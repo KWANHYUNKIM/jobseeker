@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>JD 기술스택 대시보드</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <h1>JD 기술스택 대시보드</h1>
+    <div class="meta" id="meta-line">로딩 중…</div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<section class="filters">
+  <div class="filter-group">
+    <label>회사 규모</label>
+    <div class="chips" id="filter-size"></div>
+  </div>
+  <div class="filter-group">
+    <label>직군</label>
+    <div class="chips" id="filter-role"></div>
+  </div>
+  <div class="filter-group">
+    <label>사이트</label>
+    <div class="chips" id="filter-site"></div>
+  </div>
+  <div class="filter-group">
+    <label>검색</label>
+    <input type="search" id="filter-search" placeholder="회사명·제목·기술 검색…">
+  </div>
+  <button id="reset-filters" class="btn">필터 초기화</button>
+</section>
+
+<section class="grid">
+  <div class="card span-2">
+    <h2>회사 규모별 분포</h2>
+    <canvas id="chart-size"></canvas>
+  </div>
+  <div class="card span-2">
+    <h2>직군별 채용 건수</h2>
+    <canvas id="chart-role"></canvas>
+  </div>
+  <div class="card span-4">
+    <h2>직군 × 회사규모 (스택 막대)</h2>
+    <canvas id="chart-role-size"></canvas>
+  </div>
+  <div class="card span-2">
+    <h2>Top 기술스택 (전체)</h2>
+    <canvas id="chart-tech"></canvas>
+  </div>
+  <div class="card span-2">
+    <h2>역량 키워드 (전체)</h2>
+    <canvas id="chart-comp"></canvas>
+  </div>
+  <div class="card span-4">
+    <h2>학습 우선순위 (현재 필터 기준)</h2>
+    <div class="muted">필터를 좁힐수록(예: 대기업 + 백엔드) 더 명확한 추천이 나옵니다 · 백분율 = 해당 기술을 요구한 공고 비율</div>
+    <div id="learning-tiers" class="learning-tiers"></div>
+  </div>
+  <div class="card span-4">
+    <h2>직군별 Top 기술스택 (필요도 %)</h2>
+    <div class="muted">각 직군 안에서 해당 기술이 등장한 공고 비율</div>
+    <div id="role-tech-grid" class="role-tech-grid"></div>
+  </div>
+  <div class="card span-4">
+    <h2>회사 규모별 Top 기술스택</h2>
+    <div id="size-tech-grid" class="role-tech-grid"></div>
+  </div>
+  <div class="card span-4">
+    <h2 id="jobs-title">공고 목록</h2>
+    <table id="jobs-table">
+      <thead>
+        <tr>
+          <th>회사</th>
+          <th>규모</th>
+          <th>제목</th>
+          <th>직군</th>
+          <th>기술</th>
+          <th>경력</th>
+          <th>위치</th>
+          <th>사이트</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

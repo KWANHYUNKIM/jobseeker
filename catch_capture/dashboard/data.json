@@ -1,0 +1,718 @@
+{
+  "generated_at": "2026-05-20T07:00:45",
+  "source_dir": "screenshots/all_개발자_20260520_999999",
+  "keyword": null,
+  "jobs": [
+    {
+      "site": "wanted",
+      "company": "삼성전자",
+      "company_size": "대기업",
+      "company_size_matched": "삼성전자",
+      "title": "백엔드 서버 개발자",
+      "url": "https://example.com/1",
+      "career": "경력 3~7년",
+      "location": "수원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring Boot",
+        "MySQL",
+        "Redis",
+        "Kubernetes",
+        "AWS"
+      ],
+      "tech_tags": [
+        "Java",
+        "Spring"
+      ],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "MSA/분산"
+      ],
+      "qualifications": "Java/Spring 3년 이상, MSA 경험",
+      "preferences": "성능 최적화",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "wanted",
+      "company": "네이버",
+      "company_size": "대기업",
+      "company_size_matched": "네이버",
+      "title": "AI 머신러닝 엔지니어",
+      "url": "https://example.com/2",
+      "career": "경력 2년 이상",
+      "location": "분당",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "TensorFlow",
+        "HuggingFace",
+        "AWS"
+      ],
+      "tech_tags": [
+        "PyTorch"
+      ],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "Python, 딥러닝 모델 학습 경험",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jumpit",
+      "company": "카카오",
+      "company_size": "대기업",
+      "company_size_matched": "카카오",
+      "title": "프론트엔드 개발자",
+      "url": "https://example.com/3",
+      "career": "경력 3년",
+      "location": "판교",
+      "dday": "",
+      "tech_stack": [
+        "TypeScript",
+        "React",
+        "Next.js",
+        "Tailwind"
+      ],
+      "tech_tags": [
+        "React"
+      ],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "React 3년 이상",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jumpit",
+      "company": "토스",
+      "company_size": "대기업",
+      "company_size_matched": "토스",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/4",
+      "career": "경력 3년",
+      "location": "강남",
+      "dday": "",
+      "tech_stack": [
+        "Kotlin",
+        "Spring Boot",
+        "MySQL",
+        "Redis",
+        "AWS",
+        "Kafka"
+      ],
+      "tech_tags": [
+        "Kotlin"
+      ],
+      "roles": [
+        "백엔드",
+        "모바일",
+        "데이터"
+      ],
+      "competencies": [
+        "MSA/분산"
+      ],
+      "qualifications": "Kotlin/Java 3년 이상, MSA",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "쿠팡",
+      "company_size": "대기업",
+      "company_size_matched": "쿠팡",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/5",
+      "career": "경력 5년",
+      "location": "잠실",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "MySQL",
+        "AWS",
+        "Kubernetes"
+      ],
+      "tech_tags": [
+        "Java"
+      ],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "대용량 처리"
+      ],
+      "qualifications": "대용량 트래픽",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "네이버",
+      "company_size": "대기업",
+      "company_size_matched": "네이버",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/6",
+      "career": "경력 3년",
+      "location": "분당",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring Boot",
+        "MySQL",
+        "AWS",
+        "Kafka",
+        "Kubernetes"
+      ],
+      "tech_tags": [
+        "Java",
+        "Spring"
+      ],
+      "roles": [
+        "백엔드",
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "Java/Spring",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "카카오",
+      "company_size": "대기업",
+      "company_size_matched": "카카오",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/7",
+      "career": "경력 3년",
+      "location": "판교",
+      "dday": "",
+      "tech_stack": [
+        "Kotlin",
+        "Spring Boot",
+        "MySQL",
+        "Redis",
+        "AWS"
+      ],
+      "tech_tags": [
+        "Kotlin",
+        "Spring"
+      ],
+      "roles": [
+        "백엔드",
+        "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "Kotlin 3년",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "wanted",
+      "company": "LG CNS",
+      "company_size": "대기업",
+      "company_size_matched": "LG CNS",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/8",
+      "career": "경력 5년",
+      "location": "강서",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Oracle",
+        "AWS"
+      ],
+      "tech_tags": [
+        "Java"
+      ],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "Java/Spring 5년",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "삼성SDS",
+      "company_size": "대기업",
+      "company_size_matched": "삼성SDS",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/9",
+      "career": "경력 3년",
+      "location": "잠실",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring Boot",
+        "Oracle",
+        "AWS"
+      ],
+      "tech_tags": [
+        "Java"
+      ],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "Java/Spring",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "야놀자",
+      "company_size": "중견기업",
+      "company_size_matched": "야놀자",
+      "title": "백엔드 개발자",
+      "url": "https://example.com/10",
+      "career": "경력 3년",
+      "location": "강남",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring Boot",
+        "MySQL",
+        "AWS",
+        "Kafka"
+      ],
+      "tech_tags": [
+        "Java"
+      ],
+      "roles": [
+        "백엔드",
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "Java/Spring 3년",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "wanted",
+      "company": "마켓컬리",
+      "company_size": "중견기업",
+      "company_size_matched": "마켓컬리",
+      "title": "프론트엔드 개발자",
+      "url": "https://example.com/11",
+      "career": "경력 2년",
+      "location": "성수",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "TypeScript",
+        "Next.js"
+      ],
+      "tech_tags": [
+        "React"
+      ],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "React 2년",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jumpit",
+      "company": "토스",
+      "company_size": "대기업",
+      "company_size_matched": "토스",
+      "title": "프론트엔드 개발자",
+      "url": "https://example.com/12",
+      "career": "경력 3년",
+      "location": "강남",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "TypeScript",
+        "Next.js"
+      ],
+      "tech_tags": [
+        "React"
+      ],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "React 3년",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "네이버",
+      "company_size": "대기업",
+      "company_size_matched": "네이버",
+      "title": "프론트엔드 개발자",
+      "url": "https://example.com/13",
+      "career": "경력 3년",
+      "location": "분당",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "TypeScript"
+      ],
+      "tech_tags": [
+        "React"
+      ],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "React",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "쿠팡",
+      "company_size": "대기업",
+      "company_size_matched": "쿠팡",
+      "title": "프론트엔드 개발자",
+      "url": "https://example.com/14",
+      "career": "경력 3년",
+      "location": "잠실",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "TypeScript",
+        "Next.js"
+      ],
+      "tech_tags": [
+        "React"
+      ],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "React",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "wanted",
+      "company": "카카오",
+      "company_size": "대기업",
+      "company_size_matched": "카카오",
+      "title": "AI 엔지니어",
+      "url": "https://example.com/15",
+      "career": "경력 3년",
+      "location": "판교",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "TensorFlow"
+      ],
+      "tech_tags": [
+        "PyTorch"
+      ],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "AI 모델",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "리벨리온",
+      "company_size": "중견기업",
+      "company_size_matched": "리벨리온",
+      "title": "AI 반도체 SW 엔지니어",
+      "url": "https://example.com/16",
+      "career": "경력 3년",
+      "location": "판교",
+      "dday": "",
+      "tech_stack": [
+        "C++",
+        "Python",
+        "PyTorch",
+        "Linux"
+      ],
+      "tech_tags": [
+        "C++"
+      ],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "C++ 3년",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "wanted",
+      "company": "현대모비스",
+      "company_size": "대기업",
+      "company_size_matched": "현대모비스",
+      "title": "임베디드 펌웨어 개발자",
+      "url": "https://example.com/17",
+      "career": "경력 5년",
+      "location": "용인",
+      "dday": "",
+      "tech_stack": [
+        "C",
+        "C++",
+        "Linux"
+      ],
+      "tech_tags": [
+        "C"
+      ],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "C/C++ 임베디드",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "이름없는중소IT",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 웹 개발자",
+      "url": "https://example.com/18",
+      "career": "신입",
+      "location": "구로",
+      "dday": "",
+      "tech_stack": [
+        "PHP",
+        "MySQL",
+        "JavaScript"
+      ],
+      "tech_tags": [
+        "PHP"
+      ],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "PHP 가능",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "또다른중소",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발자",
+      "url": "https://example.com/19",
+      "career": "경력 3년",
+      "location": "가산",
+      "dday": "",
+      "tech_stack": [
+        "Node.js",
+        "MySQL",
+        "AWS"
+      ],
+      "tech_tags": [
+        "Node.js"
+      ],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "Node.js",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "쿠팡",
+      "company_size": "대기업",
+      "company_size_matched": "쿠팡",
+      "title": "DevOps 엔지니어",
+      "url": "https://example.com/20",
+      "career": "경력 5년",
+      "location": "잠실",
+      "dday": "",
+      "tech_stack": [
+        "Kubernetes",
+        "AWS",
+        "Terraform",
+        "Jenkins",
+        "Docker"
+      ],
+      "tech_tags": [
+        "Kubernetes"
+      ],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "K8s, AWS",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    }
+  ],
+  "stats": {
+    "total": 20,
+    "by_size": {
+      "대기업": 15,
+      "중견기업": 3,
+      "중소기업": 2
+    },
+    "by_role": {
+      "백엔드": 10,
+      "AI/ML": 3,
+      "프론트엔드": 5,
+      "모바일": 2,
+      "데이터": 3,
+      "펌웨어/임베디드": 1,
+      "DevOps/인프라": 1
+    },
+    "by_site": {
+      "wanted": 6,
+      "jumpit": 3,
+      "saramin": 5,
+      "jobkorea": 4,
+      "dev": 2
+    },
+    "top_tech": [
+      [
+        "AWS",
+        11
+      ],
+      [
+        "MySQL",
+        8
+      ],
+      [
+        "Java",
+        6
+      ],
+      [
+        "Spring Boot",
+        6
+      ],
+      [
+        "TypeScript",
+        5
+      ],
+      [
+        "React",
+        5
+      ],
+      [
+        "Kubernetes",
+        4
+      ],
+      [
+        "Next.js",
+        4
+      ],
+      [
+        "Redis",
+        3
+      ],
+      [
+        "Python",
+        3
+      ],
+      [
+        "PyTorch",
+        3
+      ],
+      [
+        "Kafka",
+        3
+      ],
+      [
+        "TensorFlow",
+        2
+      ],
+      [
+        "Kotlin",
+        2
+      ],
+      [
+        "Spring",
+        2
+      ],
+      [
+        "Oracle",
+        2
+      ],
+      [
+        "C++",
+        2
+      ],
+      [
+        "Linux",
+        2
+      ],
+      [
+        "HuggingFace",
+        1
+      ],
+      [
+        "Tailwind",
+        1
+      ],
+      [
+        "C",
+        1
+      ],
+      [
+        "PHP",
+        1
+      ],
+      [
+        "JavaScript",
+        1
+      ],
+      [
+        "Node.js",
+        1
+      ],
+      [
+        "Terraform",
+        1
+      ],
+      [
+        "Jenkins",
+        1
+      ],
+      [
+        "Docker",
+        1
+      ]
+    ]
+  }
+}
