@@ -28,7 +28,7 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen">
       <nav className="flex items-center gap-1 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)">
         <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
           잡 리스트
