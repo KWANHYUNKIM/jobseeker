@@ -13,3 +13,8 @@ fi
 
 ln -sfn "$LATEST" all_개발자_latest
 echo "latest -> $LATEST"
+
+# enrich + mindmap 재빌드
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+python3 "$SCRIPT_DIR/enrich_jobs.py"
+python3 "$SCRIPT_DIR/build_mindmap.py"
