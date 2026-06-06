@@ -35,7 +35,8 @@ def find_latest_all_dir(keyword: str | None) -> Path | None:
         return None
     pattern = f"all_{keyword}_*" if keyword else "all_*"
     matches = sorted(
-        (p for p in SCREENSHOTS_DIR.glob(pattern) if p.is_dir()),
+        (p for p in SCREENSHOTS_DIR.glob(pattern)
+         if p.is_dir() and not p.name.endswith("_latest")),  # all_<kw>_latest 심볼릭링크 제외
         key=lambda p: p.name,
         reverse=True,
     )
