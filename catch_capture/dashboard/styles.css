@@ -217,3 +217,20 @@ td a:hover { text-decoration: underline; }
   background: rgba(124,196,255,0.08); color: var(--accent);
   border-radius: 4px; font-size: 10px;
 }
+
+/* 크롤 히스토리 */
+.history-table-wrap {
+  margin-top: 14px;
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.history-table td { font-variant-numeric: tabular-nums; }
+.history-table td:not(:first-child) { text-align: right; }
+.history-table th:not(:first-child) { text-align: right; }
+.history-table td:last-child, .history-table th:last-child { text-align: center; }
+.hist-ok { color: var(--muted); font-size: 11px; }
+.hist-warn {
+  color: var(--warn); font-weight: 600; font-size: 11px; cursor: help;
+}

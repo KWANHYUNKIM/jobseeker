@@ -40,7 +40,85 @@ function init() {
   const jobs = state.raw.jobs || [];
   buildFilterChips(jobs);
   attachListeners();
+  renderHistory(state.raw.history || []);
   render();
+}
+
+// ---------- 크롤 히스토리 (필터 무관, 1회 렌더) ----------
+const SITE_COLORS = {
+  wanted: '#7cc4ff', jumpit: '#a3e635', jobkorea: '#f59e0b',
+  saramin: '#f472b6', dev: '#c084fc',
+};
+
+function fmtTs(ts) {
+  // "2026-06-06T16:19:15" → "06-06 16:19"
+  if (!ts) return '';
+  const m = String(ts).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  return m ? `${m[2]}-${m[3]} ${m[4]}:${m[5]}` : ts;
+}
+
+function renderHistory(history) {
+  const meta = document.getElementById('history-meta');
+  if (!history.length) {
+    if (meta) meta.textContent = '· 기록 없음';
+    return;
+  }
+  if (meta) {
+    const last = history[history.length - 1];
+    meta.textContent = `· 총 ${history.length}회 · 마지막 ${fmtTs(last.ts)} (${last.active}건)`;
+  }
+
+  // --- 라인차트: active / raw_total / closed 추이 ---
+  destroyChart('history');
+  const labels = history.map(h => fmtTs(h.ts));
+  const ctx = document.getElementById('chart-history');
+  ctx.parentElement.style.height = '300px';
+  state.charts.history = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: '모집중(active)', data: history.map(h => h.active),
+          borderColor: '#a3e635', backgroundColor: '#a3e63533', tension: 0.25, fill: true, pointRadius: 3 },
+        { label: '원본(raw)', data: history.map(h => h.raw_total),
+          borderColor: '#7cc4ff', backgroundColor: 'transparent', tension: 0.25, borderDash: [5, 4], pointRadius: 2 },
+        { label: '마감(closed)', data: history.map(h => h.closed),
+          borderColor: '#f87171', backgroundColor: 'transparent', tension: 0.25, pointRadius: 2 },
+      ],
+    },
+    options: { ...COMMON_OPTS, interaction: { mode: 'index', intersect: false } },
+  });
+
+  // --- 표: 시각별 / 사이트별 / 합계 (최신이 위) ---
+  const known = Object.keys(SITE_COLORS).filter(s =>
+    history.some(h => (h.site_counts || {})[s] != null));
+  const extra = [...new Set(history.flatMap(h => Object.keys(h.site_counts || {})))]
+    .filter(s => !known.includes(s));
+  const allSites = [...known, ...extra];
+
+  const head = `
+    <tr>
+      <th>시각</th>
+      ${allSites.map(s => `<th>${escapeHtml(s)}</th>`).join('')}
+      <th>원본</th><th>중복제거</th><th>모집중</th><th>마감</th><th>상태</th>
+    </tr>`;
+  const rows = [...history].reverse().map(h => {
+    const sc = h.site_counts || {};
+    const anomaly = (h.anomalies && h.anomalies.length)
+      ? `<span class="hist-warn" title="${escapeHtml(h.anomalies.join('\n'))}">⚠ ${h.anomalies.length}</span>`
+      : '<span class="hist-ok">정상</span>';
+    return `
+      <tr>
+        <td>${escapeHtml(fmtTs(h.ts))}</td>
+        ${allSites.map(s => `<td>${sc[s] != null ? sc[s] : '·'}</td>`).join('')}
+        <td>${h.raw_total}</td><td>${h.deduped}</td>
+        <td><strong>${h.active}</strong></td><td>${h.closed}</td>
+        <td>${anomaly}</td>
+      </tr>`;
+  }).join('');
+
+  document.getElementById('history-table-wrap').innerHTML =
+    `<table class="history-table"><thead>${head}</thead><tbody>${rows}</tbody></table>`;
 }
 
 // ---------- 필터 UI ----------

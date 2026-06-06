@@ -37,6 +37,12 @@
 </section>
 
 <section class="grid">
+  <div class="card span-4">
+    <h2>크롤 히스토리 <span class="muted" id="history-meta"></span></h2>
+    <div class="muted">크롤이 돌 때마다 시각별로 수집된 공고 수가 쌓입니다 · 라인 = 모집중(active) / 원본(raw) 추이</div>
+    <canvas id="chart-history"></canvas>
+    <div id="history-table-wrap" class="history-table-wrap"></div>
+  </div>
   <div class="card span-2">
     <h2>회사 규모별 분포</h2>
     <canvas id="chart-size"></canvas>
