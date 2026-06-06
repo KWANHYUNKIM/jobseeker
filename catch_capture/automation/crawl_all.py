@@ -91,6 +91,14 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
+    try:
+        from monitoring import orchestration as orch
+    except Exception:
+        orch = None
+
+    if orch:
+        orch.crawl_started(keyword, sources)
+
     overall_start = datetime.now()
     print(f"\n========== crawl_all 시작 {overall_start:%Y-%m-%d %H:%M:%S} ==========", flush=True)
     print(f"[*] 각 크롤러 저장 경로: {BASE_DIR / 'screenshots'}/<site>_<keyword>_<timestamp>/", flush=True)
@@ -105,6 +113,8 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         script = BASE_DIR / "crawlers" / SOURCES[source]["script"]
         start = datetime.now()
         print(f"\n----- [{i}/{len(sources)}] {source} 시작 {start:%H:%M:%S} -----", flush=True)
+        if orch:
+            orch.site_started(source)
         cmd = [_python_executable(), "-u", str(script), keyword, str(target)]
         if depth is not None:
             cmd.append(str(depth))
@@ -116,24 +126,40 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
             )
         except KeyboardInterrupt:
             print(f"[!] {source} 중단(KeyboardInterrupt)", flush=True)
+            if orch:
+                orch.site_finished(source, False,
+                                   orch.count_site_jobs(keyword, source),
+                                   (datetime.now() - start).total_seconds())
             return 130
         elapsed = (datetime.now() - start).total_seconds()
+        count = orch.count_site_jobs(keyword, source) if orch else None
         if rc != 0:
             failures.append(source)
             print(f"[!] {source} 실패(rc={rc}, {elapsed:.0f}s)", flush=True)
         else:
             print(f"[OK] {source} 완료({elapsed:.0f}s)", flush=True)
+        if orch:
+            orch.site_finished(source, rc == 0, count, elapsed)
 
     if do_aggregate:
         print(f"\n----- aggregate 통합 -----", flush=True)
+        agg_start = datetime.now()
+        if orch:
+            orch.aggregate_started()
         try:
             sys.path.insert(0, str(BASE_DIR))
             from pipeline.aggregate import aggregate as _aggregate
             out = _aggregate(keyword)
             print(f"[OK] 통합 폴더: {out}", flush=True)
+            if orch:
+                orch.aggregate_finished(True, str(out),
+                                        (datetime.now() - agg_start).total_seconds())
         except Exception as e:
             print(f"[!] aggregate 실패: {e}", flush=True)
             failures.append("aggregate")
+            if orch:
+                orch.aggregate_finished(False, None,
+                                        (datetime.now() - agg_start).total_seconds())
 
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)

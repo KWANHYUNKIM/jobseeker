@@ -29,8 +29,10 @@ import signal
 import subprocess
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+
+from monitoring import orchestration as orch
 
 BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 ROOT_DIR = BASE_DIR.parent
@@ -94,15 +96,19 @@ def refresh_data(keyword: str) -> None:
     py = _python_executable()
 
     log("[refresh] dashboard/data.json 재빌드")
+    orch.refresh_started("dashboard")
     rc = subprocess.call(
         [py, str(BASE_DIR / "dashboard" / "serve.py"),
          "--keyword", keyword, "--build-only"],
         cwd=str(BASE_DIR),
     )
+    orch.refresh_finished("dashboard", rc == 0)
     log(f"[refresh] dashboard {'완료' if rc == 0 else f'실패(rc={rc})'}")
 
     log("[refresh] jd-viewer enrich + mindmap")
+    orch.refresh_started("viewer")
     rc = subprocess.call(["bash", str(REFRESH_SH)], cwd=str(ROOT_DIR))
+    orch.refresh_finished("viewer", rc == 0)
     log(f"[refresh] jd-viewer {'완료' if rc == 0 else f'실패(rc={rc})'}")
 
 
@@ -110,6 +116,7 @@ def run_cycle(keyword: str, count: int) -> bool:
     """크롤 1회 + (새 데이터면) 갱신. 새 데이터가 생겼으면 True."""
     from automation.crawl_all import run_foreground
 
+    cycle_start = datetime.now()
     before = _latest_all_dir(keyword)
     log(f"[crawl] 시작 keyword={keyword} count={count} (직전 폴더={before})")
     rc = run_foreground(keyword, count, ["dev", "jobkorea", "jumpit", "saramin", "wanted"])
@@ -117,19 +124,24 @@ def run_cycle(keyword: str, count: int) -> bool:
 
     if rc != 0:
         log(f"[crawl] 일부 실패(rc={rc})")
-    if after and after != before:
+    new_data = bool(after and after != before)
+    if new_data:
         log(f"[crawl] 새 데이터 감지: {after} → 갱신 진행")
         refresh_data(keyword)
-        return True
-    log("[crawl] 새 데이터 없음 → 갱신 스킵")
-    return False
+    else:
+        log("[crawl] 새 데이터 없음 → 갱신 스킵")
+    orch.cycle_finished(new_data, (datetime.now() - cycle_start).total_seconds())
+    return new_data
 
 
 def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
     sys.path.insert(0, str(BASE_DIR))
     log(f"===== auto_crawl 데몬 시작 (keyword={keyword}, count={count}, "
         f"interval={interval}s, 즉시크롤={run_now}) =====")
+    orch.daemon_started(keyword, count, interval, run_now)
     if not run_now:
+        next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
+        orch.waiting(next_at, interval)
         log(f"[wait] 첫 크롤까지 {interval}s 대기 (--now 로 즉시 실행 가능)")
         time.sleep(interval)
     while True:
@@ -137,6 +149,9 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
             run_cycle(keyword, count)
         except Exception as e:  # 한 주기 실패해도 데몬은 계속
             log(f"[err] 사이클 예외: {e!r}")
+            orch.error("cycle", repr(e))
+        next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
+        orch.waiting(next_at, interval)
         log(f"[wait] 다음 크롤까지 {interval}s 대기")
         time.sleep(interval)
 
