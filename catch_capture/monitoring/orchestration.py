@@ -88,15 +88,20 @@ def _trim_events() -> None:
 def count_site_jobs(keyword: str, site: str) -> int | None:
     """방금 크롤한 site 의 최신 jobs.json 건수."""
     try:
-        matches = sorted(
-            (p for p in SCREENSHOTS_DIR.glob(f"{site}_{keyword}_*") if p.is_dir()),
-            key=lambda p: p.name,
-            reverse=True,
-        )
-        for d in matches:
-            jf = d / "jobs.json"
+        # 사이트마다 폴더 네이밍이 다르다: 일부는 `<site>_<kw>`(고정, 덮어씀),
+        # 일부는 `<site>_<kw>_<timestamp>`(매회 새 폴더). 둘 다 `<site>_<kw>*` 로 잡고,
+        # jobs.json 의 mtime 이 가장 최신인 폴더를 고른다(이름 정렬은 두 방식 혼재 시 부정확).
+        cands = []
+        for p in SCREENSHOTS_DIR.glob(f"{site}_{keyword}*"):
+            if not p.is_dir():
+                continue
+            jf = p / "jobs.json"
             if jf.exists():
-                return len(json.loads(jf.read_text(encoding="utf-8")))
+                cands.append(jf)
+        if not cands:
+            return None
+        newest = max(cands, key=lambda f: f.stat().st_mtime)
+        return len(json.loads(newest.read_text(encoding="utf-8")))
     except Exception:
         pass
     return None
