@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>크롤 오케스트레이션</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot" id="liveDot"></span>
+      <h1>크롤 오케스트레이션</h1>
+    </div>
+    <div class="topmeta">
+      <span id="daemonPill" class="pill pill-muted">데몬 상태 확인 중…</span>
+      <span id="updated" class="updated">—</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- 현재 단계 + 카운트다운 -->
+    <section class="card hero">
+      <div class="hero-left">
+        <div class="hero-label">현재 단계</div>
+        <div class="hero-phase" id="phaseLabel">—</div>
+        <div class="hero-sub" id="phaseSub">—</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">다음 크롤까지</div>
+        <div class="countdown" id="countdown">—</div>
+        <div class="hero-sub" id="cfgSub">—</div>
+      </div>
+    </section>
+
+    <!-- 파이프라인 스텝퍼 -->
+    <section class="card">
+      <h2>파이프라인</h2>
+      <ol class="stepper" id="stepper"></ol>
+    </section>
+
+    <!-- 사이트별 크롤 현황 -->
+    <section class="card">
+      <h2>사이트별 수집 <span class="muted" id="cycleClock"></span></h2>
+      <div class="sites" id="sites"></div>
+    </section>
+
+    <div class="grid2">
+      <!-- 직전 사이클 품질(health) -->
+      <section class="card">
+        <h2>데이터 품질 (최신 사이클)</h2>
+        <div id="anomalyBanner"></div>
+        <div class="health" id="health"></div>
+      </section>
+
+      <!-- 사이클 히스토리 추이 -->
+      <section class="card">
+        <h2>사이클 추이</h2>
+        <table class="histtable" id="histTable">
+          <thead>
+            <tr><th>시각</th><th>수집</th><th>모집중</th><th>중복</th><th>채움률</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- 이벤트 로그 -->
+    <section class="card">
+      <h2>이벤트 로그</h2>
+      <div class="eventlog" id="eventlog"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span id="connState">연결 확인 중…</span>
+    · 자동 갱신 2s · <code>python ops_server.py</code>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
