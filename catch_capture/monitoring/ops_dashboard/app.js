@@ -2,6 +2,16 @@
 
 const SITES_ORDER = ["wanted", "jumpit", "jobkorea", "saramin", "dev"];
 
+// 차단/레이트리밋 reason → 한글 라벨 (block_detect 의 R_* 와 1:1)
+const BLOCK_LABEL = {
+  rate_limited_429: "차단 의심 · 429 과다요청",
+  forbidden_403: "차단 의심 · 403 거부",
+  unavailable_503: "일시 차단 · 503",
+  http_error: "HTTP 오류",
+  captcha_or_block_page: "캡차/차단 페이지",
+};
+const blockLabel = (r) => (r ? (BLOCK_LABEL[r] || r) : "");
+
 const PHASE_LABEL = {
   idle: "대기",
   crawling: "크롤링 중",
@@ -178,7 +188,7 @@ function renderSites(s) {
     const v = sites[k] || {};
     const status = v.status || "pending";
     const div = document.createElement("div");
-    div.className = "site " + status;
+    div.className = "site " + status + (v.reason ? " blocked" : "");
     const countHtml = v.count != null
       ? `${v.count}<span class="u"> 건</span>`
       : (status === "running" ? `<span class="spin">◐</span>` : `<span class="u">—</span>`);
@@ -186,10 +196,12 @@ function renderSites(s) {
       pending: "대기", running: "수집 중…", done: `완료${secs(v.elapsed)}`,
       failed: `실패${secs(v.elapsed)}`,
     }[status] || status;
+    const blockHtml = v.reason ? `<div class="site-block">⛔ ${blockLabel(v.reason)}</div>` : "";
     div.innerHTML =
       `<div class="site-name">${k}</div>` +
       `<div class="site-count">${countHtml}</div>` +
-      `<div class="site-status">${statusLabel}</div>`;
+      `<div class="site-status">${statusLabel}</div>` +
+      blockHtml;
     wrap.appendChild(div);
   }
   const cyc = s.cycle || {};
@@ -267,7 +279,8 @@ function evMessage(e) {
     case "daemon_start": return `데몬 시작 keyword=${e.keyword} count=${e.count} interval=${e.interval}s`;
     case "cycle_start": return `크롤 사이클 시작 [${(e.sources || []).join(", ")}]`;
     case "site_start": return `  ${e.site} 수집 시작`;
-    case "site_done": return `  ${e.site} ${e.ok ? "완료" : "실패"} · ${e.count ?? "?"}건${secs(e.elapsed)}`;
+    case "site_block": return `  ⛔ ${e.site} 차단 감지 — ${blockLabel(e.reason)}${e.http_status ? ` (HTTP ${e.http_status})` : ""}`;
+    case "site_done": return `  ${e.site} ${e.ok ? "완료" : "실패"} · ${e.count ?? "?"}건${secs(e.elapsed)}${e.reason ? ` · ⛔ ${blockLabel(e.reason)}` : ""}`;
     case "aggregate_start": return `통합(aggregate) 시작`;
     case "aggregate_done": return `통합 ${e.ok ? "완료" : "실패"}${secs(e.elapsed)}`;
     case "refresh_start": return `${e.target === "dashboard" ? "대시보드" : "뷰어"} 갱신 시작`;
