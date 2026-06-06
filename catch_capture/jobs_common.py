@@ -470,6 +470,9 @@ def split_jd_sections(text: str) -> dict[str, str]:
     out = {k: "" for k in SECTION_HEADERS}
     if not text:
         return out
+    # 인라인 대괄호 마커(예: "...경력 3년 [우대사항] 도메인 이해...")를 줄머리로 끌어내려
+    # 한 줄에 눌린 표/문단형 JD(잡코리아 등)에서도 헤더가 인식되게 한다.
+    text = re.sub(r"\s*([\[【][^\]\n】]{1,30}[\]】])", r"\n\1", text)
     lines = text.splitlines()
     current: str | None = None
     buf: dict[str, list[str]] = {k: [] for k in SECTION_HEADERS}
