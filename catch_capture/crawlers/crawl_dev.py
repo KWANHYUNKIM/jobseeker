@@ -335,6 +335,8 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
         target_url = SEARCH_URL.format(kw=quote(keyword))
         print(f"[*] 통합검색 진입: {target_url}", flush=True)
         await page.goto(target_url, wait_until="domcontentloaded", timeout=60_000)
+        from crawlers import block_detect
+        await block_detect.scan_page(page, "dev")
         try:
             await page.wait_for_selector(JOB_LINK_SELECTOR, timeout=15_000)
         except Exception:
@@ -456,6 +458,10 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
                     try:
                         desc_text, raw_html = fetch_iframe(job_id)
                     except Exception as e:
+                        from crawlers import block_detect
+                        reason, code = block_detect.from_http_error(e)
+                        if reason:
+                            block_detect.report("dev", reason, http_status=code, detail=str(e))
                         print(f"       ↳ JD fetch 실패: {e}", flush=True)
 
                 has_img = "<img " in raw_html

@@ -67,6 +67,10 @@ def collect_search_anchors(keyword: str, max_pages: int) -> list[dict]:
         try:
             html = http_get(url, timeout=30).decode("utf-8", errors="replace")
         except Exception as e:
+            from crawlers import block_detect
+            reason, code = block_detect.from_http_error(e)
+            if reason:
+                block_detect.report("saramin", reason, http_status=code, detail=str(e))
             print(f"  [page {page_num}] 가져오기 실패: {e}", flush=True)
             break
 

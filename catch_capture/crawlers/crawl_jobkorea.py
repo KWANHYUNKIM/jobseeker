@@ -188,6 +188,8 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
         target_url = SEARCH_URL.format(kw=quote(keyword), page=1)
         print(f"[*] 검색 진입: {target_url}", flush=True)
         await page.goto(target_url, wait_until="commit", timeout=30_000)
+        from crawlers import block_detect
+        await block_detect.scan_page(page, "jobkorea")
         await page.wait_for_timeout(2500)
 
         candidates = await collect_search_cards(page, keyword=keyword, max_pages=max_pages)

@@ -160,6 +160,8 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
         target_url = SEARCH_URL.format(kw=quote(keyword))
         print(f"[*] 검색 진입: {target_url}", flush=True)
         await page.goto(target_url, wait_until="domcontentloaded", timeout=30_000)
+        from crawlers import block_detect
+        await block_detect.scan_page(page, "wanted")
         # wait for hydration — JobCardSkeleton replaced by real cards
         hydrated = False
         try:
