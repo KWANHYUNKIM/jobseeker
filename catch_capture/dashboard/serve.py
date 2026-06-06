@@ -21,6 +21,7 @@ from pathlib import Path
 DASHBOARD_DIR = Path(__file__).parent.resolve()
 CATCH_DIR = DASHBOARD_DIR.parent
 SCREENSHOTS_DIR = CATCH_DIR / "screenshots"
+HISTORY_FILE = CATCH_DIR / "health_history.jsonl"
 
 sys.path.insert(0, str(DASHBOARD_DIR))
 from classifier import (
@@ -105,6 +106,40 @@ def compute_stats(jobs: list[dict]) -> dict:
     }
 
 
+def load_history(limit: int = 200) -> list[dict]:
+    """health_history.jsonl 을 읽어 시계열 수집 이력으로 변환.
+
+    같은 ts 가 여러 줄이면 마지막 것만 남긴다(중복 기록 정리).
+    대시보드 라인차트/표에 필요한 필드만 추려서 시간순으로 반환.
+    """
+    if not HISTORY_FILE.exists():
+        return []
+    by_ts: dict[str, dict] = {}
+    for line in HISTORY_FILE.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        ts = r.get("ts")
+        if not ts:
+            continue
+        by_ts[ts] = {
+            "ts": ts,
+            "keyword": r.get("keyword"),
+            "raw_total": r.get("raw_total", 0),
+            "deduped": r.get("deduped", 0),
+            "active": r.get("active", 0),
+            "closed": r.get("closed", 0),
+            "site_counts": r.get("site_counts", {}),
+            "anomalies": r.get("anomalies", []),
+        }
+    rows = sorted(by_ts.values(), key=lambda r: r["ts"])
+    return rows[-limit:]
+
+
 def build_data(keyword: str | None) -> dict:
     src = find_latest_all_dir(keyword)
     if not src:
@@ -115,6 +150,7 @@ def build_data(keyword: str | None) -> dict:
             "keyword": keyword,
             "jobs": [],
             "stats": compute_stats([]),
+            "history": load_history(),
         }
     all_jobs_file = src / "all_jobs.json"
     if not all_jobs_file.exists():
@@ -125,6 +161,7 @@ def build_data(keyword: str | None) -> dict:
             "keyword": keyword,
             "jobs": [],
             "stats": compute_stats([]),
+            "history": load_history(),
         }
     raw = json.loads(all_jobs_file.read_text(encoding="utf-8"))
     jobs = enrich_jobs(raw)
@@ -136,6 +173,7 @@ def build_data(keyword: str | None) -> dict:
         "keyword": keyword,
         "jobs": jobs,
         "stats": compute_stats(jobs),
+        "history": load_history(),
     }
 
 
