@@ -22,6 +22,7 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
+import json
 import os
 import signal
 import subprocess
@@ -33,6 +34,24 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 PID_FILE = BASE_DIR / "crawl_all.pid"
 LOG_FILE = BASE_DIR / "crawl_all.log"
+BLOCK_DIR = BASE_DIR / ".blocks"
+
+
+def _block_clear(site: str) -> None:
+    """직전 사이클의 차단 마커 제거 (이번 크롤 시작 전)."""
+    try:
+        (BLOCK_DIR / f"{site}.json").unlink()
+    except (FileNotFoundError, OSError):
+        pass
+
+
+def _block_reason(site: str) -> str | None:
+    """크롤러가 남긴 차단 마커에서 reason 추출. 없으면 None."""
+    try:
+        rec = json.loads((BLOCK_DIR / f"{site}.json").read_text(encoding="utf-8"))
+        return rec.get("reason")
+    except Exception:
+        return None
 
 
 def _python_executable() -> str:
@@ -115,6 +134,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         print(f"\n----- [{i}/{len(sources)}] {source} 시작 {start:%H:%M:%S} -----", flush=True)
         if orch:
             orch.site_started(source)
+        _block_clear(source)
         cmd = [_python_executable(), "-u", str(script), keyword, str(target)]
         if depth is not None:
             cmd.append(str(depth))
@@ -129,17 +149,22 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
             if orch:
                 orch.site_finished(source, False,
                                    orch.count_site_jobs(keyword, source),
-                                   (datetime.now() - start).total_seconds())
+                                   (datetime.now() - start).total_seconds(),
+                                   reason=_block_reason(source))
             return 130
         elapsed = (datetime.now() - start).total_seconds()
         count = orch.count_site_jobs(keyword, source) if orch else None
+        reason = _block_reason(source)
         if rc != 0:
             failures.append(source)
-            print(f"[!] {source} 실패(rc={rc}, {elapsed:.0f}s)", flush=True)
+            print(f"[!] {source} 실패(rc={rc}, {elapsed:.0f}s)"
+                  + (f" — 차단 감지: {reason}" if reason else ""), flush=True)
+        elif reason:
+            print(f"[OK] {source} 완료({elapsed:.0f}s) — 그러나 차단 신호 감지: {reason}", flush=True)
         else:
             print(f"[OK] {source} 완료({elapsed:.0f}s)", flush=True)
         if orch:
-            orch.site_finished(source, rc == 0, count, elapsed)
+            orch.site_finished(source, rc == 0, count, elapsed, reason=reason)
 
     if do_aggregate:
         print(f"\n----- aggregate 통합 -----", flush=True)

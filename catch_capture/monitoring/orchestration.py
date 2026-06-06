@@ -153,7 +153,9 @@ def site_started(site: str) -> None:
     emit("site_start", site=site)
 
 
-def site_finished(site: str, ok: bool, count: int | None, elapsed: float) -> None:
+def site_finished(site: str, ok: bool, count: int | None, elapsed: float,
+                  reason: str | None = None) -> None:
+    """reason: 차단/레이트리밋 감지 시 식별자(block_detect 의 R_* ). 없으면 None."""
     state = load_state()
     cyc = state.setdefault("cycle", {}).setdefault("sites", {})
     cyc.setdefault(site, {})
@@ -161,9 +163,10 @@ def site_finished(site: str, ok: bool, count: int | None, elapsed: float) -> Non
         "status": "done" if ok else "failed",
         "count": count,
         "elapsed": round(elapsed, 1),
+        "reason": reason,
     })
     save_state(state)
-    emit("site_done", site=site, ok=ok, count=count, elapsed=round(elapsed, 1))
+    emit("site_done", site=site, ok=ok, count=count, elapsed=round(elapsed, 1), reason=reason)
 
 
 def aggregate_started() -> None:
