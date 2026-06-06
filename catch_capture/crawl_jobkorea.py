@@ -161,6 +161,7 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
     print(f"[*] OCR 사용: {use_ocr and OCR_AVAILABLE}", flush=True)
 
     collected: list[dict] = load_existing_jobs(out_dir)
+    base_count = len(collected)  # 이번 회차 신규 target건만 수집(상한 없이 누적)
     seen_prev = load_seen_pids(base_dir, "jobkorea")
     for j in collected:
         for k in ("pid", "gno"):
@@ -190,7 +191,7 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
 
         scanned = skipped_nondev = skipped_dup = failed = 0
         for job in candidates:
-            if len(collected) >= target:
+            if len(collected) - base_count >= target:
                 break
             scanned += 1
             label = f"{job['company']}_{job['title']}".strip("_")

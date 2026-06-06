@@ -306,12 +306,12 @@ async def collect_search_anchors(page, max_pages: int) -> list[dict]:
 
 
 async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> None:
-    from jobs_common import build_jd_sections, compute_out_dir
+    from jobs_common import build_jd_sections, fixed_out_dir, load_existing_jobs, save_jobs_json
     base_dir = Path(__file__).parent
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_dir = compute_out_dir(base_dir, "dev", keyword, timestamp)
+    out_dir = fixed_out_dir(base_dir, "dev", keyword)
     out_dir.mkdir(parents=True, exist_ok=True)
-    print(f"[*] 저장 경로: {out_dir}", flush=True)
+    print(f"[*] 저장 경로(누적): {out_dir}", flush=True)
     print(f"[*] OCR 사용: {use_ocr and OCR_AVAILABLE}", flush=True)
 
     from playwright.async_api import async_playwright
@@ -374,11 +374,14 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
             await browser.close()
             return
 
-        collected: list[dict] = []
+        collected: list[dict] = load_existing_jobs(out_dir)
+        base_count = len(collected)  # 이번 회차 신규 target건만 수집(상한 없이 누적)
+        if collected:
+            print(f"[*] 누적 폴더에 기존 수집 {len(collected)}건 발견 → 인덱스 이어서 진행", flush=True)
         scanned, skipped_nondev, failed = 0, 0, 0
 
         for job in candidates:
-            if len(collected) >= target:
+            if len(collected) - base_count >= target:
                 break
             scanned += 1
             label = f"{job['company']}_{job['title']}".strip("_")
@@ -541,9 +544,7 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
             finally:
                 await detail.close()
 
-        (out_dir / "jobs.json").write_text(
-            json.dumps(collected, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
+        save_jobs_json(out_dir, collected)
         save_seen_jobs(seen_jobs)
         print(
             f"\n[완료] 수집 {len(collected)} / 비개발자 {skipped_nondev} / 실패 {failed} / 훑은 공고 {scanned}",

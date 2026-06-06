@@ -154,6 +154,7 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
     print(f"[*] 저장 경로(누적): {out_dir}", flush=True)
 
     collected: list[dict] = load_existing_jobs(out_dir)
+    base_count = len(collected)  # 이번 회차 신규 target건만 수집(상한 없이 누적)
     seen_prev = load_seen_pids(base_dir, "jumpit")
     for j in collected:
         for k in ("pid", "position_id"):
@@ -189,7 +190,7 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
 
         scanned = skipped_nondev = skipped_dup = failed = 0
         for job in candidates:
-            if len(collected) >= target:
+            if len(collected) - base_count >= target:
                 break
             scanned += 1
             label = f"{job['company']}_{job['title']}".strip("_")
