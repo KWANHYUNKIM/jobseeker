@@ -11,6 +11,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import asyncio
 import json
 import re
@@ -21,7 +25,7 @@ from urllib.parse import quote
 
 from playwright.async_api import async_playwright
 
-from jobs_common import (
+from crawlers.jobs_common import (
     OCR_AVAILABLE,
     USER_AGENT,
     build_jd_sections,
@@ -154,7 +158,7 @@ def fetch_jd(gno: str, referer: str) -> tuple[str, str]:
 
 
 async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> None:
-    base_dir = Path(__file__).parent
+    base_dir = Path(__file__).resolve().parent.parent
     out_dir = fixed_out_dir(base_dir, "jobkorea", keyword)
     out_dir.mkdir(parents=True, exist_ok=True)
     print(f"[*] 저장 경로(누적): {out_dir}", flush=True)

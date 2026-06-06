@@ -1,3 +1,7 @@
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 """
 캐치(catch.co.kr) "채용공고" 검색 결과의 각 공고 상세 페이지를 자동 캡처.
 
@@ -27,7 +31,7 @@ def sanitize_filename(name: str) -> str:
 
 
 async def capture_jobs(keyword: str, max_jobs: int = 20) -> None:
-    base_dir = Path(__file__).parent
+    base_dir = Path(__file__).resolve().parent.parent
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = base_dir / "screenshots" / f"{sanitize_filename(keyword)}_{timestamp}"
     out_dir.mkdir(parents=True, exist_ok=True)

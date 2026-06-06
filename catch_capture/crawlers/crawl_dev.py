@@ -24,6 +24,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import asyncio
 import io
 import json
@@ -46,9 +50,9 @@ try:
 except ImportError:
     OCR_AVAILABLE = False
 
-SEEN_JOBS_FILE = Path(__file__).parent / "seen_jobs.json"
-PID_FILE = Path(__file__).parent / "crawl_dev.pid"
-LOG_FILE = Path(__file__).parent / "crawl_dev.log"
+SEEN_JOBS_FILE = Path(__file__).resolve().parent.parent / "seen_jobs.json"
+PID_FILE = Path(__file__).resolve().parent.parent / "crawl_dev.pid"
+LOG_FILE = Path(__file__).resolve().parent.parent / "crawl_dev.log"
 
 SEARCH_URL = "https://www.catch.co.kr/Search/SearchList?Keyword={kw}"
 JOB_LINK_SELECTOR = "table.table2.type3 a.tdlink.al"
@@ -306,8 +310,8 @@ async def collect_search_anchors(page, max_pages: int) -> list[dict]:
 
 
 async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> None:
-    from jobs_common import build_jd_sections, fixed_out_dir, load_existing_jobs, save_jobs_json
-    base_dir = Path(__file__).parent
+    from crawlers.jobs_common import build_jd_sections, fixed_out_dir, load_existing_jobs, save_jobs_json
+    base_dir = Path(__file__).resolve().parent.parent
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = fixed_out_dir(base_dir, "dev", keyword)
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -21,13 +21,17 @@ overrides.json 구조:
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import glob
 import json
 import os
 import sys
 from pathlib import Path
 
-BASE = Path(__file__).parent.resolve()
+BASE = Path(__file__).resolve().parent.parent.resolve()
 SCREENS = BASE / "screenshots"
 OVR_PATH = BASE / "overrides.json"
 EDIT_FIELDS = ("main_tasks", "qualifications", "preferences")

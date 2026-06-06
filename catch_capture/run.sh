@@ -37,7 +37,7 @@ case "$cmd" in
         exit 1
     fi
     shift
-    script="$HERE/crawl_${crawler}.py"
+    script="$HERE/crawlers/crawl_${crawler}.py"
     if [ ! -f "$script" ]; then
         echo "[err] crawler script not found: $script" >&2
         exit 1
@@ -114,7 +114,7 @@ case "$cmd" in
 
   aggregate)
     keyword="${1:-개발자}"
-    "$VENV_PY" "$HERE/aggregate.py" "$keyword"
+    "$VENV_PY" "$HERE/pipeline/aggregate.py" "$keyword"
     ;;
 
   clean)

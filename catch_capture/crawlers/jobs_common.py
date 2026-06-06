@@ -9,6 +9,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import io
 import json
 import os
@@ -198,7 +202,7 @@ def is_image_only(html: str, text: str, min_text_len: int = 30) -> bool:
     return has_img and trimmed_len < min_text_len
 
 
-BROWSER_STATE_FILE = Path(__file__).parent / ".browser_state.json"
+BROWSER_STATE_FILE = Path(__file__).resolve().parent.parent / ".browser_state.json"
 
 
 def _browser_state() -> dict | None:

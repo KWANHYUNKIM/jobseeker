@@ -20,6 +20,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import os
 import signal
 import subprocess
@@ -28,7 +32,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent.resolve()
+BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 ROOT_DIR = BASE_DIR.parent
 SCREENSHOTS_DIR = BASE_DIR / "screenshots"
 PID_FILE = BASE_DIR / "auto_crawl.pid"
@@ -104,7 +108,7 @@ def refresh_data(keyword: str) -> None:
 
 def run_cycle(keyword: str, count: int) -> bool:
     """크롤 1회 + (새 데이터면) 갱신. 새 데이터가 생겼으면 True."""
-    from crawl_all import run_foreground
+    from automation.crawl_all import run_foreground
 
     before = _latest_all_dir(keyword)
     log(f"[crawl] 시작 keyword={keyword} count={count} (직전 폴더={before})")

@@ -21,6 +21,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import json
 import os
 import signal
@@ -29,7 +33,7 @@ import sys
 import time
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 STATE_FILE = BASE_DIR / ".browser_state.json"
 LOG_FILE = BASE_DIR / ".browser_daemon.log"
 USER_DATA_DIR = BASE_DIR / ".chrome_profile"

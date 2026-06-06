@@ -18,6 +18,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import os
 import signal
 import subprocess
@@ -26,7 +30,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent.resolve()
+BASE_DIR = Path(__file__).resolve().parent.parent.resolve()
 PID_FILE = BASE_DIR / "crawl_all.pid"
 LOG_FILE = BASE_DIR / "crawl_all.log"
 
@@ -98,7 +102,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
 
     failures: list[str] = []
     for i, source in enumerate(sources, 1):
-        script = BASE_DIR / SOURCES[source]["script"]
+        script = BASE_DIR / "crawlers" / SOURCES[source]["script"]
         start = datetime.now()
         print(f"\n----- [{i}/{len(sources)}] {source} 시작 {start:%H:%M:%S} -----", flush=True)
         cmd = [_python_executable(), "-u", str(script), keyword, str(target)]
@@ -124,7 +128,7 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         print(f"\n----- aggregate 통합 -----", flush=True)
         try:
             sys.path.insert(0, str(BASE_DIR))
-            from aggregate import aggregate as _aggregate
+            from pipeline.aggregate import aggregate as _aggregate
             out = _aggregate(keyword)
             print(f"[OK] 통합 폴더: {out}", flush=True)
         except Exception as e:

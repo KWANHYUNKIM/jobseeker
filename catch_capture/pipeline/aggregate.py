@@ -17,6 +17,10 @@
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
+
 import json
 import re
 import shutil
@@ -44,7 +48,7 @@ def latest_run_dir(screens: Path, site: str, keyword: str) -> Path | None:
 
 
 def aggregate(keyword: str) -> Path:
-    base = Path(__file__).parent
+    base = Path(__file__).resolve().parent.parent
     screens = base / "screenshots"
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = screens / f"all_{keyword}_{ts}"
@@ -133,7 +137,7 @@ def aggregate(keyword: str) -> Path:
             print(f"  [override] 수동 보정 {applied}건 적용", flush=True)
 
     # 모집중(active) / 마감(closed) 분리: job_status 의 마감일 파싱 기준
-    from job_status import classify_status, today_date
+    from pipeline.job_status import classify_status, today_date
     today = today_date()
     active_jobs: list[dict] = []
     closed_jobs: list[dict] = []
@@ -200,6 +204,20 @@ def aggregate(keyword: str) -> Path:
     print(f"  사이트별 원본 {sum(site_counts.values())}건  ({', '.join(f'{s}={n}' for s,n in site_counts.items())})")
     print(f"  중복 제거 후 {len(all_jobs)}건  (교차 사이트 중복 {cross_dups}건 제거)")
     print(f"  모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건  (마감 누적보관: closed_{keyword}.json)")
+
+    # 헬스 기록 + 이상 탐지: history.jsonl 누적, latest.json, 이상시 경고
+    try:
+        from monitoring.health import record as _health_record
+        _, _anom = _health_record(keyword, site_counts, all_jobs, active_jobs, closed_jobs, cross_dups)
+        if _anom:
+            print(f"  [health] \u26a0\ufe0f 이상 {len(_anom)}건:", flush=True)
+            for a in _anom:
+                print(f"    - {a}", flush=True)
+        else:
+            print("  [health] 이상 없음 — 기록 저장", flush=True)
+    except Exception as e:
+        print(f"  [health] 기록 실패: {e}", flush=True)
+
     return out_dir
 
 
