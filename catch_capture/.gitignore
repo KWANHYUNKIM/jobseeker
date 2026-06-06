@@ -3,3 +3,5 @@
 screenshots/
 *.log
 *.pid
+health_history.jsonl
+health_latest.json
