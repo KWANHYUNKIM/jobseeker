@@ -16,6 +16,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_captu
 import io
 import json
 import os
+import random
 import re
 import urllib.request
 from html.parser import HTMLParser
@@ -35,6 +36,18 @@ USER_AGENT = (
 )
 
 IMG_SRC_RE = re.compile(r'<img[^>]+src=["\']([^"\']+)["\']', re.IGNORECASE)
+
+
+def jitter(base_ms: int, ratio: float = 0.35, floor_ms: int = 250) -> int:
+    """고정 대기시간(ms)에 ±ratio 범위의 랜덤 지터를 더한다.
+
+    봇 탐지는 '정확히 일정한 간격'의 요청을 의심하므로, 페이지 대기마다
+    값을 흔들어 사람의 불규칙한 호흡을 흉내낸다. 예: jitter(1200) → 약 780~1620.
+    """
+    if base_ms <= 0:
+        return 0
+    delta = base_ms * ratio
+    return max(floor_ms, int(random.uniform(base_ms - delta, base_ms + delta)))
 
 DEV_PATTERNS = [
     re.compile(r"개발자", re.IGNORECASE),

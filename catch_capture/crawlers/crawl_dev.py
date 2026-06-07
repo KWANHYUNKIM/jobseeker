@@ -43,6 +43,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, urljoin
 
+from crawlers.jobs_common import jitter
+
 try:
     import pytesseract
     from PIL import Image
@@ -248,7 +250,7 @@ async def collect_search_anchors(page, max_pages: int) -> list[dict]:
     all_jobs: list[dict] = []
 
     for page_num in range(1, max_pages + 1):
-        await page.wait_for_timeout(1500)
+        await page.wait_for_timeout(jitter(1500))
         jobs = await page.evaluate(
             """() => {
                 const anchors = Array.from(document.querySelectorAll('a[href*="/NCS/RecruitInfoDetails/"]'));
@@ -304,7 +306,7 @@ async def collect_search_anchors(page, max_pages: int) -> list[dict]:
         if not clicked:
             print(f"  [page {page_num}→{page_num+1}] 다음 페이지 클릭 실패, 종료", flush=True)
             break
-        await page.wait_for_timeout(2500)
+        await page.wait_for_timeout(jitter(2500))
 
     return all_jobs
 
@@ -341,7 +343,7 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
             await page.wait_for_selector(JOB_LINK_SELECTOR, timeout=15_000)
         except Exception:
             pass
-        await page.wait_for_timeout(1500)
+        await page.wait_for_timeout(jitter(1500))
 
         print("[*] 채용공고 '더보기' 클릭", flush=True)
         clicked = False
@@ -364,7 +366,7 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
             return
 
         print(f"[*] 목록 페이지 진입: {page.url}", flush=True)
-        await page.wait_for_timeout(2500)
+        await page.wait_for_timeout(jitter(2500))
 
         candidates = await collect_search_anchors(page, max_pages=max_pages)
         print(f"[*] 후보 공고 총 {len(candidates)}개 (목표 개발자 직무 {target}개)", flush=True)
@@ -395,7 +397,7 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
             detail = await context.new_page()
             try:
                 await detail.goto(job["href"], wait_until="domcontentloaded", timeout=30_000)
-                await detail.wait_for_timeout(1800)
+                await detail.wait_for_timeout(jitter(1800))
 
                 extracted = await detail.evaluate(
                     """() => {

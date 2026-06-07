@@ -30,6 +30,7 @@ from crawlers.jobs_common import (
     fixed_out_dir,
     extract_tech_stack,
     is_developer_job,
+    jitter,
     load_existing_jobs,
     load_seen_pids,
     sanitize_filename,
@@ -101,7 +102,7 @@ async def collect_search_cards(page, max_scrolls: int) -> list[dict]:
             new_count += 1
         print(f"  [scroll {i+1}/{max_scrolls}] +{new_count}  누적 {len(all_jobs)}개", flush=True)
         await page.mouse.wheel(0, 3000)
-        await page.wait_for_timeout(1200)
+        await page.wait_for_timeout(jitter(1200))
 
     return all_jobs
 
@@ -115,7 +116,7 @@ async def fetch_detail(ctx, href: str) -> dict:
             await detail.wait_for_selector(".position_info", timeout=10_000)
         except Exception:
             pass
-        await detail.wait_for_timeout(1500)
+        await detail.wait_for_timeout(jitter(1500))
 
         data = await detail.evaluate(
             """() => {
@@ -189,7 +190,7 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
             print("[!] 검색 결과 미발견", flush=True)
             await browser.close()
             return
-        await page.wait_for_timeout(1500)
+        await page.wait_for_timeout(jitter(1500))
 
         candidates = await collect_search_cards(page, max_scrolls=max_scrolls)
         print(f"[*] 후보 공고 총 {len(candidates)}개 (목표 {target}개, 이미 보유 {len(collected)}개)", flush=True)

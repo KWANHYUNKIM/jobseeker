@@ -36,6 +36,7 @@ from crawlers.jobs_common import (
     http_get,
     is_developer_job,
     is_image_only,
+    jitter,
     load_existing_jobs,
     load_seen_pids,
     ocr_images,
@@ -66,14 +67,14 @@ async def collect_search_cards(page, keyword: str, max_pages: int) -> list[dict]
             except Exception as e:
                 print(f"  [page {page_num}] 이동 실패: {e}", flush=True)
                 break
-            await page.wait_for_timeout(2500)
+            await page.wait_for_timeout(jitter(2500))
 
         try:
             await page.wait_for_selector("a[href*='/Recruit/GI_Read/']", timeout=15_000)
         except Exception:
             print(f"  [page {page_num}] 결과 미발견", flush=True)
             break
-        await page.wait_for_timeout(1000)
+        await page.wait_for_timeout(jitter(1000))
 
         cards = await page.evaluate(
             """() => {

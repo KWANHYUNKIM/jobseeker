@@ -29,6 +29,7 @@ from crawlers.jobs_common import (
     fixed_out_dir,
     extract_tech_stack,
     is_developer_job,
+    jitter,
     load_existing_jobs,
     load_seen_pids,
     sanitize_filename,
@@ -73,7 +74,7 @@ async def collect_search_cards(page, max_scrolls: int) -> list[dict]:
             new_count += 1
         print(f"  [scroll {i+1}/{max_scrolls}] +{new_count}  누적 {len(all_jobs)}개", flush=True)
         await page.mouse.wheel(0, 3000)
-        await page.wait_for_timeout(1200)
+        await page.wait_for_timeout(jitter(1200))
 
     return all_jobs
 
@@ -91,10 +92,10 @@ async def fetch_detail(ctx, href: str) -> dict:
             btn = detail.locator("button:has-text('상세 정보 더 보기')").first
             if await btn.count() > 0:
                 await btn.click(timeout=3000)
-                await detail.wait_for_timeout(800)
+                await detail.wait_for_timeout(jitter(800))
         except Exception:
             pass
-        await detail.wait_for_timeout(1200)
+        await detail.wait_for_timeout(jitter(1200))
 
         return await detail.evaluate(
             """() => {
