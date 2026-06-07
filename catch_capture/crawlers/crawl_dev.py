@@ -338,7 +338,10 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
         print(f"[*] 통합검색 진입: {target_url}", flush=True)
         await page.goto(target_url, wait_until="domcontentloaded", timeout=60_000)
         from crawlers import block_detect
-        await block_detect.scan_page(page, "dev")
+        if await block_detect.scan_page(page, "dev"):
+            print("[!] 차단/캡차 감지 — 이번 런 조기 종료(백오프는 crawl_all이 처리)", flush=True)
+            await browser.close()
+            return
         try:
             await page.wait_for_selector(JOB_LINK_SELECTOR, timeout=15_000)
         except Exception:

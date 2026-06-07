@@ -183,7 +183,10 @@ async def crawl(keyword: str, target: int, max_scrolls: int) -> None:
         print(f"[*] 검색 진입: {target_url}", flush=True)
         await page.goto(target_url, wait_until="commit", timeout=30_000)
         from crawlers import block_detect
-        await block_detect.scan_page(page, "jumpit")
+        if await block_detect.scan_page(page, "jumpit"):
+            print("[!] 차단/캡차 감지 — 이번 런 조기 종료(백오프는 crawl_all이 처리)", flush=True)
+            await browser.close()
+            return
         try:
             await page.wait_for_selector("a[href*='/position/']", timeout=15_000)
         except Exception:

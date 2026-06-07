@@ -127,11 +127,26 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
         print(f"[*] 페이지네이션/스크롤 깊이(depth)={depth}", flush=True)
     print(f"[*] 통합(aggregate): {'예' if do_aggregate else '아니오'}\n", flush=True)
 
+    from crawlers import block_detect
+
     failures: list[str] = []
     for i, source in enumerate(sources, 1):
         script = BASE_DIR / "crawlers" / SOURCES[source]["script"]
         start = datetime.now()
         print(f"\n----- [{i}/{len(sources)}] {source} 시작 {start:%H:%M:%S} -----", flush=True)
+
+        # 자동 백오프: 직전 차단으로 쿨다운 중이면 이번 사이클은 건너뛴다.
+        remaining = block_detect.cooldown_remaining(source)
+        if remaining > 0:
+            info = block_detect.cooldown_info(source) or {}
+            mins = remaining // 60
+            print(f"[⏳ skip] {source} 차단 백오프 중 — {remaining}s(~{mins}m) 남음 "
+                  f"(level {info.get('level')}, reason {info.get('reason')}) → 이번 사이클 스킵",
+                  flush=True)
+            if orch:
+                orch.site_cooldown_skipped(source, remaining, info)
+            continue
+
         if orch:
             orch.site_started(source)
         _block_clear(source)
@@ -163,6 +178,14 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
             print(f"[OK] {source} 완료({elapsed:.0f}s) — 그러나 차단 신호 감지: {reason}", flush=True)
         else:
             print(f"[OK] {source} 완료({elapsed:.0f}s)", flush=True)
+
+        # 자동 백오프 갱신: 차단 감지 시 쿨다운을 지수적으로 늘리고,
+        # 차단 없이 정상 종료(rc==0)면 쿨다운을 해제(회복)한다.
+        if reason:
+            block_detect.note_block(source, reason)
+        elif rc == 0:
+            block_detect.note_success(source)
+
         if orch:
             orch.site_finished(source, rc == 0, count, elapsed, reason=reason)
 

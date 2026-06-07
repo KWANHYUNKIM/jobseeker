@@ -169,6 +169,23 @@ def site_finished(site: str, ok: bool, count: int | None, elapsed: float,
     emit("site_done", site=site, ok=ok, count=count, elapsed=round(elapsed, 1), reason=reason)
 
 
+def site_cooldown_skipped(site: str, remaining: int, info: dict | None = None) -> None:
+    """차단 백오프(쿨다운)로 이번 사이클 해당 사이트 크롤을 건너뛸 때."""
+    info = info or {}
+    state = load_state()
+    cyc = state.setdefault("cycle", {}).setdefault("sites", {})
+    cyc.setdefault(site, {})
+    cyc[site].update({
+        "status": "cooldown",
+        "reason": info.get("reason"),
+        "cooldown_remaining": remaining,
+        "cooldown_until": info.get("until"),
+    })
+    save_state(state)
+    emit("site_cooldown", site=site, remaining=remaining,
+         level=info.get("level"), until=info.get("until"), reason=info.get("reason"))
+
+
 def aggregate_started() -> None:
     state = load_state()
     state["phase"] = PHASE_AGGREGATING

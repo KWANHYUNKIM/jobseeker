@@ -190,8 +190,11 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
         print(f"[*] 검색 진입: {target_url}", flush=True)
         await page.goto(target_url, wait_until="commit", timeout=30_000)
         from crawlers import block_detect
-        await block_detect.scan_page(page, "jobkorea")
-        await page.wait_for_timeout(2500)
+        if await block_detect.scan_page(page, "jobkorea"):
+            print("[!] 차단/캡차 감지 — 이번 런 조기 종료(백오프는 crawl_all이 처리)", flush=True)
+            await browser.close()
+            return
+        await page.wait_for_timeout(jitter(2500))
 
         candidates = await collect_search_cards(page, keyword=keyword, max_pages=max_pages)
         print(f"[*] 후보 공고 총 {len(candidates)}개 (목표 {target}개, 이미 보유 {len(collected)}개)", flush=True)

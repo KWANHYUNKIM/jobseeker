@@ -14,11 +14,15 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 CATCH_DIR = Path(__file__).resolve().parent.parent
 BLOCK_DIR = CATCH_DIR / ".blocks"
+
+# 차단 감지 시 자동 백오프(쿨다운) 설정 — 연속 차단마다 지수적으로 늘어난다.
+COOLDOWN_BASE_SEC = 600          # 첫 차단: ~10분
+COOLDOWN_MAX_SEC = 6 * 3600      # 상한: 6시간
 
 # reason 식별자 (프런트 라벨과 1:1)
 R_429 = "rate_limited_429"
@@ -105,6 +109,75 @@ def clear(site: str) -> None:
         pass
     except Exception:
         pass
+
+
+# ── 자동 백오프(쿨다운) ────────────────────────────────────────────────
+# 차단 마커(`<site>.json`)는 사이클마다 지워지지만, 쿨다운 상태는
+# `<site>.cooldown.json` 에 따로 보관해 사이클을 넘겨 유지된다.
+# crawl_all 이 크롤러 실행 전 쿨다운 중인 사이트를 건너뛰고,
+# 차단 없이 성공하면 쿨다운을 해제한다.
+
+def _cooldown_path(site: str) -> Path:
+    return BLOCK_DIR / f"{site}.cooldown.json"
+
+
+def cooldown_info(site: str) -> dict | None:
+    try:
+        return json.loads(_cooldown_path(site).read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def cooldown_remaining(site: str) -> int:
+    """쿨다운 잔여 초. 쿨다운이 없거나 만료됐으면 0."""
+    info = cooldown_info(site)
+    if not info:
+        return 0
+    try:
+        until = datetime.fromisoformat(info["until"])
+    except Exception:
+        return 0
+    rem = (until - datetime.now()).total_seconds()
+    return int(rem) if rem > 0 else 0
+
+
+def note_block(site: str, reason: str | None = None, http_status: int | None = None) -> dict:
+    """차단 1건을 반영해 쿨다운을 지수적으로 늘린다(사이클당 1회 호출 의도).
+
+    level N → 대기 = min(BASE * 2^(N-1), MAX). 연속 차단일수록 더 오래 쉰다.
+    """
+    prev = cooldown_info(site) or {}
+    level = int(prev.get("level", 0)) + 1
+    secs = min(COOLDOWN_BASE_SEC * (2 ** (level - 1)), COOLDOWN_MAX_SEC)
+    until = datetime.now() + timedelta(seconds=secs)
+    rec = {
+        "site": site, "level": level, "cooldown_sec": secs,
+        "until": until.isoformat(timespec="seconds"),
+        "reason": reason, "http_status": http_status, "ts": _now(),
+    }
+    try:
+        BLOCK_DIR.mkdir(exist_ok=True)
+        tmp = _cooldown_path(site).with_suffix(".json.tmp")
+        tmp.write_text(json.dumps(rec, ensure_ascii=False), encoding="utf-8")
+        os.replace(tmp, _cooldown_path(site))
+    except Exception:
+        pass
+    print(f"  [⏳ backoff] {site}: level {level} → {secs}s 쿨다운 (until {rec['until']})", flush=True)
+    return rec
+
+
+def clear_cooldown(site: str) -> None:
+    try:
+        _cooldown_path(site).unlink()
+    except FileNotFoundError:
+        pass
+    except Exception:
+        pass
+
+
+def note_success(site: str) -> None:
+    """차단 없이 깨끗하게 끝난 사이클 → 쿨다운 해제(회복)."""
+    clear_cooldown(site)
 
 
 async def scan_page(page, site: str) -> bool:
