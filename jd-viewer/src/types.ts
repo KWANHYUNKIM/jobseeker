@@ -17,6 +17,57 @@ export interface Job {
   full_jd: string
 }
 
+// ── 회사 기술스택 분석 (company_stacks.json) ───────────────────────────
+export interface TechCount {
+  name: string
+  count: number
+}
+
+export interface CompanyDomain {
+  name: string
+  score: number
+  evidence: string[]
+}
+
+export interface CompanyArch {
+  label: string
+  why: string
+}
+
+export interface CompanyPosting {
+  title: string
+  url: string
+  site: string
+}
+
+export interface CompanyStack {
+  name: string
+  norm: string
+  size: string
+  size_alias: string | null
+  posting_count: number
+  sites: string[]
+  roles: Record<string, number>
+  top_tech: TechCount[]
+  tech_categories: Record<string, TechCount[]>
+  domains: CompanyDomain[]
+  architecture: CompanyArch[]
+  titles: string[]
+  postings: CompanyPosting[]
+  summary: string
+  homepage?: string | null
+  homepage_desc?: string | null
+  homepage_tech?: string[]
+}
+
+export interface CompanyStacksFile {
+  generated_at: string
+  total_jobs: number
+  company_count: number
+  min_posting: number
+  companies: CompanyStack[]
+}
+
 export type CareerBucket =
   | '신입/무관'
   | '1-2년'

@@ -4,11 +4,12 @@ import { JobList } from './components/JobList'
 import { JobDetail } from './components/JobDetail'
 import { TechChart } from './components/TechChart'
 import { MindmapView } from './components/MindmapView'
+import { CompanyView } from './components/CompanyView'
 import { useJobs } from './lib/useJobs'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'mindmap'
+type Tab = 'jobs' | 'companies' | 'mindmap'
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -33,6 +34,9 @@ function App() {
         <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
           잡 리스트
         </TabButton>
+        <TabButton active={tab === 'companies'} onClick={() => setTab('companies')}>
+          기업 기술스택
+        </TabButton>
         <TabButton active={tab === 'mindmap'} onClick={() => setTab('mindmap')}>
           커리어 마인드맵
         </TabButton>
@@ -41,7 +45,11 @@ function App() {
         </span>
       </nav>
 
-      {tab === 'jobs' ? (
+      {tab === 'companies' ? (
+        <div className="flex flex-1 min-h-0">
+          <CompanyView />
+        </div>
+      ) : tab === 'jobs' ? (
         loading ? (
           <div className="p-8 text-(--color-muted)">데이터 로딩 중...</div>
         ) : error ? (

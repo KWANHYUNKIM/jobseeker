@@ -19,7 +19,9 @@ fi
 ln -sfn "$LATEST" all_개발자_latest
 echo "latest -> $LATEST"
 
-# enrich + mindmap 재빌드
+# enrich + mindmap + 회사 기술스택 재빌드
+# build_company_stacks 는 company_profiles.json(crawl_company 결과)이 있으면 병합한다.
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 python3 "$SCRIPT_DIR/enrich_jobs.py"
 python3 "$SCRIPT_DIR/build_mindmap.py"
+python3 "$SCRIPT_DIR/build_company_stacks.py"
