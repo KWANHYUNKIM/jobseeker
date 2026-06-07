@@ -47,11 +47,20 @@ def latest_run_dir(screens: Path, site: str, keyword: str) -> Path | None:
     return matches[0] if matches else None
 
 
-def aggregate(keyword: str) -> Path:
+def aggregate(keyword: str, keywords: list[str] | None = None,
+              label: str | None = None) -> Path:
+    """단일/멀티 키워드 통합.
+
+    keywords 가 주어지면 여러 키워드의 사이트 폴더를 한 통합 폴더로 병합한다
+    (교차 사이트 + 교차 키워드 중복을 회사명+제목 기준으로 제거).
+    label 은 출력 폴더/아카이브/헬스 기록에 쓰는 이름(미지정 시 keyword).
+    """
     base = Path(__file__).resolve().parent.parent
     screens = base / "screenshots"
+    kws = [k for k in (keywords or [keyword]) if k]
+    out_label = label or keyword
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_dir = screens / f"all_{keyword}_{ts}"
+    out_dir = screens / f"all_{out_label}_{ts}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     all_jobs: list[dict] = []
@@ -59,40 +68,45 @@ def aggregate(keyword: str) -> Path:
     site_sources: dict[str, str] = {}
 
     for site in SITES:
-        src = latest_run_dir(screens, site, keyword)
-        if not src:
+        srcs: list[str] = []
+        site_jobs: list[dict] = []
+        site_out = out_dir / site
+        copied_files = 0
+        for kw in kws:
+            src = latest_run_dir(screens, site, kw)
+            if not src:
+                continue
+            srcs.append(src.name)
+            site_out.mkdir(exist_ok=True)
+
+            # copy all txt files and jobs.json (if any)
+            for f in src.iterdir():
+                if f.is_file():
+                    shutil.copy2(f, site_out / f.name)
+                    copied_files += 1
+
+            # merge jobs.json
+            jobs_file = src / "jobs.json"
+            if jobs_file.exists():
+                try:
+                    jobs = json.loads(jobs_file.read_text(encoding="utf-8"))
+                except Exception as e:
+                    print(f"  [{site}] {kw} jobs.json 파싱 실패: {e}", flush=True)
+                    jobs = []
+                for j in jobs:
+                    all_jobs.append({"site": site, **j})
+                    site_jobs.append(j)
+
+        if not srcs:
             print(f"  [{site}] 최근 결과 없음 — 스킵", flush=True)
             site_counts[site] = 0
             site_sources[site] = "(none)"
             continue
 
-        site_sources[site] = src.name
-        site_out = out_dir / site
-        site_out.mkdir(exist_ok=True)
-
-        # copy all txt files and jobs.json (if any)
-        copied_files = 0
-        for f in src.iterdir():
-            if f.is_file():
-                shutil.copy2(f, site_out / f.name)
-                copied_files += 1
-
-        # merge jobs.json
-        jobs_file = src / "jobs.json"
-        jobs: list[dict] = []
-        if jobs_file.exists():
-            try:
-                jobs = json.loads(jobs_file.read_text(encoding="utf-8"))
-            except Exception as e:
-                print(f"  [{site}] jobs.json 파싱 실패: {e}", flush=True)
-                jobs = []
-
-        for j in jobs:
-            entry = {"site": site, **j}
-            all_jobs.append(entry)
-
-        site_counts[site] = len(jobs)
-        print(f"  [{site}] {src.name} → {len(jobs)}건 (파일 {copied_files}개 복사)", flush=True)
+        site_counts[site] = len(site_jobs)
+        site_sources[site] = ", ".join(dict.fromkeys(srcs))
+        kw_note = f"{len(srcs)}개 키워드" if len(srcs) > 1 else srcs[0]
+        print(f"  [{site}] {kw_note} → {len(site_jobs)}건 (파일 {copied_files}개 복사)", flush=True)
 
     # 교차 사이트 중복 제거: (회사명+제목) 정규화 키로 첫 등장만 유지.
     # SITES 순서(wanted→dev)가 우선순위이므로 앞 사이트 게시물이 보존된다.
@@ -149,8 +163,8 @@ def aggregate(keyword: str) -> Path:
         (active_jobs if status == "active" else closed_jobs).append(j)
     print(f"  [status] 모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건", flush=True)
 
-    # 누적 마감 아카이브(영구 보관): screenshots/closed_<keyword>.json
-    archive_path = screens / f"closed_{keyword}.json"
+    # 누적 마감 아카이브(영구 보관): screenshots/closed_<label>.json
+    archive_path = screens / f"closed_{out_label}.json"
     archive: list[dict] = []
     if archive_path.exists():
         try:
@@ -181,7 +195,7 @@ def aggregate(keyword: str) -> Path:
 
     # write summary
     summary_lines = [
-        f"통합 키워드: {keyword}",
+        f"통합 키워드: {', '.join(kws)}",
         f"생성 시각: {ts}",
         f"총 수집 건수: {sum(site_counts.values())}건 (사이트별 원본)",
         f"중복 제거 후: {len(all_jobs)}건 (교차 사이트 중복 {cross_dups}건 제거)",
@@ -203,12 +217,12 @@ def aggregate(keyword: str) -> Path:
     print(f"[완료] 통합 폴더: {out_dir}")
     print(f"  사이트별 원본 {sum(site_counts.values())}건  ({', '.join(f'{s}={n}' for s,n in site_counts.items())})")
     print(f"  중복 제거 후 {len(all_jobs)}건  (교차 사이트 중복 {cross_dups}건 제거)")
-    print(f"  모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건  (마감 누적보관: closed_{keyword}.json)")
+    print(f"  모집중 {len(active_jobs)}건 / 마감 {len(closed_jobs)}건  (마감 누적보관: closed_{out_label}.json)")
 
     # 헬스 기록 + 이상 탐지: history.jsonl 누적, latest.json, 이상시 경고
     try:
         from monitoring.health import record as _health_record
-        _, _anom = _health_record(keyword, site_counts, all_jobs, active_jobs, closed_jobs, cross_dups)
+        _, _anom = _health_record(out_label, site_counts, all_jobs, active_jobs, closed_jobs, cross_dups)
         if _anom:
             print(f"  [health] \u26a0\ufe0f 이상 {len(_anom)}건:", flush=True)
             for a in _anom:
@@ -222,8 +236,12 @@ def aggregate(keyword: str) -> Path:
 
 
 def main() -> None:
-    keyword = sys.argv[1] if len(sys.argv) > 1 else "개발자"
-    aggregate(keyword)
+    # 사용: aggregate.py 개발자
+    #       aggregate.py "개발자,백엔드,프론트엔드" [라벨]
+    raw = sys.argv[1] if len(sys.argv) > 1 else "개발자"
+    kws = [k.strip() for k in raw.split(",") if k.strip()]
+    label = sys.argv[2] if len(sys.argv) > 2 else ("통합" if len(kws) > 1 else kws[0])
+    aggregate(kws[0], keywords=kws, label=label)
 
 
 if __name__ == "__main__":
