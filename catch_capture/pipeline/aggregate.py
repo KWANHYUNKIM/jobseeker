@@ -243,6 +243,23 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
     except Exception as e:
         print(f"  [trends] 기록 실패: {e}", flush=True)
 
+    # 블로그용 직군 키워드 표(하루 1회) — Notion 복붙용 blog_keywords.md
+    # enrich(all_jobs_enriched.json)는 이후 refresh 단계에서야 갱신되므로,
+    # 낡은 데이터 대신 trends와 동일하게 이번 회차 active_jobs를 직접 넘긴다.
+    try:
+        _root = Path(__file__).resolve().parent.parent.parent
+        _bin = str(_root / "jd-viewer" / "bin")
+        if _bin not in sys.path:
+            sys.path.insert(0, _bin)
+        from build_blog_table import record as _blog_record
+        _out = _blog_record(active_jobs)
+        if _out is not None:
+            print(f"  [blog] 키워드 표 갱신 → {_out.relative_to(_root)}", flush=True)
+        else:
+            print("  [blog] 오늘 이미 생성됨 — skip", flush=True)
+    except Exception as e:
+        print(f"  [blog] 생성 실패: {e}", flush=True)
+
     return out_dir
 
 
