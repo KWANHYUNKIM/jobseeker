@@ -232,6 +232,17 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
     except Exception as e:
         print(f"  [health] 기록 실패: {e}", flush=True)
 
+    # 트렌드 일일 스냅샷(하루 1회) + 마크다운 리포트
+    try:
+        from pipeline.trends import record as _trends_record
+        _snap = _trends_record(out_label, active_jobs)
+        if _snap is not None:
+            print(f"  [trends] 일일 스냅샷 기록 → trends_reports/trends_{out_label}_{_snap['date']}.md", flush=True)
+        else:
+            print("  [trends] 오늘 이미 기록됨 — skip", flush=True)
+    except Exception as e:
+        print(f"  [trends] 기록 실패: {e}", flush=True)
+
     return out_dir
 
 

@@ -9,3 +9,6 @@ run_state.json
 run_state.json.tmp
 run_events.jsonl
 .blocks/
+trends_history.jsonl
+trends_latest.json
+trends_reports/
