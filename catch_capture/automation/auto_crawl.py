@@ -113,21 +113,40 @@ def refresh_data(keyword: str) -> None:
 
 
 def run_cycle(keyword: str, count: int) -> bool:
-    """크롤 1회 + (새 데이터면) 갱신. 새 데이터가 생겼으면 True."""
+    """크롤 1회 + (새 데이터면) 갱신. 새 데이터가 생겼으면 True.
+
+    keyword 는 콤마로 여러 개를 줄 수 있다("개발자,백엔드,프론트엔드").
+    여러 개면 키워드별로 크롤한 뒤 한 통합 폴더(all_통합_*)로 병합한다.
+    """
     from automation.crawl_all import run_foreground
+    from pipeline.aggregate import aggregate
+
+    kws = [k.strip() for k in keyword.split(",") if k.strip()]
+    multi = len(kws) > 1
+    label = "통합" if multi else (kws[0] if kws else keyword)
 
     cycle_start = datetime.now()
-    before = _latest_all_dir(keyword)
-    log(f"[crawl] 시작 keyword={keyword} count={count} (직전 폴더={before})")
-    rc = run_foreground(keyword, count, ["dev", "jobkorea", "jumpit", "saramin", "wanted"])
-    after = _latest_all_dir(keyword)
+    before = _latest_all_dir(label)
+    log(f"[crawl] 시작 keywords={kws} count={count} label={label} (직전 폴더={before})")
 
-    if rc != 0:
-        log(f"[crawl] 일부 실패(rc={rc})")
+    rc_fail = 0
+    for kw in kws:
+        # 멀티 키워드면 키워드별 단일 통합은 생략하고 마지막에 1회만 통합한다.
+        rc = run_foreground(kw, count, ["dev", "jobkorea", "jumpit", "saramin", "wanted"],
+                            do_aggregate=not multi)
+        if rc != 0:
+            rc_fail += 1
+            log(f"[crawl] '{kw}' 일부 실패(rc={rc})")
+
+    if multi:
+        log(f"[aggregate] {len(kws)}개 키워드 통합 → all_{label}_*")
+        aggregate(kws[0], keywords=kws, label=label)
+
+    after = _latest_all_dir(label)
     new_data = bool(after and after != before)
     if new_data:
         log(f"[crawl] 새 데이터 감지: {after} → 갱신 진행")
-        refresh_data(keyword)
+        refresh_data(label)
     else:
         log("[crawl] 새 데이터 없음 → 갱신 스킵")
     orch.cycle_finished(new_data, (datetime.now() - cycle_start).total_seconds())
