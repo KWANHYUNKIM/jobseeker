@@ -132,8 +132,9 @@ def run_cycle(keyword: str, count: int) -> bool:
     rc_fail = 0
     for kw in kws:
         # 멀티 키워드면 키워드별 단일 통합은 생략하고 마지막에 1회만 통합한다.
+        # 기술 블로그는 키워드와 무관 → 사이클당 1회(마지막 키워드)만 실행
         rc = run_foreground(kw, count, ["dev", "jobkorea", "jumpit", "saramin", "wanted"],
-                            do_aggregate=not multi)
+                            do_aggregate=not multi, do_blog=(kw == kws[-1]))
         if rc != 0:
             rc_fail += 1
             log(f"[crawl] '{kw}' 일부 실패(rc={rc})")

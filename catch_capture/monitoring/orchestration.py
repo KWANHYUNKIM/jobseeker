@@ -29,6 +29,7 @@ ALL_SITES = ["dev", "jobkorea", "jumpit", "saramin", "wanted"]
 PHASE_IDLE = "idle"
 PHASE_CRAWLING = "crawling"
 PHASE_AGGREGATING = "aggregating"
+PHASE_BLOG = "blog"
 PHASE_BUILDING = "building"
 PHASE_REFRESHING = "refreshing"
 PHASE_WAITING = "waiting"
@@ -201,6 +202,25 @@ def aggregate_finished(ok: bool, out: str | None, elapsed: float) -> None:
                 "out": out, "elapsed": round(elapsed, 1)})
     save_state(state)
     emit("aggregate_done", ok=ok, out=out, elapsed=round(elapsed, 1))
+
+
+def blog_started() -> None:
+    state = load_state()
+    state["phase"] = PHASE_BLOG
+    state.setdefault("cycle", {}).setdefault("blog", {})["status"] = "running"
+    save_state(state)
+    emit("blog_start")
+
+
+def blog_finished(ok: bool, total: int | None, new: int | None,
+                  sources: int | None, elapsed: float) -> None:
+    """기술 블로그 크롤 결과. total/new/sources = 누적·신규·출처 수."""
+    state = load_state()
+    b = state.setdefault("cycle", {}).setdefault("blog", {})
+    b.update({"status": "done" if ok else "failed", "total": total,
+              "new": new, "sources": sources, "elapsed": round(elapsed, 1)})
+    save_state(state)
+    emit("blog_done", ok=ok, total=total, new=new, sources=sources, elapsed=round(elapsed, 1))
 
 
 def refresh_started(target: str) -> None:
