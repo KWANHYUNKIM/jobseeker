@@ -68,6 +68,37 @@ export interface CompanyStacksFile {
   companies: CompanyStack[]
 }
 
+// ── 기술 블로그 (tech_blogs.json) ──────────────────────────────────────
+export interface BlogPost {
+  key: string
+  company: string
+  country: string
+  title: string
+  url: string
+  published: string
+  published_ts: number
+  summary: string
+  tech_stack: string[]
+  categories: string[]
+  tags: string[]
+  lang: string
+}
+
+export interface BlogSource {
+  company: string
+  country: string
+  count: number
+}
+
+export interface BlogFile {
+  generated_at: string
+  total: number
+  sources: BlogSource[]
+  categories: string[]
+  tag_categories: Record<string, string>
+  posts: BlogPost[]
+}
+
 export type CareerBucket =
   | '신입/무관'
   | '1-2년'

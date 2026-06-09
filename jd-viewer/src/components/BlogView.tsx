@@ -1,0 +1,236 @@
+import { useMemo, useState } from 'react'
+import { useBlogs } from '../lib/useBlogs'
+import type { BlogPost } from '../types'
+
+const COUNTRY_LABEL: Record<string, string> = {
+  KR: '🇰🇷 한국',
+  US: '🇺🇸 미국',
+  JP: '🇯🇵 일본',
+  DE: '🇩🇪 독일',
+  GB: '🇬🇧 영국',
+  IN: '🇮🇳 인도',
+  SG: '🇸🇬 싱가포르',
+}
+
+export function BlogView() {
+  const { data, loading, error } = useBlogs()
+  const [query, setQuery] = useState('')
+  const [stacks, setStacks] = useState<Set<string>>(new Set())
+  const [country, setCountry] = useState<string | null>(null)
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
+
+  const posts = data?.posts ?? []
+  const tagCat = data?.tag_categories ?? {}
+  const catOrder = data?.categories ?? []
+
+  // 기술 키워드 빈도
+  const stackCount = useMemo(() => {
+    const c = new Map<string, number>()
+    for (const p of posts) for (const t of p.tech_stack) c.set(t, (c.get(t) ?? 0) + 1)
+    return c
+  }, [posts])
+
+  // 카테고리 → [태그, 빈도] (카테고리 순서대로, 카테고리 내 빈도순)
+  const grouped = useMemo(() => {
+    const g = new Map<string, [string, number][]>()
+    for (const [tag, n] of stackCount) {
+      const cat = tagCat[tag] ?? '기타'
+      if (!g.has(cat)) g.set(cat, [])
+      g.get(cat)!.push([tag, n])
+    }
+    for (const arr of g.values()) arr.sort((a, b) => b[1] - a[1])
+    const order = [...catOrder, '기타']
+    return order.filter((c) => g.has(c)).map((c) => [c, g.get(c)!] as const)
+  }, [stackCount, tagCat, catOrder])
+
+  const countries = useMemo(() => {
+    const c = new Map<string, number>()
+    for (const p of posts) c.set(p.country, (c.get(p.country) ?? 0) + 1)
+    return [...c.entries()].sort((a, b) => b[1] - a[1])
+  }, [posts])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return posts.filter((p) => {
+      if (country && p.country !== country) return false
+      if (stacks.size && !p.tech_stack.some((t) => stacks.has(t))) return false
+      if (q) {
+        const hay = `${p.title} ${p.summary} ${p.company} ${p.tags.join(' ')} ${p.tech_stack.join(
+          ' ',
+        )}`.toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      return true
+    })
+  }, [posts, query, stacks, country])
+
+  const toggleStack = (name: string) => {
+    const next = new Set(stacks)
+    if (next.has(name)) next.delete(name)
+    else next.add(name)
+    setStacks(next)
+  }
+  const toggleCat = (cat: string) => {
+    const next = new Set(collapsed)
+    if (next.has(cat)) next.delete(cat)
+    else next.add(cat)
+    setCollapsed(next)
+  }
+
+  if (loading) return <div className="p-8 text-(--color-muted)">기술 블로그 로딩 중…</div>
+  if (error)
+    return (
+      <div className="p-8 text-red-400">
+        tech_blogs.json 로드 실패: {error}
+        <br />
+        <span className="text-(--color-muted) text-sm">
+          생성: <code>python -m crawlers.crawl_techblog_graph</code> (catch_capture)
+        </span>
+      </div>
+    )
+
+  return (
+    <div className="flex flex-1 min-h-0">
+      {/* 사이드바: 검색 + 국가 + 카테고리별 기술 키워드 */}
+      <aside className="w-80 shrink-0 overflow-auto border-r border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-4">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="키워드 검색 (제목·요약·기술)"
+          className="w-full px-3 py-2 text-sm rounded bg-(--color-bg) border border-(--color-border) text-(--color-text) placeholder:text-(--color-muted)"
+        />
+
+        <div>
+          <div className="text-xs text-(--color-muted) mb-2">국가</div>
+          <div className="flex flex-wrap gap-1.5">
+            <Chip active={country === null} onClick={() => setCountry(null)}>
+              전체
+            </Chip>
+            {countries.map(([c, n]) => (
+              <Chip key={c} active={country === c} onClick={() => setCountry(country === c ? null : c)}>
+                {COUNTRY_LABEL[c] ?? c} {n}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-xs text-(--color-muted)">
+          <span>기술 키워드 (카테고리별)</span>
+          {stacks.size > 0 && (
+            <button onClick={() => setStacks(new Set())} className="text-(--color-accent) hover:underline">
+              선택 초기화 ({stacks.size})
+            </button>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 -mt-2">
+          {grouped.map(([cat, tags]) => {
+            const isCollapsed = collapsed.has(cat)
+            return (
+              <div key={cat}>
+                <button
+                  onClick={() => toggleCat(cat)}
+                  className="w-full flex items-center gap-1 text-xs font-medium text-(--color-text) py-1 hover:text-(--color-accent)"
+                >
+                  <span className="text-(--color-muted)">{isCollapsed ? '▸' : '▾'}</span>
+                  {cat}
+                  <span className="text-(--color-muted) font-normal">({tags.length})</span>
+                </button>
+                {!isCollapsed && (
+                  <div className="flex flex-wrap gap-1.5 pl-3 pb-1">
+                    {tags.map(([name, n]) => (
+                      <Chip key={name} active={stacks.has(name)} onClick={() => toggleStack(name)}>
+                        {name} <span className="opacity-60">{n}</span>
+                      </Chip>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </aside>
+
+      {/* 본문: 글 목록 */}
+      <main className="flex-1 min-w-0 overflow-auto">
+        <div className="px-5 py-3 border-b border-(--color-border) text-xs text-(--color-muted) flex items-center gap-3">
+          <span>
+            {data?.total ?? 0}건 중 <b className="text-(--color-text)">{filtered.length}건</b>
+            {' · '}
+            {countries.length}개국 · {data?.sources.length ?? 0}개 블로그
+          </span>
+          {data?.generated_at && <span className="ml-auto">갱신 {data.generated_at.slice(0, 10)}</span>}
+        </div>
+        <ul className="divide-y divide-(--color-border)">
+          {filtered.map((p) => (
+            <PostRow key={p.url} post={p} onPickStack={toggleStack} />
+          ))}
+          {filtered.length === 0 && (
+            <li className="p-8 text-(--color-muted)">조건에 맞는 글이 없습니다.</li>
+          )}
+        </ul>
+      </main>
+    </div>
+  )
+}
+
+function PostRow({ post, onPickStack }: { post: BlogPost; onPickStack: (s: string) => void }) {
+  return (
+    <li className="px-5 py-4 hover:bg-(--color-panel) transition">
+      <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
+        <span className="text-(--color-accent) font-medium">{post.company}</span>
+        <span>{COUNTRY_LABEL[post.country] ?? post.country}</span>
+        {post.published && <span>· {post.published}</span>}
+        {post.categories.length > 0 && (
+          <span className="ml-auto text-(--color-muted)">{post.categories.join(' · ')}</span>
+        )}
+      </div>
+      <a
+        href={post.url}
+        target="_blank"
+        rel="noreferrer"
+        className="text-(--color-text) font-medium hover:text-(--color-accent) hover:underline"
+      >
+        {post.title}
+      </a>
+      {post.summary && (
+        <p className="mt-1 text-sm text-(--color-muted) line-clamp-2">{post.summary}</p>
+      )}
+      {post.tech_stack.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {post.tech_stack.map((t) => (
+            <button
+              key={t}
+              onClick={() => onPickStack(t)}
+              className="px-2 py-0.5 text-xs rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      )}
+    </li>
+  )
+}
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-2 py-1 text-xs rounded transition border ${
+        active
+          ? 'bg-(--color-accent) text-black border-(--color-accent) font-medium'
+          : 'bg-(--color-bg) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
+      }`}
+    >
+      {children}
+    </button>
+  )
+}

@@ -5,17 +5,25 @@ import { JobDetail } from './components/JobDetail'
 import { TechChart } from './components/TechChart'
 import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
+import { ExpansionView } from './components/ExpansionView'
+import { BlogView } from './components/BlogView'
 import { useJobs } from './lib/useJobs'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'mindmap'
+type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog'
 
 function App() {
   const { jobs, loading, error } = useJobs()
   const [filter, setFilter] = useState(emptyFilter)
   const [selected, setSelected] = useState<Job | null>(null)
   const [tab, setTab] = useState<Tab>('jobs')
+  const [companyFocus, setCompanyFocus] = useState<string | null>(null)
+
+  const openCompany = (norm: string) => {
+    setCompanyFocus(norm)
+    setTab('companies')
+  }
 
   const filtered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
   const stacks = useMemo(() => stackCounts(filtered), [filtered])
@@ -37,8 +45,14 @@ function App() {
         <TabButton active={tab === 'companies'} onClick={() => setTab('companies')}>
           기업 기술스택
         </TabButton>
+        <TabButton active={tab === 'expansion'} onClick={() => setTab('expansion')}>
+          기술스택 확장
+        </TabButton>
         <TabButton active={tab === 'mindmap'} onClick={() => setTab('mindmap')}>
           커리어 마인드맵
+        </TabButton>
+        <TabButton active={tab === 'blog'} onClick={() => setTab('blog')}>
+          기술 블로그
         </TabButton>
         <span className="ml-auto text-xs text-(--color-muted)">
           {jobs.length}건 / 필터 {filtered.length}건
@@ -47,7 +61,15 @@ function App() {
 
       {tab === 'companies' ? (
         <div className="flex flex-1 min-h-0">
-          <CompanyView />
+          <CompanyView focusNorm={companyFocus} />
+        </div>
+      ) : tab === 'expansion' ? (
+        <div className="flex flex-1 min-h-0">
+          <ExpansionView onOpenCompany={openCompany} />
+        </div>
+      ) : tab === 'blog' ? (
+        <div className="flex flex-1 min-h-0">
+          <BlogView />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (
