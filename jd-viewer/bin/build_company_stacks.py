@@ -25,7 +25,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
-from classifier import classify_company_size, classify_dev_roles, _norm_company  # noqa: E402
+from classifier import (  # noqa: E402
+    classify_company_size,
+    classify_dev_roles,
+    extract_headcount,
+    extract_revenue_eok,
+    _norm_company,
+)
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 PROFILES = ROOT / "jd-viewer" / "public" / "company_profiles.json"
@@ -438,9 +444,22 @@ def build(jobs: list[dict], min_count: int) -> list[dict]:
         titles: list[str] = []
         urls: list[dict] = []
         text_parts: list[str] = []
+        hc_max: int | None = None        # 회사 사원수 (공고들 중 최댓값)
+        rev_max: float | None = None     # 회사 매출액(억원)
 
         for j in group:
             sites.add(j.get("site") or "")
+            # 규모 신호는 full_jd(비절단) 전체에서 추출 — 기업정보가 뒤쪽에 있을 수 있음
+            size_text = " ".join([
+                j.get("full_jd") or "", j.get("benefits") or "",
+                j.get("qualifications") or "", j.get("preferences") or "",
+            ])
+            hc = extract_headcount(size_text)
+            if hc and (hc_max is None or hc > hc_max):
+                hc_max = hc
+            rev = extract_revenue_eok(size_text)
+            if rev and (rev_max is None or rev > rev_max):
+                rev_max = rev
             if j.get("title"):
                 titles.append(j["title"])
             if j.get("url"):
@@ -473,7 +492,7 @@ def build(jobs: list[dict], min_count: int) -> list[dict]:
         blob = "\n".join(text_parts)
         canon_set = set(tech_counter)
         role_set = set(role_counter)
-        size, alias = classify_company_size(display)
+        size, alias = classify_company_size(display, hc_max, rev_max)
 
         domains = infer_domains(blob, top=2)
         arch = infer_architecture(canon_set, blob, role_set)

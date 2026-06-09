@@ -2,8 +2,14 @@
 
 회사 화이트리스트는 dashboard/companies.json 에서 로드 (수동 큐레이션).
 매칭 안 되면 fallback("중소기업" / "기타").
-회사명은 부분 일치로 본다 ("삼성전자(주)" / "(주)삼성전자" 모두 "삼성전자"와 매칭).
-긴 이름 우선 매칭 ("삼성전자DS" → "삼성전자"가 "삼성"보다 먼저 매칭).
+
+규모 매칭은 오탐 방지를 최우선으로 본다:
+  1) 정규화 후 정확 일치   "삼성전자(주)" == "(주)삼성전자" == "삼성전자"
+  2) 접두(prefix) 일치      회사명이 화이트리스트 이름으로 *시작*할 때만 계열사로 본다.
+                            "삼성생명보험"→"삼성생명" ✓, "카카오VX"→"카카오" ✓, "라인게임즈"→"라인" ✓
+  긴 이름 우선             "삼성전자DS" → "삼성전자"가 "삼성"보다 먼저 매칭.
+중간/끝 substring 과 역방향 포함은 매칭하지 않는다(무관 회사 오탐 방지):
+  "옥토스"/"LX판토스" ≠ "토스",  "(주)텐" ≠ "큐텐",  "디아이" ≠ "메디아이플러스".
 """
 from __future__ import annotations
 
@@ -65,7 +71,7 @@ MID_COMPANIES: list[str] = _MID_LIST_JSON or _FALLBACK_MID
 
 # 매칭용 자료구조:
 #  - _NORM_EXACT: 정규화 결과 → (size, original)  (정확 일치)
-#  - _NORM_PREFIX: [(norm, size, original)] 긴 이름 우선으로 정렬 (부분 일치)
+#  - _NORM_PREFIX: [(norm, size, original)] 긴 이름 우선으로 정렬 (접두 일치)
 # 같은 norm 키가 대기업과 중견기업에 모두 있으면 대기업 우선 (큰 쪽 신뢰).
 _NORM_EXACT: dict[str, tuple[str, str]] = {}
 for _orig in MID_COMPANIES:
@@ -84,24 +90,126 @@ _NORM_PREFIX: list[tuple[str, str, str]] = [
 _NORM_PREFIX.sort(key=lambda t: -len(t[0]))
 
 
-def classify_company_size(company: str) -> tuple[str, str | None]:
-    """반환: (label, matched_alias). label ∈ {"대기업","중견기업","중소기업"}."""
-    if not company:
-        return "중소기업", None
-    nc = _norm_company(company)
+# ---------- 회사 규모: 채용공고 본문에서 사원수·매출액 추출 ----------
+# 채용 사이트(wanted/jobkorea/saramin 등)가 기업정보 영역에 실제 수치를 노출한다.
+#   예) "구성원 25명 규모", "사원수 54명", "매출액 70억원", "매출 1.2조"
+# 이 수치를 1순위로 쓰고, 없으면 화이트리스트, 그래도 없으면 중소기업으로 본다.
+
+_HEADCOUNT_RES: list[re.Pattern[str]] = [
+    re.compile(r"(?:사원수|임직원|구성원|종업원|직원\s*수)\s*[:은는]?\s*약?\s*([\d,]+)\s*명"),
+    re.compile(r"([\d,]+)\s*명\s*규모"),
+]
+_REV_JO_RE = re.compile(r"매출(?:액)?\s*[:은는]?\s*약?\s*([\d,]+(?:\.\d+)?)\s*조\s*(?:([\d,]+)\s*억)?")
+_REV_EOK_RE = re.compile(r"매출(?:액)?\s*[:은는]?\s*약?\s*([\d,]+(?:\.\d+)?)\s*억")
+# 회사 자체 매출이 아닌 수치는 규모 판정에서 제외한다:
+#   플랫폼 거래액/GMV("누적 ... 매출 1.1조 달성"), 추정·목표치("예상 매출액 6,462억").
+_REV_NEG_CTX = re.compile(r"누적|거래\s*액|거래\s*대금|거래\s*규모|거래\s*총액|유통\s*액|gmv|예상|목표|전망", re.IGNORECASE)
+
+
+def _rev_ctx_ok(text: str, start: int) -> bool:
+    """매출 매칭 바로 앞(40자)에 거래액/예상치 신호가 없으면 회사 매출로 인정."""
+    return not _REV_NEG_CTX.search(text[max(0, start - 40):start])
+
+# 사원수 기준 (한국 통용): 1000명↑ 대기업 / 300명↑ 중견 / 그 외 중소.
+# 매출액(억원)은 보조 — 사원수가 없을 때만 사용하고, 단독으로는 최대 중견까지만
+# 올린다(대기업은 사원수·화이트리스트로만 판정). 본문 매출 수치는 '목표/달성' 등
+# 신뢰도가 낮을 수 있어 보수적으로 본다.
+_HC_LARGE, _HC_MID = 1000, 300
+_REV_MID_EOK = 1000
+_SIZE_RANK = {"대기업": 3, "중견기업": 2, "중소기업": 1}
+
+
+def extract_headcount(text: str) -> int | None:
+    """본문에서 사원수(명)를 추출. 못 찾으면 None."""
+    if not text:
+        return None
+    for rx in _HEADCOUNT_RES:
+        m = rx.search(text)
+        if not m:
+            continue
+        try:
+            n = int(m.group(1).replace(",", ""))
+        except ValueError:
+            continue
+        if 1 <= n <= 2_000_000:
+            return n
+    return None
+
+
+def extract_revenue_eok(text: str) -> float | None:
+    """본문에서 매출액을 억원 단위 숫자로 추출. 못 찾으면 None."""
+    if not text:
+        return None
+    for m in _REV_JO_RE.finditer(text):
+        if not _rev_ctx_ok(text, m.start()):
+            continue
+        try:
+            jo = float(m.group(1).replace(",", ""))
+            eok = float(m.group(2).replace(",", "")) if m.group(2) else 0.0
+            return jo * 10000 + eok
+        except ValueError:
+            continue
+    for m in _REV_EOK_RE.finditer(text):
+        if not _rev_ctx_ok(text, m.start()):
+            continue
+        try:
+            return float(m.group(1).replace(",", ""))
+        except ValueError:
+            continue
+    return None
+
+
+def _size_from_numbers(headcount: int | None, revenue_eok: float | None) -> str | None:
+    if headcount:
+        if headcount >= _HC_LARGE:
+            return "대기업"
+        if headcount >= _HC_MID:
+            return "중견기업"
+        return "중소기업"
+    if revenue_eok:
+        if revenue_eok >= _REV_MID_EOK:
+            return "중견기업"
+        # 매출액만으로 중소/대 단정은 하지 않음 (보조 지표)
+    return None
+
+
+def _whitelist_size(nc: str) -> tuple[str | None, str | None]:
     if not nc:
-        return "중소기업", None
+        return None, None
     # 1) 정확 일치
     hit = _NORM_EXACT.get(nc)
     if hit:
         return hit[0], hit[1]
-    # 2) 부분 일치 — 긴 화이트리스트 이름이 회사명에 포함되거나 그 역
+    # 2) 접두(prefix) 일치만 허용 — 회사명이 화이트리스트 이름으로 *시작*할 때만 계열사로 본다.
+    #    중간/끝 substring("옥토스"⊃"토스") 과 역방향 포함("(주)텐"⊂"큐텐")은
+    #    무관한 회사를 끌어들이므로 매칭하지 않는다. 긴 이름이 먼저 매칭된다(_NORM_PREFIX 정렬).
     for key, size, orig in _NORM_PREFIX:
-        if not key:
-            continue
-        if key in nc or nc in key:
+        if key and nc.startswith(key):
             return size, orig
-    return "중소기업", None
+    return None, None
+
+
+def classify_company_size(
+    company: str,
+    headcount: int | None = None,
+    revenue_eok: float | None = None,
+) -> tuple[str, str | None]:
+    """반환: (label, matched_alias). label ∈ {"대기업","중견기업","중소기업"}.
+
+    사원수·매출액 수치(공고 본문 추출)와 화이트리스트 중 더 큰 규모를 택한다.
+    수치도 화이트리스트도 없으면 중소기업으로 본다(기존 기본값).
+    """
+    if not company:
+        return "중소기업", None
+    nc = _norm_company(company)
+    wl_size, wl_alias = _whitelist_size(nc)
+    num_size = _size_from_numbers(headcount, revenue_eok)
+    candidates = [s for s in (wl_size, num_size) if s]
+    if not candidates:
+        return "중소기업", None
+    best = max(candidates, key=lambda s: _SIZE_RANK[s])
+    # alias 는 화이트리스트로 매칭됐을 때만 의미가 있다
+    return best, (wl_alias if wl_size else None)
 
 
 # ---------- 개발자 직군 ----------

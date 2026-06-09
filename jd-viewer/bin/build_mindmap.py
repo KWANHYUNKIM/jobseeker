@@ -20,7 +20,13 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 BIN = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
 sys.path.insert(0, str(BIN))
-from classifier import classify_company_size, classify_dev_roles, _norm_company  # noqa: E402
+from classifier import (  # noqa: E402
+    classify_company_size,
+    classify_dev_roles,
+    extract_headcount,
+    extract_revenue_eok,
+    _norm_company,
+)
 from build_company_stacks import canon_tech, infer_domains  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
@@ -62,13 +68,14 @@ def build_companies(jobs: list[dict]) -> list[dict]:
         if len(group) < MIN_POSTING:
             continue
         display = name_votes[nk].most_common(1)[0][0]
-        size, _alias = classify_company_size(display)
 
         # 직군별 스택/공고 집계
         role_tech: dict[str, Counter] = defaultdict(Counter)
         role_postings: dict[str, list[dict]] = defaultdict(list)
         role_count: Counter = Counter()
         text_parts: list[str] = []
+        hc_max: int | None = None        # 회사 사원수 (공고들 중 최댓값)
+        rev_max: float | None = None     # 회사 매출액(억원)
 
         for j in group:
             text_parts.append(" ".join([
@@ -76,6 +83,16 @@ def build_companies(jobs: list[dict]) -> list[dict]:
                 j.get("qualifications") or "", j.get("preferences") or "",
                 (j.get("full_jd") or "")[:1500],
             ]))
+            size_text = " ".join([
+                j.get("full_jd") or "", j.get("benefits") or "",
+                j.get("qualifications") or "", j.get("preferences") or "",
+            ])
+            hc = extract_headcount(size_text)
+            if hc and (hc_max is None or hc > hc_max):
+                hc_max = hc
+            rev = extract_revenue_eok(size_text)
+            if rev and (rev_max is None or rev > rev_max):
+                rev_max = rev
             roles = classify_dev_roles(
                 title=j.get("title") or "",
                 tech_stack=j.get("tech_stack") or [],
@@ -102,6 +119,7 @@ def build_companies(jobs: list[dict]) -> list[dict]:
                 if posting["url"]:
                     role_postings[r].append(posting)
 
+        size, _alias = classify_company_size(display, hc_max, rev_max)
         domains = infer_domains("\n".join(text_parts), top=1)
         domain = domains[0]["name"] if domains else DOMAIN_FALLBACK
 

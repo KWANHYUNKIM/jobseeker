@@ -28,6 +28,8 @@ from classifier import (
     classify_company_size,
     classify_dev_roles,
     extract_competencies,
+    extract_headcount,
+    extract_revenue_eok,
 )
 
 
@@ -48,7 +50,15 @@ def enrich_jobs(jobs: list[dict]) -> list[dict]:
     out = []
     for j in jobs:
         company = (j.get("company") or "").strip()
-        size, matched = classify_company_size(company)
+        size_text = " ".join([
+            j.get("full_jd") or "", j.get("benefits") or "",
+            j.get("qualifications") or "", j.get("preferences") or "",
+        ])
+        size, matched = classify_company_size(
+            company,
+            extract_headcount(size_text),
+            extract_revenue_eok(size_text),
+        )
         roles = classify_dev_roles(
             title=j.get("title") or "",
             tech_tags=j.get("tech_tags") or [],
