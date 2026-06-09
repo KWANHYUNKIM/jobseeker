@@ -35,3 +35,4 @@ catch_capture/screenshots/
 
 # Local Claude settings
 .claude/settings.local.json
+.claude/worktrees/
