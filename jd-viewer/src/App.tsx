@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar'
 import { JobList } from './components/JobList'
 import { JobDetail } from './components/JobDetail'
 import { TechChart } from './components/TechChart'
-import { MindmapView } from './components/MindmapView'
+import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
 import { useJobs } from './lib/useJobs'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
@@ -78,7 +78,7 @@ function App() {
         )
       ) : (
         <div className="flex flex-1 min-h-0 relative">
-          <MindmapView />
+          <CareerMap />
         </div>
       )}
     </div>

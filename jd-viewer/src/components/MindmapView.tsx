@@ -8,29 +8,31 @@ let stylesInjected = false
 const DARK_OVERRIDE_CSS = `
 .markmap-foreign {
   color: #e6e7eb;
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 16px;
+  line-height: 1.6;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
 }
 .markmap-foreign strong { color: #fff; font-weight: 700; }
 .markmap-foreign em { color: #d1d5db; font-style: italic; }
+.markmap-foreign a { color: #7dd3fc; text-decoration: none; }
+.markmap-foreign a:hover { color: #bae6fd; text-decoration: underline; }
 .markmap-foreign code {
-  background: rgba(255,255,255,0.10);
-  color: #fbbf24;
-  padding: 1px 6px;
-  border-radius: 4px;
+  background: rgba(96,165,250,0.16);
+  color: #93c5fd;
+  padding: 1.5px 7px;
+  border-radius: 5px;
   font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
   font-family: 'SF Mono', Menlo, Monaco, monospace;
 }
 .markmap-foreign p { margin: 0; }
-/* 루트와 1단계(직군) 노드는 더 굵고 크게 */
-.markmap-node[data-depth="0"] .markmap-foreign,
-.markmap-node[data-depth="1"] .markmap-foreign {
-  font-size: 17px;
-  font-weight: 700;
-}
-.markmap-link { stroke-width: 2; opacity: 0.9; }
-.markmap-node circle { stroke-width: 2; }
+/* 루트(0)·도메인(1) 큼직하게, 기업(2) 강조 */
+.markmap-node[data-depth="0"] .markmap-foreign { font-size: 22px; font-weight: 800; }
+.markmap-node[data-depth="1"] .markmap-foreign { font-size: 19px; font-weight: 700; }
+.markmap-node[data-depth="2"] .markmap-foreign { font-size: 16.5px; font-weight: 700; }
+.markmap-link { stroke-width: 2.2; opacity: 0.9; }
+.markmap-node circle { stroke-width: 2.4; r: 5; cursor: pointer; }
 .markmap-node text { font-weight: 600; }
 `
 
@@ -86,7 +88,7 @@ export function MindmapView() {
   const rootRef = useRef<MMNode | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [roles, setRoles] = useState<string[]>([])
+  const [domains, setDomains] = useState<string[]>([])
 
   useEffect(() => {
     let cancelled = false
@@ -117,9 +119,14 @@ export function MindmapView() {
 
         const rootNode = root as unknown as MMNode
         decodeAllContent(rootNode)
-        setFoldRecursive(rootNode, 0, 2)
+        // 기본: 루트 + 도메인(depth1)까지만 펼침. 기업/직군은 접어 가독성 확보.
+        setFoldRecursive(rootNode, 0, 1)
         rootRef.current = rootNode
-        setRoles((findTopRoles(rootNode) || []).map((n) => plainText(n.content)))
+        setDomains(
+          (findTopRoles(rootNode) || [])
+            .map((n) => plainText(n.content))
+            .filter((t) => t && !t.startsWith('📊')),
+        )
 
         if (mmRef.current) {
           mmRef.current.destroy()
@@ -127,14 +134,14 @@ export function MindmapView() {
         }
         const mm = Markmap.create(svgRef.current, {
           duration: 300,
-          maxWidth: 420,
-          spacingHorizontal: 120,
-          spacingVertical: 14,
-          paddingX: 14,
-          nodeMinHeight: 22,
+          maxWidth: 360,
+          spacingHorizontal: 140,
+          spacingVertical: 20,
+          paddingX: 16,
+          nodeMinHeight: 28,
           initialExpandLevel: -1,
-          maxInitialScale: 1.2,
-          fitRatio: 0.92,
+          maxInitialScale: 1.1,
+          fitRatio: 0.88,
           color: (node: { state: { path: string } }) => {
             const colors = ['#c084fc', '#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa', '#22d3ee']
             const i = (node.state.path.split('.').length - 1) % colors.length
@@ -177,12 +184,12 @@ export function MindmapView() {
     mmRef.current?.fit()
   }
 
-  const setAllFold = async (fold: 0 | 1) => {
+  // openToDepth=1 → 도메인만 / 0 → 모두 펼침
+  const setAllFold = async (openToDepth: number) => {
     if (!mmRef.current || !rootRef.current) return
     const walk = (n: MMNode, depth: number) => {
       n.payload = n.payload || {}
-      // 루트(0)와 직군(1)은 항상 펼침
-      n.payload.fold = depth <= 1 ? 0 : fold
+      n.payload.fold = depth >= openToDepth ? 1 : 0
       if (n.children) for (const c of n.children) walk(c, depth + 1)
     }
     walk(rootRef.current, 0)
@@ -190,30 +197,27 @@ export function MindmapView() {
     await mmRef.current.fit()
   }
 
-  const jumpToRole = async (roleName: string) => {
+  // 도메인 클릭: 해당 도메인의 기업 목록까지만 펼치고(직군/공고는 접음) 나머지 도메인은 접는다.
+  const jumpToDomain = async (domainName: string) => {
     if (!mmRef.current || !rootRef.current) return
     const walk = (n: MMNode, depth: number, target: string) => {
       const clean = plainText(n.content)
       n.payload = n.payload || {}
-      if (depth === 1) {
-        // 직군 레벨: 타겟만 펼치고 나머지는 접기
+      if (depth === 0) {
+        n.payload.fold = 0
+        if (n.children) for (const c of n.children) walk(c, depth + 1, target)
+      } else if (depth === 1) {
+        // 도메인 레벨: 타겟만 펼치고(기업 보임) 나머지는 접기
         if (clean === target) {
           n.payload.fold = 0
-          if (n.children) for (const c of n.children) openAll(c)
+          // 기업(depth2)은 펼치되 그 하위(직군)는 접어 둔다
+          if (n.children) for (const c of n.children) (c.payload = c.payload || {}).fold = 1
         } else {
           n.payload.fold = 1
         }
-      } else if (depth === 0) {
-        n.payload.fold = 0
-        if (n.children) for (const c of n.children) walk(c, depth + 1, target)
       }
     }
-    const openAll = (n: MMNode) => {
-      n.payload = n.payload || {}
-      n.payload.fold = 0
-      if (n.children) for (const c of n.children) openAll(c)
-    }
-    walk(rootRef.current, 0, roleName)
+    walk(rootRef.current, 0, domainName)
     await mmRef.current.setData(rootRef.current as never)
     await mmRef.current.fit()
   }
@@ -235,30 +239,36 @@ export function MindmapView() {
       {/* 상단 toolbar - 직군 점프 + 컨트롤 */}
       <div className="border-b border-(--color-border) bg-(--color-panel) px-4 py-2 flex flex-wrap items-center gap-2 shrink-0">
         <span className="text-[11px] text-white/60 uppercase tracking-wider font-semibold mr-1">
-          직군
+          도메인
         </span>
-        {roles.map((r) => (
+        {domains.map((r) => (
           <button
             key={r}
-            onClick={() => jumpToRole(r)}
+            onClick={() => jumpToDomain(r)}
             className="text-xs px-3 py-1.5 rounded-full text-white hover:bg-(--color-accent)/20 hover:text-(--color-accent) border border-(--color-border) hover:border-(--color-accent) font-medium transition"
-            title={`${r} 만 펼치기`}
+            title={`${r} 의 기업만 펼치기`}
           >
             {r}
           </button>
         ))}
         <div className="w-px h-5 bg-(--color-border) mx-1" />
         <button
-          onClick={() => setAllFold(0)}
+          onClick={() => setAllFold(99)}
           className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
         >
           모두 펼치기
         </button>
         <button
+          onClick={() => setAllFold(2)}
+          className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
+        >
+          기업까지
+        </button>
+        <button
           onClick={() => setAllFold(1)}
           className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
         >
-          직군만
+          도메인만
         </button>
         <button
           onClick={handleFit}
