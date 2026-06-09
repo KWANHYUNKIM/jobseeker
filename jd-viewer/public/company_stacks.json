@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-09T22:11:39",
-  "total_jobs": 5364,
-  "company_count": 1021,
+  "generated_at": "2026-06-09T23:47:56",
+  "total_jobs": 5373,
+  "company_count": 1024,
   "min_posting": 2,
   "companies": [
     {
@@ -648,7 +648,7 @@
     {
       "name": "넛지헬스케어(주)",
       "norm": "넛지헬스케어",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 21,
       "sites": [
@@ -913,7 +913,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "넛지헬스케어(주)는 의료/헬스케어/바이오 도메인의 중소기업으로, 주로 모바일 · 백엔드 직군을 채용하며 AWS, iOS, REST API, DynamoDB 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
+      "summary": "넛지헬스케어(주)는 의료/헬스케어/바이오 도메인의 중견기업으로, 주로 모바일 · 백엔드 직군을 채용하며 AWS, iOS, REST API, DynamoDB 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
     },
     {
       "name": "(주)제이투이",
@@ -3981,7 +3981,7 @@
     {
       "name": "블루개러지",
       "norm": "블루개러지",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 12,
       "sites": [
@@ -4190,7 +4190,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "블루개러지는 커머스/리테일/물류 도메인의 중소기업으로, 주로 프론트엔드 · 모바일 직군을 채용하며 Python, JavaScript, TypeScript, React 기반으로 개발합니다. 아키텍처는 ML 모델 서빙 파이프라인로 추정됩니다."
+      "summary": "블루개러지는 커머스/리테일/물류 도메인의 중견기업으로, 주로 프론트엔드 · 모바일 직군을 채용하며 Python, JavaScript, TypeScript, React 기반으로 개발합니다. 아키텍처는 ML 모델 서빙 파이프라인로 추정됩니다."
     },
     {
       "name": "텐빌리언",
@@ -10750,7 +10750,7 @@
     {
       "name": "넛지헬스케어(캐시워크)",
       "norm": "넛지헬스케어캐시워크",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 8,
       "sites": [
@@ -10967,7 +10967,7 @@
           "site": "wanted"
         }
       ],
-      "summary": "넛지헬스케어(캐시워크)는 의료/헬스케어/바이오 도메인의 중소기업으로, 주로 모바일 · 데이터 직군을 채용하며 iOS, AWS, GCP, Next.js 기반으로 개발합니다. 아키텍처는 클라우드 (AWS/GCP)로 추정됩니다."
+      "summary": "넛지헬스케어(캐시워크)는 의료/헬스케어/바이오 도메인의 중견기업으로, 주로 모바일 · 데이터 직군을 채용하며 iOS, AWS, GCP, Next.js 기반으로 개발합니다. 아키텍처는 클라우드 (AWS/GCP)로 추정됩니다."
     },
     {
       "name": "코딧(CODITCorp.)",
@@ -14646,7 +14646,7 @@
     {
       "name": "진이어스",
       "norm": "진이어스",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 7,
       "sites": [
@@ -14831,7 +14831,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "진이어스는 여행/숙박 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 PHP, Laravel, MySQL, AWS 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
+      "summary": "진이어스는 여행/숙박 도메인의 중견기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 PHP, Laravel, MySQL, AWS 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
     },
     {
       "name": "페이타랩(패스오더)",
@@ -15983,7 +15983,7 @@
     {
       "name": "트리노드주식회사",
       "norm": "트리노드",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 7,
       "sites": [
@@ -16224,7 +16224,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "트리노드주식회사는 게임 도메인의 중소기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 AWS, Kubernetes, GitHub Actions, Terraform 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
+      "summary": "트리노드주식회사는 게임 도메인의 중견기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 AWS, Kubernetes, GitHub Actions, Terraform 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
     },
     {
       "name": "중고나라",
@@ -18077,7 +18077,7 @@
     {
       "name": "(주)에이치알비즈코리아",
       "norm": "에이치알비즈코리아",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 7,
       "sites": [
@@ -18320,12 +18320,12 @@
           "site": "saramin"
         }
       ],
-      "summary": "(주)에이치알비즈코리아는 게임 도메인의 중소기업으로, 주로 데이터 · AI/ML 직군을 채용하며 Python, AWS, Java, Kafka 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
+      "summary": "(주)에이치알비즈코리아는 게임 도메인의 중견기업으로, 주로 데이터 · AI/ML 직군을 채용하며 Python, AWS, Java, Kafka 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
     },
     {
       "name": "제이앤피에이치알컨설팅",
       "norm": "제이앤피에이치알컨설팅",
-      "size": "중소기업",
+      "size": "대기업",
       "size_alias": null,
       "posting_count": 7,
       "sites": [
@@ -18465,7 +18465,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "제이앤피에이치알컨설팅는 HR/채용 도메인의 중소기업으로, 주로 데이터 · AI/ML 직군을 채용하며 Python, AWS, Kubernetes, Jira 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
+      "summary": "제이앤피에이치알컨설팅는 HR/채용 도메인의 대기업으로, 주로 데이터 · AI/ML 직군을 채용하며 Python, AWS, Kubernetes, Jira 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
     },
     {
       "name": "안랩",
@@ -30402,7 +30402,7 @@
     {
       "name": "콘센트릭스서비스코리아",
       "norm": "콘센트릭스서비스코리아",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 5,
       "sites": [
@@ -30604,7 +30604,7 @@
           "site": "jobkorea"
         }
       ],
-      "summary": "콘센트릭스서비스코리아는 커머스/리테일/물류 도메인의 중소기업으로, 주로 데이터 · AI/ML 직군을 채용하며 Python, GCP, HTML, AWS 기반으로 개발합니다. 아키텍처는 클라우드 (AWS/GCP)로 추정됩니다."
+      "summary": "콘센트릭스서비스코리아는 커머스/리테일/물류 도메인의 중견기업으로, 주로 데이터 · AI/ML 직군을 채용하며 Python, GCP, HTML, AWS 기반으로 개발합니다. 아키텍처는 클라우드 (AWS/GCP)로 추정됩니다."
     },
     {
       "name": "나이스지니데이타㈜",
@@ -32861,7 +32861,7 @@
     {
       "name": "(주)소만사",
       "norm": "소만사",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 5,
       "sites": [
@@ -32993,7 +32993,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "(주)소만사는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 보안 · 프론트엔드 직군을 채용하며 C++, Linux, Go, Rust 기반으로 개발합니다."
+      "summary": "(주)소만사는 B2B SaaS/엔터프라이즈 도메인의 중견기업으로, 주로 보안 · 프론트엔드 직군을 채용하며 C++, Linux, Go, Rust 기반으로 개발합니다."
     },
     {
       "name": "(주)키다리스튜디오",
@@ -46715,7 +46715,7 @@
     {
       "name": "락플레이스",
       "norm": "락플레이스",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 4,
       "sites": [
@@ -46880,7 +46880,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "락플레이스는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 백엔드 · 데이터 직군을 채용하며 Java, Python, Scala, Azure 기반으로 개발합니다. 아키텍처는 클라우드 (Azure)로 추정됩니다."
+      "summary": "락플레이스는 B2B SaaS/엔터프라이즈 도메인의 중견기업으로, 주로 백엔드 · 데이터 직군을 채용하며 Java, Python, Scala, Azure 기반으로 개발합니다. 아키텍처는 클라우드 (Azure)로 추정됩니다."
     },
     {
       "name": "사람인",
@@ -54852,6 +54852,101 @@
       "summary": "(주)엔디소프트는 콘텐츠/미디어/광고 도메인의 중소기업으로, 주로 백엔드 · 데이터 직군을 채용하며 Python, Go, Apache, Selenium 기반으로 개발합니다."
     },
     {
+      "name": "삼성중공업(주)",
+      "norm": "삼성중공업",
+      "size": "대기업",
+      "size_alias": "삼성중공업",
+      "posting_count": 4,
+      "sites": [
+        "dev",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 3,
+        "모바일": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 1
+        },
+        {
+          "name": "C#",
+          "count": 1
+        },
+        {
+          "name": "Android",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 1
+          },
+          {
+            "name": "C#",
+            "count": 1
+          }
+        ],
+        "모바일": [
+          {
+            "name": "Android",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 9,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 6,
+          "evidence": [
+            "정보보안",
+            "보안 솔루션"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "스마트조선소 AI전문가 양성과정 모집",
+        "경력사원 채용(AI 보안_AI Agent 보안관리)",
+        "경력사원 채용(AI 보안_AI 보안정책 운영/점검)",
+        "경력사원 채용(AI 보안)"
+      ],
+      "postings": [
+        {
+          "title": "스마트조선소 AI전문가 양성과정 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970983&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a0fd1eab-e2c8-4af6-b880-4f1d6dc76e26",
+          "site": "saramin"
+        },
+        {
+          "title": "경력사원 채용(AI 보안_AI Agent 보안관리)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54119525&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ad4350a6-9899-4f0a-b45b-0e443623f84c",
+          "site": "saramin"
+        },
+        {
+          "title": "경력사원 채용(AI 보안_AI 보안정책 운영/점검)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54119398&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=64a7635c-15a1-4965-8c35-aa467dddf9f1",
+          "site": "saramin"
+        },
+        {
+          "title": "경력사원 채용(AI 보안)",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/555171?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "삼성중공업(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · 모바일 직군을 채용하며 Python, C#, Android 기반으로 개발합니다."
+    },
+    {
       "name": "(주)안랩클라우드메이트",
       "norm": "안랩클라우드메이트",
       "size": "중견기업",
@@ -60583,7 +60678,7 @@
     {
       "name": "위펀(스낵24)",
       "norm": "위펀스낵24",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 3,
       "sites": [
@@ -60821,7 +60916,7 @@
           "site": "wanted"
         }
       ],
-      "summary": "위펀(스낵24)는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 백엔드 · 데이터 직군을 채용하며 Java, Spring, MySQL, MariaDB 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
+      "summary": "위펀(스낵24)는 B2B SaaS/엔터프라이즈 도메인의 중견기업으로, 주로 백엔드 · 데이터 직군을 채용하며 Java, Spring, MySQL, MariaDB 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
     },
     {
       "name": "워트인텔리전스",
@@ -73096,7 +73191,7 @@
     {
       "name": "쥬비스다이어트",
       "norm": "쥬비스다이어트",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 3,
       "sites": [
@@ -73310,7 +73405,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "쥬비스다이어트는 HR/채용 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Java, TypeScript, Spring, Express 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
+      "summary": "쥬비스다이어트는 HR/채용 도메인의 중견기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Java, TypeScript, Spring, Express 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
     },
     {
       "name": "이비즈테크",
@@ -74142,7 +74237,7 @@
     {
       "name": "(주)크레이버코퍼레이션",
       "norm": "크레이버코퍼레이션",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 3,
       "sites": [
@@ -74219,7 +74314,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "(주)크레이버코퍼레이션는 보안 도메인의 중소기업으로, 주로 DevOps/인프라 · 보안 직군을 채용하며 JavaScript, PHP 기반으로 개발합니다."
+      "summary": "(주)크레이버코퍼레이션는 보안 도메인의 중견기업으로, 주로 DevOps/인프라 · 보안 직군을 채용하며 JavaScript, PHP 기반으로 개발합니다."
     },
     {
       "name": "㈜앤씨앤",
@@ -84064,7 +84159,7 @@
     {
       "name": "에이치알포유(주)",
       "norm": "에이치알포유",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 3,
       "sites": [
@@ -84264,7 +84359,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "에이치알포유(주)는 핀테크/금융 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Java, JavaScript, C++, Python 기반으로 개발합니다. 아키텍처는 SPA + REST API (프론트/백 분리)로 추정됩니다."
+      "summary": "에이치알포유(주)는 핀테크/금융 도메인의 중견기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Java, JavaScript, C++, Python 기반으로 개발합니다. 아키텍처는 SPA + REST API (프론트/백 분리)로 추정됩니다."
     },
     {
       "name": "한스컨설팅",
@@ -85957,95 +86052,6 @@
       "summary": "현대카드(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 AWS, LangChain 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
     },
     {
-      "name": "삼성중공업(주)",
-      "norm": "삼성중공업",
-      "size": "대기업",
-      "size_alias": "삼성중공업",
-      "posting_count": 3,
-      "sites": [
-        "dev",
-        "saramin"
-      ],
-      "roles": {
-        "AI/ML": 2,
-        "모바일": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 1
-        },
-        {
-          "name": "C#",
-          "count": 1
-        },
-        {
-          "name": "Android",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 1
-          },
-          {
-            "name": "C#",
-            "count": 1
-          }
-        ],
-        "모바일": [
-          {
-            "name": "Android",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 7,
-          "evidence": [
-            "채용",
-            "이력서"
-          ]
-        },
-        {
-          "name": "보안",
-          "score": 5,
-          "evidence": [
-            "정보보안",
-            "보안 솔루션"
-          ]
-        }
-      ],
-      "architecture": [],
-      "titles": [
-        "스마트조선소 AI전문가 양성과정 모집",
-        "경력사원 채용(AI 보안_AI Agent 보안관리)",
-        "경력사원 채용(AI 보안)"
-      ],
-      "postings": [
-        {
-          "title": "스마트조선소 AI전문가 양성과정 모집",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970983&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a0fd1eab-e2c8-4af6-b880-4f1d6dc76e26",
-          "site": "saramin"
-        },
-        {
-          "title": "경력사원 채용(AI 보안_AI Agent 보안관리)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54119525&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ad4350a6-9899-4f0a-b45b-0e443623f84c",
-          "site": "saramin"
-        },
-        {
-          "title": "경력사원 채용(AI 보안)",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/555171?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "삼성중공업(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · 모바일 직군을 채용하며 Python, C#, Android 기반으로 개발합니다."
-    },
-    {
       "name": "(주)숲",
       "norm": "숲",
       "size": "중소기업",
@@ -87695,7 +87701,7 @@
     {
       "name": "제너러티브랩",
       "norm": "제너러티브랩",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -87742,7 +87748,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "제너러티브랩는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 백엔드 직군을 채용합니다."
+      "summary": "제너러티브랩는 B2B SaaS/엔터프라이즈 도메인의 중견기업으로, 주로 백엔드 직군을 채용합니다."
     },
     {
       "name": "코리아정보통신",
@@ -93377,7 +93383,7 @@
     {
       "name": "에이든랩",
       "norm": "에이든랩",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -93553,7 +93559,7 @@
           "site": "jobkorea"
         }
       ],
-      "summary": "에이든랩는 커머스/리테일/물류 도메인의 중소기업으로, 주로 프론트엔드 · DevOps/인프라 직군을 채용하며 JavaScript, TypeScript, React, Next.js 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다."
+      "summary": "에이든랩는 커머스/리테일/물류 도메인의 중견기업으로, 주로 프론트엔드 · DevOps/인프라 직군을 채용하며 JavaScript, TypeScript, React, Next.js 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다."
     },
     {
       "name": "마이프랜차이즈",
@@ -103494,7 +103500,7 @@
     {
       "name": "부스터스",
       "norm": "부스터스",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -103650,7 +103656,7 @@
           "site": "wanted"
         }
       ],
-      "summary": "부스터스는 커머스/리테일/물류 도메인의 중소기업으로, 주로 백엔드 · DevOps/인프라 직군을 채용하며 Redis, AWS, Kubernetes, Terraform 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
+      "summary": "부스터스는 커머스/리테일/물류 도메인의 중견기업으로, 주로 백엔드 · DevOps/인프라 직군을 채용하며 Redis, AWS, Kubernetes, Terraform 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
     },
     {
       "name": "리빌더에이아이(리빌더AI)",
@@ -105292,7 +105298,7 @@
     {
       "name": "알스퀘어",
       "norm": "알스퀘어",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -105424,7 +105430,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "알스퀘어는 프롭테크/부동산 도메인의 중소기업으로, 주로 백엔드 · AI/ML 직군을 채용하며 Java, PHP, PostgreSQL, Oracle 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
+      "summary": "알스퀘어는 프롭테크/부동산 도메인의 중견기업으로, 주로 백엔드 · AI/ML 직군을 채용하며 Java, PHP, PostgreSQL, Oracle 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
     },
     {
       "name": "아이아이컴바인드",
@@ -106766,7 +106772,7 @@
     {
       "name": "미트박스글로벌",
       "norm": "미트박스글로벌",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -106900,7 +106906,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "미트박스글로벌는 커머스/리테일/물류 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 JavaScript, TypeScript, React, Vue 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
+      "summary": "미트박스글로벌는 커머스/리테일/물류 도메인의 중견기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 JavaScript, TypeScript, React, Vue 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
     },
     {
       "name": "오토위니",
@@ -117360,7 +117366,7 @@
     {
       "name": "㈜아이스크림미디어",
       "norm": "아이스크림미디어",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -117443,7 +117449,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "㈜아이스크림미디어는 콘텐츠/미디어/광고 도메인의 중소기업으로, 주로 프론트엔드 · 백엔드 직군을 채용하며 React, Vue, Spring 기반으로 개발합니다. 아키텍처는 SPA + REST API (프론트/백 분리)로 추정됩니다."
+      "summary": "㈜아이스크림미디어는 콘텐츠/미디어/광고 도메인의 중견기업으로, 주로 프론트엔드 · 백엔드 직군을 채용하며 React, Vue, Spring 기반으로 개발합니다. 아키텍처는 SPA + REST API (프론트/백 분리)로 추정됩니다."
     },
     {
       "name": "㈜블루엠텍",
@@ -119461,6 +119467,200 @@
         }
       ],
       "summary": "㈜블록스퀘어랩스는 HR/채용 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Python, JavaScript, PHP, jQuery 기반으로 개발합니다. 아키텍처는 모놀리식 (추정)로 추정됩니다."
+    },
+    {
+      "name": "㈜머니무브",
+      "norm": "머니무브",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "데이터": 2,
+        "DevOps/인프라": 1
+      },
+      "top_tech": [
+        {
+          "name": "Java",
+          "count": 2
+        },
+        {
+          "name": "Spring",
+          "count": 2
+        },
+        {
+          "name": "Spring Boot",
+          "count": 2
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "Redis",
+          "count": 2
+        },
+        {
+          "name": "Oracle",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "Docker",
+          "count": 2
+        },
+        {
+          "name": "GitLab CI",
+          "count": 2
+        },
+        {
+          "name": "JUnit",
+          "count": 2
+        },
+        {
+          "name": "Kafka",
+          "count": 2
+        },
+        {
+          "name": "RabbitMQ",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 2
+          },
+          {
+            "name": "Spring Boot",
+            "count": 2
+          },
+          {
+            "name": "REST API",
+            "count": 2
+          },
+          {
+            "name": "MSA",
+            "count": 2
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "Redis",
+            "count": 2
+          },
+          {
+            "name": "Oracle",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 2
+          },
+          {
+            "name": "GitLab CI",
+            "count": 2
+          },
+          {
+            "name": "Linux",
+            "count": 2
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 2
+          },
+          {
+            "name": "RabbitMQ",
+            "count": 2
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "JUnit",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "핀테크/금융",
+          "score": 8,
+          "evidence": [
+            "금융",
+            "결제",
+            "대출"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 5,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "MSA · 마이크로서비스",
+          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
+        },
+        {
+          "label": "컨테이너 기반 배포 (Docker)",
+          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "서버 백엔드 개발자 채용",
+        "서버 백엔드 개발자 채용"
+      ],
+      "postings": [
+        {
+          "title": "서버 백엔드 개발자 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49255391?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=39&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "서버 백엔드 개발자 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54001340&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b7f5664f-f22a-4c5a-9404-274988b5a349",
+          "site": "saramin"
+        }
+      ],
+      "summary": "㈜머니무브는 핀테크/금융 도메인의 중소기업으로, 주로 백엔드 · 데이터 직군을 채용하며 Java, Spring, Spring Boot, MySQL 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다."
     },
     {
       "name": "㈜에스엠엔터테인먼트",
@@ -124919,7 +125119,7 @@
     {
       "name": "보람상조개발㈜",
       "norm": "보람상조개발",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -125037,7 +125237,7 @@
           "site": "jobkorea"
         }
       ],
-      "summary": "보람상조개발㈜는 HR/채용 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 React, iOS, Android, Flutter 기반으로 개발합니다. 아키텍처는 크로스플랫폼 모바일 앱로 추정됩니다."
+      "summary": "보람상조개발㈜는 HR/채용 도메인의 중견기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 React, iOS, Android, Flutter 기반으로 개발합니다. 아키텍처는 크로스플랫폼 모바일 앱로 추정됩니다."
     },
     {
       "name": "㈜새하컴즈",
@@ -125576,7 +125776,7 @@
     {
       "name": "㈜천재교육",
       "norm": "천재교육",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -125663,7 +125863,7 @@
           "site": "jobkorea"
         }
       ],
-      "summary": "㈜천재교육는 교육/에듀테크 도메인의 중소기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 Docker, Kubernetes, TensorFlow 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
+      "summary": "㈜천재교육는 교육/에듀테크 도메인의 중견기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 Docker, Kubernetes, TensorFlow 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다."
     },
     {
       "name": "㈜이노룰스",
@@ -127901,6 +128101,107 @@
         }
       ],
       "summary": "코칩㈜는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 AI/ML 직군을 채용하며 Python 기반으로 개발합니다."
+    },
+    {
+      "name": "㈜신화엔지니어링",
+      "norm": "신화엔지니어링",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 2
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 1
+        },
+        {
+          "name": "AWS",
+          "count": 1
+        },
+        {
+          "name": "Linux",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "PostgreSQL",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 8,
+          "evidence": [
+            "LLM",
+            "AI 모델"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 4,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "AI, 딥러닝 솔루션 개발 연구원 모집",
+        "AI, 딥러닝 솔루션 개발 연구원 모집"
+      ],
+      "postings": [
+        {
+          "title": "AI, 딥러닝 솔루션 개발 연구원 모집",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49322332?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=56&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "AI, 딥러닝 솔루션 개발 연구원 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54108579&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=4b7ff298-0986-481e-9cd3-3874c4f84b0a",
+          "site": "saramin"
+        }
+      ],
+      "summary": "㈜신화엔지니어링는 AI/데이터 플랫폼 도메인의 중소기업으로, 주로 AI/ML 직군을 채용하며 Python, PostgreSQL, AWS, Linux 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
     },
     {
       "name": "㈜넵튠",
@@ -143906,7 +144207,7 @@
     {
       "name": "(주)이공이공",
       "norm": "이공이공",
-      "size": "중소기업",
+      "size": "중견기업",
       "size_alias": null,
       "posting_count": 2,
       "sites": [
@@ -144003,7 +144304,7 @@
           "site": "saramin"
         }
       ],
-      "summary": "(주)이공이공는 커머스/리테일/물류 도메인의 중소기업으로, 주로 백엔드 · DevOps/인프라 직군을 채용하며 Python, Go, Node.js, AWS 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
+      "summary": "(주)이공이공는 커머스/리테일/물류 도메인의 중견기업으로, 주로 백엔드 · DevOps/인프라 직군을 채용하며 Python, Go, Node.js, AWS 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다."
     },
     {
       "name": "주식회사이아나이코리아",
@@ -152052,6 +152353,74 @@
         }
       ],
       "summary": "비앤에프테크놀로지(주)는 교육/에듀테크 도메인의 중소기업으로, 주로 QA 직군을 채용하며 Jira, Python, C++, MySQL 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다."
+    },
+    {
+      "name": "(주)삼광",
+      "norm": "삼광",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 2
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 3,
+          "evidence": [
+            "LLM",
+            "AI 모델"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 3,
+          "evidence": [
+            "ERP",
+            "업무 자동화"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "(주)삼광 Global IT팀 AI 개발 / 운영",
+        "(주)삼광 Global IT팀 AI 기획 / 전략"
+      ],
+      "postings": [
+        {
+          "title": "(주)삼광 Global IT팀 AI 개발 / 운영",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54107140&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d5f741e9-dba8-48b3-89b4-f53e0874a57d",
+          "site": "saramin"
+        },
+        {
+          "title": "(주)삼광 Global IT팀 AI 기획 / 전략",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54107121&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7da07c95-e751-4ac5-968f-72b6cd05df34",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)삼광는 AI/데이터 플랫폼 도메인의 중소기업으로, 주로 AI/ML 직군을 채용하며 Python 기반으로 개발합니다. 아키텍처는 LLM · 생성형 AI 애플리케이션로 추정됩니다."
     },
     {
       "name": "(주)스카우트플랜",
