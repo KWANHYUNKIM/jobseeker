@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
 import { ROLE_COLORS } from '../lib/classify'
 import type { CompanyStack } from '../types'
@@ -28,10 +28,17 @@ const CAT_ORDER = [
   '인프라/DevOps', '펌웨어/임베디드', 'AI/ML', '데이터', '협업/도구', '기타',
 ]
 
-export function CompanyView() {
+export function CompanyView({ focusNorm }: { focusNorm?: string | null }) {
   const { companies, meta, loading, error } = useCompanies()
   const [query, setQuery] = useState('')
   const [selectedNorm, setSelectedNorm] = useState<string | null>(null)
+
+  // 다른 탭(기술스택 확장)에서 회사를 지정해 들어오면 선택·검색 동기화
+  useEffect(() => {
+    if (!focusNorm) return
+    setSelectedNorm(focusNorm)
+    setQuery('')
+  }, [focusNorm])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
