@@ -90,6 +90,7 @@ export interface BlogContent {
   url: string
   title: string
   lang: string
+  format?: string
   content: string
   content_ko: string
   translated: boolean

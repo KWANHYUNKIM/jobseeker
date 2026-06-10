@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import type { BlogContent, BlogPost } from '../types'
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -112,8 +114,8 @@ export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => v
                   ※ 기계 번역(무료 엔진) — 정확한 내용은 원문을 확인하세요.
                 </div>
               )}
-              <article className="whitespace-pre-wrap leading-relaxed text-(--color-text) text-[0.95rem]">
-                {body}
+              <article className="blog-md text-(--color-text)">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{body || ''}</ReactMarkdown>
               </article>
             </>
           )}
