@@ -1,11 +1,26 @@
 {
- "generated_at": "2026-06-10T00:47:40",
- "total": 628,
+ "generated_at": "2026-06-10T22:26:25",
+ "total": 659,
  "sources": [
+  {
+   "company": "Etsy",
+   "country": "US",
+   "count": 40
+  },
   {
    "company": "Mercari",
    "country": "JP",
-   "count": 25
+   "count": 26
+  },
+  {
+   "company": "LINE",
+   "country": "KR",
+   "count": 26
+  },
+  {
+   "company": "Discord",
+   "country": "US",
+   "count": 26
   },
   {
    "company": "Stack Overflow",
@@ -18,18 +33,8 @@
    "count": 25
   },
   {
-   "company": "Discord",
-   "country": "US",
-   "count": 25
-  },
-  {
    "company": "Zalando",
    "country": "DE",
-   "count": 25
-  },
-  {
-   "company": "LINE",
-   "country": "KR",
    "count": 25
   },
   {
@@ -60,7 +65,12 @@
   {
    "company": "네이버 D2",
    "country": "KR",
-   "count": 20
+   "count": 21
+  },
+  {
+   "company": "AWS",
+   "country": "US",
+   "count": 21
   },
   {
    "company": "토스",
@@ -73,14 +83,19 @@
    "count": 20
   },
   {
-   "company": "AWS",
+   "company": "Lyft",
    "country": "US",
-   "count": 20
+   "count": 11
   },
   {
-   "company": "Etsy",
+   "company": "Airbnb",
    "country": "US",
-   "count": 20
+   "count": 11
+  },
+  {
+   "company": "GitHub",
+   "country": "US",
+   "count": 11
   },
   {
    "company": "Razorpay",
@@ -88,18 +103,8 @@
    "count": 10
   },
   {
-   "company": "GitHub",
-   "country": "US",
-   "count": 10
-  },
-  {
    "company": "카카오",
    "country": "KR",
-   "count": 10
-  },
-  {
-   "company": "Airbnb",
-   "country": "US",
    "count": 10
   },
   {
@@ -148,11 +153,6 @@
    "count": 10
   },
   {
-   "company": "Lyft",
-   "country": "US",
-   "count": 10
-  },
-  {
    "company": "요기요",
    "country": "KR",
    "count": 10
@@ -198,19 +198,19 @@
    "count": 9
   },
   {
+   "company": "CyberAgent",
+   "country": "JP",
+   "count": 8
+  },
+  {
    "company": "Slack",
    "country": "US",
    "count": 8
   },
   {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 6
-  },
-  {
    "company": "Spotify",
    "country": "US",
-   "count": 5
+   "count": 6
   },
   {
    "company": "Spotify R&D",
@@ -238,274 +238,537 @@
   "협업/도구"
  ],
  "tag_categories": {
-  "LangChain": "LLM/생성형",
-  "Vite": "프론트엔드",
-  "Figma": "협업/도구",
-  "Echo": "백엔드",
-  "Deno": "백엔드",
-  "Saga Pattern": "알고리즘/이론",
-  "CDC": "데이터",
-  "Game Engine": "그래픽/게임",
-  "Vue": "프론트엔드",
-  "CSS": "프론트엔드",
-  "ARM": "펌웨어/임베디드",
-  "GPT": "LLM/생성형",
-  "TensorFlow": "AI/ML",
-  "Bluetooth": "펌웨어/임베디드",
-  "Spring": "백엔드",
-  "FastAPI": "백엔드",
-  "LightGBM": "AI/ML",
-  "WebGL": "프론트엔드",
-  "Loki": "관측성",
-  "Ray": "AI/ML",
-  "GitOps": "인프라/클라우드",
-  "Vault": "인프라/클라우드",
-  "Elixir": "언어",
-  "NestJS": "백엔드",
-  "Ruby": "언어",
-  "Snowflake": "데이터베이스",
-  "Presto": "데이터",
-  "Qdrant": "데이터베이스",
-  "gRPC": "백엔드",
-  "Vercel": "인프라/클라우드",
-  "Knowledge Distillation": "AI/ML",
-  "Diffusion": "LLM/생성형",
-  "BERT": "LLM/생성형",
-  "Redis": "데이터베이스",
-  "Kubeflow": "AI/ML",
-  "Objective-C": "언어",
-  "PostgreSQL": "데이터베이스",
-  "Angular": "프론트엔드",
-  "Node.js": "백엔드",
-  "RAG": "LLM/생성형",
-  "systemd": "시스템/OS",
-  "Scikit-learn": "AI/ML",
-  "PyTorch": "AI/ML",
-  "Spring Boot": "백엔드",
-  "TDD": "협업/도구",
-  "CockroachDB": "데이터베이스",
-  "Webpack": "프론트엔드",
-  "Graph Neural Network": "AI/ML",
-  "Linux Kernel": "펌웨어/임베디드",
-  "Deep Learning": "AI/ML",
-  "Bootloader": "펌웨어/임베디드",
-  "Docker": "인프라/클라우드",
-  "dbt": "데이터",
-  "Kubernetes": "인프라/클라우드",
-  "React Native": "모바일",
-  "Rails": "백엔드",
   "pgvector": "데이터베이스",
-  "Ablation Study": "연구/논문",
-  "Jira": "협업/도구",
-  "Express": "백엔드",
-  "Firmware": "펌웨어/임베디드",
-  "Raft": "알고리즘/이론",
-  "Model Context Protocol": "LLM/생성형",
-  "Embedded": "펌웨어/임베디드",
-  "ArgoCD": "인프라/클라우드",
-  "Bare-metal": "펌웨어/임베디드",
-  "NLP": "AI/ML",
-  "Terraform": "인프라/클라우드",
-  "AI Agent": "LLM/생성형",
-  "MySQL": "데이터베이스",
-  ".NET": "백엔드",
-  "Oracle": "데이터베이스",
-  "Anomaly Detection": "AI/ML",
-  "AWS Lambda": "인프라/클라우드",
-  "Julia": "언어",
-  "ScyllaDB": "데이터베이스",
-  "PHP": "언어",
-  "Paxos": "알고리즘/이론",
-  "Java": "언어",
-  "Helm": "인프라/클라우드",
-  "Databricks": "데이터베이스",
-  "Stream Processing": "데이터",
-  "UIKit": "모바일",
-  "Envoy": "인프라/클라우드",
-  "TypeScript": "언어",
-  "Istio": "인프라/클라우드",
-  "Compiler": "알고리즘/이론",
-  "MoE": "LLM/생성형",
-  "WebAssembly": "프론트엔드",
-  "C#": "언어",
-  "Cassandra": "데이터베이스",
-  "Bun": "백엔드",
-  "Machine Learning": "AI/ML",
-  "Edge Computing": "펌웨어/임베디드",
-  "Git": "협업/도구",
-  "C++": "언어",
-  "Memory Management": "시스템/OS",
-  "jQuery": "프론트엔드",
-  "Keras": "AI/ML",
-  "Benchmark": "연구/논문",
-  "Hash Table": "알고리즘/이론",
-  "containerd": "시스템/OS",
-  "LLM": "LLM/생성형",
-  "Nuxt": "프론트엔드",
-  "vLLM": "LLM/생성형",
+  "iOS": "모바일",
+  "AWS": "인프라/클라우드",
+  "Computer Vision": "AI/ML",
+  "GPT": "LLM/생성형",
+  "FastAPI": "백엔드",
+  "BERT": "LLM/생성형",
+  "ClickHouse": "데이터베이스",
   "SASS": "프론트엔드",
-  "RabbitMQ": "데이터",
-  "Reinforcement Learning": "AI/ML",
-  "Astro": "프론트엔드",
-  "Kafka": "데이터",
-  "PWA": "프론트엔드",
-  "Authentication": "보안",
-  "React": "프론트엔드",
-  "Algorithm": "알고리즘/이론",
+  "Linux Kernel": "펌웨어/임베디드",
+  "UIKit": "모바일",
+  "Prometheus": "관측성",
+  "File System": "시스템/OS",
+  "Spring": "백엔드",
+  "TypeScript": "언어",
+  "WAF": "보안",
+  "IoT": "펌웨어/임베디드",
+  "Grafana": "관측성",
+  "CQRS": "알고리즘/이론",
+  "Scala": "언어",
+  "Istio": "인프라/클라우드",
+  "Firmware": "펌웨어/임베디드",
+  "CI/CD": "인프라/클라우드",
+  "Qdrant": "데이터베이스",
+  "Model Context Protocol": "LLM/생성형",
+  "Next.js": "프론트엔드",
+  "Monorepo": "협업/도구",
+  "GitLab CI": "인프라/클라우드",
+  "DynamoDB": "데이터베이스",
+  "Distributed Tracing": "관측성",
+  "Bash": "언어",
+  "Distributed System": "알고리즘/이론",
+  "Kotlin": "언어",
+  "Kubernetes": "인프라/클라우드",
   "Vector Search": "LLM/생성형",
-  "Unix": "시스템/OS",
-  "Lua": "언어",
-  "Assembly": "언어",
-  "Hive": "데이터",
-  "Dynamic Programming": "알고리즘/이론",
-  "Svelte": "프론트엔드",
-  "Embedding": "LLM/생성형",
+  "Gemini": "LLM/생성형",
   "MapReduce": "알고리즘/이론",
   "TLS": "보안",
-  "ONNX": "AI/ML",
-  "eBPF": "시스템/OS",
-  "Flutter": "모바일",
-  "SQL Injection": "보안",
-  "Jetpack Compose": "모바일",
-  "CVE": "보안",
-  "A/B Test": "협업/도구",
-  "SQLite": "데이터베이스",
-  "GCP": "인프라/클라우드",
-  "Fiber": "백엔드",
-  "Feature Store": "AI/ML",
-  "Go": "언어",
-  "ClickHouse": "데이터베이스",
-  "AutoML": "AI/ML",
-  "Monorepo": "협업/도구",
-  "Event Sourcing": "알고리즘/이론",
-  "Perl": "언어",
-  "Kinesis": "데이터",
-  "JavaScript": "언어",
-  "Spark": "데이터",
-  "Tailwind": "프론트엔드",
-  "Bloom Filter": "알고리즘/이론",
-  "Prompt Engineering": "LLM/생성형",
-  "Scala": "언어",
+  "RabbitMQ": "데이터",
   "Hadoop": "데이터",
-  "Unreal Engine": "그래픽/게임",
-  "Observability": "관측성",
-  "XGBoost": "AI/ML",
-  "MQTT": "펌웨어/임베디드",
-  "CUDA": "AI/ML",
-  "Claude": "LLM/생성형",
-  "BigQuery": "데이터베이스",
-  "Elasticsearch": "데이터베이스",
-  "Transformer": "LLM/생성형",
-  "Mistral": "LLM/생성형",
-  "Iceberg": "데이터",
-  "REST API": "백엔드",
-  "Groovy": "언어",
-  "Unity": "그래픽/게임",
-  "WAF": "보안",
-  "Concurrency": "알고리즘/이론",
-  "Notion": "협업/도구",
-  "Data Lake": "데이터",
-  "Fine-tuning": "LLM/생성형",
-  "HTML": "프론트엔드",
-  "SwiftUI": "모바일",
-  "CI/CD": "인프라/클라우드",
-  "Cryptography": "보안",
-  "Azure": "인프라/클라우드",
-  "OAuth": "보안",
-  "ETL": "데이터",
-  "Data Pipeline": "데이터",
-  "Qwik": "프론트엔드",
-  "CNN": "AI/ML",
-  "Gemini": "LLM/생성형",
-  "Kernel": "시스템/OS",
-  "Kotlin Multiplatform": "모바일",
-  "GitLab CI": "인프라/클라우드",
-  "Vector Database": "데이터베이스",
-  "AWS": "인프라/클라우드",
-  "Data Structure": "알고리즘/이론",
-  "Debezium": "데이터",
-  "Flink": "데이터",
-  "Grafana": "관측성",
-  "Confluence": "협업/도구",
-  "Airflow": "데이터",
-  "DSP": "펌웨어/임베디드",
-  "OWASP": "보안",
-  "GitHub Actions": "인프라/클라우드",
-  "Redshift": "데이터베이스",
-  "State of the Art": "연구/논문",
-  "Next.js": "프론트엔드",
-  "Cloudflare": "인프라/클라우드",
-  "Linux": "시스템/OS",
-  "Time Series": "AI/ML",
-  "Triton": "AI/ML",
-  "Security": "보안",
-  "DDD": "협업/도구",
-  "MongoDB": "데이터베이스",
-  "LoRA": "LLM/생성형",
-  "Python": "언어",
-  "Swift": "언어",
-  "Storybook": "프론트엔드",
-  "Dart": "언어",
-  "DDoS": "보안",
-  "Binary Search": "알고리즘/이론",
-  "Protobuf": "백엔드",
-  "Llama": "LLM/생성형",
-  "MLOps": "AI/ML",
-  "CLIP": "LLM/생성형",
-  "SQL": "언어",
-  "iOS": "모바일",
-  "Pulsar": "데이터",
-  "GraphQL": "백엔드",
-  "LSM Tree": "알고리즘/이론",
-  "Reverse Engineering": "보안",
-  "MSSQL": "데이터베이스",
-  "APM": "관측성",
-  "Garbage Collection": "알고리즘/이론",
-  "Rust": "언어",
-  "Design System": "협업/도구",
-  "WebSocket": "백엔드",
-  "Penetration Testing": "보안",
-  "Hugging Face": "LLM/생성형",
-  "Trino": "데이터",
-  "Sentry": "관측성",
-  "Bash": "언어",
-  "OpenTelemetry": "관측성",
-  "Spinnaker": "인프라/클라우드",
-  "arXiv": "연구/논문",
-  "IoT": "펌웨어/임베디드",
-  "XSS": "보안",
-  "Service Mesh": "인프라/클라우드",
-  "Kotlin": "언어",
-  "Zero Trust": "보안",
-  "Ansible": "인프라/클라우드",
-  "Jenkins": "인프라/클라우드",
+  "gRPC": "백엔드",
   "Attention Mechanism": "LLM/생성형",
-  "Remix": "프론트엔드",
-  "Datadog": "관측성",
-  "Serverless": "인프라/클라우드",
-  "File System": "시스템/OS",
-  "CQRS": "알고리즘/이론",
-  "Nginx": "인프라/클라우드",
-  "Distributed System": "알고리즘/이론",
-  "Android": "모바일",
-  "SCSS": "프론트엔드",
-  "Prometheus": "관측성",
-  "DynamoDB": "데이터베이스",
-  "SolidJS": "프론트엔드",
-  "Netty": "백엔드",
-  "Computer Vision": "AI/ML",
-  "Delta Lake": "데이터",
-  "Quantization": "LLM/생성형",
-  "JWT": "보안",
-  "Neo4j": "데이터베이스",
-  "Recommendation System": "AI/ML",
-  "Beam": "데이터",
-  "Babel": "프론트엔드",
   "Multimodal": "LLM/생성형",
+  "Quantization": "LLM/생성형",
+  "Concurrency": "알고리즘/이론",
+  "GraphQL": "백엔드",
+  "Edge Computing": "펌웨어/임베디드",
+  "RAG": "LLM/생성형",
+  "Tailwind": "프론트엔드",
+  "Protobuf": "백엔드",
+  "Claude": "LLM/생성형",
+  "Spring Boot": "백엔드",
+  "Android": "모바일",
+  "Linux": "시스템/OS",
+  "MSSQL": "데이터베이스",
+  "LangChain": "LLM/생성형",
+  "MySQL": "데이터베이스",
+  "OAuth": "보안",
+  "WebSocket": "백엔드",
+  "TDD": "협업/도구",
+  "arXiv": "연구/논문",
+  "eBPF": "시스템/OS",
+  "Raft": "알고리즘/이론",
+  "MQTT": "펌웨어/임베디드",
+  "Diffusion": "LLM/생성형",
+  "State of the Art": "연구/논문",
+  "Feature Store": "AI/ML",
+  "Prompt Engineering": "LLM/생성형",
+  "CDC": "데이터",
+  "Recommendation System": "AI/ML",
+  "Embedding": "LLM/생성형",
+  "Delta Lake": "데이터",
+  "Garbage Collection": "알고리즘/이론",
+  "Graph Neural Network": "AI/ML",
+  "Bloom Filter": "알고리즘/이론",
+  "GCP": "인프라/클라우드",
+  "Game Engine": "그래픽/게임",
+  "HTML": "프론트엔드",
+  "Astro": "프론트엔드",
+  "PyTorch": "AI/ML",
+  "Cryptography": "보안",
+  "MLOps": "AI/ML",
+  "Lua": "언어",
+  "Loki": "관측성",
+  "GitOps": "인프라/클라우드",
+  "Benchmark": "연구/논문",
+  "Iceberg": "데이터",
+  "Knowledge Distillation": "AI/ML",
+  "Paxos": "알고리즘/이론",
+  "Bootloader": "펌웨어/임베디드",
+  "A/B Test": "협업/도구",
+  "OpenTelemetry": "관측성",
+  "Compiler": "알고리즘/이론",
+  "DDD": "협업/도구",
+  "Go": "언어",
+  "JWT": "보안",
+  "Zero Trust": "보안",
+  "Terraform": "인프라/클라우드",
+  "Angular": "프론트엔드",
+  "SQLite": "데이터베이스",
+  "Embedded": "펌웨어/임베디드",
+  "Redshift": "데이터베이스",
+  "CockroachDB": "데이터베이스",
+  "Sentry": "관측성",
+  "SQL": "언어",
+  "Snowflake": "데이터베이스",
+  "Vercel": "인프라/클라우드",
+  "Ruby": "언어",
+  "Data Pipeline": "데이터",
+  "Reverse Engineering": "보안",
+  "C#": "언어",
+  "WebGL": "프론트엔드",
+  "TensorFlow": "AI/ML",
+  "XGBoost": "AI/ML",
+  "GitHub Actions": "인프라/클라우드",
+  "Kotlin Multiplatform": "모바일",
+  "Elasticsearch": "데이터베이스",
+  "Bluetooth": "펌웨어/임베디드",
+  "Pulsar": "데이터",
+  "Design System": "협업/도구",
+  "Fine-tuning": "LLM/생성형",
+  "Dynamic Programming": "알고리즘/이론",
+  "Algorithm": "알고리즘/이론",
+  "ArgoCD": "인프라/클라우드",
+  "ONNX": "AI/ML",
+  "Node.js": "백엔드",
+  "Scikit-learn": "AI/ML",
+  "CSS": "프론트엔드",
+  "vLLM": "LLM/생성형",
+  "Mistral": "LLM/생성형",
+  "Cassandra": "데이터베이스",
+  "REST API": "백엔드",
+  "SCSS": "프론트엔드",
+  "SQL Injection": "보안",
+  "Keras": "AI/ML",
+  "Envoy": "인프라/클라우드",
+  "Machine Learning": "AI/ML",
+  "Deep Learning": "AI/ML",
+  "Assembly": "언어",
+  "Serverless": "인프라/클라우드",
   "Consensus": "알고리즘/이론",
-  "Distributed Tracing": "관측성"
+  "Azure": "인프라/클라우드",
+  "Express": "백엔드",
+  "jQuery": "프론트엔드",
+  "AWS Lambda": "인프라/클라우드",
+  "Llama": "LLM/생성형",
+  "Data Structure": "알고리즘/이론",
+  "Hugging Face": "LLM/생성형",
+  "Qwik": "프론트엔드",
+  "dbt": "데이터",
+  "Confluence": "협업/도구",
+  "JavaScript": "언어",
+  "Svelte": "프론트엔드",
+  "Authentication": "보안",
+  "Ansible": "인프라/클라우드",
+  "PostgreSQL": "데이터베이스",
+  "Saga Pattern": "알고리즘/이론",
+  "Hash Table": "알고리즘/이론",
+  "OWASP": "보안",
+  "Objective-C": "언어",
+  "containerd": "시스템/OS",
+  "Airflow": "데이터",
+  "Git": "협업/도구",
+  "Fiber": "백엔드",
+  "PHP": "언어",
+  "DSP": "펌웨어/임베디드",
+  "Cloudflare": "인프라/클라우드",
+  "Dart": "언어",
+  "Penetration Testing": "보안",
+  "Helm": "인프라/클라우드",
+  "C++": "언어",
+  "Transformer": "LLM/생성형",
+  "Bun": "백엔드",
+  "Nuxt": "프론트엔드",
+  "Figma": "협업/도구",
+  "CNN": "AI/ML",
+  "Netty": "백엔드",
+  "Presto": "데이터",
+  "Triton": "AI/ML",
+  "Hive": "데이터",
+  "Groovy": "언어",
+  "Memory Management": "시스템/OS",
+  "Trino": "데이터",
+  "Julia": "언어",
+  "CUDA": "AI/ML",
+  "ARM": "펌웨어/임베디드",
+  "LSM Tree": "알고리즘/이론",
+  "LLM": "LLM/생성형",
+  "Ray": "AI/ML",
+  "Python": "언어",
+  "Kernel": "시스템/OS",
+  "LightGBM": "AI/ML",
+  "AutoML": "AI/ML",
+  "systemd": "시스템/OS",
+  "Docker": "인프라/클라우드",
+  "Deno": "백엔드",
+  "Elixir": "언어",
+  "Unix": "시스템/OS",
+  "React": "프론트엔드",
+  "Unreal Engine": "그래픽/게임",
+  "Binary Search": "알고리즘/이론",
+  "Spinnaker": "인프라/클라우드",
+  "Jira": "협업/도구",
+  "MoE": "LLM/생성형",
+  "APM": "관측성",
+  "Spark": "데이터",
+  "Debezium": "데이터",
+  "Ablation Study": "연구/논문",
+  "Service Mesh": "인프라/클라우드",
+  "Flutter": "모바일",
+  "AI Agent": "LLM/생성형",
+  "ETL": "데이터",
+  "ScyllaDB": "데이터베이스",
+  "Vector Database": "데이터베이스",
+  "Babel": "프론트엔드",
+  "Vault": "인프라/클라우드",
+  "Jetpack Compose": "모바일",
+  "WebAssembly": "프론트엔드",
+  "Kinesis": "데이터",
+  "React Native": "모바일",
+  "Perl": "언어",
+  "Kafka": "데이터",
+  "Jenkins": "인프라/클라우드",
+  "Bare-metal": "펌웨어/임베디드",
+  "Swift": "언어",
+  "Vite": "프론트엔드",
+  "Java": "언어",
+  "Nginx": "인프라/클라우드",
+  "Notion": "협업/도구",
+  "Unity": "그래픽/게임",
+  "NLP": "AI/ML",
+  "Security": "보안",
+  "Data Lake": "데이터",
+  "DDoS": "보안",
+  "Neo4j": "데이터베이스",
+  "Remix": "프론트엔드",
+  "Observability": "관측성",
+  "Reinforcement Learning": "AI/ML",
+  "LoRA": "LLM/생성형",
+  "Flink": "데이터",
+  ".NET": "백엔드",
+  "XSS": "보안",
+  "NestJS": "백엔드",
+  "CLIP": "LLM/생성형",
+  "Event Sourcing": "알고리즘/이론",
+  "Beam": "데이터",
+  "PWA": "프론트엔드",
+  "Echo": "백엔드",
+  "SolidJS": "프론트엔드",
+  "Rust": "언어",
+  "Storybook": "프론트엔드",
+  "Datadog": "관측성",
+  "Redis": "데이터베이스",
+  "Vue": "프론트엔드",
+  "MongoDB": "데이터베이스",
+  "SwiftUI": "모바일",
+  "Databricks": "데이터베이스",
+  "Oracle": "데이터베이스",
+  "Time Series": "AI/ML",
+  "Kubeflow": "AI/ML",
+  "CVE": "보안",
+  "Rails": "백엔드",
+  "Webpack": "프론트엔드",
+  "Anomaly Detection": "AI/ML",
+  "Stream Processing": "데이터",
+  "BigQuery": "데이터베이스"
  },
  "posts": [
+  {
+   "key": "spotify",
+   "company": "Spotify",
+   "country": "US",
+   "title": "Encoding Your Domain Expert: The Context Layer Behind Spotify's Data Assistant",
+   "url": "https://engineering.atspotify.com/2026/6/encoding-your-domain-expert-the-context-layer-behind-spotifys-data-assistant",
+   "published": "2026-06-10",
+   "published_ts": 1781096474.0,
+   "summary": "At Spotify, data problems used to follow a specific pattern. You'd look for the relevant dashboard, there...\n\nThe post Encoding Your Domain Expert: The Context Layer Behind Spotify's Data Assistant appeared first on Spotify Engineering.",
+   "tags": [
+    "Data",
+    "Platform"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "3aae9c642fded947"
+  },
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "안드로이드 빌드 대기 시간 없애기",
+   "url": "https://d2.naver.com/helloworld/4372269",
+   "published": "2026-06-10",
+   "published_ts": 1781093458.0,
+   "summary": "네이버 사내 기술 교류 행사인 NAVER ENGINEERING DAY 2026(5월)에서 발표되었던 세션을 공개합니다.\n\n발표 내용\n\n사내 Pod 오케스트레이션 툴인 N3R과 GitHub ARC를 결합하여, 리소스 소모가 큰 안드로이드 빌드 환경을 동적으로 할당하고 CI/CD 병목 현상을 해결한 시스템 개발 경험을 공유합니다.\n\n발표 대상\n\n사내망 / outbound 차단 / 권한 제약 환경에서 GitHub Actions Self-hosted Runner 를 운영하는 분\n\nGradle 빌드 캐시 · 멀티 모듈 최적화에 관심 있는 안드로이드 개발자\n\n공식 ARC 도입이 막혔거나 Org-level 인프라 전환을 기다리는 팀\n\n목차\n\n문제 — 빌드 무게와 고정 Runner Pool 의 한계\n\n다층 전략 — 4축 동시 전환과 한 Pod 구성 방어\n\n네트워크 — Nexus Proxy, Nginx WebDAV\n\n캐시 · 테스트 — 3-Layer Cache, Diff-aware 테스트\n\n오케스트레이션 — 왜 ARC 가 아닌가, N3R + 자체 Autoscaler, Pod 한살이\n\n결과 · 회고 — 실패 사례, 메트릭, 비용 비교, 축별 기여도, 교훈, 다음 단계\n\n◎ N…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "CI/CD",
+    "GitHub Actions",
+    "Nginx"
+   ],
+   "categories": [
+    "인프라/클라우드"
+   ],
+   "lang": "ko",
+   "content_id": "d275547ba80c38fc"
+  },
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "Android 앱의 의도치 않은 변경 방지하기",
+   "url": "https://d2.naver.com/helloworld/3431313",
+   "published": "2026-06-10",
+   "published_ts": 1781093411.0,
+   "summary": "네이버 사내 기술 교류 행사인 NAVER ENGINEERING DAY 2026(5월)에서 발표되었던 세션을 공개합니다.\n\n발표 내용\n\nAndroid 앱 및 라이브러리 개발자가 외부 라이브러리 업데이트 시 발생하는 의도치 않은 변경을 사전에 감지하고, Baseline 기반의 방어 체계를 구축하는 방법을 소개합니다.\n\n발표 대상\n\n의존성 추적과 AndroidManifest에 관심 있는 Android 개발자\n\n목차\n\n배경\n\nManifest Shield\n\n내부동작\n\nAI로 만들기\n\n◎ NAVER Engineering Day란?\n\nNAVER에서는 사내 개발 경험과 기술 트렌드를 교류를 할 수 있는 프로그램이 많이 있습니다. 그중 이제는 매회 평균 100개 이상의 발표가 이루어지는 NAVER Engineering Day를 빼놓을 수 없는데요.\n\n2016년부터 시작된 ENGINEERING DAY는 실무에서의 기술 개발 경험과 새로운 기술과 플랫폼 도입 시 유용하게 활용될 수 있는 팁 등을 공유하며 서로 배우고 성장하는 네이버의 대표적인 사내 개발자 행사입니다.(관련 포스팅 보기)\n\n올해 진행된 NAVER Engineering Day의 일부 세션을 공개합니다.",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "Android"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "ko",
+   "content_id": "02d18bbd420c87b9"
+  },
+  {
+   "key": "mercari",
+   "company": "Mercari",
+   "country": "JP",
+   "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
+   "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
+   "published": "2026-06-10",
+   "published_ts": 1781089258.0,
+   "summary": "Hi, I’m @mattsuu a frontend engineer at Merpay. This is Day 7 of Merpay & Mercoin Tech Openness Month 2026. EGP Code is an internal editor for building landing pages (LPs) with AI. We covered the background in Why we built EGP Code, an HTML-based AI editor for landing pages; this article digs into four […]",
+   "tags": [],
+   "tech_stack": [
+    "JavaScript",
+    "CSS",
+    "HTML",
+    "Node.js",
+    "Spring",
+    "WebSocket",
+    "AI Agent",
+    "Prompt Engineering"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "d782bf0f5f980bb7"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "ABEMAの多層キャッシュ機構をリアーキテクチャした話",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64293",
+   "published": "2026-06-10",
+   "published_ts": 1781059494.0,
+   "summary": "はじめに はじめまして。東京電機大学大学院修士1年の佐藤聖璃です。 2026年4月の1ヶ月間、株式会 ...",
+   "tags": [
+    "エンジニア",
+    "ABEMA",
+    "インターンシップ"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "8749bd86aafc7934"
+  },
+  {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "레거시 프로젝트에서 AI 드리븐 프로젝트로 전환, AX 로드맵",
+   "url": "https://techblog.lycorp.co.jp/ko/legacy-to-ai-driven-project-ax-roadmap",
+   "published": "2026-06-10",
+   "published_ts": 1781056800.0,
+   "summary": "들어가며\"AI를 쓰면 생산성이 오른다는데, 우리 팀은 어디서부터 시작해야 하지?\"라는 고민을 해보신 적 있나요? 기존 레거시 프로젝트를 AI 드리븐 프로젝트(AI-driven pr...",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "2eae93f7477aa7a8"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "CA DATA NIGHT #9 〜スポーツの現場を支えるAI・データ活用の最前線〜 開催レポート",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64299",
+   "published": "2026-06-09",
+   "published_ts": 1781046018.0,
+   "summary": "こんにちは。サイバーエージェントの佐藤です。 先日開催された CA DATA NIGH ...",
+   "tags": [
+    "エンジニア",
+    "CA DATA NIGHT",
+    "DS",
+    "ML",
+    "WINTICKET",
+    "サッカー",
+    "町田ゼルビア",
+    "競輪"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "4d122715dea34c43"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Anthropic Claude Fable 5 on AWS: Mythos-class capabilities with built-in safeguards now available",
+   "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
+   "published": "2026-06-09",
+   "published_ts": 1781026831.0,
+   "summary": "AWS announces the availability of Claude Fable 5 on Amazon Bedrock and Claude Platform on AWS. Claude Fable 5 makes Mythos-level capabilities available to all customers, with strong safeguards designed to make it safe for broader use.",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon Machine Learning",
+    "Artificial Intelligence",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Python",
+    "Claude",
+    "AWS",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "ce93aeb26054f002"
+  },
+  {
+   "key": "lyft",
+   "company": "Lyft",
+   "country": "US",
+   "title": "From Chaos to Clarity: How We Built a Unified, Self-Routing Support Ops Ticketing System at Lyft",
+   "url": "https://eng.lyft.com/from-chaos-to-clarity-2ab50856d0c8",
+   "published": "2026-06-09",
+   "published_ts": 1781026251.0,
+   "summary": "Written by Atul Gupta, Analytics Manager — LUS Support Ops, Lyft\n\nAt Lyft, getting operators and riders connected quickly and reliably depends on more than technology — it depends on the teams working behind the scenes to keep that technology running smoothly. For the operators managing Lyft’s fleet across markets, having fast, reliable access to support is what keeps bikes on the road, stations stocked, and issues resolved before they affect riders. Building the infrastructure that makes that support possible is what our team does; this is the story of how we built it.\n\nWhen I first joined Ly…",
+   "tags": [
+    "automation",
+    "ticketing",
+    "analytics",
+    "support",
+    "operations-management"
+   ],
+   "tech_stack": [
+    "REST API",
+    "ETL",
+    "Jira"
+   ],
+   "categories": [
+    "백엔드",
+    "데이터",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "b92c3cde1abee0e2"
+  },
+  {
+   "key": "airbnb",
+   "company": "Airbnb",
+   "country": "US",
+   "title": "Scaling beyond one: How Airbnb evolved its data architecture for a multi-product world",
+   "url": "https://medium.com/airbnb-engineering/scaling-beyond-one-how-airbnb-evolved-its-data-architecture-for-a-multi-product-world-6125645d470c",
+   "published": "2026-06-09",
+   "published_ts": 1781024462.0,
+   "summary": "How Airbnb’s data engineers and analytics engineers built a consistent and flexible data modeling framework to support the expansion into Homes, Experiences, and Services.\n\nBy: Patrick Lam, Namrata Lamba, Jamie Stober\n\nWith the May 2025 Summer Release, Airbnb redesigned its app, relaunched Experiences, and debuted Services, pushing us beyond our traditional Homes focus. For the data teams, this meant rapidly evolving a decade-old infrastructure to integrate two brand-new product pillars. Our data engineers and analytics engineers rose to the challenge by building a consistent and flexible fram…",
+   "tags": [
+    "data-engineering",
+    "analytics-engineering",
+    "technology",
+    "data-modeling",
+    "data-architecture"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "1aaf8f0eb998f572"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "From one-off prompts to workflows: How to use custom agents in GitHub Copilot CLI",
+   "url": "https://github.blog/ai-and-ml/github-copilot/from-one-off-prompts-to-workflows-how-to-use-custom-agents-in-github-copilot-cli",
+   "published": "2026-06-09",
+   "published_ts": 1781020800.0,
+   "summary": "Custom agents let GitHub Copilot CLI understand your stack and team workflows, turning one-off terminal prompts into repeatable, reviewable processes.\n\nThe post From one-off prompts to workflows: How to use custom agents in GitHub Copilot CLI appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "GitHub Copilot CLI"
+   ],
+   "tech_stack": [
+    "GPT",
+    "Helm",
+    "Kubernetes",
+    "Terraform",
+    "Observability",
+    "Security",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "987d2d2943e5bf15"
+  },
   {
    "key": "razorpay",
    "company": "Razorpay",
@@ -535,29 +798,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
-  },
-  {
-   "key": "naver-d2",
-   "company": "네이버 D2",
-   "country": "KR",
-   "title": "안드로이드 빌드 대기 시간 없애기",
-   "url": "https://d2.naver.com/helloworld/4372269",
-   "published": "2026-06-09",
-   "published_ts": 1781005690.0,
-   "summary": "네이버 사내 기술 교류 행사인 NAVER ENGINEERING DAY 2026(5월)에서 발표되었던 세션을 공개합니다.\n\n발표 내용\n\n사내 Pod 오케스트레이션 툴인 N3R과 GitHub ARC를 결합하여, 리소스 소모가 큰 안드로이드 빌드 환경을 동적으로 할당하고 CI/CD 병목 현상을 해결한 시스템 개발 경험을 공유합니다.\n\n발표 대상\n\n사내망 / outbound 차단 / 권한 제약 환경에서 GitHub Actions Self-hosted Runner 를 운영하는 분\n\nGradle 빌드 캐시 · 멀티 모듈 최적화에 관심 있는 안드로이드 개발자\n\n공식 ARC 도입이 막혔거나 Org-level 인프라 전환을 기다리는 팀\n\n목차\n\n문제 — 빌드 무게와 고정 Runner Pool 의 한계\n\n다층 전략 — 4축 동시 전환과 한 Pod 구성 방어\n\n네트워크 — Nexus Proxy, Nginx WebDAV\n\n캐시 · 테스트 — 3-Layer Cache, Diff-aware 테스트\n\n오케스트레이션 — 왜 ARC 가 아닌가, N3R + 자체 Autoscaler, Pod 한살이\n\n결과 · 회고 — 실패 사례, 메트릭, 비용 비교, 축별 기여도, 교훈, 다음 단계\n\n◎ N…",
-   "tags": [
-    "hello world"
-   ],
-   "tech_stack": [
-    "CI/CD",
-    "GitHub Actions",
-    "Nginx"
-   ],
-   "categories": [
-    "인프라/클라우드"
-   ],
-   "lang": "ko"
+   "lang": "en",
+   "content_id": "21e975a38de6c7b4"
   },
   {
    "key": "mercari",
@@ -571,7 +813,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "918cf7c8948b3267"
   },
   {
    "key": "cyberagent",
@@ -590,7 +833,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bc89f780df4e7536"
   },
   {
    "key": "stackoverflow",
@@ -617,7 +861,8 @@
    "categories": [
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "99a08c319b0eb69f"
   },
   {
    "key": "toss",
@@ -637,7 +882,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7078eea6824e85c5"
   },
   {
    "key": "cloudflare",
@@ -677,7 +923,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "af8ab56e8a9b1ec1"
   },
   {
    "key": "toss",
@@ -708,7 +955,27 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8d7ab0a2a310b0e4"
+  },
+  {
+   "key": "discord",
+   "company": "Discord",
+   "country": "US",
+   "title": "How We Moved Discord Voice to the Edge",
+   "url": "https://discord.com/blog/how-we-moved-discord-voice-to-the-edge",
+   "published": "2026-06-09",
+   "published_ts": 1780963200.0,
+   "summary": "Moving Discord’s voice and video onto Cloudflare's edge network. Closer servers, lower ping in most regions, and a few real bugs getting there.",
+   "tags": [],
+   "tech_stack": [
+    "Cloudflare"
+   ],
+   "categories": [
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "9edf44ca4fdfd59a"
   },
   {
    "key": "cyberagent",
@@ -724,7 +991,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "79c4f9fc0841b154"
   },
   {
    "key": "aws",
@@ -772,7 +1040,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "802063539260a58e"
   },
   {
    "key": "github",
@@ -796,7 +1065,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "65a7cc2ccdb8dfc4"
   },
   {
    "key": "kakao",
@@ -818,7 +1088,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7fd5917445ea1f5c"
   },
   {
    "key": "dena",
@@ -840,7 +1111,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "dac05f902df6675e"
   },
   {
    "key": "cloudflare",
@@ -869,7 +1141,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "aa158c60c7f75c95"
   },
   {
    "key": "naver-d2",
@@ -885,7 +1158,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "670588276b0c30df"
   },
   {
    "key": "naver-d2",
@@ -901,7 +1175,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e9aad3a8954bec10"
   },
   {
    "key": "naver-d2",
@@ -923,7 +1198,8 @@
     "언어",
     "연구/논문"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "528eb0f38c2e0ba3"
   },
   {
    "key": "toss",
@@ -951,7 +1227,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "eb29f09922f73597"
   },
   {
    "key": "discord",
@@ -965,7 +1242,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "1a040ac9be036f89"
   },
   {
    "key": "zalando",
@@ -997,7 +1275,8 @@
     "LLM/생성형",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "06d76efbdcacaf95"
   },
   {
    "key": "aws",
@@ -1029,7 +1308,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "57d07048dfab709a"
   },
   {
    "key": "cloudflare",
@@ -1063,7 +1343,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "923a55dacc21d28b"
   },
   {
    "key": "stackoverflow",
@@ -1089,7 +1370,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "12fdb6f9bbf7297c"
   },
   {
    "key": "toss",
@@ -1115,7 +1397,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b76533169010d485"
   },
   {
    "key": "airbnb",
@@ -1155,7 +1438,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "25e27f409d7bf131"
   },
   {
    "key": "github",
@@ -1179,7 +1463,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5d304fb1442a9f6c"
   },
   {
    "key": "naver-d2",
@@ -1195,7 +1480,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ae80a1b0396f3658"
   },
   {
    "key": "naver-d2",
@@ -1229,7 +1515,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8b36e3782b5c8741"
   },
   {
    "key": "cloudflare",
@@ -1271,7 +1558,8 @@
     "백엔드",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e88c407de030c37f"
   },
   {
    "key": "daangn",
@@ -1312,7 +1600,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f48fd10f91ef871b"
   },
   {
    "key": "stripe",
@@ -1326,7 +1615,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b3e396a80b88a686"
   },
   {
    "key": "stripe",
@@ -1344,7 +1634,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "99131d23247446e5"
   },
   {
    "key": "stripe",
@@ -1358,7 +1649,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "00b1f3b02cc45579"
   },
   {
    "key": "discord",
@@ -1372,7 +1664,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e08ced00627b460d"
   },
   {
    "key": "aws",
@@ -1404,7 +1697,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e183012e8cd22f88"
   },
   {
    "key": "meta",
@@ -1422,7 +1716,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "aa7b12f140bff60f"
   },
   {
    "key": "cloudflare",
@@ -1454,7 +1749,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "504e8f104b766eda"
   },
   {
    "key": "spotify",
@@ -1478,7 +1774,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "efe4d0122afcdfa7"
   },
   {
    "key": "mercari",
@@ -1511,7 +1808,8 @@
     "펌웨어/임베디드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bb8038e80738c72d"
   },
   {
    "key": "netflix",
@@ -1549,7 +1847,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bf74e46e5230c024"
   },
   {
    "key": "stripe",
@@ -1567,7 +1866,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ccd0f25d2c7ba3a3"
   },
   {
    "key": "github",
@@ -1616,7 +1916,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ca28bb2f664e392b"
   },
   {
    "key": "airbnb",
@@ -1644,7 +1945,8 @@
     "AI/ML",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7f45e185e1b57b56"
   },
   {
    "key": "dena",
@@ -1665,7 +1967,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9a07a963e7b78a42"
   },
   {
    "key": "stackoverflow",
@@ -1686,7 +1989,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "42a9b04dbc860f2c"
   },
   {
    "key": "cyberagent",
@@ -1712,7 +2016,8 @@
    "categories": [
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ee2ab3ec58c0faa5"
   },
   {
    "key": "cyberagent",
@@ -1729,7 +2034,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "220837add85aa42d"
   },
   {
    "key": "aws",
@@ -1761,7 +2067,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "648b789f2599b950"
   },
   {
    "key": "cloudflare",
@@ -1793,7 +2100,8 @@
     "알고리즘/이론",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e52269f5afbd3f18"
   },
   {
    "key": "dena",
@@ -1817,7 +2125,8 @@
     "인프라/클라우드",
     "그래픽/게임"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "93380d1986555118"
   },
   {
    "key": "aws",
@@ -1857,7 +2166,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7ffbcbbeb58d13a6"
   },
   {
    "key": "cyberagent",
@@ -1873,7 +2183,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5574b24fdbc43ad0"
   },
   {
    "key": "dena",
@@ -1891,7 +2202,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7aafa87cf4256205"
   },
   {
    "key": "netflix",
@@ -1926,7 +2238,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "dd5e7904c1e2bc81"
   },
   {
    "key": "netflix",
@@ -1966,7 +2279,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8e58854d07d2f7c8"
   },
   {
    "key": "stackoverflow",
@@ -1985,7 +2299,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f3c440f32ba2c34b"
   },
   {
    "key": "swiggy",
@@ -2017,7 +2332,8 @@
     "연구/논문",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "115847566c5ba70e"
   },
   {
    "key": "swiggy",
@@ -2051,7 +2367,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9b13c5fe72f2950d"
   },
   {
    "key": "stackoverflow",
@@ -2078,7 +2395,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a9c517d593d15d6a"
   },
   {
    "key": "line",
@@ -2092,7 +2410,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "a8a474f532bbd91d"
   },
   {
    "key": "grab",
@@ -2122,7 +2441,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e5cdab45c3da4f56"
   },
   {
    "key": "cyberagent",
@@ -2145,7 +2465,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "82e4ff019b0ee9df"
   },
   {
    "key": "aws",
@@ -2172,7 +2493,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3329419436495ebc"
   },
   {
    "key": "aws",
@@ -2206,7 +2528,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f6ebdf2cc2780adc"
   },
   {
    "key": "github",
@@ -2224,7 +2547,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a3235c5dd5135cf1"
   },
   {
    "key": "dropbox",
@@ -2249,7 +2573,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "57d81c1d0ce5b230"
   },
   {
    "key": "naver-d2",
@@ -2265,7 +2590,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "63b2b95e85057380"
   },
   {
    "key": "stackoverflow",
@@ -2286,7 +2612,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "93b5689a5b0f1e5a"
   },
   {
    "key": "slack",
@@ -2323,7 +2650,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9c5f1aefe94a0bc4"
   },
   {
    "key": "cloudflare",
@@ -2381,7 +2709,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "eaeca849bf28ed66"
   },
   {
    "key": "line",
@@ -2395,7 +2724,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "35a839730cd85b96"
   },
   {
    "key": "stripe",
@@ -2409,7 +2739,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f422255fd0b97e55"
   },
   {
    "key": "discord",
@@ -2423,7 +2754,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "135b70aaf4b1cb3d"
   },
   {
    "key": "cloudflare",
@@ -2448,7 +2780,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c90d42b2ed002780"
   },
   {
    "key": "aws",
@@ -2474,7 +2807,8 @@
     "AI/ML",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "946434b5f2b65114"
   },
   {
    "key": "dena",
@@ -2495,7 +2829,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "91e2af76dab715bd"
   },
   {
    "key": "stackoverflow",
@@ -2518,7 +2853,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d5ee20ddfd2bec51"
   },
   {
    "key": "stripe",
@@ -2532,7 +2868,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "49c878457f29a9b4"
   },
   {
    "key": "etsy",
@@ -2555,7 +2892,32 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "483207e37a8510ab"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Shaping Product Understanding with Contrastive Reinforcement Learning",
+   "url": "https://www.etsy.com/codeascraft/shaping-product-understanding-with-contrastive-reinforcement-learning?_=1781027812121",
+   "published": "2026-05-26",
+   "published_ts": 1779819190.0,
+   "summary": "Etsy’s marketplace is defined by the creativity and craftsmanship of our sellers and the hundreds of millions of highly diverse products they offer. You can find silversmiths who cold-forge recycled sterling silver, weavers who dye raw fleece with indigo and black walnut, and ceramicists who throw stoneware on a kick wheel.\n\nThese details define each product and often determine whether it matches a buyer’s taste, style, and interests. Sometimes buyers know exactly what they want, searching for “hand-thrown ceramic mug” or “vegetable-tanned leather wallet.” Other times, especially in recommenda…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "Reinforcement Learning",
+    "Embedding",
+    "Fine-tuning",
+    "LLM"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "84bb92430947494b"
   },
   {
    "key": "meta",
@@ -2594,7 +2956,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5ba6429351c5781d"
   },
   {
    "key": "dena",
@@ -2612,7 +2975,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "061e3b754c9d3b0c"
   },
   {
    "key": "stackoverflow",
@@ -2637,7 +3001,8 @@
    "categories": [
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "be61bd8c266f24af"
   },
   {
    "key": "aws",
@@ -2669,7 +3034,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "07a9ed13f108a6a1"
   },
   {
    "key": "github",
@@ -2696,7 +3062,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "31c316d1bb335b89"
   },
   {
    "key": "swiggy",
@@ -2720,7 +3087,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ab2f91795b8f93bf"
   },
   {
    "key": "swiggy",
@@ -2749,7 +3117,8 @@
     "LLM/생성형",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c688e4a0aca0c617"
   },
   {
    "key": "github",
@@ -2775,7 +3144,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6037e75c52a21a7f"
   },
   {
    "key": "stackoverflow",
@@ -2798,7 +3168,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bc6a5276c8256725"
   },
   {
    "key": "stackoverflow",
@@ -2820,7 +3191,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4012a01e5fc53c06"
   },
   {
    "key": "line",
@@ -2838,7 +3210,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ad798a050278bd01"
   },
   {
    "key": "woowahan",
@@ -2875,7 +3248,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "482710a8b5a6e05c"
   },
   {
    "key": "toss",
@@ -2893,7 +3267,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "2e3ca53bf0485ccc"
   },
   {
    "key": "grab",
@@ -2936,7 +3311,8 @@
     "데이터베이스",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c7c2b7d7a0f8804f"
   },
   {
    "key": "github",
@@ -2971,7 +3347,8 @@
     "시스템/OS",
     "그래픽/게임"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bab7a23a62dcd9fc"
   },
   {
    "key": "cloudflare",
@@ -3006,7 +3383,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "202592deab37b1b8"
   },
   {
    "key": "pinterest",
@@ -3043,7 +3421,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b8154cdd6bf8445b"
   },
   {
    "key": "github",
@@ -3075,7 +3454,8 @@
     "시스템/OS",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "28c44a8c57b94a23"
   },
   {
    "key": "dropbox",
@@ -3109,7 +3489,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cc1581e08ad0caed"
   },
   {
    "key": "kakao",
@@ -3125,7 +3506,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b0f1f85b1bcd61ac"
   },
   {
    "key": "stackoverflow",
@@ -3144,7 +3526,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cecb93875b9ffe4a"
   },
   {
    "key": "discord",
@@ -3158,7 +3541,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a7639da9e2f3daff"
   },
   {
    "key": "github",
@@ -3178,7 +3562,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b3babbd346469ad3"
   },
   {
    "key": "kurly",
@@ -3198,7 +3583,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "32dd49a471915000"
   },
   {
    "key": "stackoverflow",
@@ -3221,7 +3607,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b95651e81cc0d6f7"
   },
   {
    "key": "airbnb",
@@ -3256,7 +3643,8 @@
     "알고리즘/이론",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3c820459c6d189de"
   },
   {
    "key": "cloudflare",
@@ -3297,7 +3685,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7304cffdad45f254"
   },
   {
    "key": "stackoverflow",
@@ -3322,7 +3711,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "431e44e79d9bea48"
   },
   {
    "key": "aws",
@@ -3364,7 +3754,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b1c02550aa4eef3f"
   },
   {
    "key": "github",
@@ -3391,7 +3782,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b5867f7bfbb803af"
   },
   {
    "key": "stackoverflow",
@@ -3409,7 +3801,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e73e6a0c73ea8f79"
   },
   {
    "key": "spotify",
@@ -3431,7 +3824,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c25f08e504de6bb9"
   },
   {
    "key": "stackoverflow",
@@ -3451,7 +3845,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "68d41505e1d9e858"
   },
   {
    "key": "cloudflare",
@@ -3488,7 +3883,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cff65a66dd9d7386"
   },
   {
    "key": "discord",
@@ -3502,7 +3898,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ebdc82294b5a260e"
   },
   {
    "key": "soundcloud",
@@ -3524,7 +3921,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b270ef0a6e53e70e"
   },
   {
    "key": "stackoverflow",
@@ -3545,7 +3943,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3529f4d2fd2d77f3"
   },
   {
    "key": "swiggy",
@@ -3580,7 +3979,8 @@
     "LLM/생성형",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6f77bcd9885d933f"
   },
   {
    "key": "stackoverflow",
@@ -3605,7 +4005,8 @@
    "categories": [
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c6f61bb70ebb6740"
   },
   {
    "key": "line",
@@ -3623,7 +4024,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f92a7700cecdbdc6"
   },
   {
    "key": "grab",
@@ -3655,7 +4057,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "06e9e436e53e734e"
   },
   {
    "key": "aws",
@@ -3687,7 +4090,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e2dc6c4a10cf8846"
   },
   {
    "key": "cloudflare",
@@ -3716,7 +4120,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0f3de20662a17100"
   },
   {
    "key": "daangn",
@@ -3752,7 +4157,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7178aa236527e416"
   },
   {
    "key": "line",
@@ -3766,7 +4172,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "98b51614d62895b0"
   },
   {
    "key": "toss",
@@ -3784,7 +4191,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "66e408378cb772c2"
   },
   {
    "key": "airbnb",
@@ -3820,7 +4228,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "27c60677d64fc89f"
   },
   {
    "key": "dena",
@@ -3842,7 +4251,8 @@
     "프론트엔드",
     "백엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "056b3b7cd4112ba0"
   },
   {
    "key": "meta",
@@ -3869,7 +4279,8 @@
     "모바일",
     "AI/ML"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b18f307f90895b82"
   },
   {
    "key": "cloudflare",
@@ -3907,7 +4318,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3cfe6b7338af513f"
   },
   {
    "key": "stackoverflow",
@@ -3932,7 +4344,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c5f5910ea93acb8b"
   },
   {
    "key": "discord",
@@ -3946,7 +4359,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6d5a6904eb25aab0"
   },
   {
    "key": "stackoverflow",
@@ -3964,7 +4378,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "06d449383d871418"
   },
   {
    "key": "stackoverflow",
@@ -3982,7 +4397,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7698b3cd371c7bd9"
   },
   {
    "key": "aws",
@@ -4020,7 +4436,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b153e7b6023fba61"
   },
   {
    "key": "pinterest",
@@ -4051,7 +4468,8 @@
     "모바일",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "72605097e2a1d73d"
   },
   {
    "key": "meta",
@@ -4075,7 +4493,8 @@
     "데이터",
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0d960bf91a2b0f38"
   },
   {
    "key": "cloudflare",
@@ -4108,7 +4527,8 @@
     "알고리즘/이론",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f2c93fa9eccb7b0f"
   },
   {
    "key": "stackoverflow",
@@ -4134,7 +4554,8 @@
     "LLM/생성형",
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "749361dfb43b0c9e"
   },
   {
    "key": "cookpad",
@@ -4155,7 +4576,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2b1c1085ad52069f"
   },
   {
    "key": "stackoverflow",
@@ -4179,7 +4601,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "243a0b4dfaa1448f"
   },
   {
    "key": "stackoverflow",
@@ -4201,7 +4624,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ef35cb15e15e2ed8"
   },
   {
    "key": "aws",
@@ -4238,7 +4662,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3821599aec9fd6fe"
   },
   {
    "key": "meta",
@@ -4261,7 +4686,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0dfb281eb742eeb5"
   },
   {
    "key": "stackoverflow",
@@ -4280,7 +4706,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d0a4a1ce0eab1ad0"
   },
   {
    "key": "stackoverflow",
@@ -4298,7 +4725,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "fff89e40a2d7f82f"
   },
   {
    "key": "stripe",
@@ -4316,7 +4744,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e47098b5c12219e9"
   },
   {
    "key": "discord",
@@ -4330,7 +4759,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "dc0c9b9950d64f61"
   },
   {
    "key": "discord",
@@ -4344,7 +4774,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "edeef6e6ca1a6161"
   },
   {
    "key": "pinterest",
@@ -4372,7 +4803,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c8686c5196e75da5"
   },
   {
    "key": "netflix",
@@ -4402,7 +4834,8 @@
     "백엔드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0873285e09d7ef06"
   },
   {
    "key": "discord",
@@ -4420,7 +4853,8 @@
    "categories": [
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a6bc90390010dac2"
   },
   {
    "key": "cloudflare",
@@ -4442,7 +4876,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b703fa597fe2516e"
   },
   {
    "key": "cloudflare",
@@ -4479,7 +4914,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "21b116d3240028a2"
   },
   {
    "key": "naver-d2",
@@ -4507,7 +4943,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0e19da238508fbcb"
   },
   {
    "key": "line",
@@ -4527,7 +4964,8 @@
     "모바일",
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e3229e84088df7d0"
   },
   {
    "key": "grab",
@@ -4561,7 +4999,8 @@
     "관측성",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "012f79285f0b2763"
   },
   {
    "key": "discord",
@@ -4579,7 +5018,8 @@
    "categories": [
     "언어"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e54989363b6efafb"
   },
   {
    "key": "cloudflare",
@@ -4607,7 +5047,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e7b039e0a6a49b3b"
   },
   {
    "key": "aws",
@@ -4645,7 +5086,8 @@
     "시스템/OS",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "1832eabe2c56bf9e"
   },
   {
    "key": "daangn",
@@ -4687,7 +5129,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "1625416c266d8c51"
   },
   {
    "key": "daangn",
@@ -4729,7 +5172,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "550a3309fb2f075f"
   },
   {
    "key": "aws",
@@ -4763,7 +5207,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e299cbd8d9994eec"
   },
   {
    "key": "airbnb",
@@ -4794,7 +5239,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8158a1e678dbca09"
   },
   {
    "key": "kakao",
@@ -4814,7 +5260,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c960de7c0f17da5d"
   },
   {
    "key": "slack",
@@ -4869,7 +5316,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cca8609efb0e052b"
   },
   {
    "key": "flipkart",
@@ -4898,7 +5346,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f59f895bf9e032e1"
   },
   {
    "key": "aws",
@@ -4934,7 +5383,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "979728020fb77d58"
   },
   {
    "key": "netflix",
@@ -4969,7 +5419,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ee546d3df22cb21f"
   },
   {
    "key": "swiggy",
@@ -5000,7 +5451,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ef39947c106cdb3d"
   },
   {
    "key": "discord",
@@ -5014,7 +5466,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "26a84353914972ec"
   },
   {
    "key": "cloudflare",
@@ -5045,7 +5498,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "09d279b9cf1a6159"
   },
   {
    "key": "netflix",
@@ -5083,7 +5537,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "813baea9e93e9f92"
   },
   {
    "key": "pinterest",
@@ -5119,7 +5574,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b4053a774f8eca34"
   },
   {
    "key": "meta",
@@ -5146,7 +5602,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "87d6f421151f5c49"
   },
   {
    "key": "spotify",
@@ -5168,7 +5625,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7f479a299204d0c2"
   },
   {
    "key": "cloudflare",
@@ -5209,7 +5667,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0a0bc5ee8203b4d5"
   },
   {
    "key": "cloudflare",
@@ -5243,7 +5702,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "65bad520b8b39704"
   },
   {
    "key": "line",
@@ -5261,7 +5721,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e2b87b866030ddc5"
   },
   {
    "key": "daangn",
@@ -5295,7 +5756,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "4a3c22fdcee6ff57"
   },
   {
    "key": "grab",
@@ -5329,7 +5791,8 @@
     "데이터",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f82764d95b695c7f"
   },
   {
    "key": "naver-d2",
@@ -5360,7 +5823,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "dd8364d7bfd2d00e"
   },
   {
    "key": "razorpay",
@@ -5384,7 +5848,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9641e783856c35e5"
   },
   {
    "key": "stripe",
@@ -5398,7 +5863,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f07966f059911925"
   },
   {
    "key": "stripe",
@@ -5412,7 +5878,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b9a3ba31b4989e1d"
   },
   {
    "key": "discord",
@@ -5426,7 +5893,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cd2364db8d294552"
   },
   {
    "key": "aws",
@@ -5458,7 +5926,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "35bb9b84276334e8"
   },
   {
    "key": "airbnb",
@@ -5497,7 +5966,8 @@
     "알고리즘/이론",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "00d2b997eefd66ba"
   },
   {
    "key": "mercari",
@@ -5528,7 +5998,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "fb4bf5186dbb630b"
   },
   {
    "key": "pinterest",
@@ -5555,7 +6026,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "967431cbff707ce0"
   },
   {
    "key": "aws",
@@ -5596,7 +6068,8 @@
     "시스템/OS",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6bf93bdc1abb019d"
   },
   {
    "key": "kurly",
@@ -5614,7 +6087,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1a5d07b27c02f2ae"
   },
   {
    "key": "toss",
@@ -5636,7 +6110,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f9fcf85493fa9ff1"
   },
   {
    "key": "netflix",
@@ -5662,7 +6137,8 @@
     "관측성",
     "시스템/OS"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8121b2b0ed76f2cb"
   },
   {
    "key": "line",
@@ -5676,7 +6152,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "59f3ea440aba7391"
   },
   {
    "key": "discord",
@@ -5690,7 +6167,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d301b841c172e642"
   },
   {
    "key": "lyft",
@@ -5712,7 +6190,8 @@
    "categories": [
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5756a8cdc1f5754d"
   },
   {
    "key": "dena",
@@ -5732,7 +6211,8 @@
     "언어",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0b861b3f962ceb77"
   },
   {
    "key": "toss",
@@ -5768,7 +6248,8 @@
     "시스템/OS",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7f89a6a8e73ca4c9"
   },
   {
    "key": "yogiyo",
@@ -5805,7 +6286,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "52d5f776f3a658ed"
   },
   {
    "key": "toss",
@@ -5831,7 +6313,8 @@
     "데이터베이스",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b0f5c04c0e335967"
   },
   {
    "key": "daangn",
@@ -5863,7 +6346,8 @@
     "데이터베이스",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5ba450c88b46a670"
   },
   {
    "key": "toss",
@@ -5887,7 +6371,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e566b584b3d82227"
   },
   {
    "key": "spotify",
@@ -5906,7 +6391,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8fddb1ff583fedb9"
   },
   {
    "key": "naver-d2",
@@ -5931,7 +6417,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e6d92e3286057fbd"
   },
   {
    "key": "kakao",
@@ -5947,7 +6434,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0f11de4255f62a5d"
   },
   {
    "key": "dena",
@@ -5968,7 +6456,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a9cc661fb831ccfc"
   },
   {
    "key": "swiggy",
@@ -6008,7 +6497,8 @@
     "펌웨어/임베디드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "57655e855e4cafe9"
   },
   {
    "key": "line",
@@ -6022,7 +6512,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "293fe59d870825a3"
   },
   {
    "key": "hyperconnect",
@@ -6046,7 +6537,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "516df04e9703a173"
   },
   {
    "key": "hyperconnect",
@@ -6070,7 +6562,8 @@
     "언어",
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d97723d7ba34febd"
   },
   {
    "key": "airbnb",
@@ -6103,7 +6596,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9f03947c7e8c5705"
   },
   {
    "key": "meta",
@@ -6129,7 +6623,8 @@
     "LLM/생성형",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ce7ac591f88504c3"
   },
   {
    "key": "kakao",
@@ -6146,7 +6641,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8747a453350368aa"
   },
   {
    "key": "line",
@@ -6166,7 +6662,8 @@
     "모바일",
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f039c12a41ef4401"
   },
   {
    "key": "pinterest",
@@ -6197,7 +6694,8 @@
     "AI/ML",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ea82a296ff88b86e"
   },
   {
    "key": "aws",
@@ -6245,7 +6743,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "952de1346046e21d"
   },
   {
    "key": "dena",
@@ -6259,7 +6758,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0767121ef5ab83d9"
   },
   {
    "key": "kurly",
@@ -6273,7 +6773,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d050411caed8117c"
   },
   {
    "key": "netflix",
@@ -6303,7 +6804,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c16dbdeb72fc7bd3"
   },
   {
    "key": "woowahan",
@@ -6334,7 +6836,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c5b2ac4a1f2c319d"
   },
   {
    "key": "cookpad",
@@ -6356,7 +6859,8 @@
     "백엔드",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "89287f88e9eb2539"
   },
   {
    "key": "meta",
@@ -6386,7 +6890,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "eeeb2cfb6d84c2ac"
   },
   {
    "key": "meta",
@@ -6416,7 +6921,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8bf6259514ef4e5a"
   },
   {
    "key": "aws",
@@ -6446,7 +6952,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "12b87c0c19d64ce7"
   },
   {
    "key": "daangn",
@@ -6479,7 +6986,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "05b345ef363ff760"
   },
   {
    "key": "daangn",
@@ -6510,7 +7018,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3cd34f858932cf2d"
   },
   {
    "key": "toss",
@@ -6545,7 +7054,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "89b156fa71b061b6"
   },
   {
    "key": "discord",
@@ -6559,7 +7069,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "dd9cd58cca0d4415"
   },
   {
    "key": "pinterest",
@@ -6599,7 +7110,8 @@
     "인프라/클라우드",
     "시스템/OS"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "907ebe922d6007ab"
   },
   {
    "key": "dena",
@@ -6625,7 +7137,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5aba090339685311"
   },
   {
    "key": "naver-d2",
@@ -6648,7 +7161,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0d51abc054416624"
   },
   {
    "key": "flipkart",
@@ -6668,7 +7182,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f2007eda23162e77"
   },
   {
    "key": "line",
@@ -6686,7 +7201,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0e531f4b9f76a37f"
   },
   {
    "key": "airbnb",
@@ -6712,7 +7228,8 @@
     "언어",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "013948c1539866c6"
   },
   {
    "key": "pinterest",
@@ -6745,7 +7262,8 @@
     "LLM/생성형",
     "데이터"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7fd5465c10dbed2f"
   },
   {
    "key": "slack",
@@ -6776,7 +7294,8 @@
     "시스템/OS",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "1657f294d26c96f2"
   },
   {
    "key": "dena",
@@ -6794,7 +7313,8 @@
    "categories": [
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7c4543d38900c222"
   },
   {
    "key": "naver-d2",
@@ -6816,7 +7336,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "85fe764066bffef6"
   },
   {
    "key": "netflix",
@@ -6839,7 +7360,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "25513146cea34bd7"
   },
   {
    "key": "swiggy",
@@ -6871,7 +7393,8 @@
     "AI/ML",
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0990939b877a682a"
   },
   {
    "key": "line",
@@ -6885,7 +7408,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d7bb63cf32a46bd1"
   },
   {
    "key": "line",
@@ -6899,7 +7423,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "cda1881e9da5fcfc"
   },
   {
    "key": "dena",
@@ -6920,7 +7445,8 @@
     "언어",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "faf9791bf7b6dab9"
   },
   {
    "key": "toss",
@@ -6934,7 +7460,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d5850e4dcc8a1e82"
   },
   {
    "key": "zalando",
@@ -6965,7 +7492,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "974a460aa5ba9066"
   },
   {
    "key": "pinterest",
@@ -6990,7 +7518,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "00017bf5d9fb2a08"
   },
   {
    "key": "dena",
@@ -7014,7 +7543,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d1150d9087d9bf31"
   },
   {
    "key": "razorpay",
@@ -7039,7 +7569,8 @@
     "언어",
     "데이터"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ce8ce30d965b37b7"
   },
   {
    "key": "line",
@@ -7053,7 +7584,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "9eaac195e3b5f30a"
   },
   {
    "key": "airbnb",
@@ -7086,7 +7618,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e2462f944be2fbb7"
   },
   {
    "key": "pinterest",
@@ -7127,7 +7660,8 @@
     "연구/논문",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c18761f28daf6dfc"
   },
   {
    "key": "toss",
@@ -7145,7 +7679,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "121f74bbc4c154f1"
   },
   {
    "key": "stripe",
@@ -7159,7 +7694,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d42188054fc31e80"
   },
   {
    "key": "netflix",
@@ -7188,7 +7724,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d3a4797cdec56282"
   },
   {
    "key": "spotify",
@@ -7211,7 +7748,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "05d3ccc87d96bbf1"
   },
   {
    "key": "dena",
@@ -7242,7 +7780,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "75c1cf5d61d03c8b"
   },
   {
    "key": "discord",
@@ -7256,7 +7795,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "763932c232139396"
   },
   {
    "key": "mercari",
@@ -7291,7 +7831,8 @@
     "시스템/OS",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c2c751b26ba58ab6"
   },
   {
    "key": "line",
@@ -7309,7 +7850,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "19e0dd077ae10a06"
   },
   {
    "key": "woowahan",
@@ -7344,7 +7886,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ebdd2e78f820edf3"
   },
   {
    "key": "toss",
@@ -7363,7 +7906,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "02443f9b12ab99af"
   },
   {
    "key": "yogiyo",
@@ -7387,7 +7931,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "156d22cc801e3fee"
   },
   {
    "key": "airbnb",
@@ -7413,7 +7958,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "1a5060624220280d"
   },
   {
    "key": "dropbox",
@@ -7437,7 +7983,8 @@
    "categories": [
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4aa5378cfbd0296b"
   },
   {
    "key": "kurly",
@@ -7451,7 +7998,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1dda02ca5c6632b9"
   },
   {
    "key": "kurly",
@@ -7465,7 +8013,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "fd273607482d541b"
   },
   {
    "key": "mercari",
@@ -7491,7 +8040,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "67718e65e0b89451"
   },
   {
    "key": "naver-d2",
@@ -7519,7 +8069,8 @@
     "백엔드",
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "2d410aa6c8d85bbb"
   },
   {
    "key": "razorpay",
@@ -7537,7 +8088,8 @@
    "categories": [
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bd408159e1d08d2f"
   },
   {
    "key": "watcha",
@@ -7557,7 +8109,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e87455909614c7b7"
   },
   {
    "key": "line",
@@ -7571,7 +8124,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "cb504918701c9a08"
   },
   {
    "key": "toss",
@@ -7597,7 +8151,8 @@
     "프론트엔드",
     "백엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "692a7e15f73f03e7"
   },
   {
    "key": "discord",
@@ -7611,7 +8166,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6d198872a983bc0e"
   },
   {
    "key": "slack",
@@ -7642,7 +8198,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e311a5dba71e8f7f"
   },
   {
    "key": "line",
@@ -7662,7 +8219,8 @@
     "데이터",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "dca838a123be6164"
   },
   {
    "key": "mercari",
@@ -7690,7 +8248,8 @@
     "시스템/OS",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "808d4699506ca5a2"
   },
   {
    "key": "dena",
@@ -7723,7 +8282,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "aa4396649593ada1"
   },
   {
    "key": "lyft",
@@ -7752,7 +8312,8 @@
     "LLM/생성형",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ebb1c84dca6ade96"
   },
   {
    "key": "line",
@@ -7771,7 +8332,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c6371ddd357fb0b8"
   },
   {
    "key": "discord",
@@ -7789,7 +8351,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "86a2df783cc04692"
   },
   {
    "key": "naver-d2",
@@ -7811,7 +8374,8 @@
     "언어",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "002cecada307d1b2"
   },
   {
    "key": "dena",
@@ -7829,7 +8393,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6c02b8725f22815c"
   },
   {
    "key": "swiggy",
@@ -7873,7 +8438,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cf59583c399bf46d"
   },
   {
    "key": "naver-d2",
@@ -7895,7 +8461,8 @@
     "언어",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "eac00e31baaa139a"
   },
   {
    "key": "dropbox",
@@ -7922,7 +8489,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ac76e01021052670"
   },
   {
    "key": "lyft",
@@ -7944,7 +8512,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cf870da6024de6a1"
   },
   {
    "key": "line",
@@ -7962,7 +8531,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "bd0d776608ab5da7"
   },
   {
    "key": "toss",
@@ -7976,7 +8546,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b960b76d71de402f"
   },
   {
    "key": "swiggy",
@@ -8021,7 +8592,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ac44f2c82d42eab7"
   },
   {
    "key": "woowahan",
@@ -8047,7 +8619,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "4e3a0599e7665803"
   },
   {
    "key": "line",
@@ -8061,7 +8634,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "28d095dfa63c2962"
   },
   {
    "key": "discord",
@@ -8075,7 +8649,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "765d622d6bbe8c82"
   },
   {
    "key": "dena",
@@ -8099,7 +8674,8 @@
     "데이터베이스",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a6a0182c1a363a3e"
   },
   {
    "key": "etsy",
@@ -8119,7 +8695,29 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "99b25712a7b23218"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Making Ads Count: Using MMoE and Auxiliary Tasks to Better Connect Buyers & Sellers",
+   "url": "https://www.etsy.com/codeascraft/making-ads-count-using-mmoe-and-auxiliary-tasks-to-better-connect-buyers--sellers?_=1781027812121",
+   "published": "2026-03-20",
+   "published_ts": 1774031516.0,
+   "summary": "When buyers search on Etsy, they need to quickly and easily find the perfect item. At the same time, sellers need to be confident their unique products are being seen by the right customers. Our Ads Search ranking model, which is built on a multitask learning foundation, is the critical link in this connection. Recently, we identified an opportunity to drive more meaningful buyer engagement by enhancing our model’s ability to predict purchase intent. We achieved this via a dual-pronged improvement: introducing Multigate Mixture of Experts (MMoE) to our model architecture and leveraging add-to-…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "MoE"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "7422bb78c492657f"
   },
   {
    "key": "woowahan",
@@ -8142,7 +8740,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c2bc787a439d3152"
   },
   {
    "key": "line",
@@ -8156,7 +8755,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1af34376dc8c1f82"
   },
   {
    "key": "toss",
@@ -8184,7 +8784,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "814d24bddec2cb12"
   },
   {
    "key": "etsy",
@@ -8207,7 +8808,32 @@
     "데이터베이스",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "fab6f8a46f5eeab6"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Migrating Etsy’s database sharding to Vitess",
+   "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess?_=1781027812121",
+   "published": "2026-03-19",
+   "published_ts": 1773954234.0,
+   "summary": "Etsy has maintained a sharded MySQL architecture since around 2010. This database cluster contains most of Etsy’s online data and is made up of ~1,000 tables distributed across ~1,000 shards. Over the last 16 years, it has grown significantly: combined, these tables have over 425 TB of data and receive roughly 1.7 million requests per second.\n\nEtsy engineers access our MySQL data through a proprietary object-relational mapping (ORM). The ORM has a corresponding model for each MySQL table. When a table is sharded, its rows are partitioned among different databases known as shards. Each shard ha…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "MySQL",
+    "SQLite",
+    "Algorithm"
+   ],
+   "categories": [
+    "언어",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "f191eff16d1fc930"
   },
   {
    "key": "slack",
@@ -8237,7 +8863,8 @@
     "프론트엔드",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3f5ad8ab4803c0a1"
   },
   {
    "key": "line",
@@ -8251,7 +8878,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "852e67d6acbdcc71"
   },
   {
    "key": "grab",
@@ -8299,7 +8927,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "11a4ad53c5a7239b"
   },
   {
    "key": "dena",
@@ -8333,7 +8962,8 @@
     "그래픽/게임",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c5c53e633753404f"
   },
   {
    "key": "line",
@@ -8351,7 +8981,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "630539e1f9dbc2fb"
   },
   {
    "key": "watcha",
@@ -8371,7 +9002,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "316476c9fef4278f"
   },
   {
    "key": "dropbox",
@@ -8396,7 +9028,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ff6d29436f248e4f"
   },
   {
    "key": "spotify-r",
@@ -8413,7 +9046,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4282b1e50d8886be"
   },
   {
    "key": "woowahan",
@@ -8441,7 +9075,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ecfb52630a897912"
   },
   {
    "key": "toss",
@@ -8476,7 +9111,8 @@
     "LLM/생성형",
     "시스템/OS"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c00238910b7f437e"
   },
   {
    "key": "line",
@@ -8490,7 +9126,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "98ada1e6fd079c82"
   },
   {
    "key": "zalando",
@@ -8526,7 +9163,8 @@
     "데이터",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8d11b5383bfddbae"
   },
   {
    "key": "dena",
@@ -8550,7 +9188,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d9d1f3ded4d4b982"
   },
   {
    "key": "discord",
@@ -8564,7 +9203,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a1fae4dd9b130c0c"
   },
   {
    "key": "kakao",
@@ -8584,7 +9224,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e411b99dc32e0340"
   },
   {
    "key": "woowahan",
@@ -8612,7 +9253,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1581ac6e494daf1c"
   },
   {
    "key": "line",
@@ -8626,7 +9268,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "a03ef1d13e70338a"
   },
   {
    "key": "kakao",
@@ -8642,7 +9285,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b691ec2efe7b42df"
   },
   {
    "key": "kakao",
@@ -8662,7 +9306,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "41584f3680c5c356"
   },
   {
    "key": "yogiyo",
@@ -8713,7 +9358,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "9b428ebcb02d5ba3"
   },
   {
    "key": "grab",
@@ -8750,7 +9396,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c0fce70cb69d6d0e"
   },
   {
    "key": "discord",
@@ -8764,7 +9411,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f2ee3bf418f083ed"
   },
   {
    "key": "kakao",
@@ -8784,7 +9432,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "efdc36c025f8fc6a"
   },
   {
    "key": "kakao",
@@ -8800,7 +9449,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "88eeee8eb2f76049"
   },
   {
    "key": "watcha",
@@ -8826,7 +9476,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c618201e5f304a3c"
   },
   {
    "key": "woowahan",
@@ -8864,7 +9515,8 @@
     "데이터베이스",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "bd4b5d9a894fae29"
   },
   {
    "key": "discord",
@@ -8878,7 +9530,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3e1df8cc068dd8d9"
   },
   {
    "key": "zalando",
@@ -8899,7 +9552,8 @@
    "categories": [
     "언어"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c2e7ee4e76f3de6c"
   },
   {
    "key": "dena",
@@ -8917,7 +9571,8 @@
    "categories": [
     "언어"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b6fc35d52c3f66a1"
   },
   {
    "key": "toss",
@@ -8935,7 +9590,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "095625362dd9e6bb"
   },
   {
    "key": "grab",
@@ -8965,7 +9621,8 @@
     "시스템/OS",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c4da89ec6b2fd4c4"
   },
   {
    "key": "discord",
@@ -8979,7 +9636,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "18b6a97488776af9"
   },
   {
    "key": "naver-d2",
@@ -9012,7 +9670,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "518da58b9c37a02d"
   },
   {
    "key": "dena",
@@ -9030,7 +9689,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6fa9d20525adc316"
   },
   {
    "key": "discord",
@@ -9050,7 +9710,8 @@
     "언어",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e94ffef5c0bedf2b"
   },
   {
    "key": "zalando",
@@ -9083,7 +9744,8 @@
     "인프라/클라우드",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ef7ad5836557b7a1"
   },
   {
    "key": "flipkart",
@@ -9116,7 +9778,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6d1a446707c1b770"
   },
   {
    "key": "razorpay",
@@ -9151,7 +9814,8 @@
     "관측성",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2a49d2047b56c110"
   },
   {
    "key": "dena",
@@ -9171,7 +9835,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e483b03efd6f622e"
   },
   {
    "key": "daangn",
@@ -9212,7 +9877,8 @@
     "데이터",
     "데이터베이스"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f34dfda94242df64"
   },
   {
    "key": "daangn",
@@ -9242,7 +9908,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "536632124c4e78f3"
   },
   {
    "key": "toss",
@@ -9260,7 +9927,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "53bab64ac06e2740"
   },
   {
    "key": "dropbox",
@@ -9292,7 +9960,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7d84109a29d11b1c"
   },
   {
    "key": "dena",
@@ -9310,7 +9979,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "dd552676598ac03a"
   },
   {
    "key": "yogiyo",
@@ -9345,7 +10015,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "2d6fefff0354ba1e"
   },
   {
    "key": "flipkart",
@@ -9381,7 +10052,8 @@
     "시스템/OS",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6669889c8ef1ac55"
   },
   {
    "key": "socar",
@@ -9415,7 +10087,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b99db51cd514b433"
   },
   {
    "key": "flipkart",
@@ -9455,7 +10128,8 @@
     "알고리즘/이론",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "442e4a3dc22c5107"
   },
   {
    "key": "discord",
@@ -9469,7 +10143,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bb404ec18a317882"
   },
   {
    "key": "socar",
@@ -9494,7 +10169,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f36b053051043893"
   },
   {
    "key": "lyft",
@@ -9522,7 +10198,8 @@
     "프론트엔드",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "99c8a8696b27da3b"
   },
   {
    "key": "discord",
@@ -9536,7 +10213,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "903f783d654c69ca"
   },
   {
    "key": "dena",
@@ -9550,7 +10228,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f1ae5c042918f743"
   },
   {
    "key": "mercari",
@@ -9583,7 +10262,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e095b8bf0c08da6c"
   },
   {
    "key": "socar",
@@ -9610,7 +10290,8 @@
     "데이터베이스",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5e5affdf54dd356f"
   },
   {
    "key": "cookpad",
@@ -9630,7 +10311,8 @@
     "프론트엔드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "13a1781bbc3430dd"
   },
   {
    "key": "dropbox",
@@ -9661,7 +10343,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "472d1c28beeee461"
   },
   {
    "key": "lyft",
@@ -9689,7 +10372,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2d381ef443232734"
   },
   {
    "key": "yogiyo",
@@ -9721,7 +10405,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3a689e1abaab2907"
   },
   {
    "key": "dropbox",
@@ -9746,7 +10431,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "449470a247136d33"
   },
   {
    "key": "razorpay",
@@ -9769,7 +10455,8 @@
     "프론트엔드",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "13784bb448ed3a24"
   },
   {
    "key": "naver-d2",
@@ -9798,7 +10485,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f8b2c3db609757ff"
   },
   {
    "key": "woowahan",
@@ -9821,7 +10509,8 @@
    "categories": [
     "관측성"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "42c7f57e82e55124"
   },
   {
    "key": "kurly",
@@ -9839,7 +10528,8 @@
    "categories": [
     "백엔드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7a85747ec3e03438"
   },
   {
    "key": "yogiyo",
@@ -9858,7 +10548,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "60b21db5d3e7d6d0"
   },
   {
    "key": "grab",
@@ -9881,7 +10572,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6fbc30e2ced1f3ce"
   },
   {
    "key": "zalando",
@@ -9922,7 +10614,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "87e1567840f22226"
   },
   {
    "key": "dropbox",
@@ -9959,7 +10652,8 @@
     "데이터베이스",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "32581bf02c040385"
   },
   {
    "key": "banksalad",
@@ -9973,7 +10667,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "6ac2ea8bd228006a"
   },
   {
    "key": "hyperconnect",
@@ -10010,7 +10705,8 @@
     "알고리즘/이론",
     "연구/논문"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8f009a48736228b5"
   },
   {
    "key": "flipkart",
@@ -10037,7 +10733,8 @@
     "데이터",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0c80b790d70bf693"
   },
   {
    "key": "naver-d2",
@@ -10072,7 +10769,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3bffe6c4ea07b617"
   },
   {
    "key": "grab",
@@ -10115,7 +10813,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "01747f013f6554da"
   },
   {
    "key": "socar",
@@ -10148,7 +10847,8 @@
     "인프라/클라우드",
     "시스템/OS"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "cde67121f81e59ac"
   },
   {
    "key": "naver-d2",
@@ -10164,7 +10864,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "09f9056718418f9d"
   },
   {
    "key": "etsy",
@@ -10192,7 +10893,37 @@
     "LLM/생성형",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "550232f177ab3948"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "How Etsy Uses LLMs to Improve Search Relevance",
+   "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance?_=1781027812121",
+   "published": "2026-01-16",
+   "published_ts": 1768593748.0,
+   "summary": "Ever searched for something specific, only to be met with results that are close, but not quite? On Etsy’s Search Relevance team, that frustration is exactly what we are tackling. Our goal is simple yet ambitious: to help buyers find exactly what they’re looking for, and to help sellers reach the people seeking their special products.\n\nSearch plays a central role in that mission. Historically, Etsy’s search models have relied heavily on engagement signals – such as clicks, add-to-carts, and purchases – as proxies for relevance. These signals are objective, but they can also be biased: popular…",
+   "tags": [],
+   "tech_stack": [
+    "Julia",
+    "Machine Learning",
+    "BERT",
+    "Fine-tuning",
+    "LLM",
+    "Prompt Engineering",
+    "vLLM",
+    "Embedded"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "펌웨어/임베디드"
+   ],
+   "lang": "en",
+   "content_id": "cbff216acd459112"
   },
   {
    "key": "banksalad",
@@ -10206,7 +10937,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "9d16b2ebde081713"
   },
   {
    "key": "yogiyo",
@@ -10228,7 +10960,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0069b60eb1bfb501"
   },
   {
    "key": "banksalad",
@@ -10246,7 +10979,8 @@
    "categories": [
     "그래픽/게임"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8a752a24d335951a"
   },
   {
    "key": "zalando",
@@ -10276,7 +11010,8 @@
     "알고리즘/이론",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9b60a20a652ea683"
   },
   {
    "key": "naver-d2",
@@ -10301,7 +11036,8 @@
     "AI/ML",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d6870e3de2d20277"
   },
   {
    "key": "mercari",
@@ -10321,7 +11057,8 @@
     "언어",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "603bb04fac11be13"
   },
   {
    "key": "banksalad",
@@ -10339,7 +11076,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "596baa94910c3ed4"
   },
   {
    "key": "hyperconnect",
@@ -10366,7 +11104,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "663f5ac149cf8d4d"
   },
   {
    "key": "kurly",
@@ -10380,7 +11119,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "cb4baf24ce9338bd"
   },
   {
    "key": "socar",
@@ -10408,7 +11148,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f7f964c0f87d032a"
   },
   {
    "key": "socar",
@@ -10432,7 +11173,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c41b1cefc8be7c2d"
   },
   {
    "key": "lyft",
@@ -10482,7 +11224,8 @@
     "관측성",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0feb41c05907eb02"
   },
   {
    "key": "yogiyo",
@@ -10517,7 +11260,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ee36e8feab0c36cc"
   },
   {
    "key": "woowahan",
@@ -10538,7 +11282,8 @@
    "categories": [
     "언어"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0094612049177727"
   },
   {
    "key": "mercari",
@@ -10563,7 +11308,8 @@
     "LLM/생성형",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "726c5a7a7a04bbec"
   },
   {
    "key": "kurly",
@@ -10581,7 +11327,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "26dcfcc58e9edefe"
   },
   {
    "key": "mercari",
@@ -10606,7 +11353,8 @@
     "펌웨어/임베디드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6e2312aa10af5730"
   },
   {
    "key": "kurly",
@@ -10620,7 +11368,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "51c1d8fa1962e2ca"
   },
   {
    "key": "mercari",
@@ -10642,7 +11391,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6594001bb1215bec"
   },
   {
    "key": "mercari",
@@ -10662,7 +11412,8 @@
     "백엔드",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ae4f858a9045f878"
   },
   {
    "key": "banksalad",
@@ -10676,7 +11427,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "39059d3e0dc0bfca"
   },
   {
    "key": "zalando",
@@ -10706,7 +11458,8 @@
     "인프라/클라우드",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "29ed646d0f302084"
   },
   {
    "key": "dropbox",
@@ -10746,7 +11499,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ae8ccef359626d4d"
   },
   {
    "key": "mercari",
@@ -10771,7 +11525,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d6a887c8f4cda629"
   },
   {
    "key": "razorpay",
@@ -10804,7 +11559,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7f33550103cd4efd"
   },
   {
    "key": "mercari",
@@ -10818,7 +11574,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6680e9aefe06b730"
   },
   {
    "key": "mercari",
@@ -10832,7 +11589,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b10cb130317164b4"
   },
   {
    "key": "zalando",
@@ -10864,7 +11622,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8093b840af3738d3"
   },
   {
    "key": "kurly",
@@ -10882,7 +11641,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "53d9e87c779d5015"
   },
   {
    "key": "mercari",
@@ -10918,7 +11678,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0699a7393bdcf81e"
   },
   {
    "key": "mercari",
@@ -10955,7 +11716,8 @@
     "펌웨어/임베디드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "25a7778cb184d5ab"
   },
   {
    "key": "lyft",
@@ -10983,7 +11745,8 @@
     "인프라/클라우드",
     "시스템/OS"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "137570e03267539b"
   },
   {
    "key": "mercari",
@@ -11001,7 +11764,8 @@
    "categories": [
     "백엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "35cec558e088a79b"
   },
   {
    "key": "flipkart",
@@ -11042,7 +11806,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8839f9e890280921"
   },
   {
    "key": "banksalad",
@@ -11060,7 +11825,8 @@
    "categories": [
     "언어"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1d5e0ab68dd9f870"
   },
   {
    "key": "cookpad",
@@ -11083,7 +11849,8 @@
     "언어",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "ead6b44198df0ac0"
   },
   {
    "key": "yogiyo",
@@ -11117,7 +11884,8 @@
     "모바일",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "59452171688b2ad2"
   },
   {
    "key": "mercari",
@@ -11138,7 +11906,8 @@
     "LLM/생성형",
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7fcec1239b6d12bf"
   },
   {
    "key": "flipkart",
@@ -11178,7 +11947,8 @@
     "시스템/OS",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bd64a1a75af1f899"
   },
   {
    "key": "mercari",
@@ -11198,7 +11968,8 @@
     "LLM/생성형",
     "데이터"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "42927fe1331362ef"
   },
   {
    "key": "mercari",
@@ -11219,7 +11990,8 @@
     "모바일",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4d04958236679b05"
   },
   {
    "key": "mercari",
@@ -11247,7 +12019,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "fdc00d8aaca4a513"
   },
   {
    "key": "mercari",
@@ -11270,7 +12043,8 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9189efce45ba39b8"
   },
   {
    "key": "ft",
@@ -11296,7 +12070,8 @@
     "모바일",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5755effedbb6620b"
   },
   {
    "key": "mercari",
@@ -11332,7 +12107,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "129a28e9a25e77ef"
   },
   {
    "key": "flipkart",
@@ -11362,7 +12138,8 @@
     "LLM/생성형",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8f279d8877845856"
   },
   {
    "key": "kurly",
@@ -11376,7 +12153,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "4c8f488a8dc90f4e"
   },
   {
    "key": "mercari",
@@ -11410,7 +12188,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b07514ea65988b5b"
   },
   {
    "key": "flipkart",
@@ -11447,7 +12226,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c52a548bfd8a6ab8"
   },
   {
    "key": "slack",
@@ -11474,7 +12254,8 @@
     "LLM/생성형",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "422e339091f8fb76"
   },
   {
    "key": "kurly",
@@ -11492,7 +12273,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "37e11cec33387232"
   },
   {
    "key": "kurly",
@@ -11510,7 +12292,8 @@
    "categories": [
     "프론트엔드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "4ceec53ca53d326a"
   },
   {
    "key": "hyperconnect",
@@ -11535,7 +12318,8 @@
     "알고리즘/이론",
     "연구/논문"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0cbc6eaed5450c58"
   },
   {
    "key": "spotify-r",
@@ -11551,7 +12335,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "63b66b87971082d5"
   },
   {
    "key": "etsy",
@@ -11578,7 +12363,36 @@
     "데이터",
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "db3db68f3e7c0672"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Reducing experiment duration with predicted control variates",
+   "url": "https://www.etsy.com/codeascraft/reducing-experiment-duration-with-predicted-control-variates?_=1781027812121",
+   "published": "2025-11-25",
+   "published_ts": 1764088106.0,
+   "summary": "In 2021, we published a blog post titled “Increasing experimentation accuracy and speed by using control variates,” describing how we reduce the variance of metrics using CUPED in our experimentation platform. This is a follow-up on how CUPED has evolved at Etsy since then. Spoiler – It’s changed a lot, decreasing our average experiment duration by 3 days!\n\nEtsy’s mission is to Keep Commerce Human. To achieve this, we need to understand the impact each change to our platform has on our buyers' and sellers' experience. Whether that involves changing the color of the “Buy Now” button on the Etsy…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "LightGBM",
+    "Machine Learning",
+    "XGBoost",
+    "Airflow",
+    "Spark",
+    "BigQuery"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "데이터베이스"
+   ],
+   "lang": "en",
+   "content_id": "ac71b0da44b91a74"
   },
   {
    "key": "spotify-r",
@@ -11596,7 +12410,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "627515ddedd9adea"
   },
   {
    "key": "kurly",
@@ -11617,7 +12432,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "888fa9ee7208d003"
   },
   {
    "key": "yogiyo",
@@ -11639,7 +12455,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c4da562f39952e94"
   },
   {
    "key": "slack",
@@ -11666,7 +12483,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a3dd36f23436db32"
   },
   {
    "key": "lyft",
@@ -11712,7 +12530,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7b99c8832893fae4"
   },
   {
    "key": "spotify-r",
@@ -11728,7 +12547,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b45736c0096a6709"
   },
   {
    "key": "ft",
@@ -11742,7 +12562,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8c532e56072dbb3e"
   },
   {
    "key": "spotify-r",
@@ -11763,7 +12584,8 @@
    "categories": [
     "AI/ML"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "302c3cc6eaf5cff1"
   },
   {
    "key": "slack",
@@ -11799,7 +12621,8 @@
     "백엔드",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "95f046278e8712df"
   },
   {
    "key": "devsisters",
@@ -11821,7 +12644,8 @@
     "LLM/생성형",
     "그래픽/게임"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "dd18fb385a35aeea"
   },
   {
    "key": "etsy",
@@ -11842,7 +12666,30 @@
     "언어",
     "프론트엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "249074b560fcb5df"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Improving performance by prefetching product pages from Etsy Search",
+   "url": "https://www.etsy.com/codeascraft/search-prefetching-performance?_=1781027812121",
+   "published": "2025-10-29",
+   "published_ts": 1761758049.0,
+   "summary": "Rarely are there opportunities for big, bold, game-changing improvements in web performance. The Speculation Rules API (SRA) is a recent browser development that offers just such an opportunity. This post details a joint effort between the search and the web performance teams at Etsy to implement SRA on Etsy search pages and drastically improve the performance of product listing pages with some metrics seeing 20-24% improvements and some dropping all the way to 0ms values.\n\nPrefetching Options\n\nThere are two main ways to predictively fetch resources for the next page:\n\n<link rel=\"prefetch\"> al…",
+   "tags": [],
+   "tech_stack": [
+    "JavaScript",
+    "CSS",
+    "HTML"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드"
+   ],
+   "lang": "en",
+   "content_id": "7fdff3c47a3e70d2"
   },
   {
    "key": "kurly",
@@ -11856,7 +12703,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c19a7533666ed42a"
   },
   {
    "key": "kurly",
@@ -11874,7 +12722,8 @@
    "categories": [
     "백엔드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e581cc519acc3eca"
   },
   {
    "key": "etsy",
@@ -11899,7 +12748,34 @@
     "관측성",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6a1df9620ea69ca3"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Understanding Etsy’s Vast Inventory with LLMs",
+   "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms?_=1781027812121",
+   "published": "2025-10-13",
+   "published_ts": 1760378319.0,
+   "summary": "For more than 20 years, Etsy has been the destination for human creativity online. Our marketplace is home to more than 100 million special items made, handpicked and designed by more than 5 million sellers. These items and the real people behind them are what set us apart. But while the huge variety of Etsy’s inventory is one of our greatest strengths, it also creates fundamental engineering challenges specific to our marketplace.\n\nThe challenge: Etsy’s unique inventory\n\nWith millions of creative items across thousands of categories – many of which are unique – it’s difficult to accurately ca…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "LLM",
+    "Transformer",
+    "Observability",
+    "Benchmark"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "관측성",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "edb01f47aeb3f243"
   },
   {
    "key": "kurly",
@@ -11917,7 +12793,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "95c77975b5982cc9"
   },
   {
    "key": "kurly",
@@ -11935,7 +12812,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e589d26bb99ce51f"
   },
   {
    "key": "etsy",
@@ -11961,7 +12839,35 @@
     "데이터베이스",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "33d5b8d69ad43e17"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Unlocking Faster Insights with Experimenter-Defined Segmentations",
+   "url": "https://www.etsy.com/codeascraft/unlocking-faster-insights-with-experimenter-defined-segmentations?_=1781027812121",
+   "published": "2025-10-08",
+   "published_ts": 1759937522.0,
+   "summary": "Imagine you have a fabulous idea to drive more sales on Etsy by giving out free ice cream with every purchase. How would you know if it will actually work?\n\nOne way to test this out is to run an experiment! An experiment is a learning tool that can help us see if a new change really affects user behavior and key metrics we care about. At Etsy, we run nearly 2000 experiments a year for testing new ideas to improve the user experience for our buyers and sellers.\n\nFor our ice cream idea, we could set up our experiment as an A/B test on the listing page, where one group of users (the “control” gro…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "React",
+    "Data Pipeline",
+    "BigQuery",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "데이터",
+    "데이터베이스",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "845981726183a77b"
   },
   {
    "key": "cookpad",
@@ -11979,7 +12885,8 @@
    "categories": [
     "데이터베이스"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4f74676a5848f5b2"
   },
   {
    "key": "lyft",
@@ -12007,7 +12914,8 @@
     "AI/ML",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b9ff3d5c60d110a0"
   },
   {
    "key": "zalando",
@@ -12050,7 +12958,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5c0888afd91b95bb"
   },
   {
    "key": "zalando",
@@ -12084,7 +12993,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a89bd3b990f78da4"
   },
   {
    "key": "ft",
@@ -12108,7 +13018,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0c791e01eb6895d5"
   },
   {
    "key": "ft",
@@ -12128,7 +13039,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "680e7e601ce6f870"
   },
   {
    "key": "soundcloud",
@@ -12142,7 +13054,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2e0af0bfb625f157"
   },
   {
    "key": "lyft",
@@ -12175,7 +13088,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "799612b9a184db8e"
   },
   {
    "key": "cookpad",
@@ -12197,7 +13111,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8564fdf2d1f4c543"
   },
   {
    "key": "banksalad",
@@ -12211,7 +13126,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0f6494f93fd5a7d9"
   },
   {
    "key": "etsy",
@@ -12240,7 +13156,38 @@
     "데이터베이스",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5cb7b216fbaa5e0a"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Building Etsy Buyer Profiles with LLMs",
+   "url": "https://www.etsy.com/codeascraft/building-etsy-buyer-profiles-with-llms?_=1781027812121",
+   "published": "2025-09-03",
+   "published_ts": 1756935615.0,
+   "summary": "Every day, shoppers from Etsy's community of nearly 90M buyers visit our marketplace to search for unique, handmade, and vintage items. But with over 100 million listings, how do we help each buyer find exactly what they're looking for? Traditional search and recommendation systems often fall short of capturing the nuanced interests that make each Etsy buyer unique, from specific styles to aesthetic preferences. At Etsy, understanding our buyers' interests is central to delivering engaging, personalized experiences.\n\nRecently, we explored enhancing our personalization by leveraging large langu…",
+   "tags": [],
+   "tech_stack": [
+    "Julia",
+    "Feature Store",
+    "LLM",
+    "Airflow",
+    "BigQuery",
+    "Concurrency",
+    "Data Structure"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "데이터",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "1c58980b7e562c32"
   },
   {
    "key": "cookpad",
@@ -12261,7 +13208,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bc383f4a03c7e80f"
   },
   {
    "key": "hyperconnect",
@@ -12298,7 +13246,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8ca819aa71a634de"
   },
   {
    "key": "etsy",
@@ -12326,7 +13275,37 @@
     "LLM/생성형",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b7baa1a5e498e3a4"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Context engineering case studies: Etsy-specific question answering",
+   "url": "https://www.etsy.com/codeascraft/context-engineering-case-studies-etsy-specific-question-answering?_=1781027812121",
+   "published": "2025-08-19",
+   "published_ts": 1755633881.0,
+   "summary": "This post investigates the benefits and limitations of prompt engineering in two instances of AI-assisted onboarding relying on large language model (LLM) technology. Of particular interest is how truthful (and therefore reliable) LLM-generated answers turn out to be in the context of Etsy-specific question answering. Among other insights, we find that asking the LLM to identify specific source snippets is a good way to flag potential hallucinations.\n\nOver the past few years, pre-trained large-scale/foundation language models such as OpenAI’s o-series [1] and Google’s Gemini family [2] have re…",
+   "tags": [],
+   "tech_stack": [
+    "Express",
+    "NLP",
+    "Embedding",
+    "Fine-tuning",
+    "Gemini",
+    "LLM",
+    "Prompt Engineering",
+    "GCP"
+   ],
+   "categories": [
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "b962014631f995f2"
   },
   {
    "key": "ft",
@@ -12344,7 +13323,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d400f2adc984090c"
   },
   {
    "key": "devsisters",
@@ -12369,7 +13349,8 @@
     "그래픽/게임",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b9b58ad018368e32"
   },
   {
    "key": "devsisters",
@@ -12383,7 +13364,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "eba3682fd6d7c718"
   },
   {
    "key": "banksalad",
@@ -12397,7 +13379,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "15b21588b9031199"
   },
   {
    "key": "zalando",
@@ -12430,7 +13413,8 @@
     "보안",
     "그래픽/게임"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "06ecd546dcf620d9"
   },
   {
    "key": "devsisters",
@@ -12448,7 +13432,8 @@
    "categories": [
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ce67bf8ca44ed062"
   },
   {
    "key": "kurly",
@@ -12462,7 +13447,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0b0536156bf3fb5e"
   },
   {
    "key": "zalando",
@@ -12509,7 +13495,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "fbdbafed460d002f"
   },
   {
    "key": "devsisters",
@@ -12523,7 +13510,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7be92cf9b8f169d5"
   },
   {
    "key": "cookpad",
@@ -12546,7 +13534,8 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "aa39b66d2809ac9a"
   },
   {
    "key": "cookpad",
@@ -12574,7 +13563,8 @@
     "데이터",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "11adf7041794870a"
   },
   {
    "key": "hyperconnect",
@@ -12601,7 +13591,8 @@
     "프론트엔드",
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "fbebecbb43e80ec9"
   },
   {
    "key": "hyperconnect",
@@ -12634,7 +13625,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "73b6e463574454c2"
   },
   {
    "key": "socar",
@@ -12664,7 +13656,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "bcb2e3ca92ed5d7c"
   },
   {
    "key": "kurly",
@@ -12682,7 +13675,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "22beb502f17929fc"
   },
   {
    "key": "29cm",
@@ -12699,7 +13693,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8de846fc57637001"
   },
   {
    "key": "socar",
@@ -12727,7 +13722,8 @@
     "백엔드",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "900ee1f2f1d43ae1"
   },
   {
    "key": "watcha",
@@ -12747,7 +13743,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "9411d925ebf6c841"
   },
   {
    "key": "watcha",
@@ -12767,7 +13764,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8ee200d05b7559cc"
   },
   {
    "key": "zalando",
@@ -12792,7 +13790,8 @@
     "프론트엔드",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d4f2516f96f05856"
   },
   {
    "key": "hyperconnect",
@@ -12842,7 +13841,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e90d4328c4e7853e"
   },
   {
    "key": "watcha",
@@ -12862,7 +13862,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c227ffa91a7e29ab"
   },
   {
    "key": "kurly",
@@ -12876,7 +13877,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "6fb6fe67d0764684"
   },
   {
    "key": "razorpay",
@@ -12909,7 +13911,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "cfdf55ffe8ec5864"
   },
   {
    "key": "soundcloud",
@@ -12923,7 +13926,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3136714f645acc93"
   },
   {
    "key": "cookpad",
@@ -12952,7 +13956,8 @@
     "프론트엔드",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f115f6f959c743d7"
   },
   {
    "key": "29cm",
@@ -12979,7 +13984,8 @@
     "데이터",
     "데이터베이스"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "81a87d6539aab081"
   },
   {
    "key": "razorpay",
@@ -13007,7 +14013,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c1d0a663a5dc78c7"
   },
   {
    "key": "kurly",
@@ -13021,7 +14028,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e9734639e8e50ec2"
   },
   {
    "key": "cookpad",
@@ -13039,7 +14047,8 @@
    "categories": [
     "백엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2787350ee9004901"
   },
   {
    "key": "soundcloud",
@@ -13053,7 +14062,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0fb9198fb84183eb"
   },
   {
    "key": "devsisters",
@@ -13071,7 +14081,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b3c9da9d421a1d1e"
   },
   {
    "key": "cookpad",
@@ -13098,7 +14109,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "33193bc3cbcc921b"
   },
   {
    "key": "watcha",
@@ -13134,7 +14146,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "42eb88b834135bfa"
   },
   {
    "key": "etsy",
@@ -13148,7 +14161,23 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "22fa24cf48522e6c"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Behind the Scenes - A Glimpse into Tax Calculations",
+   "url": "https://www.etsy.com/codeascraft/behind-the-scenes---a-glimpse-to-tax-calculations?_=1781027812121",
+   "published": "2025-03-29",
+   "published_ts": 1743242603.0,
+   "summary": "In the past, sellers were responsible for managing and fulfilling their own tax obligations.\nHowever, more and more jurisdictions are now requiring marketplaces such as Etsy to collect the tax from buyers and remit the tax to the relevant authorities. Etsy now plays an active role in collecting tax from buyers and remitting it all over the world. In this post, I will walk you through our tax calculation infrastructure and how we adapted to the ongoing increase in traffic and business needs over the years.\n\nThe tax calculation workflow\n\nWe determine tax whenever a buyer adds an item to their Et…",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "58fef53caaa0d048"
   },
   {
    "key": "hyperconnect",
@@ -13170,7 +14199,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ee4a21d303649115"
   },
   {
    "key": "razorpay",
@@ -13196,7 +14226,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2d1a61f01f16573b"
   },
   {
    "key": "banksalad",
@@ -13210,7 +14241,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b99e8409e1a71a08"
   },
   {
    "key": "zalando",
@@ -13248,7 +14280,8 @@
     "시스템/OS",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d84ccf5f7b48e622"
   },
   {
    "key": "devsisters",
@@ -13271,7 +14304,8 @@
     "백엔드",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5ab38aeea8787069"
   },
   {
    "key": "kurly",
@@ -13289,7 +14323,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5be9f43d0d0e5bdd"
   },
   {
    "key": "socar",
@@ -13329,7 +14364,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "37dd439852bdd708"
   },
   {
    "key": "zalando",
@@ -13356,7 +14392,8 @@
     "언어",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0f5fb82de59e61b0"
   },
   {
    "key": "zalando",
@@ -13387,7 +14424,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bd443b75c48451a2"
   },
   {
    "key": "devsisters",
@@ -13410,7 +14448,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c35dd2e14308e352"
   },
   {
    "key": "socar",
@@ -13429,7 +14468,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0a879dfee6d224e2"
   },
   {
    "key": "kurly",
@@ -13443,7 +14483,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "acea6d0f89ea188d"
   },
   {
    "key": "ft",
@@ -13466,7 +14507,8 @@
     "LLM/생성형",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "e6182d283c1560ea"
   },
   {
    "key": "etsy",
@@ -13489,7 +14531,32 @@
     "모바일",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "23438f421351d223"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Adopting Jetpack Compose for Etsy’s Android App",
+   "url": "https://www.etsy.com/codeascraft/adopting-jetpack-compose-for-etsy39s-android-app?_=1781027812121",
+   "published": "2025-01-28",
+   "published_ts": 1738077911.0,
+   "summary": "One of our Guiding Principles at Etsy is that we “commit to our craft.” This means that we have a culture of learning, in which we’re constantly looking for opportunities to improve and learn, adopt industry best practices, and share our findings with our colleagues and our community.\n\nAs part of that process, Etsy recently adopted Jetpack Compose – Android's modern toolkit for defining native UIs – as our preferred means of building our Android app. The process of adoption consisted of a gradual expansion in the size and complexity of features built using Compose, eventually culminating in a…",
+   "tags": [],
+   "tech_stack": [
+    "Kotlin",
+    "Android",
+    "Jetpack Compose",
+    "Design System"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "f5cffb789a696cba"
   },
   {
    "key": "29cm",
@@ -13519,7 +14586,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e12ef6456182f87a"
   },
   {
    "key": "devsisters",
@@ -13533,7 +14601,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "88884a9deb3c264e"
   },
   {
    "key": "zalando",
@@ -13558,7 +14627,8 @@
     "알고리즘/이론",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "3c7967e26e9e1568"
   },
   {
    "key": "zalando",
@@ -13593,7 +14663,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f19a700c19ff4fc1"
   },
   {
    "key": "kurly",
@@ -13607,7 +14678,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e0093acc9161e684"
   },
   {
    "key": "cookpad",
@@ -13627,7 +14699,8 @@
     "언어",
     "백엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c2152b367bcaf53b"
   },
   {
    "key": "29cm",
@@ -13658,7 +14731,8 @@
     "모바일",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "4c37ee4736f9b436"
   },
   {
    "key": "cookpad",
@@ -13677,7 +14751,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2248029b4c7684a8"
   },
   {
    "key": "29cm",
@@ -13703,7 +14778,8 @@
     "모바일",
     "관측성"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ebdb44aa0c9004ef"
   },
   {
    "key": "banksalad",
@@ -13717,7 +14793,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "6b83e57084e4501f"
   },
   {
    "key": "zalando",
@@ -13750,7 +14827,8 @@
     "LLM/생성형",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8abe7a4326f14bec"
   },
   {
    "key": "ft",
@@ -13785,7 +14863,8 @@
     "데이터베이스",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "123bd6dc336db4df"
   },
   {
    "key": "devsisters",
@@ -13807,7 +14886,8 @@
     "LLM/생성형",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5bd56bcf02cf805c"
   },
   {
    "key": "cookpad",
@@ -13821,7 +14901,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "1a2850bb849c4950"
   },
   {
    "key": "cookpad",
@@ -13850,7 +14931,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "187509f999739c74"
   },
   {
    "key": "zalando",
@@ -13891,7 +14973,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5fbd181fed78bac0"
   },
   {
    "key": "ft",
@@ -13911,7 +14994,8 @@
     "AI/ML",
     "데이터"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7eb8c3b06e5497f0"
   },
   {
    "key": "soundcloud",
@@ -13931,7 +15015,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "592804debbc3d62d"
   },
   {
    "key": "devsisters",
@@ -13945,7 +15030,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d012da9864fa75de"
   },
   {
    "key": "cookpad",
@@ -13974,7 +15060,8 @@
     "모바일",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "58f4aded47ce2b3d"
   },
   {
    "key": "banksalad",
@@ -13992,7 +15079,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ee99e1926376aa04"
   },
   {
    "key": "devsisters",
@@ -14027,7 +15115,8 @@
     "데이터베이스",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3aa282cd5c5d5582"
   },
   {
    "key": "cookpad",
@@ -14045,7 +15134,8 @@
    "categories": [
     "언어"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "247f5dde18e54c4d"
   },
   {
    "key": "zalando",
@@ -14076,7 +15166,8 @@
     "LLM/생성형",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5f9fc73da7c07a6a"
   },
   {
    "key": "cookpad",
@@ -14098,7 +15189,8 @@
     "프론트엔드",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0b873103583001a2"
   },
   {
    "key": "cookpad",
@@ -14122,7 +15214,8 @@
     "프론트엔드",
     "백엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c0a68ef8f38db2dc"
   },
   {
    "key": "cookpad",
@@ -14141,7 +15234,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f84f5a6a522f721a"
   },
   {
    "key": "cookpad",
@@ -14160,7 +15254,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8ea22701c6e707ae"
   },
   {
    "key": "banksalad",
@@ -14174,7 +15269,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "cd5d463edfbdac99"
   },
   {
    "key": "devsisters",
@@ -14194,7 +15290,8 @@
     "언어",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f2850e748ddda8b4"
   },
   {
    "key": "ft",
@@ -14214,7 +15311,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d14ad299b4c0c6e2"
   },
   {
    "key": "cookpad",
@@ -14238,7 +15336,8 @@
     "인프라/클라우드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0f482cb468b8d4bd"
   },
   {
    "key": "cookpad",
@@ -14272,7 +15371,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7c95cf0951e08090"
   },
   {
    "key": "zalando",
@@ -14299,7 +15399,8 @@
     "프론트엔드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "0714c84b2d98a09e"
   },
   {
    "key": "cookpad",
@@ -14329,7 +15430,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "2b8e621df59fbac5"
   },
   {
    "key": "coupang",
@@ -14381,7 +15483,8 @@
     "펌웨어/임베디드",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "eb99a0e7b503ba28"
   },
   {
    "key": "29cm",
@@ -14405,7 +15508,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "4a6fc04bc43ff977"
   },
   {
    "key": "zalando",
@@ -14430,7 +15534,8 @@
     "AI/ML",
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "b29e54555209b04c"
   },
   {
    "key": "zalando",
@@ -14454,7 +15559,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6356ec8efe0406c8"
   },
   {
    "key": "devsisters",
@@ -14477,7 +15583,8 @@
     "언어",
     "백엔드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "caaaa090fd76a9e5"
   },
   {
    "key": "ft",
@@ -14506,7 +15613,8 @@
    "categories": [
     "LLM/생성형"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "29dc914944258b74"
   },
   {
    "key": "devsisters",
@@ -14530,7 +15638,8 @@
     "인프라/클라우드",
     "관측성"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "2728c5e06607782d"
   },
   {
    "key": "watcha",
@@ -14565,7 +15674,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "85c0b735010d4207"
   },
   {
    "key": "banksalad",
@@ -14579,7 +15689,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "8cd4e81ef6d6a12e"
   },
   {
    "key": "banksalad",
@@ -14593,7 +15704,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "62ccf2829b2721f9"
   },
   {
    "key": "29cm",
@@ -14613,7 +15725,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "f80302648c82a1f3"
   },
   {
    "key": "29cm",
@@ -14633,7 +15746,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b53d6a0277209409"
   },
   {
    "key": "etsy",
@@ -14658,7 +15772,34 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7fb63f3d2d9cf48b"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Machine Learning in Content Moderation at Etsy",
+   "url": "https://www.etsy.com/codeascraft/machine-learning-in-content-moderation-at-etsy?_=1781027812121",
+   "published": "2024-08-06",
+   "published_ts": 1722942903.0,
+   "summary": "At Etsy, we’re focused on elevating the best of our marketplace to help creative entrepreneurs grow their businesses. We continue to invest in making Etsy a safe and trusted place to shop, so sellers’ extraordinary items can shine.\n\nToday, there are more than 100 million unique items available for sale on our marketplace, and our vibrant global community is made up of over 90 million active buyers and 7 million active sellers, the majority of whom are women and sole owners of their creative businesses. To support this growing community, our Trust & Safety team of Product, Engineering, Data, an…",
+   "tags": [],
+   "tech_stack": [
+    "CNN",
+    "Machine Learning",
+    "BERT",
+    "Multimodal",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "38215b33e0a82558"
   },
   {
    "key": "devsisters",
@@ -14684,7 +15825,8 @@
     "연구/논문",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7bfe2ef8252a4e35"
   },
   {
    "key": "29cm",
@@ -14702,7 +15844,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "085db1034527f322"
   },
   {
    "key": "29cm",
@@ -14728,7 +15871,8 @@
     "모바일",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "459eec3a14283af9"
   },
   {
    "key": "banksalad",
@@ -14742,7 +15886,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e441932f65121971"
   },
   {
    "key": "banksalad",
@@ -14756,7 +15901,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "31665dde583304fd"
   },
   {
    "key": "banksalad",
@@ -14770,7 +15916,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "240a2e3503ffcaf5"
   },
   {
    "key": "etsy",
@@ -14792,7 +15939,31 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4afaa397aa719d89"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Enhancing Cloud Usage Forecasting, Monitoring & Optimizing",
+   "url": "https://www.etsy.com/codeascraft/enhancing-cloud-usage-forecasting-monitoring--optimizing?_=1781027812121",
+   "published": "2024-06-17",
+   "published_ts": 1718632696.0,
+   "summary": "In 2020, Etsy concluded its migration from an on-premise data center to the Google Cloud Platform (GCP). During this transition, a dedicated team of program managers ensured the migration's success. Post-migration, this team evolved into the Etsy FinOps team, dedicated to maximizing the organization's cloud value by fostering collaborations within and outside the organization, particularly with our Cloud Providers.\n\nPositioned within the Engineering organization under the Chief Architect, the FinOps team operates independently of any one Engineering org or function and optimizes globally rathe…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "BigQuery",
+    "GCP"
+   ],
+   "categories": [
+    "AI/ML",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "12abb9e69c75f37a"
   },
   {
    "key": "etsy",
@@ -14825,7 +15996,42 @@
     "LLM/생성형",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "51307d89ac190975"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Efficient Visual Representation Learning And Evaluation",
+   "url": "https://www.etsy.com/codeascraft/efficient-visual-representation-learning-and-evaluation?_=1781027812121",
+   "published": "2024-06-07",
+   "published_ts": 1717780982.0,
+   "summary": "Etsy features a diverse marketplace of unique handmade and vintage items. It’s a visually diverse marketplace as well, and computer vision has become increasingly important to Etsy as a way of enhancing our users’ shopping experience. We’ve developed applications like visual search and visually similar recommendations that can offer buyers an additional path to find what they’re looking for, powered by machine learning models that encode images as vector representations.\n\nFigure 1. Visual representations power applications such as visual search and visually similar recommendations\n\nLearning ex…",
+   "tags": [],
+   "tech_stack": [
+    "Android",
+    "iOS",
+    "CNN",
+    "Computer Vision",
+    "Deep Learning",
+    "Machine Learning",
+    "Attention Mechanism",
+    "Diffusion",
+    "Embedding",
+    "Fine-tuning",
+    "Prompt Engineering",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "모바일",
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "229b712424bbdcde"
   },
   {
    "key": "devsisters",
@@ -14844,7 +16050,8 @@
    "categories": [
     "AI/ML"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ce38716240889a0d"
   },
   {
    "key": "soundcloud",
@@ -14864,7 +16071,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bd2b671fe6e8916e"
   },
   {
    "key": "etsy",
@@ -14887,7 +16095,32 @@
     "프론트엔드",
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "65095ee53480212a"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Macramé: Untangling the Knot on the Etsy Android Listing Screen",
+   "url": "https://www.etsy.com/codeascraft/macrame-untangling-the-knot-on-the-android-listing-screen?_=1781027812121",
+   "published": "2024-03-18",
+   "published_ts": 1710778755.0,
+   "summary": "Easily the most important and complex screen in the Buy on Etsy Android app is the listing screen, where all key information about an item for sale in the Etsy marketplace is displayed to buyers. Far from just a title and description, a price and a few images, over the years the listing screen has come to aggregate ratings and reviews, seller and shipping and stock information, and gained a variety of personalization and recommendation features. As information-rich as it is, as central as it is to the buying experience, for product teams the listing screen is an irresistible place to test out…",
+   "tags": [],
+   "tech_stack": [
+    "Kotlin",
+    "React",
+    "Android",
+    "Jetpack Compose"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "bc98c287b77946a1"
   },
   {
    "key": "watcha",
@@ -14930,7 +16163,8 @@
     "관측성",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "7ae1e7bea7576a7e"
   },
   {
    "key": "etsy",
@@ -14957,7 +16191,36 @@
     "펌웨어/임베디드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f68726e1a807b532"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "How We Built The Deals Tab in Swift UI",
+   "url": "https://www.etsy.com/codeascraft/how-we-built-the-deals-tab-in-swift-ui?_=1781027812121",
+   "published": "2024-03-05",
+   "published_ts": 1709677374.0,
+   "summary": "Balancing Engineering Ambition with Product Realism\n\nIntroduction\n\nIn July of 2023, Etsy’s App Updates team, responsible for the Updates feed in Etsy’s mobile apps, set off with an ambitious goal: to revamp the Updates tab to become Deals, a home for a shopper’s coupons and sales, in time for Cyber Week 2023.\n\nThe Updates tab had been around for years, and in the course of its evolution ended up serving multiple purposes. It was a hub for updates about a user’s favorite shops and listings, but it was also increasingly a place to start new shopping journeys. Not all updates were created equal.…",
+   "tags": [],
+   "tech_stack": [
+    "Objective-C",
+    "Swift",
+    "iOS",
+    "SwiftUI",
+    "UIKit",
+    "Embedded",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "펌웨어/임베디드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "96260f70ae98ce90"
   },
   {
    "key": "watcha",
@@ -14995,7 +16258,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "9cd4a5fa99c38709"
   },
   {
    "key": "devsisters",
@@ -15014,7 +16278,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3cb0dd79b48e3ff7"
   },
   {
    "key": "zigbang",
@@ -15035,7 +16300,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "819477a302981426"
   },
   {
    "key": "zigbang",
@@ -15051,7 +16317,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "fb3b7c98a74c47df"
   },
   {
    "key": "zigbang",
@@ -15077,7 +16344,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "89a4986b89e460af"
   },
   {
    "key": "banksalad",
@@ -15095,7 +16363,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5f2191f29b5375c2"
   },
   {
    "key": "coupang",
@@ -15143,7 +16412,8 @@
     "인프라/클라우드",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b7759438ea594d71"
   },
   {
    "key": "banksalad",
@@ -15161,7 +16431,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b3fdfbeae703678a"
   },
   {
    "key": "banksalad",
@@ -15181,7 +16452,8 @@
     "백엔드",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1e18713bb5ce7571"
   },
   {
    "key": "zigbang",
@@ -15213,7 +16485,8 @@
     "모바일",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "b079916d117b3ad9"
   },
   {
    "key": "devsisters",
@@ -15241,7 +16514,8 @@
     "시스템/OS",
     "보안"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "13b7a5c50934e936"
   },
   {
    "key": "zigbang",
@@ -15269,7 +16543,8 @@
     "언어",
     "백엔드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d76416dca19c82fa"
   },
   {
    "key": "etsy",
@@ -15288,7 +16563,28 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "bf239305b589785d"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "The AR Measuring Box: Etsy&#39;s answer to Big Tape Measure",
+   "url": "https://www.etsy.com/codeascraft/the-ar-measuring-box-etsys-answer-to-big-tape-measure?_=1781027812121",
+   "published": "2023-09-18",
+   "published_ts": 1695067918.0,
+   "summary": "A little while ago, Etsy introduced a new feature in its iOS app that could place Etsy sellers' artwork on a user's wall using Apple's Augmented Reality (AR) tools. It let them visualize how a piece would look in their space, and even gave them an idea of its size options. When we launched the feature as a beta, it was only available in \"wall art\"-related categories, and after the initial rollout we were eager to expand it to work with more categories.\n\nWhat differentiates Etsy is the nature of our sellers’ unique items. Our sellers create offerings that can be personalized in numbers of ways,…",
+   "tags": [],
+   "tech_stack": [
+    "Android",
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "b37a09eacc66086e"
   },
   {
    "key": "zigbang",
@@ -15312,7 +16608,8 @@
     "AI/ML",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0bfb02ad50cb90fe"
   },
   {
    "key": "zigbang",
@@ -15355,7 +16652,8 @@
     "관측성",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a17cd744d47de92e"
   },
   {
    "key": "coupang",
@@ -15412,7 +16710,8 @@
     "보안",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "af1c1adfbd859ecc"
   },
   {
    "key": "banksalad",
@@ -15432,7 +16731,8 @@
     "언어",
     "백엔드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "0b6dba345f54a4d1"
   },
   {
    "key": "etsy",
@@ -15457,7 +16757,34 @@
     "데이터",
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d9c4250a207dc661"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "The So-fine Real-time ML Paradigm",
+   "url": "https://www.etsy.com/codeascraft/the-so-fine-real-time-ml-paradigm?_=1781027812121",
+   "published": "2023-09-05",
+   "published_ts": 1693943741.0,
+   "summary": "Introduction\n\nEach year, Etsy hosts an event known as “CodeMosaic” - an internal hackathon in which Etsy admin propose and build bold advances quickly in our technology across a number of different themes. People across Etsy source ideas, organize into teams, and then have 2-3 days to build innovative proofs-of-concept that might deliver big wins for Etsy’s buyers and sellers, or improve internal engineering systems and workflows.\n\nBesides being a ton of fun, CodeMosaic is a time for engineers to pilot novel ideas. Our team’s project this year was extremely ambitious - we wanted to build a sys…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "Machine Learning",
+    "TensorFlow",
+    "Kafka",
+    "GCP"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "10838a6bc8b1640c"
   },
   {
    "key": "devsisters",
@@ -15479,7 +16806,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "04d839d9841fc536"
   },
   {
    "key": "devsisters",
@@ -15503,7 +16831,8 @@
     "프론트엔드",
     "데이터베이스"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5286e8e0d3c213f9"
   },
   {
    "key": "soundcloud",
@@ -15527,7 +16856,8 @@
     "펌웨어/임베디드",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4e95129b8405551b"
   },
   {
    "key": "banksalad",
@@ -15545,7 +16875,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c1ba2f404510c92a"
   },
   {
    "key": "etsy",
@@ -15572,7 +16903,36 @@
     "LLM/생성형",
     "연구/논문"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "7dc6d01085b01ce0"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Leveraging Real-Time User Actions to Personalize Etsy Ads",
+   "url": "https://www.etsy.com/codeascraft/leveraging-real-time-user-actions-to-personalize-etsy-ads?_=1781027812121",
+   "published": "2023-07-14",
+   "published_ts": 1689364481.0,
+   "summary": "Introduction\n\nPersonalization is vital to connect our unique marketplace to the right buyer at the right time. Etsy has recently introduced a novel, general approach to personalizing ML models based on encoding and learning from short-term (one-hour) sequences of user actions through a reusable three-component deep learning module, the adSformer Diversifiable Personalization Module (ADPM). We describe in detail our method in our recent paper, with an emphasis on personalizing the CTR (clickthrough rate) and PCCVR (post-click conversion rate) ranking models we use in Etsy Ads. Here, we'd like t…",
+   "tags": [],
+   "tech_stack": [
+    "Deep Learning",
+    "Keras",
+    "Machine Learning",
+    "TensorFlow",
+    "Embedding",
+    "Multimodal",
+    "Transformer",
+    "Ablation Study"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "10a2e9c67593fb1c"
   },
   {
    "key": "zigbang",
@@ -15605,7 +16965,8 @@
     "백엔드",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "08bb23f4b437b090"
   },
   {
    "key": "devsisters",
@@ -15639,7 +17000,8 @@
     "그래픽/게임",
     "협업/도구"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "2eaf3a1f3f0b4bde"
   },
   {
    "key": "zigbang",
@@ -15655,7 +17017,8 @@
    ],
    "tech_stack": [],
    "categories": [],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ea078df2ea89bfff"
   },
   {
    "key": "banksalad",
@@ -15673,7 +17036,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3d1d3fec839409fb"
   },
   {
    "key": "banksalad",
@@ -15692,7 +17056,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "6e3c831ebddd2aef"
   },
   {
    "key": "banksalad",
@@ -15710,7 +17075,8 @@
    "categories": [
     "데이터"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "d477dfde33febead"
   },
   {
    "key": "soundcloud",
@@ -15728,7 +17094,8 @@
    "categories": [
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "edb8225cd9256e0a"
   },
   {
    "key": "devsisters",
@@ -15748,7 +17115,8 @@
     "언어",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "1a820756d3a287bf"
   },
   {
    "key": "zigbang",
@@ -15769,7 +17137,8 @@
    "categories": [
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "33ea5271b75a48ca"
   },
   {
    "key": "devsisters",
@@ -15791,7 +17160,8 @@
     "데이터베이스",
     "인프라/클라우드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "c7953c2bb4b7d29d"
   },
   {
    "key": "coupang",
@@ -15815,7 +17185,8 @@
    "categories": [
     "AI/ML"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "ce5bdac70122089d"
   },
   {
    "key": "coupang",
@@ -15841,7 +17212,8 @@
     "백엔드",
     "AI/ML"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "34f69fb1d4ef7d01"
   },
   {
    "key": "coupang",
@@ -15867,7 +17239,8 @@
     "인프라/클라우드",
     "펌웨어/임베디드"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "a16c148b97ce62ce"
   },
   {
    "key": "coupang",
@@ -15893,7 +17266,8 @@
     "인프라/클라우드",
     "펌웨어/임베디드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "8398cd7b3d0ebd70"
   },
   {
    "key": "coupang",
@@ -15920,7 +17294,8 @@
     "AI/ML",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "e4b85c8522765388"
   },
   {
    "key": "coupang",
@@ -15948,7 +17323,8 @@
     "AI/ML",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "f3b697b694a7be33"
   },
   {
    "key": "devsisters",
@@ -15972,7 +17348,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "3e08c44ab3a6c196"
   },
   {
    "key": "soundcloud",
@@ -15991,7 +17368,8 @@
    "categories": [
     "인프라/클라우드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "042363737586a0c8"
   },
   {
    "key": "coupang",
@@ -16028,7 +17406,8 @@
     "인프라/클라우드",
     "알고리즘/이론"
    ],
-   "lang": "ko"
+   "lang": "ko",
+   "content_id": "5c8111cc44823296"
   },
   {
    "key": "soundcloud",
@@ -16047,7 +17426,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "70aad6096e2c8eb8"
   },
   {
    "key": "soundcloud",
@@ -16061,7 +17441,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "6b135149f6b4a552"
   },
   {
    "key": "soundcloud",
@@ -16080,7 +17461,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "89bb92021d6fd8e7"
   },
   {
    "key": "soundcloud",
@@ -16100,7 +17482,8 @@
     "모바일",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "5e0a86ca9ebac24e"
   },
   {
    "key": "soundcloud",
@@ -16135,7 +17518,8 @@
     "관측성",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "011247628e8340e1"
   },
   {
    "key": "soundcloud",
@@ -16153,7 +17537,8 @@
    "categories": [
     "모바일"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "496e458f8ba45e89"
   },
   {
    "key": "soundcloud",
@@ -16171,7 +17556,8 @@
    "categories": [
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "c11c70bca6bae99f"
   },
   {
    "key": "soundcloud",
@@ -16200,7 +17586,8 @@
     "데이터베이스",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "a49012403dd8ea3a"
   },
   {
    "key": "soundcloud",
@@ -16225,7 +17612,8 @@
     "보안",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "48a2bf18e17f9038"
   },
   {
    "key": "soundcloud",
@@ -16259,7 +17647,8 @@
     "데이터베이스",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "da696fd705b7841f"
   },
   {
    "key": "soundcloud",
@@ -16279,7 +17668,8 @@
     "언어",
     "관측성"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "4ab7a4a2f03f67a7"
   },
   {
    "key": "soundcloud",
@@ -16305,7 +17695,8 @@
     "알고리즘/이론",
     "협업/도구"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9cd4497a04d0aa01"
   },
   {
    "key": "soundcloud",
@@ -16326,7 +17717,8 @@
     "백엔드",
     "알고리즘/이론"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "88126b7a8ff85362"
   },
   {
    "key": "soundcloud",
@@ -16340,7 +17732,8 @@
    "tags": [],
    "tech_stack": [],
    "categories": [],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "9d295604901d3537"
   },
   {
    "key": "soundcloud",
@@ -16366,7 +17759,8 @@
     "펌웨어/임베디드",
     "보안"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "d66480c75a30323e"
   },
   {
    "key": "soundcloud",
@@ -16385,7 +17779,8 @@
    "categories": [
     "프론트엔드"
    ],
-   "lang": "en"
+   "lang": "en",
+   "content_id": "886a6b78f58b9ecd"
   }
  ]
 }
