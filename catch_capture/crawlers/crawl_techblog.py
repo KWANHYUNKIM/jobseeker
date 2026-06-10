@@ -15,6 +15,7 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import ssl
@@ -33,6 +34,11 @@ from tech_taxonomy import CATEGORIES, CATEGORY_OF, categories_of, extract_tech_t
 
 ROOT = Path(__file__).resolve().parent.parent.parent          # jobseeker/
 OUT = ROOT / "jd-viewer" / "public" / "tech_blogs.json"
+CONTENT_DIR = ROOT / "jd-viewer" / "public" / "blog_content"   # 글별 본문/번역 (글 열 때만 로드)
+
+CONTENT_CHARS_MAX = 40000   # 저장 본문 상한 (과도한 길이 방지)
+TRANSLATE_CHUNK = 4500      # 무료 번역 endpoint 1회 요청 길이 한도(여유)
+CONTENT_LIMIT_DEFAULT = 40  # 회차당 신규 본문 수집/번역 상한 (폭주·차단 방지)
 
 # ── 큐레이션 피드 목록 ────────────────────────────────────────────────
 # key: 회사 식별자(필터/중복제거용), company: 표시명, country: 국가, feed: RSS/Atom URL
@@ -247,6 +253,7 @@ def _raw_post(src, title, link, content, summary, pub, ts, tags) -> dict:
         "published_ts": ts,
         "summary": _summarize(summary or content),
         "_blob": f"{title}\n{html_to_text(content or summary or '')}",  # enrich용 임시 본문
+        "_content_html": content or summary or "",                     # content 단계용 원문 HTML
         "tags": [t.strip() for t in tags][:8],
     }
 
@@ -269,6 +276,126 @@ def enrich_post(post: dict) -> dict:
 def parse_feed(xml_bytes: bytes, src: dict) -> list[dict]:
     """파싱 + 보강을 한 번에 (standalone 크롤러용)."""
     return [enrich_post(p) for p in parse_feed_raw(xml_bytes, src)]
+
+
+def content_id(url: str) -> str:
+    """글별 본문 파일 식별자 (정규 URL의 안정 해시)."""
+    return hashlib.sha1(canonical_url(url).encode("utf-8")).hexdigest()[:16]
+
+
+def _translate_ko(text: str) -> str:
+    """무료 구글 endpoint로 한국어 번역. 문단 경계로 청크 분할. 실패 시 빈 문자열."""
+    try:
+        from deep_translator import GoogleTranslator
+    except ImportError:
+        return ""
+    tr = GoogleTranslator(source="auto", target="ko")
+    chunks: list[str] = []
+    buf = ""
+    for para in text.split("\n"):
+        if len(buf) + len(para) + 1 > TRANSLATE_CHUNK:
+            if buf:
+                chunks.append(buf)
+            buf = para
+        else:
+            buf = f"{buf}\n{para}" if buf else para
+    if buf:
+        chunks.append(buf)
+    out: list[str] = []
+    for c in chunks:
+        if not c.strip():
+            out.append(c)
+            continue
+        try:
+            out.append(tr.translate(c) or "")
+        except Exception:
+            return ""   # 일부라도 실패하면 번역 미완료로 처리(다음 회차 재시도)
+        time.sleep(jitter(400) / 1000)
+    return "\n".join(out).strip()
+
+
+def _article_text(post: dict) -> str:
+    """글 본문 전체 텍스트. RSS content가 충분히 길면 그대로, 아니면 페이지에서 추출."""
+    raw_html = post.get("_content_html") or ""
+    text = html_to_text(raw_html)
+    if len(text) < 800:   # 요약만 온 피드 → 실제 페이지에서 본문 추출
+        try:
+            import trafilatura
+            downloaded = trafilatura.fetch_url(post["url"])
+            if downloaded:
+                extracted = trafilatura.extract(
+                    downloaded, include_comments=False, include_tables=False
+                )
+                if extracted and len(extracted) > len(text):
+                    text = extracted
+        except Exception:
+            pass
+    return text[:CONTENT_CHARS_MAX].strip()
+
+
+def build_content(post: dict, translate: bool = True) -> bool:
+    """글 본문(+번역) 파일을 생성. 이미 있으면 False(건너뜀), 새로 만들면 True."""
+    cid = content_id(post["url"])
+    path = CONTENT_DIR / f"{cid}.json"
+    post["content_id"] = cid
+    if path.exists():
+        return False
+    text = _article_text(post)
+    if not text:
+        return False
+    content_ko = ""
+    if translate and post.get("lang") != "ko":
+        content_ko = _translate_ko(text)
+        if not content_ko:
+            return False   # 번역 실패(차단 등) → 파일 미작성, 다음 회차 재시도
+    rec = {
+        "url": post["url"],
+        "title": post.get("title"),
+        "lang": post.get("lang"),
+        "content": text,
+        "content_ko": content_ko,
+        "translated": bool(content_ko),
+        "chars": len(text),
+    }
+    CONTENT_DIR.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(rec, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(path)
+    return True
+
+
+def process_content(posts: list[dict], limit: int = CONTENT_LIMIT_DEFAULT,
+                    translate: bool = True) -> dict:
+    """본문 파일이 없는 글을 최신순으로 limit개까지 수집/번역. content_id는 전부 채움.
+
+    이미 본문 파일이 있는 글은 content_id만 세팅하고 건너뛴다(재번역 0, 멱등).
+    """
+    built = 0
+    have = 0
+    ordered = sorted(posts, key=lambda p: p.get("published_ts") or 0, reverse=True)
+    for p in ordered:
+        if not p.get("url"):
+            continue
+        cid = content_id(p["url"])
+        p["content_id"] = cid
+        if (CONTENT_DIR / f"{cid}.json").exists():
+            have += 1
+            continue
+        if built >= limit:
+            continue   # 이번 회차 상한 — 나머지는 다음 회차에
+        if build_content(p, translate=translate):
+            built += 1
+            print(f"  [content] {p['company']:12s} {p.get('lang'):2s} "
+                  f"{'번역✓' if p.get('lang') != 'ko' else '원문'} {p['title'][:40]}", flush=True)
+            time.sleep(jitter(600) / 1000)
+    skipped = sum(1 for p in posts if not (CONTENT_DIR / f"{content_id(p['url'])}.json").exists())
+    print(f"[content] 신규 {built}건 · 기존 {have}건 · 미수집 {skipped}건 (상한 {limit})", flush=True)
+    return {"built": built, "have": have, "pending": skipped}
+
+
+def _strip_internal(posts: list[dict]) -> list[dict]:
+    """인덱스(tech_blogs.json) 기록 전 내부용(_) 필드 제거."""
+    return [{k: v for k, v in p.items() if not k.startswith("_")} for p in posts]
 
 
 def category_meta(posts: list[dict]) -> dict:
@@ -323,6 +450,9 @@ def crawl(per_feed: int, only: set[str] | None) -> None:
 
     posts = sorted(by_url.values(), key=lambda p: p.get("published_ts") or 0, reverse=True)
 
+    # 본문 전체 수집 + 번역 (본문 파일 없는 글만, 상한 내)
+    process_content(posts)
+
     # 출처별 집계
     src_counts: dict[str, dict] = {}
     for p in posts:
@@ -335,7 +465,7 @@ def crawl(per_feed: int, only: set[str] | None) -> None:
         "total": len(posts),
         "sources": sources,
         **category_meta(posts),
-        "posts": posts,
+        "posts": _strip_internal(posts),
     }
     tmp = OUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")

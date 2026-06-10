@@ -37,11 +37,14 @@ from crawl_techblog import (  # noqa: E402
     FEEDS,
     OUT,
     ROOT,
+    CONTENT_LIMIT_DEFAULT,
     canonical_url,
     category_meta,
     enrich_post,
     fetch_feed,
+    process_content,
     safe_parse_feed,
+    _strip_internal,
 )
 
 # ── 피드 자동 발견용 시드(피드 URL 미상, 홈페이지만 알고 있는 블로그) ──────
@@ -87,9 +90,12 @@ def discover_feed(site_url: str) -> Optional[str]:
 class GraphState(TypedDict):
     per_feed: int
     only: Optional[set]
+    content_limit: int       # 회차당 신규 본문 수집/번역 상한
     feeds: list[dict]        # 해석된 피드 목록 (key, company, country, feed)
     raw_posts: list[dict]
-    posts: list[dict]
+    posts: list[dict]        # 누적 병합된 전체 글
+    new_count: int
+    content_stats: dict
     stats: dict
 
 
@@ -144,8 +150,8 @@ def node_enrich(state: GraphState) -> dict:
     return {"posts": posts}
 
 
-def node_store(state: GraphState) -> dict:
-    # 기존 누적본 로드
+def node_merge(state: GraphState) -> dict:
+    """기존 누적본 로드 + 이번 수집분을 URL 정규화 기준으로 병합/중복제거."""
     by_url: dict[str, dict] = {}
     if OUT.exists():
         try:
@@ -160,7 +166,19 @@ def node_store(state: GraphState) -> dict:
     for p in state["posts"]:
         by_url[p["url"]] = p
     posts = sorted(by_url.values(), key=lambda p: p.get("published_ts") or 0, reverse=True)
+    new_count = len(posts) - before
+    print(f"[merge] 누적 {len(posts)}건 (신규 {new_count})", flush=True)
+    return {"posts": posts, "new_count": new_count}
 
+
+def node_content(state: GraphState) -> dict:
+    """본문 파일 없는 글을 상한 내에서 전체 크롤 + 한국어 번역."""
+    stats = process_content(state["posts"], limit=state.get("content_limit", CONTENT_LIMIT_DEFAULT))
+    return {"content_stats": stats}
+
+
+def node_store(state: GraphState) -> dict:
+    posts = state["posts"]
     src_counts: dict[str, dict] = {}
     for p in posts:
         s = src_counts.setdefault(
@@ -174,13 +192,16 @@ def node_store(state: GraphState) -> dict:
         "total": len(posts),
         "sources": sources,
         **category_meta(posts),
-        "posts": posts,
+        "posts": _strip_internal(posts),
     }
     tmp = OUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(OUT)
-    stats = {"total": len(posts), "new": len(posts) - before, "sources": len(sources)}
-    print(f"[store] 총 {stats['total']}건 (신규 {stats['new']}) → {OUT.relative_to(ROOT)}", flush=True)
+    cs = state.get("content_stats", {})
+    stats = {"total": len(posts), "new": state.get("new_count", 0), "sources": len(sources),
+             "content_built": cs.get("built", 0), "content_pending": cs.get("pending", 0)}
+    print(f"[store] 총 {stats['total']}건 (신규 {stats['new']}) · "
+          f"본문 신규 {stats['content_built']}건 → {OUT.relative_to(ROOT)}", flush=True)
     return {"stats": stats}
 
 
@@ -189,19 +210,25 @@ def build_graph():
     g.add_node("discover", node_discover)
     g.add_node("fetch", node_fetch)
     g.add_node("enrich", node_enrich)
+    g.add_node("merge", node_merge)
+    g.add_node("content", node_content)
     g.add_node("store", node_store)
     g.add_edge(START, "discover")
     g.add_edge("discover", "fetch")
     g.add_edge("fetch", "enrich")
-    g.add_edge("enrich", "store")
+    g.add_edge("enrich", "merge")
+    g.add_edge("merge", "content")
+    g.add_edge("content", "store")
     g.add_edge("store", END)
     return g.compile()
 
 
-def run(per_feed: int = 20, only: Optional[set] = None) -> dict:
+def run(per_feed: int = 20, only: Optional[set] = None,
+        content_limit: int = CONTENT_LIMIT_DEFAULT) -> dict:
     app = build_graph()
-    final = app.invoke({"per_feed": per_feed, "only": only,
-                        "feeds": [], "raw_posts": [], "posts": [], "stats": {}})
+    final = app.invoke({"per_feed": per_feed, "only": only, "content_limit": content_limit,
+                        "feeds": [], "raw_posts": [], "posts": [],
+                        "new_count": 0, "content_stats": {}, "stats": {}})
     return final.get("stats", {})
 
 

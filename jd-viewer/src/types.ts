@@ -82,6 +82,18 @@ export interface BlogPost {
   categories: string[]
   tags: string[]
   lang: string
+  content_id?: string
+}
+
+// 글별 본문/번역 (blog_content/<id>.json)
+export interface BlogContent {
+  url: string
+  title: string
+  lang: string
+  content: string
+  content_ko: string
+  translated: boolean
+  chars: number
 }
 
 export interface BlogSource {

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
+import { BlogDetail } from './BlogDetail'
 import type { BlogPost } from '../types'
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -18,6 +19,7 @@ export function BlogView() {
   const [stacks, setStacks] = useState<Set<string>>(new Set())
   const [country, setCountry] = useState<string | null>(null)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
+  const [selected, setSelected] = useState<BlogPost | null>(null)
 
   const posts = data?.posts ?? []
   const tagCat = data?.tag_categories ?? {}
@@ -162,35 +164,54 @@ export function BlogView() {
         </div>
         <ul className="divide-y divide-(--color-border)">
           {filtered.map((p) => (
-            <PostRow key={p.url} post={p} onPickStack={toggleStack} />
+            <PostRow key={p.url} post={p} onPickStack={toggleStack} onOpen={setSelected} />
           ))}
           {filtered.length === 0 && (
             <li className="p-8 text-(--color-muted)">조건에 맞는 글이 없습니다.</li>
           )}
         </ul>
       </main>
+
+      {selected && <BlogDetail post={selected} onClose={() => setSelected(null)} />}
     </div>
   )
 }
 
-function PostRow({ post, onPickStack }: { post: BlogPost; onPickStack: (s: string) => void }) {
+function PostRow({
+  post,
+  onPickStack,
+  onOpen,
+}: {
+  post: BlogPost
+  onPickStack: (s: string) => void
+  onOpen: (p: BlogPost) => void
+}) {
   return (
     <li className="px-5 py-4 hover:bg-(--color-panel) transition">
       <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
         <span className="text-(--color-accent) font-medium">{post.company}</span>
         <span>{COUNTRY_LABEL[post.country] ?? post.country}</span>
         {post.published && <span>· {post.published}</span>}
+        {post.lang && post.lang !== 'ko' && (
+          <span className="px-1.5 rounded bg-(--color-bg) border border-(--color-border)">번역</span>
+        )}
         {post.categories.length > 0 && (
           <span className="ml-auto text-(--color-muted)">{post.categories.join(' · ')}</span>
         )}
       </div>
+      <button
+        onClick={() => onOpen(post)}
+        className="text-left text-(--color-text) font-medium hover:text-(--color-accent) hover:underline"
+      >
+        {post.title}
+      </button>
       <a
         href={post.url}
         target="_blank"
         rel="noreferrer"
-        className="text-(--color-text) font-medium hover:text-(--color-accent) hover:underline"
+        className="ml-2 text-xs text-(--color-muted) hover:text-(--color-accent)"
       >
-        {post.title}
+        ↗
       </a>
       {post.summary && (
         <p className="mt-1 text-sm text-(--color-muted) line-clamp-2">{post.summary}</p>
