@@ -25,7 +25,7 @@ import urllib.request
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit, urlunsplit
 from xml.etree import ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -283,54 +283,115 @@ def content_id(url: str) -> str:
     return hashlib.sha1(canonical_url(url).encode("utf-8")).hexdigest()[:16]
 
 
-def _translate_ko(text: str) -> str:
-    """무료 구글 endpoint로 한국어 번역. 문단 경계로 청크 분할. 실패 시 빈 문자열."""
+# 펜스 코드블록 (``` ... ``` / ~~~ ... ~~~) — 번역 제외 대상
+_CODE_FENCE = re.compile(r"(```.*?```|~~~.*?~~~)", re.DOTALL)
+
+
+def _translate_chunks(tr, prose: str) -> str | None:
+    """산문 마크다운을 길이 제한 내 청크로 나눠 번역. 문단(빈 줄) 경계 보존. 실패 시 None."""
+    if not prose.strip():
+        return prose   # 코드블록 사이 공백/줄바꿈은 그대로
+    blocks = prose.split("\n\n")          # 문단 단위 (빈 줄로 구분)
+    chunks: list[str] = []
+    buf = ""
+    for blk in blocks:
+        if buf and len(buf) + len(blk) + 2 > TRANSLATE_CHUNK:
+            chunks.append(buf)
+            buf = blk
+        else:
+            buf = f"{buf}\n\n{blk}" if buf else blk
+    if buf:
+        chunks.append(buf)
+    out: list[str] = []
+    for c in chunks:
+        try:
+            out.append(tr.translate(c) or c)
+        except Exception:
+            return None
+        time.sleep(jitter(400) / 1000)
+    return "\n\n".join(out)
+
+
+def _translate_ko(md: str) -> str:
+    """마크다운을 한국어 번역. 코드블록은 원문 그대로 두고 산문만 번역.
+
+    제목(#)·목록(-)·표(|)·인라인코드(`)는 번역기가 구조를 보존하므로 그대로 번역하되,
+    펜스 코드블록(``` ```)은 분리해 번역에서 제외한다(코드/식별자 훼손 방지)."""
     try:
         from deep_translator import GoogleTranslator
     except ImportError:
         return ""
     tr = GoogleTranslator(source="auto", target="ko")
-    chunks: list[str] = []
-    buf = ""
-    for para in text.split("\n"):
-        if len(buf) + len(para) + 1 > TRANSLATE_CHUNK:
-            if buf:
-                chunks.append(buf)
-            buf = para
-        else:
-            buf = f"{buf}\n{para}" if buf else para
-    if buf:
-        chunks.append(buf)
+    parts = _CODE_FENCE.split(md)
     out: list[str] = []
-    for c in chunks:
-        if not c.strip():
-            out.append(c)
+    for part in parts:
+        if not part:
             continue
-        try:
-            out.append(tr.translate(c) or "")
-        except Exception:
-            return ""   # 일부라도 실패하면 번역 미완료로 처리(다음 회차 재시도)
-        time.sleep(jitter(400) / 1000)
-    return "\n".join(out).strip()
+        if part.startswith("```") or part.startswith("~~~"):
+            out.append(part)            # 코드블록 원문 유지
+            continue
+        translated = _translate_chunks(tr, part)
+        if translated is None:
+            return ""                   # 실패 → 미완료로 처리(다음 회차 재시도)
+        out.append(translated)
+    return "".join(out).strip()
+
+
+def _to_markdown(html: str) -> str:
+    """HTML → 구조 보존 마크다운 (제목·목록·표·코드블록). 실패 시 빈 문자열."""
+    if not html:
+        return ""
+    try:
+        import trafilatura
+        md = trafilatura.extract(
+            html, output_format="markdown",
+            include_tables=True, include_comments=False, include_formatting=True,
+            include_images=True, include_links=True,
+        )
+        return md or ""
+    except Exception:
+        return ""
+
+
+# 마크다운 링크/이미지의 URL 부분: ](URL ...)
+_MD_URL = re.compile(r"(\]\()([^)\s]+)")
+
+
+def _absolutize_md(md: str, base: str) -> str:
+    """마크다운 내 상대경로 이미지/링크 URL을 글 주소 기준 절대경로로 변환."""
+    def repl(m: "re.Match[str]") -> str:
+        url = m.group(2)
+        if url.startswith(("http://", "https://", "data:", "#", "mailto:", "//")):
+            return m.group(0)
+        return m.group(1) + urljoin(base, url)
+    return _MD_URL.sub(repl, md)
 
 
 def _article_text(post: dict) -> str:
-    """글 본문 전체 텍스트. RSS content가 충분히 길면 그대로, 아니면 페이지에서 추출."""
-    raw_html = post.get("_content_html") or ""
-    text = html_to_text(raw_html)
-    if len(text) < 800:   # 요약만 온 피드 → 실제 페이지에서 본문 추출
-        try:
-            import trafilatura
-            downloaded = trafilatura.fetch_url(post["url"])
-            if downloaded:
-                extracted = trafilatura.extract(
-                    downloaded, include_comments=False, include_tables=False
-                )
-                if extracted and len(extracted) > len(text):
-                    text = extracted
-        except Exception:
-            pass
-    return text[:CONTENT_CHARS_MAX].strip()
+    """글 본문을 구조 보존 마크다운으로 추출.
+
+    실제 페이지에서 추출(구조 최상)하고, 실패/짧으면 RSS content HTML로 폴백한다."""
+    md = ""
+    try:
+        import trafilatura
+        downloaded = trafilatura.fetch_url(post["url"])
+        if downloaded:
+            md = trafilatura.extract(
+                downloaded, output_format="markdown",
+                include_tables=True, include_comments=False, include_formatting=True,
+                include_images=True, include_links=True,
+            ) or ""
+    except Exception:
+        md = ""
+    if len(md) < 400:                       # 페이지 추출 실패/빈약 → RSS 본문 HTML 사용
+        raw = post.get("_content_html") or ""
+        md2 = _to_markdown(raw)
+        if len(md2) > len(md):
+            md = md2
+        if not md:
+            md = html_to_text(raw)          # 최후의 폴백
+    md = _absolutize_md(md, post["url"])    # 상대 이미지/링크 → 절대경로
+    return md.strip()[:CONTENT_CHARS_MAX]
 
 
 def build_content(post: dict, translate: bool = True) -> bool:
@@ -352,6 +413,7 @@ def build_content(post: dict, translate: bool = True) -> bool:
         "url": post["url"],
         "title": post.get("title"),
         "lang": post.get("lang"),
+        "format": "markdown",
         "content": text,
         "content_ko": content_ko,
         "translated": bool(content_ko),
