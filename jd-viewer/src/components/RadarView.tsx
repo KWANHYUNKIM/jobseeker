@@ -525,6 +525,7 @@ function RadarDetail({
     .filter(([, v]) => v && v.length > 0)
 
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [copied, setCopied] = useState(false)
 
   // ESC 로 닫기, ←/→ 로 이전·다음 회사 이동 + 배경 스크롤 잠금
   useEffect(() => {
@@ -575,6 +576,21 @@ function RadarDetail({
                 {position.cur}/{position.total}
               </span>
             )}
+            <button
+              onClick={() => {
+                navigator.clipboard?.writeText(window.location.href).then(
+                  () => {
+                    setCopied(true)
+                    window.setTimeout(() => setCopied(false), 1500)
+                  },
+                  () => {},
+                )
+              }}
+              title="이 회사 링크 복사"
+              className="h-7 px-2 flex items-center rounded border border-(--color-border) text-xs text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
+            >
+              {copied ? '복사됨' : '🔗 링크'}
+            </button>
             <NavBtn onClick={onPrev} title="이전 회사 (←)">‹</NavBtn>
             <NavBtn onClick={onNext} title="다음 회사 (→)">›</NavBtn>
             <button
