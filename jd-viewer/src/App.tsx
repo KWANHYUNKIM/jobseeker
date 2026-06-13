@@ -19,10 +19,18 @@ function App() {
   const [selected, setSelected] = useState<Job | null>(null)
   const [tab, setTab] = useState<Tab>('jobs')
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
+  const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
 
   const openCompany = (norm: string) => {
     setCompanyFocus(norm)
     setTab('companies')
+  }
+
+  // 회사 → "이 기술 공부하기": 기술스택 확장 탭으로 이동해 해당 기술 선택.
+  // n 카운터로 같은 기술을 다시 눌러도 useEffect 가 재실행되게 한다.
+  const openStudy = (tech: string) => {
+    setTechFocus((prev) => ({ tech, n: (prev?.n ?? 0) + 1 }))
+    setTab('expansion')
   }
 
   const filtered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
@@ -61,11 +69,11 @@ function App() {
 
       {tab === 'companies' ? (
         <div className="flex flex-1 min-h-0">
-          <CompanyView focusNorm={companyFocus} />
+          <CompanyView focusNorm={companyFocus} onStudyTech={openStudy} />
         </div>
       ) : tab === 'expansion' ? (
         <div className="flex flex-1 min-h-0">
-          <ExpansionView onOpenCompany={openCompany} />
+          <ExpansionView onOpenCompany={openCompany} focusTech={techFocus} />
         </div>
       ) : tab === 'blog' ? (
         <div className="flex flex-1 min-h-0">

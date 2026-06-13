@@ -25,3 +25,5 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 python3 "$SCRIPT_DIR/enrich_jobs.py"
 python3 "$SCRIPT_DIR/build_mindmap.py"
 python3 "$SCRIPT_DIR/build_company_stacks.py"
+# 기술별 추천 학습 영상(YouTube) — company_stacks.json 의 기술 목록을 소비. 캐시로 증분 수집.
+python3 "$SCRIPT_DIR/build_learning.py"

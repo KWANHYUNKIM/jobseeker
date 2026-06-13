@@ -30,6 +30,12 @@ catch_capture/screenshots/
 # 기술 블로그 본문/번역 (크롤러가 서버에서 생성하는 글별 데이터 — 인덱스 tech_blogs.json만 추적)
 jd-viewer/public/blog_content/
 
+# 학습 영상 수집 캐시 (build_learning.py 증분 수집용 — 결과 learning_resources.json만 추적)
+jd-viewer/bin/.learning_cache.json
+# 자동 갱신 cron 로그·락
+jd-viewer/bin/refresh-learning.log
+jd-viewer/bin/.refresh-learning.lock/
+
 # Editor / OS
 .DS_Store
 .vscode/

@@ -40,6 +40,28 @@ export interface CompanyPosting {
   site: string
 }
 
+export interface CareerRoadmapStage {
+  stage: string
+  goal: string
+  techs: string[]
+  tips: string[]
+}
+
+export interface CareerBlog {
+  title: string
+  url: string
+  company: string
+  country: string
+  why: string
+}
+
+export interface CareerGuide {
+  wants: string[]
+  roadmap: CareerRoadmapStage[]
+  tasks: string[]
+  study_blogs: CareerBlog[]
+}
+
 export interface CompanyStack {
   name: string
   norm: string
@@ -55,6 +77,7 @@ export interface CompanyStack {
   titles: string[]
   postings: CompanyPosting[]
   summary: string
+  career_guide?: CareerGuide
   homepage?: string | null
   homepage_desc?: string | null
   homepage_tech?: string[]

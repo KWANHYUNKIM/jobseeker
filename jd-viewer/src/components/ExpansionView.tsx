@@ -1,8 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
 import {
+  useLearning,
+  type LearningVideo,
+  type LearningStage,
+  type Curriculum,
+} from '../lib/useLearning'
+import {
   buildExpansionIndex,
-  roadmapsForTech,
   CAT_ORDER,
   CAT_COLOR,
   type TechNode,
@@ -17,10 +22,22 @@ const SIZE_COLOR: Record<string, string> = {
 const COMPANY_LIMIT = 60
 const COOC_LIMIT = 14
 
-export function ExpansionView({ onOpenCompany }: { onOpenCompany?: (norm: string) => void }) {
+export function ExpansionView({
+  onOpenCompany,
+  focusTech,
+}: {
+  onOpenCompany?: (norm: string) => void
+  focusTech?: { tech: string; n: number } | null
+}) {
   const { companies, loading, error } = useCompanies()
+  const learning = useLearning()
   const [query, setQuery] = useState('')
   const [selectedTech, setSelectedTech] = useState<string | null>(null)
+
+  // 다른 탭(회사 뷰)에서 "이 기술 공부하기"로 들어오면 해당 기술을 선택.
+  useEffect(() => {
+    if (focusTech?.tech) setSelectedTech(focusTech.tech)
+  }, [focusTech])
 
   const index = useMemo(() => buildExpansionIndex(companies), [companies])
 
@@ -55,6 +72,10 @@ export function ExpansionView({ onOpenCompany }: { onOpenCompany?: (norm: string
           <TechPanel
             tech={tech}
             index={index}
+            videos={learning.resources[tech] ?? []}
+            curriculum={learning.curricula[tech] ?? null}
+            searchUrl={learning.searchUrl}
+            learningLoading={learning.loading}
             onSelectTech={setSelectedTech}
             onOpenCompany={onOpenCompany}
           />
@@ -133,11 +154,19 @@ function TechSidebar({
 function TechPanel({
   tech,
   index,
+  videos,
+  curriculum,
+  searchUrl,
+  learningLoading,
   onSelectTech,
   onOpenCompany,
 }: {
   tech: string
   index: ReturnType<typeof buildExpansionIndex>
+  videos: LearningVideo[]
+  curriculum: Curriculum | null
+  searchUrl: string
+  learningLoading: boolean
   onSelectTech: (t: string) => void
   onOpenCompany?: (norm: string) => void
 }) {
@@ -146,7 +175,6 @@ function TechPanel({
   const node = index.techs.find((t) => t.name === tech) as TechNode | undefined
   const companies = index.companiesByTech[tech] ?? []
   const cooc = (index.coocByTech[tech] ?? []).slice(0, COOC_LIMIT)
-  const roadmaps = roadmapsForTech(tech)
   const maxConf = Math.max(0.0001, ...cooc.map((c) => c.confidence))
   const shown = companies.slice(0, COMPANY_LIMIT)
 
@@ -204,65 +232,101 @@ function TechPanel({
         )}
       </Section>
 
-      {/* 학습 로드맵 */}
-      {roadmaps.length > 0 && (
-        <Section title="추천 학습 로드맵" hint="현재 기술이 속한 직군 경로 — 빛나는 칸이 지금 위치">
-          <div className="space-y-4">
-            {roadmaps.map((rm) => (
-              <div key={rm.role} className="border border-(--color-border) rounded-lg p-3 bg-(--color-panel)">
-                <div className="text-sm font-semibold mb-3" style={{ color: rm.color }}>
-                  {rm.role} 로드맵
+      {/* 세부 주제 커리큘럼 — 무엇을 어떤 순서로 공부할지 */}
+      {curriculum && (
+        <Section
+          title={`${tech} 학습 커리큘럼`}
+          hint="이 기술에서 꼭 짚어야 할 주제를 공부 순서대로 — 각 주제별 추천 강의"
+        >
+          <div className="text-[12px] text-(--color-text) leading-relaxed bg-(--color-accent)/8 border border-(--color-accent)/30 rounded-lg px-3 py-2.5 mb-4">
+            <span className="font-semibold text-(--color-accent)">이렇게 공부하세요 </span>
+            {curriculum.guide}
+          </div>
+          <ol className="space-y-4">
+            {curriculum.topics.map((t, i) => (
+              <li key={t.topic} className="relative pl-7">
+                <span className="absolute left-0 top-0 flex items-center justify-center w-5 h-5 rounded-full bg-(--color-accent) text-black text-[11px] font-bold">
+                  {i + 1}
+                </span>
+                <div className="flex items-baseline flex-wrap gap-x-2">
+                  <span className="text-sm font-semibold text-(--color-text)">{t.topic}</span>
+                  <span className="text-[11px] text-(--color-muted)">{t.note}</span>
                 </div>
-                <div className="flex flex-wrap items-stretch gap-2">
-                  {rm.steps.map((step, i) => (
-                    <div key={step.tier} className="flex items-stretch gap-2">
-                      <div className="min-w-[150px]">
-                        <div className="text-[11px] font-semibold text-(--color-text) mb-1">{step.tier}</div>
-                        <div className="flex flex-wrap gap-1 mb-1">
-                          {step.techs.map((tn) => {
-                            const exists = index.categoryOf[tn] != null
-                            const here = tn === tech
-                            const count = index.techs.find((t) => t.name === tn)?.companyCount
-                            return (
-                              <button
-                                key={tn}
-                                disabled={!exists}
-                                onClick={() => exists && onSelectTech(tn)}
-                                title={exists ? `${count}개 회사` : '데이터 없음'}
-                                className={`text-[11px] px-1.5 py-0.5 rounded border transition ${
-                                  here
-                                    ? 'font-bold text-black'
-                                    : exists
-                                      ? 'text-(--color-text) hover:border-(--color-accent)'
-                                      : 'text-(--color-muted) opacity-50 cursor-default'
-                                }`}
-                                style={
-                                  here
-                                    ? { background: rm.color, borderColor: rm.color }
-                                    : { borderColor: 'var(--color-border)' }
-                                }
-                              >
-                                {tn}
-                                {exists && count != null && (
-                                  <span className="ml-1 opacity-60">{count}</span>
-                                )}
-                              </button>
-                            )
-                          })}
-                        </div>
-                        <div className="text-[10px] text-(--color-muted) leading-snug">{step.note}</div>
-                      </div>
-                      {i < rm.steps.length - 1 && (
-                        <div className="flex items-center text-(--color-muted) text-lg shrink-0">→</div>
-                      )}
-                    </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
+                  {t.videos.map((v) => (
+                    <VideoCard key={v.url} v={v} accent="#a78bfa" showStage={false} />
                   ))}
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </Section>
       )}
+
+      {/* 추천 학습 경로 (YouTube) — 단계별 폭넓은 추천 */}
+      <Section
+        title={curriculum ? `${tech} 그 외 추천 강의` : `${tech} 학습 로드맵`}
+        hint="유튜브 강의를 단계로 나눈 경로 — 위에서부터 순서대로 보면 됩니다"
+      >
+        {learningLoading ? (
+          <span className="text-sm text-(--color-muted)">학습 영상 로딩 중…</span>
+        ) : videos.length ? (
+          <>
+            <PathGuide videos={videos} />
+            <div className="space-y-5 mt-3">
+              {STAGES.map((st) => {
+                const items = videos.filter((v) => v.stage === st.key)
+                if (!items.length) return null
+                return (
+                  <div key={st.key}>
+                    <div className="flex items-baseline gap-2 mb-2">
+                      <span
+                        className="text-xs font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: st.color + '22', color: st.color }}
+                      >
+                        {st.key}
+                      </span>
+                      <span className="text-[11px] text-(--color-muted)">{st.desc}</span>
+                    </div>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {items.map((v) => (
+                        <VideoCard key={v.url} v={v} accent={st.color} />
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            {searchUrl && (
+              <a
+                href={searchUrl.replace('{tech}', encodeURIComponent(tech))}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block text-[11px] text-(--color-accent) hover:underline mt-3"
+              >
+                유튜브에서 ‘{tech} 강의’ 더 보기 →
+              </a>
+            )}
+          </>
+        ) : (
+          <div className="text-sm text-(--color-muted)">
+            수집된 학습 영상이 없습니다.
+            {searchUrl && (
+              <>
+                {' '}
+                <a
+                  href={searchUrl.replace('{tech}', encodeURIComponent(tech))}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-(--color-accent) hover:underline"
+                >
+                  유튜브에서 직접 검색 →
+                </a>
+              </>
+            )}
+          </div>
+        )}
+      </Section>
 
       {/* 이 기술을 쓰는 회사 */}
       <Section title={`이 기술을 쓰는 회사 (${companies.length}곳)`}>
@@ -306,6 +370,84 @@ function TechPanel({
       </Section>
     </div>
   )
+}
+
+const STAGES: { key: LearningStage; color: string; desc: string }[] = [
+  { key: '입문', color: '#34d399', desc: '왜 쓰는지·개념부터 — 여기서 출발' },
+  { key: '핵심', color: '#60a5fa', desc: '문법·핵심 기능을 손에 익히기' },
+  { key: '실전', color: '#fb923c', desc: '프로젝트·실무·배포로 마무리' },
+]
+
+// 보유한 단계로 "이렇게 공부하세요" 방향성 한 줄 생성
+function PathGuide({ videos }: { videos: LearningVideo[] }) {
+  const present = STAGES.filter((s) => videos.some((v) => v.stage === s.key))
+  if (!present.length) return null
+  return (
+    <div className="text-xs text-(--color-text) bg-(--color-panel) border border-(--color-border) rounded-lg px-3 py-2">
+      <span className="text-(--color-muted)">추천 순서 </span>
+      {present.map((s, i) => (
+        <span key={s.key}>
+          <span className="font-semibold" style={{ color: s.color }}>
+            {s.key}
+          </span>
+          {i < present.length - 1 && <span className="text-(--color-muted)"> → </span>}
+        </span>
+      ))}
+      <span className="text-(--color-muted)"> 순으로, 위에서부터 보면 됩니다.</span>
+    </div>
+  )
+}
+
+function VideoCard({
+  v,
+  accent,
+  showStage = true,
+}: {
+  v: LearningVideo
+  accent: string
+  showStage?: boolean
+}) {
+  return (
+    <a
+      href={v.url}
+      target="_blank"
+      rel="noreferrer"
+      className="group bg-(--color-panel) border border-(--color-border) rounded-lg overflow-hidden hover:border-(--color-accent)/60 transition"
+    >
+      <div className="relative aspect-video bg-(--color-bg)">
+        <img src={v.thumbnail} alt="" loading="lazy" className="w-full h-full object-cover" />
+        {showStage && (
+          <span
+            className="absolute top-1 left-1 text-[10px] font-bold px-1.5 py-0.5 rounded"
+            style={{ background: accent, color: '#0b0b0b' }}
+          >
+            {v.stage}
+          </span>
+        )}
+        {v.length && (
+          <span className="absolute bottom-1 right-1 text-[10px] px-1 py-0.5 rounded bg-black/80 text-white">
+            {v.length}
+          </span>
+        )}
+      </div>
+      <div className="p-2.5">
+        <div className="text-[13px] text-(--color-text) font-medium leading-snug line-clamp-2 group-hover:text-(--color-accent)">
+          {v.title}
+        </div>
+        <div className="text-[11px] text-(--color-muted) mt-1.5 truncate">{v.channel}</div>
+        <div className="text-[10px] text-(--color-muted) mt-0.5">
+          {formatViews(v.views)}
+          {v.published && ` · ${v.published}`}
+        </div>
+      </div>
+    </a>
+  )
+}
+
+function formatViews(n: number): string {
+  if (!n) return '조회수 —'
+  if (n >= 10000) return `조회수 ${(n / 10000).toFixed(1).replace(/\.0$/, '')}만회`
+  return `조회수 ${n.toLocaleString()}회`
 }
 
 function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {

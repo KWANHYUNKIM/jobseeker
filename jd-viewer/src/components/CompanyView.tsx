@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
+import { useLearning, type LearningVideo } from '../lib/useLearning'
 import { ROLE_COLORS } from '../lib/classify'
-import type { CompanyStack } from '../types'
+import type { CompanyStack, CareerGuide } from '../types'
 
 const SIZE_COLOR: Record<string, string> = {
   대기업: '#f472b6',
@@ -28,7 +29,13 @@ const CAT_ORDER = [
   '인프라/DevOps', '펌웨어/임베디드', 'AI/ML', '데이터', '협업/도구', '기타',
 ]
 
-export function CompanyView({ focusNorm }: { focusNorm?: string | null }) {
+export function CompanyView({
+  focusNorm,
+  onStudyTech,
+}: {
+  focusNorm?: string | null
+  onStudyTech?: (tech: string) => void
+}) {
   const { companies, meta, loading, error } = useCompanies()
   const [query, setQuery] = useState('')
   const [selectedNorm, setSelectedNorm] = useState<string | null>(null)
@@ -116,7 +123,7 @@ export function CompanyView({ focusNorm }: { focusNorm?: string | null }) {
 
       {/* 우측: 회사 프로필 */}
       <main className="flex-1 min-w-0 overflow-auto">
-        {selected ? <CompanyProfile c={selected} /> : (
+        {selected ? <CompanyProfile c={selected} onStudyTech={onStudyTech} /> : (
           <div className="p-8 text-(--color-muted)">회사를 선택하세요.</div>
         )}
       </main>
@@ -124,7 +131,8 @@ export function CompanyView({ focusNorm }: { focusNorm?: string | null }) {
   )
 }
 
-function CompanyProfile({ c }: { c: CompanyStack }) {
+function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (tech: string) => void }) {
+  const learning = useLearning()
   const maxRole = Math.max(1, ...Object.values(c.roles))
   return (
     <div className="p-6 max-w-4xl">
@@ -194,8 +202,17 @@ function CompanyProfile({ c }: { c: CompanyStack }) {
         )}
       </Section>
 
-      {/* 기술스택 (카테고리별) */}
-      <Section title="기술스택 (채용공고 기반)">
+      {/* 취업 가이드 */}
+      {c.career_guide && (
+        <CareerGuideBlock
+          g={c.career_guide}
+          videos={learning.resources}
+          searchUrl={learning.searchUrl}
+        />
+      )}
+
+      {/* 기술스택 (카테고리별) — 기술 클릭 시 학습 탭으로 점프 */}
+      <Section title="기술스택 (채용공고 기반 · 기술 클릭 → 학습 커리큘럼)">
         <div className="space-y-3">
           {CAT_ORDER.filter((cat) => c.tech_categories[cat]?.length).map((cat) => (
             <div key={cat}>
@@ -203,16 +220,35 @@ function CompanyProfile({ c }: { c: CompanyStack }) {
                 {cat}
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {c.tech_categories[cat].map((t) => (
-                  <span
-                    key={t.name}
-                    className="text-[13px] px-2.5 py-1 rounded-md border flex items-center gap-1.5"
-                    style={{ borderColor: (CAT_COLOR[cat] ?? '#6b7280') + '55', background: (CAT_COLOR[cat] ?? '#6b7280') + '12' }}
-                  >
-                    <span className="text-(--color-text)">{t.name}</span>
-                    <span className="text-[10px] text-(--color-muted)">{t.count}</span>
-                  </span>
-                ))}
+                {c.tech_categories[cat].map((t) => {
+                  const hasCurr = !!learning.curricula[t.name]
+                  const hasVids = (learning.resources[t.name]?.length ?? 0) > 0
+                  const studiable = !!onStudyTech && (hasCurr || hasVids)
+                  return (
+                    <button
+                      key={t.name}
+                      disabled={!studiable}
+                      onClick={() => studiable && onStudyTech?.(t.name)}
+                      title={
+                        studiable
+                          ? `${t.name} 학습 ${hasCurr ? '커리큘럼' : '영상'} 보기`
+                          : `${t.name} (공고 ${t.count}건)`
+                      }
+                      className={`text-[13px] px-2.5 py-1 rounded-md border flex items-center gap-1.5 transition ${
+                        studiable ? 'hover:brightness-125 cursor-pointer' : 'cursor-default'
+                      }`}
+                      style={{ borderColor: (CAT_COLOR[cat] ?? '#6b7280') + '55', background: (CAT_COLOR[cat] ?? '#6b7280') + '12' }}
+                    >
+                      <span className="text-(--color-text)">{t.name}</span>
+                      <span className="text-[10px] text-(--color-muted)">{t.count}</span>
+                      {hasCurr ? (
+                        <span className="text-[10px]" title="학습 커리큘럼 있음">🗺️</span>
+                      ) : hasVids ? (
+                        <span className="text-[10px]" title="학습 영상 있음">📺</span>
+                      ) : null}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           ))}
@@ -271,6 +307,186 @@ function CompanyProfile({ c }: { c: CompanyStack }) {
         </ul>
       </Section>
     </div>
+  )
+}
+
+function CareerGuideBlock({
+  g,
+  videos,
+  searchUrl,
+}: {
+  g: CareerGuide
+  videos: Record<string, LearningVideo[]>
+  searchUrl: string
+}) {
+  const [openStage, setOpenStage] = useState<number | null>(null)
+  // "{tech}+강의" 검색 URL — 큐레이션 영상이 없을 때의 폴백
+  const ytSearch = (tech: string) =>
+    searchUrl
+      ? searchUrl.replace('{tech}', encodeURIComponent(tech))
+      : `https://www.youtube.com/results?search_query=${encodeURIComponent(tech + ' 강의')}`
+  // 한 단계의 기술들에서 큐레이션 영상(기술당 1개) 모으기 — 중복 제거
+  const stageVideos = (techs: string[]): LearningVideo[] => {
+    const out: LearningVideo[] = []
+    const seen = new Set<string>()
+    for (const t of techs) {
+      const v = videos[t]?.[0]
+      if (v && !seen.has(v.url)) {
+        seen.add(v.url)
+        out.push(v)
+      }
+    }
+    return out
+  }
+
+  return (
+    <Section title="🎯 취업 가이드 (채용 데이터 기반 추론)">
+      <div className="space-y-4">
+        {/* 원하는 인재상 */}
+        {g.wants.length > 0 && (
+          <div className="bg-(--color-panel) border border-(--color-border) rounded-lg p-3">
+            <div className="text-[12px] font-semibold text-(--color-accent) mb-2">
+              이런 사람을 원합니다
+            </div>
+            <ul className="space-y-1">
+              {g.wants.map((w, i) => (
+                <li key={i} className="text-[13px] text-(--color-text) leading-relaxed flex gap-2">
+                  <span className="text-(--color-accent) shrink-0">✓</span>
+                  <span>{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 공부 로드맵 */}
+        {g.roadmap.length > 0 && (
+          <div>
+            <div className="text-[12px] font-semibold text-emerald-400 mb-2">
+              공부 로드맵 — 이 회사 스택 기준으로 순서대로 (기술 클릭 → 유튜브 강의)
+            </div>
+            <ol className="relative border-l border-(--color-border) ml-2 space-y-3">
+              {g.roadmap.map((s, i) => {
+                const vids = stageVideos(s.techs)
+                const open = openStage === i
+                return (
+                  <li key={i} className="ml-4">
+                    <span className="absolute -left-[5px] mt-1.5 w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                    <div className="text-[13px] font-semibold text-white">{s.stage}</div>
+                    <div className="text-[12px] text-(--color-muted) mt-0.5">{s.goal}</div>
+                    <div className="flex flex-wrap items-center gap-1 mt-1.5">
+                      {s.techs.map((t) => (
+                        <a
+                          key={t}
+                          href={ytSearch(t)}
+                          target="_blank"
+                          rel="noreferrer"
+                          title={`유튜브에서 '${t} 강의' 검색`}
+                          className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-400/12 text-emerald-300 border border-emerald-400/25 hover:bg-emerald-400/25"
+                        >
+                          {t}
+                          {videos[t]?.length ? ' 📺' : ''}
+                        </a>
+                      ))}
+                      {vids.length > 0 && (
+                        <button
+                          onClick={() => setOpenStage(open ? null : i)}
+                          className="text-[11px] px-2 py-0.5 rounded-md border border-sky-400/30 text-sky-300 hover:bg-sky-400/15"
+                        >
+                          {open ? '강의 접기 ▴' : `추천 강의 ${vids.length}개 ▾`}
+                        </button>
+                      )}
+                    </div>
+                    {open && vids.length > 0 && (
+                      <div className="mt-2 grid sm:grid-cols-2 gap-2">
+                        {vids.map((v) => (
+                          <a
+                            key={v.url}
+                            href={v.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex gap-2 bg-(--color-panel) border border-(--color-border) rounded-lg p-1.5 hover:border-sky-400/40"
+                          >
+                            <img
+                              src={v.thumbnail}
+                              alt=""
+                              loading="lazy"
+                              className="w-20 h-12 object-cover rounded shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <div className="text-[12px] text-(--color-text) leading-snug line-clamp-2">
+                                {v.title}
+                              </div>
+                              <div className="text-[10px] text-(--color-muted) mt-0.5 truncate">
+                                {v.channel} · {v.length}
+                              </div>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    {s.tips.length > 0 && (
+                      <ul className="mt-1.5 space-y-0.5">
+                        {s.tips.map((t, j) => (
+                          <li key={j} className="text-[12px] text-(--color-muted) leading-relaxed">
+                            · {t}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                )
+              })}
+            </ol>
+          </div>
+        )}
+
+        {/* 입사 후 업무 */}
+        {g.tasks.length > 0 && (
+          <div className="bg-(--color-panel) border border-(--color-border) rounded-lg p-3">
+            <div className="text-[12px] font-semibold text-amber-400 mb-2">
+              입사하면 이런 업무를 하게 됩니다 (추론)
+            </div>
+            <ul className="space-y-1">
+              {g.tasks.map((t, i) => (
+                <li key={i} className="text-[13px] text-(--color-text) leading-relaxed flex gap-2">
+                  <span className="text-amber-400 shrink-0">▸</span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 추천 기술블로그 */}
+        {g.study_blogs.length > 0 && (
+          <div>
+            <div className="text-[12px] font-semibold text-sky-400 mb-2">
+              공부하면 좋은 기술블로그 (스택·도메인 매칭)
+            </div>
+            <ul className="space-y-1.5">
+              {g.study_blogs.map((b, i) => (
+                <li key={i} className="text-[13px] leading-snug">
+                  <a
+                    href={b.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sky-300 hover:underline"
+                  >
+                    {b.title}
+                  </a>
+                  <span className="text-[11px] text-(--color-muted) ml-1.5">
+                    · {b.company}
+                    {b.country ? ` (${b.country})` : ''}
+                    {b.why ? ` · ${b.why}` : ''}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </Section>
   )
 }
 
