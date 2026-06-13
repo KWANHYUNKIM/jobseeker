@@ -518,6 +518,7 @@ function RadarDetail({
   position,
   onPrev,
   onNext,
+  onFilterLang,
 }: {
   company: RadarCompany
   onClose: () => void
