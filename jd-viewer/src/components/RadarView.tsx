@@ -241,6 +241,20 @@ export function RadarView() {
             {data?.countries.length ?? 0}개국 · {data?.domains.length ?? 0}개 도메인
             {data && data.refined > 0 && <span> · AI 갱신 {data.refined}</span>}
           </span>
+          {(query.trim() !== '' || country !== null || domain !== null || langs.size > 0 || flags.size > 0) && (
+            <button
+              onClick={() => {
+                setQuery('')
+                setCountry(null)
+                setDomain(null)
+                setLangs(new Set())
+                setFlags(new Set())
+              }}
+              className="text-(--color-accent) hover:underline"
+            >
+              필터 초기화
+            </button>
+          )}
           {data?.generated_at && <span className="ml-auto">갱신 {data.generated_at.slice(0, 10)}</span>}
         </div>
         <ul className="divide-y divide-(--color-border)">
