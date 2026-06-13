@@ -157,6 +157,10 @@ export function RadarView() {
             const c = byName.get(name)
             if (c) openCompany(c)
           }}
+          onPickTech={(tech) => {
+            setMode('company')
+            setQuery(tech)
+          }}
         />
       ) : (
         <div className="flex flex-1 min-h-0">
@@ -310,9 +314,11 @@ export function RadarView() {
 function DomainView({
   data,
   onOpenCompany,
+  onPickTech,
 }: {
   data: RadarFile | null
   onOpenCompany: (name: string) => void
+  onPickTech: (tech: string) => void
 }) {
   const groups = data?.domain_groups ?? []
   if (groups.length === 0) {
@@ -340,7 +346,7 @@ function DomainView({
 
       <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 p-5">
         {groups.map((g) => (
-          <DomainCard key={g.name} group={g} onOpenCompany={onOpenCompany} />
+          <DomainCard key={g.name} group={g} onOpenCompany={onOpenCompany} onPickTech={onPickTech} />
         ))}
       </div>
     </div>
@@ -357,9 +363,11 @@ const DOMAIN_STACK_LABEL: Record<keyof DomainGroup['stack'], string> = {
 function DomainCard({
   group,
   onOpenCompany,
+  onPickTech,
 }: {
   group: DomainGroup
   onOpenCompany: (name: string) => void
+  onPickTech: (tech: string) => void
 }) {
   const stackKeys = (['backend', 'frontend', 'data', 'infra'] as const).filter(
     (k) => group.stack[k]?.length > 0,
@@ -384,7 +392,7 @@ function DomainCard({
       {group.languages.length > 0 && (
         <DomainRow label="주요 언어">
           {group.languages.map((t) => (
-            <TechTag key={t.name} item={t} accent />
+            <TechTag key={t.name} item={t} accent onClick={() => onPickTech(t.name)} />
           ))}
         </DomainRow>
       )}
@@ -392,7 +400,7 @@ function DomainCard({
       {group.architecture.length > 0 && (
         <DomainRow label="아키텍처 패턴">
           {group.architecture.map((t) => (
-            <TechTag key={t.name} item={t} />
+            <TechTag key={t.name} item={t} onClick={() => onPickTech(t.name)} />
           ))}
         </DomainRow>
       )}
@@ -406,7 +414,7 @@ function DomainCard({
             </div>
             <div className="flex flex-wrap gap-1.5">
               {group.stack[k].map((t) => (
-                <TechTag key={t.name} item={t} />
+                <TechTag key={t.name} item={t} onClick={() => onPickTech(t.name)} />
               ))}
             </div>
           </div>
@@ -437,19 +445,33 @@ function DomainRow({ label, children }: { label: string; children: React.ReactNo
   )
 }
 
-// 기술 태그 — 빈도(몇 개사가 쓰는지)를 작은 숫자로 함께 표시
-function TechTag({ item, accent }: { item: RadarTechCount; accent?: boolean }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded border ${
-        accent
-          ? 'bg-(--color-accent)/15 text-(--color-accent) border-(--color-accent)/40'
-          : 'bg-(--color-bg) text-(--color-text) border-(--color-border)'
-      }`}
-    >
+// 기술 태그 — 빈도(몇 개사가 쓰는지)를 작은 숫자로 함께 표시. onClick 주면 클릭 가능.
+function TechTag({
+  item,
+  accent,
+  onClick,
+}: {
+  item: RadarTechCount
+  accent?: boolean
+  onClick?: () => void
+}) {
+  const cls = `inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded border ${
+    accent
+      ? 'bg-(--color-accent)/15 text-(--color-accent) border-(--color-accent)/40'
+      : 'bg-(--color-bg) text-(--color-text) border-(--color-border)'
+  } ${onClick ? 'hover:border-(--color-accent) hover:text-(--color-accent)' : ''}`
+  const inner = (
+    <>
       {item.name}
       {item.count > 1 && <span className="opacity-50 tabular-nums">{item.count}</span>}
-    </span>
+    </>
+  )
+  return onClick ? (
+    <button className={cls} onClick={onClick} title={`${item.name} 쓰는 회사 검색`}>
+      {inner}
+    </button>
+  ) : (
+    <span className={cls}>{inner}</span>
   )
 }
 
