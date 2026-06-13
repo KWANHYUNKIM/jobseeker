@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/python auto_crawl.py start *)",
+      "Bash(.venv/bin/python auto_crawl.py logs *)",
+      "Bash(.venv/bin/python health.py *)",
+      "Bash(.venv/bin/python overrides.py *)",
+      "Bash(.venv/bin/python aggregate.py *)",
+      "Bash(.venv/bin/python -m automation.auto_crawl start *)",
+      "Bash(.venv/bin/python -m automation.auto_crawl logs *)",
+      "Bash(.venv/bin/python -m automation.crawl_all run *)",
+      "Bash(.venv/bin/python -m pipeline.aggregate *)",
+      "Bash(.venv/bin/python -m monitoring.health *)"
+    ]
+  },
+  "worktree": {
+    "bgIsolation": "none"
+  }
+}
