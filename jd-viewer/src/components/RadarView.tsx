@@ -39,6 +39,7 @@ export function RadarView() {
   const [domain, setDomain] = useState<string | null>(null)
   const [langs, setLangs] = useState<Set<string>>(new Set())
   const [flags, setFlags] = useState<Set<string>>(new Set())
+  const [sort, setSort] = useState<'default' | 'name' | 'country'>('default')
   const [selected, setSelected] = useState<RadarCompany | null>(null)
 
   const companies = data?.companies ?? []
@@ -79,7 +80,7 @@ export function RadarView() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return companies.filter((c) => {
+    const list = companies.filter((c) => {
       if (country && c.country !== country) return false
       if (domain && c.domain !== domain) return false
       if (langs.size && !c.languages.some((l) => langs.has(l))) return false
@@ -101,7 +102,11 @@ export function RadarView() {
       }
       return true
     })
-  }, [companies, query, country, domain, langs, flags])
+    if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name))
+    else if (sort === 'country')
+      list.sort((a, b) => a.country.localeCompare(b.country) || a.name.localeCompare(b.name))
+    return list
+  }, [companies, query, country, domain, langs, flags, sort])
 
   const toggleLang = (name: string) => {
     const next = new Set(langs)
@@ -255,7 +260,17 @@ export function RadarView() {
               필터 초기화
             </button>
           )}
-          {data?.generated_at && <span className="ml-auto">갱신 {data.generated_at.slice(0, 10)}</span>}
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as 'default' | 'name' | 'country')}
+            className="ml-auto bg-(--color-bg) border border-(--color-border) rounded px-1.5 py-0.5 text-(--color-text)"
+            title="정렬"
+          >
+            <option value="default">기본순</option>
+            <option value="name">이름순</option>
+            <option value="country">국가순</option>
+          </select>
+          {data?.generated_at && <span>갱신 {data.generated_at.slice(0, 10)}</span>}
         </div>
         <ul className="divide-y divide-(--color-border)">
           {filtered.map((c) => (
