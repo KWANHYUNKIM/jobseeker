@@ -38,6 +38,7 @@ export function RadarView() {
   const [country, setCountry] = useState<string | null>(null)
   const [domain, setDomain] = useState<string | null>(null)
   const [langs, setLangs] = useState<Set<string>>(new Set())
+  const [flags, setFlags] = useState<Set<string>>(new Set())
   const [selected, setSelected] = useState<RadarCompany | null>(null)
 
   const companies = data?.companies ?? []
@@ -82,6 +83,9 @@ export function RadarView() {
       if (country && c.country !== country) return false
       if (domain && c.domain !== domain) return false
       if (langs.size && !c.languages.some((l) => langs.has(l))) return false
+      if (flags.has('debate') && !c.debate) return false
+      if (flags.has('github') && !c.github?.repos?.length) return false
+      if (flags.has('refined') && c.research_status !== 'llm-refined') return false
       if (q) {
         const hay = `${c.name} ${c.domain} ${c.summary} ${c.languages.join(' ')} ${[
           ...c.stack.backend,
@@ -93,13 +97,19 @@ export function RadarView() {
       }
       return true
     })
-  }, [companies, query, country, domain, langs])
+  }, [companies, query, country, domain, langs, flags])
 
   const toggleLang = (name: string) => {
     const next = new Set(langs)
     if (next.has(name)) next.delete(name)
     else next.add(name)
     setLangs(next)
+  }
+  const toggleFlag = (name: string) => {
+    const next = new Set(flags)
+    if (next.has(name)) next.delete(name)
+    else next.add(name)
+    setFlags(next)
   }
 
   if (loading) return <Loader label="기술 스택 레이더 불러오는 중…" />
@@ -200,6 +210,21 @@ export function RadarView() {
               {name} <span className="opacity-60">{n}</span>
             </Chip>
           ))}
+        </div>
+
+        <div>
+          <div className="text-xs text-(--color-muted) mb-2">콘텐츠</div>
+          <div className="flex flex-wrap gap-1.5">
+            {([
+              ['debate', '💬 토론', companies.filter((c) => c.debate).length],
+              ['github', '⌥ 공개코드', companies.filter((c) => c.github?.repos?.length).length],
+              ['refined', '✦ AI갱신', companies.filter((c) => c.research_status === 'llm-refined').length],
+            ] as const).map(([key, label, n]) => (
+              <Chip key={key} active={flags.has(key)} onClick={() => toggleFlag(key)}>
+                {label} <span className="opacity-60">{n}</span>
+              </Chip>
+            ))}
+          </div>
         </div>
       </aside>
 
