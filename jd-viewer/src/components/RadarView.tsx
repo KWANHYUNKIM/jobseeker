@@ -87,12 +87,16 @@ export function RadarView() {
       if (flags.has('github') && !c.github?.repos?.length) return false
       if (flags.has('refined') && c.research_status !== 'llm-refined') return false
       if (q) {
-        const hay = `${c.name} ${c.domain} ${c.summary} ${c.languages.join(' ')} ${[
-          ...c.stack.backend,
-          ...c.stack.frontend,
-          ...c.stack.data,
-          ...c.stack.infra,
-        ].join(' ')} ${c.architecture.join(' ')}`.toLowerCase()
+        // 이름·도메인·기술뿐 아니라 '왜' 설명과 심화 해설 본문까지 훑어
+        // "이벤트 소싱", "샤딩" 같은 개념으로도 회사를 찾을 수 있게 한다.
+        const hay = [
+          c.name, c.domain, c.summary, c.why_language, c.why_architecture,
+          c.languages.join(' '),
+          c.stack.backend.join(' '), c.stack.frontend.join(' '),
+          c.stack.data.join(' '), c.stack.infra.join(' '),
+          c.architecture.join(' '),
+          (c.deep_dive ?? []).map((s) => `${s.topic} ${s.body}`).join(' '),
+        ].join(' ').toLowerCase()
         if (!hay.includes(q)) return false
       }
       return true
