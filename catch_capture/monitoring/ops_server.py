@@ -26,6 +26,7 @@ import json
 import os
 import socketserver
 import webbrowser
+from datetime import datetime
 from pathlib import Path
 
 CATCH_DIR = Path(__file__).resolve().parent.parent     # catch_capture/
@@ -62,6 +63,44 @@ def _daemon_pid() -> int | None:
     except Exception:
         return None
     return pid if _process_alive(pid) else None
+
+
+# 하트비트 기준 — 프로세스가 살아만 있는 게 아니라 "실제로 진행 중"인지 판단한다.
+WAITING_GRACE = 600    # 대기 종료 예정(next_run_at)을 이만큼 넘기면 지연으로 본다
+CRAWL_STALL = 1200     # 크롤/통합 등 작업 단계에서 이 시간 이상 갱신 없으면 멈춤(hang) 의심
+
+
+def _parse_iso(s):
+    try:
+        return datetime.fromisoformat(s) if s else None
+    except Exception:
+        return None
+
+
+def _daemon_health(state: dict, alive: bool) -> tuple[str, int | None]:
+    """살아있음(os.kill) 너머로 '진행 중'인지까지 본다 → ok / stalled / stopped.
+
+    - 죽었으면 stopped.
+    - 대기 단계: 다음 크롤 예정 시각(next_run_at)을 유예시간 이상 넘기면 stalled.
+    - 작업 단계: 마지막 갱신(updated_at)이 너무 오래되면 hang 으로 보고 stalled.
+    PID 재사용으로 죽은 데몬이 alive 로 오판돼도, 갱신이 멈춰 stalled 로 잡힌다.
+    """
+    if not alive:
+        return "stopped", None
+    now = datetime.now()
+    phase = state.get("phase") or ""
+    if phase in ("waiting", "idle"):
+        nxt = _parse_iso(state.get("next_run_at"))
+        if nxt:
+            overdue = int((now - nxt).total_seconds())
+            if overdue > WAITING_GRACE:
+                return "stalled", overdue
+        return "ok", 0
+    updated = _parse_iso(state.get("updated_at"))
+    if updated:
+        idle = int((now - updated).total_seconds())
+        return ("stalled" if idle > CRAWL_STALL else "ok"), idle
+    return "ok", None
 
 
 def _read_json(path: Path) -> dict:
@@ -134,6 +173,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
             pid = _daemon_pid()
             state["daemon_alive"] = pid is not None
             state["daemon_pid"] = pid
+            health, stale = _daemon_health(state, pid is not None)
+            state["daemon_health"] = health        # ok | stalled | stopped
+            state["daemon_stale_sec"] = stale       # 마지막 진행 이후 경과(초)
             state["health_latest"] = _read_json(HEALTH_LATEST)
             self._send_json(state)
             return

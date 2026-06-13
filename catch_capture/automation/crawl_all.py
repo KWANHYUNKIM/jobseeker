@@ -10,11 +10,6 @@
     `jd-viewer/public/tech_blogs.json`
 을 누적 갱신한다. `--no-blog` 로 끌 수 있다.
 
-마지막으로 파생 분석을 재생성한다(`--no-analyze` 로 끌 수 있다):
-    `build_company_stacks.py` → 회사 취업가이드(study_blogs 재매칭)
-    `build_learning.py`       → 기술별 유튜브 학습영상
-원본(공고·블로그)이 늘면 이 단계만으로 모든 회사 추천이 자동 갱신된다.
-
 사용법:
     python crawl_all.py start                       # 5개 전부 + 블로그, 기본 키워드 "개발자", 사이트당 20개
     python crawl_all.py start 개발자 30             # 키워드/사이트당 수집 개수
@@ -27,7 +22,6 @@
     python crawl_all.py start 개발자 30 --no-aggregate   # 통합 단계 스킵
     python crawl_all.py start 개발자 30 --no-blog        # 기술 블로그 단계 스킵
     python crawl_all.py start 개발자 30 --blog-per-feed 40  # 블로그 피드당 수집 개수
-    python crawl_all.py start 개발자 30 --no-analyze     # 파생 분석 재생성 스킵
 """
 from __future__ import annotations
 
@@ -122,11 +116,8 @@ def _parse_sources(only: str | None) -> list[str]:
 
 def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: bool = True,
                    depth: int | None = None, do_blog: bool = True,
-                   blog_per_feed: int = BLOG_PER_FEED_DEFAULT,
-                   do_analyze: bool = True) -> int:
-    """5개(또는 일부) 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 크롤,
-    이어서 파생 분석(회사 취업가이드·학습영상) 재생성까지 호출 — 데이터가 늘면
-    추천이 자동으로 진화하도록 루프를 닫는다."""
+                   blog_per_feed: int = BLOG_PER_FEED_DEFAULT) -> int:
+    """5개(또는 일부) 크롤러를 순차 실행. 완료 후 aggregate + 기술 블로그 크롤 호출."""
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
@@ -252,34 +243,6 @@ def run_foreground(keyword: str, target: int, sources: list[str], do_aggregate: 
                 orch.blog_finished(False, None, None, None,
                                    (datetime.now() - blog_start).total_seconds())
 
-    if do_analyze:
-        # 파생 분석 재생성 — 늘어난 공고/블로그를 반영해 회사 취업가이드와
-        # 학습영상 추천을 다시 만든다. 추천은 하드코딩이 아니라 '매칭'이라,
-        # 원본 데이터가 늘면 이 단계만 돌려도 모든 회사 가이드가 갱신된다.
-        #   1) build_company_stacks.py — 회사 스택/도메인/아키텍처/취업가이드
-        #      (study_blogs 는 방금 갱신된 tech_blogs.json 과 다시 매칭됨)
-        #   2) build_learning.py — 기술별 유튜브 학습영상 (캐시 사용, 신규 기술만 조회)
-        py = _python_executable()
-        bindir = BASE_DIR.parent / "jd-viewer" / "bin"
-        analyze_steps = [
-            ("회사 분석·취업가이드", [py, str(bindir / "build_company_stacks.py")]),
-            ("기술별 학습영상", [py, str(bindir / "build_learning.py")]),
-        ]
-        for label, cmd in analyze_steps:
-            print(f"\n----- 분석 재생성: {label} -----", flush=True)
-            step_start = datetime.now()
-            try:
-                rc = subprocess.call(cmd, env=env)
-                elapsed = (datetime.now() - step_start).total_seconds()
-                if rc == 0:
-                    print(f"[OK] {label} 완료({elapsed:.0f}s)", flush=True)
-                else:
-                    print(f"[!] {label} 종료코드 {rc}", flush=True)
-                    failures.append(f"analyze:{label}")
-            except Exception as e:
-                print(f"[!] {label} 실패: {e}", flush=True)
-                failures.append(f"analyze:{label}")
-
     total = (datetime.now() - overall_start).total_seconds()
     print(f"\n========== 전체 완료 ({total:.0f}s) ==========", flush=True)
     if failures:
@@ -366,10 +329,6 @@ def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | N
     if "--no-blog" in args:
         do_blog = False
         args.remove("--no-blog")
-    do_analyze = True
-    if "--no-analyze" in args:
-        do_analyze = False
-        args.remove("--no-analyze")
     blog_per_feed = BLOG_PER_FEED_DEFAULT
     if "--blog-per-feed" in args:
         i = args.index("--blog-per-feed")
@@ -396,8 +355,7 @@ def _parse_run_args(args: list[str]) -> tuple[str, int, list[str], bool, int | N
         del args[i:i + 2]
     keyword = args[0] if len(args) > 0 else "개발자"
     target = int(args[1]) if len(args) > 1 else 20
-    return (keyword, target, _parse_sources(only), do_aggregate, depth,
-            do_blog, blog_per_feed, do_analyze)
+    return keyword, target, _parse_sources(only), do_aggregate, depth, do_blog, blog_per_feed
 
 
 def main() -> None:
@@ -418,10 +376,8 @@ def main() -> None:
         n = int(rest[0]) if rest and rest[0].isdigit() else 100
         cmd_logs(n)
     elif sub == "run":
-        (keyword, target, sources, do_aggregate, depth,
-         do_blog, blog_per_feed, do_analyze) = _parse_run_args(rest)
-        sys.exit(run_foreground(keyword, target, sources, do_aggregate, depth,
-                                do_blog, blog_per_feed, do_analyze))
+        keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed = _parse_run_args(rest)
+        sys.exit(run_foreground(keyword, target, sources, do_aggregate, depth, do_blog, blog_per_feed))
     else:
         print(f"[!] 알 수 없는 명령: {sub}", flush=True)
         print(__doc__)

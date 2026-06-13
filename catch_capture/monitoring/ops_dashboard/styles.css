@@ -39,11 +39,13 @@ code { background: #00000040; padding: 1px 5px; border-radius: 4px; font-size: 1
 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
 .dot.on { background: var(--green); box-shadow: 0 0 8px var(--green); }
 .dot.off { background: var(--red); }
+.dot.warn { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
 
 .pill { font-size: 12px; padding: 4px 11px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
 .pill-muted { background: #30363d; color: var(--muted); }
 .pill-on { background: #12331e; color: var(--green); border: 1px solid #1f6f33; }
 .pill-off { background: #3a1414; color: var(--red); border: 1px solid #7a2520; }
+.pill-warn { background: #3a2e10; color: var(--amber); border: 1px solid #7a5e1f; }
 
 main { max-width: 1140px; margin: 0 auto; padding: 20px 22px 40px; }
 .card {

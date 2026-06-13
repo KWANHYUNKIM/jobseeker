@@ -65,22 +65,38 @@ async function fetchJSON(url) {
 
 // ---- 렌더 ----------------------------------------------------------------
 
+function dur(sec) {
+  if (sec == null) return "";
+  if (sec < 60) return `${sec}초`;
+  if (sec < 3600) return `${Math.round(sec / 60)}분`;
+  return `${Math.round(sec / 360) / 10}시간`;
+}
+
 function renderDaemon(s) {
   const dot = $("liveDot");
   const pill = $("daemonPill");
-  if (s.daemon_alive) {
+  const d = s.daemon || {};
+  // daemon_health: ok(가동중) | stalled(살아있지만 멈춤/지연) | stopped(중지)
+  // 구버전 서버 호환: 필드 없으면 daemon_alive 로 폴백
+  const health = s.daemon_health || (s.daemon_alive ? "ok" : "stopped");
+  if (health === "ok") {
     dot.className = "dot on";
     pill.className = "pill pill-on";
-    const d = s.daemon || {};
     pill.textContent = `데몬 가동중 · PID ${s.daemon_pid}`;
     $("cfgSub").textContent = d.keyword
       ? `keyword=${d.keyword} · 사이트당 ${d.count} · 주기 ${Math.round((d.interval || 0) / 60)}분`
       : "";
+  } else if (health === "stalled") {
+    dot.className = "dot warn";
+    pill.className = "pill pill-warn";
+    const since = s.daemon_stale_sec != null ? ` · ${dur(s.daemon_stale_sec)}째 무응답` : "";
+    pill.textContent = `데몬 응답 없음 (PID ${s.daemon_pid})${since}`;
+    $("cfgSub").textContent = "살아있지만 진행이 멈춤 — 로그 확인 / 재시작 필요할 수 있음";
   } else {
     dot.className = "dot off";
     pill.className = "pill pill-off";
     pill.textContent = "데몬 중지됨";
-    $("cfgSub").textContent = "python auto_crawl.py start 으로 시작";
+    $("cfgSub").textContent = "python -m automation.auto_crawl start 으로 시작";
   }
   $("updated").textContent = s.updated_at ? `갱신 ${ago(s.updated_at)}` : "";
 }
