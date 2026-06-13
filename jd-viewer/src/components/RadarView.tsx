@@ -551,6 +551,9 @@ function RadarDetail({
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={onClose}>
       <div
         ref={scrollRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${company.name} 기술 상세`}
         className="w-[min(1040px,96vw)] h-full overflow-auto bg-(--color-panel) border-l border-(--color-border) p-6 flex flex-col gap-5 jd-slide-in"
         onClick={(e) => e.stopPropagation()}
       >
