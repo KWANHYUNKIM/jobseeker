@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
 import { BlogDetail } from './BlogDetail'
+import { Loader, ErrorState } from './ui'
 import type { BlogPost } from '../types'
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -79,16 +80,14 @@ export function BlogView() {
     setCollapsed(next)
   }
 
-  if (loading) return <div className="p-8 text-(--color-muted)">기술 블로그 로딩 중…</div>
+  if (loading) return <Loader label="기술 블로그 불러오는 중…" />
   if (error)
     return (
-      <div className="p-8 text-red-400">
-        tech_blogs.json 로드 실패: {error}
-        <br />
-        <span className="text-(--color-muted) text-sm">
-          생성: <code>python -m crawlers.crawl_techblog_graph</code> (catch_capture)
-        </span>
-      </div>
+      <ErrorState
+        title="tech_blogs.json 로드 실패"
+        detail={error}
+        hint={<>생성: <code className="text-(--color-text)">python -m crawlers.crawl_techblog_graph</code> (catch_capture)</>}
+      />
     )
 
   return (

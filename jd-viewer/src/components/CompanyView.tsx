@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
 import { useLearning, type LearningVideo } from '../lib/useLearning'
+import { Loader, ErrorState, EmptyState } from './ui'
 import { ROLE_COLORS } from '../lib/classify'
 import type { CompanyStack, CareerGuide } from '../types'
 
@@ -63,16 +64,14 @@ export function CompanyView({
     [companies, selectedNorm, filtered],
   )
 
-  if (loading) return <div className="p-8 text-(--color-muted)">회사 분석 데이터 로딩 중…</div>
+  if (loading) return <Loader label="회사 분석 데이터 불러오는 중…" />
   if (error)
     return (
-      <div className="p-8 text-red-400">
-        company_stacks.json 로드 실패: {error}
-        <br />
-        <span className="text-(--color-muted) text-sm">
-          생성: <code>python3 jd-viewer/bin/build_company_stacks.py</code>
-        </span>
-      </div>
+      <ErrorState
+        title="company_stacks.json 로드 실패"
+        detail={error}
+        hint={<>생성: <code className="text-(--color-text)">python3 jd-viewer/bin/build_company_stacks.py</code></>}
+      />
     )
 
   return (
@@ -124,7 +123,7 @@ export function CompanyView({
       {/* 우측: 회사 프로필 */}
       <main className="flex-1 min-w-0 overflow-auto">
         {selected ? <CompanyProfile c={selected} onStudyTech={onStudyTech} /> : (
-          <div className="p-8 text-(--color-muted)">회사를 선택하세요.</div>
+          <EmptyState title="회사를 선택하세요" hint="좌측 목록에서 회사를 고르면 기술스택·취업 가이드가 표시됩니다." />
         )}
       </main>
     </div>

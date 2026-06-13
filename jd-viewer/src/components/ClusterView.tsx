@@ -235,8 +235,9 @@ export function ClusterView() {
           원 클릭 = 확대 · 배경 클릭 = 뒤로 · 직군(채워진 원) 클릭 = 상세
         </div>
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center text-white/60 text-sm">
-            클러스터 로딩 중…
+          <div className="absolute inset-0 flex items-center justify-center gap-3 text-white/60 text-sm">
+            <span className="jd-spinner" aria-hidden />
+            클러스터 불러오는 중…
           </div>
         )}
         <div ref={wrapRef} className="absolute inset-0">
@@ -246,7 +247,7 @@ export function ClusterView() {
 
       {/* 상세 패널 */}
       {selected && selected.type === 'role' && (
-        <aside className="w-80 shrink-0 border-l border-(--color-border) bg-(--color-panel) overflow-auto p-4">
+        <aside className="w-80 shrink-0 border-l border-(--color-border) bg-(--color-panel) overflow-auto p-4 jd-slide-in">
           <button
             onClick={() => setSelected(null)}
             className="text-xs text-(--color-muted) hover:text-white float-right"

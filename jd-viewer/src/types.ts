@@ -135,6 +135,121 @@ export interface BlogFile {
   posts: BlogPost[]
 }
 
+// ── 기술 스택 레이더 (company_tech_radar.json) ─────────────────────────
+export interface RadarStack {
+  backend: string[]
+  frontend: string[]
+  data: string[]
+  infra: string[]
+}
+
+export interface GithubRepo {
+  name: string
+  url: string
+  desc: string
+  lang: string
+  stars?: number
+}
+
+export interface Github {
+  org: string
+  repos?: GithubRepo[]
+}
+
+// 회사 기술이 '실제로 어떻게 작동하는지' 심화 해설 — 토픽별 누적(loop 가 계속 덧붙임).
+export interface DeepDiveSection {
+  topic: string
+  body: string // 마크다운
+}
+
+// ── 아키텍처 토론 (멀티 에이전트: 설계자↔검토자 + 정리자) ──────────────
+export interface ArchCandidate {
+  name: string // "변형 A: 이벤트 소싱 중심"
+  summary: string
+  diagram?: string // mermaid (선택)
+  pros: string[]
+  cons: string[]
+}
+
+export interface DebateTurn {
+  round: number
+  role: 'architect' | 'critic' | 'synthesizer'
+  text: string // 마크다운
+}
+
+export interface DebateVerdict {
+  chosen: string // 어떤 후보/하이브리드로 합의했는지
+  rationale: string // 마크다운
+  key_insights: string[]
+  open_questions: string[]
+}
+
+export interface Debate {
+  generated_at: string
+  rounds: number
+  architectures: ArchCandidate[] // 여러 아키텍처 후보
+  transcript: DebateTurn[] // 에이전트 대화 전사
+  verdict: DebateVerdict // 합의 결론
+}
+
+export interface RadarCompany {
+  key: string
+  name: string
+  country: string
+  domain: string
+  languages: string[]
+  stack: RadarStack
+  architecture: string[]
+  diagram?: string
+  why_language: string
+  why_architecture: string
+  summary: string
+  deep_dive?: DeepDiveSection[]
+  debate?: Debate
+  github?: Github
+  sources: string[]
+  research_status: 'seed' | 'llm-refined'
+  updated_at: string
+}
+
+export interface RadarCount {
+  code?: string
+  name?: string
+  count: number
+}
+
+// 도메인별 공통 기술 집계 — 한 산업 도메인을 대표하는 기술 빈도
+export interface RadarTechCount {
+  name: string
+  count: number
+}
+
+// 상위 산업 도메인 그룹 — 그 도메인이 어떤 기술스택으로 이루어지는지 집계
+export interface DomainGroup {
+  name: string
+  count: number
+  companies: string[]
+  subdomains: string[]
+  languages: RadarTechCount[]
+  stack: {
+    backend: RadarTechCount[]
+    frontend: RadarTechCount[]
+    data: RadarTechCount[]
+    infra: RadarTechCount[]
+  }
+  architecture: RadarTechCount[]
+}
+
+export interface RadarFile {
+  generated_at: string
+  total: number
+  countries: RadarCount[]
+  domains: RadarCount[]
+  refined: number
+  domain_groups: DomainGroup[]
+  companies: RadarCompany[]
+}
+
 export type CareerBucket =
   | '신입/무관'
   | '1-2년'

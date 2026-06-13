@@ -84,7 +84,7 @@ export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => v
       onClick={onClose}
     >
       <div
-        className="relative bg-(--color-panel) border border-(--color-border) rounded-lg w-full max-w-3xl my-4 shadow-2xl"
+        className="relative bg-(--color-panel) border border-(--color-border) rounded-lg w-full max-w-3xl my-4 shadow-2xl jd-modal-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}

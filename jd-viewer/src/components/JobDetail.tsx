@@ -28,7 +28,7 @@ export function JobDetail({ job, onClose }: Props) {
       onClick={onClose}
     >
       <div
-        className="relative bg-(--color-panel) border border-(--color-border) rounded-lg w-full max-w-4xl my-4 shadow-2xl"
+        className="relative bg-(--color-panel) border border-(--color-border) rounded-lg w-full max-w-4xl my-4 shadow-2xl jd-modal-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}

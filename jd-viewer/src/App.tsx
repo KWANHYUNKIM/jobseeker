@@ -7,11 +7,13 @@ import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
 import { ExpansionView } from './components/ExpansionView'
 import { BlogView } from './components/BlogView'
+import { RadarView } from './components/RadarView'
+import { Loader, ErrorState } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog'
+type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar'
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -46,52 +48,68 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen">
-      <nav className="flex items-center gap-1 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)">
-        <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
-          잡 리스트
-        </TabButton>
-        <TabButton active={tab === 'companies'} onClick={() => setTab('companies')}>
-          기업 기술스택
-        </TabButton>
-        <TabButton active={tab === 'expansion'} onClick={() => setTab('expansion')}>
-          기술스택 확장
-        </TabButton>
-        <TabButton active={tab === 'mindmap'} onClick={() => setTab('mindmap')}>
-          커리어 마인드맵
-        </TabButton>
-        <TabButton active={tab === 'blog'} onClick={() => setTab('blog')}>
-          기술 블로그
-        </TabButton>
-        <span className="ml-auto text-xs text-(--color-muted)">
-          {jobs.length}건 / 필터 {filtered.length}건
+      <nav className="flex items-center gap-2 px-3 sm:px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/95 backdrop-blur supports-[backdrop-filter]:bg-(--color-panel)/80 sticky top-0 z-30">
+        <span className="hidden md:flex items-center gap-2 shrink-0 mr-1 select-none">
+          <span className="h-5 w-5 rounded bg-(--color-accent)/20 border border-(--color-accent)/40 flex items-center justify-center text-(--color-accent) text-[11px] font-bold">
+            JD
+          </span>
+          <span className="text-sm font-semibold text-white tracking-tight">Viewer</span>
+        </span>
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar -mx-1 px-1">
+          <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
+            잡 리스트
+          </TabButton>
+          <TabButton active={tab === 'companies'} onClick={() => setTab('companies')}>
+            기업 기술스택
+          </TabButton>
+          <TabButton active={tab === 'expansion'} onClick={() => setTab('expansion')}>
+            기술스택 확장
+          </TabButton>
+          <TabButton active={tab === 'mindmap'} onClick={() => setTab('mindmap')}>
+            커리어 마인드맵
+          </TabButton>
+          <TabButton active={tab === 'blog'} onClick={() => setTab('blog')}>
+            기술 블로그
+          </TabButton>
+          <TabButton active={tab === 'radar'} onClick={() => setTab('radar')}>
+            기술 스택 레이더
+          </TabButton>
+        </div>
+        <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
+          <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
+          <span className="hidden sm:inline"> · 필터 </span>
+          <span className="hidden sm:inline text-(--color-accent) font-medium">{filtered.length.toLocaleString()}</span>
+          <span className="hidden sm:inline">건</span>
         </span>
       </nav>
 
       {tab === 'companies' ? (
-        <div className="flex flex-1 min-h-0">
+        <div key="companies" className="flex flex-1 min-h-0 jd-fade-in">
           <CompanyView focusNorm={companyFocus} onStudyTech={openStudy} />
         </div>
       ) : tab === 'expansion' ? (
-        <div className="flex flex-1 min-h-0">
+        <div key="expansion" className="flex flex-1 min-h-0 jd-fade-in">
           <ExpansionView onOpenCompany={openCompany} focusTech={techFocus} />
         </div>
       ) : tab === 'blog' ? (
-        <div className="flex flex-1 min-h-0">
+        <div key="blog" className="flex flex-1 min-h-0 jd-fade-in">
           <BlogView />
+        </div>
+      ) : tab === 'radar' ? (
+        <div key="radar" className="flex flex-1 min-h-0 jd-fade-in">
+          <RadarView />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (
-          <div className="p-8 text-(--color-muted)">데이터 로딩 중...</div>
+          <Loader label="채용 데이터 불러오는 중…" />
         ) : error ? (
-          <div className="p-8 text-red-400">
-            데이터 로드 실패: {error}
-            <br />
-            <span className="text-(--color-muted) text-sm">
-              public/all_jobs_enriched.json 이 있는지 확인하세요.
-            </span>
-          </div>
+          <ErrorState
+            title="데이터를 불러오지 못했습니다"
+            detail={error}
+            hint={<>public/all_jobs_enriched.json 이 있는지 확인하세요.</>}
+          />
         ) : (
-          <div className="flex flex-1 min-h-0">
+          <div className="flex flex-1 min-h-0 jd-fade-in">
             <Sidebar
               filter={filter}
               setFilter={setFilter}
@@ -107,7 +125,7 @@ function App() {
           </div>
         )
       ) : (
-        <div className="flex flex-1 min-h-0 relative">
+        <div key="mindmap" className="flex flex-1 min-h-0 relative jd-fade-in">
           <CareerMap />
         </div>
       )}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, ROLE_COLORS } from '../lib/classify'
+import { EmptyState } from './ui'
 
 interface Props {
   jobs: Job[]
@@ -32,7 +33,10 @@ export function JobList({ jobs, selected, onSelect }: Props) {
 
   if (jobs.length === 0) {
     return (
-      <div className="p-8 text-center text-(--color-muted)">조건에 맞는 공고가 없습니다.</div>
+      <EmptyState
+        title="조건에 맞는 공고가 없습니다"
+        hint="필터를 줄이거나 검색어를 바꿔보세요."
+      />
     )
   }
 

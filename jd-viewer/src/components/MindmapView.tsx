@@ -284,8 +284,9 @@ export function MindmapView() {
       {/* 마인드맵 영역 - 풀폭 */}
       <div className="flex-1 min-w-0 min-h-0 relative bg-(--color-bg)">
         {loading && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-white/60 z-10 text-sm">
-            마인드맵 로딩 중…
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center gap-3 text-white/60 z-10 text-sm">
+            <span className="jd-spinner" aria-hidden />
+            마인드맵 불러오는 중…
           </div>
         )}
         <svg
