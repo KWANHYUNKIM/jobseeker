@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRadar } from '../lib/useRadar'
@@ -431,6 +431,17 @@ function RadarDetail({ company, onClose }: { company: RadarCompany; onClose: () 
   const stackEntries = (['backend', 'frontend', 'data', 'infra'] as const)
     .map((k) => [k, company.stack[k]] as const)
     .filter(([, v]) => v && v.length > 0)
+
+  // ESC 로 닫기 + 배경 스크롤 잠금 (블로그 상세와 동일한 동작)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={onClose}>

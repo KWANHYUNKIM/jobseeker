@@ -51,16 +51,20 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
     }
   }, [code, idKey])
 
-  // 전체화면 모달: ESC 닫기 + 배경 스크롤 잠금
+  // 전체화면 모달: ESC 닫기. capture 단계에서 처리하고 전파를 막아, 상위 상세 모달의
+  // ESC 핸들러보다 먼저 동작하게 한다(줌만 닫히고 상세는 유지).
   useEffect(() => {
     if (!zoomOpen) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setZoomOpen(false)
+      if (e.key === 'Escape') {
+        e.stopImmediatePropagation()
+        setZoomOpen(false)
+      }
       if (e.key === '+' || e.key === '=') setScale((s) => Math.min(4, s + 0.2))
       if (e.key === '-') setScale((s) => Math.max(0.4, s - 0.2))
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
   }, [zoomOpen])
 
   if (error) {
