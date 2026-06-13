@@ -411,6 +411,307 @@ def infer_architecture(canon_set: set[str], text: str, roles: set[str]) -> list[
 
 
 # ─────────────────────────────────────────────────────────────────────────
+# 4) 취업 가이드 — "이 회사에 들어가려면" 추론
+#    회사가 실제로 쓰는 스택/직군/도메인/아키텍처를 근거로
+#    (1) 원하는 인재상  (2) 공부 로드맵  (3) 입사 후 업무  (4) 추천 기술블로그
+#    를 규칙기반으로 생성한다. 모두 그 회사의 데이터에서만 끌어온다.
+# ─────────────────────────────────────────────────────────────────────────
+
+# canonical 기술 → "무엇을·어떻게 공부할지" 한 줄 팁 (구체적 행동 위주)
+LEARN_DB: dict[str, str] = {
+    # 언어
+    "Java": "JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+    "Kotlin": "코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기",
+    "Python": "기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+    "JavaScript": "ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심",
+    "TypeScript": "타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
+    "Go": "고루틴·채널 동시성 모델과 표준 net/http로 서버 만들기",
+    "Rust": "소유권·라이프타임·트레잇 — 소규모 CLI로 메모리 모델 체득",
+    "C++": "포인터·메모리·RAII, STL 컨테이너/알고리즘 활용",
+    "C": "포인터·메모리 구조·시스템 콜 — 임베디드/시스템 기반",
+    "Swift": "옵셔널·프로토콜 지향, SwiftUI로 화면 만들어 보기",
+    "Scala": "함수형 + JVM, Spark 데이터 처리와 함께 학습하면 효율적",
+    # 백엔드
+    "Spring": "DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
+    "Spring Boot": "REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기",
+    "Node.js": "이벤트루프·논블로킹 IO 이해, Express/Nest로 API 구현",
+    "Django": "ORM·Admin·DRF로 빠르게 API 서버 만들어 배포까지",
+    "FastAPI": "비동기 + Pydantic 검증으로 ML/일반 API 서빙 실습",
+    "NestJS": "모듈·DI 구조로 확장 가능한 TS 백엔드 설계",
+    "Express": "미들웨어 패턴으로 라우팅·인증 붙여 REST API 완성",
+    "JPA": "엔티티 매핑·연관관계·N+1 문제와 페치 전략 이해",
+    "GraphQL": "스키마·리졸버 설계, REST와의 트레이드오프 비교",
+    "gRPC": "Protobuf 스키마·스트리밍 — 서비스 간 통신 실습",
+    "MSA": "도메인 분리·서비스 경계·통신/트랜잭션 패턴 학습",
+    "REST API": "리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득",
+    # 프론트엔드
+    "React": "컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성",
+    "Vue": "반응형 시스템·컴포지션 API로 화면 구성",
+    "Next.js": "SSR/SSG·라우팅·서버컴포넌트로 풀스택 웹 구축",
+    "Redux": "전역 상태·불변성·미들웨어 흐름 이해",
+    "Tailwind": "유틸리티 클래스로 빠르게 반응형 UI 구성",
+    # 모바일
+    "iOS": "Swift + UIKit/SwiftUI, 생명주기·네트워킹·앱스토어 배포",
+    "Android": "Kotlin + Jetpack(아키텍처 컴포넌트)로 앱 구조 설계",
+    "SwiftUI": "선언형 UI·상태관리로 iOS 화면 빠르게 구현",
+    "Jetpack Compose": "선언형 UI로 안드로이드 화면 구성",
+    "Flutter": "Dart + 위젯 트리로 iOS·Android 동시 개발",
+    "React Native": "JS/RN 컴포넌트로 크로스플랫폼 앱 구현",
+    # DB
+    "MySQL": "스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+    "PostgreSQL": "고급 SQL·인덱스·트랜잭션 격리수준 이해",
+    "MongoDB": "문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
+    "Redis": "캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
+    "Elasticsearch": "역색인·분석기·검색 쿼리로 검색 기능 구현",
+    "SQL": "조인·집계·서브쿼리·윈도우 함수 등 쿼리 기본기",
+    # 인프라/DevOps
+    "AWS": "EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+    "GCP": "GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+    "Azure": "App Service·AKS·Storage로 클라우드 배포 실습",
+    "Docker": "이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+    "Kubernetes": "Pod·Service·Deployment·Ingress로 배포·오토스케일",
+    "Terraform": "IaC로 인프라를 코드화 — 상태·모듈 관리",
+    "Jenkins": "파이프라인으로 빌드·테스트·배포 자동화(CI/CD)",
+    "GitHub Actions": "워크플로 YAML로 CI/CD 파이프라인 구성",
+    "Nginx": "리버스 프록시·로드밸런싱·TLS 설정 이해",
+    "Prometheus": "메트릭 수집·쿼리(PromQL)로 서비스 관측",
+    "Grafana": "대시보드로 지표 시각화·알람 구성",
+    "Linux": "셸·프로세스·권한·네트워크 등 서버 운영 기본",
+    # AI/ML · 데이터
+    "PyTorch": "텐서·autograd로 모델 직접 학습, 파인튜닝까지",
+    "TensorFlow": "Keras API로 모델 구성·학습·서빙",
+    "LangChain": "프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+    "OpenAI": "API·함수호출·임베딩으로 생성형 기능 붙이기",
+    "HuggingFace": "사전학습 모델 로드·파인튜닝·추론 파이프라인",
+    "Pandas": "데이터프레임 가공·집계·결합으로 전처리 실습",
+    "Spark": "분산 처리·DataFrame API로 대용량 ETL",
+    "Airflow": "DAG로 배치 워크플로 스케줄링·의존성 관리",
+    "Kafka": "토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계",
+    "dbt": "SQL 기반 데이터 변환·테스트·문서화",
+    # 협업
+    "Git": "브랜치 전략·PR·리베이스 등 협업 워크플로 체득",
+}
+
+# 직군 → 로드맵 핵심 단계의 주력 카테고리
+ROLE_PRIMARY_CAT: dict[str, str] = {
+    "백엔드": "백엔드",
+    "풀스택": "백엔드",
+    "프론트엔드": "프론트엔드",
+    "모바일": "모바일",
+    "AI/ML": "AI/ML",
+    "데이터": "데이터",
+    "DevOps/인프라": "인프라/DevOps",
+    "보안": "인프라/DevOps",
+    "펌웨어/임베디드": "언어",
+}
+
+# 직군 → 입사 후 핵심 업무(베이스)
+ROLE_TASK: dict[str, str] = {
+    "백엔드": "API·서버 비즈니스 로직 개발과 DB 모델링",
+    "프론트엔드": "사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+    "모바일": "iOS/Android 앱 화면·기능 개발과 스토어 배포",
+    "AI/ML": "모델 학습·평가와 추론(서빙) 파이프라인 개발",
+    "데이터": "데이터 수집·가공(ETL)과 분석·지표 파이프라인 구축",
+    "DevOps/인프라": "CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+    "보안": "취약점 점검·보안 모니터링과 침해 대응 체계 운영",
+    "풀스택": "프론트엔드~백엔드 전반의 기능 개발",
+    "펌웨어/임베디드": "디바이스 펌웨어·하드웨어 제어 SW 개발",
+}
+
+
+def _seniority(titles: list[str]) -> tuple[bool, bool]:
+    """공고 제목들에서 시니어/주니어 신호. (시니어_강함, 주니어_기회)."""
+    blob = " ".join(titles).lower()
+    senior = any(k in blob for k in (
+        "senior", "staff", "principal", "lead", "리드", "팀장", "수석", "책임",
+        "head of", "엔지니어링 매니저", "engineering manager",
+    ))
+    junior = any(k in blob for k in (
+        "신입", "주니어", "junior", "인턴", "intern", "associate", "전환형", "신규편입",
+    ))
+    return senior, junior
+
+
+def infer_career_guide(rec: dict, blob: str) -> dict:
+    """rec(집계된 회사 레코드) + 본문 blob 으로 취업 가이드 생성."""
+    cats = rec["tech_categories"]
+    top_tech = [t["name"] for t in rec["top_tech"]]
+    roles = list(rec["roles"])
+    primary_role = roles[0] if roles else None
+    dom = rec["domains"][0]["name"] if rec["domains"] else None
+    arch_labels = [a["label"] for a in rec["architecture"]]
+    low = blob.lower()
+
+    def cat_names(cat: str, n: int = 4) -> list[str]:
+        return [t["name"] for t in cats.get(cat, [])][:n]
+
+    # ── (1) 원하는 인재상 ────────────────────────────────────────────
+    wants: list[str] = []
+    senior, junior = _seniority(rec.get("titles") or [])
+    if senior and not junior:
+        wants.append("주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요")
+    elif junior:
+        wants.append("신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능")
+    if top_tech:
+        wants.append(f"핵심 역량: {', '.join(top_tech[:3])} 실무 경험(토이프로젝트라도 동작하는 결과물)")
+    if primary_role:
+        sec = roles[1] if len(roles) > 1 else None
+        rtxt = primary_role + (f" 중심(+{sec})" if sec else " 중심")
+        wants.append(f"{rtxt} 직군 — 해당 역할의 실전 문제를 풀어본 경험")
+    if dom:
+        wants.append(f"{dom} 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점")
+    if arch_labels:
+        wants.append(f"{arch_labels[0]} 같은 구조에 대한 이해·운영 경험")
+    if any(t in top_tech for t in ("Git", "GitHub", "Jira", "Confluence", "Slack", "Notion")):
+        wants.append("협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것")
+
+    # ── (2) 공부 로드맵 (회사 실제 스택 기반 단계) ──────────────────
+    roadmap: list[dict] = []
+
+    def stage(label: str, goal: str, techs: list[str]) -> None:
+        techs = [t for t in dict.fromkeys(techs) if t]  # 중복 제거·순서 유지
+        if not techs:
+            return
+        tips = [f"{t} — {LEARN_DB[t]}" for t in techs if LEARN_DB.get(t)]
+        roadmap.append({"stage": label, "goal": goal, "techs": techs, "tips": tips})
+
+    stage("1. 언어·기본기", "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+          cat_names("언어", 3))
+    primary_cat = ROLE_PRIMARY_CAT.get(primary_role or "", "백엔드")
+    role_goal = {
+        "백엔드": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+        "프론트엔드": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
+        "모바일": "네이티브/크로스플랫폼으로 앱을 만들어 스토어 흐름까지 경험한다",
+        "AI/ML": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+        "데이터": "수집→적재→가공(ETL) 파이프라인을 한 번 끝까지 만든다",
+        "인프라/DevOps": "컨테이너·CI/CD로 앱을 빌드·배포·운영해 본다",
+    }.get(primary_cat, "핵심 프레임워크로 동작하는 결과물을 만든다")
+    stage(f"2. {primary_role or '핵심'} 핵심 스킬", role_goal, cat_names(primary_cat, 4))
+    stage("3. 데이터 계층", "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+          cat_names("데이터베이스", 3) + cat_names("데이터", 2))
+    infra = cat_names("인프라/DevOps", 4)
+    if infra or arch_labels:
+        goal = "배포·운영·확장 구조를 이해한다"
+        if arch_labels:
+            goal += f" (목표 구조: {arch_labels[0]})"
+        stage("4. 인프라·배포·아키텍처", goal, infra)
+    # 차별화 단계: 주력이 아닌 AI/ML·데이터 스택을 우대 무기로
+    diff = []
+    if primary_cat != "AI/ML":
+        diff += cat_names("AI/ML", 3)
+    if primary_cat != "데이터":
+        diff += cat_names("데이터", 2)
+    if "llm" in low or "rag" in low or any(t in top_tech for t in ("LangChain", "OpenAI")):
+        diff = ["LangChain", "OpenAI"] + diff
+    stage("5. 우대·차별화", "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게", diff)
+
+    # ── (3) 입사 후 업무 추론 ────────────────────────────────────────
+    tasks: list[str] = []
+    prefix = f"[{dom}] " if dom else ""
+    for r in roles[:2]:
+        base = ROLE_TASK.get(r)
+        if base:
+            tasks.append(prefix + base)
+    extra: list[str] = []
+    if any("MSA" in a for a in arch_labels):
+        extra.append("마이크로서비스 분리·서비스 간 연동과 장애 격리 설계")
+    if any("K8s" in a or "컨테이너" in a for a in arch_labels):
+        extra.append("컨테이너 기반 배포·오토스케일링 운영")
+    if any("데이터 파이프라인" in a for a in arch_labels):
+        extra.append("대용량 데이터의 배치/스트리밍 처리 파이프라인 운영")
+    if any("LLM" in a or "생성형" in a for a in arch_labels):
+        extra.append("LLM·RAG 기반 기능 개발과 프롬프트/품질 개선")
+    if any("ML 모델 서빙" in a for a in arch_labels):
+        extra.append("모델 학습·평가 후 추론 서비스로 배포·모니터링")
+    tasks.extend(extra[:2])
+    if not tasks:
+        tasks.append("채용공고 기반 — 제품 기능 개발과 운영 전반")
+
+    return {"wants": wants, "roadmap": roadmap, "tasks": tasks[:5]}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# 5) 추천 기술블로그 — tech_blogs.json 의 글을 회사 스택/도메인과 매칭
+# ─────────────────────────────────────────────────────────────────────────
+
+TECH_BLOGS = ROOT / "jd-viewer" / "public" / "tech_blogs.json"
+
+# 내부 카테고리 → 블로그 카테고리(tech_blogs.json categories) 매핑
+_CAT_TO_BLOGCAT: dict[str, str] = {
+    "언어": "언어",
+    "백엔드": "백엔드",
+    "프론트엔드": "프론트엔드",
+    "모바일": "모바일",
+    "데이터베이스": "데이터베이스",
+    "인프라/DevOps": "인프라/클라우드",
+    "AI/ML": "AI/ML",
+    "데이터": "데이터",
+}
+
+
+def _load_blog_index() -> list[dict]:
+    """블로그 글을 검색용 인덱스로 로드. 실패 시 빈 리스트(가이드는 여전히 동작)."""
+    if not TECH_BLOGS.exists():
+        return []
+    try:
+        data = json.loads(TECH_BLOGS.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    idx: list[dict] = []
+    for p in data.get("posts", []):
+        tags = {str(t).lower() for t in (p.get("tags") or [])}
+        tags |= {str(t).lower() for t in (p.get("tech_stack") or [])}
+        idx.append({
+            "company": p.get("company") or "",
+            "country": p.get("country") or "",
+            "title": p.get("title") or "",
+            "url": p.get("url") or "",
+            "cats": set(p.get("categories") or []),
+            "tags": tags,
+            "ts": p.get("published_ts") or 0,
+        })
+    return idx
+
+
+def recommend_study_blogs(rec: dict, blog_idx: list[dict], limit: int = 6) -> list[dict]:
+    """회사 스택/도메인과 겹치는 기술블로그 글 추천. 최신·관련도 우선, 출처 다양성 유지."""
+    if not blog_idx:
+        return []
+    tech_terms = {t["name"].lower() for t in rec["top_tech"]}
+    want_cats = {
+        _CAT_TO_BLOGCAT[c] for c in rec["tech_categories"] if c in _CAT_TO_BLOGCAT
+    }
+    arch_labels = [a["label"] for a in rec["architecture"]]
+    if any("LLM" in a or "생성형" in a for a in arch_labels):
+        want_cats.add("LLM/생성형")
+
+    scored: list[tuple[int, int, dict]] = []
+    for p in blog_idx:
+        tag_hits = tech_terms & p["tags"]
+        cat_hits = want_cats & p["cats"]
+        score = 3 * len(tag_hits) + len(cat_hits)
+        if score <= 0:
+            continue
+        why = ", ".join(sorted(tag_hits)[:3]) or ", ".join(sorted(cat_hits)[:2])
+        scored.append((score, p["ts"], {
+            "title": p["title"], "url": p["url"],
+            "company": p["company"], "country": p["country"], "why": why,
+        }))
+    scored.sort(key=lambda t: (-t[0], -t[1]))
+
+    out: list[dict] = []
+    per_company: Counter = Counter()
+    for _, _, item in scored:
+        if per_company[item["company"]] >= 2:  # 한 출처 최대 2개 — 다양성
+            continue
+        per_company[item["company"]] += 1
+        out.append(item)
+        if len(out) >= limit:
+            break
+    return out
+
+
+# ─────────────────────────────────────────────────────────────────────────
 # 집계
 # ─────────────────────────────────────────────────────────────────────────
 
@@ -430,6 +731,7 @@ def build(jobs: list[dict], min_count: int) -> list[dict]:
         name_votes[nk][name] += 1
 
     profiles = _load_profiles()
+    blog_idx = _load_blog_index()
     companies: list[dict] = []
 
     for nk, group in by_norm.items():
@@ -533,6 +835,9 @@ def build(jobs: list[dict], min_count: int) -> list[dict]:
                     if d not in known:
                         rec["domains"].append({"name": d, "score": 1, "evidence": ["홈페이지"]})
         rec["summary"] = _summary(rec)
+        guide = infer_career_guide(rec, blob)
+        guide["study_blogs"] = recommend_study_blogs(rec, blog_idx)
+        rec["career_guide"] = guide
         companies.append(rec)
 
     companies.sort(key=lambda c: -c["posting_count"])
