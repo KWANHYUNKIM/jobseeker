@@ -49,6 +49,27 @@ export function RadarView() {
     return m
   }, [companies])
 
+  // 회사 상세를 URL 해시(#radar/<key>)와 동기화 — 딥링크·공유·새로고침·뒤로가기 유지.
+  // 해시를 단일 출처로 삼는다: 열고 닫을 때 해시만 바꾸고, 상세 표시는 해시에서 파생.
+  const openCompany = (c: RadarCompany) => {
+    window.location.hash = `radar/${c.key}`
+  }
+  const closeCompany = () => {
+    if (window.location.hash.replace(/^#/, '').startsWith('radar/')) window.location.hash = 'radar'
+    else setSelected(null)
+  }
+  useEffect(() => {
+    const sync = () => {
+      const parts = window.location.hash.replace(/^#/, '').split('/')
+      setSelected(parts[0] === 'radar' && parts[1]
+        ? companies.find((c) => c.key === parts[1]) ?? null
+        : null)
+    }
+    sync()
+    window.addEventListener('hashchange', sync)
+    return () => window.removeEventListener('hashchange', sync)
+  }, [companies])
+
   const langCount = useMemo(() => {
     const c = new Map<string, number>()
     for (const co of companies) for (const l of co.languages) c.set(l, (c.get(l) ?? 0) + 1)
@@ -115,7 +136,7 @@ export function RadarView() {
           data={data}
           onOpenCompany={(name) => {
             const c = byName.get(name)
-            if (c) setSelected(c)
+            if (c) openCompany(c)
           }}
         />
       ) : (
@@ -195,7 +216,7 @@ export function RadarView() {
         </div>
         <ul className="divide-y divide-(--color-border)">
           {filtered.map((c) => (
-            <CompanyRow key={c.key} company={c} onPickLang={toggleLang} onOpen={setSelected} />
+            <CompanyRow key={c.key} company={c} onPickLang={toggleLang} onOpen={openCompany} />
           ))}
           {filtered.length === 0 && (
             <li className="p-8 text-(--color-muted)">조건에 맞는 회사가 없습니다.</li>
@@ -205,7 +226,7 @@ export function RadarView() {
         </div>
       )}
 
-      {selected && <RadarDetail company={selected} onClose={() => setSelected(null)} />}
+      {selected && <RadarDetail company={selected} onClose={closeCompany} />}
     </div>
   )
 }
