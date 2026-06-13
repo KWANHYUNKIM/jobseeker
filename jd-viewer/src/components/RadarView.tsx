@@ -824,8 +824,11 @@ function DebateView({ debate, idKey }: { debate: Debate; idKey: string }) {
   // 합의 결론이 어떤 후보(변형 A/B/…)를 반영했는지 — 탭에 '채택' 표시로 연결
   const verdictText = `${debate.verdict?.chosen ?? ''} ${debate.verdict?.rationale ?? ''}`
   const isChosen = (name: string) => {
-    const m = name.match(/변형\s*[A-Z]/)
-    return m ? verdictText.includes(m[0]) : false
+    // 후보의 변형 글자(A/B/…)를 verdict 가 "변형 A" 또는 "(A)" 형태로 언급했는지
+    const m = name.match(/변형\s*([A-Z])/)
+    if (!m) return false
+    const L = m[1]
+    return verdictText.includes(`변형 ${L}`) || verdictText.includes(`변형${L}`) || verdictText.includes(`(${L})`)
   }
   return (
     <div className="flex flex-col gap-4">
