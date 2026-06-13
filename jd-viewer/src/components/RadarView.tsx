@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRadar } from '../lib/useRadar'
@@ -524,6 +524,8 @@ function RadarDetail({
     .map((k) => [k, company.stack[k]] as const)
     .filter(([, v]) => v && v.length > 0)
 
+  const scrollRef = useRef<HTMLDivElement>(null)
+
   // ESC 로 닫기, ←/→ 로 이전·다음 회사 이동 + 배경 스크롤 잠금
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -539,9 +541,15 @@ function RadarDetail({
     }
   }, [onClose, onPrev, onNext])
 
+  // 회사가 바뀌면(이전/다음 이동·딥링크) 모달 내용을 맨 위로 스크롤
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0)
+  }, [company.key])
+
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={onClose}>
       <div
+        ref={scrollRef}
         className="w-[min(1040px,96vw)] h-full overflow-auto bg-(--color-panel) border-l border-(--color-border) p-6 flex flex-col gap-5 jd-slide-in"
         onClick={(e) => e.stopPropagation()}
       >
