@@ -265,6 +265,11 @@ export function RadarView() {
             position={idx >= 0 ? { cur: idx + 1, total: filtered.length } : null}
             onPrev={idx > 0 ? () => openCompany(filtered[idx - 1]) : undefined}
             onNext={idx >= 0 && idx < filtered.length - 1 ? () => openCompany(filtered[idx + 1]) : undefined}
+            onFilterLang={(l) => {
+              setMode('company')
+              setLangs(new Set([l]))
+              closeCompany()
+            }}
           />
         )
       })()}
@@ -519,6 +524,7 @@ function RadarDetail({
   position?: { cur: number; total: number } | null
   onPrev?: () => void
   onNext?: () => void
+  onFilterLang?: (lang: string) => void
 }) {
   const stackEntries = (['backend', 'frontend', 'data', 'infra'] as const)
     .map((k) => [k, company.stack[k]] as const)
@@ -609,9 +615,14 @@ function RadarDetail({
         <Section title="주요 언어">
           <div className="flex flex-wrap gap-1.5">
             {company.languages.map((l) => (
-              <Tag key={l} accent>
+              <button
+                key={l}
+                onClick={() => onFilterLang?.(l)}
+                title={`${l} 쓰는 회사 보기`}
+                className="px-2 py-0.5 text-xs rounded border bg-(--color-accent)/15 text-(--color-accent) border-(--color-accent)/40 hover:bg-(--color-accent)/25"
+              >
                 {l}
-              </Tag>
+              </button>
             ))}
           </div>
         </Section>
