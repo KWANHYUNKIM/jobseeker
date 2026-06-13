@@ -303,6 +303,11 @@ export function RadarView() {
               setLangs(new Set([l]))
               closeCompany()
             }}
+            onSearch={(q) => {
+              setMode('company')
+              setQuery(q)
+              closeCompany()
+            }}
           />
         )
       })()}
@@ -570,6 +575,7 @@ function RadarDetail({
   onPrev,
   onNext,
   onFilterLang,
+  onSearch,
 }: {
   company: RadarCompany
   onClose: () => void
@@ -577,6 +583,7 @@ function RadarDetail({
   onPrev?: () => void
   onNext?: () => void
   onFilterLang?: (lang: string) => void
+  onSearch?: (q: string) => void
 }) {
   const stackEntries = (['backend', 'frontend', 'data', 'infra'] as const)
     .map((k) => [k, company.stack[k]] as const)
@@ -682,7 +689,14 @@ function RadarDetail({
         <Section title="아키텍처">
           <div className="flex flex-wrap gap-1.5">
             {company.architecture.map((a) => (
-              <Tag key={a}>{a}</Tag>
+              <button
+                key={a}
+                onClick={() => onSearch?.(a)}
+                title={`"${a}" 검색`}
+                className="px-2 py-0.5 text-xs rounded border bg-(--color-bg) text-(--color-text) border-(--color-border) hover:border-(--color-accent) hover:text-(--color-accent)"
+              >
+                {a}
+              </button>
             ))}
           </div>
         </Section>
