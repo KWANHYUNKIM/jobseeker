@@ -39,6 +39,7 @@ CONTENT_DIR = ROOT / "jd-viewer" / "public" / "blog_content"   # 글별 본문/�
 CONTENT_CHARS_MAX = 40000   # 저장 본문 상한 (과도한 길이 방지)
 TRANSLATE_CHUNK = 4500      # 무료 번역 endpoint 1회 요청 길이 한도(여유)
 CONTENT_LIMIT_DEFAULT = 40  # 회차당 신규 본문 수집/번역 상한 (폭주·차단 방지)
+RENDER_MIN = 1000           # 정적 추출이 이보다 짧으면 JS 렌더(Playwright) 시도
 
 # ── 큐레이션 피드 목록 ────────────────────────────────────────────────
 # key: 회사 식별자(필터/중복제거용), company: 표시명, country: 국가, feed: RSS/Atom URL
@@ -337,14 +338,72 @@ def _translate_ko(md: str) -> str:
     return "".join(out).strip()
 
 
+# 영상 임베드 — trafilatura가 통째로 버리므로, 추출 전에 링크 단락으로 치환해 보존
+_VIDEO_HOSTS = (
+    "tv.naver.com", "youtube.com/embed", "youtube-nocookie.com", "youtu.be",
+    "youtube.com/watch", "player.vimeo.com", "vimeo.com", "dailymotion.com",
+    "wistia.", "loom.com",
+)
+_IFRAME_RE = re.compile(r"<iframe\b[^>]*?\bsrc=[\"']([^\"']+)[\"'][^>]*>(?:</iframe>)?", re.I | re.S)
+_VIDEO_RE = re.compile(r"<video\b[^>]*>.*?</video>", re.I | re.S)
+_VSRC_RE = re.compile(r"\bsrc=[\"']([^\"']+)[\"']", re.I)
+
+
+def _video_link_p(src: str) -> str:
+    if src.startswith("//"):
+        src = "https:" + src
+    # 앵커로 치환 → trafilatura(include_links)가 마크다운 링크로 보존, 위치 유지
+    return f'<p><a href="{src}">📹 영상 보기</a></p>'
+
+
+def _inject_video_embeds(html: str) -> str:
+    """영상 iframe/<video>를 링크 단락으로 치환(추출 시 드롭 방지). 비영상 iframe은 보존."""
+    def iframe_repl(m: "re.Match[str]") -> str:
+        src = m.group(1)
+        return _video_link_p(src) if any(h in src.lower() for h in _VIDEO_HOSTS) else m.group(0)
+
+    def video_repl(m: "re.Match[str]") -> str:
+        sm = _VSRC_RE.search(m.group(0))
+        return _video_link_p(sm.group(1)) if sm else ""
+
+    html = _IFRAME_RE.sub(iframe_repl, html)
+    html = _VIDEO_RE.sub(video_repl, html)
+    return html
+
+
+def _collect_video_urls(html: str) -> list[str]:
+    """원문 HTML에서 영상 URL(영상 호스트 iframe + <video>/<source>) 수집."""
+    if not html:
+        return []
+    urls: list[str] = []
+    for src in _IFRAME_RE.findall(html):
+        if any(h in src.lower() for h in _VIDEO_HOSTS):
+            urls.append("https:" + src if src.startswith("//") else src)
+    for block in _VIDEO_RE.findall(html):
+        sm = _VSRC_RE.search(block)
+        if sm:
+            src = sm.group(1)
+            urls.append("https:" + src if src.startswith("//") else src)
+    seen: set[str] = set()
+    return [u for u in urls if not (u in seen or seen.add(u))]
+
+
+def _append_missing_videos(md: str, video_urls: list[str]) -> str:
+    """본문에 빠진 영상 URL을 끝에 링크로 추가(추출기가 영상을 드롭한 경우 보강)."""
+    missing = [u for u in video_urls if u not in md]
+    if missing:
+        md = md.rstrip() + "\n\n" + "\n\n".join(f"[📹 영상 보기]({u})" for u in missing)
+    return md
+
+
 def _to_markdown(html: str) -> str:
-    """HTML → 구조 보존 마크다운 (제목·목록·표·코드블록). 실패 시 빈 문자열."""
+    """HTML → 구조 보존 마크다운 (제목·목록·표·코드블록·이미지·영상). 실패 시 빈 문자열."""
     if not html:
         return ""
     try:
         import trafilatura
         md = trafilatura.extract(
-            html, output_format="markdown",
+            _inject_video_embeds(html), output_format="markdown",
             include_tables=True, include_comments=False, include_formatting=True,
             include_images=True, include_links=True,
         )
@@ -367,30 +426,64 @@ def _absolutize_md(md: str, base: str) -> str:
     return _MD_URL.sub(repl, md)
 
 
+def _render_html(url: str) -> str:
+    """Playwright로 JS 렌더링한 HTML. D2처럼 본문이 JS로 그려지는 페이지용. 실패 시 빈 문자열."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        return ""
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            try:
+                page = browser.new_page(user_agent=USER_AGENT)
+                try:
+                    page.goto(url, wait_until="networkidle", timeout=25000)
+                except Exception:
+                    pass            # 타임아웃이어도 그때까지 렌더된 내용 사용
+                html = page.content()
+            finally:
+                browser.close()
+            return html or ""
+    except Exception:
+        return ""
+
+
 def _article_text(post: dict) -> str:
     """글 본문을 구조 보존 마크다운으로 추출.
 
-    실제 페이지에서 추출(구조 최상)하고, 실패/짧으면 RSS content HTML로 폴백한다."""
-    md = ""
+    정적 페이지 추출 → RSS 본문 폴백 → 그래도 빈약하면(JS 렌더 페이지로 추정)
+    Playwright로 렌더링해 추출. 영상은 위치 보존+누락분 보강한다."""
+    url = post["url"]
+    raw = post.get("_content_html") or ""
+    static_html = ""
     try:
         import trafilatura
-        downloaded = trafilatura.fetch_url(post["url"])
-        if downloaded:
-            md = trafilatura.extract(
-                downloaded, output_format="markdown",
-                include_tables=True, include_comments=False, include_formatting=True,
-                include_images=True, include_links=True,
-            ) or ""
+        static_html = trafilatura.fetch_url(url) or ""
     except Exception:
-        md = ""
-    if len(md) < 400:                       # 페이지 추출 실패/빈약 → RSS 본문 HTML 사용
-        raw = post.get("_content_html") or ""
-        md2 = _to_markdown(raw)
-        if len(md2) > len(md):
-            md = md2
-        if not md:
-            md = html_to_text(raw)          # 최후의 폴백
-    md = _absolutize_md(md, post["url"])    # 상대 이미지/링크 → 절대경로
+        static_html = ""
+
+    md = _to_markdown(static_html)          # 정적 페이지
+    rss_md = _to_markdown(raw)              # RSS 본문
+    if len(rss_md) > len(md):
+        md = rss_md
+
+    htmls = [static_html, raw]
+    if len(md) < RENDER_MIN:                # JS 렌더 페이지로 추정 → 브라우저 렌더링
+        rendered = _render_html(url)
+        if rendered:
+            htmls.append(rendered)
+            rmd = _to_markdown(rendered)
+            if len(rmd) > len(md):
+                md = rmd
+
+    if not md:
+        md = html_to_text(raw)              # 최후의 폴백
+
+    # 영상 보강: 모든 소스의 영상 URL 중 본문에 빠진 것을 끝에 추가(중복 제거)
+    vids = list(dict.fromkeys(v for h in htmls for v in _collect_video_urls(h)))
+    md = _append_missing_videos(md, vids)
+    md = _absolutize_md(md, url)            # 상대 이미지/링크 → 절대경로
     return md.strip()[:CONTENT_CHARS_MAX]
 
 

@@ -10,6 +10,28 @@ const COUNTRY_LABEL: Record<string, string> = {
 
 type View = 'ko' | 'orig'
 
+// 영상 링크 → 임베드 URL (없으면 null)
+function videoEmbed(href?: string): string | null {
+  if (!href) return null
+  try {
+    const u = new URL(href, 'https://x')
+    const host = u.hostname.replace(/^www\./, '')
+    if (host === 'tv.naver.com' && u.pathname.includes('/embed/'))
+      return href.replace('autoPlay=true', 'autoPlay=false')
+    if (host === 'youtube.com' && u.searchParams.get('v'))
+      return `https://www.youtube.com/embed/${u.searchParams.get('v')}`
+    if (host === 'youtu.be') return `https://www.youtube.com/embed${u.pathname}`
+    if (host === 'youtube.com' && u.pathname.startsWith('/embed/')) return href
+    if (host === 'player.vimeo.com') return href
+    if (host === 'vimeo.com') return `https://player.vimeo.com/video${u.pathname}`
+  } catch {
+    return null
+  }
+  return null
+}
+
+const VIDEO_FILE = /\.(mp4|webm|ogg)(\?|$)/i
+
 export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => void }) {
   const [content, setContent] = useState<BlogContent | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'pending' | 'error'>('loading')
@@ -115,7 +137,34 @@ export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => v
                 </div>
               )}
               <article className="blog-md text-(--color-text)">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{body || ''}</ReactMarkdown>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a({ href, children }) {
+                      const embed = videoEmbed(href)
+                      if (embed)
+                        return (
+                          <span className="blog-video">
+                            <iframe
+                              src={embed}
+                              title="video"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          </span>
+                        )
+                      if (href && VIDEO_FILE.test(href))
+                        return <video src={href} controls className="blog-video-file" />
+                      return (
+                        <a href={href} target="_blank" rel="noreferrer">
+                          {children}
+                        </a>
+                      )
+                    },
+                  }}
+                >
+                  {body || ''}
+                </ReactMarkdown>
               </article>
             </>
           )}
