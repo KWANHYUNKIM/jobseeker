@@ -10,16 +10,19 @@ import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
 import { Loader, ErrorState } from './components/ui'
 import { useJobs } from './lib/useJobs'
+import { useHashTab } from './lib/useHashTab'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
 type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar'
 
+const TABS: readonly Tab[] = ['jobs', 'companies', 'expansion', 'mindmap', 'blog', 'radar']
+
 function App() {
   const { jobs, loading, error } = useJobs()
   const [filter, setFilter] = useState(emptyFilter)
   const [selected, setSelected] = useState<Job | null>(null)
-  const [tab, setTab] = useState<Tab>('jobs')
+  const [tab, setTab] = useHashTab(TABS, 'jobs')
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
   const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
 
