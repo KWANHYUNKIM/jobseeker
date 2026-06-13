@@ -423,7 +423,25 @@ function CompanyRow({
           </button>
         ))}
       </div>
+      <ContentBadges company={company} />
     </li>
+  )
+}
+
+// 카드 하단 콘텐츠 보유 표시 — 어떤 회사가 풍부한 자료(구조도·심화·토론·코드)를 가졌는지 한눈에
+function ContentBadges({ company }: { company: RadarCompany }) {
+  const items: string[] = []
+  if (company.diagram) items.push('🗺 구조도')
+  if (company.deep_dive?.length) items.push(`📖 심화 ${company.deep_dive.length}`)
+  if (company.debate) items.push('💬 토론')
+  if (company.github?.repos?.length) items.push(`⌥ 코드 ${company.github.repos.length}`)
+  if (!items.length) return null
+  return (
+    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-(--color-muted)">
+      {items.map((t) => (
+        <span key={t}>{t}</span>
+      ))}
+    </div>
   )
 }
 
