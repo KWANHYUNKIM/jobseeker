@@ -21,9 +21,13 @@ echo "latest -> $LATEST"
 
 # enrich + mindmap + 회사 기술스택 재빌드
 # build_company_stacks 는 company_profiles.json(crawl_company 결과)이 있으면 병합한다.
+# venv 파이썬을 쓴다 — build_learning.py 가 httpx 등 venv 의존성을 필요로 하므로
+# 시스템 python3 로 돌리면 ModuleNotFoundError 로 실패한다.
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-python3 "$SCRIPT_DIR/enrich_jobs.py"
-python3 "$SCRIPT_DIR/build_mindmap.py"
-python3 "$SCRIPT_DIR/build_company_stacks.py"
+VENV_PY="$(cd "$(dirname "$0")/../.." && pwd)/catch_capture/.venv/bin/python"
+PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
+"$PY" "$SCRIPT_DIR/enrich_jobs.py"
+"$PY" "$SCRIPT_DIR/build_mindmap.py"
+"$PY" "$SCRIPT_DIR/build_company_stacks.py"
 # 기술별 추천 학습 영상(YouTube) — company_stacks.json 의 기술 목록을 소비. 캐시로 증분 수집.
-python3 "$SCRIPT_DIR/build_learning.py"
+"$PY" "$SCRIPT_DIR/build_learning.py"

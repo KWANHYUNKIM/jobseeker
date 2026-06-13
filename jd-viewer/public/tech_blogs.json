@@ -1,26 +1,26 @@
 {
- "generated_at": "2026-06-11T21:11:56",
- "total": 670,
+ "generated_at": "2026-06-13T17:07:19",
+ "total": 704,
  "sources": [
   {
    "company": "Etsy",
    "country": "US",
-   "count": 40
+   "count": 60
   },
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 27
+   "count": 31
   },
   {
    "company": "Discord",
    "country": "US",
-   "count": 27
+   "count": 28
   },
   {
    "company": "DeNA",
    "country": "JP",
-   "count": 26
+   "count": 27
   },
   {
    "company": "Mercari",
@@ -68,14 +68,14 @@
    "count": 22
   },
   {
-   "company": "AWS",
+   "company": "Cloudflare",
    "country": "US",
    "count": 22
   },
   {
-   "company": "Cloudflare",
+   "company": "AWS",
    "country": "US",
-   "count": 21
+   "count": 22
   },
   {
    "company": "토스",
@@ -83,14 +83,24 @@
    "count": 20
   },
   {
+   "company": "GitHub",
+   "country": "US",
+   "count": 15
+  },
+  {
    "company": "Lyft",
    "country": "US",
    "count": 12
   },
   {
-   "company": "GitHub",
+   "company": "Dropbox",
    "country": "US",
-   "count": 12
+   "count": 11
+  },
+  {
+   "company": "Grab",
+   "country": "SG",
+   "count": 11
   },
   {
    "company": "당근",
@@ -125,16 +135,6 @@
   {
    "company": "Swiggy",
    "country": "IN",
-   "count": 10
-  },
-  {
-   "company": "Grab",
-   "country": "SG",
-   "count": 10
-  },
-  {
-   "company": "Dropbox",
-   "country": "US",
    "count": 10
   },
   {
@@ -193,19 +193,19 @@
    "count": 10
   },
   {
-   "company": "Meta",
-   "country": "US",
-   "count": 9
-  },
-  {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 8
+   "count": 9
   },
   {
    "company": "Slack",
    "country": "US",
-   "count": 8
+   "count": 9
+  },
+  {
+   "company": "Meta",
+   "country": "US",
+   "count": 9
   },
   {
    "company": "Spotify",
@@ -238,274 +238,633 @@
   "협업/도구"
  ],
  "tag_categories": {
-  "Edge Computing": "펌웨어/임베디드",
-  "Vue": "프론트엔드",
-  "Oracle": "데이터베이스",
-  "vLLM": "LLM/생성형",
-  "TensorFlow": "AI/ML",
-  "Lua": "언어",
-  "Java": "언어",
-  "Protobuf": "백엔드",
-  "OWASP": "보안",
-  "Embedding": "LLM/생성형",
-  "CDC": "데이터",
-  "AWS Lambda": "인프라/클라우드",
-  "AWS": "인프라/클라우드",
-  "Memory Management": "시스템/OS",
-  "Perl": "언어",
-  "Reverse Engineering": "보안",
-  "React Native": "모바일",
-  "Spring": "백엔드",
-  "LLM": "LLM/생성형",
-  "Unity": "그래픽/게임",
-  "Kinesis": "데이터",
-  "gRPC": "백엔드",
-  "containerd": "시스템/OS",
-  "Notion": "협업/도구",
-  "NLP": "AI/ML",
-  "Game Engine": "그래픽/게임",
-  "Node.js": "백엔드",
-  "Vault": "인프라/클라우드",
-  "Paxos": "알고리즘/이론",
-  "DynamoDB": "데이터베이스",
-  "Recommendation System": "AI/ML",
-  "Monorepo": "협업/도구",
-  "Ray": "AI/ML",
-  "Vector Database": "데이터베이스",
-  "Babel": "프론트엔드",
-  "Astro": "프론트엔드",
-  "Anomaly Detection": "AI/ML",
-  "Embedded": "펌웨어/임베디드",
-  "MapReduce": "알고리즘/이론",
-  "DDoS": "보안",
-  "WAF": "보안",
-  "Deep Learning": "AI/ML",
-  "NestJS": "백엔드",
-  "CNN": "AI/ML",
-  "ETL": "데이터",
-  "Azure": "인프라/클라우드",
-  "SolidJS": "프론트엔드",
-  "Distributed System": "알고리즘/이론",
-  "Figma": "협업/도구",
-  "Dart": "언어",
-  "MySQL": "데이터베이스",
-  "SASS": "프론트엔드",
-  "Graph Neural Network": "AI/ML",
-  "Vite": "프론트엔드",
-  "Linux Kernel": "펌웨어/임베디드",
-  "Penetration Testing": "보안",
-  "Hadoop": "데이터",
-  "Vercel": "인프라/클라우드",
-  "Hash Table": "알고리즘/이론",
-  "File System": "시스템/OS",
-  "WebGL": "프론트엔드",
-  "Diffusion": "LLM/생성형",
-  "Express": "백엔드",
-  "JavaScript": "언어",
-  "Multimodal": "LLM/생성형",
-  "Dynamic Programming": "알고리즘/이론",
-  "Saga Pattern": "알고리즘/이론",
-  "Event Sourcing": "알고리즘/이론",
-  "Confluence": "협업/도구",
-  "Loki": "관측성",
-  "ARM": "펌웨어/임베디드",
-  "RabbitMQ": "데이터",
-  "Airflow": "데이터",
-  "Bloom Filter": "알고리즘/이론",
-  "PWA": "프론트엔드",
-  "GCP": "인프라/클라우드",
-  "Mistral": "LLM/생성형",
-  "XGBoost": "AI/ML",
-  "Objective-C": "언어",
-  "FastAPI": "백엔드",
-  "Cryptography": "보안",
-  "Neo4j": "데이터베이스",
-  "Serverless": "인프라/클라우드",
-  "Elasticsearch": "데이터베이스",
-  "BERT": "LLM/생성형",
-  "UIKit": "모바일",
-  "Jira": "협업/도구",
-  "Feature Store": "AI/ML",
-  "APM": "관측성",
-  "Claude": "LLM/생성형",
-  "AI Agent": "LLM/생성형",
-  "Spark": "데이터",
-  "HTML": "프론트엔드",
-  "Tailwind": "프론트엔드",
-  "pgvector": "데이터베이스",
-  "Bluetooth": "펌웨어/임베디드",
-  "Keras": "AI/ML",
-  "Triton": "AI/ML",
-  "Unix": "시스템/OS",
-  "Design System": "협업/도구",
-  "Firmware": "펌웨어/임베디드",
-  "LightGBM": "AI/ML",
-  "SQL Injection": "보안",
-  "React": "프론트엔드",
-  "MoE": "LLM/생성형",
-  ".NET": "백엔드",
-  "SQLite": "데이터베이스",
-  "Nginx": "인프라/클라우드",
-  "Beam": "데이터",
-  "Trino": "데이터",
-  "JWT": "보안",
-  "CSS": "프론트엔드",
-  "Next.js": "프론트엔드",
-  "Delta Lake": "데이터",
-  "Snowflake": "데이터베이스",
-  "Ablation Study": "연구/논문",
-  "Compiler": "알고리즘/이론",
-  "IoT": "펌웨어/임베디드",
-  "Kubeflow": "AI/ML",
-  "jQuery": "프론트엔드",
-  "Jenkins": "인프라/클라우드",
-  "Terraform": "인프라/클라우드",
-  "systemd": "시스템/OS",
-  "C#": "언어",
-  "Authentication": "보안",
-  "BigQuery": "데이터베이스",
-  "Fine-tuning": "LLM/생성형",
-  "Ruby": "언어",
-  "Git": "협업/도구",
-  "Kotlin": "언어",
-  "Remix": "프론트엔드",
-  "WebSocket": "백엔드",
-  "Echo": "백엔드",
-  "Kernel": "시스템/OS",
-  "CLIP": "LLM/생성형",
-  "CockroachDB": "데이터베이스",
-  "Android": "모바일",
-  "Data Pipeline": "데이터",
-  "Bare-metal": "펌웨어/임베디드",
-  "Kafka": "데이터",
-  "Binary Search": "알고리즘/이론",
-  "C++": "언어",
-  "MSSQL": "데이터베이스",
-  "PyTorch": "AI/ML",
-  "Bun": "백엔드",
-  "Grafana": "관측성",
-  "Storybook": "프론트엔드",
-  "Data Structure": "알고리즘/이론",
-  "Debezium": "데이터",
-  "Model Context Protocol": "LLM/생성형",
-  "Unreal Engine": "그래픽/게임",
-  "Knowledge Distillation": "AI/ML",
-  "Groovy": "언어",
-  "GitOps": "인프라/클라우드",
-  "LangChain": "LLM/생성형",
-  "Iceberg": "데이터",
-  "ScyllaDB": "데이터베이스",
-  "AutoML": "AI/ML",
-  "Security": "보안",
-  "Angular": "프론트엔드",
-  "Benchmark": "연구/논문",
-  "Scikit-learn": "AI/ML",
-  "Attention Mechanism": "LLM/생성형",
-  "GitHub Actions": "인프라/클라우드",
-  "Bash": "언어",
-  "SQL": "언어",
-  "GitLab CI": "인프라/클라우드",
-  "Fiber": "백엔드",
-  "eBPF": "시스템/OS",
-  "Cassandra": "데이터베이스",
-  "DSP": "펌웨어/임베디드",
-  "Datadog": "관측성",
-  "CI/CD": "인프라/클라우드",
-  "Zero Trust": "보안",
-  "Reinforcement Learning": "AI/ML",
-  "Ansible": "인프라/클라우드",
-  "Rust": "언어",
-  "Python": "언어",
-  "MongoDB": "데이터베이스",
-  "Quantization": "LLM/생성형",
-  "OAuth": "보안",
-  "Bootloader": "펌웨어/임베디드",
-  "GraphQL": "백엔드",
-  "Elixir": "언어",
-  "Hugging Face": "LLM/생성형",
-  "Swift": "언어",
-  "RAG": "LLM/생성형",
-  "Machine Learning": "AI/ML",
-  "SwiftUI": "모바일",
   "Consensus": "알고리즘/이론",
-  "LSM Tree": "알고리즘/이론",
-  "Deno": "백엔드",
-  "Redis": "데이터베이스",
-  "Flink": "데이터",
-  "TLS": "보안",
-  "Flutter": "모바일",
-  "LoRA": "LLM/생성형",
-  "Envoy": "인프라/클라우드",
-  "Redshift": "데이터베이스",
-  "Qdrant": "데이터베이스",
-  "Spinnaker": "인프라/클라우드",
-  "Transformer": "LLM/생성형",
-  "Helm": "인프라/클라우드",
-  "Jetpack Compose": "모바일",
-  "iOS": "모바일",
-  "ClickHouse": "데이터베이스",
+  "SQL": "언어",
+  "JWT": "보안",
   "Garbage Collection": "알고리즘/이론",
-  "Concurrency": "알고리즘/이론",
-  "Cloudflare": "인프라/클라우드",
-  "PostgreSQL": "데이터베이스",
-  "ArgoCD": "인프라/클라우드",
-  "CUDA": "AI/ML",
-  "Pulsar": "데이터",
-  "Distributed Tracing": "관측성",
-  "MQTT": "펌웨어/임베디드",
-  "TDD": "협업/도구",
-  "arXiv": "연구/논문",
-  "Vector Search": "LLM/생성형",
-  "SCSS": "프론트엔드",
-  "REST API": "백엔드",
-  "Databricks": "데이터베이스",
-  "Nuxt": "프론트엔드",
-  "Hive": "데이터",
-  "Prompt Engineering": "LLM/생성형",
-  "Rails": "백엔드",
-  "Qwik": "프론트엔드",
-  "Raft": "알고리즘/이론",
-  "Assembly": "언어",
-  "Time Series": "AI/ML",
-  "Julia": "언어",
-  "Computer Vision": "AI/ML",
-  "Scala": "언어",
-  "DDD": "협업/도구",
-  "OpenTelemetry": "관측성",
-  "WebAssembly": "프론트엔드",
-  "Go": "언어",
+  "Elixir": "언어",
   "Svelte": "프론트엔드",
-  "Docker": "인프라/클라우드",
-  "Sentry": "관측성",
-  "Presto": "데이터",
-  "Webpack": "프론트엔드",
-  "Service Mesh": "인프라/클라우드",
-  "TypeScript": "언어",
-  "Linux": "시스템/OS",
-  "Prometheus": "관측성",
+  "Kubeflow": "AI/ML",
+  "Firmware": "펌웨어/임베디드",
+  "Embedded": "펌웨어/임베디드",
   "PHP": "언어",
-  "State of the Art": "연구/논문",
-  "Kotlin Multiplatform": "모바일",
-  "Stream Processing": "데이터",
   "Netty": "백엔드",
-  "Llama": "LLM/생성형",
-  "dbt": "데이터",
-  "Spring Boot": "백엔드",
-  "CQRS": "알고리즘/이론",
-  "CVE": "보안",
-  "Algorithm": "알고리즘/이론",
-  "ONNX": "AI/ML",
-  "Observability": "관측성",
-  "A/B Test": "협업/도구",
-  "Gemini": "LLM/생성형",
-  "XSS": "보안",
-  "MLOps": "AI/ML",
+  "Jira": "협업/도구",
+  "Game Engine": "그래픽/게임",
   "GPT": "LLM/생성형",
-  "Data Lake": "데이터",
+  "Spring Boot": "백엔드",
+  "Triton": "AI/ML",
+  "Llama": "LLM/생성형",
+  "Angular": "프론트엔드",
+  "Spring": "백엔드",
+  "Redis": "데이터베이스",
+  "Stream Processing": "데이터",
+  "React Native": "모바일",
+  "Cassandra": "데이터베이스",
+  "Tailwind": "프론트엔드",
+  "Recommendation System": "AI/ML",
+  "CDC": "데이터",
+  "Edge Computing": "펌웨어/임베디드",
+  "XSS": "보안",
+  "APM": "관측성",
+  "TensorFlow": "AI/ML",
+  "Echo": "백엔드",
+  "systemd": "시스템/OS",
+  "Benchmark": "연구/논문",
+  "Cryptography": "보안",
+  "REST API": "백엔드",
+  "Astro": "프론트엔드",
+  "Transformer": "LLM/생성형",
+  "MoE": "LLM/생성형",
+  "Data Pipeline": "데이터",
+  "Serverless": "인프라/클라우드",
+  "LoRA": "LLM/생성형",
   "Istio": "인프라/클라우드",
-  "Kubernetes": "인프라/클라우드"
+  "XGBoost": "AI/ML",
+  "Grafana": "관측성",
+  "Delta Lake": "데이터",
+  "Bootloader": "펌웨어/임베디드",
+  "Notion": "협업/도구",
+  "Vite": "프론트엔드",
+  "Machine Learning": "AI/ML",
+  "Airflow": "데이터",
+  "SQL Injection": "보안",
+  "Embedding": "LLM/생성형",
+  "Spark": "데이터",
+  "Datadog": "관측성",
+  "Protobuf": "백엔드",
+  "AWS": "인프라/클라우드",
+  "Service Mesh": "인프라/클라우드",
+  "Iceberg": "데이터",
+  "Assembly": "언어",
+  "CUDA": "AI/ML",
+  "Cloudflare": "인프라/클라우드",
+  "TypeScript": "언어",
+  "WAF": "보안",
+  "Reverse Engineering": "보안",
+  "Mistral": "LLM/생성형",
+  "Kafka": "데이터",
+  "Compiler": "알고리즘/이론",
+  "Anomaly Detection": "AI/ML",
+  "ONNX": "AI/ML",
+  "Monorepo": "협업/도구",
+  "Paxos": "알고리즘/이론",
+  "Vault": "인프라/클라우드",
+  "Ruby": "언어",
+  "State of the Art": "연구/논문",
+  "Memory Management": "시스템/OS",
+  "Nuxt": "프론트엔드",
+  "ETL": "데이터",
+  "CI/CD": "인프라/클라우드",
+  "Vector Search": "LLM/생성형",
+  "MQTT": "펌웨어/임베디드",
+  "Linux Kernel": "펌웨어/임베디드",
+  "C++": "언어",
+  "Flink": "데이터",
+  "Figma": "협업/도구",
+  "Julia": "언어",
+  "TLS": "보안",
+  "A/B Test": "협업/도구",
+  "Deep Learning": "AI/ML",
+  "Bun": "백엔드",
+  "arXiv": "연구/논문",
+  "JavaScript": "언어",
+  "Android": "모바일",
+  "Docker": "인프라/클라우드",
+  "GCP": "인프라/클라우드",
+  "Bloom Filter": "알고리즘/이론",
+  "Vercel": "인프라/클라우드",
+  "Elasticsearch": "데이터베이스",
+  "iOS": "모바일",
+  "BERT": "LLM/생성형",
+  "Perl": "언어",
+  "PWA": "프론트엔드",
+  "Qdrant": "데이터베이스",
+  "Dart": "언어",
+  "IoT": "펌웨어/임베디드",
+  "Next.js": "프론트엔드",
+  "gRPC": "백엔드",
+  "Confluence": "협업/도구",
+  "Gemini": "LLM/생성형",
+  "Hash Table": "알고리즘/이론",
+  "Java": "언어",
+  "GitOps": "인프라/클라우드",
+  "Nginx": "인프라/클라우드",
+  "CockroachDB": "데이터베이스",
+  "Observability": "관측성",
+  "SQLite": "데이터베이스",
+  "GitLab CI": "인프라/클라우드",
+  "Redshift": "데이터베이스",
+  "Bash": "언어",
+  "Azure": "인프라/클라우드",
+  "OAuth": "보안",
+  "OWASP": "보안",
+  ".NET": "백엔드",
+  "Unix": "시스템/OS",
+  "Unity": "그래픽/게임",
+  "Trino": "데이터",
+  "Python": "언어",
+  "React": "프론트엔드",
+  "Pulsar": "데이터",
+  "Groovy": "언어",
+  "File System": "시스템/OS",
+  "dbt": "데이터",
+  "Concurrency": "알고리즘/이론",
+  "MLOps": "AI/ML",
+  "Loki": "관측성",
+  "Dynamic Programming": "알고리즘/이론",
+  "pgvector": "데이터베이스",
+  "C#": "언어",
+  "Algorithm": "알고리즘/이론",
+  "HTML": "프론트엔드",
+  "DynamoDB": "데이터베이스",
+  "Express": "백엔드",
+  "Design System": "협업/도구",
+  "MSSQL": "데이터베이스",
+  "Model Context Protocol": "LLM/생성형",
+  "Attention Mechanism": "LLM/생성형",
+  "vLLM": "LLM/생성형",
+  "Go": "언어",
+  "Kernel": "시스템/OS",
+  "Authentication": "보안",
+  "Scala": "언어",
+  "MapReduce": "알고리즘/이론",
+  "ClickHouse": "데이터베이스",
+  "NestJS": "백엔드",
+  "Binary Search": "알고리즘/이론",
+  "MySQL": "데이터베이스",
+  "MongoDB": "데이터베이스",
+  "SwiftUI": "모바일",
+  "Objective-C": "언어",
+  "AWS Lambda": "인프라/클라우드",
+  "Keras": "AI/ML",
+  "FastAPI": "백엔드",
+  "Node.js": "백엔드",
+  "Debezium": "데이터",
+  "Quantization": "LLM/생성형",
+  "Jenkins": "인프라/클라우드",
+  "Snowflake": "데이터베이스",
+  "CNN": "AI/ML",
+  "Multimodal": "LLM/생성형",
+  "Beam": "데이터",
+  "Databricks": "데이터베이스",
+  "Saga Pattern": "알고리즘/이론",
+  "Fiber": "백엔드",
+  "Remix": "프론트엔드",
+  "Hive": "데이터",
+  "Neo4j": "데이터베이스",
+  "Kotlin Multiplatform": "모바일",
+  "Rust": "언어",
+  "Knowledge Distillation": "AI/ML",
+  "Vector Database": "데이터베이스",
+  "ARM": "펌웨어/임베디드",
+  "OpenTelemetry": "관측성",
+  "DSP": "펌웨어/임베디드",
+  "PostgreSQL": "데이터베이스",
+  "LSM Tree": "알고리즘/이론",
+  "BigQuery": "데이터베이스",
+  "Bare-metal": "펌웨어/임베디드",
+  "Zero Trust": "보안",
+  "LangChain": "LLM/생성형",
+  "WebAssembly": "프론트엔드",
+  "Prompt Engineering": "LLM/생성형",
+  "Event Sourcing": "알고리즘/이론",
+  "Claude": "LLM/생성형",
+  "Helm": "인프라/클라우드",
+  "eBPF": "시스템/OS",
+  "Rails": "백엔드",
+  "AI Agent": "LLM/생성형",
+  "Distributed Tracing": "관측성",
+  "Terraform": "인프라/클라우드",
+  "Storybook": "프론트엔드",
+  "ArgoCD": "인프라/클라우드",
+  "Flutter": "모바일",
+  "Raft": "알고리즘/이론",
+  "Unreal Engine": "그래픽/게임",
+  "Git": "협업/도구",
+  "Ablation Study": "연구/논문",
+  "Graph Neural Network": "AI/ML",
+  "Feature Store": "AI/ML",
+  "RAG": "LLM/생성형",
+  "Webpack": "프론트엔드",
+  "Swift": "언어",
+  "Deno": "백엔드",
+  "Babel": "프론트엔드",
+  "CLIP": "LLM/생성형",
+  "SASS": "프론트엔드",
+  "DDoS": "보안",
+  "Scikit-learn": "AI/ML",
+  "Bluetooth": "펌웨어/임베디드",
+  "SCSS": "프론트엔드",
+  "Security": "보안",
+  "jQuery": "프론트엔드",
+  "CQRS": "알고리즘/이론",
+  "Linux": "시스템/OS",
+  "CSS": "프론트엔드",
+  "Fine-tuning": "LLM/생성형",
+  "Vue": "프론트엔드",
+  "Ansible": "인프라/클라우드",
+  "CVE": "보안",
+  "Kubernetes": "인프라/클라우드",
+  "PyTorch": "AI/ML",
+  "WebGL": "프론트엔드",
+  "Hadoop": "데이터",
+  "Lua": "언어",
+  "WebSocket": "백엔드",
+  "Spinnaker": "인프라/클라우드",
+  "RabbitMQ": "데이터",
+  "Prometheus": "관측성",
+  "Qwik": "프론트엔드",
+  "NLP": "AI/ML",
+  "LightGBM": "AI/ML",
+  "Jetpack Compose": "모바일",
+  "containerd": "시스템/OS",
+  "UIKit": "모바일",
+  "Hugging Face": "LLM/생성형",
+  "Time Series": "AI/ML",
+  "Envoy": "인프라/클라우드",
+  "SolidJS": "프론트엔드",
+  "DDD": "협업/도구",
+  "LLM": "LLM/생성형",
+  "Ray": "AI/ML",
+  "Kinesis": "데이터",
+  "GraphQL": "백엔드",
+  "Distributed System": "알고리즘/이론",
+  "Reinforcement Learning": "AI/ML",
+  "Computer Vision": "AI/ML",
+  "Data Structure": "알고리즘/이론",
+  "Oracle": "데이터베이스",
+  "Data Lake": "데이터",
+  "AutoML": "AI/ML",
+  "GitHub Actions": "인프라/클라우드",
+  "ScyllaDB": "데이터베이스",
+  "TDD": "협업/도구",
+  "Sentry": "관측성",
+  "Kotlin": "언어",
+  "Penetration Testing": "보안",
+  "Diffusion": "LLM/생성형",
+  "Presto": "데이터"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How we made GitHub Copilot CLI more selective about delegation",
+   "url": "https://github.blog/ai-and-ml/how-we-made-github-copilot-cli-more-selective-about-delegation",
+   "published": "2026-06-12",
+   "published_ts": 1781303183.0,
+   "summary": "Better orchestration, fewer handoffs, faster progress, without a single new knob.\n\nThe post How we made GitHub Copilot CLI more selective about delegation appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "AI agents",
+    "coding agent",
+    "GitHub Copilot CLI"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "LLM",
+    "A/B Test"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "c6069eed8b002805"
+  },
+  {
+   "key": "dropbox",
+   "company": "Dropbox",
+   "country": "US",
+   "title": "How Dropbox uses MCP and Dash to close the design-to-code security gap",
+   "url": "https://dropbox.tech/security/dropbox-mcp-dash-design-code-security",
+   "published": "2026-06-12",
+   "published_ts": 1781287200.0,
+   "summary": "Using an agentic AI system to surface threat models during code review and spot gaps between security requirements and implementation.",
+   "tags": [
+    "agents",
+    "Code quality",
+    "Developer",
+    "Security",
+    "Developer Tools"
+   ],
+   "tech_stack": [
+    "Model Context Protocol",
+    "Vector Search",
+    "Authentication",
+    "Security"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "a703ae1adbc78553"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "Designing CherryScript: Optimizing Data-Driven Workflows via Custom Python-Based Interpreters​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/12/designing-cherryscript-optimizing-data-driven-workflows-via-custom-python-based-interpreters",
+   "published": "2026-06-12",
+   "published_ts": 1781281030.0,
+   "summary": "",
+   "tags": [
+    "contributed",
+    "buiilding-software"
+   ],
+   "tech_stack": [
+    "Python"
+   ],
+   "categories": [
+    "언어"
+   ],
+   "lang": "en",
+   "content_id": "c20c2cf5805f5164"
+  },
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "비개발자의 AI 협업 도전기 — 생산성 측정하려다 서버까지 띄운 9일",
+   "url": "https://d2.naver.com/helloworld/2017402",
+   "published": "2026-06-12",
+   "published_ts": 1781280517.0,
+   "summary": "\"조직이 잘하고 있는지 어떻게 알 수 있을까?\" 이 질문에서 출발해 사내 가이드 문서와 AI를 붙들고 직접 측정 도구를 완성하기까지 9일이 걸렸습니다. 그 과정을 기록으로 남깁니다.\n\n사내 생산성 측정에 관한 고민\n\n기술 PM으로 일하면서 조직과 프로젝트의 생산성을 어떻게 측정할지는 늘 풀리지 않는 과제였습니다. 스프린트를 원활하게 진행하는 것 같아도 막상 이를 수치로 보여달라고 하면 난감했습니다. 속도가 빨라지는지, 병목이 어디서 발생하는지, 지난 분기보다 나아지고 있는지 감각적으로는 알 수 있었지만 데이터로 명확히 설명하기는 어려웠습니다.\n\n사내에는 이미 'DevOps board'라는 시스템이 있어 배포 빈도와 리드타임을 포함한 DORA 지표를 제공하고 있습니다. 소프트웨어 딜리버리 흐름을 측정한다는 점에서 제가 찾던 도구에 가까웠습니다. 다만 저는 분석 지표와 상황에 맞추어 조금 더 세분화된 데이터를 들여다보고 싶었습니다.\n\n그래서 먼저 Jira 대시보드를 만들어 리치 필터(rich filter)로 데이터를 추출해 보았습니다. 이슈 완료 수, 스프린트 완료율, 컴포넌트별 작업량 등 여러 수치가 모였지만, 수집한 숫자만으로는 조직의 작업 속도를 한눈에 파…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "HTML",
+    "FastAPI",
+    "Redis",
+    "Authentication",
+    "Security",
+    "Jira"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "데이터베이스",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "ko",
+   "content_id": "dd8364d7bfd2d00e"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "What's the facts, Charity? How do I get my leaders to stop running teams Into the ground?​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‍​﻿​﻿‌‍‌‌​﻿​‌​﻿‍‌​﻿‌​​﻿‍​‌‍‌‍​‍﻿‌‌‍‌‍‌‍​﻿‌‍​‌​﻿​​​‍﻿‌​﻿‌​​﻿‌​‌‍‌​​﻿‍​​‍﻿‌‌‍​‌‌‍​﻿‌‍​﻿​﻿‌﻿​‍﻿‌​﻿​​​﻿​﻿‌‍‌​​﻿‌‌​﻿​‍‌‍‌‌​﻿‌‌‌‍‌‌​﻿‌‌‌‍​‍​﻿‌‌‌‍‌‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‍​﻿​﻿‌‍‌‌​﻿​‌​﻿‍‌​﻿‌​​﻿‍​‌‍‌‍​‍﻿‌‌‍‌‍‌‍​﻿‌‍​‌​﻿​​​‍﻿‌​﻿‌​​﻿‌​‌‍‌​​﻿‍​​‍﻿‌‌‍​‌‌‍​﻿‌‍​﻿​﻿‌﻿​‍﻿‌​﻿​​​﻿​﻿‌‍‌​​﻿‌‌​﻿​‍‌‍‌‌​﻿‌‌‌‍‌‌​﻿‌‌‌‍​‍​﻿‌‌‌‍‌‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/12/what-s-the-facts-charity-how-do-i-get-my-leaders-to-stop-running-teams-into-the-ground",
+   "published": "2026-06-12",
+   "published_ts": 1781272800.0,
+   "summary": "Capacity is one of the hardest problems because it sits at the knotty, gnarled-up intersection of so many other hard problems.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‍​﻿​﻿‌‍‌‌​﻿​‌​﻿‍‌​﻿‌​​﻿‍​‌‍‌‍​‍﻿‌‌‍‌‍‌‍​﻿‌‍​‌​﻿​​​‍﻿‌​﻿‌​​﻿‌​‌‍‌​​﻿‍​​‍﻿‌‌‍​‌‌‍​﻿‌‍​﻿​﻿‌﻿​‍﻿‌​﻿​​​﻿…",
+   "tags": [
+    "devex",
+    "se-tech",
+    "se-stackoverflow"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "1321bd3035df8ed2"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
+   "url": "https://blog.cloudflare.com/scaling-security-scans",
+   "published": "2026-06-12",
+   "published_ts": 1781269200.0,
+   "summary": "Cloudflare Security Insights system now processes over 120 scans per second, providing frequent insights for all customers. By optimizing Kafka consumers, Postgres queries, and our API, we scaled our throughput 10x without adding hardware.",
+   "tags": [
+    "Application Security",
+    "Security Posture Management",
+    "Engineering",
+    "Postgres",
+    "Kafka"
+   ],
+   "tech_stack": [
+    "Go",
+    "SQL",
+    "Kafka",
+    "PostgreSQL",
+    "Cloudflare",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "데이터",
+    "데이터베이스",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "fd604dbe3082673d"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "Developers are emotionally attached to their tools​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌‌‌‍‌‌‌‍‌​​﻿​‍‌‍​‍​﻿‌​​﻿‌‍‌‍‌‍​‍﻿‌​﻿​﻿​﻿‌​‌‍​‍​﻿‍​​‍﻿‌​﻿‌​‌‍‌‍‌‍​﻿‌‍​‍​‍﻿‌‌‍​‍​﻿‌‌​﻿‌‌​﻿​‍​‍﻿‌​﻿​‍‌‍​‍‌‍​﻿‌‍​﻿​﻿​‍​﻿‌‌‌‍​﻿​﻿​‌‌‍​﻿‌‍‌‌​﻿‌​​﻿‌​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌‌‌‍‌‌‌‍‌​​﻿​‍‌‍​‍​﻿‌​​﻿‌‍‌‍‌‍​‍﻿‌​﻿​﻿​﻿‌​‌‍​‍​﻿‍​​‍﻿‌​﻿‌​‌‍‌‍‌‍​﻿‌‍​‍​‍﻿‌‌‍​‍​﻿‌‌​﻿‌‌​﻿​‍​‍﻿‌​﻿​‍‌‍​‍‌‍​﻿‌‍​﻿​﻿​‍​﻿‌‌‌‍​﻿​﻿​‌‌‍​﻿‌‍‌‌​﻿‌​​﻿‌​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/12/developers-are-emotionally-attached-to-their-tools",
+   "published": "2026-06-12",
+   "published_ts": 1781250000.0,
+   "summary": "Ryan welcomes Trisha Gee, a Java champion and developer productivity advocate, to explore how AI is transforming the role of IDEs and the broader developer experience; the relevance of traditional tools, muscle memory, the risks of hype; and how to adapt workflows for AI-driven development.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌…",
+   "tags": [
+    "podcast",
+    "se-tech",
+    "se-stackoverflow",
+    "ai",
+    "agentic-ai",
+    "java",
+    "dev-tools",
+    "developer-experience"
+   ],
+   "tech_stack": [
+    "Java"
+   ],
+   "categories": [
+    "언어"
+   ],
+   "lang": "en",
+   "content_id": "73fea61e6fcc6678"
+  },
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Scaling out Distroless adoption With AI",
+   "url": "https://engineering.grab.com/scaling-out-distroless-adoption-with-ai",
+   "published": "2026-06-12",
+   "published_ts": 1781222400.0,
+   "summary": "Distroless adoption at Grab\n\nGrab is migrating from heavy base images to Distroless images to reduce security risks. By limiting each container to the application and its runtime dependencies, we shed non-essential binaries and associated Common Vulnerabilities and Exposures (CVEs).\n\nThis migration is more than a compliance mandate; it is a strategic security decision to build a more resilient environment.\n\nWhy Distroless requires rigorous testing\n\nDistroless adoption risk: Runtime failure\n\nShifting to Distroless images introduces a critical technical risk: Runtime Failure. A service might bui…",
+   "tags": [
+    "Security",
+    "Containers",
+    "Artificial Intelligence",
+    "DevSecOps",
+    "Engineering",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "Go",
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "MySQL",
+    "Docker",
+    "Security",
+    "Monorepo"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "b918f7e142d10d60"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Web未経験MLエンジニアが社内プロダクト開発でAIコーディングにどハマりするまで",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64147",
+   "published": "2026-06-11",
+   "published_ts": 1781218851.0,
+   "summary": "Web未経験MLエンジニアが社内プロダクト開発でAIコーディングにどハマりするまで はじめに こんに ...",
+   "tags": [
+    "エンジニア",
+    "AI駆動開発"
+   ],
+   "tech_stack": [
+    "Machine Learning"
+   ],
+   "categories": [
+    "AI/ML"
+   ],
+   "lang": "en",
+   "content_id": "724e3dd2598ef096"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "GitHub availability report: May 2026",
+   "url": "https://github.blog/news-insights/company-news/github-availability-report-may-2026",
+   "published": "2026-06-11",
+   "published_ts": 1781213415.0,
+   "summary": "In May, we experienced nine incidents that resulted in degraded performance across GitHub services.\n\nThe post GitHub availability report: May 2026 appeared first on The GitHub Blog.",
+   "tags": [
+    "Company news",
+    "News & insights",
+    "GitHub Availability Report"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "GPT",
+    "Azure",
+    "GitHub Actions",
+    "Authentication",
+    "OAuth",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "b0c37bd163a91897"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Making secret scanning more trustworthy: Reducing false positives at scale",
+   "url": "https://github.blog/security/making-secret-scanning-more-trustworthy-reducing-false-positives-at-scale",
+   "published": "2026-06-11",
+   "published_ts": 1781193600.0,
+   "summary": "Alerts are more trustworthy and actionable when noise is reduced. See how we improved the verification step with context-aware LLM reasoning.\n\nThe post Making secret scanning more trustworthy: Reducing false positives at scale appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "LLMs",
+    "Security",
+    "Secret Scanning"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "LLM",
+    "Authentication",
+    "Security"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "0c19e76fe6dc5a34"
+  },
+  {
+   "key": "dena",
+   "company": "DeNA",
+   "country": "JP",
+   "title": "OpenAIエンジニアによるCodexを「自律エージェント」として使い倒すための勉強会レポート",
+   "url": "https://engineering.dena.com/blog/2026/06/openai-codex-study-report",
+   "published": "2026-06-12",
+   "published_ts": 1781190000.0,
+   "summary": "こんにちは、DeNA ヘルスケア事業本部ウェルビーイング事業部DXソリューション部の川上知宏です。\n現在弊社では「AI オールイン」を掲げ、プロダクト開発のあり方そのもののアップデートに取り組んでいます。 今回はその一環として、OpenAI 社から 3 名の講師をお招きし、OpenAI が提供する、複雑なタスクを自律的に実行し、人と協働しながら仕事を前に進める AI エージェント「Codex」に関する勉強会を開催しました。 オンラインで開催された 1 時間のセッションには、300 名を超える社員が集まり、大規模な勉強会となりました。",
+   "tags": [],
+   "tech_stack": [
+    "GPT"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "4b28acd941a4136b"
+  },
+  {
+   "key": "slack",
+   "company": "Slack",
+   "country": "US",
+   "title": "Agentic Testing: Where Agents Fit in the E2E Testing Stack",
+   "url": "https://slack.engineering/agentic-testing-where-agents-fit-in-the-e2e-testing-stack",
+   "published": "2026-06-11",
+   "published_ts": 1781187328.0,
+   "summary": "Abstract Agent-driven end-to-end (E2E) tests add a new exploratory layer to testing, but should they replace traditional deterministic tests? We ran more than 200 agentic E2E workflows using the Playwright MCP, Playwright CLI, and agent-generated Playwright tests in test workspaces using non-production data to find out how agentic testing could fit into both our and…",
+   "tags": [
+    "Uncategorized",
+    "automation-testing",
+    "developer-productivity",
+    "innovation"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "Authentication"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "73a11635e2bd59eb"
+  },
   {
    "key": "naver-d2",
    "company": "네이버 D2",
@@ -579,6 +938,21 @@
    "categories": [],
    "lang": "en",
    "content_id": "1b165cff2c0f5414"
+  },
+  {
+   "key": "stripe",
+   "company": "Stripe",
+   "country": "US",
+   "title": "Stripe Projects adds new agent integrations, more providers, and custom developer controls",
+   "url": "https://stripe.com/blog/stripe-projects-adds-new-agents-providers-developer-controls",
+   "published": "2026-06-11",
+   "published_ts": 1781136000.0,
+   "summary": "Our data shows that agents are now fully capable of independently writing code and integrating with APIs like Stripe’s. And yet, many of the steps adjacent to writing code are still too hard for agents to do on their own. We’re expanding Stripe Projects to solve this.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "77b2162c5a9e4984"
   },
   {
    "key": "lyft",
@@ -903,19 +1277,19 @@
    "content_id": "3fff811e50377a9d"
   },
   {
-   "key": "stripe",
-   "company": "Stripe",
+   "key": "discord",
+   "company": "Discord",
    "country": "US",
-   "title": "Stripe Projects adds new agent integrations, more providers, and custom developer controls",
-   "url": "https://stripe.com/blog/stripe-projects-adds-new-agents-providers-developer-controls",
+   "title": "Updated Requirements to How Apps Access Data in Servers",
+   "url": "https://discord.com/blog/updated-requirements-to-how-apps-access-data-in-servers",
    "published": "2026-06-10",
    "published_ts": 1781049600.0,
-   "summary": "Our data shows that agents are now fully capable of independently writing code and integrating with APIs like Stripe’s. And yet, many of the steps adjacent to writing code are still too hard for agents to do on their own. We’re expanding Stripe Projects to solve this.",
+   "summary": "Discord is updating requirements to how apps access certain data within servers, changing the review threshold and requiring annual review. Here's what's changing and why.",
    "tags": [],
    "tech_stack": [],
    "categories": [],
    "lang": "en",
-   "content_id": "77b2162c5a9e4984"
+   "content_id": "e273755c746bcbfb"
   },
   {
    "key": "cyberagent",
@@ -1399,6 +1773,29 @@
    ],
    "lang": "en",
    "content_id": "dac05f902df6675e"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "What can 500 years of journalism teach developers about AI trustworthiness?​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‍​​﻿‌​‌‍​﻿‌‍​﻿​﻿‌﻿​﻿‍​‌‍‌‍‌‍​﻿​‍﻿‌​﻿‌​​﻿​​‌‍‌‍‌‍​‍​‍﻿‌​﻿‌​​﻿​‌​﻿‌‍​﻿‍​​‍﻿‌‌‍​‌​﻿​​​﻿​﻿‌‍‌‌​‍﻿‌​﻿‌‌‌‍​‍​﻿​​​﻿‍‌​﻿‌​​﻿​﻿‌‍‌‍​﻿‌‍​﻿‌​‌‍‌​‌‍‌‍‌‍‌​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‍​​﻿‌​‌‍​﻿‌‍​﻿​﻿‌﻿​﻿‍​‌‍‌‍‌‍​﻿​‍﻿‌​﻿‌​​﻿​​‌‍‌‍‌‍​‍​‍﻿‌​﻿‌​​﻿​‌​﻿‌‍​﻿‍​​‍﻿‌‌‍​‌​﻿​​​﻿​﻿‌‍‌‌​‍﻿‌​﻿‌‌‌‍​‍​﻿​​​﻿‍‌​﻿‌​​﻿​﻿‌‍‌‍​﻿‌‍​﻿‌​‌‍‌​‌‍‌‍‌‍‌​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/08/what-can-500-years-of-journalism-teach-developers-about-ai-trustworthiness",
+   "published": "2026-06-08",
+   "published_ts": 1780927200.0,
+   "summary": "AI reliability issues stem from three separate architectural challenges that keep getting lumped into the same category. Prompt engineering alone can't fix them. But the sourcing and verification frameworks media organizations have used for centuries translate into clear engineering solutions developers can implement today.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌…",
+   "tags": [
+    "ai",
+    "se-tech",
+    "se-stackoverflow"
+   ],
+   "tech_stack": [
+    "Prompt Engineering"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "474b0acab181c219"
   },
   {
    "key": "cloudflare",
@@ -3206,6 +3603,30 @@
    "content_id": "84bb92430947494b"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Shaping Product Understanding with Contrastive Reinforcement Learning",
+   "url": "https://www.etsy.com/codeascraft/shaping-product-understanding-with-contrastive-reinforcement-learning?_=1775223013790",
+   "published": "2026-05-26",
+   "published_ts": 1779819190.0,
+   "summary": "Etsy’s marketplace is defined by the creativity and craftsmanship of our sellers and the hundreds of millions of highly diverse products they offer. You can find silversmiths who cold-forge recycled sterling silver, weavers who dye raw fleece with indigo and black walnut, and ceramicists who throw stoneware on a kick wheel.\n\nThese details define each product and often determine whether it matches a buyer’s taste, style, and interests. Sometimes buyers know exactly what they want, searching for “hand-thrown ceramic mug” or “vegetable-tanned leather wallet.” Other times, especially in recommenda…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "Reinforcement Learning",
+    "Embedding",
+    "Fine-tuning",
+    "LLM"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "cae28301d844c503"
+  },
+  {
    "key": "meta",
    "company": "Meta",
    "country": "US",
@@ -4079,7 +4500,7 @@
    "url": "https://stackoverflow.blog/2026/05/18/interviews-aren-t-about-you-sorry",
    "published": "2026-05-18",
    "published_ts": 1779120164.0,
-   "summary": "What interviewers are actually looking for is very different from you'd assume if you're the one sweating in the hotseat.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​​‌‍‌​‌‍​‍‌‍​‌​﻿​﻿​﻿​﻿‌‍​﻿​﻿​‌​‍﻿‌​﻿‌﻿​﻿‍‌​﻿‌‍​﻿​‍​‍﻿‌​﻿‌​‌‍‌‍​﻿​​​﻿‌‍​‍﻿‌‌‍​‌‌‍‌‍‌‍‌‍​﻿‌‌​‍﻿‌‌‍‌‌​﻿‌‍​﻿‍…",
+   "summary": "What interviewers are actually looking for is very different from what you'd assume if you're the one sweating in the hotseat.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​​‌‍‌​‌‍​‍‌‍​‌​﻿​﻿​﻿​﻿‌‍​﻿​﻿​‌​‍﻿‌​﻿‌﻿​﻿‍‌​﻿‌‍​﻿​‍​‍﻿‌​﻿‌​‌‍‌‍​﻿​​​﻿‌‍​‍﻿‌‌‍​‌‌‍‌‍‌‍‌‍​﻿‌‌​‍﻿‌‌‍‌‌​﻿…",
    "tags": [
     "contributed",
     "cc-by-sa",
@@ -4196,7 +4617,11 @@
    "published": "2026-05-18",
    "published_ts": 1779062400.0,
    "summary": "Have you ever had a brilliant idea for a music app, a custom playlist curator, or a unique way to discover underground tracks on SoundCloud…",
-   "tags": [],
+   "tags": [
+    "API",
+    "Announcement",
+    "AI"
+   ],
    "tech_stack": [
     "AI Agent",
     "Claude",
@@ -6079,38 +6504,6 @@
    ],
    "lang": "en",
    "content_id": "f82764d95b695c7f"
-  },
-  {
-   "key": "naver-d2",
-   "company": "네이버 D2",
-   "country": "KR",
-   "title": "비개발자의 AI 협업 도전기 — 생산성 측정하려다 서버까지 띄운 9일",
-   "url": "https://d2.naver.com/helloworld/2017402",
-   "published": "2026-04-29",
-   "published_ts": 1777460162.0,
-   "summary": "\"조직이 잘하고 있는지 어떻게 알 수 있을까?\" 이 질문에서 출발해 사내 가이드 문서와 AI를 붙들고 직접 측정 도구를 완성하기까지 9일이 걸렸습니다. 그 과정을 기록으로 남깁니다.\n\n사내 생산성 측정에 관한 고민\n\n기술 PM으로 일하면서 조직과 프로젝트의 생산성을 어떻게 측정할지는 늘 풀리지 않는 과제였습니다. 스프린트를 원활하게 진행하는 것 같아도 막상 이를 수치로 보여달라고 하면 난감했습니다. 속도가 빨라지는지, 병목이 어디서 발생하는지, 지난 분기보다 나아지고 있는지 감각적으로는 알 수 있었지만 데이터로 명확히 설명하기는 어려웠습니다.\n\n사내에는 이미 'DevOps board'라는 시스템이 있어 배포 빈도와 리드타임을 포함한 DORA 지표를 제공하고 있습니다. 소프트웨어 딜리버리 흐름을 측정한다는 점에서 제가 찾던 도구에 가까웠습니다. 다만 저는 분석 지표와 상황에 맞추어 조금 더 세분화된 데이터를 들여다보고 싶었습니다.\n\n그래서 먼저 Jira 대시보드를 만들어 리치 필터(rich filter)로 데이터를 추출해 보았습니다. 이슈 완료 수, 스프린트 완료율, 컴포넌트별 작업량 등 여러 수치가 모였지만, 수집한 숫자만으로는 조직의 작업 속도를 한눈에 파…",
-   "tags": [
-    "hello world"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "HTML",
-    "FastAPI",
-    "Redis",
-    "Authentication",
-    "Security",
-    "Jira"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "백엔드",
-    "데이터베이스",
-    "보안",
-    "협업/도구"
-   ],
-   "lang": "ko",
-   "content_id": "dd8364d7bfd2d00e"
   },
   {
    "key": "razorpay",
@@ -9006,6 +9399,27 @@
    "content_id": "7422bb78c492657f"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Making Ads Count: Using MMoE and Auxiliary Tasks to Better Connect Buyers & Sellers",
+   "url": "https://www.etsy.com/codeascraft/making-ads-count-using-mmoe-and-auxiliary-tasks-to-better-connect-buyers--sellers?_=1775223013790",
+   "published": "2026-03-20",
+   "published_ts": 1774031516.0,
+   "summary": "When buyers search on Etsy, they need to quickly and easily find the perfect item. At the same time, sellers need to be confident their unique products are being seen by the right customers. Our Ads Search ranking model, which is built on a multitask learning foundation, is the critical link in this connection. Recently, we identified an opportunity to drive more meaningful buyer engagement by enhancing our model’s ability to predict purchase intent. We achieved this via a dual-pronged improvement: introducing Multigate Mixture of Experts (MMoE) to our model architecture and leveraging add-to-…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "MoE"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "437927ba76753100"
+  },
+  {
    "key": "woowahan",
    "company": "우아한형제들",
    "country": "KR",
@@ -9120,6 +9534,30 @@
    ],
    "lang": "en",
    "content_id": "f191eff16d1fc930"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Migrating Etsy’s database sharding to Vitess",
+   "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess?_=1775223013790",
+   "published": "2026-03-19",
+   "published_ts": 1773954234.0,
+   "summary": "Etsy has maintained a sharded MySQL architecture since around 2010. This database cluster contains most of Etsy’s online data and is made up of ~1,000 tables distributed across ~1,000 shards. Over the last 16 years, it has grown significantly: combined, these tables have over 425 TB of data and receive roughly 1.7 million requests per second.\n\nEtsy engineers access our MySQL data through a proprietary object-relational mapping (ORM). The ORM has a corresponding model for each MySQL table. When a table is sharded, its rows are partitioned among different databases known as shards. Each shard ha…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "MySQL",
+    "SQLite",
+    "Algorithm"
+   ],
+   "categories": [
+    "언어",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "c1138f234a3f851d"
   },
   {
    "key": "slack",
@@ -11212,6 +11650,35 @@
    "content_id": "cbff216acd459112"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "How Etsy Uses LLMs to Improve Search Relevance",
+   "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance?_=1775223013790",
+   "published": "2026-01-16",
+   "published_ts": 1768593748.0,
+   "summary": "Ever searched for something specific, only to be met with results that are close, but not quite? On Etsy’s Search Relevance team, that frustration is exactly what we are tackling. Our goal is simple yet ambitious: to help buyers find exactly what they’re looking for, and to help sellers reach the people seeking their special products.\n\nSearch plays a central role in that mission. Historically, Etsy’s search models have relied heavily on engagement signals – such as clicks, add-to-carts, and purchases – as proxies for relevance. These signals are objective, but they can also be biased: popular…",
+   "tags": [],
+   "tech_stack": [
+    "Julia",
+    "Machine Learning",
+    "BERT",
+    "Fine-tuning",
+    "LLM",
+    "Prompt Engineering",
+    "vLLM",
+    "Embedded"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "펌웨어/임베디드"
+   ],
+   "lang": "en",
+   "content_id": "2401f9cc8e82d29b"
+  },
+  {
    "key": "banksalad",
    "company": "뱅크샐러드",
    "country": "KR",
@@ -12681,6 +13148,34 @@
    "content_id": "ac71b0da44b91a74"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Reducing experiment duration with predicted control variates",
+   "url": "https://www.etsy.com/codeascraft/reducing-experiment-duration-with-predicted-control-variates?_=1775223013790",
+   "published": "2025-11-25",
+   "published_ts": 1764088106.0,
+   "summary": "In 2021, we published a blog post titled “Increasing experimentation accuracy and speed by using control variates,” describing how we reduce the variance of metrics using CUPED in our experimentation platform. This is a follow-up on how CUPED has evolved at Etsy since then. Spoiler – It’s changed a lot, decreasing our average experiment duration by 3 days!\n\nEtsy’s mission is to Keep Commerce Human. To achieve this, we need to understand the impact each change to our platform has on our buyers' and sellers' experience. Whether that involves changing the color of the “Buy Now” button on the Etsy…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "LightGBM",
+    "Machine Learning",
+    "XGBoost",
+    "Airflow",
+    "Spark",
+    "BigQuery"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "데이터베이스"
+   ],
+   "lang": "en",
+   "content_id": "62f093562956a173"
+  },
+  {
    "key": "spotify-r",
    "company": "Spotify R&D",
    "country": "US",
@@ -12978,6 +13473,28 @@
    "content_id": "7fdff3c47a3e70d2"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Improving performance by prefetching product pages from Etsy Search",
+   "url": "https://www.etsy.com/codeascraft/search-prefetching-performance?_=1775223013790",
+   "published": "2025-10-29",
+   "published_ts": 1761758049.0,
+   "summary": "Rarely are there opportunities for big, bold, game-changing improvements in web performance. The Speculation Rules API (SRA) is a recent browser development that offers just such an opportunity. This post details a joint effort between the search and the web performance teams at Etsy to implement SRA on Etsy search pages and drastically improve the performance of product listing pages with some metrics seeing 20-24% improvements and some dropping all the way to 0ms values.\n\nPrefetching Options\n\nThere are two main ways to predictively fetch resources for the next page:\n\n<link rel=\"prefetch\"> al…",
+   "tags": [],
+   "tech_stack": [
+    "JavaScript",
+    "CSS",
+    "HTML"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드"
+   ],
+   "lang": "en",
+   "content_id": "342f05f656f57537"
+  },
+  {
    "key": "kurly",
    "company": "컬리",
    "country": "KR",
@@ -13062,6 +13579,32 @@
    ],
    "lang": "en",
    "content_id": "edb01f47aeb3f243"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Understanding Etsy’s Vast Inventory with LLMs",
+   "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms?_=1775223013790",
+   "published": "2025-10-13",
+   "published_ts": 1760378319.0,
+   "summary": "For more than 20 years, Etsy has been the destination for human creativity online. Our marketplace is home to more than 100 million special items made, handpicked and designed by more than 5 million sellers. These items and the real people behind them are what set us apart. But while the huge variety of Etsy’s inventory is one of our greatest strengths, it also creates fundamental engineering challenges specific to our marketplace.\n\nThe challenge: Etsy’s unique inventory\n\nWith millions of creative items across thousands of categories – many of which are unique – it’s difficult to accurately ca…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "LLM",
+    "Transformer",
+    "Observability",
+    "Benchmark"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "관측성",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "8cf37030572e4f1c"
   },
   {
    "key": "kurly",
@@ -13154,6 +13697,33 @@
    ],
    "lang": "en",
    "content_id": "845981726183a77b"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Unlocking Faster Insights with Experimenter-Defined Segmentations",
+   "url": "https://www.etsy.com/codeascraft/unlocking-faster-insights-with-experimenter-defined-segmentations?_=1775223013790",
+   "published": "2025-10-08",
+   "published_ts": 1759937522.0,
+   "summary": "Imagine you have a fabulous idea to drive more sales on Etsy by giving out free ice cream with every purchase. How would you know if it will actually work?\n\nOne way to test this out is to run an experiment! An experiment is a learning tool that can help us see if a new change really affects user behavior and key metrics we care about. At Etsy, we run nearly 2000 experiments a year for testing new ideas to improve the user experience for our buyers and sellers.\n\nFor our ice cream idea, we could set up our experiment as an A/B test on the listing page, where one group of users (the “control” gro…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "React",
+    "Data Pipeline",
+    "BigQuery",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "데이터",
+    "데이터베이스",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "07b1130e8ebbce76"
   },
   {
    "key": "cookpad",
@@ -13337,7 +13907,12 @@
    "published": "2025-09-15",
    "published_ts": 1757894400.0,
    "summary": "At SoundCloud, we’re always looking for ways to improve the listening experience for our creators, partners, and listeners. One of the…",
-   "tags": [],
+   "tags": [
+    "API",
+    "Announcement",
+    "Transcodings",
+    "Streaming"
+   ],
    "tech_stack": [],
    "categories": [],
    "lang": "en",
@@ -13476,6 +14051,36 @@
    "content_id": "1c58980b7e562c32"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Building Etsy Buyer Profiles with LLMs",
+   "url": "https://www.etsy.com/codeascraft/building-etsy-buyer-profiles-with-llms?_=1775223013790",
+   "published": "2025-09-03",
+   "published_ts": 1756935615.0,
+   "summary": "Every day, shoppers from Etsy's community of nearly 90M buyers visit our marketplace to search for unique, handmade, and vintage items. But with over 100 million listings, how do we help each buyer find exactly what they're looking for? Traditional search and recommendation systems often fall short of capturing the nuanced interests that make each Etsy buyer unique, from specific styles to aesthetic preferences. At Etsy, understanding our buyers' interests is central to delivering engaging, personalized experiences.\n\nRecently, we explored enhancing our personalization by leveraging large langu…",
+   "tags": [],
+   "tech_stack": [
+    "Julia",
+    "Feature Store",
+    "LLM",
+    "Airflow",
+    "BigQuery",
+    "Concurrency",
+    "Data Structure"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "데이터",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "0fcc725b5911a8b0"
+  },
+  {
    "key": "cookpad",
    "company": "Cookpad",
    "country": "JP",
@@ -13592,6 +14197,35 @@
    ],
    "lang": "en",
    "content_id": "b962014631f995f2"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Context engineering case studies: Etsy-specific question answering",
+   "url": "https://www.etsy.com/codeascraft/context-engineering-case-studies-etsy-specific-question-answering?_=1775223013790",
+   "published": "2025-08-19",
+   "published_ts": 1755633881.0,
+   "summary": "This post investigates the benefits and limitations of prompt engineering in two instances of AI-assisted onboarding relying on large language model (LLM) technology. Of particular interest is how truthful (and therefore reliable) LLM-generated answers turn out to be in the context of Etsy-specific question answering. Among other insights, we find that asking the LLM to identify specific source snippets is a good way to flag potential hallucinations.\n\nOver the past few years, pre-trained large-scale/foundation language models such as OpenAI’s o-series [1] and Google’s Gemini family [2] have re…",
+   "tags": [],
+   "tech_stack": [
+    "Express",
+    "NLP",
+    "Embedding",
+    "Fine-tuning",
+    "Gemini",
+    "LLM",
+    "Prompt Engineering",
+    "GCP"
+   ],
+   "categories": [
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "db1a965a3567f738"
   },
   {
    "key": "ft",
@@ -14209,7 +14843,10 @@
    "published": "2025-04-29",
    "published_ts": 1745884800.0,
    "summary": "To all developers using SoundCloud’s public API — we’re introducing an important change that will affect how you reference resources like…",
-   "tags": [],
+   "tags": [
+    "API",
+    "Announcement"
+   ],
    "tech_stack": [],
    "categories": [],
    "lang": "en",
@@ -14345,7 +14982,10 @@
    "published": "2025-04-03",
    "published_ts": 1743638400.0,
    "summary": "A while ago we made an improvement to how track and artist information is displayed on SoundCloud, making it clearer and easier to…",
-   "tags": [],
+   "tags": [
+    "API",
+    "Announcements"
+   ],
    "tech_stack": [],
    "categories": [],
    "lang": "en",
@@ -14464,6 +15104,21 @@
    "categories": [],
    "lang": "en",
    "content_id": "58fef53caaa0d048"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Behind the Scenes - A Glimpse into Tax Calculations",
+   "url": "https://www.etsy.com/codeascraft/behind-the-scenes---a-glimpse-to-tax-calculations?_=1775223013790",
+   "published": "2025-03-29",
+   "published_ts": 1743242603.0,
+   "summary": "In the past, sellers were responsible for managing and fulfilling their own tax obligations.\nHowever, more and more jurisdictions are now requiring marketplaces such as Etsy to collect the tax from buyers and remit the tax to the relevant authorities. Etsy now plays an active role in collecting tax from buyers and remitting it all over the world. In this post, I will walk you through our tax calculation infrastructure and how we adapted to the ongoing increase in traffic and business needs over the years.\n\nThe tax calculation workflow\n\nWe determine tax whenever a buyer adds an item to their Et…",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "8bd33c80f36073f7"
   },
   {
    "key": "hyperconnect",
@@ -14843,6 +15498,30 @@
    ],
    "lang": "en",
    "content_id": "f5cffb789a696cba"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Adopting Jetpack Compose for Etsy’s Android App",
+   "url": "https://www.etsy.com/codeascraft/adopting-jetpack-compose-for-etsy39s-android-app?_=1775223013790",
+   "published": "2025-01-28",
+   "published_ts": 1738077911.0,
+   "summary": "One of our Guiding Principles at Etsy is that we “commit to our craft.” This means that we have a culture of learning, in which we’re constantly looking for opportunities to improve and learn, adopt industry best practices, and share our findings with our colleagues and our community.\n\nAs part of that process, Etsy recently adopted Jetpack Compose – Android's modern toolkit for defining native UIs – as our preferred means of building our Android app. The process of adoption consisted of a gradual expansion in the size and complexity of features built using Compose, eventually culminating in a…",
+   "tags": [],
+   "tech_stack": [
+    "Kotlin",
+    "Android",
+    "Jetpack Compose",
+    "Design System"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "becaed8ec682b153"
   },
   {
    "key": "29cm",
@@ -15292,7 +15971,12 @@
    "published": "2024-12-02",
    "published_ts": 1733097600.0,
    "summary": "tl;dr: If your app doesn’t store SoundCloud access tokens outside of the context of a user’s client (i.e. a database) the following should…",
-   "tags": [],
+   "tags": [
+    "engineering",
+    "update",
+    "oauth",
+    "authentication"
+   ],
    "tech_stack": [
     "Embedded",
     "JWT"
@@ -16088,6 +16772,32 @@
    "content_id": "38215b33e0a82558"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Machine Learning in Content Moderation at Etsy",
+   "url": "https://www.etsy.com/codeascraft/machine-learning-in-content-moderation-at-etsy?_=1775223013790",
+   "published": "2024-08-06",
+   "published_ts": 1722942903.0,
+   "summary": "At Etsy, we’re focused on elevating the best of our marketplace to help creative entrepreneurs grow their businesses. We continue to invest in making Etsy a safe and trusted place to shop, so sellers’ extraordinary items can shine.\n\nToday, there are more than 100 million unique items available for sale on our marketplace, and our vibrant global community is made up of over 90 million active buyers and 7 million active sellers, the majority of whom are women and sole owners of their creative businesses. To support this growing community, our Trust & Safety team of Product, Engineering, Data, an…",
+   "tags": [],
+   "tech_stack": [
+    "CNN",
+    "Machine Learning",
+    "BERT",
+    "Multimodal",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "c1cc7da0bbe0f520"
+  },
+  {
    "key": "devsisters",
    "company": "데브시스터즈",
    "country": "KR",
@@ -16255,6 +16965,29 @@
    "key": "etsy",
    "company": "Etsy",
    "country": "US",
+   "title": "Enhancing Cloud Usage Forecasting, Monitoring & Optimizing",
+   "url": "https://www.etsy.com/codeascraft/enhancing-cloud-usage-forecasting-monitoring--optimizing?_=1775223013790",
+   "published": "2024-06-17",
+   "published_ts": 1718632696.0,
+   "summary": "In 2020, Etsy concluded its migration from an on-premise data center to the Google Cloud Platform (GCP). During this transition, a dedicated team of program managers ensured the migration's success. Post-migration, this team evolved into the Etsy FinOps team, dedicated to maximizing the organization's cloud value by fostering collaborations within and outside the organization, particularly with our Cloud Providers.\n\nPositioned within the Engineering organization under the Chief Architect, the FinOps team operates independently of any one Engineering org or function and optimizes globally rathe…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "BigQuery",
+    "GCP"
+   ],
+   "categories": [
+    "AI/ML",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "2146638a5a1f9dca"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
    "title": "Efficient Visual Representation Learning And Evaluation",
    "url": "https://www.etsy.com/codeascraft/efficient-visual-representation-learning-and-evaluation",
    "published": "2024-06-07",
@@ -16320,6 +17053,40 @@
    "content_id": "229b712424bbdcde"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Efficient Visual Representation Learning And Evaluation",
+   "url": "https://www.etsy.com/codeascraft/efficient-visual-representation-learning-and-evaluation?_=1775223013790",
+   "published": "2024-06-07",
+   "published_ts": 1717780982.0,
+   "summary": "Etsy features a diverse marketplace of unique handmade and vintage items. It’s a visually diverse marketplace as well, and computer vision has become increasingly important to Etsy as a way of enhancing our users’ shopping experience. We’ve developed applications like visual search and visually similar recommendations that can offer buyers an additional path to find what they’re looking for, powered by machine learning models that encode images as vector representations.\n\nFigure 1. Visual representations power applications such as visual search and visually similar recommendations\n\nLearning ex…",
+   "tags": [],
+   "tech_stack": [
+    "Android",
+    "iOS",
+    "CNN",
+    "Computer Vision",
+    "Deep Learning",
+    "Machine Learning",
+    "Attention Mechanism",
+    "Diffusion",
+    "Embedding",
+    "Fine-tuning",
+    "Prompt Engineering",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "모바일",
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "52b2e323120abf7f"
+  },
+  {
    "key": "devsisters",
    "company": "데브시스터즈",
    "country": "KR",
@@ -16348,7 +17115,12 @@
    "published": "2024-04-23",
    "published_ts": 1713830400.0,
    "summary": "Earlier this year, we updated our API Guide to let developers know that SoundCloud authentication is now operating on the OAuth 2.1 protocol…",
-   "tags": [],
+   "tags": [
+    "engineering",
+    "update",
+    "oauth",
+    "authentication"
+   ],
    "tech_stack": [
     "Authentication",
     "OAuth",
@@ -16407,6 +17179,30 @@
    ],
    "lang": "en",
    "content_id": "bc98c287b77946a1"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Macramé: Untangling the Knot on the Etsy Android Listing Screen",
+   "url": "https://www.etsy.com/codeascraft/macrame-untangling-the-knot-on-the-android-listing-screen?_=1775223013790",
+   "published": "2024-03-18",
+   "published_ts": 1710778755.0,
+   "summary": "Easily the most important and complex screen in the Buy on Etsy Android app is the listing screen, where all key information about an item for sale in the Etsy marketplace is displayed to buyers. Far from just a title and description, a price and a few images, over the years the listing screen has come to aggregate ratings and reviews, seller and shipping and stock information, and gained a variety of personalization and recommendation features. As information-rich as it is, as central as it is to the buying experience, for product teams the listing screen is an irresistible place to test out…",
+   "tags": [],
+   "tech_stack": [
+    "Kotlin",
+    "React",
+    "Android",
+    "Jetpack Compose"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "d73928ce02038b20"
   },
   {
    "key": "watcha",
@@ -16507,6 +17303,34 @@
    ],
    "lang": "en",
    "content_id": "96260f70ae98ce90"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "How We Built The Deals Tab in Swift UI",
+   "url": "https://www.etsy.com/codeascraft/how-we-built-the-deals-tab-in-swift-ui?_=1775223013790",
+   "published": "2024-03-05",
+   "published_ts": 1709677374.0,
+   "summary": "Balancing Engineering Ambition with Product Realism\n\nIntroduction\n\nIn July of 2023, Etsy’s App Updates team, responsible for the Updates feed in Etsy’s mobile apps, set off with an ambitious goal: to revamp the Updates tab to become Deals, a home for a shopper’s coupons and sales, in time for Cyber Week 2023.\n\nThe Updates tab had been around for years, and in the course of its evolution ended up serving multiple purposes. It was a hub for updates about a user’s favorite shops and listings, but it was also increasingly a place to start new shopping journeys. Not all updates were created equal.…",
+   "tags": [],
+   "tech_stack": [
+    "Objective-C",
+    "Swift",
+    "iOS",
+    "SwiftUI",
+    "UIKit",
+    "Embedded",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "펌웨어/임베디드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "b4e4690d59314a80"
   },
   {
    "key": "watcha",
@@ -16873,6 +17697,26 @@
    "content_id": "b37a09eacc66086e"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "The AR Measuring Box: Etsy&#39;s answer to Big Tape Measure",
+   "url": "https://www.etsy.com/codeascraft/the-ar-measuring-box-etsys-answer-to-big-tape-measure?_=1775223013790",
+   "published": "2023-09-18",
+   "published_ts": 1695067918.0,
+   "summary": "A little while ago, Etsy introduced a new feature in its iOS app that could place Etsy sellers' artwork on a user's wall using Apple's Augmented Reality (AR) tools. It let them visualize how a piece would look in their space, and even gave them an idea of its size options. When we launched the feature as a beta, it was only available in \"wall art\"-related categories, and after the initial rollout we were eager to expand it to work with more categories.\n\nWhat differentiates Etsy is the nature of our sellers’ unique items. Our sellers create offerings that can be personalized in numbers of ways,…",
+   "tags": [],
+   "tech_stack": [
+    "Android",
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "279a215374e6c256"
+  },
+  {
    "key": "zigbang",
    "company": "직방",
    "country": "KR",
@@ -17073,6 +17917,32 @@
    "content_id": "10838a6bc8b1640c"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "The So-fine Real-time ML Paradigm",
+   "url": "https://www.etsy.com/codeascraft/the-so-fine-real-time-ml-paradigm?_=1775223013790",
+   "published": "2023-09-05",
+   "published_ts": 1693943741.0,
+   "summary": "Introduction\n\nEach year, Etsy hosts an event known as “CodeMosaic” - an internal hackathon in which Etsy admin propose and build bold advances quickly in our technology across a number of different themes. People across Etsy source ideas, organize into teams, and then have 2-3 days to build innovative proofs-of-concept that might deliver big wins for Etsy’s buyers and sellers, or improve internal engineering systems and workflows.\n\nBesides being a ton of fun, CodeMosaic is a time for engineers to pilot novel ideas. Our team’s project this year was extremely ambitious - we wanted to build a sys…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "Machine Learning",
+    "TensorFlow",
+    "Kafka",
+    "GCP"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "7071bc0641f14456"
+  },
+  {
    "key": "devsisters",
    "company": "데브시스터즈",
    "country": "KR",
@@ -17129,7 +17999,12 @@
    "published": "2023-07-31",
    "published_ts": 1690761600.0,
    "summary": "Large Screen Devices - The New Frontier SoundCloud large screen optimized Recently, the Android team at SoundCloud took on a project to…",
-   "tags": [],
+   "tags": [
+    "Android",
+    "Large Screen",
+    "Optimization",
+    "Google"
+   ],
    "tech_stack": [
     "Kotlin",
     "Android",
@@ -17219,6 +18094,34 @@
    ],
    "lang": "en",
    "content_id": "10a2e9c67593fb1c"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Leveraging Real-Time User Actions to Personalize Etsy Ads",
+   "url": "https://www.etsy.com/codeascraft/leveraging-real-time-user-actions-to-personalize-etsy-ads?_=1775223013790",
+   "published": "2023-07-14",
+   "published_ts": 1689364481.0,
+   "summary": "Introduction\n\nPersonalization is vital to connect our unique marketplace to the right buyer at the right time. Etsy has recently introduced a novel, general approach to personalizing ML models based on encoding and learning from short-term (one-hour) sequences of user actions through a reusable three-component deep learning module, the adSformer Diversifiable Personalization Module (ADPM). We describe in detail our method in our recent paper, with an emphasis on personalizing the CTR (clickthrough rate) and PCCVR (post-click conversion rate) ranking models we use in Etsy Ads. Here, we'd like t…",
+   "tags": [],
+   "tech_stack": [
+    "Deep Learning",
+    "Keras",
+    "Machine Learning",
+    "TensorFlow",
+    "Embedding",
+    "Multimodal",
+    "Transformer",
+    "Ablation Study"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "0dab2ab6d27748b7"
   },
   {
    "key": "zigbang",
@@ -17373,7 +18276,11 @@
    "published": "2023-06-02",
    "published_ts": 1685664000.0,
    "summary": "We’re working on improving our API offering. In order to do that, a few changes are coming: We need to revoke access for some of you with…",
-   "tags": [],
+   "tags": [
+    "Update",
+    "API",
+    "Announcements"
+   ],
    "tech_stack": [
     "Security"
    ],
@@ -17646,7 +18553,11 @@
    "published": "2023-01-06",
    "published_ts": 1672963200.0,
    "summary": "I recently celebrated my one year anniversary as a Site Reliability Engineering (SRE) trainee at SoundCloud. Looking back, I had very little…",
-   "tags": [],
+   "tags": [
+    "Engineering Culture",
+    "Learning",
+    "Knowledge Sharing"
+   ],
    "tech_stack": [
     "GCP",
     "Kubernetes"
@@ -17704,7 +18615,12 @@
    "published": "2022-11-11",
    "published_ts": 1668124800.0,
    "summary": "We recently made updates to our SoundCloud iOS and Android apps to address key user experience (UX) fixes according to user feedback. We’ll…",
-   "tags": [],
+   "tags": [
+    "Updates",
+    "App",
+    "iOS",
+    "Android"
+   ],
    "tech_stack": [
     "Android",
     "iOS"
@@ -17724,7 +18640,10 @@
    "published": "2022-10-25",
    "published_ts": 1666656000.0,
    "summary": "In an earlier blog post, we talked about how we changed the interview process during remote working as a way of improving our recruiting…",
-   "tags": [],
+   "tags": [
+    "Engineering",
+    "Interviewing"
+   ],
    "tech_stack": [],
    "categories": [],
    "lang": "en",
@@ -17739,7 +18658,12 @@
    "published": "2022-10-17",
    "published_ts": 1665964800.0,
    "summary": "We recently made updates to our SoundCloud iOS and Android apps to address key user experience (UX) fixes according to user feedback. We’ll…",
-   "tags": [],
+   "tags": [
+    "Updates",
+    "App",
+    "iOS",
+    "Android"
+   ],
    "tech_stack": [
     "Android",
     "iOS"
@@ -17759,7 +18683,11 @@
    "published": "2022-10-13",
    "published_ts": 1665619200.0,
    "summary": "The SoundCloud Android app recently got a significant makeover: a “new year, new me” type of thing. Our remarkable design team and…",
-   "tags": [],
+   "tags": [
+    "Android",
+    "Images",
+    "Picasso"
+   ],
    "tech_stack": [
     "Android",
     "Data Structure"
@@ -17780,7 +18708,14 @@
    "published": "2022-09-19",
    "published_ts": 1663545600.0,
    "summary": "We’ve seen considerable adoption of our internal humane registry, Services Directory, since we sanitized ownership definition and introduced…",
-   "tags": [],
+   "tags": [
+    "Engineering",
+    "Humane Registry",
+    "DevXP",
+    "Tooling",
+    "Automation",
+    "Backstage"
+   ],
    "tech_stack": [
     "Go",
     "SQL",
@@ -17816,7 +18751,12 @@
    "published": "2022-08-02",
    "published_ts": 1659398400.0,
    "summary": "SoundCloud has a variety of resource groups, and one such group is called Women in Engineering, or WINE. The mission statement of the group…",
-   "tags": [],
+   "tags": [
+    "WINE",
+    "Engineering",
+    "Workshops",
+    "DEI"
+   ],
    "tech_stack": [
     "iOS"
    ],
@@ -17835,7 +18775,11 @@
    "published": "2022-07-12",
    "published_ts": 1657584000.0,
    "summary": "The first step to any code review is understanding what the code does and why. Although the author is by far the most qualified person to…",
-   "tags": [],
+   "tags": [
+    "GitHub",
+    "Knowledge Sharing",
+    "Engineering Culture"
+   ],
    "tech_stack": [
     "Git"
    ],
@@ -17854,7 +18798,11 @@
    "published": "2022-04-19",
    "published_ts": 1650326400.0,
    "summary": "I’m a backend developer who worked extensively writing code in Golang before joining SoundCloud. SoundCloud mostly uses Scala for its…",
-   "tags": [],
+   "tags": [
+    "Engineering",
+    "Go",
+    "Scala"
+   ],
    "tech_stack": [
     "C++",
     "Go",
@@ -17884,7 +18832,12 @@
    "published": "2022-03-14",
    "published_ts": 1647216000.0,
    "summary": "This is the story of how we used the Strangler pattern to migrate our public API from a monolithic codebase to a fully fledged BFF over the…",
-   "tags": [],
+   "tags": [
+    "Engineering",
+    "Architecture",
+    "BFF",
+    "Microservices"
+   ],
    "tech_stack": [
     "Ruby",
     "Scala",
@@ -17910,7 +18863,15 @@
    "published": "2022-02-01",
    "published_ts": 1643673600.0,
    "summary": "In a previous blog post, we explained how we built an internal pull-based exception monitoring service called Periskop — which is heavily…",
-   "tags": [],
+   "tags": [
+    "Engineering",
+    "Go",
+    "Python",
+    "Scala",
+    "Ruby",
+    "Monitoring",
+    "Open Source"
+   ],
    "tech_stack": [
     "Go",
     "Python",
@@ -17945,7 +18906,13 @@
    "published": "2022-01-06",
    "published_ts": 1641427200.0,
    "summary": "Imagine yourself as an engineer who just joined SoundCloud. Besides meeting your colleagues and getting your new laptop, badge, and that…",
-   "tags": [],
+   "tags": [
+    "Engineering",
+    "Humane Registry",
+    "DevXP",
+    "Tooling",
+    "Automation"
+   ],
    "tech_stack": [
     "Java",
     "Prometheus"
