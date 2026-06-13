@@ -251,7 +251,19 @@ export function RadarView() {
         </div>
       )}
 
-      {selected && <RadarDetail company={selected} onClose={closeCompany} />}
+      {selected && (() => {
+        // 현재 필터 목록 안에서 이전/다음 회사로 이동(딥링크 유지). 목록 밖이면 비활성.
+        const idx = filtered.findIndex((c) => c.key === selected.key)
+        return (
+          <RadarDetail
+            company={selected}
+            onClose={closeCompany}
+            position={idx >= 0 ? { cur: idx + 1, total: filtered.length } : null}
+            onPrev={idx > 0 ? () => openCompany(filtered[idx - 1]) : undefined}
+            onNext={idx >= 0 && idx < filtered.length - 1 ? () => openCompany(filtered[idx + 1]) : undefined}
+          />
+        )
+      })()}
     </div>
   )
 }
@@ -491,21 +503,37 @@ function ContentBadges({ company }: { company: RadarCompany }) {
   )
 }
 
-function RadarDetail({ company, onClose }: { company: RadarCompany; onClose: () => void }) {
+function RadarDetail({
+  company,
+  onClose,
+  position,
+  onPrev,
+  onNext,
+}: {
+  company: RadarCompany
+  onClose: () => void
+  position?: { cur: number; total: number } | null
+  onPrev?: () => void
+  onNext?: () => void
+}) {
   const stackEntries = (['backend', 'frontend', 'data', 'infra'] as const)
     .map((k) => [k, company.stack[k]] as const)
     .filter(([, v]) => v && v.length > 0)
 
-  // ESC 로 닫기 + 배경 스크롤 잠금 (블로그 상세와 동일한 동작)
+  // ESC 로 닫기, ←/→ 로 이전·다음 회사 이동 + 배경 스크롤 잠금
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      else if (e.key === 'ArrowLeft' && onPrev) onPrev()
+      else if (e.key === 'ArrowRight' && onNext) onNext()
+    }
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
     return () => {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
     }
-  }, [onClose])
+  }, [onClose, onPrev, onNext])
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={onClose}>
@@ -529,12 +557,22 @@ function RadarDetail({ company, onClose }: { company: RadarCompany; onClose: () 
             <h2 className="text-xl font-semibold text-(--color-text)">{company.name}</h2>
             {company.summary && <p className="mt-1 text-sm text-(--color-muted)">{company.summary}</p>}
           </div>
-          <button
-            onClick={onClose}
-            className="ml-auto shrink-0 text-(--color-muted) hover:text-(--color-text) text-lg leading-none"
-          >
-            ✕
-          </button>
+          <div className="ml-auto shrink-0 flex items-center gap-1">
+            {position && (
+              <span className="text-xs text-(--color-muted) tabular-nums mr-1">
+                {position.cur}/{position.total}
+              </span>
+            )}
+            <NavBtn onClick={onPrev} title="이전 회사 (←)">‹</NavBtn>
+            <NavBtn onClick={onNext} title="다음 회사 (→)">›</NavBtn>
+            <button
+              onClick={onClose}
+              title="닫기 (Esc)"
+              className="ml-1 text-(--color-muted) hover:text-(--color-text) text-lg leading-none px-1"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         <Section title="주요 언어">
@@ -812,6 +850,27 @@ function DeepDive({ section, defaultOpen }: { section: DeepDiveSection; defaultO
         </div>
       )}
     </div>
+  )
+}
+
+function NavBtn({
+  onClick,
+  title,
+  children,
+}: {
+  onClick?: () => void
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={!onClick}
+      title={title}
+      className="w-7 h-7 flex items-center justify-center rounded border border-(--color-border) text-(--color-text) text-lg leading-none hover:border-(--color-accent) hover:text-(--color-accent) disabled:opacity-30 disabled:hover:border-(--color-border) disabled:hover:text-(--color-text) disabled:cursor-default"
+    >
+      {children}
+    </button>
   )
 }
 
