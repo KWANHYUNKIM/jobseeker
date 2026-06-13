@@ -725,6 +725,12 @@ const ROLE_META: Record<string, { label: string; align: string; color: string }>
 function DebateView({ debate, idKey }: { debate: Debate; idKey: string }) {
   const [tab, setTab] = useState(0)
   const archs = debate.architectures ?? []
+  // 합의 결론이 어떤 후보(변형 A/B/…)를 반영했는지 — 탭에 '채택' 표시로 연결
+  const verdictText = `${debate.verdict?.chosen ?? ''} ${debate.verdict?.rationale ?? ''}`
+  const isChosen = (name: string) => {
+    const m = name.match(/변형\s*[A-Z]/)
+    return m ? verdictText.includes(m[0]) : false
+  }
   return (
     <div className="flex flex-col gap-4">
       {/* 1) 아키텍처 후보 (탭) */}
@@ -741,6 +747,7 @@ function DebateView({ debate, idKey }: { debate: Debate; idKey: string }) {
                     : 'bg-(--color-panel) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
                 }`}
               >
+                {isChosen(a.name) && <span title="합의에 반영된 후보">✓ </span>}
                 {a.name}
               </button>
             ))}
