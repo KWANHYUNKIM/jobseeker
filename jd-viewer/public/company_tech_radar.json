@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T05:00:42",
+ "generated_at": "2026-06-15T06:35:08",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 19,
+ "refined": 21,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -2346,12 +2346,12 @@
    "subdomains": [],
    "languages": [
     {
-     "name": "Python",
+     "name": "Go",
      "count": 4
     },
     {
-     "name": "Go",
-     "count": 3
+     "name": "Python",
+     "count": 4
     },
     {
      "name": "Java",
@@ -2382,14 +2382,14 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 4
-     },
-     {
-      "name": "Java",
-      "count": 2
+      "count": 3
      },
      {
       "name": "Spring Boot",
+      "count": 3
+     },
+     {
+      "name": "Java",
       "count": 2
      },
      {
@@ -2405,15 +2405,19 @@
       "count": 1
      },
      {
+      "name": "gRPC + Protobuf",
+      "count": 1
+     },
+     {
+      "name": "Netty",
+      "count": 1
+     },
+     {
       "name": "Node.js",
       "count": 1
      },
      {
       "name": "Twirp",
-      "count": 1
-     },
-     {
-      "name": "Vapor",
       "count": 1
      }
     ],
@@ -2427,11 +2431,19 @@
       "count": 2
      },
      {
+      "name": "AVKit / AVFoundation",
+      "count": 1
+     },
+     {
       "name": "Backstage",
       "count": 1
      },
      {
       "name": "SwiftUI",
+      "count": 1
+     },
+     {
+      "name": "tvOS focus engine",
       "count": 1
      },
      {
@@ -2453,6 +2465,14 @@
       "count": 2
      },
      {
+      "name": "Apache Pinot",
+      "count": 1
+     },
+     {
+      "name": "Apache Solr",
+      "count": 1
+     },
+     {
       "name": "BigQuery",
       "count": 1
      },
@@ -2471,14 +2491,6 @@
      {
       "name": "FoundationDB",
       "count": 1
-     },
-     {
-      "name": "Iceberg",
-      "count": 1
-     },
-     {
-      "name": "Pub/Sub",
-      "count": 1
      }
     ],
     "infra": [
@@ -2489,6 +2501,14 @@
      {
       "name": "AWS",
       "count": 2
+     },
+     {
+      "name": "Apache Mesos",
+      "count": 1
+     },
+     {
+      "name": "Apple HLS origin + multi-CDN",
+      "count": 1
      },
      {
       "name": "Backstage",
@@ -2507,19 +2527,11 @@
       "count": 1
      },
      {
-      "name": "Mesos",
-      "count": 1
-     },
-     {
-      "name": "Private cloud + AWS/GCP",
+      "name": "Private datacenters + AWS/GCP burst",
       "count": 1
      },
      {
       "name": "Spinnaker",
-      "count": 1
-     },
-     {
-      "name": "Titus",
       "count": 1
      }
     ]
@@ -2531,14 +2543,10 @@
     },
     {
      "name": "Event-driven",
-     "count": 3
+     "count": 2
     },
     {
      "name": "Chaos engineering",
-     "count": 1
-    },
-    {
-     "name": "Distributed systems",
      "count": 1
     },
     {
@@ -2546,7 +2554,11 @@
      "count": 1
     },
     {
-     "name": "Real-time streaming",
+     "name": "Edge-origin media delivery",
+     "count": 1
+    },
+    {
+     "name": "Event-driven / streaming",
      "count": 1
     }
    ]
@@ -3217,6 +3229,10 @@
      "count": 1
     },
     {
+     "name": "Python",
+     "count": 1
+    },
+    {
      "name": "Rust",
      "count": 1
     }
@@ -3224,11 +3240,19 @@
    "stack": {
     "backend": [
      {
+      "name": "Cap'n Proto RPC",
+      "count": 1
+     },
+     {
       "name": "Go",
       "count": 1
      },
      {
       "name": "gRPC",
+      "count": 1
+     },
+     {
+      "name": "Lua",
       "count": 1
      },
      {
@@ -3246,6 +3270,14 @@
       "count": 1
      },
      {
+      "name": "Remix/Pages",
+      "count": 1
+     },
+     {
+      "name": "Tailwind",
+      "count": 1
+     },
+     {
       "name": "TypeScript",
       "count": 1
      }
@@ -3253,6 +3285,10 @@
     "data": [
      {
       "name": "ClickHouse",
+      "count": 1
+     },
+     {
+      "name": "D1",
       "count": 1
      },
      {
@@ -3266,6 +3302,18 @@
      {
       "name": "PostgreSQL",
       "count": 1
+     },
+     {
+      "name": "Quicksilver",
+      "count": 1
+     },
+     {
+      "name": "R2",
+      "count": 1
+     },
+     {
+      "name": "Workers KV",
+      "count": 1
      }
     ],
     "infra": [
@@ -3274,11 +3322,23 @@
       "count": 1
      },
      {
+      "name": "BGP",
+      "count": 1
+     },
+     {
       "name": "Kubernetes",
       "count": 1
      },
      {
-      "name": "Quicksilver",
+      "name": "Linux",
+      "count": 1
+     },
+     {
+      "name": "Salt/config push",
+      "count": 1
+     },
+     {
+      "name": "XDP/eBPF",
       "count": 1
      }
     ]
@@ -3289,11 +3349,15 @@
      "count": 1
     },
     {
-     "name": "Edge computing",
+     "name": "Edge computing / globally distributed",
      "count": 1
     },
     {
-     "name": "Serverless isolates",
+     "name": "Every server runs every service",
+     "count": 1
+    },
+    {
+     "name": "Serverless V8 isolates",
      "count": 1
     }
    ]
@@ -6994,40 +7058,53 @@
     "Go",
     "JavaScript",
     "C",
-    "Lua"
+    "Lua",
+    "Python"
    ],
    "stack": {
     "backend": [
-     "Rust",
-     "Go",
+     "Rust (Pingora, Oxy)",
+     "Go (control plane APIs)",
      "Workers (V8 isolates)",
-     "gRPC"
+     "Cap'n Proto RPC",
+     "gRPC",
+     "Lua (legacy FL on OpenResty/NGINX)"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Remix/Pages",
+     "Tailwind"
     ],
     "data": [
      "ClickHouse",
      "Kafka",
      "PostgreSQL",
-     "Durable Objects"
+     "Quicksilver (KV)",
+     "Durable Objects",
+     "R2 (object storage)",
+     "D1 (edge SQLite)",
+     "Workers KV"
     ],
     "infra": [
-     "Anycast edge network",
+     "Anycast edge network (300+ cities)",
      "Kubernetes",
-     "Quicksilver"
+     "BGP",
+     "XDP/eBPF (L4Drop)",
+     "Salt/config push",
+     "Linux"
     ]
    },
    "architecture": [
-    "Edge computing",
+    "Edge computing / globally distributed",
     "Anycast network",
-    "Serverless isolates"
+    "Serverless V8 isolates",
+    "Every server runs every service (homogeneous fleet)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    USER[\"End User Request<br/>HTTP/HTTPS\"]\n  end\n  subgraph EdgeNetwork\n    ANY[\"Anycast Network<br/>Global Edge PoPs\"]\n    PINGORA[\"Reverse Proxy<br/>Pingora Rust\"]\n  end\n  subgraph Compute\n    WORKERS[\"Serverless<br/>Workers V8 Isolates\"]\n    DO[\"Stateful Edge<br/>Durable Objects\"]\n  end\n  subgraph ControlPlane\n    GO[\"Control Services<br/>Go\"]\n    QS[\"Config Distribution<br/>Quicksilver\"]\n    DASH[\"Dashboard<br/>React + TypeScript\"]\n  end\n  subgraph Data\n    CH[\"Analytics<br/>ClickHouse\"]\n    KAFKA[\"Event Pipeline<br/>Kafka\"]\n    PG[\"Metadata<br/>PostgreSQL\"]\n  end\n  USER --> ANY\n  ANY --> PINGORA\n  PINGORA --> WORKERS\n  WORKERS --> DO\n  DASH --> GO\n  GO --> QS\n  QS -->|push config| PINGORA\n  PINGORA --> KAFKA\n  KAFKA --> CH\n  GO --> PG",
-   "why_language": "엣지에서 패킷·요청을 안전·고성능으로 처리하려 메모리 안전한 Rust를 핵심 언어로 채택했고, 제어 평면 서비스는 Go로 작성한다. 엣지 프록시도 Rust(Pingora)로 재작성했다.",
-   "why_architecture": "전 세계 엣지 네트워크에서 Anycast로 트래픽을 흡수하고, V8 아이솔레이트 기반 Workers로 서버리스를 엣지에서 실행한다. 보안·성능을 위해 엣지 컴퓨팅이 핵심이다.",
-   "summary": "Rust와 Anycast 엣지·Workers 아이솔레이트로 엣지 컴퓨팅을 선도하는 보안 회사.",
+   "diagram": "flowchart TD\n  subgraph Client\n    U[\"User / Browser<br/>HTTP HTTPS QUIC\"]\n  end\n  subgraph EdgePOP[\"Edge POP - Anycast\"]\n    LB[\"L4 Load Balance<br/>Unimog + XDP eBPF\"]\n    DDOS[\"DDoS Mitigation<br/>L4Drop dosd flowtrackd\"]\n    PROXY[\"HTTP Proxy<br/>Pingora / FL2 Rust\"]\n    WK[\"Workers Runtime<br/>V8 Isolates workerd\"]\n    CACHE[\"Cache Layer<br/>Tiered Cache + Reserve\"]\n  end\n  subgraph EdgeState[\"Edge State\"]\n    QS[\"Quicksilver<br/>global KV config\"]\n    DO[\"Durable Objects<br/>single-instance state\"]\n    D1[\"D1<br/>edge SQLite\"]\n  end\n  subgraph Storage[\"Storage / Origin\"]\n    R2[\"R2<br/>S3-compat object store\"]\n    PG[\"PostgreSQL<br/>control plane\"]\n    ORIGIN[\"Customer Origin<br/>via Argo Tunnel\"]\n  end\n  subgraph Analytics[\"Analytics / Async\"]\n    KAFKA[\"Kafka<br/>log pipeline\"]\n    CH[\"ClickHouse<br/>analytics OLAP\"]\n  end\n  U -->|Anycast BGP| LB\n  LB --> DDOS\n  DDOS --> PROXY\n  PROXY -->|cache miss| CACHE\n  PROXY --> WK\n  WK --> DO\n  WK --> D1\n  WK --> R2\n  CACHE -->|origin pull| ORIGIN\n  PROXY -.reads.-> QS\n  PROXY -->|request logs| KAFKA\n  KAFKA --> CH\n  PG -.config push.-> QS",
+   "why_language": "지구 전체 트래픽의 약 20%를 처리하는 엣지에서 1바이트의 메모리와 1마이크로초가 비용으로 직결되기 때문에, GC가 없고 메모리 안전성을 컴파일 타임에 보장하는 Rust를 데이터플레인(Pingora, Oxy, Workers 런타임)의 핵심 언어로 채택했다. C/Lua 기반 NGINX/OpenResty 레거시(FL)를 Rust로 대체해 메모리 취약점과 GC 멈춤을 제거했고, 개발 속도가 중요한 컨트롤플레인 API와 자동화는 Go로, 고객이 작성하는 서버리스 로직은 V8 위의 JavaScript/TypeScript로 실행한다.",
+   "why_architecture": "전 세계 어디서나 수십 밀리초 안에 응답하려면 중앙 데이터센터가 아니라 사용자 가까이에서 연산해야 하므로, Anycast로 단일 IP를 전 세계 POP이 공유하고 BGP가 가장 가까운 POP으로 라우팅한다. 또한 모든 서버가 모든 서비스(프록시·캐시·Workers·DDoS 방어)를 동일하게 실행하는 동질적 fleet 구조로 용량을 유연하게 흡수하고, 컨테이너/VM 대신 V8 아이솔레이트를 써서 콜드스타트를 사실상 제거했다.",
+   "summary": "GC 없는 Rust 데이터플레인과 V8 아이솔레이트를 전 세계 Anycast 엣지에 균질하게 깔아 지연과 비용을 동시에 잡은 스택",
    "deep_dive": [
     {
      "topic": "Anycast: 하나의 IP를 전 세계가 공유하는 라우팅",
@@ -7048,6 +7125,22 @@
     {
      "topic": "관측성·분석: ClickHouse로 초당 수천만 이벤트 집계",
      "body": "### 엣지 로그의 쓰나미\nCloudflare는 수조 건/일 요청의 로그·메트릭을 다뤄야 한다. 분석 백본은 **ClickHouse**(컬럼형 OLAP)다.\n\n- 로그가 **Kafka**로 모이고 ClickHouse에 적재 → 고객 대시보드(트래픽·위협·캐시 적중률)를 sub-second 질의\n- 컬럼형 저장 + 벡터화 실행으로 **수십억 행 집계를 ms~초**에 — 시계열/카디널리티 높은 데이터에 최적\n- 원시 로그를 다 저장하면 비용 폭발 → **샘플링·집계(materialized view)** 로 카디널리티 통제\n\n### 왜 ClickHouse\n행 기반 OLTP DB로는 이 규모의 애드혹 분석이 불가능하다. 컬럼형은 필요한 컬럼만 읽어 I/O를 줄이고 압축률이 높아, **엣지 텔레메트리처럼 쓰기·집계 무거운** 워크로드에 맞는다. 트레이드오프는 단건 업데이트/트랜잭션 약점이지만, 분석 워크로드엔 무관하다. 이 가시성이 곧 제품(보안 인사이트)이라 핵심 투자다."
+    },
+    {
+     "topic": "엣지 요청 처리 흐름 end-to-end: 패킷이 POP에 들어와 응답이 나가기까지",
+     "body": "### 1. Anycast로 가장 가까운 POP에 도착\n사용자의 패킷은 Cloudflare의 단일 Anycast IP로 향하고, 전 세계 BGP 라우팅이 네트워크상 가장 가까운 POP으로 자동으로 끌어당긴다. 어느 POP에 들어올지는 사전에 정해지지 않고 인터넷 라우팅 상태에 따라 동적으로 결정된다.\n\n### 2. L4 로드밸런싱 — Unimog + XDP\nPOP 안에서 패킷은 먼저 `Unimog`라는 L4 로드밸런서를 만난다. Unimog는 커널의 `XDP`(eBPF) 훅에서 동작해, NIC에 패킷이 도착하자마자 일관 해싱으로 적절한 서버로 재전달(re-forwarding)한다. 핵심 설계는 **모든 서버가 모든 서비스를 실행**하는 동질적 fleet이라는 점이다. 따라서 어떤 서버에 패킷이 떨어져도 처리가 가능하고, Unimog는 서버 부하·헬스에 따라 트래픽 비중을 실시간으로 조정한다.\n\n### 3. DDoS 1차 방어 — L4Drop\nXDP 단계에서 이미 `L4Drop`이 동작한다. 명백한 공격 패턴(스푸핑된 SYN flood, 특정 시그니처)은 커널이 패킷을 유저스페이스로 올리기도 전에 XDP에서 폐기한다. 이 위치 선정이 중요한데, 패킷 처리 비용이 가장 싼 지점에서 버리기 때문에 대용량 볼류메트릭 공격에도 서버 CPU가 보호된다.\n\n### 4. HTTP 프록시 — FL2 / Pingora (Rust)\nTLS 종료 후 HTTP 계층은 과거 OpenResty(NGINX+Lua) 기반의 `FL`(FrontLine)이 처리했으나, 현재는 Rust 기반 `Pingora` 프레임워크 위에 올린 차세대 프록시(`FL2`)로 이전했다. 여기서 라우팅, WAF 룰, 캐시 조회, 고객 설정 적용, Workers 호출 결정이 일어난다. 프록시는 고객별 설정을 **`Quicksilver`** 에서 읽는데, Quicksilver는 전 세계 모든 서버에 수 초 내로 복제되는 KV 저장소라 디스크 로컬 읽기 수준의 지연으로 조회된다.\n\n### 5. Workers 실행 (필요 시)\n해당 경로에 Worker가 배포돼 있으면 프록시는 `workerd`(V8 아이솔레이트 런타임)로 요청을 넘긴다. 컨테이너가 아니라 아이솔레이트라 콜드스타트가 사실상 0에 가깝고, Worker는 `Durable Objects`, `D1`, `R2`, `KV`, 캐시 API 등 엣지 바인딩에 접근한다.\n\n### 6. 캐시 조회 → 오리진 풀 → 응답\n캐시 히트면 즉시 응답한다. 미스면 Tiered Cache 상위 계층 또는 고객 오리진으로 풀(pull)하며, 오리진 연결은 종종 `Argo Tunnel`(cloudflared)을 통한 아웃바운드 전용 터널로 이뤄져 오리진 IP를 노출하지 않는다. 응답이 나가는 동시에 요청 메타데이터는 로그 파이프라인(Kafka → ClickHouse)으로 비동기 적재돼 분석/청구/보안 인사이트로 쓰인다.\n\n### 핵심 트레이드오프\n동질적 fleet은 운영을 단순화(어디든 같은 바이너리)하지만, 모든 서버가 무거운 풀스택을 띄워야 하므로 메모리/CPU 효율이 절대적으로 중요해진다. 이 제약이 곧 Rust 채택의 이유로 이어진다."
+    },
+    {
+     "topic": "DDoS 완화 파이프라인: 자동 탐지와 다계층 방어의 실제 동작",
+     "body": "Cloudflare의 DDoS 방어는 사람이 룰을 켜는 방식이 아니라 **거의 전적으로 자동화**된 다계층 파이프라인이다.\n\n### 계층별 구성\n- **L3/4 볼류메트릭 (XDP/eBPF `L4Drop`)**: 커널 NIC 단계에서 시그니처 기반으로 패킷을 폐기. 가장 싼 비용 지점에서의 차단.\n- **`flowtrackd` (Flow Tracking Daemon)**: 상태 기반(stateful) TCP 흐름 검사. SYN/ACK 시퀀스를 추적해 비대칭 라우팅 환경에서도 비정상 흐름(out-of-state 패킷)을 식별·차단한다. Magic Transit 같은 L3 보호 제품의 핵심.\n- **`dosd` (Denial of Service Daemon)**: 각 서버에서 로컬로 실시간 트래픽 샘플을 분석해 동적으로 mitigation 룰을 생성한다. 중앙 결정에 의존하지 않고 엣지 자율적으로 룰을 만들어 적용 지연을 최소화한다. 수천 개의 동적 핑거프린트를 실시간 생성.\n- **`Gatebot` / autonomous edge system**: 글로벌 단위로 공격을 상관분석해 정책을 fleet 전체에 전파.\n- **L7 (HTTP) 방어**: 프록시 계층에서 행위 기반 탐지, rate limiting, Managed Challenge(JS/captcha 대체)로 봇과 사람을 구분.\n\n### 동작 원리의 핵심\n탐지는 ClickHouse/실시간 스트림으로 들어오는 트래픽 메트릭에서 baseline 대비 이상을 잡고, **mitigation은 탐지 지점과 최대한 가까운 곳(가능하면 커널)** 에서 수행한다. 이는 'detect centrally, mitigate at the edge as cheaply as possible'라는 철학이다.\n\n### 왜 이렇게 하는가\n역대 최대급 공격(예: 수천만~수억 RPS급 HTTP/2 Rapid Reset, Tbps급 볼류메트릭)을 사람 개입 없이 흡수해야 하기 때문이다. 공격 트래픽을 유저스페이스로 올려 처리하면 그 자체가 자원 소모 공격이 되므로, XDP에서 버리는 것이 결정적이다. 또한 동질적 Anycast fleet 덕분에 공격 트래픽이 자연스럽게 전 세계 수백 POP으로 분산되어 단일 지점이 무너지지 않는다."
+    },
+    {
+     "topic": "엣지 스토리지 3종 — R2 · D1 · Durable Objects의 일관성과 샤딩 전략",
+     "body": "Workers 생태계는 서로 다른 일관성/지연 특성을 가진 스토리지를 용도별로 제공한다.\n\n### R2 — Zero-egress 오브젝트 스토리지\n`R2`는 S3 호환 API를 제공하는 오브젝트 스토리지로, 최대 차별점은 **egress 요금 0원**이다. 데이터를 다시 꺼낼 때 네트워크 비용을 받지 않아 S3 lock-in의 핵심 페인포인트를 공략한다. 내부적으로는 메타데이터 일관성을 위해 Durable Objects를 활용하며, 쓰기는 강한 일관성(read-after-write)을 보장한다. 자주 접근되는 객체는 캐시 계층으로 끌어올려 엣지에서 바로 서빙한다.\n\n### D1 — 엣지의 SQLite\n`D1`은 SQLite를 기반으로 한 관계형 DB다. 각 D1 데이터베이스는 하나의 primary 인스턴스(사실상 Durable Object로 구현)를 가지며, 읽기는 **read replication**으로 여러 지역에 비동기 복제본을 두어 지역 근처에서 읽고, 쓰기는 primary로 라우팅된다(읽기 다수·쓰기 소수 워크로드에 최적). SQLite를 고른 이유는 단일 파일·임베디드 특성이 '데이터베이스를 코드 가까이 엣지에 둔다'는 모델과 잘 맞기 때문이다.\n\n### Durable Objects — 단일 인스턴스 강한 일관성\n`Durable Objects(DO)`는 '전 세계에 단 하나만 존재하는 객체'를 보장한다. 동일 객체 ID로의 모든 요청은 같은 단일 인스턴스로 라우팅되어 직렬화되므로, 분산 락 없이도 강한 일관성과 코디네이션이 가능하다. 채팅방, 협업 문서, 게임 세션, 카운터, 큐처럼 **상태 조율이 필요한** 워크로드의 기본 빌딩블록이다. 스토리지는 객체에 붙어 있는 트랜잭션 KV이며, 최근에는 SQLite 백엔드 DO로 더 풍부한 쿼리를 지원한다.\n\n### 샤딩/배치 전략\n샤딩의 단위는 곧 객체 ID다. 사용자는 키(예: 방 ID, 사용자 ID)로 DO를 생성해 자연스럽게 데이터를 분할하고, 플랫폼은 처음 접근한 위치 근처에 인스턴스를 배치해 지연을 줄인다. '강한 일관성이 필요한 작은 단위를 단일 인스턴스로 격리'하는 것이 분산 합의(Raft/Paxos)의 복잡성을 피하면서 일관성을 얻는 Cloudflare식 해법이다.\n\n| 스토리지 | 일관성 | 적합 용도 |\n|---|---|---|\n| R2 | 강한 일관성(쓰기 후 읽기) | 대용량 파일·미디어·백업 |\n| D1 | primary 강일관 / replica 최종일관 | 관계형 쿼리, 읽기 위주 앱 |\n| Durable Objects | 단일 인스턴스 강일관 | 실시간 조율·세션·카운터 |\n| Workers KV | 최종 일관성 | 전역 읽기 캐시·설정 |"
+    },
+    {
+     "topic": "캐싱 계층의 구조: Tiered Cache, Cache Reserve, Argo Smart Routing",
+     "body": "Cloudflare의 캐시는 단일 계층이 아니라 오리진 부하를 줄이고 hit rate를 극대화하는 다층 구조다.\n\n### 기본 — POP 로컬 캐시\n각 POP에는 디스크/메모리 기반 캐시가 있다. 사용자와 가까운 POP에서 캐시 히트가 나면 오리진까지 가지 않는다. 하지만 POP이 300개가 넘다 보니, 캐시를 POP마다 독립적으로 채우면 같은 객체를 여러 POP이 각각 오리진에서 받아와 **오리진 부하가 POP 수만큼 증폭**되는 문제가 생긴다.\n\n### Tiered Cache — 상·하위 계층 위계\n이를 풀기 위해 `Tiered Cache`는 POP을 lower-tier(사용자 근처)와 upper-tier(오리진 근처 또는 대형 허브)로 위계화한다. lower-tier에서 미스가 나면 오리진으로 직행하지 않고 **upper-tier에 먼저 물어본다.** 그 결과 오리진은 사실상 소수의 upper-tier로부터만 풀 요청을 받게 되어 오리진 적중 트래픽이 극적으로 줄고 전체 hit rate가 오른다. Argo Tiered Cache는 토폴로지를 동적으로 최적화한다.\n\n### Cache Reserve — R2 기반 영속 캐시\n`Cache Reserve`는 R2를 백엔드로 하는 영속적 캐시 계층이다. 일반 캐시는 인기도/공간에 따라 evict되지만, Cache Reserve에 넣은 객체는 장기 보존되어 잘 안 쓰이는 콘텐츠도 오리진까지 가지 않고 서빙된다. egress 무료인 R2 특성과 결합해 오리진 풀을 최소화한다.\n\n### Argo Smart Routing\n캐시 미스로 오리진까지 가야 할 때, 공용 인터넷의 혼잡 경로 대신 Cloudflare 백본에서 실시간 지연/패킷손실 측정 기반의 최적 경로로 트래픽을 보낸다. 마치 '인터넷의 웨이즈(Waze)'처럼 혼잡 구간을 우회해 오리진 왕복 지연을 줄인다.\n\n### 종합 흐름\n사용자 → lower-tier POP 캐시 → (미스) upper-tier 캐시 → (미스) Cache Reserve(R2) → (미스) Argo 최적 경로로 오리진 풀. 각 단계가 다음 단계의 부하를 흡수해, 오리진은 전체 요청의 극히 일부만 보게 된다. 이것이 'eyeball에 가까운 캐시 + 오리진 부하 집약'이라는 두 목표를 동시에 만족시키는 설계다."
     }
    ],
    "debate": {
@@ -7152,39 +7245,47 @@
      {
       "name": "cloudflare/pingora",
       "url": "https://github.com/cloudflare/pingora",
-      "desc": "Rust로 작성된 고성능 프록시 프레임워크",
+      "desc": "NGINX를 대체한 Rust 비동기 HTTP 프록시 프레임워크/엔진",
       "lang": "Rust",
-      "stars": 26820
+      "stars": 26828
      },
      {
       "name": "cloudflare/quiche",
       "url": "https://github.com/cloudflare/quiche",
-      "desc": "QUIC 및 HTTP/3 구현체",
+      "desc": "QUIC 및 HTTP/3 프로토콜의 Rust 구현체",
       "lang": "Rust",
-      "stars": 11560
+      "stars": 11562
+     },
+     {
+      "name": "cloudflare/cfssl",
+      "url": "https://github.com/cloudflare/cfssl",
+      "desc": "PKI/TLS 인증서 발급 및 번들링 툴킷",
+      "lang": "Go",
+      "stars": 9437
      },
      {
       "name": "cloudflare/workerd",
       "url": "https://github.com/cloudflare/workerd",
-      "desc": "Cloudflare Workers 런타임",
+      "desc": "Workers를 구동하는 V8 아이솔레이트 기반 서버리스 런타임",
       "lang": "C++",
-      "stars": 8306
+      "stars": 8307
      },
      {
-      "name": "cloudflare/workers-sdk",
-      "url": "https://github.com/cloudflare/workers-sdk",
-      "desc": "Workers 개발/배포 CLI 및 SDK",
-      "lang": "TypeScript",
-      "stars": 4152
+      "name": "cloudflare/boringtun",
+      "url": "https://github.com/cloudflare/boringtun",
+      "desc": "WARP에 쓰이는 WireGuard 프로토콜의 사용자공간 Rust 구현",
+      "lang": "Rust",
+      "stars": 7082
      }
     ]
    },
    "sources": [
-    "https://blog.cloudflare.com",
-    "https://github.com/cloudflare/pingora"
+    "https://blog.cloudflare.com/how-we-built-pingora-the-proxy-that-connects-cloudflare-to-the-internet/",
+    "https://blog.cloudflare.com/introducing-durable-objects/",
+    "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "apple",
@@ -7193,43 +7294,52 @@
    "domain": "스트리밍/미디어",
    "languages": [
     "Swift",
-    "Objective-C",
-    "C++",
     "Java",
-    "Python"
+    "C++",
+    "Objective-C",
+    "Python",
+    "Go"
    ],
    "stack": {
     "backend": [
-     "Java",
-     "Vapor (Swift)",
-     "gRPC"
+     "Java (JVM)",
+     "Vapor (Server-side Swift)",
+     "gRPC + Protobuf",
+     "Spring Boot",
+     "Netty"
     ],
     "frontend": [
      "SwiftUI",
      "UIKit",
-     "React"
+     "AVKit / AVFoundation",
+     "tvOS focus engine",
+     "React (web tv.apple.com)"
     ],
     "data": [
-     "Cassandra",
      "FoundationDB",
-     "Kafka",
-     "Solr"
+     "Cassandra",
+     "Apache Solr",
+     "Apache Kafka",
+     "Redis / memcached",
+     "Apache Pinot"
     ],
     "infra": [
      "Kubernetes",
-     "Mesos",
-     "Private cloud + AWS/GCP"
+     "Apache Mesos",
+     "Private datacenters + AWS/GCP burst",
+     "Apple HLS origin + multi-CDN (Akamai/Limelight + Apple Edge)"
     ]
    },
    "architecture": [
     "Microservices",
-    "Distributed systems",
-    "Event-driven"
+    "Event-driven / streaming",
+    "Edge-origin media delivery (HLS)",
+    "Polyglot persistence"
    ],
-   "diagram": "flowchart TD\n  subgraph Devices\n    IOS[\"iOS/macOS App<br/>SwiftUI + UIKit\"]\n    WEB[\"Web Frontend<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>gRPC\"]\n  end\n  subgraph CoreServices\n    JAVA[\"iCloud Services<br/>Java\"]\n    VAPOR[\"Swift Services<br/>Vapor\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Data\n    FDB[\"Key-Value Store<br/>FoundationDB\"]\n    CASS[\"Wide-Column Store<br/>Cassandra\"]\n    SOLR[\"Search Index<br/>Solr\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes/Mesos\"]\n    CLOUD[\"Hybrid Cloud<br/>Private + AWS/GCP\"]\n  end\n  IOS --> GW\n  WEB --> GW\n  GW -->|gRPC| JAVA\n  GW -->|gRPC| VAPOR\n  JAVA --> FDB\n  JAVA --> CASS\n  VAPOR --> FDB\n  JAVA --> SOLR\n  JAVA --> KAFKA\n  JAVA --> K8S\n  K8S --> CLOUD",
-   "why_language": "디바이스 SDK는 자사 Swift/Objective-C가 절대 중심이고, 서버측 대규모 서비스(iCloud 등)는 Java와 분산 DB로 운영한다. FoundationDB를 인수해 핵심 스토리지로 쓴다.",
-   "why_architecture": "수억 디바이스의 iCloud·서비스 트래픽을 받으려 Cassandra·FoundationDB 위 분산 마이크로서비스로 운영한다. 프라이버시를 위해 자체 데이터센터와 퍼블릭 클라우드를 함께 활용한다.",
-   "summary": "Swift로 디바이스를, FoundationDB·Java로 클라우드 서비스를 떠받치는 비밀주의 거인.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Playback\"]\n    APP[\"Apple TV app<br/>SwiftUI + UIKit\"]\n    PLAYER[\"Playback Engine<br/>AVFoundation + HLS\"]\n  end\n  subgraph Edge[\"Edge / Delivery\"]\n    CDN[\"Multi-CDN<br/>Apple Edge + Akamai\"]\n    ORIGIN[\"HLS Origin<br/>fMP4 + CMAF segments\"]\n  end\n  subgraph API[\"API / Gateway\"]\n    GW[\"Edge API Gateway<br/>gRPC + HTTP2 TLS\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CATALOG[\"Catalog Service<br/>Java + Vapor\"]\n    ENTITLE[\"Entitlement / DRM<br/>FairPlay Streaming\"]\n    RECO[\"Recommendation<br/>ML ranking\"]\n    PLAYBACKSVC[\"Playback Session<br/>gRPC microservices\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    FDB[\"FoundationDB<br/>ACID layers\"]\n    CASS[\"Cassandra<br/>viewing history\"]\n    SOLR[\"Solr<br/>search index\"]\n    PINOT[\"Apache Pinot<br/>realtime OLAP\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>QoS + playback events\"]\n    FLINK[\"Stream Processing<br/>Flink / Spark\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Kubernetes + Mesos<br/>private + cloud burst\"]\n  end\n  APP --> PLAYER\n  PLAYER -->|HLS manifest| CDN\n  CDN --> ORIGIN\n  APP -->|gRPC| GW\n  GW --> CATALOG\n  GW --> ENTITLE\n  GW --> RECO\n  GW --> PLAYBACKSVC\n  ENTITLE -->|FairPlay key| PLAYER\n  CATALOG --> FDB\n  CATALOG --> SOLR\n  PLAYBACKSVC --> CASS\n  RECO --> CASS\n  PLAYER -->|QoS beacons| KAFKA\n  KAFKA --> FLINK\n  FLINK --> PINOT\n  FLINK --> CASS\n  RECO --> PINOT\n  CATALOG --> K8S\n  PLAYBACKSVC --> K8S",
+   "why_language": "Apple TV+/뮤직 같은 미디어 서비스는 클라이언트(tvOS/iOS)가 1순위 표면이라 Swift/Objective-C가 재생·UI를 지배하고, AVFoundation 기반 HLS 재생 스택은 C++로 내려간다. 반면 카탈로그·엔타이틀먼트·추천 같은 대규모 백엔드는 오래된 JVM(Java) 자산과 처리량이 핵심이라 Java가 주력이며, Apple은 server-side Swift(Vapor)와 gRPC로 점진 전환을 시도한다. 데이터·ML 파이프라인 글루는 Python, 인프라 컨트롤플레인은 Go가 맡는 폴리글랏 구조다.",
+   "why_architecture": "수억 디바이스에 글로벌 실시간 스트리밍을 제공하려면 재생(저지연 HLS origin+멀티CDN)과 메타데이터/엔타이틀먼트(마이크로서비스)를 분리해 독립 확장해야 했다. 시청 이벤트·QoS 텔레메트리는 초당 수백만 건이라 Kafka 기반 이벤트 드리븐으로 흘려보내고 Flink/Pinot로 실시간 집계하며, 일관성이 필요한 구독·엔타이틀먼트는 FoundationDB의 ACID 위에 레이어를 쌓아 강한 정합성을 보장한다. 비밀주의 문화상 서비스 사일로가 강해 gRPC 계약과 통합 검증으로 경계를 명확히 한다.",
+   "summary": "Swift 클라이언트 재생 스택 + JVM/Vapor 마이크로서비스를 FoundationDB·Kafka·멀티CDN HLS로 잇는 폴리글랏 스트리밍 아키텍처",
    "deep_dive": [
     {
      "topic": "디바이스↔클라우드 경계: Swift 클라이언트와 분산 백엔드",
@@ -7246,6 +7356,22 @@
     {
      "topic": "비밀주의 엔지니어링: 사일로와 통합 검증",
      "body": "### 정보 격벽이 곧 문화\nApple의 특이한 엔지니어링 결정은 **극단적 정보 사일로(need-to-know)** 다. 팀들이 서로의 프로젝트 전모를 모른 채 인터페이스 계약으로만 협업한다.\n\n- 컴포넌트 단위로 강한 **API 계약**을 정의하고, 통합은 후반에 모아 검증\n- 하드웨어·OS·서비스가 한 회사 안에서 **수직 통합**되어 동시 설계 — 칩(Neural Engine)부터 프레임워크(Core ML)까지\n\n### 트레이드오프\n사일로는 정보 유출을 막고 출시 임팩트를 극대화하지만, **조기 통합 피드백 손실**과 중복 작업 위험이 있다. Apple은 강한 계약과 후반 집중 통합으로 이를 상쇄한다. 수직 통합은 하드/소프트를 함께 최적화(예: 온디바이스 ML을 위한 칩 설계)할 수 있어, 분리된 회사들이 못 하는 성능·프라이버시 통합을 가능케 한다. 비용은 막대한 자체 개발 부담이다."
+    },
+    {
+     "topic": "재생 요청 end-to-end: 앱 탭에서 첫 프레임까지",
+     "body": "### 사용자가 '재생'을 누른 순간 무슨 일이 일어나는가\n\nApple TV app에서 한 타이틀의 재생 버튼을 누르면, 화면 뒤에서 **두 개의 독립적인 평면**이 거의 동시에 깨어난다. 하나는 **컨트롤 플레인(메타데이터/권한)**, 다른 하나는 **데이터 플레인(실제 비디오 비트)**이다. 이 둘이 분리되어 있다는 점이 Apple 스트리밍 아키텍처의 핵심이다.\n\n#### 1단계 — 엔타이틀먼트 & 플레이백 세션 (gRPC)\n- 클라이언트는 `AVPlayerItem`을 만들기 전에 백엔드의 **Playback Session Service**에 gRPC 호출을 보낸다. 페이로드: 콘텐츠 ID, 디바이스 capability(HDR/Dolby Vision/Atmos 지원 여부, 화면 해상도), 구독 토큰.\n- 게이트웨이는 이 요청을 **Entitlement Service**로 라우팅한다. 여기서 \"이 Apple ID가 이 콘텐츠를 지금, 이 지역에서 볼 권리가 있는가\"를 판정한다. 이 판정은 강한 일관성이 필요하므로 뒤에 `FoundationDB`가 있다 — 구독 상태가 막 갱신/취소되었어도 stale read가 나오면 안 된다.\n- 통과하면 서비스는 **재생 세션 토큰**과 **HLS master manifest URL**(서명된, 짧은 TTL)을 돌려준다.\n\n#### 2단계 — manifest fetch & ABR 사다리 협상\n- 클라이언트의 `AVFoundation` 재생 엔진이 master `.m3u8`를 가져온다. 이 manifest에는 여러 비트레이트 variant(예: 480p 2Mbps ~ 4K Dolby Vision 25Mbps+)와 오디오/자막 트랙이 나열된다.\n- `AVPlayer`의 **Adaptive Bitrate(ABR)** 로직이 현재 추정 대역폭과 버퍼 상태를 보고 시작 variant를 고른다. Apple은 의도적으로 ABR 결정을 **클라이언트 측**에 둔다(서버 측 ABR이 아님) — tvOS/iOS 디바이스가 자기 네트워크 상황을 가장 잘 알기 때문이다.\n\n#### 3단계 — FairPlay DRM 핸드셰이크\n- 콘텐츠 세그먼트는 암호화되어 있다. 재생 엔진은 **FairPlay Streaming(FPS)** 키 요청을 만들어 (SPC, Server Playback Context) 라이선스 서버로 보낸다.\n- 라이선스 서버는 CKC(Content Key Context)를 돌려주고, Secure Enclave 수준에서 키가 다뤄져 디코더로만 흘러간다. 이 핸드셰이크가 1단계 엔타이틀먼트와 분리된 이유는 키 회전·라이선스 갱신이 재생 중에도 일어나야 하기 때문이다.\n\n#### 4단계 — 세그먼트 풀 (멀티-CDN)\n- manifest의 미디어 URL은 **multi-CDN**(Apple 자체 Edge + Akamai 등 서드파티)으로 분산된다. 클라이언트는 `fMP4/CMAF` 세그먼트(보통 6초, 저지연 모드에선 더 짧은 chunk)를 순차 GET 한다.\n- CDN edge에 캐시 미스면 **HLS Origin**으로 올라가고, origin은 미리 트랜스코딩·패키징된 세그먼트를 object storage에서 서빙한다. 라이브(스포츠/MLS Season Pass)의 경우 패키저가 실시간으로 chunk를 만들어 낸다.\n\n#### 5단계 — QoS 텔레메트리 역류\n- 재생이 시작되는 순간부터 클라이언트는 **QoS 비콘**(startup time, rebuffer 횟수, bitrate switch, dropped frame)을 백엔드로 흘려보낸다. 이 이벤트들은 `Kafka`로 들어가 Flink로 실시간 집계되며, 다음 재생의 CDN 선택·ABR 튜닝에 피드백된다.\n\n이 전체 파이프라인에서 **첫 프레임까지의 목표 시간(time-to-first-frame)**은 보통 2초 미만이며, 이를 위해 1·2단계 gRPC 호출을 병렬화하고 manifest를 edge에서 캐싱한다."
+    },
+    {
+     "topic": "QoS·시청 텔레메트리 스트리밍 파이프라인 (Kafka → Flink → Pinot)",
+     "body": "### 초당 수백만 재생 이벤트를 어떻게 처리하는가\n\n스트리밍 서비스에서 가장 큰 데이터 볼륨은 콘텐츠 자체(이건 CDN이 처리)가 아니라 **재생 텔레메트리**다. 수억 디바이스가 각각 startup/rebuffer/seek/bitrate-switch/heartbeat 이벤트를 초 단위로 뿜어낸다.\n\n#### 수집 계층 — Kafka\n- 모든 클라이언트 QoS 비콘과 시청 진행 이벤트는 **edge collector**를 거쳐 `Kafka` 토픽으로 들어간다. 토픽은 콘텐츠/이벤트 타입/리전으로 파티셔닝되어 수평 확장된다.\n- Kafka를 버퍼로 두는 이유: 다운스트림(분석·과금·추천)이 일시적으로 느려져도 클라이언트 이벤트 유실 없이 흡수해야 하기 때문. retention을 길게 잡아 재처리(reprocessing)도 가능하게 한다.\n\n#### 처리 계층 — Flink / Spark Streaming\n- **실시간 경로(Flink)**: 윈도우 집계로 \"지금 이 콘텐츠의 동시 시청자 수\", \"특정 CDN의 rebuffer 비율 급증\", \"특정 디바이스 펌웨어의 startup 실패율\" 같은 지표를 수 초 지연으로 계산한다. 이게 라이브 이벤트(스포츠) 중 운영팀이 보는 대시보드를 채운다.\n- **배치 경로(Spark)**: 일/시간 단위로 시청 시간(watch time), 완주율, 추천 학습용 피처를 만든다. 람다 아키텍처에 가깝게 실시간+배치를 병행한다.\n\n#### 서빙 계층 — Apache Pinot\n- 집계 결과는 `Apache Pinot` 같은 **realtime OLAP** 스토어에 적재되어, 운영 대시보드와 내부 분석 쿼리에 밀리초 응답을 준다. \"리전×CDN×비트레이트별 QoS\"처럼 고차원 슬라이스-앤-다이스가 필요하기 때문에 row store가 아니라 columnar OLAP이 맞다.\n- 시청 히스토리(개인별 \"이어보기\" 위치, 본 목록)는 별도로 `Cassandra`에 쓴다 — 키(userId)별 고가용 쓰기와 멀티리전 복제가 핵심이라 OLAP이 아니라 wide-column store가 적합하다.\n\n#### 왜 이렇게 나눴나 (트레이드오프)\n| 요구 | 선택 | 이유 |\n|---|---|---|\n| 이벤트 폭주 흡수 | Kafka | 백프레셔 버퍼 + 재처리 |\n| 초 단위 운영 지표 | Flink | 진짜 스트리밍, 정확한 윈도우 |\n| 고차원 분석 쿼리 | Pinot | columnar realtime OLAP |\n| 개인 시청 상태 | Cassandra | userId 키 고가용 쓰기 |\n\n핵심은 **하나의 만능 저장소를 강요하지 않는 폴리글랏 전략**이다. 같은 재생 이벤트가 운영 모니터링·과금·추천 학습·개인 이어보기라는 4개의 완전히 다른 접근 패턴을 가지므로, 각 패턴에 최적인 엔진으로 fan-out 시킨다."
+    },
+    {
+     "topic": "FairPlay Streaming DRM과 콘텐츠 보호 아키텍처",
+     "body": "### 하드웨어 신뢰 루트 위에 세운 DRM\n\nApple의 프리미엄 미디어(TV+, 4K/Dolby Vision 콘텐츠)는 스튜디오 라이선스 계약상 강한 콘텐츠 보호가 필수다. 이를 **FairPlay Streaming(FPS)**으로 구현하는데, 다른 DRM(Widevine/PlayReady)과의 차별점은 **하드웨어 보안과의 깊은 통합**이다.\n\n#### 키 전달 흐름\n1. 콘텐츠는 패키징 단계에서 AES-128(또는 AES-CBC, HLS `SAMPLE-AES`)로 암호화되고, 키 자체는 콘텐츠와 분리되어 라이선스 서버가 보유한다.\n2. 클라이언트 `AVContentKeySession`이 키가 필요해지면 **SPC(Server Playback Context)**라는 서명·암호화된 요청을 생성한다. 이 SPC는 디바이스의 고유 인증서로 서명되어 \"진짜 Apple 디바이스\"임을 증명한다.\n3. 라이선스 서버(Apple이 운영하는 KSM, Key Security Module)는 SPC를 검증하고 **CKC(Content Key Context)**를 발급한다. CKC 안의 콘텐츠 키는 디바이스 공개키로 감싸져 그 디바이스에서만 풀 수 있다.\n4. 복호화된 키는 **Secure Enclave / 하드웨어 디코더 경로**로만 흘러가 앱 메모리에 평문으로 노출되지 않는다. 4K/HDR 콘텐츠는 보통 **HDCP**와 결합되어 출력 경로까지 보호한다.\n\n#### 운영상의 함의\n- **키 회전(key rotation)**: 라이브 스트림은 주기적으로 키를 바꿔 한 키 유출의 피해 범위를 시간 창으로 제한한다. 그래서 DRM 핸드셰이크가 재생 시작 1회로 끝나지 않고 세션 중 반복된다.\n- **렌탈/오프라인 다운로드**: 라이선스에 만료·재생 횟수 같은 persistent 정책을 실어 디바이스에 저장한다.\n- **확장성**: 인기 콘텐츠 동시 시청 폭주 시 라이선스 서버는 stateless하게 수평 확장되어야 하고, SPC 검증은 CPU 집약적이라 별도 서비스로 격리·오토스케일된다.\n\n#### 왜 자체 DRM인가 (트레이드오프)\n장점은 OS·실리콘·디코더를 한 회사가 모두 통제하므로 소프트웨어 DRM보다 견고한 신뢰 루트를 만들 수 있다는 것이다. 단점은 FairPlay가 Apple 생태계 밖(안드로이드·스마트TV)에서는 동작하지 않아, tv.apple.com 웹/서드파티 디바이스에서는 Widevine/PlayReady를 병행해야 한다는 점이다. 결국 콘텐츠는 **여러 DRM으로 동시 패키징(multi-DRM)**되어 클라이언트에 맞는 키 시스템이 선택된다."
+    },
+    {
+     "topic": "JVM 모놀리스에서 gRPC·server-side Swift로의 점진적 마이그레이션",
+     "body": "### Apple 백엔드의 언어 전환 트레이드오프\n\nApple의 미디어/서비스 백엔드는 역사적으로 **JVM(Java)** 자산이 두텁다. iTunes Store 시절부터 이어진 대규모 Java 서비스가 카탈로그·과금·검색을 떠받쳐 왔고, 갑자기 갈아엎을 수 없는 규모다. 동시에 Apple은 **server-side Swift(Vapor + SwiftNIO)**를 전략적으로 밀고 있다 — 그 긴장과 절충이 이 토픽의 핵심이다.\n\n#### 왜 gRPC를 경계 계약으로 삼는가\n- 폴리글랏(Java·Swift·Go·Python) 서비스들이 공존하므로, 언어 중립 계약이 필요하다. `Protobuf` 스키마 + `gRPC`가 서비스 간 인터페이스의 **단일 진실원천**이 된다. `apple/swift-protobuf`, `apple/servicetalk`(JVM reactive HTTP/gRPC) 같은 오픈소스가 이 전략의 증거다.\n- 이렇게 하면 Java 서비스를 Swift로 한 번에 다시 쓰지 않고, **서비스 단위로 뒤에서 교체**할 수 있다. 호출자는 gRPC 계약만 보므로 구현 언어가 바뀌어도 무관하다(strangler fig 패턴).\n\n#### server-side Swift를 채택하는 이유\n- **언어 통일**: 클라이언트(iOS/tvOS) 엔지니어가 Swift를 쓰는데, 백엔드도 Swift면 같은 모델 코드·도메인 로직을 공유하고 인력 풀이 겹친다.\n- **성능/메모리**: SwiftNIO 기반 Vapor는 non-blocking I/O로 높은 동시성을 내고, ARC 기반이라 GC 일시정지(JVM의 STW pause)가 없어 **꼬리 지연(tail latency)**이 예측 가능하다. 저지연이 중요한 재생 경로 서비스에 매력적이다.\n\n#### 트레이드오프 (왜 전면 전환을 안 하는가)\n| 항목 | JVM(Java) | server-side Swift |\n|---|---|---|\n| 생태계 성숙도 | 매우 높음(라이브러리·운영툴) | 성장 중, 일부 공백 |\n| GC 일시정지 | STW pause 존재 | ARC, pause 없음 |\n| 인력/기존 자산 | 방대 | 클라이언트 인력과 공유 |\n| 멀티플랫폼 운영 | 검증됨 | Linux 운영 노하우 축적 중 |\n\n결론적으로 Apple은 **리스크가 낮은 신규/주변 서비스부터 Swift로**, 핵심 대규모 트랜잭션 서비스는 JVM에 유지하면서 gRPC 계약 뒤에서 천천히 옮기는 **이중 트랙** 전략을 쓴다. 비밀주의 문화상 팀 간 사일로가 강해, 이 gRPC 계약과 통합 검증이 사일로 경계를 안전하게 만드는 접착제 역할을 한다."
     }
    ],
    "github": {
@@ -7254,39 +7380,47 @@
      {
       "name": "swiftlang/swift",
       "url": "https://github.com/swiftlang/swift",
-      "desc": "Swift 프로그래밍 언어 컴파일러와 표준 라이브러리",
+      "desc": "클라이언트·서버 모두에 쓰이는 Swift 언어/컴파일러 본체",
       "lang": "Swift",
-      "stars": 70052
+      "stars": 70053
      },
      {
       "name": "apple/foundationdb",
       "url": "https://github.com/apple/foundationdb",
-      "desc": "분산 트랜잭션 키-값 데이터베이스",
+      "desc": "Apple 인프라의 핵심인 분산 ACID 키-값 스토어, 위에 레이어를 쌓는 설계",
       "lang": "C++",
-      "stars": 16412
+      "stars": 16417
      },
      {
       "name": "apple/swift-nio",
       "url": "https://github.com/apple/swift-nio",
-      "desc": "이벤트 기반 비동기 네트워킹 프레임워크",
+      "desc": "서버사이드 Swift의 고성능 비동기 네트워킹 프레임워크(Vapor 기반)",
       "lang": "Swift",
-      "stars": 8462
+      "stars": 8464
      },
      {
       "name": "apple/swift-protobuf",
       "url": "https://github.com/apple/swift-protobuf",
-      "desc": "Swift용 Protocol Buffers 구현",
+      "desc": "gRPC 서비스 계약을 위한 Protobuf의 Swift 구현",
       "lang": "Swift",
-      "stars": 4931
+      "stars": 4933
+     },
+     {
+      "name": "apple/servicetalk",
+      "url": "https://github.com/apple/servicetalk",
+      "desc": "JVM 기반 반응형 마이크로서비스용 HTTP/gRPC 클라이언트-서버 라이브러리",
+      "lang": "Java",
+      "stars": 1022
      }
     ]
    },
    "sources": [
-    "https://developer.apple.com/swift/",
-    "https://www.foundationdb.org"
+    "https://github.com/apple/foundationdb",
+    "https://developer.apple.com/streaming/",
+    "https://www.foundationdb.org/files/fdb-paper.pdf"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "netflix",
