@@ -33,3 +33,5 @@ PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
 "$PY" "$SCRIPT_DIR/build_learning.py"
 # 모집 캘린더 — JD 본문의 접수/모집기간·마감 표기를 파싱해 job_calendar.json 생성
 "$PY" "$SCRIPT_DIR/build_calendar.py"
+# 개발 트렌드 — 날짜별 스냅샷에서 기술 수요 시계열(trends.json) 집계
+"$PY" "$SCRIPT_DIR/build_trends.py"

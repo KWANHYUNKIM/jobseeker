@@ -9,15 +9,16 @@ import { ExpansionView } from './components/ExpansionView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
 import { CalendarView } from './components/CalendarView'
+import { TrendView } from './components/TrendView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar' | 'calendar'
+type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
 
-const TABS: readonly Tab[] = ['jobs', 'companies', 'expansion', 'mindmap', 'blog', 'radar', 'calendar']
+const TABS: readonly Tab[] = ['jobs', 'companies', 'expansion', 'mindmap', 'blog', 'radar', 'calendar', 'trend']
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -82,6 +83,9 @@ function App() {
           <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')}>
             모집 캘린더
           </TabButton>
+          <TabButton active={tab === 'trend'} onClick={() => setTab('trend')}>
+            개발 트렌드
+          </TabButton>
         </div>
         <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
           <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
@@ -110,6 +114,10 @@ function App() {
       ) : tab === 'calendar' ? (
         <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
           <CalendarView />
+        </div>
+      ) : tab === 'trend' ? (
+        <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
+          <TrendView />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (

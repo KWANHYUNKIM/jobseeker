@@ -91,6 +91,28 @@ export interface CompanyStacksFile {
   companies: CompanyStack[]
 }
 
+// ── 개발 트렌드 (trends.json) ──────────────────────────────────────────
+export interface TrendDay {
+  date: string
+  total: number
+  tech: Record<string, number> // 기술 → 그날 공고 중 언급 건수
+}
+
+export interface TrendMover {
+  tech: string
+  from_pct: number
+  to_pct: number
+  delta: number // 비중 변화(%p)
+}
+
+export interface TrendsFile {
+  generated_at: string
+  span: { from: string; to: string; days: number }
+  tracked: string[]
+  days: TrendDay[]
+  movers: { up: TrendMover[]; down: TrendMover[] }
+}
+
 // ── 모집 캘린더 (job_calendar.json) ────────────────────────────────────
 export interface CalendarItem {
   company: string
