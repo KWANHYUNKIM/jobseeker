@@ -51,12 +51,12 @@ export function JobDetail({ job, onClose }: Props) {
                 {job.career && <span className="text-xs text-(--color-muted)">· {job.career}</span>}
                 {job.location && <span className="text-xs text-(--color-muted)">· {job.location}</span>}
               </div>
-              <h2 className="text-white text-xl leading-snug">{job.title}</h2>
+              <h2 className="text-(--color-text) text-xl leading-snug">{job.title}</h2>
               <p className="text-(--color-muted) text-sm mt-1">{job.company}</p>
             </div>
             <button
               onClick={onClose}
-              className="text-(--color-muted) hover:text-white text-3xl leading-none w-9 h-9 rounded hover:bg-white/5 shrink-0"
+              className="text-(--color-muted) hover:text-(--color-text) text-3xl leading-none w-9 h-9 rounded hover:bg-white/5 shrink-0"
               aria-label="닫기 (ESC)"
               title="닫기 (ESC)"
             >
@@ -113,7 +113,7 @@ export function JobDetail({ job, onClose }: Props) {
 
           {job.full_jd && (
             <details className="mt-4 border-t border-(--color-border) pt-4">
-              <summary className="cursor-pointer text-(--color-muted) hover:text-white text-xs uppercase tracking-wider">
+              <summary className="cursor-pointer text-(--color-muted) hover:text-(--color-text) text-xs uppercase tracking-wider">
                 전체 JD 원문 보기
               </summary>
               <Pre text={job.full_jd} muted />

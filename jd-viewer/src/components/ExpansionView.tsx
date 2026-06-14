@@ -194,7 +194,7 @@ function TechPanel({
     <div className="p-6 max-w-5xl">
       {/* 헤더 */}
       <div className="flex items-center flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-white">{tech}</h1>
+        <h1 className="text-2xl font-bold text-(--color-text)">{tech}</h1>
         <span
           className="text-xs px-2 py-0.5 rounded-full"
           style={{ background: color + '22', color }}
@@ -437,7 +437,7 @@ function VideoCard({
           </span>
         )}
         {v.length && (
-          <span className="absolute bottom-1 right-1 text-[10px] px-1 py-0.5 rounded bg-black/80 text-white">
+          <span className="absolute bottom-1 right-1 text-[10px] px-1 py-0.5 rounded bg-black/80 text-(--color-text)">
             {v.length}
           </span>
         )}
@@ -465,7 +465,7 @@ function formatViews(n: number): string {
 function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <section className="mt-6">
-      <h2 className="text-sm font-semibold text-white">{title}</h2>
+      <h2 className="text-sm font-semibold text-(--color-text)">{title}</h2>
       {hint && <p className="text-[11px] text-(--color-muted) mb-2 mt-0.5">{hint}</p>}
       {!hint && <div className="mb-2" />}
       {children}

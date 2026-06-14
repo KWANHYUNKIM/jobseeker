@@ -238,14 +238,14 @@ export function MindmapView() {
     <div className="flex flex-1 flex-col min-w-0 min-h-0">
       {/* 상단 toolbar - 직군 점프 + 컨트롤 */}
       <div className="border-b border-(--color-border) bg-(--color-panel) px-4 py-2 flex flex-wrap items-center gap-2 shrink-0">
-        <span className="text-[11px] text-white/60 uppercase tracking-wider font-semibold mr-1">
+        <span className="text-[11px] text-(--color-text)/60 uppercase tracking-wider font-semibold mr-1">
           도메인
         </span>
         {domains.map((r) => (
           <button
             key={r}
             onClick={() => jumpToDomain(r)}
-            className="text-xs px-3 py-1.5 rounded-full text-white hover:bg-(--color-accent)/20 hover:text-(--color-accent) border border-(--color-border) hover:border-(--color-accent) font-medium transition"
+            className="text-xs px-3 py-1.5 rounded-full text-(--color-text) hover:bg-(--color-accent)/20 hover:text-(--color-accent) border border-(--color-border) hover:border-(--color-accent) font-medium transition"
             title={`${r} 의 기업만 펼치기`}
           >
             {r}
@@ -254,29 +254,29 @@ export function MindmapView() {
         <div className="w-px h-5 bg-(--color-border) mx-1" />
         <button
           onClick={() => setAllFold(99)}
-          className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
         >
           모두 펼치기
         </button>
         <button
           onClick={() => setAllFold(2)}
-          className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
         >
           기업까지
         </button>
         <button
           onClick={() => setAllFold(1)}
-          className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
         >
           도메인만
         </button>
         <button
           onClick={handleFit}
-          className="text-xs px-3 py-1.5 rounded text-white hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
         >
           화면 맞춤
         </button>
-        <span className="ml-auto text-[11px] text-white/55 hidden md:inline">
+        <span className="ml-auto text-[11px] text-(--color-text)/55 hidden md:inline">
           노드 클릭 = 펼침/접힘 · 휠 = 확대·축소 · 드래그 = 이동
         </span>
       </div>
@@ -284,7 +284,7 @@ export function MindmapView() {
       {/* 마인드맵 영역 - 풀폭 */}
       <div className="flex-1 min-w-0 min-h-0 relative bg-(--color-bg)">
         {loading && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center gap-3 text-white/60 z-10 text-sm">
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center gap-3 text-(--color-text)/60 z-10 text-sm">
             <span className="jd-spinner" aria-hidden />
             마인드맵 불러오는 중…
           </div>

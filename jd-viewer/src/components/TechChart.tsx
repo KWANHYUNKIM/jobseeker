@@ -20,7 +20,7 @@ export function TechChart({ data, onPick, highlight }: Props) {
   return (
     <div className="border-b border-(--color-border) bg-(--color-panel) px-4 pt-3 pb-4">
       <div className="flex items-baseline justify-between mb-2">
-        <h2 className="text-white text-sm font-medium">기술스택 빈도 (상위 30)</h2>
+        <h2 className="text-(--color-text) text-sm font-medium">기술스택 빈도 (상위 30)</h2>
         <span className="text-xs text-(--color-muted)">막대 클릭으로 필터 토글</span>
       </div>
       <ResponsiveContainer width="100%" height={260}>

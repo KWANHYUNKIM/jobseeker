@@ -28,14 +28,14 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
      <div className="p-4 overflow-y-auto flex flex-col gap-5 text-sm h-full">
       <div className="flex items-start">
         <div>
-          <h1 className="text-lg font-semibold text-white">JD Viewer</h1>
+          <h1 className="text-lg font-semibold text-(--color-text)">JD Viewer</h1>
           <p className="text-xs text-(--color-muted) mt-1">
             {filteredCount.toLocaleString()} / {totalCount.toLocaleString()} 건
           </p>
         </div>
         <button
           onClick={onClose}
-          className="md:hidden ml-auto -mt-1 -mr-1 text-(--color-muted) hover:text-white text-2xl leading-none w-8 h-8 rounded hover:bg-white/5"
+          className="md:hidden ml-auto -mt-1 -mr-1 text-(--color-muted) hover:text-(--color-text) text-2xl leading-none w-8 h-8 rounded hover:bg-white/5"
           aria-label="필터 닫기"
         >
           ×
@@ -98,7 +98,7 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
               query: '',
             })
           }
-          className="mt-auto px-3 py-2 rounded border border-(--color-border) hover:border-(--color-accent) text-(--color-muted) hover:text-white transition"
+          className="mt-auto px-3 py-2 rounded border border-(--color-border) hover:border-(--color-accent) text-(--color-muted) hover:text-(--color-text) transition"
         >
           필터 초기화
         </button>
@@ -133,7 +133,7 @@ function Chip({
         'px-2 py-1 rounded text-xs border transition ' +
         (active
           ? 'bg-(--color-accent) text-black border-(--color-accent)'
-          : 'border-(--color-border) text-(--color-muted) hover:text-white hover:border-(--color-accent)')
+          : 'border-(--color-border) text-(--color-muted) hover:text-(--color-text) hover:border-(--color-accent)')
       }
     >
       {label}

@@ -225,17 +225,17 @@ export function ClusterView() {
         {/* breadcrumb */}
         <div className="absolute top-2 left-3 z-10 flex flex-wrap items-center gap-1 text-xs">
           {crumb.map((c, i) => (
-            <span key={i} className="text-white/70">
-              {i > 0 && <span className="text-white/30 mx-1">›</span>}
+            <span key={i} className="text-(--color-text)/70">
+              {i > 0 && <span className="text-(--color-text)/30 mx-1">›</span>}
               {c}
             </span>
           ))}
         </div>
-        <div className="absolute top-2 right-3 z-10 text-[11px] text-white/50">
+        <div className="absolute top-2 right-3 z-10 text-[11px] text-(--color-text)/50">
           원 클릭 = 확대 · 배경 클릭 = 뒤로 · 직군(채워진 원) 클릭 = 상세
         </div>
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center gap-3 text-white/60 text-sm">
+          <div className="absolute inset-0 flex items-center justify-center gap-3 text-(--color-text)/60 text-sm">
             <span className="jd-spinner" aria-hidden />
             클러스터 불러오는 중…
           </div>
@@ -250,17 +250,17 @@ export function ClusterView() {
         <aside className="w-80 shrink-0 border-l border-(--color-border) bg-(--color-panel) overflow-auto p-4 jd-slide-in">
           <button
             onClick={() => setSelected(null)}
-            className="text-xs text-(--color-muted) hover:text-white float-right"
+            className="text-xs text-(--color-muted) hover:text-(--color-text) float-right"
           >
             ✕ 닫기
           </button>
           <div className="text-[11px] text-(--color-muted)">{selected.domain}</div>
-          <h2 className="text-lg font-bold text-white mt-0.5">{selected.company}</h2>
+          <h2 className="text-lg font-bold text-(--color-text) mt-0.5">{selected.company}</h2>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-sm font-semibold text-(--color-accent)">{selected.name}</span>
             <span className="text-[11px] text-(--color-muted)">· {selected.value}건 공고</span>
             {selected.size && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/70">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-(--color-text)/70">
                 {selected.size}
               </span>
             )}

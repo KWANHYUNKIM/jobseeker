@@ -144,7 +144,7 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
     <div className="p-6 max-w-4xl">
       {/* 헤더 */}
       <div className="flex items-center flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-white">{c.name}</h1>
+        <h1 className="text-2xl font-bold text-(--color-text)">{c.name}</h1>
         <span
           className="text-xs px-2 py-0.5 rounded-full"
           style={{ background: (SIZE_COLOR[c.size] ?? '#60a5fa') + '22', color: SIZE_COLOR[c.size] ?? '#60a5fa' }}
@@ -198,7 +198,7 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
           <div className="grid sm:grid-cols-2 gap-2">
             {c.architecture.map((a) => (
               <div key={a.label} className="bg-(--color-panel) border border-(--color-border) rounded-lg p-3">
-                <div className="text-sm font-semibold text-white">{a.label}</div>
+                <div className="text-sm font-semibold text-(--color-text)">{a.label}</div>
                 <div className="text-[12px] text-(--color-muted) mt-1 leading-relaxed">{a.why}</div>
               </div>
             ))}
@@ -378,7 +378,7 @@ function CareerGuideBlock({
                 return (
                   <li key={i} className="ml-4">
                     <span className="absolute -left-[5px] mt-1.5 w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                    <div className="text-[13px] font-semibold text-white">{s.stage}</div>
+                    <div className="text-[13px] font-semibold text-(--color-text)">{s.stage}</div>
                     <div className="text-[12px] text-(--color-muted) mt-0.5">{s.goal}</div>
                     <div className="flex flex-wrap items-center gap-1 mt-1.5">
                       {s.techs.map((t) => (
@@ -499,7 +499,7 @@ function CareerGuideBlock({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-5">
-      <h2 className="text-sm font-semibold text-white mb-2">{title}</h2>
+      <h2 className="text-sm font-semibold text-(--color-text) mb-2">{title}</h2>
       {children}
     </section>
   )

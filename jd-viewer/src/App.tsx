@@ -27,6 +27,23 @@ function App() {
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
   const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
   const [filterOpen, setFilterOpen] = useState(false)
+  const [light, setLight] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.classList.contains('light'),
+  )
+
+  const toggleTheme = () => {
+    setLight((v) => {
+      const next = !v
+      document.documentElement.classList.toggle('light', next)
+      try {
+        localStorage.theme = next ? 'light' : 'dark'
+      } catch {
+        /* localStorage 불가 시 무시 */
+      }
+      window.dispatchEvent(new Event('themechange')) // mermaid 등 테마 의존 컴포넌트 재렌더
+      return next
+    })
+  }
 
   const openCompany = (norm: string) => {
     setCompanyFocus(norm)
@@ -58,7 +75,7 @@ function App() {
           <span className="h-5 w-5 rounded bg-(--color-accent)/20 border border-(--color-accent)/40 flex items-center justify-center text-(--color-accent) text-[11px] font-bold">
             JD
           </span>
-          <span className="text-sm font-semibold text-white tracking-tight">Viewer</span>
+          <span className="text-sm font-semibold text-(--color-text) tracking-tight">Viewer</span>
         </span>
         <div className="flex items-center gap-1 overflow-x-auto no-scrollbar -mx-1 px-1">
           <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
@@ -80,7 +97,15 @@ function App() {
             개발 트렌드
           </TabButton>
         </div>
-        <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
+        <button
+          onClick={toggleTheme}
+          title={light ? '다크 모드로' : '라이트 모드로'}
+          aria-label="테마 전환"
+          className="ml-auto shrink-0 w-8 h-8 flex items-center justify-center rounded border border-(--color-border) text-base hover:border-(--color-accent)"
+        >
+          {light ? '🌙' : '☀️'}
+        </button>
+        <span className="shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
           <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
           <span className="hidden sm:inline"> · 필터 </span>
           <span className="hidden sm:inline text-(--color-accent) font-medium">{filtered.length.toLocaleString()}</span>

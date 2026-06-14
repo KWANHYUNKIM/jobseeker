@@ -3,18 +3,7 @@ import { useEffect, useState } from 'react'
 // Mermaid 는 번들이 커서 동적 import 로 코드 스플릿한다(레이더 상세를 열 때만 로드).
 let mermaidReady: Promise<typeof import('mermaid').default> | null = null
 function loadMermaid() {
-  if (!mermaidReady) {
-    mermaidReady = import('mermaid').then((m) => {
-      m.default.initialize({
-        startOnLoad: false,
-        theme: 'dark',
-        securityLevel: 'loose',
-        flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 55, rankSpacing: 70, padding: 12 },
-        themeVariables: { fontSize: '15px' },
-      })
-      return m.default
-    })
-  }
+  if (!mermaidReady) mermaidReady = import('mermaid').then((m) => m.default)
   return mermaidReady
 }
 
@@ -26,6 +15,14 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
   const [loading, setLoading] = useState(true)
   const [zoomOpen, setZoomOpen] = useState(false)
   const [scale, setScale] = useState(1.4)
+  const [themeV, setThemeV] = useState(0)
+
+  // 앱 테마 토글 시 다이어그램을 현재 테마로 다시 렌더
+  useEffect(() => {
+    const on = () => setThemeV((v) => v + 1)
+    window.addEventListener('themechange', on)
+    return () => window.removeEventListener('themechange', on)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -33,6 +30,14 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
     setLoading(true)
     loadMermaid()
       .then((mermaid) => {
+        const isLight = document.documentElement.classList.contains('light')
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: isLight ? 'default' : 'dark',
+          securityLevel: 'loose',
+          flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 55, rankSpacing: 70, padding: 12 },
+          themeVariables: { fontSize: '15px' },
+        })
         const id = `mmd-${idKey.replace(/[^a-zA-Z0-9]/g, '')}-${seq++}`
         return mermaid.render(id, code)
       })
@@ -49,7 +54,7 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
     return () => {
       cancelled = true
     }
-  }, [code, idKey])
+  }, [code, idKey, themeV])
 
   // 전체화면 모달: ESC 닫기. capture 단계에서 처리하고 전파를 막아, 상위 상세 모달의
   // ESC 핸들러보다 먼저 동작하게 한다(줌만 닫히고 상세는 유지).

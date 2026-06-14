@@ -58,7 +58,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                 <span className="text-(--color-accent) truncate">{j.company}</span>
                 {j.career && <span className="ml-auto shrink-0">{j.career}</span>}
               </div>
-              <div className="text-white text-sm leading-snug line-clamp-2 mb-1.5">{j.title}</div>
+              <div className="text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">{j.title}</div>
               {roles.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-1.5">
                   {roles.map((r) => (
@@ -120,7 +120,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                   <td className="px-3 py-2 text-(--color-muted) truncate max-w-[12rem]" title={j.company}>
                     {j.company}
                   </td>
-                  <td className="px-3 py-2 text-white">
+                  <td className="px-3 py-2 text-(--color-text)">
                     <div className="line-clamp-2 leading-snug">{j.title}</div>
                   </td>
                   <td className="px-3 py-2">
@@ -201,8 +201,8 @@ function Pagination({
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t border-(--color-border) bg-(--color-panel)">
       <div className="text-xs text-(--color-muted)">
-        총 <span className="text-white">{total.toLocaleString()}</span>건 · 페이지{' '}
-        <span className="text-white">{page + 1}</span> / {totalPages} (20개씩)
+        총 <span className="text-(--color-text)">{total.toLocaleString()}</span>건 · 페이지{' '}
+        <span className="text-(--color-text)">{page + 1}</span> / {totalPages} (20개씩)
       </div>
       <div className="flex items-center gap-1">
         <PgBtn onClick={() => go(0)} disabled={page === 0}>«</PgBtn>
