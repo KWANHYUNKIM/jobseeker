@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T00:10:37",
+ "generated_at": "2026-06-15T01:44:50",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 13,
+ "refined": 15,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1186,7 +1186,7 @@
     },
     {
      "name": "TypeScript",
-     "count": 6
+     "count": 7
     },
     {
      "name": "Go",
@@ -1209,7 +1209,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 6
+      "count": 5
      },
      {
       "name": "Java",
@@ -1220,16 +1220,16 @@
       "count": 4
      },
      {
+      "name": "C++",
+      "count": 2
+     },
+     {
       "name": "Rust",
       "count": 2
      },
      {
-      "name": "C++",
-      "count": 1
-     },
-     {
-      "name": "C++ query engine",
-      "count": 1
+      "name": "Scala",
+      "count": 2
      },
      {
       "name": "C++/CUDA kernels",
@@ -1244,7 +1244,7 @@
       "count": 1
      },
      {
-      "name": "FastAPI/ASGI",
+      "name": "Dropwizard",
       "count": 1
      }
     ],
@@ -1274,6 +1274,10 @@
       "count": 1
      },
      {
+      "name": "D3 / ECharts visualizations",
+      "count": 1
+     },
+     {
       "name": "Emotion",
       "count": 1
      },
@@ -1282,33 +1286,25 @@
       "count": 1
      },
      {
-      "name": "Monaco/CodeMirror editor",
-      "count": 1
-     },
-     {
-      "name": "WebGL/Canvas",
+      "name": "MobX/Redux",
       "count": 1
      }
     ],
     "data": [
      {
       "name": "Kafka",
-      "count": 5
+      "count": 4
      },
      {
       "name": "Apache Spark",
-      "count": 2
-     },
-     {
-      "name": "Cassandra",
-      "count": 2
-     },
-     {
-      "name": "Parquet",
-      "count": 2
+      "count": 3
      },
      {
       "name": "PostgreSQL",
+      "count": 3
+     },
+     {
+      "name": "Cassandra",
       "count": 2
      },
      {
@@ -1320,15 +1316,19 @@
       "count": 2
      },
      {
-      "name": "Spark",
-      "count": 2
-     },
-     {
       "name": "Vector stores",
       "count": 2
      },
      {
       "name": "Apache Arrow",
+      "count": 1
+     },
+     {
+      "name": "Apache Iceberg tables",
+      "count": 1
+     },
+     {
+      "name": "Apache Kafka / Snowpipe Streaming",
       "count": 1
      }
     ],
@@ -1339,7 +1339,7 @@
      },
      {
       "name": "Terraform",
-      "count": 5
+      "count": 6
      },
      {
       "name": "Azure",
@@ -1350,12 +1350,16 @@
       "count": 3
      },
      {
+      "name": "Envoy",
+      "count": 3
+     },
+     {
       "name": "GCP",
       "count": 3
      },
      {
-      "name": "Envoy",
-      "count": 2
+      "name": "Apollo",
+      "count": 1
      },
      {
       "name": "Atlas 자체 오케스트레이션 플레인",
@@ -1368,10 +1372,6 @@
      {
       "name": "AWS Trainium/Inferentia",
       "count": 1
-     },
-     {
-      "name": "Chef",
-      "count": 1
      }
     ]
    },
@@ -1381,7 +1381,11 @@
      "count": 2
     },
     {
-     "name": "Cloud-native data warehouse",
+     "name": "Cloud-native elastic warehouses with per-second billing",
+     "count": 1
+    },
+    {
+     "name": "Conjure-typed service mesh on the JVM",
      "count": 1
     },
     {
@@ -1390,10 +1394,6 @@
     },
     {
      "name": "Container-orchestrated HPC fabric",
-     "count": 1
-    },
-    {
-     "name": "Continuous deployment",
      "count": 1
     },
     {
@@ -6104,37 +6104,51 @@
    ],
    "stack": {
     "backend": [
-     "Java",
-     "Conjure (RPC)",
-     "Spring",
-     "gRPC"
+     "Java (JVM)",
+     "Conjure (typed RPC/IDL)",
+     "Spring Boot",
+     "gRPC",
+     "Dropwizard",
+     "Spark (JVM jobs)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Blueprint.js"
+     "Blueprint.js",
+     "Plottable/D3",
+     "Webpack",
+     "MobX/Redux"
     ],
     "data": [
-     "Spark",
-     "Parquet",
+     "Apache Spark",
+     "Parquet/ORC",
+     "Iceberg-style transactional datasets",
      "Cassandra",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Foundry Ontology store",
+     "Postgres"
     ],
     "infra": [
-     "Kubernetes (Rubix/Apollo)",
-     "Multi-cloud",
-     "On-prem"
+     "Kubernetes",
+     "Apollo (continuous deployment)",
+     "Rubix (managed K8s)",
+     "Helm/OCI artifacts",
+     "Multi-cloud (AWS/Azure/GCP)",
+     "On-prem/air-gapped",
+     "Envoy",
+     "Witchcraft (service runtime)"
     ]
    },
    "architecture": [
-    "Data integration platform",
-    "Ontology-driven",
-    "Continuous deployment"
+    "Ontology-driven data integration platform",
+    "Conjure-typed service mesh on the JVM",
+    "GitOps continuous deployment (Apollo)",
+    "Multi-modal deployment: cloud, on-prem, air-gapped"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    UI[\"Foundry UI<br/>React + Blueprint.js\"]\n    API[\"Conjure Clients<br/>RPC\"]\n  end\n  subgraph Gateway\n    CONJ[\"Service Defs<br/>Conjure RPC\"]\n    SVC[\"Services<br/>Java + Spring + gRPC\"]\n  end\n  subgraph Core\n    ONT[\"Ontology Layer<br/>Semantic Model\"]\n    PIPE[\"Data Pipelines<br/>Apache Spark\"]\n  end\n  subgraph Data\n    PARQ[\"Columnar Store<br/>Parquet\"]\n    CASS[\"Metadata<br/>Cassandra\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    APOLLO[\"Deploy<br/>Apollo + Rubix\"]\n    K8S[\"Platform<br/>Kubernetes Multi-cloud\"]\n  end\n  UI -->|HTTPS| CONJ\n  API --> CONJ\n  CONJ --> SVC\n  SVC --> ONT\n  ONT --> PIPE\n  PIPE --> PARQ\n  ONT --> CASS\n  SVC --> ES\n  SVC -.-> APOLLO\n  APOLLO --> K8S\n  PIPE -.-> K8S",
-   "why_language": "Foundry/Gotham 같은 대규모 데이터 통합 플랫폼을 JVM(Java)으로 운영하며 자체 RPC(Conjure)를 만들었다. 풍부한 분석 UI는 React/TypeScript(Blueprint)로 작성한다.",
-   "why_architecture": "이질적 데이터 소스를 온톨로지로 통합·모델링하는 것이 핵심이며, Spark 기반 파이프라인과 자체 배포 시스템(Apollo)으로 온프렘·클라우드를 가리지 않고 운영한다.",
-   "summary": "온톨로지 기반 데이터 통합과 JVM 플랫폼·Apollo 배포로 정부·기업 데이터를 다룬다.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    UI[\"Workshop / Slate UI<br/>React + TypeScript + Blueprint.js\"]\n    SDK[\"OSDK Client<br/>TypeScript / Python SDK\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"Ingress / Auth Proxy<br/>Envoy + Multipass\"]\n    CJ[\"Conjure RPC<br/>Typed IDL over HTTP/JSON\"]\n  end\n  subgraph Core[\"Core Services (Foundry)\"]\n    ONT[\"Ontology Service<br/>Java + Spring + Witchcraft\"]\n    FUNC[\"Functions / Actions<br/>TypeScript + Java\"]\n    BUILD[\"Build2 Orchestrator<br/>Java\"]\n    SEARCH[\"Object Search<br/>Elasticsearch\"]\n  end\n  subgraph Compute[\"Batch / Streaming Compute\"]\n    SPARK[\"Spark on K8s<br/>Transforms (Python/Java)\"]\n    STREAM[\"Streaming Pipelines<br/>Flink-style / Kafka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DS[\"Dataset Store<br/>Parquet on Object Storage\"]\n    TXN[\"Transactional Catalog<br/>Versioned commits\"]\n    OST[\"Ontology Object Store<br/>Cassandra + Postgres\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>Rubix\"]\n    APOLLO[\"Apollo<br/>Continuous Deployment\"]\n  end\n  UI --> GW\n  SDK --> GW\n  GW -->|Conjure| CJ\n  CJ --> ONT\n  CJ --> FUNC\n  ONT --> OST\n  ONT --> SEARCH\n  FUNC --> ONT\n  BUILD --> SPARK\n  SPARK --> DS\n  STREAM --> DS\n  DS --> TXN\n  TXN --> ONT\n  K8S --> Core\n  K8S --> Compute\n  APOLLO -->|GitOps| K8S",
+   "why_language": "Palantir의 백엔드는 대규모 분산 데이터 처리와 멀티테넌트 보안이 핵심이라, JVM의 성숙한 동시성·라이브러리 생태계와 Spark 호환성을 위해 Java를 중심으로 한다. 프런트엔드는 데이터 집약적 분석 UI(Workshop, Contour)를 빠르게 구축하기 위해 TypeScript와 자체 디자인 시스템 Blueprint.js를 쓰고, 데이터 변환 로직은 데이터 사이언티스트 친화적인 Python을, 성능이 중요한 저수준 컴포넌트는 Rust/Go를 선택적으로 쓴다.",
+   "why_architecture": "고객마다 데이터 스키마가 제각각인 정부·기업 환경을 다루기 때문에, 원천 데이터를 의미 모델(Ontology)로 통합해 객체·관계·액션 단위로 추상화하는 온톨로지 중심 설계를 택했다. 또한 클라우드뿐 아니라 온프렘·에어갭(폐쇄망)에도 동일 플랫폼을 배포해야 하므로, 모든 서비스를 Conjure로 타입 고정하고 Apollo로 GitOps 기반 지속 배포를 자동화해 수천 개 환경을 일관되게 운영한다.",
+   "summary": "JVM 기반 Conjure 타입 서비스 메시 위에 온톨로지로 데이터를 통합하고, Apollo로 멀티클라우드·온프렘·에어갭을 동시에 굴리는 데이터 통합 플랫폼",
    "deep_dive": [
     {
      "topic": "온톨로지 — 의미 데이터 모델",
@@ -6147,6 +6161,18 @@
     {
      "topic": "Apollo — 지속 배포와 온프렘/멀티클라우드",
      "body": "### 배포의 특수성\nPalantir 고객 환경은 매우 이질적이다 — 자사 클라우드, 고객 VPC, **에어갭(air-gapped) 온프렘**(인터넷 차단 정부 환경)까지. 사람이 환경마다 수동 배포하면 불가능하다. 이를 위해 `Apollo` 지속 배포 시스템을 만들었다.\n\n### Apollo 동작\n- **선언적 배포**: 각 환경에 어떤 서비스의 어떤 버전이 어떤 설정으로 떠야 하는지 desired state를 선언.\n- **제약 기반 오케스트레이션**: 서비스 간 의존성·호환성·릴리스 채널 제약을 만족시키며 안전한 순서로 업그레이드를 전파.\n- **다양한 타깃**: 같은 메커니즘으로 클라우드·온프렘·에어갭 환경을 일관되게 다룬다. 에어갭은 변경을 패키지로 반입.\n\n`Apollo`는 `Rubix`/Kubernetes 위에서 컨테이너를 배치한다. 수많은 환경에 수많은 서비스를 지속적으로·자율적으로 업그레이드하는 것이 핵심 역량이다.\n\n### 트레이드오프\nSaaS처럼 단일 환경만 운영하면 훨씬 단순하지만, Palantir의 고객(정부·규제 산업)은 데이터 주권·보안상 온프렘/에어갭을 요구한다. 이 다양성을 흡수하는 자동 배포 시스템이 경쟁 해자다. 멀티클라우드·온프렘을 가리지 않는 일관 운영이 정체성이다."
+    },
+    {
+     "topic": "Foundry 데이터셋의 트랜잭션·버전 관리와 브랜칭 (Git 같은 데이터)",
+     "body": "### 데이터셋을 Git처럼 다루는 트랜잭션 카탈로그\n\nFoundry의 가장 근본적인 엔지니어링 결정은 **데이터셋을 불변(immutable)·버전 관리되는 객체로 취급**한다는 점이다. 일반적인 데이터 레이크는 객체 스토리지(S3/ADLS) 위에 Parquet 파일을 늘어놓고 누가 언제 무엇을 바꿨는지 추적하지 못하지만, Foundry는 그 위에 **트랜잭션 카탈로그(Catalog) 서비스**를 얹어 데이터셋을 다룬다.\n\n#### 핵심 동작 메커니즘\n- 모든 쓰기는 **트랜잭션(transaction)** 단위로 일어난다. 트랜잭션 타입은 `APPEND`, `UPDATE`, `SNAPSHOT`, `DELETE`가 있고, 각 트랜잭션은 커밋되어야만 다른 사용자에게 보인다(원자성 보장).\n- 데이터셋은 `branch` 개념을 가진다. 기본 `master` 브랜치 외에 개발용 브랜치를 따서 파이프라인을 검증한 뒤 머지하는, 사실상 **Git의 데이터 버전**이다.\n- 각 트랜잭션은 어떤 Parquet 파일들이 추가/삭제되었는지의 **파일 매니페스트**만 기록한다. 즉 실제 데이터는 객체 스토리지에 그대로 두고, 카탈로그는 '어느 버전에서 어떤 파일 집합이 유효한가'라는 메타데이터만 관리한다. 이는 Apache Iceberg/Delta Lake의 사상과 동일하지만 Palantir는 이를 수년 앞서 자체 구현했다.\n\n#### 왜 이렇게 했는가 — 트레이드오프\n- **재현성(reproducibility)**: 정부·금융·제약 고객은 '이 분석 결과가 정확히 어떤 입력 데이터에서 나왔는가'를 감사(audit)해야 한다. 데이터셋 버전을 고정(pin)하면 6개월 전 리포트를 바이트 단위로 재현할 수 있다.\n- **계보(lineage)**: 모든 데이터셋은 자신을 만든 `Transform`과 입력 데이터셋을 알고 있어, 플랫폼 전체에 걸친 **데이터 계보 그래프**가 자동으로 형성된다. 상류 데이터셋이 바뀌면 하류 파이프라인을 자동으로 재빌드(Build2 오케스트레이터)할 수 있다.\n- **비용 트레이드오프**: 불변·스냅샷 방식은 스토리지를 많이 쓴다. 오래된 트랜잭션을 정리하는 retention/compaction 정책과, 작은 파일이 폭증하는 'small file problem'을 막는 주기적 컴팩션이 필수가 된다.\n\n#### 빌드 오케스트레이션\n데이터셋 간 의존성 그래프가 있으므로, 입력이 갱신되면 **Build2**가 하류 Transform을 위상정렬(topological order)로 스케줄링한다. 각 Transform은 Spark on Kubernetes 잡으로 실행되며, 입력 트랜잭션 범위를 보고 **증분(incremental) 빌드**(바뀐 파티션만 처리)인지 **스냅샷 빌드**(전체 재계산)인지 결정한다. 증분 빌드는 매일 수십 TB가 들어오는 파이프라인의 비용을 수십 배 줄이는 핵심 최적화다."
+    },
+    {
+     "topic": "멀티테넌트·에어갭 보안 모델과 세분화 접근제어 (Multipass + ACLs)",
+     "body": "### 정부급 보안: 객체·행·셀 단위 접근제어\n\nPalantir의 주요 고객은 정보기관·국방·은행이라, 보안은 부가 기능이 아니라 **아키텍처의 1급 시민**이다. 핵심 컴포넌트는 인증·인가 서비스인 **Multipass**와, 데이터에 부착되는 **마킹(markings)·ACL** 체계다.\n\n#### 인증/인가 흐름\n1. 사용자는 SSO(SAML/OIDC) 또는 PKI 인증서로 로그인 → Multipass가 **토큰**을 발급한다.\n2. 모든 Conjure 서비스 호출에는 이 토큰이 실린다. 서비스는 요청을 처리하기 전 Multipass에 **권한 검증**을 위임한다.\n3. 인가는 RBAC를 넘어 **마킹 기반(ABAC에 가까운)**으로 작동한다. 데이터셋·온톨로지 객체·심지어 개별 행/속성에 `marking`(예: 기밀등급, 부서, 국가)을 붙일 수 있고, 사용자는 자신이 보유한 마킹의 교집합에 해당하는 데이터만 볼 수 있다.\n\n#### 세분화 수준\n- **Dataset-level**: 데이터셋 전체에 대한 read/write/owner 권한.\n- **Row-level / Granular**: 온톨로지 객체 단위, 또는 행 필터(예: 'A국 사용자는 A국 시민 레코드만')로 동일 객체 타입 안에서도 보이는 행이 달라진다.\n- **Property-level**: 같은 객체라도 일부 속성(예: 주민번호)은 특정 마킹 보유자에게만 노출.\n\n이 모든 필터링은 쿼리 단계에서 강제된다. 즉 Object Search(Elasticsearch)에 질의가 들어가면 **사용자의 마킹이 쿼리에 자동으로 AND 조건으로 주입**되어, 권한 없는 데이터는 애초에 검색 결과에 나오지 않는다.\n\n#### 에어갭(폐쇄망) 배포라는 제약이 만든 설계\n인터넷이 없는 환경(군 폐쇄망, 잠수함, 전장)에도 같은 플랫폼이 돌아가야 한다. 이 제약이 아키텍처 전반을 규정한다.\n- 외부 SaaS 의존을 둘 수 없으므로 **인증·로깅·모니터링·아티팩트 저장소까지 전부 자급자족(self-contained)**이어야 한다.\n- 소프트웨어 업데이트는 인터넷 풀(pull)이 불가능하니, **Apollo가 OCI 아티팩트 번들을 물리 매체로 반입(import)**한 뒤 폐쇄망 내부에서 GitOps로 롤아웃한다.\n- 모든 서비스가 동일한 **Witchcraft 런타임** 위에 표준화되어 있어, 클라우드든 에어갭이든 배포·관측 방식이 똑같다는 점이 운영 부담을 낮춘다.\n\n#### 트레이드오프\n세분화 접근제어와 마킹 전파는 **모든 쿼리·조인에 보안 검사를 끼워 넣어야** 하므로 성능 오버헤드가 크다. Palantir는 권한 결정을 캐싱하고, 마킹을 데이터에 비정규화(denormalize)해 저장하는 방식으로 핫패스의 인가 비용을 줄인다. 그럼에도 '보안 우선' 원칙상 의심스러우면 차단(fail-closed)하는 것이 기본값이다."
+    },
+    {
+     "topic": "Witchcraft 서비스 런타임과 관측성 표준화",
+     "body": "### 모든 서비스를 같은 모양으로: Witchcraft 런타임\n\n수천 개 고객 환경(클라우드·온프렘·에어갭)에 수백 종의 마이크로서비스를 배포·운영하려면, **서비스가 제각각이면 운영이 붕괴**한다. Palantir의 해법은 모든 백엔드 서비스를 공통 런타임 프레임워크인 **Witchcraft**(JVM용, Go용 `witchcraft-go-server`도 오픈소스) 위에 세우는 것이다.\n\n#### Witchcraft가 강제하는 표준\n- **Conjure 엔드포인트**: 서비스 API는 Conjure IDL로 정의되어 서버 스텁·클라이언트가 자동 생성된다. 이로써 모든 서비스 간 호출이 **타입 안전**하고, 클라이언트가 잘못된 요청을 보내는 일이 컴파일 단계에서 걸러진다.\n- **구조화 로깅(structured logging)**: 로그는 자유 텍스트가 아니라 정해진 JSON 스키마(`service.1`, `request.2`, `audit.2` 등 버전된 로그 타입)로 출력된다. 덕분에 에어갭 환경에서도 로그를 기계적으로 파싱·분석할 수 있다.\n- **분산 트레이싱**: 모든 요청에 `TraceId`/`SpanId`가 부여되어 Conjure 호출 체인을 따라 전파된다(Zipkin 호환). 서비스 경계를 넘는 지연 분석이 기본 제공된다.\n- **메트릭**: Dropwizard Metrics 기반으로 처리량·지연·에러율이 표준 이름으로 노출되어, 어느 환경이든 동일 대시보드로 본다.\n\n#### 왜 자체 RPC(Conjure)를 만들었나\n2010년대 초 gRPC/OpenAPI가 성숙하기 전부터 Palantir는 **언어 중립적·하위호환 보장되는** API 정의가 필요했다. Conjure의 핵심 가치는:\n- **하위 호환성 검사**: API 스키마가 바뀔 때 기존 클라이언트를 깨뜨리는 변경(필드 삭제·타입 변경)을 빌드 단계에서 차단한다. 수천 환경이 서로 다른 버전으로 돌아가므로 이 보장은 필수다.\n- **다언어 코드 생성**: 한 번 정의하면 Java·TypeScript·Python·Go 클라이언트가 자동 생성되어, 프런트엔드(TS)와 백엔드(Java)가 같은 타입을 공유한다.\n\n#### 운영 효과\n이 표준화 덕분에 신규 서비스를 띄울 때 인증·로깅·트레이싱·헬스체크·TLS를 매번 새로 짜지 않는다. **'플랫폼이 정한 모양대로만 만들면 어디서든 관측·배포된다'**는 규율이, 멀티클라우드·에어갭을 동시에 굴리면서도 운영 인력을 폭증시키지 않는 비결이다. 트레이드오프는 자유도 제약 — 팀이 임의의 프레임워크/언어를 고를 수 없고 플랫폼 표준을 따라야 한다는 점이다."
     }
    ],
    "github": {
@@ -6155,39 +6181,47 @@
      {
       "name": "palantir/blueprint",
       "url": "https://github.com/palantir/blueprint",
-      "desc": "리액트 기반 데스크톱 UI 툴킷",
+      "desc": "데이터 집약 웹 앱용 React UI 컴포넌트 디자인 시스템",
       "lang": "TypeScript",
-      "stars": 21817
+      "stars": 21822
      },
      {
       "name": "palantir/tslint",
       "url": "https://github.com/palantir/tslint",
-      "desc": "타입스크립트 정적 분석 린터",
+      "desc": "TypeScript용 정적 분석 린터(현재는 ESLint로 이관됨)",
       "lang": "TypeScript",
       "stars": 5906
      },
      {
       "name": "palantir/conjure",
       "url": "https://github.com/palantir/conjure",
-      "desc": "타입 안전 HTTP/RPC API 정의 툴체인",
+      "desc": "언어 중립적 타입 RPC/API를 정의하는 IDL과 코드 생성 툴체인",
       "lang": "Java",
       "stars": 479
      },
      {
       "name": "palantir/gradle-baseline",
       "url": "https://github.com/palantir/gradle-baseline",
-      "desc": "자바 코드 품질 그래들 플러그인 모음",
+      "desc": "Java 코드 스타일·정적 분석을 강제하는 Gradle 플러그인 모음",
       "lang": "Java",
-      "stars": 341
+      "stars": 340
+     },
+     {
+      "name": "palantir/witchcraft-go-server",
+      "url": "https://github.com/palantir/witchcraft-go-server",
+      "desc": "Conjure·관측성 기본 내장 Go 서비스 런타임 프레임워크",
+      "lang": "Go",
+      "stars": 58
      }
     ]
    },
    "sources": [
-    "https://blog.palantir.com",
-    "https://github.com/palantir/blueprint"
+    "https://blog.palantir.com/",
+    "https://github.com/palantir/conjure",
+    "https://www.palantir.com/docs/foundry/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "snowflake",
@@ -6199,39 +6233,50 @@
     "C++",
     "Scala",
     "Python",
-    "Rust"
+    "Rust",
+    "TypeScript"
    ],
    "stack": {
     "backend": [
-     "Java",
-     "C++ query engine",
-     "gRPC"
+     "Java (Cloud Services / GS)",
+     "C++ (vectorized execution engine)",
+     "Scala (query compiler / optimizer)",
+     "gRPC + Thrift RPC",
+     "Snowpark Container Services"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Snowsight UI",
+     "D3 / ECharts visualizations"
     ],
     "data": [
-     "Columnar storage",
-     "FoundationDB",
-     "Kafka"
+     "Columnar micro-partitions (PAX-style hybrid)",
+     "FoundationDB (metadata KV store)",
+     "Object storage (S3 / Azure Blob / GCS)",
+     "Apache Kafka / Snowpipe Streaming",
+     "Apache Iceberg tables",
+     "FDB Record Layer"
     ],
     "infra": [
      "AWS",
      "Azure",
      "GCP",
-     "Kubernetes"
+     "Kubernetes",
+     "Terraform",
+     "Multi-cloud control plane"
     ]
    },
    "architecture": [
-    "Storage-compute separation",
-    "Multi-cluster",
-    "Cloud-native data warehouse"
+    "Storage-compute separation (3-tier: Cloud Services / Virtual Warehouses / Storage)",
+    "Multi-cluster shared-data MPP",
+    "Cloud-native elastic warehouses with per-second billing",
+    "Multi-cloud / cross-region replication"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Snowsight UI<br/>React + TypeScript\"]\n    DRV[\"Drivers<br/>SQL Clients\"]\n  end\n  subgraph CloudSvc\n    CS[\"Cloud Services<br/>Java + gRPC\"]\n    OPT[\"Query Optimizer<br/>Planner\"]\n    META[\"Metadata<br/>FoundationDB\"]\n  end\n  subgraph Compute\n    VWH[\"Virtual Warehouses<br/>C++ Query Engine\"]\n  end\n  subgraph Storage\n    COL[\"Columnar Storage<br/>Micro-partitions\"]\n    OBJ[\"Object Storage<br/>S3 Blob GCS\"]\n  end\n  subgraph Stream\n    KAFKA[\"Ingestion<br/>Kafka Connector\"]\n  end\n  subgraph Infra\n    K8S[\"Platform<br/>AWS Azure GCP Kubernetes\"]\n  end\n  WEB -->|HTTPS| CS\n  DRV -->|SQL| CS\n  CS --> OPT\n  CS --> META\n  OPT -->|dispatch| VWH\n  VWH --> COL\n  COL --> OBJ\n  KAFKA --> COL\n  CS -.-> K8S\n  VWH -.-> K8S",
-   "why_language": "분산 쿼리 실행 엔진의 성능을 위해 C++를 핵심에 두고, 클라우드 서비스 계층은 Java로 운영한다. 메타데이터 트랜잭션 스토어로 FoundationDB를 쓴다.",
-   "why_architecture": "스토리지와 컴퓨트를 분리해 독립적으로 탄력 확장하는 클라우드 네이티브 데이터 웨어하우스가 정체성이다. 멀티 클러스터 가상 웨어하우스로 동시성을 격리한다.",
-   "summary": "스토리지·컴퓨트 분리와 C++ 쿼리 엔진으로 클라우드 데이터 웨어하우스를 재정의.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    UI[\"Snowsight UI<br/>React + TypeScript\"]\n    DRV[\"Drivers / Connectors<br/>JDBC ODBC Python Spark\"]\n    SQLAPI[\"SQL REST API<br/>HTTPS\"]\n  end\n  subgraph Cloud[\"Cloud Services (GS)<br/>Java\"]\n    AUTH[\"Auth + Access Control<br/>RBAC\"]\n    OPT[\"Query Optimizer<br/>Scala Cascades\"]\n    TXN[\"Txn + Metadata Mgr<br/>MVCC\"]\n    MC[\"Cluster Manager<br/>Auto-scale\"]\n  end\n  subgraph Compute[\"Virtual Warehouses<br/>Elastic MPP\"]\n    XP[\"Execution Engine<br/>C++ vectorized columnar\"]\n    CACHE[\"Local SSD Cache<br/>Result + Data cache\"]\n  end\n  subgraph Meta[\"Metadata Layer\"]\n    FDB[\"FoundationDB<br/>Record Layer KV\"]\n  end\n  subgraph Storage[\"Storage Layer\"]\n    OBJ[\"Object Storage<br/>S3 Azure Blob GCS\"]\n    MP[\"Micro-partitions<br/>Columnar + pruning\"]\n    ICE[\"Iceberg Tables<br/>Open format\"]\n  end\n  subgraph Stream[\"Streaming / Ingest\"]\n    KAFKA[\"Kafka Connector\"]\n    PIPE[\"Snowpipe Streaming<br/>Low-latency ingest\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>Snowpark Container Svc\"]\n    MCLOUD[\"Multi-cloud<br/>AWS Azure GCP\"]\n  end\n  UI --> SQLAPI\n  DRV --> AUTH\n  SQLAPI --> AUTH\n  AUTH --> OPT\n  OPT --> TXN\n  OPT -->|plan| XP\n  TXN --> FDB\n  MC --> Compute\n  XP --> CACHE\n  CACHE -->|miss| OBJ\n  XP -->|prune| MP\n  MP --> OBJ\n  ICE --> OBJ\n  KAFKA --> PIPE\n  PIPE --> OBJ\n  Compute --> K8S\n  Storage --> MCLOUD",
+   "why_language": "쿼리 처리의 핫패스(스캔·필터·조인·집계)는 메모리 레이아웃과 SIMD 벡터화가 성능을 좌우하므로 C++로 직접 구현해 캐시 효율과 벡터화 실행을 극대화한다. 반면 트랜잭션·메타데이터·권한·스케줄링 같은 Cloud Services 제어 평면은 안정성과 동시성 관리가 중요해 JVM(Java/Scala)으로 작성하며, 옵티마이저는 표현력이 높은 Scala로 Cascades 스타일 비용기반 최적화를 구현한다. Python/Rust는 Snowpark·커넥터·신규 시스템 컴포넌트에서 사용된다.",
+   "why_architecture": "데이터 웨어하우스 워크로드는 저장 용량과 컴퓨트 수요가 독립적으로 변하므로, 스토리지와 컴퓨트를 분리하면 동일 데이터를 여러 가상 웨어하우스가 격리된 채 공유하면서 각자 독립적으로 탄력 확장할 수 있다. 메타데이터를 FoundationDB로 분리하고 데이터는 불변 micro-partition으로 object storage에 두어, 동시성 충돌 없는 MVCC와 micro-partition pruning 기반 고속 스캔을 동시에 달성한다.",
+   "summary": "스토리지-컴퓨트를 완전 분리한 멀티클러스터 공유데이터 아키텍처 위에서 C++ 벡터화 엔진과 Java/Scala 제어평면을 결합한 클라우드 네이티브 데이터 웨어하우스",
    "deep_dive": [
     {
      "topic": "스토리지-컴퓨트 분리 3계층 아키텍처",
@@ -6244,6 +6289,22 @@
     {
      "topic": "멀티클러스터·동시성·캐싱",
      "body": "### 멀티클러스터 가상 웨어하우스\n동시 쿼리가 폭증하면 단일 가상 웨어하우스 클러스터가 큐잉된다. **멀티클러스터 웨어하우스**는 부하에 따라 동일 웨어하우스의 클러스터 수를 자동으로 늘렸다 줄인다(오토스케일). 각 클러스터는 같은 객체 스토리지 데이터를 보므로, 동시 사용자가 늘어도 데이터 복제 없이 컴퓨트만 수평 확장된다.\n\n### 캐싱 계층\n객체 스토리지는 지연이 있어, Snowflake는 여러 캐시로 이를 흡수한다:\n\n- **로컬 디스크/SSD 캐시(웨어하우스)**: 가상 웨어하우스 노드가 객체 스토리지에서 읽은 마이크로파티션을 로컬 SSD에 캐싱. 후속 쿼리가 재사용해 객체 스토리지 왕복을 줄인다.\n- **result cache(클라우드 서비스)**: 동일 쿼리가 데이터 변경 없이 재실행되면, 저장된 결과를 컴퓨트 없이 즉시 반환한다.\n- **메타데이터 캐시**: 통계·프루닝 정보를 클라우드 서비스가 캐싱.\n\n### 인입과 트레이드오프\n`Kafka` 커넥터·Snowpipe로 스트리밍 인입을 받아 마이크로파티션을 만든다. 핵심 트레이드오프는 \"객체 스토리지 분리로 무한 확장·격리·저비용을 얻되, 그 지연을 캐싱·프루닝·결과 캐시로 메운다\"는 것이다. 이 설계가 클라우드 네이티브 DW의 표준이 됐다."
+    },
+    {
+     "topic": "쿼리 요청의 end-to-end 처리 흐름 (Cloud Services → Virtual Warehouse → Storage)",
+     "body": "### 한 개의 SQL이 결과로 돌아오기까지\n\nSnowflake의 처리 경로는 **3계층(Cloud Services / Virtual Warehouse / Storage)** 을 가로지른다. 클라이언트(JDBC/ODBC/Python connector/Snowsight)가 SQL을 보내면 다음 단계를 거친다.\n\n1. **수신·인증·세션 (Cloud Services, Java)** — REST/Thrift 엔드포인트가 요청을 받고 인증·RBAC 권한 체크, 세션 컨텍스트(role, warehouse, database)를 확정한다. 이 계층은 멀티테넌트로 모든 계정이 공유한다.\n2. **파싱 + 컴파일 + 최적화 (Scala)** — SQL을 파싱해 논리 플랜을 만들고, **Cascades 계열 비용기반 옵티마이저**가 조인 순서·조인 알고리즘·집계 전략을 탐색한다. 핵심은 옵티마이저가 메타데이터에 저장된 각 micro-partition의 **min/max·distinct count 같은 통계**를 읽어 **partition pruning** 대상을 컴파일 타임에 좁히는 것이다. 따라서 실제 스캔량이 플랜 단계에서 이미 크게 줄어든다.\n3. **스케줄링 (Cluster Manager)** — 최적화된 플랜을 실행 가능한 단위로 쪼개 대상 Virtual Warehouse의 워커 노드들에 분배한다. 동시성이 몰리면 multi-cluster warehouse가 클러스터를 추가로 스핀업한다.\n4. **분산 실행 (Virtual Warehouse, C++ 벡터화 엔진)** — 각 워커가 자신에게 할당된 micro-partition을 object storage(또는 로컬 SSD 캐시)에서 읽어 **컬럼 단위·벡터화(batch-at-a-time)** 로 스캔·필터·조인·집계를 수행한다. 노드 간에는 셔플(redistribution)이 일어나며, 조인 시 작은 쪽을 broadcast하거나 hash로 재분배한다.\n5. **결과 수집·캐싱·반환** — 최종 결과는 Cloud Services를 거쳐 클라이언트로 가고, 동시에 **result cache**(24시간 유효, 동일 쿼리·동일 데이터면 컴퓨트 없이 즉시 응답)에 보관된다.\n\n### 왜 이렇게 나눴나\n제어 평면(인증·메타데이터·옵티마이저)과 실행 평면(스캔·조인)을 분리하면, **무거운 컴퓨트는 고객별로 격리된 warehouse에서** 돌고 **가벼운 제어는 공유 서비스에서** 처리된다. 덕분에 한 고객의 거대한 쿼리가 다른 고객에게 영향을 주지 않으면서도, 메타데이터/통계는 전역적으로 일관되게 관리된다."
+    },
+    {
+     "topic": "FoundationDB 기반 메타데이터·트랜잭션·일관성 모델",
+     "body": "### 메타데이터가 진짜 시스템의 심장\n\nSnowflake의 데이터 본체는 object storage의 불변(immutable) micro-partition 파일이지만, **어떤 파일이 어느 테이블·어느 버전에 속하는지**를 아는 것은 전적으로 메타데이터 계층의 몫이다. 초기에는 트랜잭션 메타데이터를 키-값 스토어에 두었고, 이후 **FoundationDB(FDB)** 로 마이그레이션해 메타데이터 평면을 운영한다.\n\n#### 왜 FoundationDB인가\n- FDB는 **엄격한 직렬성(strict serializability)** 을 보장하는 분산 트랜잭션 KV 스토어다. 메타데이터 갱신(테이블 버전 커밋, 파일 추가/삭제)은 절대 깨지면 안 되므로 ACID가 필수다.\n- **FDB Record Layer**(구조화된 레코드/인덱스를 KV 위에 얹는 계층)를 활용해 카탈로그·통계·권한 같은 스키마를 표현한다.\n\n#### 일관성·동시성 메커니즘 (MVCC + Time Travel)\n- 모든 테이블 변경은 **새로운 micro-partition을 쓰고 메타데이터에서 테이블 버전을 원자적으로 교체**하는 방식이다. 기존 파일은 수정하지 않는다(copy-on-write).\n- 이 불변성 덕분에 **snapshot isolation / MVCC** 가 자연스럽게 나온다. 읽기 트랜잭션은 시작 시점의 테이블 버전을 보고, 쓰기와 충돌하지 않는다.\n- **Time Travel**(과거 시점 데이터 조회)과 **Zero-copy Cloning**(메타데이터 포인터만 복제, 실제 데이터 복사 없음)이 바로 이 \"불변 파일 + 버전 메타데이터\" 설계의 부산물이다. 클론은 데이터를 복사하지 않고 같은 micro-partition을 가리키다가, 변경분만 새 파일로 분기한다.\n\n#### 트레이드오프\n메타데이터 계층이 모든 트랜잭션의 직렬화 지점이 되므로, **메타데이터 스루풋이 전체 동시 커밋 수의 한계**가 될 수 있다. Snowflake가 FDB로 옮긴 이유 중 하나가 이 메타데이터 평면의 확장성·내구성 확보였다."
+    },
+    {
+     "topic": "스트리밍 인제스트: Snowpipe와 Snowpipe Streaming",
+     "body": "### 배치 적재에서 행 단위 실시간 적재로\n\nSnowflake의 데이터 적재는 두 갈래로 진화했다.\n\n#### 1) Snowpipe (파일 기반, 서버리스 마이크로배치)\n- object storage(S3 등)에 파일이 도착하면 **이벤트 알림(SQS/SNS, Event Grid, Pub/Sub)** 이 트리거되어 Snowflake가 자동으로 `COPY` 를 수행한다.\n- 사용자가 warehouse를 띄울 필요 없는 **서버리스** 모델이라, Snowflake가 관리하는 컴퓨트가 파일을 micro-partition으로 변환해 적재한다. 지연은 분 단위.\n\n#### 2) Snowpipe Streaming (행 기반, 저지연)\n- 파일을 거치지 않고 **클라이언트 SDK가 행(row)을 직접 채널(channel)로 푸시**한다. Kafka 커넥터도 이 경로를 사용해 토픽을 거의 실시간으로 테이블에 흘려보낸다.\n- 내부적으로 들어온 행은 먼저 가볍게 커밋되어 즉시 쿼리 가능해지고, 백그라운드에서 **자동으로 micro-partition으로 압축·재구성(file compaction/migration)** 된다. 즉 \"빨리 보이게 하기\"와 \"잘 압축해 저장하기\"를 분리한다.\n- 과금이 파일 수가 아니라 적재된 데이터량 기준이라 **고빈도·소량 적재에서 비용 효율**이 높다.\n\n#### 엔지니어링 포인트\n실시간 적재의 본질적 긴장은 **\"작게 자주 쓰면 쿼리 지연은 낮지만 파일이 잘게 쪼개져 스캔 효율이 나빠진다\"** 는 것이다. Snowflake는 적재 즉시 가시성을 주되, 뒤에서 micro-partition을 다시 모아 컬럼 압축·pruning 효율을 회복하는 **2단계(hot ingest → background compaction)** 로 이 트레이드오프를 푼다."
+    },
+    {
+     "topic": "Snowpark Container Services와 Kubernetes 위의 확장",
+     "body": "### SQL 엔진을 넘어 범용 컨테이너 런타임으로\n\nSnowflake는 \"데이터가 있는 곳에서 코드를 돌린다\"는 방향으로 확장하며 **Snowpark Container Services(SPCS)** 를 내놓았다. 이는 SQL/UDF를 넘어 **임의의 컨테이너(예: GPU 기반 ML 추론, 풀스택 앱)** 를 Snowflake 보안 경계 안에서 실행하는 관리형 런타임이다.\n\n#### 동작 방식\n- 내부적으로 **Kubernetes** 기반으로 컨테이너를 오케스트레이션하지만, 사용자는 클러스터를 직접 관리하지 않는다. **compute pool**(노드 풀, CPU/GPU 종류 선택)을 정의하면 Snowflake가 그 위에 service/job 형태로 컨테이너를 스케줄링한다.\n- 컨테이너 이미지는 Snowflake가 제공하는 **image registry**에 푸시하고, 서비스는 Snowflake의 네트워크/인증/거버넌스 경계 안에서 데이터에 접근한다. 즉 데이터를 밖으로 빼지 않고 **거버넌스·RBAC가 그대로 적용**된다.\n\n#### 왜 이 선택을 했나\n- ML/AI 워크로드(LLM 추론, 임베딩 생성, 커스텀 라이브러리)는 순수 SQL로 표현하기 어렵고 특정 런타임·GPU가 필요하다. 데이터를 외부 플랫폼으로 복사하면 거버넌스·보안·비용 문제가 생긴다.\n- 따라서 **컴퓨트를 데이터 옆으로 가져오는** 기존 storage-compute 철학을, SQL warehouse에서 범용 컨테이너로 일반화한 것이다. 이는 멀티클라우드(AWS/Azure/GCP) 위에서 동일한 추상으로 제공된다.\n\n#### 트레이드오프\n범용 컨테이너를 멀티테넌트 보안 경계 안에서 돌리려면 네트워크 격리·이미지 검증·리소스 쿼터가 까다롭다. Snowflake는 compute pool 단위 격리와 자체 ingress/egress 통제로 보안과 유연성 사이를 절충한다."
     }
    ],
    "github": {
@@ -6252,31 +6313,47 @@
      {
       "name": "snowflakedb/snowflake-connector-python",
       "url": "https://github.com/snowflakedb/snowflake-connector-python",
-      "desc": "스노우플레이크 파이썬 커넥터",
+      "desc": "Python용 공식 Snowflake DB-API 커넥터",
       "lang": "Python",
       "stars": 727
      },
      {
       "name": "snowflakedb/snowpark-python",
       "url": "https://github.com/snowflakedb/snowpark-python",
-      "desc": "Snowpark 파이썬 데이터프레임 API",
+      "desc": "Snowflake에서 DataFrame 스타일로 푸시다운 실행하는 Python 클라이언트 라이브러리",
       "lang": "Python",
       "stars": 336
      },
      {
+      "name": "snowflakedb/spark-snowflake",
+      "url": "https://github.com/snowflakedb/spark-snowflake",
+      "desc": "Apache Spark와 Snowflake를 연결하는 데이터소스 커넥터",
+      "lang": "Scala",
+      "stars": 231
+     },
+     {
       "name": "snowflakedb/snowflake-jdbc",
       "url": "https://github.com/snowflakedb/snowflake-jdbc",
-      "desc": "스노우플레이크 JDBC 드라이버",
+      "desc": "JVM 애플리케이션을 위한 공식 JDBC 드라이버",
       "lang": "Java",
       "stars": 201
+     },
+     {
+      "name": "snowflakedb/snowflake-kafka-connector",
+      "url": "https://github.com/snowflakedb/snowflake-kafka-connector",
+      "desc": "Kafka 토픽을 Snowflake 테이블로 적재하는 Sink 커넥터(Snowpipe Streaming)",
+      "lang": "Java",
+      "stars": 173
      }
     ]
    },
    "sources": [
+    "https://www.snowflake.com/wp-content/uploads/2014/12/The-Snowflake-Elastic-Data-Warehouse-SIGMOD-2016.pdf",
+    "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
     "https://www.snowflake.com/en/engineering-blog/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "doordash",
@@ -9991,7 +10068,7 @@
     "https://if.kakao.com"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-15"
   },
   {
    "key": "naver",
@@ -11522,7 +11599,7 @@
     "https://medium.com/coupang-engineering/kr"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-15"
   },
   {
    "key": "tmon",
