@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import {
@@ -6,8 +6,11 @@ import {
 } from 'recharts'
 import { useTrends } from '../lib/useTrends'
 import { useTechRelations } from '../lib/useTechRelations'
+import { ExpansionView } from './ExpansionView'
 import { Loader, ErrorState } from './ui'
 import type { TechRelation, TrendDay } from '../types'
+
+type TrendMode = 'trend' | 'relations' | 'learn'
 
 const PALETTE = ['#6ee7b7', '#93c5fd', '#fca5a5', '#fcd34d', '#c4b5fd', '#f9a8d4', '#5eead4', '#fdba74']
 
@@ -15,12 +18,23 @@ function pct(d: TrendDay, t: string): number {
   return d.total ? Math.round((1000 * (d.tech[t] ?? 0)) / d.total) / 10 : 0
 }
 
-export function TrendView() {
+export function TrendView({
+  onOpenCompany,
+  focusTech,
+}: {
+  onOpenCompany?: (norm: string) => void
+  focusTech?: { tech: string; n: number } | null
+} = {}) {
   const { data, loading, error } = useTrends()
   const { data: rel } = useTechRelations()
-  const [mode, setMode] = useState<'trend' | 'relations'>('trend')
+  const [mode, setMode] = useState<TrendMode>('trend')
   const [picked, setPicked] = useState<string[]>([])
   const [relTech, setRelTech] = useState<string | null>(null)
+
+  // "이 기술 공부하기"로 진입하면 학습·확장 모드로 전환
+  useEffect(() => {
+    if (focusTech?.tech) setMode('learn')
+  }, [focusTech])
 
   const latest = data?.days[data.days.length - 1]
   const ranking = useMemo(() => {
@@ -72,12 +86,22 @@ export function TrendView() {
         <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden">
           <ModeBtn active={mode === 'trend'} onClick={() => setMode('trend')}>수요 추이</ModeBtn>
           <ModeBtn active={mode === 'relations'} onClick={() => setMode('relations')}>기술 관계·맥락</ModeBtn>
+          <ModeBtn active={mode === 'learn'} onClick={() => setMode('learn')}>학습·확장</ModeBtn>
         </div>
         <span className="text-xs text-(--color-muted)">
-          {mode === 'trend' ? '시간에 따른 기술 수요 변화(비중%)' : '함께 쓰이는 기술(스택 레이어)과 어디서·왜 쓰이는지'}
+          {mode === 'trend'
+            ? '시간에 따른 기술 수요 변화(비중%)'
+            : mode === 'relations'
+              ? '함께 쓰이는 기술(스택 레이어)과 어디서·왜 쓰이는지'
+              : '기술 선택 → 함께 쓰는 기술 확장 추천 + 학습 커리큘럼'}
         </span>
       </div>
 
+      {mode === 'learn' ? (
+        <div className="flex flex-1 min-h-0 min-w-0">
+          <ExpansionView onOpenCompany={onOpenCompany} focusTech={focusTech} />
+        </div>
+      ) : (
       <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden">
         {/* 좌: 현재 수요 순위 (공유) */}
         <aside className="w-full md:w-80 shrink-0 md:overflow-auto border-b md:border-b-0 md:border-r border-(--color-border) bg-(--color-panel) p-4">
@@ -175,6 +199,7 @@ export function TrendView() {
           </main>
         )}
       </div>
+      )}
     </div>
   )
 }

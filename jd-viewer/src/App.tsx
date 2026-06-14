@@ -5,7 +5,6 @@ import { JobDetail } from './components/JobDetail'
 import { TechChart } from './components/TechChart'
 import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
-import { ExpansionView } from './components/ExpansionView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
 import { CalendarView } from './components/CalendarView'
@@ -16,9 +15,9 @@ import { useHashTab } from './lib/useHashTab'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
+type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
 
-const TABS: readonly Tab[] = ['jobs', 'companies', 'expansion', 'mindmap', 'blog', 'radar', 'calendar', 'trend']
+const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend']
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -34,11 +33,11 @@ function App() {
     setTab('companies')
   }
 
-  // 회사 → "이 기술 공부하기": 기술스택 확장 탭으로 이동해 해당 기술 선택.
+  // 회사 → "이 기술 공부하기": 개발 트렌드 탭의 학습·확장 모드로 이동해 해당 기술 선택.
   // n 카운터로 같은 기술을 다시 눌러도 useEffect 가 재실행되게 한다.
   const openStudy = (tech: string) => {
     setTechFocus((prev) => ({ tech, n: (prev?.n ?? 0) + 1 }))
-    setTab('expansion')
+    setTab('trend')
   }
 
   const filtered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
@@ -68,9 +67,6 @@ function App() {
           <TabButton active={tab === 'companies'} onClick={() => setTab('companies')}>
             기업 기술스택
           </TabButton>
-          <TabButton active={tab === 'expansion'} onClick={() => setTab('expansion')}>
-            기술스택 확장
-          </TabButton>
           <TabButton active={tab === 'mindmap'} onClick={() => setTab('mindmap')}>
             커리어 마인드맵
           </TabButton>
@@ -99,10 +95,6 @@ function App() {
         <div key="companies" className="flex flex-1 min-h-0 jd-fade-in">
           <CompanyView focusNorm={companyFocus} onStudyTech={openStudy} />
         </div>
-      ) : tab === 'expansion' ? (
-        <div key="expansion" className="flex flex-1 min-h-0 jd-fade-in">
-          <ExpansionView onOpenCompany={openCompany} focusTech={techFocus} />
-        </div>
       ) : tab === 'blog' ? (
         <div key="blog" className="flex flex-1 min-h-0 jd-fade-in">
           <BlogView />
@@ -117,7 +109,7 @@ function App() {
         </div>
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
-          <TrendView />
+          <TrendView onOpenCompany={openCompany} focusTech={techFocus} />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (
