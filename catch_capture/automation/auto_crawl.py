@@ -24,6 +24,7 @@ import sys as _sys
 from pathlib import Path as _Path
 _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_capture 루트를 import 경로에 추가
 
+import json
 import os
 import signal
 import subprocess
@@ -48,6 +49,12 @@ LEARNING_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_learning.py"
 RADAR_REFINE_N = 2                     # 사이클당 레이더 점진 리파인 회사 수
 LEARNING_REFRESH_SECS = 6 * 3600       # 학습영상 캐시 무시 재수집 주기(기존 learning cron 대체)
 LEARNING_STAMP = BASE_DIR / ".learning_refresh.stamp"
+
+# 주기적 데이터 자동 커밋 — 누적되는 생성물(레이더·후기·집계)을 사이클마다 커밋한다.
+# push 는 CLAUDE.md 규칙상 기본 OFF. 환경변수 JOBSEEKER_AUTOPUSH=1 일 때만 push 한다.
+AUTOCOMMIT_PATHS = ["jd-viewer/public", "catch_capture/dashboard/data.json"]
+RADAR_JSON = ROOT_DIR / "jd-viewer" / "public" / "company_tech_radar.json"
+AUTOPUSH = os.environ.get("JOBSEEKER_AUTOPUSH") == "1"
 
 DEFAULT_KEYWORD = "개발자"
 DEFAULT_COUNT = 20
@@ -169,11 +176,43 @@ def maybe_refresh_learning() -> None:
         log(f"[learning] 예외: {e!r}")
 
 
+def auto_commit_data() -> None:
+    """누적된 생성 데이터(레이더·후기·집계)를 주기적으로 git 커밋한다.
+    - 레이더 JSON 이 갱신 중(파싱 실패)이면 이번 사이클은 건너뛴다(반쪽 커밋 방지).
+    - 데이터 경로만 스테이징하므로 코드 변경은 섞이지 않는다.
+    - push 는 JOBSEEKER_AUTOPUSH=1 일 때만(기본 OFF, CLAUDE.md 규칙 준수)."""
+    if RADAR_JSON.exists():
+        try:
+            json.loads(RADAR_JSON.read_text(encoding="utf-8"))
+        except Exception:
+            log("[autocommit] 데이터 파일 갱신 중 — 이번 사이클 스킵")
+            return
+    try:
+        subprocess.call(["git", "add", "--", *AUTOCOMMIT_PATHS], cwd=str(ROOT_DIR))
+        # 스테이징된 변경이 없으면 커밋하지 않는다(빈 커밋 방지)
+        if subprocess.call(["git", "diff", "--cached", "--quiet"], cwd=str(ROOT_DIR)) == 0:
+            return
+        msg = f"chore(data): 자동 갱신 {datetime.now():%Y-%m-%d %H:%M} [auto]"
+        rc = subprocess.call(["git", "commit", "-q", "--no-verify", "-m", msg], cwd=str(ROOT_DIR))
+        if rc != 0:
+            log(f"[autocommit] 커밋 실패(rc={rc})")
+            return
+        log(f"[autocommit] 데이터 커밋{' + push' if AUTOPUSH else ''}")
+        if AUTOPUSH:
+            prc = subprocess.call(["git", "push", "origin", "HEAD"], cwd=str(ROOT_DIR))
+            if prc != 0:
+                log(f"[autocommit] push 실패(rc={prc}) — 로컬 커밋은 유지됨")
+    except Exception as e:
+        log(f"[autocommit] 예외: {e!r}")
+
+
 def enrich_extras() -> None:
-    """크롤과 무관하게 매 사이클 굴리는 부가 작업: 레이더 리파인 + 후기 데몬 보장 + 학습 재수집."""
+    """크롤과 무관하게 매 사이클 굴리는 부가 작업: 레이더 리파인 + 후기 데몬 보장 + 학습 재수집
+    + 누적 데이터 자동 커밋."""
     maybe_refresh_learning()
     enrich_radar()
     ensure_reviews_daemon()
+    auto_commit_data()
 
 
 def run_cycle(keyword: str, count: int) -> bool:
