@@ -12,7 +12,7 @@ const SIZE_COLOR: Record<string, string> = {
 }
 
 const CAT_COLOR: Record<string, string> = {
-  언어: '#c084fc',
+  언어: '#03C75A',
   백엔드: '#60a5fa',
   프론트엔드: '#34d399',
   모바일: '#fbbf24',

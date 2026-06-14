@@ -66,7 +66,7 @@ export function TechChart({ data, onPick, highlight }: Props) {
                   y={y}
                   width={width}
                   height={height}
-                  fill={isHi ? '#c084fc' : '#7d4dab'}
+                  fill={isHi ? '#03C75A' : '#1f7a4d'}
                   rx={2}
                 />
               )

@@ -6,7 +6,7 @@
   --color-border: #2a2d36;
   --color-text: #e6e7eb;
   --color-muted: #9aa0aa;
-  --color-accent: #c084fc;
+  --color-accent: #03C75A;
 }
 
 /* 라이트 테마 — <html class="light"> 일 때 6개 변수를 덮어쓴다(모든 bg-(--color-*) 가 따라감) */
@@ -18,7 +18,7 @@ html { color-scheme: dark; }
   --color-border: #e3e6eb;
   --color-text: #1f2430;
   --color-muted: #6b7280;
-  --color-accent: #7c3aed;
+  --color-accent: #03C75A;
 }
 
 html, body, #root {
@@ -52,7 +52,7 @@ html, body, #root {
 
 ::selection {
   background: color-mix(in srgb, var(--color-accent) 38%, transparent);
-  color: #fff;
+  color: var(--color-text);
 }
 
 /* 키보드 포커스 접근성 링 — 마우스 클릭에는 표시 안 됨 */
