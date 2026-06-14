@@ -109,7 +109,7 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
           onClick={() => setZoomOpen(false)}
         >
           <div
-            className="flex items-center gap-2 px-4 py-2 border-b border-white/10 text-(--color-text)"
+            className="flex items-center gap-2 px-4 py-2 border-b border-white/10 text-white"
             onClick={(e) => e.stopPropagation()}
           >
             <span className="text-sm font-medium">아키텍처 다이어그램</span>
@@ -143,7 +143,7 @@ function ZoomBtn({ onClick, children }: { onClick: () => void; children: React.R
   return (
     <button
       onClick={onClick}
-      className="px-2.5 py-1 text-xs rounded bg-white/10 hover:bg-white/20 text-(--color-text) border border-white/10"
+      className="px-2.5 py-1 text-xs rounded bg-white/10 hover:bg-white/20 text-white border border-white/10"
     >
       {children}
     </button>

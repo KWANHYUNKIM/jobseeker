@@ -50,7 +50,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
             <li
               key={`${j.site}-${j.pid}-${j.idx}`}
               onClick={() => onSelect(j)}
-              className={'px-4 py-3 cursor-pointer transition ' + (active ? 'bg-(--color-accent)/15' : 'hover:bg-white/3')}
+              className={'px-4 py-3 cursor-pointer transition ' + (active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)')}
             >
               <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
                 <span className="tabular-nums">{start + i + 1}</span>
@@ -108,7 +108,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                   onClick={() => onSelect(j)}
                   className={
                     'border-b border-(--color-border) cursor-pointer transition ' +
-                    (active ? 'bg-(--color-accent)/15' : 'hover:bg-white/3')
+                    (active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)')
                   }
                 >
                   <td className="px-3 py-2 text-(--color-muted) tabular-nums">{start + i + 1}</td>

@@ -9,17 +9,22 @@
   --color-accent: #03C75A;
 }
 
-/* 라이트 테마 — <html class="light"> 일 때 6개 변수를 덮어쓴다(모든 bg-(--color-*) 가 따라감) */
+/* 라이트 테마 — <html class="light"> 일 때 6개 변수를 덮어쓴다(모든 bg-(--color-*) 가 따라감)
+   네이버 스타일: 본문 거의 검정(#222), 흰 카드 + 회색 페이지, 또렷한 회색 구분선 */
 html { color-scheme: dark; }
 :root.light {
   color-scheme: light;
-  --color-bg: #f4f5f7;
-  --color-panel: #ffffff;
-  --color-border: #e3e6eb;
-  --color-text: #1f2430;
-  --color-muted: #6b7280;
+  --color-bg: #f3f5f7;        /* 페이지 = 옅은 회색(층 구분) */
+  --color-panel: #ffffff;     /* 카드/패널 = 흰색 */
+  --color-border: #d3d6dc;    /* 구분선 = 또렷한 회색 */
+  --color-text: #222222;      /* 본문 = 거의 검정 */
+  --color-muted: #595e68;     /* 보조 텍스트 = 진한 회색(가독성) */
   --color-accent: #03C75A;
 }
+
+/* hover/subtle 배경 — 본문색 기반이라 테마 자동 적응(다크=옅은 흰, 라이트=옅은 검정) */
+:root { --hover: color-mix(in srgb, var(--color-text) 7%, transparent); }
+:root.light { --hover: color-mix(in srgb, var(--color-text) 6%, transparent); }
 
 html, body, #root {
   height: 100%;

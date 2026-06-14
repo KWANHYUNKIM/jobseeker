@@ -260,7 +260,7 @@ export function ClusterView() {
             <span className="text-sm font-semibold text-(--color-accent)">{selected.name}</span>
             <span className="text-[11px] text-(--color-muted)">· {selected.value}건 공고</span>
             {selected.size && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-(--color-text)/70">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-(--hover) text-(--color-text)/70">
                 {selected.size}
               </span>
             )}

@@ -56,7 +56,7 @@ export function JobDetail({ job, onClose }: Props) {
             </div>
             <button
               onClick={onClose}
-              className="text-(--color-muted) hover:text-(--color-text) text-3xl leading-none w-9 h-9 rounded hover:bg-white/5 shrink-0"
+              className="text-(--color-muted) hover:text-(--color-text) text-3xl leading-none w-9 h-9 rounded hover:bg-(--hover) shrink-0"
               aria-label="닫기 (ESC)"
               title="닫기 (ESC)"
             >

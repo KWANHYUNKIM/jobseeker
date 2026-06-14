@@ -42,7 +42,7 @@ function ViewButton({
       className={`text-xs px-3 py-1 rounded transition ${
         active
           ? 'bg-(--color-accent) text-black font-medium'
-          : 'text-(--color-text) hover:bg-white/10 border border-(--color-border)'
+          : 'text-(--color-text) hover:bg-(--hover) border border-(--color-border)'
       }`}
     >
       {children}

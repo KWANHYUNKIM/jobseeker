@@ -101,7 +101,7 @@ export function CompanyView({
                   setNavOpen(false)
                 }}
                 className={`w-full text-left px-3 py-2.5 border-b border-(--color-border)/50 transition ${
-                  active ? 'bg-(--color-accent)/15' : 'hover:bg-white/5'
+                  active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)'
                 }`}
               >
                 <div className="flex items-center gap-2">

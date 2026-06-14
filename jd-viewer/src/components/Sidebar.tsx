@@ -35,7 +35,7 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
         </div>
         <button
           onClick={onClose}
-          className="md:hidden ml-auto -mt-1 -mr-1 text-(--color-muted) hover:text-(--color-text) text-2xl leading-none w-8 h-8 rounded hover:bg-white/5"
+          className="md:hidden ml-auto -mt-1 -mr-1 text-(--color-muted) hover:text-(--color-text) text-2xl leading-none w-8 h-8 rounded hover:bg-(--hover)"
           aria-label="필터 닫기"
         >
           ×

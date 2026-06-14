@@ -254,25 +254,25 @@ export function MindmapView() {
         <div className="w-px h-5 bg-(--color-border) mx-1" />
         <button
           onClick={() => setAllFold(99)}
-          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-(--hover) border border-(--color-border)"
         >
           모두 펼치기
         </button>
         <button
           onClick={() => setAllFold(2)}
-          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-(--hover) border border-(--color-border)"
         >
           기업까지
         </button>
         <button
           onClick={() => setAllFold(1)}
-          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-(--hover) border border-(--color-border)"
         >
           도메인만
         </button>
         <button
           onClick={handleFit}
-          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-white/10 border border-(--color-border)"
+          className="text-xs px-3 py-1.5 rounded text-(--color-text) hover:bg-(--hover) border border-(--color-border)"
         >
           화면 맞춤
         </button>

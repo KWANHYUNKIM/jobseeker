@@ -147,7 +147,7 @@ function TechSidebar({
                     key={t.name}
                     onClick={() => onSelect(t.name)}
                     className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition ${
-                      active ? 'bg-(--color-accent)/15' : 'hover:bg-white/5'
+                      active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)'
                     }`}
                   >
                     <span className="text-[13px] text-(--color-text) truncate">{t.name}</span>
