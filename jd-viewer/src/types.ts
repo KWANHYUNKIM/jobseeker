@@ -200,12 +200,22 @@ export interface InterviewStage {
   detail: string
 }
 
+// 공개 블로그/커리어 페이지의 면접 후기(링크+요약). 사적 후기 사이트는 수집하지 않음.
+export interface InterviewReview {
+  title: string
+  url: string
+  summary: string
+  source: string // 블로그/플랫폼 이름(예: velog, tistory)
+  date?: string
+}
+
 export interface Interview {
   process: InterviewStage[]
   focus: string[] // 이 회사가 보는 핵심 역량
   tips: string[] // 지원자 준비 팁
   difficulty?: string
   sources: string[]
+  reviews?: InterviewReview[] // 공개 면접 후기(크롤 루프가 누적)
 }
 
 export interface RadarCompany {

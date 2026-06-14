@@ -334,11 +334,12 @@ def _extract_json(text: str) -> dict | None:
         return None
 
 
-def _call_claude(prompt: str, timeout: int = 300) -> str | None:
-    """로컬 claude CLI 를 headless 로 호출해 결과 텍스트를 반환. 실패 시 None."""
+def _call_claude(prompt: str, timeout: int = 300, extra: list | None = None) -> str | None:
+    """로컬 claude CLI 를 headless 로 호출해 결과 텍스트를 반환. 실패 시 None.
+    extra 로 추가 CLI 인자를 넘길 수 있다(예: 웹검색 허용 --allowedTools)."""
     try:
         proc = subprocess.run(
-            ["claude", "-p", prompt, "--output-format", "json"],
+            ["claude", "-p", prompt, "--output-format", "json", *(extra or [])],
             capture_output=True, text=True, timeout=timeout,
         )
     except FileNotFoundError:
@@ -658,6 +659,123 @@ def cmd_debate(n: int, rounds: int, loop: bool, interval: int) -> None:
         time.sleep(interval)
 
 
+# ── 공개 면접 후기 수집(--reviews) ─────────────────────────────────────
+# claude CLI 웹검색으로 공개 블로그/커리어 페이지의 면접 후기를 찾아 링크+요약으로 수집한다.
+# 사적 후기 사이트(Blind/잡플래닛/Glassdoor 등)는 차단하고, URL 실존을 HTTP 로 검증해
+# 환각 링크를 버린다. interview.reviews 에 URL 기준 중복제거하며 누적(절대 축소 안 함).
+
+BLOCKED_REVIEW_DOMAINS = (
+    "teamblind.com", "blind.com", "jobplanet.co.kr", "jobplanet.com",
+    "glassdoor.com", "glassdoor.co.kr", "linkedin.com",
+)
+
+
+def _url_alive(url: str) -> bool:
+    """공개 URL 이 실제로 살아있는지(<400) 확인하고 차단 도메인을 거른다."""
+    if not url.startswith(("http://", "https://")):
+        return False
+    if any(d in url.lower() for d in BLOCKED_REVIEW_DOMAINS):
+        return False
+    req = urllib.request.Request(url, method="GET", headers={
+        "User-Agent": "Mozilla/5.0 (compatible; jobseeker-radar/1.0)",
+        "Accept": "text/html",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=12) as r:
+            return r.status < 400
+    except urllib.error.HTTPError as e:
+        return e.code < 400
+    except Exception:
+        return False
+
+
+REVIEWS_PROMPT = """웹검색을 사용해 아래 회사의 '개발자 채용/면접 후기' 를 다룬 **공개 글**을 찾아라.
+대상: 개인 블로그(velog, tistory, 브런치, Medium, github.io 등), 회사 공식 채용/기술 블로그.
+제외(절대 포함 금지): Blind(teamblind), 잡플래닛(jobplanet), Glassdoor, LinkedIn, 로그인/유료가 가려진 글.
+
+회사: {name} ({country})
+
+실제로 검색해서 찾은 URL 만 사용하라(존재하지 않는 URL 지어내기 금지). 2~5개.
+STRICT JSON ONLY(펜스/산문 금지):
+{{"reviews": [
+  {{"title": "글 제목", "url": "https://...", "summary": "면접 과정·난이도·팁 요약(한국어 2~3문장)", "source": "velog|tistory|브런치|Medium|회사블로그 등", "date": "YYYY-MM 있으면"}}
+]}}"""
+
+
+def merge_reviews(interview: dict, new_reviews: list) -> int:
+    existing = interview.get("reviews") or []
+    seen = {r.get("url", "").rstrip("/") for r in existing}
+    added = 0
+    for r in new_reviews or []:
+        url = (r.get("url") or "").strip()
+        title = (r.get("title") or "").strip()
+        if not url or not title or url.rstrip("/") in seen:
+            continue
+        if not _url_alive(url):
+            print(f"[reviews]   드롭(검증 실패/차단): {url[:60]}", file=sys.stderr)
+            continue
+        rec = {
+            "title": title, "url": url,
+            "summary": (r.get("summary") or "").strip(),
+            "source": (r.get("source") or "").strip(),
+        }
+        if r.get("date"):
+            rec["date"] = str(r["date"]).strip()
+        existing.append(rec)
+        seen.add(url.rstrip("/"))
+        added += 1
+    interview["reviews"] = existing
+    return added
+
+
+def _reviews_one(company: dict) -> bool:
+    text = _call_claude(
+        REVIEWS_PROMPT.format(name=company["name"], country=company.get("country", "")),
+        extra=["--allowedTools", "WebSearch,WebFetch"],
+    )
+    if not text:
+        return False
+    data = _extract_json(text)
+    if not data:
+        print(f"[reviews] {company['name']}: JSON 파싱 실패.", file=sys.stderr)
+        return False
+    iv = company.setdefault("interview", {"process": [], "focus": [], "tips": [], "sources": []})
+    added = merge_reviews(iv, data.get("reviews"))
+    company["updated_at"] = _today()
+    print(f"[reviews]   +{added}개 후기 (누적 {len(iv.get('reviews') or [])})")
+    return added > 0
+
+
+def cmd_reviews(n: int, loop: bool, interval: int) -> None:
+    while True:
+        companies = load()
+        if not companies:
+            print("[reviews] 데이터가 없습니다.", file=sys.stderr)
+            return
+        # 전형 가이드 있는 회사 우선 → 후기 적은 곳 → updated_at 오래된 순
+        targets = sorted(
+            companies,
+            key=lambda c: (
+                not bool(c.get("interview")),
+                len((c.get("interview") or {}).get("reviews") or []),
+                c.get("updated_at", ""),
+            ),
+        )[:n]
+        done = 0
+        for c in targets:
+            print(f"[reviews] {c['name']} 공개 후기 검색 중…")
+            if _reviews_one(c):
+                done += 1
+                save(companies)
+        doc = save(companies)
+        have = sum(1 for c in doc["companies"] if (c.get("interview") or {}).get("reviews"))
+        print(f"[reviews] {done}/{len(targets)}개사 수집. 후기 보유 {have}/{doc['total']}")
+        if not loop:
+            return
+        print(f"[reviews] {interval}s 대기 후 다음 사이클…")
+        time.sleep(interval)
+
+
 # ── 엔트리포인트 ──────────────────────────────────────────────────────
 
 def main() -> None:
@@ -673,6 +791,8 @@ def main() -> None:
     ap.add_argument("--debate", type=int, metavar="N", default=0,
                     help="N개사를 멀티 에이전트 토론(설계자↔검토자+정리자)으로 아키텍처 도출")
     ap.add_argument("--rounds", type=int, default=2, help="토론 라운드 수(기본 2)")
+    ap.add_argument("--reviews", type=int, metavar="N", default=0,
+                    help="N개사의 공개 면접 후기를 claude 웹검색으로 수집·검증·누적")
     ap.add_argument("--no-github", action="store_true", help="--patch 시 GitHub API 검증 생략")
     ap.add_argument("--loop", action="store_true", help="--refine/--debate 를 무한 반복")
     ap.add_argument("--interval", type=int, default=1800, help="루프 간격(초), 기본 1800")
@@ -686,6 +806,8 @@ def main() -> None:
         cmd_github(args.github)
     elif args.debate > 0:
         cmd_debate(args.debate, args.rounds, args.loop, args.interval)
+    elif args.reviews > 0:
+        cmd_reviews(args.reviews, args.loop, args.interval)
     elif args.refine > 0:
         cmd_refine(args.refine, args.loop, args.interval)
     else:

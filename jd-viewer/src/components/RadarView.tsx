@@ -889,6 +889,40 @@ function InterviewView({ interview }: { interview: Interview }) {
         </div>
       )}
 
+      {interview.reviews && interview.reviews.length > 0 && (
+        <div>
+          <div className="text-xs font-medium text-(--color-muted) mb-2">
+            공개 면접 후기 ({interview.reviews.length})
+          </div>
+          <ul className="flex flex-col gap-2">
+            {interview.reviews.map((rv) => (
+              <li
+                key={rv.url}
+                className="rounded border border-(--color-border) bg-(--color-bg) px-3 py-2"
+              >
+                <div className="flex items-center gap-2">
+                  <a
+                    href={rv.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-medium text-(--color-text) hover:text-(--color-accent) hover:underline break-all"
+                  >
+                    {rv.title} ↗
+                  </a>
+                  {rv.source && (
+                    <span className="ml-auto shrink-0 text-[11px] text-(--color-muted)">
+                      {rv.source}
+                      {rv.date ? ` · ${rv.date}` : ''}
+                    </span>
+                  )}
+                </div>
+                {rv.summary && <p className="mt-0.5 text-xs text-(--color-muted)">{rv.summary}</p>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {interview.sources.length > 0 && (
         <p className="text-[11px] text-(--color-muted)">출처: {interview.sources.join(' · ')}</p>
       )}

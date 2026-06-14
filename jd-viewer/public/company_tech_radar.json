@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T09:03:48",
+ "generated_at": "2026-06-14T10:30:07",
  "total": 100,
  "countries": [
   {
@@ -4818,6 +4818,29 @@
     "sources": [
      "Google 공개 채용 안내(careers.google.com)·널리 알려진 절차 기반",
      "공개적으로 문서화된 Hiring Committee 및 팀 매칭 프로세스"
+    ],
+    "reviews": [
+     {
+      "title": "구글 코리아 면접 후기",
+      "url": "https://velog.io/@gomjellie/%EA%B5%AC%EA%B8%80-%EC%BD%94%EB%A6%AC%EC%95%84-%EB%A9%B4%EC%A0%91%ED%9B%84%EA%B8%B0",
+      "summary": "대학 4학년 학생의 구글 인턴십 지원 후기(최종 불합격). 서류→온라인 코딩챌린지(GOCC)→영어 1차→한국어 2차 순으로 진행되며, 알고리즘은 중간 난이도지만 어려운 문제 풀이보다 명확한 설명과 소통 능력을 강조한다. 준비 자료로 'Cracking the Coding Interview'와 LeetCode를 추천한다.",
+      "source": "velog",
+      "date": "2021-06"
+     },
+     {
+      "title": "늦깎이 구글 인터뷰 경험 - 2",
+      "url": "https://brunch.co.kr/@patrickjang/7",
+      "summary": "HR 전화 인터뷰(약 45분)→실무 책임자 영상 통화→싱가포르 대면 면접으로 이어지는 과정을 기록한 경험담. 2015년 이후 학부 성적·압박 면접이 제외되어 면접이 친절하게 진행되었다고 평가하며, 명확하고 간결한 설명 능력과 자신감 있는 자기소개를 팁으로 든다.",
+      "source": "브런치",
+      "date": "2018-01"
+     },
+     {
+      "title": "실리콘밸리 top5 회사 합격 후기",
+      "url": "https://medium.com/@jubileekim/%EC%8B%A4%EB%A6%AC%EC%BD%98%EB%B0%B8%EB%A6%AC-top5-%ED%9A%8C%EC%82%AC-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0-c50640b26eab",
+      "summary": "LinkedIn·Salesforce·Google·Airbnb·Facebook 합격 후기 번역글. 구글은 Mountain View 캠퍼스에서 진행되며 알고리즘 복잡도 분석과 Big O 표기 이해가 매우 중요하다고 강조한다. 코딩 준비로 LeetCode 약 70문제 풀이와 2~3개월 준비를 권한다.",
+      "source": "Medium",
+      "date": "2017-10"
+     }
     ]
    },
    "github": {
@@ -4858,7 +4881,7 @@
     "https://kubernetes.io"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-14"
   },
   {
    "key": "roblox",
@@ -9317,6 +9340,40 @@
     "sources": [
      "카카오 공개 채용 안내 기반",
      "일반적으로 알려진 IT 기업 채용 프로세스 기반"
+    ],
+    "reviews": [
+     {
+      "title": "2023 카카오 신입 공채 합격 후기 (1차 코딩테스트, 2차 코딩테스트, 1차 면접, 2차 면접)",
+      "url": "https://velog.io/@ekzm8523/2023-%EC%B9%B4%EC%B9%B4%EC%98%A4-%EC%8B%A0%EC%9E%85-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EB%B8%94%EB%9D%BC%EC%9D%B8%EB%93%9C-%EC%B1%84%EC%9A%A9-%ED%9B%84%EA%B8%B0-1%EC%B0%A8-%EC%BD%94%EB%94%A9%ED%85%8C%EC%8A%A4%ED%8A%B8-2%EC%B0%A8-%EC%BD%94%EB%94%A9%ED%85%8C%EC%8A%A4%ED%8A%B8-1%EC%B0%A8-%EB%A9%B4%EC%A0%91-2%EC%B0%A8-%EB%A9%B4%EC%A0%91",
+      "summary": "1차·2차 코딩테스트와 1차·2차 면접 전형 전체를 상세히 정리한 합격 후기. 1차 면접에서는 CS 기초가 탄탄한지를 중점적으로 보며, 알고리즘만 잘하는 지원자는 API 기반 2차 코딩테스트에서 많이 탈락한다고 조언한다. 깊이 있는 학습 방식과 본인의 생각을 보여주는 것이 강점이 된다고 강조한다.",
+      "source": "velog",
+      "date": "2022-11"
+     },
+     {
+      "title": "2022 카카오 블라인드 공채 합격 후기",
+      "url": "https://velog.io/@bepyan/%EC%B9%B4%EC%B9%B4%EC%98%A4-%EA%B3%B5%EC%B1%84-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "카카오 블라인드 공채 전 과정을 다룬 합격 후기. 면접은 특정 프로그래밍 언어보다 프로그래밍 공통 개념과 문제 해결 사고력을 중심으로 진행된다고 설명한다. 코딩테스트는 프로그래머스의 카카오 기출 반복 풀이를 추천한다.",
+      "source": "velog",
+      "date": "2021"
+     },
+     {
+      "title": "카카오 엔터프라이즈 인턴 면접 후기",
+      "url": "https://velog.io/@jinhyukoo/%EC%B9%B4%EC%B9%B4%EC%98%A4-%EC%97%94%ED%84%B0%ED%94%84%EB%9D%BC%EC%9D%B4%EC%A6%88-%EC%9D%B8%ED%84%B4-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "카카오 엔터프라이즈 인턴 면접 후기로, 프로젝트 경험과 자바스크립트 관련 질문을 많이 받았다고 한다. 사용한 기술을 왜 선택했는지 명확히 설명할 수 있어야 하며, 단순 지식보다 고민한 과정을 보여주는 것이 중요하다고 조언한다.",
+      "source": "velog"
+     },
+     {
+      "title": "카카오 운영분석팀 머신러닝 개발자 채용 후기",
+      "url": "https://velog.io/@dldydldy75/%EC%B9%B4%EC%B9%B4%EC%98%A4-%EC%9A%B4%EC%98%81%EB%B6%84%EC%84%9D%ED%8C%80-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%B1%84%EC%9A%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "카카오 운영분석팀 머신러닝 개발자 직무의 채용·면접 과정을 정리한 후기. 일반 공채와 다른 ML 직무 특화 전형과 면접 질문 경험을 담고 있어 데이터/ML 직군 지원자에게 참고가 된다.",
+      "source": "velog"
+     },
+     {
+      "title": "카카오엔터프라이즈 개발 인턴 합격 후기",
+      "url": "https://velog.io/@kshired/%EC%B9%B4%EC%B9%B4%EC%98%A4%EC%97%94%ED%84%B0%ED%94%84%EB%9D%BC%EC%9D%B4%EC%A6%88-%EA%B0%9C%EB%B0%9C-%EC%9D%B8%ED%84%B4-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "카카오엔터프라이즈 개발 인턴 합격 후기. 면접에서 교과서적인 정답이 아니라 지원자 본인의 생각을 묻는 질문이 많았다고 한다. 자신의 경험과 판단 근거를 솔직하게 풀어내는 것이 핵심이라고 조언한다.",
+      "source": "velog"
+     }
     ]
    },
    "github": {
@@ -9350,7 +9407,7 @@
     "https://if.kakao.com"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-14"
   },
   {
    "key": "naver",
@@ -9473,6 +9530,42 @@
     "sources": [
      "네이버 공개 채용 안내 기반",
      "일반적인 IT 기업 기술 면접 패턴"
+    ],
+    "reviews": [
+     {
+      "title": "2024 팀네이버 신입 공채 Tech 직군 합격 후기",
+      "url": "https://justicehui.github.io/review/2024/06/14/2024-naver-recruitment/",
+      "summary": "코딩테스트는 간단한 구현·알고리즘 위주라 부담이 적었고, 면접에서는 알고리즘·창의 수리·손코딩·CS 지식을 폭넓게 물어봤다. 자소서에 적은 기술과 프로젝트 코드를 상세히 복기하면 면접장에서 자신감을 가질 수 있다고 조언한다.",
+      "source": "github.io",
+      "date": "2024-06"
+     },
+     {
+      "title": "2023 팀네이버 신입 공채 : Tech - 최종 합격 후기",
+      "url": "https://velog.io/@oroko/2023-%ED%8C%80%EB%84%A4%EC%9D%B4%EB%B2%84-%EC%8B%A0%EC%9E%85-%EA%B3%B5%EC%B1%84-Tech-%EC%B5%9C%EC%A2%85-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "코딩테스트→1차 기술면접→2차 최종면접 전 과정을 단계별로 정리한 합격 후기. 1차는 자소서·포트폴리오·CS·손코딩 질문이 핵심이고, 2차는 삶과 일·공부 태도 위주의 인성 질문이 많았다고 한다.",
+      "source": "velog"
+     },
+     {
+      "title": "2024 팀네이버 공채 코딩테스트 & 1차 면접 탈락 후기",
+      "url": "https://velog.io/@8804who/2024-%ED%8C%80%EB%84%A4%EC%9D%B4%EB%B2%84-%EA%B3%B5%EC%B1%84-%EC%BD%94%EB%94%A9%ED%85%8C%EC%8A%A4%ED%8A%B8-1%EC%B0%A8-%EB%A9%B4%EC%A0%91%ED%83%88%EB%9D%BD-%EC%98%88%EC%A0%95-%ED%9B%84%EA%B8%B0",
+      "summary": "코딩테스트는 2시간 3문제로 구성되며, 1차 면접은 면접관 3인의 3:1 온라인 방식이었다. 면접관에 따라 분위기·질문이 크게 달라지는 '면바면'이 심했다는 탈락자의 솔직한 회고.",
+      "source": "velog",
+      "date": "2024"
+     },
+     {
+      "title": "2024 네이버 신입 공채 합격 후기",
+      "url": "https://velog.io/@dla0510/2024-%EB%84%A4%EC%9D%B4%EB%B2%84-%EC%8B%A0%EC%9E%85-%EA%B3%B5%EC%B1%84-%ED%9B%84%EA%B8%B0",
+      "summary": "네이버는 대학에서 배운 CS 기본기를 매우 중시해 포트폴리오·깃허브 없이도 합격이 가능하다고 강조한다. 자소서, CS, 손코딩, 창의 수리 등 다양한 주제 질문에 대비할 것을 권한다.",
+      "source": "velog",
+      "date": "2024"
+     },
+     {
+      "title": "2025 네이버 최종면접 후기 (라고 쓴 네이버 본사 투어 브이로그)",
+      "url": "https://velog.io/@dyddn2015/2025-%EB%84%A4%EC%9D%B4%EB%B2%84-%EC%B5%9C%EC%A2%85%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0-%EB%9D%BC%EA%B3%A0-%EC%93%B4-%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%B3%B8%EC%82%AC-%ED%88%AC%EC%96%B4-%EB%B8%8C%EC%9D%B4%EB%A1%9C%EA%B7%B8",
+      "summary": "2025년 네이버 최종(2차) 면접을 본사 방문과 함께 정리한 후기. 최종 면접은 기술보다 삶·일·공부 태도를 묻는 인성 질문 비중이 컸다는 경험을 전한다.",
+      "source": "velog",
+      "date": "2025"
+     }
     ]
    },
    "github": {
@@ -9506,7 +9599,7 @@
     "https://tech.naver.com"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-14"
   },
   {
    "key": "nexon",
