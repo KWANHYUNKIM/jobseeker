@@ -192,6 +192,22 @@ export interface Debate {
   verdict: DebateVerdict // 합의 결론
 }
 
+// ── 채용 전형 가이드 (공개 절차·일반 패턴 기반, 사적 후기 스크래핑 아님) ──
+export interface InterviewStage {
+  name: string
+  format?: string
+  duration?: string
+  detail: string
+}
+
+export interface Interview {
+  process: InterviewStage[]
+  focus: string[] // 이 회사가 보는 핵심 역량
+  tips: string[] // 지원자 준비 팁
+  difficulty?: string
+  sources: string[]
+}
+
 export interface RadarCompany {
   key: string
   name: string
@@ -206,6 +222,7 @@ export interface RadarCompany {
   summary: string
   deep_dive?: DeepDiveSection[]
   debate?: Debate
+  interview?: Interview
   github?: Github
   sources: string[]
   research_status: 'seed' | 'llm-refined'

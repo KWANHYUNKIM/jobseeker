@@ -8,6 +8,7 @@ import type {
   Debate,
   DeepDiveSection,
   DomainGroup,
+  Interview,
   RadarCompany,
   RadarFile,
   RadarTechCount,
@@ -85,6 +86,7 @@ export function RadarView() {
       if (domain && c.domain !== domain) return false
       if (langs.size && !c.languages.some((l) => langs.has(l))) return false
       if (flags.has('debate') && !c.debate) return false
+      if (flags.has('interview') && !c.interview) return false
       if (flags.has('github') && !c.github?.repos?.length) return false
       if (flags.has('refined') && c.research_status !== 'llm-refined') return false
       if (q) {
@@ -230,6 +232,7 @@ export function RadarView() {
           <div className="flex flex-wrap gap-1.5">
             {([
               ['debate', '💬 토론', companies.filter((c) => c.debate).length],
+              ['interview', '🧭 전형', companies.filter((c) => c.interview).length],
               ['github', '⌥ 공개코드', companies.filter((c) => c.github?.repos?.length).length],
               ['refined', '✦ AI갱신', companies.filter((c) => c.research_status === 'llm-refined').length],
             ] as const).map(([key, label, n]) => (
@@ -557,6 +560,7 @@ function ContentBadges({ company }: { company: RadarCompany }) {
   if (company.diagram) items.push('🗺 구조도')
   if (company.deep_dive?.length) items.push(`📖 심화 ${company.deep_dive.length}`)
   if (company.debate) items.push('💬 토론')
+  if (company.interview) items.push('🧭 전형')
   if (company.github?.repos?.length) items.push(`⌥ 코드 ${company.github.repos.length}`)
   if (!items.length) return null
   return (
@@ -746,6 +750,12 @@ function RadarDetail({
           </Section>
         )}
 
+        {company.interview && (
+          <Section title="채용 전형 (지원 가이드)">
+            <InterviewView interview={company.interview} />
+          </Section>
+        )}
+
         {company.github && (company.github.repos?.length || company.github.org) && (
           <Section title="공개 GitHub 코드">
             {company.github.org && (
@@ -816,6 +826,74 @@ const ROLE_META: Record<string, { label: string; align: string; color: string }>
   architect: { label: '설계자', align: 'items-start', color: 'border-(--color-accent)/40 bg-(--color-accent)/10' },
   critic: { label: '검토자', align: 'items-end', color: 'border-amber-500/40 bg-amber-500/10' },
   synthesizer: { label: '정리자', align: 'items-center', color: 'border-(--color-border) bg-(--color-bg)' },
+}
+
+function InterviewView({ interview }: { interview: Interview }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {interview.difficulty && (
+        <div className="text-xs text-(--color-muted)">
+          예상 난이도 <span className="text-(--color-text) font-medium">{interview.difficulty}</span>
+          <span className="ml-2 opacity-70">· 공개 채용 절차·일반 패턴 기반 가이드</span>
+        </div>
+      )}
+
+      {/* 전형 단계 타임라인 */}
+      <ol className="flex flex-col">
+        {interview.process.map((s, i) => (
+          <li key={i} className="flex gap-3 pb-3 last:pb-0">
+            <div className="flex flex-col items-center">
+              <div className="w-6 h-6 rounded-full bg-(--color-accent) text-black text-xs font-bold flex items-center justify-center shrink-0">
+                {i + 1}
+              </div>
+              {i < interview.process.length - 1 && (
+                <div className="w-px flex-1 bg-(--color-border) my-1" />
+              )}
+            </div>
+            <div className="min-w-0 pb-1">
+              <div className="flex flex-wrap items-center gap-x-2 text-sm font-medium text-(--color-text)">
+                {s.name}
+                {s.duration && <span className="text-xs text-(--color-muted) font-normal">⏱ {s.duration}</span>}
+                {s.format && <span className="text-xs text-(--color-muted) font-normal">· {s.format}</span>}
+              </div>
+              {s.detail && <p className="mt-0.5 text-sm text-(--color-muted)">{s.detail}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      {interview.focus.length > 0 && (
+        <div>
+          <div className="text-xs font-medium text-(--color-muted) mb-2">이 회사가 보는 것</div>
+          <div className="flex flex-wrap gap-1.5">
+            {interview.focus.map((f) => (
+              <Tag key={f} accent>
+                {f}
+              </Tag>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {interview.tips.length > 0 && (
+        <div>
+          <div className="text-xs font-medium text-(--color-muted) mb-2">준비 팁</div>
+          <ul className="flex flex-col gap-1.5">
+            {interview.tips.map((t, i) => (
+              <li key={i} className="text-sm text-(--color-text) flex gap-2">
+                <span className="text-(--color-accent) shrink-0">✓</span>
+                <span>{t}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {interview.sources.length > 0 && (
+        <p className="text-[11px] text-(--color-muted)">출처: {interview.sources.join(' · ')}</p>
+      )}
+    </div>
+  )
 }
 
 function DebateView({ debate, idKey }: { debate: Debate; idKey: string }) {

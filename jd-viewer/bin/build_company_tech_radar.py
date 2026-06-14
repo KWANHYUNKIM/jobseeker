@@ -154,7 +154,7 @@ def domain_groups(companies: list[dict]) -> list[dict]:
 FIELD_ORDER = [
     "key", "name", "country", "domain", "languages", "stack",
     "architecture", "diagram", "why_language", "why_architecture", "summary",
-    "deep_dive", "debate", "github", "sources", "research_status", "updated_at",
+    "deep_dive", "debate", "interview", "github", "sources", "research_status", "updated_at",
 ]
 
 
@@ -475,6 +475,8 @@ def cmd_patch(paths: list[str], do_github: bool) -> None:
                 merge_deep_dive(c, patch["deep_dive"])
             if patch.get("debate"):             # 아키텍처 토론 결과(Workflow/CLI 산출)
                 c["debate"] = patch["debate"]
+            if patch.get("interview"):          # 채용 전형 가이드
+                c["interview"] = patch["interview"]
             if do_github:
                 try:
                     enrich_github(c)
