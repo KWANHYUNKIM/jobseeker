@@ -70,11 +70,8 @@ function App() {
           <TabButton active={tab === 'mindmap'} onClick={() => setTab('mindmap')}>
             커리어 마인드맵
           </TabButton>
-          <TabButton active={tab === 'blog'} onClick={() => setTab('blog')}>
+          <TabButton active={tab === 'blog' || tab === 'radar'} onClick={() => setTab('blog')}>
             기술 블로그
-          </TabButton>
-          <TabButton active={tab === 'radar'} onClick={() => setTab('radar')}>
-            기술 스택 레이더
           </TabButton>
           <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')}>
             모집 캘린더
@@ -95,13 +92,18 @@ function App() {
         <div key="companies" className="flex flex-1 min-h-0 jd-fade-in">
           <CompanyView focusNorm={companyFocus} onStudyTech={openStudy} />
         </div>
-      ) : tab === 'blog' ? (
-        <div key="blog" className="flex flex-1 min-h-0 jd-fade-in">
-          <BlogView />
-        </div>
-      ) : tab === 'radar' ? (
-        <div key="radar" className="flex flex-1 min-h-0 jd-fade-in">
-          <RadarView />
+      ) : tab === 'blog' || tab === 'radar' ? (
+        <div key="blogradar" className="flex flex-col flex-1 min-h-0 jd-fade-in">
+          <div className="flex items-center gap-3 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/60">
+            <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden shrink-0">
+              <ModeBtn active={tab === 'blog'} onClick={() => setTab('blog')}>블로그 글</ModeBtn>
+              <ModeBtn active={tab === 'radar'} onClick={() => setTab('radar')}>기업 100 (레이더)</ModeBtn>
+            </div>
+            <span className="hidden sm:inline text-xs text-(--color-muted) truncate">
+              {tab === 'blog' ? '기업 기술 블로그 글 모음' : '글로벌 IT 대기업 100곳의 기술 스택·아키텍처·토론·전형'}
+            </span>
+          </div>
+          {tab === 'blog' ? <BlogView /> : <RadarView />}
         </div>
       ) : tab === 'calendar' ? (
         <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
@@ -168,6 +170,27 @@ function TabButton({
         active
           ? 'bg-(--color-accent) text-black font-medium'
           : 'text-(--color-text) hover:bg-(--color-bg) border border-transparent hover:border-(--color-border)'
+      }`}
+    >
+      {children}
+    </button>
+  )
+}
+
+function ModeBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1 text-xs font-medium transition whitespace-nowrap ${
+        active ? 'bg-(--color-accent) text-black' : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'
       }`}
     >
       {children}
