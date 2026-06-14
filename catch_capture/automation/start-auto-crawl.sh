@@ -8,6 +8,10 @@
 set -uo pipefail
 export PATH="/Users/kwanhyun/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 
+# 주기적 데이터 자동 커밋은 항상 켜져 있다(로컬). 자동 push 까지 원하면 아래 주석을 해제.
+# (CLAUDE.md 규칙상 기본 OFF — 명시적으로 켤 때만 push)
+# export JOBSEEKER_AUTOPUSH=1
+
 REPO="/Users/kwanhyun/jobseeker"
 BASE="$REPO/catch_capture"
 PY="$([ -x "$BASE/.venv/bin/python" ] && echo "$BASE/.venv/bin/python" || echo python3)"
