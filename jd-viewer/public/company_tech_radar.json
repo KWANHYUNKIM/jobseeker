@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T06:35:08",
+ "generated_at": "2026-06-15T08:09:43",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 21,
+ "refined": 23,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -2417,7 +2417,7 @@
       "count": 1
      },
      {
-      "name": "Twirp",
+      "name": "Protobuf",
       "count": 1
      }
     ],
@@ -2439,6 +2439,14 @@
       "count": 1
      },
      {
+      "name": "Falcor",
+      "count": 1
+     },
+     {
+      "name": "Gatsby",
+      "count": 1
+     },
+     {
       "name": "SwiftUI",
       "count": 1
      },
@@ -2448,6 +2456,10 @@
      },
      {
       "name": "UIKit",
+      "count": 1
+     },
+     {
+      "name": "Web Playback SDK",
       "count": 1
      }
     ],
@@ -2461,8 +2473,16 @@
       "count": 3
      },
      {
-      "name": "Flink",
+      "name": "Elasticsearch",
       "count": 2
+     },
+     {
+      "name": "Apache Flink",
+      "count": 1
+     },
+     {
+      "name": "Apache Iceberg",
+      "count": 1
      },
      {
       "name": "Apache Pinot",
@@ -2473,23 +2493,15 @@
       "count": 1
      },
      {
+      "name": "Apache Storm",
+      "count": 1
+     },
+     {
       "name": "BigQuery",
       "count": 1
      },
      {
       "name": "DynamoDB",
-      "count": 1
-     },
-     {
-      "name": "Elasticsearch",
-      "count": 1
-     },
-     {
-      "name": "EVCache",
-      "count": 1
-     },
-     {
-      "name": "FoundationDB",
       "count": 1
      }
     ],
@@ -2511,6 +2523,10 @@
       "count": 1
      },
      {
+      "name": "Atlas",
+      "count": 1
+     },
+     {
       "name": "Backstage",
       "count": 1
      },
@@ -2527,11 +2543,7 @@
       "count": 1
      },
      {
-      "name": "Private datacenters + AWS/GCP burst",
-      "count": 1
-     },
-     {
-      "name": "Spinnaker",
+      "name": "Helios",
       "count": 1
      }
     ]
@@ -2542,11 +2554,7 @@
      "count": 4
     },
     {
-     "name": "Event-driven",
-     "count": 2
-    },
-    {
-     "name": "Chaos engineering",
+     "name": "Chaos engineering / Resilience",
      "count": 1
     },
     {
@@ -2555,6 +2563,10 @@
     },
     {
      "name": "Edge-origin media delivery",
+     "count": 1
+    },
+    {
+     "name": "Event-driven",
      "count": 1
     },
     {
@@ -7436,38 +7448,44 @@
    ],
    "stack": {
     "backend": [
-     "Spring Boot",
+     "Spring Boot (Netflix flavored)",
      "gRPC",
-     "GraphQL Federation",
+     "GraphQL Federation (DGS)",
      "Node.js"
     ],
     "frontend": [
-     "React"
+     "React",
+     "Falcor",
+     "Gatsby"
     ],
     "data": [
      "Cassandra",
-     "EVCache",
-     "Kafka",
+     "EVCache (memcached)",
+     "Kafka (Keystone)",
      "Flink",
-     "Iceberg"
+     "Apache Iceberg",
+     "Elasticsearch"
     ],
     "infra": [
      "AWS",
      "Spinnaker",
      "Titus",
      "Zuul",
-     "Eureka"
+     "Eureka",
+     "Open Connect CDN",
+     "Atlas"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
-    "Chaos engineering"
+    "Event-driven streaming",
+    "Chaos engineering / Resilience",
+    "GraphQL Federation BFF"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    TV[\"Smart TV/Web<br/>React\"]\n  end\n  subgraph Edge\n    ZUUL[\"Edge Gateway<br/>Zuul\"]\n    EUREKA[\"Service Discovery<br/>Eureka\"]\n  end\n  subgraph CoreServices\n    GQL[\"Federated API<br/>GraphQL Federation\"]\n    SVC[\"Microservices<br/>Spring Boot + gRPC\"]\n  end\n  subgraph Caching\n    EVC[\"Distributed Cache<br/>EVCache\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Pipeline<br/>Kafka\"]\n    FLINK[\"Stream Processing<br/>Flink\"]\n  end\n  subgraph Data\n    CASS[\"Primary Store<br/>Cassandra\"]\n    ICE[\"Data Lake<br/>Apache Iceberg\"]\n  end\n  subgraph Platform\n    TITUS[\"Container Platform<br/>Titus on AWS\"]\n    SPIN[\"Delivery<br/>Spinnaker\"]\n  end\n  TV --> ZUUL\n  ZUUL --> GQL\n  GQL -->|gRPC| SVC\n  SVC --> EUREKA\n  SVC --> EVC\n  SVC --> CASS\n  SVC --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> ICE\n  SVC --> TITUS\n  TITUS --> SPIN",
-   "why_language": "스트리밍 트래픽을 받는 수백 개 서비스를 JVM 생태계(Java/Kotlin)로 운영하며, 도구·자동화는 Python을 쓴다. 엣지·데이터 서비스에는 Node.js와 Go를 선택적으로 활용한다.",
-   "why_architecture": "전 세계 스트리밍 부하를 견디려 AWS 위 마이크로서비스로 전환하고 Spinnaker·Titus·Zuul 등 자체 클라우드 도구를 오픈소스화했다. Chaos Monkey로 장애 복원력을 상시 검증한다.",
-   "summary": "AWS 위 JVM 마이크로서비스와 카오스 엔지니어링으로 글로벌 스트리밍을 떠받친다.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    DEV[\"Devices<br/>TV/Mobile/Web React\"]\n    OC[\"Open Connect<br/>Self-built CDN\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    ZUUL[\"Edge Gateway<br/>Zuul 2\"]\n    GQL[\"GraphQL Federation<br/>DGS Gateway\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DGS[\"Domain Services<br/>Spring Boot + Kotlin\"]\n    EUR[\"Service Discovery<br/>Eureka\"]\n    GRPC[\"Inter-service<br/>gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    EV[\"Hot Cache<br/>EVCache\"]\n    CASS[\"Primary Store<br/>Cassandra\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka Keystone\"]\n    FLINK[\"Stream Proc<br/>Flink\"]\n    ICE[\"Data Lake<br/>Iceberg on S3\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    TITUS[\"Container Platform<br/>Titus on AWS\"]\n    SPIN[\"CI/CD<br/>Spinnaker\"]\n    ATLAS[\"Observability<br/>Atlas + Mantis\"]\n  end\n  DEV -->|video| OC\n  DEV -->|API| ZUUL\n  ZUUL --> GQL\n  GQL -->|federated| DGS\n  DGS --> EUR\n  DGS -->|gRPC| GRPC\n  DGS --> EV\n  EV --> CASS\n  DGS --> ES\n  DGS -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> ICE\n  DGS --> TITUS\n  SPIN -->|deploy| TITUS\n  TITUS --> ATLAS",
+   "why_language": "2억 8천만 가입자 규모의 동시 트래픽을 JVM 생태계의 성숙한 동시성·GC·라이브러리로 감당하기 위해 Java/Kotlin을 백엔드 표준으로 삼았고, 신규 서비스는 널 안정성과 코루틴을 갖춘 Kotlin으로 이동 중이다. 데이터·ML 파이프라인과 운영 자동화에는 Python을, 컨테이너 플랫폼(Titus)·CLI·고성능 인프라 도구에는 Go를 쓰는 식으로 도메인별로 언어를 분리한다.",
+   "why_architecture": "수백 개 팀이 독립적으로 배포·확장해야 하는 글로벌 규모에서 단일 모놀리스는 병목이 되므로, 각 도메인이 자율적으로 소유하는 마이크로서비스로 잘게 쪼갰다. 네트워크와 인스턴스 장애를 '정상 상태'로 가정하고 서킷브레이커·페일오버·Chaos engineering으로 복원력을 설계했으며, 클라이언트 다양성으로 인한 API 폭증은 GraphQL Federation(BFF)으로 흡수한다.",
+   "summary": "JVM 마이크로서비스 + 자체 CDN(Open Connect) + Chaos로 단련된 클라우드 네이티브 스트리밍 플랫폼",
    "deep_dive": [
     {
      "topic": "요청 처리 흐름: 클릭 한 번이 수백 마이크로서비스를 거치는 길",
@@ -7488,6 +7506,22 @@
     {
      "topic": "배포·CI/CD: Spinnaker, Titus, Red/Black, 카나리",
      "body": "### Spinnaker 멀티클라우드 배포\nNetflix는 **Spinnaker**(오픈소스화)로 배포 파이프라인을 운영한다. 핵심은 **immutable infrastructure** — 변경된 코드는 통째로 새 AMI(혹은 컨테이너 이미지)로 굽고, 인스턴스를 패치하지 않는다.\n\n- **Red/Black(blue-green) 배포**: 새 버전 클러스터를 띄우고 트래픽을 전환, 문제 시 즉시 롤백\n- **자동 카나리 분석(ACA, Kayenta)**: 카나리 인스턴스와 baseline의 메트릭(에러율·지연·CPU)을 통계적으로 비교해 합격/불합격 자동 판정\n\n### Titus 컨테이너 플랫폼\n배치 작업과 일부 서비스는 자체 컨테이너 오케스트레이터 **Titus**(EC2 위, 후에 Kubernetes API 호환 진화)에서 돌린다. 인코딩 같은 대량 배치를 spot 인스턴스에서 효율적으로 스케줄링한다.\n\n### 왜 immutable + 카나리인가\n수천 개 마이크로서비스를 하루에도 수없이 배포하려면 '사람이 검수'가 불가능하다. 카나리 통계 비교를 자동화하면 나쁜 배포를 트래픽 1% 단계에서 자동 차단할 수 있고, immutable 이미지는 'snowflake 서버'로 인한 디버깅 불가 상황을 원천 차단한다. 트레이드오프는 빌드/이미지 저장 비용과 배포 시간이지만, 롤백이 '이전 클러스터로 트래픽 전환'이라 초 단위로 끝난다."
+    },
+    {
+     "topic": "GraphQL Federation: 수백 개 클라이언트와 마이크로서비스를 잇는 단일 그래프",
+     "body": "### 왜 Federation인가\nNetflix는 TV·모바일·웹·게임 콘솔 등 수천 종의 디바이스를 지원한다. 과거에는 각 화면이 필요한 데이터를 모으기 위해 클라이언트가 수십 개 마이크로서비스를 직접 호출하거나(over-fetch/under-fetch), 화면별 BFF(Backend-for-Frontend)를 따로 만들어야 했다. 디바이스가 늘수록 BFF도 폭증하고 중복 코드가 쌓였다.\n\n그 대안으로 **Studio Edge**(사내 콘텐츠 제작 시스템)에서 시작해 전사로 확산된 것이 **GraphQL Federation** 아키텍처다.\n\n### 동작 원리\n- 각 도메인 팀은 자신의 데이터 영역을 책임지는 **DGS(Domain Graph Service)** 를 운영한다. DGS는 `dgs-framework`(Spring Boot + Kotlin) 위에서 자기 도메인의 partial schema만 정의한다. 예: `Movie`, `Talent`, `Production` 등.\n- **Federation Gateway**가 모든 DGS의 스키마를 하나의 `supergraph`로 합성(compose)한다. 클라이언트 입장에서는 단 하나의 거대한 그래프만 존재한다.\n- 클라이언트가 `query { movie(id) { title, cast { name } } }` 를 보내면, Gateway가 **query plan**을 세워 `title`은 Movie DGS에, `cast.name`은 Talent DGS에 병렬로 fan-out하고 결과를 stitching한다. 엔티티 결합은 `@key` 디렉티브와 entity resolver(`__resolveReference`)로 처리한다.\n\n### 트레이드오프\n- **장점**: 클라이언트는 필요한 필드만 정확히 받고(network round-trip 절감), 도메인 팀은 독립 배포한다. 스키마가 곧 계약이라 디바이스-백엔드 결합도가 낮아진다.\n- **단점/대응**: Gateway가 단일 병목·SPOF가 될 수 있어 query planning 캐싱, persisted queries(쿼리 해시만 전송), 필드 단위 권한·복잡도 제한(쿼리 depth/cost limit)을 둔다. 또 스키마 합성 시 충돌 검증을 CI에서 강제(schema registry)해 한 팀의 변경이 supergraph를 깨지 않도록 막는다.\n\n### 핵심 포인트\nFederation은 단순 기술 선택이 아니라 **조직 구조(팀별 도메인 소유권)를 API에 그대로 투영**한 결정이다. Conway's law를 역으로 활용해, 그래프의 경계가 팀의 경계와 일치하도록 설계했다."
+    },
+    {
+     "topic": "데이터 플랫폼: Keystone(Kafka)·Flink·Iceberg로 흐르는 1조 단위 이벤트",
+     "body": "### 규모\nNetflix의 데이터 파이프라인 **Keystone**은 하루 수조(trillions) 건의 이벤트, 페타바이트 단위 데이터를 처리한다. 재생 시작/중지, A/B 테스트 노출, 추천 클릭, QoE(재생 품질) 지표 등 거의 모든 사용자·시스템 행동이 이벤트로 흐른다.\n\n### 파이프라인 구조\n1. **Producer**: 각 마이크로서비스가 이벤트를 Keystone에 publish. 클라이언트단 SDK가 배칭·압축 후 전송.\n2. **Kafka (fronting + consumer tier)**: Keystone은 다중 Kafka 클러스터로 구성된다. fronting Kafka가 수집을 흡수하고, router가 목적지별로 분배. 의도적으로 **at-least-once** 보장(중복 허용, 유실 최소화)을 택해 처리량을 극대화한다.\n3. **Flink**: 실시간 스트림 처리(라우팅, 필터, 집계, 조인). Netflix는 수천 개의 Flink job을 셀프서비스 플랫폼으로 운영하며, 사용자는 SQL/DSL로 스트림 처리를 선언만 한다.\n4. **Sink**: 최종 목적지는 **Apache Iceberg**(S3 위 테이블 포맷), Elasticsearch, 또는 다시 Kafka.\n\n### Iceberg를 택한 이유\nNetflix는 Iceberg의 원 개발사다. 기존 Hive 테이블은 디렉터리 기반이라 파일 목록 조회(S3 LIST)가 느리고, 스키마 진화·원자적 커밋이 취약했다. Iceberg는:\n- **메타데이터를 매니페스트 파일로 관리** → 수백만 파일 테이블도 plan 시간이 일정.\n- **snapshot 기반 ACID** → 동시 쓰기/읽기 격리, time-travel 쿼리.\n- **partition evolution / hidden partitioning** → 쿼리 작성자가 파티션 칼럼을 몰라도 됨.\n\n### 트레이드오프\n- at-least-once + 멱등 소비자 패턴: 정확히-한-번(exactly-once)의 오버헤드 대신, 다운스트림에서 dedup하는 쪽을 택해 처리량과 단순성을 얻었다.\n- 셀프서비스 추상화: 수천 개 job을 소수 플랫폼 팀이 관리하기 위해 '플랫폼으로서의 스트리밍'을 만들고 운영 복잡도를 추상화 뒤로 숨겼다."
+    },
+    {
+     "topic": "추천·랭킹 ML 파이프라인: 홈 화면 모든 줄이 개인화된 모델 출력",
+     "body": "### 무엇이 개인화되나\nNetflix 홈 화면에서 **개인화되지 않은 것은 거의 없다.** 어떤 row(카테고리)를 보여줄지, row 안에서 어떤 작품을 어떤 순서로 놓을지, 심지어 각 작품의 **썸네일 아트워크**까지 사용자별로 다르게 선택된다.\n\n### 파이프라인 단계\n1. **Candidate generation**: 수만 개 타이틀 카탈로그에서 후보를 추린다. collaborative filtering, matrix factorization, embedding 기반 유사도 등으로 1차 축소.\n2. **Ranking**: 후보를 사용자 컨텍스트(시청 이력, 시간대, 디바이스, 최근 행동)와 결합해 정밀 랭킹. 과거 RBM·matrix factorization에서 deep learning 모델로 진화.\n3. **Page generation**: 개별 작품 점수를 넘어 '페이지 전체의 구성'을 최적화한다. 다양성(diversity), 신선도, row 간 균형을 함께 고려.\n4. **Artwork personalization**: 같은 작품도 contextual bandit으로 사용자가 클릭할 확률이 높은 이미지를 선택. 탐색(exploration)과 활용(exploitation)을 균형.\n\n### 오프라인·온라인 분리\n- **오프라인**: 무거운 모델 학습은 batch로. 피처 생성·학습에 Spark, 데이터는 Iceberg에서 읽는다. 모델 메타데이터·실험은 **Metaflow**(Netflix가 만든 ML 워크플로 프레임워크)로 관리해 데이터 사이언티스트가 Python만으로 프로덕션 파이프라인을 운영.\n- **온라인**: 학습된 모델을 서빙 계층에 배포해 실시간 추론. 지연 예산이 빡빡하므로 후보 축소를 오프라인에 미리 계산해 온라인 비용을 줄인다.\n\n### 검증\n모든 모델·UI 변경은 **A/B 테스트**로 검증한다. Netflix는 거의 모든 제품 결정을 실험으로 판단하는 문화이며, 실험 노출 데이터 자체가 Keystone 이벤트로 흘러 다시 모델 학습 피처가 되는 순환 구조다.\n\n### 트레이드오프\n정확도 높은 무거운 모델 ↔ 서빙 지연. Netflix는 '오프라인에서 최대한 미리 계산 → 온라인은 가볍게'라는 분업으로 이 둘을 분리했고, contextual bandit으로 콜드스타트/탐색 문제를 온라인에서 점진 학습으로 해결한다."
+    },
+    {
+     "topic": "관측성: Atlas·Mantis로 초당 수십억 메트릭을 실시간으로 본다",
+     "body": "### 문제 규모\n수백 개 마이크로서비스 × 수만 개 인스턴스 환경에서 '무엇이 느려졌는가/죽었는가'를 초 단위로 알아내야 한다. 일반 모니터링 도구로는 cardinality(차원 조합 폭발)와 처리량을 감당할 수 없다.\n\n### Atlas — 차원 시계열 메트릭\n- Netflix가 만든 **in-memory 시계열 데이터베이스**. 메트릭에 임의의 태그(차원)를 붙여 `name=request.latency, region=us-east-1, service=playback, status=500` 처럼 다차원으로 질의한다.\n- 최근 데이터는 메모리에 보관해 **대시보드·알림 쿼리를 초저지연**으로 처리. 오래된 데이터는 다운샘플링·외부 저장.\n- 핵심 설계: '운영 중 장애 대응(operational insight)'이 목적이므로, 장기 보존 정확도보다 **최근 데이터의 빠른 다차원 질의**에 최적화했다.\n\n### Mantis — 온디맨드 실시간 스트림 관측\n- 메트릭만으로 원인을 못 찾을 때, **이벤트 스트림 자체를 실시간으로 들여다보는** 플랫폼. 운영자가 필요할 때 쿼리를 띄워 라이브 트래픽에서 특정 패턴(예: 특정 디바이스에서만 나는 에러)을 샘플링·집계한다.\n- '항상 모든 걸 저장'하는 대신 **필요할 때 필요한 만큼만 처리(on-demand)** 해 비용을 통제한다.\n\n### 분산 트레이싱\n- 한 요청이 수십~수백 서비스를 거치므로, trace context를 전파해 호출 그래프와 각 hop의 지연을 추적한다(Edgar 등 사내 트레이싱 도구). gRPC/HTTP 헤더로 trace id를 전파.\n\n### 함께 작동하는 방식\n장애 시 흐름은 보통: **Atlas 대시보드/알림**으로 이상 징후 감지 → **트레이싱**으로 어느 서비스 hop이 문제인지 좁힘 → **Mantis**로 실시간 스트림을 파고들어 근본 원인 확인. 이 삼각 체계가 Chaos engineering(고의 장애 주입)과 짝을 이뤄, 장애를 '발생 후 디버깅'이 아니라 '항상 관측 가능한 상태'로 유지한다.\n\n### 트레이드오프\n메트릭을 메모리에 들고 다차원 질의를 빠르게 하는 대가로 메모리·인프라 비용이 크다. Netflix는 '장애 시 빠른 의사결정의 가치'가 그 비용을 압도한다고 보고 운영 관측성에 과감히 투자했다."
     }
    ],
    "debate": {
@@ -7590,41 +7624,49 @@
     "org": "https://github.com/Netflix",
     "repos": [
      {
+      "name": "Netflix/Hystrix",
+      "url": "https://github.com/Netflix/Hystrix",
+      "desc": "지연·장애 격리를 위한 서킷브레이커 라이브러리(현재 유지보수 모드)",
+      "lang": "Java",
+      "stars": 24456
+     },
+     {
       "name": "Netflix/zuul",
       "url": "https://github.com/Netflix/zuul",
-      "desc": "동적 라우팅 게이트웨이 서비스",
+      "desc": "동적 라우팅·필터링을 담당하는 엣지 게이트웨이",
       "lang": "Java",
       "stars": 14025
      },
      {
       "name": "Netflix/conductor",
       "url": "https://github.com/Netflix/conductor",
-      "desc": "마이크로서비스 오케스트레이션 엔진",
+      "desc": "마이크로서비스 오케스트레이션 워크플로 엔진",
       "lang": "Java",
       "stars": 12769
      },
      {
-      "name": "Netflix/eureka",
-      "url": "https://github.com/Netflix/eureka",
-      "desc": "REST 기반 서비스 디스커버리",
-      "lang": "Java",
-      "stars": 12712
+      "name": "Netflix/atlas",
+      "url": "https://github.com/Netflix/atlas",
+      "desc": "시계열 차원 메트릭 백엔드(관측성)",
+      "lang": "Scala",
+      "stars": 3550
      },
      {
-      "name": "spinnaker/spinnaker",
-      "url": "https://github.com/spinnaker/spinnaker",
-      "desc": "멀티 클라우드 지속적 배포 플랫폼",
-      "lang": "Java",
-      "stars": 9740
+      "name": "Netflix/dgs-framework",
+      "url": "https://github.com/Netflix/dgs-framework",
+      "desc": "Spring Boot 기반 GraphQL 서버 프레임워크(Federation용)",
+      "lang": "Kotlin",
+      "stars": 3373
      }
     ]
    },
    "sources": [
-    "https://netflixtechblog.com",
-    "https://spinnaker.io"
+    "https://netflixtechblog.com/",
+    "https://netflix.github.io/",
+    "https://netflixtechblog.com/how-netflix-scales-its-api-with-graphql-federation-part-1-ae3557c187e2"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "spotify",
@@ -7641,37 +7683,44 @@
    "stack": {
     "backend": [
      "Java",
-     "Apollo",
+     "Apollo (Spotify OSS framework)",
      "gRPC",
-     "Spring"
+     "Protobuf",
+     "Spring Boot (일부)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Backstage"
+     "Backstage",
+     "Web Playback SDK"
     ],
     "data": [
      "Cassandra",
      "BigQuery",
-     "Pub/Sub",
-     "Scio/Beam",
-     "Flink"
+     "Google Pub/Sub",
+     "Scio (Apache Beam Scala)",
+     "Apache Flink",
+     "Apache Storm (레거시)",
+     "Luigi (레거시 워크플로)"
     ],
     "infra": [
-     "Google Cloud",
-     "Kubernetes",
-     "Backstage"
+     "Google Cloud Platform (GCP)",
+     "Kubernetes (GKE)",
+     "Backstage",
+     "Tingle (CI)",
+     "Helios (구 컨테이너 오케스트레이터, 폐기됨)"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
-    "Squad/Tribe autonomy"
+    "Event-driven (Pub/Sub 기반)",
+    "Squad/Tribe 자율 조직 (역콘웨이)",
+    "데이터 메시/배치+스트리밍 람다 지향"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Mobile/Web Player<br/>React + TypeScript\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>gRPC\"]\n  end\n  subgraph CoreServices\n    APOLLO[\"Backend Services<br/>Java Apollo\"]\n    SPRING[\"Microservices<br/>Spring\"]\n  end\n  subgraph Streaming\n    PUBSUB[\"Event Bus<br/>Cloud Pub/Sub\"]\n    BEAM[\"Pipeline<br/>Scio/Beam\"]\n    FLINK[\"Stream Processing<br/>Flink\"]\n  end\n  subgraph Data\n    CASS[\"Primary Store<br/>Cassandra\"]\n    BQ[\"Analytics Warehouse<br/>BigQuery\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes on GCP\"]\n    BACK[\"Developer Portal<br/>Backstage\"]\n  end\n  APP --> GW\n  GW --> APOLLO\n  APOLLO -->|gRPC| SPRING\n  SPRING --> CASS\n  SPRING --> PUBSUB\n  PUBSUB --> BEAM\n  PUBSUB --> FLINK\n  BEAM --> BQ\n  SPRING --> K8S\n  K8S --> BACK",
-   "why_language": "음악 스트리밍 백엔드는 JVM(Java/Scala)으로 수천 개 서비스를 운영하고, 데이터 파이프라인은 Scala(Scio)+Python으로 다룬다. 개발자 포털 Backstage는 TypeScript다.",
-   "why_architecture": "자율적 스쿼드 조직에 맞춰 작은 마이크로서비스를 다수 운영하고, 이를 통제하려 개발자 포털 Backstage를 만들어 오픈소스화했다. GCP 위 Pub/Sub 이벤트 기반으로 추천을 처리한다.",
-   "summary": "GCP 위 JVM 마이크로서비스와 Backstage 개발자 포털로 자율 조직을 떠받친다.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Desktop / Mobile / Web<br/>Web Playback SDK\"]\n    CDN[\"Audio CDN<br/>Ogg Vorbis chunks\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"Edge / Gateway<br/>Envoy + gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Java + Apollo\"]\n    PLAY[\"Playback / Access<br/>Service\"]\n    REC[\"Recommendation<br/>BaRT (RL + CF)\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    PS[\"Event Delivery<br/>Google Pub/Sub\"]\n    BEAM[\"Scio + Dataflow<br/>Apache Beam\"]\n    FLINK[\"Apache Flink<br/>realtime\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    CASS[\"Cassandra<br/>online state\"]\n    BQ[\"BigQuery<br/>analytics warehouse\"]\n    GCS[\"Cloud Storage<br/>audio + data lake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    GKE[\"Kubernetes<br/>GKE on GCP\"]\n    BS[\"Backstage<br/>developer portal\"]\n  end\n  APP -->|gRPC| GW\n  APP -->|HTTPS range| CDN\n  GW --> SVC\n  SVC --> PLAY\n  SVC --> REC\n  PLAY --> CASS\n  SVC -->|emit events| PS\n  PS --> BEAM\n  PS --> FLINK\n  BEAM --> BQ\n  REC --> BQ\n  REC --> CASS\n  CDN --> GCS\n  SVC --- GKE\n  SVC --- BS",
+   "why_language": "수억 명의 동시 재생 트래픽과 수천 개 마이크로서비스를 안정적으로 운영해야 하므로, JVM 생태계(Java/Scala)의 성숙한 동시성·툴링·운영 노하우를 백본으로 삼는다. 대규모 데이터 파이프라인은 Beam을 함수형으로 다루기 좋은 Scala(Scio)와 ML·분석에 강한 Python을 쓰고, 개발자 도구·웹은 TypeScript, 일부 인프라성 서비스는 가볍고 배포가 단순한 Go로 작성한다.",
+   "why_architecture": "Spotify는 'Squad/Tribe' 자율 조직이 각자 서비스를 독립 배포·운영할 수 있도록 마이크로서비스를 선택했으며, 이는 조직 구조가 시스템 구조를 결정한다는 역콘웨이 전략의 산물이다. 재생·좋아요·스킵 같은 사용자 행동을 Pub/Sub 이벤트로 흘려보내 추천·분석·과금이 느슨하게 결합된 이벤트 기반 아키텍처로 확장성과 장애 격리를 동시에 확보한다.",
+   "summary": "GCP 위 JVM 마이크로서비스 + Pub/Sub 이벤트 + Beam/BigQuery 데이터 플랫폼, 그리고 이 카오스를 Backstage로 통제하는 회사",
    "deep_dive": [
     {
      "topic": "이벤트 전달 시스템: 재생 1회가 데이터로 흐르는 길",
@@ -7688,6 +7737,22 @@
     {
      "topic": "데이터 저장·확장: Cassandra와 GCP 위 멀티테넌시",
      "body": "### read/write 무거운 음악 데이터\nSpotify는 사용자별 라이브러리·재생 상태·메타데이터에 **Cassandra**를 광범위하게 쓴다.\n\n- 사용자 키 기반 파티셔닝으로 **수평 확장**, 다중 DC 복제로 가용성\n- tunable consistency로 워크로드별 일관성/지연 절충(예: 재생 상태는 빠른 eventual)\n- 분석·ML 데이터는 **BigQuery**(서버리스 DW)로, 운영 데이터와 분리\n\n### Apollo 마이크로서비스 프레임워크\nSpotify는 자체 Java 프레임워크 **Apollo**로 마이크로서비스를 작성한다(서비스 디스커버리·라우팅 표준화).\n\n### 왜\n수억 사용자의 라이브러리/상태는 쓰기·읽기가 모두 무겁고 가용성이 중요해, 강일관 RDBMS보다 **Cassandra의 수평 확장+tunable consistency**가 맞는다. 분석은 BigQuery로 분리해 운영 부하와 격리한다. GCP 관리형 활용으로 인프라 운영을 줄이고 제품에 집중하는 일관된 전략의 연장선이다."
+    },
+    {
+     "topic": "오디오 전달 파이프라인: '재생' 버튼부터 소리가 나기까지",
+     "body": "### 왜 Spotify는 자체 스트리밍 프로토콜에서 표준 HTTP로 옮겼나\n\n초창기(2008~2014) Spotify는 **P2P + 자체 TCP 프로토콜** 기반의 데스크톱 클라이언트로 유명했다. 사용자 PC들이 서로 오디오 조각을 나눠 갖는 P2P 구조로 서버 대역폭을 절감했지만, 모바일 시대가 오면서 배터리·NAT 트래버설·방화벽 문제가 커졌고 결국 P2P를 폐기하고 **CDN 기반 순수 클라이언트-서버 스트리밍**으로 전환했다.\n\n### 청크 단위 전송과 포맷\n\n- 곡은 통째로 내려받지 않고 **작은 청크(수십~수백 KB)** 단위로 `HTTP Range` 요청을 통해 가져온다.\n- 코덱은 주로 **Ogg Vorbis**(품질 등급 ~96/160/320 kbps)와 일부 AAC를 사용한다. 클라이언트는 네트워크 상황과 사용자 등급(무료/프리미엄)에 따라 비트레이트를 선택한다.\n- 오디오 원본 파일은 **GCS(Cloud Storage)** 같은 객체 스토리지에 저장되고, 그 앞단의 **CDN(여러 상용 CDN + 자체 캐시 계층)** 이 엣지에서 청크를 서빙한다.\n\n### 미리 가져오기(prefetch)와 끊김 없는 재생\n\nSpotify 재생 경험의 핵심은 '버튼을 누르면 즉시 소리가 난다'는 것이다. 이를 위해:\n\n1. **첫 청크는 가장 가까운 엣지에서 즉시** 받아 재생을 시작(time-to-first-audio 최소화).\n2. 재생 중 다음 청크들을 **백그라운드로 prefetch**하여 버퍼를 채운다.\n3. **다음 곡(플레이리스트의 next track)** 의 앞부분도 곡이 끝나기 전에 미리 받아 **gapless** 전환을 보장.\n4. 오프라인 다운로드는 같은 청크 메커니즘으로 암호화하여 로컬에 저장.\n\n### 접근 제어와 라이선싱\n\n오디오 청크 자체는 GCS/CDN에서 오지만, '이 사용자가 이 곡을 이 국가에서 이 시점에 재생할 권리가 있는가'는 **별도의 access/entitlement 서비스**가 토큰 형태로 판정한다. 라이선스는 국가·레이블별로 다르고 시점에 따라 곡이 빠질 수 있어서, 재생 요청 시마다 권리 검증 → 임시 재생 토큰 발급 → 클라이언트가 토큰으로 CDN 청크 접근, 식의 흐름을 갖는다. 즉 **'무엇을 들을 권리(컨트롤 플레인)'와 '실제 바이트 전달(데이터 플레인)'을 분리**한 것이 핵심 설계다."
+    },
+    {
+     "topic": "데이터 플랫폼의 대전환: Hadoop 온프레미스에서 GCP/Beam으로",
+     "body": "### 한때 유럽 최대급 Hadoop 클러스터를 운영하던 회사\n\n2010년대 중반까지 Spotify는 자체 데이터센터에 **수천 노드 규모의 Hadoop(MapReduce + HDFS)** 클러스터를 직접 운영했고, 배치 작업 의존성은 자사 오픈소스인 **Luigi**(Python)로 엮었다. 하지만 클러스터가 커질수록 다음 문제가 컸다:\n\n- 용량을 **피크에 맞춰 미리 사야** 해서 평소엔 놀고, 성수기엔 모자란다.\n- 클러스터·HDFS·스케줄러 운영에 인프라 팀의 막대한 시간이 들어간다.\n- 데이터 사이언티스트가 인프라 제약 때문에 실험 속도를 못 낸다.\n\n### Google Cloud로의 '올인' 마이그레이션\n\n2016년 Spotify는 인프라를 **Google Cloud Platform으로 전면 이전**하기로 결정한다(자체 데이터센터 철수). 데이터 스택의 핵심 교체는 다음과 같다:\n\n| 이전(온프레) | 이후(GCP) |\n|---|---|\n| Hadoop MapReduce | **Cloud Dataflow (Apache Beam)** |\n| HDFS | **Cloud Storage (GCS)** + **BigQuery** |\n| 자체 Kafka 클러스터 | **Google Pub/Sub** |\n| Luigi 배치 워크플로 | Beam 파이프라인 + 매니지드 스케줄링 |\n\n### Scio: Beam을 Scala로 다루다\n\nBeam의 Java API는 장황했기 때문에 Spotify는 **Scio**(오픈소스)를 만들어 Beam 파이프라인을 **Spark/Scollection 스타일의 간결한 Scala 함수형 코드**로 작성하게 했다. `map`/`groupByKey`/`join` 같은 연산을 쓰면 그 아래에서 Dataflow가 오토스케일되는 분산 잡으로 실행된다. **같은 코드가 배치(과거 로그 전체 재처리)와 스트리밍(실시간 이벤트)** 양쪽으로 돌 수 있다는 Beam의 통합 모델이 핵심 이점이다.\n\n### BigQuery가 가져온 변화\n\nBigQuery는 클러스터를 띄울 필요 없이 **페타바이트급 SQL 분석**을 서버리스로 돌린다. 덕분에 데이터 사이언티스트·분석가가 인프라 팀을 거치지 않고 직접 쿼리하게 되었고, 'Wrapped(연말결산)' 같은 대규모 집계 캠페인도 BigQuery 위에서 돌릴 수 있게 됐다. 트레이드오프는 **벤더 락인**과 스캔량 기반 비용 관리(파티셔닝·클러스터링·비용 가드레일 필수)다."
+    },
+    {
+     "topic": "Spotify Wrapped: 1년치 청취 로그를 연말 한 방에 처리하는 법",
+     "body": "### 세계 최대급 연례 배치 캠페인\n\nSpotify **Wrapped**는 매년 사용자에게 '올해 가장 많이 들은 아티스트/곡/장르/분(minutes)'을 보여주는 개인화 결산이다. 엔지니어링 관점에서 이건 **수억 사용자 × 1년치 재생 이벤트(수조 건)** 를 집계해 개인별 결과물을 만드는, 극단적인 대규모 배치 분석 문제다.\n\n### 일상 데이터 파이프라인을 재사용한다\n\nWrapped의 입력은 특별히 따로 모은 게 아니다. 평소에 **Pub/Sub → Dataflow(Scio) → BigQuery/GCS** 로 흘러 적재되는 **일상적인 재생 이벤트 로그**가 그대로 원천이다. 1회의 재생은 평소에도 `who/what/when/where/how long/skip 여부` 형태로 기록된다(아래 '이벤트 전달 시스템'에서 이미 다룸). Wrapped는 그 위에 얹힌 **대형 집계 잡**이다:\n\n1. 1년치 이벤트를 **사용자별로 group**하여 top N 아티스트/곡/장르, 총 청취 분, 청취 다양성 등을 산출.\n2. '음악 취향 성격(listening personality)' 같은 파생 지표를 **ML/규칙 기반**으로 계산.\n3. 결과를 사용자별 레코드로 만들어 **온라인 서빙 스토어(예: Cassandra/Bigtable류)** 에 적재.\n4. 클라이언트는 공개 시점에 이 사전 계산된 결과를 빠르게 읽어 스토리형 UI로 렌더.\n\n### 왜 사전 계산(precompute)인가\n\n수억 명이 **공개 당일 동시에** Wrapped를 열기 때문에, 그 순간 실시간으로 집계하면 데이터 웨어하우스가 폭발한다. 그래서 무겁고 느린 분석은 **공개 전에 배치로 미리 다 끝내 두고**, 공개 시점엔 **키 기반 단순 조회(low-latency read)** 만 하도록 읽기/쓰기 경로를 분리한다. 이는 Spotify가 일관되게 쓰는 **'무거운 계산은 오프라인, 서빙은 가벼운 조회로'** 패턴의 대표 사례다.\n\n### 트레이드오프\n\n- **신선도 vs 비용/안정성**: Wrapped는 실시간일 필요가 없으므로 배치로 미는 게 압도적으로 합리적이다.\n- **백필/재처리**: 집계 로직 버그가 발견되면 Beam 배치로 과거 로그를 다시 돌리면 된다(스트리밍 전용 시스템보다 재처리가 쉬움).\n- **피크 읽기 대비**: 공개 당일 트래픽 스파이크를 견디려면 서빙 스토어와 CDN/캐시를 미리 워밍·스케일아웃해야 한다."
+    },
+    {
+     "topic": "관측성과 배포: 수천 개 마이크로서비스를 운영 가능하게 만드는 플랫폼",
+     "body": "### 'Golden Path' — 자율성과 표준화의 균형\n\nSquad들이 완전 자율적으로 기술을 고르면 운영이 카오스가 된다. Spotify는 **Golden Path**라 부르는 '권장 기술 조합 + 자동화된 시작점'을 제공해, 새 서비스를 만들면 **CI/CD·모니터링·로깅·헬스체크·보안 기본값이 처음부터 붙어 나오게** 한다. 이 골든 패스의 사용자 진입점이 바로 **Backstage**의 소프트웨어 템플릿(Scaffolder)이다.\n\n### CI/CD: Tingle와 컨테이너 진화\n\n- Spotify는 자체 CI 시스템 **Tingle**을 운영해 왔고, 빌드·테스트·배포 파이프라인을 표준화했다.\n- 컨테이너 오케스트레이션은 초기에 자체 도구 **Helios**(Docker 기반)를 썼지만, 업계가 Kubernetes로 수렴하자 **GKE(Kubernetes on GCP)** 로 이전했다. 'NIH(자체 제작)에서 표준 매니지드로'라는 큰 흐름의 일부다.\n- 배포는 서비스 단위로 독립적이며, 위험을 줄이기 위해 **점진적 롤아웃/카나리** 패턴을 활용한다(문제 시 빠른 롤백).\n\n### 메트릭·트레이싱·로깅\n\n수천 서비스가 서로 gRPC로 호출하는 환경에서는 **분산 트레이싱**이 필수다. 한 번의 사용자 요청(예: 홈 화면 로드)이 수십 개 서비스를 거치므로, 트레이스 ID로 전체 호출 그래프를 따라가며 어디서 지연이 생겼는지 본다. 메트릭은 시계열 시스템으로 모아 **SLO/대시보드/알림**을 구성하고, 로그는 중앙 집중식으로 수집·검색한다. Spotify는 이런 관측성 신호도 Golden Path를 통해 **서비스 생성 시 자동 계측**되도록 만들어, 팀이 별도 설정 없이도 기본 관측성을 얻게 한다.\n\n### 핵심 철학\n\nSpotify 플랫폼 엔지니어링의 일관된 메시지는 **'개발자 경험(DevEx)이 곧 확장성'** 이다. 서비스가 수천 개로 늘어도 각 팀이 빠르고 안전하게 움직이려면, 인프라 복잡도를 **포털(Backstage)·골든 패스·매니지드 클라우드** 뒤로 추상화해 인지 부하를 낮추는 것이 곧 시스템 확장 전략이라는 입장이다."
     }
    ],
    "github": {
@@ -7696,39 +7761,47 @@
      {
       "name": "backstage/backstage",
       "url": "https://github.com/backstage/backstage",
-      "desc": "Spotify가 만든 오픈소스 개발자 포털 플랫폼",
+      "desc": "내부 개발자 포털을 표준화한 오픈소스 플랫폼, CNCF 졸업 프로젝트",
       "lang": "TypeScript",
-      "stars": 33599
+      "stars": 33603
      },
      {
       "name": "spotify/luigi",
       "url": "https://github.com/spotify/luigi",
-      "desc": "배치 작업 파이프라인 빌드/스케줄링 도구",
+      "desc": "복잡한 배치 작업 의존성을 관리하는 Python 워크플로 엔진",
       "lang": "Python",
       "stars": 18742
      },
      {
-      "name": "spotify/scio",
-      "url": "https://github.com/spotify/scio",
-      "desc": "Apache Beam용 Scala API",
-      "lang": "Scala",
-      "stars": 2628
+      "name": "spotify/annoy",
+      "url": "https://github.com/spotify/annoy",
+      "desc": "음악 추천용 근사 최근접 이웃(ANN) 검색 라이브러리",
+      "lang": "C++",
+      "stars": 14251
      },
      {
-      "name": "spotify/docker-client",
-      "url": "https://github.com/spotify/docker-client",
-      "desc": "Docker Remote API용 Java 클라이언트",
+      "name": "spotify/scio",
+      "url": "https://github.com/spotify/scio",
+      "desc": "Apache Beam을 위한 Scala API로 대규모 배치/스트리밍 파이프라인 작성",
+      "lang": "Scala",
+      "stars": 2627
+     },
+     {
+      "name": "spotify/apollo",
+      "url": "https://github.com/spotify/apollo",
+      "desc": "Spotify가 마이크로서비스를 작성하는 Java HTTP/RPC 프레임워크",
       "lang": "Java",
-      "stars": 1433
+      "stars": 1645
      }
     ]
    },
    "sources": [
-    "https://engineering.atspotify.com",
-    "https://backstage.io"
+    "https://engineering.atspotify.com/",
+    "https://backstage.io/",
+    "https://cloud.google.com/blog/products/data-analytics/spotify-chooses-google-cloud-platform"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "twitch",
