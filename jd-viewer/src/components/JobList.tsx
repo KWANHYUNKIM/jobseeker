@@ -42,7 +42,50 @@ export function JobList({ jobs, selected, onSelect }: Props) {
 
   return (
     <div className="flex flex-col">
-      <div className="overflow-x-auto">
+      {/* 모바일: 카드 리플로우 (표는 좁은 화면에서 잘리므로) */}
+      <ul className="md:hidden divide-y divide-(--color-border)">
+        {rows.map(({ job: j, roles }, i) => {
+          const active = selected?.site === j.site && selected?.pid === j.pid
+          return (
+            <li
+              key={`${j.site}-${j.pid}-${j.idx}`}
+              onClick={() => onSelect(j)}
+              className={'px-4 py-3 cursor-pointer transition ' + (active ? 'bg-(--color-accent)/15' : 'hover:bg-white/3')}
+            >
+              <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
+                <span className="tabular-nums">{start + i + 1}</span>
+                <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">{j.site}</span>
+                <span className="text-(--color-accent) truncate">{j.company}</span>
+                {j.career && <span className="ml-auto shrink-0">{j.career}</span>}
+              </div>
+              <div className="text-white text-sm leading-snug line-clamp-2 mb-1.5">{j.title}</div>
+              {roles.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-1.5">
+                  {roles.map((r) => (
+                    <span key={r} className="text-[10px] px-1.5 py-0.5 rounded border"
+                      style={{ borderColor: ROLE_COLORS[r] || '#444', color: ROLE_COLORS[r] || '#aaa' }}>{r}</span>
+                  ))}
+                </div>
+              )}
+              <div className="flex flex-wrap items-center gap-1">
+                {(j.tech_stack || []).slice(0, 6).map((t) => (
+                  <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)">{t}</span>
+                ))}
+                {j.tech_stack && j.tech_stack.length > 6 && (
+                  <span className="text-[10px] text-(--color-muted)">+{j.tech_stack.length - 6}</span>
+                )}
+                {j.url && (
+                  <a href={j.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+                    className="ml-auto shrink-0 text-xs px-2 py-0.5 rounded border border-(--color-border) text-(--color-muted) hover:text-(--color-accent) hover:border-(--color-accent)">원본 ↗</a>
+                )}
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+
+      {/* 데스크톱: 표 */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-sm border-collapse">
           <thead className="bg-(--color-panel) border-b border-(--color-border) sticky top-0 z-10">
             <tr className="text-left text-(--color-muted)">
