@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T16:07:46",
+ "generated_at": "2026-06-14T17:44:22",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 3,
+ "refined": 5,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -700,16 +700,16 @@
      "count": 8
     },
     {
+     "name": "Go",
+     "count": 6
+    },
+    {
      "name": "JavaScript",
      "count": 6
     },
     {
-     "name": "Go",
-     "count": 5
-    },
-    {
      "name": "Kotlin",
-     "count": 5
+     "count": 6
     },
     {
      "name": "Scala",
@@ -728,7 +728,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 7
+      "count": 6
      },
      {
       "name": "Spring Boot",
@@ -755,22 +755,22 @@
       "count": 1
      },
      {
+      "name": "Apache Spark",
+      "count": 1
+     },
+     {
       "name": "Armeria",
       "count": 1
      },
      {
-      "name": "Baseplate",
-      "count": 1
-     },
-     {
-      "name": "Django",
+      "name": "Baseplate.py / Baseplate.go",
       "count": 1
      }
     ],
     "frontend": [
      {
       "name": "React",
-      "count": 9
+      "count": 8
      },
      {
       "name": "TypeScript",
@@ -783,6 +783,10 @@
      {
       "name": "Vue.js",
       "count": 2
+     },
+     {
+      "name": "Android",
+      "count": 1
      },
      {
       "name": "Android/iOS Native",
@@ -803,10 +807,6 @@
      {
       "name": "Gestalt",
       "count": 1
-     },
-     {
-      "name": "Glimmer",
-      "count": 1
      }
     ],
     "data": [
@@ -823,6 +823,10 @@
       "count": 4
      },
      {
+      "name": "Redis",
+      "count": 4
+     },
+     {
       "name": "Elasticsearch",
       "count": 3
      },
@@ -831,23 +835,19 @@
       "count": 3
      },
      {
-      "name": "Redis",
-      "count": 3
-     },
-     {
       "name": "BigQuery",
       "count": 2
      },
      {
-      "name": "Brooklin",
-      "count": 1
-     },
-     {
-      "name": "DataHub",
-      "count": 1
-     },
-     {
       "name": "Druid",
+      "count": 2
+     },
+     {
+      "name": "Amazon S3",
+      "count": 1
+     },
+     {
+      "name": "Brooklin",
       "count": 1
      }
     ],
@@ -858,7 +858,7 @@
      },
      {
       "name": "AWS",
-      "count": 3
+      "count": 2
      },
      {
       "name": "Envoy",
@@ -881,15 +881,15 @@
       "count": 1
      },
      {
+      "name": "AWS EC2/S3",
+      "count": 1
+     },
+     {
       "name": "Azure",
       "count": 1
      },
      {
       "name": "Buck2",
-      "count": 1
-     },
-     {
-      "name": "Cloudflare",
       "count": 1
      }
     ]
@@ -897,7 +897,7 @@
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 4
+     "count": 3
     },
     {
      "name": "Microservices",
@@ -4390,43 +4390,55 @@
     "Python",
     "Java",
     "Kotlin",
+    "C++",
     "JavaScript",
-    "C++"
+    "Go"
    ],
    "stack": {
     "backend": [
      "Django",
      "Spring",
      "Thrift",
-     "gRPC"
+     "gRPC",
+     "Finagle/Thrift RPC",
+     "MemQ"
     ],
     "frontend": [
      "React",
-     "Gestalt"
+     "Gestalt",
+     "Redux",
+     "WebPack/SSR"
     ],
     "data": [
      "HBase",
      "Kafka",
-     "Druid",
-     "Pinball",
      "Flink",
-     "RocksStore"
+     "Druid",
+     "RocksStore/Rocksplicator",
+     "Manas",
+     "Ixia",
+     "Pixie/PinSage",
+     "Goku TSDB",
+     "Singer"
     ],
     "infra": [
-     "AWS",
+     "AWS EC2/S3",
      "Kubernetes",
-     "Envoy"
+     "Envoy",
+     "Teletraan",
+     "Statsboard"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven",
-    "ML-driven ranking"
+    "Microservices (Thrift/gRPC)",
+    "Event-driven streaming (Kafka/Flink)",
+    "ML-driven retrieval & ranking",
+    "Graph-based recommendation"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Gestalt\"]\n    MOB[\"Mobile App<br/>Native\"]\n  end\n  subgraph Gateway\n    ENV[\"Service Mesh<br/>Envoy\"]\n    API[\"API Services<br/>Django + Thrift\"]\n  end\n  subgraph Core\n    SVC[\"Microservices<br/>Java + gRPC\"]\n    RANK[\"Ranking/ML<br/>Feature Serving\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Proc<br/>Apache Flink\"]\n    PIN[\"Workflow<br/>Pinball\"]\n  end\n  subgraph Data\n    HBASE[\"Wide Store<br/>HBase\"]\n    DRUID[\"OLAP<br/>Apache Druid\"]\n    RS[\"KV Store<br/>RocksStore\"]\n  end\n  subgraph Infra\n    K8S[\"Platform<br/>AWS + Kubernetes\"]\n  end\n  WEB -->|HTTPS| ENV\n  MOB -->|HTTPS| ENV\n  ENV --> API\n  API -->|gRPC| SVC\n  SVC --> RANK\n  SVC --> HBASE\n  RANK --> RS\n  SVC -->|emit| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  PIN --> FLINK\n  RANK --> DRUID\n  SVC -.-> K8S",
-   "why_language": "초기 Django 모노리스로 빠르게 성장했고 Python이 여전히 웹·데이터에 강하다. 대규모 서비스·추천 시스템은 JVM(Java/Kotlin)으로 옮겨 성능을 확보했다.",
-   "why_architecture": "비주얼 추천(핀 랭킹)을 위해 ML 파이프라인 중심 아키텍처를 갖췄고, HBase·Kafka로 대규모 그래프를 저장·스트리밍한다. AWS 위 마이크로서비스로 운영한다.",
-   "summary": "Django 출발에서 JVM·ML 파이프라인으로 진화한 비주얼 추천 SNS.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Gestalt\"]\n    MOB[\"Mobile<br/>iOS Swift / Android Kotlin\"]\n  end\n  subgraph Edge\n    ELB[\"Edge LB<br/>AWS ELB + Envoy\"]\n    API[\"API Service<br/>Django + Python\"]\n  end\n  subgraph Core\n    MESH[\"Service Mesh<br/>Envoy + Thrift/gRPC\"]\n    HF[\"Homefeed Service<br/>Java/Kotlin\"]\n    SEARCH[\"Search<br/>Manas\"]\n    RECO[\"Graph Reco<br/>Pixie + PinSage\"]\n    ANN[\"Embedding Retrieval<br/>Ixia ANN\"]\n  end\n  subgraph Data\n    HBASE[\"Pin Graph Store<br/>HBase\"]\n    ROCKS[\"KV Store<br/>RocksStore/Rocksplicator\"]\n    DRUID[\"OLAP<br/>Druid\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Log Bus<br/>Kafka + MemQ\"]\n    SINGER[\"Log Agent<br/>Singer\"]\n    FLINK[\"Stream Compute<br/>Flink\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    DEPLOY[\"Deploy<br/>Teletraan\"]\n    OBS[\"Observability<br/>Statsboard + Goku\"]\n  end\n  WEB --> ELB\n  MOB --> ELB\n  ELB --> API\n  API -->|Thrift| MESH\n  MESH --> HF\n  MESH --> SEARCH\n  HF -->|candidates| RECO\n  HF -->|embeddings| ANN\n  RECO --> HBASE\n  ANN --> ROCKS\n  SEARCH --> ROCKS\n  API -->|events| SINGER\n  SINGER --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> HBASE\n  K8S --> MESH\n  DEPLOY --> API\n  OBS --> MESH",
+   "why_language": "초기 웹/제품 로직은 Django 기반 Python으로 빠르게 구축했고 지금도 API 게이트웨이 계층의 핵심이지만, 핀 그래프·홈피드·검색처럼 지연시간과 처리량이 중요한 서비스는 JVM(Java/Kotlin)으로 옮겨 GC·동시성·생태계 이점을 취한다. ML 서빙·ANN 검색·스토리지 엔진 같은 성능 임계 경로는 C++로, 신규 인프라 도구는 Go로 작성해 언어별 강점을 영역에 맞춰 배치한다.",
+   "why_architecture": "수억 명이 만드는 핀-보드-사용자 그래프를 실시간 추천으로 연결해야 하므로, 도메인을 Thrift/gRPC 마이크로서비스로 쪼개고 Envoy 메시로 묶어 독립 확장과 장애 격리를 달성한다. 모든 사용자 행동을 Kafka로 흘려 Flink로 가공하는 이벤트 드리븐 구조 위에 Pixie/PinSage 그래프 추천과 Ixia 임베딩 검색을 얹어, 후보 생성→랭킹이 ML 중심으로 동작하도록 설계했다.",
+   "summary": "Django 게이트웨이 위에 JVM 마이크로서비스와 그래프·임베딩 기반 ML 추천을 얹고, Kafka/Flink 스트리밍과 HBase로 핀 그래프를 떠받치는 추천 중심 아키텍처",
    "deep_dive": [
     {
      "topic": "홈피드 랭킹 파이프라인",
@@ -4439,6 +4451,22 @@
     {
      "topic": "Kafka·Flink 스트림 처리와 워크플로",
      "body": "### 이벤트 스트리밍 백본\n사용자 행동(핀 저장, 클릭, 노출)은 `Apache Kafka`로 흘러간다. 이 스트림은 (1) 실시간 피처 갱신, (2) 추천 모델 학습용 로그, (3) 안전성/스팸 탐지, (4) 분석으로 팬아웃된다.\n\n### Flink 실시간 처리\n`Apache Flink`로 스트림을 실시간 가공한다. Flink는 이벤트 타임·정확히 한 번(exactly-once) 시맨틱·상태 저장 윈도우 연산을 제공해, \"최근 N분 사용자 관심\" 같은 실시간 피처를 계산하거나 실시간 집계를 Druid로 밀어 넣는다.\n\n### Pinball 워크플로 오케스트레이션\n배치 ML 파이프라인(임베딩 재학습, 후보 인덱스 빌드)은 자체 워크플로 매니저 `Pinball`로 스케줄링한다. Pinball은 작업 DAG를 정의하고 의존성·재시도·동시성을 관리하는 오케스트레이터다.\n\n### 람다적 결합\n실시간 경로(Kafka→Flink→서빙 스토어)와 배치 경로(로그→Spark/배치 학습→인덱스)가 함께 모델 피처와 인덱스를 갱신한다. 실시간성으로 신선도를 잡고 배치로 정밀도·전체 재계산을 잡는 전형적 추천 시스템 구조다."
+    },
+    {
+     "topic": "Pixie & PinSage — 핀 그래프 기반 추천 엔진",
+     "body": "### 무엇을 푸는가\nPinterest의 핵심 자산은 `Pin`–`Board`–`User`로 이뤄진 거대한 이분/다중 그래프다. 수백억 개의 엣지에서 \"이 핀과 관련된 핀\"을 밀리초 단위로 찾아야 홈피드·Related Pins·검색 후보 생성이 돌아간다. 이를 위해 두 축의 시스템이 협력한다: 온라인 실시간 그래프 워크 엔진 `Pixie`와 오프라인 그래프 임베딩 학습 `PinSage`.\n\n### Pixie — Random Walk를 메모리에서\n`Pixie`는 핀 그래프 전체(수십억 노드/엣지)를 **단일 서버 메모리(대용량 RAM 인스턴스)** 에 통째로 적재하고 그 위에서 **biased random walk**를 수행한다.\n\n- 사용자가 최근 상호작용한 핀들을 시드(query set)로 넣으면, 그래프를 따라 짧은 무작위 보행을 수만 번 반복한다.\n- 보행 중 각 핀이 방문된 횟수를 카운트하고, **여러 시드에서 공통으로 자주 방문되는 핀**에 가중치를 부여하는 방식(visit count의 비선형 보정)으로 개인화 강도를 조절한다.\n- 전 그래프를 디스크/원격 KV가 아니라 RAM에 올리는 이유는 단순하다: 한 추천 요청당 수만 step을 밟으려면 엣지 조회가 네트워크 왕복이어선 안 된다. in-memory로 **요청당 수십 ms** 안에 보행을 끝낸다.\n\n트레이드오프는 명확하다. 그래프가 RAM 한 대에 들어가야 하므로 **그래프 압축·프루닝**(인기 과다 노드의 엣지 샘플링 등)이 필수이고, 업데이트는 주기적 스냅샷 리로드 성격이 강하다. 대신 외부 학습 없이도 신선한 그래프 구조를 즉시 반영할 수 있다.\n\n### PinSage — 웹스케일 GraphSAGE\n`PinSage`는 그래프 컨볼루션 네트워크(GCN)를 Pinterest 규모(30억 노드, 180억 엣지급)로 끌어올린 사례다.\n\n- 핵심 아이디어는 **이웃 전체를 보지 않고 random-walk로 중요한 이웃만 샘플링**해 그 위에서 컨볼루션을 돌리는 것. 풀 그래프 라플라시안을 메모리에 올릴 수 없으니, walk로 \"이 노드에 영향력 큰 이웃\"을 골라 importance pooling으로 집계한다.\n- 학습은 **producer-consumer 미니배치 파이프라인**으로 GPU를 굶기지 않게 CPU에서 이웃 샘플링/피처 fetch를 미리 준비한다.\n- 산출물은 핀당 임베딩 벡터다. 이 벡터가 그대로 ANN 검색(아래 Ixia)으로 흘러 후보 생성에 쓰인다.\n\n### 둘의 분업\n- `PinSage`(오프라인, 배치): 시각/텍스트/그래프 피처를 녹인 **고품질 임베딩** 생성 → 시멘틱 유사도.\n- `Pixie`(온라인, 실시간): 사용자의 **지금 세션 시드**에 대한 즉석 그래프 확장 → 신선도·개인화.\n홈피드 후보 생성기는 둘을 합쳐 \"의미적으로 가깝고(임베딩) 동시에 이 사용자 맥락에서 가까운(Pixie)\" 핀을 만든다."
+    },
+    {
+     "topic": "Manas & Ixia — 검색 인덱싱과 임베딩 기반 ANN 후보 검색",
+     "body": "### Manas: Pinterest의 검색 엔진\n`Manas`는 Pinterest가 직접 만든 C++ 기반 분산 검색/인덱싱 시스템으로, 텍스트 검색뿐 아니라 추천의 후보 생성 백본으로도 쓰인다. 설계 목표는 **수천억 건 문서 + 초당 수십만 쿼리 + 100ms 내 응답**.\n\n- **아키텍처**: 쿼리는 상위의 `root`(머지/랭킹) → 다수의 `leaf`(샤드별 posting list 스캔) 구조로 fan-out된다. leaf가 부분 결과를 매기면 root가 병합·재랭킹한다. 전형적인 scatter-gather다.\n- **인덱스 빌드와 서빙 분리**: 인덱스는 오프라인(배치)에서 만들어 leaf에 배포하고, 실시간 업데이트는 별도 incremental 경로로 반영한다. 이렇게 빌드와 서빙을 분리해 서빙 지연을 인덱싱 부하로부터 보호한다.\n- 처음엔 텍스트 토큰 매칭(term-based) 중심이었지만, 추천이 임베딩 중심으로 가면서 **벡터 검색 능력**이 핵심 요구사항이 됐다.\n\n### Ixia: 실시간 ANN과 term 검색의 융합\n`Ixia`는 Manas 위에 얹힌 **실시간 임베딩 기반 검색(ANN)** 시스템으로, \"임베딩 최근접 이웃 + 메타데이터 필터\"를 한 엔진에서 처리하는 것이 특징이다.\n\n- 단순 벡터 검색이 아니라 **`HNSW` 같은 ANN 인덱스와 inverted index(속성/필터)를 결합**한다. 예: \"이 임베딩과 가까우면서, 특정 카테고리/언어/세이프티 조건을 만족하는 핀\". 순수 ANN 라이브러리로는 이 필터링 결합이 어렵기 때문에 자체 엔진을 만든 것.\n- **실시간성**: 새 핀/콘텐츠가 들어오면 임베딩을 계산해 인덱스에 빠르게 반영해야 신선한 추천이 가능하다. Ixia는 실시간 인입 경로를 갖춰 batch-only ANN의 한계를 보완한다.\n\n### 후보 생성 파이프라인에서의 위치\n홈피드/Related/검색 모두 **다중 소스 후보 생성(candidate generation)** → **경량 랭킹(light ranking)** → **풀 ML 랭킹(heavy ranking)** 의 깔때기를 거친다. 이 깔때기의 맨 앞에서:\n\n| 단계 | 컴포넌트 | 역할 |\n|---|---|---|\n| 후보 생성 | Manas/Ixia(ANN), Pixie(graph) | 수백억 → 수천 후보 |\n| Light ranking | 경량 모델 | 수천 → 수백 |\n| Heavy ranking | 대형 DNN 랭커 | 수백 → 최종 노출 |\n\nIxia/Manas가 후보의 **재현율(recall)** 을 책임지고, 뒤단 랭커가 **정밀도(precision)** 와 비즈니스 목표(체류·저장·광고)를 최적화하는 분업이다."
+    },
+    {
+     "topic": "Singer · Kafka · MemQ — 행동 로그 인입 파이프라인과 비용 트레이드오프",
+     "body": "### 모든 추천의 연료: 행동 로그\nPinterest의 ML은 사용자의 클릭/저장(save)/숨김/체류 같은 **행동 신호**로 학습·평가된다. 따라서 \"로그를 빠짐없이, 싸게, 지연 적게 모으는 것\"이 곧 추천 품질의 하한선이다. 이 인입 파이프라인의 3요소가 `Singer` → `Kafka`/`MemQ` → 다운스트림이다.\n\n### Singer — 가볍고 견고한 로깅 에이전트\n`Singer`는 각 호스트에서 도는 로깅 에이전트다.\n\n- 애플리케이션은 그냥 **로컬 디스크에 로그 파일을 append**만 한다. Singer가 그 파일을 tail해서 Kafka로 업로드한다. 앱과 전송을 디커플링해, Kafka가 잠깐 느려도 앱 레이턴시에 영향이 없다.\n- 파일 기반이라 **at-least-once 신뢰성**과 백프레셔 흡수가 자연스럽다(디스크가 버퍼). 호스트 수만 대에 가볍게 깔 수 있도록 설계됐다.\n\n### Kafka의 비용 문제와 MemQ\nPinterest는 거대한 Kafka 사용자였지만, 페타바이트급 트래픽에서 **Kafka의 비용 구조(브로커가 디스크+네트워크+복제를 모두 떠안음, 리밸런싱 비용)** 가 부담이 됐다. 그래서 만든 것이 `MemQ`.\n\n- 핵심 발상: **데이터 저장을 브로커에서 떼어내 object storage(S3 등)에 위임**한다. 브로커는 메타데이터/포인터만 관리한다.\n- 프로듀서가 데이터를 객체로 써두면, 컨슈머는 브로커가 알려준 포인터로 객체를 직접 읽는다. 이로써 브로커는 stateless에 가까워지고, **스케일링·복제 비용이 클라우드 스토리지의 내구성으로 대체**된다.\n- 트레이드오프: object storage 특성상 **매우 낮은 ms 단위 지연이 필요한 워크로드엔 부적합**하고, 객체 단위 배칭이라 지연이 Kafka보다 크다. 그래서 MemQ는 \"높은 처리량 + 비용 민감 + 초저지연 불필요\"한 로깅/배치성 스트림에 쓰고, 진짜 실시간 경로는 여전히 Kafka가 맡는 **혼용 전략**이다.\n\n### 다운스트림\nKafka/MemQ로 모인 스트림은 `Flink`로 실시간 집계·피처화되고, 일부는 `Druid`로 흘러 실시간 OLAP 대시보드/실험 분석을 떠받친다. 배치 경로는 S3 데이터레이크 + Spark로 모델 학습 데이터셋을 만든다. 즉 **하나의 로그가 실시간(Flink/Druid)과 배치(Spark/학습)로 갈라지는 lambda 성격**의 구조다."
+    },
+    {
+     "topic": "Teletraan · Kubernetes 마이그레이션 — 배포와 컴퓨트 플랫폼",
+     "body": "### Teletraan — EC2 시대의 배포 시스템\n`Teletraan`은 Pinterest가 오픈소스로 공개한 사내 배포 시스템으로, 오랫동안 EC2 인스턴스 플릿에 코드를 굴리는 표준이었다.\n\n- **환경(environment) 단위 배포**와 **단계적 롤아웃**(일부 호스트 → 전체)을 지원해, 새 빌드를 소수 호스트에 먼저 깔고 메트릭을 본 뒤 확산하는 카나리성 흐름을 만든다.\n- **롤백 우선** 철학: 문제가 보이면 이전 빌드로 빠르게 되돌리는 것을 1급 기능으로 둔다. 대규모 플릿에서 \"안전하게 빨리 되돌릴 수 있음\"이 배포 속도를 푸는 열쇠라는 판단.\n- 호스트 메타데이터/상태를 추적해 수만 대 규모에서 어떤 호스트가 어떤 빌드인지 일관되게 관리한다.\n\n### Kubernetes로의 이전\nPinterest는 EC2 직접 관리에서 **Kubernetes 기반 컴퓨트 플랫폼**으로 점진 이전했다. 동기는 전형적이다: 팀마다 제각각이던 배포/스케일링/리소스 관리를 **통일된 추상화**로 묶고, 자원 활용률을 높이며, 배치·서비스·ML 워크로드를 같은 플랫폼에서 돌리기 위함.\n\n- 사내 개발자에게는 Kubernetes의 원시 API를 그대로 노출하지 않고 **PaaS 형태의 상위 추상화**(워크로드 명세 → 플랫폼이 K8s 리소스로 변환)를 제공해 학습 곡선과 사고 위험을 줄였다.\n- 서비스 간 통신은 **Envoy 사이드카 메시**로 통일해, 서비스 디스커버리·로드밸런싱·재시도·서킷브레이킹·관측(트레이싱/메트릭)을 애플리케이션 코드 밖으로 빼냈다. Thrift/gRPC 호출이 Envoy를 거치며 일관된 신뢰성 정책을 적용받는다.\n\n### 관측성 스택\n메트릭은 `Statsboard`(사내 메트릭/대시보드 시스템)와 시계열 DB `Goku`로 모은다. Goku는 고카디널리티 시계열을 대규모로 저장·질의하도록 만든 자체 TSDB로, 수만 서비스 인스턴스의 지표를 짧은 보존-고해상도 / 긴 보존-저해상도로 계층화해 비용과 가시성을 동시에 잡는다. 이 메트릭이 카나리 판정, 오토스케일, 이상탐지 알림의 입력이 된다.\n\n### 종합한 운영 루프\n코드 머지 → 빌드 → (Teletraan/K8s)로 단계적 롤아웃 → Envoy/Statsboard/Goku가 신·구 빌드의 에러율·지연을 비교 → 악화 시 자동/수동 롤백. 이 폐루프가 \"수천 개 서비스를 하루에도 여러 번 안전하게 바꾸는\" 능력을 만든다."
     }
    ],
    "debate": {
@@ -4547,40 +4575,49 @@
     "org": "https://github.com/pinterest",
     "repos": [
      {
-      "name": "ktlint/ktlint",
-      "url": "https://github.com/ktlint/ktlint",
-      "desc": "코틀린 린터 겸 포매터",
-      "lang": "Kotlin",
-      "stars": 6714
-     },
-     {
       "name": "pinterest/gestalt",
       "url": "https://github.com/pinterest/gestalt",
-      "desc": "핀터레스트 디자인 시스템 컴포넌트 라이브러리",
+      "desc": "Pinterest의 React 디자인 시스템 컴포넌트 라이브러리",
       "lang": "TypeScript",
       "stars": 4360
      },
      {
-      "name": "pinterest/PINCache",
-      "url": "https://github.com/pinterest/PINCache",
-      "desc": "iOS/macOS용 비동기 캐싱 라이브러리",
-      "lang": "Objective-C",
-      "stars": 2691
+      "name": "pinterest/querybook",
+      "url": "https://github.com/pinterest/querybook",
+      "desc": "빅데이터 분석을 위한 오픈소스 노트북/쿼리 IDE",
+      "lang": "TypeScript",
+      "stars": 2255
      },
      {
       "name": "pinterest/secor",
       "url": "https://github.com/pinterest/secor",
-      "desc": "카프카에서 스토리지로의 로그 적재 서비스",
+      "desc": "Kafka 로그를 S3/GCS로 안정 적재하는 무손실 컨슈머",
       "lang": "Java",
       "stars": 1858
+     },
+     {
+      "name": "pinterest/teletraan",
+      "url": "https://github.com/pinterest/teletraan",
+      "desc": "Pinterest 사내 배포(deploy) 시스템",
+      "lang": "Java",
+      "stars": 1833
+     },
+     {
+      "name": "pinterest/rocksplicator",
+      "url": "https://github.com/pinterest/rocksplicator",
+      "desc": "RocksDB 복제·클러스터 관리 프레임워크(RocksStore 기반)",
+      "lang": "C++",
+      "stars": 687
      }
     ]
    },
    "sources": [
-    "https://medium.com/pinterest-engineering"
+    "https://medium.com/pinterest-engineering",
+    "https://medium.com/pinterest-engineering/manas-realtime-enabling-changes-to-be-searchable-in-a-blink-of-an-eye-36acc3506843",
+    "https://github.com/pinterest"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-14"
   },
   {
    "key": "reddit",
@@ -4591,43 +4628,60 @@
     "Python",
     "Go",
     "TypeScript",
+    "Scala",
     "Java",
-    "Scala"
+    "Kotlin"
    ],
    "stack": {
     "backend": [
-     "Python",
+     "Python (r2 monolith)",
      "Go services",
-     "GraphQL",
-     "gRPC",
-     "Baseplate"
+     "GraphQL Federation",
+     "gRPC + Thrift",
+     "Baseplate.py / Baseplate.go",
+     "Apache Spark",
+     "Flink"
     ],
     "frontend": [
-     "React",
+     "React + Redux",
      "TypeScript",
-     "Lit/Web Components"
+     "Lit / Web Components (shreddit)",
+     "Next.js-style SSR",
+     "Android (Kotlin)",
+     "iOS (Swift)"
     ],
     "data": [
-     "PostgreSQL",
+     "PostgreSQL (Thing/Data model)",
      "Cassandra",
+     "Redis",
+     "Memcached",
      "Kafka",
-     "Memcached"
+     "Amazon S3",
+     "Druid",
+     "Elasticsearch / Solr",
+     "Vespa (search)"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Airflow"
+     "Kubernetes (Reddit Compute Platform)",
+     "Envoy / service mesh",
+     "Airflow",
+     "Terraform",
+     "Spinnaker/Drone CI",
+     "Prometheus + Wavefront",
+     "Zookeeper"
     ]
    },
    "architecture": [
-    "Service-oriented",
-    "GraphQL federation",
-    "Monolith decomposition"
+    "Service-oriented (r2 monolith decomposition)",
+    "GraphQL Federation gateway",
+    "Event-driven via Kafka",
+    "Multi-layer caching for viral traffic"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Lit\"]\n    MOB[\"Mobile App<br/>Native\"]\n  end\n  subgraph Gateway\n    GQL[\"GraphQL Federation<br/>Gateway\"]\n    BP[\"Service Framework<br/>Baseplate\"]\n  end\n  subgraph Core\n    PY[\"Core Services<br/>Python\"]\n    GO[\"Services<br/>Go + gRPC\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    AIR[\"Orchestration<br/>Airflow\"]\n  end\n  subgraph Data\n    PG[\"Relational<br/>PostgreSQL\"]\n    CASS[\"Wide Store<br/>Cassandra\"]\n    MC[\"Cache<br/>Memcached\"]\n  end\n  subgraph Infra\n    K8S[\"Platform<br/>AWS + Kubernetes\"]\n  end\n  WEB -->|GraphQL| GQL\n  MOB -->|GraphQL| GQL\n  GQL --> BP\n  BP --> PY\n  BP -->|gRPC| GO\n  PY --> PG\n  PY --> MC\n  GO --> CASS\n  PY -->|emit| KAFKA\n  KAFKA --> AIR\n  AIR --> CASS\n  GO -.-> K8S\n  PY -.-> K8S",
-   "why_language": "오래된 Python 모노리스(r2)가 코어였고, 성능·동시성 핵심 서비스를 Go로 점진 이전했다. 자사 마이크로서비스 프레임워크 Baseplate를 Python·Go로 제공한다.",
-   "why_architecture": "거대 Python 모노리스를 GraphQL 페더레이션 기반 서비스로 분해하며 피드·투표 부하를 분산했다. AWS 위 Kubernetes로 운영한다.",
-   "summary": "Python 모노리스(r2)에서 Go 서비스·GraphQL 페더레이션으로 분해 중인 SNS.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web shreddit<br/>Lit + TypeScript\"]\n    MOB[\"Mobile<br/>Kotlin + Swift\"]\n    CDN[\"CDN + Edge<br/>Fastly\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GQL[\"GraphQL Federation<br/>Apollo Gateway\"]\n    ENVOY[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    R2[\"Legacy Monolith<br/>r2 Python\"]\n    GOSVC[\"Domain Services<br/>Go + Baseplate\"]\n    PYSVC[\"Python Services<br/>Baseplate.py\"]\n    FEED[\"Feed / Listing<br/>Go services\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL<br/>Thing model\"]\n    CASS[\"Cassandra<br/>wide-column\"]\n    MC[\"Cache<br/>Memcached + Redis\"]\n    SEARCH[\"Search<br/>Vespa + Solr\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Proc<br/>Flink + Spark\"]\n    AIRF[\"Batch ETL<br/>Airflow\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Compute Platform<br/>Kubernetes on AWS\"]\n    OBS[\"Observability<br/>Prometheus + Wavefront\"]\n  end\n  WEB --> CDN\n  MOB --> CDN\n  CDN --> GQL\n  GQL -->|subgraphs| ENVOY\n  ENVOY -->|gRPC| GOSVC\n  ENVOY -->|Thrift| R2\n  ENVOY --> PYSVC\n  ENVOY --> FEED\n  R2 --> PG\n  GOSVC --> CASS\n  GOSVC --> MC\n  FEED --> SEARCH\n  R2 -->|produce| KAFKA\n  GOSVC -->|produce| KAFKA\n  KAFKA --> FLINK\n  KAFKA --> AIRF\n  FLINK --> SEARCH\n  GOSVC --- K8S\n  GOSVC --- OBS",
+   "why_language": "초창기 Reddit은 빠른 제품 반복을 위해 Python(r2 모놀리스)으로 출발했고, 지금도 방대한 비즈니스 로직이 Python에 남아 있어 유지된다. 그러나 수억 MAU 규모의 높은 동시성·저지연 요구가 커지면서 신규 도메인 서비스는 GC·동시성 모델이 유리한 Go로 작성하며, 데이터 파이프라인은 JVM 생태계(Scala/Java + Spark/Flink)를, 프론트엔드는 React/Lit 기반 TypeScript로 통일했다.",
+   "why_architecture": "단일 r2 모놀리스로는 배포·장애 격리·팀 확장이 한계에 부딪혀, Baseplate 프레임워크 위에서 도메인별 Go/Python 서비스로 점진적으로 분해(strangler fig)했다. 다양한 클라이언트(web/iOS/Android)가 제각각 데이터를 조합하던 문제는 GraphQL Federation 게이트웨이로 서브그래프를 통합해 해결했고, 핫 포스트가 순식간에 폭발하는 바이럴 트래픽은 Kafka 이벤트 버스와 다계층 캐시로 흡수한다.",
+   "summary": "Python r2 모놀리스를 Baseplate 기반 Go 서비스로 분해하고 GraphQL Federation으로 묶은, 바이럴 트래픽 대응형 SNS 아키텍처",
    "deep_dive": [
     {
      "topic": "r2 모놀리스 분해와 서비스 지향 전환",
@@ -4640,6 +4694,22 @@
     {
      "topic": "저장·캐싱과 바이럴 트래픽 대응",
      "body": "### 저장 계층\n- `PostgreSQL`: 계정·서브레딧·게시물 같은 관계형 핵심 데이터.\n- `Cassandra`: 댓글 트리·투표처럼 쓰기가 많고 wide한 데이터. 파티션 키로 게시물/스레드를 잡아 한 곳에 모은다.\n- `Memcached`: 렌더된 리스팅·핫 객체·카운터 캐시. Reddit은 카운팅·리스팅 캐시에 의존도가 매우 높다.\n\n### 리스팅 캐싱\n서브레딧 페이지·핫/탑 정렬은 매 요청마다 DB에서 계산하면 견딜 수 없다. Reddit은 정렬된 리스팅(예: 핫 알고리즘 점수 순)을 **미리 계산해 캐시**하고, 투표가 들어오면 비동기로 점수를 갱신해 리스팅을 갱신한다. 핫 알고리즘은 점수와 시간을 로그 스케일로 결합해 신선도와 인기를 균형 잡는다.\n\n### 비동기·바이럴 대응\n투표·알림·집계 같은 무거운 부가작업은 `Kafka`로 발행해 비동기 처리하고, 배치/오케스트레이션은 `Airflow`로 돌린다. 갑작스러운 바이럴 게시물(한 스레드에 트래픽 폭주)은 핫 파티션·핫 캐시 키를 만든다. 이를 캐시 계층화, 읽기 복제, request coalescing으로 흡수한다. AWS 위 Kubernetes에서 오토스케일링으로 트래픽 스파이크에 인스턴스를 늘린다."
+    },
+    {
+     "topic": "피드·리스팅 랭킹과 정렬: precompute된 리스팅과 hot 알고리즘",
+     "body": "### Reddit의 핵심은 '리스팅(Listing)'이다\nReddit에서 사용자가 보는 거의 모든 화면(subreddit 첫 페이지, r/all, 사용자 프로필, 검색 결과)은 본질적으로 **정렬된 ID 목록 = Listing**이다. 댓글 트리를 제외하면 대부분의 페이지는 `link id`의 순서 있는 집합을 만들어 캐시에서 꺼내 렌더링하는 구조다.\n\n### hot / best 스코어 계산\nReddit의 `hot` 정렬은 잘 알려진 공식을 쓴다. 핵심 아이디어는 **시간이 점수를 압도하도록 로그 스케일 + 시간 감쇠**를 두는 것이다.\n\n```python\n# 대략적 hot ranking (r2의 _sorts.pyx 계열)\nepoch_seconds(date) - 1134028003  # Reddit 기준 epoch\norder = log10(max(abs(score), 1))\nsign = 1 if ups - downs > 0 else -1\nseconds = epoch - 1134028003\nhot = round(sign * order + seconds / 45000, 7)\n```\n\n- `log10` 때문에 **첫 10표가 다음 100표만큼 영향**을 준다 → 초기 가속이 중요.\n- `seconds / 45000` 항으로 **약 12.5시간마다 한 자릿수 점수 보너스**가 자연 감쇠처럼 작동 → 오래된 글은 점수가 같아도 아래로 밀린다.\n- 이 값은 **글 작성·투표 시점에 미리 계산되어 정렬 키로 저장**되므로 읽기 시점에 매번 재계산하지 않는다.\n\n### precompute(미리 계산) 파이프라인\nReddit이 대규모에서 빠른 이유는 **읽기 시점에 정렬하지 않기 때문**이다.\n\n1. 투표/제출 이벤트가 들어오면 해당 link의 hot/top/controversial 점수를 갱신.\n2. 백그라운드 잡(원래는 Postgres + 큐, 이후 Kafka consumer)이 영향받은 **여러 정렬 버전의 Listing을 미리 만들어 Cassandra/Memcached에 저장**.\n3. 사용자가 페이지를 열면 게이트웨이는 **이미 정렬된 ID 리스트를 캐시에서 페이지네이션**해서 반환하고, 그 다음 ID들로 link 본문을 배치 조회.\n\n이 'write 시점에 비싼 일을 하고 read는 싸게'라는 트레이드오프가 Reddit 아키텍처의 근본 철학이다. 읽기:쓰기 비율이 수백:1인 SNS에서 합리적인 선택이다.\n\n### controversial / best\n- `controversial`은 ups·downs가 둘 다 많고 균형에 가까울수록 높아지는 별도 공식.\n- 로그인 사용자의 `best`(댓글 정렬)는 **Wilson score 신뢰구간 하한**을 사용한다. 표본이 적은 댓글이 운 좋게 1:0이 됐다고 상위로 오르지 못하게, 통계적 신뢰도를 반영해 '적은 표지만 압도적'인 댓글과 '많은 표에 안정적'인 댓글을 공정하게 비교한다."
+    },
+    {
+     "topic": "투표·집계의 비동기 처리와 일관성 트레이드오프",
+     "body": "### 투표는 즉시 DB에 반영되지 않는다\nReddit에서 upvote를 누르면 UI는 즉시 반응(optimistic update)하지만, 백엔드에서 **점수·랭킹·캐시 반영은 비동기**로 일어난다. 이유는 명확하다 — 인기 글 하나에 초당 수천 투표가 몰리면 그 행(row)에 대한 동기 업데이트는 **DB 핫 로우(hot row) 경합**으로 즉시 병목이 된다.\n\n### 처리 흐름\n1. 투표 요청 → 서비스가 **사용자별 vote 기록**(누가 무엇에 투표했는지)을 빠르게 기록하고 응답.\n2. 동시에 투표 이벤트를 **큐/Kafka로 발행**.\n3. consumer가 일정 윈도우 동안 **투표를 배치 집계**해서 link/comment의 ups·downs·score를 갱신.\n4. 점수 변경이 hot/top 리스팅 재계산을 트리거 → 캐시 무효화/갱신.\n\n### 의도적 부정확성(vote fuzzing)\nReddit은 표시되는 점수에 **의도적으로 노이즈를 섞는다(fuzzing)**. 표면적으로는 스팸·봇의 정확한 투표 효과 측정을 어렵게 하려는 안티-스팸 목적이고, 부수적으로 **정확한 실시간 카운트를 유지할 필요를 없애** 비동기·근사 집계를 정당화한다. 즉 '점수는 어차피 근사값'이라는 전제가 캐시 적극 활용과 결합된다.\n\n### 일관성 모델\n- **읽기-당신의-쓰기(read-your-writes)**: 내 투표가 내게는 즉시 보여야 하므로 사용자별 vote 상태는 강하게(빠르게) 일관.\n- **전역 점수**: 결과적 일관성(eventual consistency). 몇 초~수십 초의 지연과 fuzzing 오차를 허용.\n- 이 분리 덕분에 바이럴 글이 떠도 **개인 경험은 즉각적이되 전역 집계는 백프레셔로 흡수**된다.\n\n이것은 'SNS의 카운터는 정확할 필요가 없다'는 통찰을 시스템 설계에 반영한 대표적 사례다. 좋아요·조회수 같은 지표를 강한 일관성으로 다루면 비용이 폭발하지만, 근사를 허용하면 캐시·배치·샤딩이 전부 쉬워진다."
+    },
+    {
+     "topic": "PostgreSQL 위의 EAV Thing/Data 모델과 그 한계",
+     "body": "### r2의 독특한 데이터 모델: Thing & Data\nReddit의 레거시 핵심 데이터는 전통적 정규화 테이블이 아니라 **EAV(Entity-Attribute-Value) 변형인 Thing/Data 모델** 위에 얹혀 있다. PostgreSQL을 쓰지만, 스키마를 '관계형답게' 쓰지 않는다.\n\n구조는 두 종류 테이블로 단순화된다.\n\n| 테이블 | 역할 | 예시 컬럼 |\n|---|---|---|\n| `thing` | 엔티티의 공통 메타 | `thing_id`, `ups`, `downs`, `deleted`, `spam`, `date` |\n| `data` | 엔티티의 임의 속성(key-value) | `thing_id`, `key`, `value` |\n\n- `Link`, `Comment`, `Account`, `Subreddit` 각각이 `thing`+`data` 한 쌍을 가진다 (`thing_link`, `data_link` …).\n- 새 속성을 추가할 때 **ALTER TABLE이 필요 없다** — `data` 테이블에 새 row의 key로 넣으면 끝. 2000년대 후반, 무중단 마이그레이션이 어렵던 시절에 **스키마 진화를 코드 배포만으로 가능**하게 한 결정이었다.\n\n### 왜 이렇게 했나\n- 스타트업 시절 **빠른 기능 추가** > 정규화 정합성. 새 필드를 추가하려고 거대한 테이블에 lock 걸린 ALTER를 돌릴 여유가 없었다.\n- 조인을 거의 하지 않고 **thing_id로 조회 → data를 key-value로 펼침**. 사실상 PostgreSQL을 거대한 key-value 스토어처럼 사용.\n\n### 트레이드오프와 대가\n- **JOIN·관계형 쿼리 불가**: '특정 조건의 글을 SQL로 필터'하는 게 안 된다 → 모든 조회 경로를 미리 만든 인덱스/리스팅과 캐시로 해결해야 함. 이게 위에서 본 precompute 문화의 또 다른 뿌리.\n- **모든 조회가 캐시 의존적**: Memcached가 죽으면 thing/data를 다시 조립하는 부하가 PostgreSQL을 덮친다.\n- **수평 확장의 어려움**: 단일 Postgres 마스터 + read replica 구조가 한계에 다다르며, 신규 데이터(메시징·채팅·특정 카운터 등)는 점차 **Cassandra**로 이전. 새 서비스들은 Thing 모델을 버리고 자체 스키마/스토리지를 갖는 방향으로 분해됐다.\n\n결국 Thing/Data 모델은 '초기 속도를 위해 관계형 능력을 포기한' 전형적 부채였고, 모놀리스 분해의 동기 중 하나가 됐다. 새 도메인 서비스는 더 이상 이 모델에 묶이지 않고 적합한 스토리지(Cassandra, 별도 Postgres, Redis)를 직접 고른다."
+    },
+    {
+     "topic": "관측성과 서비스 표준화: Baseplate가 강제하는 것",
+     "body": "### Baseplate = '서비스를 만들면 자동으로 관측 가능하게'\nReddit이 수백 개 서비스로 분해되면서 가장 큰 위험은 **각 팀이 제각각인 로깅·메트릭·트레이싱·RPC 규약**으로 서비스를 만드는 파편화였다. Baseplate(`baseplate.py`, `baseplate.go`)는 이걸 막는 **사내 표준 프레임워크**다. 서비스를 Baseplate로 만들면 다음이 '공짜로' 따라온다.\n\n### 자동으로 붙는 것들\n- **분산 트레이싱**: 모든 요청에 trace context가 전파되어 GraphQL 게이트웨이 → 여러 다운스트림 서비스까지 한 요청의 전체 경로를 추적. span이 RPC 경계마다 자동 생성.\n- **메트릭**: 요청 수·지연·에러율(RED 메트릭)이 자동 집계되어 Prometheus/Wavefront로 흘러감.\n- **`ServerSpan`/`Span` 추상화**: 코드에서 외부 호출(DB, 캐시, RPC)을 감싸면 그 구간이 자동으로 타이밍·트레이스 대상이 됨.\n- **컨텍스트 객체**: 요청 단위로 DB 커넥션 풀, 캐시 클라이언트, 설정, secrets를 주입 — 개발자가 직접 커넥션을 관리하지 않게.\n- **헬스체크·graceful shutdown·설정 핫리로드** 등 운영 표준.\n\n### Thrift/gRPC IDL 기반 계약\n초기 Baseplate 서비스 간 통신은 **Thrift IDL**로 인터페이스를 정의했고(언어 중립 — Python r2 ↔ Go 서비스 상호 호출 가능), 이후 신규 서비스는 점차 **gRPC**로 이동했다. IDL이 있어 클라이언트/서버 스텁이 자동 생성되고, 타입 안전한 서비스 경계가 보장된다.\n\n### 왜 중요한가 — 분해의 전제 조건\n모놀리스를 마이크로서비스로 쪼개면 '한 함수 호출'이 '네트워크 호출 수십 개'가 된다. 표준화된 트레이싱·메트릭이 없으면 **느린 페이지의 원인이 어느 서비스인지 영영 알 수 없다.** Baseplate는 '분해해도 디버깅 가능성을 잃지 않게' 만드는 안전장치이며, Reddit이 r2 분해를 감행할 수 있었던 기술적 토대다. 즉 아키텍처(서비스 분해)와 플랫폼(Baseplate)은 한 세트로 움직였다."
     }
    ],
    "github": {
@@ -4648,24 +4718,40 @@
      {
       "name": "reddit-archive/reddit",
       "url": "https://github.com/reddit-archive/reddit",
-      "desc": "레딧 초기 오픈소스 코드베이스(아카이브)",
+      "desc": "2017년까지 공개됐던 레거시 r2 모놀리스 소스(현재 아카이브)",
       "lang": "Python",
       "stars": 16956
      },
      {
       "name": "reddit/baseplate.py",
       "url": "https://github.com/reddit/baseplate.py",
-      "desc": "레딧 파이썬 서비스 표준 프레임워크",
+      "desc": "Reddit 백엔드 서비스 표준 프레임워크(관측성·RPC·설정)의 Python 구현",
       "lang": "Python",
       "stars": 546
+     },
+     {
+      "name": "reddit/snudown",
+      "url": "https://github.com/reddit/snudown",
+      "desc": "Reddit 마크다운 렌더러(sundown 포크) — 댓글/포스트 렌더링 엔진",
+      "lang": "C",
+      "stars": 185
+     },
+     {
+      "name": "reddit/baseplate.go",
+      "url": "https://github.com/reddit/baseplate.go",
+      "desc": "Go 서비스용 Baseplate 라이브러리 — gRPC/Thrift 서버, 메트릭, 분산 트레이싱",
+      "lang": "Go",
+      "stars": 107
      }
     ]
    },
    "sources": [
-    "https://www.reddit.com/r/RedditEng/"
+    "https://www.reddit.com/r/RedditEng/",
+    "https://github.com/reddit/baseplate.py",
+    "https://github.com/reddit/reddit/wiki"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-14"
   },
   {
    "key": "twitter",

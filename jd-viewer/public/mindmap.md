@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **5923건** 공고 · **1160개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-14 15:56
+- 총 **5931건** 공고 · **1163개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-14 17:39
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (314개사)
+## HR/채용 (316개사)
 ### (주)제이투이 `중소기업` · 18건
 - **백엔드** [5건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -2367,6 +2367,13 @@ markmap:
 - **DevOps/인프라** [1건] · `Docker` `Kubernetes`
   - [/클라우드 엔지니어(인프라/플랫폼 엔지니어링 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148593&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1292edd7-0d32-4e3a-99b7-3a57d6d801d5)
 
+### (주)서진시스템 `중소기업` · 2건
+- **백엔드** [2건] · `JavaScript` `REST API` `TypeScript` `Vue` `HTML` `CSS`
+  - [Web Frontend(Vue.js/JSP)퍼블리싱, MES,ERP개발 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159181&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=36826f4e-38ee-43ef-9544-99cd41c04008)
+  - [Web Backend(Java/Springboot)MES,ERP개발 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159022&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=eba7034f-1a09-4861-9ddb-628cd4d53c55)
+- **프론트엔드** [1건] · `JavaScript` `TypeScript` `Vue` `HTML` `CSS` `Git`
+  - [Web Frontend(Vue.js/JSP)퍼블리싱, MES,ERP개발 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159181&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=36826f4e-38ee-43ef-9544-99cd41c04008)
+
 ### (주)오마이브랜드 `중소기업` · 2건
 - **백엔드** [1건] · `TypeScript` `PHP` `Next.js` `Node.js` `MySQL` `GCP`
   - [(백엔드 개발팀원 구인) AI융합 인재 구인중 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53834203&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e52648d4-7b83-4cb1-8630-da7297626efd)
@@ -2643,6 +2650,13 @@ markmap:
   - [(인턴십 참여자 모집) AI Agent 프로젝트개발 인턴모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54054788&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=051bfb82-da44-4630-9c6b-4ff1a9a978fd)
 
 ### 아이비커리어(주) `중소기업` · 2건
+
+### (주)사미텍 `중소기업` · 2건
+- **백엔드** [1건] · `Java` `Python` `LangChain` `Linux` `Git` `REST API`
+  - [(파견/서울)공공사업 AI 시스템 구축 및 유지보수 지원 채용공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54166782&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a482b4fc-24c0-456d-af8f-e8368aa9d750)
+- **AI/ML** [2건] · `Python` `Git` `Java` `LangChain` `Linux` `REST API`
+  - [(파견/서울)공공사업 AI 시스템 구축 및 유지보수 지원 채용공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54166782&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a482b4fc-24c0-456d-af8f-e8368aa9d750)
+  - [(파견/서울)공공사업 AI 시스템 데이터 구축 채용공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54167014&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ef121467-684f-4d29-8f17-889007d3781b)
 
 ### (주)엔이에스 `중소기업` · 2건
 - **DevOps/인프라** [2건] · `Kubernetes`
@@ -7056,7 +7070,7 @@ markmap:
   - [AI 기술 개발 PM 인재 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555469?ReturnUrl=RecruitInfo)
 
 
-## AI/데이터 플랫폼 (77개사)
+## AI/데이터 플랫폼 (78개사)
 ### 업스테이지 `중견기업` · 13건
 - **백엔드** [6건] · `FastAPI` `PyTorch` `LangChain` `OpenAI` `Java` `Python`
   - [AI Research Engineer - Agents & Workflows ↗](https://www.wanted.co.kr/wd/267072)
@@ -7665,6 +7679,13 @@ markmap:
 - **풀스택** [2건] · `Python` `TypeScript` `React` `CSS` `Tailwind` `Node.js`
   - [(인턴) 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/365886)
   - [(주)비즈플러그 풀스택 개발자 경력 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54056820&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=2d272821-8b0f-4594-b5fe-cad7fcd2c4bf)
+
+### 네오사피엔스(타입캐스트) `중소기업` · 2건
+- **백엔드** [1건] · `Python` `FastAPI`
+  - [Agentic AI Engineer ↗](https://www.wanted.co.kr/wd/359822)
+- **AI/ML** [2건] · `Python` `PyTorch` `FastAPI`
+  - [Speech AI Research Engineer(병역특례 가능) ↗](https://www.wanted.co.kr/wd/319750)
+  - [Agentic AI Engineer ↗](https://www.wanted.co.kr/wd/359822)
 
 ### 스튜디오랩(STUDIO LAB) `중소기업` · 2건
 - **AI/ML** [2건] · `PyTorch`

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-14T15:56:24",
-  "source_dir": "screenshots/all_통합_20260614_155614",
+  "generated_at": "2026-06-14T17:39:44",
+  "source_dir": "screenshots/all_통합_20260614_173937",
   "keyword": "통합",
   "jobs": [
     {
@@ -25261,6 +25261,36 @@
       "preferences": "서비스 초기 런칭 및 스케일업 경험 보유자\n데이터 분석 툴 활용 역량 우수자\nCRM 마케팅 자동화 캠페인 운영 경험 보유자\n퍼널 개선 및 Growth 실험 경험 보유자",
       "main_tasks": "유저 행동 데이터 기반 퍼널 분석 및 성장 기회 발굴\n핵심 성장 지표 정의 및 데이터 기반 성과 관리\n전환율 개선을 위한 UI/UX 가설 수립 및 실험 설계\n신규 기능 도입 시 정량·정성 성과 분석 및 배포 의사결정\n리텐션 및 인게이지먼트 향상 전략 수립\nAI 챗봇 인터랙션 기반 유저 LTV 개선\nQA/CS 기반 유저 페인포인트 분석 및 제품 로드맵 반영\n마케팅 및 개발 조직과 협업하여 실험 사이클 운영",
       "benefits": "추후 협의예정"
+    },
+    {
+      "site": "wanted",
+      "company": "네오사피엔스(타입캐스트)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Agentic AI Engineer",
+      "url": "https://www.wanted.co.kr/wd/359822",
+      "career": "",
+      "location": "경력 3-8년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "FastAPI"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화",
+        "오너십/주도성",
+        "오픈소스 기여"
+      ],
+      "qualifications": "AI Agent 또는 LLM chatbot 제품 개발 경험\n• RAG 파이프라인 구축 경험 - 실제 데이터 노이즈와 검색 성능 문제를 해결해 본 경험\n• LLM Evaluation 경험 - Evaluation 데이터셋 구축, 자동/수동 평가, 회귀 방지 체계 중 하나 이상 직접 만들어본 경험\n• LLM 동작 원리에 대한 실용적 이해 - 프롬프트가 왜 깨지는지, hallucination이 언제 나는지, 비용·지연·신뢰성 트레이드오프를 실무 의사결정으로 풀 수 있는 수준\n• 문제를 스스로 완결 짓는 '오너십' 있는 분 - 단순 구현을 넘어, 문제 정의, 설계, 실험, 정량 평가까지의 프로젝트 전 과정을 함께하실 적극적인 분",
+      "preferences": "• 음성 대화 시스템(Voice Bot, AICC, STT/TTS 기반 서비스)에서 LLM 적용 경험 - 짧은 turn, 발화 끊김, back-channel 등 음성 특유의 대화 패턴 처리\n• Guardrail / safety 시스템 직접 구현 경험\n• Multi-Agent 시스템 설계 및 다수의 에이전트 간 협업 로직 구현 경험\n• Python 기반 비동기 프로그래밍(FastAPI, asyncio) 및 성능 최적화 역량\n• 오픈소스 AI 프로젝트 기여 또는 관련 논문 게재 경험",
+      "main_tasks": "Agentic Workflow 설계: 복잡한 대화 상태를 관리하고, 비동기 tool calling 및 자가 수정이 가능한 Agent 파이프라인 개발\n• 고도화된 RAG 시스템 구축: 실시간 대화 맥락, 사용자 페르소나, 외부 지식을 결합한 하이브리드 RAG 파이프라인 설계 및 검색 효율화\n• LLM 응답 최적화: 실시간 대화에 필수적인 초저지연 응답을 위해 프롬프트 엔지니어링, 출력 구조화, 스트리밍 최적화 진행\n• Evaluation 및 Guardrail 구축: 답변의 정확성(Hallucination 억제), 안전성, 일관성을 평가하기 위한 Evaluation 데이터셋 구축 및 Guardrail 시스템 적용\n• 최신 기술 PoC 및 제품화: Multi-agent 시스템, 최신 기술을 분석하고 실제 서비스에 녹여내는 과정 주도",
+      "benefits": "• 함께 일하고 싶은 동료들과 즐겁게 일해요!\n• 점심/저녁 식사, 간식, 음료 모두 회사에서 제공해요.\n• 성장을 위해 읽고 싶은 책, 가보고 싶은 세미나, 배우고 싶은 직무 교육을 지원해요.\n• 업무 효율성을 위한 유료 툴을 다양하게 사용하며, 지원해요.\n• 선택적 근로시간제 운영으로 개인에게 맞는 최대한의 몰입을 추구해요.\n• 모두 함께 자기주도적인 업무와 조직문화를 만들어 갑니다.\n• 컨펌 없이, 날짜 제한 없이 자유로운 휴가 사용이 가능해요.\n• 각종 국제 학회나 주요 국제 전시회 참가를 독려해요.\n• 차분한 분위기 속 유연한 협업과 동료에 대한 존중이 갖춰진 곳이에요."
     },
     {
       "site": "wanted",
@@ -71408,6 +71438,36 @@
     },
     {
       "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Node.js 백엔드 경력직 개발자 모집합니다",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49372332?Oem_Code=C1&logpath=1&stext=iOS&listno=89&sc=630",
+      "career": "Node.js 백엔드 경력직 개발자 모집합니다",
+      "location": "광주 북구",
+      "dday": "",
+      "tech_stack": [
+        "Node.js",
+        "iOS",
+        "Nginx",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍ학력 : 대학교졸업(4년)이상\n\nㆍ경력 : 1년 이상\n\nㆍNode.js, Nest.js, Git 버전 관리 등의 Framework 사용경험\n\nㆍREST API 개발경험",
+      "preferences": "ㆍ유관업무 경험자(인턴·알바)\n\nㆍ클라우드 환경 기반\n\nㆍ개발, 배포 및 Nginx 서버 운영 경험\n\nㆍNative AOS/IOS 협업 개발 경험\n\nㆍDB설계 가능하신분",
+      "main_tasks": "ㆍ백엔드 개발\n\nㆍ기존 서비스 유지보수\n\nㆍ신규 서비스 설계 및 개발 관리\n\n스킬\n\nㆍGit, Node.js, RestAPI, Nest.js, Nginx, Native AOS/IOS",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜타이드스퀘어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -105551,6 +105611,39 @@
     },
     {
       "site": "saramin",
+      "company": "(주)서진시스템",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Web Frontend(Vue.js/JSP)퍼블리싱, MES,ERP개발 경력직 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159181&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=36826f4e-38ee-43ef-9544-99cd41c04008",
+      "career": "경력4년↑",
+      "location": "경기부천시 오정구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "Vue",
+        "HTML",
+        "CSS",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화"
+      ],
+      "qualifications": "• 경력 4년 이상\n\n• 대학졸업(2,3년)이상\n\n• Frontend 개발 경력 4년 이상\n\n• Vue.js 개발 경험\n\n• HTML5, CSS3, x-javascript(ES6+) 활용 가능\n\n• REST API 연동 개발 경험\n\n• Git 기반 형상관리 경험",
+      "preferences": "• MES, ERP, QMS 등 제조 시스템 개발 경험\n\n• Vuex 또는 Pinia 상태관리 경험\n\n• TypeScript 개발 경험\n\n• Chart.js, ECharts 등 차트 라이브러리 활용 경험\n\n• 웹 성능 최적화 및 운영 경험\n\n• 협업 및 커뮤니케이션 역량 보유자\n\n• 해외출장 가능자",
+      "main_tasks": "• MES/ERP Web 시스템 Frontend 설계 및 개발\n\n• Vue.js 기반 SPA(Single Page Application) 개발\n\n• RESTful API 연동을 통한 화면 및 데이터 처리 기능 개발\n\n• HTML/CSS/x-javascript 기반 화면 구현 및 퍼블리싱\n\n• 공통 컴포넌트 개발 및 유지보수\n\n• 반응형 웹 및 크로스 브라우징 환경 지원\n\n• 신규 시스템 구축 및 운영 안정화\n\n• 기존 시스템 유지보수 및 기능 개선",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)수산아이앤티",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -125464,6 +125557,42 @@
     },
     {
       "site": "saramin",
+      "company": "주식회사이노마인드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "모바일 앱 개발자 모집 (경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54149306&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=236807ab-b87b-4d73-9531-e17ebca8bdbd",
+      "career": "경력1년↑",
+      "location": "전남나주시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "jQuery",
+        "CSS",
+        "Spring",
+        "Spring Boot",
+        "iOS",
+        "Android",
+        "MySQL",
+        "MariaDB",
+        "MSSQL",
+        "SVN",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)바이오리서치에이아이",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -129592,6 +129721,30 @@
       "preferences": "서류\n필기\n1차\n\n면접\n2차\n\n면접\n\n취업지원대상자\n10%\n\n/5%\n○\n○\n○\n○\nㆍ「국가유공자 등 예우 및 지원에 관한 법률」제29조\n\nㆍ「독립유공자 예우에 관한 법률」제16조\n\nㆍ「보훈보상대상자 지원에 관한 법률」제33조\n\nㆍ「5ㆍ18민주유공자 예우 및 단체설립에 관한 법률」제20조\n\nㆍ「특수임무유공자 예우 및 단체설립에 관한 법률」제19조\n\nㆍ「고엽제후유의증 등 환자지원 및 단체설립에 관한 법률」\n\n　제7조의9 등에 해당하는 국가유공자 등 및 그 유·가족 등\n\n　* ’변호사·변리사‘ 모집부문(채용예정인원 3명 이하)은\n\n　　취업지원대상자 가점 제외. 단, 동점자 처리 시에는 우대\n적용하며, 응시자의 수가 선발예정인원과 같거나 작은 경우\n가점 적용\n\n장애인\n10%\n○\n○\n○\n○\nㆍ「장애인고용촉진 및 직업재활법」에 해당하는 장애인\n\n　* 「국가유공자 등 예우 및 지원에 관한 법률」,\n\n　　「보훈보상대상자 지원에 관한 법률」등에 의한\n\n　　상이등급기준 해당자도 포함\n\n사회적\n\n배려\n저소득층\n2%\n○\n○\n-\n-\nㆍ「국민기초생활 보장법」에 따른 기초생활보장 수급자에\n\n　속한 자로서 본인 또는 대상 가구의 구성원\n\nㆍ「한부모가족지원법」에 따른 지원대상자\n\n다문화\n가족\n2%\n○\n-\n-\n-\nㆍ「다문화가족지원법」에 따른 다문화가족 구성원\n\n북한\n\n이탈주민\n2%\n○\n-\n-\n-\nㆍ「북한이탈주민의 보호 및 정착지원에 관한 법률」에 따른\n북한이탈주민\n\n경력단절\n\n(보유)\n\n여성\n2%\n○\n-\n-\n-\nㆍ「여성의 경제활동 촉진과 경력단절 예방법」에 따른 지원대상자\n\n* 공고마감일 기준 임신·출산·육아 등의 사유로 6개월 이상\n\n　 경제활동을 중단하였거나 경제활동을 한 적 없는 여성\n\n자립\n\n준비청년\n\n(보호종료\n\n아동)\n2%\n○\n-\n-\n-\nㆍ「아동복지법」에 따라 가정위탁 보호조치가 종료되거나\n\n　아동복지시설에서 퇴소한지 5년 이내인 자\n\n　 * 2021.6.30. 이후 퇴소 또는 보호조치 종료\n\n공인노무사\n3%\n○\n○\n-\n-\nㆍ공인노무사 자격증 보유자\n\n탄소중립 전문가\n3%\n○\n-\n-\n-\nㆍ온실가스 검증심사원, 환경성적표지 인증심사원, 저탄소\n\n　농산물 인증심사원 자격증 보유자\n\n안전 전문가\n2%\n○\n-\n-\n-\nㆍ건설안전기술사, 기계안전기술사 자격증 보유자\n\n기술거래사\n1%\n○\n-\n-\n-\nㆍ기술거래사 자격증 보유자\n\n데이터 전문가\n1%\n○\n-\n-\n-\nㆍADP, DAP, SQLP, 빅데이터 분석기사,\nAICE(Associate 등급*) 자격증 보유자\n\n　* 해당 등급 2025년 1월 1일 이후 취득에 한하여 인정\n\n비수도권 지역인재\n\n(붙임2)\n\n반드시 확인\n1%\n○\n-\n-\n-\n\nㆍ최종학력이 대졸 이상인 경우 대학교를 기준으로 수도권\n(서울·경기·인천) 또는 해외를 제외한 지역 소재\n학교를 졸업(예정)·중퇴하거나 재학·휴학 중인 자\n\nㆍ최종학력이 고졸 이하인 경우 최종학교 소재지가 수도권\n(서울·경기·인천) 또는 해외를 제외한 지역인 자\n\n이전지역(부산) 인재\n\n(붙임3)\n\n반드시 확인\n1%\n○\n-\n-\n-\nㆍ대학까지의 최종학력(대학원 제외)을 기준으로\n부산 소재 고등학교* 또는 대학을 최종 졸업(예정)한 자\n\n　 * 부산 소재 고교 졸업후 타지역 대학 최종졸업(예정)한자는\n제외\n\n공공기관\n\n청년인턴\n\n경험자\n1%\n○\n-\n-\n-\nㆍ「공공기관 청년인턴제」에 의한 체험형 또는 채용형\n청년인턴으로서 1개의 공공기관에서 60일 이상 근무한 자\n\n* 근무기간(60일)은 접수마감일까지를 기준으로 함\n\n* 「공공기관 청년인턴제」에 의한 청년인턴 해당 여부는 근무\n\n　 공공기관에 확인\n\n* 공공기관 해당 여부는 재경부 「2026년 공공기관 현황」에\n포함된 경우만 인정\n\n기술\n\n보증\n\n기금\n최우수\n\n청년인턴\n3%\n○\n-\n-\n-\nㆍ「공공기관 청년인턴제」에 의한 기술보증기금 체험형\n\n청년인턴으로 근무한 자 중, 최우수 또는 우수 청년인턴으로\n\n　선정된 자\n\n우수\n\n청년인턴\n2%\n○\n-\n-\n-\n\n박사\n-\n-\n필기\n\n면제\n-\n-\nㆍ기계·재료금속, 정보통신, 섬유·화공, AI·데이터,\n\n　경영·경제(금융) 관련 박사학위 보유자\n\n* 기술보증 및 기술평가(박사) 모집부문 지원자에 한함\n\n한국공인회계사\n\n(KICPA)·세무사\n-\n-\n필기\n\n면제\n-\n-\nㆍ한국공인회계사(KICPA) 또는 세무사 자격증 보유자\n\n* CPA·세무사 모집부문 지원자에 한함\n\n변호사·변리사\n-\n-\n필기\n\n면제\n-\n-\nㆍ변호사 또는 변리사 자격증 보유자\n\n* 변호사·변리사 모집부문 지원자에 한함\n\nㆍ우대사항은 접수마감일 및 입사예정일 기준 모두 유효하게 등록된 상태여야 하며, 입사지원서에 기재한 내용에 한하여 인정\n\nㆍ우대사항은 필기시험 합격자에 한해 증빙서류 제출 요청 예정\n\nㆍ가점 항목은 중복될 경우 가장 높은 하나만 부여\n* 보훈(취업지원대상자) 모집부문은 취업지원대상자 가점 외 1개 가점 추가 인정\n\nㆍ우대사항 비해당자가 입사지원서에 해당자로 기재 후 합격한 경우, 과실유무를 불문하고 허위기재로 판단하여 불합격 처리 또는\n합격 취소될 수 있음\n\nㆍ기술보증기금 최우수·우수 청년인턴은 ‘25년 청년인턴 수료자(’25.9월 수료) 및 ’25년 장애인 청년인턴 수료자\n(‘26년 3월 수료, ’26년 6월 수료)만 해당\n\nㆍ입사 후 근무지 배치 시, 지역인재(비수도권, 이전지역)의 경우 비수도권 지역 우선 배치\n단, 인력운영계획 등에 따라 불가피한 경우 전국 지역에서 근무할 수 있음\n\n8. 제출서류\n\n■ 신분증 지참\n\n○ 전형단계마다 본인의 신분증을 지참하여야 하며, 미지참 시 응시 불가\n\n* 주민등록증, 운전면허증, 국가보훈등록증, 유효기간 내 여권(신여권은 ‘여권정보증명서’ 함께 제출)만 인정되며,\n\n　　신분증 분실한 경우 주민센터에서 발급받은 ‘주민등록증 발급신청 확인서’를 제출\n\n(단, 위 신분증이 없는 고등학교 재학생의 경우 생년월일 및 본인 사진이 부착된 학생증에 한하여 인정)\n\n증빙서류\n\n(해당자에 한함)\n취업지원대상자\nㆍ취업지원대상자 증명서\n\n장애인\n\nㆍ장애인증명서 또는 장애인등록증\n\n- 「장애인고용촉진 및 직업 재활법」상 중증장애인의 경우 중증장애인\n확인서 추가 제출\n\n- 상이등급 기준 해당자는 국가유공자 확인서 또는 보훈보상대상자 확인서\n\n저소득층\nㆍ국민기초생활수급자 증명서, 한부모가족 증명서(본인 명의로 발급)\n\n북한이탈주민\nㆍ북한이탈주민등록 확인서\n\n다문화가족\n\nㆍ다문화가족 증명자료 (① 필수제출 및 ② 또는 ③ 중 해당하는 자료 제출)\n① 가족관계증명서, 부모 또는 본인의 혼인 관계 증명서\n\n② 부모 또는 배우자 명의의 기본증명서(귀화 허가자 명의, 前 국적 표시),\n\n③ 부모 또는 배우자 명의의 외국인등록사실 증명서(결혼이민자)) 등\n\n경력단절(보유)\n여성\nㆍ건강보험자격득실확인서 및 가족관계증명서\n\n자립준비청년\n\n(보호종료아동)\n\nㆍ자립준비청년(보호종료아동) 증명자료\n\n- 보호종료확인서 또는 자립준비청년(보호종료아동)\n자립수당 수급자 확인서\n\n가점사항\n\n증빙서류\n\n(해당자에 한함)\n자격증 가점\nㆍ공인노무사 자격증, 탄소중립전문가 가점 자격증, 안전전문가 가점 자격증,\n\n기술거래사 자격증, 데이터 전문가 가점 자격증\n\n　(’26.6.30.까지 합격 발표限)\n\n청년인턴 가점\n\nㆍ공공기관 청년인턴 가점 대상(①,② 모두 제출)\n\n: ① 청년인턴 경력증명서 또는 수료증 ② 건강보험 자격득실확인서\n\nㆍ기술보증기금 최우수·우수 청년인턴 가점 대상\n\n: ① 기술보증기금 최우수·우수 청년인턴 입사추천서\n\n* ‘25년 청년인턴 수료자(’25.9월 수료) 및 ’25년 장애인 청년인턴 수료자\n\n(‘26년 3월 수료, ’26년 6월 수료)만 해당\n\n이전지역(부산)\n인재 해당자\n\nㆍ대학교 졸업 및 졸업예정자 : 부산소재 대학교 졸업(예정) 증명서\n\n* 단, 졸업예정자의 경우 입사지원서 접수 마감일 1개월 전(‘26.5.30)부터\n\n접수 마감 (‘26.6.30)이전(당일 포함)까지 발급된 졸업예정증명서\n\n　제출(접수 마감일 이전 미리 발급하여 원본 보관 하실 것)\n\nㆍ대학원 재학 또는 졸업(예정)자 : 부산소재 대학교 졸업증명서\n\nㆍ대학교 재학·휴학·중퇴자 : 재학·휴학·중퇴증명서와 부산 소재\n\n　고등학교 졸업증명서\n\nㆍ고등학교 이하 : 부산 소재 최종학교 졸업(예정) 증명서\n\n* 최종학력 증명서 등으로 이전지역(부산) 인재 확인이 불가능한\n\n　 경우는 별도 증빙서류 추가 제출\n\n부산 제외\n비수도권 지역인재\n해당자\n\nㆍ대학교 졸업 및 졸업예정자 : 대학교 졸업(예정) 증명서\n\nㆍ대학원 재학 또는 졸업(예정)자 : 대학교 졸업증명서\n\nㆍ대학교 재학·휴학·중퇴자 : 대학 재학·휴학·중퇴증명서\n\nㆍ고등학교 이하 : 최종학교 졸업(예정) 증명서 또는 재학·휴학·중퇴증명서\n\n* 최종학력 증명서 등으로 비수도권 지역인재 확인이 불가능한\n\n　 경우는 별도 증빙서류 추가 제출",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)지원에어텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "데이타센타 HVAC 공기시스템 엔지니어 모집 (신입/경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54169496&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=beeb9197-f09e-40e9-ac73-4c111b5e0194",
+      "career": "신입·경력",
+      "location": "서울강서구 | 4,500 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 신입 / 경력 3년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능\n\n• 신입--> 영업지원, 설계, CAD\n\n• 경력자 --> 현장 시스템영업 경험자, CAD가능자, 엑셀가능자",
+      "preferences": "• 책임감, 조직소통 우수자\n\n• 영업목표, 빠른 업무수행 가능자",
+      "main_tasks": "• 데이타센타 공기설계지원 및 기술영업 (신입 경력)\n\n• 프로젝트 기술컨설팅 영업지원 & 수주업무 (신입, 경력)\n\n• 제습기술 에너지절약 엔지니어링 기술영업관리 (신입, 경력)\n\n• 특수공조 급기시스템 기술컨설팅",
+      "benefits": "• 교육/생활 : 워크샵, 점심식사 제공, 간식 제공, 음료제공(차,커피)\n\n• 급여제도 : 퇴직연금, 상여금, 우수사원포상, 퇴직금, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함\n\n• 선물 : 명절선물/귀향비, 결혼기념일선물"
     },
     {
       "site": "saramin",
@@ -144764,6 +144917,35 @@
     },
     {
       "site": "saramin",
+      "company": "(주)사미텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[파견/서울]공공사업 AI 시스템 데이터 구축 채용공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54167014&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ef121467-684f-4d29-8f17-889007d3781b",
+      "career": "경력2년↑",
+      "location": "서울용산구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "MySQL",
+        "PostgreSQL",
+        "Elasticsearch",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "- 경력 2년 이상\n\n- 학력무관\n\n- Python 개발 경력 1년 이상\n\n- SQL 활용 능력\n\n- 데이터 전처리 경험\n\n- Pandas 활용 가능자\n\n- 데이터베이스(PostgreSQL, MySQL 등) 사용 경험\n\n- Git 기반 협업 경험",
+      "preferences": "- 관련 전공\n\n- ETL 개발 경험\n\n- Airflow 또는 Prefect 사용 경험\n\n- Elasticsearch/OpenSearch 활용 경험\n\n- 크롤링 및 데이터 수집 자동화 경험\n\n- 공공 데이터 사업 수행 경험",
+      "main_tasks": "- 데이터 수집 및 연계 시스템 개발\n\n- ETL 파이프라인 구축 및 운영\n\n- 정형·비정형 데이터 전처리\n\n- 데이터 품질 관리 및 정제\n\n- 데이터 적재 및 관리 자동화\n\n- AI 학습용 데이터셋 구축 지원",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)플래티어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -153503,6 +153685,31 @@
       "competencies": [],
       "qualifications": "호\n\n)\n\n드\n\n—\n\n(ERP, CRM, WMS, TMS, Slack, Notion\n\nㆍ Java, Spring Boot 또는 유사 프레\n\n(MySQL/MariaDB\nㆍ APISS, 메시징 AIAH (Kafka, ActiveMQ\n\n관계형 DB\n\n채용 프로세스\n=           =)           ㅁ           별\n\nㆍ 포지션에따라사전 안내후 심화 인터뷰나 실무 과제등주가절\n지원자의 경력 및 oto 따라 일부 HO] 생락되거나 추가될 수 있습니다:\nㆍ 필요시, 지원자의 경력 사항을 기반으로 레퍼런스 체크가 진행될 수 2\nㆍ 채용 확정 후 3개월의 수습 기간이 있으며, 해당 기간급여는 100%\nㆍ 이력서를 포함,제출된 인사 서류또는 인터뷰 등 채용 과정간 허위 시\n채8이즉시취소될수있습니다\n해당 공고는 수시 채용으로, 채용 완료 시 조기에 마감될 수 있습니다.\nㆍ 각 전형 및결과 안내는 합격자에 한하여 연락드리고 있습니다.\n\nx\n\n@ Al No.1 보상체계\n\n수준의 Impact 있는 인센티브 제도 (정기 / 수시)\nHee 인센티브 제도 (RAE A)\n\n} (우수 성과자 중심)\n\n최대 200만원)\n\n반차 + 별도 선물)\n\n건 고\nfot 오나\n이부\nal\nro mH d\n>\n\not OH |\n\n0=\n\n으\n\nrm 가\nmo  [요\na at\n띠 if\n\nㆍ 시차출퇴근제 (오전 8시 ~ 104130 출근)\nㆍ 강남역 3번 출구 도보 {분 거리 (초역세권 신사옥)\n\nㆍ 반려동물 동반 출근 /용품지원\n\nㆍ 자유로운 연차 시용\n\nㆍ 개인 범인카드제공 식대, 택시 등업무필수경비지원)\n\nㆍ 간식음료 무제한제공 (AM, Am, 라면\n\n: 여유있는식대지원(중식1만원야근시석식12만원)\nㆍ 비바 런치 문명 (1, 3주차 수요일 > 1.5시간 점심시간)\n\nㆍ 사무용품/기기 구매 지원 (1년 근속 시 최대 30만원)\nㆍ 건강검진 지원 (유급 반차 제공)\n\nㆍ 자녀 출산 시 출산키트/용품 지원 (최대 30만원 상당)\n\n»)\noe\n뼈\n$2\nil\nne\nOz\n\nㆍ 자율 복장 출근\n\nㆍ 패밀리 데이 운영 (매월 3주 차 금요일 조기 퇴근)\n\nㆍ 경조휴가 및 경조금 지원 (가족 관련 업계 최고 수준:\nㆍ 장기 근속 포상 (최대 200만 원, 유급휴가 15일)\n\nㆍ 창립기념일 축하 (매년 12월 / 공가 1일)\n\nㆍ 결혼기념일 축하 (유급 반차 제공)\n\nde 성장의 발판\n\n+ AfLH EAP \"프로그램, 워크숍\nㆍ 도서 / 교육 지원\n\noln\na\nme\n\nW’ wefun\n\n입사 지원하기",
       "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)투비파트너즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[카뱅투자 시리즈 B] 플랫폼 인프라 & DB 구축/운영 5-12년",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54169473&location=ts&searchword=SRE&searchType=search&paid_fl=n&search_uuid=d435ae11-c8e9-4251-81de-ea63482238b2",
+      "career": "경력 5~12년",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "성능 최적화"
+      ],
+      "qualifications": "• 인프라 설계·구축 (IDC/온프레미스 환경, 서버네트워크 보안), 부하 테스트 용량 산정 및 관측/진단/복구\n• 어플리케이션·DB 관측·병목 특정 (Java/JVM 환경, APM, 트레이싱, 힙덤프 분석, 슬로우 쿼리·실행 계획 분석)\n• DB 운영·성능 관리 (인스턴스 운영, 백업·복구, 파라미터 튜닝, 커넥션 관리)\n\n• Java/JVM 기반 서비스 운영 경험 (힙덤프 분석, GC 튜닝 포함)",
+      "preferences": "• 시즌성 트래픽이 강한 서비스(금융, 핀테크 등) 운영 경험\n• 자바 어플리케이션 및 DB 병목을 분석해서 실제 성능 개선으로 이어진 경험\n\n회사위치 : 영등포구 (9호선 도보 5분)",
       "main_tasks": "",
       "benefits": ""
     },
@@ -163224,6 +163431,33 @@
       "preferences": "ㆍWebSocket, MQTT, Netty 등 네트워크 프레임워크 구현 경험\nㆍHibernate 등 백엔드 라이브러리 활용 경험\nㆍDocker 및 Kubernetes 환경에서의 애플리케이션 배포 경험\nㆍ산업용 장비 및 IoT 기기와의 통신 프로토콜 설계 경험\n\n마감일 및 근무지\n\n• 마감일 : 2026년 07월 10일",
       "main_tasks": "ㆍJava 기반 백엔드 서버 애플리케이션 개발 및 기존 코드 개선\nㆍ산업용·특수 장비와의 TCP/IP 기반 소켓 통신 서버 개발\nㆍ외부 시스템 연동 및 유지보수와 로그 관리 및 장애 대응\n[주요 기술 및 도구]\nㆍJava, Spring Framework / eGovFrame(전자정부 프레임워크)\nㆍTCP/UDP, WebSocket, MQTT (통신 프로토콜)\nㆍOracle, MariaDB, PostgreSQL (데이터베이스)",
       "benefits": "ㆍ지원금/보험 : 건강검진, 단체 상해보험\nㆍ급여제도 : 퇴직연금, 상여금, 장기근속자 포상, 퇴직금, 4대 보험, 연차수당 지급\nㆍ선물 : 명절선물/귀향비, 크리스마스 선물\nㆍ교육/생활 : 창립일행사, 우수사원시상식, 워크샵, 신입사원교육(OJT), 자격증취득지원, 교육비 지원, 자기계발비 지원, 구내식당(사원식당), 점심식사 제공, 저녁식사 제공\nㆍ근무 환경 : 휴게실, 회의실, 전용 사옥, 사내 정원, 유도점자블록, 장애인 전용주차장, 장애인 엘리베이터, 문턱 없음, 유니폼지급, 노트북, 사원증, 사무용품 지급, 최고 성능 컴퓨터\nㆍ조직문화 : 회식강요 안함, 야근강요 안함, 자유복장, 자유로운 연차사용, 출산 장려, 근로자휴가지원사업 참여업체\nㆍ출퇴근 : 주차장제공, 주차비지원, 회사차량 있음, 주 52시간제 준수, 주 40시간제 시행\nㆍ리프레시 : 연차, 반차, 반반차, 근로자의 날 휴무, 휴가비지원, 산전 후 휴가, 육아휴직, 경조사 유급휴가, 장기근속 포상 및 유급휴가 지급, 년 2회 워크숍"
+    },
+    {
+      "site": "saramin",
+      "company": "진달래소프트(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Java Framework/시스템 공통 영역 전문가 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54149474&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=34226a9a-0bdd-4946-a3e6-dcf2f3f81ece",
+      "career": "경력10년↑",
+      "location": "서울송파구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "성능 최적화"
+      ],
+      "qualifications": "• 경력 10년 이상\n\n• 대학교졸업(4년)이상\n\n• 해당 분야 업무 수행 경력 10년 이상이신 분",
+      "preferences": "• SK Enterprise Application Framework (NEXCORE) 유경험자\n\n• Spring 프레임워크 활용 기술\n\n• 클라우드 유경험자\n\n• 금융 사업 유경험자",
+      "main_tasks": "[ 주 업무 ]\n\n• Java 기반 Framework 및 시스템 공통\n\n- 애플리케이션 개발 표준 정의 및 가이드\n\n- Framework 교육 및 기술 지원\n\n- 시스템 공통 모듈 작성 및 가이드\n\n• 애플리케이션 성능 튜닝 및 모니터링\n\n• 코드 인스펙션\n[ 업무 일반 ]\n\n• 아키텍처 설계/검증 및 산출물 작성\n\n• 개발 표준 수립 및 가이드 작성\n\n• 응용 프로그램 설계/개발을 위한 기술 지원\n\n• 시스템 테스트(성능, 가용성, 백업/복구 관점) 수행 지원\n\n• 사업 수행 중 발생하는 기술 이슈 해결 지원",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -179005,19 +179239,19 @@
     }
   ],
   "stats": {
-    "total": 5923,
+    "total": 5931,
     "by_size": {
-      "중소기업": 5296,
+      "중소기업": 5304,
       "대기업": 378,
       "중견기업": 249
     },
     "by_role": {
-      "기타": 774,
-      "DevOps/인프라": 889,
-      "백엔드": 2559,
-      "모바일": 975,
-      "AI/ML": 1961,
-      "프론트엔드": 1713,
+      "기타": 775,
+      "DevOps/인프라": 890,
+      "백엔드": 2564,
+      "모바일": 977,
+      "AI/ML": 1963,
+      "프론트엔드": 1714,
       "풀스택": 534,
       "게임": 37,
       "데이터": 848,
@@ -179026,16 +179260,16 @@
       "QA": 56
     },
     "by_site": {
-      "wanted": 1309,
+      "wanted": 1310,
       "jumpit": 410,
-      "jobkorea": 1106,
-      "saramin": 2857,
+      "jobkorea": 1107,
+      "saramin": 2863,
       "dev": 241
     },
     "top_tech": [
       [
         "Python",
-        1884
+        1886
       ],
       [
         "AWS",
@@ -179043,7 +179277,7 @@
       ],
       [
         "Java",
-        1564
+        1567
       ],
       [
         "React",
@@ -179051,7 +179285,7 @@
       ],
       [
         "Git",
-        998
+        1001
       ],
       [
         "Docker",
@@ -179059,23 +179293,23 @@
       ],
       [
         "Spring",
-        934
+        936
       ],
       [
         "JavaScript",
-        908
+        910
       ],
       [
         "Linux",
-        845
+        846
       ],
       [
         "TypeScript",
-        818
+        819
       ],
       [
         "MySQL",
-        774
+        776
       ],
       [
         "Kubernetes",
@@ -179083,11 +179317,11 @@
       ],
       [
         "PostgreSQL",
-        631
+        632
       ],
       [
         "REST API",
-        621
+        624
       ],
       [
         "GCP",
@@ -179095,7 +179329,7 @@
       ],
       [
         "Spring Boot",
-        527
+        528
       ],
       [
         "C++",
@@ -179107,7 +179341,7 @@
       ],
       [
         "Android",
-        453
+        454
       ],
       [
         "Next.js",
@@ -179115,19 +179349,19 @@
       ],
       [
         "Node.js",
-        437
+        438
       ],
       [
         "CSS",
-        428
-      ],
-      [
-        "HTML",
-        413
+        430
       ],
       [
         "iOS",
-        412
+        414
+      ],
+      [
+        "HTML",
+        414
       ],
       [
         "PyTorch",
@@ -179143,11 +179377,11 @@
       ],
       [
         "Vue",
-        340
+        341
       ],
       [
         "FastAPI",
-        330
+        331
       ],
       [
         "Kafka",
@@ -181264,6 +181498,22 @@
         "jumpit": 493,
         "jobkorea": 1307,
         "saramin": 3367,
+        "dev": 270
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-14T17:39:41",
+      "keyword": "통합",
+      "raw_total": 6763,
+      "deduped": 6398,
+      "active": 5931,
+      "closed": 467,
+      "site_counts": {
+        "wanted": 1316,
+        "jumpit": 493,
+        "jobkorea": 1309,
+        "saramin": 3375,
         "dev": 270
       },
       "anomalies": []
