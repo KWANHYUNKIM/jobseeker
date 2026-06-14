@@ -746,7 +746,18 @@ def _reviews_one(company: dict) -> bool:
     return added > 0
 
 
-def cmd_reviews(n: int, loop: bool, interval: int) -> None:
+DAY_SECONDS = 86400  # 하루. 적응형 백오프는 이 값을 절대 넘지 않는다.
+
+
+def cmd_reviews(n: int, loop: bool, interval: int,
+                max_interval: int = DAY_SECONDS, backoff: float = 2.0) -> None:
+    """공개 후기를 수집한다. --loop 면 적응형 간격으로 돈다:
+    - 새 후기를 찾으면 간격을 시작값(interval)으로 리셋해 빠르게 더 담는다.
+    - 못 찾으면 간격을 backoff 배씩 늘린다(점점 뜸하게).
+    - 단, 어떤 경우에도 하루(86400s)를 넘지 않는다."""
+    start = max(60, interval)
+    cap = min(max(start, max_interval), DAY_SECONDS)   # 24h 하드 캡
+    cur = start
     while True:
         companies = load()
         if not companies:
@@ -772,8 +783,15 @@ def cmd_reviews(n: int, loop: bool, interval: int) -> None:
         print(f"[reviews] {done}/{len(targets)}개사 수집. 후기 보유 {have}/{doc['total']}")
         if not loop:
             return
-        print(f"[reviews] {interval}s 대기 후 다음 사이클…")
-        time.sleep(interval)
+        # 적응형 간격: 새 후기 있으면 짧게 리셋, 없으면 늘림(하루 캡)
+        if done > 0:
+            cur = start
+        else:
+            cur = min(int(cur * backoff), cap)
+        mins = cur / 60
+        print(f"[reviews] 다음 사이클까지 {cur}s(~{mins:.0f}분) 대기 "
+              f"(새 후기 {done}개 → 간격 {'리셋' if done > 0 else '증가'})")
+        time.sleep(cur)
 
 
 # ── 엔트리포인트 ──────────────────────────────────────────────────────
@@ -794,8 +812,13 @@ def main() -> None:
     ap.add_argument("--reviews", type=int, metavar="N", default=0,
                     help="N개사의 공개 면접 후기를 claude 웹검색으로 수집·검증·누적")
     ap.add_argument("--no-github", action="store_true", help="--patch 시 GitHub API 검증 생략")
-    ap.add_argument("--loop", action="store_true", help="--refine/--debate 를 무한 반복")
-    ap.add_argument("--interval", type=int, default=1800, help="루프 간격(초), 기본 1800")
+    ap.add_argument("--loop", action="store_true", help="--refine/--debate/--reviews 를 무한 반복")
+    ap.add_argument("--interval", type=int, default=1800,
+                    help="루프 간격(초). --reviews 에선 적응형 백오프의 시작/최소 간격")
+    ap.add_argument("--max-interval", type=int, default=DAY_SECONDS,
+                    help="--reviews 적응형 백오프 상한(초). 하루(86400)로 하드 캡됨")
+    ap.add_argument("--backoff", type=float, default=2.0,
+                    help="--reviews 후기 못 찾을 때 간격 증가 배수(기본 2.0)")
     args = ap.parse_args()
 
     if args.init:
@@ -807,7 +830,8 @@ def main() -> None:
     elif args.debate > 0:
         cmd_debate(args.debate, args.rounds, args.loop, args.interval)
     elif args.reviews > 0:
-        cmd_reviews(args.reviews, args.loop, args.interval)
+        cmd_reviews(args.reviews, args.loop, args.interval,
+                    max_interval=args.max_interval, backoff=args.backoff)
     elif args.refine > 0:
         cmd_refine(args.refine, args.loop, args.interval)
     else:

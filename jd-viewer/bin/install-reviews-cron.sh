@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
-# 공개 면접 후기 자동 수집 cron 설치 (idempotent).
-# 기본 12시간마다 refresh-reviews.sh 로 N개사씩 공개 후기를 수집·누적한다.
-# 다시 실행해도 중복 등록되지 않는다. 제거: crontab -e 에서 해당 줄 삭제.
-#
-# 주의: cron 환경에서 claude CLI 인증과 웹검색이 동작해야 한다(구독 토큰 접근).
+# 적응형 후기 수집 데몬 keep-alive cron 설치 (idempotent).
+# 데몬은 스스로 적응형 간격(짧게 시작 → 후기 없으면 점점 늘림, 하루 캡)으로 돈다.
+# 여기서는 그 데몬이 항상 살아있도록만 보장한다:
+#   - @reboot: 부팅 시 데몬 시작
+#   - 매시간: reviews-loop.sh start (이미 살아있으면 멱등하게 아무것도 안 함)
+# 다시 실행해도 중복 등록되지 않는다. 제거: crontab -e 에서 해당 줄 삭제 후
+#   jd-viewer/bin/reviews-loop.sh stop.
 set -euo pipefail
 
-SCRIPT="/Users/kwanhyun/jobseeker/jd-viewer/bin/refresh-reviews.sh"
-SCHEDULE="15 */12 * * *"         # 12시간마다(00:15, 12:15)
-N="3"
-MARKER="# jobseeker-reviews-refresh"
+SCRIPT="/Users/kwanhyun/jobseeker/jd-viewer/bin/reviews-loop.sh"
+MARKER="# jobseeker-reviews-daemon"
 
 chmod +x "$SCRIPT"
 
 current="$(crontab -l 2>/dev/null | grep -v "$MARKER" || true)"
 {
   [ -n "$current" ] && printf '%s\n' "$current"
-  printf '%s %s %s %s\n' "$SCHEDULE" "$SCRIPT" "$N" "$MARKER"
+  printf '@reboot %s start %s\n' "$SCRIPT" "$MARKER"
+  printf '0 * * * * %s start %s\n' "$SCRIPT" "$MARKER"
 } | crontab -
 
 echo "설치 완료. 현재 crontab:"
 crontab -l | grep "$MARKER"
+echo
+echo "지금 바로 시작: $SCRIPT start    /    상태: $SCRIPT status    /    로그: tail -f jd-viewer/bin/reviews-loop.log"
