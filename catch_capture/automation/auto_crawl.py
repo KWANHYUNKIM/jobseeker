@@ -46,6 +46,7 @@ REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
 RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"
 REVIEWS_LOOP_SH = ROOT_DIR / "jd-viewer" / "bin" / "reviews-loop.sh"
 LEARNING_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_learning.py"
+CALENDAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_calendar.py"
 RADAR_REFINE_N = 2                     # 사이클당 레이더 점진 리파인 회사 수
 LEARNING_REFRESH_SECS = 6 * 3600       # 학습영상 캐시 무시 재수집 주기(기존 learning cron 대체)
 LEARNING_STAMP = BASE_DIR / ".learning_refresh.stamp"
@@ -206,12 +207,24 @@ def auto_commit_data() -> None:
         log(f"[autocommit] 예외: {e!r}")
 
 
+def rebuild_calendar() -> None:
+    """모집 캘린더(job_calendar.json)를 매 사이클 재생성 — 데이터가 쌓이는 즉시 반영하고
+    상대 마감(D-N)도 오늘 기준으로 최신화한다. enriched 데이터만 있으면 빠르게 동작."""
+    try:
+        rc = subprocess.call([_python_executable(), str(CALENDAR_SCRIPT)], cwd=str(ROOT_DIR))
+        if rc != 0:
+            log(f"[calendar] 실패(rc={rc})")
+    except Exception as e:
+        log(f"[calendar] 예외: {e!r}")
+
+
 def enrich_extras() -> None:
     """크롤과 무관하게 매 사이클 굴리는 부가 작업: 레이더 리파인 + 후기 데몬 보장 + 학습 재수집
-    + 누적 데이터 자동 커밋."""
+    + 모집 캘린더 재생성 + 누적 데이터 자동 커밋."""
     maybe_refresh_learning()
     enrich_radar()
     ensure_reviews_daemon()
+    rebuild_calendar()
     auto_commit_data()
 
 

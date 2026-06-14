@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -21,6 +21,45 @@ SRC = ROOT / "public" / "all_jobs_enriched.json"
 OUT = ROOT / "public" / "job_calendar.json"
 
 THIS_YEAR = date.today().year
+
+# ── 원본 마감 표기(deadline/dday) 파서 ─────────────────────────────────
+# 사이트별 형식 흡수: saramin "~07/04(토)", jumpit "D-4"/"D-day", dev "~06.28(일) 23시",
+# jobkorea "07/06(월) 마감". pipeline/job_status.parse_deadline 로직과 동일.
+ALWAYS_OPEN_RE = re.compile(r"상시|수시|채용\s*시|충원\s*시|채용시\s*마감|마감일\s*미정|미정|연중|정시채용")
+DDAY_RE = re.compile(r"D-\s*(\d+)", re.IGNORECASE)
+DDAY_TODAY_RE = re.compile(r"D-?\s*(?:DAY|day|0)\b")
+MD_RE = re.compile(r"(\d{1,2})\s*[./]\s*(\d{1,2})")
+
+
+def parse_field_deadline(deadline: str, dday: str, today: date) -> tuple[str | None, bool]:
+    """원본 deadline/dday 문자열 → (마감일 ISO|None, 상시여부)."""
+    text = " ".join(str(x) for x in (deadline, dday) if x).strip()
+    if not text:
+        return None, False
+    if ALWAYS_OPEN_RE.search(text):
+        return None, True
+    if DDAY_TODAY_RE.search(text):
+        return today.isoformat(), False
+    m = DDAY_RE.search(text)
+    if m:
+        return (today + timedelta(days=int(m.group(1)))).isoformat(), False
+    m = MD_RE.search(text)
+    if m:
+        mm, dd = int(m.group(1)), int(m.group(2))
+        if 1 <= mm <= 12 and 1 <= dd <= 31:
+            for year in (today.year, today.year + 1, today.year - 1):
+                try:
+                    cand = date(year, mm, dd)
+                except ValueError:
+                    continue
+                if cand < today - timedelta(days=60):
+                    continue
+                return cand.isoformat(), False
+            try:
+                return date(today.year, mm, dd).isoformat(), False
+            except ValueError:
+                return None, False
+    return None, False
 
 # 상시/수시/채용시 마감 등 → 마감일 없음(always_open)
 ALWAYS_RE = re.compile(r"상시\s*채용|수시\s*채용|채용\s*시\s*마감|충원\s*시|마감일\s*미정|연중\s*수시|정시\s*채용|채용시")
@@ -87,10 +126,19 @@ def parse_dates(full_jd: str) -> tuple[str | None, str | None, bool]:
 
 def main() -> None:
     jobs = json.loads(SRC.read_text(encoding="utf-8"))
+    today = date.today()
     items = []
     dated = always_open = no_info = 0
+    src_field = 0
     for j in jobs:
-        start, deadline, always = parse_dates(j.get("full_jd", "") or "")
+        # ① 원본 마감 표기(구조화, 더 정확) 우선 → ② JD 본문 접수기간 보강
+        f_deadline, f_always = parse_field_deadline(
+            j.get("deadline", "") or "", j.get("dday", "") or "", today)
+        start, jd_deadline, jd_always = parse_dates(j.get("full_jd", "") or "")
+        deadline = f_deadline or jd_deadline
+        always = (f_always or jd_always) and not deadline
+        if f_deadline:
+            src_field += 1
         if deadline:
             dated += 1
         elif always:
@@ -119,7 +167,7 @@ def main() -> None:
         "items": items,
     }
     OUT.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
-    print(f"[calendar] 총 {len(jobs)}건 → 마감일 {dated} · 상시 {always_open} · 정보없음 {no_info}")
+    print(f"[calendar] 총 {len(jobs)}건 → 마감일 {dated}(원본필드 {src_field}) · 상시 {always_open} · 정보없음 {no_info}")
     print(f"           items {len(items)}건 저장 → {OUT}")
 
 

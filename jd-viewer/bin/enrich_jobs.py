@@ -104,6 +104,9 @@ def normalize(job: dict) -> dict:
             if txt_path.exists():
                 parsed = parse_jobkorea_txt(txt_path.read_text(encoding="utf-8"))
                 out.update(parsed)
+        # 마감 캘린더용: 원본 마감 표기 보존(jobkorea 는 parsed 에 deadline 포함)
+        out["dday"] = job.get("dday", "") or ""
+        out.setdefault("deadline", job.get("deadline", "") or "")
         return out
 
     # wanted / jumpit / saramin / dev — already have most fields
@@ -124,6 +127,9 @@ def normalize(job: dict) -> dict:
     out["preferences"] = job.get("preferences", "") or ""
     out["benefits"] = job.get("benefits", "") or ""
     out["full_jd"] = job.get("full_jd", "") or ""
+    # 마감 캘린더용: 원본 마감 표기(deadline/dday) 보존 — 사이트별 형식은 build_calendar 가 흡수
+    out["deadline"] = job.get("deadline", "") or ""
+    out["dday"] = job.get("dday", "") or ""
     return out
 
 
