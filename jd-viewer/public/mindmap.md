@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **5931건** 공고 · **1163개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-14 17:39
+- 총 **5932건** 공고 · **1164개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-14 19:14
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -4319,7 +4319,7 @@ markmap:
   - [로와이드 주식회사에서 AI 솔루션 코어 & 백엔드 리드를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53816175&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=ab6c9366-0761-4503-8f06-2b9528b1e7f5)
 
 
-## 제조/하드웨어/로보틱스 (102개사)
+## 제조/하드웨어/로보틱스 (103개사)
 ### (주)인터엑스 `중소기업` · 20건
 - **백엔드** [10건] · `Python` `Docker` `MongoDB` `Git` `Elasticsearch` `REST API`
   - [풀스택 (Full-stack) 개발자 ↗](https://www.wanted.co.kr/wd/328447)
@@ -5015,6 +5015,18 @@ markmap:
 - **AI/ML** [2건] · `C++`
   - [Spatial AI 연구/개발 (연구원) ↗](https://www.wanted.co.kr/wd/366933)
   - [AI 데이터 매니저 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49147849?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=100&sc=630)
+
+### 아키스케치 `중소기업` · 2건
+- **모바일** [1건] · `Java` `Kotlin` `Python` `AWS` `Kubernetes`
+  - [클라우드 인프라 엔지니어(DevOps) ↗](https://www.wanted.co.kr/wd/349833)
+- **AI/ML** [1건] · `Python` `C++` `Unity` `ROS` `블렌더`
+  - [Robotics Simulation & Data Engineer ↗](https://www.wanted.co.kr/wd/350179)
+- **데이터** [1건] · `Python` `C++` `Unity` `ROS` `블렌더`
+  - [Robotics Simulation & Data Engineer ↗](https://www.wanted.co.kr/wd/350179)
+- **DevOps/인프라** [1건] · `Java` `Kotlin` `Python` `AWS` `Kubernetes`
+  - [클라우드 인프라 엔지니어(DevOps) ↗](https://www.wanted.co.kr/wd/349833)
+- **게임** [1건] · `Python` `C++` `Unity` `ROS` `블렌더`
+  - [Robotics Simulation & Data Engineer ↗](https://www.wanted.co.kr/wd/350179)
 
 ### 엠투클라우드 `중소기업` · 2건
 - **백엔드** [1건] · `JavaScript` `Node.js` `MySQL` `MVC` `HTTP` `RDBMS`

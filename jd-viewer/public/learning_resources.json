@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-14T17:39:50",
+  "generated_at": "2026-06-14T19:14:23",
   "source": "youtube",
   "tech_count": 163,
   "curriculum_count": 20,
@@ -7549,6 +7549,88 @@
         "stage": "실전"
       }
     ],
+    "ROS": [
+      {
+        "title": "[ROS2] 입문편 한 번에 몰아보기｜R2R 입문｜민형기 강사님 무료 강의",
+        "url": "https://www.youtube.com/watch?v=aFMDvkCr9vY",
+        "thumbnail": "https://i.ytimg.com/vi/aFMDvkCr9vY/mqdefault.jpg",
+        "channel": "핑크랩 PinkLAB",
+        "views": 21429,
+        "length": "4:41:19",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "ROS 강의 Chapter7. ROS 기본 프로그래밍",
+        "url": "https://www.youtube.com/watch?v=iGdQHi_wL1Y",
+        "thumbnail": "https://i.ytimg.com/vi/iGdQHi_wL1Y/mqdefault.jpg",
+        "channel": "ROBOTIS OpenSourceTeam",
+        "views": 55855,
+        "length": "1:50:49",
+        "published": "8년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "ROS 1 (01강 of 25강)",
+        "url": "https://www.youtube.com/watch?v=x96VuWqYLQE",
+        "thumbnail": "https://i.ytimg.com/vi/x96VuWqYLQE/mqdefault.jpg",
+        "channel": "Korean Engineers",
+        "views": 2847,
+        "length": "18:56",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "로봇 자율주행에서 ROS가 중요한 이유 | ROS2 핵심 설명",
+        "url": "https://www.youtube.com/watch?v=v07SxrYKyNk",
+        "thumbnail": "https://i.ytimg.com/vi/v07SxrYKyNk/mqdefault.jpg",
+        "channel": "애드인에듀 ADDINEDU",
+        "views": 1795,
+        "length": "2:33",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ROS Tutorial] 1. ROS의 필요성 (세미나 영상)",
+        "url": "https://www.youtube.com/watch?v=o7z2HAUJncY",
+        "thumbnail": "https://i.ytimg.com/vi/o7z2HAUJncY/mqdefault.jpg",
+        "channel": "공돌TV",
+        "views": 12676,
+        "length": "45:03",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ROS 강의 Chapter13. 매니퓰레이션",
+        "url": "https://www.youtube.com/watch?v=5c7s4jgB00k",
+        "thumbnail": "https://i.ytimg.com/vi/5c7s4jgB00k/mqdefault.jpg",
+        "channel": "ROBOTIS OpenSourceTeam",
+        "views": 17725,
+        "length": "1:34:03",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ROS Tutorial] 2. ROS란? (세미나 영상)",
+        "url": "https://www.youtube.com/watch?v=1v8jXaSdSME",
+        "thumbnail": "https://i.ytimg.com/vi/1v8jXaSdSME/mqdefault.jpg",
+        "channel": "공돌TV",
+        "views": 5591,
+        "length": "28:34",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ROS2] 1-1. Gazebo Ign에서 주행 로봇을 만들며 SDF 문법 이해해보기 1｜R2R 심화｜민형기 강사님 무료 강의",
+        "url": "https://www.youtube.com/watch?v=rg5crcz0ukk",
+        "thumbnail": "https://i.ytimg.com/vi/rg5crcz0ukk/mqdefault.jpg",
+        "channel": "핑크랩 PinkLAB",
+        "views": 5468,
+        "length": "20:26",
+        "published": "10개월 전",
+        "stage": "실전"
+      }
+    ],
     "JPA": [
       {
         "title": "JPA 강의를 시작합니다. [ JPA (Java Persistence API) ]",
@@ -7791,88 +7873,6 @@
         "channel": "조코딩AX파트너스",
         "views": 3379,
         "length": "11:09",
-        "published": "10개월 전",
-        "stage": "실전"
-      }
-    ],
-    "ROS": [
-      {
-        "title": "[ROS2] 입문편 한 번에 몰아보기｜R2R 입문｜민형기 강사님 무료 강의",
-        "url": "https://www.youtube.com/watch?v=aFMDvkCr9vY",
-        "thumbnail": "https://i.ytimg.com/vi/aFMDvkCr9vY/mqdefault.jpg",
-        "channel": "핑크랩 PinkLAB",
-        "views": 21429,
-        "length": "4:41:19",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "ROS 강의 Chapter7. ROS 기본 프로그래밍",
-        "url": "https://www.youtube.com/watch?v=iGdQHi_wL1Y",
-        "thumbnail": "https://i.ytimg.com/vi/iGdQHi_wL1Y/mqdefault.jpg",
-        "channel": "ROBOTIS OpenSourceTeam",
-        "views": 55855,
-        "length": "1:50:49",
-        "published": "8년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "ROS 1 (01강 of 25강)",
-        "url": "https://www.youtube.com/watch?v=x96VuWqYLQE",
-        "thumbnail": "https://i.ytimg.com/vi/x96VuWqYLQE/mqdefault.jpg",
-        "channel": "Korean Engineers",
-        "views": 2847,
-        "length": "18:56",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "로봇 자율주행에서 ROS가 중요한 이유 | ROS2 핵심 설명",
-        "url": "https://www.youtube.com/watch?v=v07SxrYKyNk",
-        "thumbnail": "https://i.ytimg.com/vi/v07SxrYKyNk/mqdefault.jpg",
-        "channel": "애드인에듀 ADDINEDU",
-        "views": 1795,
-        "length": "2:33",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ROS Tutorial] 1. ROS의 필요성 (세미나 영상)",
-        "url": "https://www.youtube.com/watch?v=o7z2HAUJncY",
-        "thumbnail": "https://i.ytimg.com/vi/o7z2HAUJncY/mqdefault.jpg",
-        "channel": "공돌TV",
-        "views": 12676,
-        "length": "45:03",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ROS 강의 Chapter13. 매니퓰레이션",
-        "url": "https://www.youtube.com/watch?v=5c7s4jgB00k",
-        "thumbnail": "https://i.ytimg.com/vi/5c7s4jgB00k/mqdefault.jpg",
-        "channel": "ROBOTIS OpenSourceTeam",
-        "views": 17725,
-        "length": "1:34:03",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ROS Tutorial] 2. ROS란? (세미나 영상)",
-        "url": "https://www.youtube.com/watch?v=1v8jXaSdSME",
-        "thumbnail": "https://i.ytimg.com/vi/1v8jXaSdSME/mqdefault.jpg",
-        "channel": "공돌TV",
-        "views": 5591,
-        "length": "28:34",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ROS2] 1-1. Gazebo Ign에서 주행 로봇을 만들며 SDF 문법 이해해보기 1｜R2R 심화｜민형기 강사님 무료 강의",
-        "url": "https://www.youtube.com/watch?v=rg5crcz0ukk",
-        "thumbnail": "https://i.ytimg.com/vi/rg5crcz0ukk/mqdefault.jpg",
-        "channel": "핑크랩 PinkLAB",
-        "views": 5468,
-        "length": "20:26",
         "published": "10개월 전",
         "stage": "실전"
       }
@@ -10583,6 +10583,88 @@
         "stage": "실전"
       }
     ],
+    "Unity": [
+      {
+        "title": "UI Toolkit의 기초 1: 레이아웃과 버튼 애니메이션 [유니티 UI 강의, Unity UI Toolkit 강좌]",
+        "url": "https://www.youtube.com/watch?v=eeDjeziVEbA",
+        "thumbnail": "https://i.ytimg.com/vi/eeDjeziVEbA/mqdefault.jpg",
+        "channel": "Hj",
+        "views": 26679,
+        "length": "38:19",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Chap.01-2. Unity Hub에서 Unity Editor 최신버전v6 2 설치",
+        "url": "https://www.youtube.com/watch?v=IKlB2XgToOI",
+        "thumbnail": "https://i.ytimg.com/vi/IKlB2XgToOI/mqdefault.jpg",
+        "channel": "J-Lab 코딩",
+        "views": 1513,
+        "length": "3:09",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "당신이 AI를 Unity에 제대로 활용 못하던 이유",
+        "url": "https://www.youtube.com/watch?v=RhcDFMZnP4w",
+        "thumbnail": "https://i.ytimg.com/vi/RhcDFMZnP4w/mqdefault.jpg",
+        "channel": "어레이의 개발문고",
+        "views": 6378,
+        "length": "8:48",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ZEPETO Unity] 설치부터 설정, 관절, 표정 움직이기까지 튜토리얼 모음 + 다른 슬롯 붙러오기 2025.05(본문 설명 추가)",
+        "url": "https://www.youtube.com/watch?v=P_GZs6mEdBY",
+        "thumbnail": "https://i.ytimg.com/vi/P_GZs6mEdBY/mqdefault.jpg",
+        "channel": "볼땃쥐",
+        "views": 62656,
+        "length": "9:41",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "유니티 무료 강의 (Crash Course) - 5시간 만에 게임 만드는 법 배우기",
+        "url": "https://www.youtube.com/watch?v=rJE6bhVUNhk",
+        "thumbnail": "https://i.ytimg.com/vi/rJE6bhVUNhk/mqdefault.jpg",
+        "channel": "나도코딩",
+        "views": 587406,
+        "length": "5:28:20",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Unity AI랑 Cursor로 게임 만들어보기 개발 속도 ㄷㄷㄷㄷㄷㄷㄷ;",
+        "url": "https://www.youtube.com/watch?v=YFYzH8V5wnw",
+        "thumbnail": "https://i.ytimg.com/vi/YFYzH8V5wnw/mqdefault.jpg",
+        "channel": "바코",
+        "views": 59682,
+        "length": "6:29",
+        "published": "10개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[Unity] 유니티 6 게임 만들기 무작정 따라하기 ( 1. 유니티 설치 및 화면 구성 )",
+        "url": "https://www.youtube.com/watch?v=qK9utQK7BIY",
+        "thumbnail": "https://i.ytimg.com/vi/qK9utQK7BIY/mqdefault.jpg",
+        "channel": "더블엘 DoubleL",
+        "views": 14065,
+        "length": "15:32",
+        "published": "1년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[유니티 TIPS] 유니티 최적화를 위한 필수 기본기! Batching 방법 소개",
+        "url": "https://www.youtube.com/watch?v=w14yjBlfNeQ",
+        "thumbnail": "https://i.ytimg.com/vi/w14yjBlfNeQ/mqdefault.jpg",
+        "channel": "Unity Korea",
+        "views": 28274,
+        "length": "16:29",
+        "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
     "Pads": [
       {
         "title": "전자캐드 패즈 PADS 01강 전자캐드와 자격증",
@@ -11544,88 +11626,6 @@
         "views": 3605,
         "length": "9:23",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "Unity": [
-      {
-        "title": "UI Toolkit의 기초 1: 레이아웃과 버튼 애니메이션 [유니티 UI 강의, Unity UI Toolkit 강좌]",
-        "url": "https://www.youtube.com/watch?v=eeDjeziVEbA",
-        "thumbnail": "https://i.ytimg.com/vi/eeDjeziVEbA/mqdefault.jpg",
-        "channel": "Hj",
-        "views": 26679,
-        "length": "38:19",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Chap.01-2. Unity Hub에서 Unity Editor 최신버전v6 2 설치",
-        "url": "https://www.youtube.com/watch?v=IKlB2XgToOI",
-        "thumbnail": "https://i.ytimg.com/vi/IKlB2XgToOI/mqdefault.jpg",
-        "channel": "J-Lab 코딩",
-        "views": 1513,
-        "length": "3:09",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "당신이 AI를 Unity에 제대로 활용 못하던 이유",
-        "url": "https://www.youtube.com/watch?v=RhcDFMZnP4w",
-        "thumbnail": "https://i.ytimg.com/vi/RhcDFMZnP4w/mqdefault.jpg",
-        "channel": "어레이의 개발문고",
-        "views": 6378,
-        "length": "8:48",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ZEPETO Unity] 설치부터 설정, 관절, 표정 움직이기까지 튜토리얼 모음 + 다른 슬롯 붙러오기 2025.05(본문 설명 추가)",
-        "url": "https://www.youtube.com/watch?v=P_GZs6mEdBY",
-        "thumbnail": "https://i.ytimg.com/vi/P_GZs6mEdBY/mqdefault.jpg",
-        "channel": "볼땃쥐",
-        "views": 62656,
-        "length": "9:41",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "유니티 무료 강의 (Crash Course) - 5시간 만에 게임 만드는 법 배우기",
-        "url": "https://www.youtube.com/watch?v=rJE6bhVUNhk",
-        "thumbnail": "https://i.ytimg.com/vi/rJE6bhVUNhk/mqdefault.jpg",
-        "channel": "나도코딩",
-        "views": 587406,
-        "length": "5:28:20",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Unity AI랑 Cursor로 게임 만들어보기 개발 속도 ㄷㄷㄷㄷㄷㄷㄷ;",
-        "url": "https://www.youtube.com/watch?v=YFYzH8V5wnw",
-        "thumbnail": "https://i.ytimg.com/vi/YFYzH8V5wnw/mqdefault.jpg",
-        "channel": "바코",
-        "views": 59682,
-        "length": "6:29",
-        "published": "10개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[Unity] 유니티 6 게임 만들기 무작정 따라하기 ( 1. 유니티 설치 및 화면 구성 )",
-        "url": "https://www.youtube.com/watch?v=qK9utQK7BIY",
-        "thumbnail": "https://i.ytimg.com/vi/qK9utQK7BIY/mqdefault.jpg",
-        "channel": "더블엘 DoubleL",
-        "views": 14065,
-        "length": "15:32",
-        "published": "1년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[유니티 TIPS] 유니티 최적화를 위한 필수 기본기! Batching 방법 소개",
-        "url": "https://www.youtube.com/watch?v=w14yjBlfNeQ",
-        "thumbnail": "https://i.ytimg.com/vi/w14yjBlfNeQ/mqdefault.jpg",
-        "channel": "Unity Korea",
-        "views": 28274,
-        "length": "16:29",
-        "published": "2년 전",
         "stage": "실전"
       }
     ],

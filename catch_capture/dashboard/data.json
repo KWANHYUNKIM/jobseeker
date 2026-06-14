@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-14T17:39:44",
-  "source_dir": "screenshots/all_통합_20260614_173937",
+  "generated_at": "2026-06-14T19:14:17",
+  "source_dir": "screenshots/all_통합_20260614_191411",
   "keyword": "통합",
   "jobs": [
     {
@@ -36408,6 +36408,33 @@
       "preferences": "• Rust를 사용해보았거나, Python-Rust 연동(PyO3 등)에 관심이 있으신 분\n• C/C++ 또는 Rust 등 시스템 레벨 언어를 활용한 개발 경험이 있으신 분\n• 성능 최적화, 병목 분석, 연산 효율 개선에 관심이 있으신 분\n• Web Assembly 개발 경험이 있으신 분\n• Django, Celery, RabbitMQ 기반 Python 백엔드 사용 경험이 있으신 분\n• SQL/MySQL 사용 경험이 있으신 분",
       "main_tasks": "• Shapely, Numpy, NetworkX, Scipy 등 Python 패키지를 활용한 데이터 처리 및 기하 연산 기능 개발\n• 공간/도형 문제 해결을 위한 알고리즘 구현 및 개선\n• Rust(PyO3), C/C++ 바인딩 모듈과 연계된 고성능 연산 기능 개발 지원\n• 파이썬 엔진 서버 (Django, Celery, RabbitMQ) 유지보수 및 개발",
       "benefits": "• 시차 출퇴근제 (출근시간 8시~10시 선택, 일8시간 근무)\n• 중소기업 소득세 감면, 청년 내일채움공제 지원\n• 1년 재직 시 연차휴가 17일 부여\n• 연말 공동휴가 (2026년 12월 24일 ~ 2027년 1월 3일, 11일간)\n• 점심 및 간식 제공\n• 건물 내 카페테리아 이용 가능 (원두커피 무제한)\n• 정규직(수습기간 3개월)\n• 근무지: 서울특별시 영등포구 의사당대로 83, 오투타워 6층 (여의도역 3분거리)"
+    },
+    {
+      "site": "wanted",
+      "company": "아키스케치",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Robotics Simulation & Data Engineer",
+      "url": "https://www.wanted.co.kr/wd/350179",
+      "career": "",
+      "location": "경력 2-10년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• C++ 또는 Python 중 하나 이상은 자신 있게 다루시는 분\n• 산업용 로봇 혹은 협동 로봇을 직접 제어하거나 다뤄본 경험이 있으신 분\n• 로보틱스 이론 또는 3D 그래픽스/시뮬레이션에 대한 기본 지식을 갖추신 분\n• 막히는 문제가 생겨도 프로젝트의 목적에 맞춰 '해결 방법'을 찾아낼 수 있는 분\n• 해외여행에 결격 사유가 없으신 분",
+      "preferences": "• NVIDIA Isaac Sim 또는 Omniverse 플랫폼 사용 경험이 있으신 분\n• ROS / ROS2 기반의 로봇 제어 시스템 구축 경험이 있으신 분\n• Unity, Unreal, Blender 등 3D 엔진이나 툴을 활용한 프로젝트 경험이 있으신 분\n• 로봇 팔 제어(Manipulation) 관련 프로젝트를 리딩해 본 경험이 있으신 분\n• 새로운 영역(로봇 + AI + 3D)에 대한 호기심과 도전 의지가 있는 분\n• 스타트업의 빠른 성장 속도 속에서 성취감을 느끼시는 분",
+      "main_tasks": "1. Robotics Simulation & Data Engineering\n• NVIDIA Isaac Sim / Cosmos를 활용한 고정밀 시뮬레이션 환경 구축\n• 3D 모델 및 씬 데이터를 활용하여 로봇 학습에 최적화된 데이터 생성\n• 효율적인 학습을 위한 데이터 파이프라인 설계 및 자동화\n• 가상 세계의 학습이 실재로 이어지는 Sim-to-Real 데이터 최적화\n2. Robot Manipulation\n• 로봇 팔 기반의 Pick & Place 및 물체 조작(Manipulation) 알고리즘 구현\n• 로봇 동작 제어 및 모션 로직 개발\n• 실제 로봇 환경과 시뮬레이션 간의 차이를 줄이는 정합성 개선 업무\n3. 기술 PoC 및 협업\n• 국내외 유수 휴머노이드/로봇 기업과의 기술 검증(PoC) 및 공동 프로젝트 진행\n• 내부 3D 엔진 및 AI 시스템과 로봇 소프트웨어 간의 연동 및 최적화",
+      "benefits": "• 출근 시간에 대한 압박이 없는 유연 출근제(9시 ~ 10시 출근)\n• 직급 없이 \"영어 이름\" 으로 소통하는 문화\n• 자유로운 연차 문화\n• 최신 업무 장비 지원\n• 리프레시 휴가 제공\n• 국내외 워크숍 기회 지원\n• 온보딩 프로그램 지원\n• 커피 및 음료 무한 제공\n• 수습 종료 후 입사 축하 선물 증정\n• 자유로운 복장 출근\n• 석식 및 야근 교통비 지원"
     },
     {
       "site": "wanted",
@@ -179239,9 +179266,9 @@
     }
   ],
   "stats": {
-    "total": 5931,
+    "total": 5932,
     "by_size": {
-      "중소기업": 5304,
+      "중소기업": 5305,
       "대기업": 378,
       "중견기업": 249
     },
@@ -179250,17 +179277,17 @@
       "DevOps/인프라": 890,
       "백엔드": 2564,
       "모바일": 977,
-      "AI/ML": 1963,
+      "AI/ML": 1964,
       "프론트엔드": 1714,
       "풀스택": 534,
       "게임": 37,
-      "데이터": 848,
+      "데이터": 849,
       "펌웨어/임베디드": 219,
       "보안": 241,
       "QA": 56
     },
     "by_site": {
-      "wanted": 1310,
+      "wanted": 1311,
       "jumpit": 410,
       "jobkorea": 1107,
       "saramin": 2863,
@@ -179269,7 +179296,7 @@
     "top_tech": [
       [
         "Python",
-        1886
+        1887
       ],
       [
         "AWS",
@@ -179333,7 +179360,7 @@
       ],
       [
         "C++",
-        487
+        488
       ],
       [
         "Azure",
@@ -181511,6 +181538,22 @@
       "closed": 467,
       "site_counts": {
         "wanted": 1316,
+        "jumpit": 493,
+        "jobkorea": 1309,
+        "saramin": 3375,
+        "dev": 270
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-14T19:14:14",
+      "keyword": "통합",
+      "raw_total": 6764,
+      "deduped": 6399,
+      "active": 5932,
+      "closed": 467,
+      "site_counts": {
+        "wanted": 1317,
         "jumpit": 493,
         "jobkorea": 1309,
         "saramin": 3375,
