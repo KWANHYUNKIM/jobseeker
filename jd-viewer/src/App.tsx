@@ -8,15 +8,16 @@ import { CompanyView } from './components/CompanyView'
 import { ExpansionView } from './components/ExpansionView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
+import { CalendarView } from './components/CalendarView'
 import { Loader, ErrorState } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar'
+type Tab = 'jobs' | 'companies' | 'expansion' | 'mindmap' | 'blog' | 'radar' | 'calendar'
 
-const TABS: readonly Tab[] = ['jobs', 'companies', 'expansion', 'mindmap', 'blog', 'radar']
+const TABS: readonly Tab[] = ['jobs', 'companies', 'expansion', 'mindmap', 'blog', 'radar', 'calendar']
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -77,6 +78,9 @@ function App() {
           <TabButton active={tab === 'radar'} onClick={() => setTab('radar')}>
             기술 스택 레이더
           </TabButton>
+          <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')}>
+            모집 캘린더
+          </TabButton>
         </div>
         <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
           <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
@@ -101,6 +105,10 @@ function App() {
       ) : tab === 'radar' ? (
         <div key="radar" className="flex flex-1 min-h-0 jd-fade-in">
           <RadarView />
+        </div>
+      ) : tab === 'calendar' ? (
+        <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
+          <CalendarView />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (

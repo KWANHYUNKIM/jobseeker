@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""채용 모집 캘린더 데이터 빌더.
+
+all_jobs_enriched.json 의 JD 본문(full_jd)에서 '접수기간/모집기간/마감일' 텍스트를 파싱해
+각 공고의 모집 시작일·마감일·상시채용 여부를 뽑아 public/job_calendar.json 으로 낸다.
+뷰어의 모집 캘린더 탭이 이 데이터를 소비해 '언제부터 언제까지 모집'을 한눈에 보여준다.
+
+한국 공고는 상시/수시채용이 많아 마감일이 없는 경우가 흔하다 — 그런 공고는 always_open
+으로 분류하고, 날짜를 못 찾으면 no_info 로 둔다. 사이트별 마감 표기가 제각각이라
+통합 정규식으로 흡수한다(완벽하진 않으나 한눈 파악엔 충분).
+"""
+from __future__ import annotations
+
+import json
+import re
+from datetime import date, datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "public" / "all_jobs_enriched.json"
+OUT = ROOT / "public" / "job_calendar.json"
+
+THIS_YEAR = date.today().year
+
+# 상시/수시/채용시 마감 등 → 마감일 없음(always_open)
+ALWAYS_RE = re.compile(r"상시\s*채용|수시\s*채용|채용\s*시\s*마감|충원\s*시|마감일\s*미정|연중\s*수시|정시\s*채용|채용시")
+
+# 접수/모집 기간 라인
+PERIOD_RE = re.compile(r"(?:접수|모집|지원)\s*기간\s*[:：]?\s*(.+)")
+# 마감 표기
+DEADLINE_RE = re.compile(r"(?:마감일|마감)\s*[:：]?\s*([0-9]{4}[.\-/][0-9]{1,2}[.\-/][0-9]{1,2}|[0-9]{1,2}[.\-/][0-9]{1,2})")
+
+
+def _to_iso(token: str) -> str | None:
+    """'2026-06-30' / '2026.6.30' / '06/30' / '6.30' → ISO. 실패 시 None."""
+    token = token.strip()
+    m = re.match(r"^(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})", token)
+    if m:
+        y, mo, d = map(int, m.groups())
+    else:
+        m = re.match(r"^(\d{1,2})[.\-/](\d{1,2})", token)
+        if not m:
+            return None
+        mo, d = map(int, m.groups())
+        y = THIS_YEAR
+    try:
+        return date(y, mo, d).isoformat()
+    except ValueError:
+        return None
+
+
+def parse_dates(full_jd: str) -> tuple[str | None, str | None, bool]:
+    """(start_iso, deadline_iso, always_open) 반환."""
+    if not full_jd:
+        return None, None, False
+    start = deadline = None
+    always = False
+
+    m = PERIOD_RE.search(full_jd)
+    if m:
+        seg = m.group(1)[:80]
+        # "<start> ~ <end>" 형태
+        parts = re.split(r"~|∼|〜|–|—", seg, maxsplit=1)
+        start = _to_iso(parts[0])
+        if len(parts) > 1:
+            tail = parts[1]
+            if ALWAYS_RE.search(tail) or "채용" in tail and "마감" in tail:
+                always = True
+            else:
+                deadline = _to_iso(tail.strip())
+        else:
+            # 끝 표기 없음 → 본문 다른 곳의 상시 여부로 판단
+            pass
+
+    if deadline is None:
+        dm = DEADLINE_RE.search(full_jd)
+        if dm:
+            deadline = _to_iso(dm.group(1))
+
+    if deadline is None and not start and ALWAYS_RE.search(full_jd):
+        always = True
+    if deadline is None and ALWAYS_RE.search(full_jd):
+        always = True
+
+    return start, deadline, always
+
+
+def main() -> None:
+    jobs = json.loads(SRC.read_text(encoding="utf-8"))
+    items = []
+    dated = always_open = no_info = 0
+    for j in jobs:
+        start, deadline, always = parse_dates(j.get("full_jd", "") or "")
+        if deadline:
+            dated += 1
+        elif always:
+            always_open += 1
+        else:
+            no_info += 1
+        if deadline or start or always:
+            items.append({
+                "company": j.get("company", ""),
+                "title": j.get("title", ""),
+                "url": j.get("url", ""),
+                "site": j.get("site", ""),
+                "career": j.get("career", ""),
+                "tech_stack": j.get("tech_stack", [])[:8],
+                "start": start,
+                "deadline": deadline,
+                "always_open": always,
+            })
+
+    doc = {
+        "generated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "total": len(jobs),
+        "dated": dated,
+        "always_open": always_open,
+        "no_info": no_info,
+        "items": items,
+    }
+    OUT.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+    print(f"[calendar] 총 {len(jobs)}건 → 마감일 {dated} · 상시 {always_open} · 정보없음 {no_info}")
+    print(f"           items {len(items)}건 저장 → {OUT}")
+
+
+if __name__ == "__main__":
+    main()

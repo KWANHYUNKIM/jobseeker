@@ -31,3 +31,5 @@ PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
 "$PY" "$SCRIPT_DIR/build_company_stacks.py"
 # 기술별 추천 학습 영상(YouTube) — company_stacks.json 의 기술 목록을 소비. 캐시로 증분 수집.
 "$PY" "$SCRIPT_DIR/build_learning.py"
+# 모집 캘린더 — JD 본문의 접수/모집기간·마감 표기를 파싱해 job_calendar.json 생성
+"$PY" "$SCRIPT_DIR/build_calendar.py"

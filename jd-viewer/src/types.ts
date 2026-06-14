@@ -91,6 +91,28 @@ export interface CompanyStacksFile {
   companies: CompanyStack[]
 }
 
+// ── 모집 캘린더 (job_calendar.json) ────────────────────────────────────
+export interface CalendarItem {
+  company: string
+  title: string
+  url: string
+  site: string
+  career: string
+  tech_stack: string[]
+  start: string | null // 모집 시작일 ISO
+  deadline: string | null // 마감일 ISO
+  always_open: boolean // 상시채용
+}
+
+export interface CalendarFile {
+  generated_at: string
+  total: number
+  dated: number
+  always_open: number
+  no_info: number
+  items: CalendarItem[]
+}
+
 // ── 기술 블로그 (tech_blogs.json) ──────────────────────────────────────
 export interface BlogPost {
   key: string
