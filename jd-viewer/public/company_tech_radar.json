@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T10:30:07",
+ "generated_at": "2026-06-14T12:20:19",
  "total": 100,
  "countries": [
   {
@@ -4840,6 +4840,68 @@
       "summary": "LinkedIn·Salesforce·Google·Airbnb·Facebook 합격 후기 번역글. 구글은 Mountain View 캠퍼스에서 진행되며 알고리즘 복잡도 분석과 Big O 표기 이해가 매우 중요하다고 강조한다. 코딩 준비로 LeetCode 약 70문제 풀이와 2~3개월 준비를 권한다.",
       "source": "Medium",
       "date": "2017-10"
+     },
+     {
+      "title": "구글 코리아 코딩 인터뷰 본 후기(같은 일기)",
+      "url": "https://velog.io/@making-a-scene/%EA%B5%AC%EA%B8%80-%EC%BD%94%EB%A6%AC%EC%95%84-%EC%BD%94%EB%94%A9-%EC%9D%B8%ED%84%B0%EB%B7%B0-%EB%B3%B8-%ED%9B%84%EA%B8%B0%EA%B0%99%EC%9D%80-%EC%9D%BC%EA%B8%B0",
+      "summary": "여름 인턴 코딩 인터뷰를 본 직후 쓴 일기 형식의 후기로, 구글 미트 화상으로 45분씩 2라운드를 진행하고 구글 독스에 코드를 작성했다. 기본 자료구조·알고리즘 위주로 출제돼 난이도는 우려한 만큼 어렵지 않았다고 한다. 팁으로 편한 언어 선택, 최대한 빠른 지원, 풀이 전 조건 명확화를 꼽았다.",
+      "source": "velog"
+     },
+     {
+      "title": "My Google [Software Engineer] Interview Experience | L4",
+      "url": "https://medium.com/@sshiwangi770/my-google-software-engineer-interview-experience-l4-46de5a70fb1f",
+      "summary": "전화 심사 → 기술 면접 3회 + Googliness 라운드 1회로 진행됐고, 그래프·동적 프로그래밍 등 패턴 인식 문제가 고난이도로 출제됐다. 단순히 빨리 푸는 것보다 문제를 깊이 이해하고 실패한 시도를 재검토하며 성급함을 피하라고 조언한다.",
+      "source": "Medium",
+      "date": "2025-04"
+     },
+     {
+      "title": "Google Interview Experience — Software Engineer, University Graduate 2026",
+      "url": "https://medium.com/@yashitz07/google-interview-experience-software-engineer-university-graduate-2026-69c9c097db89",
+      "summary": "신입(University Graduate) 대상 총 3라운드(각 45분~1시간) 면접으로, 긴 스토리로 포장된 그래프/구간 기반 알고리즘 문제가 나왔다. 기술 실력뿐 아니라 협업·커뮤니케이션 같은 Googliness가 중요하며, 문제를 차분히 읽고 시간복잡도를 항상 설명하라는 팁을 준다.",
+      "source": "Medium",
+      "date": "2025-12"
+     },
+     {
+      "title": "My Google Software Engineer Interview Journey (L4) — A First-Person Tale",
+      "url": "https://medium.com/@philshanshan/my-google-software-engineer-interview-journey-l4-a-first-person-tale-99219202c7c7",
+      "summary": "전화 스크린 후 온사이트 4라운드(코딩 3회 + 행동 면접 1회)를 봤고 트리 경로 합·행렬 경로 등 중상 난이도 문제가 출제됐다(최종 불합격, 2번째 코딩 라운드가 원인). LeetCode 150문제 이상 풀이, 시간 관리, 명확한 소통, STAR 방식 행동 면접 준비를 권한다.",
+      "source": "Medium",
+      "date": "2025-03"
+     },
+     {
+      "title": "Google Software Engineer Interview Experience — Offer",
+      "url": "https://medium.com/@lahotipranali/google-software-engineer-interview-experience-offer-25e4eb6a0a5c",
+      "summary": "코딩 3라운드(DFS, 슬라이딩 윈도우, 우선순위 큐)와 행동 면접 1라운드로 구성됐으며 난이도는 LeetCode 중상~상 수준이었다. 3주간 집중 준비했고 STAR 패턴 기반 사전 준비가 행동 면접에서 효과적이었다고 한다.",
+      "source": "Medium",
+      "date": "2023-09"
+     },
+     {
+      "title": "Cracking the Google SDE-2 (L3) Interview: My Experience",
+      "url": "https://medium.com/@flick_23/cracking-the-google-sde-2-l3-interview-my-experience-4f9305a245b8",
+      "summary": "리크루터 스크리닝→폰스크린(그래프 탐색 O(N)→O(1) 최적화)→가상 온사이트 4라운드→팀 매칭→오퍼로 이어진 합격 후기. 문자열 상태전이, O(1) 자료구조 설계, 이진탐색 후속질문 등 심화 주제가 나왔다. 풀이를 외우기보다 '왜 동작하는지'를 이해하고 추론 과정을 소리내어 설명하라고 강조한다.",
+      "source": "Medium",
+      "date": "2025-04"
+     },
+     {
+      "title": "Google Interview Experience - L4 Software Engineer",
+      "url": "https://jatinnarula.substack.com/p/google-interview-experience-l4-software",
+      "summary": "마이크로소프트에서 이직하며 스크리닝 포함 5라운드(우선순위큐, 멀티포인트 BFS, 변형 다익스트라, 인터벌, Googlyness)를 통과했다. 문제는 의도적으로 모호해 명확화 질문이 필요하고 약 30분 안에 풀어야 해 속도가 중요하다. 리트코드 미디엄~하드 150문제 풀이와 BFS/DFS/유니온파인드 복잡도 숙지를 권한다.",
+      "source": "Medium(Substack)",
+      "date": "2022-09"
+     },
+     {
+      "title": "Interview Experience — Google Software Engineer | L4",
+      "url": "https://roundz.substack.com/p/interview-experience-google-software-engineer-l4",
+      "summary": "미국 베이에어리어에서 사내 추천으로 진행한 구글 L4 면접 합격 후기다. DSA 기술 3라운드(브루트포스→최적화, BFS+그리디 그래프, 정렬·투포인터)와 Googliness 행동 1라운드로 구성되며 난이도는 미디엄~미디엄하드. BFS/DFS 숙달과 mock 인터뷰, 그리고 L4 이상에서는 행동 면접 준비도 동등하게 중요하다고 강조한다.",
+      "source": "Substack(개인블로그)",
+      "date": "2025-04"
+     },
+     {
+      "title": "Google Interview Experience | Set 3 (Mountain View)",
+      "url": "https://www.geeksforgeeks.org/google-mountain-view-interview/",
+      "summary": "구글 마운틴뷰 본사 온사이트 5라운드 후기로, 매 라운드가 시스템 설계와 코딩으로 짝지어져 진행됐다(이미지 저장 설계, 스트림 중앙값, 이진탐색, 웨어러블 설계, n-gram 문자열 등). 그래프·DP·문자열·배열·비트·링크드리스트를 모두 풀어보고, 특히 설계 문제는 생각보다 훨씬 어려우니 집중 대비하라고 조언한다.",
+      "source": "GeeksforGeeks(공개 후기글)",
+      "date": "2025-07"
      }
     ]
    },
@@ -9373,6 +9435,47 @@
       "url": "https://velog.io/@kshired/%EC%B9%B4%EC%B9%B4%EC%98%A4%EC%97%94%ED%84%B0%ED%94%84%EB%9D%BC%EC%9D%B4%EC%A6%88-%EA%B0%9C%EB%B0%9C-%EC%9D%B8%ED%84%B4-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
       "summary": "카카오엔터프라이즈 개발 인턴 합격 후기. 면접에서 교과서적인 정답이 아니라 지원자 본인의 생각을 묻는 질문이 많았다고 한다. 자신의 경험과 판단 근거를 솔직하게 풀어내는 것이 핵심이라고 조언한다.",
       "source": "velog"
+     },
+     {
+      "title": "2020 카카오 신입 개발자 블라인드 채용 후기 - ZZAEBOK'S BLOG",
+      "url": "https://zzaebok.github.io/interview/review/kakao_review/",
+      "summary": "블라인드 채용 전 과정을 회고한 글이다. 2차 코딩테스트는 문제 자체보다 평소와 매우 다른 출제 형식에 적응하기 어려워 통과자가 적었다고 분석하며, 형식 적응의 중요성을 강조한다.",
+      "source": "github.io",
+      "date": "2020"
+     },
+     {
+      "title": "2022 카카오 공채 (신입 개발자 블라인드 채용) 합격 후기 - 카카오페이",
+      "url": "https://velog.io/@dls4585/%EC%B7%A8%EC%97%85-%EC%88%98%EA%B8%B0-2022-%EC%B9%B4%EC%B9%B4%EC%98%A4-%EA%B3%B5%EC%B1%84-%EC%8B%A0%EC%9E%85-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EB%B8%94%EB%9D%BC%EC%9D%B8%EB%93%9C-%EC%B1%84%EC%9A%A9-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0-%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%8E%98%EC%9D%B4",
+      "summary": "카카오페이로 입사한 신입 개발자의 블라인드 채용 합격 수기로, 코딩테스트부터 면접까지의 준비 과정을 다룬다. 계열사 지원 시 전형 흐름과 면접 분위기, 합격 팁을 정리했다.",
+      "source": "velog",
+      "date": "2022"
+     },
+     {
+      "title": "카카오엔터프라이즈 합격 후기",
+      "url": "https://velog.io/@heelieben/%EC%B9%B4%EC%B9%B4%EC%98%A4%EC%97%94%ED%84%B0%ED%94%84%EB%9D%BC%EC%9D%B4%EC%A6%88-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "카카오엔터프라이즈 1차 인터뷰는 구글 Meet으로 약 1시간 진행되며 면접관 2명이 친절한 분위기에서 기술·인성을 함께 질문했다고 한다. 면접 분위기와 질문 구성에 대한 구체적 경험을 공유한다.",
+      "source": "velog"
+     },
+     {
+      "title": "[면접후기] 카카오 헬스케어 신입 프론트엔드 면접 회고",
+      "url": "https://velog.io/@o1011/%EB%A9%B4%EC%A0%91%ED%9B%84%EA%B8%B0-%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%97%AC%EC%8A%A4%EC%BC%80%EC%96%B4-%EC%8B%A0%EC%9E%85-%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-%EB%A9%B4%EC%A0%91-%ED%9A%8C%EA%B3%A0",
+      "summary": "카카오 헬스케어 프론트엔드 1차 면접은 약 1시간 라이브 코딩(본인 노트북 사용)과 함께 면접관 1명이 진행한다. 현장에서 '머릿속이 새하얘졌다'고 할 만큼 압박감이 컸다고 한다. 선택한 라이브러리·겪은 문제와 해결 과정을 어떤 질문에도 답할 수 있게 준비하고 개발 철학을 미리 정리하라고 조언한다.",
+      "source": "velog",
+      "date": "2025-02"
+     },
+     {
+      "title": "카카오 엔터프라이즈 면접 후기 (Dev Note)",
+      "url": "https://devstarsj.github.io/etc/2021/02/28/kakao.enterprise.interview/",
+      "summary": "사내 추천으로 서버 개발자 경력직에 지원해 서류·코딩테스트·화상 프리 인터뷰·최종 인터뷰를 거쳐 합격한 과정을 정리했다. 카카오 코딩테스트는 평판대로 난이도가 높았고, 특히 최종 인터뷰에서 실제 경험이 없던 엔지니어링 상황 질문에 당황했다고 한다.",
+      "source": "github.io",
+      "date": "2021-02"
+     },
+     {
+      "title": "2023 카카오 신입 공채 1차 온라인 코딩 테스트 for Tech developers 문제해설",
+      "url": "https://tech.kakao.com/posts/567",
+      "summary": "카카오 공식 기술 블로그가 신입 공채 1차 온라인 코딩테스트 문제를 직접 해설한 글. 출제 의도와 풀이 접근법을 다뤄 코딩테스트 난이도와 준비 방향을 파악하는 데 도움이 된다.",
+      "source": "회사블로그",
+      "date": "2023"
      }
     ]
    },
@@ -9565,6 +9668,47 @@
       "summary": "2025년 네이버 최종(2차) 면접을 본사 방문과 함께 정리한 후기. 최종 면접은 기술보다 삶·일·공부 태도를 묻는 인성 질문 비중이 컸다는 경험을 전한다.",
       "source": "velog",
       "date": "2025"
+     },
+     {
+      "title": "2025 팀네이버 신입 공채 Tech 면접 후기",
+      "url": "https://velog.io/@gundy/2025-%ED%8C%80%EB%84%A4%EC%9D%B4%EB%B2%84-%EC%8B%A0%EC%9E%85-%EA%B3%B5%EC%B1%84-Tech-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "기술 역량 인터뷰가 두 세션으로 나뉘며 각 세션 40분, 중간 10분 휴식으로 총 90분 진행된다. 직무 기술에 대해 깊게 파고드는 질문이 특징이다.",
+      "source": "velog",
+      "date": "2025"
+     },
+     {
+      "title": "2025 네이버 Android 직무 기술면접 후기",
+      "url": "https://velog.io/@dyddn2015/2025-%EC%83%81%EB%B0%98%EA%B8%B0-%EB%84%A4%EC%9D%B4%EB%B2%84-%EA%B3%B5%EC%B1%84-Android-%EC%A7%81%EB%AC%B4-%EA%B8%B0%EC%88%A0%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "Android 직무 기술면접 경험담으로, 프로젝트 코드 기반의 심화 질문과 직무 역량 검증 과정을 다룬다. 자신의 프로젝트를 깊이 이해하고 설명할 수 있어야 한다고 조언한다.",
+      "source": "velog",
+      "date": "2025"
+     },
+     {
+      "title": "🎉 네이버 공채 면접 후기",
+      "url": "https://velog.io/@gomjellie/%EB%84%A4%EC%9D%B4%EB%B2%84-%EA%B3%B5%EC%B1%84-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "면접은 온라인 3:1 방식으로 진행되며, 미리 배송된 디지털펜과 노트로 손코딩한 화면을 공유하는 방식이다. 전체 전형 흐름과 패키지 수령 경험을 소개한다.",
+      "source": "velog"
+     },
+     {
+      "title": "2020 네이버 경력공채 후기",
+      "url": "https://velog.io/@pranne1224/2020-%EB%84%A4%EC%9D%B4%EB%B2%84-%EA%B2%BD%EB%A0%A5%EA%B3%B5%EC%B1%84-%ED%9B%84%EA%B8%B0",
+      "summary": "신입이 아닌 경력공채 관점에서 네이버 전형 과정을 정리한 후기다. 서류·코딩테스트·기술면접 단계별 경험과 경력직에게 요구되는 역량 및 준비 팁을 공유한다.",
+      "source": "velog",
+      "date": "2020"
+     },
+     {
+      "title": "[후기] 2021 상반기 네이버 신입 공채 최종 합격 후기와 준비 과정",
+      "url": "https://4z7l.github.io/2021/09/28/2021_naver_recruit.html",
+      "summary": "서류→코딩테스트→1·2차 면접 전 과정과 합격 준비기. 1차는 1:3 약 90분, 수리·손코딩·CS·자소서 기반의 '문제 은행식'으로 40~50개 질문이 쏟아진다. 2차는 1:2 약 40분으로 시니어와 티타임 느낌. 자소서 기술 복기와 면접 스터디를 강력 추천한다.",
+      "source": "github.io",
+      "date": "2021-09"
+     },
+     {
+      "title": "2019 네이버 신입 개발자 공채 후기",
+      "url": "https://zzaebok.github.io/interview/review/naver-review/",
+      "summary": "서류·온라인 코딩테스트·1차·2차 면접으로 이어지는 네이버 공채 전형을 정리한 후기. 별도 서류 합격 없이 코딩테스트와 서류를 종합해 면접 대상을 정한다. 자소서에 쓴 기술은 반드시 다시 공부해 복기하라는 팁을 강조한다.",
+      "source": "github.io",
+      "date": "2019"
      }
     ]
    },
@@ -10798,6 +10942,49 @@
     "sources": [
      "쿠팡 공개 채용 안내 기반",
      "글로벌(미국식) 기술 채용 프로세스 일반론"
+    ],
+    "reviews": [
+     {
+      "title": "쿠팡 수시채용 합격 후기 | Yoon Sung's Blog",
+      "url": "https://unluckyjung.github.io/recruit_story/2022/03/18/Coupang/",
+      "summary": "링크드인 리크루터 제안 → CV 제출 → 150분 3문제 온라인 코딩테스트(평이한 난이도) → 라이브 코딩 기술면접 2~3세션 → 컬쳐핏 면접 순으로 진행된 백엔드 합격 후기다. 코딩테스트 3문제를 1시간 내 풀 만큼 평이했고, 기술면접 성과가 좋아 세션 하나가 생략되었다. 면접 피드백을 제공받고 전체 프로세스가 신속히 진행된 점을 강조한다.",
+      "source": "github.io",
+      "date": "2022-03"
+     },
+     {
+      "title": "쿠팡 면접 후기 - Staff Machine Learning Engineer",
+      "url": "https://velog.io/@yonghyeokrhee/%EC%BF%A0%ED%8C%A1-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0-Staff-Machne-Learning-Engineer",
+      "summary": "리크루터 면담 → CV 스크리닝 → 채용 매니저 1차 인터뷰 → 프로젝트 분석·모델링·라이브코딩·시스템디자인·바레이저 등 5개 독립 인터뷰로 구성된 ML 엔지니어 면접 후기다. 영어/한국어 혼용으로 진행되며 난이도는 비교적 무난했으나, 예상과 달리 Staff 레벨로 진행됐다. 최종 탈락 통보까지 3주가 걸린 점을 언급한다.",
+      "source": "velog",
+      "date": "2025-09"
+     },
+     {
+      "title": "쿠팡 입사를 희망하는 개발자들에게 주는 약간의 팁 :: 허니몬(Honeymon)의 자바guru",
+      "url": "https://java.ihoney.pe.kr/323",
+      "summary": "기술면접 탈락 경험을 바탕으로 지원자에게 조언하는 글로, '코딩테스트 → 전화면접 → 기술면접 → 임원면접' 절차를 설명한다. 손코딩, 알고리즘, 프로그래밍 개론, UML 기반 프로젝트 설명 준비가 필수라고 강조한다. 약 10% 수준의 엄격한 합격률을 통과하려면 각 단계별 철저한 연습이 필요하다고 제언한다.",
+      "source": "tistory",
+      "date": "2014-05"
+     },
+     {
+      "title": "13년차 개발자 네카라쿠배토당야두몰센 도전기",
+      "url": "https://velog.io/@bisori/13%EB%85%84%EC%B0%A8-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%9D%B4%EC%A7%81%EB%8F%84%EC%A0%84%EA%B8%B0",
+      "summary": "이력서 기반으로 트랜잭션·MSA·Kafka·Reactive 등 사용 기술의 장단점과 도입 이유를 깊게 파고드는 기술면접이 진행된다. 라이브코딩은 총 5회로, 알고리즘 문제에 더해 요구사항을 추가하며 기존 코드를 수정하는 확장성 테스트가 특징이다. 임원/컬처 면접에서는 개발자 출신 면접관이 추가 기술질문을 하기도 한다.",
+      "source": "velog",
+      "date": "2022-05"
+     },
+     {
+      "title": "(작성 중) 프론트엔드 면접 후기",
+      "url": "https://velog.io/@aideneverywhere/%EC%9E%91%EC%84%B1-%EC%A4%91-%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "쿠팡플레이 프론트엔드 전형으로 전화상담 포함 4~5단계를 거쳤다. 2시간 코딩테스트는 LeetCode 유형 1문제와 JS 비동기 API 호출 로직을 즉석에서 짜는 중상 난이도 문제가 출제됐고, 가장 중요한 소프트웨어 아키텍처 면접과 대표 1:1 면접을 통과해 합격했다.",
+      "source": "velog",
+      "date": "2023-06"
+     },
+     {
+      "title": "쿠팡 면접 후기/면접 경험 공유",
+      "url": "https://www.saramin.co.kr/zf_user/interview-review?company_nm=%EC%BF%A0%ED%8C%A1",
+      "summary": "사람인에 공개된 쿠팡 지원자들의 면접 후기 모음으로, 면접 유형·질문·난이도를 로그인 없이 열람할 수 있다. 코딩 위주의 1:1 기술면접과 컬쳐핏 질문 경향을 다수 사례에서 확인할 수 있다.",
+      "source": "사람인"
+     }
     ]
    },
    "github": {
@@ -10808,7 +10995,7 @@
     "https://medium.com/coupang-engineering/kr"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-14"
   },
   {
    "key": "tmon",
@@ -11286,6 +11473,74 @@
     "sources": [
      "당근 공개 채용 안내 기반",
      "일반적인 IT 기업 채용 전형 패턴"
+    ],
+    "reviews": [
+     {
+      "title": "당근마켓 면접 후기 및 회고",
+      "url": "https://velog.io/@dion/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0-%EB%B0%8F-%ED%9A%8C%EA%B3%A0",
+      "summary": "사업부문 서버 직군 면접 후기로, Database·Web·SpringBoot·Java 4개 카테고리를 1시간 동안 스피드 퀴즈 형식으로 약 20문제 답변했다. 한 답변에 꼬리질문이 계속 이어지는 방식이며, 평균 1시간 반 면접을 3회 진행하는 깊이 있는 채용 과정이었다고 한다.",
+      "source": "velog"
+     },
+     {
+      "title": "첫 이직 도전, 당근마켓 화상면접 본 후기",
+      "url": "https://velog.io/@harudev_/%EC%B2%AB-%EC%9D%B4%EC%A7%81-%EB%8F%84%EC%A0%84-%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%ED%99%94%EC%83%81%EB%A9%B4%EC%A0%91-%EB%B3%B8-%ED%9B%84%EA%B8%B0",
+      "summary": "1차 화상 면접에서 지원자가 쓰는 기술 스택을 왜 채택했는지 깊이 있게 묻는 질문이 많았다고 한다. 단순 기본 개념이 아니라 더 깊은 이해를 요구하며, 알고리즘보다 실제 문제 해결 역량을 중시한다는 인상을 받았다.",
+      "source": "velog"
+     },
+     {
+      "title": "당근마켓 프론트엔드 개발자 면접 후기",
+      "url": "https://slog.website/post/12",
+      "summary": "프론트엔드 직무 면접 후기로, '왜 항상 import React를 해야 하나', 'key값을 왜 부여하나', 'setState는 왜 비동기인가' 등 'Why'를 파고드는 질문이 특징이다. 이력서·기술 블로그를 꼼꼼히 보고 이론과 패러다임까지 묻는다.",
+      "source": "개인블로그(slog)"
+     },
+     {
+      "title": "당근마켓 최종 면접까지의 과정을 돌아보며",
+      "url": "https://enjoydev.life/blog/retrospect/5-daangn-interview",
+      "summary": "서류부터 최종 면접까지 전 과정을 회고한 글. 화상 면접에서는 What을, 직무 면접에서는 Why·How를 물으며 프로젝트와 사용 기술을 왜·어떻게 도입했는지 깊이 파고든다고 정리했다.",
+      "source": "개인블로그(enjoydev)"
+     },
+     {
+      "title": "[회고] 2023 당근(마켓) 썸머테크 인턴십 후기",
+      "url": "https://velog.io/@gyutato/2023-%EC%8D%B8%EB%A8%B8%ED%85%8C%ED%81%AC-%ED%9B%84%EA%B8%B0",
+      "summary": "2023 당근 썸머테크 인턴십 지원·면접 과정을 담은 회고. 코딩 테스트와 면접 준비 과정, 실제 인턴 합류까지의 흐름과 팁을 정리해 인턴 지원자에게 참고가 된다.",
+      "source": "velog",
+      "date": "2023"
+     },
+     {
+      "title": "당근마켓 최종합격까지 (당근마켓 인턴 전환)",
+      "url": "https://junghyeonsu.com/posts/daangn-pass-retrospect/",
+      "summary": "서류부터 최종합격(인턴 전환)까지의 전 과정을 회고한 개인 블로그 글이다. 면접에서 단순 사용법이 아닌 기술 채택 이유와 문제 해결 역량을 중점적으로 묻는다는 점, 일정 조율이 지원자 친화적이었다는 점을 팁으로 전한다.",
+      "source": "개인블로그",
+      "date": "2022-09"
+     },
+     {
+      "title": "당근페이 면접 후기 및 질문과 답-1",
+      "url": "https://youngkyonyou.github.io/interview/2021/12/21/Interview-Dangeun-02.html",
+      "summary": "서류 합격 후 기술면접에서 HTTPS 동작 원리, 대칭키/비대칭키, SSL 핸드셰이크 등 CS·네트워크 보안 지식을 깊게 물어봤다. 준비 기간이 짧아 어려웠고 불합격했다. 다른 회사에서도 자주 나오는 주제이므로 CS 기본기를 체계적으로 준비하라고 조언한다.",
+      "source": "github.io",
+      "date": "2021-12"
+     },
+     {
+      "title": "당근마켓 인턴십 면접 회고",
+      "url": "https://velog.io/@jsi06138/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EC%9D%B8%ED%84%B4%EC%8B%AD-%EB%A9%B4%EC%A0%91-%ED%9A%8C%EA%B3%A0",
+      "summary": "프론트엔드 인턴 직무로 서류 합격 후 화상 면접을 진행했으며, '왜 import React를 해주어야 하나요?'처럼 기술 동작 원리를 묻는 질문이 중심이었다. 논리력과 깊이 있는 이해를 평가하는 난이도로, 규칙을 따르기보다 원리에 끊임없이 의문을 제기하는 자세가 중요하다.",
+      "source": "velog",
+      "date": "2022-01"
+     },
+     {
+      "title": "당근마켓 면접 회고",
+      "url": "https://velog.io/@hwon3814/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EB%A9%B4%EC%A0%91-%ED%9A%8C%EA%B3%A0",
+      "summary": "1차 화상면접 후기로, 기술 선택 이유와 깊이 있는 이해를 집중적으로 평가받았다. 구글링 수준의 장단점이 아닌 더 딥한 내용을 답할 수 있어야 해 난이도가 높았다고 한다. 라이브러리의 내부 구현 원리를 오픈소스 코드 분석으로 익히고 근본 이유부터 이해할 것을 권한다.",
+      "source": "velog",
+      "date": "2023-03"
+     },
+     {
+      "title": "당근마켓 지원후기",
+      "url": "https://velog.io/@xylopeofficial/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EC%A7%80%EC%9B%90%ED%9B%84%EA%B8%B0",
+      "summary": "서류→화상면접(1시간 기술 심화)→직무면접(4:1) 3단계 전형. 화상면접은 Database/Web/SpringBoot/Java 4개 카테고리 스피드 퀴즈 형식 약 20문제, 직무면접은 프로젝트의 Why·How 심화 질문이었다. 포트폴리오와 기술블로그를 충실히 작성하는 것이 핵심 팁.",
+      "source": "velog",
+      "date": "2022-02"
+     }
     ]
    },
    "github": {
@@ -11297,7 +11552,7 @@
     "https://about.daangn.com/tech"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-14"
   },
   {
    "key": "watcha",
@@ -11874,6 +12129,89 @@
      "토스(비바리퍼블리카) 공개 채용 공고 및 채용 페이지 기반",
      "토스 기술 블로그(toss.tech) 공개 자료 기반",
      "핀테크 업계 일반적인 다단계 채용 전형 패턴"
+    ],
+    "reviews": [
+     {
+      "title": "[2025년 10월] 토스뱅크 백엔드 개발자 직무면접 후기",
+      "url": "https://velog.io/@eddy159/2025%EB%85%84-10%EC%9B%94-%ED%86%A0%EC%8A%A4%EB%B1%85%ED%81%AC-%EB%B0%B1%EC%97%94%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%A7%81%EB%AC%B4%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "사전 과제 없이 이력서·포트폴리오만으로 1차 직무면접을 봤으며, 면접관 2명과 약 1시간 30분 진행됐다. '수천만 사용자 규모로 성장한다면'이라는 가정 하에 대규모 트래픽 대응·분산 환경 데이터 정합성 등 실무 중심 질문이 많아 난이도가 높았다. 프로젝트의 기술 선택 이유와 트레이드오프, 분산·대용량 이론을 미리 준비하라고 조언한다.",
+      "source": "velog",
+      "date": "2025-11"
+     },
+     {
+      "title": "토스 프론트엔드 면접 후기 및 앞으로의 커리어 방향",
+      "url": "https://caesiumy.dev/posts/career/toss-interview-retrospect/",
+      "summary": "과제 테스트(약 10시간 제한, 실제 토스 유사 과제) → 라이브 코딩 포함 1차 면접 → 경력 기반 시나리오 위주의 2차 면접 순으로 진행됐고 최종 탈락했다. 특히 실무진 면접에서 운영 관리·실무 시나리오 대응 능력을 깊게 평가해 난이도가 높았다. 단순 구현을 넘어 대규모 트래픽·레거시 처리 등 실무 경험과 예측 불가 상황 대응력이 중요하다고 정리한다.",
+      "source": "개인블로그(github.io 류)",
+      "date": "2025-08"
+     },
+     {
+      "title": "토스 안드로이드 개발자 합격 후기",
+      "url": "https://velog.io/@l2hyunwoo/toss-android-developer",
+      "summary": "서류 → 온라인 객관식 테스트 → 사전 과제 → 안드로이드/프론트엔드 직무 면접 → 문화적합성 인터뷰 → 레퍼런스 체크까지 거친 합격 후기다. 사전 과제는 요구사항은 간단해 보여도 지금까지 본 과제 중 가장 어려웠다고 평가했고, 문화적합성 면접은 있는 그대로 솔직히 답하면 충분했다. 이력서에 성과를 정량적으로 수치화하고 내부 동작 원리를 이해하라고 조언한다.",
+      "source": "velog",
+      "date": "2024-07"
+     },
+     {
+      "title": "토스페이먼츠 서버 직무 인터뷰 불합 후기",
+      "url": "https://velog.io/@hsh111366/%ED%86%A0%EC%8A%A4%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0-%EC%84%9C%EB%B2%84-%EC%A7%81%EB%AC%B4-%EC%9D%B8%ED%84%B0%EB%B7%B0-%EB%B6%88%ED%95%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "서류 합격 후 현업 상황 기반 사전 과제와 약 1시간 이상의 직무 면접을 봤고 불합격했다. 과제 자체는 크게 어렵지 않았으나 면접이 매우 딥하게 들어가 예상 범위를 벗어난 질문이 많았다. 기술 선택 이유와 대안을 2~3단계 깊이로 준비하고 CS 기초를 탄탄히 하라고 강조한다.",
+      "source": "velog",
+      "date": "2025-04"
+     },
+     {
+      "title": "토스 면접 후기",
+      "url": "https://velog.io/@sangbooom/%ED%86%A0%EC%8A%A4-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "과제 전형 난이도는 중상 수준이었고 모든 요구사항을 만족해 좋은 점수로 통과했다. 이후 테크리더·현업 엔지니어와의 기술 인터뷰는 '엔지니어 대 엔지니어' 분위기였으나, 평소 얕게 알던 부분을 깊게 파고들어 답변하지 못해 아쉽게 탈락한 후기다.",
+      "source": "velog"
+     },
+     {
+      "title": "토스 서버 개발자 직무인터뷰 탈락 후기",
+      "url": "https://jimoou.github.io/daily/2024/03/19/post13.html",
+      "summary": "서류→과제→기술면접 3단계로, 전원에게 과제 기회가 주어지며 과제가 기본기와 엣지 케이스를 요구해 까다롭다. 대규모 트래픽 회사답게 Redis 등 사용 기술의 내부 동작과 트레이드오프('왜')를 깊게 파고드니 이력서를 최신화하고 기술스택 deep dive를 준비하라고 강조한다. 토스 SLASH 등 기술블로그로 엔지니어링 철학을 파악할 것을 권한다.",
+      "source": "github.io",
+      "date": "2024-03"
+     },
+     {
+      "title": "토스 안드로이드 개발자 합격 후기",
+      "url": "https://medium.com/@l2hyunwoo/%ED%86%A0%EC%8A%A4-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0-41d3490286a6",
+      "summary": "토스 안드로이드 개발자 합격까지의 과제·면접 전형 회고. 과제 수행과 기술 인터뷰 준비 과정, 토스가 추구하는 문화와 기술 역량을 어떻게 준비했는지 정리한 합격 수기다.",
+      "source": "Medium"
+     },
+     {
+      "title": "노베이스에서 토스 합격까지",
+      "url": "https://velog.io/@eddy_song/retrospective",
+      "summary": "iOS/Swift 코딩테스트(객관식·서술형)→1차 기술면접→2차 문화 핏 면접 순으로 진행됐다. 검색하면 나오는 뻔한 질문은 스킵되고 깊이 있는 CS 추론 능력을 보며, 카카오·네이버보다 난이도는 낮지만 뎁스 있는 질문이 특징이다. 개발 블로그 운영과 빠르게 털고 일어나는 회복력이 긍정 평가를 받았다고 한다.",
+      "source": "velog",
+      "date": "2022-09"
+     },
+     {
+      "title": "개발자로 이직하기(feat. Toss NEXT 개발자 채용를 마치며)",
+      "url": "https://samslow.github.io/diary/2020/09/26/tossNextReview/",
+      "summary": "Toss NEXT 채용을 코딩테스트(실무 중심) → 과제전형 → 기술면접 → 컬쳐면접 4단계로 정리한 후기다. 코딩테스트는 알고리즘보다 실무 문제 해결에 초점이라 경력자에게 유리했고, 모르는 것은 솔직히 인정하고 기업문화를 충분히 조사하되 진솔하게 임하라는 팁을 준다.",
+      "source": "github.io",
+      "date": "2020-09"
+     },
+     {
+      "title": "2022 토스 NEXT 개발자 챌린지 > 프론트엔드 > 코딩 테스트 & 과제 후기",
+      "url": "https://velog.io/@ksol0630/2022-%ED%86%A0%EC%8A%A4-NEXT-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%B1%8C%EB%A6%B0%EC%A7%80-%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-%EC%BD%94%EB%94%A9-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B3%BC%EC%A0%9C-%ED%9B%84%EA%B8%B0",
+      "summary": "코딩테스트는 프로그래머스와는 '결이 다른' 실무형 문제가 출제되고, 과제 전형은 제한 시간 내 실무 중심 요구사항을 구현하는 방식이다. 전반적으로 난이도와 실무성이 높은 채용 과정으로 평가한다.",
+      "source": "velog",
+      "date": "2022-08"
+     },
+     {
+      "title": "2024 토스 Next 개발자 챌린지 Node.js 직군 최종합격 후기",
+      "url": "https://tolerblanc.github.io/review/toss-next-developer-challenge/",
+      "summary": "코딩테스트(2시간 30분·7문제, 실무 시나리오형), 48시간 과제, 약 2시간 기술 면접(과제 코드·포트폴리오 기반 토론), 1시간 10분 컬처핏 순으로 진행됐다. 알고리즘 암기보다 사고 과정을 보는 전형이며 기술 면접은 일방적 질문이 아닌 토론 형태였다고 한다.",
+      "source": "github.io",
+      "date": "2024-12"
+     },
+     {
+      "title": "토스 서버 개발자들이 가장 많이 받는 질문 10가지, 직접 답해드립니다",
+      "url": "https://toss.im/career/article/toss-serverchapter-faq10",
+      "summary": "토스 공식 채용 아티클로, 서버 개발자 지원자가 면접·전형에서 가장 자주 받는 질문 10가지를 현직자가 직접 답한다. 코딩테스트가 실무 상황 기반 문제로 구성된다는 점 등 채용 전형 전반에 대한 회사 측 안내를 담고 있다.",
+      "source": "회사블로그"
+     }
     ]
    },
    "github": {
@@ -11885,7 +12223,7 @@
     "https://github.com/toss"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-14"
   },
   {
    "key": "dunamu",
