@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **5797건** 공고 · **1136개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-15 03:14
+- 총 **5806건** 공고 · **1138개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-15 04:49
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (307개사)
+## HR/채용 (308개사)
 ### (주)제이투이 `중소기업` · 18건
 - **백엔드** [5건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -859,6 +859,15 @@ markmap:
 - **데이터** [1건] · `Go` `FastAPI` `MongoDB` `Elasticsearch` `AWS` `GCP`
   - [머신러닝 엔지니어 (2년이상) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=51067949&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=2810b810-ff55-4539-bd83-af6ba03eb82e)
 
+### LG전자(주) `대기업` · 4건
+- **AI/ML** [1건] · `Python`
+  - [(한국영업본부) AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo)
+- **데이터** [2건] · `Python`
+  - [2026년 상반기 LG전자 신입사원 채용 (ES사업본부_품질) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54156862&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=e52ca4fc-4f03-4888-bd38-2b1b21c6ab19)
+  - [(한국영업본부) AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo)
+- **DevOps/인프라** [1건] · `Python`
+  - [(한국영업본부) AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo)
+
 ### 엘아이지디펜스앤에어로스페이스(주) `중소기업` · 4건
 - **AI/ML** [3건]
   - [2026 LIG D&A 인턴십(R&D-SW(AI)) 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54133769&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=6aa6def0-34c2-4427-9593-4336226dd531)
@@ -1201,14 +1210,6 @@ markmap:
   - [(디지털 마케팅) 마케팅 데이터 분석/비즈니스 분석 컨설턴트 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54057654&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=480afee7-bcc6-48e8-8ad6-443f8b32eafa)
   - [빅데이터 플랫폼 구축 (분석/설계/개발/PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54042365&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=aebb5ada-6047-4ce6-9563-218447ed0c70)
 
-### LG전자 `대기업` · 3건
-- **AI/ML** [1건] · `Python`
-  - [(한국영업본부) AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo)
-- **데이터** [1건] · `Python`
-  - [(한국영업본부) AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo)
-- **DevOps/인프라** [1건] · `Python`
-  - [(한국영업본부) AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo)
-
 ### (주)스카우트플랜 `중소기업` · 3건
 - **DevOps/인프라** [1건]
   - [IT분야 전문 헤드헌터 모집(신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034153&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=ae70d69b-40a6-463d-bc30-65e8995c5458)
@@ -1426,6 +1427,12 @@ markmap:
   - [㈜유알피 AI 응용/ 백엔드 개발 포지션 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49299119?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=74&sc=630)
 - **AI/ML** [1건] · `Java` `Python` `React` `Spring` `Spring Boot` `FastAPI`
   - [㈜유알피 AI 응용/ 백엔드 개발 포지션 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49299119?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=74&sc=630)
+
+### ㈜제니엘 `중소기업` · 2건
+- **AI/ML** [1건] · `Go`
+  - [(제니엘그룹) AI 서비스기획 · 개발 및 PM ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54024670&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=c9b96074-0b06-4ce7-b3c9-f1a861acbb70)
+- **DevOps/인프라** [1건] · `Go`
+  - [(제니엘그룹) AI 서비스기획 · 개발 및 PM ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54024670&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=c9b96074-0b06-4ce7-b3c9-f1a861acbb70)
 
 ### ㈜셀바스에이아이 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `JavaScript` `TypeScript` `React` `Spring` `Spring Boot`
@@ -6095,7 +6102,7 @@ markmap:
   - [(한컴케어링크) AI·바이오 데이터 연구개발 인재 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54085561&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=051bfb82-da44-4630-9c6b-4ff1a9a978fd)
 
 
-## 콘텐츠/미디어/광고 (79개사)
+## 콘텐츠/미디어/광고 (80개사)
 ### 트루엔 `중소기업` · 15건
 - **백엔드** [3건] · `Go` `AWS` `Linux` `REST API`
   - [서버 개발자 (경력 5년↑) ↗](https://jumpit.saramin.co.kr/position/54122713)
@@ -6909,6 +6916,11 @@ markmap:
 - **AI/ML** [2건] · `Go`
   - [(AI 활용) 이커머스 브랜드 웹디자인 웹디자이너 (사전인터뷰O) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54017608&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a0fd1eab-e2c8-4af6-b880-4f1d6dc76e26)
   - [(생성형 AI 활용 콘텐츠 크리에이터) 웹디자인 MD 마케터 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54017643&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=bc467331-1174-47b8-b31a-37c5c7d743ed)
+
+### (주)마케팅모먼트 `중소기업` · 2건
+- **AI/ML** [2건]
+  - [(콘텐츠팀) 퍼포먼스 광고 영상 PD 채용 (기획/촬영/편집/AI) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53991679&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=b6608e1d-686b-417a-93dd-0a2ae9357df2)
+  - [(AI 혁신 조직) 마케팅사업부 콘텐츠디자이너 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54131962&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=c9b96074-0b06-4ce7-b3c9-f1a861acbb70)
 
 ### (주)지텍에이치 `중소기업` · 2건
 - **AI/ML** [2건] · `JavaScript` `CSS`
@@ -7805,24 +7817,12 @@ markmap:
 - **프론트엔드** [1건] · `Java` `Python` `React` `Spring` `Linux` `Restful API`
   - [WEBFRONT-K GUI개발 ↗](https://www.wanted.co.kr/wd/75911)
 
-### 하나금융티아이 `대기업` · 11건
-- **AI/ML** [2건]
-  - [(하나금융융합기술원) AI Quant Researcher ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49227803?Oem_Code=C1&logpath=1&stext=AI&listno=98&sc=630)
-  - [(하나금융TI) 네트워크 보안 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53965043&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
-- **DevOps/인프라** [3건] · `Linux`
-  - [(하나금융TI) 단말 보안운영 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53964923&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
-  - [(인프라) 클라우드 네트워크 운영 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553057?ReturnUrl=RecruitInfo)
-  - [(보안) 단말 보안 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553051?ReturnUrl=RecruitInfo)
-- **보안** [2건] · `Linux`
-  - [(하나금융TI) 단말 보안운영 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53964923&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
-  - [(보안) 단말 보안 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553051?ReturnUrl=RecruitInfo)
-
-### (주)비바리퍼블리카 `대기업` · 11건
+### (주)비바리퍼블리카 `대기업` · 12건
 - **백엔드** [3건] · `AWS` `Java` `Kotlin` `Spring` `Spring Boot` `MySQL`
   - [(토스페이먼츠) Server Developer(SRE) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49075859?Oem_Code=C1&logpath=1&stext=SRE&listno=6&sc=630)
   - [(토스) Node.js Developer (AI) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49213619?Oem_Code=C1&logpath=1&stext=%EB%85%B8%EB%93%9C&listno=1&sc=630)
   - [(토스페이먼츠) Server Developer (SRE) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54016802&location=ts&searchword=SRE&searchType=search&paid_fl=n&search_uuid=60290df7-ff85-48e0-9467-4a28fb35bb8e)
-- **프론트엔드** [4건] · `TypeScript` `React` `GitHub Actions` `JavaScript` `CSS` `Terraform`
+- **프론트엔드** [5건] · `TypeScript` `React` `GitHub Actions` `JavaScript` `CSS` `Terraform`
   - [(토스뱅크) Frontend Ops Developer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53868221&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
   - [(토스뱅크) Frontend Developer (Product) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53868206&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
   - [(토스인슈어런스) Frontend Developer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53872958&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
@@ -7843,6 +7843,18 @@ markmap:
   - [(토스) Security Engineer (보안 분석 플랫폼 운영) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53877844&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
   - [(토스뱅크) Security Engineer (시스템 보안) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53606151&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=29c27ddf-f83b-4cba-a251-f02f3152e750)
   - [(토스뱅크) Security Engineer (네트워크 보안) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53606197&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=29c27ddf-f83b-4cba-a251-f02f3152e750)
+
+### 하나금융티아이 `대기업` · 11건
+- **AI/ML** [2건]
+  - [(하나금융융합기술원) AI Quant Researcher ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49227803?Oem_Code=C1&logpath=1&stext=AI&listno=98&sc=630)
+  - [(하나금융TI) 네트워크 보안 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53965043&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
+- **DevOps/인프라** [3건] · `Linux`
+  - [(하나금융TI) 단말 보안운영 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53964923&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
+  - [(인프라) 클라우드 네트워크 운영 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553057?ReturnUrl=RecruitInfo)
+  - [(보안) 단말 보안 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553051?ReturnUrl=RecruitInfo)
+- **보안** [2건] · `Linux`
+  - [(하나금융TI) 단말 보안운영 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53964923&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
+  - [(보안) 단말 보안 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553051?ReturnUrl=RecruitInfo)
 
 ### 넥스트증권 `중소기업` · 7건
 - **백엔드** [6건] · `AWS` `Kotlin` `PostgreSQL` `Kafka` `Spring` `Spring Boot`
