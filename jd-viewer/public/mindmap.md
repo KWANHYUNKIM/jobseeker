@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **5934건** 공고 · **1164개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-14 20:52
+- 총 **5936건** 공고 · **1165개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-14 22:25
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (316개사)
+## HR/채용 (317개사)
 ### (주)제이투이 `중소기업` · 18건
 - **백엔드** [5건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -2366,6 +2366,13 @@ markmap:
   - [/프론트엔드 엔지니어(React, TypeScript 웹 개발 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148515&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c2b9ec6d-8e4d-4f37-9116-773edfaf4f6f)
 - **DevOps/인프라** [1건] · `Docker` `Kubernetes`
   - [/클라우드 엔지니어(인프라/플랫폼 엔지니어링 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148593&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1292edd7-0d32-4e3a-99b7-3a57d6d801d5)
+
+### 주식회사 워크포트 `중소기업` · 2건
+- **백엔드** [2건] · `Git` `REST API` `JavaScript` `TypeScript` `React` `Cypress`
+  - [(E-7/F-2 비자 지원) 프론트엔드 개발자 (React / TypeScript) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54160180&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9956b1ab-117e-4762-b995-5c7b573ce40d)
+  - [(E-7/F-2 비자 지원) 백엔드 개발자 (Java / Spring) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54160170&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=c62e8327-3356-4a9d-aace-d002f031ac5b)
+- **프론트엔드** [1건] · `JavaScript` `TypeScript` `React` `Cypress` `Git` `REST API`
+  - [(E-7/F-2 비자 지원) 프론트엔드 개발자 (React / TypeScript) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54160180&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9956b1ab-117e-4762-b995-5c7b573ce40d)
 
 ### (주)서진시스템 `중소기업` · 2건
 - **백엔드** [2건] · `JavaScript` `REST API` `TypeScript` `Vue` `HTML` `CSS`

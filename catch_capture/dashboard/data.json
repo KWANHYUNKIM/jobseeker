@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-14T20:52:00",
-  "source_dir": "screenshots/all_통합_20260614_205148",
+  "generated_at": "2026-06-14T22:25:18",
+  "source_dir": "screenshots/all_통합_20260614_222512",
   "keyword": "통합",
   "jobs": [
     {
@@ -145025,6 +145025,29 @@
     },
     {
       "site": "saramin",
+      "company": "램퍼스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[램퍼스] AI콘텐츠 빌더, 디자이너 경력 채용(ComfyUI)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54167947&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=09d32240-70d8-487b-a68a-b16bdda164fd",
+      "career": "경력1년↑",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 1년 이상\n\n• 고등학교졸업이상\n\n• 실무 경력 1년 이상 혹은 그에 준하는 자 (고연차 우대)\n\n• Comfy UI 기반 제작 워크플로우 설계 및 고도화\n\n• Comfy UI에서 3D그래픽 혹은 엔진 연계 워크플로우 제작 경험이 있는 분 우대\n\n• Python기반 자동화 및 AI파이프라인 구축 경험이 있는 분 우대\n\n• 여러 직무의 동료와 유연하고 원활한 소통이 가능한 분\n\n• 새로운 기술과 크리에이티브를 연결하는 것에 관심이 높은 분\n\n• R&D 등 연구개발에 대한 관심이 높은 분 우대",
+      "preferences": "",
+      "main_tasks": "ㆍComfyUI 기반 제작 워크플로우 설계 및 고도화\n\nㆍAI기반 콘텐츠 생성 및 R&D\n\nㆍ내부 영상 디자이너, 개발자와 협업하여 산출물 제작\n\n• 솔루션팀 부서 소속, 차장/과장 직급, 팀장 직책으로 함께할 예정이에요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)플래티어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -163540,6 +163563,52 @@
     },
     {
       "site": "saramin",
+      "company": "주식회사 워크포트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[E-7/F-2 비자 지원] 백엔드 개발자 (Java / Spring)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54160170&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=c62e8327-3356-4a9d-aace-d002f031ac5b",
+      "career": "경력",
+      "location": "경기성남시 수정구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Node.js",
+        "Spring",
+        "Spring Boot",
+        "Flask",
+        "FastAPI",
+        "Express",
+        "PostgreSQL",
+        "Redis",
+        "Oracle",
+        "Docker",
+        "GitLab",
+        "Nginx",
+        "Linux",
+        "Git",
+        "REST API",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "대용량 처리",
+        "MSA/분산"
+      ],
+      "qualifications": "• Java 8 이상 개발 경험\n• Spring Boot 기반 프로젝트 경험\n• JPA 또는 MyBatis 사용 경험\n• RESTful API 설계 및 개발 경험\n• Oracle 또는 PostgreSQL 운영 경험\n• SQL 튜닝 및 실행계획 분석 가능\n• Git 기반 협업 경험",
+      "preferences": "• MSA 아키텍처 설계 및 운영 경험\n• Spring Security, JWT 인증 구현 경험\n• Docker / Docker Compose 운영 경험\n• Redis 등 캐시 시스템 사용 경험\n• Node.js (Express) 또는 Python (FastAPI / Flask) 개발 경험\n• 대용량 트래픽 또는 대용량 파일 처리 경험\n• Linux 서버 운영 경험\n• PostGIS 등 공간 데이터 처리 경험",
+      "main_tasks": "• Java / Spring Boot 기반 REST API 설계 및 개발\n• Oracle / PostgreSQL 기반 데이터베이스 설계 및 성능 튜닝\n• 대용량 데이터 처리 및 파일 업로드·다운로드 시스템 개발\n• Node.js / Python 기반 외부 서비스 및 AI 분석 서버 연동\n• Docker 기반 서비스 배포 및 운영 환경 구축\n• API 인증 및 보안 설계 (JWT, OAuth2 등)\n• MSA 아키텍처 기반 서비스 설계 및 운영\n• 서비스 성능 개선 및 장애 대응",
+      "benefits": "• 건강보험·고용보험·국민연금·산재보험\n\n• 각종 휴가 제도 지원"
+    },
+    {
+      "site": "saramin",
       "company": "신플렛(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -179318,16 +179387,16 @@
     }
   ],
   "stats": {
-    "total": 5934,
+    "total": 5936,
     "by_size": {
-      "중소기업": 5307,
+      "중소기업": 5309,
       "대기업": 378,
       "중견기업": 249
     },
     "by_role": {
-      "기타": 775,
+      "기타": 776,
       "DevOps/인프라": 890,
-      "백엔드": 2565,
+      "백엔드": 2566,
       "모바일": 977,
       "AI/ML": 1965,
       "프론트엔드": 1715,
@@ -179342,13 +179411,13 @@
       "wanted": 1311,
       "jumpit": 410,
       "jobkorea": 1107,
-      "saramin": 2865,
+      "saramin": 2867,
       "dev": 241
     },
     "top_tech": [
       [
         "Python",
-        1887
+        1888
       ],
       [
         "AWS",
@@ -179356,7 +179425,7 @@
       ],
       [
         "Java",
-        1567
+        1568
       ],
       [
         "React",
@@ -179364,15 +179433,15 @@
       ],
       [
         "Git",
-        1001
+        1002
       ],
       [
         "Docker",
-        973
+        974
       ],
       [
         "Spring",
-        936
+        937
       ],
       [
         "JavaScript",
@@ -179380,7 +179449,7 @@
       ],
       [
         "Linux",
-        846
+        847
       ],
       [
         "TypeScript",
@@ -179396,11 +179465,11 @@
       ],
       [
         "PostgreSQL",
-        632
+        633
       ],
       [
         "REST API",
-        624
+        625
       ],
       [
         "GCP",
@@ -179408,7 +179477,7 @@
       ],
       [
         "Spring Boot",
-        528
+        529
       ],
       [
         "C++",
@@ -179428,7 +179497,7 @@
       ],
       [
         "Node.js",
-        438
+        439
       ],
       [
         "CSS",
@@ -179448,7 +179517,7 @@
       ],
       [
         "Redis",
-        402
+        403
       ],
       [
         "Kotlin",
@@ -179460,7 +179529,7 @@
       ],
       [
         "FastAPI",
-        331
+        332
       ],
       [
         "Kafka",
@@ -181625,6 +181694,22 @@
         "jumpit": 493,
         "jobkorea": 1309,
         "saramin": 3380,
+        "dev": 270
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-14T22:25:16",
+      "keyword": "통합",
+      "raw_total": 6773,
+      "deduped": 6403,
+      "active": 5936,
+      "closed": 467,
+      "site_counts": {
+        "wanted": 1317,
+        "jumpit": 493,
+        "jobkorea": 1309,
+        "saramin": 3384,
         "dev": 270
       },
       "anomalies": []

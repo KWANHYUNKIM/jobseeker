@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T20:55:46",
+ "generated_at": "2026-06-14T22:36:40",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 9,
+ "refined": 11,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1174,6 +1174,10 @@
    "languages": [
     {
      "name": "Python",
+     "count": 8
+    },
+    {
+     "name": "C++",
      "count": 7
     },
     {
@@ -1181,16 +1185,12 @@
      "count": 7
     },
     {
-     "name": "C++",
-     "count": 6
-    },
-    {
      "name": "TypeScript",
      "count": 6
     },
     {
      "name": "Java",
-     "count": 5
+     "count": 4
     },
     {
      "name": "CUDA",
@@ -1212,16 +1212,16 @@
       "count": 7
      },
      {
+      "name": "Java",
+      "count": 4
+     },
+     {
       "name": "Python",
       "count": 4
      },
      {
-      "name": "Java",
-      "count": 3
-     },
-     {
       "name": "C++",
-      "count": 2
+      "count": 1
      },
      {
       "name": "C++ query engine",
@@ -1229,6 +1229,10 @@
      },
      {
       "name": "C++/CUDA kernels",
+      "count": 1
+     },
+     {
+      "name": "C++17",
       "count": 1
      },
      {
@@ -1242,10 +1246,6 @@
      {
       "name": "Go",
       "count": 1
-     },
-     {
-      "name": "Go services",
-      "count": 1
      }
     ],
     "frontend": [
@@ -1258,6 +1258,10 @@
       "count": 8
      },
      {
+      "name": "Redux",
+      "count": 3
+     },
+     {
       "name": "Next.js",
       "count": 2
      },
@@ -1266,7 +1270,11 @@
       "count": 1
      },
      {
-      "name": "LeafyGreen",
+      "name": "Emotion",
+      "count": 1
+     },
+     {
+      "name": "LeafyGreen Design System",
       "count": 1
      },
      {
@@ -1274,15 +1282,11 @@
       "count": 1
      },
      {
-      "name": "Redux",
-      "count": 1
-     },
-     {
       "name": "Tailwind CSS",
       "count": 1
      },
      {
-      "name": "WebSocket live notebooks",
+      "name": "WebGL/Canvas",
       "count": 1
      }
     ],
@@ -1290,6 +1294,10 @@
      {
       "name": "Kafka",
       "count": 5
+     },
+     {
+      "name": "Spark",
+      "count": 3
      },
      {
       "name": "Cassandra",
@@ -1304,12 +1312,12 @@
       "count": 2
      },
      {
-      "name": "Spark",
+      "name": "Vector stores",
       "count": 2
      },
      {
-      "name": "Vector stores",
-      "count": 2
+      "name": "Apache Lucene",
+      "count": 1
      },
      {
       "name": "Apache Parquet",
@@ -1322,10 +1330,6 @@
      {
       "name": "Columnar storage",
       "count": 1
-     },
-     {
-      "name": "cuDF",
-      "count": 1
      }
     ],
     "infra": [
@@ -1334,11 +1338,15 @@
       "count": 6
      },
      {
-      "name": "AWS",
-      "count": 3
+      "name": "Azure",
+      "count": 4
      },
      {
-      "name": "Azure",
+      "name": "Terraform",
+      "count": 4
+     },
+     {
+      "name": "AWS",
       "count": 3
      },
      {
@@ -1346,8 +1354,12 @@
       "count": 3
      },
      {
-      "name": "Terraform",
+      "name": "Envoy",
       "count": 2
+     },
+     {
+      "name": "Atlas 자체 오케스트레이션 플레인",
+      "count": 1
      },
      {
       "name": "AWS / Azure / GCP",
@@ -1358,26 +1370,18 @@
       "count": 1
      },
      {
-      "name": "Cloud",
-      "count": 1
-     },
-     {
-      "name": "DGX/Kubernetes",
-      "count": 1
-     },
-     {
-      "name": "Envoy",
+      "name": "Chef",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Microservices",
-     "count": 3
+     "name": "Distributed training",
+     "count": 2
     },
     {
-     "name": "Distributed training",
+     "name": "Microservices",
      "count": 2
     },
     {
@@ -5577,42 +5581,55 @@
    "languages": [
     "Go",
     "Python",
-    "Java",
     "Rust",
-    "TypeScript"
+    "Java",
+    "TypeScript",
+    "C++"
    ],
    "stack": {
     "backend": [
      "Go services",
-     "Python (Agent)",
-     "gRPC"
+     "gRPC",
+     "Python (Agent integrations)",
+     "Rust (hot paths / Glommio)",
+     "Java (legacy intake/processing)"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Redux",
+     "WebGL/Canvas (dense viz)"
     ],
     "data": [
-     "Kafka",
+     "Kafka (multi-cluster)",
+     "Husky (custom event store on S3 + Parquet)",
+     "custom Timeseries store",
      "Cassandra",
      "PostgreSQL",
-     "Husky (custom store)",
-     "Flink"
+     "Redis",
+     "Flink",
+     "Spark"
     ],
     "infra": [
-     "AWS",
+     "AWS (primary)",
      "GCP",
-     "Kubernetes"
+     "Azure",
+     "Kubernetes",
+     "Envoy",
+     "Terraform",
+     "Chef"
     ]
    },
    "architecture": [
-    "Microservices",
-    "High-throughput ingestion",
-    "Stream processing"
+    "High-throughput multi-pillar ingestion",
+    "Event-driven / Kafka-backed async pipelines",
+    "Separation of storage & compute (Husky)",
+    "Multi-tenant microservices on Kubernetes"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    AGENT[\"Datadog Agent<br/>Go + Python\"]\n    WEB[\"Dashboard UI<br/>React + TypeScript\"]\n  end\n  subgraph Ingestion\n    LB[\"Intake API<br/>Go Services\"]\n    GW[\"Gateway<br/>gRPC\"]\n  end\n  subgraph Core\n    SVC[\"Microservices<br/>Go\"]\n    FLINK[\"Stream Proc<br/>Apache Flink\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    HUSKY[\"Event Store<br/>Husky\"]\n    CASS[\"Metrics<br/>Cassandra\"]\n    PG[\"Metadata<br/>PostgreSQL\"]\n  end\n  subgraph Infra\n    K8S[\"Platform<br/>AWS GCP Kubernetes\"]\n  end\n  AGENT -->|HTTPS| LB\n  WEB -->|HTTPS| GW\n  LB --> GW\n  GW -->|gRPC| SVC\n  SVC -->|emit| KAFKA\n  KAFKA --> FLINK\n  FLINK --> HUSKY\n  SVC --> CASS\n  SVC --> PG\n  GW --> HUSKY\n  SVC -.-> K8S\n  FLINK -.-> K8S",
-   "why_language": "초당 수조 개의 메트릭/이벤트를 받는 고처리량 파이프라인을 효율적으로 다루려 Go를 백엔드 표준으로 쓴다. 모니터링 에이전트는 이식성을 위해 Python으로 작성한다.",
-   "why_architecture": "방대한 텔레메트리를 Kafka로 수집하고 자체 컬럼형 스토어(Husky)와 스트림 처리로 실시간 분석한다. 대규모 멀티테넌트 SaaS를 마이크로서비스로 운영한다.",
-   "summary": "Go 고처리량 파이프라인과 자체 스토어로 조 단위 관측 데이터를 실시간 처리.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    AG[\"Datadog Agent<br/>Go + embedded Python\"]\n    RUM[\"RUM / Browser SDK<br/>TypeScript\"]\n  end\n  subgraph Gateway[\"Intake / API\"]\n    LB[\"Edge LB<br/>Envoy\"]\n    INTAKE[\"Intake API<br/>Go\"]\n  end\n  subgraph Core[\"Processing Services\"]\n    METRICS[\"Metrics Pipeline<br/>Go\"]\n    TRACE[\"APM Trace Intake<br/>Go\"]\n    LOGS[\"Logs Pipeline<br/>Go + Rust\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>multi-cluster\"]\n    FLINK[\"Flink<br/>stream processing\"]\n  end\n  subgraph Storage[\"Storage\"]\n    HUSKY[\"Husky<br/>S3 + Parquet\"]\n    TSDB[\"Timeseries Store<br/>custom\"]\n    CASS[\"Cassandra\"]\n    PG[\"PostgreSQL\"]\n  end\n  subgraph Query[\"Query / Frontend\"]\n    QE[\"Query Engine<br/>Go\"]\n    WEB[\"Web App<br/>React + TypeScript\"]\n  end\n  CLOUD[\"AWS + GCP on Kubernetes\"]\n\n  AG -->|gzip HTTPS| LB\n  RUM --> LB\n  LB --> INTAKE\n  INTAKE --> METRICS\n  INTAKE --> TRACE\n  INTAKE --> LOGS\n  METRICS -->|emit| KAFKA\n  TRACE --> KAFKA\n  LOGS --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> HUSKY\n  METRICS --> TSDB\n  FLINK --> CASS\n  QE --> HUSKY\n  QE --> TSDB\n  QE --> PG\n  WEB -->|gRPC/HTTP| QE\n  CLOUD -.hosts.-> Core",
+   "why_language": "Datadog는 초당 수천만~수억 이벤트를 받는 인입·처리 경로에서 GC가 예측 가능하고 동시성(goroutine)·gRPC 생태계가 강한 Go를 백엔드 표준으로 삼았고, Agent의 수백 개 통합(integration) 체크는 생태계가 풍부한 Python으로 유지한다. 메모리·지연에 극도로 민감한 핫패스(로그/이벤트 직렬화, thread-per-core 처리)는 Rust로 재작성하고, 초기 인입·검색 일부는 Java(JVM)로 운영해 왔다. 즉 '대량 처리는 Go, 확장성은 Python, 한계 성능은 Rust'라는 규모 기반 분업이 언어 선택의 핵심이다.",
+   "why_architecture": "메트릭·트레이스·로그는 트래픽 패턴과 쿼리 특성이 전혀 다르므로 파이프라인을 pillar별로 분리하고, 인입과 저장·쿼리를 Kafka로 비동기 디커플링해 폭주(스파이크)와 다운스트림 장애를 흡수한다. 또한 저장 비용과 쿼리 신축성을 위해 Husky처럼 오브젝트 스토리지(S3) 위 컬럼형(Parquet) 저장과 컴퓨트를 분리해 무한에 가까운 보존과 탄력적 스케일을 얻는다. 모든 서비스는 Kubernetes 멀티테넌트로 돌려 수천 고객의 데이터를 격리·격납하면서 자원을 공유한다.",
+   "summary": "Go 마이크로서비스 + Kafka 비동기 인입 + S3·Parquet 기반 자체 스토어(Husky)로 초대규모 관측성 데이터를 저비용·탄력적으로 처리하는 스택",
    "deep_dive": [
     {
      "topic": "고처리량 인입 파이프라인",
@@ -5625,6 +5642,22 @@
     {
      "topic": "멀티테넌시·관측성·복원력",
      "body": "### 멀티테넌트 격리\n수많은 고객이 같은 인프라를 공유하므로, 한 고객의 트래픽 폭주(인입 스파이크, 비싼 질의)가 다른 고객에 영향 주지 않게 격리해야 한다. 인입 경로에서 테넌트별 rate limit·쿼터를 두고, Kafka 파티셔닝과 컴퓨트 분리로 워크로드를 격리한다. 질의 경로에선 테넌트별 자원 한도·우선순위로 noisy neighbor를 막는다.\n\n### Datadog이 곧 관측성\n역설적이게도 Datadog은 자사를 자사 제품으로 관측한다. 모든 서비스가 메트릭·트레이스·로그를 방출하고, 분산 트레이싱으로 Kafka→컨슈머→스토어로 이어지는 파이프라인의 지연·병목을 추적한다.\n\n### 복원력\n- **Kafka 버퍼링**: 다운스트림 장애 시 Kafka가 데이터를 보관해 복구 후 리플레이. 인입을 절대 멈추지 않는 게 SaaS 신뢰의 핵심.\n- **백프레셔·격리**: 한 컴포넌트가 느려져도 버퍼가 충격을 흡수.\n- **멀티 클라우드/리전**: `AWS`·`GCP`에 걸쳐 `Kubernetes`로 운영하며, 리전 장애 격리·오토스케일링으로 트래픽 변동에 대응한다.\n- **점진 배포**: 카나리·점진 롤아웃으로 고처리량 경로의 회귀를 조기에 잡는다."
+    },
+    {
+     "topic": "Datadog Agent의 end-to-end 동작 원리 (Go 코어 + 임베디드 Python)",
+     "body": "### Agent는 단일 바이너리 안의 여러 서브 프로세스다\nDatadog Agent(v6 이후)는 Python으로 작성됐던 v5를 Go로 전면 재작성한 산물이다. 다만 수백 개의 integration(예: `postgres`, `nginx`, `kafka_consumer`)은 여전히 Python 체크로 존재하기 때문에, Go 바이너리 안에 **CPython 인터프리터를 임베드**(cgo 기반 `rtloader`)해 Go 코어가 Python 체크를 직접 호출한다. 이렇게 해서 '성능·동시성은 Go, 통합 생태계는 Python'을 한 프로세스에서 동시에 취한다.\n\n### 내부 컴포넌트\n- **Collector**: 스케줄러가 각 체크(Go 또는 Python)를 정해진 주기로 실행해 메트릭을 모은다.\n- **DogStatsD**: UDP/UDS로 들어오는 애플리케이션 커스텀 메트릭을 받는 고성능 수신기. 카디널리티 폭발을 막기 위해 client-side aggregation을 지원한다.\n- **Forwarder**: 수집물을 버퍼링·재시도하며 인입 엔드포인트로 보낸다. 네트워크 단절 시 디스크에 스풀링한다.\n- **trace-agent**: APM 스팬을 받아 **head-based sampling**·우선순위 샘플링·정규화 후 전송.\n- **process-agent / logs-agent / security-agent(eBPF)**: 프로세스, 로그 tail, 시스템 호출 수준 보안 이벤트를 각각 담당.\n\n### 전송 경로\nAgent는 메트릭을 일정 주기로 모아 **gzip 압축 + 배치**로 HTTPS POST 한다. 트레이스/로그는 별도 엔드포인트로 흐른다. 핵심 설계는 '엣지에서 최대한 집계·압축·샘플링해서 백본으로 보내는 데이터를 줄인다'는 것이다. 수백만 호스트에서 들어오는 원본을 그대로 받으면 인입단이 붕괴하므로, Agent 단계의 pre-aggregation이 전체 비용 곡선을 결정한다.\n\n### 왜 이렇게?\n관측성 도구의 Agent는 고객 서버에 상주하므로 **CPU·메모리 풋프린트가 곧 제품 평판**이다. Go 재작성으로 Python 런타임 의존성과 메모리 사용을 줄였고, eBPF·시스템 콜 모니터링 같은 저수준 기능은 Go/C로 직접 구현해야 가능했다. 동시에 통합 수백 개를 다시 짜는 비용을 피하려 Python 체크를 임베드로 끌어안은 것이 현실적 트레이드오프다."
+    },
+    {
+     "topic": "시계열 메트릭 저장·쿼리 엔진 (custom TSDB와 카디널리티 문제)",
+     "body": "### 메트릭은 Husky가 아니라 별도의 시계열 경로로 흐른다\n로그·트레이스 같은 이벤트는 Husky(S3+Parquet)로 가지만, **메트릭은 시계열 특화 저장소**로 흐른다. 메트릭의 핵심 도전은 보존 용량이 아니라 **카디널리티**다. `metric_name{host, service, env, version, endpoint, status_code, ...}`처럼 태그 조합이 곱연산으로 폭발하면, 하나의 메트릭이 수백만 개의 개별 시계열(time series)로 분기한다.\n\n### 저장·집계 구조\n- 인입된 포인트는 보통 **10초~1분 단위로 롤업(rollup)**되어 저장되고, 오래된 데이터는 더 거친 해상도로 다운샘플링되어 보존 비용을 낮춘다.\n- 시계열은 `(metric, tagset)` 해시 기반으로 **샤딩**되어 여러 노드에 분산되며, 쓰기는 append-friendly한 구조로, 읽기는 시간 범위 스캔에 최적화된다.\n- 쿼리(`avg:system.cpu.user{service:web} by {host}`)는 태그 필터 → 매칭되는 시계열 집합 결정 → 시간 범위 스캔 → space aggregation(by 절) + time aggregation(rollup) 순으로 평가된다.\n\n### 카디널리티 방어\nDatadog은 인입단에서 태그 카디널리티를 모니터링하고, DogStatsD client-side aggregation, 태그 화이트리스트, metrics-without-limits 같은 제품 기능으로 '저장은 풀 카디널리티, 쿼리는 인덱싱된 태그만'처럼 **인입과 인덱싱을 분리**한다. 이는 고객이 비용을 통제하면서도 사후에 임의 태그로 드릴다운할 수 있게 하는 핵심 설계다.\n\n### 트레이드오프\n시계열을 범용 이벤트 스토어에 넣지 않은 이유는 명확하다 — 메트릭 쿼리는 '좁은 태그 + 넓은 시간 범위 + 집계'가 지배적이라, 컬럼형 풀스캔보다 시계열 인덱스·롤업이 압도적으로 빠르고 싸기 때문이다."
+    },
+    {
+     "topic": "Kafka 중심의 비동기 파이프라인과 Flink 스트림 처리",
+     "body": "### Kafka가 인입과 처리를 디커플링한다\nDatadog은 업계에서 가장 큰 규모의 Kafka 사용자 중 하나로, **multi-cluster Kafka**가 인입(intake)과 다운스트림 처리 사이의 중앙 버퍼 역할을 한다. 인입 서비스는 검증·정규화 후 곧장 Kafka 토픽에 produce 하고, 메트릭/트레이스/로그 각 처리 파이프라인이 독립적으로 consume 한다.\n\n### 왜 Kafka를 가운데 두는가\n- **스파이크 흡수**: 고객 장애·배포 시 로그/트레이스가 순간적으로 수십 배 폭증한다. Kafka가 완충재가 되어 다운스트림이 자기 속도로 처리하게 한다(backpressure 대신 버퍼링).\n- **장애 격리**: 저장·쿼리 계층이 잠시 죽어도 인입은 계속 받아 토픽에 쌓을 수 있어 데이터 유실을 막는다.\n- **fan-out**: 같은 스트림을 여러 consumer 그룹(인덱싱, 실시간 알림, 아카이브)이 동시에 소비한다.\n\n### Flink 기반 스트림 처리\nFlink는 **stateful stream processing**(윈도우 집계, watermark 기반 이벤트 타임 처리, 정확히-한-번 시맨틱)을 담당한다. 실시간 메트릭 파생, 로그→메트릭 변환, 이상탐지·watchdog 류의 연속 집계가 여기서 일어난다. Flink의 체크포인트·상태 백엔드가 장애 복구 시 정확성을 보장한다.\n\n### 운영 현실\n이 규모의 Kafka는 그 자체가 거대한 운영 과제다 — 파티션 리밸런싱, 브로커 교체, consumer lag 모니터링, 멀티 클러스터 간 토픽 라우팅이 모두 자동화돼야 한다. Datadog은 이를 자사 제품(즉 Datadog으로 Datadog을 모니터링)으로 관측하는 dogfooding 구조를 갖는다."
+    },
+    {
+     "topic": "Rust thread-per-core(Glommio)와 핫패스 최적화",
+     "body": "### 왜 Go만으로 충분하지 않았나\nGo는 생산성과 동시성이 뛰어나지만, **GC 일시정지**와 work-stealing 스케줄러의 캐시 비친화성은 초저지연·초고처리 핫패스(로그 라인 파싱·직렬화, 대량 I/O)에서 꼬리 지연(tail latency)을 만든다. Datadog은 이런 한계 경로를 **Rust**로 재작성해 GC 없는 결정적 성능과 메모리 안전성을 동시에 얻는다.\n\n### Glommio — thread-per-core 런타임\nDatadog 엔지니어(Glauber Costa 등)가 오픈소스로 공개한 `glommio`는 Linux **io_uring** 기반의 **thread-per-core** 비동기 Rust 런타임이다. 핵심 아이디어:\n- **shared-nothing**: 각 CPU 코어에 작업을 고정(pin)하고 코어 간 데이터 공유를 없애 락·캐시 코히런시 트래픽·컨텍스트 스위치를 제거한다.\n- **io_uring**: 시스템 콜 오버헤드 없이 배치 비동기 I/O를 수행해 디스크·네트워크 처리량을 극대화한다.\n- 전통적 work-stealing(Go runtime, Tokio 기본)과 달리, 코어별 독립 실행이므로 **예측 가능한 지연**과 선형 확장을 노린다.\n\n### 적용 지점과 트레이드오프\n이 모델은 로그 인입처럼 '코어당 독립 샤드로 쪼갤 수 있고, 코어 간 조정이 거의 없는' 워크로드에 이상적이다. 대신 작업이 코어 간 불균형(skew)하면 한 코어만 과부하될 수 있어, 샤딩 키 설계가 중요해진다. Datadog은 '대부분은 Go로 충분하고, 측정으로 증명된 병목만 Rust/Glommio로 내린다'는 실용적 기준을 따른다 — 즉 성급한 Rust화가 아니라 프로파일링에 근거한 선택적 최적화다."
     }
    ],
    "github": {
@@ -5633,38 +5666,47 @@
      {
       "name": "DataDog/datadog-agent",
       "url": "https://github.com/DataDog/datadog-agent",
-      "desc": "메트릭/로그/트레이스 수집 에이전트",
+      "desc": "메트릭·트레이스·로그를 수집하는 핵심 Agent (Go 코어 + 임베디드 Python 체크)",
       "lang": "Go",
       "stars": 3646
      },
      {
-      "name": "DataDog/dd-trace-go",
-      "url": "https://github.com/DataDog/dd-trace-go",
-      "desc": "Go용 APM 추적 라이브러리",
-      "lang": "Go",
-      "stars": 847
+      "name": "DataDog/glommio",
+      "url": "https://github.com/DataDog/glommio",
+      "desc": "io_uring 기반 thread-per-core 비동기 Rust 런타임",
+      "lang": "Rust",
+      "stars": 3608
      },
      {
       "name": "DataDog/dd-trace-java",
       "url": "https://github.com/DataDog/dd-trace-java",
-      "desc": "자바용 APM 추적 라이브러리",
+      "desc": "JVM 자동 계측 트레이싱 에이전트",
       "lang": "Java",
       "stars": 724
      },
      {
       "name": "DataDog/dd-trace-py",
       "url": "https://github.com/DataDog/dd-trace-py",
-      "desc": "파이썬 APM 분산 추적 라이브러리",
+      "desc": "Python 애플리케이션용 APM·분산 트레이싱 라이브러리",
       "lang": "Python",
       "stars": 642
+     },
+     {
+      "name": "DataDog/datadog-operator",
+      "url": "https://github.com/DataDog/datadog-operator",
+      "desc": "Agent 배포를 관리하는 Kubernetes 오퍼레이터",
+      "lang": "Go",
+      "stars": 380
      }
     ]
    },
    "sources": [
-    "https://www.datadoghq.com/blog/engineering/"
+    "https://www.datadoghq.com/blog/engineering/introducing-husky/",
+    "https://github.com/DataDog/glommio",
+    "https://github.com/DataDog/datadog-agent"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-14"
   },
   {
    "key": "mongodb",
@@ -5676,42 +5718,49 @@
     "Go",
     "JavaScript",
     "TypeScript",
-    "Java"
+    "Python"
    ],
    "stack": {
     "backend": [
-     "C++ (server)",
-     "Go (Atlas control plane)",
+     "C++17 (mongod/mongos 서버 코어)",
+     "Go (Atlas control plane·자동화 에이전트)",
      "Node.js",
-     "gRPC"
+     "gRPC",
+     "Java/Python/Go 드라이버"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "LeafyGreen"
+     "LeafyGreen Design System",
+     "Redux",
+     "Emotion(CSS-in-JS)"
     ],
     "data": [
-     "WiredTiger",
-     "MongoDB",
-     "Kafka",
-     "Lucene (Atlas Search)"
+     "WiredTiger 스토리지 엔진",
+     "MongoDB(BSON 도큐먼트)",
+     "Apache Lucene(Atlas Search)",
+     "Apache Kafka(Atlas Stream Processing)",
+     "Voyage AI 임베딩(벡터 검색)"
     ],
     "infra": [
      "AWS",
-     "Azure",
      "GCP",
-     "Kubernetes Operator"
+     "Azure",
+     "Kubernetes Operator",
+     "Terraform",
+     "Atlas 자체 오케스트레이션 플레인"
     ]
    },
    "architecture": [
-    "Distributed database",
-    "Sharded replica sets",
-    "DBaaS control plane"
+    "Distributed document database (sharded replica sets)",
+    "DBaaS multi-cloud control plane (Atlas)",
+    "Pluggable storage engine + Raft 유사 복제 프로토콜",
+    "Lucene 기반 통합 검색·벡터 검색 사이드카"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    DRV[\"Drivers<br/>Node Java Go\"]\n    UI[\"Atlas UI<br/>React + LeafyGreen\"]\n  end\n  subgraph Control\n    CP[\"Atlas Control Plane<br/>Go + gRPC\"]\n    OP[\"Kubernetes Operator<br/>Go\"]\n  end\n  subgraph Cluster\n    MONGOS[\"Query Router<br/>mongos\"]\n    PRIM[\"Primary<br/>mongod C++\"]\n    SEC[\"Secondaries<br/>Replica Set\"]\n  end\n  subgraph Engine\n    WT[\"Storage Engine<br/>WiredTiger\"]\n    SEARCH[\"Atlas Search<br/>Lucene\"]\n  end\n  subgraph Stream\n    KAFKA[\"Change Streams<br/>Kafka Connector\"]\n  end\n  subgraph Infra\n    CLOUD[\"Platform<br/>AWS Azure GCP\"]\n  end\n  DRV -->|wire proto| MONGOS\n  UI -->|HTTPS| CP\n  CP --> OP\n  OP --> MONGOS\n  MONGOS --> PRIM\n  PRIM -->|oplog| SEC\n  PRIM --> WT\n  SEC --> WT\n  PRIM --> SEARCH\n  PRIM -->|change stream| KAFKA\n  CP -.-> CLOUD\n  PRIM -.-> CLOUD",
-   "why_language": "데이터베이스 코어 엔진(쿼리·스토리지 WiredTiger)은 성능·메모리 제어를 위해 C++로 작성하고, 클라우드 관리 평면(Atlas)은 Go로 운영한다. 드라이버·UI는 다양한 언어로 제공한다.",
-   "why_architecture": "도큐먼트 모델을 샤딩·복제 셋으로 수평 확장하는 분산 데이터베이스가 본질이며, 이를 멀티 클라우드 DBaaS(Atlas)로 자동 운영하는 컨트롤 플레인을 갖췄다.",
-   "summary": "C++ 분산 DB 엔진과 Go 기반 Atlas 컨트롤 플레인으로 멀티클라우드 DBaaS를 제공.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Drivers\"]\n    APP[\"App / SDK<br/>Java Python Go Node Drivers\"]\n    SHELL[\"mongosh / Compass<br/>JavaScript + Electron\"]\n  end\n  subgraph CP[\"Atlas Control Plane\"]\n    UI[\"Atlas UI<br/>React + TypeScript + LeafyGreen\"]\n    API[\"Atlas API<br/>Go + gRPC\"]\n    AUTO[\"Automation Agent<br/>Go\"]\n  end\n  subgraph Query[\"Query Routing\"]\n    MONGOS[\"mongos Router<br/>C++ Query Planner\"]\n    CFG[\"Config Servers<br/>Replica Set (metadata)\"]\n  end\n  subgraph Data[\"Data Layer (Sharded)\"]\n    PRIM[\"Primary mongod<br/>C++ + WiredTiger\"]\n    SEC1[\"Secondary mongod<br/>oplog replication\"]\n    SEC2[\"Secondary mongod<br/>oplog replication\"]\n  end\n  subgraph Search[\"Search / AI\"]\n    MOT[\"mongot<br/>Java + Lucene (Atlas Search)\"]\n    VEC[\"Vector Search<br/>Voyage AI Embeddings\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Atlas Stream Processing<br/>Kafka + Change Streams\"]\n  end\n  subgraph Infra[\"Multi-Cloud Infra\"]\n    K8S[\"Kubernetes Operator<br/>AWS / GCP / Azure\"]\n  end\n  APP -->|MongoDB Wire Protocol| MONGOS\n  SHELL --> MONGOS\n  UI --> API\n  API --> AUTO\n  AUTO -->|provision/scale| K8S\n  MONGOS -->|metadata| CFG\n  MONGOS -->|routed query| PRIM\n  PRIM -->|oplog| SEC1\n  PRIM -->|oplog| SEC2\n  PRIM -->|change stream| MOT\n  PRIM -->|change stream| KAFKA\n  MOT --> VEC\n  K8S --> PRIM",
+   "why_language": "데이터베이스 코어(mongod/mongos)는 메모리·락·디스크 I/O를 직접 통제해야 하므로 GC가 없는 C++17로 작성돼 WiredTiger와 저수준에서 맞물린다. 반면 수만 개 클러스터를 멀티클라우드에 프로비저닝·스케일하는 Atlas control plane은 높은 동시성과 빠른 개발 속도가 중요해 고루틴 기반의 Go를, 검색 사이드카(mongot)는 성숙한 Lucene 생태계 때문에 Java를 쓴다.",
+   "why_architecture": "단일 노드 한계를 넘어 수평 확장하기 위해 데이터를 샤드 키로 분할한 sharded replica set 구조를 택했고, 각 복제 셋은 oplog 기반 복제와 Raft 유사 선출로 자동 페일오버한다. DBaaS인 Atlas는 데이터 평면(mongod)과 제어 평면(Go control plane)을 분리해, 동일한 데이터베이스 코어를 AWS·GCP·Azure 어디서나 동일하게 운영하면서 검색·벡터·스트리밍을 change stream으로 비동기 연동하는 사이드카 패턴을 쓴다.",
+   "summary": "C++ 코어 데이터베이스 + Go 멀티클라우드 control plane이 결합된 샤딩형 도큐먼트 DBaaS",
    "deep_dive": [
     {
      "topic": "WiredTiger 스토리지 엔진",
@@ -5724,6 +5773,22 @@
     {
      "topic": "샤딩 — 수평 확장",
      "body": "### 샤딩 구조\n단일 복제 셋의 용량을 넘으면 **샤딩 클러스터**로 수평 확장한다. 구성:\n\n- `mongos`: 쿼리 라우터. 클라이언트는 mongos에 접속하고, mongos가 어느 샤드로 보낼지 라우팅한다.\n- **config servers**: 청크-샤드 매핑 등 메타데이터를 보관(자체도 복제 셋).\n- **샤드**: 각 샤드가 데이터 일부를 가진 복제 셋.\n\n### 샤드 키와 청크\n컬렉션을 **샤드 키**로 분할한다. 데이터는 샤드 키 범위(또는 해시) 기준 **청크(chunk)**로 쪼개져 샤드에 분산된다. 샤드 키 선택이 핵심이다:\n\n- **range sharding**: 범위 쿼리에 유리하나, 단조 증가 키(타임스탬프)는 한 샤드에 쓰기가 몰리는 핫스팟을 만든다.\n- **hashed sharding**: 키를 해시해 고르게 분산, 쓰기 핫스팟을 막지만 범위 쿼리가 모든 샤드로 흩어진다(scatter-gather).\n\n### 밸런싱과 라우팅\n밸런서가 청크 분포를 모니터링해 불균형하면 샤드 간 청크를 마이그레이션한다. 쿼리에 샤드 키가 있으면 mongos가 **targeted query**로 해당 샤드만 친다(효율적). 없으면 모든 샤드에 broadcast 후 머지(scatter-gather, 비쌈). 그래서 샤드 키를 쿼리 패턴에 맞추는 게 성능의 관건이다.\n\n### Atlas 컨트롤 플레인\n이 모든 분산 토폴로지를 `Atlas`(Go + gRPC 컨트롤 플레인)가 멀티클라우드(AWS/Azure/GCP)에서 자동 프로비저닝·백업·스케일·패치한다. Kubernetes Operator로 셀프매니지드 배포도 자동화한다. `Atlas Search`는 `Lucene` 기반 전문 검색을, change stream은 oplog 기반으로 변경 이벤트를 Kafka 등으로 흘려보낸다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end — 드라이버에서 WiredTiger까지",
+     "body": "### 한 번의 `find()` 가 서버를 통과하는 경로\n\nMongoDB의 요청은 SQL이 아니라 **MongoDB Wire Protocol**(BSON 직렬화된 `OP_MSG`)로 흐른다. 클라이언트 드라이버는 쿼리를 BSON 도큐먼트로 직렬화하고 TCP(또는 TLS) 위로 보낸다.\n\n1. **드라이버 / 서버 셀렉션** — 드라이버는 내부에 토폴로지 맵을 유지하며 SDAM(Server Discovery and Monitoring) 스펙에 따라 각 노드에 주기적으로 `hello` 명령을 던져 RTT와 역할(primary/secondary)을 추적한다. `readPreference` 와 RTT 윈도우(기본 15ms)를 기준으로 보낼 노드를 고른다.\n2. **mongos 라우팅(샤딩 시)** — 샤드 클러스터면 요청은 먼저 `mongos` 라우터로 간다. mongos는 config server에 캐시된 청크 메타데이터(샤드 키 범위 → 샤드 매핑)를 보고, 쿼리에 샤드 키가 있으면 *targeted* 라우팅(해당 샤드만), 없으면 *scatter-gather*(모든 샤드에 부채살 전송 후 병합)를 한다. 이 차이가 샤드 키 설계가 성능을 좌우하는 이유다.\n3. **명령 디스패치** — `mongod` 의 `ServiceEntryPoint` 가 OP_MSG를 파싱해 command 객체로 만든다. 인증·권한(RBAC) 체크 후 쿼리면 `find` command handler로 간다.\n4. **쿼리 플래닝** — `QueryPlanner` 가 후보 플랜(인덱스 스캔 vs 컬렉션 스캔)을 생성하고, 실제로 각 플랜을 짧게 돌려보는 **plan cache + trial period** 방식으로 최적 플랜을 고른다. 선택된 플랜은 query shape별로 캐시된다.\n5. **스토리지 접근** — 실행기는 WiredTiger의 cursor API를 통해 도큐먼트를 읽는다. 이때 스냅샷 격리(MVCC)가 적용돼 읽기 일관성을 보장한다.\n6. **응답** — 결과를 BSON 배치로 묶어 cursor ID와 함께 반환하고, 클라이언트는 `getMore` 로 다음 배치를 가져간다.\n\n쓰기 경로는 추가로 **journaling(WAL)** 과 **oplog 기록**이 동기적으로 일어나며, `writeConcern: {w: \"majority\"}` 면 과반 복제 확인까지 기다린 뒤 ack 한다."
+    },
+    {
+     "topic": "Atlas control plane — 데이터 평면과 분리된 멀티클라우드 오케스트레이션",
+     "body": "### 왜 control plane을 Go로 따로 떼었나\n\nAtlas는 \"MongoDB를 클릭 몇 번으로 AWS·GCP·Azure에 띄우는\" DBaaS다. 핵심은 **데이터 평면(C++ mongod)** 과 **제어 평면(Go)** 의 완전한 분리다.\n\n- **Automation Agent** — 각 노드에 함께 배포되는 Go 에이전트가 control plane이 발행한 *목표 상태(goal state)* 도큐먼트를 폴링한다. \"이 노드는 4.4 → 6.0 으로 올려라\", \"replica set에 멤버를 추가하라\" 같은 선언적 명세를 받아, 현재 상태와 diff를 계산해 단계적으로 수렴시킨다. 이는 Kubernetes의 reconcile 루프와 같은 철학이다.\n- **무중단 업그레이드** — replica set의 secondary를 하나씩 내려 업그레이드 → 재합류 → 마지막에 primary를 step-down 시키는 rolling 방식으로, 클라이언트 입장에선 짧은 페일오버 한 번으로 메이저 버전이 올라간다.\n- **멀티클라우드 추상화** — control plane은 클라우드별 IaaS 차이(인스턴스 타입, 디스크, 네트워크 peering)를 추상화해 동일한 클러스터를 여러 클라우드 region에 걸쳐 띄울 수 있다. 한 replica set의 멤버가 AWS와 GCP에 나뉘어 있을 수도 있다.\n- **스케일링** — 메트릭(IOPS·CPU·디스크)을 보고 control plane이 인스턴스 티어 상향이나 스토리지 auto-scaling을 트리거한다. 이 모든 게 mongod 코어를 건드리지 않고 외부에서 일어난다.\n\n이 분리 덕분에 MongoDB는 동일한 오픈소스 DB 엔진을 self-managed와 Atlas 양쪽에 그대로 쓰면서, 운영 자동화만 Go 서비스로 빠르게 진화시킬 수 있다."
+    },
+    {
+     "topic": "Atlas Search & Vector Search — mongot 사이드카와 Lucene 통합",
+     "body": "### 왜 검색을 DB 안에 넣지 않고 옆에 붙였나\n\nMongoDB의 B-tree 인덱스는 정확 매칭·범위엔 강하지만 full-text 랭킹(BM25), 형태소 분석, 벡터 유사도엔 부적합하다. MongoDB는 별도 검색 클러스터를 운영하게 하는 대신 **`mongot`** 이라는 사이드카 프로세스를 mongod 옆에 함께 띄운다.\n\n- **mongot** 은 Java로 작성된 Apache Lucene 기반 프로세스다. 각 데이터 노드마다 함께 배치된다.\n- **데이터 동기화** — mongot은 mongod의 **change stream**(내부적으로 oplog tailing)을 구독해, 도큐먼트 변경을 실시간으로 자신의 Lucene 인덱스에 반영한다. 즉 별도 ETL 없이 DB 쓰기가 곧 검색 인덱스 갱신으로 이어진다(near real-time).\n- **쿼리 경로** — 사용자는 평소처럼 aggregation pipeline에 `$search` 또는 `$vectorSearch` 스테이지를 넣는다. mongod가 이를 받아 같은 노드의 mongot에 gRPC로 위임하고, mongot이 Lucene으로 랭킹된 `_id` 리스트를 돌려주면 mongod가 원본 도큐먼트를 조회해 합쳐 반환한다. 개발자 입장에선 검색이 그냥 또 하나의 쿼리 스테이지로 보인다.\n- **Vector Search** — 2023년 이후 핵심 투자 영역. Lucene의 HNSW(Hierarchical Navigable Small World) 그래프 인덱스로 ANN(근사 최근접) 검색을 한다. 2024년 인수한 **Voyage AI** 의 임베딩 모델을 결합해, RAG 파이프라인의 임베딩 생성+저장+검색을 한 플랫폼에서 끝내는 것을 노린다.\n\n**트레이드오프**: 사이드카라 운영 단순성과 데이터 지역성(같은 노드)을 얻지만, 검색 워크로드와 DB 워크로드가 같은 호스트 자원을 나눠 쓰므로 Atlas는 Search Node를 별도 노드로 분리 배치하는 옵션도 제공한다."
+    },
+    {
+     "topic": "트랜잭션과 일관성 — WiredTiger MVCC에서 분산 트랜잭션까지",
+     "body": "### 도큐먼트 DB가 ACID 멀티-도큐먼트 트랜잭션을 갖기까지\n\n초기 MongoDB는 단일 도큐먼트 원자성만 보장했지만, 4.0(복제 셋)·4.2(샤드 클러스터)에서 멀티-도큐먼트 분산 트랜잭션을 도입했다. 기반은 WiredTiger의 MVCC다.\n\n- **스냅샷 격리** — WiredTiger는 각 트랜잭션에 시작 시점 스냅샷을 주고, 다른 트랜잭션의 미커밋 변경은 보이지 않게 한다. 충돌하는 쓰기는 write conflict로 abort 후 재시도된다(낙관적 동시성).\n- **클러스터 전역 시간 — `clusterTime`** — 분산 환경에서 인과적 일관성(causal consistency)을 위해 하이브리드 논리 시계(HLC) 기반의 `clusterTime` 을 모든 노드가 oplog와 함께 전파한다. 클라이언트 세션은 이 토큰을 들고 다니며 \"내가 방금 쓴 건 반드시 읽힌다(read-your-writes)\" 를 보장받는다.\n- **readConcern 레벨** — `local`(노드 로컬 최신), `majority`(과반 복제돼 롤백 불가능한 데이터만), `snapshot`(트랜잭션 전역 스냅샷), `linearizable`(선형화) 등으로 일관성/지연 트레이드오프를 선택한다.\n- **샤드 간 분산 트랜잭션** — 여러 샤드에 걸친 트랜잭션은 **two-phase commit(2PC)** 으로 조율된다. mongos가 코디네이터가 되어 prepare → commit 단계를 진행하며, prepare timestamp로 각 샤드의 커밋 시점을 정렬해 전역 스냅샷 읽기를 가능하게 한다.\n\n**설계 철학**: MongoDB는 \"잘 설계된 도큐먼트 모델이면 멀티-도큐먼트 트랜잭션이 거의 필요 없다\"는 입장을 유지하면서도, RDBMS 마이그레이션 수요를 위해 안전망으로 분산 트랜잭션을 제공한다. 단, 샤드 간 2PC는 비용이 크므로 핫패스에선 권장하지 않는다."
     }
    ],
    "github": {
@@ -5732,39 +5797,40 @@
      {
       "name": "mongodb/mongo",
       "url": "https://github.com/mongodb/mongo",
-      "desc": "몽고DB 서버 코어 소스",
+      "desc": "MongoDB 서버 코어(mongod/mongos) C++ 소스 전체",
       "lang": "C++",
-      "stars": 28361
-     },
-     {
-      "name": "mongodb/node-mongodb-native",
-      "url": "https://github.com/mongodb/node-mongodb-native",
-      "desc": "Node.js용 공식 드라이버",
-      "lang": "TypeScript",
-      "stars": 10180
+      "stars": 28362
      },
      {
       "name": "mongodb/mongo-go-driver",
       "url": "https://github.com/mongodb/mongo-go-driver",
-      "desc": "Go용 공식 드라이버",
+      "desc": "공식 Go 드라이버",
       "lang": "Go",
-      "stars": 8525
+      "stars": 8526
      },
      {
       "name": "wiredtiger/wiredtiger",
       "url": "https://github.com/wiredtiger/wiredtiger",
-      "desc": "몽고DB 기본 스토리지 엔진",
+      "desc": "MongoDB의 기본 스토리지 엔진 WiredTiger",
       "lang": "C",
       "stars": 2397
+     },
+     {
+      "name": "mongodb/leafygreen-ui",
+      "url": "https://github.com/mongodb/leafygreen-ui",
+      "desc": "Atlas UI의 React 디자인 시스템 컴포넌트",
+      "lang": "TypeScript",
+      "stars": 271
      }
     ]
    },
    "sources": [
     "https://www.mongodb.com/blog/channel/engineering-blog",
-    "https://github.com/wiredtiger/wiredtiger"
+    "https://github.com/mongodb/mongo",
+    "https://www.mongodb.com/docs/manual/core/sharding-data-partitioning/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-14"
   },
   {
    "key": "nvidia",
