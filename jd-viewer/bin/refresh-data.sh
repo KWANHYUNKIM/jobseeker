@@ -35,3 +35,5 @@ PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
 "$PY" "$SCRIPT_DIR/build_calendar.py"
 # 개발 트렌드 — 날짜별 스냅샷에서 기술 수요 시계열(trends.json) 집계
 "$PY" "$SCRIPT_DIR/build_trends.py"
+# 기술 관계·맥락 — 동시출현(스택 레이어) 집계(LLM context/domains 는 보존)
+"$PY" "$SCRIPT_DIR/build_tech_relations.py"

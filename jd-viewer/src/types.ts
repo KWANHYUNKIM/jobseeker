@@ -113,6 +113,36 @@ export interface TrendsFile {
   movers: { up: TrendMover[]; down: TrendMover[] }
 }
 
+// ── 기술 관계·맥락 (tech_relations.json) ───────────────────────────────
+export interface RelatedTech {
+  name: string
+  layer: string
+  count: number
+  pct: number // 이 기술 공고 중 함께 쓰인 비율
+}
+
+export interface TechRelation {
+  name: string
+  layer: string
+  count: number
+  pct_jobs: number
+  related: RelatedTech[]
+  context: string | null // LLM: 어디서·왜 쓰이는지(마크다운)
+}
+
+export interface DomainInsight {
+  domain: string
+  techs: string[]
+  why: string // 마크다운
+}
+
+export interface TechRelationsFile {
+  generated_at: string
+  total_jobs: number
+  techs: TechRelation[]
+  domains: DomainInsight[]
+}
+
 // ── 모집 캘린더 (job_calendar.json) ────────────────────────────────────
 export interface CalendarItem {
   company: string
