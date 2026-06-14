@@ -1,6 +1,7 @@
 import type { FilterState } from '../lib/filter'
 import type { Site } from '../types'
 import { CAREER_BUCKETS } from '../types'
+import { SidePanel } from './ui'
 
 const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev']
 
@@ -10,6 +11,8 @@ interface Props {
   topStacks: { name: string; count: number }[]
   totalCount: number
   filteredCount: number
+  open: boolean
+  onClose: () => void
 }
 
 function toggle<T>(set: Set<T>, val: T): Set<T> {
@@ -19,14 +22,24 @@ function toggle<T>(set: Set<T>, val: T): Set<T> {
   return next
 }
 
-export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCount }: Props) {
+export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCount, open, onClose }: Props) {
   return (
-    <aside className="w-72 shrink-0 border-r border-(--color-border) bg-(--color-panel) p-4 overflow-y-auto h-screen sticky top-0 flex flex-col gap-5 text-sm">
-      <div>
-        <h1 className="text-lg font-semibold text-white">JD Viewer</h1>
-        <p className="text-xs text-(--color-muted) mt-1">
-          {filteredCount.toLocaleString()} / {totalCount.toLocaleString()} 건
-        </p>
+    <SidePanel side="left" desktopWidth="md:w-72" open={open} onClose={onClose}>
+     <div className="p-4 overflow-y-auto flex flex-col gap-5 text-sm h-full">
+      <div className="flex items-start">
+        <div>
+          <h1 className="text-lg font-semibold text-white">JD Viewer</h1>
+          <p className="text-xs text-(--color-muted) mt-1">
+            {filteredCount.toLocaleString()} / {totalCount.toLocaleString()} 건
+          </p>
+        </div>
+        <button
+          onClick={onClose}
+          className="md:hidden ml-auto -mt-1 -mr-1 text-(--color-muted) hover:text-white text-2xl leading-none w-8 h-8 rounded hover:bg-white/5"
+          aria-label="필터 닫기"
+        >
+          ×
+        </button>
       </div>
 
       <div>
@@ -90,7 +103,8 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
           필터 초기화
         </button>
       )}
-    </aside>
+     </div>
+    </SidePanel>
   )
 }
 

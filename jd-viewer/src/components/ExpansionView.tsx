@@ -12,7 +12,7 @@ import {
   CAT_COLOR,
   type TechNode,
 } from '../lib/expansion'
-import { Loader, ErrorState, EmptyState } from './ui'
+import { Loader, ErrorState, EmptyState, SidePanel, MobileBar } from './ui'
 
 const SIZE_COLOR: Record<string, string> = {
   대기업: '#f472b6',
@@ -34,6 +34,7 @@ export function ExpansionView({
   const learning = useLearning()
   const [query, setQuery] = useState('')
   const [selectedTech, setSelectedTech] = useState<string | null>(null)
+  const [navOpen, setNavOpen] = useState(false)
 
   // 다른 탭(회사 뷰)에서 "이 기술 공부하기"로 들어오면 해당 기술을 선택.
   useEffect(() => {
@@ -58,15 +59,23 @@ export function ExpansionView({
     )
 
   return (
-    <div className="flex flex-1 min-h-0">
+    <div className="flex flex-1 min-h-0 min-w-0">
       <TechSidebar
         index={index}
         query={query}
         setQuery={setQuery}
         selected={tech}
-        onSelect={setSelectedTech}
+        onSelect={(t) => {
+          setSelectedTech(t)
+          setNavOpen(false)
+        }}
+        open={navOpen}
+        onClose={() => setNavOpen(false)}
       />
       <main className="flex-1 min-w-0 overflow-auto">
+        <MobileBar onMenu={() => setNavOpen(true)} label="기술 목록">
+          {tech && <span className="ml-auto text-xs text-(--color-text) truncate">{tech}</span>}
+        </MobileBar>
         {tech ? (
           <TechPanel
             tech={tech}
@@ -92,18 +101,22 @@ function TechSidebar({
   setQuery,
   selected,
   onSelect,
+  open,
+  onClose,
 }: {
   index: ReturnType<typeof buildExpansionIndex>
   query: string
   setQuery: (v: string) => void
   selected: string | null
   onSelect: (t: string) => void
+  open: boolean
+  onClose: () => void
 }) {
   const q = query.trim().toLowerCase()
   const cats = CAT_ORDER.filter((c) => index.byCategory[c]?.length)
 
   return (
-    <aside className="w-64 shrink-0 border-r border-(--color-border) bg-(--color-panel) flex flex-col min-h-0">
+    <SidePanel side="left" desktopWidth="md:w-64" open={open} onClose={onClose}>
       <div className="p-3 border-b border-(--color-border)">
         <input
           value={query}
@@ -146,7 +159,7 @@ function TechSidebar({
           )
         })}
       </div>
-    </aside>
+    </SidePanel>
   )
 }
 

@@ -86,9 +86,9 @@ export function CalendarView() {
   const selItems = selected ? byDate.get(selected) ?? [] : null
 
   return (
-    <div className="flex flex-1 min-h-0">
+    <div className="flex flex-col md:flex-row flex-1 min-h-0 min-w-0 overflow-y-auto md:overflow-hidden">
       {/* 캘린더 */}
-      <div className="flex-1 min-w-0 overflow-auto p-5 flex flex-col gap-3">
+      <div className="flex-1 min-w-0 md:overflow-auto p-4 sm:p-5 flex flex-col gap-3">
         <div className="flex items-center gap-3 text-xs text-(--color-muted)">
           <span>
             마감일 표기 <b className="text-(--color-text)">{data?.dated ?? 0}</b>건 · 상시채용{' '}
@@ -150,8 +150,8 @@ export function CalendarView() {
         </p>
       </div>
 
-      {/* 우측: 선택일 또는 마감 임박 */}
-      <aside className="w-96 shrink-0 overflow-auto border-l border-(--color-border) bg-(--color-panel) p-4">
+      {/* 우측(모바일=하단): 선택일 또는 마감 임박 */}
+      <aside className="w-full md:w-96 shrink-0 md:overflow-auto border-t md:border-t-0 md:border-l border-(--color-border) bg-(--color-panel) p-4">
         {selItems ? (
           <>
             <div className="flex items-center gap-2 mb-3">

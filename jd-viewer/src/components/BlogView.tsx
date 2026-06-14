@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
 import { BlogDetail } from './BlogDetail'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, SidePanel, MobileBar } from './ui'
 import type { BlogPost } from '../types'
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -21,6 +21,7 @@ export function BlogView() {
   const [country, setCountry] = useState<string | null>(null)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const [selected, setSelected] = useState<BlogPost | null>(null)
+  const [navOpen, setNavOpen] = useState(false)
 
   const posts = data?.posts ?? []
   const tagCat = data?.tag_categories ?? {}
@@ -91,9 +92,10 @@ export function BlogView() {
     )
 
   return (
-    <div className="flex flex-1 min-h-0">
-      {/* 사이드바: 검색 + 국가 + 카테고리별 기술 키워드 */}
-      <aside className="w-80 shrink-0 overflow-auto border-r border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-4">
+    <div className="flex flex-1 min-h-0 min-w-0">
+      {/* 사이드바: 검색 + 국가 + 카테고리별 기술 키워드 (모바일=드로어) */}
+      <SidePanel side="left" desktopWidth="md:w-80" open={navOpen} onClose={() => setNavOpen(false)}>
+       <div className="overflow-auto p-4 flex flex-col gap-4">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -149,10 +151,14 @@ export function BlogView() {
             )
           })}
         </div>
-      </aside>
+       </div>
+      </SidePanel>
 
       {/* 본문: 글 목록 */}
       <main className="flex-1 min-w-0 overflow-auto">
+        <MobileBar onMenu={() => setNavOpen(true)} label="검색·필터">
+          <span className="ml-auto text-xs text-(--color-muted)">{filtered.length}건</span>
+        </MobileBar>
         <div className="px-5 py-3 border-b border-(--color-border) text-xs text-(--color-muted) flex items-center gap-3">
           <span>
             {data?.total ?? 0}건 중 <b className="text-(--color-text)">{filtered.length}건</b>
@@ -186,8 +192,8 @@ function PostRow({
   onOpen: (p: BlogPost) => void
 }) {
   return (
-    <li className="px-5 py-4 hover:bg-(--color-panel) transition">
-      <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
+    <li className="px-4 sm:px-5 py-4 min-w-0 hover:bg-(--color-panel) transition">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-(--color-muted) mb-1">
         <span className="text-(--color-accent) font-medium">{post.company}</span>
         <span>{COUNTRY_LABEL[post.country] ?? post.country}</span>
         {post.published && <span>· {post.published}</span>}
@@ -195,12 +201,12 @@ function PostRow({
           <span className="px-1.5 rounded bg-(--color-bg) border border-(--color-border)">번역</span>
         )}
         {post.categories.length > 0 && (
-          <span className="ml-auto text-(--color-muted)">{post.categories.join(' · ')}</span>
+          <span className="sm:ml-auto text-(--color-muted) break-words">{post.categories.join(' · ')}</span>
         )}
       </div>
       <button
         onClick={() => onOpen(post)}
-        className="text-left text-(--color-text) font-medium hover:text-(--color-accent) hover:underline"
+        className="block text-left text-(--color-text) font-medium break-words hover:text-(--color-accent) hover:underline"
       >
         {post.title}
       </button>

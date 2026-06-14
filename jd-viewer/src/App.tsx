@@ -9,7 +9,7 @@ import { ExpansionView } from './components/ExpansionView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
 import { CalendarView } from './components/CalendarView'
-import { Loader, ErrorState } from './components/ui'
+import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
 import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
@@ -26,6 +26,7 @@ function App() {
   const [tab, setTab] = useHashTab(TABS, 'jobs')
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
   const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
+  const [filterOpen, setFilterOpen] = useState(false)
 
   const openCompany = (norm: string) => {
     setCompanyFocus(norm)
@@ -127,8 +128,15 @@ function App() {
               topStacks={allStacks}
               totalCount={jobs.length}
               filteredCount={filtered.length}
+              open={filterOpen}
+              onClose={() => setFilterOpen(false)}
             />
             <main className="flex-1 min-w-0 overflow-auto">
+              <MobileBar onMenu={() => setFilterOpen(true)} label="필터">
+                <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
+                  {filtered.length.toLocaleString()}건
+                </span>
+              </MobileBar>
               <TechChart data={stacks} onPick={toggleStack} highlight={filter.stacks} />
               <JobList jobs={filtered} selected={selected} onSelect={setSelected} />
             </main>
@@ -156,7 +164,7 @@ function TabButton({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-1.5 text-sm rounded transition ${
+      className={`px-3 sm:px-4 py-1.5 text-sm rounded transition whitespace-nowrap shrink-0 ${
         active
           ? 'bg-(--color-accent) text-black font-medium'
           : 'text-(--color-text) hover:bg-(--color-bg) border border-transparent hover:border-(--color-border)'

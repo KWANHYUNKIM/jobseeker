@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRadar } from '../lib/useRadar'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, SidePanel, MobileBar } from './ui'
 import type {
   Debate,
   DeepDiveSection,
@@ -42,6 +42,7 @@ export function RadarView() {
   const [flags, setFlags] = useState<Set<string>>(new Set())
   const [sort, setSort] = useState<'default' | 'name' | 'country'>('default')
   const [selected, setSelected] = useState<RadarCompany | null>(null)
+  const [navOpen, setNavOpen] = useState(false)
 
   const companies = data?.companies ?? []
 
@@ -134,7 +135,7 @@ export function RadarView() {
     )
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col flex-1 min-h-0 min-w-0">
       {/* 보기 전환: 회사별 ↔ 도메인별 공통 스택 */}
       <div className="flex items-center gap-3 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/60">
         <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden">
@@ -165,9 +166,10 @@ export function RadarView() {
           }}
         />
       ) : (
-        <div className="flex flex-1 min-h-0">
-          {/* 사이드바: 검색 + 국가 + 도메인 + 언어 */}
-          <aside className="w-80 shrink-0 overflow-auto border-r border-(--color-border) bg-(--color-panel) p-4 flex flex-col gap-4">
+        <div className="flex flex-1 min-h-0 min-w-0">
+          {/* 사이드바: 검색 + 국가 + 도메인 + 언어 (모바일=드로어) */}
+          <SidePanel side="left" desktopWidth="md:w-80" open={navOpen} onClose={() => setNavOpen(false)}>
+       <div className="overflow-auto p-4 flex flex-col gap-4">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -242,10 +244,14 @@ export function RadarView() {
             ))}
           </div>
         </div>
-      </aside>
+       </div>
+      </SidePanel>
 
       {/* 본문: 회사 카드 목록 */}
       <main className="flex-1 min-w-0 overflow-auto">
+        <MobileBar onMenu={() => setNavOpen(true)} label="검색·필터">
+          <span className="ml-auto text-xs text-(--color-muted)">{filtered.length}개사</span>
+        </MobileBar>
         <div className="px-5 py-3 border-b border-(--color-border) text-xs text-(--color-muted) flex items-center gap-3">
           <span>
             {data?.total ?? 0}개사 중 <b className="text-(--color-text)">{filtered.length}개사</b>

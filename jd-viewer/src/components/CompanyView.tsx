@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
 import { useLearning, type LearningVideo } from '../lib/useLearning'
-import { Loader, ErrorState, EmptyState } from './ui'
+import { Loader, ErrorState, EmptyState, SidePanel, MobileBar } from './ui'
 import { ROLE_COLORS } from '../lib/classify'
 import type { CompanyStack, CareerGuide } from '../types'
 
@@ -40,6 +40,7 @@ export function CompanyView({
   const { companies, meta, loading, error } = useCompanies()
   const [query, setQuery] = useState('')
   const [selectedNorm, setSelectedNorm] = useState<string | null>(null)
+  const [navOpen, setNavOpen] = useState(false)
 
   // 다른 탭(기술스택 확장)에서 회사를 지정해 들어오면 선택·검색 동기화
   useEffect(() => {
@@ -75,9 +76,9 @@ export function CompanyView({
     )
 
   return (
-    <div className="flex flex-1 min-h-0">
-      {/* 좌측: 회사 리스트 */}
-      <aside className="w-72 shrink-0 border-r border-(--color-border) bg-(--color-panel) flex flex-col min-h-0">
+    <div className="flex flex-1 min-h-0 min-w-0">
+      {/* 좌측: 회사 리스트 (모바일=드로어) */}
+      <SidePanel side="left" desktopWidth="md:w-72" open={navOpen} onClose={() => setNavOpen(false)}>
         <div className="p-3 border-b border-(--color-border)">
           <input
             value={query}
@@ -95,7 +96,10 @@ export function CompanyView({
             return (
               <button
                 key={c.norm}
-                onClick={() => setSelectedNorm(c.norm)}
+                onClick={() => {
+                  setSelectedNorm(c.norm)
+                  setNavOpen(false)
+                }}
                 className={`w-full text-left px-3 py-2.5 border-b border-(--color-border)/50 transition ${
                   active ? 'bg-(--color-accent)/15' : 'hover:bg-white/5'
                 }`}
@@ -118,12 +122,15 @@ export function CompanyView({
             )
           })}
         </div>
-      </aside>
+      </SidePanel>
 
       {/* 우측: 회사 프로필 */}
       <main className="flex-1 min-w-0 overflow-auto">
+        <MobileBar onMenu={() => setNavOpen(true)} label="회사 목록">
+          {selected && <span className="ml-auto text-xs text-(--color-text) truncate">{selected.name}</span>}
+        </MobileBar>
         {selected ? <CompanyProfile c={selected} onStudyTech={onStudyTech} /> : (
-          <EmptyState title="회사를 선택하세요" hint="좌측 목록에서 회사를 고르면 기술스택·취업 가이드가 표시됩니다." />
+          <EmptyState title="회사를 선택하세요" hint="‘회사 목록’에서 회사를 고르면 기술스택·취업 가이드가 표시됩니다." />
         )}
       </main>
     </div>
