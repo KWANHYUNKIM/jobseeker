@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T12:27:01",
+ "generated_at": "2026-06-14T16:07:46",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 1,
+ "refined": 3,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -692,12 +692,12 @@
    ],
    "languages": [
     {
-     "name": "Python",
+     "name": "Java",
      "count": 8
     },
     {
-     "name": "Java",
-     "count": 7
+     "name": "Python",
+     "count": 8
     },
     {
      "name": "JavaScript",
@@ -717,7 +717,7 @@
     },
     {
      "name": "C++",
-     "count": 3
+     "count": 4
     },
     {
      "name": "Rust",
@@ -735,20 +735,24 @@
       "count": 5
      },
      {
-      "name": "Thrift",
-      "count": 4
+      "name": "Python",
+      "count": 3
      },
      {
-      "name": "Django",
-      "count": 2
+      "name": "Thrift",
+      "count": 3
      },
      {
       "name": "Go",
       "count": 2
      },
      {
-      "name": "Python",
+      "name": "Netty",
       "count": 2
+     },
+     {
+      "name": "Akka",
+      "count": 1
      },
      {
       "name": "Armeria",
@@ -759,11 +763,7 @@
       "count": 1
      },
      {
-      "name": "Elixir/Erlang OTP",
-      "count": 1
-     },
-     {
-      "name": "Finagle",
+      "name": "Django",
       "count": 1
      }
     ],
@@ -774,7 +774,11 @@
      },
      {
       "name": "TypeScript",
-      "count": 5
+      "count": 6
+     },
+     {
+      "name": "React Native",
+      "count": 2
      },
      {
       "name": "Vue.js",
@@ -801,11 +805,7 @@
       "count": 1
      },
      {
-      "name": "GraphQL",
-      "count": 1
-     },
-     {
-      "name": "Lit/Web Components",
+      "name": "Glimmer",
       "count": 1
      }
     ],
@@ -839,15 +839,15 @@
       "count": 2
      },
      {
+      "name": "Brooklin",
+      "count": 1
+     },
+     {
+      "name": "DataHub",
+      "count": 1
+     },
+     {
       "name": "Druid",
-      "count": 1
-     },
-     {
-      "name": "Espresso",
-      "count": 1
-     },
-     {
-      "name": "Flink",
       "count": 1
      }
     ],
@@ -877,19 +877,19 @@
       "count": 1
      },
      {
+      "name": "Akkio",
+      "count": 1
+     },
+     {
       "name": "Azure",
       "count": 1
      },
      {
-      "name": "Buck",
+      "name": "Buck2",
       "count": 1
      },
      {
       "name": "Cloudflare",
-      "count": 1
-     },
-     {
-      "name": "Grafana",
       "count": 1
      }
     ]
@@ -3908,41 +3908,53 @@
     "Scala",
     "Python",
     "JavaScript",
-    "Kotlin"
+    "Kotlin",
+    "C++"
    ],
    "stack": {
     "backend": [
      "Rest.li",
      "Play Framework",
      "gRPC",
-     "Spring"
+     "Spring",
+     "Netty",
+     "Akka"
     ],
     "frontend": [
      "Ember.js",
-     "React"
+     "React",
+     "TypeScript",
+     "Glimmer"
     ],
     "data": [
      "Kafka",
      "Espresso",
-     "Pinot",
      "Venice",
-     "Samza"
+     "Pinot",
+     "Samza",
+     "Brooklin",
+     "Galene",
+     "DataHub"
     ],
     "infra": [
      "Kubernetes",
      "Azure",
-     "Helix"
+     "Helix",
+     "LinkedIn-Kafka",
+     "OpenTelemetry",
+     "inGraphs"
     ]
    },
    "architecture": [
     "Microservices",
     "Event-driven",
-    "Stream processing"
+    "Stream processing",
+    "CQRS / read-optimized derived stores"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>Ember.js + React\"]\n    MOB[\"Mobile App<br/>Native + REST\"]\n  end\n  subgraph Gateway\n    REST[\"API Layer<br/>Rest.li\"]\n    PLAY[\"Web Tier<br/>Play Framework\"]\n  end\n  subgraph Core\n    SVC[\"Microservices<br/>Java + gRPC\"]\n    HELIX[\"Cluster Mgmt<br/>Apache Helix\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SAMZA[\"Stream Proc<br/>Samza\"]\n  end\n  subgraph Data\n    ESP[\"OLTP Store<br/>Espresso\"]\n    PINOT[\"Realtime OLAP<br/>Apache Pinot\"]\n    VENICE[\"Derived Data<br/>Venice\"]\n  end\n  subgraph Infra\n    K8S[\"Platform<br/>Azure + Kubernetes\"]\n  end\n  WEB -->|HTTPS| PLAY\n  MOB -->|REST| REST\n  PLAY --> REST\n  REST -->|gRPC| SVC\n  SVC --> HELIX\n  SVC --> ESP\n  SVC -->|emit| KAFKA\n  KAFKA --> SAMZA\n  SAMZA --> PINOT\n  SAMZA --> VENICE\n  SVC --> PINOT\n  SVC --> VENICE\n  SVC -.-> K8S",
-   "why_language": "JVM(Java/Scala) 생태계가 백엔드 표준이며, 스트리밍·데이터 처리도 Scala로 작성한다. 회사가 Kafka·Samza·Pinot을 만들어 데이터 인프라가 곧 정체성이다.",
-   "why_architecture": "전문 그래프와 피드를 실시간 갱신하려 Kafka를 발명해 이벤트 중심 아키텍처를 표준화했다. Rest.li 기반 마이크로서비스로 수천 개 서비스를 운영한다.",
-   "summary": "Kafka를 발명한 회사답게 모든 것이 이벤트 스트림으로 흐르는 데이터 인프라 강자.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Web / Mobile App<br/>Ember.js + React + iOS/Android\"]\n    CDN[\"Edge / CDN<br/>Akamai + ATS\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    FE[\"Frontend API<br/>Play Framework + Netty\"]\n    DSP[\"Dispatcher / D2<br/>Rest.li dynamic discovery\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PROF[\"Profile / Identity<br/>Rest.li + Java\"]\n    FEED[\"Feed Service<br/>Rest.li + gRPC\"]\n    GRAPH[\"Economic Graph<br/>Liquid graph DB\"]\n    SEARCH[\"Search Service<br/>Galene + Lucene\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    ESP[\"Primary OLTP<br/>Espresso on MySQL/RocksDB\"]\n    VEN[\"Derived KV Store<br/>Venice + RocksDB\"]\n    PIN[\"Real-time OLAP<br/>Apache Pinot\"]\n    HDFS[\"Offline / Lake<br/>HDFS + Iceberg + Spark\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SAMZA[\"Stream Processing<br/>Apache Samza\"]\n    BROOK[\"Change Capture<br/>Brooklin CDC\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on Azure\"]\n    HELIX[\"Cluster Mgmt<br/>Apache Helix + ZooKeeper\"]\n  end\n  APP --> CDN --> FE\n  FE -->|Rest.li| DSP\n  DSP --> PROF\n  DSP --> FEED\n  DSP --> SEARCH\n  PROF --> ESP\n  FEED --> VEN\n  FEED --> PIN\n  ESP -->|CDC| BROOK\n  BROOK --> KAFKA\n  KAFKA --> SAMZA\n  SAMZA --> VEN\n  SAMZA --> PIN\n  HDFS -->|bulk push| VEN\n  GRAPH --> ESP\n  SEARCH --> GRAPH\n  DSP -. discovery .-> HELIX\n  Core --> K8S\n  Data --> HELIX",
+   "why_language": "LinkedIn은 초창기부터 JVM 생태계에 깊이 투자해 Java를 핵심 서비스 언어로, 동시성·함수형 처리가 필요한 Kafka·Samza·Venice 같은 데이터 인프라는 Scala로 작성했다. 수천 개 마이크로서비스가 초당 수백만 요청을 처리해야 하므로 성숙한 JVM 런타임, 정적 타입, 풍부한 동시성 라이브러리가 안정성과 성능의 기반이 되며, ML·데이터 파이프라인은 Python, 신규 Android·서비스 코드는 Kotlin으로 점진 전환 중이다.",
+   "why_architecture": "10억+ 회원의 Economic Graph를 실시간으로 다루려면 단일 모놀리식으로는 확장이 불가능해, 도메인별 Rest.li 마이크로서비스로 분해하고 D2 기반 동적 서비스 디스커버리로 묶었다. 쓰기는 Espresso 같은 OLTP에 하고 Brooklin CDC→Kafka→Samza로 변경을 스트리밍해 Venice·Pinot 같은 읽기 최적화 파생 스토어를 비동기로 갱신하는 이벤트 중심·CQRS 패턴을 채택함으로써, 폭주하는 읽기 트래픽과 피드·검색·추천의 지연 요구를 분리해 독립적으로 확장한다.",
+   "summary": "JVM(Java/Scala) 기반 Rest.li 마이크로서비스를 Kafka 이벤트 백본으로 잇고, 쓰기(Espresso)와 읽기(Venice·Pinot)를 CQRS로 분리한 초대형 소셜 그래프 플랫폼",
    "deep_dive": [
     {
      "topic": "Kafka의 탄생과 이벤트 중심 아키텍처",
@@ -3955,6 +3967,18 @@
     {
      "topic": "Rest.li 마이크로서비스와 서비스 통신",
      "body": "### Rest.li — 타입 안전 REST 프레임워크\nLinkedIn은 수천 개 서비스를 운영하는데, 이들의 API 일관성을 위해 `Rest.li`라는 자체 프레임워크를 만들었다. Rest.li는 PDSC/PDL 스키마로 데이터 모델을 정의하고, 그로부터 클라이언트·서버 코드를 생성한다. 리소스 중심 REST 규약을 강제하고, **dynamic discovery(D2)**로 클라이언트가 서비스 인스턴스를 동적으로 찾고 클라이언트 사이드 로드밸런싱·서킷 브레이킹을 수행한다.\n\n### Play Framework 웹 티어\n웹 프론트는 `Play Framework`(Scala/Java, 비동기 논블로킹) 위에서 돌며, `Ember.js`/`React` 클라이언트에 페이지·데이터를 제공한다. 모바일·웹 클라이언트의 요청은 게이트웨이 격인 Rest.li API 레이어를 통해 백엔드 마이크로서비스로 들어간다.\n\n### 요청 흐름\n1. 클라이언트가 HTTPS로 Play 웹티어 또는 Rest.li API에 요청.\n2. Rest.li가 D2로 대상 서비스를 찾아 `gRPC`/Rest.li RPC로 호출.\n3. 서비스가 Espresso(OLTP)·Venice(파생)·Pinot(분석)을 조합해 응답을 만들고, 부가 효과는 Kafka로 발행.\n4. Kafka 이벤트가 Samza/검색/추천으로 비동기 전파.\n\nJVM(Java/Scala)이 전 계층의 표준이며, 데이터 인프라 자체(Kafka·Samza·Pinot·Helix·Venice)를 자기들이 발명해 \"데이터 인프라가 곧 정체성\"인 회사다."
+    },
+    {
+     "topic": "검색·추천 end-to-end: Galene 검색 엔진과 People You May Know",
+     "body": "### LinkedIn 검색 스택: Galene\nLinkedIn의 거의 모든 검색(People Search, Job Search, 콘텐츠 검색)은 자체 검색 인프라인 `Galene` 위에서 돈다. Galene은 Apache Lucene을 코어 인덱싱 엔진으로 쓰되, 그 위에 LinkedIn 특유의 두 가지 문제를 해결하는 계층을 얹었다.\n\n- **그래프 인지 검색(graph-aware retrieval)**: 일반 검색엔진은 문서를 점수순으로 반환하지만, LinkedIn 검색은 \"검색하는 사람과의 거리(1촌·2촌·3촌)\"가 결과 품질의 핵심이다. Galene은 forward index에 회원의 네트워크 정보를 함께 담아, 검색 시점에 쿼리어(searcher)의 인맥 그래프를 조인한다.\n- **2단계 랭킹**: 1차로 Lucene 역색인에서 후보 수천 건을 빠르게 회수(retrieval)하고, 2차로 머신러닝 랭킹 모델이 피처 수백 개를 평가해 재정렬(re-ranking)한다. 1차 회수에서도 가능한 한 ML 피처를 인덱스에 미리 구워(materialize) 넣어 지연을 줄인다.\n\n### People You May Know(PYMK)\nPYMK는 LinkedIn에서 가장 유명한 추천 제품이자, 대표적인 **오프라인 배치 + 온라인 서빙** 하이브리드 사례다.\n\n1. **후보 생성(offline, Hadoop/Spark)**: \"triangle closing\" — 내 1촌의 1촌(= 2촌)이 나와 연결될 확률이 높다는 그래프 휴리스틱으로 수십억 쌍의 후보를 배치로 생성한다. 과거에는 이 한 잡이 Hadoop 클러스터에서 가장 무거운 워크로드 중 하나였다.\n2. **피처·스코어링**: 공통 인맥 수, 같은 회사·학교, 프로필 조회 신호 등을 피처로 ML 모델이 점수를 매긴다.\n3. **온라인 서빙**: 계산된 추천 결과를 `Venice` 같은 읽기 최적화 파생 스토어에 bulk push 하고, 사용자가 페이지를 열면 단순 KV 룩업으로 밀리초 내 서빙한다. 무거운 계산은 오프라인에, 사용자 경로에는 가벼운 조회만 두는 전형적인 **precompute-then-serve** 패턴이다.\n\n### 왜 이렇게 하나\n10억+ 노드 그래프에서 \"네가 알 수도 있는 사람\"을 요청 시점에 실시간 그래프 순회로 계산하면 지연과 비용이 폭발한다. 그래서 무거운 그래프 연산은 배치로 미리 돌려 Venice에 적재하고, 실시간 경로는 KV 조회로 단순화한다. 신선도가 중요한 신호(방금 맺은 인맥 등)는 Kafka→Samza 스트리밍으로 nearline 업데이트해 배치의 지연을 보완한다."
+    },
+    {
+     "topic": "장애 복원력: Rest.li D2의 클라이언트 사이드 로드밸런싱과 degrader 서킷브레이커",
+     "body": "### D2: Dynamic Discovery\nLinkedIn은 별도 중앙 로드밸런서(L7 프록시) 한 대에 모든 트래픽을 몰지 않는다. 대신 `Rest.li`에 내장된 `D2(Dynamic Discovery)`라는 **클라이언트 사이드 로드밸런싱** 계층을 쓴다. 동작 원리:\n\n- 각 서비스 인스턴스는 부팅 시 `ZooKeeper`에 자신의 위치(host:port)를 등록한다.\n- 호출하는 쪽(client)은 ZooKeeper를 통해 대상 서비스(cluster)의 살아있는 인스턴스 목록을 받아 **로컬에서 직접** 분산 결정을 내린다. 중앙 프록시 홉이 없어 지연이 줄고 단일 장애점이 사라진다.\n- 서비스 이름은 URI 스킴(`d2://`)으로 추상화돼, 물리 주소가 바뀌어도 호출 코드는 그대로다.\n\n### Degrader: 분산 서킷브레이커\nD2의 핵심은 `degrader`라 불리는 적응형 부하 분배·차단 로직이다. 클라이언트는 각 다운스트림 인스턴스의 **호출 지연(latency)과 에러율**을 실시간으로 관찰한다.\n\n- 특정 인스턴스의 응답이 느려지거나 에러가 늘면, 그 인스턴스로 가는 트래픽 비중(`drop rate`)을 점진적으로 낮춘다. 완전 차단이 아니라 \"가중치를 깎는\" 방식이라, 일시적 지터에 과민 반응하지 않는다.\n- 인스턴스가 회복되면 다시 점진적으로 트래픽을 되돌린다. 이는 한 노드의 GC 멈춤·디스크 스파이크가 전체 서비스로 번지는 것을 막는 **분산형 서킷브레이커**로 작동한다.\n\n### 왜 클라이언트 사이드인가\n수천 개 서비스, 수십만 인스턴스 규모에서 모든 호출을 중앙 프록시로 보내면 그 프록시 자체가 병목·SPOF가 된다. 호출자마다 자기 시점에서 본 다운스트림 건강 상태로 직접 판단하게 하면, 글로벌 조정 없이도 빠르고 국소적으로 나쁜 노드를 회피할 수 있다. 트레이드오프는 클라이언트 라이브러리가 무거워지고 모든 언어에 D2 구현을 맞춰야 한다는 점인데, LinkedIn은 대부분이 JVM이라 이 비용을 감당할 수 있었다."
+    },
+    {
+     "topic": "관측성: inGraphs 메트릭 파이프라인과 분산 트레이싱",
+     "body": "### 모든 것을 측정한다 — Kafka 위의 메트릭\nLinkedIn 관측성의 출발점도 결국 `Kafka`다. 수천 서비스가 내보내는 메트릭·이벤트가 전용 Kafka 토픽으로 흘러가고, 이를 집계해 `inGraphs`라는 내부 시계열 모니터링 시스템에 적재한다. 엔지니어는 서비스를 배포하면 별도 설정 없이도 표준 메트릭(QPS, p50/p90/p99 지연, 에러율, GC)이 자동으로 대시보드에 뜬다.\n\n- **자동 계측**: Rest.li/D2 호출 경로에 메트릭 수집이 내장돼, 모든 서비스 간 호출의 지연·에러가 별도 코드 없이 기록된다.\n- **이상 탐지(autometrics/anomaly detection)**: 단순 임계값이 아니라 과거 패턴(요일·시간대 계절성) 대비 편차를 보고 알람을 울려, 트래픽이 주기적으로 출렁이는 소셜 서비스 특성에 맞춘다.\n\n### 분산 트레이싱: call tree\n하나의 사용자 요청(예: 피드 로드)은 수십 개 다운스트림 서비스를 부채꼴로 호출한다. 어디서 느려졌는지 보려면 **요청 단위 추적**이 필수다. LinkedIn은 요청에 trace id를 심어 서비스 경계를 넘나드는 호출 트리(call graph)를 재구성하고, 이를 통해 특정 느린 요청의 critical path를 시각화한다. 최근에는 `OpenTelemetry` 표준으로 수렴해 트레이스·메트릭·로그를 통합하는 방향으로 이동했다.\n\n### Pinot으로 셀프서브 분석\n흥미로운 점은, LinkedIn이 **운영 분석에도 자사 제품 인프라를 재사용**한다는 것이다. 사이트 트래픽·A/B 실험 지표 같은 분석 쿼리는 실시간 OLAP 스토어 `Apache Pinot`에 올려, 내부 대시보드가 수십억 행에 대해 밀리초~초 단위로 집계 쿼리를 돌린다. 이렇게 \"제품을 떠받치는 인프라(Pinot)\"가 \"그 제품을 운영·관측하는 도구\"로도 쓰이는 구조가 LinkedIn 엔지니어링의 특징이다.\n\n### 왜 자체 구축인가\n초당 수천만 메트릭 데이터포인트와 페타바이트급 트레이스를 외부 SaaS로 감당하기엔 비용과 지연이 비현실적이었다. 또한 핵심 데이터 인프라(Kafka, Pinot)를 이미 보유했기에, 관측성 파이프라인을 그 위에 얹는 것이 자연스러운 선택이었다 — 트레이드오프는 막대한 내부 유지보수 부담이지만, 그 결과물 상당수(Pinot, Kafka)를 오픈소스로 환원해 생태계 전체가 이득을 봤다."
     }
    ],
    "debate": {
@@ -4066,41 +4090,49 @@
     "org": "https://github.com/linkedin",
     "repos": [
      {
-      "name": "apache/kafka",
-      "url": "https://github.com/apache/kafka",
-      "desc": "링크드인에서 탄생한 분산 이벤트 스트리밍 플랫폼",
-      "lang": "Java",
-      "stars": 32807
+      "name": "datahub-project/datahub",
+      "url": "https://github.com/datahub-project/datahub",
+      "desc": "메타데이터 검색·데이터 거버넌스 플랫폼",
+      "lang": "Python",
+      "stars": 12083
      },
      {
       "name": "apache/pinot",
       "url": "https://github.com/apache/pinot",
-      "desc": "실시간 분산 OLAP 데이터스토어",
+      "desc": "LinkedIn이 만든 실시간 분산 OLAP 데이터스토어",
       "lang": "Java",
-      "stars": 6098
+      "stars": 6097
      },
      {
       "name": "linkedin/rest.li",
       "url": "https://github.com/linkedin/rest.li",
-      "desc": "타입 안전 REST + RPC 프레임워크",
+      "desc": "타입 안전한 RESTful 마이크로서비스 프레임워크와 D2 동적 디스커버리",
       "lang": "Java",
-      "stars": 2535
+      "stars": 2534
+     },
+     {
+      "name": "linkedin/brooklin",
+      "url": "https://github.com/linkedin/brooklin",
+      "desc": "이종 시스템 간 대규모 변경 데이터 캡처/스트리밍 서비스",
+      "lang": "Java",
+      "stars": 965
      },
      {
       "name": "linkedin/venice",
       "url": "https://github.com/linkedin/venice",
-      "desc": "파생 데이터 서빙 플랫폼",
+      "desc": "ML 피처·파생 데이터를 위한 파생 KV 스토어(읽기 최적화)",
       "lang": "Java",
-      "stars": 604
+      "stars": 606
      }
     ]
    },
    "sources": [
-    "https://www.linkedin.com/blog/engineering",
-    "https://kafka.apache.org"
+    "https://engineering.linkedin.com/blog",
+    "https://github.com/linkedin/rest.li",
+    "https://github.com/linkedin/venice"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-14"
   },
   {
    "key": "meta",
@@ -4112,43 +4144,58 @@
     "Hack/PHP",
     "Python",
     "JavaScript",
-    "Rust"
+    "Rust",
+    "Java"
    ],
    "stack": {
     "backend": [
      "Hack (HHVM)",
-     "Thrift",
+     "Thrift / fbthrift",
      "Folly",
-     "Django"
+     "Proxygen",
+     "ServiceRouter",
+     "Python (Cinder)"
     ],
     "frontend": [
      "React",
+     "React Native",
      "Relay",
      "GraphQL",
-     "Flow"
+     "Flow",
+     "Hermes",
+     "StyleX"
     ],
     "data": [
-     "MySQL",
+     "MySQL (MyRocks)",
      "TAO",
      "RocksDB",
+     "ZippyDB",
      "Presto",
-     "Cassandra"
+     "Cassandra",
+     "Scuba",
+     "Haystack/f4",
+     "Manifold"
     ],
     "infra": [
-     "Tupperware",
-     "Buck",
-     "Twine"
+     "Twine (Tupperware)",
+     "Buck2",
+     "Shard Manager",
+     "Configerator",
+     "Delos",
+     "FBLearner Flow",
+     "Akkio"
     ]
    },
    "architecture": [
-    "Service-oriented",
-    "GraphQL data layer",
-    "Monorepo"
+    "Service-oriented (Thrift RPC mesh)",
+    "GraphQL/TAO data layer over sharded MySQL",
+    "Monorepo + remote build (Buck2)",
+    "Region-aware replication with master/replica routing"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Relay\"]\n    GQL[\"Data Layer<br/>GraphQL\"]\n  end\n  subgraph Gateway\n    WWW[\"Web Tier<br/>Hack on HHVM\"]\n    THRIFT[\"RPC<br/>Apache Thrift\"]\n  end\n  subgraph Core\n    SVC[\"Services<br/>Hack + C++ Folly\"]\n    PY[\"ML/Tools<br/>Python + Django\"]\n  end\n  subgraph Data\n    TAO[\"Social Graph<br/>TAO\"]\n    MYSQL[\"Source of Truth<br/>MySQL\"]\n    ROCKS[\"Storage Engine<br/>RocksDB\"]\n    CASS[\"Wide Store<br/>Cassandra\"]\n    PRESTO[\"Analytics<br/>Presto\"]\n  end\n  subgraph Infra\n    TW[\"Cluster Mgmt<br/>Twine + Tupperware\"]\n    BUCK[\"Build<br/>Buck\"]\n  end\n  WEB --> GQL\n  GQL -->|HTTPS| WWW\n  WWW -->|Thrift| THRIFT\n  THRIFT --> SVC\n  THRIFT --> PY\n  SVC --> TAO\n  TAO --> MYSQL\n  MYSQL --> ROCKS\n  SVC --> CASS\n  MYSQL --> PRESTO\n  SVC -.-> TW\n  TW --> BUCK",
-   "why_language": "초기 PHP 코드베이스를 점진 진화시키려 Hack(HHVM)으로 타입 안정성을 더했고, 성능 핵심 인프라는 C++로 작성한다. 프론트엔드는 React를 만든 회사답게 JavaScript 생태계가 중심이다.",
-   "why_architecture": "소셜 그래프를 효율적으로 노출하려 React+GraphQL+Relay로 데이터 계층을 통합했고, 백엔드는 Thrift 기반 SOA로 분리했다. 거대 모노레포를 Buck으로 빌드해 수만 엔지니어의 협업을 가능하게 한다.",
-   "summary": "React·GraphQL을 발명하고 Hack/HHVM으로 PHP를 대규모로 진화시킨 SNS 거인.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"Apps<br/>React Native + Hermes\"]\n    WEB[\"Web<br/>React + Relay\"]\n    POP[\"Edge PoP<br/>Proxygen + TLS termination\"]\n  end\n  subgraph Web[\"Web / API Tier\"]\n    HHVM[\"Web Tier<br/>Hack on HHVM\"]\n    GQL[\"GraphQL Server<br/>schema + resolvers\"]\n  end\n  subgraph Svc[\"Core Services\"]\n    SR[\"ServiceRouter<br/>Thrift RPC mesh\"]\n    TAO[\"TAO<br/>social graph cache\"]\n    FEED[\"Feed / Ranking<br/>C++ services\"]\n    ML[\"Inference<br/>PyTorch + accelerators\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL<br/>MyRocks engine\"]\n    ZIPPY[\"ZippyDB<br/>RocksDB + Paxos\"]\n    HAY[\"Haystack / f4<br/>photo + blob store\"]\n    PRESTO[\"Presto + Hive<br/>analytics warehouse\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    SCRIBE[\"Scribe + LogDevice<br/>log transport\"]\n    ASYNC[\"Async tier<br/>deferred jobs\"]\n    SCUBA[\"Scuba<br/>realtime telemetry\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    TWINE[\"Twine<br/>cluster scheduler\"]\n    CFG[\"Configerator<br/>config distribution\"]\n  end\n  APP --> POP\n  WEB --> POP\n  POP --> HHVM\n  HHVM --> GQL\n  GQL -->|Thrift| SR\n  SR --> TAO\n  SR --> FEED\n  FEED --> ML\n  TAO -->|read/write through| MYSQL\n  FEED --> ZIPPY\n  GQL --> HAY\n  SR --> SCRIBE\n  SCRIBE --> PRESTO\n  SCRIBE --> SCUBA\n  HHVM --> ASYNC\n  TWINE -.-> SR\n  CFG -.-> SR",
+   "why_language": "수십억 사용자 규모에서 레이턴시와 CPU 효율이 곧 비용이라 피드 랭킹·TAO·스토리지 같은 핫패스는 C++로, 제품 웹 로직은 PHP를 JIT 컴파일하는 Hack/HHVM으로 빠른 반복과 점진적 타입 안정성을 동시에 챙긴다. 데이터·ML 파이프라인은 Python(PyTorch)로 생산성을 얻되 성능 임계 구간은 C++/Rust로 내려, 동일 모노레포 안에서 언어를 용도별로 분리한다.",
+   "why_architecture": "단일 거대 코드베이스를 Thrift RPC로 잘게 나눈 서비스 메시 위에 올려, 소셜 그래프 읽기 폭증을 TAO 캐시 계층이 흡수하고 그 뒤의 샤딩된 MySQL이 진실의 원천(source of truth)을 맡는 read-heavy 패턴에 최적화했다. GraphQL을 데이터 계층 표준으로 삼아 클라이언트가 필요한 그래프만 선언적으로 가져가게 하고, region별 master/replica 라우팅으로 지리적 지연과 일관성을 동시에 관리한다.",
+   "summary": "Hack/HHVM 웹 티어와 C++ 핫패스를, TAO·샤딩 MySQL 위 GraphQL 데이터 계층과 Thrift 서비스 메시로 엮은 초대규모 read-heavy 소셜 플랫폼",
    "deep_dive": [
     {
      "topic": "TAO — 소셜 그래프 캐시 계층",
@@ -4165,6 +4212,22 @@
     {
      "topic": "React·GraphQL·Relay 데이터 계층",
      "body": "### 왜 GraphQL인가\n소셜 그래프를 클라이언트에 노출할 때, REST는 화면마다 over/under-fetching이 생긴다. Meta는 `GraphQL`을 만들어 클라이언트가 **필요한 필드만 선언적으로 질의**하게 했다. 한 번의 GraphQL 쿼리로 게시물 + 작성자 + 댓글 + 좋아요 수를 한 라운드트립에 가져온다. 서버는 이 쿼리를 파싱해 각 필드를 TAO/서비스 호출로 resolve한다.\n\n### Relay — 클라이언트 데이터 프레임워크\n`Relay`는 React 컴포넌트가 자기 데이터 의존성을 GraphQL fragment로 **콜로케이션**(컴포넌트 옆에 선언)하게 하고, 빌드 타임에 이를 모아 하나의 최적화된 쿼리로 컴파일한다. 정규화된 클라이언트 스토어, 자동 캐시, pagination(connection 모델), optimistic update를 제공한다. 이로써 수만 컴포넌트의 데이터 요구를 일관되게 관리한다.\n\n### 모노레포와 Buck\n프론트·백엔드 코드가 거대한 단일 모노레포에 있고, 빌드는 Meta가 만든 `Buck`(증분·병렬·캐시 빌드 시스템)으로 돌린다. 변경된 타깃과 그 의존 그래프만 재빌드해 수만 엔지니어의 동시 작업을 가능케 한다.\n\n### Thrift RPC\n백엔드 서비스 간 통신은 `Apache Thrift`(Meta 발 RPC/직렬화)로 표준화돼 있고, 성능 핵심 라이브러리는 C++ `Folly`(Facebook Open-source Library) 위에서 작성된다. 웹 티어(HHVM)가 Thrift로 수많은 백엔드 서비스를 호출해 페이지를 조립하는 SOA 구조다."
+    },
+    {
+     "topic": "요청 처리 end-to-end: 클릭에서 피드 렌더까지",
+     "body": "### 한 번의 News Feed 요청이 흐르는 경로\n\nMeta의 요청은 사용자 앱에서 시작해 수백 개의 서비스를 거쳐 돌아온다. 핵심은 **단 한 번의 사용자 액션이 fan-out되어 내부적으로 수천 건의 그래프 조회로 폭증**한다는 점이다.\n\n#### 1) Edge / PoP 진입\n- 클라이언트(React Native + `Hermes` 엔진 또는 React 웹)는 가장 가까운 **Edge PoP(Point of Presence)** 로 연결된다. 여기서 **`Proxygen`**(Meta 자체 C++ HTTP 서버/로드밸런서)이 TLS를 종료하고 연결을 재사용한다.\n- PoP는 데이터센터와 **장거리 백본으로 미리 맺어둔 warm 연결**을 통해 요청을 전달한다. TLS 핸드셰이크를 사용자 근처에서 끝내므로 RTT가 크게 줄어든다.\n\n#### 2) 웹 티어 (Hack on HHVM)\n- 요청은 **`Hack`** 으로 작성된 제품 로직이 도는 **`HHVM`** 웹 서버에 도착한다. 여기는 stateless하게 설계되어 어느 머신이든 동일 요청을 처리할 수 있다.\n- 웹 티어는 직접 DB를 때리지 않는다. 대신 **`GraphQL` 리졸버**를 호출하고, 리졸버는 다시 백엔드 서비스로 **`Thrift` RPC**를 던진다.\n\n#### 3) GraphQL → 서비스 메시\n- 클라이언트는 `Relay`로 \"내가 필요한 필드 트리\"를 선언했고, 서버 GraphQL은 이 쿼리를 **여러 백엔드 호출로 분해**한다.\n- 라우팅은 **`ServiceRouter`** 가 담당한다. 서비스 이름 → 샤드/리전/replica 집합을 동적으로 해석하고, 헬스·부하 기반으로 인스턴스를 고른다. (서비스 디스커버리 + L7 LB + 클라이언트 사이드 로드밸런싱의 결합)\n\n#### 4) 데이터 계층\n- 그래프 읽기는 거의 전부 **`TAO`** 에서 해결된다(피드 한 번에 수천 건의 assoc/object 조회). TAO 미스만 **샤딩된 MySQL(MyRocks)** 로 내려간다.\n- 사진/동영상 같은 BLOB은 GraphQL이 **`Haystack`/`f4`** 의 URL을 돌려주고, 실제 바이트는 CDN/Edge에서 서빙된다.\n\n#### 5) 랭킹 & ML\n- 후보 글들은 **C++ 랭킹 서비스**로 모여 feature를 붙이고, **PyTorch 추론**(전용 가속기/CPU)으로 점수를 매겨 정렬된다.\n\n#### 6) 응답 + 비동기 후처리\n- 정렬된 피드가 GraphQL 응답으로 합쳐져 클라이언트로 돌아간다.\n- 로깅/카운터/알림 같은 부수효과는 응답 경로를 막지 않고 **async 티어**와 **`Scribe`** 로그 파이프라인으로 비동기 처리된다.\n\n> 핵심 트레이드오프: 웹 티어를 얇고 stateless하게 유지하고 \"읽기 폭증\"을 TAO가 흡수하도록 설계함으로써, 제품 코드(Hack)는 빠르게 반복하면서도 데이터 경로의 효율(C++/TAO)은 따로 최적화할 수 있다."
+    },
+    {
+     "topic": "Configerator: 초당 수백만 노드에 설정을 푸시하는 방법",
+     "body": "### 코드 배포보다 빠른 \"설정\" 배포\n\nMeta에서 동작을 바꾸는 가장 흔한 수단은 코드 푸시가 아니라 **설정(config) 변경**이다. 이를 담당하는 시스템이 **`Configerator`** 다.\n\n#### 왜 설정을 분리했나\n- 코드 배포는 빌드·카나리·롤아웃에 시간이 걸린다. 하지만 \"기능 플래그를 1%→5%로 올린다\", \"특정 캐시 TTL을 바꾼다\", \"부하 분산 가중치를 조정한다\" 같은 변경은 **초 단위로, 안전하게** 반영돼야 한다.\n- 그래서 운영 파라미터·feature gate·A/B 실험 설정·라우팅 정책을 전부 **버전 관리되는 설정**으로 빼냈다.\n\n#### 동작 원리\n- 설정은 코드처럼 작성된다. **`Thrift` 스키마로 타입이 정의**되고, 검증 로직(validator)을 통과해야 커밋된다. 즉 \"잘못된 설정\"은 배포 전에 컴파일/검증 단계에서 걸러진다.\n- 커밋된 설정은 **버전 관리 + 코드리뷰**를 거친다(설정도 PR처럼 리뷰됨).\n- 배포 시에는 거대한 **분산 배포 트리**를 통해 전 세계 수백만 호스트로 전파된다. 각 호스트의 클라이언트 라이브러리가 로컬에 캐시하고, 변경 시 콜백으로 즉시 갱신을 받는다. **읽기는 로컬 메모리 속도**, 전파는 수 초.\n\n#### 일관성과 안전장치\n- 설정 변경은 **점진 롤아웃(canary)** 가능 — 일부 호스트/리전에만 먼저 적용해 메트릭을 보고 확장.\n- 잘못된 변경은 **즉시 이전 버전으로 롤백**(버전이 있으므로). 이것이 대규모 장애를 막는 핵심 안전망이다.\n\n#### 관련 시스템\n- 그 위에 실험 플랫폼(Gatekeeper류 feature gating)이 올라가, 엔지니어가 \"한국 안드로이드 사용자 2%에게만 켜기\" 같은 타게팅을 설정만으로 구현한다.\n\n> 인사이트: \"배포 가능한 모든 것을 데이터로 만들어 버전 관리한다\"는 철학. 코드와 설정을 같은 수준의 안전성(타입·리뷰·카나리·롤백)으로 다루는 것이 초대규모 운영의 핵심 레버다."
+    },
+    {
+     "topic": "장애 대응과 복원력: SEV·Disaster Recovery·리전 드레인",
+     "body": "### 수십억 사용자 규모의 \"고장은 정상\" 엔지니어링\n\n#### SEV 문화\n- 인시던트는 심각도에 따라 **SEV1~SEV3**로 분류된다. 모든 SEV는 **blameless postmortem**(비난 없는 사후분석)을 남기고, 액션 아이템이 추적된다. 같은 실패가 반복되지 않게 만드는 조직적 피드백 루프다.\n\n#### Region Drain / Disaster Recovery 훈련\n- Meta는 **데이터센터 리전 하나를 통째로 트래픽에서 빼는(drain) 훈련**을 정기적으로 수행한다. \"리전이 죽었다\"를 실제로 가정하고 트래픽을 다른 리전으로 옮겨, 남은 용량으로 버틸 수 있는지 검증한다.\n- 이를 가능케 하려면 평소에 **headroom(여유 용량)** 을 확보하고, 상태(state)가 특정 리전에 고착되지 않도록 복제·라우팅을 설계해야 한다. 이 훈련이 실제 장애 때의 자동 페일오버를 신뢰할 수 있게 만든다.\n\n#### 자동 헬스체크 & 라우팅 회피\n- `ServiceRouter`는 인스턴스 헬스를 지속 관측해 **불량 인스턴스로의 트래픽을 자동 차단**한다. 부하가 한쪽에 쏠리면 가중치를 재조정한다.\n- 과부하 상황에서는 **load shedding**(저우선 요청 의도적 거절)으로 핵심 경로를 보호한다 — 전체가 무너지는 것보다 일부를 빠르게 거절하는 편이 낫다는 판단.\n\n#### 캐시 의존성의 위험과 대응\n- TAO 같은 거대 캐시 앞단에서 **thundering herd**(미스 폭주가 DB를 덮침)를 막기 위해, 미스 시 요청을 합치거나 stale 데이터를 잠시 허용하는 메커니즘을 둔다. 2021년 대규모 장애 사례처럼, 백본/설정 변경이 연쇄 실패를 부를 수 있어 **배포·설정 변경 자체를 가장 위험한 행위로 간주**하고 카나리·자동 롤백으로 감싼다.\n\n> 핵심 사상: \"실패를 막는다\"가 아니라 \"실패가 일어나도 사용자에게 보이지 않게 흡수한다\". 그래서 여유 용량 + 자동 페일오버 + 빠른 롤백 + 정기 재해 훈련의 4종 세트를 운영의 기본기로 둔다."
+    },
+    {
+     "topic": "데이터 웨어하우스와 분석: Scribe → Hive/Presto → Scuba",
+     "body": "### 제품 신호를 의사결정으로 바꾸는 분석 파이프라인\n\nMeta는 \"모든 것을 로깅하고, 거의 모든 것을 쿼리 가능하게\" 만든다. 이 분석 스택은 제품 실험·랭킹·운영의 토대다.\n\n#### 1) 로그 수집: Scribe + LogDevice\n- 서비스들은 이벤트를 **`Scribe`** 로 emit한다(분산 로그 전송 버스). 그 아래 **`LogDevice`** 가 내구성 있는 분산 로그 저장을 맡아, 순서 보장과 재생(replay)이 가능한 스트림을 제공한다.\n- 이 구조 덕에 동일 이벤트 스트림을 **실시간 소비자(스트리밍 집계)** 와 **배치 적재(웨어하우스)** 가 동시에 가져갈 수 있다.\n\n#### 2) 배치 웨어하우스: Hive + Presto\n- 로그는 거대한 **Hive 데이터 웨어하우스**(컬럼형, ORC류 포맷)에 적재된다. 페타바이트~엑사바이트 규모.\n- 대화형 분석은 **`Presto`**(Meta가 만든 분산 SQL 엔진)가 담당한다. 여러 데이터소스에 걸친 ad-hoc SQL을 **인메모리 파이프라인**으로 빠르게 실행해, 데이터 사이언티스트가 초~분 단위로 탐색한다.\n- 무거운 ETL/변환은 Spark류 배치 잡으로 처리되며, 산출물은 다시 웨어하우스 테이블로 떨어진다.\n\n#### 3) 실시간 관측: Scuba\n- **`Scuba`** 는 **인메모리·실시간 슬라이스 앤 다이스** 분석 시스템이다. 샘플링된 이벤트를 메모리에 올려, 운영자가 \"지금 이 순간\" 임의 차원으로 집계·드릴다운한다.\n- 성능 회귀, 에러 급증, 실험 효과를 **수 초 지연**으로 본다. 정확한 전수 집계보다 **빠른 근사**를 택한 트레이드오프(샘플링 기반)다 — 디버깅·인시던트 대응에 최적.\n\n#### 4) 실험/ML로 환류\n- 이 데이터는 A/B 실험 플랫폼과 **`FBLearner Flow`**(ML 워크플로/feature store/모델 학습 오케스트레이션)로 흘러들어 랭킹·추천 모델을 학습시키고, 결과가 다시 제품에 반영되는 **닫힌 루프**를 형성한다.\n\n| 계층 | 시스템 | 지연 | 용도 |\n|------|--------|------|------|\n| 수집 | Scribe / LogDevice | ms~s | 내구성 로그 전송·재생 |\n| 배치 | Hive + Presto | s~min | 정확한 대규모 SQL 분석 |\n| 실시간 | Scuba | s | 근사·인메모리 운영 디버깅 |\n| ML | FBLearner Flow | 시간~일 | 모델 학습·서빙 |\n\n> 인사이트: \"정확하지만 느린\" 배치(Presto)와 \"근사하지만 즉시\"인 실시간(Scuba)을 **목적에 따라 분리**한 것이 핵심. 모든 분석을 한 시스템에 욱여넣지 않고, 정확도-지연 트레이드오프를 두 레이어로 나눴다."
     }
    ],
    "debate": {
@@ -4276,39 +4339,47 @@
      {
       "name": "react/react",
       "url": "https://github.com/react/react",
-      "desc": "UI 구축용 자바스크립트 라이브러리",
+      "desc": "선언적 UI 라이브러리 — Meta 프론트엔드의 기반",
       "lang": "JavaScript",
-      "stars": 245809
-     },
-     {
-      "name": "pytorch/pytorch",
-      "url": "https://github.com/pytorch/pytorch",
-      "desc": "딥러닝 프레임워크",
-      "lang": "Python",
-      "stars": 100708
+      "stars": 245828
      },
      {
       "name": "facebook/rocksdb",
       "url": "https://github.com/facebook/rocksdb",
-      "desc": "고성능 임베디드 키-값 스토리지 엔진",
+      "desc": "LSM 기반 임베디드 KV 스토리지 엔진 — MyRocks·ZippyDB의 코어",
       "lang": "C++",
-      "stars": 31758
+      "stars": 31761
      },
      {
       "name": "facebook/folly",
       "url": "https://github.com/facebook/folly",
-      "desc": "고성능 C++ 컴포넌트 라이브러리",
+      "desc": "고성능 C++ 공통 라이브러리(컨테이너·동시성·futures)",
       "lang": "C++",
-      "stars": 30413
+      "stars": 30411
+     },
+     {
+      "name": "facebook/hhvm",
+      "url": "https://github.com/facebook/hhvm",
+      "desc": "Hack/PHP를 JIT 컴파일하는 가상머신 — 웹 티어 런타임",
+      "lang": "C++",
+      "stars": 18628
+     },
+     {
+      "name": "facebook/buck2",
+      "url": "https://github.com/facebook/buck2",
+      "desc": "Rust로 작성된 대규모 모노레포 빌드 시스템",
+      "lang": "Rust",
+      "stars": 4356
      }
     ]
    },
    "sources": [
-    "https://engineering.fb.com",
-    "https://react.dev"
+    "https://engineering.fb.com/",
+    "https://research.facebook.com/publications/tao-facebooks-distributed-data-store-for-the-social-graph/",
+    "https://engineering.fb.com/2015/06/02/data-infrastructure/scuba-diving-into-data-at-facebook/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-14"
   },
   {
    "key": "pinterest",
@@ -4902,6 +4973,25 @@
       "summary": "구글 마운틴뷰 본사 온사이트 5라운드 후기로, 매 라운드가 시스템 설계와 코딩으로 짝지어져 진행됐다(이미지 저장 설계, 스트림 중앙값, 이진탐색, 웨어러블 설계, n-gram 문자열 등). 그래프·DP·문자열·배열·비트·링크드리스트를 모두 풀어보고, 특히 설계 문제는 생각보다 훨씬 어려우니 집중 대비하라고 조언한다.",
       "source": "GeeksforGeeks(공개 후기글)",
       "date": "2025-07"
+     },
+     {
+      "title": "My Google Software Engineer Interview Journey: From LeetCode to Onsite Thrills (and Lessons Learned)",
+      "url": "https://medium.com/@shivesh.kaundinya/my-google-software-engineer-interview-journey-from-leetcode-to-onsite-thrills-and-lessons-7ea015f4629e",
+      "summary": "구글 L3 SWE 합격 후기. 리크루터 연락 → 폰 스크린 → 가상 온사이트 4라운드 → 팀 매칭 → 오퍼로 수개월에 걸쳐 진행됐다. 난이도는 중상으로 최적화 힌트를 요구하는 문제도 있었고, 핵심 팁은 '생각을 소리내어 말하기', 자료구조 기본기, STAR 기법, 언어 숙련도다.",
+      "source": "Medium",
+      "date": "2025-06"
+     },
+     {
+      "title": "My Google Early Career Software Engineer Interview Experience (Canada)",
+      "url": "https://neelsuthar1901.medium.com/my-google-early-career-software-engineer-interview-experience-canada-cdc2e2168524",
+      "summary": "Early Career SWE 포지션 면접 과정을 기록한 글로, 코딩 실력·문제해결 능력·컬처핏을 두루 시험하는 강도 높은 과정이라고 설명한다. 알고리즘 문제 풀이와 함께 협업·리더십 등 'Googlyness'가 코딩만큼 중요하게 평가된다고 강조한다.",
+      "source": "Medium"
+     },
+     {
+      "title": "My Google Software Engineer (III - AI/ML) Interview Experience and Key Takeaways",
+      "url": "https://medium.com/@hiraltalsaniya98/my-google-software-engineer-iii-ai-ml-interview-experience-and-key-takeaways-7521c837e414",
+      "summary": "구글 SWE III(AI/ML) 면접으로 각 45분짜리 5라운드(DSA 3개, ML 1개, 행동 1개) 구성. 이진탐색·그래프/다익스트라 라운드는 Medium-Hard 난이도였고 ML 라운드는 개념 깊이를 봤다. 코딩 전 요구사항·제약·엣지케이스를 먼저 명확히 하고, 최적화보다 정확성을 우선하며 사고 과정을 소리 내어 설명하라고 권한다.",
+      "source": "Medium"
      }
     ]
    },
@@ -9476,6 +9566,26 @@
       "summary": "카카오 공식 기술 블로그가 신입 공채 1차 온라인 코딩테스트 문제를 직접 해설한 글. 출제 의도와 풀이 접근법을 다뤄 코딩테스트 난이도와 준비 방향을 파악하는 데 도움이 된다.",
       "source": "회사블로그",
       "date": "2023"
+     },
+     {
+      "title": "카카오 경력공채 면접 후기",
+      "url": "https://encyphered.github.io/blog/note/2018/09/26/kakao-interview-review.html",
+      "summary": "서류 → 코딩테스트 → 인터뷰로 이어지는 경력공채 전형을 직접 겪으며 정리한 후기. 면접 분위기와 받은 기술 질문, 준비하면서 느낀 점을 솔직하게 적었다.",
+      "source": "github.io",
+      "date": "2018-09"
+     },
+     {
+      "title": "카카오 경력 취준 후기",
+      "url": "https://medium.com/@ChungEun_Choi/%EC%B9%B4%EC%B9%B4%EC%98%A4-%EA%B2%BD%EB%A0%A5-%EC%B7%A8%EC%A4%80-%ED%9B%84%EA%B8%B0-f7a1f1c7bd29",
+      "summary": "경력직으로 카카오 취업을 준비하며 거친 전형과 면접 경험을 회고한 글. 어떤 점을 준비했고 면접에서 무엇을 강조했는지 등 실질적인 팁을 담았다.",
+      "source": "Medium"
+     },
+     {
+      "title": "[후기] 2026 카카오 신입공채 코딩 테스트 후기",
+      "url": "https://velog.io/@pcjo1202/%ED%9B%84%EA%B8%B0-2026-%EC%B9%B4%EC%B9%B4%EC%98%A4-%EC%8B%A0%EC%9E%85%EA%B3%B5%EC%B1%84-%EC%BD%94%EB%94%A9-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%9B%84%EA%B8%B0",
+      "summary": "2026 카카오 신입공채 1차 코딩테스트 후기로, 타 기업보다 긴 5시간 동안 진행된다. 문자열·트리·그래프·구현 유형이 출제되며 난이도는 프로그래머스 기출과 비슷한 수준이라고 평한다. 기출 문제 풀이로 유형에 익숙해지는 것을 준비 팁으로 든다.",
+      "source": "velog",
+      "date": "2025-09"
      }
     ]
    },
@@ -9709,6 +9819,25 @@
       "summary": "서류·온라인 코딩테스트·1차·2차 면접으로 이어지는 네이버 공채 전형을 정리한 후기. 별도 서류 합격 없이 코딩테스트와 서류를 종합해 면접 대상을 정한다. 자소서에 쓴 기술은 반드시 다시 공부해 복기하라는 팁을 강조한다.",
       "source": "github.io",
       "date": "2019"
+     },
+     {
+      "title": "[네이버 클라우드] 백엔드 개발자 채용 후기",
+      "url": "https://velog.io/@dev-hsl-960221/%EB%84%A4%EC%9D%B4%EB%B2%84-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%B1%84%EC%9A%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "네이버 클라우드 백엔드 개발자 채용 전형 후기. 자소서 기반 기술 면접과 백엔드 직무 관련 CS/프로젝트 질문이 중심이며, 프로젝트에서 사용한 기술 스택에 대한 깊이 있는 복기가 합격에 중요하다고 설명한다.",
+      "source": "velog"
+     },
+     {
+      "title": "네이버 면접 후기(SW개발, 전화면접, 기술면접)",
+      "url": "https://madplay.github.io/post/job-interview-naver-corporation",
+      "summary": "기술면접은 1시간씩 3개의 방을 도는 약 3시간짜리 트랙 면접으로, 각 방에서 면접관과 인터뷰가 이어진다. 기초 전산 지식 질문이 기본으로 깔리고 창의력을 묻는 문제도 많아 대학 기본기를 중시한다는 인상을 전한다.",
+      "source": "github.io"
+     },
+     {
+      "title": "네이버 경력채용 합격 후기 | Yoon Sung's Blog",
+      "url": "https://unluckyjung.github.io/recruit_story/2026/05/17/Naver/",
+      "summary": "네이버 경력직 채용 합격 후기로, 한 면접에서 기술·경험·인성 질문 비율이 약 3:5:2였다고 회고한다. 자소서에 쓴 기술은 반드시 다시 공부해 직무와 연관 지어 설명하고, 중간 코딩테스트는 비교적 간단한 구현/알고리즘 수준이라 과도하게 걱정하지 않아도 된다고 조언한다.",
+      "source": "github.io",
+      "date": "2026-05"
      }
     ]
    },
@@ -10984,6 +11113,13 @@
       "url": "https://www.saramin.co.kr/zf_user/interview-review?company_nm=%EC%BF%A0%ED%8C%A1",
       "summary": "사람인에 공개된 쿠팡 지원자들의 면접 후기 모음으로, 면접 유형·질문·난이도를 로그인 없이 열람할 수 있다. 코딩 위주의 1:1 기술면접과 컬쳐핏 질문 경향을 다수 사례에서 확인할 수 있다.",
       "source": "사람인"
+     },
+     {
+      "title": "어쩌다 이직 (4/4) — Google 타이완·AWS·쿠팡 면접 후기",
+      "url": "https://gayuna.github.io/etc/accidental-trans-4/",
+      "summary": "쿠팡 최종 면접은 2시간으로 1시간 코딩 인터뷰 + 1시간 LP(Leadership Principles) 면접으로 구성됐다. 코딩 문제보다 LP 답변에서 솔직함을 유지하는 것이 중요하며, 면접 일정이 급박하게 잡히는 편이라 선호 일정을 미리 전달하라고 조언한다.",
+      "source": "github.io",
+      "date": "2021-11"
      }
     ]
    },
@@ -11540,6 +11676,34 @@
       "summary": "서류→화상면접(1시간 기술 심화)→직무면접(4:1) 3단계 전형. 화상면접은 Database/Web/SpringBoot/Java 4개 카테고리 스피드 퀴즈 형식 약 20문제, 직무면접은 프로젝트의 Why·How 심화 질문이었다. 포트폴리오와 기술블로그를 충실히 작성하는 것이 핵심 팁.",
       "source": "velog",
       "date": "2022-02"
+     },
+     {
+      "title": "프론트엔드 이직 회고 - 당근마켓, 토스, 뱅크샐러드, 모두싸인",
+      "url": "https://blog.hoseung.me/2022-04-16-change-job-retrospect",
+      "summary": "당근마켓은 서류→직무인터뷰→컬쳐핏인터뷰→최종합격 절차로 진행되며 글쓴이는 직무인터뷰에서 탈락했다. 기술 질문 난이도 자체는 높지 않았으나 긴장과 예상 밖 인성 질문에 당황한 점이 아쉬웠고, 면접 전 아이스브레이킹으로 편안한 분위기를 만들어 준다는 점이 인상적이었다.",
+      "source": "회사 외부 개인블로그",
+      "date": "2022-04"
+     },
+     {
+      "title": "[Retrospective] 당근 직무 면접까지의 과정 회고",
+      "url": "https://gist.github.com/taekwon-dev/0572459638d2cc7c9b1e499401f8eba4",
+      "summary": "공고 키워드에 맞춘 이력서 작성을 강조하며, 1차 화상면접(1:1, 약 80분, 라이브 코테)과 2차 기술면접(3:1, 약 90분, 시스템 디자인 포함)으로 진행됐다. 예상 못한 시스템 디자인 면접에서 어려움을 느꼈다며 사전 대비를 조언한다.",
+      "source": "github.io(gist)",
+      "date": "2024-12"
+     },
+     {
+      "title": "🥕 당근마켓 지원 후기",
+      "url": "https://velog.io/@ldh3907/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EC%A7%80%EC%9B%90-%ED%9B%84%EA%B8%B0",
+      "summary": "서류(이력서·포트폴리오 PDF) 합격 후 2주 내 줌으로 1시간 화상면접을 봤다. 면접관은 프로젝트에서 쓴 기술이 무엇이고 어떻게·왜 사용했는지를 중심으로 포트폴리오를 꼼꼼히 검토한다. 신입도 기술 역량이 있으면 도전할 만하며 프로젝트 경험 위주로 이력서를 준비하라는 조언이다.",
+      "source": "velog",
+      "date": "2023-04"
+     },
+     {
+      "title": "당근 비즈프로필 프론트엔드 면접 후기",
+      "url": "https://velog.io/@qqbck123/%EB%8B%B9%EA%B7%BC-%EB%B9%84%EC%A6%88%ED%94%84%EB%A1%9C%ED%95%84-%EB%A9%B4%EC%A0%91-%ED%9B%84%EA%B8%B0",
+      "summary": "당근 비즈프로필 프론트엔드 포지션 지원·합격 후기로, 화상 면접으로 진행됐다. 지원부터 합격 메일까지의 일정과 면접 분위기, 받은 질문 위주로 실제 경험을 공유한다.",
+      "source": "velog",
+      "date": "2026-01"
      }
     ]
    },
@@ -12211,6 +12375,20 @@
       "url": "https://toss.im/career/article/toss-serverchapter-faq10",
       "summary": "토스 공식 채용 아티클로, 서버 개발자 지원자가 면접·전형에서 가장 자주 받는 질문 10가지를 현직자가 직접 답한다. 코딩테스트가 실무 상황 기반 문제로 구성된다는 점 등 채용 전형 전반에 대한 회사 측 안내를 담고 있다.",
       "source": "회사블로그"
+     },
+     {
+      "title": "🔥 토스뱅크 서버 개발자 합격 후기 🔥",
+      "url": "https://velog.io/@softhoon/%ED%86%A0%EC%8A%A4%EB%B1%85%ED%81%AC-Server-Developer-%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "서류 → 약 1시간 30분 직무 인터뷰 → 문화적합성 인터뷰 → 레퍼런스 체크 → 최종합격까지 약 한 달이 걸렸다. 난이도는 중상으로, CS 전공 지식을 그 이상으로 준비하고 프로젝트 아키텍처를 설명할 수 있어야 하며, 정해진 답보다 '왜 그렇게 결정했는지'에 대한 현장 대응력을 중시한다.",
+      "source": "velog",
+      "date": "2024-08"
+     },
+     {
+      "title": "2025 토스뱅크 신입 Server Developer 직무인터뷰 후기",
+      "url": "https://velog.io/@chan25/2025-%ED%86%A0%EC%8A%A4%EB%B1%85%ED%81%AC-%EC%8B%A0%EC%9E%85-Server-Developer-%EC%A7%81%EB%AC%B4%EC%9D%B8%ED%84%B0%EB%B7%B0-%ED%9B%84%EA%B8%B0",
+      "summary": "지엽적 지식 질문이 아니라 실제 상황을 기반으로 지원자가 제시한 해결책을 깊이 검증하는 질문이 많아 질문 퀄리티가 인상 깊었다고 한다. 신입 서버 개발자 직무 인터뷰의 흐름과 준비 팁을 정리했다.",
+      "source": "velog",
+      "date": "2025"
      }
     ]
    },
