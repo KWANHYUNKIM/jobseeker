@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-14T19:14:17",
-  "source_dir": "screenshots/all_통합_20260614_191411",
+  "generated_at": "2026-06-14T20:52:00",
+  "source_dir": "screenshots/all_통합_20260614_205148",
   "keyword": "통합",
   "jobs": [
     {
@@ -105671,6 +105671,37 @@
     },
     {
       "site": "saramin",
+      "company": "피코소프트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[피코소프트] 채용공고 퍼블리셔/프론트엔드 개발자 (신입/경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54169786&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=91f58fd6-0031-441c-a854-7fea4ae41330",
+      "career": "경력무관",
+      "location": "경남양산시",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "React",
+        "Vue",
+        "HTML",
+        "CSS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화"
+      ],
+      "qualifications": "• 웹 및 모바일 디자인 경험과 UX/UI에 대한 이해가 있으신 분\n\n• html, css, 반응형 코딩, 미디어쿼리(Media Query), Semantic Markup 가능하신 분\n• 포토샵/일러스트레이터/Figma 등의 다양한 디자인툴을 능숙하게 사용하시는 분\n\n• RESTful API 및 AJAX 개발 가능한 분\n\n• 웹 성능 최적화 개발 가능한 분\n\n• 프론트엔드 프레임워크 및 라이브러리 (React, Vue) 활용 가능한 분\n\n※ 포트폴리오 제출 필수 (미 제출시 심사 제외)",
+      "preferences": "• 디자인 협업 툴 (Figma, sketch 등) 활용 역량이 있으신 분\n\n• 웹 트렌드에 밝고 배움에 적극적인 분\n\n• GSAP JavaScript 라이브러리 활용 역량이 있으신 분\n• 시각디자인학/산업디자인학/멀티미디어학/컴퓨터공학 전공자 우대합니다.",
+      "main_tasks": "• HTML, CSS 퍼블리싱 작업\n• UI/UX 디자인 및 개발\n\n• 웹접근성 개발 및 웹애플리케이션 개발",
+      "benefits": "• 휴가제도 : 자유로운 연차 사용\n\n• 식사제공 : 급여 외 중식 제공\n\n• 간식 및 음료제공 : 간식 & 커피 및 음료를 제공합니다.\n\n• 자율복장 : 최적화된 근무환경 조성\n• 트리플 모니터 제공 : 디자인 작업에 필요한 최상의 환경을 제공합니다.\n\n• 유연근무제 : 오전 8시 ~ 오후 10시 사이 편하신 시간에 출근하세요. 물론 주 40시간은 채우셔야해요."
+    },
+    {
+      "site": "saramin",
       "company": "(주)수산아이앤티",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -144973,6 +145004,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)스마일툰",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 남성향 웹툰 이미지 제작 담당 그림 작가 (경력 1년 이상)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54024745&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=22df2ebb-477b-404a-b05a-b07b819a6d22",
+      "career": "경력1년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)플래티어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -179266,19 +179318,19 @@
     }
   ],
   "stats": {
-    "total": 5932,
+    "total": 5934,
     "by_size": {
-      "중소기업": 5305,
+      "중소기업": 5307,
       "대기업": 378,
       "중견기업": 249
     },
     "by_role": {
       "기타": 775,
       "DevOps/인프라": 890,
-      "백엔드": 2564,
+      "백엔드": 2565,
       "모바일": 977,
-      "AI/ML": 1964,
-      "프론트엔드": 1714,
+      "AI/ML": 1965,
+      "프론트엔드": 1715,
       "풀스택": 534,
       "게임": 37,
       "데이터": 849,
@@ -179290,7 +179342,7 @@
       "wanted": 1311,
       "jumpit": 410,
       "jobkorea": 1107,
-      "saramin": 2863,
+      "saramin": 2865,
       "dev": 241
     },
     "top_tech": [
@@ -179308,7 +179360,7 @@
       ],
       [
         "React",
-        1321
+        1322
       ],
       [
         "Git",
@@ -179324,7 +179376,7 @@
       ],
       [
         "JavaScript",
-        910
+        911
       ],
       [
         "Linux",
@@ -179380,14 +179432,14 @@
       ],
       [
         "CSS",
-        430
-      ],
-      [
-        "iOS",
-        414
+        431
       ],
       [
         "HTML",
+        415
+      ],
+      [
+        "iOS",
         414
       ],
       [
@@ -179404,7 +179456,7 @@
       ],
       [
         "Vue",
-        341
+        342
       ],
       [
         "FastAPI",
@@ -181557,6 +181609,22 @@
         "jumpit": 493,
         "jobkorea": 1309,
         "saramin": 3375,
+        "dev": 270
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-14T20:51:57",
+      "keyword": "통합",
+      "raw_total": 6769,
+      "deduped": 6401,
+      "active": 5934,
+      "closed": 467,
+      "site_counts": {
+        "wanted": 1317,
+        "jumpit": 493,
+        "jobkorea": 1309,
+        "saramin": 3380,
         "dev": 270
       },
       "anomalies": []
