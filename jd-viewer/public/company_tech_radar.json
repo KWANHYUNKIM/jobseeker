@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-14T22:36:40",
+ "generated_at": "2026-06-15T00:10:37",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 11,
+ "refined": 13,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1189,15 +1189,15 @@
      "count": 6
     },
     {
+     "name": "Go",
+     "count": 4
+    },
+    {
      "name": "Java",
      "count": 4
     },
     {
      "name": "CUDA",
-     "count": 3
-    },
-    {
-     "name": "Go",
      "count": 3
     },
     {
@@ -1209,7 +1209,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 7
+      "count": 6
      },
      {
       "name": "Java",
@@ -1218,6 +1218,10 @@
      {
       "name": "Python",
       "count": 4
+     },
+     {
+      "name": "Rust",
+      "count": 2
      },
      {
       "name": "C++",
@@ -1242,10 +1246,6 @@
      {
       "name": "FastAPI/ASGI",
       "count": 1
-     },
-     {
-      "name": "Go",
-      "count": 1
      }
     ],
     "frontend": [
@@ -1258,11 +1258,15 @@
       "count": 8
      },
      {
+      "name": "Next.js",
+      "count": 3
+     },
+     {
       "name": "Redux",
       "count": 3
      },
      {
-      "name": "Next.js",
+      "name": "Tailwind CSS",
       "count": 2
      },
      {
@@ -1282,10 +1286,6 @@
       "count": 1
      },
      {
-      "name": "Tailwind CSS",
-      "count": 1
-     },
-     {
       "name": "WebGL/Canvas",
       "count": 1
      }
@@ -1296,11 +1296,15 @@
       "count": 5
      },
      {
-      "name": "Spark",
-      "count": 3
+      "name": "Apache Spark",
+      "count": 2
      },
      {
       "name": "Cassandra",
+      "count": 2
+     },
+     {
+      "name": "Parquet",
       "count": 2
      },
      {
@@ -1312,37 +1316,33 @@
       "count": 2
      },
      {
+      "name": "Redis",
+      "count": 2
+     },
+     {
+      "name": "Spark",
+      "count": 2
+     },
+     {
       "name": "Vector stores",
       "count": 2
      },
      {
-      "name": "Apache Lucene",
-      "count": 1
-     },
-     {
-      "name": "Apache Parquet",
-      "count": 1
-     },
-     {
-      "name": "Apache Spark",
-      "count": 1
-     },
-     {
-      "name": "Columnar storage",
+      "name": "Apache Arrow",
       "count": 1
      }
     ],
     "infra": [
      {
       "name": "Kubernetes",
-      "count": 6
-     },
-     {
-      "name": "Azure",
-      "count": 4
+      "count": 7
      },
      {
       "name": "Terraform",
+      "count": 5
+     },
+     {
+      "name": "Azure",
       "count": 4
      },
      {
@@ -1377,11 +1377,7 @@
    },
    "architecture": [
     {
-     "name": "Distributed training",
-     "count": 2
-    },
-    {
-     "name": "Microservices",
+     "name": "Distributed model training",
      "count": 2
     },
     {
@@ -1390,6 +1386,10 @@
     },
     {
      "name": "Constitutional AI / safety-in-the-loop pipeline",
+     "count": 1
+    },
+    {
+     "name": "Container-orchestrated HPC fabric",
      "count": 1
     },
     {
@@ -5847,35 +5847,44 @@
    "stack": {
     "backend": [
      "C++",
-     "Python (Triton)",
-     "gRPC"
+     "Python",
+     "Triton Inference Server",
+     "TensorRT / TensorRT-LLM",
+     "gRPC",
+     "NIM microservices"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Next.js"
     ],
     "data": [
-     "RAPIDS",
-     "Spark",
-     "cuDF",
-     "Kafka"
+     "RAPIDS (cuDF)",
+     "Apache Spark (RAPIDS Accelerator)",
+     "Apache Arrow",
+     "Kafka",
+     "Parquet"
     ],
     "infra": [
-     "DGX/Kubernetes",
+     "Kubernetes",
      "Slurm",
      "NCCL",
-     "Cloud"
+     "DGX SuperPOD",
+     "NVLink/NVSwitch + InfiniBand",
+     "NGC Containers",
+     "Cloud (AWS/Azure/GCP/OCI)"
     ]
    },
    "architecture": [
-    "GPU-accelerated computing",
-    "Distributed training",
-    "Microservices"
+    "GPU-accelerated heterogeneous computing",
+    "Distributed parallel training (tensor/pipeline/data parallel)",
+    "Inference-serving microservices (NIM/Triton)",
+    "Container-orchestrated HPC fabric"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"AI Apps<br/>Python + React\"]\n    SDK[\"CUDA SDK<br/>C++ Clients\"]\n  end\n  subgraph Serving\n    TRITON[\"Inference Server<br/>Triton + gRPC\"]\n    API[\"API Layer<br/>C++\"]\n  end\n  subgraph Compute\n    NCCL[\"Collective Comms<br/>NCCL\"]\n    RAPIDS[\"GPU Data Proc<br/>RAPIDS + cuDF\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Distributed<br/>Spark on GPU\"]\n  end\n  subgraph Infra\n    DGX[\"GPU Cluster<br/>DGX + Kubernetes\"]\n    SLURM[\"Scheduler<br/>Slurm\"]\n  end\n  APP -->|HTTPS| API\n  SDK -->|gRPC| TRITON\n  API --> TRITON\n  TRITON --> NCCL\n  TRITON --> RAPIDS\n  RAPIDS --> SPARK\n  SPARK -->|emit| KAFKA\n  NCCL --> DGX\n  RAPIDS --> DGX\n  DGX --> SLURM\n  TRITON -.-> DGX",
-   "why_language": "GPU 가속 라이브러리·드라이버의 본질상 C++/CUDA가 절대 중심이고, AI 프레임워크 인터페이스는 Python으로 제공한다. CUDA는 자사가 만든 병렬 컴퓨팅 언어다.",
-   "why_architecture": "대규모 분산 학습·추론(NCCL, Triton Inference Server)을 GPU 클러스터에서 가속하는 것이 핵심이며, 데이터 처리도 GPU 위에서 돌리는 RAPIDS로 가속한다.",
-   "summary": "CUDA/C++로 GPU 가속 컴퓨팅 전 계층을 장악한 AI 인프라의 심장.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Apps & SDKs<br/>Python + C++ + Rust\"]\n    WEB[\"NGC / Build Portal<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"API / Serving\"]\n    NIM[\"NIM Microservice<br/>gRPC + REST\"]\n    TRITON[\"Triton Inference Server<br/>dynamic batching\"]\n  end\n  subgraph Core[\"Compute Core\"]\n    TRT[\"TensorRT-LLM<br/>fused CUDA kernels\"]\n    CUDA[\"CUDA Runtime<br/>SM + Tensor Cores\"]\n    TRAIN[\"Megatron / NeMo<br/>tensor+pipeline parallel\"]\n  end\n  subgraph Data[\"Data / ETL\"]\n    RAPIDS[\"RAPIDS cuDF<br/>GPU dataframes\"]\n    SPARK[\"Spark + RAPIDS<br/>Arrow / Parquet\"]\n    KAFKA[\"Kafka<br/>event stream\"]\n  end\n  subgraph Infra[\"HPC Platform\"]\n    K8S[\"Kubernetes + Slurm<br/>DGX SuperPOD\"]\n    NCCL[\"NCCL collectives<br/>NVLink + InfiniBand\"]\n    STORE[\"Parallel FS<br/>Lustre / GPUDirect\"]\n  end\n  APP -->|gRPC| NIM\n  WEB --> NIM\n  NIM --> TRITON\n  TRITON --> TRT\n  TRT --> CUDA\n  KAFKA --> SPARK\n  SPARK --> RAPIDS\n  RAPIDS --> TRAIN\n  TRAIN -->|all-reduce| NCCL\n  TRAIN --> CUDA\n  CUDA --> NCCL\n  NCCL --> K8S\n  TRAIN --> STORE\n  K8S --> STORE",
+   "why_language": "초저지연 GPU 커널과 하드웨어 추상화(드라이버·런타임·라이브러리)는 C/C++/CUDA로 작성해 메모리 레이아웃과 Tensor Core 명령을 직접 제어해야 성능이 나오기 때문입니다. 반면 모델 학습·데이터 파이프라인·SDK 표면은 생태계가 가장 큰 Python으로 감싸 사용성을 확보하고, 새 시스템 컴포넌트(드라이버 툴링·CLI)에는 메모리 안전성과 동시성이 강한 Rust를 점진 도입하고 있습니다.",
+   "why_architecture": "수천 개 GPU를 하나의 가속기처럼 다뤄야 하므로 NVLink/InfiniBand 패브릭 위에서 NCCL 집합통신과 tensor/pipeline 병렬을 결합한 분산 아키텍처가 필수입니다. 학습과 추론을 분리해, 추론은 Triton/NIM 마이크로서비스로 패키징하고 TensorRT로 커널을 컴파일·융합하여 동일 하드웨어에서 처리량과 지연을 동시에 최적화합니다.",
+   "summary": "C++/CUDA로 하드웨어를 직접 두드리고 NCCL 패브릭과 Triton/NIM으로 GPU를 데이터센터 단위 슈퍼컴퓨터처럼 운영하는 가속 컴퓨팅 스택",
    "deep_dive": [
     {
      "topic": "CUDA 프로그래밍 모델과 GPU 실행",
@@ -5888,47 +5897,67 @@
     {
      "topic": "Triton 추론 서버",
      "body": "### 추론 서빙 표준화\n`Triton Inference Server`는 학습된 모델을 프로덕션에서 서빙하는 NVIDIA의 서버다. 다양한 프레임워크(TensorRT, PyTorch, ONNX, TensorFlow) 모델을 같은 서버에서 `gRPC`/HTTP로 서빙한다.\n\n### 핵심 메커니즘\n- **dynamic batching**: 개별 추론 요청을 짧은 시간 창에서 모아 한 배치로 묶어 GPU 활용률을 높인다. 지연 예산 안에서 처리량을 극대화.\n- **concurrent model execution**: 한 GPU에서 여러 모델 인스턴스를 동시에 실행해 활용률을 채운다.\n- **model ensemble/pipeline**: 전처리→모델→후처리를 서버 내 파이프라인으로 연결.\n- **TensorRT 통합**: 모델을 TensorRT로 컴파일(레이어 융합, 정밀도 캘리브레이션 FP16/INT8, 커널 자동 튜닝)해 추론 지연을 크게 줄인다.\n\n### 데이터 처리 가속: RAPIDS\n추론·학습 주변의 데이터 전처리도 GPU로 가속한다. `RAPIDS`(`cuDF` 등)는 pandas/Spark 유사 API를 GPU에서 실행해, ETL·피처 엔지니어링을 CPU 대비 수~수십 배 가속한다. `Spark on GPU`로 분산 데이터 처리도 GPU로 밀어낸다. 즉 학습-데이터처리-추론 전 계층을 GPU 가속으로 일관되게 묶는 것이 NVIDIA 아키텍처의 정체성이다."
+    },
+    {
+     "topic": "TensorRT-LLM의 추론 엔진 컴파일과 in-flight batching이 실제로 작동하는 방식",
+     "body": "### 왜 그냥 PyTorch로 추론하지 않는가\nLLM 추론의 병목은 거의 항상 **메모리 대역폭**과 **커널 런치 오버헤드**입니다. 디코딩은 토큰을 한 개씩 생성하는 autoregressive 루프라, 한 토큰마다 수백 개의 작은 CUDA 커널을 런치하면 GPU의 SM은 대부분 idle 상태로 메모리에서 weight를 읽어오기만 기다립니다. TensorRT-LLM은 이 그래프를 **빌드 타임에 컴파일**해 이 오버헤드를 제거합니다.\n\n### 엔진 빌드 단계에서 일어나는 일\n- **Kernel fusion**: `LayerNorm → QKV projection → RoPE → attention → output projection` 같은 연산들을 가능한 한 하나의 fused 커널로 합쳐 중간 텐서를 HBM에 쓰지 않고 레지스터/`shared memory`에 유지합니다. 메모리 왕복이 줄어 대역폭 병목을 직접 완화합니다.\n- **Quantization**: `FP16/BF16` 기본에서 `FP8`(Hopper), `INT4 AWQ/GPTQ`, `INT8 SmoothQuant`까지 weight·activation을 저비트로 변환합니다. weight가 작아지면 메모리에서 읽는 바이트 수가 줄어 디코딩 처리량이 거의 선형으로 올라갑니다.\n- **Plugin 기반 attention**: FlashAttention/`fused multi-head attention` 커널을 plugin으로 끼워 softmax를 타일 단위로 online 계산해 O(N) 메모리만 사용합니다.\n- 결과물은 GPU 아키텍처(SM90 등)에 고정된 직렬화된 `engine` 파일이라, 다른 GPU 세대에서는 재빌드가 필요합니다 — 이게 이식성을 희생하고 성능을 얻는 핵심 트레이드오프입니다.\n\n### In-flight (continuous) batching\n전통적 static batching은 배치 안의 모든 요청이 끝날 때까지 기다립니다. 짧은 답변 요청이 긴 요청에 발이 묶여 GPU가 놀게 됩니다. TensorRT-LLM의 `batch manager`는 **iteration 단위**로 동작합니다:\n\n| 항목 | static batching | in-flight batching |\n|---|---|---|\n| 스케줄 단위 | 요청 전체 | 토큰 1회 생성마다 |\n| 완료된 요청 | 배치 끝까지 점유 | 즉시 슬롯 반납·새 요청 투입 |\n| GPU 활용률 | 낮음(꼬리 지연) | 높음 |\n\n매 디코딩 스텝마다 끝난 시퀀스를 빼고 큐에서 새 prompt의 prefill을 끼워넣어 배치를 가득 채웁니다.\n\n### KV cache와 PagedAttention\n각 시퀀스의 attention key/value는 토큰마다 누적되어 메모리를 크게 먹습니다. TensorRT-LLM은 KV cache를 고정 크기 **block(page)** 으로 쪼개 OS 가상메모리처럼 관리합니다. 덕분에 단편화 없이 많은 동시 요청을 수용하고, 같은 system prompt를 쓰는 요청 간 **prefix 공유**로 prefill 중복 계산을 건너뜁니다. 이 batch manager + paged KV cache 조합이 Triton 백엔드로 노출되어 NIM 마이크로서비스가 그대로 서빙합니다."
+    },
+    {
+     "topic": "Megatron-LM의 3D 병렬화 — 수천 GPU에 하나의 모델을 어떻게 쪼개는가",
+     "body": "### 모델이 GPU 한 장에 안 들어갈 때\n수십~수천억 파라미터 모델은 weight·gradient·optimizer state만으로도 수 TB라 단일 GPU에 불가능합니다. Megatron-LM은 세 축의 병렬화를 직교적으로 조합합니다(흔히 3D parallelism).\n\n### 1) Tensor Parallelism (TP) — 레이어 '내부'를 쪼갬\n트랜스포머의 핵심은 거대한 행렬곱입니다. MLP의 `Y = GeLU(X·A)·B`에서 `A`를 column-wise로, `B`를 row-wise로 쪼개면 각 GPU가 부분 곱만 계산하고 마지막에 한 번의 `all-reduce`로 합칩니다. attention도 head 단위로 GPU에 분배합니다. TP는 통신량이 크기 때문에 **NVLink로 묶인 노드 내부(보통 8 GPU)** 안에서만 씁니다 — InfiniBand로 넘어가면 대역폭이 떨어져 비효율적입니다.\n\n### 2) Pipeline Parallelism (PP) — 레이어를 '층'으로 쪼갬\n80개 레이어를 8개 stage로 나눠 stage마다 다른 노드에 배치합니다. 문제는 **pipeline bubble**(앞 stage가 일할 때 뒤 stage가 노는 시간)입니다. Megatron은 micro-batch를 잘게 쪼개 1F1B(one-forward-one-backward) 스케줄로 흘려보내 bubble을 micro-batch 수에 반비례하게 줄입니다. `interleaved` 스케줄은 한 GPU에 비연속 레이어 청크를 여러 개 줘 bubble을 더 줄입니다.\n\n### 3) Data Parallelism (DP) + Sequence Parallelism\n위 모델 복제본을 여러 벌 두고 서로 다른 데이터 배치를 먹인 뒤 gradient를 `all-reduce`합니다. `ZeRO`/distributed optimizer로 optimizer state를 DP rank에 샤딩해 메모리 중복을 제거합니다. **Sequence parallelism**은 LayerNorm/Dropout 등 TP가 복제하던 영역을 시퀀스 차원으로 쪼개 activation 메모리를 추가로 절약합니다.\n\n### 통신 위계 매핑이 곧 성능\n핵심 엔지니어링 결정은 **'어느 병렬화를 어느 네트워크 계층에 매핑하느냐'** 입니다.\n\n| 병렬화 | 통신 빈도 | 매핑되는 패브릭 |\n|---|---|---|\n| Tensor (TP) | 레이어마다 all-reduce, 매우 잦음 | 노드 내 NVLink/NVSwitch |\n| Pipeline (PP) | stage 경계 point-to-point | 노드 간 InfiniBand |\n| Data (DP) | step 끝 all-reduce | 노드 간 InfiniBand, overlap 가능 |\n\nNCCL이 토폴로지를 인식해 ring/tree 알고리즘을 고르고, gradient all-reduce를 backward 연산과 overlap시켜 통신을 계산 뒤에 숨깁니다. 이 매핑이 어긋나면(예: TP를 InfiniBand로) 학습 속도가 몇 배 느려지므로, 클러스터 토폴로지에 맞춘 (TP, PP, DP) 조합 튜닝이 대규모 학습의 실질적 핵심 작업입니다."
+    },
+    {
+     "topic": "RAPIDS cuDF — GPU에서 데이터프레임/ETL을 돌리는 메커니즘",
+     "body": "### CPU 데이터프레임의 한계\npandas는 단일 스레드·row 지향이라 수십 GB ETL에서 CPU와 메모리 대역폭에 막힙니다. RAPIDS `cuDF`는 동일한 API를 유지하면서 실행을 GPU로 옮깁니다.\n\n### 핵심 메커니즘\n- **Columnar + Apache Arrow 메모리 포맷**: 데이터를 컬럼 단위 연속 버퍼로 GPU HBM에 올립니다. `groupby`, `filter`, `join` 같은 연산이 수천 CUDA 스레드로 컬럼을 동시에 훑어 GPU의 높은 메모리 대역폭(수 TB/s)을 활용합니다.\n- **libcudf (C++/CUDA 코어)**: 실제 커널은 C++/CUDA로 작성된 `libcudf`에 있고 Python `cudf`는 얇은 바인딩입니다. join은 GPU 해시 테이블, sort는 radix/merge sort 같은 GPU 친화 알고리즘을 씁니다.\n- **`cudf.pandas` 가속 모드**: 기존 pandas 코드에 `import cudf.pandas`만 추가하면 GPU에서 실행하다 미지원 연산은 자동으로 CPU pandas로 fallback해 무중단 가속을 제공합니다.\n- **Spark RAPIDS Accelerator**: Spark SQL의 physical plan을 가로채 지원되는 연산자를 GPU 커널로 치환합니다. 애플리케이션 코드 변경 없이 셔플·집계를 GPU로 내려 대규모 ETL 비용을 줄입니다.\n\n### 데이터 이동이라는 트레이드오프\nGPU ETL의 적은 PCIe를 통한 host↔device 복사입니다. RAPIDS는 **GPUDirect Storage**로 NVMe/네트워크 스토리지에서 GPU 메모리로 CPU bounce 없이 직접 DMA하고, Parquet/ORC를 GPU에서 직접 디코딩합니다. 그래도 데이터가 작거나 연산이 가벼우면 복사 비용이 가속 이득을 잡아먹으므로, RAPIDS는 **충분히 큰 배치·연산 밀도가 높은 파이프라인**에서 가장 효과적입니다 — 이 경계를 아는 것이 도입의 핵심 판단입니다. 이렇게 GPU에 머무는 데이터프레임은 그대로 cuML/Megatron 학습 입력으로 zero-copy 연결되어 ETL→학습 경계의 직렬화 비용을 없앱니다."
     }
    ],
    "github": {
     "org": "https://github.com/NVIDIA",
     "repos": [
      {
-      "name": "triton-inference-server/server",
-      "url": "https://github.com/triton-inference-server/server",
-      "desc": "고성능 추론 서빙 서버",
+      "name": "NVIDIA-NeMo/NeMo",
+      "url": "https://github.com/NVIDIA-NeMo/NeMo",
+      "desc": "음성·LLM·멀티모달 생성형 AI 학습/파인튜닝 툴킷",
       "lang": "Python",
-      "stars": 10749
+      "stars": 17373
+     },
+     {
+      "name": "NVIDIA/Megatron-LM",
+      "url": "https://github.com/NVIDIA/Megatron-LM",
+      "desc": "초대형 트랜스포머의 tensor/pipeline/sequence 병렬 학습 프레임워크",
+      "lang": "Python",
+      "stars": 16699
+     },
+     {
+      "name": "NVIDIA/TensorRT-LLM",
+      "url": "https://github.com/NVIDIA/TensorRT-LLM",
+      "desc": "LLM 추론을 위한 커널 융합·양자화·in-flight 배칭 최적화 엔진 빌더",
+      "lang": "Python",
+      "stars": 13867
      },
      {
       "name": "rapidsai/cudf",
       "url": "https://github.com/rapidsai/cudf",
-      "desc": "GPU 가속 데이터프레임 라이브러리",
+      "desc": "pandas 호환 API의 GPU 가속 데이터프레임 라이브러리",
       "lang": "C++",
-      "stars": 9662
-     },
-     {
-      "name": "NVIDIA/cuda-samples",
-      "url": "https://github.com/NVIDIA/cuda-samples",
-      "desc": "CUDA 프로그래밍 예제 모음",
-      "lang": "C++",
-      "stars": 9291
+      "stars": 9663
      },
      {
       "name": "NVIDIA/nccl",
       "url": "https://github.com/NVIDIA/nccl",
-      "desc": "멀티 GPU 집합 통신 라이브러리",
+      "desc": "다중 GPU/노드 집합통신(all-reduce 등) 라이브러리",
       "lang": "C++",
       "stars": 4808
      }
     ]
    },
    "sources": [
-    "https://developer.nvidia.com/blog",
-    "https://rapids.ai"
+    "https://github.com/NVIDIA/TensorRT-LLM",
+    "https://github.com/NVIDIA/Megatron-LM",
+    "https://developer.nvidia.com/rapids"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "openai",
@@ -5937,44 +5966,56 @@
    "domain": "데이터/AI",
    "languages": [
     "Python",
+    "Rust",
+    "TypeScript",
     "C++",
     "CUDA",
-    "TypeScript",
-    "Rust"
+    "Go"
    ],
    "stack": {
     "backend": [
-     "Python (FastAPI)",
+     "Python (FastAPI/asyncio)",
+     "Rust (perf-critical services)",
      "C++/CUDA kernels",
-     "gRPC"
+     "Triton (GPU kernel DSL)",
+     "gRPC + Protobuf"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "Tailwind CSS"
     ],
     "data": [
      "PostgreSQL",
+     "Redis",
      "Kafka",
      "Ray",
-     "Vector stores"
+     "Snowflake",
+     "Vector stores (pgvector/FAISS)",
+     "Azure Blob Storage"
     ],
     "infra": [
-     "Azure",
+     "Azure (primary)",
      "Kubernetes",
-     "Triton",
-     "PyTorch"
+     "PyTorch",
+     "Triton Inference Server",
+     "NVIDIA H100/GB200",
+     "InfiniBand/NCCL",
+     "Terraform",
+     "Prometheus/Grafana"
     ]
    },
    "architecture": [
-    "Distributed training",
-    "Inference serving",
-    "Microservices"
+    "Distributed model training (data/tensor/pipeline parallelism)",
+    "GPU inference serving with continuous batching",
+    "Event-driven microservices",
+    "Multi-tenant API platform with rate limiting/quota"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"ChatGPT Web<br/>Next.js + React\"]\n    SDK[\"API Clients<br/>SDK + REST\"]\n  end\n  subgraph Gateway\n    API[\"API Service<br/>Python FastAPI\"]\n    GW[\"Gateway<br/>gRPC\"]\n  end\n  subgraph Serving\n    INF[\"Inference<br/>Triton + CUDA\"]\n    RAY[\"Orchestration<br/>Ray\"]\n  end\n  subgraph Training\n    PT[\"Training<br/>PyTorch\"]\n  end\n  subgraph Data\n    PG[\"Relational<br/>PostgreSQL\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    VEC[\"Retrieval<br/>Vector Stores\"]\n  end\n  subgraph Infra\n    AZURE[\"Platform<br/>Azure + Kubernetes\"]\n  end\n  WEB -->|HTTPS| API\n  SDK -->|HTTPS| API\n  API -->|gRPC| GW\n  GW --> INF\n  INF --> RAY\n  INF --> VEC\n  API --> PG\n  API -->|emit| KAFKA\n  RAY --> PT\n  PT --> AZURE\n  INF -.-> AZURE",
-   "why_language": "대규모 모델 학습·연구가 Python(PyTorch) 생태계 중심이고, GPU 커널 성능 최적화는 C++/CUDA로 작성한다. 제품(ChatGPT) 웹은 TypeScript/Next.js다.",
-   "why_architecture": "수천 GPU에 걸친 분산 학습과 저지연 대규모 추론 서빙이 핵심이라 Ray·Triton·Kubernetes로 스케줄링·서빙을 운영한다. API 제품은 마이크로서비스로 제공한다.",
-   "summary": "Python/PyTorch 분산 학습과 GPU 추론 서빙으로 대규모 LLM을 운영하는 AI 연구소.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"ChatGPT Web/App<br/>Next.js + React\"]\n    SDK[\"API Clients<br/>openai-python / openai-node\"]\n    CDN[\"Edge / CDN<br/>Cloudflare + Azure Front Door\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Auth + Rate Limit + Quota\"]\n    ROUTER[\"Model Router<br/>Python asyncio\"]\n  end\n  subgraph Core[\"Core Services\"]\n    ORCH[\"Inference Orchestrator<br/>Python + Rust\"]\n    MOD[\"Moderation / Safety<br/>Classifier models\"]\n    TOOL[\"Tool / Function Calling<br/>Code Interpreter, Retrieval\"]\n  end\n  subgraph Serving[\"GPU Inference\"]\n    BATCH[\"Continuous Batching<br/>Triton + custom server\"]\n    KER[\"GPU Kernels<br/>CUDA + Triton DSL\"]\n    GPU[\"H100/GB200 Fleet<br/>NCCL + InfiniBand\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL<br/>metadata + threads\"]\n    REDIS[\"Redis<br/>session + KV cache meta\"]\n    VEC[\"Vector Store<br/>pgvector / FAISS\"]\n    BLOB[\"Azure Blob<br/>files + checkpoints\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>usage + telemetry events\"]\n    RAY[\"Ray<br/>training + batch jobs\"]\n  end\n  APP --> CDN --> GW\n  SDK --> GW\n  GW --> ROUTER --> ORCH\n  ORCH -->|gRPC| BATCH\n  ORCH --> MOD\n  ORCH --> TOOL\n  TOOL --> VEC\n  BATCH --> KER --> GPU\n  ORCH --> PG\n  ORCH --> REDIS\n  TOOL --> BLOB\n  GW -->|events| KAFKA\n  KAFKA --> RAY\n  RAY --> BLOB",
+   "why_language": "초저지연·고처리량 추론과 대규모 학습이 핵심이라, 모델/연구 코드와 데이터 파이프라인은 생산성이 높은 Python으로, GPU 연산은 C++/CUDA와 Triton DSL로 커널 수준까지 직접 최적화한다. API 게이트웨이·라우팅처럼 동시성과 메모리 안전성이 중요한 핫패스는 Rust로 옮기고, 제품 웹은 TypeScript/React로 빠르게 반복한다.",
+   "why_architecture": "수십만 GPU에 걸친 분산 학습과, 토큰 단위 스트리밍으로 폭증하는 추론 트래픽을 동시에 감당해야 하므로 학습 클러스터(Ray+PyTorch)와 추론 서빙(continuous batching)을 분리했다. ChatGPT·API·엔터프라이즈가 같은 모델 풀을 공유하는 멀티테넌트 구조라 게이트웨이에서 인증·쿼터·라우팅을 중앙화하고, 안전성·도구호출을 독립 서비스로 떼어 모델과 무관하게 확장·교체할 수 있게 했다.",
+   "summary": "Python 연구 코드 + CUDA/Triton 커널 + Rust 핫패스로 Azure 위 멀티테넌트 추론 플랫폼을 굴리는 GPU-네이티브 스택",
    "deep_dive": [
     {
      "topic": "분산 학습: PyTorch + Ray + 병렬화",
@@ -5987,6 +6028,18 @@
     {
      "topic": "제품 마이크로서비스와 데이터",
      "body": "### API 제품 아키텍처\nChatGPT·API 제품은 추론 서빙과 별개로 일반 마이크로서비스 계층을 갖는다. 인증, 사용량·과금 미터링, rate limit, 대화 저장, 도구 호출(function calling) 오케스트레이션, 검색 증강(RAG) 등이 여기 산다.\n\n### 데이터 저장\n- `PostgreSQL`: 계정·대화 메타데이터·사용량 등 관계형 핵심 데이터.\n- `Kafka`: 사용 이벤트·로그·미터링을 비동기 스트리밍. 과금·분석·안전성 파이프라인으로 팬아웃.\n- `Vector Stores`: RAG·검색을 위한 임베딩 인덱스. 사용자 제공 문서·도구 컨텍스트를 임베딩해 ANN으로 검색하고 프롬프트에 주입한다.\n\n### 도구 호출·에이전트\n모델이 함수/도구를 호출하면, 오케스트레이션 계층이 실제 도구(코드 실행, 브라우징, 검색)를 실행하고 결과를 모델에 되먹인다. 이 루프가 멀티스텝 에이전트 동작을 만든다. 안전성·모더레이션 분류기가 입출력 경로에 붙어 정책 위반을 거른다.\n\n### 확장\n사용량 폭증(바이럴 출시) 시 추론 GPU가 병목이라, 큐잉·우선순위·점진 롤아웃으로 부하를 관리한다. Kubernetes 오토스케일링으로 무상태 API 계층을 늘리되, GPU 추론 용량은 물리적 제약이라 별도 용량 계획·배칭 효율로 흡수한다."
+    },
+    {
+     "topic": "토큰 스트리밍 추론: Continuous Batching과 KV 캐시의 실제 동작",
+     "body": "### 왜 요청을 묶어야 하는가\nLLM 추론은 두 단계로 나뉜다. (1) **prefill**: 입력 프롬프트 전체를 한 번에 행렬곱으로 처리해 KV 캐시를 채우는 compute-bound 단계, (2) **decode**: 토큰을 한 개씩 자기회귀적으로 생성하는 memory-bandwidth-bound 단계. decode 단계에서 GPU는 거대한 가중치 행렬을 토큰 1개를 위해 메모리에서 읽어오므로, 단일 요청만 처리하면 H100의 연산 유닛이 대부분 놀게 된다. 그래서 여러 사용자의 요청을 **한 배치로 묶어** 같은 가중치 읽기로 동시에 여러 토큰을 만들어내야 GPU 효율이 산다.\n\n### Static batching의 한계와 Continuous Batching\n전통적 static batching은 배치 안의 모든 요청이 끝날 때까지 기다린다. 그런데 한 요청은 30토큰, 다른 요청은 2000토큰을 생성하면 짧은 요청이 끝나도 슬롯이 비어 GPU가 낭비된다. OpenAI를 포함한 현대 서빙 스택은 **continuous(in-flight) batching**을 쓴다. 매 decode 스텝마다 배치를 재구성해서, 완료된 요청은 즉시 빼고 대기열의 새 요청을 빈 슬롯에 끼워 넣는다. 덕분에 GPU 점유율이 높게 유지되고 대기 지연이 줄어든다.\n\n### KV 캐시가 진짜 병목\n각 토큰의 attention을 위해 이전 모든 토큰의 Key/Value 텐서를 보관해야 한다. 이 **KV 캐시**는 `시퀀스길이 × 레이어수 × 헤드수 × 차원 × 2(K,V) × dtype바이트`로 커지며, 긴 컨텍스트(128K)에서는 모델 가중치보다 GPU 메모리를 더 먹을 수 있다. 그래서:\n- **PagedAttention** 류 기법으로 KV 캐시를 OS 페이지처럼 고정 크기 블록으로 쪼개 단편화를 없애고 메모리 활용을 극대화한다.\n- **prefix caching**: ChatGPT의 system prompt나 멀티턴 대화의 앞부분은 매 요청 동일하므로, 그 구간의 KV를 캐시해 prefill을 통째로 건너뛴다. OpenAI API의 `Prompt Caching`(동일 프리픽스 50% 할인)은 바로 이 메커니즘을 제품화한 것으로, 캐시 히트 시 첫 토큰 지연(TTFT)이 크게 줄어든다.\n\n### Prefill/Decode 분리(Disaggregation)\n최신 서빙 설계 트렌드는 prefill 전용 GPU 풀과 decode 전용 풀을 **물리적으로 분리**하는 것이다. prefill은 짧고 무겁고, decode는 길고 가볍기 때문에 둘을 같은 GPU에 섞으면 서로의 지연을 악화시킨다. 분리하면 각 단계를 독립적으로 오토스케일하고, prefill 결과(KV 캐시)를 고속 인터커넥트로 decode 노드에 넘긴다.\n\n### 트레이드오프\n배치를 키우면 처리량(throughput)은 오르지만 개별 사용자의 토큰 간 지연(ITL)은 늘어난다. OpenAI는 ChatGPT처럼 사람이 읽는 속도(초당 수십 토큰)면 충분한 제품과, 코드 자동완성처럼 극저지연이 필요한 워크로드를 **다른 배치/우선순위 큐**로 라우팅해 SLA를 맞춘다. `Batch API`(24시간 내 완료, 50% 저렴)는 아예 지연을 포기하고 처리량만 극대화한 별도 경로다."
+    },
+    {
+     "topic": "대규모 학습 인프라: 수만 GPU의 병렬화·체크포인트·장애 복원",
+     "body": "### 3D 병렬화 + 그 이상\n수천억~조 단위 파라미터 모델은 단일 GPU는 물론 단일 노드에도 안 들어간다. OpenAI는 PyTorch 기반으로 여러 병렬화 축을 조합한다:\n- **Data Parallelism(DP)**: 같은 모델 복제본이 서로 다른 데이터 배치를 처리하고 gradient를 `all-reduce`로 합친다.\n- **Tensor Parallelism(TP)**: 하나의 행렬곱을 여러 GPU로 쪼갠다. 통신이 잦아 같은 노드 내 NVLink로 묶는다.\n- **Pipeline Parallelism(PP)**: 레이어를 GPU 그룹별로 나누고 마이크로배치를 파이프라인처럼 흘려보내 'bubble'(유휴)을 최소화한다.\n- **ZeRO/FSDP**: optimizer state·gradient·parameter를 GPU들에 샤딩해 메모리 중복을 제거한다.\n\n이 통신은 **NCCL**이 담당하고, 노드 간은 **InfiniBand**(또는 RoCE)로 수백 Gbps 대역폭을 확보한다. 토폴로지 인지 스케줄링으로 통신량 많은 TP는 가까이, DP는 멀리 배치한다.\n\n### 체크포인팅과 장애 복원\n수만 GPU 규모에서는 **하드웨어 고장이 상수**다. GPU 메모리 ECC 오류, 네트워크 링크 끊김, HBM 결함이 학습 중 수시로 난다. 핵심 방어책:\n- **빈번한 비동기 체크포인트**: 학습 상태를 주기적으로 Azure Blob에 저장하되, 학습을 멈추지 않도록 GPU→CPU→스토리지를 비동기 파이프라인으로 흘린다. 조 단위 파라미터 체크포인트는 수 TB라 샤딩 저장한다.\n- **빠른 재시작**: 노드가 죽으면 마지막 체크포인트에서 전체 잡을 되살리되, 수만 GPU를 재동기화하는 비용이 크므로 **장애 노드만 hot-swap**하는 elastic 방식을 지향한다.\n- **silent data corruption 탐지**: 결함 GPU가 틀린 계산을 조용히 내놓는 경우가 가장 위험해서, 주기적 검증·이상 gradient 탐지·노드 헬스체크로 걸러낸다. OpenAI는 학습 안정성을 위해 loss spike 발생 시 직전 체크포인트로 롤백하고 데이터 배치를 건너뛰는 운영을 공개한 바 있다.\n\n### Ray의 역할\n**Ray**는 학습 잡 자체의 텐서 연산보다는 그 주변 오케스트레이션—데이터 전처리, RLHF의 rollout 생성·보상 모델 추론·정책 업데이트 같은 이질적 단계의 분산 스케줄링—에 쓰인다. RLHF는 추론(샘플 생성)과 학습(정책 갱신)이 섞인 복잡한 파이프라인이라, Ray의 actor 모델이 GPU 자원을 단계별로 배분하기에 적합하다.\n\n### 왜 Azure인가\nMicrosoft와의 파트너십으로 OpenAI 전용 슈퍼컴퓨팅 클러스터를 Azure에 구축했다. 수만 장의 GPU를 InfiniBand로 단일 패브릭에 묶은 전용 리전을 쓰며, 이는 일반 클라우드 인스턴스를 빌리는 것과 달리 **네트워크 토폴로지까지 학습에 맞춰 설계**된 것이 차별점이다."
+    },
+    {
+     "topic": "멀티테넌트 API 플랫폼: 인증·쿼터·라우팅과 안전성 파이프라인",
+     "body": "### 하나의 모델 풀, 수많은 테넌트\nChatGPT(무료/Plus/Team/Enterprise), Platform API, 그리고 파트너(예: Microsoft Copilot)가 **같은 GPU 추론 풀**을 공유한다. 따라서 게이트웨이가 다음을 중앙에서 처리해야 한다:\n- **인증·인가**: API key / OAuth, organization·project 단위 스코프, Enterprise의 데이터 격리 보장.\n- **Rate limiting**: 분당 요청수(RPM)와 분당 토큰수(TPM) 두 축으로 제한한다. LLM은 요청 수보다 토큰 양이 비용을 지배하므로 TPM이 핵심이며, 보통 token-bucket을 Redis에 두고 분산 카운팅한다.\n- **쿼터·과금**: 입력/출력 토큰을 분리 집계하고(출력이 더 비쌈), 캐시 히트 토큰은 할인 단가로 계량한다. 사용량 이벤트는 Kafka로 흘려 비동기로 집계·청구한다.\n\n### 모델 라우팅\n요청의 `model` 파라미터, 사용자 티어, 현재 부하에 따라 **어느 모델·어느 GPU 풀로 보낼지**를 라우터가 결정한다. 같은 모델이라도 여러 배포본(지역·하드웨어 세대)이 있고, 신모델 출시 시 트래픽을 점진 이전한다. `gpt-4o`처럼 멀티모달은 텍스트·이미지·오디오 인코더 경로가 갈리므로 라우팅이 더 복잡하다.\n\n### 안전성은 별도 서비스로\n생성 전후로 **moderation 분류기**가 끼어든다. 입력이 정책 위반인지 사전 검사하고, 출력 스트림도 검사한다. 이를 추론 본체와 분리한 이유는 (1) 안전 정책은 모델보다 자주 바뀌고, (2) 별도 경량 분류 모델로 돌려야 비용·지연이 맞고, (3) 모델 교체와 무관하게 일관된 가드레일을 적용하기 위함이다. Enterprise·API에는 끄거나 커스텀할 수 있는 옵션을 둔다.\n\n### 도구 호출(Function Calling)과 Retrieval\n모델이 `tool_call`을 내놓으면 오케스트레이터가 실제 도구(Code Interpreter 샌드박스, web 검색, 파일 retrieval)를 실행하고 결과를 다시 컨텍스트에 넣어 모델을 재호출한다. 이 **agentic 루프**는 한 사용자 요청이 내부적으로 여러 번의 추론 호출로 펼쳐진다는 뜻이고, retrieval은 업로드 파일을 임베딩해 **vector store(pgvector/FAISS 계열)**에 저장한 뒤 유사도 검색으로 관련 청크를 끌어온다. Code Interpreter는 격리된 컨테이너 샌드박스에서 임의 코드를 안전하게 실행하도록 네트워크·파일시스템을 제한한다.\n\n### 스트리밍 응답 메커니즘\n클라이언트에는 **SSE(Server-Sent Events)**로 토큰을 흘려보낸다. decode가 토큰을 만들 때마다 게이트웨이가 chunk로 푸시하므로 사용자는 전체 생성 완료를 기다리지 않는다. 연결이 끊겨도 과금·로깅은 Kafka 이벤트로 이미 비동기 분리돼 있어 정합성을 유지한다."
     }
    ],
    "github": {
@@ -5995,46 +6048,47 @@
      {
       "name": "openai/whisper",
       "url": "https://github.com/openai/whisper",
-      "desc": "강건한 음성 인식 모델",
+      "desc": "다국어 음성인식 모델·추론 코드",
       "lang": "Python",
-      "stars": 102591
-     },
-     {
-      "name": "openai/gym",
-      "url": "https://github.com/openai/gym",
-      "desc": "강화학습 환경 툴킷",
-      "lang": "Python",
-      "stars": 37224
+      "stars": 102696
      },
      {
       "name": "openai/openai-python",
       "url": "https://github.com/openai/openai-python",
-      "desc": "OpenAI API 파이썬 공식 SDK",
+      "desc": "공식 Python API 클라이언트 SDK",
       "lang": "Python",
-      "stars": 30984
+      "stars": 30999
+     },
+     {
+      "name": "triton-lang/triton",
+      "url": "https://github.com/triton-lang/triton",
+      "desc": "GPU 커널을 Python처럼 작성해 컴파일하는 딥러닝 컴파일러·언어",
+      "lang": "MLIR",
+      "stars": 19439
+     },
+     {
+      "name": "openai/evals",
+      "url": "https://github.com/openai/evals",
+      "desc": "LLM 평가용 프레임워크와 벤치마크 레지스트리",
+      "lang": "Python",
+      "stars": 18689
      },
      {
       "name": "openai/tiktoken",
       "url": "https://github.com/openai/tiktoken",
-      "desc": "GPT용 고속 BPE 토크나이저",
+      "desc": "GPT 모델용 고속 BPE 토크나이저(코어는 Rust)",
       "lang": "Python",
-      "stars": 18475
-     },
-     {
-      "name": "openai/openai-node",
-      "url": "https://github.com/openai/openai-node",
-      "desc": "OpenAI API 타입스크립트 공식 SDK",
-      "lang": "TypeScript",
-      "stars": 10965
+      "stars": 18483
      }
     ]
    },
    "sources": [
-    "https://openai.com/research/",
-    "https://github.com/openai/triton"
+    "https://openai.com/index/scaling-kubernetes-to-7500-nodes/",
+    "https://github.com/openai/triton",
+    "https://openai.com/index/prompt-caching-in-the-api/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "palantir",
