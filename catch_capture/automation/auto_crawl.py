@@ -41,6 +41,14 @@ PID_FILE = BASE_DIR / "auto_crawl.pid"
 LOG_FILE = BASE_DIR / "auto_crawl.log"
 REFRESH_SH = ROOT_DIR / "jd-viewer" / "bin" / "refresh-data.sh"
 
+# 크롤 오케스트레이션이 함께 굴리는 부가 작업(흩어진 cron 을 여기로 통합)
+RADAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_company_tech_radar.py"
+REVIEWS_LOOP_SH = ROOT_DIR / "jd-viewer" / "bin" / "reviews-loop.sh"
+LEARNING_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_learning.py"
+RADAR_REFINE_N = 2                     # 사이클당 레이더 점진 리파인 회사 수
+LEARNING_REFRESH_SECS = 6 * 3600       # 학습영상 캐시 무시 재수집 주기(기존 learning cron 대체)
+LEARNING_STAMP = BASE_DIR / ".learning_refresh.stamp"
+
 DEFAULT_KEYWORD = "개발자"
 DEFAULT_COUNT = 20
 DEFAULT_INTERVAL = 3600  # 1시간
@@ -112,6 +120,62 @@ def refresh_data(keyword: str) -> None:
     log(f"[refresh] jd-viewer {'완료' if rc == 0 else f'실패(rc={rc})'}")
 
 
+def _gh_env() -> dict:
+    """GITHUB_TOKEN 이 없으면 gh CLI 로 토큰을 실어 GitHub API 한도를 올린다(레이더 repo 검증)."""
+    env = dict(os.environ)
+    if not env.get("GITHUB_TOKEN"):
+        try:
+            tok = subprocess.check_output(["gh", "auth", "token"], text=True, timeout=10).strip()
+            if tok:
+                env["GITHUB_TOKEN"] = tok
+        except Exception:
+            pass
+    return env
+
+
+def enrich_radar() -> None:
+    """기술 스택 레이더를 점진 리파인(claude CLI). 크롤 오케스트레이션의 부가 단계."""
+    log(f"[radar] --refine {RADAR_REFINE_N} (claude CLI)")
+    try:
+        rc = subprocess.call([_python_executable(), str(RADAR_SCRIPT), "--refine", str(RADAR_REFINE_N)],
+                             cwd=str(ROOT_DIR), env=_gh_env())
+        log(f"[radar] {'완료' if rc == 0 else f'실패(rc={rc})'}")
+    except Exception as e:
+        log(f"[radar] 예외: {e!r}")
+
+
+def ensure_reviews_daemon() -> None:
+    """공개 면접 후기 적응형 수집 데몬이 살아있도록 보장(멱등). 죽었으면 재시작."""
+    try:
+        subprocess.call(["bash", str(REVIEWS_LOOP_SH), "start"], cwd=str(ROOT_DIR))
+    except Exception as e:
+        log(f"[reviews] 데몬 보장 실패: {e!r}")
+
+
+def maybe_refresh_learning() -> None:
+    """학습 영상 캐시 무시 재수집(--refresh)을 주기적으로(기본 6h). 기존 learning cron 을 대체."""
+    try:
+        last = float(LEARNING_STAMP.read_text()) if LEARNING_STAMP.exists() else 0.0
+    except Exception:
+        last = 0.0
+    if time.time() - last < LEARNING_REFRESH_SECS:
+        return
+    log("[learning] 캐시 무시 재수집(--refresh)")
+    try:
+        rc = subprocess.call([_python_executable(), str(LEARNING_SCRIPT), "--refresh"], cwd=str(ROOT_DIR))
+        LEARNING_STAMP.write_text(str(time.time()))
+        log(f"[learning] {'완료' if rc == 0 else f'실패(rc={rc})'}")
+    except Exception as e:
+        log(f"[learning] 예외: {e!r}")
+
+
+def enrich_extras() -> None:
+    """크롤과 무관하게 매 사이클 굴리는 부가 작업: 레이더 리파인 + 후기 데몬 보장 + 학습 재수집."""
+    maybe_refresh_learning()
+    enrich_radar()
+    ensure_reviews_daemon()
+
+
 def run_cycle(keyword: str, count: int) -> bool:
     """크롤 1회 + (새 데이터면) 갱신. 새 데이터가 생겼으면 True.
 
@@ -159,6 +223,7 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
     log(f"===== auto_crawl 데몬 시작 (keyword={keyword}, count={count}, "
         f"interval={interval}s, 즉시크롤={run_now}) =====")
     orch.daemon_started(keyword, count, interval, run_now)
+    ensure_reviews_daemon()  # 시작 시 후기 적응형 데몬도 함께 띄운다
     if not run_now:
         next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
         orch.waiting(next_at, interval)
@@ -170,6 +235,10 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
         except Exception as e:  # 한 주기 실패해도 데몬은 계속
             log(f"[err] 사이클 예외: {e!r}")
             orch.error("cycle", repr(e))
+        try:
+            enrich_extras()  # 레이더 리파인 + 후기 데몬 보장 + 학습 재수집(크롤 결과와 무관)
+        except Exception as e:
+            log(f"[err] enrich 예외: {e!r}")
         next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
         orch.waiting(next_at, interval)
         log(f"[wait] 다음 크롤까지 {interval}s 대기")
@@ -234,7 +303,12 @@ def cmd_stop() -> None:
         except OSError:
             pass
     PID_FILE.unlink(missing_ok=True)
-    print("[*] 종료 완료", flush=True)
+    # 오케스트레이션의 일부인 후기 적응형 데몬도 함께 중지
+    try:
+        subprocess.call(["bash", str(REVIEWS_LOOP_SH), "stop"], cwd=str(ROOT_DIR))
+    except Exception:
+        pass
+    print("[*] 종료 완료 (후기 데몬 포함)", flush=True)
 
 
 def cmd_status() -> None:
