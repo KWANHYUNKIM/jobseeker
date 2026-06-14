@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-15T01:41:17",
-  "total_jobs": 5792,
-  "company_count": 1135,
+  "generated_at": "2026-06-15T03:14:19",
+  "total_jobs": 5797,
+  "company_count": 1136,
   "min_posting": 2,
   "companies": [
     {
@@ -133072,6 +133072,229 @@
       }
     },
     {
+      "name": "(주)더그리트",
+      "norm": "더그리트",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "프론트엔드": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "DynamoDB",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "REST API",
+          "count": 2
+        },
+        {
+          "name": "JavaScript",
+          "count": 1
+        },
+        {
+          "name": "React",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          },
+          {
+            "name": "JavaScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "REST API",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "DynamoDB",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "핀테크/금융",
+          "score": 9,
+          "evidence": [
+            "핀테크",
+            "결제"
+          ]
+        },
+        {
+          "name": "커머스/리테일/물류",
+          "score": 7,
+          "evidence": [
+            "물류",
+            "배송",
+            "주문"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        }
+      ],
+      "titles": [
+        "[(주)더그리트] 백엔드 개발자 채용(경력)",
+        "[(주)더그리트] 프론트 개발자(React) 채용 (경력)",
+        "[(주)더그리트] 백엔드 개발자 채용(경력)"
+      ],
+      "postings": [
+        {
+          "title": "[(주)더그리트] 백엔드 개발자 채용(경력)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49329487?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=100&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[(주)더그리트] 프론트 개발자(React) 채용 (경력)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54003499&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=7a4cb013-6f33-4f3c-a15d-6d5d0a04658a",
+          "site": "saramin"
+        },
+        {
+          "title": "[(주)더그리트] 백엔드 개발자 채용(경력)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54107560&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=6c55ddc7-5443-4877-8a00-b446bc303aa3",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)더그리트는 핀테크/금융 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Python, DynamoDB, AWS, REST API 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, DynamoDB, AWS 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "JavaScript"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "REST API"
+            ],
+            "tips": [
+              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "DynamoDB"
+            ],
+            "tips": []
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
+            "techs": [
+              "AWS"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
+            ]
+          }
+        ],
+        "tasks": [
+          "[핀테크/금융] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[핀테크/금융] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화"
+        ],
+        "study_blogs": [
+          {
+            "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
+            "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "aws, dynamodb, javascript"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, javascript, python"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "aws, python, rest api"
+          },
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "javascript, python, react"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "aws, javascript, python"
+          },
+          {
+            "title": "lambda@edge를 활용한 이미지 워터마킹",
+            "url": "https://medium.com/zigbang/lambda-edge%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9B%8C%ED%84%B0%EB%A7%88%ED%82%B9-41f1cb282682",
+            "company": "직방",
+            "country": "KR",
+            "why": "aws, javascript, python"
+          }
+        ]
+      }
+    },
+    {
       "name": "다온기술(주)",
       "norm": "다온기술",
       "size": "중소기업",
@@ -147186,6 +147409,164 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "java, kubernetes, mysql"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LG전자",
+      "norm": "lg전자",
+      "size": "대기업",
+      "size_alias": "LG전자",
+      "posting_count": 3,
+      "sites": [
+        "dev",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 1,
+        "DevOps/인프라": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 6,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 3,
+          "evidence": [
+            "LLM"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "2026년 상반기 LG전자 신입사원 채용 (ES사업본부_구매)",
+        "[VS사업본부] 통신 SW/HW 개발 엔지니어 일본 유학생 채용",
+        "[한국영업본부] AI 엔지니어 채용"
+      ],
+      "postings": [
+        {
+          "title": "2026년 상반기 LG전자 신입사원 채용 (ES사업본부_구매)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54156712&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=eba82fac-fd1d-496b-ad13-2f43906e069e",
+          "site": "saramin"
+        },
+        {
+          "title": "[VS사업본부] 통신 SW/HW 개발 엔지니어 일본 유학생 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554895?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "[한국영업본부] AI 엔지니어 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "LG전자는 HR/채용 도메인의 대기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 Python 기반으로 개발합니다. 아키텍처는 LLM · 생성형 AI 애플리케이션로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
+          "핵심 역량: Python 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "LLM · 생성형 AI 애플리케이션 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[HR/채용] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "Metric Semantic Layer: How Lyft Governs and Scales Key Data Definitions",
+            "url": "https://eng.lyft.com/metric-semantic-layer-how-lyft-governs-and-scales-key-data-definitions-56bee3643c29",
+            "company": "Lyft",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "Anthropic Claude Fable 5 on AWS: Mythos-class capabilities with built-in safeguards now available",
+            "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
+            "company": "AWS",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
+            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
+            "company": "Razorpay",
+            "country": "IN",
+            "why": "python"
+          },
+          {
+            "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
+            "url": "https://toss.tech/article/skill-quality-rubric",
+            "company": "토스",
+            "country": "KR",
+            "why": "python"
+          },
+          {
+            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
+            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
+            "company": "당근",
+            "country": "KR",
+            "why": "python"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "python"
           }
         ]
       }
@@ -245441,222 +245822,6 @@
       }
     },
     {
-      "name": "(주)더그리트",
-      "norm": "더그리트",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "saramin"
-      ],
-      "roles": {
-        "프론트엔드": 1,
-        "백엔드": 1
-      },
-      "top_tech": [
-        {
-          "name": "JavaScript",
-          "count": 1
-        },
-        {
-          "name": "React",
-          "count": 1
-        },
-        {
-          "name": "Python",
-          "count": 1
-        },
-        {
-          "name": "DynamoDB",
-          "count": 1
-        },
-        {
-          "name": "AWS",
-          "count": 1
-        },
-        {
-          "name": "REST API",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "JavaScript",
-            "count": 1
-          },
-          {
-            "name": "Python",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "REST API",
-            "count": 1
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "DynamoDB",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "핀테크/금융",
-          "score": 6,
-          "evidence": [
-            "핀테크",
-            "결제"
-          ]
-        },
-        {
-          "name": "커머스/리테일/물류",
-          "score": 5,
-          "evidence": [
-            "물류",
-            "배송",
-            "주문"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        }
-      ],
-      "titles": [
-        "[(주)더그리트] 프론트 개발자(React) 채용 (경력)",
-        "[(주)더그리트] 백엔드 개발자 채용(경력)"
-      ],
-      "postings": [
-        {
-          "title": "[(주)더그리트] 프론트 개발자(React) 채용 (경력)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54003499&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=7a4cb013-6f33-4f3c-a15d-6d5d0a04658a",
-          "site": "saramin"
-        },
-        {
-          "title": "[(주)더그리트] 백엔드 개발자 채용(경력)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54107560&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=6c55ddc7-5443-4877-8a00-b446bc303aa3",
-          "site": "saramin"
-        }
-      ],
-      "summary": "(주)더그리트는 핀테크/금융 도메인의 중소기업으로, 주로 프론트엔드 · 백엔드 직군을 채용하며 JavaScript, React, Python, DynamoDB 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: JavaScript, React, Python 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "프론트엔드 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "JavaScript",
-              "Python"
-            ],
-            "tips": [
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심",
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "2. 프론트엔드 핵심 스킬",
-            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
-            "techs": [
-              "React"
-            ],
-            "tips": [
-              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "DynamoDB"
-            ],
-            "tips": []
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
-            "techs": [
-              "AWS"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
-            ]
-          }
-        ],
-        "tasks": [
-          "[핀테크/금융] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "[핀테크/금융] API·서버 비즈니스 로직 개발과 DB 모델링"
-        ],
-        "study_blogs": [
-          {
-            "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
-            "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "aws, dynamodb, javascript"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, javascript, python"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "aws, python, rest api"
-          },
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "javascript, python, react"
-          },
-          {
-            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
-            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
-            "company": "하이퍼커넥트",
-            "country": "KR",
-            "why": "aws, javascript, python"
-          },
-          {
-            "title": "lambda@edge를 활용한 이미지 워터마킹",
-            "url": "https://medium.com/zigbang/lambda-edge%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9B%8C%ED%84%B0%EB%A7%88%ED%82%B9-41f1cb282682",
-            "company": "직방",
-            "country": "KR",
-            "why": "aws, javascript, python"
-          }
-        ]
-      }
-    },
-    {
       "name": "(주)텍트원",
       "norm": "텍트원",
       "size": "중소기업",
@@ -271347,6 +271512,208 @@
       }
     },
     {
+      "name": "(주)트루인테크놀로지스",
+      "norm": "트루인테크놀로지스",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 2,
+        "DevOps/인프라": 1
+      },
+      "top_tech": [
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "Oracle",
+          "count": 2
+        },
+        {
+          "name": "MSSQL",
+          "count": 2
+        },
+        {
+          "name": "Linux",
+          "count": 2
+        },
+        {
+          "name": "Azure",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "Oracle",
+            "count": 2
+          },
+          {
+            "name": "MSSQL",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Linux",
+            "count": 2
+          },
+          {
+            "name": "Azure",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 5,
+          "evidence": [
+            "솔루션"
+          ]
+        },
+        {
+          "name": "교육/에듀테크",
+          "score": 4,
+          "evidence": [
+            "교육",
+            "학습"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (Azure)",
+          "why": "Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "IT 엔지니어 DB 채용 (2명, Engineer / Lead Engineer)",
+        "IT 엔지니어 보안 채용 (2명, Engineer / Lead Engineer)"
+      ],
+      "postings": [
+        {
+          "title": "IT 엔지니어 DB 채용 (2명, Engineer / Lead Engineer)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54147438&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e16db58f-b083-4a48-9623-bc7c05b03369",
+          "site": "saramin"
+        },
+        {
+          "title": "IT 엔지니어 보안 채용 (2명, Engineer / Lead Engineer)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54144410&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=49243410-6258-4e1d-ac3e-6f41a1b1afae",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)트루인테크놀로지스는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 MySQL, Oracle, MSSQL, Linux 기반으로 개발합니다. 아키텍처는 클라우드 (Azure)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
+          "핵심 역량: MySQL, Oracle, MSSQL 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "클라우드 (Azure) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "Oracle",
+              "MSSQL"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (Azure))",
+            "techs": [
+              "Linux",
+              "Azure"
+            ],
+            "tips": [
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본",
+              "Azure — App Service·AKS·Storage로 클라우드 배포 실습"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[B2B SaaS/엔터프라이즈] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[B2B SaaS/엔터프라이즈] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "AWS Weekly Roundup: BYOM for Amazon RDS for SQL Server, AWS IoT Device SDK for Swift, and more (June 8, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-byom-for-amazon-rds-for-sql-server-aws-iot-device-sdk-for-swift-and-more-june-8-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux, mssql"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.8 on AWS, Aurora MySQL with Kiro Powers, and more (June 1, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-8-on-aws-aurora-mysql-with-kiro-powers-and-more-june-1-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "mssql, mysql"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "azure, linux"
+          },
+          {
+            "title": "StarRocks 운영기: Resource Group으로 멀티테넌트 워크로드 격리하기",
+            "url": "https://toss.tech/article/operating-starrocks-1",
+            "company": "토스",
+            "country": "KR",
+            "why": "linux, mysql"
+          },
+          {
+            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
+            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
+            "company": "Pinterest",
+            "country": "US",
+            "why": "linux, oracle"
+          },
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "mysql, oracle"
+          }
+        ]
+      }
+    },
+    {
       "name": "(주)어센드",
       "norm": "어센드",
       "size": "중소기업",
@@ -280898,155 +281265,6 @@
             "company": "쏘카",
             "country": "KR",
             "why": "aws, gcp, python"
-          }
-        ]
-      }
-    },
-    {
-      "name": "LG전자",
-      "norm": "lg전자",
-      "size": "대기업",
-      "size_alias": "LG전자",
-      "posting_count": 2,
-      "sites": [
-        "dev"
-      ],
-      "roles": {
-        "AI/ML": 1,
-        "DevOps/인프라": 1,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "AI/데이터 플랫폼",
-          "score": 3,
-          "evidence": [
-            "LLM"
-          ]
-        },
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 2,
-          "evidence": [
-            "솔루션"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        }
-      ],
-      "titles": [
-        "[VS사업본부] 통신 SW/HW 개발 엔지니어 일본 유학생 채용",
-        "[한국영업본부] AI 엔지니어 채용"
-      ],
-      "postings": [
-        {
-          "title": "[VS사업본부] 통신 SW/HW 개발 엔지니어 일본 유학생 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554895?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "[한국영업본부] AI 엔지니어 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/555741?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "LG전자는 AI/데이터 플랫폼 도메인의 대기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 Python 기반으로 개발합니다. 아키텍처는 LLM · 생성형 AI 애플리케이션로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "AI/데이터 플랫폼 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "LLM · 생성형 AI 애플리케이션 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
-            ]
-          }
-        ],
-        "tasks": [
-          "[AI/데이터 플랫폼] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[AI/데이터 플랫폼] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
-          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
-        ],
-        "study_blogs": [
-          {
-            "title": "Metric Semantic Layer: How Lyft Governs and Scales Key Data Definitions",
-            "url": "https://eng.lyft.com/metric-semantic-layer-how-lyft-governs-and-scales-key-data-definitions-56bee3643c29",
-            "company": "Lyft",
-            "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "Anthropic Claude Fable 5 on AWS: Mythos-class capabilities with built-in safeguards now available",
-            "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
-            "company": "AWS",
-            "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
-            "why": "python"
-          },
-          {
-            "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
-            "url": "https://toss.tech/article/skill-quality-rubric",
-            "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "python"
           }
         ]
       }

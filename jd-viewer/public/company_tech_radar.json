@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T01:44:50",
+ "generated_at": "2026-06-15T03:19:01",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 15,
+ "refined": 17,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1453,7 +1453,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 7
+      "count": 6
      },
      {
       "name": "Spring Boot",
@@ -1465,14 +1465,22 @@
      },
      {
       "name": "Python",
-      "count": 2
+      "count": 3
      },
      {
       "name": "C++",
       "count": 1
      },
      {
+      "name": "Cadence/Temporal",
+      "count": 1
+     },
+     {
       "name": "Envoy",
+      "count": 1
+     },
+     {
+      "name": "Flask-Smorest/OpenAPI",
       "count": 1
      },
      {
@@ -1482,14 +1490,6 @@
      {
       "name": "Go services",
       "count": 1
-     },
-     {
-      "name": "Java",
-      "count": 1
-     },
-     {
-      "name": "Kotlin",
-      "count": 1
      }
     ],
     "frontend": [
@@ -1498,15 +1498,27 @@
       "count": 7
      },
      {
+      "name": "React Native",
+      "count": 4
+     },
+     {
       "name": "TypeScript",
       "count": 4
      },
      {
-      "name": "React Native",
-      "count": 3
+      "name": "Fusion.js",
+      "count": 1
      },
      {
-      "name": "Fusion.js",
+      "name": "GraphQL",
+      "count": 1
+     },
+     {
+      "name": "Next.js",
+      "count": 1
+     },
+     {
+      "name": "Redux",
       "count": 1
      },
      {
@@ -1520,11 +1532,15 @@
       "count": 7
      },
      {
-      "name": "Cassandra",
-      "count": 3
+      "name": "Redis",
+      "count": 5
      },
      {
       "name": "Elasticsearch",
+      "count": 4
+     },
+     {
+      "name": "Cassandra",
       "count": 3
      },
      {
@@ -1532,19 +1548,7 @@
       "count": 3
      },
      {
-      "name": "Redis",
-      "count": 3
-     },
-     {
-      "name": "Druid",
-      "count": 2
-     },
-     {
-      "name": "Flink",
-      "count": 2
-     },
-     {
-      "name": "Hudi",
+      "name": "Apache Flink",
       "count": 2
      },
      {
@@ -1552,7 +1556,15 @@
       "count": 2
      },
      {
-      "name": "Custom telemetry",
+      "name": "Amazon Aurora/MySQL",
+      "count": 1
+     },
+     {
+      "name": "Amazon S3",
+      "count": 1
+     },
+     {
+      "name": "Amundsen",
       "count": 1
      }
     ],
@@ -1566,11 +1578,19 @@
       "count": 6
      },
      {
-      "name": "Envoy",
-      "count": 2
+      "name": "Argo CD + Argo Workflows",
+      "count": 1
      },
      {
-      "name": "Argo",
+      "name": "Cartography",
+      "count": 1
+     },
+     {
+      "name": "Clutch",
+      "count": 1
+     },
+     {
+      "name": "Confidant",
       "count": 1
      },
      {
@@ -1578,50 +1598,42 @@
       "count": 1
      },
      {
+      "name": "Envoy",
+      "count": 1
+     },
+     {
+      "name": "Envoy / service mesh",
+      "count": 1
+     },
+     {
       "name": "Flyte",
-      "count": 1
-     },
-     {
-      "name": "IoT/Edge",
-      "count": 1
-     },
-     {
-      "name": "M3",
-      "count": 1
-     },
-     {
-      "name": "Mesos/Peloton",
-      "count": 1
-     },
-     {
-      "name": "PyTorch",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Event-driven",
-     "count": 5
-    },
-    {
      "name": "Microservices",
      "count": 5
     },
     {
-     "name": "Cell-based",
+     "name": "Event-driven",
+     "count": 3
+    },
+    {
+     "name": "Event-driven streaming",
+     "count": 2
+    },
+    {
+     "name": "Cell-based architecture",
+     "count": 1
+    },
+    {
+     "name": "CQRS / async workflow orchestration",
      "count": 1
     },
     {
      "name": "Distributed training",
-     "count": 1
-    },
-    {
-     "name": "Domain-oriented",
-     "count": 1
-    },
-    {
-     "name": "Embedded real-time",
      "count": 1
     }
    ]
@@ -6370,36 +6382,49 @@
    "stack": {
     "backend": [
      "Kotlin",
-     "Spring Boot/WebFlux",
-     "gRPC"
+     "Spring Boot / WebFlux",
+     "gRPC + Protobuf",
+     "Cadence/Temporal",
+     "Python (legacy Django monolith)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "React Native"
+     "React Native",
+     "GraphQL (BFF)",
+     "Next.js"
     ],
     "data": [
-     "PostgreSQL (CockroachDB)",
-     "Kafka",
+     "CockroachDB",
+     "PostgreSQL (Aurora)",
+     "Apache Kafka",
+     "Apache Flink",
      "Cassandra",
-     "Snowflake"
+     "Redis",
+     "Elasticsearch",
+     "Snowflake",
+     "Amazon S3"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Envoy",
-     "Argo"
+     "Kubernetes (EKS)",
+     "Envoy / service mesh",
+     "Argo CD + Argo Workflows",
+     "Terraform",
+     "Prometheus + Grafana",
+     "OpenTelemetry"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
-    "Cell-based"
+    "Event-driven streaming",
+    "Cell-based architecture",
+    "CQRS / async workflow orchestration"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Consumer App<br/>React Native\"]\n    WEB[\"Web App<br/>React + TypeScript\"]\n  end\n  subgraph Gateway\n    BFF[\"BFF / Gateway<br/>gRPC\"]\n    ENV[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Core\n    SVC[\"Microservices<br/>Kotlin + Spring WebFlux\"]\n    DISP[\"Dispatch/Logistics<br/>Service\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    ARGO[\"Workflow<br/>Argo\"]\n  end\n  subgraph Data\n    CRDB[\"Relational<br/>CockroachDB\"]\n    CASS[\"Wide Store<br/>Cassandra\"]\n    SNOW[\"Analytics<br/>Snowflake\"]\n  end\n  subgraph Infra\n    K8S[\"Platform<br/>AWS + Kubernetes\"]\n  end\n  APP -->|HTTPS| BFF\n  WEB -->|HTTPS| BFF\n  BFF --> ENV\n  ENV -->|gRPC| SVC\n  SVC --> DISP\n  SVC --> CRDB\n  DISP --> CASS\n  SVC -->|emit| KAFKA\n  KAFKA --> ARGO\n  KAFKA --> SNOW\n  SVC -.-> K8S\n  DISP -.-> K8S",
-   "why_language": "Python/Django 모노리스에서 출발했으나 성능·타입 안정성을 위해 Kotlin(Spring WebFlux)을 백엔드 표준으로 채택했다. 데이터·ML은 Python을 쓴다.",
-   "why_architecture": "음식 배달 매칭·배차의 실시간 부하를 위해 Kotlin 마이크로서비스와 Kafka 이벤트 기반으로 전환하고, 장애 격리를 위해 셀 기반 아키텍처를 도입했다. CockroachDB로 지역 분산 일관성을 확보한다.",
-   "summary": "Python 모노리스를 Kotlin 마이크로서비스·셀 기반으로 재구축한 배달 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    CONS[\"Consumer App<br/>React Native + TS\"]\n    DASH[\"Dasher App<br/>React Native\"]\n    MERCH[\"Merchant Web<br/>React + Next.js\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    CDN[\"CDN + Envoy Edge<br/>AWS + Envoy\"]\n    BFF[\"GraphQL BFF<br/>Apollo + TS\"]\n  end\n  subgraph Core[\"Core Services (Kotlin)\"]\n    ORDER[\"Order Service<br/>Kotlin + WebFlux\"]\n    DISP[\"Dispatch DeepRed<br/>Kotlin + MIP solver\"]\n    FEED[\"Feed / Search<br/>Kotlin + Elasticsearch\"]\n    PAY[\"Payments<br/>Kotlin + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    IGUAZU[\"Iguazu Pipeline<br/>Flink\"]\n    CAD[\"Workflows<br/>Cadence/Temporal\"]\n  end\n  subgraph ML[\"ML Platform\"]\n    RIV[\"Feature Store Riviera<br/>Flink + Redis\"]\n    SIBYL[\"Prediction Sibyl<br/>Python + gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    CRDB[\"OLTP<br/>CockroachDB\"]\n    CASS[\"Cassandra<br/>+ Redis cache\"]\n    SNOW[\"Warehouse<br/>Snowflake + S3\"]\n  end\n  CONS --> CDN\n  DASH --> CDN\n  MERCH --> CDN\n  CDN --> BFF\n  BFF -->|gRPC| ORDER\n  BFF -->|gRPC| FEED\n  ORDER -->|gRPC| PAY\n  ORDER --> DISP\n  ORDER -->|publish| KAFKA\n  DISP --> CAD\n  FEED --> SIBYL\n  DISP --> SIBYL\n  SIBYL --> RIV\n  KAFKA --> IGUAZU\n  KAFKA --> RIV\n  IGUAZU --> SNOW\n  ORDER --> CRDB\n  PAY --> CRDB\n  FEED --> CASS\n  RIV --> CASS",
+   "why_language": "주문·배차 트랜잭션이 폭증하는 3-sided 마켓플레이스(소비자·가맹점·Dasher)라 JVM의 동시성·성숙한 생태계와 null-safety·코루틴을 갖춘 Kotlin을 백엔드 표준으로 삼았다. 초기 Python/Django 모놀리스는 빠른 제품 실험에 적합했으나 규모가 커지며 성능·타입 안정성 한계가 드러나 Kotlin 마이크로서비스로 이전했고, Python은 ML·데이터 영역에 남겼다. 물류 최적화·인프라 툴링엔 Go, 모든 클라이언트는 TypeScript/React Native로 통일했다.",
+   "why_architecture": "수백 개 도시에서 실시간 배차가 동시에 일어나는 만큼 도메인별 마이크로서비스로 팀 자율성과 독립 배포를 확보하고, Kafka 기반 이벤트 드리븐으로 주문·배차·결제 흐름을 비동기 분리했다. 단일 리전 장애가 전체로 번지는 것을 막기 위해 셀 기반 아키텍처로 트래픽을 격리하고, 장기 실행 주문 플로우는 Cadence/Temporal 워크플로로 내구성 있게 오케스트레이션한다. 폭발적 성장에도 수평 확장이 가능한 CockroachDB로 옮겨 샤딩·멀티리전 일관성을 확보했다.",
+   "summary": "Python 모놀리스에서 출발해 Kotlin 마이크로서비스 + Kafka/Flink 이벤트 스트리밍 + CockroachDB로 확장한 실시간 물류 마켓플레이스 스택",
    "deep_dive": [
     {
      "topic": "배차/물류 디스패치 실시간 매칭",
@@ -6412,6 +6437,22 @@
     {
      "topic": "셀 기반 아키텍처와 장애 격리",
      "body": "### 왜 셀(cell)인가\n마이크로서비스가 수백 개로 늘자, 한 서비스/리전의 장애가 전체로 번지는 **blast radius**가 커졌다. DoorDash는 이를 줄이려 **셀 기반(cell-based) 아키텍처**를 도입했다.\n\n### 셀 메커니즘\n- 인프라를 여러 독립 **셀**로 복제한다. 각 셀은 서비스·데이터·의존성의 완결된 한 벌이다.\n- 트래픽을 (예: 사용자/지역 기준으로) 셀에 라우팅하고, **한 셀 안에서 요청이 완결**되게 한다(셀 간 호출 최소화).\n- 한 셀이 장애·과부하·배포 문제를 겪어도 다른 셀은 멀쩡하다. 즉 장애가 한 셀로 국소화된다.\n\n### 운영 이점\n- **점진 배포**: 새 버전을 한 셀에만 먼저 배포(카나리)해 문제를 그 셀에 가둔다.\n- **격리된 부하 시험·복구**: 셀 단위로 트래픽을 빼거나(drain) 되돌릴 수 있다.\n\n### 데이터 일관성: CockroachDB\n지역 분산 환경에서 강한 일관성을 위해 `CockroachDB`(분산 SQL, 지리 분산 + 직렬화 가능 트랜잭션)를 쓴다. 주문 같은 정합성이 중요한 데이터를 다지역에 복제하면서 ACID를 보장한다. wide·고쓰기 데이터는 `Cassandra`, 분석은 `Snowflake`로 보낸다. 배포·워크플로는 `Argo`로 오케스트레이션하고, AWS 위 Kubernetes에서 오토스케일링으로 피크 부하를 흡수한다."
+    },
+    {
+     "topic": "Iguazu — 회사 전체를 관통하는 이벤트 인제스션·스트리밍 파이프라인",
+     "body": "### 왜 만들었나\nDoorDash는 주문 생성, 카트 담기, Dasher 위치 핑, 결제 시도, 검색 클릭 등 **수조 단위의 이벤트**를 매일 처리한다. 초기에는 각 서비스가 제각각 분석 DB로 직접 적재하면서 스키마가 깨지고, ML/분석 팀이 동일 이벤트를 중복 수집하는 문제가 있었다. 이를 단일 표준 파이프라인으로 통합한 것이 `Iguazu`다.\n\n### 동작 메커니즘 (end-to-end)\n1. **Producer SDK** — 각 Kotlin/Python 서비스는 Iguazu 클라이언트로 이벤트를 발행한다. 이벤트는 **Protobuf/Avro 스키마**로 정의되며 스키마 레지스트리에서 호환성(backward-compatible)을 강제한다. 스키마가 깨지는 변경은 빌드 단계에서 거부된다.\n2. **Apache Kafka** — 모든 이벤트의 중앙 버스. 토픽은 도메인별로 분리되고 파티션 키로 순서를 보장한다.\n3. **Apache Flink** — Kafka에서 소비해 디시리얼라이즈·검증·정규화·enrichment(예: store_id로 지역 정보 join)를 수행하고, 윈도우 집계·중복 제거를 처리한다. Flink의 **exactly-once 체크포인팅**으로 장애 시에도 이벤트 유실/중복을 막는다.\n4. **싱크(sink)** — 정제된 이벤트는 `S3`(raw/parquet)와 `Snowflake`(분석/BI)로 적재되고, 실시간 소비자(ML 피처, 모니터링)는 Kafka에서 곧장 구독한다.\n\n### 트레이드오프\n- **Push-down 스키마 검증**: 런타임이 아니라 빌드/발행 시점에 검증해 'garbage-in'을 원천 차단했지만, 스키마 변경 속도가 느려지는 비용을 감수했다.\n- **Flink 운영 부담**: 정확히-한-번 보장과 상태 관리(stateful) 덕에 강력하지만, 체크포인트 스토리지·백프레셔 튜닝 등 운영 복잡도가 높아 전담 플랫폼 팀이 필요하다.\n- 결과적으로 분석·실험(A/B)·ML 피처가 **동일한 신뢰 가능한 단일 이벤트 소스**를 공유하게 되어, 데이터 정합성과 개발 속도를 동시에 끌어올렸다."
+    },
+    {
+     "topic": "실시간 ML 플랫폼 — Riviera 피처 엔지니어링과 Sibyl 예측 서빙",
+     "body": "### 문제 정의\nDoorDash의 핵심 가치(ETA 예측, 배달 시간, 수요 예측, 검색·홈피드 랭킹, 사기 탐지)는 거의 모두 ML에 의존한다. 특히 **배달 예상 시간(ETA)** 은 가맹점 조리 시간, 실시간 도로 상황, 대기 중인 Dasher 수 등 **수 초 단위로 변하는 신선한 피처**가 정확도를 좌우한다. 배치로 계산한 어제 데이터로는 부정확하다.\n\n### Riviera — 실시간 피처 엔지니어링\n- Flink 기반 스트리밍 프레임워크로, Kafka 이벤트 스트림에서 **온라인 피처**(예: 최근 30분 매장 주문량, 현재 지역 Dasher 공급량)를 실시간 계산한다.\n- 계산된 피처는 **Redis** 같은 저지연 온라인 스토어에 기록되어 추론 시 수 밀리초 내 조회된다.\n- 동일한 피처 정의를 배치(오프라인 학습)와 스트리밍(온라인 서빙) 양쪽에서 재사용해 **training/serving skew**(학습-서빙 피처 불일치)를 줄인다 — 피처 스토어의 핵심 설계 목표.\n\n### Sibyl — 예측 서비스\n- 모델 추론을 전담하는 **gRPC 기반 예측 서비스**. 서비스 팀은 모델 인프라를 직접 다루지 않고 Sibyl에 호출만 하면 된다.\n- 모델은 중앙에서 버전 관리·배포되고, **shadow/A-B 트래픽**으로 신모델을 검증한다.\n- 추론 시 Riviera 온라인 스토어에서 피처를 fetch → 모델 실행 → 점수 반환. 디스패치(DeepRed)·검색·사기 시스템이 모두 이 패턴을 공유한다.\n\n### 왜 이렇게 했나\n수백 개 ML 모델을 각 팀이 제각각 서빙하면 표준화·관측성·재현성이 무너진다. **피처 계산(Riviera)과 모델 서빙(Sibyl)을 플랫폼으로 분리**해, 데이터 사이언티스트는 피처·모델 로직에만 집중하고 ML 플랫폼 팀이 확장성·지연을 책임지는 구조를 만들었다."
+    },
+    {
+     "topic": "CockroachDB로의 데이터 저장·일관성·샤딩 전환",
+     "body": "### 단일 PostgreSQL의 한계\n초기 DoorDash는 거대한 **Amazon Aurora PostgreSQL** 인스턴스 하나에 핵심 데이터를 몰아넣은 모놀리식 DB였다. 주문량이 폭증하자 (1) 수직 확장의 천장, (2) 단일 장애점, (3) 멀티리전 쓰기 불가 같은 문제가 명확해졌다.\n\n### 왜 CockroachDB인가\n- **수평 확장 + PostgreSQL 와이어 호환**: 애플리케이션 코드 변경을 최소화하면서 노드를 추가해 쓰기/저장을 분산한다.\n- **분산 트랜잭션 + 강한 일관성**: 주문·결제처럼 정합성이 필수인 워크로드에서 serializable 격리를 제공한다. 데이터는 **range 단위로 자동 샤딩**되고 Raft 합의로 복제된다.\n- **멀티리전 토폴로지**: 지역별 데이터 배치(geo-partitioning)로 지연을 낮추고 리전 장애에 견딘다 — 셀 기반 아키텍처와 잘 맞는다.\n\n### 마이그레이션 전략\n- 서비스 분해와 함께 **DB도 도메인별로 쪼개**(database-per-service), 모놀리식 Aurora의 테이블을 점진적으로 떼어냈다.\n- 듀얼-라이트/백필 → 검증 → 컷오버 방식으로 무중단 이전을 진행했다.\n- 모든 워크로드를 옮기진 않았다. **OLTP·고확장 트랜잭션은 CockroachDB**, 일부 단순/레거시는 Aurora 유지, 분석은 Snowflake, 저지연 조회·세션은 Redis/Cassandra로 **폴리글랏 퍼시스턴스**를 채택했다.\n\n### 트레이드오프\n- CockroachDB의 분산 트랜잭션은 강력하지만, **contention이 큰 핫 row**(인기 매장의 카운터 등)는 latch 경합·재시도를 유발해 스키마·접근 패턴을 신중히 설계해야 한다.\n- 단일 PostgreSQL 대비 운영 모델·쿼리 플랜이 달라 인덱싱·조인 전략을 분산 환경에 맞게 재튜닝하는 비용이 있었다."
+    },
+    {
+     "topic": "장애 복원력과 관측성 — 셀 격리·서킷브레이커·분산 트레이싱",
+     "body": "### 멀티테넌트 마켓플레이스의 장애 도전\n주문이 흐르는 critical path는 Order → Dispatch → Payment → Notification 등 **수십 개 서비스의 동기/비동기 호출 체인**이다. 한 서비스의 지연이 호출자에게 전파되어 전체가 무너지는 **cascading failure**가 최대 위험이다.\n\n### 복원력 기법\n- **Envoy 서비스 메시**: 모든 서비스 간 트래픽이 Envoy 사이드카를 거친다. 여기서 **retry, timeout, outlier detection(서킷브레이킹), load balancing**을 애플리케이션 코드 밖 인프라 레벨에서 일관 적용한다.\n- **Circuit breaker / bulkhead**: 다운스트림이 느려지면 회로를 열어 빠르게 실패시키고, 리소스 풀을 격리해 한 의존성의 고갈이 전체 스레드/커넥션을 잡아먹지 않게 한다.\n- **Cell 기반 격리**: 트래픽을 독립적인 셀(자기완결적 서비스+데이터 묶음)로 분할해, 한 셀의 장애 반경(blast radius)을 그 셀 사용자로 한정한다.\n- **Cadence/Temporal 워크플로**: 주문 라이프사이클처럼 길고 여러 단계를 거치는 플로우는 워크플로 엔진이 상태를 내구성 있게 저장하고, 중간 실패 시 **자동 재시도·보상 트랜잭션(saga)** 으로 복구한다. 서비스가 죽었다 살아나도 중단 지점부터 재개된다.\n\n### 관측성 스택\n- **메트릭**: Prometheus로 수집, Grafana로 시각화. 서비스별 SLI(지연·에러율·포화도)를 대시보드/알람으로 관리.\n- **분산 트레이싱**: OpenTelemetry로 요청이 수십 서비스를 지나는 경로를 추적해, 느린 호출의 병목을 핀포인트한다 — 마이크로서비스에서 디버깅의 필수 도구.\n- **로깅·이벤트**: 앞서 설명한 Iguazu 파이프라인이 운영 이벤트도 표준 스트림으로 흘려 보내, 사후 분석과 실시간 이상탐지를 동일 소스에서 수행한다.\n\n### 핵심 트레이드오프\n인프라 레벨(Envoy)에서 복원력을 표준화하면 모든 팀이 공짜로 혜택을 받지만, 메시·셀·워크플로 엔진을 **운영하는 플랫폼 복잡도**가 커진다. DoorDash는 이 복잡도를 전담 인프라 팀에 흡수시키고, 제품 팀은 비즈니스 로직에 집중하도록 추상화 경계를 그었다."
     }
    ],
    "github": {
@@ -6419,10 +6460,12 @@
     "repos": []
    },
    "sources": [
-    "https://careersatdoordash.com/engineering-blog/"
+    "https://careersatdoordash.com/engineering-blog/",
+    "https://doordash.engineering/",
+    "https://github.com/doordash-oss"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "lyft",
@@ -6440,36 +6483,49 @@
     "backend": [
      "Python (Flask)",
      "Go services",
+     "gRPC",
      "Envoy",
-     "gRPC"
+     "Protobuf + protoc-gen-validate",
+     "Flask-Smorest/OpenAPI"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "React Native (모바일 일부)",
+     "Redux"
     ],
     "data": [
      "DynamoDB",
+     "Amazon Aurora/MySQL",
+     "Redis",
      "Kafka",
-     "Flink",
-     "Druid",
-     "Hudi"
+     "Apache Flink",
+     "Apache Druid",
+     "Apache Hudi",
+     "Presto/Trino",
+     "Amundsen (data discovery)"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "Envoy",
-     "Flyte"
+     "Envoy (service mesh)",
+     "Flyte (ML/데이터 오케스트레이션)",
+     "Clutch (infra control plane)",
+     "Confidant (secrets)",
+     "Cartography (security graph)",
+     "Salt/Terraform"
     ]
    },
    "architecture": [
     "Microservices",
-    "Service mesh",
-    "Event-driven"
+    "Service mesh (Envoy data plane)",
+    "Event-driven streaming",
+    "Polyglot platform (Python+Go)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    RIDER[\"Rider/Driver App<br/>React Native\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n  end\n  subgraph Edge\n    ENVOY[\"Service Mesh<br/>Envoy Proxy\"]\n  end\n  subgraph CoreServices\n    PY[\"API Services<br/>Python Flask\"]\n    GO[\"Matching/Pricing<br/>Go + gRPC\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Realtime Processing<br/>Flink\"]\n  end\n  subgraph Data\n    DDB[\"Geo/Trip Store<br/>DynamoDB\"]\n    DRUID[\"Analytics<br/>Druid\"]\n    HUDI[\"Data Lake<br/>Apache Hudi\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    FLYTE[\"ML Orchestration<br/>Flyte\"]\n  end\n  RIDER --> ENVOY\n  WEB --> ENVOY\n  ENVOY -->|gRPC| PY\n  ENVOY -->|gRPC| GO\n  PY --> DDB\n  GO --> DDB\n  GO --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> HUDI\n  GO --> K8S\n  HUDI --> FLYTE",
-   "why_language": "Python(Flask)으로 다수 마이크로서비스를 빠르게 구축했고, 매칭·실시간 경로 등 성능 핵심부는 Go로 작성한다. ML 오케스트레이션 Flyte를 직접 만들어 오픈소스화했다.",
-   "why_architecture": "수백 개 마이크로서비스 간 네트워킹을 통일하려 Envoy 프록시를 만들어 서비스 메시 표준(CNCF)으로 기여했다. Kafka·Flink로 실시간 위치/가격 이벤트를 처리한다.",
-   "summary": "Python/Go 마이크로서비스와 자체 발명한 Envoy 서비스 메시로 배차를 운영.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Rider/Driver App<br/>React Native + Native\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Mesh\"]\n    FE[\"Front Envoy<br/>Edge Proxy + TLS\"]\n    GW[\"API Gateway<br/>Python/Flask + gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Matching/Dispatch<br/>Go services\"]\n    PRICE[\"Pricing/Surge<br/>Go + Python\"]\n    LOC[\"Location/ETA<br/>Go + Geo index\"]\n    RIDE[\"Ride Lifecycle<br/>Python/Flask\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    SIDE[\"Envoy Sidecars<br/>mTLS + retries + LB\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>event bus\"]\n    FLINK[\"Flink<br/>stateful stream proc\"]\n    DRUID[\"Druid<br/>real-time OLAP\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"DynamoDB<br/>ride/session state\"]\n    AUR[\"Aurora/MySQL<br/>transactional\"]\n    REDIS[\"Redis<br/>cache + geo\"]\n    HUDI[\"Hudi on S3<br/>lakehouse\"]\n  end\n  subgraph Platform[\"Infra / ML Platform\"]\n    K8S[\"Kubernetes<br/>on AWS\"]\n    FLYTE[\"Flyte<br/>ML/data DAGs\"]\n  end\n  APP --> FE\n  WEB --> FE\n  FE --> GW\n  GW -->|gRPC| MATCH\n  GW -->|gRPC| RIDE\n  MATCH --> SIDE\n  PRICE --> SIDE\n  LOC --> SIDE\n  RIDE --> SIDE\n  SIDE --> DDB\n  SIDE --> AUR\n  LOC --> REDIS\n  MATCH -->|events| KAFKA\n  PRICE -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> PRICE\n  KAFKA --> HUDI\n  FLYTE --> HUDI\n  FLYTE --> PRICE\n  Core --> K8S\n  Stream --> K8S",
+   "why_language": "Lyft은 초기 제품 속도를 위해 Python/Flask 모놀리스로 출발했고, 지금도 비즈니스 로직·API·ML 영역에서 Python 생산성을 활용한다. 하지만 매칭·디스패치·위치 처리처럼 낮은 지연과 높은 동시성이 필요한 핫패스는 Go로 옮겨 GIL 한계와 메모리·레이턴시 문제를 해결했고, 스트리밍(Flink/Scala·Java)과 프론트엔드(TypeScript)를 더해 도메인별 최적 언어를 쓰는 폴리글랏 전략을 취한다.",
+   "why_architecture": "실시간 차량 매칭·가격 책정은 수백 개 서비스가 ms 단위로 통신해야 해서, Lyft은 모놀리스를 마이크로서비스로 쪼개고 그 통신을 안정화하기 위해 Envoy 데이터 평면을 직접 만들어 서비스 메시로 표준화했다. 또한 위치·이벤트가 끊임없이 흐르는 도메인 특성상 Kafka·Flink 기반 이벤트 드리븐 스트리밍을 핵심에 두어 surge pricing과 ETA를 실시간으로 갱신한다.",
+   "summary": "Envoy를 발명한 회사답게 Python→Go 폴리글랏 마이크로서비스를 Envoy 서비스 메시와 Kafka·Flink 스트리밍으로 묶은 실시간 모빌리티 플랫폼",
    "deep_dive": [
     {
      "topic": "Envoy 서비스 메시: Lyft가 발명한 데이터 평면",
@@ -6486,47 +6542,71 @@
     {
      "topic": "관측성: Envoy 기반 통합 텔레메트리와 분산 추적",
      "body": "### 메시가 곧 관측성\nEnvoy가 모든 서비스 간 호출을 매개하므로, Lyft의 관측성은 **메시 데이터 평면에서 자연 발생**한다.\n\n- 모든 RPC의 **요청수·에러율·지연 분포(p50/p99)** 가 Envoy stats로 일관 수집 → 서비스가 코드를 안 바꿔도 SRE 골든 시그널 확보\n- **분산 추적**: Envoy가 trace 헤더(B3 등)를 전파·생성해 한 요청이 거친 서비스 체인을 시각화 → fan-out 병목 진단\n- 메시 레벨에서 **재시도/서킷브레이킹 발생 빈도**가 보여 '어느 의존성이 불안정한지' 즉시 파악\n\n### 왜 가치 있나\n수백 서비스 환경에서 각 팀이 제각각 계측하면 메트릭 정의가 달라 비교가 불가능하다. Envoy로 **표준 메트릭을 인프라가 강제**하면 모든 서비스가 동일 언어로 건강 상태를 말한다. 트레이드오프는 사이드카가 생성하는 대량 텔레메트리의 저장/카디널리티 비용이지만, 운영 가시성이 장애 대응 속도(MTTR)를 좌우하므로 핵심 투자로 본다."
+    },
+    {
+     "topic": "모놀리스 해체와 Go 핫패스 이전: Lyft 마이크로서비스 마이그레이션 히스토리",
+     "body": "### 출발점: 하나의 Python 모놀리스\nLyft의 백엔드는 초기에 `Flask` 기반의 거대한 Python 모놀리스 하나로 운영됐다. 제품 시장 적합성을 빠르게 찾던 단계에서는 Python의 생산성이 압도적 이점이었지만, 라이드 수요가 폭증하면서 두 가지 한계가 동시에 터졌다.\n\n- **배포 결합도**: 수백 명의 엔지니어가 하나의 코드베이스에 커밋하면서 배포 큐가 막히고, 한 팀의 버그가 전체 서비스를 멈췄다.\n- **런타임 한계**: Python의 GIL과 프로세스당 메모리 비용 때문에 매칭·위치 갱신처럼 동시성·저지연이 필요한 경로에서 비용이 기하급수적으로 늘었다.\n\n### 해법 1 — 서비스 분리와 통신 표준화\n모놀리스를 도메인별 마이크로서비스로 쪼개면서 가장 먼저 부딪힌 문제는 \"서비스가 늘수록 네트워크가 불안정해진다\"는 것이었다. 각 언어/프레임워크가 제각각 retry, timeout, circuit breaking, 로드밸런싱을 구현하다 보니 장애 양상이 예측 불가능했다. Lyft는 이 문제를 애플리케이션 코드가 아니라 **네트워크 계층**에서 풀기로 결정했고, 그 결과물이 바로 `Envoy`다. 모든 서비스 옆에 sidecar로 붙은 Envoy가 mTLS, 재시도, 아웃라이어 디텍션, 관측성을 일관되게 처리하면서 polyglot 환경에서도 통신 동작이 통일됐다.\n\n### 해법 2 — 핫패스만 Go로\nLyft는 \"전부 Go로 재작성\"하는 도박 대신, **트래픽·지연에 가장 민감한 경로만** Go로 옮기는 점진적 전략을 택했다. 매칭/디스패치, 위치 스트림 수집, 일부 가격 계산 경로가 Go로 이전됐다. Go의 고루틴 기반 동시성 모델은 수많은 동시 라이드 세션과 위치 업데이트를 적은 메모리로 처리하기에 적합했다. 반면 복잡한 비즈니스 규칙, 실험 로직, ML 서빙 글루 코드는 여전히 Python에 남겨 개발 속도를 유지했다.\n\n### 트레이드오프\n이 폴리글랏 결정의 대가는 **운영 복잡성**이다. 두 개의 런타임, 두 개의 빌드/배포 파이프라인, gRPC/Protobuf 스키마 동기화 부담이 생긴다. Lyft는 이를 `protoc-gen-star`/`protoc-gen-validate` 같은 자체 도구로 스키마·검증을 코드 생성으로 표준화하고, Envoy가 언어와 무관하게 네트워크 동작을 통일함으로써 상쇄했다. 즉 \"언어는 다양하게, 인프라 계약은 하나로\"가 핵심 원칙이다."
+    },
+    {
+     "topic": "Flyte: Lyft가 만든 ML·데이터 워크플로 오케스트레이션",
+     "body": "### 왜 또 하나의 오케스트레이터인가\nETA 예측, surge pricing, 사기 탐지, 수요 예측 등 Lyft의 핵심 기능 다수가 ML 모델에 의존한다. 초기에는 Airflow 류 도구로 파이프라인을 돌렸지만, 데이터 사이언티스트가 늘면서 **재현성·버전 관리·타입 안정성** 문제가 커졌다. 같은 노트북이 환경에 따라 다르게 동작하고, 파이프라인 간 의존성 추적이 어려웠다. Lyft는 이를 해결하려고 `Flyte`를 만들어 오픈소스화했다(현재 `flyteorg` 거버넌스).\n\n### 핵심 동작 원리\nFlyte는 워크플로를 **강타입(strongly-typed) DAG**로 정의한다. 각 task는 입력/출력 타입이 명시되고, 컨테이너 단위로 Kubernetes 위에서 실행된다.\n\n- **Task 컨테이너화**: 모든 task가 격리된 컨테이너로 실행돼 의존성·환경이 코드와 함께 고정된다 → 재현성 확보.\n- **버전 불변성(immutability)**: 워크플로/태스크가 버전으로 등록되어, 과거 실행을 그대로 재현하거나 롤백할 수 있다.\n- **캐싱**: 입력이 동일한 task는 결과를 캐시해 비싼 재계산을 건너뛴다. 대규모 피처 엔지니어링에서 비용·시간을 크게 절약.\n- **K8s 네이티브 스케일링**: task별로 리소스(CPU/GPU/메모리)를 선언하면 Kubernetes가 스케줄링·오토스케일을 담당한다. Spark, Flink 같은 분산 엔진도 플러그인으로 연동.\n\n### 데이터 흐름에서의 위치\nKafka로 흘러든 이벤트와 Hudi 레이크하우스에 적재된 데이터를 Flyte 파이프라인이 읽어 피처를 만들고, 모델을 학습/평가한 뒤 서빙 시스템으로 내보낸다. 즉 Flyte는 `Hudi/S3 → 피처 → 모델 → 프로덕션`을 잇는 **ML 백본**이다.\n\n### 트레이드오프\nFlyte는 강타입·컨테이너 격리로 안정성을 얻는 대신, 가벼운 임시 실험에는 진입장벽(컨테이너 빌드, 타입 정의)이 있다. Lyft는 노트북/SDK 레이어를 얹어 데이터 사이언티스트의 마찰을 줄이는 방향으로 보완했다."
+    },
+    {
+     "topic": "실시간 위치·매칭·ETA: 지오스페이셜 파이프라인의 동작",
+     "body": "### 문제의 규모\n수십만 대의 차량이 초 단위로 GPS 좌표를 보내고, 동시에 수십만 명의 라이더가 \"지금 내 주변 가장 가까운 적합한 드라이버\"를 요구한다. 이는 **쓰기 폭주(write-heavy) + 공간 질의(spatial query) + 저지연**이 동시에 걸리는 어려운 문제다.\n\n### 위치 수집 경로\n드라이버 앱의 위치 업데이트는 Front Envoy → 위치 수집 서비스(Go)로 들어온다. 이 핫패스는 동시성 효율 때문에 Go로 구현돼 있고, 최신 위치는 `Redis` 같은 인메모리 저장소에 보관해 읽기 지연을 ms 단위로 유지한다. 동시에 위치 이벤트는 `Kafka`로 발행되어 분석·ML·실시간 집계 파이프라인이 소비한다.\n\n### 공간 인덱싱과 매칭\n\"근처 차량 찾기\"는 지구 표면을 셀로 나누는 지오 인덱스(예: geohash/H3 류의 셀 기반 인덱싱)로 처리한다. 라이더 위치를 셀로 매핑하고 인접 셀의 후보 드라이버를 빠르게 추려낸 뒤, 매칭/디스패치 서비스가 **단순 최근접이 아니라** ETA·차량 등급·수요 균형을 고려한 최적화를 돌려 배차를 결정한다. 핵심은 \"직선 거리\"가 아니라 \"실제 도착 시간(ETA)\"으로 평가한다는 점 — 강 건너 1km보다 다리 건너야 하는 경로가 더 멀 수 있기 때문이다.\n\n### ETA 예측\nETA는 도로망·실시간 교통·과거 패턴을 학습한 ML 모델로 추정한다. 이 모델들은 Flyte 파이프라인에서 학습되고, 위치 스트림과 결합해 지속적으로 갱신된다. ETA는 매칭 품질, 가격, 그리고 라이더에게 보여줄 도착 시간 표시 모두에 입력된다.\n\n### 트레이드오프\n- **정확도 vs 지연**: 매번 완벽한 경로 최적화를 풀면 느리므로, 셀 기반 후보 축소로 검색 공간을 먼저 줄인 뒤 정밀 계산하는 2단계 방식을 쓴다.\n- **신선도 vs 부하**: 위치를 너무 자주 쓰면 저장소가 과부하되고, 너무 드물면 매칭이 부정확해진다. 그래서 최신 위치는 Redis 류 핫 스토어에, 이력은 Kafka→레이크로 분리한다."
+    },
+    {
+     "topic": "배포·복원력: Kubernetes 위 카나리와 Envoy 기반 장애 격리",
+     "body": "### 수백 서비스를 안전하게 배포하기\n마이크로서비스가 수백 개로 늘면 \"하루에도 수백 번 배포\"가 일상이 된다. Lyft는 서비스를 `Kubernetes` 위에서 운영하며, 새 버전을 한 번에 전체 교체하지 않고 **카나리/점진적 롤아웃**으로 내보낸다. 일부 트래픽만 새 버전으로 보내 에러율·레이턴시·핵심 비즈니스 지표를 관측한 뒤, 이상이 없으면 비중을 늘리고 문제가 보이면 즉시 롤백한다.\n\n### Envoy가 만드는 트래픽 제어와 복원력\n카나리의 핵심 메커니즘은 **트래픽 셰이핑**인데, 이게 가능한 이유가 바로 Envoy 데이터 평면이다. Envoy sidecar는 서비스 간 모든 호출을 가로채므로 다음을 코드 수정 없이 제공한다.\n\n- **가중치 기반 라우팅**: v1/v2로 트래픽을 % 단위로 분배 → 카나리.\n- **재시도·타임아웃**: 일시적 실패를 sidecar가 흡수.\n- **Outlier detection(서킷 브레이킹)**: 특정 인스턴스가 연속 에러를 내면 자동으로 풀에서 빼내 장애 전파를 차단.\n- **Rate limiting / 로드 셰딩**: 과부하 시 우선순위 낮은 요청을 떨궈 핵심 경로를 보호.\n\n### 인프라 운영의 통합: Clutch\n이런 운영 액션(트래픽 조정, 인스턴스 종료, 스케일링, 카나리 제어)을 엔지니어가 일관된 UI/API로 다루도록 Lyft는 `Clutch`라는 컨트롤 플레인을 만들어 오픈소스화했다. 여러 인프라 도구(K8s, AWS, Envoy 설정 등)를 하나의 확장형 플랫폼으로 묶어, 사고 대응 시 컨텍스트 전환 비용을 줄인다.\n\n### 관측 기반 의사결정\n카나리 판단은 사람의 감이 아니라 메트릭으로 한다. Envoy가 표준 포맷으로 내보내는 통계(요청률, 에러율, p50/p99 레이턴시)와 분산 트레이싱을 근거로 자동/반자동 승격·롤백을 수행한다.\n\n### 트레이드오프\n카나리는 안전하지만 배포가 느려지고, sidecar 메시는 노드마다 Envoy 프로세스를 띄우는 **리소스·운영 오버헤드**를 동반한다. Lyft는 이 비용을 \"장애 폭발 반경 축소 + 일관된 네트워크 동작\"이라는 이득으로 정당화한다 — 모빌리티 서비스는 한 번의 전면 장애가 곧 길 위의 사람들에게 직접 영향을 주기 때문이다."
     }
    ],
    "github": {
     "org": "https://github.com/lyft",
     "repos": [
      {
-      "name": "envoyproxy/envoy",
-      "url": "https://github.com/envoyproxy/envoy",
-      "desc": "Lyft가 만든 클라우드 네이티브 서비스 메시 프록시",
-      "lang": "C++",
-      "stars": 28387
-     },
-     {
       "name": "flyteorg/flyte",
       "url": "https://github.com/flyteorg/flyte",
-      "desc": "쿠버네티스 기반 ML/데이터 워크플로 오케스트레이션",
+      "desc": "Lyft에서 시작된 ML/데이터 워크플로 오케스트레이션 플랫폼",
       "lang": "Go",
-      "stars": 7085
+      "stars": 7089
      },
      {
       "name": "cartography-cncf/cartography",
       "url": "https://github.com/cartography-cncf/cartography",
-      "desc": "인프라 자산을 그래프로 매핑하는 보안 도구",
+      "desc": "클라우드 자산 관계를 Neo4j 그래프로 매핑하는 보안 도구",
       "lang": "Python",
-      "stars": 3922
+      "stars": 3923
+     },
+     {
+      "name": "lyft/confidant",
+      "url": "https://github.com/lyft/confidant",
+      "desc": "KMS 기반 시크릿 관리 서비스",
+      "lang": "Python",
+      "stars": 1857
      },
      {
       "name": "lyft/clutch",
       "url": "https://github.com/lyft/clutch",
-      "desc": "인프라 관리용 확장형 플랫폼 UI",
+      "desc": "인프라 운영을 위한 확장형 컨트롤 플레인/관리 UI 플랫폼",
       "lang": "Go",
       "stars": 1774
+     },
+     {
+      "name": "lyft/flinkk8soperator",
+      "url": "https://github.com/lyft/flinkk8soperator",
+      "desc": "Kubernetes에서 Flink 애플리케이션을 관리하는 오퍼레이터",
+      "lang": "Go",
+      "stars": 581
      }
     ]
    },
    "sources": [
-    "https://eng.lyft.com",
-    "https://www.envoyproxy.io"
+    "https://eng.lyft.com/",
+    "https://www.envoyproxy.io/",
+    "https://flyte.org/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "tesla",
@@ -10327,7 +10407,7 @@
     "https://tech.naver.com"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-15"
   },
   {
    "key": "nexon",
@@ -12184,7 +12264,7 @@
     "https://about.daangn.com/tech"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-15"
   },
   {
    "key": "watcha",
