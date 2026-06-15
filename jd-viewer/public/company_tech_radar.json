@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T22:29:42",
+ "generated_at": "2026-06-16T00:10:38",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 41,
+ "refined": 43,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1669,12 +1669,12 @@
    "subdomains": [],
    "languages": [
     {
-     "name": "Go",
+     "name": "TypeScript",
      "count": 7
     },
     {
-     "name": "TypeScript",
-     "count": 7
+     "name": "Go",
+     "count": 6
     },
     {
      "name": "JavaScript",
@@ -1689,23 +1689,23 @@
      "count": 3
     },
     {
+     "name": "Java",
+     "count": 3
+    },
+    {
      "name": "Python",
      "count": 3
     },
     {
      "name": "Ruby",
      "count": 3
-    },
-    {
-     "name": "Java",
-     "count": 2
     }
    ],
    "stack": {
     "backend": [
      {
       "name": "gRPC",
-      "count": 6
+      "count": 5
      },
      {
       "name": "Go services",
@@ -1724,6 +1724,10 @@
       "count": 3
      },
      {
+      "name": "Apache Spark",
+      "count": 1
+     },
+     {
       "name": "Atlas service framework",
       "count": 1
      },
@@ -1736,11 +1740,7 @@
       "count": 1
      },
      {
-      "name": "Go",
-      "count": 1
-     },
-     {
-      "name": "gRPC / Courier RPC",
+      "name": "Express/Koa-style monolith",
       "count": 1
      }
     ],
@@ -1800,15 +1800,19 @@
       "count": 3
      },
      {
-      "name": "Redis",
-      "count": 3
+      "name": "Amazon S3",
+      "count": 2
      },
      {
       "name": "DynamoDB",
       "count": 2
      },
      {
-      "name": "Amazon S3",
+      "name": "Redis",
+      "count": 2
+     },
+     {
+      "name": "Apache Hudi",
       "count": 1
      },
      {
@@ -1821,10 +1825,6 @@
      },
      {
       "name": "Edgestore",
-      "count": 1
-     },
-     {
-      "name": "Elasticsearch/OpenSearch",
       "count": 1
      }
     ],
@@ -1839,6 +1839,10 @@
      },
      {
       "name": "Atlas/Watchman CI",
+      "count": 1
+     },
+     {
+      "name": "AWS RDS",
       "count": 1
      },
      {
@@ -1862,26 +1866,18 @@
       "count": 1
      },
      {
-      "name": "Cloud Native Helm",
-      "count": 1
-     },
-     {
-      "name": "Consul",
+      "name": "Cloud Native GitLab Helm Charts",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Modular monolith",
-     "count": 2
-    },
-    {
      "name": "Async task framework 기반 이벤트 처리",
      "count": 1
     },
     {
-     "name": "Block-based data model",
+     "name": "Block-based recursive tree data model",
      "count": 1
     },
     {
@@ -1889,11 +1885,15 @@
      "count": 1
     },
     {
-     "name": "CDC data lake",
+     "name": "Cellular architecture",
      "count": 1
     },
     {
-     "name": "Cellular architecture",
+     "name": "Custom exabyte 스토리지 인프라",
+     "count": 1
+    },
+    {
+     "name": "DBProxy를 통한 PostgreSQL 수평 샤딩",
      "count": 1
     }
    ]
@@ -10337,34 +10337,46 @@
     "backend": [
      "Ruby on Rails",
      "Go (Gitaly)",
+     "Sidekiq",
      "gRPC",
-     "GraphQL"
+     "GraphQL",
+     "Grape REST API"
     ],
     "frontend": [
      "Vue.js",
-     "TypeScript"
+     "TypeScript",
+     "GraphQL Apollo Client",
+     "Vuex/Pinia",
+     "SCSS"
     ],
     "data": [
      "PostgreSQL",
+     "PgBouncer",
      "Redis",
      "Elasticsearch",
-     "ClickHouse"
+     "ClickHouse",
+     "Object Storage (GCS/S3)"
     ],
     "infra": [
-     "Google Cloud",
+     "Google Cloud Platform",
      "Kubernetes",
-     "Cloud Native Helm"
+     "Cloud Native GitLab Helm Charts",
+     "Omnibus",
+     "Terraform",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
-    "Modular monolith",
-    "Service extraction",
-    "Cloud-native deployable"
+    "Modular monolith (Rails) + extracted Go services",
+    "Gitaly RPC storage layer with Praefect 복제",
+    "Sidekiq 기반 비동기 작업 처리",
+    "단일 코드베이스 SaaS + self-managed 동시 배포"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    WEB[\"Web UI<br/>Vue.js TS\"]\n    CLI[\"Git CLI<br/>HTTPS SSH\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    WH[\"Reverse Proxy<br/>Workhorse Go\"]\n    GW[\"API GraphQL\"]\n  end\n  subgraph Core[\"Core Services\"]\n    RAILS[\"Monolith<br/>Ruby on Rails\"]\n    GITALY[\"Git Backend<br/>Gitaly Go\"]\n    RUNNER[\"CI Runner<br/>Go\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL\"]\n    REDIS[\"Redis\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    SIDEKIQ[\"Async Jobs<br/>Sidekiq\"]\n    CH[\"Analytics<br/>ClickHouse\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>Google Cloud\"]\n  end\n  WEB --> WH\n  CLI --> WH\n  WH --> GW\n  GW --> RAILS\n  RAILS -->|gRPC| GITALY\n  RAILS -->|gRPC| RUNNER\n  RAILS --> PG\n  RAILS --> REDIS\n  RAILS --> ES\n  RAILS --> SIDEKIQ\n  RAILS --> CH\n  RAILS --- K8S\n  GITALY --- K8S",
-   "why_language": "단일 DevOps 플랫폼을 Rails 모노리스로 통합 운영하며 Ruby가 코어이고, Git 접근 성능 핵심부는 Go(Gitaly)로 분리했다. 프론트는 Vue.js로 통일한다.",
-   "why_architecture": "고객이 자체 호스팅도 할 수 있도록 단일 배포 가능한 모노리스를 유지하면서, Git 스토리지(Gitaly) 등 성능 핵심을 Go 서비스로 추출했다. 멀티클라우드·온프렘 호환을 중시한다.",
-   "summary": "셀프호스팅 가능한 Rails 모노리스에 Go Gitaly를 결합한 통합 DevOps 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    BROWSER[\"Web UI<br/>Vue.js + TypeScript\"]\n    GITCLI[\"git client<br/>HTTPS / SSH\"]\n    API_CLIENT[\"API consumers<br/>REST + GraphQL\"]\n  end\n  subgraph Gateway[\"Routing / Edge Proxy\"]\n    LB[\"Load Balancer<br/>GCP LB + HAProxy\"]\n    WORKHORSE[\"GitLab Workhorse<br/>Go reverse proxy\"]\n  end\n  subgraph App[\"Application Core\"]\n    RAILS[\"Rails Monolith<br/>Puma + Ruby\"]\n    GRAPHQL[\"GraphQL API<br/>graphql-ruby\"]\n    GRAPE[\"REST API<br/>Grape\"]\n    SIDEKIQ[\"Async Jobs<br/>Sidekiq\"]\n  end\n  subgraph Git[\"Git Storage Layer\"]\n    PRAEFECT[\"Praefect<br/>Go router\"]\n    GITALY[\"Gitaly<br/>Go RPC + git\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL<br/>main + ci 분리\"]\n    PGB[\"PgBouncer<br/>connection pool\"]\n    REDIS[\"Redis<br/>cache + queue\"]\n    ES[\"Elasticsearch<br/>code/issue search\"]\n    CH[\"ClickHouse<br/>analytics events\"]\n    OBJ[\"Object Storage<br/>GCS LFS/artifacts\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Kubernetes<br/>Helm Charts on GKE\"]\n    PROM[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  BROWSER --> LB\n  API_CLIENT --> LB\n  GITCLI --> LB\n  LB --> WORKHORSE\n  WORKHORSE -->|slow/large| OBJ\n  WORKHORSE --> RAILS\n  RAILS --> GRAPHQL\n  RAILS --> GRAPE\n  RAILS -->|enqueue| SIDEKIQ\n  RAILS -->|gRPC| PRAEFECT\n  SIDEKIQ -->|gRPC| PRAEFECT\n  PRAEFECT -->|gRPC| GITALY\n  GITALY --> OBJ\n  RAILS --> PGB --> PG\n  RAILS --> REDIS\n  SIDEKIQ --> REDIS\n  RAILS --> ES\n  SIDEKIQ --> CH\n  K8S -.deploys.-> RAILS\n  K8S -.deploys.-> GITALY\n  PROM -.scrapes.-> RAILS",
+   "why_language": "GitLab은 2011년부터 Ruby on Rails로 시작한 거대한 모놀리식 코드베이스로, 개발자 생산성과 빠른 기능 출시를 위해 Ruby를 핵심 언어로 유지한다. 다만 Git 객체 접근·네트워크 프록시처럼 성능과 동시성이 중요한 경로는 Ruby의 한계를 벗어나기 위해 Go(Gitaly, Workhorse, Praefect)로 재작성했고, CLI 도구 등 일부는 Rust도 채택한다. 프런트엔드는 Vue.js와 TypeScript로 대규모 SPA의 유지보수성을 확보한다.",
+   "why_architecture": "GitLab은 self-managed로 고객사 인프라에 단일 패키지로 배포되어야 하므로, 수십 개 마이크로서비스로 쪼개는 대신 운영이 단순한 '모듈러 모놀리스'를 의도적으로 고수한다. 대신 Git 저장처럼 모놀리스에 두기 어려운 부분만 Gitaly 같은 독립 Go 서비스로 추출하고, Praefect로 복제·HA를 구현해 확장성과 배포 단순성의 균형을 맞춘다. 동일한 Rails 코드베이스가 GitLab.com SaaS와 self-managed 양쪽을 모두 구동한다.",
+   "summary": "Rails 모듈러 모놀리스를 유지하면서 성능 임계 경로만 Go 서비스로 추출한 '단일 코드베이스, 두 배포 모델' 아키텍처",
    "deep_dive": [
     {
      "topic": "Gitaly — Git 저장을 RPC로 추상화하다",
@@ -10385,6 +10397,18 @@
     {
      "topic": "MR 요청의 end-to-end 흐름과 GraphQL 전환",
      "body": "### Merge Request 하나가 도는 길\nGitLab의 대표 워크플로인 Merge Request(MR) 생성·갱신을 따라가 보자.\n1. **HTTP 진입**: 사용자가 push 또는 웹 UI로 MR을 만들면 요청이 로드밸런서를 거쳐 Rails(Puma) 워커에 도달한다.\n2. **권한·검증**: Rails가 PostgreSQL(main)에서 프로젝트·사용자·권한을 조회해 접근을 검증한다.\n3. **Git 연산**: 브랜치 diff, 머지 가능 여부, 충돌 검사 등은 디스크를 직접 만지지 않고 **Gitaly RPC**로 위임한다. Gitaly가 해당 리포가 있는 노드에서 git 명령을 실행해 결과를 돌려준다.\n4. **CI 트리거**: MR이 파이프라인을 유발하면, 파이프라인·잡 데이터가 분리된 **`ci` 데이터베이스**에 기록되고, 실제 잡은 비동기로 스케줄된다.\n5. **비동기 후처리**: 알림 발송, 코드 품질·보안 스캔 연동, 머지 후 정리 등은 **Sidekiq** 잡으로 큐에 넣어 백그라운드 처리한다.\n6. **응답·실시간 갱신**: 사용자에게 응답을 돌려주고, 이후 상태 변화(파이프라인 진행 등)는 폴링/실시간 갱신으로 UI에 반영된다.\n\n### REST에서 GraphQL로\nGitLab은 프런트엔드(Vue.js)와 통합을 위해 GraphQL을 점점 확대하고 있다.\n- 복잡한 화면(예: MR 페이지)은 연관 데이터가 많아 REST로는 N번 왕복이 필요한데, GraphQL은 한 쿼리로 필요한 필드만 정확히 가져온다\n- over-fetching·under-fetching을 줄여 모바일·저대역폭에서도 효율적\n- 다만 GraphQL은 백엔드 부하 제어가 까다로워, 쿼리 복잡도 제한과 N+1 방지(배치 로딩)에 신경 써야 한다\n\n### 분석 워크로드와 ClickHouse\n대량의 이벤트성·분석성 데이터(예: 사용량 분석, 관측 데이터)는 OLTP인 PostgreSQL에 부담이므로 컬럼형 OLAP DB인 ClickHouse로 옮겨 집계 쿼리를 빠르게 처리한다. 이는 \"트랜잭션 DB와 분석 DB의 역할 분리\"라는 일반 원칙을 GitLab 맥락에 적용한 것으로, 각 워크로드에 맞는 저장소를 고르는 다형적 데이터 전략의 일부다."
+    },
+    {
+     "topic": "GitLab Workhorse — Rails 앞단의 Go 리버스 프록시가 무거운 트래픽을 가로채는 법",
+     "body": "### Workhorse가 존재하는 이유\n\nGitLab.com 초창기에 가장 큰 운영 통증은 `git clone`, `git push`, CI 아티팩트 업로드, LFS 같은 **느리고 대용량인 요청**이었다. 이런 요청이 Ruby `Puma` 워커를 통째로 점유하면, 워커 수가 제한된 상황에서 일반 웹 요청까지 굶주리게 된다(slow request starvation). GitLab은 이 문제를 해결하기 위해 Rails 앞에 **`GitLab Workhorse`**라는 Go로 작성된 스마트 리버스 프록시를 두었다. 원래 이름이 `gitlab-git-http-server`였다는 점에서 알 수 있듯, 출발점은 Git over HTTP 처리였고 점점 책임이 확장됐다.\n\n### 요청 흐름과 'pre-authorization' 패턴\n\nWorkhorse의 핵심 트릭은 **인증·인가는 Rails에 위임하되, 실제 바이트 전송은 Go가 맡는** 분업이다.\n\n- 클라이언트 요청이 들어오면 Workhorse는 먼저 Rails(`/authorize` 류 엔드포인트)에 짧은 인증 요청을 보낸다.\n- Rails는 \"이 사용자가 이 저장소에 push해도 되는가\"를 판단하고, 허용이면 Workhorse에게 **어디로 데이터를 보내야 하는지**(Gitaly 주소, object storage presigned URL 등)를 담은 작은 JSON 응답을 돌려준다. 이 응답에는 `Gitlab-Workhorse-Send-Data` 같은 특수 헤더가 실린다.\n- 그 뒤 실제 수 GB짜리 pack 파일 전송이나 아티팩트 업로드는 Rails를 거치지 않고 Workhorse가 직접 Gitaly나 GCS로 스트리밍한다.\n\n이 패턴 덕분에 메모리·동시성에 약한 Ruby 워커는 \"권한 판단\"이라는 짧은 일만 하고, 무거운 I/O는 goroutine 기반 Go가 효율적으로 처리한다.\n\n### Workhorse가 실제로 가로채는 작업들\n\n| 작업 | Workhorse의 역할 |\n|---|---|\n| `git clone/push` over HTTP | Gitaly로 직접 스트리밍, Rails 워커 비점유 |\n| CI 아티팩트 / LFS 업로드 | 임시 파일/object storage로 직접 받아 Rails 메모리 보호 |\n| Job 로그(trace) | 실시간 incremental 로그를 효율적으로 중계 |\n| `X-Sendfile` 대체 | 큰 파일 다운로드를 Go가 직접 전송 |\n| WebSocket (터미널 등) | 프록시 업그레이드 처리 |\n\n### 왜 Nginx로 안 하고 직접 만들었나\n\n범용 프록시(Nginx)로는 \"Rails에 물어보고 그 결과에 따라 Gitaly로 보낼지 object storage로 보낼지 동적으로 결정\"하는 GitLab 고유 로직을 표현하기 어렵다. Workhorse는 GitLab 도메인에 특화된 인가·라우팅 로직을 코드로 담아야 했기 때문에 별도 Go 서비스가 됐다. 결과적으로 Workhorse는 GitLab 아키텍처에서 **Rails 모놀리스를 보호하는 방파제**이자, Go 추출 전략의 대표 사례다."
+    },
+    {
+     "topic": "Sidekiq 비동기 처리 — 모놀리스를 견디게 하는 백그라운드 잡 시스템",
+     "body": "### 왜 Sidekiq이 GitLab의 심장인가\n\nGitLab에서 사용자가 클릭하는 거의 모든 무거운 작업은 **동기 요청 안에서 끝나지 않는다**. MR을 머지하면 파이프라인 트리거, 알림 메일, Elasticsearch 인덱싱, webhook 발송, 통계 집계가 줄줄이 일어나는데, 이걸 HTTP 요청 안에서 처리하면 타임아웃이 난다. GitLab은 이 모든 비동기 작업을 Ruby 진영의 표준 백그라운드 잡 프레임워크인 **`Sidekiq`**(Redis 기반)으로 처리한다. GitLab.com 규모에서는 **수백 개의 잡 클래스**가 초당 수만 건씩 실행된다.\n\n### 큐 분리와 워커 라우팅\n\n단일 큐에 모든 잡을 넣으면 느린 잡 하나가 빠른 잡을 막는다. GitLab은 이를 막기 위해 정교한 큐 전략을 쓴다.\n\n- **잡마다 메타데이터 부여**: 각 worker는 `urgency`(high/low/throttled), `data_consistency`(always/sticky/delayed), `resource_boundaries`(cpu/memory) 같은 속성을 선언한다.\n- **`Sidekiq Cluster`로 큐 그룹 분리**: 긴급한 사용자 대면 잡(예: `PostReceive`, 파이프라인 생성)과 느린 배치 잡(통계, 정리)을 **물리적으로 다른 워커 플릿**에서 돌려 상호 간섭을 줄인다.\n- **`routing rules`**: 큐 이름 기반으로 어떤 Sidekiq 프로세스가 어떤 잡을 가져갈지 라우팅한다.\n\n### DB 복제 지연과 'data_consistency'\n\nGitLab의 흥미로운 엔지니어링 결정 중 하나는 Sidekiq과 **PostgreSQL 읽기 복제본(replica)**의 상호작용이다. 잡이 너무 빨리 실행되면, 방금 커밋된 데이터가 아직 replica에 복제되지 않아 잡이 옛 데이터를 읽는 경쟁 상태가 생긴다. GitLab은 `data_consistency` 옵션으로 이를 해결한다.\n\n- `:always` → 항상 primary에서 읽음(안전하지만 primary 부하↑)\n- `:sticky` → replica가 최신이면 replica, 아니면 primary로 폴백\n- `:delayed` → replica가 따라잡을 때까지 잡 실행을 잠깐 미룸\n\n이 메커니즘은 \"읽기 부하는 replica로 분산하되, 정합성이 필요한 잡은 보호한다\"는 트레이드오프를 코드 레벨에서 다루는 사례다.\n\n### 멱등성과 중복 제거\n\n대규모 큐에서는 같은 잡이 중복 enqueue되는 일이 흔하다. GitLab worker는 `idempotent!`를 선언하고 **deduplication**(예: 동일 인자 잡을 하나로 합치는 `until_executing` 전략)을 활성화해, 동일 작업이 폭주하는 것을 막는다. 이런 디테일이 없으면 webhook 재시도나 인덱싱 잡이 Redis와 DB를 쉽게 마비시킨다.\n\n### 정리\n\nSidekiq은 단순한 '백그라운드 잡 라이브러리'가 아니라, GitLab이 모놀리스를 유지하면서도 거대한 비동기 워크로드를 감당하게 해주는 **운영 백본**이다. 큐 분리·urgency·data_consistency·idempotency라는 네 축이 모여, 마이크로서비스 없이도 수평 확장과 격리를 달성한다."
+    },
+    {
+     "topic": "Reference Architectures와 수평 확장 — 같은 코드로 1명부터 5만 명까지",
+     "body": "### 문제: 하나의 제품이 모든 규모를 감당해야 한다\n\nGitLab의 가장 독특한 제약은 **같은 소프트웨어가 개인 개발자의 노트북부터 5만 사용자 엔터프라이즈까지 모두 돌아가야 한다**는 점이다. SaaS만 운영하는 회사와 달리, GitLab은 고객이 직접 설치·확장하는 self-managed를 지원하므로 \"어떻게 키울 것인가\"를 **문서화된 청사진**으로 제공해야 한다. 이것이 GitLab의 **`Reference Architectures`**다(예: 1k, 3k, 5k, 10k, 25k, 50k 사용자 등급).\n\n### 컴포넌트별 수평 확장 전략\n\nGitLab은 모놀리스지만, 내부적으로 **상태 없는 계층과 상태 있는 계층을 명확히 분리**해 각각 독립적으로 스케일한다.\n\n- **Stateless 앱 계층** (`Puma` 웹, `Sidekiq` 잡, `Workhorse`): 무상태이므로 그냥 노드를 추가하면 선형 확장된다. 부하는 로드밸런서가 분산.\n- **Gitaly (Git 저장)**: 상태가 있으므로 저장소를 **샤딩**해 여러 Gitaly 노드에 분산하고, HA가 필요하면 **Gitaly Cluster + Praefect**로 복제한다.\n- **PostgreSQL**: 쓰기는 primary 1대, 읽기는 다수의 streaming replica로 분산하며 앞단에 **`PgBouncer`**를 둬 커넥션 수를 통제한다(Rails는 커넥션을 많이 여는데 PG는 커넥션당 프로세스 비용이 크기 때문). 대규모에서는 `main`/`ci` 데이터베이스 분해(decomposition)로 부하를 나눈다.\n- **Redis**: 용도별로 인스턴스를 쪼갠다 — 캐시용, Sidekiq 큐용, 공유 상태(예: `Redis Sentinel`로 HA)용을 분리해 한 용도의 폭주가 다른 용도를 죽이지 않게 한다.\n\n### 두 가지 배포 패키징\n\n같은 컴포넌트를 두 방식으로 묶는다.\n\n| 패키징 | 대상 | 특징 |\n|---|---|---|\n| **Omnibus** | VM/베어메탈 self-managed | 모든 컴포넌트를 단일 deb/rpm 패키지로, `gitlab.rb` 한 파일로 설정 |\n| **Cloud Native (Helm Charts)** | Kubernetes | 컴포넌트별 컨테이너·HPA로 오토스케일, GitLab.com SaaS도 GKE 위에서 이 방식 |\n\nGitLab.com 자체는 **GKE(Google Kubernetes Engine)** 위에서 Cloud Native 차트로 운영되며, 동일한 차트를 고객도 쓸 수 있다.\n\n### 트레이드오프\n\n이 접근의 비용은 **복잡한 설정 표면**이다. 마이크로서비스라면 각 서비스가 알아서 스케일하지만, GitLab은 고객에게 \"어떤 컴포넌트를 몇 대로 늘릴지\"를 직접 결정하게 만든다. 그래서 Reference Architecture라는 **검증된 사이징 표**가 제품의 일부가 됐다. 이는 \"모놀리스의 운영 단순성\"과 \"대규모 확장성\"을 동시에 잡으려는 GitLab 특유의 절충이며, 같은 코드 한 벌로 양 극단을 모두 커버한다는 회사 철학의 직접적 결과다."
     }
    ],
    "github": {
@@ -10393,18 +10417,19 @@
      {
       "name": "gitlabhq/gitlabhq",
       "url": "https://github.com/gitlabhq/gitlabhq",
-      "desc": "깃랩 본체의 깃허브 미러 저장소",
+      "desc": "GitLab 본체 Rails 모놀리스의 GitHub 미러",
       "lang": "Ruby",
-      "stars": 24411
+      "stars": 24428
      }
     ]
    },
    "sources": [
-    "https://about.gitlab.com/blog/",
-    "https://gitlab.com/gitlab-org/gitaly"
+    "https://docs.gitlab.com/development/architecture/",
+    "https://gitlab.com/gitlab-org/gitlab-workhorse",
+    "https://docs.gitlab.com/administration/reference_architectures/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "notion",
@@ -10415,43 +10440,52 @@
     "TypeScript",
     "JavaScript",
     "Rust",
-    "Go",
-    "Python"
+    "Python",
+    "Java"
    ],
    "stack": {
     "backend": [
      "Node.js",
      "TypeScript",
      "Rust",
-     "gRPC"
+     "Express/Koa-style monolith",
+     "Apache Spark (Scala/Java)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Electron"
+     "Electron",
+     "React Native",
+     "Slate-style block editor"
     ],
     "data": [
-     "PostgreSQL (sharded)",
-     "Kafka",
-     "Snowflake",
+     "PostgreSQL (96 physical / thousands of logical shards)",
+     "Redis / Memcached",
      "Elasticsearch",
-     "Redis"
+     "Apache Kafka",
+     "Apache Hudi",
+     "Amazon S3",
+     "Snowflake"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Debezium"
+     "Kubernetes (EKS)",
+     "Debezium",
+     "AWS RDS",
+     "CloudFront",
+     "ElastiCache"
     ]
    },
    "architecture": [
-    "Block-based data model",
-    "Sharded multi-tenant",
-    "CDC data lake"
+    "Block-based recursive tree data model",
+    "Sharded multi-tenant PostgreSQL",
+    "In-house CDC data lake (Debezium→Kafka→Hudi→S3)",
+    "Offline-first reactive client with local cache"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    WEB[\"Web App<br/>React TS\"]\n    DESK[\"Desktop<br/>Electron\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>Node.js\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MONO[\"App Backend<br/>Node.js TS\"]\n    PERF[\"Perf Services<br/>Rust Go\"]\n    SEARCH[\"Search<br/>TS\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL Sharded\"]\n    REDIS[\"Redis\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    DBZ[\"CDC<br/>Debezium\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  WEB --> GW\n  DESK --> GW\n  GW -->|gRPC| MONO\n  GW -->|gRPC| PERF\n  MONO --> PG\n  MONO --> REDIS\n  SEARCH --> ES\n  PG --> DBZ\n  DBZ --> KAFKA\n  KAFKA --> SNOW\n  MONO --- K8S\n  PERF --- K8S",
-   "why_language": "프론트·백엔드를 TypeScript(Node.js)로 통일해 풀스택 일관성을 얻었고, 성능 핵심부에 Rust를 도입한다. 데이터·검색은 별도 파이프라인을 둔다.",
-   "why_architecture": "모든 콘텐츠를 '블록' 단위로 모델링한 유연한 데이터 모델이 핵심이며, 폭증하는 PostgreSQL을 샤딩하고 CDC(Debezium)로 데이터 레이크를 구축해 분석·검색을 분리했다.",
-   "summary": "블록 기반 데이터 모델과 PostgreSQL 샤딩·CDC로 확장한 TypeScript 협업툴.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + TypeScript\"]\n    DESK[\"Desktop<br/>Electron\"]\n    MOB[\"Mobile<br/>React Native\"]\n  end\n  subgraph Edge\n    CDN[\"CDN<br/>CloudFront\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n  end\n  subgraph Core\n    API[\"Monolith API<br/>Node.js + TypeScript\"]\n    BLK[\"Block Service<br/>tree + permissions\"]\n    AI[\"Notion AI / RAG<br/>Rust + LLM\"]\n    SRCH[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Storage\n    PG[\"PostgreSQL<br/>96 shards / logical sharding\"]\n    CACHE[\"Cache<br/>Redis + Memcached\"]\n    VEC[\"Vector Index<br/>embeddings\"]\n  end\n  subgraph Streaming\n    DBZ[\"CDC<br/>Debezium\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HUDI[\"Lakehouse<br/>Apache Hudi\"]\n    S3[\"Data Lake<br/>Amazon S3\"]\n    SPARK[\"Processing<br/>Apache Spark\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n  end\n  WEB --> CDN\n  DESK --> CDN\n  MOB --> CDN\n  CDN --> ALB\n  ALB -->|HTTPS| API\n  API --> BLK\n  API --> AI\n  API --> SRCH\n  BLK -->|read/write| PG\n  BLK -->|hot cache| CACHE\n  AI --> VEC\n  AI --> BLK\n  PG -->|WAL| DBZ\n  DBZ -->|change events| KAFKA\n  KAFKA --> HUDI\n  HUDI --> S3\n  S3 --> SPARK\n  SPARK --> SNOW\n  SPARK -->|embeddings| VEC\n  KAFKA -->|index updates| SRCH",
+   "why_language": "Notion의 핵심은 브라우저·데스크톱·모바일에서 동일하게 동작하는 풍부한 에디터이므로, 클라이언트와 Node.js 백엔드를 TypeScript 단일 언어로 통일해 block 모델 타입을 공유하고 풀스택 생산성을 극대화했다. 데이터 레이크의 대규모 배치 처리는 Spark(JVM)와 Python으로, 동기화·AI 등 지연시간이 민감한 핫패스는 Rust로 보강해 모놀리스의 성능 한계를 보완한다.",
+   "why_architecture": "모든 콘텐츠를 부모-자식 관계의 `block`이라는 단일 추상으로 표현하면 페이지·텍스트·데이터베이스·임베드를 같은 재귀 트리로 다룰 수 있어 권한 상속과 동기화가 일관되게 작동한다. 수백억 개로 폭증한 block row를 한 PostgreSQL로는 감당할 수 없어 logical shard 기반 멀티테넌트 샤딩으로 수평 확장했고, 분석·AI 수요는 운영 DB에서 분리하기 위해 Debezium CDC 기반 자체 데이터 레이크로 흡수했다.",
+   "summary": "모든 것을 block 트리로 모델링하고, 샤딩된 PostgreSQL 모놀리스 위에 CDC 데이터 레이크와 Rust 핫패스를 얹은 협업툴 아키텍처",
    "deep_dive": [
     {
      "topic": "Block 데이터 모델 — 모든 것이 block이다",
@@ -10472,6 +10506,18 @@
     {
      "topic": "Block 트리 기반 권한 상속",
      "body": "### 권한도 트리를 따른다\nNotion에서 권한(누가 무엇을 보고 편집할 수 있는가)은 block 트리 구조와 긴밀히 엮여 있다. 핵심 원리는 **상속(inheritance)**이다: 어떤 block에 권한을 명시하지 않으면, 그 권한은 부모 block에서 내려온다. 페이지 안의 문단(block)은 보통 자체 권한을 갖지 않고 페이지의 권한을 따른다. 페이지는 또 그 상위(예: workspace, teamspace, 부모 페이지)의 권한을 따른다.\n\n### 동작 방식\n특정 사용자가 어떤 block에 접근할 수 있는지 판단하려면:\n1. 해당 block에 직접 부여된 권한이 있는지 확인\n2. 없으면 parent 포인터를 따라 위로 올라가며 권한을 상속받음\n3. 명시적 공유(특정 사람/그룹에게 공유), workspace 멤버십, public 링크 등의 규칙을 종합해 최종 접근 권한을 결정\n\n즉 권한 판정은 종종 block 트리를 루트 방향으로 따라 올라가는 traversal을 수반한다.\n\n### 왜 상속 모델인가\n- **단순성**: 페이지를 공유하면 그 안의 모든 콘텐츠가 자동으로 같은 권한을 갖는다. 사용자는 수백 개 block에 일일이 권한을 설정할 필요가 없다.\n- **유연성**: 필요할 때 특정 하위 페이지에만 다른 권한을 부여(override)해 세분화할 수 있다. 상속이 기본, override가 예외다.\n\n### 트레이드오프와 캐싱\n권한이 트리 traversal에 의존하면, 매 요청마다 부모를 거슬러 올라가는 비용이 든다. 깊은 트리에서는 이 경로가 길어질 수 있다. 또 상위 권한이 바뀌면 그 아래 모든 후손의 유효 권한이 영향을 받으므로, 권한 캐시 무효화가 까다롭다(부모 권한 변경 → 서브트리 전체 재평가). Notion은 권한 계산 결과를 캐싱하되, 트리 변경 시 영향 받는 범위를 정확히 무효화해야 한다. 이는 \"직관적이고 관리하기 쉬운 상속 모델\"과 \"권한 평가·무효화의 계산 비용\" 사이의 트레이드오프다. 보안이 걸린 영역이라 정확성이 성능보다 우선이다."
+    },
+    {
+     "topic": "The Great Re-shard — 무중단 32→96 PostgreSQL 재샤딩 마이그레이션",
+     "body": "### 배경\n2021년 Notion은 단일 PostgreSQL 인스턴스가 한계에 도달하자 데이터를 **480개 logical shard**로 쪼개 **32개 물리 인스턴스(인스턴스당 15 shard)**에 분산했다. 샤딩 키는 테넌트 단위인 **workspace ID**이며, 한 workspace에 속한 모든 `block`은 같은 shard에 위치해 조인과 트리 순회가 단일 DB 안에서 끝난다.\n\n하지만 2년 만에 데이터·트래픽이 다시 폭증하면서 일부 인스턴스의 CPU·연결 수·디스크가 위험 수위에 닿았다. 그래서 2023년 **물리 인스턴스를 32 → 96개**로 늘리는 \"The Great Re-shard\"를 단행했다.\n\n### 핵심 설계 결정\n- **logical shard 수는 그대로 두고 물리 분산만 바꿨다.** 480개 logical shard를 96 인스턴스에 **인스턴스당 5 shard**로 재배치 — 애플리케이션의 라우팅 로직과 shard 키 계산은 거의 그대로 두고, \"어느 logical shard가 어느 물리 호스트에 사는가\"라는 매핑만 바꾸는 전략이다. 데이터 재해싱(re-hashing)을 피해 위험을 최소화했다.\n- 처음엔 PostgreSQL **logical replication**으로 데이터를 새 인스턴스로 복제하려 했으나, 초기 스냅샷이 너무 느리고 대용량에서 백로그가 쌓이는 문제를 만났다.\n\n### 마이그레이션 메커니즘\n1. **데이터 복제**: `pg_dump`/병렬 복사로 초기 스냅샷을 새 인스턴스에 적재하고, 이후 변경분은 logical replication slot으로 따라잡게 했다. 복제 지연을 줄이기 위해 인덱스를 나중에 생성하는 등 튜닝을 적용했다.\n2. **검증**: 원본/대상 shard의 row 수와 체크섬을 비교해 데이터 정합성을 확인했다.\n3. **컷오버(cutover)**: 짧은 쓰기 차단 구간 동안 애플리케이션의 shard→host 매핑을 갱신하고, 복제 지연이 0에 수렴한 순간 트래픽을 새 인스턴스로 전환했다. 전체 다운타임은 수 분 수준으로 억제했다.\n\n### 결과·트레이드오프\n- 인스턴스당 부하가 분산되어 CPU 여유와 향후 성장 헤드룸을 확보했다.\n- logical shard를 넉넉히(480개) 미리 만들어 둔 과거 결정 덕분에 \"물리만 늘리면 되는\" 저위험 경로가 가능했다 — **샤딩 설계 시 logical shard를 물리보다 훨씬 많게 잡아두는 것**이 미래 확장의 핵심 레버리지였다는 교훈."
+    },
+    {
+     "topic": "자체 데이터 레이크 구축 — Fivetran/Snowflake에서 Debezium→Kafka→Hudi→S3로",
+     "body": "### 왜 자체 구축했나\n초기 Notion은 운영 PostgreSQL의 변경분을 **Fivetran** 커넥터로 뽑아 **Snowflake**에 적재해 분석을 처리했다. 그러나 block 데이터가 6~12개월마다 두 배로 늘면서 두 가지 문제가 터졌다.\n- **update 중심 워크로드**: Notion의 데이터는 새 row 삽입보다 기존 block의 **잦은 수정**이 압도적이다. Snowflake와 Fivetran은 append-heavy에 최적화돼 있어, 끊임없는 upsert를 재적재하는 비용·지연이 폭발했다.\n- **커넥터 수 폭증**: 480 shard마다 커넥터가 필요해 운영·비용이 선형으로 늘었다.\n\n### 새 아키텍처\n```\nPostgres WAL → Debezium → Kafka → (Hudi writer / Spark) → S3 (Apache Hudi 테이블) → Spark/Trino → 다운스트림(Snowflake, AI)\n```\n- **Debezium**이 각 PostgreSQL shard의 WAL을 읽어 **row-level change event(CDC)**를 만들고 **Kafka**로 흘려보낸다. shard 하나당 토픽을 매핑한다.\n- **Apache Hudi**를 S3 위의 저장 포맷으로 채택했다. Hudi는 **upsert와 incremental processing**을 1급으로 지원해, update가 지배적인 Notion 워크로드에 정확히 맞았다. (Iceberg/Delta 대신 Hudi를 고른 핵심 이유.)\n- **Spark**가 메인 처리 엔진으로, 원시 CDC를 정제·비정규화(denormalize)하고, block 트리를 분석 친화적 형태로 펼친다.\n\n### 효과\n- Snowflake/Fivetran 대비 **연간 백만 달러 규모의 비용 절감**과 적재 지연(데이터 신선도)을 시간 단위에서 분 단위 가까이로 단축했다.\n- 이 레이크는 단순 분석을 넘어 **Notion AI의 임베딩·검색 인덱스 빌드**의 원천 데이터로 재활용된다 — 운영 DB를 건드리지 않고 AI 파이프라인에 대규모 텍스트를 공급하는 통로가 됐다.\n\n### 트레이드오프\n- Hudi 운영(컴팩션, 클러스터링, 파일 사이즈 관리)과 Spark 튜닝이라는 운영 복잡도를 떠안았지만, 폭증하는 데이터 규모에서 매니지드 SaaS보다 단위경제가 우월하다는 판단이었다. Snowflake는 폐기 대신 **다운스트림 소비자**로 남겨 기존 BI 자산을 보존했다."
+    },
+    {
+     "topic": "Notion AI와 RAG 파이프라인 — block 데이터를 LLM에 연결하기",
+     "body": "### 문제 정의\nNotion AI의 \"Q&A/Enterprise Search\"는 사용자의 워크스페이스 전체(수천~수십만 페이지)에서 질문에 답해야 한다. 모든 텍스트를 프롬프트에 넣을 수 없으므로 **RAG(Retrieval-Augmented Generation)** 구조가 필수다.\n\n### 인덱싱 파이프라인 (오프라인)\n1. **소스**: 운영 DB의 block을 직접 긁지 않고, 위에서 설명한 **데이터 레이크(S3/Hudi)**의 CDC 스트림을 활용한다. block이 수정될 때마다 Kafka 이벤트가 흘러 인덱스를 **증분 갱신**한다.\n2. **청킹(chunking)**: block 트리를 의미 단위로 잘라 텍스트 chunk를 만든다. block 모델 자체가 구조화돼 있어(제목·문단·리스트 등) 자연스러운 청킹 경계를 제공한다.\n3. **임베딩**: 각 chunk를 embedding 모델로 벡터화해 **vector index**에 적재한다. 이때 원본 block의 **권한(permission) 메타데이터**를 함께 저장하는 것이 핵심 — 검색 결과가 권한 경계를 절대 넘지 않도록 한다.\n\n### 질의 파이프라인 (온라인)\n1. 사용자 질문을 임베딩 → vector index에서 **유사 chunk를 retrieval**.\n2. **권한 필터링**: 검색 후보를 사용자가 실제 접근 가능한 block으로 후처리 필터링한다. block 트리의 권한 상속 모델이 여기서 그대로 재사용된다 — AI라고 해서 권한 모델을 우회하지 않는다.\n3. 살아남은 chunk를 컨텍스트로 묶어 **LLM(Anthropic Claude, OpenAI 등 멀티 프로바이더)**에 프롬프트로 전달, 출처(citation) 링크와 함께 답변을 생성한다.\n\n### 엔지니어링 결정·트레이드오프\n- **지연시간이 민감한 경로는 Rust로**: 검색·후처리·스트리밍 응답 등 핫패스를 Node.js 모놀리스에서 떼어내 Rust 서비스로 운영하는 식으로 tail latency를 관리한다.\n- **신선도 vs 비용**: 모든 편집을 실시간 재임베딩하면 비용이 폭발하므로, CDC 기반 증분 인덱싱과 배치 임베딩을 혼합해 \"충분히 최신\" 수준의 신선도와 비용을 절충한다.\n- **권한이 1급 제약**: RAG에서 가장 위험한 실패는 \"못 보는 문서를 AI가 요약해 노출\"하는 것이다. Notion은 검색 단계와 생성 단계 양쪽에서 권한을 강제해 데이터 누출을 막는다."
     }
    ],
    "github": {
@@ -10480,17 +10526,19 @@
      {
       "name": "makenotion/notion-sdk-js",
       "url": "https://github.com/makenotion/notion-sdk-js",
-      "desc": "노션 공식 자바스크립트 API 클라이언트 SDK",
+      "desc": "공식 Notion API용 JavaScript/TypeScript SDK",
       "lang": "TypeScript",
-      "stars": 5610
+      "stars": 5611
      }
     ]
    },
    "sources": [
-    "https://www.notion.so/blog/topic/tech"
+    "https://www.notion.so/blog/sharding-postgres-at-notion",
+    "https://www.notion.so/blog/the-great-re-shard",
+    "https://www.notion.so/blog/building-and-scaling-notions-data-lake"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "slack",
