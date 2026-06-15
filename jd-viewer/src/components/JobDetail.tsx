@@ -69,7 +69,7 @@ export function JobDetail({ job, onClose }: Props) {
               href={job.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-(--color-accent) text-black text-sm font-medium hover:opacity-90"
+              className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-(--color-accent) text-(--color-on-accent) text-sm font-medium hover:opacity-90"
             >
               원본 공고 열기 ↗
             </a>
@@ -129,7 +129,7 @@ export function JobDetail({ job, onClose }: Props) {
                 href={job.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-(--color-accent) text-black font-medium hover:opacity-90"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-(--color-accent) text-(--color-on-accent) font-medium hover:opacity-90"
               >
                 원본 공고 열기 ↗
               </a>

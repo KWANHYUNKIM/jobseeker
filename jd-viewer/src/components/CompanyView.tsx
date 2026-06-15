@@ -5,12 +5,6 @@ import { Loader, ErrorState, EmptyState, SidePanel, MobileBar } from './ui'
 import { ROLE_COLORS } from '../lib/classify'
 import type { CompanyStack, CareerGuide } from '../types'
 
-const SIZE_COLOR: Record<string, string> = {
-  대기업: '#f472b6',
-  중견기업: '#fbbf24',
-  중소기업: '#60a5fa',
-}
-
 const CAT_COLOR: Record<string, string> = {
   언어: '#03C75A',
   백엔드: '#60a5fa',
@@ -106,10 +100,7 @@ export function CompanyView({
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-(--color-text) font-medium truncate">{c.name}</span>
-                  <span
-                    className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0"
-                    style={{ background: (SIZE_COLOR[c.size] ?? '#60a5fa') + '22', color: SIZE_COLOR[c.size] ?? '#60a5fa' }}
-                  >
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0 bg-(--color-text)/10 text-(--color-text)">
                     {c.size}
                   </span>
                   <span className="ml-auto text-[11px] text-(--color-muted) shrink-0">{c.posting_count}건</span>
@@ -145,10 +136,7 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
       {/* 헤더 */}
       <div className="flex items-center flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-(--color-text)">{c.name}</h1>
-        <span
-          className="text-xs px-2 py-0.5 rounded-full"
-          style={{ background: (SIZE_COLOR[c.size] ?? '#60a5fa') + '22', color: SIZE_COLOR[c.size] ?? '#60a5fa' }}
-        >
+        <span className="text-xs px-2 py-0.5 rounded-full bg-(--color-text)/10 text-(--color-text)">
           {c.size}
         </span>
         <span className="text-xs text-(--color-muted)">채용공고 {c.posting_count}건</span>

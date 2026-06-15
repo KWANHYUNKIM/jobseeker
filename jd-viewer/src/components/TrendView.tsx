@@ -252,7 +252,7 @@ function RelationDetail({ t }: { t: TechRelation }) {
 
 function ModeBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button onClick={onClick} className={`px-3 py-1 text-xs font-medium transition ${active ? 'bg-(--color-accent) text-black' : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'}`}>
+    <button onClick={onClick} className={`px-3 py-1 text-xs font-medium transition ${active ? 'bg-(--color-accent) text-(--color-on-accent)' : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'}`}>
       {children}
     </button>
   )

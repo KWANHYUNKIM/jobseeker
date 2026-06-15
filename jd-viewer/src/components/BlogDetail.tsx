@@ -187,7 +187,7 @@ function ViewBtn({
     <button
       onClick={onClick}
       className={`px-3 py-1 transition ${
-        active ? 'bg-(--color-accent) text-black font-medium' : 'text-(--color-text) hover:bg-(--color-bg)'
+        active ? 'bg-(--color-accent) text-(--color-on-accent) font-medium' : 'text-(--color-text) hover:bg-(--color-bg)'
       }`}
     >
       {children}

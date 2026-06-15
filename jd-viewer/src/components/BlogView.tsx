@@ -252,7 +252,7 @@ function Chip({
       onClick={onClick}
       className={`px-2 py-1 text-xs rounded transition border ${
         active
-          ? 'bg-(--color-accent) text-black border-(--color-accent) font-medium'
+          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
           : 'bg-(--color-bg) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
       }`}
     >

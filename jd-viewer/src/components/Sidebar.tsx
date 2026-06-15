@@ -132,7 +132,7 @@ function Chip({
       className={
         'px-2 py-1 rounded text-xs border transition ' +
         (active
-          ? 'bg-(--color-accent) text-black border-(--color-accent)'
+          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent)'
           : 'border-(--color-border) text-(--color-muted) hover:text-(--color-text) hover:border-(--color-accent)')
       }
     >

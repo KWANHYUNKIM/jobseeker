@@ -257,7 +257,7 @@ function TechPanel({
           <ol className="space-y-4">
             {curriculum.topics.map((t, i) => (
               <li key={t.topic} className="relative pl-7">
-                <span className="absolute left-0 top-0 flex items-center justify-center w-5 h-5 rounded-full bg-(--color-accent) text-black text-[11px] font-bold">
+                <span className="absolute left-0 top-0 flex items-center justify-center w-5 h-5 rounded-full bg-(--color-accent) text-(--color-on-accent) text-[11px] font-bold">
                   {i + 1}
                 </span>
                 <div className="flex items-baseline flex-wrap gap-x-2">

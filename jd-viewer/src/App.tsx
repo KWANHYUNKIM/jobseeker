@@ -193,7 +193,7 @@ function TabButton({
       onClick={onClick}
       className={`px-3 sm:px-4 py-1.5 text-sm rounded transition whitespace-nowrap shrink-0 ${
         active
-          ? 'bg-(--color-accent) text-black font-medium'
+          ? 'bg-(--color-accent) text-(--color-on-accent) font-medium'
           : 'text-(--color-text) hover:bg-(--color-bg) border border-transparent hover:border-(--color-border)'
       }`}
     >
@@ -215,7 +215,7 @@ function ModeBtn({
     <button
       onClick={onClick}
       className={`px-3 py-1 text-xs font-medium transition whitespace-nowrap ${
-        active ? 'bg-(--color-accent) text-black' : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'
+        active ? 'bg-(--color-accent) text-(--color-on-accent)' : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'
       }`}
     >
       {children}

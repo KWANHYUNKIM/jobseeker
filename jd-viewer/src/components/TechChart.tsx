@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -6,7 +7,32 @@ interface Props {
   highlight: Set<string>
 }
 
+// 테마 변수를 런타임에 읽어 차트에 적용(SVG 속성은 var() 호환이 불안정).
+// themechange 이벤트로 다크/라이트 전환 시 재렌더.
+function useThemeColors() {
+  const read = () => {
+    const s = getComputedStyle(document.documentElement)
+    const v = (n: string) => s.getPropertyValue(n).trim()
+    return {
+      border: v('--color-border'),
+      muted: v('--color-muted'),
+      panel: v('--color-panel'),
+      text: v('--color-text'),
+      accent: v('--color-accent'),
+    }
+  }
+  const [c, setC] = useState(read)
+  useEffect(() => {
+    const on = () => setC(read())
+    window.addEventListener('themechange', on)
+    return () => window.removeEventListener('themechange', on)
+  }, [])
+  return c
+}
+
 export function TechChart({ data, onPick, highlight }: Props) {
+  const c = useThemeColors()
+
   if (data.length === 0) {
     return (
       <div className="px-4 pb-2 text-xs text-(--color-muted)">
@@ -25,24 +51,24 @@ export function TechChart({ data, onPick, highlight }: Props) {
       </div>
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={top} margin={{ top: 4, right: 8, left: -16, bottom: 56 }}>
-          <CartesianGrid stroke="#2a2d36" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke={c.border} strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="name"
             angle={-45}
             textAnchor="end"
             interval={0}
-            tick={{ fill: '#9aa0aa', fontSize: 11 }}
-            stroke="#2a2d36"
+            tick={{ fill: c.muted, fontSize: 11 }}
+            stroke={c.border}
           />
-          <YAxis tick={{ fill: '#9aa0aa', fontSize: 11 }} stroke="#2a2d36" />
+          <YAxis tick={{ fill: c.muted, fontSize: 11 }} stroke={c.border} />
           <Tooltip
-            cursor={{ fill: 'rgba(192,132,252,0.1)' }}
+            cursor={{ fill: c.text, fillOpacity: 0.06 }}
             contentStyle={{
-              background: '#15171d',
-              border: '1px solid #2a2d36',
+              background: c.panel,
+              border: `1px solid ${c.border}`,
               borderRadius: 4,
               fontSize: 12,
-              color: '#e6e7eb',
+              color: c.text,
             }}
           />
           <Bar
@@ -66,7 +92,8 @@ export function TechChart({ data, onPick, highlight }: Props) {
                   y={y}
                   width={width}
                   height={height}
-                  fill={isHi ? '#03C75A' : '#1f7a4d'}
+                  fill={c.accent}
+                  fillOpacity={isHi ? 1 : 0.55}
                   rx={2}
                 />
               )

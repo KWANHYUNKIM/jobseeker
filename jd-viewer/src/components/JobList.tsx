@@ -237,7 +237,7 @@ function PgBtn({
       className={
         'min-w-[2rem] px-2 py-1 text-xs rounded border transition ' +
         (active
-          ? 'bg-(--color-accent) text-black border-(--color-accent) font-medium'
+          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
           : disabled
             ? 'border-(--color-border) text-(--color-muted)/50 cursor-not-allowed'
             : 'border-(--color-border) text-(--color-text) hover:border-(--color-accent)')

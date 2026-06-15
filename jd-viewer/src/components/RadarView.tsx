@@ -503,7 +503,7 @@ function ModeBtn({
       onClick={onClick}
       className={`px-3 py-1 text-xs font-medium transition ${
         active
-          ? 'bg-(--color-accent) text-black'
+          ? 'bg-(--color-accent) text-(--color-on-accent)'
           : 'bg-(--color-bg) text-(--color-muted) hover:text-(--color-text)'
       }`}
     >
@@ -849,7 +849,7 @@ function InterviewView({ interview }: { interview: Interview }) {
         {interview.process.map((s, i) => (
           <li key={i} className="flex gap-3 pb-3 last:pb-0">
             <div className="flex flex-col items-center">
-              <div className="w-6 h-6 rounded-full bg-(--color-accent) text-black text-xs font-bold flex items-center justify-center shrink-0">
+              <div className="w-6 h-6 rounded-full bg-(--color-accent) text-(--color-on-accent) text-xs font-bold flex items-center justify-center shrink-0">
                 {i + 1}
               </div>
               {i < interview.process.length - 1 && (
@@ -960,7 +960,7 @@ function DebateView({ debate, idKey }: { debate: Debate; idKey: string }) {
                 onClick={() => setTab(i)}
                 className={`px-2.5 py-1 text-xs rounded border transition ${
                   tab === i
-                    ? 'bg-(--color-accent) text-black border-(--color-accent) font-medium'
+                    ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
                     : 'bg-(--color-panel) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
                 }`}
               >
@@ -1147,7 +1147,7 @@ function Chip({
       onClick={onClick}
       className={`px-2 py-1 text-xs rounded transition border ${
         active
-          ? 'bg-(--color-accent) text-black border-(--color-accent) font-medium'
+          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
           : 'bg-(--color-bg) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'
       }`}
     >

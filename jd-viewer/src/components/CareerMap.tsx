@@ -41,7 +41,7 @@ function ViewButton({
       onClick={onClick}
       className={`text-xs px-3 py-1 rounded transition ${
         active
-          ? 'bg-(--color-accent) text-black font-medium'
+          ? 'bg-(--color-accent) text-(--color-on-accent) font-medium'
           : 'text-(--color-text) hover:bg-(--hover) border border-(--color-border)'
       }`}
     >
