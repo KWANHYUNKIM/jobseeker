@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T00:10:38",
+ "generated_at": "2026-06-16T01:46:39",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 43,
+ "refined": 45,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1808,6 +1808,10 @@
       "count": 2
      },
      {
+      "name": "MySQL + Vitess",
+      "count": 2
+     },
+     {
       "name": "Redis",
       "count": 2
      },
@@ -1816,15 +1820,11 @@
       "count": 1
      },
      {
+      "name": "AWS S3",
+      "count": 1
+     },
+     {
       "name": "Azure Blob Storage",
-      "count": 1
-     },
-     {
-      "name": "ClickHouse",
-      "count": 1
-     },
-     {
-      "name": "Edgestore",
       "count": 1
      }
     ],
@@ -1836,6 +1836,10 @@
      {
       "name": "AWS",
       "count": 4
+     },
+     {
+      "name": "Consul",
+      "count": 2
      },
      {
       "name": "Atlas/Watchman CI",
@@ -1863,10 +1867,6 @@
      },
      {
       "name": "Bitbucket Pipelines",
-      "count": 1
-     },
-     {
-      "name": "Cloud Native GitLab Helm Charts",
       "count": 1
      }
     ]
@@ -3139,6 +3139,10 @@
      "count": 1
     },
     {
+     "name": "Go",
+     "count": 1
+    },
+    {
      "name": "Java",
      "count": 1
     },
@@ -3158,7 +3162,15 @@
    "stack": {
     "backend": [
      {
+      "name": "Akka/Reactive",
+      "count": 1
+     },
+     {
       "name": "AWS Lambda",
+      "count": 1
+     },
+     {
+      "name": "gRPC",
       "count": 1
      },
      {
@@ -3182,9 +3194,21 @@
      {
       "name": "React",
       "count": 1
+     },
+     {
+      "name": "SmartThings One UI",
+      "count": 1
      }
     ],
     "data": [
+     {
+      "name": "Amazon Aurora/MySQL",
+      "count": 1
+     },
+     {
+      "name": "Amazon S3",
+      "count": 1
+     },
      {
       "name": "DynamoDB",
       "count": 1
@@ -3198,7 +3222,7 @@
       "count": 1
      },
      {
-      "name": "MySQL",
+      "name": "Redis/ElastiCache",
       "count": 1
      }
     ],
@@ -3208,18 +3232,30 @@
       "count": 1
      },
      {
+      "name": "AWS IoT Core/MQTT",
+      "count": 1
+     },
+     {
       "name": "Kubernetes",
       "count": 1
      },
      {
-      "name": "사내 클라우드",
+      "name": "Terraform",
+      "count": 1
+     },
+     {
+      "name": "사내 Samsung Cloud",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "IoT 클라우드",
+     "name": "Edge-Cloud 하이브리드",
+     "count": 1
+    },
+    {
+     "name": "IoT 클라우드 플랫폼",
      "count": 1
     },
     {
@@ -10546,7 +10582,7 @@
    "country": "US",
    "domain": "협업툴",
    "languages": [
-    "PHP/Hack",
+    "Hack",
     "JavaScript",
     "TypeScript",
     "Java",
@@ -10554,36 +10590,43 @@
    ],
    "stack": {
     "backend": [
-     "Hack (HHVM)",
+     "Hack on HHVM (webapp monolith)",
      "Java services",
-     "gRPC"
+     "gRPC",
+     "Memcached",
+     "Redis"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Electron"
+     "Electron (desktop)",
+     "Swift / Kotlin (mobile)"
     ],
     "data": [
-     "MySQL (Vitess)",
+     "MySQL + Vitess (sharded)",
      "Kafka",
-     "Solr",
-     "Flannel cache"
+     "Solr (검색)",
+     "Flannel (edge cache)",
+     "AWS S3"
     ],
     "infra": [
      "AWS",
-     "Envoy",
-     "Bedrock (k8s)"
+     "Envoy (edge + service mesh)",
+     "Consul (service discovery)",
+     "Bedrock (Kubernetes)",
+     "Nebula (overlay network)"
     ]
    },
    "architecture": [
-    "Service-oriented",
-    "Real-time messaging",
-    "Cellular architecture"
+    "Hack 모놀리스 + Java 마이크로서비스 하이브리드",
+    "WebSocket 기반 실시간 메시징",
+    "Cellular architecture (AZ 단위 격리)",
+    "Kafka 기반 비동기 Job Queue"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    WEB[\"Web App<br/>React TS\"]\n    DESK[\"Desktop<br/>Electron\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    EDGE[\"Edge Proxy<br/>Envoy\"]\n    FLANNEL[\"Edge Cache<br/>Flannel\"]\n  end\n  subgraph Core[\"Core Services\"]\n    WEBAPP[\"Webapp<br/>Hack HHVM\"]\n    RTS[\"Realtime<br/>Java\"]\n    SVC[\"Services<br/>Go Java\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"MySQL Vitess\"]\n    SOLR[\"Search<br/>Solr\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    JOBQ[\"Job Queue<br/>Kafka\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    BEDROCK[\"K8s Platform<br/>Bedrock\"]\n  end\n  WEB --> EDGE\n  DESK -->|WebSocket| RTS\n  EDGE --> FLANNEL\n  FLANNEL --> WEBAPP\n  WEBAPP -->|gRPC| SVC\n  WEBAPP --> RTS\n  WEBAPP --> VITESS\n  SVC --> SOLR\n  WEBAPP -->|publish| KAFKA\n  KAFKA --> JOBQ\n  WEBAPP --- BEDROCK\n  SVC --- BEDROCK",
-   "why_language": "초기 PHP 코드베이스를 Hack(HHVM)으로 타입 안정성을 더해 진화시켰고, 성능 핵심 서비스는 Java로 분리했다. 데스크톱 앱은 Electron+React로 통일한다.",
-   "why_architecture": "실시간 메시징 일관성을 위해 채널 단위 라우팅과 Flannel 엣지 캐시를 운영하고, Vitess로 MySQL을 샤딩한다. 장애 격리를 위해 셀룰러(가용영역 단위) 아키텍처를 도입했다.",
-   "summary": "Hack/HHVM 모노리스와 셀룰러 아키텍처로 실시간 협업 메시징을 안정 운영.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web/Desktop<br/>React + TypeScript + Electron\"]\n    MOB[\"Mobile<br/>Swift / Kotlin\"]\n  end\n  subgraph Edge[\"Edge / Real-time\"]\n    ENVOY[\"Edge Proxy<br/>Envoy\"]\n    FLANNEL[\"Edge Cache<br/>Flannel\"]\n    CS[\"Channel Server<br/>Java WebSocket\"]\n  end\n  subgraph Core[\"Core Services\"]\n    WEBAPP[\"Webapp Monolith<br/>Hack on HHVM\"]\n    SVC[\"Microservices<br/>Java + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Job Queue Log<br/>Kafka\"]\n    REDIS[\"Job Scheduler<br/>Redis\"]\n    JQ[\"Job Workers<br/>Hack\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"MySQL + Vitess<br/>sharded\"]\n    SOLR[\"Search Index<br/>Solr\"]\n    S3[\"Object Store<br/>AWS S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    BEDROCK[\"Compute Platform<br/>Bedrock Kubernetes\"]\n    CONSUL[\"Service Discovery<br/>Consul\"]\n    NEBULA[\"Overlay Network<br/>Nebula\"]\n  end\n  WEB --> ENVOY\n  MOB --> ENVOY\n  WEB -->|WebSocket| CS\n  ENVOY --> FLANNEL\n  ENVOY --> WEBAPP\n  FLANNEL --> WEBAPP\n  WEBAPP -->|gRPC| SVC\n  WEBAPP --> VITESS\n  WEBAPP --> KAFKA\n  REDIS --> JQ\n  KAFKA --> JQ\n  JQ --> VITESS\n  CS --> KAFKA\n  WEBAPP --> SOLR\n  SVC --> VITESS\n  WEBAPP --> S3\n  SVC --> CONSUL\n  BEDROCK --> SVC\n  NEBULA --> SVC",
+   "why_language": "Slack은 초기 PHP 코드베이스를 버리지 않고 점진적으로 Hack(HHVM)으로 옮겨, 동적 언어의 빠른 개발 속도를 유지하면서 점진적 타입 검사·성능·동시성을 확보했다. 실시간 메시지 fan-out과 WebSocket 연결 유지처럼 동시성이 핵심인 경로는 JVM(Java) 서비스로 분리했고, 네트워킹·인프라 도구(Nebula 등)는 단일 바이너리 배포와 성능 때문에 Go를 쓴다. 클라이언트는 대규모 워크스페이스를 다루는 복잡한 UI 상태 관리를 위해 React + TypeScript로 통일했다.",
+   "why_architecture": "수억 줄 규모의 Hack 모놀리스(webapp)를 한 번에 쪼개는 대신, 실시간 메시징·검색·플로우 같은 고부하 경로만 Java/gRPC 마이크로서비스로 떼어내는 하이브리드 전략을 택해 마이그레이션 리스크를 낮췄다. 메시지 전송은 사용자에게 즉각 응답하고 무거운 작업은 Kafka Job Queue로 비동기 처리해 지연을 숨긴다. 2021년 대규모 장애 이후에는 한 가용 영역(AZ)의 문제가 전체로 번지지 않도록 트래픽을 셀(cell) 단위로 격리하고 Envoy로 드레이닝하는 Cellular architecture를 도입했다.",
+   "summary": "PHP에서 물려받은 Hack 모놀리스를 Java/gRPC 서비스와 Kafka 비동기 큐로 둘러싸고, Envoy·Vitess·셀 격리로 실시간 협업 규모를 버티는 하이브리드 아키텍처",
    "deep_dive": [
     {
      "topic": "Hack/HHVM — Slack 백엔드의 언어 선택",
@@ -10604,39 +10647,67 @@
     {
      "topic": "Cellular architecture — 가용 영역 단위 격리",
      "body": "### 동기: AWS 가용 영역 장애 격리\nSlack은 AWS 위에서 운영되며, 과거 단일 가용 영역(Availability Zone, AZ)의 회색 장애(gray failure)가 시스템 전체로 번지는 사고를 겪었다. 한 AZ가 완전히 죽는 게 아니라 \"느려지거나 일부만 실패\"하는 회색 장애는 탐지·대응이 어렵고, 다른 AZ의 정상 자원까지 묶어버린다. 이를 근본적으로 막기 위해 Slack은 `cellular architecture`로 전환했다.\n\n### cell이란\n핵심 아이디어는 인프라를 AZ 경계에 맞춘 독립적 `cell`들로 나누는 것이다.\n- 각 cell은 자체적으로 요청을 끝까지 처리할 수 있는 (가능한 한) 자족적 단위다 — 서비스, 캐시, 연결 종단 등을 포함\n- **cell 내부에서 트래픽이 완결**되도록 설계해, 한 cell(=한 AZ)의 문제가 다른 cell로 전파되지 않게 한다. cross-AZ 의존을 최소화하는 것이 핵심\n- AZ에 회색 장애가 감지되면 해당 cell로 가던 트래픽을 **건강한 cell들로 빠르게 drain(우회)**한다. 망가진 AZ를 격리·차단하는 것이다\n\n### siloing과 트래픽 라우팅\nSlack은 요청이 가능한 한 한 AZ 안에서 처리되도록 트래픽을 \"siloing\"한다. 정상 시에는 cross-AZ 호출을 줄여 지연·비용을 낮추고, 장애 시에는 문제 AZ를 통째로 우회한다. 이 우회는 사람의 수동 개입보다 빠르게, 가능한 한 자동화된 메커니즘으로 작동해야 한다.\n\n### 트레이드오프\ncellular architecture는 강력한 장애 격리(blast radius 축소)를 주지만 대가가 있다:\n- **복잡성**: 트래픽 라우팅, cell별 용량 관리, 상태 있는 시스템(예: WebSocket 연결, DB)의 cell 정합성이 까다롭다\n- **자원 효율**: cell 간 자원을 자유롭게 공유하지 못하므로, 각 cell에 여유 용량(headroom)을 둬야 해 활용률이 다소 낮아진다\n\n그럼에도 Slack은 \"한 AZ의 회색 장애가 전사 장애가 되는 것\"이 사업적으로 훨씬 치명적이라 판단해 이 트레이드오프를 택했다. 큰 blast radius를 작은 cell 단위로 쪼개, 장애를 가두고 빠르게 우회하는 복원력 중심 설계다."
+    },
+    {
+     "topic": "비동기 작업 처리 — Kafka 기반 Job Queue 재설계",
+     "body": "### 왜 Job Queue가 핵심인가\nSlack에서 사용자가 메시지를 보내면 webapp(Hack)은 거의 즉시 `200`을 돌려주지만, 그 뒤에는 수많은 후속 작업이 따라붙는다. 링크 언펄링(unfurl), 푸시·이메일 알림, 검색 색인 갱신, 봇/슬래시 커맨드 호출, 캘린더 연동 등은 모두 **비동기 Job**으로 떨어진다. 피크 시 초당 수만~수십만 건의 Job이 enqueue되며, 이 큐가 막히면 알림 지연·검색 지연 같은 형태로 사용자 체감 품질이 무너진다.\n\n### 기존 Redis 큐의 한계\n초기 구조는 **Redis**를 큐 저장소로 쓰는 방식이었다. 작업을 Redis에 넣고 워커가 꺼내 처리했는데, 두 가지 구조적 문제가 있었다.\n- **메모리 바운드**: Redis는 인메모리라서 큐가 밀리면(소비가 생산을 못 따라가면) 메모리가 가득 차고, 그 순간 enqueue 자체가 실패해 장애가 연쇄됐다.\n- **헤드 오브 라인 블로킹**: 한 종류의 느린 Job이 큐를 점유하면 빠른 Job까지 같이 굶었다. 중복 제거(dedupe) 로직도 Redis 위에서 직접 구현해 복잡했다.\n\n### Kafka + Redis 하이브리드로의 전환\nSlack은 Redis를 들어내지 않고 **앞단에 Kafka를 끼워 넣는** 방식으로 재설계했다. 핵심 컴포넌트는 다음과 같다.\n\n| 컴포넌트 | 역할 |\n|---|---|\n| `Kafkagate` | webapp이 Job을 던지는 얇은 프록시. Kafka 프로듀서를 추상화해 enqueue 지연을 일정하게 유지 |\n| `Kafka` | Job의 **durable한 커밋 로그**. 디스크 기반이라 소비가 밀려도 데이터가 사라지지 않음 |\n| `JQ Relay` | Kafka에서 Job을 읽어 실행 직전 단계인 Redis로 옮기는 중계자 |\n| `Redis` | 스케줄링·중복 제거·즉시 실행 대상 관리를 담당하는 가까운 버퍼 |\n| Job Workers(Hack) | 실제 Job 핸들러를 실행하는 워커 풀 |\n\n흐름은 **webapp → Kafkagate → Kafka → JQ Relay → Redis → Workers** 다. Kafka가 \"무한대에 가까운\" 완충 디스크 버퍼 역할을 해서, 소비가 일시적으로 느려져도 enqueue가 죽지 않는다(백프레셔를 디스크가 흡수). Redis는 여전히 빠른 스케줄링·dedupe 레이어로 남되, 더 이상 내구성의 단일 지점이 아니다.\n\n### 얻은 것\n- **격리성**: Job 타입별로 Kafka 토픽/파티션과 워커 풀을 나눠, 느린 Job이 빠른 Job을 굶기는 문제를 완화.\n- **재생(replay) 가능**: Kafka 로그가 남아 있어 워커 버그로 잘못 처리된 Job을 되돌려 재실행할 수 있다.\n- **운영 가시성**: 파티션 lag으로 큐 적체를 정량 측정 가능.\n\n트레이드오프는 명확하다 — 컴포넌트가 늘어 운영 복잡도(Kafka 클러스터 관리, relay 튜닝)가 올라갔지만, \"큐가 메모리 한계로 터지는\" 클래스의 장애를 구조적으로 제거한 것이 더 큰 이득이었다."
+    },
+    {
+     "topic": "메시지 검색 — Solr 기반 실시간 색인과 권한 인지 랭킹",
+     "body": "### 검색이 어려운 이유: 권한 경계\nSlack 검색의 본질적 난점은 텍스트 매칭이 아니라 **ACL(접근 권한)**이다. 같은 워크스페이스라도 사용자는 자신이 속한 채널·DM의 메시지만 볼 수 있고, Enterprise Grid에서는 워크스페이스 경계까지 얽힌다. 따라서 검색은 \"질의에 맞는 문서\"가 아니라 \"이 사용자가 **볼 권한이 있는** 문서 중 질의에 맞는 것\"을 실시간으로 좁혀야 한다.\n\n### 색인 파이프라인\n메시지가 들어오면 webapp이 이벤트를 발생시키고, 이는 비동기 Job(앞의 Job Queue)을 거쳐 **검색 인덱서**로 흘러간다. 색인 백엔드는 **Apache Solr**(Lucene 기반)를 샤딩해 쓴다.\n- 메시지는 워크스페이스(팀) 단위로 샤드에 분산 색인되어, 한 팀의 검색이 다른 팀 샤드를 건드리지 않게 한다.\n- 거의 **실시간 색인**을 목표로 해서, 방금 보낸 메시지가 곧바로 검색에 잡히도록 enqueue→index 지연을 최소화한다.\n\n### 질의 처리 — 2단계 좁히기\n검색 요청이 오면 대략 다음 순서를 밟는다.\n1. **권한 해석**: 해당 사용자가 접근 가능한 채널/대화 집합을 먼저 계산한다. 이 정보는 webapp/캐시 계층에서 얻으며, Solr 질의에 필터로 주입된다.\n2. **Solr 질의 + 랭킹**: 텍스트 매칭 점수에 더해 **최신성(recency)**, 작성자/채널과의 친밀도, 멘션 여부 같은 시그널을 섞어 재랭킹한다. Slack 검색은 단순 시간순이 아니라 \"내가 찾을 법한 것\"을 위로 올리는 relevance 모드를 지원한다.\n\n### 트레이드오프\n- **정확성 vs 신선도**: 메시지 권한이 사후에 바뀌면(채널에서 나가거나 메시지가 삭제되면) 색인과 ACL 사이에 일시적 불일치가 생길 수 있어, 질의 시점 권한 필터를 신뢰 원천으로 삼아 \"보이면 안 되는 것\"이 새지 않도록 한다.\n- **샤딩 비용**: 팀 단위 샤딩은 격리에 좋지만, 초대형 Enterprise Grid 조직에서는 한 조직이 여러 샤드에 걸치게 되어 fan-out 질의가 무거워진다. 이를 위해 대형 조직 전용 색인 전략과 캐시를 따로 둔다.\n\n별개로 Slack은 **로그/관측 데이터 검색**용으로 자체 분산 엔진 `Astra`(구 KalDB, Lucene 기반, 오픈소스)를 만들어, 사용자 메시지 검색(Solr)과 내부 운영 로그 검색을 분리 운영한다."
+    },
+    {
+     "topic": "서비스 메시 — Consul에서 Envoy + xDS 컨트롤 플레인으로",
+     "body": "### 출발점: Hack 모놀리스 + Consul\nSlack의 트래픽 라우팅은 오랫동안 **HAProxy + Consul** 조합에 의존했다. Consul이 서비스 등록/헬스체크를 담당하고, 각 노드의 설정 생성기가 Consul 상태를 읽어 HAProxy 설정을 다시 써 reload하는 방식이었다. 모놀리스 시절에는 충분했지만, Java/gRPC 마이크로서비스가 늘고 수백만 개의 동시 WebSocket을 다뤄야 하면서 한계가 드러났다.\n- HAProxy reload 기반은 **설정 변경이 빈번하고 대규모일 때** 비효율적이고, 동적 라우팅(가중치 조정, 셀 드레이닝)에 약했다.\n- gRPC(HTTP/2) 멀티플렉싱·로드밸런싱을 L7에서 제대로 다루기 어려웠다.\n\n### Envoy 도입과 xDS\nSlack은 edge(사용자 ↔ 데이터센터)와 내부 서비스 메시 양쪽에 **Envoy**를 채택했다. 핵심은 Envoy 자체가 아니라 그것을 **동적으로 설정하는 컨트롤 플레인**이다. Envoy는 `xDS` API(EDS/CDS/LDS/RDS)로 엔드포인트·클러스터·리스너·라우트 설정을 **런타임에 푸시**받는다. Slack은 Consul의 서비스 디스커버리 데이터를 xDS로 변환해 Envoy에 흘려보내는 컨트롤 플레인을 구축했다 — reload 없이, 핫리로드 없이, gRPC 스트림으로 설정이 갱신된다.\n\n### 수백만 WebSocket 마이그레이션\n가장 까다로운 작업은 사용자 실시간 연결을 받는 edge를 HAProxy에서 Envoy로 옮기는 것이었다. WebSocket은 **장수명 연결**이라, 단순히 새 프록시로 트래픽을 돌리면 기존 연결을 끊거나 재연결 폭풍을 일으킨다. Slack은 점진적으로 트래픽 비중을 옮기면서 연결 드레이닝을 제어해, 수백만 동시 연결을 **무중단에 가깝게** 이전했다.\n\n### Cellular architecture와의 결합\nEnvoy + xDS 컨트롤 플레인은 2021년 장애 이후 도입한 **셀 격리**의 실행 기반이기도 하다. 어떤 AZ(셀)에 문제가 생기면, 컨트롤 플레인이 xDS로 해당 셀의 엔드포인트 가중치를 0으로 떨어뜨려 **트래픽을 즉시 다른 셀로 드레이닝**한다. HAProxy reload 시절에는 불가능했던 \"초 단위 동적 트래픽 시프트\"가 이 구조 덕에 가능해졌다.\n\n### 트레이드오프\nEnvoy/xDS는 강력하지만 **컨트롤 플레인이 곧 단일 두뇌**가 된다. 컨트롤 플레인이 잘못된 설정을 푸시하면 전 메시에 동시에 퍼질 수 있어, 설정 검증·점진 롤아웃·셀 단위 격리가 더 중요해진다. Slack은 이 위험을 셀 경계와 단계적 배포로 상쇄한다."
     }
    ],
    "github": {
-    "org": "https://github.com/slackapi",
+    "org": "https://github.com/slackhq",
     "repos": [
      {
       "name": "slackhq/nebula",
       "url": "https://github.com/slackhq/nebula",
-      "desc": "확장 가능한 오버레이 네트워킹 도구",
+      "desc": "Slack이 만든 확장형 오버레이 네트워킹/메시 VPN, 서비스 간 보안 통신에 사용",
       "lang": "Go",
-      "stars": 17396
+      "stars": 17402
      },
      {
       "name": "slackapi/python-slack-sdk",
       "url": "https://github.com/slackapi/python-slack-sdk",
-      "desc": "슬랙 API용 공식 Python SDK",
+      "desc": "Slack Web/RTM/이벤트 API를 다루는 공식 Python SDK",
       "lang": "Python",
       "stars": 4008
      },
      {
+      "name": "slackapi/node-slack-sdk",
+      "url": "https://github.com/slackapi/node-slack-sdk",
+      "desc": "Slack 플랫폼 연동용 공식 Node.js SDK 모음",
+      "lang": "TypeScript",
+      "stars": 3377
+     },
+     {
       "name": "slackapi/bolt-js",
       "url": "https://github.com/slackapi/bolt-js",
-      "desc": "슬랙 앱 개발용 자바스크립트 프레임워크 Bolt",
+      "desc": "Slack 앱을 빠르게 만드는 공식 JavaScript 프레임워크",
       "lang": "TypeScript",
       "stars": 2914
+     },
+     {
+      "name": "slackhq/astra",
+      "url": "https://github.com/slackhq/astra",
+      "desc": "대용량 로그를 실시간 색인·검색하는 분산 로그 검색 엔진(구 KalDB)",
+      "lang": "Java",
+      "stars": 253
      }
     ]
    },
    "sources": [
-    "https://slack.engineering"
+    "https://slack.engineering/scaling-slacks-job-queue/",
+    "https://slack.engineering/migrating-millions-of-concurrent-websockets-to-envoy/",
+    "https://slack.engineering/flannel-an-application-level-edge-cache-to-make-slack-scale/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "samsung-smartthings",
@@ -10646,42 +10717,51 @@
    "languages": [
     "Java",
     "Kotlin",
+    "TypeScript",
     "Swift",
     "C++",
-    "TypeScript"
+    "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Node.js",
-     "AWS Lambda"
+     "AWS Lambda",
+     "Akka/Reactive",
+     "gRPC"
     ],
     "frontend": [
-     "Android(Kotlin)",
+     "Android(Kotlin/Jetpack Compose)",
      "iOS(Swift)",
-     "React"
+     "React",
+     "SmartThings One UI(WebView)"
     ],
     "data": [
-     "Kafka",
+     "Apache Kafka",
      "DynamoDB",
-     "MySQL",
-     "Elasticsearch"
+     "Amazon Aurora/MySQL",
+     "Elasticsearch",
+     "Redis/ElastiCache",
+     "Amazon S3"
     ],
     "infra": [
-     "AWS",
-     "Kubernetes",
-     "사내 클라우드"
+     "AWS(multi-region)",
+     "Kubernetes(EKS)",
+     "AWS IoT Core/MQTT",
+     "사내 Samsung Cloud",
+     "Terraform"
     ]
    },
    "architecture": [
-    "IoT 클라우드",
-    "이벤트 기반 디바이스 제어",
-    "MSA"
+    "IoT 클라우드 플랫폼",
+    "이벤트 기반 디바이스 제어(Event-driven)",
+    "MSA(Microservices)",
+    "Edge-Cloud 하이브리드(Hub/Edge Driver)"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    APP[\"SmartThings App<br/>Kotlin Swift\"]\n    HUB[\"Hub Device<br/>Edge Driver\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>AWS\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DEV[\"Device Mgmt<br/>Spring Boot\"]\n    RULE[\"Automation<br/>Node.js Lambda\"]\n    PUSH[\"Notification<br/>Spring\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"DynamoDB\"]\n    MYSQL[\"MySQL\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    MQTT[\"Device Channel<br/>MQTT\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  APP --> GW\n  HUB -->|MQTT| MQTT\n  GW --> DEV\n  GW --> RULE\n  MQTT --> DEV\n  DEV --> DDB\n  RULE --> MYSQL\n  DEV --> ES\n  DEV -->|publish| KAFKA\n  KAFKA --> PUSH\n  DEV --- K8S\n  RULE --- K8S",
-   "why_language": "갤럭시 앱·SmartThings 클라이언트는 Kotlin(Android)/Swift(iOS)로, 디바이스 펌웨어·임베디드는 C/C++로, 클라우드 백엔드는 Java/Spring으로 구성한다.",
-   "why_architecture": "수많은 IoT 디바이스의 연결·제어를 이벤트 기반으로 처리하는 IoT 클라우드 MSA를 AWS 위에 구축해 글로벌 규모로 운영한다.",
-   "summary": "디바이스(C++/Kotlin/Swift)와 IoT 클라우드 MSA를 잇는 삼성 생태계.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"SmartThings App<br/>Android Kotlin / iOS Swift\"]\n    HUB[\"SmartThings Hub<br/>Edge Drivers Lua\"]\n    DEV[\"IoT Devices<br/>Zigbee / Z-Wave / Matter / WiFi\"]\n  end\n  subgraph Conn[\"Connectivity Layer\"]\n    MQTT[\"Device Gateway<br/>MQTT / WebSocket / AWS IoT Core\"]\n    API[\"API Gateway<br/>REST + gRPC\"]\n  end\n  subgraph Core[\"Core Services MSA\"]\n    DEVSVC[\"Device Service<br/>Spring Boot / Kotlin\"]\n    CAP[\"Capability / Schema<br/>Device Handler Model\"]\n    RULE[\"Rules / Automation<br/>AWS Lambda Node.js\"]\n    AUTH[\"Auth / OAuth2<br/>Samsung Account\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"Device State<br/>DynamoDB\"]\n    AUR[\"Metadata<br/>Aurora MySQL\"]\n    ES[\"Search / Logs<br/>Elasticsearch\"]\n    REDIS[\"Cache<br/>Redis ElastiCache\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS multi-region\"]\n  end\n  DEV --> HUB\n  HUB -->|MQTT/TLS| MQTT\n  APP -->|HTTPS| API\n  MQTT --> DEVSVC\n  API --> DEVSVC\n  API --> AUTH\n  DEVSVC --> CAP\n  DEVSVC -->|publish state| KAFKA\n  KAFKA --> RULE\n  RULE -->|command| DEVSVC\n  DEVSVC --> DDB\n  DEVSVC --> REDIS\n  CAP --> AUR\n  KAFKA --> ES\n  DEVSVC -.runs on.-> EKS\n  RULE -.serverless.-> EKS",
+   "why_language": "디바이스 펌웨어·앱(Android Kotlin, iOS Swift)부터 클라우드(Java/Kotlin Spring Boot)까지 전 계층을 다루기 때문에 JVM 계열을 백본으로 삼아 대규모 동시 디바이스 세션을 안정적으로 처리한다. 룰 엔진·서버리스 automation은 빠른 배포와 가벼운 함수 단위 실행이 중요해 Node.js(TypeScript) Lambda를 쓰고, Edge Driver는 Hub의 제한된 리소스에서 동작해야 해 Lua를 채택했다. 즉 '제어 지연이 중요한 곳은 JVM/네이티브, 유연성이 중요한 자동화는 TS/Node'라는 분리가 핵심이다.",
+   "why_architecture": "수억 대의 이기종 디바이스를 '상태 변화 이벤트' 단위로 다뤄야 하므로 동기 호출이 아닌 Kafka 기반 event-driven으로 상태 전파와 룰 트리거를 비동기 분리했다. 디바이스 종류·제조사가 폭발적으로 늘어나기 때문에 Capability/Device Handler 추상화 위에 MSA를 두어 신규 디바이스 온보딩이 핵심 서비스 변경 없이 가능하게 했고, 네트워크 단절·클라우드 장애 시에도 로컬 제어가 끊기지 않도록 Hub의 Edge Driver로 제어 로직을 엣지로 내려 hybrid 구조를 택했다.",
+   "summary": "이기종 IoT 디바이스를 Capability 추상화 + Kafka 이벤트 + Edge-Cloud 하이브리드로 묶은 대규모 IoT 플랫폼",
    "deep_dive": [
     {
      "topic": "디바이스 연결 end-to-end: MQTT/WebSocket부터 클라우드 이벤트까지",
@@ -10702,40 +10782,60 @@
     {
      "topic": "장애 대응·복원력: 오프라인 디바이스와 부분 장애 격리",
      "body": "### 장애 도메인 격리\nIoT 클라우드의 가장 큰 적은 \"수억 세션이 동시에 재연결\"하는 thundering herd다. region 클라우드 하나가 흔들리면, 그 region 디바이스 전체가 동시에 reconnect를 시도해 브로커를 무너뜨릴 수 있다.\n\n- **지수 백오프 + jitter**: 디바이스 펌웨어/허브에 재연결 백오프를 강제해, 장애 복구 시 동시 재연결 스파이크를 평탄화한다.\n- **region 격리**: 한 region 장애가 다른 region으로 전파되지 않도록 데이터·트래픽 경로를 분리한다. cross-region 의존을 최소화한 이유다.\n\n### 부분 기능 저하(graceful degradation)\n- 클라우드 룰 엔진이 죽어도 로컬 Edge Driver의 로컬 automation은 허브에서 계속 동작한다. \"불이 켜지는 것\"은 클라우드 없이도 보장되어야 하는 사용자 경험이기 때문이다.\n- command 서비스는 디바이스 오프라인 시 무한 대기 대신 빠른 실패(fast-fail)를 반환하고, 일부는 디바이스 복귀 시 적용되는 desired-state 모델로 보정한다.\n\n### 멱등성과 재시도\n명령은 멱등하게 설계한다. `setLevel(50)` 같은 절대값 명령은 중복 전달돼도 안전하다. 네트워크 불안정이 기본 전제인 IoT에서, 재시도·중복은 정상 상황이므로 멱등성이 정합성의 핵심이다. Lambda 이벤트 처리도 at-least-once 전제하에 DynamoDB conditional write로 중복 적용을 막는다."
+    },
+    {
+     "topic": "Matter / Thread 채택과 멀티-프로토콜 브리징 동작 원리",
+     "body": "### 왜 Matter인가\nSmartThings는 초기에 `Zigbee`/`Z-Wave` 기반의 자체 디바이스 핸들러(DTH) 생태계로 출발했지만, 제조사마다 클라우드 연동 방식이 달라 온보딩 비용이 기하급수적으로 늘었다. CSA(Connectivity Standards Alliance)의 `Matter`는 이 파편화를 IP 기반 표준으로 통합하려는 시도이고, Samsung은 Apple·Google·Amazon과 함께 핵심 추진 주체다. SmartThings는 Matter Controller이자 Thread Border Router 역할을 동시에 수행한다.\n\n### 동작 흐름\n- **Commissioning(페어링)**: 사용자가 앱에서 QR/숫자 코드를 스캔하면 `Matter`의 `PASE`(Passcode-Authenticated Session Establishment)로 초기 암호화 채널을 맺고, 이어서 `CASE`(Certificate-Authenticated Session)로 인증서 기반 세션을 수립한다. 디바이스는 Fabric에 합류하며 NOC(Node Operational Certificate)를 발급받는다.\n- **Thread Border Router**: 배터리 디바이스(도어센서 등)는 저전력 mesh인 `Thread`로 붙고, SmartThings Hub/일부 Galaxy 기기가 Border Router가 되어 Thread mesh ↔ Wi-Fi/Ethernet IP망을 라우팅한다. 즉 디바이스는 IPv6 주소를 갖는다.\n- **Edge Driver 매핑**: Matter 클러스터/속성(예: `OnOff`, `LevelControl`, `ColorControl`)이 SmartThings 내부의 `Capability` 모델(`switch`, `switchLevel`, `colorControl`)로 매핑된다. 이 매핑 레이어가 Matter 표준 모델과 SmartThings 자체 추상화 사이의 어댑터다.\n\n### 트레이드오프\n- 로컬 IP 제어가 가능해져 클라우드 왕복 없이 응답 지연이 수십 ms대로 떨어진다(특히 Edge Driver 로컬 실행 시).\n- 그러나 Matter 펌웨어 성숙도 편차, multi-admin(여러 생태계 동시 제어) 시의 상태 동기화 충돌 등 신규 엣지 케이스가 생겨, 기존 클라우드-투-클라우드(ST Schema) 경로를 한동안 병행 유지하는 '이중 경로' 부담을 진다."
+    },
+    {
+     "topic": "보안·인증: Samsung Account OAuth2와 디바이스 신뢰 모델",
+     "body": "### 다층 신원 체계\nSmartThings의 보안은 '사용자 신원'과 '디바이스 신원'을 분리해 다룬다.\n- **사용자**: `Samsung Account`가 IdP로서 `OAuth2 / OIDC` 토큰을 발급한다. 앱·서드파티 SmartApp은 scope 기반 access token으로 API Gateway를 통과하며, refresh token rotation으로 장기 세션을 관리한다.\n- **디바이스**: 디바이스/Hub는 사용자 토큰이 아니라 자체 디바이스 인증서 + per-device 시크릿으로 `AWS IoT Core`(또는 자체 게이트웨이)에 mutual TLS로 접속한다. 이렇게 하면 사용자 계정이 탈취돼도 디바이스 제어 채널이 즉시 뚫리지 않는다.\n\n### 권한 모델\n- SmartApp/Automation은 OAuth scope(`r:devices:*`, `x:devices:*` 등 read/execute 구분)로 최소권한을 강제한다. 룰 엔진이 디바이스에 명령을 내릴 때도 해당 installed-app의 권한 범위를 런타임에 검증한다.\n- 외부 클라우드 연동(`ST Schema`)은 partner OAuth로 토큰을 교환하고, 명령은 partner 클라우드 → SmartThings → 디바이스로 위임된다.\n\n### 실무적 함의\n- 디바이스 시크릿은 안전 저장소(Hub의 secure element 또는 KMS 보호 영역)에 두고, 펌웨어 OTA 시 서명 검증을 거친다.\n- region별 데이터 주권 요건 때문에 토큰/PII는 사용자가 속한 region 클라우드에 머무르도록 설계되어, 인증 흐름도 region-aware하게 라우팅된다."
+    },
+    {
+     "topic": "관측성: 수억 디바이스 이벤트의 로깅·트레이싱·메트릭",
+     "body": "### 문제의 규모\n수억 대 디바이스가 상태 변화를 push하면 초당 수십만 건 이상의 이벤트가 발생한다. 단순 로그 적재로는 비용과 노이즈가 폭증하므로, 관측성은 '샘플링 + 집계 + 분산 추적'의 조합으로 설계된다.\n\n### 구성\n- **메트릭**: 디바이스 연결 수, 명령 성공/실패율, 룰 트리거 지연(latency p50/p95/p99), Kafka consumer lag 같은 골든 시그널을 시계열로 수집한다. consumer lag은 이벤트 처리 적체를 가장 먼저 드러내는 핵심 지표다.\n- **분산 트레이싱**: 앱 명령 → API Gateway → Device Service → Kafka → Lambda 룰 실행 → 디바이스 ack까지 하나의 trace id로 묶어, '사용자가 불 켰는데 1초 늦게 켜진' 류의 꼬리 지연을 어느 hop에서 났는지 짚는다.\n- **로깅**: 전량 적재 대신 에러/이상 이벤트 위주로 `Elasticsearch`에 색인하고, 정상 이벤트는 집계 후 폐기하거나 콜드 스토리지(S3)로 내린다.\n\n### 트레이드오프\n- 풀 트레이싱을 전 트래픽에 켜면 오버헤드와 비용이 감당 불가라, head-based sampling으로 일부만 추적하되 에러 trace는 강제 보존하는 식의 정책을 둔다.\n- region 분산 구조라 관측 데이터도 region별로 흩어지므로, 글로벌 장애 판단을 위해서는 region 메트릭을 상위에서 다시 합치는 aggregation 레이어가 필요하다."
     }
    ],
    "github": {
     "org": "https://github.com/SmartThingsCommunity",
     "repos": [
      {
-      "name": "SmartThingsCommunity/SmartThingsPublic",
-      "url": "https://github.com/SmartThingsCommunity/SmartThingsPublic",
-      "desc": "스마트싱스 공식 디바이스 핸들러와 SmartApp 모음",
-      "lang": "Groovy",
-      "stars": 2650
-     },
-     {
       "name": "SmartThingsCommunity/smartthings-cli",
       "url": "https://github.com/SmartThingsCommunity/smartthings-cli",
-      "desc": "스마트싱스 개발자용 커맨드라인 도구",
+      "desc": "디바이스·자동화·스키마를 관리하는 공식 개발자 CLI",
       "lang": "TypeScript",
       "stars": 342
      },
      {
+      "name": "SmartThingsCommunity/SmartThingsEdgeDrivers",
+      "url": "https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers",
+      "desc": "Hub에서 로컬 실행되는 공식 Edge Driver(Lua) 모음 — 엣지 제어 로직",
+      "lang": "Lua",
+      "stars": 339
+     },
+     {
       "name": "SmartThingsCommunity/smartthings-core-sdk",
       "url": "https://github.com/SmartThingsCommunity/smartthings-core-sdk",
-      "desc": "스마트싱스 REST API용 Node.js SDK",
+      "desc": "SmartThings REST API용 공식 TypeScript/Node SDK",
       "lang": "TypeScript",
       "stars": 127
+     },
+     {
+      "name": "SmartThingsCommunity/st-schema-nodejs",
+      "url": "https://github.com/SmartThingsCommunity/st-schema-nodejs",
+      "desc": "외부 클라우드 디바이스를 연동하는 ST Schema 커넥터 SDK",
+      "lang": "JavaScript",
+      "stars": 35
      }
     ]
    },
    "sources": [
-    "https://developer.samsung.com",
-    "https://smartthings.developer.samsung.com"
+    "https://github.com/SmartThingsCommunity",
+    "https://developer.smartthings.com/docs/devices/capabilities/capabilities-reference",
+    "https://developer.smartthings.com/docs/edge-device-drivers/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "line",
@@ -11165,7 +11265,7 @@
     "https://if.kakao.com"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-16"
   },
   {
    "key": "naver",
@@ -12696,7 +12796,7 @@
     "https://medium.com/coupang-engineering/kr"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-16"
   },
   {
    "key": "tmon",
@@ -13281,7 +13381,7 @@
     "https://about.daangn.com/tech"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-16"
   },
   {
    "key": "watcha",

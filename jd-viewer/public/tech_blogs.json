@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-15T23:59:21",
- "total": 709,
+ "generated_at": "2026-06-16T01:42:23",
+ "total": 721,
  "sources": [
   {
    "company": "Etsy",
@@ -10,7 +10,7 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 31
+   "count": 33
   },
   {
    "company": "Discord",
@@ -83,6 +83,11 @@
    "count": 20
   },
   {
+   "company": "Netflix",
+   "country": "US",
+   "count": 20
+  },
+  {
    "company": "GitHub",
    "country": "US",
    "count": 15
@@ -130,11 +135,6 @@
   {
    "company": "카카오",
    "country": "KR",
-   "count": 10
-  },
-  {
-   "company": "Netflix",
-   "country": "US",
    "count": 10
   },
   {
@@ -506,6 +506,47 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "Selenium vs Cypress vs Playwright: Choosing Your Test Automation Framework​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌﻿​﻿‌​​﻿‌﻿‌‍​‌‌‍‌‍‌‍‌‍‌‍​‌‌‍​‌​‍﻿‌​﻿‌​​﻿​‌​﻿‍​‌‍‌‌​‍﻿‌​﻿‌​​﻿​‌​﻿​‌​﻿​﻿​‍﻿‌​﻿‍‌​﻿‌​​﻿‌﻿​﻿‌‌​‍﻿‌​﻿‌‌​﻿‌‍‌‍​‌‌‍‌‌‌‍‌‍‌‍​‍​﻿​‌‌‍​‍​﻿‌﻿​﻿​‌‌‍​‍​﻿‌​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌﻿​﻿‌​​﻿‌﻿‌‍​‌‌‍‌‍‌‍‌‍‌‍​‌‌‍​‌​‍﻿‌​﻿‌​​﻿​‌​﻿‍​‌‍‌‌​‍﻿‌​﻿‌​​﻿​‌​﻿​‌​﻿​﻿​‍﻿‌​﻿‍‌​﻿‌​​﻿‌﻿​﻿‌‌​‍﻿‌​﻿‌‌​﻿‌‍‌‍​‌‌‍‌‌‌‍‌‍‌‍​‍​﻿​‌‌‍​‍​﻿‌﻿​﻿​‌‌‍​‍​﻿‌​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/15/selenium-vs-cypress-vs-playwright-choosing-your-test-automation-framework",
+   "published": "2026-06-15",
+   "published_ts": 1781536974.0,
+   "summary": "",
+   "tags": [
+    "contributed",
+    "testing"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "662fe4115e78a77f"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "AI agents expose the security checks you never actually wrote​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‍​﻿​‍‌‍​‌‌‍​‌‌‍​‍​﻿​‌​﻿‌‌‌‍​‌​‍﻿‌​﻿​​​﻿​‌​﻿‌‌‌‍​‌​‍﻿‌​﻿‌​‌‍​‍‌‍‌‍​﻿​‍​‍﻿‌​﻿‍​‌‍​‍​﻿​﻿‌‍‌‌​‍﻿‌‌‍​‍​﻿‍‌​﻿‌​‌‍​﻿‌‍​﻿​﻿​﻿​﻿‌‌​﻿‌‍​﻿‍‌​﻿‌﻿​﻿‌﻿​﻿​​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‍​﻿​‍‌‍​‌‌‍​‌‌‍​‍​﻿​‌​﻿‌‌‌‍​‌​‍﻿‌​﻿​​​﻿​‌​﻿‌‌‌‍​‌​‍﻿‌​﻿‌​‌‍​‍‌‍‌‍​﻿​‍​‍﻿‌​﻿‍​‌‍​‍​﻿​﻿‌‍‌‌​‍﻿‌‌‍​‍​﻿‍‌​﻿‌​‌‍​﻿‌‍​﻿​﻿​﻿​﻿‌‌​﻿‌‍​﻿‍‌​﻿‌﻿​﻿‌﻿​﻿​​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/15/ai-agents-expose-the-security-checks-you-never-actually-wrote",
+   "published": "2026-06-15",
+   "published_ts": 1781535534.0,
+   "summary": "How attackers took twenty thousand Instagram accounts by asking Meta's AI politely, and why that failure is about to become common.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‍​﻿​‍‌‍​‌‌‍​‌‌‍​‍​﻿​‌​﻿‌‌‌‍​‌​‍﻿‌​﻿​​​﻿​‌​﻿‌‌‌‍​‌​‍﻿‌​﻿‌​‌‍​‍‌‍‌‍​﻿​‍​‍﻿‌​﻿‍​‌‍​‍​﻿​﻿‌‍‌‌​‍﻿‌‌…",
+   "tags": [
+    "contributed",
+    "security",
+    "running-software"
+   ],
+   "tech_stack": [
+    "Security"
+   ],
+   "categories": [
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "db6146ce771cf1e9"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",
@@ -2662,6 +2703,45 @@
    "content_id": "bf74e46e5230c024"
   },
   {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "Dynamic Repartitioning for Time Series Workloads",
+   "url": "https://medium.com/netflix-techblog/dynamically-splitting-wide-partitions-in-cassandra-for-time-series-workloads-0eded064f456",
+   "published": "2026-06-03",
+   "published_ts": 1780452305.0,
+   "summary": "By Rajiv Shringi, Kaidan Fullerton, Oleksii Tkachuk and Kartik Sathyanarayanan\n\nIntroduction\n\nNetflix’s TimeSeries Abstraction is a scalable system for ingesting and querying petabytes of temporal event data with millisecond latency. We use Apache Cassandra 4.x as the underlying storage for these main reasons:\n\nThroughput, latency, and cost: Cassandra can handle millions of low‑latency reads and writes in a cost-effective manner.\n\nOperational maturity: Our data platform team has deep operational expertise running large Cassandra clusters in production.\n\nHowever, using Cassandra at this scale i…",
+   "tags": [
+    "scalability",
+    "cassandra",
+    "database",
+    "distributed-systems",
+    "timeseries"
+   ],
+   "tech_stack": [
+    "TypeScript",
+    "gRPC",
+    "Time Series",
+    "Kafka",
+    "Spark",
+    "Cassandra",
+    "AWS",
+    "Bloom Filter",
+    "Garbage Collection"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "AI/ML",
+    "데이터",
+    "데이터베이스",
+    "인프라/클라우드",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "acb0a60a88153abf"
+  },
+  {
    "key": "stripe",
    "company": "Stripe",
    "country": "US",
@@ -3056,6 +3136,42 @@
    "key": "netflix",
    "company": "Netflix",
    "country": "US",
+   "title": "High-Throughput Graph Abstraction at Netflix: Part I",
+   "url": "https://medium.com/netflix-techblog/high-throughput-graph-abstraction-at-netflix-part-i-e88063e6f6d5",
+   "published": "2026-05-29",
+   "published_ts": 1780080553.0,
+   "summary": "By Oleksii Tkachuk, Kartik Sathyanarayanan, Rajiv Shringi\n\nIntroduction\n\nNetflix has a diverse range of graph use cases, each serving specific business needs with unique functionality and performance requirements. These use cases fall into two broad categories:\n\nOLAP: These use cases typically involve open-ended and algorithmic exploration of large graph datasets. They often utilize industry-standard models and languages such as RDF with SPARQL, Property Graphs with Gremlin or openCypher, and even SQL. The primary focus in these situations is in-depth analysis, rather than achieving high throu…",
+   "tags": [
+    "stateful-systems",
+    "distributed-systems",
+    "caching",
+    "scalability",
+    "graph-database"
+   ],
+   "tech_stack": [
+    "SQL",
+    "TypeScript",
+    "gRPC",
+    "Time Series",
+    "Kafka",
+    "Cassandra",
+    "AWS"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "AI/ML",
+    "데이터",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "0dfa0e4cf6a1fef4"
+  },
+  {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
    "title": "From Silos to Service Topology: Why Netflix Built a Real-Time Service Map",
    "url": "https://netflixtechblog.com/from-silos-to-service-topology-why-netflix-built-a-real-time-service-map-0165ba13a7bc",
    "published": "2026-05-29",
@@ -3092,6 +3208,47 @@
    ],
    "lang": "en",
    "content_id": "8e58854d07d2f7c8"
+  },
+  {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "From Silos to Service Topology: Why Netflix Built a Real-Time Service Map",
+   "url": "https://medium.com/netflix-techblog/from-silos-to-service-topology-why-netflix-built-a-real-time-service-map-0165ba13a7bc",
+   "published": "2026-05-29",
+   "published_ts": 1780063262.0,
+   "summary": "By Parth Jain, Rakesh Sukumar, Yingwu Zhao, Renzo Sanchez & Nathan Fisher\nHow we built a living map of our distributed infrastructure to help engineers understand dependencies, troubleshoot faster, and keep Netflix running smoothly for our members around the world.\n\nThe Puzzle with a Thousand Pieces\n\nPicture this: It’s 3am, and an engineer gets paged. One of our critical services is showing elevated error rates. Members trying to watch their favorite films and series are seeing degraded experiences. The clock is ticking.\nA single service at the center of a web of dependencies — services, data…",
+   "tags": [
+    "distributed-systems",
+    "software-engineering",
+    "platform-engineering",
+    "microservices",
+    "observability"
+   ],
+   "tech_stack": [
+    "GraphQL",
+    "gRPC",
+    "Kafka",
+    "AWS",
+    "Distributed Tracing",
+    "Observability",
+    "eBPF",
+    "Kernel",
+    "Distributed System",
+    "Garbage Collection",
+    "Authentication"
+   ],
+   "categories": [
+    "백엔드",
+    "데이터",
+    "인프라/클라우드",
+    "관측성",
+    "시스템/OS",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "93fcabafa6c878b0"
   },
   {
    "key": "stackoverflow",
@@ -5677,6 +5834,37 @@
    "content_id": "0873285e09d7ef06"
   },
   {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "Scaling ArchUnit with Nebula ArchRules",
+   "url": "https://medium.com/netflix-techblog/scaling-archunit-with-nebula-archrules-b4642c464c5a",
+   "published": "2026-05-08",
+   "published_ts": 1778255759.0,
+   "summary": "By John Burns and Emily Yuan\n\nIntroduction\n\nAt Netflix, we operate using a polyrepo strategy with tens of thousands of Java repositories. This means that we need to have ways of sharing common build logic across these repositories. On the JVM Ecosystem team within Java Platform, we build tooling such as the Nebula suite of Gradle plugins to provide standard ways to build projects, keep dependencies up-to-date, and publish artifacts reliably across the Java ecosystem. Our mission also entails providing build-time feedback to the developer when they deviate from the paved road, or when their cod…",
+   "tags": [
+    "gradle",
+    "nebula",
+    "java",
+    "archunit"
+   ],
+   "tech_stack": [
+    "Java",
+    "Kotlin",
+    "Scala",
+    "Spring",
+    "Spring Boot",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "f0466d411238beaa"
+  },
+  {
    "key": "discord",
    "company": "Discord",
    "country": "US",
@@ -6262,6 +6450,42 @@
    "content_id": "ee546d3df22cb21f"
   },
   {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "Democratizing Machine Learning at Netflix: Building the Model Lifecycle Graph",
+   "url": "https://medium.com/netflix-techblog/democratizing-machine-learning-at-netflix-building-the-model-lifecycle-graph-5cc6d5828bb1",
+   "published": "2026-05-04",
+   "published_ts": 1777910462.0,
+   "summary": "Saish Sali, Nipun Kumar, Sura Elamurugu\n\nIntroduction\n\nAs Netflix has grown, machine learning continues to support our ability to deliver value to members and drive excellence across multiple areas of our business. When Netflix began investing in machine learning over a decade ago, it was primarily focused on a single domain: personalization. Scala was the industry standard, our ML teams were relatively small, and optimizing member engagement was our primary use case. Fast forward to today, and machine learning has become the backbone of Netflix’s business transformation. We now apply ML acros…",
+   "tags": [
+    "mlops",
+    "event-driven-architecture",
+    "machine-learning",
+    "distributed-systems",
+    "knowledge-graph"
+   ],
+   "tech_stack": [
+    "Scala",
+    "Feature Store",
+    "Machine Learning",
+    "Kafka",
+    "Elasticsearch",
+    "AWS",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "데이터베이스",
+    "인프라/클라우드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "f6662745d2691b1a"
+  },
+  {
    "key": "swiggy",
    "company": "Swiggy",
    "country": "IN",
@@ -6378,6 +6602,45 @@
    ],
    "lang": "en",
    "content_id": "813baea9e93e9f92"
+  },
+  {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "State of Routing in Model Serving",
+   "url": "https://medium.com/netflix-techblog/state-of-routing-in-model-serving-16e22fe18741",
+   "published": "2026-05-01",
+   "published_ts": 1777669393.0,
+   "summary": "By Nipun Kumar, Rajat Shah, Peter Chng\n\nIntroduction\n\nThis is the first blog post in a multi-part series that shares technical insights into how our ML model serving infrastructure powers several personalized experiences at scale across various domains (e.g., title recommendations, commerce). In this introductory blog post, we will dive into our domain-independent API abstraction and its traffic routing capabilities that the central ML model serving platform exposes to several domain-specific microservices for model inference. This singular API, or entry point, into the ML model serving platfo…",
+   "tags": [
+    "ai-platform",
+    "distributed-systems",
+    "infrastructure",
+    "machine-learning"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "gRPC",
+    "Machine Learning",
+    "MLOps",
+    "AWS",
+    "Envoy",
+    "Service Mesh",
+    "Observability",
+    "Concurrency",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "AI/ML",
+    "인프라/클라우드",
+    "관측성",
+    "알고리즘/이론",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "3f7a53c1dd124ba8"
   },
   {
    "key": "pinterest",
@@ -6946,6 +7209,33 @@
    ],
    "lang": "en",
    "content_id": "8121b2b0ed76f2cb"
+  },
+  {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "Scaling Camera File Processing at Netflix",
+   "url": "https://medium.com/netflix-techblog/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
+   "published": "2026-04-24",
+   "published_ts": 1777043161.0,
+   "summary": "Orchestrating Media Workflows Through Strategic Collaboration\n\nAuthors: Eric Reinecke, Bhanu Srikanth\n\nIntroduction to Content Hub’s Media Production Suite\n\nAt Netflix, we want to provide filmmakers with the tools they need to produce content at a global scale, with quick turnaround and choice from an extraordinary variety of cameras, formats, workflows, and collaborators. Every series or film arrives with its own creative ambitions and technical requirements. To reduce friction and keep productions moving smoothly, we built Netflix’s Media Production Suite (MPS) with the goal of automating re…",
+   "tags": [],
+   "tech_stack": [
+    "Java",
+    "Python",
+    "Docker",
+    "Serverless",
+    "Observability",
+    "Linux"
+   ],
+   "categories": [
+    "언어",
+    "인프라/클라우드",
+    "관측성",
+    "시스템/OS"
+   ],
+   "lang": "en",
+   "content_id": "617930db7dd17c7b"
   },
   {
    "key": "line",
@@ -7615,6 +7905,37 @@
    "content_id": "c16dbdeb72fc7bd3"
   },
   {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "The Human Infrastructure: How Netflix Built the Operations Layer Behind Live at Scale",
+   "url": "https://medium.com/netflix-techblog/the-human-infrastructure-how-netflix-built-the-operations-layer-behind-live-at-scale-33e2a311c597",
+   "published": "2026-04-17",
+   "published_ts": 1776438062.0,
+   "summary": "By: Brett Axler, Casper Choffat, and Alo Lowry\n\nIn the three years since our first Live show, Chris Rock: Selective Outrage, we have witnessed an incredible expansion of our live content slate and the live operations that support it. From modest beginnings of streaming just one show per month, we are now capable of streaming over nine shows in a single day, reaching tens of millions of concurrent members. This post pulls back the curtain on the Live Operations teams that enable this rapid scale.\n\nHumble Beginnings\n\nIn March 2023, the engineers who built Netflix’s first live streaming pipeline…",
+   "tags": [
+    "netflix",
+    "incident-response",
+    "live-operations",
+    "live-broadcast-technology",
+    "live-streaming"
+   ],
+   "tech_stack": [
+    "Gemini",
+    "Observability",
+    "Concurrency",
+    "Security"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "관측성",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "eccd73af703011e3"
+  },
+  {
    "key": "woowahan",
    "company": "우아한형제들",
    "country": "KR",
@@ -8171,6 +8492,30 @@
    "content_id": "25513146cea34bd7"
   },
   {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "Evaluating Netflix Show Synopses with LLM-as-a-Judge",
+   "url": "https://medium.com/netflix-techblog/evaluating-netflix-show-synopses-with-llm-as-a-judge-6269251e6f28",
+   "published": "2026-04-10",
+   "published_ts": 1775838361.0,
+   "summary": "by Gabriela Alessio, Cameron Taylor, and Cameron R. Wolfe\n\nIntroduction\n\nWhen members log into Netflix, one of the hardest choices is what to watch. The challenge isn’t a lack of options — there are thousands of titles — but finding the most intriguing one is complex and deeply personal. To help, we surface personalized promotional assets, especially the show synopsis — a brief description highlighting key plot elements, with cues like genre or talent.\n\nStrong synopses help members scan, understand, and choose. Poor synopses frustrate, mislead, and drive abandonment. Ensuring high-quality syno…",
+   "tags": [],
+   "tech_stack": [
+    "LLM",
+    "Prompt Engineering",
+    "Consensus",
+    "A/B Test"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "알고리즘/이론",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "280ac8bd5b31654f"
+  },
+  {
    "key": "swiggy",
    "company": "Swiggy",
    "country": "IN",
@@ -8533,6 +8878,36 @@
    ],
    "lang": "en",
    "content_id": "d3a4797cdec56282"
+  },
+  {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "Stop Answering the Same Question Twice: Interval-Aware Caching for Druid at Netflix Scale",
+   "url": "https://medium.com/netflix-techblog/stop-answering-the-same-question-twice-interval-aware-caching-for-druid-at-netflix-scale-22fadc9b840e",
+   "published": "2026-04-06",
+   "published_ts": 1775513714.0,
+   "summary": "By Ben Sykes\n\nIn a previous post, we described how Netflix uses Apache Druid to ingest millions of events per second and query trillions of rows, providing the real-time insights needed to ensure a high-quality experience for our members. Since that post, our scale has grown considerably.\n\nWith our database holding over 10 trillion rows and regularly ingesting up to 15 million events per second, the value of our real-time data is undeniable. But this massive scale introduced a new challenge: queries. The live show monitoring, dashboards, automated alerting, canary analysis, and A/B test monito…",
+   "tags": [
+    "apache-druid",
+    "cache"
+   ],
+   "tech_stack": [
+    "SQL",
+    "Data Pipeline",
+    "Cassandra",
+    "Hash Table",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "데이터",
+    "데이터베이스",
+    "알고리즘/이론",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "148ea45d32377d7d"
   },
   {
    "key": "spotify",
