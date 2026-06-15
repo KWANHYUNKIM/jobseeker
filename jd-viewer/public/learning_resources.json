@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T01:42:41",
+  "generated_at": "2026-06-16T03:16:54",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -1481,88 +1481,6 @@
         "stage": "실전"
       }
     ],
-    "Redis": [
-      {
-        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
-        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
-        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 186,
-        "length": "23:09",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[우아한테크세미나] 191121 우아한레디스 by 강대명님",
-        "url": "https://www.youtube.com/watch?v=mPB2CZiAkKM",
-        "thumbnail": "https://i.ytimg.com/vi/mPB2CZiAkKM/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 54390,
-        "length": "1:39:55",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 2021] Redis 야무지게 사용하기",
-        "url": "https://www.youtube.com/watch?v=92NizoBL4uA",
-        "thumbnail": "https://i.ytimg.com/vi/92NizoBL4uA/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 50960,
-        "length": "27:39",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
-        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
-        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
-        "channel": "데브원영 DVWY",
-        "views": 54535,
-        "length": "3:54",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 🤔디디의 Redis",
-        "url": "https://www.youtube.com/watch?v=Gimv7hroM8A",
-        "thumbnail": "https://i.ytimg.com/vi/Gimv7hroM8A/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 50090,
-        "length": "14:14",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "대규모 선착순 대기열. Kafka 대신 Redis를 사용하는 이유 (요약)",
-        "url": "https://www.youtube.com/watch?v=lcsRcd8so7s",
-        "thumbnail": "https://i.ytimg.com/vi/lcsRcd8so7s/mqdefault.jpg",
-        "channel": "코딩하는기술사",
-        "views": 10237,
-        "length": "5:25",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "BJ.53 NoSQL 설명!! RDB와는 어떤 차이가 있는지도 설명!! MongoDB, Redis 매우 간단한 예제 포함!!",
-        "url": "https://www.youtube.com/watch?v=sqVByJ5tbNA",
-        "thumbnail": "https://i.ytimg.com/vi/sqVByJ5tbNA/mqdefault.jpg",
-        "channel": "쉬운코드",
-        "views": 27965,
-        "length": "30:26",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Redis 입문·실전 - 1.1. Redis란? / Redis의 장점",
-        "url": "https://www.youtube.com/watch?v=4PQs57cq84U",
-        "thumbnail": "https://i.ytimg.com/vi/4PQs57cq84U/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 7998,
-        "length": "3:09",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Next.js": [
       {
         "title": "Next.js 13 강의 달린다 (1강~6강)",
@@ -1642,6 +1560,88 @@
         "views": 487,
         "length": "4:57",
         "published": "3개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Redis": [
+      {
+        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
+        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
+        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 186,
+        "length": "23:09",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[우아한테크세미나] 191121 우아한레디스 by 강대명님",
+        "url": "https://www.youtube.com/watch?v=mPB2CZiAkKM",
+        "thumbnail": "https://i.ytimg.com/vi/mPB2CZiAkKM/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 54390,
+        "length": "1:39:55",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 2021] Redis 야무지게 사용하기",
+        "url": "https://www.youtube.com/watch?v=92NizoBL4uA",
+        "thumbnail": "https://i.ytimg.com/vi/92NizoBL4uA/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 50960,
+        "length": "27:39",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
+        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
+        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
+        "channel": "데브원영 DVWY",
+        "views": 54535,
+        "length": "3:54",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 🤔디디의 Redis",
+        "url": "https://www.youtube.com/watch?v=Gimv7hroM8A",
+        "thumbnail": "https://i.ytimg.com/vi/Gimv7hroM8A/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 50090,
+        "length": "14:14",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "대규모 선착순 대기열. Kafka 대신 Redis를 사용하는 이유 (요약)",
+        "url": "https://www.youtube.com/watch?v=lcsRcd8so7s",
+        "thumbnail": "https://i.ytimg.com/vi/lcsRcd8so7s/mqdefault.jpg",
+        "channel": "코딩하는기술사",
+        "views": 10237,
+        "length": "5:25",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "BJ.53 NoSQL 설명!! RDB와는 어떤 차이가 있는지도 설명!! MongoDB, Redis 매우 간단한 예제 포함!!",
+        "url": "https://www.youtube.com/watch?v=sqVByJ5tbNA",
+        "thumbnail": "https://i.ytimg.com/vi/sqVByJ5tbNA/mqdefault.jpg",
+        "channel": "쉬운코드",
+        "views": 27965,
+        "length": "30:26",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Redis 입문·실전 - 1.1. Redis란? / Redis의 장점",
+        "url": "https://www.youtube.com/watch?v=4PQs57cq84U",
+        "thumbnail": "https://i.ytimg.com/vi/4PQs57cq84U/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 7998,
+        "length": "3:09",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -2619,88 +2619,6 @@
         "stage": "실전"
       }
     ],
-    "Terraform": [
-      {
-        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
-        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
-        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
-        "channel": "데브아트 DevArt",
-        "views": 13863,
-        "length": "14:55",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
-        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
-        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 2583,
-        "length": "13:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
-        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
-        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1521,
-        "length": "13:41",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
-        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
-        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
-        "channel": "NDC",
-        "views": 4733,
-        "length": "20:43",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
-        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
-        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
-        "channel": "44BITS",
-        "views": 13132,
-        "length": "5:11",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
-        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
-        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3137,
-        "length": "36:29",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[젝톡] 최재혁의 Terraform 소개",
-        "url": "https://www.youtube.com/watch?v=mdO3NOr4vuY",
-        "thumbnail": "https://i.ytimg.com/vi/mdO3NOr4vuY/mqdefault.jpg",
-        "channel": "젝트 JECT",
-        "views": 124,
-        "length": "7:17",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
-        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
-        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
-        "channel": "딩코딩코",
-        "views": 4182,
-        "length": "9:08",
-        "published": "5개월 전",
-        "stage": "실전"
-      }
-    ],
     "Vue": [
       {
         "title": "Vue 3 강좌 한방에 몰아보기 - 2시간 정주행",
@@ -2780,6 +2698,88 @@
         "views": 1018,
         "length": "42:27",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Terraform": [
+      {
+        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
+        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
+        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
+        "channel": "데브아트 DevArt",
+        "views": 13863,
+        "length": "14:55",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
+        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
+        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 2583,
+        "length": "13:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
+        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
+        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1521,
+        "length": "13:41",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
+        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
+        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
+        "channel": "NDC",
+        "views": 4733,
+        "length": "20:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
+        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
+        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
+        "channel": "44BITS",
+        "views": 13132,
+        "length": "5:11",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
+        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
+        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3137,
+        "length": "36:29",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[젝톡] 최재혁의 Terraform 소개",
+        "url": "https://www.youtube.com/watch?v=mdO3NOr4vuY",
+        "thumbnail": "https://i.ytimg.com/vi/mdO3NOr4vuY/mqdefault.jpg",
+        "channel": "젝트 JECT",
+        "views": 124,
+        "length": "7:17",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
+        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
+        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
+        "channel": "딩코딩코",
+        "views": 4182,
+        "length": "9:08",
+        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -3521,88 +3521,6 @@
         "stage": "실전"
       }
     ],
-    "GitLab CI": [
-      {
-        "title": "[인포그랩] GitLab CI/CD 파이프라인 데모로 해보기 - 기본편 #basic #gitlab #파이프라인 #infograb #devops #devsecops",
-        "url": "https://www.youtube.com/watch?v=8VKKLhKZU3A",
-        "thumbnail": "https://i.ytimg.com/vi/8VKKLhKZU3A/mqdefault.jpg",
-        "channel": "InfoGrab",
-        "views": 1254,
-        "length": "5:10",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
-        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
-        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 213116,
-        "length": "7:32",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[DevOps 로그] GitLab CI/CD와 GitHub Actions 뭐가 달라요? #GitLabCICD #GitHub #githubactions",
-        "url": "https://www.youtube.com/watch?v=UeEtT4YTsMw",
-        "thumbnail": "https://i.ytimg.com/vi/UeEtT4YTsMw/mqdefault.jpg",
-        "channel": "InfoGrab",
-        "views": 1809,
-        "length": "2:42",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT]GitLab CI/CD 사용법 (1/2)",
-        "url": "https://www.youtube.com/watch?v=bCbBlBHchsk",
-        "thumbnail": "https://i.ytimg.com/vi/bCbBlBHchsk/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 1005,
-        "length": "16:09",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] gitlab CI/CD를 소개하고 사용하는 방법 안내 (0/8) - Intro",
-        "url": "https://www.youtube.com/watch?v=mSSS-JefnbY",
-        "thumbnail": "https://i.ytimg.com/vi/mSSS-JefnbY/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 142,
-        "length": "2:03",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
-        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
-        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 19471,
-        "length": "23:05",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[개발] git 14 - gitlab 서비스 서버 구축하기 (docker 사용)",
-        "url": "https://www.youtube.com/watch?v=C1xQnbZ-aoQ",
-        "thumbnail": "https://i.ytimg.com/vi/C1xQnbZ-aoQ/mqdefault.jpg",
-        "channel": "컴달인 - 컴퓨터 달인",
-        "views": 3940,
-        "length": "31:28",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "GitLab을 활용한 빠르고 안전한 배포 파이프라인 (CI/CD) 만들기│gitops를 해야 하는 이유? DevSecOps를 경험해보세요.",
-        "url": "https://www.youtube.com/watch?v=F3gEkZirFMU",
-        "thumbnail": "https://i.ytimg.com/vi/F3gEkZirFMU/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 1823,
-        "length": "7:48",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "React Native": [
       {
         "title": "React Native 뽀개기 1강 | 기본 개념 한 번에 정리 (상태 · 렌더링 · 컴포넌트)",
@@ -3682,6 +3600,88 @@
         "views": 211161,
         "length": "3:35:02",
         "published": "스트리밍 시간: 3년 전",
+        "stage": "실전"
+      }
+    ],
+    "GitLab CI": [
+      {
+        "title": "[인포그랩] GitLab CI/CD 파이프라인 데모로 해보기 - 기본편 #basic #gitlab #파이프라인 #infograb #devops #devsecops",
+        "url": "https://www.youtube.com/watch?v=8VKKLhKZU3A",
+        "thumbnail": "https://i.ytimg.com/vi/8VKKLhKZU3A/mqdefault.jpg",
+        "channel": "InfoGrab",
+        "views": 1254,
+        "length": "5:10",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
+        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
+        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
+        "channel": "드림코딩",
+        "views": 213116,
+        "length": "7:32",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[DevOps 로그] GitLab CI/CD와 GitHub Actions 뭐가 달라요? #GitLabCICD #GitHub #githubactions",
+        "url": "https://www.youtube.com/watch?v=UeEtT4YTsMw",
+        "thumbnail": "https://i.ytimg.com/vi/UeEtT4YTsMw/mqdefault.jpg",
+        "channel": "InfoGrab",
+        "views": 1809,
+        "length": "2:42",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT]GitLab CI/CD 사용법 (1/2)",
+        "url": "https://www.youtube.com/watch?v=bCbBlBHchsk",
+        "thumbnail": "https://i.ytimg.com/vi/bCbBlBHchsk/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 1005,
+        "length": "16:09",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] gitlab CI/CD를 소개하고 사용하는 방법 안내 (0/8) - Intro",
+        "url": "https://www.youtube.com/watch?v=mSSS-JefnbY",
+        "thumbnail": "https://i.ytimg.com/vi/mSSS-JefnbY/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 142,
+        "length": "2:03",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
+        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
+        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
+        "channel": "큰돌의터전",
+        "views": 19471,
+        "length": "23:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[개발] git 14 - gitlab 서비스 서버 구축하기 (docker 사용)",
+        "url": "https://www.youtube.com/watch?v=C1xQnbZ-aoQ",
+        "thumbnail": "https://i.ytimg.com/vi/C1xQnbZ-aoQ/mqdefault.jpg",
+        "channel": "컴달인 - 컴퓨터 달인",
+        "views": 3940,
+        "length": "31:28",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "GitLab을 활용한 빠르고 안전한 배포 파이프라인 (CI/CD) 만들기│gitops를 해야 하는 이유? DevSecOps를 경험해보세요.",
+        "url": "https://www.youtube.com/watch?v=F3gEkZirFMU",
+        "thumbnail": "https://i.ytimg.com/vi/F3gEkZirFMU/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 1823,
+        "length": "7:48",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -5407,88 +5407,6 @@
         "stage": "실전"
       }
     ],
-    "GitHub": [
-      {
-        "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
-        "url": "https://www.youtube.com/watch?v=Fley6IFhlC8",
-        "thumbnail": "https://i.ytimg.com/vi/Fley6IFhlC8/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 179427,
-        "length": "6:37",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "깃, 깃허브 한번에 이해시켜드리고 포트폴리오 올리는 법까지 알려드림.  15분안에 당신은 Github 전문가가 됩니다",
-        "url": "https://www.youtube.com/watch?v=lelVripbt2M",
-        "thumbnail": "https://i.ytimg.com/vi/lelVripbt2M/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 749695,
-        "length": "16:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Git과 Github 개념 및 코드 관리 사용 설명서 + VScode에서 사용 방법",
-        "url": "https://www.youtube.com/watch?v=HXsKNIz0VRk",
-        "thumbnail": "https://i.ytimg.com/vi/HXsKNIz0VRk/mqdefault.jpg",
-        "channel": "딥스푼",
-        "views": 23182,
-        "length": "42:03",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "얄코의 제대로 파는 Git & GitHub (+ 🎁 전체강의 반값에 듣기 이벤트중!)",
-        "url": "https://www.youtube.com/watch?v=0TEPC1UDGM0",
-        "thumbnail": "https://i.ytimg.com/vi/0TEPC1UDGM0/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 11624,
-        "length": "2:12:52",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 파는 Git & GitHub (고정댓글에서 새 버전을 확인하세요!)",
-        "url": "https://www.youtube.com/watch?v=1I3hMwQU6GU",
-        "thumbnail": "https://i.ytimg.com/vi/1I3hMwQU6GU/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 268177,
-        "length": "2:21:52",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] GitHub Copilot편",
-        "url": "https://www.youtube.com/watch?v=YrRfMLnWw2Y",
-        "thumbnail": "https://i.ytimg.com/vi/YrRfMLnWw2Y/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 3688,
-        "length": "10:24",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "깃 깃허브 사용법 완벽 가이드 | 바이브 코딩 입문자 필수 시청 (Git & GitHub)",
-        "url": "https://www.youtube.com/watch?v=TnQgBKwiKSU",
-        "thumbnail": "https://i.ytimg.com/vi/TnQgBKwiKSU/mqdefault.jpg",
-        "channel": "nuguna",
-        "views": 619,
-        "length": "7:04",
-        "published": "1개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Claude Code 쓸 때 꼭 알아야 할 Git, GitHub 완벽 정리 | 비개발자도 한 번만 보면 끝",
-        "url": "https://www.youtube.com/watch?v=pE5zKg7tS2U",
-        "thumbnail": "https://i.ytimg.com/vi/pE5zKg7tS2U/mqdefault.jpg",
-        "channel": "카일스쿨",
-        "views": 20195,
-        "length": "18:44",
-        "published": "2개월 전",
-        "stage": "실전"
-      }
-    ],
     "Jest": [
       {
         "title": "코드커버리지가 100%여도 에러가 나는 이유 - Jest (자바스크립트 테스트) 강의 맛보기 1편",
@@ -5569,6 +5487,88 @@
         "length": "5:42",
         "published": "7년 전",
         "stage": "핵심"
+      }
+    ],
+    "GitHub": [
+      {
+        "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
+        "url": "https://www.youtube.com/watch?v=Fley6IFhlC8",
+        "thumbnail": "https://i.ytimg.com/vi/Fley6IFhlC8/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 179427,
+        "length": "6:37",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "깃, 깃허브 한번에 이해시켜드리고 포트폴리오 올리는 법까지 알려드림.  15분안에 당신은 Github 전문가가 됩니다",
+        "url": "https://www.youtube.com/watch?v=lelVripbt2M",
+        "thumbnail": "https://i.ytimg.com/vi/lelVripbt2M/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 749695,
+        "length": "16:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Git과 Github 개념 및 코드 관리 사용 설명서 + VScode에서 사용 방법",
+        "url": "https://www.youtube.com/watch?v=HXsKNIz0VRk",
+        "thumbnail": "https://i.ytimg.com/vi/HXsKNIz0VRk/mqdefault.jpg",
+        "channel": "딥스푼",
+        "views": 23182,
+        "length": "42:03",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "얄코의 제대로 파는 Git & GitHub (+ 🎁 전체강의 반값에 듣기 이벤트중!)",
+        "url": "https://www.youtube.com/watch?v=0TEPC1UDGM0",
+        "thumbnail": "https://i.ytimg.com/vi/0TEPC1UDGM0/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 11624,
+        "length": "2:12:52",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 파는 Git & GitHub (고정댓글에서 새 버전을 확인하세요!)",
+        "url": "https://www.youtube.com/watch?v=1I3hMwQU6GU",
+        "thumbnail": "https://i.ytimg.com/vi/1I3hMwQU6GU/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 268177,
+        "length": "2:21:52",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] GitHub Copilot편",
+        "url": "https://www.youtube.com/watch?v=YrRfMLnWw2Y",
+        "thumbnail": "https://i.ytimg.com/vi/YrRfMLnWw2Y/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 3688,
+        "length": "10:24",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "깃 깃허브 사용법 완벽 가이드 | 바이브 코딩 입문자 필수 시청 (Git & GitHub)",
+        "url": "https://www.youtube.com/watch?v=TnQgBKwiKSU",
+        "thumbnail": "https://i.ytimg.com/vi/TnQgBKwiKSU/mqdefault.jpg",
+        "channel": "nuguna",
+        "views": 619,
+        "length": "7:04",
+        "published": "1개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Claude Code 쓸 때 꼭 알아야 할 Git, GitHub 완벽 정리 | 비개발자도 한 번만 보면 끝",
+        "url": "https://www.youtube.com/watch?v=pE5zKg7tS2U",
+        "thumbnail": "https://i.ytimg.com/vi/pE5zKg7tS2U/mqdefault.jpg",
+        "channel": "카일스쿨",
+        "views": 20195,
+        "length": "18:44",
+        "published": "2개월 전",
+        "stage": "실전"
       }
     ],
     "Rust": [
@@ -5817,88 +5817,6 @@
         "stage": "실전"
       }
     ],
-    "Scikit-learn": [
-      {
-        "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
-        "url": "https://www.youtube.com/watch?v=2VPFth2UqoI",
-        "thumbnail": "https://i.ytimg.com/vi/2VPFth2UqoI/mqdefault.jpg",
-        "channel": "K-ICT 빅데이터센터",
-        "views": 10561,
-        "length": "32:27",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "사이킷런 scikit-learn 제대로 시작하기",
-        "url": "https://www.youtube.com/watch?v=eVxGhCRN-xA",
-        "thumbnail": "https://i.ytimg.com/vi/eVxGhCRN-xA/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 37253,
-        "length": "1:48:12",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[3] 파이썬 머신러닝 라이브러리(Scikit-learn) 핵심 개발자의 슬라이드로 기계학습 개념 정리하기 - classification 모델 비교와 시각화 강좌",
-        "url": "https://www.youtube.com/watch?v=jzuz-FCL3i8",
-        "thumbnail": "https://i.ytimg.com/vi/jzuz-FCL3i8/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 5423,
-        "length": "14:58",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[토크ON세미나] Scikit-Learn으로 다지는 머신러닝 기초 4강 - 분류 (Classification) | T아카데미",
-        "url": "https://www.youtube.com/watch?v=pVvlh2ciR64",
-        "thumbnail": "https://i.ytimg.com/vi/pVvlh2ciR64/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 1321,
-        "length": "44:56",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "머신런닝으로 자동매매 전략구현 feat.scikit learn",
-        "url": "https://www.youtube.com/watch?v=-6SE73MBJzU",
-        "thumbnail": "https://i.ytimg.com/vi/-6SE73MBJzU/mqdefault.jpg",
-        "channel": "존버킴",
-        "views": 978,
-        "length": "19:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "도서리뷰 [개정2판] 사이킷런(Scikit-Learn) 핵심 개발자가 쓴 머신러닝과 데이터 과학 실무서",
-        "url": "https://www.youtube.com/watch?v=DyldYDj3v1s",
-        "thumbnail": "https://i.ytimg.com/vi/DyldYDj3v1s/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 2526,
-        "length": "23:24",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "머신러닝, 딥러닝 실전 개발 입문 14강 - scikit learn 기본 구성",
-        "url": "https://www.youtube.com/watch?v=a_F6Zu2-B1k",
-        "thumbnail": "https://i.ytimg.com/vi/a_F6Zu2-B1k/mqdefault.jpg",
-        "channel": "윤인성",
-        "views": 10584,
-        "length": "10:57",
-        "published": "8년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "30.Scikit-learn 시작하기 완벽 가이드",
-        "url": "https://www.youtube.com/watch?v=9be9aU9zsWw",
-        "thumbnail": "https://i.ytimg.com/vi/9be9aU9zsWw/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 8,
-        "length": "14:22",
-        "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
     "SCSS": [
       {
         "title": "SCSS, CSS: 레이아웃 개념잡기",
@@ -5978,6 +5896,88 @@
         "views": 548,
         "length": "36:09",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Scikit-learn": [
+      {
+        "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
+        "url": "https://www.youtube.com/watch?v=2VPFth2UqoI",
+        "thumbnail": "https://i.ytimg.com/vi/2VPFth2UqoI/mqdefault.jpg",
+        "channel": "K-ICT 빅데이터센터",
+        "views": 10561,
+        "length": "32:27",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "사이킷런 scikit-learn 제대로 시작하기",
+        "url": "https://www.youtube.com/watch?v=eVxGhCRN-xA",
+        "thumbnail": "https://i.ytimg.com/vi/eVxGhCRN-xA/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 37253,
+        "length": "1:48:12",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[3] 파이썬 머신러닝 라이브러리(Scikit-learn) 핵심 개발자의 슬라이드로 기계학습 개념 정리하기 - classification 모델 비교와 시각화 강좌",
+        "url": "https://www.youtube.com/watch?v=jzuz-FCL3i8",
+        "thumbnail": "https://i.ytimg.com/vi/jzuz-FCL3i8/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 5423,
+        "length": "14:58",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[토크ON세미나] Scikit-Learn으로 다지는 머신러닝 기초 4강 - 분류 (Classification) | T아카데미",
+        "url": "https://www.youtube.com/watch?v=pVvlh2ciR64",
+        "thumbnail": "https://i.ytimg.com/vi/pVvlh2ciR64/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 1321,
+        "length": "44:56",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "머신런닝으로 자동매매 전략구현 feat.scikit learn",
+        "url": "https://www.youtube.com/watch?v=-6SE73MBJzU",
+        "thumbnail": "https://i.ytimg.com/vi/-6SE73MBJzU/mqdefault.jpg",
+        "channel": "존버킴",
+        "views": 978,
+        "length": "19:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "도서리뷰 [개정2판] 사이킷런(Scikit-Learn) 핵심 개발자가 쓴 머신러닝과 데이터 과학 실무서",
+        "url": "https://www.youtube.com/watch?v=DyldYDj3v1s",
+        "thumbnail": "https://i.ytimg.com/vi/DyldYDj3v1s/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 2526,
+        "length": "23:24",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "머신러닝, 딥러닝 실전 개발 입문 14강 - scikit learn 기본 구성",
+        "url": "https://www.youtube.com/watch?v=a_F6Zu2-B1k",
+        "thumbnail": "https://i.ytimg.com/vi/a_F6Zu2-B1k/mqdefault.jpg",
+        "channel": "윤인성",
+        "views": 10584,
+        "length": "10:57",
+        "published": "8년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "30.Scikit-learn 시작하기 완벽 가이드",
+        "url": "https://www.youtube.com/watch?v=9be9aU9zsWw",
+        "thumbnail": "https://i.ytimg.com/vi/9be9aU9zsWw/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 8,
+        "length": "14:22",
+        "published": "4개월 전",
         "stage": "실전"
       }
     ],
@@ -6637,6 +6637,88 @@
         "stage": "실전"
       }
     ],
+    "Cypress": [
+      {
+        "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
+        "url": "https://www.youtube.com/watch?v=I5Zpc41XA9M",
+        "thumbnail": "https://i.ytimg.com/vi/I5Zpc41XA9M/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 75,
+        "length": "57:14",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Cypress Tutorial For Beginners : Part 1 ( Creating your first script )",
+        "url": "https://www.youtube.com/watch?v=vQH-2Sq0cKk",
+        "thumbnail": "https://i.ytimg.com/vi/vQH-2Sq0cKk/mqdefault.jpg",
+        "channel": "The Testing Academy",
+        "views": 43126,
+        "length": "12:57",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Cypress PSoC 워크숍 1일 of 2일",
+        "url": "https://www.youtube.com/watch?v=IjdlSCQD8Mo",
+        "thumbnail": "https://i.ytimg.com/vi/IjdlSCQD8Mo/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 245,
+        "length": "2:10:02",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Cypress CVRA Presentation [KOREAN TRANSLATION]",
+        "url": "https://www.youtube.com/watch?v=0cPA63-PAP8",
+        "thumbnail": "https://i.ytimg.com/vi/0cPA63-PAP8/mqdefault.jpg",
+        "channel": "CityofCypress",
+        "views": 20,
+        "length": "15:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "End to End Testing with Cypress - Lecture",
+        "url": "https://www.youtube.com/watch?v=CwQk_jZPbTQ",
+        "thumbnail": "https://i.ytimg.com/vi/CwQk_jZPbTQ/mqdefault.jpg",
+        "channel": "Lighthouse",
+        "views": 84,
+        "length": "1:47:08",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Intro to Cypress",
+        "url": "https://www.youtube.com/watch?v=Eg-lIZkllGI",
+        "thumbnail": "https://i.ytimg.com/vi/Eg-lIZkllGI/mqdefault.jpg",
+        "channel": "Kyle Coberly",
+        "views": 14,
+        "length": "1:10:34",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "#AskRaghav | Cypress Or Selenium | Which is better automation platform |",
+        "url": "https://www.youtube.com/watch?v=2anO9t6-oT8",
+        "thumbnail": "https://i.ytimg.com/vi/2anO9t6-oT8/mqdefault.jpg",
+        "channel": "Automation Step by Step",
+        "views": 47619,
+        "length": "11:26",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Part 1: Cypress Introduction | Web Automation using Cypress",
+        "url": "https://www.youtube.com/watch?v=yM38NmF-LC4",
+        "thumbnail": "https://i.ytimg.com/vi/yM38NmF-LC4/mqdefault.jpg",
+        "channel": "SDET- QA",
+        "views": 228262,
+        "length": "19:18",
+        "published": "6년 전",
+        "stage": "핵심"
+      }
+    ],
     "Windows": [
       {
         "title": "컴퓨터 윈도우 11 기본기능 과 사용법_Windows 10 비교 _PC 환경 및 기초 배우기.",
@@ -6880,88 +6962,6 @@
         "views": 1528,
         "length": "9:50",
         "published": "5년 전",
-        "stage": "핵심"
-      }
-    ],
-    "Cypress": [
-      {
-        "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
-        "url": "https://www.youtube.com/watch?v=I5Zpc41XA9M",
-        "thumbnail": "https://i.ytimg.com/vi/I5Zpc41XA9M/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 75,
-        "length": "57:14",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Cypress Tutorial For Beginners : Part 1 ( Creating your first script )",
-        "url": "https://www.youtube.com/watch?v=vQH-2Sq0cKk",
-        "thumbnail": "https://i.ytimg.com/vi/vQH-2Sq0cKk/mqdefault.jpg",
-        "channel": "The Testing Academy",
-        "views": 43126,
-        "length": "12:57",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Cypress PSoC 워크숍 1일 of 2일",
-        "url": "https://www.youtube.com/watch?v=IjdlSCQD8Mo",
-        "thumbnail": "https://i.ytimg.com/vi/IjdlSCQD8Mo/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 245,
-        "length": "2:10:02",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Cypress CVRA Presentation [KOREAN TRANSLATION]",
-        "url": "https://www.youtube.com/watch?v=0cPA63-PAP8",
-        "thumbnail": "https://i.ytimg.com/vi/0cPA63-PAP8/mqdefault.jpg",
-        "channel": "CityofCypress",
-        "views": 20,
-        "length": "15:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "End to End Testing with Cypress - Lecture",
-        "url": "https://www.youtube.com/watch?v=CwQk_jZPbTQ",
-        "thumbnail": "https://i.ytimg.com/vi/CwQk_jZPbTQ/mqdefault.jpg",
-        "channel": "Lighthouse",
-        "views": 84,
-        "length": "1:47:08",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Intro to Cypress",
-        "url": "https://www.youtube.com/watch?v=Eg-lIZkllGI",
-        "thumbnail": "https://i.ytimg.com/vi/Eg-lIZkllGI/mqdefault.jpg",
-        "channel": "Kyle Coberly",
-        "views": 14,
-        "length": "1:10:34",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "#AskRaghav | Cypress Or Selenium | Which is better automation platform |",
-        "url": "https://www.youtube.com/watch?v=2anO9t6-oT8",
-        "thumbnail": "https://i.ytimg.com/vi/2anO9t6-oT8/mqdefault.jpg",
-        "channel": "Automation Step by Step",
-        "views": 47619,
-        "length": "11:26",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Part 1: Cypress Introduction | Web Automation using Cypress",
-        "url": "https://www.youtube.com/watch?v=yM38NmF-LC4",
-        "thumbnail": "https://i.ytimg.com/vi/yM38NmF-LC4/mqdefault.jpg",
-        "channel": "SDET- QA",
-        "views": 228262,
-        "length": "19:18",
-        "published": "6년 전",
         "stage": "핵심"
       }
     ],
@@ -7457,6 +7457,88 @@
         "stage": "실전"
       }
     ],
+    "Nuxt": [
+      {
+        "title": "율곡선생 76기 1강 VUE Nuxt 개념, 장점, 특징 및 서버 사이드 렌더링 설명",
+        "url": "https://www.youtube.com/watch?v=S998Eh-trJQ",
+        "thumbnail": "https://i.ytimg.com/vi/S998Eh-trJQ/mqdefault.jpg",
+        "channel": "서울IT교육센터온라인강좌TV",
+        "views": 2920,
+        "length": "15:46",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Nuxt 란? | Nuxt 사용하는 이유",
+        "url": "https://www.youtube.com/watch?v=5U6zDCxgFU4",
+        "thumbnail": "https://i.ytimg.com/vi/5U6zDCxgFU4/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 5059,
+        "length": "6:37",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Nuxt3 Pinia Full Course (feat. News API)",
+        "url": "https://www.youtube.com/watch?v=5eA0V540hZs",
+        "thumbnail": "https://i.ytimg.com/vi/5eA0V540hZs/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 2572,
+        "length": "2:32:41",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SSR, SSG, JAM Stack이 뭔가요? (+ CSR, SEO, Next.js, Nuxt.js, Gatsby)",
+        "url": "https://www.youtube.com/watch?v=5ILR9Vd_Vos",
+        "thumbnail": "https://i.ytimg.com/vi/5ILR9Vd_Vos/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 17408,
+        "length": "14:23",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "앱을 만들자 n4f3 3 nuxt guide",
+        "url": "https://www.youtube.com/watch?v=Ubhrdb12arI",
+        "thumbnail": "https://i.ytimg.com/vi/Ubhrdb12arI/mqdefault.jpg",
+        "channel": "memi dev",
+        "views": 62,
+        "length": "48:51",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "앱을 만들자 n4f3 4 nuxt ui 알아보기",
+        "url": "https://www.youtube.com/watch?v=0JZihwh9fis",
+        "thumbnail": "https://i.ytimg.com/vi/0JZihwh9fis/mqdefault.jpg",
+        "channel": "memi dev",
+        "views": 145,
+        "length": "30:50",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Nuxt 3 강의 오리엔테이션 | 고정댓글 할인쿠폰",
+        "url": "https://www.youtube.com/watch?v=U1OvIKHh24M",
+        "thumbnail": "https://i.ytimg.com/vi/U1OvIKHh24M/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 970,
+        "length": "9:39",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Do it! Vue.js + Nuxt 입문] Vue.js 기초부터 Nuxt 4 실전까지, '이 책' 한 권으로 종결!",
+        "url": "https://www.youtube.com/watch?v=ZclHcS5dvso",
+        "thumbnail": "https://i.ytimg.com/vi/ZclHcS5dvso/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 580,
+        "length": "8:19",
+        "published": "3개월 전",
+        "stage": "실전"
+      }
+    ],
     "ROS": [
       {
         "title": "[ROS2] 입문편 한 번에 몰아보기｜R2R 입문｜민형기 강사님 무료 강의",
@@ -7782,88 +7864,6 @@
         "views": 1462,
         "length": "30:11",
         "published": "11개월 전",
-        "stage": "실전"
-      }
-    ],
-    "Nuxt": [
-      {
-        "title": "율곡선생 76기 1강 VUE Nuxt 개념, 장점, 특징 및 서버 사이드 렌더링 설명",
-        "url": "https://www.youtube.com/watch?v=S998Eh-trJQ",
-        "thumbnail": "https://i.ytimg.com/vi/S998Eh-trJQ/mqdefault.jpg",
-        "channel": "서울IT교육센터온라인강좌TV",
-        "views": 2920,
-        "length": "15:46",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Nuxt 란? | Nuxt 사용하는 이유",
-        "url": "https://www.youtube.com/watch?v=5U6zDCxgFU4",
-        "thumbnail": "https://i.ytimg.com/vi/5U6zDCxgFU4/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 5059,
-        "length": "6:37",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nuxt3 Pinia Full Course (feat. News API)",
-        "url": "https://www.youtube.com/watch?v=5eA0V540hZs",
-        "thumbnail": "https://i.ytimg.com/vi/5eA0V540hZs/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 2572,
-        "length": "2:32:41",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "SSR, SSG, JAM Stack이 뭔가요? (+ CSR, SEO, Next.js, Nuxt.js, Gatsby)",
-        "url": "https://www.youtube.com/watch?v=5ILR9Vd_Vos",
-        "thumbnail": "https://i.ytimg.com/vi/5ILR9Vd_Vos/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 17408,
-        "length": "14:23",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "앱을 만들자 n4f3 3 nuxt guide",
-        "url": "https://www.youtube.com/watch?v=Ubhrdb12arI",
-        "thumbnail": "https://i.ytimg.com/vi/Ubhrdb12arI/mqdefault.jpg",
-        "channel": "memi dev",
-        "views": 62,
-        "length": "48:51",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "앱을 만들자 n4f3 4 nuxt ui 알아보기",
-        "url": "https://www.youtube.com/watch?v=0JZihwh9fis",
-        "thumbnail": "https://i.ytimg.com/vi/0JZihwh9fis/mqdefault.jpg",
-        "channel": "memi dev",
-        "views": 145,
-        "length": "30:50",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nuxt 3 강의 오리엔테이션 | 고정댓글 할인쿠폰",
-        "url": "https://www.youtube.com/watch?v=U1OvIKHh24M",
-        "thumbnail": "https://i.ytimg.com/vi/U1OvIKHh24M/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 970,
-        "length": "9:39",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Do it! Vue.js + Nuxt 입문] Vue.js 기초부터 Nuxt 4 실전까지, '이 책' 한 권으로 종결!",
-        "url": "https://www.youtube.com/watch?v=ZclHcS5dvso",
-        "thumbnail": "https://i.ytimg.com/vi/ZclHcS5dvso/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 580,
-        "length": "8:19",
-        "published": "3개월 전",
         "stage": "실전"
       }
     ],

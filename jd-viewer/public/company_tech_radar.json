@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T01:46:39",
+ "generated_at": "2026-06-16T03:20:07",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 45,
+ "refined": 47,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -708,10 +708,6 @@
      "count": 8
     },
     {
-     "name": "Go",
-     "count": 6
-    },
-    {
      "name": "JavaScript",
      "count": 6
     },
@@ -720,12 +716,16 @@
      "count": 6
     },
     {
-     "name": "Scala",
+     "name": "C++",
      "count": 5
     },
     {
-     "name": "C++",
-     "count": 4
+     "name": "Go",
+     "count": 5
+    },
+    {
+     "name": "Scala",
+     "count": 5
     },
     {
      "name": "Rust",
@@ -744,7 +744,7 @@
      },
      {
       "name": "Netty",
-      "count": 3
+      "count": 4
      },
      {
       "name": "Python",
@@ -801,7 +801,7 @@
       "count": 1
      },
      {
-      "name": "Android/iOS Native",
+      "name": "Android Native",
       "count": 1
      },
      {
@@ -824,6 +824,10 @@
      },
      {
       "name": "Cassandra",
+      "count": 5
+     },
+     {
+      "name": "Elasticsearch",
       "count": 4
      },
      {
@@ -833,10 +837,6 @@
      {
       "name": "Redis",
       "count": 4
-     },
-     {
-      "name": "Elasticsearch",
-      "count": 3
      },
      {
       "name": "HBase",
@@ -869,6 +869,10 @@
       "count": 3
      },
      {
+      "name": "Prometheus",
+      "count": 3
+     },
+     {
       "name": "AWS",
       "count": 2
      },
@@ -877,7 +881,7 @@
       "count": 2
      },
      {
-      "name": "Prometheus",
+      "name": "Terraform",
       "count": 2
      },
      {
@@ -889,15 +893,11 @@
       "count": 1
      },
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
       "name": "AWS EC2/S3",
-      "count": 1
-     },
-     {
-      "name": "Azure",
-      "count": 1
-     },
-     {
-      "name": "BigQuery",
       "count": 1
      }
     ]
@@ -913,18 +913,18 @@
     },
     {
      "name": "MSA",
-     "count": 3
+     "count": 2
     },
     {
      "name": "Service-oriented",
      "count": 2
     },
     {
-     "name": "대용량 메시징",
-     "count": 2
+     "name": "Actor-model concurrency",
+     "count": 1
     },
     {
-     "name": "Actor-model concurrency",
+     "name": "CQRS / read-optimized derived stores",
      "count": 1
     }
    ]
@@ -10847,42 +10847,48 @@
     "Kotlin",
     "Scala",
     "JavaScript",
-    "Go"
+    "C++"
    ],
    "stack": {
     "backend": [
      "Armeria",
      "Spring Boot",
+     "Thrift",
      "gRPC",
-     "Thrift"
+     "Netty"
     ],
     "frontend": [
      "React",
      "Vue.js",
-     "TypeScript"
+     "TypeScript",
+     "Next.js"
     ],
     "data": [
      "Kafka",
      "HBase",
      "Redis",
      "Elasticsearch",
-     "MySQL"
+     "MySQL",
+     "Cassandra"
     ],
     "infra": [
      "Kubernetes",
-     "사내 PaaS(Verda)",
-     "Prometheus"
+     "Verda(사내 PaaS)",
+     "Central Dogma",
+     "Prometheus",
+     "OpenStack"
     ]
    },
    "architecture": [
     "MSA",
-    "RPC 기반 통신",
-    "대용량 메시징"
+    "RPC 기반 통신(Thrift/gRPC)",
+    "이벤트 드리븐 스트리밍",
+    "멀티 데이터센터/지오 에지"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    APP[\"LINE App<br/>Native\"]\n    WEB[\"Web<br/>React Vue TS\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>Armeria\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MSG[\"Messaging<br/>Armeria Thrift\"]\n    SVC[\"Services<br/>Spring Boot\"]\n    PAY[\"LINE Pay<br/>Kotlin\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"HBase\"]\n    MYSQL[\"MySQL\"]\n    REDIS[\"Redis\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    VERDA[\"Private PaaS<br/>Verda\"]\n    K8S[\"Kubernetes\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW -->|gRPC Thrift| MSG\n  GW -->|gRPC| SVC\n  GW -->|gRPC| PAY\n  MSG --> HBASE\n  SVC --> MYSQL\n  MSG --> REDIS\n  MSG -->|publish| KAFKA\n  KAFKA --> ES\n  VERDA --- K8S\n  MSG --- VERDA\n  SVC --- VERDA",
-   "why_language": "글로벌 메시징 트래픽을 처리하기 위해 JVM(Java/Kotlin/Scala)을 핵심으로 쓰며, 사내 오픈소스 RPC 프레임워크 Armeria를 중심으로 서비스 간 통신을 표준화한다.",
-   "why_architecture": "수억 사용자의 메시지를 처리하므로 gRPC/Thrift 기반 RPC로 마이크로서비스를 연결하고, 자체 PaaS(Verda) 위에서 대규모 분산 시스템을 운영한다.",
-   "summary": "Armeria 기반 RPC로 글로벌 메시징을 떠받치는 JVM 중심 MSA.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"LINE App<br/>iOS / Android / Desktop\"]\n    LEGY[\"LEGY Edge Gateway<br/>SPDY/HTTP2 + Thrift\"]\n  end\n  subgraph Core[\"Core Services\"]\n    TALK[\"Talk-Server<br/>Java + Armeria\"]\n    AUTH[\"Auth / Channel<br/>Spring Boot\"]\n    PUSH[\"Push Delivery<br/>APNs / FCM Bridge\"]\n    CD[\"Central Dogma<br/>Git 설정/디스커버리\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>이벤트 버스\"]\n    FLINK[\"Stream Proc<br/>Flink / Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"HBase<br/>메시지 스토어\"]\n    REDIS[\"Redis<br/>세션/캐시\"]\n    MYSQL[\"MySQL<br/>유저/관계\"]\n    ES[\"Elasticsearch<br/>검색/로그\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    VERDA[\"Verda PaaS<br/>OpenStack + K8s\"]\n    PROM[\"Prometheus<br/>메트릭/관측성\"]\n  end\n  APP -->|SPDY long-conn| LEGY\n  LEGY -->|Thrift RPC| TALK\n  LEGY -->|Thrift RPC| AUTH\n  TALK -->|write| HBASE\n  TALK -->|session| REDIS\n  TALK -->|event| KAFKA\n  AUTH --> MYSQL\n  TALK --> PUSH\n  KAFKA --> FLINK\n  FLINK --> ES\n  CD -.config.-> TALK\n  CD -.config.-> AUTH\n  TALK --- VERDA\n  VERDA --- PROM",
+   "why_language": "글로벌 수억 MAU 메시징의 동시 접속·낮은 지연 처리를 위해 JVM 생태계(Java/Kotlin/Scala)를 중심으로 채택했으며, Netty/Armeria 기반 비동기 I/O로 대규모 커넥션을 효율적으로 다룬다. Scala는 Kafka·스트리밍 데이터 처리에, Kotlin은 신규 서버·안드로이드 개발 생산성에 활용되고, 에지 게이트웨이(LEGY) 같은 극한 성능 구간은 C++로 최적화한다.",
+   "why_architecture": "메시지·콜·결제·커머스 등 도메인이 폭증하면서 독립 배포·장애 격리가 가능한 MSA로 분리했고, 내부 통신은 스키마 명확하고 빠른 Thrift/gRPC RPC로 묶었다. 전 세계 사용자에게 일정한 지연을 제공하기 위해 LEGY 에지 + 멀티 데이터센터 구조를 택했고, 비동기 후처리는 Kafka 이벤트 스트림으로 분리해 코어 전송 경로를 가볍게 유지한다.",
+   "summary": "JVM·RPC·LEGY 에지로 수억 MAU 실시간 메시징을 떠받치는 대규모 MSA",
    "deep_dive": [
     {
      "topic": "메시지 종단간 흐름: send → store → push",
@@ -10903,6 +10909,22 @@
     {
      "topic": "Verda 사내 PaaS와 관측성·확장성",
      "body": "### Verda\n**Verda** 는 LINE의 사내 프라이빗 클라우드/PaaS다. OpenStack·Kubernetes를 기반으로 컴퓨트·네트워크·스토리지·매니지드 서비스(DB, Kafka, Redis 등)를 self-service로 제공한다.\n\n- 개발자는 물리 인프라를 신경 쓰지 않고 API/포털로 VM·컨테이너·매니지드 미들웨어를 프로비저닝한다.\n- 퍼블릭 클라우드 대신 사내 PaaS를 운영하는 이유는 **규모의 비용**(LINE 트래픽 규모에선 자체 운영이 저렴)과 **데이터 주권/규제**(메시징 데이터의 자국 내 보관) 때문이다.\n\n### 오토스케일링·확장성\n- 서비스는 Kubernetes에 배포되어 HPA로 CPU/RPS 기반 스케일.\n- Armeria의 클라이언트 LB와 결합해, 스케일아웃된 신규 파드를 디스커버리가 즉시 트래픽 풀에 편입한다.\n- 대용량 메시징 이벤트는 Kafka 파티션 확장으로 처리량을 늘린다.\n\n### 관측성\n- **Prometheus** 로 메트릭을 수집한다. Armeria가 RPC별 latency·에러율·서킷 상태 메트릭을 기본 노출하므로, 서비스 메시 전체의 골든 시그널을 통일된 형식으로 본다.\n- 분산 트레이싱은 RequestContext로 trace-id를 전파해, 한 메시지가 게이트웨이→Talk→HBase→Kafka로 흐르는 경로를 한 trace로 묶는다.\n- 알림은 SLO(에러 예산) 기반으로 발화한다.\n\n### WHY\n자체 PaaS는 초기 투자와 운영 인력이 비싸지만, 글로벌 메신저 규모에선 단위 비용·지연·규제 통제력에서 우위를 준다. Armeria(표준 메트릭)+Central Dogma(설정)+Verda(인프라)가 하나의 일관된 운영 플랫폼을 이룬다."
+    },
+    {
+     "topic": "LEGY: 글로벌 에지 게이트웨이와 경량 SPDY 프로토콜",
+     "body": "### LEGY가 푸는 문제\n\nLINE은 일본·대만·태국·인도네시아 등 지리적으로 흩어진 수억 사용자가 모바일 네트워크(고지연·불안정·잦은 핸드오버)에서 접속한다. 매 요청마다 TCP+TLS 핸드셰이크를 다시 하면 RTT가 누적돼 채팅 체감 지연이 치명적으로 커진다. 이를 해결하는 코어가 `LEGY`(LINE Event Delivery Gateway)다.\n\n### 동작 원리\n\n- **상시 연결(long-lived connection)**: 클라이언트는 가장 가까운 LEGY 에지 PoP에 단 하나의 영속 커넥션을 맺고, 모든 메시지 송수신·푸시를 이 커넥션에 멀티플렉싱한다. 재핸드셰이크 비용을 제거한다.\n- **SPDY 기반 커스텀 프로토콜**: 초기 HTTP/2 표준화 이전부터 LINE은 SPDY를 변형해 헤더 압축·스트림 멀티플렉싱을 적용했다. 모바일에서 헤더 오버헤드를 줄이고 한 커넥션 위에서 여러 RPC를 병렬화한다.\n- **Thrift 페이로드**: 본문은 Apache Thrift 컴팩트 직렬화를 써 JSON 대비 바이트·파싱 비용을 크게 낮춘다. LEGY는 들어온 Thrift 호출을 백엔드 `Talk-Server` 등으로 RPC 라우팅한다.\n- **에지 라우팅·푸시 종단**: LEGY는 단순 LB가 아니라 인증 토큰 검증, 백엔드 서비스 디스커버리, 그리고 서버가 클라이언트로 보내는 이벤트(새 메시지 도착 신호)를 상시 커넥션으로 즉시 내려보내는 푸시 종단점 역할까지 한다.\n\n### 트레이드오프\n\n표준 HTTP가 아닌 자체 프로토콜이라 디버깅·생태계 호환성은 떨어지지만, 모바일 메시징이라는 단일 목적에 맞춰 **연결 지속성·바이트 효율·지연**을 극한까지 최적화했다. 에지 PoP를 사용자 가까이 배치해 코어 데이터센터까지의 왕복을 최소화하는 것이 LINE 실시간성의 근간이다."
+    },
+    {
+     "topic": "Kafka·Decaton 기반 비동기 이벤트 스트리밍",
+     "body": "### 코어 전송 경로와 후처리의 분리\n\n메시지 전송의 동기 경로(LEGY → Talk-Server → HBase 저장 → 수신자 푸시)는 최대한 가볍게 유지하고, 그 외 부가 작업(읽음 처리 집계, 봇 콜백, 검색 색인, 통계, 안티스팸/어뷰징 탐지, 알림 fan-out)은 전부 `Kafka` 이벤트 스트림으로 비동기 분리한다. 코어가 후처리에 묶이지 않으므로 전송 지연이 안정적이다.\n\n### Decaton: 고처리량 컨슈머\n\nLINE이 오픈소스로 공개한 `Decaton`은 Kafka 파티션 수의 제약을 넘어서기 위한 라이브러리다.\n\n- 표준 Kafka 컨슈머는 파티션당 1스레드라 동시성이 파티션 개수에 묶인다. Decaton은 **하나의 파티션 안에서 키 단위 순서를 보존하면서도 여러 작업을 동시 처리**해, 파티션을 무한정 늘리지 않고도 처리량을 끌어올린다.\n- 처리 실패 시 **지연 재시도(delayed retry)**, 백프레셔, per-key 순서 보장을 제공해 외부 API 호출처럼 느리고 실패 가능한 작업을 안전하게 소화한다.\n\n### 스트림 처리 계층\n\nKafka 토픽 위에서 `Flink`/`Spark Streaming`이 실시간 집계·이상탐지·피처 생성을 수행하고, 결과는 `Elasticsearch`(검색·로그 분석), 데이터 레이크, 알림 시스템으로 흘러간다. 이 이벤트 백본 덕분에 새로운 소비자(예: 신규 어뷰징 룰)는 코어 서비스를 건드리지 않고 토픽을 구독만 하면 추가된다 — 전형적인 이벤트 드리븐 확장 패턴이다."
+    },
+    {
+     "topic": "관측성: 분산 트레이싱·Prometheus·Promgen",
+     "body": "### 수천 개 RPC 호출을 추적하기\n\nMSA에서 한 번의 메시지 전송이 LEGY→Talk→Auth→Storage 등 수십 개 서비스 RPC로 펼쳐지면, 장애·지연의 원인을 찾으려면 요청 단위 추적이 필수다. LINE은 `Armeria`에 내장된 분산 트레이싱(Zipkin/Brave 호환)을 활용해 RPC 경계마다 trace/span을 전파하고, 어느 홉에서 지연이 났는지 시각화한다. Armeria는 또한 서비스별 요청/에러/지연 메트릭을 자동 노출한다.\n\n### Prometheus + Promgen\n\n- 메트릭 수집은 `Prometheus`가 담당하지만, 수천 개 타깃·룰을 손으로 관리할 수 없어 LINE은 `Promgen`(오픈소스)을 만들었다. Promgen은 **Prometheus 설정 생성·서비스/팜 단위 타깃 관리·알림 라우팅을 웹 UI로 추상화**하는 관리 레이어다.\n- 서비스 팀은 Promgen에서 자기 서비스의 타깃과 알림 규칙을 선언하고, Promgen이 그걸 Prometheus 설정으로 렌더링해 배포한다. 대규모 멀티테넌트 모니터링을 셀프서비스로 운영하기 위한 핵심 도구다.\n\n### 설정의 단일 소스, Central Dogma\n\n관측성·라우팅·기능 토글 등 동적 설정은 `Central Dogma`(Git 기반 저장소)에 두고, 서비스가 변경을 **watch**해 무중단으로 반영한다. 설정 변경 이력이 Git 커밋으로 남아 롤백·감사 추적이 가능하다."
+    },
+    {
+     "topic": "멀티 데이터센터·복원력: 페일오버와 장애 격리",
+     "body": "### 왜 멀티 DC인가\n\nLINE은 일본을 핵심으로 글로벌 사용자를 서비스하며, 단일 데이터센터 장애가 곧 국가 단위 통신 마비로 이어질 수 있어 **멀티 데이터센터·다중 가용영역**을 전제로 설계된다. 메시지 저장소인 `HBase`는 여러 리전·랙에 걸쳐 복제되고, 사용자/관계 데이터의 `MySQL`은 샤딩+레플리카로 읽기 부하와 페일오버를 동시에 처리한다.\n\n### 복원력 메커니즘\n\n- **서킷 브레이커·재시도·타임아웃**: `Armeria` 클라이언트에 내장된 circuit breaker가 다운스트림 서비스의 연쇄 장애(cascading failure)를 차단한다. 느린 서비스로의 호출을 빠르게 끊고 백오프 재시도해, 한 서비스의 지연이 전체로 번지지 않게 한다.\n- **서비스 디스커버리 기반 페일오버**: `Central Dogma`/내부 디스커버리로 엔드포인트 목록을 동적으로 관리해, 인스턴스가 죽으면 트래픽을 건강한 노드로 재라우팅한다.\n- **에지 분산(LEGY PoP)**: 특정 PoP/리전 장애 시 클라이언트를 다른 에지로 재연결시켜 글로벌 가용성을 유지한다.\n\n### 트레이드오프\n\n강한 일관성(특히 메시지 순서·중복 방지)과 멀티 DC 가용성은 충돌하므로, LINE은 메시지 도메인 특성에 맞춰 **키(채팅방) 단위 순서 보장 + 최종적 일관성**을 받아들이는 식으로 균형을 잡는다. 전 세계 어디서나 일정한 지연으로 \"끊기지 않는\" 메신저를 제공하는 것이 최우선 설계 목표다."
     }
    ],
    "github": {
@@ -10911,25 +10933,47 @@
      {
       "name": "line/armeria",
       "url": "https://github.com/line/armeria",
-      "desc": "비동기 RPC와 REST를 위한 마이크로서비스 프레임워크",
+      "desc": "HTTP/2·gRPC·Thrift·REST를 한 포트에서 다루는 비동기 마이크로서비스 프레임워크",
       "lang": "Java",
-      "stars": 5114
+      "stars": 5115
+     },
+     {
+      "name": "line/promgen",
+      "url": "https://github.com/line/promgen",
+      "desc": "Prometheus 설정·알림을 관리하는 웹 UI/프록시",
+      "lang": "JavaScript",
+      "stars": 1125
      },
      {
       "name": "line/centraldogma",
       "url": "https://github.com/line/centraldogma",
-      "desc": "Git 기반 고가용성 설정 저장소 서비스",
+      "desc": "Git 기반 고가용 설정·서비스 디스커버리 저장소",
       "lang": "Java",
       "stars": 663
+     },
+     {
+      "name": "line/line-bot-sdk-java",
+      "url": "https://github.com/line/line-bot-sdk-java",
+      "desc": "LINE Messaging API 공식 Java SDK",
+      "lang": "Java",
+      "stars": 641
+     },
+     {
+      "name": "line/decaton",
+      "url": "https://github.com/line/decaton",
+      "desc": "Kafka 컨슈머의 고처리량 동시 처리 스트리밍 라이브러리",
+      "lang": "Java",
+      "stars": 371
      }
     ]
    },
    "sources": [
-    "https://engineering.linecorp.com",
-    "https://line.github.io/armeria"
+    "https://engineering.linecorp.com/en/blog",
+    "https://github.com/line/armeria",
+    "https://github.com/line/decaton"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "hyperconnect",
@@ -10938,45 +10982,55 @@
    "domain": "SNS/실시간 영상",
    "languages": [
     "Kotlin",
-    "Java",
     "Go",
+    "C++",
     "Python",
-    "C++"
+    "Java",
+    "Swift"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
+     "Kotlin Coroutines",
      "Go",
      "gRPC",
-     "WebRTC"
+     "WebRTC SFU",
+     "Envoy"
     ],
     "frontend": [
+     "Android Native",
+     "iOS Native (Swift)",
      "React",
-     "TypeScript",
-     "Android/iOS Native"
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "Redis",
      "Cassandra",
-     "BigQuery"
+     "BigQuery",
+     "Elasticsearch"
     ],
     "infra": [
      "GCP",
      "AWS",
-     "Kubernetes"
+     "Kubernetes",
+     "Istio",
+     "ArgoCD",
+     "Terraform",
+     "Prometheus"
     ]
    },
    "architecture": [
-    "실시간 미디어(WebRTC)",
-    "MSA",
-    "글로벌 저지연"
+    "실시간 미디어 SFU 기반 MSA",
+    "글로벌 멀티리전 저지연",
+    "이벤트 드리븐(Kafka)",
+    "ML 실시간 추론 파이프라인"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    APP[\"Azar Hakuna App<br/>Android iOS Native\"]\n    WEB[\"Web<br/>React TS\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>gRPC\"]\n    SFU[\"Media SFU<br/>WebRTC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Matching<br/>Go\"]\n    USER[\"User Service<br/>Spring Boot\"]\n    ML[\"ML Moderation<br/>Python\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL\"]\n    REDIS[\"Redis\"]\n    CASS[\"Cassandra\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    BQ[\"Analytics<br/>BigQuery\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>GCP AWS\"]\n  end\n  APP -->|WebRTC| SFU\n  APP --> GW\n  WEB --> GW\n  GW -->|gRPC| MATCH\n  GW -->|gRPC| USER\n  SFU --> ML\n  MATCH --> REDIS\n  USER --> MYSQL\n  ML --> CASS\n  MATCH -->|publish| KAFKA\n  KAFKA --> BQ\n  MATCH --- K8S\n  USER --- K8S",
-   "why_language": "실시간 영상 매칭(아자르)의 저지연 미디어 서버를 위해 C++/Go로 성능을 확보하고, 백엔드 서비스는 Kotlin/Java, ML은 Python을 쓴다.",
-   "why_architecture": "글로벌 영상 통화의 낮은 지연과 품질을 위해 WebRTC 기반 미디어 인프라와 MSA를 구축하고, 멀티 클라우드(GCP/AWS)로 글로벌 엣지를 운영한다.",
-   "summary": "WebRTC 실시간 영상 매칭을 떠받치는 저지연 글로벌 미디어 인프라.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>Android Kotlin + iOS Swift\"]\n    WEBC[\"Web Client<br/>React + TypeScript\"]\n    TURN[\"TURN / STUN<br/>coturn (글로벌 분산)\"]\n  end\n  subgraph Media[\"Realtime Media\"]\n    SFU[\"Media Server SFU<br/>WebRTC + C++\"]\n    MLF[\"ML Filter / AR<br/>TensorFlow Lite + C++\"]\n    TRANS[\"Realtime Translate<br/>STT/MT/TTS Python\"]\n  end\n  subgraph Gateway[\"API / Mesh\"]\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Matching Service<br/>Go + gRPC\"]\n    USER[\"User / Auth<br/>Kotlin Spring Boot\"]\n    BILL[\"Billing / Item<br/>Kotlin Spring Boot\"]\n    MOD[\"Moderation<br/>Go + ML\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    REDIS[\"Redis<br/>세션/매칭 큐\"]\n    MYSQL[\"MySQL<br/>트랜잭션 데이터\"]\n    CASS[\"Cassandra<br/>세션/메시지 이력\"]\n    ES[\"Elasticsearch<br/>검색/필터\"]\n  end\n  subgraph Async[\"Streaming / Analytics\"]\n    KAFKA[\"Kafka<br/>이벤트 버스\"]\n    BQ[\"BigQuery<br/>분석/ML 학습\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Kubernetes<br/>GCP + AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP -->|WebRTC| SFU\n  WEBC -->|WebRTC| SFU\n  APP -.NAT traversal.-> TURN\n  TURN --> SFU\n  SFU --> MLF\n  SFU --> TRANS\n  APP -->|gRPC/HTTPS| GW\n  GW -->|gRPC| MATCH\n  GW -->|gRPC| USER\n  GW -->|gRPC| BILL\n  SFU --> MOD\n  MATCH --> REDIS\n  USER --> MYSQL\n  BILL --> MYSQL\n  MATCH --> CASS\n  USER --> ES\n  MATCH --> KAFKA\n  MOD --> KAFKA\n  BILL --> KAFKA\n  KAFKA --> BQ\n  BQ --> MLF\n  Core --> K8S\n  Media --> K8S\n  K8S --> OBS",
+   "why_language": "Azar·Hakuna 같은 실시간 영상 제품은 모바일 네이티브 경험과 저지연 미디어 처리가 핵심이라, 안드로이드/서버 도메인 로직은 Kotlin(Spring Boot, Coroutines), iOS는 Swift로 작성한다. 초당 수만 건의 매칭과 시그널링을 처리하는 매칭·미디어 시그널링 서비스는 경량 동시성과 낮은 GC 오버헤드가 중요해 Go로 구현하고, WebRTC 미디어 파이프라인·AR 필터의 실시간 영상 처리는 성능이 절대적이라 C++로 작성한다. ML 학습·실시간 번역 파이프라인은 생태계가 풍부한 Python을 사용한다.",
+   "why_architecture": "전 세계 사용자를 1:1로 즉시 연결해야 하므로 미디어는 P2P보다 확장·녹화·필터링에 유리한 SFU 기반 구조를 택했고, 지역별 엣지 미디어 서버와 글로벌 분산 TURN으로 RTT를 줄여 저지연을 확보한다. 매칭·과금·인증·모더레이션을 독립 마이크로서비스로 쪼개 gRPC와 Istio 메시로 통신시켜 장애 격리와 개별 오토스케일링을 가능하게 했고, 매칭·모더레이션·과금 이벤트는 Kafka로 비동기 전파해 분석(BigQuery)과 ML 재학습 루프까지 느슨하게 연결한다.",
+   "summary": "WebRTC SFU 미디어 + Go/Kotlin gRPC MSA로 전 세계 실시간 1:1 영상을 저지연으로 매칭하는 글로벌 스택",
    "deep_dive": [
     {
      "topic": "WebRTC 실시간 미디어: SFU 기반 영상 처리 흐름",
@@ -10997,6 +11051,18 @@
     {
      "topic": "MSA와 확장성·장애 격리(Go/Kotlin gRPC)",
      "body": "### 서비스 구성\nHyperconnect는 시그널링·매칭·미디어·안전·결제·프로필 등을 독립 마이크로서비스로 분리한다.\n\n- **Go 서비스**: 시그널링·미디어 제어처럼 동시성·저지연이 중요한 영역. 고루틴 기반 경량 동시성으로 수만 동시 세션을 적은 인스턴스로 처리한다.\n- **Kotlin/Spring Boot 서비스**: 비즈니스 로직·결제·사용자 도메인처럼 풍부한 생태계가 필요한 영역.\n- 서비스 간 통신은 `gRPC`(HTTP/2, protobuf)로 통일해 강타입 계약·스트리밍·다국어 클라이언트를 얻는다.\n\n### 확장성\n- GCP/AWS의 Kubernetes에 배포, HPA로 트래픽에 따라 스케일.\n- 미디어/시그널링은 stateful(세션 고정) 특성이 있어, stateless 비즈니스 서비스와 다른 스케일링 전략(세션 어피니티, 점진적 드레이닝)을 쓴다.\n\n### 장애 격리\n- **서킷 브레이커/타임아웃**: 한 다운스트림(예: 번역 ML)이 느려져도 통화 자체는 유지되도록, ML은 best-effort로 분리하고 실패 시 우아하게 비활성화한다. 핵심 경로(미디어 연결)와 부가 경로(필터/번역)를 격리하는 것이 복원력의 핵심이다.\n- **region 격리**: 한 region 장애가 다른 region 매칭을 막지 않도록, 매칭 풀과 인프라를 region별로 분리한다.\n\n### WHY 멀티클라우드\nGCP와 AWS를 함께 쓰는 이유는 글로벌 엣지 커버리지 확대와 단일 벤더 종속·장애 위험 완화다. 트레이드오프는 운영 복잡성 증가지만, 글로벌 실시간 미디어에선 가용 엣지 위치가 곧 사용자 경험이라 이를 감수한다."
+    },
+    {
+     "topic": "매칭 시스템 end-to-end: 큐잉부터 미디어 연결까지",
+     "body": "### 전체 흐름\nAzar의 핵심은 \"버튼을 누르면 1~2초 안에 전 세계 어딘가의 낯선 사람과 영상이 연결\"되는 경험이다. 이 한 번의 스와이프 뒤에는 다음과 같은 파이프라인이 돈다.\n\n1. **클라이언트 매칭 요청** — 모바일 앱이 `gRPC`로 Gateway(Envoy/Istio)를 거쳐 `Matching Service(Go)`에 enqueue 요청을 보낸다. 이때 성별·지역·언어·관심사·구매등급(유료 필터) 등 매칭 선호도와 디바이스 토큰이 함께 전달된다.\n2. **매칭 큐 적재** — Matching Service는 사용자를 `Redis` 기반의 인메모리 매칭 풀에 넣는다. 단순 FIFO가 아니라 \"선호 조건 교집합\"을 빠르게 찾기 위해 지역·언어 등 키별로 분할된 버킷 구조를 둔다. 전 세계 동시 대기자가 수십만 명 규모라 풀 자체를 리전별로 샤딩한다.\n3. **매칭 성사** — 매처(matcher) 루프가 양쪽 선호가 호환되는 후보 쌍을 찾으면 두 사용자에게 `match found` 이벤트를 푸시한다. 매칭은 \"양방향 만족\" 문제라, A가 원하는 B의 조건과 B가 원하는 A의 조건을 동시에 만족시켜야 해 단순 그래프 매칭보다 제약이 많다.\n4. **시그널링 & SFU 할당** — 매칭이 성사되면 두 클라이언트가 가장 가까운 엣지 리전의 `WebRTC SFU(C++)`에 배정된다. SDP offer/answer, ICE candidate 교환이 시그널링 채널로 오가고, NAT 뒤 사용자는 글로벌 분산 `coturn(TURN/STUN)`을 통해 릴레이된다.\n5. **미디어 스트림 시작** — SFU가 양방향 비디오/오디오 트랙을 중계하기 시작하고, 동시에 ML 필터·실시간 번역 파이프라인이 트랙에 붙는다.\n\n### 왜 Redis 인메모리인가\n매칭 대기는 본질적으로 \"수명이 수 초인 휘발성 상태\"다. 디스크 기반 DB에 넣으면 enqueue/dequeue 지연이 매칭 체감 속도를 직접 악화시킨다. 그래서 큐는 Redis에 두고, **매칭이 확정된 세션 이력만** Cassandra/MySQL로 영속화한다. 대기 중 사용자가 앱을 끄거나 타임아웃되면 큐에서 조용히 제거된다(TTL + heartbeat).\n\n### 트레이드오프\n- **저지연 vs 매칭 품질**: 더 오래 기다리면 더 좋은 상대(선호 일치율↑)를 찾을 수 있지만 체감 대기시간이 길어진다. 그래서 대기 시간이 늘수록 매칭 조건을 점진적으로 완화(relaxation)하는 전략을 쓴다.\n- **리전 로컬리티 vs 매칭 풀 크기**: 같은 리전끼리 붙이면 RTT는 짧지만 \"글로벌하게 다양한 사람을 만난다\"는 제품 가치가 약해진다. 그래서 크로스 리전 매칭을 허용하되 미디어 경로는 양쪽에서 가장 가까운 SFU를 거치도록 최적화한다."
+    },
+    {
+     "topic": "모더레이션(유해 콘텐츠 차단) 실시간 파이프라인",
+     "body": "### 랜덤 영상 매칭의 숙명: 실시간 안전성\n낯선 사람과 즉석 영상으로 연결되는 서비스에서 가장 큰 엔지니어링·신뢰 문제는 **노출·폭력 등 유해 행위의 실시간 차단**이다. Hyperconnect는 이를 사람 신고에만 의존하지 않고 온디바이스 + 서버 ML 이중 구조로 처리한다.\n\n### 동작 구조\n1. **온디바이스 1차 필터** — 영상 프레임 일부를 클라이언트에서 경량 모델(`TensorFlow Lite`, C++ 추론)로 검사한다. 네트워크로 영상을 보내지 않고 단말에서 판정하면 프라이버시·지연·서버 비용 모두 유리하다.\n2. **서버 측 2차 판정** — 의심 프레임/세션은 `Moderation Service(Go + ML)`로 샘플링되어 더 무거운 모델로 재판정된다. SFU가 미디어를 중계하므로 P2P와 달리 서버가 프레임을 샘플링할 수 있는 지점이 존재한다는 점이 SFU 구조의 부수 이점이다.\n3. **조치 & 이벤트 전파** — 위반이 확정되면 세션 강제 종료, 사용자 플래깅, 누적 시 차단으로 이어지고, 모든 판정 이벤트는 `Kafka`로 흘러간다.\n4. **피드백 루프** — Kafka → `BigQuery`로 적재된 위반/신고 데이터가 모델 재학습 셋이 되고, 갱신된 모델이 다시 온디바이스/서버로 배포된다.\n\n### 핵심 트레이드오프\n| 축 | 온디바이스 | 서버 ML |\n|---|---|---|\n| 지연 | 매우 낮음 | 네트워크 왕복 발생 |\n| 정확도 | 경량 모델, 다소 낮음 | 대형 모델, 높음 |\n| 비용 | 단말 연산 | GPU/서버 비용 |\n| 프라이버시 | 영상 미전송 | 샘플 전송 |\n\n온디바이스로 명백한 케이스를 즉시 걸러내고, 애매한 케이스만 서버로 올려 비용·지연·정확도의 균형을 맞춘다. \"전 영상을 서버로 보내 판정\"하는 방식은 글로벌 트래픽 규모에서 대역폭·비용·프라이버시 모두 비현실적이기 때문에 이 분산 구조가 필연적이다."
+    },
+    {
+     "topic": "글로벌 멀티리전 배포와 관측성·복원력",
+     "body": "### 멀티 클라우드·멀티 리전\nAzar/Hakuna 사용자는 특정 국가에 몰려 있지 않고 전 세계에 흩어져 있다. 그래서 인프라는 `GCP`와 `AWS`를 함께 쓰는 멀티 클라우드에, `Kubernetes` + `Istio` 서비스 메시로 리전별 클러스터를 운영한다. 미디어(SFU)·TURN은 사용자에게 물리적으로 가까운 엣지 리전에 배치해 RTT를 줄이고, 상태성 코어 서비스는 데이터 지역성을 고려해 배치한다.\n\n### 서비스 메시가 주는 것\n`Istio/Envoy`를 깔면 애플리케이션 코드를 건드리지 않고 다음을 얻는다.\n- **mTLS**: 서비스 간 통신 암호화/인증 자동화\n- **트래픽 셰이핑**: 가중치 기반 카나리 배포, 리전 라우팅\n- **복원력 정책**: 재시도, 타임아웃, **서킷 브레이커**, outlier detection을 사이드카에서 일괄 적용\n- **L7 관측성**: 모든 gRPC 호출의 지연·에러율 자동 수집\n\n### 관측성 스택\n`Prometheus`로 메트릭을 긁고 `Grafana`로 대시보드를 구성한다. 미디어 품질 지표(패킷 손실률, 지터, 매칭 성공률, p99 시그널링 지연)는 일반 백엔드 SLO와 함께 별도로 모니터링된다. 영상 서비스 특성상 \"요청은 성공했지만 영상 품질이 나빴다\"는 상황을 잡아야 하므로 RTC 레벨 텔레메트리가 핵심이다.\n\n### 복원력 설계\n- **장애 격리**: MSA로 쪼갰기 때문에 Billing 장애가 매칭/미디어로 전파되지 않는다. 매칭·미디어 같은 핵심 경로는 과금 같은 부가 경로와 의존성을 끊어 \"돈은 못 받아도 영상은 연결된다\"를 유지한다.\n- **페일오버**: 한 리전 SFU/TURN이 죽으면 클라이언트는 차선 리전으로 재연결한다(ICE 재협상).\n- **백프레셔**: Kafka가 분석·모더레이션 후처리를 비동기 버퍼링해, 다운스트림(BigQuery, ML)이 느려도 실시간 매칭 경로는 영향을 받지 않는다.\n\n### 배포\n선언적 GitOps(`ArgoCD`)와 `Terraform` IaC로 멀티 리전 인프라를 코드로 관리하고, 메시 가중치 라우팅을 이용한 카나리로 신규 버전을 일부 트래픽에만 노출해 안전하게 롤아웃한다."
     }
    ],
    "github": {
@@ -11004,11 +11070,12 @@
     "repos": []
    },
    "sources": [
-    "https://hyperconnect.github.io",
-    "https://hyperconnect.com"
+    "https://hyperconnect.github.io/",
+    "https://github.com/hyperconnect",
+    "https://hyperconnect.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "kakao",
