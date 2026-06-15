@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-15T12:55:00",
+  "generated_at": "2026-06-15T14:28:26",
   "source": "youtube",
-  "tech_count": 163,
+  "tech_count": 164,
   "curriculum_count": 20,
   "search_url": "https://www.youtube.com/results?search_query={tech}+강의",
   "resources": {
@@ -2465,88 +2465,6 @@
         "stage": "실전"
       }
     ],
-    "MSA": [
-      {
-        "title": "[MSA 강의 11강] SAGA 패턴 완전 정복 — 분산 트랜잭션을 로컬 트랜잭션으로 분해하는 법",
-        "url": "https://www.youtube.com/watch?v=38C2kuy6Kqo",
-        "thumbnail": "https://i.ytimg.com/vi/38C2kuy6Kqo/mqdefault.jpg",
-        "channel": "AI-Trendy",
-        "views": 160,
-        "length": "17:06",
-        "published": "2개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MSA 요소 6가지 7분컷",
-        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
-        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 20747,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
-        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
-        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 13090,
-        "length": "5:14",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SK TECH SUMMIT 2022] Cloud Native 기반 MSA 개발을 지원하는 애플리케이션 현대화 개발 플랫폼",
-        "url": "https://www.youtube.com/watch?v=UPwl7wEbB8o",
-        "thumbnail": "https://i.ytimg.com/vi/UPwl7wEbB8o/mqdefault.jpg",
-        "channel": "SK AI SUMMIT 2025",
-        "views": 137,
-        "length": "24:56",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의 미리보기] 김병규 강사님과 MSA 전환 조건 알아보기",
-        "url": "https://www.youtube.com/watch?v=66OwESpwI1g",
-        "thumbnail": "https://i.ytimg.com/vi/66OwESpwI1g/mqdefault.jpg",
-        "channel": "패스트캠퍼스",
-        "views": 700,
-        "length": "14:49",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "잡코리아 사례 | MSA 기반 클라우드 전환 구성과 인프라 현대화 - 오준호, 최고 소프트웨어 아키텍트(CSA), CNE팀, 베스핀글로벌",
-        "url": "https://www.youtube.com/watch?v=OWi0qce7DPU",
-        "thumbnail": "https://i.ytimg.com/vi/OWi0qce7DPU/mqdefault.jpg",
-        "channel": "Amazon Web Services Korea",
-        "views": 866,
-        "length": "24:05",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. MSA 소개",
-        "url": "https://www.youtube.com/watch?v=qHB5lLTuWB8",
-        "thumbnail": "https://i.ytimg.com/vi/qHB5lLTuWB8/mqdefault.jpg",
-        "channel": "Open cloud Platform Alliance(OPA)│K-PaaS",
-        "views": 436,
-        "length": "51:12",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 2020] MSA 환경에서 API 문서 관리하기: 생성부터 배포까지",
-        "url": "https://www.youtube.com/watch?v=qguXHW0s8RY",
-        "thumbnail": "https://i.ytimg.com/vi/qguXHW0s8RY/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 5175,
-        "length": "14:05",
-        "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
     "TensorFlow": [
       {
         "title": "텐서 플로우 TensorFlow 기초",
@@ -2626,6 +2544,88 @@
         "views": 17,
         "length": "13:56",
         "published": "2개월 전",
+        "stage": "실전"
+      }
+    ],
+    "MSA": [
+      {
+        "title": "[MSA 강의 11강] SAGA 패턴 완전 정복 — 분산 트랜잭션을 로컬 트랜잭션으로 분해하는 법",
+        "url": "https://www.youtube.com/watch?v=38C2kuy6Kqo",
+        "thumbnail": "https://i.ytimg.com/vi/38C2kuy6Kqo/mqdefault.jpg",
+        "channel": "AI-Trendy",
+        "views": 160,
+        "length": "17:06",
+        "published": "2개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MSA 요소 6가지 7분컷",
+        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
+        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 20747,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
+        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
+        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 13090,
+        "length": "5:14",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SK TECH SUMMIT 2022] Cloud Native 기반 MSA 개발을 지원하는 애플리케이션 현대화 개발 플랫폼",
+        "url": "https://www.youtube.com/watch?v=UPwl7wEbB8o",
+        "thumbnail": "https://i.ytimg.com/vi/UPwl7wEbB8o/mqdefault.jpg",
+        "channel": "SK AI SUMMIT 2025",
+        "views": 137,
+        "length": "24:56",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[강의 미리보기] 김병규 강사님과 MSA 전환 조건 알아보기",
+        "url": "https://www.youtube.com/watch?v=66OwESpwI1g",
+        "thumbnail": "https://i.ytimg.com/vi/66OwESpwI1g/mqdefault.jpg",
+        "channel": "패스트캠퍼스",
+        "views": 700,
+        "length": "14:49",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "잡코리아 사례 | MSA 기반 클라우드 전환 구성과 인프라 현대화 - 오준호, 최고 소프트웨어 아키텍트(CSA), CNE팀, 베스핀글로벌",
+        "url": "https://www.youtube.com/watch?v=OWi0qce7DPU",
+        "thumbnail": "https://i.ytimg.com/vi/OWi0qce7DPU/mqdefault.jpg",
+        "channel": "Amazon Web Services Korea",
+        "views": 866,
+        "length": "24:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. MSA 소개",
+        "url": "https://www.youtube.com/watch?v=qHB5lLTuWB8",
+        "thumbnail": "https://i.ytimg.com/vi/qHB5lLTuWB8/mqdefault.jpg",
+        "channel": "Open cloud Platform Alliance(OPA)│K-PaaS",
+        "views": 436,
+        "length": "51:12",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 2020] MSA 환경에서 API 문서 관리하기: 생성부터 배포까지",
+        "url": "https://www.youtube.com/watch?v=qguXHW0s8RY",
+        "thumbnail": "https://i.ytimg.com/vi/qguXHW0s8RY/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 5175,
+        "length": "14:05",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -4269,88 +4269,6 @@
         "stage": "핵심"
       }
     ],
-    "MSSQL": [
-      {
-        "title": "[MSSQL 중급 3강] 조인 기초편",
-        "url": "https://www.youtube.com/watch?v=HiXPO3X4gtE",
-        "thumbnail": "https://i.ytimg.com/vi/HiXPO3X4gtE/mqdefault.jpg",
-        "channel": "최찰떡의 찰떡수업",
-        "views": 2542,
-        "length": "4:10",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
-        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
-        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
-        "channel": "홍팍",
-        "views": 7230,
-        "length": "2:34:46",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL 초보자가 꼭  알아야 하는 10가지 문법. 무료 강의. 편안하게 들어보세요",
-        "url": "https://www.youtube.com/watch?v=ZsYnTSSuSiw",
-        "thumbnail": "https://i.ytimg.com/vi/ZsYnTSSuSiw/mqdefault.jpg",
-        "channel": "디노자유아빠 - SQL쿼리, 엑셀, 데이터 분석",
-        "views": 70336,
-        "length": "38:13",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MSSQL CTE1",
-        "url": "https://www.youtube.com/watch?v=IhuyVzyQOBY",
-        "thumbnail": "https://i.ytimg.com/vi/IhuyVzyQOBY/mqdefault.jpg",
-        "channel": "정원혁 (William Chung)",
-        "views": 1132,
-        "length": "10:39",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MsSQL Server - 프로시저 생성, 사용법",
-        "url": "https://www.youtube.com/watch?v=YRO5_Ytv7hw",
-        "thumbnail": "https://i.ytimg.com/vi/YRO5_Ytv7hw/mqdefault.jpg",
-        "channel": "DevTory TV",
-        "views": 1599,
-        "length": "17:28",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSSQL 데이터베이스 강의",
-        "url": "https://www.youtube.com/watch?v=UGnVyVElGg8",
-        "thumbnail": "https://i.ytimg.com/vi/UGnVyVElGg8/mqdefault.jpg",
-        "channel": "개발자PARK",
-        "views": 439,
-        "length": "1:50",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSSQL 기초 강의 기초부터 실무까지 차근차근! MSSQL Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=yqVRdtDZWQ0",
-        "thumbnail": "https://i.ytimg.com/vi/yqVRdtDZWQ0/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 1332,
-        "length": "20:01",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "MSSQL 강의 기초부터 실습 위주의 교육",
-        "url": "https://www.youtube.com/watch?v=bkX-yu0mJlQ",
-        "thumbnail": "https://i.ytimg.com/vi/bkX-yu0mJlQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 1899,
-        "length": "15:06",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "PHP": [
       {
         "title": "PHP 웹 프로그래밍 기초",
@@ -4430,6 +4348,88 @@
         "views": 5620,
         "length": "40:43",
         "published": "8년 전",
+        "stage": "실전"
+      }
+    ],
+    "MSSQL": [
+      {
+        "title": "[MSSQL 중급 3강] 조인 기초편",
+        "url": "https://www.youtube.com/watch?v=HiXPO3X4gtE",
+        "thumbnail": "https://i.ytimg.com/vi/HiXPO3X4gtE/mqdefault.jpg",
+        "channel": "최찰떡의 찰떡수업",
+        "views": 2542,
+        "length": "4:10",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
+        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
+        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
+        "channel": "홍팍",
+        "views": 7230,
+        "length": "2:34:46",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL 초보자가 꼭  알아야 하는 10가지 문법. 무료 강의. 편안하게 들어보세요",
+        "url": "https://www.youtube.com/watch?v=ZsYnTSSuSiw",
+        "thumbnail": "https://i.ytimg.com/vi/ZsYnTSSuSiw/mqdefault.jpg",
+        "channel": "디노자유아빠 - SQL쿼리, 엑셀, 데이터 분석",
+        "views": 70336,
+        "length": "38:13",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MSSQL CTE1",
+        "url": "https://www.youtube.com/watch?v=IhuyVzyQOBY",
+        "thumbnail": "https://i.ytimg.com/vi/IhuyVzyQOBY/mqdefault.jpg",
+        "channel": "정원혁 (William Chung)",
+        "views": 1132,
+        "length": "10:39",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MsSQL Server - 프로시저 생성, 사용법",
+        "url": "https://www.youtube.com/watch?v=YRO5_Ytv7hw",
+        "thumbnail": "https://i.ytimg.com/vi/YRO5_Ytv7hw/mqdefault.jpg",
+        "channel": "DevTory TV",
+        "views": 1599,
+        "length": "17:28",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSSQL 데이터베이스 강의",
+        "url": "https://www.youtube.com/watch?v=UGnVyVElGg8",
+        "thumbnail": "https://i.ytimg.com/vi/UGnVyVElGg8/mqdefault.jpg",
+        "channel": "개발자PARK",
+        "views": 439,
+        "length": "1:50",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSSQL 기초 강의 기초부터 실무까지 차근차근! MSSQL Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=yqVRdtDZWQ0",
+        "thumbnail": "https://i.ytimg.com/vi/yqVRdtDZWQ0/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 1332,
+        "length": "20:01",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "MSSQL 강의 기초부터 실습 위주의 교육",
+        "url": "https://www.youtube.com/watch?v=bkX-yu0mJlQ",
+        "thumbnail": "https://i.ytimg.com/vi/bkX-yu0mJlQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 1899,
+        "length": "15:06",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -5253,88 +5253,6 @@
         "stage": "실전"
       }
     ],
-    "SQL": [
-      {
-        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
-        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
-        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 214570,
-        "length": "2:52:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발 필수 지식 데이터 베이스 DB SQL 이 영상만 보셔도 개념이해 되십니다. 끝까지 보세요~",
-        "url": "https://www.youtube.com/watch?v=muOKnEIUA8Y",
-        "thumbnail": "https://i.ytimg.com/vi/muOKnEIUA8Y/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 53530,
-        "length": "9:32",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
-        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
-        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
-        "channel": "홍팍",
-        "views": 7230,
-        "length": "2:34:46",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[SQL 기초] 0. SELECT문 기본",
-        "url": "https://www.youtube.com/watch?v=cl6Um_H_Q1Q",
-        "thumbnail": "https://i.ytimg.com/vi/cl6Um_H_Q1Q/mqdefault.jpg",
-        "channel": "SQL강의",
-        "views": 529,
-        "length": "14:06",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "알면 무조건 도움되는 SQL 10분 부트캠프, 기본 개념 설명 | 기획자, PM, 마케터의 데이터 분석",
-        "url": "https://www.youtube.com/watch?v=w-EC6OCD4NM",
-        "thumbnail": "https://i.ytimg.com/vi/w-EC6OCD4NM/mqdefault.jpg",
-        "channel": "곰사원은 곰대표",
-        "views": 23079,
-        "length": "11:12",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL injection 공격",
-        "url": "https://www.youtube.com/watch?v=FoZ2cucLiDs",
-        "thumbnail": "https://i.ytimg.com/vi/FoZ2cucLiDs/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 258089,
-        "length": "6:24",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "데이터베이스? SQL? NoSQL? 4분만에 정리해드립니다. (ft. AWS Innovate)",
-        "url": "https://www.youtube.com/watch?v=IAMdPn3YCG4",
-        "thumbnail": "https://i.ytimg.com/vi/IAMdPn3YCG4/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 61503,
-        "length": "4:24",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[New!! 2026] (1과목) SQLD 완벽 요약강의 | 요약강의 | 데이터 모델링의 이해 | 최단시간 최대효율👍 | 핵심 요약노트 | SQL개발자",
-        "url": "https://www.youtube.com/watch?v=e_AIZkWJNqA",
-        "thumbnail": "https://i.ytimg.com/vi/e_AIZkWJNqA/mqdefault.jpg",
-        "channel": "IT의 답을 터득하다, 아답터",
-        "views": 108171,
-        "length": "49:32",
-        "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
     "jQuery": [
       {
         "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
@@ -5414,6 +5332,88 @@
         "views": 811,
         "length": "18:11",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "SQL": [
+      {
+        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
+        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
+        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 214570,
+        "length": "2:52:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발 필수 지식 데이터 베이스 DB SQL 이 영상만 보셔도 개념이해 되십니다. 끝까지 보세요~",
+        "url": "https://www.youtube.com/watch?v=muOKnEIUA8Y",
+        "thumbnail": "https://i.ytimg.com/vi/muOKnEIUA8Y/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 53530,
+        "length": "9:32",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
+        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
+        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
+        "channel": "홍팍",
+        "views": 7230,
+        "length": "2:34:46",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[SQL 기초] 0. SELECT문 기본",
+        "url": "https://www.youtube.com/watch?v=cl6Um_H_Q1Q",
+        "thumbnail": "https://i.ytimg.com/vi/cl6Um_H_Q1Q/mqdefault.jpg",
+        "channel": "SQL강의",
+        "views": 529,
+        "length": "14:06",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "알면 무조건 도움되는 SQL 10분 부트캠프, 기본 개념 설명 | 기획자, PM, 마케터의 데이터 분석",
+        "url": "https://www.youtube.com/watch?v=w-EC6OCD4NM",
+        "thumbnail": "https://i.ytimg.com/vi/w-EC6OCD4NM/mqdefault.jpg",
+        "channel": "곰사원은 곰대표",
+        "views": 23079,
+        "length": "11:12",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL injection 공격",
+        "url": "https://www.youtube.com/watch?v=FoZ2cucLiDs",
+        "thumbnail": "https://i.ytimg.com/vi/FoZ2cucLiDs/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 258089,
+        "length": "6:24",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "데이터베이스? SQL? NoSQL? 4분만에 정리해드립니다. (ft. AWS Innovate)",
+        "url": "https://www.youtube.com/watch?v=IAMdPn3YCG4",
+        "thumbnail": "https://i.ytimg.com/vi/IAMdPn3YCG4/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 61503,
+        "length": "4:24",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[New!! 2026] (1과목) SQLD 완벽 요약강의 | 요약강의 | 데이터 모델링의 이해 | 최단시간 최대효율👍 | 핵심 요약노트 | SQL개발자",
+        "url": "https://www.youtube.com/watch?v=e_AIZkWJNqA",
+        "thumbnail": "https://i.ytimg.com/vi/e_AIZkWJNqA/mqdefault.jpg",
+        "channel": "IT의 답을 터득하다, 아답터",
+        "views": 108171,
+        "length": "49:32",
+        "published": "4개월 전",
         "stage": "실전"
       }
     ],
@@ -7467,6 +7467,88 @@
         "stage": "실전"
       }
     ],
+    "Firebase": [
+      {
+        "title": "서버지식없이 당근마켓 만드는 법 (Firebase로 만드는 당근마켓 2시간컷)",
+        "url": "https://www.youtube.com/watch?v=9RkXchEJgKU",
+        "thumbnail": "https://i.ytimg.com/vi/9RkXchEJgKU/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 95961,
+        "length": "7:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "구글 Firebase Studio 사용법! | 코딩 몰라도 AI로 앱 개발하는 방법 소개",
+        "url": "https://www.youtube.com/watch?v=0A45kpsOCPY",
+        "thumbnail": "https://i.ytimg.com/vi/0A45kpsOCPY/mqdefault.jpg",
+        "channel": "모두의 핸드북",
+        "views": 29992,
+        "length": "14:01",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[LIVE] 바이브 코딩, 1인 창업가 부트캠프 - Firebase Studio 종료 대응 방안",
+        "url": "https://www.youtube.com/watch?v=tzBFg1UPH2Y",
+        "thumbnail": "https://i.ytimg.com/vi/tzBFg1UPH2Y/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 8606,
+        "length": "53:03",
+        "published": "스트리밍 시간: 2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "앱 개발 시 서버 구성 설명 + 파이어베이스 firebase 같이 해봐요~",
+        "url": "https://www.youtube.com/watch?v=P6CRAk-s95Q",
+        "thumbnail": "https://i.ytimg.com/vi/P6CRAk-s95Q/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 19990,
+        "length": "23:38",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이어베이스(Firebase) 완벽 정리 | 서버 없이 앱 만드는 구글 백엔드 플랫폼 개념과 특징, 요금제",
+        "url": "https://www.youtube.com/watch?v=g-oOlomxNYQ",
+        "thumbnail": "https://i.ytimg.com/vi/g-oOlomxNYQ/mqdefault.jpg",
+        "channel": "ToyMakers",
+        "views": 2524,
+        "length": "11:19",
+        "published": "6개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Firebase로 당근마켓 만들기 1 : Firebase 설치 개쉬움",
+        "url": "https://www.youtube.com/watch?v=bJ-33ANIScE",
+        "thumbnail": "https://i.ytimg.com/vi/bJ-33ANIScE/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 58824,
+        "length": "12:26",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Firebase AI 풀스택 아키텍처 — GPU 없이 AI 앱 프로덕션 올리기",
+        "url": "https://www.youtube.com/watch?v=lveL6Ctq0ZU",
+        "thumbnail": "https://i.ytimg.com/vi/lveL6Ctq0ZU/mqdefault.jpg",
+        "channel": "개발자 플레이북",
+        "views": 64,
+        "length": "7:35",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "배포를 아직도 못해? 이 영상 하나로 끝내보세요 | firebase studio 입문🔥🔥",
+        "url": "https://www.youtube.com/watch?v=nroyeDbMNi0",
+        "thumbnail": "https://i.ytimg.com/vi/nroyeDbMNi0/mqdefault.jpg",
+        "channel": "조코딩AX파트너스",
+        "views": 3379,
+        "length": "11:09",
+        "published": "10개월 전",
+        "stage": "실전"
+      }
+    ],
     "ROS": [
       {
         "title": "[ROS2] 입문편 한 번에 몰아보기｜R2R 입문｜민형기 강사님 무료 강의",
@@ -7792,88 +7874,6 @@
         "views": 1461,
         "length": "30:11",
         "published": "11개월 전",
-        "stage": "실전"
-      }
-    ],
-    "Firebase": [
-      {
-        "title": "서버지식없이 당근마켓 만드는 법 (Firebase로 만드는 당근마켓 2시간컷)",
-        "url": "https://www.youtube.com/watch?v=9RkXchEJgKU",
-        "thumbnail": "https://i.ytimg.com/vi/9RkXchEJgKU/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 95961,
-        "length": "7:43",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "구글 Firebase Studio 사용법! | 코딩 몰라도 AI로 앱 개발하는 방법 소개",
-        "url": "https://www.youtube.com/watch?v=0A45kpsOCPY",
-        "thumbnail": "https://i.ytimg.com/vi/0A45kpsOCPY/mqdefault.jpg",
-        "channel": "모두의 핸드북",
-        "views": 29992,
-        "length": "14:01",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[LIVE] 바이브 코딩, 1인 창업가 부트캠프 - Firebase Studio 종료 대응 방안",
-        "url": "https://www.youtube.com/watch?v=tzBFg1UPH2Y",
-        "thumbnail": "https://i.ytimg.com/vi/tzBFg1UPH2Y/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 8606,
-        "length": "53:03",
-        "published": "스트리밍 시간: 2개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "앱 개발 시 서버 구성 설명 + 파이어베이스 firebase 같이 해봐요~",
-        "url": "https://www.youtube.com/watch?v=P6CRAk-s95Q",
-        "thumbnail": "https://i.ytimg.com/vi/P6CRAk-s95Q/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 19990,
-        "length": "23:38",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이어베이스(Firebase) 완벽 정리 | 서버 없이 앱 만드는 구글 백엔드 플랫폼 개념과 특징, 요금제",
-        "url": "https://www.youtube.com/watch?v=g-oOlomxNYQ",
-        "thumbnail": "https://i.ytimg.com/vi/g-oOlomxNYQ/mqdefault.jpg",
-        "channel": "ToyMakers",
-        "views": 2524,
-        "length": "11:19",
-        "published": "6개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Firebase로 당근마켓 만들기 1 : Firebase 설치 개쉬움",
-        "url": "https://www.youtube.com/watch?v=bJ-33ANIScE",
-        "thumbnail": "https://i.ytimg.com/vi/bJ-33ANIScE/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 58824,
-        "length": "12:26",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Firebase AI 풀스택 아키텍처 — GPU 없이 AI 앱 프로덕션 올리기",
-        "url": "https://www.youtube.com/watch?v=lveL6Ctq0ZU",
-        "thumbnail": "https://i.ytimg.com/vi/lveL6Ctq0ZU/mqdefault.jpg",
-        "channel": "개발자 플레이북",
-        "views": 64,
-        "length": "7:35",
-        "published": "2개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "배포를 아직도 못해? 이 영상 하나로 끝내보세요 | firebase studio 입문🔥🔥",
-        "url": "https://www.youtube.com/watch?v=nroyeDbMNi0",
-        "thumbnail": "https://i.ytimg.com/vi/nroyeDbMNi0/mqdefault.jpg",
-        "channel": "조코딩AX파트너스",
-        "views": 3379,
-        "length": "11:09",
-        "published": "10개월 전",
         "stage": "실전"
       }
     ],
@@ -9025,6 +9025,88 @@
         "stage": "실전"
       }
     ],
+    "MATLAB": [
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
+        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
+        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 177274,
+        "length": "1:59:05",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Matlab (매트랩) 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
+        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
+        "channel": "염홍기",
+        "views": 4193,
+        "length": "1:51:35",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part2)",
+        "url": "https://www.youtube.com/watch?v=3nm7YHBGMB0",
+        "thumbnail": "https://i.ytimg.com/vi/3nm7YHBGMB0/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 57018,
+        "length": "1:58:06",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MATLAB 제대로 배우기 (기초) Part.1",
+        "url": "https://www.youtube.com/watch?v=1WkltrXfzDU",
+        "thumbnail": "https://i.ytimg.com/vi/1WkltrXfzDU/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 134,
+        "length": "49:53",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제어공학 - Matlab 강좌1",
+        "url": "https://www.youtube.com/watch?v=84Sebez8S68",
+        "thumbnail": "https://i.ytimg.com/vi/84Sebez8S68/mqdefault.jpg",
+        "channel": "KONKUKPEL",
+        "views": 8332,
+        "length": "52:54",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Matlab Simulink 01A교시",
+        "url": "https://www.youtube.com/watch?v=GILWlXgMq-I",
+        "thumbnail": "https://i.ytimg.com/vi/GILWlXgMq-I/mqdefault.jpg",
+        "channel": "박굥교수: 국민대 자동차",
+        "views": 56800,
+        "length": "20:44",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Matlab Simulink 를 이용한 DC모터 제어 1",
+        "url": "https://www.youtube.com/watch?v=25dU_Aq49m4",
+        "thumbnail": "https://i.ytimg.com/vi/25dU_Aq49m4/mqdefault.jpg",
+        "channel": "KONKUKPEL",
+        "views": 25581,
+        "length": "27:51",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "매트랩 기초 강의 기초부터 실무까지 차근차근! MATLAB Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=BGSz-eVxOh8",
+        "thumbnail": "https://i.ytimg.com/vi/BGSz-eVxOh8/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 581,
+        "length": "20:01",
+        "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
     "Prometheus": [
       {
         "title": "[SWTT] Grafana와 Prometheus를 이용한 로컬 개발 모니터링",
@@ -9760,88 +9842,6 @@
         "views": 116444,
         "length": "8:15",
         "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
-    "MATLAB": [
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
-        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
-        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 177274,
-        "length": "1:59:05",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Matlab (매트랩) 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
-        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
-        "channel": "염홍기",
-        "views": 4193,
-        "length": "1:51:35",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part2)",
-        "url": "https://www.youtube.com/watch?v=3nm7YHBGMB0",
-        "thumbnail": "https://i.ytimg.com/vi/3nm7YHBGMB0/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 57018,
-        "length": "1:58:06",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MATLAB 제대로 배우기 (기초) Part.1",
-        "url": "https://www.youtube.com/watch?v=1WkltrXfzDU",
-        "thumbnail": "https://i.ytimg.com/vi/1WkltrXfzDU/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 134,
-        "length": "49:53",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제어공학 - Matlab 강좌1",
-        "url": "https://www.youtube.com/watch?v=84Sebez8S68",
-        "thumbnail": "https://i.ytimg.com/vi/84Sebez8S68/mqdefault.jpg",
-        "channel": "KONKUKPEL",
-        "views": 8332,
-        "length": "52:54",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Matlab Simulink 01A교시",
-        "url": "https://www.youtube.com/watch?v=GILWlXgMq-I",
-        "thumbnail": "https://i.ytimg.com/vi/GILWlXgMq-I/mqdefault.jpg",
-        "channel": "박굥교수: 국민대 자동차",
-        "views": 56800,
-        "length": "20:44",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Matlab Simulink 를 이용한 DC모터 제어 1",
-        "url": "https://www.youtube.com/watch?v=25dU_Aq49m4",
-        "thumbnail": "https://i.ytimg.com/vi/25dU_Aq49m4/mqdefault.jpg",
-        "channel": "KONKUKPEL",
-        "views": 25581,
-        "length": "27:51",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "매트랩 기초 강의 기초부터 실무까지 차근차근! MATLAB Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=BGSz-eVxOh8",
-        "thumbnail": "https://i.ytimg.com/vi/BGSz-eVxOh8/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 581,
-        "length": "20:01",
-        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -13338,6 +13338,88 @@
         "views": 1724,
         "length": "2:55",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "SwiftUI": [
+      {
+        "title": "Swift? SwiftUI? 뭐 부터 시작해야할지 망설이는 당신에게",
+        "url": "https://www.youtube.com/watch?v=vIPiydAQFLk",
+        "thumbnail": "https://i.ytimg.com/vi/vIPiydAQFLk/mqdefault.jpg",
+        "channel": "개발자리",
+        "views": 398,
+        "length": "9:32",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "iOS TDD 부트캠프 #10-1 | 동적 SwiftUI 뷰 - Combine/ObservableObject",
+        "url": "https://www.youtube.com/watch?v=T76RsT0wPhs",
+        "thumbnail": "https://i.ytimg.com/vi/T76RsT0wPhs/mqdefault.jpg",
+        "channel": "만두쌤의 코딩 한 꼬집",
+        "views": 1,
+        "length": "8:41",
+        "published": "5일 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NCDP 2023 | SwiftUI가 바꾸는 앱 개발 패러다임 | 엔씨소프트(NCSOFT)",
+        "url": "https://www.youtube.com/watch?v=jpxmOR6BJl8",
+        "thumbnail": "https://i.ytimg.com/vi/jpxmOR6BJl8/mqdefault.jpg",
+        "channel": "NC Official",
+        "views": 5331,
+        "length": "33:21",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SwiftUI 핵심 기능",
+        "url": "https://www.youtube.com/watch?v=HyQgpxX__-A",
+        "thumbnail": "https://i.ytimg.com/vi/HyQgpxX__-A/mqdefault.jpg",
+        "channel": "Apple Developer",
+        "views": 223471,
+        "length": "24:16",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "취준생을 위한 스위프트UI 앱만들기 앱 아키텍쳐 TCA 알아보기 / SwiftUi fundamental Tutorial (2022) - composable Architecture",
+        "url": "https://www.youtube.com/watch?v=fYQ9YnbvasU",
+        "thumbnail": "https://i.ytimg.com/vi/fYQ9YnbvasU/mqdefault.jpg",
+        "channel": "개발하는 정대리",
+        "views": 7511,
+        "length": "53:44",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "402C (워크숍) SwiftUI와 TCA로 GithubSearch 앱 만들기 - 허규영, 김대영",
+        "url": "https://www.youtube.com/watch?v=2DO420E9lvs",
+        "thumbnail": "https://i.ytimg.com/vi/2DO420E9lvs/mqdefault.jpg",
+        "channel": "코드스쿼드",
+        "views": 2248,
+        "length": "51:14",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Xcode 새프로젝트 만들기#ios개발  #개발공부 #앱개발 #Xcode #SwiftUI #iOS개발 #iPhone시뮬레이터 #swift",
+        "url": "https://www.youtube.com/watch?v=U-_jD75SykI",
+        "thumbnail": "https://i.ytimg.com/vi/U-_jD75SykI/mqdefault.jpg",
+        "channel": "만두쌤의 코딩 한 꼬집",
+        "views": 6119,
+        "length": "9:00",
+        "published": "1년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "취준생을 위한 스위프트UI 앱만들기 앱델리겟 사용하기 / SwiftUi fundamental Tutorial (2022) DelegateAdaptor",
+        "url": "https://www.youtube.com/watch?v=V5klgaUziFQ",
+        "thumbnail": "https://i.ytimg.com/vi/V5klgaUziFQ/mqdefault.jpg",
+        "channel": "개발하는 정대리",
+        "views": 935,
+        "length": "19:12",
+        "published": "3년 전",
         "stage": "실전"
       }
     ]
