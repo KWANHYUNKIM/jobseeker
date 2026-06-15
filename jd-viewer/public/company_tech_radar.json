@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T11:24:59",
+ "generated_at": "2026-06-15T12:58:44",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 27,
+ "refined": 29,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -524,7 +524,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 10
+      "count": 11
      },
      {
       "name": "Next.js",
@@ -561,12 +561,12 @@
     ],
     "data": [
      {
-      "name": "Kafka",
+      "name": "Elasticsearch",
       "count": 14
      },
      {
-      "name": "Elasticsearch",
-      "count": 13
+      "name": "Kafka",
+      "count": 14
      },
      {
       "name": "MySQL",
@@ -631,15 +631,15 @@
       "count": 2
      },
      {
+      "name": "Envoy",
+      "count": 2
+     },
+     {
       "name": "사내 데이터센터",
       "count": 2
      },
      {
       "name": "Airflow",
-      "count": 1
-     },
-     {
-      "name": "Apache Thrift RPC",
       "count": 1
      }
     ]
@@ -2160,6 +2160,10 @@
       "count": 1
      },
      {
+      "name": "Adobe I/O Runtime",
+      "count": 1
+     },
+     {
       "name": "Apex",
       "count": 1
      },
@@ -2173,10 +2177,6 @@
      },
      {
       "name": "Dapr",
-      "count": 1
-     },
-     {
-      "name": "Python",
       "count": 1
      }
     ],
@@ -2198,6 +2198,10 @@
       "count": 1
      },
      {
+      "name": "Emscripten",
+      "count": 1
+     },
+     {
       "name": "Fluent UI",
       "count": 1
      },
@@ -2215,10 +2219,6 @@
      },
      {
       "name": "Vue.js",
-      "count": 1
-     },
-     {
-      "name": "WebAssembly",
       "count": 1
      }
     ],
@@ -2240,27 +2240,27 @@
       "count": 2
      },
      {
-      "name": "Azure",
+      "name": "Apache Flink",
+      "count": 1
+     },
+     {
+      "name": "Apache HBase",
+      "count": 1
+     },
+     {
+      "name": "Apache Iceberg",
+      "count": 1
+     },
+     {
+      "name": "Apache Spark",
+      "count": 1
+     },
+     {
+      "name": "Azure Data Lake",
       "count": 1
      },
      {
       "name": "Azure Synapse",
-      "count": 1
-     },
-     {
-      "name": "Cosmos DB",
-      "count": 1
-     },
-     {
-      "name": "DynamoDB",
-      "count": 1
-     },
-     {
-      "name": "Elasticsearch",
-      "count": 1
-     },
-     {
-      "name": "HBase",
       "count": 1
      }
     ],
@@ -2276,6 +2276,14 @@
      {
       "name": "Azure",
       "count": 3
+     },
+     {
+      "name": "Adobe Ethos",
+      "count": 1
+     },
+     {
+      "name": "Adobe I/O Runtime",
+      "count": 1
      },
      {
       "name": "AKS",
@@ -2294,15 +2302,7 @@
       "count": 1
      },
      {
-      "name": "I/O Runtime",
-      "count": 1
-     },
-     {
       "name": "Service Fabric",
-      "count": 1
-     },
-     {
-      "name": "Terraform",
       "count": 1
      }
     ]
@@ -2310,14 +2310,18 @@
    "architecture": [
     {
      "name": "Microservices",
-     "count": 4
-    },
-    {
-     "name": "Cloud-native",
-     "count": 2
+     "count": 3
     },
     {
      "name": "API-first",
+     "count": 1
+    },
+    {
+     "name": "Cloud-native",
+     "count": 1
+    },
+    {
+     "name": "Cloud-native Microservices",
      "count": 1
     },
     {
@@ -2326,10 +2330,6 @@
     },
     {
      "name": "Event-driven",
-     "count": 1
-    },
-    {
-     "name": "Metadata-driven",
      "count": 1
     }
    ]
@@ -8326,8 +8326,8 @@
    "domain": "이커머스",
    "languages": [
     "Ruby",
-    "JavaScript",
     "TypeScript",
+    "JavaScript",
     "Go",
     "Rust"
    ],
@@ -8335,35 +8335,43 @@
     "backend": [
      "Ruby on Rails",
      "GraphQL",
-     "gRPC"
+     "gRPC",
+     "Sorbet",
+     "Temporal"
     ],
     "frontend": [
      "React",
      "Remix",
      "Hydrogen",
-     "Polaris"
+     "Polaris",
+     "TypeScript"
     ],
     "data": [
      "MySQL (Vitess)",
      "Kafka",
      "Redis",
-     "Memcached"
+     "Memcached",
+     "Elasticsearch",
+     "BigQuery"
     ],
     "infra": [
-     "Google Cloud",
+     "Google Cloud Platform",
      "Kubernetes",
-     "Shopify Cloud"
+     "Shopify Cloud",
+     "Envoy",
+     "Nginx/OpenResty (Lua)"
     ]
    },
    "architecture": [
-    "Modular monolith",
-    "Sharded multi-tenant",
-    "Pods"
+    "Modular monolith (Rails Components)",
+    "Pods 기반 멀티테넌트 샤딩",
+    "Vitess 수평 샤딩",
+    "이벤트 기반 비동기 처리(Kafka)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    STORE[\"Storefront<br/>Hydrogen/Remix\"]\n    ADMIN[\"Admin UI<br/>React + Polaris\"]\n  end\n  subgraph Edge\n    GQL[\"GraphQL API<br/>Ruby\"]\n  end\n  subgraph CoreServices\n    MONO[\"Modular Monolith<br/>Ruby on Rails\"]\n    GO[\"Perf Services<br/>Go/Rust + gRPC\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Data\n    VITESS[\"Sharded Store<br/>MySQL Vitess\"]\n    REDIS[\"Cache/Jobs<br/>Redis\"]\n    MEMC[\"Cache<br/>Memcached\"]\n  end\n  subgraph Platform\n    PODS[\"Multi-tenant Pods<br/>Kubernetes on GCP\"]\n  end\n  STORE --> GQL\n  ADMIN --> GQL\n  GQL --> MONO\n  MONO -->|gRPC| GO\n  MONO --> VITESS\n  MONO --> REDIS\n  MONO --> MEMC\n  MONO --> KAFKA\n  MONO --> PODS\n  VITESS --> PODS",
-   "why_language": "세계 최대급 Rails 애플리케이션을 운영하며 Ruby가 코어이고, 성능 핵심부는 Go/Rust로 보완한다. 스토어프론트는 React/Remix(Hydrogen) 생태계를 쓴다.",
-   "why_architecture": "마이크로서비스 대신 '모듈러 모노리스'를 의도적으로 유지해 개발 생산성을 지키고, Vitess 샤딩과 Pods 단위로 멀티테넌트 트래픽을 수평 확장한다. 블랙프라이데이 급증 부하를 셀 기반으로 격리한다.",
-   "summary": "거대 Rails 모듈러 모노리스를 Vitess 샤딩과 Pods로 확장하는 이커머스 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Storefront\"]\n    BUYER[\"Buyer Browser<br/>Hydrogen + React\"]\n    ADMIN[\"Merchant Admin<br/>React + Polaris + Remix\"]\n  end\n  subgraph Edge[\"Edge / Routing\"]\n    OXYGEN[\"Oxygen<br/>Storefront SSR Edge\"]\n    LB[\"Edge LB + Cache<br/>Nginx + OpenResty Lua\"]\n    SORTING[\"Sorting Hat<br/>Pod Routing Lua\"]\n  end\n  subgraph Core[\"Core Application\"]\n    MONOLITH[\"Shopify Core<br/>Rails Modular Monolith\"]\n    GQL[\"GraphQL API<br/>graphql-ruby\"]\n    SVC[\"Extracted Services<br/>Go + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    JOBS[\"Background Jobs<br/>Sidekiq + Resque\"]\n    FLOW[\"Workflow Engine<br/>Temporal\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"Sharded OLTP<br/>MySQL + Vitess\"]\n    REDIS[\"Cache + Queue<br/>Redis\"]\n    MEMCACHE[\"Page Cache<br/>Memcached\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    BQ[\"Analytics<br/>BigQuery\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Pods Runtime<br/>Kubernetes on GCP\"]\n  end\n  BUYER --> OXYGEN\n  ADMIN --> LB\n  OXYGEN --> LB\n  LB --> SORTING\n  SORTING -->|pod routing| MONOLITH\n  MONOLITH --> GQL\n  MONOLITH -->|gRPC| SVC\n  MONOLITH --> VITESS\n  MONOLITH --> REDIS\n  MONOLITH --> MEMCACHE\n  MONOLITH --> ES\n  MONOLITH -->|publish| KAFKA\n  MONOLITH --> JOBS\n  JOBS --> REDIS\n  KAFKA --> FLOW\n  KAFKA --> BQ\n  SVC --> VITESS\n  MONOLITH --> K8S\n  SVC --> K8S",
+   "why_language": "Shopify는 2004년 Rails로 시작한 이래 Ruby를 핵심 비즈니스 로직 언어로 유지하며, 머천트 도메인의 복잡한 커머스 규칙을 빠르게 표현하는 생산성을 우선한다. 대신 타입 안정성을 위해 Sorbet를 자체 개발해 Ruby에 점진적 정적 타입을 입혔고, 지연·처리량이 중요한 인프라/주변 시스템은 Go(gRPC 서비스), 성능 임계 영역은 Rust로 분리한다. 프론트엔드는 TypeScript/React 기반의 Polaris·Hydrogen으로 통일해 대규모 UI를 일관되게 운영한다.",
+   "why_architecture": "수백만 머천트를 한 코드베이스로 운영하려면 마이크로서비스의 분산 복잡도보다 모듈러 모노리스가 개발 속도·일관성에서 유리하다고 판단해, Rails를 컴포넌트(bounded context)로 강제 분리하되 단일 배포 단위를 유지한다. 멀티테넌트 확장은 서비스 분해가 아니라 데이터 계층 샤딩(Vitess)과 Pods 단위 격리로 풀어, 한 Pod 장애가 전체로 번지지 않도록 폭발 반경을 제한한다. 이 구조 덕분에 BFCM 같은 초대형 트래픽에서도 Pod를 수평으로 늘려 대응한다.",
+   "summary": "Rails 모듈러 모노리스를 Vitess 샤딩과 Pods로 멀티테넌트 수평 확장하는, 'modular monolith at scale'의 대표 사례",
    "deep_dive": [
     {
      "topic": "모듈러 모노리스: 마이크로서비스를 거부한 결정",
@@ -8380,47 +8388,71 @@
     {
      "topic": "엣지·스토어프론트: Hydrogen/Oxygen과 캐싱",
      "body": "### 빠른 스토어프론트\nShopify는 스토어프론트 성능을 위해 **Hydrogen(React 기반 커머스 프레임워크)** 과 **Oxygen(글로벌 엣지 호스팅)** 을 제공한다.\n\n- Hydrogen은 **Storefront GraphQL API**로 상품/장바구니 데이터를 가져와 React로 렌더\n- Oxygen이 **엣지에서 SSR**해 사용자 가까이서 렌더 → TTFB 단축\n- **다층 캐싱**: 상품/컬렉션 같은 read-heavy 데이터를 **Redis/Memcached**와 엣지 캐시로 캐싱, 재고/가격은 짧은 TTL\n\n### 왜\n커머스에서 **페이지 속도가 곧 전환율**이다. 엣지 SSR+캐싱으로 동적 커머스 데이터를 빠르게 전달하되, 재고/가격처럼 정확성이 중요한 데이터는 짧은 TTL로 신선도를 지킨다. 트레이드오프는 캐시 무효화 복잡도(가격 변경 즉시 반영 vs 캐시 효율)지만, 머천트별로 TTL을 조율해 균형을 맞춘다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: Sorting Hat와 Pod 라우팅",
+     "body": "### 한 요청이 어떤 Pod에 도달하는가\n\nShopify의 인프라에서 가장 특이한 구성요소 중 하나는 **Sorting Hat**(또는 nginx/OpenResty Lua 기반 라우팅 레이어)이다. Shopify는 전체 머천트를 여러 개의 **Pod**로 나눠 운영하는데, 각 Pod는 자체 MySQL(Vitess) 샤드·Redis·Memcached·백그라운드 잡 워커를 갖는 **독립적이고 완결된(self-contained) 단위**다. 따라서 들어오는 모든 HTTP 요청은 '이 shop이 어느 Pod에 사는가'를 먼저 판별해야 한다.\n\n동작 순서는 대략 다음과 같다.\n\n1. 요청이 엣지 로드밸런서(`nginx` + `OpenResty`의 Lua 스크립트)에 도달한다.\n2. Lua 레이어가 요청의 호스트/경로에서 **shop 식별자**를 추출하고, shop→pod 매핑 테이블을 조회한다.\n3. 해당 shop이 속한 Pod로 요청을 프록시한다. 이 매핑은 자주 바뀌지 않으므로 엣지에서 캐싱된다.\n4. Pod 내부의 Rails 모노리스 인스턴스가 요청을 받아, 그 Pod에 한정된 Vitess 샤드·Redis만 바라보며 처리한다.\n\n### 왜 이렇게 하는가\n\n- **폭발 반경(blast radius) 제한**: 한 Pod의 DB가 죽어도 다른 Pod의 머천트는 영향이 없다. 장애가 '전 세계 Shopify 다운'이 아니라 '일부 Pod 저하'로 국한된다.\n- **이동 가능성(shop mobility)**: 특정 머천트가 갑자기 대형 세일로 트래픽이 폭증하면, 해당 shop을 통째로 덜 붐비는 Pod 또는 전용 Pod로 **이사**시킬 수 있다. Vitess의 `VReplication`을 활용해 데이터를 옮기고 매핑을 갱신한다.\n- **지역 분산**: Pod 단위로 데이터 거주지(data residency)·지역 배치를 제어할 수 있다.\n\n### 트레이드오프\n\n크로스-Pod 쿼리는 비싸거나 불가능하다. 따라서 '전 머천트를 가로지르는' 분석성 질의는 OLTP에서 직접 하지 않고 **Kafka → BigQuery**로 흘려보낸 분석 계층에서 수행한다. 즉 운영 일관성은 Pod 안에서, 전역 분석은 별도 데이터 웨어하우스에서 분리해 처리하는 구조다."
+    },
+    {
+     "topic": "Ruby에 타입을 입히다: Sorbet와 대규모 모노리스 생산성",
+     "body": "### 동적 언어로 수백만 줄을 운영하는 문제\n\nShopify Core는 세계에서 가장 큰 Rails 코드베이스 중 하나다. Ruby의 생산성은 강력하지만, 코드베이스가 수백만 줄에 이르면 **타입 안정성 부재**가 리팩터링·온보딩·런타임 오류 측면에서 큰 비용이 된다. Shopify는 이를 외부 언어로의 재작성이 아니라 **언어 도구로 보강**하는 방향을 택했고, 그 결과가 Stripe와 공동 개발·운영하는 정적 타입 체커 **Sorbet**다.\n\n### Sorbet의 동작 방식\n\n- `# typed: false/true/strict/strong` 같은 **파일 단위 시길(sigil)**로 타입 적용 강도를 점진적으로 올린다. 거대한 레거시를 한 번에 바꾸지 않고 파일별로 엄격도를 단계적으로 높이는 **gradual typing** 전략이다.\n- 메서드 시그니처는 `sig { params(x: Integer).returns(String) }` 형태로 Ruby DSL로 선언한다. 런타임에서도 검증이 가능해, 정적 체크를 통과 못 한 영역도 런타임 가드로 잡을 수 있다.\n- 타입 체커 본체는 **C++**로 작성되어 수백만 줄을 수초 내에 검사할 만큼 빠르다. 개발자 피드백 루프를 해치지 않는 속도가 핵심 설계 목표였다.\n- RBI(Ruby Interface) 파일로 gem 등 외부 코드의 타입을 기술하고, `tapioca` 같은 도구로 RBI를 자동 생성한다.\n\n### 효과와 트레이드오프\n\n타입 도입으로 대규모 자동 리팩터링·데드코드 제거·API 안전성이 크게 개선됐다. 다만 Ruby 본연의 메타프로그래밍(동적 메서드 정의 등)과 정적 타입은 본질적 긴장 관계라, Rails의 매직(`method_missing`, 동적 association)을 타입으로 표현하기 위해 RBI 자동 생성·shim에 상당한 엔지니어링이 투입된다. 이는 '재작성 없이 모노리스를 길들인다'는 Shopify의 철학을 잘 보여주는 사례다."
+    },
+    {
+     "topic": "테스트와 복원력 엔지니어링: Toxiproxy와 카오스, CI 스케일",
+     "body": "### 장애를 일부러 만든다: Toxiproxy\n\nShopify는 분산 시스템의 네트워크 실패를 재현하기 위해 **Toxiproxy**(Go)를 만들어 오픈소스화했다. 애플리케이션과 의존 서비스(MySQL, Redis, 외부 API) 사이에 TCP 프록시로 끼어들어, 다음과 같은 **toxic**을 주입한다.\n\n- `latency`: 인위적 지연 추가 (느린 DB/네트워크 시뮬레이션)\n- `down`: 연결을 완전히 끊어 의존성 다운 재현\n- `bandwidth`, `slow_close`, `timeout` 등 다양한 네트워크 열화\n\n이를 통해 '결제 게이트웨이가 3초 느려지면?', 'Redis가 죽으면 주문 흐름이 graceful degradation 되는가?' 같은 시나리오를 **테스트 코드에서 결정론적으로** 검증한다. 서킷브레이커·타임아웃·재시도 정책이 실제로 작동하는지를 CI에서 강제하는 셈이다.\n\n### BFCM을 위한 부하·복원력 검증\n\nBlack Friday/Cyber Monday(BFCM)는 Shopify에 매년 가장 가혹한 트래픽 이벤트다. Shopify는 프로덕션과 동등한 환경에 **실전 수준의 부하를 미리 쏟아붓는 대규모 부하 테스트**를 정례화한다. Toxiproxy 류의 장애 주입과 결합해 '용량은 충분한가'뿐 아니라 '일부 의존성이 흔들려도 핵심 체크아웃 경로가 살아남는가'를 같이 검증한다. 체크아웃 같은 매출 직결 경로는 비핵심 기능(추천, 일부 분석)을 떼어내고도 동작하도록 의존성을 의도적으로 약결합시켜 둔다.\n\n### CI 규모\n\n초대형 모노리스의 테스트 스위트는 그 자체가 인프라 문제다. Shopify는 테스트를 대규모 병렬로 분산 실행하고, 변경 영향 범위 기반으로 실행 대상을 좁히며, 머지 큐(merge queue)로 직렬화된 안전한 통합을 보장하는 식으로 '하루 수많은 배포'를 가능하게 한다. 이런 도구 투자(개발자 생산성 인프라) 자체가 모듈러 모노리스를 지속 가능하게 만드는 핵심 축이다."
+    },
+    {
+     "topic": "비동기·잡 처리와 멱등성: 결제·주문 워크플로",
+     "body": "### 동기 응답에서 잘라내는 것들\n\n커머스 트랜잭션은 한 번의 HTTP 요청 안에서 모두 끝나지 않는다. 주문 생성 후 이메일 발송, 재고 동기화, 웹훅 전달, 외부 결제 캡처, 분석 적재 등은 **백그라운드로 분리**된다. Shopify는 전통적으로 `Resque`/`Sidekiq` 계열의 Redis 기반 잡 시스템으로 이 비동기 작업을 처리해 왔고, Pod마다 자체 잡 워커와 Redis를 둔다.\n\n### 멱등성과 정확히-한-번 환상\n\n분산 큐에서는 **최소 한 번(at-least-once)** 전달이 기본이라 잡이 중복 실행될 수 있다. 결제·재고처럼 중복이 치명적인 도메인에서는 **멱등성 키(idempotency key)**와 상태 머신으로 '같은 작업이 두 번 들어와도 한 번의 효과'를 보장한다. 즉 '정확히 한 번 실행'이 아니라 '여러 번 실행돼도 결과는 한 번'이 되도록 설계한다.\n\n### 장기 실행 워크플로우\n\n여러 단계가 며칠에 걸쳐 진행되거나 외부 시스템과 여러 번 왕복해야 하는 비즈니스 프로세스에는 **Temporal** 같은 워크플로우 엔진을 도입해, 단계별 상태를 내구성 있게 저장하고 실패 지점부터 재개(resume)할 수 있게 한다. 이는 '잡 하나가 실패하면 처음부터'가 아니라 '중단된 곳부터 이어서'를 가능하게 해 복잡한 다단계 커머스 플로우의 신뢰성을 끌어올린다.\n\n### 이벤트 스트리밍과의 결합\n\n도메인 이벤트(주문 생성, 결제 완료 등)는 **Kafka**로 발행되어 다수의 컨슈머가 독립적으로 소비한다. 검색 인덱싱(Elasticsearch), 분석(BigQuery), 머천트 웹훅, 사기 탐지 등이 같은 이벤트 스트림을 구독해 **읽기 모델을 각자 갱신**한다. 이렇게 쓰기(OLTP, Pod 내부)와 다양한 읽기/파생 처리(스트리밍 기반)를 분리해, 핵심 트랜잭션 경로의 부하를 낮추고 시스템 간 결합을 느슨하게 유지한다."
     }
    ],
    "github": {
     "org": "https://github.com/Shopify",
     "repos": [
      {
-      "name": "Shopify/draggable",
-      "url": "https://github.com/Shopify/draggable",
-      "desc": "JavaScript 드래그 앤 드롭 라이브러리",
-      "lang": "JavaScript",
-      "stars": 18458
-     },
-     {
       "name": "Shopify/toxiproxy",
       "url": "https://github.com/Shopify/toxiproxy",
-      "desc": "장애 주입을 위한 TCP 프록시",
+      "desc": "장애 주입·네트워크 카오스 테스트용 TCP 프록시",
       "lang": "Go",
-      "stars": 12085
-     },
-     {
-      "name": "Shopify/liquid",
-      "url": "https://github.com/Shopify/liquid",
-      "desc": "안전한 템플릿 엔진 언어",
-      "lang": "Ruby",
-      "stars": 11809
+      "stars": 12086
      },
      {
       "name": "Shopify/polaris-react",
       "url": "https://github.com/Shopify/polaris-react",
-      "desc": "Shopify 디자인 시스템 React 컴포넌트",
+      "desc": "머천트 Admin UI를 위한 디자인 시스템·React 컴포넌트",
       "lang": "TypeScript",
       "stars": 6183
+     },
+     {
+      "name": "sorbet/sorbet",
+      "url": "https://github.com/sorbet/sorbet",
+      "desc": "Ruby용 점진적 정적 타입 체커. Shopify가 Stripe와 함께 주도",
+      "lang": "C++",
+      "stars": 3790
+     },
+     {
+      "name": "Shopify/ruby-lsp",
+      "url": "https://github.com/Shopify/ruby-lsp",
+      "desc": "Ruby 개발자 경험을 위한 Language Server",
+      "lang": "Ruby",
+      "stars": 2016
+     },
+     {
+      "name": "Shopify/hydrogen",
+      "url": "https://github.com/Shopify/hydrogen",
+      "desc": "Remix 기반 커스텀 스토어프론트 빌드 프레임워크",
+      "lang": "TypeScript",
+      "stars": 1972
      }
     ]
    },
    "sources": [
-    "https://shopify.engineering",
-    "https://vitess.io"
+    "https://shopify.engineering/shopify-monolith",
+    "https://shopify.engineering/how-shopify-scales-up-its-development-teams",
+    "https://github.com/Shopify/toxiproxy"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "adobe",
@@ -8437,37 +8469,45 @@
    "stack": {
     "backend": [
      "Java",
-     "Spring",
+     "Spring Boot",
      "Node.js",
-     "gRPC"
+     "gRPC",
+     "Adobe I/O Runtime (OpenWhisk)"
     ],
     "frontend": [
      "React",
      "React Spectrum",
-     "WebAssembly"
+     "WebAssembly",
+     "Emscripten",
+     "WebGL/WebGPU"
     ],
     "data": [
-     "Azure",
+     "Apache Kafka",
+     "Apache Spark",
+     "Apache Flink",
+     "Azure Data Lake (ADLS)",
+     "Apache HBase",
      "Cassandra",
-     "Kafka",
-     "Spark"
+     "Apache Iceberg"
     ],
     "infra": [
      "Azure",
      "AWS",
      "Kubernetes",
-     "I/O Runtime"
+     "Adobe I/O Runtime",
+     "Adobe Ethos (internal PaaS)"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Cloud-native",
-    "WASM in browser"
+    "Cloud-native Microservices",
+    "Event-driven streaming",
+    "WASM-powered web apps",
+    "Serverless (FaaS) extensibility"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Spectrum\"]\n    WASM[\"In-browser Editor<br/>WebAssembly\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>gRPC\"]\n    IORT[\"Serverless<br/>I/O Runtime\"]\n  end\n  subgraph CoreServices\n    JAVA[\"Cloud Services<br/>Java Spring\"]\n    NODE[\"API Services<br/>Node.js\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Pipeline<br/>Kafka\"]\n    SPARK[\"Batch Compute<br/>Spark\"]\n  end\n  subgraph Data\n    CASS[\"Profile Store<br/>Cassandra\"]\n    AZ[\"Cloud Storage<br/>Azure\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes\"]\n  end\n  WEB --> GW\n  WASM --> GW\n  GW --> JAVA\n  GW --> NODE\n  IORT --> NODE\n  JAVA --> CASS\n  JAVA --> AZ\n  JAVA --> KAFKA\n  KAFKA --> SPARK\n  JAVA --> K8S",
-   "why_language": "Photoshop 등 데스크톱 코어는 수십 년 C++ 자산이며, 이를 WebAssembly로 웹에 이식한다. 클라우드(Experience/Document Cloud) 백엔드는 Java가 중심이다.",
-   "why_architecture": "Creative/Document/Experience Cloud를 마이크로서비스로 운영하고, 무거운 C++ 이미지 처리를 WASM으로 브라우저에서 실행한다. 데이터 플랫폼은 Spark/Kafka 기반이다.",
-   "summary": "C++ 데스크톱 자산을 WASM으로 웹에 옮기고 Java 클라우드로 확장한 크리에이티브 강자.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web Apps<br/>React + React Spectrum\"]\n    WASM[\"In-browser Engine<br/>C++ to WASM via Emscripten\"]\n    DESK[\"Desktop Apps<br/>Photoshop/Illustrator C++\"]\n  end\n  subgraph Gateway[\"API / Edge Gateway\"]\n    CDN[\"Adobe CDN/Edge<br/>Fastly + Akamai\"]\n    GW[\"API Gateway<br/>Adobe I/O\"]\n    AUTH[\"Identity<br/>IMS OAuth/JWT\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Java + Spring Boot\"]\n    FAAS[\"I/O Runtime<br/>OpenWhisk Functions\"]\n    AEP[\"Experience Platform<br/>Profile/Segmentation\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SPARK[\"Batch<br/>Apache Spark\"]\n    FLINK[\"Stream Compute<br/>Apache Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    LAKE[\"Data Lake<br/>ADLS + Iceberg\"]\n    HBASE[\"Profile Store<br/>HBase/Cassandra\"]\n    BLOB[\"Asset Store<br/>Azure Blob + S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes (Ethos)\"]\n    CLOUD[\"Cloud<br/>Azure + AWS\"]\n  end\n  WEB --> WASM\n  WEB --> CDN\n  DESK --> CDN\n  CDN --> GW\n  GW --> AUTH\n  GW -->|gRPC/REST| SVC\n  GW --> FAAS\n  SVC --> AEP\n  SVC --> BLOB\n  AEP -->|ingest| KAFKA\n  KAFKA --> FLINK\n  KAFKA --> SPARK\n  FLINK --> HBASE\n  SPARK --> LAKE\n  AEP --> HBASE\n  SVC --> K8S\n  FAAS --> K8S\n  K8S --> CLOUD\n  BLOB --> CLOUD",
+   "why_language": "Adobe의 핵심 자산은 Photoshop·Illustrator·Premiere 같은 수십 년 된 C++ 데스크톱 엔진으로, 픽셀/벡터/영상 처리의 성능이 절대적이라 C++을 포기할 수 없고 이를 Emscripten으로 WASM 컴파일해 브라우저까지 재활용한다. 반면 Creative Cloud·Document Cloud·Experience Platform 같은 대규모 SaaS 백엔드는 JVM 생태계의 성숙도와 운영성 때문에 Java/Spring을, 확장 함수와 프런트엔드는 Node.js/TypeScript를, 데이터/ML 파이프라인은 Python을 사용한다.",
+   "why_architecture": "마케팅 클라우드(AEP)는 초당 수백만 건의 고객 이벤트를 실시간 프로파일·세그먼트로 합쳐야 하므로 Kafka 기반 이벤트 스트리밍과 Flink/Spark 컴퓨트가 중심이 되는 event-driven 구조가 필연적이다. 또한 거대한 모놀리식 데스크톱 자산과 신규 SaaS를 동시에 운영해야 하므로, 독립 배포가 가능한 마이크로서비스와 서드파티 확장을 위한 I/O Runtime 서버리스를 Kubernetes(Ethos) 위에 멀티클라우드로 얹는 cloud-native 전략을 택했다.",
+   "summary": "C++ 데스크톱 엔진을 WASM으로 브라우저에 이식하고, Kafka·Flink 기반 실시간 데이터 파이프라인과 멀티클라우드 마이크로서비스로 Creative·Experience Cloud를 운영한다",
    "deep_dive": [
     {
      "topic": "WASM: C++ 데스크톱 자산을 브라우저로 옮기다",
@@ -8484,6 +8524,22 @@
     {
      "topic": "렌더링·자산 동기화: 데스크톱 협업과 Creative Cloud 동기화",
      "body": "### 무거운 자산을 어떻게 동기화하나\nCreative Cloud는 디자이너의 거대한 자산(PSD·AI·비디오)을 디바이스 간 동기화하고, 최근엔 **실시간 멀티유저 협업**(공동 편집)을 지원한다.\n\n- 자산은 **블록/델타 동기화**로 변경분만 업로드 → 수 GB 파일도 전체 재전송 없이 빠르게 반영\n- 클라우드 문서는 **CRDT/OT 계열 충돌 해소**로 여러 사용자의 동시 편집을 머지\n- 무거운 렌더링(이펙트·프리뷰)은 가능하면 **GPU 가속**(로컬) 또는 클라우드 렌더 팜으로 오프로드\n\n### 캐싱과 전달\n자산 메타데이터/썸네일은 CDN·캐시 계층으로 전 세계에 빠르게 전달하고, 원본은 객체 스토리지(클라우드)에 둔다.\n\n### 왜\n크리에이티브 워크플로는 **파일이 거대하고 반복 저장**이 잦다. 매번 전체 업로드는 비현실적이라 델타 동기화가 필수다. 협업은 디자인 작업을 락-기반으로 막으면 생산성이 죽으므로, 충돌을 사후 머지하는 낙관적 방식을 택한다. 트레이드오프는 머지 충돌 처리의 복잡도와 델타 인덱스 유지 비용이지만, 대용량 크리에이티브 협업엔 이 설계가 본질적이다."
+    },
+    {
+     "topic": "Adobe Experience Platform의 Real-Time Customer Profile: HBase 위에 Kafka·Flink로 만드는 실시간 통합 프로파일",
+     "body": "### 문제 정의\nAEP의 핵심 약속은 \"수십 개 채널(웹/앱/이메일/매장 POS/CRM)에서 들어오는 고객 행동을 단 하나의 `Real-Time Customer Profile`로 합쳐, 마케터가 세그먼트를 만들면 수 초~수 분 내 활성화한다\"는 것이다. 이는 전형적인 대규모 stateful stream join 문제다.\n\n### 데이터 모델 — XDM\n모든 이벤트는 `XDM(Experience Data Model)`이라는 표준 스키마(JSON Schema 기반)로 정규화된다. 이 정규화가 없으면 채널마다 다른 필드를 join할 수 없다. 수집 단계에서 스키마 검증·필드 매핑이 강제된다.\n\n### 파이프라인 흐름\n1. **Ingestion**: 스트리밍 인입은 HTTP/Edge로 받아 곧장 `Apache Kafka` 토픽으로 흘린다. 배치 인입(대용량 CRM dump)은 `ADLS(Azure Data Lake)`로 올린 뒤 Spark로 처리.\n2. **Identity 해석**: 같은 사람이 쿠키 ID, 로그인 ID, 이메일 해시 등 여러 식별자로 등장한다. `Identity Graph`가 이 식별자들을 하나의 그래프로 묶어(stitching) 동일인으로 병합한다.\n3. **Profile 머지**: `Apache Flink` 기반 스트림 컴퓨트가 동일 식별자의 이벤트를 stateful하게 누적·병합해 최신 프로파일 fragment를 만든다. merge policy(우선순위·timestamp 기준)에 따라 충돌 필드를 해소한다.\n4. **Store**: 병합 결과는 `HBase`(과거에 Cassandra 계열도 사용)에 row-key=식별자로 저장한다. wide-column 구조라 한 사람의 수백 개 속성을 한 row에서 읽어 저비용으로 조회 가능.\n\n### 세그먼테이션의 두 갈래\n- **Batch segmentation**: 복잡한 룰(\"지난 30일 3회 이상 구매\")은 Spark 잡이 데이터 레이크 전체를 스캔.\n- **Streaming segmentation**: \"방금 장바구니 이탈\" 같은 즉시성 룰은 Flink가 인입 이벤트에 룰을 직접 평가해 수 초 내 세그먼트 진입/이탈 이벤트를 다시 Kafka로 발행 → 활성화(이메일·광고)로 연결.\n\n### 트레이드오프\n실시간성과 정합성은 상충한다. AEP는 streaming 경로에서 eventual consistency를 받아들이는 대신, batch 경로로 주기적 full recompute를 돌려 drift를 교정하는 lambda-ish 아키텍처를 쓴다. 또한 \"최신 프로파일\"을 위해 read 시점이 아니라 write 시점에 미리 병합(materialized profile)해 두는 전략으로 조회 지연을 낮춘다."
+    },
+    {
+     "topic": "Adobe Ethos: 내부 Kubernetes PaaS와 멀티클라우드(Azure+AWS) 배포 전략",
+     "body": "### Ethos란\nAdobe는 수많은 팀이 제각각 인프라를 깔던 시절을 끝내기 위해 `Ethos`라는 사내 컨테이너 플랫폼(Kubernetes 기반 PaaS)을 구축했다. 팀은 클러스터를 직접 운영하지 않고, Ethos가 제공하는 멀티테넌트 Kubernetes 위에 컨테이너를 올리기만 한다.\n\n### 멀티클라우드인 이유\nAdobe 인수 합병의 역사가 그대로 인프라에 남아 있다: Marketo/Magento 계열은 AWS 비중이 크고, Experience Platform 신규 스택은 `Azure`에 깊게 묶여 있다(Microsoft와의 파트너십, ADLS/Azure Blob 활용). 그래서 Ethos는 특정 클라우드에 종속되지 않도록 `Azure`와 `AWS` 양쪽에 클러스터를 운영하는 abstraction을 제공한다. 워크로드 입장에선 \"어느 클라우드냐\"보다 \"Ethos 위냐\"가 더 중요하다.\n\n### 구성 요소\n- **Ethos Flex/Managed Kubernetes**: 클러스터 프로비저닝·업그레이드·패치를 플랫폼팀이 대행.\n- **GitOps 배포**: 팀은 Helm chart / Argo CD 스타일 선언적 매니페스트로 배포. 변경은 Git PR → 자동 동기화.\n- **공통 사이드카**: service mesh(트래픽 관리·mTLS), 로깅/메트릭 수집 에이전트가 사이드카로 주입되어 관측성이 기본 제공.\n\n### 이점과 비용\n중앙 플랫폼팀이 보안 패치·CVE 대응·노드 업그레이드를 일괄 처리하므로 수백 개 서비스의 운영 표준화가 가능하다. 반대급부로 개별 팀의 인프라 자유도는 줄고, 플랫폼이 지원하지 않는 특수 요구(특정 GPU·특이 네트워킹)는 예외 절차가 필요하다. 이는 '표준화 vs 자율성' 트레이드오프의 전형으로, Adobe 규모에선 표준화 쪽 이득이 압도적이라는 판단이다."
+    },
+    {
+     "topic": "Adobe I/O Runtime: OpenWhisk 기반 서버리스로 만드는 확장 생태계와 요청 흐름",
+     "body": "### 왜 자체 서버리스인가\nAdobe는 파트너·고객이 Adobe 제품(Experience Cloud, Creative Cloud) 위에 커스텀 로직을 얹길 원했지만, 그 코드를 Adobe 코어 서비스 안에 넣을 순 없다(보안·격리·배포 충돌). 답은 FaaS였고, AWS Lambda에 종속되는 대신 오픈소스 `Apache OpenWhisk`를 기반으로 `Adobe I/O Runtime`을 만들었다. 멀티클라우드 전략과도 일관된다.\n\n### 동작 메커니즘 (OpenWhisk)\n1. **Action**: 개발자가 올린 함수(주로 `Node.js`, 일부 다른 런타임). 컨테이너(Docker) 안에서 실행된다.\n2. **Trigger & Rule**: 이벤트 소스(Trigger)와 Action을 Rule로 연결. 이벤트가 들어오면 매칭된 Action이 호출된다.\n3. **Controller → Kafka → Invoker**: OpenWhisk 내부는 흥미롭게도 자체가 이벤트 기반이다. Controller가 요청을 받아 `Kafka`에 메시지를 넣고, Invoker가 이를 소비해 컨테이너를 띄워 함수를 실행한다. 결과는 다시 회수된다.\n4. **Cold/Warm start**: Invoker는 컨테이너를 풀로 재사용(warm)해 cold start를 줄인다. 미사용 컨테이너는 회수(pause/destroy)해 자원을 회수.\n\n### App Builder와의 결합\nAdobe `App Builder`는 I/O Runtime(백엔드 함수) + React Spectrum(프런트) + I/O Events(이벤트 구독) + custom CDN을 묶은 풀스택 확장 프레임워크다. 예를 들어 \"AEM에 새 자산이 업로드되면 → I/O Events가 이벤트 발행 → I/O Runtime 함수가 외부 DAM과 동기화\" 같은 통합을 서버 없이 구현한다.\n\n### 트레이드오프\n서버리스는 확장 개발자에게 무한 확장·운영 제로를 주지만, 실행 시간 제한·cold start·상태 비저장이라는 제약을 강제한다. 그래서 무거운 영상 트랜스코딩 같은 작업은 Runtime이 아니라 별도 비동기 워커/큐로 빠진다. Runtime은 'glue logic'과 webhook 처리에 최적화된 계층으로 포지셔닝된다."
+    },
+    {
+     "topic": "데스크톱→웹 마이그레이션의 관측성·배포: Photoshop Web의 점진적 롤아웃과 카나리",
+     "body": "### 배경\nPhotoshop/Illustrator를 WASM으로 브라우저에 올린 것은 기술 데모가 아니라 실제 SaaS 제품(Photoshop on the web)이다. 수백 MB급 C++ 코드베이스를 WASM으로 컴파일하면 번들 크기·메모리·브라우저 호환성이라는 새로운 운영 리스크가 생긴다. 이를 안전하게 출시하는 핵심이 점진적 배포와 관측성이다.\n\n### 점진적 롤아웃\n- **Feature flagging**: 기능을 코드 배포와 분리해 플래그로 켠다. 신규 WASM 모듈/필터를 소수 사용자에게만 노출(percentage rollout)하고, 문제 시 즉시 끈다(kill switch).\n- **Canary**: 새 빌드를 전체가 아닌 일부 트래픽/지역/사용자군에 먼저 흘려 오류율·성능 회귀를 관찰한 뒤 단계적으로 확대. WASM은 브라우저·GPU 조합이 다양해 '내 머신에선 됨' 문제가 크므로, 실사용 환경 카나리가 특히 중요하다.\n\n### 관측성 — 클라이언트가 곧 런타임\n전통 백엔드와 달리 연산의 상당수가 사용자 브라우저(WASM)에서 일어난다. 따라서 관측 포인트가 클라이언트로 이동한다.\n- **RUM(Real User Monitoring)**: 문서 로드 시간, WASM 모듈 init 시간, 필터 실행 latency, OOM/crash, GPU fallback 발생률 등을 클라이언트에서 텔레메트리로 수집.\n- **Asset/sync 트레이싱**: 로컬 편집과 Creative Cloud 동기화 사이의 충돌·지연을 추적하는 분산 트레이스.\n- **Bundle 분석**: WASM 바이너리 크기·다운로드 시간·캐시 히트율을 지속 모니터링해 회귀를 잡는다.\n\n### 캐싱·전송 최적화\n거대한 WASM 바이너리는 `CDN`(Fastly/Akamai 계열) edge 캐시 + 브라우저 캐시로 재다운로드를 피하고, streaming compilation(`WebAssembly.instantiateStreaming`)으로 다운로드와 컴파일을 겹쳐 TTI(Time To Interactive)를 줄인다. 코드 분할로 '처음 필요한 기능'만 먼저 로드하고 고급 필터는 지연 로드한다.\n\n### 트레이드오프\nC++ 자산 재사용으로 기능 패리티는 빠르게 얻지만, 메모리 모델(WASM linear memory 한계)·스레딩(SharedArrayBuffer/COOP·COEP 헤더 필요)·파일 시스템 부재 같은 웹 제약을 우회해야 한다. Adobe는 데스크톱 코어를 단일 소스로 유지하되 플랫폼 어댑터 계층에서 이 차이를 흡수하는 방식으로 유지보수 분기를 최소화한다."
     }
    ],
    "github": {
@@ -8492,31 +8548,47 @@
      {
       "name": "adobe/brackets",
       "url": "https://github.com/adobe/brackets",
-      "desc": "웹 개발자용 오픈소스 코드 에디터",
+      "desc": "웹 개발자를 위한 오픈소스 코드 에디터(아카이브)",
       "lang": "JavaScript",
       "stars": 33037
      },
      {
       "name": "adobe/react-spectrum",
       "url": "https://github.com/adobe/react-spectrum",
-      "desc": "접근성 우선 React 컴포넌트 및 디자인 시스템",
+      "desc": "Adobe Spectrum 디자인 시스템을 구현한 접근성 우선 React 컴포넌트·훅 라이브러리",
       "lang": "TypeScript",
-      "stars": 15500
+      "stars": 15517
      },
      {
       "name": "adobe/aem-core-wcm-components",
       "url": "https://github.com/adobe/aem-core-wcm-components",
-      "desc": "AEM 표준 WCM 컴포넌트 모음",
+      "desc": "Adobe Experience Manager(AEM)용 표준 WCM 컴포넌트 모음",
       "lang": "Java",
-      "stars": 788
+      "stars": 789
+     },
+     {
+      "name": "adobe/helix-home",
+      "url": "https://github.com/adobe/helix-home",
+      "desc": "서버리스 기반 초고속 웹 퍼블리싱 플랫폼 Adobe Helix(Edge Delivery)",
+      "lang": "HTML",
+      "stars": 67
+     },
+     {
+      "name": "adobe/aepsdk-core-ios",
+      "url": "https://github.com/adobe/aepsdk-core-ios",
+      "desc": "Experience Platform 모바일 SDK의 iOS 코어 구현",
+      "lang": "Swift",
+      "stars": 35
      }
     ]
    },
    "sources": [
-    "https://blog.developer.adobe.com"
+    "https://blog.developer.adobe.com/",
+    "https://web.dev/articles/ps-on-the-web",
+    "https://experienceleague.adobe.com/en/docs/experience-platform/profile/home"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "microsoft",
