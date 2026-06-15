@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T14:31:52",
+ "generated_at": "2026-06-15T16:05:24",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 31,
+ "refined": 33,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -248,6 +248,10 @@
       "count": 2
      },
      {
+      "name": "Ruby on Rails",
+      "count": 2
+     },
+     {
       "name": "Spring WebFlux",
       "count": 2
      },
@@ -261,10 +265,6 @@
      },
      {
       "name": "Fastglue",
-      "count": 1
-     },
-     {
-      "name": "Go microservices",
       "count": 1
      }
     ],
@@ -290,6 +290,14 @@
       "count": 1
      },
      {
+      "name": "GraphQL",
+      "count": 1
+     },
+     {
+      "name": "Market Design System",
+      "count": 1
+     },
+     {
       "name": "Mithril",
       "count": 1
      },
@@ -309,7 +317,7 @@
      },
      {
       "name": "Redis",
-      "count": 12
+      "count": 13
      },
      {
       "name": "MySQL",
@@ -362,6 +370,10 @@
       "count": 3
      },
      {
+      "name": "Terraform",
+      "count": 2
+     },
+     {
       "name": "사내 클라우드",
       "count": 2
      },
@@ -370,19 +382,15 @@
       "count": 1
      },
      {
+      "name": "Bazel",
+      "count": 1
+     },
+     {
       "name": "Codeflow",
       "count": 1
      },
      {
-      "name": "GCP",
-      "count": 1
-     },
-     {
-      "name": "Hybrid cloud",
-      "count": 1
-     },
-     {
-      "name": "Istio",
+      "name": "Datadog",
       "count": 1
      }
     ]
@@ -2117,12 +2125,12 @@
      "count": 4
     },
     {
-     "name": "TypeScript",
+     "name": "C++",
      "count": 3
     },
     {
-     "name": "C++",
-     "count": 2
+     "name": "TypeScript",
+     "count": 3
     },
     {
      "name": "Go",
@@ -2228,11 +2236,11 @@
       "count": 4
      },
      {
-      "name": "Cassandra",
-      "count": 2
+      "name": "Elasticsearch",
+      "count": 3
      },
      {
-      "name": "Elasticsearch",
+      "name": "Cassandra",
       "count": 2
      },
      {
@@ -2278,11 +2286,11 @@
       "count": 3
      },
      {
-      "name": "Envoy",
-      "count": 2
+      "name": "Terraform",
+      "count": 3
      },
      {
-      "name": "Terraform",
+      "name": "Envoy",
       "count": 2
      },
      {
@@ -8871,42 +8879,58 @@
     "Python",
     "Go",
     "JavaScript",
-    "Scala"
+    "Scala",
+    "C++"
    ],
    "stack": {
     "backend": [
      "Java",
+     "Dropwizard",
+     "Spring",
      "Python",
+     "Go",
      "gRPC",
-     "Spring"
+     "Thrift",
+     "FreeSWITCH",
+     "Kamailio"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Paste Design System"
+     "Paste Design System",
+     "Redux",
+     "Twilio Flex"
     ],
     "data": [
-     "MySQL",
-     "Kafka",
+     "MySQL (Aurora)",
      "DynamoDB",
      "Cassandra",
-     "Redis"
+     "Kafka",
+     "Kinesis",
+     "Redis",
+     "Elasticsearch",
+     "S3"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Envoy"
+     "Kubernetes (EKS)",
+     "Envoy",
+     "Terraform",
+     "Consul",
+     "Datadog",
+     "Signalfx"
     ]
    },
    "architecture": [
     "Microservices",
     "API-first",
-    "Event-driven"
+    "Event-driven",
+    "Multi-region active-active"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Developer App<br/>SDK/REST\"]\n    CONSOLE[\"Console<br/>React + Paste\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>API-first REST\"]\n    ENVOY[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph CoreServices\n    JAVA[\"Messaging/Voice Services<br/>Java Spring\"]\n    PY[\"API Services<br/>Python + gRPC\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"Primary Store<br/>MySQL\"]\n    DDB[\"NoSQL Store<br/>DynamoDB\"]\n    CASS[\"Wide-Column Store<br/>Cassandra\"]\n    REDIS[\"Cache<br/>Redis\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n  end\n  APP --> GW\n  CONSOLE --> GW\n  GW --> ENVOY\n  ENVOY --> JAVA\n  ENVOY -->|gRPC| PY\n  JAVA --> MYSQL\n  JAVA --> CASS\n  PY --> DDB\n  JAVA --> REDIS\n  JAVA --> KAFKA\n  JAVA --> K8S",
-   "why_language": "통신 API의 고처리량 메시지/통화 라우팅을 JVM(Java) 안정성으로 운영하고, 자동화·도구는 Python을 쓴다. 일부 고성능 서비스는 Go로 작성한다.",
-   "why_architecture": "SMS·음성·이메일을 단일 API로 추상화하는 API-퍼스트 설계가 핵심이며, 대량 메시지 흐름을 Kafka 이벤트 기반 마이크로서비스로 처리한다. AWS 위에서 글로벌하게 운영한다.",
-   "summary": "JVM 마이크로서비스와 API-퍼스트 설계로 통신을 클라우드 API로 추상화한 회사.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / SDK\"]\n    APP[\"App / Browser<br/>Twilio Helper Libs + JS SDK\"]\n    WRTC[\"Voice/Video<br/>WebRTC + SIP\"]\n  end\n  subgraph Edge[\"Edge / API\"]\n    LB[\"Edge LB<br/>AWS NLB + Envoy\"]\n    GW[\"API Gateway<br/>REST + Auth/Rate-limit\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MSG[\"Messaging Svc<br/>Java + Dropwizard\"]\n    VOICE[\"Voice Control<br/>FreeSWITCH + Kamailio\"]\n    ROUTE[\"Carrier Router<br/>Go\"]\n    BILL[\"Billing/Usage<br/>Java + Scala\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka + Kinesis\"]\n    WORK[\"Delivery Workers<br/>Python/Go\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL Aurora\"]\n    DDB[\"Hot KV<br/>DynamoDB\"]\n    CASS[\"Wide-column<br/>Cassandra\"]\n    REDIS[\"Cache<br/>Redis\"]\n    S3[\"Logs/Media<br/>S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes EKS\"]\n    OBS[\"Observability<br/>Datadog + SignalFx\"]\n  end\n  APP --> LB\n  WRTC --> LB\n  LB --> GW\n  GW -->|REST| MSG\n  GW -->|REST| VOICE\n  MSG --> KAFKA\n  VOICE --> ROUTE\n  KAFKA --> WORK\n  WORK -->|SMPP/SIP| ROUTE\n  MSG --> MYSQL\n  MSG --> DDB\n  VOICE --> CASS\n  GW --> REDIS\n  WORK --> S3\n  BILL --> KAFKA\n  Core --> OBS\n  Core --> K8S",
+   "why_language": "Twilio의 코어는 대규모 트래픽을 처리하는 메시징·과금 서비스로, JVM 생태계의 성숙한 동시성·라이브러리·운영 도구 때문에 Java/Scala(Dropwizard, Akka)가 중심입니다. 캐리어 라우팅·네트워크 데몬처럼 낮은 지연과 높은 처리량이 중요한 영역엔 Go를, 자동화·데이터 파이프라인엔 Python을, 실시간 음성 미디어 처리엔 C++ 기반 FreeSWITCH를 사용해 도메인별로 최적 언어를 혼용합니다.",
+   "why_architecture": "Twilio는 '통신을 API 한 줄로'라는 제품 철학상 모든 기능을 REST/SDK로 추상화하는 API-first가 필수이며, 메시지·통화는 본질적으로 비동기 이벤트(발송→캐리어→전달 상태 콜백)이므로 Kafka 기반 event-driven 파이프라인이 자연스럽습니다. 또한 전 세계 캐리어 연동과 규제·지연 요구를 충족하기 위해 멀티 리전 active-active 마이크로서비스로 도메인을 분리해 독립 확장·장애 격리를 달성합니다.",
+   "summary": "통신을 단일 API로 추상화한, Kafka 이벤트 기반·멀티 데이터스토어 마이크로서비스로 글로벌 메시징·음성을 처리하는 스택",
    "deep_dive": [
     {
      "topic": "API-퍼스트: 통신을 단일 REST API로 추상화",
@@ -8923,6 +8947,22 @@
     {
      "topic": "글로벌 음성·SIP 인프라와 복원력",
      "body": "### 실시간 음성은 다르다\n메시지(SMS)는 비동기로 큐잉할 수 있지만, **음성 통화는 실시간 미디어 스트림**이라 지연·끊김을 못 견딘다. Twilio는 글로벌 **SIP/미디어 인프라**를 운영한다.\n\n- 통화는 **TwiML** 지시에 따라 흐르고, Twilio가 carrier·SIP 트렁크와 인터커넥트\n- 미디어(RTP)는 사용자에 **지리적으로 가까운 엣지 미디어 서버**로 라우팅해 지연 최소화\n- **글로벌 저지연 라우팅**으로 국가 간 통화 품질을 보장\n\n### 복원력\n- carrier 장애 시 **대체 경로로 페일오버**(여러 통신사 연동으로 redundancy)\n- 메시지 발송 실패는 **재시도·대체 경로**, 상태를 웹훅으로 정확히 통지\n- 리전 장애에 대비해 **멀티 리전 active-active** 운영\n\n### 왜\n통신은 **SLA 가용성이 곧 제품 신뢰**다. 한 통신사가 죽었다고 메시지/통화가 실패하면 안 되므로, 여러 carrier·리전에 redundancy를 둬 자동 페일오버한다. 음성은 비동기 큐로 못 푸는 실시간 워크로드라, 미디어를 엣지로 분산해 지연을 줄이는 별도 설계가 필요하다. 트레이드오프는 다중 carrier·리전 운영의 막대한 복잡도·비용이지만, 통신 SLA를 지키는 데 필수다."
+    },
+    {
+     "topic": "전달 상태 콜백과 멱등성: 비동기 파이프라인의 일관성 보장",
+     "body": "### 왜 비동기인가\nSMS 한 건을 보내면 Twilio가 즉시 캐리어에 꽂아 끝나는 게 아니라 `queued → sending → sent → delivered/undelivered/failed` 라는 상태 머신을 거칩니다. 캐리어(이동통신사) 게이트웨이의 응답은 수백 ms~수십 초까지 들쭉날쭉하고, 최종 전달 영수증(DLR, Delivery Receipt)은 분 단위로 늦게 돌아오기도 합니다. 그래서 API 호출(동기 경로)과 실제 전송(비동기 경로)을 분리하는 것이 구조적으로 강제됩니다.\n\n### 흐름\n1. `POST /Messages` → API 게이트웨이가 인증·레이트리밋·잔액 확인 후 메시지를 **즉시 영속화**(MySQL/DynamoDB)하고 `Message SID`와 함께 `queued` 상태를 반환. 여기까지가 동기.\n2. 메시지 이벤트가 `Kafka` 토픽에 들어가고, 다수의 delivery worker가 컨슘하여 캐리어/`SMPP` 바인드 또는 상위 애그리게이터로 송신.\n3. 캐리어가 비동기로 DLR을 보내면, 이를 받아 상태를 갱신하고 고객이 등록한 `StatusCallback` URL로 **웹훅**을 발사.\n\n### 멱등성과 정확히-한-번\nKafka는 본질적으로 at-least-once이므로 같은 메시지 이벤트가 두 번 소비될 수 있습니다. 두 번 SMS가 나가면 고객 과금·평판 모두 망가지므로, worker는 `Message SID` 기반의 **dedup 키**를 캐시/DB의 조건부 쓰기(예: DynamoDB conditional put, MySQL unique index)로 검사해 '이미 전송됨' 상태에서는 재전송을 건너뜁니다. 상태 전이 역시 **단조 증가(monotonic)** 규칙을 적용해, 늦게 도착한 `sent` 콜백이 이미 도달한 `delivered` 상태를 되돌리지 못하게 합니다.\n\n### 고객 웹훅의 함정\n고객 엔드포인트는 느리거나 죽어 있을 수 있으므로 StatusCallback 발사는 **재시도 + 지수 백오프 + 타임아웃**으로 격리됩니다. 고객 서버 장애가 Twilio 내부 파이프라인을 막지 않도록 별도 큐/워커로 분리하는 것이 핵심 설계 결정입니다."
+    },
+    {
+     "topic": "멀티테넌시·레이트리밋과 폭주 트래픽 격리",
+     "body": "### 문제: 한 계정이 전체를 흔든다\nTwilio는 수십만 고객이 같은 인프라를 공유하는 멀티테넌트 플랫폼입니다. 한 고객이 갑자기 캠페인성 대량 발송을 하면 공유 캐리어 채널·DB·큐가 포화되어 다른 고객까지 지연되는 'noisy neighbor' 문제가 생깁니다.\n\n### 방어 계층\n- **API 레벨 레이트리밋**: 계정·리소스별 토큰 버킷으로 초당 요청 수 제한. 초과 시 `429 Too Many Requests`.\n- **메시지 대기열의 공정 스케줄링**: 발송은 즉시 캐리어로 가지 않고 계정별 큐에 들어가 캐리어가 허용하는 throughput(예: long code는 초당 1건, 단축코드·toll-free·A2P 10DLC는 등급별 한도)에 맞춰 페이싱됩니다. 즉 레이트리밋은 단순 거절이 아니라 **셰이핑(shaping)**에 가깝습니다.\n- **격리(bulkhead)**: 대형 테넌트의 트래픽이 별도 큐·워커 풀로 분리되어 소형 테넌트의 지연을 만들지 않도록 합니다.\n\n### A2P 규제와의 결합\n미국 A2P 10DLC, toll-free verification처럼 캐리어가 요구하는 등록·throughput 등급이 레이트리밋 로직과 직접 얽혀 있어, 단순 기술 한도가 아니라 **규제·캐리어 정책을 코드로 인코딩한 동적 한도**라는 점이 Twilio 특유의 복잡성입니다."
+    },
+    {
+     "topic": "관측성: 통화·메시지 단위 분산 트레이싱과 캐리어 블랙박스 문제",
+     "body": "### 왜 관측성이 생존 문제인가\nTwilio의 SLA는 '메시지가 전달되었는가'에 직결되는데, 정작 마지막 구간(캐리어 망)은 Twilio가 제어할 수 없는 블랙박스입니다. 따라서 자기 시스템 내부는 극단적으로 투명해야 캐리어 문제와 자사 문제를 구분할 수 있습니다.\n\n### 구성\n- **메트릭**: `Datadog`, `SignalFx`(Splunk APM) 등으로 서비스별 지연·에러율·큐 깊이·캐리어별 전달률을 실시간 대시보드화. 캐리어별·국가별 전달 성공률 급락을 이상탐지로 잡아냅니다.\n- **분산 트레이싱**: 하나의 `Message SID`/`Call SID`를 trace correlation 키로 삼아 API 게이트웨이→코어 서비스→Kafka→delivery worker→캐리어 바인드까지 한 호출의 전 구간을 추적. 어느 마이크로서비스 홉에서 지연이 생겼는지 핀포인트.\n- **로그·미디어 아카이브**: 통화 녹취·로그·CDR(Call Detail Record)은 `S3`에 적재되어 사후 분석·과금 검증·컴플라이언스 증빙에 사용.\n\n### 핵심 트레이드오프\n초당 수백만 이벤트에 풀 트레이싱을 켜면 비용이 폭발하므로, **샘플링 + 에러/이상 경로는 항상 캡처**하는 하이브리드 전략을 씁니다. 또한 캐리어 응답 코드를 표준화된 Twilio 에러코드(예: `30007 message filtered`)로 정규화해, 제각각인 캐리어 에러를 고객이 일관되게 디버깅하도록 추상화한 것이 특징입니다."
+    },
+    {
+     "topic": "Twilio Segment와 실시간 CDP 스트리밍 파이프라인",
+     "body": "### 인수로 들어온 거대한 데이터 시스템\nTwilio는 2020년 `Segment`(CDP, Customer Data Platform)를 인수하며 통신 API 회사에서 고객 데이터 플랫폼으로 외연을 넓혔습니다. Segment의 코어는 통신 스택과는 결이 다른 **대규모 이벤트 수집·라우팅 파이프라인**입니다.\n\n### 동작 원리\n1. 클라이언트 SDK가 `track/identify/page` 이벤트를 발사 → 수집 게이트웨이가 받음.\n2. 이벤트는 내부 스트리밍 버스(`Kafka` 기반)로 흘러 수백 개의 다운스트림 'destination'(광고·분석·CRM 도구)으로 **팬아웃 라우팅**됩니다. 하나의 이벤트가 N개 목적지로 복제되는 fan-out이 핵심 부하 패턴.\n3. 각 destination은 외부 SaaS API라 느리거나 죽을 수 있으므로, Segment는 목적지별 **독립 큐 + 재시도 + 서킷브레이커**로 격리합니다. 한 목적지의 장애가 다른 목적지 전달을 막지 않습니다(앞서의 bulkhead 패턴이 여기서도 반복).\n\n### 엔지니어링 결정\nSegment는 한때 마이크로서비스를 과도하게 쪼갰다가 운영 복잡도 폭증으로 일부를 다시 **모놀리스로 통합(monorepo 단일 서비스)** 한 사례로 유명합니다(\"Goodbye Microservices\"). 수백 개 destination worker를 개별 서비스로 운영하던 것을 단일 서비스로 합쳐 배포·의존성 지옥을 줄인 것으로, '마이크로서비스가 항상 정답은 아니다'라는 트레이드오프를 보여주는 대표 사례입니다. 데이터 저장·집계엔 컬럼형 웨어하우스 연동과 대량 배치/스트림 혼합 처리가 쓰입니다."
     }
    ],
    "github": {
@@ -8931,38 +8971,40 @@
      {
       "name": "twilio/twilio-python",
       "url": "https://github.com/twilio/twilio-python",
-      "desc": "Twilio API용 파이썬 헬퍼 라이브러리",
+      "desc": "Twilio REST API용 공식 Python 헬퍼 라이브러리",
       "lang": "Python",
       "stars": 2063
      },
      {
       "name": "twilio/twilio-node",
       "url": "https://github.com/twilio/twilio-node",
-      "desc": "Twilio API용 Node.js 라이브러리",
+      "desc": "Node.js용 공식 Twilio API SDK",
       "lang": "TypeScript",
       "stars": 1542
      },
      {
       "name": "twilio/twilio-java",
       "url": "https://github.com/twilio/twilio-java",
-      "desc": "Twilio API용 Java 헬퍼 라이브러리",
+      "desc": "JVM 환경을 위한 공식 Java 헬퍼 라이브러리",
       "lang": "Java",
       "stars": 520
      },
      {
-      "name": "twilio-labs/paste",
-      "url": "https://github.com/twilio-labs/paste",
-      "desc": "Twilio 디자인 시스템",
-      "lang": "TypeScript",
-      "stars": 475
+      "name": "twilio/twilio-cli",
+      "url": "https://github.com/twilio/twilio-cli",
+      "desc": "터미널에서 Twilio API를 다루는 공식 CLI",
+      "lang": "JavaScript",
+      "stars": 190
      }
     ]
    },
    "sources": [
-    "https://www.twilio.com/en-us/blog/category/engineering"
+    "https://www.twilio.com/en-us/blog/engineering-insights",
+    "https://segment.com/blog/goodbye-microservices/",
+    "https://github.com/twilio"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "block",
@@ -8978,36 +9020,46 @@
    ],
    "stack": {
     "backend": [
-     "Java",
      "Kotlin",
+     "Java",
      "Misk",
-     "gRPC"
+     "gRPC",
+     "Protocol Buffers",
+     "Ruby on Rails"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Market Design System",
+     "GraphQL"
     ],
     "data": [
      "MySQL (Vitess)",
      "Kafka",
      "Cassandra",
-     "DynamoDB"
+     "DynamoDB",
+     "Redis",
+     "Snowflake"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "Envoy"
+     "Envoy",
+     "Terraform",
+     "Bazel",
+     "Datadog"
     ]
    },
    "architecture": [
     "Microservices",
     "Service mesh",
-    "Event-driven"
+    "Event-driven",
+    "Multi-region active-active"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Seller/Cash App<br/>React + TypeScript\"]\n  end\n  subgraph Edge\n    ENVOY[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph CoreServices\n    MISK[\"Payment Services<br/>Kotlin Misk\"]\n    JAVA[\"Core Services<br/>Java + gRPC\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Data\n    VITESS[\"Sharded Store<br/>MySQL Vitess\"]\n    CASS[\"Wide-Column Store<br/>Cassandra\"]\n    DDB[\"NoSQL Store<br/>DynamoDB\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n  end\n  WEB --> ENVOY\n  ENVOY -->|gRPC| MISK\n  ENVOY -->|gRPC| JAVA\n  MISK --> VITESS\n  JAVA --> CASS\n  JAVA --> DDB\n  MISK --> KAFKA\n  MISK --> K8S\n  JAVA --> K8S",
-   "why_language": "결제 트랜잭션의 정합성·동시성을 위해 JVM(Java/Kotlin)을 백엔드 표준으로 쓰고, 자체 마이크로서비스 프레임워크 Misk를 만들었다. Cash App 일부는 Ruby/Kotlin이다.",
-   "why_architecture": "Square·Cash App의 결제 흐름을 Misk 기반 마이크로서비스로 운영하고 Vitess로 MySQL을 샤딩한다. 금융 정합성과 가용성을 위해 이벤트 기반 분산 설계를 둔다.",
-   "summary": "JVM·자체 프레임워크 Misk와 Vitess 샤딩으로 Square·Cash App 결제를 떠받친다.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    POS[\"Square Register / Reader<br/>Kotlin + Swift SDK\"]\n    WEB[\"Seller Dashboard<br/>React + TypeScript\"]\n    CASH[\"Cash App<br/>Kotlin + Swift\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    LB[\"Edge LB<br/>Envoy\"]\n    GW[\"API Gateway<br/>Misk HTTP/gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PAY[\"Payments Service<br/>Kotlin + Misk\"]\n    LEDGER[\"Ledger / Settlement<br/>Java + Kotlin\"]\n    CATALOG[\"Catalog / Orders<br/>Kotlin\"]\n    RISK[\"Risk / Fraud<br/>Kotlin + ML\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    ENVOY[\"Sidecar Proxy<br/>Envoy + xDS\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HERMES[\"Async Jobs<br/>Misk Jobqueue + SQS\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"Sharded OLTP<br/>MySQL + Vitess\"]\n    CASS[\"Wide-column<br/>Cassandra\"]\n    DDB[\"Key-Value<br/>DynamoDB\"]\n    REDIS[\"Cache<br/>Redis\"]\n    SNOW[\"Analytics<br/>Snowflake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    DD[\"Observability<br/>Datadog + OpenTelemetry\"]\n  end\n  POS -->|gRPC| LB\n  WEB -->|GraphQL/HTTPS| LB\n  CASH -->|gRPC| LB\n  LB --> GW\n  GW -->|gRPC| ENVOY\n  ENVOY --> PAY\n  ENVOY --> CATALOG\n  PAY --> LEDGER\n  PAY --> RISK\n  PAY -->|read/write| VITESS\n  LEDGER --> VITESS\n  CATALOG --> CASS\n  RISK --> DDB\n  PAY --> REDIS\n  PAY -->|publish| KAFKA\n  LEDGER -->|publish| KAFKA\n  KAFKA --> HERMES\n  KAFKA --> SNOW\n  PAY -.-> DD\n  ENVOY -.-> DD\n  K8S --> PAY\n  K8S --> LEDGER",
+   "why_language": "Block은 결제·정산처럼 강한 정합성과 높은 처리량이 동시에 필요한 도메인이라, JVM의 성숙한 동시성·관측성·라이브러리 생태계를 핵심 백엔드의 기반으로 삼고 신규 서비스는 null 안전성과 코루틴을 갖춘 Kotlin으로 작성한다. Cash App과 Square Reader 같은 모바일·임베디드 클라이언트도 Kotlin/Swift로 통일해 서버-클라이언트 간 Protobuf 스키마와 도메인 모델을 공유하며, 초기 셀러 대시보드 등 일부 영역은 Ruby on Rails 유산이, 인프라·CLI 도구는 Go가 담당한다.",
+   "why_architecture": "단일 결제 모놀리스로는 수천 개 셀러 기능과 규제·정산 요구를 독립 배포할 수 없기에, Misk 기반 마이크로서비스를 Envoy 서비스 메시로 묶어 gRPC로 통신시키고 결제 데이터는 Vitess로 수평 샤딩한다. 카드 승인은 동기 경로로 빠르게 처리하되 정산·리워드·리스크·분석은 Kafka 이벤트로 비동기 분리해, 핵심 결제 경로의 지연을 낮추면서 멀티 리전 active-active로 가용성을 확보하는 트레이드오프를 택했다.",
+   "summary": "JVM(Kotlin/Java) + 자체 Misk 프레임워크 위에서 Envoy 메시와 Vitess 샤딩, Kafka 이벤트로 굴리는 결제 마이크로서비스 플랫폼",
    "deep_dive": [
     {
      "topic": "결제 흐름: 카드 탭부터 정산까지 end-to-end",
@@ -9024,36 +9076,59 @@
     {
      "topic": "이벤트 기반 정합성과 모바일 SDK(OkHttp/Retrofit)",
      "body": "### 비동기 정합성\n결제 후 처리(영수증·정산·리워드·장부)는 동기 결제 경로에서 분리해 **Kafka 이벤트**로 전파한다.\n\n- 결제 성공 이벤트가 발행되면 다운스트림(분석·정산·알림)이 독립 소비 → 결제 응답 지연 최소화\n- 분산 흐름의 정합성은 **saga/보상 트랜잭션**과 멱등 소비로 보장\n- 대규모 KV/시계열은 **Cassandra/DynamoDB**, 핵심 트랜잭션은 Vitess MySQL\n\n### 모바일 측\nSquare/Cash App 모바일은 **OkHttp/Retrofit**(Square가 만든 HTTP/REST 클라이언트 라이브러리)로 백엔드와 통신한다 — 이 라이브러리들은 안드로이드 생태계 표준이 됐다.\n\n### 왜\n결제 핵심 경로는 빠르고 강일관해야 하지만, 부가 처리까지 동기로 묶으면 느려진다. **핵심은 동기 강일관, 부가는 비동기 이벤트**로 나누면 응답성과 정합성을 모두 잡는다. 트레이드오프는 이벤트 소비의 최종 일관성과 멱등 처리 복잡도지만, 금융 워크로드에서 검증된 패턴이다. OkHttp/Retrofit은 모바일 결제의 신뢰성 있는 네트워킹을 표준화했다."
+    },
+    {
+     "topic": "Envoy 서비스 메시와 xDS 기반 동적 라우팅",
+     "body": "### 왜 Envoy인가\nBlock은 수백 개의 Misk 마이크로서비스가 gRPC로 통신하는데, 각 서비스가 직접 서비스 디스커버리·재시도·mTLS·로드밸런싱을 구현하면 언어/프레임워크마다 동작이 갈라진다. 그래서 모든 서비스 인스턴스 옆에 `Envoy` 사이드카를 붙여 네트워크 관심사를 애플리케이션 밖으로 빼냈다.\n\n### 동작 메커니즘\n- 애플리케이션은 `localhost`의 Envoy로만 요청을 보내고, Envoy가 실제 목적지 서비스의 헬시한 엔드포인트로 라우팅한다.\n- 라우팅 테이블·클러스터·엔드포인트는 중앙 컨트롤 플레인이 **xDS API**(CDS/EDS/LDS/RDS)로 푸시한다. 새 서비스가 뜨거나 죽으면 코드 재배포 없이 메시 전체에 전파된다.\n- 서비스 간 통신은 사이드카에서 **mTLS**로 자동 암호화·인증된다. 결제 데이터가 오가는 만큼 서비스 아이덴티티(SPIFFE류 인증서)가 핵심이다.\n\n### 메시가 주는 것\n| 기능 | 애플리케이션 코드 변경 없이 |\n|------|------------------------------|\n| 재시도/타임아웃 | Envoy route 설정 |\n| 서킷브레이커 | `max_connections`, `max_pending_requests` |\n| 카나리/트래픽 분할 | weighted cluster |\n| 관측성 | 모든 hop에서 자동 메트릭/트레이스 |\n\n결과적으로 Misk 서비스는 비즈니스 로직만 들고, 네트워크 복원력은 메시가 균일하게 보장한다. gRPC의 HTTP/2 멀티플렉싱과 Envoy의 L7 인지가 결합되어 커넥션 재사용·헤더 기반 라우팅까지 표준화된다."
+    },
+    {
+     "topic": "리스크·사기 탐지 파이프라인: 실시간 스코어링과 피처 스토어",
+     "body": "### 결제 한 건마다 리스크 판정\n핀테크의 본질은 '돈을 잃지 않는 것'이라, Block은 모든 결제 승인 경로에 리스크 평가를 끼워 넣는다. 카드 탭 → 승인 요청이 들어오면 `Payments Service`가 동기적으로 `Risk Service`를 호출해 **수십~수백 ms 내** 승인/거절/추가검증 결정을 받아야 한다.\n\n### 피처 계산의 이중 경로\n- **온라인(실시간)**: 현재 거래의 금액·기기·지오·머천트·속도(velocity, 예: 최근 1분 내 같은 카드의 시도 횟수) 같은 피처를 저지연 스토어(`Redis`/`DynamoDB`)에서 조회하거나 즉석 계산한다.\n- **오프라인(배치)**: 과거 거래 이력으로부터 머천트 신뢰도·계정 나이·환불율 같은 무거운 피처를 `Kafka` → 데이터 레이크/`Snowflake`로 흘려 주기적으로 갱신하고 다시 온라인 스토어로 머티리얼라이즈한다. 이 **online/offline 피처 일관성**이 모델 정확도의 관건이다.\n\n### 모델 서빙과 룰 엔진의 하이브리드\n순수 ML 스코어만으로 거절하면 설명 책임(규제)이 어렵기 때문에, **ML 스코어 + 결정론적 룰 엔진**을 함께 쓴다. 룰은 즉시 차단(블랙리스트, 명백한 카드 테스팅 패턴)에, 모델 스코어는 회색지대 판정에 쓰고, 결과는 다시 `Kafka`로 흘려 라벨링·재학습 데이터로 순환시킨다.\n\n### 트레이드오프\n실시간 경로에 모델 추론을 넣으면 결제 지연이 늘어난다. 그래서 무거운 그래프 기반 피처(연결망 사기 탐지)는 비동기로 사후 평가하고, 동기 경로에서는 가볍고 빠른 피처·모델만 사용해 **승인 지연 예산**을 지킨다."
+    },
+    {
+     "topic": "멀티 리전 가용성과 셀-기반(failover) 복원력",
+     "body": "### 결제는 멈추면 안 된다\n오프라인 매장에서 카드 결제가 몇 분만 막혀도 셀러의 매출이 직접 증발한다. Block은 그래서 가용성을 SLA의 최상위 목표로 두고 AWS 멀티 리전·멀티 AZ로 설계한다.\n\n### 핵심 메커니즘\n- **Vitess 토폴로지의 리전 인지**: 샤딩된 MySQL 클러스터(`vttablet`/`vtgate`)는 각 샤드마다 프라이머리와 복제본을 여러 AZ·리전에 배치한다. 프라이머리 장애 시 Vitess의 오케스트레이션이 복제본을 승격(failover)하고 `vtgate`가 라우팅을 갱신한다.\n- **active-active 트래픽**: 가능한 경로는 리전별로 트래픽을 동시에 받아, 한 리전이 빠져도 나머지가 흡수한다. 단, 결제 정합성 때문에 같은 계정/샤드의 쓰기는 한 곳으로 직렬화되도록 라우팅 키를 설계한다.\n- **서킷브레이커·백프레셔**: 다운스트림(예: 외부 카드 네트워크, 은행)이 느려지면 Envoy/Misk 레벨에서 빠르게 끊고, `Misk Jobqueue`로 재시도 가능한 작업을 비동기 큐에 적재해 부하를 평탄화한다.\n\n### 비동기로 흡수하는 부분\n승인(authorization)은 동기·강정합이 필요하지만, **정산·리워드·알림·리포팅**은 `Kafka` 이벤트로 분리해 일시 장애 시 지연만 발생하고 데이터는 유실되지 않게 한다. 이렇게 '돈이 움직이는 동기 코어'와 '나중에 맞춰도 되는 비동기 외곽'을 분리하는 것이 Block 복원력 설계의 뼈대다.\n\n### 트레이드오프\n멀티 리전 active-active는 데이터 라우팅과 충돌 방지를 복잡하게 만든다. Block은 강정합이 필요한 결제/원장 데이터를 샤드 단위로 단일 프라이머리에 묶고, 결국 일관성 비용을 '샤딩 키 설계'라는 한 곳에 집중시켜 운영 복잡도를 통제한다."
+    },
+    {
+     "topic": "Bazel 모노레포와 배포 파이프라인",
+     "body": "### 대규모 폴리글랏 코드베이스의 빌드\nKotlin/Java 서비스, 모바일(Kotlin/Swift), 프론트(TypeScript)가 한데 얽힌 대규모 코드베이스를 일관되게 빌드하기 위해 Block은 **Bazel** 기반의 가설 가능한(hermetic) 빌드를 광범위하게 쓴다. 핵심 가치는 두 가지다.\n\n- **증분·캐시 빌드**: 변경된 타깃과 그 의존성만 다시 빌드/테스트한다. 수천 개 모듈에서 전체 빌드를 매번 돌리지 않고 원격 캐시를 공유해 CI 시간을 압축한다.\n- **재현성**: 입력이 같으면 출력이 같다. Protobuf 스키마(`Wire`로 코드 생성)·서비스·클라이언트가 같은 정의에서 결정론적으로 생성되어 서버-모바일 간 스키마 드리프트를 막는다.\n\n### 스키마 우선(contract-first) 개발\nBlock의 서비스 통신은 Protocol Buffers/gRPC가 기본이다. `.proto`가 단일 소스이고, 서버는 Misk gRPC 핸들러로, Android/JVM 클라이언트는 `Wire`로, 다른 언어는 표준 gRPC 스택으로 코드를 생성한다. API 변경은 스키마 호환성 검사를 통과해야 머지된다.\n\n### 배포\n- 컨테이너화된 Misk 서비스는 **Kubernetes(on AWS)** 위에서 굴러간다.\n- 롤아웃은 Envoy의 weighted routing을 활용한 **카나리/점진 배포**로, 소수 트래픽에 먼저 노출하고 메트릭(Datadog)·에러율을 보며 확장하거나 롤백한다.\n- 인프라는 `Terraform`으로 코드화해 리전·환경 간 재현 가능하게 관리한다.\n\n### 트레이드오프\nBazel은 학습 곡선과 BUILD 파일 유지 비용이 크지만, 결제 시스템처럼 '빌드 산출물의 신뢰성'이 곧 안전성인 도메인에서는 재현성과 캐시 효율이 그 비용을 상쇄한다."
     }
    ],
    "github": {
-    "org": "https://github.com/block",
+    "org": "https://github.com/cashapp",
     "repos": [
      {
       "name": "square/okhttp",
       "url": "https://github.com/square/okhttp",
-      "desc": "JVM/안드로이드용 HTTP 클라이언트",
+      "desc": "JVM/Android의 사실상 표준 HTTP 클라이언트, 모든 모바일·서버 통신의 기반",
       "lang": "Kotlin",
       "stars": 46973
      },
      {
       "name": "square/retrofit",
       "url": "https://github.com/square/retrofit",
-      "desc": "타입 안전한 REST 클라이언트",
+      "desc": "타입 안전한 REST 클라이언트, OkHttp 위에서 API 호출을 인터페이스로 추상화",
       "lang": "HTML",
       "stars": 43893
      },
      {
-      "name": "square/leakcanary",
-      "url": "https://github.com/square/leakcanary",
-      "desc": "안드로이드 메모리 누수 탐지 도구",
+      "name": "sqldelight/sqldelight",
+      "url": "https://github.com/sqldelight/sqldelight",
+      "desc": "SQL로부터 타입 안전한 Kotlin API를 생성하는 멀티플랫폼 영속화 라이브러리",
       "lang": "Kotlin",
-      "stars": 29920
+      "stars": 6813
+     },
+     {
+      "name": "square/wire",
+      "url": "https://github.com/square/wire",
+      "desc": "경량 Protocol Buffers/gRPC 런타임·코드 생성기, 모바일에 최적화",
+      "lang": "Kotlin",
+      "stars": 4420
      },
      {
       "name": "cashapp/misk",
       "url": "https://github.com/cashapp/misk",
-      "desc": "Block의 마이크로서비스 프레임워크",
+      "desc": "Block이 만든 Kotlin 마이크로서비스 프레임워크 — DI·서비스 생명주기·gRPC/HTTP·잡큐 통합",
       "lang": "Kotlin",
       "stars": 469
      }
@@ -9061,10 +9136,11 @@
    },
    "sources": [
     "https://developer.squareup.com/blog",
-    "https://github.com/cashapp/misk"
+    "https://github.com/cashapp/misk",
+    "https://code.cash.app/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "coinbase",
