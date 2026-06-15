@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T08:09:43",
+ "generated_at": "2026-06-15T09:42:44",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 23,
+ "refined": 25,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -471,7 +471,7 @@
     },
     {
      "name": "Scala",
-     "count": 2
+     "count": 3
     }
    ],
    "stack": {
@@ -497,6 +497,10 @@
       "count": 2
      },
      {
+      "name": "GraphQL",
+      "count": 2
+     },
+     {
       "name": "Node.js",
       "count": 2
      },
@@ -511,10 +515,6 @@
      {
       "name": "Dropwizard",
       "count": 1
-     },
-     {
-      "name": "DynamoDB SDK",
-      "count": 1
      }
     ],
     "frontend": [
@@ -524,26 +524,30 @@
      },
      {
       "name": "TypeScript",
-      "count": 8
+      "count": 9
      },
      {
       "name": "Next.js",
       "count": 7
      },
      {
+      "name": "React Native",
+      "count": 3
+     },
+     {
       "name": "Vue.js",
       "count": 3
      },
      {
-      "name": "React Native",
-      "count": 2
-     },
-     {
-      "name": "GraphQL",
+      "name": "Apollo GraphQL",
       "count": 1
      },
      {
       "name": "Hydrogen",
+      "count": 1
+     },
+     {
+      "name": "Hypernova SSR",
       "count": 1
      },
      {
@@ -552,10 +556,6 @@
      },
      {
       "name": "Polaris",
-      "count": 1
-     },
-     {
-      "name": "Remix",
       "count": 1
      }
     ],
@@ -566,7 +566,7 @@
      },
      {
       "name": "Elasticsearch",
-      "count": 12
+      "count": 13
      },
      {
       "name": "MySQL",
@@ -574,15 +574,15 @@
      },
      {
       "name": "Redis",
-      "count": 9
+      "count": 10
+     },
+     {
+      "name": "HBase",
+      "count": 3
      },
      {
       "name": "Airflow",
-      "count": 3
-     },
-     {
-      "name": "Spark",
-      "count": 3
+      "count": 2
      },
      {
       "name": "Aurora",
@@ -593,11 +593,11 @@
       "count": 2
      },
      {
-      "name": "HBase",
+      "name": "MongoDB",
       "count": 2
      },
      {
-      "name": "MongoDB",
+      "name": "PostgreSQL",
       "count": 2
      }
     ],
@@ -635,11 +635,11 @@
       "count": 1
      },
      {
-      "name": "EC2",
+      "name": "Apache Thrift RPC",
       "count": 1
      },
      {
-      "name": "ECS",
+      "name": "Datadog",
       "count": 1
      }
     ]
@@ -655,11 +655,7 @@
     },
     {
      "name": "Microservices",
-     "count": 5
-    },
-    {
-     "name": "Service-oriented",
-     "count": 3
+     "count": 4
     },
     {
      "name": "검색/추천",
@@ -668,6 +664,10 @@
     {
      "name": "모놀리스→MSA 전환",
      "count": 3
+    },
+    {
+     "name": "Service-oriented",
+     "count": 2
     }
    ]
   },
@@ -2393,6 +2393,10 @@
       "count": 2
      },
      {
+      "name": "Node.js",
+      "count": 2
+     },
+     {
       "name": "Apollo",
       "count": 1
      },
@@ -2405,19 +2409,15 @@
       "count": 1
      },
      {
+      "name": "GraphQL gateway",
+      "count": 1
+     },
+     {
       "name": "gRPC + Protobuf",
       "count": 1
      },
      {
       "name": "Netty",
-      "count": 1
-     },
-     {
-      "name": "Node.js",
-      "count": 1
-     },
-     {
-      "name": "Protobuf",
       "count": 1
      }
     ],
@@ -2429,6 +2429,10 @@
      {
       "name": "TypeScript",
       "count": 2
+     },
+     {
+      "name": "Apollo GraphQL",
+      "count": 1
      },
      {
       "name": "AVKit / AVFoundation",
@@ -2447,19 +2451,15 @@
       "count": 1
      },
      {
+      "name": "Redux",
+      "count": 1
+     },
+     {
       "name": "SwiftUI",
       "count": 1
      },
      {
       "name": "tvOS focus engine",
-      "count": 1
-     },
-     {
-      "name": "UIKit",
-      "count": 1
-     },
-     {
-      "name": "Web Playback SDK",
       "count": 1
      }
     ],
@@ -2475,6 +2475,10 @@
      {
       "name": "Elasticsearch",
       "count": 2
+     },
+     {
+      "name": "Amazon S3",
+      "count": 1
      },
      {
       "name": "Apache Flink",
@@ -2497,11 +2501,7 @@
       "count": 1
      },
      {
-      "name": "BigQuery",
-      "count": 1
-     },
-     {
-      "name": "DynamoDB",
+      "name": "Aurora/MySQL",
       "count": 1
      }
     ],
@@ -2531,7 +2531,7 @@
       "count": 1
      },
      {
-      "name": "Custom video CDN",
+      "name": "Custom Video CDN",
       "count": 1
      },
      {
@@ -2558,7 +2558,7 @@
      "count": 1
     },
     {
-     "name": "Edge video delivery",
+     "name": "Edge video delivery via custom CDN",
      "count": 1
     },
     {
@@ -7810,42 +7810,52 @@
    "domain": "스트리밍/미디어",
    "languages": [
     "Go",
-    "Python",
     "TypeScript",
+    "Python",
     "C++",
     "Rust"
    ],
    "stack": {
     "backend": [
      "Go services",
-     "Twirp",
-     "gRPC"
+     "Twirp (RPC)",
+     "gRPC",
+     "GraphQL gateway",
+     "Node.js (BFF)"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Apollo GraphQL",
+     "Redux",
+     "WebRTC"
     ],
     "data": [
      "DynamoDB",
-     "Kafka",
+     "Aurora/MySQL",
+     "Apache Kafka",
      "Redis",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Amazon S3"
     ],
     "infra": [
-     "AWS",
+     "AWS (EC2/EKS)",
      "Kubernetes",
-     "Custom video CDN"
+     "Custom Video CDN (POP edge)",
+     "HLS/LHLS delivery",
+     "Spade/event pipeline"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Real-time streaming",
-    "Edge video delivery"
+    "Microservices (Go + Twirp service mesh)",
+    "Real-time streaming (ingest→transcode→edge)",
+    "Event-driven pub/sub fan-out",
+    "Edge video delivery via custom CDN"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    VIEWER[\"Viewer/Streamer App<br/>React + TypeScript\"]\n  end\n  subgraph Ingest\n    RTMP[\"Video Ingest<br/>RTMP\"]\n    TRANS[\"Transcoding<br/>C++\"]\n  end\n  subgraph Edge\n    CDN[\"Video CDN<br/>Custom Edge\"]\n  end\n  subgraph CoreServices\n    GO[\"Backend Services<br/>Go + Twirp\"]\n    CHAT[\"Chat Service<br/>Go gRPC\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Data\n    DDB[\"Primary Store<br/>DynamoDB\"]\n    REDIS[\"Cache/PubSub<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n  end\n  RTMP --> TRANS\n  TRANS --> CDN\n  CDN --> VIEWER\n  VIEWER --> GO\n  VIEWER --> CHAT\n  CHAT --> REDIS\n  GO --> DDB\n  GO --> ES\n  GO --> KAFKA\n  GO --> K8S",
-   "why_language": "라이브 스트리밍의 고동시성 백엔드를 효율적으로 다루려 Go를 표준 언어로 채택했고, 자체 RPC 프레임워크 Twirp를 만들었다. 비디오 트랜스코딩 핵심은 C++다.",
-   "why_architecture": "수백만 동시 시청자에게 저지연 라이브 비디오를 전달하려 자체 비디오 CDN과 엣지 인프라를 운영하고, 채팅·이벤트는 마이크로서비스로 분리했다. AWS 위에서 운영한다.",
-   "summary": "Go 고동시성 마이크로서비스와 자체 비디오 CDN으로 라이브 스트리밍을 떠받친다.",
+   "diagram": "flowchart TD\n  subgraph Client\n    BR[\"Web/Mobile/TV<br/>React + TypeScript\"]\n    OBS[\"Broadcaster<br/>OBS / RTMP encoder\"]\n  end\n  subgraph Edge\n    ING[\"Ingest PoP<br/>RTMP/SRT receivers\"]\n    CDN[\"Video Edge CDN<br/>Custom PoP + HLS\"]\n  end\n  subgraph Gateway\n    GQL[\"API Gateway<br/>GraphQL + BFF Node.js\"]\n    EDGE[\"Edge Auth<br/>Twitch Edge service\"]\n  end\n  subgraph Core\n    TRANS[\"Transcoder<br/>C++/FFmpeg + GPU\"]\n    CHAT[\"Chat (TMI)<br/>Go pub/sub fan-out\"]\n    SVC[\"Core Services<br/>Go + Twirp/gRPC\"]\n    PUBSUB[\"PubSub/EventSub<br/>Go realtime push\"]\n  end\n  subgraph Data\n    DDB[\"DynamoDB<br/>users/streams KV\"]\n    AUR[\"Aurora MySQL<br/>relational\"]\n    RDS[\"Redis<br/>cache/presence\"]\n    ES[\"Elasticsearch<br/>search/discovery\"]\n  end\n  subgraph Async\n    KAFKA[\"Kafka / Spade<br/>event pipeline\"]\n    S3[\"S3<br/>VOD/clips storage\"]\n  end\n  OBS -->|RTMP| ING\n  ING --> TRANS\n  TRANS -->|HLS segments| CDN\n  TRANS --> S3\n  CDN -->|video| BR\n  BR -->|GraphQL| GQL\n  GQL -->|Twirp| SVC\n  GQL --> EDGE\n  BR -->|WebSocket| CHAT\n  CHAT --> PUBSUB\n  PUBSUB --> BR\n  SVC --> DDB\n  SVC --> AUR\n  SVC --> RDS\n  SVC --> ES\n  SVC --> KAFKA\n  CHAT --> KAFKA\n  KAFKA --> ES",
+   "why_language": "Twitch는 수천 개의 동시 라이브 스트림과 수백만 동시 시청자·채팅을 다뤄야 해서, 가벼운 고루틴 동시성과 빠른 컴파일을 제공하는 Go를 백엔드 서비스 메시의 기본 언어로 삼았다. 비디오 트랜스코딩·인제스트처럼 CPU/GPU 바운드의 초저지연 경로는 C++(FFmpeg 기반)로, 시청자 대면 UI는 React/TypeScript로 구성하며, 데이터 파이프라인·도구는 Python, 일부 성능 핫패스는 Rust를 도입했다.",
+   "why_architecture": "라이브 영상이라는 도메인 특성상 송출(ingest)·트랜스코딩·엣지 배포·채팅이 각기 다른 확장 곡선을 가지므로, 이를 독립 배포·확장 가능한 Go 마이크로서비스로 쪼개고 Twirp/gRPC로 연결했다. 영상은 자체 PoP 기반 CDN으로 시청자에 가까운 엣지에서 HLS로 전달해 지연과 대역폭 비용을 통제하고, 채팅·이벤트는 Kafka와 pub/sub 팬아웃으로 비동기 처리해 동시 시청 폭주(드롭 이벤트 등)에도 견딘다.",
+   "summary": "Go 마이크로서비스 + 자체 비디오 CDN으로 초대형 라이브 스트리밍과 실시간 채팅을 동시에 굴리는 미디어 플랫폼",
    "deep_dive": [
     {
      "topic": "라이브 비디오 파이프라인: 송출부터 시청까지 end-to-end",
@@ -7862,6 +7872,22 @@
     {
      "topic": "확장성: 대형 이벤트(드롭·동시 시청 폭주) 대응",
      "body": "### 예측 불가한 스파이크\nTwitch 트래픽은 인기 스트리머·게임 출시·e스포츠 결승에 **순간 폭증**한다. 한 방송이 갑자기 수십만 동시 시청자를 모은다.\n\n- 비디오 엣지와 채팅 모두 **수평 오토스케일**하되, 라이브는 미리 워밍이 어려워 **여유 용량(headroom)** 을 상시 확보\n- 인기 방송 트래픽을 **여러 엣지에 분산**하고, 동일 청크를 캐시 계층에서 재사용해 origin 트랜스코딩 부하를 1회로 수렴\n- 채팅은 거대 방을 **샤드/팬아웃 트리**로 나눠 단일 노드 병목 방지\n\n### 왜 어려운가\nVOD는 CDN 캐시로 무한 확장되지만, 라이브는 **콘텐츠가 지금 생성**되므로 트랜스코딩이 병목이고 캐시 적중 전 origin에 부하가 몰린다. Twitch는 동일 스트림의 fan-out을 캐시 계층으로 흡수해 'origin 1회 → 엣지 N배 전달' 구조로 확장한다. 트레이드오프는 유휴 용량 비용이지만, 스파이크 시 끊김이 곧 이탈이라 여유를 둔다."
+    },
+    {
+     "topic": "비디오 트랜스코딩 파이프라인: 단일 입력에서 ABR 래더까지",
+     "body": "### 인제스트와 트랜스코딩의 분리\nTwitch의 영상 경로는 크게 `ingest → transcode → packaging → edge distribution` 네 단계로 나뉜다. 방송인은 OBS 같은 인코더로 가장 가까운 **ingest PoP**에 `RTMP`(점차 `SRT`/저지연 프로토콜 병행)로 단일 비트레이트 소스를 올린다. 여기서 핵심 설계 결정은 **소스 1개를 여러 화질로 다시 인코딩하는 transcoding을 클라우드/엣지에서 수행**한다는 점이다.\n\n### ABR(Adaptive Bitrate) 래더\n하나의 1080p 소스가 들어오면 트랜스코더는 `1080p60 / 720p60 / 480p / 360p / 160p` 같은 **여러 렌디션(rendition)**으로 동시에 재인코딩한다. 이를 통해 시청자의 네트워크 상황에 맞춰 플레이어가 세그먼트 단위로 화질을 올리고 내릴 수 있다(`ABR switching`).\n\n- 트랜스코딩 코어는 `C++` + `FFmpeg` 기반이며, GPU 가속과 커스텀 인코딩 최적화를 사용한다.\n- Twitch는 모든 스트림에 무한정 트랜스코딩 자원을 줄 수 없어서, **인기/파트너 스트림 우선으로 transcode 슬롯을 배분**하는 트레이드오프를 둔다. 자원이 부족하면 소형 스트림은 source-only(원본 화질만)로 제공된다.\n\n### 패키징과 전달\n트랜스코딩된 출력은 `HLS`(HTTP Live Streaming) 세그먼트로 패키징되어 짧은 `.ts`/CMAF 청크로 쪼개진다. Twitch는 지연을 줄이려고 **LHLS(Low-Latency HLS)** 계열 기법을 도입해, 세그먼트를 끝까지 기다리지 않고 부분 전송(chunked transfer)하여 방송인-시청자 간 글래스-투-글래스 지연을 수 초 수준으로 낮췄다.\n\n### 왜 이렇게 하나\n라이브는 VOD와 달리 **버퍼링 여유가 거의 없다.** 세그먼트를 짧게 가져가면 지연은 줄지만 요청 수와 오버헤드가 늘고, 길게 가져가면 효율은 좋지만 지연이 커진다. Twitch는 이 사이에서 LHLS·부분 세그먼트·엣지 캐싱으로 균형을 잡는다."
+    },
+    {
+     "topic": "캐싱 계층과 디스커버리: Redis·Elasticsearch로 읽기 폭주 흡수",
+     "body": "### 읽기-우세 트래픽의 현실\nTwitch 트래픽은 압도적으로 **읽기 우세**다. 홈 화면, 카테고리 페이지, '라이브 중인 채널' 목록, 시청자 수, 팔로우 상태는 초당 막대한 횟수로 조회된다. 이를 원천 DB(`DynamoDB`/`Aurora`)로 직접 때리면 비용과 지연이 폭발하므로 여러 캐싱 계층을 둔다.\n\n### 계층별 역할\n- **Edge/CDN 캐시**: 정적 자산, 썸네일, 일부 API 응답을 시청자 가까운 PoP에서 캐싱.\n- **Redis**: 실시간성이 중요한 휘발 데이터 — `presence`(누가 라이브인지), 시청자 카운트 집계, 세션·레이트리밋, 채팅 룸 상태 등에 사용. TTL 짧게 두고 빈번히 갱신.\n- **서비스 로컬 캐시**: Go 서비스 내부의 in-process 캐시로 핫키(hot key) 부하를 흡수.\n\n### 검색·추천을 위한 Elasticsearch\n채널/카테고리/스트림 검색과 디스커버리 랭킹에는 `Elasticsearch`를 둔다. 라이브 상태·태그·시청자 수 같은 빠르게 변하는 신호를 색인에 반영해야 하므로, **Kafka 이벤트 스트림을 소비해 색인을 근실시간으로 업데이트**하는 패턴을 쓴다. '지금 뜨는 스트림'은 본질적으로 시간이 지나면 무의미해지는 데이터라, 색인 신선도(freshness)와 색인 비용 사이의 트레이드오프가 핵심이다.\n\n### 일관성 트레이드오프\n시청자 수나 라이브 목록은 **강한 일관성보다 가용성·지연**이 우선이다. 그래서 약간 오래된(수 초) 캐시 값을 허용하고, 정확한 정산이 필요한 도메인(결제·구독·비트)만 관계형(`Aurora`)으로 강한 일관성을 보장한다."
+    },
+    {
+     "topic": "이벤트 파이프라인 Spade와 Kafka: 분석·운영 신호의 비동기 처리",
+     "body": "### Spade: 대규모 이벤트 수집\nTwitch는 사용자 행동(시청 시작/종료, 페이지뷰, 클릭, 채팅 활동 등)과 시스템 신호를 초당 수백만 건 규모로 수집한다. 이를 위해 자체 분석 인제스트 시스템 **Spade**(twitchscience/spade)를 운영해왔다. Spade는 클라이언트/서비스가 보낸 이벤트를 받아 검증·정규화한 뒤 다운스트림으로 흘려보내는 진입점 역할을 한다.\n\n### Kafka를 중심으로 한 팬아웃\n수집된 이벤트는 `Kafka` 토픽으로 흐르며, 여기서 여러 소비자가 **서로 독립적으로** 같은 스트림을 읽어간다.\n\n- 실시간 운영 메트릭/이상탐지 컨슈머\n- 검색·추천 색인 업데이트 컨슈머(→ Elasticsearch)\n- 데이터 웨어하우스 적재(배치 ETL, S3/Redshift 계열)\n- ML 피처 생성 파이프라인\n\n### 왜 이벤트 드리븐인가\n시청 이벤트 하나가 발생할 때마다 추천·통계·정산·모더레이션이 모두 동기적으로 처리되면 요청 경로가 느려지고 한 컴포넌트 장애가 전체로 전파된다. **Kafka로 생산자와 소비자를 분리(decouple)**하면 다운스트림이 일시적으로 느려지거나 죽어도 이벤트가 토픽에 쌓여 있다가 복구 후 재처리(replay)된다. 이는 대형 트래픽 이벤트 동안의 복원력에 핵심적이다.\n\n### 트레이드오프\n이벤트 드리븐은 강한 일관성 대신 **최종 일관성**을 받아들인다. 예컨대 방송 종료 직후 통계가 곧바로 반영되지 않을 수 있다. 또 토픽 파티셔닝·컨슈머 랙(lag) 관리, 중복 전달(at-least-once) 시 멱등 처리 같은 운영 복잡성을 떠안아야 한다."
+    },
+    {
+     "topic": "관측성과 복원력: 서비스 메시에서의 장애 대응",
+     "body": "### 수많은 Go 서비스의 가시성 확보\n수백 개의 Go 마이크로서비스가 `Twirp`/`gRPC`로 얽혀 있으면 한 요청이 여러 서비스를 거치므로, **분산 트레이싱·메트릭·구조적 로깅**이 없으면 장애 원인 파악이 불가능하다. Twitch는 요청에 trace context를 전파해 서비스 경계를 가로지르는 호출 체인을 따라가고, 서비스별 RED 메트릭(Rate·Errors·Duration)을 수집한다.\n\n### 프로덕션 디버깅 도구\nTwitch는 살아있는 Go 프로세스를 안전하게 들여다보기 위한 도구를 자체 개발했다. 공개된 **igvm**(twitchtv/igvm)은 Delve 기반으로 프로덕션 Go 서비스에 디버거를 붙이는 접근을 보여준다. 이는 '재현이 어려운 라이브 환경 버그'를 다루는 미디어 플랫폼 특유의 필요에서 나온 결정이다.\n\n### 복원력 패턴\n- **Timeout/Deadline 전파**: Twirp/gRPC 호출에 deadline을 걸어 느린 다운스트림이 상위 요청을 무한 대기시키지 않게 한다.\n- **Circuit breaker / 부하 차단(load shedding)**: 다운스트림이 과부하면 빠르게 실패시키고, 비핵심 기능(예: 추천, 부가 메타데이터)을 우선 degrade해 핵심 경로(영상 재생·채팅)를 보호한다.\n- **Graceful degradation**: 트랜스코딩 자원이 부족하면 source-only로 떨어뜨리는 것처럼, '전부 멈추기'보다 '품질을 낮춰 계속 제공'을 택한다.\n\n### 대형 이벤트 대응\n드롭(Drops) 캠페인이나 대형 e스포츠 중계처럼 동시 시청·채팅이 폭증하는 순간엔, 사전 용량 예약과 오토스케일링, 채팅 팬아웃 샤딩, 비핵심 쓰기 경로의 비동기화로 스파이크를 흡수한다. 핵심은 **영상과 채팅이라는 두 실시간 경로의 가용성을 최우선으로 지키는 것**이다."
     }
    ],
    "github": {
@@ -7870,18 +7896,33 @@
      {
       "name": "twitchtv/twirp",
       "url": "https://github.com/twitchtv/twirp",
-      "desc": "간결한 RPC 프레임워크",
+      "desc": "Twitch가 만든 경량 RPC 프레임워크로, protobuf 정의로 Go 서비스 간 통신을 생성한다",
       "lang": "Go",
-      "stars": 7516
+      "stars": 7515
+     },
+     {
+      "name": "arthurnn/twirp-ruby",
+      "url": "https://github.com/arthurnn/twirp-ruby",
+      "desc": "Twirp RPC 프로토콜의 Ruby 구현체",
+      "lang": "Ruby",
+      "stars": 164
+     },
+     {
+      "name": "twitchscience/spade",
+      "url": "https://github.com/twitchscience/spade",
+      "desc": "Twitch의 대규모 이벤트/분석 수집 파이프라인 컴포넌트",
+      "lang": "Go",
+      "stars": 4
      }
     ]
    },
    "sources": [
     "https://blog.twitch.tv/en/tags/engineering/",
-    "https://github.com/twitchtv/twirp"
+    "https://github.com/twitchtv/twirp",
+    "https://blog.twitch.tv/en/2017/10/10/live-video-transcoding-at-twitch-octo-9b9b1a4f7c4c/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "airbnb",
@@ -7892,42 +7933,58 @@
     "Ruby",
     "Java",
     "Kotlin",
+    "TypeScript",
     "JavaScript",
-    "TypeScript"
+    "Scala"
    ],
    "stack": {
     "backend": [
      "Ruby on Rails",
-     "Spring",
+     "Java",
+     "Kotlin",
      "Dropwizard",
-     "Apache Thrift"
+     "Spring Boot",
+     "Apache Thrift",
+     "GraphQL (Viaduct)"
     ],
     "frontend": [
      "React",
-     "GraphQL"
+     "TypeScript",
+     "Apollo GraphQL",
+     "Hypernova SSR",
+     "React Native"
     ],
     "data": [
-     "MySQL",
-     "Kafka",
-     "Druid",
-     "Airflow",
-     "Spark"
+     "MySQL (Vitess)",
+     "Apache Kafka",
+     "Apache Spark",
+     "Apache Airflow",
+     "Apache Druid",
+     "Apache Hive",
+     "Apache Hudi",
+     "Elasticsearch",
+     "Redis",
+     "HBase"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "Envoy"
+     "Envoy",
+     "Apache Thrift RPC",
+     "Spinnaker",
+     "Datadog"
     ]
    },
    "architecture": [
-    "Service-oriented",
-    "Microservices",
-    "Monolith decomposition"
+    "Service-oriented architecture (SOA)",
+    "GraphQL-aggregated data layer (Viaduct)",
+    "Service mesh (Envoy)",
+    "Event-driven streaming"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web/Mobile<br/>React + GraphQL\"]\n  end\n  subgraph Edge\n    ENVOY[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph CoreServices\n    RAILS[\"Monorail<br/>Ruby on Rails\"]\n    JAVA[\"Services<br/>Java/Kotlin + Thrift\"]\n    DW[\"Service Framework<br/>Dropwizard\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    AIRFLOW[\"Workflow<br/>Airflow\"]\n  end\n  subgraph Data\n    MYSQL[\"Primary Store<br/>MySQL\"]\n    DRUID[\"Analytics OLAP<br/>Druid\"]\n    SPARK[\"Batch Compute<br/>Spark\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n  end\n  WEB --> ENVOY\n  ENVOY --> RAILS\n  ENVOY -->|Thrift| JAVA\n  JAVA --> DW\n  RAILS --> MYSQL\n  JAVA --> MYSQL\n  JAVA --> KAFKA\n  KAFKA --> SPARK\n  SPARK --> DRUID\n  AIRFLOW --> SPARK\n  JAVA --> K8S",
-   "why_language": "초기 Rails 모노리스(Monorail)로 빠르게 제품을 키웠고, 규모가 커지며 서비스 계층을 Java/Kotlin으로 옮겼다. 데이터 도구 Airflow를 직접 만들어 Python 생태계도 깊다.",
-   "why_architecture": "거대해진 Rails 모노리스를 Thrift 기반 SOA로 점진 분해하고 GraphQL로 데이터 통합을 추진했다. 검색·추천 부하를 위해 Druid·Kafka 기반 데이터 파이프라인을 운영한다.",
-   "summary": "Rails 모노리스에서 출발해 SOA·GraphQL로 진화하고 Airflow를 낳은 회사.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n    MOBILE[\"Mobile<br/>React Native + Native\"]\n    EDGE[\"Edge / CDN<br/>AWS CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    APIGW[\"API Gateway<br/>Envoy Front Proxy\"]\n    GQL[\"Data Layer<br/>Viaduct GraphQL\"]\n  end\n  subgraph Services[\"Core Services\"]\n    MONO[\"Legacy Monolith<br/>Ruby on Rails\"]\n    SVC[\"Microservices<br/>Java + Kotlin + Dropwizard\"]\n    PRICE[\"Pricing / Search<br/>JVM Services\"]\n    PAY[\"Payments<br/>Java Services\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    ENVOY[\"Sidecar Mesh<br/>Envoy + Thrift RPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL + Vitess\"]\n    REDIS[\"Cache<br/>Redis\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    DRUID[\"OLAP<br/>Apache Druid\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SPARK[\"Batch / ETL<br/>Spark + Airflow\"]\n    HUDI[\"Data Lake<br/>Hudi on S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    SPIN[\"Deploy<br/>Spinnaker\"]\n  end\n  WEB --> EDGE\n  MOBILE --> EDGE\n  EDGE --> APIGW\n  APIGW --> GQL\n  GQL -->|Thrift RPC| ENVOY\n  ENVOY --> MONO\n  ENVOY --> SVC\n  ENVOY --> PRICE\n  ENVOY --> PAY\n  SVC --> MYSQL\n  SVC --> REDIS\n  PRICE --> ES\n  SVC -->|events| KAFKA\n  KAFKA --> SPARK\n  KAFKA --> DRUID\n  SPARK --> HUDI\n  K8S --> SVC\n  SPIN --> K8S",
+   "why_language": "초기 Airbnb는 빠른 제품 반복을 위해 Ruby on Rails 모놀리스로 시작했지만, 글로벌 트래픽과 결제·검색 같은 고부하 도메인에서 JVM의 성능·동시성·타입 안정성이 필요해 Java와 Kotlin으로 핵심 서비스를 옮겼다. 프론트엔드는 대규모 컴포넌트 재사용과 SSR을 위해 React + TypeScript로 표준화했고, 데이터·ML 파이프라인에는 Spark 생태계와 맞물리는 Scala/Java를 사용한다.",
+   "why_architecture": "단일 Rails 모놀리스가 수백 명의 엔지니어와 트래픽을 감당하지 못하자 도메인 단위 SOA로 해체했고, 서비스 간 통신은 Apache Thrift 기반 RPC를 Envoy 서비스 메시로 묶어 일관된 라우팅·관측성·신뢰성을 확보했다. 클라이언트가 수십 개 서비스를 직접 호출하는 N+1 문제를 막기 위해 Viaduct(GraphQL) 데이터 게이트웨이로 스키마를 중앙 집약해 데이터 페칭을 표준화했다.",
+   "summary": "Rails 모놀리스를 Thrift·Envoy·GraphQL로 묶은 JVM 중심 SOA로 재편한 글로벌 마켓플레이스 스택",
    "deep_dive": [
     {
      "topic": "모놀리스 해체: Rails에서 SOA로의 마이그레이션",
@@ -7944,6 +8001,18 @@
     {
      "topic": "신뢰·결제·서비스 메시: Envoy로 묶은 통신",
      "body": "### Envoy 채택\nAirbnb는 Lyft가 만든 **Envoy**를 서비스 메시 데이터 평면으로 채택해, 수백 서비스 간 통신을 표준화했다.\n\n- 사이드카 Envoy가 **재시도·타임아웃·서킷브레이킹·mTLS·관측**을 일관 처리\n- 다언어(Ruby·Java) 서비스가 같은 네트워킹 동작을 보장받음\n\n### 결제와 신뢰\n결제·환불은 강한 정합성과 멱등성이 필요해, **멱등 키·saga 패턴**으로 분산 트랜잭션을 처리한다. 사기 탐지는 ML 모델로 실시간 점수화한다.\n\n### 왜\nSOA로 서비스가 많아질수록 **네트워킹 신뢰성·보안을 각 서비스가 따로 구현하면 불일치·취약점**이 생긴다. Envoy로 이를 인프라로 추출하면 보안(mTLS)과 복원력을 전역에서 보장한다. 결제는 금전이 걸려 eventual consistency를 못 쓰므로, 멱등성+saga로 정확성을 확보한다. 트레이드오프는 사이드카 오버헤드지만 운영 일관성이 우선이다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩 전략: Vitess로 푼 MySQL 수평 확장",
+     "body": "### 단일 MySQL 모놀리스의 한계\n\nAirbnb의 핵심 트랜잭션 데이터(예약, 결제, 호스트/게스트 프로필)는 오랫동안 단일 `MySQL` 클러스터에 집중돼 있었다. 마켓플레이스 특성상 예약은 **강한 일관성**이 필요하다 — 같은 숙소의 같은 날짜를 두 명이 동시에 예약하는 더블부킹은 절대 허용되지 않는다. 따라서 단순히 NoSQL로 갈아엎을 수 없었고, MySQL의 ACID 트랜잭션을 유지하면서 수평 확장하는 길을 택했다.\n\n### 왜 Vitess인가\n\nMySQL을 직접 샤딩하면 애플리케이션 코드가 샤드 키 라우팅, 크로스 샤드 조인, 리샤딩을 모두 떠안아야 한다. Airbnb는 이를 애플리케이션 밖으로 밀어내기 위해 `Vitess`(YouTube에서 시작한 MySQL 샤딩 미들웨어)를 도입했다. 핵심 메커니즘:\n\n- **VTGate**: 애플리케이션은 평범한 MySQL 프로토콜로 `VTGate` 프록시에 접속한다. VTGate가 쿼리를 파싱해 어느 샤드로 보낼지 라우팅하므로, 앱 입장에서는 샤딩이 거의 투명하다.\n- **VSchema(샤딩 스키마)**: 어떤 컬럼을 샤드 키(Vindex)로 쓸지 선언한다. 예를 들어 예약 데이터를 `listing_id` 기반으로 분산하면 같은 숙소의 가용성 검사가 한 샤드 안에서 끝난다.\n- **온라인 리샤딩**: VReplication으로 무중단 상태에서 샤드를 쪼개거나 합칠 수 있다. 트래픽이 커지면 16샤드 → 32샤드로 점진 이동.\n\n### 트레이드오프\n\n| 항목 | 이점 | 비용 |\n|------|------|------|\n| 강한 일관성 | 더블부킹 방지, 익숙한 SQL 유지 | 크로스 샤드 트랜잭션은 비싸 회피 설계 필요 |\n| 투명한 라우팅 | 앱 코드 단순화 | VTGate 홉 추가로 지연 약간 증가 |\n| 온라인 리샤딩 | 무중단 확장 | 운영 복잡도·Vitess 전문성 요구 |\n\n샤드 키를 잘못 고르면 크로스 샤드 쿼리(스캐터-개더)가 폭증해 성능이 무너지기 때문에, Airbnb는 도메인별로 '같이 읽고 쓰는 데이터는 같은 샤드에' 원칙을 엄격히 적용한다. 분석/집계성 질의는 OLTP를 건드리지 않고 `Kafka` → 데이터 레이크 → `Druid`/`Spark`로 흘려보내 OLTP와 OLAP를 물리적으로 분리한다."
+    },
+    {
+     "topic": "비동기·이벤트·스트리밍: Kafka 기반 변경 캡처와 데이터 레이크",
+     "body": "### 동기 호출만으로는 부족한 이유\n\n예약 한 건이 일어나면 결제 정산, 호스트 알림, 검색 인덱스 갱신, 사기 탐지, 데이터 웨어하우스 적재, 추천 모델 피처 갱신 등 수십 개 후속 작업이 따라온다. 이를 전부 동기 RPC로 엮으면 예약 API의 지연과 실패 결합도가 폭발한다. 그래서 Airbnb는 **이벤트 기반 비동기 처리**를 광범위하게 쓴다.\n\n### Kafka를 중심으로 한 흐름\n\n1. **이벤트 발행**: 서비스가 상태를 바꾸면 도메인 이벤트(`BookingConfirmed`, `PriceUpdated` 등)를 `Apache Kafka` 토픽에 발행한다. Thrift/Protobuf 스키마로 직렬화해 스키마 호환성을 강제한다.\n2. **CDC(Change Data Capture)**: MySQL의 binlog를 캡처해 Kafka로 흘리는 파이프라인(SpinalTap 류)으로, 애플리케이션이 명시적으로 이벤트를 안 쏴도 DB 변경을 스트림으로 만든다. 검색 인덱스·캐시 무효화가 이 스트림을 구독한다.\n3. **스트림 소비**: 컨슈머들이 각자 속도로 이벤트를 처리한다. 검색 서비스는 이를 받아 `Elasticsearch` 인덱스를 갱신하고, 알림 서비스는 푸시/이메일을 보낸다.\n\n### 배치 + 스트리밍의 람다/카파 구조\n\n- **실시간 분석**: Kafka → `Apache Druid`로 적재해 초저지연 OLAP(대시보드, 실시간 지표)를 제공한다.\n- **배치 레이크하우스**: Kafka/CDC 이벤트는 S3 기반 데이터 레이크에 `Apache Hudi` 포맷으로 쌓인다. Hudi는 **upsert와 증분 처리**를 지원해, 매번 전체 테이블을 다시 쓰지 않고 변경분만 머지한다 — 페타바이트 규모에서 ETL 비용을 크게 줄이는 핵심. (Hudi 자체가 Airbnb·Uber 같은 곳의 대규모 인제스천 요구에서 나온 계열 기술이다.)\n- **오케스트레이션**: 이 모든 배치 잡은 `Apache Airflow`(Airbnb가 만든 오픈소스)로 DAG를 짜서 스케줄링·의존성 관리한다.\n\n### 핵심 트레이드오프\n\n비동기는 결합도를 낮추지만 **최종 일관성(eventual consistency)**을 받아들여야 한다. 예약 확정 후 검색 인덱스 반영까지 수백 ms~수 초 지연이 생길 수 있다. Airbnb는 '돈·가용성처럼 강한 일관성이 필요한 경로는 동기 트랜잭션(MySQL), 나머지 파생 데이터는 비동기 스트림' 으로 명확히 선을 긋는다."
+    },
+    {
+     "topic": "관측성과 배포: 서비스 메시 위의 트레이싱·카나리 파이프라인",
+     "body": "### 수백 개 서비스를 어떻게 들여다보나\n\nSOA로 쪼갠 뒤 한 요청이 게이트웨이 → Viaduct → 여러 백엔드 서비스 → DB를 거치며 수십 홉을 탄다. 어디서 느려지고 어디서 깨졌는지 보려면 **분산 트레이싱**이 필수다. Airbnb는 모든 트래픽이 `Envoy` 사이드카를 통과한다는 점을 활용한다:\n\n- **Envoy 메시가 곧 관측 지점**: 각 서비스 옆 Envoy 사이드카가 요청별로 trace ID를 전파하고, 지연·에러율·재시도를 자동 수집한다. 애플리케이션 코드를 거의 안 고치고도 표준 메트릭(`p50/p95/p99`, 5xx율)을 얻는다.\n- **메트릭·대시보드**: 수집된 지표는 `Datadog`/내부 시계열 시스템으로 모여 SLO 대시보드와 알림이 된다. 서비스 의존성 그래프를 자동으로 그려 장애 전파 경로를 추적한다.\n\n### 신뢰성 메커니즘 (메시 레벨)\n\nEnvoy 레이어에서 애플리케이션과 무관하게 다음을 강제한다:\n\n- **타임아웃·재시도**: 느린 다운스트림에 대한 요청 차단, 멱등 요청 자동 재시도.\n- **서킷 브레이커**: 특정 서비스의 에러/지연이 임계치를 넘으면 회로를 열어 연쇄 장애(cascading failure)를 끊는다.\n- **아웃라이어 디텍션**: 비정상 인스턴스를 로드밸런싱 풀에서 자동 격리.\n\n이 정책들이 **코드가 아니라 인프라 설정**에 있다는 게 핵심 — 모든 서비스가 일관된 신뢰성 기본값을 공짜로 얻는다.\n\n### 배포 파이프라인\n\n- **컨테이너 + Kubernetes**: 서비스는 컨테이너로 패키징돼 `AWS` 위 `Kubernetes`에 배포된다. Airbnb는 EC2 직접 운영에서 K8s 기반 플랫폼으로 이전하며 셀프서비스 배포를 표준화했다.\n- **Spinnaker 카나리**: `Spinnaker`로 배포 파이프라인을 정의하고, 새 버전을 소수 트래픽에만 흘리는 **카나리 분석**을 돌린다. 카나리와 베이스라인의 에러율·지연을 통계적으로 비교해 자동으로 롤아웃/롤백을 결정한다.\n- **점진 롤아웃**: 문제가 감지되면 메시의 트래픽 가중치를 빠르게 되돌려 폭발 반경(blast radius)을 최소화한다.\n\n결과적으로 '메시가 관측·신뢰성을, Spinnaker가 안전한 점진 배포를' 담당하는 분업 구조로, 수백 팀이 독립적으로 매일 배포하면서도 전체 시스템 안정성을 유지한다."
     }
    ],
    "github": {
@@ -7952,39 +8021,47 @@
      {
       "name": "airbnb/javascript",
       "url": "https://github.com/airbnb/javascript",
-      "desc": "널리 쓰이는 JavaScript 스타일 가이드",
+      "desc": "널리 쓰이는 JavaScript/React 스타일 가이드",
       "lang": "JavaScript",
-      "stars": 148083
+      "stars": 148081
      },
      {
       "name": "apache/superset",
       "url": "https://github.com/apache/superset",
-      "desc": "데이터 탐색 및 시각화 플랫폼",
+      "desc": "Airbnb가 만든 오픈소스 데이터 탐색·시각화 플랫폼",
       "lang": "TypeScript",
-      "stars": 73268
-     },
-     {
-      "name": "apache/airflow",
-      "url": "https://github.com/apache/airflow",
-      "desc": "Airbnb가 만든 워크플로 오케스트레이션 플랫폼",
-      "lang": "Python",
-      "stars": 45795
+      "stars": 73292
      },
      {
       "name": "airbnb/lottie-android",
       "url": "https://github.com/airbnb/lottie-android",
-      "desc": "After Effects 애니메이션을 렌더링하는 라이브러리",
+      "desc": "After Effects 애니메이션을 모바일에서 렌더링하는 라이브러리",
       "lang": "Java",
-      "stars": 35613
+      "stars": 35612
+     },
+     {
+      "name": "airbnb/epoxy",
+      "url": "https://github.com/airbnb/epoxy",
+      "desc": "Android RecyclerView를 위한 선언적 UI 빌더",
+      "lang": "Java",
+      "stars": 8557
+     },
+     {
+      "name": "airbnb/mavericks",
+      "url": "https://github.com/airbnb/mavericks",
+      "desc": "Android 화면 상태 관리 프레임워크",
+      "lang": "Kotlin",
+      "stars": 5934
      }
     ]
    },
    "sources": [
     "https://medium.com/airbnb-engineering",
-    "https://airflow.apache.org"
+    "https://medium.com/airbnb-engineering/airbnbs-microservices-architecture-journey-to-quality-engineering-d5a46d8b6c10",
+    "https://github.com/airbnb"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "amazon",

@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-15T08:05:41",
- "total": 704,
+ "generated_at": "2026-06-15T09:39:08",
+ "total": 705,
  "sources": [
   {
    "company": "Etsy",
@@ -118,6 +118,11 @@
    "count": 11
   },
   {
+   "company": "CyberAgent",
+   "country": "JP",
+   "count": 10
+  },
+  {
    "company": "Razorpay",
    "country": "IN",
    "count": 10
@@ -191,11 +196,6 @@
    "company": "직방",
    "country": "KR",
    "count": 10
-  },
-  {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 9
   },
   {
    "company": "Slack",
@@ -506,6 +506,24 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "CA Tech JOB 参加記録【極予測やりとりAI】",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64326",
+   "published": "2026-06-14",
+   "published_ts": 1781479259.0,
+   "summary": "はじめに こんにちは！電気通信大学大学院 情報理工学研究科 修士1年の南村栞多と申します。2026年 ...",
+   "tags": [
+    "エンジニア",
+    "インターンシップ"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "265eef00b9936a83"
+  },
   {
    "key": "github",
    "company": "GitHub",

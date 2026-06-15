@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-15T08:05:47",
-  "source_dir": "screenshots/all_통합_20260615_080541",
+  "generated_at": "2026-06-15T09:39:14",
+  "source_dir": "screenshots/all_통합_20260615_093908",
   "keyword": "통합",
   "jobs": [
     {
@@ -74716,6 +74716,28 @@
     },
     {
       "site": "jobkorea",
+      "company": "iRT㈜ [아이알티㈜]",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "데이터 분석 / 발주 솔루션 신입 웹 백엔드 개발자(Servlet/JSP/Oracle)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49341044?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=90&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 성동구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ 학력무관\n경력:신입\n개발언어:843. JSP, SQL\n#24 Customizing\n솔루션 유지보수                                                         0명\nㆍ 신규 솔루션 개발",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -105567,6 +105589,34 @@
     },
     {
       "site": "saramin",
+      "company": "(주)뉴제스트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[신입 가능]열정가득한 프론트엔드 개발자 채용(채용시 마감)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54170020&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=82a0e88b-e27b-4f0a-85c4-523acb17575d",
+      "career": "경력무관",
+      "location": "경기구리시",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\nㆍ학력 : 학력무관\n\nㆍ경력 : 경력무관\n\n관련 학위와 경력이 없어도 괜찮습니다.\n\n다만 강한 열정과 책임감을 바탕으로 문제 해결에 적극적으로 임하는 자세가 필요합니다.\n\n새로운 기술과 업무를 빠르게 배우고 실제 업무에 적용할 수 있는 분을 찾습니다.\n\n하나의 역할에만 머무르기보다 다양한 실무를 경험하며 빠르게 성장하고 싶은 분\n\n스타트업 환경에서 변화에 유연하게 적응하며 함께 성장하고 싶은 분\n\n화면 구현을 넘어 서비스 흐름과 사용성을 함께 고민할 수 있는 분\n\n협업 과정에서 능동적으로 소통하고 끝까지 결과물을 만들어내는 분\n\n포트폴리오 제출 필수입니다.\n\n🔥 뉴제스트는 평일·주말 없이 24시간 돌아가고 있습니다.\n\n잦은 야근, 밤샘에도 끄떡없는 분. 진행중인 프로젝트가 많아 해야 할 일도 많습니다!\n\n그만큼 하나의 역할에만 머무르기보다 다양한 실무를 경험하며 빠르게 성장가능\n\n각오가 단단히 되신 분만 지원해주세요 🔥",
+      "preferences": "ㆍ관련 학과 전공자\n\nㆍ관련 자격증 보유자\n\nㆍ장기근무 가능자\n\nㆍ주요 업무와 관련된 경험 보유자\n\nㆍReact 기반 프로젝트 경험 보유자\n\nㆍ디자인 시안을 실제 서비스 화면으로 정교하게 구현한 경험 보유자\n\nㆍ백엔드 API 연동 및 상태 관리 경험 보유자\n\nㆍ관리자 페이지, 대시보드, 플랫폼 서비스 개발 경험 보유자\n\nㆍUI/UX에 대한 이해도가 있는 분\n\nㆍ빠른 속도의 환경에서 다양한 업무를 경험하며 성장한 분\n\nㆍ인테리어 또는 솔루션 서비스에 대한 이해도가 있는 분",
+      "main_tasks": "웹 애플리케이션 프론트엔드 개발을 담당합니다.\n\nReact 기반 서비스의 화면 설계 및 구현 작업을 수행합니다.\n\n사용자 경험을 고려한 UI 개발과 인터랙션 구현을 담당합니다.\n\n백엔드, 디자인, 기획과 협업하여 실제 서비스 화면을 빠르게 구현하고 개선합니다.\n\n인테리어 관련 솔루션의 프론트엔드 개발을 담당합니다.\n\n유지보수 및 기능 개선을 진행합니다.\n\n랜딩페이지, 관리자 페이지, 서비스 운영 화면 등 다양한 성격의 화면을 폭넓게 개발합니다.\n\n프로젝트 상황에 따라 하나의 영역에 한정되지 않고 다양한 프론트엔드 실무를 빠르게 익히고 수행합니다.\n\n빠르게 변화하는 요구사항 속에서 우선순위를 조정하며 실행력 있게 개발합니다.\n\n• 개발팀 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 식사 제공\n\n• 장비 지원\n\n• 업무 관련 강의, 도서 구매 지원\n\n• 필요 시 기숙사 제공"
+    },
+    {
+      "site": "saramin",
       "company": "(주)수산아이앤티",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -128800,6 +128850,55 @@
     },
     {
       "site": "saramin",
+      "company": "(주)정데이타시스템",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "MS Azure 인프라 운영 Data Engineer 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54171108&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3e55236b-4a2d-404b-a01e-e791bb55517a",
+      "career": "경력7년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Azure"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "문제해결",
+        "성능 최적화"
+      ],
+      "qualifications": "ㆍ학력 : 전문대학 졸업 이상\n\nMS Azure 인프라 운영 Data Engineer 채용 2명",
+      "preferences": "",
+      "main_tasks": "ㆍ\n\nㆍ근무형태 : 계약직, 프리랜서\n\nㆍ급여조건 : 면접 시 협의\n\nㆍ근무지 : 서울 종로구 안국역 인근\n\nㆍ담당업무 :\n\n- 관계형 DB 설계, 모델링 및 마이그레이션 전략 수립\n\n- 쿼리 개선, 인덱스 최적화 및 성능 튜닝 제안\n\n- 데이터 이상 분석, 검증 및 마이그레이션/복구 지원\n\n- 데이터 보안 실사 대응 및 미사용 데이터 파기\n\n자격요건(필수)\n\n- 경력 : 중급(7년차이상)\n\n역할정의\n[데이터 운영/장애 대응]\n\n- Azure 데이터 패브릭 운영\n\n- 데이터 처리 장애 대응",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)스마트비전",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "각 분야 신입/경력사원 채용공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54150482&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=b557462b-f805-4d91-96d2-ce3097ad9862",
+      "career": "신입·경력",
+      "location": "광주전체",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "신입 및\n\n경력\nITS\n\n(지능형 교통 시스템)\n\n유지관리\n호남사업단 관내\n\n(전라남도, 전라북도,\n\n광주, 전주)\n고속도로\n\n정보통신시설물\n\n유지관리\n\n(상세 담당업무 참조)\n\nㆍ정보통신관련 산업기사,\n\n　기사 자격증 소지자\n\n　(관련 자격증 참조)\n\nㆍ정보통신공사협회 등급\n\n　초급이상 보유자\n\nㆍ운전면허 보유자\n\nㆍ정보통신관련 기능사,\n\n　산업기사, 기사 자격증\n\n　소지자\n\n　(관련 자격증 참조)\n\nㆍ엔지니어링협회 등급\n\n　초급숙련이상 보유자\n\nㆍ관련전공 대학교 졸업자\n\n※ ITS 유지관리 상세 담당업무 : 고속도로에 설치된 정보통신시설물 유지보수, 고장수리, 운영관리\n\n　ㆍ고속도로에 설치된 CCTV, VMS, VDS등 ITS(지능형교통시스템)\n\n　ㆍ광케이블과 광전송시스템\n\n　ㆍ하이패스등 통행료 수납시스템\n\n　ㆍ축중기등 제한차량 단속시스템\n\n※ 관련 자격증\n\n　ㆍ기사 : 정보통신, 전파전자통신, 무선설비, 방송통신, 전자, 전자계산기, 반도체설계, 정보처리, 전자계산기조직응용, 토목,\n\n　　　　 철도신호, 정보보안, 빅데이터분석, 임베디드, 로봇소프트웨어개발, 로봇하드웨어개발, 로봇기구개발, 광학,\n\n　　　　 광학기기 또는 의공\n\n　ㆍ산업기사 : 정보통신, 전파전자통신, 무선설비, 통신선로, 사무자동화, 방송통신, 전자, 전자계산기제어, 반도체설계,\n\n　　　　　　 정보처리, 토목, 철도신호, 정보보안, 광학기기 또는 의공\n\n　ㆍ기능사 : 통신기기, 통신선로, 정보기기운용, 전파전자통신, 무선설비, 방송통신, 전자기기, 전자계산기, 전자캐드,\n\n　　　　　 정보처리, 철도전기신호, 광학 또는 의료전자",
+      "preferences": "ㆍ정보통신관련 및 해당업무\n\n　경험자 우대\n\nㆍ관내 출퇴근 및\n\n　사택 거주 가능자\n\n충청사업단 관내\n\n(충청남도, 충청북도,\n\n대전, 세종)\n\n경남사업단 관내\n\n(경상남도, 진주,\n\n산청, 고성)\n\n중부사업소 관내\n\n(서울시 중랑구)\n\n도로교통정보센터\n\n운영(교대)\n원주청 관내\n\n(원주지방\n\n국토관리청)\n도로 교통상황 등\n\n모니터링 및 관리\n\n(교대직 야간근무 포함)",
+      "main_tasks": "",
+      "benefits": "4대보험\n\n국민연금, 고용보험, 산재보험, 건강보험\n\n급여제도\n\n연차수당, 퇴직연금\n\n동호회\n\n사내동호회 운영 및 지원\n\n의료\n\n종합건강검진, 진료비지원\n\n휴가/휴일\n\n연차, 하계휴가, 경조휴가,\n\n하계 휴가비 지원,\n\n근로자 휴가지원사업 운영\n\n지원\n\n자녀학자금 및 경조사비, 생일 선물,\n\n상조용품 지원, 미취학자녀 지원금,\n\n장애인 근로자 지원금\n\n지급품\n\n회사 다이어리, 근무복, 명함, 노트북\n\n교육/훈련\n\n직무능력향상교육, 법정의무교육\n\n포상\n\n우수사원 포상, 장기근속자 포상\n\n콘도운영\n\n대명리조트, 한화리조트\n\n기타\n\n당사규정\n\nRecruitment Process\n\n1\n\n서류전형\n\n2\n\n면접전형\n\n3\n\n최종합격"
+    },
+    {
+      "site": "saramin",
       "company": "㈜얼라이언스인터넷",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -143607,6 +143706,27 @@
       "preferences": "• AI, LLM 관련 프로젝트를 직접 리딩하고 개발한 경험\n\n- PM/PL 역할을 수행하며 프로젝트를 성공적으로 완수한 경험\n\n- AI PoC, 프로토타입, MVP 기획부터 출시(Go-to-Market)까지 전 과정을 주도한 경험\n\n- 개발팀과의 원활한 소통 및 조율 능력이 뛰어나신 분",
       "main_tasks": "• AI 서비스/플랫폼 기획 및 설계\n\n• 비즈니스 요구사항 분석 및 기술 정의\n\n(Architecture 설계)\n\n• AI 모델 및 서비스 직접 개발/구현\n\n• AI 도입 과제 발굴 및 로드맵 수립\n\n• PoC, MVP, 프로토타입 기획 및 개발 추진\n\n• 시스템 구축, 통합 관리 및 배포\n\n• 프로젝트 일정, 이슈, 리스크 관리\n\n(PM 역할)\n\n• 외부 연계 시스템 및 API 관리",
       "benefits": "• 교육/생활 : 워크샵, 신규 입사자 교육(OJT), 직무능력향상교육, 리더십 강화교육, 해외연수지원, 사내동호회 운영, 사우회(경조사회),\n\n음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무, 산전 후 휴가, 육아휴직, 남성출산휴가, 보건휴가\n\n• 급여제도 : 퇴직연금, 상여금, 장기근속자 포상, 우수사원포상, 퇴직금, 야근수당, 연차수당, 직책수당, 장기근속수당, 4대 보험\n\n• 지원금/보험 : 직원대출제도, 각종 경조사 지원, 업무활동비 지급, 선택적복리후생, 자녀학자금\n\n• 조직 문화 : 노조/노사협의회, 회식강요 안함, 야근강요 안함\n\n• 선물 : 명절선물/귀향비, 생일선물/파티\n\n• 근무 환경 : 회의실, 공기청정기, 카페테리아, 노트북, 콘도/리조트 이용권, 사무용품 지급"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)베이컨디자인스튜디오",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Ai 영상 콘텐츠 크리에이터 모집합니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148486&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=9a84f13f-395d-4494-bea4-c1e246329a6c",
+      "career": "경력무관",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입/경력 1년이상\n\n• VEO3, Kling, Midjourney, StableDiffusion 등 최신Ai 툴 활용\n\n• 영상편집, 이미지 등 프로그램 활용이 가능하신 분\n\n• AI 툴을 능숙하게 활용하시고 영상에 대한 이해도가 있으신 분\n\n• 신입 / 경력 (연수 무관)\n\n• 학력무관",
+      "preferences": "• 시각디자인, 영상전공자 (디자인 관련 학과)\n\n• AI 툴을 다양하게 다루실 수 있는 분\n\n• 최신 트랜드 및 기법을 잘 활용하여 접목하실 수 있는 분",
+      "main_tasks": "• AI 툴을 활용한 기업광고, 홍보영상 제작\n\n• 2D, 3D모션그래픽과 접목하여 제작\n\n• 최신 Ai 트랜드를 활용하여 제작",
+      "benefits": "• 급여제도 : 장기근속자 포상, 퇴직금, 4대 보험, 성과급"
     },
     {
       "site": "saramin",
@@ -176634,31 +176754,31 @@
     }
   ],
   "stats": {
-    "total": 5845,
+    "total": 5850,
     "by_size": {
-      "중소기업": 5224,
+      "중소기업": 5229,
       "대기업": 376,
       "중견기업": 245
     },
     "by_role": {
       "기타": 747,
-      "DevOps/인프라": 882,
-      "백엔드": 2530,
+      "DevOps/인프라": 883,
+      "백엔드": 2531,
       "모바일": 951,
-      "AI/ML": 1949,
-      "프론트엔드": 1679,
+      "AI/ML": 1951,
+      "프론트엔드": 1680,
       "풀스택": 524,
       "게임": 39,
-      "데이터": 842,
-      "펌웨어/임베디드": 218,
+      "데이터": 844,
+      "펌웨어/임베디드": 219,
       "보안": 237,
       "QA": 53
     },
     "by_site": {
       "wanted": 1326,
       "jumpit": 410,
-      "jobkorea": 1106,
-      "saramin": 2773,
+      "jobkorea": 1107,
+      "saramin": 2777,
       "dev": 230
     },
     "top_tech": [
@@ -176676,7 +176796,7 @@
       ],
       [
         "React",
-        1292
+        1293
       ],
       [
         "Git",
@@ -176692,7 +176812,7 @@
       ],
       [
         "JavaScript",
-        883
+        884
       ],
       [
         "Linux",
@@ -176732,7 +176852,7 @@
       ],
       [
         "Azure",
-        454
+        455
       ],
       [
         "Next.js",
@@ -179053,6 +179173,22 @@
         "jumpit": 495,
         "jobkorea": 1357,
         "saramin": 3404,
+        "dev": 270
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-15T09:39:12",
+      "keyword": "통합",
+      "raw_total": 6867,
+      "deduped": 6484,
+      "active": 5850,
+      "closed": 634,
+      "site_counts": {
+        "wanted": 1332,
+        "jumpit": 495,
+        "jobkorea": 1358,
+        "saramin": 3412,
         "dev": 270
       },
       "anomalies": []
