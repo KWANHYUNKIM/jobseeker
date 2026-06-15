@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T06:31:59",
+  "generated_at": "2026-06-16T08:04:50",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -8615,88 +8615,6 @@
         "stage": "핵심"
       }
     ],
-    "Firmware": [
-      {
-        "title": "마이컴 펌웨어(FirmWare) 기초개념",
-        "url": "https://www.youtube.com/watch?v=dRL3rTYSc4k",
-        "thumbnail": "https://i.ytimg.com/vi/dRL3rTYSc4k/mqdefault.jpg",
-        "channel": "아이엠솔더",
-        "views": 45741,
-        "length": "6:16",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU Firmware를 간단하게 재설계 해보자 {no.97}",
-        "url": "https://www.youtube.com/watch?v=huJpyF4oDnU",
-        "thumbnail": "https://i.ytimg.com/vi/huJpyF4oDnU/mqdefault.jpg",
-        "channel": "SEMONAN",
-        "views": 527,
-        "length": "1:18",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "STM32C0316-DK 펌웨어 강좌 #18 - CLI 완성",
-        "url": "https://www.youtube.com/watch?v=eWg9cd6x3lw",
-        "thumbnail": "https://i.ytimg.com/vi/eWg9cd6x3lw/mqdefault.jpg",
-        "channel": "Baram",
-        "views": 1410,
-        "length": "55:15",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[시나공 컴활2급] 3304602 펌웨어",
-        "url": "https://www.youtube.com/watch?v=IijxMnRVLOs",
-        "thumbnail": "https://i.ytimg.com/vi/IijxMnRVLOs/mqdefault.jpg",
-        "channel": "시나공",
-        "views": 9208,
-        "length": "1:25",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[이것]이 가능한 펌웨어 개발자 구합니다.",
-        "url": "https://www.youtube.com/watch?v=gYzP0HDfRcs",
-        "thumbnail": "https://i.ytimg.com/vi/gYzP0HDfRcs/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 7086,
-        "length": "13:20",
-        "published": "스트리밍 시간: 3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[STEP] 시스템 소프트웨어 펌웨어 구현",
-        "url": "https://www.youtube.com/watch?v=rHi9s9No4yw",
-        "thumbnail": "https://i.ytimg.com/vi/rHi9s9No4yw/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 1211,
-        "length": "6:20",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C언어로 펌웨어, 윈도우 프로그램을 만든다구? 닷넷은 또 뭐고?",
-        "url": "https://www.youtube.com/watch?v=hBinYsjsuJs",
-        "thumbnail": "https://i.ytimg.com/vi/hBinYsjsuJs/mqdefault.jpg",
-        "channel": "Physical AI Lab. 깹TV",
-        "views": 6304,
-        "length": "14:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(e-RTC) 8비트 AVR 펌웨어 개발(2) – 실습 및 데모(Hello World, Code stepping)",
-        "url": "https://www.youtube.com/watch?v=pSIlTr8mEqY",
-        "thumbnail": "https://i.ytimg.com/vi/pSIlTr8mEqY/mqdefault.jpg",
-        "channel": "Microchip - Korean",
-        "views": 1102,
-        "length": "21:44",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     "Cassandra": [
       {
         "title": "Apache Cassandra 데이터베이스 – 초보자를 위한 전체 과정",
@@ -8776,6 +8694,88 @@
         "views": 578,
         "length": "36:07",
         "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
+    "Firmware": [
+      {
+        "title": "마이컴 펌웨어(FirmWare) 기초개념",
+        "url": "https://www.youtube.com/watch?v=dRL3rTYSc4k",
+        "thumbnail": "https://i.ytimg.com/vi/dRL3rTYSc4k/mqdefault.jpg",
+        "channel": "아이엠솔더",
+        "views": 45741,
+        "length": "6:16",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU Firmware를 간단하게 재설계 해보자 {no.97}",
+        "url": "https://www.youtube.com/watch?v=huJpyF4oDnU",
+        "thumbnail": "https://i.ytimg.com/vi/huJpyF4oDnU/mqdefault.jpg",
+        "channel": "SEMONAN",
+        "views": 527,
+        "length": "1:18",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "STM32C0316-DK 펌웨어 강좌 #18 - CLI 완성",
+        "url": "https://www.youtube.com/watch?v=eWg9cd6x3lw",
+        "thumbnail": "https://i.ytimg.com/vi/eWg9cd6x3lw/mqdefault.jpg",
+        "channel": "Baram",
+        "views": 1410,
+        "length": "55:15",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[시나공 컴활2급] 3304602 펌웨어",
+        "url": "https://www.youtube.com/watch?v=IijxMnRVLOs",
+        "thumbnail": "https://i.ytimg.com/vi/IijxMnRVLOs/mqdefault.jpg",
+        "channel": "시나공",
+        "views": 9208,
+        "length": "1:25",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[이것]이 가능한 펌웨어 개발자 구합니다.",
+        "url": "https://www.youtube.com/watch?v=gYzP0HDfRcs",
+        "thumbnail": "https://i.ytimg.com/vi/gYzP0HDfRcs/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 7086,
+        "length": "13:20",
+        "published": "스트리밍 시간: 3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[STEP] 시스템 소프트웨어 펌웨어 구현",
+        "url": "https://www.youtube.com/watch?v=rHi9s9No4yw",
+        "thumbnail": "https://i.ytimg.com/vi/rHi9s9No4yw/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 1211,
+        "length": "6:20",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C언어로 펌웨어, 윈도우 프로그램을 만든다구? 닷넷은 또 뭐고?",
+        "url": "https://www.youtube.com/watch?v=hBinYsjsuJs",
+        "thumbnail": "https://i.ytimg.com/vi/hBinYsjsuJs/mqdefault.jpg",
+        "channel": "Physical AI Lab. 깹TV",
+        "views": 6304,
+        "length": "14:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(e-RTC) 8비트 AVR 펌웨어 개발(2) – 실습 및 데모(Hello World, Code stepping)",
+        "url": "https://www.youtube.com/watch?v=pSIlTr8mEqY",
+        "thumbnail": "https://i.ytimg.com/vi/pSIlTr8mEqY/mqdefault.jpg",
+        "channel": "Microchip - Korean",
+        "views": 1102,
+        "length": "21:44",
+        "published": "6년 전",
         "stage": "실전"
       }
     ],
