@@ -28,9 +28,19 @@ const DOMAIN_COLORS = [
 
 type HNode = d3.HierarchyCircularNode<TreeNode>
 
+// 호버 툴팁 문구 — 구슬 종류별로 회사 이름 위주로 표시
+function tipText(d: HNode): string {
+  const t = d.data
+  if (t.type === 'role') return `${t.company ?? ''} · ${t.name}${t.value ? ` (${t.value}건)` : ''}`
+  if (t.type === 'company') return t.name
+  if (t.type === 'domain') return `${t.name}${t.company_count ? ` · 회사 ${t.company_count}개` : ''}`
+  return t.name
+}
+
 export function ClusterView() {
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const svgRef = useRef<SVGSVGElement | null>(null)
+  const tipRef = useRef<HTMLDivElement | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selected, setSelected] = useState<TreeNode | null>(null)
@@ -113,13 +123,26 @@ export function ClusterView() {
       .attr('stroke-width', 1)
       .attr('stroke-opacity', 0.5)
       .attr('pointer-events', 'all')
-      .on('mouseover', function (this: any) {
+      .on('mouseover', function (this: any, _event: MouseEvent, d: HNode) {
         d3.select(this).attr('stroke', '#fff').attr('stroke-opacity', 0.9)
+        const tip = tipRef.current
+        if (tip) {
+          tip.textContent = tipText(d)
+          tip.style.opacity = '1'
+        }
+      })
+      .on('mousemove', function (event: MouseEvent) {
+        const tip = tipRef.current
+        if (!tip) return
+        const [mx, my] = d3.pointer(event, wrap)
+        tip.style.left = `${mx}px`
+        tip.style.top = `${my}px`
       })
       .on('mouseout', function (this: any) {
         d3.select<SVGCircleElement, HNode>(this)
           .attr('stroke', (d) => (d.data.type === 'role' ? 'none' : colorOf(d)))
           .attr('stroke-opacity', 0.5)
+        if (tipRef.current) tipRef.current.style.opacity = '0'
       })
       .on('click', (event: MouseEvent, d) => {
         event.stopPropagation()
@@ -243,6 +266,12 @@ export function ClusterView() {
         <div ref={wrapRef} className="absolute inset-0">
           <svg ref={svgRef} />
         </div>
+        {/* 호버 툴팁 — 구슬 위에 올리면 회사 이름 표시 */}
+        <div
+          ref={tipRef}
+          className="pointer-events-none absolute z-20 px-2 py-1 rounded text-xs font-medium bg-(--color-panel) text-(--color-text) border border-(--color-border) shadow-lg whitespace-nowrap opacity-0 transition-opacity"
+          style={{ transform: 'translate(-50%, calc(-100% - 10px))' }}
+        />
       </div>
 
       {/* 상세 패널 */}

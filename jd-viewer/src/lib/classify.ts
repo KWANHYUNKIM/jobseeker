@@ -103,3 +103,24 @@ export const ROLE_COLORS: Record<string, string> = {
   QA: '#94a3b8',
   기타: '#6b7280',
 }
+
+// 라이트 테마용 짙은 계열 — 위 밝은 색은 흰 배경에서 흐림
+export const ROLE_COLORS_LIGHT: Record<string, string> = {
+  백엔드: '#1d4ed8',
+  프론트엔드: '#7e22ce',
+  풀스택: '#047857',
+  모바일: '#b45309',
+  'AI/ML': '#be185d',
+  데이터: '#0e7490',
+  'DevOps/인프라': '#c2410c',
+  '펌웨어/임베디드': '#6d28d9',
+  보안: '#b91c1c',
+  게임: '#4d7c0f',
+  QA: '#475569',
+  기타: '#374151',
+}
+
+// 테마에 맞는 직군 색 — light면 짙은 계열, 아니면 밝은 계열
+export function roleColor(role: string, light: boolean): string {
+  return (light ? ROLE_COLORS_LIGHT : ROLE_COLORS)[role] ?? (light ? '#374151' : '#6b7280')
+}

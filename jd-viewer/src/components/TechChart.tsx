@@ -70,9 +70,12 @@ export function TechChart({ data, onPick, highlight }: Props) {
               fontSize: 12,
               color: c.text,
             }}
+            labelStyle={{ color: c.text }}
+            itemStyle={{ color: c.text }}
           />
           <Bar
             dataKey="count"
+            fill={c.accent}
             onClick={(d: { name?: string }) => {
               if (d.name) onPick(d.name)
             }}

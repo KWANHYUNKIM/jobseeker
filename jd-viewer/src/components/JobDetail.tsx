@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { Job } from '../types'
-import { classifyRoles, ROLE_COLORS } from '../lib/classify'
+import { classifyRoles, roleColor } from '../lib/classify'
+import { useIsLight } from '../lib/useIsLight'
 
 interface Props {
   job: Job
@@ -20,6 +21,7 @@ export function JobDetail({ job, onClose }: Props) {
     }
   }, [onClose])
 
+  const isLight = useIsLight()
   const roles = classifyRoles(job.title, job.tech_stack, job.qualifications || '')
 
   return (
@@ -32,7 +34,7 @@ export function JobDetail({ job, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="sticky top-0 z-10 bg-(--color-panel)/95 backdrop-blur border-b border-(--color-border) rounded-t-lg px-6 py-4">
+        <div className="bg-(--color-panel) border-b border-(--color-border) rounded-t-lg px-6 py-4">
           <div className="flex items-start gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -43,7 +45,7 @@ export function JobDetail({ job, onClose }: Props) {
                   <span
                     key={r}
                     className="text-xs px-2 py-0.5 rounded border"
-                    style={{ borderColor: ROLE_COLORS[r] || '#444', color: ROLE_COLORS[r] || '#aaa' }}
+                    style={{ borderColor: roleColor(r, isLight), color: roleColor(r, isLight) }}
                   >
                     {r}
                   </span>

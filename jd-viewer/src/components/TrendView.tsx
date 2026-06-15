@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 import {
   CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts'
+import { useIsLight } from '../lib/useIsLight'
 import { useTrends } from '../lib/useTrends'
 import { useTechRelations } from '../lib/useTechRelations'
 import { ExpansionView } from './ExpansionView'
@@ -12,7 +13,9 @@ import type { TechRelation, TrendDay } from '../types'
 
 type TrendMode = 'trend' | 'relations' | 'learn'
 
+// 다크용 밝은 파스텔 / 라이트용 짙은 계열(흰 배경 가독성)
 const PALETTE = ['#6ee7b7', '#93c5fd', '#fca5a5', '#fcd34d', '#c4b5fd', '#f9a8d4', '#5eead4', '#fdba74']
+const PALETTE_LIGHT = ['#047857', '#1d4ed8', '#b91c1c', '#b45309', '#6d28d9', '#be185d', '#0f766e', '#c2410c']
 
 function pct(d: TrendDay, t: string): number {
   return d.total ? Math.round((1000 * (d.tech[t] ?? 0)) / d.total) / 10 : 0
@@ -27,6 +30,7 @@ export function TrendView({
 } = {}) {
   const { data, loading, error } = useTrends()
   const { data: rel } = useTechRelations()
+  const palette = useIsLight() ? PALETTE_LIGHT : PALETTE
   const [mode, setMode] = useState<TrendMode>('trend')
   const [picked, setPicked] = useState<string[]>([])
   const [relTech, setRelTech] = useState<string | null>(null)
@@ -150,7 +154,7 @@ export function TrendView({
                     <YAxis tick={{ fontSize: 11, fill: 'var(--color-muted)' }} unit="%" width={42} />
                     <Tooltip contentStyle={{ background: 'var(--color-panel)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }} labelStyle={{ color: 'var(--color-text)' }} />
                     {selected.map((t, i) => (
-                      <Line key={t} type="monotone" dataKey={t} stroke={PALETTE[i % PALETTE.length]} strokeWidth={2} dot={false} />
+                      <Line key={t} type="monotone" dataKey={t} stroke={palette[i % palette.length]} strokeWidth={2} dot={false} />
                     ))}
                   </LineChart>
                 </ResponsiveContainer>
@@ -158,7 +162,7 @@ export function TrendView({
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {selected.map((t, i) => (
                   <span key={t} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-(--color-border)">
-                    <span className="w-2 h-2 rounded-full" style={{ background: PALETTE[i % PALETTE.length] }} />{t}
+                    <span className="w-2 h-2 rounded-full" style={{ background: palette[i % palette.length] }} />{t}
                   </span>
                 ))}
               </div>

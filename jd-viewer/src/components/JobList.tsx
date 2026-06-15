@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Job } from '../types'
-import { classifyRoles, ROLE_COLORS } from '../lib/classify'
+import { classifyRoles, roleColor } from '../lib/classify'
+import { useIsLight } from '../lib/useIsLight'
 import { EmptyState } from './ui'
 
 interface Props {
@@ -13,6 +14,7 @@ const PAGE_SIZE = 20
 
 export function JobList({ jobs, selected, onSelect }: Props) {
   const [page, setPage] = useState(0)
+  const isLight = useIsLight()
 
   useEffect(() => {
     setPage(0)
@@ -63,7 +65,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                 <div className="flex flex-wrap gap-1 mb-1.5">
                   {roles.map((r) => (
                     <span key={r} className="text-[10px] px-1.5 py-0.5 rounded border"
-                      style={{ borderColor: ROLE_COLORS[r] || '#444', color: ROLE_COLORS[r] || '#aaa' }}>{r}</span>
+                      style={{ borderColor: roleColor(r, isLight), color: roleColor(r, isLight) }}>{r}</span>
                   ))}
                 </div>
               )}
@@ -129,7 +131,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                         <span
                           key={r}
                           className="text-[10px] px-1.5 py-0.5 rounded border"
-                          style={{ borderColor: ROLE_COLORS[r] || '#444', color: ROLE_COLORS[r] || '#aaa' }}
+                          style={{ borderColor: roleColor(r, isLight), color: roleColor(r, isLight) }}
                         >
                           {r}
                         </span>
