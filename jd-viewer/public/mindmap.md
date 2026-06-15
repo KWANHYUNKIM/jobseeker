@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **5983건** 공고 · **1187개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-16 04:50
+- 총 **5984건** 공고 · **1187개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-16 06:24
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -10530,9 +10530,10 @@ markmap:
 - **보안** [1건] · `AWS`
   - [보안 엔지니어 ↗](https://www.wanted.co.kr/wd/367896)
 
-### 레브잇 `중소기업` · 7건
-- **백엔드** [3건] · `React` `CSS` `Node.js` `TypeScript` `AWS` `GitHub Actions`
+### 레브잇 `중소기업` · 8건
+- **백엔드** [4건] · `React` `CSS` `Node.js` `Java` `Kotlin` `Spring`
   - [Product Engineer (Frontend) ↗](https://www.wanted.co.kr/wd/366548)
+  - [Software Engineer (Platform) ↗](https://www.wanted.co.kr/wd/350346)
   - [Software Engineer (Frontend/3년이상) ↗](https://www.wanted.co.kr/wd/339811)
   - [Commerce Tech Lead ↗](https://www.wanted.co.kr/wd/339839)
 - **프론트엔드** [4건] · `React` `CSS` `JavaScript` `TypeScript` `Vue` `Angular`
@@ -10540,14 +10541,16 @@ markmap:
   - [Software Engineer(Frontend) (병역특례(보충역)) ↗](https://www.wanted.co.kr/wd/339807)
   - [Product Engineer (Frontend) ↗](https://www.wanted.co.kr/wd/366548)
   - [Software Engineer (Frontend/3년이상) ↗](https://www.wanted.co.kr/wd/339811)
-- **모바일** [4건] · `TypeScript` `React` `CSS` `AWS` `GitHub Actions` `Git`
+- **모바일** [5건] · `TypeScript` `React` `CSS` `AWS` `GitHub Actions` `Git`
   - [Software Engineer(Frontend) (병역특례(보충역)) ↗](https://www.wanted.co.kr/wd/339807)
   - [Product Engineer (Frontend) ↗](https://www.wanted.co.kr/wd/366548)
+  - [Software Engineer (Platform) ↗](https://www.wanted.co.kr/wd/350346)
   - [Software Engineer (Frontend/3년이상) ↗](https://www.wanted.co.kr/wd/339811)
-  - [Commerce Tech Lead ↗](https://www.wanted.co.kr/wd/339839)
 - **AI/ML** [2건]
   - [AI Engineer (병역특례 보충역 지원 가능) ↗](https://www.wanted.co.kr/wd/365715)
   - [(쇼포트) AI Data Assistant (1개월, 단기계약직) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49276205?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=100&sc=630)
+- **데이터** [1건] · `Java` `Kotlin` `Spring` `Spring Boot` `Redis` `Kubernetes`
+  - [Software Engineer (Platform) ↗](https://www.wanted.co.kr/wd/350346)
 
 ### 페이타랩(패스오더) `중소기업` · 7건
 - **백엔드** [5건] · `Kotlin` `AWS` `Kubernetes` `Jenkins` `MSA` `React`
