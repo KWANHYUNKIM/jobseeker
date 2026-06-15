@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-16T03:16:41",
- "total": 721,
+ "generated_at": "2026-06-16T04:50:39",
+ "total": 722,
  "sources": [
   {
    "company": "Etsy",
@@ -90,7 +90,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 15
+   "count": 16
   },
   {
    "company": "Lyft",
@@ -506,6 +506,28 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Accelerating researchers and developers building multilingual AI with a new open dataset",
+   "url": "https://github.blog/ai-and-ml/llms/accelerating-researchers-and-developers-building-multilingual-ai-with-a-new-open-dataset",
+   "published": "2026-06-15",
+   "published_ts": 1781551050.0,
+   "summary": "A new repository-level dataset, published on GitHub under CC0-1.0, helps researchers and developers discover multilingual developer content across READMEs, issues, and pull requests.\n\nThe post Accelerating researchers and developers building multilingual AI with a new open dataset appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "LLMs"
+   ],
+   "tech_stack": [
+    "Benchmark"
+   ],
+   "categories": [
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "642cd4136432738b"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",

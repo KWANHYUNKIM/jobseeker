@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T03:20:07",
+ "generated_at": "2026-06-16T04:55:21",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 47,
+ "refined": 49,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -956,10 +956,6 @@
      "count": 7
     },
     {
-     "name": "JavaScript",
-     "count": 7
-    },
-    {
      "name": "Python",
      "count": 7
     },
@@ -968,15 +964,19 @@
      "count": 5
     },
     {
+     "name": "JavaScript",
+     "count": 5
+    },
+    {
      "name": "Go",
      "count": 3
     },
     {
-     "name": "Luau",
-     "count": 1
+     "name": "Rust",
+     "count": 2
     },
     {
-     "name": "Rust",
+     "name": "Luau",
      "count": 1
     }
    ],
@@ -999,6 +999,10 @@
       "count": 2
      },
      {
+      "name": "gRPC",
+      "count": 2
+     },
+     {
       "name": "자체 게임서버 엔진",
       "count": 2
      },
@@ -1011,15 +1015,11 @@
       "count": 1
      },
      {
+      "name": "C# 게임서버",
+      "count": 1
+     },
+     {
       "name": "C++ game engine",
-      "count": 1
-     },
-     {
-      "name": "Go services",
-      "count": 1
-     },
-     {
-      "name": "gRPC",
       "count": 1
      }
     ],
@@ -1029,12 +1029,12 @@
       "count": 6
      },
      {
-      "name": "Unreal Engine",
-      "count": 5
+      "name": "React",
+      "count": 4
      },
      {
-      "name": "React",
-      "count": 3
+      "name": "Unreal Engine",
+      "count": 4
      },
      {
       "name": "Luau",
@@ -1050,6 +1050,14 @@
      },
      {
       "name": "TypeScript",
+      "count": 1
+     },
+     {
+      "name": "Unreal Engine 5",
+      "count": 1
+     },
+     {
+      "name": "사내 런처/Patcher",
       "count": 1
      },
      {
@@ -1079,7 +1087,7 @@
       "count": 4
      },
      {
-      "name": "Hadoop",
+      "name": "Elasticsearch",
       "count": 2
      },
      {
@@ -1110,7 +1118,15 @@
      },
      {
       "name": "사내 데이터센터",
-      "count": 5
+      "count": 4
+     },
+     {
+      "name": "Terraform",
+      "count": 2
+     },
+     {
+      "name": "CDN",
+      "count": 1
      },
      {
       "name": "Envoy",
@@ -1131,25 +1147,13 @@
      {
       "name": "Hybrid on-prem DCs",
       "count": 1
-     },
-     {
-      "name": "Terraform",
-      "count": 1
      }
     ]
    },
    "architecture": [
     {
      "name": "게임 전용 서버",
-     "count": 5
-    },
-    {
-     "name": "실시간 동기화",
      "count": 3
-    },
-    {
-     "name": "글로벌 서비스",
-     "count": 2
     },
     {
      "name": "데이터 분석",
@@ -1161,6 +1165,14 @@
     },
     {
      "name": "Burst scaling",
+     "count": 1
+    },
+    {
+     "name": "C++ Authoritative 실시간 게임 서버",
+     "count": 1
+    },
+    {
+     "name": "Cell-based microservices on own datacenters",
      "count": 1
     }
    ]
@@ -11602,42 +11614,49 @@
     "C++",
     "C#",
     "Python",
-    "Java",
-    "JavaScript"
+    "Rust",
+    "Java"
    ],
    "stack": {
     "backend": [
-     "자체 게임서버 엔진",
+     "자체 게임서버 엔진(C++)",
+     "C# 게임서버",
      "Spring Boot",
-     "Node.js"
+     "Node.js",
+     "gRPC/사내 RPC"
     ],
     "frontend": [
-     "Unreal Engine",
+     "Unreal Engine 5",
      "Unity",
-     "React"
+     "React",
+     "사내 런처/Patcher"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "MySQL(샤딩)",
      "Redis",
      "MongoDB",
-     "Hadoop"
+     "Kafka",
+     "Hadoop/Spark",
+     "Druid/ClickHouse류 OLAP"
     ],
     "infra": [
-     "사내 데이터센터",
+     "사내 IDC(베어메탈)",
      "AWS",
-     "Kubernetes"
+     "Kubernetes",
+     "CDN",
+     "NGS(Nexon Game Security)"
     ]
    },
    "architecture": [
-    "게임 전용 서버",
-    "실시간 동기화",
-    "대규모 분석 파이프라인"
+    "C++ Authoritative 실시간 게임 서버",
+    "Channel·Shard·World 분리 동시접속 확장",
+    "Kafka→Hadoop/Spark 대규모 로그 분석 파이프라인",
+    "라이브 운영(LiveOps) 중심 배포·핫픽스 구조"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    GAME[\"Game Client<br/>Unreal Unity\"]\n    WEB[\"Portal Web<br/>React\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    LB[\"Game LB<br/>Edge\"]\n    GW[\"Web API<br/>Spring Boot\"]\n  end\n  subgraph Core[\"Core Services\"]\n    GS[\"Game Server<br/>C++ Engine\"]\n    MATCH[\"Matchmaking<br/>C++\"]\n    BILL[\"Billing<br/>Spring Node.js\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL\"]\n    REDIS[\"Redis\"]\n    MONGO[\"MongoDB\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HADOOP[\"Analytics<br/>Hadoop\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    DC[\"Own DC + AWS\"]\n    K8S[\"Kubernetes\"]\n  end\n  GAME -->|TCP UDP| LB\n  WEB --> GW\n  LB --> GS\n  GS --> MATCH\n  GS --> REDIS\n  GS --> MYSQL\n  GW --> BILL\n  BILL --> MONGO\n  GS -->|publish| KAFKA\n  KAFKA --> HADOOP\n  GS --- DC\n  BILL --- K8S",
-   "why_language": "실시간 게임 서버의 낮은 지연과 높은 성능을 위해 C++을 핵심으로 쓰고, 도구·웹 백오피스는 C#/Java/Python을 활용하며, 게임 로직 스크립팅에 Python을 쓰기도 한다.",
-   "why_architecture": "MMORPG의 실시간 상태 동기화를 위해 게임 전용 서버 아키텍처를 사용하고, 방대한 유저 로그를 Hadoop/Kafka 기반 대규모 분석 파이프라인으로 처리한다.",
-   "summary": "C++ 게임서버와 대규모 로그 분석으로 돌아가는 실시간 게임 인프라.",
+   "diagram": "flowchart TD\n  subgraph Client\n    C[\"Game Client<br/>Unreal Engine 5 / Unity\"]\n    P[\"Patcher<br/>CDN + Diff Patch\"]\n  end\n  subgraph Edge\n    GW[\"Login Gateway<br/>Auth + Session\"]\n    MM[\"Matchmaking<br/>C++ Service\"]\n  end\n  subgraph Core\n    WS[\"World Server<br/>C++ Authoritative\"]\n    CH[\"Channel / Shard<br/>Zone Servers\"]\n    RT[\"Chat / Realtime<br/>Redis PubSub\"]\n    AC[\"Anti-cheat<br/>NGS Client+Server\"]\n  end\n  subgraph DataLayer\n    DB[\"Game DB<br/>MySQL Sharded\"]\n    RC[\"Cache<br/>Redis\"]\n    MG[\"Log / Profile<br/>MongoDB\"]\n  end\n  subgraph Analytics\n    KF[\"Event Bus<br/>Kafka\"]\n    HD[\"Data Lake<br/>Hadoop + Spark\"]\n    ML[\"Intelligence Labs<br/>ML 이탈/추천\"]\n  end\n  subgraph Platform\n    IN[\"Infra<br/>IDC + AWS + K8s\"]\n  end\n  P -->|HTTPS| C\n  C -->|TCP login| GW\n  GW --> MM\n  MM --> WS\n  C -->|UDP/TCP game packets| WS\n  WS --> CH\n  WS --> RT\n  WS --> AC\n  WS --> DB\n  WS --> RC\n  WS -->|events| KF\n  DB --> MG\n  KF --> HD\n  HD --> ML\n  ML -->|타겟팅/추천| GW\n  IN --- Core\n  IN --- DataLayer",
+   "why_language": "수십 ms의 tick 안에 수천 명의 상태를 권위적으로 시뮬레이션해야 하는 MMO·실시간 대전 장르 특성상, 메모리·CPU를 직접 제어할 수 있는 C++가 게임 서버의 중심이며 일부 신작·툴은 C#로 작성된다. 데이터 분석·운영 자동화·ML 파이프라인은 생산성이 높은 Python, 결제·플랫폼 백오피스는 Java(Spring) 계열을 쓰고, Embark Studios 인수를 통해 렌더링·툴링 영역에서 Rust 자산도 보유한다.",
+   "why_architecture": "동시접속이 채널·서버 단위로 폭증하는 온라인 게임에서는 단일 프로세스로 확장이 불가능하므로 World→Channel→Shard로 공간을 분할해 수평 확장하고, 치팅을 막기 위해 서버가 모든 판정을 쥐는 Authoritative 구조를 택했다. 동시에 결제·이탈·밸런싱을 데이터로 운영해야 하므로 게임 로그를 Kafka로 흘려 Hadoop/Spark 레이크에 적재하고 Intelligence Labs의 ML로 되먹이는 대규모 분석 파이프라인을 핵심에 두었다.",
+   "summary": "C++ 권위적 게임 서버 + 채널·샤드 수평 확장 + Kafka·Hadoop 기반 데이터 드리븐 라이브 운영",
    "deep_dive": [
     {
      "topic": "C++ Authoritative 게임 서버: tick loop와 권위적 시뮬레이션",
@@ -11658,18 +11677,71 @@
     {
      "topic": "대규모 분석 파이프라인: Hadoop/Kafka 로그 처리",
      "body": "### 게임의 데이터 홍수\n넥슨 게임은 플레이어 행동(이동·전투·결제·아이템 획득) 로그를 초당 막대한 양으로 쏟아낸다. 이 데이터는 밸런싱·이탈 예측·매출 분석·치트 탐지의 원천이다.\n\n### 파이프라인\n1. **수집(Kafka)**: 게임 서버가 이벤트 로그를 `Kafka`로 발행한다. Kafka가 폭발적 로그를 버퍼링하며 다운스트림을 게임 서버 부하에서 분리(decouple)한다. 게임 tick에 영향을 주지 않으려면 로깅이 비동기·논블로킹이어야 한다.\n2. **적재(Hadoop/HDFS)**: 원시 로그를 `Hadoop`에 페타바이트급으로 적재. 배치 분석(Spark/MapReduce)으로 일/주 단위 지표를 만든다.\n3. **실시간 스트림**: 일부는 실시간 스트림 처리로 즉시 집계(동접·매출·이상 트래픽 모니터링).\n4. **저장·서빙**: 집계 결과는 `MySQL`/`MongoDB`/분석 DB에 적재해 대시보드·운영툴에 서빙한다.\n\n### 활용\n- **밸런싱**: 직업/아이템 승률·사용률을 분석해 패치 밸런스를 잡는다.\n- **이탈·결제 예측**: 행동 시퀀스로 이탈 위험·과금 성향을 모델링한다.\n- **치트 사후 탐지**: 통계 이상치를 ML로 분류해 웨이브 밴에 활용한다.\n\n### 트레이드오프\n모든 이벤트를 무손실로 적재하면 비용이 크다. 그래서 핵심 이벤트(결제·치트 신호)는 정확히, 행동 텔레메트리는 샘플링·집계로 비용을 조절한다. 배치(정확·저비용·지연)와 스트림(즉시·고비용)을 함께 써, 운영 즉응성과 심층 분석을 모두 충족하는 것이 게임 데이터 플랫폼의 설계 핵심이다."
+    },
+    {
+     "topic": "MMO 영속성 데이터: 계정·인벤토리 DB 샤딩과 트랜잭션 일관성",
+     "body": "### 왜 어려운가\n\n게임 서버의 상태(위치, HP)는 휘발성이라 RAM에서 tick마다 갱신되지만, **계정·캐릭터·인벤토리·재화**는 절대 유실되면 안 되는 영속 데이터다. MapleStory급 타이틀은 수천만 계정 × 캐릭터당 수백 개 아이템을 다루므로 단일 RDB로는 쓰기 처리량과 용량이 모두 한계에 부딪힌다. 넥슨 계열은 전통적으로 **MySQL을 계정 ID(또는 월드) 기준으로 수평 샤딩**해 이를 해결한다.\n\n### 샤딩 키 설계\n\n- **World/Server 단위 분할**: '루나' '스카니아' 같은 월드별로 DB 인스턴스를 물리 분리한다. 같은 월드 유저끼리만 상호작용하므로 cross-shard 조인이 거의 없다는 게임 특성을 활용한 자연스러운 파티셔닝이다.\n- **Account ID 해시 샤딩**: 글로벌한 계정/결제 정보는 `account_id % N`으로 샤드를 정한다. 캐릭터 데이터는 그 캐릭터가 속한 월드 샤드에 둔다.\n- 결과적으로 \"하나의 트랜잭션은 한 샤드 안에서 끝난다\"는 단일 샤드 트랜잭션 원칙이 성립하도록 도메인을 설계한다.\n\n### 일관성을 지키는 핵심 패턴\n\n게임에서 가장 무서운 버그는 **아이템 복제(duping)**다. 거래·강화·우편 같은 다중 객체 조작은 다음으로 방어한다:\n\n| 시나리오 | 처리 방식 |\n|---|---|\n| 같은 샤드 내 거래 | 단일 MySQL 트랜잭션 + 행 잠금(`SELECT ... FOR UPDATE`) |\n| 서로 다른 월드/샤드 간 이동(캐릭터 이전) | **2-phase 우편/에스크로 패턴** — 출발지에서 \"전송중\" 상태로 잠그고, 도착 확정 시 커밋, 실패 시 롤백 |\n| 서버 크래시 시 인메모리 상태 유실 | 주기적 **체크포인트 저장** + 거래/강화 같은 결정적 행위는 즉시 동기 커밋 |\n\n### Write-back 캐시와 저장 주기\n\n캐릭터의 모든 변화를 매번 DB에 쓰면 IOPS가 폭발한다. 그래서 활성 캐릭터 상태는 **게임 서버 프로세스의 메모리가 1차 진실(source of truth)**이고, DB는 일정 주기(수십 초)와 핵심 이벤트(로그아웃, 거래, 결제)마다 **write-back**으로 비동기 영속화한다. 이 때문에 \"서버 다운 시 마지막 저장 이후 진행분 롤백\"이 가능하고, 운영팀은 장애 시 직전 스냅샷으로 복구한다. Redis는 이 사이에서 세션·랭킹·쿨다운 등 준영속 상태의 캐시·원자적 카운터(`INCR`)로 쓰인다."
+    },
+    {
+     "topic": "라이브 운영(LiveOps): 정기점검·핫픽스·CDN 패치 배포 파이프라인",
+     "body": "### 게임 배포는 웹 배포와 다르다\n\n웹 서비스는 무중단 롤링 배포가 기본이지만, 온라인 게임은 **클라이언트 바이너리와 서버 프로토콜이 강하게 결합**돼 있어 둘을 원자적으로 갈아끼워야 한다. 그래서 넥슨식 라이브 게임은 여전히 **정기 점검(maintenance window)**을 핵심 배포 채널로 쓴다. 보통 주 1회 새벽 점검에 서버를 내리고 다음을 한꺼번에 수행한다:\n\n- 서버 빌드 교체 + DB 마이그레이션(스키마 변경, 컬럼 추가)\n- 신규 콘텐츠 데이터 테이블 적용\n- 클라이언트 패치를 CDN에 게시\n\n### 클라이언트 패치: Diff/Delta 다운로드\n\n수십 GB짜리 게임을 매번 전체 재다운로드시키면 트래픽·이탈이 폭발한다. 그래서 자체 **런처/Patcher**가 다음을 한다:\n\n1. 패치 서버에서 **버전 매니페스트(파일 해시 목록)**를 받아 로컬과 비교\n2. 바뀐 파일만, 그것도 **바이너리 diff(델타 패치)**로 내려받아 적용\n3. 무결성 해시 검증 후 실행 — 변조된 클라이언트는 NGS와 함께 차단\n4. 실제 바이트는 **CDN 엣지**에서 서빙해 오리진과 IDC 회선을 보호\n\n### 핫픽스와 데이터 드리븐 운영\n\n점검을 매번 열 수 없으므로 위험이 낮은 변경은 **무중단 핫픽스**로 처리한다:\n\n- **밸런스·드롭률·이벤트 수치는 코드가 아니라 데이터 테이블/원격 설정**으로 분리해 서버 재시작 없이(또는 채널 단위 순차 재기동) 반영. 즉 게임 로직은 '데이터 드리븐'으로 짜서 운영팀이 배포 없이 수치를 바꾼다.\n- 크래시급 버그는 채널 서버를 **순차적으로(rolling)** 비우고 교체해 전체 점검 없이 패치.\n- 신규 확률형/이벤트는 **카나리아 성격의 일부 채널·일부 월드 선반영** 후 지표를 보고 확대.\n\n### 트레이드오프\n\n이 구조의 대가는 \"긴 새벽 점검\"이라는 사용자 경험 비용이다. 대신 클라이언트-서버 프로토콜·DB 스키마를 한 시점에 정합성 있게 교체할 수 있어 **버전 불일치로 인한 데이터 깨짐을 원천 차단**한다. 최근 신작일수록 데이터 분리·원격 설정을 늘려 점검 빈도를 줄이는 방향으로 진화하고 있다."
+    },
+    {
+     "topic": "매치메이킹과 세션 라이프사이클: KartRider/Sudden Attack형 실시간 대전",
+     "body": "### MMO와 세션형 게임의 아키텍처 차이\n\nMapleStory 같은 지속 월드(persistent world)는 유저가 항상 같은 채널에 머물지만, KartRider·Sudden Attack·FC Online 같은 **세션형 PvP**는 '대기 → 매칭 → 짧은 한 판 → 해산'을 반복한다. 이 장르는 **Matchmaking 서비스**와 **동적 게임 세션 할당**이 아키텍처의 심장이다.\n\n### 매치메이킹 동작 원리\n\n1. **큐 진입**: 클라이언트가 게이트웨이를 통해 매치메이커에 모드·실력(MMR)과 함께 등록된다.\n2. **MMR 기반 그룹핑**: 매치메이커는 비슷한 레이팅끼리 묶되, 대기 시간이 길어지면 **허용 MMR 밴드를 점진적으로 넓혀**(relaxation) 매칭 성사와 공정성을 트레이드오프한다.\n3. **지역·핑 고려**: 실시간 대전은 지연이 치명적이라 같은 리전/데이터센터로 모아 **RTT를 최소화**한다.\n4. **세션 배정**: 매칭이 성사되면 **게임 세션 서버(룸)**를 풀에서 하나 잡아(또는 새로 띄워) 양쪽에 접속 토큰과 엔드포인트를 푸시한다.\n\n### 세션 서버 풀과 자원 회수\n\n- 한 판은 수 분이므로 세션 서버는 **상태가 거의 없는(stateless에 가까운) 단명 워커**처럼 다룬다. 끝나면 즉시 메모리를 비우고 풀로 반환한다.\n- 동시 매치 수요는 시간대별로 출렁이므로 **서버 풀을 사전 워밍**해두고, 부하 급증 시 IDC 여유분 + AWS로 **버스트 확장**한다. \"콜드 스타트 지연 없이 즉시 룸을 줄 수 있는가\"가 체감 품질을 좌우한다.\n- 결과(전적·재화·랭킹)는 판이 끝나는 순간 **이벤트로 Kafka에 발행**되고, 영속 DB와 랭킹(Redis Sorted Set), 분석 레이크로 동시에 흘러간다.\n\n### Authoritative 시뮬레이션과의 결합\n\n세션 서버 역시 **권위적**이다. 카트의 충돌·아이템 적중, FPS의 히트 판정은 서버가 결정하고 클라이언트는 예측·보간만 한다. 다만 응답성을 위해 슈터류는 **lag compensation(서버가 슈터의 과거 시점으로 되감아 판정)**을, 레이싱류는 **결정적(deterministic) 물리 + 입력 동기화** 쪽을 더 쓰는 식으로 장르별 트레이드오프를 달리한다."
+    },
+    {
+     "topic": "데이터 드리븐 운영과 ML: Nexon Intelligence Labs의 이탈예측·추천·이상탐지",
+     "body": "### 게임 회사가 사실은 데이터 회사인 이유\n\n부분유료화(F2P) 게임의 매출은 소수 핵심 유저의 잔존·결제에 크게 좌우된다. 넥슨이 **Nexon Intelligence Labs(인텔리전스랩스)**라는 별도 데이터/AI 조직을 둔 이유가 여기 있다. 핵심은 \"게임에서 나오는 **초당 수백만 건의 행동 로그**를 분석 가능한 자산으로 바꿔 운영에 되먹이는 것\"이다.\n\n### 로그 수집 → 레이크 → 분석 흐름\n\n```\n게임 서버  --이벤트-->  Kafka  -->  적재(배치/스트림)  -->  Hadoop/HDFS 데이터 레이크\n                                   |--> Spark 배치 분석\n                                   |--> OLAP(Druid/ClickHouse류) 대시보드\n                                   |--> 피처 저장소 --> ML 모델\n```\n\n- **Kafka**는 게임 서버와 분석계를 느슨하게 분리하는 버퍼다. 분석 파이프라인이 느려져도 게임 서버 tick에는 영향을 주지 않는다(백프레셔 격리).\n- **Hadoop/Spark**는 전수 로그에 대한 대규모 배치(코호트 분석, 리텐션 곡선, 경제 시뮬레이션)를 돌린다.\n- 실시간성이 필요한 대시보드는 **컬럼형 OLAP 엔진**으로 분리해 운영팀이 지표를 즉시 본다.\n\n### 대표 ML 적용\n\n| 영역 | 동작 | 운영 액션 |\n|---|---|---|\n| **이탈 예측(churn)** | 최근 접속 패턴·결제·진행도로 이탈 확률 산출 | 위험 유저에 복귀 보상/쿠폰 타겟팅 |\n| **추천/개인화** | 플레이 성향 기반 콘텐츠·상품 추천 | 상점 노출·이벤트 개인화 |\n| **이상탐지(작업장/봇)** | 행동 시퀀스가 정상 분포에서 벗어나는지 탐지 | 매크로·골드파밍·결제사기 차단(anti-cheat 보강) |\n| **밸런싱** | 직업·아이템별 승률·사용률 통계 | 점검 때 수치 패치 근거 |\n\n### 엔지니어링 트레이드오프\n\n- **배치 vs 스트림**: 정확하지만 지연이 큰 Spark 배치와, 빠르지만 근사적인 스트림 처리를 용도별로 나눠 쓴다(이탈 점수는 일배치, 어뷰징 차단은 준실시간).\n- **개인정보·규제**: 결제·개인정보가 섞이므로 로그는 가명화/접근통제 하에 다루고, 분석계와 운영계의 데이터 권한을 분리한다.\n- 이 데이터 루프가 결국 'C++ 게임 서버'와 'Hadoop 분석계'를 하나의 제품으로 묶는 접착제이며, 넥슨이 단순 게임 개발이 아니라 **라이브 서비스 운영 역량**으로 경쟁하는 근거다."
     }
    ],
    "github": {
-    "org": "https://github.com/nexon",
-    "repos": []
+    "org": "https://github.com/EmbarkStudios",
+    "repos": [
+     {
+      "name": "EmbarkStudios/rust-gpu",
+      "url": "https://github.com/EmbarkStudios/rust-gpu",
+      "desc": "Rust 코드를 SPIR-V GPU 셰이더로 컴파일하는 실험적 컴파일러",
+      "lang": "Rust",
+      "stars": 7574
+     },
+     {
+      "name": "EmbarkStudios/kajiya",
+      "url": "https://github.com/EmbarkStudios/kajiya",
+      "desc": "실시간 글로벌 일루미네이션을 탐구하는 실험적 Vulkan 렌더러",
+      "lang": "Rust",
+      "stars": 5334
+     },
+     {
+      "name": "EmbarkStudios/cargo-deny",
+      "url": "https://github.com/EmbarkStudios/cargo-deny",
+      "desc": "Rust 의존성의 라이선스·보안 취약점·중복을 감사하는 CI 도구",
+      "lang": "Rust",
+      "stars": 2338
+     },
+     {
+      "name": "EmbarkStudios/puffin",
+      "url": "https://github.com/EmbarkStudios/puffin",
+      "desc": "게임/실시간 앱용 경량 인스트루멘테이션 프로파일러",
+      "lang": "Rust",
+      "stars": 1715
+     },
+     {
+      "name": "EmbarkStudios/physx-rs",
+      "url": "https://github.com/EmbarkStudios/physx-rs",
+      "desc": "NVIDIA PhysX 물리 엔진의 Rust 바인딩",
+      "lang": "Rust",
+      "stars": 730
+     }
+    ]
    },
    "sources": [
-    "https://www.intelligencelabs.tech",
-    "https://nexon.com"
+    "https://ndc.nexon.com/",
+    "https://www.intelligencelabs.tech/",
+    "https://github.com/EmbarkStudios"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "smilegate",
@@ -11681,40 +11753,46 @@
     "C#",
     "Java",
     "Python",
-    "JavaScript"
+    "TypeScript"
    ],
    "stack": {
     "backend": [
-     "자체 게임서버",
+     "자체 게임서버(C++ Authoritative Server)",
      "Spring Boot",
-     "Node.js"
+     "Node.js",
+     "gRPC"
     ],
     "frontend": [
      "Unreal Engine",
-     "Unity"
+     "Unity",
+     "React"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "Redis",
      "MongoDB",
-     "Spark"
+     "Spark",
+     "Elasticsearch"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "사내 데이터센터"
+     "사내 데이터센터(IDC)",
+     "Terraform",
+     "Prometheus/Grafana"
     ]
    },
    "architecture": [
-    "게임 전용 서버",
-    "실시간 동기화",
-    "글로벌 서비스"
+    "권위 서버 기반 실시간 동기화",
+    "글로벌 멀티리전 서비스",
+    "게임-플랫폼 분리(MSA)",
+    "하이브리드 클라우드(IDC+AWS)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    GAME[\"게임 클라이언트<br/>Unreal Engine + Unity\"]\n    WEB[\"로비 웹<br/>JavaScript + React\"]\n  end\n  subgraph Gateway\n    GW[\"게임 게이트웨이<br/>자체 세션 서버 C++\"]\n    API[\"플랫폼 API<br/>Spring Boot + Java\"]\n  end\n  subgraph Services\n    GS[\"게임 월드 서버<br/>자체 게임서버 C++\"]\n    MATCH[\"매칭 서비스<br/>C#\"]\n    BO[\"백오피스<br/>Node.js\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"게임 DB<br/>MySQL\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n    MONGO[\"로그 저장<br/>MongoDB\"]\n    SPARK[\"데이터 분석<br/>Spark\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>AWS + Kubernetes + 사내 데이터센터\"]\n  end\n  GAME --> GW\n  WEB --> API\n  GW --> GS\n  GS --> MATCH\n  API --> BO\n  GS --> REDIS\n  GS --> MYSQL\n  GS --> KAFKA\n  KAFKA --> MONGO\n  KAFKA --> SPARK\n  GS --> K8S",
-   "why_language": "크로스파이어·로스트아크의 실시간 게임 서버를 C++로 구현하고, 플랫폼·백오피스는 Java/C#, 데이터·운영 도구는 Python을 활용한다.",
-   "why_architecture": "글로벌 FPS·MMORPG의 실시간 동기화를 위해 전용 게임 서버를 운영하고, 클라우드와 사내 인프라를 결합해 대규모 동시접속을 처리한다.",
-   "summary": "C++ 게임서버 기반의 글로벌 FPS·MMORPG 서비스 게임사.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    GC[\"Game Client<br/>Unreal Engine / Unity\"]\n    WC[\"Web/App<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"Gateway / Edge\"]\n    LB[\"Edge LB / CDN<br/>AWS ALB + CloudFront\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Realtime[\"Realtime Game Layer\"]\n    GS[\"Authoritative Game Server<br/>C++ Dedicated Server\"]\n    MM[\"Matchmaking<br/>C++/Go Service\"]\n    AC[\"Anti-Cheat<br/>Server Validation\"]\n  end\n  subgraph Platform[\"Platform Services\"]\n    AUTH[\"Account/Auth<br/>Spring Boot\"]\n    BILL[\"Billing/Shop<br/>Spring Boot\"]\n    SOCIAL[\"Social/Community<br/>Node.js\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Analytics<br/>Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Persistent State<br/>MySQL Sharded\"]\n    REDIS[\"Session/Cache<br/>Redis\"]\n    MONGO[\"Logs/Profiles<br/>MongoDB\"]\n    ES[\"Search/Log<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    CLOUD[\"Hybrid<br/>AWS + IDC\"]\n  end\n  GC -->|UDP/TCP| GS\n  WC --> LB --> GW\n  GS --> MM\n  GS --> AC\n  GS -->|state| REDIS\n  GS -->|persist| MYSQL\n  GW --> AUTH\n  GW --> BILL\n  GW --> SOCIAL\n  AUTH --> MYSQL\n  BILL --> MYSQL\n  SOCIAL --> MONGO\n  GS -->|events| KAFKA\n  BILL --> KAFKA\n  KAFKA --> SPARK\n  KAFKA --> ES\n  SPARK --> MONGO\n  AUTH --> REDIS\n  GS --> K8S\n  Platform --> K8S\n  K8S --> CLOUD",
+   "why_language": "실시간 틱 루프와 물리·히트 판정이 핵심인 권위 게임서버는 지연·메모리 제어가 결정적이라 C++로 작성하고, 클라이언트는 Unreal/Unity 기반이라 C++·C#을 함께 쓴다. 계정·결제·커뮤니티 같은 플랫폼 백엔드는 생산성과 생태계가 풍부한 Java(Spring Boot)·Node.js로, 데이터 분석·자동화는 Python으로 분리해 도메인별 최적 언어를 채택한다.",
+   "why_architecture": "FPS·MMO 같은 장르는 클라이언트를 신뢰할 수 없어 서버가 모든 게임 상태의 단일 진실원천이 되는 권위 서버 구조가 필수이며, 글로벌 동시 서비스를 위해 멀티리전에 게임서버를 분산하고 매치메이킹으로 지연을 최소화한다. 안정적 트래픽의 게임서버는 사내 IDC로 비용을 통제하고, 신규 출시·이벤트의 탄력적 부하는 AWS로 흡수하는 하이브리드 클라우드 + Kubernetes 조합을 택했다.",
+   "summary": "C++ 권위 게임서버를 코어로, Spring/Node 플랫폼을 MSA로 분리하고 IDC+AWS 하이브리드 위에 글로벌 실시간 서비스를 운영한다",
    "deep_dive": [
     {
      "topic": "권위 서버(Authoritative Server)와 틱 루프",
@@ -11735,17 +11813,35 @@
     {
      "topic": "FPS 히트 판정과 지연 보상",
      "body": "### 밀리초가 승부를 가르는 FPS 네트워킹\n\n크로스파이어 같은 FPS의 핵심 난제는 **\"내 화면에서 적을 맞췄는데 서버에서는 빗나감\"** 문제다. 플레이어마다 핑이 다르기 때문이다.\n\n**지연 보상(lag compensation)**\n- 서버는 각 플레이어의 과거 위치를 짧은 시간(수백 ms) 동안 기록(히스토리 버퍼)해 둔다.\n- 발사 명령이 오면 *그 플레이어의 핑만큼 과거 시점의 적 위치*로 되감아 히트를 판정한다(rewind). 그래야 \"내가 본 화면 기준\"으로 맞은 게 인정된다.\n\n**Trade-off**\n- 이 보상이 과하면 \"분명 엄폐했는데 죽었다\"(peeker's advantage)가 생긴다. 보상 윈도우를 너무 넓히면 치터·고핑 유저에게 유리해진다. 그래서 윈도우를 핑 범위로 엄격히 제한한다.\n\n### 글로벌 분산\n크로스파이어는 국가별 퍼블리셔/데이터센터로 트래픽을 나눈다. 중국처럼 인구가 거대한 지역은 별도 인프라로 운영하고, 매칭도 리전 내에서만 돌려 핑을 보장한다. \"FPS는 핑이 곧 실력 보정\"이라 *지리적 근접성*이 아키텍처 1순위다."
+    },
+    {
+     "topic": "게임 영속 상태 저장과 샤딩 전략 (MySQL + Redis 2계층)",
+     "body": "### 왜 2계층인가\n게임의 상태는 성격이 두 가지로 나뉜다. 하나는 **휘발성·고빈도 상태**(현재 위치, HP, 버프, 매치 세션)로 초당 수십~수백 번 갱신되고, 다른 하나는 **영속 상태**(보유 아이템, 재화, 레벨, 우편함)로 영구 보존·정합성이 중요하다. 스마일게이트류 게임 백엔드는 이 둘을 `Redis`(인메모리)와 `MySQL`(영속)로 명확히 분리한다.\n\n- **Redis 계층**: 매치 진행 중인 플레이어의 세션 상태, 매치메이킹 큐, 랭킹용 `ZSET`, 분산락(`SETNX`)을 담당. 권위 서버는 틱마다 메모리에서 상태를 굴리고, 체크포인트 시점에만 Redis/DB로 내려쓴다.\n- **MySQL 계층**: 결제·아이템 지급처럼 잃어버리면 CS·환불 이슈가 되는 데이터. 트랜잭션과 외래키 정합성이 필요하다.\n\n### 샤딩\n단일 MySQL로는 글로벌 동접을 감당할 수 없어 **유저 ID 기반 수평 샤딩**을 쓴다. 일반적으로 `user_id % N` 또는 해시 슬롯으로 샤드를 정하고, 같은 유저의 인벤토리·재화는 같은 샤드에 모아 **크로스 샤드 트랜잭션을 회피**한다. 거래·선물처럼 두 유저가 엮이는 기능은 샤드를 넘으므로, DB 분산 트랜잭션 대신 **애플리케이션 레벨의 2-phase(예약→확정) + 멱등키**로 처리해 한쪽이 실패해도 보상 트랜잭션으로 롤백한다.\n\n### 정합성의 핵심: 멱등성\n결제 콜백·아이템 지급은 네트워크 재시도로 **중복 호출**이 일상이다. 그래서 모든 지급 API는 `idempotency_key`(주문번호 등)를 받아 `UNIQUE` 제약 또는 Redis 락으로 \"이미 처리됨\"을 판별한다. 이게 없으면 한 번 결제로 다이아가 두 번 들어가는 사고가 난다.\n\n| 데이터 | 저장소 | 갱신 빈도 | 정합성 요구 |\n|---|---|---|---|\n| 매치 세션/위치 | Redis | 매우 높음 | 낮음(휘발 허용) |\n| 랭킹 | Redis ZSET | 높음 | 중간 |\n| 재화·아이템 | MySQL(샤딩) | 중간 | 매우 높음(트랜잭션) |\n| 로그·프로필 | MongoDB | 높음(append) | 낮음 |"
+    },
+    {
+     "topic": "이벤트 스트리밍과 실시간 분석 파이프라인 (Kafka → Spark)",
+     "body": "### 게임 로그가 곧 데이터 자산\n게임은 플레이어의 모든 행동(스폰, 사망, 결제, 매치 결과, 아이템 획득)이 **이벤트**다. 이 이벤트 폭주를 직접 DB에 쓰면 OLTP가 죽으므로, 권위 서버·플랫폼 서비스는 행동 로그를 전부 `Kafka`로 흘려보낸다.\n\n### 흐름 end-to-end\n1. **Producer**: 게임서버/결제서비스가 `match.ended`, `payment.completed`, `item.acquired` 같은 토픽으로 이벤트를 발행. 토픽은 보통 `game_id` 또는 `region`으로 파티셔닝해 순서 보장 단위를 좁힌다.\n2. **Buffer**: Kafka가 트래픽 스파이크(점검 후 오픈, 신규 출시)를 흡수하는 **백프레셔 완충기** 역할. 컨슈머가 느려도 프로듀서는 막히지 않는다.\n3. **Consumer 분기**:\n   - **실시간 처리**: `Spark Structured Streaming`(또는 Flink)으로 실시간 지표(동접, 매출, 어뷰징 패턴) 집계.\n   - **검색/운영**: `Elasticsearch`로 적재해 CS·운영팀이 특정 유저 로그를 즉시 조회.\n   - **배치/적재**: `MongoDB`·데이터레이크(S3)로 적재해 BI·ML 학습용 원본 보관.\n\n### 왜 Kafka인가\n- **서비스 디커플링**: 게임서버는 \"누가 이 이벤트를 소비하는지\" 몰라도 된다. 신규 분석 기능을 추가할 때 컨슈머만 붙이면 끝.\n- **재처리(replay)**: 집계 로직 버그가 났을 때 리텐션 기간 내 이벤트를 다시 읽어 재계산 가능.\n- **어뷰징·매크로 탐지**: 행동 스트림을 실시간으로 보면서 비정상 패턴(초당 비현실적 행동, 봇)을 잡아 안티치트와 연동한다.\n\n### 트레이드오프\nKafka는 **정확히 한 번(exactly-once)** 보장이 까다로워, 매출 같은 민감 지표는 멱등 컨슈머 + 중복제거 키로 처리하고, 휘발성 지표(동접 그래프)는 **at-least-once**로 두고 약간의 중복을 감수한다."
+    },
+    {
+     "topic": "하이브리드 클라우드와 오토스케일링 — IDC와 AWS를 함께 쓰는 이유",
+     "body": "### 왜 둘 다 쓰는가\n게임 트래픽은 **베이스라인은 예측 가능하지만 피크는 폭발적**이다. 안정적으로 도는 라이브 게임 서버군은 비용 대비 사내 데이터센터(IDC)가 유리하고, 신규 출시·대형 업데이트·이벤트처럼 단기간 수십 배로 튀는 부하는 클라우드의 탄력성이 필수다. 그래서 **하이브리드 클라우드**를 택한다.\n\n- **IDC(사내 데이터센터)**: 장기 라이브 서비스의 권위 게임서버·DB. 트래픽이 안정적이라 고정 하드웨어가 단위 비용에서 우월하고, 게임서버는 커널·네트워크 튜닝(UDP 처리, NIC offload)을 직접 제어할 수 있다.\n- **AWS**: 신규 리전 진출, 글로벌 엣지(CloudFront), 출시 직후의 폭발적 동접, 분석/ML 워크로드. **EC2 + Auto Scaling Group**으로 분 단위 증설.\n\n### 게임서버 오토스케일링의 특수성\n웹 서버는 무상태라 LB 뒤에서 자유롭게 늘리면 되지만, **게임서버는 상태가 있고 매치 단위로 점유**된다. 진행 중인 매치가 있는 서버는 함부로 죽일 수 없다. 그래서:\n- **세션 어웨어 스케줄링**: 매치메이커가 빈 게임서버 인스턴스를 풀에서 할당(allocation)하고, 매치 종료 후 \"drain\" 상태로 두었다가 신규 할당이 멈춘 빈 서버만 스케일인.\n- **사전 예열(warm pool)**: 게임서버는 콜드 스타트가 길어(맵 로드, 에셋), 빈 인스턴스를 미리 띄워두고 매치가 들어오면 즉시 배정. Kubernetes 환경에선 `Agones` 같은 게임서버 오케스트레이터 패턴을 쓴다.\n- **리전 라우팅**: 매치메이커가 플레이어 RTT를 측정해 가장 가까운 리전의 게임서버에 배정, 지연을 최소화한다.\n\n### 트레이드오프\nIDC는 증설 리드타임이 길어 \"갑자기 터지는\" 흥행에 약하고, AWS는 상시 게임서버를 다 올리면 비싸다. 하이브리드는 두 약점을 상쇄하지만 **네트워크 경계·데이터 동기화·배포 파이프라인을 두 환경에서 동시에 관리**해야 하는 운영 복잡도를 대가로 치른다. 이를 줄이려고 `Kubernetes` + `Terraform`(IaC)로 양쪽 환경의 배포를 가능한 한 동일한 매니페스트로 통일한다."
+    },
+    {
+     "topic": "관측성(Observability) — 게임서버 틱 지연과 매치 품질을 어떻게 보는가",
+     "body": "### 게임 운영의 SLI는 웹과 다르다\n웹 서비스는 보통 p99 레이턴시·에러율을 본다. 게임은 여기에 더해 **틱 안정성**과 **매치 품질**이 핵심 지표다.\n\n- **틱 시간(tick budget)**: 권위 서버가 60틱이면 한 틱 예산은 약 16.6ms. 이 예산을 초과하면 모든 플레이어가 렉을 체감한다. 그래서 틱당 처리시간 히스토그램을 메트릭으로 뽑아, 특정 맵·플레이어 수에서 예산 초과가 나는지 모니터링한다.\n- **RTT/패킷 손실**: 리전별·ISP별 RTT 분포. 특정 리전에서 지연이 튀면 매치메이킹 라우팅을 조정.\n- **매치메이킹 큐 시간**: 매칭 대기시간 vs 매치 밸런스(실력 격차)의 트레이드오프 지표.\n\n### 스택 구성\n- **메트릭**: `Prometheus`로 게임서버·플랫폼 서비스의 메트릭 수집, `Grafana` 대시보드로 시각화. 게임서버는 push gateway 또는 사이드카로 틱·동접·메모리를 노출.\n- **로그**: 행동 로그는 `Kafka` → `Elasticsearch`로 적재해 운영툴에서 유저 단위 추적. 애플리케이션 로그는 별도 파이프라인으로 집계.\n- **트레이싱**: 플랫폼(Spring/Node) 호출은 분산 트레이싱으로 결제→지급 흐름을 추적, 어디서 지연·실패가 났는지 한눈에 본다.\n\n### 왜 중요한가 — 사고 대응\n게임은 **\"점검 후 오픈\" 순간이 가장 위험**하다. 대기하던 유저가 한꺼번에 몰려 로그인·매치메이킹·결제가 동시에 폭주한다. 이때 대시보드에서 병목(로그인 큐? DB 커넥션풀? 게임서버 부족?)을 즉시 식별해야 하고, 서킷브레이커로 결제 등 비핵심 경로를 일시 차단(graceful degradation)하면서 핵심 플레이 경로를 지킨다. 관측성이 빈약하면 \"느린데 어디가 느린지 모르는\" 상태로 장애가 길어진다."
     }
    ],
    "github": {
-    "org": "https://github.com/smilegate"
+    "org": "https://github.com/smilegateengineering",
+    "repos": []
    },
    "sources": [
-    "https://career.smilegate.com",
-    "https://www.smilegate.com"
+    "https://smilegate.ai/",
+    "https://career.smilegate.com/",
+    "https://www.smilegate.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "krafton",
