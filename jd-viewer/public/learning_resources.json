@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-15T19:16:40",
+  "generated_at": "2026-06-15T20:51:27",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -579,88 +579,6 @@
         "stage": "핵심"
       }
     ],
-    "Kubernetes": [
-      {
-        "title": "쿠버네티스(Kubernetes) 기본 개념, 필요성 30분만에 쉽고 빠르게",
-        "url": "https://www.youtube.com/watch?v=2M9eB_DMsVA",
-        "thumbnail": "https://i.ytimg.com/vi/2M9eB_DMsVA/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2516,
-        "length": "30:05",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발자를 위한 쉬운 도커 (2024 NEW) | 컨테이너, 도커, 쿠버네티스의 개념을 엄청 쉽게 알려드려요.",
-        "url": "https://www.youtube.com/watch?v=eRfHp16qJq8",
-        "thumbnail": "https://i.ytimg.com/vi/eRfHp16qJq8/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 68162,
-        "length": "7:28",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Kubernetes 개념 잡기",
-        "url": "https://www.youtube.com/watch?v=7CPFJZZF60E",
-        "thumbnail": "https://i.ytimg.com/vi/7CPFJZZF60E/mqdefault.jpg",
-        "channel": "Tucker Programming",
-        "views": 20631,
-        "length": "46:40",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "쿠버네티스 서비스와 인그레스 쉽게 이해하기!",
-        "url": "https://www.youtube.com/watch?v=US2E8xvw_Hk",
-        "thumbnail": "https://i.ytimg.com/vi/US2E8xvw_Hk/mqdefault.jpg",
-        "channel": "감테크",
-        "views": 973,
-        "length": "7:52",
-        "published": "9개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[Kubernetes 6주 코스] 1주 차 1강: Kubernetes 기본 개념",
-        "url": "https://www.youtube.com/watch?v=vC2qSuTcgjY",
-        "thumbnail": "https://i.ytimg.com/vi/vC2qSuTcgjY/mqdefault.jpg",
-        "channel": "Basphere",
-        "views": 121,
-        "length": "23:34",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "5분만에 Kubernetes 리소스 9개 이해하기",
-        "url": "https://www.youtube.com/watch?v=bM6-AbChWPE",
-        "thumbnail": "https://i.ytimg.com/vi/bM6-AbChWPE/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 20940,
-        "length": "6:05",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 22] K8s 도입하면서 겪은 일들",
-        "url": "https://www.youtube.com/watch?v=JBGsqsoGxEo",
-        "thumbnail": "https://i.ytimg.com/vi/JBGsqsoGxEo/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 11383,
-        "length": "39:21",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따배쿠] 4-1. 쿠버네티스 아키텍처 - Kubernetes 동작원리",
-        "url": "https://www.youtube.com/watch?v=Iue9TC13vPQ",
-        "thumbnail": "https://i.ytimg.com/vi/Iue9TC13vPQ/mqdefault.jpg",
-        "channel": "TTABAE-LEARN",
-        "views": 35303,
-        "length": "20:11",
-        "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
     "Linux": [
       {
         "title": "리눅스 명령어 모음 | 초중급 개발자를 위한 기본 명령어 강좌",
@@ -740,6 +658,88 @@
         "views": 3337,
         "length": "19:19",
         "published": "7개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Kubernetes": [
+      {
+        "title": "쿠버네티스(Kubernetes) 기본 개념, 필요성 30분만에 쉽고 빠르게",
+        "url": "https://www.youtube.com/watch?v=2M9eB_DMsVA",
+        "thumbnail": "https://i.ytimg.com/vi/2M9eB_DMsVA/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2516,
+        "length": "30:05",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발자를 위한 쉬운 도커 (2024 NEW) | 컨테이너, 도커, 쿠버네티스의 개념을 엄청 쉽게 알려드려요.",
+        "url": "https://www.youtube.com/watch?v=eRfHp16qJq8",
+        "thumbnail": "https://i.ytimg.com/vi/eRfHp16qJq8/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 68162,
+        "length": "7:28",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Kubernetes 개념 잡기",
+        "url": "https://www.youtube.com/watch?v=7CPFJZZF60E",
+        "thumbnail": "https://i.ytimg.com/vi/7CPFJZZF60E/mqdefault.jpg",
+        "channel": "Tucker Programming",
+        "views": 20631,
+        "length": "46:40",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "쿠버네티스 서비스와 인그레스 쉽게 이해하기!",
+        "url": "https://www.youtube.com/watch?v=US2E8xvw_Hk",
+        "thumbnail": "https://i.ytimg.com/vi/US2E8xvw_Hk/mqdefault.jpg",
+        "channel": "감테크",
+        "views": 973,
+        "length": "7:52",
+        "published": "9개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[Kubernetes 6주 코스] 1주 차 1강: Kubernetes 기본 개념",
+        "url": "https://www.youtube.com/watch?v=vC2qSuTcgjY",
+        "thumbnail": "https://i.ytimg.com/vi/vC2qSuTcgjY/mqdefault.jpg",
+        "channel": "Basphere",
+        "views": 121,
+        "length": "23:34",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "5분만에 Kubernetes 리소스 9개 이해하기",
+        "url": "https://www.youtube.com/watch?v=bM6-AbChWPE",
+        "thumbnail": "https://i.ytimg.com/vi/bM6-AbChWPE/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 20940,
+        "length": "6:05",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 22] K8s 도입하면서 겪은 일들",
+        "url": "https://www.youtube.com/watch?v=JBGsqsoGxEo",
+        "thumbnail": "https://i.ytimg.com/vi/JBGsqsoGxEo/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 11383,
+        "length": "39:21",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따배쿠] 4-1. 쿠버네티스 아키텍처 - Kubernetes 동작원리",
+        "url": "https://www.youtube.com/watch?v=Iue9TC13vPQ",
+        "thumbnail": "https://i.ytimg.com/vi/Iue9TC13vPQ/mqdefault.jpg",
+        "channel": "TTABAE-LEARN",
+        "views": 35303,
+        "length": "20:11",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -1481,88 +1481,6 @@
         "stage": "실전"
       }
     ],
-    "Next.js": [
-      {
-        "title": "Next.js 13 강의 달린다 (1강~6강)",
-        "url": "https://www.youtube.com/watch?v=PCkiz2GUFg8",
-        "thumbnail": "https://i.ytimg.com/vi/PCkiz2GUFg8/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 132869,
-        "length": "1:00:20",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
-        "url": "https://www.youtube.com/watch?v=jYJ3ygUfPrU",
-        "thumbnail": "https://i.ytimg.com/vi/jYJ3ygUfPrU/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 222278,
-        "length": "5:32",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발자들이 Next.js를 떠나는 이유 (5가지 대안 프레임워크)",
-        "url": "https://www.youtube.com/watch?v=CqQtjS6ZKxo",
-        "thumbnail": "https://i.ytimg.com/vi/CqQtjS6ZKxo/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 41116,
-        "length": "6:24",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 혹시 그냥 쓰고계신가요? 이 강의보면 \"왜\"를 설명할 수 있게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=gqPJ-78RlZE",
-        "thumbnail": "https://i.ytimg.com/vi/gqPJ-78RlZE/mqdefault.jpg",
-        "channel": "가장 쉬운 AI 활용 개발 with Boaz",
-        "views": 13161,
-        "length": "9:30",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 13- 0. Next.js 란 무엇인가? (14 버전 호환됩니다)",
-        "url": "https://www.youtube.com/watch?v=9KOaR6QMb9A",
-        "thumbnail": "https://i.ytimg.com/vi/9KOaR6QMb9A/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 62472,
-        "length": "2:43",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 과연 필수일까요?? 일단 저는 안 쓰고 있습니다",
-        "url": "https://www.youtube.com/watch?v=XfuYV2JxVWk",
-        "thumbnail": "https://i.ytimg.com/vi/XfuYV2JxVWk/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 17665,
-        "length": "15:35",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NextJS 존재 이유부터 실전까지 다 알려드립니다 (개쉽게)  | 프리즈마, 도커는 덤",
-        "url": "https://www.youtube.com/watch?v=u78I5kNULYc",
-        "thumbnail": "https://i.ytimg.com/vi/u78I5kNULYc/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 15933,
-        "length": "31:11",
-        "published": "4개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[신규 강의 오픈] 타입스크립트로 배우는 Next.JS! 기초부터 최신 기술까지 완벽하게",
-        "url": "https://www.youtube.com/watch?v=SWSRsVNBToM",
-        "thumbnail": "https://i.ytimg.com/vi/SWSRsVNBToM/mqdefault.jpg",
-        "channel": "수코딩",
-        "views": 486,
-        "length": "4:57",
-        "published": "3개월 전",
-        "stage": "실전"
-      }
-    ],
     "Redis": [
       {
         "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
@@ -1642,6 +1560,88 @@
         "views": 7998,
         "length": "3:09",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "Next.js": [
+      {
+        "title": "Next.js 13 강의 달린다 (1강~6강)",
+        "url": "https://www.youtube.com/watch?v=PCkiz2GUFg8",
+        "thumbnail": "https://i.ytimg.com/vi/PCkiz2GUFg8/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 132869,
+        "length": "1:00:20",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
+        "url": "https://www.youtube.com/watch?v=jYJ3ygUfPrU",
+        "thumbnail": "https://i.ytimg.com/vi/jYJ3ygUfPrU/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 222278,
+        "length": "5:32",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발자들이 Next.js를 떠나는 이유 (5가지 대안 프레임워크)",
+        "url": "https://www.youtube.com/watch?v=CqQtjS6ZKxo",
+        "thumbnail": "https://i.ytimg.com/vi/CqQtjS6ZKxo/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 41116,
+        "length": "6:24",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 혹시 그냥 쓰고계신가요? 이 강의보면 \"왜\"를 설명할 수 있게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=gqPJ-78RlZE",
+        "thumbnail": "https://i.ytimg.com/vi/gqPJ-78RlZE/mqdefault.jpg",
+        "channel": "가장 쉬운 AI 활용 개발 with Boaz",
+        "views": 13161,
+        "length": "9:30",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 13- 0. Next.js 란 무엇인가? (14 버전 호환됩니다)",
+        "url": "https://www.youtube.com/watch?v=9KOaR6QMb9A",
+        "thumbnail": "https://i.ytimg.com/vi/9KOaR6QMb9A/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 62472,
+        "length": "2:43",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 과연 필수일까요?? 일단 저는 안 쓰고 있습니다",
+        "url": "https://www.youtube.com/watch?v=XfuYV2JxVWk",
+        "thumbnail": "https://i.ytimg.com/vi/XfuYV2JxVWk/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 17665,
+        "length": "15:35",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NextJS 존재 이유부터 실전까지 다 알려드립니다 (개쉽게)  | 프리즈마, 도커는 덤",
+        "url": "https://www.youtube.com/watch?v=u78I5kNULYc",
+        "thumbnail": "https://i.ytimg.com/vi/u78I5kNULYc/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 15933,
+        "length": "31:11",
+        "published": "4개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[신규 강의 오픈] 타입스크립트로 배우는 Next.JS! 기초부터 최신 기술까지 완벽하게",
+        "url": "https://www.youtube.com/watch?v=SWSRsVNBToM",
+        "thumbnail": "https://i.ytimg.com/vi/SWSRsVNBToM/mqdefault.jpg",
+        "channel": "수코딩",
+        "views": 486,
+        "length": "4:57",
+        "published": "3개월 전",
         "stage": "실전"
       }
     ],

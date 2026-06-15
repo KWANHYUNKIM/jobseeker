@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-15T19:20:22",
+ "generated_at": "2026-06-15T20:55:55",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 37,
+ "refined": 39,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1705,7 +1705,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 7
+      "count": 6
      },
      {
       "name": "Go services",
@@ -1713,34 +1713,34 @@
      },
      {
       "name": "GraphQL",
-      "count": 2
+      "count": 3
+     },
+     {
+      "name": "Rust",
+      "count": 3
      },
      {
       "name": "Ruby on Rails",
       "count": 2
      },
      {
-      "name": "Rust",
-      "count": 2
+      "name": "Atlas service framework",
+      "count": 1
+     },
+     {
+      "name": "Dropwizard",
+      "count": 1
      },
      {
       "name": "Go",
       "count": 1
      },
      {
+      "name": "gRPC / Courier RPC",
+      "count": 1
+     },
+     {
       "name": "Hack",
-      "count": 1
-     },
-     {
-      "name": "Java",
-      "count": 1
-     },
-     {
-      "name": "Java services",
-      "count": 1
-     },
-     {
-      "name": "Kotlin",
       "count": 1
      }
     ],
@@ -1762,19 +1762,27 @@
       "count": 1
      },
      {
+      "name": "Bedrock design system",
+      "count": 1
+     },
+     {
       "name": "Catalyst/Web Components",
       "count": 1
      },
      {
+      "name": "Forge UI Kit",
+      "count": 1
+     },
+     {
+      "name": "GraphQL",
+      "count": 1
+     },
+     {
+      "name": "Pyxl/server-rendered legacy",
+      "count": 1
+     },
+     {
       "name": "Vue.js",
-      "count": 1
-     },
-     {
-      "name": "WebAssembly",
-      "count": 1
-     },
-     {
-      "name": "WebGL",
       "count": 1
      }
     ],
@@ -1784,15 +1792,11 @@
       "count": 6
      },
      {
-      "name": "Elasticsearch",
-      "count": 4
-     },
-     {
       "name": "PostgreSQL",
       "count": 4
      },
      {
-      "name": "MySQL",
+      "name": "Elasticsearch",
       "count": 3
      },
      {
@@ -1804,19 +1808,23 @@
       "count": 2
      },
      {
+      "name": "MySQL",
+      "count": 2
+     },
+     {
+      "name": "Amazon S3",
+      "count": 1
+     },
+     {
       "name": "ClickHouse",
       "count": 1
      },
      {
-      "name": "Flannel cache",
+      "name": "Edgestore",
       "count": 1
      },
      {
-      "name": "Magic Pocket",
-      "count": 1
-     },
-     {
-      "name": "Panda",
+      "name": "Elasticsearch/OpenSearch",
       "count": 1
      }
     ],
@@ -1830,15 +1838,23 @@
       "count": 4
      },
      {
+      "name": "Atlas/Watchman CI",
+      "count": 1
+     },
+     {
       "name": "Azure",
       "count": 1
      },
      {
-      "name": "Bazel",
+      "name": "Bazel monorepo",
       "count": 1
      },
      {
       "name": "Bedrock",
+      "count": 1
+     },
+     {
+      "name": "Bitbucket Pipelines",
       "count": 1
      },
      {
@@ -1852,26 +1868,10 @@
      {
       "name": "Envoy",
       "count": 1
-     },
-     {
-      "name": "GCP",
-      "count": 1
-     },
-     {
-      "name": "Hybrid",
-      "count": 1
      }
     ]
    },
    "architecture": [
-    {
-     "name": "Service-oriented",
-     "count": 3
-    },
-    {
-     "name": "Microservices",
-     "count": 2
-    },
     {
      "name": "Modular monolith",
      "count": 2
@@ -1881,11 +1881,19 @@
      "count": 2
     },
     {
+     "name": "Async task framework 기반 이벤트 처리",
+     "count": 1
+    },
+    {
      "name": "Block-based data model",
      "count": 1
     },
     {
      "name": "CDC data lake",
+     "count": 1
+    },
+    {
+     "name": "Cellular architecture",
      "count": 1
     }
    ]
@@ -9774,44 +9782,55 @@
    "domain": "협업툴",
    "languages": [
     "Java",
-    "TypeScript",
     "Kotlin",
+    "TypeScript",
     "Python",
-    "Go"
+    "Go",
+    "Scala"
    ],
    "stack": {
     "backend": [
      "Java",
      "Spring Boot",
      "Kotlin",
-     "gRPC"
+     "Dropwizard",
+     "gRPC",
+     "GraphQL"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Atlassian Design System"
+     "Atlassian Design System (Atlaskit)",
+     "Forge UI Kit",
+     "GraphQL (Apollo)"
     ],
     "data": [
-     "PostgreSQL",
+     "PostgreSQL (Amazon RDS/Aurora)",
      "DynamoDB",
-     "Kafka",
-     "Elasticsearch"
+     "Apache Kafka",
+     "Elasticsearch/OpenSearch",
+     "Redis/ElastiCache",
+     "Amazon S3"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "Micros (PaaS)"
+     "Micros (내부 PaaS)",
+     "SignalFx/Splunk",
+     "LaunchDarkly",
+     "Bitbucket Pipelines"
     ]
    },
    "architecture": [
     "Microservices",
-    "Multi-tenant cloud",
-    "Service-oriented"
+    "Multi-tenant cloud (셀 기반 격리)",
+    "Event-driven / async",
+    "Internal Developer Platform (Micros) 위 SOA"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    WEB[\"Jira Confluence UI<br/>React TS\"]\n    CDN[\"Edge<br/>CDN\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>Edge\"]\n  end\n  subgraph Core[\"Core Services\"]\n    JIRA[\"Jira<br/>Java Spring\"]\n    CONF[\"Confluence<br/>Java\"]\n    BB[\"Bitbucket<br/>Kotlin\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL\"]\n    DDB[\"DynamoDB\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    MICROS[\"PaaS<br/>Micros\"]\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  WEB --> CDN\n  CDN --> GW\n  GW -->|gRPC| JIRA\n  GW -->|gRPC| CONF\n  GW -->|gRPC| BB\n  JIRA --> PG\n  CONF --> DDB\n  BB --> ES\n  JIRA -->|publish| KAFKA\n  CONF --> ES\n  MICROS --- K8S\n  JIRA --- MICROS\n  CONF --- MICROS",
-   "why_language": "Jira·Confluence 등 코어 제품이 오랜 JVM(Java) 자산이라 백엔드 중심이고, 새 서비스는 Kotlin을 쓴다. 프론트엔드는 React/TypeScript 디자인 시스템으로 통일한다.",
-   "why_architecture": "데이터센터 제품을 클라우드 멀티테넌트로 전환하며 자체 PaaS(Micros) 위 마이크로서비스로 재구축했다. AWS 위에서 수많은 테넌트를 격리 수용한다.",
-   "summary": "JVM 코어 제품을 자체 PaaS(Micros) 위 클라우드 마이크로서비스로 재편한 협업 회사.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Atlaskit\"]\n    APP[\"Mobile + Forge Apps<br/>TypeScript + Forge\"]\n  end\n  subgraph Edge\n    CF[\"CDN + WAF<br/>AWS CloudFront\"]\n    EDGE[\"Edge Routing<br/>Tenant Context Resolver\"]\n  end\n  subgraph Gateway\n    GQL[\"GraphQL Gateway<br/>Apollo Federation\"]\n    AUTH[\"AuthN/AuthZ<br/>Identity + OAuth2\"]\n  end\n  subgraph Core\n    JIRA[\"Jira Service<br/>Java + Spring Boot\"]\n    CONF[\"Confluence Service<br/>Java\"]\n    PERM[\"Permissions Service<br/>Kotlin + gRPC\"]\n    MEDIA[\"Media Service<br/>Kotlin\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    STREAM[\"Stream Processors<br/>Kafka Streams\"]\n  end\n  subgraph Data\n    PG[\"Relational<br/>PostgreSQL Aurora\"]\n    DDB[\"Key-Value<br/>DynamoDB\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    S3[\"Object Store<br/>Amazon S3\"]\n    REDIS[\"Cache<br/>Redis ElastiCache\"]\n  end\n  subgraph Platform\n    MICROS[\"Internal PaaS<br/>Micros on AWS ECS/K8s\"]\n    OBS[\"Observability<br/>SignalFx + Splunk\"]\n  end\n  WEB --> CF\n  APP --> CF\n  CF --> EDGE\n  EDGE --> GQL\n  GQL --> AUTH\n  GQL -->|gRPC| JIRA\n  GQL -->|gRPC| CONF\n  JIRA -->|gRPC| PERM\n  JIRA --> MEDIA\n  JIRA --> PG\n  PERM --> DDB\n  JIRA --> REDIS\n  JIRA -->|index| ES\n  MEDIA --> S3\n  JIRA -->|publish| KAFKA\n  KAFKA --> STREAM\n  STREAM --> ES\n  STREAM --> DDB\n  JIRA -.runs on.-> MICROS\n  CONF -.runs on.-> MICROS\n  MICROS --> OBS",
+   "why_language": "Jira·Confluence·Bitbucket 등 핵심 제품이 수십 년간 축적된 대규모 JVM 코드베이스라 Java가 중심이며, 신규 서비스는 더 안전하고 간결한 Kotlin으로 작성한다. 풍부한 협업 UI는 React+TypeScript로, 서드파티 확장(Forge) 플랫폼도 TS 기반이라 프론트·백엔드 타입 일관성을 확보한다. 데이터 파이프라인·자동화 도구에는 Python, 고성능·네트워크 집약 서비스에는 Go를 선택적으로 사용한다.",
+   "why_architecture": "수십만 테넌트에 단일 코드베이스로 SaaS를 제공해야 하므로 테넌트 격리를 내장한 멀티테넌트 마이크로서비스를 택했고, 각 제품팀이 독립 배포할 수 있도록 SOA로 분해했다. 이 모든 서비스가 표준화된 방식으로 운영되도록 Micros라는 내부 개발자 플랫폼(IDP)을 만들어 인프라 프로비저닝·배포·관측을 추상화했고, 제품 간 느슨한 결합은 Kafka 기반 이벤트 아키텍처로 구현한다.",
+   "summary": "Micros 내부 PaaS 위에서 돌아가는 JVM(Java/Kotlin) 멀티테넌트 마이크로서비스 + React/Forge 생태계",
    "deep_dive": [
     {
      "topic": "멀티테넌트 격리 모델",
@@ -9832,6 +9851,22 @@
     {
      "topic": "DynamoDB 사용 패턴과 데이터 모델링",
      "body": "### 왜 DynamoDB인가\n\nAtlassian은 멀티테넌트 클라우드에서 **DynamoDB**를 광범위하게 쓴다. 이유는 명확하다 — 예측 가능한 저지연, 거의 무한한 수평 확장, 운영 부담이 적은 완전관리형, 그리고 멀티테넌트 키 설계와 잘 맞는 파티션 모델이다.\n\n### 데이터 모델링 원칙\n\nDynamoDB는 관계형이 아니라 **접근 패턴 중심**으로 모델링한다. \"이 데이터를 어떻게 조회할 것인가\"를 먼저 정하고 그에 맞춰 키를 설계한다.\n\n- **파티션 키(PK)**: 테넌트 멀티테넌트 환경에서는 보통 테넌트/엔터티 ID를 파티션 키 또는 키의 접두로 넣어, 한 테넌트의 데이터가 자연스럽게 묶이고 테넌트 격리·지역성이 생긴다.\n- **정렬 키(SK)**: 같은 파티션 안에서 항목을 정렬·범위 조회. single-table design으로 여러 엔터티를 한 테이블에 키 패턴으로 표현하기도 한다.\n- **GSI(Global Secondary Index)**: 다른 접근 패턴이 필요하면 보조 인덱스로 대체 키 조회를 제공.\n\n### 핫 파티션 회피\n\nDynamoDB의 함정은 **핫 파티션**이다. 특정 파티션 키에 트래픽이 몰리면 throttling이 생긴다. 대형 테넌트가 한 파티션에 집중되지 않도록 키에 분산 요소를 섞거나, 부하가 큰 데이터는 별도 설계로 분산한다.\n\n### 일관성 선택\n\nDynamoDB는 기본 eventual consistency 읽기와 옵션으로 strong consistency 읽기를 제공한다. Atlassian은 데이터 특성에 따라 — 즉시 정확성이 필요하면 strong, 그렇지 않으면 eventual — 을 선택해 비용·지연·정확성을 조율한다.\n\n### 트레이드오프\n\nDynamoDB는 스케일·운영 편의에서 탁월하지만, 유연한 ad-hoc 쿼리·조인이 약하다. 그래서 복잡한 관계형 질의는 PostgreSQL, 검색은 Elasticsearch로 보내는 polyglot 분담을 한다. 접근 패턴을 미리 확정해야 하므로 데이터 모델 변경이 비싸다는 점이, 빠른 확장성과 맞바꾸는 핵심 트레이드오프다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: 테넌트 컨텍스트가 모든 계층을 관통하는 방식",
+     "body": "### 한 번의 Jira 페이지 로드에 무슨 일이 벌어지나\n\nAtlassian 클라우드에서 사용자가 `your-site.atlassian.net`에 접속하면, 요청은 단순히 한 서비스로 가는 게 아니라 **테넌트 컨텍스트(tenant context)** 를 입히는 여러 단계를 통과한다.\n\n1. **Edge / CDN 계층** — `CloudFront`가 정적 자산(번들된 React 청크, Atlaskit 컴포넌트)을 엣지에서 서빙하고, 동적 요청만 리전 진입점으로 라우팅한다. 이 단계에서 호스트명(`*.atlassian.net`)을 보고 어느 **테넌트/사이트**인지 1차 식별한다.\n2. **Edge Routing & Tenant Resolution** — 가장 중요한 단계. Atlassian은 테넌트를 물리적으로 특정 **샤드(shard)** 와 **AWS 리전**에 묶어둔다(데이터 거주지 요구사항 때문). 엣지 라우터가 `cloudId`(테넌트의 불변 식별자)를 해석해, 이 테넌트의 데이터가 사는 리전·셀로 요청을 보낸다. 잘못된 리전으로 들어오면 올바른 리전으로 리다이렉트된다.\n3. **GraphQL Gateway** — 프론트엔드는 REST를 직접 호출하기보다 **Apollo Federation** 기반 GraphQL 게이트웨이에 단일 쿼리를 던진다. 게이트웨이가 이를 여러 백엔드 서비스(Jira, Permissions, Media, Identity) 호출로 쪼개 fan-out 하고, 결과를 합쳐 하나의 응답으로 돌려준다. 이렇게 하면 클라이언트 왕복 횟수를 줄이고 over-fetching을 막는다.\n4. **AuthN/AuthZ** — 모든 백엔드 호출에는 테넌트·사용자·권한 컨텍스트가 토큰 형태로 전파된다. 권한 판정은 별도의 **Permissions Service**(저지연이 핵심이라 `DynamoDB` 백엔드 + 캐싱)가 담당한다. 'user X가 issue Y를 볼 수 있는가'는 페이지당 수십~수백 번 발생하므로 이 경로의 p99 지연이 전체 체감 성능을 좌우한다.\n5. **Core Service 처리** — Jira 서비스(Java/Spring Boot)가 비즈니스 로직을 수행하며, 관계형 데이터는 테넌트 샤드의 `PostgreSQL`에서, 검색·JQL 쿼리는 `Elasticsearch`에서, 첨부파일은 `Media Service`를 통해 `S3`에서 가져온다.\n6. **응답 조립** — 게이트웨이가 부분 결과를 머지하고, 일부 필드 실패 시 GraphQL의 partial-response 특성을 살려 가능한 데이터만이라도 렌더한다.\n\n### 왜 이렇게 복잡한가\n핵심은 **모든 계층이 `cloudId`를 1급 시민으로 취급**한다는 점이다. 단일 코드베이스가 수십만 테넌트를 서비스하므로, 요청 어디서든 '지금 어느 테넌트인가'가 불명확해지면 곧바로 데이터 유출(cross-tenant leak)로 이어진다. 그래서 테넌트 식별이 비즈니스 로직보다 먼저, 엣지에서부터 강제된다."
+    },
+    {
+     "topic": "Kafka 기반 이벤트 아키텍처와 비동기 처리",
+     "body": "### 제품 간 결합을 끊는 이벤트 백본\n\nJira에서 이슈를 하나 만들면 단순히 DB에 행 하나가 추가되는 게 아니다. 그 사건은 **도메인 이벤트**로 `Kafka`에 발행되고, 수많은 구독자가 비동기로 반응한다.\n\n- **검색 인덱싱** — 이슈 변경 이벤트를 Stream Processor가 소비해 `Elasticsearch` 인덱스를 갱신한다. 쓰기 경로(PostgreSQL 커밋)와 인덱싱 경로를 분리해, 검색 인덱싱이 느려도 이슈 생성 자체는 빠르게 끝난다(쓰기/읽기 모델 분리, CQRS 성향).\n- **알림(Notification)** — 멘션·담당자 변경 등은 별도 알림 서비스가 이벤트를 받아 이메일·인앱·모바일 푸시로 처리한다.\n- **자동화(Automation)** — 'A가 일어나면 B를 한다' 규칙 엔진이 이벤트 스트림을 구독한다.\n- **애널리틱스·감사 로그** — 컴플라이언스용 audit trail과 사용량 분석도 동일 이벤트를 소비한다.\n\n### 왜 동기 호출이 아니라 이벤트인가\n만약 이슈 생성이 검색 인덱싱·알림·자동화·분석을 모두 **동기적으로** 호출하면, 가장 느린 다운스트림이 사용자 응답 시간을 결정하고, 하나가 죽으면 이슈 생성 전체가 실패한다. 이벤트 기반으로 바꾸면:\n\n| 측면 | 효과 |\n|------|------|\n| 지연 | 사용자는 DB 커밋 + 이벤트 발행만 기다림 |\n| 복원력 | 다운스트림 장애가 핵심 쓰기 경로를 막지 않음 |\n| 확장성 | 소비자별로 독립 스케일·재처리(replay) 가능 |\n| 결합도 | 새 기능이 기존 서비스를 수정하지 않고 토픽만 구독 |\n\n### 트레이드오프\n대가는 **최종 일관성(eventual consistency)** 이다. 이슈를 만든 직후 검색에 즉시 안 잡힐 수 있고, 사용자에게는 '방금 만든 항목이 목록에 늦게 보이는' 현상으로 나타난다. 또 멱등성(idempotency)·이벤트 순서·중복 처리(at-least-once 전달) 같은 분산 시스템 난제를 소비자마다 풀어야 한다. Atlassian은 이를 이벤트에 버전·키를 넣고 소비자를 멱등하게 설계하는 방식으로 흡수한다."
+    },
+    {
+     "topic": "배포·CI/CD와 점진적 릴리스: feature flag 중심 문화",
+     "body": "### 수천 개 서비스를 매일 안전하게 내보내는 법\n\nAtlassian은 Micros 위에 올라간 수천 개의 서비스를 **하루에도 수없이** 배포한다. 핵심 도구와 관행은 다음과 같다.\n\n- **빌드/파이프라인** — 자사 제품인 `Bitbucket Pipelines`를 도그푸딩하여 빌드·테스트·배포를 정의한다. 이미지가 빌드되면 Micros가 선언적 디스크립터(service descriptor)를 읽어 AWS 리소스(컨테이너, RDS, DynamoDB 테이블, SQS 등)를 함께 프로비저닝한다.\n- **환경 승격(promotion)** — dev → staging(stg) → prod로 단계적 승격. 각 환경이 동일한 디스크립터로 정의되므로 환경 간 드리프트가 적다.\n- **Feature Flags (`LaunchDarkly`)** — 이게 Atlassian 배포 문화의 심장이다. 코드 배포(deploy)와 기능 노출(release)을 **분리**한다. 새 기능 코드는 플래그 뒤에 숨겨 prod에 미리 배포해두고, 플래그를 통해 내부 직원 → 베타 테넌트 → 1% → 100% 식으로 점진 노출한다.\n- **테넌트 단위 카나리** — 멀티테넌트 특성을 살려, 새 기능을 특정 테넌트 집단(예: 사내 인스턴스, opt-in 얼리어답터)에만 켤 수 있다. 문제가 보이면 재배포 없이 **플래그만 끄면** 즉시 롤백된다(초 단위).\n\n### 왜 deploy ≠ release 인가\n전통적 롤백은 이전 버전 재배포라 수 분이 걸리고, 그 사이 사용자는 장애를 겪는다. 반면 플래그 기반은:\n\n- **롤백이 즉각적** — 코드 되돌림 없이 토글로 끔.\n- **점진 노출로 폭발 반경 축소** — 버그가 있어도 1% 테넌트만 영향.\n- **A/B 실험·운영 킬스위치** — 동일 메커니즘으로 실험과 비상 차단을 모두 수행.\n\n### 트레이드오프\n플래그가 쌓이면 코드에 분기가 늘고 'flag debt'가 생긴다. 어떤 조합이 prod에서 실제로 돌고 있는지 추적이 어려워지고, 테스트 매트릭스가 폭발한다. 그래서 만료된 플래그를 정리하는 규율과, 플래그 상태를 가시화하는 내부 도구가 필수가 된다."
+    },
+    {
+     "topic": "관측성(Observability)과 운영 복원력",
+     "body": "### 멀티테넌트 환경에서 '누가 아픈가'를 찾는 법\n\n수십만 테넌트가 공유 인프라를 쓰는 SaaS에서 가장 어려운 운영 문제는 **'전체는 멀쩡한데 특정 테넌트만 느리다'** 를 잡아내는 것이다. 단순 평균 지표로는 절대 안 보인다.\n\n- **메트릭** — Atlassian은 `SignalFx`(현 Splunk Observability) 계열을 활용해 고카디널리티(high-cardinality) 메트릭을 다룬다. 메트릭에 `cloudId`·`region`·`service`·`shard` 차원을 붙여, p99 지연을 테넌트·샤드 단위로 슬라이스할 수 있다. '샤드 17이 느리다' 같은 진단이 가능해진다.\n- **로깅** — 구조화 로그를 `Splunk`로 집계하며, 모든 로그에 trace id·tenant id를 심어 한 요청의 전 구간을 재구성한다.\n- **분산 트레이싱** — GraphQL 게이트웨이에서 시작된 한 요청이 Jira → Permissions → Media → DB로 퍼지는 경로를 추적해, 어느 hop에서 지연이 생겼는지 본다.\n\n### 복원력 패턴\n- **노이지 네이버(noisy neighbor) 격리** — 한 테넌트의 폭주 트래픽이 같은 샤드의 다른 테넌트를 망치지 않도록 테넌트별 **레이트 리미팅**과 쿼터를 둔다. 셀/샤드 단위 격리 자체가 폭발 반경을 가두는 1차 방어선이다.\n- **서킷 브레이커 & 벌크헤드** — 다운스트림 서비스가 느려지면 호출을 빠르게 실패시키고(fail fast) 스레드 풀을 분리(bulkhead)해, 한 의존성의 지연이 전체 서비스로 전파(cascading failure)되는 걸 막는다.\n- **점진적 성능 저하(graceful degradation)** — GraphQL partial response처럼, 일부 위젯 데이터가 실패해도 페이지 핵심은 렌더되게 한다.\n- **리전 페일오버** — 테넌트가 묶인 리전에 장애가 나면 복제 데이터를 기반으로 다른 가용영역/리전으로 넘긴다. 단, 데이터 거주지 약속 때문에 리전 간 페일오버는 규제 제약 안에서만 가능하다.\n\n### 왜 테넌트 차원 관측이 필수인가\nB2B SaaS에서 '특정 대기업 고객 하나가 느리다'는 곧 계약 리스크다. 전역 평균이 좋아도 그 고객의 SLA를 어기면 의미가 없다. 그래서 Atlassian의 관측성은 처음부터 **테넌트를 쪼갤 수 있는 차원**을 모든 신호에 심는 방향으로 설계됐다."
     }
    ],
    "github": {
@@ -9840,24 +9875,40 @@
      {
       "name": "atlassian/react-beautiful-dnd",
       "url": "https://github.com/atlassian/react-beautiful-dnd",
-      "desc": "React용 아름다운 드래그 앤 드롭 라이브러리",
+      "desc": "Jira 보드의 드래그앤드롭을 위해 만든 접근성 우선 React DnD 라이브러리",
       "lang": "JavaScript",
-      "stars": 33987
+      "stars": 33985
      },
      {
       "name": "atlassian/pragmatic-drag-and-drop",
       "url": "https://github.com/atlassian/pragmatic-drag-and-drop",
-      "desc": "성능 중심의 프레임워크 무관 드래그 앤 드롭 라이브러리",
+      "desc": "react-beautiful-dnd의 후속, 프레임워크 비종속 고성능 드래그앤드롭 코어",
       "lang": "TypeScript",
-      "stars": 12664
+      "stars": 12672
+     },
+     {
+      "name": "atlassian-labs/compiled",
+      "url": "https://github.com/atlassian-labs/compiled",
+      "desc": "빌드 타임 CSS-in-JS 라이브러리로 런타임 비용 최소화",
+      "lang": "TypeScript",
+      "stars": 2047
+     },
+     {
+      "name": "atlassian/escalator",
+      "url": "https://github.com/atlassian/escalator",
+      "desc": "배치 워크로드에 최적화된 Kubernetes 오토스케일러",
+      "lang": "Go",
+      "stars": 685
      }
     ]
    },
    "sources": [
-    "https://www.atlassian.com/engineering"
+    "https://www.atlassian.com/engineering",
+    "https://www.atlassian.com/blog/atlassian-engineering/micros-paas",
+    "https://developer.atlassian.com/platform/forge/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "dropbox",
@@ -9873,35 +9924,45 @@
    ],
    "stack": {
     "backend": [
-     "Python",
+     "Python 3 (asyncio)",
      "Go services",
-     "gRPC"
+     "Rust (Nucleus)",
+     "gRPC / Courier RPC",
+     "Atlas service framework"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Pyxl/server-rendered legacy",
+     "Bedrock design system"
     ],
     "data": [
-     "MySQL (Edgestore)",
-     "Magic Pocket",
+     "Edgestore (MySQL/Vitess-style sharding)",
+     "Magic Pocket (자체 blob storage)",
+     "Panda (filesystem metadata)",
      "Kafka",
-     "Panda"
+     "Redis/Memcached",
+     "Vitess"
     ],
     "infra": [
-     "Hybrid (own DCs + AWS)",
+     "Hybrid (자체 데이터센터 + AWS)",
      "Kubernetes",
-     "Bazel"
+     "Bazel monorepo",
+     "Envoy/Courier service mesh",
+     "Vortex 메트릭",
+     "Atlas/Watchman CI"
     ]
    },
    "architecture": [
-    "Service-oriented",
-    "Custom storage infra",
-    "Microservices"
+    "Service-Oriented Architecture (SOA)",
+    "Custom exabyte 스토리지 인프라",
+    "Sharded metadata + dedup",
+    "Async task framework 기반 이벤트 처리"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    WEB[\"Web<br/>React TS\"]\n    DESK[\"Desktop Client<br/>Rust Sync\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    META[\"Metadata<br/>Python\"]\n    SYNC[\"Sync Engine<br/>Rust\"]\n    SVC[\"Services<br/>Go\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    EDGE[\"Metadata Store<br/>Edgestore MySQL\"]\n    POCKET[\"Block Store<br/>Magic Pocket\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    PANDA[\"Async Jobs<br/>Panda\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    DC[\"Own DCs + AWS\"]\n    BAZEL[\"Build<br/>Bazel\"]\n  end\n  WEB --> GW\n  DESK --> GW\n  GW -->|gRPC| META\n  GW -->|gRPC| SYNC\n  GW -->|gRPC| SVC\n  META --> EDGE\n  SYNC --> POCKET\n  SVC -->|publish| KAFKA\n  KAFKA --> PANDA\n  META --- DC\n  POCKET --- DC\n  DC --- BAZEL",
-   "why_language": "Python으로 제품을 빠르게 키웠고 핵심 서비스·동기화 성능 부분은 Go와 Rust로 재작성했다. 파일 동기화 코어(Nucleus)를 Rust로 옮긴 사례가 유명하다.",
-   "why_architecture": "AWS S3에 의존하던 스토리지를 자체 구축한 Magic Pocket으로 이전(클라우드 탈출)해 비용·성능을 통제한다. 거대 모노리스를 서비스로 분해하며 Bazel로 빌드를 통일했다.",
-   "summary": "S3를 떠나 자체 스토리지 Magic Pocket을 짓고 Rust로 동기화 코어를 재작성.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Desktop/Mobile/Web<br/>Nucleus (Rust) sync\"]\n    EDGE[\"Edge POPs<br/>Envoy + custom proxy\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Courier (gRPC) + Envoy\"]\n    ATLAS[\"Atlas<br/>Python service framework\"]\n  end\n  subgraph Core[\"Core Services\"]\n    META[\"Metadata Service<br/>Python/Go\"]\n    BLOCK[\"Block Server<br/>Go\"]\n    NOTIF[\"Notification/Sync<br/>Go (longpoll)\"]\n    ATF[\"Async Task Framework<br/>Python/Go\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    EDGE_S[\"Edgestore<br/>MySQL + Vitess sharding\"]\n    PANDA[\"Panda<br/>filesystem metadata\"]\n    MP[\"Magic Pocket<br/>exabyte blob store\"]\n    CACHE[\"Cache<br/>Memcached/Redis\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka\"]\n    VORTEX[\"Vortex<br/>metrics pipeline\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes\"]\n    BAZEL[\"Bazel monorepo CI\"]\n  end\n  APP -->|gRPC| EDGE --> GW\n  GW -->|Courier gRPC| ATLAS --> META\n  META --> EDGE_S\n  META --> PANDA\n  META --> CACHE\n  APP -->|block upload| BLOCK -->|dedup chunks| MP\n  META --> NOTIF --> APP\n  META --> ATF --> KAFKA\n  ATF --> EDGE_S\n  Core --> VORTEX\n  K8S -.runs.-> Core\n  BAZEL -.deploys.-> Core",
+   "why_language": "Python은 Dropbox 창업 초기부터 제품 개발 속도를 끌어올린 핵심 언어로 수백만 줄 규모의 모놀리스와 서비스에 여전히 쓰이지만, GIL과 동적 타이핑의 한계 때문에 throughput이 중요한 동기화·블록 서버·인프라 컴포넌트는 Go로 옮겨졌다. 동기화 엔진(Nucleus)처럼 정확성과 메모리 안전성이 절대적인 영역은 C++ 대신 Rust로 재작성했고, 스토리지 핫패스(Magic Pocket)는 Go와 Rust/C++를 혼용한다. 즉 '제품 속도는 Python, 처리량은 Go, 안전성·성능 임계 경로는 Rust'라는 도메인별 분업이 명확하다.",
+   "why_architecture": "수억 명 사용자의 파일을 exabyte 규모로 저장·동기화해야 하므로 범용 클라우드 스토리지에 의존하기보다 Magic Pocket이라는 자체 blob 인프라를 만들어 비용과 내구성을 직접 통제했다. 메타데이터는 Edgestore에서 샤딩된 MySQL로 수평 확장하고, 파일 블록은 content-addressed dedup으로 중복을 제거해 저장량과 대역폭을 동시에 줄인다. 단일 모놀리스의 한계를 넘기 위해 Courier(gRPC) 기반 SOA로 분리하고 비동기 작업은 ATF로 흡수해 사용자 요청 경로의 지연을 최소화한다.",
+   "summary": "Python 제품속도 + Go 처리량 + Rust 안전성으로, 자체 exabyte 스토리지(Magic Pocket)와 샤딩 메타데이터(Edgestore) 위에 SOA를 얹은 대규모 파일 동기화 플랫폼",
    "deep_dive": [
     {
      "topic": "Magic Pocket — 자체 exabyte 스토리지 시스템",
@@ -9922,39 +9983,71 @@
     {
      "topic": "AWS에서 자체 데이터센터로의 마이그레이션(Exodus)",
      "body": "### 배경\n2010년대 초 Dropbox는 사실상 S3 위에서 운영되는 회사였다. 그러나 페타바이트를 넘어 exabyte로 향하면서, 외부 스토리지 비용이 매출 성장보다 빠르게 증가하는 위험이 보였다. 또한 스토리지 성능·내구성을 직접 제어하지 못하면 제품 차별화가 어려웠다. 이에 \"Exodus\"라 불린 대규모 탈클라우드 프로젝트를 단행했다.\n\n### 어떻게 무중단으로 옮겼나\n핵심 난제는 \"수백 페타바이트의 사용자 데이터를 단 한 바이트도 잃지 않고, 서비스 중단 없이\" 옮기는 것이었다.\n- **이중 쓰기(dual write)**: 일정 기간 신규 블록을 자체 DC(Magic Pocket)와 S3 양쪽에 동시 기록해 안전망을 둠\n- **백필(backfill)**: 기존 S3 데이터를 백그라운드로 천천히 Magic Pocket으로 복사하며 무결성 검증(hash 비교)\n- **읽기 전환**: 데이터가 자체 DC에 안전히 존재함이 검증되면 읽기를 점진적으로 자체 DC로 라우팅\n- **검증·정리**: 충분한 기간 양쪽이 일치함을 확인한 뒤 S3 의존을 제거\n\n### 결과와 트레이드오프\n결과적으로 대부분의 미국 사용자 데이터를 자체 DC로 옮겨 인프라 비용을 크게 절감했고, 스토리지 스택을 직접 최적화(SMR, erasure coding)할 자유를 얻었다. 반대급부로 데이터센터 운영·하드웨어 조달·네트워크 백본이라는 \"클라우드가 추상화해주던 복잡성\"을 직접 떠안게 됐다. 흥미로운 점은, 이후 Dropbox가 일부 워크로드(특히 글로벌 엣지·탄력적 컴퓨트)는 다시 AWS를 적극 활용하는 hybrid로 정착했다는 것이다. \"무조건 탈클라우드\"가 아니라 워크로드별로 최적 위치를 고르는 실용주의적 결론이다."
+    },
+    {
+     "topic": "Courier·Atlas — 모놀리스에서 gRPC 기반 SOA로의 전환",
+     "body": "### 배경: 거대 Python 모놀리스의 한계\nDropbox의 초기 서버는 `metaserver`라 불리는 거대한 Python 모놀리스였다. 모든 기능(파일 메타데이터, 공유, 인증, 노티)이 한 코드베이스·한 배포 단위에 묶여 있어 배포가 위험하고, 한 팀의 변경이 다른 팀을 깨뜨리며, 언어가 Python으로 고정돼 throughput이 중요한 기능도 GIL에 갇혔다. 이를 풀기 위해 Dropbox는 **Courier**라는 gRPC 기반 RPC 프레임워크를 만들고, 그 위에 **Atlas**라는 서비스 작성 표준을 얹어 모놀리스를 점진적으로 쪼갰다.\n\n### Courier: gRPC를 사내 표준으로\nCourier는 순수 gRPC가 아니라 Dropbox 운영 환경에 맞춘 gRPC 래퍼다. 핵심 부가 기능은 다음과 같다.\n\n- **인증·보안**: 모든 서비스 간 호출에 TLS와 service identity(상호 인증)를 기본 적용. 누가 누구를 부를 수 있는지 ACL로 통제.\n- **자동 관측성**: 모든 RPC에 대해 latency·에러율·트래픽 메트릭을 Vortex로 자동 방출하고, 분산 트레이싱 컨텍스트를 전파.\n- **신뢰성 기능**: deadline 전파, 재시도, circuit breaking, 부하 차단(load shedding)을 프레임워크 레벨에서 제공해 개별 서비스가 재구현하지 않게 함.\n- **언어 중립성**: `.proto` 정의 하나로 Python·Go·Rust 클라이언트/서버 스텁을 생성 → 팀이 적합한 언어를 고를 자유 확보. 이것이 Go 마이그레이션을 가능케 한 핵심 인프라다.\n\n### Atlas: '서버리스에 가까운' Python 서비스 경험\n모놀리스를 쪼갤 때 문제는 '수백 개의 작은 서비스를 누가 다 운영하느냐'였다. 각 팀이 배포·오토스케일·온콜을 떠안으면 분할의 이득보다 운영 비용이 커진다. Atlas는 이 트레이드오프를 겨냥한 **managed SOA 플랫폼**이다.\n\n- 개발자는 비즈니스 로직(엔드포인트 핸들러)만 작성하고, 라우팅·배포·용량 관리·오토스케일은 플랫폼이 담당.\n- 모놀리스의 코드 경로를 점진적으로 Atlas '컴포넌트'로 추출 → 한 번에 다 바꾸는 빅뱅 없이 strangler-fig 방식으로 이전.\n- 내부적으로는 여전히 Courier/gRPC로 통신하지만, 팀 입장에선 'FaaS처럼 함수만 올리면 되는' 추상화를 제공.\n\n### 트레이드오프\n이 구조의 이점은 명확하다 — 언어 선택의 자유, 독립 배포, 프레임워크가 강제하는 일관된 신뢰성/관측성. 대신 비용도 있다. RPC가 네트워크 경계를 넘으니 한 사용자 요청이 여러 서비스를 fan-out하면서 tail latency가 누적되고, deadline 전파를 정교하게 설계하지 않으면 retry storm이 발생한다. Dropbox가 프레임워크 레벨에서 circuit breaker·load shedding을 기본 내장한 이유가 바로 이 fan-out 폭발을 길들이기 위해서다."
+    },
+    {
+     "topic": "Bazel 모노레포와 대규모 CI — 수천 명이 한 저장소에서",
+     "body": "### 모노레포 + Bazel 선택\nDropbox는 서버 코드 상당 부분을 거대한 모노레포로 운영하며 빌드 시스템으로 **Bazel**(Google Blaze의 오픈소스판)을 채택했다. 이유는 규모다. 수백만 줄, 다언어(Python/Go/Rust/C++/TypeScript), 수천 명의 엔지니어가 같은 트리를 건드리는 환경에서 일관된 빌드와 '변경 영향 범위만 다시 빌드/테스트'하는 능력이 필수였다.\n\n- **Hermetic·재현 가능 빌드**: 입력(소스+툴체인)이 같으면 출력도 같음을 보장 → 머신 간, CI와 로컬 간 결과 일치.\n- **정밀한 의존성 그래프**: `BUILD` 파일이 타깃 단위 의존성을 선언 → 어떤 커밋이 어떤 타깃에 영향을 주는지 그래프로 정확히 계산.\n- **원격 캐시·원격 실행**: 누군가 이미 빌드한 산출물은 캐시에서 즉시 가져오고, 빌드/테스트를 분산 워커 팜으로 흩뿌려 병렬 실행.\n\n### CI: 영향 기반 테스트 선택(Targeted testing)\n모노레포에서 모든 커밋마다 전체 테스트를 돌리는 건 불가능하다(수십만 테스트). Dropbox CI는 Bazel 의존성 그래프를 이용해 **변경된 타깃에 도달하는 테스트만** 선택적으로 실행한다. 과거 자체 CI 시스템 `changes`(공개됨)로 분산 테스트 오케스트레이션을 했고, 이후 Bazel 기반 파이프라인으로 진화했다.\n\n- 커밋 → 영향 받은 타깃 계산 → 해당 타깃 테스트만 분산 실행 → 결과를 merge queue에 반영.\n- flaky 테스트 격리·재시도, 테스트 셰이딩(shard)으로 wall-clock 단축.\n\n### Python 모노레포의 특수성\nPython은 동적 언어라 Bazel과 궁합이 까다롭다. Dropbox는 의존성 명세를 엄격히 하고, 인터프리터/서드파티 패키지를 hermetic하게 핀(pin)해 '내 머신에선 됨' 문제를 줄였다. 또한 한때 자체 Python 구현 **Pyston**(JIT로 CPython 가속)을 개발해 Python 워크로드 성능을 직접 끌어올리려 시도했다 — 거대한 Python 자산을 가진 회사다운 결정이다.\n\n### 트레이드오프\nBazel 모노레포는 일관성·정밀 빌드·코드 공유라는 큰 이득을 주지만, 진입 장벽이 높다. `BUILD` 파일 유지보수 비용, Bazel 자체의 학습 곡선, 원격 캐시/실행 인프라를 직접 운영해야 하는 부담이 따른다. Dropbox 규모(수천 엔지니어)에서는 이 고정비용이 분명히 회수되지만, 작은 조직이 그대로 흉내 내면 손해라는 점이 핵심 교훈이다."
+    },
+    {
+     "topic": "관측성(Observability) — Vortex 메트릭과 분산 트레이싱",
+     "body": "### 왜 자체 메트릭 시스템인가\nexabyte 스토리지와 수억 사용자 트래픽을 다루면 시계열 메트릭의 cardinality·write 부하가 폭발한다. 범용 SaaS 모니터링으로는 비용과 지연을 감당하기 어려워 Dropbox는 **Vortex**라는 자체 메트릭 파이프라인을 구축했다. 목표는 '초고밀도 메트릭을 저지연으로 수집·질의'하는 것.\n\n### Vortex의 구조(개념)\n- **수집 경로**: 모든 서비스가 Courier 프레임워크를 통해 RPC 단위 메트릭(count, latency histogram, error)을 자동 방출. 애플리케이션 코드가 명시적으로 계측하지 않아도 RPC 경계마다 기본 신호가 생긴다.\n- **집계·다운샘플링**: 짧은 보존주기의 고해상도 데이터와 긴 보존주기의 저해상도 롤업을 분리해 저장 비용을 통제(전형적인 시계열 tiering).\n- **질의·알람**: 대시보드와 알람 룰이 이 위에서 동작하며, SLO 위반·에러 버짓 소진을 감지.\n\n### 분산 트레이싱\nSOA로 쪼개진 뒤 한 사용자 요청이 수십 개 서비스를 거치므로, 어디서 latency가 새는지 추적하려면 분산 트레이싱이 필수다. Courier가 trace context(요청 ID, span)를 RPC마다 전파해, 한 요청의 end-to-end span 트리를 재구성할 수 있다. 이를 통해:\n\n- fan-out된 호출 중 어떤 다운스트림이 tail latency를 만드는지 식별.\n- deadline 초과·retry 증폭 같은 패턴을 시각적으로 포착.\n\n### 로깅과 상관\n구조화 로그에 동일한 요청 ID를 박아 메트릭(무엇이 느린가)·트레이스(어디서 느린가)·로그(왜 느린가)를 세 축으로 교차 분석한다. 이 'three pillars' 상관이 온콜의 MTTR을 좌우한다.\n\n### 트레이드오프\n자체 메트릭 스택은 비용·성능을 통제할 수 있는 대신 운영 부담이 크다. cardinality 폭발(특히 사용자 ID·경로 같은 고유 라벨)을 막기 위해 라벨 설계 규율이 강하게 요구되고, 메트릭 시스템 자체의 가용성이 전 서비스 관측성의 single point가 되지 않도록 다중화해야 한다. Dropbox가 Courier 레벨에서 메트릭을 표준화·자동화한 것은, 수천 개 서비스가 제각각 계측하면 일관성과 신뢰성이 무너지기 때문이다."
+    },
+    {
+     "topic": "Async Task Framework(ATF) — 사용자 요청 경로 밖으로 일을 밀어내기",
+     "body": "### 문제: 동기 경로에 무거운 작업을 둘 수 없다\n파일 업로드 한 번에 부수적으로 일어나야 하는 일이 많다 — 썸네일/프리뷰 생성, 전문 검색 인덱싱, 공유 멤버에게 노티 발송, 바이러스/콘텐츠 스캔, 사용량 집계, 외부 연동(웹훅) 등. 이를 사용자 요청 경로에서 동기적으로 처리하면 latency가 치솟고, 한 다운스트림 장애가 업로드 자체를 실패시킨다. 그래서 Dropbox는 이런 일을 **Async Task Framework(ATF)** 로 비동기화한다.\n\n### 동작 원리\n- **태스크 제출**: 코어 서비스(메타데이터 등)가 작업을 동기 처리하지 않고 ATF에 '태스크'로 enqueue. 사용자에게는 즉시 응답을 돌려준다.\n- **내구성 큐**: 태스크는 내구성 있는 저장소(샤딩된 DB/큐, Kafka 연계)에 기록되어 워커 크래시·재시작에도 유실되지 않는다. 이것이 '응답은 빨리, 일은 반드시'를 동시에 만족시키는 핵심.\n- **워커 풀**: 태스크 타입별 워커가 큐를 소비해 실행. 실패하면 지수 백오프로 재시도하고, 일정 횟수 초과 시 dead-letter로 격리.\n- **at-least-once 의미론**: 대부분의 비동기 시스템처럼 같은 태스크가 두 번 실행될 수 있으므로, 핸들러는 멱등(idempotent)하게 설계해야 한다(예: 썸네일은 덮어쓰기, 노티는 dedup 키 사용).\n\n### 스트리밍과의 결합\n무거운 fan-out(검색 인덱싱, 분석)은 **Kafka**로 이벤트를 흘려보내 다운스트림 컨슈머가 독립 속도로 처리하게 한다. ATF가 '신뢰성 있는 단위 작업'을, Kafka가 '대량 이벤트 스트림'을 담당하는 분업 구조다.\n\n### 백프레셔와 격리\n비동기 시스템의 진짜 난제는 폭주다. 대량 업로드 이벤트(예: 한 팀이 수십만 파일을 한꺼번에 동기화)가 들어오면 인덱싱 큐가 폭발할 수 있다. ATF는 태스크 타입별 우선순위·rate limit·격리된 큐로 한 워크로드가 다른 워크로드를 굶기지 않게(noisy neighbor 방지) 한다. 사용자 대면 노티 같은 latency 민감 태스크와 배치 분석 태스크를 분리하는 식이다.\n\n### 트레이드오프\n비동기화의 대가는 **결과적 일관성(eventual consistency)** 이다. 업로드 직후 검색에 안 잡히거나 프리뷰가 잠깐 안 보일 수 있다 — UX상 허용 가능한 지연으로 설계해 동기 경로의 속도·안정성과 맞바꾼 것이다. 또한 at-least-once 때문에 모든 핸들러를 멱등하게 만들어야 하는 설계 규율이 전사적으로 강제된다."
     }
    ],
    "github": {
     "org": "https://github.com/dropbox",
     "repos": [
      {
-      "name": "dropbox/zxcvbn",
-      "url": "https://github.com/dropbox/zxcvbn",
-      "desc": "현실적인 비밀번호 강도 추정 라이브러리",
-      "lang": "CoffeeScript",
-      "stars": 15983
+      "name": "pyston/pyston_v1",
+      "url": "https://github.com/pyston/pyston_v1",
+      "desc": "CPython 호환 고성능 Python 구현(JIT)으로 Python 워크로드 가속을 위한 프로젝트",
+      "lang": "C++",
+      "stars": 4847
+     },
+     {
+      "name": "dropbox/godropbox",
+      "url": "https://github.com/dropbox/godropbox",
+      "desc": "Dropbox 백엔드 Go 서비스에서 쓰는 공통 라이브러리 모음",
+      "lang": "Go",
+      "stars": 4205
      },
      {
       "name": "dropbox/PyHive",
       "url": "https://github.com/dropbox/PyHive",
-      "desc": "Hive와 Presto를 위한 Python 인터페이스",
+      "desc": "Presto/Hive에 접속하는 Python DB-API·SQLAlchemy 인터페이스",
       "lang": "Python",
-      "stars": 1697
+      "stars": 1696
      },
      {
-      "name": "dropbox/dropbox-sdk-python",
-      "url": "https://github.com/dropbox/dropbox-sdk-python",
-      "desc": "드롭박스 API용 공식 Python SDK",
+      "name": "dropbox/dropbox-sdk-js",
+      "url": "https://github.com/dropbox/dropbox-sdk-js",
+      "desc": "공식 JavaScript/TypeScript API SDK",
+      "lang": "JavaScript",
+      "stars": 968
+     },
+     {
+      "name": "dropbox/changes",
+      "url": "https://github.com/dropbox/changes",
+      "desc": "대규모 분산 CI를 위해 만든 빌드/테스트 오케스트레이션 시스템",
       "lang": "Python",
-      "stars": 979
+      "stars": 749
      }
     ]
    },
    "sources": [
-    "https://dropbox.tech"
+    "https://dropbox.tech/infrastructure",
+    "https://dropbox.tech/infrastructure/atlas-our-journey-from-a-python-monolith-to-a-managed-platform",
+    "https://dropbox.tech/infrastructure/courier-dropbox-migration-to-grpc"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-15"
   },
   {
    "key": "figma",

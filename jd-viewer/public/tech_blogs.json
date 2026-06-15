@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-15T19:16:27",
- "total": 707,
+ "generated_at": "2026-06-15T20:51:04",
+ "total": 708,
  "sources": [
   {
    "company": "Etsy",
@@ -63,17 +63,17 @@
    "count": 25
   },
   {
+   "company": "AWS",
+   "country": "US",
+   "count": 23
+  },
+  {
    "company": "네이버 D2",
    "country": "KR",
    "count": 23
   },
   {
    "company": "Cloudflare",
-   "country": "US",
-   "count": 22
-  },
-  {
-   "company": "AWS",
    "country": "US",
    "count": 22
   },
@@ -383,8 +383,8 @@
   "AutoML": "AI/ML",
   "Vercel": "인프라/클라우드",
   "Nginx": "인프라/클라우드",
-  "Bash": "언어",
   "Embedding": "LLM/생성형",
+  "Bash": "언어",
   "CDC": "데이터",
   "UIKit": "모바일",
   "IoT": "펌웨어/임베디드",
@@ -506,6 +506,48 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Weekly Roundup: AWS FinOps Agent in preview, Gemma 4 on Bedrock, Kiro Pro Max, and more (June 15, 2026)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-finops-agent-in-preview-gemma-4-on-bedrock-kiro-pro-max-and-more-june-15-2026",
+   "published": "2026-06-15",
+   "published_ts": 1781523708.0,
+   "summary": "This week, New York City is hosting AWS Summit, bringing together builders, customers, and AWS teams for a full day of announcements, demos, and technical sessions at the Javits Center. I wrote blog posts for some of the Summit launches, so I am excited to see them go live this week. I just won’t be […]",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon EC2",
+    "Announcements",
+    "Graviton",
+    "Kiro",
+    "Launch",
+    "News",
+    "Week in Review"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "Multimodal",
+    "AWS",
+    "Observability",
+    "Prometheus",
+    "Security",
+    "Jira"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "3ec6486dd48ea508"
+  },
   {
    "key": "naver-d2",
    "company": "네이버 D2",
