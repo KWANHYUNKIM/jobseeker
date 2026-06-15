@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-15T09:39:08",
- "total": 705,
+ "generated_at": "2026-06-15T11:14:01",
+ "total": 707,
  "sources": [
   {
    "company": "Etsy",
@@ -18,14 +18,14 @@
    "count": 28
   },
   {
-   "company": "DeNA",
+   "company": "Mercari",
    "country": "JP",
    "count": 27
   },
   {
-   "company": "Mercari",
+   "company": "DeNA",
    "country": "JP",
-   "count": 26
+   "count": 27
   },
   {
    "company": "LINE",
@@ -65,7 +65,7 @@
   {
    "company": "네이버 D2",
    "country": "KR",
-   "count": 22
+   "count": 23
   },
   {
    "company": "Cloudflare",
@@ -430,8 +430,8 @@
   "Benchmark": "연구/논문",
   "Quantization": "LLM/생성형",
   "Vector Search": "LLM/생성형",
-  "HTML": "프론트엔드",
   "iOS": "모바일",
+  "HTML": "프론트엔드",
   "OWASP": "보안",
   "Time Series": "AI/ML",
   "Redis": "데이터베이스",
@@ -506,6 +506,42 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "AI 에이전트를 위한 Playwright E2E 테스트 하네스 구축하기",
+   "url": "https://d2.naver.com/helloworld/6811215",
+   "published": "2026-06-15",
+   "published_ts": 1781520663.0,
+   "summary": "네이버 사내 기술 교류 행사인 NAVER ENGINEERING DAY 2026(5월)에서 발표되었던 세션을 공개합니다.\n\n발표 내용\n\nAI 에이전트가 코드를 짜는 시대, 우리는 그 코드를 어떻게 믿을 수 있을까요? Playwright 기반 E2E 테스트를 구축하고, 에이전트가 직접 테스트 코드를 작성 및 검증하는 워크플로우를 만든 여정을 공유합니다.\n\n발표 대상\n\n특히 이런 분들에게 추천 드립니다.\n\n\"에이전트로 '딸깍'할 수 있는 대규모 코드베이스를 만들고 싶어요\"\n\n\"E2E 테스트, 어디서부터 시작해야 할지 모르겠어요\"\n\n\"테스트 짜본 적 없는데, 에이전트한테 시키고 싶어요\"\n\n\"테스트 깨질 때마다 사람이 고치느라, 오히려 생산성이 줄었어요\"\n\n\"테스트가 실패하면 에이전트가 알아서 고치게 하고 싶어요\"\n\n목차\n\n왜 E2E 테스트가 필요할까요?\n\n테스트 어떻게 작성할까요?\n\n그럼 사람은 무엇을 할까요?\n\n◎ NAVER Engineering Day란?\n\nNAVER에서는 사내 개발 경험과 기술 트렌드를 교류를 할 수 있는 프로그램이 많이 있습니다. 그중 이제는 매회 평균 100개 이상의 발표가 이루어지는 NAVER Engineering Day를 빼놓을 수 없는…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "833c516b4e597503"
+  },
+  {
+   "key": "mercari",
+   "company": "Mercari",
+   "country": "JP",
+   "title": "Build First, Discuss Later: How Prototypes Speed Up Product Decisions",
+   "url": "https://engineering.mercari.com/en/blog/entry/20260615-build-first-discuss-later",
+   "published": "2026-06-15",
+   "published_ts": 1781517616.0,
+   "summary": "I’m Kubomi, an iOS engineer at Merpay, Inc. This article is the 10th entry in Merpay & Mercoin Tech Openness Month 2026. Generative AI has made it easier for engineers to build prototypes quickly. Recently, I tried building a working prototype before the kickoff meeting for a small project. This made decision-making much faster. I […]",
+   "tags": [],
+   "tech_stack": [
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "ab8e24499e1890b4"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",
