@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6019건** 공고 · **1180개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-15 20:51
+- 총 **6025건** 공고 · **1183개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-15 22:25
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (326개사)
+## HR/채용 (327개사)
 ### (주)제이투이 `중소기업` · 20건
 - **백엔드** [5건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -1432,6 +1432,10 @@ markmap:
 - **모바일** [2건] · `Java` `Kotlin` `Android` `Swift` `iOS`
   - [(Vrew/vFlat) 안드로이드 개발자 ↗](https://www.wanted.co.kr/wd/82181)
   - [(Vrew/vFlat) iOS 개발자 ↗](https://www.wanted.co.kr/wd/82178)
+
+### 에스넷아이씨티 `중소기업` · 2건
+- **DevOps/인프라** [1건]
+  - [공공기관 네트워크/보안 운영 엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159764&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=0835b7d5-d061-4144-9938-8f873127cfeb)
 
 ### 비누랩스 `중소기업` · 2건
 - **백엔드** [1건] · `TypeScript` `Node.js` `AWS`
@@ -2889,7 +2893,7 @@ markmap:
   - [(주)프레쉬아워와 함께할 Server Developer를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54134744&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=d336c475-7ad6-4df5-84e9-fbedfb544533)
 
 
-## B2B SaaS/엔터프라이즈 (143개사)
+## B2B SaaS/엔터프라이즈 (144개사)
 ### 26도라인 `중소기업` · 14건
 - **백엔드** [9건] · `JavaScript` `REST API` `Java` `Spring` `PHP` `Node.js`
   - [JAVA 풀스택 개발자 경력 ↗](https://jumpit.saramin.co.kr/position/53739543)
@@ -4324,6 +4328,16 @@ markmap:
 - **프론트엔드** [1건] · `React`
   - [웹자료관리 개발 및  유지운영 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54157852&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=1314bead-e920-4919-8421-228df5d9d406)
 
+### (주)흰곰 `중소기업` · 2건
+- **백엔드** [2건] · `Java` `JavaScript` `Spring` `PostgreSQL` `Oracle` `TypeScript`
+  - [(주식회사 흰곰) 웹 서버 개발자 (5년 이상 ~ 10년 이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54174454&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=065c70db-4864-44ed-aaad-683d6c515e55)
+  - [(주식회사 흰곰) 웹 프론트앤드 개발자 (3년 이상 ~ 10년 이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010468&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
+- **프론트엔드** [1건] · `Java` `JavaScript` `TypeScript` `REST API`
+  - [(주식회사 흰곰) 웹 프론트앤드 개발자 (3년 이상 ~ 10년 이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010468&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
+- **AI/ML** [2건] · `Java` `JavaScript` `Spring` `PostgreSQL` `Oracle` `TypeScript`
+  - [(주식회사 흰곰) 웹 서버 개발자 (5년 이상 ~ 10년 이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54174454&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=065c70db-4864-44ed-aaad-683d6c515e55)
+  - [(주식회사 흰곰) 웹 프론트앤드 개발자 (3년 이상 ~ 10년 이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010468&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
+
 ### 주식회사 엔젠바이오 `중소기업` · 2건
 - **백엔드** [1건] · `Java` `Spring` `Spring Boot` `MySQL` `PostgreSQL` `Docker`
   - [((주)엔젠바이오) 백엔드 개발 인력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53922935&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e52648d4-7b83-4cb1-8630-da7297626efd)
@@ -4444,7 +4458,7 @@ markmap:
   - [로와이드 주식회사에서 AI 솔루션 코어 & 백엔드 리드를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53816175&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=ab6c9366-0761-4503-8f06-2b9528b1e7f5)
 
 
-## 제조/하드웨어/로보틱스 (102개사)
+## 제조/하드웨어/로보틱스 (103개사)
 ### (주)인터엑스 `중소기업` · 21건
 - **백엔드** [11건] · `Python` `Docker` `MongoDB` `Git` `Elasticsearch` `REST API`
   - [풀스택 (Full-stack) 개발자 ↗](https://www.wanted.co.kr/wd/328447)
@@ -5118,6 +5132,11 @@ markmap:
 ### 퀀텀에어로 `중소기업` · 2건
 - **AI/ML** [1건] · `Python` `TensorFlow` `PyTorch` `OpenCV`
   - [Computer Vision 엔지니어 ↗](https://www.wanted.co.kr/wd/345099)
+
+### 오엔제이 `중소기업` · 2건
+- **AI/ML** [2건]
+  - [Industrial AI Solution Director ↗](https://www.wanted.co.kr/wd/360828)
+  - [용접 교육 AI 플랫폼 PO ↗](https://www.wanted.co.kr/wd/348522)
 
 ### 몽구스에이아이 `중소기업` · 2건
 - **AI/ML** [1건] · `Python` `TensorFlow` `PyTorch`
