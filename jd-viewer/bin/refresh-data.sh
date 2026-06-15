@@ -37,3 +37,5 @@ PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
 "$PY" "$SCRIPT_DIR/build_trends.py"
 # 기술 관계·맥락 — 동시출현(스택 레이어) 집계(LLM context/domains 는 보존)
 "$PY" "$SCRIPT_DIR/build_tech_relations.py"
+# 직군별 인사이트 — 직군(수식어)별 산업·경력·학력·우대사항·자격요건 취합(role_insights.json)
+"$PY" "$SCRIPT_DIR/build_role_insights.py"
