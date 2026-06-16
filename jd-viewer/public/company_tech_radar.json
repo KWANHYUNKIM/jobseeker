@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T08:08:23",
+ "generated_at": "2026-06-16T09:43:12",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 53,
+ "refined": 55,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1453,12 +1453,12 @@
      "count": 4
     },
     {
-     "name": "JavaScript",
+     "name": "C++",
      "count": 3
     },
     {
-     "name": "C++",
-     "count": 2
+     "name": "JavaScript",
+     "count": 3
     },
     {
      "name": "Kotlin",
@@ -1530,11 +1530,11 @@
       "count": 2
      },
      {
-      "name": "Fusion.js",
-      "count": 1
+      "name": "Next.js",
+      "count": 2
      },
      {
-      "name": "Next.js",
+      "name": "Fusion.js",
       "count": 1
      },
      {
@@ -1564,6 +1564,10 @@
       "count": 5
      },
      {
+      "name": "Cassandra",
+      "count": 4
+     },
+     {
       "name": "Elasticsearch",
       "count": 4
      },
@@ -1573,10 +1577,6 @@
      },
      {
       "name": "Apache Flink",
-      "count": 3
-     },
-     {
-      "name": "Cassandra",
       "count": 3
      },
      {
@@ -1614,6 +1614,10 @@
       "count": 1
      },
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
       "name": "Buildkite",
       "count": 1
      },
@@ -1631,10 +1635,6 @@
      },
      {
       "name": "Confidant",
-      "count": 1
-     },
-     {
-      "name": "Dojo",
       "count": 1
      }
     ]
@@ -1976,7 +1976,7 @@
       "count": 2
      },
      {
-      "name": "Django",
+      "name": "Django/Python",
       "count": 1
      },
      {
@@ -2018,7 +2018,15 @@
       "count": 1
      },
      {
-      "name": "SDK",
+      "name": "Kotlin",
+      "count": 1
+     },
+     {
+      "name": "Swift",
+      "count": 1
+     },
+     {
+      "name": "멀티플랫폼 SDK",
       "count": 1
      },
      {
@@ -2045,7 +2053,11 @@
      },
      {
       "name": "Cassandra",
-      "count": 3
+      "count": 2
+     },
+     {
+      "name": "Cassandra/ScyllaDB",
+      "count": 1
      },
      {
       "name": "DynamoDB",
@@ -2053,6 +2065,10 @@
      },
      {
       "name": "PostgreSQL",
+      "count": 1
+     },
+     {
+      "name": "S3",
       "count": 1
      },
      {
@@ -2072,6 +2088,14 @@
      {
       "name": "사내 데이터센터",
       "count": 2
+     },
+     {
+      "name": "CloudFront",
+      "count": 1
+     },
+     {
+      "name": "FCM/APNs",
+      "count": 1
      },
      {
       "name": "GCP",
@@ -2097,12 +2121,16 @@
      "count": 3
     },
     {
-     "name": "API-first",
+     "name": "Multi-tenant SaaS",
      "count": 2
     },
     {
-     "name": "Multi-tenant SaaS",
-     "count": 2
+     "name": "API-first",
+     "count": 1
+    },
+    {
+     "name": "API-first + 멀티플랫폼 SDK",
+     "count": 1
     },
     {
      "name": "Desktop+cloud sync",
@@ -2110,10 +2138,6 @@
     },
     {
      "name": "Device farm orchestration",
-     "count": 1
-    },
-    {
-     "name": "Event-driven",
      "count": 1
     }
    ]
@@ -12260,47 +12284,54 @@
    "country": "KR",
    "domain": "메시징 API/SaaS",
    "languages": [
+    "Go",
+    "Python",
     "Java",
     "Kotlin",
-    "Python",
-    "Go",
-    "TypeScript"
+    "TypeScript",
+    "Swift"
    ],
    "stack": {
     "backend": [
-     "Spring Boot",
-     "Django",
-     "Go",
+     "Go (실시간 채팅 서버)",
+     "Django/Python (API·관리 백엔드)",
      "gRPC",
-     "WebSocket"
+     "WebSocket",
+     "Spring Boot"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "SDK(다중 플랫폼)"
+     "멀티플랫폼 SDK(JS/iOS/Android/Flutter/RN/Unity)",
+     "Swift",
+     "Kotlin"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "MySQL(샤딩)",
      "Redis",
-     "Cassandra",
-     "Elasticsearch"
+     "Cassandra/ScyllaDB",
+     "Kafka",
+     "Elasticsearch",
+     "S3"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Terraform"
+     "Kubernetes(EKS)",
+     "Terraform",
+     "FCM/APNs",
+     "CloudFront"
     ]
    },
    "architecture": [
-    "멀티테넌트 SaaS",
-    "실시간 메시징",
-    "API-first"
+    "멀티테넌트 SaaS(application_id 기반 격리)",
+    "WebSocket 실시간 메시징 게이트웨이",
+    "API-first + 멀티플랫폼 SDK",
+    "멀티리전 글로벌 배포"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    SDK[\"채팅 SDK<br/>Android iOS Web Flutter\"]\n    DASH[\"대시보드<br/>React + TypeScript\"]\n  end\n  subgraph Gateway\n    WS[\"WebSocket 게이트웨이<br/>실시간 연결 Go\"]\n    REST[\"REST 플랫폼 API<br/>Django + Python\"]\n  end\n  subgraph Services\n    MSG[\"메시지 서비스<br/>Spring Boot + Java\"]\n    PRES[\"프레즌스 서비스<br/>Go + gRPC\"]\n    PUSH[\"푸시 알림<br/>Kotlin\"]\n  end\n  subgraph Async\n    KAFKA[\"메시지 팬아웃<br/>Kafka\"]\n  end\n  subgraph Data\n    CASS[\"메시지 저장<br/>Cassandra\"]\n    MYSQL[\"메타데이터<br/>MySQL\"]\n    REDIS[\"세션 프레즌스<br/>Redis\"]\n    ES[\"메시지 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"멀티리전 인프라<br/>AWS + Kubernetes + Terraform\"]\n  end\n  SDK --> WS\n  DASH --> REST\n  WS --> MSG\n  WS --> PRES\n  MSG --> KAFKA\n  KAFKA --> PUSH\n  KAFKA --> CASS\n  MSG --> MYSQL\n  PRES --> REDIS\n  CASS --> ES\n  MSG --> K8S",
-   "why_language": "채팅 API SaaS의 대규모 실시간 메시징을 위해 Java/Go 기반 백엔드를 쓰고, 멀티 플랫폼 SDK를 다양한 언어로 제공한다.",
-   "why_architecture": "수많은 고객사를 수용하는 멀티테넌트 SaaS로, WebSocket 기반 실시간 메시징과 API-first 설계로 글로벌 규모의 채팅 인프라를 제공한다.",
-   "summary": "글로벌 채팅 API를 제공하는 멀티테넌트 실시간 메시징 SaaS.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / SDK Layer\"]\n    SDK[\"Platform SDKs<br/>JS/Swift/Kotlin/Flutter/RN\"]\n    WEB[\"Dashboard<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    CF[\"CDN/Edge<br/>CloudFront\"]\n    LB[\"Load Balancer<br/>AWS ALB/NLB\"]\n    WS[\"WebSocket Gateway<br/>Go\"]\n    API[\"Platform API<br/>Django + Go\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CHAT[\"Chat/Message Service<br/>Go + gRPC\"]\n    PRES[\"Presence Service<br/>Go + Redis\"]\n    PUSH[\"Push Pipeline<br/>FCM + APNs\"]\n    MOD[\"Moderation/Filter<br/>Go\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    WORK[\"Workers<br/>Go/Python\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Metadata + Channels<br/>MySQL sharded\"]\n    CASS[\"Message Store<br/>Cassandra/ScyllaDB\"]\n    REDIS[\"Cache/Presence<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    S3[\"File/Media<br/>S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes EKS\"]\n    TF[\"IaC<br/>Terraform\"]\n  end\n  SDK -->|WSS| WS\n  SDK -->|HTTPS| API\n  WEB --> CF --> API\n  WS -->|gRPC| CHAT\n  API --> CHAT\n  CHAT --> PRES\n  CHAT --> MOD\n  CHAT -->|fanout| KAFKA\n  KAFKA --> WORK\n  WORK --> PUSH\n  CHAT --> CASS\n  CHAT --> MYSQL\n  PRES --> REDIS\n  CHAT --> ES\n  CHAT --> S3\n  K8S -.-> WS\n  K8S -.-> CHAT\n  TF -.-> K8S",
+   "why_language": "수백만 동시 WebSocket 연결과 낮은 지연의 메시지 팬아웃이 핵심이라, 고루틴 기반 경량 동시성과 낮은 메모리 풋프린트를 가진 Go를 실시간 채팅 서버의 핫패스에 사용한다. 초기 제품·관리 API는 Django/Python으로 빠르게 구축됐고, 클라이언트는 각 플랫폼 네이티브 언어(Swift/Kotlin/TS)로 SDK를 제공해야 하므로 멀티 언어 구성이 자연스럽다.",
+   "why_architecture": "전 세계 앱에 채팅을 '기능으로 끼워 넣는' B2B2C SaaS이므로 application_id 단위의 멀티테넌트 격리와 API-first 설계가 필수다. 사용자 경험상 실시간성이 생명이라 HTTP 폴링 대신 WebSocket 게이트웨이를 두고, 글로벌 사용자의 지연을 줄이기 위해 AWS 멀티리전에 배포하며 Kubernetes로 연결 폭증에 맞춰 게이트웨이를 수평 확장한다.",
+   "summary": "Go 기반 WebSocket 게이트웨이로 수백만 동시 연결을 처리하는 멀티테넌트 메시징 SaaS",
    "deep_dive": [
     {
      "topic": "멀티테넌트 채팅 SaaS 아키텍처",
@@ -12317,6 +12348,18 @@
     {
      "topic": "멀티리전과 글로벌 저지연",
      "body": "### 전 세계 어디서나 빠른 채팅\n\n센드버드 고객은 전 세계에 있다. 미국 유저와 한국 유저가 같은 채널에서 대화할 수 있어야 하고, 각자에게 *지연이 낮아야* 한다. 그래서 **멀티리전** 인프라가 필수다.\n\n**리전 전략**\n- 고객사(테넌트)를 *주요 사용자에 가까운 리전*에 배치한다. 데이터 레지던시(GDPR 등) 요구가 있으면 특정 리전에 고정한다.\n- 유저는 **가장 가까운 게이트웨이**(엣지/리전)로 연결해 WebSocket 왕복 지연을 줄인다.\n\n**리전 간 동기화**\n- 한 채널의 참여자가 여러 리전에 흩어져 있으면, 메시지를 리전 간에 복제·전파해야 한다. 이때 **순서·일관성**과 *리전 간 지연*이 트레이드오프다. 보통 채널의 \"홈 리전\"을 정하고 그 기준으로 순서를 확정한다.\n\n### 운영 인프라\n- AWS 멀티리전 + Kubernetes로 각 리전에 동일 스택을 배포하고 Terraform으로 일관 관리한다.\n- 한 리전 장애 시 트래픽을 다른 리전으로 넘기는 failover를 준비하되, *stateful 연결* 특성상 완전 무중단은 어려워 클라이언트 자동 재연결로 체감 영향을 줄인다.\n\n### WHY\n\"채팅은 1초만 늦어도 어색하다.\" 글로벌 SaaS에서 지연은 곧 품질이라, 연결 지점을 사용자 가까이 두는 게 가장 큰 아키텍처 동인이다."
+    },
+    {
+     "topic": "메시지 저장·일관성·샤딩 전략",
+     "body": "### 두 종류의 데이터, 두 종류의 저장소\nSendbird의 데이터는 성격이 완전히 다른 두 부류로 나뉘고, 저장 전략도 그에 맞춰 분리된다.\n\n- **메타데이터(채널, 멤버십, 유저, 애플리케이션 설정)**: 조회·갱신 패턴이 트랜잭셔널하고 관계형 질의가 필요하므로 `MySQL`에 둔다. 멀티테넌트라 테넌트 수와 채널 수가 폭증하기 때문에 단일 인스턴스로는 감당이 안 되고, `application_id`/채널 키 기반의 **수평 샤딩**으로 쓰기·저장을 분산한다.\n- **메시지 본문(append-only 시계열)**: 채널마다 끝없이 쌓이고, '특정 채널의 최근 N개' 또는 '타임스탬프 범위' 조회가 지배적이다. 이런 워크로드는 RDB의 B-tree보다 `Cassandra`/`ScyllaDB` 계열 wide-column 스토어가 압도적으로 유리하다.\n\n### 메시지 테이블 모델링\n메시지는 보통 **partition key = channel_url(또는 channel_id), clustering key = message_ts(역순)** 형태로 모델링한다. 그러면 한 채널의 메시지가 물리적으로 같은 파티션에 시간 정렬되어 저장되고, '최근 메시지 50개 로드'나 '이 시점 이전 페이징'이 단일 파티션 순차 읽기로 끝난다. 핫 채널(수십만 명이 보는 라이브 채널)이 한 파티션에 몰리는 문제는 시간 버킷팅(`channel_url + time_bucket`)으로 파티션을 쪼개 완화한다.\n\n### 일관성 트레이드오프\n채팅은 '내가 보낸 메시지는 즉시 보여야' 하지만 글로벌 강한 일관성은 비용이 크다. 그래서 전송 경로에서는 **클라이언트 측 낙관적 렌더링 + 서버 ack**를 쓴다. 즉 SDK가 메시지를 화면에 먼저 그리고, 서버가 영속화·시퀀스 부여 후 ack를 돌려주면 임시 메시지를 확정 메시지로 교체한다. 저장소 자체는 가용성/지연을 우선해 튜닝된 quorum 수준 일관성을 쓰고, **message_id에 단조 증가 시퀀스**를 부여해 클라이언트가 빠진 메시지를 감지하고 gap-fill(누락 구간 재조회)할 수 있게 한다."
+    },
+    {
+     "topic": "Presence·세션·캐싱 계층(Redis)",
+     "body": "### 왜 Redis가 핫패스의 중심인가\n실시간 채팅에서 가장 빈번한 연산은 메시지 저장이 아니라 **'누가 지금 온라인인가', '이 유저는 어느 게이트웨이에 붙어 있나', '안 읽은 수가 몇 개인가'** 같은 휘발성·고빈도 상태 조회다. 이걸 MySQL/Cassandra에 매번 치면 DB가 즉시 죽는다. 그래서 `Redis`가 다음을 담당한다.\n\n- **Presence(접속 상태)**: 유저가 WebSocket으로 붙으면 게이트웨이가 `presence:{user_id}` 키를 짧은 TTL과 함께 세팅하고, 연결이 살아있는 동안 갱신(heartbeat)한다. 연결이 끊기면 TTL 만료로 자동 오프라인 처리되어, 비정상 종료에도 stale presence가 남지 않는다.\n- **연결 라우팅 테이블**: 멀티테넌트에서 수백만 연결이 여러 게이트웨이 노드에 분산되므로, '이 유저에게 메시지를 푸시하려면 어느 노드로 보내야 하나'를 Redis(또는 내부 라우팅 레이어)로 해결한다. 팬아웃 시 채널 멤버 → 연결된 노드 매핑을 빠르게 조회한다.\n- **Unread count / read receipt 캐시**: 채널별·유저별 마지막 읽은 message_ts를 캐시해두고, 안 읽은 수를 O(1)에 가깝게 계산한다. 영속 저장은 비동기로 뒤따른다.\n- **Rate limiting / 멱등성 키**: 테넌트·유저 단위 API 레이트리밋, 메시지 중복 전송 방지(client request id 기반 dedup)를 Redis 카운터/SETNX로 구현.\n\n### 캐시 무효화\n채널 멤버십이나 설정처럼 MySQL이 source of truth인 데이터는 Redis에 read-through 캐싱하되, 변경 이벤트를 `Kafka`로 흘려 캐시를 무효화하거나 버전 토큰을 올려 stale read를 막는다. presence처럼 본질적으로 휘발성인 값은 TTL에 자가 치유를 맡기는 식으로, 데이터 성격에 따라 무효화 전략을 다르게 가져간다."
+    },
+    {
+     "topic": "푸시 알림 파이프라인과 비동기 이벤트 처리",
+     "body": "### 온라인이면 WebSocket, 오프라인이면 Push\n메시지가 도착했을 때 수신자가 **연결돼 있으면 WebSocket으로 즉시 전달**하지만, 백그라운드/오프라인이면 모바일 푸시로 전환해야 한다. 이 분기와 전달은 동기 경로에서 떼어내 비동기로 처리한다. 동기 전송 경로에 외부 의존성(FCM/APNs)을 넣으면 지연·실패가 채팅 전체를 막기 때문이다.\n\n### 흐름\n1. Chat Service가 메시지를 영속화하고 채널 멤버에게 팬아웃한 뒤, **'이 메시지에 대한 알림 후보'** 이벤트를 `Kafka`에 발행한다.\n2. Push Worker(Go/Python)가 컨슈머로 받아, 각 수신자에 대해 (a) 현재 presence가 오프라인인지, (b) 채널/유저별 푸시 설정·DnD(방해금지)·미독 여부, (c) 멘션 정책을 평가한다.\n3. 통과한 대상만 `FCM`(Android), `APNs`(iOS), Web Push로 라우팅한다. 토큰 만료·invalid 응답은 토큰 테이블에서 정리(reaping)한다.\n\n### Kafka를 쓰는 이유와 트레이드오프\n- **버퍼링**: 대형 그룹/오픈채널에서 한 메시지가 수만 건의 푸시로 증폭(amplification)되므로, Kafka가 스파이크를 흡수하고 워커가 자기 속도로 소비한다.\n- **재시도·격리**: APNs 일시 장애 시 파티션 단위로 재시도하고, 푸시 실패가 메시지 저장/전달을 절대 막지 않는다.\n- **순서 보장의 한계**: Kafka 파티션 내 순서만 보장되므로, 같은 (채널, 유저) 키로 파티셔닝해 한 대화 내 알림 순서를 맞춘다. 대신 서로 다른 채널 간 전역 순서는 포기한다 — 채팅 도메인에선 채널 내 순서만 의미 있기 때문에 합리적 트레이드오프다.\n\n### 추가 비동기 작업\n웹훅 전달, 메시지 모더레이션(욕설/스팸 필터), 통계 집계, Elasticsearch 인덱싱(메시지·채널 검색)도 같은 이벤트 스트림을 소비하는 별도 컨슈머 그룹으로 붙어, 코어 전송 경로를 가볍게 유지한다."
     }
    ],
    "github": {
@@ -12325,32 +12368,47 @@
      {
       "name": "sendbird/sendbird-uikit-react",
       "url": "https://github.com/sendbird/sendbird-uikit-react",
-      "desc": "웹 채팅 UIKit 리액트 컴포넌트",
+      "desc": "React용 채팅 UI 컴포넌트 키트",
       "lang": "TypeScript",
       "stars": 235
      },
      {
-      "name": "sendbird/sendbird-chat-sample-ios",
-      "url": "https://github.com/sendbird/sendbird-chat-sample-ios",
-      "desc": "iOS 채팅 SDK 샘플 앱",
-      "lang": "Swift",
-      "stars": 39
+      "name": "sendbird/sendbird-uikit-react-native",
+      "url": "https://github.com/sendbird/sendbird-uikit-react-native",
+      "desc": "React Native용 채팅 UIKit",
+      "lang": "TypeScript",
+      "stars": 94
      },
      {
-      "name": "sendbird/sendbird-chat-sample-android",
-      "url": "https://github.com/sendbird/sendbird-chat-sample-android",
-      "desc": "안드로이드 채팅 SDK 샘플 앱",
-      "lang": "Kotlin",
-      "stars": 22
+      "name": "sendbird/sendbird-chat-sdk-javascript",
+      "url": "https://github.com/sendbird/sendbird-chat-sdk-javascript",
+      "desc": "웹/Node용 JavaScript·TypeScript 채팅 SDK",
+      "lang": "JavaScript",
+      "stars": 31
+     },
+     {
+      "name": "sendbird/sendbird-chat-sdk-ios",
+      "url": "https://github.com/sendbird/sendbird-chat-sdk-ios",
+      "desc": "iOS(Swift) 채팅 SDK",
+      "lang": "Ruby",
+      "stars": 25
+     },
+     {
+      "name": "sendbird/sendbird-chat-sdk-android",
+      "url": "https://github.com/sendbird/sendbird-chat-sdk-android",
+      "desc": "Android(Kotlin/Java) 채팅 SDK",
+      "lang": "Shell",
+      "stars": 10
      }
     ]
    },
    "sources": [
-    "https://sendbird.com/blog",
-    "https://sendbird.com/developer"
+    "https://sendbird.com/developer/tutorials",
+    "https://github.com/sendbird",
+    "https://sendbird.com/blog/engineering"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "kakaomobility",
@@ -12362,42 +12420,53 @@
     "Kotlin",
     "Go",
     "Python",
-    "TypeScript"
+    "TypeScript",
+    "C++"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud",
+     "Spring Cloud Gateway",
+     "Kotlin Coroutines",
      "Go",
-     "gRPC"
+     "gRPC",
+     "Netty"
     ],
     "frontend": [
      "React",
      "Vue.js",
-     "TypeScript"
+     "TypeScript",
+     "Next.js"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "Redis",
      "Elasticsearch",
-     "Druid"
+     "Druid",
+     "Hadoop/Spark",
+     "Cassandra",
+     "S3"
     ],
     "infra": [
      "Kubernetes",
      "AWS",
-     "사내 클라우드"
+     "사내 PaaS(DKOS/카카오 클라우드)",
+     "ArgoCD",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
-    "MSA",
-    "실시간 위치/배차",
-    "지도/경로 엔진"
+    "MSA + 도메인 분리",
+    "실시간 위치/배차 스트리밍",
+    "지도/경로 엔진 (CPU-bound 전용 서비스)",
+    "이벤트 기반 비동기(Kafka)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"카카오T 앱<br/>Android iOS\"]\n    WEB[\"관제 웹<br/>React + Vue.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    DISP[\"실시간 배차 서비스<br/>Go + gRPC\"]\n    LOC[\"위치 추적 서비스<br/>Go\"]\n    ROUTE[\"경로 엔진<br/>Spring Boot + Kotlin\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"위치 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    REDIS[\"실시간 위치 캐시<br/>Redis\"]\n    MYSQL[\"주문 DB<br/>MySQL\"]\n    DRUID[\"실시간 집계<br/>Druid\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>Kubernetes + AWS + 사내 클라우드\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> DISP\n  GW --> ROUTE\n  GW --> PAY\n  APP -->|위치 전송| LOC\n  LOC --> KAFKA\n  KAFKA --> DISP\n  DISP --> REDIS\n  KAFKA --> DRUID\n  ROUTE --> ES\n  PAY --> MYSQL\n  DISP --> K8S",
-   "why_language": "택시 호출·배차의 실시간성과 대규모 위치 처리를 위해 Java/Kotlin을 핵심으로 쓰고, 고성능 위치·경로 처리에는 Go를 활용하며 데이터는 Python으로 분석한다.",
-   "why_architecture": "실시간 배차·내비게이션·결제 도메인을 MSA로 분리하고, 위치 스트림을 Kafka로 처리하며 경로 탐색 엔진을 자체 운영한다.",
-   "summary": "실시간 배차·경로 엔진을 떠받치는 Java/Kotlin·Go 모빌리티 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Driver/Rider App<br/>Android Kotlin + iOS Swift\"]\n    WEB[\"Web / Partner Console<br/>React + Vue + TS\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Netty\"]\n    WS[\"Realtime Location Ingest<br/>WebSocket / gRPC stream\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    DISPATCH[\"Dispatch / Matching<br/>Kotlin + Go\"]\n    ROUTE[\"Route Engine<br/>C++ / Go\"]\n    ETA[\"ETA Prediction<br/>Python ML + Go serving\"]\n    PAY[\"Payment / Settlement<br/>Spring Boot\"]\n    USER[\"User / Driver Domain<br/>Spring Boot\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    GEO[\"Geo Index Cache<br/>Redis Geo + H3\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Transactional DB<br/>MySQL\"]\n    DRUID[\"Realtime OLAP<br/>Druid\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    LAKE[\"Data Lake<br/>S3 + Spark + Hadoop\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>사내 PaaS + AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP -->|gRPC stream| WS\n  WEB --> GW\n  WS -->|location events| KAFKA\n  GW --> DISPATCH\n  GW --> ROUTE\n  GW --> PAY\n  GW --> USER\n  KAFKA --> GEO\n  KAFKA --> DRUID\n  DISPATCH -->|nearby query| GEO\n  DISPATCH -->|path/ETA| ROUTE\n  ROUTE --> ETA\n  DISPATCH --> MYSQL\n  PAY --> MYSQL\n  USER --> ES\n  KAFKA --> LAKE\n  ETA -.train.-> LAKE\n  Core --> K8S\n  Stream --> K8S\n  K8S --> OBS",
+   "why_language": "택시 호출·배차처럼 트랜잭션 정합성과 풍부한 도메인 로직이 필요한 영역은 JVM 생태계(Java/Kotlin + Spring)로 안정적으로 다루고, 위치 수집·매칭처럼 동시성과 낮은 레이턴시가 핵심인 핫패스는 Go를 쓴다. 경로 탐색 엔진은 그래프 연산이 CPU 바운드라 C++/Go로 최적화하고, ETA·수요예측 같은 ML 영역은 Python으로 학습 파이프라인을 구성한다.",
+   "why_architecture": "택시·대리·바이크·내비 등 서로 다른 비즈니스 도메인이 한 플랫폼에 공존해 도메인별 독립 배포·확장이 필수라 MSA를 택했다. 수만 대 차량의 실시간 위치가 초당 대량으로 유입되므로 동기 호출 대신 Kafka 기반 이벤트 스트리밍으로 백프레셔를 흡수하고, 배차 매칭과 경로 엔진을 별도 서비스로 떼어 트래픽 급증 구간만 독립적으로 오토스케일한다.",
+   "summary": "JVM으로 트랜잭션 도메인을, Go/C++로 실시간 위치·경로 핫패스를, Kafka로 대량 위치 이벤트를 흡수하는 모빌리티 특화 MSA",
    "deep_dive": [
     {
      "topic": "실시간 위치 수집 파이프라인",
@@ -12414,17 +12483,64 @@
     {
      "topic": "MSA와 도메인 분리",
      "body": "### 모빌리티 도메인의 MSA 구성\n\n카카오모빌리티는 택시·대리·바이크·주차·내비·결제 등 *여러 서비스*가 한 플랫폼에 있다. 이들을 **MSA**로 분리해 독립적으로 개발·배포·확장한다.\n\n**구성**\n- 도메인별 서비스(호출/배차, 위치, 경로, 결제, 정산, 회원)를 나누고, 동기 통신은 REST/**gRPC**, 비동기 연동은 **Kafka** 이벤트로.\n- Spring Cloud 계열로 서비스 디스커버리·게이트웨이·설정 관리를 구성하고, Kubernetes 위에서 운영한다.\n\n**왜 분리하나**\n- 배차(실시간·저지연)와 정산(정확성·배치성)은 *부하 특성과 요구사항이 완전히 다르다*. 한 덩어리에 두면 한쪽 최적화가 다른 쪽을 해친다. 분리하면 배차는 인스턴스를 공격적으로 늘리고, 정산은 정합성에 집중할 수 있다.\n- 결제·정산은 돈이 걸려 *강한 정합성*과 감사 로그가 필요하다. 이벤트 기반으로 호출/운행 완료 이벤트를 받아 요금을 계산하고, 멱등 처리로 중복 정산을 막는다.\n\n### 복원력\n실시간 위치·배차는 잠깐 끊겨도 큰 사고지만, 내비 부가기능은 degrade 가능하다. 서킷 브레이커·타임아웃으로 외부(지도 타일, 결제 PG) 장애를 격리해 *핵심 호출 경로*를 보호한다."
+    },
+    {
+     "topic": "위치 인덱싱과 근접 검색: H3 + Redis Geo 기반 후보군 추출",
+     "body": "### 왜 '근접 검색'이 배차의 첫 관문인가\n\n배차의 출발점은 \"이 호출 지점 반경 N km 안에 배차 가능한 기사가 누구인가\"를 **수십 ms 안에** 찾는 것이다. 전국 수만 대 차량 위치가 매초 갱신되는 상황에서 매번 DB를 `WHERE lat BETWEEN ... AND lng BETWEEN ...`로 풀스캔하면 인덱스가 있어도 레이턴시와 부하를 감당할 수 없다. 그래서 위치 데이터는 트랜잭션 DB가 아니라 **인메모리 공간 인덱스**에서 처리한다.\n\n### 공간 분할: 격자(grid) 시스템\n\n지구 표면을 계층적 격자로 잘라 각 차량을 셀 ID로 매핑하는 방식이 표준이다. Uber가 공개한 `H3`(육각형 계층 격자)가 대표적인데, 카카오모빌리티 도메인에서도 동일한 문제 구조를 갖는다.\n\n- 위경도 `(37.501, 127.039)` → 특정 resolution의 셀 ID로 해시\n- 호출이 들어오면 호출 지점 셀과 **인접 ring(k-ring)** 셀들만 조회 → O(반경) 후보군\n- 육각형은 사각형 격자와 달리 이웃 6개의 중심거리가 균일해 \"반경 검색\" 왜곡이 적다\n\n```\n호출지점 → H3 cell(res=9) → k-ring(2) → 후보 셀 19개\n각 셀의 활성 기사 set 합집합 → 후보 기사 200명\n```\n\n### 저장 계층: Redis Geo / Sorted Set\n\n셀별 기사 목록은 Redis에 보관한다. 두 가지 패턴이 흔히 병행된다.\n\n| 방식 | 자료구조 | 용도 |\n|------|----------|------|\n| Redis `GEOADD`/`GEOSEARCH` | geohash 기반 ZSET | 반경 직접 질의 |\n| 셀 ID 키 + member set | `cell:{id}` → set | 격자 합집합 질의 |\n\nRedis Geo는 내부적으로 geohash를 score로 갖는 sorted set이라 `GEOSEARCH ... BYRADIUS`가 O(log N + M)으로 동작한다. TTL을 짧게(수~수십 초) 걸어 **위치 보고가 끊긴 기사는 자동으로 후보에서 탈락**시킨다 — 죽은 세션을 따로 청소할 필요가 없다.\n\n### 트레이드오프\n\n- **정확도 vs 비용**: resolution을 높이면 셀이 작아져 후보가 정밀해지지만 k-ring 셀 수가 늘어 Redis 조회가 많아진다. 보통 호출 밀집 도심은 작은 resolution, 외곽은 큰 resolution으로 적응적 운용.\n- **경계 문제**: 셀 경계에 걸친 기사를 놓치지 않으려고 항상 인접 ring까지 포함해 약간 과하게 긁은 뒤, 다음 단계(정밀 거리/ETA 계산)에서 거른다.\n- 이 단계는 **재현율(recall) 우선** — \"가까운 기사를 빠뜨리지 않는 것\"이 목표이고, 정밀 정렬은 뒤에서 한다."
+    },
+    {
+     "topic": "캐싱 계층 전략: 지도 타일·경로·POI의 다단 캐시",
+     "body": "### 모빌리티 캐싱의 특수성\n\n일반 웹과 달리 모빌리티는 **읽기 폭증 + 공간 지역성 + 시간 변동성**이 섞여 있다. 같은 지도 타일/경로/POI를 수많은 사용자가 동시에 보지만(높은 캐시 적중 가능성), 교통 상황은 분 단위로 바뀌어(캐시 무효화 압박) 단순 TTL만으로는 부족하다. 그래서 데이터 성질별로 캐시 정책을 분리한다.\n\n### 계층 구조\n\n```\nL0  Client 캐시      앱 내 지도 타일/벡터 디스크 캐시\nL1  CDN/Edge        정적 타일·아이콘·POI 메타\nL2  Local cache     서비스 인스턴스 JVM 힙(Caffeine)\nL3  Distributed     Redis 클러스터\nL4  Origin          MySQL / 경로엔진 / 타일 서버\n```\n\n### 데이터 종류별 정책\n\n- **지도 타일 / 벡터 데이터**: 거의 안 변함 → CDN + 클라이언트 장기 캐시. 버전 토큰(예: `?v=20260616`)으로 무효화. 적중률이 가장 높은 구간.\n- **POI / 주소 / 지오코딩 결과**: 변경이 드묾 → Redis에 길게 캐시, 변경 이벤트가 Kafka로 흘러오면 키 무효화.\n- **경로/ETA 결과**: 출발·도착·시간대 조합이 키. **짧은 TTL(수십 초~수 분)** + 교통 갱신 이벤트 기반 무효화. 같은 OD(origin-destination)라도 러시아워엔 캐시를 짧게.\n- **실시간 교통 가중치(edge weight)**: 경로 엔진 내부 메모리에 상주, 스트리밍으로 주기 갱신(아래 토픽 참조).\n\n### Caffeine(L2)을 두는 이유\n\nRedis 왕복도 비싼 핫키(예: 강남역 같은 초인기 POI)는 인스턴스 로컬 `Caffeine` 캐시로 한 번 더 막는다. **W-TinyLFU** 정책이라 일회성 대량 조회가 인기 키를 밀어내지 않아 hot-key 보호에 적합하다. 로컬 캐시는 정합성이 약해지므로 TTL을 짧게 두고, 강한 일관성이 필요한 데이터(결제·정산)는 절대 로컬 캐시에 넣지 않는다.\n\n### Thundering herd 방어\n\n인기 경로의 캐시가 동시에 만료되면 origin(경로 엔진)으로 요청이 폭주한다. 이를 막기 위해:\n\n- **request coalescing**: 동일 키 in-flight 요청 1건만 origin 호출, 나머지는 그 결과를 공유\n- **early recompute**: TTL 만료 직전 백그라운드로 미리 재계산(stale-while-revalidate)\n- 캐시 미스 시 짧은 분산락으로 중복 계산 차단"
+    },
+    {
+     "topic": "관측성: 분산 트레이싱으로 '한 번의 호출'을 추적하기",
+     "body": "### 왜 트레이싱이 생존 도구인가\n\n승객이 호출 버튼을 누르면 Gateway → 인증 → 위치인덱스 → 배차매칭 → 경로엔진 → ETA → 결제예약까지 **10개 안팎의 서비스**를 거친다. 어느 단계에서 200ms가 새는지, 어느 기사 후보가 왜 탈락했는지를 사후에 재구성하지 못하면 MSA는 디버깅 불가능한 블랙박스가 된다. 그래서 관측성은 선택이 아니라 운영의 전제다.\n\n### 세 기둥(three pillars)\n\n| 기둥 | 도구 | 핵심 용도 |\n|------|------|-----------|\n| Metrics | Prometheus + Grafana | RED(Rate/Error/Duration), 배차 성공률, 매칭 시간 |\n| Tracing | OpenTelemetry → Jaeger/Zipkin | 호출 단위 end-to-end 지연 분해 |\n| Logging | Elasticsearch + Kibana(ELK) | 구조화 로그 검색, 에러 컨텍스트 |\n\n### Trace context 전파\n\n진입 Gateway에서 `trace_id`를 발급하고, 모든 내부 호출(gRPC 메타데이터/HTTP 헤더)과 **Kafka 메시지 헤더**까지 동일 ID를 실어 보낸다. 비동기 이벤트 경계를 넘어서도 trace가 끊기지 않게 하는 게 핵심 — 위치 이벤트가 Kafka를 거쳐 매칭 결과로 이어지는 흐름을 한 줄기로 본다.\n\n```\ntrace_id=ab12 ─ Gateway 5ms\n             └ Dispatch 40ms\n                 ├ Redis Geo 8ms\n                 ├ RouteEngine 22ms ← 여기서 지연!\n                 └ ETA 6ms\n```\n\n### 도메인 특화 지표\n\n일반 RED 지표 위에 모빌리티 고유 SLI를 얹는다.\n\n- **배차 매칭 소요 시간**(호출→기사 배정 p50/p95)\n- **배차 성공률 / 미배차율**(공급 부족 탐지)\n- **ETA 정확도**(예측 도착 vs 실제 도착 오차 분포)\n- **위치 보고 지연**(앱→서버 위치 신선도)\n\n### 카디널리티 함정\n\nuser_id·trip_id를 Prometheus 라벨로 넣으면 시계열이 폭발한다. 고카디널리티 식별자는 **트레이스/로그**로 보내고 메트릭 라벨은 region·service·version 같은 저카디널리티만 유지한다 — 이 분리가 관측 비용을 좌우한다."
+    },
+    {
+     "topic": "실시간 교통 반영과 경로 엔진의 동적 가중치 갱신",
+     "body": "### 핵심 질문: 정적 도로망에 어떻게 '지금의 교통'을 입히나\n\n경로 탐색은 도로망을 그래프로 보고 `Dijkstra`/`A*`/계층적 전처리(`Contraction Hierarchies`, `CRP`)로 최단경로를 푼다. 하지만 모빌리티에서 '거리 최단'은 의미가 없고 **'지금 시각에 가장 빠른 길'**이 답이라, 그래프의 **edge weight(통과 소요시간)**를 실시간으로 갱신하는 게 진짜 어려운 부분이다.\n\n### 데이터 소스: 프로브 데이터(probe data)\n\n운행 중인 차량들의 GPS 궤적 자체가 최고의 교통 센서다.\n\n```\n차량 위치 스트림(Kafka)\n   → map-matching: GPS 점을 도로 링크에 스냅\n   → 링크별 통과 속도 집계(최근 N분 윈도우)\n   → edge weight 갱신 메시지\n   → 경로 엔진 메모리 반영\n```\n\nmap-matching은 노이즈 섞인 GPS 점을 실제 도로 링크 시퀀스로 보정하는 단계로, `HMM`(Hidden Markov Model) 기반 기법이 표준이다. 이 결과로 **링크별 실시간 속도**가 나온다.\n\n### 갱신을 '스트리밍'으로 하는 이유\n\n전국 수백만 도로 링크의 가중치를 매번 배치로 다시 깔면 신선도가 떨어진다. 대신:\n\n- Kafka로 들어오는 위치 이벤트를 **윈도우 집계**(예: 최근 5분 EWMA)\n- 변화가 유의미한 링크만 **델타 업데이트** 메시지로 발행\n- 경로 엔진 인스턴스들이 이를 구독해 메모리 내 weight 배열을 in-place 갱신\n\n전처리 기반 엔진(CH 등)은 weight가 바뀌면 전처리가 무효화되는 약점이 있어, **실시간 교통은 '동적 비용'으로 분리**해 쿼리 시점에 합산하는 customizable routing(CRP류) 설계를 쓴다. 정적 구조(전처리)는 재사용하고, 가변 교통만 customization 단계에서 얹는 구조다.\n\n### ETA로의 연결\n\n경로가 정해지면 각 링크의 실시간 속도를 적분해 1차 ETA를 만들고, 여기에 **ML 보정**(요일·시간대·날씨·교차로 신호 패턴·과거 동일 구간 실주행 분포)을 곱해 최종 ETA를 낸다. 단순 합산 ETA는 신호·회전·정체 진입 같은 비선형 요소를 못 잡아서, Python으로 학습한 잔차 보정 모델을 Go 서빙 레이어에 얹는 형태가 일반적이다.\n\n### 트레이드오프\n\n- **신선도 vs 안정성**: weight를 너무 자주 갱신하면 같은 호출에도 경로가 출렁여 사용자 경험이 나빠진다 → 히스테리시스(임계 이상 변할 때만 경로 변경 권고).\n- **데이터 희소 구간**: 차량 통행이 적은 외곽 링크는 실시간 프로브가 부족 → 과거 통계(historical speed profile)로 폴백."
     }
    ],
    "github": {
-    "org": "https://github.com/kakaomobility"
+    "org": "https://github.com/kakao",
+    "repos": [
+     {
+      "name": "kakao/khaiii",
+      "url": "https://github.com/kakao/khaiii",
+      "desc": "CNN 기반 한국어 형태소 분석기",
+      "lang": "Python",
+      "stars": 1447
+     },
+     {
+      "name": "kakao/n2",
+      "url": "https://github.com/kakao/n2",
+      "desc": "대용량 벡터 근사 최근접 이웃(ANN) 검색 라이브러리",
+      "lang": "Jupyter Notebook",
+      "stars": 581
+     },
+     {
+      "name": "kakao/cuesheet",
+      "url": "https://github.com/kakao/cuesheet",
+      "desc": "Spark 애플리케이션을 손쉽게 작성·배포하는 프레임워크",
+      "lang": "Scala",
+      "stars": 84
+     },
+     {
+      "name": "kakao/varlog",
+      "url": "https://github.com/kakao/varlog",
+      "desc": "대규모 분산 로그 스토리지 시스템 (Go)",
+      "lang": "Go",
+      "stars": 53
+     }
+    ]
    },
    "sources": [
-    "https://tech.kakaomobility.com",
-    "https://www.kakaomobility.com"
+    "https://tech.kakaomobility.com/",
+    "https://tech.kakao.com/",
+    "https://github.com/kakao"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "woowahan",
