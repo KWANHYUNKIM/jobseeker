@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-17T01:45:29",
+  "generated_at": "2026-06-17T03:19:30",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -2865,88 +2865,6 @@
         "stage": "실전"
       }
     ],
-    "Jenkins": [
-      {
-        "title": "[토크ON세미나] Jenkins를 활용한 CI/CD 1강 - 젠킨스(Jenkins) 이해 | T아카데미",
-        "url": "https://www.youtube.com/watch?v=JPDKLgX5bRg",
-        "thumbnail": "https://i.ytimg.com/vi/JPDKLgX5bRg/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 46373,
-        "length": "23:40",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "🚀 Jenkins 시작하기",
-        "url": "https://www.youtube.com/watch?v=CSlCkCHHLCo",
-        "thumbnail": "https://i.ytimg.com/vi/CSlCkCHHLCo/mqdefault.jpg",
-        "channel": "Kenu Heo",
-        "views": 2656,
-        "length": "55:20",
-        "published": "스트리밍 시간: 2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
-        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
-        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 213133,
-        "length": "7:32",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[NHN FORWARD 22] Jenkins에서 Jenkins로의 여정",
-        "url": "https://www.youtube.com/watch?v=8sKTvf1c2zQ",
-        "thumbnail": "https://i.ytimg.com/vi/8sKTvf1c2zQ/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 6864,
-        "length": "36:09",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jenkins를 활용한 CI/CD - 1.2 Jenkins란 무엇일까?",
-        "url": "https://www.youtube.com/watch?v=TcAJgHNZbok",
-        "thumbnail": "https://i.ytimg.com/vi/TcAJgHNZbok/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 147,
-        "length": "5:37",
-        "published": "2개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Learn Jenkins! Complete Jenkins Course - Zero to Hero",
-        "url": "https://www.youtube.com/watch?v=6YZvp2GwT0A",
-        "thumbnail": "https://i.ytimg.com/vi/6YZvp2GwT0A/mqdefault.jpg",
-        "channel": "DevOps Journey",
-        "views": 1268031,
-        "length": "1:08:28",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
-        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
-        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 19476,
-        "length": "23:05",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jenkins를 활용한 CI/CD - 1.4 [실습] Docker를 활용한 Jenkins 설치하기",
-        "url": "https://www.youtube.com/watch?v=FaAdXC1akUU",
-        "thumbnail": "https://i.ytimg.com/vi/FaAdXC1akUU/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 130,
-        "length": "11:59",
-        "published": "2개월 전",
-        "stage": "실전"
-      }
-    ],
     "Oracle": [
       {
         "title": "[오라클 기초 강좌] 05 - 데이터베이스 구조 - Oracle Instance, SGA, Shared Pool,  Data Buffer Cache, Redo Log Buffer",
@@ -3026,6 +2944,88 @@
         "views": 8784,
         "length": "1:59:07",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Jenkins": [
+      {
+        "title": "[토크ON세미나] Jenkins를 활용한 CI/CD 1강 - 젠킨스(Jenkins) 이해 | T아카데미",
+        "url": "https://www.youtube.com/watch?v=JPDKLgX5bRg",
+        "thumbnail": "https://i.ytimg.com/vi/JPDKLgX5bRg/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 46373,
+        "length": "23:40",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "🚀 Jenkins 시작하기",
+        "url": "https://www.youtube.com/watch?v=CSlCkCHHLCo",
+        "thumbnail": "https://i.ytimg.com/vi/CSlCkCHHLCo/mqdefault.jpg",
+        "channel": "Kenu Heo",
+        "views": 2656,
+        "length": "55:20",
+        "published": "스트리밍 시간: 2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
+        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
+        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
+        "channel": "드림코딩",
+        "views": 213133,
+        "length": "7:32",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[NHN FORWARD 22] Jenkins에서 Jenkins로의 여정",
+        "url": "https://www.youtube.com/watch?v=8sKTvf1c2zQ",
+        "thumbnail": "https://i.ytimg.com/vi/8sKTvf1c2zQ/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 6864,
+        "length": "36:09",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jenkins를 활용한 CI/CD - 1.2 Jenkins란 무엇일까?",
+        "url": "https://www.youtube.com/watch?v=TcAJgHNZbok",
+        "thumbnail": "https://i.ytimg.com/vi/TcAJgHNZbok/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 147,
+        "length": "5:37",
+        "published": "2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Learn Jenkins! Complete Jenkins Course - Zero to Hero",
+        "url": "https://www.youtube.com/watch?v=6YZvp2GwT0A",
+        "thumbnail": "https://i.ytimg.com/vi/6YZvp2GwT0A/mqdefault.jpg",
+        "channel": "DevOps Journey",
+        "views": 1268031,
+        "length": "1:08:28",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
+        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
+        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
+        "channel": "큰돌의터전",
+        "views": 19476,
+        "length": "23:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jenkins를 활용한 CI/CD - 1.4 [실습] Docker를 활용한 Jenkins 설치하기",
+        "url": "https://www.youtube.com/watch?v=FaAdXC1akUU",
+        "thumbnail": "https://i.ytimg.com/vi/FaAdXC1akUU/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 130,
+        "length": "11:59",
+        "published": "2개월 전",
         "stage": "실전"
       }
     ],
@@ -4331,88 +4331,6 @@
         "stage": "실전"
       }
     ],
-    "RabbitMQ": [
-      {
-        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
-        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
-        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 187,
-        "length": "23:09",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
-        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
-        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 22108,
-        "length": "10:22",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] rabbitMQ로 메시지 전달하기",
-        "url": "https://www.youtube.com/watch?v=IvS4pxMsyQA",
-        "thumbnail": "https://i.ytimg.com/vi/IvS4pxMsyQA/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 244,
-        "length": "23:33",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "예비 개발자를 위한 개발 영상 - 010.Rabbit MQ 큐 생성, 메시지 넣고 빼보기",
-        "url": "https://www.youtube.com/watch?v=X_23snldl4U",
-        "thumbnail": "https://i.ytimg.com/vi/X_23snldl4U/mqdefault.jpg",
-        "channel": "개발자 Foo",
-        "views": 7570,
-        "length": "10:23",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "J208. RabbitMQ + Spring Boot",
-        "url": "https://www.youtube.com/watch?v=80y2C54KPxg",
-        "thumbnail": "https://i.ytimg.com/vi/80y2C54KPxg/mqdefault.jpg",
-        "channel": "Spring",
-        "views": 3191,
-        "length": "33:27",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "예비 개발자를 위한 개발 영상 - 009.Rabbit MQ 도커로 띄워보기",
-        "url": "https://www.youtube.com/watch?v=KTa0qy4gpjE",
-        "thumbnail": "https://i.ytimg.com/vi/KTa0qy4gpjE/mqdefault.jpg",
-        "channel": "개발자 Foo",
-        "views": 993,
-        "length": "4:20",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "율곡선생 17강 window에 RabbitMQ 미들웨어 설치 및 실행",
-        "url": "https://www.youtube.com/watch?v=rJZ7oKp90b4",
-        "thumbnail": "https://i.ytimg.com/vi/rJZ7oKp90b4/mqdefault.jpg",
-        "channel": "서울IT교육센터온라인강좌TV",
-        "views": 227,
-        "length": "13:26",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[오픈소스 컨트리뷰션] 메시지 큐 - Apache Kafka, RabbitMQ",
-        "url": "https://www.youtube.com/watch?v=tG7TrHQjifQ",
-        "thumbnail": "https://i.ytimg.com/vi/tG7TrHQjifQ/mqdefault.jpg",
-        "channel": "SIMJJI",
-        "views": 93,
-        "length": "9:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      }
-    ],
     "MSSQL": [
       {
         "title": "[MSSQL 중급 3강] 조인 기초편",
@@ -4493,6 +4411,88 @@
         "length": "15:06",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "RabbitMQ": [
+      {
+        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
+        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
+        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 187,
+        "length": "23:09",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
+        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
+        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 22108,
+        "length": "10:22",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] rabbitMQ로 메시지 전달하기",
+        "url": "https://www.youtube.com/watch?v=IvS4pxMsyQA",
+        "thumbnail": "https://i.ytimg.com/vi/IvS4pxMsyQA/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 244,
+        "length": "23:33",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "예비 개발자를 위한 개발 영상 - 010.Rabbit MQ 큐 생성, 메시지 넣고 빼보기",
+        "url": "https://www.youtube.com/watch?v=X_23snldl4U",
+        "thumbnail": "https://i.ytimg.com/vi/X_23snldl4U/mqdefault.jpg",
+        "channel": "개발자 Foo",
+        "views": 7570,
+        "length": "10:23",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "J208. RabbitMQ + Spring Boot",
+        "url": "https://www.youtube.com/watch?v=80y2C54KPxg",
+        "thumbnail": "https://i.ytimg.com/vi/80y2C54KPxg/mqdefault.jpg",
+        "channel": "Spring",
+        "views": 3191,
+        "length": "33:27",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "예비 개발자를 위한 개발 영상 - 009.Rabbit MQ 도커로 띄워보기",
+        "url": "https://www.youtube.com/watch?v=KTa0qy4gpjE",
+        "thumbnail": "https://i.ytimg.com/vi/KTa0qy4gpjE/mqdefault.jpg",
+        "channel": "개발자 Foo",
+        "views": 993,
+        "length": "4:20",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "율곡선생 17강 window에 RabbitMQ 미들웨어 설치 및 실행",
+        "url": "https://www.youtube.com/watch?v=rJZ7oKp90b4",
+        "thumbnail": "https://i.ytimg.com/vi/rJZ7oKp90b4/mqdefault.jpg",
+        "channel": "서울IT교육센터온라인강좌TV",
+        "views": 227,
+        "length": "13:26",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[오픈소스 컨트리뷰션] 메시지 큐 - Apache Kafka, RabbitMQ",
+        "url": "https://www.youtube.com/watch?v=tG7TrHQjifQ",
+        "thumbnail": "https://i.ytimg.com/vi/tG7TrHQjifQ/mqdefault.jpg",
+        "channel": "SIMJJI",
+        "views": 93,
+        "length": "9:16",
+        "published": "1년 전",
+        "stage": "핵심"
       }
     ],
     "OpenCV": [

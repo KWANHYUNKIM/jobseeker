@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T01:49:23",
+ "generated_at": "2026-06-17T03:24:07",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 75,
+ "refined": 77,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1933,12 +1933,12 @@
      "count": 4
     },
     {
-     "name": "JavaScript",
+     "name": "Java",
      "count": 4
     },
     {
-     "name": "Java",
-     "count": 3
+     "name": "JavaScript",
+     "count": 4
     },
     {
      "name": "TypeScript",
@@ -1965,18 +1965,22 @@
      },
      {
       "name": "Node.js",
-      "count": 2
+      "count": 3
      },
      {
       "name": "Ruby on Rails",
       "count": 2
      },
      {
-      "name": "Spring Boot",
-      "count": 2
+      "name": "AWS Lambda",
+      "count": 1
      },
      {
       "name": "Django/Python",
+      "count": 1
+     },
+     {
+      "name": "Express",
       "count": 1
      },
      {
@@ -1992,11 +1996,7 @@
       "count": 1
      },
      {
-      "name": "Sinatra/Rack",
-      "count": 1
-     },
-     {
-      "name": "WebSocket",
+      "name": "Java / Spring Boot",
       "count": 1
      }
     ],
@@ -2026,19 +2026,19 @@
       "count": 1
      },
      {
+      "name": "Monaco Editor",
+      "count": 1
+     },
+     {
+      "name": "Redux",
+      "count": 1
+     },
+     {
+      "name": "Stencil.js",
+      "count": 1
+     },
+     {
       "name": "Swift",
-      "count": 1
-     },
-     {
-      "name": "WebRTC/VNC 클라이언트",
-      "count": 1
-     },
-     {
-      "name": "멀티플랫폼 SDK",
-      "count": 1
-     },
-     {
-      "name": "사내 JS 프레임워크",
       "count": 1
      }
     ],
@@ -2052,12 +2052,12 @@
       "count": 4
      },
      {
-      "name": "MySQL",
+      "name": "Redis",
       "count": 4
      },
      {
-      "name": "Redis",
-      "count": 4
+      "name": "MySQL",
+      "count": 3
      },
      {
       "name": "Cassandra",
@@ -2076,11 +2076,11 @@
       "count": 1
      },
      {
-      "name": "PostgreSQL",
+      "name": "MySQL / Aurora",
       "count": 1
      },
      {
-      "name": "S3",
+      "name": "PostgreSQL",
       "count": 1
      }
     ],
@@ -2095,6 +2095,14 @@
      },
      {
       "name": "Terraform",
+      "count": 4
+     },
+     {
+      "name": "CloudFront",
+      "count": 2
+     },
+     {
+      "name": "Docker",
       "count": 2
      },
      {
@@ -2102,15 +2110,11 @@
       "count": 2
      },
      {
-      "name": "CloudFront",
+      "name": "CloudFront / WAF",
       "count": 1
      },
      {
       "name": "FCM/APNs",
-      "count": 1
-     },
-     {
-      "name": "GCP",
       "count": 1
      },
      {
@@ -2125,6 +2129,10 @@
    },
    "architecture": [
     {
+     "name": "Event-driven",
+     "count": 2
+    },
+    {
      "name": "Microservices",
      "count": 2
     },
@@ -2133,19 +2141,15 @@
      "count": 2
     },
     {
-     "name": "API-first",
-     "count": 1
-    },
-    {
      "name": "API-first + 멀티플랫폼 SDK",
      "count": 1
     },
     {
-     "name": "Desktop+cloud sync",
+     "name": "API-first / contract-first",
      "count": 1
     },
     {
-     "name": "Device farm orchestration",
+     "name": "Desktop+Cloud realtime sync",
      "count": 1
     }
    ]
@@ -15715,36 +15719,41 @@
    "stack": {
     "backend": [
      "Ruby on Rails",
-     "Spring Boot",
-     "Go"
+     "Java / Spring Boot",
+     "Go",
+     "Node.js (FDK serverless)"
     ],
     "frontend": [
-     "React",
      "Ember.js",
-     "TypeScript"
+     "React",
+     "TypeScript",
+     "Stencil.js (Crayons web components)"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
-     "Elasticsearch",
+     "MySQL / Aurora (sharded)",
      "Redis",
-     "Cassandra"
+     "Elasticsearch",
+     "Cassandra",
+     "Apache Kafka"
     ],
     "infra": [
-     "Kubernetes",
      "AWS",
-     "GCP"
+     "Kubernetes",
+     "Docker",
+     "CloudFront / WAF",
+     "Terraform"
     ]
    },
    "architecture": [
-    "Microservices",
     "Multi-tenant SaaS",
-    "Event-driven"
+    "Microservices",
+    "Event-driven (Kafka 기반 Central)",
+    "Sharded multi-tenant (pod) 아키텍처"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Freshdesk 콘솔<br/>React + Ember.js\"]\n    APP[\"모바일 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"멀티테넌트 게이트웨이<br/>Go\"]\n  end\n  subgraph Services\n    TICKET[\"티켓 서비스<br/>Ruby on Rails\"]\n    CRM[\"CRM 서비스<br/>Spring Boot + Java\"]\n    AUTOM[\"자동화 워크플로<br/>Go\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"테넌트 DB<br/>MySQL\"]\n    CASS[\"활동 로그<br/>Cassandra\"]\n    REDIS[\"캐시<br/>Redis\"]\n    ES[\"전문 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes\"]\n    CLOUD[\"멀티 클라우드<br/>AWS + GCP\"]\n  end\n  WEB --> GW\n  APP --> GW\n  GW --> TICKET\n  GW --> CRM\n  GW --> AUTOM\n  TICKET --> KAFKA\n  CRM --> KAFKA\n  KAFKA --> AUTOM\n  TICKET --> MYSQL\n  TICKET --> CASS\n  CRM --> REDIS\n  TICKET --> ES\n  K8S --> CLOUD",
-   "why_language": "고객지원·CRM SaaS 제품군을 빠르게 키우려고 Ruby on Rails로 초기 제품을 구축했고, 멀티테넌트 규모가 커지며 Java와 Go로 핵심 서비스를 재작성한다.",
-   "why_architecture": "여러 SaaS 제품(Freshdesk·Freshsales 등)이 공통 플랫폼 위에서 멀티테넌트로 동작하므로 공유 마이크로서비스 플랫폼을 두고, 자동화·알림을 이벤트 드리븐으로 처리한다.",
-   "summary": "Rails 출발 후 Java/Go로 확장한 멀티테넌트 마이크로서비스 SaaS 제품군.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    WEB[\"Web App<br/>Ember.js + React + Crayons\"]\n    MOB[\"Mobile / Embed SDK<br/>iOS + Android + JS Widget\"]\n    CDN[\"CDN + WAF<br/>CloudFront + AWS WAF\"]\n  end\n  subgraph Gate[\"API / Gateway\"]\n    GW[\"API Gateway / LB<br/>Nginx + ALB\"]\n    AUTH[\"AuthN / AuthZ<br/>Org-level SSO + OAuth\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DESK[\"Freshdesk / Freshservice<br/>Ruby on Rails\"]\n    SVC[\"Platform Services<br/>Java + Spring Boot\"]\n    GOSVC[\"Latency-critical Svc<br/>Go\"]\n    AUTO[\"Automation Engine<br/>Workflows + Freddy AI\"]\n    FDK[\"Marketplace Runtime<br/>FDK + Node.js Serverless\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka (Central)\"]\n    WRK[\"Async Workers<br/>Sidekiq + Java Consumers\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Tenant DB<br/>MySQL / Aurora (sharded)\"]\n    REDIS[\"Cache + Queue<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    CASS[\"High-write Store<br/>Cassandra\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + Docker\"]\n    AWS[\"Multi-region Cloud<br/>AWS (US/EU/IN/AU)\"]\n  end\n  WEB --> CDN\n  MOB --> CDN\n  CDN --> GW\n  GW --> AUTH\n  AUTH --> DESK\n  AUTH --> SVC\n  GW -->|REST| GOSVC\n  DESK -->|domain events| KAFKA\n  SVC -->|publish| KAFKA\n  KAFKA -->|consume| WRK\n  KAFKA -->|triggers| AUTO\n  KAFKA -->|app events| FDK\n  WRK --> MYSQL\n  DESK --> MYSQL\n  DESK --> REDIS\n  SVC --> CASS\n  DESK -->|index| ES\n  AUTO --> REDIS\n  Core --> K8S\n  Stream --> K8S\n  K8S --> AWS\n  Data --> AWS",
+   "why_language": "Freshdesk/Freshservice가 Ruby on Rails 모놀리스로 출발해 빠른 제품 개발로 시장을 선점했기 때문에 Rails가 여전히 핵심 비즈니스 로직을 담당한다. 다만 동시접속·이벤트 처리량이 큰 플랫폼 계층(Central, 알림, 인덱싱)은 JVM의 성숙한 동시성과 생태계를 노려 Java/Spring Boot로, 지연에 민감한 핫패스는 Go로 재작성해 Rails의 처리량 한계를 보완한다. Freddy AI 등 ML 워크로드에는 Python을 쓴다.",
+   "why_architecture": "수십만 고객사를 한 인프라에서 운영하는 B2B SaaS이므로 테넌트별 격리·과금·규제(데이터 레지던시)를 만족시키려면 멀티테넌트 + 샤딩(pod) 구조가 필수다. 제품군(Desk/Service/CRM/Chat)이 늘면서 기능을 독립 배포·확장하기 위해 모놀리스에서 마이크로서비스로 분리했고, 티켓 변경이 자동화·알림·서드파티 앱·검색 인덱싱 등 여러 후속 동작을 유발하므로 Kafka 기반 이벤트 드리븐(Central)으로 서비스 간 결합도를 낮췄다.",
+   "summary": "Rails 모놀리스의 속도 위에 Java/Go 마이크로서비스와 Kafka 이벤트 버스(Central)를 얹어 멀티테넌트 SaaS를 다중 리전으로 확장한 스택",
    "deep_dive": [
     {
      "topic": "멀티테넌트 SaaS 플랫폼 구조",
@@ -15761,17 +15770,43 @@
     {
      "topic": "멀티 클라우드·다중 리전 운영",
      "body": "### 글로벌 고객을 어떻게 서비스하나\nFreshworks 고객은 전 세계에 있고, 데이터 거주(residency)·지연 요건이 다르다. 그래서 `AWS`/`GCP` 멀티 클라우드 + 다중 리전으로 운영한다.\n- 고객 데이터를 지역 요건(예: EU 데이터는 EU 리전)에 맞춰 배치한다. 규제 대응이 SaaS의 진입 조건이다.\n- `Kubernetes`로 컨테이너를 표준 배포해 리전·클라우드 간 일관성을 확보한다.\n\n### 데이터 계층 선택\n- `MySQL`: 트랜잭션성 핵심 데이터.\n- `Cassandra`: 대규모·고쓰기 분산 데이터(활동 로그·시계열 등). 다중 리전 복제에 강하다.\n- `Elasticsearch`: 검색. `Redis`: 캐시·세션.\n\n### 트레이드오프\n멀티 클라우드·다중 리전은 데이터 거주·지연 요건을 충족하지만 운영 복잡도·데이터 동기화·일관성 관리 비용이 크다. 글로벌 SaaS로서 규제·성능 요건이 이를 강제하므로, 컨테이너 표준화와 리전별 격리로 복잡도를 통제한다."
+    },
+    {
+     "topic": "티켓 한 건의 end-to-end 처리 흐름 (Freshdesk)",
+     "body": "### 요청이 들어와 후속 동작이 폭발하기까지\n\nFreshdesk에서 고객이 이메일·웹폼·챗·전화로 문의를 보내면 다음과 같은 경로를 탄다.\n\n1. **수신 채널 정규화** — 이메일은 mailbox 폴러/웹훅으로, 웹·챗·전화는 채널 게이트웨이로 들어와 공통 `ticket` 도메인 객체로 정규화된다. 멀티 채널을 단일 티켓 모델로 수렴시키는 것이 핵심.\n2. **Edge → Gateway** — `CloudFront + AWS WAF`로 봇/남용을 걸러낸 뒤 `Nginx/ALB`가 테넌트 도메인(`acme.freshdesk.com`)을 보고 어느 **pod(샤드)** 로 라우팅할지 결정한다. 즉 인증보다 먼저 *테넌트 라우팅*이 일어난다.\n3. **Rails 코어에서 쓰기** — `Ruby on Rails` 코어가 비즈니스 규칙(SLA 정책, 그룹/에이전트 배정, 우선순위)을 적용하고 해당 테넌트 샤드의 `MySQL/Aurora`에 티켓을 INSERT 한다. 이때 동기 경로는 **DB 기록 + 응답 반환**까지만 최소화한다.\n4. **도메인 이벤트 발행** — 커밋 직후 `ticket.created` 같은 도메인 이벤트를 **Kafka(Central event bus)** 로 publish 한다. 여기서부터 동기 경로와 분리된다.\n5. **팬아웃(비동기 후속)** — 컨슈머들이 병렬로 반응한다.\n   - **Automation Engine**: 디스패처/시나리오 규칙을 평가해 자동 배정·태그·에스컬레이션 실행\n   - **Notification 서비스**: 에이전트·고객에게 메일/푸시/웹소켓 알림\n   - **Search Indexer**: `Elasticsearch`에 역색인 업데이트(검색·필터)\n   - **Marketplace(FDK) runtime**: 구독한 서드파티 앱의 `onTicketCreate` 핸들러 트리거\n   - **Analytics 파이프라인**: 리포팅용 집계 스토어로 적재\n\n### 왜 이렇게 쪼갰나\n동기 응답 경로에 모든 후속 작업을 묶으면 p99 지연이 \"가장 느린 후속 작업\"에 발목 잡힌다. 외부 앱 웹훅이나 무거운 인덱싱은 수백 ms~수 초가 걸릴 수 있으므로, **쓰기 트랜잭션은 짧게 끝내고 나머지는 Kafka로 비동기화**하는 것이 일관된 사용자 응답 시간을 지키는 핵심 트레이드오프다. 대신 \"이벤트 발행 후 컨슈머 실패\" 시 재처리(at-least-once)와 멱등 처리가 필요해 컨슈머들은 이벤트 ID 기반 중복 제거를 구현한다."
+    },
+    {
+     "topic": "멀티테넌트 데이터 샤딩·격리 전략 (pod 아키텍처)",
+     "body": "### 수십만 테넌트를 한 플랫폼에 태우는 법\n\nFreshworks 같은 B2B SaaS의 본질적 난제는 *작은 테넌트 수십만 개 + 거대 테넌트 수십 개*가 공존한다는 점이다. 단일 거대 DB로는 한 테넌트의 트래픽 폭주가 전체를 마비시키는 **noisy neighbor** 문제가 생긴다.\n\n#### pod(셀) 기반 샤딩\n- 인프라를 **pod(또는 cluster/shard) 단위**로 나누고, 각 테넌트를 특정 pod에 배정한다. pod는 자체 `MySQL/Aurora` 인스턴스 그룹, 캐시, 워커를 가진 **격리된 실행 단위**다.\n- 라우팅 계층이 `account_id → pod` 매핑을 들고 있어, 도메인/서브도메인 기반으로 요청을 해당 pod로 보낸다. 새 테넌트는 여유 있는 pod에 배치하고, 거대 테넌트는 전용 pod로 분리해 블라스트 레이디우스를 제한한다.\n- 장점: 장애·과부하·마이그레이션이 pod 경계 안에 갇힌다. pod 단위로 점진 배포(카나리)와 용량 증설이 가능하다.\n\n#### 테넌트 격리\n- 같은 DB 안에 여러 테넌트가 있을 때는 모든 쿼리에 `account_id`를 강제하는 스코핑(Rails의 default scope/mandatory filter)으로 **데이터 누수**를 차단한다. 한 줄의 누락이 테넌트 간 데이터 유출이 되므로 코드 레벨 가드가 중요하다.\n- 데이터 레지던시(EU/IN/AU/US) 규제 때문에 리전별로 별도 인프라 스택을 운영하며, 테넌트는 가입 시 리전이 고정된다.\n\n#### 보조 스토어 선택\n| 데이터 성격 | 스토어 | 이유 |\n|---|---|---|\n| 트랜잭션·관계형(티켓/유저) | `MySQL/Aurora` | 강한 일관성, 샤딩 용이 |\n| 고빈도 쓰기·시계열(활동/이벤트 로그) | `Cassandra` | 쓰기 확장성, 멀티 리전 복제 |\n| 검색/필터 | `Elasticsearch` | 역색인, 패싯 |\n| 세션·핫데이터·레이트리밋 | `Redis` | 마이크로초 응답 |\n\n핵심 트레이드오프는 **운영 복잡도 ↔ 격리성**이다. pod가 많아질수록 배포·관측·스키마 마이그레이션을 수백 개 클러스터에 일관되게 적용해야 하므로 자동화(Terraform/파이프라인)에 크게 투자한다."
+    },
+    {
+     "topic": "Marketplace와 FDK — 서드파티 앱 런타임의 동작 원리",
+     "body": "### 남의 코드를 내 SaaS 안에서 안전하게 돌리기\n\nFreshworks Marketplace는 1,000개 이상의 서드파티 앱이 Freshdesk/Freshservice/CRM UI와 백엔드에 끼어들어 동작하는 플랫폼이다. 이를 떠받치는 것이 **FDK(Freshworks Developer Kit)** 다.\n\n#### 두 가지 앱 유형\n1. **Frontend(앱) — UI 확장**: 티켓 사이드바, 모달, 풀페이지 등 정해진 *placeholder*에 앱 UI를 **iframe 샌드박스**로 주입한다. 앱은 호스트 페이지의 DOM에 직접 접근할 수 없고, `client` SDK(데이터 메서드·이벤트·인터페이스 API)를 통해 메시지 패싱으로만 호스트와 통신한다. 이 격리가 서드파티 코드가 고객 데이터를 임의로 긁어가지 못하게 막는 1차 방어선이다.\n2. **Serverless(백엔드) — 이벤트/외부 연동**: `Node.js` 기반 서버리스 핸들러로, `onTicketCreate`, `onConversationUpdate` 같은 **제품 이벤트(Kafka에서 흘러나온 도메인 이벤트)** 와 스케줄러, 외부 웹훅에 반응한다. 개발자는 인프라를 몰라도 함수만 작성하면 Freshworks가 실행 환경·스케일링·시크릿 저장(`iparams`)을 관리한다.\n\n#### 동작 흐름\n- 코어에서 `ticket.created` 이벤트 발생 → Central(Kafka) → **Marketplace runtime**이 해당 테넌트가 설치한 앱 중 그 이벤트를 구독한 serverless 함수를 찾아 격리된 컨테이너에서 실행.\n- 함수는 SDK의 `$request`(프록시된 HTTP 호출)로만 외부 API를 부르게 해, 자격증명을 코드에 노출하지 않고 레이트리밋·로깅을 중앙에서 건다.\n- 실행은 **타임아웃·메모리 상한·동시성 제한** 아래 둔다. 한 앱의 폭주가 플랫폼 전체나 다른 테넌트에 번지지 않도록 멀티테넌트 격리를 런타임에도 적용한다.\n\n#### 왜 이렇게\n수만 명의 외부 개발자 코드를 핵심 제품과 같은 신뢰 수준으로 둘 수 없다. 그래서 **iframe + serverless 샌드박스 + 프록시드 네트워크 + 이벤트 구독**이라는 4겹 격리로 \"확장성은 열되 신뢰 경계는 닫는\" 설계를 택했다. 트레이드오프는 앱이 호스트와 직접 호출이 아닌 메시지/이벤트로만 상호작용해야 해 지연·표현력에 제약이 생긴다는 점이다."
+    },
+    {
+     "topic": "Crayons 디자인 시스템과 프론트엔드 전략",
+     "body": "### 여러 제품·여러 프레임워크에서 하나의 UI를 공유하기\n\nFreshworks는 Freshdesk(역사적으로 `Ember.js`), 신규 제품·앱(`React`), 그리고 서드파티 Marketplace 앱(프레임워크 제각각)이라는 **이질적인 프론트엔드 군집**을 가진다. 이들을 일관된 브랜드/UX로 묶기 위해 오픈소스 디자인 시스템 **Crayons**(`github.com/freshworks/crayons`)를 만들었다.\n\n#### 왜 Web Components(Stencil.js)인가\n- React 컴포넌트로만 만들면 Ember 앱이나 바닐라 JS 서드파티 앱에서 못 쓴다. 그래서 **프레임워크 중립적인 Web Components(Custom Elements)** 로 만들고, 빌드 도구로 `Stencil.js`를 채택했다.\n- Stencil은 컴포넌트를 표준 Web Component로 컴파일하면서 lazy-loading, 타입스크립트, 그리고 `React/Vue` 래퍼를 자동 생성해 준다. 덕분에 `<fw-button>` 하나를 Ember·React·서드파티 iframe 앱 어디서든 동일하게 쓴다.\n- Shadow DOM으로 스타일을 캡슐화해, 호스트 앱이나 다른 앱의 CSS가 컴포넌트 스타일을 깨뜨리지 못하게 한다 — 멀티테넌트 Marketplace 환경에서 특히 중요한 격리 특성.\n\n#### 프론트엔드 진화\n- Freshdesk의 레거시는 `Ember.js`로 만든 대형 SPA였고, 신규/리뉴얼 화면은 `React + TypeScript`로 이동 중이다. 두 세계가 공존하므로 **공통 컴포넌트를 프레임워크에 종속시키지 않는 것**이 곧 마이그레이션 비용을 낮추는 길이었다.\n- Marketplace 앱 개발자도 Crayons를 import 해 네이티브 Freshworks UI와 시각적으로 구분되지 않는 앱을 만들 수 있어, 제품 전반의 UX 일관성을 확장 생태계까지 끌고 간다.\n\n#### 트레이드오프\nWeb Components는 폼/접근성/이벤트 처리가 프레임워크 네이티브 컴포넌트보다 손이 더 가고, SSR·테스트 도구 생태계가 React 단독보다 빈약하다. 그럼에도 \"하나의 컴포넌트를 N개 프레임워크에서 재사용\"하는 이점이 다제품·확장 플랫폼이라는 Freshworks의 구조에 더 잘 맞았다."
     }
    ],
    "github": {
-    "org": "freshworks",
-    "repos": []
+    "org": "https://github.com/freshworks",
+    "repos": [
+     {
+      "name": "freshworks-oss/crayons",
+      "url": "https://github.com/freshworks-oss/crayons",
+      "desc": "Stencil.js 기반 Freshworks 디자인 시스템 웹 컴포넌트 라이브러리 (프레임워크 무관)",
+      "lang": "JavaScript",
+      "stars": 247
+     }
+    ]
    },
    "sources": [
-    "https://engineering.freshworks.com"
+    "https://github.com/freshworks/crayons",
+    "https://developers.freshworks.com/",
+    "https://www.freshworks.com/platform/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "postman",
@@ -15782,40 +15817,49 @@
     "JavaScript",
     "TypeScript",
     "Go",
-    "Python"
+    "Python",
+    "Java"
    ],
    "stack": {
     "backend": [
      "Node.js",
+     "Express",
      "Go",
-     "GraphQL"
+     "GraphQL (Apollo)",
+     "AWS Lambda"
     ],
     "frontend": [
      "React",
      "Electron",
-     "TypeScript"
+     "TypeScript",
+     "Redux",
+     "Monaco Editor"
     ],
     "data": [
-     "Kafka",
-     "PostgreSQL",
+     "PostgreSQL (Aurora)",
+     "DynamoDB",
+     "Redis (ElastiCache)",
      "Elasticsearch",
-     "Redis",
-     "DynamoDB"
+     "Kafka"
     ],
     "infra": [
-     "Kubernetes",
-     "AWS"
+     "AWS",
+     "Kubernetes (EKS)",
+     "Docker",
+     "Terraform",
+     "CloudFront"
     ]
    },
    "architecture": [
     "Microservices",
-    "API-first",
-    "Desktop+cloud sync"
+    "API-first / contract-first",
+    "Desktop+Cloud realtime sync",
+    "Event-driven (Kafka)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    DESK[\"데스크톱 앱<br/>Electron + React\"]\n    WEB[\"웹 클라이언트<br/>React + TypeScript\"]\n  end\n  subgraph Gateway\n    GQL[\"API Gateway<br/>GraphQL\"]\n  end\n  subgraph Services\n    SYNC[\"동기화 서비스<br/>Node.js\"]\n    COLL[\"컬렉션 런너<br/>Node.js\"]\n    MONITOR[\"모니터링 서비스<br/>Go\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    PG[\"워크스페이스 DB<br/>PostgreSQL\"]\n    DYNAMO[\"실행 기록<br/>DynamoDB\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n    ES[\"API 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  DESK --> GQL\n  WEB --> GQL\n  GQL --> SYNC\n  GQL --> COLL\n  GQL --> MONITOR\n  SYNC --> KAFKA\n  MONITOR --> KAFKA\n  SYNC --> PG\n  COLL --> DYNAMO\n  SYNC --> REDIS\n  GQL --> ES\n  K8S --> AWS",
-   "why_language": "API 협업 도구로 클라이언트(Electron 데스크톱 앱)와 서버를 모두 JS/TS로 통일해 코드 공유와 개발 속도를 높였다. 고성능 백엔드 서비스 일부는 Go로 보완한다.",
-   "why_architecture": "데스크톱 앱과 클라우드 워크스페이스를 동기화하는 API-first 제품이라 컬렉션·협업·모니터링 도메인을 마이크로서비스로 나누고, 변경 이벤트를 Kafka로 전파한다.",
-   "summary": "Node.js/TypeScript 풀스택과 Electron으로 API 협업을 동기화하는 개발자 SaaS.",
+   "diagram": "flowchart TD\n  subgraph Client\n    DESK[\"Desktop App<br/>Electron + React\"]\n    WEB[\"Web App<br/>React + TypeScript\"]\n    CLI[\"Newman CLI<br/>Node.js\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Node.js + Express\"]\n    GQL[\"GraphQL Gateway<br/>Apollo\"]\n  end\n  subgraph Core\n    SYNC[\"Sync Service<br/>Node.js + WebSocket\"]\n    COLL[\"Collection Service<br/>Node.js\"]\n    WS[\"Workspace + RBAC<br/>Node.js\"]\n    MON[\"Monitor + Mock Engine<br/>AWS Lambda\"]\n    NET[\"API Network Search<br/>Go\"]\n  end\n  subgraph Data\n    PG[\"PostgreSQL<br/>Aurora\"]\n    DDB[\"DynamoDB\"]\n    REDIS[\"Redis<br/>ElastiCache\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS EKS\"]\n  end\n  DESK -->|WSS| SYNC\n  DESK -->|HTTPS| GW\n  WEB --> GQL\n  WEB --> GW\n  CLI --> GW\n  GW --> COLL\n  GW --> WS\n  GW --> MON\n  GQL --> COLL\n  SYNC --> DDB\n  SYNC --> KAFKA\n  COLL --> PG\n  COLL --> REDIS\n  COLL --> KAFKA\n  WS --> PG\n  MON --> KAFKA\n  KAFKA --> NET\n  NET --> ES\n  K8S -.hosts.-> COLL\n  K8S -.hosts.-> SYNC",
+   "why_language": "Postman은 Electron 데스크톱 앱, 브라우저 웹 앱, Newman CLI까지 동일한 컬렉션/요청 실행 로직을 공유해야 하므로 JavaScript/TypeScript를 클라이언트-서버 양쪽에 두는 단일 언어 전략을 택했다. I/O 바운드가 지배적인 API 프록시·동기화 워크로드에는 Node.js의 이벤트 루프가 적합하고, API Network 검색·인덱싱처럼 CPU·동시성 요구가 큰 일부 서비스는 Go로, 데이터/ML 파이프라인은 Python으로 보완한다.",
+   "why_architecture": "수백만 개발자가 협업으로 컬렉션을 동시 편집하는 제품이라 변경 전파·충돌 해결을 담당하는 Sync 서비스를 독립시키고, 컬렉션·워크스페이스·모니터·목 서버 등 도메인별로 마이크로서비스를 쪼개 각자 다른 데이터스토어(Aurora, DynamoDB)와 확장 정책을 갖게 했다. API-first 회사답게 모든 기능이 자사 공개 API와 contract로 먼저 정의되고, 모니터·검색 인덱싱 같은 후처리는 Kafka 이벤트로 비동기 분리해 결합도를 낮췄다.",
+   "summary": "JS/TS 단일 언어로 데스크톱·웹·CLI를 묶고, 실시간 협업 동기화를 핵심으로 한 AWS 위 이벤트 기반 마이크로서비스",
    "deep_dive": [
     {
      "topic": "Electron 데스크톱 앱과 클라우드 동기화",
@@ -15832,17 +15876,71 @@
     {
      "topic": "JS/TS 풀스택 단일 언어 전략",
      "body": "### 왜 클라이언트와 서버를 같은 언어로\nPostman은 `JavaScript`/`TypeScript`로 클라이언트(Electron·웹)와 서버(`Node.js`)를 통일했다.\n- **코드·지식 공유**: 검증 로직·타입·유틸을 양쪽에서 공유한다. 테스트 스크립트 런타임도 Node라 일관적이다.\n- **개발 속도**: 한 언어 스택이라 풀스택 개발·채용이 효율적이다.\n- **TypeScript 타입 안정성**: 큰 코드베이스에서 타입으로 버그를 줄인다.\n\n### Go로 보완\n일부 고성능 백엔드(고동시성·저지연이 중요한 서비스)는 `Go`로 작성한다. Node의 단일 스레드 이벤트 루프가 불리한 CPU 바운드·고처리량 영역을 Go가 메운다.\n\n### 인프라\n`Kubernetes` + `AWS`로 컨테이너를 운영하고, 변경 이벤트는 `Kafka`로 전파한다.\n\n### 트레이드오프\n단일 언어는 생산성·공유 이점을 주지만 Node의 성능 한계(CPU 바운드·단일 스레드)가 있다. Postman은 \"기본은 JS/TS, 병목만 Go\"의 실용적 분업으로 생산성과 성능을 함께 취한다. 무리하게 전부 통일하지 않는 것이 핵심 판단이다."
+    },
+    {
+     "topic": "요청 한 번이 흐르는 경로 — end-to-end 처리 흐름",
+     "body": "### 클라이언트에서 데이터스토어까지\n\nPostman에서 사용자가 컬렉션을 열고 요청을 저장하는 한 번의 동작은 여러 계층을 통과한다.\n\n1. **클라이언트 분기**: Electron 데스크톱 앱과 브라우저 웹 앱은 같은 React/TypeScript 코드베이스를 공유한다. 다만 데스크톱은 **로컬 파일시스템 캐시 + 자체 네트워크 스택**을 갖고, 웹 앱은 사내 `Postman Desktop Agent`(로컬에서 도는 작은 프록시)를 통해 CORS/네트워크 제약을 우회해 실제 HTTP 요청을 사용자의 머신에서 쏜다. 즉 \"요청 실행\"은 서버가 아니라 **클라이언트 측에서 일어난다** — 이는 사용자의 사설망 API도 테스트할 수 있게 하는 핵심 설계다.\n\n2. **엣지/게이트웨이**: 컬렉션 저장·조회 같은 메타데이터 작업은 `HTTPS`로 **API Gateway(Node.js + Express)** 에 도달한다. 웹 앱의 대시보드성 화면은 **GraphQL Gateway(Apollo)** 를 통해 여러 서비스의 데이터를 한 번에 모아 받는다. 게이트웨이는 인증 토큰 검증, 레이트리밋, 라우팅을 담당한다.\n\n3. **코어 서비스**: 요청은 도메인별 마이크로서비스로 분산된다 — `Collection Service`(컬렉션 CRUD), `Workspace/RBAC`(권한), `Sync Service`(실시간 변경 전파). 컬렉션 본문 메타데이터는 **PostgreSQL(Aurora)** 에, 자주 읽히는 핫 데이터는 **Redis** 에 캐시된다.\n\n4. **비동기 후처리**: 저장이 커밋되면 서비스는 **Kafka** 로 도메인 이벤트(예: `collection.updated`)를 발행한다. 검색 인덱서, 활동 피드, 모니터 스케줄러 등 구독자들이 이 이벤트를 받아 자기 일을 한다. 사용자 응답 경로는 이 후처리를 **기다리지 않으므로** 저장 응답이 빠르다.\n\n이 구조의 핵심 트레이드오프는 \"요청 실행을 클라이언트로 밀어낸 것\"이다. 서버 부하·보안 책임은 줄지만, 브라우저 환경에서의 네트워크 제약을 풀기 위해 Desktop Agent라는 별도 컴포넌트를 유지보수해야 하는 복잡도를 떠안았다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩 — 폴리글랏 퍼시스턴스 전략",
+     "body": "### 워크로드별로 데이터스토어를 나누는 이유\n\nPostman은 하나의 DB로 모든 것을 처리하지 않고, **접근 패턴에 따라 저장소를 분리**한다.\n\n| 데이터 유형 | 저장소 | 이유 |\n|---|---|---|\n| 컬렉션/워크스페이스 메타, 사용자·팀·권한 | **PostgreSQL (Aurora)** | 관계형 무결성·트랜잭션이 필요한 핵심 도메인 |\n| 실시간 동기화 상태·세션·고빈도 쓰기 | **DynamoDB** | 키 기반 초저지연 읽기/쓰기, 수평 확장이 예측 가능 |\n| 핫 캐시·레이트리밋 카운터·세션 | **Redis (ElastiCache)** | 마이크로초 응답, TTL 기반 만료 |\n| 검색 인덱스(API Network, 공개 API 탐색) | **Elasticsearch** | 전문 검색·랭킹·패싯 |\n\n### 샤딩과 확장\n\n관계형 측은 Aurora의 **리더 복제본(read replica)** 으로 읽기를 분산하고, 멀티테넌트 특성상 **테넌트(팀) 단위 파티셔닝** 으로 큰 팀의 부하가 다른 팀에 번지지 않게 격리하는 패턴을 쓴다. 고빈도 쓰기 경로(동기화 상태)는 애초에 관계형 DB에 두지 않고 DynamoDB로 빼서, **단일 RDBMS의 쓰기 병목** 을 회피한다.\n\n### 일관성 모델\n\n협업 동기화에서는 **강한 일관성보다 빠른 수렴(convergence)** 을 우선한다. 동시에 같은 컬렉션을 편집하면 변경분을 Sync 서비스가 받아 순서를 정하고, 충돌은 마지막-쓰기-우선 또는 머지 규칙으로 해소한 뒤 모든 클라이언트에 재전파한다. 검색 인덱스(Elasticsearch)는 Kafka 이벤트로 갱신되므로 **결과적 일관성(eventual consistency)** 이다 — 컬렉션을 공개해도 검색에 노출되기까지 약간의 지연이 존재한다."
+    },
+    {
+     "topic": "Monitors와 Mock의 확장 — 서버리스로 처리하는 스케줄 워크로드",
+     "body": "### 왜 모니터·목 서버를 서버리스로 돌리나\n\nPostman **Monitors** 는 사용자가 정의한 컬렉션을 정해진 주기(예: 5분마다)로 클라우드에서 자동 실행해 API 상태·응답시간·테스트 통과 여부를 추적하는 기능이다. 이 워크로드는 **버스트성·간헐적** 이다 — 평소엔 놀다가 특정 시각(매시 정각 등)에 수만 개 스케줄이 한꺼번에 깨어난다.\n\n이런 \"불규칙·짧은 작업의 대량 동시 실행\"은 상시 구동되는 컨테이너로 받으면 비효율적이다. 그래서 모니터 실행은 **AWS Lambda 기반 서버리스** 로 처리하는 구조가 자연스럽다:\n\n- 스케줄러가 큐/이벤트로 실행 작업을 던지면 Lambda가 **수요만큼 순간 팬아웃** 한다. 동시성은 실행 함수 인스턴스 수로 자동 확장되고, 유휴 시 비용은 0에 수렴한다.\n- 각 실행은 격리된 환경에서 컬렉션을 돌리고(내부적으로 Newman과 같은 러너 로직 공유), 결과·에러·응답시간을 수집해 다시 이벤트로 발행한다.\n- 결과 집계·알림(Slack/PagerDuty 연동)은 다시 Kafka 구독자가 비동기로 처리한다.\n\n### Mock 서버\n\nMock 서버 역시 \"요청이 올 때만 응답을 생성\"하는 이벤트성 워크로드라 서버리스/스테이트리스 처리에 잘 맞는다. 컬렉션에 정의된 예시(example) 응답을 매칭 규칙(경로·헤더·쿼리)에 따라 골라 반환하므로, 상태를 거의 들고 있지 않아 수평 확장이 쉽다.\n\n### 트레이드오프\n\n서버리스는 콜드스타트 지연과 실행 시간 상한(대형 컬렉션의 긴 실행)이라는 제약을 준다. 그래서 무겁고 오래 도는 작업은 컨테이너(EKS) 경로로, 짧고 폭발적인 스케줄 작업은 Lambda 경로로 나눠 **워크로드 모양에 맞는 컴퓨트를 선택** 하는 하이브리드 전략을 취한다."
+    },
+    {
+     "topic": "이벤트 기반 아키텍처 — Kafka로 서비스를 분리하기",
+     "body": "### 동기 호출 대신 이벤트로 묶는 이유\n\nPostman처럼 \"컬렉션 변경 하나가 여러 후속 작업(검색 인덱싱, 활동 로그, 알림, 사용량 집계, 모니터 트리거)을 유발\"하는 도메인에서, 이를 전부 동기 호출로 엮으면 사용자 응답 경로가 가장 느린 후속 작업에 묶여버린다. Postman은 **Kafka 이벤트 버스** 를 중심에 두어 이를 끊는다.\n\n### 동작 메커니즘\n\n- **발행**: `Collection Service`/`Sync Service` 등이 도메인 변경을 커밋한 뒤 `collection.updated`, `workspace.member.added` 같은 이벤트를 토픽에 발행한다. 사용자에게는 즉시 200을 반환한다.\n- **구독**: 각 후속 처리는 독립 컨슈머 그룹으로 동작한다. **검색 인덱서**(→ Elasticsearch 갱신), **활동 피드 빌더**, **사용량/빌링 집계**, **모니터/웹훅 트리거** 등이 같은 이벤트 스트림을 각자의 속도로 소비한다.\n- **파티셔닝**: 토픽은 보통 테넌트/엔티티 키로 파티셔닝해 **같은 컬렉션의 이벤트 순서** 를 보장하면서도 전체 처리량은 파티션 수만큼 병렬화한다.\n\n### 회복력\n\n이벤트 기반의 가장 큰 이점은 **장애 격리** 다. 검색 인덱서가 다운돼도 컬렉션 저장 자체는 멈추지 않고, 인덱서가 복구되면 Kafka의 보존된 오프셋부터 다시 소비해 **뒤처진 작업을 따라잡는다(catch-up)**. 이는 검색 일관성이 결과적(eventual)인 대신, 코어 쓰기 경로의 가용성을 높이는 명시적 트레이드오프다.\n\n### 트레이드오프\n\n대가는 **디버깅·추적의 복잡성** 이다. 하나의 사용자 행동이 여러 비동기 스트림으로 갈라지므로, 분산 트레이싱과 이벤트 스키마 관리(스키마 진화·하위호환)가 필수가 된다. 또 \"방금 저장했는데 검색에 안 보인다\" 같은 결과적 일관성으로 인한 UX 혼란을 제품 레벨에서 다뤄야 한다."
     }
    ],
    "github": {
-    "org": "postmanlabs",
-    "repos": []
+    "org": "https://github.com/postmanlabs",
+    "repos": [
+     {
+      "name": "postmanlabs/newman",
+      "url": "https://github.com/postmanlabs/newman",
+      "desc": "Postman 컬렉션을 CLI/CI에서 실행하는 공식 커맨드라인 러너",
+      "lang": "JavaScript",
+      "stars": 7230
+     },
+     {
+      "name": "postmanlabs/postman-app-support",
+      "url": "https://github.com/postmanlabs/postman-app-support",
+      "desc": "데스크톱/웹 앱의 공개 이슈 트래커 및 지원 저장소",
+      "lang": "JavaScript",
+      "stars": 6004
+     },
+     {
+      "name": "postmanlabs/openapi-to-postman",
+      "url": "https://github.com/postmanlabs/openapi-to-postman",
+      "desc": "OpenAPI 스펙을 Postman 컬렉션으로 변환하는 컨버터",
+      "lang": "JavaScript",
+      "stars": 1054
+     },
+     {
+      "name": "postmanlabs/postman-code-generators",
+      "url": "https://github.com/postmanlabs/postman-code-generators",
+      "desc": "요청을 40여 개 언어 코드 스니펫으로 생성하는 엔진",
+      "lang": "JavaScript",
+      "stars": 1045
+     },
+     {
+      "name": "postmanlabs/postman-collection",
+      "url": "https://github.com/postmanlabs/postman-collection",
+      "desc": "컬렉션·요청·환경을 프로그래밍적으로 다루는 핵심 SDK 모델",
+      "lang": "JavaScript",
+      "stars": 496
+     }
+    ]
    },
    "sources": [
-    "https://blog.postman.com/category/engineering"
+    "https://blog.postman.com/engineering/",
+    "https://github.com/postmanlabs",
+    "https://www.postman.com/api-platform/api-monitoring/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "zoho",
