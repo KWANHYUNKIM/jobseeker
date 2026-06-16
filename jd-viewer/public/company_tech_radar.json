@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T03:24:07",
+ "generated_at": "2026-06-17T04:58:57",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 77,
+ "refined": 79,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -983,16 +983,16 @@
    "stack": {
     "backend": [
      {
+      "name": "gRPC",
+      "count": 5
+     },
+     {
       "name": "Node.js",
       "count": 5
      },
      {
       "name": "Spring Boot",
       "count": 5
-     },
-     {
-      "name": "gRPC",
-      "count": 4
      },
      {
       "name": "Go",
@@ -1037,6 +1037,10 @@
       "count": 3
      },
      {
+      "name": "TypeScript",
+      "count": 2
+     },
+     {
       "name": "Cocos2d-x",
       "count": 1
      },
@@ -1050,10 +1054,6 @@
      },
      {
       "name": "Roact",
-      "count": 1
-     },
-     {
-      "name": "TypeScript",
       "count": 1
      },
      {
@@ -1091,19 +1091,19 @@
       "count": 3
      },
      {
-      "name": "Druid",
-      "count": 2
-     },
-     {
       "name": "Aerospike",
       "count": 1
      },
      {
-      "name": "Apache Spark",
+      "name": "Amazon Aurora MySQL",
       "count": 1
      },
      {
-      "name": "Aurora",
+      "name": "Amazon S3",
+      "count": 1
+     },
+     {
+      "name": "Apache Druid",
       "count": 1
      }
     ],
@@ -1118,7 +1118,7 @@
      },
      {
       "name": "Terraform",
-      "count": 4
+      "count": 5
      },
      {
       "name": "사내 데이터센터",
@@ -1133,6 +1133,10 @@
       "count": 1
      },
      {
+      "name": "Amazon EC2",
+      "count": 1
+     },
+     {
       "name": "AWS 하이브리드",
       "count": 1
      },
@@ -1141,11 +1145,7 @@
       "count": 1
      },
      {
-      "name": "ELK",
-      "count": 1
-     },
-     {
-      "name": "Envoy",
+      "name": "CloudFront CDN",
       "count": 1
      }
     ]
@@ -1160,10 +1160,6 @@
      "count": 1
     },
     {
-     "name": "Burst scaling",
-     "count": 1
-    },
-    {
      "name": "C++ Authoritative 실시간 게임 서버",
      "count": 1
     },
@@ -1173,6 +1169,10 @@
     },
     {
      "name": "Channel·Shard·World 분리 동시접속 확장",
+     "count": 1
+    },
+    {
+     "name": "CQRS + read-heavy caching",
      "count": 1
     }
    ]
@@ -1925,12 +1925,12 @@
    ],
    "languages": [
     {
-     "name": "Python",
+     "name": "Go",
      "count": 5
     },
     {
-     "name": "Go",
-     "count": 4
+     "name": "Python",
+     "count": 5
     },
     {
      "name": "Java",
@@ -1949,11 +1949,11 @@
      "count": 2
     },
     {
-     "name": "C",
+     "name": "C++",
      "count": 1
     },
     {
-     "name": "C++",
+     "name": "C/C++",
      "count": 1
     }
    ],
@@ -1976,6 +1976,10 @@
       "count": 1
      },
      {
+      "name": "C/C++",
+      "count": 1
+     },
+     {
       "name": "Django/Python",
       "count": 1
      },
@@ -1993,10 +1997,6 @@
      },
      {
       "name": "Java",
-      "count": 1
-     },
-     {
-      "name": "Java / Spring Boot",
       "count": 1
      }
     ],
@@ -2106,8 +2106,8 @@
       "count": 2
      },
      {
-      "name": "사내 데이터센터",
-      "count": 2
+      "name": "Catalyst",
+      "count": 1
      },
      {
       "name": "CloudFront / WAF",
@@ -15950,38 +15950,46 @@
    "languages": [
     "Java",
     "JavaScript",
-    "C",
-    "Python"
+    "C/C++",
+    "Python",
+    "Go"
    ],
    "stack": {
     "backend": [
-     "Java",
-     "사내 프레임워크"
+     "Java (JVM)",
+     "사내 application framework",
+     "C/C++ (storage·infra 계층)",
+     "Servlet 기반 멀티테넌트 컨테이너"
     ],
     "frontend": [
-     "사내 JS 프레임워크",
-     "React"
+     "사내 JS 프레임워크 (ZAS/Deluge UI)",
+     "React (신규 제품)",
+     "사내 컴포넌트 라이브러리"
     ],
     "data": [
      "MySQL",
-     "사내 분산 스토리지",
+     "사내 분산 스토리지 (ZGrid 계열)",
      "Cassandra",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Redis/사내 캐시"
     ],
     "infra": [
-     "사내 데이터센터",
-     "베어메탈 서버"
+     "자체 데이터센터 (IN·US·EU·SEA)",
+     "베어메탈 서버",
+     "사내 오케스트레이션/배포 시스템",
+     "Catalyst (사내 serverless 플랫폼)"
     ]
    },
    "architecture": [
     "Multi-tenant SaaS",
-    "Vertically integrated",
-    "Self-hosted"
+    "Vertically integrated full-stack",
+    "Self-hosted private cloud",
+    "Region-pinned data residency"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Zoho 웹 앱<br/>사내 JS 프레임워크\"]\n    APP[\"모바일 앱<br/>React\"]\n  end\n  subgraph Gateway\n    GW[\"통합 게이트웨이<br/>사내 Java 프레임워크\"]\n  end\n  subgraph Services\n    CRM[\"Zoho CRM<br/>Java\"]\n    MAIL[\"Zoho Mail<br/>Java\"]\n    DOCS[\"Zoho Docs<br/>Java + C\"]\n  end\n  subgraph Async\n    QUEUE[\"메시지 큐<br/>사내 큐 시스템\"]\n  end\n  subgraph Data\n    MYSQL[\"테넌트 DB<br/>MySQL\"]\n    DSTORE[\"분산 스토리지<br/>사내 스토리지\"]\n    CASS[\"활동 로그<br/>Cassandra\"]\n    ES[\"전문 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    DC[\"자체 데이터센터<br/>베어메탈 서버\"]\n  end\n  WEB --> GW\n  APP --> GW\n  GW --> CRM\n  GW --> MAIL\n  GW --> DOCS\n  CRM --> QUEUE\n  QUEUE --> MAIL\n  CRM --> MYSQL\n  MAIL --> DSTORE\n  DOCS --> CASS\n  CRM --> ES\n  DC --> MYSQL\n  DC --> DSTORE",
-   "why_language": "50개 이상의 통합 비즈니스 앱을 자체 데이터센터에서 운영하며 장기 안정성과 이식성을 중시해 JVM(Java)을 핵심으로 쓴다. 외부 의존을 줄이려고 프레임워크까지 사내 자체 개발하는 문화가 강하다.",
-   "why_architecture": "프라이버시와 비용 통제를 위해 퍼블릭 클라우드 대신 자체 데이터센터에 수직 통합된 멀티테넌트 SaaS 플랫폼을 운영한다. 인프라부터 앱까지 직접 만들어 외부 종속을 최소화한다.",
-   "summary": "자체 데이터센터와 사내 자작 스택 위에서 JVM으로 50+ SaaS 앱을 돌리는 회사.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web Apps<br/>사내 JS Framework + React\"]\n    MOB[\"Mobile/Desktop<br/>Native + WebView\"]\n  end\n  subgraph Edge\n    LB[\"Edge LB/Proxy<br/>사내 reverse proxy\"]\n    DNS[\"GeoDNS<br/>data residency 라우팅\"]\n  end\n  subgraph App\n    GW[\"App Gateway<br/>Java Servlet container\"]\n    AUTH[\"Identity/SSO<br/>Zoho Accounts (IAM)\"]\n    SVC[\"Product Services<br/>Java + 사내 framework\"]\n    DELUGE[\"Scripting Engine<br/>Deluge runtime\"]\n  end\n  subgraph Data\n    MYSQL[\"OLTP<br/>MySQL (tenant-sharded)\"]\n    ZGRID[\"Distributed Store<br/>ZGrid (사내 KV/blob)\"]\n    CASS[\"Wide-column<br/>Cassandra\"]\n    ES[\"Search/Index<br/>Elasticsearch\"]\n    CACHE[\"Cache<br/>Redis/사내 cache\"]\n  end\n  subgraph Async\n    MQ[\"Message/Queue<br/>사내 messaging bus\"]\n    JOB[\"Batch/Cron<br/>Job scheduler\"]\n  end\n  subgraph Infra\n    DC[\"Owned Datacenters<br/>Bare-metal fleet\"]\n    CAT[\"Serverless<br/>Catalyst\"]\n  end\n  DNS --> LB\n  WEB --> LB\n  MOB --> LB\n  LB --> GW\n  GW --> AUTH\n  GW --> SVC\n  SVC --> DELUGE\n  SVC -->|SQL| MYSQL\n  SVC --> ZGRID\n  SVC --> CASS\n  SVC -->|query| ES\n  SVC --> CACHE\n  SVC --> MQ\n  MQ --> JOB\n  JOB --> ES\n  SVC --> CAT\n  MYSQL --- DC\n  ZGRID --- DC\n  CASS --- DC",
+   "why_language": "수십 개 제품(CRM·Mail·WorkDrive·Books 등)을 단일 멀티테넌트 플랫폼 위에서 30년 가까이 운영하려면 JVM의 안정성·성숙한 운영 도구·강한 하위호환성이 필요해 Java를 백엔드 핵심으로 삼았다. 스토리지 엔진·네트워크 데몬 등 성능이 결정적인 하부 계층은 C/C++로 직접 작성하고, 자동화·데이터 파이프라인에는 Python, 신규 인프라 컴포넌트에는 Go를 쓰는 식으로 계층별로 언어를 선택한다.",
+   "why_architecture": "Zoho는 외부 퍼블릭 클라우드에 의존하지 않고 자체 데이터센터·베어메탈 위에 전체 스택을 수직 통합해, 비용을 트래픽이 아니라 하드웨어 감가상각으로 고정하고 고객 데이터의 주권·잔존(residency)을 직접 통제한다. 단일 멀티테넌트 코어에 수많은 SaaS 제품을 올려 공통 Identity·스토리지·배포 기반을 공유함으로써 제품 추가의 한계비용을 낮추는 전략이다.",
+   "summary": "퍼블릭 클라우드 없이 자체 데이터센터·베어메탈 위에 Java 멀티테넌트 코어와 사내 분산 스토리지로 수십 개 SaaS를 수직 통합한 'own-everything' 아키텍처.",
    "deep_dive": [
     {
      "topic": "자체 데이터센터·베어메탈 운영",
@@ -15998,16 +16006,31 @@
     {
      "topic": "특이한 엔지니어링 결정: 외부 종속 최소화",
      "body": "### 역행하는 선택의 논리\nZoho의 엔지니어링은 업계 주류(퍼블릭 클라우드·오픈소스·SaaS 의존)와 의도적으로 역행한다. 그 일관된 원칙은 \"외부 종속 최소화\"다.\n- **인프라**: 퍼블릭 클라우드 대신 자체 데이터센터·베어메탈.\n- **프레임워크**: 외부 프레임워크 대신 사내 자체 개발.\n- **데이터**: 매니지드 DB 대신 자체 분산 스토리지.\n- **제품 통합**: 50+ 앱을 자사 공통 플랫폼에 수직 통합해 외부 SaaS를 끼우지 않는다.\n\n### 왜 이렇게까지\n- **프라이버시**: 고객 데이터를 자사가 끝까지 통제한다는 신뢰가 차별점이다.\n- **비용·마진**: 외부 임대료 없이 장기 단가를 낮춰 가격 경쟁력을 만든다.\n- **독립성**: 특정 벤더 정책 변경·가격 인상·종료 리스크에서 자유롭다.\n\n### 트레이드오프\n이 전략은 막대한 자체 역량·인력·자본을 요구하고, 스케일 민첩성·생태계 이점을 포기한다. 시장 대다수와 반대 방향이라 모방하기 어렵다. 하지만 Zoho는 수십 년·거대 규모·일관된 철학으로 이를 지속 가능한 강점으로 만들었다. \"느리지만 종속 없는\" 길을 의도적으로 택한 대표 사례다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: GeoDNS → 멀티테넌트 Servlet 코어",
+     "body": "### 한 요청이 거치는 경로\nZoho의 요청 처리는 **데이터 잔존(data residency)**을 1급 제약으로 두고 설계되어 있다. 사용자가 `crm.zoho.com` / `crm.zoho.eu` / `crm.zoho.in` 같은 도메인에 접속하면 가장 먼저 **GeoDNS·계정 메타데이터**가 그 테넌트가 어느 데이터센터(US/EU/IN/AU/SEA/JP 등)에 '핀(pin)'되어 있는지를 결정한다. 이는 단순 지연 최적화가 아니라 **GDPR·현지 데이터 주권 규정** 때문에 테넌트의 모든 데이터가 한 리전 밖으로 나가지 않도록 강제하는 라우팅이다.\n\n### Edge → App Gateway\n- 리전 진입 후 **사내 reverse proxy/로드밸런서**가 베어메탈 애플리케이션 노드 풀로 분산한다. AWS ELB 같은 매니지드 LB가 아니라 자체 운영 프록시다.\n- 애플리케이션 계층은 전통적인 **Java Servlet 컨테이너** 기반이다. 마이크로서비스 우선이 아니라, 오래 검증된 **모듈러 모놀리식+서비스 혼합** 형태로, 하나의 제품(예: CRM)이 거대한 Java 애플리케이션으로 떠 있고 공통 기능(메일 발송, 파일, 검색)은 별도 서비스로 분리돼 있다.\n\n### 멀티테넌시의 핵심: tenant context 주입\n모든 요청은 게이트웨이에서 **인증(Zoho Accounts/IAM)** 을 통과하면서 `ZUID`(Zoho User ID)와 `ZGID`(조직 ID)가 담긴 **tenant context**가 thread-local로 주입된다. 이후 비즈니스 로직·DB 접근·캐시 키·파일 경로 모두 이 context를 통해 자동으로 테넌트 격리된다. 즉 애플리케이션 코드는 '내가 멀티테넌트'라는 것을 거의 의식하지 않고, 프레임워크 계층이 `WHERE org_id = ?` 스코핑과 샤드 선택을 책임진다.\n\n### Deluge: 고객이 끼어드는 실행 경로\n특이점은 **Deluge**(Data Enriched Language for the Universal Grid)라는 사내 스크립팅 런타임이다. 고객이 CRM 워크플로·커스텀 함수·버튼을 Deluge로 작성하면, 요청 처리 도중 **샌드박스화된 Deluge 인터프리터**가 호출돼 고객 코드를 실행한다. 멀티테넌트 JVM 안에서 임의 고객 코드를 안전·공정하게 돌려야 하므로 실행 시간·메모리·외부 호출에 **쿼터/타임아웃**이 걸린다. 이것이 Zoho를 단순 SaaS가 아니라 **로우코드 플랫폼**으로 만드는 핵심 실행 경로다."
+    },
+    {
+     "topic": "데이터 저장·샤딩·일관성 전략: MySQL 테넌트 샤딩과 ZGrid",
+     "body": "### 왜 MySQL인가, 그리고 어떻게 쪼개는가\nZoho의 OLTP 백본은 **MySQL**이다. 단일 거대 인스턴스가 아니라 **테넌트(조직) 단위 샤딩**이 기본 모델이다. 작은 테넌트 다수는 공유 스키마/공유 DB에 `org_id`로 행 수준 격리되고, 트래픽이 큰 엔터프라이즈 테넌트는 별도 DB/샤드로 떼어내는 **혼합(pooled + isolated) 멀티테넌시**를 쓴다. 이 구조의 장점:\n- **폭발 반경(blast radius) 축소**: 한 샤드 장애가 전체가 아니라 일부 테넌트에만 영향.\n- **점진적 마이그레이션**: 무거워진 테넌트를 핫스팟 샤드에서 한가한 샤드로 옮기는 운영이 가능.\n\n일관성 모델은 **샤드 내부는 강한 일관성(단일 MySQL 트랜잭션)**, 샤드/제품 간은 **메시지 버스를 통한 최종 일관성**으로 가른다. 즉 한 CRM 레코드 갱신은 ACID지만, 'CRM에서 만든 연락처가 Campaigns에 반영' 같은 cross-product 동기화는 비동기 이벤트로 흐른다.\n\n### ZGrid / 사내 분산 스토리지\n파일(WorkDrive), 메일 본문, 첨부, 대용량 blob은 관계형 DB가 아니라 **사내 분산 스토리지(흔히 ZGrid 계열로 알려진 KV/오브젝트 스토어)** 에 들어간다. 핵심 설계 의도:\n- **베어메탈 디스크를 직접 끌어쓰는** 자체 스토리지라서 S3 같은 외부 오브젝트 스토리지 비용·종속이 없다.\n- 복제(replication factor)와 리전 고정을 스토리지 계층에서 직접 통제 → 데이터 잔존 규정을 storage 레벨에서 보장.\n\n### Cassandra와 Elasticsearch의 역할 분담\n- **Cassandra**: 시계열/대량 append 워크로드 — 활동 로그, 알림, 분석성 이벤트처럼 쓰기량이 크고 단일 파티션 조회가 많은 데이터.\n- **Elasticsearch**: 전 제품 공통 **검색·인덱싱** 계층. MySQL이 source-of-truth이고, 변경분이 인덱싱 파이프라인을 통해 ES로 흘러 들어가 전문검색/필터를 담당한다. 즉 ES는 1차 저장소가 아니라 **파생 인덱스**다.\n\n| 데이터 종류 | 저장소 | 일관성 |\n|---|---|---|\n| 트랜잭션 레코드 | MySQL (샤딩) | 강한 일관성(샤드 내) |\n| 파일/blob/메일 본문 | 사내 분산 스토리지 | 복제 기반, 최종 일관성 |\n| 이벤트/로그/시계열 | Cassandra | 최종 일관성 |\n| 검색 인덱스 | Elasticsearch | 파생/지연 반영 |"
+    },
+    {
+     "topic": "외부 종속 0을 향한 트레이드오프: 메일 인프라부터 결제까지 자가 운영",
+     "body": "### 'own the full stack'의 극단적 실천\nZoho의 가장 특징적인 엔지니어링 결정은 **거의 모든 의존 컴포넌트를 직접 만들거나 직접 운영한다**는 점이다. 대부분의 SaaS가 빌려 쓰는 것을 Zoho는 내재화했다:\n- **클라우드**: AWS/GCP/Azure 대신 자체 데이터센터·베어메탈.\n- **이메일 전송**: 외부 ESP(SendGrid 등) 대신 **자체 SMTP/메일 인프라**(Zoho Mail). 자사 제품의 알림·캠페인 메일도 자기 인프라로 발송.\n- **Identity/SSO**: 외부 IDaaS 대신 **Zoho Accounts**가 전 제품 공통 인증·OAuth·MFA를 담당.\n- **분석·BI, 결제, 화상회의(Meeting), 문서 협업** 등도 외부 SaaS가 아니라 사내 제품으로 충당.\n\n### 트레이드오프\n**이점**\n- 비용 구조가 **트래픽 비례(opex)** 가 아니라 **하드웨어 감가상각(capex)** 으로 고정 → 사용자당 비용이 매우 낮아져 공격적 가격(저가 SaaS)이 가능.\n- 벤더 종속·가격 인상·약관 변경 리스크 제거, 데이터 주권 완전 통제.\n- 다운스트림 장애가 '남의 클라우드' 사정에 좌우되지 않음.\n\n**비용**\n- 데이터센터·네트워크·하드웨어 수명주기를 **직접 운영해야 하는 막대한 인적·자본 부담**. 이를 감당하기 위해 Zoho는 도시가 아닌 **시골(Tenkasi 등)에 캠퍼스/데이터센터를 두고 자체 인력을 장기 양성**하는 전략(Zoho Schools of Learning)을 함께 운영한다 — 기술 결정과 인사 전략이 한 묶음이다.\n- 매니지드 서비스의 'autoscale 버튼'이 없으므로 **용량 계획(capacity planning)** 을 미리 해야 하고, 급격한 스파이크 대응 유연성은 퍼블릭 클라우드보다 떨어진다. 그래서 사내 **Catalyst(serverless 플랫폼)** 를 만들어 베어메탈 위에서 함수/오토스케일 추상을 자체 제공하는 방향으로 보완한다.\n\n### 시사점\n이 모델은 '느리지만 30년을 버티는' 선택이다. 단기 출시 속도보다 **장기 단위경제(unit economics)와 통제권**을 우선한 결과이며, 같은 SaaS라도 Salesforce/HubSpot의 클라우드-네이티브 전략과 정반대 지점에 서 있다."
     }
    ],
    "github": {
-    "org": "zoho"
+    "org": "https://github.com/zoho",
+    "repos": []
    },
    "sources": [
-    "https://www.zoho.com/blog/engineering"
+    "https://www.zoho.com/security.html",
+    "https://www.zoho.com/deluge/",
+    "https://www.zoho.com/data-protection/data-centers.html"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "dream11",
@@ -16015,43 +16038,54 @@
    "country": "IN",
    "domain": "게임",
    "languages": [
-    "Scala",
     "Java",
+    "Scala",
     "Go",
     "Python",
-    "JavaScript"
+    "JavaScript",
+    "Kotlin"
    ],
    "stack": {
     "backend": [
+     "Spring Boot (Java)",
      "Akka (Scala)",
-     "Spring Boot",
-     "Go"
+     "Go",
+     "Play Framework",
+     "gRPC"
     ],
     "frontend": [
+     "React Native",
      "React",
-     "React Native"
+     "TypeScript"
     ],
     "data": [
-     "Kafka",
      "Aerospike",
+     "Apache Kafka",
+     "Apache Druid",
+     "Amazon Aurora MySQL",
+     "Redis",
      "Cassandra",
-     "Druid",
-     "Redis"
+     "Amazon S3"
     ],
     "infra": [
-     "Kubernetes",
-     "AWS"
+     "AWS",
+     "Kubernetes (EKS)",
+     "Amazon EC2",
+     "CloudFront CDN",
+     "Terraform",
+     "Spinnaker/ArgoCD"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
-    "Burst scaling"
+    "Event-driven (Kafka)",
+    "CQRS + read-heavy caching",
+    "Predictive burst auto-scaling"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Dream11 앱<br/>React Native\"]\n    WEB[\"웹 클라이언트<br/>React\"]\n  end\n  subgraph Gateway\n    GW[\"버스트 트래픽 게이트웨이<br/>Go\"]\n  end\n  subgraph Services\n    TEAM[\"팀 구성 서비스<br/>Akka Scala\"]\n    SCORE[\"실시간 점수 엔진<br/>Akka Scala\"]\n    CONTEST[\"콘테스트 매칭<br/>Spring Boot\"]\n  end\n  subgraph Async\n    KAFKA[\"실시간 이벤트 스트림<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    AERO[\"초저지연 인메모리<br/>Aerospike\"]\n    CASS[\"유저 데이터<br/>Cassandra\"]\n    DRUID[\"실시간 분석<br/>Druid\"]\n    REDIS[\"리더보드 캐시<br/>Redis\"]\n  end\n  subgraph Infra\n    K8S[\"버스트 오토스케일링<br/>Kubernetes\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> TEAM\n  GW --> CONTEST\n  CONTEST --> SCORE\n  SCORE --> KAFKA\n  KAFKA --> DRUID\n  SCORE --> AERO\n  TEAM --> CASS\n  SCORE --> REDIS\n  K8S --> AWS",
-   "why_language": "크리켓 경기 시작 직전 수백만 사용자가 동시에 팀을 확정하는 극단적 버스트 트래픽을 처리해야 해 액터 모델 기반 Scala/Akka의 동시성을 핵심에 쓴다. JVM 생태계로 처리량과 안정성을 확보한다.",
-   "why_architecture": "경기 직전 몇 분간 트래픽이 평소의 수십 배로 치솟으므로 이벤트 드리븐 마이크로서비스로 버스트 스케일링을 설계하고, Aerospike·Druid로 초고속 읽기와 실시간 집계를 지원한다.",
-   "summary": "Scala/Akka 이벤트 드리븐으로 경기 직전 버스트 트래픽을 견디는 판타지 게임.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n    CDN[\"CDN + WAF<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Core[\"Core Services (Microservices)\"]\n    TEAM[\"Team / Lineup Svc<br/>Java Spring Boot\"]\n    CONTEST[\"Contest / Join Svc<br/>Scala Akka\"]\n    WALLET[\"Wallet / Payments<br/>Go\"]\n    SCORE[\"Live Scoring / Rank<br/>Go + Akka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    AERO[\"Hot KV Store<br/>Aerospike\"]\n    REDIS[\"Cache<br/>Redis\"]\n    AURORA[\"Txn DB<br/>Aurora MySQL\"]\n    DRUID[\"Realtime OLAP<br/>Apache Druid\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Proc<br/>Spark / Flink\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Orchestration<br/>Kubernetes EKS\"]\n    SCALE[\"Predictive Pre-warm<br/>Match-calendar autoscaler\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> ALB --> GW\n  GW -->|REST/gRPC| TEAM\n  GW -->|REST/gRPC| CONTEST\n  GW -->|REST/gRPC| WALLET\n  TEAM --> AERO\n  TEAM --> REDIS\n  CONTEST --> AURORA\n  CONTEST -->|join events| KAFKA\n  WALLET --> AURORA\n  SCORE --> AERO\n  SCORE -->|rank updates| KAFKA\n  KAFKA --> FLINK --> DRUID\n  KAFKA --> SCORE\n  SCALE --> EKS\n  EKS --> Core",
+   "why_language": "초저지연·고동시성이 생명인 라이브 스코어링과 랭킹 집계에는 JVM 위에서 액터 모델로 백프레셔를 다루는 Scala/Akka와, GC 영향이 적고 가벼운 고루틴으로 수십만 RPS를 처리하는 Go를 쓴다. 반면 결제·콘테스트 같은 견고한 트랜잭션 도메인은 생태계가 성숙한 Java/Spring Boot로, 데이터·ML 파이프라인은 Python으로 분리해 도메인별로 가장 적합한 언어를 선택하는 polyglot 전략을 취한다.",
+   "why_architecture": "경기 라인업 발표 직후 수 분 안에 수백만 사용자가 동시에 팀을 수정하는 극단적 버스트 트래픽이 핵심 제약이라, 도메인을 마이크로서비스로 쪼개 결제·콘테스트·스코어링을 독립 확장·격리한다. 읽기가 압도적으로 많고 쓰기는 멱등성이 중요하므로 Kafka 기반 이벤트 드리븐 + CQRS로 쓰기와 조회 경로를 분리하고, 반응형 오토스케일링으로는 못 따라잡는 순간 폭증을 경기 일정 기반 예측 사전 웜업으로 대비한다.",
+   "summary": "IPL 경기 직전 수백만 동시 접속 버스트를 견디기 위해 Aerospike·Kafka·Go/Akka·예측 사전 스케일링으로 무장한 이벤트 드리븐 MSA",
    "deep_dive": [
     {
      "topic": "경기 직전 버스트 트래픽 대응",
@@ -16068,13 +16102,35 @@
     {
      "topic": "이벤트 기반 MSA와 격리",
      "body": "### 버스트를 견디는 구조\nDream11은 이벤트 드리븐 마이크로서비스로 버스트를 흡수한다.\n- **이벤트로 결합 분리**: 팀 확정·점수 갱신·결제·알림을 `Kafka` 이벤트로 잇는다. 한 도메인 폭주가 다른 도메인을 막지 않는다.\n- **백프레셔·큐잉**: 진입점이 폭주를 큐로 받아 하위 서비스를 보호한다. 받아만 두고 처리 속도에 맞춰 소비한다.\n- **읽기/쓰기 분리**: 사용자 조회(점수·랭킹 보기)는 캐시·읽기 전용 저장소로, 쓰기(팀 확정·점수 갱신)는 별도 경로로 분리해 서로 간섭을 줄인다.\n\n### 정합성\n판타지 게임은 상금이 걸려 점수 집계·순위 결정이 정확해야 한다. Kafka 원본 이벤트를 단일 진실원으로 두고, 멱등 소비로 중복 집계를 막는다. 최종 순위는 검증을 거쳐 확정한다.\n\n### 인프라\n`Kubernetes` + `AWS`로 컨테이너를 운영하며, 경기 일정 기반으로 선제 스케일한다.\n\n### 트레이드오프\n이벤트 드리븐 + 버스트 스케일은 최종 일관성·운영 복잡도를 받아들이는 대가로 극단적 확장성을 얻는다. \"경기 직전 절대 안 멈춘다\"가 사업의 생명이라, 이 복잡도를 감수하고 격리·백프레셔·전용 저장소에 집중 투자한다."
+    },
+    {
+     "topic": "팀 수정 요청의 end-to-end 흐름 (라인업 마감 직전 폭증 경로)",
+     "body": "### 한 번의 \"팀 저장\"이 시스템을 통과하는 길\n\nDream11에서 가장 트래픽이 집중되는 순간은 경기 시작 직전, 정확히는 **양 팀 라인업(플레잉 일레븐)이 발표되는 순간**이다. 토스 직후 벤치 멤버가 확정되면 수백만 명이 동시에 앱을 열어 마지막 순간에 캡틴/부캡틴과 선수 구성을 바꾼다. 마감 시각(deadline)을 1초라도 넘기면 거래가 무효이므로, 모든 요청이 **수 분이라는 좁은 시간 창에 압축**된다.\n\n요청 처리 흐름을 단계별로 보면:\n\n1. **Edge / CDN** — 정적 자산(선수 이미지, JS 번들)은 `CloudFront`에서 처리되어 오리진 부하를 줄인다. WAF가 봇/어뷰징 트래픽을 1차 차단한다.\n2. **L7 LB → API Gateway** — `ALB`가 트래픽을 받아 `API Gateway`로 보낸다. 게이트웨이는 인증 토큰 검증, 레이트 리밋, 라우팅을 담당하며 이 자체가 stateless 하게 수평 확장된다.\n3. **Team/Lineup Service** — 팀 구성 검증(크레딧 100 이내, 포지션별 인원 제약, 동일 경기 1팀 규칙 등)은 **읽기 집약적**이다. 선수 메타·크레딧·사용자의 현재 팀 상태는 `Aerospike`/`Redis`에서 sub-ms로 읽는다. RDBMS를 핫패스에 두지 않는 것이 핵심 결정이다.\n4. **마감 검증** — deadline 체크는 서버 권위 시각을 기준으로 한다. 클라이언트 시계를 믿지 않고, 게이트웨이/서비스 단에서 단조 증가 타임스탬프로 컷오프를 강제한다.\n5. **쓰기 & 이벤트** — 저장이 확정되면 변경은 동기적으로 핫 스토어(Aerospike)에 반영되고, 동시에 `Kafka`로 `team.updated` 이벤트가 발행된다. 다운스트림(분석, 콘테스트 스냅샷, 사기 탐지)은 이 이벤트를 비동기로 소비한다.\n\n### 왜 이렇게 설계했나\n\n- **동기 경로는 최대한 짧게**: 사용자에게 보이는 응답 경로에는 Aerospike 읽기/쓰기와 검증만 남기고, 나머지는 전부 Kafka 뒤로 밀어내 p99 지연을 방어한다.\n- **마감 직전 쏠림** 때문에 평균 RPS가 아니라 **순간 피크 RPS**가 용량 산정 기준이다. 그래서 평소 대비 수십 배 용량을 경기 시작 전에 미리 띄워 둔다(아래 사전 웜업 토픽 참조).\n- 팀 저장은 **멱등(idempotent)** 해야 한다. 네트워크 재시도로 같은 저장이 여러 번 와도 최종 상태는 하나여야 하므로, 요청에 client-generated idempotency key를 실어 중복 쓰기를 흡수한다."
+    },
+    {
+     "topic": "콘테스트 참가·지갑 트랜잭션의 일관성 전략 (돈이 걸린 쓰기 경로)",
+     "body": "### 읽기는 캐시, 쓰기는 강한 일관성\n\nDream11의 데이터 도메인은 일관성 요구가 극명하게 갈린다.\n\n| 도메인 | 저장소 | 일관성 모델 | 이유 |\n|---|---|---|---|\n| 선수 크레딧/메타, 사용자 팀 | `Aerospike` + `Redis` | 최종 일관성 + 핫캐시 | 초저지연 대량 읽기, 손실 허용 가능 |\n| 라이브 점수·랭킹 | `Aerospike` / `Druid` | 근실시간 집계 | 빠른 갱신 우선 |\n| **지갑/결제/콘테스트 참가** | `Aurora MySQL` | **강한 트랜잭션 일관성(ACID)** | 돈이 걸려 절대 틀리면 안 됨 |\n\n### 콘테스트 참가의 어려움\n\n콘테스트 참가는 **돈과 한정 자원(슬롯)**이 동시에 걸린 쓰기다. 100만 명 규모 메가 콘테스트는 정원이 있고, 동시에 수만 건의 참가 요청이 같은 콘테스트에 몰린다. 여기서 두 가지를 동시에 만족해야 한다:\n\n1. **지갑 차감의 정확성** — 잔액보다 많이 쓰면 안 되고, 중복 차감도 안 된다.\n2. **슬롯 초과 방지** — 정원 100만이면 1,000,001번째 참가는 거부돼야 한다.\n\n전략:\n\n- **지갑은 RDBMS 트랜잭션 + 행 잠금/낙관적 락**으로 처리한다. `deposit/winnings/bonus` 같은 계정 버킷을 분리해 차감 우선순위 규칙을 적용한다. 모든 거래는 append-only **ledger(원장)** 로 기록해 사후 정산·감사·환불이 가능하도록 한다.\n- **멱등성 키**로 결제 게이트웨이 콜백/재시도의 이중 차감을 막는다.\n- **슬롯 카운팅**은 RDBMS 단일 행에 모든 참가가 직렬화되면 병목이 되므로, 카운터를 `Redis`/in-memory로 빠르게 예약(reserve)한 뒤 비동기로 영속화하거나 샤딩된 카운터를 합산하는 식으로 hot-row contention을 완화한다. 초과 예약분은 보상 트랜잭션으로 롤백한다.\n\n### 핵심 트레이드오프\n\n읽기 경로의 최종 일관성(캐시 stale 허용)과 돈 경로의 강한 일관성을 **물리적으로 다른 저장소로 분리**한 것이 핵심이다. 모든 걸 한 DB로 했다면 라이브 점수 폭주 읽기가 결제 트랜잭션을 굶기거나, 반대로 결제 락이 점수 갱신을 막았을 것이다. 도메인별 저장소 분리가 곧 장애 격리이기도 하다."
+    },
+    {
+     "topic": "경기 일정 기반 예측 사전 웜업 (Predictive Pre-scaling)",
+     "body": "### 반응형 오토스케일링이 통하지 않는 이유\n\n일반적인 `HPA`(CPU/메모리 기반 수평 확장)나 EC2 Auto Scaling은 **부하가 오른 뒤 반응**한다. 새 노드를 띄우고, 컨테이너를 스케줄링하고, JVM을 워밍업하고, 커넥션 풀을 채우는 데 수십 초~수 분이 걸린다. 그런데 Dream11의 피크는 라인업 발표 후 **수십 초 만에 평소의 수십 배**로 치솟는다. 반응형으로는 이미 늦어 사용자가 에러를 본다.\n\n### 일정이 곧 미래 부하다\n\nDream11의 결정적 강점은 **부하 폭증 시점을 미리 안다는 것**이다. 크리켓/축구 경기 일정은 정해져 있고, 마감 시각도 알려져 있다. 따라서:\n\n- **경기 캘린더를 입력으로 삼는 예측 스케일러**가 경기 시작 한참 전부터 용량을 미리 끌어올린다. IPL 결승 같은 빅매치는 일반 리그전보다 더 큰 배수로 사전 프로비저닝한다.\n- **워밍업된 풀(warm pool)**: 단순히 인스턴스를 띄우는 게 아니라 JVM JIT, 커넥션 풀, 캐시 라인을 미리 데워(prime) 첫 요청부터 p99가 튀지 않게 한다. 콜드 스타트 비용을 피크 전에 미리 지불하는 것이다.\n- **캐시 사전 적재(cache pre-warming)**: 해당 경기의 선수 메타·크레딧·콘테스트 정의를 Aerospike/Redis에 미리 채워 cold miss로 인한 오리진 폭격을 막는다.\n\n### 경기 후 축소와 비용\n\n마감이 지나면 트래픽은 라이브 스코어링/랭킹 조회 중심으로 성격이 바뀌고 총량은 빠르게 감소한다. 그래서 스케일러는 **경기 종료 후 신속히 축소**해 거대한 idle 용량 비용을 줄인다. 결국 이 시스템은 \"평균에 맞춰 자동 확장\"하는 게 아니라 **\"알려진 이벤트 곡선에 맞춰 용량을 미리 그려 넣는\"** 스케줄 주도 방식이며, 이것이 fantasy sports라는 도메인 특성을 가장 잘 활용한 엔지니어링 결정이다."
+    },
+    {
+     "topic": "장애 격리와 우아한 성능 저하 (Graceful Degradation)",
+     "body": "### 피크 중 일부가 죽어도 코어는 살린다\n\n피크 순간엔 어떤 의존성이든 흔들릴 수 있다. Dream11의 복원력 설계는 **\"모두 완벽하게 vs 아무것도 안 됨\" 대신 기능 우선순위에 따른 우아한 저하**를 택한다.\n\n- **기능 우선순위**: \"팀 저장/콘테스트 참가\"는 절대 사수해야 할 코어다. 반면 \"라이브 순위 실시간 갱신\", \"개인화 추천\", \"소셜 피드\" 같은 부가 기능은 피크 중 의도적으로 갱신 주기를 늘리거나 잠시 비활성화할 수 있다. 부가 기능을 희생해 코어 쓰기 경로의 용량을 확보한다.\n\n### 회복 패턴\n\n- **Circuit Breaker / Bulkhead**: 서비스 간 호출에 서킷 브레이커를 두어, 느려진 다운스트림이 업스트림 스레드를 다 잡아먹는 cascading failure를 끊는다. Bulkhead로 스레드풀/커넥션을 도메인별로 격리해 한 의존성의 포화가 전체로 번지지 않게 한다.\n- **타임아웃 + 폴백**: 캐시(Aerospike/Redis) 조회가 느리면 짧은 타임아웃 후 안전한 기본값이나 약간 stale한 값으로 폴백한다. 라이브 점수가 몇 초 지연 표시되는 것은 허용하지만, 마감 검증과 결제 정합성은 절대 폴백하지 않는다.\n- **레이트 리밋 & 로드 셰딩**: 게이트웨이 단에서 사용자/엔드포인트별 레이트 리밋과 우선순위 기반 load shedding을 적용해, 과부하 시 저우선 트래픽부터 떨군다(429 반환). 전체가 무너지는 것보다 일부를 거절하는 편이 낫다.\n- **비동기 백프레셔**: Akka 기반 컴포넌트는 메일박스/스트림 백프레셔로 처리 가능한 만큼만 받아들여, 메모리 폭발 대신 흐름을 조절한다.\n\n### 관측성\n\n이 모든 의사결정은 **실시간 메트릭**(p99 지연, 큐 깊이, Kafka consumer lag, Aerospike ops/sec) 위에서 돌아간다. consumer lag이 임계치를 넘으면 부가 소비자를 줄이고 코어 소비자에 리소스를 몰아주는 식으로, 경기 중에 사람이 아니라 시스템이 우선순위를 재배분하도록 운영한다."
     }
    ],
+   "github": {
+    "org": "https://github.com/dream-sports-labs",
+    "repos": []
+   },
    "sources": [
-    "https://medium.com/dream-sports-tech"
+    "https://medium.com/dream11-tech",
+    "https://aerospike.com/resources/customer-stories/",
+    "https://www.youtube.com/results?search_query=dream11+engineering+scale+architecture"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "ola",
