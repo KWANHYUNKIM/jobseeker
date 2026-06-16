@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T04:58:57",
+ "generated_at": "2026-06-17T06:32:27",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 79,
+ "refined": 81,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -1461,11 +1461,11 @@
      "count": 3
     },
     {
-     "name": "Kotlin",
-     "count": 2
+     "name": "Scala",
+     "count": 3
     },
     {
-     "name": "Scala",
+     "name": "Kotlin",
      "count": 2
     }
    ],
@@ -1478,6 +1478,10 @@
      {
       "name": "Go",
       "count": 4
+     },
+     {
+      "name": "Netty",
+      "count": 3
      },
      {
       "name": "Python",
@@ -1506,10 +1510,6 @@
      {
       "name": "Flask-Smorest/OpenAPI",
       "count": 1
-     },
-     {
-      "name": "Go microservices",
-      "count": 1
      }
     ],
     "frontend": [
@@ -1519,7 +1519,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 5
+      "count": 6
      },
      {
       "name": "React Native",
@@ -1534,15 +1534,15 @@
       "count": 2
      },
      {
+      "name": "Redux",
+      "count": 2
+     },
+     {
       "name": "Fusion.js",
       "count": 1
      },
      {
       "name": "Qt/QML",
-      "count": 1
-     },
-     {
-      "name": "Redux",
       "count": 1
      },
      {
@@ -1580,6 +1580,10 @@
       "count": 3
      },
      {
+      "name": "Apache Druid",
+      "count": 2
+     },
+     {
       "name": "Apache Hudi",
       "count": 2
      },
@@ -1588,12 +1592,8 @@
       "count": 2
      },
      {
-      "name": "Amazon Aurora/MySQL",
-      "count": 1
-     },
-     {
-      "name": "Amazon S3",
-      "count": 1
+      "name": "S3",
+      "count": 2
      }
     ],
     "infra": [
@@ -1606,7 +1606,15 @@
       "count": 6
      },
      {
+      "name": "Prometheus",
+      "count": 3
+     },
+     {
       "name": "Envoy",
+      "count": 2
+     },
+     {
+      "name": "Terraform",
       "count": 2
      },
      {
@@ -1628,29 +1636,17 @@
      {
       "name": "Cartography",
       "count": 1
-     },
-     {
-      "name": "Clutch",
-      "count": 1
-     },
-     {
-      "name": "Confidant",
-      "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Microservices",
+     "name": "Event-driven streaming",
      "count": 4
     },
     {
-     "name": "Event-driven streaming",
-     "count": 3
-    },
-    {
-     "name": "Event-driven",
-     "count": 2
+     "name": "Microservices",
+     "count": 4
     },
     {
      "name": "Cell-based architecture",
@@ -1658,6 +1654,10 @@
     },
     {
      "name": "Cellular / multi-region",
+     "count": 1
+    },
+    {
+     "name": "CQRS",
      "count": 1
     },
     {
@@ -16139,6 +16139,7 @@
    "domain": "모빌리티",
    "languages": [
     "Java",
+    "Scala",
     "Go",
     "Python",
     "JavaScript"
@@ -16146,34 +16147,48 @@
    "stack": {
     "backend": [
      "Spring Boot",
+     "Play Framework (Scala)",
      "Go",
-     "gRPC"
+     "gRPC",
+     "Node.js",
+     "Netty"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "Redux"
     ],
     "data": [
      "Kafka",
      "Cassandra",
-     "Elasticsearch",
      "Redis",
-     "MySQL"
+     "Aerospike",
+     "Elasticsearch",
+     "MySQL",
+     "HBase",
+     "Apache Druid",
+     "Spark"
     ],
     "infra": [
      "Kubernetes",
-     "AWS"
+     "AWS",
+     "Docker",
+     "Consul",
+     "Zookeeper",
+     "Prometheus",
+     "Jaeger"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
-    "Geospatial real-time"
+    "Event-driven streaming",
+    "Geospatial real-time matching",
+    "CQRS"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Rider/Driver App<br/>React Native\"]\n    WEB[\"Web<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>NGINX + AWS\"]\n  end\n  subgraph Services\n    MATCH[\"Matching Service<br/>Go\"]\n    RIDE[\"Ride Service<br/>Java + Spring Boot\"]\n    GEO[\"Geospatial Tracking<br/>Go + Redis\"]\n    PAY[\"Payments<br/>Java\"]\n  end\n  subgraph Data\n    MYSQL[\"MySQL<br/>Trip Records\"]\n    CASS[\"Cassandra<br/>Location History\"]\n    REDIS[\"Redis<br/>Live Driver Index\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Async\n    KAFKA[\"Kafka<br/>Event Bus\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> RIDE\n  GW --> MATCH\n  RIDE --> PAY\n  MATCH --> GEO\n  GEO --> REDIS\n  RIDE --> MYSQL\n  GEO --> CASS\n  RIDE --> ES\n  MATCH -->|events| KAFKA\n  RIDE -->|events| KAFKA\n  KAFKA --> GEO\n  RIDE --> K8S",
-   "why_language": "라이드헤일링은 실시간 위치·요금·배차 매칭에서 저지연 지오스페이셜 연산이 필요해 Go와 JVM을 코어에 함께 쓰고, 수요예측·ETA ML은 Python으로 처리한다.",
-   "why_architecture": "운전기사 위치와 라이드 상태가 초 단위로 변하는 도메인이라 이벤트 드리븐 마이크로서비스로 실시간 매칭·배차를 처리하고, 지역별로 확장 가능한 지오스페이셜 인프라를 둔다.",
-   "summary": "Go+JVM 이벤트 드리븐으로 실시간 라이드 배차를 돌리는 모빌리티.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    RIDER[\"Rider App<br/>React Native\"]\n    DRIVER[\"Driver App<br/>React Native\"]\n    WEB[\"Web / Partner<br/>React\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    LB[\"Edge LB<br/>AWS ELB + Nginx\"]\n    GW[\"API Gateway<br/>Netty + Spring Cloud\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Dispatch / Matching<br/>Go + gRPC\"]\n    GEO[\"Geo Index<br/>S2 + Geohash\"]\n    PRICE[\"Surge Pricing<br/>Python + Spark ML\"]\n    ETA[\"ETA / Routing<br/>Ola Maps + OSRM\"]\n    TRIP[\"Trip Lifecycle<br/>Spring Boot\"]\n    PAY[\"Payments / Wallet<br/>Java\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Proc<br/>Spark Streaming\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    REDIS[\"Hot Location<br/>Redis + Aerospike\"]\n    CASS[\"Trip / Location<br/>Cassandra\"]\n    ES[\"Search / Geo Query<br/>Elasticsearch\"]\n    MYSQL[\"Txn / Billing<br/>MySQL\"]\n    DRUID[\"Realtime Analytics<br/>Apache Druid\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes + Docker\"]\n    OBS[\"Observability<br/>Prometheus + Jaeger\"]\n  end\n  RIDER --> LB\n  DRIVER --> LB\n  WEB --> LB\n  LB --> GW\n  GW -->|gRPC| MATCH\n  GW -->|gRPC| TRIP\n  GW --> PRICE\n  GW --> ETA\n  MATCH --> GEO\n  GEO --> REDIS\n  DRIVER -->|location ping| KAFKA\n  KAFKA --> FLINK\n  FLINK --> REDIS\n  FLINK --> DRUID\n  MATCH --> KAFKA\n  TRIP --> KAFKA\n  TRIP --> CASS\n  TRIP --> MYSQL\n  PAY --> MYSQL\n  GEO --> ES\n  PRICE --> DRUID\n  K8S -.runs.-> Core\n  OBS -.monitors.-> Core",
+   "why_language": "초당 수십만 건의 드라이버 위치 핑과 매칭 연산을 저지연으로 처리해야 해서, GC 지터가 치명적인 핫패스(배차·지오인덱스)는 Go로, 풍부한 도메인 로직과 결제·트립 라이프사이클은 JVM 생태계(Spring Boot, Scala Play)로 분리한 폴리글랏 전략을 쓴다. 데이터·ML 파이프라인(서지 가격, ETA 예측)은 Spark/Python으로, 단일 코드베이스로 iOS·Android를 커버하는 라이더/드라이버 앱은 React Native로 구현한다.",
+   "why_architecture": "한 도시의 공급(드라이버)과 수요(요청)가 초 단위로 변하는 실시간 시장이라, 위치 스트림을 Kafka로 흘려보내고 각 도메인(매칭·가격·트립·결제)을 독립 마이크로서비스로 쪼개 도시별·기능별로 따로 스케일링한다. 위치 갱신은 쓰기 폭주, 매칭 조회는 읽기 폭주라는 비대칭 때문에 CQRS로 핫 위치 저장(Redis/Aerospike)과 영속 트립 기록(Cassandra)을 분리하고, 모든 상태 전이를 이벤트로 발행해 분석·정산·이상탐지가 비동기로 따라붙게 했다.",
+   "summary": "JVM 도메인 서비스 + Go 핫패스 + Kafka 이벤트 스트림으로 굴러가는 도시 단위 실시간 지오 매칭 플랫폼",
    "deep_dive": [
     {
      "topic": "실시간 라이드 배차: 매칭과 이벤트 드리븐",
@@ -16186,16 +16201,39 @@
     {
      "topic": "위치 데이터 저장과 Cassandra/Redis/ES",
      "body": "### 위치·상태 저장\n- **`Redis`**: 드라이버 최신 위치·세션을 sub-ms로 읽고 쓰는 핫 KV. 지오스페이셜 명령(GEOADD/GEORADIUS)으로 주변 검색을 빠르게.\n- **`Cassandra`**: 라이드 이력·위치 트레일·시계열을 *높은 쓰기 처리량 + 수평 확장*으로 보관. 마스터리스라 쓰기 병목이 없다.\n- **`Elasticsearch`**: 라이드·드라이버 검색·운영 조회.\n- **`MySQL`**: 결제·요금·정합성 OLTP 코어.\n\n### 왜 이 분담인가\n드라이버 위치는 *초당 대량 쓰기 + 최신값 핫 읽기*다 -- Redis(핫)와 Cassandra(이력)로 나눈다. RDBMS로 위치 트레일을 받으면 쓰기 폭주에 죽는다. **핫 상태는 Redis, 대용량 이력은 Cassandra, 돈은 MySQL**로 나누는 폴리글랏 퍼시스턴스가 핵심. 각 저장소를 그 강점에 정확히 맞춘다."
+    },
+    {
+     "topic": "서지 프라이싱: 도시를 셀로 쪼갠 실시간 수요·공급 가격 결정",
+     "body": "### 왜 서지가 필요한가\nOla 같은 양면 마켓플레이스의 본질은 **특정 시각·특정 위치의 공급(가용 드라이버)과 수요(대기 요청)를 가격으로 균형 맞추는 것**이다. 비 오는 출근 시간 강남역에 요청 200건·드라이버 30대면 ETA가 폭발하고 취소가 늘어난다. 서지(surge)는 가격을 올려 한계 수요를 억제하고 인접 셀의 드라이버를 끌어와 균형을 회복하는 제어 루프다.\n\n### 공간·시간 디스크리타이제이션\n도시 전체를 한 덩어리로 가격 매기면 의미가 없으므로, Ola는 도시를 **지오 셀(geohash / S2 cell)** 격자로 잘게 나눈다. 각 셀마다 슬라이딩 윈도(보통 1~5분) 단위로 다음 신호를 집계한다.\n\n- `open_requests` : 미배차 요청 수\n- `available_supply` : 셀 + 인접 셀의 빈 드라이버 수\n- `eta_p50 / eta_p90` : 최근 매칭 ETA 분포\n- `cancellation_rate`, `search-without-book` (검색했지만 호출 안 한 비율 = 가격 민감도 프록시)\n\n이 신호들은 드라이버 위치 핑과 앱 이벤트가 흘러드는 `Kafka` 토픽에서 `Spark Streaming` 잡이 셀×시간 버킷으로 윈도 집계해 만든다.\n\n### 가격 산정 파이프라인\n```\nKafka(events) -> Spark Streaming(window agg) -> feature store(Redis/Aerospike)\n        -> surge model(Python) -> surge multiplier per cell -> pricing service(gRPC)\n```\n승수(multiplier)는 단순 `demand/supply` 비율 룰에서 출발하지만, 실제로는 **탄력성(elasticity) 모델**이 들어간다. 즉 \"승수를 1.5x로 올리면 이 셀의 수요가 몇 % 줄고 인접 셀에서 드라이버가 몇 대 유입되는가\"를 과거 데이터로 학습해, 목표 ETA/충족률을 만족하는 최소 승수를 고른다. 결과 승수는 셀 단위로 `Redis`에 캐시되고, 라이더가 가격을 조회할 때 `pricing service`가 `gRPC`로 읽어 base fare에 곱한다.\n\n### 트레이드오프와 엔지니어링 디테일\n- **격자 경계 점프 문제**: 셀 경계를 사이에 두고 가격이 1.0x↔1.8x로 튀면 사용자가 몇 미터 이동해 가격을 회피한다. 이를 막으려 인접 셀 승수를 **공간 스무딩(가우시안 블러)** 처리해 그라데이션을 만든다.\n- **가격 확정 시점**: 견적은 호출 직전 lock 되어야 한다. 매칭 진행 중 서지가 바뀌어도 이미 확정된 견적은 보존(price quote TTL)해 신뢰를 유지한다.\n- **콜드 셀**: 데이터가 희박한 외곽 셀은 상위 영역(도시 평균)으로 폴백해 노이즈로 인한 과도한 서지를 막는다.\n- **피드백 지연**: 가격 변화→공급 이동은 분 단위 지연이 있어, 제어를 너무 공격적으로 하면 진동(oscillation)이 생긴다. 그래서 승수 변화율에 캡과 히스테리시스를 둔다."
+    },
+    {
+     "topic": "ETA·라우팅과 자체 지도(Ola Maps)로의 마이그레이션",
+     "body": "### ETA가 시스템의 심장인 이유\nETA(도착 예상 시간)는 단순 표시값이 아니라 **매칭 결정의 입력**이다. \"가장 가까운 드라이버\"가 아니라 \"실제 도로 기준 가장 빨리 도착할 드라이버\"를 골라야 하고, 서지·배차·정산이 모두 ETA에 의존한다. 직선거리(haversine)로는 강이나 일방통행 때문에 완전히 틀린 답이 나온다.\n\n### 라우팅 엔진 동작\nOla는 도로 그래프 위에서 최단/최속 경로를 구하는 라우팅 서비스를 운영한다. 핵심 메커니즘:\n\n1. **도로 그래프**: 노드(교차점)·엣지(도로 구간)로 그래프를 구성하고, 각 엣지에 *시간대별·요일별 평균 통행시간* 가중치를 부여한다.\n2. **속도 프로파일**: 과거 트립의 GPS 트레이스를 map-matching해 \"이 구간은 평일 오전 9시에 12km/h\"식 히스토리컬 속도 테이블을 만들고, 실시간 핑으로 라이브 보정한다.\n3. **경로 탐색**: 대규모 그래프에서 매 요청마다 Dijkstra를 돌리면 느려서, **Contraction Hierarchies(CH)** 같은 전처리 기법으로 쿼리를 밀리초급으로 만든다(OSRM 계열 접근).\n4. **ETA = 경로 통행시간 + 픽업 보정 + 표준 오차 보정**으로 산출하며, 실측 도착과의 오차를 다시 모델에 피드백한다.\n\n### Google Maps → Ola Maps 자체화 (대표적 트레이드오프)\nOla는 지도/지오코딩/라우팅을 외부(Google Maps)에 의존하다가 **Ola Maps**로 자체 구축하는 결정을 내렸다. 이유와 트레이드오프:\n\n| 항목 | 외부 의존 | 자체 구축(Ola Maps) |\n|------|-----------|---------------------|\n| 비용 | 호출당 과금, 규모 커질수록 폭증 | 인프라 고정비, 한계비용 낮음 |\n| 커스텀 | 라이드 특화 튜닝 불가 | 픽업 포인트·이륜차 경로 등 자체 최적화 |\n| 데이터 | 자사 트립 데이터 미활용 | 수억 건 트립 GPS로 자체 보정 |\n| 리스크 | 즉시 사용 가능 | OSM 기반 데이터 정제·맵매칭 파이프라인 자체 운영 부담 |\n\n자체 지도는 **OpenStreetMap 베이스 + 자사 플릿의 GPS 트레이스**로 인도 현지(좁은 골목, 비공식 도로, 이륜차 통행)에 특화된 그래프를 만든다는 점이 핵심이다. 인도 시장은 글로벌 지도 데이터의 커버리지·정확도가 낮은 영역이 많아 자사 트립 데이터가 곧 해자(moat)가 된다.\n\n### 캐싱\n동일 출발-도착 셀 쌍의 ETA/경로는 짧은 TTL로 `Redis`에 캐시해 동일 시간대 반복 쿼리를 흡수하고, 라우팅 엔진의 CH 전처리 결과는 메모리에 상주시켜 콜드스타트를 피한다."
+    },
+    {
+     "topic": "복원력: 서킷브레이커·페일오버·그레이스풀 디그레이드",
+     "body": "### 실시간 시스템에서 부분 장애를 다루는 법\n수백 개 마이크로서비스가 `gRPC`로 얽힌 구조에서 하나가 느려지면 호출 스레드가 쌓여 **연쇄 장애(cascading failure)**로 번진다. 라이드 호출 한 번이 매칭·ETA·가격·결제·알림 등 십수 개 서비스를 동기/비동기로 건드리기 때문에 격리(isolation)가 필수다.\n\n### 적용 패턴\n- **서킷 브레이커**: JVM 서비스는 Hystrix/Resilience4j 스타일로 다운스트림 호출을 감싼다. 에러율이 임계치를 넘으면 회로를 open해 즉시 폴백을 반환하고, 일정 시간 뒤 half-open으로 일부만 흘려보내 회복을 탐지한다. ETA 서비스가 죽으면 → 히스토리컬 평균 ETA로 폴백.\n- **벌크헤드(bulkhead)**: 다운스트림별로 스레드풀/세마포어를 분리해 한 의존성의 지연이 전체 워커를 잠식하지 못하게 한다.\n- **타임아웃·재시도 + 지터**: 모든 RPC에 짧은 데드라인을 걸고, 재시도에는 exponential backoff + jitter를 적용해 재시도 폭풍(retry storm)을 막는다. 멱등하지 않은 결제 호출은 재시도 대신 idempotency key로 보호한다.\n- **그레이스풀 디그레이드**: 핵심 경로(매칭·트립)는 살리고 부가 기능(추천 목적지, 프로모션 배너)은 장애 시 조용히 끈다. 즉 \"차는 잡힌다, 다만 부가 UI가 빠진다\"가 원칙.\n\n### 데이터 계층 페일오버\n- `Cassandra`는 멀티 레플리카 + 튜너블 컨시스턴시(`LOCAL_QUORUM`)로 노드 장애에도 읽기/쓰기를 지속한다. 위치성 트립 데이터는 강한 일관성보다 가용성·낮은 지연을 우선한다.\n- `Redis`/`Aerospike`의 핫 위치 캐시는 휘발성으로 취급한다. 캐시가 비어도 Kafka 위치 스트림에서 수 초 내 재구성되므로, 캐시 장애가 곧 데이터 손실은 아니다.\n- **멀티 AZ**: 서비스와 스토리지를 여러 AWS Availability Zone에 분산하고, 도시 트래픽을 가까운 리전/AZ로 라우팅해 단일 AZ 장애를 흡수한다.\n\n### 핵심 사상\n위치·매칭처럼 \"1초 뒤면 새 데이터가 또 온다\"는 도메인 특성을 적극 활용한다. 한 번의 위치 핑 유실이나 캐시 미스는 다음 핑이 곧 메꾸므로, **완벽한 일관성보다 빠른 자기복구(self-healing)**에 베팅하는 것이 Ola 복원력 설계의 일관된 트레이드오프다."
     }
    ],
    "github": {
-    "org": "https://github.com/olacabs"
+    "org": "https://github.com/olacabs",
+    "repos": [
+     {
+      "name": "olacabs/jackhammer",
+      "url": "https://github.com/olacabs/jackhammer",
+      "desc": "Ola 보안팀이 만든 정적/동적/모바일 취약점 스캔을 한 콘솔에서 오케스트레이션하는 자동화 보안 프레임워크",
+      "lang": "Java",
+      "stars": 740
+     }
+    ]
    },
    "sources": [
-    "https://tech.olacabs.com"
+    "https://github.com/olacabs/jackhammer",
+    "https://blog.olacabs.com/",
+    "https://maps.olakrutrim.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "ola-electric",
@@ -16213,34 +16251,40 @@
     "backend": [
      "Spring Boot",
      "Go",
-     "gRPC"
+     "gRPC",
+     "Netty"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "TimescaleDB",
      "Elasticsearch",
      "MySQL",
-     "Redis"
+     "Redis",
+     "S3"
     ],
     "infra": [
      "Kubernetes",
      "AWS",
-     "IoT/Edge"
+     "MQTT/IoT Edge",
+     "Terraform",
+     "Prometheus"
     ]
    },
    "architecture": [
     "Microservices",
     "Event-driven",
-    "IoT telemetry"
+    "IoT telemetry pipeline",
+    "Edge computing"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Owner App<br/>React Native\"]\n    DASH[\"Fleet Dashboard<br/>React\"]\n  end\n  subgraph Edge\n    IOT[\"IoT Edge Gateway<br/>MQTT + Edge\"]\n    GW[\"API Gateway<br/>AWS\"]\n  end\n  subgraph Services\n    TELE[\"Telemetry Ingest<br/>Go\"]\n    VEH[\"Vehicle Service<br/>Java + Spring Boot\"]\n    DIAG[\"Diagnostics<br/>C++ + Go\"]\n    OTA[\"OTA Update<br/>Java\"]\n  end\n  subgraph Data\n    TS[\"TimescaleDB<br/>Sensor Series\"]\n    MYSQL[\"MySQL<br/>Vehicle Registry\"]\n    REDIS[\"Redis<br/>Live State\"]\n    ES[\"Elasticsearch<br/>Logs\"]\n  end\n  subgraph Async\n    KAFKA[\"Kafka<br/>Telemetry Stream\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  APP --> GW\n  DASH --> GW\n  IOT -->|sensor data| KAFKA\n  GW --> VEH\n  KAFKA --> TELE\n  TELE --> TS\n  TELE --> DIAG\n  VEH --> MYSQL\n  TELE --> REDIS\n  DIAG --> ES\n  VEH --> OTA\n  VEH --> K8S",
-   "why_language": "전기 스쿠터 차량의 IoT 텔레메트리와 배터리·모터 제어 펌웨어 때문에 C++(임베디드)와 백엔드 Java/Go를 함께 쓴다. 대량 차량 데이터 분석·ML은 Python으로 처리한다.",
-   "why_architecture": "수많은 EV 차량에서 쏟아지는 센서 텔레메트리를 실시간 수집·분석해야 하므로 이벤트 드리븐 마이크로서비스와 시계열 저장소를 두고, 엣지/IoT 계층에서 차량 데이터를 집계한다.",
-   "summary": "IoT 텔레메트리와 이벤트 드리븐 백엔드로 EV 차량 데이터를 다루는 모빌리티.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Vehicle Edge\"]\n    VCU[\"MoveOS VCU<br/>C++ Embedded Linux\"]\n    BMS[\"BMS Telemetry<br/>CAN Bus + C++\"]\n    APP[\"Ola Electric App<br/>React Native\"]\n  end\n  subgraph Ingest[\"Ingestion / Gateway\"]\n    MQTT[\"MQTT Broker<br/>EMQX on AWS IoT\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Processing<br/>Kafka Streams\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DEVICE[\"Device Mgmt<br/>Go + gRPC\"]\n    TELE[\"Telemetry Svc<br/>Spring Boot\"]\n    OTA[\"OTA Update<br/>Go\"]\n    ORDER[\"Commerce/Order<br/>Spring Boot\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    TS[\"Time-series<br/>TimescaleDB\"]\n    MYSQL[\"Transactional<br/>MySQL Aurora\"]\n    ES[\"Search/Analytics<br/>Elasticsearch\"]\n    REDIS[\"Cache<br/>Redis\"]\n    S3[\"Blob/Logs<br/>AWS S3\"]\n  end\n  VCU -->|MQTT/TLS| MQTT\n  BMS -->|CAN| VCU\n  APP -->|HTTPS| GW\n  MQTT -->|publish| KAFKA\n  GW -->|gRPC| DEVICE\n  GW -->|REST| ORDER\n  KAFKA --> FLINK\n  KAFKA --> TELE\n  FLINK --> TS\n  TELE --> TS\n  DEVICE --> MYSQL\n  DEVICE -->|push| OTA\n  OTA -->|signed firmware| S3\n  ORDER --> MYSQL\n  TELE --> ES\n  DEVICE --> REDIS\n  OTA -.->|delta image| VCU",
+   "why_language": "차량 ECU·BMS 등 임베디드 레이어는 실시간성과 하드웨어 제어가 필요해 C++를 쓰고, 수백만 대 스쿠터에서 쏟아지는 텔레메트리를 처리하는 디바이스 관리·OTA 같은 고동시성 I/O 서비스는 가벼운 고루틴 모델의 Go로 작성한다. 커머스·주문·사용자 도메인처럼 풍부한 비즈니스 로직과 트랜잭션이 필요한 영역은 성숙한 생태계의 Java/Spring Boot를, 데이터 분석·ML 배터리 진단 파이프라인은 Python을 사용한다.",
+   "why_architecture": "수백만 대의 IVU(차량 단말)가 끊임없이 상태·위치·배터리 데이터를 보내는 IoT 특성상 동기 호출로는 감당이 안 되어 MQTT→Kafka 기반 이벤트 드리븐 파이프라인으로 수집과 처리를 분리했다. 마이크로서비스로 디바이스 관리·OTA·커머스를 독립 배포·확장하고, 시계열은 TimescaleDB에 따로 저장해 차량 분석과 트랜잭션 부하를 격리한다. 네트워크가 불안정한 인도 도로 환경 때문에 차량 단(MoveOS)에 엣지 컴퓨팅을 두어 연결이 끊겨도 로컬 판단이 가능하도록 설계했다.",
+   "summary": "MQTT·Kafka로 수백만 대 스쿠터 텔레메트리를 빨아들이고 Go·Spring Boot 마이크로서비스 + TimescaleDB로 처리하는 IoT 모빌리티 플랫폼",
    "deep_dive": [
     {
      "topic": "IoT 텔레메트리 수집: 차량에서 클라우드까지",
@@ -16253,16 +16297,43 @@
     {
      "topic": "이벤트 드리븐 백엔드와 디바이스 관리",
      "body": "### 이벤트 드리븐인 이유\n차량 텔레메트리·이벤트(저전압 경고, 충전 시작/종료, 위치 갱신, 진단 코드)는 본질적으로 *비동기 스트림*이다. `Kafka` 중심 이벤트 드리븐으로 이를 처리한다.\n\n- **스트림 분기**: 텔레메트리를 *실시간 모니터링/알림*(저지연 경로)과 *분석/저장*(TimescaleDB) 양쪽으로 분기.\n- **실시간 알림**: 위험 이벤트(과열·저전압)를 스트림에서 감지해 사용자/운영팀에 즉시 알림.\n- **디바이스 관리**: OTA 업데이트, 원격 진단, 설정 변경 명령을 디바이스로 내려보내는 *양방향* 제어 채널.\n\n### 백엔드 구조\n- **`Go`/`Spring Boot`**: 고동시성 디바이스 게이트웨이는 Go, 복잡 도메인(차량·사용자·정비)은 JVM.\n- **`Kubernetes`+엣지**: 클라우드 코어와 엣지 컴퓨팅을 결합해 *지연 민감 처리는 엣지에서*.\n\n### 왜 이렇게\n수십만 이동 디바이스를 관리하려면 *비동기·확장 가능·양방향* 인프라가 필요하다. 이벤트 드리븐이 디바이스 폭발에도 시스템을 디커플·확장 가능하게 유지하는 핵심이다. 물리 자산(차량)을 소프트웨어로 운영하는 *커넥티드 비히클* 플랫폼의 본질을 보여준다."
+    },
+    {
+     "topic": "OTA 펌웨어 업데이트: 수백만 대 스쿠터를 무선으로 갱신하는 법",
+     "body": "### 왜 OTA가 핵심인가\nOla Electric의 S1 시리즈는 단순한 전동 스쿠터가 아니라 `MoveOS`라는 자체 운영체제를 탑재한 '바퀴 달린 컴퓨터'다. 신규 기능(하이퍼모드, 크루즈 컨트롤, 디지털 키 등)을 물리적 리콜 없이 배포하려면 OTA(Over-The-Air) 파이프라인이 제품 경쟁력의 핵심이 된다. 수백만 대 단위로 배포가 일어나기 때문에 OTA 서비스는 단순 파일 전송이 아니라 **분산 롤아웃 오케스트레이션** 문제로 다뤄진다.\n\n### 동작 메커니즘\n- **델타 업데이트**: 전체 이미지를 보내면 인도의 모바일 네트워크(불안정한 4G) 환경에서 실패율이 치솟는다. 그래서 이전 펌웨어와의 바이너리 diff(`bsdiff` 계열)만 전송해 페이로드를 수백 MB에서 수~수십 MB로 줄인다.\n- **서명 검증**: 차량 측 `VCU`(Vehicle Control Unit)는 펌웨어 이미지의 코드 서명을 부트로더 단계에서 검증한다. 서명이 안 맞으면 적용을 거부해 악성 펌웨어 주입을 막는다.\n- **A/B 파티션**: 업데이트는 비활성 파티션에 먼저 기록되고, 부팅 검증 성공 시에만 활성 파티션을 스위칭한다. 실패하면 자동으로 이전 파티션으로 롤백되어 '벽돌(brick)'을 방지한다.\n- **단계적 롤아웃(canary)**: Device Management 서비스(Go)가 대상 차량을 코호트로 나눠 1% → 10% → 50% → 100% 식으로 점진 배포한다. 각 단계마다 Kafka로 흘러드는 텔레메트리(부팅 성공률, BMS 에러율)를 모니터링해 이상 징후가 보이면 롤아웃을 즉시 중단한다.\n\n### 트레이드오프\n전량 일괄 배포(big bang)는 빠르지만 펌웨어 버그가 전 차량을 동시에 망가뜨릴 수 있다(실제로 OTA 후 차량 이슈가 SNS에서 화제가 된 사례가 업계에 존재). 그래서 Ola는 **느리지만 관측 가능한** canary 방식을 택했고, S3에 서명된 펌웨어 아티팩트를 저장한 뒤 CDN/엣지로 분산 전송해 다운로드 부하를 흡수한다."
+    },
+    {
+     "topic": "차량 엣지 컴퓨팅: 연결이 끊겨도 동작하는 MoveOS",
+     "body": "### 왜 엣지인가\n인도 도로 환경은 셀룰러 커버리지가 들쭉날쭉하다. 클라우드 왕복(round-trip)에 의존하면 터널·외곽 지역에서 핵심 기능이 멈춘다. 그래서 `MoveOS`는 **클라우드 의존 최소화** 원칙으로 차량 단에서 대부분의 의사결정을 처리하는 엣지 아키텍처를 취한다.\n\n### 차량 내부 컴퓨트 구조\n- **VCU (Vehicle Control Unit)**: Embedded Linux + C++. 모터 제어, 토크 맵, 회생제동 같은 실시간(real-time) 제어를 담당한다. 결정론적 응답이 필요해 GC 없는 C++가 필수다.\n- **BMS (Battery Management System)**: CAN 버스로 셀 단위 전압·온도·SoC(State of Charge)를 수집한다. 셀 밸런싱과 열폭주(thermal runaway) 보호 로직은 클라우드를 절대 기다리지 않고 로컬에서 즉시 작동한다.\n- **IVU/HMI**: 대시보드 UI는 Android 기반으로, 지도·음악·프로필 등 인포테인먼트를 담당한다.\n\n### 데이터 흐름 (Edge → Cloud)\n1. 센서/CAN 데이터가 차량 내부에서 1차 집계·필터링된다(모든 raw 데이터를 보내면 대역폭이 폭발한다).\n2. 연결이 살아 있으면 `MQTT over TLS`로 클라우드 IoT 브로커(EMQX/AWS IoT)에 publish한다.\n3. **연결이 끊기면 로컬 버퍼(store-and-forward)** 에 쌓아 두었다가 재연결 시 백필(backfill)한다. 그래서 외곽 주행 데이터도 유실 없이 사후 분석에 들어간다.\n4. 클라우드에서는 MQTT → Kafka로 들어와 Telemetry 서비스와 Stream 처리로 분기된다.\n\n### 트레이드오프\n엣지에서 너무 많이 집계하면 클라우드가 보는 해상도가 떨어져 정밀 진단(배터리 셀 노후 패턴 등)이 어려워진다. 반대로 raw를 다 보내면 통신비·저장비가 폭증한다. Ola는 **평상시 저해상도 + 이상 감지 시 고해상도 버스트 업로드** 하이브리드로 이 둘을 절충한다."
+    },
+    {
+     "topic": "배터리 진단 ML 파이프라인과 시계열 분석",
+     "body": "### 문제 정의\nEV 사업의 진짜 자산은 배터리다. 셀 열화(degradation), 잔존수명(RUL, Remaining Useful Life), 열폭주 예측은 안전·보증비용·중고가치에 직결된다. Ola는 차량에서 올라오는 시계열 텔레메트리를 ML 파이프라인으로 흘려 배터리 상태를 모델링한다.\n\n### 파이프라인 구조\n- **수집/저장**: 셀 전압·온도·충방전 사이클 데이터가 `TimescaleDB`의 hypertable에 시간축으로 저장된다. TimescaleDB는 PostgreSQL 호환이라 `continuous aggregate`로 시간 단위 다운샘플링(예: 초→분→시간)을 자동화하고, 오래된 데이터는 compression policy로 압축해 저장비를 낮춘다.\n- **피처 엔지니어링**: Python(`pandas`/`numpy`) 배치 잡이 충전 사이클별 dQ/dV 곡선, 내부저항 추정, 온도 스트레스 적분 등 배터리 화학 특성 피처를 뽑는다.\n- **모델링**: SoH(State of Health)·RUL 예측에 gradient boosting / 시계열 회귀 모델을 사용하고, 결과를 차량별 프로파일로 환원한다.\n- **피드백 루프**: 이상 셀 패턴이 감지되면 알림이 Device Management로 전달되어 OTA로 충전 곡선·BMS 파라미터를 보정하거나 서비스센터 점검을 트리거한다.\n\n### 왜 TimescaleDB인가 (트레이드오프)\n순수 NoSQL TSDB(InfluxDB 등) 대신 TimescaleDB를 쓰면 **SQL 조인과 관계형 메타데이터(차량 VIN, 모델, 배치)** 를 시계열과 함께 다룰 수 있다. 배터리 분석은 '이 셀 데이터'만으론 부족하고 '어느 차량·어느 생산 배치·어떤 펌웨어 버전'과 결합해야 인사이트가 나오기 때문에, 관계형+시계열 하이브리드가 큰 이점이다. 대신 초고빈도 쓰기 부하에서는 카프카 버퍼링과 배치 인서트로 쓰기 증폭을 흡수해야 한다."
+    },
+    {
+     "topic": "관측성과 플릿 헬스 모니터링: 수백만 대를 한눈에",
+     "body": "### 두 층위의 관측성\nOla의 관측성은 (1) 일반 백엔드 마이크로서비스 관측성과 (2) **차량 플릿(fleet) 헬스 모니터링** 이라는 도메인 특화 관측성이 공존한다.\n\n### 서비스 관측성\n- **메트릭**: `Prometheus`로 서비스별 RPS·지연·에러율을 수집하고 `Grafana`로 대시보드를 구성한다. Kubernetes 위에서 도는 Go/Spring Boot 파드들이 `/metrics` 엔드포인트를 노출한다.\n- **로깅**: 구조화 로그를 Elasticsearch(또는 OpenSearch)로 모아 Kibana에서 검색한다. 디바이스 ID·trace ID로 한 차량의 요청 흐름을 추적한다.\n- **트레이싱**: gRPC 마이크로서비스 간 호출 체인을 분산 트레이싱으로 묶어 병목을 찾는다.\n\n### 플릿 헬스 모니터링 (도메인 특화)\n일반 SRE 메트릭과 별개로, '지금 도로 위 차량들의 건강 상태'를 봐야 한다.\n- 실시간 온라인/오프라인 차량 수, 평균 SoC, 비정상 BMS 경보 발생률, 지역별 주행 패턴 등을 Kafka 스트림에서 집계해 Elasticsearch에 인덱싱하고 대시보드로 시각화한다.\n- 특정 펌웨어 버전에서 에러율이 튀면(OTA canary 중) 즉시 경보를 띄워 롤아웃을 멈춘다 — 즉 관측성이 OTA 안전장치와 직접 연결된다.\n\n### 트레이드오프\n수백만 대의 디바이스 텔레메트리를 전부 실시간 인덱싱하면 Elasticsearch 비용이 감당 안 된다. 그래서 **집계된 지표(aggregate)는 실시간으로, raw 시계열은 TimescaleDB에 저장 후 필요 시 조회** 하는 식으로 hot/cold 경로를 분리한다. 알림은 임계치 기반 룰 + 이상탐지를 함께 써서 false positive를 줄인다."
     }
    ],
    "github": {
-    "org": "https://github.com/olacabs"
+    "org": "https://github.com/olacabs",
+    "repos": [
+     {
+      "name": "olacabs/jackhammer",
+      "url": "https://github.com/olacabs/jackhammer",
+      "desc": "Ola가 공개한 통합 보안 취약점 스캐닝·관리 오케스트레이션 프레임워크",
+      "lang": "Java",
+      "stars": 740
+     }
+    ]
    },
    "sources": [
-    "https://www.olaelectric.com"
+    "https://www.olaelectric.com/moveos",
+    "https://github.com/olacabs",
+    "https://blog.olacabs.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "swiggy",
