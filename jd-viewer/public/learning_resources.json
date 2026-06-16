@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T09:39:23",
+  "generated_at": "2026-06-16T11:13:45",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -989,88 +989,6 @@
         "stage": "실전"
       }
     ],
-    "REST API": [
-      {
-        "title": "REST API - 이거 하나로 끝남",
-        "url": "https://www.youtube.com/watch?v=fB3MB8TXNXM",
-        "thumbnail": "https://i.ytimg.com/vi/fB3MB8TXNXM/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 49297,
-        "length": "13:01",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "면접 단골 질문! API, REST API가 뭔가요? (개발 필수지식)",
-        "url": "https://www.youtube.com/watch?v=C7yhysF_wAg",
-        "thumbnail": "https://i.ytimg.com/vi/C7yhysF_wAg/mqdefault.jpg",
-        "channel": "Code ON 코드온",
-        "views": 25776,
-        "length": "3:46",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 이해하는 REST API",
-        "url": "https://www.youtube.com/watch?v=7LbylTMlj8M",
-        "thumbnail": "https://i.ytimg.com/vi/7LbylTMlj8M/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 13983,
-        "length": "18:08",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "5분만에 제대로 설계하는 ⭐️ REST API",
-        "url": "https://www.youtube.com/watch?v=4DxHX95Lq2U",
-        "thumbnail": "https://i.ytimg.com/vi/4DxHX95Lq2U/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 120882,
-        "length": "5:16",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기계들의 대화법 - REST API",
-        "url": "https://www.youtube.com/watch?v=PmY3dWcCxXI",
-        "thumbnail": "https://i.ytimg.com/vi/PmY3dWcCxXI/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 84692,
-        "length": "20:38",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "'RESTful' 이제 확실히 알겠어요. 122회 정보관리 기술사 문제 중 REST API",
-        "url": "https://www.youtube.com/watch?v=CBXIjJOHerU",
-        "thumbnail": "https://i.ytimg.com/vi/CBXIjJOHerU/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 14099,
-        "length": "12:47",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "이 영상을 보고나면 REST API 를 못쓰게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=N-81mS2vldI",
-        "thumbnail": "https://i.ytimg.com/vi/N-81mS2vldI/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 76208,
-        "length": "8:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "REST API 강의 1.  REST API 개요",
-        "url": "https://www.youtube.com/watch?v=0oy0CC1gyYA",
-        "thumbnail": "https://i.ytimg.com/vi/0oy0CC1gyYA/mqdefault.jpg",
-        "channel": "위데이터랩 wedatalab",
-        "views": 309,
-        "length": "18:59",
-        "published": "4년 전",
-        "stage": "핵심"
-      }
-    ],
     "PostgreSQL": [
       {
         "title": "PostgreSQL 입문수업",
@@ -1151,6 +1069,88 @@
         "length": "28:44",
         "published": "7개월 전",
         "stage": "실전"
+      }
+    ],
+    "REST API": [
+      {
+        "title": "REST API - 이거 하나로 끝남",
+        "url": "https://www.youtube.com/watch?v=fB3MB8TXNXM",
+        "thumbnail": "https://i.ytimg.com/vi/fB3MB8TXNXM/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 49297,
+        "length": "13:01",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "면접 단골 질문! API, REST API가 뭔가요? (개발 필수지식)",
+        "url": "https://www.youtube.com/watch?v=C7yhysF_wAg",
+        "thumbnail": "https://i.ytimg.com/vi/C7yhysF_wAg/mqdefault.jpg",
+        "channel": "Code ON 코드온",
+        "views": 25776,
+        "length": "3:46",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 이해하는 REST API",
+        "url": "https://www.youtube.com/watch?v=7LbylTMlj8M",
+        "thumbnail": "https://i.ytimg.com/vi/7LbylTMlj8M/mqdefault.jpg",
+        "channel": "큰돌의터전",
+        "views": 13983,
+        "length": "18:08",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "5분만에 제대로 설계하는 ⭐️ REST API",
+        "url": "https://www.youtube.com/watch?v=4DxHX95Lq2U",
+        "thumbnail": "https://i.ytimg.com/vi/4DxHX95Lq2U/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 120882,
+        "length": "5:16",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기계들의 대화법 - REST API",
+        "url": "https://www.youtube.com/watch?v=PmY3dWcCxXI",
+        "thumbnail": "https://i.ytimg.com/vi/PmY3dWcCxXI/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 84692,
+        "length": "20:38",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "'RESTful' 이제 확실히 알겠어요. 122회 정보관리 기술사 문제 중 REST API",
+        "url": "https://www.youtube.com/watch?v=CBXIjJOHerU",
+        "thumbnail": "https://i.ytimg.com/vi/CBXIjJOHerU/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 14099,
+        "length": "12:47",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "이 영상을 보고나면 REST API 를 못쓰게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=N-81mS2vldI",
+        "thumbnail": "https://i.ytimg.com/vi/N-81mS2vldI/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 76208,
+        "length": "8:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "REST API 강의 1.  REST API 개요",
+        "url": "https://www.youtube.com/watch?v=0oy0CC1gyYA",
+        "thumbnail": "https://i.ytimg.com/vi/0oy0CC1gyYA/mqdefault.jpg",
+        "channel": "위데이터랩 wedatalab",
+        "views": 309,
+        "length": "18:59",
+        "published": "4년 전",
+        "stage": "핵심"
       }
     ],
     "Spring Boot": [
@@ -2547,85 +2547,85 @@
         "stage": "실전"
       }
     ],
-    "Vue": [
+    "Terraform": [
       {
-        "title": "Vue 3 강좌 한방에 몰아보기 - 2시간 정주행",
-        "url": "https://www.youtube.com/watch?v=m2j_Y245xew",
-        "thumbnail": "https://i.ytimg.com/vi/m2j_Y245xew/mqdefault.jpg",
-        "channel": "csslick - UI 디자인 & 코딩 팁",
-        "views": 37339,
-        "length": "1:37:32",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Vue 0강 : 카카오가 리액트냅두고 Vue 쓰는 이유",
-        "url": "https://www.youtube.com/watch?v=-tVaahsXpwk",
-        "thumbnail": "https://i.ytimg.com/vi/-tVaahsXpwk/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 229312,
-        "length": "6:51",
+        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
+        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
+        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
+        "channel": "데브아트 DevArt",
+        "views": 13863,
+        "length": "14:55",
         "published": "5년 전",
         "stage": "입문"
       },
       {
-        "title": "Vue.js/React/입문자도 이해하기 쉬운 명쾌한 비교",
-        "url": "https://www.youtube.com/watch?v=W8uxLdeev7s",
-        "thumbnail": "https://i.ytimg.com/vi/W8uxLdeev7s/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 52469,
-        "length": "1:48",
-        "published": "5년 전",
+        "title": "Terraform 완전 강좌 - 초보자부터 전문가까지! (Infrastructure as Code 배우기)",
+        "url": "https://www.youtube.com/watch?v=7xngnjfIlK4",
+        "thumbnail": "https://i.ytimg.com/vi/7xngnjfIlK4/mqdefault.jpg",
+        "channel": "DevOps Directive",
+        "views": 1346957,
+        "length": "2:38:04",
+        "published": "4년 전",
         "stage": "입문"
       },
       {
-        "title": "Vue.js 개발 가이드 - Full Course (feat. Composition API)",
-        "url": "https://www.youtube.com/watch?v=9lWaIhE05m8",
-        "thumbnail": "https://i.ytimg.com/vi/9lWaIhE05m8/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 23867,
-        "length": "2:30:24",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. Vue.js를 배우기 전에 알아둬야 할 것들",
-        "url": "https://www.youtube.com/watch?v=fP40BIIC2zo",
-        "thumbnail": "https://i.ytimg.com/vi/fP40BIIC2zo/mqdefault.jpg",
-        "channel": "csslick - UI 디자인 & 코딩 팁",
-        "views": 1641,
-        "length": "1:40",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아무리 좋은 게 나와도 React를 이길 수 없는 이유 + 취준생이 Vue, Svelte, Angular를 배우면 안 되는 이유",
-        "url": "https://www.youtube.com/watch?v=WRvd29xF8dc",
-        "thumbnail": "https://i.ytimg.com/vi/WRvd29xF8dc/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 20196,
-        "length": "12:04",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Vue.js] Vue 사용자가 Pinia를 사용해야 하는 이유! (Vue Pinia)",
-        "url": "https://www.youtube.com/watch?v=95MzmkwPnLY",
-        "thumbnail": "https://i.ytimg.com/vi/95MzmkwPnLY/mqdefault.jpg",
-        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
-        "views": 84,
-        "length": "3:56",
+        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
+        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
+        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 2584,
+        "length": "13:14",
         "published": "1년 전",
         "stage": "핵심"
       },
       {
-        "title": "Vue.js Tutorial - 핵심문법 1️⃣ 실습 Full 버전",
-        "url": "https://www.youtube.com/watch?v=kO43BEsYDR4",
-        "thumbnail": "https://i.ytimg.com/vi/kO43BEsYDR4/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 1018,
-        "length": "42:27",
+        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
+        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
+        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1523,
+        "length": "13:41",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
+        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
+        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
+        "channel": "NDC",
+        "views": 4733,
+        "length": "20:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
+        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
+        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
+        "channel": "44BITS",
+        "views": 13132,
+        "length": "5:11",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
+        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
+        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3137,
+        "length": "36:29",
         "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
+        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
+        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
+        "channel": "딩코딩코",
+        "views": 4182,
+        "length": "9:08",
+        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -2711,85 +2711,85 @@
         "stage": "실전"
       }
     ],
-    "Terraform": [
+    "Vue": [
       {
-        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
-        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
-        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
-        "channel": "데브아트 DevArt",
-        "views": 13863,
-        "length": "14:55",
+        "title": "Vue 3 강좌 한방에 몰아보기 - 2시간 정주행",
+        "url": "https://www.youtube.com/watch?v=m2j_Y245xew",
+        "thumbnail": "https://i.ytimg.com/vi/m2j_Y245xew/mqdefault.jpg",
+        "channel": "csslick - UI 디자인 & 코딩 팁",
+        "views": 37339,
+        "length": "1:37:32",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Vue 0강 : 카카오가 리액트냅두고 Vue 쓰는 이유",
+        "url": "https://www.youtube.com/watch?v=-tVaahsXpwk",
+        "thumbnail": "https://i.ytimg.com/vi/-tVaahsXpwk/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 229312,
+        "length": "6:51",
         "published": "5년 전",
         "stage": "입문"
       },
       {
-        "title": "Terraform 완전 강좌 - 초보자부터 전문가까지! (Infrastructure as Code 배우기)",
-        "url": "https://www.youtube.com/watch?v=7xngnjfIlK4",
-        "thumbnail": "https://i.ytimg.com/vi/7xngnjfIlK4/mqdefault.jpg",
-        "channel": "DevOps Directive",
-        "views": 1346957,
-        "length": "2:38:04",
-        "published": "4년 전",
+        "title": "Vue.js/React/입문자도 이해하기 쉬운 명쾌한 비교",
+        "url": "https://www.youtube.com/watch?v=W8uxLdeev7s",
+        "thumbnail": "https://i.ytimg.com/vi/W8uxLdeev7s/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 52469,
+        "length": "1:48",
+        "published": "5년 전",
         "stage": "입문"
       },
       {
-        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
-        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
-        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 2584,
-        "length": "13:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
-        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
-        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1523,
-        "length": "13:41",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
-        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
-        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
-        "channel": "NDC",
-        "views": 4733,
-        "length": "20:43",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
-        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
-        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
-        "channel": "44BITS",
-        "views": 13132,
-        "length": "5:11",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
-        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
-        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3137,
-        "length": "36:29",
+        "title": "Vue.js 개발 가이드 - Full Course (feat. Composition API)",
+        "url": "https://www.youtube.com/watch?v=9lWaIhE05m8",
+        "thumbnail": "https://i.ytimg.com/vi/9lWaIhE05m8/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 23867,
+        "length": "2:30:24",
         "published": "2년 전",
         "stage": "핵심"
       },
       {
-        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
-        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
-        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
-        "channel": "딩코딩코",
-        "views": 4182,
-        "length": "9:08",
-        "published": "5개월 전",
+        "title": "1. Vue.js를 배우기 전에 알아둬야 할 것들",
+        "url": "https://www.youtube.com/watch?v=fP40BIIC2zo",
+        "thumbnail": "https://i.ytimg.com/vi/fP40BIIC2zo/mqdefault.jpg",
+        "channel": "csslick - UI 디자인 & 코딩 팁",
+        "views": 1641,
+        "length": "1:40",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아무리 좋은 게 나와도 React를 이길 수 없는 이유 + 취준생이 Vue, Svelte, Angular를 배우면 안 되는 이유",
+        "url": "https://www.youtube.com/watch?v=WRvd29xF8dc",
+        "thumbnail": "https://i.ytimg.com/vi/WRvd29xF8dc/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 20196,
+        "length": "12:04",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Vue.js] Vue 사용자가 Pinia를 사용해야 하는 이유! (Vue Pinia)",
+        "url": "https://www.youtube.com/watch?v=95MzmkwPnLY",
+        "thumbnail": "https://i.ytimg.com/vi/95MzmkwPnLY/mqdefault.jpg",
+        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
+        "views": 84,
+        "length": "3:56",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Vue.js Tutorial - 핵심문법 1️⃣ 실습 Full 버전",
+        "url": "https://www.youtube.com/watch?v=kO43BEsYDR4",
+        "thumbnail": "https://i.ytimg.com/vi/kO43BEsYDR4/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 1018,
+        "length": "42:27",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -5417,88 +5417,6 @@
         "stage": "핵심"
       }
     ],
-    "Jest": [
-      {
-        "title": "코드커버리지가 100%여도 에러가 나는 이유 - Jest (자바스크립트 테스트) 강의 맛보기 1편",
-        "url": "https://www.youtube.com/watch?v=GnYnwfWcJfo",
-        "thumbnail": "https://i.ytimg.com/vi/GnYnwfWcJfo/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 2454,
-        "length": "4:55",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "테스트 귀찮은데 꼭 해야할까? [Jest(자바스크립트 테스트) 강의 맛보기]",
-        "url": "https://www.youtube.com/watch?v=W-fyyAHAqSU",
-        "thumbnail": "https://i.ytimg.com/vi/W-fyyAHAqSU/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 6015,
-        "length": "14:47",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "#04 Global Methods In Jest | Jest Tutorial for Beginners | Unit Testing In Jest",
-        "url": "https://www.youtube.com/watch?v=JdrtyDJWpZo",
-        "thumbnail": "https://i.ytimg.com/vi/JdrtyDJWpZo/mqdefault.jpg",
-        "channel": "Code with Kundan",
-        "views": 76,
-        "length": "3:02",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Jest 강좌 #1 소개, 설치 및 간단한 테스트 작성 - 자바스크립트 테스트 프레임워크",
-        "url": "https://www.youtube.com/watch?v=g4MdUjxA-S4",
-        "thumbnail": "https://i.ytimg.com/vi/g4MdUjxA-S4/mqdefault.jpg",
-        "channel": "코딩앙마",
-        "views": 20195,
-        "length": "5:36",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Debug Jest tests with VSCode (JS/TS)",
-        "url": "https://www.youtube.com/watch?v=_usf3xQ7wys",
-        "thumbnail": "https://i.ytimg.com/vi/_usf3xQ7wys/mqdefault.jpg",
-        "channel": "Concise Developer",
-        "views": 16855,
-        "length": "7:02",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Testing with Jest Part 2-CS3380",
-        "url": "https://www.youtube.com/watch?v=d9NfuK70jdc",
-        "thumbnail": "https://i.ytimg.com/vi/d9NfuK70jdc/mqdefault.jpg",
-        "channel": "ProfessorJenson",
-        "views": 140,
-        "length": "5:30",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JEST 2026 Physics | How to prepare? Under 100 rank in 10 weeks Full Strategy | IISC Calling",
-        "url": "https://www.youtube.com/watch?v=my5sZ4SXxPQ",
-        "thumbnail": "https://i.ytimg.com/vi/my5sZ4SXxPQ/mqdefault.jpg",
-        "channel": "Physics by Aaryan",
-        "views": 3969,
-        "length": "1:14:14",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "toBe() or .not.toBe(): The Power of Jest Assertions (Hebrew)",
-        "url": "https://www.youtube.com/watch?v=sS2Krb68et4",
-        "thumbnail": "https://i.ytimg.com/vi/sS2Krb68et4/mqdefault.jpg",
-        "channel": "JavaScript Israel",
-        "views": 256,
-        "length": "5:42",
-        "published": "7년 전",
-        "stage": "핵심"
-      }
-    ],
     "GitHub": [
       {
         "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
@@ -5581,86 +5499,86 @@
         "stage": "실전"
       }
     ],
-    "Rust": [
+    "Jest": [
       {
-        "title": "러스트 공략 초보자 가이드 1편 이것만 보면 생존 가능 RUST",
-        "url": "https://www.youtube.com/watch?v=1ryj9xJHAcU",
-        "thumbnail": "https://i.ytimg.com/vi/1ryj9xJHAcU/mqdefault.jpg",
-        "channel": "GN",
-        "views": 161093,
-        "length": "25:46",
-        "published": "4년 전",
+        "title": "코드커버리지가 100%여도 에러가 나는 이유 - Jest (자바스크립트 테스트) 강의 맛보기 1편",
+        "url": "https://www.youtube.com/watch?v=GnYnwfWcJfo",
+        "thumbnail": "https://i.ytimg.com/vi/GnYnwfWcJfo/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 2454,
+        "length": "4:55",
+        "published": "2년 전",
         "stage": "입문"
       },
       {
-        "title": "러스트 10000시간이 알려주는 초보자 1분 강좌",
-        "url": "https://www.youtube.com/watch?v=MFH2bZ1cnZQ",
-        "thumbnail": "https://i.ytimg.com/vi/MFH2bZ1cnZQ/mqdefault.jpg",
-        "channel": "투투 TuTU",
-        "views": 49833,
-        "length": "1:46",
+        "title": "테스트 귀찮은데 꼭 해야할까? [Jest(자바스크립트 테스트) 강의 맛보기]",
+        "url": "https://www.youtube.com/watch?v=W-fyyAHAqSU",
+        "thumbnail": "https://i.ytimg.com/vi/W-fyyAHAqSU/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 6015,
+        "length": "14:47",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "#04 Global Methods In Jest | Jest Tutorial for Beginners | Unit Testing In Jest",
+        "url": "https://www.youtube.com/watch?v=JdrtyDJWpZo",
+        "thumbnail": "https://i.ytimg.com/vi/JdrtyDJWpZo/mqdefault.jpg",
+        "channel": "Code with Kundan",
+        "views": 76,
+        "length": "3:02",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Jest 강좌 #1 소개, 설치 및 간단한 테스트 작성 - 자바스크립트 테스트 프레임워크",
+        "url": "https://www.youtube.com/watch?v=g4MdUjxA-S4",
+        "thumbnail": "https://i.ytimg.com/vi/g4MdUjxA-S4/mqdefault.jpg",
+        "channel": "코딩앙마",
+        "views": 20195,
+        "length": "5:36",
         "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Rust가 C보다 35%나 느리다고? (FFmpeg가 Rust를 조롱한 이유)",
-        "url": "https://www.youtube.com/watch?v=H_OTkWzef4c",
-        "thumbnail": "https://i.ytimg.com/vi/H_OTkWzef4c/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 27725,
-        "length": "7:24",
-        "published": "11개월 전",
         "stage": "핵심"
       },
       {
-        "title": "16,000 시간 고인물 솔로 유저가 혼자 최종 무기 얻고 집 주변을 폭발 시키는 방법 RUST SOLO",
-        "url": "https://www.youtube.com/watch?v=dDt7JCv9QfE",
-        "thumbnail": "https://i.ytimg.com/vi/dDt7JCv9QfE/mqdefault.jpg",
-        "channel": "GN",
-        "views": 124085,
-        "length": "34:40",
-        "published": "2년 전",
+        "title": "Debug Jest tests with VSCode (JS/TS)",
+        "url": "https://www.youtube.com/watch?v=_usf3xQ7wys",
+        "thumbnail": "https://i.ytimg.com/vi/_usf3xQ7wys/mqdefault.jpg",
+        "channel": "Concise Developer",
+        "views": 16855,
+        "length": "7:02",
+        "published": "3년 전",
         "stage": "핵심"
       },
       {
-        "title": "#RUST  농사 가이드",
-        "url": "https://www.youtube.com/watch?v=IChVG-5VvXI",
-        "thumbnail": "https://i.ytimg.com/vi/IChVG-5VvXI/mqdefault.jpg",
-        "channel": "째수",
-        "views": 18107,
-        "length": "15:39",
-        "published": "1년 전",
+        "title": "Testing with Jest Part 2-CS3380",
+        "url": "https://www.youtube.com/watch?v=d9NfuK70jdc",
+        "thumbnail": "https://i.ytimg.com/vi/d9NfuK70jdc/mqdefault.jpg",
+        "channel": "ProfessorJenson",
+        "views": 140,
+        "length": "5:30",
+        "published": "6년 전",
         "stage": "핵심"
       },
       {
-        "title": "개발 언어 러스트 호들갑은 실체가 있는가...?",
-        "url": "https://www.youtube.com/watch?v=FMt3gwWPUak",
-        "thumbnail": "https://i.ytimg.com/vi/FMt3gwWPUak/mqdefault.jpg",
-        "channel": "저세상개발자",
-        "views": 29444,
-        "length": "5:05",
-        "published": "2년 전",
+        "title": "JEST 2026 Physics | How to prepare? Under 100 rank in 10 weeks Full Strategy | IISC Calling",
+        "url": "https://www.youtube.com/watch?v=my5sZ4SXxPQ",
+        "thumbnail": "https://i.ytimg.com/vi/my5sZ4SXxPQ/mqdefault.jpg",
+        "channel": "Physics by Aaryan",
+        "views": 3969,
+        "length": "1:14:14",
+        "published": "4개월 전",
         "stage": "핵심"
       },
       {
-        "title": "Rust의 장점, 그리고 C++이 버티는 힘",
-        "url": "https://www.youtube.com/watch?v=kZA1R-MHWio",
-        "thumbnail": "https://i.ytimg.com/vi/kZA1R-MHWio/mqdefault.jpg",
-        "channel": "포프TV",
-        "views": 13080,
-        "length": "4:10",
-        "published": "7개월 전",
+        "title": "toBe() or .not.toBe(): The Power of Jest Assertions (Hebrew)",
+        "url": "https://www.youtube.com/watch?v=sS2Krb68et4",
+        "thumbnail": "https://i.ytimg.com/vi/sS2Krb68et4/mqdefault.jpg",
+        "channel": "JavaScript Israel",
+        "views": 256,
+        "length": "5:42",
+        "published": "7년 전",
         "stage": "핵심"
-      },
-      {
-        "title": "왜 Rust 프로젝트들은 포기되고 있을까? (여전히 C/C++ 선호 이유)",
-        "url": "https://www.youtube.com/watch?v=Tam4Ya9-soA",
-        "thumbnail": "https://i.ytimg.com/vi/Tam4Ya9-soA/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 47032,
-        "length": "4:46",
-        "published": "1년 전",
-        "stage": "실전"
       }
     ],
     "Express": [
@@ -5743,6 +5661,88 @@
         "length": "11:22",
         "published": "4년 전",
         "stage": "핵심"
+      }
+    ],
+    "Rust": [
+      {
+        "title": "러스트 공략 초보자 가이드 1편 이것만 보면 생존 가능 RUST",
+        "url": "https://www.youtube.com/watch?v=1ryj9xJHAcU",
+        "thumbnail": "https://i.ytimg.com/vi/1ryj9xJHAcU/mqdefault.jpg",
+        "channel": "GN",
+        "views": 161093,
+        "length": "25:46",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "러스트 10000시간이 알려주는 초보자 1분 강좌",
+        "url": "https://www.youtube.com/watch?v=MFH2bZ1cnZQ",
+        "thumbnail": "https://i.ytimg.com/vi/MFH2bZ1cnZQ/mqdefault.jpg",
+        "channel": "투투 TuTU",
+        "views": 49833,
+        "length": "1:46",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Rust가 C보다 35%나 느리다고? (FFmpeg가 Rust를 조롱한 이유)",
+        "url": "https://www.youtube.com/watch?v=H_OTkWzef4c",
+        "thumbnail": "https://i.ytimg.com/vi/H_OTkWzef4c/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 27725,
+        "length": "7:24",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "16,000 시간 고인물 솔로 유저가 혼자 최종 무기 얻고 집 주변을 폭발 시키는 방법 RUST SOLO",
+        "url": "https://www.youtube.com/watch?v=dDt7JCv9QfE",
+        "thumbnail": "https://i.ytimg.com/vi/dDt7JCv9QfE/mqdefault.jpg",
+        "channel": "GN",
+        "views": 124085,
+        "length": "34:40",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "#RUST  농사 가이드",
+        "url": "https://www.youtube.com/watch?v=IChVG-5VvXI",
+        "thumbnail": "https://i.ytimg.com/vi/IChVG-5VvXI/mqdefault.jpg",
+        "channel": "째수",
+        "views": 18107,
+        "length": "15:39",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발 언어 러스트 호들갑은 실체가 있는가...?",
+        "url": "https://www.youtube.com/watch?v=FMt3gwWPUak",
+        "thumbnail": "https://i.ytimg.com/vi/FMt3gwWPUak/mqdefault.jpg",
+        "channel": "저세상개발자",
+        "views": 29444,
+        "length": "5:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Rust의 장점, 그리고 C++이 버티는 힘",
+        "url": "https://www.youtube.com/watch?v=kZA1R-MHWio",
+        "thumbnail": "https://i.ytimg.com/vi/kZA1R-MHWio/mqdefault.jpg",
+        "channel": "포프TV",
+        "views": 13080,
+        "length": "4:10",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "왜 Rust 프로젝트들은 포기되고 있을까? (여전히 C/C++ 선호 이유)",
+        "url": "https://www.youtube.com/watch?v=Tam4Ya9-soA",
+        "thumbnail": "https://i.ytimg.com/vi/Tam4Ya9-soA/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 47032,
+        "length": "4:46",
+        "published": "1년 전",
+        "stage": "실전"
       }
     ],
     "SCSS": [
@@ -6401,6 +6401,88 @@
         "stage": "실전"
       }
     ],
+    "Embedded": [
+      {
+        "title": "아두이노중급 1강 임베디드 이론 임베디드 이해하기",
+        "url": "https://www.youtube.com/watch?v=tokMDurqbL0",
+        "thumbnail": "https://i.ytimg.com/vi/tokMDurqbL0/mqdefault.jpg",
+        "channel": "미래인재연구소",
+        "views": 2552,
+        "length": "30:48",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[임베디드 1강] 임베디드가 뭔가요?",
+        "url": "https://www.youtube.com/watch?v=hB5CafwlJLg",
+        "thumbnail": "https://i.ytimg.com/vi/hB5CafwlJLg/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 18303,
+        "length": "1:04:15",
+        "published": "스트리밍 시간: 4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
+        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
+        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
+        "channel": "임땡겸(전자컴퓨터)",
+        "views": 9332,
+        "length": "11:30",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[임베디드 39-1강] 클라스가 다른 ADC 강의",
+        "url": "https://www.youtube.com/watch?v=Y3--0XLFjwo",
+        "thumbnail": "https://i.ytimg.com/vi/Y3--0XLFjwo/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 3019,
+        "length": "1:42:50",
+        "published": "스트리밍 시간: 3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "2025 임베디드 프로그래밍 공부 순서 | 공부 방법 | 로드맵【전자과 | 로봇학과 | 인공지능 | AI 공대생 필수시청】",
+        "url": "https://www.youtube.com/watch?v=Cv30BqRo1Cc",
+        "thumbnail": "https://i.ytimg.com/vi/Cv30BqRo1Cc/mqdefault.jpg",
+        "channel": "그라운드 임베디드",
+        "views": 33366,
+        "length": "7:57",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI 덕분에 전공 상관없이 누구나 임베디드 개발자 될 수 있습니다.",
+        "url": "https://www.youtube.com/watch?v=SMdNkN0Jfcs",
+        "thumbnail": "https://i.ytimg.com/vi/SMdNkN0Jfcs/mqdefault.jpg",
+        "channel": "그라운드 임베디드",
+        "views": 35922,
+        "length": "3:48",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[강의 미리보기] 반도체 올인 금지! '초고속 임베디드 보드 설계'로 대기업 회로설계  합격하기",
+        "url": "https://www.youtube.com/watch?v=WzNAOtjuUUA",
+        "thumbnail": "https://i.ytimg.com/vi/WzNAOtjuUUA/mqdefault.jpg",
+        "channel": "회로설계 멘토 삼코치",
+        "views": 7542,
+        "length": "10:03",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "임베디드 엔지니어라면 책상에 반드시 있어야 할 '규칙' 시리즈 3권 리뷰!",
+        "url": "https://www.youtube.com/watch?v=7_9LoOFOkdk",
+        "thumbnail": "https://i.ytimg.com/vi/7_9LoOFOkdk/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 4579,
+        "length": "6:37",
+        "published": "5개월 전",
+        "stage": "핵심"
+      }
+    ],
     "Selenium": [
       {
         "title": "Selenium 웹 자동화 기초",
@@ -6565,85 +6647,85 @@
         "stage": "실전"
       }
     ],
-    "Embedded": [
+    "Windows": [
       {
-        "title": "아두이노중급 1강 임베디드 이론 임베디드 이해하기",
-        "url": "https://www.youtube.com/watch?v=tokMDurqbL0",
-        "thumbnail": "https://i.ytimg.com/vi/tokMDurqbL0/mqdefault.jpg",
-        "channel": "미래인재연구소",
-        "views": 2552,
-        "length": "30:48",
-        "published": "7년 전",
+        "title": "컴퓨터 윈도우 11 기본기능 과 사용법_Windows 10 비교 _PC 환경 및 기초 배우기.",
+        "url": "https://www.youtube.com/watch?v=AxXtFS-P1Ew",
+        "thumbnail": "https://i.ytimg.com/vi/AxXtFS-P1Ew/mqdefault.jpg",
+        "channel": "IB 96",
+        "views": 86298,
+        "length": "13:24",
+        "published": "4년 전",
         "stage": "입문"
       },
       {
-        "title": "[임베디드 1강] 임베디드가 뭔가요?",
-        "url": "https://www.youtube.com/watch?v=hB5CafwlJLg",
-        "thumbnail": "https://i.ytimg.com/vi/hB5CafwlJLg/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 18303,
-        "length": "1:04:15",
-        "published": "스트리밍 시간: 4년 전",
+        "title": "04. 컴퓨터 기초 - 알고 쓰자! 윈도우10(Windows10)! 윈도우가 뭘까요? 왜 쓰는걸까요?",
+        "url": "https://www.youtube.com/watch?v=FzSqz5N-5zc",
+        "thumbnail": "https://i.ytimg.com/vi/FzSqz5N-5zc/mqdefault.jpg",
+        "channel": "욜디_컴퓨터 인터넷 기초강의",
+        "views": 190441,
+        "length": "8:37",
+        "published": "6년 전",
         "stage": "입문"
       },
       {
-        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
-        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
-        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
-        "channel": "임땡겸(전자컴퓨터)",
-        "views": 9332,
-        "length": "11:30",
-        "published": "1년 전",
+        "title": "[컴활 필기]컴퓨터일반-Windows의 기초",
+        "url": "https://www.youtube.com/watch?v=5EpVbkZLXrE",
+        "thumbnail": "https://i.ytimg.com/vi/5EpVbkZLXrE/mqdefault.jpg",
+        "channel": "이기적 영진닷컴",
+        "views": 333973,
+        "length": "1:47:53",
+        "published": "2년 전",
         "stage": "입문"
       },
       {
-        "title": "[임베디드 39-1강] 클라스가 다른 ADC 강의",
-        "url": "https://www.youtube.com/watch?v=Y3--0XLFjwo",
-        "thumbnail": "https://i.ytimg.com/vi/Y3--0XLFjwo/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 3019,
-        "length": "1:42:50",
-        "published": "스트리밍 시간: 3년 전",
+        "title": "컴활 1,2급 필기🔥1과목 :: 10강_Windows특징과 단축키 핵심요약 기출문제 풀이💯(선점형 멀티테스킹, OLE, NTFS, GUI, 조합키)👨‍💻[균쌤]",
+        "url": "https://www.youtube.com/watch?v=AhoBthm9ilc",
+        "thumbnail": "https://i.ytimg.com/vi/AhoBthm9ilc/mqdefault.jpg",
+        "channel": "합격다드림_균쌤",
+        "views": 797192,
+        "length": "18:18",
+        "published": "5년 전",
         "stage": "입문"
       },
       {
-        "title": "2025 임베디드 프로그래밍 공부 순서 | 공부 방법 | 로드맵【전자과 | 로봇학과 | 인공지능 | AI 공대생 필수시청】",
-        "url": "https://www.youtube.com/watch?v=Cv30BqRo1Cc",
-        "thumbnail": "https://i.ytimg.com/vi/Cv30BqRo1Cc/mqdefault.jpg",
-        "channel": "그라운드 임베디드",
-        "views": 33366,
-        "length": "7:57",
-        "published": "1년 전",
-        "stage": "핵심"
+        "title": "[Windows Server 기초 강의] 55강. 14.1 Active Directory",
+        "url": "https://www.youtube.com/watch?v=bXKNf1SKZh4",
+        "thumbnail": "https://i.ytimg.com/vi/bXKNf1SKZh4/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4334,
+        "length": "10:21",
+        "published": "3년 전",
+        "stage": "입문"
       },
       {
-        "title": "AI 덕분에 전공 상관없이 누구나 임베디드 개발자 될 수 있습니다.",
-        "url": "https://www.youtube.com/watch?v=SMdNkN0Jfcs",
-        "thumbnail": "https://i.ytimg.com/vi/SMdNkN0Jfcs/mqdefault.jpg",
-        "channel": "그라운드 임베디드",
-        "views": 35922,
-        "length": "3:48",
-        "published": "1년 전",
-        "stage": "핵심"
+        "title": "[Windows Server 기초 강의] 49강. 10.2.5 라운드 로빈 방식의 DNS 서버",
+        "url": "https://www.youtube.com/watch?v=EqkSVFw1PO4",
+        "thumbnail": "https://i.ytimg.com/vi/EqkSVFw1PO4/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 791,
+        "length": "7:43",
+        "published": "3년 전",
+        "stage": "입문"
       },
       {
-        "title": "[강의 미리보기] 반도체 올인 금지! '초고속 임베디드 보드 설계'로 대기업 회로설계  합격하기",
-        "url": "https://www.youtube.com/watch?v=WzNAOtjuUUA",
-        "thumbnail": "https://i.ytimg.com/vi/WzNAOtjuUUA/mqdefault.jpg",
-        "channel": "회로설계 멘토 삼코치",
-        "views": 7542,
-        "length": "10:03",
-        "published": "4개월 전",
-        "stage": "핵심"
+        "title": "터미널 명령어 입문 가이드 영상 - Windows 편 (관련 개념 설명, 심볼, 기초 명령어 및 옵션 등등)",
+        "url": "https://www.youtube.com/watch?v=JSKXM2KPui4",
+        "thumbnail": "https://i.ytimg.com/vi/JSKXM2KPui4/mqdefault.jpg",
+        "channel": "딥스푼",
+        "views": 4250,
+        "length": "20:10",
+        "published": "2년 전",
+        "stage": "입문"
       },
       {
-        "title": "임베디드 엔지니어라면 책상에 반드시 있어야 할 '규칙' 시리즈 3권 리뷰!",
-        "url": "https://www.youtube.com/watch?v=7_9LoOFOkdk",
-        "thumbnail": "https://i.ytimg.com/vi/7_9LoOFOkdk/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 4579,
-        "length": "6:37",
-        "published": "5개월 전",
+        "title": "컴퓨터 윈도우11 꼭 알아야 하는 기능 _How to use Windows 11 on your computer.",
+        "url": "https://www.youtube.com/watch?v=zA7a3B9_Zyw",
+        "thumbnail": "https://i.ytimg.com/vi/zA7a3B9_Zyw/mqdefault.jpg",
+        "channel": "IB 96",
+        "views": 70368,
+        "length": "1:08:19",
+        "published": "2년 전",
         "stage": "핵심"
       }
     ],
@@ -6729,86 +6811,86 @@
         "stage": "핵심"
       }
     ],
-    "Windows": [
+    "Keras": [
       {
-        "title": "컴퓨터 윈도우 11 기본기능 과 사용법_Windows 10 비교 _PC 환경 및 기초 배우기.",
-        "url": "https://www.youtube.com/watch?v=AxXtFS-P1Ew",
-        "thumbnail": "https://i.ytimg.com/vi/AxXtFS-P1Ew/mqdefault.jpg",
-        "channel": "IB 96",
-        "views": 86298,
-        "length": "13:24",
+        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
+        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
+        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 68616,
+        "length": "4:20:05",
         "published": "4년 전",
         "stage": "입문"
       },
       {
-        "title": "04. 컴퓨터 기초 - 알고 쓰자! 윈도우10(Windows10)! 윈도우가 뭘까요? 왜 쓰는걸까요?",
-        "url": "https://www.youtube.com/watch?v=FzSqz5N-5zc",
-        "thumbnail": "https://i.ytimg.com/vi/FzSqz5N-5zc/mqdefault.jpg",
-        "channel": "욜디_컴퓨터 인터넷 기초강의",
-        "views": 190441,
-        "length": "8:37",
+        "title": "[토크ON세미나] 딥러닝 입문에서 활용까지 케라스(Keras) 1강 - 딥러닝과 케라스 | T아카데미",
+        "url": "https://www.youtube.com/watch?v=cJpjAmRO_h8",
+        "thumbnail": "https://i.ytimg.com/vi/cJpjAmRO_h8/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 14676,
+        "length": "59:44",
         "published": "6년 전",
         "stage": "입문"
       },
       {
-        "title": "[컴활 필기]컴퓨터일반-Windows의 기초",
-        "url": "https://www.youtube.com/watch?v=5EpVbkZLXrE",
-        "thumbnail": "https://i.ytimg.com/vi/5EpVbkZLXrE/mqdefault.jpg",
-        "channel": "이기적 영진닷컴",
-        "views": 333973,
-        "length": "1:47:53",
-        "published": "2년 전",
+        "title": "#1 너무 쉬운 인공지능: Tensorflow/Keras 따라하기 1강",
+        "url": "https://www.youtube.com/watch?v=GfthCE801HE",
+        "thumbnail": "https://i.ytimg.com/vi/GfthCE801HE/mqdefault.jpg",
+        "channel": "easycoding",
+        "views": 2034,
+        "length": "19:09",
+        "published": "3년 전",
         "stage": "입문"
       },
       {
-        "title": "컴활 1,2급 필기🔥1과목 :: 10강_Windows특징과 단축키 핵심요약 기출문제 풀이💯(선점형 멀티테스킹, OLE, NTFS, GUI, 조합키)👨‍💻[균쌤]",
-        "url": "https://www.youtube.com/watch?v=AhoBthm9ilc",
-        "thumbnail": "https://i.ytimg.com/vi/AhoBthm9ilc/mqdefault.jpg",
-        "channel": "합격다드림_균쌤",
-        "views": 797192,
-        "length": "18:18",
+        "title": "R keras 신경망 (Useful Technique of \"keras\" Neural Networks",
+        "url": "https://www.youtube.com/watch?v=SfSDkhBbndA",
+        "thumbnail": "https://i.ytimg.com/vi/SfSDkhBbndA/mqdefault.jpg",
+        "channel": "데이타솔루션 DATAsolution",
+        "views": 318,
+        "length": "38:39",
         "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[Windows Server 기초 강의] 55강. 14.1 Active Directory",
-        "url": "https://www.youtube.com/watch?v=bXKNf1SKZh4",
-        "thumbnail": "https://i.ytimg.com/vi/bXKNf1SKZh4/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4334,
-        "length": "10:21",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[Windows Server 기초 강의] 49강. 10.2.5 라운드 로빈 방식의 DNS 서버",
-        "url": "https://www.youtube.com/watch?v=EqkSVFw1PO4",
-        "thumbnail": "https://i.ytimg.com/vi/EqkSVFw1PO4/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 791,
-        "length": "7:43",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "터미널 명령어 입문 가이드 영상 - Windows 편 (관련 개념 설명, 심볼, 기초 명령어 및 옵션 등등)",
-        "url": "https://www.youtube.com/watch?v=JSKXM2KPui4",
-        "thumbnail": "https://i.ytimg.com/vi/JSKXM2KPui4/mqdefault.jpg",
-        "channel": "딥스푼",
-        "views": 4250,
-        "length": "20:10",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "컴퓨터 윈도우11 꼭 알아야 하는 기능 _How to use Windows 11 on your computer.",
-        "url": "https://www.youtube.com/watch?v=zA7a3B9_Zyw",
-        "thumbnail": "https://i.ytimg.com/vi/zA7a3B9_Zyw/mqdefault.jpg",
-        "channel": "IB 96",
-        "views": 70368,
-        "length": "1:08:19",
-        "published": "2년 전",
         "stage": "핵심"
+      },
+      {
+        "title": "Keras, 케라스 인공지능의 표준어",
+        "url": "https://www.youtube.com/watch?v=6hYb7794k-k",
+        "thumbnail": "https://i.ytimg.com/vi/6hYb7794k-k/mqdefault.jpg",
+        "channel": "앙트레타임스",
+        "views": 3596,
+        "length": "10:37",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "01 텐서플로우소개 #tensorflow #keras",
+        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
+        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
+        "channel": "Funny AI",
+        "views": 493,
+        "length": "25:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
+        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
+        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 17,
+        "length": "13:56",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[STEP] 실무 활용 Keras How-To",
+        "url": "https://www.youtube.com/watch?v=nEuohuILrdE",
+        "thumbnail": "https://i.ytimg.com/vi/nEuohuILrdE/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 38,
+        "length": "2:00",
+        "published": "3년 전",
+        "stage": "실전"
       }
     ],
     "Dart": [
@@ -7137,88 +7219,6 @@
         "length": "21:26",
         "published": "3주 전",
         "stage": "핵심"
-      }
-    ],
-    "Keras": [
-      {
-        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
-        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
-        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 68616,
-        "length": "4:20:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[토크ON세미나] 딥러닝 입문에서 활용까지 케라스(Keras) 1강 - 딥러닝과 케라스 | T아카데미",
-        "url": "https://www.youtube.com/watch?v=cJpjAmRO_h8",
-        "thumbnail": "https://i.ytimg.com/vi/cJpjAmRO_h8/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 14676,
-        "length": "59:44",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "#1 너무 쉬운 인공지능: Tensorflow/Keras 따라하기 1강",
-        "url": "https://www.youtube.com/watch?v=GfthCE801HE",
-        "thumbnail": "https://i.ytimg.com/vi/GfthCE801HE/mqdefault.jpg",
-        "channel": "easycoding",
-        "views": 2034,
-        "length": "19:09",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R keras 신경망 (Useful Technique of \"keras\" Neural Networks",
-        "url": "https://www.youtube.com/watch?v=SfSDkhBbndA",
-        "thumbnail": "https://i.ytimg.com/vi/SfSDkhBbndA/mqdefault.jpg",
-        "channel": "데이타솔루션 DATAsolution",
-        "views": 318,
-        "length": "38:39",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Keras, 케라스 인공지능의 표준어",
-        "url": "https://www.youtube.com/watch?v=6hYb7794k-k",
-        "thumbnail": "https://i.ytimg.com/vi/6hYb7794k-k/mqdefault.jpg",
-        "channel": "앙트레타임스",
-        "views": 3596,
-        "length": "10:37",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "01 텐서플로우소개 #tensorflow #keras",
-        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
-        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
-        "channel": "Funny AI",
-        "views": 493,
-        "length": "25:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
-        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
-        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 17,
-        "length": "13:56",
-        "published": "2개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[STEP] 실무 활용 Keras How-To",
-        "url": "https://www.youtube.com/watch?v=nEuohuILrdE",
-        "thumbnail": "https://i.ytimg.com/vi/nEuohuILrdE/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 38,
-        "length": "2:00",
-        "published": "3년 전",
-        "stage": "실전"
       }
     ],
     "Ruby": [
@@ -8533,6 +8533,88 @@
         "stage": "실전"
       }
     ],
+    "PCB": [
+      {
+        "title": "대학생때 알았더라면..ㅠ PCB설계부터 제작까지 왕초보 가이드 with EasyEDA(스마트팜 DIY #2 회로설계편)",
+        "url": "https://www.youtube.com/watch?v=U1cSzB38JNQ",
+        "thumbnail": "https://i.ytimg.com/vi/U1cSzB38JNQ/mqdefault.jpg",
+        "channel": "뉴틀킴",
+        "views": 120363,
+        "length": "10:14",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PCB 설계 기초 교육 (PCB 설계 순서/PCB 강의/PCB 설계 방법/KiCAD강좌/PCB설계기본)",
+        "url": "https://www.youtube.com/watch?v=ITiRL_1lt_0",
+        "thumbnail": "https://i.ytimg.com/vi/ITiRL_1lt_0/mqdefault.jpg",
+        "channel": "루드비크 전원회로 설계 연구소",
+        "views": 27590,
+        "length": "5:40",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PCB설계기초과정 5일차",
+        "url": "https://www.youtube.com/watch?v=eK4nw3Ew61o",
+        "thumbnail": "https://i.ytimg.com/vi/eK4nw3Ew61o/mqdefault.jpg",
+        "channel": "용인시산업진흥원",
+        "views": 314,
+        "length": "3:47:45",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "온라인강의 01 PCB개념",
+        "url": "https://www.youtube.com/watch?v=JohKxLe30VI",
+        "thumbnail": "https://i.ytimg.com/vi/JohKxLe30VI/mqdefault.jpg",
+        "channel": "전자공학자료실",
+        "views": 138,
+        "length": "31:31",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PCB 설계 - PCB 기본 이론 교육",
+        "url": "https://www.youtube.com/watch?v=sFmCyO2moCU",
+        "thumbnail": "https://i.ytimg.com/vi/sFmCyO2moCU/mqdefault.jpg",
+        "channel": "만들마루_Official",
+        "views": 65548,
+        "length": "15:59",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "대학생때 알았더라면 무조건 씁니다. AI만 있으면 PCB 하드웨어 개발 그냥 합니다.",
+        "url": "https://www.youtube.com/watch?v=TvWiVdHu0b8",
+        "thumbnail": "https://i.ytimg.com/vi/TvWiVdHu0b8/mqdefault.jpg",
+        "channel": "그라운드 임베디드",
+        "views": 77704,
+        "length": "17:09",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "78강. 당신이 PCB제조 공정을 이해하게 되는데 필요한 시간 40분 / PCB관련 회사에 취업을 준비하는 당신이 들어야할 단 하나의 강의 / 성균관대 화학공학 고분자공학부 교수",
+        "url": "https://www.youtube.com/watch?v=RJp1ZqNBjFA",
+        "thumbnail": "https://i.ytimg.com/vi/RJp1ZqNBjFA/mqdefault.jpg",
+        "channel": "플라스틱 읽어주는 배진영 교수님",
+        "views": 30594,
+        "length": "42:16",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "84강(종강). 소형화 고속화에 따른 PCB재료의 특성은? / 성균관대학교 화학공학 고분자공학부 교수",
+        "url": "https://www.youtube.com/watch?v=oEeL4RlARJ8",
+        "thumbnail": "https://i.ytimg.com/vi/oEeL4RlARJ8/mqdefault.jpg",
+        "channel": "플라스틱 읽어주는 배진영 교수님",
+        "views": 2133,
+        "length": "33:52",
+        "published": "4년 전",
+        "stage": "핵심"
+      }
+    ],
     "Airflow": [
       {
         "title": "Airflow 3.0 Architecture 기초의 모든것, 이 영상 10분만 투자하세요ㅣArchitecture, DAG Parsing 프로세스",
@@ -8943,86 +9025,86 @@
         "stage": "실전"
       }
     ],
-    "PCB": [
+    "ARM": [
       {
-        "title": "대학생때 알았더라면..ㅠ PCB설계부터 제작까지 왕초보 가이드 with EasyEDA(스마트팜 DIY #2 회로설계편)",
-        "url": "https://www.youtube.com/watch?v=U1cSzB38JNQ",
-        "thumbnail": "https://i.ytimg.com/vi/U1cSzB38JNQ/mqdefault.jpg",
-        "channel": "뉴틀킴",
-        "views": 120363,
-        "length": "10:14",
-        "published": "1년 전",
+        "title": "Arm MBED Basics 04강 프로그램 기본 구조",
+        "url": "https://www.youtube.com/watch?v=_spc6M2kKtY",
+        "thumbnail": "https://i.ytimg.com/vi/_spc6M2kKtY/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 71,
+        "length": "22:08",
+        "published": "5년 전",
         "stage": "입문"
       },
       {
-        "title": "PCB 설계 기초 교육 (PCB 설계 순서/PCB 강의/PCB 설계 방법/KiCAD강좌/PCB설계기본)",
-        "url": "https://www.youtube.com/watch?v=ITiRL_1lt_0",
-        "thumbnail": "https://i.ytimg.com/vi/ITiRL_1lt_0/mqdefault.jpg",
-        "channel": "루드비크 전원회로 설계 연구소",
-        "views": 27590,
-        "length": "5:40",
+        "title": "[STM32 강의] #01 ARM 마이크로프로세서란?",
+        "url": "https://www.youtube.com/watch?v=-25yLjScB40",
+        "thumbnail": "https://i.ytimg.com/vi/-25yLjScB40/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 5929,
+        "length": "13:35",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ARM아키텍쳐완전정복미리보기",
+        "url": "https://www.youtube.com/watch?v=2uM4rwqdBME",
+        "thumbnail": "https://i.ytimg.com/vi/2uM4rwqdBME/mqdefault.jpg",
+        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
+        "views": 531,
+        "length": "5:25",
         "published": "3년 전",
-        "stage": "입문"
+        "stage": "핵심"
       },
       {
-        "title": "PCB설계기초과정 5일차",
-        "url": "https://www.youtube.com/watch?v=eK4nw3Ew61o",
-        "thumbnail": "https://i.ytimg.com/vi/eK4nw3Ew61o/mqdefault.jpg",
-        "channel": "용인시산업진흥원",
-        "views": 314,
-        "length": "3:47:45",
-        "published": "5년 전",
-        "stage": "입문"
+        "title": "[강의] Arm 서버 해부학, 파일럿 Ep. | Arm Server Anatomy, Pilot Ep.",
+        "url": "https://www.youtube.com/watch?v=ZWPQL0Zkc6Y",
+        "thumbnail": "https://i.ytimg.com/vi/ZWPQL0Zkc6Y/mqdefault.jpg",
+        "channel": "XSLAB 엑세스랩",
+        "views": 423,
+        "length": "30:31",
+        "published": "2년 전",
+        "stage": "핵심"
       },
       {
-        "title": "온라인강의 01 PCB개념",
-        "url": "https://www.youtube.com/watch?v=JohKxLe30VI",
-        "thumbnail": "https://i.ytimg.com/vi/JohKxLe30VI/mqdefault.jpg",
-        "channel": "전자공학자료실",
-        "views": 138,
-        "length": "31:31",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PCB 설계 - PCB 기본 이론 교육",
-        "url": "https://www.youtube.com/watch?v=sFmCyO2moCU",
-        "thumbnail": "https://i.ytimg.com/vi/sFmCyO2moCU/mqdefault.jpg",
+        "title": "[전문메이커] ARM 임베디드 강의 (초급, 중급)",
+        "url": "https://www.youtube.com/watch?v=D0yJaZ9Qx7s",
+        "thumbnail": "https://i.ytimg.com/vi/D0yJaZ9Qx7s/mqdefault.jpg",
         "channel": "만들마루_Official",
-        "views": 65548,
-        "length": "15:59",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "대학생때 알았더라면 무조건 씁니다. AI만 있으면 PCB 하드웨어 개발 그냥 합니다.",
-        "url": "https://www.youtube.com/watch?v=TvWiVdHu0b8",
-        "thumbnail": "https://i.ytimg.com/vi/TvWiVdHu0b8/mqdefault.jpg",
-        "channel": "그라운드 임베디드",
-        "views": 77704,
-        "length": "17:09",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "78강. 당신이 PCB제조 공정을 이해하게 되는데 필요한 시간 40분 / PCB관련 회사에 취업을 준비하는 당신이 들어야할 단 하나의 강의 / 성균관대 화학공학 고분자공학부 교수",
-        "url": "https://www.youtube.com/watch?v=RJp1ZqNBjFA",
-        "thumbnail": "https://i.ytimg.com/vi/RJp1ZqNBjFA/mqdefault.jpg",
-        "channel": "플라스틱 읽어주는 배진영 교수님",
-        "views": 30594,
-        "length": "42:16",
+        "views": 475,
+        "length": "4:19",
         "published": "4년 전",
         "stage": "핵심"
       },
       {
-        "title": "84강(종강). 소형화 고속화에 따른 PCB재료의 특성은? / 성균관대학교 화학공학 고분자공학부 교수",
-        "url": "https://www.youtube.com/watch?v=oEeL4RlARJ8",
-        "thumbnail": "https://i.ytimg.com/vi/oEeL4RlARJ8/mqdefault.jpg",
-        "channel": "플라스틱 읽어주는 배진영 교수님",
-        "views": 2133,
-        "length": "33:52",
-        "published": "4년 전",
+        "title": "리얼리눅스 무료세미나: ARM아키텍쳐 알아야 하는 이유",
+        "url": "https://www.youtube.com/watch?v=6qK_H0x04OY",
+        "thumbnail": "https://i.ytimg.com/vi/6qK_H0x04OY/mqdefault.jpg",
+        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
+        "views": 8453,
+        "length": "1:26:26",
+        "published": "스트리밍 시간: 5년 전",
         "stage": "핵심"
+      },
+      {
+        "title": "[강의] Arm 서버 해부학, Ep. 02 \"CPU\"  | Arm Server Anatomy, \"CPU\"",
+        "url": "https://www.youtube.com/watch?v=Kmm3yk-kNjY",
+        "thumbnail": "https://i.ytimg.com/vi/Kmm3yk-kNjY/mqdefault.jpg",
+        "channel": "XSLAB 엑세스랩",
+        "views": 692,
+        "length": "24:08",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[전문메이커] ARM 임베디드 강의 (고급)",
+        "url": "https://www.youtube.com/watch?v=LnTfvXjVVso",
+        "thumbnail": "https://i.ytimg.com/vi/LnTfvXjVVso/mqdefault.jpg",
+        "channel": "만들마루_Official",
+        "views": 270,
+        "length": "5:05",
+        "published": "4년 전",
+        "stage": "실전"
       }
     ],
     "WebSocket": [
@@ -9513,88 +9595,6 @@
         "channel": "인프런 inflearn",
         "views": 336,
         "length": "9:43",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
-    "ARM": [
-      {
-        "title": "Arm MBED Basics 04강 프로그램 기본 구조",
-        "url": "https://www.youtube.com/watch?v=_spc6M2kKtY",
-        "thumbnail": "https://i.ytimg.com/vi/_spc6M2kKtY/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 71,
-        "length": "22:08",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[STM32 강의] #01 ARM 마이크로프로세서란?",
-        "url": "https://www.youtube.com/watch?v=-25yLjScB40",
-        "thumbnail": "https://i.ytimg.com/vi/-25yLjScB40/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 5929,
-        "length": "13:35",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ARM아키텍쳐완전정복미리보기",
-        "url": "https://www.youtube.com/watch?v=2uM4rwqdBME",
-        "thumbnail": "https://i.ytimg.com/vi/2uM4rwqdBME/mqdefault.jpg",
-        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
-        "views": 531,
-        "length": "5:25",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의] Arm 서버 해부학, 파일럿 Ep. | Arm Server Anatomy, Pilot Ep.",
-        "url": "https://www.youtube.com/watch?v=ZWPQL0Zkc6Y",
-        "thumbnail": "https://i.ytimg.com/vi/ZWPQL0Zkc6Y/mqdefault.jpg",
-        "channel": "XSLAB 엑세스랩",
-        "views": 423,
-        "length": "30:31",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[전문메이커] ARM 임베디드 강의 (초급, 중급)",
-        "url": "https://www.youtube.com/watch?v=D0yJaZ9Qx7s",
-        "thumbnail": "https://i.ytimg.com/vi/D0yJaZ9Qx7s/mqdefault.jpg",
-        "channel": "만들마루_Official",
-        "views": 475,
-        "length": "4:19",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리얼리눅스 무료세미나: ARM아키텍쳐 알아야 하는 이유",
-        "url": "https://www.youtube.com/watch?v=6qK_H0x04OY",
-        "thumbnail": "https://i.ytimg.com/vi/6qK_H0x04OY/mqdefault.jpg",
-        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
-        "views": 8453,
-        "length": "1:26:26",
-        "published": "스트리밍 시간: 5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의] Arm 서버 해부학, Ep. 02 \"CPU\"  | Arm Server Anatomy, \"CPU\"",
-        "url": "https://www.youtube.com/watch?v=Kmm3yk-kNjY",
-        "thumbnail": "https://i.ytimg.com/vi/Kmm3yk-kNjY/mqdefault.jpg",
-        "channel": "XSLAB 엑세스랩",
-        "views": 692,
-        "length": "24:08",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[전문메이커] ARM 임베디드 강의 (고급)",
-        "url": "https://www.youtube.com/watch?v=LnTfvXjVVso",
-        "thumbnail": "https://i.ytimg.com/vi/LnTfvXjVVso/mqdefault.jpg",
-        "channel": "만들마루_Official",
-        "views": 270,
-        "length": "5:05",
         "published": "4년 전",
         "stage": "실전"
       }

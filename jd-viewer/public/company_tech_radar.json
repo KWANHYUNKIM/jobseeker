@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T09:43:12",
+ "generated_at": "2026-06-16T11:16:50",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 55,
+ "refined": 57,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -2842,11 +2842,11 @@
      "count": 3
     },
     {
-     "name": "Go",
-     "count": 2
+     "name": "Python",
+     "count": 3
     },
     {
-     "name": "Python",
+     "name": "Go",
      "count": 2
     },
     {
@@ -2861,6 +2861,10 @@
    "stack": {
     "backend": [
      {
+      "name": "gRPC",
+      "count": 3
+     },
+     {
       "name": "Spring Boot",
       "count": 3
      },
@@ -2869,8 +2873,12 @@
       "count": 2
      },
      {
-      "name": "gRPC",
-      "count": 2
+      "name": "JPA / QueryDSL",
+      "count": 1
+     },
+     {
+      "name": "Kotlin + Spring WebFlux",
+      "count": 1
      },
      {
       "name": "Spring Cloud",
@@ -2891,7 +2899,15 @@
       "count": 1
      },
      {
+      "name": "TypeScript",
+      "count": 1
+     },
+     {
       "name": "Vue.js",
+      "count": 1
+     },
+     {
+      "name": "Webpack",
       "count": 1
      }
     ],
@@ -2905,12 +2921,12 @@
       "count": 3
      },
      {
-      "name": "MySQL",
+      "name": "Redis",
       "count": 3
      },
      {
-      "name": "Redis",
-      "count": 3
+      "name": "MySQL",
+      "count": 2
      },
      {
       "name": "Aerospike",
@@ -2921,11 +2937,19 @@
       "count": 1
      },
      {
+      "name": "DynamoDB",
+      "count": 1
+     },
+     {
       "name": "Flink",
       "count": 1
      },
      {
       "name": "MongoDB",
+      "count": 1
+     },
+     {
+      "name": "MySQL / Aurora",
       "count": 1
      }
     ],
@@ -2941,17 +2965,33 @@
      {
       "name": "ArgoCD",
       "count": 1
+     },
+     {
+      "name": "Prometheus + Grafana",
+      "count": 1
+     },
+     {
+      "name": "Spinnaker",
+      "count": 1
+     },
+     {
+      "name": "Terraform",
+      "count": 1
      }
     ]
    },
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 3
+     "count": 2
     },
     {
      "name": "Microservices",
      "count": 2
+    },
+    {
+     "name": "Event-driven Architecture",
+     "count": 1
     },
     {
      "name": "MSA",
@@ -2962,11 +3002,7 @@
      "count": 1
     },
     {
-     "name": "Stream processing",
-     "count": 1
-    },
-    {
-     "name": "이벤트 소싱",
+     "name": "Saga 기반 분산 트랜잭션",
      "count": 1
     }
    ]
@@ -3498,6 +3534,14 @@
       "count": 1
      },
      {
+      "name": "gRPC",
+      "count": 1
+     },
+     {
+      "name": "Kotlin Coroutines",
+      "count": 1
+     },
+     {
       "name": "Node.js",
       "count": 1
      },
@@ -3516,6 +3560,14 @@
       "count": 1
      },
      {
+      "name": "React Native",
+      "count": 1
+     },
+     {
+      "name": "Redux/Recoil",
+      "count": 1
+     },
+     {
       "name": "TypeScript",
       "count": 1
      }
@@ -3523,6 +3575,10 @@
     "data": [
      {
       "name": "Airflow",
+      "count": 1
+     },
+     {
+      "name": "DynamoDB",
       "count": 1
      },
      {
@@ -3540,11 +3596,27 @@
      {
       "name": "Redis",
       "count": 1
+     },
+     {
+      "name": "S3",
+      "count": 1
      }
     ],
     "infra": [
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
       "name": "AWS",
+      "count": 1
+     },
+     {
+      "name": "AWS Lambda",
+      "count": 1
+     },
+     {
+      "name": "Datadog",
       "count": 1
      },
      {
@@ -3552,12 +3624,16 @@
       "count": 1
      },
      {
-      "name": "Serverless",
+      "name": "Terraform",
       "count": 1
      }
     ]
    },
    "architecture": [
+    {
+     "name": "BFF/GraphQL Gateway",
+     "count": 1
+    },
     {
      "name": "MSA",
      "count": 1
@@ -3567,7 +3643,7 @@
      "count": 1
     },
     {
-     "name": "지도/공간 검색",
+     "name": "지도 기반 공간 검색",
      "count": 1
     }
    ]
@@ -12550,41 +12626,52 @@
    "languages": [
     "Java",
     "Kotlin",
+    "TypeScript",
     "JavaScript",
-    "TypeScript"
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud"
+     "Spring Cloud",
+     "Kotlin + Spring WebFlux",
+     "JPA / QueryDSL",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "Vue.js"
+     "Vue.js",
+     "TypeScript",
+     "Webpack"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "Apache Kafka",
+     "MySQL / Aurora",
      "Redis",
      "MongoDB",
-     "Elasticsearch"
+     "Elasticsearch",
+     "DynamoDB"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "ArgoCD"
+     "Kubernetes (EKS)",
+     "ArgoCD",
+     "Spinnaker",
+     "Terraform",
+     "Prometheus + Grafana"
     ]
    },
    "architecture": [
     "MSA",
-    "Event-driven",
-    "이벤트 소싱"
+    "Event-driven Architecture",
+    "이벤트 소싱 / CQRS",
+    "Saga 기반 분산 트랜잭션"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"배민 앱<br/>Android iOS\"]\n    WEB[\"사장님 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    ORDER[\"주문 서비스<br/>Spring Boot + Kotlin\"]\n    DELIV[\"배달 매칭 서비스<br/>Spring Boot + Kotlin\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Java\"]\n    SHOP[\"가게 서비스<br/>Spring Boot + Kotlin\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 DB<br/>MySQL\"]\n    REDIS[\"주문 캐시<br/>Redis\"]\n    MONGO[\"이벤트 저장소<br/>MongoDB\"]\n    ES[\"가게 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + ArgoCD\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> ORDER\n  GW --> SHOP\n  ORDER --> KAFKA\n  KAFKA -->|주문 이벤트| DELIV\n  KAFKA -->|결제 요청| PAY\n  ORDER --> MYSQL\n  ORDER --> REDIS\n  KAFKA --> MONGO\n  SHOP --> ES\n  ORDER --> K8S",
-   "why_language": "주문 트래픽이 시간대에 집중되는 대용량 시스템이라 Java/Spring을 기반으로 안정성을 확보하고, 신규 모듈은 간결한 Kotlin으로 전환해 생산성을 높이고 있다.",
-   "why_architecture": "주문·배달 도메인이 복잡하게 얽혀 있어 MSA로 분리하고, 주문 폭주 시 결합도를 낮추기 위해 Kafka 기반 이벤트 드리븐·이벤트 소싱을 적극 도입했다.",
-   "summary": "피크 주문을 견디는 Java/Kotlin 기반 대용량 이벤트 드리븐 MSA.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"배민 App / Web<br/>React + Next.js + Vue.js\"]\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    BFF[\"BFF<br/>Node.js + Kotlin\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    ORDER[\"주문 서비스<br/>Kotlin + Spring Boot\"]\n    SHOP[\"가게/메뉴 서비스<br/>Spring Boot + JPA\"]\n    MATCH[\"배민1 배차 매칭<br/>Kotlin + WebFlux\"]\n    PAY[\"결제 서비스<br/>Spring Boot\"]\n    SEARCH[\"검색/랭킹<br/>Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    ESTORE[\"Event Store<br/>이벤트 소싱\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"주문/거래 DB<br/>MySQL / Aurora\"]\n    REDIS[\"캐시/세션<br/>Redis\"]\n    MONGO[\"노출 캐시 뷰<br/>MongoDB\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps 배포<br/>ArgoCD + Spinnaker\"]\n    OBS[\"관측성<br/>Prometheus + Grafana\"]\n  end\n  APP --> CDN --> GW\n  APP --> GW\n  GW --> BFF\n  BFF --> ORDER\n  BFF --> SHOP\n  BFF --> SEARCH\n  ORDER -->|\"OrderCreated\"| KAFKA\n  ORDER --> MYSQL\n  ORDER --> ESTORE\n  KAFKA --> MATCH\n  KAFKA --> PAY\n  KAFKA --> MONGO\n  SHOP --> REDIS\n  SHOP --> MONGO\n  SEARCH --> ES\n  MATCH --> REDIS\n  Core --> EKS\n  ARGO --> EKS\n  EKS --> OBS",
+   "why_language": "주문·결제·정산처럼 정합성과 안정성이 중요한 대규모 트랜잭션 도메인이라 JVM 생태계(Java/Spring)의 성숙도와 운영 경험을 기반으로 한다. 동시에 신규 서비스와 배차 매칭처럼 동시성·비동기 처리가 많은 영역은 코드 간결성과 null 안정성, 코루틴을 갖춘 Kotlin으로 빠르게 전환하고 있으며, 프론트는 빠른 화면 개발과 SSR을 위해 TypeScript 기반 React/Next.js를 쓴다.",
+   "why_architecture": "전국 단위 주문·배차·결제·정산이 초당 수만 건씩 몰리는 피크(점심·저녁) 트래픽을 도메인별로 독립 확장·배포하기 위해 MSA를 채택했다. 서비스 간 강결합과 분산 트랜잭션 문제를 피하기 위해 Kafka 기반 이벤트 드리븐으로 비동기 통신하고, 주문 상태처럼 변화 이력 자체가 비즈니스인 영역은 이벤트 소싱/CQRS로 모델링해 감사·재처리·읽기 최적화를 동시에 달성한다.",
+   "summary": "JVM(Java·Kotlin)+Spring 기반 MSA를 Kafka 이벤트 드리븐과 이벤트 소싱으로 묶어 피크 트래픽을 견디는 배달 플랫폼",
    "deep_dive": [
     {
      "topic": "주문 요청 end-to-end 흐름",
@@ -12605,18 +12692,39 @@
     {
      "topic": "피크 트래픽과 장애 복원력",
      "body": "### 점심·저녁 피크를 견디는 설계\n\n배민 트래픽은 하루 두 번 거대한 봉우리를 그린다(평시 대비 수십 배). 이 패턴이 모든 인프라 결정을 지배한다.\n\n**오토스케일링**\n- Kubernetes(HPA)로 CPU·요청수·커스텀 메트릭(주문 큐 길이)에 따라 파드를 늘린다.\n- 피크가 *예측 가능*하므로 점심/저녁 직전 미리 키우는 **스케줄 기반 선제 스케일링**을 병행 — 콜드 스타트로 피크 진입에 실패하지 않게.\n\n**복원력 패턴**\n- **서킷 브레이커**: PG·지도·푸시가 느려지면 회로를 열어 빠르게 실패시키고 주문 임계경로를 보호.\n- **Bulkhead**: 스레드/커넥션 풀을 도메인별로 격리해 한 곳 고갈이 전체로 안 번지게.\n- **Graceful degradation**: 추천·배너·리뷰는 장애 시 끄고 *주문은 살린다*.\n- **DLQ**: 처리 실패 이벤트는 DLQ로 보내 재처리. 정산처럼 유실 불가 이벤트의 안전망.\n\n### WHY\n\"주문 안 됨\"은 매출 손실이자 라이더·가게의 연쇄 손해다. 그래서 *기능을 줄여서라도 주문은 받는다*는 원칙으로 우선순위를 정렬한다."
+    },
+    {
+     "topic": "정산·포인트 도메인의 분산 트랜잭션과 Saga / Outbox 패턴",
+     "body": "### 왜 분산 트랜잭션이 문제인가\n배민에서 한 건의 주문이 완료되면 `주문`, `결제`, `쿠폰/포인트`, `정산`, `라이더 수수료` 등 서로 다른 서비스의 DB가 함께 바뀌어야 한다. MSA에서는 이들이 각자 다른 MySQL/Aurora 인스턴스를 갖기 때문에 전통적인 `2PC(XA)`로 한 트랜잭션에 묶는 것은 락 점유·가용성 저하 때문에 사실상 불가능하다.\n\n### Saga로 푸는 방식\n그래서 **Saga 패턴**을 쓴다. 각 로컬 트랜잭션이 끝나면 이벤트를 발행하고, 다음 단계 서비스가 그 이벤트를 구독해 자신의 로컬 트랜잭션을 수행한다. 중간 단계가 실패하면 앞 단계를 되돌리는 **보상 트랜잭션(compensating transaction)**을 발행한다.\n\n- 예: `결제승인됨` → 포인트 적립 서비스가 적립 시도 → 실패 시 `포인트적립실패` 발행 → 결제 서비스가 `결제취소` 보상 처리\n- 오케스트레이션형(중앙 코디네이터가 단계 지시)과 코레오그래피형(각 서비스가 이벤트만 보고 반응)을 도메인 복잡도에 따라 섞어 쓴다.\n\n### Outbox 패턴 — 이벤트 유실 방지\nDB에 주문을 `commit` 했는데 Kafka로 이벤트를 보내기 직전에 인스턴스가 죽으면 **DB와 메시지가 어긋난다(dual write 문제)**. 이를 막기 위해 **Transactional Outbox**를 쓴다.\n\n| 단계 | 동작 |\n|------|------|\n| 1 | 비즈니스 데이터와 `outbox` 레코드를 **같은 로컬 트랜잭션**으로 commit |\n| 2 | 별도 릴레이(또는 CDC, Debezium)가 outbox를 읽어 Kafka로 발행 |\n| 3 | 발행 성공 후 outbox 레코드를 처리완료 표시 |\n\n이렇게 하면 \"DB에 기록됐지만 이벤트는 안 나갔다\"는 구멍이 사라지고, consumer 측은 **멱등(idempotent)** 처리로 중복 수신을 흡수한다(이벤트 ID + 처리 이력 테이블). 결국 *exactly-once 의미*를 애플리케이션 레벨에서 'at-least-once + 멱등'으로 달성하는 전형적 트레이드오프다."
+    },
+    {
+     "topic": "관측성(Observability): 분산 트레이싱과 메트릭 기반 장애 감지",
+     "body": "### 수십~수백 개 서비스에서 '느린 주문'을 어떻게 찾나\n주문 한 건이 Gateway → BFF → 주문 → 결제 → 매칭까지 여러 서비스를 hop 하기 때문에, 단순 로그만으로는 어디서 지연·에러가 났는지 알 수 없다. 그래서 **분산 트레이싱**이 핵심 인프라다.\n\n- 요청 진입점에서 `trace-id`를 발급하고 모든 서비스 호출·Kafka 메시지 헤더에 전파한다. `Spring Cloud Sleuth`/`Micrometer Tracing` 계열로 자동 주입되고, 수집은 `Zipkin`/`Jaeger`류 백엔드로 모은다.\n- 한 trace 안의 각 span에 서비스명·소요시간이 찍혀, '결제 승인 외부 PG 호출이 P99에서 800ms'처럼 병목을 정확히 짚는다.\n\n### 메트릭과 알림\n- 각 서비스는 `Micrometer`로 JVM·HTTP·커스텀 비즈니스 메트릭을 노출하고 **Prometheus**가 scrape, **Grafana**로 대시보드화한다.\n- 핵심은 **비즈니스 메트릭 기반 이상탐지**다: 단순 CPU가 아니라 '분당 주문 생성 수', '배차 실패율', '결제 승인 지연' 같은 지표가 평소 패턴(점심·저녁 피크 곡선) 대비 급변하면 알림을 띄운다. 트래픽이 시간대별로 극단적으로 출렁이기 때문에 고정 임계치보다 시간대 baseline 대비 편차가 더 유효하다.\n\n### 로그\n구조화 로그(JSON)에 `trace-id`를 포함시켜 Elasticsearch/Kibana(또는 Loki)로 검색한다. 트레이스에서 발견한 span의 `trace-id`로 바로 로그를 끌어와 *메트릭→트레이스→로그* 3단 드릴다운이 가능하게 묶는 것이 운영의 핵심이다."
+    },
+    {
+     "topic": "배포 파이프라인: GitOps(ArgoCD)와 Spinnaker 카나리",
+     "body": "### EKS 위에서 안전하게 배포하기\n핵심 도메인이 AWS **EKS(Kubernetes)** 위에 떠 있고, 배포는 **GitOps** 모델을 따른다.\n\n- 애플리케이션의 **원하는 상태(desired state)**를 Git 레포의 매니페스트/`Helm`/`Kustomize`로 선언한다.\n- **ArgoCD**가 클러스터 실제 상태와 Git 상태를 지속 비교(diff)하고 자동으로 동기화한다. 즉 'Git에 머지 = 배포'이며, 누가 무엇을 바꿨는지가 전부 Git 히스토리로 남아 **감사·롤백이 git revert** 수준으로 단순해진다.\n\n### 카나리 / 점진적 롤아웃\n주문·결제처럼 실패가 곧 매출 손실인 서비스는 한 번에 100% 교체하지 않는다.\n\n| 단계 | 트래픽 | 판단 |\n|------|--------|------|\n| Canary | 신버전에 5~10% | 에러율·지연·비즈니스 지표 자동 평가 |\n| 확대 | 25% → 50% | 지표 정상이면 단계 상승 |\n| 완료 | 100% | 이상 시 자동 롤백 |\n\n**Spinnaker**(또는 Argo Rollouts)의 자동 카나리 분석이 Prometheus 지표를 보고 신/구 버전을 비교해 '나쁘면 자동 abort'한다. 이 덕분에 하루에도 여러 번 배포하면서 피크 시간대 장애 위험을 통제한다.\n\n### 트레이드오프\nGitOps는 일관성·추적성이 강력하지만, 긴급 핫픽스조차 'Git 머지 → 동기화'를 거쳐야 해 사람이 직접 `kubectl`로 손대는 우회를 막는 규율이 필요하다. 배민은 이 규율을 지키는 대신 *모든 변경이 재현 가능*하다는 운영 안정성을 택했다."
     }
    ],
    "github": {
     "org": "https://github.com/woowacourse",
-    "repos": []
+    "repos": [
+     {
+      "name": "woowacourse/service-apply",
+      "url": "https://github.com/woowacourse/service-apply",
+      "desc": "우아한테크코스 지원·모집 플랫폼. Kotlin + Spring Boot 실서비스 오픈소스",
+      "lang": "Kotlin",
+      "stars": 580
+     }
+    ]
    },
    "sources": [
-    "https://techblog.woowahan.com",
-    "https://woowabros.github.io"
+    "https://techblog.woowahan.com/",
+    "https://www.youtube.com/@woowatech",
+    "https://github.com/woowacourse"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "zigbang",
@@ -12626,43 +12734,53 @@
    "languages": [
     "Kotlin",
     "Java",
-    "Python",
     "TypeScript",
+    "Python",
     "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
+     "Kotlin Coroutines",
      "Node.js",
-     "GraphQL"
+     "GraphQL(Apollo)",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "React Native",
+     "TypeScript",
+     "Redux/Recoil"
     ],
     "data": [
      "Kafka",
-     "MySQL",
+     "MySQL(Aurora)",
+     "DynamoDB",
      "Elasticsearch",
      "Redis",
-     "Airflow"
+     "Airflow",
+     "S3"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Serverless(Lambda)"
+     "Kubernetes(EKS)",
+     "AWS Lambda",
+     "Terraform",
+     "ArgoCD",
+     "Datadog"
     ]
    },
    "architecture": [
     "MSA",
-    "Serverless",
-    "지도/공간 검색"
+    "Serverless(이벤트 기반)",
+    "지도 기반 공간 검색",
+    "BFF/GraphQL Gateway"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"직방 앱<br/>Android iOS\"]\n    WEB[\"매물 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GQL[\"GraphQL 게이트웨이<br/>TypeScript\"]\n  end\n  subgraph Services\n    LIST[\"매물 서비스<br/>Spring Boot + Kotlin\"]\n    GEO[\"공간 검색 서비스<br/>Node.js\"]\n    AGENT[\"중개사 서비스<br/>Spring Boot + Java\"]\n    FN[\"서버리스 함수<br/>Lambda + Go\"]\n  end\n  subgraph Async\n    KAFKA[\"매물 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"매물 DB<br/>MySQL\"]\n    ES[\"지도 검색 인덱스<br/>Elasticsearch\"]\n    REDIS[\"조회 캐시<br/>Redis\"]\n    AIRFLOW[\"데이터 파이프라인<br/>Airflow + Python\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + Serverless\"]\n  end\n  APP --> GQL\n  WEB --> GQL\n  GQL --> LIST\n  GQL --> GEO\n  GQL --> AGENT\n  GEO --> ES\n  LIST --> MYSQL\n  LIST --> KAFKA\n  KAFKA --> FN\n  KAFKA --> AIRFLOW\n  LIST --> REDIS\n  LIST --> K8S",
-   "why_language": "매물 검색·지도 서비스를 위해 Kotlin/Java 기반 백엔드를 쓰고, 데이터 분석·시세 예측은 Python을 활용하며 프론트는 React로 통일한다.",
-   "why_architecture": "지역·지도 기반 검색 트래픽이 변동적이라 서버리스와 MSA를 혼용하고, AWS 위에서 공간 검색(Elasticsearch geo)을 활용한다.",
-   "summary": "지도·공간 검색 중심의 Kotlin/서버리스 부동산 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + Swift/Kotlin\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / BFF Layer\"]\n    GQL[\"GraphQL BFF<br/>Apollo + Node.js\"]\n    ALB[\"Ingress<br/>ALB + Nginx\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    LISTING[\"매물 Service<br/>Kotlin + Spring Boot\"]\n    GEO[\"공간검색 Service<br/>Elasticsearch geo_shape\"]\n    USER[\"User/Auth Service<br/>Spring Boot\"]\n    CHAT[\"중개/문의 Service<br/>Node.js + WebSocket\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    LAMBDA[\"Ingest/ETL<br/>AWS Lambda\"]\n    AIRFLOW[\"Batch Orchestration<br/>Airflow\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Aurora MySQL\"]\n    DYNAMO[\"DynamoDB\"]\n    ES[\"Elasticsearch\"]\n    REDIS[\"Redis Cache\"]\n    S3[\"S3<br/>이미지/원본\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>EKS\"]\n    ARGO[\"ArgoCD + Terraform\"]\n    DD[\"Datadog 관측성\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> ALB\n  ALB --> GQL\n  GQL -->|gRPC/REST| LISTING\n  GQL --> GEO\n  GQL --> USER\n  GQL --> CHAT\n  LISTING --> MYSQL\n  LISTING -->|CDC| KAFKA\n  KAFKA --> LAMBDA\n  LAMBDA --> ES\n  GEO --> ES\n  CHAT --> DYNAMO\n  GEO --> REDIS\n  AIRFLOW --> MYSQL\n  LISTING --> S3\n  S3 --> CDN\n  Core --> EKS\n  ARGO --> EKS\n  EKS --> DD",
+   "why_language": "매물·거래·인증 같은 도메인 핵심 트랜잭션은 타입 안정성과 JVM 생태계 성숙도가 필요해 Kotlin/Java(Spring Boot)로 작성하고, 지도 화면·웹은 React/Next.js와 React Native로 통합해 iOS/Android/Web 코드를 공유한다. 대량 매물 수집·정제 ETL과 데이터 파이프라인은 Python(Airflow)으로, 고처리량 인프라성 컴포넌트 일부는 Go로 운용해 도메인별로 적합한 언어를 혼용한다.",
+   "why_architecture": "지도 위에서 수백만 매물을 실시간 필터링·반경 검색해야 하므로 Elasticsearch geo 쿼리를 중심으로 한 공간 검색 서비스를 독립 MSA로 분리하고, 매물 변동·알림·집계처럼 트래픽이 spiky한 작업은 Kafka 이벤트와 Lambda 서버리스로 처리해 비용과 확장성을 동시에 잡았다. 멀티 클라이언트(앱/웹)의 화면 조립을 GraphQL BFF로 통합해 클라이언트별 오버페치를 줄이고 백엔드 서비스 경계를 깔끔하게 유지한다.",
+   "summary": "지도 공간검색은 Elasticsearch 기반 MSA로, 매물 변동은 Kafka+Lambda 서버리스로 처리하고 GraphQL BFF로 멀티클라이언트를 통합한 부동산 플랫폼",
    "deep_dive": [
     {
      "topic": "지도 기반 공간 검색",
@@ -12679,17 +12797,31 @@
     {
      "topic": "이미지·콘텐츠 처리와 캐싱",
      "body": "### 매물 사진·VR을 빠르게 보여주는 법\n\n부동산 앱은 *매물 사진·평면도·VR/3D 투어*가 핵심 콘텐츠다. 한 매물에 수십 장의 고해상도 이미지가 붙고, 이를 빠르게 다양한 기기에 보여줘야 한다.\n\n**이미지 파이프라인**\n- 매물 등록 시 원본 이미지를 받아 *여러 해상도·포맷(WebP 등)*으로 변환(리사이즈·압축)한다. 이런 비정기·버스트성 작업은 **Lambda(서버리스)**로 처리하기 적합하다 — 등록량에 따라 자동 확장되고 평소엔 비용이 안 든다.\n- 변환된 이미지는 객체 스토리지(S3)에 두고 **CDN**으로 전 세계/전국에 캐싱 배포한다. 사용자는 가까운 엣지에서 빠르게 받는다.\n\n**캐싱 전략**\n- 매물 목록·지도 타일·상세는 읽기가 압도적이라 CDN + Redis로 캐싱한다. 가격·상태처럼 변동 있는 정보는 짧은 TTL이나 이벤트 무효화로 갱신한다.\n- 지도 클러스터링 결과처럼 *계산 비용이 큰* 응답도 캐싱해 반복 계산을 줄인다.\n\n### WHY\n부동산 탐색은 *비주얼 중심*이라 이미지 전달 속도가 곧 사용자 경험이다. 이미지 변환을 서버리스로 탄력 처리하고 CDN으로 분산하는 건 *비용 효율과 속도*를 함께 잡는 직방의 전형적 선택이다."
+    },
+    {
+     "topic": "지도 뷰포트 기반 매물 클러스터링과 좌표 인덱싱",
+     "body": "### 문제 정의\n직방의 첫 화면은 사실상 '지도 위 매물 분포'다. 사용자가 지도를 드래그/줌 할 때마다 현재 화면 bounding box 안의 매물을 빠르게 집계해 동(洞)·단지 단위 클러스터 마커로 보여줘야 한다. 전국 수백만 건 매물을 매 제스처마다 그대로 내려주면 네트워크와 렌더링이 모두 폭발하므로, 핵심은 **줌 레벨별 사전 집계(aggregation)** 다.\n\n### 동작 메커니즘\n- 클라이언트는 `viewport`(남서/북동 좌표)와 `zoom level`을 파라미터로 공간검색 서비스에 질의한다.\n- 백엔드는 Elasticsearch의 `geo_bounding_box` 필터로 화면 안 매물만 1차 필터링하고, `geohash_grid` 또는 `geotile_grid` aggregation으로 줌 레벨에 대응하는 precision의 셀 단위로 개수를 집계한다. 줌이 멀면 precision을 낮춰(예: geohash 5) 광역 클러스터, 가까우면 precision을 높여(geohash 7~8) 건물 단위로 쪼갠다.\n- 셀별 `doc_count`와 셀 중심 좌표만 내려주므로 응답 페이로드가 매물 전체가 아니라 '마커 수십~수백 개'로 압축된다. 사용자가 특정 클러스터를 탭하면 그때 해당 셀의 실제 매물 리스트를 lazy load 한다.\n\n### 트레이드오프\n- `geohash_grid`는 직사각형 셀이라 위도에 따라 셀 크기가 달라지는 왜곡이 있어, 마커 위치가 미세하게 어긋나 보일 수 있다. 이를 보정하려면 클러스터 중심을 단순 셀 중심이 아니라 셀 내 매물 좌표의 `centroid` aggregation으로 다시 계산해야 한다.\n- 정확도(개별 매물 핀)와 성능(집계 마커) 사이의 균형을 줌 레벨 임계값으로 끊는다. 보통 특정 줌 이상에서는 클러스터를 풀고 개별 핀 + Redis 캐시된 리스트로 전환한다.\n- 면(面) 검색(원룸 밀집 구역을 폴리곤으로 그려 검색)은 `geo_shape`와 `geo_polygon` 쿼리로 처리하는데, 복잡한 폴리곤은 인덱싱·질의 비용이 커서 좌표 단순화(Douglas-Peucker)로 꼭짓점 수를 줄여 넣는다."
+    },
+    {
+     "topic": "매물 변동 이벤트의 CDC → Kafka → Lambda 파이프라인과 검색 인덱스 동기화",
+     "body": "### 왜 이벤트 기반인가\n매물은 '신규 등록 / 가격 변경 / 거래완료 / 광고 만료'처럼 상태가 끊임없이 바뀐다. 원천(transactional) DB는 MySQL(Aurora)이지만, 사용자 검색은 Elasticsearch가 담당하므로 두 저장소의 **최종 일관성(eventual consistency)** 을 어떻게 빠르고 안정적으로 맞추느냐가 관건이다. 동기적으로 ES를 같이 쓰면 쓰기 지연·부분 실패 문제가 생기므로 비동기 파이프라인으로 분리한다.\n\n### end-to-end 흐름\n1. 매물 서비스가 MySQL에 상태를 커밋한다. 같은 트랜잭션에서 **outbox 테이블**에 변경 이벤트를 적재하거나, Debezium류 CDC로 binlog를 읽는다.\n2. 변경 이벤트가 `Kafka` 토픽(예: `listing.changed`)으로 발행된다. 토픽은 매물 ID로 파티셔닝해 같은 매물의 이벤트 순서를 보장한다.\n3. 컨슈머(또는 Kafka→Lambda 트리거)가 이벤트를 받아 정규화/지오코딩/가격 파생필드 계산 후 Elasticsearch에 upsert 한다. 거래완료·만료는 `is_active=false`로 soft delete 처리해 검색에서 빠지게 한다.\n4. 동시에 알림(찜한 매물 가격 하락 등), 통계 집계, 데이터레이크(S3) 적재가 같은 토픽을 **별도 컨슈머 그룹**으로 구독해 fan-out 된다. 하나의 이벤트가 검색·알림·분석으로 동시에 흐른다.\n\n### 신뢰성 장치\n- 멱등성: ES upsert는 매물 ID를 document id로 쓰고 이벤트에 version/timestamp를 실어, 늦게 도착한 오래된 이벤트가 최신 상태를 덮어쓰지 않도록 `version_type=external` 또는 조건부 업데이트로 막는다.\n- 실패 처리: 컨슈머 처리 실패 시 재시도 후 DLQ(dead letter queue)로 보내고, 일정 주기 reconciliation 배치(Airflow)가 MySQL과 ES를 풀스캔 대조해 누락분을 메운다.\n- spiky 트래픽: 외부 중개 매물 일괄 동기화처럼 한 번에 수십만 건이 쏟아질 때는 Lambda의 자동 스케일이 유리하지만, ES 인덱싱 처리량 한계를 넘지 않도록 Kafka 컨슈머 lag을 모니터링하며 bulk 크기와 동시성을 조절한다."
+    },
+    {
+     "topic": "허위매물 검증과 ML 기반 랭킹·정렬 파이프라인",
+     "body": "### 비즈니스 제약\n부동산 플랫폼의 신뢰는 '허위매물(낚시 매물)'을 얼마나 거르느냐에 달려 있다. 직방은 '안심중개사/허위매물 검증' 같은 신뢰 기능을 제품 핵심으로 내세워 왔고, 이는 단순 룰만으로는 부족해 데이터·ML 파이프라인이 뒤를 받친다.\n\n### 검증 파이프라인\n- **룰 기반 1차 필터**: 동일 사진·동일 전화번호·비정상적으로 낮은 시세 대비 가격·중복 등록을 규칙으로 즉시 플래깅한다. 이미지 perceptual hash(pHash)로 다른 매물에 재사용된 사진을 탐지한다.\n- **시세 이상 탐지**: 단지/지역/면적별 실거래·등록가 분포를 Airflow 배치로 집계해 통계 모델을 만들고, 신규 매물 가격이 분포에서 과도하게 벗어나면(낚시 의심) 스코어를 낮춘다.\n- **사람 검증 루프**: 의심 매물은 검증 큐로 보내 중개사 확인/CS 검수를 거치고, 그 라벨이 다시 학습 데이터로 환류된다.\n\n### 랭킹·정렬\n- 사용자가 보는 매물 순서는 단순 최신순이 아니라, 신뢰 점수·매물 신선도·중개사 응답률·이미지 품질·사용자 선호(찜/조회 패턴) 등을 결합한 스코어로 정렬한다. Elasticsearch의 `function_score`/`script_score`로 base 검색 점수에 비즈니스 신호를 곱해 재정렬하거나, 후보를 뽑은 뒤 별도 ranking 모델로 re-rank 하는 2단계(retrieval → ranking) 구조를 취하기 좋다.\n- 추천(이 매물을 본 사람이 본 다른 매물, 비슷한 조건 매물)은 사용자 행동 로그를 S3 데이터레이크에 쌓고 배치로 임베딩/유사도를 계산한 뒤, 서빙 단에서 Redis에 캐싱해 빠르게 내려주는 형태로 운영된다.\n\n### 트레이드오프\n- 신뢰 점수를 너무 공격적으로 반영하면 신규/소규모 중개사 매물이 영구히 하위에 깔리는 cold-start 편향이 생긴다. 그래서 탐색(exploration) 슬롯을 일부 섞어 신규 매물도 노출 기회를 준다.\n- 실시간성과 정확도의 균형상, 무거운 ML 스코어는 배치로 미리 계산해 매물 document에 필드로 박아두고(near-real-time), 룰 기반 즉시 차단만 동기 경로에 둔다."
     }
    ],
    "github": {
-    "org": "https://github.com/zigbang"
+    "org": "https://github.com/zigbang",
+    "repos": []
    },
    "sources": [
     "https://medium.com/zigbang",
+    "https://github.com/zigbang",
     "https://www.zigbang.com"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "yanolja",
