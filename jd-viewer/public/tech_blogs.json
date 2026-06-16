@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-16T20:58:19",
- "total": 730,
+ "generated_at": "2026-06-16T22:31:35",
+ "total": 731,
  "sources": [
   {
    "company": "Etsy",
@@ -68,14 +68,14 @@
    "count": 24
   },
   {
-   "company": "AWS",
+   "company": "Cloudflare",
    "country": "US",
    "count": 24
   },
   {
-   "company": "Cloudflare",
+   "company": "AWS",
    "country": "US",
-   "count": 23
+   "count": 24
   },
   {
    "company": "토스",
@@ -530,6 +530,34 @@
    ],
    "lang": "ko",
    "content_id": "ede3e0b40f8e99a7"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Cloudflare DMARC Management is now generally available",
+   "url": "https://blog.cloudflare.com/dmarc-management-ga",
+   "published": "2026-06-16",
+   "published_ts": 1781614800.0,
+   "summary": "Get unified visibility into your email authentication posture and reach full DMARC enforcement with deeper reporting, record analysis, and SPF audits free for every Cloudflare customer.",
+   "tags": [
+    "Email",
+    "Email Security",
+    "DMARC"
+   ],
+   "tech_stack": [
+    "Go",
+    "Cloudflare",
+    "Authentication",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "82f189f472e5a543"
   },
   {
    "key": "stackoverflow",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T20:58:32",
+  "generated_at": "2026-06-16T22:31:49",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -4341,88 +4341,6 @@
         "stage": "실전"
       }
     ],
-    "RabbitMQ": [
-      {
-        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
-        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
-        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 187,
-        "length": "23:09",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
-        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
-        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 22106,
-        "length": "10:22",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] rabbitMQ로 메시지 전달하기",
-        "url": "https://www.youtube.com/watch?v=IvS4pxMsyQA",
-        "thumbnail": "https://i.ytimg.com/vi/IvS4pxMsyQA/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 244,
-        "length": "23:33",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "예비 개발자를 위한 개발 영상 - 010.Rabbit MQ 큐 생성, 메시지 넣고 빼보기",
-        "url": "https://www.youtube.com/watch?v=X_23snldl4U",
-        "thumbnail": "https://i.ytimg.com/vi/X_23snldl4U/mqdefault.jpg",
-        "channel": "개발자 Foo",
-        "views": 7570,
-        "length": "10:23",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "J208. RabbitMQ + Spring Boot",
-        "url": "https://www.youtube.com/watch?v=80y2C54KPxg",
-        "thumbnail": "https://i.ytimg.com/vi/80y2C54KPxg/mqdefault.jpg",
-        "channel": "Spring",
-        "views": 3191,
-        "length": "33:27",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "예비 개발자를 위한 개발 영상 - 009.Rabbit MQ 도커로 띄워보기",
-        "url": "https://www.youtube.com/watch?v=KTa0qy4gpjE",
-        "thumbnail": "https://i.ytimg.com/vi/KTa0qy4gpjE/mqdefault.jpg",
-        "channel": "개발자 Foo",
-        "views": 993,
-        "length": "4:20",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "율곡선생 17강 window에 RabbitMQ 미들웨어 설치 및 실행",
-        "url": "https://www.youtube.com/watch?v=rJZ7oKp90b4",
-        "thumbnail": "https://i.ytimg.com/vi/rJZ7oKp90b4/mqdefault.jpg",
-        "channel": "서울IT교육센터온라인강좌TV",
-        "views": 227,
-        "length": "13:26",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[오픈소스 컨트리뷰션] 메시지 큐 - Apache Kafka, RabbitMQ",
-        "url": "https://www.youtube.com/watch?v=tG7TrHQjifQ",
-        "thumbnail": "https://i.ytimg.com/vi/tG7TrHQjifQ/mqdefault.jpg",
-        "channel": "SIMJJI",
-        "views": 93,
-        "length": "9:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      }
-    ],
     "MSSQL": [
       {
         "title": "[MSSQL 중급 3강] 조인 기초편",
@@ -4503,6 +4421,88 @@
         "length": "15:06",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "RabbitMQ": [
+      {
+        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
+        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
+        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 187,
+        "length": "23:09",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
+        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
+        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 22106,
+        "length": "10:22",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] rabbitMQ로 메시지 전달하기",
+        "url": "https://www.youtube.com/watch?v=IvS4pxMsyQA",
+        "thumbnail": "https://i.ytimg.com/vi/IvS4pxMsyQA/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 244,
+        "length": "23:33",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "예비 개발자를 위한 개발 영상 - 010.Rabbit MQ 큐 생성, 메시지 넣고 빼보기",
+        "url": "https://www.youtube.com/watch?v=X_23snldl4U",
+        "thumbnail": "https://i.ytimg.com/vi/X_23snldl4U/mqdefault.jpg",
+        "channel": "개발자 Foo",
+        "views": 7570,
+        "length": "10:23",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "J208. RabbitMQ + Spring Boot",
+        "url": "https://www.youtube.com/watch?v=80y2C54KPxg",
+        "thumbnail": "https://i.ytimg.com/vi/80y2C54KPxg/mqdefault.jpg",
+        "channel": "Spring",
+        "views": 3191,
+        "length": "33:27",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "예비 개발자를 위한 개발 영상 - 009.Rabbit MQ 도커로 띄워보기",
+        "url": "https://www.youtube.com/watch?v=KTa0qy4gpjE",
+        "thumbnail": "https://i.ytimg.com/vi/KTa0qy4gpjE/mqdefault.jpg",
+        "channel": "개발자 Foo",
+        "views": 993,
+        "length": "4:20",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "율곡선생 17강 window에 RabbitMQ 미들웨어 설치 및 실행",
+        "url": "https://www.youtube.com/watch?v=rJZ7oKp90b4",
+        "thumbnail": "https://i.ytimg.com/vi/rJZ7oKp90b4/mqdefault.jpg",
+        "channel": "서울IT교육센터온라인강좌TV",
+        "views": 227,
+        "length": "13:26",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[오픈소스 컨트리뷰션] 메시지 큐 - Apache Kafka, RabbitMQ",
+        "url": "https://www.youtube.com/watch?v=tG7TrHQjifQ",
+        "thumbnail": "https://i.ytimg.com/vi/tG7TrHQjifQ/mqdefault.jpg",
+        "channel": "SIMJJI",
+        "views": 93,
+        "length": "9:16",
+        "published": "1년 전",
+        "stage": "핵심"
       }
     ],
     "OpenCV": [
@@ -6719,6 +6719,88 @@
         "stage": "핵심"
       }
     ],
+    "Keras": [
+      {
+        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
+        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
+        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 68621,
+        "length": "4:20:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "딥러닝기초프로그래밍) cifar10 데이터셋 활용, Keras 프로그래밍",
+        "url": "https://www.youtube.com/watch?v=_yDRYPi-wYQ",
+        "thumbnail": "https://i.ytimg.com/vi/_yDRYPi-wYQ/mqdefault.jpg",
+        "channel": "Joongheon Kim",
+        "views": 1585,
+        "length": "29:00",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R keras 신경망 (Useful Technique of \"keras\" Neural Networks",
+        "url": "https://www.youtube.com/watch?v=SfSDkhBbndA",
+        "thumbnail": "https://i.ytimg.com/vi/SfSDkhBbndA/mqdefault.jpg",
+        "channel": "데이타솔루션 DATAsolution",
+        "views": 318,
+        "length": "38:39",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "01 텐서플로우소개 #tensorflow #keras",
+        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
+        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
+        "channel": "Funny AI",
+        "views": 493,
+        "length": "25:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Keras를 활용한 딥러닝 프로그래밍] 실제 손글씨 인식",
+        "url": "https://www.youtube.com/watch?v=aMEd3tS3vc4",
+        "thumbnail": "https://i.ytimg.com/vi/aMEd3tS3vc4/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 1480,
+        "length": "16:38",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
+        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
+        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 18,
+        "length": "13:56",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[STEP] 실무 활용 Keras How-To",
+        "url": "https://www.youtube.com/watch?v=nEuohuILrdE",
+        "thumbnail": "https://i.ytimg.com/vi/nEuohuILrdE/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 38,
+        "length": "2:00",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "06.Keras Sequential API 완벽 가이드 | 퀴즈 10개 포함",
+        "url": "https://www.youtube.com/watch?v=kv6r5n8E6j4",
+        "thumbnail": "https://i.ytimg.com/vi/kv6r5n8E6j4/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 2,
+        "length": "22:44",
+        "published": "3개월 전",
+        "stage": "실전"
+      }
+    ],
     "Cypress": [
       {
         "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
@@ -6881,88 +6963,6 @@
         "length": "4:02",
         "published": "7년 전",
         "stage": "핵심"
-      }
-    ],
-    "Keras": [
-      {
-        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
-        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
-        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 68621,
-        "length": "4:20:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "딥러닝기초프로그래밍) cifar10 데이터셋 활용, Keras 프로그래밍",
-        "url": "https://www.youtube.com/watch?v=_yDRYPi-wYQ",
-        "thumbnail": "https://i.ytimg.com/vi/_yDRYPi-wYQ/mqdefault.jpg",
-        "channel": "Joongheon Kim",
-        "views": 1585,
-        "length": "29:00",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R keras 신경망 (Useful Technique of \"keras\" Neural Networks",
-        "url": "https://www.youtube.com/watch?v=SfSDkhBbndA",
-        "thumbnail": "https://i.ytimg.com/vi/SfSDkhBbndA/mqdefault.jpg",
-        "channel": "데이타솔루션 DATAsolution",
-        "views": 318,
-        "length": "38:39",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "01 텐서플로우소개 #tensorflow #keras",
-        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
-        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
-        "channel": "Funny AI",
-        "views": 493,
-        "length": "25:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Keras를 활용한 딥러닝 프로그래밍] 실제 손글씨 인식",
-        "url": "https://www.youtube.com/watch?v=aMEd3tS3vc4",
-        "thumbnail": "https://i.ytimg.com/vi/aMEd3tS3vc4/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 1480,
-        "length": "16:38",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
-        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
-        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 18,
-        "length": "13:56",
-        "published": "2개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[STEP] 실무 활용 Keras How-To",
-        "url": "https://www.youtube.com/watch?v=nEuohuILrdE",
-        "thumbnail": "https://i.ytimg.com/vi/nEuohuILrdE/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 38,
-        "length": "2:00",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "06.Keras Sequential API 완벽 가이드 | 퀴즈 10개 포함",
-        "url": "https://www.youtube.com/watch?v=kv6r5n8E6j4",
-        "thumbnail": "https://i.ytimg.com/vi/kv6r5n8E6j4/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 2,
-        "length": "22:44",
-        "published": "3개월 전",
-        "stage": "실전"
       }
     ],
     "Dart": [

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T21:02:01",
+ "generated_at": "2026-06-16T22:35:41",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 69,
+ "refined": 71,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -202,7 +202,7 @@
     },
     {
      "name": "Python",
-     "count": 11
+     "count": 12
     },
     {
      "name": "TypeScript",
@@ -228,12 +228,12 @@
    "stack": {
     "backend": [
      {
-      "name": "Spring Boot",
+      "name": "gRPC",
       "count": 12
      },
      {
-      "name": "gRPC",
-      "count": 11
+      "name": "Spring Boot",
+      "count": 12
      },
      {
       "name": "Go",
@@ -245,6 +245,10 @@
      },
      {
       "name": "Java",
+      "count": 2
+     },
+     {
+      "name": "Netty",
       "count": 2
      },
      {
@@ -262,10 +266,6 @@
      {
       "name": "Armeria",
       "count": 1
-     },
-     {
-      "name": "Celery",
-      "count": 1
      }
     ],
     "frontend": [
@@ -275,7 +275,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 10
+      "count": 11
      },
      {
       "name": "Next.js",
@@ -284,6 +284,14 @@
      {
       "name": "React Native",
       "count": 6
+     },
+     {
+      "name": "Redux",
+      "count": 2
+     },
+     {
+      "name": "Webpack",
+      "count": 2
      },
      {
       "name": "Dust.js",
@@ -299,14 +307,6 @@
      },
      {
       "name": "Market Design System",
-      "count": 1
-     },
-     {
-      "name": "Mithril",
-      "count": 1
-     },
-     {
-      "name": "Node.js",
       "count": 1
      }
     ],
@@ -332,12 +332,12 @@
       "count": 6
      },
      {
-      "name": "PostgreSQL",
+      "name": "MongoDB",
       "count": 5
      },
      {
-      "name": "MongoDB",
-      "count": 4
+      "name": "PostgreSQL",
+      "count": 5
      },
      {
       "name": "Aerospike",
@@ -374,6 +374,10 @@
       "count": 3
      },
      {
+      "name": "ArgoCD",
+      "count": 2
+     },
+     {
       "name": "Bazel",
       "count": 2
      },
@@ -382,16 +386,12 @@
       "count": 2
      },
      {
-      "name": "사내 클라우드",
+      "name": "Prometheus",
       "count": 2
      },
      {
-      "name": "ArgoCD",
-      "count": 1
-     },
-     {
-      "name": "Codeflow",
-      "count": 1
+      "name": "사내 클라우드",
+      "count": 2
      }
     ]
    },
@@ -413,12 +413,12 @@
      "count": 2
     },
     {
-     "name": "고가용성",
-     "count": 2
+     "name": "API-first",
+     "count": 1
     },
     {
-     "name": "장애 격리",
-     "count": 2
+     "name": "API-first with versioned public API",
+     "count": 1
     }
    ]
   },
@@ -14719,40 +14719,53 @@
    "languages": [
     "Java",
     "Kotlin",
+    "TypeScript",
     "JavaScript",
-    "TypeScript"
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
-     "Armeria"
+     "Armeria",
+     "gRPC",
+     "Reactor (WebFlux)",
+     "Netty"
     ],
     "frontend": [
      "React",
-     "Next.js"
+     "Next.js",
+     "TypeScript",
+     "Recoil",
+     "Webpack"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "Redis",
-     "Elasticsearch"
+     "Elasticsearch",
+     "MongoDB",
+     "Apache Hadoop/Spark"
     ],
     "infra": [
      "Kubernetes",
      "네이버클라우드(NCP)",
-     "Pinpoint"
+     "nGrinder",
+     "Pinpoint",
+     "Jenkins/ArgoCD",
+     "Nelo(로그)"
     ]
    },
    "architecture": [
     "MSA",
-    "장애 격리",
-    "금융 보안"
+    "장애 격리(Bulkhead)와 서킷브레이커",
+    "이벤트 기반 비동기 정산",
+    "금융 보안·이중화"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"네이버페이 웹<br/>React + Next.js\"]\n    APP[\"네이버페이 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Armeria\"]\n  end\n  subgraph Services\n    PAY[\"결제 코어<br/>Spring Boot + Kotlin\"]\n    POINT[\"포인트 적립<br/>Spring Cloud\"]\n    CREDIT[\"대출 신용<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"결제 원장 DB<br/>MySQL\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n    ES[\"거래 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes\"]\n    NCP[\"네이버클라우드<br/>NCP\"]\n    APM[\"분산 추적<br/>Pinpoint\"]\n  end\n  WEB --> GW\n  APP --> GW\n  GW --> PAY\n  GW --> POINT\n  GW --> CREDIT\n  PAY --> KAFKA\n  KAFKA --> POINT\n  KAFKA --> CREDIT\n  PAY --> MYSQL\n  PAY --> REDIS\n  PAY --> ES\n  K8S --> NCP\n  K8S --> APM",
-   "why_language": "네이버페이 결제·정산의 금융 안정성을 위해 Java/Spring을 기반으로 하고, 신규 영역은 Kotlin을 채택하며 네이버 공통 인프라(Armeria, Pinpoint)를 공유한다.",
-   "why_architecture": "결제·송금·정산 거래의 정합성과 장애 격리가 핵심이라 MSA로 도메인을 나누고, 네이버 클라우드 위에서 금융 수준의 모니터링·보안을 적용한다.",
-   "summary": "네이버페이 결제 정합성을 지키는 Java/Spring 금융 MSA.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"네이버페이 App/Web<br/>React + Next.js\"]\n    NPAY[\"가맹점 SDK/결제창<br/>JavaScript SDK\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Armeria + Spring Cloud Gateway\"]\n    AUTH[\"인증/인가<br/>OAuth2 + 간편결제 인증\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    PAY[\"결제 서비스<br/>Spring Boot\"]\n    SETTLE[\"정산 서비스<br/>Kotlin + Spring\"]\n    POINT[\"포인트/적립<br/>Spring Boot\"]\n    LOAN[\"대출/금융상품<br/>Spring Boot\"]\n    RISK[\"이상거래탐지 FDS<br/>Spark + ML\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    OUTBOX[\"Transactional Outbox<br/>멱등 소비\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"원장/거래<br/>MySQL (샤딩)\"]\n    REDIS[\"캐시/분산락<br/>Redis\"]\n    ES[\"거래 검색/조회<br/>Elasticsearch\"]\n    HADOOP[\"데이터 레이크<br/>Hadoop + Spark\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>NCP\"]\n    OBS[\"관측성<br/>Pinpoint + Nelo\"]\n  end\n  APP --> GW\n  NPAY --> GW\n  GW --> AUTH\n  GW -->|REST/gRPC| PAY\n  PAY --> POINT\n  PAY -->|결제 확정 이벤트| KAFKA\n  PAY --> OUTBOX --> KAFKA\n  KAFKA --> SETTLE\n  KAFKA --> RISK\n  SETTLE --> MYSQL\n  PAY --> MYSQL\n  PAY --> REDIS\n  SETTLE --> ES\n  RISK --> HADOOP\n  Core --> K8S\n  Core --> OBS",
+   "why_language": "결제·정산·원장처럼 강한 트랜잭션 정합성과 JVM 생태계의 성숙한 금융 라이브러리가 필요한 영역은 Java/Spring을 기본으로 쓰고, 신규 정산·도메인 서비스는 null-safety와 불변성·코루틴 표현력이 좋은 Kotlin으로 작성한다. 사용자 접점인 네이버페이 앱/웹은 React·Next.js 기반이라 TypeScript/JavaScript 비중이 높고, FDS·데이터 분석 파이프라인에는 Python/Spark를 곁들인다.",
+   "why_architecture": "초당 대량의 결제·송금·포인트 트래픽을 다루면서 한 도메인 장애가 전체 결제로 번지지 않도록 서비스를 잘게 쪼갠 MSA에 Bulkhead·서킷브레이커로 장애를 격리한다. 결제 확정과 정산을 동기 호출로 묶으면 외부 금융망 지연이 결제 응답을 막기 때문에, Kafka 이벤트와 Transactional Outbox·멱등 소비로 비동기 분리해 정합성과 가용성을 동시에 확보한다.",
+   "summary": "JVM(Java/Kotlin) 기반 금융 MSA에 Kafka 이벤트로 결제·정산을 분리하고 NCP·Kubernetes 위에서 장애 격리와 정합성을 동시에 잡은 핀테크 스택",
    "deep_dive": [
     {
      "topic": "네이버페이 결제·정산 흐름과 정합성",
@@ -14769,18 +14782,50 @@
     {
      "topic": "Kafka 기반 비동기 정산 처리와 멱등 소비",
      "body": "### 왜 정산을 비동기로 처리하나\n네이버페이는 커머스 결제와 강결합되어, 결제 한 건이 판매자 정산·포인트 적립·통계 등 수많은 후속 작업을 만든다. 이를 결제 응답 안에서 동기로 처리하면 후속 작업의 지연·실패가 결제 자체를 막는다. 그래서 결제 완료를 `Kafka` 이벤트로 발행하고 후속 도메인이 독립 구독한다.\n\n### Outbox로 발행 보장\nDB 트랜잭션과 이벤트 발행의 원자성을 위해 **Outbox 패턴**을 쓴다. 결제 상태를 DB에 커밋할 때 outbox 테이블에 이벤트를 함께 기록하고, 릴레이가 이를 Kafka로 내보낸다. \"DB는 커밋됐는데 이벤트는 유실\"되는 사고를 막아 정산 누락을 방지한다.\n\n### 멱등 소비\nKafka는 at-least-once라 정산·적립 소비자가 같은 이벤트를 두 번 받을 수 있다. 각 소비자는 (거래 ID + 처리 단계)를 유니크 제약으로 막아 이중 정산·중복 적립을 차단한다.\n\n### 트레이드오프\n비동기는 결합도를 낮추고 결제 응답을 빠르게 유지하지만 최종 일관성을 받아들여야 한다(적립이 약간 늦게 반영). 즉시성이 필요 없는 정산·적립·통계만 비동기화하고, 결제 승인 같은 핵심은 동기로 남겨 사용자 경험과 정합성을 함께 지킨다."
+    },
+    {
+     "topic": "원장(Ledger) MySQL 샤딩과 거래 정합성 전략",
+     "body": "### 왜 RDB 원장인가\n네이버파이낸셜의 결제·송금·포인트는 본질적으로 `복식부기(double-entry)` 성격의 원장 시스템이다. 잔액과 거래 내역은 단 1원의 오차도 허용되지 않으므로, 최종 일관성(eventual consistency)만으로는 부족하고 단일 거래 단위에서 강한 ACID가 필요하다. 그래서 핵심 원장은 NoSQL이 아니라 `MySQL`을 1차 저장소로 쓴다.\n\n### 샤딩 키 설계\n결제·정산 트래픽이 단일 인스턴스 한계를 넘기 때문에 원장 테이블은 수평 샤딩된다. 일반적으로 다음 축을 고려한다.\n\n| 후보 샤드 키 | 장점 | 단점 |\n|---|---|---|\n| `user_id` 해시 | 한 사용자의 거래가 한 샤드에 모여 잔액 계산이 단순 | 가맹점/정산 조회가 여러 샤드에 흩어짐 |\n| `merchant_id` | 정산 집계가 샤드 로컬에서 끝남 | 헤비 가맹점 핫스팟 |\n| 거래일자 기반 | 시계열 아카이빙·파티셔닝 용이 | 최신 샤드 쏠림 |\n\n실무에서는 사용자 지갑/잔액은 `user_id` 해시 샤딩, 가맹점 정산 집계는 `merchant_id` 기준 별도 모델로 비정규화해 두 관점을 모두 빠르게 처리한다. 샤드 간 조인이 불가능하므로 조회 전용 뷰는 `Elasticsearch`로 따로 색인한다.\n\n### 분산 트랜잭션을 피하는 방법\n결제 한 건이 여러 도메인(결제·포인트·정산)을 건드리지만, 2PC(2-phase commit)는 가용성과 성능을 크게 떨어뜨리므로 쓰지 않는다. 대신:\n\n- **로컬 트랜잭션 + Outbox**: 결제 서비스는 자기 DB에 거래 row와 outbox 이벤트를 *한 트랜잭션*으로 커밋한 뒤, 별도 릴레이가 Kafka로 발행한다. 원자성은 로컬 DB가 보장한다.\n- **Saga 보상 트랜잭션**: 송금처럼 여러 단계를 거치는 흐름은 실패 시 역연산(환불·홀드 해제)으로 되돌린다.\n- **분산 락**: 같은 지갑에 대한 동시 차감 경쟁은 `Redis` 기반 분산 락 또는 DB 비관적 락(`SELECT ... FOR UPDATE`)으로 직렬화한다.\n\n### 마감·아카이빙\n원장은 무한히 커지므로 월 단위 파티셔닝과 콜드 데이터의 `Hadoop` 데이터 레이크 이관으로 핫 테이블 크기를 일정하게 유지한다. 정산·세무·감사를 위한 장기 보관은 레이크에서 `Spark`로 재집계한다."
+    },
+    {
+     "topic": "이상거래탐지(FDS)와 실시간/배치 하이브리드 ML 파이프라인",
+     "body": "### 이중 경로 아키텍처\n핀테크에서 FDS(Fraud Detection System)는 결제 승인 지연을 최소화하면서도 도용·자금세탁·어뷰징을 잡아야 하는 모순적 요구를 받는다. 그래서 네이버파이낸셜류 시스템은 **실시간 인라인 판정 + 준실시간/배치 학습**의 하이브리드로 설계된다.\n\n```\n결제요청 -> 결제서비스 -> [동기] Rule Engine(수십 ms) -> 승인/홀드\n                       \\-> [비동기 Kafka] FDS 스코어링 -> 사후 차단/심사 큐\n```\n\n### 동기 경로: 규칙 엔진\n결제 승인 경로에 무거운 ML 추론을 넣으면 응답 지연이 커지므로, 응답 임계 시간 안에 끝나는 결정론적 규칙(속도 제한, 디바이스/IP 평판, 블랙리스트, 금액·빈도 임계)만 인라인으로 돌린다. 이 단계는 `Redis`에 올려둔 카운터/평판 캐시로 수 ms 안에 끝난다.\n\n### 비동기 경로: 피처·스코어링\n결제 이벤트는 `Kafka`로 흘러가 FDS 컨슈머가 그래프 피처(계정-기기-카드 연결망), 행동 시퀀스 피처를 만들고 모델 스코어를 매긴다. 고위험 스코어는 거래 홀드·재인증 요구·심사 큐로 보낸다. 이 경로는 결제 응답을 막지 않으므로 더 정교한 모델을 쓸 수 있다.\n\n### 피처 일관성 문제\n학습 시점 피처와 서빙 시점 피처가 어긋나면(training-serving skew) 모델이 무력해진다. 이를 막기 위해 피처 정의를 한 곳에서 관리하는 피처 스토어 패턴을 쓰고, 배치(`Spark`)와 실시간(Kafka Streams류) 양쪽이 같은 정의로 피처를 계산한다.\n\n### 트레이드오프\n- **오탐(false positive)** 은 정상 사용자의 결제를 막아 매출·신뢰를 깎고, **미탐(false negative)** 은 손실로 직결된다. 그래서 단일 임계값이 아니라 금액·가맹점 등급별로 임계를 다르게 두고, 애매한 구간은 추가 인증(재인증)으로 떠넘긴다.\n- 모델 전면 차단보다 **단계적 마찰(step-up authentication)** 을 선호한다."
+    },
+    {
+     "topic": "간편결제 인증·토큰화와 금융 보안 경계",
+     "body": "### 카드 정보 토큰화\n네이버페이의 핵심 보안 설계는 '민감정보를 서비스 코드가 직접 만지지 않게 하는 것'이다. 실제 카드번호(PAN)는 토큰화 영역(금융망/PG 연계 보안 모듈)에만 두고, 일반 결제 서비스는 `token` 또는 `billing key`만 다룬다. 이렇게 하면 결제 마이크로서비스가 침해돼도 원천 카드정보가 새지 않는다(PCI-DSS 스코프 축소).\n\n### 간편결제 인증 흐름\n```\n사용자 -> 결제 비밀번호/생체(FIDO) -> 인증 서버 -> 단기 결제 토큰 발급\n결제 토큰 -> 결제 서비스 -> 토큰화 모듈 -> 카드사 승인\n```\n- 결제 비밀번호·생체는 단말의 `FIDO`/시큐어 엘리먼트에서 검증되고, 서버는 비밀번호 원문을 보관하지 않는다.\n- 발급되는 결제 토큰은 **단기·일회성**이라 탈취되더라도 재사용이 어렵다.\n\n### 망 분리와 권한 경계\n금융 규제상 내부 인프라는 망 분리·접근통제·감사 로깅이 강제된다. 운영 접근은 모두 기록되고, 서비스 간 호출도 `mTLS`/서비스 인증으로 신원을 검증한다(`Armeria`가 TLS·인증 데코레이터를 지원). 비밀값은 코드/이미지에 박지 않고 시크릿 매니저에서 주입한다.\n\n### 멱등성과 재시도 안전\n결제 API는 네트워크 재시도로 인한 이중 결제를 막기 위해 `Idempotency-Key`를 받는다. 같은 키의 요청은 한 번만 실제 처리되고 이후는 저장된 결과를 반환한다. 키-결과 매핑은 `Redis`/DB에 일정 TTL로 보관한다.\n\n### 트레이드오프\n토큰화·망분리·다단계 인증은 보안을 크게 높이지만 호출 경로가 길어지고 지연·복잡도가 늘어난다. 그래서 인증 강도를 거래 위험도에 비례시키는 `risk-based authentication`으로 평상시 사용자 경험과 보안을 절충한다."
+    },
+    {
+     "topic": "배포·복원력: Kubernetes on NCP, 카나리, 서킷브레이커",
+     "body": "### 플랫폼\n서비스는 `네이버클라우드(NCP)` 위 `Kubernetes`에 컨테이너로 배포된다. 금융 시스템 특성상 멀티 AZ(가용영역) 이중화로 한 영역 장애가 결제 중단으로 이어지지 않게 한다. 트래픽은 다수 AZ에 걸친 파드로 분산되고, DB는 동기/준동기 복제로 페일오버를 준비한다.\n\n### 배포 전략\n결제처럼 무중단이 필수인 서비스는 한 번에 전체를 교체하지 않는다.\n\n| 전략 | 용도 |\n|---|---|\n| Rolling update | 일반 서비스 무중단 교체 |\n| Canary | 새 버전을 소수 트래픽에만 흘려 오류율·지연 관찰 후 확대 |\n| Blue-Green | 결제 코어처럼 즉시 롤백이 중요한 경우 |\n\n`Jenkins`/`ArgoCD` 류 파이프라인으로 빌드→테스트→이미지→GitOps 배포가 자동화되고, 카나리 단계에서 `Pinpoint` 지표(에러율·응답시간)가 임계를 넘으면 자동 롤백한다.\n\n### 복원력 패턴\n- **서킷브레이커**: 외부 카드사·금융망 호출이 느려지면 회로를 열어 빠르게 실패시키고, 결제 응답 스레드가 외부 지연에 묶이지 않게 한다(`resilience4j`/Armeria 데코레이터).\n- **Bulkhead(격벽)**: 도메인별 스레드풀·커넥션풀을 분리해 한 의존성의 포화가 다른 결제 흐름을 마비시키지 않게 한다.\n- **Timeout + Retry(멱등 전제)**: 짧은 타임아웃과 멱등 키 기반 재시도를 결합한다. 멱등성이 보장되지 않는 호출은 재시도하지 않는다.\n- **Backpressure**: Kafka 컨슈머는 처리 속도에 맞춰 파티션 소비를 조절해 정산 폭주 시에도 다운스트림이 무너지지 않게 한다.\n\n### 부하 검증\n대형 트래픽 이벤트(프로모션·결제 피크) 전에는 `nGrinder`로 분산 부하 테스트를 돌려 오토스케일링 임계와 병목을 사전에 찾는다.\n\n### 트레이드오프\n카나리·블루그린·다AZ 이중화는 인프라 비용과 운영 복잡도를 키우지만, 금융 서비스에서 단 몇 분의 결제 장애가 주는 신뢰·매출 손실이 훨씬 크기 때문에 가용성에 비용을 더 쓰는 선택을 한다."
     }
    ],
    "github": {
-    "org": "naver",
-    "repos": []
+    "org": "https://github.com/naver",
+    "repos": [
+     {
+      "name": "pinpoint-apm/pinpoint",
+      "url": "https://github.com/pinpoint-apm/pinpoint",
+      "desc": "대규모 분산 시스템용 APM·분산 추적 도구로 결제 트랜잭션 관측성에 사용",
+      "lang": "Java",
+      "stars": 13828
+     },
+     {
+      "name": "naver/ngrinder",
+      "url": "https://github.com/naver/ngrinder",
+      "desc": "분산 부하 테스트 플랫폼으로 결제 트래픽 대비 성능 검증에 활용",
+      "lang": "Java",
+      "stars": 2103
+     }
+    ]
    },
    "sources": [
-    "https://d2.naver.com",
-    "https://medium.com/naverfinancial"
+    "https://medium.com/naverfinancial",
+    "https://github.com/naver/armeria",
+    "https://github.com/naver/pinpoint"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "toss",
@@ -15127,43 +15172,53 @@
     "Java",
     "Kotlin",
     "Go",
-    "Python",
-    "TypeScript"
+    "TypeScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
+     "Kotlin Coroutines",
      "Go",
-     "gRPC"
+     "gRPC",
+     "Netty"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "WebSocket",
+     "Redux"
     ],
     "data": [
-     "Kafka",
+     "Apache Kafka",
      "MySQL",
      "Redis",
      "Elasticsearch",
-     "ClickHouse"
+     "ClickHouse",
+     "Apache Spark"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Terraform"
+     "Kubernetes (EKS)",
+     "Terraform",
+     "ArgoCD",
+     "Prometheus",
+     "Grafana",
+     "Vault/HSM"
     ]
    },
    "architecture": [
-    "MSA",
-    "초저지연 매칭 엔진",
-    "고가용성"
+    "MSA (Microservices)",
+    "초저지연 인메모리 매칭 엔진",
+    "이벤트 소싱·CQRS 기반 원장",
+    "다중화 고가용성·핫/콜드 월렛 분리"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"업비트 웹<br/>React + Next.js\"]\n    APP[\"업비트 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    WS[\"실시간 시세 WebSocket<br/>Go\"]\n  end\n  subgraph Services\n    MATCH[\"매칭 엔진<br/>초저지연 Go + gRPC\"]\n    ORDER[\"주문 서비스<br/>Spring Boot + Kotlin\"]\n    WALLET[\"지갑 입출금<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"대용량 체결 스트림<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 원장 DB<br/>MySQL\"]\n    REDIS[\"호가창 캐시<br/>Redis\"]\n    CLICK[\"체결 분석<br/>ClickHouse\"]\n    ES[\"거래 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"고가용성 오케스트레이션<br/>Kubernetes + Terraform\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  WEB --> GW\n  APP --> GW\n  APP --> WS\n  GW --> ORDER\n  ORDER --> MATCH\n  MATCH --> KAFKA\n  KAFKA --> WALLET\n  KAFKA --> CLICK\n  MATCH --> REDIS\n  ORDER --> MYSQL\n  WS --> REDIS\n  ORDER --> ES\n  K8S --> AWS",
-   "why_language": "거래소 매칭 엔진과 주문 처리의 안정성·성능을 위해 Java/Spring을 핵심으로 쓰고, 고성능 영역은 Go, 시세·데이터 처리는 Python을 활용한다.",
-   "why_architecture": "가상자산 거래의 초당 대량 주문을 처리하기 위해 저지연 매칭 엔진과 MSA를 결합하고, 변동성 큰 트래픽에 대비한 고가용성·확장성을 확보한다.",
-   "summary": "초저지연 매칭 엔진을 떠받치는 Java/Go 기반 가상자산 거래소.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile / Web<br/>React + Next.js + TS\"]\n    WS[\"Realtime Feed<br/>WebSocket\"]\n    CDN[\"Edge / WAF<br/>AWS CloudFront + WAF\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    AUTH[\"Auth / 2FA / KYC<br/>OAuth2 + OTP\"]\n  end\n  subgraph Core[\"Core Trading Services\"]\n    ORD[\"Order Service<br/>Spring Boot + Kotlin\"]\n    ME[\"Matching Engine<br/>In-memory Java + Netty\"]\n    LED[\"Ledger / Wallet<br/>Go + gRPC\"]\n    MKT[\"Market Data<br/>Go fan-out\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KFK[\"Event Bus<br/>Apache Kafka\"]\n    SPK[\"Stream Processing<br/>Spark / Kafka Streams\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    SQL[\"Orders / Ledger<br/>MySQL\"]\n    RDS[\"Cache / Orderbook<br/>Redis\"]\n    ES[\"Search / Logs<br/>Elasticsearch\"]\n    CH[\"Analytics / OLAP<br/>ClickHouse\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>AWS EKS + ArgoCD\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n    KMS[\"Key Mgmt / Wallet<br/>HSM + Vault\"]\n  end\n  APP --> CDN --> GW\n  WS --> MKT\n  GW --> AUTH\n  GW -->|REST| ORD\n  ORD -->|gRPC| ME\n  ME -->|fills| LED\n  ME --> KFK\n  LED --> KFK\n  KFK --> MKT\n  KFK --> SPK\n  ME --> RDS\n  ORD --> SQL\n  LED --> SQL\n  SPK --> CH\n  GW --> ES\n  LED --> KMS\n  K8S -.-> Core\n  OBS -.-> Core",
+   "why_language": "초저지연 매칭과 원장 정합성이 핵심이라 JVM(Java/Kotlin) 기반의 성숙한 동시성·GC 튜닝 생태계와 Spring 프레임워크로 거래 핵심 로직을 구현한다. 시세 팬아웃, 지갑·블록체인 연동처럼 높은 동시성과 낮은 메모리 풋프린트가 필요한 영역은 Go로, 데이터 분석·자동화는 Python으로 분담한다. 프론트는 실시간 호가/차트 렌더링 요구로 React+TypeScript를 채택한다.",
+   "why_architecture": "단일 장애가 전체 거래 중단으로 이어지지 않도록 주문·매칭·원장·시세·지갑을 독립 서비스로 분리한 MSA를 택했고, 순간 폭증하는 트래픽을 흡수하기 위해 Kafka 기반 이벤트 스트리밍으로 비동기 결합을 두었다. 매칭 엔진은 디스크 I/O를 배제한 인메모리 단일 스레드 결정성 구조로 마이크로초 수준 체결을 보장하고, 자산 보관은 핫/콜드 월렛을 물리적으로 분리해 보안과 가용성을 동시에 확보한다.",
+   "summary": "JVM 기반 인메모리 매칭 엔진 + Go 시세·지갑 + Kafka 이벤트 스트리밍으로 묶은 초저지연·고가용성 가상자산 거래 플랫폼",
    "deep_dive": [
     {
      "topic": "초저지연 매칭 엔진과 주문북",
@@ -15180,17 +15235,35 @@
     {
      "topic": "폭증 트래픽 대비 확장성·고가용성",
      "body": "### 변동성이 곧 트래픽 스파이크\n코인 시장은 뉴스 한 줄에 트래픽이 평소의 수십 배로 치솟는다. 업비트는 이 스파이크를 **계층별로 다르게** 흡수한다.\n\n### 계층별 전략\n- **무상태 읽기 계층**(시세 WS, REST 조회): `Kubernetes` HPA로 빠르게 스케일아웃. 캐시·CDN으로 원본 부하 차단.\n- **매칭 엔진(상태 보유)**: 함부로 스케일아웃 못 하므로 **마켓별 샤딩**으로 수평 분할하고, 각 샤드는 충분한 헤드룸을 미리 확보한다. 고성능 영역은 `Go`로 작성해 GC·지연을 줄인다.\n- **주문 접수 게이트웨이**: 폭주 시 레이트리밋·큐잉으로 매칭 엔진을 보호한다. 받아만 두고 순차 처리하는 백프레셔 설계.\n\n### 고가용성\n- 매칭 엔진은 액티브-스탠바이로 운영하고, 이벤트 로그 리플레이로 페일오버 시 주문북을 정확히 복원한다.\n- `Terraform`으로 인프라를 코드화해 재현 가능한 다중 AZ 구성을 유지한다.\n\n### 트레이드오프\n미리 헤드룸을 잡아 두면 평시 비용이 든다. 하지만 거래소에서 \"스파이크 때 거래 불가\"는 곧 신뢰 붕괴이므로, 과소 프로비저닝보다 약간의 낭비를 택한다. 핵심은 \"스파이크 때 절대 멈추지 않는다\"."
+    },
+    {
+     "topic": "지갑 아키텍처와 출금 보안 (Hot/Cold Wallet, HSM, 다중 서명)",
+     "body": "### 핫/콜드 월렛 물리 분리\n가상자산 거래소의 최대 리스크는 해킹에 의한 자산 탈취다. 업비트는 사용자 예치 자산의 대부분을 인터넷과 완전히 분리된 `Cold Wallet`(콜드 스토리지)에 보관하고, 실시간 입출금 처리에 필요한 최소 유동성만 `Hot Wallet`에 둔다. 이 둘은 네트워크 토폴로지 자체가 분리되어 있어 핫월렛이 침해되어도 콜드월렛 자산은 노출되지 않는다.\n\n### 출금 처리 파이프라인\n사용자가 출금을 요청하면 다음과 같은 단계가 비동기로 흐른다.\n\n1. **인증·검증 단계**: `Auth Service`가 2FA(OTP), 카카오페이 인증, 출금 주소 화이트리스트(고정 출금주소), 트래블룰(VASP 간 송신자 정보 공유) 검증을 수행한다.\n2. **리스크 스코어링**: 출금 패턴·금액·신규 주소 여부를 룰 엔진과 ML 기반 이상거래탐지(FDS)로 평가해 자동 승인 / 보류 / 수동 검토로 분기한다.\n3. **서명 단계**: 승인된 트랜잭션은 `HSM(Hardware Security Module)` 또는 MPC/멀티시그 기반 서명 모듈로 전달된다. 개인키는 절대 애플리케이션 메모리에 평문으로 존재하지 않으며, 서명 요청만 HSM 경계 안으로 보낸다.\n4. **블록체인 브로드캐스트**: 서명된 raw transaction을 각 체인별 풀노드(Bitcoin, Ethereum, 기타 수십 개 체인)에 전파하고, confirmation 수를 추적해 최종 완료 처리한다.\n\n### 입금 처리\n입금은 각 체인 노드에 대한 block scanning 또는 webhook으로 감지한다. Go로 작성된 체인별 어댑터가 신규 블록을 폴링/구독하며, 사용자별 입금 주소(HD Wallet 파생 주소)로 들어온 트랜잭션을 매칭한다. 요구 confirmation 수(BTC 1~6, ETH 등 체인별 상이)를 충족하면 원장에 잔고 증가 이벤트를 발행한다.\n\n### 왜 이렇게 하는가\n자산 보관에서는 **가용성보다 무결성·보안이 우선**이다. 콜드월렛 출금은 사람이 개입하는 수동 절차가 포함되어 느리지만, 이는 의도된 트레이드오프다. 대신 일상적 소액 출금은 핫월렛으로 빠르게 처리해 UX를 확보하는 2계층 구조로 보안과 속도를 동시에 만족시킨다."
+    },
+    {
+     "topic": "관측성(Observability)과 거래 추적: 로깅·트레이싱·메트릭",
+     "body": "### 왜 관측성이 거래소에서 특히 중요한가\n금융 거래는 \"내 주문이 왜 체결 안 됐는가\", \"이 잔고는 어느 트랜잭션에서 비롯됐는가\"를 사후에 100% 재구성할 수 있어야 한다. 따라서 단순 모니터링이 아니라 **모든 주문·체결·원장 변동에 대한 감사 가능한(auditable) 추적**이 설계 요구사항이다.\n\n### 분산 트레이싱\nMSA 환경에서 하나의 주문은 `Gateway → Order → Matching Engine → Ledger → Kafka → Market Data`를 거친다. 각 요청에 `trace_id`를 부여하고 서비스 간 gRPC/HTTP 헤더로 전파해, 한 주문의 전체 여정을 한 화면에서 본다. OpenTelemetry 스타일의 trace 수집 → 백엔드(Jaeger/Tempo류)로 저장하는 구조가 일반적이다.\n\n### 메트릭 스택\n- **Prometheus**: 서비스별 latency(p50/p99/p999), 초당 주문 수(TPS), 매칭 엔진 큐 깊이, Kafka consumer lag, JVM GC pause 등을 수집.\n- **Grafana**: 실시간 대시보드. 특히 매칭 엔진의 **체결 지연 p999**는 핵심 SLO 지표로 알람이 걸린다.\n- **알람**: consumer lag 급증, GC pause 스파이크, 원장 처리 지연은 즉시 on-call로 통보된다.\n\n### 로그 파이프라인\n애플리케이션 로그와 감사 로그는 Kafka로 흘려보내 `Elasticsearch`에 적재하고 Kibana로 검색한다. 분석·정산용 대용량 이벤트는 `ClickHouse`로 보내 OLAP 쿼리(거래량 통계, 수수료 정산, 이상거래 패턴 분석)를 수행한다.\n\n### 핵심 트레이드오프\n모든 이벤트를 동기적으로 영속화하면 매칭 엔진의 지연이 늘어난다. 그래서 관측·감사 데이터는 **매칭 핫패스에서 분리해 Kafka로 비동기 방출**하고, 핫패스에는 최소한의 메모리 로깅만 남긴다. 정합성이 필요한 원장은 동기, 관측 데이터는 비동기로 명확히 나눈 것이 설계의 핵심이다."
+    },
+    {
+     "topic": "배포·CI/CD와 무중단 운영 (Kubernetes, GitOps, 카나리)",
+     "body": "### 24/7 무중단 거래소의 배포 제약\n주식시장과 달리 가상자산 거래는 휴장이 없다. 즉 **정기 점검 시간 외에는 거래가 멈추면 안 된다.** 이 제약이 배포 전략 전체를 규정한다.\n\n### 컨테이너 플랫폼\n대부분의 stateless 서비스(주문 API, 인증, 시세 게이트웨이 등)는 `AWS EKS(Kubernetes)` 위에서 운영된다. 인프라는 `Terraform`으로 코드화(IaC)하고, 애플리케이션 배포는 `ArgoCD` 같은 GitOps 도구로 Git 저장소의 매니페스트를 클러스터에 선언적으로 동기화한다. 이렇게 하면 \"현재 무엇이 떠 있는가\"가 항상 Git과 일치하고 롤백이 커밋 revert로 단순해진다.\n\n### 배포 전략\n- **Rolling / Blue-Green**: 무상태 서비스는 점진 교체 또는 블루그린으로 무중단 배포.\n- **Canary**: 새 버전을 트래픽의 일부(예: 1~5%)에만 노출해 에러율·지연을 관측한 뒤 점진 확대. 메트릭이 임계치를 넘으면 자동 롤백.\n\n### Stateful 컴포넌트의 특수성\n인메모리 매칭 엔진은 일반 무상태 서비스처럼 굴릴 수 없다. 메모리에 라이브 주문북 상태를 들고 있기 때문이다. 따라서 active-standby 이중화로 운영하며, 배포 시에는 standby를 먼저 새 버전으로 올리고 주문북 상태(또는 Kafka 이벤트 리플레이로 복원)를 동기화한 뒤 트래픽을 전환하는 신중한 절차를 거친다. **상태가 있는 핫패스 컴포넌트는 별도의 안전한 배포 절차**를 두는 것이 핵심이다.\n\n### 트레이드오프\n속도보다 안전을 택한다. 핵심 거래 경로 배포는 자동화하되 단계마다 메트릭 게이트와 수동 승인을 둬, 잘못된 배포가 자산·원장에 영향을 주지 못하게 한다."
+    },
+    {
+     "topic": "장애 대응과 복원력 (서킷브레이커, 백프레셔, 페일오버)",
+     "body": "### 폭증 트래픽이 만드는 연쇄 장애\n비트코인 급등락 시 트래픽이 평소의 수십 배로 튄다. 이때 한 서비스가 느려지면 호출하는 상류 서비스의 스레드가 묶이고, 그 압력이 도미노처럼 번지는 **cascading failure**가 거래소의 전형적 장애 패턴이다.\n\n### 서킷브레이커\n서비스 간 호출에 `Resilience4j` 류의 서킷브레이커를 둔다. 하류 서비스의 에러율/지연이 임계치를 넘으면 회로를 `OPEN`시켜 즉시 실패(fail-fast)시키고, 일정 시간 후 `HALF_OPEN`으로 일부 요청만 흘려 회복을 탐지한다. 이를 통해 죽어가는 서비스에 요청을 쌓아 함께 죽는 것을 막는다.\n\n### 백프레셔와 부하 차단\n매칭 엔진처럼 처리량 상한이 명확한 컴포넌트 앞에는 큐와 rate limit을 두어 과부하 시 초과 주문을 빠르게 거절(load shedding)한다. \"느린 성공\"보다 \"빠른 실패\"가 전체 시스템 안정에 유리하기 때문이다. Kafka가 이벤트 버퍼 역할을 해 순간 스파이크를 흡수하고 컨슈머가 자기 속도로 소화한다.\n\n### 다중화와 페일오버\n- **AZ 다중화**: AWS 여러 가용영역에 서비스·DB를 분산. 단일 AZ 장애를 견딘다.\n- **DB**: MySQL은 primary-replica로 구성, 읽기는 replica로 분산하고 primary 장애 시 자동 승격(failover).\n- **매칭 엔진**: active-standby. 모든 주문 이벤트가 Kafka에 적재되어 있어, standby는 이벤트 로그를 **리플레이**해 동일한 결정적 상태를 복원할 수 있다. 이것이 인메모리 구조임에도 내구성을 확보하는 핵심 메커니즘이다.\n\n### 점검 모드\n블록체인 네트워크 이슈나 중대 장애 시 입출금만 선택적으로 중단하는 등 **부분 기능 격리(graceful degradation)**가 가능하도록 기능이 모듈화되어 있다. 전체를 내리지 않고 영향 범위를 최소화하는 것이 운영 철학이다."
     }
    ],
    "github": {
-    "org": "dunamu"
+    "org": "https://github.com/dunamu",
+    "repos": []
    },
    "sources": [
     "https://dunamu.com",
-    "https://github.com/dunamu"
+    "https://upbit.com",
+    "https://www.dunamu.com/careers"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "kakaopay",
