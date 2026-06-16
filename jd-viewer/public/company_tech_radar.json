@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T22:35:41",
+ "generated_at": "2026-06-17T00:08:53",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 71,
+ "refined": 73,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -193,12 +193,12 @@
    ],
    "languages": [
     {
-     "name": "Java",
+     "name": "Go",
      "count": 14
     },
     {
-     "name": "Go",
-     "count": 13
+     "name": "Java",
+     "count": 14
     },
     {
      "name": "Python",
@@ -248,6 +248,14 @@
       "count": 2
      },
      {
+      "name": "Kotlin",
+      "count": 2
+     },
+     {
+      "name": "Kotlin Coroutines",
+      "count": 2
+     },
+     {
       "name": "Netty",
       "count": 2
      },
@@ -256,16 +264,8 @@
       "count": 2
      },
      {
-      "name": "Ruby on Rails",
+      "name": "Protocol Buffers",
       "count": 2
-     },
-     {
-      "name": "Spring WebFlux",
-      "count": 2
-     },
-     {
-      "name": "Armeria",
-      "count": 1
      }
     ],
     "frontend": [
@@ -321,11 +321,11 @@
      },
      {
       "name": "MySQL",
-      "count": 11
+      "count": 10
      },
      {
       "name": "Elasticsearch",
-      "count": 7
+      "count": 8
      },
      {
       "name": "Cassandra",
@@ -363,7 +363,15 @@
      },
      {
       "name": "Terraform",
-      "count": 5
+      "count": 6
+     },
+     {
+      "name": "Bazel",
+      "count": 3
+     },
+     {
+      "name": "Datadog",
+      "count": 3
      },
      {
       "name": "Envoy",
@@ -375,14 +383,6 @@
      },
      {
       "name": "ArgoCD",
-      "count": 2
-     },
-     {
-      "name": "Bazel",
-      "count": 2
-     },
-     {
-      "name": "Datadog",
       "count": 2
      },
      {
@@ -406,7 +406,7 @@
     },
     {
      "name": "MSA",
-     "count": 6
+     "count": 5
     },
     {
      "name": "Service mesh",
@@ -15274,40 +15274,51 @@
     "Kotlin",
     "Java",
     "TypeScript",
-    "JavaScript"
+    "JavaScript",
+    "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring WebFlux",
-     "gRPC"
+     "Kotlin Coroutines",
+     "gRPC",
+     "Resilience4j",
+     "QueryDSL/JPA"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "Recoil/Zustand",
+     "Webpack/Vite"
     ],
     "data": [
-     "Kafka",
+     "Apache Kafka",
      "MySQL",
      "MongoDB",
-     "Redis"
+     "Redis",
+     "Elasticsearch"
     ],
     "infra": [
      "Kubernetes",
-     "사내 클라우드",
-     "ArgoCD"
+     "사내 클라우드(Private Cloud)",
+     "ArgoCD/GitOps",
+     "Vault",
+     "Prometheus/Grafana",
+     "Jaeger/Zipkin"
     ]
    },
    "architecture": [
     "MSA",
-    "Event-driven",
-    "결제 정합성"
+    "Event-driven (Kafka)",
+    "Reactive/Non-blocking (WebFlux)",
+    "결제 정합성 보장(원장·멱등성)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"카카오페이 웹<br/>React + Next.js\"]\n    APP[\"카카오페이 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    CH[\"채널계 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PAY[\"결제 코어 계정계<br/>Spring Boot + Kotlin\"]\n    SETTLE[\"정산 서비스<br/>Spring WebFlux\"]\n    INS[\"보험 투자<br/>Kotlin + gRPC\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"결제 원장 DB<br/>MySQL\"]\n    MONGO[\"거래 이력<br/>MongoDB\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes + ArgoCD\"]\n    PCLOUD[\"사내 클라우드<br/>금융 격리망\"]\n  end\n  WEB --> CH\n  APP --> CH\n  CH --> PAY\n  CH --> SETTLE\n  CH --> INS\n  PAY --> KAFKA\n  KAFKA --> SETTLE\n  KAFKA --> INS\n  PAY --> MYSQL\n  SETTLE --> MONGO\n  PAY --> REDIS\n  K8S --> PCLOUD",
-   "why_language": "결제·송금·투자 서비스의 생산성과 안정성을 위해 Kotlin을 메인으로 적극 채택했고, 비동기 처리에는 WebFlux를 활용한다.",
-   "why_architecture": "결제 거래의 정합성을 보장하면서 다양한 금융 서비스로 확장하기 위해 MSA와 Kafka 기반 이벤트 드리븐을 결합했다.",
-   "summary": "Kotlin 중심으로 결제 정합성을 보장하는 이벤트 드리븐 핀테크.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>Android Kotlin + iOS Swift\"]\n    WEB[\"Web<br/>React + Next.js TS\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway WebFlux\"]\n    AUTH[\"Auth / 인증<br/>OAuth2 + JWT + Vault\"]\n  end\n  subgraph Core[\"Core Payment Services (MSA)\"]\n    PAY[\"결제 Service<br/>Kotlin + Spring Boot\"]\n    LEDGER[\"원장 Ledger<br/>Kotlin + 멱등성\"]\n    SETTLE[\"정산 Settlement<br/>Kotlin\"]\n    FDS[\"이상거래탐지 FDS<br/>Kotlin + ML\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    CONSUMER[\"Consumers<br/>Coroutines + gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"거래 원장 DB<br/>MySQL Sharded\"]\n    MONGO[\"이력/문서<br/>MongoDB\"]\n    REDIS[\"캐시·분산락<br/>Redis\"]\n    ES[\"검색/로그<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>사내 클라우드\"]\n    ARGO[\"GitOps<br/>ArgoCD\"]\n    OBS[\"관측성<br/>Prometheus + Jaeger\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> AUTH\n  GW -->|gRPC| PAY\n  PAY -->|정합성 체크| LEDGER\n  PAY --> FDS\n  PAY -->|이벤트 발행| KAFKA\n  LEDGER --> MYSQL\n  KAFKA --> CONSUMER\n  CONSUMER --> SETTLE\n  SETTLE --> MYSQL\n  PAY --> REDIS\n  PAY --> MONGO\n  CONSUMER --> ES\n  Core --> K8S\n  ARGO --> K8S\n  Core --> OBS",
+   "why_language": "결제·송금처럼 강한 도메인 모델과 동시성·정합성이 핵심인 영역에서 Kotlin은 null-safety와 코루틴 기반 비동기로 안전하고 간결한 코드를 제공해, 카카오페이는 기존 Java 자산과 Spring 생태계를 그대로 유지하면서 신규 MSA를 대거 Kotlin으로 전환했다. 프런트는 React·Next.js·TypeScript로 대규모 화면 트래픽과 타입 안정성을 확보하고, 인프라 일부 도구·에이전트성 작업에는 Go를 활용한다.",
+   "why_architecture": "단일 결제 트랜잭션이 인증·한도·FDS·원장·정산 등 여러 도메인에 걸치고 각각 독립 배포·확장이 필요해 MSA를 채택했으며, 서비스 간 강결합 없이 결제 후속 처리(정산·알림·리워드)를 비동기로 풀기 위해 Kafka 기반 Event-driven을 핵심에 두었다. 외부 PG·은행 연동의 높은 I/O 대기를 적은 스레드로 견디기 위해 WebFlux 논블로킹을 쓰고, 금융 특성상 멱등성·분산락·원장 정합성으로 '정확히 한 번'을 보장한다.",
+   "summary": "Kotlin MSA + Kafka 이벤트 기반으로 결제 정합성과 대규모 비동기 처리를 동시에 잡은 핀테크 스택",
    "deep_dive": [
     {
      "topic": "결제 요청 end-to-end 흐름",
@@ -15324,17 +15335,31 @@
     {
      "topic": "Kotlin MSA와 배포(ArgoCD/GitOps)",
      "body": "### 언어·프레임워크\n카카오페이는 `Kotlin`을 메인 백엔드 언어로 적극 채택했다. null 안정성·코루틴·간결성으로 금융 로직의 버그 표면을 줄인다. 서비스 간 통신은 계약이 명확한 `gRPC`를 쓰고, 도메인 데이터는 `MySQL`, 문서·로그성은 `MongoDB`, 캐시·세션은 `Redis`를 조합한다.\n\n### 사내 클라우드 + ArgoCD GitOps\n배포는 `Kubernetes` 위에서 `ArgoCD`를 통한 **GitOps**로 한다. 배포 명세(매니페스트)를 Git에 두고, ArgoCD가 클러스터 상태를 Git의 선언과 지속적으로 동기화한다.\n- 모든 배포 변경이 Git 커밋으로 남아 **감사·롤백이 커밋 단위**로 가능하다. 금융 규제상 \"누가 무엇을 언제 배포했나\"의 추적성이 중요하다.\n- 클러스터가 선언 상태에서 드리프트되면 ArgoCD가 감지·복구한다.\n\n### 카나리/점진 배포\n결제 같은 핵심 서비스는 새 버전을 일부 트래픽에만 먼저 흘리고(canary), 에러율·지연을 관측해 문제없으면 전체로 확장한다. 문제가 보이면 Git revert로 즉시 롤백.\n\n### 왜 GitOps\n금융은 \"변경 추적성\"과 \"재현 가능성\"이 곧 컴플라이언스다. GitOps는 인프라 상태를 코드로 못박아 둘 다 만족시킨다."
+    },
+    {
+     "topic": "이상거래탐지(FDS)와 실시간 리스크 스코어링 파이프라인",
+     "body": "### FDS가 결제 흐름 안에서 동작하는 방식\n\n카카오페이의 결제·송금은 단순히 '잔액 차감 → 승인'이 아니라, 매 거래마다 **실시간 이상거래탐지(FDS, Fraud Detection System)**를 거친다. 결제 서비스가 승인 직전에 FDS를 동기/준동기로 호출하고, FDS는 수십 ms 내에 위험도 점수를 돌려줘야 결제 응답 지연이 발생하지 않는다.\n\n### 핵심 메커니즘\n\n- **피처(feature) 조회**: 사용자·기기·가맹점 단위의 최근 거래 빈도, 금액 분포, 평소 사용 시간대, 디바이스 지문 등을 `Redis`에 사전 집계된 카운터/슬라이딩 윈도우로 보관한다. 실시간 호출 시 RDB까지 가지 않고 Redis에서 O(1)에 가깝게 피처를 읽어 지연을 억제한다.\n- **룰 엔진 + 모델 하이브리드**: 명백한 패턴(짧은 시간 다수 시도, 신규 기기 고액 송금)은 결정적 룰로 즉시 차단하고, 애매한 영역은 ML 모델 점수로 판정한다. 룰은 운영자가 빠르게 추가/수정할 수 있어야 하므로 코드 배포 없이 변경 가능한 형태로 운영된다.\n- **비동기 학습 루프**: 실제 거래 이벤트는 `Kafka`로 흘러가고, 별도 컨슈머가 이를 적재(`Elasticsearch`/데이터 레이크)해 모델 재학습과 사후 분석에 사용한다. 즉 *실시간 추론은 동기*, *학습·집계는 비동기*로 분리하는 전형적인 lambda-style 구조다.\n\n### 트레이드오프\n\nFDS 호출을 결제 임계 경로(critical path)에 넣으면 안전하지만 지연·장애 전파 위험이 생긴다. 그래서 FDS 호출에는 `Resilience4j` 기반 **타임아웃·서킷브레이커·폴백**이 걸려 있어, FDS가 느려지거나 죽어도 결제 본류가 통째로 멈추지 않도록(저위험 거래는 통과시키거나 사후 검증으로 회수) 설계한다. '보안'과 '가용성'의 균형을 점수 임계값과 폴백 정책으로 조절하는 것이 핵심 엔지니어링 결정이다."
+    },
+    {
+     "topic": "데이터 일관성·샤딩 전략과 분산 트랜잭션(Saga)",
+     "body": "### 왜 단일 트랜잭션으로 안 되는가\n\nMSA에서는 결제 서비스 DB, 원장 DB, 정산 DB, 포인트/리워드 DB가 물리적으로 분리돼 있어 RDB의 단일 `XA`/2PC 트랜잭션으로 묶기 어렵다(성능·락 비용·장애 결합도 때문). 카카오페이는 대신 **이벤트 기반 Saga 패턴**으로 여러 서비스에 걸친 일관성을 맞춘다.\n\n### Saga 동작 흐름\n\n1. 결제 서비스가 로컬 트랜잭션으로 '결제 시도' 상태를 커밋하고 `payment.requested` 이벤트를 `Kafka`에 발행한다.\n2. 원장·정산·리워드 컨슈머가 각자 로컬 트랜잭션을 수행하고 결과 이벤트를 되돌려준다.\n3. 중간 단계가 실패하면 **보상 트랜잭션(compensating transaction)**(예: 차감 취소, 상태 롤백)을 이벤트로 발행해 전체를 일관 상태로 되돌린다.\n\n이때 **Transactional Outbox** 패턴이 중요하다 — DB 커밋과 Kafka 발행이 따로 놀면 '돈은 빠졌는데 이벤트는 안 나간' 정합성 사고가 난다. 그래서 비즈니스 데이터와 발행할 이벤트를 *같은 로컬 트랜잭션*으로 outbox 테이블에 쓰고, 별도 릴레이가 outbox를 읽어 Kafka로 내보낸다.\n\n### 샤딩 전략\n\n거래량이 큰 원장/거래 테이블은 단일 `MySQL`로 감당이 안 되므로 사용자 ID 또는 거래 키 기준으로 **수평 샤딩**한다. 샤드 키 선택은 '핫 파티션' 회피와 조회 패턴(특정 사용자의 거래 이력 조회가 한 샤드에 모이도록)을 동시에 만족해야 한다. 분석·이력성 조회는 RDB 부하를 줄이기 위해 `Elasticsearch`/`MongoDB`로 분리한다.\n\n### 트레이드오프\n\nSaga는 **최종 일관성(eventual consistency)**을 받아들이는 대신 가용성과 확장성을 얻는다. 사용자에게는 '결제 완료' 응답을 빠르게 주되, 정산·리워드 같은 후속은 수 초~수 분 내 수렴하도록 한다. 금융 도메인에서 이 지연 구간 동안의 상태(처리중)를 명확히 모델링하고, 멱등성 키로 이벤트 재처리 시 중복 적용을 막는 것이 정합성의 마지막 방어선이다."
+    },
+    {
+     "topic": "분산 추적·관측성(Observability)으로 결제 한 건을 끝까지 따라가기",
+     "body": "### 문제: 한 결제가 10개 서비스를 거친다\n\nMSA·이벤트 기반 구조에서 결제 한 건은 Gateway → 결제 → FDS → 원장 → (Kafka) → 정산으로 흩어진다. 장애가 났을 때 '어디서 느려졌나/실패했나'를 찾으려면 서비스별 로그만으로는 부족하다. 그래서 **분산 추적(distributed tracing)**이 필수다.\n\n### 구성\n\n- **Trace ID 전파**: 요청 입구(Gateway)에서 생성한 `traceId`/`spanId`를 HTTP 헤더와 gRPC 메타데이터로 전 서비스에 전파한다. 어려운 지점은 **Kafka 경계** — 동기 호출이 끊기는 곳이라, 이벤트 메시지 헤더에 trace context를 실어 컨슈머가 부모 trace를 이어받게 해야 비동기 후속 처리까지 한 트레이스로 묶인다. WebFlux/Coroutines 환경에서는 스레드가 바뀌므로 `Reactor Context`/coroutine context로 trace를 전달해야 컨텍스트가 끊기지 않는다.\n- **3대 신호 통합**: `Jaeger/Zipkin`(트레이스), `Prometheus + Grafana`(메트릭: 결제 성공률, p99 지연, Kafka consumer lag), 중앙 로그 수집(`Elasticsearch` 기반)으로 로그를 모아 traceId로 상호 점프한다.\n- **금융 특화 비즈니스 지표**: 단순 인프라 지표를 넘어 '승인율', '취소율', 'PG사별 응답 지연', '미정산 잔액' 같은 도메인 지표를 알람으로 건다. 결제 성공률이 평소 대비 떨어지면 특정 PG/은행 연동 장애일 가능성이 높아 즉시 대응한다.\n\n### 왜 이렇게까지 하나\n\n결제는 '실패해도 안 되지만, 같은 거래가 두 번 일어나도 안 되는' 도메인이라 장애 시 **정확한 재처리 판단**이 생명이다. 트레이스로 '원장까지 반영됐는지/Kafka 이벤트가 발행됐는지'를 확실히 확인할 수 있어야, 재시도해도 안전한지(멱등성 보장 구간인지) 판단하고 무분별한 중복 처리·이중 출금을 막을 수 있다. 관측성이 곧 정합성 운영의 토대가 된다."
     }
    ],
    "github": {
-    "org": "kakaopay"
+    "org": "https://github.com/kakaopay",
+    "repos": []
    },
    "sources": [
-    "https://tech.kakaopay.com",
-    "https://www.kakaopay.com"
+    "https://tech.kakaopay.com/",
+    "https://github.com/kakaopay",
+    "https://if.kakao.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "banksalad",
@@ -15342,17 +15367,19 @@
    "country": "KR",
    "domain": "핀테크/데이터",
    "languages": [
-    "Kotlin",
     "Go",
-    "Scala",
+    "Kotlin",
     "TypeScript",
+    "Scala",
     "Python"
    ],
    "stack": {
     "backend": [
-     "Spring Boot",
      "Go",
-     "gRPC"
+     "Kotlin",
+     "Spring Boot",
+     "gRPC",
+     "Protocol Buffers"
     ],
     "frontend": [
      "React",
@@ -15362,27 +15389,34 @@
     ],
     "data": [
      "Kafka",
-     "MySQL",
+     "Aurora MySQL",
      "Redis",
      "BigQuery",
-     "Airflow"
+     "Airflow",
+     "Spark"
     ],
     "infra": [
-     "GCP",
      "AWS",
+     "EKS",
      "Kubernetes",
-     "Istio"
+     "Istio",
+     "ArgoCD",
+     "Bazel",
+     "Terraform",
+     "Datadog"
     ]
    },
    "architecture": [
-    "MSA",
-    "gRPC 기반 통신",
-    "마이데이터 파이프라인"
+    "gRPC 기반 MSA",
+    "Protobuf 스키마 주도 개발",
+    "Bazel 모노레포",
+    "마이데이터 수집 파이프라인",
+    "Istio 서비스 메시"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"뱅크샐러드 앱<br/>Flutter\"]\n    WEB[\"뱅크샐러드 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>gRPC Gateway\"]\n  end\n  subgraph Services\n    ASSET[\"자산 관리<br/>Spring Boot + Kotlin\"]\n    MYDATA[\"마이데이터 수집<br/>Go + gRPC\"]\n    ANALYZE[\"분석 엔진<br/>Scala\"]\n    REC[\"금융 추천<br/>Python\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n    AIRFLOW[\"데이터 파이프라인<br/>Airflow\"]\n  end\n  subgraph Data\n    MYSQL[\"자산 DB<br/>MySQL\"]\n    REDIS[\"캐시<br/>Redis\"]\n    BQ[\"데이터 웨어하우스<br/>BigQuery\"]\n  end\n  subgraph Infra\n    MESH[\"서비스 메시<br/>Istio\"]\n    CLOUD[\"멀티 클라우드<br/>GCP + AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> ASSET\n  GW --> MYDATA\n  ASSET --> KAFKA\n  MYDATA --> KAFKA\n  KAFKA --> ANALYZE\n  ANALYZE --> AIRFLOW\n  AIRFLOW --> BQ\n  BQ --> REC\n  ASSET --> MYSQL\n  ASSET --> REDIS\n  MESH --> CLOUD",
-   "why_language": "마이데이터 자산 통합의 안정성과 생산성을 위해 Kotlin을 메인으로 쓰고, 고성능 서비스·게이트웨이는 Go, 데이터 처리는 Scala/Python을 활용한다.",
-   "why_architecture": "여러 금융기관 데이터를 통합하는 마이데이터 특성상 gRPC 기반 MSA와 서비스 메시(Istio)로 서비스를 촘촘히 연결하고, 클라우드 네이티브로 운영한다.",
-   "summary": "마이데이터 자산 통합을 gRPC MSA로 처리하는 Kotlin/Go 핀테크.",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Mobile App<br/>Flutter + Native\"]\n    WEB[\"Web<br/>Next.js + React\"]\n  end\n  subgraph Edge\n    ENVOY[\"Edge Proxy<br/>Envoy + gRPC-Web\"]\n    BFF[\"BFF / API Gateway<br/>Kotlin + Go\"]\n  end\n  subgraph CoreServices\n    MESH[\"Service Mesh<br/>Istio + mTLS\"]\n    SVC1[\"Account / Asset Svc<br/>Go + gRPC\"]\n    SVC2[\"Domain Services<br/>Kotlin Spring Boot\"]\n    MYDATA[\"MyData Aggregator<br/>Go + OAuth2\"]\n  end\n  subgraph External\n    INST[\"금융기관<br/>MyData OpenAPI\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Storage\n    AURORA[\"OLTP<br/>Aurora MySQL\"]\n    REDIS[\"Cache<br/>Redis\"]\n    BQ[\"Warehouse<br/>BigQuery\"]\n  end\n  subgraph Pipeline\n    AIRFLOW[\"Orchestration<br/>Airflow\"]\n    SPARK[\"Batch / ETL<br/>Spark + Scala\"]\n  end\n  subgraph Platform\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps CD<br/>ArgoCD\"]\n    DD[\"Observability<br/>Datadog\"]\n  end\n  APP --> ENVOY\n  WEB --> ENVOY\n  ENVOY -->|gRPC-Web| BFF\n  BFF -->|gRPC| MESH\n  MESH --> SVC1\n  MESH --> SVC2\n  MESH --> MYDATA\n  MYDATA -->|HTTPS / 전자서명| INST\n  SVC1 --> AURORA\n  SVC2 --> AURORA\n  SVC1 --> REDIS\n  SVC1 -->|produce| KAFKA\n  MYDATA -->|produce| KAFKA\n  KAFKA --> AIRFLOW\n  AIRFLOW --> SPARK\n  SPARK --> BQ\n  KAFKA --> BQ\n  EKS -.hosts.-> MESH\n  ARGO -.deploy.-> EKS\n  DD -.monitor.-> MESH",
+   "why_language": "백엔드는 마이데이터처럼 수많은 금융기관과 동시에 통신하며 높은 동시성·낮은 지연이 필요한 영역에 goroutine 기반 경량 동시성을 가진 Go를 주력으로 쓰고, 복잡한 도메인 로직과 풍부한 생태계가 필요한 서비스에는 Kotlin/Spring Boot를 쓴다. 데이터 대량 배치·ETL에는 Spark와 잘 맞는 Scala를, 자산 분석·ML과 스크립팅에는 Python을 두어 영역별로 가장 적합한 언어를 분담한다. 프론트는 웹의 React/Next.js, 모바일의 Flutter로 TypeScript 중심의 일관된 개발 경험을 확보한다.",
+   "why_architecture": "수백 개 금융기관 연동과 자산·소비·대출 등 도메인이 폭발적으로 늘어나는 핀테크 특성상, 팀별 독립 배포와 장애 격리가 가능한 gRPC 기반 MSA를 택했다. 다양한 언어로 작성된 서비스 간 타입 안전한 계약을 보장하기 위해 Protobuf 스키마를 단일 진실 공급원으로 삼는 스키마 주도 개발과 Bazel 모노레포로 빌드·코드생성을 표준화했고, 서비스가 늘어도 트래픽 제어·mTLS·관측을 코드 밖에서 일괄 적용하기 위해 Istio 서비스 메시를 얹었다.",
+   "summary": "Protobuf 스키마를 단일 계약으로 삼아 Go·Kotlin 마이크로서비스를 gRPC로 잇고 Bazel 모노레포·Istio·EKS로 굴리는 스키마 주도 핀테크 플랫폼",
    "deep_dive": [
     {
      "topic": "마이데이터 수집 파이프라인 end-to-end",
@@ -15399,18 +15433,35 @@
     {
      "topic": "Kotlin/Go 언어 분담과 클라우드 네이티브",
      "body": "### 언어를 왜 나누나\n뱅크샐러드는 도메인 특성에 맞춰 언어를 나눈다.\n- **`Kotlin`(메인 비즈니스 서비스)**: 마이데이터 자산 통합 로직의 안정성·생산성. JVM 생태계 + null 안정성.\n- **`Go`(고성능 게이트웨이/인프라성 서비스)**: 낮은 지연·적은 메모리·빠른 기동. 트래픽이 집중되는 진입점에 적합.\n- **`Scala`/`Python`(데이터 처리)**: 대규모 분석·ML.\n- **`Flutter`(모바일)**: iOS/Android 단일 코드베이스로 빠른 화면 개발.\n\n### 클라우드 네이티브 운영\n`Kubernetes` + `Istio` 위에서 `GCP`/`AWS` 멀티클라우드로 운영한다. 컨테이너 표준화로 어디서든 동일하게 배포·스케일하고, 메시로 통신·보안을 일관 관리한다.\n\n### 왜 멀티클라우드\n특정 클라우드 종속을 줄이고, 데이터 분석(BigQuery)은 GCP 강점을, 일반 워크로드는 AWS를 쓰는 식으로 강점을 조합한다.\n\n### 트레이드오프\n다언어·멀티클라우드는 운영·학습 비용이 크다. 하지만 \"적재적소\"의 성능·생산성 이득과 종속 회피가 이를 정당화한다고 본다. 컨테이너·메시로 이질성을 표준화해 복잡도를 관리한다."
+    },
+    {
+     "topic": "Protobuf 스키마 주도 개발과 Bazel 모노레포 — 계약이 코드를 만든다",
+     "body": "### 왜 스키마가 먼저인가\n뱅크샐러드의 백엔드는 Go, Kotlin, (데이터 영역의) Scala/Python이 뒤섞인 폴리글랏(polyglot) 환경이다. 이런 환경에서 서비스끼리 JSON REST로 통신하면 필드 오타·타입 불일치·문서-구현 괴리가 런타임에서야 터진다. 그래서 이들은 **Protocol Buffers(.proto) 정의를 API의 단일 진실 공급원(Single Source of Truth)** 으로 삼는다. 개발 순서가 `코드 → 문서`가 아니라 **`.proto 계약 정의 → 코드 생성 → 구현`** 으로 뒤집힌다.\n\n### 동작 메커니즘\n- 한 서비스의 API는 `service`/`rpc`/`message` 로 `.proto` 파일에 먼저 선언된다. 이 파일이 곧 서버·클라이언트가 공유하는 인터페이스다.\n- `protoc` + 언어별 플러그인(`protoc-gen-go`, `protoc-gen-go-grpc`, Kotlin/gRPC 스텁 등)이 **서버 인터페이스와 클라이언트 스텁을 자동 생성**한다. Go 서비스가 정의한 RPC를 Kotlin 서비스가 호출할 때, 손으로 HTTP 클라이언트를 짜는 대신 생성된 타입 안전한 stub을 그대로 쓴다.\n- 필드 번호(`= 1`, `= 2`) 기반 직렬화 덕분에 **필드 추가/삭제 시 하위 호환**이 보장된다. 새 필드를 새 번호로 추가하면 구버전 클라이언트는 모르는 필드를 무시하고, 신버전은 채워 쓴다. 이게 무중단으로 굴러가는 MSA에서 배포 순서에 덜 민감하게 만들어 준다.\n- 브라우저는 HTTP/2 trailer 등을 직접 못 다루므로, 엣지에서 **gRPC-Web(Envoy 필터)** 로 변환해 웹/모바일까지 동일한 Protobuf 계약을 끌고 내려온다.\n\n### Bazel 모노레포가 푸는 문제\n폴리글랏 + 코드 생성 + 다수 서비스를 합치면 빌드가 지옥이 된다. 언어마다 빌드 도구가 다르고(.go는 go build, Kotlin은 Gradle, proto는 protoc…), `.proto` 한 줄 바꾸면 그걸 의존하는 모든 서비스가 다시 생성/빌드돼야 한다. 뱅크샐러드는 이를 **Bazel 단일 모노레포**로 묶어 해결한다.\n\n| 문제 | Bazel이 주는 것 |\n|---|---|\n| 언어마다 빌드 체계가 제각각 | `rules_go`, `rules_kotlin`, `rules_proto` 로 한 빌드 그래프에 통합 |\n| proto 변경의 파급 추적 | 의존 그래프 기반 **증분 빌드** — 영향받는 타깃만 재빌드 |\n| CI가 매번 전체 빌드 | **원격 캐시/액션 캐시**로 바뀐 부분만 컴파일·테스트 |\n| 재현 불가능한 빌드 | 입력을 명시한 **hermetic build** 로 로컬=CI 결과 일치 |\n\n### 트레이드오프\nBazel 모노레포는 초기 러닝커브와 `BUILD` 파일 유지 비용이 크다. 신규 입사자가 `go build`가 아니라 `bazel build //…` 에 적응해야 하고, 서드파티 의존성을 Bazel 규칙으로 편입하는 작업이 번거롭다. 그럼에도 **\"계약을 바꾸면 깨지는 모든 곳이 컴파일 타임에 드러나고, 바뀐 것만 빠르게 빌드된다\"** 는 이점이 서비스 수가 많은 핀테크에서 이 비용을 정당화한다."
+    },
+    {
+     "topic": "배포 파이프라인 — EKS 위 GitOps와 점진적 롤아웃",
+     "body": "### 전체 흐름\n뱅크샐러드 서비스는 AWS **EKS(Kubernetes)** 위에서 돌아가며, 배포는 **GitOps** 모델을 따른다. 핵심 아이디어는 *\"클러스터의 실제 상태를 Git에 선언된 상태로 수렴시킨다\"* 이다.\n\n1. **빌드/이미지**: 머지되면 CI(Bazel 기반)가 영향받은 서비스만 빌드·테스트하고 컨테이너 이미지를 만들어 레지스트리(ECR)에 푸시한다. 증분 빌드 덕에 모노레포여도 전체를 다시 굽지 않는다.\n2. **선언적 매니페스트**: 배포 대상의 원하는 상태(이미지 태그, 레플리카 수, 리소스 한도, Istio 라우팅)는 Git 저장소의 매니페스트/Helm 값으로 기술된다.\n3. **동기화(ArgoCD)**: ArgoCD가 Git을 지속적으로 관찰하다가 차이를 감지하면 EKS에 적용한다. 사람이 `kubectl apply` 를 직접 치는 게 아니라 **Git PR이 곧 배포 트리거**가 된다. 이로써 배포 이력·롤백이 Git history로 추적되고, 클러스터 드리프트(수동 변경으로 인한 불일치)를 자동 교정한다.\n\n### 점진적 롤아웃과 안전장치\n금융 서비스는 잘못된 배포가 곧 자산·결제 사고로 이어지므로 한 번에 전량 교체하지 않는다.\n- **Rolling update / 카나리**: 새 버전을 일부 파드(또는 일부 트래픽 비율)에만 먼저 노출하고, **Istio의 가중치 라우팅(VirtualService weight)** 으로 5% → 25% → 100% 식으로 비중을 올린다. 메시 레벨에서 트래픽을 쪼개므로 애플리케이션 코드 변경 없이 카나리가 가능하다.\n- **헬스 게이트**: 롤아웃 중 Datadog 지표(에러율·지연·gRPC status code)가 임계치를 넘으면 진행을 멈추거나 자동 롤백한다.\n- **Readiness/Liveness probe**: gRPC health check로 트래픽 투입 전 준비 완료를 확인하고, 죽은 파드는 재기동한다.\n\n### 왜 이렇게까지\nMSA에서 서비스 수가 수십~수백 개가 되면 \"누가 무엇을 언제 배포했는가\"가 추적 불가능해진다. GitOps는 배포를 **감사 가능한(auditable) 선언적 자산**으로 바꿔 규제 산업인 핀테크의 변경 통제 요구와 잘 맞는다. 트레이드오프는 모든 변경이 Git→ArgoCD 동기화를 거치므로 *긴급 핫픽스의 절차적 지연*이 생긴다는 점인데, 이는 별도 fast-path 와 권한 분리로 보완한다."
+    },
+    {
+     "topic": "관측성 — gRPC 인터셉터 기반 분산 트레이싱과 Datadog",
+     "body": "### MSA에서 관측성이 핵심인 이유\n하나의 사용자 요청(예: '자산 새로고침')이 BFF → 자산 서비스 → 마이데이터 수집기 → 외부 금융기관까지 여러 hop을 거친다. 어느 구간에서 느려졌는지/실패했는지 로그만으로는 추적 불가능하다. 그래서 **분산 트레이싱**이 필수다.\n\n### 동작 메커니즘\n- **gRPC 인터셉터로 자동 계측**: 서비스마다 트레이싱 코드를 흩뿌리는 대신, gRPC의 `UnaryServerInterceptor`/`ClientInterceptor`(및 Kotlin 측 동등 인터셉터)에서 **trace context를 메타데이터로 주입·전파**한다. 요청이 서비스 경계를 넘을 때 `trace-id`/`span-id`가 gRPC metadata header에 실려 다음 서비스로 이어지고, 각 hop이 span을 추가한다. 결과적으로 한 요청의 전체 호출 트리가 하나의 trace로 묶인다.\n- **3대 신호 통합(Datadog)**: \n  - *Metrics* — RPC별 처리량/지연(p50·p95·p99)/gRPC status code 분포, 큐 길이, 리소스 사용량.\n  - *Traces* — 위의 분산 트레이스. 느린 span을 클릭해 병목(특정 외부 기관 응답 지연, DB 쿼리, 캐시 미스)을 짚는다.\n  - *Logs* — 구조화 로그에 trace-id를 심어 **트레이스 ↔ 로그 상호 점프**가 된다. 에러 span에서 바로 해당 요청의 로그로 넘어간다.\n- **Istio 사이드카 텔레메트리**: Envoy 사이드카가 서비스 간 트래픽의 골든 시그널(요청 수·에러율·지연)을 코드 변경 없이 메시 레벨에서 수집한다. 애플리케이션이 미계측인 구간도 메시 차원에서 보인다.\n\n### 실전 효과와 트레이드오프\n외부 금융기관 API는 응답 시간이 들쭉날쭉하다. 트레이싱이 있으면 \"전체 지연 상승의 원인이 우리 서비스가 아니라 특정 기관 endpoint\" 임을 즉시 분리해내고, 해당 기관에만 타임아웃/서킷브레이커를 적용할 수 있다. 비용 측면에서는 **전수 트레이싱은 데이터량·요금이 폭증**하므로 보통 샘플링(에러·고지연 요청은 우선 보존, 정상 트래픽은 비율 샘플링)으로 신호 대 비용을 조절한다."
+    },
+    {
+     "topic": "마이데이터 보안·인증 — mTLS 메시, OAuth2, 그리고 토큰·전자서명 관리",
+     "body": "### 위협 모델\n뱅크샐러드는 사용자의 동의 하에 여러 금융기관의 민감 데이터(계좌·카드·대출·보험)를 끌어모은다. 따라서 보안은 (1) **외부 기관과의 인증·서명**, (2) **내부 서비스 간 신뢰**, (3) **토큰·동의 정보의 안전한 보관** 세 층위로 나뉜다.\n\n### 외부: OAuth2 기반 마이데이터 인증\n- 표준 마이데이터(본인신용정보관리업) 규격은 **OAuth2 인가 코드 그랜트**를 기반으로 한다. 사용자가 각 금융기관에서 정보 제공에 동의하면 뱅크샐러드(마이데이터 사업자)는 **access token / refresh token** 을 발급받아 정기적으로 데이터를 조회한다.\n- 조회 요청은 **전자서명/메시지 인증**과 함께 **상호 TLS(mTLS) 또는 기관 지정 보안 채널**로 전송된다. 즉 \"이 요청이 정말 인가된 마이데이터 사업자가 보낸, 위변조되지 않은 요청\"임을 기관이 검증할 수 있어야 한다.\n- **토큰 수명 관리**가 운영의 핵심이다. refresh token으로 access token을 갱신하고, 사용자가 동의를 철회하면 즉시 토큰을 폐기해 더 이상 데이터를 끌어오지 않게 한다. 수백만 사용자 × 다수 기관의 토큰을 만료 전 자동 갱신하는 배치가 항시 돈다.\n\n### 내부: Istio mTLS로 제로 트러스트\n- 클러스터 내부 서비스 간 모든 gRPC 트래픽은 **Istio가 사이드카(Envoy) 레벨에서 자동 mTLS**로 암호화·상호 인증한다. 애플리케이션이 인증서를 직접 다루지 않아도, 메시가 SPIFFE 류 ID로 \"누가 누구와 통신해도 되는지\"를 강제한다.\n- **AuthorizationPolicy**로 서비스 간 호출 권한을 화이트리스트한다. 예컨대 마이데이터 수집기만 외부 커넥터를 호출할 수 있고, 분석 서비스는 원천 토큰 저장소에 직접 접근하지 못하게 막는 식의 최소 권한 원칙을 코드 밖에서 적용한다.\n\n### 저장: 민감 정보의 격리와 암호화\n- 토큰·개인신용정보는 **저장 시 암호화(at-rest)** 되고, 접근은 감사 로그로 남는다. 키 관리는 AWS KMS류로 분리해 애플리케이션이 평문 키를 보유하지 않는다.\n- 데이터 웨어하우스(BigQuery)로 흘러가는 분석용 데이터는 가능한 한 **비식별/가명 처리**하여, 분석 파이프라인이 원본 민감 식별자를 그대로 다루지 않도록 경계를 둔다.\n\n### 트레이드오프\n전 구간 mTLS + 세밀한 AuthorizationPolicy + 토큰 갱신 배치는 운영 복잡도를 크게 높인다. 인증서 로테이션, 정책 오설정으로 인한 통신 차단, 기관별로 다른 보안 규격 대응 등 끊임없는 유지 비용이 든다. 그러나 규제 산업이자 \"신뢰가 곧 제품\"인 자산관리 서비스에서 이 비용은 선택이 아니라 전제다."
     }
    ],
    "github": {
-    "org": "banksalad",
+    "org": "https://github.com/banksalad",
     "repos": []
    },
    "sources": [
-    "https://blog.banksalad.com",
-    "https://www.banksalad.com"
+    "https://blog.banksalad.com/",
+    "https://github.com/banksalad",
+    "https://blog.banksalad.com/tags/server/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "kakaobank",
