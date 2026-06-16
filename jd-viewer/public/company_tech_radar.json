@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T17:41:45",
+ "generated_at": "2026-06-16T19:22:21",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 65,
+ "refined": 67,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -2681,11 +2681,11 @@
       "count": 4
      },
      {
-      "name": "FastAPI",
+      "name": "Go",
       "count": 2
      },
      {
-      "name": "Go",
+      "name": "gRPC",
       "count": 2
      },
      {
@@ -2697,7 +2697,11 @@
       "count": 1
      },
      {
-      "name": "gRPC",
+      "name": "FastAPI",
+      "count": 1
+     },
+     {
+      "name": "Flask/FastAPI",
       "count": 1
      },
      {
@@ -2719,15 +2723,19 @@
       "count": 2
      },
      {
+      "name": "React Native",
+      "count": 2
+     },
+     {
       "name": "TypeScript",
       "count": 2
      },
      {
-      "name": "JavaScript",
+      "name": "GraphQL",
       "count": 1
      },
      {
-      "name": "React Native",
+      "name": "JavaScript",
       "count": 1
      }
     ],
@@ -2757,6 +2765,10 @@
       "count": 1
      },
      {
+      "name": "Airflow",
+      "count": 1
+     },
+     {
       "name": "Cassandra",
       "count": 1
      },
@@ -2765,11 +2777,7 @@
       "count": 1
      },
      {
-      "name": "MySQL",
-      "count": 1
-     },
-     {
-      "name": "PostgreSQL",
+      "name": "MySQL/Aurora",
       "count": 1
      }
     ],
@@ -2780,14 +2788,34 @@
      },
      {
       "name": "Kubernetes",
-      "count": 4
+      "count": 3
      },
      {
       "name": "Terraform",
       "count": 2
      },
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
+      "name": "CloudFront",
+      "count": 1
+     },
+     {
+      "name": "Datadog",
+      "count": 1
+     },
+     {
+      "name": "EKS/Kubernetes",
+      "count": 1
+     },
+     {
       "name": "GCP",
+      "count": 1
+     },
+     {
+      "name": "GitHub Actions/ArgoCD",
       "count": 1
      },
      {
@@ -2802,19 +2830,19 @@
      "count": 2
     },
     {
-     "name": "MSA",
-     "count": 2
-    },
-    {
      "name": "Big data pipeline",
      "count": 1
     },
     {
-     "name": "DRM/전자책 뷰어",
+     "name": "DRM 라이선스 분리형 콘텐츠 전송",
      "count": 1
     },
     {
      "name": "Edge/CDN streaming",
+     "count": 1
+    },
+    {
+     "name": "Kafka 기반 이벤트 드리븐 로그 수집·분석",
      "count": 1
     },
     {
@@ -14213,36 +14241,42 @@
    "stack": {
     "backend": [
      "Ruby on Rails",
-     "Spring Boot",
-     "FastAPI"
+     "Spring Boot (Kotlin)",
+     "FastAPI",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "React Native"
     ],
     "data": [
      "Kafka",
      "PostgreSQL",
      "Redis",
      "Elasticsearch",
-     "Spark"
+     "Spark",
+     "Airflow"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Terraform"
+     "Kubernetes (EKS)",
+     "Terraform",
+     "ArgoCD",
+     "Datadog"
     ]
    },
    "architecture": [
-    "MSA(Rails 모놀리스→MSA 전환)",
-    "추천 시스템",
-    "스트리밍"
+    "Rails 모놀리스 → 도메인 단위 MSA 점진 전환(스트랭글러 패턴)",
+    "평점 데이터 기반 협업필터링/임베딩 추천 파이프라인",
+    "Kafka 기반 이벤트 드리븐 로그 수집·분석",
+    "OTT 스트리밍(인코딩·CDN·DRM)과 메타/추천 도메인 분리"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"왓챠 웹<br/>React + Next.js\"]\n    APP[\"왓챠피디아 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    LEG[\"레거시 모놀리스<br/>Ruby on Rails\"]\n    CATALOG[\"콘텐츠 카탈로그<br/>Spring Boot + Kotlin\"]\n    REC[\"추천 시스템<br/>FastAPI + Python\"]\n    STREAM[\"스트리밍 재생<br/>Spring Boot\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n    SPARK[\"배치 분석<br/>Apache Spark\"]\n  end\n  subgraph Data\n    PG[\"콘텐츠 DB<br/>PostgreSQL\"]\n    REDIS[\"재생 캐시<br/>Redis\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes + Terraform\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  WEB --> GW\n  APP --> GW\n  GW --> LEG\n  GW --> CATALOG\n  GW --> REC\n  GW --> STREAM\n  CATALOG --> KAFKA\n  KAFKA --> SPARK\n  SPARK --> REC\n  LEG --> PG\n  CATALOG --> PG\n  STREAM --> REDIS\n  CATALOG --> ES\n  K8S --> AWS",
-   "why_language": "별점 기반 추천 서비스로 시작해 Ruby on Rails로 빠르게 구축했고, 추천 모델은 Python, 신규 서비스는 Kotlin/Go로 확장하고 있다.",
-   "why_architecture": "방대한 평가 데이터 기반 개인화 추천이 핵심이라 추천 파이프라인을 강화하고, OTT 스트리밍 도메인을 MSA로 분리해 운영한다.",
-   "summary": "평가 데이터 기반 개인화 추천이 핵심인 Rails/Python OTT.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web<br/>Next.js + React\"]\n    APP[\"Mobile<br/>React Native\"]\n    TV[\"TV/STB Player<br/>Native\"]\n  end\n  subgraph Edge\n    CDN[\"CDN/DRM<br/>CloudFront + Widevine\"]\n    GW[\"API Gateway<br/>ALB + Envoy\"]\n  end\n  subgraph Core\n    MONO[\"Pedia Monolith<br/>Ruby on Rails\"]\n    USER[\"User/Auth<br/>Kotlin Spring Boot\"]\n    CONTENT[\"Content/Meta<br/>Kotlin Spring Boot\"]\n    PLAY[\"Playback/Stream<br/>Kotlin Spring Boot\"]\n    REC[\"Recommend API<br/>Python FastAPI\"]\n  end\n  subgraph Data\n    PG[(\"PostgreSQL\")]\n    REDIS[(\"Redis<br/>cache/session\")]\n    ES[(\"Elasticsearch<br/>search\")]\n    S3[(\"S3<br/>video/feature store\")]\n  end\n  subgraph Async\n    KAFKA[\"Kafka<br/>event log\"]\n    SPARK[\"Spark + Airflow<br/>batch ETL\"]\n    ML[\"ML Training<br/>embeddings/CF\"]\n  end\n  subgraph Platform\n    EKS[\"Kubernetes<br/>EKS + ArgoCD\"]\n    OBS[\"Observability<br/>Datadog\"]\n  end\n  WEB --> GW\n  APP --> GW\n  TV --> CDN\n  GW -->|REST/gRPC| MONO\n  GW --> USER\n  GW --> CONTENT\n  GW --> PLAY\n  GW --> REC\n  PLAY --> CDN\n  MONO --> PG\n  CONTENT --> ES\n  USER --> REDIS\n  REC --> REDIS\n  PLAY --> S3\n  MONO -->|events| KAFKA\n  PLAY -->|view logs| KAFKA\n  KAFKA --> SPARK\n  SPARK --> ML\n  ML --> S3\n  REC --> S3\n  EKS -.runs.-> Core\n  OBS -.monitors.-> Core",
+   "why_language": "왓챠는 초기 왓챠피디아 서비스를 Ruby on Rails 모놀리스로 빠르게 키웠고 평점/리뷰 핵심 로직이 여전히 Rails에 남아 있어 Ruby가 레거시 자산으로 유지됩니다. 트래픽이 큰 OTT 재생·사용자·콘텐츠 도메인을 분리하면서는 JVM의 성능과 타입 안정성을 위해 Kotlin/Spring Boot를 택했고, 추천·랭킹 모델 서빙은 데이터/ML 생태계가 풍부한 Python(FastAPI)으로 처리합니다. 프론트는 SEO와 SSR이 중요한 왓챠피디아 특성상 Next.js/TypeScript, 앱은 React Native로 통일했습니다.",
+   "why_architecture": "수억 건의 평점 데이터가 추천의 핵심 자산이라 평점/리뷰는 Rails 모놀리스에 두되, 트래픽과 장애 격리가 중요한 스트리밍 재생·인증·메타 도메인만 떼어내는 스트랭글러 방식의 점진적 MSA 전환을 택했습니다. 사용자 행동·시청 로그를 Kafka로 흘려보내 Spark/Airflow 배치와 추천 모델 학습에 재사용하는 이벤트 드리븐 구조라, 서비스 추가나 분석 파이프라인 확장이 모놀리스를 건드리지 않고 가능합니다.",
+   "summary": "Rails 모놀리스의 평점 자산은 지키고 스트리밍·추천만 Kotlin/Python MSA로 떼어낸, 이벤트 드리븐 OTT 아키텍처",
    "deep_dive": [
     {
      "topic": "평가 데이터 기반 개인화 추천 파이프라인",
@@ -14259,17 +14293,35 @@
     {
      "topic": "이벤트 기반 데이터 수집과 분석",
      "body": "### 모든 행동이 데이터\n왓챠는 시청·평가·검색·이탈 등 사용자 행동을 추천·분석의 연료로 쓴다. 이를 `Kafka` 기반 이벤트 파이프라인으로 수집한다.\n- 클라이언트·서비스가 행동 이벤트를 `Kafka` 토픽으로 발행한다.\n- 컨슈머가 이를 실시간(스트리밍)과 배치 양쪽으로 소비한다. 실시간은 즉각 재정렬·모니터링에, 배치는 모델 학습·리포트에.\n- 원천 이벤트는 데이터 레이크/웨어하우스에 적재되어 `Spark`로 대규모 분석한다.\n\n### 람다형 분리\n- **속도 계층**: 최근 행동을 빠르게 반영(온라인 추천, 실시간 지표).\n- **배치 계층**: 전체 데이터로 정확한 모델·집계를 주기 생성.\n\n### 데이터 품질\n이벤트 스키마를 관리해 깨진 데이터가 모델을 오염시키지 않게 한다. 중복 이벤트는 멱등 처리로 거른다.\n\n### 트레이드오프\n실시간 + 배치 양쪽 운영은 인프라·코드 중복을 부른다. 하지만 OTT는 \"방금 본 것\"의 즉시 반영과 \"전체 취향\"의 정확한 모델이 모두 필요해, 이 이중 구조를 받아들인다. 비용은 인기 데이터 위주 처리와 샘플링으로 통제한다."
+    },
+    {
+     "topic": "재생 요청 end-to-end: 플레이 버튼부터 청크 스트리밍까지",
+     "body": "### 한 번의 재생 클릭이 거치는 경로\n\n사용자가 콘텐츠 상세에서 재생을 누르면 다음 순서로 흐릅니다.\n\n1. **인증/엔타이틀먼트 확인** — 앱이 `ALB → Envoy → User/Auth(Kotlin Spring Boot)`로 토큰을 검증하고, 해당 사용자가 그 콘텐츠를 볼 권한(구독 상태, 지역, 동시 재생 수)을 확인합니다. 동시 재생 제한 같은 카운터성 상태는 `Redis`에 두어 RDB 부하 없이 원자적 증감(`INCR`/Lua script)으로 처리합니다.\n2. **재생 매니페스트 발급** — `Playback/Stream` 서비스가 콘텐츠의 화질 래더(예: 1080p/720p/480p)와 자막·오디오 트랙 목록을 담은 `HLS/DASH manifest`를 만들고, 각 세그먼트 URL에 **짧은 만료의 signed URL** 또는 토큰을 붙입니다. 실제 비디오 청크는 `S3`에 저장되어 `CloudFront` CDN으로 엣지 캐시됩니다.\n3. **DRM 라이선스 교환** — 디바이스별로 `Widevine`(Android/Web), `FairPlay`(Apple), `PlayReady`(일부 TV) 라이선스 서버와 키 교환을 합니다. 콘텐츠 키는 패키징 단계에서 암호화되어 있고, 라이선스 응답에만 키가 실려 내려갑니다.\n4. **적응형 비트레이트(ABR) 재생** — 플레이어는 네트워크 상황을 보고 세그먼트 단위로 화질을 올리거나 내립니다. 서버는 매니페스트만 주고, 실제 buffering 판단은 클라이언트가 합니다. 덕분에 백엔드는 상태가 없고(stateless) 수평 확장이 쉽습니다.\n\n### 왜 이렇게 쪼갰나\n\n재생 트래픽은 저녁·주말에 급증하는 전형적 OTT 패턴이라, 인증·매니페스트 발급(가볍고 stateless)과 실제 대용량 청크 전송(CDN 위임)을 철저히 분리했습니다. 백엔드는 **메타데이터와 권한만 다루고 바이트는 절대 직접 흘리지 않는다**는 원칙이 핵심입니다. 이렇게 해야 Playback 서비스 인스턴스 수를 트래픽에 맞춰 늘려도 원본 스토리지(S3)와 CDN이 실제 대역폭을 흡수합니다."
+    },
+    {
+     "topic": "캐싱 계층 전략: Redis를 중심으로 한 다단 캐시",
+     "body": "### 무엇을 어디에 캐시하는가\n\nOTT+평점 서비스는 읽기:쓰기 비율이 압도적으로 읽기 우위라, 계층별 캐시가 응답시간과 DB 보호의 핵심입니다.\n\n| 계층 | 대상 | 저장소 | TTL/무효화 |\n|------|------|--------|-----------|\n| CDN edge | 비디오 세그먼트, 포스터/스틸 이미지, 정적 메타 JSON | `CloudFront` | 길게(이미지·세그먼트는 immutable URL) |\n| 분산 캐시 | 세션, 콘텐츠 상세, 평균 평점, 랭킹 리스트 | `Redis` | 초~분 단위, 이벤트 기반 invalidation |\n| 검색 캐시 | 자동완성, 인기 검색어 | `Elasticsearch` + Redis | 분 단위 |\n| 앱 내 | 추천 결과(개인화) | Redis(유저키) | 수십 분, 배치 갱신 시 덮어씀 |\n\n### 평점 평균 같은 '뜨거운 집계값' 처리\n\n왓챠피디아의 작품 평균 별점은 수십만 명이 동시에 보는 대표적 hot key입니다. 매 요청마다 RDB에서 `AVG`를 돌리면 안 되므로, 평점이 들어올 때 이벤트로 평균을 증분 갱신해 `Redis`에 캐시하고, 화면은 캐시값을 읽습니다. 캐시 미스 시 thundering herd(동시에 같은 키를 DB로 몰림)를 막기 위해 **단일 갱신 잠금(Redis 분산 락)** 이나 stale-while-revalidate 패턴을 씁니다.\n\n### 개인화 추천의 캐시 딜레마\n\n추천 결과는 사람마다 달라서 캐시 적중률이 낮은 게 본질적 난점입니다. 그래서 **추천 후보는 배치(Spark/ML)로 미리 계산해 유저별 Redis 키에 적재**해 두고, 실시간 API는 그 후보를 가볍게 재정렬(re-rank)만 합니다. 즉 무거운 모델 추론은 오프라인, 온라인은 캐시된 후보 + 가벼운 필터링/정렬로 나눠 latency를 잡는 lambda-style 분리입니다."
+    },
+    {
+     "topic": "배포·운영: EKS 위의 GitOps와 관측성",
+     "body": "### Kubernetes(EKS) + Terraform + GitOps\n\n여러 언어(Ruby/Kotlin/Python/Node)의 서비스를 한 플랫폼에서 굴리려면 컨테이너 표준화가 필수라, 각 서비스는 컨테이너 이미지로 빌드되어 `AWS EKS`에 배포됩니다. 인프라(IAM, VPC, RDS, EKS 노드그룹 등)는 `Terraform`으로 코드화해 환경(stage/prod) 간 드리프트를 줄입니다. 애플리케이션 배포는 `ArgoCD` 류의 GitOps로, **Git의 매니페스트가 곧 클러스터의 desired state**가 되어 롤백이 'git revert'로 환원됩니다.\n\n### 점진 배포와 트래픽 보호\n\nOTT는 저녁 피크에 배포 사고가 곧 매출 손실이라, 새 버전은 한 번에 100%로 바꾸지 않습니다.\n\n- **Rolling update**로 파드를 점진 교체하고, `readiness probe`가 통과해야 트래픽을 받습니다.\n- 위험한 변경은 **카나리**(소수 파드/소수 트래픽)로 먼저 노출해 에러율·지연을 보고 확대합니다.\n- HPA(Horizontal Pod Autoscaler)로 CPU/요청량 기준 오토스케일링을 걸어, 금요일 밤 신작 공개 같은 스파이크에 파드 수가 자동으로 늘어납니다.\n\n### 관측성(Observability)\n\n다언어 MSA에서 장애 원인 추적이 가장 어렵기 때문에 세 축을 모두 봅니다.\n\n- **메트릭**: 서비스별 RPS/에러율/p99 지연, 파드 리소스 — `Datadog`/Prometheus 계열 대시보드.\n- **로그**: 구조화 로그를 중앙 수집해 검색(`Elasticsearch`/Datadog Logs).\n- **분산 트레이싱**: 한 재생 요청이 Gateway→Auth→Playback→CDN을 거치는 경로를 trace ID로 이어 붙여 병목 구간을 찾습니다.\n\n이 관측 데이터는 단순 모니터링을 넘어, 어떤 서비스를 모놀리스에서 다음에 떼어낼지(=가장 자주 바뀌고 트래픽 부담이 큰 도메인) 결정하는 근거로도 쓰입니다."
+    },
+    {
+     "topic": "검색과 랭킹: Elasticsearch 기반 탐색 + 개인화 재정렬",
+     "body": "### 검색 인덱싱 파이프라인\n\n작품/인물/컬렉션 검색은 `Elasticsearch`가 담당합니다. 원천 데이터(RDB의 작품 메타, 출연진, 장르, 평점 통계)는 변경 이벤트가 `Kafka`로 흐를 때 검색 인덱서가 소비해 ES 도큐먼트를 갱신하는 **CDC(Change Data Capture)식 비동기 색인** 구조입니다. 그래야 검색 색인 갱신이 본 서비스의 쓰기 경로를 막지 않습니다.\n\n### 한국어 검색의 까다로움\n\n한국어는 띄어쓰기·조사·외래어 표기(예: '아바타' vs 'Avatar', '인터스텔라' 오타) 때문에 단순 매칭이 약합니다. 그래서\n\n- **Nori** 같은 한국어 형태소 분석기로 토크나이즈,\n- **edge n-gram**으로 자동완성(타이핑 중 검색),\n- 동의어·오타 보정(fuzzy)과 영문/한글 혼용 처리,\n- 인기도(평점 수, 최근 조회)를 **function score**로 섞어 단순 텍스트 일치가 아니라 '사람들이 실제로 찾는 것'이 위로 오게 합니다.\n\n### 검색 랭킹 ≠ 추천 랭킹\n\n검색은 '질의 의도 적합성'이 1순위(찾는 작품을 정확히), 추천은 '개인 취향 적합성'이 1순위입니다. 그래서 두 랭킹 로직을 분리합니다. 검색 결과 상위에 대해서만 가볍게 개인화 신호(이미 본 작품 강등, 취향 장르 가산)를 얹는 **2단계 랭킹**(ES 후보 추출 → 개인화 re-rank)을 적용해, 무거운 모델을 전체에 돌리지 않고도 개인화 효과를 냅니다. 이 구조는 추천 도메인에서 쓰는 '오프라인 후보 생성 + 온라인 경량 재정렬' 원칙과 동일한 철학을 공유합니다."
     }
    ],
    "github": {
-    "org": "watcha"
+    "org": "https://github.com/watcha-team",
+    "repos": []
    },
    "sources": [
-    "https://watcha.team",
-    "https://medium.com/watcha"
+    "https://medium.com/watcha",
+    "https://watcha.team/",
+    "https://github.com/watcha-team"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "ridi",
@@ -14278,44 +14330,49 @@
    "domain": "콘텐츠/전자책",
    "languages": [
     "Python",
-    "Kotlin",
     "TypeScript",
+    "Kotlin",
     "Go",
     "PHP"
    ],
    "stack": {
     "backend": [
      "Django",
-     "FastAPI",
-     "Spring Boot",
+     "Flask/FastAPI",
+     "Spring Boot (Kotlin)",
      "Node.js"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "GraphQL (Apollo)"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "MySQL/Aurora",
      "Redis",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Kafka",
+     "S3"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Terraform"
+     "EKS/Kubernetes",
+     "Terraform",
+     "CloudFront",
+     "GitHub Actions/ArgoCD"
     ]
    },
    "architecture": [
-    "MSA",
-    "콘텐츠 추천",
-    "DRM/전자책 뷰어"
+    "MSA + BFF/GraphQL Gateway",
+    "이벤트 기반 비동기 처리",
+    "DRM 라이선스 분리형 콘텐츠 전송",
+    "콘텐츠 파싱·패키징 파이프라인"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"리디 웹<br/>React + Next.js\"]\n    VIEWER[\"전자책 뷰어<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Node.js\"]\n  end\n  subgraph Services\n    STORE[\"서점 서비스<br/>Django + Python\"]\n    REC[\"콘텐츠 추천<br/>FastAPI\"]\n    DRM[\"DRM 서비스<br/>Spring Boot + Kotlin\"]\n    LEG[\"레거시 결제<br/>PHP\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"도서 결제 DB<br/>MySQL\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes + Terraform\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  WEB --> GW\n  VIEWER --> GW\n  GW --> STORE\n  GW --> REC\n  GW --> DRM\n  GW --> LEG\n  STORE --> KAFKA\n  KAFKA --> REC\n  STORE --> MYSQL\n  LEG --> MYSQL\n  DRM --> REDIS\n  STORE --> ES\n  K8S --> AWS",
-   "why_language": "콘텐츠 플랫폼의 빠른 개발과 데이터·추천을 위해 Python을 핵심으로 쓰고, 일부 서비스는 Kotlin/Go로 전환하며 프론트는 React/TypeScript를 쓴다.",
-   "why_architecture": "전자책·웹툰 콘텐츠 도메인을 MSA로 분리하고, 추천·검색을 강화하며 DRM·뷰어 등 콘텐츠 보호 기술을 함께 운영한다.",
-   "summary": "Python 중심의 콘텐츠 추천과 전자책 플랫폼을 운영하는 RIDI.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Device\"]\n    WEB[\"Web<br/>React + Next.js\"]\n    APP[\"iOS / Android App<br/>Swift / Kotlin\"]\n    PAPER[\"RIDI Paper e-reader<br/>Viewer + DRM\"]\n  end\n  subgraph Edge[\"Edge\"]\n    CDN[\"CDN<br/>CloudFront\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n  end\n  subgraph Gateway[\"API / BFF\"]\n    BFF[\"GraphQL BFF<br/>Node.js + Apollo\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    AUTH[\"Account / Auth<br/>Django\"]\n    CAT[\"Catalog<br/>Django / FastAPI\"]\n    PAY[\"Purchase / Pay<br/>Spring Boot (Kotlin)\"]\n    LIB[\"Library<br/>Python\"]\n    DRM[\"DRM License<br/>Go\"]\n    SEARCH[\"Search / Recsys<br/>Python\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL / Aurora\"]\n    REDIS[\"Redis Cache\"]\n    ES[\"Elasticsearch\"]\n    S3[\"Encrypted Content<br/>S3\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka\"]\n    PARSER[\"Content Pipeline<br/>epub/comic-parser\"]\n  end\n  subgraph Infra[\"Platform\"]\n    EKS[\"EKS / Kubernetes\"]\n    TF[\"Terraform\"]\n  end\n  WEB --> CDN\n  APP --> CDN\n  PAPER --> CDN\n  CDN --> ALB\n  ALB --> BFF\n  BFF -->|gRPC/REST| AUTH\n  BFF --> CAT\n  BFF --> PAY\n  BFF --> LIB\n  BFF --> SEARCH\n  PAPER -->|license req| DRM\n  PAY -->|event| KAFKA\n  KAFKA --> LIB\n  PARSER --> S3\n  DRM --> S3\n  CAT --> MYSQL\n  PAY --> MYSQL\n  AUTH --> REDIS\n  SEARCH --> ES\n  KAFKA --> PARSER\n  EKS --- Core\n  TF -.-> Infra",
+   "why_language": "전자책·콘텐츠 도메인은 카탈로그·구매·라이브러리 같은 데이터 중심 CRUD가 핵심이라 생산성이 높은 Python(Django)으로 초기 백엔드를 빠르게 구축했고, 트래픽과 결제 정합성 요구가 커지면서 JVM 기반 Kotlin(Spring Boot)으로 정산·결제 같은 고신뢰 도메인을 점진적으로 이관했다. 프런트는 뷰어·웹·BFF를 모두 TypeScript로 통일해 epub/comic 파서 같은 라이브러리를 서버·클라이언트가 공유하고, DRM 라이선스 발급처럼 동시성·저지연이 중요한 경로는 Go로 분리했다.",
+   "why_architecture": "구매·라이브러리·뷰어·검색이 서로 다른 확장 특성을 가지므로 도메인별 MSA로 쪼개고, 결제 완료 같은 이벤트를 Kafka로 비동기 전파해 '구매 즉시 라이브러리 반영'을 느슨하게 결합했다. 콘텐츠 자체는 암호화해 S3+CloudFront로 대용량 전송하되 복호화 권한은 DRM 라이선스 서비스로 분리하는 '콘텐츠/권한 분리' 구조를 택해, CDN 캐싱 이점과 저작권 보호를 동시에 달성했다.",
+   "summary": "Python으로 빠르게 세운 콘텐츠 플랫폼을 Kotlin·Go로 고신뢰·저지연 도메인부터 이관하며, DRM 분리형 전송과 이벤트 기반 MSA로 굳힌 전자책 스택",
    "deep_dive": [
     {
      "topic": "전자책 DRM과 뷰어 동작 원리",
@@ -14332,18 +14389,46 @@
     {
      "topic": "이벤트 기반 MSA와 캐싱 전략",
      "body": "### 콘텐츠 플랫폼의 읽기 부하\n리디는 도서·웹툰 조회·목록·검색이 압도적으로 읽기 중심이다. 이를 `Redis` 캐시로 흡수한다.\n- **콘텐츠 메타·목록 캐시**: 변경이 적은 도서 정보·인기 목록을 캐시해 DB 부하를 줄인다.\n- **세션·읽기진도**: 사용자 세션과 읽던 위치를 빠르게 읽고 쓴다.\n- **추천 결과 캐시**: 사전 계산한 개인화 추천을 캐시에 두어 즉시 서빙한다.\n\n### 이벤트로 도메인 분리\n구매·열람·평점 이벤트를 `Kafka`로 발행해 추천·검색 색인·통계가 각자 구독한다. 한 도메인 장애가 핵심 열람 흐름을 막지 않는다. 신간 등록·가격/품절 변경 이벤트는 검색 색인(`Elasticsearch`)을 갱신해 잘못된 노출을 막는다.\n\n### 캐시 일관성\n가격·구매가능 여부처럼 틀리면 안 되는 값은 변경 이벤트로 즉시 무효화하거나 짧은 TTL을 두고, 조회수·인기처럼 약간 늦어도 되는 값은 긴 TTL로 비용을 아낀다.\n\n### 트레이드오프\n캐시는 성능을 주지만 일관성 리스크가 있다. \"틀리면 결제·권한 문제\"인 데이터는 강하게, 부가 데이터는 느슨하게 관리하는 차등 전략으로 읽기 성능과 정확성을 함께 잡는다."
+    },
+    {
+     "topic": "구매→다운로드→뷰어 라이선스 발급 end-to-end 흐름",
+     "body": "### 한 권을 사서 펼치기까지 무슨 일이 일어나는가\n\n전자책 플랫폼의 핵심 트랜잭션은 '구매한 책이 즉시 내 서재에 보이고, 오프라인에서도 열린다'는 경험이다. RIDI에서 이 흐름은 대략 다음 단계를 거친다.\n\n1. **구매 요청** — 웹/앱이 GraphQL `BFF`에 결제 mutation을 보낸다. BFF는 인증 토큰을 `Account` 서비스로 검증하고 `Purchase/Pay` 서비스(결제 정합성이 중요한 도메인이라 Kotlin/Spring 계열)로 위임한다.\n2. **결제 트랜잭션 커밋** — 주문·결제 원장은 `MySQL/Aurora`에 ACID 트랜잭션으로 기록한다. 여기는 eventual consistency를 허용하지 않는 '돈' 영역이라 단일 RDB 트랜잭션 경계 안에서 처리한다.\n3. **이벤트 발행** — 결제가 확정되면 `purchase.completed` 같은 도메인 이벤트를 `Kafka`로 발행한다. 이 한 번의 이벤트를 `Library`(서재 반영), 추천 로그, 정산, 알림 등 여러 컨슈머가 각자 구독한다. 구매 응답은 이벤트 발행까지만 기다리고 바로 사용자에게 반환되므로 체감 지연이 짧다.\n4. **서재 반영** — `Library` 서비스가 이벤트를 받아 '소유 도서' 레코드를 만든다. 이 시점이 구매와 서재가 *느슨하게* 결합되는 지점이고, 드물게 지연되면 사용자에게는 '잠시 후 표시' 형태로 보정된다.\n5. **콘텐츠 다운로드** — 뷰어가 책을 열 때 실제 파일은 `S3`에 **암호화된 상태**로 저장되어 있고 `CloudFront`로 전송된다. CDN은 암호문을 그대로 캐싱하므로 인기 도서일수록 오리진 부하가 거의 없다.\n6. **DRM 라이선스 발급** — 핵심은 *콘텐츠와 복호화 권한의 분리*다. 뷰어는 `DRM License` 서비스(동시성·저지연이 중요해 Go로 분리하기 좋은 경로)에 별도로 라이선스를 요청하고, 서비스는 '이 사용자가 이 책을 소유했는가'를 `Library`/소유권 정보로 확인한 뒤 기기에 바인딩된 복호화 키/라이선스를 발급한다.\n7. **오프라인 열람** — 발급된 라이선스는 기기에 안전 저장되어, 네트워크 없이도 뷰어가 로컬 암호문을 복호화해 렌더링한다.\n\n### 왜 이렇게 쪼갰나\n이 구조의 트레이드오프는 명확하다. '구매=RDB 트랜잭션(강한 일관성)', '서재 반영=Kafka 이벤트(가용성·확장성)', '콘텐츠 전송=CDN 캐시(대역폭)', '권한 확인=DRM 서비스(보안)'를 각각 다른 일관성·확장 모델로 운영해, 한 트랜잭션 안에 모두 묶었을 때 생기는 결합도와 장애 전파를 끊는다."
+    },
+    {
+     "topic": "콘텐츠 인입·변환·패키징 파이프라인",
+     "body": "### 출판사 원본이 뷰어가 읽는 포맷이 되기까지\n\nRIDI가 오픈소스로 공개한 `@ridi/content-parser`(epub-parser·comic-parser·pdf-parser)와 `react-viewer`는 단순 샘플이 아니라, 사내 콘텐츠 처리 파이프라인의 사고방식을 드러낸다. 전자책 도메인의 숨은 난이도는 *포맷의 다양성*에 있다.\n\n### 인입 단계\n- 출판사/CP가 올린 원본은 `epub`(소설·일반서), 이미지 시퀀스 기반 `comic`(만화), `pdf`(고정 레이아웃) 등 제각각이다.\n- 업로드된 원본은 먼저 오브젝트 스토리지에 적재되고(이 추상화 계층이 오픈소스 `ridi/object-storage`의 역할), 변환 작업이 **비동기 잡**으로 큐잉된다. 동기 처리하면 대용량 만화 한 권 변환에 응답이 묶이기 때문이다.\n\n### 파싱·정규화\n- `content-parser`가 epub의 `OPF`/스파인/매니페스트를 읽어 **목차·읽기 순서·리소스 맵**을 구조화한다. 만화는 페이지 이미지 순서와 해상도/스프레드(좌우 펼침) 정보를 정규화한다.\n- 이 단계에서 뷰어가 클라이언트에서 다시 무거운 파싱을 하지 않도록 **메타데이터를 미리 추출**해 둔다. 같은 파서 라이브러리를 서버 전처리와 클라이언트 뷰어가 공유하므로(둘 다 TypeScript) 동작 불일치가 줄어든다.\n\n### 패키징·암호화\n- 정규화된 콘텐츠는 뷰어 친화적 단위(챕터/페이지)로 재패키징되고, **저작권 보호를 위해 암호화**된 뒤 `S3`에 저장된다. 앞서 설명한 대로 이 암호문이 그대로 `CloudFront`로 배포된다.\n- 검색 색인용 메타데이터(제목·저자·시리즈·태그·본문 일부)는 별도로 `Elasticsearch`에 색인되어 카탈로그/검색 서비스가 소비한다.\n\n### 트레이드오프\n클라이언트 렌더링 품질(특히 만화의 고해상도/뷰어 성능)과 전송 비용·보안을 동시에 만족시키려면, '무겁고 다양한 원본 → 일관된 중간 포맷 → 암호화 패키지'라는 **다단계 비동기 변환**이 거의 불가피하다. 변환을 파이프라인으로 떼어내면 새 포맷·새 뷰어 기능이 생겨도 인입 단계만 확장하면 된다."
+    },
+    {
+     "topic": "AWS EKS 기반 배포·CI/CD·관측성",
+     "body": "### 다언어 MSA를 한 플랫폼 위에서 굴리는 법\n\nPython·Kotlin·Go·Node.js가 섞인 MSA를 운영하려면 '언어와 무관한 공통 배포·관측 레이어'가 필요하다. RIDI 스택의 `EKS/Kubernetes` + `Terraform` 조합이 그 역할이다.\n\n### 패키징·배포\n- 각 서비스는 언어가 달라도 **컨테이너 이미지**로 통일된다. Python 서비스든 Kotlin 서비스든 쿠버네티스 입장에서는 동일한 Pod 단위로 다뤄지므로, 배포 파이프라인을 언어마다 새로 만들 필요가 없다.\n- 인프라는 `Terraform`으로 코드화(IaC)해 VPC·EKS 클러스터·`Aurora`·`Elasticsearch`·`MSK(Kafka)` 같은 매니지드 리소스를 선언적으로 관리한다. 클러스터/네트워크 변경이 코드 리뷰를 거치므로 휴먼 에러와 드리프트가 줄어든다.\n\n### CI/CD\n- 일반적 패턴은 `GitHub Actions`로 빌드·테스트·이미지 푸시까지 수행하고, 배포는 `ArgoCD` 같은 GitOps 도구가 매니페스트 저장소 상태를 클러스터로 수렴시키는 방식이다. '원하는 상태'가 Git에 남으므로 롤백이 곧 revert다.\n- 결제처럼 위험한 도메인은 한 번에 100% 교체하지 않고 **카나리/점진 롤아웃**으로 일부 트래픽만 새 버전에 흘려 지표를 보고 확대한다.\n\n### 관측성\n- 다수 서비스를 가로지르는 한 번의 요청(BFF→Catalog→Pay→Kafka→Library)을 추적하려면 **분산 트레이싱**이 사실상 필수다. 요청에 trace id를 심어 서비스 경계를 넘어 전파하면, '구매가 느리다'는 신고를 어느 서비스/쿼리 구간에서 막혔는지로 좁힐 수 있다.\n- 메트릭(요청량·에러율·지연 p95/p99)과 구조화 로그를 중앙 수집해, 트래픽 급증(신간/프로모션) 때 오토스케일링과 경보의 근거로 쓴다.\n\n### 왜 이 선택인가\n언어를 통일하는 대신 **배포·관측 레이어를 통일**한 것이 핵심 결정이다. 덕분에 '도메인에 맞는 언어를 고르는 자유'(Python의 생산성, Kotlin의 정합성, Go의 저지연)를 유지하면서도, 운영 표준은 하나로 수렴시켜 다언어 MSA의 운영 비용을 억제한다."
     }
    ],
    "github": {
-    "org": "ridi",
-    "repos": []
+    "org": "https://github.com/ridi",
+    "repos": [
+     {
+      "name": "ridi/react-viewer",
+      "url": "https://github.com/ridi/react-viewer",
+      "desc": "React 기반 전자책/만화 뷰어 컴포넌트",
+      "lang": "JavaScript",
+      "stars": 64
+     },
+     {
+      "name": "ridi/content-parser",
+      "url": "https://github.com/ridi/content-parser",
+      "desc": "epub·comic·pdf 등 전자책 포맷을 파싱하는 JS 라이브러리 모음",
+      "lang": "JavaScript",
+      "stars": 28
+     }
+    ]
    },
    "sources": [
-    "https://ridicorp.com/story-category/tech-blog",
-    "https://www.ridicorp.com"
+    "https://ridicorp.com/story/",
+    "https://github.com/ridi",
+    "https://github.com/ridi/content-parser"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "lgcns",
