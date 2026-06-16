@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T11:16:50",
+ "generated_at": "2026-06-16T12:59:02",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 57,
+ "refined": 59,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -467,7 +467,7 @@
     },
     {
      "name": "Python",
-     "count": 8
+     "count": 9
     },
     {
      "name": "Go",
@@ -513,16 +513,16 @@
       "count": 2
      },
      {
+      "name": "Netty",
+      "count": 2
+     },
+     {
       "name": "Node.js",
       "count": 2
      },
      {
-      "name": "Apache",
-      "count": 1
-     },
-     {
-      "name": "Apache Thrift",
-      "count": 1
+      "name": "Spring WebFlux",
+      "count": 2
      }
     ],
     "frontend": [
@@ -532,7 +532,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 11
+      "count": 12
      },
      {
       "name": "Next.js",
@@ -563,7 +563,7 @@
       "count": 1
      },
      {
-      "name": "Polaris",
+      "name": "Node.js BFF",
       "count": 1
      }
     ],
@@ -593,6 +593,10 @@
       "count": 2
      },
      {
+      "name": "Apache Spark",
+      "count": 2
+     },
+     {
       "name": "Aurora",
       "count": 2
      },
@@ -602,10 +606,6 @@
      },
      {
       "name": "MongoDB",
-      "count": 2
-     },
-     {
-      "name": "PostgreSQL",
       "count": 2
      }
     ],
@@ -620,7 +620,7 @@
      },
      {
       "name": "ArgoCD",
-      "count": 3
+      "count": 4
      },
      {
       "name": "GCP",
@@ -628,10 +628,6 @@
      },
      {
       "name": "Terraform",
-      "count": 3
-     },
-     {
-      "name": "사내 클라우드",
       "count": 3
      },
      {
@@ -644,6 +640,10 @@
      },
      {
       "name": "사내 데이터센터",
+      "count": 2
+     },
+     {
+      "name": "사내 클라우드",
       "count": 2
      },
      {
@@ -667,14 +667,14 @@
     },
     {
      "name": "검색/추천",
-     "count": 3
+     "count": 2
     },
     {
      "name": "모놀리스→MSA 전환",
-     "count": 3
+     "count": 2
     },
     {
-     "name": "BFF",
+     "name": "API Gateway + Service Discovery",
      "count": 1
     }
    ]
@@ -3684,6 +3684,14 @@
       "count": 1
      },
      {
+      "name": "gRPC",
+      "count": 1
+     },
+     {
+      "name": "Kotlin + Spring WebFlux",
+      "count": 1
+     },
+     {
       "name": "Node.js",
       "count": 1
      },
@@ -3694,11 +3702,19 @@
     ],
     "frontend": [
      {
+      "name": "Flutter",
+      "count": 1
+     },
+     {
       "name": "Next.js",
       "count": 1
      },
      {
       "name": "React",
+      "count": 1
+     },
+     {
+      "name": "React Native",
       "count": 1
      },
      {
@@ -3708,7 +3724,15 @@
     ],
     "data": [
      {
-      "name": "Elasticsearch",
+      "name": "Debezium CDC",
+      "count": 1
+     },
+     {
+      "name": "DynamoDB",
+      "count": 1
+     },
+     {
+      "name": "Elasticsearch / OpenSearch",
       "count": 1
      },
      {
@@ -3730,7 +3754,19 @@
     ],
     "infra": [
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
       "name": "AWS",
+      "count": 1
+     },
+     {
+      "name": "Datadog",
+      "count": 1
+     },
+     {
+      "name": "Istio",
       "count": 1
      },
      {
@@ -3738,7 +3774,11 @@
       "count": 1
      },
      {
-      "name": "사내 클라우드",
+      "name": "Prometheus + Grafana",
+      "count": 1
+     },
+     {
+      "name": "Terraform",
       "count": 1
      }
     ]
@@ -3754,6 +3794,10 @@
     },
     {
      "name": "MSA",
+     "count": 1
+    },
+    {
+     "name": "Multi-tenant SaaS",
      "count": 1
     }
    ]
@@ -12832,42 +12876,53 @@
     "Java",
     "Kotlin",
     "Go",
-    "Python",
-    "TypeScript"
+    "TypeScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Node.js",
-     "Go"
+     "Kotlin + Spring WebFlux",
+     "Node.js (NestJS)",
+     "Go",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "React Native",
+     "Flutter"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "Apache Kafka",
+     "MySQL (Aurora)",
      "MongoDB",
-     "Elasticsearch",
-     "Redis"
+     "Elasticsearch / OpenSearch",
+     "Redis",
+     "DynamoDB",
+     "Debezium CDC"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "사내 클라우드"
+     "Kubernetes (EKS)",
+     "ArgoCD",
+     "Istio",
+     "Terraform",
+     "Prometheus + Grafana",
+     "Datadog"
     ]
    },
    "architecture": [
-    "MSA",
-    "Cloud-native",
-    "Event-driven"
+    "MSA (Microservices)",
+    "Event-driven (Kafka)",
+    "Cloud-native (K8s)",
+    "Multi-tenant SaaS (Yanolja Cloud)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"야놀자 앱<br/>Android iOS\"]\n    WEB[\"예약 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>TypeScript + Node.js\"]\n  end\n  subgraph Services\n    RSV[\"예약 서비스<br/>Spring Boot + Kotlin\"]\n    INV[\"객실 재고 서비스<br/>Go\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Java\"]\n    SRCH[\"숙소 검색 서비스<br/>Spring Boot + Kotlin\"]\n  end\n  subgraph Async\n    KAFKA[\"예약 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"예약 DB<br/>MySQL\"]\n    REDIS[\"재고 캐시<br/>Redis\"]\n    MONGO[\"로그 저장<br/>MongoDB\"]\n    ES[\"숙소 검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + 사내 클라우드\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> RSV\n  GW --> SRCH\n  RSV --> INV\n  RSV --> KAFKA\n  KAFKA -->|결제 요청| PAY\n  RSV --> MYSQL\n  INV --> REDIS\n  KAFKA --> MONGO\n  SRCH --> ES\n  RSV --> K8S",
-   "why_language": "예약·검색 트래픽 처리를 위해 Java/Spring을 핵심으로 쓰며, 글로벌 클라우드 솔루션(야놀자클라우드) 영역에선 Go·Python 등 다양한 언어를 활용한다.",
-   "why_architecture": "숙박·레저 예약 도메인이 다양해 MSA로 분리하고, 글로벌 호스피탈리티 SaaS로 확장하면서 클라우드 네이티브 아키텍처를 강화하고 있다.",
-   "summary": "여행·숙박 예약을 MSA로 확장한 글로벌 호스피탈리티 테크.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + Flutter\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    CDN[\"Edge / CDN<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    MESH[\"Service Mesh<br/>Istio + Envoy\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    SEARCH[\"Search / Pricing<br/>Go + Elasticsearch\"]\n    BOOK[\"Reservation<br/>Spring Boot + Kotlin\"]\n    INV[\"Inventory / Channel Mgr<br/>Java + gRPC\"]\n    PAY[\"Payment<br/>Spring Boot\"]\n    PMS[\"Yanolja Cloud PMS<br/>Multi-tenant SaaS\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL Aurora\"]\n    MONGO[\"Catalog / Docs<br/>MongoDB\"]\n    REDIS[\"Cache / Lock<br/>Redis\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    DYNAMO[\"High-write<br/>DynamoDB\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps<br/>ArgoCD\"]\n    OBS[\"Observability<br/>Prometheus + Datadog\"]\n  end\n  APP --> CDN --> GW\n  WEB --> CDN\n  GW --> MESH\n  MESH --> SEARCH\n  MESH --> BOOK\n  MESH --> INV\n  MESH --> PAY\n  MESH --> PMS\n  SEARCH --> ES\n  SEARCH --> REDIS\n  BOOK -->|lock| REDIS\n  BOOK --> MYSQL\n  BOOK -->|event| KAFKA\n  INV --> MYSQL\n  INV -->|sync| KAFKA\n  PAY --> MYSQL\n  PMS --> MONGO\n  PMS --> DYNAMO\n  MYSQL -->|CDC| CDC --> KAFKA\n  KAFKA -->|index| ES\n  KAFKA --> INV\n  Core --- EKS\n  EKS --- ARGO\n  EKS --- OBS",
+   "why_language": "예약·결제·정산처럼 트랜잭션 정합성과 안정성이 핵심인 도메인은 JVM 생태계(Java/Kotlin + Spring)의 성숙한 트랜잭션·동시성 제어와 풍부한 라이브러리가 유리해 백엔드의 중심축이 된다. 검색·가격·재고처럼 고동시성·저지연이 필요한 영역은 Go로, 글로벌 PMS·SaaS 콘솔과 앱은 TypeScript(Next.js)·React Native로, 데이터·LLM 파이프라인은 Python으로 분업해 도메인 특성에 언어를 맞춘다.",
+   "why_architecture": "야놀자는 국내 숙박·레저 예약을 넘어 Yanolja Cloud(인터파크·이지테크노시스·고글로벌트래블 인수)로 전 세계 호텔 PMS·채널관리 SaaS를 운영하기 때문에, 멀티테넌트와 지역별 독립 확장이 가능한 MSA·클라우드 네이티브가 필수다. 예약·재고·채널 동기화가 실시간으로 얽혀 있어 Kafka 기반 이벤트 드리븐으로 서비스 간 결합도를 낮추고 성수기 트래픽 급증에 K8s 오토스케일링으로 대응한다.",
+   "summary": "예약·결제는 JVM(Spring)으로 견고하게, 검색·재고는 Go로 빠르게 — Kafka 이벤트 드리븐 MSA를 AWS·EKS 위에 멀티테넌트 SaaS로 글로벌 확장",
    "deep_dive": [
     {
      "topic": "예약 정합성과 동시성",
@@ -12884,17 +12939,35 @@
     {
      "topic": "성수기 트래픽과 채널 동기화",
      "body": "### 연휴·성수기의 폭증과 외부 채널\n\n여행 트래픽은 *계절성*이 극단적이다. 연휴·여름 성수기·연말에 예약·검색이 평소의 수 배로 솟구치고, 비수기엔 가라앉는다. 이 변동이 인프라 설계를 지배한다.\n\n**트래픽 대응**\n- 변동이 크므로 **오토스케일링**(K8s/HPA)으로 탄력 확장하되, 연휴처럼 *예측 가능한* 피크엔 선제 스케일링을 병행한다.\n- 검색·숙소 노출은 읽기 폭증이라 Redis/CDN 캐싱으로 원천 DB를 보호한다. 인기 지역·날짜에 쏠리는 **핫키**를 캐시 복제로 분산한다.\n\n**채널 동기화(OTA 연동)**\n- 한 숙소가 야놀자뿐 아니라 여러 OTA(외부 예약 채널)에 동시 노출된다. 한 채널에서 객실이 팔리면 *다른 모든 채널 재고에 즉시 반영*돼야 오버부킹이 안 난다.\n- 이 채널 간 재고 동기화는 *실시간성*과 *외부 API 신뢰성*이 얽힌 난제다. 외부 채널 API는 느리거나 실패하므로, 이벤트 기반 동기화 + 재시도 + 불일치 감지·보정을 둔다.\n\n### WHY\n여행 도메인은 *재고가 날짜에 묶이고 여러 채널에 동시 노출되는* 특수성이 있다. 그래서 단순 트래픽 처리뿐 아니라 *외부 채널과의 일관성*이 핵심 엔지니어링 과제가 된다."
+    },
+    {
+     "topic": "Yanolja Cloud 멀티테넌트 SaaS와 글로벌 PMS 아키텍처",
+     "body": "### 왜 멀티테넌트인가\n야놀자의 진짜 무게중심은 국내 예약 앱이 아니라 `Yanolja Cloud`다. eZee(인도), Innsoft(국내 PMS), GO Global Travel(B2B 호텔 유통) 등을 인수하며 전 세계 수십만 개 호텔·숙소가 쓰는 **PMS(Property Management System)·채널 매니저**를 SaaS로 운영한다. 이 규모에서 호텔마다 인스턴스를 따로 띄우면 비용·운영이 폭발하므로, 핵심은 **multi-tenant** 설계다.\n\n### 테넌시 격리 전략\n일반적으로 SaaS는 세 가지 격리 모델 사이에서 트레이드오프를 한다.\n\n| 모델 | 격리 수준 | 비용 | 적합 대상 |\n|------|-----------|------|-----------|\n| DB-per-tenant | 강함 | 높음 | 엔터프라이즈 체인 호텔 |\n| Schema-per-tenant | 중간 | 중간 | 중견 호텔 그룹 |\n| Shared-schema (tenant_id) | 약함 | 낮음 | 롱테일 소규모 숙소 |\n\nYanolja Cloud처럼 글로벌 롱테일(소규모 게스트하우스~대형 체인)을 모두 수용하려면 **하이브리드**가 현실적이다. 대형 체인은 전용 스키마/DB로 SLA·데이터 주권(GDPR, 지역별 규제)을 보장하고, 소규모는 `tenant_id` 기반 shared-schema로 밀도를 높인다. 모든 쿼리 경로에 tenant context를 주입해 cross-tenant 누수를 막는 것이 보안의 핵심이다.\n\n### 리전 분산\n호텔 PMS는 **데이터가 머무는 위치(지역 규제)**와 **저지연(프론트데스크 직원이 실시간으로 쓰는 시스템)**이 둘 다 중요하다. 따라서 AWS의 다중 리전(서울·뭄바이·유럽 등)에 셀(cell) 단위로 테넌트를 배치하고, 글로벌 카탈로그/요금은 별도로 동기화한다. 프론트데스크 체크인/체크아웃 같은 OLTP는 리전 내에서 끝나고, 객실 재고·요금 변경 이벤트만 Kafka로 글로벌 유통(OTA 채널)에 흘려보낸다.\n\n### 트레이드오프\n멀티테넌트의 가장 큰 위험은 **noisy neighbor**다. 한 대형 체인의 야간 배치(요금 일괄 변경)가 같은 풀의 소규모 숙소 응답을 망칠 수 있다. 이를 막기 위해 테넌트별 rate limit·리소스 쿼터, 무거운 작업의 비동기 큐 분리, 그리고 핵심 테넌트의 셀 분리가 동시에 들어간다."
+    },
+    {
+     "topic": "Channel Manager: 외부 OTA와의 양방향 재고·요금 동기화 메커니즘",
+     "body": "### 문제 정의\n한 호텔은 야놀자뿐 아니라 Booking.com, Expedia, Agoda, 여기어때 등 수십 개 채널에 같은 객실을 동시에 판다. **Channel Manager**의 임무는 '실제 남은 객실 수'라는 단일 진실을 모든 채널에 일관되게 반영하는 것이다. 동기화가 늦으면 **overbooking**(이미 다 팔린 방을 또 팜)이라는 치명적 사고가 난다.\n\n### 이벤트 드리븐 동기화 흐름\n```\n예약 발생(채널 A) \n  -> Reservation Service: DB 트랜잭션 + 재고 차감\n  -> outbox 테이블 기록 (같은 트랜잭션)\n  -> Debezium CDC가 outbox 변경을 캡처\n  -> Kafka(topic: inventory.changed)\n  -> Channel Sync Worker가 구독\n  -> 채널 B,C,D... API로 재고 push (병렬, 멱등)\n```\n핵심은 **Transactional Outbox 패턴**이다. 재고 차감과 '이벤트 발행 의도'를 같은 DB 트랜잭션에 묶고, 실제 Kafka 발행은 CDC(Debezium)가 책임진다. 이렇게 하면 'DB는 커밋됐는데 이벤트는 유실'되는 dual-write 문제를 원천 차단한다.\n\n### 외부 API의 불확실성 다루기\n외부 OTA API는 느리고, timeout 나고, rate limit이 걸린다. 그래서 Channel Sync Worker는:\n- **멱등(idempotent) 업데이트**: 각 push에 버전(seq)을 실어 보내 순서가 뒤집혀도 최신만 반영.\n- **재시도 + 지수 백오프 + DLQ**: 실패 이벤트는 Dead Letter Queue로 보내 별도 복구.\n- **Circuit Breaker**: 특정 채널 API가 죽으면 차단하고 나머지 채널 동기화는 계속 진행.\n- **Reconciliation 배치**: 이벤트 누락에 대비해 주기적으로 전 채널 재고를 풀스캔 대조.\n\n### overbooking 방어\n재고 차감은 Redis 분산 락 또는 DB의 조건부 업데이트(`UPDATE ... WHERE remaining > 0`)로 원자적으로 처리한다. 성수기처럼 동시 예약이 몰릴 때는 단일 객실타입에 대한 차감을 직렬화해야 하므로, 객실타입 키 기준 락 분할(lock striping)로 경합을 줄이면서 정합성을 지킨다."
+    },
+    {
+     "topic": "관측성과 장애 대응: 분산 추적·서킷브레이커·페일오버",
+     "body": "### MSA에서 관측성이 생명인 이유\n예약 한 건이 Gateway -> 검색 -> 가격 -> 재고 -> 결제 -> 알림까지 수많은 서비스를 거친다. 어디서 느려졌는지 로그만으로는 못 찾는다. 그래서 **distributed tracing**(OpenTelemetry 기반, Datadog APM/Jaeger)으로 trace_id를 요청 전 구간에 전파해 한 예약의 전체 여정을 시각화한다.\n\n### 3-pillar 관측성\n- **Metrics**: Prometheus로 서비스별 latency(p50/p95/p99), 에러율, Kafka consumer lag을 수집하고 Grafana로 대시보드화. consumer lag은 채널 동기화 지연의 선행지표라 특히 중요하다.\n- **Logs**: 구조화 로그(JSON)를 Elasticsearch/OpenSearch에 적재해 trace_id로 교차 검색.\n- **Traces**: 서비스 간 호출 그래프와 병목 span 식별.\n\n### 복원력 패턴\nMSA는 한 서비스 장애가 연쇄(cascading failure)로 번지기 쉽다. 야놀자 규모에서 표준적으로 쓰이는 방어막:\n- **Circuit Breaker** (Resilience4j): 다운스트림(예: 외부 결제 PG, 특정 OTA)이 죽으면 빠르게 fail-fast해 스레드 풀 고갈을 막는다.\n- **Bulkhead**: 결제·검색 등 기능별로 리소스 풀을 격리해 한쪽 폭주가 전체를 못 잡아먹게 한다.\n- **Timeout + Retry(백오프)**: 무한 대기 금지, 멱등 호출만 재시도.\n- **Fallback**: 검색 가격 서비스가 죽으면 캐시된 last-known 가격을 보여주고 '실시간 아님' 처리.\n\n### 페일오버\n상태 저장소(MySQL Aurora)는 Multi-AZ로 자동 failover, Redis는 클러스터/Replica로 승격, Kafka는 다중 broker·복제 팩터로 무중단을 보장한다. 무상태 서비스는 EKS의 다중 노드/AZ에 분산되어 노드 장애 시 자동 재스케줄된다."
+    },
+    {
+     "topic": "CI/CD와 GitOps: ArgoCD 기반 카나리 배포",
+     "body": "### 배포가 어려운 이유\n수백 개 마이크로서비스를 각 팀이 독립적으로 하루에도 여러 번 배포한다. 수작업 배포는 불가능하고, 한 서비스의 잘못된 배포가 예약 흐름 전체를 끊을 수 있다.\n\n### GitOps 파이프라인\n```\n개발자 push -> CI(빌드/테스트/이미지) -> 컨테이너 레지스트리(ECR)\n  -> manifest(Git) 업데이트(이미지 태그)\n  -> ArgoCD가 Git을 단일 진실로 보고 클러스터 상태를 동기화\n  -> EKS에 롤아웃\n```\n핵심은 **Git이 배포 상태의 단일 소스**라는 점이다. 클러스터에 직접 `kubectl apply` 하지 않고 Git을 바꾸면 ArgoCD가 desired state와 actual state의 drift를 감지해 맞춘다. 롤백은 Git revert 한 번으로 끝나고, 누가 무엇을 언제 배포했는지 감사 추적이 자동으로 남는다.\n\n### 점진적 배포(Progressive Delivery)\n예약·결제처럼 사고 영향이 큰 서비스는 전면 교체(빅뱅)가 위험하다. 그래서 Argo Rollouts/Istio로:\n- **Canary**: 새 버전에 트래픽 5% -> 25% -> 50% -> 100% 단계적 증가.\n- **자동 분석(analysis)**: 각 단계마다 Prometheus 메트릭(에러율, p99 latency)을 자동 평가해 임계 초과 시 **자동 롤백**.\n- **Blue/Green**: 신구 버전을 동시에 띄우고 트래픽 스위치, 문제 시 즉시 되돌림.\n\n### 트레이드오프\n카나리는 안전하지만 배포 시간이 길어지고, 신구 버전이 공존하는 동안 **하위 호환 스키마**(DB 컬럼 추가는 OK, 즉시 삭제는 금지)와 **이벤트 스키마 버저닝**(Schema Registry)이 필수다. 이를 안 지키면 카나리 중 구버전이 신버전 데이터를 못 읽어 깨진다."
     }
    ],
    "github": {
-    "org": "https://github.com/yanolja"
+    "org": "https://github.com/yanolja",
+    "repos": []
    },
    "sources": [
-    "https://yanolja.github.io",
-    "https://medium.com/yanolja-cloud"
+    "https://yanolja.github.io/",
+    "https://github.com/yanolja",
+    "https://www.yanoljacloud.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "11st",
@@ -12905,40 +12978,50 @@
     "Java",
     "Kotlin",
     "JavaScript",
-    "TypeScript"
+    "TypeScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud"
+     "Spring Cloud Gateway",
+     "Spring Cloud (Eureka)",
+     "Spring WebFlux",
+     "Netty"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "Vue.js"
+     "Vue.js",
+     "TypeScript",
+     "Node.js BFF"
     ],
     "data": [
-     "Kafka",
+     "Apache Kafka",
      "MySQL",
      "Redis",
      "Elasticsearch",
-     "MongoDB"
+     "MongoDB",
+     "Apache Spark"
     ],
     "infra": [
      "Kubernetes",
-     "사내 클라우드",
-     "OpenStack"
+     "OpenStack 사내 클라우드",
+     "Jenkins",
+     "ArgoCD",
+     "Prometheus + Grafana"
     ]
    },
    "architecture": [
-    "MSA",
-    "모놀리스→MSA 전환",
-    "검색/추천"
+    "MSA (모놀리스→MSA 전환)",
+    "Event-Driven Architecture (Kafka)",
+    "검색/랭킹/추천 파이프라인",
+    "API Gateway + Service Discovery"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"11번가 앱<br/>Android iOS\"]\n    WEB[\"쇼핑 웹<br/>React + Vue.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PROD[\"상품 서비스<br/>Spring Boot + Kotlin\"]\n    ORDER[\"주문 서비스<br/>Spring Boot + Java\"]\n    SRCH[\"검색 추천 서비스<br/>Spring Boot + Kotlin\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 상품 DB<br/>MySQL\"]\n    REDIS[\"상품 캐시<br/>Redis\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n    MONGO[\"로그 저장<br/>MongoDB\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>Kubernetes + 사내 클라우드 + OpenStack\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> PROD\n  GW --> ORDER\n  GW --> SRCH\n  ORDER --> KAFKA\n  KAFKA -->|결제| PAY\n  ORDER --> MYSQL\n  PROD --> REDIS\n  SRCH --> ES\n  KAFKA --> MONGO\n  ORDER --> K8S",
-   "why_language": "오픈마켓의 대규모 상품·주문 트래픽을 처리하기 위해 Java/Spring을 핵심으로 쓰고, 신규 서비스는 Kotlin을 도입하며 검색·추천에 다양한 기술을 활용한다.",
-   "why_architecture": "거대 모놀리스 커머스를 MSA로 분리해 배포 독립성과 확장성을 확보하고, 검색·추천 시스템을 강화해 상품 탐색 경험을 개선한다.",
-   "summary": "오픈마켓 대용량 트래픽을 MSA로 전환한 Java/Spring 커머스.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web/Mobile<br/>React + Next.js + Vue.js\"]\n    CDN[\"CDN/Edge<br/>Static Assets\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    DISC[\"Service Discovery<br/>Eureka\"]\n  end\n  subgraph Core\n    PROD[\"Product Service<br/>Spring Boot\"]\n    SRCH[\"Search Service<br/>Spring Boot\"]\n    ORD[\"Order Service<br/>Spring Boot\"]\n    PAY[\"Payment Service<br/>Spring Boot\"]\n    PROMO[\"Promotion Service<br/>Spring Boot\"]\n  end\n  subgraph SearchReco\n    ES[\"Search Index<br/>Elasticsearch\"]\n    RANK[\"Ranking/Reco<br/>Python ML + Spark\"]\n  end\n  subgraph Data\n    MYSQL[\"RDB<br/>MySQL\"]\n    MONGO[\"Catalog/Log<br/>MongoDB\"]\n    REDIS[\"Cache<br/>Redis\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Infra\n    K8S[\"Container Platform<br/>Kubernetes + OpenStack\"]\n  end\n  WEB --> CDN\n  WEB -->|HTTPS| GW\n  GW --> DISC\n  GW --> PROD\n  GW --> SRCH\n  GW --> ORD\n  GW --> PROMO\n  SRCH --> ES\n  SRCH --> RANK\n  RANK --> ES\n  PROD --> MYSQL\n  PROD --> REDIS\n  PROD --> MONGO\n  ORD --> MYSQL\n  ORD --> PAY\n  PAY --> MYSQL\n  ORD -->|order event| KAFKA\n  PROMO --> REDIS\n  KAFKA --> SRCH\n  KAFKA --> RANK\n  PROD -.deployed on.-> K8S\n  ORD -.deployed on.-> K8S",
+   "why_language": "오픈마켓 백엔드의 핵심인 상품·주문·결제 도메인은 Spring 생태계의 성숙한 트랜잭션·MSA 지원이 필수라 Java가 기반이며, 신규 서비스와 코루틴 기반 비동기 처리에는 Kotlin을 점진적으로 도입하고 있다. 프론트는 대규모 트래픽의 상품/검색 페이지를 SSR로 빠르게 그리기 위해 React/Next.js·Vue를 쓰고, 검색 랭킹·추천 모델 학습 파이프라인에는 Python을 사용한다.",
+   "why_architecture": "단일 모놀리스로는 상품·검색·주문·프로모션 도메인의 배포 주기와 장애 격리를 분리할 수 없어 도메인별 MSA로 전환했고, 서비스 간 결합을 줄이기 위해 Kafka 기반 이벤트 드리븐으로 주문 이벤트를 비동기 전파한다. 대형 프로모션의 폭주 트래픽을 도메인 단위로 독립 오토스케일하기 위해 Kubernetes 위에 서비스를 배치하는 구조를 택했다.",
+   "summary": "Java/Spring MSA + Kafka 이벤트 드리븐 위에 Elasticsearch 검색·ML 랭킹을 얹은 대규모 오픈마켓 커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "오픈마켓 검색 시스템",
@@ -12955,14 +13038,35 @@
     {
      "topic": "대형 프로모션 트래픽 대응",
      "body": "### 십일절 같은 폭증 대비\n\n11번가의 상징은 **십일절(11.11)** 같은 대형 세일이다. 평소의 수십 배 트래픽이 *예정된 시각*에 몰린다.\n\n**대응 전략**\n- **캐싱**: 기획전·상품 상세·랭킹은 변하지 않으므로 CDN + Redis로 원천 DB를 보호한다. 읽기 부하의 대부분을 캐시가 흡수한다.\n- **대기열(virtual waiting room)**: 한정 특가처럼 동시 진입이 시스템 한계를 넘으면, *대기열*로 입장을 조절해 백엔드가 감당 가능한 속도로 트래픽을 흘려보낸다.\n- **비동기 처리**: 주문 쓰기 폭주는 Kafka로 버퍼링해 다운스트림이 따라오게 한다.\n- **선제 스케일링**: 세일은 시각이 정해져 있으니 *미리 인프라를 키워둔다*. 콜드 스타트로 오픈 순간을 놓치면 안 된다.\n\n### 핫키 문제\n세일 때 특정 인기 상품 하나에 트래픽이 집중되는 **핫키(hot key)**가 캐시·DB 한 노드를 마비시킬 수 있다. 인기 상품을 별도 캐시·복제로 분산하고, 재고 카운터도 분할(sharded counter)해 단일 지점 병목을 피한다.\n\n### WHY\n\"세일 오픈 순간 사이트 다운\"은 최악의 마케팅 실패다. 그래서 캐시·대기열·선제 스케일·핫키 분산을 총동원해 *예정된 폭증*을 정면 돌파한다."
+    },
+    {
+     "topic": "Kafka 기반 이벤트 드리븐 아키텍처와 주문 이벤트 전파",
+     "body": "### 왜 동기 호출 대신 이벤트인가\n오픈마켓에서 하나의 '주문 완료'는 수십 개 후속 작업을 유발한다 — 재고 차감, 정산 예약, 쿠폰 사용 확정, 검색 색인의 판매량 갱신, 추천 모델의 행동 로그 적재, 알림(푸시/SMS), 셀러 정산 집계. 이걸 `Order Service`가 동기 REST로 모든 다운스트림을 호출하면, 한 다운스트림(예: 알림 서비스)이 느려지거나 죽을 때 주문 자체가 실패하는 **장애 전파**가 생긴다. 그래서 `Order Service`는 주문 상태가 확정되면 자기 DB 트랜잭션 커밋과 함께 `OrderCreated`·`OrderPaid`·`OrderCancelled` 같은 도메인 이벤트를 `Apache Kafka` 토픽에 발행하고, 책임을 다운스트림 컨슈머에게 넘긴다.\n\n### 정합성: Transactional Outbox\n'DB 커밋'과 'Kafka 발행'은 서로 다른 시스템이라 둘 중 하나만 성공하는 dual-write 문제가 발생한다. 이를 막기 위해 **Outbox 패턴**을 쓴다 — 주문 트랜잭션 안에서 비즈니스 테이블과 `outbox` 테이블에 이벤트 레코드를 같은 트랜잭션으로 함께 쓰고, 별도 relay(또는 CDC)가 `outbox`를 폴링해 Kafka로 내보낸 뒤 발행 완료 플래그를 찍는다. 이렇게 하면 'DB에는 주문이 있는데 이벤트가 유실'되는 상황이 사라진다.\n\n### 멱등성과 재처리\n컨슈머는 **at-least-once** 전제로 동작한다. Kafka 리밸런싱·재시도로 같은 이벤트가 두 번 올 수 있으므로, 모든 컨슈머는 `eventId`(또는 `orderNo + eventType`)를 키로 처리 이력을 Redis/DB에 기록해 **멱등 처리**한다. 파티션 키를 `orderNo`로 잡아 동일 주문의 이벤트가 항상 같은 파티션·같은 순서로 처리되도록 보장한다.\n\n| 항목 | 설계 선택 | 이유 |\n|---|---|---|\n| 전달 보장 | at-least-once | 유실 < 중복, 중복은 멱등으로 흡수 |\n| 순서 | 파티션 키 = orderNo | 주문별 상태 전이 순서 보장 |\n| 실패 격리 | DLQ(Dead Letter Topic) | 독성 메시지로 컨슈머 그룹 전체 막힘 방지 |\n\n### 결과\n알림 서버가 30분 죽어도 주문은 정상 접수되고, 복구 후 컨슈머가 밀린 오프셋부터 따라잡아 알림을 보낸다. 즉 Kafka가 **버퍼 겸 장애 격리막** 역할을 하며, 이는 대형 프로모션 때 주문 쓰기 스파이크를 다운스트림과 디커플링하는 핵심이다."
+    },
+    {
+     "topic": "다층 캐싱 전략 — 상품 상세와 핫키 대응",
+     "body": "### 캐시가 곧 생존인 도메인\n상품 상세/리스트는 11번가 트래픽의 절대다수를 차지하고 읽기:쓰기 비율이 압도적으로 읽기 우위다. DB로 직격하면 MySQL이 먼저 무너지므로, 읽기 경로는 **여러 층의 캐시**로 보호한다.\n\n### 계층 구조\n- **L0 CDN/Edge**: 정적 자원과 변동이 거의 없는 카탈로그 일부를 엣지에서 흡수.\n- **L1 Local Cache (in-JVM)**: 각 `Product Service` 인스턴스 내부의 `Caffeine` 류 로컬 캐시. 카테고리 메타·환율·공통 코드처럼 거의 안 바뀌고 초고빈도로 읽히는 데이터를 수 초 TTL로 둬, 네트워크 홉 자체를 없앤다.\n- **L2 Redis (분산 캐시)**: 상품 상세 DTO, 가격·재고 스냅샷, 프로모션 적용가 등을 키-값으로 저장. 여러 인스턴스가 공유해 적중률을 높인다.\n- **L3 MySQL**: 최종 진실. 캐시 미스일 때만 도달.\n\n### Cache Stampede(캐시 쏠림) 방어\n인기 상품의 캐시가 동시에 만료되면 수천 요청이 한꺼번에 DB로 몰리는 thundering herd가 생긴다. 이를 막기 위해:\n- **TTL 지터(jitter)**: 만료 시각을 ±랜덤으로 흩어 동시 만료를 분산.\n- **Mutex/단일 재생성**: 미스 시 한 요청만 DB에서 값을 채우고 나머지는 잠깐 대기하거나 직전 값을 반환.\n- **Hot Key 분리**: 초대형 프로모션 메인 상품처럼 한 키에 트래픽이 집중되면 Redis 단일 샤드가 핫스팟이 되므로, 키를 `productId#shardN`로 복제해 부하를 분산하거나 로컬 캐시 비중을 높인다.\n\n### 무효화(Invalidation)\n가격·재고가 바뀌면 Kafka의 상품 변경 이벤트를 컨슈머가 받아 해당 Redis 키를 **이벤트 기반으로 무효화**한다. 즉 캐시는 짧은 TTL로 안전망을 두되, 정확성이 중요한 변경은 이벤트로 즉시 퍼지(purge)하는 하이브리드다. 재고처럼 강한 정합성이 필요한 값은 캐시에 '표시용'만 두고 최종 차감은 DB 원자 연산으로 확정한다."
+    },
+    {
+     "topic": "검색·랭킹·추천 ML 파이프라인의 실제 동작",
+     "body": "### 색인(Indexing) 파이프라인\n수억 건 규모의 오픈마켓 상품을 `Elasticsearch`에 올리려면 실시간 색인과 대량 재색인을 분리해야 한다.\n- **실시간**: 셀러가 상품을 등록/수정하면 상품 변경 이벤트가 `Kafka`로 흐르고, 색인 컨슈머가 이를 받아 ES 문서를 부분 업데이트(partial update)한다. 판매량·리뷰수·재고 같은 랭킹 피처도 이 경로로 갱신된다.\n- **전체 재색인**: 형태소 분석기(은전한닢/Nori 계열)나 매핑이 바뀌면 신규 인덱스를 백그라운드로 빌드한 뒤 **alias 스위칭**으로 무중단 교체한다. 색인 빌드는 `Spark`로 배치 처리.\n\n### 2단계 랭킹\n검색 품질의 핵심은 **retrieval → re-ranking** 2단계 구조다.\n1. **Retrieval**: ES의 BM25 + 한국어 형태소 분석으로 질의에 대한 후보 수백~수천 건을 빠르게 거른다. 동의어·오타교정(typo)·카테고리 추론을 질의 분석 단계에서 적용한다.\n2. **Re-ranking**: 후보에 대해 `Python` ML 모델(LTR, Learning-to-Rank)이 CTR·전환율·판매량·가격경쟁력·셀러 신뢰도·개인화 신호 등 피처를 결합해 최종 순위를 매긴다. 단순 텍스트 적합도가 아니라 '살 만한 상품'을 위로 올리는 게 목표다.\n\n### 추천 파이프라인\n- **오프라인**: 사용자 행동 로그(클릭·장바구니·구매)가 Kafka→데이터 레이크로 적재되고, `Spark` 배치로 협업필터링/임베딩 모델을 학습해 사용자·상품 벡터를 만든다.\n- **온라인 서빙**: 학습된 추천 결과를 Redis/ES에 적재해 ms 단위로 서빙하고, 실시간 행동(방금 본 상품)은 세션 단위 신호로 결합해 '함께 본 상품/추천' 영역을 구성한다.\n\n### 트레이드오프\n랭킹 모델을 무겁게 하면 정확도는 오르지만 검색 지연이 늘어 이탈로 직결된다. 그래서 retrieval은 가볍게(ES), 비용이 큰 ML은 상위 후보에만 적용하는 식으로 **지연 예산(latency budget)** 안에서 정확도를 짜낸다."
+    },
+    {
+     "topic": "배포·관측성 — Kubernetes 위의 무중단 배포와 모니터링",
+     "body": "### 사내 클라우드 위의 컨테이너 플랫폼\n11번가는 SK 계열의 `OpenStack` 기반 사내(프라이빗) 클라우드 위에 `Kubernetes`를 올려 서비스를 운영한다. 퍼블릭 클라우드가 아닌 사내 인프라를 쓰는 건 커머스 결제·정산 데이터의 규제·보안 요구와 대규모 트래픽의 비용 효율 때문이다. 각 MSA는 컨테이너 이미지로 패키징되어 K8s Deployment로 굴러간다.\n\n### CI/CD와 무중단 배포\n- **CI**: `Jenkins`로 빌드·테스트·이미지 푸시.\n- **CD**: GitOps 방식(`ArgoCD`)으로 매니페스트를 선언적으로 동기화. 클러스터 상태가 Git의 desired state로 수렴한다.\n- **롤아웃 전략**: rolling update를 기본으로, 위험한 변경은 일부 파드에만 새 버전을 띄워 지표를 본 뒤 확장하는 **카나리** 방식으로 점진 배포한다. readiness probe가 통과해야 트래픽을 받으므로, 배포 중에도 죽은 인스턴스로 요청이 가지 않는다.\n\n### 오토스케일링\nHPA(Horizontal Pod Autoscaler)가 CPU/커스텀 메트릭(요청 수, 큐 길이) 기준으로 파드 수를 조절한다. 대형 프로모션은 예측 가능한 이벤트라 사전 **스케일 아웃 + 워밍업**으로 캐시·커넥션 풀을 미리 데워 콜드스타트를 방지한다.\n\n### 관측성(Observability) 3축\n| 축 | 도구 | 용도 |\n|---|---|---|\n| Metrics | Prometheus + Grafana | 파드/서비스 단위 지연·에러율·포화도, HPA 트리거 |\n| Logging | ELK/Elasticsearch + Kibana | 중앙 집중 로그, 주문번호로 추적 |\n| Tracing | 분산 트레이싱 | 게이트웨이→다중 MSA 호출 경로의 병목 추적 |\n\nMSA에서는 하나의 사용자 요청이 여러 서비스를 거치므로, `traceId`를 게이트웨이에서 발급해 전 구간에 전파하면 '어느 서비스에서 100ms가 샜는지'를 한 화면에서 본다. 이 관측성이 곧 장애 대응 속도(MTTR)를 결정하기 때문에, 도메인 분리(MSA)의 대가로 반드시 갖춰야 하는 인프라다."
     }
    ],
+   "github": {
+    "org": "",
+    "repos": []
+   },
    "sources": [
-    "https://11st-tech.github.io",
-    "https://www.11st.co.kr"
+    "https://medium.com/11st-tech",
+    "https://www.11st.co.kr",
+    "https://www.sksquare.com"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "ssg",
