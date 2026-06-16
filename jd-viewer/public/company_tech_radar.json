@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T14:32:50",
+ "generated_at": "2026-06-16T16:07:32",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 61,
+ "refined": 63,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -454,11 +454,11 @@
      "count": 12
     },
     {
-     "name": "JavaScript",
-     "count": 11
+     "name": "Python",
+     "count": 12
     },
     {
-     "name": "Python",
+     "name": "JavaScript",
      "count": 11
     },
     {
@@ -471,7 +471,7 @@
     },
     {
      "name": "Go",
-     "count": 7
+     "count": 8
     },
     {
      "name": "Ruby",
@@ -490,7 +490,7 @@
      },
      {
       "name": "gRPC",
-      "count": 7
+      "count": 9
      },
      {
       "name": "Spring Cloud",
@@ -499,6 +499,10 @@
      {
       "name": "Ruby on Rails",
       "count": 4
+     },
+     {
+      "name": "Spring Cloud Gateway",
+      "count": 3
      },
      {
       "name": "Spring WebFlux",
@@ -518,10 +522,6 @@
      },
      {
       "name": "Netty",
-      "count": 2
-     },
-     {
-      "name": "Node.js",
       "count": 2
      }
     ],
@@ -555,15 +555,15 @@
       "count": 1
      },
      {
+      "name": "GraphQL BFF",
+      "count": 1
+     },
+     {
       "name": "Hydrogen",
       "count": 1
      },
      {
       "name": "Hypernova SSR",
-      "count": 1
-     },
-     {
-      "name": "Node.js",
       "count": 1
      }
     ],
@@ -586,6 +586,14 @@
      },
      {
       "name": "Apache Spark",
+      "count": 4
+     },
+     {
+      "name": "Aurora",
+      "count": 3
+     },
+     {
+      "name": "DynamoDB",
       "count": 3
      },
      {
@@ -597,15 +605,7 @@
       "count": 3
      },
      {
-      "name": "Airflow",
-      "count": 2
-     },
-     {
-      "name": "Aurora",
-      "count": 2
-     },
-     {
-      "name": "DynamoDB",
+      "name": "Apache Airflow",
       "count": 2
      }
     ],
@@ -620,14 +620,22 @@
      },
      {
       "name": "ArgoCD",
-      "count": 6
+      "count": 7
      },
      {
       "name": "Terraform",
-      "count": 4
+      "count": 5
+     },
+     {
+      "name": "Datadog",
+      "count": 3
      },
      {
       "name": "GCP",
+      "count": 3
+     },
+     {
+      "name": "Grafana",
       "count": 3
      },
      {
@@ -635,19 +643,11 @@
       "count": 3
      },
      {
-      "name": "Datadog",
-      "count": 2
+      "name": "Prometheus",
+      "count": 3
      },
      {
       "name": "Docker",
-      "count": 2
-     },
-     {
-      "name": "Envoy",
-      "count": 2
-     },
-     {
-      "name": "Grafana",
       "count": 2
      }
     ]
@@ -13567,39 +13567,51 @@
     "Kotlin",
     "Java",
     "TypeScript",
-    "JavaScript"
+    "JavaScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring WebFlux"
+     "Spring WebFlux",
+     "Spring Cloud Gateway",
+     "Querydsl",
+     "gRPC"
     ],
     "frontend": [
-     "React",
      "Next.js",
-     "TypeScript"
+     "React",
+     "TypeScript",
+     "React Query",
+     "Recoil"
     ],
     "data": [
-     "Kafka",
      "MySQL",
+     "Aurora",
      "Redis",
-     "Elasticsearch"
+     "Kafka",
+     "Elasticsearch",
+     "DynamoDB"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "ArgoCD"
+     "Kubernetes (EKS)",
+     "ArgoCD",
+     "Helm",
+     "Datadog",
+     "Terraform"
     ]
    },
    "architecture": [
     "MSA",
     "Event-driven",
-    "큐레이션 커머스"
+    "큐레이션 커머스",
+    "CQRS / Read-model 분리"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"29CM 앱<br/>Android iOS\"]\n    WEB[\"큐레이션 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PROD[\"상품 서비스<br/>Spring Boot + Kotlin\"]\n    ORDER[\"주문 서비스<br/>Spring WebFlux + Kotlin\"]\n    CONT[\"큐레이션 콘텐츠 서비스<br/>Spring Boot + Kotlin\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 상품 DB<br/>MySQL\"]\n    REDIS[\"조회 캐시<br/>Redis\"]\n    ES[\"상품 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + ArgoCD\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> PROD\n  GW --> ORDER\n  GW --> CONT\n  ORDER --> KAFKA\n  KAFKA -->|결제| PAY\n  ORDER --> MYSQL\n  PROD --> REDIS\n  PROD --> ES\n  ORDER --> K8S",
-   "why_language": "셀렉트샵 커머스의 생산성과 안정성을 위해 Kotlin/Spring을 메인으로 채택하고, 프론트는 React/TypeScript로 감성적 UI를 구현한다.",
-   "why_architecture": "상품 큐레이션·주문·콘텐츠 도메인을 MSA로 분리하고, AWS 위에서 쿠버네티스·ArgoCD 기반 GitOps로 배포 자동화를 운영한다.",
-   "summary": "Kotlin/Spring 기반의 큐레이션 중심 라이프스타일 커머스.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web App<br/>Next.js + React\"]\n    APP[\"Mobile App<br/>iOS / Android\"]\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    BFF[\"BFF<br/>Next.js Route Handlers\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    PROD[\"Product / Catalog<br/>Spring Boot + Kotlin\"]\n    ORDER[\"Order / Payment<br/>Spring Boot\"]\n    INV[\"Inventory<br/>Spring WebFlux\"]\n    CONTENT[\"Curation / Content<br/>Spring Boot\"]\n    SEARCH[\"Search / Ranking<br/>Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    CONSUMER[\"Consumers<br/>Kotlin Coroutines\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL / Aurora\"]\n    REDIS[\"Cache / Lock<br/>Redis\"]\n    ES[\"Index<br/>Elasticsearch\"]\n    DYNAMO[\"Read Model<br/>DynamoDB\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Container Platform<br/>Kubernetes EKS\"]\n    ARGO[\"GitOps<br/>ArgoCD + Helm\"]\n    DD[\"Observability<br/>Datadog\"]\n  end\n  WEB --> CDN --> BFF --> GW\n  APP --> GW\n  GW --> PROD\n  GW --> ORDER\n  GW --> CONTENT\n  GW --> SEARCH\n  ORDER -->|재고 차감| INV\n  PROD --> MYSQL\n  ORDER --> MYSQL\n  INV --> REDIS\n  SEARCH --> ES\n  ORDER -->|이벤트 발행| KAFKA\n  PROD -->|변경 이벤트| KAFKA\n  KAFKA --> CONSUMER\n  CONSUMER --> ES\n  CONSUMER --> DYNAMO\n  CONSUMER --> CONTENT\n  EKS --- ARGO\n  Core --- DD",
+   "why_language": "29CM는 무신사 그룹 합류 이후 트래픽이 급증하는 커머스 도메인에서 JVM 생태계의 안정성과 풍부한 라이브러리를 유지하면서 보일러플레이트를 줄이기 위해 Kotlin을 주력으로 채택했다. 주문·재고처럼 IO 대기가 많은 영역은 Coroutine과 WebFlux로 논블로킹 처리해 적은 스레드로 높은 동시성을 확보하고, 큐레이션 콘텐츠 중심의 프런트엔드는 SEO와 초기 렌더링이 중요해 Next.js + TypeScript로 타입 안정성과 SSR을 동시에 가져간다.",
+   "why_architecture": "감성·큐레이션 콘텐츠와 주문·결제·재고라는 성격이 전혀 다른 도메인이 한 서비스에 묶이면 배포·확장이 서로를 발목 잡기 때문에 도메인 경계를 따라 MSA로 분리했다. 서비스 간 강결합을 피하고 재고 정합성·검색 색인·추천 갱신을 비동기로 흡수하기 위해 Kafka 기반 이벤트 드리븐을 채택했으며, 읽기 트래픽이 압도적으로 많은 상품·콘텐츠 조회는 Read-model을 별도 스토어(Elasticsearch·DynamoDB·Redis)로 투영하는 CQRS 성격의 분리로 쓰기 경합과 읽기 지연을 동시에 낮춘다.",
+   "summary": "JVM(Kotlin/WebFlux) 기반 이벤트 드리븐 MSA 위에 Next.js 큐레이션 프런트와 GitOps(EKS+ArgoCD)를 얹은 라이프스타일 커머스 스택",
    "deep_dive": [
     {
      "topic": "큐레이션 커머스와 콘텐츠 도메인",
@@ -13616,14 +13628,31 @@
     {
      "topic": "주문·재고 정합성과 감성 UI 성능",
      "body": "### 큐레이션 커머스의 거래와 프론트\n\n29CM도 커머스인 이상 **주문·재고 정합성**이 핵심이고, 동시에 *감성 브랜드*라 프론트 성능·품질이 정체성이다.\n\n**주문·재고**\n- 인기 브랜드 신상·한정 드롭은 *동시 주문*이 몰린다. 재고를 원자적으로 차감(조건부 갱신/락)해 오버셀을 막는다.\n- 결제는 외부 PG라 `결제대기 → 승인 → 확정` 상태머신으로 관리하고, 멱등키로 중복 결제를 막는다. 분산 흐름은 Saga·보상 트랜잭션으로 최종 일관성을 맞춘다.\n\n**감성 UI 성능**\n- 29CM의 비주얼은 *고해상도 이미지·콘텐츠 중심*이다. React/Next.js로 **SSR/정적 생성**을 활용해 초기 로딩과 SEO를 잡고, 이미지를 최적화(지연 로딩·반응형 포맷)해 무거운 비주얼을 빠르게 보여준다.\n- 콘텐츠(에디토리얼)와 상품이 섞인 화면을 *조합*해야 하므로 BFF/그래프형 조회로 프론트가 필요한 데이터만 효율적으로 받는다.\n\n### Trade-off\n감성 UI는 풍부한 비주얼을 원하지만 그만큼 *무겁다*. 이미지 최적화·CDN·SSR로 \"예쁘면서 빠른\" 두 마리 토끼를 잡는 게 29CM 프론트 엔지니어링의 핵심 긴장이다.\n\n### WHY\n큐레이션 커머스는 *브랜드 경험(UI)이 곧 차별점*이라, 백엔드 정합성만큼 프론트 성능·품질에 자원을 쏟는다. 양쪽을 모두 높은 기준으로 가져가는 게 정체성이다."
+    },
+    {
+     "topic": "주문 → 재고 차감 → 이벤트 전파의 end-to-end 처리 흐름",
+     "body": "### 한 번의 '구매하기'가 시스템을 가로지르는 길\n\n29CM 같은 큐레이션 커머스에서 가장 위험한 순간은 인기 상품의 **한정 수량이 동시에 팔릴 때**다. 단일 트랜잭션으로 모든 걸 처리하면 DB 락 경합으로 응답이 무너지고, 너무 느슨하게 처리하면 오버셀(초과 판매)이 난다. 실제 흐름은 대략 다음과 같이 구성된다.\n\n1. **Gateway 진입** — `Spring Cloud Gateway`가 인증 토큰 검증·라우팅·rate limit을 수행하고 `Order` 서비스로 라우팅한다. 이 단계에서 사용자별/상품별 요청 폭주를 1차로 걸러낸다.\n2. **재고 선점(reservation)** — `Order`는 결제 확정 전에 `Inventory` 서비스에 재고 선점을 요청한다. 핵심 포인트는 **MySQL `UPDATE ... WHERE qty >= n` 의 원자적 차감**과 `Redis` 분산 락/카운터를 조합해 핫 아이템의 락 경합을 DB 밖으로 빼는 것이다. Redis에서 1차 차감 가능 여부를 판정하고, 최종 정합성은 RDB의 조건부 UPDATE 영향행 수(affected rows)로 확정한다. 영향행이 0이면 곧바로 `품절`로 응답한다.\n3. **결제 연동** — PG 호출은 외부 IO 지연이 크므로 `WebFlux`/Coroutine 기반 논블로킹으로 처리해 스레드 점유 없이 PG 콜백을 대기한다.\n4. **주문 확정 & 이벤트 발행** — 주문이 확정되면 `OrderCreated`, `StockDecreased` 같은 도메인 이벤트를 `Kafka`로 발행한다. 여기서 **Transactional Outbox 패턴**이 중요하다. 주문 DB 커밋과 Kafka 발행이 따로 놀면 '주문은 됐는데 이벤트가 안 갔다' 또는 그 반대가 생긴다. Outbox 테이블에 이벤트를 같은 트랜잭션으로 적재하고, 별도 릴레이가 이를 읽어 Kafka로 흘려보내 **at-least-once** 전달을 보장한다.\n5. **후속 소비** — `Consumer`들이 이벤트를 받아 검색 색인 갱신(ES), 추천/큐레이션 갱신, 적립금·알림·정산 등 부수효과를 비동기로 처리한다. 소비자는 **idempotency key**(주문ID+이벤트버전)로 중복 수신을 무시해 at-least-once의 부작용을 흡수한다.\n\n### 트레이드오프\n- **강한 일관성은 재고 한 곳에만** 둔다. 나머지(검색 노출 수량, 마이페이지 표시 등)는 수백 ms~수 초의 **결과적 일관성**을 허용한다. 사용자가 보는 '품절' 표시는 약간 늦어도 되지만, 실제 결제 시점의 재고는 절대 음수가 되면 안 되기 때문이다.\n- 이렇게 분리하면 주문 트랜잭션은 짧게 끝나고, 무거운 후처리는 Kafka 뒤로 밀려 **피크 트래픽에서 주문 경로의 p99 지연을 안정적으로 유지**할 수 있다."
+    },
+    {
+     "topic": "읽기 폭증을 흡수하는 다층 캐싱과 CQRS Read-model 투영",
+     "body": "### 커머스는 '읽기 99% : 쓰기 1%'의 세계\n\n상품 상세·홈 피드·기획전 페이지는 한 명이 사도 수만 명이 본다. 그래서 29CM 스택은 쓰기 모델(MySQL)과 읽기 모델을 분리하고 캐시를 여러 겹으로 쌓는다.\n\n| 계층 | 기술 | 역할 | TTL/무효화 |\n|------|------|------|-----------|\n| Edge | `CloudFront` | 이미지·정적 에셋·일부 SSR HTML | 길게, 콘텐츠 해시 기반 |\n| App | `Next.js` ISR/SSG | 기획전·콘텐츠 페이지 | revalidate + 온디맨드 |\n| 분산 캐시 | `Redis` | 상품/가격/재고 카운터, 세션, 랭킹 | 짧게, 이벤트로 무효화 |\n| 읽기 인덱스 | `Elasticsearch` | 검색·필터·정렬·집계 | Kafka로 갱신 |\n| 읽기 투영 | `DynamoDB` | 피드/홈 read-model | Consumer가 갱신 |\n\n### Read-model은 어떻게 채워지나\n쓰기 측 `Product`/`Order`가 상태를 바꾸면 변경 이벤트가 Kafka로 발행되고, Consumer가 이를 받아 ES 문서와 DynamoDB 아이템을 갱신한다. 조회 API는 RDB를 거의 건드리지 않고 이 투영본만 읽는다. 덕분에 **복잡한 조인·집계 쿼리가 RDB의 쓰기 성능을 침범하지 않는다.**\n\n### 캐시의 함정 세 가지와 대응\n- **Cache stampede(동시 만료 폭주)**: 인기 키가 동시에 만료되면 수천 요청이 한꺼번에 DB로 쏟아진다. → TTL에 지터(jitter)를 주거나, 갱신은 단일 요청만 락을 잡고 나머지는 직전 값을 반환하는 **single-flight** 방식으로 막는다.\n- **재고 같은 빠른 변동 데이터**: TTL 캐시로는 위험 → 이벤트 기반 능동 무효화(write 시점에 키 삭제/갱신)로 정합성을 맞춘다.\n- **핫키 쏠림**: 특정 인기 상품 키에 트래픽이 집중되면 Redis 단일 샤드가 병목 → 로컬 캐시(애플리케이션 JVM 내) + 분산 캐시의 2단 구성으로 분산한다.\n\n결과적으로 '감성 콘텐츠 페이지는 빠르게, 가격·재고는 정확하게'라는 상충 요구를 **데이터의 변동 속도에 따라 캐시 계층을 다르게 배치**하는 방식으로 푼다."
+    },
+    {
+     "topic": "검색·랭킹·개인화 큐레이션의 작동 원리",
+     "body": "### 29CM의 정체성 = '무엇을 보여줄 것인가'\n\n29CM는 단순 검색 커머스가 아니라 **편집·큐레이션**이 핵심 가치다. 따라서 검색/랭킹 파이프라인은 '키워드 일치'를 넘어 '취향·맥락에 맞는 노출'을 만들어야 한다.\n\n### 색인(indexing) 경로\n- 상품·콘텐츠·브랜드 데이터가 변경되면 Kafka 이벤트로 흘러 Consumer가 `Elasticsearch` 문서를 **부분 업데이트**한다. 전량 재색인 대신 이벤트 기반 증분 색인이라 노출 반영이 수 초 내로 빠르다.\n- 검색용 문서에는 텍스트 필드뿐 아니라 **랭킹 신호**(판매량, 최근 클릭률, 리뷰 점수, 콘텐츠 연결 여부, 재고 유무)를 함께 비정규화해 넣는다. 조회 시 조인을 없애기 위함이다.\n\n### 랭킹(retrieval → ranking) 2단 구조\n1. **Retrieval**: ES `bool` 쿼리로 후보군을 넓게 뽑는다(텍스트 매칭 + 필터 + `function_score`로 1차 가중).\n2. **Re-ranking**: 후보군에 대해 개인화 신호(최근 본 카테고리, 선호 브랜드, 가격대)와 비즈니스 규칙(품절 강등, 신상/기획전 부스팅)을 적용해 재정렬한다. 무거운 모델 추론은 별도 추천 서비스로 분리해 검색 응답 지연을 지킨다.\n\n### 큐레이션 피드\n홈/카테고리 피드는 실시간 계산이 아니라 **사전 계산된 read-model**(DynamoDB 등)에서 읽는다. 배치/스트리밍 잡이 사용자 세그먼트별 추천 결과를 미리 만들어 두고, 요청 시엔 키 조회만 한다. 이로써 개인화의 무거운 연산을 사용자 응답 경로 밖으로 빼낸다.\n\n### 트레이드오프\n- **정확도 vs 지연**: 모든 개인화를 실시간으로 하면 정확하지만 느리다 → 후보 추출은 실시간, 개인화 점수는 캐시/사전계산으로 절충.\n- **신선도 vs 비용**: 전량 재색인은 신선하지만 비싸다 → 이벤트 증분 색인으로 비용을 낮추되, 주기적 정합성 점검(reconciliation) 배치로 누락 이벤트를 보정한다."
     }
    ],
+   "github": {
+    "org": "",
+    "repos": []
+   },
    "sources": [
     "https://medium.com/29cm",
-    "https://www.29cm.co.kr"
+    "https://www.musinsa.com/",
+    "https://www.29cm.co.kr/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "kurly",
@@ -13634,40 +13663,55 @@
     "Java",
     "Kotlin",
     "Python",
-    "TypeScript"
+    "TypeScript",
+    "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud"
+     "Spring Cloud",
+     "Kotlin Coroutines",
+     "gRPC",
+     "QueryDSL"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "Redux",
+     "GraphQL BFF"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "Apache Kafka",
+     "MySQL (Aurora)",
      "Redis",
      "Elasticsearch",
-     "Airflow"
+     "Apache Airflow",
+     "Apache Spark",
+     "Apache Druid",
+     "Debezium CDC"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Terraform"
+     "Kubernetes (EKS)",
+     "Terraform",
+     "ArgoCD",
+     "Spinnaker",
+     "Istio",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
     "MSA",
-    "Event-driven",
-    "데이터 파이프라인"
+    "Event-driven (Kafka)",
+    "데이터 파이프라인 (Lambda 아키텍처)",
+    "GitOps 기반 CD"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"마켓컬리 앱<br/>Android iOS\"]\n    WEB[\"쇼핑 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PROD[\"상품 서비스<br/>Spring Boot + Kotlin\"]\n    ORDER[\"주문 서비스<br/>Spring Boot + Java\"]\n    WMS[\"콜드체인 물류 WMS<br/>Spring Boot + Kotlin\"]\n    DELIV[\"샛별배송 서비스<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 DB<br/>MySQL\"]\n    REDIS[\"재고 캐시<br/>Redis\"]\n    ES[\"상품 검색<br/>Elasticsearch\"]\n    AIRFLOW[\"데이터 파이프라인<br/>Airflow + Python\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + Terraform\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> PROD\n  GW --> ORDER\n  ORDER --> KAFKA\n  KAFKA -->|출고 지시| WMS\n  WMS --> DELIV\n  ORDER --> MYSQL\n  PROD --> REDIS\n  PROD --> ES\n  KAFKA --> AIRFLOW\n  ORDER --> K8S",
-   "why_language": "샛별배송의 주문·재고·물류 도메인을 안정적으로 다루기 위해 Java/Spring을 기반으로 하고, 신규 서비스는 Kotlin, 데이터·수요예측은 Python을 활용한다.",
-   "why_architecture": "신선식품 재고·물류가 시간에 민감해 이벤트 드리븐으로 주문·풀필먼트를 연동하고, 레거시 모놀리스를 MSA로 분리하며 AWS 위에서 운영한다.",
-   "summary": "샛별배송 물류를 떠받치는 Java/Kotlin 기반 이벤트 드리븐 커머스.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    APP[\"Mobile App<br/>iOS / Android\"]\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    BFF[\"BFF<br/>GraphQL / Node\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    ORDER[\"Order Service<br/>Spring Boot + Kotlin\"]\n    PROD[\"Product / Catalog<br/>Spring Boot\"]\n    SEARCH[\"Search Service<br/>Elasticsearch\"]\n    REC[\"Recommendation<br/>Python + ML\"]\n    WMS[\"Fulfillment / WMS<br/>Spring Boot\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL Aurora\"]\n    REDIS[\"Cache<br/>Redis\"]\n    ES[\"Index<br/>Elasticsearch\"]\n    DRUID[\"OLAP<br/>Druid + Spark\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS + Istio\"]\n    CD[\"GitOps CD<br/>ArgoCD + Spinnaker\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  WEB --> CDN --> GW\n  APP --> GW\n  GW --> BFF --> ORDER\n  BFF --> PROD\n  BFF --> SEARCH\n  BFF --> REC\n  ORDER -->|publish| KAFKA\n  WMS -->|consume| KAFKA\n  KAFKA --> REC\n  MYSQL --> CDC --> KAFKA\n  CDC --> ES\n  ORDER --> MYSQL\n  PROD --> MYSQL\n  ORDER --> REDIS\n  SEARCH --> ES\n  KAFKA --> DRUID\n  Core --> EKS\n  CD --> EKS\n  EKS --> OBS",
+   "why_language": "주문·정산·물류처럼 강한 트랜잭션 정합성과 안정적 운영이 필요한 코어 도메인은 JVM 생태계(Java/Kotlin)와 Spring Boot로 구축해 성숙한 라이브러리·모니터링 자산을 활용한다. 신규 서비스는 Kotlin으로 작성해 null 안정성과 코루틴 기반 비동기 처리 이점을 얻고, 수요예측·검색랭킹·추천 같은 데이터/ML 영역은 Python, 사용자 화면은 TypeScript(Next.js)로 분담해 도메인별 최적 언어를 쓴다.",
+   "why_architecture": "샛별배송 마감 직전 주문 폭주와 신선식품 재고·물류의 실시간 연계 때문에, 단일 모놀리식으로는 특정 도메인의 부하가 전체로 전파되는 문제가 있어 MSA로 분리하고 Kafka 이벤트로 서비스 간 결합을 느슨하게 했다. 주문→재고차감→WMS 피킹→배송이 이벤트로 흐르는 event-driven 구조라 한 서비스 장애가 비동기 버퍼로 흡수되며, 데이터 파이프라인(Airflow/Spark/Druid)으로 발주·수요예측·분석을 배치+스트리밍 혼합(Lambda)으로 처리한다.",
+   "summary": "JVM(Spring Boot/Kotlin) 기반 MSA를 Kafka 이벤트로 묶고 AWS EKS·GitOps로 운영하는 신선식품 이커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "샛별배송 콜드체인 WMS",
@@ -13684,14 +13728,31 @@
     {
      "topic": "이벤트 드리븐 MSA 전환과 인프라",
      "body": "### 모놀리스를 쪼개며 물류와 잇기\n\n컬리도 초기 모놀리스에서 **MSA**로 점진 전환 중이다. 주문·재고·물류·정산·상품 도메인을 분리해 배포 독립성과 확장성을 확보한다.\n\n**왜 이벤트 드리븐인가**\n- 신선식품은 *재고·물류가 시간에 극도로 민감*하다. 주문이 들어오면 재고 차감·피킹 지시·배송 슬롯 확정이 빠르고 일관되게 연쇄돼야 한다.\n- 이 도메인들을 동기 호출로 묶으면 한 곳(예: 물류 시스템)이 느릴 때 주문까지 막힌다. 그래서 **Kafka 이벤트**로 느슨히 연결해 *주문은 받고 물류는 뒤따라가게* 한다. 멱등 컨슈머로 at-least-once 중복을 흡수한다.\n\n**스택·인프라**\n- Java/Kotlin(Spring) 커머스 + Python 데이터 파이프라인(수요예측). 데이터 워크플로는 **Airflow**로 스케줄링.\n- AWS + Kubernetes + Terraform(IaC)으로 클라우드 네이티브 운영. 마감 피크에 맞춰 오토스케일링.\n\n**복원력**\n- 마감-출고 시간이 짧아 *장애 복구 여유가 거의 없다*. 서킷 브레이커·격벽으로 외부 의존을 격리하고, 실패 이벤트는 DLQ로 재처리해 *주문·출고 누락*을 막는다.\n\n### WHY\n\"오늘 주문 → 내일 새벽 도착\"이라는 약속은 주문-물류 파이프라인 전 구간이 *시간 예산* 안에서 끊김 없이 돌아야 지켜진다. 그 끊김 없음을 이벤트 드리븐 MSA가 떠받친다."
+    },
+    {
+     "topic": "검색·랭킹·추천 파이프라인이 실제로 어떻게 동작하는가",
+     "body": "### 컬리 검색의 두 단계: Retrieval → Ranking\n컬리 검색은 전형적인 2-stage 구조다. 먼저 `Elasticsearch`에서 형태소 분석(Nori analyzer + 자체 사전)과 동의어/오타 교정 사전을 거쳐 후보 상품 집합을 빠르게 추려내는 **retrieval** 단계가 있고, 그 다음 후보들을 비즈니스·개인화 신호로 재정렬하는 **ranking** 단계가 붙는다.\n\n신선식품 도메인 특성상 일반 이커머스와 다른 제약이 강하게 작동한다.\n\n- **재고·판매가능 여부가 1급 랭킹 신호**: 품절/오늘 마감 임박 상품을 상단에 띄우면 전환이 떨어지므로, 재고 상태가 색인(index) 또는 런타임 필터로 반영된다.\n- **콜드체인/배송권역 필터**: 사용자의 배송지가 샛별배송 가능 권역인지에 따라 노출 상품 자체가 달라진다.\n\n### 색인 갱신 — CDC 기반 near-real-time\n상품/가격/재고가 바뀌면 검색 결과에 즉시 반영돼야 한다. 컬리는 상품 DB(`MySQL`)의 변경을 `Debezium` 같은 CDC로 잡아 `Kafka`에 흘리고, 이를 소비해 `Elasticsearch` 색인을 갱신하는 near-real-time 파이프라인을 둔다. 이렇게 하면 배치 전체 재색인(full reindex)의 부하 없이 변경분만 반영할 수 있고, 가격·재고처럼 자주 바뀌는 필드를 분리 관리할 수 있다. 전체 스키마/분석기 변경처럼 구조가 바뀔 때만 무중단 재색인(alias swap: `products_v2`로 새로 색인 후 alias를 원자적으로 교체)을 수행한다.\n\n### 추천 — 오프라인 학습 + 온라인 서빙\n추천은 `Airflow`로 스케줄되는 배치 파이프라인에서 `Spark`로 사용자-상품 상호작용(클릭/장바구니/구매) 피처를 만들고 모델을 학습한 뒤, 결과(또는 임베딩)를 `Redis`/온라인 스토어에 적재해 `Python` 추천 서비스가 낮은 지연으로 서빙한다.\n\n| 단계 | 처리 | 도구 |\n|------|------|------|\n| 로그 수집 | 행동 이벤트 스트리밍 | Kafka |\n| 피처/학습 | 배치 가공·모델 학습 | Spark + Airflow |\n| 서빙 | 후보 조회·재정렬 | Redis + Python |\n\n핵심 트레이드오프는 \"신선도 vs 안정성\"이다. 식품은 재구매 주기가 뚜렷해(우유·계란·채소) 행동 기반 협업필터링이 잘 먹히지만, 신상품/시즌상품은 콜드스타트가 심해 인기·카테고리 기반 룰과 ML을 혼합(hybrid)해 보정한다."
+    },
+    {
+     "topic": "배포·CI/CD·카나리 — EKS 위의 GitOps",
+     "body": "### 플랫폼: AWS EKS + GitOps\n컬리는 수십~수백 개 MSA를 `AWS EKS`(Kubernetes)에서 운영하며, 배포 모델을 명령형(kubectl apply)에서 선언형 **GitOps**로 이동했다. 핵심은 \"클러스터의 desired state는 Git 저장소가 단일 진실원천(Single Source of Truth)\"이라는 원칙이다.\n\n전형적 흐름:\n\n1. 개발자가 애플리케이션 레포에 머지 → CI(빌드/테스트)에서 컨테이너 이미지를 `ECR`에 push.\n2. CI가 이미지 태그를 **manifest 레포**(Helm/Kustomize)에 커밋.\n3. `ArgoCD`가 manifest 레포의 변경을 감지해 클러스터 상태를 자동 동기화(sync). 드리프트가 생기면 self-heal로 원상복구.\n\n이 구조의 이점은 (a) 롤백이 곧 git revert라 감사·재현이 쉽고, (b) 클러스터 접근 권한을 사람에게 줄 필요가 없어 보안이 강해지며, (c) 여러 클러스터(스테이징/프로덕션, 멀티 리전)에 동일 매니페스트를 일관 적용할 수 있다는 것이다.\n\n### 점진 배포: Canary / Blue-Green\n주문·결제처럼 실패 비용이 큰 서비스는 한 번에 전량 교체하지 않는다. `Spinnaker` 또는 `Argo Rollouts` 기반으로 **canary**를 돌린다.\n\n- 신버전에 트래픽 5% → 10% → 50% → 100% 단계적 확대.\n- 각 단계에서 `Prometheus` 메트릭(에러율, p99 latency, 5xx)을 자동 분석해 임계 초과 시 자동 롤백.\n- 마감 트래픽이 몰리는 시간대를 피해 배포 윈도우를 잡는 운영 규칙과 결합된다.\n\n### 왜 이렇게 했나\n신선식품은 \"오늘 주문 못 받으면 매출이 그날 날아가는\" 도메인이라 배포 사고의 비용이 즉각적이다. 선언형 + 자동 분석 카나리는 사람의 실수와 야간 배포 리스크를 줄이고, 장애 시 git 기반 즉시 롤백으로 복구 시간(MTTR)을 단축한다."
+    },
+    {
+     "topic": "캐싱 계층과 데이터 일관성 — 마감 트래픽을 견디는 읽기 경로",
+     "body": "### 다층 캐싱(Multi-layer cache)\n컬리의 읽기 경로는 여러 캐시 계층으로 보호된다.\n\n- **Edge/CDN(`CloudFront`)**: 상품 이미지, 정적 자산, 일부 카탈로그 응답을 엣지에서 흡수.\n- **애플리케이션 캐시(`Redis`)**: 상품 상세, 카테고리, 프로모션 정보처럼 읽기 비율이 압도적인 데이터를 캐싱. 마감 직전 동일 상품에 조회가 폭증하므로 Redis가 `MySQL` 부하를 막는 1차 방어선이다.\n- **로컬 캐시(Caffeine 등)**: 변하지 않는 코드성 데이터는 JVM 인스턴스 로컬에 둬 Redis 왕복도 줄인다.\n\n### 캐시 일관성 — TTL + 이벤트 무효화\n가격·재고처럼 틀리면 안 되는 데이터는 단순 TTL만으로 부족하다. 그래서 **이벤트 기반 무효화**를 함께 쓴다. 상품/가격 변경이 `Kafka` 이벤트로 발행되면 캐시를 invalidate하거나 갱신해, 최신성과 부하 흡수를 동시에 잡는다. 재고는 특히 민감해서 캐시된 값은 노출용으로만 쓰고, 실제 차감은 주문 트랜잭션 시점에 DB/재고 서비스에서 원자적으로 확정한다(over-sell 방지).\n\n### 핫키와 마감 폭주 대응\n샛별배송 마감(밤 11시 전후)에는 특정 인기 상품으로 트래픽이 쏠리는 **hot key** 문제가 생긴다. 대응 기법:\n\n- 인기 상품 캐시를 로컬+Redis 다중화해 단일 키 핫스팟 분산.\n- 재고 차감은 큐잉/이벤트로 비동기화해 DB 경합을 줄이고, 최종 일관성으로 수렴.\n- 결제 후 후속 처리(적립/정산/배송지시)는 `Kafka`로 비동기 분리해 주문 응답 경로를 가볍게 유지.\n\n### 정합성 전략\n주문 자체는 강한 정합성(DB 트랜잭션)으로 처리하되, 주문 이후 도메인 간 협력(재고·WMS·정산)은 이벤트 기반 **최종 일관성(eventual consistency)** 과 보상 트랜잭션(saga 패턴)으로 처리한다. 이는 분산 트랜잭션(2PC)의 성능·복잡도 비용을 피하면서 마감 트래픽을 견디기 위한 의도적 선택이다."
     }
    ],
+   "github": {
+    "org": "",
+    "repos": []
+   },
    "sources": [
-    "https://helloworld.kurly.com",
-    "https://thefarmersfront.github.io"
+    "https://helloworld.kurly.com/",
+    "https://www.youtube.com/c/kurlytech",
+    "https://thefarmersfront.github.io/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "bucketplace",

@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-16T14:29:07",
- "total": 727,
+ "generated_at": "2026-06-16T16:03:39",
+ "total": 729,
  "sources": [
   {
    "company": "Etsy",
@@ -10,7 +10,7 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 33
+   "count": 34
   },
   {
    "company": "Discord",
@@ -98,6 +98,11 @@
    "count": 12
   },
   {
+   "company": "카카오",
+   "country": "KR",
+   "count": 11
+  },
+  {
    "company": "Dropbox",
    "country": "US",
    "count": 11
@@ -130,11 +135,6 @@
   {
    "company": "Razorpay",
    "country": "IN",
-   "count": 10
-  },
-  {
-   "company": "카카오",
-   "country": "KR",
    "count": 10
   },
   {
@@ -532,6 +532,37 @@
    "content_id": "ede3e0b40f8e99a7"
   },
   {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "If context is king, architecture is the castle​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍​﻿​﻿​‍​﻿​﻿‌‍​﻿​﻿​​​﻿‍‌‌‍​‍​﻿​‍​‍﻿‌​﻿‌​​﻿​‌​﻿​﻿‌‍‌​​‍﻿‌​﻿‌​‌‍​‌​﻿‌﻿​﻿​​​‍﻿‌​﻿‍‌‌‍​‌‌‍​‍‌‍​﻿​‍﻿‌‌‍‌‌​﻿‌​​﻿​﻿‌‍‌​​﻿​‌‌‍​‍​﻿‌﻿​﻿​​​﻿‌‍‌‍‌‍​﻿‌‍​﻿‌﻿​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍​﻿​﻿​‍​﻿​﻿‌‍​﻿​﻿​​​﻿‍‌‌‍​‍​﻿​‍​‍﻿‌​﻿‌​​﻿​‌​﻿​﻿‌‍‌​​‍﻿‌​﻿‌​‌‍​‌​﻿‌﻿​﻿​​​‍﻿‌​﻿‍‌‌‍​‌‌‍​‍‌‍​﻿​‍﻿‌‌‍‌‌​﻿‌​​﻿​﻿‌‍‌​​﻿​‌‌‍​‍​﻿‌﻿​﻿​​​﻿‌‍‌‍‌‍​﻿‌‍​﻿‌﻿​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/16/if-context-is-king-architecture-is-the-castle",
+   "published": "2026-06-16",
+   "published_ts": 1781595600.0,
+   "summary": "Recorded live at the AI Agent Conference, Ryan sits down with Apollo GraphQL CEO Matt DeBerglis to discuss how enterprises can leverage GraphQL and MCP as a structured semantic architecture to feed clean data to autonomous agents, safeguard internal microservices against unprecedented \"east-west\" data exfiltration risks, and rein in skyrocketing token spend by explicitly querying only the exact context required.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌…",
+   "tags": [
+    "podcast",
+    "se-tech",
+    "se-stackoverflow",
+    "ai",
+    "graphql",
+    "apollo-graphql",
+    "architecture",
+    "se-tech"
+   ],
+   "tech_stack": [
+    "GraphQL",
+    "AI Agent",
+    "Model Context Protocol"
+   ],
+   "categories": [
+    "백엔드",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "02cced804d88b286"
+  },
+  {
    "key": "toss",
    "company": "토스",
    "country": "KR",
@@ -668,6 +699,23 @@
    "categories": [],
    "lang": "en",
    "content_id": "662fe4115e78a77f"
+  },
+  {
+   "key": "kakao",
+   "company": "카카오",
+   "country": "KR",
+   "title": "Vibe Coding하는 비개발자는 개발자인가(3)",
+   "url": "https://tech.kakao.com/posts/823",
+   "published": "2026-06-15",
+   "published_ts": 1781535600.0,
+   "summary": "2편을 쓴 뒤 시간이 꽤 지났습니다. 그 사이 AI 도구들은 더 많은 일을 하게 되었고, 저도 이전보다 훨씬 자주 AI 에이전트와 함께 일하게 되었습니다.\n처음에는 업무에 실제적으로 도움을 주는 도구를 직접 만드는 일이 신났습니다. 개선하고 싶은 기능을 설명하면 화면이 생기고, 입력값을 넣으면 일정하게 필요한 결과가 나왔습니다. 이렇게 만든 도구들을 실제 업무에 계속쓰다 보니, 관심사가 자연스럽게 다음 단계로 넘어갔습니다.\n혼자 쓰던 도구를 다른 사람에...",
+   "tags": [
+    "blog"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "2089a956deaf3707"
   },
   {
    "key": "stackoverflow",
