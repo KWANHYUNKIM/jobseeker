@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T00:08:53",
+ "generated_at": "2026-06-17T01:49:23",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 73,
+ "refined": 75,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -202,7 +202,7 @@
     },
     {
      "name": "Python",
-     "count": 12
+     "count": 13
     },
     {
      "name": "TypeScript",
@@ -229,7 +229,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 12
+      "count": 13
      },
      {
       "name": "Spring Boot",
@@ -240,7 +240,15 @@
       "count": 8
      },
      {
+      "name": "Netty",
+      "count": 3
+     },
+     {
       "name": "Spring Cloud",
+      "count": 3
+     },
+     {
+      "name": "Spring WebFlux",
       "count": 3
      },
      {
@@ -256,15 +264,7 @@
       "count": 2
      },
      {
-      "name": "Netty",
-      "count": 2
-     },
-     {
       "name": "Node.js",
-      "count": 2
-     },
-     {
-      "name": "Protocol Buffers",
       "count": 2
      }
     ],
@@ -279,11 +279,11 @@
      },
      {
       "name": "Next.js",
-      "count": 7
+      "count": 8
      },
      {
       "name": "React Native",
-      "count": 6
+      "count": 7
      },
      {
       "name": "Redux",
@@ -325,7 +325,7 @@
      },
      {
       "name": "Elasticsearch",
-      "count": 8
+      "count": 9
      },
      {
       "name": "Cassandra",
@@ -333,7 +333,7 @@
      },
      {
       "name": "MongoDB",
-      "count": 5
+      "count": 6
      },
      {
       "name": "PostgreSQL",
@@ -386,11 +386,11 @@
       "count": 2
      },
      {
-      "name": "Prometheus",
+      "name": "Grafana",
       "count": 2
      },
      {
-      "name": "사내 클라우드",
+      "name": "Jenkins/ArgoCD",
       "count": 2
      }
     ]
@@ -1941,11 +1941,11 @@
      "count": 3
     },
     {
-     "name": "Ruby",
-     "count": 2
+     "name": "TypeScript",
+     "count": 3
     },
     {
-     "name": "TypeScript",
+     "name": "Ruby",
      "count": 2
     },
     {
@@ -1953,7 +1953,7 @@
      "count": 1
     },
     {
-     "name": "Kotlin",
+     "name": "C++",
      "count": 1
     }
    ],
@@ -1992,11 +1992,11 @@
       "count": 1
      },
      {
-      "name": "WebSocket",
+      "name": "Sinatra/Rack",
       "count": 1
      },
      {
-      "name": "사내 프레임워크",
+      "name": "WebSocket",
       "count": 1
      }
     ],
@@ -2008,6 +2008,10 @@
      {
       "name": "TypeScript",
       "count": 4
+     },
+     {
+      "name": "Backbone.js",
+      "count": 1
      },
      {
       "name": "Electron",
@@ -2023,6 +2027,10 @@
      },
      {
       "name": "Swift",
+      "count": 1
+     },
+     {
+      "name": "WebRTC/VNC 클라이언트",
       "count": 1
      },
      {
@@ -2056,6 +2064,10 @@
       "count": 2
      },
      {
+      "name": "Aerospike",
+      "count": 1
+     },
+     {
       "name": "Cassandra/ScyllaDB",
       "count": 1
      },
@@ -2070,10 +2082,6 @@
      {
       "name": "S3",
       "count": 1
-     },
-     {
-      "name": "사내 분산 스토리지",
-      "count": 1
      }
     ],
     "infra": [
@@ -2084,6 +2092,10 @@
      {
       "name": "Kubernetes",
       "count": 4
+     },
+     {
+      "name": "Terraform",
+      "count": 2
      },
      {
       "name": "사내 데이터센터",
@@ -2102,11 +2114,7 @@
       "count": 1
      },
      {
-      "name": "Terraform",
-      "count": 1
-     },
-     {
-      "name": "디바이스 팜",
+      "name": "real macOS/Windows/iOS/Android 호스트",
       "count": 1
      },
      {
@@ -2118,7 +2126,7 @@
    "architecture": [
     {
      "name": "Microservices",
-     "count": 3
+     "count": 2
     },
     {
      "name": "Multi-tenant SaaS",
@@ -11835,7 +11843,7 @@
     "https://tech.naver.com"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-17"
   },
   {
    "key": "nexon",
@@ -13541,7 +13549,7 @@
     "https://medium.com/coupang-engineering/kr"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-17"
   },
   {
    "key": "tmon",
@@ -14284,7 +14292,7 @@
     "https://about.daangn.com/tech"
    ],
    "research_status": "seed",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-17"
   },
   {
    "key": "watcha",
@@ -15471,39 +15479,55 @@
    "languages": [
     "Java",
     "Kotlin",
+    "TypeScript",
     "JavaScript",
-    "TypeScript"
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud"
+     "Spring Cloud",
+     "Spring WebFlux",
+     "Netty",
+     "gRPC",
+     "Tibero/Oracle PL-SQL 연동"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Next.js",
+     "React Native"
     ],
     "data": [
-     "Kafka",
+     "Apache Kafka",
      "Oracle",
+     "Tibero",
      "MySQL",
-     "Redis"
+     "Redis",
+     "MongoDB",
+     "Elasticsearch",
+     "Hadoop/Spark"
     ],
     "infra": [
      "Kubernetes",
-     "사내 클라우드",
-     "Prometheus"
+     "사내 프라이빗 클라우드",
+     "Prometheus",
+     "Grafana",
+     "Jenkins/ArgoCD",
+     "Istio/Envoy",
+     "ELK Stack"
     ]
    },
    "architecture": [
-    "MSA",
-    "계정계/채널계 분리",
-    "고가용성"
+    "MSA(Microservices)",
+    "계정계/채널계 물리 분리",
+    "x86 Linux 기반 코어뱅킹(노 메인프레임)",
+    "이벤트 드리븐 + 고가용성 액티브-액티브"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"카카오뱅크 앱<br/>React + TypeScript\"]\n  end\n  subgraph Gateway\n    CHGW[\"채널계 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    CHANNEL[\"채널계 서비스<br/>Spring Boot + Kotlin\"]\n    ACCOUNT[\"계정계 코어뱅킹<br/>Spring Boot + Java\"]\n    LOAN[\"여신 대출<br/>Spring Cloud\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    ORA[\"계정계 원장 DB<br/>Oracle\"]\n    MYSQL[\"채널계 DB<br/>MySQL\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n  end\n  subgraph Infra\n    K8S[\"고가용성 오케스트레이션<br/>Kubernetes\"]\n    PCLOUD[\"사내 클라우드<br/>금융 격리망\"]\n    MON[\"모니터링<br/>Prometheus\"]\n  end\n  APP --> CHGW\n  CHGW --> CHANNEL\n  CHANNEL --> ACCOUNT\n  CHANNEL --> LOAN\n  ACCOUNT --> KAFKA\n  KAFKA --> LOAN\n  ACCOUNT --> ORA\n  CHANNEL --> MYSQL\n  CHANNEL --> REDIS\n  K8S --> PCLOUD\n  K8S --> MON",
-   "why_language": "은행 코어뱅킹의 안정성과 규제 대응을 위해 Java/Spring을 핵심으로 쓰고, 신규 채널·서비스 개발에는 Kotlin을 점진 도입한다.",
-   "why_architecture": "은행 시스템 특성상 계정계와 채널계를 분리하고 MSA로 고가용성을 확보하며, 무중단 운영을 위해 쿠버네티스 기반 자동화를 강화했다.",
-   "summary": "코어뱅킹 안정성을 위한 Java/Spring 기반 고가용성 은행 MSA.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>iOS / Android\"]\n    WEB[\"Web / RN<br/>React + TypeScript\"]\n  end\n  subgraph Channel[\"채널계 (Channel)\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Envoy\"]\n    BFF[\"BFF / Channel API<br/>Spring Boot + WebFlux\"]\n    AUTH[\"인증 / FDS<br/>OAuth2 + 자체 보안모듈\"]\n  end\n  subgraph Core[\"계정계 (Core Banking)\"]\n    DEP[\"수신/여신 서비스<br/>Java + Spring\"]\n    PAY[\"이체/결제 엔진<br/>Java\"]\n    LEDGER[\"원장/결산<br/>PL-SQL + Batch\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    BATCH[\"배치/정산<br/>Spring Batch\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    ORA[\"코어 원장 DB<br/>Oracle / Tibero\"]\n    MYSQL[\"채널 DB<br/>MySQL\"]\n    REDIS[\"캐시 / 세션<br/>Redis\"]\n    ES[\"검색/로그<br/>Elasticsearch\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>사내 클라우드\"]\n    OBS[\"관측성<br/>Prometheus + Grafana + ELK\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> AUTH\n  GW --> BFF\n  BFF -->|REST/gRPC| DEP\n  BFF -->|REST/gRPC| PAY\n  PAY --> LEDGER\n  DEP --> ORA\n  PAY --> ORA\n  LEDGER --> ORA\n  BFF --> MYSQL\n  BFF --> REDIS\n  PAY -->|이벤트 발행| KAFKA\n  KAFKA --> BATCH\n  KAFKA --> ES\n  BATCH --> ORA\n  Core --> K8S\n  Channel --> K8S\n  K8S --> OBS",
+   "why_language": "은행 코어뱅킹은 트랜잭션 정합성·장기 유지보수·풍부한 금융 라이브러리 생태계가 핵심이라 검증된 Java/Spring을 기반으로 삼는다. 채널계 신규 개발에는 Null 안정성과 간결한 코드로 생산성을 높이는 Kotlin을 점진 도입하고, 앱·웹 화면은 React/TypeScript로 통일해 타입 안정성과 컴포넌트 재사용성을 확보한다.",
+   "why_architecture": "막대한 동시 트래픽과 24/7 무중단이 요구되는 모바일 전용 은행이라 장애 격리와 독립 배포가 가능한 MSA를 택했고, 규제·정합성이 중요한 계정계와 빠른 변화가 필요한 채널계를 물리적으로 분리해 안정성과 민첩성을 동시에 얻는다. 특히 전통 은행의 메인프레임 대신 x86 Linux + 오픈소스 기반 코어뱅킹을 구축해 비용을 낮추고 클라우드 네이티브 확장성을 확보한 점이 차별점이다.",
+   "summary": "메인프레임을 버리고 x86 Linux·Spring·Kafka 위에 계정계/채널계를 분리한 클라우드 네이티브 인터넷전문은행",
    "deep_dive": [
     {
      "topic": "계정계/채널계 분리 아키텍처",
@@ -15520,17 +15544,35 @@
     {
      "topic": "Java/Spring 선택과 Kotlin 점진 도입",
      "body": "### 왜 Java/Spring이 코어인가\n코어뱅킹은 수십 년 안정성·풍부한 인력·검증된 트랜잭션 처리가 필요하다. `Java`/`Spring`은 JVM의 성숙도, 강력한 트랜잭션·배치(Spring Batch) 지원, 광범위한 엔터프라이즈 검증 사례로 이 요건을 충족한다. 규제 대응·장기 유지보수 관점에서도 표준성이 큰 자산이다.\n\n### Kotlin 점진 도입\n신규 채널·서비스 개발에는 `Kotlin`을 점진 도입한다. Java와 100% 상호운용되면서 null 안정성·간결성으로 생산성과 안전성을 높인다. 코어는 보수적으로 Java를 유지하고, 변화가 잦은 채널 영역부터 Kotlin을 확대하는 \"리스크 낮은 곳부터\" 전략이다.\n\n### 데이터 계층\n원장처럼 강한 트랜잭션·검증이 필요한 영역은 `Oracle`을, 채널·신규 서비스는 `MySQL`을 쓴다. 이벤트 전파는 `Kafka`, 캐시·세션은 `Redis`. 사내 클라우드 위 `Kubernetes`로 운영해 규제상 데이터 통제권을 유지한다.\n\n### 트레이드오프\n검증된 스택은 안정적이지만 빠른 신기술 도입은 보수적이다. 은행은 \"안 깨지는 것\"이 \"빠른 것\"보다 중요하므로 이 보수성을 의도적으로 받아들인다. 대신 채널계에서 점진 혁신으로 균형을 맞춘다."
+    },
+    {
+     "topic": "이체 요청의 end-to-end 처리 흐름 — 채널계에서 계정계 원장까지",
+     "body": "### 한 건의 이체가 거치는 경로\n\n사용자가 앱에서 '이체' 버튼을 누르는 순간부터 상대 계좌에 입금이 확정되기까지, 요청은 명확히 분리된 두 영역(`채널계`→`계정계`)을 통과한다.\n\n1. **Edge / Gateway**: 모바일 앱의 요청은 `API Gateway`(Spring Cloud Gateway + Envoy)에 도달한다. 여기서 TLS 종료, 라우팅, 레이트 리밋, 그리고 1차 인증 토큰(OAuth2/JWT) 검증이 일어난다.\n2. **채널계 BFF**: 게이트웨이는 요청을 `Channel API/BFF`로 넘긴다. BFF는 화면에 필요한 데이터(잔액 조회, 한도 확인, 수취인 검증)를 여러 마이크로서비스에서 모아 조합한다. 이 계층은 읽기·조회성 트래픽이 많아 `Redis` 캐시와 `MySQL`을 적극 활용한다.\n3. **FDS / 인증 게이트**: 이체처럼 자금이 움직이는 거래는 `FDS(이상거래탐지)`와 추가 인증(생체/PIN/공동인증)을 통과해야 한다. 이 단계가 통과되어야만 계정계로 트랜잭션이 넘어간다.\n4. **계정계 코어**: 검증된 이체 명령은 `이체/결제 엔진`으로 전달된다. 여기서 **출금 계좌 차감 → 원장 기록 → 입금 반영**이 하나의 트랜잭션 경계 안에서 처리된다. 계정계는 정합성이 생명이라 `Oracle/Tibero` RDBMS의 ACID 트랜잭션에 강하게 의존한다.\n5. **이벤트 발행**: 거래 확정 후 결과 이벤트가 `Kafka`로 발행된다. 이 이벤트를 푸시 알림, 거래내역 인덱싱(`Elasticsearch`), 정산/통계 배치, FDS 학습 파이프라인 등 여러 컨슈머가 비동기로 소비한다.\n\n### 핵심 트레이드오프\n핵심 자금 이동(`출금-입금`)은 **동기·강한 일관성**으로 처리하되, 그 외 부수 효과(알림·통계·검색 색인)는 **비동기·최종 일관성**으로 분리한다. 이렇게 해야 거래 응답 지연을 최소화하면서도 시스템 전체의 결합도를 낮출 수 있다. 만약 모든 후속 작업을 동기로 묶으면 알림 서버 장애가 이체 자체를 막아버리는 사고로 번질 수 있기 때문이다."
+    },
+    {
+     "topic": "Kafka 기반 이벤트 드리븐 아키텍처와 거래내역·알림 파이프라인",
+     "body": "### 왜 Kafka가 은행 시스템의 중추인가\n\n카카오뱅크처럼 수천만 사용자가 동시에 거래·조회를 발생시키는 환경에서 `Apache Kafka`는 단순 메시지큐가 아니라 **시스템 간 결합을 끊는 비동기 백본**이다.\n\n#### 주요 활용 패턴\n\n| 용도 | 설명 |\n|------|------|\n| 거래 이벤트 전파 | 이체/결제 확정 이벤트를 발행해 알림·통계·정산이 독립 소비 |\n| 푸시 알림 | 거래 발생 → 알림 서비스가 컨슘 → FCM/APNs 전송 |\n| 검색 색인 | 거래내역을 `Elasticsearch`에 비동기 인덱싱해 빠른 조회 제공 |\n| 데이터 레이크 적재 | `Hadoop/Spark` 분석 파이프라인으로 스트리밍 |\n| FDS 피처 공급 | 실시간 거래 스트림을 이상탐지 모델에 입력 |\n\n#### 정합성을 지키는 장치\n금융 거래에서 이벤트 유실/중복은 곧 사고다. 따라서:\n\n- **멱등성(idempotency)**: 컨슈머는 이벤트 ID 기반으로 중복 처리를 방지한다. 같은 이체 알림이 두 번 와도 사용자에게 한 번만 전송된다.\n- **Outbox 패턴**: DB 트랜잭션과 Kafka 발행 사이의 원자성 깨짐을 막기 위해, 거래를 기록할 때 같은 트랜잭션 안에서 `outbox` 테이블에 이벤트를 적재하고 별도 릴레이가 Kafka로 옮긴다. 이로써 '`DB는 커밋됐는데 이벤트는 안 나간`' 불일치를 차단한다.\n- **순서 보장**: 계좌 단위로 파티션 키를 잡아 같은 계좌의 이벤트는 순서대로 처리되게 한다.\n\n### 효과\n이 구조 덕분에 채널계 화면 개발팀은 계정계 코어를 직접 호출하지 않고도 Kafka 토픽만 구독하면 새 기능(예: 새 알림 유형, 새 통계 화면)을 추가할 수 있다. 서비스 간 배포 독립성이 곧 출시 속도가 된다."
+    },
+    {
+     "topic": "관측성(Observability)과 무중단 배포 — 24/7 은행을 떠받치는 운영 체계",
+     "body": "### 은행은 멈추면 안 된다\n\n지점이 없는 카카오뱅크에서 앱 장애는 곧 '`은행이 문을 닫은`' 것과 같다. 그래서 관측성과 배포 전략에 막대한 투자를 한다.\n\n#### 관측성 3축\n- **메트릭**: `Prometheus`가 각 마이크로서비스의 지연시간, 에러율, JVM 힙/GC, 커넥션 풀 상태를 수집하고 `Grafana`로 시각화한다. 거래 처리량(TPS)과 응답시간 SLO를 실시간 모니터링한다.\n- **로그**: `ELK(Elasticsearch + Logstash + Kibana)` 스택으로 분산 로그를 중앙 집계한다. 거래 추적용 `trace ID`를 로그에 심어, 한 이체가 거쳐 간 모든 서비스의 로그를 한 번에 추적할 수 있다.\n- **트레이싱**: 분산 추적으로 채널계→계정계 호출 체인의 병목 구간을 식별한다. 어느 서비스 호출에서 지연이 생기는지 시각적으로 파악한다.\n\n#### 무중단 배포 전략\n- **Kubernetes 롤링 업데이트 + 카나리**: 새 버전을 일부 파드에만 먼저 배포(`canary`)해 에러율·지연을 관찰한 뒤 점진 확대한다. 문제가 감지되면 즉시 롤백한다.\n- **블루-그린**: 무거운 변경은 신·구 환경을 동시에 띄우고 트래픽을 전환하는 방식으로 다운타임을 0에 수렴시킨다.\n- **GitOps**: `ArgoCD` 등으로 선언적 배포를 관리해, Git에 정의된 상태와 클러스터 실제 상태를 지속 동기화한다.\n\n#### 복원력 패턴\n- **서킷 브레이커**: 특정 다운스트림 서비스가 응답 불능이면 `Resilience4j` 등으로 회로를 차단해 장애 전파(cascading failure)를 막고 폴백을 제공한다.\n- **벌크헤드 / 타임아웃**: 스레드 풀과 타임아웃을 격리해 한 기능의 과부하가 전체 앱을 마비시키지 않게 한다.\n- **액티브-액티브 다중화**: 계정계 핵심 시스템을 이중화해 한쪽 장애 시에도 거래가 계속되도록 페일오버를 구성한다."
+    },
+    {
+     "topic": "메인프레임 탈피 — x86 Linux + 오픈소스 코어뱅킹의 엔지니어링 결단",
+     "body": "### 전통 은행과 가장 다른 결정\n\n대부분의 시중은행은 수십 년간 IBM `메인프레임`과 COBOL 위에 코어뱅킹(계정계)을 운영해왔다. 카카오뱅크의 가장 상징적인 엔지니어링 결정은 이 **메인프레임을 채택하지 않고 `x86` 표준 서버 + `Linux` + 오픈소스/상용 RDBMS 위에 코어뱅킹을 구축**한 것이다.\n\n#### 왜 이 길을 택했나\n- **비용 구조**: 메인프레임은 라이선스·유지보수 비용이 거래량에 비례해 폭증한다. x86 스케일아웃은 트래픽이 늘면 서버를 수평으로 추가하는 구조라 비용 곡선이 완만하다.\n- **인재·생태계**: COBOL 인력은 줄어드는 반면 Java/Linux 개발자 풀은 방대하다. 표준 기술 스택은 채용과 지식 공유에 유리하다.\n- **클라우드 네이티브 지향**: x86/Linux 기반이어야 `Kubernetes`·컨테이너·오픈소스 관측 도구 같은 현대적 운영 생태계를 그대로 얹을 수 있다.\n\n#### 감수해야 했던 트레이드오프\n메인프레임이 하드웨어 차원에서 보장하던 **극단적 트랜잭션 처리량과 안정성**을, 분산 아키텍처에서는 소프트웨어로 직접 설계해 메워야 한다.\n\n- 강한 일관성이 필요한 원장 처리는 `Oracle/Tibero`의 ACID 트랜잭션에 의존하되,\n- 확장이 필요한 채널계는 `MySQL` 샤딩·`Redis` 캐시로 부하를 분산하고,\n- 시스템 간 비동기는 `Kafka`로 흡수하며,\n- 가용성은 액티브-액티브 다중화와 정교한 페일오버로 확보한다.\n\n#### 의미\n이 결정은 단순한 기술 선택을 넘어, '`은행 코어도 오픈 스택으로 만들 수 있다`'는 것을 국내에서 입증한 사례다. 결과적으로 빠른 기능 출시, 낮은 단위 비용, 클라우드 네이티브 운영이라는 인터넷전문은행의 정체성을 기술적으로 뒷받침하는 토대가 되었다."
     }
    ],
    "github": {
-    "org": "kakaobank"
+    "org": "https://github.com/kakaobank",
+    "repos": []
    },
    "sources": [
-    "https://tech.kakaobank.com",
-    "https://www.kakaobank.com"
+    "https://tech.kakaobank.com/",
+    "https://github.com/kakaobank",
+    "https://if.kakao.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "browserstack",
@@ -15541,40 +15583,48 @@
     "Ruby",
     "Go",
     "JavaScript",
-    "Python"
+    "Python",
+    "C++",
+    "TypeScript"
    ],
    "stack": {
     "backend": [
      "Ruby on Rails",
      "Go",
-     "Node.js"
+     "Node.js",
+     "Sinatra/Rack"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Backbone.js (레거시)",
+     "WebRTC/VNC 클라이언트"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "MySQL (샤딩)",
      "Redis",
-     "Elasticsearch"
+     "Kafka",
+     "Elasticsearch",
+     "Aerospike"
     ],
     "infra": [
-     "사내 데이터센터",
+     "사내 데이터센터(실기기 팜)",
      "AWS",
      "Kubernetes",
-     "디바이스 팜"
+     "Terraform",
+     "real macOS/Windows/iOS/Android 호스트"
     ]
    },
    "architecture": [
-    "Microservices",
+    "Microservices + Rails 모놀리스 혼합",
     "Device farm orchestration",
-    "Real-time streaming"
+    "Real-time session streaming (WebRTC/VNC)",
+    "Secure tunneling (Local Testing)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"대시보드<br/>React + TypeScript\"]\n    CLI[\"Local 테스트 CLI<br/>Node.js\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Go\"]\n  end\n  subgraph Services\n    SESS[\"세션 오케스트레이터<br/>Ruby on Rails\"]\n    FARM[\"디바이스 팜 매니저<br/>Go\"]\n    STREAM[\"실시간 화면 스트리밍<br/>Node.js\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 큐<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"세션 메타 DB<br/>MySQL\"]\n    REDIS[\"세션 상태 캐시<br/>Redis\"]\n    ES[\"로그 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    DC[\"실기기 디바이스 팜<br/>사내 데이터센터\"]\n    K8S[\"오케스트레이션<br/>Kubernetes\"]\n    AWS[\"엣지 클라우드<br/>AWS\"]\n  end\n  WEB --> GW\n  CLI --> GW\n  GW --> SESS\n  SESS --> FARM\n  SESS --> STREAM\n  FARM --> KAFKA\n  KAFKA --> SESS\n  FARM --> DC\n  SESS --> MYSQL\n  STREAM --> REDIS\n  SESS --> ES\n  K8S --> AWS",
-   "why_language": "개발자 도구 SaaS로 빠른 제품 반복이 중요해 Ruby on Rails를 주력으로 쓰고, 실시간 세션 스트리밍·디바이스 오케스트레이션 같은 고성능 영역은 Go로 처리한다.",
-   "why_architecture": "수만 대의 실제 기기·브라우저를 글로벌 디바이스 팜으로 운영하며 사용자에게 실시간 테스트 세션을 스트리밍하므로, 디바이스 오케스트레이션과 세션 라우팅을 마이크로서비스로 설계한다.",
-   "summary": "Rails+Go로 글로벌 디바이스 팜과 실시간 테스트 세션을 운영하는 개발자 SaaS.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / SDK Edge\"]\n    DEV[\"Dashboard / IDE<br/>React + TypeScript\"]\n    SDK[\"Test SDK / CLI<br/>Selenium WebDriver + Cypress CLI\"]\n    LOCAL[\"BrowserStackLocal<br/>Go tunnel binary\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway / LB<br/>Nginx + HAProxy\"]\n    HUB[\"Selenium Hub / Session Broker<br/>Go\"]\n  end\n  subgraph Core[\"Core Services\"]\n    AUTH[\"Auth + Billing<br/>Ruby on Rails\"]\n    SCHED[\"Device Scheduler<br/>Go\"]\n    TUNNEL[\"Tunnel Termination<br/>Go\"]\n    MEDIA[\"Media Relay<br/>WebRTC + VNC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    WORK[\"Log / Artifact Workers<br/>Sidekiq + Go\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Sharded OLTP<br/>MySQL\"]\n    REDIS[\"Queue / Cache<br/>Redis\"]\n    ES[\"Logs / Search<br/>Elasticsearch\"]\n    S3[\"Artifacts<br/>AWS S3\"]\n  end\n  subgraph Farm[\"Device Farm Infra\"]\n    DC[\"Real Device Hosts<br/>iOS + Android + macOS + Windows\"]\n    K8S[\"Control Plane<br/>Kubernetes + Terraform\"]\n  end\n  DEV --> GW\n  SDK -->|W3C WebDriver| GW\n  LOCAL -.->|secure tunnel| TUNNEL\n  GW --> AUTH\n  GW --> HUB\n  HUB -->|allocate| SCHED\n  SCHED -->|lease| DC\n  DC --> MEDIA\n  MEDIA -->|live stream| DEV\n  DC -->|app traffic| TUNNEL\n  SCHED --> REDIS\n  AUTH --> MYSQL\n  DC --> KAFKA\n  KAFKA --> WORK\n  WORK --> ES\n  WORK --> S3\n  K8S --> SCHED\n  K8S --> MEDIA",
+   "why_language": "BrowserStack은 초기 제품을 Ruby on Rails 모놀리스로 빠르게 키운 뒤, 세션 브로커링·디바이스 스케줄러·Local 터널처럼 동시성과 낮은 지연이 생명인 경로는 Go로 분리해 GC 부담과 고루틴 기반 다중 연결 처리 이점을 취했다. 테스트 자동화 SDK·CLI는 고객 생태계(Selenium/Cypress/Playwright)에 맞춰 Node.js·Python·Java 바인딩으로 제공하고, 실기기/브라우저를 제어하는 저수준 에이전트는 C++로 작성해 OS 네이티브 자동화 API에 직접 붙는다.",
+   "why_architecture": "수만 대의 실제 물리 디바이스·머신을 전 세계 데이터센터에 두고 고객 테스트 세션을 실시간으로 배정·스트리밍해야 하므로, 무상태 API 게이트웨이 뒤에 디바이스 스케줄러와 미디어 릴레이를 둔 microservices + device farm orchestration 구조가 필연적이다. 사내 IP에 갇힌 스테이징 앱을 클라우드 기기에서 테스트하려면 BrowserStackLocal 같은 보안 터널이 필요하고, 사용자가 기기 화면을 즉시 보고 조작해야 하므로 WebRTC/VNC 기반 실시간 스트리밍을 1급 시민으로 설계했다.",
+   "summary": "Rails 모놀리스로 시작해 Go 마이크로서비스로 핵심 경로를 분리하고, 실기기 팜을 WebRTC로 실시간 스트리밍하는 글로벌 테스트 클라우드",
    "deep_dive": [
     {
      "topic": "디바이스 팜 오케스트레이션",
@@ -15591,17 +15641,64 @@
     {
      "topic": "관측성과 세션 라우팅 신뢰성",
      "body": "### 수많은 세션을 어떻게 보나\nBrowserStack은 동시에 수많은 테스트 세션을 돌린다. 각 세션의 건강성·기기 상태·지연을 실시간 관측해야 한다.\n- 기기별 상태(가용/사용중/장애), 세션별 지연·실패율, 데이터센터별 부하를 메트릭으로 수집한다.\n- 장애 기기·느린 세션을 빠르게 탐지해 격리·재할당한다. 사용자가 \"기기가 안 잡힌다\"는 경험을 최소화한다.\n\n### 세션 라우팅\n- 요청을 가용 기기·가까운 지역·여유 있는 데이터센터로 라우팅한다. `Kafka`로 상태 이벤트를 흘려 라우팅 결정을 최신화한다.\n- 할당 실패 시 재시도·대체 기기 라우팅으로 사용자 대기를 줄인다.\n\n### 신뢰성\n실기기는 물리 장애(배터리·연결·소프트웨어 멈춤)가 잦다. 자동 헬스체크·재부팅·풀 회수로 장애 기기를 자가 치유한다.\n\n### 트레이드오프\n실기기 운영은 본질적으로 불안정 요소가 많다. 충분한 기기 헤드룸과 자동 복구로 가용성을 확보하되, 이는 비용을 늘린다. \"요청하면 즉시 기기가 잡힌다\"는 경험이 제품 신뢰의 핵심이라 이 투자를 감수한다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: WebDriver 세션이 실기기에 닿기까지",
+     "body": "### 한 번의 `RemoteWebDriver` 호출이 거치는 경로\n\nAutomate 사용자가 `hub-cloud.browserstack.com/wd/hub` 로 W3C WebDriver `New Session` 요청을 보내는 순간부터 실제 기기에서 첫 명령이 실행되기까지의 흐름은 대략 다음과 같다.\n\n1. **Edge / LB 진입** — 요청은 지역별 `Nginx`/`HAProxy` 계층에 도착한다. 여기서 TLS 종료, 요청 사용자 식별(`browserstack.user` / `key`), 그리고 어느 데이터센터 리전으로 보낼지 1차 라우팅이 일어난다.\n2. **인증·엔타이틀먼트 체크** — `Ruby on Rails` 코어가 계정/플랜/병렬 세션 쿼터를 검증한다. \"이 사용자가 동시에 5세션까지인데 지금 6번째인가?\" 같은 판단은 `Redis` 의 카운터로 원자적으로 처리한다.\n3. **Session Broker / Hub** — 요청한 capability(`browserName`, `os`, `device`, `osVersion`)를 만족하는 기기 풀을 찾는다. BrowserStack은 Selenium Hub 개념을 자체 `Go` 서비스로 다시 구현해, 단순 라운드로빈이 아니라 *가용 기기·웜업 상태·리전 근접성*을 함께 고려한다.\n4. **Device Scheduler 의 lease** — 스케줄러가 실제 물리 기기(또는 VM 슬롯)를 원자적으로 점유(lease)한다. 경쟁 조건을 막기 위해 점유는 `Redis`/내부 락 위에서 처리되고, lease에는 TTL이 붙어 클라이언트가 죽어도 기기가 영구 점유되지 않는다.\n5. **기기 준비(provisioning)** — 모바일이면 앱 설치/리셋, 데스크톱이면 깨끗한 브라우저 프로필·확장·프록시 세팅. 이 \"클린 상태 보장\"이 멀티테넌트 보안의 핵심이라 매 세션 후 기기는 와이프된다.\n6. **명령 프록시** — 이후 모든 WebDriver 명령(`click`, `findElement`)은 Hub를 지나 기기에 붙은 네이티브 에이전트(C++/플랫폼별)로 전달되고, 응답이 역방향으로 돌아온다.\n\n### 왜 이렇게 쪼갰나\n\n인증·과금 같은 비즈니스 로직은 변경이 잦고 개발 속도가 중요해 Rails에 두고, 초당 수많은 명령을 프록시하며 수만 개의 동시 연결을 버텨야 하는 Hub/Scheduler/Tunnel 은 Go로 분리했다. 이렇게 하면 트래픽 폭주 시 Rails 모놀리스를 건드리지 않고 Go 서비스만 수평 확장할 수 있다."
+    },
+    {
+     "topic": "BrowserStackLocal 터널의 동작 원리와 보안 모델",
+     "body": "### 문제: 클라우드 기기가 사내망 앱을 어떻게 보나\n\n고객의 스테이징 서버는 보통 `localhost`, 사설 IP, 또는 방화벽 뒤 VPN 안에 있다. BrowserStack 클라우드의 기기는 외부 인터넷에 있으니 그냥은 접근할 수 없다. 이를 해결하는 것이 `BrowserStackLocal` 바이너리(주로 Go로 작성, 각 언어 바인딩 제공)다.\n\n### 흐름\n\n- 고객이 머신에서 `BrowserStackLocal --key <ACCESS_KEY>` 를 실행하면, 바이너리가 **outbound** 로 BrowserStack 의 터널 종단 서버(`Tunnel Termination`)에 안전한(암호화된) 영속 연결을 연다. 인바운드 포트를 열 필요가 없어 방화벽 정책을 거의 건드리지 않는다 — 이게 채택의 핵심 이유다.\n- 테스트 세션 중 클라우드 기기의 브라우저가 `bs-local.com` 또는 고객이 지정한 호스트로 요청을 보내면, 이 트래픽은 Tunnel Termination 서버 → 영속 터널 → 고객 머신의 Local 바이너리로 역방향 프록시되어 고객 사설망의 실제 앱에 도달한다.\n- 응답은 같은 경로를 거슬러 기기 브라우저로 돌아간다. 기기 입장에선 마치 그 사내 앱이 인터넷에 있는 것처럼 보인다.\n\n### 보안·격리 고려\n\n- `--force-local`, `--only-automate`, 호스트 화이트리스트(`--only`) 등으로 *어떤 트래픽만* 터널을 타게 할지 좁힐 수 있다. 무분별하게 전사 내부망이 클라우드로 노출되지 않도록 하는 안전장치다.\n- 동시 다중 터널을 위해 `--local-identifier` 로 터널을 네임스페이스화하고, 세션 capability에서 같은 식별자를 지정해 *정확히 그 고객의 그 터널*로만 라우팅되게 한다. 멀티테넌트 환경에서 A사 세션이 B사 터널을 타면 안 되므로 이 매칭이 엄격하게 검증된다.\n\n### 엔지니어링 트레이드오프\n\n터널은 본질적으로 추가 홉(hop)이라 지연이 생긴다. 그래서 리전별로 터널 종단을 분산 배치해 RTT를 줄이고, keep-alive와 다중화로 매 요청마다 핸드셰이크를 새로 하지 않도록 한다. Go의 고루틴 모델이 \"커넥션당 스레드\" 없이 수많은 동시 프록시 스트림을 싸게 다루게 해주는 점이 여기서 결정적이다."
+    },
+    {
+     "topic": "데이터 저장·일관성: 샤딩된 MySQL과 Redis·Kafka·Elasticsearch의 역할 분담",
+     "body": "### 데이터의 종류를 먼저 나눈다\n\nBrowserStack 같은 테스트 클라우드의 데이터는 성격이 매우 다른 세 종류로 갈린다. 각자 다른 저장소가 맡는다.\n\n| 데이터 | 특성 | 저장소 |\n|---|---|---|\n| 계정·플랜·조직·세션 메타 | 강한 일관성, 트랜잭션 필요 | `MySQL` (샤딩) |\n| 세션 락·쿼터·rate-limit·실시간 카운터 | 매우 빈번, 휘발성 OK | `Redis` |\n| 세션 로그·네트워크 로그·콘솔 로그 | 대용량 append, 검색 필요 | `Kafka` → `Elasticsearch` |\n| 비디오·스크린샷·앱 빌드 | 큰 바이너리, 영속 | `AWS S3` |\n\n### MySQL 샤딩 전략\n\n수백만 세션 레코드와 조직 데이터를 단일 인스턴스에 담을 수 없으므로 **테넌트(조직/사용자) 기준 샤딩**이 자연스럽다. 같은 조직의 데이터를 한 샤드에 모으면 \"내 조직의 최근 세션 목록\" 같은 대시보드 쿼리가 단일 샤드 안에서 끝나 크로스-샤드 조인을 피한다. 읽기 부하는 리드 레플리카로 분산하고, 빌링처럼 정확성이 중요한 경로만 프라이머리에서 읽는다.\n\n### Redis 가 캐시 이상인 이유\n\n여기서 Redis는 단순 캐시가 아니라 **동시성 제어의 심장**이다. \"이 플랜은 동시 10세션\" 같은 제약은 분산 환경에서 원자적 increment/decrement 와 TTL 로 강제된다. 기기 lease 점유, 큐 대기열, API rate limit 모두 Redis 위에 얹힌다. 그래서 Redis 장애는 곧 \"세션을 새로 못 띄움\"으로 이어지므로 HA 구성과 페일오버가 중요하다.\n\n### Kafka → Elasticsearch 파이프라인\n\n매 세션은 셀레늄 명령 로그, 네트워크 HAR, 콘솔/디바이스 로그를 쏟아낸다. 이걸 동기적으로 DB에 쓰면 핫패스가 막히므로 `Kafka` 로 비동기 흘려보내고, 워커가 소비해 `Elasticsearch`(검색·필터)와 `S3`(원본 보관)로 분기한다. 이렇게 하면 로그 폭주가 세션 실행 경로의 지연으로 번지지 않는다(백프레셔 격리). 사용자가 대시보드에서 \"실패한 명령 찾기\"를 하면 그건 Elasticsearch 쿼리로 처리된다."
+    },
+    {
+     "topic": "장애 대응·복원력: 기기 헬스 체크와 세션 reclamation",
+     "body": "### 실기기 팜만의 독특한 실패 모드\n\n순수 클라우드 VM과 달리, BrowserStack은 수만 대의 **실제 물리 기기**(iOS/Android 폰, Mac, Windows 박스)를 운영한다. 물리 기기는 소프트웨어보다 훨씬 다양하게 망가진다: USB 연결 끊김, 기기 과열·배터리 이슈, OS 행, 멈춘 앱, 더러워진 상태(이전 세션 잔재). 그래서 복원력 설계의 상당 부분이 \"고장난 기기를 빠르게 격리\"하는 데 쓰인다.\n\n### 기기 라이프사이클과 헬스 체크\n\n- 각 기기는 `available → leased → in-use → cleanup → quarantine?` 상태 머신을 돈다.\n- 세션이 끝나거나 비정상 종료되면 **cleanup** 단계에서 앱 삭제·캐시 와이프·기본 상태 복원을 강제한다. 이 단계가 멀티테넌트 보안(다음 고객이 이전 고객 데이터를 못 봄)과 직결된다.\n- 주기적/세션 후 **헬스 체크**가 기기 응답성·화면·자동화 에이전트 생존을 확인한다. 실패하면 기기를 `quarantine` 으로 빼서 스케줄러 풀에서 제외하고 운영팀/자동 복구(재부팅·재연결)로 넘긴다.\n\n### 세션 reclamation 과 lease TTL\n\n클라이언트가 갑자기 죽거나 네트워크가 끊기면 기기가 영원히 점유될 위험이 있다. 이를 막으려고 **lease 에 TTL**을 두고, 일정 시간 명령이 없으면(`idleTimeout`) 세션을 자동 종료해 기기를 풀로 되돌린다. 또한 세션 최대 길이(`maxDuration`)로 폭주하는 테스트가 기기를 독점하지 못하게 한다. 이 두 타이머가 device farm 의 \"자가 치유\"를 떠받친다.\n\n### 라우팅 신뢰성과 페일오버\n\n- 한 리전 데이터센터가 흔들리면, capability 를 만족하는 기기가 있는 다른 리전으로 신규 세션을 라우팅한다. 스케줄러가 *근접성*뿐 아니라 *현재 가용성·에러율*을 보고 결정하므로 자연스러운 페일오버가 된다.\n- Hub/Scheduler 는 무상태에 가깝게 설계해(상태는 Redis/DB에) 인스턴스가 죽어도 다른 인스턴스가 즉시 받는다. 상태를 서비스 메모리에 갖지 않는 것이 수평 확장과 장애 복구 모두의 전제다.\n\n### 트레이드오프\n\n\"매 세션 완전 와이프 + 헬스 체크\"는 안전하지만 기기 회전율(turnover) 시간을 늘려 가용 용량을 깎는다. 그래서 cleanup 을 병렬화하고, 자주 쓰이는 OS/브라우저 조합은 **웜 풀**로 미리 준비해 두어 세션 시작 지연을 줄이는 식으로 안전성과 처리량 사이를 조율한다."
     }
    ],
    "github": {
-    "org": "browserstack",
-    "repos": []
+    "org": "https://github.com/browserstack",
+    "repos": [
+     {
+      "name": "browserstack/browserstack-local-nodejs",
+      "url": "https://github.com/browserstack/browserstack-local-nodejs",
+      "desc": "사내망 앱을 클라우드 기기에서 테스트하는 Local 터널의 Node.js 바인딩",
+      "lang": "JavaScript",
+      "stars": 73
+     },
+     {
+      "name": "browserstack/browserstack-cypress-cli",
+      "url": "https://github.com/browserstack/browserstack-cypress-cli",
+      "desc": "Cypress 테스트를 BrowserStack에서 병렬 실행하는 공식 CLI",
+      "lang": "JavaScript",
+      "stars": 58
+     },
+     {
+      "name": "browserstack/browserstack-local-python",
+      "url": "https://github.com/browserstack/browserstack-local-python",
+      "desc": "Local Testing 터널의 Python 바인딩",
+      "lang": "Python",
+      "stars": 10
+     },
+     {
+      "name": "browserstack/fast-selenium-scripts",
+      "url": "https://github.com/browserstack/fast-selenium-scripts",
+      "desc": "Selenium 세션 지연을 줄이는 최적화 스크립트 모음",
+      "lang": "Python",
+      "stars": 3
+     }
+    ]
    },
    "sources": [
-    "https://www.browserstack.com/blog/engineering"
+    "https://www.browserstack.com/docs/automate/selenium",
+    "https://github.com/browserstack",
+    "https://www.browserstack.com/local-testing"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "freshworks",
