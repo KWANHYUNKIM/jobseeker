@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T16:07:32",
+ "generated_at": "2026-06-16T17:41:45",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 63,
+ "refined": 65,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -486,26 +486,30 @@
     "backend": [
      {
       "name": "Spring Boot",
-      "count": 13
+      "count": 12
      },
      {
       "name": "gRPC",
-      "count": 9
-     },
-     {
-      "name": "Spring Cloud",
-      "count": 5
+      "count": 10
      },
      {
       "name": "Ruby on Rails",
       "count": 4
      },
      {
+      "name": "Spring Cloud",
+      "count": 4
+     },
+     {
       "name": "Spring Cloud Gateway",
-      "count": 3
+      "count": 4
      },
      {
       "name": "Spring WebFlux",
+      "count": 4
+     },
+     {
+      "name": "QueryDSL",
       "count": 3
      },
      {
@@ -518,10 +522,6 @@
      },
      {
       "name": "GraphQL",
-      "count": 2
-     },
-     {
-      "name": "Netty",
       "count": 2
      }
     ],
@@ -540,7 +540,7 @@
      },
      {
       "name": "React Native",
-      "count": 4
+      "count": 5
      },
      {
       "name": "Vue.js",
@@ -582,10 +582,14 @@
      },
      {
       "name": "Redis",
-      "count": 11
+      "count": 12
      },
      {
       "name": "Apache Spark",
+      "count": 5
+     },
+     {
+      "name": "MongoDB",
       "count": 4
      },
      {
@@ -601,12 +605,8 @@
       "count": 3
      },
      {
-      "name": "MongoDB",
+      "name": "Spark",
       "count": 3
-     },
-     {
-      "name": "Apache Airflow",
-      "count": 2
      }
     ],
     "infra": [
@@ -624,11 +624,11 @@
      },
      {
       "name": "Terraform",
-      "count": 5
+      "count": 7
      },
      {
       "name": "Datadog",
-      "count": 3
+      "count": 5
      },
      {
       "name": "GCP",
@@ -659,7 +659,7 @@
     },
     {
      "name": "MSA",
-     "count": 8
+     "count": 7
     },
     {
      "name": "Microservices",
@@ -13760,45 +13760,54 @@
    "country": "KR",
    "domain": "이커머스/인테리어",
    "languages": [
-    "Ruby",
     "Kotlin",
-    "Python",
+    "Ruby",
     "TypeScript",
+    "Python",
     "Go"
    ],
    "stack": {
     "backend": [
      "Ruby on Rails",
-     "Spring Boot",
-     "FastAPI"
+     "Kotlin + Spring Boot",
+     "FastAPI",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "React Native"
     ],
     "data": [
-     "Kafka",
+     "Apache Kafka",
+     "Debezium (CDC)",
+     "MySQL (Aurora)",
      "PostgreSQL",
-     "MySQL",
      "Elasticsearch",
-     "Airflow"
+     "Redis",
+     "Airflow",
+     "Spark"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "ArgoCD"
+     "Kubernetes (EKS)",
+     "ArgoCD",
+     "Terraform",
+     "CloudFront",
+     "Datadog"
     ]
    },
    "architecture": [
-    "MSA(Rails 모놀리스→MSA 전환)",
-    "데이터 기반 추천",
-    "Event-driven"
+    "Strangler Fig: Rails 모놀리스 → Kotlin MSA 점진 전환",
+    "Event-driven (CDC + Kafka)",
+    "데이터/ML 기반 개인화 추천",
+    "커뮤니티-커머스 통합 도메인"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"오늘의집 앱<br/>Android iOS\"]\n    WEB[\"커뮤니티 커머스 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>TypeScript + Node.js\"]\n  end\n  subgraph Services\n    CORE[\"코어 서비스<br/>Ruby on Rails\"]\n    ORDER[\"커머스 주문 서비스<br/>Spring Boot + Kotlin\"]\n    FEED[\"콘텐츠 피드 서비스<br/>Spring Boot + Kotlin\"]\n    REC[\"추천 서비스<br/>FastAPI + Python\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    PG[\"주문 DB<br/>PostgreSQL\"]\n    MYSQL[\"레거시 DB<br/>MySQL\"]\n    ES[\"콘텐츠 검색<br/>Elasticsearch\"]\n    AIRFLOW[\"데이터 파이프라인<br/>Airflow + Python\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + ArgoCD\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> CORE\n  GW --> ORDER\n  GW --> FEED\n  CORE --> MYSQL\n  ORDER --> PG\n  ORDER --> KAFKA\n  KAFKA --> AIRFLOW\n  AIRFLOW --> REC\n  FEED --> ES\n  ORDER --> K8S",
-   "why_language": "초기 빠른 제품 개발을 위해 Ruby on Rails로 시작했고, 트래픽·복잡도 증가에 따라 Kotlin/Spring 기반 MSA로 전환하며 데이터·추천은 Python을 활용한다.",
-   "why_architecture": "커뮤니티+커머스가 결합된 도메인을 MSA로 분리하고, 사용자 행동 데이터 기반 추천을 강화하며 이벤트 드리븐으로 서비스를 연동한다.",
-   "summary": "Rails 모놀리스에서 Kotlin MSA로 전환 중인 데이터 기반 인테리어 커머스.",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Mobile App<br/>React Native\"]\n    WEB[\"Web<br/>Next.js + React\"]\n  end\n  subgraph Edge\n    CDN[\"CDN<br/>CloudFront\"]\n    GW[\"API Gateway<br/>ALB + Envoy\"]\n  end\n  subgraph Core\n    MONO[\"Legacy Monolith<br/>Ruby on Rails\"]\n    MSA[\"Domain Services<br/>Kotlin + Spring Boot\"]\n    ML[\"Recsys/Search API<br/>Python + FastAPI\"]\n  end\n  subgraph Async\n    CDC[\"CDC<br/>Debezium\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"OLTP<br/>MySQL Aurora\"]\n    PG[\"OLTP<br/>PostgreSQL\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    REDIS[\"Cache<br/>Redis\"]\n    S3[\"Media Store<br/>S3\"]\n  end\n  subgraph DataPlatform\n    AF[\"Orchestration<br/>Airflow\"]\n    SPARK[\"Batch/Feature<br/>Spark\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> GW\n  GW --> MONO\n  GW --> MSA\n  GW -->|gRPC| ML\n  MONO -->|binlog| CDC\n  CDC --> KAFKA\n  MSA -->|publish| KAFKA\n  KAFKA --> ML\n  KAFKA --> AF\n  MONO --> MYSQL\n  MSA --> PG\n  MSA --> REDIS\n  MSA --> ES\n  ML --> ES\n  MONO --> S3\n  AF --> SPARK\n  SPARK -->|features| ML",
+   "why_language": "초기 빠른 제품 검증을 위해 생산성이 높은 Ruby on Rails로 시작했지만, 트래픽과 도메인이 폭증하면서 정적 타입·JVM 생태계·동시성 처리에 강한 Kotlin + Spring Boot로 핵심 도메인을 분리해 나가고 있다. 추천·검색·이미지 분석 같은 ML 워크로드는 Python(FastAPI) 생태계를, 사용자 인터랙션이 풍부한 커뮤니티-커머스 UI는 TypeScript/React/React Native로 웹·앱을 단일 언어 체계로 구축한다.",
+   "why_architecture": "수백만 사용자의 콘텐츠 소비(피드·집들이)와 거래(커머스)가 한 화면에서 얽히는 도메인 특성상, 결합도 높은 Rails 모놀리스를 한 번에 갈아엎는 대신 Strangler Fig 방식으로 트래픽이 큰 도메인부터 Kotlin MSA로 떼어낸다. 모놀리스 DB 변경을 Debezium CDC로 잡아 Kafka 이벤트로 흘려보내는 event-driven 구조 덕분에, 기존 시스템을 깨지 않으면서 신규 서비스가 같은 데이터를 비동기로 구독해 추천·검색 인덱스·통계를 독립적으로 갱신할 수 있다.",
+   "summary": "Rails 모놀리스를 CDC·Kafka 이벤트로 감싸 Kotlin MSA로 점진 분해하며, 데이터/ML로 커뮤니티-커머스를 개인화하는 이커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "Rails 모놀리스에서 Kotlin MSA로",
@@ -13815,14 +13824,35 @@
     {
      "topic": "이미지·콘텐츠 인프라와 검색",
      "body": "### 비주얼 커머스를 떠받치는 인프라\n\n오늘의집은 *사용자가 올린 인테리어 사진·영상*이 핵심 콘텐츠다. 방대한 이미지가 매일 업로드되고, 이를 빠르게 다양한 기기에 보여주는 게 사용자 경험의 근간이다.\n\n**이미지 파이프라인**\n- 업로드된 원본을 *여러 해상도·포맷(WebP 등)*으로 변환·압축한다. 업로드량이 들쭉날쭉하므로 비동기 처리(큐/서버리스)로 탄력 처리한다.\n- 변환 결과는 객체 스토리지(S3)에 두고 **CDN**으로 배포해 가까운 엣지에서 빠르게 받게 한다.\n- 사진 속 *상품 태깅*(어떤 가구인지 연결)은 콘텐츠-커머스 연결의 핵심이라, 이미지 분석·태깅 파이프라인이 별도로 돈다.\n\n**검색**\n- 상품·콘텐츠를 **Elasticsearch**로 검색. 인테리어 도메인 특유의 *스타일·색·공간 카테고리* 같은 탐색 축을 색인에 반영한다.\n- 콘텐츠 검색은 단순 텍스트가 아니라 *시각적 유사성·스타일 매칭*까지 가려는 영역이라, 이미지 임베딩 기반 유사 검색 같은 시도가 들어간다.\n\n**캐싱**\n- 인기 콘텐츠·상품·메인 피드는 Redis/CDN으로 캐싱해 읽기 폭주를 흡수. 바이럴 콘텐츠의 *핫키*를 분산 캐싱한다.\n\n### WHY\n오늘의집의 경쟁력은 *콘텐츠의 양과 발견성*이다. 이미지를 싸고 빠르게 처리·전달하고, 콘텐츠를 잘 검색·추천하는 인프라가 곧 비즈니스 해자(moat)다."
+    },
+    {
+     "topic": "요청 처리 end-to-end: 한 번의 피드 스크롤이 거치는 경로",
+     "body": "### 사용자가 앱을 켜고 피드를 내릴 때 실제로 무슨 일이 일어나는가\n\n오늘의집의 메인 화면은 \"집들이/사진 콘텐츠\"와 \"커머스 상품\"이 한 피드에 섞여 내려오는 구조라, 단순 CRUD가 아니라 **개인화 랭킹 + 다중 도메인 조합** 요청이다.\n\n1. **Edge** — `React Native` 앱 / `Next.js` 웹의 요청은 먼저 `CloudFront`에서 정적 자산·이미지(`S3` 원본의 리사이즈 변형)를 캐시 히트시키고, 동적 API는 `ALB`를 거쳐 게이트웨이 계층으로 들어온다.\n2. **Gateway/BFF** — 인증 토큰 검증과 라우팅이 여기서 일어난다. 모놀리스로 보낼지, 이미 분리된 `Kotlin` 도메인 서비스로 보낼지를 경로 기준으로 분기한다. 모바일은 화면 단위 응답을 한 번에 받기 위해 BFF(Backend for Frontend) 성격의 조합 API를 호출하는 패턴이 많다.\n3. **랭킹 호출** — 피드 정렬은 `FastAPI` 기반 추천/랭킹 서비스가 담당한다. 게이트웨이는 사용자 ID·컨텍스트를 담아 `gRPC`/HTTP로 추천 서비스를 때리고, 추천 서비스는 미리 계산된 후보(candidate)와 실시간 피처를 합쳐 정렬된 콘텐츠/상품 ID 리스트를 반환한다.\n4. **하이드레이션(hydration)** — ID 리스트가 나오면 콘텐츠 본문은 콘텐츠 서비스, 가격·재고는 커머스 서비스, 좋아요/스크랩 카운트는 카운터 저장소(`Redis`)에서 병렬로 채워 넣는다. 이 fan-out/fan-in 단계가 지연시간의 핵심이라 `Redis` 캐싱과 배치 조회로 N+1을 막는다.\n5. **응답** — 조합된 결과를 클라이언트 화면 스키마에 맞춰 직렬화해 반환한다.\n\n핵심 트레이드오프: 콘텐츠와 커머스를 한 피드에 섞기 때문에 **랭킹 일관성 vs 지연시간**의 긴장이 크다. 그래서 무거운 랭킹은 오프라인/근실시간으로 후보를 미리 만들어두고(precompute), 온라인 단계는 가벼운 리랭킹과 하이드레이션만 하도록 책임을 쪼갠다."
+    },
+    {
+     "topic": "Strangler Fig 마이그레이션의 실제 동작: CDC로 모놀리스를 '감싸기'",
+     "body": "### 왜 빅뱅 재작성을 안 하고 CDC로 둘러쌌나\n\n수년치 비즈니스 로직이 쌓인 `Ruby on Rails` 모놀리스와 단일 `MySQL`을 한 번에 교체하는 건 위험이 너무 크다. 오늘의집은 **Strangler Fig 패턴**으로 도메인을 하나씩 떼어내며, 그 접착제가 `Debezium` 기반 CDC(Change Data Capture)다.\n\n#### 동작 메커니즘\n- 모놀리스가 `MySQL`에 쓰면, `Debezium`이 **binlog**를 tail 하여 row 단위 변경(INSERT/UPDATE/DELETE)을 `Kafka` 토픽으로 발행한다. 애플리케이션 코드를 거의 안 건드리고도 \"데이터 변경 = 이벤트\"가 만들어진다는 게 핵심.\n- 새로 분리한 `Kotlin` 서비스는 이 토픽을 구독해 자기 소유의 `PostgreSQL`/`MySQL`에 **read model**을 구축하거나, 검색용 `Elasticsearch` 인덱스를 갱신한다. 즉 모놀리스를 직접 호출(동기 결합)하지 않고도 같은 진실을 비동기로 따라간다.\n- 쓰기 경로를 옮길 때는 게이트웨이 라우팅을 신규 서비스로 점진 전환하고, 안정화되면 모놀리스의 해당 코드 경로를 폐기한다.\n\n#### 신경 써야 하는 지점\n| 이슈 | 대응 |\n|------|------|\n| 이벤트 순서/중복 | 토픽 파티션 키를 엔티티 ID로 잡아 순서 보장, 컨슈머는 idempotent 처리 |\n| 듀얼 라이트 정합성 | 단일 소스(모놀리스 DB)만 쓰고 CDC로 파생 — 듀얼 라이트를 피함 |\n| 스키마 변경 전파 | `Kafka` 스키마 관리(예: Schema Registry)로 호환성 유지 |\n| 백필(backfill) | 신규 서비스 첫 구동 시 과거 데이터를 일괄 적재 후 CDC 스트림에 이어붙임 |\n\n결과적으로 \"모놀리스는 살아있는데, 그 데이터를 먹고 자라는 신규 서비스들이 점점 기능을 가져가는\" 구조가 된다. 이게 event-driven이 단순 메시징이 아니라 **마이그레이션 전략 그 자체**로 쓰이는 이유다."
+    },
+    {
+     "topic": "배포·CI/CD와 GitOps: EKS 위에서 ArgoCD로 굴리는 법",
+     "body": "### 컨테이너 플랫폼과 선언적 배포\n\n수십 개로 늘어나는 `Kotlin`/`Python` 서비스를 사람이 일일이 배포할 수 없으니, `AWS EKS`(Kubernetes) 위에서 **GitOps**로 운영한다.\n\n- **빌드 파이프라인**: 코드 푸시 → CI에서 테스트/타입체크 → 컨테이너 이미지 빌드 → 레지스트리(ECR) 푸시. 이미지 태그를 배포용 매니페스트(또는 Helm values)에 반영한다.\n- **ArgoCD(선언적 배포)**: 클러스터의 \"원하는 상태\"를 Git 저장소가 단일 소스로 갖는다. `ArgoCD`가 Git과 클러스터를 지속적으로 비교(diff)해 드리프트를 자동으로 동기화한다. 즉 배포 = \"Git에 머지\", 롤백 = \"Git revert\"가 되어 변경 이력과 감사가 깔끔해진다.\n- **점진 배포**: 트래픽이 큰 서비스는 카나리/롤링으로 일부 파드에 먼저 새 버전을 띄우고 에러율·지연을 보며 확대한다. 문제가 보이면 이전 리비전으로 즉시 되돌린다.\n- **인프라 코드화**: 클러스터·네트워크·DB 등 기반은 `Terraform`으로 코드화해 환경 재현성과 변경 추적을 확보한다.\n\n#### 왜 이렇게 하나\nMSA 전환의 부작용은 \"배포 단위가 폭증한다\"는 것이다. GitOps는 서비스가 늘어도 운영 복잡도가 선형 이상으로 튀지 않게 막아주는 표준화 장치다. 선언적 상태 + 자동 동기화 덕에 온콜 엔지니어가 클러스터에 수동 `kubectl`을 칠 일을 줄이고, 모든 변경을 PR 리뷰 흐름에 태운다."
+    },
+    {
+     "topic": "관측성(Observability): 분산 시스템에서 장애를 추적하는 방식",
+     "body": "### 한 요청이 여러 서비스를 거치면 디버깅이 어려워진다\n\n모놀리스 시절엔 로그 한 군데만 보면 됐지만, 게이트웨이 → `Kotlin` 도메인 서비스 → `FastAPI` 추천 → `Redis`/`Elasticsearch`로 fan-out 되는 지금은 **분산 추적**이 필수다.\n\n- **메트릭(Metrics)**: 서비스별 RPS, p99 지연, 에러율, `Kafka` 컨슈머 랙(consumer lag) 같은 골든 시그널을 수집해 대시보드/알람으로 본다. 특히 CDC·이벤트 구조에서는 **consumer lag**이 핵심 지표 — 랙이 커지면 추천 인덱스나 read model이 \"과거의 진실\"을 보고 있다는 뜻이라 데이터 신선도(freshness) SLO와 직결된다.\n- **분산 트레이싱(Tracing)**: 요청에 trace ID를 부여해 게이트웨이부터 말단 서비스·DB 호출까지 한 타임라인으로 잇는다. \"피드가 느리다\"는 신고가 들어오면 어느 hop(랭킹? 하이드레이션? ES 쿼리?)에서 시간을 먹는지 즉시 짚는다.\n- **로깅(Logging)**: 구조화 로그(JSON)에 trace ID를 박아 중앙 수집기로 보내고, 메트릭/트레이스와 상호 링크한다. `Datadog` 같은 APM/통합 모니터링이나 ELK 계열로 메트릭·로그·트레이스를 한 화면에서 오간다.\n\n#### 비동기 시스템 특유의 관측 포인트\nevent-driven에서는 \"어느 API가 실패했나\"만큼 \"어느 이벤트가 처리 안 됐나\"가 중요하다. 그래서 DLQ(dead letter queue) 적재량, 재처리 횟수, 토픽별 처리 지연을 함께 본다. 동기 호출의 HTTP 5xx와 달리 비동기는 **조용히 늦어지는 실패**가 많기 때문에, lag와 freshness를 알람의 1급 시민으로 둔다."
     }
    ],
+   "github": {
+    "org": "https://github.com/bucketplace",
+    "repos": []
+   },
    "sources": [
-    "https://www.bucketplace.com/post",
-    "https://medium.com/bucketplace-corp"
+    "https://www.bucketplace.com/post/",
+    "https://team.ohou.se/",
+    "https://github.com/bucketplace"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "musinsa",
@@ -13830,44 +13860,60 @@
    "country": "KR",
    "domain": "이커머스/패션",
    "languages": [
-    "Java",
     "Kotlin",
-    "JavaScript",
+    "Java",
     "TypeScript",
+    "JavaScript",
     "PHP"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud",
-     "Laravel(레거시)"
+     "Spring WebFlux",
+     "Spring Cloud Gateway",
+     "Kotlin Coroutines",
+     "Laravel(레거시 PHP)",
+     "QueryDSL"
     ],
     "frontend": [
-     "React",
      "Next.js",
-     "TypeScript"
+     "React",
+     "TypeScript",
+     "Recoil/React Query",
+     "Storybook",
+     "Module Federation(MFE)"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
+     "MySQL(Aurora)",
      "Redis",
-     "Elasticsearch"
+     "Kafka",
+     "Elasticsearch",
+     "MongoDB",
+     "Debezium(CDC)",
+     "Apache Spark",
+     "Airflow"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "ArgoCD"
+     "Kubernetes(EKS)",
+     "ArgoCD",
+     "Istio",
+     "Terraform",
+     "GitHub Actions",
+     "Datadog",
+     "Grafana/Prometheus"
     ]
    },
    "architecture": [
-    "MSA(PHP 모놀리스→MSA 전환)",
-    "Event-driven",
-    "검색/추천"
+    "MSA(PHP 모놀리스 → Kotlin/Spring MSA 전환)",
+    "Event-driven(Kafka + CDC outbox)",
+    "검색·추천 플랫폼",
+    "Cell/도메인 단위 서비스 분할"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"무신사 웹<br/>React + Next.js\"]\n    APP[\"모바일 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PROD[\"상품 서비스<br/>Spring Boot + Kotlin\"]\n    ORDER[\"주문 결제<br/>Spring Boot\"]\n    SRCH[\"검색 추천<br/>Spring + Elasticsearch\"]\n    LEG[\"레거시 모놀리스<br/>Laravel PHP\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 상품 DB<br/>MySQL\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"컨테이너 오케스트레이션<br/>Kubernetes + ArgoCD\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  WEB --> GW\n  APP --> GW\n  GW --> PROD\n  GW --> ORDER\n  GW --> SRCH\n  GW --> LEG\n  PROD --> KAFKA\n  ORDER --> KAFKA\n  KAFKA --> SRCH\n  PROD --> MYSQL\n  ORDER --> MYSQL\n  PROD --> REDIS\n  SRCH --> ES\n  K8S --> AWS",
-   "why_language": "초기 PHP(Laravel) 모놀리스로 성장했으나, 트래픽 증가에 따라 Java/Kotlin·Spring 기반 MSA로 전환하며 안정성과 확장성을 확보하고 있다.",
-   "why_architecture": "패션 커머스의 상품·주문·검색 도메인을 MSA로 분리하고, 레거시 PHP를 점진적으로 분해하며 이벤트 드리븐으로 결합도를 낮춘다.",
-   "summary": "PHP 모놀리스에서 Java/Kotlin MSA로 진화하는 패션 커머스.",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"모바일 앱<br/>iOS/Android\"]\n    WEB[\"무신사 스토어 웹<br/>Next.js + React\"]\n  end\n  subgraph Edge\n    CDN[\"CDN/이미지<br/>CloudFront\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    MESH[\"Service Mesh<br/>Istio on EKS\"]\n  end\n  subgraph Core\n    PROD[\"상품/카탈로그<br/>Kotlin + Spring Boot\"]\n    ORDER[\"주문/결제<br/>Kotlin + WebFlux\"]\n    INVEN[\"재고<br/>Spring Boot + Redis lock\"]\n    SEARCH[\"검색/랭킹<br/>Spring Boot + ES\"]\n    RECO[\"추천<br/>Spark + ML\"]\n    LEGACY[\"레거시 모놀리스<br/>PHP Laravel\"]\n  end\n  subgraph Data\n    MYSQL[\"주문/상품 DB<br/>Aurora MySQL\"]\n    REDIS[\"캐시/재고락<br/>Redis\"]\n    ES[\"검색 색인<br/>Elasticsearch\"]\n    MONGO[\"상품 속성/로그<br/>MongoDB\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n    DWH[\"분석/배치<br/>Airflow + Spark\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  APP --> GW\n  WEB --> GW\n  GW --> MESH\n  MESH --> PROD\n  MESH --> ORDER\n  MESH --> SEARCH\n  MESH --> LEGACY\n  ORDER --> INVEN\n  INVEN -->|분산락| REDIS\n  ORDER --> MYSQL\n  PROD --> MYSQL\n  PROD --> MONGO\n  SEARCH --> ES\n  SEARCH --> RECO\n  MYSQL -->|binlog| CDC\n  CDC --> KAFKA\n  KAFKA -->|색인 동기화| ES\n  KAFKA --> RECO\n  KAFKA --> DWH\n  RECO --> REDIS",
+   "why_language": "PHP(Laravel) 모놀리스로 출발했지만 대규모 트래픽과 복잡한 도메인을 감당하기 위해 JVM 생태계로 이전했고, 신규 서비스는 Null-safety·coroutine·간결한 DSL을 가진 Kotlin + Spring Boot/WebFlux로 표준화했다. 프론트는 SEO와 초기 로딩이 중요한 커머스 특성상 Next.js + TypeScript로 SSR/타입 안정성을 확보한다.",
+   "why_architecture": "단일 PHP 모놀리스로는 상품·주문·재고·검색·추천 각 도메인의 배포 주기와 트래픽 특성이 달라 병목이 컸기 때문에, 도메인 경계로 쪼갠 MSA와 Kafka 기반 event-driven으로 결합도를 낮췄다. 특히 무신사 스냅·세일 같은 순간 트래픽 폭증에 대응하려면 서비스별 독립 오토스케일링과 CDC outbox로 DB와 검색 색인을 비동기 정합시키는 구조가 필수였다.",
+   "summary": "PHP 모놀리스에서 Kotlin/Spring MSA + Kafka 이벤트 드리븐으로 전환한 대규모 패션 커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "PHP 모놀리스에서 Kotlin MSA로의 전환",
@@ -13884,18 +13930,35 @@
     {
      "topic": "캐싱과 트래픽 이벤트 대응",
      "body": "### 무엇을 캐시하나\n커머스는 읽기(상품 조회·목록)가 쓰기보다 압도적으로 많다. 무신사는 `Redis`를 다층으로 활용한다.\n- **상품/카테고리 조회 캐시**: 변경이 적은 상품 정보를 캐시해 DB 부하를 줄인다.\n- **세션·장바구니**: 빠른 읽기/쓰기.\n- **재고 핫 카운터**: 폭주 상품의 재고를 인메모리로 관리.\n\n### 핫 트래픽 이벤트\n세일·드롭 같은 대형 이벤트는 평소의 수십 배 트래픽을 만든다. 대응:\n- **사전 워밍**: 노출될 상품·페이지를 미리 캐시에 채워 콜드 캐시 미스 폭주를 막는다.\n- **오토스케일**: `Kubernetes` HPA + `ArgoCD`로 무상태 서비스를 스케일아웃.\n- **백프레셔/대기열**: 결제·재고 등 병목 지점은 대기열로 받아 순차 처리해 시스템 붕괴를 막는다.\n\n### 캐시 일관성\n가격·재고는 틀리면 안 되므로, 캐시 무효화 이벤트(`Kafka`)로 변경 시 즉시 갱신하거나 짧은 TTL을 둔다. 조회수·인기처럼 약간 늦어도 되는 값은 긴 TTL로 비용을 아낀다.\n\n### 트레이드오프\n캐시는 성능을 주지만 일관성 리스크가 있다. \"틀리면 돈 문제\"인 데이터는 강하게, 부가 데이터는 느슨하게 관리하는 차등 전략으로 균형을 잡는다."
+    },
+    {
+     "topic": "CDC outbox로 MySQL ↔ Elasticsearch 색인 정합 맞추기",
+     "body": "### 문제: 듀얼 라이트의 함정\n무신사처럼 상품 수가 많고 가격·재고·할인이 수시로 바뀌는 커머스에서 가장 어려운 일 중 하나는 **원천 DB(MySQL)와 검색 색인(Elasticsearch)을 동기화**하는 것이다. 단순하게 `상품 저장` 코드에서 `MySQL insert` 후 곧바로 `ES index`를 호출하는 **dual write**는 두 시스템 중 하나가 실패하면 데이터가 어긋난다. 가격을 내렸는데 검색 결과엔 옛 가격이 남는 식의 불일치는 커머스에서 치명적이다.\n\n### 해결: Transactional Outbox + Debezium CDC\n무신사 계열 서비스는 이 문제를 **outbox 패턴 + CDC(Change Data Capture)** 로 푼다. 흐름은 다음과 같다.\n\n1. 비즈니스 트랜잭션 안에서 도메인 테이블과 `outbox` 테이블을 **하나의 로컬 트랜잭션**으로 함께 커밋한다. 이때 ES 호출 같은 외부 I/O는 트랜잭션에 넣지 않는다 → 원자성 보장.\n2. `Debezium`이 MySQL **binlog**를 tailing 하다가 `outbox` 행 변경을 감지해 `Kafka` 토픽으로 흘려보낸다. 애플리케이션은 Kafka에 직접 produce 하지 않고 DB 커밋만 신경 쓰면 된다.\n3. 색인 컨슈머가 Kafka 토픽을 구독해 ES bulk API로 색인을 갱신한다. 실패하면 Kafka offset을 commit 하지 않으므로 **at-least-once**로 재처리된다.\n\n```\n[Service] --tx--> MySQL(상품 + outbox)\n                     | binlog\n                  Debezium --> Kafka(product.changed)\n                                   |\n                             Index Consumer --> Elasticsearch (bulk)\n```\n\n### 멱등성과 순서 보장\n- ES 문서 id를 상품 id로 고정하고 `version`(또는 binlog의 LSN/timestamp)을 external version으로 써서, **늦게 도착한 옛 이벤트가 최신 문서를 덮어쓰지 못하게** 한다.\n- Kafka 파티션 키를 상품 id로 잡아 **동일 상품 이벤트는 같은 파티션 = 순서 보장**.\n\n### 트레이드오프\n색인은 결국 **eventual consistency**다. 가격 변경이 검색에 반영되기까지 보통 수백 ms~수 초의 지연이 생긴다. 대신 원천 DB 트랜잭션이 ES 장애에 영향받지 않고, 색인 파이프라인을 독립적으로 재처리·재색인(full reindex)할 수 있어 운영 탄력성이 크게 올라간다."
+    },
+    {
+     "topic": "관측성(Observability): 분산 트레이싱과 메트릭으로 MSA 디버깅하기",
+     "body": "### 왜 필요한가\n모놀리스에서는 스택 트레이스 하나로 끝나던 디버깅이, 주문 한 건이 `Gateway → 주문 → 재고 → 결제 → 쿠폰 → 적립금` 식으로 수많은 서비스를 거치는 MSA에서는 **어느 hop에서 느려졌는지/실패했는지** 추적하기 어렵다. 무신사 규모(초당 수만 RPS의 이벤트 트래픽)에서는 관측성이 곧 장애 대응 속도다.\n\n### 3 pillars 구성\n| 축 | 도구 | 용도 |\n|---|---|---|\n| Metrics | `Prometheus` + `Grafana`, `Datadog` | RPS·p99 latency·에러율·JVM heap·Kafka consumer lag |\n| Tracing | `OpenTelemetry` / Datadog APM | 서비스 간 호출 체인, hop별 소요시간 |\n| Logging | 중앙 로그 수집(ELK/Datadog Logs) | trace_id로 로그 상관관계 |\n\n### Trace 전파 메커니즘\n- Gateway에서 요청에 `trace_id` / `span_id`를 부여하고, 모든 다운스트림 HTTP 헤더(W3C `traceparent`)와 **Kafka 메시지 헤더**에 전파한다.\n- 비동기 구간이 핵심이다. 동기 호출만 추적하면 Kafka를 건너는 순간 trace가 끊기므로, producer가 헤더에 trace context를 심고 consumer가 이어받아 **이벤트 기반 흐름까지 하나의 trace로** 묶는다.\n\n### Kafka consumer lag — 가장 중요한 단일 지표\n이벤트 드리븐 아키텍처에서 `consumer lag`(아직 처리 못 한 메시지 수)은 시스템 건강의 핵심 신호다. 색인/추천/정산 컨슈머의 lag이 급증하면 \"검색 결과가 늦게 갱신된다\", \"적립금이 늦게 들어온다\" 같은 사용자 체감 문제로 직결된다. 무신사는 이 lag을 SLO 지표로 잡고, 임계치 초과 시 컨슈머 파드를 오토스케일하거나 알람을 띄운다.\n\n### 트레이드오프\n100% 트레이싱은 비용(스토리지·네트워크)이 크므로 **tail-based sampling**(에러·고지연 trace는 100% 보존, 정상 trace는 일부만)으로 비용과 가시성의 균형을 맞춘다."
+    },
+    {
+     "topic": "배포 파이프라인: GitOps(ArgoCD)와 카나리 릴리스",
+     "body": "### GitOps의 핵심 아이디어\n무신사는 EKS 위에서 수십~수백 개 마이크로서비스를 굴리므로, 배포를 사람이 `kubectl apply`로 하는 건 비현실적이다. 대신 **Git이 단일 진실 공급원(single source of truth)** 이 되는 GitOps를 쓴다.\n\n1. 개발자가 코드를 머지하면 `GitHub Actions`가 빌드·테스트 후 컨테이너 이미지를 ECR에 push 하고, **manifest 레포의 이미지 태그를 commit**한다.\n2. `ArgoCD`가 manifest 레포를 지속적으로 감시하다가 클러스터의 실제 상태와 Git 선언 상태의 **drift를 감지하면 자동으로 sync**(배포)한다.\n3. 롤백은 단순히 **Git revert** — 이전 커밋으로 되돌리면 ArgoCD가 그 상태로 클러스터를 맞춘다. 배포 이력이 곧 Git 히스토리라 감사 추적도 깔끔하다.\n\n### 카나리 릴리스로 위험 줄이기\n커머스에서 잘못된 배포는 곧 매출 손실이다. 무신사는 신버전을 전체에 한 번에 푸시하지 않고 **점진적 카나리**로 내보낸다(Argo Rollouts / Istio traffic split 활용).\n\n```\nv2에 트래픽 5% → 메트릭 정상? → 25% → 50% → 100%\n            ↘ p99 latency·5xx 증가 감지 → 자동 롤백\n```\n\n- `Istio`의 가중치 라우팅으로 v1:v2 트래픽 비율을 조절한다.\n- Prometheus/Datadog 메트릭(에러율·latency)을 **analysis 단계에서 자동 평가**해 임계치를 넘으면 사람 개입 없이 롤백한다.\n\n### 트레이드오프\n카나리는 배포 시간이 길어지고(점진 승급) 두 버전이 공존하므로 **DB 스키마 변경은 backward-compatible** 해야 한다(expand-contract 마이그레이션: 컬럼 추가 → 양쪽 코드 호환 → 구컬럼 제거). 대신 장애 폭발 반경(blast radius)을 5% 수준으로 가둘 수 있어 대규모 트래픽 서비스에 적합하다."
+    },
+    {
+     "topic": "마이크로 프론트엔드(MFE)와 Next.js SSR로 거대 커머스 화면 쪼개기",
+     "body": "### 왜 프론트도 쪼개는가\n무신사 스토어는 홈·카테고리·상품 상세·스냅(콘텐츠)·장바구니·마이페이지 등 **성격이 완전히 다른 화면**들의 집합이고, 각 영역을 담당하는 팀이 다르다. 단일 SPA로 묶으면 한 팀 배포가 전체 빌드·릴리스를 막는 병목이 된다. 그래서 백엔드의 MSA에 대응하는 **micro frontend(MFE)** 로 프론트를 도메인 단위로 분할한다.\n\n### Next.js를 쓰는 이유 — 커머스 = SEO + 초기 로딩\n패션 커머스는 **검색 유입(SEO)** 과 **첫 화면 로딩 속도(LCP)** 가 매출과 직결된다. 그래서 CSR-only React 대신 `Next.js`로:\n- **SSR/SSG**: 상품 상세·카테고리 페이지를 서버에서 렌더해 크롤러가 가격·상품명을 읽을 수 있고, 초기 페인트가 빠르다.\n- **ISR(Incremental Static Regeneration)**: 자주 안 바뀌는 페이지는 정적으로 캐시하되 일정 주기로 백그라운드 재생성 → 원천 부하를 줄인다.\n- **이미지 최적화**: 패션은 이미지가 핵심이므로 next/image + CDN으로 디바이스별 리사이즈·WebP 변환.\n\n### 공통 디자인 시스템\n여러 팀·여러 앱이 일관된 UI를 유지하려면 컴포넌트를 중앙화해야 한다. 무신사는 `musinsa/ui`(공개) 같은 **디자인 시스템/컴포넌트 라이브러리**를 만들어 버튼·모달·상품카드 등을 표준화하고 `Storybook`으로 문서화한다. 덕분에 MFE로 쪼개도 화면 일관성이 깨지지 않는다.\n\n### 통합 방식과 트레이드오프\n- **Module Federation**(Webpack) 또는 라우트 단위 분리로 각 MFE를 독립 배포·로딩한다.\n- 장점: 팀별 독립 배포, 기술 스택 부분 교체 용이, 장애 격리.\n- 단점: **번들 중복**(공통 라이브러리가 여러 번 로드될 위험) → shared deps 설정으로 중복 제거 필요, 그리고 MFE 간 **버전·디자인 정합성** 관리 비용이 크다. 그래서 공통 라이브러리 버전 정책과 디자인 토큰 표준화가 MFE 운영의 핵심 숙제가 된다."
     }
    ],
    "github": {
-    "org": "musinsa",
+    "org": "https://github.com/musinsa",
     "repos": []
    },
    "sources": [
     "https://medium.com/musinsa-tech",
-    "https://www.musinsa.com"
+    "https://github.com/musinsa",
+    "https://www.musinsa.com/career"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "daangn",

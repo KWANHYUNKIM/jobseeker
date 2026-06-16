@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-16T16:03:39",
- "total": 729,
+ "generated_at": "2026-06-16T17:37:11",
+ "total": 730,
  "sources": [
   {
    "company": "Etsy",
@@ -93,14 +93,14 @@
    "count": 17
   },
   {
-   "company": "Lyft",
-   "country": "US",
+   "company": "카카오",
+   "country": "KR",
    "count": 12
   },
   {
-   "company": "카카오",
-   "country": "KR",
-   "count": 11
+   "company": "Lyft",
+   "country": "US",
+   "count": 12
   },
   {
    "company": "Dropbox",
@@ -716,6 +716,27 @@
    "categories": [],
    "lang": "ko",
    "content_id": "2089a956deaf3707"
+  },
+  {
+   "key": "kakao",
+   "company": "카카오",
+   "country": "KR",
+   "title": "AI 에이전트로 카카오톡 추천 지표 분석 자동화하기",
+   "url": "https://tech.kakao.com/posts/824",
+   "published": "2026-06-15",
+   "published_ts": 1781535600.0,
+   "summary": "AI 에이전트로 카카오톡 추천 지표 분석 자동화하기: Hadoop 기반 도입 사례\n안녕하세요. 소셜추천엔진팀에서 숏폼 추천 모델을 개발하고 있는 루퍼트(rupert)입니다.\n추천 시스템을 개발하다 보면 코드를 짜는 시간만큼이나 데이터를 들여다보는 시간이 길어집니다. 지표가 조금만 움직여도 “이번 주 CTR이 왜 떨어졌지?”, “실험군 반응은 어땠지?”, “배포 이후 특정 사용자군에서 달라진 점은 없을까?” 같은 질문이 이어집니다.\n질문은 한 문장이지만,...",
+   "tags": [
+    "blog"
+   ],
+   "tech_stack": [
+    "Hadoop"
+   ],
+   "categories": [
+    "데이터"
+   ],
+   "lang": "ko",
+   "content_id": "d09e1253478467bc"
   },
   {
    "key": "stackoverflow",
