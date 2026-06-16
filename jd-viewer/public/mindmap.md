@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6250건** 공고 · **1240개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-17 06:28
+- 총 **6256건** 공고 · **1240개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-17 08:02
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (348개사)
+## HR/채용 (347개사)
 ### (주)제이투이 `중소기업` · 20건
 - **백엔드** [5건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -294,27 +294,6 @@ markmap:
 - **펌웨어/임베디드** [2건] · `C++` `Python`
   - [(쿤텍 ES사업그룹 개발팀) 임베디드 SW 테스팅 도구 개발자 5~15년 ↗](https://www.wanted.co.kr/wd/350294)
   - [(쿤텍 ES사업그룹) 임베디드 SW/FW 개발자 / 경력 2명 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53986098&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=41e7582e-45a6-4118-b35b-79ec55d29f71)
-
-### 토스뱅크(주) `대기업` · 6건
-- **백엔드** [3건] · `Python` `Kotlin` `Go` `MSA` `Java` `Spring`
-  - [ML Backend Engineer ↗](https://www.wanted.co.kr/wd/368055)
-  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
-  - [Server Developer(Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185459&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=347185e7-92b5-4cec-88ee-edcb2be58f5f)
-- **프론트엔드** [1건] · `Java` `Python`
-  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
-- **모바일** [1건] · `Kotlin` `Python` `Go` `MSA`
-  - [ML Backend Engineer ↗](https://www.wanted.co.kr/wd/368055)
-- **AI/ML** [4건] · `Python` `Kotlin` `Go` `MSA` `Java` `Kubernetes`
-  - [ML Backend Engineer ↗](https://www.wanted.co.kr/wd/368055)
-  - [Data Product Manager (AI) ↗](https://www.wanted.co.kr/wd/368061)
-  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
-  - [ML Platform Team Leader ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185460&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=42d91347-9e34-4d82-ae5a-e7bddfb49731)
-- **데이터** [1건] · `Java` `Python`
-  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
-- **DevOps/인프라** [3건] · `Java` `Python` `Kubernetes` `Terraform` `Linux` `Git`
-  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
-  - [ML Platform Team Leader ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185460&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=42d91347-9e34-4d82-ae5a-e7bddfb49731)
-  - [OpenStack Cloud Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185462&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=63453ad2-6bbc-43eb-8775-f1662bb64d92)
 
 ### 아토머스㈜ `중소기업` · 6건
 - **백엔드** [2건] · `Python` `React` `Vue` `AWS` `iOS` `Android`
@@ -7641,7 +7620,7 @@ markmap:
   - [AI 기술 개발 PM 인재 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555469?ReturnUrl=RecruitInfo)
 
 
-## AI/데이터 플랫폼 (83개사)
+## AI/데이터 플랫폼 (84개사)
 ### 플래티어 `중소기업` · 14건
 - **백엔드** [4건] · `Python` `Java` `Azure` `JavaScript` `TypeScript` `Rust`
   - [(EC솔루션연구소) AI 기술 개발자 ↗](https://jumpit.saramin.co.kr/position/53847144)
@@ -7715,6 +7694,32 @@ markmap:
   - [Security Engineer ↗](https://www.wanted.co.kr/wd/358904)
 - **보안** [1건]
   - [Security Engineer ↗](https://www.wanted.co.kr/wd/358904)
+
+### 토스뱅크(주) `대기업` · 11건
+- **백엔드** [6건] · `Python` `Kotlin` `Go` `MSA` `FastAPI` `Kafka`
+  - [ML Backend Engineer ↗](https://www.wanted.co.kr/wd/368055)
+  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
+  - [ML Engineer(Service) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53406412&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a)
+  - [ML Engineer(Product) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53419889&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a)
+- **프론트엔드** [1건] · `Java` `Python`
+  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
+- **모바일** [2건] · `Kotlin` `Python` `Go` `MSA`
+  - [ML Backend Engineer ↗](https://www.wanted.co.kr/wd/368055)
+  - [ML Backend Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53406271&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a)
+- **AI/ML** [9건] · `Python` `Kubernetes` `Kotlin` `Go` `MSA` `FastAPI`
+  - [ML Backend Engineer ↗](https://www.wanted.co.kr/wd/368055)
+  - [Data Product Manager (AI) ↗](https://www.wanted.co.kr/wd/368061)
+  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
+  - [ML Platform Team Leader ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185460&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=42d91347-9e34-4d82-ae5a-e7bddfb49731)
+- **데이터** [3건] · `FastAPI` `Kafka` `Java` `Python` `Kubernetes`
+  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
+  - [ML Engineer(Service) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53406412&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a)
+  - [ML Engineer(Product) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53419889&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a)
+- **DevOps/인프라** [4건] · `Kubernetes` `Java` `Python` `Cassandra` `Apache` `Terraform`
+  - [Data Engineer (Finance) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185463&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=dfbee50e-9ac5-4fea-a3e2-81708b5f1a9e)
+  - [ML Platform Team Leader ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185460&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=42d91347-9e34-4d82-ae5a-e7bddfb49731)
+  - [ML Engineer(MLOps) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53419883&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e6dd63c5-b7ee-4ada-9c7f-f69d37f6358d)
+  - [OpenStack Cloud Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54185462&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=63453ad2-6bbc-43eb-8775-f1662bb64d92)
 
 ### 로이드케이 `중소기업` · 9건
 - **백엔드** [3건] · `FastAPI` `AWS` `GCP` `Azure` `TypeScript` `React`

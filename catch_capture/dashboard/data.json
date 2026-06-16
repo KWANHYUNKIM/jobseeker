@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-17T06:28:31",
-  "source_dir": "screenshots/all_통합_20260617_062823",
+  "generated_at": "2026-06-17T08:02:00",
+  "source_dir": "screenshots/all_통합_20260617_080153",
   "keyword": "통합",
   "jobs": [
     {
@@ -106433,6 +106433,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)청우식품",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "소스  및 분말 제품 OEM/PB/수출  개발자 모집합니다",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54188164&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=b291b396-f403-4f7d-b1ac-d80fe68dbc0c",
+      "career": "경력4년↑",
+      "location": "경북구미시 | 4,500 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 4년 이상\n\n• 대학교졸업(4년)이상\n\n• 전공: 식품/유전/바이오, 생명과학",
+      "preferences": "",
+      "main_tasks": "• 새로운 제품 아이디어 발굴 및 실험\n\n• 시장 동향 조사 및 분석\n\n• 제품 개선을 위한 실험 설계\n\n• 품질 향상을 위한 실험 진행\n\n• 제품 생산 공정 개선\n\n*요리,식품 좋아하는분\n\n• 청우식품 기술영업팀 부서 소속, 책임연구원/부장 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 신규 입사자 교육(OJT), 점심식사 제공, 음료제공(차,커피), 식비 지원\n\n• 리프레시 : 연차, 여름휴가, 경조휴가제, 반차, 근로자의날 휴무, 육아휴직, 공휴일 휴무\n\n• 급여제도 : 퇴직연금, 퇴직금, 연차수당, 4대 보험, 상여금, 성과급\n\n• 조직 문화 : 회식강요 안함, 자유복장"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -146747,6 +146768,150 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": "기오                   간식,커피,차,음료등상시구비 QB 야근시저녁식사제공\ntae ey            bd 직무교육지원         @   우수직원 포상\na\n장기근속자 포싱                 조사비              ee 명절선물\n장기근속자 포상      개     경                  별: 명절선물\n오너                Mey 매달 문화의날           %%' 중소기업근로지\nsania 자도 오시            QF 2412\n중소기업근로자                   > 업무능력 개발을 위한\n전세자금 대출 등 신청                  > 도서 구입 지원\n연차, 반차, 경조휴가, 대체공휴일, 근로자의날, 포상휴가, 출산전후휴가, 육아휴직\n기업문화              NEST 불필요한야근및회식지양 자유로운연차사용 디수의젊은세대\n주도적인 업무환경 성장기회 제공             자유로운 회식 분위기, 점심 회식\n개인 역량 및 성과에 따라 연봉 인상 및 승진 (승진 연한 없음)"
+    },
+    {
+      "site": "saramin",
+      "company": "토스뱅크(주)",
+      "company_size": "대기업",
+      "company_size_matched": "토스뱅크",
+      "title": "ML Engineer(MLOps)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53419883&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e6dd63c5-b7ee-4ada-9c7f-f69d37f6358d",
+      "career": "신입·경력",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Cassandra",
+        "Kubernetes",
+        "Apache"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "대용량 처리"
+      ],
+      "qualifications": "-Kubernetes 위에서 서비스를 개발, 배포하고 운영해본 분이 필요해요.\n-머신러닝에 대한 지식과 최신 동향에 대해 관심이 많으시면 좋아요.\n-대규모 트래픽 처리 경험이 있으면 좋아요.\n-GPU를 사용하는 프레임워크를 이용해 개발, 성능 개선을 한 경험이 있으면 좋아요.\n-Apache Cassandra, ScyllaDB 등 분산 데이터베이스를 운영한 경험이 있으면 좋아요.\n-LLM 서빙이나 LLMOps 플랫폼을 구축하고 운영해 본 경험이 있으면 좋아요.\n-다양한 상황에서 최적의 솔루션을 찾을 수 있는 문제해결능력 및 원활한 커뮤니케이션 역량을 갖춘 분을 찾고있어요.",
+      "preferences": "",
+      "main_tasks": "-ML 챕터 내 공통 기술을 개발해요.\n-MLFlow, Airflow, Jupyterhub, Kubeflow 등 사내 머신러닝 플랫폼을 구축하고 운영해요.\n-ScyllaDB 클러스터를 운영하고 Feature Store 서비스를 개발해요.\n-Triton Inference Server 기반의 모델 서빙 환경을 개발해요.\n-사내 LLM 플랫폼을 구축하고 운영해요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "토스뱅크(주)",
+      "company_size": "대기업",
+      "company_size_matched": "토스뱅크",
+      "title": "ML Engineer(LLM)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53396160&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e6dd63c5-b7ee-4ada-9c7f-f69d37f6358d",
+      "career": "경력1년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "대용량 처리"
+      ],
+      "qualifications": "-대규모 트래픽 환경에서 vLLM, SGLang, TensorRT LLM 등의 서빙 프레임워크를 활용하여 모델을 직접 서빙해 본 경험이 있으면 좋아요.\n-LLMOps 플랫폼을 구축하고 운영해 본 경험이 있으면 좋아요.\n-LLM 기술을 활용해 LLM 어플리케이션 개발을 해 본 경험이 있으면 좋아요.\n-LLM 파인 튜닝, 최적화 경험이 있으면 좋아요.\n-최신 LLM 기술에 관심을 가지고 있고 새로운 기술에 두려움이 없는 분을 찾고있어요.",
+      "preferences": "",
+      "main_tasks": "-LLM 서빙 프레임워크 등을 활용하여 GPU 환경에서 모델을 직접 운영하고 최적화해요.\n-LLM 게이트웨이 서버, 워크플로우, Vector Database 등 LLMOps 플랫폼을 구축하고 운영해요.\n-다양한 LLM 기술들을 활용해 LLM 어플리케이션을 개발해요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "토스뱅크(주)",
+      "company_size": "대기업",
+      "company_size_matched": "토스뱅크",
+      "title": "ML Engineer(Service)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53406412&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a",
+      "career": "경력",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "FastAPI",
+        "Kafka"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "대용량 처리"
+      ],
+      "qualifications": "-대규모 트래픽 환경에서 높은 SLA를 요구하는 ML 서비스를 개발하고 운영한 경험과 역량이 필요해요.\n-안정성과 확장성을 모두 고려한 서비스 아키텍처를 설계하고, 유지보수가 용이한 고품질 코드를 작성하는 역량이 필요해요.\n-Agent 로 업무를 최적화 해본 경험이 있거나, 관심이 있으신 분이면 좋아요.\n-FastAPI, LLM, Agent, Kafka, Spark, Flink, Airflow 등의 기술에 대한 경험이 있으면 좋아요.\n-AI 기술을 활용해서 크고 복잡한 문제를 해결하거나, 이를 위한 서비스나 제품을 개발해서 비즈니스 임팩트를 낸 경험이 있으면 좋아요.",
+      "preferences": "",
+      "main_tasks": "-금융 업무 최적화를 위한 Agent를 개발하고 운영해요.\n-안정적이고 확장성 있게 금융 ML 모형을 서빙할 수 있도록 시스템을 설계하고 개발해요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "토스뱅크(주)",
+      "company_size": "대기업",
+      "company_size_matched": "토스뱅크",
+      "title": "ML Engineer(Product)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53419889&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a",
+      "career": "신입·경력",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "FastAPI",
+        "Kubernetes",
+        "Kafka"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "대용량 처리",
+        "MSA/분산"
+      ],
+      "qualifications": "-ML 모델을 실제 서비스 환경에 배포하고, 성능 최적화를 위해 튜닝 및 경량화를 성공적으로 수행해 본 경험이 필요해요.\n-높은 SLA 요구사항을 만족시키는 대규모 ML 서비스를 프로덕션 환경에서 개발하고 운영해 본 경험과 역량이 필요해요.\n-GPU 환경에서 ML 모델의 추론 성능을 극대화하기 위해 TensorRT, ONNX Runtime 등을 활용한 모델 컴파일 및 최적화 경험이 풍부하면 좋아요.\n-Triton Inference Server, Kubernetes, FastAPI 등 ML 서빙 및 서버 개발 기술에 대한 깊은 이해와 경험이 있으면 좋아요.\n-Airflow, Hadoop, Kafka, Spark, Flink 등의 대용량 분산 시스템 및 데이터 파이프라인 시스템 기술에 대한 깊은 이해와 경험이 있으면 좋아요.\n-안정성과 확장성을 모두 고려한 서비스 아키텍처를 설계하고, 유지보수가 용이한 고품질 코드를 작성하는 역량이 있는 분이면 좋아요.\n-크고 복잡한 문제를 AI 기술을 활용해서 해결하거나, 이를 위한 서비스나 제품을 개발해서 비즈니스 임팩트를 낸 경험이 있으면 좋아요.",
+      "preferences": "",
+      "main_tasks": "-최신 AI 기술을 포함한 Vision, LLM 등의 모델을 비롯해 범용적인 ML 모델이 안정적이고 확장성 있게 작동할 수 있도록 서빙 시스템을 설계하고 개발해요.\n-ML 모델의 특성을 고려한 최적의 서빙 아키텍처를 설계하고, 이에 특화된 기술 스택을 활용해 빠르고 효율적인 시스템을 구현해요.\n-견고한 서버 아키텍처를 기반으로 대규모 트래픽을 안정적으로 받을 수 있는 개별 서비스를 개발해요.\n-배치 혹은 실시간 서빙 파이프라인을 설계하고, 대규모 데이터를 다루는 ML 서빙을 안정적으로 운영해요.\n-무거운 연산을 필요로 하는 AI 모델을 안정적인 응답 속도 및 처리량으로 서빙할 수 있는 서버를 개발해요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "토스뱅크(주)",
+      "company_size": "대기업",
+      "company_size_matched": "토스뱅크",
+      "title": "ML Backend Engineer",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53406271&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7c1e2542-ee77-433f-9885-d58c9bd1ab5a",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Kotlin",
+        "Python",
+        "Go",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일",
+        "AI/ML"
+      ],
+      "competencies": [
+        "대용량 처리",
+        "MSA/분산"
+      ],
+      "qualifications": "-Python, Kotlin, Go 등 하나 이상의 언어로 서버를 개발하고 운영해 본 경험이 필요해요.\n-견고한 서비스 아키텍처를 설계하고 안정적인 구조의 코드를 구현할 수 있는 역량이 필요해요.\n-쿠버네티스 환경 위에서 서버를 배포하고 모니터링하며 안정적으로 운영한 경험이 있으면 좋아요.\n-대규모 트래픽을 받거나 SLA가 높은 서비스를 프로덕션으로 개발하고 운영한 경험과 역량이 있으면 좋아요.\n-크고 복잡한 문제를 소프트웨어 기술로 해결하거나, 혹은 서비스나 제품으로 비즈니스 임팩트를 낸 경험이 있으면 좋아요.\n-ML 경험은 없어도 좋아요. AI/ML 분야에 관심이 많고 이 방향으로의 경험을 쌓고 싶은 분이면 좋아요.",
+      "preferences": "",
+      "main_tasks": "-ML Service Team 이 담당하는 다양한 AI 제품이 안정적으로 서빙될 수 있도록 기반이 되는 서버 아키텍처를 설계하고 개발해요.\n-견고한 서버 아키텍처를 기반으로 대규모 트래픽을 안정적으로 받을 수 있는 개별 서비스를 개발해요.\n-무거운 연산을 필요로 하는 AI 모델을 안정적인 응답 속도 및 처리량으로 서빙할 수 있는 서버를 개발해요.\n-MSA 환경에서 분산 추적이 가능한 서비스를 운영하며 장애를 최소화 하기 위한 환경을 구축해요.",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -188678,22 +188843,22 @@
     }
   ],
   "stats": {
-    "total": 6250,
+    "total": 6256,
     "by_size": {
-      "중소기업": 5610,
-      "대기업": 381,
+      "중소기업": 5611,
+      "대기업": 386,
       "중견기업": 259
     },
     "by_role": {
-      "기타": 804,
-      "DevOps/인프라": 935,
-      "백엔드": 2702,
-      "모바일": 1015,
-      "AI/ML": 2076,
+      "기타": 805,
+      "DevOps/인프라": 936,
+      "백엔드": 2705,
+      "모바일": 1016,
+      "AI/ML": 2081,
       "프론트엔드": 1794,
       "풀스택": 571,
       "게임": 41,
-      "데이터": 885,
+      "데이터": 887,
       "펌웨어/임베디드": 230,
       "보안": 251,
       "QA": 60
@@ -188702,13 +188867,13 @@
       "wanted": 1396,
       "jumpit": 431,
       "jobkorea": 1201,
-      "saramin": 2960,
+      "saramin": 2966,
       "dev": 262
     },
     "top_tech": [
       [
         "Python",
-        1946
+        1947
       ],
       [
         "AWS",
@@ -188752,7 +188917,7 @@
       ],
       [
         "Kubernetes",
-        710
+        712
       ],
       [
         "PostgreSQL",
@@ -188816,15 +188981,15 @@
       ],
       [
         "Kotlin",
-        359
+        360
       ],
       [
         "FastAPI",
-        357
+        359
       ],
       [
         "Kafka",
-        336
+        338
       ]
     ]
   },
@@ -191561,6 +191726,22 @@
         "jumpit": 538,
         "jobkorea": 1519,
         "saramin": 3815,
+        "dev": 317
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-17T08:01:57",
+      "keyword": "통합",
+      "raw_total": 7601,
+      "deduped": 7059,
+      "active": 6256,
+      "closed": 803,
+      "site_counts": {
+        "wanted": 1406,
+        "jumpit": 538,
+        "jobkorea": 1519,
+        "saramin": 3821,
         "dev": 317
       },
       "anomalies": []

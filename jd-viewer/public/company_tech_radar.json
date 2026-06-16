@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T06:32:27",
+ "generated_at": "2026-06-17T08:12:37",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 81,
+ "refined": 83,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -2891,6 +2891,14 @@
     },
     {
      "name": "Kotlin",
+     "count": 2
+    },
+    {
+     "name": "Scala",
+     "count": 1
+    },
+    {
+     "name": "Swift",
      "count": 1
     },
     {
@@ -2913,6 +2921,14 @@
       "count": 2
      },
      {
+      "name": "Dropwizard",
+      "count": 1
+     },
+     {
+      "name": "Java",
+      "count": 1
+     },
+     {
       "name": "JPA / QueryDSL",
       "count": 1
      },
@@ -2921,13 +2937,29 @@
       "count": 1
      },
      {
-      "name": "Spring Cloud",
+      "name": "Netty",
+      "count": 1
+     },
+     {
+      "name": "Node.js",
+      "count": 1
+     },
+     {
+      "name": "PHP",
       "count": 1
      }
     ],
     "frontend": [
      {
+      "name": "Next.js",
+      "count": 3
+     },
+     {
       "name": "React",
+      "count": 3
+     },
+     {
+      "name": "TypeScript",
       "count": 3
      },
      {
@@ -2935,11 +2967,11 @@
       "count": 2
      },
      {
-      "name": "Next.js",
+      "name": "Kotlin",
       "count": 1
      },
      {
-      "name": "TypeScript",
+      "name": "Swift",
       "count": 1
      },
      {
@@ -2965,11 +2997,19 @@
       "count": 3
      },
      {
+      "name": "Aerospike",
+      "count": 2
+     },
+     {
       "name": "MySQL",
       "count": 2
      },
      {
-      "name": "Aerospike",
+      "name": "Apache Flink",
+      "count": 1
+     },
+     {
+      "name": "Apache Pinot",
       "count": 1
      },
      {
@@ -2977,19 +3017,11 @@
       "count": 1
      },
      {
-      "name": "DynamoDB",
+      "name": "ClickHouse",
       "count": 1
      },
      {
-      "name": "Flink",
-      "count": 1
-     },
-     {
-      "name": "MongoDB",
-      "count": 1
-     },
-     {
-      "name": "MySQL / Aurora",
+      "name": "Druid",
       "count": 1
      }
     ],
@@ -3003,46 +3035,62 @@
       "count": 3
      },
      {
+      "name": "Envoy",
+      "count": 2
+     },
+     {
+      "name": "Grafana",
+      "count": 2
+     },
+     {
+      "name": "Istio",
+      "count": 2
+     },
+     {
+      "name": "Prometheus",
+      "count": 2
+     },
+     {
+      "name": "Terraform",
+      "count": 2
+     },
+     {
+      "name": "Airflow",
+      "count": 1
+     },
+     {
       "name": "ArgoCD",
       "count": 1
      },
      {
       "name": "Prometheus + Grafana",
       "count": 1
-     },
-     {
-      "name": "Spinnaker",
-      "count": 1
-     },
-     {
-      "name": "Terraform",
-      "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Event-driven",
-     "count": 2
+     "name": "CQRS / Read-optimized stores",
+     "count": 1
     },
     {
-     "name": "Microservices",
-     "count": 2
+     "name": "Event-driven",
+     "count": 1
     },
     {
      "name": "Event-driven Architecture",
      "count": 1
     },
     {
-     "name": "MSA",
+     "name": "Event-driven logistics",
      "count": 1
     },
     {
-     "name": "Real-time dispatch",
+     "name": "Lambda+streaming analytics",
      "count": 1
     },
     {
-     "name": "Saga 기반 분산 트랜잭션",
+     "name": "Microservices",
      "count": 1
     }
    ]
@@ -16344,17 +16392,22 @@
     "Java",
     "Go",
     "Python",
-    "JavaScript"
+    "JavaScript",
+    "Scala"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Go",
-     "gRPC"
+     "gRPC",
+     "Dropwizard",
+     "Netty"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "Next.js",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
@@ -16362,22 +16415,31 @@
      "Elasticsearch",
      "MySQL",
      "Redis",
-     "Cassandra"
+     "Cassandra",
+     "Aerospike",
+     "Druid",
+     "Spark"
     ],
     "infra": [
      "Kubernetes",
-     "AWS"
+     "AWS",
+     "Envoy",
+     "Istio",
+     "Terraform",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
-    "Microservices",
+    "Polyglot Microservices",
     "Event-driven",
-    "Stream processing"
+    "Stream processing",
+    "CQRS / Read-optimized stores"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Consumer/DE App<br/>React Native\"]\n    WEB[\"Web<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>AWS\"]\n  end\n  subgraph Services\n    ORD[\"Order Service<br/>Java + Spring Boot\"]\n    DISP[\"Dispatch Engine<br/>Go\"]\n    TRACK[\"Live Tracking<br/>Go + Redis\"]\n    CAT[\"Restaurant Catalog<br/>Java\"]\n  end\n  subgraph Data\n    MYSQL[\"MySQL<br/>Orders\"]\n    CASS[\"Cassandra<br/>Tracking State\"]\n    REDIS[\"Redis<br/>Cache\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Bus\"]\n    FLINK[\"Flink<br/>Stream Processing\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> ORD\n  GW --> CAT\n  ORD --> DISP\n  DISP --> TRACK\n  TRACK --> REDIS\n  ORD --> MYSQL\n  TRACK --> CASS\n  CAT --> ES\n  ORD -->|events| KAFKA\n  DISP -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> TRACK\n  ORD --> K8S",
-   "why_language": "주문·배차·실시간 ETA 예측을 위해 JVM의 안정적 처리량과 Go의 경량 동시성을 함께 쓰고, 추천·ML 모델은 Python으로 서빙한다. 도메인별로 가장 적합한 언어를 고른 폴리글랏 전략이다.",
-   "why_architecture": "Instamart(퀵커머스)·Food·Dineout 등 여러 비즈니스를 동시에 운영하므로 도메인별 마이크로서비스로 분리하고, Kafka·Flink 스트림 처리로 실시간 배차와 ETA를 계산한다.",
-   "summary": "JVM+Go 폴리글랏 마이크로서비스와 스트림 처리로 굴러가는 배달·퀵커머스.",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Consumer App<br/>React Native\"]\n    PARTNER[\"Partner/Rider App<br/>React Native\"]\n    WEB[\"Web<br/>React + Next.js\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n    BFF[\"BFF / Edge Services<br/>Go\"]\n  end\n  subgraph Core\n    ORDER[\"Order Service<br/>Spring Boot\"]\n    CART[\"Cart/Checkout<br/>Java\"]\n    DISPATCH[\"Dispatch/Assignment<br/>Go + ML\"]\n    LOC[\"Location Tracking<br/>Go\"]\n    SEARCH[\"Search/Listing<br/>Elasticsearch\"]\n    PRICE[\"Pricing/Surge<br/>Python\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Processing<br/>Flink\"]\n    SPARK[\"Batch/ML ETL<br/>Spark\"]\n  end\n  subgraph Data\n    MYSQL[\"Transactional<br/>MySQL\"]\n    CASS[\"Order/Tracking Store<br/>Cassandra\"]\n    AERO[\"Low-latency KV<br/>Aerospike\"]\n    REDIS[\"Cache<br/>Redis\"]\n    DRUID[\"Realtime OLAP<br/>Druid\"]\n  end\n  subgraph Infra\n    K8S[\"Container Platform<br/>Kubernetes on AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> GW\n  PARTNER --> GW\n  WEB --> GW\n  GW --> BFF\n  BFF -->|gRPC| ORDER\n  BFF -->|gRPC| SEARCH\n  BFF -->|gRPC| CART\n  ORDER --> MYSQL\n  ORDER -->|events| KAFKA\n  CART --> REDIS\n  DISPATCH --> AERO\n  LOC --> AERO\n  PARTNER -->|GPS pings| LOC\n  LOC -->|stream| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DISPATCH\n  FLINK --> DRUID\n  KAFKA --> SPARK\n  SPARK --> PRICE\n  DISPATCH --> CASS\n  SEARCH --> REDIS\n  Core --> K8S\n  Streaming --> K8S\n  K8S --> OBS",
+   "why_language": "주문·결제·정산처럼 강한 일관성과 성숙한 트랜잭션 생태계가 필요한 도메인은 JVM(Java/Spring Boot)으로 구현하고, 라이더 위치 수집·디스패치·게이트웨이 같이 초당 수십만 건의 동시 연결과 낮은 지연이 핵심인 엣지 경로는 경량 고루틴 동시성을 가진 Go로 처리한다. 가격·수요예측·추천 등 ML 영역은 Python/Spark 생태계가 사실상 표준이라 데이터 사이언스 협업 비용을 최소화하기 위해 Python을 쓴다.",
+   "why_architecture": "음식 배달은 주문 생성→식당 수락→조리→라이더 배차→픽업→배달까지 이어지는 본질적으로 이벤트 흐름이라, Kafka 기반 이벤트 드리븐으로 각 단계를 비동기 상태 전이로 모델링하고 서비스 간 결합도를 낮춘다. 라이더 GPS 스트림을 Flink로 실시간 집계해 ETA와 배차 결정에 즉시 반영해야 하므로 스트림 처리가 1급 시민이며, 점심·저녁 피크의 극단적 트래픽 변동에 대응하기 위해 폴리글랏 MSA를 Kubernetes 위에서 독립적으로 오토스케일한다.",
+   "summary": "JVM으로 트랜잭션 도메인을, Go로 실시간 엣지를, Kafka+Flink로 배달 라이프사이클을 흐르게 하는 폴리글랏 이벤트 드리븐 아키텍처",
    "deep_dive": [
     {
      "topic": "배달 디스패치 최적화: 주문-라이더 매칭",
@@ -16394,16 +16456,35 @@
     {
      "topic": "Kafka 이벤트 드리븐과 주문 라이프사이클",
      "body": "### 주문의 여정\n주문 한 건은 *결제 -> 음식점 수락 -> 조리 -> 라이더 배정 -> 픽업 -> 배달 -> 완료*로 흐른다. 각 단계는 사람·외부(음식점/라이더)에 의존해 비동기·불확실하다.\n\n### Kafka로 모델링\n- 각 상태 전이를 `Kafka` 이벤트로 발행하고, 알림·추적·정산·분석·디스패치가 독립 소비.\n- **이벤트 소싱적 접근**: 주문 상태를 이벤트 시퀀스로 재구성 가능해 감사·디버깅·재처리가 쉽다.\n- **백프레셔**: 피크(점심·저녁)에 다운스트림이 느려져도 큐가 흡수.\n- **멱등·순서**: 주문 ID 파티셔닝으로 순서 보장, 컨슈머 멱등 처리로 중복 흡수.\n\n### 왜 비동기인가\n음식점이 수락하는 데 수십 초가 걸릴 수 있는데 이를 동기로 기다리면 시스템이 막힌다. 비동기 이벤트로 각 행위자를 디커플하면, *느린 참여자가 전체를 멈추지 않고* 시스템이 자기 속도로 진행한다. 이것이 사람이 개입하는 실시간 물류 시스템의 본질적 설계다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩 전략: 폴리글랏 퍼시스턴스",
+     "body": "### 도메인별 저장소 분리\nSwiggy는 단일 DB로 모든 워크로드를 처리하지 않고, 데이터 접근 패턴에 따라 저장소를 명확히 나눈다.\n\n| 저장소 | 용도 | 선택 이유 |\n|---|---|---|\n| `MySQL` | 주문·결제·정산 트랜잭션 | ACID, 외래키, 성숙한 운영 도구. 강한 일관성이 돈과 직결되는 도메인 |\n| `Cassandra` | 주문 이력·라이더 트래킹 시계열 | 쓰기 헤비·고가용성, 단일 장애점 없는 멀티 마스터 |\n| `Aerospike` | 디스패치·세션·실시간 위치 KV | sub-millisecond 읽기, SSD 최적화로 RAM 대비 비용 절감 |\n| `Redis` | 카트·검색 결과·피처 캐시 | 휘발성 핫데이터, TTL 기반 만료 |\n| `Elasticsearch` | 식당/메뉴 검색·지오 필터 | 역색인 + geo_distance 쿼리 |\n| `Druid` | 실시간 운영 대시보드 OLAP | 스트림 인입 + 초저지연 집계 |\n\n### 샤딩과 핫스팟 회피\n주문 테이블은 도시(city) 또는 주문 ID 해시 기준으로 수평 분할한다. 음식 배달은 **지역성(locality)** 이 강해서 — 한 주문의 식당·고객·라이더가 모두 같은 도시에 묶인다 — 도시 단위 샤딩이 조인·범위 쿼리를 같은 샤드에 가둘 수 있어 효율적이다. 다만 벵갈루루·델리 같은 메가시티가 핫스팟이 되므로, 대도시는 다시 zone/hex 단위로 서브샤딩해 부하를 분산한다.\n\n### 일관성 모델의 의도적 차등\n- **주문 생성·결제**: 강한 일관성(동기 MySQL 커밋). 중복 결제·유실은 절대 허용 불가.\n- **라이더 위치·ETA**: 최종 일관성(eventual). GPS 핑이 몇 초 늦거나 한두 개 유실돼도 다음 핑으로 보정되므로 가용성과 처리량을 우선한다.\n- **주문 상태 전이**: 이벤트 소싱에 가까운 패턴으로 Kafka에 상태 변경 이벤트를 발행하고, 각 소비자가 자기 read model을 갱신하는 CQRS 형태를 띤다."
+    },
+    {
+     "topic": "장애 대응·복원력: 피크 트래픽과 서킷브레이커",
+     "body": "### 점심·저녁의 이중 피크 문제\nSwiggy 트래픽은 하루 두 번(12~14시, 19~22시) 극단적으로 치솟는 **bimodal** 패턴을 보인다. 평시 대비 수 배의 주문이 30분 안에 몰리기 때문에, 단순 평균 기준의 정적 용량 산정은 무의미하다. 대응 전략은 다음 세 축이다.\n\n### 1) 예측 기반 사전 스케일링\n반응형 HPA(CPU/메모리 기반)는 인스턴스 부팅 지연 때문에 피크 시작 시점을 놓친다. 그래서 과거 시계열로 학습한 수요 예측을 바탕으로 피크 *이전*에 미리 용량을 끌어올리는 predictive autoscaling을 병행한다. (사내 도구 `Pluto` 계열의 문제의식)\n\n### 2) 서킷브레이커와 graceful degradation\n- 결제 게이트웨이·추천 같은 비핵심/외부 의존이 느려지면 `Hystrix`/`resilience4j` 류의 서킷브레이커가 빠르게 열려 호출을 차단하고 fallback을 반환한다.\n- 핵심 경로 보호: 추천이 죽으면 *인기 식당 정적 리스트*로 폴백해 검색·주문 자체는 계속 동작하게 한다. 즉 \"주문을 받는 것\"이 최우선이고, 개인화는 best-effort다.\n\n### 3) 부하 차단(load shedding)과 우선순위\n과부하 시 신규 비핵심 요청(예: 무한 스크롤 추가 로딩, 비필수 배너)을 먼저 떨궈서 진행 중인 주문·결제 트랜잭션의 자원을 보존한다. 게이트웨이 레벨에서 rate limiting과 priority queue로 트래픽 등급을 나눈다.\n\n### 멀티 AZ와 페일오버\nAWS 멀티 AZ에 걸쳐 stateful 저장소(Cassandra/Aerospike)는 복제 팩터를 두어 한 AZ가 빠져도 쿼럼이 유지되도록 한다. Kafka도 멀티 브로커·멀티 AZ로 운영해 파티션 리더 장애 시 자동 리더 선출로 흡수한다."
+    },
+    {
+     "topic": "검색·랭킹·추천: 위치 인지 개인화 파이프라인",
+     "body": "### 음식 검색의 특수성\n일반 e-커머스 검색과 달리 Swiggy 검색은 **시공간 제약**이 1급 필터다. \"지금, 이 위치에서, 배달 가능한\" 식당만 후보가 된다. 따라서 파이프라인은 보통 다음 단계를 거친다.\n\n1. **후보 생성(retrieval)**: 사용자 GPS 좌표 기준으로 `Elasticsearch`의 `geo_distance`/serviceability 폴리곤으로 배달 가능 식당을 1차 추림. 영업 중 여부, 현재 라이더 가용성, 예상 배달 시간도 동시에 필터.\n2. **랭킹(ranking)**: 후보를 ML 랭커로 정렬. 피처에는 개인 취향(과거 주문 cuisine), 식당 평점·전환율, 거리·ETA, 가격대, 시간대(점심엔 빠른 식당 가중) 등이 들어간다.\n3. **개인화 홈피드**: 검색 외 홈 화면도 \"당신을 위한 추천\", \"다시 주문\", \"근처 인기\" 같은 위젯으로 랭킹 모델이 채운다.\n\n### 피처 스토어와 온라인/오프라인 일관성\n추천 품질의 핵심은 **학습 때 본 피처와 서빙 때 쓰는 피처가 동일**해야 한다는 점(train-serve skew 방지)이다. 그래서 오프라인 배치 피처는 `Spark`로 계산해 저장하고, 실시간 피처(직전 클릭, 현재 카트, 실시간 ETA)는 `Flink`로 스트림 계산해 동일한 피처 스토어(`Redis`/`Aerospike`)에 써넣는다. 서빙 시에는 이 저지연 KV에서 피처를 읽어 모델에 주입한다.\n\n### 지연 예산\n홈피드·검색은 사용자 체감 직결이라 수십 ms 단위의 빡빡한 지연 예산을 갖는다. 그래서 무거운 모델은 후보 수를 줄인 뒤(top-N) 적용하고, 자주 안 바뀌는 결과는 `Redis`에 짧은 TTL로 캐시해 반복 계산을 피한다."
+    },
+    {
+     "topic": "관측성: 분산 트레이싱과 운영 OLAP",
+     "body": "### 왜 관측성이 핵심인가\n하나의 주문이 게이트웨이→주문→카트→디스패치→위치→결제 등 수십 개 마이크로서비스를 가로지른다. 어느 단계에서 지연·실패가 났는지 추적하지 못하면 피크 시간 장애의 원인 분석이 불가능하다.\n\n### 세 기둥(three pillars)\n- **Metrics**: `Prometheus`로 서비스별 RED 지표(Rate, Errors, Duration)와 인프라 메트릭을 수집하고 `Grafana`로 시각화한다. SLO 기반 알람을 걸어 p99 지연·에러율이 임계치를 넘으면 온콜을 호출한다.\n- **Tracing**: 게이트웨이에서 trace id를 발급해 gRPC 메타데이터로 하위 서비스에 전파한다. 이로써 한 주문의 전체 호출 그래프와 각 홉의 소요 시간을 한 화면에서 본다(병목 핀포인트).\n- **Logging**: 구조화 로그를 중앙 수집해 trace id로 상호 참조한다.\n\n### 운영 실시간 분석: Druid\n비즈니스/운영팀은 \"지금 이 도시의 미배차 주문 수\", \"평균 배달 지연\", \"라이더 가동률\"을 초 단위로 봐야 한다. 이를 위해 Kafka 이벤트를 `Druid`로 실시간 인입해, 수십억 행 위에서도 sub-second 집계 쿼리가 가능한 운영 대시보드를 제공한다. 이는 엔지니어링 관측성(Prometheus/trace)과 별개로, **비즈니스 실시간 OLAP** 계층을 분리한 설계다.\n\n### 카오스/부하 검증\n피크를 견디는지 미리 확인하기 위해 정기적으로 부하 테스트와 장애 주입(특정 서비스 강제 다운 → 폴백 동작 확인)을 수행해, 서킷브레이커와 degradation 경로가 실제로 작동하는지 검증한다."
     }
    ],
    "github": {
-    "org": "https://github.com/Swiggy"
+    "org": "https://github.com/Swiggy",
+    "repos": []
    },
    "sources": [
-    "https://bytes.swiggy.com"
+    "https://bytes.swiggy.com/",
+    "https://github.com/Swiggy",
+    "https://bytes.swiggy.com/swiggys-real-time-data-platform-1f3b1e3f7c1a"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "zomato",
@@ -16413,40 +16494,61 @@
    "languages": [
     "Go",
     "Java",
+    "JavaScript",
     "Python",
-    "JavaScript"
+    "Kotlin",
+    "Swift"
    ],
    "stack": {
     "backend": [
      "Go",
+     "Java",
      "Spring Boot",
-     "gRPC"
+     "gRPC",
+     "Node.js",
+     "PHP (legacy)"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "Next.js",
+     "TypeScript",
+     "Kotlin (Android)",
+     "Swift (iOS)"
     ],
     "data": [
-     "Kafka",
      "Aerospike",
+     "MySQL (Vitess)",
+     "Kafka",
+     "Redis",
      "Elasticsearch",
-     "MySQL",
-     "Redis"
+     "ScyllaDB",
+     "ClickHouse",
+     "Apache Pinot",
+     "Apache Flink",
+     "S3 + Apache Hudi"
     ],
     "infra": [
-     "Kubernetes",
-     "AWS"
+     "Kubernetes (EKS)",
+     "AWS",
+     "Envoy",
+     "Istio",
+     "Spark/EMR",
+     "Airflow",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
-    "Real-time dispatch"
+    "Event-driven logistics",
+    "Real-time dispatch / geospatial",
+    "Lambda+streaming analytics"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Customer/Rider App<br/>React Native\"]\n    WEB[\"Web<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>AWS\"]\n  end\n  subgraph Services\n    ORD[\"Order Service<br/>Go\"]\n    DISP[\"Real-time Dispatch<br/>Go\"]\n    REST[\"Restaurant Service<br/>Java + Spring Boot\"]\n    PAY[\"Payments<br/>Java\"]\n  end\n  subgraph Data\n    MYSQL[\"MySQL<br/>Orders\"]\n    AERO[\"Aerospike<br/>Low-latency Store\"]\n    REDIS[\"Redis<br/>Cache\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Bus\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> ORD\n  GW --> REST\n  ORD --> DISP\n  ORD --> PAY\n  DISP --> AERO\n  ORD --> MYSQL\n  REST --> ES\n  DISP --> REDIS\n  ORD -->|events| KAFKA\n  DISP -->|events| KAFKA\n  KAFKA --> DISP\n  ORD --> K8S",
-   "why_language": "음식 배달은 실시간 위치 추적과 배차 매칭에서 저지연·고동시성이 핵심이라 가벼운 고루틴 모델의 Go를 핵심 서비스에 적극 채택했다. 검색·추천 등 데이터 무거운 영역은 Java/Python을 병행한다.",
-   "why_architecture": "주문·결제·배차·레스토랑 도메인을 독립적으로 확장해야 하고, 라이더 위치와 주문 상태가 끊임없이 변하므로 이벤트 드리븐 마이크로서비스로 실시간 배차를 처리한다.",
-   "summary": "Go 중심 마이크로서비스로 실시간 음식 배차를 돌리는 배달 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Consumer App<br/>React Native + Kotlin/Swift\"]\n    RES[\"Restaurant/Rider App<br/>Kotlin + React Native\"]\n    WEB[\"Web<br/>Next.js + React\"]\n  end\n  subgraph Edge\n    CDN[\"CDN + WAF<br/>Cloudflare/CloudFront\"]\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n  end\n  subgraph Core\n    SEARCH[\"Search/Discovery<br/>Go + Elasticsearch\"]\n    CART[\"Cart/Checkout<br/>Java + Spring Boot\"]\n    ORDER[\"Order Service<br/>Go + gRPC\"]\n    DISPATCH[\"Dispatch/Assignment<br/>Go geospatial engine\"]\n    ETA[\"ETA/Pricing ML<br/>Python + Pinot\"]\n    PAY[\"Payments<br/>Java\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Processing<br/>Flink\"]\n  end\n  subgraph Data\n    AERO[\"Hot State<br/>Aerospike\"]\n    REDIS[\"Cache<br/>Redis\"]\n    MYSQL[\"OLTP<br/>MySQL + Vitess\"]\n    SCYLLA[\"Location/Tracking<br/>ScyllaDB\"]\n    LAKE[\"Lakehouse<br/>S3 + Hudi + ClickHouse\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS EKS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  RES --> CDN\n  CDN --> GW\n  GW -->|gRPC| SEARCH\n  GW -->|gRPC| CART\n  GW -->|gRPC| ORDER\n  CART --> ORDER\n  ORDER --> PAY\n  ORDER -->|event| KAFKA\n  KAFKA --> DISPATCH\n  DISPATCH --> ETA\n  DISPATCH --> SCYLLA\n  ORDER --> AERO\n  SEARCH --> REDIS\n  ORDER --> MYSQL\n  KAFKA --> FLINK\n  FLINK --> LAKE\n  ETA --> AERO\n  Core --> K8S\n  Streaming --> OBS",
+   "why_language": "Zomato는 음식 배달 특성상 주문 폭주 시간대(점심·저녁 피크)에 짧은 지연으로 막대한 동시 요청을 처리해야 하므로, 가볍고 동시성(goroutine)이 강한 Go를 주문·디스패치 같은 핵심 실시간 경로에 채택했습니다. 결제·검색·전사 비즈니스 로직 등 성숙한 라이브러리와 트랜잭션 안정성이 중요한 영역은 Java/Spring Boot로 운영하며, ML·ETA 예측은 Python 생태계로, 앱은 React Native와 네이티브(Kotlin/Swift)를 병행해 개발 속도와 성능을 동시에 잡습니다.",
+   "why_architecture": "배달은 주문 → 결제 → 라이더 배정 → 픽업 → 추적 → 배달 완료로 이어지는 본질적으로 이벤트 흐름이라, Kafka 기반 event-driven 마이크로서비스로 각 단계를 비동기 분리해 한 컴포넌트 장애가 전체로 번지지 않도록 했습니다. 라이더 위치·매장 거리·예상 조리시간을 실시간으로 결합하는 geospatial 디스패치는 Aerospike/ScyllaDB 같은 초저지연 저장소와 스트리밍 처리(Flink)로 받쳐, 수백 ms 안에 최적 배정을 계산할 수 있게 설계했습니다.",
+   "summary": "Go 실시간 마이크로서비스 + Kafka 이벤트 물류 + Aerospike/ScyllaDB 초저지연 저장소로 배달을 굴리는 스택",
    "deep_dive": [
     {
      "topic": "Go 중심 마이크로서비스와 배달 실시간성",
@@ -16463,16 +16565,35 @@
     {
      "topic": "Kafka 스트림과 이벤트 드리븐 물류",
      "body": "### 비동기 물류 파이프라인\n주문·위치·라이더·결제 이벤트가 `Kafka`로 흐른다.\n\n- **인제스트 버스**: 위치·주문 스트림을 대량 수집해 추적·디스패치·알림·분석으로 분배.\n- **상태 머신 + 멱등**: 주문 라이프사이클을 이벤트로 전이시키되, 중복·순서 이슈를 멱등 처리와 주문 ID 파티셔닝으로 흡수.\n- **스트림 분석**: 실시간 지표(지역별 수요, 라이더 가용성, 이상 탐지)를 스트림에서 집계해 운영 결정에 사용.\n\n### 왜 이 구조인가\n배달은 *사람과 외부(음식점·라이더)에 의존*해 본질적으로 비동기·불확실하다. 동기 호출 사슬로는 느린 참여자가 전체를 막는다. Kafka로 각 행위자를 디커플하면 시스템이 *자기 속도*로 진행하고, 피크 백프레셔를 큐가 흡수한다. 컨슈머 lag과 이벤트 종단 지연이 핵심 SLO다. **이벤트 드리븐이 실시간 물류의 복원력을 만든다**."
+    },
+    {
+     "topic": "주문 end-to-end 요청 흐름: 탭에서 배달 완료까지",
+     "body": "### 한 건의 배달 주문이 시스템을 통과하는 경로\n\nZomato의 주문은 단일 요청이 아니라 **여러 마이크로서비스를 가로지르는 이벤트 사가(saga)** 로 처리됩니다. 사용자가 '주문하기'를 누른 순간부터의 흐름을 단계별로 보면:\n\n1. **Edge 진입** — 앱(React Native/네이티브)의 요청은 CDN/WAF를 거쳐 `Envoy + Istio` 게이트웨이에 도착합니다. 여기서 인증(토큰 검증), 레이트리밋, 라우팅이 일어나고 내부로는 대부분 `gRPC`로 전환됩니다. HTTP/JSON을 외부 경계에서만 쓰고 내부는 gRPC로 가는 이유는 피크 시간대 수십만 RPS에서 직렬화 비용과 커넥션 오버헤드를 줄이기 위함입니다.\n\n2. **Cart/Checkout (Java/Spring)** — 장바구니 검증, 쿠폰·프로모션 적용, 매장 영업 여부, 최소주문금액, 실시간 품절 체크를 수행합니다. 이 단계는 가격 정합성이 핵심이라 트랜잭션 안정성이 강한 JVM 스택에 둡니다.\n\n3. **Payments (Java)** — 인도 시장 특성상 UPI, 카드, 월렛, COD 등 결제수단이 다양하고 PG가 파편화돼 있어 결제 오케스트레이션 레이어가 두껍습니다. 결제 승인은 동기적으로 처리하되 결과는 이벤트로 발행합니다.\n\n4. **Order Service (Go)** — 결제 확정 이벤트를 받아 주문 레코드를 생성하고 `OrderCreated` 이벤트를 `Kafka`에 발행합니다. 이 순간부터 주문은 **상태 기계(state machine)** 로 관리됩니다: `PLACED → ACCEPTED → PREPARING → READY → PICKED_UP → DELIVERED`.\n\n5. **Dispatch (Go geospatial)** — `Kafka`를 구독하던 디스패치 엔진이 주문을 받아, 매장 주변 라이더 풀에서 거리·현재 부하·예상 조리완료시각(ETA)을 결합해 최적 라이더를 배정합니다. 라이더 실시간 위치는 `ScyllaDB`/`Aerospike`에 초 단위로 갱신됩니다.\n\n6. **추적·알림** — 라이더 위치 스트림이 `Kafka → Flink`를 거쳐 소비자 앱의 실시간 지도와 ETA로 푸시됩니다.\n\n### 왜 동기 호출이 아니라 이벤트인가\n각 단계를 동기 RPC 체인으로 묶으면 라이더 배정 지연이 결제 응답까지 막아버립니다. 이벤트로 분리하면 **사용자에게는 '주문 완료'를 즉시 응답**하고, 배정·조리·픽업은 백그라운드 사가로 진행하면서 실패 시 보상 트랜잭션(환불·재배정)을 독립적으로 돌릴 수 있습니다."
+    },
+    {
+     "topic": "검색·디스커버리와 홈피드 랭킹 파이프라인",
+     "body": "### 사용자마다 다른 홈 화면을 만드는 방법\n\n배달 앱의 핵심 전환 지점은 검색창보다 **홈피드(추천 매장·요리 리스트)** 입니다. Zomato의 디스커버리는 다음 계층으로 구성됩니다.\n\n#### 1) 후보 생성 (Candidate Generation)\n- 사용자의 **현재 위치(geo-hash)** 를 기준으로 배달 가능 반경 내 매장만 1차 필터링합니다. 이때 `Elasticsearch`의 geo_distance 쿼리와, 자주 조회되는 지역은 `Redis`에 캐싱된 후보 집합으로 빠르게 응답합니다.\n- 영업 여부·현재 주문 폭주로 인한 매장 일시중단·라이더 가용성 같은 **실시간 신호** 를 결합해 '지금 주문 가능한' 매장만 남깁니다.\n\n#### 2) 랭킹 (Ranking)\n- 후보 매장을 개인화 점수로 정렬합니다. 피처에는 과거 주문 이력, 평점, 배달 ETA, 가격대, 시간대(아침엔 카페·저녁엔 정찬), 프로모션 등이 들어갑니다.\n- 랭킹 모델은 Python으로 학습하고, 추론 피처는 `Aerospike`/`Redis`에 사전 계산해 두어 **수십 ms 내 응답** 을 보장합니다. 실시간 피처(현재 ETA 등)만 요청 시점에 결합합니다.\n\n#### 3) 분석·집계\n- 검색·클릭·전환 이벤트는 `Kafka`로 흘러 `Apache Pinot`/`ClickHouse` 같은 OLAP 저장소에 적재됩니다. 운영팀과 매장주 대시보드는 이 저장소에서 **초 단위 신선도** 의 노출/클릭/전환 지표를 봅니다.\n\n### 트레이드오프\n완전 실시간 개인화는 비용이 크기 때문에, Zomato는 **무거운 피처는 배치로 미리 계산**(near-line)하고 **가벼운 실시간 신호만 온라인 결합** 하는 람다 구조를 택합니다. 이로써 피크 트래픽에서도 홈피드 응답 지연을 일정하게 유지합니다."
+    },
+    {
+     "topic": "데이터 저장·샤딩·일관성 전략: MySQL Vitess와 폴리글랏 스토리지",
+     "body": "### 데이터 종류마다 다른 저장소를 쓰는 이유\n\nZomato는 단일 DB가 아니라 **워크로드 특성별 폴리글랏 퍼시스턴스** 를 씁니다.\n\n| 데이터 성격 | 저장소 | 이유 |\n|---|---|---|\n| 주문·결제 등 트랜잭션 OLTP | `MySQL` (Vitess 샤딩) | 강한 일관성·관계형 무결성 |\n| 라이더 위치·세션 등 초고빈도 hot state | `Aerospike`, `ScyllaDB` | 1ms 미만 읽기/쓰기, 자동 복제 |\n| 캐시·카운터·레이트리밋 | `Redis` | 인메모리 초저지연 |\n| 매장·메뉴 검색 | `Elasticsearch` | geo + 텍스트 질의 |\n| 분석/대시보드 OLAP | `Pinot`, `ClickHouse` | 컬럼형 집계 |\n| 장기 보관·ML 학습 | `S3 + Apache Hudi` | 저비용 레이크하우스, upsert 지원 |\n\n#### MySQL을 어떻게 확장하나 — Vitess\n주문량이 늘면 단일 MySQL은 한계에 부딪힙니다. Zomato는 `Vitess`로 MySQL을 **수평 샤딩** 합니다. Vitess는 애플리케이션에는 하나의 논리적 DB처럼 보이지만 내부적으로는 shard key(예: city_id 또는 user_id 해시)로 여러 물리 샤드에 분산합니다. 이로써:\n- 도시·지역 단위로 데이터를 가깝게 모아 **지역성(locality)** 을 확보하고,\n- 특정 도시의 폭증이 다른 샤드에 영향을 주지 않도록 **장애 격리** 를 합니다.\n\n#### 일관성 모델\n- 주문 상태·결제는 **강한 일관성**(MySQL 트랜잭션)을 요구합니다.\n- 라이더 위치·ETA·노출 카운트 같은 신호는 **최종 일관성** 으로 충분하므로 Aerospike/Scylla의 비동기 복제를 활용합니다.\n- 서비스 간 상태 동기화는 직접 DB 공유 대신 `Kafka` 이벤트로 전파해 **각 서비스가 자기 DB를 소유(database-per-service)** 하는 원칙을 지킵니다."
+    },
+    {
+     "topic": "피크 트래픽 대응: 오토스케일링과 복원력 설계",
+     "body": "### 점심·저녁 두 번의 거대한 파도\n\n배달 트래픽은 24시간 균등하지 않습니다. **점심(12~14시)과 저녁(19~22시)** 에 하루 트래픽의 대부분이 몰리고, 우천·공휴일·크리켓 경기 같은 이벤트에 추가로 폭증합니다. Zomato는 이를 위해 다음을 조합합니다.\n\n#### 오토스케일링\n- 서비스는 `Kubernetes(EKS)` 위에서 돌고, HPA(Horizontal Pod Autoscaler)가 CPU·요청 큐 길이·커스텀 메트릭(예: 주문 RPS)에 따라 파드를 늘립니다.\n- 피크가 **예측 가능** 하므로 순수 반응형 스케일링만 쓰지 않고, 점심·저녁 직전에 **사전 워밍(pre-scaling)** 으로 용량을 미리 띄워 콜드스타트 지연을 피합니다.\n\n#### 복원력 패턴\n- **Circuit Breaker**: 결제 PG나 외부 의존성이 느려지면 서킷을 열어 빠르게 실패시키고 폴백(예: 대체 PG, 나중 재시도 큐)으로 전환합니다.\n- **Graceful Degradation**: 추천 랭킹 모델이 느리면 개인화를 끄고 거리·평점 기반 기본 정렬로 폴백해, **핵심 기능(주문)** 은 절대 막히지 않게 합니다.\n- **Bulkhead/격리**: 도시·기능별로 리소스 풀을 나눠 한 지역 폭증이 전체 클러스터를 잠식하지 않게 합니다.\n- **비동기 버퍼링**: 주문 폭주 시 다운스트림(영수증·알림·정산)은 `Kafka` 큐로 흡수해 백프레셔를 완충합니다.\n\n#### 관측성\n`Prometheus + Grafana` 로 메트릭을, 분산 트레이싱으로 주문 한 건이 거치는 서비스 체인의 지연을 추적합니다. 피크 중 어느 서비스가 병목인지 **실시간으로 보고 자동·수동 대응** 할 수 있도록 SLO 기반 알림을 운영합니다."
     }
    ],
    "github": {
-    "org": "https://github.com/Zomato"
+    "org": "https://github.com/Zomato",
+    "repos": []
    },
    "sources": [
-    "https://blog.zomato.com/category/technology"
+    "https://www.blog.zomato.com/category/technology",
+    "https://github.com/Zomato",
+    "https://blog.zomato.com/building-a-significantly-faster-and-more-stable-system-at-zomato-with-aerospike"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "flipkart",
