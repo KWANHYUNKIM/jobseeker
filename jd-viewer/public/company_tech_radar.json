@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T19:22:21",
+ "generated_at": "2026-06-16T21:02:01",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 67,
+ "refined": 69,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -2173,12 +2173,12 @@
      "count": 3
     },
     {
-     "name": "TypeScript",
+     "name": "Go",
      "count": 3
     },
     {
-     "name": "Go",
-     "count": 2
+     "name": "TypeScript",
+     "count": 3
     },
     {
      "name": "Scala",
@@ -2239,7 +2239,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 2
+      "count": 3
      },
      {
       "name": "Angular",
@@ -2266,11 +2266,11 @@
       "count": 1
      },
      {
-      "name": "Paste Design System",
+      "name": "Next.js",
       "count": 1
      },
      {
-      "name": "React Spectrum",
+      "name": "Paste Design System",
       "count": 1
      }
     ],
@@ -2284,7 +2284,15 @@
       "count": 3
      },
      {
+      "name": "Redis",
+      "count": 3
+     },
+     {
       "name": "Cassandra",
+      "count": 2
+     },
+     {
+      "name": "MySQL",
       "count": 2
      },
      {
@@ -2293,10 +2301,6 @@
      },
      {
       "name": "PostgreSQL",
-      "count": 2
-     },
-     {
-      "name": "Redis",
       "count": 2
      },
      {
@@ -2309,10 +2313,6 @@
      },
      {
       "name": "Apache Iceberg",
-      "count": 1
-     },
-     {
-      "name": "Apache Spark",
       "count": 1
      }
     ],
@@ -2350,11 +2350,11 @@
       "count": 1
      },
      {
-      "name": "Azure DevOps / GitHub Actions",
+      "name": "ArgoCD",
       "count": 1
      },
      {
-      "name": "Azure Front Door",
+      "name": "Azure DevOps / GitHub Actions",
       "count": 1
      }
     ]
@@ -3957,6 +3957,10 @@
    ],
    "languages": [
     {
+     "name": "Go",
+     "count": 1
+    },
+    {
      "name": "Java",
      "count": 1
     },
@@ -3984,6 +3988,14 @@
       "count": 1
      },
      {
+      "name": "gRPC",
+      "count": 1
+     },
+     {
+      "name": "Netty",
+      "count": 1
+     },
+     {
       "name": "Spring Boot",
       "count": 1
      },
@@ -3994,7 +4006,15 @@
     ],
     "frontend": [
      {
+      "name": "Next.js",
+      "count": 1
+     },
+     {
       "name": "React",
+      "count": 1
+     },
+     {
+      "name": "TypeScript",
       "count": 1
      },
      {
@@ -4004,7 +4024,15 @@
     ],
     "data": [
      {
+      "name": "Druid",
+      "count": 1
+     },
+     {
       "name": "Elasticsearch",
+      "count": 1
+     },
+     {
+      "name": "Flink",
       "count": 1
      },
      {
@@ -4016,7 +4044,19 @@
       "count": 1
      },
      {
+      "name": "MariaDB",
+      "count": 1
+     },
+     {
+      "name": "Milvus",
+      "count": 1
+     },
+     {
       "name": "Oracle",
+      "count": 1
+     },
+     {
+      "name": "Redis",
       "count": 1
      },
      {
@@ -4026,11 +4066,27 @@
     ],
     "infra": [
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
+      "name": "Grafana",
+      "count": 1
+     },
+     {
+      "name": "Istio",
+      "count": 1
+     },
+     {
       "name": "Kubernetes",
       "count": 1
      },
      {
       "name": "OpenStack",
+      "count": 1
+     },
+     {
+      "name": "Prometheus",
       "count": 1
      },
      {
@@ -4041,7 +4097,7 @@
    },
    "architecture": [
     {
-     "name": "AI 서비스",
+     "name": "LLM 기반 AI 에이전트 플랫폼",
      "count": 1
     },
     {
@@ -4049,7 +4105,11 @@
      "count": 1
     },
     {
-     "name": "대규모 데이터 플랫폼",
+     "name": "대규모 데이터 레이크하우스",
+     "count": 1
+    },
+    {
+     "name": "이벤트 스트리밍",
      "count": 1
     }
    ]
@@ -14437,44 +14497,58 @@
    "domain": "클라우드/SI",
    "languages": [
     "Java",
-    "Kotlin",
+    "TypeScript",
     "Python",
+    "Kotlin",
     "JavaScript",
-    "TypeScript"
+    "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
-     "Node.js"
+     "Spring Batch",
+     "Node.js",
+     "FastAPI"
     ],
     "frontend": [
      "React",
      "Vue.js",
-     "Angular"
+     "Angular",
+     "TypeScript",
+     "Next.js"
     ],
     "data": [
-     "Kafka",
      "Oracle",
      "PostgreSQL",
-     "Elasticsearch"
+     "Kafka",
+     "Elasticsearch",
+     "Redis",
+     "MySQL",
+     "Tibero"
     ],
     "infra": [
      "AWS",
      "Azure",
      "Kubernetes",
-     "Terraform"
+     "Terraform",
+     "Jenkins",
+     "ArgoCD",
+     "Docker",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
     "MSA",
-    "클라우드 마이그레이션",
-    "DX 플랫폼"
+    "엔터프라이즈 클라우드 마이그레이션",
+    "DX 플랫폼(DAP/AIXR)",
+    "이벤트 드리븐 아키텍처"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"기업 포털<br/>React + Vue.js\"]\n    ADMIN[\"관리 콘솔<br/>Angular\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    DX[\"DX 플랫폼<br/>Spring Boot + Kotlin\"]\n    MIG[\"클라우드 마이그레이션<br/>Spring Cloud\"]\n    BFF[\"통합 API<br/>Node.js\"]\n    AI[\"AI 분석<br/>Python\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    ORA[\"엔터프라이즈 DB<br/>Oracle\"]\n    PG[\"신규 서비스 DB<br/>PostgreSQL\"]\n    ES[\"로그 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes + Terraform\"]\n    CLOUD[\"멀티 클라우드<br/>AWS + Azure\"]\n  end\n  WEB --> GW\n  ADMIN --> GW\n  GW --> DX\n  GW --> MIG\n  GW --> BFF\n  BFF --> AI\n  DX --> KAFKA\n  KAFKA --> AI\n  DX --> ORA\n  MIG --> PG\n  AI --> ES\n  K8S --> CLOUD",
-   "why_language": "엔터프라이즈 SI·DX 프로젝트의 표준성을 위해 Java/Spring을 핵심으로 쓰고, AI·데이터 영역은 Python을 활용하며 멀티 클라우드 환경을 지원한다.",
-   "why_architecture": "고객사 레거시를 클라우드로 전환하는 MSA·컨테이너 기반 현대화를 주도하며, 멀티 클라우드(AWS/Azure)와 자체 DX 플랫폼을 운영한다.",
-   "summary": "엔터프라이즈 클라우드 전환을 이끄는 Java/Spring 기반 DX 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Channel\"]\n    WEB[\"Web Portal<br/>React + Vue.js\"]\n    MOB[\"Mobile / Kiosk<br/>Hybrid App\"]\n    EXT[\"B2B System<br/>EAI / API Caller\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    LB[\"Load Balancer<br/>AWS ALB / Azure FrontDoor\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    AUTH[\"AuthN / AuthZ<br/>OAuth2 + Keycloak\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    SVC1[\"Domain Service<br/>Spring Boot\"]\n    SVC2[\"Domain Service<br/>Spring Boot\"]\n    BATCH[\"Batch / ETL<br/>Spring Batch\"]\n    AISVC[\"AI/ML Service<br/>Python + FastAPI\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RDB[\"RDB<br/>Oracle / PostgreSQL / Tibero\"]\n    CACHE[\"Cache<br/>Redis\"]\n    SEARCH[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform (DevOps)\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    IAC[\"IaC<br/>Terraform\"]\n    CICD[\"CI/CD<br/>Jenkins + ArgoCD\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  WEB --> LB\n  MOB --> LB\n  EXT --> LB\n  LB --> GW\n  GW --> AUTH\n  GW -->|REST| SVC1\n  GW -->|REST| SVC2\n  GW -->|REST| AISVC\n  SVC1 -->|event| KAFKA\n  SVC2 -->|event| KAFKA\n  KAFKA --> BATCH\n  BATCH --> RDB\n  SVC1 --> RDB\n  SVC2 --> RDB\n  SVC1 --> CACHE\n  SVC2 --> SEARCH\n  AISVC --> RDB\n  K8S -.-> Core\n  CICD -.-> K8S\n  IAC -.-> K8S\n  OBS -.-> Core",
+   "why_language": "LG CNS는 금융·공공·제조 대기업 SI/SM이 핵심이라 엔터프라이즈 표준성과 인력 수급이 검증된 Java/Spring을 백엔드 기본으로 삼는다. 동시에 클라우드 전환(MSP)과 DX·생성형 AI 사업 확대로 데이터·ML 영역은 Python을, 프론트와 풀스택 신규 과제는 TypeScript(React/Vue)를 채택해 레거시 안정성과 신기술 생산성을 분리 운영한다.",
+   "why_architecture": "수백 개 고객사의 이질적 레거시를 다루기 때문에 단일 모놀리식보다 도메인별로 분리·독립 배포가 가능한 MSA가 운영·확장에 유리하다. 또한 AWS/Azure 멀티 클라우드 마이그레이션을 사업화하면서 Terraform·Kubernetes로 인프라를 코드화하고, DAP·AIXR 같은 사내 DX 플랫폼으로 반복되는 구축 패턴을 표준 자산화해 프로젝트 납기와 품질을 동시에 잡는 전략을 택했다.",
+   "summary": "Java/Spring 엔터프라이즈 표준 위에 멀티 클라우드 MSA와 DX 플랫폼을 얹어 대기업 SI를 자산화한 스택",
    "deep_dive": [
     {
      "topic": "엔터프라이즈 클라우드 마이그레이션 방법론",
@@ -14491,17 +14565,31 @@
     {
      "topic": "관측성·DevOps와 CI/CD 표준화",
      "body": "### 다수 고객 프로젝트를 어떻게 표준 운영하나\nLG CNS는 여러 고객사의 시스템을 동시에 구축·운영한다. 프로젝트마다 배포·모니터링을 처음부터 만들면 비효율적이고 품질이 들쭉날쭉해진다. 그래서 **CI/CD·관측성을 표준화**한 공통 자산(DX 플랫폼)을 둔다.\n- **CI/CD**: 코드 커밋 → 빌드 → 테스트 → 컨테이너 이미지 → 배포의 파이프라인을 표준 템플릿으로 제공한다. `Kubernetes` 기반 배포로 환경 일관성을 확보한다.\n- **IaC**: `Terraform`으로 인프라를 코드화해 멀티 클라우드(`AWS`/`Azure`)에서 재현 가능하게 프로비저닝한다.\n- **관측성**: 메트릭·로그·`Elasticsearch` 기반 로그 분석을 공통 제공해 고객 시스템의 상태를 표준 대시보드로 본다.\n\n### 왜 표준화인가\nSI 특성상 인력·고객이 자주 바뀌어도 일정 품질을 유지하려면 \"개인 역량\"이 아니라 \"플랫폼·프로세스\"에 품질을 새겨야 한다.\n\n### 트레이드오프\n표준화는 품질 일관성·재사용·운영 효율을 주지만, 고객마다 다른 특수 요건을 다 담기 어려운 경직성이 있다. 공통 골격은 표준으로 강제하되, 고객별 특이 요건은 확장 포인트로 수용하는 절충으로 유연성을 확보한다."
+    },
+    {
+     "topic": "엔터프라이즈 MSA에서의 분산 트랜잭션과 데이터 일관성 — Saga와 Outbox",
+     "body": "### 왜 분산 트랜잭션이 문제인가\nLG CNS의 SI 과제는 대부분 금융 결제, 보험 청약, 공공 민원 같이 **금전·법적 정합성이 핵심인 도메인**이다. 모놀리식 시절에는 단일 Oracle 트랜잭션(`@Transactional`) 하나로 끝나던 업무가, MSA로 쪼개지면서 `주문 서비스`, `결제 서비스`, `재고 서비스`가 각자의 DB를 갖게 되면 2-Phase Commit(XA)을 쓰지 않는 한 ACID가 깨진다. 그런데 XA는 락 유지 시간이 길고 한 참여자가 죽으면 전체가 블로킹돼 대규모 트래픽에서 사실상 못 쓴다.\n\n### 실제 채택 패턴: Saga + Transactional Outbox\n- **Choreography Saga**: 각 서비스가 로컬 트랜잭션을 커밋한 뒤 `Kafka`로 도메인 이벤트(`OrderCreated`, `PaymentApproved`)를 발행하고, 다음 서비스가 이를 구독해 자기 일을 한다. 중앙 조율자가 없어 결합도가 낮지만 흐름 추적이 어렵다.\n- **Orchestration Saga**: 복잡한 금융 업무는 별도 오케스트레이터(보통 `Spring Boot` 상태머신 또는 `Camunda`류)가 단계를 명시적으로 호출하고 실패 시 **보상 트랜잭션(compensating transaction)** — 예: `결제취소`, `재고복원` — 을 역순으로 실행한다.\n\n### Outbox로 \"DB 커밋과 이벤트 발행\"의 원자성 보장\n가장 흔한 버그는 *DB에는 저장됐는데 Kafka 발행이 실패*하거나 그 반대인 경우다. 이를 막기 위해:\n\n| 단계 | 동작 |\n|------|------|\n| 1 | 비즈니스 데이터와 이벤트를 **같은 로컬 트랜잭션**에서 `outbox` 테이블에 INSERT |\n| 2 | 트랜잭션 커밋(원자적) |\n| 3 | CDC(`Debezium`) 또는 폴링 퍼블리셔가 `outbox`를 읽어 Kafka로 발행 |\n| 4 | 컨슈머는 `event_id` 기반 **멱등 처리(idempotent consumer)** 로 중복 수신 방어 |\n\n이 구조 덕분에 \"at-least-once\" 전달을 보장하면서도 비즈니스 정합성을 유지한다. 트레이드오프는 **최종 일관성(eventual consistency)** 을 받아들여야 한다는 점 — 사용자에게 \"처리 중\" 상태를 노출하고, 화면은 이벤트가 도착하면 갱신되도록 설계한다."
+    },
+    {
+     "topic": "클라우드 마이그레이션 실행 메커니즘 — 6R 평가부터 Strangler Fig 전환까지",
+     "body": "### MSP 사업의 실제 작업 흐름\nLG CNS의 클라우드 마이그레이션은 단순 \"서버를 클라우드에 옮기기\"가 아니라 **자산 인벤토리 → 평가 → 전환 → 최적화**의 반복 사이클이다.\n\n### 1) Discovery & 6R 평가\n수천 대 규모의 온프레미스 워크로드를 자동 디스커버리 툴(AWS Application Discovery Service, Azure Migrate)로 의존성 맵을 그린 뒤 각 애플리케이션을 6R로 분류한다:\n- **Rehost** (lift-and-shift): 가장 빠름, OS·앱 그대로 VM 이전\n- **Replatform**: 예) 자체 운영 Oracle → `Amazon RDS`, WAS → 컨테이너\n- **Refactor**: 모놀리식 → `Spring Boot` MSA 재설계 (비용 최대, 가치 최대)\n- **Repurchase / Retire / Retain**: SaaS 전환, 폐기, 잔류\n\n### 2) Strangler Fig 패턴으로 무중단 전환\n금융·공공 시스템은 빅뱅 전환이 불가능하다. 그래서 **Strangler Fig** 방식을 쓴다:\n- 레거시 앞단에 `API Gateway`(Spring Cloud Gateway)를 두고 라우팅 규칙을 건다.\n- 신규로 떼어낸 기능은 새 MSA로 보내고, 아직 안 옮긴 기능은 레거시로 보낸다.\n- 기능을 하나씩 \"교살(strangle)\"하듯 이전하며 트래픽 비율을 점진적으로 옮긴다.\n- 모든 기능이 이전되면 레거시를 폐기한다.\n\n### 3) 데이터 마이그레이션의 까다로움\n- **무중단 DB 이전**: `AWS DMS` 또는 `Debezium` CDC로 소스 DB 변경분을 실시간 복제하며 cutover 시점의 다운타임을 분 단위로 줄인다.\n- **국산 DB 이슈**: 공공은 `Tibero`(Oracle 호환) 요구가 많아 SQL 방언·시퀀스·힌트 호환성 검증이 필수.\n\n### 트레이드오프\nRefactor는 ROI가 가장 높지만 리스크·기간이 커서, 실제로는 \"일단 Rehost로 빠르게 클라우드에 올리고(데이터센터 계약 만료 대응) 이후 단계적으로 Replatform/Refactor\" 하는 **2단계 전략**이 현실적 정답으로 자주 선택된다."
+    },
+    {
+     "topic": "DX 플랫폼(DAP)과 생성형 AI 사업의 작동 원리 — RAG 기반 엔터프라이즈 AI",
+     "body": "### LG CNS의 AI 포지셔닝\nLG CNS는 자체 LLM을 만드는 회사가 아니라 **기업 내부 데이터에 LLM을 붙여주는** AX(AI Transformation) 사업자다. 핵심은 고객사의 사내 문서·DB를 안전하게 활용하는 **RAG(Retrieval-Augmented Generation)** 파이프라인이다.\n\n### RAG 파이프라인 end-to-end\n```\n사내문서(PDF/HWP/Confluence)\n   → 청킹(chunking) + 임베딩(embedding model)\n   → Vector Store 적재\n   → [질의] 사용자 질문 임베딩 → 유사도 검색(top-k)\n   → 검색된 컨텍스트 + 프롬프트 → LLM\n   → 출처(citation) 포함 답변\n```\n- **벡터 저장소**: `Elasticsearch`(kNN 플러그인) 또는 전용 Vector DB. 이미 운영 중인 ES 클러스터에 dense_vector 필드를 추가해 키워드+벡터 **하이브리드 검색**을 하는 방식이 엔터프라이즈에서 선호된다(기존 인프라 재활용).\n- **LLM 선택**: 보안 등급에 따라 외부 API(Azure OpenAI 등)와 사내망 전용 오픈 모델을 분리. 공공·금융은 망분리 때문에 **on-prem GPU에 올린 오픈 LLM** 요구가 강하다.\n\n### 왜 RAG인가 (Fine-tuning 대비 트레이드오프)\n| 항목 | RAG | Fine-tuning |\n|------|-----|-------------|\n| 최신 데이터 반영 | 문서만 갱신하면 즉시 | 재학습 필요 |\n| 출처 추적 | 가능(citation) | 어려움 |\n| 초기 비용 | 낮음 | 높음(GPU 학습) |\n| 환각(hallucination) | 컨텍스트로 억제 | 상대적 취약 |\n\n엔터프라이즈는 \"왜 이 답이 나왔는지\" 감사·추적이 필수라 출처를 명시할 수 있는 RAG가 기본 선택이다.\n\n### 플랫폼 자산화\nLG CNS는 이런 RAG·MLOps 파이프라인을 매 프로젝트마다 새로 짜지 않고 **DAP(Digital Application Platform)** 같은 사내 플랫폼에 컴포넌트(데이터 커넥터, 임베딩 잡, 프롬프트 관리, 가드레일)로 표준화해두고, 고객사별로 조립·커스터마이징한다. 이것이 SI의 반복 비용을 줄이고 품질을 균질화하는 핵심 엔지니어링 결정이다."
     }
    ],
    "github": {
-    "org": "LG-CNS"
+    "org": "https://github.com/LG-CNS",
+    "repos": []
    },
    "sources": [
-    "https://www.lgcns.com",
-    "https://blog.lgcns.com"
+    "https://www.lgcns.com/tech-blog/",
+    "https://github.com/LG-CNS",
+    "https://www.lgcns.com/business/cloud/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "skt",
@@ -14510,43 +14598,58 @@
    "domain": "통신/AI",
    "languages": [
     "Java",
-    "Kotlin",
     "Python",
+    "Kotlin",
     "Scala",
-    "TypeScript"
+    "TypeScript",
+    "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
-     "FastAPI"
+     "FastAPI",
+     "Netty",
+     "gRPC"
     ],
     "frontend": [
      "React",
-     "Vue.js"
+     "Next.js",
+     "Vue.js",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "Hadoop",
      "Spark",
+     "Flink",
+     "Druid",
      "Oracle",
-     "Elasticsearch"
+     "MariaDB",
+     "Redis",
+     "Elasticsearch",
+     "Milvus"
     ],
     "infra": [
      "Kubernetes",
+     "OpenStack",
      "사내 클라우드",
-     "OpenStack"
+     "Istio",
+     "ArgoCD",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
     "MSA",
-    "대규모 데이터 플랫폼",
-    "AI 서비스(에이닷)"
+    "대규모 데이터 레이크하우스",
+    "이벤트 스트리밍(CDC)",
+    "LLM 기반 AI 에이전트 플랫폼"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"T world 웹<br/>React + Vue.js\"]\n    ADOT[\"에이닷 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    CORE[\"통신 코어<br/>Spring Boot + Java\"]\n    AISVC[\"AI 서비스 에이닷<br/>FastAPI + Python\"]\n    BILL[\"과금 서비스<br/>Spring Boot + Kotlin\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 스트림<br/>Apache Kafka\"]\n    HADOOP[\"대규모 데이터 플랫폼<br/>Hadoop + Spark\"]\n  end\n  subgraph Data\n    ORA[\"가입자 DB<br/>Oracle\"]\n    ES[\"로그 검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes\"]\n    PCLOUD[\"사내 클라우드<br/>OpenStack\"]\n  end\n  WEB --> GW\n  ADOT --> GW\n  GW --> CORE\n  GW --> AISVC\n  GW --> BILL\n  CORE --> KAFKA\n  BILL --> KAFKA\n  KAFKA --> HADOOP\n  HADOOP --> AISVC\n  CORE --> ORA\n  AISVC --> ES\n  K8S --> PCLOUD",
-   "why_language": "통신 과금·고객 시스템은 Java/Spring으로 안정성을 확보하고, AI 비서(에이닷)·데이터 분석은 Python을 핵심으로 쓴다.",
-   "why_architecture": "통신 인프라와 AI 서비스를 함께 운영하기 위해 MSA와 대규모 데이터 플랫폼(Hadoop/Spark)을 구축하고, 자체 클라우드 위에서 쿠버네티스로 운영한다.",
-   "summary": "통신 백본과 AI 서비스를 잇는 Java/Python 대규모 데이터 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"A. (에이닷) App<br/>React Native + Native\"]\n    WEB[\"T world Web<br/>Next.js + React\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    APIM[\"API Gateway<br/>Spring Cloud Gateway + Istio\"]\n    AUTH[\"Auth / 인증<br/>OAuth2 + OIDC\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    SVC[\"Telco/과금 Services<br/>Spring Boot + Kotlin\"]\n    AIORCH[\"AI Orchestrator<br/>FastAPI + LangGraph\"]\n    LLM[\"LLM Serving<br/>vLLM + Triton + A.X\"]\n    RAG[\"RAG / Retrieval<br/>Milvus + Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n    FLINK[\"Stream Proc<br/>Spark + Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    OLTP[\"OLTP<br/>Oracle + MariaDB\"]\n    CACHE[\"Cache<br/>Redis\"]\n    LAKE[\"Data Lake<br/>Hadoop + Iceberg\"]\n    OLAP[\"OLAP<br/>Druid\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + OpenStack\"]\n    GPU[\"GPU Cluster<br/>NVIDIA + Kubeflow\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> APIM\n  WEB --> APIM\n  APIM --> AUTH\n  APIM -->|REST/gRPC| SVC\n  APIM -->|gRPC| AIORCH\n  AIORCH --> LLM\n  AIORCH --> RAG\n  LLM --> GPU\n  RAG --> OLAP\n  SVC --> OLTP\n  SVC --> CACHE\n  SVC -->|produce| KAFKA\n  OLTP --> CDC\n  CDC --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> LAKE\n  LAKE --> OLAP\n  SVC --> K8S\n  AIORCH --> K8S\n  K8S --> OBS",
+   "why_language": "통신 과금·고객관리 같은 미션크리티컬 백엔드는 안정성과 방대한 Spring/JVM 생태계, 트랜잭션 정합성 때문에 Java/Kotlin을 핵심으로 쓴다. 반면 에이닷(A.)과 A.X LLM, 추천·데이터 파이프라인은 모델 서빙·전처리 생태계가 압도적인 Python을, 대규모 배치/스트림 처리는 Spark·Flink와 맞물린 Scala를 택해 도메인별로 언어를 분리한다.",
+   "why_architecture": "수천만 가입자의 과금·인증·트래픽을 무중단으로 처리하려면 장애 격리와 독립 배포가 필수라 MSA와 자체 클라우드(OpenStack/K8s)를 채택했다. 동시에 통화·결제·로그 이벤트를 실시간 분석하고 AI 에이전트에 컨텍스트로 공급해야 하므로 Kafka 기반 이벤트 스트리밍과 Hadoop/Iceberg 레이크하우스, LLM 서빙 플랫폼을 한 축으로 묶었다.",
+   "summary": "통신 미션크리티컬은 JVM·MSA로, AI·데이터는 Python·Kafka·LLM 플랫폼으로 양분한 하이브리드 스택",
    "deep_dive": [
     {
      "topic": "대규모 데이터 플랫폼(Hadoop/Spark)",
@@ -14563,17 +14666,50 @@
     {
      "topic": "MSA·자체 클라우드 운영과 확장성",
      "body": "### 통신과 AI를 한 인프라에서\nSK텔레콤은 안정성이 절대적인 통신 코어와 빠른 변화가 필요한 AI 서비스를 함께 운영한다. 이를 위해 `사내 클라우드`·`OpenStack` 위에서 `Kubernetes` 기반 MSA를 운영한다.\n- **자체 클라우드**: 통신 데이터의 규모·민감도·규제 때문에 퍼블릭 클라우드에 전적으로 의존하지 않고 자체 클라우드(OpenStack 기반 IaaS)를 운영해 인프라 통제권을 유지한다.\n- **컨테이너 표준화**: `Kubernetes`로 서비스를 컨테이너 배포·스케일해 자원 효율과 배포 일관성을 확보한다.\n\n### 확장성\n- 무상태 서비스는 오토스케일로 트래픽에 맞춰 늘리고, 대규모 데이터 처리는 `Spark`/`Hadoop` 클러스터로 분산한다.\n- 실시간 이벤트는 `Kafka`로 받아 스트리밍 처리해 망 운영·AI 서비스에 빠르게 반영한다.\n\n### 코어와 신규의 경계\n통신 코어(과금·고객)는 보수적 안정성, AI·데이터·신규 서비스는 민첩성으로 운영 정책을 나눈다. 둘을 같은 컨테이너 플랫폼 위에 두되 운영 등급을 다르게 한다.\n\n### 트레이드오프\n자체 클라우드는 통제·보안·규제 대응에 유리하지만 퍼블릭 클라우드의 무한 탄력성·매니지드 편의를 일부 포기한다. 통신사 특성상 데이터 주권·규모가 이를 정당화하며, 컨테이너·MSA로 민첩성 손해를 보완한다."
+    },
+    {
+     "topic": "A. (에이닷) 요청 처리 end-to-end: 음성 한 마디가 LLM 응답이 되기까지",
+     "body": "### 전체 흐름 한 장면\n\n사용자가 에이닷 앱에서 \"이번 달 데이터 얼마 남았어?\"라고 말하면, 그 요청은 단순한 LLM 호출 하나로 끝나지 않는다. 통신사 도메인 특성상 *실제 과금/회선 데이터*를 정확히 가져와야 하므로, 음성 → 텍스트 → 의도분류 → 도구 호출(통신 API) → LLM 응답 생성이라는 멀티홉 파이프라인을 탄다.\n\n```\nVoice → ASR → API Gateway → AI Orchestrator → (Intent / Router)\n   ├─ 일반 대화  → LLM(A.X / 외부 LLM) 스트리밍 생성\n   └─ 통신 의도  → Function Calling → Telco MSA(과금/회선 조회) → 결과를 컨텍스트로 LLM 재생성\n```\n\n### 단계별 동작 원리\n\n- **ASR(음성인식)**: 온디바이스 또는 서버 사이드 STT가 음성을 텍스트로 변환한다. 지연을 줄이기 위해 발화 중 partial result를 스트리밍으로 흘려보내고, end-pointing(말이 끝났다는 판단)이 떨어지면 최종 텍스트를 확정한다.\n- **API Gateway**: `Spring Cloud Gateway` + `Istio` 계층에서 OAuth2 토큰 검증, 사용자 식별(어떤 회선의 가입자인지), rate limiting을 수행한다. 여기서 \"누구의 데이터를 조회할 권한이 있는가\"가 먼저 결정된다.\n- **AI Orchestrator(FastAPI + LangGraph 류)**: 핵심 두뇌. 들어온 발화를 **의도 분류(intent routing)** 한다. 잡담이면 곧장 LLM으로, \"요금/데이터/부가서비스\" 같은 통신 의도면 **Function Calling**으로 내부 Telco MSA를 호출한다.\n- **Tool 호출 → Telco MSA**: `Spring Boot` 기반 과금/회선 마이크로서비스가 Oracle/MariaDB에서 실제 잔여 데이터량을 읽어 온다. 이 값은 *환각이 절대 허용되지 않는* 정확한 사실이므로 LLM이 생성하는 게 아니라 시스템이 조회해서 컨텍스트로 주입한다.\n- **LLM 응답 생성**: 조회 결과 + 사용자 질문을 프롬프트에 합쳐 `A.X` 또는 외부 LLM에 넣고, `vLLM`/`Triton` 서빙으로 **토큰 스트리밍**한다. 사용자는 글자가 타이핑되듯 흘러나오는 응답을 본다.\n\n### 왜 이렇게 복잡하게 했나 (트레이드오프)\n\n순수 LLM 단독이면 \"데이터 3GB 남았어요\" 같은 답을 *지어낼* 위험이 있다. 통신사는 이런 숫자 오류가 곧 고객 클레임·요금 분쟁으로 직결된다. 그래서 **사실 조회는 결정론적 시스템(MSA+DB)**, **자연어 표현은 LLM** 으로 역할을 명확히 쪼갰다. 대신 홉이 늘어 지연이 커지므로, 의도 분류를 빠른 소형 모델/룰로 먼저 처리하고, 통신 API 응답을 캐싱하며, LLM 생성은 스트리밍으로 체감 지연을 숨기는 식으로 보완한다."
+    },
+    {
+     "topic": "LLM 서빙 인프라: A.X 모델을 GPU 위에서 어떻게 돌리나",
+     "body": "### 서빙 스택의 구조\n\nSKT는 한국어 특화 LLM `A.X` 시리즈를 자체 공개·운영한다. 수십만 동시 사용자의 토큰 생성을 GPU 클러스터에서 처리하려면 단순히 모델을 띄우는 것으로는 부족하고, **배칭·메모리 관리·라우팅**이 핵심이 된다.\n\n| 계층 | 기술 | 역할 |\n|------|------|------|\n| 모델 | `A.X` (자체 LLM) | 한국어/통신 도메인 특화 추론 |\n| 추론 엔진 | `vLLM`, `Triton Inference Server` | 고처리량 토큰 생성 |\n| 가속 | `NVIDIA GPU`, `TensorRT-LLM` | 커널 최적화 |\n| 오케스트레이션 | `Kubernetes`, `Kubeflow` | GPU 스케줄링·오토스케일 |\n\n### 핵심 메커니즘: continuous batching + PagedAttention\n\nLLM 서빙의 최대 난제는 \"각 요청의 생성 길이가 제각각\"이라는 점이다. 전통적 정적 배치는 가장 긴 요청이 끝날 때까지 GPU가 놀게 된다. `vLLM`의 **continuous batching**은 한 요청이 끝나면 그 슬롯에 즉시 새 요청을 끼워 넣어 GPU 점유율을 극대화한다. 또 **PagedAttention**은 KV 캐시를 OS 가상메모리처럼 페이지 단위로 관리해, 긴 컨텍스트에서도 메모리 단편화 없이 처리량을 끌어올린다.\n\n### 스케일링·비용 트레이드오프\n\n- **GPU는 비싸다**: 그래서 의도 분류·간단한 FAQ는 소형 모델이나 RAG로 우회시키고, 진짜 복잡한 추론만 대형 LLM으로 보낸다(모델 라우팅/캐스케이딩).\n- **오토스케일**: 출퇴근·저녁 시간대 트래픽 피크에 맞춰 `Kubernetes` HPA/KEDA가 GPU 파드 수를 조절한다. 다만 GPU 워밍업(모델 로딩) 시간이 길어, 스케일아웃이 즉각적이지 않다는 게 통신 트래픽 스파이크 대응의 약점이고, 이를 예측 기반 사전 스케일링과 모델 샤딩으로 보완한다.\n- **양자화**: INT8/FP8 양자화로 동일 GPU에 더 많은 동시 요청을 태워 단가를 낮춘다. 대신 한국어 미묘한 뉘앙스에서 품질 저하가 없는지 지속 평가가 필요하다."
+    },
+    {
+     "topic": "CDC 기반 실시간 데이터 파이프라인과 레이크하우스",
+     "body": "### 왜 CDC인가\n\n통신사는 과금·통화·결제·앱 로그가 1초에도 막대하게 쌓인다. 이 데이터를 분석/AI에 쓰려면 운영 DB(Oracle)에 직접 분석 쿼리를 때리면 안 된다 — 미션크리티컬 OLTP 성능이 무너지기 때문이다. 그래서 **CDC(Change Data Capture)** 로 OLTP 변경분만 비동기로 빼내 분석계로 흘린다.\n\n```\nOracle/MariaDB (OLTP)\n   │  redo log / binlog\n   ▼\nDebezium (CDC) ──► Kafka (이벤트 백본)\n                      │\n          ┌───────────┼─────────────┐\n          ▼           ▼             ▼\n   Flink/Spark    실시간 집계     Iceberg/Hadoop\n  (스트림 처리)   (Druid OLAP)    (Data Lake)\n```\n\n### 동작 원리\n\n- **Debezium**이 DB의 redo log/binlog를 tail하여 INSERT/UPDATE/DELETE를 이벤트로 변환, `Kafka` 토픽에 싣는다. 애플리케이션 코드를 건드리지 않고 변경분을 잡아낸다는 게 핵심 장점이다.\n- **Kafka**가 전사 이벤트 백본 역할을 한다. 한 번 들어온 이벤트를 여러 컨슈머(실시간 대시보드, ML 피처 파이프라인, 데이터 레이크 적재)가 각자 속도로 소비한다 — *생산자와 소비자의 완전한 디커플링*.\n- **Spark/Flink**: 배치는 Spark, 진짜 실시간(이상탐지·실시간 과금 모니터링)은 Flink가 처리한다. Flink는 이벤트 타임·워터마크 기반으로 늦게 도착한 이벤트(out-of-order)도 정확히 윈도우 집계한다.\n- **Druid**: 초저지연 OLAP. 운영 대시보드에서 \"방금 5분간 특정 기지국 트래픽\" 같은 슬라이스를 밀리초로 응답한다.\n- **Iceberg/Hadoop 레이크하우스**: 원본 이벤트를 컬럼형으로 장기 저장하고, 스키마 진화·time travel·ACID를 지원해 ML 학습용 대규모 배치 재처리에 쓴다.\n\n### 트레이드오프\n\n이 구조는 **결과적 일관성(eventual consistency)** 을 받아들인다. OLTP에 반영된 변경이 분석계에 보이기까지 수초~수분 지연이 있다. 대신 OLTP는 보호되고, 컨슈머는 독립적으로 확장된다. 과금처럼 *강한 정합성*이 필요한 영역은 여전히 동기 트랜잭션(2PC/Saga)을 OLTP 안에서 처리하고, CDC는 어디까지나 *분석·파생 처리*용으로 경계를 긋는 것이 설계의 핵심 결정이다."
+    },
+    {
+     "topic": "RAG: LLM에 '진짜 통신 지식'을 붙이는 검색 계층",
+     "body": "### 문제 정의\n\nLLM은 SKT의 최신 요금제·약관·부가서비스·고객별 가입 정보를 *모른다*. 그리고 이런 정보는 수시로 바뀐다. 모델을 매번 재학습할 수 없으니, **RAG(Retrieval-Augmented Generation)** 로 외부 지식을 실시간 검색해 프롬프트에 주입한다.\n\n### 파이프라인\n\n```\n요금제/약관/FAQ 문서\n   │ 임베딩(embedding)\n   ▼\nMilvus (Vector DB) ◄──┐\n                       │ 하이브리드 검색\nElasticsearch (BM25) ◄─┘\n   │ top-k 문서\n   ▼\nRe-ranker → 프롬프트 컨텍스트 → LLM 생성\n```\n\n- **인덱싱**: 약관·요금제·FAQ 문서를 청크로 쪼개 임베딩 모델로 벡터화하고 `Milvus` 같은 벡터 DB에 저장한다. 동시에 `Elasticsearch`에 원문을 색인한다.\n- **하이브리드 검색**: 벡터 검색(의미 유사도)만으로는 \"5G 슬림\" 같은 정확한 고유명사 매칭을 놓칠 수 있다. 그래서 **BM25(키워드) + dense vector(의미)** 를 결합해 둘의 장점을 합친다.\n- **Re-ranking**: 1차로 넉넉히 top-k를 뽑은 뒤, cross-encoder 재정렬기로 질문과의 실제 관련도를 다시 매겨 상위 몇 개만 LLM에 넣는다. 컨텍스트 길이(=비용·지연)를 아끼면서 정확도를 올린다.\n- **생성**: 검색된 근거 문서를 컨텍스트로 주고 \"이 자료에 근거해서만 답하라\"고 제약해 환각을 억제하고, 출처를 함께 제시한다.\n\n### 트레이드오프와 운영 포인트\n\n- **신선도**: 요금제가 바뀌면 벡터 인덱스를 즉시 갱신해야 한다. CDC/배치로 문서 변경을 감지해 재임베딩하는 파이프라인이 붙는다.\n- **개인화 vs 보안**: 고객별 가입 정보를 RAG로 끌어오면 강력하지만, 권한 검증(누구의 데이터를 검색할 수 있는가)을 검색 계층에서 엄격히 필터링해야 한다. SKT는 통신 도메인 특성상 이 부분을 Gateway 인증과 결합해 *검색 결과 자체를 사용자 권한으로 스코프* 한다.\n- **비용**: 벡터 검색·재정렬·LLM 생성이 누적되면 지연이 커진다. 자주 묻는 질문은 응답 캐싱으로, 검색은 근사최근접(ANN, HNSW 인덱스)으로 가속해 균형을 맞춘다."
     }
    ],
    "github": {
-    "org": "SKTelecom"
+    "org": "https://github.com/sktelecom",
+    "repos": [
+     {
+      "name": "SKT-AI/KoGPT2",
+      "url": "https://github.com/SKT-AI/KoGPT2",
+      "desc": "한국어 GPT-2 사전학습 모델, 국내 NLP 연구의 기준 모델",
+      "lang": "Python",
+      "stars": 558
+     },
+     {
+      "name": "SKT-AI/A.X-4.0",
+      "url": "https://github.com/SKT-AI/A.X-4.0",
+      "desc": "SKT가 공개한 한국어 특화 대형 언어모델(A.X) 가중치·추론 코드",
+      "lang": "Python",
+      "stars": 158
+     }
+    ]
    },
    "sources": [
-    "https://devocean.sk.com",
-    "https://www.sktelecom.com"
+    "https://devocean.sk.com/",
+    "https://github.com/SKT-AI",
+    "https://www.sktelecom.com/en/tech/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "naverfin",

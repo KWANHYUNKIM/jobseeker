@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T19:18:36",
+  "generated_at": "2026-06-16T20:58:32",
   "source": "youtube",
   "tech_count": 165,
   "curriculum_count": 20,
@@ -12265,6 +12265,88 @@
         "stage": "핵심"
       }
     ],
+    "MES": [
+      {
+        "title": "Cloud MES로 시작하는 제조혁신 최신 사례 및 성공 전략 - 서병화 상무, MIRACOM",
+        "url": "https://www.youtube.com/watch?v=HHh4w1kBzHg",
+        "thumbnail": "https://i.ytimg.com/vi/HHh4w1kBzHg/mqdefault.jpg",
+        "channel": "에티버스 VAD",
+        "views": 180,
+        "length": "30:59",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "스토리텔링과 함께하는 MES 개론 - Chapter 4. 제조 산업군별 MES의 특징",
+        "url": "https://www.youtube.com/watch?v=PgFkyak3kv0",
+        "thumbnail": "https://i.ytimg.com/vi/PgFkyak3kv0/mqdefault.jpg",
+        "channel": "Miracom Inc",
+        "views": 1072,
+        "length": "6:46",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스마트팩토리의 중심 MES는 무엇일까",
+        "url": "https://www.youtube.com/watch?v=tr2NknsKkqM",
+        "thumbnail": "https://i.ytimg.com/vi/tr2NknsKkqM/mqdefault.jpg",
+        "channel": "Miracom Inc",
+        "views": 19849,
+        "length": "7:45",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SW개발자를 위한 MES 이해",
+        "url": "https://www.youtube.com/watch?v=nlEPo-iUYM0",
+        "thumbnail": "https://i.ytimg.com/vi/nlEPo-iUYM0/mqdefault.jpg",
+        "channel": "코딩하는오후",
+        "views": 3190,
+        "length": "18:46",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "도도하다) 25. MES란 (자동화 공장)",
+        "url": "https://www.youtube.com/watch?v=Y4w--9C3p08",
+        "thumbnail": "https://i.ytimg.com/vi/Y4w--9C3p08/mqdefault.jpg",
+        "channel": "Dori Dori",
+        "views": 2503,
+        "length": "24:36",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MES를 통한 생산업무의 이해  제 4강 / 생산  모니터링과 현황 파악",
+        "url": "https://www.youtube.com/watch?v=_fYzienj-mU",
+        "thumbnail": "https://i.ytimg.com/vi/_fYzienj-mU/mqdefault.jpg",
+        "channel": "CmcTech",
+        "views": 5804,
+        "length": "16:12",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MES의 범위: PLM, ERP와 MES - CNG TV 3분 클립",
+        "url": "https://www.youtube.com/watch?v=gWcDod3JKV8",
+        "thumbnail": "https://i.ytimg.com/vi/gWcDod3JKV8/mqdefault.jpg",
+        "channel": "캐드앤그래픽스",
+        "views": 5493,
+        "length": "3:09",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MPS 주 생산계획의 필요성, ERP MES 구축에서 가장 중요한 것",
+        "url": "https://www.youtube.com/watch?v=WB60Kf_qzjE",
+        "thumbnail": "https://i.ytimg.com/vi/WB60Kf_qzjE/mqdefault.jpg",
+        "channel": "CmcTech",
+        "views": 2773,
+        "length": "12:20",
+        "published": "3년 전",
+        "stage": "핵심"
+      }
+    ],
     "Apache Tomcat": [
       {
         "title": "apache tomcat 연동",
@@ -12426,88 +12508,6 @@
         "views": 800,
         "length": "1:59",
         "published": "6년 전",
-        "stage": "핵심"
-      }
-    ],
-    "MES": [
-      {
-        "title": "Cloud MES로 시작하는 제조혁신 최신 사례 및 성공 전략 - 서병화 상무, MIRACOM",
-        "url": "https://www.youtube.com/watch?v=HHh4w1kBzHg",
-        "thumbnail": "https://i.ytimg.com/vi/HHh4w1kBzHg/mqdefault.jpg",
-        "channel": "에티버스 VAD",
-        "views": 180,
-        "length": "30:59",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "스토리텔링과 함께하는 MES 개론 - Chapter 4. 제조 산업군별 MES의 특징",
-        "url": "https://www.youtube.com/watch?v=PgFkyak3kv0",
-        "thumbnail": "https://i.ytimg.com/vi/PgFkyak3kv0/mqdefault.jpg",
-        "channel": "Miracom Inc",
-        "views": 1072,
-        "length": "6:46",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스마트팩토리의 중심 MES는 무엇일까",
-        "url": "https://www.youtube.com/watch?v=tr2NknsKkqM",
-        "thumbnail": "https://i.ytimg.com/vi/tr2NknsKkqM/mqdefault.jpg",
-        "channel": "Miracom Inc",
-        "views": 19849,
-        "length": "7:45",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "SW개발자를 위한 MES 이해",
-        "url": "https://www.youtube.com/watch?v=nlEPo-iUYM0",
-        "thumbnail": "https://i.ytimg.com/vi/nlEPo-iUYM0/mqdefault.jpg",
-        "channel": "코딩하는오후",
-        "views": 3190,
-        "length": "18:46",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "도도하다) 25. MES란 (자동화 공장)",
-        "url": "https://www.youtube.com/watch?v=Y4w--9C3p08",
-        "thumbnail": "https://i.ytimg.com/vi/Y4w--9C3p08/mqdefault.jpg",
-        "channel": "Dori Dori",
-        "views": 2503,
-        "length": "24:36",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MES를 통한 생산업무의 이해  제 4강 / 생산  모니터링과 현황 파악",
-        "url": "https://www.youtube.com/watch?v=_fYzienj-mU",
-        "thumbnail": "https://i.ytimg.com/vi/_fYzienj-mU/mqdefault.jpg",
-        "channel": "CmcTech",
-        "views": 5804,
-        "length": "16:12",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MES의 범위: PLM, ERP와 MES - CNG TV 3분 클립",
-        "url": "https://www.youtube.com/watch?v=gWcDod3JKV8",
-        "thumbnail": "https://i.ytimg.com/vi/gWcDod3JKV8/mqdefault.jpg",
-        "channel": "캐드앤그래픽스",
-        "views": 5493,
-        "length": "3:09",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MPS 주 생산계획의 필요성, ERP MES 구축에서 가장 중요한 것",
-        "url": "https://www.youtube.com/watch?v=WB60Kf_qzjE",
-        "thumbnail": "https://i.ytimg.com/vi/WB60Kf_qzjE/mqdefault.jpg",
-        "channel": "CmcTech",
-        "views": 2773,
-        "length": "12:20",
-        "published": "3년 전",
         "stage": "핵심"
       }
     ],
