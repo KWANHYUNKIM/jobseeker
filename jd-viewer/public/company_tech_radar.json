@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-16T12:59:02",
+ "generated_at": "2026-06-16T14:32:50",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 59,
+ "refined": 61,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -458,15 +458,15 @@
      "count": 11
     },
     {
+     "name": "Python",
+     "count": 11
+    },
+    {
      "name": "TypeScript",
      "count": 11
     },
     {
      "name": "Kotlin",
-     "count": 9
-    },
-    {
-     "name": "Python",
      "count": 9
     },
     {
@@ -490,7 +490,7 @@
      },
      {
       "name": "gRPC",
-      "count": 5
+      "count": 7
      },
      {
       "name": "Spring Cloud",
@@ -499,6 +499,10 @@
      {
       "name": "Ruby on Rails",
       "count": 4
+     },
+     {
+      "name": "Spring WebFlux",
+      "count": 3
      },
      {
       "name": "FastAPI",
@@ -519,10 +523,6 @@
      {
       "name": "Node.js",
       "count": 2
-     },
-     {
-      "name": "Spring WebFlux",
-      "count": 2
      }
     ],
     "frontend": [
@@ -536,7 +536,7 @@
      },
      {
       "name": "Next.js",
-      "count": 7
+      "count": 9
      },
      {
       "name": "React Native",
@@ -545,6 +545,10 @@
      {
       "name": "Vue.js",
       "count": 3
+     },
+     {
+      "name": "Webpack",
+      "count": 2
      },
      {
       "name": "Apollo GraphQL",
@@ -560,10 +564,6 @@
      },
      {
       "name": "Node.js",
-      "count": 1
-     },
-     {
-      "name": "Node.js BFF",
       "count": 1
      }
     ],
@@ -585,15 +585,19 @@
       "count": 11
      },
      {
+      "name": "Apache Spark",
+      "count": 3
+     },
+     {
       "name": "HBase",
       "count": 3
      },
      {
-      "name": "Airflow",
-      "count": 2
+      "name": "MongoDB",
+      "count": 3
      },
      {
-      "name": "Apache Spark",
+      "name": "Airflow",
       "count": 2
      },
      {
@@ -602,10 +606,6 @@
      },
      {
       "name": "DynamoDB",
-      "count": 2
-     },
-     {
-      "name": "MongoDB",
       "count": 2
      }
     ],
@@ -620,6 +620,10 @@
      },
      {
       "name": "ArgoCD",
+      "count": 6
+     },
+     {
+      "name": "Terraform",
       "count": 4
      },
      {
@@ -627,7 +631,7 @@
       "count": 3
      },
      {
-      "name": "Terraform",
+      "name": "Jenkins",
       "count": 3
      },
      {
@@ -635,20 +639,16 @@
       "count": 2
      },
      {
+      "name": "Docker",
+      "count": 2
+     },
+     {
       "name": "Envoy",
       "count": 2
      },
      {
-      "name": "사내 데이터센터",
+      "name": "Grafana",
       "count": 2
-     },
-     {
-      "name": "사내 클라우드",
-      "count": 2
-     },
-     {
-      "name": "Airflow",
-      "count": 1
      }
     ]
    },
@@ -666,15 +666,15 @@
      "count": 3
     },
     {
-     "name": "검색/추천",
-     "count": 2
-    },
-    {
-     "name": "모놀리스→MSA 전환",
+     "name": "이벤트 드리븐 아키텍처",
      "count": 2
     },
     {
      "name": "API Gateway + Service Discovery",
+     "count": 1
+    },
+    {
+     "name": "BFF",
      "count": 1
     }
    ]
@@ -13076,41 +13076,55 @@
    "languages": [
     "Java",
     "Kotlin",
+    "TypeScript",
     "JavaScript",
-    "TypeScript"
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud"
+     "Spring Cloud",
+     "Spring WebFlux",
+     "Spring Batch",
+     "gRPC"
     ],
     "frontend": [
      "React",
+     "Next.js",
      "Vue.js",
-     "TypeScript"
+     "TypeScript",
+     "Webpack"
     ],
     "data": [
-     "Kafka",
      "Oracle",
      "MySQL",
+     "MongoDB",
      "Redis",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Apache Kafka",
+     "Apache Spark"
     ],
     "infra": [
      "Kubernetes",
-     "사내 클라우드",
-     "AWS"
+     "Docker",
+     "사내 PaaS",
+     "AWS",
+     "Jenkins",
+     "ArgoCD",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
-    "MSA",
-    "모놀리스→MSA 전환",
-    "검색/추천"
+    "MSA (모놀리스→마이크로서비스 전환)",
+    "이벤트 드리븐 아키텍처 (Kafka 기반)",
+    "옴니채널 통합 커머스 플랫폼",
+    "검색/추천 분리 서빙"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"SSG닷컴 앱<br/>Android iOS\"]\n    WEB[\"쇼핑 웹<br/>React + Vue.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PROD[\"상품 서비스<br/>Spring Boot + Kotlin\"]\n    ORDER[\"주문 서비스<br/>Spring Boot + Java\"]\n    SRCH[\"검색 추천 서비스<br/>Spring Boot + Kotlin\"]\n    DELIV[\"새벽배송 서비스<br/>Spring Boot + Java\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    ORACLE[\"기간계 DB<br/>Oracle\"]\n    MYSQL[\"서비스 DB<br/>MySQL\"]\n    REDIS[\"상품 캐시<br/>Redis\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>Kubernetes + 사내 클라우드 + AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> PROD\n  GW --> ORDER\n  GW --> SRCH\n  ORDER --> KAFKA\n  KAFKA -->|배송 요청| DELIV\n  ORDER --> ORACLE\n  PROD --> MYSQL\n  PROD --> REDIS\n  SRCH --> ES\n  ORDER --> K8S",
-   "why_language": "신세계 유통의 대규모 주문·재고·정산 시스템을 위해 Java/Spring을 핵심으로 쓰고, 신규 서비스는 Kotlin을 도입하며 검색·추천을 강화한다.",
-   "why_architecture": "오프라인 유통과 온라인 커머스를 통합하는 복잡한 도메인을 MSA로 분리하고, 풀필먼트·물류를 연동하며 점진적으로 클라우드로 전환한다.",
-   "summary": "신세계 유통을 잇는 Java/Spring 기반 옴니채널 커머스 MSA.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"SSG / 이마트몰 App<br/>React Native + Web\"]\n    WEB[\"Web Front<br/>React + Next.js\"]\n    CDN[\"CDN / Edge<br/>CloudFront + 사내 CDN\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    BFF[\"BFF<br/>Spring WebFlux\"]\n  end\n  subgraph Core[\"Core Domain Services\"]\n    PROD[\"상품/카탈로그<br/>Spring Boot\"]\n    ORD[\"주문/결제<br/>Spring Boot\"]\n    INV[\"재고/풀필먼트<br/>Spring Boot\"]\n    SRCH[\"검색 서비스<br/>Spring Boot + Elasticsearch\"]\n    RECO[\"추천 서비스<br/>Spring + Spark ML\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    ORA[\"주문 원장<br/>Oracle RAC\"]\n    MYSQL[\"상품/회원<br/>MySQL\"]\n    MONGO[\"비정형/세션<br/>MongoDB\"]\n    REDIS[\"캐시/재고카운터<br/>Redis Cluster\"]\n    ES[\"색인<br/>Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n    SPARK[\"배치/ML<br/>Apache Spark\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"오케스트레이션<br/>Kubernetes\"]\n    OBS[\"관측성<br/>Prometheus + Grafana\"]\n  end\n  APP --> CDN --> GW\n  WEB --> CDN\n  GW --> BFF\n  BFF --> PROD\n  BFF --> ORD\n  BFF --> SRCH\n  BFF --> RECO\n  ORD -->|재고차감| INV\n  PROD --> MYSQL\n  ORD --> ORA\n  INV --> REDIS\n  SRCH --> ES\n  ORD -->|주문 이벤트| KAFKA\n  INV -->|재고 이벤트| KAFKA\n  KAFKA --> SPARK\n  SPARK --> RECO\n  SPARK -->|색인 갱신| ES\n  RECO --> MONGO\n  Core --> K8S\n  K8S --> OBS",
+   "why_language": "대규모 트랜잭션(주문·결제·정산)의 안정성과 풍부한 엔터프라이즈 생태계 때문에 JVM 기반 Java/Spring이 백엔드의 중심이며, 신규 서비스와 동시성 처리에는 널-세이프하고 간결한 Kotlin을 점진적으로 도입한다. 프론트는 SSG·이마트몰·신세계몰 등 여러 채널의 복잡한 UI 상태를 안정적으로 관리하기 위해 TypeScript와 React/Next.js를 표준으로 삼는다.",
+   "why_architecture": "마트 기반 새벽배송·옴니채널·대규모 프로모션(쓱데이) 트래픽을 채널·도메인별로 독립 확장·배포하기 위해 거대한 모놀리스를 MSA로 분리했다. 주문·재고·배송 슬롯이 실시간으로 강하게 얽혀 있어 Kafka 기반 이벤트 드리븐으로 서비스 간 결합을 낮추고 최종 일관성을 확보하며, 트래픽 특성이 다른 검색/추천은 별도 서빙 계층으로 떼어 캐싱과 색인을 독립 운영한다.",
+   "summary": "JVM(Java/Kotlin)·Spring MSA 위에 Kafka 이벤트 드리븐으로 주문·재고·새벽배송을 묶은 옴니채널 커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "옴니채널과 재고 통합",
@@ -13127,14 +13141,31 @@
     {
      "topic": "MSA 전환과 인프라",
      "body": "### 복잡한 유통 도메인의 분리\n\nSSG닷컴은 상품·주문·재고·정산·물류·프로모션 도메인이 복잡하게 얽혀 있다. 이를 **MSA**로 분리해 배포 독립성과 확장성을 확보한다.\n\n**전환**\n- 거대 모놀리스를 스트랭글러 패턴으로 점진 분리. 도메인 경계를 따라 서비스를 떼어내고, 공유 DB를 끊는 게 핵심 난제다.\n- 동기 통신은 REST, 비동기 연동은 Kafka 이벤트. Spring Cloud로 게이트웨이·디스커버리·설정을 구성.\n\n**인프라**\n- 사내 클라우드 + AWS 하이브리드, Kubernetes로 컨테이너 운영. 기간계 Oracle은 그대로 두되 신규는 클라우드 네이티브로.\n\n**복원력**\n- 유통 시스템은 점검·세일 트래픽 대비가 필요하다. 오토스케일링·캐시·대기열로 피크를 흡수하고, 외부 PG·배송사 연동은 서킷 브레이커로 격리한다.\n\n### WHY\n오프라인 유통 강자의 온라인 전환은 *레거시 안정성*과 *클라우드 민첩성*을 동시에 잡아야 한다. MSA + 이벤트 동기화 + 하이브리드 인프라가 그 절충점이다."
+    },
+    {
+     "topic": "주문→재고→배송슬롯 end-to-end 요청 처리 흐름",
+     "body": "### SSG닷컴 주문 트랜잭션의 한 사이클\n\nSSG닷컴의 가장 까다로운 처리 경로는 단순 상품 구매가 아니라 **새벽배송/쓱배송 슬롯이 걸린 장바구니 주문**이다. 마트 상품은 재고가 점포·물류센터(`PP센터`, 네오센터) 단위로 쪼개져 있고, 배송 슬롯(예: 내일 새벽 6~8시)은 센터별 캐파(capacity)가 유한하기 때문에 \"재고\"와 \"배송 캐파\"라는 **두 개의 한정 자원을 동시에 선점**해야 한다.\n\n#### 1. 슬롯 조회 단계 (읽기 최적화)\n- 고객이 장바구니에서 배송지를 입력하면 BFF(`Spring WebFlux`)가 **배송 가능 센터 매핑**과 **잔여 슬롯**을 조회한다.\n- 슬롯 잔여 수량은 변동이 매우 잦아 RDB로 매번 카운트하면 부하가 크므로 `Redis`의 카운터(슬롯키별 잔여값)로 서빙한다. 읽기는 캐시, 권위 있는 값은 비동기로 정합화한다.\n\n#### 2. 주문 확정 단계 (쓰기 일관성)\n- 결제 버튼을 누르면 주문 서비스가 **재고 차감**과 **슬롯 1석 점유**를 시도한다.\n- 동시성이 핵심이다. 인기 슬롯은 마감 직전 수천 요청이 같은 키로 몰리므로, `Redis` 기반 분산 락 또는 원자적 `DECR` 로 오버부킹을 막고, 실패 시 즉시 다른 슬롯을 제안한다.\n- 주문 원장 자체는 정산·환불·세금계산서까지 강한 정합성이 필요하므로 `Oracle`(RAC) 트랜잭션으로 확정한다. 즉 **\"빠른 선점은 Redis, 최종 확정은 Oracle\"** 의 2단 구조다.\n\n#### 3. 후속 비동기 단계 (이벤트 발행)\n- 주문이 확정되면 `OrderCreated`, `StockReserved` 이벤트가 `Kafka`로 발행된다.\n- 이 이벤트를 WMS(창고관리), 정산, 알림(앱푸시/카카오), 추천 학습 파이프라인이 각자 구독한다. 주문 API는 이들이 끝나기를 기다리지 않으므로 응답 지연이 후속 시스템에 결합되지 않는다.\n\n#### 트레이드오프\n- Redis 선점값과 Oracle 확정값 사이에는 짧은 불일치 구간이 생긴다. 이를 보정하기 위해 결제 실패/타임아웃 시 **보상 트랜잭션(슬롯·재고 복원)** 을 이벤트로 처리한다. 강한 일관성을 포기하는 대신, 마감 임박 슬롯의 응답 속도와 처리량을 얻는 전형적인 커머스 트레이드오프다."
+    },
+    {
+     "topic": "데이터 저장·일관성 전략: Oracle 원장과 폴리글랏 퍼시스턴스",
+     "body": "### 왜 한 종류 DB로 통일하지 않는가\n\nSSG닷컴은 신세계/이마트 그룹의 기간계(레거시)에서 출발했기 때문에 **주문·정산의 원천 원장은 `Oracle`** 에 강하게 묶여 있다. 이 부분은 금액 정합성, 회계 마감, 환불·부분취소가 얽혀 함부로 NoSQL로 옮길 수 없다. 대신 도메인별로 가장 적합한 저장소를 쓰는 **polyglot persistence** 전략을 취한다.\n\n| 데이터 | 저장소 | 이유 |\n|---|---|---|\n| 주문/결제/정산 원장 | `Oracle RAC` | 강한 트랜잭션·회계 정합성, 레거시 연속성 |\n| 상품/회원/카탈로그 | `MySQL` | 수평 확장 용이, MSA 분리 시 서비스별 소유 |\n| 재고/슬롯 카운터·세션 | `Redis Cluster` | 원자적 카운터, 마감 임박 고동시성 |\n| 검색 색인 | `Elasticsearch` | 형태소·랭킹·패싯 질의 |\n| 비정형/추천 피처 | `MongoDB` | 스키마 유연성, 프로필·로그성 데이터 |\n\n#### 서비스별 DB 소유(Database per Service)\nMSA 전환 과정에서 가장 어려운 부분은 **거대한 공유 Oracle 스키마를 도메인별로 분해**하는 것이다. 한 번에 못 쪼개므로 보통 다음 순서를 밟는다.\n1. 신규/주변 도메인(상품 전시, 리뷰, 추천)부터 별도 `MySQL`/`MongoDB`로 떼어낸다.\n2. 핵심 원장(주문·정산)은 Oracle에 남기되, 다른 서비스가 직접 그 테이블을 조인하지 못하도록 **API/이벤트로만 접근**하게 막는다.\n3. 서비스 간 데이터가 필요하면 조인 대신 `Kafka` 이벤트로 **각 서비스가 필요한 만큼 로컬 복제본(read model)** 을 만든다(CQRS 성격).\n\n#### 일관성 모델\n- 같은 트랜잭션 안에서 끝나야 하는 것(결제 금액)은 RDB ACID.\n- 서비스 경계를 넘는 것(주문→WMS→알림)은 **Saga/이벤트 기반 최종 일관성**. 중간 실패는 보상 이벤트로 되돌린다.\n- 이 분리가 곧 \"왜 Kafka가 SSG 아키텍처의 척추인가\"에 대한 답이다."
+    },
+    {
+     "topic": "대규모 프로모션(쓱데이·새벽배송 마감) 트래픽 흡수와 오토스케일링",
+     "body": "### 스파이크가 \"예측 가능\"하다는 점이 설계를 바꾼다\n\n이커머스 트래픽은 두 종류다. SSG닷컴은 **예측 가능한 대형 스파이크**(쓱데이 같은 그룹 단위 세일, 매일 자정 직후 새벽배송 슬롯 오픈)와 **상시 트래픽**을 다르게 다룬다.\n\n#### 1. 큐잉/대기열로 입구를 통제\n전면 개방하면 DB·결제 게이트웨이가 무너지므로, 초대형 행사에서는 **가상 대기열(waiting room)** 로 입장 인원을 초당 단위로 조절한다. 뒷단 서비스가 받을 수 있는 만큼만 토큰을 발급해 흘려보내는 방식으로, 스케일아웃이 따라잡을 시간을 번다.\n\n#### 2. 읽기/쓰기 경로 분리\n- 상품 상세·기획전 같은 **읽기 폭증**은 `CDN` + `Redis` 캐시 + 정적/SSR 캐싱으로 원천 DB까지 내려가지 않게 흡수한다. `Next.js` SSR 결과나 상품 조각을 캐시 계층에서 재사용한다.\n- 실제 한정 자원 경쟁(재고·슬롯·쿠폰)인 **쓰기 폭증**만 코어 서비스로 통과시킨다.\n\n#### 3. Kubernetes 오토스케일링\n- 서비스는 `Kubernetes` 위에서 `HPA`(CPU/메모리/커스텀 메트릭 기반)로 파드를 늘린다. 검색·추천처럼 트래픽 패턴이 다른 워크로드는 독립적으로 스케일된다.\n- 자정 슬롯 오픈처럼 **시각이 정해진 이벤트**는 반응형 오토스케일이 늦으므로, 사전에 **예약 스케일링(미리 파드/노드 풀 확보)** 으로 워밍업한다. cold start와 JVM 워밍업(JIT) 지연을 피하기 위한 선제 조치다.\n\n#### 4. 결제·외부 연동 보호\n결제 PG, 본인인증 같은 외부 의존은 우리 마음대로 못 늘린다. 그래서 **서킷브레이커**(Resilience4j 류)와 **벌크헤드(스레드 풀 격리)**, **레이트리미팅**으로 외부 장애가 전체 주문 흐름으로 번지지 않게 격벽을 친다. 외부가 느려지면 빠르게 실패 처리하고 재시도 큐로 흘려 사용자 응답성을 지킨다.\n\n#### 트레이드오프 요약\n핵심은 **\"모든 트래픽을 코어까지 보내지 않는다\"** 이다. 캐시·대기열·격벽으로 입구에서 거른 뒤, 진짜 자원 경쟁만 정밀하게 처리한다. 무한 스케일아웃보다 비용·정합성 측면에서 합리적인 선택이다."
     }
    ],
+   "github": {
+    "org": "https://github.com/SSG-DEV",
+    "repos": []
+   },
    "sources": [
     "https://medium.com/ssgtech",
-    "https://www.ssg.com"
+    "https://www.ssg.com",
+    "https://career.ssg.com"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "coupang",
@@ -13433,41 +13464,54 @@
     "Java",
     "Kotlin",
     "JavaScript",
-    "TypeScript"
+    "TypeScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
-     "Node.js"
+     "Spring Cloud Gateway",
+     "Node.js",
+     "QueryDSL",
+     "gRPC"
     ],
     "frontend": [
      "React",
+     "Next.js",
      "Vue.js",
-     "TypeScript"
+     "TypeScript",
+     "Webpack"
     ],
     "data": [
-     "Kafka",
      "MySQL",
      "Redis",
+     "Apache Kafka",
      "Elasticsearch",
-     "MongoDB"
+     "MongoDB",
+     "Amazon Aurora"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "사내 클라우드"
+     "Docker",
+     "Jenkins",
+     "ArgoCD",
+     "Terraform",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
     "MSA",
-    "모놀리스→MSA 전환",
-    "특가/딜 트래픽 처리"
+    "모놀리스→MSA 점진적 전환(Strangler Fig)",
+    "이벤트 드리븐 아키텍처",
+    "타임딜 트래픽 스파이크 처리"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"티몬 앱<br/>Android iOS\"]\n    WEB[\"딜 웹<br/>React + Vue.js\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    DEAL[\"딜 특가 서비스<br/>Spring Boot + Kotlin\"]\n    ORDER[\"주문 서비스<br/>Spring Boot + Java\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Java\"]\n    BO[\"운영 백오피스<br/>Node.js\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"주문 딜 DB<br/>MySQL\"]\n    REDIS[\"특가 트래픽 캐시<br/>Redis\"]\n    ES[\"딜 검색<br/>Elasticsearch\"]\n    MONGO[\"로그 저장<br/>MongoDB\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + 사내 클라우드\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> DEAL\n  GW --> ORDER\n  DEAL --> REDIS\n  ORDER --> KAFKA\n  KAFKA -->|결제| PAY\n  ORDER --> MYSQL\n  DEAL --> ES\n  KAFKA --> MONGO\n  ORDER --> K8S",
-   "why_language": "타임딜·특가 트래픽이 순간 집중되는 커머스라 Java/Spring으로 안정성을 확보하고, 신규 서비스는 Kotlin을 도입한다.",
-   "why_architecture": "특가 오픈 시 폭증하는 트래픽을 견디기 위해 MSA로 분리하고 캐시·큐를 활용하며, 레거시를 점진적으로 클라우드 네이티브로 전환한다.",
-   "summary": "타임딜 트래픽 폭증에 대비한 Java/Spring 기반 딜 커머스.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App / Web<br/>React + Next.js + Vue\"]\n    CDN[\"CDN + Static<br/>CloudFront + S3\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    LB[\"Load Balancer<br/>AWS ALB\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    DEAL[\"Deal Service<br/>Spring Boot + Kotlin\"]\n    ORDER[\"Order Service<br/>Spring Boot\"]\n    PAY[\"Payment / Settlement<br/>Spring Boot\"]\n    SEARCH[\"Search Service<br/>Spring Boot + ES\"]\n    PROMO[\"Promotion / Coupon<br/>Spring Boot\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    WORKER[\"Async Workers<br/>Spring + Node.js\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    REDIS[\"Cache + Stock Counter<br/>Redis\"]\n    MYSQL[\"OLTP<br/>MySQL / Aurora\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    MONGO[\"Catalog / Logs<br/>MongoDB\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + Docker\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n    CICD[\"CI/CD<br/>Jenkins + ArgoCD\"]\n  end\n  APP --> CDN\n  APP --> LB --> GW\n  GW -->|REST| DEAL\n  GW -->|REST| ORDER\n  GW -->|REST| SEARCH\n  GW -->|REST| PROMO\n  DEAL --> REDIS\n  DEAL --> MYSQL\n  ORDER --> MYSQL\n  ORDER -->|publish| KAFKA\n  PAY --> MYSQL\n  KAFKA --> WORKER\n  WORKER --> PAY\n  WORKER --> ES\n  SEARCH --> ES\n  DEAL --> MONGO\n  Core --> K8S\n  K8S --> OBS\n  CICD --> K8S",
+   "why_language": "티몬은 초기 모놀리스부터 대규모 트래픽과 정산·결제 정합성이 핵심이라 JVM 생태계의 Spring Boot/Spring Cloud를 백엔드 표준으로 삼았고, 안정성과 풍부한 라이브러리·운영 노하우 때문에 Java를 유지하면서 신규 서비스는 널 안정성과 간결함을 위해 Kotlin을 도입했다. 프론트와 BFF·실시간 영역은 JavaScript/TypeScript(React·Next·Vue·Node)로 빠른 화면 개발과 SEO·SSR 요구를 충족한다.",
+   "why_architecture": "타임딜·특가처럼 짧은 시간에 트래픽이 수십 배로 튀는 이커머스 특성상, 결제·주문·딜·검색을 독립 배포·독립 스케일 가능한 MSA로 분리해 핫스팟만 선택적으로 오토스케일링한다. 모놀리스를 한 번에 갈아엎는 대신 Strangler Fig 방식으로 점진 분리했고, 주문→결제→정산의 결합도를 낮추고 재고 차감·알림을 비동기로 처리하기 위해 Kafka 기반 이벤트 드리븐 구조를 채택했다.",
+   "summary": "Spring 기반 MSA에 Redis·Kafka로 타임딜 트래픽 스파이크를 흡수하는 JVM 중심 이커머스 스택",
    "deep_dive": [
     {
      "topic": "타임딜 트래픽 폭증 처리",
@@ -13484,14 +13528,35 @@
     {
      "topic": "딜 검색·노출과 캐싱",
      "body": "### 특가를 빠르게 찾고 보여주는 법\n\n티몬의 화면은 *딜 진열*이 중심이다. 메인·카테고리·기획전에 수많은 딜이 노출되고, 사용자는 이를 탐색·검색한다. 읽기 트래픽이 압도적이라 노출 최적화가 핵심이다.\n\n**검색·노출**\n- 딜·상품을 **Elasticsearch**에 색인해 키워드·카테고리·가격·정렬을 결합 조회한다. 딜 등록/변경은 Kafka 파이프라인으로 색인에 반영한다.\n- 메인 진열·랭킹은 *마케팅 주도로 자주 바뀌지만 사용자별로는 거의 동일*하다. 그래서 진열 결과를 캐싱해 대량 사용자에게 빠르게 내려준다.\n\n**계층형 캐싱**\n- 딜 상세·이미지·기획전은 CDN + Redis로 캐싱. 읽기 폭주의 대부분을 캐시가 흡수한다.\n- *재고·가격·딜 마감 시각*처럼 빠르게 변하는 정보는 짧은 TTL이나 이벤트 무효화로 갱신하고, 최종 구매 시점엔 원본을 재검증한다.\n\n### 노출-구매 일관성\n\"딜이 진열에 떠 있는데 클릭하니 마감\"은 흔한 시나리오다. 진열은 빠르되(약한 일관성), 구매·재고 차감은 강한 일관성으로 가른다. 한정 특가는 진열 캐시와 별개로 *실시간 잔여 수량*을 가벼운 채널로 자주 갱신해 매진 직전 혼선을 줄인다.\n\n### WHY\n딜 커머스는 *진열·노출이 곧 매출*이라 읽기 경로를 극단적으로 캐싱하되, 한정 수량 특성상 *재고 정확성*은 절대 양보하지 않는 이원화가 필수다."
+    },
+    {
+     "topic": "타임딜 재고 차감의 동시성 제어 — Redis 원자연산 vs DB 비관적 락",
+     "body": "### 문제: 한정 수량 딜에 트래픽이 한꺼번에 몰린다\n\n티몬의 핵심 상품 형태인 `타임어택딜`/`특가딜`은 \"선착순 N개\" 구조다. 오픈 순간 수만 건의 주문 요청이 동시에 동일 상품의 재고 row를 건드린다. 이때 가장 큰 위험은 **oversell(초과 판매)** 과 **DB row lock 경합으로 인한 응답 지연**이다.\n\n### 순진한 접근의 한계\n\n```sql\n-- 비관적 락: 트래픽 폭증 시 lock 대기 행렬이 길어져 커넥션 풀 고갈\nSELECT stock FROM deal_stock WHERE deal_id = ? FOR UPDATE;\nUPDATE deal_stock SET stock = stock - 1 WHERE deal_id = ?;\n```\n\n- `SELECT ... FOR UPDATE`는 동일 row에 대해 직렬화되므로, 1만 TPS가 단일 row에 몰리면 락 대기열이 그대로 latency가 된다.\n- DB 커넥션이 락 대기로 묶이면 **HikariCP 풀이 고갈**되고, 같은 DB를 쓰는 무관한 API까지 동반 장애(blast radius 확산)가 난다.\n\n### 실제 패턴: Redis를 1차 재고 게이트로\n\n티몬류 이커머스에서 흔히 쓰는 구조는 **Redis를 \"재고 카운터\"의 1차 관문**으로 두는 것이다.\n\n1. 딜 오픈 시 재고 수량을 Redis 키(`deal:{id}:stock`)에 적재.\n2. 주문 진입 시 `DECR` 또는 Lua 스크립트로 **원자적으로** 차감. 결과가 음수면 즉시 `품절`로 reject — DB까지 가지 않는다.\n3. Redis 차감에 성공한 요청만 주문 트랜잭션(DB)으로 진입.\n\n```lua\n-- 원자적 재고 차감 (Lua: check-and-decrement을 단일 명령으로)\nlocal stock = tonumber(redis.call('GET', KEYS[1]))\nif stock and stock > 0 then\n  return redis.call('DECR', KEYS[1])\nelse\n  return -1\nend\n```\n\nLua 스크립트는 Redis 단일 스레드에서 원자적으로 실행되므로, 분산 환경에서도 race condition 없이 `check-then-decrement`이 보장된다. `WATCH/MULTI` 낙관적 트랜잭션보다 재시도 부담이 없어 핫키에 유리하다.\n\n### 정합성 보정: Redis와 DB의 최종 일치\n\nRedis는 휘발성이라 **장애 시 카운터 유실** 위험이 있다. 그래서:\n\n- 결제 확정 시점에 DB의 `deal_stock`를 함께 차감하고, **DB를 source of truth**로 둔다.\n- 주문 취소·결제 실패 시 보상 트랜잭션으로 Redis `INCR` 복원.\n- 배치/스케줄러가 주기적으로 `Redis 잔여 ↔ DB 잔여`를 reconcile해 drift를 교정.\n\n### 트레이드오프\n\n| 방식 | 장점 | 단점 |\n|---|---|---|\n| DB 비관적 락 | 강한 정합성 | 핫키 latency·커넥션 고갈 |\n| Redis 1차 게이트 | DB 부하 격리, 초저지연 | 휘발성·DB와 보정 필요 |\n| DB 낙관적 락(version) | 락 없음 | 경합 심하면 재시도 폭증 |\n\n티몬처럼 \"순간 스파이크 + 한정 수량\" 도메인에서는 **Redis로 트래픽을 흡수해 DB를 보호**하고, 결제 확정 구간에서만 DB 정합성을 강제하는 하이브리드가 현실적인 선택이다."
+    },
+    {
+     "topic": "모놀리스→MSA Strangler Fig 마이그레이션과 API Gateway 라우팅",
+     "body": "### 왜 빅뱅이 아니라 점진 분리인가\n\n티몬은 오랜 기간 운영된 거대한 모놀리스(주문·딜·정산이 한 덩어리)를 갖고 있었다. 가동 중인 커머스에서 매출이 멈추면 안 되므로, 한 번에 재작성하는 빅뱅 대신 **Strangler Fig 패턴**으로 기능을 한 조각씩 떼어냈다.\n\n### 동작 메커니즘\n\n```\n[Client]\n   │\n   ▼\n[API Gateway (Spring Cloud Gateway)]\n   │  route 규칙: /api/deal/**  → 신규 Deal MSA\n   │            /api/order/** → 신규 Order MSA\n   │            그 외 /**      → 레거시 Monolith (fallback)\n   ▼\n신규/레거시로 분기\n```\n\n- **Gateway가 라우팅 스위치** 역할을 한다. 새 마이크로서비스가 준비되면 해당 경로만 신규 서비스로 트래픽을 옮기고, 나머지는 모놀리스가 계속 처리.\n- 카나리처럼 **트래픽 비율(예: 5% → 50% → 100%)** 을 점진 전환해, 신규 서비스에 문제가 생기면 즉시 레거시로 롤백.\n\n### 데이터 분리가 진짜 어려운 부분\n\n서비스 코드 분리보다 **DB 분리**가 훨씬 까다롭다. 모놀리스 시절엔 하나의 트랜잭션으로 `JOIN` 하던 데이터를 서비스별 DB로 쪼개면:\n\n- 분산 트랜잭션이 불가능해진다 → **Saga 패턴 / 이벤트 기반 최종 일관성**으로 전환.\n- 조회 시 여러 서비스 JOIN이 필요 → **데이터 복제(CDC)** 나 **조회 전용 모델(CQRS)** 도입.\n- 전환 과도기엔 신규 서비스와 레거시가 **같은 테이블을 동시 참조**하는 위험 구간이 생긴다. 이를 줄이려고 Kafka로 변경 이벤트를 흘려보내 양쪽 데이터를 sync.\n\n### 트레이드오프와 현실\n\n- **장점**: 무중단 전환, 위험 분산, 팀별 독립 배포.\n- **비용**: 과도기 동안 \"모놀리스 + MSA + 동기화 파이프라인\"을 **동시에** 운영해야 하므로 일시적으로 복잡도와 운영 부담이 오히려 증가한다.\n- 그래서 \"모든 걸 MSA로\"가 아니라, **트래픽·변경 빈도가 높은 핵심(딜·주문·검색)부터** 우선 분리하고, 변경이 드문 영역은 모놀리스에 남겨두는 실용적 절충을 택한다."
+    },
+    {
+     "topic": "관측성(Observability) — 스파이크 순간을 어떻게 보고 대응하는가",
+     "body": "### 타임딜은 \"평상시 그래프\"가 무의미하다\n\n티몬의 트래픽은 평상시 대비 딜 오픈 순간 수십 배로 튄다. 이런 도메인에서 관측성의 핵심은 **순간 폭증 구간에서 어느 서비스가 병목인지 초 단위로 짚어내는 것**이다.\n\n### 3대 축: Metrics / Logs / Traces\n\n**1) Metrics — Prometheus + Grafana**\n- Spring Boot `Micrometer`가 JVM·HTTP·커넥션풀·Kafka consumer lag 지표를 노출하고 Prometheus가 스크랩.\n- 핵심 알람: `HikariCP active connections`, `p99 latency`, `Kafka consumer lag`, `Redis hit rate`, `5xx rate`.\n- 딜 오픈 시 **consumer lag이 치솟으면** 비동기 워커가 밀린다는 신호 → 워커 오토스케일 트리거.\n\n**2) Distributed Tracing**\n- MSA에서 하나의 주문 요청은 `Gateway → Order → Payment → Kafka → Settlement Worker`로 여러 서비스를 거친다.\n- `traceId`를 전 구간에 전파(`Spring Cloud Sleuth`/`Micrometer Tracing` + W3C `traceparent`)해, 느려진 요청이 **정확히 어느 hop에서** 시간을 썼는지 추적.\n- 이게 없으면 \"주문이 느리다\"는 신고에 대해 결제인지 정산인지 재고인지 구분이 불가능하다.\n\n**3) Centralized Logging**\n- 각 서비스 로그를 `Elasticsearch`로 집계(ELK/EFK 계열). `traceId`로 cross-service 로그를 한 번에 묶어 조회.\n- 결제 실패·정산 불일치 같은 정합성 이슈는 로그 추적이 1차 디버깅 수단이다.\n\n### 실전 대응 흐름 예시\n\n```\n딜 오픈 → 5xx 알람 발화\n  → Grafana 대시보드: Order 서비스 p99 급등 확인\n  → Trace 조회: Payment 호출 hop에서 지연 집중\n  → Metric: Payment DB 커넥션 풀 saturation\n  → 조치: Payment Pod HPA 스케일아웃 + circuit breaker로 비핵심 호출 차단\n```\n\n### 왜 이렇게까지 하나\n\n이커머스에서 딜 오픈 5분의 장애는 그날 매출의 상당 부분을 날린다. 따라서 **MTTD(탐지)·MTTR(복구)를 분 단위로 줄이는 것**이 관측성 투자 이유다. \"문제가 났는지\"가 아니라 \"어디서 났는지를 즉시\" 아는 것이 핵심."
+    },
+    {
+     "topic": "장애 격리와 복원력 — Circuit Breaker·Bulkhead·Graceful Degradation",
+     "body": "### MSA의 그림자: 하나가 죽으면 연쇄로 죽는다\n\n서비스를 쪼개면 한 서비스의 장애가 호출 체인을 타고 전파될 수 있다. 결제가 느려지면 주문 스레드가 결제 응답을 기다리며 묶이고, 주문 스레드 풀이 고갈되면 결제와 무관한 주문 조회까지 멈춘다. 티몬 같은 고트래픽 커머스에서 이 **cascading failure**를 막는 것이 복원력 설계의 핵심이다.\n\n### Circuit Breaker (Resilience4j)\n\n```\nCLOSED  → 정상 호출\n   │ 실패율 임계 초과 (예: 50%)\n   ▼\nOPEN    → 호출 즉시 차단, fallback 반환 (다운스트림에 숨 쉴 틈)\n   │ 일정 시간 경과\n   ▼\nHALF_OPEN → 소수 요청만 시험 통과 → 회복되면 CLOSED, 아니면 OPEN 복귀\n```\n\n- 결제 서비스가 흔들리면 회로를 열어 **빠르게 실패(fail fast)** 하고, 사용자에겐 \"잠시 후 다시\" 같은 fallback을 준다. 무한 대기로 호출자까지 같이 죽는 것을 막는다.\n\n### Bulkhead (격벽)\n\n- 배의 격벽처럼 **호출 대상별로 스레드 풀/커넥션 풀을 격리**한다. 검색 서비스가 느려져도 그 풀만 포화되고 주문 처리 풀은 멀쩡하게 유지.\n- 자원을 공유하면 한 곳의 포화가 전체로 번지므로, 핵심 경로(주문·결제)는 별도 풀로 보호.\n\n### Graceful Degradation (우아한 성능 저하)\n\n- 딜 오픈 폭주 시 **비핵심 기능을 의도적으로 끈다**: 개인화 추천, 실시간 리뷰 수, 배너 등은 캐시된 기본값으로 대체하고, **주문·결제 핵심 경로에 자원을 몰아준다**.\n- 검색이 죽으면 Elasticsearch 대신 인기 딜 캐시를 보여주는 식의 fallback.\n\n### 비동기로 결합 끊기\n\n- 주문 확정 후 정산 집계·알림·포인트 적립 등은 **동기 호출이 아니라 Kafka 이벤트**로 던진다. 정산 워커가 잠시 죽어도 주문 자체는 성공하고, 워커가 복구되면 밀린 이벤트를 lag만큼 따라잡아 처리한다(at-least-once + 멱등 처리).\n\n### 트레이드오프\n\n- Circuit Breaker 임계값을 너무 민감하게 잡으면 정상 트래픽도 차단(false open), 너무 둔하면 장애 전파를 못 막는다 → 서비스별 SLO에 맞춰 튜닝.\n- 비동기화는 복원력을 높이지만 **최종 일관성**을 받아들여야 한다. \"즉시 정확\" 대신 \"잠시 후 정확\"을 선택하는 도메인 판단이 필요하다."
     }
    ],
+   "github": {
+    "org": "https://github.com/tmon-com",
+    "repos": []
+   },
    "sources": [
-    "https://github.com/tmondev",
-    "https://www.tmon.co.kr"
+    "https://www.tmon.co.kr",
+    "https://career.tmon.co.kr",
+    "https://github.com/tmon-com"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-16"
   },
   {
    "key": "29cm",
