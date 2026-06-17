@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T17:46:20",
+ "generated_at": "2026-06-17T19:22:09",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 95,
+ "refined": 97,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -202,7 +202,7 @@
     },
     {
      "name": "Python",
-     "count": 13
+     "count": 14
     },
     {
      "name": "TypeScript",
@@ -252,6 +252,10 @@
       "count": 3
      },
      {
+      "name": "Armeria",
+      "count": 2
+     },
+     {
       "name": "gRPC + Protobuf",
       "count": 2
      },
@@ -261,10 +265,6 @@
      },
      {
       "name": "Kotlin",
-      "count": 2
-     },
-     {
-      "name": "Kotlin Coroutines",
       "count": 2
      }
     ],
@@ -283,7 +283,7 @@
      },
      {
       "name": "React Native",
-      "count": 8
+      "count": 9
      },
      {
       "name": "Redux",
@@ -320,12 +320,12 @@
       "count": 16
      },
      {
-      "name": "MySQL",
+      "name": "Elasticsearch",
       "count": 10
      },
      {
-      "name": "Elasticsearch",
-      "count": 9
+      "name": "MySQL",
+      "count": 10
      },
      {
       "name": "MongoDB",
@@ -409,15 +409,15 @@
      "count": 5
     },
     {
+     "name": "Event-Driven",
+     "count": 2
+    },
+    {
      "name": "Service mesh",
      "count": 2
     },
     {
      "name": "API Gateway + Service Mesh",
-     "count": 1
-    },
-    {
-     "name": "API-first / merchant SDK platform",
      "count": 1
     }
    ]
@@ -736,7 +736,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 6
+      "count": 7
      },
      {
       "name": "Spring Boot",
@@ -755,12 +755,12 @@
       "count": 3
      },
      {
-      "name": "Go",
+      "name": "Akka",
       "count": 2
      },
      {
-      "name": "Akka",
-      "count": 1
+      "name": "Go",
+      "count": 2
      },
      {
       "name": "Apache Spark",
@@ -782,7 +782,11 @@
      },
      {
       "name": "TypeScript",
-      "count": 6
+      "count": 7
+     },
+     {
+      "name": "Next.js",
+      "count": 2
      },
      {
       "name": "React Native",
@@ -811,10 +815,6 @@
      {
       "name": "Ember.js",
       "count": 1
-     },
-     {
-      "name": "Flow",
-      "count": 1
      }
     ],
     "data": [
@@ -827,15 +827,15 @@
       "count": 5
      },
      {
+      "name": "Redis",
+      "count": 5
+     },
+     {
       "name": "Elasticsearch",
       "count": 4
      },
      {
       "name": "MySQL",
-      "count": 4
-     },
-     {
-      "name": "Redis",
       "count": 4
      },
      {
@@ -851,11 +851,11 @@
       "count": 2
      },
      {
-      "name": "Amazon S3",
-      "count": 1
+      "name": "Hadoop",
+      "count": 2
      },
      {
-      "name": "Brooklin",
+      "name": "Amazon S3",
       "count": 1
      }
     ],
@@ -893,11 +893,11 @@
       "count": 1
      },
      {
-      "name": "ArgoCD",
+      "name": "Argo CD",
       "count": 1
      },
      {
-      "name": "AWS EC2/S3",
+      "name": "ArgoCD",
       "count": 1
      }
     ]
@@ -924,7 +924,7 @@
      "count": 1
     },
     {
-     "name": "CQRS / read-optimized derived stores",
+     "name": "Cell/Zone 기반 격리",
      "count": 1
     }
    ]
@@ -11461,35 +11461,45 @@
     "backend": [
      "Spring Boot",
      "Spring Cloud",
-     "Netty"
+     "Netty",
+     "Akka",
+     "gRPC"
     ],
     "frontend": [
      "React",
-     "Vue.js"
+     "Vue.js",
+     "Next.js",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "HBase",
      "Cassandra",
      "Elasticsearch",
-     "MySQL"
+     "MySQL",
+     "Redis",
+     "Hadoop",
+     "Spark"
     ],
     "infra": [
      "Kubernetes",
-     "카카오클라우드(KaaS)",
+     "카카오클라우드(KakaoCloud/KaaS)",
      "Prometheus",
-     "Grafana"
+     "Grafana",
+     "Helm",
+     "Argo CD"
     ]
    },
    "architecture": [
     "MSA",
     "Event-driven",
-    "대용량 메시징"
+    "대용량 실시간 메시징",
+    "Cell/Zone 기반 격리"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    APP[\"KakaoTalk App<br/>Native\"]\n    WEB[\"Web<br/>React Vue\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MSG[\"Messaging<br/>Netty\"]\n    SVC[\"Services<br/>Spring Boot\"]\n    PAY[\"KakaoPay<br/>Spring\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"HBase\"]\n    CASS[\"Cassandra\"]\n    MYSQL[\"MySQL\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    KAAS[\"KakaoCloud<br/>KaaS\"]\n    K8S[\"Kubernetes\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> MSG\n  GW --> SVC\n  GW --> PAY\n  MSG --> HBASE\n  SVC --> MYSQL\n  PAY --> CASS\n  MSG -->|publish| KAFKA\n  KAFKA --> ES\n  KAAS --- K8S\n  MSG --- KAAS\n  SVC --- KAAS",
-   "why_language": "카카오톡 메시징의 초대규모 동시접속을 처리하기 위해 JVM 생태계(Java/Kotlin)와 비동기 처리에 강한 Scala를 함께 쓰며, 신규 서비스는 Kotlin 채택이 확대되고 있다.",
-   "why_architecture": "메시지 수신·발송이 이벤트 중심이라 Kafka 기반 이벤트 드리븐 아키텍처와 MSA로 도메인을 분리하고, 카카오 자체 클라우드 위에서 쿠버네티스로 운영한다.",
-   "summary": "초대규모 메시징을 이벤트 드리븐 MSA로 처리하는 JVM 중심 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"KakaoTalk App<br/>iOS / Android\"]\n    WEB[\"Web Front<br/>React + Vue.js\"]\n    LB[\"L4/L7 LB<br/>DNS + GSLB\"]\n  end\n  subgraph Edge[\"Connection Layer\"]\n    LOCO[\"LOCO Server<br/>Netty TCP\"]\n    PUSH[\"Push Gateway<br/>FCM / APNs Fanout\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    AUTH[\"Auth / Kakao Account<br/>OAuth2\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    MSG[\"Message Service<br/>Spring Boot + Netty\"]\n    ROOM[\"Chatroom Service<br/>Kotlin\"]\n    REL[\"Relation/Friends<br/>Java\"]\n    FEED[\"Feed/Content<br/>Scala + Akka\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>Event Bus\"]\n    FLINK[\"Stream Proc<br/>Spark / Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"HBase<br/>Chat Log Store\"]\n    CASS[\"Cassandra<br/>Wide-column\"]\n    MYSQL[\"MySQL<br/>Metadata\"]\n    REDIS[\"Redis<br/>Session/Cache\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>on KakaoCloud\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> LB\n  WEB --> LB\n  LB --> LOCO\n  LB --> GW\n  LOCO -->|persistent TCP| MSG\n  GW --> AUTH\n  GW --> ROOM\n  GW --> REL\n  GW --> FEED\n  MSG --> ROOM\n  MSG -->|publish| KAFKA\n  MSG --> REDIS\n  MSG --> HBASE\n  ROOM --> MYSQL\n  REL --> CASS\n  KAFKA --> PUSH\n  KAFKA --> FLINK\n  FLINK --> ES\n  FEED --> ES\n  PUSH --> APP\n  K8S -.-> MSG\n  K8S -.-> ROOM\n  K8S -.-> FEED\n  OBS -.-> K8S",
+   "why_language": "수천만 동시 접속과 초당 수십만 건의 메시지를 처리해야 하므로 JVM 생태계(Java/Kotlin/Scala)의 성숙한 동시성·GC 튜닝·Netty 비동기 I/O를 핵심으로 채택했다. 메시지 코어와 신규 서비스는 Kotlin/Java로, 대규모 스트림·액터 기반 처리는 Scala(Akka)로 구현하며, 데이터 파이프라인·ML·운영 자동화에는 Python을 폭넓게 쓴다.",
+   "why_architecture": "단일 장애가 전 국민 메신저를 멈추게 할 수 없기에 서비스를 도메인별로 잘게 쪼갠 MSA와, 메시지 송수신·푸시·검색을 Kafka로 비동기 분리한 event-driven 구조를 택했다. 명절·신년 같은 트래픽 폭증과 데이터센터 장애에 대비해 Cell/Zone 단위로 트래픽을 격리하고 페일오버하는 설계로 가용성을 확보한다.",
+   "summary": "JVM(Netty)·Kafka·HBase로 전 국민 실시간 메시징을 떠받치는 MSA·이벤트 드리븐 플랫폼",
    "deep_dive": [
     {
      "topic": "카카오톡 메시지 흐름: Netty 비동기 서버 end-to-end",
@@ -11510,6 +11520,22 @@
     {
      "topic": "관측성과 HBase 채팅 저장·일관성",
      "body": "### 관측성 스택\n- **Prometheus**: 메트릭 수집. 서비스별 RPS·latency·에러율·자원 사용을 시계열로 본다. pull 모델로 각 파드의 /metrics를 긁는다.\n- **Grafana**: 대시보드 시각화. 메시지 처리량, Kafka lag, 접속 세션 수, 푸시 성공률 같은 골든 시그널을 한눈에 본다.\n- **알림**: SLO/임계치 기반으로, 명절 트래픽 중 실시간 모니터링의 생명선이 된다.\n\n### HBase 채팅 저장 심화\n- **Row key**: `채팅방ID + 역순 timestamp` 형태로, 최근 메시지가 row 앞에 오게 해 \"최신 N개\" 조회를 빠른 range scan으로 만든다.\n- **Hotspot 회피**: 인기 채팅방이 한 region에 쏠리지 않게 키에 분산 요소(salt/hash)를 섞는다.\n- **일관성**: HBase는 row 단위 강한 일관성을 보장해, 한 메시지 쓰기는 원자적이다. 대화방 시퀀스로 순서를 부여하므로 클라이언트는 빠진 sequence를 감지해 재동기화한다.\n\n### 저장과 검색 분리\nHBase는 검색 인덱스가 약해, 메시지/콘텐츠 검색은 `Elasticsearch`로 별도 인덱싱한다. 일부 메타·세션 데이터는 `Cassandra`/`MySQL`을 용도에 맞게 혼용한다.\n\n### WHY 이 조합\n\"쓰기·순차읽기는 HBase, 검색은 ES, 관계형은 MySQL\"이라는 polyglot persistence로, 각 워크로드를 최적 저장소에 매핑한다. 단일 DB로 모든 패턴을 감당하려는 시도는 메신저 규모에서 반드시 깨지기 때문이다."
+    },
+    {
+     "topic": "LOCO 프로토콜: 카카오톡 전용 바이너리 메시징 프로토콜의 동작 원리",
+     "body": "### 왜 HTTP가 아니라 자체 프로토콜인가\n\n카카오톡은 메시지 송수신에 일반적인 `HTTP/REST`가 아니라 **LOCO**라 불리는 자체 바이너리 프로토콜을 TCP 위에서 운용한다. 모바일 메신저는 (1) 항상 연결을 유지하며 서버가 클라이언트로 즉시 메시지를 **푸시**해야 하고, (2) 헤더 오버헤드를 최소화해 모바일 데이터·배터리를 아껴야 하며, (3) 수천만 개의 **상시 연결(persistent connection)**을 적은 서버 수로 감당해야 한다. 매 요청마다 핸드셰이크·헤더가 큰 HTTP로는 이 세 조건을 동시에 만족하기 어렵다.\n\n### LOCO 패킷 구조와 처리 흐름\n\nLOCO는 대략 다음과 같은 구조의 경량 바이너리 패킷을 주고받는다.\n\n| 필드 | 역할 |\n|------|------|\n| `packetId` | 요청-응답 매칭용 시퀀스 ID (비동기 멀티플렉싱) |\n| `statusCode` | 상태 코드 |\n| `methodName` | 명령 (`LOGINLIST`, `WRITE`, `MSG`, `PING` 등) 고정 길이 |\n| `bodyType` | 바디 인코딩 타입 |\n| `bodyLength` | 바디 길이 |\n| `body` | BSON 류로 직렬화된 페이로드 |\n\n- 클라이언트는 먼저 **CheckIn 서버**(HTTP)에 접속해 자신이 붙어야 할 LOCO 엣지 서버의 IP/포트를 할당받는다. 이 단계에서 GSLB·지역·부하 기반으로 접속 대상을 분산한다.\n- 이후 클라이언트는 할당받은 **LOCO 엣지 서버**에 TCP로 상시 연결을 맺고, 핸드셰이크 시 RSA로 교환한 대칭키(AES)로 본문을 암호화한다.\n- 연결 유지를 위해 주기적으로 `PING`을 보내며, NAT 타임아웃·모바일 네트워크 전환(LTE↔WiFi)에 대비한 빠른 재연결 로직을 둔다.\n\n### Netty 기반 엣지 서버\n\nLOCO 엣지 서버는 `Netty`의 이벤트 루프(`EventLoopGroup`) 위에서 동작한다. 한 서버가 수십만 개의 소켓을 들고 있어야 하므로 **스레드-퍼-커넥션 모델은 불가능**하고, 소수의 I/O 스레드가 epoll로 다수 연결을 멀티플렉싱한다. 메시지 도착 시 디코더가 LOCO 패킷을 파싱→도메인 객체로 변환→뒤단 Message Service로 전달하고, 응답·푸시는 해당 커넥션의 `Channel`로 비동기 write된다. 이 구조 덕분에 메모리·컨텍스트 스위칭 비용을 억제하면서 대규모 fan-out(단톡방 한 메시지를 N명에게 전송)을 처리한다.\n\n### 트레이드오프\n\n자체 프로토콜은 **극한의 효율**을 주지만, 표준 인프라(로드밸런서·프록시·관측 도구)가 그대로 안 먹히고 클라이언트·서버 양쪽 구현/디버깅 난도가 높다는 비용을 동반한다. 카카오는 전 국민 트래픽 규모에서 이 비용이 충분히 정당화된다고 판단해 LOCO를 장기 유지·발전시켜 왔다."
+    },
+    {
+     "topic": "단톡방 fan-out과 메시지 일관성: 쓰기 증폭을 어떻게 다루는가",
+     "body": "### 문제: 1번의 전송이 N번의 쓰기로 증폭된다\n\n메신저의 본질적 난제는 **fan-out write amplification**이다. 1,000명짜리 단체 채팅방에 누군가 메시지 하나를 보내면, 시스템은 (1) 메시지를 영속 저장하고 (2) 1,000명 각각의 '받은 메시지/안 읽은 수' 상태를 갱신하며 (3) 접속 중인 사용자에게는 실시간 푸시를, 미접속자에게는 FCM/APNs 푸시를 보내야 한다. 즉 **단일 send 이벤트가 수백~수천 건의 다운스트림 작업**으로 폭증한다.\n\n### 흐름 분해\n\n```\nsender --LOCO WRITE--> Message Service\n   1) 방 시퀀스(logId) 발급 (방 단위 단조 증가)\n   2) HBase에 메시지 본문 append (rowkey = chatId + reverse(logId))\n   3) Kafka publish: {chatId, logId, members...}\n        ├─> Online Fanout: 접속 멤버의 LOCO 채널로 MSG push\n        ├─> Offline Fanout: Push Gateway -> FCM/APNs\n        └─> Counter/Badge 갱신, 검색 색인 등\n```\n\n- **방 단위 시퀀스(logId)**: 메시지 순서는 '방' 기준으로만 전역 정렬하면 충분하므로, 방마다 단조 증가하는 logId를 부여한다. 클라이언트는 이 logId로 누락·재정렬을 감지하고 gap이 있으면 동기화를 요청한다(미수신분 pull). 이렇게 **푸시는 best-effort, 정합성은 pull로 보정**하는 하이브리드 전략을 쓴다.\n- **HBase rowkey 설계**: `chatId`를 prefix로 두어 같은 방의 메시지를 물리적으로 인접 저장(range scan 최적화)하고, logId를 역순/보정해 **최신 메시지를 빠르게 조회**한다. 핫 채팅방이 특정 RegionServer로 쏠리는 hotspotting을 막기 위해 salting·region split 전략을 병행한다.\n\n### 왜 HBase인가\n\n채팅 로그는 **쓰기 폭주 + 시간순 append + 무한 증가**라는 특성을 가진다. RDB로는 이 쓰기량과 용량을 감당하기 어렵다. HBase는 LSM-tree 기반으로 순차 쓰기에 강하고, rowkey range scan으로 '특정 방의 최근 N개'를 효율적으로 읽을 수 있으며, HDFS 위에서 수평 확장된다. 대신 **강한 트랜잭션·조인이 없어** 일관성은 애플리케이션 레벨(시퀀스+pull 보정)에서 설계로 메운다.\n\n### 안 읽은 수(unread count)의 함정\n\n'1' 표시(안 읽음 카운트)는 의외로 비싼 연산이다. 멤버 수가 많은 방에서 매 메시지마다 전원 카운터를 즉시 갱신하면 부하가 크므로, **Redis 기반 카운터 + 읽음 이벤트의 비동기 집계**로 처리하고, 정확한 값은 클라이언트 진입 시 재계산/동기화한다. 즉 화면에 보이는 숫자는 **결과적 일관성(eventual consistency)** 모델 위에서 동작한다."
+    },
+    {
+     "topic": "다층 캐싱과 핫키 문제: Redis 계층 설계와 셀러브리티 트래픽",
+     "body": "### 캐싱이 곧 생존인 도메인\n\n전 국민 서비스에서 DB 직격은 곧 장애다. 카카오는 친구 목록, 프로필, 세션, 채팅방 메타, 안 읽은 수 등 **읽기 비율이 압도적인 데이터**를 `Redis`/인메모리 다층 캐시로 흡수한다. 캐싱 계층은 보통 다음처럼 구성된다.\n\n- **L1 (애플리케이션 로컬 캐시)**: 각 서비스 인스턴스의 JVM 힙(예: Caffeine). 마이크로초 단위 접근, 단 인스턴스 간 불일치 가능 → 짧은 TTL·이벤트 무효화로 보정.\n- **L2 (분산 캐시, Redis Cluster)**: 서비스 인스턴스 공유. 세션·카운터·friend list 등. 샤딩으로 수평 확장.\n- **L3 (영속 저장소, MySQL/HBase/Cassandra)**: 캐시 미스 시 fallback.\n\n### 핫키(hot key) / 셀러브리티 문제\n\n수백만 팔로워를 가진 채널·공식계정, 혹은 거대 단톡방의 메타데이터는 **하나의 키에 트래픽이 집중**된다. Redis Cluster는 키를 슬롯에 해시 분산하지만, 특정 키 1개가 뜨거우면 그 키를 담당하는 노드만 과열된다. 대응책:\n\n- **로컬 캐시로 흡수**: 핫키는 L1에 짧은 TTL로 올려 Redis 접근 자체를 줄인다.\n- **키 복제(key replication/fanout)**: `hotkey:{0..N}` 식으로 키를 여러 슬롯에 복제해 읽기를 분산.\n- **요청 병합(request coalescing)**: 동일 키에 대한 동시 미스가 DB로 쏟아지는 **thundering herd**를 막기 위해, 첫 요청만 DB를 치고 나머지는 그 결과를 공유(single-flight).\n\n### 캐시 무효화와 일관성\n\n가장 어려운 건 무효화다. 프로필·친구관계가 바뀌면 L1/L2 모두 갱신해야 하는데, 분산 환경에서 즉시 일관성은 비싸다. 카카오는 **변경 이벤트를 Kafka로 흘려보내** 각 서비스가 구독→로컬 캐시를 무효화하는 **이벤트 기반 캐시 무효화**를 활용한다. 즉 쓰기는 DB+이벤트 발행, 읽기는 캐시 우선, 무효화는 비동기 전파라는 패턴으로 **성능과 일관성의 균형**을 맞춘다.\n\n### 트레이드오프 요약\n\n| 선택 | 얻는 것 | 잃는 것 |\n|------|---------|---------|\n| 로컬 L1 캐시 | 초저지연 | 인스턴스 간 일시적 불일치 |\n| Redis Cluster | 수평 확장·공유 | 핫키 편중, 네트워크 홉 |\n| 이벤트 기반 무효화 | 결합도↓, 확장성↑ | 전파 지연(수십~수백ms) |"
+    },
+    {
+     "topic": "Cell/Zone 기반 격리와 장애 복원력: 데이터센터 화재가 남긴 설계 교훈",
+     "body": "### 2021년 판교 데이터센터 화재라는 변곡점\n\n2021년 10월 SK C&C 판교 데이터센터 화재로 카카오의 다수 서비스가 장시간 중단된 사건은, 카카오 인프라 설계의 방향을 **'다중화'에서 '완전한 이중·삼중 리던던시와 격리'**로 강하게 틀어놓은 결정적 계기였다. 단일 IDC에 트래픽·데이터가 집중되어 있으면, 그 IDC 하나의 물리적 사고가 전 서비스를 마비시킬 수 있음이 실증되었다.\n\n### Cell / Zone 아키텍처\n\n이후 카카오는 시스템을 **독립적으로 운영·페일오버 가능한 단위(Cell/Zone)**로 잘게 나누는 방향을 추구한다. 핵심 아이디어는 **장애 폭발 반경(blast radius) 최소화**다.\n\n- **트래픽 격리**: 사용자/요청을 셀 단위로 라우팅해, 한 셀의 장애가 다른 셀 사용자에게 전파되지 않게 한다.\n- **데이터 다중화**: 채팅 로그(HBase), 메타데이터(MySQL) 등을 **물리적으로 분리된 복수 IDC/리전**에 복제해, 한 센터가 통째로 사라져도 다른 센터에서 서비스를 이어간다.\n- **Active-Active / Active-Standby**: 중요 서비스는 여러 센터에서 동시에 트래픽을 받거나(Active-Active), 즉시 승격 가능한 대기 센터를 둔다.\n\n### 복원력 패턴: 서킷 브레이커와 graceful degradation\n\nMSA에서 한 서비스의 지연이 호출 체인을 타고 전체로 번지는 **cascading failure**를 막기 위해 다음을 적용한다.\n\n- **Circuit Breaker**: 다운스트림 의존 서비스의 에러율/지연이 임계치를 넘으면 호출을 차단(open)하고, 일정 시간 뒤 절반만 흘려보내(half-open) 회복을 탐지한다. JVM 생태계의 Resilience4j류 패턴.\n- **Timeout & Bulkhead**: 호출별 타임아웃과 자원 격벽으로, 느린 의존성이 스레드풀을 고갈시키지 못하게 한다.\n- **Graceful Degradation**: 부가 기능(예: 프로필 음악, 일부 추천)이 죽어도 **핵심 메시지 송수신은 유지**되도록 기능별 중요도를 분리한다.\n\n### KakaoCloud(KaaS) 위에서의 멀티존 운영\n\n이 격리·다중화는 사내 클라우드 **KakaoCloud**와 그 위의 `Kubernetes` 멀티 클러스터/멀티 존으로 구현된다. 워크로드는 존에 분산 스케줄되고, 노드/존 장애 시 다른 존으로 재스케줄·트래픽 우회된다. `Prometheus`+`Grafana` 기반 관측으로 셀별 헬스를 모니터링하고, 임계 초과 시 자동 페일오버·오토스케일을 트리거한다.\n\n### 한 줄 교훈\n\n화재 사건의 본질적 교훈은 **'아무리 좋은 소프트웨어도 물리적 단일점(SPOF)을 이기지 못한다'**였고, 카카오의 대응은 소프트웨어·데이터·물리 인프라 전 계층에서 단일점을 제거하는 방향으로 수렴했다."
     }
    ],
    "interview": {
@@ -11675,32 +11701,47 @@
      {
       "name": "kakao/khaiii",
       "url": "https://github.com/kakao/khaiii",
-      "desc": "카카오가 개발한 딥러닝 기반 한국어 형태소 분석기",
+      "desc": "딥러닝 기반 한국어 형태소 분석기",
       "lang": "Python",
       "stars": 1447
      },
      {
+      "name": "kakao/buffalo",
+      "url": "https://github.com/kakao/buffalo",
+      "desc": "고속 대규모 추천 시스템 라이브러리",
+      "lang": "Python",
+      "stars": 581
+     },
+     {
+      "name": "kakao/n2",
+      "url": "https://github.com/kakao/n2",
+      "desc": "대용량 벡터 근사 최근접 이웃(ANN) 검색 라이브러리",
+      "lang": "Jupyter Notebook",
+      "stars": 581
+     },
+     {
       "name": "kakao/cuesheet",
       "url": "https://github.com/kakao/cuesheet",
-      "desc": "스파크 애플리케이션 작성 프레임워크",
+      "desc": "Spark 애플리케이션 작성·배포를 단순화하는 프레임워크",
       "lang": "Scala",
       "stars": 84
      },
      {
       "name": "kakao/varlog",
       "url": "https://github.com/kakao/varlog",
-      "desc": "분산 로그 스토리지 시스템",
+      "desc": "대규모 분산 로그 스트리밍 스토리지 시스템",
       "lang": "Go",
       "stars": 53
      }
     ]
    },
    "sources": [
-    "https://tech.kakao.com",
-    "https://if.kakao.com"
+    "https://tech.kakao.com/",
+    "https://github.com/kakao",
+    "https://if.kakao.com/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-16"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "naver",
@@ -14960,40 +15001,50 @@
     "Kotlin",
     "Java",
     "TypeScript",
-    "JavaScript"
+    "JavaScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring WebFlux",
-     "gRPC"
+     "Reactor",
+     "gRPC",
+     "Armeria"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "React Native",
+     "Server-Driven UI"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "MongoDB",
-     "Redis"
+     "Redis",
+     "Debezium CDC",
+     "Elasticsearch"
     ],
     "infra": [
      "Kubernetes",
      "AWS",
-     "사내 PaaS"
+     "사내 PaaS",
+     "GitOps/ArgoCD",
+     "Istio/Envoy"
     ]
    },
    "architecture": [
-    "MSA",
-    "장애 격리(서버 단위)",
-    "Server-driven UI"
+    "MSA(Microservices)",
+    "Server Unit 단위 장애 격리",
+    "Event-Driven(Kafka/CDC)",
+    "Server-Driven UI"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"토스 앱<br/>Server-driven UI\"]\n    WEB[\"토스 웹<br/>React + Next.js\"]\n  end\n  subgraph Gateway\n    SDUI[\"SDUI 서버<br/>Spring Boot + Kotlin\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PAY[\"결제 코어<br/>Spring Boot + Kotlin\"]\n    REMIT[\"송금 서비스<br/>Spring WebFlux\"]\n    BANK[\"뱅킹 서비스<br/>Kotlin + gRPC\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 버스<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    MYSQL[\"금융 원장 DB<br/>MySQL\"]\n    MONGO[\"이력 저장<br/>MongoDB\"]\n    REDIS[\"세션 캐시<br/>Redis\"]\n  end\n  subgraph Infra\n    K8S[\"서버 단위 장애 격리<br/>Kubernetes\"]\n    PAAS[\"사내 PaaS<br/>AWS 기반\"]\n  end\n  APP --> SDUI\n  WEB --> GW\n  SDUI --> GW\n  GW --> PAY\n  GW --> REMIT\n  GW --> BANK\n  PAY --> KAFKA\n  REMIT --> KAFKA\n  KAFKA --> BANK\n  PAY --> MYSQL\n  REMIT --> MONGO\n  PAY --> REDIS\n  K8S --> PAAS",
-   "why_language": "금융 서비스의 안정성과 생산성을 모두 잡기 위해 Kotlin을 메인 백엔드 언어로 채택했고, 프론트는 React/TypeScript로 토스 앱 전반의 일관된 UI를 구현한다.",
-   "why_architecture": "결제·송금에서 한 기능 장애가 전체로 번지지 않도록 서버 단위 장애 격리와 MSA를 철저히 적용하고, 빠른 화면 변경을 위해 서버 주도 UI(SDUI)를 활용한다.",
-   "summary": "금융 안정성을 위해 장애를 격리한 Kotlin 중심 MSA와 서버 주도 UI.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Toss App<br/>React Native + SDUI\"]\n    WEB[\"Web<br/>React + Next.js\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Envoy\"]\n    SDUI[\"SDUI Renderer<br/>Server-Driven UI JSON\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    AUTH[\"Auth/Identity<br/>Kotlin + Spring\"]\n    PAY[\"Payment/Transfer<br/>Kotlin + Spring WebFlux\"]\n    LEDGER[\"Ledger/Account<br/>Kotlin + Reactor\"]\n    BANK[\"Bank Adapter<br/>금융망 연동\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Sharded RDB<br/>MySQL\"]\n    REDIS[\"Cache/Lock<br/>Redis\"]\n    MONGO[\"Document Store<br/>MongoDB\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + 사내 PaaS\"]\n    AWS[\"Cloud<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  APP --> SDUI\n  SDUI --> GW\n  GW -->|gRPC| AUTH\n  GW -->|gRPC| PAY\n  PAY -->|gRPC| LEDGER\n  PAY --> BANK\n  PAY --> REDIS\n  LEDGER --> MYSQL\n  MYSQL --> CDC\n  CDC --> KAFKA\n  PAY --> KAFKA\n  KAFKA --> ES\n  KAFKA --> MONGO\n  AUTH --> REDIS\n  Core --> K8S\n  K8S --> AWS",
+   "why_language": "송금·결제·원장 처리는 강한 타입 안정성과 JVM 생태계의 성숙한 트랜잭션·동시성 라이브러리가 필수라, 토스는 Java 자산을 흡수하면서도 null 안전성과 간결한 코루틴/함수형 표현이 가능한 Kotlin을 백엔드 표준으로 삼았다. 프론트는 앱·웹·SDUI 스키마를 한 언어로 다루기 위해 TypeScript로 통일해 클라이언트-서버 계약을 타입으로 강제한다.",
+   "why_architecture": "초당 수만 건의 금융 거래에서 한 도메인의 장애가 전체 송금을 막으면 안 되므로, 토스는 서비스를 잘게 쪼갠 MSA 위에 'Server Unit' 단위로 인프라까지 격리해 특정 기능 장애가 다른 기능으로 전파되지 않게 했다. 동시에 화면 로직을 서버가 내려주는 SDUI로 앱 배포 주기에 묶이지 않고 UI를 즉시 바꾸고, Kafka/CDC 기반 이벤트로 원장·정산·알림을 비동기로 분리해 핵심 거래 경로의 지연을 최소화한다.",
+   "summary": "Kotlin/Spring MSA를 Server Unit 단위로 장애 격리하고, SDUI와 Kafka·CDC 이벤트로 금융 트래픽의 복원력·민첩성을 동시에 잡은 핀테크 스택",
    "deep_dive": [
     {
      "topic": "서버 단위 장애 격리(Server Unit) 아키텍처",
@@ -15014,6 +15065,22 @@
     {
      "topic": "관측성과 복원력",
      "body": "### 무엇을 보나\n금융 서비스는 \"지금 돈이 흐르는가\"를 초 단위로 알아야 한다. 토스는 메트릭(Prometheus 류)·분산 트레이싱·구조화 로그를 표준 수집하고, **거래 성공률·지연 분포(p99)·외부 연동별 에러율**을 핵심 SLI로 본다.\n\n### 장애를 빨리 좁히는 법\n- Server Unit 경계마다 메트릭이 찍히므로, 장애 시 어느 Unit·어느 외부 연동이 원인인지 빠르게 격리된다.\n- Circuit Breaker가 열리면 알림이 발생하고, 해당 Unit만 degrade되며 핵심 화면은 살아 있다.\n- 분산 트레이스로 한 송금 요청이 게이트웨이→송금→오픈뱅킹까지 어디서 지연됐는지 span 단위로 추적한다.\n\n### 복원력 메커니즘\n- **타임아웃·재시도·백오프**: 외부 호출마다 짧은 타임아웃과 지수 백오프. 단 멱등성이 보장된 연산만 재시도한다.\n- **벌크헤드**: Unit별 스레드/커넥션 풀 분리로 한 연동의 고갈이 전체로 안 번진다.\n- **Graceful degradation**: 부가 정보(추천·배너) 조회 실패 시 핵심 거래는 계속 진행하고 부가 영역만 비운다.\n\n### 트레이드오프\n관측 데이터 카디널리티가 폭증하면 저장·쿼리 비용이 커진다. 토스는 핵심 거래 지표는 고해상도로, 부가 지표는 샘플링/집계로 비용을 통제한다."
+    },
+    {
+     "topic": "Server Unit 위에서의 데이터 샤딩과 금융 원장 일관성 전략",
+     "body": "### 왜 단일 거대 DB를 버렸나\n토스의 송금·결제·계좌 도메인은 모두 `MySQL` 기반 RDB 위에서 돌아간다. 그런데 사용자 수가 수천만으로 늘면서 단일 인스턴스로는 쓰기 처리량(IOPS)과 커넥션 한계에 부딪힌다. 토스는 **Server Unit** 개념을 데이터 계층까지 확장해, 서비스(Server Unit)마다 자기 소유의 DB를 갖는 *Database per Service* 원칙을 강하게 적용한다. 즉 결제 서비스가 계좌 서비스의 테이블을 직접 JOIN하지 못하고, 반드시 gRPC API나 이벤트로만 데이터를 주고받는다.\n\n### 샤딩(Sharding) 방식\n계좌·거래 원장처럼 행(row)이 폭증하는 테이블은 **사용자 ID(또는 계좌 ID) 해시 기반 수평 샤딩**으로 분산한다.\n\n- 샤드 키는 보통 거래 주체(user_id)로 잡아, 한 사용자의 거래가 한 샤드에 모이게 한다 → 단일 샤드 내 트랜잭션으로 정합성을 보장하기 쉬움.\n- 샤드 라우팅은 애플리케이션 레이어(또는 ShardingSphere류 미들웨어)에서 결정하고, 샤드 수 변경(리샤딩) 시 **consistent hashing**과 더블 라이트(dual-write) 마이그레이션으로 무중단 이전한다.\n\n### 분산 환경에서의 일관성\n금융에서는 '잔액이 음수가 되면 안 된다' 같은 불변식이 절대적이다. 토스는 두 가지를 조합한다.\n\n1. **단일 샤드 강한 일관성**: 출금 계좌와 그 거래 기록은 같은 샤드/같은 DB 트랜잭션 안에서 원자적으로 커밋한다. 잔액 차감과 거래 로그가 함께 성공하거나 함께 롤백된다.\n2. **서비스 간 Saga/이벤트 보상**: 송금처럼 출금 서비스와 입금 서비스가 다른 Server Unit일 때는 2PC 대신 **Saga 패턴**을 쓴다. 출금 확정 → `transfer.requested` 이벤트 발행 → 입금 서비스가 소비해 입금 처리 → 실패 시 `transfer.failed` 보상 이벤트로 출금을 되돌린다. 모든 단계는 멱등 키로 보호되어 중복 소비에도 잔액이 두 번 바뀌지 않는다.\n\n### 트레이드오프\n샤딩과 서비스별 DB는 *순간적인 cross-service 데이터 조회를 어렵게* 만든다. 그래서 토스는 조회 전용 화면(거래내역 통합 뷰 등)을 위해 CDC로 이벤트를 흘려 **읽기 전용 집계 스토어(MongoDB/Elasticsearch)** 를 따로 구축하는 CQRS 스타일을 택한다. 쓰기는 강하게 일관된 샤드 RDB에서, 읽기는 비정규화된 뷰에서 가져오는 식이다."
+    },
+    {
+     "topic": "Debezium CDC와 Kafka로 만든 이벤트 백본",
+     "body": "### 핵심 아이디어: DB 변경을 '진실의 원천'으로\n토스는 서비스 간 결합을 줄이고 데이터를 비동기로 퍼뜨리기 위해 **Change Data Capture(CDC)** 를 적극 활용한다. 각 서비스의 `MySQL` binlog를 **Debezium**이 읽어 `Kafka` 토픽으로 흘려보낸다. 이렇게 하면 애플리케이션 코드가 '거래를 저장하면서 동시에 이벤트도 발행'하는 *dual-write 문제*(DB는 커밋됐는데 이벤트 발행은 실패하는 정합성 깨짐)를 원천 차단한다 — DB에 커밋된 사실만이 binlog를 타고 이벤트가 되므로 **outbox/CDC가 곧 신뢰 가능한 단일 소스**가 된다.\n\n### 파이프라인 흐름\n```\nService DB(MySQL) --binlog--> Debezium Connector --> Kafka Topic\n   --> (소비자 A) 정산/원장 집계\n   --> (소비자 B) 알림/푸시\n   --> (소비자 C) Elasticsearch 색인 / MongoDB 읽기모델\n```\n\n### Kafka 운영 디테일\n- **파티셔닝**: 같은 계좌/사용자의 이벤트는 같은 파티션으로 가도록 키를 잡아 *순서 보장(ordering)* 을 확보한다. 잔액 변경 이벤트의 순서가 뒤집히면 잔액 재구성이 깨지기 때문.\n- **소비자 멱등성**: 컨슈머는 이벤트의 고유 키(transaction_id 등)를 저장해두고 재처리 시 무시한다. Kafka의 at-least-once 전달을 멱등 소비로 effectively-once에 가깝게 만든다.\n- **스키마 관리**: 이벤트 페이로드는 호환성을 위해 Schema Registry/명시적 버전으로 관리해 생산자-소비자 배포 시점 불일치를 흡수한다.\n\n### 왜 이렇게까지 하나\n핀테크는 '거래 → 정산 → 통계 → 알림 → 외부 보고' 등 후속 처리가 많은데, 이를 동기 호출 체인으로 묶으면 한 곳이 느려질 때 핵심 송금 경로까지 지연된다. CDC+Kafka로 핵심 경로(잔액 차감)와 후속 경로(집계·알림)를 시간적으로 분리(temporal decoupling)해, 핵심 거래 latency를 짧게 유지하고 후속 처리는 컨슈머가 자기 속도로 따라잡게 한다."
+    },
+    {
+     "topic": "대규모 이벤트 트래픽(만보기·행운퀴즈)과 오토스케일링·부하 방어",
+     "body": "### 문제 상황\n토스의 만보기, 행운퀴즈, 송금 이벤트 같은 리워드성 기능은 **특정 시각에 트래픽이 수십 배로 스파이크**친다. 보상이 걸린 버튼이 열리는 순간 수백만 사용자가 동시에 같은 API를 때리는 *thundering herd* 가 발생한다. 일반 쇼핑 트래픽과 달리 '돈/포인트'가 걸려 있어 *정확히 한 번만* 지급돼야 한다는 제약까지 겹친다.\n\n### 방어 계층\n1. **Edge 단 큐잉·레이트리밋**: 게이트웨이/Envoy 레벨에서 비정상 폭주를 흡수하고, 필요 시 대기열(virtual waiting room)로 유입을 평탄화한다.\n2. **Redis 기반 분산 락·카운터**: '선착순 N명 지급' 같은 한정 자원은 `Redis`의 원자적 연산(INCR, Lua 스크립트)으로 카운트해, RDB에 들어가기 전에 자원 소진을 빠르게 판정한다. DB까지 가는 트래픽 자체를 줄이는 게 핵심.\n3. **멱등 처리**: 사용자가 네트워크 불안으로 재시도해도 멱등 키로 중복 지급을 막는다.\n\n### 스케일링\n서비스는 `Kubernetes` 위에서 **HPA(Horizontal Pod Autoscaler)** 로 CPU/커스텀 메트릭(초당 요청, 큐 적체)에 따라 파드를 늘린다. 다만 금융 도메인 특성상 *DB가 병목*이 되기 쉬워서, 애플리케이션을 무한정 늘려도 RDB가 못 버티는 구간이 생긴다. 그래서 토스는 (a) 이벤트성 쓰기를 Redis/Kafka로 1차 흡수 후 비동기로 RDB에 반영하거나, (b) 이벤트 전용 Server Unit을 따로 떼어 **핵심 송금 인프라와 자원을 격리**한다. 이벤트가 터져서 다운돼도 일반 송금은 멀쩡하게 동작하는 것 — 이게 Server Unit 격리의 실전 가치다.\n\n### 트레이드오프\n비동기 흡수는 '사용자가 버튼을 눌렀는데 결과가 즉시 안 보이는' UX 지연을 만든다. 토스는 SDUI로 '처리 중' 상태 화면을 서버가 즉시 내려주고, 실제 지급 확정은 이벤트 처리 후 push/polling으로 갱신하는 식으로 *체감 응답성과 시스템 보호*를 맞바꾼다."
+    },
+    {
+     "topic": "사내 PaaS와 GitOps 기반 배포·카나리 파이프라인",
+     "body": "### 왜 사내 PaaS인가\n수백 개 마이크로서비스를 각 팀이 직접 `Kubernetes` 매니페스트를 짜서 배포하면, 팀마다 설정이 제각각이고 금융 규제(접근통제·감사로그)를 일관되게 강제하기 어렵다. 토스는 이를 추상화한 **사내 PaaS(내부 개발자 플랫폼, IDP)** 를 만들어, 개발자가 인프라 세부사항 대신 '내 서비스'만 신경 쓰게 한다. 서비스 정의(리소스 한도, 오토스케일링, 시크릿, 네트워크 정책)를 선언하면 플랫폼이 표준 템플릿으로 K8s 리소스를 생성한다.\n\n### 배포 흐름 (GitOps)\n```\ngit push -> CI(빌드/테스트/이미지) -> 이미지 레지스트리\n   -> 매니페스트 리포 갱신 -> ArgoCD가 desired state 동기화 -> K8s 반영\n```\n선언적 GitOps라서 **현재 운영 상태 = Git에 적힌 상태**가 보장되고, 문제 시 Git revert만으로 롤백이 된다. 누가 언제 무엇을 바꿨는지가 커밋으로 남아 금융 감사 요건과도 잘 맞는다.\n\n### 카나리/점진 배포\n새 버전을 한 번에 100% 띄우지 않고 **카나리 배포**로 트래픽 일부(예: 1%→10%→50%→100%)만 신버전에 보낸다. 이때 `Istio/Envoy` 서비스 메시가 트래픽 비율을 제어하고, 신버전의 에러율·latency 메트릭이 임계치를 넘으면 자동으로 롤백(또는 진행 중단)한다. 금융 거래는 한 번의 잘못된 배포가 곧 돈 문제이므로, *작은 단위로 내보내고 빠르게 되돌리는* 능력이 핵심이다.\n\n### Server Unit과의 결합\nServer Unit 단위로 인프라가 격리돼 있으므로, 한 서비스의 배포 사고가 다른 서비스로 번지지 않는다. 카나리 도중 장애가 나도 폭발 반경(blast radius)이 그 Server Unit 안으로 제한된다 — '자주, 작게, 안전하게 배포한다'는 토스 배포 철학의 인프라적 토대다."
     }
    ],
    "debate": {
@@ -15277,15 +15344,52 @@
     ]
    },
    "github": {
-    "org": "toss",
-    "repos": []
+    "org": "https://github.com/toss",
+    "repos": [
+     {
+      "name": "toss/es-toolkit",
+      "url": "https://github.com/toss/es-toolkit",
+      "desc": "Lodash를 대체하는 고성능·경량 모던 JavaScript 유틸리티 라이브러리",
+      "lang": "TypeScript",
+      "stars": 11147
+     },
+     {
+      "name": "toss/slash",
+      "url": "https://github.com/toss/slash",
+      "desc": "토스 프론트엔드 팀이 실서비스에서 쓰는 React/JS 유틸리티 모음",
+      "lang": "JavaScript",
+      "stars": 2970
+     },
+     {
+      "name": "toss/frontend-fundamentals",
+      "url": "https://github.com/toss/frontend-fundamentals",
+      "desc": "좋은 프론트엔드 코드 기준을 정리한 토스의 가이드 문서",
+      "lang": "TypeScript",
+      "stars": 1964
+     },
+     {
+      "name": "toss/suspensive",
+      "url": "https://github.com/toss/suspensive",
+      "desc": "React Suspense를 선언적으로 다루게 해주는 라이브러리",
+      "lang": "TypeScript",
+      "stars": 1026
+     },
+     {
+      "name": "toss/overlay-kit",
+      "url": "https://github.com/toss/overlay-kit",
+      "desc": "모달·토스트 등 오버레이를 명령형 없이 선언적으로 관리하는 라이브러리",
+      "lang": "TypeScript",
+      "stars": 713
+     }
+    ]
    },
    "sources": [
-    "https://toss.tech",
-    "https://github.com/toss"
+    "https://toss.tech/",
+    "https://github.com/toss",
+    "https://toss.tech/article/slash23-server-unit"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-14"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "dunamu",
