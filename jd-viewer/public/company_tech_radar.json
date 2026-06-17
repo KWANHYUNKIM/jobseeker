@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T21:03:13",
+ "generated_at": "2026-06-17T22:36:21",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 99,
+ "refined": 100,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -920,11 +920,11 @@
      "count": 2
     },
     {
-     "name": "Actor-model concurrency",
+     "name": "Cell/Zone 기반 격리",
      "count": 1
     },
     {
-     "name": "Cell/Zone 기반 격리",
+     "name": "CQRS / read-optimized derived stores",
      "count": 1
     }
    ]
@@ -3957,6 +3957,10 @@
      "count": 1
     },
     {
+     "name": "Python",
+     "count": 1
+    },
+    {
      "name": "Ruby",
      "count": 1
     },
@@ -3976,15 +3980,23 @@
       "count": 1
      },
      {
-      "name": "GraphQL",
+      "name": "GraphQL Federation",
+      "count": 1
+     },
+     {
+      "name": "gRPC",
+      "count": 1
+     },
+     {
+      "name": "Kotlin/Spring Boot",
+      "count": 1
+     },
+     {
+      "name": "Node.js",
       "count": 1
      },
      {
       "name": "Ruby on Rails",
-      "count": 1
-     },
-     {
-      "name": "Spring Boot",
       "count": 1
      }
     ],
@@ -3998,11 +4010,27 @@
       "count": 1
      },
      {
+      "name": "React Native",
+      "count": 1
+     },
+     {
+      "name": "Relay",
+      "count": 1
+     },
+     {
       "name": "TypeScript",
       "count": 1
      }
     ],
     "data": [
+     {
+      "name": "Debezium",
+      "count": 1
+     },
+     {
+      "name": "DynamoDB",
+      "count": 1
+     },
      {
       "name": "Elasticsearch",
       "count": 1
@@ -4018,6 +4046,10 @@
      {
       "name": "Redis",
       "count": 1
+     },
+     {
+      "name": "S3",
+      "count": 1
      }
     ],
     "infra": [
@@ -4030,26 +4062,42 @@
       "count": 1
      },
      {
+      "name": "Datadog",
+      "count": 1
+     },
+     {
+      "name": "Envoy",
+      "count": 1
+     },
+     {
       "name": "Istio",
       "count": 1
      },
      {
       "name": "Kubernetes",
       "count": 1
+     },
+     {
+      "name": "Terraform",
+      "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "GraphQL 연합",
+     "name": "GraphQL Federation 기반 API 통합",
      "count": 1
     },
     {
-     "name": "MSA",
+     "name": "Service Mesh + Kubernetes",
      "count": 1
     },
     {
-     "name": "Service Mesh",
+     "name": "모놀리스 →MSA 전환",
+     "count": 1
+    },
+    {
+     "name": "이벤트 드리븐",
      "count": 1
     }
    ]
@@ -4238,47 +4286,49 @@
    ],
    "stack": {
     "backend": [
-     "Elixir/Erlang OTP",
-     "Rust services",
-     "Python (API/HTTP)",
+     "Elixir/Erlang OTP (Gateway/실시간)",
+     "Rust (data services / 핫패스)",
+     "Python (HTTP API)",
+     "Go (인프라 툴링)",
      "gRPC",
-     "Go"
+     "Manifold (Elixir fan-out)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Electron (desktop)",
      "React Native (mobile)",
-     "Redux/Flux"
+     "Redux/Flux",
+     "WebRTC (voice/video)"
     ],
     "data": [
-     "ScyllaDB (migrated from Cassandra)",
+     "ScyllaDB (Cassandra에서 마이그레이션)",
      "Redis",
-     "MongoDB (legacy)",
+     "Elasticsearch (메시지 검색)",
      "Apache Kafka",
-     "Elasticsearch",
-     "BigQuery",
      "Google Cloud Pub/Sub",
-     "Snowflake"
+     "BigQuery",
+     "Snowflake",
+     "MongoDB (legacy)"
     ],
     "infra": [
      "Google Cloud Platform",
      "Kubernetes",
-     "Envoy",
+     "Envoy (service mesh)",
      "Cloudflare",
-     "Rust (data services / read-states)"
+     "gRPC"
     ]
    },
    "architecture": [
-    "Real-time messaging (WebSocket Gateway)",
-    "Actor-model concurrency (Erlang/Elixir processes)",
-    "Event-driven / pub-sub fan-out",
-    "Microservices with gRPC + Envoy mesh"
+    "Real-time WebSocket Gateway + Actor-model (Elixir/Erlang OTP 프로세스)",
+    "Event-driven pub/sub fan-out (Guild→Session 메시지 전파)",
+    "Rust 핫패스 데이터 서비스 + request coalescing",
+    "gRPC 마이크로서비스 + Envoy 메시 on GCP/Kubernetes"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    DESK[\"Desktop App<br/>React + Electron\"]\n    MOB[\"Mobile App<br/>React Native\"]\n  end\n  subgraph Edge\n    CF[\"Edge / CDN<br/>Cloudflare\"]\n    GW[\"Realtime Gateway<br/>WebSocket + Elixir\"]\n    ENV[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Core\n    API[\"HTTP API<br/>Python\"]\n    SESS[\"Session/Presence<br/>Elixir OTP Actors\"]\n    READ[\"Read States<br/>Rust Service\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Kafka + Pub/Sub\"]\n  end\n  subgraph Data\n    SCYLLA[\"Messages<br/>ScyllaDB\"]\n    REDIS[\"Cache<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    BQ[\"Analytics<br/>BigQuery + Snowflake\"]\n  end\n  subgraph Infra\n    GKE[\"Platform<br/>GCP + Kubernetes\"]\n  end\n  DESK -->|HTTPS| CF\n  MOB -->|HTTPS| CF\n  DESK -->|WSS| GW\n  MOB -->|WSS| GW\n  CF --> API\n  GW --> SESS\n  API -->|gRPC| ENV\n  ENV --> SESS\n  ENV --> READ\n  SESS -->|fan-out| KAFKA\n  READ --> SCYLLA\n  SESS --> REDIS\n  API --> SCYLLA\n  API --> ES\n  KAFKA --> BQ\n  SESS -.-> GKE\n  READ -.-> GKE",
-   "why_language": "수백만 동시 접속자에게 실시간 메시지를 팬아웃해야 하는 도메인 특성상, 경량 프로세스와 액터 모델로 대규모 동시성을 자연스럽게 다루는 Elixir/Erlang OTP를 게이트웨이·세션 관리의 핵심으로 채택했다. GC 일시정지와 메모리 효율이 병목이 되는 핫패스(read-states, 메시지 스토리지 인터페이스)는 Rust로 재작성해 꼬리 지연(tail latency)을 제거했고, 빠른 개발이 필요한 API 레이어는 Python을 유지한다.",
-   "why_architecture": "단일 채널·길드에 수십만 명이 몰리는 팬아웃 부하를 감당하기 위해 게이트웨이를 WebSocket 기반 영속 연결과 액터별 상태 격리로 설계했고, 길드/세션을 독립 프로세스로 분산해 장애를 국소화한다. 조 단위 메시지의 쓰기·읽기 확장을 위해 Cassandra의 운영 부담과 GC 문제를 ScyllaDB로 이전하고, 서비스 간 통신은 gRPC와 Envoy 메시로 표준화했다.",
-   "summary": "Elixir 액터 모델로 실시간 팬아웃을 떠받치고, 핫패스는 Rust로, 데이터는 ScyllaDB로 확장한 실시간 메시징 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client\n    DESK[\"Desktop App<br/>Electron + React + TS\"]\n    MOB[\"Mobile App<br/>React Native\"]\n  end\n  subgraph Edge\n    CF[\"Edge / CDN<br/>Cloudflare\"]\n  end\n  subgraph Realtime\n    GW[\"WebSocket Gateway<br/>Elixir OTP\"]\n    SESS[\"Session Processes<br/>Elixir GenServer\"]\n    GUILD[\"Guild Processes<br/>Elixir + Manifold\"]\n    VOICE[\"Voice Servers<br/>WebRTC SFU\"]\n  end\n  subgraph CoreServices\n    API[\"HTTP API<br/>Python\"]\n    DATA[\"Data Services<br/>Rust + gRPC\"]\n    MESH[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Storage\n    SCYLLA[\"Messages<br/>ScyllaDB\"]\n    REDIS[\"Cache / State<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka + Pub/Sub\"]\n    BQ[\"Analytics<br/>BigQuery + Snowflake\"]\n  end\n  subgraph Platform\n    GCP[\"Cloud Platform<br/>GCP + Kubernetes\"]\n  end\n  DESK --> CF\n  MOB --> CF\n  CF -->|WebSocket| GW\n  CF -->|HTTPS| API\n  GW --> SESS\n  SESS --> GUILD\n  GUILD -->|fan-out| SESS\n  DESK -.->|UDP/RTP| VOICE\n  API -->|gRPC| MESH\n  MESH --> DATA\n  DATA --> SCYLLA\n  DATA --> REDIS\n  API --> ES\n  DATA -->|CDC events| KAFKA\n  KAFKA --> BQ\n  KAFKA --> ES\n  GCP --- GW\n  GCP --- DATA",
+   "why_language": "수백만 동시 접속 게이트웨이는 경량 프로세스와 메시지 패싱에 특화된 Erlang/Elixir OTP로 처리해 한 노드에서 수백만 개의 세션·길드 액터를 격리 실행한다. BEAM의 GC·스케줄링 한계가 드러나는 핫패스(read-states, 데이터 서비스)는 예측 가능한 지연과 무GC 메모리 제어가 가능한 Rust로 재작성했고, 빠른 개발이 필요한 HTTP API는 Python, 일반 백엔드/툴링은 Go를 쓴다.",
+   "why_architecture": "메시지는 본질적으로 길드(서버) 단위로 fan-out되는 실시간 이벤트이므로, 각 길드와 사용자 세션을 독립 액터로 모델링해 장애를 격리하고 상태를 인메모리로 유지하는 actor-model이 도메인에 정확히 들어맞는다. 저장은 쓰기 폭주와 핫 파티션을 견디도록 ScyllaDB의 LSM 기반 분산 저장 위에 Rust 데이터 서비스로 request coalescing을 얹어 동일 데이터에 대한 중복 쿼리를 한 번으로 합친다.",
+   "summary": "Elixir 액터 모델로 실시간 fan-out을, Rust 핫패스와 ScyllaDB로 수조 건 메시지 저장을 감당하는 GCP 기반 실시간 메시징 아키텍처",
    "deep_dive": [
     {
      "topic": "실시간 게이트웨이와 길드 액터 모델",
@@ -4295,6 +4345,22 @@
     {
      "topic": "확장성과 인프라 구성",
      "body": "### GCP + Kubernetes 위의 서비스 메시\nDiscord는 `Google Cloud Platform` 위에서 운영하며, 서비스 간 통신은 `gRPC` + `Envoy` 서비스 메시로 표준화했다. Envoy가 사이드카로 붙어 로드밸런싱, 재시도, 서킷 브레이킹, 관측성(요청 메트릭)을 일괄 처리한다.\n\n### 게이트웨이의 수평 확장\n게이트웨이는 무상태 라우팅 계층이 아니라 클라이언트별 영속 연결을 들고 있는 상태 계층이라, 단순 라운드로빈으로 확장할 수 없다. 클라이언트는 처음 REST API로 게이트웨이 URL을 받아오고, 길드 프로세스는 일관성 해시로 노드에 분산된다. 노드가 추가되면 길드 프로세스가 재배치되며 리밸런싱된다.\n\n### 이벤트 버스와 분석\n세션·길드 이벤트는 `Kafka`와 `Google Cloud Pub/Sub`로 흘러가 다운스트림(분석, 안전성/모더레이션, 알림)으로 팬아웃된다. 분석 데이터는 `BigQuery`와 `Snowflake`로 적재되어 제품·운영 분석에 쓰인다. 검색은 `Elasticsearch`가 담당한다.\n\n### 음성/영상\n음성·영상은 텍스트와 별개 경로다. 클라이언트는 UDP 기반 미디어를 글로벌하게 분산된 미디어 릴레이(SFU)로 보내고, 시그널링만 게이트웨이를 거친다. 이로써 미디어 대역폭이 핵심 메시징 경로를 오염시키지 않는다."
+    },
+    {
+     "topic": "음성·영상 인프라: WebRTC SFU와 Elixir 시그널링",
+     "body": "### 왜 SFU인가\nDiscord의 음성/화상은 P2P 메시(mesh)가 아니라 **SFU(Selective Forwarding Unit)** 모델을 쓴다. 한 채널에 N명이 있을 때 P2P는 각 클라이언트가 N-1개의 스트림을 업로드·다운로드해야 해 모바일/저대역 환경에서 폭발한다. SFU는 클라이언트가 자신의 미디어 스트림을 **딱 하나** 서버(voice server)에 올리면, 서버가 그 스트림을 채널 내 다른 참가자들에게 **복제·선택 전달**한다. 트랜스코딩을 하지 않고 RTP 패킷을 그대로 포워딩하므로 CPU 비용이 낮고 지연이 작다.\n\n### 시그널링과 미디어의 분리\n- **시그널링(signaling)**: 어느 voice server에 붙을지, 암호화 키 교환, ICE 후보 협상 등은 게이트웨이/Elixir 레이어가 담당한다. 클라이언트는 길드의 voice state를 게이트웨이로 받고, Discord가 지정한 voice server 엔드포인트로 다시 연결한다.\n- **미디어(media)**: 실제 오디오/비디오는 별도의 **UDP 기반 RTP** 경로로 voice server와 직접 흐른다. TCP/WebSocket의 head-of-line blocking을 피하려고 미디어는 UDP를 쓰고, 패킷 손실은 코덱(Opus) 단의 PLC(packet loss concealment)와 FEC로 흡수한다.\n\n### 지리적 라우팅\nvoice server는 전 세계 여러 리전에 배치되고, Discord는 채널을 만든 사용자/참가자들의 위치에 따라 가장 가까운 리전을 자동 선택한다(수동 override도 가능했던 'region' 기능의 기반). 이렇게 해서 RTT를 줄이고, 한 리전 장애 시 다른 리전으로 채널을 재배치할 수 있다.\n\n### 트레이드오프\nSFU의 단점은 서버가 fan-out 부담을 전부 떠안는다는 점이다. 큰 스테이지 채널/대규모 음성 이벤트에서는 한 voice server의 업링크 대역과 패킷 처리량이 병목이 되므로, 참가자 수 제한·비디오 simulcast(여러 해상도 레이어를 올려 수신자별로 골라 전달)·active speaker만 비디오 전달 같은 기법으로 부하를 관리한다."
+    },
+    {
+     "topic": "Elixir fan-out 메커니즘: Manifold, Session/Guild 프로세스 분리, 슈퍼 길드",
+     "body": "### 문제: 한 메시지가 수만 명에게\n인기 길드(서버)에서 메시지 하나가 올라오면 그 길드에 접속 중인 수만 개의 사용자 세션으로 동시에 push해야 한다. 단순 구현은 길드 프로세스가 모든 세션 PID로 직접 `send`를 날리는데, 세션이 **다른 BEAM 노드**에 있을 때 노드 간 메시지가 송신자별로 개별 직렬화·전송되어 같은 페이로드가 노드 경계를 수만 번 넘나든다.\n\n### Manifold: 노드별로 한 번만 보낸다\nDiscord가 오픈소스화한 **Manifold**가 이 문제를 해결한다. fan-out 대상 PID들을 **노드별로 그룹핑**한 뒤, 각 원격 노드에는 페이로드를 **딱 한 번** 보내고, 그 노드의 로컬 Manifold가 거기서 다시 로컬 PID들로 분배한다. 결과적으로 노드 간 트래픽이 `세션 수`가 아니라 `노드 수`에 비례하게 줄고, 직렬화 비용도 노드당 1회로 감소한다. 분배 작업을 여러 워커로 나눠 단일 프로세스가 GC/메일박스 병목이 되는 것도 막는다.\n\n### Session 프로세스 vs Guild 프로세스\n- **Session 프로세스**: 클라이언트 WebSocket 연결 하나당 하나. 압축·시퀀스 번호·하트비트·해당 사용자가 받아야 할 이벤트 필터링을 담당한다.\n- **Guild 프로세스**: 서버(길드) 하나당 하나. 그 길드의 presence, 멤버 목록, 어떤 세션들이 구독 중인지를 들고 있다가 새 이벤트가 오면 구독 세션들로 fan-out한다.\n이 분리 덕에 한 길드 프로세스가 죽어도 다른 길드와 사용자 세션은 영향을 받지 않는다(OTP supervisor가 재시작).\n\n### 슈퍼 길드(대형 서버)와 'lazy' 멤버 동기화\n수십만~수백만 멤버의 초대형 서버에서는 전체 멤버 리스트/presence를 모든 세션에 보내면 비현실적이다. 그래서 클라이언트가 실제로 화면에 보이는 멤버 구간만 요청하는 **lazy member list(범위 구독)** 방식으로 바꿔, 길드 프로세스가 보내야 할 데이터와 push 양을 화면에 필요한 만큼으로 제한했다. presence 업데이트도 디바운스/배치해 BEAM 스케줄러가 감당 가능한 수준으로 평탄화한다."
+    },
+    {
+     "topic": "Rust 데이터 서비스 계층과 request coalescing — 핫 파티션 방어",
+     "body": "### 데이터베이스 앞단의 Rust 중간 계층\nDiscord는 API/서비스가 ScyllaDB를 **직접** 때리지 않고, 그 앞에 **Rust로 작성한 data services** 계층을 둔다. 이 계층의 핵심 역할은 동시에 들어오는 동일 데이터 요청을 합치는 **request coalescing(요청 합치기)**다.\n\n### 핫 파티션이 만드는 thundering herd\n유명인이 글을 올린 채널처럼 트래픽이 한 파티션에 쏠리면, 같은 row/파티션을 거의 동시에 수천 건이 읽으려 한다. 이를 그대로 ScyllaDB로 흘리면 동일 데이터에 대한 중복 쿼리가 특정 샤드를 과열시켜 latency가 치솟는다(thundering herd / hot partition).\n\n### 동작 원리\ndata service는 키별로 'in-flight(진행 중) 요청'을 추적한다.\n- 같은 키에 대한 첫 요청이 오면 DB로 실제 쿼리를 보내고 그 키를 '진행 중'으로 표시한다.\n- 동일 키에 대한 후속 요청들은 새 쿼리를 만들지 않고 **첫 요청의 결과를 기다리는 대기열에 합류**한다.\n- DB 응답이 오면 한 번의 결과를 대기 중인 모든 요청자에게 동시에 돌려준다.\n이 패턴으로 핫 채널에서도 ScyllaDB로 가는 실제 쿼리 수를 극적으로 줄여, 데이터베이스가 보는 부하를 '동시 요청 수'가 아니라 '고유 키 수'에 가깝게 만든다.\n\n### 왜 Rust인가\n이 계층은 모든 읽기/쓰기가 통과하는 극단적 핫패스다. BEAM/GC 기반 언어는 꼬리 지연(tail latency)이 GC pause에 흔들리는데, Rust는 GC가 없어 p99 지연이 예측 가능하고, 비동기 런타임(tokio)으로 수많은 동시 in-flight 요청을 적은 스레드로 처리한다. read-states를 Rust로 재작성해 큰 효과를 본 경험이 이 데이터 서비스 전략으로 확장됐다.\n\n### 트레이드오프\ncoalescing은 강한 읽기 일관성을 약간 양보한다(아주 짧은 시간 창 안에서 같은 스냅샷을 공유). Discord의 도메인에서는 채팅 읽기에 ms 단위의 신선도 차이가 허용되므로, 그 대가로 얻는 DB 부하 감소·안정성이 훨씬 크다."
+    },
+    {
+     "topic": "메시지 검색 인프라: Elasticsearch 멀티 클러스터와 비동기 인덱싱",
+     "body": "### 요구사항\n채팅 검색은 '특정 길드·채널·작성자·기간 안에서 키워드'를 빠르게 찾아야 하고, 길드 단위로 권한이 철저히 격리돼야 한다. 또 메시지는 매 순간 막대하게 쌓이므로 인덱싱이 실시간 채팅 경로를 느리게 해서는 안 된다.\n\n### 비동기 인덱싱 파이프라인\n메시지 검색 색인은 쓰기 경로에 동기적으로 끼우지 않는다. 메시지가 저장되면 인덱싱 작업이 **큐(Pub/Sub/Kafka 류)를 거쳐 비동기로** Elasticsearch에 반영된다. 이렇게 하면 메시지 전송 지연과 검색 색인 지연을 분리할 수 있고, ES 클러스터가 잠시 느려져도 채팅 자체는 영향받지 않는다(인덱싱은 뒤따라 catch-up).\n\n### 길드 단위 샤딩과 라우팅\nDiscord는 ES를 단일 거대 인덱스가 아니라, **길드를 단위로 라우팅·분산**하는 구조로 운영한다. 검색 쿼리는 항상 특정 길드 범위로 라우팅되므로 해당 길드의 샤드만 조회하면 되고, 권한 격리도 자연스럽게 보장된다. 활동량이 큰 길드와 작은 길드를 같은 클러스터에 섞되, 핫한 길드가 작은 길드의 검색을 방해하지 않도록 클러스터/풀을 나눠 운영한다.\n\n### 운영상의 과제\nElasticsearch는 색인 세그먼트 머지, 매핑 폭발, 노드 재배치 시 리밸런싱 비용 등 운영 난도가 높다. Discord는 인덱싱을 비동기 + 배치로 묶어 ES에 가해지는 쓰기 압력을 평탄화하고, 색인 실패·지연 시 재시도/백필을 큐에서 처리해 결과적 일관성(eventual consistency)으로 수렴시킨다. 검색은 '실시간성보다 정확성·격리·안정성'이 우선인 기능이라는 도메인 판단이 이 설계 전반에 깔려 있다."
     }
    ],
    "debate": {
@@ -4403,28 +4469,28 @@
     "org": "https://github.com/discord",
     "repos": [
      {
-      "name": "discord/discord-api-docs",
-      "url": "https://github.com/discord/discord-api-docs",
-      "desc": "디스코드 공개 API 공식 문서",
-      "lang": "MDX",
-      "stars": 6426
-     },
-     {
       "name": "discord/lilliput",
       "url": "https://github.com/discord/lilliput",
-      "desc": "Go용 고성능 이미지 리사이즈 라이브러리",
+      "desc": "Go용 고성능 이미지 리사이즈/트랜스코딩 라이브러리(미디어 처리)",
       "lang": "C++",
-      "stars": 2046
+      "stars": 2047
+     },
+     {
+      "name": "discord/erlpack",
+      "url": "https://github.com/discord/erlpack",
+      "desc": "Erlang External Term Format 고속 직렬화(게이트웨이 페이로드)",
+      "lang": "Cython",
+      "stars": 249
      }
     ]
    },
    "sources": [
     "https://discord.com/blog/how-discord-stores-trillions-of-messages",
-    "https://discord.com/blog/why-discord-is-switching-from-go-to-rust",
-    "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users"
+    "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+    "https://discord.com/blog/why-discord-is-switching-from-go-to-rust"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-13"
+   "updated_at": "2026-06-17"
   },
   {
    "key": "linkedin",
@@ -14297,44 +14363,56 @@
    "languages": [
     "Kotlin",
     "Go",
-    "Ruby",
     "TypeScript",
-    "Rust"
+    "Ruby",
+    "Rust",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Ruby on Rails",
-     "Spring Boot",
+     "Kotlin/Spring Boot",
      "Go",
-     "GraphQL"
+     "GraphQL Federation",
+     "gRPC",
+     "Node.js"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "React Native",
+     "Relay"
     ],
     "data": [
-     "Kafka",
      "PostgreSQL",
+     "Kafka",
      "Elasticsearch",
-     "Redis"
+     "Redis",
+     "DynamoDB",
+     "S3",
+     "Debezium"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
+     "Kubernetes(EKS)",
      "Istio",
-     "ArgoCD"
+     "ArgoCD",
+     "Terraform",
+     "Datadog",
+     "Envoy"
     ]
    },
    "architecture": [
-    "MSA(모놀리스→MSA 전환)",
-    "GraphQL 연합",
-    "Service Mesh"
+    "모놀리스(Rails)→MSA 전환",
+    "GraphQL Federation 기반 API 통합",
+    "Service Mesh(Istio) + Kubernetes",
+    "이벤트 드리븐(Kafka CDC)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"당근 웹<br/>React + Next.js\"]\n    APP[\"당근 앱<br/>TypeScript\"]\n  end\n  subgraph Gateway\n    GQL[\"GraphQL 연합<br/>Apollo Federation\"]\n    MESH[\"서비스 메시<br/>Istio\"]\n  end\n  subgraph Services\n    LEG[\"레거시 모놀리스<br/>Ruby on Rails\"]\n    FEED[\"피드 서비스<br/>Go\"]\n    CHAT[\"채팅 서비스<br/>Kotlin + Spring Boot\"]\n    LOC[\"위치기반 동네<br/>Go + Rust\"]\n  end\n  subgraph Async\n    KAFKA[\"이벤트 스트림<br/>Apache Kafka\"]\n  end\n  subgraph Data\n    PG[\"트랜잭션 DB<br/>PostgreSQL\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n    REDIS[\"실시간 캐시<br/>Redis\"]\n  end\n  subgraph Infra\n    K8S[\"오케스트레이션<br/>Kubernetes + ArgoCD\"]\n    AWS[\"클라우드<br/>AWS\"]\n  end\n  WEB --> GQL\n  APP --> GQL\n  GQL --> MESH\n  MESH --> LEG\n  MESH --> FEED\n  MESH --> CHAT\n  MESH --> LOC\n  FEED --> KAFKA\n  CHAT --> KAFKA\n  LOC --> ES\n  LEG --> PG\n  FEED --> PG\n  CHAT --> REDIS\n  K8S --> AWS",
-   "why_language": "초기 빠른 출시를 위해 Ruby on Rails로 시작했으나, 트래픽 성장에 따라 성능과 타입 안정성이 필요한 영역을 Go·Kotlin으로 점진 전환하고 있다.",
-   "why_architecture": "거대해진 Rails 모놀리스를 GraphQL 연합과 서비스 메시(Istio)를 활용한 MSA로 쪼개며, 쿠버네티스 기반으로 점진적 마이그레이션을 진행한다.",
-   "summary": "Rails 모놀리스에서 Go/Kotlin MSA로 진화 중인 지역 커뮤니티 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    CDN[\"Edge / CDN<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GQL[\"GraphQL Gateway<br/>Apollo Federation\"]\n    MESH[\"Service Mesh<br/>Istio + Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MONO[\"Legacy Monolith<br/>Ruby on Rails\"]\n    FEED[\"Feed / Region Svc<br/>Go\"]\n    CHAT[\"Chat Svc<br/>Kotlin + WebSocket\"]\n    SEARCH[\"Search Svc<br/>Kotlin/Spring\"]\n    PAY[\"Pay Svc<br/>Kotlin/Spring\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL<br/>RDS Aurora\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    REDIS[\"Cache<br/>Redis\"]\n    DDB[\"Hot Store<br/>DynamoDB\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n    ML[\"Recommend / Rank<br/>Python + Feature Store\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps<br/>ArgoCD\"]\n    OBS[\"Observability<br/>Datadog\"]\n  end\n  APP --> CDN --> GQL\n  WEB --> GQL\n  GQL --> MESH\n  MESH -->|gRPC| FEED\n  MESH -->|gRPC| CHAT\n  MESH -->|gRPC| SEARCH\n  MESH -->|gRPC| PAY\n  MESH --> MONO\n  FEED --> PG\n  FEED --> REDIS\n  CHAT --> DDB\n  SEARCH --> ES\n  PAY --> PG\n  MONO --> PG\n  PG --> CDC --> KAFKA\n  KAFKA --> ES\n  KAFKA --> ML\n  ML --> FEED\n  EKS --- ARGO\n  EKS --- OBS",
+   "why_language": "초기 빠른 제품 검증을 위해 생산성 높은 Ruby on Rails로 시작했고, 트래픽과 조직이 커지면서 동시성·운영 안정성이 중요한 피드/위치 서비스는 Go, 결제·검색·채팅처럼 타입 안정성과 JVM 생태계가 필요한 도메인은 Kotlin/Spring으로 분리했다. 글로벌(Karrot) 확장과 지역 기반 대규모 트래픽을 감당하기 위해 언어를 도메인 특성에 맞게 폴리글랏으로 운용한다.",
+   "why_architecture": "단일 Rails 모놀리스로는 팀 자율성과 배포 독립성, 도메인별 확장이 어려워 MSA로 점진 전환했고, 수십 개 서비스의 API를 클라이언트가 단일 그래프로 소비하도록 GraphQL Federation을 도입했다. 서비스 간 통신·트래픽 제어·관측을 표준화하기 위해 Istio Service Mesh와 EKS를 채택하고, 서비스 간 결합을 줄이기 위해 PostgreSQL CDC(Debezium)→Kafka 이벤트 드리븐으로 검색 색인과 추천 파이프라인을 비동기로 연결한다.",
+   "summary": "Rails 모놀리스에서 Go/Kotlin MSA로 전환하며 GraphQL Federation·Istio·Kafka 이벤트 드리븐으로 지역 기반 대규모 트래픽을 처리하는 폴리글랏 아키텍처",
    "deep_dive": [
     {
      "topic": "Rails 모놀리스에서 Go/Kotlin MSA로",
@@ -14351,6 +14429,22 @@
     {
      "topic": "Service Mesh(Istio)와 Kubernetes 운영",
      "body": "### 서비스가 많아지면 통신이 문제\nMSA로 서비스가 수십~수백 개가 되면 서비스 간 통신의 보안·재시도·관측·트래픽 제어를 각 서비스 코드에 넣기 어렵다. 당근은 `Istio` 서비스 메시로 이를 인프라 계층으로 끌어올린다.\n- 각 파드에 사이드카 프록시(Envoy)가 붙어 모든 트래픽을 가로챈다.\n- **mTLS**로 서비스 간 통신을 자동 암호화·인증.\n- **트래픽 관리**: 재시도·타임아웃·서킷브레이킹·카나리/가중치 라우팅을 선언적으로 설정. 새 버전을 1%→10%→100%로 점진 출시.\n- **관측성**: 모든 호출의 지연·에러·토폴로지를 자동 수집.\n\n### Kubernetes + GitOps\n`Kubernetes`로 컨테이너를 표준 배포하고, `ArgoCD`로 GitOps 배포한다. 배포 명세가 Git에 있어 추적·롤백이 쉽다.\n\n### 왜 메시인가\n다언어(`Go`/`Kotlin`/`Ruby`) 환경에서 통신 신뢰성을 언어별로 구현하면 중복·불일치가 생긴다. 메시는 언어 무관하게 일관된 정책을 강제한다.\n\n### 트레이드오프\n사이드카는 지연·리소스 오버헤드와 운영 복잡도를 더한다. 당근은 서비스 수가 메시의 이득(보안·일관성·점진배포)을 정당화하는 규모라 판단해 채택했다."
+    },
+    {
+     "topic": "PostgreSQL CDC → Kafka 이벤트 드리븐: 모놀리스 디커플링과 검색 색인 동기화",
+     "body": "### 왜 CDC인가\n당근의 MSA 전환에서 가장 까다로운 문제는 **\"여전히 Rails 모놀리스가 쥐고 있는 데이터를 어떻게 신규 서비스들과 공유하느냐\"** 였다. 서비스가 서로의 DB를 직접 읽는 것은 강결합과 장애 전파를 낳기 때문에, 당근은 **데이터베이스를 진실의 원천(source of truth)으로 두되, 변경을 이벤트로 흘려보내는** Change Data Capture 패턴을 채택했다.\n\n### 동작 메커니즘\n- `PostgreSQL`의 WAL(Write-Ahead Log)을 `Debezium` 커넥터가 논리적 복제 슬롯으로 구독한다.\n- 행(row) 단위 INSERT/UPDATE/DELETE가 `Kafka` 토픽에 `before`/`after` 페이로드를 가진 이벤트로 발행된다.\n- 다운스트림 컨슈머들이 각자의 목적에 맞게 이벤트를 소비한다:\n  - **검색 인덱서**: 게시글/사용자 변경 이벤트를 받아 `Elasticsearch` 색인을 갱신 → DB 트랜잭션과 색인을 직접 묶지 않아 쓰기 경로가 가벼워진다.\n  - **추천/피처 파이프라인**: 동일 이벤트 스트림을 ML 피처 생성에 재사용.\n  - **신규 MSA 서비스**: 모놀리스가 가진 도메인 데이터를 폴링 없이 구독해 자기 로컬 뷰(materialized view)를 구성.\n\n### 트레이드오프\n| 장점 | 비용 |\n|------|------|\n| 애플리케이션 코드 수정 없이 변경 전파 | 최종 일관성(eventual consistency) — 색인 반영까지 수백 ms~수 초 지연 |\n| 쓰기 트랜잭션과 색인/이벤트 발행 분리 | 스키마 변경 시 컨슈머 호환성 관리 부담 |\n| 하나의 변경을 다수 컨슈머가 재사용 | 복제 슬롯/오프셋 운영, 순서 보장 토픽 파티셔닝 설계 필요 |\n\n핵심은 **dual write(앱이 DB와 Kafka에 동시에 쓰기) 안티패턴을 피하고**, DB 커밋이 곧 이벤트의 단일 출처가 되도록 만든 점이다. 이로써 \"DB엔 저장됐는데 검색엔 안 보인다\" 같은 정합성 문제를 구조적으로 줄인다."
+    },
+    {
+     "topic": "실시간 채팅 시스템: WebSocket 세션 관리와 핫 스토어 설계",
+     "body": "### 채팅이 당근 도메인에서 갖는 무게\n중고거래의 모든 거래는 **채팅에서 시작**한다. 즉 채팅은 부가기능이 아니라 트랜잭션의 진입점이라 가용성과 지연(latency) 요구가 매우 높다. 검색/피드는 잠깐 느려도 되지만 채팅 메시지 유실·지연은 거래 자체를 막는다.\n\n### 아키텍처 요소\n- **연결 계층**: 모바일/웹 클라이언트가 `WebSocket`으로 상시 연결을 유지한다. 수백만 동시 연결을 다루기 위해 연결을 받는 게이트웨이 노드와 비즈니스 로직을 처리하는 서비스를 분리한다.\n- **세션/팬아웃**: 한 채팅방의 메시지를 참여자들의 활성 연결로 전달해야 하므로, 어떤 사용자가 어느 노드에 붙어 있는지를 추적하는 라우팅이 필요하다. `Redis` Pub/Sub 류로 노드 간 메시지를 팬아웃하고, 연결 상태(presence)를 빠르게 조회한다.\n- **메시지 저장**: 메시지는 \"방 기준 시간순 append + 빠른 최근 N개 조회\"가 지배적인 액세스 패턴이라, 관계형 DB보다 키-값/와이드칼럼 성격의 **핫 스토어**(예: `DynamoDB`)가 적합하다. 파티션 키를 `room_id`, 정렬 키를 타임스탬프/시퀀스로 두면 단일 파티션 안에서 최신 메시지 페이지네이션이 O(1)에 가깝게 동작한다.\n\n### 일관성·신뢰성 장치\n- **at-least-once 전송 + 클라이언트 측 dedup**: 네트워크 재연결 시 같은 메시지가 중복 도착할 수 있어 클라이언트가 메시지 ID로 중복 제거.\n- **읽음 처리/미수신 복구**: 클라이언트가 재접속하면 마지막으로 받은 시퀀스 이후를 서버에서 backfill.\n- 푸시 알림(미접속 사용자용)은 채팅 서비스가 발행한 이벤트를 별도 알림 서비스가 소비해 처리 → 채팅 핫패스에서 알림 발송을 분리."
+    },
+    {
+     "topic": "위치 기반 피드·검색의 랭킹과 캐싱 계층",
+     "body": "### '동네' 라는 1급 제약\n당근의 모든 콘텐츠는 **사용자의 인증된 생활권(동네) 반경** 안에서만 노출된다. 따라서 모든 조회 쿼리는 `(지역 필터) × (개인화 랭킹)` 의 곱으로 표현되며, 글로벌 인기순만 보여주면 되는 일반 커머스와 근본적으로 다르다.\n\n### 쿼리·인덱싱 전략\n- 게시글은 `geo` 정보(동네 ID / geohash / 좌표)를 함께 색인한다. `Elasticsearch`의 geo_distance·geohash grid를 활용해 **반경 필터를 인덱스 레벨에서** 적용 → 후보군을 동네 단위로 좁힌 뒤 랭킹.\n- 랭킹 신호: 거리(가까울수록 가점), 최신성(중고매물은 신선도가 핵심), 카테고리/검색어 적합도, 개인화(관심 카테고리·과거 행동). 이 신호들을 score function으로 합성한다.\n\n### 캐싱 계층 (읽기 폭증 완화)\n중고거래 앱은 **읽기:쓰기 비율이 압도적으로 읽기 우위**다. 동일 동네의 같은 첫 화면을 수많은 사용자가 반복 조회하므로 캐시 적중률이 곧 비용·지연이다.\n- **L1 — 엣지/CDN**: 이미지·정적 자산은 `CloudFront`.\n- **L2 — 애플리케이션 캐시**: `Redis` 에 동네+필터 조합의 피드 페이지, 인기 검색 결과, 카운터(관심/조회수)를 캐싱. 카운터는 즉시 정합성이 필요 없어 비동기 집계로 처리.\n- **L3 — GraphQL 프래그먼트 캐시**: Rails 쪽은 `graphql-ruby-fragment_cache`(당근이 오픈소스로 공개) 로 응답 일부를 재사용해 N+1과 중복 resolve 비용을 줄인다.\n\n### 무효화(invalidation)\n위치 피드는 \"완벽한 최신\"보다 \"빠른 응답 + 곧 따라잡는 정합성\"을 택한다. 새 글/가격변경은 CDC 이벤트로 색인을 갱신하고, 캐시는 짧은 TTL + 이벤트 기반 부분 무효화를 섞어 stale 윈도우를 수 초 내로 제한한다."
+    },
+    {
+     "topic": "배포·운영 표준화: ArgoCD GitOps와 Istio 트래픽 관리",
+     "body": "### 수십 개 서비스를 한 방식으로\nMSA로 쪼개면 서비스 수만큼 배포·롤백·시크릿·트래픽 정책이 늘어난다. 당근은 이를 **GitOps + Service Mesh** 로 표준화해 팀이 인프라 세부보다 도메인에 집중하게 만든다.\n\n### GitOps (ArgoCD)\n- 배포의 **진실의 원천은 Git 리포지토리**다. Kubernetes 매니페스트(또는 Helm/Kustomize)를 Git에 두면 `ArgoCD`가 클러스터 상태를 선언과 지속적으로 동기화(reconcile)한다.\n- 장점: 모든 변경이 PR로 리뷰·감사 가능하고, 롤백은 \"이전 커밋으로 되돌리기\"로 단순화된다. 클러스터 드리프트(누군가 수동 변경)도 자동 감지·교정.\n\n### 트래픽 관리 (Istio + Envoy)\n- 각 파드에 `Envoy` 사이드카가 주입되어 서비스 간 모든 트래픽이 mesh를 통과한다. 여기서 **재시도, 타임아웃, 서킷 브레이킹, mTLS, 트래픽 분할**을 애플리케이션 코드 밖에서 선언적으로 제어한다.\n- **카나리/점진 배포**: Istio의 VirtualService 가중치로 신버전에 1% → 10% → 100% 식으로 트래픽을 점진 이행. 메트릭(에러율·지연)이 악화되면 가중치를 되돌려 빠르게 롤백.\n- **장애 격리**: 한 서비스가 느려지면 서킷 브레이커가 호출을 빠르게 차단(fail fast)해 호출자 스레드 고갈·연쇄 장애를 막는다.\n\n### 관측성\n- mesh가 표준 메트릭/트레이스를 자동 생성하고, `Datadog`로 메트릭·로그·분산 트레이싱을 통합한다. 요청이 GraphQL Gateway → 여러 gRPC 서비스 → DB로 퍼지는 경로를 trace ID로 추적해 병목을 짚는다.\n\n### 트레이드오프\nmesh와 사이드카는 노드당 리소스 오버헤드와 운영 복잡도를 추가한다. 하지만 서비스 수가 많아질수록 \"각 서비스가 재시도/보안/관측을 제각각 구현\"하는 비용보다 표준화 이득이 커지는 임계점을 넘기 때문에 채택한 선택이다."
     }
    ],
    "interview": {
@@ -14517,14 +14611,30 @@
     ]
    },
    "github": {
-    "org": "daangn",
-    "repos": []
+    "org": "https://github.com/daangn",
+    "repos": [
+     {
+      "name": "daangn/stackflow",
+      "url": "https://github.com/daangn/stackflow",
+      "desc": "모바일 스택 기반 화면 전환을 웹/RN에서 선언적으로 구현하는 프론트엔드 프레임워크",
+      "lang": "TypeScript",
+      "stars": 1017
+     },
+     {
+      "name": "daangn/seed-design",
+      "url": "https://github.com/daangn/seed-design",
+      "desc": "당근 제품 전반에 쓰이는 디자인 시스템 및 컴포넌트 라이브러리",
+      "lang": "TypeScript",
+      "stars": 889
+     }
+    ]
    },
    "sources": [
     "https://medium.com/daangn",
-    "https://about.daangn.com/tech"
+    "https://github.com/daangn",
+    "https://team.daangn.com/"
    ],
-   "research_status": "seed",
+   "research_status": "llm-refined",
    "updated_at": "2026-06-17"
   },
   {
