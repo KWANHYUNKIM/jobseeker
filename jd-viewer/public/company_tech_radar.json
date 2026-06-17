@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T09:49:16",
+ "generated_at": "2026-06-17T11:23:08",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 85,
+ "refined": 87,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -474,11 +474,11 @@
      "count": 8
     },
     {
-     "name": "Ruby",
-     "count": 4
+     "name": "Scala",
+     "count": 5
     },
     {
-     "name": "Scala",
+     "name": "Ruby",
      "count": 4
     }
    ],
@@ -490,7 +490,7 @@
      },
      {
       "name": "gRPC",
-      "count": 10
+      "count": 11
      },
      {
       "name": "Ruby on Rails",
@@ -532,7 +532,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 13
+      "count": 14
      },
      {
       "name": "Next.js",
@@ -543,12 +543,12 @@
       "count": 6
      },
      {
-      "name": "Vue.js",
+      "name": "Redux",
       "count": 3
      },
      {
-      "name": "Redux",
-      "count": 2
+      "name": "Vue.js",
+      "count": 3
      },
      {
       "name": "Webpack",
@@ -589,12 +589,16 @@
       "count": 5
      },
      {
+      "name": "Spark",
+      "count": 5
+     },
+     {
       "name": "MongoDB",
       "count": 4
      },
      {
-      "name": "Spark",
-      "count": 4
+      "name": "Aerospike",
+      "count": 3
      },
      {
       "name": "Aurora",
@@ -602,10 +606,6 @@
      },
      {
       "name": "DynamoDB",
-      "count": 3
-     },
-     {
-      "name": "HBase",
       "count": 3
      }
     ],
@@ -639,16 +639,16 @@
       "count": 4
      },
      {
-      "name": "Prometheus",
+      "name": "Istio",
       "count": 4
      },
      {
-      "name": "Docker",
-      "count": 3
+      "name": "Jenkins",
+      "count": 4
      },
      {
-      "name": "GCP",
-      "count": 3
+      "name": "Prometheus",
+      "count": 4
      }
     ]
    },
@@ -2670,6 +2670,10 @@
      "count": 2
     },
     {
+     "name": "Scala",
+     "count": 2
+    },
+    {
      "name": "TypeScript",
      "count": 2
     },
@@ -2680,10 +2684,6 @@
     {
      "name": "PHP",
      "count": 1
-    },
-    {
-     "name": "Ruby",
-     "count": 1
     }
    ],
    "stack": {
@@ -2691,6 +2691,10 @@
      {
       "name": "Spring Boot",
       "count": 4
+     },
+     {
+      "name": "Akka",
+      "count": 2
      },
      {
       "name": "Go",
@@ -2701,8 +2705,8 @@
       "count": 2
      },
      {
-      "name": "Akka",
-      "count": 1
+      "name": "Node.js",
+      "count": 2
      },
      {
       "name": "Django",
@@ -2717,7 +2721,7 @@
       "count": 1
      },
      {
-      "name": "Node.js",
+      "name": "Java",
       "count": 1
      },
      {
@@ -2731,15 +2735,15 @@
       "count": 4
      },
      {
+      "name": "TypeScript",
+      "count": 3
+     },
+     {
       "name": "Next.js",
       "count": 2
      },
      {
       "name": "React Native",
-      "count": 2
-     },
-     {
-      "name": "TypeScript",
       "count": 2
      },
      {
@@ -2765,10 +2769,6 @@
       "count": 3
      },
      {
-      "name": "Druid",
-      "count": 2
-     },
-     {
       "name": "Spark",
       "count": 2
      },
@@ -2781,15 +2781,19 @@
       "count": 1
      },
      {
+      "name": "Apache Druid",
+      "count": 1
+     },
+     {
+      "name": "Apache Flink",
+      "count": 1
+     },
+     {
+      "name": "Apache Spark",
+      "count": 1
+     },
+     {
       "name": "Cassandra",
-      "count": 1
-     },
-     {
-      "name": "HBase",
-      "count": 1
-     },
-     {
-      "name": "MySQL/Aurora",
       "count": 1
      }
     ],
@@ -2804,7 +2808,7 @@
      },
      {
       "name": "Terraform",
-      "count": 2
+      "count": 3
      },
      {
       "name": "ArgoCD",
@@ -2823,24 +2827,20 @@
       "count": 1
      },
      {
+      "name": "Envoy",
+      "count": 1
+     },
+     {
       "name": "GCP",
       "count": 1
      },
      {
       "name": "GitHub Actions/ArgoCD",
       "count": 1
-     },
-     {
-      "name": "Multi-CDN",
-      "count": 1
      }
     ]
    },
    "architecture": [
-    {
-     "name": "Microservices",
-     "count": 2
-    },
     {
      "name": "Big data pipeline",
      "count": 1
@@ -2850,7 +2850,11 @@
      "count": 1
     },
     {
-     "name": "Edge/CDN streaming",
+     "name": "Edge/Multi-CDN streaming",
+     "count": 1
+    },
+    {
+     "name": "Event-driven + real-time OLAP",
      "count": 1
     },
     {
@@ -2858,7 +2862,7 @@
      "count": 1
     },
     {
-     "name": "Massive autoscaling",
+     "name": "Massive predictive autoscaling",
      "count": 1
     }
    ]
@@ -16849,42 +16853,53 @@
    "languages": [
     "Java",
     "Go",
+    "JavaScript",
     "Python",
-    "JavaScript"
+    "Scala"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Go",
-     "Node.js"
+     "Node.js BFF",
+     "Vertx",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "React Native",
-     "Next.js"
+     "Next.js",
+     "Redux",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "HBase",
      "Elasticsearch",
      "MySQL",
-     "Redis"
+     "Redis",
+     "Aerospike",
+     "Spark"
     ],
     "infra": [
      "Kubernetes",
-     "사내 데이터센터",
-     "GCP"
+     "사내 데이터센터(on-prem)",
+     "GCP",
+     "Istio",
+     "Jenkins",
+     "Prometheus/Grafana"
     ]
    },
    "architecture": [
     "Microservices",
     "Event-driven",
-    "BFF"
+    "BFF (Backend-for-Frontend)",
+    "CQRS/Read-replica"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Fashion App<br/>React Native\"]\n    WEB[\"Storefront<br/>Next.js\"]\n  end\n  subgraph Edge\n    BFF[\"BFF Layer<br/>Node.js\"]\n    GW[\"API Gateway<br/>Own DC\"]\n  end\n  subgraph Services\n    CAT[\"Catalog Service<br/>Java + Spring Boot\"]\n    ORD[\"Order Service<br/>Java\"]\n    INV[\"Inventory<br/>Go\"]\n    REC[\"Recommendation<br/>Go\"]\n  end\n  subgraph Data\n    HBASE[\"HBase<br/>Catalog Store\"]\n    MYSQL[\"MySQL<br/>Orders\"]\n    REDIS[\"Redis<br/>Cache\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Bus\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>Own DC + GCP\"]\n  end\n  APP --> BFF\n  WEB --> BFF\n  BFF --> GW\n  GW --> CAT\n  GW --> ORD\n  GW --> REC\n  CAT --> HBASE\n  CAT --> ES\n  ORD --> INV\n  ORD --> MYSQL\n  REC --> REDIS\n  ORD -->|events| KAFKA\n  INV -->|events| KAFKA\n  KAFKA --> INV\n  ORD --> K8S",
-   "why_language": "패션 카탈로그·검색·추천을 대규모로 운영하고 EORS 같은 세일 이벤트 트래픽을 견뎌야 하므로 JVM 코어에 Go를 더해 처리량을 확보한다. 추천·스타일 ML은 Python으로 서빙한다.",
-   "why_architecture": "Flipkart 그룹사로 카탈로그·검색·체크아웃 도메인을 독립 배포하는 마이크로서비스를 채택하고, 모바일 중심 UX를 위해 BFF 패턴으로 앱별 응답을 조립한다.",
-   "summary": "JVM+Go 마이크로서비스와 BFF로 패션 커머스 세일을 견디는 이커머스.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native\"]\n    WEB[\"Web<br/>React + Next.js\"]\n    CDN[\"CDN / Edge<br/>Akamai + Fastly\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"API Gateway<br/>NGINX + Istio Ingress\"]\n    BFF[\"BFF Layer<br/>Node.js\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CAT[\"Catalog / PDP<br/>Spring Boot\"]\n    SRCH[\"Search + Ranking<br/>Go + Elasticsearch\"]\n    REC[\"Recommendation<br/>Python/Spark ML\"]\n    CART[\"Cart + Checkout<br/>Spring Boot\"]\n    ORD[\"Order / OMS<br/>Java\"]\n    PROMO[\"Pricing + Promo<br/>Go\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Stream/Batch<br/>Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Transactional<br/>MySQL\"]\n    HBASE[\"Catalog / Wide<br/>HBase\"]\n    REDIS[\"Cache<br/>Redis + Aerospike\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> CDN --> GW\n  WEB --> CDN\n  GW --> BFF\n  BFF -->|REST/gRPC| CAT\n  BFF --> SRCH\n  BFF --> REC\n  BFF --> CART\n  CART --> ORD\n  CART --> PROMO\n  CAT --> HBASE\n  CAT --> REDIS\n  SRCH --> ES\n  ORD --> MYSQL\n  ORD -->|publish| KAFKA\n  PROMO --> REDIS\n  KAFKA --> SPARK\n  SPARK --> ES\n  SPARK --> REC\n  Core --> K8S\n  Core --> OBS",
+   "why_language": "초당 수십만 요청을 견뎌야 하는 카탈로그·주문·결제 핵심 도메인은 성숙한 JVM 생태계와 Spring Boot의 안정성·라이브러리 풍부함 때문에 Java가 중심이다. 반면 검색·프로모션·게이트웨이처럼 지연시간과 동시성이 극도로 중요한 경로는 가벼운 goroutine 동시성 모델을 가진 Go로 분리했고, BFF와 프론트는 단일 언어로 풀스택을 묶을 수 있는 JavaScript/TypeScript, 추천·랭킹 ML 파이프라인은 Python/Spark를 쓴다.",
+   "why_architecture": "패션 이커머스 특성상 EORS 같은 대형 세일 때 평시 대비 수십 배 트래픽이 특정 도메인(카트·결제·재고)에만 집중되므로, 도메인별로 독립 확장·배포가 가능한 Microservices가 필수였다. 다양한 클라이언트(앱·웹·태블릿)가 각자 다른 데이터 조합을 요구하기 때문에 BFF로 클라이언트별 응답을 조립하고, 주문·재고·결제 상태 전파는 강결합 대신 Kafka 기반 Event-driven으로 비동기 분리해 한 서비스 장애가 전체로 번지지 않게 했다.",
+   "summary": "JVM 코어 + Go 핫패스 폴리글랏 MSA를, Kafka 이벤트 버스와 BFF로 묶어 세일 폭주를 버티는 패션 커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "패션 세일 폭주(EORS)와 트래픽 설계",
@@ -16897,16 +16912,39 @@
     {
      "topic": "검색·추천과 HBase/Elasticsearch",
      "body": "### 패션 디스커버리\n패션은 *발견(discovery)*이 구매를 좌우한다 -- 검색, 필터(사이즈·색상·브랜드·가격), 개인화 추천, 비주얼 탐색.\n\n- **`Elasticsearch`**: 상품 검색·다차원 패싯 필터. 패션은 속성이 많아(브랜드/소재/핏/색) 패싯 검색이 핵심.\n- **`HBase`**: 카탈로그·사용자 행동·추천 피처 같은 *대용량 와이드컬럼*. 행 키 설계로 사용자별/상품별 조회 최적화.\n- **`Kafka`**: 행동 이벤트(클릭·뷰·장바구니)를 수집해 추천 모델·실시간 개인화로 흘림.\n\n### 일관성\n검색 인덱스 반영은 *최종 일관성*으로 충분(상품 추가가 몇 초 늦어도 무방). 비싼 강한 일관성은 재고·결제에만 쓴다.\n\n### 왜 이 분담인가\n검색(역색인)과 카탈로그 저장(와이드컬럼)과 트랜잭션(MySQL)은 *근본적으로 다른 자료구조*를 요구한다. 하나로 다 하면 다 못한다. 각 워크로드를 *전용 엔진*에 맡기고 Kafka로 데이터를 흘려 동기화하는 것이 디스커버리 품질과 확장성을 동시에 잡는 길이다."
+    },
+    {
+     "topic": "주문 흐름의 비동기 이벤트 처리와 분산 스케줄링 (roadrunner / goscheduler)",
+     "body": "### 왜 '지연 작업'이 패션 커머스의 핵심인가\n\nMyntra의 주문 라이프사이클에는 즉시 처리하면 안 되는 작업이 가득하다. 예: 결제 미완료 카트의 **30분 후 재고 해제**, **N시간 후 미결제 주문 자동 취소**, 세일 종료 시점의 **가격 롤백**, 배송 SLA 초과 시 **알림 발송**, 쿠폰 만료 처리 등. 이런 '미래의 특정 시각에 정확히 한 번' 실행되어야 하는 작업을 단순 cron이나 DB 폴링으로 처리하면 정확도와 확장성이 무너진다.\n\n### roadrunner — Go 기반 delayed queue\n\nMyntra가 오픈소스로 공개한 `roadrunner`는 **지연 메시지 큐**다. 메시지에 `delay`를 부여해 enqueue 하면 그 시점이 될 때까지 컨슈머에게 노출되지 않는다. 내부적으로는 시간 버킷(time-bucket) 단위로 메시지를 인덱싱하고, 워커가 현재 시각에 해당하는 버킷만 스캔해 전체 큐를 폴링하지 않도록 설계했다. 이렇게 하면 수백만 건의 미래 작업이 쌓여 있어도 활성 작업만 O(버킷) 비용으로 꺼낼 수 있다.\n\n### goscheduler — 카산드라 백엔드 분산 스케줄러\n\n더 큰 규모의 스케줄링은 `goscheduler`(Myntra Cron)가 담당한다. 핵심 설계:\n\n- **샤딩**: 스케줄을 시간 + 앱(App) 기준으로 파티셔닝해 특정 시각에 수백만 개 작업이 몰려도(예: 세일 시작 0시 정각) 여러 노드가 분산 처리한다.\n- **Cassandra 저장**: 스케줄 메타데이터를 Cassandra에 저장해 수평 확장과 고가용성을 확보. 단일 RDBMS의 폴링 병목을 피한다.\n- **At-least-once 보장 + 콜백**: 트리거 시 HTTP 콜백으로 해당 마이크로서비스를 호출하는 모델이라, 스케줄러 자체는 비즈니스 로직을 모르고 '시각이 됐다'는 신호만 신뢰성 있게 전달한다.\n\n### 트레이드오프\n\n정확한 1회 실행보다 **at-least-once + 멱등 컨슈머**를 택했다. 즉 동일 작업이 중복 트리거될 수 있음을 전제로, 주문 취소·재고 해제 핸들러를 멱등(idempotent)하게 구현한다. 분산 환경에서 exactly-once를 보장하는 비용보다 컨슈머 멱등성이 훨씬 싸고 견고하기 때문이다."
+    },
+    {
+     "topic": "다계층 캐싱 전략과 Redis/Aerospike 역할 분담",
+     "body": "### 패션 PDP(상품 상세)는 읽기 폭주, 쓰기 희소\n\n상품 상세(PDP), 가격, 재고 가용성, 추천 슬롯은 **읽기 대 쓰기 비율이 수천:1**에 달한다. EORS 세일 중 인기 상품 하나의 PDP가 초당 수만 조회를 받는 일이 흔하다. 그래서 Myntra는 origin 서비스에 트래픽이 직접 닿지 않도록 여러 캐시 계층을 쌓는다.\n\n### 계층 구조\n\n| 계층 | 기술 | 캐싱 대상 | TTL 성격 |\n|------|------|-----------|----------|\n| Edge/CDN | Akamai/Fastly | 정적 이미지, 일부 PDP HTML/JSON | 길게(분~시간) |\n| BFF 캐시 | Node.js in-memory + Redis | 클라이언트별 조립 응답 | 짧게(초~분) |\n| 서비스 캐시 | Redis | 카탈로그/가격 read-through | 초~분 |\n| 초저지연 KV | Aerospike | 세션, 개인화 피처, 카운터 | 매우 짧거나 영속 |\n| Origin | HBase/MySQL | 진실의 원천(SoT) | - |\n\n### Redis vs Aerospike를 나눠 쓰는 이유\n\n`Redis`는 풍부한 자료구조(sorted set으로 랭킹, hash로 객체 캐시)와 운영 편의성 때문에 일반 read-through 캐시와 카운터에 쓴다. 반면 `Aerospike`는 **SSD를 1차 저장소로 쓰면서도 sub-millisecond 지연**과 페타바이트급 수평 확장을 제공해, 개인화 피처 스토어·세션·실시간 카운터처럼 데이터셋이 RAM에 다 안 들어가지만 지연은 극도로 낮아야 하는 영역에 배치한다.\n\n### 캐시 무효화 — 이벤트 기반 invalidation\n\n가격/재고가 바뀌면 해당 서비스가 Kafka에 변경 이벤트를 publish하고, 캐시 무효화 컨슈머가 이를 받아 Redis 키를 만료시킨다. TTL만 의존하면 세일 중 가격 변경이 수십 초 지연되어 'PDP 가격 ≠ 결제 가격' 불일치가 생기므로, **이벤트 기반 능동 무효화 + 안전망 TTL**을 함께 쓴다. 결제 직전에는 캐시를 믿지 않고 가격·재고를 origin에서 재검증(read-after-write)하는 이중화로 오버셀링을 막는다."
+    },
+    {
+     "topic": "관측성과 카오스 — 세일 트래픽을 견디는 복원력 엔지니어링",
+     "body": "### 평시의 50배가 한 시각에 몰리는 문제\n\nEORS는 자정 또는 특정 시각에 트래픽이 계단처럼 수직 상승한다. 이때 오토스케일러가 반응하기를 기다리면 이미 늦으므로, Myntra는 세일 전 **사전 프로비저닝(pre-scaling)** + 부하 시험으로 캐파를 미리 확보하고, 런타임 복원력 패턴을 겹겹이 둔다.\n\n### 복원력 패턴\n\n- **Circuit Breaker**: 추천·리뷰·위시리스트 같은 비핵심 의존 서비스가 느려지면 회로를 열어 빠르게 실패(fast-fail)하고, PDP는 추천 슬롯을 비운 채라도 렌더링한다. 비핵심 때문에 핵심(구매 동선)이 막히지 않게 한다.\n- **Graceful degradation**: 개인화 추천이 죽으면 인기순/규칙기반 fallback으로 대체. 사용자는 '약간 덜 개인화된' 화면을 볼 뿐 에러를 보지 않는다.\n- **Rate limiting / load shedding**: 게이트웨이(NGINX/Istio)에서 봇·과도 요청을 흘려보내고(shed), 핵심 결제 경로에 자원을 우선 배분한다.\n- **Bulkhead**: 서비스별/테넌트별 스레드풀·커넥션풀 격리로 한 다운스트림의 지연이 전체 워커를 잠식하지 못하게 한다.\n\n### 관측성 스택\n\n메트릭은 `Prometheus`로 수집해 `Grafana`로 시각화하고, 분산 트레이싱으로 BFF→코어 서비스→DB까지의 요청 경로 지연을 추적한다. 세일 중에는 **비즈니스 메트릭(분당 주문수, 결제 성공률, 카트 전환율)** 을 시스템 메트릭과 나란히 보는 워룸 대시보드를 운영해, CPU가 멀쩡해도 '결제 성공률이 떨어지는' 신호를 조기에 잡는다.\n\n### 트레이드오프 — 일관성보다 가용성\n\n세일 피크에서 Myntra는 종종 **strong consistency보다 availability를 택한다**. 예컨대 위시리스트 동기화나 추천 갱신은 약간 늦어도 되지만, 사용자가 화면을 보고 장바구니에 담는 동선은 절대 끊기면 안 된다. 대신 돈이 오가는 결제·재고 차감 경로만 강한 일관성과 멱등 처리로 엄격히 보호하는 **'경로별 차등 일관성'** 전략을 쓴다."
     }
    ],
    "github": {
-    "org": "https://github.com/myntra"
+    "org": "https://github.com/myntra",
+    "repos": [
+     {
+      "name": "myntra/goscheduler",
+      "url": "https://github.com/myntra/goscheduler",
+      "desc": "대규모 분산 작업 스케줄러(Myntra Cron) — 카산드라 기반 확장형 스케줄링",
+      "lang": "Go",
+      "stars": 16
+     }
+    ]
    },
    "sources": [
-    "https://medium.com/myntra-engineering"
+    "https://medium.com/myntra-engineering",
+    "https://github.com/myntra",
+    "https://github.com/myntra/goscheduler"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "hotstar",
@@ -16916,41 +16954,54 @@
    "languages": [
     "Go",
     "Java",
+    "Scala",
     "Python",
     "JavaScript"
    ],
    "stack": {
     "backend": [
      "Go",
+     "Java",
      "Spring Boot",
-     "gRPC"
+     "gRPC",
+     "Akka",
+     "Node.js"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "Redis",
      "Cassandra",
-     "Druid",
-     "Elasticsearch"
+     "Apache Druid",
+     "Elasticsearch",
+     "Apache Spark",
+     "Apache Flink",
+     "Snowflake"
     ],
     "infra": [
      "Kubernetes",
      "AWS",
-     "Multi-CDN"
+     "Multi-CDN",
+     "Terraform",
+     "Spinnaker",
+     "Prometheus",
+     "Envoy"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Massive autoscaling",
-    "Edge/CDN streaming"
+    "Microservices on Kubernetes",
+    "Massive predictive autoscaling",
+    "Edge/Multi-CDN streaming",
+    "Event-driven (Kafka) + real-time OLAP (Druid)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Streaming App<br/>React Native\"]\n    WEB[\"Web Player<br/>React\"]\n  end\n  subgraph Edge\n    CDN[\"Multi-CDN<br/>Adaptive Bitrate\"]\n    GW[\"API Gateway<br/>Go\"]\n  end\n  subgraph Services\n    PLAY[\"Playback Service<br/>Go\"]\n    LIVE[\"Live Cricket Service<br/>Go\"]\n    PROF[\"Profile Service<br/>Java + Spring Boot\"]\n    CONC[\"Concurrency Control<br/>Go\"]\n  end\n  subgraph Data\n    CASS[\"Cassandra<br/>Watch State\"]\n    REDIS[\"Redis<br/>Session Cache\"]\n    DRUID[\"Druid<br/>Real-time Analytics\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Firehose\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>Aggressive Autoscaling AWS\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  APP --> GW\n  GW --> PLAY\n  GW --> LIVE\n  GW --> PROF\n  LIVE --> CONC\n  CONC --> REDIS\n  PLAY --> CDN\n  PROF --> CASS\n  PROF --> ES\n  LIVE -->|events| KAFKA\n  PLAY -->|events| KAFKA\n  KAFKA --> DRUID\n  KAFKA --> K8S",
-   "why_language": "크리켓 생중계 때 5천만 명 이상이 동시에 접속하는 세계 최대급 동시 스트리밍을 버텨야 해 가벼운 동시성과 빠른 스케일아웃에 유리한 Go를 핵심 서비스에 적극 채택했다.",
-   "why_architecture": "경기 중 광고 브레이크 직후 수백만 명이 동시에 재접속하는 극단적 동시성 스파이크를 다루기 위해 적극적 오토스케일링·트래픽 셰이핑·멀티 CDN을 설계의 중심에 둔다.",
-   "summary": "Go 마이크로서비스와 공격적 오토스케일링으로 수천만 동시 스트리밍을 견디는 OTT.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile / TV / Web<br/>React Native + React\"]\n    CDN[\"Multi-CDN<br/>Akamai + CloudFront + Edge\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    LB[\"Edge LB<br/>AWS ALB + Envoy\"]\n    GW[\"API Gateway<br/>Go + gRPC\"]\n    PANIC[\"Panic Mode Controller<br/>Go feature flags\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PLAY[\"Playback Service<br/>Go\"]\n    PERS[\"Personalization<br/>Java + Spring Boot\"]\n    SUB[\"Subscription / Identity<br/>Java\"]\n    NOTIF[\"Notification Fanout<br/>Go + Akka\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Proc<br/>Spark + Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    REDIS[\"Cache<br/>Redis\"]\n    CASS[\"OLTP Store<br/>Cassandra\"]\n    DRUID[\"Real-time OLAP<br/>Apache Druid\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    SCALE[\"Predictive Autoscaler<br/>Custom + HPA\"]\n  end\n  APP -->|video| CDN\n  APP -->|API| LB\n  LB --> GW\n  GW --> PANIC\n  GW -->|gRPC| PLAY\n  GW -->|gRPC| PERS\n  GW -->|gRPC| SUB\n  PLAY --> REDIS\n  PLAY --> CDN\n  PERS --> CASS\n  PERS --> ES\n  SUB --> CASS\n  NOTIF --> KAFKA\n  GW -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> SNOW\n  DRUID --> SCALE\n  SCALE --> K8S\n  K8S --> PLAY\n  K8S --> PERS",
+   "why_language": "초당 수백만 건의 요청을 처리하는 재생·게이트웨이 핫패스는 낮은 메모리 풋프린트와 가벼운 goroutine 동시성이 필요해 Go를 채택했고, 구독·결제·개인화 같은 풍부한 도메인 로직과 성숙한 생태계가 필요한 영역은 Java/Spring Boot를 쓴다. 대규모 스트림·배치 데이터 처리는 Scala(Spark/Flink)와 Python을, 크로스플랫폼 UI는 React/React Native로 단일 코드베이스를 유지한다.",
+   "why_architecture": "크리켓 라이브처럼 평소의 수십 배로 순식간에 치솟는 동시접속(수천만)을 감당하려면 컴포넌트별로 독립 확장 가능한 마이크로서비스와, 트래픽을 미리 예측해 노드를 선제적으로 띄우는 공격적 오토스케일링이 필수다. 장애 시 전체 다운 대신 비핵심 기능을 끄고 재생만 살리는 Panic Mode와 우아한 성능 저하(graceful degradation)를 설계에 내장했으며, Druid 기반 실시간 분석으로 스케일·CDN 전환을 초 단위로 결정한다.",
+   "summary": "크리켓발 수천만 동시접속을 Go 핫패스 + 예측 오토스케일링 + Panic Mode로 버티는 이벤트 드리븐 스트리밍 플랫폼",
    "deep_dive": [
     {
      "topic": "크리켓 동시접속 수천만: 트래픽의 본질",
@@ -16971,16 +17022,35 @@
     {
      "topic": "관측성과 실시간 의사결정(Druid)",
      "body": "### 수천만 사용자를 어떻게 보나\n스파이크 중에는 *지금 무슨 일이 일어나는지*를 초 단위로 알아야 panic mode·스케일 결정을 내릴 수 있다.\n\n- **`Druid`**: 재생 이벤트·QoE 지표를 실시간 인제스트해 *세그먼트별·CDN별·디바이스별*로 sub-second 집계 쿼리를 제공한다. 운영자가 \"특정 ISP에서 버퍼링 급증\"을 즉시 본다.\n- **`Kafka`**: 클라이언트 텔레메트리를 대량 수집하는 버스. 스파이크 시 초당 수백만 이벤트를 버퍼링한다.\n\n### 의사결정 루프\n관측 -> 이상 탐지 -> 자동 대응(스케일/panic/CDN 전환)이 *사람보다 빠르게* 닫혀야 한다. 그래서 대시보드뿐 아니라 **자동화된 컨트롤 루프**에 지표를 직접 먹인다. 라이브 OTT의 운영은 사후 분석이 아니라 *실시간 폐루프 제어*에 가깝다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: 한 번의 '재생' 뒤에서 일어나는 일",
+     "body": "### 재생 요청의 생애주기\n\nDisney+ Hotstar에서 사용자가 라이브 크리켓 스트림의 재생 버튼을 누르는 순간, 요청은 다음 경로를 거친다. 핵심 설계 원칙은 **'영상 비트는 절대 오리진/서비스 계층을 거치지 않는다'** 와 **'제어 평면(control plane)과 데이터 평면(data plane)의 철저한 분리'** 다.\n\n```\nClient → Edge LB(ALB/Envoy) → API Gateway(Go) → Playback Service(Go) → Redis(토큰/매니페스트 캐시)\n                                                              ↘ CDN 선택 로직 → 매니페스트 URL 반환\nClient ← (signed manifest + CDN host) ← \nClient → Multi-CDN(Akamai/CloudFront/...) → 실제 video segment(HLS/DASH chunk)\n```\n\n### 단계별 동작\n\n- **1) 엣지 진입**: 클라이언트는 먼저 가장 가까운 AWS 리전의 엣지 로드밸런서로 붙는다. 여기서 L7 라우팅과 1차 rate-limiting이 일어난다. Envoy 사이드카가 서비스 메시 차원의 헬스/서킷브레이킹을 담당한다.\n- **2) API Gateway(Go)**: 인증 토큰 검증, 요금제(entitlement) 확인, A/B 플래그 주입을 한다. 이 계층은 **stateless** 하게 유지되어 수평 확장이 자유롭다. 트래픽 폭증 시 가장 먼저 스케일아웃되는 지점이다.\n- **3) Playback Service**: 핵심은 영상 자체를 서빙하는 게 아니라 **'어떤 CDN에서, 어떤 비트레이트 래더로, 어떤 서명된 URL로 받을지'를 결정하는 매니페스트 브로커** 라는 점이다. 영상 청크는 서비스 계층을 절대 통과하지 않는다 — 이것이 수천만 동접에서도 백엔드가 견디는 비결이다.\n- **4) CDN 결정**: Playback Service는 실시간 CDN 품질 점수(아래 별도 토픽)와 사용자의 ISP/지역을 보고 최적 CDN을 골라 서명된 매니페스트를 돌려준다.\n- **5) 실제 스트리밍**: 이후 클라이언트는 선택된 CDN과 직접 통신하며 HLS/DASH 세그먼트를 받는다. ABR(적응형 비트레이트) 로직이 클라이언트에서 네트워크 상태에 맞춰 화질을 조정한다.\n\n### 왜 이렇게 했나\n\n핵심 트레이드오프는 **'백엔드를 영상 트래픽에서 완전히 격리'** 하는 것이다. 매니페스트 요청(수 KB)은 폭증해도 감당 가능하지만, 영상 비트(Gbps~Tbps 규모)를 서비스가 직접 다루면 어떤 오토스케일링으로도 못 버틴다. 그래서 제어 평면(가볍고 폭증, K8s에서 탄력 확장)과 데이터 평면(무겁지만 CDN이 흡수)을 분리하는 것이 전체 아키텍처의 제1원칙이 된다."
+    },
+    {
+     "topic": "예측 기반 오토스케일링: 반응형으로는 못 버티는 이유와 사전 워밍",
+     "body": "### 반응형 오토스케일링의 한계\n\n일반적인 HPA(Horizontal Pod Autoscaler)는 CPU/메모리가 임계치를 넘으면 파드를 늘리는 **반응형(reactive)** 방식이다. 하지만 크리켓 경기에서 위켓이 떨어지거나 토스가 시작되는 순간, 트래픽은 **수십 초 만에 수 배로 점프** 한다. EC2 인스턴스를 새로 띄우고 부팅·이미지 풀·워밍업까지 하면 수 분이 걸리는데, 그 사이 사용자는 이미 버퍼링과 에러를 겪는다. 반응형은 본질적으로 너무 느리다.\n\n### Hotstar의 접근: 예측 + 사전 확보\n\n- **트래픽 예측 모델**: 과거 경기 데이터(팀 인기도, 시간대, 토너먼트 단계, 마케팅 푸시 일정)를 학습해 분 단위로 예상 동접을 추정한다. 빅매치(인도 vs 파키스탄 같은)는 평상시의 수십 배를 미리 가정한다.\n- **사전 워밍(pre-warming)**: 경기 시작 전에 미리 노드 풀과 파드를 **선제적으로 띄워 둔다**. AWS에 capacity reservation을 걸어 인스턴스 가용성 자체를 확보하는 것까지 포함된다 — 폭증 순간에 'AWS에 인스턴스가 없어서' 못 띄우는 상황을 방지하기 위함이다.\n- **계단식 확장(step scaling)**: 1개씩 늘리는 게 아니라 한 번에 수백~수천 파드를 블록 단위로 확장한다.\n\n### 스케일링의 두 축\n\n| 계층 | 확장 단위 | 속도 요구 |\n|------|-----------|-----------|\n| 파드(K8s) | HPA + 커스텀 메트릭(동접 기반) | 초 단위 |\n| 노드(EC2) | Cluster Autoscaler + 사전 예약 | 분 단위(그래서 사전 확보 필수) |\n\n### 비용 트레이드오프\n\n사전 워밍은 **'쓰지 않을 수도 있는 용량에 미리 돈을 쓰는'** 결정이다. 하지만 라이브 스포츠에서 단 몇 초의 장애는 수백만 사용자 이탈과 브랜드 손상으로 이어지므로, Hotstar는 **'과잉 프로비저닝 비용 < 장애 비용'** 이라고 명확히 판단했다. 경기가 끝나면 빠르게 스케일인해 비용을 회수한다. 이 예측-확장 루프의 입력 신호 중 상당수가 Druid 실시간 분석에서 나온다는 점이 관측성과 스케일링을 직결시킨 핵심 설계다."
+    },
+    {
+     "topic": "대규모 알림 팬아웃: 위켓이 떨어지면 수천만 명에게 동시에 푸시",
+     "body": "### 문제의 규모\n\n크리켓에서 위켓·6점·경기 종료 같은 이벤트가 발생하면, Hotstar는 **수천만 명에게 거의 동시에 push notification** 을 보내야 한다. 단순히 'for 루프로 디바이스 토큰을 돌며 FCM/APNs 호출'하는 방식은 이 규모에서 완전히 무너진다. 직렬 처리로는 마지막 사용자가 알림을 받을 때쯤 이미 다음 위켓이 나온다.\n\n### 팬아웃 아키텍처\n\n```\nGame Event → Kafka(event topic) → Notification Service(Go/Akka)\n   → 사용자 세그먼트 조회(어떤 경기 구독자?)\n   → 샤딩된 배치로 분할 → 워커 풀이 병렬로 FCM/APNs 호출\n   → rate-limit & retry & dedup\n```\n\n- **이벤트 소싱**: 경기 이벤트는 Kafka 토픽으로 들어온다. 알림 서비스는 컨슈머로서 이를 받아 처리한다 — 동기 호출이 아니라 비동기 이벤트 기반이라 발신측과 수신측이 디커플된다.\n- **세그먼트 타깃팅**: '이 경기를 보고 있거나 구독한 사용자'를 빠르게 추려야 한다. 이를 위해 사용자-경기 관심 매핑을 Redis/Cassandra에 미리 인덱싱해 둔다.\n- **병렬 워커 풀**: 대상 사용자를 수천 개의 샤드로 쪼개 워커들이 동시에 푸시 게이트웨이(FCM/APNs)를 친다. Go의 goroutine 또는 Akka actor 모델이 이 대규모 동시성을 가볍게 표현하는 데 적합하다.\n- **백프레셔와 rate-limit**: FCM/APNs 자체에 throughput 한계가 있어, 다운스트림이 받을 수 있는 속도로 조절(throttle)하며 보낸다. 실패는 재시도 큐로, 중복은 dedup 키로 거른다.\n\n### 핵심 트레이드오프: '동시성' vs '정확한 타이밍'\n\n알림은 **신선도(freshness)** 가 생명이다. 위켓이 떨어지고 30초 뒤 오는 알림은 이미 사용자가 다 아는 정보다(소셜·TV로 먼저 본다). 그래서 '모두에게 보내는 것'보다 '빨리 보내는 것'을 우선하며, 일부 디바이스 토큰 실패는 best-effort로 허용한다. 정확성(at-least-once 보장)보다 지연 최소화를 택한 의도적 결정이다."
+    },
+    {
+     "topic": "Multi-CDN 실시간 품질 라우팅과 graceful degradation의 결합",
+     "body": "### 단일 CDN으로는 안 되는 이유\n\n수천만 동접의 라이브 영상은 단일 CDN의 capacity와 가용성을 초과한다. 특정 CDN이 특정 ISP/지역에서 갑자기 품질이 떨어지거나(인도의 다양한 통신사 환경), 용량 한계에 도달할 수 있다. Hotstar는 **여러 CDN(Akamai, CloudFront 등)을 동시에 운용** 하고 실시간으로 트래픽을 분배한다.\n\n### 실시간 CDN 품질 점수\n\n- **클라이언트 텔레메트리**: 각 플레이어는 버퍼링 비율, 시작 지연(startup time), 비트레이트 하락, 에러율 같은 QoE(Quality of Experience) 지표를 지속적으로 백엔드로 보고한다.\n- **실시간 집계(Druid)**: 이 텔레메트리가 Kafka를 거쳐 Apache Druid에 들어가 **CDN×지역×ISP 조합별 실시간 품질 점수** 로 집계된다. Druid는 수십억 이벤트에 대한 sub-second OLAP 쿼리가 가능해 '지금 이 순간 어떤 CDN이 어디서 잘 나오는지'를 초 단위로 안다.\n- **동적 라우팅**: Playback Service가 매니페스트를 발급할 때 이 점수를 참조해 **사용자별로 최적 CDN을 배정** 한다. 한 CDN이 나빠지면 신규 세션을 다른 CDN으로 점진 전환(traffic shifting)한다.\n\n### Panic Mode와의 결합\n\n극단적 폭증이나 다운스트림 장애 시, Hotstar는 **Panic Mode** 를 발동한다. 이는 graceful degradation의 구현체로:\n\n- 개인화 추천, 디테일한 메타데이터, 비핵심 API를 **의도적으로 꺼서** 핵심 경로(재생)의 부하를 줄인다.\n- 추천 대신 정적/캐시된 콘텐츠를 보여주는 식으로 **품질을 낮추되 서비스는 살린다**.\n- 기능 플래그로 제어되어 운영진이 초 단위로 토글할 수 있다.\n\n### 설계 철학\n\n핵심은 **'전부 아니면 전무(all-or-nothing)를 거부'** 하는 것이다. 장애 시 화면이 멈추는 대신, 부가 기능을 희생하고 영상만은 끊김 없이 흐르게 한다. CDN 라우팅(어디서 받을지 최적화)과 Panic Mode(무엇을 포기할지 결정)는 둘 다 'QoE를 지키기 위해 동적으로 시스템 모양을 바꾼다'는 같은 철학의 두 축이다. 그리고 두 메커니즘 모두 Druid 실시간 분석이라는 같은 신경계에서 의사결정 신호를 받는다."
     }
    ],
    "github": {
-    "org": "https://github.com/hotstar"
+    "org": "https://github.com/hotstar",
+    "repos": []
    },
    "sources": [
-    "https://blog.hotstar.com"
+    "https://blog.hotstar.com/",
+    "https://www.youtube.com/watch?v=tDJkrIv4BzA",
+    "https://aws.amazon.com/solutions/case-studies/disney-hotstar/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "inmobi",

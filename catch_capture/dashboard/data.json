@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-17T09:44:55",
-  "source_dir": "screenshots/all_통합_20260617_094448",
+  "generated_at": "2026-06-17T11:19:29",
+  "source_dir": "screenshots/all_통합_20260617_111922",
   "keyword": "통합",
   "jobs": [
     {
@@ -16973,6 +16973,47 @@
     },
     {
       "site": "wanted",
+      "company": "다이버(DiiVER)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "개발팀 풀스택 리그 (7년 이상)",
+      "url": "https://www.wanted.co.kr/wd/369011",
+      "career": "",
+      "location": "경력 7년 이상",
+      "dday": "",
+      "tech_stack": [
+        "Kotlin",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "AWS",
+        "Docker",
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일",
+        "DevOps/인프라",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "CI/CD"
+      ],
+      "qualifications": "• 관련 경력 7년 이상 또는 이에 준하는 역량 보유자\n- Kotlin 기반의 Spring Boot / WebFlux 백엔드 개발 및 운영 경험\n- React, Typescript, Next.js(App Router) 기반 프론트엔드 개발 및 운영 경험\n- AWS 클라우드 환경 및 MySQL 등 관계형 데이터베이스(RDBMS) 설계·운영 경험\n- 다양한 직군과의 원활한 소통 및 협업 역량\n• 개발 및 기술 설계 관련 포트폴리오 제출 필수",
+      "preferences": "• 이커머스, 제조, 물류 도메인에 대한 이해 또는 실무 경험\n• 서비스 기획부터 설계, 개발, 배포, 운영까지 전체 프로덕트 라이프 사이클을 주도한 경험\n• MongoDB 등 NoSQL 데이터베이스 및 Redis 등 캐시 시스템 설계·운영 경험\n• CI/CD 파이프라인 구축 및 배포 자동화 경험\n• Docker 컨테이너 환경 설계 및 운영 경험\n• AI 및 자동화 도구를 활용하여 개발 생산성 또는 서비스 가치를 향상시킨 경험\n• Jira, Slack, Notion, Figma 등 협업 도구를 활용한 프로젝트 관리 경험",
+      "main_tasks": "• 개발팀 리딩 및 조직 운영\n- 개발 조직의 목표 수립 및 팀원들의 기술적 성장과 협업 문화 리딩\n- 개발 일정, 리소스, 우선순위 관리 및 프로젝트의 성공적인 운영 총괄\n• 플랫폼 및 서비스 아키텍처 설계\n- Kotlin 기반의 Spring Boot / WebFlux 백엔드와 Next.js 기반의 프론트엔드 서비스 설계·개발·운영\n- 백오피스 및 SaaS 형태의 플랫폼 설계 및 지속적인 고도화\n- AWS 기반 인프라 운영\n- 관계형 데이터베이스(MySQL), NoSQL(MongoDB), 캐시(Redis)를 활용한 데이터 아키텍처 설계 및 운영",
+      "benefits": "1. 자율적인 업무 환경\n• 시차출근제 시행 (8시~10시 사이)\n• 연차·반차·반반차 자유롭게 사용 가능\n• 자유로운 복장\n• 팀 빌딩 활동비(인당 4만원 / 月)\n\n2. 밀도 높은 휴식\n• 명절 헤드 스타트(명절 전날 반반차)\n• 창립기념일(5월 19일) 휴무 1일\n• 생일 특별휴가 1일 제공\n• 장기근속 리프레시 휴가 + 지원금\n(3년 3일+50만원 / 5년 5일+100만원 / 7년 7일+200만원)\n• 롱런치데이 운영 (매월 2·4주 금요일 점심시간 90분)\n\n3. 세심한 팀원 케어\n• 야근 시 식대 및 귀가 택시비 지원\n• 정밀 건강검진 지원 (지원금 20만원 + 검진휴가 1일)\n• 사내 스낵바 운영\n• 경조금 및 경조휴가(최대 5일) 지원\n• 명절 상여금 지급(설, 추석 20만원)\n• 인재 추천 보너스\n• 퇴사자 예우 휴가\n• 단체 보험 가입(책임급 이상, 현장직)\n• 출산휴가·배우자 출산휴가·육아휴직 지원\n\n4. 전문가를 위한 인프라\n• 웰컴키트 지급\n• 최신 업무 장비 지원\n• 자기계발비 도서 구매, 전시 참관 지원 (분기별 5만원)\n\n5. 인센티브 / 성과급 제도\n• 우수 성과자 인센티브 지급\n(연 2회 / 최상위 성과자 상한 없음 · 500 · 300 · 100만원)"
+    },
+    {
+      "site": "wanted",
       "company": "엘리스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -27652,6 +27693,30 @@
     },
     {
       "site": "wanted",
+      "company": "팀스파르타",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[인턴] Account Manager (AI 기업교육) (전환형)",
+      "url": "https://www.wanted.co.kr/wd/366988",
+      "career": "",
+      "location": "신입 · 인턴",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "■ 이런 분을 찾고 있어요\n• 고객을 '한 번의 프로젝트'가 아니라 '장기 관계'로 바라보고, 신뢰를 쌓아 거래를 키우는 데서 보람을 느끼는 분\n• 숫자로 성과를 책임지는 분\n• 매출·리텐션·만족도 지표를 본인의 성과로 여기고 주도적으로 끌어올리는 분\n• 고객사의 문제를 먼저 발견하고, 교육이라는 솔루션으로 연결해 제안할 수 있는 분\n• 다양한 이해관계자와 신뢰감 있게 커뮤니케이션하며, 어려운 협의도 책임감 있게 매듭짓는 분\n• 빈틈없는 사후 관리와 꼼꼼한 팔로업으로 고객에게 '믿고 맡길 수 있다'는 확신을 주는 분",
+      "preferences": "■ 이런 분이라면 더 좋아요\n• B2B 세일즈, 고객사 관리(Account / Key Account), 고객 성공(CS) 등 고객사 단위 매출을 책임진 경험이 있는 분\n• SW/AI/교육 분야에서 제안·수주, 또는 재계약·업셀을 직접 만들어 본 분\n• 대기업·공공기관 등 복잡한 의사결정 구조를 가진 고객과 성공적으로 협업하고 거래를 확장해 본\n• 고객사의 다양한 요구를 조율하여 장기 파트너십으로 발전시켜 본 분\n• 한컴오피스/PPT 등 제안·보고 문서 작성 경험이 잦은 분",
+      "main_tasks": "■ 합류하면 이런 업무를 해요\n담당 고객사 포트폴리오의 오너(Account Manager)가 되어, 첫 거래부터 재계약·확장까지 고객사와의 관계 전반을 책임집니다.\n• 고객사의 사업·조직 맥락을 깊이 이해하고, 교육으로 풀 수 있는 문제를 먼저 발굴하여 제안합니다. (업셀·크로스셀)\n• 매 회차 교육의 효용을 지표와 데이터로 입증하고, 고객사 의사결정자에게 성과를 설득력 있게 전달합니다.\n• 고객사 내 여러 담당자·의사결정자와 신뢰 관계를 구축하여, 단발 거래를 장기 파트너십으로 전환합니다.\n• 리텐션·갱신율·계정별 매출 성장을 핵심 지표로 관리하며, 담당 고객군(territory)을 주도적으로 키웁니다.\n• 교육 설계·운영·강사 등 내부 유관 파트와 긴밀히 협업하여, 고객사에 약속한 Delivery 품질을 끝까지 책임집니다.\n• 고객 관리·확장 과정에서 반복되는 업무는 AI / 노코드 / SaaS로 자동화하고, 성공 패턴을 표준화하여 다른 계정에도 복제합니다.",
+      "benefits": "■ 팀스파르타 복지 : \"몰입을 위해 지원합니다\"\n서로에 대한 신뢰를 바탕으로 설계된 팀스파르타의 복지는 모두가 마음껏 일에 집중하고 행복하게 일하기 위함입니다.\n\n• 큰일내기 위해서는 컨디션 조절이 필수니까, 무제한 유급 휴가\n• 책 마음껏 읽고 무한 성장해요, 도서 구매 무제한\n• 업무에 도움 된다면 얼마든지, 자기계발비 지원 & 자사 교육 무제한\n• 함께 성장하는 즐거움, 사내 스터디 지원\n• 함께 만드는 일상 속 재미, 사내 소모임 지원\n• 열심히 일한 당신, 떠나라! 여름방학&겨울방학 제공 (각 일주일)\n• 꼭꼭 씹어 먹어요, 1시간 30분의 넉넉한 점심시간\n• 무엇보다 건강이 우선이니까, 건강검진 지원 (1년 주기)\n• 매월 나만의 목표를 설정하고 달성해요, 월별 미션 성공시 선물 제공\n• 누구보다도 축하해요, 생일 3시간 조기 퇴근 & 생일 선물 제공\n• 힘들 때 기댈 수 있어요, 사내 심리상담 제도\n• 모여봐요 삼삼오오, 주 1회 랜덤 팀원 간 식사/간식비 지원"
+    },
+    {
+      "site": "wanted",
       "company": "씨디알아이(CDRI)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -30733,6 +30798,45 @@
       "preferences": "• Naver Cloud 사용 경험\n• AWS ECS EKS 마이그레이션 경험\n• Terraform 등 IaC 도구 사용 경험",
       "main_tasks": "• ‎Kubernetes(EKS) 도입 및 운영\n• AWS 인프라 운영\n• CI/CD 자동화\n• 관측성(Observability) 체계 고도화\n• 클라우드 비용 최적화\n• 보안 & 안정성",
       "benefits": "• 시차출퇴근제도 운영\n• 자율적인 연차/반차/반반차 사용\n• 자녀 학자금 지원\n• 건강 검진 지원\n• 생일 선물 지원\n• 명절 선물 지원\n• 존쿡 시그니처점 및 존쿡마켓 직원 할인\n• 최신 업무 장비 및 소프트웨어 지원\n• 커피 등 음료 및 간식 지원\n• 경조금 및 경조 휴가 지급\n• 사이드 장비 구매 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "유모스원",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Senior Cloud Infra Engineer (DevOps, SRE)",
+      "url": "https://www.wanted.co.kr/wd/369049",
+      "career": "",
+      "location": "경력 5-11년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Go",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "GitLab",
+        "GitHub Actions",
+        "Terraform",
+        "Kafka",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "대용량 처리",
+        "MSA/분산",
+        "CI/CD"
+      ],
+      "qualifications": "• 5년 이상의 인프라 설계 및 운영 경력을 보유하신 분\n• AWS 환경에서 대규모 인프라를 직접 설계하고 구축 및 운영해 본 경험이 풍부하신 분\n• Terraform 등 IaC 도구를 활용하여 인프라를 코드화하고 관리해 본 숙련도가 높으신 분\n• Docker 및 Kubernetes(EKS) 기반의 컨테이너 환경을 구축하고 운영 및 트러블슈팅이 가능하신 분\n• CI/CD 도구(Jenkins, GitHub Actions, ArgoCD 등)를 활용하여 배포 자동화 체계를 구축해 본 경험이 있으신 분",
+      "preferences": "• 기존 레거시(온프레미스/EC2) 환경의 완전 분산형 워크로드를 EKS 아키텍처로 Zero-to-One 이관(Migration) 프로세스 주도 경험\n• 차량 IoT, 센서 데이터 등 대규모 실시간 스트리밍(Kinesis, Kafka 등) 인프라 수용을 위한 Burst 대역폭 최적화 설계 경험\n• Python, Go, Bash 스크립트를 활용해 반복적인 운영 프록시 및 자동화 툴(CLI 도구 등)을 직접 개발하여 인프라 운영 리소스를 크게 감축해 본 역량\n• Terraform 내에 보안 스캔 자동화를 통합하거나, AWS Security Hub, GuardDuty 연동을 통해 ISMS-P / ISO 27001 등 컴플라이언스 기술적 보안 규격을 통과해 본 경험",
+      "main_tasks": "• EKS 기반 클라우드 인프라 구축 및 운영 (Infra Engineering & Modernization)\n• AWS 가상 인프라 아키텍팅: EC2 기반 레거시 모놀리식 구조에서 EKS(Kubernetes) 기반 마이크로서비스 아키텍처(MSA)로의 전환 아키텍처를 직접 설계하고, 컨테이너 인프라를 안정적으로 구축합니다\n• IaC 및 GitOps 기반 인프라 자동화 (DevOps & IaC)\n• 인프라 프로비저닝 자동화: Terraform 등을 활용하여 전사 인프라 영역을 모듈화 및 코드화(IaC)하고, 수동 조작(Click-Ops) 없는 재현 가능한 환경을 구현합니다\n• GitOps 및 CI/CD 파이프라인 엔지니어링: Gitlab, ArgoCD 등을 연계하여 인프라 변경 및 애플리케이션 배포 전 과정을 자동화하는 통합 CI/CD 파이프라인을 구축 및 고도화합니다\n• SRE 관점의 가용성 관리 및 Observability 구축 (SRE & Observability)\n• Terraform 등을 활용한 인프라 전 영역의 코드화(IaC) 및 모듈화된 프로비저닝 환경 구축\n• 수동 배포 환경을 개선하여 애플리케이션 및 인프라의 통합 CI/CD 파이프라인 설계 및 고도화\n• 개발 단계부터 배포까지의 전 과정을 자동화하여 개발 생산성 및 배포 안정성 확보\n• SRE 및 24x7 모니터링 체계 설계 (SRE & Observability)\n• 통합 가용성 모니터링: 대규모 실시간 대용량 트래픽 수용을 위해 Prometheus, Grafana, ELK 등을 활용한 24x7 풀스택 Observability 시스템을 연동하고 고도화합니다\n• Self-healing 및 트러블슈팅: 서비스 가용성 지표(SLI/SLO)를 정의하고, 장애 복구 자동화(Self-healing) 아키텍처 및 무중단 배포 전략을 실무 레벨에서 검증하고 구현합니다",
+      "benefits": "• 복지카드\n• 식비 지원\n• 단체 상해보험\n• 건강검진\n• 경조사지원\n• 최신형 업무기기 지원\n• 라운지 간식 및 음료 제공"
     },
     {
       "site": "wanted",
@@ -55696,6 +55800,42 @@
       "preferences": "• Java/Spring/자료구조/스레드 프로그래밍에 대한 깊은 이해도가 있으신 분\n• Spring Boot 및 Spring Cloud 어플리케이션 사용 경험이 있으신 분\n• 객체지향적 사고방식을 갖추신 분\n• 큰 어려움 없이 해당 분야 영문 기술자료를 이해할 수 있는 수준의 영어 역량을 갖추신 분\n• Jenkins 기반의 CI/CD 활용 경험이 있으신 분\n• Git/Git flow/AWS 사용 경험이 있으신 분\n• RESTful API 설계 또는 작성 경험이 있으신 분\n• '읽기 좋은 코드가 좋은 코드' 라는 가치관 보유하신 분\n• Java 1.6 이상의 JVM thread dump 분석 가능하신 분\n• 1개 이상의 Message Queue 기술 실무 경험이 있으신 분\n• 대용량 분산처리 경험이 있으신 분\n• 코딩역량인증(PCCP, PCCE) 인증서 보유하신 분",
       "main_tasks": "• 신규 제품 기획 및 개발\n• 기존 제품군 기능 개선 및 추가\n• 기술자료 작성 및 관리",
       "benefits": "[가치제안]\n• 문서 기반의 커뮤니케이션을 중점적으로 하고 있어, 문서화 업무 협업 경험을 할 수 있습니다.\n• 단순 디자인 구현이 아닌 고수준의 기능을 많이 요구하므로, 설계 및 문제 해결 능력을 개발할 수 있습니다.\n• SDK 등 개발자를 대상으로 하는 개발이 많이 이뤄지고 있어, DX(Developer Experience)에 대한 이해도를 높일 수 있습니다.\n• 글로벌 팀과의 협업을 통해 다양한 문화권 사이에서의 커뮤니케이션 스킬을 향상시킬 수 있습니다.\n\n[근무환경]\n• 수평적인 조직문화, 복장/연차(시간단위) \"완전\" 자유\n• 불필요한 야근/회식 강요없음\n• 최고수준 개발장비, 풍족한 간식/음료 제공\n\n[다양한 지원제도]\n• 전월세 자금 대출, 암/실손보험 가입\n• 내일채움공제 가입, 퇴직연금제도 시행\n• 식대 지원, 경조사비/휴가 지원\n• 사내 동호회 지원"
+    },
+    {
+      "site": "jumpit",
+      "company": "딥오토",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Engineer",
+      "url": "https://jumpit.saramin.co.kr/position/54201019",
+      "career": "경력 3~6년",
+      "location": "서울 강남구 테헤란로216, 7층\n지도보기·\n주소복사",
+      "dday": "D-29",
+      "tech_stack": [
+        "Python",
+        "TypeScript",
+        "AWS",
+        "OpenAI"
+      ],
+      "tech_tags": [
+        "Python",
+        "TypeScript",
+        "AWS",
+        "SQL"
+      ],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "석박사 우대",
+        "MSA/분산"
+      ],
+      "qualifications": "• AI/CS/EE 관련 학위\n• Python 능숙, 백엔드 개발 경력 3년 이상\n• LLM/NLP 관련 프로젝트 경험 (프롬프트 엔지니어링, fine-tuning, RAG 등)\n• SQL 능숙, 데이터 파이프라인 설계 경험",
+      "preferences": "• 석사 이상\n• 금융 도메인에 대한 학위 또는 실무 이해 (증권/결제/자산운용/핀테크 등)\n• 금융권 IT 근무 경험\n• 분산 시스템 / 데이터 인프라 경험\n• On-prem 배포 및 보안 환경 경험\n• 크립토/블록체인 관련 개발 경험",
+      "main_tasks": "• 금융 데이터(거래/고객/Activity 로그) 수집·정제·구조화 파이프라인 개발\n• LLM Agent 기반 로직 설계 및 구현 (니즈 추출, 액션 추천, 이상 탐지 등)\n• Agentic Lakehouse 위에 금융 도메인 데이터 모델 설계\n• RAG / NL2SQL 파이프라인 구축 및 최적화\n• 고객사 on-prem 환경 배포 및 시스템 연동 (OMS, Bloomberg, 컴플라이언스 시스템 등)\n• 금융 규제 요건(정보교류 차단, 감사 추적, 데이터 암호화)을 반영한 시스템 설계\n• 고객사 기술팀과 협업하여 데이터 연동 및 인프라 구성",
+      "benefits": "ㆍ서울 강남 테헤란로 신웅타워7층 신규 오피스 근무(역삼역 5분 거리)\nㆍ오전 10 시까지 자율 출근, 주 40시간 유연근무제 실행\nㆍ월 2회 재택근무를 통해 자율적으로 업무 진행\nㆍ자유로운 반차/연차 사용\nㆍ비포괄임금제 운영\nㆍ중소기업청년소득세 감면 및 퇴직 연금 가입\nㆍ자유롭고 평등한 근무 분위기\nㆍ최신식 개발 장비 및 프로그램 제공\nㆍ외근, 야근 택시비 지원\nㆍ근무시간에 따른 출근 장려 식비 지급\nㆍClaude Code, OpenAI Codex 등의 코딩 에이전트 구독"
     },
     {
       "site": "jumpit",
@@ -106954,6 +107094,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)네오티스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "기업부설연구소 중급 개발자 모집합니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54186351&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=ad49d805-827a-4ee6-b6bd-4afb190ac326",
+      "career": "경력 4~7년",
+      "location": "서울송파구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 무관\n\n연구소기업부설연구소 0명\n\nㆍ경력 : 4년 이상 ~ 7년이하\n\nㆍ기타 필수 사항",
+      "preferences": "ㆍ컴퓨터/시스템공학\n\nㆍ정보처리기사, 정보처리산업기사",
+      "main_tasks": "ㆍ 기업용 솔루션 개발 및 유지보수\n\nㆍ java/spring/spring boot/jsp/DB/full stack\n\nㆍ",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -113003,6 +113168,68 @@
       "preferences": "• 모노레포 시스템을 이용하여 통일성 있는 서비스 구축 경험이 있으신 분\n\n• 재사용 가능한 컴퍼넌트 설계 및 구현 능력 보유하신 분\n\n• 웹앱 개발 경험이 있으신 분\n\n• 웹 성능 최적화 경험이 있으신 분 (로딩 시간 개선, 렌더링 최적화 등)\n\n• React Native, Expo 로 크로스플랫폼 서비스 개발 경험이 있으신 분\n\n• 금융 / 핀테크 서비스 개발 경험이 있으신 분",
       "main_tasks": "웹 또는 앱 프론트엔드개발 구현 및 유지보수",
       "benefits": "• 조직 문화 : 님/닉네임 문화, 자유로운 연차사용, 회식강요 안함, 수평적 조직문화, 자유복장"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)미리디",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[미리디] 프론트엔드 개발자 - 이미지 프로세싱",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54162995&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c6cbca62-3cde-42f3-b829-48f69b614e8d",
+      "career": "신입·경력",
+      "location": "서울구로구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "HTML",
+        "CSS",
+        "SCSS",
+        "Tailwind",
+        "AWS",
+        "Jest",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "\"이런 분이라면 목표 달성에 확신을 얻을 것 같아요\"\n\n• 원하는 웹 페이지와 동작을 구현할 수 있는 HTML, CSS, JavaScript 기초 지식이 있으신 분\n• React, TypeScript를 활용한 개발 경험이 있으신 분\n• 객체 지향 등 설계 원칙을 바탕으로, '굴러만 가는 코드'보다 '재사용과 유지보수가 쉬운 구조'를 고민하는 분\n• 자료구조, 운영체제, 컴퓨터 아키텍처, 네트워크 등 컴퓨터공학(CS) 기초 지식이 있으신 분\n• 기본적인 Git 활용이 가능하신 분\n• 타입 에러나 경고를 우회하기보다 원인을 이해하고 해결하는 것을 선호하는 분 (any 보면 잠 못 자는 분)\n• AI 코딩 도구를 활용해 개발하고, 그 결과물을 비판적으로 검토/검증해본 경험이 있으신 분",
+      "preferences": "“이런 분이면 잘 맞아요” ⚡\n\n• 개발 중 만난 이슈나 배운 점을 틈틈이 기록하시는 분\n• 공식 문서와 기술 문서를 읽으며 스스로 학습하는 데 익숙하신 분\n• API 응답이 항상 정상적일 것이라 가정하지 않고 예외 상황과 실패 케이스를 고려하시는 분\n\n“이런 경험이 있다면 더 좋아요” ⚡\n\n• 복잡한 프론트엔드 웹앱의 상태 관리 경험\n• HTML canvas, WebGL, WebGPU, WebAssembly 등을 활용한 이미지 처리 프로그램 개발 경험\n• SCSS, Emotion, PandaCSS, Tailwind 등 다양한 CSS 도구 활용 경험\n• 번들링, 메모리 최적화를 개선하기 위한 노력을 해본 경험\n• 이미지, 동영상, pptx, pdf, zip 등 구조화된 바이너리·문서 포맷을 다뤄보신 경험\n• AWS를 활용한 웹 서비스 배포 및 운영 경험",
+      "main_tasks": "\"미리디에서 이런 일들을 함께 하고 싶어요!\"\n\n• TypeScript, React, Vite, Jotai, PandaCSS 기반의 백오피스 및 SDK를 개발합니다.\n• Storybook을 활용한 디자인 시스템을 개발합니다.\n• Three.js를 활용한 3D 편집툴을 개발합니다.\n• AI 기반의 신규 서비스들을 웹으로 제공하기 위한 연구와 개발을 진행합니다.\n• Jest, Vitest, Playwright를 활용한 단위·통합·E2E 테스트를 개발하고 운영합니다.",
+      "benefits": "\"미리디는 복지를 통해 나눔의 경영을 실현하고 있습니다.\"\n[자율과 책임의 근무 환경을 제공합니다.]\n• 시차출퇴근제 운영\n• 자유로운 휴가 사용\n• 경조사 휴가지원\n• 3년 근속 시 리프레시 휴가 제공\n[배움과 성장, 행복을 지원합니다.]\n• 업무 관련 비용 100% 지원\n• 업무 도서 구입비 무제한 지원\n• 외부 교육 및 기술 세미나 적극 참여 독려\n[열일하는 미리인 굶길 수 없다! 삼시세끼 지원]\n• 아침, 점심, 저녁 식사비 지원\n• 제휴 카페 포인트 지원\n[미리인의 회사 적응과 단합을 지원합니다.]\n• 직급 없이 수평적인 문화 지향\n• 신입사원 OJT, 적응 프로그램 지원\n• 미리인 동호회 지원\n• 분기별 문화이벤트 회식 지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)솔텍시스템",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 및 프론트엔드 개발자 모집, 관공서 프로젝트 개발자우대",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54201513&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c6cbca62-3cde-42f3-b829-48f69b614e8d",
+      "career": "경력 5~7년",
+      "location": "대전대덕구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "PostgreSQL",
+        "Oracle"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화"
+      ],
+      "qualifications": "• 경력 5년 이상 ~ 7년 이하\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능\nHTML5, CSS3, JavaScript(ES6+)에 대한 깊은 이해\nRDBMS(Tibero, Oracle, PostgreSQL 등) 대한 기본 이해\n웹 성능 최적화 및 접근성에 대한 기본 지식\n전자정부 프레임워크를 활용한 실무 경험\nRESTful API 연동 및 비동기 처리 경험",
+      "preferences": "공공기관 프로젝트 및 유지보수 경험\nFull stack 가능자 우대",
+      "main_tasks": "웹 서비스의 UI/UX 개발 및 개선\n디자이너, 백엔드 개발자와 협업\n공통 UI 컴포넌트 및 디자인 시스템 구축 및 유지보수\n\n• 대전지사 부서 소속, 면접 후 결정 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 워크샵, 자격증취득지원, 저녁식사 제공, 사내동호회 운영, 사우회(경조사회), 간식 제공, 음료제공(차, 커피)\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의 날 휴무, 공휴일 휴무\n• 급여제도 : 퇴직연금, 상여금, 장기근속자 포상, 연차수당, 자격증수당, 4대 보험\n• 지원금/보험 : 건강검진, 자녀학자금\n• 조직문화 : 회식강요 안함, 자유복장, 자유로운 연차사용\n• 선물 : 명절선물/귀향비, 창립일선물지급\n• 근무 환경 : 휴게실, 회의실, 공기청정기, 전용 사옥, 노트북, 사무용품 지급\n• 출퇴근 : 자율 근무제"
     },
     {
       "site": "saramin",
@@ -119560,6 +119787,31 @@
       "preferences": "- NestJS, Spring, FastAPI 등 계층형 서버 프레임워크 사용 경험\n- Nx 또는 모노레포 환경에서의 개발 경험\n- Swagger/OpenAPI 기반 API 문서화 경험\n- JWT 인증/인가, RBAC 등 권한 모델 구현 경험\n- Audit Trail, 변경 이력, 트랜잭션 처리 등 신뢰성이 중요한 기능 개발 경험\n- 의료, 제약, 임상, PV, Safety DB 등 규제 도메인 경험\n- Jest, Supertest, Testcontainers 등을 활용한 테스트 경험\n[기술 스텍]\n\n- Language: TypeScript\n- Framework: NestJS, Fastify\n- Database: PostgreSQL, TypeORM\n- Architecture: Domain 중심 구조, Controller-Service-Repository 계층\n- Test: Jest, Supertest, Testcontainers\n- Docs: Swagger/OpenAPI\n- Monorepo: Nx, pnpm\n- Dev Environment: Docker 기반 로컬 개발 환경",
       "main_tasks": "- NestJS/TypeScript 기반 REST API 개발\n- PostgreSQL, TypeORM 기반 데이터 모델링 및 Repository 구현\n- 인증/인가, 권한, Audit Trail 등 제품 핵심 백엔드 기능 개발\n- Swagger/OpenAPI 기반 API 문서 작성 및 관리\n- Jest 기반 유닛 테스트, E2E 테스트, 타입 체크를 통한 품질 관리",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)법틀",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "웹/서버 SW 백엔드 개발자 신입 (Legal Startup)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199578&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=db26ad29-3685-49be-ac42-934f6d3e3356",
+      "career": "신입",
+      "location": "서울성동구 | 3,200 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Django"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입\n\n• 학력무관",
+      "preferences": "",
+      "main_tasks": "• python, Django, Java, Springboot 기반의 시스템을 구축/운영 합니다.\n\n• 국내 1등 기업용 법무관리 시스템을 개발 합니다.\n\n• 데이터 베이스를 설계하고 ORM매핑 및 SQL 을 작성 합니다.\n\n• 서버 api를 개발하고 이를 사용합니다.\n\n• 운영파트 개발지원 업무\n\n• 개발팀 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 워크샵, 자기계발비 지원, 점심식사 제공, 저녁식사 제공, 간식 제공, 식비 지원\n\n• 리프레시 : 연차, Refresh휴가, 공휴일 휴무, 근로자의날 휴무\n\n• 급여제도 : 4대 보험, 성과급, 퇴직연금\n\n• 조직 문화 : 자유복장\n\n• 출퇴근 : 탄력근무제\n\n• 선물 : 도서 무제한 제공"
     },
     {
       "site": "saramin",
@@ -126517,6 +126769,44 @@
     },
     {
       "site": "saramin",
+      "company": "웹스토리",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "풀스택 개발자 경력채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54201273&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=55eb3657-e7ff-4990-880a-5b8307218848",
+      "career": "경력무관",
+      "location": "강원원주시 | 5,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "jQuery",
+        "HTML",
+        "CSS",
+        "Tailwind",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "MariaDB",
+        "Nginx"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "풀스택",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결"
+      ],
+      "qualifications": "• 경력 무관\n\n• 학력무관\n\n- Java 17, Spring Boot 환경 개발 경험 3년이상 또는 그에 준하는 실력\n\n- Spring Boot 또는 Spring MVC 기반 웹 애플리케이션 개발 경험\n\n- MariaDB 또는 MySQL 사용 경험\n\n- MyBatis 기반 SQL Mapper 개발 경험\n\n- HTML, JavaScript, jQuery 기반 관리자 페이지 연동 경험\n\n- Git을 활용한 협업 경험\n\n- 운영 중인 서비스의 장애 대응 또는 유지보수 경험\n\n- nginx 배포경험",
+      "preferences": "- Thymeleaf 기반 서버 사이드 렌더링 개발 경험\n\n- JPA/Hibernate 사용 경험\n\n- 관리자/ERP/CRM/백오피스 시스템 개발 경험\n\n- 결제, 알림톡, 문자, 파일 업로드, NAS 연동 경험\n\n- 레거시 시스템 리팩토링 경험\n\n- 그누보드 개발경험\n\n- vue3 개발경험\n\n**이런 분과 함께하고 싶습니다**\n\n- 운영 중인 서비스를 안정적으로 개선해본 경험이 있는 분\n\n- 복잡한 비즈니스 로직과 SQL을 차분히 분석할 수 있는 분\n\n- 기존 코드를 존중하면서도 필요한 개선 방향을 제안할 수 있는 분",
+      "main_tasks": "- FO/BO 백엔드 개발 및 유지보수\n\n- MariaDB 기반 데이터 조회/수정 로직 개발\n\n- MyBatis XML Mapper 및 JPA 기반 데이터 접근 로직 유지보수\n\n- 알림톡, 문자, 결제, 주소 API 등 외부 서비스 연동\n\n- 운영 중 발생하는 이슈 분석 및 성능 개선\n\n- 레거시 코드 구조 개선 및 공통 기능 정리",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)헬릭스테크",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -129788,6 +130078,31 @@
       "preferences": "= Java, JSP 사용 유경험자\n\n~ Be Se 유경험자\n\n- 안드로이드 스튜디오 개발 툴 사용 경험자\nGit 활용한 형상 관리 및협업경형\n\nog\n\n인턴기간 후, 평가와 SHY 결과에 따라 정규직 전환\n주 5일(월~금), 오전 9시 ~6시\n대전 중구 계룡로 814,4층 청취닷컴\n\n회사 내규에 따름\n\n자사 이력서 양식 작성 후 사람인 접수\n※ 채용시 접수 마감됩니다.\n\n오고 AGA\n\n실무면접                            임원면접\n\nMBAS 합격자에 한하여 추가 제출 서류가 있을 수 있습니다.\nMBAS 합격자에 한하여 직무적합성진단평가가 진행될 수 있습니다.\n면접 일정은 추후 통보됩니다.\n\n복지제도\n\n효율적인 업무 환경을 제공해요.      개 개인의성장을적극지원해요.\n+ 최신형업무장비                 ㆍ 세미나및교육비용제공\n+ 27인치듀얼모니터제공             ㆍ 스터디룸자유대여\nㆍ ARAB                   ㆍ 월 2퀸도서구매지원\nㆍ 영어교육\n\n  구성원의 건강과삶을 책임져요.    Sy 따뜻한조직문회를지향해요.\nㆍ 중석식제공                  ㆍ 줄근시간선택제(8~10시)\n+ 간식커피무제한                + 연차자유사용\n+ 출산육야류직눈치40             + 생일엔작은선물\nㆍ 소득세 80%감면                ㆍ 경조사비경조휴가지원\n\nㆍ 건강검진비용지원                            ㆍ 자율적인 사내동아리 운영\n\nchungchy®\n| 비전\n\nOpen the Next 5 years with Edu Tech!\n청취닷컴은 “소리“를 언어습득의 핵심가치로 삼아,\n언어교육을 필요로하는 전세계 고객들에게 차별화된 교육적 가치를 제공하고 있습니다.\n\n| 주요지표\n\n글로벌\n약 100만 권\n\n| 서비스 소개\n\nAnchor - 앵커잉글리시\nth          English     앵커잉글리시는 학생이 사용하는 온라인 프로그램으로 원서, 영화, 뉴스, 강연 등 다양한 카테\nPIB Listening, Speaking, Writing, 4008, 6<301의 짜임새 있는 멀티콘텐츠로 제공하여\n학생들의 공부하는 습관을 만들어주는 서비스 입니다.\n\nAnchor 앵커플레이어\n“          Player 앙커플레이어는 영어수업용 플레이어로 수년간 YS AS 받아온 에듀플레이어 3.091 전면\n업그레이드 버전입니다. 077서비스급 콘텐츠 추천 로직과100여가지 어학기능을 담아 직관\n적인 네로 선생님의 영어 수업을 더욱 다채롭게 만들어주는 서비스 입니다.\n\n우아영\n\n우아영은 미국 정통 출판사의 원서를 매일 20분씩 매달 1권을 정독할 수 있도록 필요한 교육\n과정, 웹사이트, WS 제공하는 서비스입니다.\n\n‘Highlights Samnesaiianind\n9    ci) ding      하이라이츠 리딩은 하이라이츠 원서로 개발된 Listening, Speaking, Reading, Writing,\n[se          Voca 콘텐츠와 독서 코칭을 제공하는 온라인 자기주도 영어 학습 서비스입니다.\n\n1                     하이라이츠라이브러리\nHighlights ii          .                        .\nHR 이이라이츠 라이브러리는 미국 75년 tel eta HIGHLIGHTS} EL{8i@ 0, 어린\n\n이들에게 가장 인기있는 이야기를 언제 어디서나 접할 수 있도록 서비스하는 온라인 영어 도서\n관 플랫폼입니다.\n\n| 사내 커뮤니티, PLAY CHUNGCHY",
       "main_tasks": "= S01 E-Leaming 슬루션웹개발및 유지보수\n-글로벌서비스 axial olan ol 유지보수\n\n뽀\n+\n\n항 및 우대사항\n\nwae\n\n~ Java, Kotlin SE Jetpack Composed He?\n기본지식\n\n-1440파턴에대한기본지식\n\n-팀원 및타부서와의원활한커뮤니케이션능력\n\n-새로운 기솔에대한학습 의지와 도전정신\n\n+ SRM Se LS\n\n-성실항과책임김을갖춘분",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "메리티움(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[가산] 원격제어/관리 SQA 테스트 엔지니어 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54187311&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=347fe041-f913-4e04-a12b-a90d4d8fe5df",
+      "career": "경력4년↑",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "Android"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "• 경력 4년 이상\n\n• 전문학사 이상",
+      "preferences": "• 프로그래밍 언어 및 SQL 기초 지식 보유자\n\n• 관련 자격증 보유자(ISTQB, CSTS, 정보처리기사)",
+      "main_tasks": "• 파이썬업무 가능자\n\n• 원격제어 관리 시스템(Web) 기능테스트\n\n• 시스템 및 원격 제품간 연동테스트\n\n• SQL 명령어 사용 데이터 셋팅\n\n• 테스트케이스 작성 및 테스트 수행",
+      "benefits": "• 교육/생활 : 우수사원시상식, 워크샵, 도서구입비지원, 자격증취득지원, 저녁식사 제공\n\n• 리프레시 : 연차, 반차, 근로자의날 휴무, 남성출산휴가\n\n• 급여제도 : 퇴직연금, 장기근속자 포상, 우수사원포상, 연차수당, 4대 보험\n\n• 지원금/보험 : 건강검진, 직원대출제도, 헬스비 지급, 문화생활비\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장, 자유로운 연차사용\n\n• 선물 : 명절선물/귀향비"
     },
     {
       "site": "saramin",
@@ -147471,6 +147786,91 @@
     },
     {
       "site": "saramin",
+      "company": "(주)이노메트리",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[X-Ray 및 CT 검사장비 AI 솔루션] 운영 SW 개발 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54189821&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=842f40a8-d8c6-425d-aa1d-f5ce1cc3ea94",
+      "career": "경력",
+      "location": "경기화성시",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++",
+        "C#",
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "- 학력 : 대졸 이상\n\n- 경력 : 경력 5년 이상\n\n- 장비 개발 경험자\n\n- 독자적/창의적 문제 해결 가능자",
+      "preferences": "- Axis, IO, FrameGraber\n\n프로그램 경험자\n\n- 네트웍 프로그램 경험자\n\n- C++, C# 가능자\n\n- 비전 프로그램 사용 경험자\n\n- 반도체 장비 현장 경험자\n본사\n\n(화성정남)\n\n※ 본 채용건은 적격자 있을시 빠르게 전형절차 진행하여 조기에 채용이 종료될 수 있습니다.\n\n- 차량소지자, 인근지역 거주자\n\n- 해당직무 근무 경험자\n\n- 해외출장 결격 사유 없는 자",
+      "main_tasks": "",
+      "benefits": "- (주)이노메트리는 임직원의 행복한 삶을 위해 다양한 복리후생 프로그램을 운영하고 있습니다."
+    },
+    {
+      "site": "saramin",
+      "company": "(주)토모큐브",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[Tomocube] Life Science AI 제품화 엔지니어",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54187615&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=f43ee744-5a0f-462c-912b-1e75ded31ec6",
+      "career": "신입·경력",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 전산 및 AI 관련 분야의 대학원 학위 (의료 및 생명 영상 및 물리 복수 전공 우대)\n\n• Python·PyTorch 기반 2D/3D segmentation / image-to-image translation 모델 개발 경험\n\n• 생체 영상 또는 현미경 영상 처리 연구 경험\n\n• 평가 지표 설계(Dice/IoU, F1, MAE 등) 및 정량·통계적 결과 보고 경험\n\n• 하이퍼파라미터 탐색, 실험 자동화 스크립팅 능력",
+      "preferences": "• Label-free imaging(holotomography, quantitative phase, polarization 등) 또는 light-sheet/confocal 영상 연구 경험\n\n• Virtual staining / cross-modality image translation 연구 경험\n\n• 두꺼운 조직(thick tissue, 3D tissue) 영상 처리 경험\n\n• Pretrained model fine-tuning, domain adaptation, few-shot learning 등 adaptive learning 연구 경험\n\n• GT-free / weakly-supervised / self-supervised 평가·학습 경험\n\n• 광학·신호처리 기본기 (PSF, deconvolution, noise modeling, scattering 등)\n\n• 생체 영상 segmentation 프레임워크 (SAM, Cellpose, MONAI 등) 활용 경험\n\n• 병리/조직학 또는 임상 영상(H&E, IHC, IF) 도메인 이해\n\n• 영상 정합·스티칭 알고리즘 이해 및 구현 경험\n\n• 관련 분야 학회/저널(MICCAI, CVPR, Nature Methods, Medical Image Analysis 등) 게재 또는 특허 경험",
+      "main_tasks": "• Label-free 광학 영상(quantitative phase / holotomography 등) 기반 virtual staining / virtual fluorescence 모델 연구·개발\n\n• 두꺼운 생체 조직(thick tissue) 영상에서 발생하는 깊이별 신호 저하 문제에 대한 딥러닝 기반 영상 변환 기법 연구\n\n• Pre-trained global model + sample-specific fine-tuning + label-free-only inference 구조의 adaptive 파이프라인 설계·구현\n\n• 2D/3D 생체 영상 segmentation 및 multichannel marker 예측 모델 개발\n\n• Ground-truth 부재 환경에서의 평가 체계(GT-free evaluation, risk map 기반) 설계 및 운영\n\n• 데이터 큐레이션·QC·전처리 파이프라인 구축, 영상 정합(registration)·스티칭(stitching) 보정\n\n• 측정 데이터 분석 및 알고리즘 성능 검증\n\n※ AI팀 소속, 팀원 직책으로 함께할 예정이에요.",
+      "benefits": "[WORK]\n\n• 신규 입사자 웰컴키트 지급\n\n• 시차출퇴근제 운영\n\n• 2시간 단위 연차 사용\n\n• 직급 없는 수평적 조직문화\n\n• 연장/휴일근무 시 식비 지원\n\n• 스낵바 운영\n[LIFE]\n\n• 연말 Office Closing 휴가(약 일주일간)\n\n• 장기근속자 안식휴가(2주) 및 포상금 지급\n\n• 우수 사원 시상 (상품권 및 휴가비 지원)\n\n• 종합건강검진 지원\n\n• 각종 경조금 및 경조휴가\n\n• 생일 유급 반차, 생일/결혼기념일/명절 선물\n[GROWTH]\n\n• 연간 최대 120만원의 자기계발비 지원\n\n• 직무 역량 교육 지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)시스콘로보틱스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AMR S/W Engineer 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191017&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=f43ee744-5a0f-462c-912b-1e75ded31ec6",
+      "career": "경력3년↑",
+      "location": "경기성남시 수정구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++",
+        "C/C++",
+        "Linux",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "성능 최적화",
+        "오픈소스 기여",
+        "CI/CD"
+      ],
+      "qualifications": "• 로봇 Localization, SLAM, 주행 제어 또는 Planning 개발 경력 4년 이상 필수\n\n• C++ 사용 경험 2년 이상 필수\n\n• C++ 기반 알고리즘 구현 및 최적화 능력 필수\n\n• ROS/ROS2 환경에서의 로봇 소프트웨어 개발 경험 필수\n\n• 선형 대수, 확률론, 로봇 기구학(Kinematics), 기본 제어 이론(PID 등)에 대한 이해\n\n• 알고리즘 문제를 코드로 해결하는 역량\n\n• Git을 활용한 협업 및 코드 리뷰 경험\n\n• 임베디드 소프트웨어 또는 로봇 시스템 개발 경력 4년 이상 필수\n\n• C++ 사용 경험 2년 이상 필수\n\n• C/C++ 기반 하드웨어 제어 경험 필수\n\n• Linux 환경에서의 장치 드라이버 및 멀티스레딩 프로그래밍 경험\n\n• 회로도 및 데이터시트 분석 역량\n\n• Git을 활용한 협업 및 코드 리뷰 경험\n\n• SW 개발과 직접적으로 관련된 학과(예: 소프트웨어공학, 전산학, 컴퓨터공학 등) 졸업 필수\n\n• Linux 환경에서 개발 경험 필수\n\n• C++ 사용 경험 2년 이상 필수\n\n• C++ 기반 알고리즘 구현 및 최적화 능력\n\n• 자료구조, 알고리즘, 운영체제, 네트워크 등 컴퓨터공학 기초 지식\n\n• Git을 활용한 협업 및 코드 리뷰 경험\n\n• 로봇, 자동화 장비, 임베디드 제어 시스템 등 복합 시스템 소프트웨어 개발 경력 5년 이상 필수\n\n• C++ 기반 대규모 프로젝트 설계 및 개발 경험 필수\n\n• 팀 리더 역할 경험 필수\n\n• Linux 환경 개발 경험 필수\n\n• ROS 기반 로봇 소프트웨어 개발 경험\n\n• 객체지향 설계 및 소프트웨어 아키텍처 설계 경험\n\n• Git 기반 협업 경험",
+      "preferences": "• Cartographer 등 오픈소스 SLAM 활용 및 커스터마이징 경험\n\n• 센서 퓨전(Extended Kalman Filter 등) 관련 프로젝트 경험\n\n• C++ 기반 Navigation Stack(Nav2 등) 활용 및 개발 경험\n\n• AMR/AGV 상용 제품의 주행 로직 개발 참여 경험\n\n• MPC(Model Predictive Control) 등 고급 제어 이론 적용 경험\n\n• Behavior Tree 등을 활용한 복잡한 로봇 행동 설계 경험\n\n• 고정밀 지도(HD Map) 데이터 처리 경\n\n자율주행팀 시스템\n\n• RTOS 또는 실시간 리눅스(RT-Preempt) 환경 개발 경험\n\n• 모터 드라이버 제어(Velocity/Position/Torque) 최적화 경험\n\n• 산업용 통신 규격 및 Safety 시스템 연동 경험\n\n자율주행팀 S/W\n\n• ROS 또는 ROS2 사용 경험\n\n• 로봇 Localization, SLAM, Navigation, Path Planning 관련 이해 또는 개발 경험\n\n• LiDAR, 카메라, IMU, Encoder 등 센서 데이터 처리 경험\n\n• 멀티스레딩, 비동기 처리, 성능 최적화 경험\n\n• C/C++ 기반 하드웨어 제어 또는 임베디드 시스템 개발 경험\n\n• AMR/AGV 등 자율주행 로봇 개발 경험\n\n• 테스트 자동화, CI/CD, 정적 분석 등 코드 품질 개선 경험\n\n자율주행 팀장\n\n• AMR/AGV 등 자율주행 로봇 개발 경험\n\n• SLAM, Localization, Path Planning 관련 이해 또는 개발 경험\n\n• 실시간 제어(PID 등) 또는 Motion Control 개발 경험\n\n• 외부 설비(PLC, 자동문, 충전기 등) 연동 경험\n\n• CI/CD 및 자동화 테스트 환경 구축 경험\n\n• 대규모 로봇 시스템 운영 또는 상용화 경험",
+      "main_tasks": "• 위치 추정 알고리즘 개발: LiDAR, IMU, Encoder 등 멀티 센서 데이터를 활용한 실시간 위치 추정 로직 구현\n\n• SLAM & Mapping: 실내외 환경에서의 맵 생성(Mapping) 및 업데이트 알고리즘 적용 및 최적화\n\n• 주행 알고리즘 구현: Global/Local Path Planning 및 추종(Path Following) 모듈 개발\n\n• 정밀 도킹 제어: 충전 스테이션 및 특정 설비 진입을 위한 정밀 제어 로직 구현\n\n• 장애물 회피 및 예외 처리: 동적/정적 장애물 회피 알고리즘 적용 및 주행 시나리오별 예외 처리\n\n• 성능 검증: 시뮬레이션과 실기로봇을 활용한 위치추정, 주행, 도킹 성능 테스트 및 개선\n\n• 하드웨어 인터페이스 개발: 모터 드라이버, LiDAR, IMU 등 각종 센서의 드라이버 및 통신 모듈 개발\n\n• 임베디드 제어 로직: MCU 또는 산업용 PC 기반의 IO 제어 및 상태 모니터링 로직 구현\n\n• 통신 프로토콜 구현: CAN, RS-485/232, EtherCAT 등을 활용한 장치 간 통신 최적화\n\n• 시스템 통합: 센서 데이터 패키징 및 ROS 미들웨어 연동 작업\n\n• 로봇 소프트웨어 전반 개발: 위치추정, 주행/도킹, 센서 처리, 시스템 연동 등 자율주행 로봇 코드베이스 개발 및 개선\n\n•C++ 기반 알고리즘 구현: 로봇 기능 구현에 필요한 알고리즘을 C++로 설계, 구현, 최적화\n\n•시스템 통합 및 성능 개선: ROS/ROS2 기반 모듈 연동, 데이터 흐름 개선, 병목 분석 및 안정화\n\n•코드 품질 개선: 구조 개선, 리팩토링, 테스트 코드 작성, 코드 리뷰를 통한 유지보수성 향상\n\n•현장 이슈 분석 및 재현: 로그, 센서 데이터, 실행 결과를 바탕으로 문제 원인을 분석하고 코드 수준의 개선안 도출\n\n• AMR Core 소프트웨어 아키텍처 설계 및 기술 리딩 (C++)\n\n• 로봇 주행 제어 모듈 개발 (Navigation, Localization, Path Planning)\n\n• SLAM, Localization, Path Planning 알고리즘 적용 및 시스템 통합\n\n• 실시간 제어 로직 및 상태 관리 시스템 설계/개발\n\n• 센서 데이터 처리(LiDAR, IMU, Encoder 등) 및 제어 연동 개발\n\n• 다수 로봇 환경을 고려한 안정적 소프트웨어 구조 설계\n\n• 코드 리뷰 및 개발 프로세스 개선, 기술 방향성 수립",
+      "benefits": "• 리프레시 : 연차, 반차\n\n• 급여제도 : 퇴직연금, 인센티브제, 4대 보험\n\n• 지원금/보험 : 건강검진, 체력단련실운영\n\n• 교육/생활 : 점심식사 제공, 저녁식사 제공, 식비 지원, 음료제공(차,커피)"
+    },
+    {
+      "site": "saramin",
       "company": "(주)사람인",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -153968,6 +154368,116 @@
       "qualifications": "• 신입\n\n• 학력무관\n\n• 신입\n\n• 대학교 졸업(4년) 이상, 졸업 예정자 지원 가능\n\n• 학사 졸업자 및 졸업예정자 (전공무관)\n\n• LLM과 RAG 관련 기술에 대한 기본 지식 보유\n\n• LLM 기반 에이전트 개발 경험이나 이해도 보유\n\n• 주요 AI 프레임워크 활용 가능자 (Python, LLM, RAG, LangChain, LangGraph 등)",
       "preferences": "• 벡터 검색 및 RAG 솔루션 구축 경험\n\n• 대규모 AI 모델 및 데이터를 다루고 최적화한 경험\n\n• LLM, 임베딩, 멀티모달 모델 학습을 위한 데이터셋 생성, 학습 및 배포 경험\n\n• OpenAI, Claude 등 생성형 AI API 활용 경험\n\n• 헬스케어·바이오·의료 데이터 관련 프로젝트 경험",
       "main_tasks": "뉴지엄랩은 임상급 정밀영양(Clinical-Grade Precision Nutrition) AI 인프라를 구축하는 헬스케어 AI 스타트업입니다.\n\n의료기관, 헬스케어 플랫폼, 약국, 식품·커머스 기업이 개인의 건강 데이터에 기반한 정밀영양 서비스를 제공할 수 있도록 AI 엔진, 영양 지식베이스, RAG 및 Agent 시스템을 개발하고 있습니다.\n\n건강검진 결과, 질환 정보, 복용약물, 알레르기, 생활습관 데이터를 통합 분석하여 과학적 근거에 기반한 영양 추천을 제공하며, 이를 API 및 SDK 형태로 다양한 서비스에 제공합니다.\n\n• LLM 및 RAG 기반 AI 서비스 구축 및 운영\n\n• 모델 학습 및 서비스 고도화를 위한 데이터셋 생성 및 관리\n\n• AI Agent 개발 및 정밀영양 AI 솔루션 구축 프로젝트 지원",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)이아이씨엔",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI (딥러닝,NLP,RAG,LLM,Agent) 경력개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54187515&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=3b74758e-5008-481e-b0d3-f0354d481e24",
+      "career": "경력3년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "TensorFlow",
+        "PyTorch",
+        "Keras"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 무관\nㆍ경력 : 경력 3년 이상\n\nAI 개발자 채용공고솔루션개발팀 / 채용인원 O명",
+      "preferences": "",
+      "main_tasks": "ㆍ\n[AI 솔루션 개발 분야] 담당 업무 ㆍ딥러닝, 자연어처리(NLP/NLU), RAG/sLLM, 챗봇/콜봇, Agent 관련 기술 연구 및 솔루션 개발 필수 자격 요건 ㆍ인공지능,딥러닝,생성형AI 관련 분야 경력 3년 이상 ㆍ딥러닝 모델 개발, 자연어처리, 생성형AI 기반 서비스 설계 및 구현 경력자 ㆍRAG, sLLM 연구 및 적용 경험자 ㆍPyTorch, TensorFlow, Keras 라이브러리 관련 기술 보유자 ㆍ상세 경력기술서 필수 우대 사항 ㆍ컴퓨터공학, 인공지능 관련 전공자\n[공통 사항] 급여 조건 ㆍ면접 후 결정 수습 기간 ㆍ3개월, 수습 기간 중 급여 100% 지급",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)이수시스템",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[이수시스템] 화학·제조 AI솔루션 구축 개발자/PL 경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199891&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d7bb216d-5e96-4240-b683-4462e21ad498",
+      "career": "경력 5~10년",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "React",
+        "Vue",
+        "Node.js",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "Oracle",
+        "MSSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 개발 산출물 관리 및 품질 검토\n\n• 5년 이상 ~ 10년 이하의 개발 및 PL 역량을 보유하신 분\n\n• Java 및 Spring / Spring Boot Framework 기반 개발 및 설계 경험이 있으신 분\n\n• MySQL, MSSQL, Oracle 등 RDBMS 설계 및 쿼리 최적화, API 연계 개발 능력을 갖추신 분\n\n• 외부 시스템 연계 및 API 개발 경험이 있으신 분\n\n• 개발 일정 관리, 이슈 조율, 산출물 품질 관리 등 PL급 역할 수행이 가능하신 분\n\n• 시스템 구조와 개발 전반에 대한 이해를 바탕으로 주도적인 개발이 가능하신 분\n\n• 반상주 지방 출장이 가능하신 분",
+      "preferences": "• 화학·제조 분야 SI 프로젝트 경험 및 제조 업무(MES, ERP, 설비, 품질 등) 이해도가 높으신 분\n\n• AI 관련 프로젝트 경험 또는 LLM API, RAG, AI Agent 활용 서비스 구축 경험이 있으신 분\n\n(Claude, ChatGPT, Cursor 등 활용 우대)\n\n• PM 또는 PL 역할을 맡아 고객 커뮤니케이션, 일정 관리, 개발 리딩을 해보신 분\n\n• React/Vue.js 등 프론트엔드 개발 경험이 있거나 Python, Node.js 활용이 가능하신 분",
+      "main_tasks": "1. 화학·제조 분야 AI솔루션 구축 프로젝트 수행\n\n• 업무 시스템 내 AI 기능 적용 및 AI Agent 개발\n\n• LLM API, RAG를 활용한 AI 서비스 및 업무 자동화 개발\n\n• AI도구(Claude, ChatGPT 등)를 활용한 개발 및 업무 개선\n\n2. 제조·산업 분야 SI 시스템 구축 및 고도화\n\n• 설비, 생산, 품질, 물류, 업무 포털 등 기업 업무 시스템 개발\n\n• Java/Spring 기반 웹 어플리케이션 설계 및 개발\n\n• DB설계, SQL작성, 데이터 조회/처리 로직 개발\n\n• 운영 이슈 분석 및 신규 기능 개발을 통한 기존 시스템 개선\n\n3. 프로젝트 관리 및 협업\n\n• 고객사, 내부 개발자, 기획자, 협력사와의 커뮤니케이션",
+      "benefits": "• 최고급 PC 제공\n\n• 탄력근무제 운영 : 시차출퇴근제\n\n• 구내 식당 : 구내식당 및 매점, 스낵바 운영\n\n• 종합 건강검진 : 30만 원 패키지 + 가족 1인 포함 + 유급휴가\n\n• 자기계발 지원 : 자격증 취득 및 교육 비용 지원(개인 온라인,오프라인 교육/사내 스터디/사내강사 제도 등)\n\n• 복지카드 + 법인카드 : 1인 1카드\n\n• 전세자금 및 주택 구매 대출 지원\n\n• 성과급 지급"
+    },
+    {
+      "site": "saramin",
+      "company": "네오아크로보틱스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[네오아크로보틱스] 로봇 SW/AI 개발자 모집 (대구)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54194788&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a8574c73-44f2-4257-abd7-10367ab4ef8e",
+      "career": "신입·경력",
+      "location": "대구북구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C#",
+        ".NET",
+        "OpenCV",
+        "Git",
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "(Tasks)",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "주식회사발전존중",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[재택/프리랜서] AI 영상 추출·광고 영상 편집자 (숏폼)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54192917&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=a8574c73-44f2-4257-abd7-10367ab4ef8e",
+      "career": "경력무관",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 합격 시 약 1주간 발산 사무실 교육 참여가 가능하신 분 (사무실 교육 진행 후 재택 전환)\n\n• AI툴 활용에 능숙하신 분\n\n• 영상 편집 및 제작 경험이 있으신 분\n\n• SNS를 즐겨하시는 분",
+      "preferences": "• AI를 활용한 제작물 포트폴리오가 있으신 분",
+      "main_tasks": "• AI툴을 이용하여 영상 추출 (크레딧 미제공)\n\n• 추출한 자료를 활용하여 영상 제작 (기획안 제공)",
       "benefits": ""
     },
     {
@@ -167768,6 +168278,72 @@
     },
     {
       "site": "saramin",
+      "company": "(주)지란지교데이터",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[대전] 보안 솔루션 원격 기술지원 엔지니어 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191830&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=bb492dd2-f8ce-4b0e-9ba8-4be4cd31ce45",
+      "career": "경력무관",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)케이엠에스테크놀로지",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "IT 보안 솔루션 엔지니어 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54192577&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=cf345110-d17b-4511-aac7-a68d1307281f",
+      "career": "경력 1~7년",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Node.js",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "GitLab",
+        "GitHub Actions",
+        "Apache",
+        "Linux",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성",
+        "오픈소스 기여",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 1년 이상 ~ 7년 이하\n\n• 대학졸업(2,3년)이상\n\n기술적 역량\n\n• Linux 시스템 운영 및 Shell Scripting(Bash, Python 등) 가능하신 분\n\n• 네트워크 및 통신 프로토콜(TCP/IP, OSI 7 Layer 등)에 대한 기초 지식이 탄탄하신 분\n\n• Docker, Kubernetes 등 컨테이너 기반 인프라에 대한 이해도를 보유자\n\n• 다양한 언어 환경(Java/Maven, Python/Pip, Node.js/Npm 등)의 빌드 메커니즘 및 패키지 매니저 이해도 보유자\n\n• REST API 활용 및 연동 개발 가능하신 분\n\n보안 및 라이선스 역량\n\n• CVE, CWE, CVSS 등 보안 취약점 점검 표준 체계에 대한 지식\n\n• 주요 오픈소스 라이선스의 의무사항 및 상충 관계 이해\n\n소프트 스킬\n\n• 기술적 이슈를 고객에게 설명할 수 있는 커뮤니케이션 능력\n\n• 논리적 사고를 바탕으로 한 문제 해결 능력 및 고객 지향적 태도\n\n• 최신 보안 트렌드 및 새로운 기술 규격을 주도적으로 학습하고 적용할 수 있는 분\n\n• 영문 기술 문서 독해가 가능자, 벤더사와 서면(E-mail, Ticket) 소통 가능자",
+      "preferences": "• SCA 실무 경험: Black Duck, Mend, Snyk, Sonatype 등 SCA 도구 운영 또는 컨설팅 유경험자\n\n• 클라우드환경 구축 경험: 클라우드(AWS, Azure, GCP) 환경 구축 경험\n\n• 자동차(Automotive) 전장 분야 프로토콜 경험자 우대 (CANbus, Bluetooth, WiFi, Automotive Ethernet 등)\n\n• 퍼징 테스팅(Fuzzing Test) 툴 활용 경험자\n\n• 취약점 분석(CVE), 모의해킹, Pentest, 소스코드 진단, 코드 정적 분석(SAST), 동적 분석(DAST) 도구 등 보안 관련 프로젝트 수행 경험자",
+      "main_tasks": "• SCA 솔루션 and/or 퍼징 테스트 솔루션 기반 보안 컨설팅 및 기술 지원 담당\n\n• 솔루션 도입 고객사 대상 제품 구축, 시스템 초기 설정 및 안정화 지원\n\n• 잠재 고객사 대상 솔루션 프레젠테이션, 데모 시연 및 기술 컨설팅 수행\n\n• 고객사 환경에 맞춘 PoC(개념 검증) 및 BMT(벤치마크 테스트) 시나리오 설계 및 기술 검증 주도\n\n• 고객 요구사항(RFP) 분석을 통한 보안 테스팅 아키텍처 제안 및 지원\n\n• 고객사 개발자 및 보안 담당자 대상 맞춤형 교육 및 기술 세미나 진행\n\n• 오픈소스 취약점(CVE) 분석 및 라이선스(GPL, Apache 등) 위반 리스크 해결을 위한 기술적 가이드 제공\n\n• 기업별 오픈소스 사용 정책 수립 및 규정 준수 여부를 검토하는 거버넌스 체계 컨설팅\n\n• CI/CD 파이프라인(Jenkins, GitLab, GitHub Actions 등)에 SCA를 자동화하여 'Shift-Left' 보안 구축에 대한 가이드\n\n• SBOM(SPDX, CyclonDX) 생성 관리 체계 지원을 통한 소프트웨어 공급망 보안 강화\n\n• 글로벌 벤더사 엔지니어와의 기술 협업 및 이슈 소통\n\n• 솔루션사업부 부서 소속, 사원/대리/과장 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 워크샵, 직무능력향상교육, 교육비 지원, 자기계발비 지원, 점심식사 제공, 간식 제공, 음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무, 포상휴가, 공휴일 휴무, 육아휴직\n\n• 급여제도 : 퇴직연금, 퇴직금, 성과급, 4대 보험\n\n• 지원금/보험 : 건강검진, 의료비지원(본인), 각종 경조사 지원, 선택적복리후생, 복지카드/포인트\n\n• 조직 문화 : 수평적 조직문화, 회식강요 안함, 야근강요 안함, 자유복장, 자유로운 연차사용, 칼퇴근 보장\n\n• 선물 : 명절선물/귀향비"
+    },
+    {
+      "site": "saramin",
       "company": "퓨렌스(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -173041,6 +173617,64 @@
     },
     {
       "site": "saramin",
+      "company": "(주)드림아이디어소프트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[대구] Java 자바(바이브 코더) 백엔드 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54201807&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=1c9fffdc-ac43-4c53-9649-0e53eeee30c1",
+      "career": "경력무관",
+      "location": "대구동구",
+      "dday": "",
+      "tech_stack": [
+        "Java"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관",
+      "preferences": "• 보유역량: 해당직무 근무경험",
+      "main_tasks": "• 자바 기반의 웹서비스 개발 및 백엔드 시스템 구축 유경험자\n\n• DB SQL 작성 능숙하신 분\n\n• 시스템사업부 부서 소속, 연구원/사원 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 도서구입비지원, 자격증취득지원, 저녁식사 제공, 음료제공(차,커피)\n\n• 리프레시 : 연차, 여름휴가, 근로자의날 휴무\n\n• 급여제도 : 퇴직연금, 인센티브제, 상여금, 성과급, 야근수당, 휴일(특근)수당, 연차수당, 4대 보험\n\n• 선물 : 명절선물/귀향비\n\n• 조직 문화 : 자유복장\n\n• 출퇴근 : 주 40시간제 시행"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)오픈메이트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[오픈메이트] Java , Vue WEB 경력 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199824&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=8713e8f6-b6ac-46e2-9c1b-7e6539ca643d",
+      "career": "경력3년↑",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "Vue",
+        "Spring",
+        "MySQL",
+        "PostgreSQL",
+        "Oracle",
+        "Linux",
+        "Unix"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "ㆍ정보처리기사\nㆍ시스템 분석, 설계 가능",
+      "preferences": "+ Linux/Unix 명령어 사용 가능\nㆍ관련 기술 경험 3년 이상 우대\n\n|오제출자 우대\n\nㆍ 정규직 (수습기간 3개월, Bol 100% 지급)\n\nㆍ주 5일 (월~금) / 오전 Al ~ 오후 6시(8시간근무)\nㆍ근무지 : 본사 및 파견지 근무 (서울, 경기)\n\nㆍ급여 : 면접 후 결정, 희망연봉 기재\n\n자율 출퇴근제                            패밀리데이                       자유로운 연차 사용                  생일자상품권 지급\n\n출퇴근 시간,                           매월 3째주 금요일                  연차, 반차, 반반차까지                            생일엔\n내 생활에 맞게 조절!                 .4시간 근무 후퇴근                  눈치없이 사용                     축하 상품권 제공\n\n= BB  Bu\n\n리프레시 휴가                     청년세금감면 지원                    건강검진 지원                      도서 구입비 지원\n3년마다 15일            청년 대상 세제 혜택         면1회 건강검진비              wie\n유급휴가와 휴가비 제공                         적극지원                                 추가지원                              도서 구입비 지원\n\n경조사 지원       지인추천 보상금\n경조휴가 및                                추천채용 시\n경조금 지원                                포상금지급\n\n입사지원 서류에 허위사실이 발견될 경우, 채용확정 이후라도 채용이 취소될 수 있습니다.\n경력 사항 근거 서류가 없을 경우 경력 인정이 안될 수 있습니다.\n\n 채용절차의 공정화에 관한 법률 (약칭: 채용절차법 )\n[시행 2020. 5. 26.1\n[벌률 제17326호, 2020. 5. 26, 타법개정]\n제17조(채용서류의 반환 등)\n\n© 구인자는 구직자의 채용 여부가 확정된 이후 구직자(확정된 채용대상자는 제외한다)가 채용서류의 반환을 청구하는 경우에는 본인임을\n확인한 후 대통령령으로 정하는 바에 mle} 반환하여야 한다. cel, 제7조제1황에 따라 홈페이지 또는 전자우편으로 Nee BSL\n구직자가 구인자의 요구 없이 자발적으로 제출한 경우에는 그러하지 아니하다.\n\n© 제항에 따른 구직자의 채용서류 반환 청구는 서면 또는 전자적 방법 등 고용노동부령으로 정하는 바에 따라 하여야 한다.\n\n© 구인자는제1항에 따른 구직자의 반환청구에대비하여 대통령령으로 정하는 기간 동안 채용서류를 보관하여야 한다. 다만, 천재지변\n이나 그 밖에 구인자에게 책임 없는 ARE 채용서류가 멸실된 경우 구인자는 제1항에 따른 채용서류의 반환 의무를 이행한것으로 본다.\n\n© 구인자는 대통령령으로 정한 visto] 청구기간이 지난 경우 및 ASAE 반환하지 아니한 경우에는 「개인정보 보호법[에 따라\nBH FH 파기하여야 한다.\n\n© 제1황에 따른 채용서류의 반환에 소요되는 비용은 원칙적으로 구인자가 부담한다. 다만, 구인자는 대통령령으로 정하는 범위에서\n재용서류의 반환에 소요되는 비용을 구직자에게 부담하게 할수 있다.\n\n© 구인자는제1황부터 제5항까지의 규정을 채용 여부가 확정되기 전까지 구직자에게 알려야 한다.",
+      "main_tasks": "ㆍ Web Application 개발 (Java/javascript)\nㆍ긍공/민간 spit 프로젝트 수행\n\nㆍ경력 : 경력 3년 이상\n+ Web Application 개발 가능\n+ Spring(Spring 8000/전자정부표준프레임워크 활용 가능\n+ Oracle/MySQL/PostgreSQL S RDBMS 활용 가능\n+ Vue.js, Reacts &\nㆍ원활한 커뮤니케이션 능력과 책임감을 보유하신 분\n새로운 개발 언어 도입에 거부감이 없으신 분\nㆍ긍정적이고 적극적인 마인드를 가지신 분",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "신플렛(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -175971,6 +176605,59 @@
       "preferences": "• ROS2 기반 지능형 제어 및 ROS 시뮬레이션 환경 경험자\n\n• OpenCV, PyTorch, TensorFlow 등 AI/비전 프레임워크 활용 능숙자\n\n• 로봇/센서/제어 시스템 등 피지컬 AI 관련 개발 및 융합 경험\n\n• 산업용 통신(Modbus, 시리얼, PLC 등) 및 IO 통신 기반 장비 인터페이스에 대한 이해도",
       "main_tasks": "• AI 영상 분석 알고리즘 개발 및 고도화\n\n-OpenCV 및 딥러닝 기반의 실시간 영상 인식·분석 알고리즘 설계 및 구현\n\n• AI 영상 분석 프로그램 수정 및 개발 관리\n\n- 기존 영상 처리 프로그램의 기능 개선, 리팩토링 및 유지보수 관리\n\n- AI 영상 분석 시스템의 요구사항 분석 및 버전 관리\n\n• 데이터 처리 및 제어 시퀀스 운영\n\n- Python 기반의 대용량 영상/데이터 전처리 및 효율적인 제어 시퀀스 구축\n\n• AI 모델 학습·추론 환경 구축 및 시스템 통합\n\n- 딥러닝 모델의 학습/추론 파이프라인 최적화 및 타 장비(센서, PLC 등)와의 데이터 연동·통합",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)웨어비즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI제품(Python) 개발 경력직 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54200306&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=15010d26-4a70-421f-9510-8c6e0ab0ac4d",
+      "career": "경력2년↑",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "FastAPI",
+        "MySQL",
+        "Oracle",
+        "AWS",
+        "Azure",
+        "OpenCV"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "- 2년차 이상 경력직 백엔드 개발자\n\n- 파이썬에 대한 이해도 및 능숙한 활용 능력\n\n- 프레임워크 및 라이브러리 경험 (ex:fastAPI,openCV 등)\n\n- 데이터베이스 관련 지식 (ex: MySQL, Oracle 등)\n\n- 컴퓨터공학 전공자 또는 정보처리기사 자격증 보유자\n\n• 경력 2년 이상\n\n• 대학교졸업(4년)이상",
+      "preferences": "- 인공지능 솔루션 개발 경험 우대\n\n- 리액트 사용 경험\n\n- Elastic Search을 사용하여 프로젝트 경험 우대\n\n- AI 관련 업무 경험 우대\n\n- 클라우드 기술 및 서비스 활용 경험 (ex: AWS, Azure 등)\n\n- 백엔드 개발 경험",
+      "main_tasks": "AI 기술로 비즈니스의 혁신을 이끄는 '웨어비즈'에서 함께 성장할 AI 개발자를 모십니다.\n\n저희는 고도화된 기술력을 바탕으로 고객의 다양한 비즈니스 요구를 충족하는 AI 솔루션을 서비스하며 빠르게 성장하고 있는 기업입니다.\n\n자사의 AI 기반 솔루션들을 고도화하고, 새로운 가치를 창출할 역량 있는 2년 차 이상의 개발자분을 기다립니다.\n[모집분야] AI 개발\n\n- 검색엔진 제품 고도화\n\n- AI 기술 분석 및 제품 향상\n\n- 고객의 요구사항에 맞춰 솔루션 및 시스템 개발 및 유지보수\n\n- 신기술 및 트렌드를 연구하고 이를 적용하여 서비스 향상",
+      "benefits": "- 경조사 지원 및 연차휴가 등 복리후생 제공\n\n- 연차 12일 제공 (1년 근무 시 15일 제공 / 이후 2년에 1개씩 증가)\n\n- 야근, 장거리 출장 시 식비 제공\n\n- 장거리 출장 교통비 지원\n\n- 명절선물 제공\n\n- 4대보험, 퇴직금"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)세니젠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "생물정보분석 BI (Bioiformatics)  팀원 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54186930&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=9020dec1-6f62-4cf3-8ad6-d88121703104",
+      "career": "경력무관",
+      "location": "경기안양시 동안구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "-리눅스환경경험자                       + 해당직무 근무경험 보유\n-미생물데이터 생물정보분석 경험      * 통계학 또는 Bioinformatics HSAt\n\n= Python, R SE snakemake &\n\n미생물데이터분석 파이프라인개발\n경험자우대\n\n+ 미생물 분석서비스경험자우대\n\n하나 이상의 언어로 스크립트 작성 가능\n\n(데이터 추출 및 변환, figure 생성 등)",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": "생일자                시100만원\n상품권지급                |금지급\n\n장기근속자                  유연한                  사내 동호회\n포상                   휴가제도               활동 지원\n\ne © 0\n\n커피 및 간식            시차출퇴근             명절선물\n\n제공                         운영                         지급"
     },
     {
       "site": "saramin",
@@ -181492,6 +182179,84 @@
     },
     {
       "site": "saramin",
+      "company": "(주)지엠피아이티",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[C#, React] 품질관리시스템 (LIMS, QMS, SDMS) 개발",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54200429&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=19738aef-e1a6-4811-b665-1f89271a396e",
+      "career": "신입·경력",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "C#",
+        "React",
+        ".NET"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입 / 경력 1년 이상 ~ 20년 이하\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능",
+      "preferences": "",
+      "main_tasks": "근무 장소 : 서울시 가산동\n\nLIMS / QMS / SDMS 기반 웹 시스템 설계 및 개발\n\nC#(.NET) 기반 백엔드 API 개발\n\nReact 기반 프론트엔드 개발\n\nDB 설계 및 쿼리 최적화 (MS-SQL 등)\n\n고객사 요구사항 분석 및 기능 개선\n\n기존 시스템 유지보수 및 고도화",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)지엠피아이티",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "제약 MES 솔루션 개발자 채용 React, C#(천안)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54200474&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=19738aef-e1a6-4811-b665-1f89271a396e",
+      "career": "신입·경력",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "C#",
+        "React",
+        "MSSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "대용량 처리"
+      ],
+      "qualifications": "• 신입 / 경력 1년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능",
+      "preferences": "MES, ERP, WMS 등 제조/업무 시스템 개발 경험\n\n대용량 데이터 처리 및 성능 개선 경험\n\n실서비스 운영 및 유지보수 경험\n\n② MES 유지보수 및 운영 관리자 (React · C# Winforms)\n\n모집 인원: 0명\n\n주요 요건\n\nC# WinForms 기반 솔루션 유지보수 및 운영 경험\n\nSQL 활용 능력: MSSQL 쿼리 작성을 통한 데이터 분석 및 트러블슈팅\n\n제약 제조 공정의 이해: 칭량, 제조, 포장 등 주요 공정 흐름 파악 가능자\n\nGMP 기반 운영: 데이터 무결성(Data Integrity) 준수 및 변경 관리 경험\n\nCSV(Computer System Validation) 대응 및 문서화 경험\n\n제약 분야 ERP/LIMS 등 유관 시스템 연동 경험\n\n현장 사용자(생산직군)와의 원활한 커뮤니케이션 능력",
+      "main_tasks": "① MES 웹 프론트 or 백엔드 개발자 (React · C#)\n\n모집 인원 : 0명\n\n주요 요건\n\nReact 기반 웹 프론트엔드 개발 경험\n\nC# / ASP.NET Core 기반 백엔드 개발 경험\n\nEntity Framework Core를 활용한 ORM 설계 및 데이터 처리 경험\n\nMSSQL 등 RDBMS 기반 실무 개발 경험",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)아이티존",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "프로그램 웹/앱 개발 경력사원 모집(정규직)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191098&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=a53b6f03-8d45-4d15-8b1c-7d50684b1a27",
+      "career": "경력 3~5년",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 3년 이상 ~ 5년 이하\n\n• 대학졸업(2,3년)이상",
+      "preferences": "",
+      "main_tasks": "• WEB&앱 개발 업무로 콜센터 업무, 금융업무(은행,카드,보험,증권 등) 개발\n\n• 개발부 부서 소속, 면접 후 결정 직급으로 함께할 예정이에요.",
+      "benefits": "• 급여제도 : 퇴직금, 4대 보험"
+    },
+    {
+      "site": "saramin",
       "company": "주식회사노드랩스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -184895,6 +185660,52 @@
     },
     {
       "site": "dev",
+      "company": "딜로이트컨설팅",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "SAP ABAP 개발 전문 컨설턴트 경력직 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556523?ReturnUrl=RecruitInfo",
+      "career": "경력",
+      "location": "서울 영등포구",
+      "dday": "~09.04(금)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "기본적인 ABAP 역량(Code를 점검하고 Logic을 파악하여 개발자와 소통할 수 있는 수준)\n\n해외여행에 결격 사유가 없는 자\n\nGlobal Talent Standards 에 따른 역량을 보유한 자",
+      "preferences": "업무설계서 직접 작성 가능자\n\nSAP ABAP Certification 보유자\n\n■Global Talent Standards\n\nDeloitte는 우리의 고객이 일관되고 탁월한 서비스를 경험할 수 있도록 글로벌 비즈니스 품질 수준을 세계적으로 균일하게 유지함을 목표로 합니다.\n\nTalent 에서는 글로벌 공통 기준에 의거한 Function별, 직급별 Global Core Services 영역과 Client Service Professionals에게 필요한 핵심역량을 인재 채용 및 인사 제도 운영에 반영하고 있으며\n\n이를 기반으로 후보자를 탐색 하고 채용을 진행합니다.\n\n■전형방법\n\n서류 전형\n면접 전형\n인성 검사\n최종 합격\n최종 승인\n\n*단, 채용 직급에 따라 Background check/Reference check이 추가로 진행될 수 있습니다.",
+      "main_tasks": "SAP ERP ABAP 프로그램 개발 및 유지보수\n\n신규 기능개발 및 기존 프로그램 개선\n\n인터페이스 개발 및 데이터 연계\n\n사용자 요구사항 분석 및 기술지원\n\n※ 채용직급 : Consultant ~ Senior Manager\n\n※ 수습기간 3개월 적용 (수습기간 중 평가에 따라 수습기간 연장 가능성 있음)\n\n학력\n\n대학교(학사)졸 이상\n\n경력\n\n경력 3년 이상 이하",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "파인디지털",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[분당 상장사] 파인뷰 HW개발 부문 경력 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556479?ReturnUrl=RecruitInfo",
+      "career": "경력(1~16년)",
+      "location": "경기 성남시 분당구",
+      "dday": "D-7",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "- 경력 : 1년~16년이하 (사원~부장급)\n\n- 블랙박스, 영상처리장치 H/W 개발 경험자",
+      "preferences": "- 무선 네트워크 장치 H/W 개발자\n\n근무 관련 정보",
+      "main_tasks": "- 블랙박스 System H/W 개발\n- H/W 시스템 설계, 회로 / PCB 설계, BOM, 디버깅, 인증시험 등\n- 설계범위 : AP & 이미지 센서, 주요 주변 회로, 시스템 구조",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -185691,6 +186502,33 @@
       "qualifications": "+ 전문학사 이상\n\n* SQLE 능속하게 다루고 데이터 가공:파이프라인을 직접 설계해본 분\n\n* 644 또는 디지털 행동 데이터 수집 구조(이벤트 파라미터 설계)를 이해하고 운영해본 경혐을 보유하신 분\n+ BigQuery 등 클라우드 데이터 웨어하우스 실무 경혐을 보유하신 분\n\n+ 데이터 표준-스키마`품질 관리에 대한 감각\n\n* 최종함격 추, 지정 입사일에 입사 가능하신 분\n\n+ 해외 출장에 결격 사유가 없는 분 (남성의 경우, 회사가 지정한 입사일까지 병역을 마쳤거나 면제되신 분)",
       "preferences": "＊ GCP 생태계(80046, Dataflow, Agent Builder, Vertex AIS) 활용 경험\n+ MMP(S 어트리뷰션)'다04000 등 고객'마케팅 데이터 통합 경험\n\n*＊ 대규모 820(완성차-이커머스 등) 고객 데이터 환경 경험\n\n+ 6604186를 위한 데이터 정제/구조화 경험\n\n* 28085010타11417(55 등 개발 언어 이해도\n\n를 지원서 접수\n\n© 공고가 게시된 기간 내 접수 (지원서는 제출완료 된 건에 한하여 검토)\n* 이노션 채용 홈페이지의 온라인 입사 지원서 제출\n\nm 기타사항\n\n0\n갈 >\n\n}.\n4\n\n|채용 특성상, 전형 일정이 변동 될 수 있습니다.\n별 함격자에 한하여 개별 안내 예정입니다.\n\n|사지원서 기재사항 또는 제출서류 중 허위사실이 있는 경우 합격이 취소될 수 있습니다.\n\n형대상자에 한하여 별도의 증빙서류를 요청할 수 있습니다.\n\n취업보호대상자(장애, 보룬 등)는 관계 벌령에 의거하여 우대합니다.\n\n}근무가 불가능할 경우, 함격이 취소되거나 전형상 불이익이 있을 수 있습니다.\n\n애드\n\n한하\n\n과 rat\n\n수 2 og 주\n\n[내",
       "main_tasks": "글로별 자동차 브랜드의 원월/앰의 고객 행동 데이터 수집 환경 설계:운영 (644 중심, 6114 등)\n GA4-MMP-CRM-VoC-ICDB-HMG 고객ㅁ08 등 다중 소스 데이터를 60 BigQuery= 통합하고 데이터 표준 수립\n+ 분석\"8['마케팅이 즉시 활용 가능한 데이터 마트 설계:구죽:운영\n\n+ Agent Builder 기반 GenAl 데이터 활용 환경 구성 및 데이터 정제\n\n+ 데이터 품질\"정함성 관리, 개발 가이드 문서화 (ConfluenceTira 기반 협업",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "이노션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "마케팅 데이터 엔지니어 (Martech Engineer)　채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556498?ReturnUrl=RecruitInfo",
+      "career": "경력(8~13년)",
+      "location": "서울 강남구",
+      "dday": "~06.28(일)",
+      "tech_stack": [
+        "Python",
+        "GCP"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "*＊ 학사 이상\n\n＊ GCP(Google Cloud Platform) 환경에서 데이터 엔지니어링 경혐이 있으신\n* Google Ads, Meta 등 디지털 마케팅 플랫폼 및 마케팅 데이터에 대한 이해를 보유하신\n+ Python 및 501 활용 역량을 보유하신 분\n\n* 데이터 파이프라인 구축 또는 운영 경험이 있으신\n+ 최종할격 추, 지정 입사일에 입사 가능하신 분\n\n* 해외 출장에 결격 사유가 없는 분 (남성의 경우, 회사가 지정한 입사일까지 SSS 마쳤거나 면제되신 분)\n\na\n\nHE\n\nA",
+      "preferences": "» MMM(Marketing Mix Modeling), MTA(Multi-Touch Attribution) 관련 프로젝트 경、\n* APL 기반 데이터 연동 및 자동화 경혐이 있으신 분\n\n+ 생성형 ALEE LIM 기반 업무 자동화 경혐이 있으신 분\n+ 글로벌 프로젝트 또는 비즈니스 영어 활용 경혐이 있으신\n\ngt\n으\n의\n10\n>\n\nAA 접수\n\n*＊ 공고가 게시된 기간 내 접수 (지원서는 제출완료 된 건에 한하여 검토)\n* 이노션 채용 홈페이지의 온라인 입사 지원서 제출\n\n를 채용전형\n\n* 서류전형 - 1차 면접 - 인성검사 - 2차 면접 - ABA\n\n면\n\n- 입사\n\nm 기타사항\n\n+ 포지션에 따라 3차 면접까지 진행될 수 있습니다.\n\n+ 취업보호대상자(장애, 보훈 등)는 관계 법령에 의거하여 우대합니다.\n\n+ 상시채용 특성상, 전형 일정이 변동 될 수 있습니다.\n\n* 전형 별 함격자에 한하여 개별 안내 예정입니다.\n\n+ 입사지원서 기재사항 또는 제출서류 중 허위사실이 있는 경우 합격이 취소될 수 있습니다.\n+ 전형대상자에 한하여 별도의 증빙서류를 요청할 수 있습니다.\n\n+ 절상근무가 불가능할 경우, 함격이 취소되거나 MHA 붙이익이 있을 수 있습니다.",
+      "main_tasks": ". 글로벌 마케팅 데이터 Sat 및 운'\n\na\n\n08\n\n* 국가별 마케팅 성과 데이터 검증, 품질 관리 및 데이터 적재 프로세스 운영\n+ FFM(Full Funnel Marketing) View 742 위한 데이터 연동 및 운영\n\n본\n\n데이터 파이프라인 구축 및 자동화\n\n© GCP 기반 마케팅 데이터 수집:처리 파이프라'\n＊ 광고 매크로(081461100( 등) 및 UTM 기반 트래킹 자동화 체\n\n3. 마케팅 분석 환경 구축 지원\n\n광고 플랫폼 WAP 연동을 통한 데이터 활용 환경 구죽\nMMM(Marketing Mix Modeling) 프로젝트 관련 데이터 구조 설계 및 데이터 분석 지원",
       "benefits": ""
     },
     {
@@ -189535,132 +190373,155 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "GS리테일",
+      "company_size": "대기업",
+      "company_size_matched": "GS리테일",
+      "title": "정보보안부문 개인정보보호 담당 경력사원 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556507?ReturnUrl=RecruitInfo",
+      "career": "경력(7년 이상)",
+      "location": "서울 영등포구",
+      "dday": "~06.29(월)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "-경력: 7년 이상\nㆍ개인정보 처리현황 관리, 점검, 검토 및 개선 업무 수행 경험\nㆍ개인정보보호 법규 BLISMS-P 인증기준에 대한 이해\n-서비스17-기획'법무 등 다양한 유관부서와 협업하며 업무를 수행한 경험\nEM 작성 및 커뮤니케이션을 통한 의사결정 지원 역량\n\n우대요건 ㆍ오프라인 가맹 구조, 이커머스 홈쇼핑 위치기반서비스 등 관련 업무 경험\nㆍ개인정보 보호 관련 자격증(0056, PIA, ISMS-P 5) 보유\n-가명.익명처리 등 데이터 비식별화 또는 데이터 활용 검토 경험\n-개인정보 보호 인증 또는 대외 점검 HS 경험\n-개인정보 보유기간 관리 및파기 체계 구축 운영 경험\n-개인정보 처리현황,개인정보 흐름도,개인정보 메타데이터 관리 경험\n\n근무정보         ㆍ근무 형태 : 정규직 ＊입사후:3개월의수습기간이있으며 수습기간동안급여는100%지급됩니다\n-근무지:강서65타워\n\n지원여정\n(위               00\n서류접수         .시역량검사         1차면접          2차면접        레퍼런스체크     채용검진및입사\n~'26.06.29          ‘26.075          ‘26.075        '26.07~08중        ‘26.083        '26.08~09 5\n꼭!유의해주세요\n\n-각전형일정과온/오프라인진행 OEE BIAS] APSO THE 변동될수 있어요.\n-각전형 단계별결과는 개별 이메일및 문자 안내예정이며, 05리테일 채용 홈페이지에서 확인 가능해요.\n-최종합격 통보 후,당사의 고정 양식에 의한 근로계약서를 작성한 때에 정식 채용된것으로 간주해요.\n*최종합격:채용검진채용적격 판정이후\n-052터일및자회사의다른 채용 STO} SIO] XIHA 수 없어요 (계열시간중복지원은가능\n-입사지원서 기재사항 SI MIMS 허위 또는 고의누락이 판명될 경우 BIO] SAE! + 있어요.\n-국가유공자 및 보훈 대상자는 관련법에의거하여우대해요.\n채       Sale 채용페이지 내\" 채용 문와를통해 문의할수 있어요.\n\n.05리테일의 S/A]=(WELL-BeingH|=)S 474 S242.\n\nWork: SPA 운영, 이동 통신비 지원, 자격증 지원 제도 운영 등\nEngagement : 임직원 할인, 심리상담 지원, 장기근속 포상 운영 등\n\nLife: BA} 지원 의료비 지원, 건강 검진, 자녀교육비지원, 사내 어린이집 운영 등\nLeisure : 617] #7} 5a! 지원, 제휴 휴양시설 지원, 스포츠티켓 지원 운영 등\n\n'05리테일 공식 SNS 채널이에요\n\n홈페이지\n\nSesaciy",
+      "preferences": "",
+      "main_tasks": "-개인정보수집-이용제공'보관과기 전 과정 관리\n-개인정보 처리현황 및 보유현황 점검\n-개인정보 보유기간 관리 및 만료데이터'파기 수행\n-개인정보처리 SH (Lifecycle) 현행화 및 개선\n-개인정보 처리 업무 현황 관리\n-개인정보메타 데이터 관리\n\n개인정보 보관:파기 정책 운영\n\nㆍ법령 및 내부 정책에 따른 개인정보 보관-파기 기준 수립 및 운영\nㆍ시스템별 개인정보 보관기간 준수 여부 점검\n\nㆍ개인정보 파기 결과 관리 및 관련 증적 유지\n\n개인정보 관리체계운영\n\n-개인정보 처리시스템 현황 관리\n\n-개인정보 처리 목적 변경 및 신규 처리 검토\n\n-신규서비스시스템 도입 및 변경 시 개인정보 영향 검토 지원\n.16146-0 인증 운영 (애인정보보호 영역)\n\n개인정보보호 컴플라이언스 운영\n\nㆍ개인정보 처리방침 및 내부 관리기준 현행화\n\nㆍ개인정보보호 법규 준수 여부 점검 및 개선 지원\nㆍ개인정보 접속기록 점검 및 이상행위 모니터링\nㆍ개인정보처리시스템 접근권한 점검",
+      "benefits": ""
     }
   ],
   "stats": {
-    "total": 6280,
+    "total": 6310,
     "by_size": {
-      "중소기업": 5634,
-      "대기업": 387,
+      "중소기업": 5663,
+      "대기업": 388,
       "중견기업": 259
     },
     "by_role": {
-      "기타": 807,
-      "DevOps/인프라": 938,
-      "백엔드": 2715,
-      "모바일": 1019,
-      "AI/ML": 2089,
-      "프론트엔드": 1797,
-      "풀스택": 571,
+      "기타": 810,
+      "DevOps/인프라": 941,
+      "백엔드": 2727,
+      "모바일": 1022,
+      "AI/ML": 2098,
+      "프론트엔드": 1806,
+      "풀스택": 573,
       "게임": 41,
-      "데이터": 891,
-      "펌웨어/임베디드": 231,
-      "보안": 253,
+      "데이터": 894,
+      "펌웨어/임베디드": 232,
+      "보안": 254,
       "QA": 60
     },
     "by_site": {
-      "wanted": 1413,
-      "jumpit": 431,
+      "wanted": 1416,
+      "jumpit": 432,
       "jobkorea": 1201,
-      "saramin": 2972,
-      "dev": 263
+      "saramin": 2994,
+      "dev": 267
     },
     "top_tech": [
       [
         "Python",
-        1954
+        1966
       ],
       [
         "AWS",
-        1676
+        1682
       ],
       [
         "Java",
-        1626
+        1634
       ],
       [
         "React",
-        1384
+        1390
       ],
       [
         "Git",
-        1046
+        1050
       ],
       [
         "Docker",
-        1035
+        1038
       ],
       [
         "Spring",
-        982
+        987
       ],
       [
         "JavaScript",
-        953
+        957
       ],
       [
         "Linux",
-        902
+        906
       ],
       [
         "TypeScript",
-        875
+        878
       ],
       [
         "MySQL",
-        816
+        821
       ],
       [
         "Kubernetes",
-        715
+        717
       ],
       [
         "PostgreSQL",
-        673
+        675
       ],
       [
         "REST API",
-        672
+        673
       ],
       [
         "Spring Boot",
-        561
+        565
       ],
       [
         "GCP",
-        556
+        558
       ],
       [
         "C++",
-        507
+        509
       ],
       [
         "Node.js",
-        490
+        492
       ],
       [
         "Azure",
-        485
+        487
       ],
       [
         "Next.js",
-        477
+        478
       ],
       [
         "Android",
-        461
+        462
       ],
       [
         "CSS",
-        449
+        451
       ],
       [
         "HTML",
-        434
+        436
       ],
       [
         "Redis",
-        431
+        432
       ],
       [
         "iOS",
@@ -189668,23 +190529,23 @@
       ],
       [
         "PyTorch",
-        412
+        415
       ],
       [
         "Vue",
-        363
+        365
       ],
       [
         "FastAPI",
-        362
+        363
       ],
       [
         "Kotlin",
-        361
+        362
       ],
       [
         "Kafka",
-        340
+        341
       ]
     ]
   },
@@ -192454,6 +193315,22 @@
         "jobkorea": 1519,
         "saramin": 3834,
         "dev": 318
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-17T11:19:26",
+      "keyword": "통합",
+      "raw_total": 7666,
+      "deduped": 7113,
+      "active": 6310,
+      "closed": 803,
+      "site_counts": {
+        "wanted": 1427,
+        "jumpit": 539,
+        "jobkorea": 1520,
+        "saramin": 3858,
+        "dev": 322
       },
       "anomalies": []
     }
