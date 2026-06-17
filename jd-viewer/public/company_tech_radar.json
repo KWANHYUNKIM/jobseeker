@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T11:23:08",
+ "generated_at": "2026-06-17T12:56:49",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 87,
+ "refined": 89,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -229,7 +229,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 13
+      "count": 12
      },
      {
       "name": "Spring Boot",
@@ -252,6 +252,10 @@
       "count": 3
      },
      {
+      "name": "gRPC + Protobuf",
+      "count": 2
+     },
+     {
       "name": "Java",
       "count": 2
      },
@@ -262,10 +266,6 @@
      {
       "name": "Kotlin Coroutines",
       "count": 2
-     },
-     {
-      "name": "Node.js",
-      "count": 2
      }
     ],
     "frontend": [
@@ -275,7 +275,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 11
+      "count": 12
      },
      {
       "name": "Next.js",
@@ -328,12 +328,12 @@
       "count": 9
      },
      {
-      "name": "Cassandra",
+      "name": "MongoDB",
       "count": 6
      },
      {
-      "name": "MongoDB",
-      "count": 6
+      "name": "Cassandra",
+      "count": 5
      },
      {
       "name": "PostgreSQL",
@@ -363,7 +363,7 @@
      },
      {
       "name": "Terraform",
-      "count": 6
+      "count": 7
      },
      {
       "name": "Bazel",
@@ -398,11 +398,11 @@
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 9
+     "count": 8
     },
     {
      "name": "Microservices",
-     "count": 9
+     "count": 8
     },
     {
      "name": "MSA",
@@ -413,11 +413,11 @@
      "count": 2
     },
     {
-     "name": "API-first",
+     "name": "API Gateway + Service Mesh",
      "count": 1
     },
     {
-     "name": "API-first with versioned public API",
+     "name": "API-first",
      "count": 1
     }
    ]
@@ -2713,6 +2713,10 @@
       "count": 1
      },
      {
+      "name": "Dropwizard",
+      "count": 1
+     },
+     {
       "name": "FastAPI",
       "count": 1
      },
@@ -2723,10 +2727,6 @@
      {
       "name": "Java",
       "count": 1
-     },
-     {
-      "name": "Ruby on Rails",
-      "count": 1
      }
     ],
     "frontend": [
@@ -2736,7 +2736,7 @@
      },
      {
       "name": "TypeScript",
-      "count": 3
+      "count": 4
      },
      {
       "name": "Next.js",
@@ -2761,11 +2761,11 @@
       "count": 4
      },
      {
-      "name": "Elasticsearch",
-      "count": 3
+      "name": "Redis",
+      "count": 4
      },
      {
-      "name": "Redis",
+      "name": "Elasticsearch",
       "count": 3
      },
      {
@@ -2803,11 +2803,11 @@
       "count": 4
      },
      {
-      "name": "Kubernetes",
-      "count": 3
+      "name": "Terraform",
+      "count": 4
      },
      {
-      "name": "Terraform",
+      "name": "Kubernetes",
       "count": 3
      },
      {
@@ -2823,6 +2823,10 @@
       "count": 1
      },
      {
+      "name": "Docker",
+      "count": 1
+     },
+     {
       "name": "EKS/Kubernetes",
       "count": 1
      },
@@ -2833,18 +2837,10 @@
      {
       "name": "GCP",
       "count": 1
-     },
-     {
-      "name": "GitHub Actions/ArgoCD",
-      "count": 1
      }
     ]
    },
    "architecture": [
-    {
-     "name": "Big data pipeline",
-     "count": 1
-    },
     {
      "name": "DRM 라이선스 분리형 콘텐츠 전송",
      "count": 1
@@ -2858,11 +2854,15 @@
      "count": 1
     },
     {
+     "name": "Event-driven streaming",
+     "count": 1
+    },
+    {
      "name": "Kafka 기반 이벤트 드리븐 로그 수집·분석",
      "count": 1
     },
     {
-     "name": "Massive predictive autoscaling",
+     "name": "Lambda big-data pipeline",
      "count": 1
     }
    ]
@@ -17067,10 +17067,13 @@
     "backend": [
      "Spring Boot",
      "Akka (Scala)",
-     "Go"
+     "Netty",
+     "Go",
+     "Dropwizard"
     ],
     "frontend": [
      "React",
+     "TypeScript",
      "JavaScript"
     ],
     "data": [
@@ -17078,23 +17081,28 @@
      "Druid",
      "Spark",
      "HBase",
-     "Aerospike"
+     "Aerospike",
+     "Redis",
+     "Hive"
     ],
     "infra": [
      "Kubernetes",
      "AWS",
-     "GCP"
+     "GCP",
+     "Docker",
+     "Terraform"
     ]
    },
    "architecture": [
     "Microservices",
-    "Real-time bidding",
-    "Big data pipeline"
+    "Real-time bidding (RTB)",
+    "Lambda big-data pipeline",
+    "Event-driven streaming"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    SDK[\"Ad SDK<br/>Mobile\"]\n    PORTAL[\"Advertiser Portal<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"Ad Gateway<br/>Go\"]\n  end\n  subgraph Services\n    RTB[\"RTB Engine<br/>Java\"]\n    BID[\"Bidder<br/>Akka Scala\"]\n    MATCH[\"Ad Matching<br/>Java + Spring Boot\"]\n    TRACK[\"Impression Tracker<br/>Go\"]\n  end\n  subgraph Data\n    AERO[\"Aerospike<br/>Low-latency Profile\"]\n    HBASE[\"HBase<br/>User Store\"]\n    DRUID[\"Druid<br/>OLAP\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Bus\"]\n    SPARK[\"Spark<br/>Batch Pipeline\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS + GCP\"]\n  end\n  SDK --> GW\n  PORTAL --> MATCH\n  GW --> RTB\n  RTB --> BID\n  BID --> AERO\n  MATCH --> HBASE\n  RTB --> TRACK\n  TRACK -->|events| KAFKA\n  BID -->|events| KAFKA\n  KAFKA --> SPARK\n  SPARK --> DRUID\n  RTB --> K8S",
-   "why_language": "모바일 광고 거래소로 밀리초 단위 실시간 입찰(RTB)을 초당 수백만 건 처리해야 해 JVM(Java/Scala)의 저지연 처리량을 핵심에 쓰고, 대규모 데이터 파이프라인을 Spark로 돌린다.",
-   "why_architecture": "광고 요청에 수 밀리초 안에 입찰 응답을 해야 하는 RTB 특성상 저지연 마이크로서비스와 Druid·Spark 기반 대규모 분석 파이프라인을 결합한다.",
-   "summary": "JVM 저지연 마이크로서비스로 실시간 광고 입찰을 처리하는 애드테크.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    SDK[\"Mobile SDK<br/>Android/iOS\"]\n    SSP[\"Exchange / SSP<br/>OpenRTB\"]\n  end\n  subgraph Gateway[\"Ad Serving Gateway\"]\n    LB[\"Edge LB<br/>Envoy + ALB\"]\n    ADX[\"Ad Exchange<br/>Java + Netty\"]\n  end\n  subgraph Core[\"Bidding Core\"]\n    BID[\"Bidder<br/>Akka Scala Actors\"]\n    PACE[\"Budget Pacing<br/>Go\"]\n    RANK[\"Ranking eCPM<br/>ML Scoring\"]\n  end\n  subgraph Store[\"Low-latency Stores\"]\n    AERO[\"User Profile Store<br/>Aerospike\"]\n    HB[\"Counters/Features<br/>HBase\"]\n    RED[\"Cache<br/>Redis\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAF[\"Event Bus<br/>Kafka\"]\n    SPK[\"Stream/Batch<br/>Spark\"]\n    DRU[\"Realtime OLAP<br/>Druid\"]\n  end\n  subgraph Platform[\"Infra\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    CLOUD[\"Multi-cloud<br/>AWS + GCP\"]\n  end\n  SDK --> LB\n  SSP -->|OpenRTB| LB\n  LB --> ADX\n  ADX -->|bid request| BID\n  BID -->|read profile| AERO\n  BID --> RANK\n  RANK -->|features| HB\n  BID --> PACE\n  PACE --> RED\n  ADX -->|win/imp/click| KAF\n  KAF --> SPK\n  KAF --> DRU\n  SPK --> AERO\n  SPK --> HB\n  RANK -.->|model features| SPK\n  K8S --- ADX\n  K8S --- BID\n  CLOUD --- K8S",
+   "why_language": "초당 수백만 건의 광고 입찰 요청을 100ms 안에 처리해야 하므로 JVM 기반의 Java/Scala로 고성능·고동시성 서버를 구축한다. 입찰 경매처럼 동시성·논블로킹이 핵심인 경로는 Akka 액터 모델(Scala)로, 배치/스트림 데이터 처리는 Spark(Scala/Java)로 다룬다. 가볍고 빠른 네트워크 프록시·페이싱 같은 단순 고처리량 서비스에는 Go를, 데이터 분석·ML 파이프라인에는 Python을 쓴다.",
+   "why_architecture": "광고 거래소(Exchange) 특성상 한 요청 안에서 수많은 후보 광고를 경매·랭킹·예산제어해야 해 기능별 마이크로서비스로 분리하고, OpenRTB 기반 실시간 입찰을 코어로 둔다. 노출·클릭·전환 이벤트는 Kafka로 흘려 Spark/Druid가 실시간·배치 두 경로(Lambda)로 집계해 과금·리포팅·모델 학습에 동시에 쓴다. 이벤트 기반 비동기 처리로 입찰 핫패스의 지연을 데이터 처리와 분리한다.",
+   "summary": "JVM(Java/Scala) 기반 RTB 코어에 Aerospike·Druid·Kafka를 얹어 100ms 안에 광고 경매를 끝내는 대규모 모바일 애드테크 스택",
    "deep_dive": [
     {
      "topic": "RTB 입찰 저지연: 100ms 안의 경매",
@@ -17111,16 +17119,53 @@
     {
      "topic": "Kafka·Spark·HBase 데이터 파이프라인",
      "body": "### 광고 데이터의 흐름\n입찰·노출·클릭·전환 이벤트는 막대한 볼륨이다. InMobi는 이를 람다/카파 스타일로 처리한다.\n\n- **`Kafka`**: 모든 광고 이벤트를 받는 고처리량 인제스트 버스. 실시간(Druid)과 배치(Spark) 양쪽으로 분기.\n- **`Spark`**: 대규모 배치/스트림 처리로 *모델 학습용 피처, 정산·청구, 깊은 분석*을 계산. 입찰 시점에 쓸 *사전 계산 세그먼트*를 만든다.\n- **`HBase`**: 사용자 프로필·이력 같은 대용량 KV/와이드컬럼을 보관. 입찰기는 여기서 만든 핫 데이터를 Aerospike로 올려 sub-ms 조회.\n\n### 람다적 분업의 이유\n입찰 경로는 *극한 저지연*(사전 계산 결과만 조회), 분석/학습 경로는 *대용량 정확성*(배치)으로 요구가 정반대다. **실시간은 Druid/Aerospike, 대용량 계산은 Spark/HBase, 버스는 Kafka**로 나눠 각자의 강점에 맞춘다. 이 분리가 ms 입찰과 페타바이트 분석을 한 시스템 안에서 공존시킨다."
+    },
+    {
+     "topic": "Aerospike 기반 사용자 프로파일 스토어와 입찰 핫패스의 KV 조회",
+     "body": "### 왜 Aerospike인가\n\nRTB 입찰 한 건에는 보통 **2~5ms 안에** '이 유저가 누구이고 무엇에 관심 있는가'를 읽어와야 하는 단계가 있다. HBase/Cassandra 같은 LSM 기반 스토어는 컴팩션·GC 지터 때문에 p99 지연이 출렁이는데, InMobi 규모(수십억 디바이스 프로파일, 초당 수백만 read)에서는 이 꼬리지연이 곧 손실 입찰로 직결된다. 그래서 입찰 핫패스의 1차 사용자 스토어로 **Aerospike**를 쓴다.\n\n### 동작 메커니즘\n\n- **하이브리드 메모리 아키텍처**: 인덱스(PK)는 DRAM에, 실제 레코드는 SSD에 직접(raw device) 둔다. 파일시스템을 우회하고 SSD에 직접 I/O를 날려 read p99를 **1ms 안팎**으로 유지한다.\n- **키 설계**: `device_id`(GAID/IDFA) 또는 해시된 유저키를 PK로 쓰고, bin에 세그먼트·관심사 벡터·frequency cap 카운터·최근 노출 이력을 담는다.\n- **읽기 경로**: Bidder(Akka)가 bid request를 받으면 디바이스키로 Aerospike single-record read → 프로파일을 메모리 객체로 역직렬화 → 랭킹/타게팅에 투입.\n- **쓰기 경로**: 노출/클릭 이벤트가 Kafka로 들어와 Spark 스트리밍이 프로파일을 갱신(세그먼트 재계산, frequency cap +1)하고 Aerospike에 write-back. 즉 **읽기는 핫패스, 쓰기는 비동기 스트림**으로 완전히 분리한다.\n\n### Frequency capping이라는 까다로운 문제\n\n같은 광고를 같은 유저에게 하루 N회 이상 안 보여주려면 글로벌 카운터가 필요한데, 멀티 리전·멀티 데이터센터 환경에서 강한 일관성을 고집하면 지연이 폭발한다. 그래서 **eventual consistency를 받아들이고** Aerospike의 atomic increment + 짧은 TTL(예: 24h 롤링)로 근사한다. 약간의 오버딜리버리(살짝 초과 노출)는 비즈니스적으로 허용 가능한 트레이드오프로 본다 — 정확도보다 지연·가용성을 택한 전형적인 애드테크 결정이다.\n\n### TTL과 용량 관리\n\n프로파일은 무한정 쌓이면 안 되므로 bin·레코드 단위 TTL로 비활성 디바이스를 자동 만료시킨다. 이로써 SSD 용량을 일정하게 유지하고, 콜드 데이터는 HBase/S3의 오프라인 스토어로만 남긴다(핫=Aerospike, 콜드=HBase의 2계층)."
+    },
+    {
+     "topic": "eCPM 예측과 입찰 최적화 ML 파이프라인",
+     "body": "### 입찰가는 '예측'으로 결정된다\n\n광고 경매에서 InMobi가 내야 할 입찰가는 본질적으로 `bid = pCTR × pCVR × value` 형태다. 즉 **이 노출이 클릭될 확률(pCTR)**, **클릭이 전환될 확률(pCVR)**, 전환 가치를 곱해 기대 eCPM을 만들고 거기서 마진/페이싱을 적용한다. 이 예측의 정확도가 곧 수익이라 ML 파이프라인이 시스템의 심장이다.\n\n### 학습 파이프라인 (오프라인)\n\n1. **피처 로깅**: 입찰 시점에 Bidder가 사용한 모든 피처(유저 세그먼트, 광고 크리에이티브, 앱 컨텍스트, 시간대, 디바이스)를 노출/클릭 결과와 함께 Kafka로 기록한다. 이걸 **'request-time feature logging'**이라 하며, 학습-서빙 스큐(training-serving skew)를 없애는 핵심이다 — 서빙 때 본 피처를 그대로 라벨과 조인한다.\n2. **라벨 조인**: Spark가 노출(impression) 로그와 이후 도착하는 클릭/전환 로그를 윈도우 조인한다. 전환은 늦게 도착(attribution window)하므로 지연 라벨 처리가 필요하다.\n3. **모델 학습**: 대규모 희소 피처(수억 차원의 해시 피처)에 대해 로지스틱 회귀/FTRL, GBDT, 점차 딥러닝 모델을 Spark/분산 학습으로 훈련한다.\n4. **모델 배포**: 학습된 모델을 직렬화해 Bidder가 메모리에 로드. 모델 버전은 자주(수 시간~일 단위) 롤링 갱신한다.\n\n### 서빙 (온라인, 핫패스)\n\nBidder 내부에서 모델 추론은 외부 호출 없이 **in-process로** 일어나야 한다(네트워크 홉 추가 = 지연 위반). 피처 룩업은 Aerospike/HBase에서, 모델 가중치는 로컬 메모리에서 가져와 수 마이크로초 안에 스코어를 낸다. 수백 개 후보 광고 각각에 대해 이 스코어링을 100ms 예산 안에서 병렬로 끝낸다.\n\n### 콜드스타트와 탐색\n\n신규 캠페인/크리에이티브는 학습 데이터가 없어 pCTR을 모른다. 이때 **explore/exploit**(예: Thompson sampling, UCB 류)으로 일부 트래픽을 의도적으로 신규 광고에 배정해 데이터를 모으고, 충분히 쌓이면 exploit로 전환한다. 탐색 비용과 수익의 균형이 트레이드오프다."
+    },
+    {
+     "topic": "트래픽 스파이크 대응: 멀티클라우드·오토스케일링·과부하 보호",
+     "body": "### 트래픽의 성격\n\n모바일 광고 트래픽은 **시간대·지역별로 크게 출렁인다**(저녁 피크, 캠페인 런칭, 글로벌 이벤트). 입찰 요청은 들어오면 무조건 100ms 안에 응답하거나 아니면 버려야 하므로(늦은 응답은 무가치), 시스템은 '느려지는' 게 아니라 '의도적으로 덜어내는' 쪽으로 설계된다.\n\n### Kubernetes 오토스케일링\n\n- Ad Exchange/Bidder는 Kubernetes 위에서 **HPA(CPU·QPS·커스텀 메트릭 기반)**로 수평 확장된다. 입찰 서비스는 stateless하게 유지해(상태는 Aerospike/Redis로 외부화) 파드 추가/제거가 자유롭다.\n- JVM 워밍업 문제: 새 파드는 JIT 컴파일 전이라 콜드하다. 그래서 트래픽을 점진 투입(slow start)하거나 사전 워밍업해 콜드 파드가 p99를 망치지 않게 한다.\n\n### 멀티클라우드 (AWS + GCP)\n\nInMobi는 단일 클라우드 종속을 피하고 리전 근접성·비용 협상력·가용성을 위해 **AWS와 GCP를 병행**한다. 광고 서빙은 유저에 지리적으로 가까운 리전에서 처리해 RTT를 줄여야 하므로, 멀티리전 배포 자체가 지연 요구사항에서 나온 결정이다. 데이터 파이프라인(Spark/BigQuery 류 분석)과 서빙을 클라우드별 강점에 맞춰 배치하기도 한다.\n\n### 과부하 보호 (load shedding & circuit breaking)\n\n- **타임아웃 버짓**: 한 입찰 요청에 엄격한 deadline(예: 80ms 내부 예산)을 두고, 늦어지는 downstream(피처 스토어, 모델) 호출은 잘라낸다. 부분 정보로라도 입찰하거나 'no-bid'를 빠르게 반환한다.\n- **서킷 브레이커**: Aerospike/HBase 같은 의존 스토어가 느려지면 회로를 열어(open) 즉시 폴백(캐시된 기본 프로파일/세그먼트 없음으로 입찰)한다. 한 컴포넌트의 지연이 전체 입찰기를 스레드 고갈로 무너뜨리는 걸 막는다.\n- **그레이스풀 디그레이드**: 극단적 과부하에서는 저가치 트래픽부터 no-bid 처리해 핵심 캠페인의 SLA를 지킨다. 100% 응답보다 'p99 지연 유지'를 우선한다."
     }
    ],
    "github": {
-    "org": "https://github.com/InMobi"
+    "org": "https://github.com/InMobi",
+    "repos": [
+     {
+      "name": "InMobi/grill",
+      "url": "https://github.com/InMobi/grill",
+      "desc": "통합 분석 인터페이스(이후 Apache Lens로 기증) — 큐브 위에 SQL 추상화",
+      "lang": "Java",
+      "stars": 17
+     },
+     {
+      "name": "InMobi/conduit",
+      "url": "https://github.com/InMobi/conduit",
+      "desc": "데이터센터 간 로그/스트림 데이터를 안정적으로 이송하는 파이프라인",
+      "lang": "Java",
+      "stars": 9
+     },
+     {
+      "name": "InMobi/falcon",
+      "url": "https://github.com/InMobi/falcon",
+      "desc": "Hadoop 피드/데이터 라이프사이클 관리(이후 Apache Falcon)",
+      "lang": "Java",
+      "stars": 0
+     }
+    ]
    },
    "sources": [
-    "https://www.inmobi.com/blog"
+    "https://www.inmobi.com/company/engineering",
+    "https://github.com/InMobi",
+    "https://aerospike.com/resources/customer-stories/inmobi/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "cred",
@@ -17131,40 +17176,50 @@
     "Kotlin",
     "Java",
     "Go",
-    "Python",
-    "TypeScript"
+    "TypeScript",
+    "Python"
    ],
    "stack": {
     "backend": [
      "Spring Boot (Kotlin)",
-     "gRPC",
-     "Go"
+     "gRPC + Protobuf",
+     "Go (latency-critical services)",
+     "Netty / Reactive",
+     "Temporal/workflow orchestration"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "NeoPOP Design System",
+     "TypeScript"
     ],
     "data": [
-     "Kafka",
-     "PostgreSQL",
-     "Elasticsearch",
+     "Apache Kafka",
+     "PostgreSQL (Aurora)",
      "Redis",
-     "Cassandra"
+     "Elasticsearch",
+     "Cassandra / ScyllaDB",
+     "Amazon S3"
     ],
     "infra": [
-     "Kubernetes",
-     "AWS"
+     "Kubernetes (EKS)",
+     "AWS",
+     "Envoy / Istio service mesh",
+     "Terraform",
+     "Prometheus + Grafana",
+     "Spinnaker / ArgoCD"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven",
-    "Domain-driven"
+    "Domain-Driven Microservices",
+    "Event-Driven (Kafka)",
+    "API Gateway + Service Mesh",
+    "CQRS / Idempotent Ledger"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Member App<br/>React Native\"]\n    WEB[\"Web<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>AWS\"]\n  end\n  subgraph Services\n    CARD[\"Card Service<br/>Kotlin + Spring Boot\"]\n    PAY[\"Payments<br/>Kotlin\"]\n    REW[\"Rewards Service<br/>Go\"]\n    LEDG[\"Ledger Service<br/>Kotlin\"]\n  end\n  subgraph Data\n    PG[\"PostgreSQL<br/>Ledger Store\"]\n    CASS[\"Cassandra<br/>Events\"]\n    REDIS[\"Redis<br/>Cache\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Bus\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> CARD\n  GW --> PAY\n  GW --> REW\n  PAY --> LEDG\n  LEDG --> PG\n  CARD --> ES\n  REW --> REDIS\n  PAY -->|events| KAFKA\n  LEDG -->|events| KAFKA\n  KAFKA --> CASS\n  KAFKA --> REW\n  CARD --> K8S",
-   "why_language": "신용카드 결제·리워드 핀테크로 안정성과 개발 생산성을 동시에 추구해 JVM 위 Kotlin을 주력으로 쓰고, 고성능 영역은 Go, 데이터/ML은 Python으로 보완한다.",
-   "why_architecture": "결제·리워드·대출·정산 등 금융 도메인을 깔끔히 분리하기 위해 도메인 주도 마이크로서비스를 채택하고, 트랜잭션·리워드 이벤트를 Kafka로 비동기 처리한다.",
-   "summary": "Kotlin/JVM 도메인 주도 마이크로서비스로 결제·리워드를 다루는 프리미엄 핀테크.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + NeoPOP\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    CDN[\"CDN + WAF<br/>CloudFront\"]\n    GW[\"API Gateway<br/>Envoy + Spring Cloud Gateway\"]\n    AUTH[\"Auth / Token<br/>OAuth2 + JWT + Device Binding\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MESH[\"Service Mesh<br/>Istio + Envoy\"]\n    PAY[\"Payments Service<br/>Kotlin Spring Boot\"]\n    REWARD[\"Rewards Engine<br/>Kotlin + gRPC\"]\n    LEDGER[\"Ledger Service<br/>Go + Idempotency\"]\n    USER[\"Member Profile<br/>Kotlin\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    WF[\"Workflow Orchestration<br/>Temporal\"]\n    STREAM[\"Stream Processing<br/>Kafka Streams\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"OLTP<br/>PostgreSQL Aurora\"]\n    REDIS[\"Cache / Locks<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    CASS[\"Wide-Column<br/>Cassandra / ScyllaDB\"]\n    S3[\"Object Store<br/>Amazon S3\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>AWS EKS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana + Jaeger\"]\n    CICD[\"CI/CD<br/>ArgoCD + Spinnaker\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> GW\n  GW --> AUTH\n  GW --> MESH\n  MESH -->|gRPC| PAY\n  MESH -->|gRPC| REWARD\n  MESH -->|gRPC| USER\n  PAY -->|append| LEDGER\n  PAY -->|publish| KAFKA\n  REWARD --> WF\n  KAFKA --> STREAM\n  STREAM --> REWARD\n  KAFKA --> WF\n  PAY --> PG\n  LEDGER --> PG\n  REWARD --> REDIS\n  USER --> CASS\n  REWARD --> ES\n  PAY --> REDIS\n  WF --> S3\n  K8S --- MESH\n  OBS -.-> Core\n  CICD -.-> K8S",
+   "why_language": "신용카드 대금 결제·정산·리워드처럼 금전 정합성과 동시성 제어가 핵심인 도메인이라, 강타입·널 안전성·풍부한 JVM 생태계(Spring 트랜잭션, 검증된 결제 라이브러리)를 갖춘 Kotlin/Java를 백엔드 주력으로 쓴다. 초저지연이 필요한 게이트웨이·원장(ledger)·팬아웃 경로에는 GC 지연이 작고 동시성 모델이 단순한 Go를 선택하고, 클라이언트는 iOS/Android/Web을 단일 코드로 빠르게 출시하기 위해 React Native·React(TypeScript)를 쓴다.",
+   "why_architecture": "결제·리워드·멤버십 등 도메인 경계가 뚜렷하고 각기 다른 확장·규제 요구를 갖기 때문에 도메인 주도 마이크로서비스로 쪼개 독립 배포·확장한다. 결제 성공 이벤트가 리워드·정산·알림 등 수십 개 후속 작업을 비동기로 촉발하는 구조라 Kafka 기반 이벤트 드리븐을 채택했고, 돈을 다루는 만큼 append-only 원장과 멱등 키로 정확히 한 번(effectively-once) 처리와 감사 추적성을 보장한다.",
+   "summary": "Kotlin/JVM 도메인 마이크로서비스 + Kafka 이벤트 드리븐 + 멱등 원장으로 결제·리워드 정합성을 지키는 AWS·Kubernetes 핀테크 스택",
    "deep_dive": [
     {
      "topic": "Kotlin/JVM 도메인 주도 마이크로서비스",
@@ -17181,16 +17236,53 @@
     {
      "topic": "폴리글랏 저장소와 보안 중심 설계",
      "body": "### 저장소 분담\n- **`PostgreSQL`**: 권위 있는 OLTP. 거래·장부·사용자 금융 데이터를 ACID로. 정확성의 진실의 원천.\n- **`Cassandra`**: 대용량 이벤트·이력·시계열을 수평 확장으로 보관(높은 쓰기 처리량).\n- **`Elasticsearch`**: 거래·명세 검색·운영 조회.\n- **`Redis`**: 세션·캐시·레이트리밋·핫 읽기.\n\n### 보안·규제 고려\n금융 데이터를 다루므로 *암호화(전송/저장), 토큰화, 접근 통제, 감사 로그*가 설계 전반에 박혀 있다. 카드 데이터는 PCI-DSS 범위를 최소화하도록 토큰화하고, 민감 데이터 접근은 세분화된 권한과 감사로 추적한다.\n\n### 왜 폴리글랏인가\n*정합성이 필요한 트랜잭션*(PostgreSQL)과 *대용량 쓰기/이력*(Cassandra)은 요구가 정반대다. 하나의 DB로 둘을 맞추면 비용이나 일관성이 깨진다. 각 저장소를 강점에 맞게 쓰되, **돈은 항상 PostgreSQL 트랜잭션을 거치게** 하는 것이 CRED 데이터 설계의 원칙이다."
+    },
+    {
+     "topic": "결제 탭부터 응답까지: end-to-end 요청 처리 흐름",
+     "body": "### 한 번의 '카드 대금 납부' 탭이 시스템을 관통하는 경로\n\nCRED에서 사용자가 카드 대금을 결제하면 단순한 단일 API 호출이 아니라 **수십 개 서비스를 가로지르는 분산 트랜잭션**이 시작된다. 흐름을 단계별로 보면:\n\n1. **Edge 진입** — React Native 앱이 `CloudFront(CDN) + WAF`를 거쳐 `API Gateway(Envoy + Spring Cloud Gateway)`로 들어온다. 게이트웨이는 (a) 디바이스 바인딩된 JWT 검증, (b) per-user/per-route rate limiting, (c) 요청 정규화·라우팅을 담당한다. 금융 앱 특성상 여기서 **device fingerprint + token binding**으로 탈취된 토큰의 재사용을 차단한다.\n\n2. **인증/세션** — `Auth Service`가 토큰을 검증하고 멤버 컨텍스트(등급, KYC 상태, 한도)를 주입한다. CRED는 신용점수 750+ 회원만 받는 폐쇄형 모델이라, 이 단계에서 **멤버십 자격 검사**가 비즈니스 게이트로 동작한다.\n\n3. **서비스 메시 내부 통신** — 게이트웨이 이후의 서비스 간 호출은 전부 `gRPC + Protobuf` over `Istio/Envoy` 메시로 흐른다. mTLS가 메시 레벨에서 강제되어 서비스 간 평문 통신이 없고, Envoy 사이드카가 retry·timeout·circuit breaking을 애플리케이션 코드 밖에서 처리한다.\n\n4. **Payments Service (Kotlin/Spring Boot)** — 결제 의도를 받아 (a) **멱등 키(idempotency key)** 를 생성/확인하고, (b) 외부 결제망(은행/카드 네트워크, UPI, 페이먼트 게이트웨이)으로의 호출을 오케스트레이션한다. 외부 결제망은 본질적으로 느리고 비결정적(timeout 후 실제론 성공했을 수 있음)이라, **`PENDING → SUCCESS/FAILED`** 상태 머신과 **reconciliation(대사) 잡**이 필수다.\n\n5. **Ledger 기록 (Go)** — 결제 상태 전이는 append-only 원장에 기록된다. 사용자 잔액/포인트를 직접 update하지 않고 **이벤트(차변/대변)를 추가**하는 방식이라 감사 추적과 재계산이 가능하다.\n\n6. **이벤트 발행** — 결제 성공 시 `payment.succeeded` 이벤트가 `Kafka`로 발행된다. 이 시점에서 동기 응답은 사용자에게 반환되고, **리워드 지급·캐시백·통계·알림·CRED Coin 적립** 등은 전부 비동기로 분리된다. 사용자는 결제 확인을 빠르게 받고, 무거운 후속 처리는 백그라운드로 흘려보내는 **'동기 경로는 짧게, 비동기 경로는 풍부하게'** 원칙이다.\n\n### 왜 이렇게 쪼개는가\n외부 결제망 호출 하나에 리워드 계산까지 동기로 묶으면, 결제망 지연이 곧 사용자 체감 지연이 되고 리워드 로직 버그가 결제 자체를 실패시킨다. CRED는 **돈의 이동(결제·원장)과 가치의 부여(리워드)를 트랜잭션·시간축에서 분리**해, 핵심 경로의 가용성과 부가 경로의 풍부함을 동시에 확보한다."
+    },
+    {
+     "topic": "캐싱 계층과 분산 락 — Redis를 쓰는 세 가지 방식",
+     "body": "### 핀테크에서 캐시는 '속도'만의 문제가 아니다\n\nCRED의 `Redis` 사용은 단순 read-through 캐시를 넘어 **세 개의 독립된 역할**로 나뉜다.\n\n#### 1) 읽기 캐시 (read cache)\n멤버 프로필, 등록 카드 메타데이터, 등급/혜택 정보처럼 **읽기는 폭발적이지만 쓰기는 드문** 데이터를 PostgreSQL 앞단에 캐싱한다. 핵심은 **무효화(invalidation)** 전략 — 카드/등급 변경 이벤트가 Kafka로 흐를 때 캐시 무효화 메시지를 함께 소비해 stale read를 줄인다. TTL 단독에 의존하면 한도·잔액류 데이터에서 위험하므로 **이벤트 기반 무효화 + 짧은 TTL**을 병행한다.\n\n#### 2) 분산 락 (distributed lock)\n결제·리워드의 **동시성 제어**가 가장 중요한 용도다. 같은 사용자가 빠르게 두 번 결제를 누르거나, 재시도가 중복 발행되면 **이중 인출/이중 적립**이 발생할 수 있다. CRED는 `idempotency key`를 Redis에 `SET key value NX EX <ttl>` 로 선점하는 패턴으로 **'먼저 잡은 요청만 실제 처리'** 를 보장한다. 락은 짧게 잡고, 진짜 정합성의 최종 보루는 DB 유니크 제약 + 원장 멱등성에 둔다(캐시 락은 1차 방어선, DB가 최종 방어선).\n\n#### 3) 레이트 리미팅 / 카운터\nOTP 발급, 로그인 시도, API 호출량을 **sliding window 카운터**로 Redis에 기록해 어뷰징과 무차별 대입을 차단한다. 금융 앱이라 계정당·디바이스당·IP당 다층 한도를 둔다.\n\n### 트레이드오프\n캐시-DB 이중화는 항상 **일관성 vs 지연**의 줄다리기다. CRED는 **돈에 직접 닿는 값(잔액·원장)은 캐시를 신뢰하지 않고 DB를 source of truth로**, **부가 정보(프로필·혜택 노출)는 캐시 우선**으로 두는 식으로 데이터 민감도에 따라 일관성 수준을 차등 적용한다. 이게 \"모든 걸 캐시하거나, 아무것도 캐시하지 않거나\"보다 훨씬 실전적인 선택이다."
+    },
+    {
+     "topic": "관측성과 장애 복원력 — 돈이 흐르는 시스템의 안전장치",
+     "body": "### '결제가 됐는지 안 됐는지 모른다'가 최악의 상태\n\n핀테크에서 가장 무서운 건 다운이 아니라 **불확실성**이다. CRED의 관측성·복원력 스택은 이 불확실성을 줄이는 데 초점이 맞춰져 있다.\n\n#### 분산 트레이싱\n하나의 결제가 게이트웨이 → Payments → Ledger → Kafka → Rewards로 흩어지므로, **단일 trace ID**가 게이트웨이에서 주입되어 모든 gRPC 호출과 Kafka 메시지 헤더를 타고 전파된다. `Jaeger/OpenTelemetry` 기반으로 \"이 사용자의 이 결제가 어느 서비스에서 몇 ms 걸렸고 어디서 실패했는지\"를 한 화면에서 추적한다. Envoy 사이드카가 trace 컨텍스트를 자동 전파하므로 애플리케이션 코드 부담이 적다.\n\n#### 메트릭과 알림\n`Prometheus + Grafana`로 (a) **비즈니스 메트릭**(분당 결제 성공률, 리워드 지급 지연, reconciliation 미해결 건수)과 (b) **인프라 메트릭**(p99 latency, gRPC 에러율, Kafka consumer lag)을 함께 본다. 특히 **Kafka consumer lag**은 리워드 파이프라인 적체를 알려주는 핵심 신호다 — lag이 쌓이면 \"결제는 됐는데 리워드가 늦게 들어온다\"는 사용자 불만으로 직결된다.\n\n#### 복원력 패턴\n- **Circuit Breaker** — 외부 결제망/카드 네트워크가 느려지면 Envoy/Resilience4j 레벨에서 회로를 열어, 죽어가는 의존성에 요청을 계속 던져 스레드 풀을 고갈시키는 cascading failure를 막는다.\n- **Retry with backoff + idempotency** — 재시도는 반드시 멱등 키와 짝지어진다. 멱등성 없는 재시도는 이중 결제를 만들므로, \"retry는 idempotency가 보장될 때만\"이 철칙이다.\n- **Reconciliation(대사) 잡** — 외부 결제망과의 상태 불일치(우리는 FAILED로 알고 있는데 은행은 SUCCESS)는 배치 대사로 주기적으로 맞춘다. 비동기 세계에서 **'결국 일치하게 만드는'(eventual consistency)** 안전망이다.\n- **Graceful degradation** — 리워드/추천 같은 부가 기능이 죽어도 핵심 결제는 계속되도록 의존성을 우선순위로 나눈다.\n\n### 핵심 사상\nCRED의 복원력 설계는 \"장애를 0으로 만든다\"가 아니라 **\"장애가 나도 돈은 틀리지 않게, 그리고 결국 정확히 맞춰지게\"** 에 맞춰져 있다. 멱등성·append-only 원장·reconciliation이 삼위일체로 이 약속을 지탱한다."
     }
    ],
    "github": {
-    "org": "https://github.com/CRED-CLUB"
+    "org": "https://github.com/CRED-CLUB",
+    "repos": [
+     {
+      "name": "CRED-CLUB/neopop-web",
+      "url": "https://github.com/CRED-CLUB/neopop-web",
+      "desc": "CRED의 NeoPOP 디자인 시스템 React 컴포넌트 라이브러리",
+      "lang": "TypeScript",
+      "stars": 1022
+     },
+     {
+      "name": "CRED-CLUB/propeller",
+      "url": "https://github.com/CRED-CLUB/propeller",
+      "desc": "B2B 결제·구독 인프라 관련 오픈소스 컴포넌트",
+      "lang": "Go",
+      "stars": 329
+     },
+     {
+      "name": "CRED-CLUB/neopop-android",
+      "url": "https://github.com/CRED-CLUB/neopop-android",
+      "desc": "Android(Jetpack Compose)용 NeoPOP UI 컴포넌트",
+      "lang": "Kotlin",
+      "stars": 310
+     }
+    ]
    },
    "sources": [
-    "https://blog.cred.club"
+    "https://blog.cred.club/category/engineering/",
+    "https://github.com/CRED-CLUB",
+    "https://blog.cred.club/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "groww",

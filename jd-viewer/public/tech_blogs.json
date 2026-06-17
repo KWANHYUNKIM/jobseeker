@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-17T11:19:22",
- "total": 733,
+ "generated_at": "2026-06-17T12:52:36",
+ "total": 735,
  "sources": [
   {
    "company": "Etsy",
@@ -18,6 +18,11 @@
    "count": 28
   },
   {
+   "company": "LINE",
+   "country": "KR",
+   "count": 27
+  },
+  {
    "company": "Mercari",
    "country": "JP",
    "count": 27
@@ -28,9 +33,9 @@
    "count": 27
   },
   {
-   "company": "LINE",
+   "company": "네이버 D2",
    "country": "KR",
-   "count": 26
+   "count": 25
   },
   {
    "company": "AWS",
@@ -66,11 +71,6 @@
    "company": "데브시스터즈",
    "country": "KR",
    "count": 25
-  },
-  {
-   "company": "네이버 D2",
-   "country": "KR",
-   "count": 24
   },
   {
    "company": "Cloudflare",
@@ -510,6 +510,49 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "도구에서 동료로 — AI 에이전트 자율 성장 프레임워크",
+   "url": "https://d2.naver.com/helloworld/4399330",
+   "published": "2026-06-17",
+   "published_ts": 1781695877.0,
+   "summary": "네이버 사내 기술 교류 행사인 NAVER ENGINEERING DAY 2026(5월)에서 발표되었던 세션을 공개합니다.\n\n발표 내용\n\n매 세션 초기화되는 AI의 한계를 넘어, 경험을 축적하고 스스로 성장하는 에이전트 프레임워크 GNOSIS의 설계 원칙과 구현 사례를 소개합니다.\n\n발표 대상\n\nAI Agent 프레임워크 활용에 관심 있는 개발자\n\n목차\n\nPROLOGUE — 당신의 AI는 어제와 똑같다\n\nINTRODUCTION — GNOSIS 30초 요약\n\nARCHITECTURE — 3-Loop + Constitution + 5층 기억\n\nALGORITHMS — 13 공리 · 17 메커니즘 · 7 알고리즘\n\nTHEORY — 수학적 안전 보장\n\nEXPERIMENTS — 검증과 외부 근거\n\nIMPLEMENTATION — Phase -1 → 3\n\nDISCUSSION — 모르는 것은 모른다고 말한다\n\nSUMMARY & Q&A — 5분 핵심 요약\n\n◎ NAVER Engineering Day란?\n\nNAVER에서는 사내 개발 경험과 기술 트렌드를 교류를 할 수 있는 프로그램이 많이 있습니다. 그중 이제는 매회 평균 100개 이상의 발표가 이루어지는 NAVER Engineeri…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Algorithm"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "알고리즘/이론"
+   ],
+   "lang": "ko",
+   "content_id": "ebabd4b505d34230"
+  },
+  {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "ID-JAG The Hard Way: 실패로 배우는 AI 에이전트 보안 핸즈온",
+   "url": "https://techblog.lycorp.co.jp/ko/id-jag-the-hard-way-learning-ai-agent-authz-through-failure",
+   "published": "2026-06-17",
+   "published_ts": 1781665200.0,
+   "summary": "안녕하세요. LY Corporation에서 인증·인가 기반 Athenz의 개발·운영을 담당하고 있는 보안 플랫폼 엔지니어 김정우입니다.지난 글 AI 시대에 인증 과제를 해결할 차세...",
+   "tags": [],
+   "tech_stack": [
+    "Authentication",
+    "Security"
+   ],
+   "categories": [
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "290281538fe7c51f"
+  },
   {
    "key": "aws",
    "company": "AWS",
