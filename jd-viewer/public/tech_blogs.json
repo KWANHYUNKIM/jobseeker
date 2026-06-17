@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-18T06:40:43",
- "total": 765,
+ "generated_at": "2026-06-18T08:26:46",
+ "total": 766,
  "sources": [
   {
    "company": "Etsy",
@@ -40,7 +40,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 25
+   "count": 26
   },
   {
    "company": "네이버 D2",
@@ -402,8 +402,8 @@
   "Linux": "시스템/OS",
   "Computer Vision": "AI/ML",
   "Bluetooth": "펌웨어/임베디드",
-  "Figma": "협업/도구",
   "Node.js": "백엔드",
+  "Figma": "협업/도구",
   "Envoy": "인프라/클라우드",
   "XGBoost": "AI/ML",
   "WebAssembly": "프론트엔드",
@@ -442,8 +442,8 @@
   "Authentication": "보안",
   "Grafana": "관측성",
   ".NET": "백엔드",
-  "Ruby": "언어",
   "Astro": "프론트엔드",
+  "Ruby": "언어",
   "Data Lake": "데이터",
   "PHP": "언어",
   "gRPC": "백엔드",
@@ -535,6 +535,54 @@
    ],
    "lang": "en",
    "content_id": "4e9e2bfdc46dbbe9"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
+   "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+   "published": "2026-06-17",
+   "published_ts": 1781724900.0,
+   "summary": "The Agents SDK is now a runtime any agent framework can build on. Today we're opening up the Agents SDK primitives, with Flue as a first framework targeting Agents SDK, and rolling out agents in the dashboard.",
+   "tags": [
+    "AI",
+    "Cloudflare Workers",
+    "Developers",
+    "Developer Platform",
+    "Durable Objects",
+    "SDK",
+    "MCP"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "TypeScript",
+    "Astro",
+    "React",
+    "Node.js",
+    "AI Agent",
+    "Claude",
+    "LLM",
+    "SQLite",
+    "Cloudflare",
+    "GitHub Actions",
+    "Serverless",
+    "File System",
+    "Linux",
+    "Git"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "시스템/OS",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "82c755021c845235"
   },
   {
    "key": "aws",

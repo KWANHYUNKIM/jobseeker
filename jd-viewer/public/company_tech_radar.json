@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T06:45:37",
+ "generated_at": "2026-06-18T08:31:28",
  "total": 100,
  "countries": [
   {
@@ -1228,16 +1228,16 @@
    "stack": {
     "backend": [
      {
-      "name": "gRPC",
-      "count": 4
-     },
-     {
       "name": "Java",
       "count": 4
      },
      {
       "name": "Python",
       "count": 4
+     },
+     {
+      "name": "gRPC",
+      "count": 3
      },
      {
       "name": "Rust",
@@ -1264,7 +1264,7 @@
       "count": 1
      },
      {
-      "name": "C++17",
+      "name": "C++17/20",
       "count": 1
      }
     ],
@@ -1282,11 +1282,11 @@
       "count": 3
      },
      {
-      "name": "Redux",
+      "name": "Tailwind CSS",
       "count": 3
      },
      {
-      "name": "Tailwind CSS",
+      "name": "Redux",
       "count": 2
      },
      {
@@ -1359,14 +1359,10 @@
      },
      {
       "name": "Terraform",
-      "count": 6
+      "count": 5
      },
      {
       "name": "Azure",
-      "count": 4
-     },
-     {
-      "name": "AWS",
       "count": 3
      },
      {
@@ -1374,8 +1370,12 @@
       "count": 3
      },
      {
+      "name": "AWS",
+      "count": 2
+     },
+     {
       "name": "GCP",
-      "count": 3
+      "count": 2
      },
      {
       "name": "Multi-cloud",
@@ -1417,7 +1417,7 @@
      "count": 1
     },
     {
-     "name": "DBaaS multi-cloud control plane",
+     "name": "DBaaS 멀티클라우드 control plane / data plane 분리",
      "count": 1
     }
    ]
@@ -6504,45 +6504,49 @@
    ],
    "stack": {
     "backend": [
-     "C++17 (mongod/mongos 서버 코어)",
-     "Go (Atlas control plane·자동화 에이전트)",
-     "Node.js",
-     "gRPC",
-     "Java/Python/Go 드라이버"
+     "C++17/20 (mongod/mongos 서버 코어)",
+     "Go (Atlas control plane·Automation Agent·MongoDB Agent)",
+     "Node.js (Atlas UI BFF·mongosh)",
+     "Java/Python/Go/C#/Node 드라이버 (BSON wire protocol)",
+     "gRPC + 내부 RPC (mongot 통신)",
+     "SpiderMonkey (서버 내 JavaScript 엔진 — $where·map-reduce)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "LeafyGreen Design System",
-     "Redux",
-     "Emotion(CSS-in-JS)"
+     "Redux / Redux-Saga",
+     "Emotion (CSS-in-JS)",
+     "Vite/Webpack"
     ],
     "data": [
-     "WiredTiger 스토리지 엔진",
-     "MongoDB(BSON 도큐먼트)",
-     "Apache Lucene(Atlas Search)",
-     "Apache Kafka(Atlas Stream Processing)",
-     "Voyage AI 임베딩(벡터 검색)"
+     "WiredTiger 스토리지 엔진 (B-tree·MVCC·LSM 옵션)",
+     "BSON 도큐먼트 모델",
+     "oplog (capped collection 기반 복제 로그)",
+     "Apache Lucene (mongot — Atlas Search/Vector Search)",
+     "Apache Kafka (Atlas Stream Processing)",
+     "Voyage AI 임베딩 (벡터 검색·rerank)",
+     "S3/Blob 스토리지 (백업·콜드 스토리지)"
     ],
     "infra": [
-     "AWS",
-     "GCP",
-     "Azure",
-     "Kubernetes Operator",
-     "Terraform",
-     "Atlas 자체 오케스트레이션 플레인"
+     "AWS·GCP·Azure (멀티클라우드)",
+     "Kubernetes + Atlas Kubernetes Operator",
+     "Terraform / Atlas Admin API",
+     "Atlas 자체 오케스트레이션 플레인 (control plane)",
+     "FTDC (Full Time Diagnostic Data Capture) 관측성",
+     "Evergreen (자체 CI/분산 테스트 플랫폼)"
     ]
    },
    "architecture": [
-    "Distributed document database (sharded replica sets)",
-    "DBaaS multi-cloud control plane (Atlas)",
-    "Pluggable storage engine + Raft 유사 복제 프로토콜",
-    "Lucene 기반 통합 검색·벡터 검색 사이드카"
+    "Distributed document database — sharded replica sets",
+    "DBaaS 멀티클라우드 control plane / data plane 분리 (Atlas)",
+    "Pluggable storage engine + Raft 유사 복제 프로토콜 (PV1)",
+    "Lucene 기반 검색·벡터 검색 사이드카 (mongot) 분리"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Drivers\"]\n    APP[\"App / SDK<br/>Java Python Go Node Drivers\"]\n    SHELL[\"mongosh / Compass<br/>JavaScript + Electron\"]\n  end\n  subgraph CP[\"Atlas Control Plane\"]\n    UI[\"Atlas UI<br/>React + TypeScript + LeafyGreen\"]\n    API[\"Atlas API<br/>Go + gRPC\"]\n    AUTO[\"Automation Agent<br/>Go\"]\n  end\n  subgraph Query[\"Query Routing\"]\n    MONGOS[\"mongos Router<br/>C++ Query Planner\"]\n    CFG[\"Config Servers<br/>Replica Set (metadata)\"]\n  end\n  subgraph Data[\"Data Layer (Sharded)\"]\n    PRIM[\"Primary mongod<br/>C++ + WiredTiger\"]\n    SEC1[\"Secondary mongod<br/>oplog replication\"]\n    SEC2[\"Secondary mongod<br/>oplog replication\"]\n  end\n  subgraph Search[\"Search / AI\"]\n    MOT[\"mongot<br/>Java + Lucene (Atlas Search)\"]\n    VEC[\"Vector Search<br/>Voyage AI Embeddings\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Atlas Stream Processing<br/>Kafka + Change Streams\"]\n  end\n  subgraph Infra[\"Multi-Cloud Infra\"]\n    K8S[\"Kubernetes Operator<br/>AWS / GCP / Azure\"]\n  end\n  APP -->|MongoDB Wire Protocol| MONGOS\n  SHELL --> MONGOS\n  UI --> API\n  API --> AUTO\n  AUTO -->|provision/scale| K8S\n  MONGOS -->|metadata| CFG\n  MONGOS -->|routed query| PRIM\n  PRIM -->|oplog| SEC1\n  PRIM -->|oplog| SEC2\n  PRIM -->|change stream| MOT\n  PRIM -->|change stream| KAFKA\n  MOT --> VEC\n  K8S --> PRIM",
-   "why_language": "데이터베이스 코어(mongod/mongos)는 메모리·락·디스크 I/O를 직접 통제해야 하므로 GC가 없는 C++17로 작성돼 WiredTiger와 저수준에서 맞물린다. 반면 수만 개 클러스터를 멀티클라우드에 프로비저닝·스케일하는 Atlas control plane은 높은 동시성과 빠른 개발 속도가 중요해 고루틴 기반의 Go를, 검색 사이드카(mongot)는 성숙한 Lucene 생태계 때문에 Java를 쓴다.",
-   "why_architecture": "단일 노드 한계를 넘어 수평 확장하기 위해 데이터를 샤드 키로 분할한 sharded replica set 구조를 택했고, 각 복제 셋은 oplog 기반 복제와 Raft 유사 선출로 자동 페일오버한다. DBaaS인 Atlas는 데이터 평면(mongod)과 제어 평면(Go control plane)을 분리해, 동일한 데이터베이스 코어를 AWS·GCP·Azure 어디서나 동일하게 운영하면서 검색·벡터·스트리밍을 change stream으로 비동기 연동하는 사이드카 패턴을 쓴다.",
-   "summary": "C++ 코어 데이터베이스 + Go 멀티클라우드 control plane이 결합된 샤딩형 도큐먼트 DBaaS",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Drivers\"]\n    APP[\"App<br/>Java/Python/Go/Node 드라이버\"]\n    SHELL[\"mongosh<br/>Node.js REPL\"]\n  end\n  subgraph CP[\"Atlas Control Plane\"]\n    UI[\"Atlas UI<br/>React + LeafyGreen + TS\"]\n    API[\"Control Plane API<br/>Go\"]\n    AGENT[\"Automation Agent<br/>Go\"]\n  end\n  subgraph Routing[\"Query Routing\"]\n    MONGOS[\"mongos<br/>C++ 라우터\"]\n    CONFIG[\"Config Servers<br/>샤드 메타데이터 RS\"]\n  end\n  subgraph Data[\"Data Plane — Shard (Replica Set)\"]\n    PRIMARY[\"mongod Primary<br/>C++17\"]\n    SEC1[\"mongod Secondary<br/>oplog 복제\"]\n    SEC2[\"mongod Secondary<br/>oplog 복제\"]\n    WT[\"WiredTiger<br/>B-tree + MVCC\"]\n  end\n  subgraph Search[\"Search / Vector Sidecar\"]\n    MONGOT[\"mongot<br/>Java + Apache Lucene\"]\n    VOYAGE[\"Voyage AI<br/>임베딩/rerank\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    CS[\"Change Streams<br/>oplog 기반\"]\n    KAFKA[\"Atlas Stream Processing<br/>Kafka\"]\n  end\n  subgraph Infra[\"Multi-Cloud Infra\"]\n    K8S[\"Kubernetes Operator\"]\n    S3[\"S3/Blob<br/>백업·PITR\"]\n  end\n  APP -->|wire protocol BSON| MONGOS\n  SHELL --> MONGOS\n  UI --> API\n  API --> AGENT\n  AGENT -->|provision/config| PRIMARY\n  MONGOS -->|메타조회| CONFIG\n  MONGOS -->|라우팅| PRIMARY\n  PRIMARY -->|oplog| SEC1\n  PRIMARY -->|oplog| SEC2\n  PRIMARY --> WT\n  PRIMARY -->|$search/$vectorSearch| MONGOT\n  MONGOT --> VOYAGE\n  PRIMARY --> CS\n  CS --> KAFKA\n  AGENT --> K8S\n  PRIMARY -->|oplog backup| S3",
+   "why_language": "데이터베이스 코어(mongod/mongos)는 메모리·캐시·락을 직접 제어해야 하는 극한의 저지연 시스템이라 C++17/20으로 작성해 WiredTiger와 같은 주소 공간에서 무복사로 동작한다. 반면 Atlas control plane은 수십만 클러스터를 멀티클라우드에서 오케스트레이션하는 동시성 중심 작업이라 goroutine 모델이 잘 맞는 Go를 쓰고, 사용자 대면 콘솔과 mongosh는 React/TypeScript·Node.js로 빠르게 반복 개발한다.",
+   "why_architecture": "데이터 평면(샤딩된 replica set)과 control plane(Atlas)을 분리해, DB 엔진은 단일 노드 성능에 집중하고 프로비저닝·오토스케일·백업은 클라우드별 차이를 흡수하는 별도 평면이 담당하도록 했다. 검색·벡터 워크로드는 OLTP 코어와 자원 경쟁을 일으키므로 Lucene 기반 mongot 사이드카로 분리해 독립 확장하고, replica set은 Raft 유사 PV1 합의로 자동 페일오버를 보장한다.",
+   "summary": "C++ DB 코어 + Go 멀티클라우드 control plane + Lucene 검색 사이드카로 구성된, 데이터·제어 평면을 분리한 분산 도큐먼트 DBaaS",
    "deep_dive": [
     {
      "topic": "WiredTiger 스토리지 엔진",
@@ -6571,6 +6575,22 @@
     {
      "topic": "트랜잭션과 일관성 — WiredTiger MVCC에서 분산 트랜잭션까지",
      "body": "### 도큐먼트 DB가 ACID 멀티-도큐먼트 트랜잭션을 갖기까지\n\n초기 MongoDB는 단일 도큐먼트 원자성만 보장했지만, 4.0(복제 셋)·4.2(샤드 클러스터)에서 멀티-도큐먼트 분산 트랜잭션을 도입했다. 기반은 WiredTiger의 MVCC다.\n\n- **스냅샷 격리** — WiredTiger는 각 트랜잭션에 시작 시점 스냅샷을 주고, 다른 트랜잭션의 미커밋 변경은 보이지 않게 한다. 충돌하는 쓰기는 write conflict로 abort 후 재시도된다(낙관적 동시성).\n- **클러스터 전역 시간 — `clusterTime`** — 분산 환경에서 인과적 일관성(causal consistency)을 위해 하이브리드 논리 시계(HLC) 기반의 `clusterTime` 을 모든 노드가 oplog와 함께 전파한다. 클라이언트 세션은 이 토큰을 들고 다니며 \"내가 방금 쓴 건 반드시 읽힌다(read-your-writes)\" 를 보장받는다.\n- **readConcern 레벨** — `local`(노드 로컬 최신), `majority`(과반 복제돼 롤백 불가능한 데이터만), `snapshot`(트랜잭션 전역 스냅샷), `linearizable`(선형화) 등으로 일관성/지연 트레이드오프를 선택한다.\n- **샤드 간 분산 트랜잭션** — 여러 샤드에 걸친 트랜잭션은 **two-phase commit(2PC)** 으로 조율된다. mongos가 코디네이터가 되어 prepare → commit 단계를 진행하며, prepare timestamp로 각 샤드의 커밋 시점을 정렬해 전역 스냅샷 읽기를 가능하게 한다.\n\n**설계 철학**: MongoDB는 \"잘 설계된 도큐먼트 모델이면 멀티-도큐먼트 트랜잭션이 거의 필요 없다\"는 입장을 유지하면서도, RDBMS 마이그레이션 수요를 위해 안전망으로 분산 트랜잭션을 제공한다. 단, 샤드 간 2PC는 비용이 크므로 핫패스에선 권장하지 않는다."
+    },
+    {
+     "topic": "Change Streams — oplog 위에 세운 실시간 이벤트 스트림",
+     "body": "### Change Streams가 풀어낸 문제\n전통적으로 DB 변경을 외부로 흘려보내려면 애플리케이션이 주기적으로 `polling`하거나, 별도 CDC(Change Data Capture) 도구로 트랜잭션 로그를 파싱해야 했다. MongoDB는 이미 복제를 위해 모든 쓰기를 `oplog`(operations log, capped collection)에 기록하고 있으므로, 이 로그를 **1급 API로 노출**해 별도 인프라 없이 변경 구독을 가능하게 만들었다.\n\n### 동작 메커니즘\n- 클라이언트가 `db.collection.watch()`를 호출하면 서버 내부적으로 `$changeStream` aggregation stage가 열린다. 이 스테이지는 oplog를 tailable cursor로 따라가며 사용자가 지정한 namespace에 해당하는 항목만 필터링·변환해 표준화된 이벤트 도큐먼트로 변환한다.\n- 각 이벤트에는 `_id` 필드에 **resume token**이 들어간다. 이 토큰은 oplog 항목의 cluster time(`ts`)과 식별자를 인코딩한 값으로, 클라이언트가 죽었다 깨어나도 `resumeAfter`/`startAfter`로 정확히 그 지점부터 이어받을 수 있다. 정확히-한-번 재개를 보장하는 핵심 장치다.\n- 샤드 클러스터에서는 각 샤드의 oplog가 따로 돌기 때문에, `mongos`가 모든 샤드의 change stream을 열고 **cluster time 기준으로 글로벌 정렬(merge sort)**한다. 이때 일부 샤드에 변경이 없으면 진행이 막히므로, 주기적인 `noop write`(periodic noop writer)로 모든 샤드가 시계를 전진시키도록 해 스트림이 멈추지 않게 한다.\n\n### majority 가시성과 일관성\nChange Streams는 기본적으로 **majority-committed** 데이터만 흘려보낸다. 즉 롤백될 수 있는 쓰기는 이벤트로 내보내지 않는다. 덕분에 다운스트림(예: Kafka, 검색 인덱스 동기화)이 '존재하지 않았던 변경'을 받는 일이 없다. `fullDocument: \"updateLookup\"` 옵션을 켜면 update 이벤트에 대해 현재 도큐먼트 전체를 조회해 함께 실어주는데, 이건 이벤트 시점이 아니라 lookup 시점 스냅샷이라는 미묘한 트레이드오프가 있다.\n\n### 실제 활용\nAtlas Stream Processing, Atlas Search 인덱스 동기화, Atlas Triggers(서버리스 함수 트리거)가 모두 내부적으로 change stream을 토대로 동작한다. 즉 검색 사이드카 `mongot`도 결국 change stream 계열 메커니즘으로 원본 컬렉션의 변경을 따라가며 Lucene 인덱스를 갱신한다."
+    },
+    {
+     "topic": "쿼리 옵티마이저와 SBE — plan cache와 Slot-Based Execution Engine",
+     "body": "### MongoDB 옵티마이저는 왜 '경쟁(plan ranking)' 방식인가\n대부분의 RDBMS는 통계(히스토그램)와 비용 모델로 실행 계획을 정한다. MongoDB의 클래식 옵티마이저는 다르게 접근했다: 한 쿼리에 여러 후보 plan을 동시에 만들고 **실제로 조금씩 실행시켜 경쟁(trial period)**시킨다. 가장 빨리 목표 문서 수를 채우거나 가장 적은 work unit으로 결과를 내는 plan이 승리하고, 그 결과가 `plan cache`에 저장된다. 통계가 부정확한 도큐먼트 모델 특성상, '실측'이 모델 추정보다 안전하다는 엔지니어링 판단이다.\n\n### Plan Cache와 무효화\n- 캐시 키는 쿼리의 **shape**(필터 필드·정렬·프로젝션의 구조; 값은 제외)다. `find({age: 25})`와 `find({age: 40})`는 같은 shape로 같은 plan을 공유한다.\n- 캐시된 plan은 영원하지 않다. 실행 중 실제 work가 예상보다 크게 나빠지면(`works` 비율이 임계 초과) plan이 evict되고 재경쟁한다. 인덱스 추가/삭제, 통계 큰 변화도 무효화 트리거다.\n- `$planCacheStats`, `explain(\"allPlansExecution\")`으로 어떤 plan이 왜 이겼는지 내부 카운터(`works`, `advanced`, `isEOF`)를 들여다볼 수 있다.\n\n### SBE — Slot-Based Execution Engine (4.4~7.x)\n기존 실행기는 `PlanStage` 트리가 BSON 도큐먼트를 통째로 들고 단계 사이를 오가는 구조라 불필요한 역직렬화·복사가 많았다. SBE는 데이터를 **slot**(가상 레지스터)에 분해해 흘려보내는 push 기반 엔진으로, 필요한 필드만 끄집어내고 표현식을 컴파일된 bytecode로 평가한다. 그룹·정렬·조인 같은 무거운 연산에서 CPU 효율이 크게 올라간다.\n- SBE는 모든 쿼리를 대체하지 않는다. eligibility 체크를 통과한 쿼리만 SBE로, 나머지는 클래식 엔진으로 폴백한다. 8.0에서는 SBE 적용 범위와 plan cache 통합이 더 정교해졌다.\n- 트레이드오프: SBE는 plan 컴파일 비용이 있어 단발성 단순 쿼리엔 오히려 손해일 수 있어, 휴리스틱으로 엔진을 선택한다.\n\n### Aggregation 파이프라인과의 관계\n`$match`, `$sort`, `$group`, `$lookup` 같은 스테이지는 가능하면 인덱스를 타도록 재작성(pushdown)되고, 연속된 스테이지는 병합(coalescence)된다. 예컨대 `$match`는 파이프라인 앞으로 끌어올려져 인덱스 스캔으로 처리되고, `$sort + $limit`는 top-k 힙으로 융합된다."
+    },
+    {
+     "topic": "FTDC — 데이터베이스에 내장된 블랙박스 관측성",
+     "body": "### FTDC(Full Time Diagnostic Data Capture)란\nMongoDB 서버는 외부 APM 없이도 **항상 켜져 있는 비행기록장치(블랙박스)**를 내장한다. 이것이 FTDC다. mongod/mongos가 약 1초 간격으로 수백~수천 개의 내부 메트릭(서버 상태, WiredTiger 캐시 사용량, 락 경합, 커넥션 수, oplog 윈도우, replication lag, 디스크 I/O 등)을 스냅샷으로 떠서 `diagnostic.data` 디렉터리에 저장한다.\n\n### 왜 별도 포맷으로 압축하는가\n- 매초 수천 메트릭을 그대로 쌓으면 디스크가 폭증한다. FTDC는 BSON으로 메트릭을 모은 뒤, 연속 샘플 간 **delta + zlib 압축**을 적용한다. 시계열 메트릭은 인접 값이 거의 비슷해 delta가 0에 가깝고, 그래서 압축률이 극단적으로 높다(수백:1 수준). 결과적으로 운영 오버헤드가 거의 없으면서 수일~수주치 고해상도 진단 데이터를 링버퍼처럼 보관한다.\n- 이 포맷은 사실상 **MongoDB의 시계열 컬렉션(columnar bucketing) 설계 철학의 원형**이기도 하다. 나중에 도입된 Time Series Collections도 유사하게 measurement를 bucket으로 묶고 컬럼 단위로 압축한다.\n\n### 운영·지원에서의 역할\n장애가 나면 고객/지원팀은 `diagnostic.data`만 받아도 사건 발생 직전 수 초 단위 내부 상태를 재구성할 수 있다. '왜 갑자기 느려졌나'를 사후에 추적할 수 있는 결정적 도구다. Atlas는 이 FTDC 스트림을 control plane으로 끌어올려 차트·알림·오토스케일 판단의 입력으로 쓴다.\n\n### 트레이드오프\n항상 켜져 있는 대신 캡처 항목은 신중히 선별돼 있고, 1초 해상도라 마이크로초 단위 스파이크는 놓칠 수 있다. 그럼에도 '관측을 위해 부하를 주는' 방식이 아니라 '서버가 스스로 싸게 기록'하는 방식이라는 점이 핵심 설계 결정이다."
+    },
+    {
+     "topic": "Queryable Encryption — 암호화된 채로 질의하는 보안 엔진",
+     "body": "### 풀려던 난제\nClient-Side Field Level Encryption(CSFLE, 4.2)은 민감 필드를 드라이버에서 암호화해 서버는 평문을 절대 보지 못하게 했다. 하지만 결정적(deterministic) 암호화가 아니면 동등 비교조차 못 했고, 결정적 암호화는 빈도 분석에 취약했다. Queryable Encryption(QE, 7.0 GA)은 **무작위(randomized) 암호화를 유지하면서도 서버 측에서 동등·범위 질의를 가능하게** 만든 구조다.\n\n### 동작 메커니즘\n- 드라이버가 평문 필드를 암호화할 때, 검색 가능성을 위한 **암호화 인덱스(metadata/`__safeContent__`)**를 함께 만든다. 핵심은 searchable encryption 계열 기법으로, 각 값마다 무작위화된 토큰을 생성해 같은 평문이라도 ciphertext가 매번 달라지지만, 질의 시에는 클라이언트가 동일한 키로 검색 토큰을 파생시켜 서버가 매칭할 수 있게 한다.\n- 서버(mongod)는 키도 평문도 모른 채, 오직 토큰 매칭만으로 인덱스를 조회한다. 키는 `KMS`(AWS KMS, Azure Key Vault, GCP KMS, KMIP)로 보호되는 Customer Master Key 아래 Data Encryption Key로 관리되며, key vault 컬렉션에 암호화돼 저장된다.\n- 7.x에서 동등(equality), 이후 버전에서 **range 질의**(범위 비교)까지 확장됐다. 범위 질의는 order-revealing이 아니라, 값 구간을 트리 형태 토큰으로 분해해 누출을 제한하는 방식이라 구현 난도가 높았다.\n\n### 트레이드오프\n- 스토리지·쓰기 비용 증가: 필드마다 보조 메타데이터와 `__safeContent__` 엔트리가 생겨 도큐먼트가 커지고 쓰기 경로가 무거워진다.\n- 질의 제약: 임의의 정규식·부분일치는 안 되고, 미리 'encrypted for query' 선언한 필드·연산만 가능하다.\n- 그럼에도 DBA·클라우드 운영자·서버 침해 시에도 평문이 새지 않는다는 강력한 보장을 제공한다. 규제 산업(금융·헬스케어)에서 MongoDB를 채택하게 만든 차별화 기능이다."
     }
    ],
    "github": {
@@ -6579,40 +6599,40 @@
      {
       "name": "mongodb/mongo",
       "url": "https://github.com/mongodb/mongo",
-      "desc": "MongoDB 서버 코어(mongod/mongos) C++ 소스 전체",
+      "desc": "mongod/mongos 서버 코어 — C++로 작성된 데이터베이스 본체",
       "lang": "C++",
-      "stars": 28362
+      "stars": 28372
      },
      {
       "name": "mongodb/mongo-go-driver",
       "url": "https://github.com/mongodb/mongo-go-driver",
-      "desc": "공식 Go 드라이버",
+      "desc": "공식 Go 드라이버 — BSON 직렬화·wire protocol 구현",
       "lang": "Go",
       "stars": 8526
      },
      {
       "name": "wiredtiger/wiredtiger",
       "url": "https://github.com/wiredtiger/wiredtiger",
-      "desc": "MongoDB의 기본 스토리지 엔진 WiredTiger",
+      "desc": "기본 스토리지 엔진 — B-tree·MVCC·압축 구현",
       "lang": "C",
       "stars": 2397
      },
      {
       "name": "mongodb/leafygreen-ui",
       "url": "https://github.com/mongodb/leafygreen-ui",
-      "desc": "Atlas UI의 React 디자인 시스템 컴포넌트",
+      "desc": "Atlas UI를 떠받치는 React 디자인 시스템",
       "lang": "TypeScript",
       "stars": 271
      }
     ]
    },
    "sources": [
-    "https://www.mongodb.com/blog/channel/engineering-blog",
-    "https://github.com/mongodb/mongo",
-    "https://www.mongodb.com/docs/manual/core/sharding-data-partitioning/"
+    "https://www.mongodb.com/docs/manual/core/wiredtiger/",
+    "https://www.mongodb.com/docs/manual/changeStreams/",
+    "https://www.mongodb.com/docs/manual/core/queryable-encryption/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "nvidia",
@@ -6632,41 +6652,46 @@
      "Python",
      "Triton Inference Server",
      "TensorRT / TensorRT-LLM",
+     "NVIDIA Dynamo",
+     "NIM microservices",
      "gRPC",
-     "NIM microservices"
+     "CUTLASS / cuDNN / cuBLAS"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Next.js"
+     "Next.js",
+     "Tailwind CSS"
     ],
     "data": [
-     "RAPIDS (cuDF)",
+     "RAPIDS (cuDF / cuML)",
      "Apache Spark (RAPIDS Accelerator)",
      "Apache Arrow",
      "Kafka",
-     "Parquet"
+     "Parquet",
+     "Lance / Vector DB (NeMo Retriever)"
     ],
     "infra": [
      "Kubernetes",
      "Slurm",
      "NCCL",
-     "DGX SuperPOD",
-     "NVLink/NVSwitch + InfiniBand",
+     "DGX SuperPOD / GB200 NVL72",
+     "NVLink/NVSwitch + InfiniBand (SHARP)",
      "NGC Containers",
+     "Base Command / Run:ai",
      "Cloud (AWS/Azure/GCP/OCI)"
     ]
    },
    "architecture": [
     "GPU-accelerated heterogeneous computing",
-    "Distributed parallel training (tensor/pipeline/data parallel)",
-    "Inference-serving microservices (NIM/Triton)",
-    "Container-orchestrated HPC fabric"
+    "Distributed parallel training (tensor/pipeline/data/expert parallel)",
+    "Disaggregated inference serving (prefill/decode 분리, KV-cache aware routing)",
+    "Container-orchestrated HPC fabric (Slurm/K8s on SuperPOD)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Apps & SDKs<br/>Python + C++ + Rust\"]\n    WEB[\"NGC / Build Portal<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"API / Serving\"]\n    NIM[\"NIM Microservice<br/>gRPC + REST\"]\n    TRITON[\"Triton Inference Server<br/>dynamic batching\"]\n  end\n  subgraph Core[\"Compute Core\"]\n    TRT[\"TensorRT-LLM<br/>fused CUDA kernels\"]\n    CUDA[\"CUDA Runtime<br/>SM + Tensor Cores\"]\n    TRAIN[\"Megatron / NeMo<br/>tensor+pipeline parallel\"]\n  end\n  subgraph Data[\"Data / ETL\"]\n    RAPIDS[\"RAPIDS cuDF<br/>GPU dataframes\"]\n    SPARK[\"Spark + RAPIDS<br/>Arrow / Parquet\"]\n    KAFKA[\"Kafka<br/>event stream\"]\n  end\n  subgraph Infra[\"HPC Platform\"]\n    K8S[\"Kubernetes + Slurm<br/>DGX SuperPOD\"]\n    NCCL[\"NCCL collectives<br/>NVLink + InfiniBand\"]\n    STORE[\"Parallel FS<br/>Lustre / GPUDirect\"]\n  end\n  APP -->|gRPC| NIM\n  WEB --> NIM\n  NIM --> TRITON\n  TRITON --> TRT\n  TRT --> CUDA\n  KAFKA --> SPARK\n  SPARK --> RAPIDS\n  RAPIDS --> TRAIN\n  TRAIN -->|all-reduce| NCCL\n  TRAIN --> CUDA\n  CUDA --> NCCL\n  NCCL --> K8S\n  TRAIN --> STORE\n  K8S --> STORE",
-   "why_language": "초저지연 GPU 커널과 하드웨어 추상화(드라이버·런타임·라이브러리)는 C/C++/CUDA로 작성해 메모리 레이아웃과 Tensor Core 명령을 직접 제어해야 성능이 나오기 때문입니다. 반면 모델 학습·데이터 파이프라인·SDK 표면은 생태계가 가장 큰 Python으로 감싸 사용성을 확보하고, 새 시스템 컴포넌트(드라이버 툴링·CLI)에는 메모리 안전성과 동시성이 강한 Rust를 점진 도입하고 있습니다.",
-   "why_architecture": "수천 개 GPU를 하나의 가속기처럼 다뤄야 하므로 NVLink/InfiniBand 패브릭 위에서 NCCL 집합통신과 tensor/pipeline 병렬을 결합한 분산 아키텍처가 필수입니다. 학습과 추론을 분리해, 추론은 Triton/NIM 마이크로서비스로 패키징하고 TensorRT로 커널을 컴파일·융합하여 동일 하드웨어에서 처리량과 지연을 동시에 최적화합니다.",
-   "summary": "C++/CUDA로 하드웨어를 직접 두드리고 NCCL 패브릭과 Triton/NIM으로 GPU를 데이터센터 단위 슈퍼컴퓨터처럼 운영하는 가속 컴퓨팅 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Apps / Agents<br/>OpenAI-compatible API\"]\n    SDK[\"NeMo / NIM SDK<br/>Python + gRPC/HTTP\"]\n  end\n  subgraph Gateway[\"API / Routing\"]\n    GW[\"NIM Gateway<br/>FastAPI + gRPC\"]\n    RT[\"Dynamo Router<br/>KV-cache aware LB\"]\n  end\n  subgraph Serving[\"Inference Serving\"]\n    PRE[\"Prefill Workers<br/>TensorRT-LLM\"]\n    DEC[\"Decode Workers<br/>TensorRT-LLM in-flight batch\"]\n    TRT[\"Triton Server<br/>C++ runtime\"]\n    KV[\"KV-Cache Manager<br/>NVLink + GPU HBM\"]\n  end\n  subgraph Training[\"Training Cluster\"]\n    MEG[\"Megatron / NeMo<br/>3D parallel\"]\n    NCCL[\"NCCL collectives<br/>NVSwitch + IB SHARP\"]\n    CKPT[\"Distributed Checkpoint<br/>async to storage\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RAP[\"RAPIDS + Spark<br/>cuDF GPU ETL\"]\n    PARQ[\"Parquet / Arrow<br/>Lakehouse\"]\n    VEC[\"Vector DB<br/>NeMo Retriever\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    SLURM[\"Slurm + K8s<br/>DGX SuperPOD\"]\n    NGC[\"NGC Containers<br/>GB200 NVL72\"]\n  end\n  APP -->|HTTPS| GW\n  SDK -->|gRPC| GW\n  GW --> RT\n  RT -->|prefill req| PRE\n  RT -->|decode req| DEC\n  PRE -->|KV transfer NVLink| KV\n  KV --> DEC\n  PRE --> TRT\n  DEC --> TRT\n  RAP --> PARQ\n  PARQ --> MEG\n  MEG --> NCCL\n  MEG --> CKPT\n  VEC --> RT\n  SLURM --> MEG\n  NGC --> TRT\n  SLURM --> NGC",
+   "why_language": "모델 학습·추론의 핫패스는 GPU 커널 효율이 곧 비용·성능이므로 CUDA/C++/C로 cuDNN·cuBLAS·CUTLASS·TensorRT 같은 저수준 라이브러리를 직접 구현한다. 반면 연구자·고객이 닿는 NeMo·RAPIDS·NIM의 상위 API는 생산성을 위해 Python으로 감싸고, 메모리 안전성과 동시성이 중요한 신규 서비스 컴포넌트(예: Dynamo의 일부, 툴링)에는 Rust를 점진적으로 도입한다.",
+   "why_architecture": "단일 모델이 수천억~수조 파라미터로 커지면서 한 GPU·한 노드에 담기지 않기 때문에, 텐서/파이프라인/데이터/전문가 병렬을 조합한 분산 학습과 NVLink/NVSwitch+InfiniBand로 묶은 HPC fabric이 필수가 됐다. 추론에서는 compute-bound인 prefill과 memory-bound인 decode의 자원 특성이 달라, 이를 분리(disaggregation)하고 KV-cache 위치를 인지해 라우팅함으로써 GPU 활용률과 처리량을 극대화한다.",
+   "summary": "GPU 하드웨어부터 CUDA 커널, 분산 학습, disaggregated 추론까지 수직 통합한 풀스택 가속 컴퓨팅 플랫폼",
    "deep_dive": [
     {
      "topic": "CUDA 프로그래밍 모델과 GPU 실행",
@@ -6691,6 +6716,22 @@
     {
      "topic": "RAPIDS cuDF — GPU에서 데이터프레임/ETL을 돌리는 메커니즘",
      "body": "### CPU 데이터프레임의 한계\npandas는 단일 스레드·row 지향이라 수십 GB ETL에서 CPU와 메모리 대역폭에 막힙니다. RAPIDS `cuDF`는 동일한 API를 유지하면서 실행을 GPU로 옮깁니다.\n\n### 핵심 메커니즘\n- **Columnar + Apache Arrow 메모리 포맷**: 데이터를 컬럼 단위 연속 버퍼로 GPU HBM에 올립니다. `groupby`, `filter`, `join` 같은 연산이 수천 CUDA 스레드로 컬럼을 동시에 훑어 GPU의 높은 메모리 대역폭(수 TB/s)을 활용합니다.\n- **libcudf (C++/CUDA 코어)**: 실제 커널은 C++/CUDA로 작성된 `libcudf`에 있고 Python `cudf`는 얇은 바인딩입니다. join은 GPU 해시 테이블, sort는 radix/merge sort 같은 GPU 친화 알고리즘을 씁니다.\n- **`cudf.pandas` 가속 모드**: 기존 pandas 코드에 `import cudf.pandas`만 추가하면 GPU에서 실행하다 미지원 연산은 자동으로 CPU pandas로 fallback해 무중단 가속을 제공합니다.\n- **Spark RAPIDS Accelerator**: Spark SQL의 physical plan을 가로채 지원되는 연산자를 GPU 커널로 치환합니다. 애플리케이션 코드 변경 없이 셔플·집계를 GPU로 내려 대규모 ETL 비용을 줄입니다.\n\n### 데이터 이동이라는 트레이드오프\nGPU ETL의 적은 PCIe를 통한 host↔device 복사입니다. RAPIDS는 **GPUDirect Storage**로 NVMe/네트워크 스토리지에서 GPU 메모리로 CPU bounce 없이 직접 DMA하고, Parquet/ORC를 GPU에서 직접 디코딩합니다. 그래도 데이터가 작거나 연산이 가벼우면 복사 비용이 가속 이득을 잡아먹으므로, RAPIDS는 **충분히 큰 배치·연산 밀도가 높은 파이프라인**에서 가장 효과적입니다 — 이 경계를 아는 것이 도입의 핵심 판단입니다. 이렇게 GPU에 머무는 데이터프레임은 그대로 cuML/Megatron 학습 입력으로 zero-copy 연결되어 ETL→학습 경계의 직렬화 비용을 없앱니다."
+    },
+    {
+     "topic": "NVIDIA Dynamo — disaggregated 추론: prefill/decode 분리와 KV-cache 라우팅이 실제로 작동하는 방식",
+     "body": "### 왜 prefill과 decode를 쪼개는가\nLLM 추론은 성격이 완전히 다른 두 단계로 이뤄진다.\n\n- **Prefill(프롬프트 처리)**: 입력 토큰 전체를 한 번에 처리해 KV-cache를 채운다. 행렬-행렬 연산이라 **compute-bound**, GPU의 Tensor Core를 꽉 채워 쓴다.\n- **Decode(토큰 생성)**: 한 번에 토큰 하나씩 autoregressive하게 생성한다. 매 스텝 KV-cache 전체를 읽어야 하는 행렬-벡터 연산이라 **memory-bandwidth-bound**, 연산 유닛은 놀고 HBM 대역폭이 병목이다.\n\n이 둘을 같은 GPU·같은 배치에 섞으면 서로를 방해한다. 긴 prefill 하나가 들어오면 그동안 다른 요청의 decode가 멈춰(`inter-token latency` 튐) TTFT(Time-To-First-Token)와 ITL(Inter-Token-Latency)을 동시에 만족시키기 어렵다. **Dynamo는 prefill 워커 풀과 decode 워커 풀을 물리적으로 분리**해 각각을 독립적으로 스케일하고 각 단계에 최적인 병렬화/배치 전략을 적용한다.\n\n### end-to-end 요청 흐름\n1. 요청이 **Dynamo Frontend**(OpenAI 호환 API)로 들어온다.\n2. **Smart Router**가 들어온 프롬프트의 토큰을 보고 *이미 어느 decode 워커의 KV-cache에 겹치는 prefix가 올라가 있는지*를 조회한다(KV-cache aware routing). 시스템 프롬프트나 RAG 컨텍스트처럼 반복되는 prefix는 재계산 없이 재사용된다.\n3. prefill 워커가 프롬프트를 처리해 KV-cache를 생성한다.\n4. 생성된 KV-cache 블록을 **NVLink/NVSwitch(노드 내) 또는 InfiniBand RDMA(노드 간)** 로 decode 워커에 전송한다. 이 전송을 담당하는 게 **NIXL(NVIDIA Inference Xfer Library)** 로, GPU HBM↔HBM 직접 전송을 추상화한다.\n5. decode 워커가 in-flight batching으로 다른 요청들과 섞어 토큰을 스트리밍 생성한다.\n\n### 핵심 컴포넌트\n| 컴포넌트 | 역할 |\n|---|---|\n| **Smart Router** | KV-cache 적중률·부하를 보고 워커 선택, prefix 재사용 극대화 |\n| **KV-Cache Manager / KVBM** | GPU HBM → CPU DRAM → SSD/오브젝트 스토리지로 이어지는 **계층형 KV-cache 오프로딩**. 핫한 블록은 HBM, 콜드한 블록은 하위 계층 |\n| **NIXL** | 이기종 메모리 간 저지연 KV 전송 추상화(NVLink/IB/RoCE/파일) |\n| **Planner** | 트래픽 패턴을 보고 prefill:decode 워커 비율을 동적 조정 |\n\n### 트레이드오프\n분리는 공짜가 아니다. KV-cache를 prefill→decode로 **네트워크 너머 복사**하는 비용이 추가된다. 따라서 짧은 프롬프트·짧은 출력에서는 오히려 손해일 수 있고, 긴 컨텍스트(RAG, 에이전트, 코드)에서 이득이 커진다. Dynamo의 Planner가 이 손익분기를 트래픽에 맞춰 조정하는 이유다. GB200 NVL72처럼 72개 GPU가 NVLink로 한 도메인에 묶인 하드웨어에서 KV 전송 비용이 극적으로 낮아지기 때문에, 하드웨어와 서빙 SW가 함께 설계되는 수직 통합이 진가를 발휘한다."
+    },
+    {
+     "topic": "DGX SuperPOD 인터커넥트 패브릭 — NVLink/NVSwitch + InfiniBand SHARP가 집합통신을 가속하는 원리",
+     "body": "### 두 종류의 네트워크\n대규모 학습 클러스터는 계층이 다른 두 패브릭을 함께 쓴다.\n\n- **Scale-up (노드 내, NVLink/NVSwitch)**: 한 서버(또는 GB200 NVL72 같은 랙) 안의 GPU들을 NVSwitch로 풀-메시 연결한다. 5세대 NVLink 기준 GPU당 **1.8TB/s** 양방향. GPU들이 서로의 HBM을 거의 로컬 메모리처럼 직접 읽고 쓴다. NVL72에서는 72개 GPU가 하나의 거대한 NVLink 도메인을 이뤄, 마치 하나의 큰 GPU처럼 보인다.\n- **Scale-out (노드 간, InfiniBand)**: 서버들 사이는 NDR InfiniBand **400Gb/s** 링크를 GPU당 하나씩 붙인 **rail-optimized fat-tree** 토폴로지로 연결한다. GPUDirect RDMA로 CPU·시스템 메모리를 거치지 않고 GPU HBM에서 직접 NIC로 데이터를 쏜다.\n\n### NCCL이 이 패브릭 위에서 하는 일\n분산 학습의 통신은 대부분 `all-reduce`(gradient 합산), `all-gather`, `reduce-scatter` 같은 **집합통신**이다. NCCL은 토폴로지를 자동 탐지해 ring/tree 알고리즘을 선택하고, 노드 내는 NVLink, 노드 간은 IB로 경로를 짠다. all-reduce를 reduce-scatter + all-gather로 분해해 대역폭을 최적화하는 식이다.\n\n### SHARP — 스위치에서 연산을 수행하는 in-network computing\n핵심적인 차별점은 **SHARP(Scalable Hierarchical Aggregation and Reduction Protocol)** 다. 보통 all-reduce는 모든 데이터가 노드들을 오가며 합산되지만, SHARP는 **InfiniBand 스위치 ASIC 내부에서 직접 reduction을 수행**한다. 즉 각 GPU가 gradient를 스위치로 한 번 올리면 스위치가 트리 구조로 합산해 결과만 되돌려준다.\n\n- 네트워크를 오가는 데이터량이 절반 이하로 줄고,\n- 엔드포인트(GPU)의 통신 부하가 사라지며,\n- 수천 GPU 규모에서 all-reduce 지연이 노드 수에 거의 무관하게 평탄해진다.\n\n### 왜 이렇게까지 하는가\n수천 GPU 학습에서 **통신은 곧 낭비된 GPU 시간**이다. gradient 동기화가 1% 느려지면 수백만 달러의 컴퓨트가 증발한다. 그래서 NVIDIA는 GPU(연산)·NVSwitch(scale-up)·InfiniBand+SHARP(scale-out)·NCCL(SW)을 한 몸으로 설계해, 통신을 계산에 겹치고(overlap) 가능한 한 패브릭 안에서 처리한다. 이것이 commodity 이더넷 클러스터와 SuperPOD의 본질적 차이다."
+    },
+    {
+     "topic": "수천 GPU 학습의 장애 복원력 — Slurm 스케줄링, 분산 체크포인팅, 자동 재시작",
+     "body": "### MTBF가 분 단위인 세계\n10,000개 GPU가 몇 주~몇 달을 도는 학습에서는 **고장이 예외가 아니라 상수**다. GPU ECC 에러, NVLink 다운, IB 링크 플랩, 노드 행(hang), 호스트 OOM이 통계적으로 끊임없이 발생한다. 한 노드만 죽어도 동기식(synchronous) 학습 전체가 멈추므로, 시스템은 **빠른 감지 → 격리 → 복구**를 자동화해야 한다.\n\n### 스케줄링: Slurm (+ K8s)\nHPC 전통에 따라 학습 잡은 주로 **Slurm**으로 스케줄된다. `srun`/`sbatch`로 노드를 gang-scheduling(전체 노드를 동시에 잡아야 시작)하고, **topology-aware** 배치로 같은 잡의 노드들을 같은 IB 리프/스파인 아래 몰아 통신 거리를 줄인다. 추론·MLOps 워크로드는 Kubernetes(+ Run:ai/Base Command)로 굴려, 학습은 Slurm·서빙은 K8s라는 이중 구조가 흔하다.\n\n### 분산 체크포인팅\n- **Distributed checkpoint**: 모델·옵티마이저 상태(수 TB)를 각 rank가 자기 샤드만 병렬로 저장한다. 단일 rank가 전부 모으는 방식은 불가능한 규모다.\n- **Asynchronous checkpoint**: GPU 상태를 CPU 메모리로 빠르게 복사(staging)한 뒤, 디스크/오브젝트 스토리지로의 실제 쓰기는 백그라운드로 흘려보내 학습 중단 시간을 최소화한다.\n- 저장 빈도는 **체크포인트 비용 vs 손실 재계산 비용**의 균형으로 정한다. 고장이 잦을수록 더 자주 저장하는 게 이득이다.\n\n### 자동 감지·복구 (NeMo / NVIDIA Resiliency)\n- **헬스 체크 / straggler 감지**: 각 스텝의 통신·연산 시간을 모니터링해 느려진(곧 죽을) 노드를 사전에 잡아낸다.\n- **fault tolerance 콜백**: 행이나 NCCL 타임아웃을 감지하면 잡을 죽이고, Slurm이 고장 노드를 drain한 뒤 hot spare로 교체해 **마지막 체크포인트에서 자동 재시작**한다.\n- **in-job restart**: 일부 구현은 프로세스를 완전히 재기동하지 않고 잡 내부에서 통신 그룹만 재구성해 복구 시간을 더 줄인다.\n\n### 트레이드오프\n동기식 데이터 병렬은 단순하고 수렴이 깨끗하지만 *가장 느린 노드*가 전체를 좌우한다(straggler). 그래서 비대칭 하드웨어를 피하고, topology-aware 배치로 통신 꼬리지연을 누르며, 체크포인트 간격을 실측 MTBF에 맞춰 튜닝하는 운영 규율이 학습 처리량(MFU, Model FLOPs Utilization)을 좌우한다."
+    },
+    {
+     "topic": "NIM 마이크로서비스 — 모델을 배포 가능한 컨테이너로 패키징하는 방식",
+     "body": "### NIM이 푸는 문제\n모델 가중치 파일 하나를 받아 실제 서비스로 띄우려면 GPU별 최적 엔진 빌드, 런타임, 배치 스케줄러, API 게이트웨이, 헬스체크, 메트릭을 다 갖춰야 한다. **NIM(NVIDIA Inference Microservices)** 은 이 전부를 하나의 OCI 컨테이너로 패키징해 `docker run` 또는 Helm으로 즉시 띄울 수 있게 만든다.\n\n### 컨테이너 내부 구조\n```\nNIM Container\n├─ OpenAI-compatible REST/gRPC API (FastAPI)\n├─ Inference Runtime: Triton + TensorRT-LLM (LLM) / 기타 백엔드\n├─ Pre-built engine 또는 런타임 빌드\n├─ Model Profile selector (하드웨어 자동 매칭)\n└─ Prometheus metrics / health endpoint\n```\n\n- **하드웨어 인지 엔진 선택**: 같은 모델이라도 H100, A100, L40S에 최적인 TensorRT-LLM 엔진 프로파일이 다르다. NIM은 부팅 시 GPU를 감지해 사전 컴파일된 최적 엔진을 내려받거나(또는 즉석 빌드) 매칭한다. 이는 'TensorRT-LLM은 GPU별로 엔진을 컴파일한다'는 특성을 운영에서 자동화한 것이다.\n- **표준 API**: OpenAI 호환 인터페이스라 기존 애플리케이션 코드를 거의 그대로 자체 인프라로 옮길 수 있다.\n- **K8s 네이티브**: Helm 차트와 NIM Operator로 배포하고, GPU 메트릭 기반 HPA로 오토스케일한다.\n\n### NeMo Retriever / RAG와의 결합\nNIM은 LLM뿐 아니라 임베딩·리랭킹·음성·비전 모델도 같은 패턴으로 제공한다. RAG 파이프라인은 보통 **Embedding NIM → Vector DB → Reranker NIM → LLM NIM**으로 마이크로서비스를 체이닝해 구성한다. 각 단계가 독립 컨테이너라 모델별로 따로 스케일·업데이트할 수 있다.\n\n### 설계 철학과 트레이드오프\nNIM의 핵심 가치는 **이식성과 성능의 동시 확보**다. 고객은 모델을 자기 VPC·온프레미스·각종 클라우드 어디서나 동일하게 굴리면서도(데이터 주권), TensorRT-LLM 수준의 최적화를 얻는다. 대가는 **NVIDIA GPU 종속**과 컨테이너 추상화로 인한 저수준 커스터마이징 제약이다. NVIDIA는 이 종속을 단점이 아니라 수직 통합의 해자(moat)로 본다 — 하드웨어·엔진·서빙·API가 한 회사 손에서 함께 튜닝되기 때문에 일반 OSS 조합으로는 따라잡기 어려운 throughput/$를 낸다."
     }
    ],
    "github": {
@@ -6699,47 +6740,40 @@
      {
       "name": "NVIDIA-NeMo/NeMo",
       "url": "https://github.com/NVIDIA-NeMo/NeMo",
-      "desc": "음성·LLM·멀티모달 생성형 AI 학습/파인튜닝 툴킷",
+      "desc": "LLM·음성·멀티모달 모델 학습/정렬을 위한 확장형 프레임워크",
       "lang": "Python",
-      "stars": 17373
+      "stars": 17397
      },
      {
       "name": "NVIDIA/Megatron-LM",
       "url": "https://github.com/NVIDIA/Megatron-LM",
-      "desc": "초대형 트랜스포머의 tensor/pipeline/sequence 병렬 학습 프레임워크",
+      "desc": "수천 GPU에 모델을 쪼개는 3D 병렬화 대규모 학습 코드베이스",
       "lang": "Python",
-      "stars": 16699
+      "stars": 16741
      },
      {
       "name": "NVIDIA/TensorRT-LLM",
       "url": "https://github.com/NVIDIA/TensorRT-LLM",
-      "desc": "LLM 추론을 위한 커널 융합·양자화·in-flight 배칭 최적화 엔진 빌더",
+      "desc": "LLM 추론을 위한 엔진 컴파일·in-flight batching·양자화 최적화 라이브러리",
       "lang": "Python",
-      "stars": 13867
+      "stars": 13900
      },
      {
       "name": "rapidsai/cudf",
       "url": "https://github.com/rapidsai/cudf",
-      "desc": "pandas 호환 API의 GPU 가속 데이터프레임 라이브러리",
+      "desc": "GPU에서 pandas 호환 데이터프레임/ETL을 실행하는 라이브러리",
       "lang": "C++",
-      "stars": 9663
-     },
-     {
-      "name": "NVIDIA/nccl",
-      "url": "https://github.com/NVIDIA/nccl",
-      "desc": "다중 GPU/노드 집합통신(all-reduce 등) 라이브러리",
-      "lang": "C++",
-      "stars": 4808
+      "stars": 9672
      }
     ]
    },
    "sources": [
-    "https://github.com/NVIDIA/TensorRT-LLM",
-    "https://github.com/NVIDIA/Megatron-LM",
-    "https://developer.nvidia.com/rapids"
+    "https://github.com/NVIDIA/dynamo",
+    "https://developer.nvidia.com/blog/introducing-nvidia-dynamo-a-low-latency-distributed-inference-framework-for-scaling-reasoning-ai-models/",
+    "https://docs.nvidia.com/nim/large-language-models/latest/introduction.html"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "openai",

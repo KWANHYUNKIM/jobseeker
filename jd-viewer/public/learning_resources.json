@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-18T06:40:56",
+  "generated_at": "2026-06-18T08:27:00",
   "source": "youtube",
   "tech_count": 167,
   "curriculum_count": 20,
@@ -12449,88 +12449,6 @@
         "stage": "실전"
       }
     ],
-    "R": [
-      {
-        "title": "하루만에 끝내는 R기초 \"전체 강의 모아보기\"",
-        "url": "https://www.youtube.com/watch?v=0DYFRSykkXQ",
-        "thumbnail": "https://i.ytimg.com/vi/0DYFRSykkXQ/mqdefault.jpg",
-        "channel": "통계의 도구들 Statools",
-        "views": 36476,
-        "length": "1:00:12",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R 프로그래밍 기초 강의 - [카이스트 석사 출신 AI기업 현직자] - 메타코드",
-        "url": "https://www.youtube.com/watch?v=yicfFo_A-KY",
-        "thumbnail": "https://i.ytimg.com/vi/yicfFo_A-KY/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 4815,
-        "length": "3:41:03",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[R00] 논문통계강의 시작합니다 | R로하는 아주쉬운 논문통계분석",
-        "url": "https://www.youtube.com/watch?v=zHPi2kF7BNo",
-        "thumbnail": "https://i.ytimg.com/vi/zHPi2kF7BNo/mqdefault.jpg",
-        "channel": "맥러닝MAClearning",
-        "views": 3164,
-        "length": "7:23",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[R 데이터 분석 기초 강의] 5강. R 스튜디오 클라우드에서 파일을 업로드하는 방법",
-        "url": "https://www.youtube.com/watch?v=l1z3zocBwBs",
-        "thumbnail": "https://i.ytimg.com/vi/l1z3zocBwBs/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4113,
-        "length": "1:41",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R로 배우는 데이터 과학 기초: 0. 강의 소개 및 개발환경 구축",
-        "url": "https://www.youtube.com/watch?v=MkFe2e5KbcA",
-        "thumbnail": "https://i.ytimg.com/vi/MkFe2e5KbcA/mqdefault.jpg",
-        "channel": "주니온TV 아무거나연구소",
-        "views": 1349,
-        "length": "17:44",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R 프로그래밍 기초 강의 3일만에 끝내기: 7장-1 빠진 값(결측치) 제거하기 (is.na) [R 프로그램, R 언어]",
-        "url": "https://www.youtube.com/watch?v=NOyjiQ7W84g",
-        "thumbnail": "https://i.ytimg.com/vi/NOyjiQ7W84g/mqdefault.jpg",
-        "channel": "만만한 수학TV [이상준 경희대 수학과 교수]",
-        "views": 3393,
-        "length": "13:32",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[R 강의]  75. R에서 제공하는 모든 색상 살펴보기(colors)",
-        "url": "https://www.youtube.com/watch?v=QhkfFlkVtWM",
-        "thumbnail": "https://i.ytimg.com/vi/QhkfFlkVtWM/mqdefault.jpg",
-        "channel": "통계의 도구들 Statools",
-        "views": 506,
-        "length": "10:15",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[얼불춤 공략 #1] R 깨는법",
-        "url": "https://www.youtube.com/watch?v=ghgnm6Wh33Y",
-        "thumbnail": "https://i.ytimg.com/vi/ghgnm6Wh33Y/mqdefault.jpg",
-        "channel": "Platster",
-        "views": 12827,
-        "length": "2:49",
-        "published": "11개월 전",
-        "stage": "핵심"
-      }
-    ],
     "XML": [
       {
         "title": "[파이썬 기초 강의] 33강 xml 다루기",
@@ -12610,6 +12528,88 @@
         "views": 86,
         "length": "30:30",
         "published": "2년 전",
+        "stage": "핵심"
+      }
+    ],
+    "R": [
+      {
+        "title": "하루만에 끝내는 R기초 \"전체 강의 모아보기\"",
+        "url": "https://www.youtube.com/watch?v=0DYFRSykkXQ",
+        "thumbnail": "https://i.ytimg.com/vi/0DYFRSykkXQ/mqdefault.jpg",
+        "channel": "통계의 도구들 Statools",
+        "views": 36476,
+        "length": "1:00:12",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R 프로그래밍 기초 강의 - [카이스트 석사 출신 AI기업 현직자] - 메타코드",
+        "url": "https://www.youtube.com/watch?v=yicfFo_A-KY",
+        "thumbnail": "https://i.ytimg.com/vi/yicfFo_A-KY/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 4815,
+        "length": "3:41:03",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[R00] 논문통계강의 시작합니다 | R로하는 아주쉬운 논문통계분석",
+        "url": "https://www.youtube.com/watch?v=zHPi2kF7BNo",
+        "thumbnail": "https://i.ytimg.com/vi/zHPi2kF7BNo/mqdefault.jpg",
+        "channel": "맥러닝MAClearning",
+        "views": 3164,
+        "length": "7:23",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[R 데이터 분석 기초 강의] 5강. R 스튜디오 클라우드에서 파일을 업로드하는 방법",
+        "url": "https://www.youtube.com/watch?v=l1z3zocBwBs",
+        "thumbnail": "https://i.ytimg.com/vi/l1z3zocBwBs/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4113,
+        "length": "1:41",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R로 배우는 데이터 과학 기초: 0. 강의 소개 및 개발환경 구축",
+        "url": "https://www.youtube.com/watch?v=MkFe2e5KbcA",
+        "thumbnail": "https://i.ytimg.com/vi/MkFe2e5KbcA/mqdefault.jpg",
+        "channel": "주니온TV 아무거나연구소",
+        "views": 1349,
+        "length": "17:44",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R 프로그래밍 기초 강의 3일만에 끝내기: 7장-1 빠진 값(결측치) 제거하기 (is.na) [R 프로그램, R 언어]",
+        "url": "https://www.youtube.com/watch?v=NOyjiQ7W84g",
+        "thumbnail": "https://i.ytimg.com/vi/NOyjiQ7W84g/mqdefault.jpg",
+        "channel": "만만한 수학TV [이상준 경희대 수학과 교수]",
+        "views": 3393,
+        "length": "13:32",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[R 강의]  75. R에서 제공하는 모든 색상 살펴보기(colors)",
+        "url": "https://www.youtube.com/watch?v=QhkfFlkVtWM",
+        "thumbnail": "https://i.ytimg.com/vi/QhkfFlkVtWM/mqdefault.jpg",
+        "channel": "통계의 도구들 Statools",
+        "views": 506,
+        "length": "10:15",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[얼불춤 공략 #1] R 깨는법",
+        "url": "https://www.youtube.com/watch?v=ghgnm6Wh33Y",
+        "thumbnail": "https://i.ytimg.com/vi/ghgnm6Wh33Y/mqdefault.jpg",
+        "channel": "Platster",
+        "views": 12827,
+        "length": "2:49",
+        "published": "11개월 전",
         "stage": "핵심"
       }
     ],
