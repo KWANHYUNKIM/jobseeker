@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T00:10:44",
+ "generated_at": "2026-06-18T01:45:29",
  "total": 100,
  "countries": [
   {
@@ -759,19 +759,19 @@
       "count": 2
      },
      {
+      "name": "Envoy",
+      "count": 2
+     },
+     {
+      "name": "Finagle",
+      "count": 2
+     },
+     {
       "name": "Go",
       "count": 2
      },
      {
       "name": "Apache Spark",
-      "count": 1
-     },
-     {
-      "name": "Armeria",
-      "count": 1
-     },
-     {
-      "name": "Async / job tier",
       "count": 1
      }
     ],
@@ -783,6 +783,10 @@
      {
       "name": "TypeScript",
       "count": 7
+     },
+     {
+      "name": "GraphQL",
+      "count": 2
      },
      {
       "name": "Next.js",
@@ -810,10 +814,6 @@
      },
      {
       "name": "Electron",
-      "count": 1
-     },
-     {
-      "name": "Ember.js",
       "count": 1
      }
     ],
@@ -847,11 +847,11 @@
       "count": 2
      },
      {
-      "name": "Druid",
+      "name": "Hadoop",
       "count": 2
      },
      {
-      "name": "Hadoop",
+      "name": "Spark",
       "count": 2
      },
      {
@@ -905,11 +905,11 @@
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 3
+     "count": 2
     },
     {
      "name": "Microservices",
-     "count": 3
+     "count": 2
     },
     {
      "name": "MSA",
@@ -924,7 +924,7 @@
      "count": 1
     },
     {
-     "name": "Event-driven pub/sub fan-out",
+     "name": "Event-driven / CDC",
      "count": 1
     }
    ]
@@ -4510,15 +4510,15 @@
      "Rest.li",
      "Play Framework",
      "gRPC",
-     "Spring",
      "Netty",
-     "Akka"
+     "Akka",
+     "Spring"
     ],
     "frontend": [
      "Ember.js",
+     "Glimmer",
      "React",
-     "TypeScript",
-     "Glimmer"
+     "TypeScript"
     ],
     "data": [
      "Kafka",
@@ -4528,7 +4528,8 @@
      "Samza",
      "Brooklin",
      "Galene",
-     "DataHub"
+     "DataHub",
+     "Couchbase"
     ],
     "infra": [
      "Kubernetes",
@@ -4536,19 +4537,20 @@
      "Helix",
      "LinkedIn-Kafka",
      "OpenTelemetry",
-     "inGraphs"
+     "inGraphs",
+     "Gradle"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven",
+    "Event-driven / CDC",
     "Stream processing",
     "CQRS / read-optimized derived stores"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Web / Mobile App<br/>Ember.js + React + iOS/Android\"]\n    CDN[\"Edge / CDN<br/>Akamai + ATS\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    FE[\"Frontend API<br/>Play Framework + Netty\"]\n    DSP[\"Dispatcher / D2<br/>Rest.li dynamic discovery\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PROF[\"Profile / Identity<br/>Rest.li + Java\"]\n    FEED[\"Feed Service<br/>Rest.li + gRPC\"]\n    GRAPH[\"Economic Graph<br/>Liquid graph DB\"]\n    SEARCH[\"Search Service<br/>Galene + Lucene\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    ESP[\"Primary OLTP<br/>Espresso on MySQL/RocksDB\"]\n    VEN[\"Derived KV Store<br/>Venice + RocksDB\"]\n    PIN[\"Real-time OLAP<br/>Apache Pinot\"]\n    HDFS[\"Offline / Lake<br/>HDFS + Iceberg + Spark\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SAMZA[\"Stream Processing<br/>Apache Samza\"]\n    BROOK[\"Change Capture<br/>Brooklin CDC\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on Azure\"]\n    HELIX[\"Cluster Mgmt<br/>Apache Helix + ZooKeeper\"]\n  end\n  APP --> CDN --> FE\n  FE -->|Rest.li| DSP\n  DSP --> PROF\n  DSP --> FEED\n  DSP --> SEARCH\n  PROF --> ESP\n  FEED --> VEN\n  FEED --> PIN\n  ESP -->|CDC| BROOK\n  BROOK --> KAFKA\n  KAFKA --> SAMZA\n  SAMZA --> VEN\n  SAMZA --> PIN\n  HDFS -->|bulk push| VEN\n  GRAPH --> ESP\n  SEARCH --> GRAPH\n  DSP -. discovery .-> HELIX\n  Core --> K8S\n  Data --> HELIX",
-   "why_language": "LinkedIn은 초창기부터 JVM 생태계에 깊이 투자해 Java를 핵심 서비스 언어로, 동시성·함수형 처리가 필요한 Kafka·Samza·Venice 같은 데이터 인프라는 Scala로 작성했다. 수천 개 마이크로서비스가 초당 수백만 요청을 처리해야 하므로 성숙한 JVM 런타임, 정적 타입, 풍부한 동시성 라이브러리가 안정성과 성능의 기반이 되며, ML·데이터 파이프라인은 Python, 신규 Android·서비스 코드는 Kotlin으로 점진 전환 중이다.",
-   "why_architecture": "10억+ 회원의 Economic Graph를 실시간으로 다루려면 단일 모놀리식으로는 확장이 불가능해, 도메인별 Rest.li 마이크로서비스로 분해하고 D2 기반 동적 서비스 디스커버리로 묶었다. 쓰기는 Espresso 같은 OLTP에 하고 Brooklin CDC→Kafka→Samza로 변경을 스트리밍해 Venice·Pinot 같은 읽기 최적화 파생 스토어를 비동기로 갱신하는 이벤트 중심·CQRS 패턴을 채택함으로써, 폭주하는 읽기 트래픽과 피드·검색·추천의 지연 요구를 분리해 독립적으로 확장한다.",
-   "summary": "JVM(Java/Scala) 기반 Rest.li 마이크로서비스를 Kafka 이벤트 백본으로 잇고, 쓰기(Espresso)와 읽기(Venice·Pinot)를 CQRS로 분리한 초대형 소셜 그래프 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web<br/>Ember.js + Glimmer\"]\n    MOB[\"Mobile<br/>iOS/Android native\"]\n  end\n  subgraph Edge\n    ATS[\"Edge/API Tier<br/>Rest.li + Netty\"]\n    D2[\"Service Discovery<br/>D2 + ZooKeeper\"]\n  end\n  subgraph Core\n    MID[\"Midtier Services<br/>Rest.li + Play\"]\n    FEED[\"Feed/FollowFeed<br/>Java\"]\n    PYMK[\"PYMK/Recsys<br/>Pro-ML\"]\n    SEARCH[\"Search<br/>Galene\"]\n  end\n  subgraph Storage\n    ESP[\"Primary OLTP<br/>Espresso\"]\n    VEN[\"Derived KV<br/>Venice\"]\n    PIN[\"OLAP/Analytics<br/>Pinot\"]\n    CB[\"Cache<br/>Couchbase\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    BROOK[\"CDC<br/>Brooklin\"]\n    SAMZA[\"Stream Proc<br/>Samza\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes + Helix\"]\n    AZ[\"Cloud<br/>Azure\"]\n    OBS[\"Observability<br/>inGraphs + OpenTelemetry\"]\n  end\n  WEB --> ATS\n  MOB --> ATS\n  ATS -->|D2 LB| MID\n  MID --> D2\n  MID --> FEED\n  MID --> PYMK\n  MID --> SEARCH\n  FEED --> ESP\n  FEED --> CB\n  PYMK --> VEN\n  SEARCH --> PIN\n  ESP -->|change capture| BROOK\n  BROOK --> KAFKA\n  KAFKA --> SAMZA\n  SAMZA --> VEN\n  SAMZA --> PIN\n  KAFKA --> PIN\n  MID -.metrics.-> OBS\n  K8S --> AZ\n  MID --> K8S",
+   "why_language": "수억 명 규모의 회원 그래프와 실시간 피드·추천을 안정적으로 처리하기 위해 JVM 생태계(Java/Scala)를 핵심으로 삼아 Rest.li·Kafka·Samza 같은 자체 인프라를 JVM 위에 통일했다. 데이터/ML 파이프라인은 Python, 검색·스토리지 엔진의 성능 임계 경로는 C++, 신규 백엔드·모바일 코드는 Kotlin으로 점진 확장하며, 프론트는 대규모 SPA 운영에 강한 Ember.js와 TypeScript를 쓴다.",
+   "why_architecture": "회원 그래프 변경(연결, 게시물, 조회) 하나가 피드·검색·추천·알림 등 수십 개 시스템에 파급되므로, 단일 거대 DB 대신 Kafka 이벤트와 Brooklin CDC로 변경을 흘려보내고 Espresso(쓰기)·Venice/Pinot(읽기)로 책임을 분리하는 CQRS형 파생 저장소 모델을 택했다. 마이크로서비스 + D2 클라이언트 로드밸런싱으로 수천 개 서비스를 독립 배포·격리하고, 스트림 처리로 추천·피드를 준실시간으로 갱신한다.",
+   "summary": "Kafka 이벤트 버스를 중심으로 JVM 마이크로서비스와 CQRS형 파생 저장소(Espresso→Venice/Pinot)를 엮은 대규모 스트리밍 아키텍처",
    "deep_dive": [
     {
      "topic": "Kafka의 탄생과 이벤트 중심 아키텍처",
@@ -4573,6 +4575,18 @@
     {
      "topic": "관측성: inGraphs 메트릭 파이프라인과 분산 트레이싱",
      "body": "### 모든 것을 측정한다 — Kafka 위의 메트릭\nLinkedIn 관측성의 출발점도 결국 `Kafka`다. 수천 서비스가 내보내는 메트릭·이벤트가 전용 Kafka 토픽으로 흘러가고, 이를 집계해 `inGraphs`라는 내부 시계열 모니터링 시스템에 적재한다. 엔지니어는 서비스를 배포하면 별도 설정 없이도 표준 메트릭(QPS, p50/p90/p99 지연, 에러율, GC)이 자동으로 대시보드에 뜬다.\n\n- **자동 계측**: Rest.li/D2 호출 경로에 메트릭 수집이 내장돼, 모든 서비스 간 호출의 지연·에러가 별도 코드 없이 기록된다.\n- **이상 탐지(autometrics/anomaly detection)**: 단순 임계값이 아니라 과거 패턴(요일·시간대 계절성) 대비 편차를 보고 알람을 울려, 트래픽이 주기적으로 출렁이는 소셜 서비스 특성에 맞춘다.\n\n### 분산 트레이싱: call tree\n하나의 사용자 요청(예: 피드 로드)은 수십 개 다운스트림 서비스를 부채꼴로 호출한다. 어디서 느려졌는지 보려면 **요청 단위 추적**이 필수다. LinkedIn은 요청에 trace id를 심어 서비스 경계를 넘나드는 호출 트리(call graph)를 재구성하고, 이를 통해 특정 느린 요청의 critical path를 시각화한다. 최근에는 `OpenTelemetry` 표준으로 수렴해 트레이스·메트릭·로그를 통합하는 방향으로 이동했다.\n\n### Pinot으로 셀프서브 분석\n흥미로운 점은, LinkedIn이 **운영 분석에도 자사 제품 인프라를 재사용**한다는 것이다. 사이트 트래픽·A/B 실험 지표 같은 분석 쿼리는 실시간 OLAP 스토어 `Apache Pinot`에 올려, 내부 대시보드가 수십억 행에 대해 밀리초~초 단위로 집계 쿼리를 돌린다. 이렇게 \"제품을 떠받치는 인프라(Pinot)\"가 \"그 제품을 운영·관측하는 도구\"로도 쓰이는 구조가 LinkedIn 엔지니어링의 특징이다.\n\n### 왜 자체 구축인가\n초당 수천만 메트릭 데이터포인트와 페타바이트급 트레이스를 외부 SaaS로 감당하기엔 비용과 지연이 비현실적이었다. 또한 핵심 데이터 인프라(Kafka, Pinot)를 이미 보유했기에, 관측성 파이프라인을 그 위에 얹는 것이 자연스러운 선택이었다 — 트레이드오프는 막대한 내부 유지보수 부담이지만, 그 결과물 상당수(Pinot, Kafka)를 오픈소스로 환원해 생태계 전체가 이득을 봤다."
+    },
+    {
+     "topic": "Brooklin과 CDC: Databus의 후계, 어떻게 변경을 전 시스템에 흘려보내는가",
+     "body": "### 왜 CDC가 LinkedIn의 심장인가\nLinkedIn에서 회원이 직함을 바꾸거나, 연결을 맺거나, 게시물에 좋아요를 누르면 그 단일 변경이 검색 인덱스(Galene), 추천(PYMK), 피드(FollowFeed), 알림, 표준화(standardization) 등 **수십 개 다운스트림 시스템**에 반영되어야 한다. 이를 각 시스템이 원본 DB를 폴링/조인으로 직접 읽게 하면 OLTP가 즉시 무너진다. 그래서 LinkedIn은 \"원본 쓰기는 한 곳, 변경은 스트림으로 팬아웃\"이라는 CDC(Change Data Capture) 모델을 1세대 `Databus` 때부터 핵심으로 삼았다.\n\n### Databus → Brooklin\n초기 `Databus`는 Oracle/Espresso의 트랜잭션 로그를 tail하여 변경 이벤트를 순서 보장된 스트림으로 노출했다. 컨슈머는 자신의 SCN(System Change Number)/체크포인트를 들고 와서 \"내가 마지막으로 본 지점 이후\"만 받아간다. 이 **bootstrap + 무한 스트리밍** 2단계 모델 덕분에 새 컨슈머는 전체 스냅샷을 먼저 받고 이후 증분만 따라잡을 수 있었다.\n\n현재는 `Brooklin`이 이 역할을 일반화했다. Brooklin은 특정 소스에 묶이지 않는 **범용 스트리밍 브리지**다:\n- 소스: Espresso, Oracle, MySQL, 그리고 Kafka 자체\n- 싱크: Kafka(주로), 다른 데이터스토어\n- 하나의 클러스터로 수천 개의 `datastream`을 멀티테넌트로 운영\n\n### 동작 메커니즘\n- Brooklin은 내부적으로 `Connector`(소스에서 읽기)와 `TransportProvider`(싱크로 쓰기) 추상으로 나뉜다.\n- 파티션·리더십 배분은 Apache `Helix`가 담당한다 — 어떤 Brooklin 인스턴스가 어떤 datastream 파티션을 맡을지, 노드가 죽으면 누가 인계받을지를 Helix 상태 머신으로 관리한다.\n- 변경 이벤트는 보통 **Espresso → Brooklin → Kafka 토픽** 경로로 흘러, 이후 `Samza` 스트림 잡이나 `Venice` push가 이를 소비한다.\n\n### 왜 이렇게까지 했나 (트레이드오프)\n- **장점**: OLTP(Espresso)는 \"진실의 원천\"으로 단순 유지, 읽기 최적화는 전부 파생 저장소로 위임 → 읽기/쓰기 폭증을 독립적으로 스케일.\n- **대가**: 모든 다운스트림은 **eventual consistency**를 받아들여야 한다. 프로필을 수정한 직후 검색 결과에 즉시 안 보일 수 있는 수 초의 지연은 이 설계의 의도된 결과다.\n- **운영 복잡성**: 수천 개 datastream의 lag, 순서 보장, 재처리(replay)를 모니터링해야 하므로 체크포인트/오프셋 관리가 1급 시민이다."
+    },
+    {
+     "topic": "ML/추천 파이프라인: Pro-ML, Feathr 피처 스토어, Venice 서빙",
+     "body": "### 문제의 규모\nFeed 랭킹, People You May Know, Jobs You May Be Interested In, 광고 타깃팅 등 LinkedIn의 거의 모든 표면이 ML로 구동된다. 핵심 과제는 (1) 오프라인 학습과 온라인 서빙 사이의 **피처 일관성(training/serving skew)**, (2) 수백 명의 모델러가 같은 피처를 재발명하지 않게 하는 것이다.\n\n### Pro-ML: 모델 라이프사이클의 산업화\n`Pro-ML`은 LinkedIn의 내부 엔드투엔드 ML 플랫폼으로, 모델의 탐색 → 학습 → 배포 → 모니터링 전 과정을 표준화했다. 핵심 산출물 중 하나가 모델·피처 표현 표준인데, 학습에서 쓴 피처 변환을 서빙에서 그대로 재현하도록 강제해 skew를 줄인다.\n\n### Feathr: 피처 스토어\n`Feathr`(현재 오픈소스/LF AI & Data)는 LinkedIn에서 나온 피처 스토어다. 핵심 개념:\n- **피처 정의의 단일 소스**: 한 번 정의한 피처를 오프라인 학습(스파크 배치)과 온라인 서빙 양쪽에서 동일 정의로 사용.\n- **point-in-time correct join**: 학습 데이터를 만들 때 \"그 시점에 알 수 있었던 값\"만 조인해 미래 정보 누수(label leakage)를 막는다. 이게 추천 품질의 핵심 디테일이다.\n- 온라인 피처는 저지연 KV(예: Venice)에서 읽어 서빙 레이턴시를 맞춘다.\n\n### 서빙: 왜 Venice인가\n학습된 임베딩·피처·모델 산출물(예: 회원별 추천 후보, 피처 벡터)은 **배치/스트리밍으로 계산된 파생 데이터**이고, 온라인에서 키 기반 초저지연 조회가 필요하다. 이건 OLTP(Espresso)가 아니라 `Venice`의 영역이다:\n- Venice는 **batch push**(스파크/하둡 결과를 통째로 swap-in)와 **streaming/nearline 업데이트**(Samza/Kafka로 증분 갱신)를 모두 지원해, \"매일 전량 재계산 + 실시간 보정\"을 한 스토어에서 처리한다.\n- 따라서 PYMK·Feed 후보 생성 같은 잡은 오프라인에서 무거운 그래프/모델 연산을 돌려 Venice에 push하고, 온라인 미드티어는 Venice를 단순 조회해 응답한다.\n\n### 흐름 요약\n```\n로그/이벤트(Kafka) ─▶ 오프라인 학습(Spark) ─▶ 모델/피처 산출물\n                                   │\n         Feathr(피처 정의 공유) ───┤\n                                   ▼\n                         Venice(batch push + nearline) ─▶ 온라인 서빙(미드티어)\n```\n이 분리 덕분에 모델러는 무거운 계산을 배치로 자유롭게 돌리고, 서빙 경로는 KV lookup 수준의 단순·저지연을 유지한다."
+    },
+    {
+     "topic": "배포·CI/CD: Multiproduct 모노레포 관행과 카나리·Trunk-based",
+     "body": "### Multiproduct: 수천 서비스의 의존성 지옥을 푸는 방식\nLinkedIn은 수천 개의 마이크로서비스와 공유 라이브러리를 갖고 있고, Rest.li 인터페이스로 서로 강하게 묶여 있다. 이를 관리하는 단위가 **`multiproduct`(MP)** 라는 개념이다. 각 MP는 독립적으로 버전이 매겨지고 `Gradle`로 빌드되며, 다른 MP를 의존성으로 끌어다 쓴다.\n\n핵심 과제는 \"공유 라이브러리 한 줄 바꿨을 때 그걸 쓰는 수백 개 서비스가 깨지지 않는가\"이다. LinkedIn은 이를 위해:\n- **dependency management 자동화**: 새 버전이 나오면 다운스트림 MP들로 자동 PR/업그레이드를 흘려보내고 빌드·테스트를 돌려 호환성을 검증.\n- Rest.li의 **IDL/스키마 호환성 검사**: API 변경 시 backward-incompatible change를 빌드 단계에서 잡아낸다(PDSC/PDL 스키마 호환성 룰). 이것이 \"이벤트·인터페이스 중심\" 아키텍처를 깨지지 않게 유지하는 안전망이다.\n\n### 빌드·테스트·배포 파이프라인\n- 빌드: `Gradle` 기반, MP 단위로 격리.\n- 코드 리뷰는 트렁크 기반에 가깝게 운영되며, 머지 전 자동 테스트 게이트를 통과해야 한다.\n- 배포는 fabric(데이터센터/리전)·인스턴스 그룹 단위로 단계적 롤아웃. 새 빌드는 일부 인스턴스에 **canary**로 먼저 나가고, 헬스/메트릭(에러율, 레이턴시, GC)이 정상이면 점진 확대, 이상 시 자동 롤백.\n\n### 안전 장치와의 결합\n- 배포 중 문제가 생기면 앞서 다룬 D2의 **degrader 서킷브레이커**가 비정상 인스턴스로 가는 트래픽을 자동으로 줄여 카나리 폭발 반경을 좁힌다.\n- 관측성(inGraphs/OpenTelemetry) 메트릭이 canary 판정의 입력으로 쓰여, 배포·관측·로드밸런싱이 한 루프로 묶인다.\n\n### 트레이드오프\n- **장점**: 수천 서비스를 독립 배포하면서도 인터페이스 호환성을 컴파일·CI 단계에서 강제 → 런타임 통합 장애 최소화.\n- **대가**: MP/의존성 자동화·스키마 호환성 도구라는 무거운 사내 인프라를 직접 만들고 유지해야 한다. 외부 표준 도구만으로는 이 규모의 의존성 그래프를 감당하기 어렵다는 판단이 깔려 있다."
     }
    ],
    "debate": {
@@ -4686,47 +4700,47 @@
      {
       "name": "datahub-project/datahub",
       "url": "https://github.com/datahub-project/datahub",
-      "desc": "메타데이터 검색·데이터 거버넌스 플랫폼",
+      "desc": "메타데이터·데이터 거버넌스 플랫폼(현 DataHub 프로젝트)",
       "lang": "Python",
-      "stars": 12083
-     },
-     {
-      "name": "apache/pinot",
-      "url": "https://github.com/apache/pinot",
-      "desc": "LinkedIn이 만든 실시간 분산 OLAP 데이터스토어",
-      "lang": "Java",
-      "stars": 6097
+      "stars": 12112
      },
      {
       "name": "linkedin/rest.li",
       "url": "https://github.com/linkedin/rest.li",
-      "desc": "타입 안전한 RESTful 마이크로서비스 프레임워크와 D2 동적 디스커버리",
+      "desc": "타입 안전 REST+RPC 프레임워크와 D2 로드밸런싱",
       "lang": "Java",
       "stars": 2534
      },
      {
       "name": "linkedin/brooklin",
       "url": "https://github.com/linkedin/brooklin",
-      "desc": "이종 시스템 간 대규모 변경 데이터 캡처/스트리밍 서비스",
+      "desc": "이종 시스템 간 스트리밍·CDC 데이터 이동 서비스",
       "lang": "Java",
       "stars": 965
      },
      {
       "name": "linkedin/venice",
       "url": "https://github.com/linkedin/venice",
-      "desc": "ML 피처·파생 데이터를 위한 파생 KV 스토어(읽기 최적화)",
+      "desc": "파생 데이터를 위한 분산 KV 스토어, 추천·ML 피처 서빙",
       "lang": "Java",
-      "stars": 606
+      "stars": 609
+     },
+     {
+      "name": "linkedin/kafka",
+      "url": "https://github.com/linkedin/kafka",
+      "desc": "LinkedIn이 운영하는 Apache Kafka 포크(릴리스 브랜치)",
+      "lang": "Java",
+      "stars": 151
      }
     ]
    },
    "sources": [
     "https://engineering.linkedin.com/blog",
-    "https://github.com/linkedin/rest.li",
+    "https://github.com/linkedin/brooklin",
     "https://github.com/linkedin/venice"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "meta",
@@ -5016,48 +5030,55 @@
    "stack": {
     "backend": [
      "Django",
-     "Spring",
+     "Spring Boot",
      "Thrift",
      "gRPC",
-     "Finagle/Thrift RPC",
+     "Finagle",
+     "Envoy",
+     "Pacer (async job)",
      "MemQ"
     ],
     "frontend": [
      "React",
-     "Gestalt",
+     "Gestalt Design System",
      "Redux",
-     "WebPack/SSR"
+     "Webpack",
+     "Node.js SSR",
+     "GraphQL"
     ],
     "data": [
      "HBase",
      "Kafka",
      "Flink",
-     "Druid",
-     "RocksStore/Rocksplicator",
+     "Apache Druid",
+     "Rocksplicator/RocksDB (Rockstore)",
      "Manas",
      "Ixia",
      "Pixie/PinSage",
      "Goku TSDB",
-     "Singer"
+     "Singer",
+     "Spark",
+     "Presto/Trino"
     ],
     "infra": [
      "AWS EC2/S3",
-     "Kubernetes",
+     "Kubernetes (PinCompute)",
      "Envoy",
      "Teletraan",
-     "Statsboard"
+     "Statsboard",
+     "Spinnaker-like canary"
     ]
    },
    "architecture": [
-    "Microservices (Thrift/gRPC)",
-    "Event-driven streaming (Kafka/Flink)",
-    "ML-driven retrieval & ranking",
-    "Graph-based recommendation"
+    "Microservices over Thrift/gRPC with Envoy service mesh",
+    "Event-driven streaming (Kafka/Flink/Singer)",
+    "ML-driven retrieval & ranking (embedding ANN)",
+    "Graph-based recommendation (Pin/board graph)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Gestalt\"]\n    MOB[\"Mobile<br/>iOS Swift / Android Kotlin\"]\n  end\n  subgraph Edge\n    ELB[\"Edge LB<br/>AWS ELB + Envoy\"]\n    API[\"API Service<br/>Django + Python\"]\n  end\n  subgraph Core\n    MESH[\"Service Mesh<br/>Envoy + Thrift/gRPC\"]\n    HF[\"Homefeed Service<br/>Java/Kotlin\"]\n    SEARCH[\"Search<br/>Manas\"]\n    RECO[\"Graph Reco<br/>Pixie + PinSage\"]\n    ANN[\"Embedding Retrieval<br/>Ixia ANN\"]\n  end\n  subgraph Data\n    HBASE[\"Pin Graph Store<br/>HBase\"]\n    ROCKS[\"KV Store<br/>RocksStore/Rocksplicator\"]\n    DRUID[\"OLAP<br/>Druid\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Log Bus<br/>Kafka + MemQ\"]\n    SINGER[\"Log Agent<br/>Singer\"]\n    FLINK[\"Stream Compute<br/>Flink\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    DEPLOY[\"Deploy<br/>Teletraan\"]\n    OBS[\"Observability<br/>Statsboard + Goku\"]\n  end\n  WEB --> ELB\n  MOB --> ELB\n  ELB --> API\n  API -->|Thrift| MESH\n  MESH --> HF\n  MESH --> SEARCH\n  HF -->|candidates| RECO\n  HF -->|embeddings| ANN\n  RECO --> HBASE\n  ANN --> ROCKS\n  SEARCH --> ROCKS\n  API -->|events| SINGER\n  SINGER --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> HBASE\n  K8S --> MESH\n  DEPLOY --> API\n  OBS --> MESH",
-   "why_language": "초기 웹/제품 로직은 Django 기반 Python으로 빠르게 구축했고 지금도 API 게이트웨이 계층의 핵심이지만, 핀 그래프·홈피드·검색처럼 지연시간과 처리량이 중요한 서비스는 JVM(Java/Kotlin)으로 옮겨 GC·동시성·생태계 이점을 취한다. ML 서빙·ANN 검색·스토리지 엔진 같은 성능 임계 경로는 C++로, 신규 인프라 도구는 Go로 작성해 언어별 강점을 영역에 맞춰 배치한다.",
-   "why_architecture": "수억 명이 만드는 핀-보드-사용자 그래프를 실시간 추천으로 연결해야 하므로, 도메인을 Thrift/gRPC 마이크로서비스로 쪼개고 Envoy 메시로 묶어 독립 확장과 장애 격리를 달성한다. 모든 사용자 행동을 Kafka로 흘려 Flink로 가공하는 이벤트 드리븐 구조 위에 Pixie/PinSage 그래프 추천과 Ixia 임베딩 검색을 얹어, 후보 생성→랭킹이 ML 중심으로 동작하도록 설계했다.",
-   "summary": "Django 게이트웨이 위에 JVM 마이크로서비스와 그래프·임베딩 기반 ML 추천을 얹고, Kafka/Flink 스트리밍과 HBase로 핀 그래프를 떠받치는 추천 중심 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Mobile + Web<br/>React + Gestalt + SSR\"]\n  end\n  subgraph Edge\n    CDN[\"Image CDN + Edge<br/>AWS CloudFront\"]\n    GW[\"API Gateway<br/>Envoy + Django/Java\"]\n  end\n  subgraph Core\n    HOME[\"Home Feed Service<br/>Java + Finagle/Thrift\"]\n    SEARCH[\"Search Service<br/>Manas + Ixia\"]\n    GRAPH[\"Pin Graph / Recs<br/>Pixie + PinSage\"]\n    ASYNC[\"Async Jobs<br/>Pacer\"]\n  end\n  subgraph Storage\n    HB[\"Graph Store<br/>HBase\"]\n    RX[\"KV Store<br/>Rocksplicator/RocksDB\"]\n    S3[\"Object Store<br/>AWS S3\"]\n  end\n  subgraph Streaming\n    SINGER[\"Log Agent<br/>Singer\"]\n    KAFKA[\"Event Bus<br/>Kafka + MemQ\"]\n    FLINK[\"Stream Proc<br/>Flink\"]\n    DRUID[\"Realtime OLAP<br/>Druid\"]\n  end\n  subgraph Platform\n    K8S[\"Compute<br/>Kubernetes PinCompute\"]\n    DEPLOY[\"Deploy<br/>Teletraan\"]\n    OBS[\"Observability<br/>Goku TSDB + Statsboard\"]\n  end\n  APP --> CDN --> S3\n  APP -->|HTTPS| GW\n  GW -->|gRPC/Thrift| HOME\n  GW -->|gRPC| SEARCH\n  HOME -->|Thrift| GRAPH\n  HOME --> ASYNC\n  GRAPH --> HB\n  SEARCH --> RX\n  HOME --> RX\n  GW --> SINGER --> KAFKA\n  KAFKA --> FLINK --> DRUID\n  FLINK --> HB\n  HOME -.metrics.-> OBS\n  K8S --> DEPLOY\n  ASYNC --> KAFKA",
+   "why_language": "Pinterest는 초기 Django 기반 Python 모놀리스에서 출발해 제품 반복 속도를 확보했고, 트래픽이 수십억 핀·수억 MAU 규모로 커지면서 지연·처리량이 중요한 서비스는 JVM(Java/Kotlin) + Finagle/Thrift로 옮겼다. 검색·랭킹·임베딩 서빙처럼 CPU·메모리 효율이 핵심인 경로는 C++(Manas, Rocksplicator)로 작성하고, 인프라·운영 도구는 동시성과 배포 단순성이 좋은 Go를 쓴다. 즉 '제품은 Python, 규모는 JVM/C++, 인프라는 Go'라는 도메인·규모별 분업이 언어 선택을 결정한다.",
+   "why_architecture": "비주얼 디스커버리 SNS 특성상 모든 요청이 개인화된 추천(홈피드·검색·관련 핀)을 거치므로, 후보 생성→랭킹을 독립적으로 확장·실험할 수 있는 마이크로서비스 + ML 리트리벌 구조가 필수였다. 사용자 행동 로그를 거의 실시간으로 임베딩·그래프에 반영해야 추천 품질이 유지되므로 Singer→Kafka→Flink의 이벤트 스트리밍을 1급 시민으로 두고, 핀-보드 관계를 Pixie/PinSage 그래프로 모델링해 '비슷한 핀' 발견을 핵심 가치로 만든다. Envoy 서비스 메시로 수백 개 서비스 간 RPC·서킷브레이킹·관측성을 표준화해 운영 복잡도를 통제한다.",
+   "summary": "Python 모놀리스에서 출발해 JVM/C++ 마이크로서비스 + 그래프·임베딩 ML 리트리벌로 진화한 '추천이 곧 제품'인 비주얼 디스커버리 스택",
    "deep_dive": [
     {
      "topic": "홈피드 랭킹 파이프라인",
@@ -5086,6 +5107,22 @@
     {
      "topic": "Teletraan · Kubernetes 마이그레이션 — 배포와 컴퓨트 플랫폼",
      "body": "### Teletraan — EC2 시대의 배포 시스템\n`Teletraan`은 Pinterest가 오픈소스로 공개한 사내 배포 시스템으로, 오랫동안 EC2 인스턴스 플릿에 코드를 굴리는 표준이었다.\n\n- **환경(environment) 단위 배포**와 **단계적 롤아웃**(일부 호스트 → 전체)을 지원해, 새 빌드를 소수 호스트에 먼저 깔고 메트릭을 본 뒤 확산하는 카나리성 흐름을 만든다.\n- **롤백 우선** 철학: 문제가 보이면 이전 빌드로 빠르게 되돌리는 것을 1급 기능으로 둔다. 대규모 플릿에서 \"안전하게 빨리 되돌릴 수 있음\"이 배포 속도를 푸는 열쇠라는 판단.\n- 호스트 메타데이터/상태를 추적해 수만 대 규모에서 어떤 호스트가 어떤 빌드인지 일관되게 관리한다.\n\n### Kubernetes로의 이전\nPinterest는 EC2 직접 관리에서 **Kubernetes 기반 컴퓨트 플랫폼**으로 점진 이전했다. 동기는 전형적이다: 팀마다 제각각이던 배포/스케일링/리소스 관리를 **통일된 추상화**로 묶고, 자원 활용률을 높이며, 배치·서비스·ML 워크로드를 같은 플랫폼에서 돌리기 위함.\n\n- 사내 개발자에게는 Kubernetes의 원시 API를 그대로 노출하지 않고 **PaaS 형태의 상위 추상화**(워크로드 명세 → 플랫폼이 K8s 리소스로 변환)를 제공해 학습 곡선과 사고 위험을 줄였다.\n- 서비스 간 통신은 **Envoy 사이드카 메시**로 통일해, 서비스 디스커버리·로드밸런싱·재시도·서킷브레이킹·관측(트레이싱/메트릭)을 애플리케이션 코드 밖으로 빼냈다. Thrift/gRPC 호출이 Envoy를 거치며 일관된 신뢰성 정책을 적용받는다.\n\n### 관측성 스택\n메트릭은 `Statsboard`(사내 메트릭/대시보드 시스템)와 시계열 DB `Goku`로 모은다. Goku는 고카디널리티 시계열을 대규모로 저장·질의하도록 만든 자체 TSDB로, 수만 서비스 인스턴스의 지표를 짧은 보존-고해상도 / 긴 보존-저해상도로 계층화해 비용과 가시성을 동시에 잡는다. 이 메트릭이 카나리 판정, 오토스케일, 이상탐지 알림의 입력이 된다.\n\n### 종합한 운영 루프\n코드 머지 → 빌드 → (Teletraan/K8s)로 단계적 롤아웃 → Envoy/Statsboard/Goku가 신·구 빌드의 에러율·지연을 비교 → 악화 시 자동/수동 롤백. 이 폐루프가 \"수천 개 서비스를 하루에도 여러 번 안전하게 바꾸는\" 능력을 만든다."
+    },
+    {
+     "topic": "Envoy 기반 서비스 메시와 RPC·복원력 계층",
+     "body": "### 왜 서비스 메시가 필요했나\n\nPinterest는 단일 Django 모놀리스에서 출발해 수백 개의 Thrift/gRPC 마이크로서비스로 분화했다. 서비스가 늘어나자 각 언어(Python·Java·C++·Go)마다 제각각인 RPC 클라이언트, 재시도 정책, 로드밸런싱, 서킷브레이커를 일관되게 유지하는 것이 불가능해졌다. 그래서 **Envoy를 사이드카 프록시**로 모든 서비스 인스턴스 옆에 배치해 네트워크 정책을 애플리케이션 코드에서 분리했다.\n\n### 동작 메커니즘\n\n- **L7 프록시 + xDS**: 각 서비스 호출은 `localhost`의 Envoy로 나가고, Envoy가 서비스 디스커버리(EDS), 라우팅(RDS), 클러스터 설정(CDS)을 control plane에서 동적으로 받아 실제 업스트림으로 전달한다. 배포 중 엔드포인트가 바뀌어도 앱 재시작 없이 라우팅이 갱신된다.\n- **로드밸런싱 & outlier detection**: Envoy가 업스트림 풀에서 응답이 느리거나 5xx를 반복하는 인스턴스를 자동으로 ejection(격리)한다. 이게 사실상 분산 서킷브레이커 역할을 한다 — 한 노드가 GC 폭주나 hot shard로 느려져도 전체 풀로 장애가 번지지 않는다.\n- **재시도 & 타임아웃 표준화**: per-route retry budget, hedged request, deadline propagation을 메시 레벨에서 강제한다. 예전엔 서비스마다 다른 타임아웃 때문에 retry storm으로 캐스케이딩 장애가 났는데, 메시로 일원화하면서 이를 통제했다.\n\n### 트레이드오프\n\n사이드카는 모든 hop마다 추가 레이턴시(보통 sub-millisecond)와 메모리 오버헤드를 더한다. Pinterest는 홈피드처럼 fan-out이 큰 경로에서 이 누적 비용이 의미가 있어, 핵심 hot path는 Finagle의 인프로세스 클라이언트와 혼용한다. 즉 '모든 트래픽을 메시로'가 아니라 운영 일관성이 더 중요한 경계에 선택적으로 적용하는 실용적 접근을 택했다."
+    },
+    {
+     "topic": "Rocksplicator & Rockstore — RocksDB 기반 분산 KV의 샤딩·복제 전략",
+     "body": "### 배경\n\nHBase는 그래프·대용량 와이드 컬럼에 강하지만, 핀 메타데이터·피처 스토어·랭킹 시그널처럼 **낮은 p99 읽기 지연**이 필요한 워크로드에는 JVM GC와 HDFS 계층 때문에 부적합한 경우가 있었다. Pinterest는 이를 위해 임베디드 KV 엔진 **RocksDB**를 기반으로 자체 복제·클러스터링 레이어인 **Rocksplicator**(오픈소스)를 만들었고, 이를 운영형 서비스로 감싼 것이 **Rockstore**다.\n\n### 핵심 동작\n\n- **샤딩**: 키 공간을 다수의 RocksDB 인스턴스(shard)로 분할한다. 각 shard는 leader 1 + follower N 구조로 복제된다.\n- **복제**: Rocksplicator는 RocksDB의 `WAL`/`SST` 스트림을 follower로 전송하는 커스텀 replication을 구현한다. leader가 쓰기를 받으면 변경분을 follower로 비동기 복제하고, follower는 읽기 트래픽을 분산 수용한다.\n- **클러스터 관리**: Apache Helix(또는 자체 coordinator)로 shard→host 배치, leader 선출, 장애 시 follower 승격, 리밸런싱을 자동화한다. 노드 추가 시 shard를 점진적으로 이동(`SST` 파일 전송)해 무중단 확장한다.\n\n### 왜 이렇게 했나 / 트레이드오프\n\n임베디드 엔진이라 네트워크 hop 없이 로컬 디스크에서 읽으므로 p99가 매우 낮고, RocksDB의 LSM-tree compaction을 워크로드별로 튜닝할 수 있다. 대신 강한 트랜잭션·전역 secondary index가 약하고, 복제가 비동기라 leader 장애 시 일부 최신 쓰기 유실 가능성이 있다. Pinterest는 피처/추천 시그널처럼 '약간의 stale은 허용, 지연은 절대 양보 불가'한 도메인에 정확히 매칭시켜 이 트레이드오프를 수용했다."
+    },
+    {
+     "topic": "Pacer / PinLater — 대규모 비동기·지연 작업 실행 플랫폼",
+     "body": "### 문제 정의\n\n핀 저장, 알림 발송, 스팸 스코어링, 이미지 후처리, 검색 인덱스 갱신 같은 작업은 사용자 요청 경로(synchronous path)에서 처리하면 안 된다. 응답을 막거나, 다운스트림(이메일·푸시·ML 스코어러)이 느려지면 사용자 경험이 깨진다. Pinterest는 이를 위해 비동기 잡 시스템을 운영한다 — 초기 **PinLater**(오픈소스)에서 출발해, 정교한 rate-limiting이 필요해지며 **Pacer**로 진화했다.\n\n### 동작 메커니즘\n\n- **잡 인큐**: 서비스가 잡(작업 타입 + 페이로드 + 실행 시각)을 큐에 넣는다. 즉시 실행과 미래 시점 예약(delayed) 둘 다 지원한다.\n- **저장 백엔드**: 잡 상태는 신뢰성 있는 스토어(MySQL/HBase 계열)에 영속화되어 at-least-once 실행을 보장한다. 워커가 죽어도 잡은 유실되지 않고 재시도된다.\n- **Pacer의 핵심 — rate control**: 다운스트림 시스템(예: 푸시 게이트웨이, 외부 API)이 견딜 수 있는 속도로 잡 dequeue 속도를 동적으로 조절한다. 트래픽 스파이크 때 잡을 한꺼번에 쏟아붓지 않고 토큰버킷처럼 페이싱해서 다운스트림 과부하를 막는다.\n- **재시도 & 백오프**: 실패한 잡은 exponential backoff로 재시도하고, 반복 실패는 dead-letter로 격리해 운영자가 분석한다.\n\n### 트레이드오프\n\nat-least-once 보장이므로 잡 핸들러는 **멱등(idempotent)**해야 한다 — 같은 알림이 두 번 발송되지 않도록 dedup 키를 설계해야 한다. 또 강한 순서 보장을 포기하는 대신 처리량과 격리성을 얻는다. 이 플랫폼 덕분에 제품팀은 인프라 고민 없이 '이 작업을 비동기로, 초당 N건으로, 실패하면 재시도'를 선언적으로 위임할 수 있다."
+    },
+    {
+     "topic": "Goku TSDB · Statsboard — 시계열 관측성 스택",
+     "body": "### 왜 자체 TSDB를 만들었나\n\nPinterest는 수십만 호스트·수백 서비스에서 초당 수천만 개의 메트릭 데이터포인트를 방출한다. 초기엔 OpenTSDB(HBase 기반)를 썼지만, 쿼리 지연과 비용·카디널리티 한계에 부딪혔다. 그래서 OpenTSDB 호환 인터페이스를 유지하면서 내부를 새로 쓴 **Goku**라는 인메모리 우선 TSDB를 개발했다.\n\n### Goku 동작 원리\n\n- **2계층 구조**: 최근 데이터(보통 수 시간~하루)는 **Goku Short-Term**이 인메모리로 보관해 sub-second로 응답한다. Facebook Gorilla 논문의 델타-of-델타 + XOR 압축 기법을 차용해 메모리에 시계열을 극단적으로 압축 저장한다. 오래된 데이터는 **Goku Long-Term**이 RocksDB/디스크로 내려 보관한다.\n- **샤딩**: 메트릭을 다수의 Goku 인스턴스로 샤딩하고, 쿼리는 fan-out 후 병합한다. 카디널리티 폭증(예: per-user 태그)을 막기 위한 가드레일을 둔다.\n- **쓰기 경로**: 서비스 → Singer/스탯 에이전트 → Kafka → Goku ingestion으로 흐른다. 즉 메트릭도 행동 로그와 같은 스트리밍 백본을 탄다.\n\n### Statsboard\n\n그 위에 **Statsboard**라는 사내 대시보드/알림 UI가 올라간다. 엔지니어는 Statsboard에서 메트릭 쿼리, 대시보드, anomaly 기반 알림을 정의한다. 배포(Teletraan) 이벤트와 메트릭을 겹쳐 봐서 '이 배포 직후 p99가 튀었다'를 즉시 상관분석할 수 있게 한다.\n\n### 트레이드오프\n\n인메모리 우선이라 hot 데이터 쿼리는 매우 빠르지만 메모리가 비싸므로, 보존 기간을 계층별로 엄격히 나눈다. 또 고카디널리티 태그를 무분별하게 허용하면 메모리가 폭발하므로, 메트릭 네이밍·태깅 규칙을 플랫폼 차원에서 강제하는 거버넌스가 핵심 운영 포인트가 된다."
     }
    ],
    "debate": {
@@ -5194,49 +5231,49 @@
     "org": "https://github.com/pinterest",
     "repos": [
      {
-      "name": "pinterest/gestalt",
-      "url": "https://github.com/pinterest/gestalt",
-      "desc": "Pinterest의 React 디자인 시스템 컴포넌트 라이브러리",
-      "lang": "TypeScript",
-      "stars": 4360
-     },
-     {
-      "name": "pinterest/querybook",
-      "url": "https://github.com/pinterest/querybook",
-      "desc": "빅데이터 분석을 위한 오픈소스 노트북/쿼리 IDE",
-      "lang": "TypeScript",
-      "stars": 2255
+      "name": "ktlint/ktlint",
+      "url": "https://github.com/ktlint/ktlint",
+      "desc": "Kotlin 코드 린터/포매터 — Pinterest가 메인테인하는 대표 OSS",
+      "lang": "Kotlin",
+      "stars": 6713
      },
      {
       "name": "pinterest/secor",
       "url": "https://github.com/pinterest/secor",
-      "desc": "Kafka 로그를 S3/GCS로 안정 적재하는 무손실 컨슈머",
+      "desc": "Kafka 로그를 S3로 무손실 적재하는 영속화 서비스",
       "lang": "Java",
-      "stars": 1858
-     },
-     {
-      "name": "pinterest/teletraan",
-      "url": "https://github.com/pinterest/teletraan",
-      "desc": "Pinterest 사내 배포(deploy) 시스템",
-      "lang": "Java",
-      "stars": 1833
+      "stars": 1859
      },
      {
       "name": "pinterest/rocksplicator",
       "url": "https://github.com/pinterest/rocksplicator",
-      "desc": "RocksDB 복제·클러스터 관리 프레임워크(RocksStore 기반)",
+      "desc": "RocksDB 기반 분산 KV 저장소의 복제·자동 샤딩·클러스터 관리 프레임워크",
       "lang": "C++",
-      "stars": 687
+      "stars": 688
+     },
+     {
+      "name": "pinterest/singer",
+      "url": "https://github.com/pinterest/singer",
+      "desc": "고처리량 로그 수집 에이전트로 Kafka/MemQ로 행동 로그를 인입",
+      "lang": "Java",
+      "stars": 189
+     },
+     {
+      "name": "pinterest/pinlater",
+      "url": "https://github.com/pinterest/pinlater",
+      "desc": "지연·비동기 작업 큐잉 및 신뢰성 있는 잡 실행 시스템",
+      "lang": "Java",
+      "stars": 142
      }
     ]
    },
    "sources": [
     "https://medium.com/pinterest-engineering",
-    "https://medium.com/pinterest-engineering/manas-realtime-enabling-changes-to-be-searchable-in-a-blink-of-an-eye-36acc3506843",
-    "https://github.com/pinterest"
+    "https://github.com/pinterest/rocksplicator",
+    "https://medium.com/pinterest-engineering/goku-building-a-scalable-and-high-performant-time-series-database-system-a8ff5758a181"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "reddit",
@@ -11848,7 +11885,7 @@
     "https://if.kakao.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "naver",
@@ -13873,7 +13910,7 @@
     "https://www.coupang.jobs/en/teams/engineering/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "tmon",
@@ -14660,7 +14697,7 @@
     "https://team.daangn.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "watcha",

@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-18T00:05:18",
- "total": 738,
+ "generated_at": "2026-06-18T01:41:32",
+ "total": 744,
  "sources": [
   {
    "company": "Etsy",
@@ -11,6 +11,11 @@
    "company": "Stack Overflow",
    "country": "US",
    "count": 35
+  },
+  {
+   "company": "AWS",
+   "country": "US",
+   "count": 31
   },
   {
    "company": "Discord",
@@ -40,11 +45,6 @@
   {
    "company": "네이버 D2",
    "country": "KR",
-   "count": 25
-  },
-  {
-   "company": "AWS",
-   "country": "US",
    "count": 25
   },
   {
@@ -350,8 +350,8 @@
   "eBPF": "시스템/OS",
   "Trino": "데이터",
   "Attention Mechanism": "LLM/생성형",
-  "Deep Learning": "AI/ML",
   "AWS Lambda": "인프라/클라우드",
+  "Deep Learning": "AI/ML",
   "Iceberg": "데이터",
   "Monorepo": "협업/도구",
   "Angular": "프론트엔드",
@@ -427,6 +427,7 @@
   "Hugging Face": "LLM/생성형",
   "SQL Injection": "보안",
   "Cryptography": "보안",
+  "LlamaIndex": "LLM/생성형",
   "Express": "백엔드",
   "Dart": "언어",
   "Linux Kernel": "펌웨어/임베디드",
@@ -488,9 +489,9 @@
   "Assembly": "언어",
   "Anomaly Detection": "AI/ML",
   "Ablation Study": "연구/논문",
-  "Vue": "프론트엔드",
-  "Solana": "블록체인",
   "Confluence": "협업/도구",
+  "Solana": "블록체인",
+  "Vue": "프론트엔드",
   "Jenkins": "인프라/클라우드",
   "LSM Tree": "알고리즘/이론",
   "JWT": "보안",
@@ -510,6 +511,229 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Top announcements of the AWS Summit in New York, 2026",
+   "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
+   "published": "2026-06-17",
+   "published_ts": 1781714168.0,
+   "summary": "A recap of the top announcements from AWS's New York Summit 2026",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon Bedrock AgentCore",
+    "Amazon Simple Storage Service (S3)",
+    "Announcements",
+    "AWS Summit New York",
+    "AWS Transform",
+    "AWS WAF",
+    "Kiro"
+   ],
+   "tech_stack": [
+    "iOS",
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "RAG",
+    "AWS",
+    "Security",
+    "WAF",
+    "Git"
+   ],
+   "categories": [
+    "모바일",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "4ba54f1afb0510ee"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
+   "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
+   "published": "2026-06-17",
+   "published_ts": 1781708960.0,
+   "summary": "Amazon Bedrock's new Fully Managed Knowledge Bases simplifies building enterprise RAG pipelines by providing native data connectors Smart Parsing for automatic multi-format data preparation, and an Agentic Retriever for complex multi-step queries—all integrated with AgentCore Gateway so developers can focus on business outcomes rather than infrastructure management.",
+   "tags": [
+    "Amazon Bedrock AgentCore",
+    "Amazon Bedrock Knowledge Bases",
+    "Amazon Machine Learning",
+    "Announcements",
+    "Artificial Intelligence",
+    "AWS Summit New York",
+    "Events",
+    "Generative AI"
+   ],
+   "tech_stack": [
+    "HTML",
+    "REST API",
+    "Machine Learning",
+    "AI Agent",
+    "Embedding",
+    "LangChain",
+    "LlamaIndex",
+    "Model Context Protocol",
+    "Multimodal",
+    "RAG",
+    "AWS",
+    "AWS Lambda",
+    "Observability",
+    "Embedded",
+    "Security",
+    "Confluence"
+   ],
+   "categories": [
+    "프론트엔드",
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "펌웨어/임베디드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a82c68b6650c6cfc"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
+   "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
+   "published": "2026-06-17",
+   "published_ts": 1781708411.0,
+   "summary": "AWS introduces Web Search on Amazon Bedrock AgentCore, a fully managed tool that enables agents to ground responses in current, cited web knowledge with zero data egress from customer's secured AWS environment. You can focus on building agents instead of manually adding web search to agents on Bedrock AgentCore and managing its infrastructure.",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon Bedrock AgentCore",
+    "Amazon Machine Learning",
+    "Artificial Intelligence",
+    "AWS Summit New York",
+    "Events",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Python",
+    "AI Agent",
+    "Model Context Protocol",
+    "AWS"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "1065a2246bc70e09"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Proactively reduce tech debt autonomously with AWS Transform – continuous modernization (preview)",
+   "url": "https://aws.amazon.com/blogs/aws/proactively-reduce-tech-debt-autonomously-with-aws-transform-continuous-modernization-preview",
+   "published": "2026-06-17",
+   "published_ts": 1781708280.0,
+   "summary": "AWS Transform – continuous modernization (preview) automatically scans code repositories to detect, prioritize, and remediate technical debt at scale.",
+   "tags": [
+    "AWS Summit New York",
+    "AWS Transform",
+    "Events",
+    "Generative AI",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Java",
+    "Model Context Protocol",
+    "AWS",
+    "AWS Lambda",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "fcbcaf4fd3ba2bb4"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS DevOps Agent adds release management capabilities to assess code changes before production (preview)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-devops-agent-adds-release-management-capabilities-to-assess-code-changes-before-production-preview",
+   "published": "2026-06-17",
+   "published_ts": 1781708254.0,
+   "summary": "AWS DevOps Agent now offers release management capability in preview, reviewing code changes for release readiness and running autonomous release testing to help you ship code to production safely and with confidence.",
+   "tags": [
+    "Announcements",
+    "AWS Summit New York",
+    "DevOps",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Claude",
+    "AWS",
+    "Observability",
+    "Security"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "27b609260443a105"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Security Agent adds threat modeling, Kiro power and Claude Code plugin, and more",
+   "url": "https://aws.amazon.com/blogs/aws/aws-security-agent-adds-threat-modeling-kiro-power-and-claude-code-plugin-and-more",
+   "published": "2026-06-17",
+   "published_ts": 1781708095.0,
+   "summary": "AWS Security Agent now adds STRIDE-based threat modeling, full repo and PR code scanning with remediation across major Git platforms, and IDE integrations via Kiro power, Claude Code plugin, and MCP — letting developers run security reviews and fix issues without context switching.",
+   "tags": [
+    "AWS Summit New York",
+    "Events",
+    "Launch",
+    "News",
+    "Security, Identity, & Compliance"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "AWS",
+    "Penetration Testing",
+    "Security",
+    "WAF",
+    "Confluence"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "e2cb6ec45e30ce6f"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",

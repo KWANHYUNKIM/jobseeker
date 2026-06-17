@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-18T00:05:34",
+  "generated_at": "2026-06-18T01:41:44",
   "source": "youtube",
   "tech_count": 167,
   "curriculum_count": 20,
@@ -2773,88 +2773,6 @@
         "stage": "실전"
       }
     ],
-    "Oracle": [
-      {
-        "title": "Oracle 01 - 오라클 시작하기",
-        "url": "https://www.youtube.com/watch?v=VNX7SdlwfqY",
-        "thumbnail": "https://i.ytimg.com/vi/VNX7SdlwfqY/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 4773,
-        "length": "24:36",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[개발자를 위한 Oracle Database] 데이터 베이스 개요",
-        "url": "https://www.youtube.com/watch?v=nSBk3l5eUNg",
-        "thumbnail": "https://i.ytimg.com/vi/nSBk3l5eUNg/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 138,
-        "length": "7:38",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Oracle Database (Oracle-11g, SQLplus) 제대로 배우기 Part.1",
-        "url": "https://www.youtube.com/watch?v=2FRLpV1aLak",
-        "thumbnail": "https://i.ytimg.com/vi/2FRLpV1aLak/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 10,
-        "length": "39:23",
-        "published": "2주 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "이것이 오라클이다 - 09장 2교시 : [Oracle] 인덱스의 내부 작동",
-        "url": "https://www.youtube.com/watch?v=fbqJDc5PJJc",
-        "thumbnail": "https://i.ytimg.com/vi/fbqJDc5PJJc/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 2923,
-        "length": "14:30",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[개발자를 위한 Oracle Database]  논리 연산자 사용하기",
-        "url": "https://www.youtube.com/watch?v=tPdPsve-YE8",
-        "thumbnail": "https://i.ytimg.com/vi/tPdPsve-YE8/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 59,
-        "length": "13:51",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "오라클 기초 강의 기초부터 실무까지 차근차근! ORACLE Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=lNQnlwqO5vQ",
-        "thumbnail": "https://i.ytimg.com/vi/lNQnlwqO5vQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 652,
-        "length": "26:56",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "#3 Oracle PL/SQL - PROCEDURE , Funtion |  Declare  - 프로시져, 펑션 만들어 보기",
-        "url": "https://www.youtube.com/watch?v=jvL5mE_Pdbo",
-        "thumbnail": "https://i.ytimg.com/vi/jvL5mE_Pdbo/mqdefault.jpg",
-        "channel": "IT 늦공 김부장",
-        "views": 1127,
-        "length": "19:24",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[Oracle SQL 실무 적용 강의 2시간 완성] - 문과출신 데이터분석가 - 메타코드",
-        "url": "https://www.youtube.com/watch?v=nE7cpiJljN0",
-        "thumbnail": "https://i.ytimg.com/vi/nE7cpiJljN0/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 8784,
-        "length": "1:59:07",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "Jira": [
       {
         "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
@@ -2934,6 +2852,88 @@
         "views": 3416,
         "length": "49:08",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "Oracle": [
+      {
+        "title": "Oracle 01 - 오라클 시작하기",
+        "url": "https://www.youtube.com/watch?v=VNX7SdlwfqY",
+        "thumbnail": "https://i.ytimg.com/vi/VNX7SdlwfqY/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 4773,
+        "length": "24:36",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[개발자를 위한 Oracle Database] 데이터 베이스 개요",
+        "url": "https://www.youtube.com/watch?v=nSBk3l5eUNg",
+        "thumbnail": "https://i.ytimg.com/vi/nSBk3l5eUNg/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 138,
+        "length": "7:38",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Oracle Database (Oracle-11g, SQLplus) 제대로 배우기 Part.1",
+        "url": "https://www.youtube.com/watch?v=2FRLpV1aLak",
+        "thumbnail": "https://i.ytimg.com/vi/2FRLpV1aLak/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 10,
+        "length": "39:23",
+        "published": "2주 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "이것이 오라클이다 - 09장 2교시 : [Oracle] 인덱스의 내부 작동",
+        "url": "https://www.youtube.com/watch?v=fbqJDc5PJJc",
+        "thumbnail": "https://i.ytimg.com/vi/fbqJDc5PJJc/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 2923,
+        "length": "14:30",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[개발자를 위한 Oracle Database]  논리 연산자 사용하기",
+        "url": "https://www.youtube.com/watch?v=tPdPsve-YE8",
+        "thumbnail": "https://i.ytimg.com/vi/tPdPsve-YE8/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 59,
+        "length": "13:51",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "오라클 기초 강의 기초부터 실무까지 차근차근! ORACLE Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=lNQnlwqO5vQ",
+        "thumbnail": "https://i.ytimg.com/vi/lNQnlwqO5vQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 652,
+        "length": "26:56",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "#3 Oracle PL/SQL - PROCEDURE , Funtion |  Declare  - 프로시져, 펑션 만들어 보기",
+        "url": "https://www.youtube.com/watch?v=jvL5mE_Pdbo",
+        "thumbnail": "https://i.ytimg.com/vi/jvL5mE_Pdbo/mqdefault.jpg",
+        "channel": "IT 늦공 김부장",
+        "views": 1127,
+        "length": "19:24",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[Oracle SQL 실무 적용 강의 2시간 완성] - 문과출신 데이터분석가 - 메타코드",
+        "url": "https://www.youtube.com/watch?v=nE7cpiJljN0",
+        "thumbnail": "https://i.ytimg.com/vi/nE7cpiJljN0/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 8784,
+        "length": "1:59:07",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -4331,88 +4331,6 @@
         "stage": "핵심"
       }
     ],
-    "PHP": [
-      {
-        "title": "PHP 웹 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=tr-ba-wAH-I",
-        "thumbnail": "https://i.ytimg.com/vi/tr-ba-wAH-I/mqdefault.jpg",
-        "channel": "나이스코딩",
-        "views": 1295,
-        "length": "1:29:30",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[ PHP 강좌 ] #1. 코드이그나이터 설치 및 기초 설명",
-        "url": "https://www.youtube.com/watch?v=8_9mbDmXQLE",
-        "thumbnail": "https://i.ytimg.com/vi/8_9mbDmXQLE/mqdefault.jpg",
-        "channel": "코딩아빠의 개발일지",
-        "views": 3451,
-        "length": "17:00",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "26. PHP란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=fjvcUDcz7E4",
-        "thumbnail": "https://i.ytimg.com/vi/fjvcUDcz7E4/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 11694,
-        "length": "18:58",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PHP - 반복문 흐름의제어",
-        "url": "https://www.youtube.com/watch?v=D1c6Z7XbcZ4",
-        "thumbnail": "https://i.ytimg.com/vi/D1c6Z7XbcZ4/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 8271,
-        "length": "10:16",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "이렇게 쉬워도 되나 싶은 PHP 강좌 - 초급 001",
-        "url": "https://www.youtube.com/watch?v=iiqatIsBs40",
-        "thumbnail": "https://i.ytimg.com/vi/iiqatIsBs40/mqdefault.jpg",
-        "channel": "아빠는개발자",
-        "views": 6265,
-        "length": "8:13",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "php 1. HTML이란 무엇인가!",
-        "url": "https://www.youtube.com/watch?v=tJ-UkC2-6q8",
-        "thumbnail": "https://i.ytimg.com/vi/tJ-UkC2-6q8/mqdefault.jpg",
-        "channel": "유니다고",
-        "views": 5882,
-        "length": "15:10",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PHP 기초 강의 기초부터 실무까지 차근차근! PHP Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=fRG5ATR4ZKQ",
-        "thumbnail": "https://i.ytimg.com/vi/fRG5ATR4ZKQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 627,
-        "length": "26:34",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[쩡원의PHP 특강-1] 하루만에 기초 마스터 하기 (재 편집)",
-        "url": "https://www.youtube.com/watch?v=IvdnHeojzsw",
-        "thumbnail": "https://i.ytimg.com/vi/IvdnHeojzsw/mqdefault.jpg",
-        "channel": "쩡원의PHP",
-        "views": 5620,
-        "length": "40:43",
-        "published": "8년 전",
-        "stage": "실전"
-      }
-    ],
     "MSSQL": [
       {
         "title": "[MSSQL 중급 3강] 조인 기초편",
@@ -4492,6 +4410,88 @@
         "views": 1901,
         "length": "15:06",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "PHP": [
+      {
+        "title": "PHP 웹 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=tr-ba-wAH-I",
+        "thumbnail": "https://i.ytimg.com/vi/tr-ba-wAH-I/mqdefault.jpg",
+        "channel": "나이스코딩",
+        "views": 1295,
+        "length": "1:29:30",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[ PHP 강좌 ] #1. 코드이그나이터 설치 및 기초 설명",
+        "url": "https://www.youtube.com/watch?v=8_9mbDmXQLE",
+        "thumbnail": "https://i.ytimg.com/vi/8_9mbDmXQLE/mqdefault.jpg",
+        "channel": "코딩아빠의 개발일지",
+        "views": 3451,
+        "length": "17:00",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "26. PHP란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=fjvcUDcz7E4",
+        "thumbnail": "https://i.ytimg.com/vi/fjvcUDcz7E4/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 11694,
+        "length": "18:58",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PHP - 반복문 흐름의제어",
+        "url": "https://www.youtube.com/watch?v=D1c6Z7XbcZ4",
+        "thumbnail": "https://i.ytimg.com/vi/D1c6Z7XbcZ4/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 8271,
+        "length": "10:16",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "이렇게 쉬워도 되나 싶은 PHP 강좌 - 초급 001",
+        "url": "https://www.youtube.com/watch?v=iiqatIsBs40",
+        "thumbnail": "https://i.ytimg.com/vi/iiqatIsBs40/mqdefault.jpg",
+        "channel": "아빠는개발자",
+        "views": 6265,
+        "length": "8:13",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "php 1. HTML이란 무엇인가!",
+        "url": "https://www.youtube.com/watch?v=tJ-UkC2-6q8",
+        "thumbnail": "https://i.ytimg.com/vi/tJ-UkC2-6q8/mqdefault.jpg",
+        "channel": "유니다고",
+        "views": 5882,
+        "length": "15:10",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PHP 기초 강의 기초부터 실무까지 차근차근! PHP Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=fRG5ATR4ZKQ",
+        "thumbnail": "https://i.ytimg.com/vi/fRG5ATR4ZKQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 627,
+        "length": "26:34",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[쩡원의PHP 특강-1] 하루만에 기초 마스터 하기 (재 편집)",
+        "url": "https://www.youtube.com/watch?v=IvdnHeojzsw",
+        "thumbnail": "https://i.ytimg.com/vi/IvdnHeojzsw/mqdefault.jpg",
+        "channel": "쩡원의PHP",
+        "views": 5620,
+        "length": "40:43",
+        "published": "8년 전",
         "stage": "실전"
       }
     ],
@@ -5725,6 +5725,88 @@
         "stage": "실전"
       }
     ],
+    "SCSS": [
+      {
+        "title": "SCSS, CSS: 레이아웃 개념잡기",
+        "url": "https://www.youtube.com/watch?v=8dZiKEBTEIY",
+        "thumbnail": "https://i.ytimg.com/vi/8dZiKEBTEIY/mqdefault.jpg",
+        "channel": "DEvS",
+        "views": 89,
+        "length": "19:42",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "25 04 21, SCSS 기초 개념 강좌, 1강, SASS(SCSS) 수업개요",
+        "url": "https://www.youtube.com/watch?v=xkQCthf9OSU",
+        "thumbnail": "https://i.ytimg.com/vi/xkQCthf9OSU/mqdefault.jpg",
+        "channel": "방구석코딩",
+        "views": 141,
+        "length": "7:53",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "순수 CSS 선택자 중첩(Nesting) 01 - 기본 사용법 without SCSS(SASS)",
+        "url": "https://www.youtube.com/watch?v=Lhk4ipAcJIE",
+        "thumbnail": "https://i.ytimg.com/vi/Lhk4ipAcJIE/mqdefault.jpg",
+        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
+        "views": 171,
+        "length": "19:08",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[HTML/CSS] SASS(SCSS) 문법 정복하기! (SASS/SCSS)",
+        "url": "https://www.youtube.com/watch?v=8NIFja9XNyc",
+        "thumbnail": "https://i.ytimg.com/vi/8NIFja9XNyc/mqdefault.jpg",
+        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
+        "views": 170,
+        "length": "5:49",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "🧹 css를 정리정돈해보자! | Sass(Scss)",
+        "url": "https://www.youtube.com/watch?v=9ZnOK3lEcfY",
+        "thumbnail": "https://i.ytimg.com/vi/9ZnOK3lEcfY/mqdefault.jpg",
+        "channel": "너드 애니멀즈 | Nerd Animals",
+        "views": 325,
+        "length": "4:28",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SCSS와 Sass의 차이점에 대해서 알아봅시다.",
+        "url": "https://www.youtube.com/watch?v=wxyT4fr9Lf0",
+        "thumbnail": "https://i.ytimg.com/vi/wxyT4fr9Lf0/mqdefault.jpg",
+        "channel": "리베하얀",
+        "views": 631,
+        "length": "3:47",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "@each 반복문에 대해서 - SASS(SCSS)사스",
+        "url": "https://www.youtube.com/watch?v=hl6zORQAkjE",
+        "thumbnail": "https://i.ytimg.com/vi/hl6zORQAkjE/mqdefault.jpg",
+        "channel": "리베하얀",
+        "views": 2022,
+        "length": "8:57",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[퍼블리싱 완성본 미리보기] SCSS(SASS)+FLEX 실전 반응형 웹 프로젝트(PC, Mobile, Tablet 레이아웃)",
+        "url": "https://www.youtube.com/watch?v=A33IEjjtEmA",
+        "thumbnail": "https://i.ytimg.com/vi/A33IEjjtEmA/mqdefault.jpg",
+        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
+        "views": 548,
+        "length": "36:09",
+        "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
     "Scikit-learn": [
       {
         "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
@@ -5886,88 +5968,6 @@
         "views": 421,
         "length": "9:29",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "SCSS": [
-      {
-        "title": "SCSS, CSS: 레이아웃 개념잡기",
-        "url": "https://www.youtube.com/watch?v=8dZiKEBTEIY",
-        "thumbnail": "https://i.ytimg.com/vi/8dZiKEBTEIY/mqdefault.jpg",
-        "channel": "DEvS",
-        "views": 89,
-        "length": "19:42",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "25 04 21, SCSS 기초 개념 강좌, 1강, SASS(SCSS) 수업개요",
-        "url": "https://www.youtube.com/watch?v=xkQCthf9OSU",
-        "thumbnail": "https://i.ytimg.com/vi/xkQCthf9OSU/mqdefault.jpg",
-        "channel": "방구석코딩",
-        "views": 141,
-        "length": "7:53",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "순수 CSS 선택자 중첩(Nesting) 01 - 기본 사용법 without SCSS(SASS)",
-        "url": "https://www.youtube.com/watch?v=Lhk4ipAcJIE",
-        "thumbnail": "https://i.ytimg.com/vi/Lhk4ipAcJIE/mqdefault.jpg",
-        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
-        "views": 171,
-        "length": "19:08",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[HTML/CSS] SASS(SCSS) 문법 정복하기! (SASS/SCSS)",
-        "url": "https://www.youtube.com/watch?v=8NIFja9XNyc",
-        "thumbnail": "https://i.ytimg.com/vi/8NIFja9XNyc/mqdefault.jpg",
-        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
-        "views": 170,
-        "length": "5:49",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "🧹 css를 정리정돈해보자! | Sass(Scss)",
-        "url": "https://www.youtube.com/watch?v=9ZnOK3lEcfY",
-        "thumbnail": "https://i.ytimg.com/vi/9ZnOK3lEcfY/mqdefault.jpg",
-        "channel": "너드 애니멀즈 | Nerd Animals",
-        "views": 325,
-        "length": "4:28",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "SCSS와 Sass의 차이점에 대해서 알아봅시다.",
-        "url": "https://www.youtube.com/watch?v=wxyT4fr9Lf0",
-        "thumbnail": "https://i.ytimg.com/vi/wxyT4fr9Lf0/mqdefault.jpg",
-        "channel": "리베하얀",
-        "views": 631,
-        "length": "3:47",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "@each 반복문에 대해서 - SASS(SCSS)사스",
-        "url": "https://www.youtube.com/watch?v=hl6zORQAkjE",
-        "thumbnail": "https://i.ytimg.com/vi/hl6zORQAkjE/mqdefault.jpg",
-        "channel": "리베하얀",
-        "views": 2022,
-        "length": "8:57",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[퍼블리싱 완성본 미리보기] SCSS(SASS)+FLEX 실전 반응형 웹 프로젝트(PC, Mobile, Tablet 레이아웃)",
-        "url": "https://www.youtube.com/watch?v=A33IEjjtEmA",
-        "thumbnail": "https://i.ytimg.com/vi/A33IEjjtEmA/mqdefault.jpg",
-        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
-        "views": 548,
-        "length": "36:09",
-        "published": "2년 전",
         "stage": "실전"
       }
     ],
