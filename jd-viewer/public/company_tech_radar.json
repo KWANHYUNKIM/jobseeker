@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T04:58:35",
+ "generated_at": "2026-06-18T06:45:37",
  "total": 100,
  "countries": [
   {
@@ -1229,7 +1229,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 5
+      "count": 4
      },
      {
       "name": "Java",
@@ -1240,11 +1240,19 @@
       "count": 4
      },
      {
+      "name": "Rust",
+      "count": 3
+     },
+     {
       "name": "C++",
       "count": 2
      },
      {
-      "name": "Rust",
+      "name": "Go",
+      "count": 2
+     },
+     {
+      "name": "gRPC + Protobuf",
       "count": 2
      },
      {
@@ -1257,14 +1265,6 @@
      },
      {
       "name": "C++17",
-      "count": 1
-     },
-     {
-      "name": "Conjure",
-      "count": 1
-     },
-     {
-      "name": "Dropwizard",
       "count": 1
      }
     ],
@@ -1294,6 +1294,10 @@
       "count": 1
      },
      {
+      "name": "D3",
+      "count": 1
+     },
+     {
       "name": "D3 / ECharts visualizations",
       "count": 1
      },
@@ -1304,20 +1308,16 @@
      {
       "name": "LeafyGreen Design System",
       "count": 1
-     },
-     {
-      "name": "MobX/Redux",
-      "count": 1
      }
     ],
     "data": [
      {
-      "name": "Kafka",
+      "name": "Apache Spark",
       "count": 4
      },
      {
-      "name": "Apache Spark",
-      "count": 3
+      "name": "Kafka",
+      "count": 4
      },
      {
       "name": "PostgreSQL",
@@ -1328,11 +1328,11 @@
       "count": 2
      },
      {
-      "name": "Ray",
+      "name": "Elasticsearch",
       "count": 2
      },
      {
-      "name": "Redis",
+      "name": "Ray",
       "count": 2
      },
      {
@@ -1344,11 +1344,11 @@
       "count": 1
      },
      {
-      "name": "Apache Iceberg tables",
+      "name": "Apache Flink",
       "count": 1
      },
      {
-      "name": "Apache Kafka / Snowpipe Streaming",
+      "name": "Apache Iceberg tables",
       "count": 1
      }
     ],
@@ -6196,27 +6196,31 @@
    ],
    "stack": {
     "backend": [
-     "Scala (Spark core)",
-     "Java (JVM services)",
+     "Scala (Spark core + 워크스페이스 서비스)",
+     "Java (JVM 서비스/Spark driver)",
      "gRPC + Spark Connect",
      "Jetty/Netty",
-     "Photon (C++)"
+     "Photon (C++ 벡터화 엔진)",
+     "Rust (일부 성능 컴포넌트)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Redux",
-     "Monaco/CodeMirror editor",
-     "WebSocket live notebooks"
+     "Monaco/CodeMirror 노트북 에디터",
+     "WebSocket 라이브 노트북",
+     "Plotly/D3 시각화"
     ],
     "data": [
      "Apache Spark",
      "Delta Lake",
      "Unity Catalog",
      "MLflow",
-     "Photon (C++ vectorized engine)",
+     "Photon",
      "Delta Sharing",
-     "Apache Parquet"
+     "Apache Parquet",
+     "RocksDB (Structured Streaming 상태 저장)",
+     "Deletion Vectors / Liquid Clustering"
     ],
     "infra": [
      "AWS / Azure / GCP",
@@ -6225,19 +6229,20 @@
      "Envoy",
      "Apache Kafka",
      "Prometheus + Grafana",
-     "S3 / ADLS / GCS object storage"
+     "S3 / ADLS / GCS 오브젝트 스토리지",
+     "Spot/Warm Pool 인스턴스"
     ]
    },
    "architecture": [
     "Lakehouse (storage-compute 분리)",
     "Control plane / Data plane 분리 멀티테넌시",
-    "Distributed MPP 컴퓨트",
+    "Distributed MPP 벡터화 컴퓨트",
     "Multi-cloud SaaS"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    UI[\"Web UI<br/>React + TypeScript\"]\n    NB[\"Notebooks / SQL Editor<br/>WebSocket live\"]\n    SDK[\"Spark Connect Client<br/>gRPC + Python/Scala\"]\n  end\n  subgraph CP[\"Control Plane (Databricks account)\"]\n    GW[\"API Gateway<br/>Envoy + REST/gRPC\"]\n    WS[\"Workspace Services<br/>Scala/Java on JVM\"]\n    UC[\"Unity Catalog<br/>Governance + Lineage\"]\n    JOBS[\"Jobs / Scheduler<br/>Orchestration\"]\n  end\n  subgraph DP[\"Data Plane (customer VPC)\"]\n    DRV[\"Spark Driver<br/>Catalyst Planner\"]\n    EXEC[\"Executors<br/>JVM + Photon C++\"]\n    PHO[\"Photon Engine<br/>C++ vectorized SIMD\"]\n  end\n  subgraph Storage[\"Lakehouse Storage\"]\n    DELTA[\"Delta Lake<br/>Parquet + _delta_log\"]\n    OBJ[\"Object Store<br/>S3 / ADLS / GCS\"]\n    MLF[\"MLflow Registry<br/>Models + Experiments\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>Multi-cloud\"]\n    KAFKA[\"Kafka<br/>Events + Audit\"]\n    OBS[\"Prometheus + Grafana<br/>Metrics/Tracing\"]\n  end\n  UI --> GW\n  NB --> GW\n  SDK -->|gRPC| DRV\n  GW --> WS\n  WS --> UC\n  WS --> JOBS\n  JOBS -->|launch cluster| DRV\n  DRV -->|task scheduling| EXEC\n  EXEC --> PHO\n  UC -->|credential vending| DELTA\n  EXEC -->|read/write| DELTA\n  DELTA --> OBJ\n  EXEC --> MLF\n  WS --> K8S\n  WS -->|audit| KAFKA\n  EXEC --> OBS",
-   "why_language": "분산 데이터 처리 엔진의 핵심인 Spark가 JVM 위에서 동작하므로 Scala/Java가 백엔드 컴퓨트의 1순위 언어이며, 타입 안전성과 함수형 표현력으로 Catalyst 옵티마이저·쿼리 플래너 같은 복잡한 컴파일러성 코드를 작성하기에 적합하다. 데이터 과학·ML 사용자층이 절대다수라 사용자 대면 API와 노트북 경험은 Python(PySpark)이 사실상 표준이고, 성능 임계 경로인 벡터화 실행 엔진 Photon은 JVM의 GC·박싱 오버헤드를 피하기 위해 C++로 새로 작성했다.",
-   "why_architecture": "원본 데이터를 값싼 object storage(S3/ADLS/GCS)에 두고 컴퓨트를 분리하는 Lakehouse 구조는 data warehouse의 트랜잭션·성능과 data lake의 저비용·개방형 포맷을 한 시스템에서 얻기 위함이다. 또한 보안·과금·메타데이터를 관리하는 control plane은 Databricks가 운영하되 실제 고객 데이터를 처리하는 data plane은 고객 VPC 안에서 돌려, 멀티테넌시 SaaS이면서도 데이터가 고객 경계를 벗어나지 않게 하는 신뢰·규제 요구를 충족한다.",
-   "summary": "Object storage 위에 Delta Lake 트랜잭션 레이어와 C++ 벡터화 엔진 Photon을 얹어 warehouse급 성능을 내는, control/data plane 분리형 멀티클라우드 Lakehouse",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    UI[\"Web App<br/>React + TypeScript + Redux\"]\n    NB[\"Notebook Editor<br/>Monaco + WebSocket\"]\n    SDK[\"Clients<br/>Spark Connect gRPC + JDBC\"]\n  end\n  subgraph CP[\"Control Plane (Databricks SaaS)\"]\n    GW[\"API Gateway<br/>Envoy + Jetty\"]\n    WS[\"Workspace Services<br/>Scala / Java JVM\"]\n    UC[\"Unity Catalog<br/>Metastore + Lineage\"]\n    CM[\"Cluster Manager<br/>Terraform + Cloud APIs\"]\n  end\n  subgraph DP[\"Data Plane (customer / serverless VPC)\"]\n    DRV[\"Spark Driver<br/>Scala JVM\"]\n    EXE[\"Executors + Photon<br/>C++ vectorized\"]\n    POOL[\"Serverless Warm Pool<br/>Kubernetes\"]\n  end\n  subgraph Storage[\"Lakehouse Storage\"]\n    DL[\"Delta Lake<br/>Parquet + _delta_log\"]\n    OBJ[\"Object Store<br/>S3 / ADLS / GCS\"]\n    DS[\"Delta Sharing<br/>REST protocol\"]\n  end\n  subgraph Infra[\"Async / Platform\"]\n    KFK[\"Event Bus<br/>Apache Kafka\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  UI --> GW\n  NB -->|WebSocket| GW\n  SDK -->|gRPC| GW\n  GW --> WS\n  WS --> UC\n  WS --> CM\n  CM -->|provision| POOL\n  WS -->|submit job| DRV\n  DRV --> EXE\n  EXE --> POOL\n  UC -->|credential vending| EXE\n  EXE -->|read / write| DL\n  DL --> OBJ\n  DL --> DS\n  WS --> KFK\n  EXE --> OBS",
+   "why_language": "Spark 코어와 카탈리스트 옵티마이저가 JVM 위에서 태어났기 때문에 Scala/Java가 분산 컴퓨트 엔진의 1차 언어이고, 데이터/ML 사용자 대면 API는 사실상 표준인 Python(PySpark)이 담당한다. JVM의 GC·인터프리터 오버헤드가 한계인 핫패스는 Photon을 C++로 다시 써서 SIMD 벡터화로 끌어올렸고, 노트북·워크스페이스 UI는 React/TypeScript로 구현해 언어를 계층별 성능·생산성 요구에 맞췄다.",
+   "why_architecture": "페타바이트급 데이터를 싸게 보관하려면 컴퓨트와 스토리지를 분리해 오브젝트 스토리지에 데이터를 두고 컴퓨트를 탄력적으로 띄워야 했고, 그 위에 ACID 트랜잭션을 얹은 것이 Lakehouse다. 수천 고객의 데이터를 격리하면서 Databricks가 SaaS로 운영하려면 메타데이터·인증을 다루는 Control Plane과 고객 데이터를 처리하는 Data Plane을 분리해, 민감 데이터는 고객 경계 안에 두고 자격증명을 짧게 벤딩하는 멀티테넌시 모델이 필수였다.",
+   "summary": "JVM 기반 Spark에 C++ Photon을 얹고, 오브젝트 스토리지 위 Delta Lake로 storage-compute를 분리한 멀티클라우드 Lakehouse",
    "deep_dive": [
     {
      "topic": "Spark Catalyst 옵티마이저와 실행",
@@ -6266,6 +6271,18 @@
     {
      "topic": "Unity Catalog — 거버넌스·리니지·메타데이터의 단일 평면",
      "body": "### 왜 메타스토어를 다시 만들었나\n\n초기 Databricks는 Spark가 물려받은 **Hive Metastore**를 썼다. 워크스페이스마다 메타스토어가 따로 놀아서, 같은 회사 안에서도 워크스페이스 A의 권한과 B의 권한이 단절됐다. 거버넌스·감사·데이터 검색이 파편화됐다. Unity Catalog(UC)는 이를 **계정 단위의 단일 거버넌스 평면**으로 통합한다.\n\n### 3단계 네임스페이스\n\nUC는 `catalog.schema.table` 3-level 네임스페이스를 도입했다(기존 Spark는 `schema.table` 2-level). 이로써 여러 워크스페이스·여러 사업부 데이터를 하나의 논리 트리로 묶고, catalog 단위로 격리·공유를 제어한다.\n\n### 핵심 동작 메커니즘\n\n- **중앙 권한 모델**: 테이블·뷰·볼륨·함수·모델까지 모든 securable object에 ANSI SQL `GRANT/REVOKE`. 권한 검사는 UC 서버가 일원화해 수행.\n- **Credential Vending**: (앞서 설명한) 권한 통과 시 down-scoped 단기 스토리지 토큰 발급. 클러스터가 아니라 principal에 권한이 묶인다.\n- **Lineage 자동 수집**: 쿼리 실행 계획을 분석해 컬럼·테이블 레벨 **데이터 리니지**를 자동 기록. \"이 컬럼이 어떤 소스에서 파생됐나\"를 그래프로 추적. 규제·디버깅·영향분석에 쓰인다.\n- **Audit log**: 모든 접근을 이벤트로 남겨(내부적으로 Kafka 등 이벤트 파이프라인 경유) 보안 감사.\n- **Delta Sharing 연동**: UC가 관리하는 테이블을 외부 조직과 복제 없이 공유. 수신측은 권한 토큰으로 원본 Parquet을 직접 읽는다.\n\n### 엔지니어링 트레이드오프\n\nUC는 데이터 접근 경로에 **중앙 권한 검사 홉**을 추가한다. 이는 거버넌스를 얻는 대신 잠재적 단일 병목·지연을 만든다. 그래서 토큰 캐싱·권한 결정 캐싱으로 hot path 지연을 줄이고, 권한 검사 자체는 메타데이터 연산(데이터 스캔 전)이라 실제 쿼리 비용 대비 작게 유지한다. 또한 메타스토어를 계정당 단일 논리 엔터티로 두되 리전별로 배치해 데이터 주권·지연을 관리한다."
+    },
+    {
+     "topic": "Structured Streaming end-to-end — 마이크로배치, 체크포인트, RocksDB 상태 저장, exactly-once",
+     "body": "### 실행 모델: 무한 테이블 위의 증분 쿼리\nStructured Streaming의 핵심 추상화는 \"스트림 = 끝없이 행이 추가되는 테이블\"이다. 사용자가 작성한 `df.groupBy(...).count()` 같은 배치 쿼리를 엔진이 **증분(incremental) 실행 계획**으로 컴파일해, 새로 도착한 데이터에 대해서만 반복 실행한다. 기본 실행 단위는 **micro-batch**로, 트리거(예: `processingTime=\"5 seconds\"`)마다 다음을 한 트랜잭션으로 묶는다.\n\n1. **오프셋 확정**: Kafka/Delta 등 소스에서 이번 배치가 처리할 오프셋 범위를 정해 `offsets/` 체크포인트에 WAL로 먼저 기록한다(처리 *전*에 기록 → 재시작 시 같은 범위를 재처리).\n2. **계획 실행**: Catalyst가 만든 증분 계획을 executor에서 실행하며, 집계·조인·dedup 같은 stateful 연산의 누적 상태를 읽고 갱신한다.\n3. **커밋**: 결과 싱크 출력이 끝나면 `commits/`에 배치 완료를 기록한다.\n\n### 상태 저장소: 왜 RocksDB로 갔나\n초기 상태 저장은 executor JVM 힙의 in-memory `HashMap`이었다. 윈도우 집계·stream-stream 조인처럼 상태가 수천만 키로 커지면 **JVM GC가 stop-the-world로 스트리밍 지연을 튀게** 만들었다. 그래서 기본 상태 저장소를 **RocksDB**(off-heap, embedded LSM-tree)로 전환했다. 효과:\n\n- 상태를 힙 밖 네이티브 메모리/로컬 디스크에 두어 GC 압력 제거 → 수억 키 규모에서도 안정적 p99\n- 각 마이크로배치 종료 시 RocksDB의 **변경분(SST 파일 증분)을 체크포인트 스토리지(S3/ADLS)에 업로드**해 내구성 확보. 전체 스냅샷이 아니라 증분만 올려 I/O를 줄임\n- 재시작/리밸런싱 시 마지막 체크포인트에서 상태를 복원\n\n### exactly-once는 어떻게 보장되나\n진짜 보장은 두 가지 조건의 곱이다: **(a) 재생 가능한 소스**(Kafka offset, Delta version)와 **(b) 멱등(idempotent)/트랜잭셔널 싱크**. 흐름은 \"처리 전 오프셋 WAL 기록 → 실패 시 같은 배치 재실행 → 싱크가 동일 batchId의 중복 출력을 거부\"다. Delta 싱크의 경우 `txnVersion`/`txnAppId`를 트랜잭션 로그에 남겨, 같은 배치가 재시도돼도 커밋이 한 번만 반영된다. 그래서 end-to-end exactly-once는 엔진 단독이 아니라 **소스·상태·싱크가 같은 체크포인트 경계를 공유**할 때 성립한다.\n\n### 지연 데이터와 watermark\nstateful 연산에서 상태가 무한히 커지지 않도록 **event-time watermark**로 \"이 시각 이전 데이터는 더 안 온다\"를 선언하고, 그보다 오래된 윈도우 상태를 정리(evict)한다. watermark는 지연 허용(latency)과 상태 크기(메모리/비용) 사이의 명시적 트레이드오프 다이얼이다.\n\n### Project Lightspeed / 큐잉\n레이턴시를 더 낮추기 위해 오프셋 관리·로그 정리 같은 배치 간 고정 비용을 줄이고, 상태 체크포인트를 비동기화하는 등의 최적화가 들어갔다. 그럼에도 기본 모델은 여전히 마이크로배치라, **초저지연(밀리초)보다는 수백 ms~수 초 처리량·정확성**에 최적화된 설계라는 점이 핵심 트레이드오프다."
+    },
+    {
+     "topic": "Delta Lake 데이터 레이아웃 최적화 — OPTIMIZE, Z-Order, Liquid Clustering, Deletion Vectors, Predictive Optimization",
+     "body": "### 문제: 오브젝트 스토리지 위 테이블의 물리 레이아웃이 곧 성능\nDelta는 데이터를 S3/ADLS/GCS의 Parquet 파일 묶음으로 저장하고, `_delta_log`가 \"어떤 파일이 현재 테이블에 속하는가\"를 정의한다. 그래서 쿼리 성능은 **(1) 파일이 너무 잘게 쪼개지지 않았는가(small file problem)**, **(2) 자주 필터링하는 컬럼 값이 파일 단위로 잘 모여 있어 스킵 가능한가**에 좌우된다.\n\n### data skipping의 기반: 파일별 min/max 통계\n각 Parquet 파일에 대해 Delta는 컬럼별 min/max·null count를 트랜잭션 로그에 적어둔다. 쿼리에 `WHERE date = '2026-06-18'` 같은 술어가 있으면 옵티마이저가 통계만 보고 **해당 범위를 포함할 수 없는 파일 전체를 읽지 않고 건너뛴다(file pruning)**. 따라서 레이아웃 최적화의 목표는 \"각 파일의 min/max 범위를 좁게 만들어 스킵률을 높이는 것\"이다.\n\n### OPTIMIZE + bin-packing\n스트리밍/잦은 작은 커밋은 수많은 작은 파일을 만든다. `OPTIMIZE`는 작은 파일들을 읽어 ~1GB 단위의 큰 파일로 **bin-packing 재작성**한다. 메타데이터 갱신은 새 트랜잭션이므로 동시 읽기는 영향받지 않는다.\n\n### Z-Order vs Liquid Clustering\n- **Z-Order**: 여러 컬럼을 공간 채움 곡선(Z-curve)으로 인터리브해, 다차원 필터에서도 관련 데이터가 같은 파일에 모이게 정렬한다. 단점은 컬럼 집합을 미리 고정해야 하고, 재클러스터링이 전체 재작성에 가까워 비싸다.\n- **Liquid Clustering**: Z-Order/파티셔닝을 대체하는 차세대 방식. **파티션 경계를 고정하지 않고**, 점진적으로(incremental) 클러스터링하므로 데이터 분포가 바뀌어도 전체를 다시 쓰지 않는다. 클러스터링 키도 나중에 바꿀 수 있어, \"파티션 컬럼을 잘못 골라 테이블을 통째로 마이그레이션\"하던 고통을 줄인다. 카디널리티가 높은 컬럼에도 잘 동작한다.\n\n### Deletion Vectors — copy-on-write에서 merge-on-read로\n전통적으로 Delta의 `DELETE`/`UPDATE`/`MERGE`는 영향받은 행이 **한 줄이라도 있으면 그 Parquet 파일 전체를 재작성**(copy-on-write)했다. 한 행 지우려고 1GB를 다시 쓰는 쓰기 증폭이 문제였다. **Deletion Vectors**는 파일을 다시 쓰는 대신, \"이 파일의 N번째 행은 삭제됨\"을 표시하는 비트맵(RoaringBitmap)을 따로 저장한다(merge-on-read). 읽을 때 엔진이 DV를 적용해 삭제 행을 필터링한다. 효과는 **포인트 삭제/갱신의 지연·비용 대폭 감소**(특히 GDPR 삭제, CDC MERGE), 대신 읽기 시 DV 적용 비용과 주기적 `OPTIMIZE`로 물리 삭제를 회수해야 하는 트레이드오프가 생긴다.\n\n### Predictive Optimization — 최적화 자체를 자동화\n언제 `OPTIMIZE`/`VACUUM`/통계 수집을 돌릴지 사람이 정하던 것을, 테이블 접근 패턴을 학습해 **시스템이 자동으로 스케줄링**한다. 자주 쿼리되는 테이블만 골라 최적화에 비용을 쓰고, 쓰지 않는 테이블은 건드리지 않아 불필요한 컴퓨트 낭비를 막는다. 이는 \"성능 튜닝은 플랫폼의 책임\"이라는 Databricks의 방향성을 보여준다."
+    },
+    {
+     "topic": "Databricks SQL Warehouse — 쿼리 라우팅, 멀티클러스터 로드밸런싱, 결과 캐시 계층, Photon 경로",
+     "body": "### BI 대시보드 동시성 문제\nETL 잡은 소수의 무거운 쿼리지만, **BI/대시보드 트래픽은 다수의 작고 짧은 동시 쿼리**다. 범용 Spark 클러스터로는 동시성 한계와 콜드 스타트가 BI UX를 망친다. 그래서 Databricks SQL은 별도의 컴퓨트 형태인 **SQL Warehouse**(특히 Serverless SQL Warehouse)를 둔다.\n\n### 멀티클러스터 라우팅과 오토스케일링\nWarehouse는 하나의 엔드포인트 뒤에 여러 컴퓨트 클러스터를 둘 수 있다. 쿼리가 들어오면 라우터가 부하가 낮은 클러스터로 분배하고, 큐가 쌓이면 **클러스터 수를 수평 확장(scale-out)**해 동시성을 늘린다(개별 쿼리를 빠르게 하는 게 아니라 *더 많은 쿼리를 동시에* 처리). Serverless에서는 클러스터를 미리 데운 풀에서 즉시 가져와 콜드 스타트를 초 단위로 줄인다.\n\n### 캐싱 계층 — 여러 단계로 나뉜다\n1. **Result cache (결과 캐시)**: 동일 쿼리 텍스트 + 동일 테이블 버전이면 실행을 건너뛰고 저장된 결과를 즉시 반환. 대시보드의 반복 조회에 결정적. Serverless에는 클러스터를 넘어 공유되는 **remote result cache**도 있어, 클러스터가 바뀌어도 캐시가 유지된다.\n2. **Disk cache (구 Delta cache)**: executor 로컬 NVMe SSD에 원격 Parquet을 디코딩된 형태로 캐싱해, 같은 데이터 재스캔 시 원격 오브젝트 스토리지 왕복을 없앤다.\n3. **Metadata/통계 캐시**: 파일 목록과 min/max 통계를 메모리에 캐싱해 file pruning을 빠르게.\n\n### Photon 실행 경로\nSQL Warehouse 쿼리는 기본적으로 **Photon**(C++ 벡터화 엔진)으로 실행된다. Catalyst가 논리·물리 계획을 만들면, Photon이 지원하는 연산자는 JVM 대신 네이티브 벡터화 커널로 실행되고(컬럼 배치를 SIMD로 처리), Photon이 아직 커버하지 않는 연산은 Spark로 폴백한다. 이 하이브리드 덕분에 점진적으로 더 많은 연산을 네이티브로 옮기면서 호환성을 유지했다.\n\n### 왜 이렇게 나눴나 (트레이드오프)\nETL용 범용 클러스터와 BI용 SQL Warehouse를 **물리적으로 분리**한 것은, 워크로드 특성(소수 대형 vs 다수 소형)이 정반대라 같은 리소스 풀에서 서로의 SLA를 해치기 때문이다. 분리 덕에 BI는 낮은 지연·높은 동시성, ETL은 처리량에 각각 최적화된 컴퓨트를 받는다. 대가는 운영 표면이 늘어나는 것이지만, Serverless가 그 운영 부담을 플랫폼으로 흡수한다."
     }
    ],
    "github": {
@@ -6274,47 +6291,47 @@
      {
       "name": "apache/spark",
       "url": "https://github.com/apache/spark",
-      "desc": "Databricks가 창립·주도하는 분산 데이터 처리 엔진 Apache Spark",
+      "desc": "Databricks가 주도 개발하는 분산 데이터 처리 엔진(Catalyst/Tungsten)",
       "lang": "Scala",
-      "stars": 43449
+      "stars": 43471
      },
      {
       "name": "mlflow/mlflow",
       "url": "https://github.com/mlflow/mlflow",
-      "desc": "실험 추적·모델 레지스트리·배포를 다루는 ML 라이프사이클 플랫폼",
+      "desc": "ML 실험 추적·모델 레지스트리·서빙을 다루는 MLOps 플랫폼",
       "lang": "Python",
-      "stars": 26508
+      "stars": 26584
      },
      {
       "name": "delta-io/delta",
       "url": "https://github.com/delta-io/delta",
-      "desc": "Object storage에 ACID 트랜잭션·time travel을 부여하는 Delta Lake 스토리지 레이어",
+      "desc": "오브젝트 스토리지 위 ACID 트랜잭션 테이블 포맷(Delta Lake)",
       "lang": "Scala",
-      "stars": 8850
+      "stars": 8858
      },
      {
       "name": "delta-io/delta-sharing",
       "url": "https://github.com/delta-io/delta-sharing",
-      "desc": "조직 간 데이터를 복제 없이 공유하는 개방형 프로토콜 Delta Sharing",
+      "desc": "벤더 종속 없이 데이터를 공유하는 오픈 REST 프로토콜",
       "lang": "Scala",
-      "stars": 949
+      "stars": 950
      },
      {
-      "name": "databrickslabs/dbx",
-      "url": "https://github.com/databrickslabs/dbx",
-      "desc": "Databricks 잡 CI/CD·배포 자동화를 돕는 CLI 도구",
+      "name": "databricks/dbt-databricks",
+      "url": "https://github.com/databricks/dbt-databricks",
+      "desc": "dbt를 Databricks SQL/Lakehouse에 연결하는 어댑터",
       "lang": "Python",
-      "stars": 462
+      "stars": 361
      }
     ]
    },
    "sources": [
-    "https://www.databricks.com/blog/2022/12/13/spark-connect-available-apache-spark.html",
-    "https://www.databricks.com/product/unity-catalog",
-    "https://www.databricks.com/blog/2022/06/30/architecting-data-and-machine-learning-platforms.html"
+    "https://www.databricks.com/blog/2022/06/30/whats-new-in-databricks-photon.html",
+    "https://docs.databricks.com/aws/en/structured-streaming/",
+    "https://docs.databricks.com/aws/en/delta/clustering"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "datadog",
@@ -6331,48 +6348,54 @@
    ],
    "stack": {
     "backend": [
-     "Go services",
-     "gRPC",
-     "Python (Agent integrations)",
-     "Rust (hot paths / Glommio)",
-     "Java (legacy intake/processing)"
+     "Go (대다수 마이크로서비스)",
+     "gRPC + Protobuf",
+     "Python (Agent integrations, 데이터 처리)",
+     "Rust (hot path / Glommio thread-per-core / Vector)",
+     "Java (legacy intake & 일부 processing)",
+     "Envoy 기반 서비스 통신"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Redux",
-     "WebGL/Canvas (dense viz)"
+     "WebGL / Canvas (dense timeseries 시각화)",
+     "D3"
     ],
     "data": [
-     "Kafka (multi-cluster)",
-     "Husky (custom event store on S3 + Parquet)",
-     "custom Timeseries store",
+     "Kafka (multi-cluster, 백본)",
+     "Husky (S3 + Parquet 기반 자체 event store)",
+     "custom Timeseries DB (metrics)",
      "Cassandra",
      "PostgreSQL",
-     "Redis",
-     "Flink",
-     "Spark"
+     "Redis / Memcached",
+     "Apache Flink (stream)",
+     "Apache Spark (batch)",
+     "Elasticsearch (일부 검색/로그)",
+     "DDSketch (분위수 집계)"
     ],
     "infra": [
      "AWS (primary)",
      "GCP",
      "Azure",
-     "Kubernetes",
+     "Kubernetes (대규모 멀티클러스터)",
      "Envoy",
      "Terraform",
-     "Chef"
+     "Chef",
+     "Bazel (빌드)",
+     "ClickHouse/Prometheus (내부 관측성)"
     ]
    },
    "architecture": [
-    "High-throughput multi-pillar ingestion",
-    "Event-driven / Kafka-backed async pipelines",
-    "Separation of storage & compute (Husky)",
-    "Multi-tenant microservices on Kubernetes"
+    "High-throughput 멀티필러(metrics/traces/logs) 인입 파이프라인",
+    "Kafka 기반 이벤트 드리븐 비동기 처리",
+    "Storage-Compute 분리 (Husky: S3에 데이터, stateless query/compaction 노드)",
+    "Kubernetes 위의 멀티테넌트 마이크로서비스"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    AG[\"Datadog Agent<br/>Go + embedded Python\"]\n    RUM[\"RUM / Browser SDK<br/>TypeScript\"]\n  end\n  subgraph Gateway[\"Intake / API\"]\n    LB[\"Edge LB<br/>Envoy\"]\n    INTAKE[\"Intake API<br/>Go\"]\n  end\n  subgraph Core[\"Processing Services\"]\n    METRICS[\"Metrics Pipeline<br/>Go\"]\n    TRACE[\"APM Trace Intake<br/>Go\"]\n    LOGS[\"Logs Pipeline<br/>Go + Rust\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>multi-cluster\"]\n    FLINK[\"Flink<br/>stream processing\"]\n  end\n  subgraph Storage[\"Storage\"]\n    HUSKY[\"Husky<br/>S3 + Parquet\"]\n    TSDB[\"Timeseries Store<br/>custom\"]\n    CASS[\"Cassandra\"]\n    PG[\"PostgreSQL\"]\n  end\n  subgraph Query[\"Query / Frontend\"]\n    QE[\"Query Engine<br/>Go\"]\n    WEB[\"Web App<br/>React + TypeScript\"]\n  end\n  CLOUD[\"AWS + GCP on Kubernetes\"]\n\n  AG -->|gzip HTTPS| LB\n  RUM --> LB\n  LB --> INTAKE\n  INTAKE --> METRICS\n  INTAKE --> TRACE\n  INTAKE --> LOGS\n  METRICS -->|emit| KAFKA\n  TRACE --> KAFKA\n  LOGS --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> HUSKY\n  METRICS --> TSDB\n  FLINK --> CASS\n  QE --> HUSKY\n  QE --> TSDB\n  QE --> PG\n  WEB -->|gRPC/HTTP| QE\n  CLOUD -.hosts.-> Core",
-   "why_language": "Datadog는 초당 수천만~수억 이벤트를 받는 인입·처리 경로에서 GC가 예측 가능하고 동시성(goroutine)·gRPC 생태계가 강한 Go를 백엔드 표준으로 삼았고, Agent의 수백 개 통합(integration) 체크는 생태계가 풍부한 Python으로 유지한다. 메모리·지연에 극도로 민감한 핫패스(로그/이벤트 직렬화, thread-per-core 처리)는 Rust로 재작성하고, 초기 인입·검색 일부는 Java(JVM)로 운영해 왔다. 즉 '대량 처리는 Go, 확장성은 Python, 한계 성능은 Rust'라는 규모 기반 분업이 언어 선택의 핵심이다.",
-   "why_architecture": "메트릭·트레이스·로그는 트래픽 패턴과 쿼리 특성이 전혀 다르므로 파이프라인을 pillar별로 분리하고, 인입과 저장·쿼리를 Kafka로 비동기 디커플링해 폭주(스파이크)와 다운스트림 장애를 흡수한다. 또한 저장 비용과 쿼리 신축성을 위해 Husky처럼 오브젝트 스토리지(S3) 위 컬럼형(Parquet) 저장과 컴퓨트를 분리해 무한에 가까운 보존과 탄력적 스케일을 얻는다. 모든 서비스는 Kubernetes 멀티테넌트로 돌려 수천 고객의 데이터를 격리·격납하면서 자원을 공유한다.",
-   "summary": "Go 마이크로서비스 + Kafka 비동기 인입 + S3·Parquet 기반 자체 스토어(Husky)로 초대규모 관측성 데이터를 저비용·탄력적으로 처리하는 스택",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    AGENT[\"Datadog Agent<br/>Go core + embedded CPython\"]\n    LIBS[\"Tracing Libraries<br/>dd-trace-go/py/js/java\"]\n    VECTOR[\"Vector<br/>Rust observability pipeline\"]\n  end\n  subgraph Intake[\"Intake / Gateway\"]\n    LB[\"Edge LB / TLS<br/>Envoy\"]\n    INTAKE[\"Intake Services<br/>Go + gRPC\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>multi-cluster backbone\"]\n    FLINK[\"Stream Processing<br/>Flink\"]\n    SPARK[\"Batch / ETL<br/>Spark\"]\n  end\n  subgraph Core[\"Core Services\"]\n    METRICS[\"Metrics Pipeline<br/>Go + DDSketch\"]\n    APM[\"APM Trace Pipeline<br/>Go tail-based sampling\"]\n    LOGS[\"Logs Pipeline<br/>Go Logging without Limits\"]\n  end\n  subgraph Storage[\"Data / Storage\"]\n    TSDB[\"Timeseries DB<br/>custom TSDB\"]\n    HUSKY[\"Husky<br/>S3 + Parquet event store\"]\n    CASS[\"Metadata<br/>Cassandra + PostgreSQL\"]\n    REDIS[\"Cache<br/>Redis / Memcached\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>multi-cluster\"]\n    CLOUD[\"AWS primary<br/>GCP / Azure\"]\n  end\n  subgraph App[\"Query / UI\"]\n    QUERY[\"Query Engine<br/>Go stateless\"]\n    UI[\"Web App<br/>React + TS + WebGL\"]\n  end\n  AGENT -->|HTTPS payloads| LB\n  LIBS -->|spans| LB\n  VECTOR -->|logs/metrics| LB\n  LB --> INTAKE\n  INTAKE -->|produce| KAFKA\n  KAFKA --> METRICS\n  KAFKA --> APM\n  KAFKA --> LOGS\n  KAFKA --> FLINK\n  KAFKA --> SPARK\n  METRICS --> TSDB\n  APM --> HUSKY\n  LOGS --> HUSKY\n  FLINK --> HUSKY\n  METRICS --> CASS\n  QUERY --> TSDB\n  QUERY --> HUSKY\n  QUERY --> REDIS\n  QUERY --> CASS\n  UI -->|API| QUERY\n  Core --> K8S\n  Storage --> CLOUD\n  K8S --> CLOUD",
+   "why_language": "초당 수조 개의 데이터 포인트를 처리하는 관측성 백엔드라 GC가 가볍고 동시성 모델(goroutine)이 강력한 Go를 대다수 서비스의 기본 언어로 삼는다. Agent의 수백 개 integration은 생태계가 풍부한 Python으로 작성하고 Go 코어에 CPython을 임베드해 결합하며, P99 지연이 치명적인 압축·집계 핫패스는 Rust(Glommio thread-per-core)로 내려 메모리 안전성과 예측 가능한 성능을 얻는다. 초창기 intake/processing 일부는 Java로 남아 있고, 데이터 밀도가 높은 프런트엔드는 TypeScript+React에 WebGL을 더해 렌더링한다.",
+   "why_architecture": "메트릭·트레이스·로그라는 서로 다른 필러를 폭증하는 트래픽에서 독립적으로 확장해야 하므로 Kafka를 백본으로 둔 이벤트 드리븐 파이프라인으로 인입과 처리를 분리(backpressure·재처리 보장)했다. 저장은 S3 위 Parquet(Husky)에 두고 쿼리/압축 노드를 stateless로 분리해 스토리지와 컴퓨트를 독립적으로 스케일하고 비용을 통제한다. 모든 것은 멀티테넌트 마이크로서비스로 Kubernetes 위에서 돌며 멀티클라우드로 격리·복원력을 확보한다.",
+   "summary": "Go 마이크로서비스 + Kafka 이벤트 백본 위에서 S3·Parquet(Husky)로 스토리지와 컴퓨트를 분리한 초고처리량 멀티필러 관측성 플랫폼",
    "deep_dive": [
     {
      "topic": "고처리량 인입 파이프라인",
@@ -6401,55 +6424,71 @@
     {
      "topic": "Rust thread-per-core(Glommio)와 핫패스 최적화",
      "body": "### 왜 Go만으로 충분하지 않았나\nGo는 생산성과 동시성이 뛰어나지만, **GC 일시정지**와 work-stealing 스케줄러의 캐시 비친화성은 초저지연·초고처리 핫패스(로그 라인 파싱·직렬화, 대량 I/O)에서 꼬리 지연(tail latency)을 만든다. Datadog은 이런 한계 경로를 **Rust**로 재작성해 GC 없는 결정적 성능과 메모리 안전성을 동시에 얻는다.\n\n### Glommio — thread-per-core 런타임\nDatadog 엔지니어(Glauber Costa 등)가 오픈소스로 공개한 `glommio`는 Linux **io_uring** 기반의 **thread-per-core** 비동기 Rust 런타임이다. 핵심 아이디어:\n- **shared-nothing**: 각 CPU 코어에 작업을 고정(pin)하고 코어 간 데이터 공유를 없애 락·캐시 코히런시 트래픽·컨텍스트 스위치를 제거한다.\n- **io_uring**: 시스템 콜 오버헤드 없이 배치 비동기 I/O를 수행해 디스크·네트워크 처리량을 극대화한다.\n- 전통적 work-stealing(Go runtime, Tokio 기본)과 달리, 코어별 독립 실행이므로 **예측 가능한 지연**과 선형 확장을 노린다.\n\n### 적용 지점과 트레이드오프\n이 모델은 로그 인입처럼 '코어당 독립 샤드로 쪼갤 수 있고, 코어 간 조정이 거의 없는' 워크로드에 이상적이다. 대신 작업이 코어 간 불균형(skew)하면 한 코어만 과부하될 수 있어, 샤딩 키 설계가 중요해진다. Datadog은 '대부분은 Go로 충분하고, 측정으로 증명된 병목만 Rust/Glommio로 내린다'는 실용적 기준을 따른다 — 즉 성급한 Rust화가 아니라 프로파일링에 근거한 선택적 최적화다."
+    },
+    {
+     "topic": "APM 분산 트레이싱 파이프라인 — tail-based sampling과 trace 재조립",
+     "body": "### 왜 어려운가\nAPM은 메트릭과 근본적으로 다르다. 하나의 사용자 요청은 수십~수백 개 서비스를 지나며 각 구간마다 `span`을 만들고, 같은 `trace_id`를 가진 span들이 **서로 다른 호스트의 Agent에서, 서로 다른 시각에** 도착한다. 즉 trace 전체를 보려면 분산된 조각을 재조립해야 하는데, 트래픽은 초당 수천만 span 규모다.\n\n### end-to-end 흐름\n1. **계측**: `dd-trace-go/py/js/java/rust` 라이브러리가 코드에 자동/수동 계측을 걸어 span을 만든다. 각 span에는 `trace_id`, `span_id`, `parent_id`, 서비스/리소스명, 태그, 타이밍이 담긴다.\n2. **Agent의 trace-agent**: 애플리케이션과 같은 호스트의 Agent가 span을 받아 1차로 모은다. 여기서 **APM stats(요청수·에러율·레이턴시 분포)** 를 span 원본과 별개로 계산해 올려보낸다 — 이렇게 하면 trace를 100% 보관하지 않아도 정확한 메트릭이 나온다(분포는 후술하는 DDSketch로 집계).\n3. **head-based vs tail-based sampling**: 비용상 모든 trace를 영구 저장할 수 없다. Datadog은 라이브러리 단의 **head-based sampling**(요청 시작 시 보관 여부 결정)과 백엔드 단의 **tail-based sampling**(trace가 거의 완성된 뒤 '에러 있음/p99 느림/희귀 엔드포인트'를 보고 보관 결정)을 결합한다. tail 방식은 흥미로운 trace를 골라내지만, trace 조각이 다 모일 때까지 버퍼링해야 하므로 별도의 stateful 단계가 필요하다.\n4. **Kafka 경유 재조립**: span은 `trace_id` 기준으로 파티셔닝되어 Kafka로 흐른다. 같은 trace의 span이 같은 파티션/컨슈머로 모이게 해 재조립과 sampling 판단을 한 곳에서 하게 만드는 것이 핵심 설계다.\n5. **저장**: 보관 결정된 trace는 Husky(S3+Parquet) 계열 저장으로 내려가 태그 기반 검색·집계가 가능해진다.\n\n### 트레이드오프\n- **stats는 100%, raw trace는 샘플**: 메트릭 정확도(에러율·레이턴시)는 손해 보지 않으면서 저장 비용은 통제한다. 사용자가 보는 '서비스 맵'과 'p99 그래프'는 sampling과 무관하게 정확한 이유다.\n- **지연된 결정의 비용**: tail-based는 trace 완성을 기다려야 해 메모리/버퍼와 시간 윈도우 관리가 까다롭다. 늦게 오는 span(클럭 스큐, 비동기 작업)을 어디까지 기다릴지가 정확도와 자원의 줄다리기다."
+    },
+    {
+     "topic": "DDSketch — 분위수(percentile)를 분산 환경에서 정확하게 집계하는 알고리즘",
+     "body": "### 문제: 평균은 거짓말을 한다\n관측성에서 가장 중요한 수치는 평균이 아니라 **p95/p99 같은 분위수**다. 그런데 분위수는 평균과 달리 **단순 합산이 안 된다** — 호스트 A의 p99와 호스트 B의 p99를 더하거나 평균 낸다고 전체 p99가 나오지 않는다. 그렇다고 원본 레이턴시 값을 전부 모아 정렬하는 것은 초당 수십억 포인트 규모에서 불가능하다.\n\n### 해법: 상대오차 보장 sketch\nDatadog은 이를 위해 **DDSketch**라는 자체 자료구조를 만들고 오픈소스화(`sketches-go`, 논문은 VLDB 2019)했다. 핵심 아이디어:\n- 값의 범위를 **로그 스케일 버킷**으로 쪼갠다. 버킷 경계가 `gamma^i` 형태라 어떤 값이든 들어갈 버킷이 상대오차 `α` 이내로 보장된다 — 즉 \"p99가 실제보다 ±1% 이내\"처럼 **상대오차를 수학적으로 보장**한다(기존 t-digest 등은 그 보장이 약함).\n- 각 버킷은 카운트만 들고 있어 메모리가 작다.\n- 결정적 장점: **mergeable**. 호스트별 sketch를 그냥 버킷끼리 더하면 전체 sketch가 되고, 거기서 분위수를 뽑으면 된다.\n\n### 시스템에서의 역할\n- Agent가 호스트 단에서 레이턴시 분포를 DDSketch로 누적해 올리고, 백엔드는 수많은 sketch를 단순 병합해 글로벌 p99를 계산한다 → **distribution 메트릭**과 APM 레이턴시 분포가 이 위에서 동작한다.\n- 덕분에 \"전 서비스, 특정 태그 조합, 임의 시간 윈도우\"의 p99를 원본 보관 없이 즉석에서 합쳐 보여줄 수 있다.\n\n### 트레이드오프\n정확한 개별 값(특정 요청의 레이턴시)은 잃지만, 집계·병합 가능성과 메모리 효율을 얻는다. 관측성은 '집계된 추세'가 본질이므로 이 교환이 합리적이다."
+    },
+    {
+     "topic": "로그 파이프라인 — Logging without Limits와 인덱싱·아카이브 분리",
+     "body": "### 핵심 발상: 수집과 인덱싱을 분리한다\n전통적 로그 시스템(예: Elasticsearch 중심)은 **수집한 만큼 인덱싱**하므로 로그량=비용이 되어, 사용자는 로그를 줄이거나 버리게 된다. Datadog의 **Logging without Limits**는 이 결합을 끊는다: 모든 로그를 일단 수집·파싱·처리하되, **비싼 인덱싱은 사용자가 정의한 필터(인덱스)에 매칭되는 로그에만** 적용한다.\n\n### 파이프라인 단계\n1. **수집**: Agent 또는 `Vector`(Rust 파이프라인)가 로그를 모아 인입한다.\n2. **처리(Processing Pipeline)**: grok 파서·리매퍼로 비정형 로그를 구조화하고 표준 속성(`status`, `service`, `host`, `trace_id`)을 추출한다. `trace_id` 추출이 중요한데, 이걸로 **로그 ↔ APM trace 상관(correlation)** 이 가능해진다.\n3. **인덱싱 분기**: 인덱스 필터에 걸린 로그만 검색 가능한 저장소로 들어가 **retention/quota**가 적용된다. 나머지도 버리지 않는다.\n4. **아카이브 & Rehydration**: 인덱싱되지 않은 로그는 사용자 S3 같은 객체 스토리지로 **아카이브**된다. 나중에 감사·사고조사가 필요하면 특정 기간·필터로 아카이브를 다시 끌어와 인덱싱하는 **Rehydration**을 돌린다.\n5. **메트릭화(Log-based Metrics)**: 인덱싱 안 한 로그에서도 카운트/분포 메트릭을 뽑아낼 수 있어, 원본을 안 들고도 추세를 본다.\n\n### 왜 이렇게 했나\n로그는 양이 폭발적이고 99%는 평소엔 안 본다. \"전부 수집하되 인덱싱은 선택적, 원본은 싸게 아카이브, 필요하면 rehydrate\"라는 구조가 **비용과 가시성의 딜레마**를 깬다. 저장-컴퓨트 분리(Husky 철학)와 동일한 사상이 로그 제품에 적용된 사례다."
+    },
+    {
+     "topic": "배포·CI/CD와 자가관측(dogfooding) — 모노레포, 카나리, Dynamic Instrumentation",
+     "body": "### 모노레포와 빌드\n수많은 Go 서비스가 거대한 **모노레포** 중심으로 관리되며 빌드는 `Bazel` 등으로 재현성·캐시를 확보한다. 공통 라이브러리(프로토콜, Kafka 클라이언트, 관측성 SDK)를 한곳에서 버전 일치시켜 수백 개 서비스의 일관성을 유지하는 것이 멀티팀 대규모 개발의 핵심이다.\n\n### 점진적 배포\n- 서비스는 `Kubernetes` 멀티클러스터에 배포되고, 신규 버전은 **카나리/점진 롤아웃**으로 일부 트래픽에 먼저 노출해 SLO(에러율·레이턴시)를 보고 자동 승급/롤백한다.\n- 멀티리전·멀티클라우드(AWS 주력, GCP/Azure)라 배포는 region별로 격리되어 한 리전 사고가 전체로 번지지 않게 한다.\n\n### Dogfooding — 자기 제품으로 자기를 본다\nDatadog의 강력한 운영 무기는 **자사 제품으로 자사 인프라를 관측**하는 것이다. 배포 파이프라인, 카나리 판단, 사고 대응 모두 Datadog APM/Metrics/Logs/CI Visibility 위에서 돈다. 새 기능은 사실상 내부 트래픽에서 먼저 극한 검증을 받는다.\n\n### Dynamic Instrumentation / Continuous Profiler\n- **Continuous Profiler**: 프로덕션에서 상시 낮은 오버헤드로 CPU/메모리/락 프로파일을 떠, 어느 함수가 비용을 쓰는지 코드 라인 단위로 본다.\n- **Dynamic Instrumentation**: 재배포 없이 실행 중 서비스에 로그/메트릭/트레이스 포인트를 **동적으로 주입**한다. 핫패스 디버깅에서 코드 변경·재배포 사이클을 없애는 결정적 도구다.\n\n### 트레이드오프\n모노레포+Bazel은 초기 진입장벽과 빌드 인프라 투자가 크지만, 수백 서비스의 의존성 지옥과 버전 드리프트를 막는다. 상시 프로파일링/동적 계측은 약간의 런타임 오버헤드를 감수하는 대신, 프로덕션 사고의 평균 해결 시간(MTTR)을 크게 줄인다."
     }
    ],
    "github": {
     "org": "https://github.com/DataDog",
     "repos": [
      {
+      "name": "vectordotdev/vector",
+      "url": "https://github.com/vectordotdev/vector",
+      "desc": "고성능 관측성 데이터 파이프라인(수집·변환·라우팅), Datadog이 인수",
+      "lang": "Rust",
+      "stars": 22053
+     },
+     {
       "name": "DataDog/datadog-agent",
       "url": "https://github.com/DataDog/datadog-agent",
-      "desc": "메트릭·트레이스·로그를 수집하는 핵심 Agent (Go 코어 + 임베디드 Python 체크)",
+      "desc": "메트릭·트레이스·로그를 수집하는 Go 코어 + 임베디드 Python Agent",
       "lang": "Go",
-      "stars": 3646
+      "stars": 3649
      },
      {
       "name": "DataDog/glommio",
       "url": "https://github.com/DataDog/glommio",
-      "desc": "io_uring 기반 thread-per-core 비동기 Rust 런타임",
+      "desc": "io_uring 기반 Rust thread-per-core 비동기 런타임",
       "lang": "Rust",
-      "stars": 3608
-     },
-     {
-      "name": "DataDog/dd-trace-java",
-      "url": "https://github.com/DataDog/dd-trace-java",
-      "desc": "JVM 자동 계측 트레이싱 에이전트",
-      "lang": "Java",
-      "stars": 724
+      "stars": 3609
      },
      {
       "name": "DataDog/dd-trace-py",
       "url": "https://github.com/DataDog/dd-trace-py",
-      "desc": "Python 애플리케이션용 APM·분산 트레이싱 라이브러리",
+      "desc": "Python용 APM 분산 트레이싱/프로파일링 라이브러리",
       "lang": "Python",
       "stars": 642
      },
      {
-      "name": "DataDog/datadog-operator",
-      "url": "https://github.com/DataDog/datadog-operator",
-      "desc": "Agent 배포를 관리하는 Kubernetes 오퍼레이터",
+      "name": "DataDog/sketches-go",
+      "url": "https://github.com/DataDog/sketches-go",
+      "desc": "상대오차 보장 분위수 집계 알고리즘 DDSketch의 Go 구현",
       "lang": "Go",
-      "stars": 380
+      "stars": 185
      }
     ]
    },
    "sources": [
-    "https://www.datadoghq.com/blog/engineering/introducing-husky/",
-    "https://github.com/DataDog/glommio",
-    "https://github.com/DataDog/datadog-agent"
+    "https://www.datadoghq.com/blog/engineering/",
+    "https://www.datadoghq.com/blog/engineering/introducing-glommio/",
+    "https://www.datadoghq.com/blog/engineering/computing-accurate-percentiles-with-ddsketch/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "mongodb",
