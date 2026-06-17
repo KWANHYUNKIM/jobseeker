@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-17T08:01:53",
- "total": 732,
+ "generated_at": "2026-06-17T09:44:48",
+ "total": 733,
  "sources": [
   {
    "company": "Etsy",
@@ -31,6 +31,11 @@
    "company": "LINE",
    "country": "KR",
    "count": 26
+  },
+  {
+   "company": "AWS",
+   "country": "US",
+   "count": 25
   },
   {
    "company": "Zalando",
@@ -69,11 +74,6 @@
   },
   {
    "company": "Cloudflare",
-   "country": "US",
-   "count": 24
-  },
-  {
-   "company": "AWS",
    "country": "US",
    "count": 24
   },
@@ -352,10 +352,10 @@
   "Attention Mechanism": "LLM/생성형",
   "Deep Learning": "AI/ML",
   "AWS Lambda": "인프라/클라우드",
+  "Iceberg": "데이터",
   "Monorepo": "협업/도구",
   "Angular": "프론트엔드",
   "Swift": "언어",
-  "Iceberg": "데이터",
   "Jetpack Compose": "모바일",
   "XSS": "보안",
   "SASS": "프론트엔드",
@@ -510,6 +510,37 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Amazon S3 annotations: attach rich, queryable context directly to your objects",
+   "url": "https://aws.amazon.com/blogs/aws/amazon-s3-annotations-attach-rich-queryable-context-directly-to-your-objects",
+   "published": "2026-06-16",
+   "published_ts": 1781651590.0,
+   "summary": "Amazon S3 now lets you attach up to 1 GB of rich, mutable, and queryable context directly to your objects using annotations, purpose-built for AI agents and autonomous workflows that need to discover, understand, and act on data at scale without maintaining separate metadata systems.",
+   "tags": [
+    "Amazon Simple Storage Service (S3)",
+    "AWS Summit New York",
+    "Events",
+    "Launch",
+    "News",
+    "Storage"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Model Context Protocol",
+    "Iceberg",
+    "AWS"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "데이터",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "d2e59414468950fe"
+  },
   {
    "key": "github",
    "company": "GitHub",
