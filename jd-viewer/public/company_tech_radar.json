@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T14:36:55",
+ "generated_at": "2026-06-17T16:11:23",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 91,
+ "refined": 93,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -206,15 +206,15 @@
     },
     {
      "name": "TypeScript",
-     "count": 12
+     "count": 13
     },
     {
      "name": "Kotlin",
-     "count": 9
+     "count": 10
     },
     {
      "name": "JavaScript",
-     "count": 8
+     "count": 7
     },
     {
      "name": "Ruby",
@@ -233,7 +233,7 @@
      },
      {
       "name": "Spring Boot",
-      "count": 12
+      "count": 11
      },
      {
       "name": "Go",
@@ -241,7 +241,7 @@
      },
      {
       "name": "Netty",
-      "count": 5
+      "count": 6
      },
      {
       "name": "Spring Cloud",
@@ -275,15 +275,15 @@
      },
      {
       "name": "TypeScript",
-      "count": 14
+      "count": 15
      },
      {
       "name": "Next.js",
-      "count": 9
+      "count": 10
      },
      {
       "name": "React Native",
-      "count": 7
+      "count": 8
      },
      {
       "name": "Redux",
@@ -317,7 +317,7 @@
      },
      {
       "name": "Redis",
-      "count": 15
+      "count": 16
      },
      {
       "name": "MySQL",
@@ -363,7 +363,19 @@
      },
      {
       "name": "Terraform",
-      "count": 8
+      "count": 9
+     },
+     {
+      "name": "Envoy",
+      "count": 4
+     },
+     {
+      "name": "Grafana",
+      "count": 4
+     },
+     {
+      "name": "Prometheus",
+      "count": 4
      },
      {
       "name": "ArgoCD",
@@ -378,19 +390,7 @@
       "count": 3
      },
      {
-      "name": "Envoy",
-      "count": 3
-     },
-     {
-      "name": "Grafana",
-      "count": 3
-     },
-     {
-      "name": "Prometheus",
-      "count": 3
-     },
-     {
-      "name": "사내 데이터센터",
+      "name": "Prometheus + Grafana",
       "count": 3
      }
     ]
@@ -398,11 +398,11 @@
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 8
+     "count": 7
     },
     {
      "name": "Microservices",
-     "count": 7
+     "count": 6
     },
     {
      "name": "MSA",
@@ -417,7 +417,7 @@
      "count": 1
     },
     {
-     "name": "API-first",
+     "name": "API-first / merchant SDK platform",
      "count": 1
     }
    ]
@@ -17497,39 +17497,49 @@
     "Java",
     "Go",
     "Python",
-    "JavaScript"
+    "JavaScript",
+    "Kotlin"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
+     "Dropwizard",
      "gRPC",
+     "Netty",
      "Go"
     ],
     "frontend": [
      "React",
-     "React Native"
+     "React Native",
+     "TypeScript"
     ],
     "data": [
-     "Kafka",
      "Aerospike",
      "HBase",
+     "MySQL",
+     "Kafka",
      "Elasticsearch",
-     "MySQL"
+     "Redis",
+     "Apache Pinot"
     ],
     "infra": [
      "Kubernetes",
-     "사내 데이터센터"
+     "Bare-metal On-prem Datacenter",
+     "Envoy",
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
     "Microservices",
     "Event-driven",
-    "Sharded datastore"
+    "Sharded Datastore",
+    "Cell-based / Multi-DC Active-Active"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Payments App<br/>React Native\"]\n    WEB[\"Web<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Own DC\"]\n  end\n  subgraph Services\n    UPI[\"UPI Service<br/>Java + Spring Boot\"]\n    TXN[\"Transaction Service<br/>Java\"]\n    MERCH[\"Merchant Service<br/>Go\"]\n    LEDG[\"Ledger Service<br/>Java\"]\n  end\n  subgraph Data\n    AERO[\"Aerospike<br/>Hot Txn Store\"]\n    HBASE[\"HBase<br/>Ledger History\"]\n    MYSQL[\"MySQL<br/>Sharded Datastore\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>UPI Scale Stream\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>Own Data Centers\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> UPI\n  GW --> TXN\n  GW --> MERCH\n  UPI --> TXN\n  TXN --> LEDG\n  TXN --> AERO\n  LEDG --> HBASE\n  TXN --> MYSQL\n  MERCH --> ES\n  TXN -->|events| KAFKA\n  LEDG -->|events| KAFKA\n  KAFKA --> HBASE\n  TXN --> K8S",
-   "why_language": "인도 UPI 거래량의 상당 부분을 처리하는 초대규모 결제 시스템이라 JVM의 검증된 처리량과 강한 타입 안정성을 코어에 쓴다. 결제 정합성이 최우선이므로 성숙한 Java 생태계에 의존한다.",
-   "why_architecture": "수억 사용자의 결제를 무중단으로 처리하려고 자체 데이터센터에 마이크로서비스를 올리고, Aerospike·HBase로 샤딩된 저장소를 운영한다. 트랜잭션 이벤트는 Kafka로 비동기 전파한다.",
-   "summary": "자체 데이터센터 위 JVM 마이크로서비스로 UPI 초대량 결제를 돌리는 핀테크.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + Native\"]\n    WEB[\"Merchant Web<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    LB[\"L7 LB / Envoy<br/>On-prem\"]\n    GW[\"API Gateway<br/>Java + Netty\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PAY[\"Payment Orchestrator<br/>Spring Boot\"]\n    UPI[\"UPI Switch<br/>Java + gRPC\"]\n    WALLET[\"Wallet / Ledger<br/>Spring Boot\"]\n    LOW[\"Low-latency Path<br/>Go\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    WORK[\"Settlement / Recon<br/>Consumers\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    AERO[\"Hot State<br/>Aerospike\"]\n    MYSQL[\"Sharded Txn Store<br/>MySQL\"]\n    HBASE[\"Cold / History<br/>HBase\"]\n    ES[\"Search / Analytics<br/>Elasticsearch + Pinot\"]\n  end\n  subgraph Ext[\"External\"]\n    NPCI[\"NPCI UPI<br/>Banks Rails\"]\n  end\n  APP --> LB\n  WEB --> LB\n  LB --> GW\n  GW -->|gRPC| PAY\n  GW -->|gRPC| WALLET\n  PAY --> UPI\n  UPI -->|ISO 8583 / API| NPCI\n  PAY --> AERO\n  PAY --> MYSQL\n  WALLET --> MYSQL\n  PAY -->|events| KAFKA\n  UPI -->|events| KAFKA\n  KAFKA --> WORK\n  WORK --> HBASE\n  WORK --> MYSQL\n  KAFKA --> ES\n  LOW --> AERO",
+   "why_language": "결제 코어는 강한 타입 안정성·성숙한 트랜잭션/동시성 생태계·JVM 운영 도구가 필요해 Java(Spring Boot/Dropwizard)를 주력으로 쓴다. UPI 같은 초저지연·고동시성 경로나 사이드카·인프라 도구에는 GC 부담이 적고 가벼운 Go를 선별 투입하고, 데이터 파이프라인·내부 툴링은 Python, 앱/웹은 React Native·React로 코드 공유를 노린다.",
+   "why_architecture": "초당 수만~수십만 건의 UPI 거래를 처리하면서 정합성을 지켜야 하므로 도메인별로 잘게 쪼갠 마이크로서비스와 샤딩된 MySQL 원장으로 수평 확장과 격리를 동시에 확보한다. 결제 확정 이후의 정산·정산조정·알림은 Kafka 기반 이벤트로 비동기 분리해 핫패스 지연을 줄이고, 자체 데이터센터를 다중 DC Active-Active로 운영해 NPCI 연동 중 장애에도 페일오버 가능한 복원력을 갖춘다.",
+   "summary": "자체 데이터센터 위 JVM 마이크로서비스로 UPI 초대량 결제를 처리하고, Aerospike·샤딩 MySQL·Kafka로 핫스테이트·원장·비동기를 분리한 핀테크 스택",
    "deep_dive": [
     {
      "topic": "자체 데이터센터 위 JVM 마이크로서비스",
@@ -17550,16 +17560,35 @@
     {
      "topic": "UPI 초대량 스케일과 NPCI 연동 복원력",
      "body": "### NPCI라는 외부 의존\nPhonePe의 모든 UPI 거래는 외부 `NPCI` 스위치를 거친다. 즉 *통제 못 하는 의존성*에 시스템이 묶여 있다. NPCI 지연·타임아웃·거절은 일상이다.\n\n### 복원력 설계\n- **서킷 브레이커·타임아웃 예산**: NPCI/은행 응답이 느릴 때 빠르게 실패시켜 스레드/커넥션 고갈을 막는다.\n- **펜딩 재조정**: 타임아웃된 거래는 즉시 실패 처리하지 않고 'pending'으로 두고 *상태 조회/대사*로 최종 확정. UPI는 진실이 늦게 도착하므로.\n- **은행별 격리**: 특정 은행이 다운되면 그 경로만 디그레이드하고 나머지는 정상 동작(bulkhead).\n- **재시도 셰이핑**: 장애 은행으로의 재시도가 thundering herd가 되지 않도록 백오프·지터.\n\n### 핵심 통찰\nPhonePe의 가용성은 *자기 코드*만으로 결정되지 않고 *생태계 전체*(NPCI·은행)와 함께 움직인다. 그래서 엔지니어링의 절반은 **외부 의존 실패를 우아하게 흡수하는 것**에 쓰인다."
+    },
+    {
+     "topic": "UPI 결제 요청의 end-to-end 처리 흐름과 2단계 커밋",
+     "body": "### 요청이 들어와서 NPCI까지 갔다 오는 길\n\nPhonePe에서 사용자가 송금 버튼을 누르는 순간부터 거래가 확정되기까지는 여러 동기/비동기 단계가 맞물린다.\n\n1. **Edge → Gateway**: React Native 앱이 보낸 요청은 on-prem L7 로드밸런서(Envoy 계열)를 거쳐 Java/Netty 기반 API Gateway에 닿는다. 게이트웨이는 인증 토큰 검증, rate limiting, idempotency key 부여를 담당한다. 결제는 **재시도가 본질적으로 발생하는 도메인**이라 모든 거래에 `idempotency key`를 붙여 같은 요청이 두 번 들어와도 원장에 한 번만 반영되게 한다.\n\n2. **Payment Orchestrator**: 게이트웨이는 gRPC로 결제 오케스트레이터를 호출한다. 오케스트레이터는 거래를 상태 머신으로 모델링한다(`INITIATED → DEBIT_PENDING → DEBIT_SUCCESS → CREDIT_PENDING → COMPLETED` 등). 각 상태 전이는 샤딩된 MySQL 원장에 기록되어, 어느 단계에서 크래시가 나도 재기동 후 상태를 복구해 이어갈 수 있다.\n\n3. **UPI Switch ↔ NPCI**: 실제 자금 이동은 PhonePe가 자체 운영하는 UPI 스위치를 통해 **NPCI**로 나간다. UPI는 `PSP(Payment Service Provider)` 모델로, 디바이스 → PSP → NPCI → 송금/수취 은행(remitter/beneficiary bank) 순으로 메시지가 흐른다. 스위치는 NPCI와의 세션·암호화·메시지 포맷을 관리하고, 타임아웃·중복응답을 정규화한다.\n\n### 왜 분산 트랜잭션 대신 상태 머신 + 보상 트랜잭션인가\n\n송금자 은행 차변(debit)과 수취자 은행 대변(credit)은 서로 다른 외부 시스템이라 단일 DB 트랜잭션으로 묶을 수 없다. 그래서 PhonePe는 **Saga 패턴**에 가까운 방식을 쓴다. 차변이 성공했는데 대변이 실패하면, 원래 상태로 되돌리는 `reversal`(보상 트랜잭션)을 비동기로 발행한다. 이 reversal/정산조정 로직이 뒤에 나오는 Kafka 컨슈머의 핵심 일거리다.\n\n### 핵심 트레이드오프\n\n- **동기 핫패스는 최소한만**: 사용자 체감 지연을 줄이려고 차변/대변 확정까지만 동기로 처리하고, 영수증 생성·푸시 알림·리워드 적립·analytics는 전부 이벤트로 떼어낸다.\n- **결정성(determinism) 우선**: 결제는 \"빠르지만 가끔 틀림\"보다 \"조금 느려도 항상 정합\"이 중요하므로, 모든 상태 전이를 영속화하고 재구동 가능하게 설계한다."
+    },
+    {
+     "topic": "다중 데이터센터 Active-Active와 셀(cell) 기반 격리",
+     "body": "### 클라우드가 아니라 자체 DC를 다중으로\n\nPhonePe는 퍼블릭 클라우드 대신 자체 베어메탈 데이터센터를 여러 곳 운영한다. 핀테크 규제(데이터 현지화, RBI 가이드라인)와 UPI 트래픽 규모에서 단위 비용·지연·통제권을 확보하기 위한 선택이다. 멀티 DC를 **Active-Active**로 굴려 한 DC 전체가 빠져도 서비스가 계속되도록 한다.\n\n### 셀(cell) 기반 아키텍처\n\n장애 격리를 위해 시스템을 **셀(또는 zone) 단위**로 쪼갠다. 사용자/거래를 특정 셀에 라우팅하고, 셀 내부에 그 트래픽을 처리하는 서비스·데이터 샤드 풀세트를 둔다. 이렇게 하면:\n\n- **blast radius 제한**: 한 셀의 Aerospike/MySQL이 망가져도 다른 셀 사용자는 영향이 없다.\n- **점진적 배포**: 새 버전을 한 셀에만 먼저 깔아 카나리처럼 검증한 뒤 셀 단위로 롤아웃한다.\n\n### 데이터 복제와 일관성\n\n- **원장(MySQL)**: 강한 정합이 필요하므로 샤드별 primary를 한 DC에 두고 동기/반동기 복제로 다른 DC에 복제한다. primary가 죽으면 failover로 승격한다.\n- **핫 상태(Aerospike)**: Aerospike의 cross-datacenter replication(XDR)으로 DC 간 복제해 한 DC가 빠져도 세션/카운터/멱등성 상태를 잃지 않는다.\n\n### 왜 이렇게까지 하나\n\nUPI는 사실상 인도의 공공 결제 인프라가 되어버려서, PhonePe 다운타임이 곧 \"가게에서 돈을 못 받는\" 사회적 사건이 된다. 그래서 단일 DC 장애·랙 장애·네트워크 분할을 전제로 설계하고, 가용성을 위해 운영 복잡도(멀티 DC 복제·셀 라우팅)를 떠안는 트레이드오프를 택했다."
+    },
+    {
+     "topic": "관측성(Observability): 초당 수만 거래를 추적·정산조정하는 방법",
+     "body": "### 모든 거래는 추적 가능해야 한다\n\n결제 시스템에서 \"돈이 어디서 멈췄는가\"를 못 찾으면 곧바로 고객 클레임·정산 분쟁이 된다. PhonePe는 거래마다 `transactionId`를 발급하고, 이를 **분산 트레이싱 컨텍스트**로 게이트웨이→오케스트레이터→UPI 스위치→Kafka 컨슈머까지 전 구간에 전파한다. 한 거래의 전체 타임라인을 한 화면에서 재구성할 수 있어야 한다.\n\n### 메트릭·로그·트레이스 스택\n\n| 축 | 도구 | 용도 |\n|---|---|---|\n| 메트릭 | `Prometheus` + `Grafana` | 서비스별 latency/error rate, 거래 성공률(은행별), NPCI 응답시간 |\n| 로그 | `Elasticsearch` (ELK) | 거래 단위 검색, 디버깅, 클레임 조사 |\n| 분석/실시간 집계 | `Apache Pinot` | 실시간 대시보드·이상탐지용 OLAP 쿼리 |\n\n### 은행별 헬스 모니터링이 핵심\n\nUPI는 수십 개 은행 엔드포인트에 의존하는데, 특정 은행의 응답 지연·실패율이 치솟는 일이 일상이다. PhonePe는 **은행/PSP별 성공률을 실시간 메트릭으로 분리**해서 본다. 어떤 은행이 흔들리면:\n\n- 해당 은행으로 가는 요청에 **서킷브레이커**를 작동시키거나,\n- 라우팅 가능한 경우 대체 경로로 우회하고,\n- 사용자에게 빠르게 실패를 반환해 무한 대기를 막는다.\n\n### 정산조정(reconciliation)이라는 비동기 진실 검증\n\n실시간 응답과 별개로, PhonePe는 NPCI/은행이 보내는 정산 파일과 자체 원장을 대조하는 **recon 파이프라인**을 Kafka 컨슈머·배치로 돌린다. \"우리는 성공이라 기록했는데 은행은 실패\" 같은 불일치(mismatch)를 잡아내 자동 reversal하거나 수동 검토 큐로 보낸다. 이 비동기 진실 검증 계층이 실시간 핫패스의 불확실성을 메우는 안전망이다."
+    },
+    {
+     "topic": "캐싱·핫스테이트 계층: Aerospike를 1차 데이터스토어처럼 쓰는 이유",
+     "body": "### Aerospike는 단순 캐시가 아니다\n\n많은 곳에서 Redis를 사이드 캐시로 쓰는 것과 달리, PhonePe에서 `Aerospike`는 **저지연 1차 상태 저장소**에 가깝게 쓰인다. SSD(플래시) 최적화 엔진 덕에 RAM 캐시급 지연(밀리초 이하)을 유지하면서도 데이터셋이 RAM을 넘어가도 견딘다. 결제 핫패스에서 다음 같은 데이터가 여기 산다:\n\n- **멱등성/중복방지 키**: 같은 거래의 재시도를 즉시 판별\n- **세션·디바이스·리스크 상태**: 매 요청 RDB를 때리지 않고 빠르게 조회\n- **카운터/레이트리밋**: 사용자·가맹점 단위 한도 체크\n\n### 핫/콜드 분리 전략\n\n- **핫(최근/진행 중 거래 상태)** → Aerospike: 빠른 읽기/쓰기, 짧은 TTL\n- **확정 원장(정합성)** → 샤딩 MySQL: 거래의 진실 원천(source of truth)\n- **콜드(과거 이력·대용량)** → HBase: 오래된 거래·로그를 저비용 대용량으로 보관, 범위 스캔\n\n이렇게 같은 거래라도 \"진행 중인 1초\"와 \"확정된 영구 기록\"과 \"6개월 전 조회용\"을 서로 다른 스토어에 두어, 각 워크로드의 접근 패턴(저지연 vs 정합 vs 대용량)에 맞춘다.\n\n### 캐시 무효화의 어려움과 회피\n\n결제에서 stale 캐시는 곧 잘못된 잔액 표시·이중 차변 위험이다. PhonePe는 잔액·원장처럼 정합이 생명인 값은 **캐시로 읽기 응답을 만들지 않고** MySQL 원장에서 권위 있는 값을 읽되, 그 외 변하지 않는/추정 가능한 메타데이터(가맹점 정보, 사용자 프로필, 카탈로그)만 캐시한다. 즉 \"캐시해도 안전한 것\"과 \"절대 캐시하면 안 되는 것\"을 도메인 규칙으로 엄격히 가른다는 게 핵심 설계 결정이다."
     }
    ],
    "github": {
-    "org": "https://github.com/PhonePe"
+    "org": "https://github.com/PhonePe",
+    "repos": []
    },
    "sources": [
-    "https://blog.phonepe.com/tag/engineering"
+    "https://blog.phonepe.com/",
+    "https://github.com/PhonePe",
+    "https://www.npci.org.in/what-we-do/upi/product-overview"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "razorpay",
@@ -17571,39 +17600,48 @@
     "PHP",
     "Java",
     "Python",
-    "JavaScript"
+    "TypeScript"
    ],
    "stack": {
     "backend": [
-     "Go",
-     "Laravel (PHP)",
-     "Spring Boot"
+     "Go (core payment microservices)",
+     "Laravel / PHP (legacy 'API' monolith)",
+     "Spring Boot / Java (settlements, ledger)",
+     "Python (data, ML, fraud)"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "React Native (Blade design system)",
+     "Next.js"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
-     "Aerospike",
-     "Elasticsearch",
-     "Redis"
+     "MySQL (RDS Aurora, source of truth)",
+     "Aerospike (low-latency hot KV)",
+     "Redis (cache/locks/rate-limit)",
+     "Kafka (event bus)",
+     "Elasticsearch (search/observability)",
+     "S3 (artifacts, ledger archive)"
     ],
     "infra": [
-     "Kubernetes",
-     "AWS"
+     "Kubernetes (EKS)",
+     "AWS",
+     "Envoy / Nginx",
+     "Spinnaker / ArgoCD",
+     "Terraform",
+     "Prometheus + Grafana"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven",
-    "API-first"
+    "Microservices (Go) strangling a Laravel monolith",
+    "Event-driven (Kafka) + reliable webhooks",
+    "API-first / merchant SDK platform",
+    "Smart-routing layer over multiple acquirers"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    SDK[\"Checkout SDK<br/>JavaScript\"]\n    DASH[\"Merchant Dashboard<br/>React\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Go\"]\n  end\n  subgraph Services\n    PAY[\"Payment Service<br/>Go\"]\n    UPI[\"UPI Service<br/>Go\"]\n    API[\"Core API<br/>Laravel PHP\"]\n    SETL[\"Settlement<br/>Java + Spring Boot\"]\n  end\n  subgraph Data\n    MYSQL[\"MySQL<br/>Payments\"]\n    AERO[\"Aerospike<br/>Idempotency Store\"]\n    REDIS[\"Redis<br/>Cache\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>Event Bus\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS\"]\n  end\n  SDK --> GW\n  DASH --> GW\n  GW --> PAY\n  GW --> API\n  PAY --> UPI\n  PAY --> AERO\n  API --> MYSQL\n  PAY --> SETL\n  API --> ES\n  PAY --> REDIS\n  PAY -->|events| KAFKA\n  SETL -->|events| KAFKA\n  KAFKA --> SETL\n  PAY --> K8S",
-   "why_language": "결제 게이트웨이는 UPI 규모의 트랜잭션을 정확하고 낮은 지연으로 처리해야 하므로 신규 코어를 Go로 옮겼고, 초기 모놀리스는 PHP(Laravel)로 빠르게 구축했다. 금융 정합성과 처리량을 동시에 잡기 위한 선택이다.",
-   "why_architecture": "결제·정산·대출·뱅킹 등 금융 도메인마다 규제와 SLA가 달라 마이크로서비스로 격리하고, 트랜잭션 상태 변화를 Kafka 이벤트로 안정적으로 전파한다. API-first로 가맹점 통합을 쉽게 만든다.",
-   "summary": "Go로 재구축한 마이크로서비스로 UPI 규모 결제를 처리하는 핀테크.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    CHK[\"Merchant Checkout<br/>razorpay.js + Checkout SDK\"]\n    SDK[\"Mobile SDK<br/>Android/iOS + React Native\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    EDGE[\"Edge Gateway<br/>Nginx + Envoy\"]\n    AUTH[\"AuthN/Z + Rate Limit<br/>Redis\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MONO[\"Payments API Monolith<br/>Laravel PHP\"]\n    PAY[\"Payment Service<br/>Go\"]\n    ROUTE[\"Smart Router<br/>Go\"]\n    LEDGER[\"Ledger and Settlement<br/>Java Spring Boot\"]\n    VAULT[\"Card Vault and Tokens<br/>Go + HSM\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL Aurora<br/>source of truth\"]\n    AERO[\"Aerospike<br/>hot KV idempotency\"]\n    RDS2[\"Redis<br/>cache and locks\"]\n    ES[\"Elasticsearch<br/>search and logs\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>event bus\"]\n    HOOK[\"Webhook Delivery<br/>Go workers\"]\n    DLQ[\"Retry and DLQ<br/>Kafka\"]\n  end\n  subgraph Ext[\"External Rails\"]\n    BANK[\"Acquiring Banks<br/>UPI NPCI Cards\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes EKS<br/>on AWS\"]\n  end\n  CHK --> EDGE\n  SDK --> EDGE\n  EDGE --> AUTH\n  AUTH --> MONO\n  AUTH --> PAY\n  MONO -->|strangler| PAY\n  PAY -->|idempotency check| AERO\n  PAY --> ROUTE\n  ROUTE -->|route by success rate| BANK\n  PAY --> VAULT\n  PAY --> MYSQL\n  PAY -->|emit events| KAFKA\n  KAFKA --> LEDGER\n  KAFKA --> HOOK\n  HOOK -->|at-least-once| CHK\n  HOOK --> DLQ\n  LEDGER --> MYSQL\n  PAY --> RDS2\n  MONO --> ES\n  K8S --- Core",
+   "why_language": "인도 결제 도메인은 초고동시성·저지연·정확한 금전 처리가 핵심이라, 초기 Laravel(PHP) 모놀리스로 빠르게 시장에 진입한 뒤 결제 핵심 경로를 Go로 점진 재작성해 GC·고루틴 기반 동시성으로 P99 지연과 처리량을 잡았다. 정산·원장처럼 트랜잭션 무결성과 성숙한 엔터프라이즈 생태계가 필요한 영역은 Java/Spring Boot를, 사기탐지·데이터·리포팅은 Python을 쓰는 polyglot 전략이다. 프런트는 머천트 체크아웃 SDK와 대시보드를 React/TypeScript로 통일하고 자체 디자인 시스템 Blade로 웹·React Native를 일원화한다.",
+   "why_architecture": "단일 Laravel 모놀리스로는 IPL·축제 세일 같은 급증 트래픽과 결제/정산/원장 도메인의 독립 배포 요구를 감당하기 어려워, strangler fig 패턴으로 핵심 경로부터 Go 마이크로서비스로 떼어냈다. 결제 상태 전이는 본질적으로 비동기·외부 은행 의존적이므로 Kafka 이벤트 드리븐으로 서비스 간 결합을 끊고 웹훅·정산·원장 적재를 at-least-once로 보장한다. 또한 여러 acquiring bank를 단일 API 뒤에 추상화하는 API-first + smart-routing 설계로 머천트는 한 번만 연동하고 라조페이가 성공률을 최적화한다.",
+   "summary": "Laravel 모놀리스를 Go 마이크로서비스로 strangling하며 Kafka 이벤트와 multi-acquirer smart routing 위에 올린 API-first 핀테크 플랫폼",
    "deep_dive": [
     {
      "topic": "PHP(Laravel)에서 Go로의 점진적 재작성",
@@ -17620,32 +17658,71 @@
     {
      "topic": "Kafka 이벤트 드리븐과 웹훅 전달 보증",
      "body": "### 결제 후의 긴 꼬리\n결제 성공 자체보다 *그 이후*가 복잡하다. 정산, 가맹점 웹훅 통지, 송장, 분석 인제스트가 따라온다. 이를 동기로 묶으면 가맹점 서버가 느릴 때 결제 응답까지 늦어진다.\n\n### Kafka로 분리\n- 결제 이벤트를 `Kafka`에 발행하고, 웹훅·정산·분석이 각자 컨슈머로 처리한다.\n- **웹훅 전달 보증**: 가맹점 엔드포인트는 자주 실패하므로, 지수 백오프 재시도와 데드레터 큐(DLQ)로 *최소 한 번* 전달을 보장한다. 가맹점 측 멱등 처리를 권고한다.\n- **순서·파티셔닝**: 가맹점/결제 ID 기준 파티션으로 이벤트 순서를 보존한다.\n\n### 왜 비동기인가\n결제 확정의 *사용자 체감 경로*는 짧게 유지하고, 신뢰성이 필요하지만 즉시성이 덜한 후속 작업은 큐로 흡수한다. 이로써 가맹점 장애가 Razorpay 코어로 *역류*하지 않는다. 분산 결제 시스템에서 **장애 격리(blast radius 축소)**의 핵심 기법이다."
+    },
+    {
+     "topic": "결제 요청 end-to-end 흐름과 Smart Routing(다중 acquirer 성공률 최적화)",
+     "body": "### 한 건의 결제가 시스템을 통과하는 경로\n\n머천트 사이트에서 `razorpay.js`(Checkout)가 뜨면, 먼저 서버-서버로 **Order**가 생성된다(`order_id` 발급). 사용자가 카드/UPI/넷뱅킹을 선택해 `Payment`를 만들면 요청은 `Edge Gateway(Nginx + Envoy)` → 인증·레이트리밋 → 결제 서비스로 들어간다. 핵심은 **하나의 통합 API 뒤에 수십 개 acquiring bank/PSP를 숨기는 것**이다. 머천트는 라조페이에만 연동하지만 실제 자금 이동은 HDFC·ICICI·Axis 등 여러 acquirer와 UPI(NPCI), 카드 네트워크를 통해 일어난다.\n\n### Smart Routing이 푸는 문제\n\n인도 결제의 고질병은 **acquiring bank의 들쭉날쭉한 성공률(success rate)** 이다. 특정 은행의 게이트웨이가 밤사이 불안정하거나 BIN(카드 발급사) 구간별로 승인률이 다르다. Smart Router(Go)는 다음을 실시간으로 본다:\n\n- 카드 `BIN` / 발급은행 / 카드 네트워크(Visa·Mastercard·RuPay)\n- 결제 수단(UPI vs 카드 vs 넷뱅킹)\n- 각 acquirer의 **최근 시계열 성공률·지연·다운타임** (스트리밍 집계)\n- 비용(MDR)·머천트별 우선순위 규칙\n\n이 신호로 **가장 승인 가능성이 높은 경로**를 고르고, 한 acquirer에서 실패하면 자동 **retry/failover**로 다른 acquirer로 재시도한다(가능한 결제수단 한정). 이 한 레이어가 머천트 체감 성공률을 수 %p 끌어올리는 핵심 차별화 포인트다.\n\n### 상태 머신과 비동기성\n\n`Payment`는 `created → authorized → captured → refunded/failed` 식의 **상태 머신**으로 모델링된다. 외부 은행 응답은 느리고 비동기(콜백/리다이렉트/UPI collect)이므로, 시스템은 동기 응답을 끝까지 붙들지 않고 **이벤트로 상태 전이**를 흘려보낸다. 은행 콜백이 늦거나 유실되면 별도 **reconciliation/poller**가 acquirer에 상태를 다시 질의해 최종 상태를 맞춘다(자금은 움직였는데 상태만 안 온 'pending' 케이스를 봉합). 이 때문에 멱등성과 at-least-once 처리가 필수다."
+    },
+    {
+     "topic": "Double-entry Ledger와 정산(Settlement)·리컨실리에이션",
+     "body": "### 돈을 다루는 시스템의 진짜 코어: 원장\n\n결제 게이트웨이의 본질은 메시지 전달이 아니라 **'장부가 항상 맞아야 한다'** 는 것이다. 라조페이는 머천트 잔액·수수료·세금(GST)·환불·정산을 **double-entry bookkeeping(복식부기)** 원장으로 관리한다. 모든 금전 이벤트는 차변/대변이 짝을 이루는 불변(immutable) 원장 엔트리로 기록되어, 어떤 시점에도 **합이 0(balanced)** 이 되도록 강제한다. 이는 사후 정정이 아니라 설계 불변식이다.\n\n### MySQL을 source of truth로 두는 이유\n\n핫 KV는 Aerospike지만, **금전의 최종 진실은 MySQL(Aurora)** 의 트랜잭션 위에 둔다. 잔액 갱신·정산 배치는 ACID 트랜잭션과 강한 일관성이 필요하기 때문이다. 멱등성 키와 고유 제약(unique constraint)으로 **중복 적립/이중 환불**을 DB 레벨에서 차단한다.\n\n### 정산(Settlement) 파이프라인\n\n- 캡처된 결제는 Kafka 이벤트로 Ledger/Settlement 서비스(Java/Spring Boot)에 전달된다.\n- 머천트별로 수수료·세금을 제하고 **정산 주기(T+2 등)** 에 맞춰 은행 송금(NEFT/IMPS/RTGS) 배치를 만든다.\n- `Route`(분할 정산)·`Instant Settlement` 같은 제품은 동일 원장 위에서 잔액을 쪼개거나 당겨쓰는 형태로 구현된다.\n\n### 리컨실리에이션(Reconciliation)\n\n매일 acquirer/은행이 보내는 **settlement 파일(MIS)** 과 내부 원장을 대사(對査)한다. \"우리가 캡처했다고 본 거래\" vs \"은행이 실제 정산한 거래\"의 차집합을 찾아 누락·중복·금액 불일치를 자동 플래그한다. 결제 회사가 가장 두려워하는 것은 장애가 아니라 **조용한 금액 불일치**이므로, 이 대사 파이프라인이 신뢰의 마지막 방어선이다."
+    },
+    {
+     "topic": "RBI 토큰화 의무, Card Vault와 PCI-DSS 보안",
+     "body": "### 왜 카드번호를 저장하지 못하는가\n\n인도 중앙은행 **RBI**는 2022년 이후 머천트·게이트웨이가 실제 카드 PAN(16자리)을 저장하는 것을 금지하고 **network tokenization(CoF token)** 을 의무화했다. 즉 반복 결제·구독을 위해 카드를 '기억'하려면 원본 PAN이 아니라 **카드 네트워크가 발급한 토큰**을 저장해야 한다. 이는 라조페이 같은 게이트웨이에 대규모 마이그레이션 과제를 안겼다.\n\n### Card Vault 동작 원리\n\n- 결제 시 PAN은 **PCI-DSS 범위로 격리된 Vault 서비스**(Go) 안에서만 잠깐 다뤄지고, 핵심 코어 서비스로는 절대 평문 PAN이 흘러가지 않는다.\n- Vault는 카드 네트워크(Visa/Mastercard/RuPay)에 토큰화를 요청해 **머천트·디바이스 단위로 스코프된 토큰**과 마지막 4자리·만료 같은 메타데이터만 받는다.\n- 민감 데이터 암호화 키는 **HSM/KMS**로 관리하고, 평문이 닿는 시스템을 최소화해 **PCI-DSS 감사 범위(scope)** 자체를 줄인다. (범위를 줄이는 게 곧 보안·감사비용 절감)\n\n### 격리(scoping)의 엔지니어링 의미\n\nVault를 별도 서비스로 떼어내는 건 단순 모듈화가 아니라 **컴플라이언스 경계선** 그리기다. PAN을 만지는 컴포넌트가 적을수록 PCI-DSS 인증·침투테스트 대상이 줄고, 나머지 마이크로서비스는 토큰만 다루므로 자유롭게 진화할 수 있다. 결제 회사의 아키텍처 결정 상당수가 '기술적 최선'이 아니라 **'감사 범위 최소화'** 라는 제약에서 역산된다는 점이 일반 SaaS와 다른 지점이다."
+    },
+    {
+     "topic": "축제·세일 트래픽 스파이크 대응과 Kubernetes 오토스케일링",
+     "body": "### 인도 결제 트래픽의 특수성\n\n인도 e커머스/핀테크 트래픽은 **극단적으로 스파이키**하다. Big Billion Days·Great Indian Festival, 분기 말, 월급날, IPL 광고 직후처럼 **평시 대비 수 배~수십 배**가 짧은 시간에 몰린다. 평균이 아니라 **피크에 맞춰 설계**해야 하고, 동시에 평시 비용도 통제해야 한다.\n\n### 어떻게 버티는가\n\n- **EKS(Kubernetes) 위 마이크로서비스 + HPA**: CPU·요청률·커스텀 메트릭(예: 큐 길이)으로 결제 서비스 파드를 수평 확장한다. 노드는 Cluster Autoscaler로 늘린다.\n- **stateless 서비스 + 외부 상태 분리**: 결제 서비스는 무상태로 유지하고 멱등성·핫 상태는 Aerospike/Redis에 둬서 빠르게 복제·확장 가능하게 한다.\n- **Kafka로 부하 평탄화(buffering)**: 캡처·웹훅·정산·원장 적재 같은 후속 작업을 동기 경로에서 떼어 Kafka로 흘리면, 스파이크가 와도 동기 결제 경로는 가벼움을 유지하고 후속 처리는 컨슈머가 자기 속도로 소화한다.\n- **Aerospike 핫패스**: 멱등성 체크·중복 판정 같은 초저지연 조회를 RDB가 아닌 Aerospike로 처리해 DB 핫스팟을 회피한다.\n\n### 복원력(resilience) 패턴\n\n외부 acquiring bank는 통제 불가 변수다. 따라서 은행 호출에 **timeout·circuit breaker·재시도(backoff)** 를 걸고, 특정 acquirer가 죽으면 Smart Router가 트래픽을 다른 경로로 옮긴다(graceful degradation). 동기 경로가 막히더라도 결제 상태는 이벤트·reconciliation으로 결국 일관되게(eventually consistent) 수렴하도록 설계해, '은행 하나가 흔들려도 전체 성공률은 버틴다'를 목표로 한다."
     }
    ],
    "github": {
-    "org": "razorpay",
+    "org": "https://github.com/razorpay",
     "repos": [
      {
       "name": "razorpay/blade",
       "url": "https://github.com/razorpay/blade",
-      "desc": "크로스 플랫폼 디자인 시스템",
+      "desc": "웹·React Native를 아우르는 Razorpay 공식 디자인 시스템",
       "lang": "TypeScript",
       "stars": 624
      },
      {
+      "name": "razorpay/ifsc",
+      "url": "https://github.com/razorpay/ifsc",
+      "desc": "인도 은행 IFSC 코드 데이터셋·툴킷·API",
+      "lang": "HTML",
+      "stars": 384
+     },
+     {
+      "name": "razorpay/razorpay-node",
+      "url": "https://github.com/razorpay/razorpay-node",
+      "desc": "Razorpay 결제 API 공식 Node.js SDK",
+      "lang": "JavaScript",
+      "stars": 237
+     },
+     {
+      "name": "razorpay/razorpay-php",
+      "url": "https://github.com/razorpay/razorpay-php",
+      "desc": "Razorpay 결제 API 공식 PHP SDK",
+      "lang": "PHP",
+      "stars": 203
+     },
+     {
       "name": "razorpay/razorpay-python",
       "url": "https://github.com/razorpay/razorpay-python",
-      "desc": "Razorpay 결제 API Python SDK",
+      "desc": "Razorpay 결제 API 공식 Python SDK",
       "lang": "Python",
-      "stars": 170
+      "stars": 171
      }
     ]
    },
    "sources": [
-    "https://engineering.razorpay.com"
+    "https://engineering.razorpay.com/",
+    "https://github.com/razorpay",
+    "https://razorpay.com/docs/payments/"
    ],
-   "research_status": "seed",
-   "updated_at": "2026-06-13"
+   "research_status": "llm-refined",
+   "updated_at": "2026-06-17"
   },
   {
    "key": "zerodha",
