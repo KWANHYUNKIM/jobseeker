@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T19:22:09",
+ "generated_at": "2026-06-17T21:03:13",
  "total": 100,
  "countries": [
   {
@@ -161,7 +161,7 @@
    "count": 1
   }
  ],
- "refined": 97,
+ "refined": 99,
  "domain_groups": [
   {
    "name": "핀테크",
@@ -471,7 +471,7 @@
     },
     {
      "name": "Go",
-     "count": 8
+     "count": 9
     },
     {
      "name": "Scala",
@@ -493,6 +493,14 @@
       "count": 11
      },
      {
+      "name": "Spring Cloud Gateway",
+      "count": 5
+     },
+     {
+      "name": "Netty",
+      "count": 4
+     },
+     {
       "name": "Ruby on Rails",
       "count": 4
      },
@@ -501,19 +509,11 @@
       "count": 4
      },
      {
-      "name": "Spring Cloud Gateway",
-      "count": 4
-     },
-     {
       "name": "Spring WebFlux",
       "count": 4
      },
      {
       "name": "FastAPI",
-      "count": 3
-     },
-     {
-      "name": "Netty",
       "count": 3
      },
      {
@@ -536,11 +536,11 @@
      },
      {
       "name": "Next.js",
-      "count": 10
+      "count": 11
      },
      {
       "name": "React Native",
-      "count": 6
+      "count": 7
      },
      {
       "name": "Redux",
@@ -601,11 +601,11 @@
       "count": 3
      },
      {
-      "name": "Aurora",
+      "name": "DynamoDB",
       "count": 3
      },
      {
-      "name": "DynamoDB",
+      "name": "HBase",
       "count": 3
      }
     ],
@@ -666,15 +666,15 @@
      "count": 3
     },
     {
+     "name": "Polyglot persistence",
+     "count": 2
+    },
+    {
      "name": "이벤트 드리븐 아키텍처",
      "count": 2
     },
     {
      "name": "API Gateway + Service Discovery",
-     "count": 1
-    },
-    {
-     "name": "BFF",
      "count": 1
     }
    ]
@@ -3133,6 +3133,10 @@
      "count": 1
     },
     {
+     "name": "Scala",
+     "count": 1
+    },
+    {
      "name": "TypeScript",
      "count": 1
     }
@@ -3153,6 +3157,10 @@
      },
      {
       "name": "Flume/Dataflow",
+      "count": 1
+     },
+     {
+      "name": "gRPC",
       "count": 1
      },
      {
@@ -3194,11 +3202,19 @@
       "count": 1
      },
      {
+      "name": "TypeScript",
+      "count": 1
+     },
+     {
       "name": "Vue.js",
       "count": 1
      },
      {
       "name": "Web Components/Lit",
+      "count": 1
+     },
+     {
+      "name": "Webpack",
       "count": 1
      },
      {
@@ -3220,6 +3236,14 @@
       "count": 1
      },
      {
+      "name": "Cubrid",
+      "count": 1
+     },
+     {
+      "name": "Druid",
+      "count": 1
+     },
+     {
       "name": "Elasticsearch",
       "count": 1
      },
@@ -3238,14 +3262,6 @@
      {
       "name": "Mesa",
       "count": 1
-     },
-     {
-      "name": "MySQL",
-      "count": 1
-     },
-     {
-      "name": "Pub/Sub",
-      "count": 1
      }
     ],
     "infra": [
@@ -3262,11 +3278,19 @@
       "count": 1
      },
      {
+      "name": "Docker",
+      "count": 1
+     },
+     {
       "name": "GCP/Kubernetes",
       "count": 1
      },
      {
       "name": "GFE",
+      "count": 1
+     },
+     {
+      "name": "Jenkins",
       "count": 1
      },
      {
@@ -3280,22 +3304,10 @@
      {
       "name": "Monarch",
       "count": 1
-     },
-     {
-      "name": "nGrinder",
-      "count": 1
-     },
-     {
-      "name": "Pinpoint",
-      "count": 1
      }
     ]
    },
    "architecture": [
-    {
-     "name": "APM 자체개발",
-     "count": 1
-    },
     {
      "name": "Cluster-scheduled platform",
      "count": 1
@@ -3314,6 +3326,10 @@
     },
     {
      "name": "Sharded root-leaf fan-out serving",
+     "count": 1
+    },
+    {
+     "name": "대용량 분산 검색 인덱싱",
      "count": 1
     }
    ]
@@ -11751,45 +11767,57 @@
    "languages": [
     "Java",
     "Kotlin",
+    "C++",
     "JavaScript",
     "Python",
-    "C++"
+    "Scala"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
      "Armeria",
-     "Netty"
+     "Netty",
+     "Tomcat",
+     "gRPC"
     ],
     "frontend": [
      "React",
      "Next.js",
-     "Vue.js"
+     "Vue.js",
+     "TypeScript",
+     "Webpack"
     ],
     "data": [
      "Kafka",
      "HBase",
      "Elasticsearch",
      "MySQL",
-     "Hadoop"
+     "Hadoop",
+     "Redis",
+     "Cubrid",
+     "Druid"
     ],
     "infra": [
      "Kubernetes",
      "네이버클라우드(NCP)",
      "nGrinder",
-     "Pinpoint"
+     "Pinpoint",
+     "Jenkins",
+     "Docker",
+     "Nelo(로그)"
     ]
    },
    "architecture": [
-    "MSA",
-    "대용량 분산 검색",
-    "APM 자체개발"
+    "MSA (Microservices)",
+    "대용량 분산 검색 인덱싱",
+    "비동기 논블로킹 RPC",
+    "자체 APM/관측성 플랫폼"
    ],
-   "diagram": "flowchart TD\n  subgraph ClientEdge[\"Client / Edge\"]\n    WEB[\"Web<br/>React Next Vue\"]\n    APP[\"Naver App<br/>Native\"]\n  end\n  subgraph Gateway[\"API Gateway\"]\n    GW[\"API Gateway<br/>Armeria\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SEARCH[\"Search<br/>C++ Java\"]\n    SVC[\"Services<br/>Spring Boot\"]\n    PAY[\"Naver Pay<br/>Spring Cloud\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"HBase\"]\n    MYSQL[\"MySQL\"]\n    HADOOP[\"Hadoop\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    NCP[\"Naver Cloud<br/>NCP\"]\n    K8S[\"Kubernetes\"]\n    PP[\"APM<br/>Pinpoint\"]\n  end\n  WEB --> GW\n  APP --> GW\n  GW -->|gRPC| SEARCH\n  GW -->|gRPC| SVC\n  GW -->|gRPC| PAY\n  SEARCH --> HADOOP\n  SVC --> MYSQL\n  SEARCH --> ES\n  SVC -->|publish| KAFKA\n  KAFKA --> HBASE\n  NCP --- K8S\n  SVC --- NCP\n  SVC --- PP",
-   "why_language": "검색·광고 트래픽이 국내 최대 규모라 JVM(Java/Kotlin) 기반의 안정적 백엔드를 핵심으로 쓰고, 검색엔진·색인 등 성능 임계 영역은 C++로 구현한다. 프론트는 대규모 서비스 UI를 위해 React/Vue를 광범위하게 사용한다.",
-   "why_architecture": "수십 개 서비스가 독립 배포·확장되어야 하므로 MSA와 자체 클라우드(NCP)를 운영하고, Pinpoint·nGrinder 등 APM/부하테스트 도구를 직접 만들어 대규모 분산 시스템을 모니터링한다.",
-   "summary": "국내 최대 트래픽을 떠받치는 JVM+C++ 기반 대규모 분산 검색·클라우드 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    U[\"User<br/>Web/App\"]\n    CDN[\"CDN/Edge<br/>NCP Global CDN\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    LB[\"L7 LB<br/>Netty based\"]\n    GW[\"API Gateway<br/>Armeria + Spring Cloud Gateway\"]\n  end\n  subgraph Core[\"Search Core Services\"]\n    QP[\"Query Processor<br/>Java/Armeria\"]\n    RANK[\"Ranking/Reranking<br/>C++ + ML scorer\"]\n    IDX[\"Index Searcher<br/>C++ inverted index\"]\n    VERT[\"Verticals<br/>News/Shop/Blog svc\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    ES[\"Elasticsearch<br/>doc retrieval\"]\n    HB[\"HBase<br/>doc store\"]\n    MY[\"MySQL/Cubrid<br/>metadata\"]\n    RD[\"Redis<br/>cache layer\"]\n  end\n  subgraph Stream[\"Streaming / Indexing\"]\n    KF[\"Kafka<br/>doc/log pipeline\"]\n    HAD[\"Hadoop<br/>batch index build\"]\n    DR[\"Druid<br/>realtime analytics\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>on NCP\"]\n    PP[\"Pinpoint<br/>APM tracing\"]\n    NELO[\"Nelo<br/>log platform\"]\n    NG[\"nGrinder<br/>load test\"]\n  end\n  U --> CDN --> LB --> GW\n  GW -->|RPC| QP\n  QP --> RANK\n  QP --> IDX\n  QP --> VERT\n  IDX --> ES\n  IDX --> HB\n  RANK --> RD\n  VERT --> MY\n  KF --> HAD --> IDX\n  KF --> ES\n  KF --> DR\n  QP -.trace.-> PP\n  QP -.log.-> NELO\n  K8S --- QP\n  K8S --- VERT",
+   "why_language": "초당 수만 건의 검색 쿼리와 색인 빌드 같은 대용량 트래픽을 안정적으로 처리하기 위해 JVM 생태계(Java/Kotlin)를 백엔드 주력으로 삼아 성숙한 동시성·GC 튜닝·라이브러리 자산을 활용한다. 역색인 탐색·랭킹 스코어링처럼 레이턴시와 메모리 지역성이 극단적으로 중요한 검색 엔진 코어는 C++로 작성해 ms 단위 응답을 보장하고, 데이터 파이프라인·실험은 Python으로 빠르게 다룬다.",
+   "why_architecture": "검색·쇼핑·뉴스·지도 등 수백 개의 도메인 서비스를 독립 배포·확장하기 위해 MSA를 채택했고, 각 vertical 팀이 자율적으로 릴리즈하면서도 장애를 격리한다. 대용량 분산 검색은 색인을 샤딩해 수평 확장하고, Armeria 기반 비동기 논블로킹 RPC로 적은 스레드로 높은 동시성을 처리하며, 자체 APM Pinpoint로 수많은 서비스 간 분산 트레이싱과 병목을 실시간 관측한다.",
+   "summary": "JVM·C++ 하이브리드로 대용량 분산 검색을 떠받치고, 직접 만든 Armeria·Pinpoint·nGrinder로 MSA 운영을 자급자족하는 스택",
    "deep_dive": [
     {
      "topic": "실시간 검색 쿼리 흐름: 분산 인덱싱 end-to-end",
@@ -11810,6 +11838,22 @@
     {
      "topic": "HBase/Hadoop 대용량 처리와 NCP·확장성",
      "body": "### 대용량 데이터 계층\n네이버는 검색 인덱싱·로그·추천·trace 등 페타바이트급 데이터를 다룬다.\n\n- **Hadoop(HDFS/MapReduce·Spark)**: 검색 인덱스 빌드, 로그 분석, 추천 모델 학습 같은 대규모 배치를 분산 처리한다. 수십억 문서를 샤드 인덱스로 빌드하는 작업이 대표적이다.\n- **HBase**: 실시간 무작위 읽기/쓰기가 필요한 대용량(예: Pinpoint trace, 사용자 활동, 일부 검색 메타)을 저장한다. row key 설계로 hotspot을 피하고 region split으로 확장한다.\n- **Kafka**: 로그·이벤트 스트림의 중앙 버스로, 실시간 인덱싱·집계 파이프라인에 데이터를 공급한다.\n\n### 인덱스 빌드와 서빙 분리\n무거운 인덱스 빌드는 Hadoop 배치로 오프라인 수행하고, 완성된 인덱스를 서빙 샤드에 배포한다. 빌드(쓰기 무거움)와 서빙(읽기·저지연)을 분리해, 검색 응답 경로가 인덱싱 부하의 영향을 받지 않게 한다. 신선도가 중요한 뉴스/실검은 별도 실시간 인덱싱 경로를 둔다.\n\n### NCP와 확장\n네이버클라우드(`NCP`)와 Kubernetes 위에 서비스를 운영한다. stateless 서비스는 HPA로 오토스케일, 검색 샤드처럼 stateful한 것은 샤드 추가·재분배로 용량을 늘린다.\n\n### WHY 자체 인프라·자체 OSS\nArmeria(RPC)·Pinpoint(APM)·nGrinder(부하)·NCP(클라우드)까지, 네이버는 핵심 인프라를 자체 개발·운영한다. 이는 외부 종속을 줄이고 자사 초대형 워크로드에 맞춰 깊이 최적화하기 위한 전략적 결정이며, 그 결과물 다수를 오픈소스로 환원해 생태계를 키운다."
+    },
+    {
+     "topic": "검색 랭킹 파이프라인: 다단계 retrieval-then-rerank 구조",
+     "body": "### 왜 한 번에 정렬하지 않는가\n네이버 통합검색은 수십억 건의 문서 풀에서 사용자가 입력한 쿼리에 대해 보통 `100ms` 안팎의 응답을 요구받는다. 전체 문서를 한 번에 정밀 스코어링하는 것은 물리적으로 불가능하므로, 거의 모든 대규모 검색과 마찬가지로 **다단계(multi-stage) retrieval-then-rerank** 구조를 쓴다.\n\n### 단계별 동작\n1. **Query Understanding (QU)** — 오타교정, 형태소 분석(한국어 특성상 매우 중요), 동의어/축약어 확장, 의도 분류(쇼핑성·지역성·뉴스성). 한국어는 띄어쓰기·조사 변형이 많아 형태소 분석기(자체 개발한 색인용 tokenizer)가 검색 품질의 1차 관문이다.\n2. **Candidate Retrieval (1차 회수)** — 역색인(inverted index)에서 `BM25` 류 텀 매칭과 벡터 기반 dense retrieval을 병행해 수만~수십만 후보를 빠르게 좁힌다. 이 구간은 C++로 작성된 index searcher가 담당하며, posting list 순회·skip list·메모리 지역성이 레이턴시를 좌우한다.\n3. **Coarse Ranking (경량 랭킹)** — GBDT나 경량 모델로 후보를 수백~수천 개로 줄인다. feature는 대부분 색인 시점에 미리 계산해 둔 정적 신호(문서 품질, 클릭 통계, 신선도).\n4. **Fine Ranking / Reranking (정밀 랭킹)** — 상위 수백 건에 대해 무거운 ML 스코어러(딥러닝 기반 relevance model)를 적용. 여기서 사용자 개인화 신호·세션 컨텍스트가 결합된다.\n5. **Blending** — 통합검색이므로 웹문서·블로그·쇼핑·뉴스·이미지 등 서로 다른 vertical 결과를 하나의 SERP로 합치는 **collection ranking**이 마지막에 동작한다. 이 단계가 네이버 검색의 가장 특징적인 부분으로, 각 vertical은 독립 MSA 서비스이며 query processor가 fan-out 호출 후 결과를 묶는다.\n\n### 트레이드오프\n- 단계를 늘릴수록 품질은 좋아지지만 각 단계가 레이턴시 예산을 갉아먹는다. 그래서 1차 회수는 recall 위주(놓치면 복구 불가), 후단은 precision 위주로 역할을 분리한다.\n- vertical fan-out은 partial failure에 취약하므로 **타임아웃 + 부분 응답(graceful degradation)** 전략을 쓴다. 쇼핑 컬렉션이 늦으면 그 블록만 비우고 나머지를 먼저 그린다."
+    },
+    {
+     "topic": "Armeria 기반 비동기 논블로킹 서비스 메시 패턴",
+     "body": "### 스레드-per-request의 한계 극복\n네이버(및 자회사 LINE)가 OSS로 공개한 `Armeria`는 Netty 위에 올린 비동기 논블로킹 RPC/HTTP 프레임워크다. 검색처럼 한 요청이 내부적으로 수십 개의 downstream 서비스를 fan-out 호출하는 워크로드에서, 전통적인 thread-per-request(Tomcat blocking) 모델은 대기 중인 스레드가 메모리·컨텍스트 스위칭을 잡아먹어 동시성이 막힌다.\n\n### 핵심 메커니즘\n- **단일 이벤트 루프 + CompletableFuture 체이닝**: I/O 대기 동안 스레드를 점유하지 않으므로 적은 스레드로 수만 동시 연결을 처리한다.\n- **프로토콜 다중화**: 같은 포트에서 `HTTP/1`, `HTTP/2`, `gRPC`, `Thrift`, REST를 동시에 서빙. 사내 레거시(Thrift)와 신규(gRPC) 서비스를 점진 마이그레이션할 때 유용하다.\n- **내장 클라이언트 레질리언스**: circuit breaker, 자동 retry(backoff), client-side load balancing, health check를 데코레이터로 조립. 별도 사이드카(예: Envoy) 없이도 애플리케이션 레이어에서 서비스 메시 기능을 얻는다.\n- **Distributed tracing 네이티브 연동**: Pinpoint/Zipkin/Brave와 결합되어 trace context가 RPC 경계를 자동 전파.\n\n### 트레이드오프\n- 비동기 코드는 디버깅·스택트레이스 추적이 어렵다. Armeria는 `RequestContext`를 통해 비동기 경계를 넘어 컨텍스트(로그 MDC, trace id)를 잇는 장치를 제공해 이 고통을 완화한다.\n- 블로킹 JDBC 호출을 이벤트 루프에서 그대로 하면 전체가 멈추므로, blocking 작업은 별도 `BlockingTaskExecutor`로 격리해야 한다 — 이 규칙을 어기면 장애가 난다."
+    },
+    {
+     "topic": "색인 업데이트와 일관성: 배치 풀빌드 + 실시간 증분 인덱싱",
+     "body": "### 두 개의 인덱싱 경로\n검색 인덱스는 \"정확하지만 느린\" 배치 경로와 \"빠르지만 최신만\" 실시간 경로를 결합한 **람다(λ)형 아키텍처**로 운영하는 것이 일반적이며, 네이버 규모의 검색도 동일한 패턴을 따른다.\n\n1. **Batch full build (배치 풀빌드)** — `Hadoop`/Spark 기반 MapReduce로 전체 문서 코퍼스를 주기적으로(예: 일 단위) 재색인한다. 정적 랭킹 feature(문서 품질 점수, 링크 신호, 누적 클릭 통계)를 이 단계에서 무겁게 계산해 인덱스에 굽는다(bake-in). 결과는 immutable index segment로 배포된다.\n2. **Realtime incremental (실시간 증분)** — 뉴스·실시간 게시물처럼 신선도가 생명인 문서는 `Kafka` 토픽으로 변경 이벤트가 흘러들어와 near-real-time으로 색인에 반영된다. 새 문서가 검색되기까지 수초~수십초.\n\n### 일관성 전략\n- 검색은 **강한 일관성보다 가용성·신선도**를 택한다. 사용자는 0.1초 사이 결과가 약간 달라지는 것을 거의 인지하지 못하므로, eventual consistency가 충분하다.\n- **인덱스 세그먼트의 원자적 스왑(atomic swap)**: 새 풀빌드 인덱스를 백그라운드로 로드한 뒤 트래픽을 한 번에 전환. 중간 상태가 노출되지 않게 한다.\n- **버전 핀(version pinning)**: 한 검색 요청이 여러 샤드를 fan-out할 때 모든 샤드가 같은 인덱스 버전을 보도록 맞춰 결과의 일관성을 보장.\n\n### 샤딩\n- 문서를 document-id 해시로 **수평 샤딩**하고, 각 샤드를 다시 replica로 복제해 read 처리량과 가용성을 동시에 확보한다.\n- 쿼리는 모든 샤드에 broadcast(scatter) 후 각 샤드의 top-k를 모아 merge(gather)하는 **scatter-gather** 방식. tail latency가 전체 응답을 지배하므로, 느린 replica를 우회하는 **hedged request(중복 요청)** 기법으로 p99를 깎는다."
+    },
+    {
+     "topic": "관측성 스택: Pinpoint + Nelo 로그 플랫폼으로 MSA 디버깅",
+     "body": "### MSA의 숙명: 한 요청이 수십 서비스를 지난다\n검색 요청 하나가 gateway → query processor → 형태소 분석 → 다수 vertical → 각 vertical의 storage까지 퍼지면, 장애가 났을 때 \"어디가 느린가\"를 사람이 추적하는 것은 불가능하다. 네이버는 이를 위해 관측성 도구를 **직접 만들어** 자급한다.\n\n### Pinpoint — 자체 APM/분산 트레이싱\n- **바이트코드 계측(bytecode instrumentation)**: 애플리케이션 코드를 고치지 않고 JVM 에이전트가 클래스 로딩 시점에 주요 라이브러리(HTTP client, JDBC, MyBatis, Kafka 등) 호출 지점을 자동 계측한다. 도입 비용이 낮은 게 강점.\n- **TransactionId로 호출 그래프 복원**: 요청마다 고유 id를 부여하고 RPC 경계로 전파해, 서버맵(server map) 위에 서비스 간 호출 토폴로지·응답시간·에러율을 시각화한다.\n- **HBase 백엔드**: 초당 수십만 트레이스 span을 쓰기 위해 `HBase`를 저장소로 사용. 카디널리티가 폭발하는 trace 데이터를 column-family 설계로 흡수한다.\n- **콜스택 레벨 샘플링**: 전수 수집은 비용이 크므로 샘플링하되, 느린 트랜잭션은 우선 포착하도록 가중한다.\n\n### Nelo — 사내 로그 수집/검색 플랫폼\n- 수많은 서비스의 로그를 중앙 집계하고 `Elasticsearch`/Kibana 류로 검색·알람한다. trace id를 로그에 심어 Pinpoint 트레이스 ↔ 로그를 상호 점프할 수 있게 연결하는 것이 운영 생산성의 핵심.\n\n### 트레이드오프\n- 트레이싱은 그 자체로 오버헤드(에이전트 CPU·네트워크)를 만든다. 샘플링 비율은 \"문제를 놓치지 않을 만큼\"과 \"운영 비용\" 사이의 균형이며, 핫패스에서는 비율을 낮추고 에러·슬로우 경로는 강제 캡처하는 식으로 조정한다."
     }
    ],
    "interview": {
@@ -11975,31 +12019,32 @@
      {
       "name": "pinpoint-apm/pinpoint",
       "url": "https://github.com/pinpoint-apm/pinpoint",
-      "desc": "대규모 분산 시스템용 APM 도구",
+      "desc": "대규모 분산 시스템용 자체 개발 APM·분산 트레이싱 플랫폼",
       "lang": "Java",
-      "stars": 13826
+      "stars": 13833
      },
      {
-      "name": "naver/d2codingfont",
-      "url": "https://github.com/naver/d2codingfont",
-      "desc": "개발자를 위한 D2Coding 코딩 폰트",
-      "lang": "Shell",
-      "stars": 2156
+      "name": "line/armeria",
+      "url": "https://github.com/line/armeria",
+      "desc": "Netty 기반 비동기 논블로킹 마이크로서비스/RPC 프레임워크(HTTP/2·gRPC·Thrift)",
+      "lang": "Java",
+      "stars": 5116
      },
      {
       "name": "naver/ngrinder",
       "url": "https://github.com/naver/ngrinder",
-      "desc": "네이버가 만든 부하 테스트 플랫폼",
+      "desc": "분산 부하 테스트와 용량 계획을 위한 스트레스 테스트 플랫폼",
       "lang": "Java",
-      "stars": 2104
+      "stars": 2103
      }
     ]
    },
    "sources": [
-    "https://d2.naver.com",
-    "https://tech.naver.com"
+    "https://github.com/naver/pinpoint",
+    "https://github.com/line/armeria",
+    "https://d2.naver.com/home"
    ],
-   "research_status": "seed",
+   "research_status": "llm-refined",
    "updated_at": "2026-06-17"
   },
   {
@@ -13430,39 +13475,52 @@
     "Kotlin",
     "Scala",
     "Python",
-    "TypeScript"
+    "TypeScript",
+    "Go"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
-     "gRPC"
+     "gRPC",
+     "Netty",
+     "Spring Cloud Gateway",
+     "Armeria"
     ],
     "frontend": [
      "React",
-     "TypeScript"
+     "TypeScript",
+     "Next.js",
+     "React Native"
     ],
     "data": [
      "Kafka",
      "DynamoDB",
-     "Aurora",
+     "Aurora MySQL",
      "Elasticsearch",
-     "Spark"
+     "Spark",
+     "Redis/ElastiCache",
+     "S3",
+     "Flink"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
-     "Terraform"
+     "Kubernetes (EKS)",
+     "Terraform",
+     "CloudFront",
+     "Spinnaker",
+     "Prometheus/Grafana"
     ]
    },
    "architecture": [
     "MSA",
-    "Cloud-native",
-    "Event-driven"
+    "Cloud-native (AWS all-in)",
+    "Event-driven",
+    "Polyglot persistence"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"쿠팡 앱<br/>Android iOS\"]\n    WEB[\"쇼핑 웹<br/>React + TypeScript\"]\n  end\n  subgraph Gateway\n    GW[\"API 게이트웨이<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Services\n    PROD[\"상품 서비스<br/>Spring Boot + Java\"]\n    ORDER[\"주문 서비스<br/>Spring Boot + Kotlin\"]\n    FC[\"물류 풀필먼트 서비스<br/>Java + gRPC\"]\n    SRCH[\"검색 추천 서비스<br/>Scala\"]\n  end\n  subgraph Async\n    KAFKA[\"주문 이벤트 스트림<br/>Kafka\"]\n  end\n  subgraph Data\n    DYNAMO[\"주문 카탈로그<br/>DynamoDB\"]\n    AURORA[\"트랜잭션 DB<br/>Aurora\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n    SPARK[\"물류 분석<br/>Spark\"]\n  end\n  subgraph Infra\n    K8S[\"인프라<br/>AWS + Kubernetes + Terraform\"]\n  end\n  APP --> GW\n  WEB --> GW\n  GW --> PROD\n  GW --> ORDER\n  GW --> SRCH\n  ORDER --> KAFKA\n  KAFKA -->|배송 지시| FC\n  ORDER --> DYNAMO\n  ORDER --> AURORA\n  SRCH --> ES\n  KAFKA --> SPARK\n  ORDER --> K8S",
-   "why_language": "물류·커머스의 대규모 트랜잭션을 안정적으로 처리하기 위해 Java/Spring을 핵심으로 쓰고, 데이터 파이프라인과 추천에는 Scala/Python을 활용한다. JVM의 성숙한 생태계가 대규모 서비스 운영에 유리하다.",
-   "why_architecture": "전사를 AWS 위에 올린 클라우드 네이티브 MSA로, 로켓배송의 주문·재고·배송을 이벤트 기반으로 연동해 폭발적 트래픽에도 탄력적으로 확장한다.",
-   "summary": "AWS 클라우드 네이티브 위에서 돌아가는 초대형 이커머스 MSA.",
+   "diagram": "flowchart TD\n  subgraph Client\n    App[\"Mobile App + Web<br/>React + TypeScript + RN\"]\n  end\n  subgraph Edge\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    Search[\"Search Service<br/>Spring Boot + ML Ranking\"]\n    Catalog[\"Catalog Service<br/>Spring Boot + gRPC\"]\n    Order[\"Order Service<br/>Kotlin + Spring Boot\"]\n    Inventory[\"Inventory Service<br/>Kotlin\"]\n    Fulfillment[\"Fulfillment / WMS<br/>Spring Boot\"]\n    Reco[\"Pricing + Reco<br/>Scala + Spark ML\"]\n  end\n  subgraph DataStore[\"Data / Storage\"]\n    Cache[\"Cache Layer<br/>Redis / ElastiCache\"]\n    DDB[\"DynamoDB\"]\n    Aurora[\"Aurora MySQL\"]\n    ES[\"Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    Kafka[\"Event Bus<br/>Kafka\"]\n    Stream[\"Stream / Batch<br/>Spark + Flink\"]\n    S3[\"Data Lake<br/>S3\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    K8s[\"EKS + Terraform<br/>Spinnaker\"]\n  end\n  App -->|HTTPS| CDN --> GW\n  GW -->|gRPC| Search\n  GW -->|gRPC| Catalog\n  GW -->|gRPC| Order\n  Search --> ES\n  Search --> Reco\n  Catalog --> Cache\n  Catalog --> DDB\n  Order --> Aurora\n  Order -->|publish| Kafka\n  Inventory --> Aurora\n  Kafka --> Inventory\n  Kafka --> Fulfillment\n  Kafka --> Stream\n  Stream --> S3\n  Stream --> Reco\n  Reco --> Cache\n  Core --> K8s",
+   "why_language": "수천만 사용자·수억 SKU를 처리하는 초대형 트랜잭션 시스템이라 JVM 생태계(Java/Kotlin)의 성숙한 동시성·GC 튜닝·Spring 생태계가 백엔드의 중심이며, 신규 서비스는 널 안정성과 코루틴을 갖춘 Kotlin으로 작성한다. 검색 랭킹·가격·물류 최적화 같은 대규모 데이터/ML 파이프라인은 Spark와 잘 맞는 Scala와 Python을 쓰고, 고객용 웹/앱은 React+TypeScript로 통일한다.",
+   "why_architecture": "주문·결제·재고·배송·검색이 각기 다른 확장 특성과 트래픽 패턴을 가지므로 도메인별 독립 배포·확장이 가능한 MSA를 택했고, 2021년 전후 자체 데이터센터에서 AWS로 전면 이전하며 cloud-native 탄력성을 확보했다. 주문 한 건이 재고 차감·풀필먼트 지시·정산으로 퍼지는 흐름을 동기 호출로 묶으면 결합도와 장애 전파가 커지기 때문에 Kafka 기반 event-driven으로 비동기 분리해 로켓배송의 마감 시간 정합성을 맞춘다.",
+   "summary": "AWS 위에 JVM 기반 초대형 MSA + Kafka 이벤트 백본으로 로켓배송 규모의 이커머스를 굴리는 cloud-native 스택",
    "deep_dive": [
     {
      "topic": "AWS 위의 초대형 MSA",
@@ -13483,6 +13541,22 @@
     {
      "topic": "배포·CI/CD와 무중단 운영",
      "body": "### 하루에도 수없이 배포\n\n수백 팀이 독립 배포한다. 한 서비스 배포가 다른 걸 멈추면 안 되므로 **배포 독립성**이 MSA의 핵심 이점이자 과제다.\n\n**파이프라인**\n- 푸시 → CI(빌드·테스트·정적분석) → 이미지 빌드 → 레지스트리 → CD로 K8s 롤아웃.\n- **점진적 배포**: 카나리(일부 트래픽) → 지표 정상 확인 → 전면. 이상 시 자동 롤백.\n- **무중단**: 롤링 업데이트 + readiness probe로 준비 안 된 파드엔 트래픽 차단.\n\n**테스트 전략**\n- MSA에서 서비스 간 계약(contract)이 깨지면 큰 사고. **컨트랙트 테스트**와 스키마 호환성(Kafka 이벤트, gRPC proto)을 CI에서 강제.\n- 상시 **부하 테스트**.\n\n### 운영 문화\n빠른 배포는 빠른 복구를 전제로 한다. **롤백을 1분 내** 가능케 하고, 기능 토글(feature flag)로 코드 배포와 기능 노출을 분리한다. \"배포는 자주, 위험은 작게\"."
+    },
+    {
+     "topic": "검색·랭킹·추천 파이프라인이 실제로 작동하는 방식",
+     "body": "### 쿼리 한 줄이 결과 페이지가 되기까지\n\n쿠팡 검색은 단순 키워드 매칭이 아니라 **다단계 retrieval + ranking** 구조다. 사용자가 검색창에 입력하면 흐름은 대략 이렇게 흐른다.\n\n1. **Query Understanding**: 오타 교정(typo correction), 동의어 확장, 형태소 분석(한국어 nori/Mecab 계열 analyzer), 카테고리/브랜드 인식이 먼저 일어난다. \"아이폰충전기\" 같이 붙여 쓴 한국어 쿼리를 토큰화하고 의도를 분류한다.\n2. **Candidate Retrieval (1차 회수)**: `Elasticsearch` 역색인에서 수억 개 SKU 중 수천~수만 건의 후보를 빠르게 끌어온다. 이 단계는 recall(놓치지 않기)이 목표라 lexical 매칭 위주다. 최근에는 임베딩 기반 **vector retrieval**(semantic search)을 병행해 \"선물용 무선이어폰\" 같은 의도형 쿼리를 보완한다.\n3. **Ranking (2차 정밀 정렬)**: 회수된 후보를 ML 모델로 재정렬한다. 피처는 텍스트 적합도(BM25 점수), 판매량·전환율·리뷰·가격경쟁력, 로켓배송 가능 여부, 개인화 신호(과거 클릭/구매), 재고 상태 등 수백 개에 달한다. `Learning-to-Rank`(GBDT/딥러닝) 모델이 클릭·구매 로그로 학습된다.\n4. **Blending & Business Rule**: 광고(스폰서) 상품, 품절 페널티, 다양성(같은 셀러 도배 방지) 규칙이 마지막에 섞인다.\n\n### 왜 이렇게 나눴나\n\n수억 SKU에 무거운 딥러닝 모델을 전부 돌리면 응답 지연이 폭발하므로, **싸고 빠른 retrieval로 후보를 좁히고 비싼 모델은 상위 수백~수천 건에만** 적용하는 funnel 구조가 필수다. 이는 검색 latency를 수십 ms대로 유지하면서도 정밀도를 확보하는 전형적 트레이드오프다.\n\n### 모델 학습 루프\n\n클릭/노출/구매 로그는 `Kafka`로 흘러 `S3` 데이터 레이크에 적재되고, `Spark`(주로 Scala)로 대규모 피처 가공·라벨 생성이 일어난다. 학습된 랭킹 모델은 주기적으로 배포되어 온라인 서빙 레이어에 반영되며, 신모델은 **A/B 테스트**로 전환율·매출 지표가 검증된 뒤에야 전체 트래픽에 적용된다. 색인 자체도 상품 변경 이벤트를 Kafka로 받아 near-real-time으로 갱신해, 가격·재고가 바뀌면 검색 결과에 빠르게 반영된다."
+    },
+    {
+     "topic": "다층 캐싱 전략 — 수만 RPS를 DB로부터 보호하기",
+     "body": "### 캐싱 없이는 못 버틴다\n\n상품 상세·카테고리·검색 결과는 읽기가 쓰기보다 압도적으로 많은 read-heavy 워크로드다. 모든 요청을 `Aurora`/`DynamoDB`로 보내면 DB가 먼저 죽으므로, 쿠팡은 요청 경로 곳곳에 캐시를 깐다.\n\n| 계층 | 기술 | 캐싱 대상 | 특징 |\n|------|------|-----------|------|\n| Edge | `CloudFront` CDN | 이미지·정적 자산·일부 상품 페이지 fragment | TTL 기반, 지역 PoP에서 응답 |\n| Gateway/Service | `Redis`/`ElastiCache` | 상품 정보, 가격, 카테고리 트리, 세션 | 분산 캐시, 수 ms 응답 |\n| In-process | 로컬 캐시(Caffeine 등) | 자주 안 바뀌는 설정·메타데이터 | 네트워크 hop 제거, hot key 보호 |\n\n### 핵심 난제: 캐시 일관성\n\n가격·재고·프로모션은 자주 바뀌는데, 캐시가 오래된 값을 들고 있으면 \"품절인데 주문 가능\"하게 보이는 사고가 난다. 쿠팡은 이를 **이벤트 기반 무효화(event-driven invalidation)**로 푼다. 상품/가격 변경이 발생하면 도메인 서비스가 `Kafka`로 변경 이벤트를 쏘고, 캐시 갱신 컨슈머가 해당 키를 invalidate/update한다. TTL만 의존하면 stale 시간이 길어지므로 이벤트로 즉시 갱신하는 방식이다.\n\n### Hot Key·Thundering Herd 방어\n\n빅세일 때 특정 인기 상품(예: 한정 특가)에 트래픽이 쏠리면 단일 Redis 키가 병목이 된다. 대응으로 (1) 인기 키를 로컬 캐시로 끌어올려 분산, (2) 캐시 미스가 동시에 몰려 DB로 폭주하는 **cache stampede**를 막기 위해 단일 갱신 락 또는 미리 채워두는 cache warming을 쓴다. 트래픽 급증 이벤트(로켓와우 세일, 광클이 몰리는 시간대) 전에 핵심 데이터를 선제적으로 예열하는 운영 패턴이 자리잡혀 있다."
+    },
+    {
+     "topic": "Polyglot Persistence — 데이터 성격별로 저장소를 쪼개는 전략",
+     "body": "### 하나의 DB로는 안 된다\n\n쿠팡은 \"모든 데이터를 RDB에\" 두지 않고, 데이터의 접근 패턴·일관성 요구·규모에 따라 저장소를 분리하는 **polyglot persistence**를 명확히 채택했다. 이는 자체 데이터센터(Oracle 중심)에서 AWS로 이전하면서 더 뚜렷해졌다.\n\n- **`DynamoDB`**: 키 기반 초고속 조회·무한 수평 확장이 필요한 영역. 장바구니, 세션, 상품 카탈로그 일부, 대규모 매핑 데이터 등. **single-table design**과 파티션 키 설계로 일정한 지연시간을 보장하고, 트래픽이 튀어도 on-demand/auto-scaling으로 흡수한다. 단점인 복잡한 쿼리 부재는 GSI(Global Secondary Index)와 애플리케이션 레벨 비정규화로 보완한다.\n- **`Aurora MySQL`**: 주문·결제·정산처럼 **강한 트랜잭션·관계 무결성**이 필요한 영역. read replica로 읽기 부하를 분산하고, 쓰기 노드가 병목이면 도메인/고객 기준 **샤딩**으로 수평 분할한다.\n- **`Elasticsearch`**: 검색 역색인 및 로그/분석.\n- **`S3`**: 원천 로그·이벤트의 데이터 레이크. 분석·ML 학습의 single source of truth.\n- **`Redis`**: 캐시·랭킹·세션.\n\n### 샤딩과 일관성의 트레이드오프\n\n주문량이 단일 DB의 쓰기 한계를 넘으면 샤드 키(예: 고객 ID 해시)로 분산하는데, 이때 **여러 샤드에 걸친 트랜잭션은 분산 트랜잭션의 복잡성**을 부른다. 쿠팡은 강한 분산 락 대신 도메인 경계를 잘 그어 \"한 주문은 한 샤드 안에서 완결\"되도록 설계하고, 서비스 간 정합성은 2PC가 아니라 **이벤트 기반 eventual consistency**로 맞춘다. 즉 주문 서비스가 commit 후 이벤트를 발행하면 재고·정산·풀필먼트가 비동기로 따라오며, 중간 실패는 멱등(idempotent) 컨슈머와 재처리로 복구한다. 강한 일관성을 포기하는 대신 가용성과 확장성을 얻는 전형적 CAP 트레이드오프다."
+    },
+    {
+     "topic": "관측성(Observability) — 수천 개 서비스에서 장애를 5분 안에 찾기",
+     "body": "### MSA의 숙명: 분산 추적 없이는 디버깅이 불가능\n\n요청 하나가 Gateway → 검색 → 카탈로그 → 가격 → 재고 등 수십 개 서비스를 거치는 구조에서, \"왜 이 주문이 느렸나\"를 단일 로그로는 절대 못 푼다. 쿠팡은 **로그·메트릭·트레이스 3축**을 갖춘 관측성 플랫폼을 운영한다.\n\n- **Distributed Tracing**: 요청 진입 시 `trace ID`를 부여해 모든 다운스트림 호출에 전파한다. 어느 서비스/어느 DB 호출에서 지연이 발생했는지 span 단위로 본다. gRPC/HTTP 헤더로 컨텍스트를 넘긴다.\n- **Metrics**: 서비스별 RPS·에러율·p50/p99 latency·자원 사용률을 `Prometheus`/`Grafana` 계열 대시보드로 수집·시각화하고, SLO를 벗어나면 알람이 울린다.\n- **Centralized Logging**: 구조화 로그를 `Kafka` → `Elasticsearch`/데이터 레이크로 모아 Kibana류 도구에서 검색한다.\n\n### 왜 p99에 집착하나\n\n이커머스에서 평균 응답시간은 거짓말을 한다. p99(상위 1% 느린 요청)가 나쁘면 트래픽이 클 때 \"가끔 멈추는\" 경험이 대량 발생한다. 그래서 평균이 아니라 **꼬리 지연(tail latency)** 중심으로 SLO를 잡고, 느린 트레이스를 샘플링해 원인(GC pause, 캐시 미스 폭주, 특정 다운스트림 타임아웃)을 추적한다.\n\n### 카오스·게임데이\n\n빅세일을 앞두고는 실제 장애를 의도적으로 주입(인스턴스 강제 종료, 의존성 지연 주입)해 서킷브레이커·페일오버·오토스케일링이 제대로 동작하는지 검증하는 **부하 테스트/게임데이**를 돌린다. 관측성 데이터가 이때의 합격 기준선이 된다. 이는 단순 모니터링을 넘어, 장애를 '발견'하는 게 아니라 '예측·재현'하는 단계로 운영 성숙도를 끌어올린 것이다."
     }
    ],
    "debate": {
@@ -13699,13 +13773,15 @@
     ]
    },
    "github": {
-    "org": "https://github.com/coupang"
+    "org": "https://github.com/coupang",
+    "repos": []
    },
    "sources": [
     "https://medium.com/coupang-engineering",
-    "https://medium.com/coupang-engineering/kr"
+    "https://aws.amazon.com/solutions/case-studies/coupang/",
+    "https://www.coupang.jobs/en/teams/engineering/"
    ],
-   "research_status": "seed",
+   "research_status": "llm-refined",
    "updated_at": "2026-06-17"
   },
   {
