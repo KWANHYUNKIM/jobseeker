@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-17T16:07:20",
+  "generated_at": "2026-06-17T17:41:41",
   "source": "youtube",
   "tech_count": 166,
   "curriculum_count": 20,
@@ -1399,88 +1399,6 @@
         "stage": "실전"
       }
     ],
-    "Next.js": [
-      {
-        "title": "Next.js 13 강의 달린다 (1강~6강)",
-        "url": "https://www.youtube.com/watch?v=PCkiz2GUFg8",
-        "thumbnail": "https://i.ytimg.com/vi/PCkiz2GUFg8/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 132938,
-        "length": "1:00:20",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
-        "url": "https://www.youtube.com/watch?v=jYJ3ygUfPrU",
-        "thumbnail": "https://i.ytimg.com/vi/jYJ3ygUfPrU/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 222327,
-        "length": "5:32",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Next.js 혹시 그냥 쓰고계신가요? 이 강의보면 \"왜\"를 설명할 수 있게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=gqPJ-78RlZE",
-        "thumbnail": "https://i.ytimg.com/vi/gqPJ-78RlZE/mqdefault.jpg",
-        "channel": "가장 쉬운 AI 활용 개발 with Boaz",
-        "views": 13173,
-        "length": "9:30",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자들이 Next.js를 떠나는 이유 (5가지 대안 프레임워크)",
-        "url": "https://www.youtube.com/watch?v=CqQtjS6ZKxo",
-        "thumbnail": "https://i.ytimg.com/vi/CqQtjS6ZKxo/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 41144,
-        "length": "6:24",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 13- 0. Next.js 란 무엇인가? (14 버전 호환됩니다)",
-        "url": "https://www.youtube.com/watch?v=9KOaR6QMb9A",
-        "thumbnail": "https://i.ytimg.com/vi/9KOaR6QMb9A/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 62512,
-        "length": "2:43",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js Full Course - Supabase를 활용한 나만의 To do list",
-        "url": "https://www.youtube.com/watch?v=fXLBVDa6J2s",
-        "thumbnail": "https://i.ytimg.com/vi/fXLBVDa6J2s/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 3002,
-        "length": "8:26:25",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NextJS 존재 이유부터 실전까지 다 알려드립니다 (개쉽게)  | 프리즈마, 도커는 덤",
-        "url": "https://www.youtube.com/watch?v=u78I5kNULYc",
-        "thumbnail": "https://i.ytimg.com/vi/u78I5kNULYc/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 15969,
-        "length": "31:11",
-        "published": "4개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Next.js 완벽 마스터 강의 무료파트 | Notion 기반 블로그 만들기 | Cursor AI 활용",
-        "url": "https://www.youtube.com/watch?v=hUp7-lKWyVA",
-        "thumbnail": "https://i.ytimg.com/vi/hUp7-lKWyVA/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 2002,
-        "length": "3:13:14",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "PyTorch": [
       {
         "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
@@ -1559,6 +1477,88 @@
         "channel": "혁펜하임 | AI & 딥러닝 강의",
         "views": 3906,
         "length": "19:20",
+        "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "Next.js": [
+      {
+        "title": "Next.js 13 강의 달린다 (1강~6강)",
+        "url": "https://www.youtube.com/watch?v=PCkiz2GUFg8",
+        "thumbnail": "https://i.ytimg.com/vi/PCkiz2GUFg8/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 132938,
+        "length": "1:00:20",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
+        "url": "https://www.youtube.com/watch?v=jYJ3ygUfPrU",
+        "thumbnail": "https://i.ytimg.com/vi/jYJ3ygUfPrU/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 222327,
+        "length": "5:32",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Next.js 혹시 그냥 쓰고계신가요? 이 강의보면 \"왜\"를 설명할 수 있게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=gqPJ-78RlZE",
+        "thumbnail": "https://i.ytimg.com/vi/gqPJ-78RlZE/mqdefault.jpg",
+        "channel": "가장 쉬운 AI 활용 개발 with Boaz",
+        "views": 13173,
+        "length": "9:30",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자들이 Next.js를 떠나는 이유 (5가지 대안 프레임워크)",
+        "url": "https://www.youtube.com/watch?v=CqQtjS6ZKxo",
+        "thumbnail": "https://i.ytimg.com/vi/CqQtjS6ZKxo/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 41144,
+        "length": "6:24",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 13- 0. Next.js 란 무엇인가? (14 버전 호환됩니다)",
+        "url": "https://www.youtube.com/watch?v=9KOaR6QMb9A",
+        "thumbnail": "https://i.ytimg.com/vi/9KOaR6QMb9A/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 62512,
+        "length": "2:43",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js Full Course - Supabase를 활용한 나만의 To do list",
+        "url": "https://www.youtube.com/watch?v=fXLBVDa6J2s",
+        "thumbnail": "https://i.ytimg.com/vi/fXLBVDa6J2s/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 3002,
+        "length": "8:26:25",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NextJS 존재 이유부터 실전까지 다 알려드립니다 (개쉽게)  | 프리즈마, 도커는 덤",
+        "url": "https://www.youtube.com/watch?v=u78I5kNULYc",
+        "thumbnail": "https://i.ytimg.com/vi/u78I5kNULYc/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 15969,
+        "length": "31:11",
+        "published": "4개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Next.js 완벽 마스터 강의 무료파트 | Notion 기반 블로그 만들기 | Cursor AI 활용",
+        "url": "https://www.youtube.com/watch?v=hUp7-lKWyVA",
+        "thumbnail": "https://i.ytimg.com/vi/hUp7-lKWyVA/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 2002,
+        "length": "3:13:14",
         "published": "1년 전",
         "stage": "실전"
       }
@@ -1727,78 +1727,6 @@
         "stage": "실전"
       }
     ],
-    "Android": [
-      {
-        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
-        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
-        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4851,
-        "length": "7:21",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
-        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
-        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 1867,
-        "length": "43:15",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
-        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
-        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
-        "channel": "소프트캠퍼스softcampus",
-        "views": 9603,
-        "length": "4:45",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드 앱 개발 영상 강의입니다.",
-        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
-        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 1516,
-        "length": "4:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
-        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
-        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
-        "channel": "널널한 교수의 코딩 클래스",
-        "views": 1161,
-        "length": "1:32:31",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 397,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[센치한 개발자] (2) 안드로이드 기초 강의 : 앱으로 용돈벌기 첫걸음, 헬로 월드 만들기",
-        "url": "https://www.youtube.com/watch?v=-yX6S_Kp-ZA",
-        "thumbnail": "https://i.ytimg.com/vi/-yX6S_Kp-ZA/mqdefault.jpg",
-        "channel": "센치랩",
-        "views": 44561,
-        "length": "33:35",
-        "published": "7년 전",
-        "stage": "실전"
-      }
-    ],
     "C++": [
       {
         "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
@@ -1879,6 +1807,78 @@
         "length": "29:02",
         "published": "4년 전",
         "stage": "핵심"
+      }
+    ],
+    "Android": [
+      {
+        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
+        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
+        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4851,
+        "length": "7:21",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
+        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
+        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 1867,
+        "length": "43:15",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
+        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
+        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
+        "channel": "소프트캠퍼스softcampus",
+        "views": 9603,
+        "length": "4:45",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드 앱 개발 영상 강의입니다.",
+        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
+        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 1516,
+        "length": "4:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
+        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
+        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
+        "channel": "널널한 교수의 코딩 클래스",
+        "views": 1161,
+        "length": "1:32:31",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 397,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[센치한 개발자] (2) 안드로이드 기초 강의 : 앱으로 용돈벌기 첫걸음, 헬로 월드 만들기",
+        "url": "https://www.youtube.com/watch?v=-yX6S_Kp-ZA",
+        "thumbnail": "https://i.ytimg.com/vi/-yX6S_Kp-ZA/mqdefault.jpg",
+        "channel": "센치랩",
+        "views": 44561,
+        "length": "33:35",
+        "published": "7년 전",
+        "stage": "실전"
       }
     ],
     "CSS": [
@@ -2701,88 +2701,6 @@
         "stage": "실전"
       }
     ],
-    "Jira": [
-      {
-        "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
-        "url": "https://www.youtube.com/watch?v=rjxPQaUIowM",
-        "thumbnail": "https://i.ytimg.com/vi/rjxPQaUIowM/mqdefault.jpg",
-        "channel": "Learning by Doing (러닝바이두잉)",
-        "views": 9234,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
-        "url": "https://www.youtube.com/watch?v=b5PL4iYfzEU",
-        "thumbnail": "https://i.ytimg.com/vi/b5PL4iYfzEU/mqdefault.jpg",
-        "channel": "일맛",
-        "views": 11216,
-        "length": "9:14",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인생 효율 2배로 늘리는 법 - (Jira 활용)",
-        "url": "https://www.youtube.com/watch?v=QZHSTIWDTC8",
-        "thumbnail": "https://i.ytimg.com/vi/QZHSTIWDTC8/mqdefault.jpg",
-        "channel": "라매개발자",
-        "views": 39497,
-        "length": "7:13",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
-        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
-        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
-        "channel": "colicelab",
-        "views": 1038,
-        "length": "5:03",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자 잡일, 이제 AI가 다 합니다 Claude Code + Jira",
-        "url": "https://www.youtube.com/watch?v=US3SpMT0syA",
-        "thumbnail": "https://i.ytimg.com/vi/US3SpMT0syA/mqdefault.jpg",
-        "channel": "딩코딩코 및 인프런 inflearn",
-        "views": 10637,
-        "length": "9:52",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, 너 내 동료가 되라! - 2강 Jira 설치 및 설정",
-        "url": "https://www.youtube.com/watch?v=afUZB_IOze0",
-        "thumbnail": "https://i.ytimg.com/vi/afUZB_IOze0/mqdefault.jpg",
-        "channel": "Learning by Doing (러닝바이두잉)",
-        "views": 3828,
-        "length": "8:20",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira 사용법 : 초보자를 위한 Atlassian Jira 튜토리얼 (애자일 프로젝트 관리) /Jira 무료 강의 (아틀라시안 지라)",
-        "url": "https://www.youtube.com/watch?v=Vwa7BQ6WFYw",
-        "thumbnail": "https://i.ytimg.com/vi/Vwa7BQ6WFYw/mqdefault.jpg",
-        "channel": "Open Source Consulting - 오픈소스컨설팅",
-        "views": 49282,
-        "length": "34:27",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "성장하는 조직의 프로젝트 관리 노하우 - Jira 클라우드 활용법",
-        "url": "https://www.youtube.com/watch?v=jvdcHtnZ_Rc",
-        "thumbnail": "https://i.ytimg.com/vi/jvdcHtnZ_Rc/mqdefault.jpg",
-        "channel": "Polaris Office Atlassian",
-        "views": 3416,
-        "length": "49:08",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "TensorFlow": [
       {
         "title": "텐서 플로우 TensorFlow 기초",
@@ -2943,6 +2861,88 @@
         "channel": "IT 늦공 김부장",
         "views": 1127,
         "length": "19:24",
+        "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "Jira": [
+      {
+        "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
+        "url": "https://www.youtube.com/watch?v=rjxPQaUIowM",
+        "thumbnail": "https://i.ytimg.com/vi/rjxPQaUIowM/mqdefault.jpg",
+        "channel": "Learning by Doing (러닝바이두잉)",
+        "views": 9234,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
+        "url": "https://www.youtube.com/watch?v=b5PL4iYfzEU",
+        "thumbnail": "https://i.ytimg.com/vi/b5PL4iYfzEU/mqdefault.jpg",
+        "channel": "일맛",
+        "views": 11216,
+        "length": "9:14",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인생 효율 2배로 늘리는 법 - (Jira 활용)",
+        "url": "https://www.youtube.com/watch?v=QZHSTIWDTC8",
+        "thumbnail": "https://i.ytimg.com/vi/QZHSTIWDTC8/mqdefault.jpg",
+        "channel": "라매개발자",
+        "views": 39497,
+        "length": "7:13",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
+        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
+        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
+        "channel": "colicelab",
+        "views": 1038,
+        "length": "5:03",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자 잡일, 이제 AI가 다 합니다 Claude Code + Jira",
+        "url": "https://www.youtube.com/watch?v=US3SpMT0syA",
+        "thumbnail": "https://i.ytimg.com/vi/US3SpMT0syA/mqdefault.jpg",
+        "channel": "딩코딩코 및 인프런 inflearn",
+        "views": 10637,
+        "length": "9:52",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, 너 내 동료가 되라! - 2강 Jira 설치 및 설정",
+        "url": "https://www.youtube.com/watch?v=afUZB_IOze0",
+        "thumbnail": "https://i.ytimg.com/vi/afUZB_IOze0/mqdefault.jpg",
+        "channel": "Learning by Doing (러닝바이두잉)",
+        "views": 3828,
+        "length": "8:20",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira 사용법 : 초보자를 위한 Atlassian Jira 튜토리얼 (애자일 프로젝트 관리) /Jira 무료 강의 (아틀라시안 지라)",
+        "url": "https://www.youtube.com/watch?v=Vwa7BQ6WFYw",
+        "thumbnail": "https://i.ytimg.com/vi/Vwa7BQ6WFYw/mqdefault.jpg",
+        "channel": "Open Source Consulting - 오픈소스컨설팅",
+        "views": 49282,
+        "length": "34:27",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "성장하는 조직의 프로젝트 관리 노하우 - Jira 클라우드 활용법",
+        "url": "https://www.youtube.com/watch?v=jvdcHtnZ_Rc",
+        "thumbnail": "https://i.ytimg.com/vi/jvdcHtnZ_Rc/mqdefault.jpg",
+        "channel": "Polaris Office Atlassian",
+        "views": 3416,
+        "length": "49:08",
         "published": "4년 전",
         "stage": "실전"
       }
@@ -3931,88 +3931,6 @@
         "stage": "실전"
       }
     ],
-    "OpenAI": [
-      {
-        "title": "OpenAi Agent Builder 초기초부터 10분안에 알려드립니다",
-        "url": "https://www.youtube.com/watch?v=cnxJk1QBzVA",
-        "thumbnail": "https://i.ytimg.com/vi/cnxJk1QBzVA/mqdefault.jpg",
-        "channel": "딩코딩코",
-        "views": 5995,
-        "length": "9:44",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "OpenAI: EP1 - OpenAI 회사 시작의 배경에 대해서 알아보기",
-        "url": "https://www.youtube.com/watch?v=Nye7DIxmBZY",
-        "thumbnail": "https://i.ytimg.com/vi/Nye7DIxmBZY/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 433,
-        "length": "5:19",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "귀여운 라마로 OpenAI에 경제보복하기",
-        "url": "https://www.youtube.com/watch?v=medh_c3X97Y",
-        "thumbnail": "https://i.ytimg.com/vi/medh_c3X97Y/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 232181,
-        "length": "6:39",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[LIVE] OpenAI 내부자가 직접 알려주는 Codex 사용 꿀팁",
-        "url": "https://www.youtube.com/watch?v=Lj9lPlLugJI",
-        "thumbnail": "https://i.ytimg.com/vi/Lj9lPlLugJI/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 34962,
-        "length": "1:38:11",
-        "published": "스트리밍 시간: 3개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[OpenAI X ALINN] Codex 라이브 강의",
-        "url": "https://www.youtube.com/watch?v=erTJFm7x-6s",
-        "thumbnail": "https://i.ytimg.com/vi/erTJFm7x-6s/mqdefault.jpg",
-        "channel": "알린 ALINN",
-        "views": 1337,
-        "length": "1:45:35",
-        "published": "스트리밍 시간: 1개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "EP01. #openai 의 새로운 기능 #assistant  API 완벽히 이해해보기",
-        "url": "https://www.youtube.com/watch?v=-Wne4a-8RlY",
-        "thumbnail": "https://i.ytimg.com/vi/-Wne4a-8RlY/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 13278,
-        "length": "16:29",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "OpenAI 플랫폼 API 키 발급 방법 | 챗GPT·AI 앱 만들기 전 필수 설정 가이드 {인공지능디지털연구소 TV}",
-        "url": "https://www.youtube.com/watch?v=3EYTs83DABk",
-        "thumbnail": "https://i.ytimg.com/vi/3EYTs83DABk/mqdefault.jpg",
-        "channel": "인공지능디지털연구소TV",
-        "views": 1283,
-        "length": "4:01",
-        "published": "7개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "입문자를 위한 🧑‍💻 #OPENAI API로 구현하는 GPT (채팅 💬, DALLE 이미지 🎨, Whisper 오디오 🎧) 마스터 클래스",
-        "url": "https://www.youtube.com/watch?v=VmB_bSa8Jf4",
-        "thumbnail": "https://i.ytimg.com/vi/VmB_bSa8Jf4/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 17759,
-        "length": "2:40:34",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Swift": [
       {
         "title": "짱쉬운 스위프트 기초 | 30분만에 뽀개기",
@@ -4092,6 +4010,88 @@
         "views": 7511,
         "length": "53:44",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "OpenAI": [
+      {
+        "title": "OpenAi Agent Builder 초기초부터 10분안에 알려드립니다",
+        "url": "https://www.youtube.com/watch?v=cnxJk1QBzVA",
+        "thumbnail": "https://i.ytimg.com/vi/cnxJk1QBzVA/mqdefault.jpg",
+        "channel": "딩코딩코",
+        "views": 5995,
+        "length": "9:44",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "OpenAI: EP1 - OpenAI 회사 시작의 배경에 대해서 알아보기",
+        "url": "https://www.youtube.com/watch?v=Nye7DIxmBZY",
+        "thumbnail": "https://i.ytimg.com/vi/Nye7DIxmBZY/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 433,
+        "length": "5:19",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "귀여운 라마로 OpenAI에 경제보복하기",
+        "url": "https://www.youtube.com/watch?v=medh_c3X97Y",
+        "thumbnail": "https://i.ytimg.com/vi/medh_c3X97Y/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 232181,
+        "length": "6:39",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[LIVE] OpenAI 내부자가 직접 알려주는 Codex 사용 꿀팁",
+        "url": "https://www.youtube.com/watch?v=Lj9lPlLugJI",
+        "thumbnail": "https://i.ytimg.com/vi/Lj9lPlLugJI/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 34962,
+        "length": "1:38:11",
+        "published": "스트리밍 시간: 3개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[OpenAI X ALINN] Codex 라이브 강의",
+        "url": "https://www.youtube.com/watch?v=erTJFm7x-6s",
+        "thumbnail": "https://i.ytimg.com/vi/erTJFm7x-6s/mqdefault.jpg",
+        "channel": "알린 ALINN",
+        "views": 1337,
+        "length": "1:45:35",
+        "published": "스트리밍 시간: 1개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "EP01. #openai 의 새로운 기능 #assistant  API 완벽히 이해해보기",
+        "url": "https://www.youtube.com/watch?v=-Wne4a-8RlY",
+        "thumbnail": "https://i.ytimg.com/vi/-Wne4a-8RlY/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 13278,
+        "length": "16:29",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "OpenAI 플랫폼 API 키 발급 방법 | 챗GPT·AI 앱 만들기 전 필수 설정 가이드 {인공지능디지털연구소 TV}",
+        "url": "https://www.youtube.com/watch?v=3EYTs83DABk",
+        "thumbnail": "https://i.ytimg.com/vi/3EYTs83DABk/mqdefault.jpg",
+        "channel": "인공지능디지털연구소TV",
+        "views": 1283,
+        "length": "4:01",
+        "published": "7개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "입문자를 위한 🧑‍💻 #OPENAI API로 구현하는 GPT (채팅 💬, DALLE 이미지 🎨, Whisper 오디오 🎧) 마스터 클래스",
+        "url": "https://www.youtube.com/watch?v=VmB_bSa8Jf4",
+        "thumbnail": "https://i.ytimg.com/vi/VmB_bSa8Jf4/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 17759,
+        "length": "2:40:34",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -4341,88 +4341,6 @@
         "stage": "실전"
       }
     ],
-    "MSSQL": [
-      {
-        "title": "[MSSQL 중급 3강] 조인 기초편",
-        "url": "https://www.youtube.com/watch?v=HiXPO3X4gtE",
-        "thumbnail": "https://i.ytimg.com/vi/HiXPO3X4gtE/mqdefault.jpg",
-        "channel": "최찰떡의 찰떡수업",
-        "views": 2543,
-        "length": "4:10",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
-        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
-        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 214639,
-        "length": "2:52:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL 초보자가 꼭  알아야 하는 10가지 문법. 무료 강의. 편안하게 들어보세요",
-        "url": "https://www.youtube.com/watch?v=ZsYnTSSuSiw",
-        "thumbnail": "https://i.ytimg.com/vi/ZsYnTSSuSiw/mqdefault.jpg",
-        "channel": "디노자유아빠 - SQL쿼리, 엑셀, 데이터 분석",
-        "views": 70347,
-        "length": "38:13",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MsSQL Server - 프로시저 생성, 사용법",
-        "url": "https://www.youtube.com/watch?v=YRO5_Ytv7hw",
-        "thumbnail": "https://i.ytimg.com/vi/YRO5_Ytv7hw/mqdefault.jpg",
-        "channel": "DevTory TV",
-        "views": 1600,
-        "length": "17:28",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSSQL 데이터베이스 강의",
-        "url": "https://www.youtube.com/watch?v=UGnVyVElGg8",
-        "thumbnail": "https://i.ytimg.com/vi/UGnVyVElGg8/mqdefault.jpg",
-        "channel": "개발자PARK",
-        "views": 439,
-        "length": "1:50",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSSQL CTE1",
-        "url": "https://www.youtube.com/watch?v=IhuyVzyQOBY",
-        "thumbnail": "https://i.ytimg.com/vi/IhuyVzyQOBY/mqdefault.jpg",
-        "channel": "정원혁 (William Chung)",
-        "views": 1132,
-        "length": "10:39",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSSQL 기초 강의 기초부터 실무까지 차근차근! MSSQL Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=yqVRdtDZWQ0",
-        "thumbnail": "https://i.ytimg.com/vi/yqVRdtDZWQ0/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 1340,
-        "length": "20:01",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "MSSQL 강의 기초부터 실습 위주의 교육",
-        "url": "https://www.youtube.com/watch?v=bkX-yu0mJlQ",
-        "thumbnail": "https://i.ytimg.com/vi/bkX-yu0mJlQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 1901,
-        "length": "15:06",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "RabbitMQ": [
       {
         "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
@@ -4503,6 +4421,88 @@
         "length": "13:26",
         "published": "1년 전",
         "stage": "핵심"
+      }
+    ],
+    "MSSQL": [
+      {
+        "title": "[MSSQL 중급 3강] 조인 기초편",
+        "url": "https://www.youtube.com/watch?v=HiXPO3X4gtE",
+        "thumbnail": "https://i.ytimg.com/vi/HiXPO3X4gtE/mqdefault.jpg",
+        "channel": "최찰떡의 찰떡수업",
+        "views": 2543,
+        "length": "4:10",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
+        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
+        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 214639,
+        "length": "2:52:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL 초보자가 꼭  알아야 하는 10가지 문법. 무료 강의. 편안하게 들어보세요",
+        "url": "https://www.youtube.com/watch?v=ZsYnTSSuSiw",
+        "thumbnail": "https://i.ytimg.com/vi/ZsYnTSSuSiw/mqdefault.jpg",
+        "channel": "디노자유아빠 - SQL쿼리, 엑셀, 데이터 분석",
+        "views": 70347,
+        "length": "38:13",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MsSQL Server - 프로시저 생성, 사용법",
+        "url": "https://www.youtube.com/watch?v=YRO5_Ytv7hw",
+        "thumbnail": "https://i.ytimg.com/vi/YRO5_Ytv7hw/mqdefault.jpg",
+        "channel": "DevTory TV",
+        "views": 1600,
+        "length": "17:28",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSSQL 데이터베이스 강의",
+        "url": "https://www.youtube.com/watch?v=UGnVyVElGg8",
+        "thumbnail": "https://i.ytimg.com/vi/UGnVyVElGg8/mqdefault.jpg",
+        "channel": "개발자PARK",
+        "views": 439,
+        "length": "1:50",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSSQL CTE1",
+        "url": "https://www.youtube.com/watch?v=IhuyVzyQOBY",
+        "thumbnail": "https://i.ytimg.com/vi/IhuyVzyQOBY/mqdefault.jpg",
+        "channel": "정원혁 (William Chung)",
+        "views": 1132,
+        "length": "10:39",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSSQL 기초 강의 기초부터 실무까지 차근차근! MSSQL Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=yqVRdtDZWQ0",
+        "thumbnail": "https://i.ytimg.com/vi/yqVRdtDZWQ0/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 1340,
+        "length": "20:01",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "MSSQL 강의 기초부터 실습 위주의 교육",
+        "url": "https://www.youtube.com/watch?v=bkX-yu0mJlQ",
+        "thumbnail": "https://i.ytimg.com/vi/bkX-yu0mJlQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 1901,
+        "length": "15:06",
+        "published": "3년 전",
+        "stage": "실전"
       }
     ],
     "OpenCV": [
@@ -6145,88 +6145,6 @@
         "stage": "핵심"
       }
     ],
-    "Scala": [
-      {
-        "title": "🎈스칼라 기초 강의🎉 몰아보기 #1 - 이거 하나면 끝!!! Scala Basics tutorial",
-        "url": "https://www.youtube.com/watch?v=MhFYisVJesU",
-        "thumbnail": "https://i.ytimg.com/vi/MhFYisVJesU/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 185,
-        "length": "1:03:36",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "선형대수학 무료강의 - [서울대 AI박사] - 행렬, 벡터, 스칼라, 텐서 등 인공기능 수학 기초",
-        "url": "https://www.youtube.com/watch?v=k_yto_vDRF0",
-        "thumbnail": "https://i.ytimg.com/vi/k_yto_vDRF0/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 51516,
-        "length": "1:04:51",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SpringFramework in Scala - 석종일",
-        "url": "https://www.youtube.com/watch?v=SKQVcfapCrQ",
-        "thumbnail": "https://i.ytimg.com/vi/SKQVcfapCrQ/mqdefault.jpg",
-        "channel": "Worker KSUG",
-        "views": 100,
-        "length": "24:58",
-        "published": "10년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "수포자를 위한 전기장, 벡터와 스칼라 강의  [쉬운물리 전자기학 2강] (수학없이 배우는 쉬운 물리) 공대, 할리데이, 일반물리학",
-        "url": "https://www.youtube.com/watch?v=2R0T4QG2s7w",
-        "thumbnail": "https://i.ytimg.com/vi/2R0T4QG2s7w/mqdefault.jpg",
-        "channel": "공대조교형",
-        "views": 3406,
-        "length": "21:42",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스칼라 프로그래밍, 강의 추천강의 교육안내",
-        "url": "https://www.youtube.com/watch?v=tZ5_GCekgrM",
-        "thumbnail": "https://i.ytimg.com/vi/tZ5_GCekgrM/mqdefault.jpg",
-        "channel": "Algio Joseph",
-        "views": 180,
-        "length": "1:57",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Scala(스칼라): EP1 - 스칼라 언어에 대한 소개와 설치방법에 대해 알아보자",
-        "url": "https://www.youtube.com/watch?v=SQ2GGDhSZYg",
-        "thumbnail": "https://i.ytimg.com/vi/SQ2GGDhSZYg/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 754,
-        "length": "9:33",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스칼라 강좌, 언어 추천강의 교육안내",
-        "url": "https://www.youtube.com/watch?v=8BJq2bCXvFM",
-        "thumbnail": "https://i.ytimg.com/vi/8BJq2bCXvFM/mqdefault.jpg",
-        "channel": "Algio Joseph",
-        "views": 555,
-        "length": "1:54",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스칼라 프로그래밍 강의 기초부터 실습 위주의 교육",
-        "url": "https://www.youtube.com/watch?v=bCPaPc1pKV0",
-        "thumbnail": "https://i.ytimg.com/vi/bCPaPc1pKV0/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 127,
-        "length": "25:18",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "DeepLearning": [
       {
         "title": "이 영상 하나면 '인공지능', '머신러닝', '딥러닝' 이해가 됩니다ㅣ서울대 AI박사 6분 개념정리",
@@ -6306,6 +6224,88 @@
         "views": 13415,
         "length": "2:30:54",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Scala": [
+      {
+        "title": "🎈스칼라 기초 강의🎉 몰아보기 #1 - 이거 하나면 끝!!! Scala Basics tutorial",
+        "url": "https://www.youtube.com/watch?v=MhFYisVJesU",
+        "thumbnail": "https://i.ytimg.com/vi/MhFYisVJesU/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 185,
+        "length": "1:03:36",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "선형대수학 무료강의 - [서울대 AI박사] - 행렬, 벡터, 스칼라, 텐서 등 인공기능 수학 기초",
+        "url": "https://www.youtube.com/watch?v=k_yto_vDRF0",
+        "thumbnail": "https://i.ytimg.com/vi/k_yto_vDRF0/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 51516,
+        "length": "1:04:51",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SpringFramework in Scala - 석종일",
+        "url": "https://www.youtube.com/watch?v=SKQVcfapCrQ",
+        "thumbnail": "https://i.ytimg.com/vi/SKQVcfapCrQ/mqdefault.jpg",
+        "channel": "Worker KSUG",
+        "views": 100,
+        "length": "24:58",
+        "published": "10년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "수포자를 위한 전기장, 벡터와 스칼라 강의  [쉬운물리 전자기학 2강] (수학없이 배우는 쉬운 물리) 공대, 할리데이, 일반물리학",
+        "url": "https://www.youtube.com/watch?v=2R0T4QG2s7w",
+        "thumbnail": "https://i.ytimg.com/vi/2R0T4QG2s7w/mqdefault.jpg",
+        "channel": "공대조교형",
+        "views": 3406,
+        "length": "21:42",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스칼라 프로그래밍, 강의 추천강의 교육안내",
+        "url": "https://www.youtube.com/watch?v=tZ5_GCekgrM",
+        "thumbnail": "https://i.ytimg.com/vi/tZ5_GCekgrM/mqdefault.jpg",
+        "channel": "Algio Joseph",
+        "views": 180,
+        "length": "1:57",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Scala(스칼라): EP1 - 스칼라 언어에 대한 소개와 설치방법에 대해 알아보자",
+        "url": "https://www.youtube.com/watch?v=SQ2GGDhSZYg",
+        "thumbnail": "https://i.ytimg.com/vi/SQ2GGDhSZYg/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 754,
+        "length": "9:33",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스칼라 강좌, 언어 추천강의 교육안내",
+        "url": "https://www.youtube.com/watch?v=8BJq2bCXvFM",
+        "thumbnail": "https://i.ytimg.com/vi/8BJq2bCXvFM/mqdefault.jpg",
+        "channel": "Algio Joseph",
+        "views": 555,
+        "length": "1:54",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스칼라 프로그래밍 강의 기초부터 실습 위주의 교육",
+        "url": "https://www.youtube.com/watch?v=bCPaPc1pKV0",
+        "thumbnail": "https://i.ytimg.com/vi/bCPaPc1pKV0/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 127,
+        "length": "25:18",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -13003,88 +13003,6 @@
         "stage": "핵심"
       }
     ],
-    "Redux": [
-      {
-        "title": "React 입문자들이 알아야할 Redux 쉽게설명 (8분컷)",
-        "url": "https://www.youtube.com/watch?v=QZcYz2NrDIs",
-        "thumbnail": "https://i.ytimg.com/vi/QZcYz2NrDIs/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 136090,
-        "length": "8:25",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "1-1강. Redux 소개 (Redux의 탄생)",
-        "url": "https://www.youtube.com/watch?v=IqYKkXE5Gvw",
-        "thumbnail": "https://i.ytimg.com/vi/IqYKkXE5Gvw/mqdefault.jpg",
-        "channel": "소플TV",
-        "views": 802,
-        "length": "4:21",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[쌤즈 – 인강] Redux 의 기본 구조 및 원칙 | 코딩 강의 | Redux",
-        "url": "https://www.youtube.com/watch?v=r3EFCezvflc",
-        "thumbnail": "https://i.ytimg.com/vi/r3EFCezvflc/mqdefault.jpg",
-        "channel": "ssamz(쌤즈)",
-        "views": 55,
-        "length": "11:17",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Redux toolkit",
-        "url": "https://www.youtube.com/watch?v=9wrHxqI6zuM",
-        "thumbnail": "https://i.ytimg.com/vi/9wrHxqI6zuM/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 27241,
-        "length": "19:03",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Redux의 쉬운 대안 - 페북이 만든 Recoil",
-        "url": "https://www.youtube.com/watch?v=T4QSK3Un4rU",
-        "thumbnail": "https://i.ytimg.com/vi/T4QSK3Un4rU/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 12807,
-        "length": "22:39",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Redux 완전 정복  상태 관리",
-        "url": "https://www.youtube.com/watch?v=I__-tKx6Ddk",
-        "thumbnail": "https://i.ytimg.com/vi/I__-tKx6Ddk/mqdefault.jpg",
-        "channel": "최강사",
-        "views": 6,
-        "length": "7:09",
-        "published": "3개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] React 소개와 redux 구현",
-        "url": "https://www.youtube.com/watch?v=nmgzYc_3AHc",
-        "thumbnail": "https://i.ytimg.com/vi/nmgzYc_3AHc/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 24,
-        "length": "14:47",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Chapter 09.  Redux-Toolkit 활용 쇼핑 카트 만들기 (feat. 안전한 타입을 곁들인...)",
-        "url": "https://www.youtube.com/watch?v=mjGfXU4YsH8",
-        "thumbnail": "https://i.ytimg.com/vi/mjGfXU4YsH8/mqdefault.jpg",
-        "channel": "용코딩",
-        "views": 982,
-        "length": "1:03:55",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Amazon RDS": [
       {
         "title": "클릭 몇 번으로 Amazon RDS 손쉽게 구성하기",
@@ -13164,6 +13082,88 @@
         "views": 1734,
         "length": "2:55",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Redux": [
+      {
+        "title": "React 입문자들이 알아야할 Redux 쉽게설명 (8분컷)",
+        "url": "https://www.youtube.com/watch?v=QZcYz2NrDIs",
+        "thumbnail": "https://i.ytimg.com/vi/QZcYz2NrDIs/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 136090,
+        "length": "8:25",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "1-1강. Redux 소개 (Redux의 탄생)",
+        "url": "https://www.youtube.com/watch?v=IqYKkXE5Gvw",
+        "thumbnail": "https://i.ytimg.com/vi/IqYKkXE5Gvw/mqdefault.jpg",
+        "channel": "소플TV",
+        "views": 802,
+        "length": "4:21",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[쌤즈 – 인강] Redux 의 기본 구조 및 원칙 | 코딩 강의 | Redux",
+        "url": "https://www.youtube.com/watch?v=r3EFCezvflc",
+        "thumbnail": "https://i.ytimg.com/vi/r3EFCezvflc/mqdefault.jpg",
+        "channel": "ssamz(쌤즈)",
+        "views": 55,
+        "length": "11:17",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Redux toolkit",
+        "url": "https://www.youtube.com/watch?v=9wrHxqI6zuM",
+        "thumbnail": "https://i.ytimg.com/vi/9wrHxqI6zuM/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 27241,
+        "length": "19:03",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Redux의 쉬운 대안 - 페북이 만든 Recoil",
+        "url": "https://www.youtube.com/watch?v=T4QSK3Un4rU",
+        "thumbnail": "https://i.ytimg.com/vi/T4QSK3Un4rU/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 12807,
+        "length": "22:39",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Redux 완전 정복  상태 관리",
+        "url": "https://www.youtube.com/watch?v=I__-tKx6Ddk",
+        "thumbnail": "https://i.ytimg.com/vi/I__-tKx6Ddk/mqdefault.jpg",
+        "channel": "최강사",
+        "views": 6,
+        "length": "7:09",
+        "published": "3개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] React 소개와 redux 구현",
+        "url": "https://www.youtube.com/watch?v=nmgzYc_3AHc",
+        "thumbnail": "https://i.ytimg.com/vi/nmgzYc_3AHc/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 24,
+        "length": "14:47",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Chapter 09.  Redux-Toolkit 활용 쇼핑 카트 만들기 (feat. 안전한 타입을 곁들인...)",
+        "url": "https://www.youtube.com/watch?v=mjGfXU4YsH8",
+        "thumbnail": "https://i.ytimg.com/vi/mjGfXU4YsH8/mqdefault.jpg",
+        "channel": "용코딩",
+        "views": 982,
+        "length": "1:03:55",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
