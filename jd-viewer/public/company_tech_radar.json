@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T03:26:37",
+ "generated_at": "2026-06-18T04:58:35",
  "total": 100,
  "countries": [
   {
@@ -983,16 +983,16 @@
    "stack": {
     "backend": [
      {
-      "name": "gRPC",
-      "count": 5
-     },
-     {
       "name": "Node.js",
       "count": 5
      },
      {
       "name": "Spring Boot",
       "count": 5
+     },
+     {
+      "name": "gRPC",
+      "count": 4
      },
      {
       "name": "Go",
@@ -1019,14 +1019,14 @@
       "count": 1
      },
      {
-      "name": "C# microservices",
+      "name": "C# / .NET microservices",
       "count": 1
      }
     ],
     "frontend": [
      {
       "name": "React",
-      "count": 8
+      "count": 7
      },
      {
       "name": "Unity",
@@ -1037,8 +1037,8 @@
       "count": 3
      },
      {
-      "name": "TypeScript",
-      "count": 2
+      "name": "C++ 렌더러",
+      "count": 1
      },
      {
       "name": "Cocos2d-x",
@@ -1046,6 +1046,10 @@
      },
      {
       "name": "Luau",
+      "count": 1
+     },
+     {
+      "name": "React + TypeScript",
       "count": 1
      },
      {
@@ -1057,11 +1061,7 @@
       "count": 1
      },
      {
-      "name": "Unreal Engine 4/5",
-      "count": 1
-     },
-     {
-      "name": "Unreal Engine 5",
+      "name": "TypeScript",
       "count": 1
      }
     ],
@@ -1164,11 +1164,11 @@
      "count": 1
     },
     {
-     "name": "Cell-based microservices on own datacenters",
+     "name": "Channel·Shard·World 분리 동시접속 확장",
      "count": 1
     },
     {
-     "name": "Channel·Shard·World 분리 동시접속 확장",
+     "name": "Consul + Envoy 사이드카 서비스 메시",
      "count": 1
     },
     {
@@ -1197,16 +1197,16 @@
      "count": 8
     },
     {
-     "name": "C++",
-     "count": 7
-    },
-    {
      "name": "Rust",
      "count": 7
     },
     {
      "name": "TypeScript",
      "count": 7
+    },
+    {
+     "name": "C++",
+     "count": 6
     },
     {
      "name": "Go",
@@ -1218,7 +1218,7 @@
     },
     {
      "name": "CUDA",
-     "count": 3
+     "count": 2
     },
     {
      "name": "JavaScript",
@@ -1378,6 +1378,10 @@
       "count": 3
      },
      {
+      "name": "Multi-cloud",
+      "count": 2
+     },
+     {
       "name": "Apollo",
       "count": 1
      },
@@ -1388,18 +1392,10 @@
      {
       "name": "AWS / Azure / GCP",
       "count": 1
-     },
-     {
-      "name": "AWS Trainium/Inferentia",
-      "count": 1
      }
     ]
    },
    "architecture": [
-    {
-     "name": "Distributed model training",
-     "count": 2
-    },
     {
      "name": "Cloud-native elastic warehouses with per-second billing",
      "count": 1
@@ -1409,7 +1405,7 @@
      "count": 1
     },
     {
-     "name": "Constitutional AI / safety-in-the-loop pipeline",
+     "name": "Constitutional AI / RLHF safety-in-the-loop training & serving pipeline",
      "count": 1
     },
     {
@@ -1418,6 +1414,10 @@
     },
     {
      "name": "Control plane / Data plane 분리 멀티테넌시",
+     "count": 1
+    },
+    {
+     "name": "DBaaS multi-cloud control plane",
      "count": 1
     }
    ]
@@ -5903,44 +5903,47 @@
    ],
    "stack": {
     "backend": [
-     "C++ game engine",
-     "C# microservices",
+     "C++ (game engine + core runtime)",
+     "Luau (server-authoritative game logic)",
+     "C# / .NET microservices",
      "Go services",
-     "gRPC",
-     "Luau (server-side game logic)"
+     "gRPC + Protocol Buffers",
+     "Rust (성능 민감 컴포넌트)"
     ],
     "frontend": [
-     "React",
-     "TypeScript",
-     "Luau (client engine UI)",
-     "Roact"
+     "Roact (React 스타일 Luau UI 프레임워크)",
+     "Luau (클라이언트 엔진 UI)",
+     "React + TypeScript (웹 포털)",
+     "C++ 렌더러 (Vulkan/Metal/Direct3D)"
     ],
     "data": [
      "MongoDB",
      "Redis",
-     "Kafka",
-     "Sphinx (search)",
+     "Apache Kafka",
+     "Sphinx (검색)",
      "HashiCorp Vault",
-     "Consul KV"
+     "HashiCorp Consul KV",
+     "BoltDB (Consul 내부 raft 저장)"
     ],
     "infra": [
-     "Hybrid on-prem DCs",
-     "HashiCorp Nomad",
-     "HashiCorp Consul",
-     "Envoy",
-     "Kubernetes (일부)"
+     "하이브리드 자체 데이터센터 + PoP/Edge",
+     "HashiCorp Nomad (워크로드 스케줄러)",
+     "HashiCorp Consul (서비스 디스커버리/메시)",
+     "Envoy (사이드카 프록시)",
+     "Kubernetes (일부 워크로드)",
+     "gRPC 서비스 메시"
     ]
    },
    "architecture": [
-    "Game engine + cloud services (client-authoritative + server-authoritative hybrid)",
-    "Cell-based microservices on own datacenters",
-    "Edge/PoP 기반 게임 서버 배치",
-    "Service mesh (Consul + Envoy)"
+    "게임 엔진 + 클라우드 서비스 하이브리드 (server-authoritative 우선, 일부 client-side 예측)",
+    "Nomad 기반 셀룰러(cellular) 마이크로서비스 인프라 — 장애 격리 단위로 셀 분할",
+    "Edge/PoP에 게임 서버 동적 배치로 지연 최소화",
+    "Consul + Envoy 사이드카 서비스 메시"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Engine\"]\n    APP[\"Roblox App<br/>C++ Engine + Luau VM\"]\n    UI[\"In-game UI<br/>Roact + Luau\"]\n    WEB[\"Web/Studio<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / PoP\"]\n    POP[\"Edge PoP<br/>Own DC + Envoy\"]\n    GS[\"Game Server<br/>C++ + Luau (server-authoritative)\"]\n  end\n  subgraph Gateway[\"API / Mesh\"]\n    GW[\"API Gateway<br/>Envoy + gRPC\"]\n    MESH[\"Service Mesh<br/>Consul + Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MM[\"Matchmaking / Placement<br/>Go + C#\"]\n    ECON[\"Economy / Catalog<br/>C# services\"]\n    SEARCH[\"Discovery / Search<br/>Sphinx\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MONGO[\"DataStore<br/>MongoDB (sharded)\"]\n    REDIS[\"Cache / Session<br/>Redis\"]\n    VAULT[\"Secrets<br/>HashiCorp Vault\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    ANALYTICS[\"Analytics / ML<br/>Data Lake\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    NOMAD[\"Scheduler<br/>HashiCorp Nomad\"]\n    CONSUL[\"Service Discovery<br/>Consul KV\"]\n  end\n  APP -->|UDP/RakNet-like| POP\n  UI --> APP\n  WEB -->|HTTPS| GW\n  POP --> GS\n  GW -->|gRPC| MESH\n  MESH --> MM\n  MESH --> ECON\n  MESH --> SEARCH\n  MM -->|place session| GS\n  GS -->|read/write| MONGO\n  ECON --> MONGO\n  ECON --> REDIS\n  GS --> REDIS\n  ECON --> VAULT\n  GS -->|events| KAFKA\n  KAFKA --> ANALYTICS\n  NOMAD -.schedules.-> GS\n  NOMAD -.schedules.-> MM\n  CONSUL -.discovery.-> MESH",
-   "why_language": "수억 명의 동시 사용자에게 저지연 3D 시뮬레이션을 제공해야 하므로 게임 엔진·물리·렌더링은 성능이 절대적인 C++로 작성하고, 사용자가 만든 게임 로직은 샌드박스 안에서 안전하게 실행되어야 해서 Lua를 타입 시스템과 성능을 강화한 Luau로 자체 포크했다. 백엔드 마이크로서비스는 기존 C# 자산과 고성능 동시성이 필요한 신규 서비스의 Go가 공존하며, 성능 크리티컬한 일부 시스템 영역에는 Rust를 점진 도입하고 있다.",
-   "why_architecture": "Roblox는 클라우드가 아니라 자체 데이터센터와 전 세계 PoP를 직접 운영해, 게임 서버를 사용자와 물리적으로 가까운 엣지에 배치하고 비용·지연·하드웨어를 통제한다. 수만 개의 게임 서버와 백엔드 서비스를 스케줄링하기 위해 Kubernetes 대신 HashiCorp Nomad+Consul+Vault 스택을 핵심으로 채택했고, 서비스 간 통신은 Consul/Envoy 서비스 메시와 gRPC로 묶는다. 이 셀 기반 자체 인프라 전략은 통제력을 주지만 2021년 73시간 장애처럼 단일 컨트롤 플레인 의존의 위험도 함께 안고 있다.",
-   "summary": "C++ 엔진 + Luau 샌드박스 + 자체 DC 위 HashiCorp Nomad/Consul로 돌아가는 셀 기반 게임 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Roblox Client<br/>C++ Engine + Luau VM\"]\n    UI[\"Game UI<br/>Roact + Luau\"]\n    WEB[\"Web Portal<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / PoP\"]\n    POP[\"Edge PoP<br/>Envoy + Anycast\"]\n    GS[\"Game Server (DCC)<br/>C++ + Luau server logic\"]\n  end\n  subgraph Svc[\"Core Services\"]\n    MM[\"Matchmaking / Placement<br/>Go + C# services\"]\n    API[\"Platform APIs<br/>C# .NET + Go + gRPC\"]\n    REC[\"Discovery / Recsys<br/>ML ranking services\"]\n  end\n  subgraph Mesh[\"Service Mesh / Platform\"]\n    CONSUL[\"Service Discovery<br/>HashiCorp Consul\"]\n    NOMAD[\"Scheduler<br/>HashiCorp Nomad cells\"]\n    VAULT[\"Secrets<br/>HashiCorp Vault\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MONGO[\"Primary Store<br/>MongoDB sharded\"]\n    REDIS[\"Cache<br/>Redis\"]\n    SPHINX[\"Search<br/>Sphinx\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  APP -->|UDP game traffic| POP\n  UI --> APP\n  WEB -->|HTTPS| API\n  POP --> GS\n  APP -->|join request| MM\n  MM -->|place player| GS\n  GS -->|gRPC| API\n  API --> REC\n  API -->|reads/writes| MONGO\n  API --> REDIS\n  REC --> SPHINX\n  GS -->|DataStore persist| MONGO\n  API -->|events| KAFKA\n  KAFKA --> REC\n  API -.discovery.-> CONSUL\n  GS -.discovery.-> CONSUL\n  NOMAD -->|schedules| GS\n  NOMAD -->|schedules| API\n  API -.secrets.-> VAULT\n  CONSUL --- POP",
+   "why_language": "C++는 수억 명이 다양한 저사양 기기에서 60FPS로 돌리는 자체 게임 엔진·렌더러·물리의 성능과 메모리 제어를 위해 필수이고, Luau는 Lua를 포크해 점진적 타입·샌드박싱·빠른 인터프리터를 더해 신뢰할 수 없는 개발자 코드를 안전하게 서버/클라이언트에서 실행하기 위한 선택이다. 플랫폼 백엔드는 역사적으로 C#/.NET로 시작했으나 고동시성·저지연 인프라 서비스는 Go로, 일부 핫패스는 Rust로 이동하며 언어를 도메인별로 최적화한다.",
+   "why_architecture": "Roblox는 UGC 게임이 server-authoritative로 돌아야 치팅과 동기화 문제를 통제할 수 있어 게임 서버(DCC)를 Edge/PoP에 동적 배치해 지연을 줄이고, 플랫폼 백엔드는 Nomad 기반 셀룰러 구조로 나눠 한 셀의 장애가 전체로 번지지 않게 격리한다. AWS 같은 퍼블릭 클라우드 대신 자체 DC + Nomad/Consul을 택한 것은 비용·하드웨어 제어·대규모 게임 서버 밀도 최적화를 위한 트레이드오프다.",
+   "summary": "자체 C++ 엔진과 안전한 Lua 포크 Luau를 축으로, 자체 데이터센터 위에 Nomad·Consul 셀룰러 인프라로 굴리는 거대 UGC 게임 플랫폼",
    "deep_dive": [
     {
      "topic": "게임 클라이언트-서버 실시간 동기화",
@@ -5969,6 +5972,18 @@
     {
      "topic": "엣지 게임 서버 배치와 요청 흐름 end-to-end",
      "body": "### 한 판의 게임이 뜨기까지\nRoblox에서 사용자가 게임(experience)에 입장하는 순간 일어나는 흐름을 따라가 보면 플랫폼 구조가 드러난다.\n\n1. **클라이언트 → 웹 백엔드**: 사용자가 게임을 누르면 클라이언트(C++ 엔진)가 HTTPS로 백엔드(C#/Go 마이크로서비스)에 입장 요청을 보낸다. 이 요청은 **Envoy 게이트웨이**를 지나 **Consul/Envoy 서비스 메시** 안의 적절한 서비스로 gRPC 라우팅된다.\n\n2. **매치메이킹/플레이스먼트**: placement 서비스가 (a) 해당 게임의 기존 서버 인스턴스 중 자리가 있는 곳을 찾거나, (b) 없으면 **Nomad**에 새 게임 서버 프로세스 스케줄링을 요청한다. 이때 사용자와 **물리적으로 가까운 엣지 PoP/데이터센터**를 골라 지연을 최소화한다 — Roblox는 자체 DC와 전 세계 엣지 거점을 직접 운영하므로 가능한 전략이다.\n\n3. **게임 서버 기동**: 선택된 서버는 C++ 엔진 + 서버측 Luau 스크립트를 로드한다. 서버는 **server-authoritative**로 물리·게임 상태의 진실 원본을 들고, 클라이언트는 예측(prediction)과 보간(interpolation)으로 부드러움을 유지한다.\n\n4. **실시간 통신**: 클라이언트-서버는 신뢰성 있는 UDP 계열 프로토콜로 상태를 주고받는다. 저지연이 생명이므로 TCP가 아닌 커스텀 UDP 위 신뢰성 레이어를 쓴다.\n\n5. **데이터 영속화**: 게임 중 DataStore 읽기/쓰기는 백엔드를 거쳐 **MongoDB(샤딩)**로 간다. 세션/캐시는 **Redis**, 핫한 카탈로그·인벤토리는 캐시 계층으로 가속한다.\n\n6. **이벤트/분석**: 플레이 이벤트·텔레메트리는 **Kafka**로 흘러 분석/추천/안전(abuse detection) 파이프라인으로 들어간다.\n\n### 왜 이렇게 설계했나\n- 게임 서버를 **사용자 근처 엣지**에 띄우는 것이 핵심 — 글로벌 사용자 기반에서 50ms의 차이가 게임 체감을 좌우한다.\n- 백엔드는 메시 기반 마이크로서비스로 두어 economy·catalog·social·moderation 등 수백 개 도메인을 독립 배포·스케일한다.\n- 자체 DC + Nomad 스케줄링 덕에 **게임 서버를 분 단위로 수만 개 띄웠다 내렸다** 하는 탄력적 용량 운용이 비용 효율적으로 가능하다."
+    },
+    {
+     "topic": "게임 디스커버리와 추천 랭킹 — 수천만 경험을 어떻게 줄세우는가",
+     "body": "### 문제의 규모\nRoblox 홈/검색은 수천만 개의 `experience`(게임)를 대상으로, 개인화된 정렬(sorts)을 실시간에 가깝게 만들어야 한다. 단순 인기순이 아니라 '이 유저가 지금 플레이를 시작하고 오래 머물 확률'을 최적화한다.\n\n### 파이프라인 구조\n- **후보 생성(candidate generation)**: 전체 카탈로그에서 수천 개 후보를 빠르게 추린다. `Sphinx` 기반 검색 인덱스와 임베딩 유사도, 협업필터링 신호(같이 플레이되는 게임), 최근 트렌드 신호를 합친다.\n- **랭킹(ranking)**: 후보를 ML 모델로 정밀 정렬. 피처는 유저 측(연령대·과거 장르·세션 길이), 아이템 측(장르·평점·동시접속), 컨텍스트(기기·시간대·지역)로 구성된다. 핵심 타깃은 CTR이 아니라 **playtime/engagement** 계열 지표로, 클릭만 유발하는 썸네일 낚시를 억제한다.\n- **정책/안전 필터**: 연령 적합성(age recommendation), 정책 위반 콘텐츠 강등이 랭킹 위에 덮인다.\n\n### 피처/이벤트 흐름\n플레이 세션의 join/leave, 구매, 좋아요 같은 행동은 `Kafka`로 흘러 들어가 피처 스토어와 학습 파이프라인을 채운다. 모델은 배치로 재학습되고, 서빙 단계는 저지연 추론 서비스(Go/C# 서비스가 모델 서버 호출)로 분리한다.\n\n### 트레이드오프\n- '신규/소규모 크리에이터 노출' vs '검증된 인기 게임' 사이의 **탐험-활용(exploration-exploitation)** 균형이 핵심 난제다. 인기 신호만 쓰면 부익부가 심해져 생태계가 죽기 때문에, 신규 콘텐츠에 의도적 탐험 트래픽을 배정한다.\n- 개인화 강도를 높이면 필터 버블이 생겨 발견성이 떨어진다 — 그래서 '추천 sort'와 '카테고리/장르 sort'를 섞어 보여준다.\n- 글로벌 서비스라 지역·언어·문화별 선호가 달라, 모델이 지역 피처를 강하게 반영한다."
+    },
+    {
+     "topic": "관측성(Observability) — 자체 DC 위 수만 게임 서버를 어떻게 보는가",
+     "body": "### 왜 어려운가\nRoblox는 퍼블릭 클라우드의 관리형 모니터링을 그대로 못 쓰고, 자체 DC와 Edge PoP에 흩어진 수만 개 게임 서버(DCC)와 플랫폼 마이크로서비스를 직접 계측해야 한다. 2021년 73시간 장애의 교훈 중 하나가 바로 **관측성 시스템 자체가 부하/순환 의존으로 무력화되면 장애 원인 파악이 마비된다**는 것이었다.\n\n### 텔레메트리 스택\n- **메트릭**: 시계열 메트릭을 대량 수집·집계한다. 장애 후 Roblox는 텔레메트리 파이프라인을 보강하고, 관측성 백엔드를 **모니터링 대상 인프라(Consul 등)와 의존성을 끊어** 독립적으로 띄우는 방향으로 개선했다. '관측 시스템은 장애 난 시스템에 의존하면 안 된다'는 원칙.\n- **분산 트레이싱**: 클라이언트 join → matchmaking/placement → game server → 플랫폼 API → MongoDB/Redis로 이어지는 호출 사슬을 추적해, 지연이 어느 hop에서 생기는지 본다. `Envoy` 사이드카가 자연스러운 트레이스 주입 지점이 된다.\n- **로깅**: 게임 서버·서비스 로그를 중앙 집계. 대규모라 샘플링·카디널리티 관리가 필수다.\n\n### 핵심 신호\n게임 플랫폼 특성상 '서비스가 200을 주는가'보다 **체감 품질 지표**가 더 중요하다. 동시접속(CCU), join 성공률, join 지연, 서버 틱레이트/프레임 안정성, 강제 종료(disconnect) 비율 같은 게임 고유 SLI를 대시보드의 1급 시민으로 둔다.\n\n### 회고에서 나온 변화\n2021 장애 회고에서 Roblox는 (1) Consul 같은 핵심 인프라의 내부 지표(예: BoltDB write 지연, raft 상태)를 더 깊이 노출하고, (2) 관측 스택의 독립 가용성을 보장하고, (3) 점진적 트래픽 복구(트래픽을 한꺼번에 돌려보내지 않고 천천히 올림)를 위한 가시성을 강화했다고 밝혔다."
+    },
+    {
+     "topic": "콘텐츠 안전·모더레이션과 인증 — UGC 플랫폼의 신뢰 인프라",
+     "body": "### 위협 모델\nRoblox는 주 사용자층에 미성년자가 많은 UGC 플랫폼이라, '치팅'보다 **아동 안전·악성 콘텐츠·소셜 위험**이 1순위 엔지니어링 제약이다. 이는 언어 선택(Luau 샌드박싱)부터 서버 권위 모델, 모더레이션 파이프라인까지 전 계층에 스며 있다.\n\n### 다층 모더레이션 파이프라인\n- **텍스트 채팅**: 실시간 채팅은 필터를 거친다. 연령에 따라 허용 어휘가 다른 **연령별 채팅 정책**이 있고, 우회를 막기 위해 단순 블랙리스트가 아니라 문맥/패턴 기반 분류를 쓴다.\n- **에셋(이미지·오디오·3D·텍스처)**: 업로드된 모든 에셋은 자동 분류기(ML)로 1차 스크리닝되고, 위험/모호 케이스는 사람 모더레이터 큐로 간다. 대량 업로드를 감당하려고 '머신이 명백한 것은 자동 처리, 경계 케이스만 사람'으로 트리아지한다.\n- **음성**: 음성 채팅 도입 후엔 음성 분류/신고 기반 모더레이션이 추가됐다.\n- **행동 신호**: 신고, 비정상 친구추가/메시지 패턴 등을 `Kafka` 이벤트로 모아 어뷰즈 탐지 모델에 투입한다.\n\n### 왜 server-authoritative가 안전의 토대인가\n게임 로직을 server-authoritative로 두면 클라이언트 조작으로 인한 부정 거래·아이템 복제·위치 핵을 구조적으로 줄일 수 있다. Luau VM의 샌드박싱은 크리에이터 스크립트가 호스트 시스템이나 다른 유저 데이터에 손대지 못하게 하는 격리 경계다.\n\n### 인증·시크릿\n- 플랫폼 인증/세션은 표준 토큰 기반이며, 서비스 간 비밀(DB 크레덴셜, API 키)은 `HashiCorp Vault`로 중앙 관리·동적 발급한다. Vault는 셀룰러 인프라에서 서비스가 부팅 시 신원증명으로 시크릿을 받아오는 신뢰 루트 역할을 한다.\n- 결제·환경(연령 인증·부모 통제) 같은 컴플라이언스 기능은 별도 서비스 경계로 분리해 사고 반경을 줄인다."
     }
    ],
    "github": {
@@ -5977,33 +5992,47 @@
      {
       "name": "luau-lang/luau",
       "url": "https://github.com/luau-lang/luau",
-      "desc": "Roblox가 Lua 5.1을 포크해 만든 점진적 타입·고성능 스크립트 언어 Luau",
+      "desc": "Roblox가 만든 점진적 타입·샌드박스를 갖춘 빠른 Lua 5.1 포크 언어/VM",
       "lang": "C++",
-      "stars": 5614
+      "stars": 5624
      },
      {
       "name": "Roblox/roact",
       "url": "https://github.com/Roblox/roact",
-      "desc": "선언적 UI를 Luau로 작성하는 React 스타일 라이브러리",
+      "desc": "선언형 Luau UI 라이브러리 (React 스타일 컴포넌트 모델)",
       "lang": "Lua",
       "stars": 623
      },
      {
       "name": "Roblox/rodux",
       "url": "https://github.com/Roblox/rodux",
-      "desc": "Lua용 예측 가능한 상태 관리 라이브러리(Redux 영감)",
+      "desc": "Luau용 예측 가능한 상태 컨테이너 (Redux 스타일)",
       "lang": "Lua",
       "stars": 331
+     },
+     {
+      "name": "Roblox/foreman",
+      "url": "https://github.com/Roblox/foreman",
+      "desc": "Roblox 개발 툴체인 버전 관리자(toolchain manager)",
+      "lang": "Rust",
+      "stars": 255
+     },
+     {
+      "name": "Roblox/tarmac",
+      "url": "https://github.com/Roblox/tarmac",
+      "desc": "Roblox 프로젝트의 이미지/에셋 관리 빌드 도구",
+      "lang": "Rust",
+      "stars": 138
      }
     ]
    },
    "sources": [
-    "https://corp.roblox.com/newsroom/2021/10/post-mortem-roblox-outage-october-2021",
-    "https://luau-lang.org/",
-    "https://github.com/luau-lang/luau"
+    "https://corp.roblox.com/newsroom/2022/01/roblox-return-to-service-10-28-10-31-2021",
+    "https://luau.org/",
+    "https://github.com/Roblox/luau"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "anthropic",
@@ -6015,13 +6044,13 @@
     "Rust",
     "TypeScript",
     "JavaScript",
-    "C++",
-    "CUDA"
+    "C++/CUDA"
    ],
    "stack": {
     "backend": [
      "Python",
      "Rust services",
+     "JAX research core",
      "FastAPI/ASGI",
      "gRPC",
      "PyO3 bindings"
@@ -6030,7 +6059,8 @@
      "React",
      "Next.js",
      "TypeScript",
-     "Tailwind CSS"
+     "Tailwind CSS",
+     "Server-Sent Events"
     ],
     "data": [
      "JAX",
@@ -6038,26 +6068,29 @@
      "Ray",
      "Kafka/streaming",
      "Parquet/object stores",
-     "Vector stores"
+     "Vector stores",
+     "KV cache stores"
     ],
     "infra": [
+     "GCP TPU v5e/v5p",
      "AWS Trainium/Inferentia",
-     "GCP TPU v5",
+     "NVIDIA GPU",
      "Kubernetes",
      "Terraform",
-     "Pulumi"
+     "Pulumi",
+     "Multi-cloud"
     ]
    },
    "architecture": [
-    "Distributed model training (JAX/XLA on TPU/Trainium)",
-    "Low-latency inference serving with token streaming",
-    "Constitutional AI / safety-in-the-loop pipeline",
-    "Rust hot-path services around a Python research core"
+    "Distributed model training on JAX/XLA across TPU/Trainium/GPU",
+    "Low-latency inference serving with continuous batching and token streaming",
+    "Constitutional AI / RLHF safety-in-the-loop training & serving pipeline",
+    "Rust hot-path services wrapping a Python/JAX research core, capacity-aware routing"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Apps & SDKs<br/>Claude.ai / API / MCP\"]\n    CC[\"Claude Code<br/>TypeScript CLI\"]\n  end\n  subgraph Edge\n    CDN[\"Edge / CDN<br/>Cloudflare + TLS\"]\n    LB[\"Load Balancer<br/>Envoy\"]\n  end\n  subgraph API\n    GW[\"API Gateway<br/>Python ASGI + Rate Limit\"]\n    AUTH[\"AuthN/AuthZ<br/>API Keys + OAuth\"]\n  end\n  subgraph Core\n    ORCH[\"Request Orchestrator<br/>Python + Rust\"]\n    SAFE[\"Safety / Guardrails<br/>Classifiers + Constitutional AI\"]\n    ROUTER[\"Model Router<br/>Rust service\"]\n    CACHE[\"Prompt Cache<br/>KV cache + Redis\"]\n  end\n  subgraph Inference\n    SCHED[\"Inference Scheduler<br/>Continuous batching\"]\n    SERVE[\"Model Servers<br/>JAX/XLA on TPU + Trainium\"]\n    STREAM[\"Token Streamer<br/>SSE / gRPC\"]\n  end\n  subgraph Training\n    DATA[\"Data Pipeline<br/>Ray + Parquet\"]\n    TRAIN[\"Distributed Training<br/>JAX/XLA pods\"]\n  end\n  subgraph Platform\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    OBS[\"Observability<br/>Metrics + Tracing\"]\n  end\n  APP --> CDN\n  CC --> CDN\n  CDN --> LB --> GW\n  GW --> AUTH --> ORCH\n  ORCH --> SAFE\n  ORCH --> CACHE\n  ORCH -->|route| ROUTER\n  ROUTER --> SCHED\n  SCHED -->|batched| SERVE\n  SERVE --> STREAM -->|SSE tokens| GW\n  DATA --> TRAIN --> SERVE\n  SERVE --> OBS\n  SCHED --> K8S",
-   "why_language": "연구 코어는 Python으로 작성되어 JAX/XLA 생태계와 빠른 실험 반복을 활용하고, 지연·처리량이 중요한 게이트웨이·라우팅·토크나이저 같은 핫패스는 Rust로 구현해 GIL과 GC 없이 안정적 성능을 얻는다. 사용자 대면 제품(Claude.ai, Claude Code)은 TypeScript/React로 만들고, 커널 수준 최적화에는 C++/CUDA가 들어간다.",
-   "why_architecture": "초대형 모델 학습은 데이터·텐서·파이프라인 병렬화가 필수라 XLA가 자동 샤딩/컴파일을 해주는 JAX를 TPU·Trainium 위에서 돌리고, 추론은 continuous batching과 KV/prompt 캐시로 GPU·TPU 활용률을 끌어올린다. 모든 요청이 안전성 분류기와 Constitutional AI 가드레일을 통과하도록 파이프라인 중심에 안전 계층을 배치한 것이 핵심 설계 결정이다.",
-   "summary": "Python 연구 코어 + Rust 핫패스로 JAX/XLA를 TPU·Trainium에 올려 학습·추론하고, 안전 계층을 파이프라인 중심에 둔 LLM 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"claude.ai<br/>React + Next.js + TS\"]\n    SDK[\"SDKs + Claude Code<br/>Python / TypeScript\"]\n    MCPCLIENT[\"MCP Clients<br/>Tools + Data Sources\"]\n  end\n  subgraph Edge\n    LB[\"Edge + TLS<br/>Cloudflare + LB\"]\n    GW[\"API Gateway<br/>Auth + Rate Limit\"]\n  end\n  subgraph Core\n    ROUTER[\"Capacity-aware Router<br/>Rust\"]\n    SAFETY[\"Safety + Guardrails<br/>Classifiers\"]\n    ORCH[\"Inference Orchestrator<br/>Python + gRPC\"]\n  end\n  subgraph Serving\n    BATCH[\"Continuous Batching<br/>Rust hot path\"]\n    ENGINE[\"Model Engine<br/>JAX + XLA\"]\n    KV[\"KV + Prompt Cache<br/>Prefix reuse\"]\n  end\n  subgraph DataPlane\n    KAFKA[\"Event Stream<br/>Kafka\"]\n    OBJ[\"Object Store<br/>Parquet + GCS/S3\"]\n    VEC[\"Vector Store<br/>Embeddings\"]\n  end\n  subgraph Training\n    RAY[\"Orchestration<br/>Ray\"]\n    TPU[\"Accelerators<br/>TPU v5 + Trainium + GPU\"]\n    RLHF[\"RLHF + Constitutional AI<br/>Preference Models\"]\n  end\n  WEB --> LB\n  SDK --> LB\n  MCPCLIENT --> GW\n  LB --> GW\n  GW -->|gRPC| ROUTER\n  ROUTER --> SAFETY\n  SAFETY --> ORCH\n  ORCH --> BATCH\n  BATCH --> ENGINE\n  ENGINE <-->|prefix reuse| KV\n  ENGINE -->|SSE tokens| ORCH\n  ORCH -->|usage events| KAFKA\n  KAFKA --> OBJ\n  OBJ --> RAY\n  RAY --> TPU\n  TPU --> RLHF\n  RLHF -->|new weights| ENGINE\n  ORCH --> VEC",
+   "why_language": "프런티어 모델의 연구·실험 속도가 최우선이라 수치 계산 생태계(JAX/NumPy)와 결합한 Python을 핵심 연구·학습 코드의 기본 언어로 쓴다. 반면 토큰 단위로 수십억 회 반복되는 추론 디스패치·배칭·라우팅 같은 hot path는 지연·GC 변동성이 치명적이라 Rust로 내려 안정적 p99를 확보하고, 사용자 대면 제품(claude.ai, Claude Code)은 TypeScript/React로 빠르게 반복한다.",
+   "why_architecture": "단일 가속기에 종속되면 공급·비용 리스크가 커지므로 JAX/XLA를 이식성 레이어로 삼아 동일 모델 코드를 TPU·Trainium·GPU에 컴파일해 돌리는 멀티클라우드 전략을 택했다. 또 안전성이 제품 요구사항이라 Constitutional AI/RLHF로 학습 단계에 가치를 주입하고 서빙 단계에서도 classifier 가드레일을 인라인에 두는 safety-in-the-loop 구조를, 비용 효율을 위해 continuous batching과 prompt/KV 캐시로 prefix 재계산을 제거하는 서빙 구조를 결합했다.",
+   "summary": "Python/JAX 연구 코어를 Rust hot-path와 멀티 가속기(TPU·Trainium·GPU) 위에 올린, 안전성 내장형 LLM 서빙 플랫폼",
    "deep_dive": [
     {
      "topic": "분산 학습: JAX/XLA on TPU/Trainium",
@@ -6086,6 +6119,18 @@
     {
      "topic": "관측성과 용량 관리: 토큰 단위로 보는 시스템과 capacity-aware 라우팅",
      "body": "### LLM 서빙의 관측 지표는 전통 웹과 다르다\n일반 서비스가 RPS·p99 latency를 본다면, LLM 서빙은 추가로 다음을 핵심 SLI로 둔다.\n\n| 지표 | 의미 | 영향 요인 |\n|------|------|-----------|\n| **TTFT** (Time To First Token) | 첫 토큰까지 지연 | prefill 길이, 큐 대기, 배치 정책 |\n| **TPOT/ITL** (Time Per Output Token) | 토큰 간 지연 | decode 단계 메모리 대역폭, 배치 크기 |\n| **Throughput** | 초당 총 토큰 | continuous batching 효율, 하드웨어 활용률 |\n| **Goodput** | SLO를 만족한 요청 비율 | 위 모두의 조합 |\n\n### 용량 관리와 라우팅\n가속기(TPU/Trainium)는 비싸고 유한하므로, 라우터는 단순 라운드로빈이 아니라 **현재 배치 점유율·KV 캐시 잔여 메모리·큐 길이**를 보고 보낸다. 메모리가 부족하면 새 요청은 큐에서 대기하거나(admission control) 다른 풀로 흘러간다. 트래픽 급증 시에는 모델 티어별로 우선순위를 두어, 낮은 우선순위 배치 요청은 지연시키고 인터랙티브 요청을 보호한다.\n\n### 복원력\n- **재시도/페일오버**: 특정 서빙 노드 장애 시 라우터가 다른 replica로 재라우팅. 단, 스트리밍이 시작된 요청은 멱등하지 않아 중간 실패 처리가 까다롭다.\n- **과부하 보호**: 429(rate limit)와 529(overloaded)를 구분해 클라이언트에 backoff 신호를 준다. SDK는 지수 백오프 재시도를 기본 내장한다.\n- **점진 배포**: 새 모델·서빙 스택은 카나리로 소수 트래픽에 먼저 노출해 품질·지연 회귀를 관측한 뒤 확대한다."
+    },
+    {
+     "topic": "멀티 가속기 이식성: JAX/XLA를 추상화 레이어로 쓰는 결정",
+     "body": "### 왜 JAX인가\nAnthropic은 학습/추론 모두에서 **단일 하드웨어 벤더 종속을 피하는 것**을 핵심 엔지니어링 원칙으로 둔다. NVIDIA GPU, Google TPU, AWS Trainium은 메모리 계층·인터커넥트(NVLink vs ICI vs NeuronLink)·컴파일러가 전부 다르다. 이 차이를 모델 연구 코드에서 직접 다루면 연구 속도가 망가진다. 그래서 `JAX`를 채택해 모델을 **수학적 함수의 합성**으로 기술하고, 실제 디바이스 매핑은 `XLA` 컴파일러에 위임한다.\n\n### 동작 메커니즘\n- 연구자는 `jax.jit`으로 함수를 트레이스하면 XLA HLO(High-Level Optimizer) IR로 변환되고, 같은 IR이 TPU용 `LLO`, GPU용 `PTX`, Trainium용 `Neuron` 백엔드로 각각 컴파일된다. **모델 코드 한 벌 → 세 종류 실리콘**이 핵심 이득이다.\n- 대규모 병렬화는 `jax.sharding`의 `Mesh`/`PartitionSpec`(GSPMD 기반)으로 표현한다. 텐서를 어떤 축(data/tensor/pipeline)으로 쪼갤지 선언하면 XLA가 all-reduce·all-gather collective를 자동 삽입한다. 즉 **수동으로 통신을 코딩하지 않는다.**\n\n### 트레이드오프\n| 항목 | 이득 | 비용 |\n|---|---|---|\n| 이식성 | 하드웨어 협상력·공급 리스크 분산 | 백엔드별 컴파일러 버그·성능 편차를 따로 튜닝 |\n| 컴파일 | 런타임 최적화·fusion 자동 | 첫 `jit` 컴파일 지연, 동적 shape 취약 |\n| 추상화 | 연구 속도↑ | 저수준 커널 제어는 Pallas/커스텀 커널로 따로 내려가야 함 |\n\n동적 길이 시퀀스(가변 prompt)는 XLA가 싫어하므로 **bucketing/padding**으로 shape를 고정해 재컴파일 폭발을 막는 것이 실전 포인트다."
+    },
+    {
+     "topic": "Constitutional AI와 RLHF 학습 파이프라인의 실제 데이터 흐름",
+     "body": "### 두 단계 구조\nClaude의 정렬(alignment)은 **(1) 지도학습(SFT) → (2) 선호 기반 강화학습(RLHF), 그리고 그 위에 Constitutional AI(CAI)** 를 얹는 구조다. 핵심은 사람이 일일이 유해성 라벨을 달지 않고 **'헌법(constitution)'이라는 자연어 원칙 집합**으로 모델이 스스로 자기 출력을 비평·수정하게 하는 것이다.\n\n### CAI 동작 원리\n1. **Supervised stage (비평·수정)**: 모델에게 유해할 수 있는 프롬프트를 주고 응답을 받은 뒤, *\"이 응답이 헌법 원칙 X를 위반하는지 비평하라 → 위반하면 다시 써라\"* 를 반복시킨다. 이 self-revision 쌍으로 SFT 데이터셋을 만든다. **사람 라벨러 대신 모델 자신이 데이터를 생성**한다.\n2. **RL stage (RLAIF)**: 두 응답 중 어느 쪽이 헌법에 더 부합하는지 **AI가 선호 라벨**을 매긴다(RLHF의 human feedback을 AI feedback으로 대체). 이 선호쌍으로 **preference model(보상 모델)** 을 학습하고, 정책 모델을 PPO 계열 알고리즘으로 최적화한다.\n\n### 파이프라인 인프라\n- 선호 데이터·롤아웃은 `Kafka`류 스트림으로 수집되어 `Parquet`로 object store(GCS/S3)에 적재된다.\n- RL 롤아웃은 **추론 클러스터(정책 샘플링) + 학습 클러스터(가중치 업데이트)** 가 비동기로 맞물리는 구조라 `Ray`로 actor/learner를 오케스트레이션한다. 정책이 생성하고, 보상 모델이 점수 매기고, learner가 업데이트하는 루프가 끊기지 않게 weight broadcast 주기를 관리하는 것이 병목 포인트다.\n\n### 트레이드오프\nRLAIF는 사람 라벨 비용을 극적으로 줄이고 일관성을 높이지만, **헌법 원칙 자체의 품질과 보상 모델의 reward hacking** 위험을 운영으로 막아야 한다. 그래서 서빙 단계에도 별도 classifier 가드레일을 둬서 학습 정렬과 런타임 필터를 이중화한다."
+    },
+    {
+     "topic": "멀티클라우드 복원력과 capacity-aware failover",
+     "body": "### 문제 정의\n프런티어 모델 추론은 **가속기 공급 자체가 희소 자원**이다. 한 리전·한 벤더의 TPU/GPU 풀이 포화되거나 장애가 나면 곧바로 사용자 지연·실패로 이어진다. 그래서 라우팅은 단순 round-robin이 아니라 **현재 가용 capacity를 인지하는(capacity-aware) 라우팅**이어야 한다.\n\n### 동작 메커니즘\n- 프런트의 `Rust` 라우터는 각 서빙 풀(TPU v5 on GCP, Trainium/GPU on AWS)의 **실시간 큐 깊이·배치 점유율·토큰 처리율**을 신호로 받아, 요청을 가장 헤드룸 있는 풀로 보낸다.\n- 모델 코드가 JAX로 이식 가능하므로, **동일 모델을 여러 백엔드에 동시에 배포**해 둘 수 있다. 한 벤더 capacity가 마르면 트래픽을 다른 실리콘으로 흘려보내는 failover가 코드 재작성 없이 가능하다 — 이것이 멀티 가속기 전략의 운영상 보상이다.\n- 요청 단위로 **token budget**을 추적해, 긴 출력이 예상되는 요청과 짧은 요청을 분리 배치(continuous batching)하여 head-of-line blocking을 줄인다.\n\n### 복원력 패턴\n- **Backpressure**: 큐가 임계치를 넘으면 429/overloaded를 빠르게 반환해 시스템 전체가 무너지는 것을 막는다(느리게 다 받느니 빠르게 거절).\n- **Graceful degradation**: 특정 모델 티어가 포화면 우선순위 낮은 트래픽을 지연시키거나 대체 capacity로 재라우팅한다.\n- **Streaming 복구**: SSE로 토큰을 흘리는 도중 끊김에 대비해 생성 상태를 추적, 부분 응답 처리를 명확히 한다.\n\n### 트레이드오프\n멀티클라우드는 단일 벤더 최적화 대비 **운영 복잡도와 벤더별 성능 튜닝 부담**을 키운다. 그러나 capacity 협상력·장애 격리·가격 레버리지라는 전략적 이득이 프런티어 규모에서는 그 비용을 압도한다."
     }
    ],
    "github": {
@@ -6096,45 +6141,45 @@
       "url": "https://github.com/anthropics/claude-code",
       "desc": "터미널 기반 에이전트형 코딩 도구",
       "lang": "Python",
-      "stars": 132310
+      "stars": 133009
+     },
+     {
+      "name": "modelcontextprotocol/servers",
+      "url": "https://github.com/modelcontextprotocol/servers",
+      "desc": "MCP 레퍼런스 서버 모음, 도구·데이터 연결 표준 구현",
+      "lang": "TypeScript",
+      "stars": 87385
      },
      {
       "name": "anthropics/claude-cookbooks",
       "url": "https://github.com/anthropics/claude-cookbooks",
-      "desc": "프롬프트·도구사용·RAG 실전 예제 모음",
+      "desc": "Claude 활용 예제·레시피 모음(RAG·도구·비전 등)",
       "lang": "Jupyter Notebook",
-      "stars": 45410
-     },
-     {
-      "name": "anthropics/courses",
-      "url": "https://github.com/anthropics/courses",
-      "desc": "프롬프트 엔지니어링·API 활용 공식 교육 자료",
-      "lang": "Jupyter Notebook",
-      "stars": 21837
+      "stars": 45603
      },
      {
       "name": "anthropics/anthropic-sdk-python",
       "url": "https://github.com/anthropics/anthropic-sdk-python",
-      "desc": "Claude API 공식 Python SDK(스트리밍·도구사용·타입 지원)",
+      "desc": "Claude API 공식 Python SDK, 스트리밍·도구사용·비동기 지원",
       "lang": "Python",
-      "stars": 3625
+      "stars": 3642
      },
      {
       "name": "anthropics/anthropic-sdk-typescript",
       "url": "https://github.com/anthropics/anthropic-sdk-typescript",
-      "desc": "Node/브라우저용 공식 TypeScript SDK",
+      "desc": "Claude API 공식 TypeScript/JS SDK",
       "lang": "TypeScript",
-      "stars": 2000
+      "stars": 2008
      }
     ]
    },
    "sources": [
-    "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching",
-    "https://modelcontextprotocol.io/",
-    "https://www.anthropic.com/engineering"
+    "https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback",
+    "https://github.com/anthropics/anthropic-sdk-python",
+    "https://modelcontextprotocol.io"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "databricks",

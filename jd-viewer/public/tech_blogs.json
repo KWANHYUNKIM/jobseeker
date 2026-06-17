@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-18T03:15:57",
- "total": 764,
+ "generated_at": "2026-06-18T04:54:57",
+ "total": 765,
  "sources": [
   {
    "company": "Etsy",
@@ -90,7 +90,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 18
+   "count": 19
   },
   {
    "company": "카카오",
@@ -511,6 +511,31 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Getting more from each token: How Copilot improves context handling and model routing",
+   "url": "https://github.blog/ai-and-ml/github-copilot/getting-more-from-each-token-how-copilot-improves-context-handling-and-model-routing",
+   "published": "2026-06-17",
+   "published_ts": 1781725306.0,
+   "summary": "How GitHub Copilot is making more of each session go toward useful work, so your credits go further.\n\nThe post Getting more from each token: How Copilot improves context handling and model routing appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Model Context Protocol",
+    "Azure"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "4e9e2bfdc46dbbe9"
+  },
   {
    "key": "aws",
    "company": "AWS",

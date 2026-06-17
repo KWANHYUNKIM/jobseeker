@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-18T03:22:39",
+  "generated_at": "2026-06-18T04:55:09",
   "source": "youtube",
   "tech_count": 167,
   "curriculum_count": 20,
@@ -2793,88 +2793,6 @@
         "stage": "실전"
       }
     ],
-    "Jira": [
-      {
-        "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
-        "url": "https://www.youtube.com/watch?v=b5PL4iYfzEU",
-        "thumbnail": "https://i.ytimg.com/vi/b5PL4iYfzEU/mqdefault.jpg",
-        "channel": "일맛",
-        "views": 11227,
-        "length": "9:14",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
-        "url": "https://www.youtube.com/watch?v=rjxPQaUIowM",
-        "thumbnail": "https://i.ytimg.com/vi/rjxPQaUIowM/mqdefault.jpg",
-        "channel": "Learning by Doing (러닝바이두잉)",
-        "views": 9244,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
-        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
-        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
-        "channel": "colicelab",
-        "views": 1038,
-        "length": "5:03",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자 잡일, 이제 AI가 다 합니다 Claude Code + Jira",
-        "url": "https://www.youtube.com/watch?v=US3SpMT0syA",
-        "thumbnail": "https://i.ytimg.com/vi/US3SpMT0syA/mqdefault.jpg",
-        "channel": "딩코딩코 및 인프런 inflearn",
-        "views": 10646,
-        "length": "9:52",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인생 효율 2배로 늘리는 법 - (Jira 활용)",
-        "url": "https://www.youtube.com/watch?v=QZHSTIWDTC8",
-        "thumbnail": "https://i.ytimg.com/vi/QZHSTIWDTC8/mqdefault.jpg",
-        "channel": "라매개발자",
-        "views": 39507,
-        "length": "7:13",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, 너 내 동료가 되라! - 2강 Jira 설치 및 설정",
-        "url": "https://www.youtube.com/watch?v=afUZB_IOze0",
-        "thumbnail": "https://i.ytimg.com/vi/afUZB_IOze0/mqdefault.jpg",
-        "channel": "Learning by Doing (러닝바이두잉)",
-        "views": 3834,
-        "length": "8:20",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira 사용법 : 초보자를 위한 Atlassian Jira 튜토리얼 (애자일 프로젝트 관리) /Jira 무료 강의 (아틀라시안 지라)",
-        "url": "https://www.youtube.com/watch?v=Vwa7BQ6WFYw",
-        "thumbnail": "https://i.ytimg.com/vi/Vwa7BQ6WFYw/mqdefault.jpg",
-        "channel": "Open Source Consulting - 오픈소스컨설팅",
-        "views": 49295,
-        "length": "34:27",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "성장하는 조직의 프로젝트 관리 노하우 - Jira 클라우드 활용법",
-        "url": "https://www.youtube.com/watch?v=jvdcHtnZ_Rc",
-        "thumbnail": "https://i.ytimg.com/vi/jvdcHtnZ_Rc/mqdefault.jpg",
-        "channel": "Polaris Office Atlassian",
-        "views": 3417,
-        "length": "49:08",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "Oracle": [
       {
         "title": "Oracle 01 - 오라클 시작하기",
@@ -2954,6 +2872,88 @@
         "views": 8784,
         "length": "1:59:07",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Jira": [
+      {
+        "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
+        "url": "https://www.youtube.com/watch?v=b5PL4iYfzEU",
+        "thumbnail": "https://i.ytimg.com/vi/b5PL4iYfzEU/mqdefault.jpg",
+        "channel": "일맛",
+        "views": 11227,
+        "length": "9:14",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
+        "url": "https://www.youtube.com/watch?v=rjxPQaUIowM",
+        "thumbnail": "https://i.ytimg.com/vi/rjxPQaUIowM/mqdefault.jpg",
+        "channel": "Learning by Doing (러닝바이두잉)",
+        "views": 9244,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
+        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
+        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
+        "channel": "colicelab",
+        "views": 1038,
+        "length": "5:03",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자 잡일, 이제 AI가 다 합니다 Claude Code + Jira",
+        "url": "https://www.youtube.com/watch?v=US3SpMT0syA",
+        "thumbnail": "https://i.ytimg.com/vi/US3SpMT0syA/mqdefault.jpg",
+        "channel": "딩코딩코 및 인프런 inflearn",
+        "views": 10646,
+        "length": "9:52",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인생 효율 2배로 늘리는 법 - (Jira 활용)",
+        "url": "https://www.youtube.com/watch?v=QZHSTIWDTC8",
+        "thumbnail": "https://i.ytimg.com/vi/QZHSTIWDTC8/mqdefault.jpg",
+        "channel": "라매개발자",
+        "views": 39507,
+        "length": "7:13",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, 너 내 동료가 되라! - 2강 Jira 설치 및 설정",
+        "url": "https://www.youtube.com/watch?v=afUZB_IOze0",
+        "thumbnail": "https://i.ytimg.com/vi/afUZB_IOze0/mqdefault.jpg",
+        "channel": "Learning by Doing (러닝바이두잉)",
+        "views": 3834,
+        "length": "8:20",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira 사용법 : 초보자를 위한 Atlassian Jira 튜토리얼 (애자일 프로젝트 관리) /Jira 무료 강의 (아틀라시안 지라)",
+        "url": "https://www.youtube.com/watch?v=Vwa7BQ6WFYw",
+        "thumbnail": "https://i.ytimg.com/vi/Vwa7BQ6WFYw/mqdefault.jpg",
+        "channel": "Open Source Consulting - 오픈소스컨설팅",
+        "views": 49295,
+        "length": "34:27",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "성장하는 조직의 프로젝트 관리 노하우 - Jira 클라우드 활용법",
+        "url": "https://www.youtube.com/watch?v=jvdcHtnZ_Rc",
+        "thumbnail": "https://i.ytimg.com/vi/jvdcHtnZ_Rc/mqdefault.jpg",
+        "channel": "Polaris Office Atlassian",
+        "views": 3417,
+        "length": "49:08",
+        "published": "4년 전",
         "stage": "실전"
       }
     ],

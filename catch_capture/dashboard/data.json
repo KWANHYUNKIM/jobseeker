@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-18T03:16:03",
-  "source_dir": "screenshots/all_통합_20260618_031557",
+  "generated_at": "2026-06-18T04:55:03",
+  "source_dir": "screenshots/all_통합_20260618_045457",
   "keyword": "통합",
   "jobs": [
     {
@@ -120300,6 +120300,59 @@
     },
     {
       "site": "saramin",
+      "company": "(주)와이매틱스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)와이매틱스 서버·백엔드 개발자 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54207543&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=4e35bf1f-913a-4021-a7f0-9bb198a9752e",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "gRPC"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "대용량 처리"
+      ],
+      "qualifications": "• 경력 무관\n\n• 학력무관\n\n• 상용화 경험 — 실제 서비스·납품·운영된 시스템을 직접 구축\n\n• 서버·백엔드를 설계~개발~배포~운영까지 책임지고 끌고 가 본 실력\n\n• 네트워크를 심화 이해하고 직접 진단 가능 (방화벽·포트·라우팅 너머 패킷 흐름 추적으로 원인 규명)\n\n• AI 도구를 활용하되, 결과물의 동작 원리·위험을 스스로 설명하고 정확성·보안성을 검증할 수 있는 능력",
+      "preferences": "• AI 모델 서빙 / LLM·RAG / 벡터 DB·임베딩 검색 구축·운영 경험\n\n• 데이터 시스템 지식·경험: 데이터 파이프라인(ETL), 실시간 스트리밍 처리, 대용량 데이터 처리·저장, DB 설계\n\n• 레거시·통신 장비: 교환기(IP-PBX)·CTI/IVR·음성 패킷 등 연계 경험, 필요시 유지보수·개선\n\n• 실시간·다채널 연계: gRPC 스트리밍·소켓·메시지 큐 등 경험\n\n• 온프레미스: 리눅스 서버 직접 구축·운영, 망분리(폐쇄망) 개발·배포\n\n• 정부·공공기관·관공서 프로젝트, 보안·개인정보 처리 경험\n\n• 전자정부 표준 프레임워크 기반 개발 경험 (입사 후 습득 가능한 자)",
+      "main_tasks": "AI 112 긴급신고 지원 시스템의 서버·백엔드를 설계·구축·운영합니다. (경찰청·연구기관·협력사와 컨소시엄으로 진행)\n\n(시스템 개요: 신고 음성 인식·분석 → 사건 분류 / 법령·판례·매뉴얼 검색 기반 출동 판단 지원 / 외국인 신고 실시간 통번역)\n\n아래 업무 중 일부를 담당하게 됩니다. (포지션과 역량에 따라 범위가 정해질 예정)\n\n1. 분류·요약·임베딩 등 AI 모델의 API 서빙 및 안정 운영\n\n2. 법령·판례·매뉴얼 벡터 검색·RAG 지식 검색 시스템 개발\n\n3. 자연어 질의 → 통계·시각화 분석 기능 개발\n\n4. 민감정보 서버의 인증·인가, 암호화, 접근통제, 비식별화 설계·구현\n\n5. 교환기(IP-PBX)·CTI/IVR·협력사 시스템 실시간 연계\n\n6. 자체 GPU 서버 구성(웹·WAS·DB·모델), 망분리(폐쇄망) 배포·검증",
+      "benefits": "• 유연한 근무제\n\n• 업무 장비 제공\n\n• 시간 단위 연차\n\n• 건강검진 반차 지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주) 디비웍스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[백엔드] Java 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54202499&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=d15919b3-a643-4d00-92ef-f776b3b6ea5d",
+      "career": "경력5년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "MySQL",
+        "Redis",
+        "MariaDB",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 5년 이상\n\n• 학력무관",
+      "preferences": "",
+      "main_tasks": "- Java springframework 소스코딩 (git 사용)\n\n- SQL쿼리 (mysql/mariadb)\n\n- eGovFramework 유경험자\n\n- Redis DB사용 유경험자\n\n- AI API사용 유경험자\n\n- 공공포털 API사용 유경험자",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -148435,6 +148488,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)씨드앤",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[씨드앤] R&D 인턴",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54204395&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=dfc3bdf9-92d7-409d-b7b7-0a696ef04bef",
+      "career": "신입",
+      "location": "서울송파구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "",
+      "preferences": "ㆍ 건축 및 설비, 건물에너지 및 실내환경 등 유관 전공 계열이신 분\n+ Python, Claude 등 기반 Al 모델링, Agent 구축 경험\nㆍ 건물에너지/환경/101 분야 프로젝트 또는 연구 경험이 있으신 분\n\n[모\n때\n으\not\nal\n31\n>\npal\nHor\n00\n\n30\n10\n=\n\nMEQ 710] 자율적이고 몰입할수있는 SONA\n성징할수있도록다양한제도를운영하고있습니다.\n\n유연하고 자율적인 근무 환경\n\n턴 종료 후에는 오전 8시부터 10시 사이 자율 출근:\n점심시간은 1시간 10분으로 여유 있게 식사와 휴식을 즐길 수 있습니다.\n반려동물과의 동반 출퇴근이 가능합니다.\n\n[은\n\n최신형\n\n신형\n\n구성원 간\n\n지향합니\n\n사무실에서는 풍미 좋은 커피를 무제한으로 제공합니다.\n\n성장을 위한 지원\n\n신규 입사자가 빠르게 적응할 수 있도록 온보딩 프로그램을 운영합니다.\n소통과 연결의 문화\n\n@ 서류전형 6@9 1차대면면접 Oat (4) ew\n\n지원서류\n\nㆍ이력서\n\n모두 자유양식이며\n추가로 제출하고 싶\n\n훌 56604\n\nBetter For US, Better For EARTH",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)사람인",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -155439,6 +155517,52 @@
       "preferences": "• 점역·교정사 자격증 소지자(1급/2급)\n\n• 묵자–점자 병렬말뭉치 또는 대체자료(점자도서) 제작·검수 경험자\n\n• 점자 변환/입력 SW(점사랑 등), 아래아한글·MS오피스 활용 가능자\n\n• AI 학습데이터 라벨링·검수 경험자\n\n• 시각장애 당사자 환영",
       "main_tasks": "• AI 점자 변환 결과물의 정확성 검수 및 교정(QA)\n\n• 묵자–점자 병렬 학습데이터 구축·검증 및 라벨링\n\n• 한글 수학 점자 / UEB(통합영문점자) 점역 규칙 정합성 평가\n\n• 점역 오류 유형 분류 및 교정 가이드라인 작성 지원",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)블랙월",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[블랙올AI] 경영지원 파트타임 (재택전환 가능)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54207136&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=38becf70-02d8-4d57-8477-bbb469aa1fa3",
+      "career": "경력무관",
+      "location": "서울강서구 | 10,320 원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n• 커뮤니케이션 능력이 뛰어나야 해요\n\n• 팀워크를 잘 할 수 있어야 해요",
+      "preferences": "• AI 서비스 이용 경험이 있으면 좋아요",
+      "main_tasks": "• B2B 고객사 이메일링 및 문의 응대\n\n• 업무 안정화 시 주 1일 출근, 4일 재택 형태 전환 가능",
+      "benefits": "• 업무 안정화 시 주 1회 출근 및 재택구조 전환 가능합니다."
+    },
+    {
+      "site": "saramin",
+      "company": "(주)대한오토텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI기반 전산/시스템 구축 담당자 채용(경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199630&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5b2246d9-d7b2-47f5-9b79-05317b2260af",
+      "career": "경력3년↑",
+      "location": "경남양산시",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 학력무관\n\n• 대학졸업(2·3년제) 이상\n\n• 관련 경력 3년 이상 (전산·개발·시스템 구축)\n\n• 생성형 AI Tool 활용 및 업무 자동화 경험자\n\n• 제조업 전산 시스템 경험 보유자",
+      "preferences": "•ERP·MES 구축·운영 경험\n\n• Python·VBA·SQL 활용 가능자\n\n• AI API 연동 및 자동화 구축 경험\n\n• 웹 기반 사내 시스템 개발 경험",
+      "main_tasks": "• 생성형 AI(Claude, ChatGPT)를 활용한 업무 자동화 및 사내 시스템 개발\n\n• Claude Code 기반 코드 개발·고도화\n\n• ERP·MES 구축·운영 및 생산 데이터 분석·시각화\n\n• AI Agent 및 사내 업무 지원 시스템 구축",
+      "benefits": "• 조직 문화 : 자유로운 연차사용\n\n• 리프레시 : 반차, 여름휴가, 연차"
     },
     {
       "site": "saramin",
@@ -178077,6 +178201,39 @@
     },
     {
       "site": "saramin",
+      "company": "(주)포오스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 하반기 각 부문 신입/경력 직원 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54204888&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=3977d9b9-60d4-4208-9be2-f93f0c9ea740",
+      "career": "신입·경력",
+      "location": "서울구로구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "MySQL",
+        "MSSQL",
+        "HuggingFace",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "석박사 우대",
+        "오픈소스 기여"
+      ],
+      "qualifications": "IT\n\n기술영업\n경력\nㆍ통신장비,\n\n전산장비 영업\nㆍIT분야의 2~5년의 경력자\n\nㆍ동종업계 영업 경력자 우대\n\nㆍ학력 무관, 군필 또는 면제자\n\n신입\nㆍ영업에 관심이 있으신 분\n\nㆍ학력 무관, 군필 또는 면제자\n\n기술 PM\n경력\n\nㆍ통신/녹음 시스템\n\n구축 및 설치\nㆍ관련업무 1년이상 경력자\n\nㆍ리눅스 관련 경력자 우대\n\nㆍMYSQL/MSSQL 경험자 우대\n\n신입\nㆍLINUX / MYSQL/MSSQL 교육 이수자 우대\n\n인공지능\n\n융합\n경력\nㆍLLM, RAG, NLP\n\n(NLU, NER), STT 기술을\n\n활용한 콜센터 AI 서비스\n\n신규 기능 기획/연구/개발\n\nㆍLLM 모델 등의 Fine-tuning\n\n(LoRA 등) 및 도메인 최적화\n\n연구/개발\n\nㆍ콜센터 도메인에 특화된\n\nAI 모델 및 파이프라인을\n\n설계하고 상용화 수준으로\n\n고도화\n\nㆍPython 혹은 Java 백엔드 개발 5년\n\n이상에 준하는 숙련도\n\nㆍHuggingFace 등 오픈소스 AI 모델 및\n\n라이브러리를 활용한 서비스 개발/구현 경험\n\nㆍRESTful API 설계 및 연동 서비스 개발/구현 경험\n\nㆍLinux 환경에서의 서비스 개발 및 운영 경험\n\nㆍPython 혹은 Java개발 및 라이브러리활용 가능\n\nㆍRESTful API 및 서버 구조 기본 이해\n\nㆍLinux 환경 사용 가능",
+      "preferences": "ㆍAI 관련 전공 석사 이상 학위\n\nㆍRAG/LLM/NLP 기반 검색 시스템 혹은\n\n지능형 에이전트 설계 및 구현 경험\n\nㆍRAG 관련 비정형 데이터 처리 및\n\n검색 성능 개선 경험 (Parsing, Chunking 전략,\n\nPrompt Engineering 등)\n\nㆍLLM 등의 AI 모델 Fine-Tuning 및 도메인\n\n최적화 경험 (LoRA, QLoRA, PEFT)\n\nㆍ자연어 처리 (NLP, NLU, NER) 기반\n\n분류 · 요약 · 개체 추출 모델 및 서비스 구현 경험\n\nㆍTransformer 기반 사전학습 언어모델\n\n(KoBERT, KoELECTRA 등) 활용 경험\n\nㆍNemo Conformer, Whisper 등 오픈소스\n\nSTT 모델 활용 도메인 튜닝 및 서비스 구현 경험\n\n신입\n\nㆍAI 관련 전공 또는 심화 과목 이수\n\nㆍHuggingFace 등 오픈소스 AI 라이브러리 활용\n\n구현 실습 경험\n\nㆍRAG · Embedding · Vector Search 개념\n\n이해 또는 실습 경험\n\nㆍWhisper 등 오픈소스 STT 모델 실습 경험\n\nㆍNLP 기반 분류 · 요약 · 엔티티 추출 프로젝트 경험\n\nㆍ개인 AI 프로젝트 또는 캡스톤 수행 경험\n\n(주)포오스의 사업영역\n\n(주)포오스에서 누리는 복리후생\n\nㆍ탄력적 근무제 시행\n\nㆍ회사 실적에 따른 성과급 지급\n\nㆍ분기별 부서별 우수사원 포상\n\nㆍ연말 우수사원 포창 및 장기 근속자 포상\n\nㆍ식대 지원, 간식 제공\n\nㆍ생일자 기념 행사 및 기프트 카드 지급\n\nㆍ명절 및 크리스마스 선물 지급\n\nㆍ주 5일제 및 연차 자유 사용\n\nㆍ월 1회 전체 휴무\n\nㆍ각종 경조사 지원 및 휴무\n\nㆍ사내 동호회 지원\n\nㆍ체력단비 지원\n\nㆍ자기계발비 및 도서비 지원",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사 윈어시",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -187490,6 +187647,29 @@
     },
     {
       "site": "dev",
+      "company": "티에이케이정보시스템",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 ERP팀 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556571?ReturnUrl=RecruitInfo",
+      "career": "신입",
+      "location": "서울 강서구",
+      "dday": "~06.28(일)",
+      "tech_stack": [
+        "Oracle"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -192262,18 +192442,18 @@
     }
   ],
   "stats": {
-    "total": 6377,
+    "total": 6384,
     "by_size": {
-      "중소기업": 5719,
+      "중소기업": 5726,
       "대기업": 398,
       "중견기업": 260
     },
     "by_role": {
-      "기타": 834,
+      "기타": 837,
       "DevOps/인프라": 933,
-      "백엔드": 2751,
+      "백엔드": 2754,
       "모바일": 1029,
-      "AI/ML": 2125,
+      "AI/ML": 2128,
       "프론트엔드": 1812,
       "풀스택": 569,
       "게임": 40,
@@ -192286,13 +192466,13 @@
       "wanted": 1428,
       "jumpit": 443,
       "jobkorea": 1169,
-      "saramin": 3061,
-      "dev": 276
+      "saramin": 3067,
+      "dev": 277
     },
     "top_tech": [
       [
         "Python",
-        1985
+        1988
       ],
       [
         "AWS",
@@ -192300,7 +192480,7 @@
       ],
       [
         "Java",
-        1653
+        1655
       ],
       [
         "React",
@@ -192308,7 +192488,7 @@
       ],
       [
         "Git",
-        1050
+        1051
       ],
       [
         "Docker",
@@ -192324,7 +192504,7 @@
       ],
       [
         "Linux",
-        918
+        919
       ],
       [
         "TypeScript",
@@ -192332,7 +192512,7 @@
       ],
       [
         "MySQL",
-        817
+        819
       ],
       [
         "Kubernetes",
@@ -192384,7 +192564,7 @@
       ],
       [
         "Redis",
-        437
+        438
       ],
       [
         "PyTorch",
@@ -195354,6 +195534,22 @@
         "jobkorea": 1526,
         "saramin": 4016,
         "dev": 339
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-18T04:55:00",
+      "keyword": "통합",
+      "raw_total": 7884,
+      "deduped": 7301,
+      "active": 6384,
+      "closed": 917,
+      "site_counts": {
+        "wanted": 1441,
+        "jumpit": 555,
+        "jobkorea": 1526,
+        "saramin": 4022,
+        "dev": 340
       },
       "anomalies": []
     }
