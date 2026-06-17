@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-17T22:36:21",
+ "generated_at": "2026-06-18T00:10:44",
  "total": 100,
  "countries": [
   {
@@ -700,12 +700,12 @@
    ],
    "languages": [
     {
-     "name": "Java",
+     "name": "Python",
      "count": 8
     },
     {
-     "name": "Python",
-     "count": 8
+     "name": "Java",
+     "count": 7
     },
     {
      "name": "JavaScript",
@@ -771,7 +771,7 @@
       "count": 1
      },
      {
-      "name": "Baseplate.py / Baseplate.go",
+      "name": "Async / job tier",
       "count": 1
      }
     ],
@@ -823,12 +823,12 @@
       "count": 8
      },
      {
-      "name": "Cassandra",
+      "name": "Redis",
       "count": 5
      },
      {
-      "name": "Redis",
-      "count": 5
+      "name": "Cassandra",
+      "count": 4
      },
      {
       "name": "Elasticsearch",
@@ -916,15 +916,15 @@
      "count": 2
     },
     {
-     "name": "Service-oriented",
-     "count": 2
-    },
-    {
      "name": "Cell/Zone 기반 격리",
      "count": 1
     },
     {
      "name": "CQRS / read-optimized derived stores",
+     "count": 1
+    },
+    {
+     "name": "Event-driven pub/sub fan-out",
      "count": 1
     }
    ]
@@ -4734,41 +4734,47 @@
    "country": "US",
    "domain": "SNS",
    "languages": [
-    "C++",
     "Hack/PHP",
+    "C++",
     "Python",
     "JavaScript",
     "Rust",
-    "Java"
+    "Java/Kotlin"
    ],
    "stack": {
     "backend": [
      "Hack (HHVM)",
-     "Thrift / fbthrift",
+     "fbthrift / Thrift RPC",
      "Folly",
-     "Proxygen",
-     "ServiceRouter",
-     "Python (Cinder)"
+     "Proxygen (HTTP/2,3)",
+     "ServiceRouter (SMC)",
+     "Python (Cinder)",
+     "Wangle",
+     "Async / job tier"
     ],
     "frontend": [
      "React",
      "React Native",
-     "Relay",
+     "Relay (GraphQL client)",
      "GraphQL",
      "Flow",
-     "Hermes",
-     "StyleX"
+     "Hermes (JS engine)",
+     "StyleX",
+     "Metro bundler"
     ],
     "data": [
      "MySQL (MyRocks)",
      "TAO",
      "RocksDB",
      "ZippyDB",
+     "Cassandra/Instagram",
      "Presto",
-     "Cassandra",
      "Scuba",
-     "Haystack/f4",
-     "Manifold"
+     "Haystack / f4",
+     "Manifold",
+     "LogDevice",
+     "Scribe",
+     "Memcache/mcrouter"
     ],
     "infra": [
      "Twine (Tupperware)",
@@ -4777,19 +4783,22 @@
      "Configerator",
      "Delos",
      "FBLearner Flow",
-     "Akkio"
+     "Akkio",
+     "Conveyor (CD)",
+     "Maelstrom (DR)",
+     "BGP/Edge PoP + Katran"
     ]
    },
    "architecture": [
-    "Service-oriented (Thrift RPC mesh)",
-    "GraphQL/TAO data layer over sharded MySQL",
-    "Monorepo + remote build (Buck2)",
-    "Region-aware replication with master/replica routing"
+    "Service-oriented Thrift RPC mesh with ServiceRouter/SMC service discovery",
+    "TAO write-through graph cache over horizontally sharded MySQL(MyRocks)",
+    "Monorepo + remote/distributed build (Buck2) with continuous deployment (Conveyor)",
+    "Region-aware replication: master shards per region, master/replica routing, region drain for DR"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"Apps<br/>React Native + Hermes\"]\n    WEB[\"Web<br/>React + Relay\"]\n    POP[\"Edge PoP<br/>Proxygen + TLS termination\"]\n  end\n  subgraph Web[\"Web / API Tier\"]\n    HHVM[\"Web Tier<br/>Hack on HHVM\"]\n    GQL[\"GraphQL Server<br/>schema + resolvers\"]\n  end\n  subgraph Svc[\"Core Services\"]\n    SR[\"ServiceRouter<br/>Thrift RPC mesh\"]\n    TAO[\"TAO<br/>social graph cache\"]\n    FEED[\"Feed / Ranking<br/>C++ services\"]\n    ML[\"Inference<br/>PyTorch + accelerators\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL<br/>MyRocks engine\"]\n    ZIPPY[\"ZippyDB<br/>RocksDB + Paxos\"]\n    HAY[\"Haystack / f4<br/>photo + blob store\"]\n    PRESTO[\"Presto + Hive<br/>analytics warehouse\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    SCRIBE[\"Scribe + LogDevice<br/>log transport\"]\n    ASYNC[\"Async tier<br/>deferred jobs\"]\n    SCUBA[\"Scuba<br/>realtime telemetry\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    TWINE[\"Twine<br/>cluster scheduler\"]\n    CFG[\"Configerator<br/>config distribution\"]\n  end\n  APP --> POP\n  WEB --> POP\n  POP --> HHVM\n  HHVM --> GQL\n  GQL -->|Thrift| SR\n  SR --> TAO\n  SR --> FEED\n  FEED --> ML\n  TAO -->|read/write through| MYSQL\n  FEED --> ZIPPY\n  GQL --> HAY\n  SR --> SCRIBE\n  SCRIBE --> PRESTO\n  SCRIBE --> SCUBA\n  HHVM --> ASYNC\n  TWINE -.-> SR\n  CFG -.-> SR",
-   "why_language": "수십억 사용자 규모에서 레이턴시와 CPU 효율이 곧 비용이라 피드 랭킹·TAO·스토리지 같은 핫패스는 C++로, 제품 웹 로직은 PHP를 JIT 컴파일하는 Hack/HHVM으로 빠른 반복과 점진적 타입 안정성을 동시에 챙긴다. 데이터·ML 파이프라인은 Python(PyTorch)로 생산성을 얻되 성능 임계 구간은 C++/Rust로 내려, 동일 모노레포 안에서 언어를 용도별로 분리한다.",
-   "why_architecture": "단일 거대 코드베이스를 Thrift RPC로 잘게 나눈 서비스 메시 위에 올려, 소셜 그래프 읽기 폭증을 TAO 캐시 계층이 흡수하고 그 뒤의 샤딩된 MySQL이 진실의 원천(source of truth)을 맡는 read-heavy 패턴에 최적화했다. GraphQL을 데이터 계층 표준으로 삼아 클라이언트가 필요한 그래프만 선언적으로 가져가게 하고, region별 master/replica 라우팅으로 지리적 지연과 일관성을 동시에 관리한다.",
-   "summary": "Hack/HHVM 웹 티어와 C++ 핫패스를, TAO·샤딩 MySQL 위 GraphQL 데이터 계층과 Thrift 서비스 메시로 엮은 초대규모 read-heavy 소셜 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client & Edge\"]\n    APP[\"App / Web<br/>React + React Native + Hermes\"]\n    POP[\"Edge PoP<br/>Proxygen + Katran L4LB\"]\n  end\n  subgraph Web[\"Web / API Tier\"]\n    WWW[\"Web Tier<br/>Hack on HHVM\"]\n    GQL[\"GraphQL Server<br/>Relay + GraphQL\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    SR[\"ServiceRouter / SMC<br/>fbthrift RPC\"]\n    SVC[\"Core Services<br/>C++ Folly + Python\"]\n    ASYNC[\"Async / Job Tier<br/>Iris queues\"]\n  end\n  subgraph Data[\"Data & Storage\"]\n    TAO[\"TAO<br/>Graph Cache\"]\n    MC[\"Memcache<br/>mcrouter\"]\n    SQL[\"MySQL<br/>MyRocks shards\"]\n    ZDB[\"ZippyDB<br/>RocksDB KV\"]\n    BLOB[\"Haystack / f4<br/>Blob store\"]\n  end\n  subgraph Plat[\"Platform & Analytics\"]\n    TW[\"Twine<br/>Container orch\"]\n    CFG[\"Configerator<br/>Config push\"]\n    LOG[\"Scribe -> Presto / Scuba<br/>Analytics\"]\n    ML[\"FBLearner Flow<br/>DLRM ranking\"]\n  end\n  APP --> POP --> WWW\n  WWW --> GQL\n  GQL -->|Thrift| SR\n  SR --> SVC\n  SVC --> ASYNC\n  SVC -->|read/write| TAO\n  TAO --> MC\n  TAO -->|miss / persist| SQL\n  SVC --> ZDB\n  SVC --> BLOB\n  SVC --> ML\n  TW -.runs.-> SVC\n  CFG -.config.-> SVC\n  SVC -.logs.-> LOG\n  ML -.features.-> LOG",
+   "why_language": "수십억 사용자의 PHP 코드베이스를 점진적으로 타입 안전하게 진화시키기 위해 PHP를 Hack/HHVM으로 JIT 컴파일했고, 지연·메모리가 결정적인 그래프 캐시·스토리지·네트워킹 핫패스는 C++(Folly/Proxygen)와 Rust로 작성한다. 데이터 파이프라인·ML·툴링은 Python, 클라이언트는 React/React Native(Hermes) 기반의 JavaScript로 통일해 코드·인재·추상화를 대규모로 재사용한다.",
+   "why_architecture": "단일 거대 모놀리스로는 수천 개 팀이 독립 배포할 수 없으므로 fbthrift RPC와 ServiceRouter 기반의 서비스 메시로 분해하되, 소셜 그래프 읽기가 트래픽의 대부분이라 TAO라는 단일 그래프 캐시 계층으로 일관성과 캐시 적중률을 중앙집중 관리한다. 데이터를 리전별 master/replica 샤드로 분산하고 region drain·Maelstrom으로 리전 단위 장애를 흡수하도록 설계해, 읽기는 지역 복제본에서 처리하고 쓰기만 master로 라우팅한다.",
+   "summary": "Hack/HHVM 웹티어 + C++ RPC 메시 위에, TAO 그래프 캐시가 샤딩된 MyRocks/MySQL을 감싸는 리전 인지형 초대규모 소셜 플랫폼",
    "deep_dive": [
     {
      "topic": "TAO — 소셜 그래프 캐시 계층",
@@ -4822,6 +4831,22 @@
     {
      "topic": "데이터 웨어하우스와 분석: Scribe → Hive/Presto → Scuba",
      "body": "### 제품 신호를 의사결정으로 바꾸는 분석 파이프라인\n\nMeta는 \"모든 것을 로깅하고, 거의 모든 것을 쿼리 가능하게\" 만든다. 이 분석 스택은 제품 실험·랭킹·운영의 토대다.\n\n#### 1) 로그 수집: Scribe + LogDevice\n- 서비스들은 이벤트를 **`Scribe`** 로 emit한다(분산 로그 전송 버스). 그 아래 **`LogDevice`** 가 내구성 있는 분산 로그 저장을 맡아, 순서 보장과 재생(replay)이 가능한 스트림을 제공한다.\n- 이 구조 덕에 동일 이벤트 스트림을 **실시간 소비자(스트리밍 집계)** 와 **배치 적재(웨어하우스)** 가 동시에 가져갈 수 있다.\n\n#### 2) 배치 웨어하우스: Hive + Presto\n- 로그는 거대한 **Hive 데이터 웨어하우스**(컬럼형, ORC류 포맷)에 적재된다. 페타바이트~엑사바이트 규모.\n- 대화형 분석은 **`Presto`**(Meta가 만든 분산 SQL 엔진)가 담당한다. 여러 데이터소스에 걸친 ad-hoc SQL을 **인메모리 파이프라인**으로 빠르게 실행해, 데이터 사이언티스트가 초~분 단위로 탐색한다.\n- 무거운 ETL/변환은 Spark류 배치 잡으로 처리되며, 산출물은 다시 웨어하우스 테이블로 떨어진다.\n\n#### 3) 실시간 관측: Scuba\n- **`Scuba`** 는 **인메모리·실시간 슬라이스 앤 다이스** 분석 시스템이다. 샘플링된 이벤트를 메모리에 올려, 운영자가 \"지금 이 순간\" 임의 차원으로 집계·드릴다운한다.\n- 성능 회귀, 에러 급증, 실험 효과를 **수 초 지연**으로 본다. 정확한 전수 집계보다 **빠른 근사**를 택한 트레이드오프(샘플링 기반)다 — 디버깅·인시던트 대응에 최적.\n\n#### 4) 실험/ML로 환류\n- 이 데이터는 A/B 실험 플랫폼과 **`FBLearner Flow`**(ML 워크플로/feature store/모델 학습 오케스트레이션)로 흘러들어 랭킹·추천 모델을 학습시키고, 결과가 다시 제품에 반영되는 **닫힌 루프**를 형성한다.\n\n| 계층 | 시스템 | 지연 | 용도 |\n|------|--------|------|------|\n| 수집 | Scribe / LogDevice | ms~s | 내구성 로그 전송·재생 |\n| 배치 | Hive + Presto | s~min | 정확한 대규모 SQL 분석 |\n| 실시간 | Scuba | s | 근사·인메모리 운영 디버깅 |\n| ML | FBLearner Flow | 시간~일 | 모델 학습·서빙 |\n\n> 인사이트: \"정확하지만 느린\" 배치(Presto)와 \"근사하지만 즉시\"인 실시간(Scuba)을 **목적에 따라 분리**한 것이 핵심. 모든 분석을 한 시스템에 욱여넣지 않고, 정확도-지연 트레이드오프를 두 레이어로 나눴다."
+    },
+    {
+     "topic": "랭킹·추천 파이프라인: DLRM, 피처 스토어, FBLearner Flow",
+     "body": "### 추천이 곧 제품이다\nMeta의 핵심 제품(News Feed, Reels, Ads, Instagram Explore)은 본질적으로 **랭킹 문제**다. 후보 수천~수만 개를 사용자별로 실시간 정렬해 상위 수십 개를 반환해야 하며, 이 추론이 수십억 사용자에게 하루 수조 회 일어난다.\n\n### 다단계 랭킹(Multi-stage ranking)\n전체 콘텐츠를 한 번에 무거운 모델로 점수화하는 것은 불가능하므로 깔때기 구조를 쓴다.\n\n| 단계 | 후보 수 | 모델 | 목적 |\n|---|---|---|---|\n| Retrieval / 후보생성 | 수백만 → 수천 | 임베딩 ANN(`faiss`), two-tower | 빠르게 관련 후보만 추림 |\n| Lightweight ranking | 수천 → 수백 | 가벼운 NN | 1차 점수화 |\n| Heavy ranking | 수백 → 수십 | DLRM 등 대형 모델 | 정밀 점수·다목적 예측 |\n| Re-ranking | 수십 | 규칙·다양성 | 중복/품질/정책 보정 |\n\n### DLRM (Deep Learning Recommendation Model)\nMeta가 공개한 대표 추천 아키텍처. 핵심은 **희소 범주형 피처(sparse categorical features)**(예: 사용자 ID, 페이지 ID, 광고 ID)를 거대한 **embedding table**로 변환하고, 연속형 피처는 bottom MLP로 처리한 뒤 feature interaction(내적)을 거쳐 top MLP로 확률을 예측하는 구조다.\n- Embedding table이 **수백 GB~TB** 규모라 단일 GPU 메모리에 안 들어간다 → **model parallelism으로 embedding을 GPU/노드에 샤딩**하고, dense 부분은 data parallelism으로 처리하는 하이브리드 병렬화를 쓴다. (`TorchRec`가 이 샤딩을 추상화)\n- 학습 인프라로 **ZionEX / Grand Teton** 같은 자체 GPU 트레이닝 하드웨어를 설계했고, all-to-all 통신이 병목이라 고대역 인터커넥트가 중요하다.\n\n### 피처 스토어와 온라인/오프라인 일관성\n추천에서 가장 어려운 문제는 **학습 때 본 피처와 서빙 때 보는 피처가 같아야 한다(train-serve skew 방지)**는 점이다. Meta는 로그 스트림(Scribe)에서 사용자 행동을 캡처해 오프라인 학습용 테이블을 만들고, 동시에 온라인 서빙용 실시간 피처를 동일 정의로 계산한다. 노출(impression)과 클릭/전환이 시간차로 도착하므로(특히 광고 전환은 수일 지연) **라벨 조인을 위한 지연 윈도우와 attribution 로직**이 파이프라인에 들어간다.\n\n### FBLearner Flow\n전사 ML 워크플로 플랫폼. 데이터 추출 → 학습 → 평가 → 배포를 **DAG 형태의 워크플로**로 정의하고, 수천 명의 엔지니어가 GPU/CPU 풀을 공유하며 실험을 돌린다. 모델은 버전·A/B 실험으로 관리되고, 검증을 통과하면 서빙 티어(predictor)로 푸시된다. 핵심 가치는 **재현성 + 자원 스케줄링 + 실험 추적**을 표준화해 ML을 일부 전문가가 아닌 일반 제품 엔지니어도 쓰게 만든 것이다.\n\n### 트레이드오프\n- **지연 예산**이 절대적이라(피드 1건 렌더에 수십 ms) heavy 모델 크기를 무한정 키울 수 없고, retrieval 단계의 품질이 전체 천장을 결정한다.\n- Embedding table이 거대해 **메모리·통신 비용**이 GPU 연산보다 더 큰 병목 → 하드웨어/병렬화 전략이 모델 구조만큼 중요하다."
+    },
+    {
+     "topic": "검색 인프라: Unicorn과 소셜 그래프 검색",
+     "body": "### 일반 검색과 다른 점\n웹 검색(Google)은 문서를 키워드로 찾지만, Meta의 검색(Graph Search/엔티티 검색)은 **소셜 그래프 위에서** \"내 친구 중 시애틀에 사는 사람\", \"이 페이지를 좋아한 친구의 친구\" 같은 **그래프 탐색형 질의**를 풀어야 한다. 이를 위해 만든 분산 역색인 시스템이 **Unicorn**이다.\n\n### 역색인을 그래프 엣지로 모델링\nUnicorn은 전통적 검색의 **posting list** 개념을 그래프에 적용한다.\n- 각 term은 `<edge-type>:<id>` 형태(예: `friend:5`, `likes:104`)이고, 그 posting list는 해당 엣지를 가진 엔티티 ID 목록이다.\n- 질의는 이 posting list들에 대한 **집합 연산(AND/OR/차집합)**으로 표현된다. 예: `friend:5 AND lives_in:Seattle`.\n- **Apply 연산자**가 핵심 혁신 — 한 검색 결과를 다음 검색의 입력으로 \"펼쳐서(flatten)\" 그래프를 한 홉 더 따라간다. 이걸로 \"내 친구의 친구\"처럼 **다단계 그래프 순회**를 단일 질의 트리로 표현한다.\n\n### 샤딩과 분산 실행\n- 인덱스는 ID 기준으로 **수직 샤딩(vertical: 엔티티 타입별)**과 **수평 샤딩(horizontal: id mod N)**을 함께 쓴다.\n- 질의는 **2단계 aggregator** 구조로 실행된다: top aggregator → rack aggregator → leaf(인덱스 서버). 각 leaf가 자기 샤드에서 후보를 내고 상위에서 병합·정렬한다(scatter-gather).\n- 결과에는 **scoring/ranking**이 결합되어 단순 일치가 아니라 친밀도·인기도 등 신호로 정렬된다.\n\n### 실시간성과 일관성\n소셜 데이터는 끊임없이 바뀌므로(친구 추가, 좋아요) 인덱스에 **실시간 업데이트 스트림**이 필요하다. posting list는 메모리에 두어 저지연을 확보하고, 새 엣지는 스트리밍으로 반영한다. 강한 일관성보다 **빠른 수렴(eventual)**을 택해 검색 결과가 약간 지연될 수 있음을 허용한다.\n\n### 왜 이렇게?\nTAO가 \"이 노드의 엣지를 가져와\" 같은 **포인트 조회**에 최적화돼 있다면, Unicorn은 \"이 조건들을 모두 만족하는 노드 집합\"이라는 **역방향·집합 질의**에 최적화돼 있다. 둘은 상호보완적이며, 같은 소셜 그래프를 서로 다른 접근 패턴으로 인덱싱한 것이다."
+    },
+    {
+     "topic": "컨테이너 오케스트레이션과 배포: Twine, Shard Manager, Conveyor",
+     "body": "### 글로벌 규모의 스케줄링: Twine (구 Tupperware)\nMeta는 Kubernetes를 쓰지 않고 자체 오케스트레이터 **Twine**으로 수백만 대 서버에 작업을 배치한다. 일반적 컨테이너 스케줄러와 차별화되는 설계 철학:\n- **공유 풀 + 오버커밋**: 서비스를 전용 머신에 고정하지 않고 거대한 공유 풀에 배치한다. 자체 운영 데이터센터라 하드웨어를 표준화하고 자원을 촘촘히 채워 효율을 극대화한다.\n- **Entitlement(자원 권리) 모델**: 팀은 절대 머신이 아니라 \"권리\"를 할당받고, Twine이 어디에 둘지 결정한다.\n- **자동 유지보수 통합**: 커널 업그레이드·하드웨어 수리를 위해 작업을 자동으로 비우고(drain) 재배치하는 것이 1급 기능이다.\n\n### 상태 있는 서비스의 분산: Shard Manager\n무상태 서비스는 어디서 돌아도 되지만, TAO·ZippyDB처럼 **샤드를 소유한 상태 있는 서비스**는 \"어떤 샤드가 어느 서버에서, 누가 master인지\"를 관리해야 한다. **Shard Manager**가 이를 전담한다.\n- 수십억 개 샤드의 **배치·복제본 수·리더십(master 선출)**을 중앙에서 조율한다.\n- 서버 장애·드레인 시 영향받는 샤드만 **다른 복제본으로 페일오버**하고 부하를 재분산한다.\n- 리전 인지: 샤드 복제본을 여러 리전에 분산해 단일 리전 장애를 견디게 한다.\n\n### 설정 전파: Configerator\n코드 배포와 분리된 **런타임 설정**을 초당 수백만 노드에 일관되게 푸시한다. 설정 변경도 코드처럼 리뷰·버전관리되고, 카나리처럼 점진 롤아웃된다(이미 별도 토픽). 배포와 함께 \"기능을 코드로 출시하고 설정으로 켠다\"는 분리를 가능하게 한다.\n\n### 지속적 배포: Conveyor\nMeta는 **대부분의 서비스를 하루에도 여러 번, 사람 개입 없이 배포**한다. **Conveyor**가 표준 CD 파이프라인:\n- 모노레포에서 **Buck2**로 빌드 → 푸시 단계를 거친다.\n- **카나리 → 단계적 롤아웃(예: 1% → 리전 일부 → 전체)** 으로 진행하며, 각 단계에서 자동으로 헬스 메트릭(에러율·지연·SEV 신호)을 보고 **자동 롤백** 판단을 한다.\n- \"릴리스 트레인\" 대신 **변경마다 작게 자주\" 배포해, 문제 발생 시 원인 커밋 범위를 좁힌다.\n\n### 트레이드오프\n자체 스택을 쓰는 이유는 **규모와 하드웨어 통제** 때문이다. 오픈소스 K8s는 수만 노드 규모·자체 DC 가정에 맞지 않고, Twine/Shard Manager는 Meta의 자원 효율·드레인 자동화·리전 모델에 깊게 통합돼 있다. 비용은 **모든 것을 직접 만들고 유지**해야 한다는 것이지만, 이 규모에서는 효율 1%가 막대한 비용 절감으로 환산된다."
+    },
+    {
+     "topic": "비동기·이벤트 처리: Async 티어, LogDelving 스트리밍, mcrouter",
+     "body": "### 요청 경로에서 일을 빼낸다\n웹 티어(Hack)의 한 요청은 수 밀리초 안에 응답해야 하므로, **즉시 끝낼 필요 없는 일**(알림 발송, 푸시, 피드 팬아웃, 카운터 갱신, ML 피처 로깅 등)은 동기 경로에서 제거해 **Async 티어**로 넘긴다.\n- 웹 코드가 함수를 \"나중에 실행\"으로 enqueue하면, 별도 워커 풀이 큐에서 꺼내 실행한다. 재시도·지연 실행·rate limiting·우선순위가 내장돼 있다.\n- 효과: 사용자 응답 지연 단축 + 다운스트림 부하 평활화(스파이크 흡수).\n\n### 팬아웃(fan-out)의 비대칭 문제\nSNS의 고전 난제: 한 사용자가 글을 쓰면 **수천만 팔로워의 피드에 전파(write fan-out)**할 것인가, 아니면 읽을 때 합칠(read fan-out) 것인가? Meta는 **하이브리드**를 쓴다 — 일반 사용자는 write 시점에 팔로워 피드를 갱신하지만, **수천만 팔로워를 가진 셀럽/페이지는 write fan-out이 폭발하므로 read 시점에 끌어오는(pull)** 방식으로 전환한다. 이 결정 자체가 비동기 잡과 그래프 캐시(TAO)에 걸쳐 분산된다.\n\n### 영속 로그 스트리밍: LogDevice & Scribe\n- **Scribe**가 전사 로그/이벤트 버스 역할을 해 모든 서비스의 이벤트를 모은다 → 다운스트림(분석, ML 피처, 모니터링)이 구독한다.\n- **LogDevice**는 Meta의 분산 **append-only 로그 스토리지**로, Kafka와 유사하지만 **레코드를 여러 노드에 흩뿌려 저장(non-deterministic placement)** 해 단일 파티션의 핫스팟·재복제 부담을 줄인 것이 특징이다. 순서 보장이 필요한 복제 스트림(예: DB binlog, 작업 큐 백엔드)에 쓰인다.\n- **Delos**는 메타데이터/제어 평면을 위한 **재구성 가능한 합의 로그**로, 합의 프로토콜을 런타임에 교체할 수 있는 가상화 계층을 둔 점이 독특하다.\n\n### 캐시 라우팅: mcrouter\n수천 대 Memcache 인스턴스 앞단의 **memcached 프로토콜 라우터**. 클라이언트는 단일 캐시처럼 보고 말하지만, mcrouter가 **샤딩(consistent hashing)·복제·리전 간 라우팅·실패 처리·풀 분리**를 투명하게 처리한다. 리전 인지가 핵심 — 읽기는 로컬 리전 캐시에서, 무효화는 리전 간으로 전파해 master DB 변경과 캐시 일관성을 맞춘다.\n\n### 일관성 트레이드오프\n비동기·캐시·팬아웃 전반에서 Meta는 **강한 일관성보다 가용성과 지연을 우선**한다. 좋아요 수가 잠깐 어긋나거나 피드 항목이 수 초 늦게 보이는 것은 허용하되(eventual), 결제·인증 같은 경로는 별도로 강한 보장을 둔다. 이 \"경로별 일관성 차등\"이 초대규모에서 비용·성능을 맞추는 핵심 전략이다."
     }
    ],
    "debate": {
@@ -4933,47 +4958,47 @@
      {
       "name": "react/react",
       "url": "https://github.com/react/react",
-      "desc": "선언적 UI 라이브러리 — Meta 프론트엔드의 기반",
+      "desc": "선언적 UI 라이브러리 — 웹·React Native 클라이언트의 기반",
       "lang": "JavaScript",
-      "stars": 245828
+      "stars": 245922
      },
      {
       "name": "facebook/rocksdb",
       "url": "https://github.com/facebook/rocksdb",
-      "desc": "LSM 기반 임베디드 KV 스토리지 엔진 — MyRocks·ZippyDB의 코어",
+      "desc": "LSM 기반 임베디드 KV 엔진 — MyRocks·ZippyDB의 스토리지 코어",
       "lang": "C++",
-      "stars": 31761
+      "stars": 31772
      },
      {
       "name": "facebook/folly",
       "url": "https://github.com/facebook/folly",
-      "desc": "고성능 C++ 공통 라이브러리(컨테이너·동시성·futures)",
+      "desc": "고성능 C++ 핵심 라이브러리 컬렉션(동시성·문자열·자료구조)",
       "lang": "C++",
-      "stars": 30411
+      "stars": 30415
      },
      {
       "name": "facebook/hhvm",
       "url": "https://github.com/facebook/hhvm",
-      "desc": "Hack/PHP를 JIT 컴파일하는 가상머신 — 웹 티어 런타임",
+      "desc": "Hack/PHP를 JIT 컴파일하는 가상머신 — 웹 티어 실행 엔진",
       "lang": "C++",
-      "stars": 18628
+      "stars": 18633
      },
      {
       "name": "facebook/buck2",
       "url": "https://github.com/facebook/buck2",
-      "desc": "Rust로 작성된 대규모 모노레포 빌드 시스템",
+      "desc": "Rust로 작성된 대규모 모노레포용 원격 빌드 시스템",
       "lang": "Rust",
-      "stars": 4356
+      "stars": 4359
      }
     ]
    },
    "sources": [
     "https://engineering.fb.com/",
     "https://research.facebook.com/publications/tao-facebooks-distributed-data-store-for-the-social-graph/",
-    "https://engineering.fb.com/2015/06/02/data-infrastructure/scuba-diving-into-data-at-facebook/"
+    "https://github.com/facebookresearch/dlrm"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "pinterest",
