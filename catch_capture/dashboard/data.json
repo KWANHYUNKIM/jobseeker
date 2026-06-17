@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-18T01:41:38",
-  "source_dir": "screenshots/all_통합_20260618_014132",
+  "generated_at": "2026-06-18T03:16:03",
+  "source_dir": "screenshots/all_통합_20260618_031557",
   "keyword": "통합",
   "jobs": [
     {
@@ -27964,6 +27964,55 @@
       "preferences": "• 2bit 이하 양자화(quantization) 알고리즘을 설계하거나 실험해 본 경험\n• LLM 또는 SLM을 온디바이스/엣지 환경에서 실행해 본 프로젝트 경험\n• 자원이 제한된 환경에서 모델을 학습하거나 최적화해 본 경험\n• 모델 경량화 기법을 실제 모델·서비스에 적용해 본 경험\n• 관련 분야 학회·저널 게재 경험\n• 관련 전공 석사·박사 학위 보유 (학위 과정의 연구 경력은 경력으로 인정)",
       "main_tasks": "에너자이의 ​ML 직군은 데이터센터가 ​아닌 엣지·온디바이스 ​환경에서 동작하는 언어·음성 AI를 만듭니다.\n메모리도 연산 자원도 부족한 디바이스 위에서 큰 모델 못지않은 성능을 내야 하는, 흔치 않은 문제를 다룹니다.\n\"모델을 작게 만드는 연구\"와 \"실제 기기에서 잘 돌게 만드는 구현\"이 한 몸으로 맞물려, 연구가 논문이나 데모에서 끝나지 않고 제품이 되는 끝까지를 직접 경험하게 됩니다.\n\n• 자원이 제한된 환경에서 적은 파라미터로 목표 성능을 내는 초경량 transformer 기반 언어 모델을 직접 설계·학습\n• 정확도 손실을 최소화하며 모델을 압축하는 ultra-low-bit 양자화 연구 (QAT/PTQ, weight/activation quantization 등)\n• STT·LLM·TTS를 결합한 온디바이스 음성·언어 에이전트 구현\n• 정해진 명령에 반응하는 reactive 수준을 넘어, 맥락을 추론하는 reasoning 기반으로 동작하도록 설계\n• 사용자가 명시하지 않은 의도까지 읽어 선제적으로 대응하는 형태로 고도화\n• 사내 추론 엔진(Optimium) 팀과 협업해, 연구한 모델이 타겟 하드웨어에서 실제 가속되는 형태까지 통합\n• 타겟 디바이스: Qualcomm, Broadcom, Synaptics 등 다양한 반도체사 제품들",
       "benefits": "[함께 성장합니다]\n• 직무 관련 도서 구입비 지급\n• 업무 역량 향상을 위한 교육비 지급\n• 팀 스터디·세미나·컨퍼런스·논문 투고 비용 지원\n• 직무발명보상제도 시행\n\n[몰입할 수 있는 환경을 만듭니다]\n• 평일 주 5일 선택 출퇴근제(9시~11시 출근 선택)\n• SW/IT 고성능 장비 지원\n• 점심 및 저녁 식대 지원\n• 맛있는 간식과 커피머신 상시 비치\n• 외근 및 야근 시 택시비 지원\n\n[삶의 순간을 함께합니다]\n• 생일 유급 반차 제공\n• 결혼·출산 시 축하금 지급\n• 경조금 및 상조 서비스 지원\n• 건강검진 검진비 지원\n• 근속 연수에 따른 선물 지급\n• 동호회비 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "엑스에이아이 (xAI)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Physics Tutor",
+      "url": "https://www.wanted.co.kr/wd/357265",
+      "career": "",
+      "location": "신입 이상",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "• Master's or PhD in physics or a highly related field.\n• Expertise in one or more subdomains of physics, including but not limited to: condensed matter physics, high energy physics, nuclear physics, atomic/molecular/optical physics, quantum computing and information, computational physics, mathematical physics, and interdisciplinary physics (such as biophysics).\n• Proficiency in reading and writing, both in informal and professional English.\n• Strong ability to navigate various information resources, databases, and online resources is essential.\n• Outstanding communication, interpersonal, analytical, and organizational capabilities.\n• Solid reading comprehension skills combined with the capacity to exercise autonomous judgment even when presented with limited data/material.\n• Strong passion for and commitment to technological advancements and innovation.",
+      "preferences": "• Advanced expertise in physics, demonstrated by multiple publications, preferably with one or more first-author papers, in reputable peer-reviewed journals.\n• Previous AI Tutoring experience.\n• Teaching experience (as a professor, teacher, or tutor).\n• Experience in technical writing, journalism, or a professional writing setting.",
+      "main_tasks": "• Use proprietary software applications to provide input/labels on defined projects.\n• Support and ensure the delivery of high-quality curated data.\n• Play a pivotal role in supporting and contributing to the training of new tasks, working closely with the technical staff to ensure the successful development and implementation of cutting-edge initiatives/technologies.\n• Interact with the technical staff to help improve the design of efficient annotation tools.\n• Solve problems that help drive innovation in physics by guiding AI models to enhance research in specialized areas, improving outcomes in scientific discovery and application.\n• Choose problems from various fields across physics that align with your specialization, where you can confidently provide detailed solutions and evaluate model responses.\n• Regularly interpret, analyze, and execute tasks based on given instructions.",
+      "benefits": "• Health insurance (for eligible U.S. based positions).\n• 401(k) plan (for eligible U.S. based positions).\n• Paid sick leave (for eligible U.S. based positions).\n• Remote work from any location worldwide, subject to legal eligibility and time-zone compatibility.\n• Flexible hours for contractor positions with no fixed commitments required."
+    },
+    {
+      "site": "wanted",
+      "company": "피에프씨테크놀로지스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "B2B AI Product Owner(PO, 프로덕트 오너)",
+      "url": "https://www.wanted.co.kr/wd/338869",
+      "career": "",
+      "location": "경력 3년 이상",
+      "dday": "",
+      "tech_stack": [
+        "CSS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "저희는 이런 분을 찾고 있어요\n• Problem Solver: B2B 고객과 직접 소통하며 모호한 요구 사항 속에서 핵심 문제를 정의하고 해결책을 도출하는 데 두려움이 없는 분\n• Tech-Savvy: 데이터 분석 및 AI 기술에 대한 이해도가 높거나 관련 전공을 이수하여, 개발팀과 '기술 언어'로 소통이 가능한 분\n• Growth Mindset: 정해진 스펙대로 만드는 것이 아니라, 가설 검증과 실패를 통해 배우고 성장하며 '성공하는 제품'을 만들어 본 경험(또는 강렬한 의지)이 있는 분",
+      "preferences": "이런 경험을 가진 분이면 더 좋아요\n• B2B AI Experience: B2B 환경에서 AI 기반의 Product을 기획/개발하고 사업화 해본 경험이 있는 분\n• Global Capability: 비즈니스 레벨의 외국어 구사 능력(영어, 인도네시아어, 베트남어 등)을 갖춘 분\n• Domain Expertise: 금융권 실무(데이터 분석, IT 기획, 대출 심사 프로세스, 리스크 관리 등)를 경험했거나, 신용 평가 모델(CSS) 개발에 대한 이해도가 있는 분\n• Winning Experience: 팀 단위 프로젝트를 주도하여 가시적인 성과를 내본 경험이 있는 분",
+      "main_tasks": "B2B AI Product Owner(프로덕트 오너)는,\n금융회사를 대상으로 하는 B2B AI 솔루션의 기획부터 출시, 사업화까지, 제품 라이프사이클 전 과정을 리딩하고, 제품 방향성, 우선순위, 출시 기준에 대한 의사 결정을 주관해요.\n• Product: 신용 리스크 관리 및 여신 효율화를 위한 AX 솔루션\n• Scope: 국내외 금융사 대상 On-premise/SaaS 솔루션 기획 및 사업화\n\n합류하면 이런 일을 해요\n• Zero to One 기획\n시장에 없는 제품을 만들기 위해 가설을 설정하고, MVP를 기획하며, 시장의 피드백을 통해 제품을 완성해 나가요.\n• 고객 요구사항의 제품화\nB2B 고객의 복잡한 요구 사항을 명확히 분석하여, 우리 기술로 해결 가능한 Product Roadmap을 수립해요.\n• Cross-functional 협업\n뛰어난 엔지니어, 분석가와 밀접하게 소통하며 AI와 신용 리스크 관리 기술을 실제 비즈니스 가치로 전환해요.\n\n\"많은 PO 분들이 '성장할 수 있는 환경'과 '안정적인 회사' 사이에서 고민합니다. 저희는 이 두 가지 모순된 가치를 모두 해결했습니다. 이미 흑자를 내는 탄탄한 사업 구조 위에서, AI Agent라는 가장 트렌디한 기술로 글로벌 시장에 도전하는 이 여정에 탑승하세요. 당신의 커리어에서 가장 빛나는 순간을 함께 만들고 싶습니다.\"\n\n[ 업계 최고 수준의 동료 ] : 1위 DNA를 가진 뛰어난 개발자, 분석가들이 당신의 든든한 러닝 메이트\n[ Impact Career ] : 금융권 Business Model의 핵심인 여신 및 리스크 관리 영역의 새로운 기준을 제시하고, 내 손으로 만든 제품으로 변화시키는 짜릿한 경험\n[ Global Opportunity ] : 한국을 넘어 글로벌 시장에서 본인의 커리어를 확장할 수 있는 실질적인 기회를 제공",
+      "benefits": "[ Healthy to be Wealthy ]\n• 점심 식대 및 야근 식대 지원\n• 하루 영양제를 챙겨주는 ‘알고케어’ 서비스\n• 과일, 견과, 스낵 등 건강에 달달함을 더한 프리미엄 스낵바 운영\n• 매주 수요일 오후 SNS 핫템 특별 간식 제공\n• 연 1회 종합건강검진 및 건강검진 반차 지원\n\n[ Connection & Trust ]\n• 2달 한 번 '랜덤 런치 버디'\n• 신규 입사자를 위한 '피플버디' 매칭\n• 팀 빌딩을 위한 회식비&워크샵 지원\n• 사내 동호회 활동비 지원\n\n[ Growth as a Team ]\n• 무제한 도서 지원 제도, '피플의 서재'\n• 업무와 관련된 외부 교육 참여 및 강사 초청 지원\n• 피플러의 재능 공유 사내 클래스, '피클'\n\n[ Life Comes First ]\n• 생일 반차 및 생일 상품권 제공\n• 명절 선물 및 경조사 지원\n• 결혼 유급 휴가 2주 및 축하금 100만 원, 축하 화환 제공\n• 피플맘, 피플대디를 위한 출산 혜택\n\n[ Support for Focus & Energy ]\n• 오전 8시부터 오후 12시까지 시차출퇴근제\n• 매 3년 근속시, 리프레시 휴가 2주 부여\n• 밤 11시 이후 퇴근 시 야근 택시비 전액 지원\n• 안마의자 및 휴게공간 구비\n• 의자계의 에르메스, 허먼밀러 의자 제공"
     },
     {
       "site": "wanted",
@@ -120220,6 +120269,37 @@
     },
     {
       "site": "saramin",
+      "company": "메가스터디교육(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206985&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5ef6d16a-4fbe-4a73-88e2-a27c48afd938",
+      "career": "신입·경력",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "AWS",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -155261,6 +155341,107 @@
     },
     {
       "site": "saramin",
+      "company": "(주)도구모음",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "개발은 AI가, 구조는 당신이 AI 서비스 기획 및 PI 담당자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54202737&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=26a2d1d0-4b43-4541-be2f-3ea03605d1c9",
+      "career": "신입",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "HTML"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성"
+      ],
+      "qualifications": "기초 체력: 컴퓨터공학(컴공) 전공자, 개발 관련 자격증 보유자, 또는 부트캠프 등 개발 교육 과정을 수료하여 프로그래밍 기초 지식 및 약간의 개발 경험이 있으신 분 (실제 개발 능력이 뛰어날 필요는 없으며, 메커니즘을 이해하는 수준이면 충분합니다.)\n\n독서와 학습: 평소에 꾸준히 책을 읽으시는 분 (성장의 근간은 활자를 통한 깊이 있는 학습에 있다고 믿기 때문에, 평소 독서 습관이 있으신 분이어야 학습에 도움이 됩니다.)\n\n태도: 모르는 것을 인정하고 치열하게 배울 의지가 있으며, 맡은 일은 끝까지 책임지는 강력한 책임감을 가지신 분\n\n[배울 수 있는 것 (Growth Opportunities)]\n\n트렌디한 AI 개발 패러다임 마스터: 전통적인 하드 코딩을 넘어, AI와 협업하여 폭발적인 생산성을 내는 `바이브 코딩(Vibe Coding)`의 실전 노하우를 깊이 있게 체득할 수 있습니다.\n\n탑티어 수준의 사고 체계 전수: 문제를 본질적으로 해결하는 `시스템 사고`와 `구조화 사고법`을 사수와 팀으로부터 직접 트레이닝받으며 정교한 문제 해결사로 성장합니다.\n\n비즈니스의 제로투원(0 to 1) 경험: 신규 서비스의 기획·런칭부터 기업 전체의 프로세스 혁신(PI)까지 주도적으로 참여하며 비즈니스 아키텍처 전체를 조망하는 시야를 기를 수 있습니다.\n\n○ 계약기간:\n입사일로 부터 1~3개월(필요시 연장 가능 최대 6개월)의 계약 기간이 적용되며, 평가를 통과하지 못하거나 계속 근로가 부적당한 경우 계약기간 만료시 근로계약이 해지 될 수 있음\n근로자가 회사에 적합다하고 판단될 경우 3~6개월 계약기간 만료시 정규직 전환\n(신입사원의 90%가 정규직 전환이 되었습니다.)",
+      "preferences": "",
+      "main_tasks": "당장 압도적인 코딩 실력이 없어도 관계없습니다. 개발은 고도화된 AI가 도울 것입니다. 우리는 비즈니스를 이해하는 `기초 지식`과 이를 연결하는 `사고력`을 봅니다.\n\nAI 협업 기반 서비스 개발 및 런칭\n\nLLM과 프롬프트를 활용한 `바이브 코딩(Vibe Coding)` 중심의 신규 모바일/웹 서비스 프로토타이핑 및 서비스 런칭\n\n내부 프로세스 혁신 (Process Innovation)\n\n기업의 업무 효율성을 극대화하기 위한 프로세스 개선 및 자동화 시스템 구축\n\n시스템 구조 설계\n\n서비스와 비즈니스 로직을 면밀히 분석하고, 효율적인 워크플로우를 기획 및 구조화",
+      "benefits": "[업무 환경 및 장비]\n\nIT 장비 지원: MacBook, 고성능 노트북 등 업무에 필요한 모든 장비 제공\n\n성장 지원: 업무 관련 도서 구매 비용 전액 지원\n\n무제한 간식: 각종 음료, 간편식, 스낵 상시 구비\n[휴식과 자유로운 문화]\n\n진짜 자율 휴가제: 간단한 시스템 등록만으로 승인, 사유를 묻지도 받지도 않습니다.\n\n리프레시 휴가: 3년 이상 근무 시 5일의 특별 휴가 제공 (CS 부문)\n\n자유로운 회식: 참석은 100% 자유, 술 강요는 절대 없습니다.\n\n고급 안마의자: 주 1회 최소 15분 이상 사용이 의무입니다.\n[보상과 인정]\n\n생일 축하 이벤트: 소정의 선물과 4시간 단축 근무, 소규모 다과회로 함께 축하합니다.\n\n명절 선물: 명절엔 소고기를 드립니다.\n\n자사 제품 혜택: 연 1회 원가 구매 기회 제공\n\n성과 중심 승진: 학력과 경력이 아닌 오직 성과와 태도로 평가합니다\n[재미와 소통]\n\n조별모임: 팀, 부서와 관계 없이 랜덤하게 만들어진 조를 통해 조별모임을 진행합니다.\n(볼링, AI로 시쓰기 대회, 노래방 점수 내기, 노래 맞추기, 사업 아이디어 공모전 등등)"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)네오소프트뱅크",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 에이전트, 바이브 코딩, 웹프로그래머 경력직 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54205590&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f5154821-3a5c-4abb-8f7c-e34c9faf1b89",
+      "career": "경력3년↑",
+      "location": "서울구로구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Express",
+        "PostgreSQL",
+        "MSSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 3년 이상\n\n• 학력무관\n\n• 제미나이, Claude, 챗GPT, Cursor AI 등 관련 툴 능숙자, 바이브 코딩 가능자.\n\n• PostgreSQL / MSSQL\n\n• Node/React/Next/Javascript/typescript\n\n• RestfulAPI/express\n\n• Redux/Zustand\n\n• 웹 기반의 기본 이해가 있으신분\n\n• EMR 차트 프로그램 개발 경험 우대",
+      "preferences": "• 전공: 컴퓨터/시스템공학, 공학계열\n\n• 보유역량: 해당직무 근무경험\n\n• 자격증: 정보처리산업기사, 상급정보처리사, SQL개발자(SQLD자격)",
+      "main_tasks": "AI 에이전트 활용한 병원 의원용 EMR 전자차트 프로그램 기능 개발\n\n• 개발부 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 리프레시 : 연차, 여름휴가, 경조휴가제, 근로자의날 휴무, 휴양시설 제공\n\n• 급여제도 : 퇴직연금, 인센티브제, 우수사원포상, 퇴직금, 성과급, 4대 보험\n\n• 지원금/보험 : 건강검진\n\n• 출퇴근 : 아파트 기숙사 운영(남), 장기근속자 필요시 사택제공\n\n• 교육/생활 : 구내식당(사원식당), 점심식사 제공, 아침식사 제공, 간식 제공, 음료제공(차,커피)\n\n• 조직 문화 : 야근강요 안함, 자유복장, 자유로운 연차사용\n\n• 선물 : 명절선물/귀향비, 생일선물/파티"
+    },
+    {
+      "site": "saramin",
+      "company": "㈜트루팜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[트루팜 본사] AI 업무혁신·자동화 담당자 채용(AI Automation)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54207439&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=65cf034a-edcc-4620-9d47-06137d817ca5",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n아래 중 일부 경험이 있으면 지원 가능합니다.\n\nChatGPT, Claude, Gemini 등 생성형 AI를 실무에 활용해본 경험\n\n엑셀, 구글시트, 노션, 에어테이블 등으로 데이터를 정리해본 경험\n\n반복 업무를 자동화하거나 업무 양식을 개선해본 경험\n\n프롬프트 작성, GPT 제작, 업무 매뉴얼 작성에 관심이 있는 분\n\n복잡한 업무를 구조화하고 체크리스트로 만드는 능력이 있는 분\n\n현업 직원의 이야기를 듣고 실제 사용할 수 있는 도구로 바꾸는 능력이 있는 분\n\n외식업, 프랜차이즈, 본사 운영 업무에 관심이 있는 분",
+      "preferences": "외식업, 프랜차이즈 본사, 식품회사, F&B 관련 경험\n\n메뉴 원가, 식자재 발주, 레시피 관리 업무 경험\n\n회계, 정산, 총무, 구매, 물류 업무 이해도\n\n엑셀 함수, 피벗테이블, 구글시트 자동화 경험\n\nApps Script, Python, SQL, 노코드/로우코드 자동화 경험\n\nZapier, Make, Power Automate, Notion, Airtable 사용 경험\n\n사내 매뉴얼, 업무 프로세스, 체크리스트 제작 경험\n\nAI 챗봇, 사내 GPT, 업무 자동화 툴 제작 경험\n\n📋 이런 분을 찾습니다\n\n“이 업무는 왜 사람이 계속 반복하고 있지?”라고 생각하는 분\n\n복잡한 업무를 단순한 구조로 정리하는 것을 좋아하는 분\n\nAI를 단순 검색용이 아니라 실제 회사 업무에 적용해보고 싶은 분\n\n개발자가 아니더라도, 도구를 조합해서 문제를 해결하는 데 관심이 있는 분\n\n현장 직원, 본사 직원, 대표의 요구를 듣고 실용적인 결과물로 만드는 분\n\n100점짜리 거대한 시스템보다, 당장 직원들이 쓸 수 있는 70점짜리 도구를 빠르게 만드는 분\n\n외식 프랜차이즈 본사의 업무를 AI로 바꿔보고 싶은 분\n\n📋실무 면접 예시\n\n외식 프랜차이즈 본사에서\n“메뉴별 레시피 데이터, 가맹점 판매량, 가맹점 발주량”을 활용해\n가맹점이 정상 레시피대로 원재료를 사용하고 있는지 검토하는 AI 도구를 만들고자 합니다.\n\n어떤 데이터를 입력받아야 하는지\n\n어떤 기준으로 이상 여부를 판단할지\n\n직원이 쉽게 사용할 수 있는 화면이나 양식은 어떻게 구성할지\n\nChatGPT나 엑셀, 구글시트, 노션, 자동화 도구를 활용한다면 어떻게 만들지\n간단히 제안해주세요.\n\n이는 개발 실력보다 업무를 구조화하는 능력을 보기 위한 면접 예시입니다.",
+      "main_tasks": "ㆍ사내 AI 업무도구 기획 및 구축\n\n회사 내 반복 업무를 파악하고, AI가 처리할 수 있는 형태로 정리합니다.\n\n예시 업무:\n\n메뉴별 레시피 데이터 정리\n\n원재료별 단가 데이터 정리\n\n가맹점별 발주량·판매량 비교 구조 설계\n\n정산·회계·총무 관련 검토 기준 정리\n\n직원들이 쉽게 사용할 수 있는 AI 프롬프트, GPT, 자동화 양식 제작\n\nㆍ업무 프로세스 문서화 및 데이터 정리\n\nAI가 제대로 작동하려면 회사 업무 기준이 먼저 정리되어야 합니다.\n\n따라서 이 직무는 단순히 AI만 다루는 것이 아니라, 회사의 업무 기준을 정리하는 역할도 함께 수행합니다.\n\n예시:\n\n업무별 체크리스트 작성\n\n부서별 반복 업무 정리\n\n데이터 입력 양식 표준화\n\n원가표, 레시피표, 발주표, 정산표 구조 개선\n\nAI가 읽기 쉬운 형태로 자료 정리\n\n업무별 예외 상황 정리",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "오리누(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[출근+재택] AI 점자 검수·점역교정 전문가 (계약직/프리랜서)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54205059&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=65cf034a-edcc-4620-9d47-06137d817ca5",
+      "career": "경력무관",
+      "location": "경기화성시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n• 한글 수학·과학 점자를 정확히 구사하는 분 (점역·교정사 2급 수학/과학 수준)\n\n• UEB(Unified English Braille, 통합영문점자) 규칙을 정확히 숙지한 분",
+      "preferences": "• 점역·교정사 자격증 소지자(1급/2급)\n\n• 묵자–점자 병렬말뭉치 또는 대체자료(점자도서) 제작·검수 경험자\n\n• 점자 변환/입력 SW(점사랑 등), 아래아한글·MS오피스 활용 가능자\n\n• AI 학습데이터 라벨링·검수 경험자\n\n• 시각장애 당사자 환영",
+      "main_tasks": "• AI 점자 변환 결과물의 정확성 검수 및 교정(QA)\n\n• 묵자–점자 병렬 학습데이터 구축·검증 및 라벨링\n\n• 한글 수학 점자 / UEB(통합영문점자) 점역 규칙 정합성 평가\n\n• 점역 오류 유형 분류 및 교정 가이드라인 작성 지원",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)플래티어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -180983,6 +181164,40 @@
     },
     {
       "site": "saramin",
+      "company": "(재)부산인재개발원",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 기반 실무 프로젝트 과정 훈련생 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206292&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=9cc8dd99-f275-4652-8dbf-bcf8f225c717",
+      "career": "경력무관",
+      "location": "부산수영구 | 교육생",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "React",
+        "Node.js",
+        "Spring",
+        "Flutter",
+        "MySQL",
+        "AWS",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일",
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사엠에이치앤티(MH&T)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -192047,53 +192262,53 @@
     }
   ],
   "stats": {
-    "total": 6369,
+    "total": 6377,
     "by_size": {
-      "중소기업": 5711,
+      "중소기업": 5719,
       "대기업": 398,
       "중견기업": 260
     },
     "by_role": {
-      "기타": 833,
+      "기타": 834,
       "DevOps/인프라": 933,
-      "백엔드": 2748,
-      "모바일": 1028,
-      "AI/ML": 2119,
-      "프론트엔드": 1810,
+      "백엔드": 2751,
+      "모바일": 1029,
+      "AI/ML": 2125,
+      "프론트엔드": 1812,
       "풀스택": 569,
       "게임": 40,
-      "데이터": 888,
+      "데이터": 889,
       "펌웨어/임베디드": 234,
       "보안": 260,
       "QA": 61
     },
     "by_site": {
-      "wanted": 1426,
+      "wanted": 1428,
       "jumpit": 443,
       "jobkorea": 1169,
-      "saramin": 3055,
+      "saramin": 3061,
       "dev": 276
     },
     "top_tech": [
       [
         "Python",
-        1984
+        1985
       ],
       [
         "AWS",
-        1695
+        1697
       ],
       [
         "Java",
-        1651
+        1653
       ],
       [
         "React",
-        1389
+        1391
       ],
       [
         "Git",
-        1049
+        1050
       ],
       [
         "Docker",
@@ -192101,23 +192316,23 @@
       ],
       [
         "Spring",
-        995
+        997
       ],
       [
         "JavaScript",
-        964
+        967
       ],
       [
         "Linux",
-        917
+        918
       ],
       [
         "TypeScript",
-        878
+        879
       ],
       [
         "MySQL",
-        815
+        817
       ],
       [
         "Kubernetes",
@@ -192129,11 +192344,11 @@
       ],
       [
         "PostgreSQL",
-        680
+        681
       ],
       [
         "Spring Boot",
-        571
+        572
       ],
       [
         "GCP",
@@ -192145,7 +192360,7 @@
       ],
       [
         "Node.js",
-        496
+        497
       ],
       [
         "Azure",
@@ -192161,11 +192376,11 @@
       ],
       [
         "CSS",
-        458
+        460
       ],
       [
         "HTML",
-        446
+        448
       ],
       [
         "Redis",
@@ -195122,6 +195337,22 @@
         "jumpit": 555,
         "jobkorea": 1526,
         "saramin": 4010,
+        "dev": 339
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-18T03:16:01",
+      "keyword": "통합",
+      "raw_total": 7877,
+      "deduped": 7294,
+      "active": 6377,
+      "closed": 917,
+      "site_counts": {
+        "wanted": 1441,
+        "jumpit": 555,
+        "jobkorea": 1526,
+        "saramin": 4016,
         "dev": 339
       },
       "anomalies": []

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T01:45:29",
+ "generated_at": "2026-06-18T03:26:37",
  "total": 100,
  "countries": [
   {
@@ -704,8 +704,12 @@
      "count": 8
     },
     {
+     "name": "C++",
+     "count": 6
+    },
+    {
      "name": "Java",
-     "count": 7
+     "count": 6
     },
     {
      "name": "JavaScript",
@@ -716,16 +720,12 @@
      "count": 6
     },
     {
-     "name": "C++",
+     "name": "Scala",
      "count": 5
     },
     {
      "name": "Go",
-     "count": 5
-    },
-    {
-     "name": "Scala",
-     "count": 5
+     "count": 4
     },
     {
      "name": "Rust",
@@ -771,7 +771,7 @@
       "count": 2
      },
      {
-      "name": "Apache Spark",
+      "name": "Airflow",
       "count": 1
      }
     ],
@@ -881,11 +881,7 @@
       "count": 2
      },
      {
-      "name": "Terraform",
-      "count": 2
-     },
-     {
-      "name": "Airflow",
+      "name": "Achilles Autoscaler",
       "count": 1
      },
      {
@@ -899,21 +895,21 @@
      {
       "name": "ArgoCD",
       "count": 1
+     },
+     {
+      "name": "AWS EC2/S3",
+      "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Event-driven",
-     "count": 2
-    },
-    {
-     "name": "Microservices",
-     "count": 2
-    },
-    {
      "name": "MSA",
      "count": 2
+    },
+    {
+     "name": "Candidate-generation + ranking ML pipeline",
+     "count": 1
     },
     {
      "name": "Cell/Zone 기반 격리",
@@ -921,6 +917,10 @@
     },
     {
      "name": "CQRS / read-optimized derived stores",
+     "count": 1
+    },
+    {
+     "name": "Event-driven",
      "count": 1
     },
     {
@@ -5285,59 +5285,60 @@
     "Go",
     "TypeScript",
     "Scala",
-    "Java",
-    "Kotlin"
+    "Kotlin",
+    "Swift"
    ],
    "stack": {
     "backend": [
      "Python (r2 monolith)",
-     "Go services",
-     "GraphQL Federation",
-     "gRPC + Thrift",
-     "Baseplate.py / Baseplate.go",
+     "Go services (Baseplate.go)",
+     "Baseplate.py framework",
+     "GraphQL Federation gateway",
+     "gRPC + Thrift IDL",
      "Apache Spark",
-     "Flink"
+     "Apache Flink",
+     "Airflow"
     ],
     "frontend": [
-     "React + Redux",
-     "TypeScript",
      "Lit / Web Components (shreddit)",
-     "Next.js-style SSR",
-     "Android (Kotlin)",
-     "iOS (Swift)"
+     "React + Redux (legacy 2X)",
+     "TypeScript",
+     "Server-Side Rendering (Node BFF)",
+     "Android (Kotlin + Jetpack)",
+     "iOS (Swift + SwiftUI)"
     ],
     "data": [
-     "PostgreSQL (Thing/Data model)",
+     "PostgreSQL (Thing/Data EAV model)",
      "Cassandra",
      "Redis",
-     "Memcached",
+     "Memcached / mcrouter",
      "Kafka",
      "Amazon S3",
      "Druid",
-     "Elasticsearch / Solr",
-     "Vespa (search)"
+     "Vespa (search + ranking)",
+     "Elasticsearch / Solr (legacy)"
     ],
     "infra": [
-     "AWS",
+     "AWS (EC2, S3)",
      "Kubernetes (Reddit Compute Platform)",
-     "Envoy / service mesh",
-     "Airflow",
-     "Terraform",
-     "Spinnaker/Drone CI",
+     "Achilles Autoscaler (KEDA-based)",
+     "Envoy service mesh",
+     "Terraform + Helm",
+     "Drone CI + Spinnaker/Argo",
      "Prometheus + Wavefront",
      "Zookeeper"
     ]
    },
    "architecture": [
     "Service-oriented (r2 monolith decomposition)",
-    "GraphQL Federation gateway",
-    "Event-driven via Kafka",
-    "Multi-layer caching for viral traffic"
+    "GraphQL Federation gateway with BFF SSR",
+    "Event-driven via Kafka + Flink streaming",
+    "Multi-layer caching for viral/spiky traffic"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web shreddit<br/>Lit + TypeScript\"]\n    MOB[\"Mobile<br/>Kotlin + Swift\"]\n    CDN[\"CDN + Edge<br/>Fastly\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GQL[\"GraphQL Federation<br/>Apollo Gateway\"]\n    ENVOY[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    R2[\"Legacy Monolith<br/>r2 Python\"]\n    GOSVC[\"Domain Services<br/>Go + Baseplate\"]\n    PYSVC[\"Python Services<br/>Baseplate.py\"]\n    FEED[\"Feed / Listing<br/>Go services\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL<br/>Thing model\"]\n    CASS[\"Cassandra<br/>wide-column\"]\n    MC[\"Cache<br/>Memcached + Redis\"]\n    SEARCH[\"Search<br/>Vespa + Solr\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Proc<br/>Flink + Spark\"]\n    AIRF[\"Batch ETL<br/>Airflow\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Compute Platform<br/>Kubernetes on AWS\"]\n    OBS[\"Observability<br/>Prometheus + Wavefront\"]\n  end\n  WEB --> CDN\n  MOB --> CDN\n  CDN --> GQL\n  GQL -->|subgraphs| ENVOY\n  ENVOY -->|gRPC| GOSVC\n  ENVOY -->|Thrift| R2\n  ENVOY --> PYSVC\n  ENVOY --> FEED\n  R2 --> PG\n  GOSVC --> CASS\n  GOSVC --> MC\n  FEED --> SEARCH\n  R2 -->|produce| KAFKA\n  GOSVC -->|produce| KAFKA\n  KAFKA --> FLINK\n  KAFKA --> AIRF\n  FLINK --> SEARCH\n  GOSVC --- K8S\n  GOSVC --- OBS",
-   "why_language": "초창기 Reddit은 빠른 제품 반복을 위해 Python(r2 모놀리스)으로 출발했고, 지금도 방대한 비즈니스 로직이 Python에 남아 있어 유지된다. 그러나 수억 MAU 규모의 높은 동시성·저지연 요구가 커지면서 신규 도메인 서비스는 GC·동시성 모델이 유리한 Go로 작성하며, 데이터 파이프라인은 JVM 생태계(Scala/Java + Spark/Flink)를, 프론트엔드는 React/Lit 기반 TypeScript로 통일했다.",
-   "why_architecture": "단일 r2 모놀리스로는 배포·장애 격리·팀 확장이 한계에 부딪혀, Baseplate 프레임워크 위에서 도메인별 Go/Python 서비스로 점진적으로 분해(strangler fig)했다. 다양한 클라이언트(web/iOS/Android)가 제각각 데이터를 조합하던 문제는 GraphQL Federation 게이트웨이로 서브그래프를 통합해 해결했고, 핫 포스트가 순식간에 폭발하는 바이럴 트래픽은 Kafka 이벤트 버스와 다계층 캐시로 흡수한다.",
-   "summary": "Python r2 모놀리스를 Baseplate 기반 Go 서비스로 분해하고 GraphQL Federation으로 묶은, 바이럴 트래픽 대응형 SNS 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web shreddit<br/>Lit + Web Components\"]\n    MOB[\"Mobile Apps<br/>Kotlin / Swift\"]\n    OLD[\"Legacy Web 2X<br/>React + Redux\"]\n  end\n  subgraph Edge\n    CDN[\"CDN + Fastly<br/>edge cache\"]\n    LB[\"Load Balancer<br/>AWS ELB\"]\n  end\n  subgraph Gateway\n    BFF[\"SSR BFF<br/>Node + TypeScript\"]\n    GQL[\"GraphQL Federation<br/>Apollo Gateway\"]\n  end\n  subgraph Core\n    R2[\"r2 Monolith<br/>Python\"]\n    SVC[\"Domain Services<br/>Go + Baseplate\"]\n    MESH[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Data\n    PG[\"PostgreSQL<br/>Thing/Data EAV\"]\n    CASS[\"Cassandra<br/>wide-column\"]\n    CACHE[\"Memcached + Redis<br/>mcrouter\"]\n    VESPA[\"Vespa<br/>search + ranking\"]\n  end\n  subgraph Async\n    KAFKA[\"Kafka<br/>event bus\"]\n    FLINK[\"Flink + Spark<br/>stream / batch\"]\n    DRUID[\"Druid<br/>OLAP\"]\n  end\n  subgraph Platform\n    K8S[\"Reddit Compute<br/>Kubernetes\"]\n    ACH[\"Achilles<br/>KEDA autoscaler\"]\n  end\n  WEB --> CDN\n  OLD --> CDN\n  MOB --> LB\n  CDN --> BFF\n  LB --> GQL\n  BFF --> GQL\n  GQL -->|gRPC/Thrift| MESH\n  MESH --> R2\n  MESH --> SVC\n  R2 --> PG\n  R2 --> CACHE\n  SVC --> CASS\n  SVC --> CACHE\n  SVC --> VESPA\n  R2 -->|votes/events| KAFKA\n  SVC --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> CASS\n  SVC -.runs on.-> K8S\n  KAFKA -.scales.-> ACH\n  ACH -.-> K8S",
+   "why_language": "Reddit은 2008년 r2 모놀리스를 Python으로 구축해 빠른 제품 반복에 최적화했고, 그 막대한 코드 자산과 도메인 로직 때문에 Python은 여전히 코어로 남아 있다. 트래픽이 폭증하면서 지연·동시성·메모리 효율이 중요한 신규 서비스는 Go(Baseplate.go)로 분리했고, 데이터·검색 랭킹 파이프라인은 JVM 생태계(Scala/Spark/Flink)를, 클라이언트는 TypeScript와 네이티브(Kotlin/Swift)로 나눠 각 레이어의 제약에 맞는 언어를 쓴다.",
+   "why_architecture": "단일 Python 모놀리스(r2)로는 수백만 동시 사용자와 바이럴 스파이크를 감당하기 어려워, 가장 부하가 큰 도메인부터 Go 서비스로 떼어내는 점진적 SOA 분해를 택했다. 클라이언트 다양성(웹·iOS·안드로이드)과 over-fetch 문제를 풀기 위해 GraphQL Federation 게이트웨이로 스키마를 통합했고, 투표·집계처럼 즉시 일관성이 필요 없는 작업은 Kafka 기반 이벤트 처리로 비동기화해 쓰기 경로의 부하를 분산했다. 읽기는 다층 캐시로 흡수해 '핫'한 게시물이 바이럴할 때도 DB를 보호한다.",
+   "summary": "Python r2 모놀리스를 Go 서비스로 점진 분해하고, GraphQL Federation·Kafka 이벤트·다층 캐싱으로 바이럴 트래픽을 버티는 SNS 스택",
    "deep_dive": [
     {
      "topic": "r2 모놀리스 분해와 서비스 지향 전환",
@@ -5366,6 +5367,22 @@
     {
      "topic": "관측성과 서비스 표준화: Baseplate가 강제하는 것",
      "body": "### Baseplate = '서비스를 만들면 자동으로 관측 가능하게'\nReddit이 수백 개 서비스로 분해되면서 가장 큰 위험은 **각 팀이 제각각인 로깅·메트릭·트레이싱·RPC 규약**으로 서비스를 만드는 파편화였다. Baseplate(`baseplate.py`, `baseplate.go`)는 이걸 막는 **사내 표준 프레임워크**다. 서비스를 Baseplate로 만들면 다음이 '공짜로' 따라온다.\n\n### 자동으로 붙는 것들\n- **분산 트레이싱**: 모든 요청에 trace context가 전파되어 GraphQL 게이트웨이 → 여러 다운스트림 서비스까지 한 요청의 전체 경로를 추적. span이 RPC 경계마다 자동 생성.\n- **메트릭**: 요청 수·지연·에러율(RED 메트릭)이 자동 집계되어 Prometheus/Wavefront로 흘러감.\n- **`ServerSpan`/`Span` 추상화**: 코드에서 외부 호출(DB, 캐시, RPC)을 감싸면 그 구간이 자동으로 타이밍·트레이스 대상이 됨.\n- **컨텍스트 객체**: 요청 단위로 DB 커넥션 풀, 캐시 클라이언트, 설정, secrets를 주입 — 개발자가 직접 커넥션을 관리하지 않게.\n- **헬스체크·graceful shutdown·설정 핫리로드** 등 운영 표준.\n\n### Thrift/gRPC IDL 기반 계약\n초기 Baseplate 서비스 간 통신은 **Thrift IDL**로 인터페이스를 정의했고(언어 중립 — Python r2 ↔ Go 서비스 상호 호출 가능), 이후 신규 서비스는 점차 **gRPC**로 이동했다. IDL이 있어 클라이언트/서버 스텁이 자동 생성되고, 타입 안전한 서비스 경계가 보장된다.\n\n### 왜 중요한가 — 분해의 전제 조건\n모놀리스를 마이크로서비스로 쪼개면 '한 함수 호출'이 '네트워크 호출 수십 개'가 된다. 표준화된 트레이싱·메트릭이 없으면 **느린 페이지의 원인이 어느 서비스인지 영영 알 수 없다.** Baseplate는 '분해해도 디버깅 가능성을 잃지 않게' 만드는 안전장치이며, Reddit이 r2 분해를 감행할 수 있었던 기술적 토대다. 즉 아키텍처(서비스 분해)와 플랫폼(Baseplate)은 한 세트로 움직였다."
+    },
+    {
+     "topic": "Reddit Compute Platform: 모놀리스에서 Kubernetes와 Achilles 오토스케일링으로",
+     "body": "### 왜 컨테이너 플랫폼을 만들었나\nReddit은 오랫동안 r2 모놀리스를 AWS EC2 인스턴스 위에 직접 배포해 운영했다. 인스턴스를 미리 띄워두는 정적 프로비저닝 방식은 (1) 트래픽이 바이럴로 폭증할 때 즉시 확장하지 못하고, (2) 평소에는 피크 대비 용량을 깔아둬 비용이 낭비되며, (3) 수백 개로 늘어난 Go 서비스마다 배포 표준이 제각각이 되는 문제를 낳았다. 이를 해결하기 위해 사내 PaaS인 **Reddit Compute Platform(RCP)** 을 구축했다. RCP는 Kubernetes를 기반으로 하되, 개발자가 raw `kubectl` 매니페스트를 직접 다루지 않고 **Helm 차트 + 사내 추상화(서비스 정의 YAML)** 로 배포하도록 만들어, Baseplate 서비스가 일관된 방식으로 컨테이너화·롤아웃되게 한다.\n\n### Achilles Autoscaler — 큐 기반 스케일링\n표준 Kubernetes의 `HorizontalPodAutoscaler`는 CPU/메모리 같은 리소스 메트릭으로 스케일한다. 그러나 Reddit의 많은 워크로드는 **Kafka 컨슈머**나 비동기 작업 처리기라서, '백로그(밀린 메시지 수)'가 진짜 부하 신호다. CPU만 보면 메시지가 쌓이는데도 스케일하지 않는 사각지대가 생긴다. Reddit은 **KEDA(Kubernetes Event-Driven Autoscaling)** 를 채택·확장한 **Achilles**라는 자동 스케일링 시스템을 만들어, Kafka consumer lag·HTTP RPS·커스텀 Prometheus 메트릭 등 **이벤트 소스 기반**으로 파드 수를 조절한다. 이렇게 하면 'pinned post'가 r/popular에 올라 트래픽이 수십 배로 튈 때, 리소스 포화가 일어나기 전에 선제적으로 워커를 늘릴 수 있다.\n\n### 멀티테넌시와 노드 풀\n- 수백 개의 마이크로서비스가 공용 클러스터를 공유하므로, 노이지 네이버(한 서비스가 노드 리소스를 독식)를 막기 위해 **노드 풀 분리·리소스 쿼터·PriorityClass**를 적극 사용한다.\n- 배포는 **Drone CI**로 이미지를 빌드하고 **Spinnaker/Argo** 계열 파이프라인으로 카나리·롤아웃을 진행한다. 카나리 단계에서 에러율·지연 메트릭(Prometheus/Wavefront)을 보고 자동 롤백한다.\n\n### 트레이드오프\nKubernetes로 옮기면서 '인스턴스를 키운다'는 단순한 멘탈 모델이 사라지고, 파드 스케줄링·리소스 request/limit 튜닝·네트워크 정책 등 새로운 복잡성이 생겼다. 대신 배포 빈도와 자원 효율이 크게 올라갔고, 무엇보다 **이벤트 기반 오토스케일링**으로 Reddit 특유의 예측 불가능한 바이럴 스파이크에 대응할 수 있게 된 것이 핵심 이득이다."
+    },
+    {
+     "topic": "검색·랭킹 인프라의 Vespa 전환과 동작 원리",
+     "body": "### 레거시: Solr/Elasticsearch 기반의 한계\n과거 Reddit 검색은 Lucene 기반의 **Solr/Elasticsearch** 클러스터로 운영됐다. 그러나 (1) 인덱싱 파이프라인과 서빙이 분리돼 신선도(freshness)를 맞추기 어렵고, (2) 텍스트 매칭 점수와 ML 랭킹 모델을 같은 엔진 안에서 결합하기 까다로우며, (3) 수십억 개의 post·comment·subreddit·user 문서를 낮은 지연으로 다루기에 운영 비용이 커지는 문제가 있었다. 검색은 Reddit에서 발견(discovery)의 핵심 진입점인데도 품질·확장성이 병목이었다.\n\n### 왜 Vespa인가\nReddit은 검색 백엔드를 **Vespa**(Yahoo가 오픈소스화한 서빙 엔진)로 옮겼다. Vespa의 핵심 장점은 **'검색(retrieval) + 랭킹(ranking) + 텐서 기반 ML 추론'을 하나의 엔진에서** 처리한다는 점이다.\n- **단계적 랭킹(phased ranking)**: 1차로 값싼 점수(BM25, 필터)로 후보를 좁히고(`first-phase`), 2차로 비싼 ML 모델(GBDT·신경망)을 후보 상위에만 적용(`second-phase`)해 지연과 품질을 동시에 잡는다.\n- **텐서 연산 내장**: 임베딩 기반 의미 검색(벡터 ANN)과 전통적 키워드 검색을 같은 쿼리에서 결합할 수 있어, semantic + lexical 하이브리드 랭킹을 자연스럽게 구현한다.\n- **실시간 인덱싱**: 문서 쓰기가 즉시 검색 가능 상태로 반영돼, 새 글·새 서브레딧이 빠르게 검색에 노출된다.\n\n### 데이터 플로우\nKafka로 흘러오는 post/comment/subreddit 변경 이벤트를 **인덱싱 파이프라인**이 소비해 Vespa 문서로 정규화·업서트한다. 검색 요청은 GraphQL/Go 서비스를 거쳐 Vespa 쿼리로 변환되고, Vespa 내부에서 retrieval→first-phase→second-phase 랭킹을 거쳐 결과를 돌려준다. 랭킹 피처에는 텍스트 적합도뿐 아니라 **커뮤니티 신호·최신성·개인화 시그널**이 섞인다.\n\n### 트레이드오프\nVespa는 강력하지만 운영 학습 곡선이 가파르고, 스키마·랭킹 프로파일을 직접 정의·튜닝해야 한다. Reddit은 이 복잡성을 감수하는 대신, '검색과 추천 랭킹을 같은 인프라 위에서 ML로 발전시킬 수 있는 단일 플랫폼'을 얻었다."
+    },
+    {
+     "topic": "홈피드 추천과 ML 파이프라인: 후보 생성부터 랭킹 서빙까지",
+     "body": "### 기존 'hot 알고리즘'에서 ML 개인화로\nReddit의 전통적 정렬은 시간 감쇠가 들어간 결정론적 **hot/best 공식**이었다(score = 함수(upvotes, downvotes, age)). 이는 단순·투명하지만 사용자별 개인화가 약하다. Home Feed가 중요해지면서 Reddit은 **ML 기반 추천 파이프라인**을 도입해, 어떤 글을 어떤 순서로 보여줄지 개인화한다.\n\n### 전형적인 다단계 추천 구조\nReddit의 피드 추천은 산업 표준인 **2~3단계 퍼널**을 따른다.\n\n| 단계 | 역할 | 특징 |\n|------|------|------|\n| Candidate Generation | 수백만 후보 → 수천 개로 축소 | 구독 서브레딧, 협업필터링, 임베딩 ANN, 트렌딩 소스 등 여러 소스를 합집합 |\n| Ranking(Heavy model) | 수천 → 수백, 정밀 점수화 | GBDT/딥러닝으로 click·upvote·dwell·comment 등 다중 목표 예측 |\n| Re-ranking / Policy | 다양성·신선도·정책 규칙 적용 | 같은 서브레딧 도배 방지, NSFW·정책 필터, 비즈니스 규칙 |\n\n### 피처와 데이터 파이프라인\n- **배치 피처**: 사용자·게시물·커뮤니티 단위 통계는 **Spark**(과거 일부 BigQuery/Snowflake 활용)로 배치 계산해 **피처 스토어**에 적재한다.\n- **실시간 피처**: 최근 클릭·체류 같은 신선한 행동 신호는 **Kafka → Flink** 스트리밍으로 거의 실시간 갱신한다. 이 '배치 + 스트리밍' 결합은 람다/카파에 가까운 구조다.\n- **모델 서빙**: 랭킹 서비스(주로 Go/Python)가 요청 시 피처 스토어에서 피처를 조회하고 모델 추론을 수행해 점수를 매긴다. 지연 예산이 빡빡하므로 후보 수를 단계별로 줄여 무거운 모델은 상위 후보에만 적용한다.\n\n### 관측·실험\n모든 랭킹 변경은 **A/B 실험 플랫폼**으로 검증된다. Druid 같은 OLAP 스토어가 실시간 지표 집계를, 오프라인 평가는 로그 리플레이로 이뤄진다.\n\n### 트레이드오프\nML 개인화는 참여도를 끌어올리지만, (1) 피드백 루프로 인한 에코챔버·다양성 저하, (2) 신선도·콜드스타트(신규 사용자/신규 글) 문제, (3) 추론 지연·인프라 비용이라는 비용을 동반한다. Reddit은 re-ranking 단계의 다양성·신선도 규칙과 hot 알고리즘 류의 휴리스틱 소스를 후보 생성에 섞어 이 균형을 맞춘다."
+    },
+    {
+     "topic": "서비스 간 통신: Thrift/gRPC + Envoy 서비스 메시와 Baseplate의 역할",
+     "body": "### r2 분해가 만든 '네트워크 호출의 폭발'\n모놀리스 안에서는 함수 호출이던 것이, SOA로 쪼개지면서 모두 **네트워크 RPC**가 된다. 호출 수가 폭증하고, 각 호출마다 직렬화·타임아웃·재시도·서킷브레이킹·인증·트레이싱을 처리해야 한다. Reddit은 이 횡단 관심사를 **Baseplate 프레임워크 + Envoy 서비스 메시**로 표준화했다.\n\n### IDL: Thrift에서 gRPC/Protobuf로\n초기 서비스 인터페이스는 **Apache Thrift IDL**로 정의됐다(Baseplate.py가 Thrift 서버를 기본 제공). 이후 신규 서비스는 **gRPC + Protobuf**로 이동하는 추세다. IDL로 인터페이스를 먼저 정의하면 Python·Go·JVM 클라이언트 스텁을 자동 생성해 다언어 환경에서 타입 안전한 통신이 가능하다.\n\n### Envoy 사이드카가 처리하는 것\n각 서비스 파드 옆에 **Envoy 프록시**를 사이드카로 붙여, 애플리케이션 코드 밖에서 다음을 처리한다.\n- **서비스 디스커버리·로드밸런싱**: 동적으로 변하는 파드 엔드포인트로 트래픽 분산\n- **재시도·타임아웃·서킷브레이킹**: 다운스트림 장애가 상류로 전파되는 캐스케이딩 실패 차단\n- **mTLS·관측성**: 서비스 간 암호화와 일관된 메트릭/트레이스 수집\n\n### Baseplate가 강제하는 것\nBaseplate.py / Baseplate.go는 모든 서비스가 (1) 분산 트레이싱 컨텍스트를 전파하고, (2) 표준 메트릭(요청 수·지연·에러)을 Prometheus/Wavefront로 내보내며, (3) 설정·시크릿 로딩과 graceful shutdown을 동일한 방식으로 하도록 만든다. 즉 '어떻게 서비스를 잘 만드느냐'를 개별 팀의 재량에 맡기지 않고 **프레임워크로 박아넣어**, 수백 개 서비스의 운영 일관성을 확보한다.\n\n### 트레이드오프\n사이드카 메시는 운영 복잡성과 약간의 지연·리소스 오버헤드를 더한다. 하지만 재시도·서킷브레이킹·트레이싱을 모든 서비스가 공짜로 일관되게 얻는 이득이 훨씬 커서, 대규모 SOA 환경에서 사실상 필수 인프라가 됐다."
     }
    ],
    "github": {
@@ -5374,28 +5391,28 @@
      {
       "name": "reddit-archive/reddit",
       "url": "https://github.com/reddit-archive/reddit",
-      "desc": "2017년까지 공개됐던 레거시 r2 모놀리스 소스(현재 아카이브)",
+      "desc": "역사적 r2 코드베이스(오픈소스 아카이브) — Python 모놀리스 원형",
       "lang": "Python",
-      "stars": 16956
+      "stars": 16955
      },
      {
       "name": "reddit/baseplate.py",
       "url": "https://github.com/reddit/baseplate.py",
-      "desc": "Reddit 백엔드 서비스 표준 프레임워크(관측성·RPC·설정)의 Python 구현",
+      "desc": "Reddit의 Python 서비스 표준 프레임워크 — 관측성·설정·서버 추상화를 강제",
       "lang": "Python",
       "stars": 546
      },
      {
       "name": "reddit/snudown",
       "url": "https://github.com/reddit/snudown",
-      "desc": "Reddit 마크다운 렌더러(sundown 포크) — 댓글/포스트 렌더링 엔진",
+      "desc": "Reddit 마크다운 렌더러 — C 기반 markdown 파서",
       "lang": "C",
       "stars": 185
      },
      {
       "name": "reddit/baseplate.go",
       "url": "https://github.com/reddit/baseplate.go",
-      "desc": "Go 서비스용 Baseplate 라이브러리 — gRPC/Thrift 서버, 메트릭, 분산 트레이싱",
+      "desc": "Baseplate의 Go 구현 — gRPC/Thrift 서비스용 공통 라이브러리",
       "lang": "Go",
       "stars": 107
      }
@@ -5404,10 +5421,10 @@
    "sources": [
     "https://www.reddit.com/r/RedditEng/",
     "https://github.com/reddit/baseplate.py",
-    "https://github.com/reddit/reddit/wiki"
+    "https://blog.vespa.ai/reddit-improves-search-relevance-with-vespa/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "twitter",
@@ -5417,54 +5434,59 @@
    "languages": [
     "Scala",
     "Java",
+    "Rust",
     "JavaScript",
     "Python",
-    "Go",
-    "Rust"
+    "C++"
    ],
    "stack": {
     "backend": [
      "Finagle",
      "Finatra",
+     "Twitter Server",
      "Thrift",
-     "gRPC",
      "Netty",
-     "Twitter Server"
+     "gRPC",
+     "Navi (Rust ML serving)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Redux",
-     "Node.js"
+     "Node.js",
+     "PWA (Twitter Lite)"
     ],
     "data": [
      "Manhattan",
      "Kafka",
      "Heron",
-     "FlockDB",
-     "Hadoop",
      "GraphJet",
-     "Redis/Nighthawk",
-     "Pig/Scalding"
+     "Earlybird (Lucene)",
+     "Nighthawk (Redis)",
+     "Hadoop",
+     "Scalding",
+     "FlockDB",
+     "TimelineMixer"
     ],
     "infra": [
      "Mesos/Aurora",
      "Kubernetes",
      "Google Cloud Platform",
      "BigQuery",
-     "Hybrid cloud"
+     "Hybrid on-prem + cloud",
+     "Bazel"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven",
+    "Microservices on JVM RPC mesh",
+    "Hybrid write/read fanout timeline",
     "Real-time stream processing",
-    "Hybrid write/read fanout"
+    "Candidate-generation + ranking ML pipeline"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile/Web App<br/>React + TypeScript\"]\n    TFE[\"Edge / TLS Term<br/>TFE Front End\"]\n  end\n  subgraph Gateway[\"API / RPC Layer\"]\n    API[\"API Service<br/>Finatra + Thrift\"]\n    MUX[\"RPC Mux<br/>Finagle + Netty\"]\n  end\n  subgraph Core[\"Core Services\"]\n    TWEET[\"Tweet Service<br/>Scala/Finagle\"]\n    TLS[\"Timeline Service<br/>Scala/Finagle\"]\n    SOCIAL[\"Social Graph<br/>FlockDB + GraphJet\"]\n    SEARCH[\"Search / Earlybird<br/>Lucene/Java\"]\n    RANK[\"Home Mixer / Ranker<br/>ML serving\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HERON[\"Stream Proc<br/>Heron\"]\n    FANOUT[\"Fanout Service<br/>write fanout\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MH[\"Manhattan<br/>KV Store\"]\n    CACHE[\"Timeline Cache<br/>Redis/Nighthawk\"]\n    HADOOP[\"Batch<br/>Hadoop + Scalding\"]\n    BQ[\"Analytics<br/>BigQuery (GCP)\"]\n  end\n  subgraph Infra[\"Platform\"]\n    AURORA[\"Scheduler<br/>Mesos/Aurora + K8s\"]\n  end\n  APP --> TFE -->|HTTP/2| API\n  API -->|Thrift| MUX\n  MUX --> TWEET\n  MUX --> TLS\n  MUX --> SEARCH\n  TWEET --> MH\n  TWEET -->|publish| KAFKA\n  KAFKA --> FANOUT\n  FANOUT --> CACHE\n  TLS --> CACHE\n  TLS --> RANK\n  RANK --> SEARCH\n  SOCIAL --> FANOUT\n  KAFKA --> HERON --> HADOOP --> BQ\n  AURORA -.runs.-> Core\n  AURORA -.runs.-> Stream",
-   "why_language": "초기부터 Ruby on Rails의 성능 한계(유명한 'Fail Whale')를 겪으며 JVM 기반 Scala/Java로 핵심 서비스를 재작성했고, 함수형·동시성 모델과 Finagle 같은 비동기 RPC 스택이 수억 사용자의 팬아웃·타임라인 트래픽을 처리하기에 적합하기 때문이다. 데이터 파이프라인·툴링은 Python, 일부 고성능·인프라 컴포넌트는 Go/Rust를 쓰며, 클라이언트는 React/TypeScript로 통일했다.",
-   "why_architecture": "초당 수십만 트윗 쓰기와 수백만 타임라인 읽기를 동시에 감당하려면 단일 모놀리식으로는 불가능해, 서비스를 잘게 쪼개 독립 확장하는 마이크로서비스와 Kafka 기반 이벤트 드리븐 구조를 택했다. 특히 타임라인은 대부분 write-time fanout(작성 시 팔로워 캐시에 미리 푸시)으로 읽기 지연을 줄이되, 수천만 팔로워를 가진 셀럽 계정은 read-time merge로 처리하는 하이브리드 전략으로 쓰기 폭증과 핫스팟을 회피한다.",
-   "summary": "Rails 모놀리스를 버리고 JVM(Scala/Finagle) 마이크로서비스 + 하이브리드 타임라인 팬아웃으로 글로벌 실시간 SNS를 떠받친다.",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web/Mobile<br/>React + TypeScript PWA\"]\n  end\n  subgraph Edge\n    TFE[\"Edge Proxy<br/>TFE + Finagle\"]\n    API[\"API Service<br/>Finatra + Thrift\"]\n  end\n  subgraph Core\n    TLS[\"Timeline Mixer<br/>Finagle Scala\"]\n    TWS[\"Tweet Service<br/>Finatra\"]\n    SGS[\"Social Graph<br/>GraphJet + FlockDB\"]\n    SEARCH[\"Search<br/>Earlybird Lucene\"]\n  end\n  subgraph ML\n    CAND[\"Candidate Gen<br/>SimClusters + TwHIN\"]\n    RANK[\"Heavy Ranker<br/>Navi Rust + MaskNet\"]\n  end\n  subgraph Data\n    MH[\"Manhattan<br/>KV Store\"]\n    NH[\"Nighthawk<br/>Redis Cache\"]\n    EB[\"Earlybird Index<br/>Inverted Index\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HERON[\"Stream Proc<br/>Heron\"]\n    HAD[\"Batch<br/>Hadoop + Scalding\"]\n  end\n  subgraph Infra\n    AURORA[\"Scheduler<br/>Mesos/Aurora + K8s\"]\n    GCP[\"Analytics<br/>GCP + BigQuery\"]\n  end\n  WEB -->|HTTPS| TFE\n  TFE -->|Thrift| API\n  API --> TLS\n  TLS -->|gRPC| TWS\n  TLS --> SGS\n  TLS --> CAND\n  CAND --> RANK\n  RANK -->|scored| TLS\n  TWS --> MH\n  TLS --> NH\n  SEARCH --> EB\n  TWS -->|events| KAFKA\n  KAFKA --> HERON\n  KAFKA --> HAD\n  HERON --> SGS\n  HAD --> GCP\n  AURORA -.runs.-> TLS\n  AURORA -.runs.-> RANK",
+   "why_language": "수억 명 규모의 팬아웃·실시간 처리에서 JVM의 성숙한 동시성·GC·관측성이 핵심이라, 트위터는 Scala로 Finagle 비동기 RPC 스택을 만들어 함수형 추상화로 대규모 서비스 코드를 다룬다. 레이턴시가 극단적으로 중요한 ML 추론 서버(Navi)와 일부 핫패스는 GC 지연을 없애려 Rust로 작성했고, 데이터 파이프라인은 Python, 웹은 TypeScript를 쓴다.",
+   "why_architecture": "타임라인은 활성 사용자에겐 작성 시점에 팔로워 캐시로 밀어넣는 write fanout, 셀럽처럼 팔로워가 수천만인 계정은 읽기 시점에 합치는 read fanout을 혼합해 쓰기 폭발과 읽기 지연을 동시에 잡는다. For You 피드는 후보 생성(SimClusters/TwHIN/GraphJet) → Heavy Ranker → 필터/휴리스틱의 3단 파이프라인으로 수억 개 트윗을 수십 개로 좁히며, Finagle 기반 마이크로서비스 메시가 백프레셔·서킷브레이커로 장애를 격리한다.",
+   "summary": "Scala/Finagle JVM RPC 메시 위에서 하이브리드 팬아웃 타임라인과 후보생성·랭킹 ML 파이프라인으로 실시간 SNS를 돌린다",
    "deep_dive": [
     {
      "topic": "타임라인 팬아웃: write vs read fanout",
@@ -5493,6 +5515,22 @@
     {
      "topic": "관측성과 신뢰성: Finagle 기반 서킷브레이커·백프레셔·분산 트레이싱",
      "body": "### 수만 개 서비스 인스턴스를 어떻게 안 죽게 하나\nTwitter는 수백 개 마이크로서비스가 Finagle RPC로 거미줄처럼 연결돼 있다. 한 서비스가 느려지면 호출 체인을 타고 장애가 전파되는(cascading failure) 위험이 상존한다. Finagle은 이를 막는 **복원력 기능을 RPC 스택 자체에 내장**한 것이 특징이다 — 애플리케이션 코드가 아니라 클라이언트 라이브러리 레벨에서 자동 보호된다.\n\n### 내장된 복원력 메커니즘\n- **클라이언트 사이드 로드밸런싱 + P2C**: 'Power of Two Choices'로 무작위 두 후보 중 부하가 적은 쪽을 고른다. 여기에 **least-loaded / EWMA(지수가중이동평균) 지연** 기반 선택을 결합해 느린 인스턴스로 가는 트래픽을 자동으로 줄인다.\n- **Failure Accrual(서킷브레이커)**: 특정 인스턴스가 연속 실패하면 일정 시간 후보군에서 **자동 격리**했다가, 백오프 후 조심스럽게 트래픽을 다시 흘려 회복을 확인한다.\n- **Deadline / Timeout 전파**: 요청에 **남은 시간 예산(deadline)** 을 실어 호출 체인 전체에 전파한다. 상위에서 이미 타임아웃 임박이면 하위 서비스가 헛수고를 안 하도록 조기 취소해 자원을 아낀다.\n- **Retry Budget**: 무지성 재시도는 장애 시 트래픽을 폭증시켜 'retry storm'을 일으킨다. Finagle은 전체 요청의 일정 비율(예: 20%)로만 재시도를 제한하는 **예산제 재시도**로 폭주를 막는다.\n- **백프레셔**: Netty 기반 비동기 I/O와 Future 기반 동시성으로, 처리량 한계를 넘으면 큐가 무한정 쌓이지 않고 거부/지연 신호를 상류로 전달한다.\n\n### 관측성 (Observability)\n- **Zipkin**: Twitter가 만들어 오픈소스화한 **분산 트레이싱** 시스템. 하나의 사용자 요청이 수십 개 서비스를 거치는 경로와 각 구간 지연을 추적해 병목을 찾는다(이후 OpenTelemetry/업계 표준의 모태).\n- **메트릭**: 모든 Finagle 서비스는 요청률·지연 분포(p50/p99)·성공률·큐 깊이 등을 자동으로 노출한다. 'Twitter Server' 프레임워크가 표준 관리 엔드포인트·stats를 기본 제공해, 모든 서비스가 동일한 방식으로 관측된다.\n\n### 핵심 통찰\nTwitter의 신뢰성 철학은 **'복원력을 개별 개발자에게 맡기지 않고 플랫폼(Finagle/Finatra)에 박아 넣는다'** 는 것이다. 덕분에 새 서비스를 만들어도 서킷브레이커·로드밸런싱·트레이싱·메트릭이 공짜로 따라온다. 트레이드오프는 JVM/Finagle 생태계에 강하게 종속된다는 점이지만, 동일한 RPC 시맨틱을 전사가 공유함으로써 운영 일관성과 디버깅 효율을 극대화했다."
+    },
+    {
+     "topic": "For You 추천 파이프라인의 실제 동작: SimClusters · TwHIN · Heavy Ranker",
+     "body": "### 한 번의 피드 요청에서 일어나는 일\n트위터가 2023년 공개한 `the-algorithm`을 보면 For You 타임라인은 **약 5억 개의 트윗 풀에서 최종 수십 개를 골라내는 깔때기**다. 단계별로 후보 수가 극적으로 줄어든다.\n\n| 단계 | 역할 | 대략 규모 |\n|------|------|-----------|\n| Candidate Sourcing | In-Network(팔로우) + Out-of-Network 후보 수집 | ~1,500개로 축소 |\n| Heavy Ranker | 신경망으로 engagement 확률 예측·스코어링 | ~1,500개 정렬 |\n| Heuristics & Filters | 다양성·차단·NSFW·저자 다양성 보정 | 최종 노출분 |\n\n비율은 트위터 발표 기준 **In-Network 50% / Out-of-Network 50%** 가 목표였다.\n\n### SimClusters — 커뮤니티 기반 임베딩\n`SimClusters`는 **영향력 있는 사용자들을 양분 그래프에서 커뮤니티(약 145k개)로 클러스터링**한 뒤, 트윗과 사용자를 그 커뮤니티 공간의 sparse 임베딩으로 표현한다. \"이 사용자가 속한 커뮤니티에서 인기 있는 트윗\"을 빠르게 찾는 Out-of-Network 후보 소스의 핵심이다. 커뮤니티 갱신은 배치로, 트윗→커뮤니티 매핑은 실시간에 가깝게 유지한다.\n\n### TwHIN — 이종 그래프 임베딩\n`TwHIN`(Twitter Heterogeneous Information Network)은 사용자·트윗·광고를 하나의 거대한 지식그래프로 보고 knowledge-graph embedding을 학습한다. follow/engage 같은 관계를 같은 벡터 공간에 담아 추천·광고·검색이 공유한다.\n\n### Heavy Ranker — Navi(Rust) 위의 신경망\n후보가 모이면 `Heavy Ranker`(MaskNet 계열 다중태스크 신경망)가 각 트윗에 대해 **리트윗·답글·체류·신고 등 여러 engagement 확률을 동시에 예측**하고 가중합으로 최종 점수를 낸다. 부정 신호(신고, '관심없음')에는 음수 가중치를 준다. 추론 서버 `Navi`는 **Rust로 작성**되어 JVM GC 지연 없이 낮은 tail latency로 모델을 서빙한다.\n\n### 마지막 휴리스틱\n랭킹 후에도 **같은 저자 연속 노출 억제, 이미 본 트윗 제거, 차단/뮤트 반영, In/Out 네트워크 균형** 같은 규칙이 들어간다. 이 단계가 \"모델 점수는 높지만 사용자 경험을 해치는\" 결과를 걷어낸다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩: Manhattan KV 스토어의 설계",
+     "body": "### 왜 자체 KV를 만들었나\n초기 트위터는 Cassandra와 MySQL 샤딩에 의존했지만, **멀티테넌시·운영 자동화·강한 SLA**를 직접 통제하려고 자체 분산 KV 스토어 `Manhattan`을 만들었다. 현재 타임라인 메타데이터, DM, 사용자 데이터 등 핵심 저장소다.\n\n### 핵심 설계 포인트\n- **다중 일관성 모델**: 같은 클러스터에서 eventual / strong(read-your-writes) 일관성을 데이터셋 단위로 선택. 모든 데이터가 강일관성을 필요로 하지 않으므로 비용·지연을 트레이드오프한다.\n- **스토리지 엔진 플러그형**: 읽기·쓰기 패턴에 맞춰 SSTable 기반(seadb, read-only), 쓰기 최적화 LSM 엔진 등을 데이터셋별로 교체.\n- **샤딩**: 키스페이스를 파티셔닝해 일관된 해싱으로 노드에 분산, 자동 리밸런싱. 운영자가 수동 리샤딩하지 않도록 **self-service + 자동화**를 1급 목표로 삼았다.\n- **멀티테넌시**: 수많은 팀이 한 클러스터를 공유하되, rate limiting과 quota로 한 테넌트가 클러스터를 망치지 않게 격리.\n- **시간 기반 데이터·secondary index**: 단순 KV를 넘어 범위 쿼리·인덱스를 일부 지원.\n\n### 캐시와의 관계\nManhattan 앞단에 `Nighthawk`(샤딩된 Redis)가 타임라인·카운터 캐시로 붙어 대부분의 읽기를 흡수한다. 스토리지는 **\"콜드 데이터의 신뢰성 있는 출처\"**, 캐시는 **\"핫 데이터의 저지연 제공\"** 으로 역할이 분리된다."
+    },
+    {
+     "topic": "스트리밍·이벤트 처리: Kafka → Heron 실시간 파이프라인",
+     "body": "### 모든 행동은 이벤트\n트윗 작성, 좋아요, 팔로우, 노출(impression) 등 사용자 상호작용은 **이벤트로 발행**되어 메시지 버스로 흐른다. 트위터는 오래 자체 `EventBus`(Kafka 변형/래퍼)를 운영하다가 Kafka 생태계로 수렴했다.\n\n### Heron — Storm의 후계자\n실시간 스트림 처리는 자체 개발한 `Heron`이 담당한다. 기존 Apache Storm을 운영하며 겪은 **디버깅 난이도, 자원 격리 부재, 백프레셔 부족** 문제를 풀려고 만들었고 API는 Storm 호환이다.\n\n- **토폴로지 = spout(소스) + bolt(처리)** 의 DAG.\n- 각 토폴로지가 **컨테이너 단위로 Aurora/Mesos에 스케줄**되어 자원 격리가 명확.\n- **백프레셔**: 하류 bolt가 밀리면 상류로 신호를 보내 데이터 유입을 늦춰 과부하·데이터 손실을 막는다.\n- Stream Manager가 컨테이너 간 라우팅, Topology Master가 메타데이터 관리.\n\n### 무엇에 쓰나\n- **실시간 집계**: 트렌드, engagement 카운터, 실시간 지표.\n- **그래프 갱신**: `GraphJet`(인메모리 양분 그래프 엔진)에 실시간 상호작용을 흘려 \"방금 이 사용자가 좋아한 것과 비슷한 트윗\" 같은 실시간 추천 후보를 만든다.\n- **검색 인덱싱**: 새 트윗을 `Earlybird` 역색인에 수 초 내 반영.\n\n### 배치와의 람다 구조\n실시간(Heron)과 배치(`Hadoop` + `Scalding`)를 함께 돌리는 **람다 아키텍처**에 가깝다. 실시간 레이어가 최신성을, 배치 레이어가 정확한 재계산을 담당하며 ML 피처와 분석은 `BigQuery`로도 흘러간다."
+    },
+    {
+     "topic": "배포·스케줄링·빌드: Aurora/Mesos · Kubernetes 전환 · Bazel",
+     "body": "### Mesos/Aurora — 트위터가 컨테이너 오케스트레이션을 개척한 방식\n쿠버네티스가 대중화되기 전부터 트위터는 **`Apache Mesos` + `Aurora`** 로 수만 대 서버를 한 자원 풀로 묶어 서비스를 스케줄했다. Aurora는 \"이 서비스를 N개 인스턴스로, 이 자원 제약 하에 항상 떠 있게\" 유지하는 선언적 스케줄러로, **장애 노드에서 자동 재배치·롤링 업데이트·헬스체크 기반 롤백**을 제공했다. 사실상 사내 PaaS였다.\n\n### Kubernetes로의 전환\n생태계가 쿠버네티스로 수렴하면서 트위터도 **stateful·compute 워크로드를 점진적으로 K8s로 이전**했다. 다만 수년간 Aurora에 최적화된 운영 자산이 컸기에 **하이브리드(온프레미스 데이터센터 + GCP)** 형태로 오래 공존했다. 콜드 스토리지·분석은 GCP/BigQuery로, 레이턴시 민감 서비스는 자체 데이터센터에 두는 분리가 특징이다.\n\n### Bazel 모노레포\n방대한 Scala/Java 코드베이스는 **`Bazel` 기반 모노레포**로 빌드한다. 원격 캐시·증분 빌드로 거대한 코드에서도 빌드 시간을 통제하고, `Finagle`/`Finatra` 같은 공통 라이브러리를 전사가 일관되게 공유한다.\n\n### 카나리·점진 배포\n서비스 배포는 **소수 인스턴스 카나리 → 메트릭 관찰 → 점진 확대** 흐름을 따른다. Finagle이 내보내는 success rate·latency·load 메트릭을 보고 이상 시 자동/수동 롤백한다. 트래픽 급증 이벤트(예: 대형 스포츠·정치 이벤트) 때는 사전 용량 확보와 read fanout 비중 조정으로 대응한다."
     }
    ],
    "github": {
@@ -5501,47 +5539,47 @@
      {
       "name": "twitter/the-algorithm",
       "url": "https://github.com/twitter/the-algorithm",
-      "desc": "2023년 공개된 추천 타임라인 알고리즘(Home Mixer·랭킹) 소스",
+      "desc": "For You 추천 타임라인의 후보생성·랭킹·필터 소스 공개",
       "lang": "Scala",
-      "stars": 73422
+      "stars": 73435
+     },
+     {
+      "name": "twitter/twemproxy",
+      "url": "https://github.com/twitter/twemproxy",
+      "desc": "Memcached/Redis용 경량 프록시(nutcracker)",
+      "lang": "C",
+      "stars": 12339
+     },
+     {
+      "name": "twitter/the-algorithm-ml",
+      "url": "https://github.com/twitter/the-algorithm-ml",
+      "desc": "추천 랭킹 모델 학습·서빙 ML 코드",
+      "lang": "Python",
+      "stars": 10580
      },
      {
       "name": "twitter/finagle",
       "url": "https://github.com/twitter/finagle",
-      "desc": "JVM용 비동기 프로토콜 비종속 RPC 시스템, 백엔드의 핵심",
+      "desc": "JVM용 확장형 비동기 RPC 시스템(트위터 백엔드의 근간)",
       "lang": "Scala",
       "stars": 8867
      },
      {
-      "name": "apache/incubator-heron",
-      "url": "https://github.com/apache/incubator-heron",
-      "desc": "Storm 후속의 실시간 스트림 처리 엔진(현 Apache Heron)",
-      "lang": "Java",
-      "stars": 3632
-     },
-     {
       "name": "twitter/scalding",
       "url": "https://github.com/twitter/scalding",
-      "desc": "Cascading 기반 Scala MapReduce DSL, 배치 데이터 파이프라인",
+      "desc": "Cascading 기반 Scala MapReduce 데이터 파이프라인 DSL",
       "lang": "Scala",
       "stars": 3521
-     },
-     {
-      "name": "twitter/util",
-      "url": "https://github.com/twitter/util",
-      "desc": "Future·동시성·시간 등 Finagle 생태계의 공통 유틸 라이브러리",
-      "lang": "Scala",
-      "stars": 2721
      }
     ]
    },
    "sources": [
-    "https://blog.twitter.com/engineering/en_us/topics/open-source/2023/twitter-recommendation-algorithm",
     "https://github.com/twitter/the-algorithm",
-    "https://github.com/twitter/finagle"
+    "https://blog.twitter.com/engineering/en_us/topics/open-source/2023/twitter-recommendation-algorithm",
+    "https://blog.twitter.com/engineering/en_us/topics/infrastructure"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-14"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "google",

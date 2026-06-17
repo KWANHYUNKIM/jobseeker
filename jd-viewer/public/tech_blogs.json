@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-06-18T01:41:32",
- "total": 744,
+ "generated_at": "2026-06-18T03:15:57",
+ "total": 764,
  "sources": [
   {
    "company": "Etsy",
    "country": "US",
-   "count": 60
+   "count": 80
   },
   {
    "company": "Stack Overflow",
@@ -4542,6 +4542,30 @@
    ],
    "lang": "en",
    "content_id": "cae28301d844c503"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Shaping Product Understanding with Contrastive Reinforcement Learning",
+   "url": "https://www.etsy.com/codeascraft/shaping-product-understanding-with-contrastive-reinforcement-learning?_=1781529995644",
+   "published": "2026-05-26",
+   "published_ts": 1779819190.0,
+   "summary": "Etsy’s marketplace is defined by the creativity and craftsmanship of our sellers and the hundreds of millions of highly diverse products they offer. You can find silversmiths who cold-forge recycled sterling silver, weavers who dye raw fleece with indigo and black walnut, and ceramicists who throw stoneware on a kick wheel.\n\nThese details define each product and often determine whether it matches a buyer’s taste, style, and interests. Sometimes buyers know exactly what they want, searching for “hand-thrown ceramic mug” or “vegetable-tanned leather wallet.” Other times, especially in recommenda…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "Reinforcement Learning",
+    "Embedding",
+    "Fine-tuning",
+    "LLM"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "29aca3073a6aa33f"
   },
   {
    "key": "meta",
@@ -10555,6 +10579,27 @@
    "content_id": "437927ba76753100"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Making Ads Count: Using MMoE and Auxiliary Tasks to Better Connect Buyers & Sellers",
+   "url": "https://www.etsy.com/codeascraft/making-ads-count-using-mmoe-and-auxiliary-tasks-to-better-connect-buyers--sellers?_=1781529995644",
+   "published": "2026-03-20",
+   "published_ts": 1774031516.0,
+   "summary": "When buyers search on Etsy, they need to quickly and easily find the perfect item. At the same time, sellers need to be confident their unique products are being seen by the right customers. Our Ads Search ranking model, which is built on a multitask learning foundation, is the critical link in this connection. Recently, we identified an opportunity to drive more meaningful buyer engagement by enhancing our model’s ability to predict purchase intent. We achieved this via a dual-pronged improvement: introducing Multigate Mixture of Experts (MMoE) to our model architecture and leveraging add-to-…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "MoE"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "e63c277564ca6538"
+  },
+  {
    "key": "woowahan",
    "company": "우아한형제들",
    "country": "KR",
@@ -10693,6 +10738,30 @@
    ],
    "lang": "en",
    "content_id": "c1138f234a3f851d"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Migrating Etsy’s database sharding to Vitess",
+   "url": "https://www.etsy.com/codeascraft/migrating-etsyas-database-sharding-to-vitess?_=1781529995644",
+   "published": "2026-03-19",
+   "published_ts": 1773954234.0,
+   "summary": "Etsy has maintained a sharded MySQL architecture since around 2010. This database cluster contains most of Etsy’s online data and is made up of ~1,000 tables distributed across ~1,000 shards. Over the last 16 years, it has grown significantly: combined, these tables have over 425 TB of data and receive roughly 1.7 million requests per second.\n\nEtsy engineers access our MySQL data through a proprietary object-relational mapping (ORM). The ORM has a corresponding model for each MySQL table. When a table is sharded, its rows are partitioned among different databases known as shards. Each shard ha…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "MySQL",
+    "SQLite",
+    "Algorithm"
+   ],
+   "categories": [
+    "언어",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "e48993db18ec4bb1"
   },
   {
    "key": "slack",
@@ -12814,6 +12883,35 @@
    "content_id": "2401f9cc8e82d29b"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "How Etsy Uses LLMs to Improve Search Relevance",
+   "url": "https://www.etsy.com/codeascraft/how-etsy-uses-llms-to-improve-search-relevance?_=1781529995644",
+   "published": "2026-01-16",
+   "published_ts": 1768593748.0,
+   "summary": "Ever searched for something specific, only to be met with results that are close, but not quite? On Etsy’s Search Relevance team, that frustration is exactly what we are tackling. Our goal is simple yet ambitious: to help buyers find exactly what they’re looking for, and to help sellers reach the people seeking their special products.\n\nSearch plays a central role in that mission. Historically, Etsy’s search models have relied heavily on engagement signals – such as clicks, add-to-carts, and purchases – as proxies for relevance. These signals are objective, but they can also be biased: popular…",
+   "tags": [],
+   "tech_stack": [
+    "Julia",
+    "Machine Learning",
+    "BERT",
+    "Fine-tuning",
+    "LLM",
+    "Prompt Engineering",
+    "vLLM",
+    "Embedded"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "펌웨어/임베디드"
+   ],
+   "lang": "en",
+   "content_id": "f516868c5044c038"
+  },
+  {
    "key": "banksalad",
    "company": "뱅크샐러드",
    "country": "KR",
@@ -14311,6 +14409,34 @@
    "content_id": "62f093562956a173"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Reducing experiment duration with predicted control variates",
+   "url": "https://www.etsy.com/codeascraft/reducing-experiment-duration-with-predicted-control-variates?_=1781529995644",
+   "published": "2025-11-25",
+   "published_ts": 1764088106.0,
+   "summary": "In 2021, we published a blog post titled “Increasing experimentation accuracy and speed by using control variates,” describing how we reduce the variance of metrics using CUPED in our experimentation platform. This is a follow-up on how CUPED has evolved at Etsy since then. Spoiler – It’s changed a lot, decreasing our average experiment duration by 3 days!\n\nEtsy’s mission is to Keep Commerce Human. To achieve this, we need to understand the impact each change to our platform has on our buyers' and sellers' experience. Whether that involves changing the color of the “Buy Now” button on the Etsy…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "LightGBM",
+    "Machine Learning",
+    "XGBoost",
+    "Airflow",
+    "Spark",
+    "BigQuery"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "데이터베이스"
+   ],
+   "lang": "en",
+   "content_id": "b4c22d7613821dca"
+  },
+  {
    "key": "spotify-r",
    "company": "Spotify R&D",
    "country": "US",
@@ -14630,6 +14756,28 @@
    "content_id": "342f05f656f57537"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Improving performance by prefetching product pages from Etsy Search",
+   "url": "https://www.etsy.com/codeascraft/search-prefetching-performance?_=1781529995644",
+   "published": "2025-10-29",
+   "published_ts": 1761758049.0,
+   "summary": "Rarely are there opportunities for big, bold, game-changing improvements in web performance. The Speculation Rules API (SRA) is a recent browser development that offers just such an opportunity. This post details a joint effort between the search and the web performance teams at Etsy to implement SRA on Etsy search pages and drastically improve the performance of product listing pages with some metrics seeing 20-24% improvements and some dropping all the way to 0ms values.\n\nPrefetching Options\n\nThere are two main ways to predictively fetch resources for the next page:\n\n<link rel=\"prefetch\"> al…",
+   "tags": [],
+   "tech_stack": [
+    "JavaScript",
+    "CSS",
+    "HTML"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드"
+   ],
+   "lang": "en",
+   "content_id": "87e601843e4d2a48"
+  },
+  {
    "key": "kurly",
    "company": "컬리",
    "country": "KR",
@@ -14740,6 +14888,32 @@
    ],
    "lang": "en",
    "content_id": "8cf37030572e4f1c"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Understanding Etsy’s Vast Inventory with LLMs",
+   "url": "https://www.etsy.com/codeascraft/understanding-etsyas-vast-inventory-with-llms?_=1781529995644",
+   "published": "2025-10-13",
+   "published_ts": 1760378319.0,
+   "summary": "For more than 20 years, Etsy has been the destination for human creativity online. Our marketplace is home to more than 100 million special items made, handpicked and designed by more than 5 million sellers. These items and the real people behind them are what set us apart. But while the huge variety of Etsy’s inventory is one of our greatest strengths, it also creates fundamental engineering challenges specific to our marketplace.\n\nThe challenge: Etsy’s unique inventory\n\nWith millions of creative items across thousands of categories – many of which are unique – it’s difficult to accurately ca…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "LLM",
+    "Transformer",
+    "Observability",
+    "Benchmark"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "관측성",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "6e3101577245a051"
   },
   {
    "key": "kurly",
@@ -14859,6 +15033,33 @@
    ],
    "lang": "en",
    "content_id": "07b1130e8ebbce76"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Unlocking Faster Insights with Experimenter-Defined Segmentations",
+   "url": "https://www.etsy.com/codeascraft/unlocking-faster-insights-with-experimenter-defined-segmentations?_=1781529995644",
+   "published": "2025-10-08",
+   "published_ts": 1759937522.0,
+   "summary": "Imagine you have a fabulous idea to drive more sales on Etsy by giving out free ice cream with every purchase. How would you know if it will actually work?\n\nOne way to test this out is to run an experiment! An experiment is a learning tool that can help us see if a new change really affects user behavior and key metrics we care about. At Etsy, we run nearly 2000 experiments a year for testing new ideas to improve the user experience for our buyers and sellers.\n\nFor our ice cream idea, we could set up our experiment as an A/B test on the listing page, where one group of users (the “control” gro…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "React",
+    "Data Pipeline",
+    "BigQuery",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "데이터",
+    "데이터베이스",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "bf82837167af2ff0"
   },
   {
    "key": "cookpad",
@@ -15216,6 +15417,36 @@
    "content_id": "0fcc725b5911a8b0"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Building Etsy Buyer Profiles with LLMs",
+   "url": "https://www.etsy.com/codeascraft/building-etsy-buyer-profiles-with-llms?_=1781529995644",
+   "published": "2025-09-03",
+   "published_ts": 1756935615.0,
+   "summary": "Every day, shoppers from Etsy's community of nearly 90M buyers visit our marketplace to search for unique, handmade, and vintage items. But with over 100 million listings, how do we help each buyer find exactly what they're looking for? Traditional search and recommendation systems often fall short of capturing the nuanced interests that make each Etsy buyer unique, from specific styles to aesthetic preferences. At Etsy, understanding our buyers' interests is central to delivering engaging, personalized experiences.\n\nRecently, we explored enhancing our personalization by leveraging large langu…",
+   "tags": [],
+   "tech_stack": [
+    "Julia",
+    "Feature Store",
+    "LLM",
+    "Airflow",
+    "BigQuery",
+    "Concurrency",
+    "Data Structure"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "데이터",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "c19b5d4a87427480"
+  },
+  {
    "key": "cookpad",
    "company": "Cookpad",
    "country": "JP",
@@ -15361,6 +15592,35 @@
    ],
    "lang": "en",
    "content_id": "db1a965a3567f738"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Context engineering case studies: Etsy-specific question answering",
+   "url": "https://www.etsy.com/codeascraft/context-engineering-case-studies-etsy-specific-question-answering?_=1781529995644",
+   "published": "2025-08-19",
+   "published_ts": 1755633881.0,
+   "summary": "This post investigates the benefits and limitations of prompt engineering in two instances of AI-assisted onboarding relying on large language model (LLM) technology. Of particular interest is how truthful (and therefore reliable) LLM-generated answers turn out to be in the context of Etsy-specific question answering. Among other insights, we find that asking the LLM to identify specific source snippets is a good way to flag potential hallucinations.\n\nOver the past few years, pre-trained large-scale/foundation language models such as OpenAI’s o-series [1] and Google’s Gemini family [2] have re…",
+   "tags": [],
+   "tech_stack": [
+    "Express",
+    "NLP",
+    "Embedding",
+    "Fine-tuning",
+    "Gemini",
+    "LLM",
+    "Prompt Engineering",
+    "GCP"
+   ],
+   "categories": [
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "e8108c34aa64e9f4"
   },
   {
    "key": "ft",
@@ -16256,6 +16516,21 @@
    "content_id": "8bd33c80f36073f7"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Behind the Scenes - A Glimpse into Tax Calculations",
+   "url": "https://www.etsy.com/codeascraft/behind-the-scenes---a-glimpse-to-tax-calculations?_=1781529995644",
+   "published": "2025-03-29",
+   "published_ts": 1743242603.0,
+   "summary": "In the past, sellers were responsible for managing and fulfilling their own tax obligations.\nHowever, more and more jurisdictions are now requiring marketplaces such as Etsy to collect the tax from buyers and remit the tax to the relevant authorities. Etsy now plays an active role in collecting tax from buyers and remitting it all over the world. In this post, I will walk you through our tax calculation infrastructure and how we adapted to the ongoing increase in traffic and business needs over the years.\n\nThe tax calculation workflow\n\nWe determine tax whenever a buyer adds an item to their Et…",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "c48a4ee595e5ca67"
+  },
+  {
    "key": "hyperconnect",
    "company": "하이퍼커넥트",
    "country": "KR",
@@ -16657,6 +16932,30 @@
    ],
    "lang": "en",
    "content_id": "becaed8ec682b153"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Adopting Jetpack Compose for Etsy’s Android App",
+   "url": "https://www.etsy.com/codeascraft/adopting-jetpack-compose-for-etsy39s-android-app?_=1781529995644",
+   "published": "2025-01-28",
+   "published_ts": 1738077911.0,
+   "summary": "One of our Guiding Principles at Etsy is that we “commit to our craft.” This means that we have a culture of learning, in which we’re constantly looking for opportunities to improve and learn, adopt industry best practices, and share our findings with our colleagues and our community.\n\nAs part of that process, Etsy recently adopted Jetpack Compose – Android's modern toolkit for defining native UIs – as our preferred means of building our Android app. The process of adoption consisted of a gradual expansion in the size and complexity of features built using Compose, eventually culminating in a…",
+   "tags": [],
+   "tech_stack": [
+    "Kotlin",
+    "Android",
+    "Jetpack Compose",
+    "Design System"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a98610114252a3eb"
   },
   {
    "key": "29cm",
@@ -17933,6 +18232,32 @@
    "content_id": "c1cc7da0bbe0f520"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Machine Learning in Content Moderation at Etsy",
+   "url": "https://www.etsy.com/codeascraft/machine-learning-in-content-moderation-at-etsy?_=1781529995644",
+   "published": "2024-08-06",
+   "published_ts": 1722942903.0,
+   "summary": "At Etsy, we’re focused on elevating the best of our marketplace to help creative entrepreneurs grow their businesses. We continue to invest in making Etsy a safe and trusted place to shop, so sellers’ extraordinary items can shine.\n\nToday, there are more than 100 million unique items available for sale on our marketplace, and our vibrant global community is made up of over 90 million active buyers and 7 million active sellers, the majority of whom are women and sole owners of their creative businesses. To support this growing community, our Trust & Safety team of Product, Engineering, Data, an…",
+   "tags": [],
+   "tech_stack": [
+    "CNN",
+    "Machine Learning",
+    "BERT",
+    "Multimodal",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a1fbbdd46379267a"
+  },
+  {
    "key": "devsisters",
    "company": "데브시스터즈",
    "country": "KR",
@@ -18123,6 +18448,29 @@
    "key": "etsy",
    "company": "Etsy",
    "country": "US",
+   "title": "Enhancing Cloud Usage Forecasting, Monitoring & Optimizing",
+   "url": "https://www.etsy.com/codeascraft/enhancing-cloud-usage-forecasting-monitoring--optimizing?_=1781529995644",
+   "published": "2024-06-17",
+   "published_ts": 1718632696.0,
+   "summary": "In 2020, Etsy concluded its migration from an on-premise data center to the Google Cloud Platform (GCP). During this transition, a dedicated team of program managers ensured the migration's success. Post-migration, this team evolved into the Etsy FinOps team, dedicated to maximizing the organization's cloud value by fostering collaborations within and outside the organization, particularly with our Cloud Providers.\n\nPositioned within the Engineering organization under the Chief Architect, the FinOps team operates independently of any one Engineering org or function and optimizes globally rathe…",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "BigQuery",
+    "GCP"
+   ],
+   "categories": [
+    "AI/ML",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "3d4f0d1770d6bbdc"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
    "title": "Efficient Visual Representation Learning And Evaluation",
    "url": "https://www.etsy.com/codeascraft/efficient-visual-representation-learning-and-evaluation",
    "published": "2024-06-07",
@@ -18220,6 +18568,40 @@
    ],
    "lang": "en",
    "content_id": "52b2e323120abf7f"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Efficient Visual Representation Learning And Evaluation",
+   "url": "https://www.etsy.com/codeascraft/efficient-visual-representation-learning-and-evaluation?_=1781529995644",
+   "published": "2024-06-07",
+   "published_ts": 1717780982.0,
+   "summary": "Etsy features a diverse marketplace of unique handmade and vintage items. It’s a visually diverse marketplace as well, and computer vision has become increasingly important to Etsy as a way of enhancing our users’ shopping experience. We’ve developed applications like visual search and visually similar recommendations that can offer buyers an additional path to find what they’re looking for, powered by machine learning models that encode images as vector representations.\n\nFigure 1. Visual representations power applications such as visual search and visually similar recommendations\n\nLearning ex…",
+   "tags": [],
+   "tech_stack": [
+    "Android",
+    "iOS",
+    "CNN",
+    "Computer Vision",
+    "Deep Learning",
+    "Machine Learning",
+    "Attention Mechanism",
+    "Diffusion",
+    "Embedding",
+    "Fine-tuning",
+    "Prompt Engineering",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "모바일",
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "f892adf11c0e8604"
   },
   {
    "key": "devsisters",
@@ -18338,6 +18720,30 @@
    ],
    "lang": "en",
    "content_id": "d73928ce02038b20"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Macramé: Untangling the Knot on the Etsy Android Listing Screen",
+   "url": "https://www.etsy.com/codeascraft/macrame-untangling-the-knot-on-the-android-listing-screen?_=1781529995644",
+   "published": "2024-03-18",
+   "published_ts": 1710778755.0,
+   "summary": "Easily the most important and complex screen in the Buy on Etsy Android app is the listing screen, where all key information about an item for sale in the Etsy marketplace is displayed to buyers. Far from just a title and description, a price and a few images, over the years the listing screen has come to aggregate ratings and reviews, seller and shipping and stock information, and gained a variety of personalization and recommendation features. As information-rich as it is, as central as it is to the buying experience, for product teams the listing screen is an irresistible place to test out…",
+   "tags": [],
+   "tech_stack": [
+    "Kotlin",
+    "React",
+    "Android",
+    "Jetpack Compose"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "18f4dc0c0519b2c0"
   },
   {
    "key": "watcha",
@@ -18466,6 +18872,34 @@
    ],
    "lang": "en",
    "content_id": "b4e4690d59314a80"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "How We Built The Deals Tab in Swift UI",
+   "url": "https://www.etsy.com/codeascraft/how-we-built-the-deals-tab-in-swift-ui?_=1781529995644",
+   "published": "2024-03-05",
+   "published_ts": 1709677374.0,
+   "summary": "Balancing Engineering Ambition with Product Realism\n\nIntroduction\n\nIn July of 2023, Etsy’s App Updates team, responsible for the Updates feed in Etsy’s mobile apps, set off with an ambitious goal: to revamp the Updates tab to become Deals, a home for a shopper’s coupons and sales, in time for Cyber Week 2023.\n\nThe Updates tab had been around for years, and in the course of its evolution ended up serving multiple purposes. It was a hub for updates about a user’s favorite shops and listings, but it was also increasingly a place to start new shopping journeys. Not all updates were created equal.…",
+   "tags": [],
+   "tech_stack": [
+    "Objective-C",
+    "Swift",
+    "iOS",
+    "SwiftUI",
+    "UIKit",
+    "Embedded",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "펌웨어/임베디드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "30dd359952560726"
   },
   {
    "key": "watcha",
@@ -18852,6 +19286,26 @@
    "content_id": "279a215374e6c256"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "The AR Measuring Box: Etsy&#39;s answer to Big Tape Measure",
+   "url": "https://www.etsy.com/codeascraft/the-ar-measuring-box-etsys-answer-to-big-tape-measure?_=1781529995644",
+   "published": "2023-09-18",
+   "published_ts": 1695067918.0,
+   "summary": "A little while ago, Etsy introduced a new feature in its iOS app that could place Etsy sellers' artwork on a user's wall using Apple's Augmented Reality (AR) tools. It let them visualize how a piece would look in their space, and even gave them an idea of its size options. When we launched the feature as a beta, it was only available in \"wall art\"-related categories, and after the initial rollout we were eager to expand it to work with more categories.\n\nWhat differentiates Etsy is the nature of our sellers’ unique items. Our sellers create offerings that can be personalized in numbers of ways,…",
+   "tags": [],
+   "tech_stack": [
+    "Android",
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "b74597053c095353"
+  },
+  {
    "key": "zigbang",
    "company": "직방",
    "country": "KR",
@@ -19078,6 +19532,32 @@
    "content_id": "7071bc0641f14456"
   },
   {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "The So-fine Real-time ML Paradigm",
+   "url": "https://www.etsy.com/codeascraft/the-so-fine-real-time-ml-paradigm?_=1781529995644",
+   "published": "2023-09-05",
+   "published_ts": 1693943741.0,
+   "summary": "Introduction\n\nEach year, Etsy hosts an event known as “CodeMosaic” - an internal hackathon in which Etsy admin propose and build bold advances quickly in our technology across a number of different themes. People across Etsy source ideas, organize into teams, and then have 2-3 days to build innovative proofs-of-concept that might deliver big wins for Etsy’s buyers and sellers, or improve internal engineering systems and workflows.\n\nBesides being a ton of fun, CodeMosaic is a time for engineers to pilot novel ideas. Our team’s project this year was extremely ambitious - we wanted to build a sys…",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "Machine Learning",
+    "TensorFlow",
+    "Kafka",
+    "GCP"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "데이터",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "8ce9d90503fb6eee"
+  },
+  {
    "key": "devsisters",
    "company": "데브시스터즈",
    "country": "KR",
@@ -19257,6 +19737,34 @@
    ],
    "lang": "en",
    "content_id": "0dab2ab6d27748b7"
+  },
+  {
+   "key": "etsy",
+   "company": "Etsy",
+   "country": "US",
+   "title": "Leveraging Real-Time User Actions to Personalize Etsy Ads",
+   "url": "https://www.etsy.com/codeascraft/leveraging-real-time-user-actions-to-personalize-etsy-ads?_=1781529995644",
+   "published": "2023-07-14",
+   "published_ts": 1689364481.0,
+   "summary": "Introduction\n\nPersonalization is vital to connect our unique marketplace to the right buyer at the right time. Etsy has recently introduced a novel, general approach to personalizing ML models based on encoding and learning from short-term (one-hour) sequences of user actions through a reusable three-component deep learning module, the adSformer Diversifiable Personalization Module (ADPM). We describe in detail our method in our recent paper, with an emphasis on personalizing the CTR (clickthrough rate) and PCCVR (post-click conversion rate) ranking models we use in Etsy Ads. Here, we'd like t…",
+   "tags": [],
+   "tech_stack": [
+    "Deep Learning",
+    "Keras",
+    "Machine Learning",
+    "TensorFlow",
+    "Embedding",
+    "Multimodal",
+    "Transformer",
+    "Ablation Study"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "a0c974a35bace331"
   },
   {
    "key": "zigbang",

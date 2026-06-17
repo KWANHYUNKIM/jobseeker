@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6369건** 공고 · **1267개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-18 01:41
+- 총 **6377건** 공고 · **1267개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-18 03:16
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -305,6 +305,13 @@ markmap:
   - [(쿤텍 ES사업그룹 개발팀) 임베디드 SW 테스팅 도구 개발자 5~15년 ↗](https://www.wanted.co.kr/wd/350294)
   - [(쿤텍 ES사업그룹) 임베디드 SW/FW 개발자 / 경력 2명 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53986098&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=41e7582e-45a6-4118-b35b-79ec55d29f71)
 
+### 메가스터디교육 `중소기업` · 6건
+- **백엔드** [5건] · `Spring` `Spring Boot` `MySQL` `PHP` `MSSQL` `Classic ASP`
+  - [웹서비스(백엔드) 개발자 ↗](https://www.wanted.co.kr/wd/352728)
+  - [웹서비스(백앤드) 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54002171)
+  - [웹서비스(백앤드) 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54002171&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367)
+  - [(2026년 하반기) 신입/경력 백엔드 개발 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206985&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5ef6d16a-4fbe-4a73-88e2-a27c48afd938)
+
 ### 10가트 `중소기업` · 6건
 - **백엔드** [2건] · `C++` `Swift` `iOS` `REST API` `Objective-C`
   - [IOS 개발자 경력직 채용 ↗](https://jumpit.saramin.co.kr/position/54186052)
@@ -437,13 +444,6 @@ markmap:
   - [(주)다온더케어에서 풀스택 개발자를 채용해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53810054&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=de9c4d31-30ad-49a3-8dd1-4b7f344afb26)
 - **DevOps/인프라** [1건] · `TypeScript` `React` `Node.js` `React Native` `PostgreSQL` `AWS`
   - [Node.js 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/363772)
-
-### 메가스터디교육 `중소기업` · 5건
-- **백엔드** [4건] · `PHP` `Spring` `Spring Boot` `MySQL` `MSSQL` `Classic ASP`
-  - [웹서비스(백엔드) 개발자 ↗](https://www.wanted.co.kr/wd/352728)
-  - [웹서비스(백앤드) 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54002171)
-  - [웹서비스(백앤드) 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54002171&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367)
-  - [(연장) (IT) 웹서비스(백엔드) 개발자 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/552403?ReturnUrl=RecruitInfo)
 
 ### 아인잡 `중소기업` · 5건
 - **백엔드** [5건] · `Git` `REST API` `TypeScript` `React` `Next.js` `HTML`
@@ -3123,6 +3123,17 @@ markmap:
 - **펌웨어/임베디드** [1건]
   - [Associate Google Cloud Learning Lead, gReach Program for People with Disabilities or Veterans (장애인 or 보훈대상자) (English, Korean) ↗](https://www.wanted.co.kr/wd/356868)
 
+### 엑스에이아이 (xAI) `중소기업` · 8건
+- **백엔드** [1건] · `Rust` `Swift` `iOS` `gRPC`
+  - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
+- **모바일** [1건] · `Rust` `Swift` `iOS` `gRPC`
+  - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
+- **AI/ML** [6건] · `Rust` `Swift` `iOS` `gRPC`
+  - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
+  - [AI Tutor - Audio Editing ↗](https://www.wanted.co.kr/wd/357201)
+  - [AI Tutor - Russian ↗](https://www.wanted.co.kr/wd/358640)
+  - [AI Tutor - Telugu ↗](https://www.wanted.co.kr/wd/357233)
+
 ### (주)위펀 `중소기업` · 8건
 - **백엔드** [6건] · `Java` `Spring` `MySQL` `MariaDB` `Spring Boot` `Kafka`
   - [백엔드 엔지니어(운영&보안) ↗](https://jumpit.saramin.co.kr/position/53865354)
@@ -3145,17 +3156,6 @@ markmap:
   - [백엔드 엔지니어(운영&보안) ↗](https://jumpit.saramin.co.kr/position/53865354)
 - **QA** [1건] · `Java` `React` `Next.js` `Spring` `Spring Boot` `iOS`
   - [(위펀) AI Native QA Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53820716&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=8dd5ae4a-b210-4f26-b241-b44c722f335c)
-
-### 엑스에이아이 (xAI) `중소기업` · 7건
-- **백엔드** [1건] · `Rust` `Swift` `iOS` `gRPC`
-  - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
-- **모바일** [1건] · `Rust` `Swift` `iOS` `gRPC`
-  - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
-- **AI/ML** [6건] · `Rust` `Swift` `iOS` `gRPC`
-  - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
-  - [AI Tutor - Audio Editing ↗](https://www.wanted.co.kr/wd/357201)
-  - [AI Tutor - Russian ↗](https://www.wanted.co.kr/wd/358640)
-  - [AI Tutor - Telugu ↗](https://www.wanted.co.kr/wd/357233)
 
 ### 브이엔티지 `중소기업` · 7건
 - **백엔드** [4건] · `TypeScript` `React` `Node.js` `NestJS` `AWS`
@@ -9664,6 +9664,18 @@ markmap:
 - **보안** [1건] · `AWS` `OpenAI` `Linux` `방화벽` `백신` `ISO 27001`
   - [정보보안 담당자 (Data & Client Security) ↗](https://www.wanted.co.kr/wd/365094)
 
+### 피에프씨테크놀로지스 `중소기업` · 8건
+- **AI/ML** [1건] · `CSS`
+  - [B2B AI Product Owner(PO, 프로덕트 오너) ↗](https://www.wanted.co.kr/wd/338869)
+- **데이터** [2건] · `CSS` `Python`
+  - [B2B AI Product Owner(PO, 프로덕트 오너) ↗](https://www.wanted.co.kr/wd/338869)
+  - [Data Strategist(Junior CSS Consultant) ↗](https://www.wanted.co.kr/wd/303800)
+- **DevOps/인프라** [6건] · `AWS` `GCP` `Kubernetes` `Terraform`
+  - [DevOps Lead(데브옵스 리드) ↗](https://www.wanted.co.kr/wd/365587)
+  - [DevOps Engineer(데브옵스 엔지니어) ↗](https://www.wanted.co.kr/wd/367602)
+  - [DevOps Lead(데브옵스 리드) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49339835?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4&listno=3&sc=630)
+  - [DevOps Engineer(데브옵스 엔지니어) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49340659?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4&listno=3&sc=630)
+
 ### 넥스트증권 `중소기업` · 7건
 - **백엔드** [6건] · `AWS` `Kotlin` `PostgreSQL` `Kafka` `Spring` `Spring Boot`
   - [Fullstack Engineer ↗](https://www.wanted.co.kr/wd/357407)
@@ -9691,15 +9703,6 @@ markmap:
   - [Fullstack Engineer ↗](https://www.wanted.co.kr/wd/357407)
   - [DevOps Engineer ↗](https://www.wanted.co.kr/wd/355991)
   - [Data Engineer(AI데이터플랫폼) ↗](https://www.wanted.co.kr/wd/356044)
-
-### 피에프씨테크놀로지스 `중소기업` · 7건
-- **데이터** [1건] · `Python` `CSS`
-  - [Data Strategist(Junior CSS Consultant) ↗](https://www.wanted.co.kr/wd/303800)
-- **DevOps/인프라** [6건] · `AWS` `GCP` `Kubernetes` `Terraform`
-  - [DevOps Lead(데브옵스 리드) ↗](https://www.wanted.co.kr/wd/365587)
-  - [DevOps Engineer(데브옵스 엔지니어) ↗](https://www.wanted.co.kr/wd/367602)
-  - [DevOps Lead(데브옵스 리드) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49339835?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4&listno=3&sc=630)
-  - [DevOps Engineer(데브옵스 엔지니어) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49340659?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4&listno=3&sc=630)
 
 ### 빗썸 `중견기업` · 6건
 - **백엔드** [2건] · `Java` `Kotlin` `Spring` `Spring Boot` `MySQL` `Redis`
