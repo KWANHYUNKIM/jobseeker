@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-17T12:52:36",
- "total": 735,
+ "generated_at": "2026-06-17T14:25:55",
+ "total": 736,
  "sources": [
   {
    "company": "Etsy",
@@ -80,7 +80,7 @@
   {
    "company": "토스",
    "country": "KR",
-   "count": 22
+   "count": 23
   },
   {
    "company": "Netflix",
@@ -532,6 +532,21 @@
    ],
    "lang": "ko",
    "content_id": "ebabd4b505d34230"
+  },
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "AI로 바꾼 제품 설계의 순서",
+   "url": "https://toss.tech/article/chatbot",
+   "published": "2026-06-17",
+   "published_ts": 1781672160.0,
+   "summary": "고객센터 챗봇을 만들면서, 좋은 사용자 경험을 먼저 만들고 필요한 것들을 역산해나간 과정을 소개할게요.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "7f1f923ca4d34478"
   },
   {
    "key": "line",
