@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T12:12:01",
+ "generated_at": "2026-06-18T13:57:41",
  "total": 100,
  "countries": [
   {
@@ -1437,16 +1437,16 @@
    "subdomains": [],
    "languages": [
     {
+     "name": "Go",
+     "count": 7
+    },
+    {
      "name": "Java",
      "count": 7
     },
     {
      "name": "Python",
      "count": 7
-    },
-    {
-     "name": "Go",
-     "count": 6
     },
     {
      "name": "TypeScript",
@@ -1457,12 +1457,12 @@
      "count": 3
     },
     {
-     "name": "JavaScript",
+     "name": "Scala",
      "count": 3
     },
     {
-     "name": "Scala",
-     "count": 3
+     "name": "JavaScript",
+     "count": 2
     },
     {
      "name": "Kotlin",
@@ -1472,11 +1472,11 @@
    "stack": {
     "backend": [
      {
-      "name": "gRPC",
-      "count": 6
+      "name": "Go",
+      "count": 5
      },
      {
-      "name": "Go",
+      "name": "gRPC",
       "count": 5
      },
      {
@@ -1488,7 +1488,7 @@
       "count": 3
      },
      {
-      "name": "Python",
+      "name": "gRPC + Protobuf",
       "count": 2
      },
      {
@@ -1550,7 +1550,7 @@
       "count": 1
      },
      {
-      "name": "Vue.js",
+      "name": "Three.js",
       "count": 1
      }
     ],
@@ -1580,6 +1580,10 @@
       "count": 3
      },
      {
+      "name": "S3",
+      "count": 3
+     },
+     {
       "name": "Apache Druid",
       "count": 2
      },
@@ -1589,10 +1593,6 @@
      },
      {
       "name": "PostgreSQL",
-      "count": 2
-     },
-     {
-      "name": "S3",
       "count": 2
      }
     ],
@@ -1614,6 +1614,10 @@
       "count": 2
      },
      {
+      "name": "Terraform",
+      "count": 2
+     },
+     {
       "name": "Argo CD + Argo Workflows",
       "count": 1
      },
@@ -1631,10 +1635,6 @@
      },
      {
       "name": "Cadence",
-      "count": 1
-     },
-     {
-      "name": "Cartography",
       "count": 1
      }
     ]
@@ -7356,29 +7356,33 @@
    ],
    "stack": {
     "backend": [
-     "Python (Flask)",
+     "Python 3 (Flask)",
      "Go services",
-     "gRPC",
-     "Envoy",
-     "Protobuf + protoc-gen-validate",
-     "Flask-Smorest/OpenAPI"
+     "gRPC + Protobuf",
+     "protoc-gen-validate (PGV)",
+     "Envoy (sidecar proxy)",
+     "Flask-Smorest/OpenAPI",
+     "Java/Scala (data services)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "React Native (모바일 일부)",
-     "Redux"
+     "Redux",
+     "React Native (일부 모바일)",
+     "Webpack"
     ],
     "data": [
      "DynamoDB",
      "Amazon Aurora/MySQL",
      "Redis",
-     "Kafka",
+     "Apache Kafka",
      "Apache Flink",
      "Apache Druid",
      "Apache Hudi",
      "Presto/Trino",
-     "Amundsen (data discovery)"
+     "Amundsen (data discovery)",
+     "Apache Superset",
+     "S3 (data lake)"
     ],
     "infra": [
      "AWS",
@@ -7388,7 +7392,9 @@
      "Clutch (infra control plane)",
      "Confidant (secrets)",
      "Cartography (security graph)",
-     "Salt/Terraform"
+     "Terraform",
+     "Salt",
+     "Spinnaker/내부 CD"
     ]
    },
    "architecture": [
@@ -7397,10 +7403,10 @@
     "Event-driven streaming",
     "Polyglot platform (Python+Go)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Rider/Driver App<br/>React Native + Native\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Mesh\"]\n    FE[\"Front Envoy<br/>Edge Proxy + TLS\"]\n    GW[\"API Gateway<br/>Python/Flask + gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Matching/Dispatch<br/>Go services\"]\n    PRICE[\"Pricing/Surge<br/>Go + Python\"]\n    LOC[\"Location/ETA<br/>Go + Geo index\"]\n    RIDE[\"Ride Lifecycle<br/>Python/Flask\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    SIDE[\"Envoy Sidecars<br/>mTLS + retries + LB\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>event bus\"]\n    FLINK[\"Flink<br/>stateful stream proc\"]\n    DRUID[\"Druid<br/>real-time OLAP\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"DynamoDB<br/>ride/session state\"]\n    AUR[\"Aurora/MySQL<br/>transactional\"]\n    REDIS[\"Redis<br/>cache + geo\"]\n    HUDI[\"Hudi on S3<br/>lakehouse\"]\n  end\n  subgraph Platform[\"Infra / ML Platform\"]\n    K8S[\"Kubernetes<br/>on AWS\"]\n    FLYTE[\"Flyte<br/>ML/data DAGs\"]\n  end\n  APP --> FE\n  WEB --> FE\n  FE --> GW\n  GW -->|gRPC| MATCH\n  GW -->|gRPC| RIDE\n  MATCH --> SIDE\n  PRICE --> SIDE\n  LOC --> SIDE\n  RIDE --> SIDE\n  SIDE --> DDB\n  SIDE --> AUR\n  LOC --> REDIS\n  MATCH -->|events| KAFKA\n  PRICE -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> PRICE\n  KAFKA --> HUDI\n  FLYTE --> HUDI\n  FLYTE --> PRICE\n  Core --> K8S\n  Stream --> K8S",
-   "why_language": "Lyft은 초기 제품 속도를 위해 Python/Flask 모놀리스로 출발했고, 지금도 비즈니스 로직·API·ML 영역에서 Python 생산성을 활용한다. 하지만 매칭·디스패치·위치 처리처럼 낮은 지연과 높은 동시성이 필요한 핫패스는 Go로 옮겨 GIL 한계와 메모리·레이턴시 문제를 해결했고, 스트리밍(Flink/Scala·Java)과 프론트엔드(TypeScript)를 더해 도메인별 최적 언어를 쓰는 폴리글랏 전략을 취한다.",
-   "why_architecture": "실시간 차량 매칭·가격 책정은 수백 개 서비스가 ms 단위로 통신해야 해서, Lyft은 모놀리스를 마이크로서비스로 쪼개고 그 통신을 안정화하기 위해 Envoy 데이터 평면을 직접 만들어 서비스 메시로 표준화했다. 또한 위치·이벤트가 끊임없이 흐르는 도메인 특성상 Kafka·Flink 기반 이벤트 드리븐 스트리밍을 핵심에 두어 surge pricing과 ETA를 실시간으로 갱신한다.",
-   "summary": "Envoy를 발명한 회사답게 Python→Go 폴리글랏 마이크로서비스를 Envoy 서비스 메시와 Kafka·Flink 스트리밍으로 묶은 실시간 모빌리티 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Rider/Driver App<br/>React Native + iOS/Android\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    EDGE[\"Edge Proxy<br/>Envoy front proxy\"]\n    GW[\"API Gateway<br/>Python/Flask + gRPC\"]\n  end\n  subgraph Core[\"Core Services (mesh)\"]\n    RIDE[\"Ride/Matching<br/>Go + Envoy sidecar\"]\n    PRICE[\"Pricing/ETA<br/>Go + Python\"]\n    LOC[\"Location/Geo<br/>Go services\"]\n    USER[\"User/Auth<br/>Python/Flask\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Processing<br/>Apache Flink\"]\n    DRUID[\"Realtime OLAP<br/>Apache Druid\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DYNAMO[\"Hot KV/Geo<br/>DynamoDB\"]\n    AURORA[\"Transactional<br/>Aurora/MySQL\"]\n    REDIS[\"Cache<br/>Redis\"]\n    HUDI[\"Lakehouse<br/>Hudi on S3 + Trino\"]\n  end\n  subgraph Plat[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    FLYTE[\"ML/Data Workflows<br/>Flyte\"]\n    CLUTCH[\"Control Plane<br/>Clutch\"]\n  end\n  APP --> EDGE\n  WEB --> EDGE\n  EDGE -->|gRPC| GW\n  GW -->|gRPC| RIDE\n  GW -->|gRPC| PRICE\n  GW -->|gRPC| USER\n  RIDE --> LOC\n  RIDE --> DYNAMO\n  PRICE --> REDIS\n  USER --> AURORA\n  RIDE -->|events| KAFKA\n  LOC -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  FLINK --> PRICE\n  KAFKA --> HUDI\n  FLYTE --> HUDI\n  FLYTE --> PRICE\n  K8S --- RIDE\n  K8S --- PRICE\n  CLUTCH --- K8S",
+   "why_language": "Lyft는 초기 모놀리스를 Python/Flask로 빠르게 구축했고 지금도 비즈니스 로직·API 계층의 다수가 Python으로 남아 개발 생산성을 유지한다. 매칭·라우팅·위치 처리처럼 지연시간과 동시성이 중요한 핫패스는 GC 부담이 적고 고루틴 동시성이 뛰어난 Go로 점진 이전했고, 데이터·스트리밍 계층(Flink, Druid, Kafka 생태계)은 JVM 기반이라 Java/Scala를 함께 쓴다. 클라이언트는 타입 안정성과 코드 공유를 위해 TypeScript와 React/React Native를 채택했다.",
+   "why_architecture": "수백 개 팀이 독립 배포·확장해야 하는 실시간 모빌리티 규모에서 거대한 Python 모놀리스는 배포·장애 격리·언어 선택의 병목이 되어 마이크로서비스로 해체했다. 다만 서비스 수가 폭증하면서 언어별로 제각각인 네트워킹·재시도·관측 로직을 표준화하기 위해 Envoy를 사이드카로 두는 서비스 메시를 직접 발명해 데이터 평면을 통일했다. 가격·매칭·ETA처럼 끊임없이 변하는 상태는 Kafka/Flink 기반 이벤트 스트리밍으로 처리해 요청 경로와 분석 경로를 분리했다.",
+   "summary": "Python 모놀리스를 Envoy 메시 위 Go·Python 폴리글랏 마이크로서비스로 해체하고, Kafka·Flink 스트리밍으로 실시간 모빌리티를 구동하는 스택",
    "deep_dive": [
     {
      "topic": "Envoy 서비스 메시: Lyft가 발명한 데이터 평면",
@@ -7433,45 +7439,61 @@
     {
      "topic": "배포·복원력: Kubernetes 위 카나리와 Envoy 기반 장애 격리",
      "body": "### 수백 서비스를 안전하게 배포하기\n마이크로서비스가 수백 개로 늘면 \"하루에도 수백 번 배포\"가 일상이 된다. Lyft는 서비스를 `Kubernetes` 위에서 운영하며, 새 버전을 한 번에 전체 교체하지 않고 **카나리/점진적 롤아웃**으로 내보낸다. 일부 트래픽만 새 버전으로 보내 에러율·레이턴시·핵심 비즈니스 지표를 관측한 뒤, 이상이 없으면 비중을 늘리고 문제가 보이면 즉시 롤백한다.\n\n### Envoy가 만드는 트래픽 제어와 복원력\n카나리의 핵심 메커니즘은 **트래픽 셰이핑**인데, 이게 가능한 이유가 바로 Envoy 데이터 평면이다. Envoy sidecar는 서비스 간 모든 호출을 가로채므로 다음을 코드 수정 없이 제공한다.\n\n- **가중치 기반 라우팅**: v1/v2로 트래픽을 % 단위로 분배 → 카나리.\n- **재시도·타임아웃**: 일시적 실패를 sidecar가 흡수.\n- **Outlier detection(서킷 브레이킹)**: 특정 인스턴스가 연속 에러를 내면 자동으로 풀에서 빼내 장애 전파를 차단.\n- **Rate limiting / 로드 셰딩**: 과부하 시 우선순위 낮은 요청을 떨궈 핵심 경로를 보호.\n\n### 인프라 운영의 통합: Clutch\n이런 운영 액션(트래픽 조정, 인스턴스 종료, 스케일링, 카나리 제어)을 엔지니어가 일관된 UI/API로 다루도록 Lyft는 `Clutch`라는 컨트롤 플레인을 만들어 오픈소스화했다. 여러 인프라 도구(K8s, AWS, Envoy 설정 등)를 하나의 확장형 플랫폼으로 묶어, 사고 대응 시 컨텍스트 전환 비용을 줄인다.\n\n### 관측 기반 의사결정\n카나리 판단은 사람의 감이 아니라 메트릭으로 한다. Envoy가 표준 포맷으로 내보내는 통계(요청률, 에러율, p50/p99 레이턴시)와 분산 트레이싱을 근거로 자동/반자동 승격·롤백을 수행한다.\n\n### 트레이드오프\n카나리는 안전하지만 배포가 느려지고, sidecar 메시는 노드마다 Envoy 프로세스를 띄우는 **리소스·운영 오버헤드**를 동반한다. Lyft는 이 비용을 \"장애 폭발 반경 축소 + 일관된 네트워크 동작\"이라는 이득으로 정당화한다 — 모빌리티 서비스는 한 번의 전면 장애가 곧 길 위의 사람들에게 직접 영향을 주기 때문이다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩 전략: 폴리글랏 퍼시스턴스와 Hudi 레이크하우스",
+     "body": "### 워크로드별로 저장소를 쪼갠다\nLyft는 단일 RDB를 고집하지 않고 액세스 패턴별로 저장소를 분리하는 polyglot persistence를 택했다.\n\n- **DynamoDB**: 라이드 상태, 드라이버 위치 인덱스, 세션처럼 키 기반 초고빈도 읽기/쓰기에 사용한다. 파티션 키로 수평 샤딩이 자동이고 single-digit ms 지연을 보장하므로, 매칭·디스패치 핫패스에서 RDB 락 경합을 피한다.\n- **Aurora/MySQL**: 결제, 사용자 계정, 정산처럼 강한 트랜잭션·관계 무결성이 필요한 도메인에 쓴다. 서비스별로 자기 DB를 소유(database-per-service)해 스키마 결합을 끊는다.\n- **Redis**: 가격 계수, 지오 셀별 수요/공급 카운트, 레이트리밋 토큰처럼 휘발성·고빈도 상태의 캐시·카운터로 쓴다.\n\n### 트랜잭션 경계와 일관성\n마이크로서비스로 쪼개면서 분산 트랜잭션 대신 **이벤트 기반 최종 일관성**을 기본으로 삼았다. 라이드 한 건의 상태 전이(요청→매칭→픽업→완료→정산)는 각 서비스가 자기 저장소를 갱신하고 Kafka로 도메인 이벤트를 발행하면, 하류 서비스가 이를 구독해 자기 뷰를 갱신하는 식이다. 즉 결제·정산 같은 강일관 영역만 RDB 트랜잭션으로 묶고, 나머지는 이벤트로 수렴시킨다.\n\n### 분석·ML을 위한 Hudi 레이크하우스\nLyft는 운영 DB와 분석을 분리하기 위해 **Apache Hudi**(원래 Uber가 만들었지만 Lyft가 대규모로 채택) 기반 lakehouse를 S3 위에 구축했다. Kafka의 이벤트와 CDC 스트림을 Hudi 테이블로 흘려보내면:\n\n- **upsert/incremental**: Hudi의 copy-on-write/merge-on-read로 S3 위에서도 레코드 단위 갱신과 증분 쿼리가 가능해, 매번 전체 테이블을 다시 쓰지 않는다.\n- **쿼리**: `Presto/Trino`로 ad-hoc 분석, `Apache Druid`로 실시간 OLAP 대시보드(공급/수요 모니터링)를 돌린다.\n- **discovery**: 수천 개 테이블의 메타데이터·계보를 `Amundsen`(Lyft가 오픈소스화한 data discovery 엔진)으로 검색한다.\n\n이 구조의 핵심 트레이드오프는 *운영 경로의 강일관성을 포기하는 대신, 서비스·저장소를 독립적으로 확장하고 분석 부하를 운영 DB에서 완전히 격리*하는 것이다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: 라이드 한 건이 메시를 통과하는 경로",
+     "body": "### \"차 불러줘\" 한 번에 일어나는 일\n라이더가 호출 버튼을 누른 순간부터의 실제 흐름을 단계별로 보면 Lyft 아키텍처의 결이 드러난다.\n\n1. **Edge 진입**: 모바일 앱의 요청은 먼저 **Envoy front proxy**(edge)로 들어온다. 여기서 TLS 종료, 인증 토큰 검증, 레이트리밋, 라우팅이 일어난다. edge Envoy는 내부 메시와 동일한 데이터 평면을 쓰므로 외부/내부 경로의 관측·정책이 일관된다.\n2. **Gateway**: 요청은 API gateway 계층(상당수 Python/Flask)으로 전달돼 BFF처럼 여러 백엔드 호출을 조립한다. 서비스 간 통신은 REST가 아니라 **gRPC + Protobuf**이며, 메시지 스키마는 `protoc-gen-validate(PGV)`로 필드 검증 코드를 자동 생성해 잘못된 페이로드를 경계에서 차단한다.\n3. **매칭·디스패치**: 핵심 라이드/매칭 서비스(지연 민감 → 다수 Go)가 호출된다. 라이더 위치를 지오 인덱스(셀)로 변환하고, 주변 가용 드라이버를 `DynamoDB`/in-memory 인덱스에서 조회한 뒤 매칭 점수를 계산한다.\n4. **가격·ETA**: pricing 서비스가 현재 셀의 수요/공급 비율(스트리밍에서 갱신된 값, Redis 캐시), ETA 예측(ML 모델)을 합쳐 견적을 만든다.\n5. **사이드카 처리**: 위 모든 서비스 호출은 각 Pod의 **Envoy sidecar**를 거친다. 사이드카가 service discovery, 로드밸런싱(least-request 등), 재시도, 타임아웃, circuit breaking, 그리고 분산 추적 헤더 전파를 담당한다. 애플리케이션 코드는 'localhost의 Envoy로 보낸다'만 알면 된다.\n6. **이벤트 발행**: 라이드가 확정되면 도메인 이벤트가 **Kafka**로 발행되고, 이는 실시간 가격 갱신(Flink), 분석(Druid/Hudi), 알림, 정산 등 비동기 소비자로 팬아웃된다.\n\n### 왜 이렇게 나눴나\n동기 응답 경로(매칭·가격·ETA)는 수백 ms 내 끝나야 하므로 짧고 단순하게 유지하고, 시간이 걸리거나 다른 팀 소유인 작업(분석·알림·정산·재계산)은 전부 Kafka 뒤로 비동기화했다. 덕분에 핫패스 지연과 백오피스 처리량을 독립적으로 튜닝할 수 있다."
+    },
+    {
+     "topic": "ML 플랫폼: LyftLearn과 Flyte로 ETA·가격·매칭 모델을 운영하는 법",
+     "body": "### Lyft에서 ML은 일급 인프라다\nETA 예측, surge 가격, 도착시간·경로 추정, 수요예측, 사기탐지까지 — Lyft의 핵심 제품 지표는 사실상 모델 품질이다. 이를 떠받치는 두 축이 **Flyte**와 **LyftLearn**이다.\n\n### Flyte: 재현 가능한 워크플로 오케스트레이션\nLyft가 만들어 오픈소스화한 `Flyte`는 Kubernetes 네이티브 데이터/ML 워크플로 엔진이다.\n\n- **강타입 + 컨테이너화**: 각 태스크는 입출력 타입이 명시된 컨테이너로 실행돼, 파이프라인 전체가 버전·재현 가능하다. 'A의 출력이 B의 입력' 같은 의존성을 DAG로 선언한다.\n- **캐싱·재시도**: 동일 입력의 태스크는 결과를 캐시해 재계산을 건너뛰고, 실패 태스크만 재시도한다. 대규모 피처 백필에서 비용을 크게 줄인다.\n- **멀티테넌시**: 수백 명의 데이터 과학자가 같은 클러스터에서 격리된 워크플로를 돌린다.\n\n### LyftLearn: 학습·서빙 표준화\n`LyftLearn`은 Lyft 내부 ML 플랫폼으로, 모델 개발(노트북·학습 환경)과 서빙을 표준화한다. 핵심 아이디어는 데이터 과학자가 **임의의 라이브러리(XGBoost, PyTorch, scikit-learn 등)** 로 만든 모델을 동일한 인터페이스 뒤로 감싸, 학습 환경과 프로덕션 서빙 환경의 불일치(training/serving skew)를 없애는 것이다. 모델은 컨테이너로 패키징돼 표준 서빙 서비스로 배포되고, 피처는 오프라인(배치, Hudi)과 온라인(저지연 조회)에서 일관되게 제공되도록 관리한다.\n\n### 실시간과의 접점\n가격·ETA 모델이 쓰는 피처 중 상당수는 시시각각 변하는 값(셀별 수요/공급, 최근 통행 속도)이다. 이 값들은 **Kafka→Flink**에서 실시간 집계돼 온라인 피처 스토어/캐시에 적재되고, 서빙 시점에 모델이 즉시 읽는다. 즉 *Flyte로 오프라인 학습/백필을 재현 가능하게 돌리고, Flink로 온라인 피처를 신선하게 유지*하는 이원 구조다. 트레이드오프는 두 경로의 피처 계산 로직을 일치시켜야 한다는 운영 부담인데, LyftLearn이 그 정의를 공유 코드로 묶어 완화한다."
+    },
+    {
+     "topic": "확장성·장애 대응: Envoy 사이드카가 만드는 자동 복원력과 오토스케일링",
+     "body": "### 복원력을 애플리케이션이 아니라 인프라가 보장한다\nLyft 아키텍처의 특징은 재시도·타임아웃·서킷브레이커·로드밸런싱 같은 신뢰성 로직을 각 서비스 코드가 아니라 **Envoy 사이드카**라는 공통 데이터 평면으로 끌어올린 점이다. 서비스가 Python이든 Go든 동일한 정책이 적용된다.\n\n- **Outlier detection / circuit breaking**: Envoy가 특정 업스트림 인스턴스의 연속 5xx·타임아웃을 감지하면 해당 호스트를 로드밸런싱 풀에서 자동 격리(eject)한다. 느린 인스턴스가 전체를 끌어내리는 cascading failure를 막는다.\n- **Retry budget & timeout**: 재시도는 무한정이 아니라 예산(budget) 안에서만 허용해 재시도 폭주로 인한 retry storm을 방지한다. 타임아웃은 호출 체인 전체에 전파된다.\n- **Zone-aware LB**: AZ 인지 라우팅으로 같은 가용영역 내 호출을 우선해 지연·전송비를 줄이고, 한 AZ 장애 시 다른 AZ로 가중치를 옮긴다.\n\n### 오토스케일링과 트래픽 패턴\n모빌리티 트래픽은 출퇴근·심야·우천·대형 이벤트(콘서트, 공항)에서 급증하는 강한 시간/공간 편향을 가진다. Lyft는 서비스를 **Kubernetes** 위에서 운영하며 CPU·동시성 기반 HPA로 핫패스 서비스를 수평 확장한다. Envoy가 노출하는 풍부한 메트릭(요청률, 큐 길이, p99 지연)이 스케일링·알람의 신호원이 되어, 단순 CPU보다 실제 부하에 가까운 기준으로 확장한다.\n\n### Clutch: 장애 대응을 셀프서비스로\nLyft는 인시던트 대응을 빠르게 하려고 컨트롤 플레인 `Clutch`를 만들어 오픈소스화했다. 온콜 엔지니어가 UI에서 안전하게 Pod 스케일, 트래픽 드레인, Envoy 설정 변경, Kafka 토픽 관리 같은 위험한 작업을 권한·감사 로그와 함께 수행한다. 즉 *복원력은 Envoy가 런타임에서, 운영 대응은 Clutch가 휴먼 인터페이스에서* 양쪽으로 표준화한 것이 Lyft 신뢰성 전략의 골자다."
     }
    ],
    "github": {
     "org": "https://github.com/lyft",
     "repos": [
      {
+      "name": "envoyproxy/envoy",
+      "url": "https://github.com/envoyproxy/envoy",
+      "desc": "Lyft가 만든 L7 프록시·서비스 메시 데이터 평면, 현재 CNCF 졸업 프로젝트",
+      "lang": "C++",
+      "stars": 28418
+     },
+     {
       "name": "flyteorg/flyte",
       "url": "https://github.com/flyteorg/flyte",
-      "desc": "Lyft에서 시작된 ML/데이터 워크플로 오케스트레이션 플랫폼",
+      "desc": "Lyft가 만든 Kubernetes 네이티브 ML·데이터 워크플로 오케스트레이터",
       "lang": "Go",
-      "stars": 7089
+      "stars": 7098
      },
      {
       "name": "cartography-cncf/cartography",
       "url": "https://github.com/cartography-cncf/cartography",
-      "desc": "클라우드 자산 관계를 Neo4j 그래프로 매핑하는 보안 도구",
+      "desc": "인프라·보안 자산을 그래프(Neo4j)로 모델링하는 보안 도구",
       "lang": "Python",
-      "stars": 3923
-     },
-     {
-      "name": "lyft/confidant",
-      "url": "https://github.com/lyft/confidant",
-      "desc": "KMS 기반 시크릿 관리 서비스",
-      "lang": "Python",
-      "stars": 1857
+      "stars": 3929
      },
      {
       "name": "lyft/clutch",
       "url": "https://github.com/lyft/clutch",
-      "desc": "인프라 운영을 위한 확장형 컨트롤 플레인/관리 UI 플랫폼",
+      "desc": "확장형 인프라 관리 UI·컨트롤 플레인 플랫폼",
       "lang": "Go",
       "stars": 1774
      },
      {
-      "name": "lyft/flinkk8soperator",
-      "url": "https://github.com/lyft/flinkk8soperator",
-      "desc": "Kubernetes에서 Flink 애플리케이션을 관리하는 오퍼레이터",
+      "name": "lyft/protoc-gen-star",
+      "url": "https://github.com/lyft/protoc-gen-star",
+      "desc": "protoc 플러그인 작성 프레임워크, PGV 검증 코드 생성의 기반",
       "lang": "Go",
-      "stars": 581
+      "stars": 670
      }
     ]
    },
@@ -7481,7 +7503,7 @@
     "https://flyte.org/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "tesla",
@@ -7493,48 +7515,52 @@
     "Python",
     "C",
     "Java",
-    "JavaScript"
+    "Go"
    ],
    "stack": {
     "backend": [
      "Python",
+     "Go",
      "Java",
      "C++",
      "gRPC",
-     "Go"
+     "MQTT"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Qt/QML",
-     "WebGL"
+     "WebGL",
+     "Three.js"
     ],
     "data": [
+     "Custom telemetry TSDB",
      "PostgreSQL",
+     "MySQL",
      "Kafka",
      "Spark",
-     "MySQL",
-     "Custom telemetry store"
+     "S3/object store"
     ],
     "infra": [
      "Dojo",
-     "Kubernetes",
-     "AWS",
+     "NVIDIA GPU clusters",
      "PyTorch",
      "Triton/CUDA",
+     "Kubernetes",
+     "AWS",
      "Buildkite"
     ]
    },
    "architecture": [
-    "Embedded real-time",
-    "Distributed training",
-    "Telemetry ingestion pipeline",
-    "Fleet OTA delivery"
+    "Embedded real-time (dual-SoC redundancy)",
+    "Telemetry ingestion + data engine loop",
+    "Distributed training (vision-first)",
+    "Fleet OTA / command-and-control"
    ],
-   "diagram": "flowchart TD\n  subgraph Vehicle[\"Vehicle Edge\"]\n    AP[\"Autopilot Stack<br/>C++ + CUDA\"]\n    FSDChip[\"FSD SoC<br/>Custom inference\"]\n    MCU[\"Infotainment MCU<br/>Linux + Qt/QML\"]\n    Tel[\"Telemetry Agent<br/>C++ buffering\"]\n    AP --> Tel\n    FSDChip --> AP\n    MCU --> Tel\n  end\n  subgraph Edge[\"Connectivity\"]\n    LTE[\"Cellular/WiFi<br/>mTLS gRPC\"]\n  end\n  Tel -->|gRPC stream| LTE\n  subgraph Ingest[\"Ingestion + API\"]\n    GW[\"Fleet Gateway<br/>Go + gRPC\"]\n    API[\"Backend Services<br/>Python + Java\"]\n  end\n  LTE -->|protobuf| GW\n  GW --> API\n  subgraph Stream[\"Streaming\"]\n    K[\"Event Bus<br/>Kafka\"]\n    SP[\"Batch/ETL<br/>Spark\"]\n  end\n  GW --> K\n  K --> SP\n  subgraph Data[\"Storage\"]\n    PG[\"Transactional<br/>PostgreSQL/MySQL\"]\n    Lake[\"Clip/Label Store<br/>Data Engine\"]\n  end\n  API --> PG\n  SP --> Lake\n  subgraph Train[\"Training Platform\"]\n    Dojo[\"Dojo Supercomputer<br/>D1 + PyTorch\"]\n    GPU[\"GPU Cluster<br/>A100 + Triton\"]\n  end\n  Lake --> Dojo\n  Lake --> GPU\n  subgraph Deploy[\"Release\"]\n    OTA[\"OTA Service<br/>Signed firmware\"]\n  end\n  Dojo -->|trained weights| OTA\n  GPU --> OTA\n  OTA -->|canary fleet| LTE\n  subgraph Platform[\"Infra\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    AWS[\"Cloud<br/>AWS\"]\n  end\n  API --- K8S\n  K8S --- AWS",
-   "why_language": "차량 측 자율주행·제어는 마이크로초 단위 결정론적 실행과 하드웨어 직접 제어가 필요해 C/C++가 필수이며, FSD 칩 추론 커널은 CUDA/C++로 작성된다. 반면 수백만 차량의 텔레메트리를 받는 클라우드 백엔드와 데이터 엔진은 개발 속도와 ML 생태계를 위해 Python/Java를 쓰고, 학습 파이프라인 전체가 PyTorch 기반이라 Python이 데이터·모델 영역의 공용어다.",
-   "why_architecture": "Tesla의 핵심은 '차량 플릿을 거대한 분산 데이터 수집 장치'로 보는 데이터 엔진 루프다. 엣지(차량)에서 실시간 추론·트리거 기반 클립 수집을 하고, 클라우드로 스트리밍해 라벨링·학습한 뒤 OTA로 다시 플릿에 배포하는 폐루프를 택했다. 이 규모의 비전 학습 수요 때문에 범용 GPU만으로는 비용·처리량이 한계라 Dojo라는 학습 전용 슈퍼컴퓨터를 직접 설계하는 수직통합 결정을 내렸다.",
-   "summary": "차량 엣지의 실시간 C++ 자율주행 스택과 플릿 텔레메트리→Dojo 학습→OTA 배포로 이어지는 데이터 엔진 폐루프",
+   "diagram": "flowchart TD\n  subgraph Vehicle_Edge[\"Vehicle / Edge\"]\n    FSD[\"FSD Computer<br/>HW4 dual-SoC C++/CUDA\"]\n    MCU[\"Infotainment MCU<br/>Linux + Qt/QML\"]\n    PW[\"Powerwall / Solar<br/>Edge controller C\"]\n  end\n  subgraph Conn[\"Connectivity / Gateway\"]\n    TGW[\"Telemetry Gateway<br/>mTLS gRPC\"]\n    CMD[\"Command Service<br/>MQTT\"]\n  end\n  subgraph Core[\"Core Services\"]\n    FAPI[\"Fleet API<br/>Python/Go\"]\n    APP[\"Mobile App Backend<br/>gRPC\"]\n    BID[\"Autobidder VPP<br/>Java/Go\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"ETL / Triggers<br/>Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    TSDB[\"Telemetry Store<br/>Custom TSDB\"]\n    PG[\"Metadata<br/>PostgreSQL/MySQL\"]\n    CLIP[\"Clip Lake<br/>S3 object store\"]\n  end\n  subgraph Train[\"Training / Compute\"]\n    LABEL[\"Auto-Labeling<br/>4D Reconstruction\"]\n    DOJO[\"Training Cluster<br/>Dojo + GPU PyTorch\"]\n  end\n  subgraph Plat[\"Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes + Buildkite\"]\n    OTA[\"OTA Service<br/>Canary Rollout\"]\n  end\n  FSD -->|gRPC mTLS| TGW\n  MCU --> TGW\n  PW --> TGW\n  APP -->|wake/command| CMD\n  CMD -->|MQTT| FSD\n  TGW --> KAFKA\n  KAFKA --> SPARK\n  KAFKA --> TSDB\n  SPARK -->|trigger upload| CLIP\n  FAPI --> PG\n  FAPI --> TSDB\n  BID -->|dispatch| PW\n  CLIP --> LABEL\n  LABEL --> DOJO\n  DOJO -->|model artifact| OTA\n  OTA -->|signed update| FSD\n  K8S --- Core\n  K8S --- Train",
+   "why_language": "차량 측 실시간 추론·제어는 결정적 지연과 메모리 제어가 필요해 C++/C가 지배적이며, FSD 칩의 NPU·GPU 커널은 CUDA/C++로 직접 작성한다. 반면 클라우드 측 데이터 엔진·라벨링·학습 파이프라인은 반복 속도가 중요해 Python(PyTorch)과 Go가 쓰이고, 대규모 플릿 API·과금·에너지 트레이딩 같은 트랜잭션 백엔드는 Java/Go로 운영한다.",
+   "why_architecture": "수백만 대 차량이 만들어내는 엑사바이트급 영상·센서 데이터를 그냥 다 올릴 수 없기 때문에, 차량을 '엣지 필터'로 삼아 트리거된 클립만 수집하는 데이터 엔진 루프를 중심에 둔다. 안전이 절대적인 임베디드 시스템과 빠르게 진화해야 하는 신경망 학습을 분리하고, 그 둘을 OTA로 잇는 폐루프(closed-loop) 구조가 Tesla 아키텍처의 본질이다.",
+   "summary": "차량을 엣지 필터로 쓰는 데이터 엔진 폐루프 — 실시간 C++ 임베디드와 Dojo/PyTorch 학습을 OTA로 잇는다",
    "deep_dive": [
     {
      "topic": "차량 측 실시간 임베디드 시스템: C++ 자율주행 스택",
@@ -7567,6 +7593,22 @@
     {
      "topic": "OTA 카나리 배포와 플릿 롤아웃 안전장치",
      "body": "### 차에 소프트웨어를 내보내는 것은 '서버 배포'보다 위험하다\n\n웹 서비스는 배포가 잘못되면 롤백하면 그만이지만, 차량 펌웨어는 잘못되면 **물리적 안전·리콜 문제**가 된다. Tesla의 OTA는 이 제약 위에서 설계됐다.\n\n#### 단계적 카나리 롤아웃\n1. 새 빌드는 먼저 **내부 직원 차량 → 소수 얼리 액세스(FSD Beta) → 점진적 확대** 순으로 퍼진다. 사실상 차량판 canary deployment다.\n2. 각 단계에서 텔레메트리로 **이상 신호**(개입률 disengagement, 크래시/리부트, 특정 센서 에러율, 배터리/충전 이상)를 모니터링한다. 지표가 나빠지면 다음 단계 확대를 멈춘다(자동 게이트).\n3. 펌웨어는 **암호 서명**되어 있고 차량은 서명 검증 후에만 설치한다. 중간자·변조 펌웨어를 막는다.\n\n#### 설치 시 안전\n- 업데이트는 **A/B 파티션** 방식이 흔하다. 새 이미지를 비활성 파티션에 쓰고, 부팅 검증에 실패하면 기존 파티션으로 자동 폴백한다 — 차량이 '벽돌'이 되지 않게 하는 핵심 안전장치.\n- 설치는 주차·충분한 배터리 등 조건을 만족할 때만, 사용자 동의 시점에 진행한다. 주행 중 제어 펌웨어를 바꾸지 않는다.\n\n#### 트레이드오프\n- **속도 vs 안전**: Tesla는 다른 완성차 대비 매우 빠른 릴리스 주기를 갖지만, 그 속도는 위 카나리·텔레메트리 게이트·A/B 폴백이 받쳐주기에 가능하다.\n- **플릿 단위 실험**: shadow mode와 결합하면 OTA는 단순 배포가 아니라 '플릿 규모 A/B 테스트 플랫폼'이 된다. 일부 차량군에 새 planner를 켜고 개입률을 비교하는 식의 실세계 실험을 돌릴 수 있다."
+    },
+    {
+     "topic": "모바일 앱 → 차량 원격 명령 전달: wake-up·MQTT·서명 명령 파이프라인",
+     "body": "### 문제: 차는 대부분 '자고 있다'\n\nTesla 앱에서 문 열기·예열·소환(Summon)을 누르면 명령이 즉시 가는 것처럼 보이지만, 실제로는 차량 측 컴퓨터가 **전력 절약을 위해 깊은 sleep 상태**에 들어가 있는 경우가 대부분이다. 12V 보조 배터리와 고전압 팩을 보호하려면 셀룰러 모뎀만 최소 전력으로 깨어 있고 메인 SoC는 꺼져 있다. 그래서 명령 전달은 단순 HTTP 요청-응답이 아니라 **wake → 연결 수립 → 명령 큐잉 → 확인** 의 비동기 흐름이다.\n\n### end-to-end 흐름\n\n1. 앱 → **Fleet API** (지역별 엔드포인트, OAuth 토큰 인증) 로 `wake_up` 호출\n2. 백엔드가 차량의 셀룰러 모뎀으로 push를 보내 메인 컴퓨터를 깨움 (수 초~수십 초 소요)\n3. 차량이 깨어나면 백엔드 게이트웨이로 **상시 연결(persistent connection)** 을 다시 맺는다 — 여기서 경량 pub/sub인 **MQTT** 계열 프로토콜이 쓰인다. 차량이 '구독자'이자 '발행자'로 동작\n4. 앱이 보낸 실제 명령(예: `door_unlock`)은 백엔드 큐에 쌓였다가 연결이 살아나는 순간 차량으로 전달\n5. 차량이 명령을 수행하고 `result: true/false` 를 다시 게이트웨이로 publish → 앱이 폴링/스트림으로 결과 수신\n\n### 보안: 명령은 반드시 서명된다\n\n2021년 이후 Tesla는 차량 명령에 **end-to-end 서명(command authentication)** 을 도입했다. `teslamotors/vehicle-command` SDK가 보여주듯, 클라이언트는 차량과 세션 키를 교환하고 각 명령에 대해 **NIST P-256 ECDH + HMAC** 기반 서명을 붙인다. 즉 백엔드가 탈취되어도 임의 명령을 차량에 주입할 수 없고, 차량 펌웨어가 서명을 직접 검증한다. 이는 '클라우드를 신뢰하지 않는' zero-trust 설계로, 안전 관련 액추에이터(조향·가속) 명령은 앱에서 절대 직접 내릴 수 없게 권한 분리도 함께 적용된다.\n\n### 트레이드오프\n\n- **지연 vs 전력**: 항상 연결을 유지하면 명령이 즉각적이지만 배터리를 갉아먹는다. Tesla는 sleep을 기본으로 하고 wake 지연(체감 2~10초)을 감수하는 쪽을 택했다.\n- **eventual consistency**: 차량이 지하주차장 등 음영지역이면 명령이 큐에 머문다. 앱 UI가 '명령 전송됨'과 '실행 확인됨'을 구분해 보여주는 이유다."
+    },
+    {
+     "topic": "엑사바이트 텔레메트리 저장·샤딩 전략: 왜 자체 시계열 스토어를 만들었나",
+     "body": "### 규모 감각\n\n수백만 대의 차량이 각각 수백 개 신호(속도·배터리 셀 전압·모터 토크·카메라 메타데이터 등)를 초 단위로 쏟아낸다. 이는 전형적인 **고-cardinality, 고-throughput 시계열** 문제이며, 일반 RDBMS로는 쓰기 처리량과 보존 비용을 감당할 수 없다.\n\n### 계층 분리: 메타데이터 vs 시계열 vs 원본 클립\n\nTesla의 데이터 저장은 성격이 다른 세 층으로 갈린다.\n\n| 데이터 종류 | 저장소 | 이유 |\n|---|---|---|\n| 차량·계정·주문 메타데이터 | `PostgreSQL` / `MySQL` | 강한 일관성·트랜잭션 필요 |\n| 텔레메트리 시계열 신호 | **자체 TSDB** | 쓰기 폭주·다운샘플링·TTL 최적화 |\n| 카메라 클립·센서 raw | **S3 류 객체 스토어** | 페타바이트 비용 최적화, 학습 시 배치 read |\n\n### 시계열 스토어의 핵심 설계\n\n- **VIN + 신호명 + 시간** 으로 파티셔닝(샤딩). 차량 단위로 데이터가 지역화되어 특정 차량 조회가 한 샤드에 떨어진다.\n- **시간 윈도우 롤업**: 원해상도(raw)는 짧게 보관하고, 1분/1시간 평균·min·max로 **다운샘플링**해 장기 보관 비용을 낮춘다.\n- **컬럼 지향 압축**: 신호값은 시간에 따라 천천히 변하므로 delta-of-delta + LZ 계열 압축(자사 `liblzfse` 같은 기술과 같은 계열의 사고방식)으로 수십 배 압축.\n- **TTL 자동 만료**: 신호별 보존 정책이 달라 — 안전 관련 신호는 길게, 단순 UI 신호는 짧게.\n\n### Kafka가 앞단을 흡수한다\n\n게이트웨이가 받은 텔레메트리는 곧장 DB로 가지 않고 **Kafka** 토픽으로 들어간다. Kafka가 쓰기 버스트를 흡수(buffer)하고, 여러 소비자(실시간 알림, TSDB 적재, Spark ETL, 데이터 엔진 트리거)가 같은 스트림을 독립적으로 소비한다. 이 fan-out 구조 덕에 새로운 분석 파이프라인을 추가해도 차량이나 게이트웨이를 건드릴 필요가 없다.\n\n### 트레이드오프\n\n- **자체 TSDB의 비용**: 운영·개발 부담이 크지만, 차량 신호의 도메인 특성(고정 cardinality, 예측 가능한 샘플링)을 알기에 범용 DB보다 압축·쿼리를 훨씬 공격적으로 최적화할 수 있다 — '제어할 수 있을 때 직접 만든다'는 Tesla 특유의 수직통합 철학이 소프트웨어에도 그대로 나타난다."
+    },
+    {
+     "topic": "Energy 제품의 실시간 스트리밍: Autobidder와 가상발전소(VPP) 디스패치",
+     "body": "### 차량만 플릿이 아니다 — Powerwall도 플릿이다\n\nTesla Energy는 가정용 `Powerwall`, 상업용 `Megapack`, 태양광을 클라우드로 묶는다. 여기서 핵심 소프트웨어가 **Autobidder**(에너지 트레이딩·자동입찰 플랫폼)와 **Virtual Power Plant(VPP)** 다. 수천~수만 대의 분산 배터리를 **하나의 발전소처럼** 동작시킨다.\n\n### 동작 메커니즘\n\n1. 각 Powerwall/Megapack 엣지 컨트롤러가 충전 상태(SoC)·전력 흐름·계통 주파수를 텔레메트리로 보고\n2. 클라우드의 **VPP 디스패치 엔진**이 전력 도매시장 가격, 계통 수요, 기상 예측을 입력으로 받아 '지금 방전할지/충전할지'를 최적화\n3. **Autobidder**가 시장(예: 호주 AEMO, 캘리포니아 CAISO)에 자동 입찰을 넣고, 체결되면 분산 배터리 군에 **방전 디스패치 명령**을 내림\n4. 폭염 피크 시간대처럼 계통이 위태로울 때, 수만 가구의 Powerwall이 거의 동시에 소량씩 방전해 가상의 발전소 역할\n\n### 왜 스트리밍·이벤트 기반인가\n\n전력 계통은 **밀리초~초 단위 응답**이 필요한 도메인이다. 주파수가 떨어지면 즉각 방전 응답(frequency response)을 해야 하므로, 배치가 아니라 **저지연 이벤트 스트림 + 분산 제어 루프**로 설계된다. 차량 명령 파이프라인과 마찬가지로 '클라우드가 정책을 정하고, 엣지가 안전 한계 내에서 실시간 실행'하는 계층 분리를 쓴다 — 통신이 끊겨도 각 배터리는 로컬 안전 로직으로 단독 동작할 수 있어야 한다(fail-safe).\n\n### 트레이드오프\n\n- **중앙 최적화 vs 엣지 자율**: 완전 중앙집중이면 통신 장애에 취약하고, 완전 분산이면 시장 최적화가 어렵다. Tesla는 '중앙은 목표(setpoint)를 주고 엣지가 안전하게 추종'하는 하이브리드를 택한다.\n- **차량 아키텍처와의 공통 DNA**: 텔레메트리 수집 → 클라우드 최적화 → 서명된 디스패치 → 엣지 실행이라는 폐루프가 자동차와 에너지에서 동일하게 재사용된다."
+    },
+    {
+     "topic": "차량 내부 추론 경로: HW4 dual-SoC 리던던시와 end-to-end 신경망",
+     "body": "### 안전 컴퓨터는 '두 번 생각한다'\n\nFSD(HW3/HW4) 컴퓨터에는 **두 개의 독립 SoC**가 들어 있다. 두 칩이 같은 카메라 입력을 받아 **각자 독립적으로** 신경망을 추론하고 그 결과를 교차 비교한다. 한쪽이 멈추거나 결과가 크게 어긋나면 안전 페일오버(fail-operational)로 전환 — 항공기 수준의 리던던시를 양산차에 넣은 셈이다. 칩 내부에는 자체 설계한 **NPU(Neural Processing Unit)** 가 있고, 추론 커널은 `CUDA`/`C++` 스타일의 저수준 코드로 NPU에 맞춰 최적화된다.\n\n### in-car 추론 파이프라인 (초당 36프레임 × 8카메라급)\n\n1. 8개 카메라 raw → ISP 보정 → 공통 좌표계(vector space)로 정렬\n2. 백본 신경망이 멀티카메라 특징을 융합해 **BEV(bird's-eye-view) / occupancy** 표현 생성\n3. v12부터는 인지→계획을 사람이 짠 C++ 규칙으로 잇던 구조를 버리고, **end-to-end 신경망(photons-in, controls-out)** 으로 전환 — 즉 영상 입력에서 조향·가감속 출력까지 단일 망이 처리\n4. 결정적 실시간 스케줄러가 **하드 마감시간(deadline)** 안에 추론·제어 루프를 닫는다. 늦은 정답은 틀린 답과 같다.\n\n### end-to-end 전환의 트레이드오프\n\n- **장점**: 사람이 일일이 못 짜는 미묘한 운전 뉘앙스(끼어들기·서행 양보)를 데이터로 학습. 코드 규칙 수십만 줄이 신경망 가중치로 대체됨.\n- **단점**: **해석가능성(interpretability) 하락**. '왜 그렇게 멈췄나'를 디버깅하기 어렵다. 그래서 [shadow mode]와 대규모 시뮬레이션·재현 클립으로 회귀 검증을 강하게 건다.\n- **메모리·전력 한계**: 클라우드 GPU와 달리 차량은 전력·열·메모리가 빡빡하다. 그래서 모델을 **양자화(quantization)** 하고 NPU 전용으로 컴파일해 와트당 추론 효율을 극한까지 끌어올린다.\n\n### 학습 ↔ 추론의 비대칭\n\n학습은 `PyTorch` + Dojo/GPU 클러스터에서 fp16/bf16로 유연하게 하지만, 차량 추론은 int8 양자화된 고정 그래프로 돌린다. 이 **학습-추론 정밀도 격차**를 줄이려 QAT(quantization-aware training)와 차량 하드웨어 시뮬레이터로 검증한 뒤에야 OTA로 내보낸다."
     }
    ],
    "github": {
@@ -7575,40 +7617,33 @@
      {
       "name": "teslamotors/light-show",
       "url": "https://github.com/teslamotors/light-show",
-      "desc": "차량 라이트쇼용 커스텀 시퀀스 제작 도구·포맷",
+      "desc": "차량 라이트쇼 커스텀 시퀀스 제작 툴과 포맷",
       "lang": "Python",
-      "stars": 3902
-     },
-     {
-      "name": "teslamotors/roadster",
-      "url": "https://github.com/teslamotors/roadster",
-      "desc": "오리지널 Roadster 진단·서비스 소프트웨어 공개",
-      "lang": "C",
-      "stars": 1090
+      "stars": 3907
      },
      {
       "name": "teslamotors/fleet-telemetry",
       "url": "https://github.com/teslamotors/fleet-telemetry",
-      "desc": "차량 플릿 텔레메트리를 안정적으로 수집·전달하는 서버 (Go, mTLS/protobuf)",
+      "desc": "차량 텔레메트리를 mTLS로 수집·전달하는 서버 레퍼런스 구현",
       "lang": "Go",
-      "stars": 858
+      "stars": 860
      },
      {
       "name": "teslamotors/vehicle-command",
       "url": "https://github.com/teslamotors/vehicle-command",
-      "desc": "차량 명령 API용 공식 Go SDK 및 엔드투엔드 암호화 프로토콜",
+      "desc": "차량에 서명된 명령을 보내는 공식 SDK와 BLE/HTTP 프로토콜",
       "lang": "Go",
-      "stars": 657
+      "stars": 660
      }
     ]
    },
    "sources": [
     "https://github.com/teslamotors/fleet-telemetry",
-    "https://www.youtube.com/watch?v=g6bOwQdCJrc",
-    "https://www.tesla.com/AI"
+    "https://www.tesla.com/AI",
+    "https://github.com/teslamotors/vehicle-command"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "uber",
