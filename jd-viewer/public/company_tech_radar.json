@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T06:06:55",
+ "generated_at": "2026-06-19T08:00:25",
  "total": 100,
  "countries": [
   {
@@ -228,12 +228,12 @@
    "stack": {
     "backend": [
      {
-      "name": "gRPC",
+      "name": "Spring Boot",
       "count": 11
      },
      {
-      "name": "Spring Boot",
-      "count": 11
+      "name": "gRPC",
+      "count": 10
      },
      {
       "name": "Go",
@@ -1717,7 +1717,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 5
+      "count": 4
      },
      {
       "name": "Go services",
@@ -1736,7 +1736,15 @@
       "count": 3
      },
      {
+      "name": "Node.js",
+      "count": 2
+     },
+     {
       "name": "Apache Spark",
+      "count": 1
+     },
+     {
+      "name": "ASAP",
       "count": 1
      },
      {
@@ -1745,14 +1753,6 @@
      },
      {
       "name": "DBProxy",
-      "count": 1
-     },
-     {
-      "name": "Dropwizard",
-      "count": 1
-     },
-     {
-      "name": "Express/Koa-style monolith",
       "count": 1
      }
     ],
@@ -1768,6 +1768,10 @@
      {
       "name": "Electron",
       "count": 2
+     },
+     {
+      "name": "Apollo GraphQL",
+      "count": 1
      },
      {
       "name": "Atlassian Design System",
@@ -1790,11 +1794,7 @@
       "count": 1
      },
      {
-      "name": "Forge UI Kit",
-      "count": 1
-     },
-     {
-      "name": "GraphQL",
+      "name": "Forge UI Kit / Custom UI",
       "count": 1
      }
     ],
@@ -1828,15 +1828,15 @@
       "count": 2
      },
      {
+      "name": "Amazon SQS/SNS/Kinesis",
+      "count": 1
+     },
+     {
       "name": "Apache Hudi",
       "count": 1
      },
      {
       "name": "AWS S3",
-      "count": 1
-     },
-     {
-      "name": "Azure Blob Storage",
       "count": 1
      }
     ],
@@ -1858,6 +1858,10 @@
       "count": 1
      },
      {
+      "name": "AWS Lambda",
+      "count": 1
+     },
+     {
       "name": "AWS RDS",
       "count": 1
      },
@@ -1876,10 +1880,6 @@
      {
       "name": "Bedrock",
       "count": 1
-     },
-     {
-      "name": "Bitbucket Pipelines",
-      "count": 1
      }
     ]
    },
@@ -1897,15 +1897,15 @@
      "count": 1
     },
     {
+     "name": "Cell-based multi-tenant isolation",
+     "count": 1
+    },
+    {
      "name": "Cellular architecture",
      "count": 1
     },
     {
      "name": "Custom exabyte 스토리지 인프라",
-     "count": 1
-    },
-    {
-     "name": "DBProxy를 통한 PostgreSQL 수평 샤딩",
      "count": 1
     }
    ]
@@ -10724,49 +10724,51 @@
    ],
    "stack": {
     "backend": [
-     "Ruby (Sorbet)",
-     "Scala services",
+     "Ruby + Sorbet (gradual typing)",
+     "Sinatra-derived monolithic API framework (apiori)",
+     "Scala services (Radar/streaming)",
      "Java",
-     "gRPC",
-     "Thrift/Twirp-style RPC",
-     "Sinatra-derived API framework"
+     "gRPC + Twirp-style RPC",
+     "Redis (idempotency/rate-limit state)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Sail/internal design system",
-     "Next.js (docs)"
+     "Sail internal design system",
+     "Next.js (docs/marketing)",
+     "Stripe.js + Elements"
     ],
     "data": [
-     "MongoDB (primary OLTP)",
+     "MongoDB (DocDB, primary OLTP)",
      "PostgreSQL",
      "Apache Kafka",
      "Apache Flink",
-     "Apache Pinot",
-     "Redis",
+     "Apache Pinot (realtime OLAP)",
      "DynamoDB",
-     "Iceberg/Spark (analytics)"
+     "Iceberg + Spark (lakehouse/analytics)",
+     "Redis"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
      "Envoy",
-     "Bazel",
+     "Bazel (monorepo build)",
      "Terraform",
-     "Veneur/Datadog telemetry",
+     "Veneur + Datadog (telemetry)",
+     "Smokescreen (egress proxy)",
      "internal canary/deploy tooling"
     ]
    },
    "architecture": [
-    "Service-oriented / Microservices",
-    "API-first with versioned public API",
-    "Event-driven & streaming",
-    "Idempotent request processing"
+    "Service-oriented / Microservices on a large Ruby monolith core",
+    "API-first with per-request version pinning",
+    "Event-driven & streaming (Kafka/Flink/Pinot)",
+    "Idempotent, double-entry money-movement core"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    SDK[\"Stripe SDKs<br/>stripe-node / stripe-ruby\"]\n    LB[\"Edge LB + TLS<br/>AWS ELB\"]\n  end\n  subgraph API[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Envoy + internal proxy\"]\n    VER[\"Version Transform<br/>API versioning layer\"]\n    IDEM[\"Idempotency Layer<br/>idempotency keys + Redis\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CHG[\"Charge / PaymentIntent<br/>Ruby (Sorbet)\"]\n    LEDGER[\"Ledger<br/>double-entry Scala\"]\n    RADAR[\"Radar Fraud ML<br/>Scala + feature store\"]\n    CONN[\"Connect / Payouts<br/>Ruby + Scala\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Processing<br/>Apache Flink\"]\n    PINOT[\"Realtime OLAP<br/>Apache Pinot\"]\n    WH[\"Webhook Delivery<br/>retry queue\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MONGO[\"Primary OLTP<br/>MongoDB sharded\"]\n    PG[\"PostgreSQL<br/>relational\"]\n    REDIS[\"Cache<br/>Redis\"]\n    LAKE[\"Lakehouse<br/>Iceberg + Spark\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    OBS[\"Telemetry<br/>Veneur + Datadog\"]\n  end\n  SDK --> LB --> GW --> VER --> IDEM\n  IDEM --> CHG\n  CHG -->|gRPC| LEDGER\n  CHG -->|sync scoring| RADAR\n  CHG --> CONN\n  CHG --> IDEM\n  IDEM --> REDIS\n  CHG --> MONGO\n  LEDGER --> MONGO\n  CHG -->|emit events| KAFKA\n  KAFKA --> FLINK --> PINOT\n  KAFKA --> WH\n  FLINK --> LAKE\n  RADAR --> PINOT\n  CONN --> PG\n  Core --> K8S\n  Async --> OBS",
-   "why_language": "결제는 정확성과 안전한 리팩터링이 생명이라, Stripe는 거대한 Ruby 모놀리스에 자체 개발한 점진적 타입 시스템 Sorbet을 입혀 동적 언어의 생산성과 정적 타입의 안전성을 동시에 얻었다. Ledger·Radar·스트리밍처럼 높은 처리량과 JVM 생태계(Kafka/Flink)가 필요한 영역은 Scala/Java로 분리했고, 공개 SDK와 대시보드는 타입 안정성을 위해 TypeScript/React를 쓴다. 일부 인프라·툴링 계층에는 Go를 채택해 배포 바이너리와 운영 도구의 단순성을 확보한다.",
-   "why_architecture": "단일 결제 요청이라도 인증·중복방지·원장 기록·사기 점수·웹훅 발송 등 책임이 명확히 다른 단계로 나뉘므로, 도메인 경계를 따라 서비스를 쪼갠 SOA/마이크로서비스가 자연스럽다. 외부 개발자가 십수 년간 깨지지 않는 API를 기대하기 때문에 요청별로 버전을 고정하고 변환 레이어로 내부 진화를 흡수하는 API-first 설계를 택했고, 모든 돈의 이동을 멱등 처리와 이벤트 스트림으로 다뤄 재시도 안전성과 사후 정합성·분석을 동시에 달성한다.",
-   "summary": "Sorbet으로 타입을 입힌 Ruby 모놀리스를 축으로, Scala 스트리밍과 멱등·이벤트 기반 설계로 '절대 틀리면 안 되는 돈의 이동'을 다루는 API-first 핀테크 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client\n    SDK[\"Client SDKs<br/>stripe-node/python/ruby\"]\n    DASH[\"Dashboard<br/>React + TypeScript\"]\n  end\n  subgraph Edge\n    LB[\"Edge LB + TLS<br/>AWS + Envoy\"]\n    APIGW[\"API Gateway<br/>Sinatra-derived apiori\"]\n  end\n  subgraph Core\n    IDEM[\"Idempotency Layer<br/>Redis keys\"]\n    PAY[\"Payments Service<br/>Ruby + Sorbet\"]\n    LEDGER[\"Ledger<br/>double-entry\"]\n    RADAR[\"Radar Fraud ML<br/>Scala/Java\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Proc<br/>Apache Flink\"]\n    PINOT[\"Realtime OLAP<br/>Apache Pinot\"]\n  end\n  subgraph Data\n    MONGO[\"Primary OLTP<br/>MongoDB DocDB\"]\n    PG[\"PostgreSQL\"]\n    ICE[\"Lakehouse<br/>Iceberg + Spark\"]\n  end\n  subgraph Infra\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    OBS[\"Telemetry<br/>Veneur + Datadog\"]\n  end\n  SDK -->|HTTPS| LB\n  DASH -->|HTTPS| LB\n  LB --> APIGW\n  APIGW -->|gRPC| PAY\n  PAY --> IDEM\n  PAY --> LEDGER\n  PAY -->|score| RADAR\n  PAY --> MONGO\n  LEDGER --> MONGO\n  PAY -->|emit events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> PINOT\n  KAFKA --> ICE\n  RADAR --> PINOT\n  MONGO --> ICE\n  K8S -.-> PAY\n  OBS -.-> PAY",
+   "why_language": "Stripe는 빠른 제품 이터레이션을 위해 Ruby 모놀리스로 출발했고, 수천 명 규모로 커지자 코드 안전성을 잃지 않으려 직접 Sorbet 점진적 타입 시스템을 만들어 Ruby에 정적 타입을 입혔다. 사기 탐지·스트리밍처럼 높은 처리량과 JVM 생태계가 필요한 영역은 Scala/Java로, 개발자 SDK·CLI·인프라 툴은 분산 친화적인 Go로, 대시보드·문서는 TypeScript/React로 분담한다.",
+   "why_architecture": "돈을 다루는 결제 API는 정확성과 하위호환이 절대 조건이라, 핵심을 대규모 Ruby 모놀리스로 응집시켜 일관성을 지키면서 주변부를 서비스로 분리하는 하이브리드를 택했다. 모든 쓰기는 idempotency key로 멱등화하고 잔액은 double-entry ledger로 기록해 재시도·부분장애 속에서도 이중청구나 정합성 깨짐을 막으며, 비동기·분석은 Kafka→Flink→Pinot 스트리밍으로 분리해 핵심 트랜잭션 경로의 지연을 보호한다.",
+   "summary": "Sorbet로 타입을 입힌 거대한 Ruby 모놀리스 + 멱등·복식부기 결제 코어를 Kafka 스트리밍과 MongoDB/AWS 위에 올린 API-first 핀테크 플랫폼",
    "deep_dive": [
     {
      "topic": "Idempotency keys 동작 메커니즘",
@@ -10803,6 +10805,22 @@
     {
      "topic": "장애 복원력 — 멱등성·재시도·최종 일관성으로 짜인 안전망",
      "body": "### 부분 실패를 '정상 상태'로 가정하는 설계\n\n분산 결제 시스템에서 네트워크 타임아웃·서비스 장애는 예외가 아니라 상시다. Stripe의 복원력은 단일 마법이 아니라 여러 패턴의 합이다.\n\n#### 1. 멱등성이 곧 재시도 안전성\nIdempotency key 덕분에 클라이언트는 '응답을 못 받았으면 그냥 같은 키로 다시 보내라'가 정답이 된다. 서버는 동일 키의 작업이 진행 중이면 잠금/대기, 완료됐으면 캐시된 결과를 반환한다. 이게 없으면 타임아웃마다 이중 청구 리스크가 생긴다.\n\n#### 2. 동기/비동기 경계로 폭발 반경 축소\n- **동기 경로**(인증·원장 기록)는 반드시 성공해야 응답을 준다.\n- **비동기 경로**(웹훅, 분석 적재, 일부 사후 처리)는 Kafka로 분리해, 다운스트림이 죽어도 결제 자체는 성공한다. 웹훅 배송 서비스는 **지수 백오프 재시도**로 가맹점 엔드포인트가 잠시 죽어도 결국 전달한다.\n\n#### 3. 이벤트 로그 = 복구·정합성의 원천\nKafka 이벤트 스트림은 단순 메시징이 아니라 **사실의 로그**다. 다운스트림(분석, 검색 인덱스, Pinot OLAP)이 깨지면 스트림을 재처리(replay)해 상태를 재구축한다. Flink가 이 스트림을 stateful하게 소비하므로, 체크포인트에서 회복하면 정확히-한-번(exactly-once에 준하는) 처리를 유지한다.\n\n#### 4. 멀티테넌트 격리\n한 대형 가맹점의 트래픽 급증이 다른 가맹점을 죽이지 않도록 rate limiting과 자원 격리를 둔다. 블랙프라이데이처럼 특정 가맹점 트래픽이 폭증하는 이벤트가 일상이라, '시끄러운 이웃' 격리가 필수다.\n\n#### 트레이드오프\n이 모든 안전망의 대가는 **복잡성**이다. 모든 쓰기를 멱등하게, 모든 사이드이펙트를 재시도 안전하게 설계해야 하므로 단순 CRUD보다 개발 비용이 크다. Stripe는 '돈은 절대 틀리면 안 된다'는 제약 때문에 이 비용을 정당화한다."
+    },
+    {
+     "topic": "Online migrations at scale — 무중단 데이터 모델 변경의 4단계 dual-write 패턴",
+     "body": "### 문제: 살아 움직이는 수십억 row를 멈추지 않고 바꾸기\n\nStripe의 핵심 OLTP는 MongoDB(DocDB) 위에 올라가 있고, `subscriptions`·`charges` 같은 컬렉션은 수억~수십억 도큐먼트 규모다. 결제 트래픽이 24/7 흐르는 상황에서 스키마/저장 형태를 바꾸려면 `ALTER TABLE` 같은 한 방의 락은 불가능하다. Stripe가 공개한 해법은 **4단계 dual-write(이중 쓰기) 마이그레이션**이다. 예를 들어 구독의 단일 `plan` 필드를 여러 plan을 담는 `subscription_items` 배열로 바꾼 실제 사례가 대표적이다.\n\n### 4단계\n\n| 단계 | 하는 일 | 읽기 소스 |\n|------|---------|-----------|\n| 1. Dual write | 새 코드가 **구/신 양쪽 필드에 동시에 write**. 아직 읽기는 구 필드 | old |\n| 2. Backfill | 배경 잡이 **기존 row를 한 건씩 새 형식으로 채움**(멱등하게, 재시작 가능) | old |\n| 3. Dual read & verify | 읽을 때 **신 필드를 우선 읽되 구 필드와 비교**해 불일치를 로깅·검증 | new(검증) |\n| 4. Drop old | 구 필드 write/read 제거, 구 데이터 삭제 | new |\n\n각 단계는 독립 배포로 나가고, 문제가 생기면 이전 단계로 되돌릴 수 있다. 핵심은 **어느 순간에도 양쪽 데이터가 동시에 유효**하다는 점 — 그래서 롤백이 안전하다.\n\n### 왜 이렇게까지 하나\n\n- **무중단**: 결제는 점검창(maintenance window)을 가질 수 없다. 모든 변경은 트래픽이 흐르는 채로 진행돼야 한다.\n- **검증 내장**: 3단계의 dual-read 비교가 \"백필이 정말 정확했는가\"를 프로덕션 데이터로 증명한다. 통계적 샘플이 아니라 실제 읽기 경로에서 1:1로 맞춰본다.\n- **멱등 백필**: 백필 잡이 중간에 죽어도 같은 row를 다시 처리해도 결과가 같게 설계 — 이는 Stripe 전반의 idempotency 철학과 동일한 결이다.\n\n이 패턴은 Stripe 엔지니어링 블로그 \"Online migrations at scale\"로 공개됐고, 이후 업계 표준 레시피처럼 인용된다."
+    },
+    {
+     "topic": "4종 rate limiter & load shedding — 과부하에서 API를 살려두는 법",
+     "body": "### 모든 요청이 평등하지 않다\n\nStripe API는 전 세계 가맹점·플랫폼이 동시에 때리는 공용 인프라다. 한 명의 폭주가 전체를 무너뜨리지 않게 하려고 Stripe는 **목적이 다른 4종류의 limiter**를 Redis 기반으로 운영한다(블로그 \"Scaling your API with rate limiters\", Paul Tarjan).\n\n### 1) Request rate limiter\n사용자별 \"초당 N요청\" 상한. 토큰 버킷으로 구현하며 평균 속도를 넘는 트래픽을 `429 Too Many Requests`로 거절한다. 가장 흔한 1차 방어선.\n\n### 2) Concurrent requests limiter\n동시에 처리 중인 in-flight 요청 수 상한. 느린 요청(무거운 리스트 조회 등)이 워커를 점유해 풀을 고갈시키는 상황을 막는다. \"초당 횟수\"가 아니라 \"동시 점유량\"을 본다는 점이 1번과 다르다.\n\n### 3) Fleet usage load shedder\n전체 워커 용량을 **critical vs non-critical**로 나눠, 일정 비율(예: 마지막 ~20%)은 **중요 요청 전용으로 예약**한다. 과부하가 오면 비핵심(분석·리스트성) 요청부터 흘려보내(shed) 결제 생성 같은 핵심 쓰기를 지킨다. 즉 \"무엇을 버릴지\"를 우선순위로 결정한다.\n\n### 4) Worker utilization load shedder\n워커 사용률이 위험 수위에 닿으면 트래픽을 4개 등급(critical → maintenance 순)으로 나눠 **낮은 등급부터 단계적으로 차단**한다. 시스템이 죽기 직전 스스로 부하를 덜어내는 최후의 안전판.\n\n### 설계 철학\n\n- **거절도 기능이다**: 429로 빠르게 거절하는 게, 모두를 느리게 만들다 동반 붕괴하는 것보다 낫다. SDK(stripe-node 등)는 429에 지수 백오프 + jitter로 자동 재시도하므로 클라이언트 경험은 부드럽게 유지된다.\n- **공정성 + 우선순위**: 1·2번이 \"한 사용자가 전체를 독식 못하게\"라면, 3·4번은 \"전체가 무너질 때 무엇을 먼저 살릴지\"를 결정한다.\n- **Redis 원자 연산**: 카운터/버킷 갱신을 Lua 스크립트로 원자화해 분산 환경에서도 정확하게 센다."
+    },
+    {
+     "topic": "Kafka·Flink·Pinot로 짠 비동기/스트리밍 레이어 — 핵심 경로에서 분석을 떼어내기",
+     "body": "### 동기 결제 경로는 짧게, 무거운 일은 뒤로\n\n결제 생성 요청의 동기 경로는 가능한 한 짧아야 한다(승인·ledger 기록·Radar 스코어 정도). 나머지 — webhook 발송, 영수증, 리포팅, 집계, ML 피처 갱신 — 는 전부 **이벤트 기반 비동기**로 분리한다. 중심에 **Apache Kafka**가 있다.\n\n### 이벤트 흐름\n\n```\nPayments Service --(domain events)--> Kafka --> Flink (stream processing)\n                                          \\--> Iceberg/Spark (lakehouse, batch)\nFlink --(materialize)--> Pinot (realtime OLAP) --> Dashboard/Sigma 쿼리\n```\n\n- **Kafka**: 결제·구독·환불 등 도메인 이벤트의 중앙 버스. 내구성 있는 로그라서 소비자(consumer)가 죽었다 살아나도 오프셋부터 재처리 가능 → at-least-once. 그래서 다운스트림은 **멱등 소비**가 필수다(같은 이벤트 두 번 와도 결과 동일).\n- **Apache Flink**: 윈도우 집계·조인·실시간 피처 계산. 이벤트 타임 기반 처리와 체크포인트로 정확히-한-번(exactly-once) 의미를 보장하는 스테이트풀 스트리밍.\n- **Apache Pinot**: 가맹점 대시보드·Sigma 같은 곳에서 \"방금 일어난 거래\"를 초저지연으로 집계 조회. OLTP(MongoDB)를 직접 때리지 않고, 컬럼형 실시간 OLAP가 분석 쿼리를 흡수한다.\n- **Iceberg + Spark**: 장기 보관·대규모 배치 분석·ML 학습 데이터셋. 스트리밍이 \"지금\"이라면 이쪽은 \"전체 역사\".\n\n### 트레이드오프\n\n- **결과적 일관성 수용**: 대시보드 숫자가 결제 직후 수백 ms~수초 늦게 반영될 수 있다. 대신 핵심 결제 경로의 p99 지연이 분석 부하로부터 보호된다.\n- **OLTP/OLAP 분리**: MongoDB는 트랜잭션 일관성에, Pinot은 집계 쿼리에 각자 최적화. 한 DB로 둘 다 잘하려는 타협을 피한다.\n- **멱등 + 재처리**가 비동기 신뢰성의 뼈대다 — 장애가 나면 Kafka 오프셋을 되감아 다시 흘리면 되고, 멱등 소비라 중복이 안전하다."
+    },
+    {
+     "topic": "Bazel 모노레포 + Sorbet at scale — 수천 명이 한 코드베이스를 빠르게 빌드하는 법",
+     "body": "### 거대 모놀리스의 개발 생산성 문제\n\nStripe의 코어는 수백만 줄 규모의 Ruby 모놀리스이고, 수천 명의 엔지니어가 매일 같은 코드베이스에 커밋한다. 이 규모에서 \"빌드/테스트가 느려지는 것\"과 \"타입 안전성이 무너지는 것\"이 가장 큰 위협이며, Stripe는 두 도구로 정면 대응한다: **Bazel**과 **Sorbet**.\n\n### Bazel — 결정적·증분·캐시되는 빌드\n\n- **콘텐츠 주소 캐시**: 입력이 같으면 결과를 재사용. 바꾼 부분과 그 영향 그래프만 다시 빌드/테스트하므로 모노레포가 커져도 CI 시간이 선형으로 폭발하지 않는다.\n- **원격 캐시/실행**: 한 엔지니어가 빌드한 타겟을 팀 전체가 캐시에서 가져온다. 로컬에서 처음부터 다 빌드할 일이 거의 없다.\n- **명시적 의존성 그래프**: 어떤 코드 변경이 어떤 테스트에 영향 주는지 Bazel이 정확히 알기에, PR마다 \"영향받는 테스트만\" 선별 실행이 가능하다.\n\n### Sorbet — Ruby에 정적 타입을 입히다\n\nRuby는 본래 동적 타입이라 대규모 리팩터링에서 런타임에야 깨진다. Stripe는 자체 타입 체커 **Sorbet**(C++로 구현, 초고속)을 만들어 점진적으로 도입했다.\n\n- **파일별 `# typed:` 엄격도**: `false → true → strict → strong`으로 파일마다 단계 상향. 레거시를 한 번에 안 고치고 점진 전환.\n- **`sig {}` 시그니처**: 메서드 입출력 타입을 선언하면 컴파일 타임에 호출부를 검증. IDE 자동완성·정의 점프도 강화.\n- **런타임 체크**: 정적 검사를 빠져나간 경우에도 `sig`가 런타임에 타입을 검증해 잘못된 값이 결제 로직 깊숙이 흐르는 걸 차단.\n- **속도가 핵심**: 수백만 줄을 수 초 내 검사 — 그래야 에디터/CI 피드백 루프에 끼워 넣을 수 있다. 느린 타입 체커는 아무도 안 쓴다는 게 설계 전제였다.\n\n### 종합한 효과\n\nBazel이 \"빌드/테스트를 빠르고 결정적으로\", Sorbet이 \"동적 언어의 안전성 공백\"을 메운다. 둘 다 **모놀리스를 굳이 쪼개지 않고도** 대규모 협업을 가능케 한 핵심 선택이며, Sorbet은 오픈소스(`sorbet/sorbet`)로 공개돼 Ruby 생태계 표준급 도구가 됐다."
     }
    ],
    "debate": {
@@ -10906,47 +10924,47 @@
      {
       "name": "stripe/stripe-node",
       "url": "https://github.com/stripe/stripe-node",
-      "desc": "공식 Node.js 서버사이드 SDK",
+      "desc": "공식 Node.js 서버사이드 SDK(자동 재시도·idempotency 지원)",
       "lang": "TypeScript",
-      "stars": 4439
+      "stars": 4449
      },
      {
       "name": "sorbet/sorbet",
       "url": "https://github.com/sorbet/sorbet",
-      "desc": "Ruby용 점진적 정적 타입체커 — Stripe 모놀리스 안전성의 핵심",
-      "lang": "C++",
-      "stars": 3790
+      "desc": "Stripe가 만든 Ruby용 빠른 정적 타입 체커(점진적 타이핑)",
+      "lang": "Ruby",
+      "stars": 3789
      },
      {
-      "name": "stripe/stripe-ruby",
-      "url": "https://github.com/stripe/stripe-ruby",
-      "desc": "공식 Ruby SDK",
-      "lang": "Ruby",
-      "stars": 2140
+      "name": "stripe/stripe-cli",
+      "url": "https://github.com/stripe/stripe-cli",
+      "desc": "로컬 개발·webhook 포워딩·API 테스트용 커맨드라인 도구",
+      "lang": "Go",
+      "stars": 2080
      },
      {
       "name": "stripe/veneur",
       "url": "https://github.com/stripe/veneur",
-      "desc": "분산 환경용 메트릭 집계 파이프라인(DogStatsD 호환)",
+      "desc": "글로벌 집계를 지원하는 분산 StatsD/DogStatsD 메트릭 파이프라인",
       "lang": "Go",
       "stars": 1746
      },
      {
-      "name": "stripe/skycfg",
-      "url": "https://github.com/stripe/skycfg",
-      "desc": "Starlark 기반 타입드 설정 생성 라이브러리",
+      "name": "stripe/smokescreen",
+      "url": "https://github.com/stripe/smokescreen",
+      "desc": "SSRF 방어용 아웃바운드 트래픽 egress 프록시",
       "lang": "Go",
-      "stars": 674
+      "stars": 1304
      }
     ]
    },
    "sources": [
-    "https://stripe.com/blog/engineering",
-    "https://sorbet.org",
-    "https://github.com/stripe/veneur"
+    "https://stripe.com/blog/online-migrations",
+    "https://stripe.com/blog/rate-limiters",
+    "https://sorbet.org"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "atlassian",
@@ -10958,52 +10976,58 @@
     "Kotlin",
     "TypeScript",
     "Python",
-    "Go",
-    "Scala"
+    "Scala",
+    "Go"
    ],
    "stack": {
     "backend": [
      "Java",
-     "Spring Boot",
      "Kotlin",
+     "Spring Boot",
      "Dropwizard",
-     "gRPC",
-     "GraphQL"
+     "Node.js (Forge runtime)",
+     "GraphQL",
+     "gRPC/REST",
+     "ASAP (service-to-service auth)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Atlassian Design System (Atlaskit)",
-     "Forge UI Kit",
-     "GraphQL (Apollo)"
+     "Forge UI Kit / Custom UI",
+     "Apollo GraphQL",
+     "Redux"
     ],
     "data": [
-     "PostgreSQL (Amazon RDS/Aurora)",
+     "PostgreSQL (Amazon Aurora/RDS)",
      "DynamoDB",
      "Apache Kafka",
+     "Amazon SQS/SNS/Kinesis",
      "Elasticsearch/OpenSearch",
-     "Redis/ElastiCache",
+     "Redis/ElastiCache + Memcached",
      "Amazon S3"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
      "Micros (내부 PaaS)",
-     "SignalFx/Splunk",
+     "Kubernetes (Micros v2)",
+     "AWS Lambda (Forge)",
+     "Bitbucket Pipelines / Spinnaker",
      "LaunchDarkly",
-     "Bitbucket Pipelines"
+     "Splunk + SignalFx + DataDog",
+     "Statsig/Atlassian feature flags"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Multi-tenant cloud (셀 기반 격리)",
-    "Event-driven / async",
-    "Internal Developer Platform (Micros) 위 SOA"
+    "Microservices on an internal PaaS (Micros) over AWS",
+    "Cell-based multi-tenant isolation (Tenant Context Service)",
+    "Event-driven / async (Kafka, SQS streaming)",
+    "Serverless app platform (Forge FaaS) for the ecosystem"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + Atlaskit\"]\n    APP[\"Mobile + Forge Apps<br/>TypeScript + Forge\"]\n  end\n  subgraph Edge\n    CF[\"CDN + WAF<br/>AWS CloudFront\"]\n    EDGE[\"Edge Routing<br/>Tenant Context Resolver\"]\n  end\n  subgraph Gateway\n    GQL[\"GraphQL Gateway<br/>Apollo Federation\"]\n    AUTH[\"AuthN/AuthZ<br/>Identity + OAuth2\"]\n  end\n  subgraph Core\n    JIRA[\"Jira Service<br/>Java + Spring Boot\"]\n    CONF[\"Confluence Service<br/>Java\"]\n    PERM[\"Permissions Service<br/>Kotlin + gRPC\"]\n    MEDIA[\"Media Service<br/>Kotlin\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    STREAM[\"Stream Processors<br/>Kafka Streams\"]\n  end\n  subgraph Data\n    PG[\"Relational<br/>PostgreSQL Aurora\"]\n    DDB[\"Key-Value<br/>DynamoDB\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    S3[\"Object Store<br/>Amazon S3\"]\n    REDIS[\"Cache<br/>Redis ElastiCache\"]\n  end\n  subgraph Platform\n    MICROS[\"Internal PaaS<br/>Micros on AWS ECS/K8s\"]\n    OBS[\"Observability<br/>SignalFx + Splunk\"]\n  end\n  WEB --> CF\n  APP --> CF\n  CF --> EDGE\n  EDGE --> GQL\n  GQL --> AUTH\n  GQL -->|gRPC| JIRA\n  GQL -->|gRPC| CONF\n  JIRA -->|gRPC| PERM\n  JIRA --> MEDIA\n  JIRA --> PG\n  PERM --> DDB\n  JIRA --> REDIS\n  JIRA -->|index| ES\n  MEDIA --> S3\n  JIRA -->|publish| KAFKA\n  KAFKA --> STREAM\n  STREAM --> ES\n  STREAM --> DDB\n  JIRA -.runs on.-> MICROS\n  CONF -.runs on.-> MICROS\n  MICROS --> OBS",
-   "why_language": "Jira·Confluence·Bitbucket 등 핵심 제품이 수십 년간 축적된 대규모 JVM 코드베이스라 Java가 중심이며, 신규 서비스는 더 안전하고 간결한 Kotlin으로 작성한다. 풍부한 협업 UI는 React+TypeScript로, 서드파티 확장(Forge) 플랫폼도 TS 기반이라 프론트·백엔드 타입 일관성을 확보한다. 데이터 파이프라인·자동화 도구에는 Python, 고성능·네트워크 집약 서비스에는 Go를 선택적으로 사용한다.",
-   "why_architecture": "수십만 테넌트에 단일 코드베이스로 SaaS를 제공해야 하므로 테넌트 격리를 내장한 멀티테넌트 마이크로서비스를 택했고, 각 제품팀이 독립 배포할 수 있도록 SOA로 분해했다. 이 모든 서비스가 표준화된 방식으로 운영되도록 Micros라는 내부 개발자 플랫폼(IDP)을 만들어 인프라 프로비저닝·배포·관측을 추상화했고, 제품 간 느슨한 결합은 Kafka 기반 이벤트 아키텍처로 구현한다.",
-   "summary": "Micros 내부 PaaS 위에서 돌아가는 JVM(Java/Kotlin) 멀티테넌트 마이크로서비스 + React/Forge 생태계",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web App<br/>React + Atlaskit\"]\n    MOBILE[\"Mobile<br/>Swift / Kotlin\"]\n    EDGE[\"Edge / CDN<br/>AWS CloudFront + ALB\"]\n  end\n  subgraph Gateway[\"API / Identity\"]\n    GW[\"Edge Gateway<br/>Stargate + GraphQL\"]\n    TCS[\"Tenant Context Service<br/>tenant routing\"]\n    IDENT[\"Atlassian Identity<br/>OAuth2 + ASAP\"]\n  end\n  subgraph Core[\"Core Services (Micros)\"]\n    JIRA[\"Jira / Confluence<br/>Java + Spring Boot\"]\n    PERMS[\"Permissions / CSP<br/>Kotlin\"]\n    MEDIA[\"Media / Search<br/>Dropwizard + OpenSearch\"]\n    FORGE[\"Forge Runtime<br/>Node on AWS Lambda\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Apache Kafka\"]\n    SQS[\"AWS SQS / SNS\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    AURORA[\"PostgreSQL<br/>Amazon Aurora\"]\n    DDB[\"DynamoDB\"]\n    S3[\"Amazon S3\"]\n    REDIS[\"Redis / Memcached<br/>ElastiCache\"]\n    ES[\"OpenSearch\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    MICROS[\"Micros PaaS<br/>AWS + Kubernetes\"]\n    OBS[\"Observability<br/>Splunk + SignalFx\"]\n  end\n  WEB --> EDGE\n  MOBILE --> EDGE\n  EDGE --> GW\n  GW --> TCS\n  GW --> IDENT\n  TCS -->|tenant ctx| JIRA\n  TCS --> MEDIA\n  GW -->|GraphQL| JIRA\n  JIRA --> PERMS\n  JIRA -->|events| KAFKA\n  JIRA --> AURORA\n  MEDIA --> ES\n  MEDIA --> S3\n  FORGE -->|invoke API| GW\n  KAFKA --> SQS\n  KAFKA --> MEDIA\n  JIRA --> REDIS\n  PERMS --> DDB\n  MICROS -.runs.-> JIRA\n  MICROS -.runs.-> MEDIA\n  JIRA -.metrics.-> OBS",
+   "why_language": "Jira·Confluence·Bitbucket의 수십 년 된 핵심 도메인 로직이 JVM 위에 구축되어 있어 Java가 중심이며, 신규 서비스와 Android는 더 안전하고 간결한 Kotlin으로 작성한다. 프론트엔드는 수백 개 제품 화면을 공유 디자인 시스템(Atlaskit)으로 통일하기 위해 React+TypeScript를 표준화했고, Forge 앱 런타임은 빠른 콜드스타트와 생태계 개발자 친화성을 위해 Node.js를 택했다.",
+   "why_architecture": "단일 인스턴스 Server 제품을 클라우드로 옮긴 Vertigo 마이그레이션 이후, 수십만 테넌트를 안전하게 격리하면서도 규모의 경제를 얻기 위해 Tenant Context Service 기반의 셀(cell) 멀티테넌시를 채택했다. 모든 팀이 인프라를 직접 다루지 않고 빠르게 배포하도록 Micros라는 내부 PaaS 위에 마이크로서비스를 올렸고, 제품 간 결합도를 낮추고 비동기 워크로드를 흡수하기 위해 Kafka·SQS 기반 이벤트 드리븐 구조를 광범위하게 사용한다.",
+   "summary": "AWS 위 Micros 내부 PaaS에 올린 JVM 마이크로서비스 + Tenant Context 기반 셀 멀티테넌시, Forge 서버리스로 확장하는 협업툴 플랫폼",
    "deep_dive": [
     {
      "topic": "멀티테넌트 격리 모델",
@@ -11040,6 +11064,18 @@
     {
      "topic": "관측성(Observability)과 운영 복원력",
      "body": "### 멀티테넌트 환경에서 '누가 아픈가'를 찾는 법\n\n수십만 테넌트가 공유 인프라를 쓰는 SaaS에서 가장 어려운 운영 문제는 **'전체는 멀쩡한데 특정 테넌트만 느리다'** 를 잡아내는 것이다. 단순 평균 지표로는 절대 안 보인다.\n\n- **메트릭** — Atlassian은 `SignalFx`(현 Splunk Observability) 계열을 활용해 고카디널리티(high-cardinality) 메트릭을 다룬다. 메트릭에 `cloudId`·`region`·`service`·`shard` 차원을 붙여, p99 지연을 테넌트·샤드 단위로 슬라이스할 수 있다. '샤드 17이 느리다' 같은 진단이 가능해진다.\n- **로깅** — 구조화 로그를 `Splunk`로 집계하며, 모든 로그에 trace id·tenant id를 심어 한 요청의 전 구간을 재구성한다.\n- **분산 트레이싱** — GraphQL 게이트웨이에서 시작된 한 요청이 Jira → Permissions → Media → DB로 퍼지는 경로를 추적해, 어느 hop에서 지연이 생겼는지 본다.\n\n### 복원력 패턴\n- **노이지 네이버(noisy neighbor) 격리** — 한 테넌트의 폭주 트래픽이 같은 샤드의 다른 테넌트를 망치지 않도록 테넌트별 **레이트 리미팅**과 쿼터를 둔다. 셀/샤드 단위 격리 자체가 폭발 반경을 가두는 1차 방어선이다.\n- **서킷 브레이커 & 벌크헤드** — 다운스트림 서비스가 느려지면 호출을 빠르게 실패시키고(fail fast) 스레드 풀을 분리(bulkhead)해, 한 의존성의 지연이 전체 서비스로 전파(cascading failure)되는 걸 막는다.\n- **점진적 성능 저하(graceful degradation)** — GraphQL partial response처럼, 일부 위젯 데이터가 실패해도 페이지 핵심은 렌더되게 한다.\n- **리전 페일오버** — 테넌트가 묶인 리전에 장애가 나면 복제 데이터를 기반으로 다른 가용영역/리전으로 넘긴다. 단, 데이터 거주지 약속 때문에 리전 간 페일오버는 규제 제약 안에서만 가능하다.\n\n### 왜 테넌트 차원 관측이 필수인가\nB2B SaaS에서 '특정 대기업 고객 하나가 느리다'는 곧 계약 리스크다. 전역 평균이 좋아도 그 고객의 SLA를 어기면 의미가 없다. 그래서 Atlassian의 관측성은 처음부터 **테넌트를 쪼갤 수 있는 차원**을 모든 신호에 심는 방향으로 설계됐다."
+    },
+    {
+     "topic": "Forge: 생태계를 위한 서버리스 앱 플랫폼과 테넌트 격리 런타임",
+     "body": "### 왜 Forge인가\nAtlassian Connect(서드파티가 자기 서버에 앱을 호스팅하던 1세대 모델)에는 두 가지 근본 문제가 있었다. (1) 고객 데이터가 벤더의 인프라로 빠져나가 보안·컴플라이언스 검증이 불가능했고, (2) 벤더마다 운영 수준이 제각각이라 가용성·지연이 들쭉날쭉했다. **Forge**는 \"앱 코드를 Atlassian이 직접 호스팅하고, 데이터는 Atlassian 경계 안에 머문다\"는 전제를 코드화한 FaaS 플랫폼이다.\n\n### 런타임 동작 원리\n- 앱 함수는 **AWS Lambda** 위에서 실행되지만, 표준 Lambda를 그대로 노출하지 않고 Atlassian이 감싼 **FaaS 격리 런타임** 안에서 돈다. 초기에는 Node.js 기반 커스텀 격리 환경에서 코드를 실행했고, 이후 더 강한 격리를 위해 샌드박싱을 강화했다.\n- 각 호출은 `installation context`(어느 테넌트의 어느 사이트에 설치된 앱인지)를 동반한다. 함수는 자기 테넌트의 데이터에만 접근 가능하며, 다른 테넌트로의 횡적 이동이 플랫폼 레벨에서 차단된다 — 멀티테넌시 격리를 앱 개발자가 직접 구현하지 않아도 된다는 게 핵심 가치다.\n- 외부로 나가는 네트워크 호출은 기본 차단(`egress controls`)이며, 매니페스트(`manifest.yml`)에 선언한 도메인만 허용된다. 이 선언적 권한 모델 덕분에 마켓플레이스 심사와 고객의 데이터 거주지(data residency) 보증이 가능하다.\n\n### 개발 모델\n- 앱은 `manifest.yml`로 모듈(이슈 패널, 매크로, 트리거, 웹 트리거, 스케줄 트리거 등)을 선언한다. UI는 두 갈래다: **UI Kit**(Atlassian이 렌더링을 통제하는 선언적 컴포넌트, React 유사 모델)과 **Custom UI**(개발자가 임의 HTML/JS를 iframe 안에서 자유롭게, 단 격리된 채로 실행).\n- 상태 저장은 **Forge Storage**(내부적으로 DynamoDB 기반 key-value/엔티티 스토어)로 제공돼 앱이 별도 DB를 운영할 필요가 없다.\n- 이벤트는 제품 이벤트(이슈 생성 등)를 구독하는 **trigger** 모듈로 받는다 — 내부적으로 Atlassian의 Kafka/SQS 이벤트 파이프라인에 후킹된 형태다.\n\n### 트레이드오프\nLambda 기반이라 **콜드스타트**와 실행시간 한도가 존재해, 무거운 백그라운드 작업에는 `async events`와 큐를 쓰도록 유도한다. 자유도(임의 서버 운영)를 포기하는 대신 **보안·격리·운영부담 제로**를 얻는 명확한 교환이며, 이는 엔터프라이즈 고객이 마켓플레이스 앱을 신뢰하게 만든 결정적 설계다."
+    },
+    {
+     "topic": "검색 플랫폼과 Smarts: 페더레이션 검색·랭킹·추천이 동작하는 방식",
+     "body": "### 문제: 제품을 가로지르는 검색\nJira 이슈, Confluence 페이지, Bitbucket PR, Trello 카드가 각각 다른 서비스·다른 저장소에 흩어져 있는데, 사용자는 \"하나의 검색창\"에서 전부 찾기를 기대한다. Atlassian은 이를 **federated search** + 중앙 랭킹/추천 레이어로 풀었다.\n\n### 인덱싱 파이프라인\n- 각 제품은 도메인 객체가 바뀔 때마다 **변경 이벤트를 Kafka로 발행**한다. 검색 인덱싱 서비스가 이를 소비해 **OpenSearch/Elasticsearch** 인덱스에 반영한다(near-real-time). 권한이 자주 바뀌는 협업툴 특성상, 인덱스에는 본문뿐 아니라 **ACL/permission 메타데이터**를 함께 색인해 쿼리 시점에 \"이 사용자가 볼 수 있는 문서\"만 필터링한다.\n- 멀티테넌시 때문에 인덱스는 테넌트로 강하게 파티셔닝되며, 쿼리에는 항상 tenant context가 주입돼 교차 테넌트 누출을 차단한다.\n\n### Smarts: 랭킹과 추천\n- **Smarts**는 Atlassian의 ML/시그널 기반 개인화 레이어다. \"최근에 본 이슈\", \"자주 협업하는 사람\", \"같은 프로젝트의 활동\" 같은 행동 시그널을 모아 검색 결과와 typeahead(자동완성), 멘션 추천, 받은 사람 추천을 개인화한다.\n- 대표 기능이 **Recent / Quick search의 instant results**다. 사용자가 한 글자 치기도 전에 \"당신이 다음에 열 가능성이 높은 문서\"를 미리 띄우는데, 이는 협업 그래프(누가 무엇을 언제 건드렸나)에 기반한 협업 필터링/시그널 랭킹의 결과다.\n- 랭킹은 단일 BM25 점수가 아니라 **텍스트 관련도 + 최신성(recency) + 개인 친밀도(affinity) + 권한**을 결합한 learning-to-rank 형태로, 오프라인 학습 모델과 온라인 시그널을 합성한다.\n\n### 트레이드오프\n실시간 권한 정합성과 검색 신선도 사이의 긴장이 핵심이다. 권한이 막 바뀐 문서가 인덱스에 반영되기 전 검색에 노출되면 보안 사고이므로, **쿼리 타임 권한 재검증**(인덱스의 ACL을 신뢰하되 민감 케이스는 소스 권한 서비스로 확인)이라는 이중 방어를 둔다. 신선도를 위해 이벤트 파이프라인의 지연을 최소화하지만, 그 대가로 인덱싱 인프라가 무거워지는 것을 감수한다."
+    },
+    {
+     "topic": "서비스 간 인증(ASAP/Slauth)과 보안 경계 모델",
+     "body": "### 수백 개 마이크로서비스가 서로를 어떻게 믿는가\nMicros 위에 수백 개 서비스가 떠 있을 때 가장 위험한 질문은 \"서비스 A가 진짜 서비스 A인가, 그리고 이 호출이 정당한가\"이다. Atlassian은 이를 **ASAP(Atlassian Service Authentication Protocol)** 로 표준화했다.\n\n### ASAP 동작 원리\n- 호출하는 서비스는 자신의 개인키로 서명한 **JWT**를 만들어 요청에 붙인다. 수신 서비스는 발급자(`iss`)의 **공개키**를 신뢰 저장소에서 받아 서명을 검증한다. 공개키는 well-known 위치/중앙 키 스토어에 게시되고, 키 회전이 가능하도록 설계됐다.\n- JWT에는 `aud`(이 토큰이 향한 대상 서비스), 짧은 만료(`exp`), 고유 `jti`가 들어가 **재전송(replay)** 과 **혼동된 대리자(confused deputy)** 공격을 막는다. 즉 \"누가 보냈는지\"와 \"누구에게 보낸 건지\"가 토큰에 암호학적으로 묶인다.\n- 사람 사용자 인증(OAuth2/OpenID 기반 Atlassian Identity)과 **서비스 신원**을 분리한 게 핵심이다. 사용자 요청은 게이트웨이에서 사용자 토큰으로 인증되고, 그 뒤 내부 서비스 홉들은 ASAP로 서로를 인증하면서 필요 시 사용자 컨텍스트를 함께 전파한다.\n\n### Slauth / 다층 인증\n- 내부 도구·운영 접근에는 **Slauth**(Atlassian 내부 인증 계층)와 같은 메커니즘이 더해져, 직원·운영자 접근을 별도 신뢰 도메인으로 다룬다.\n- 네트워크 레벨에서는 Micros가 서비스에 **보안 경계(perimeter)** 와 IAM 역할을 자동 부여한다. 서비스는 자기 몫의 AWS 리소스(전용 Aurora, DynamoDB 테이블, SQS 큐)에만 접근하도록 최소권한 IAM이 묶이고, 테넌트 데이터 접근은 항상 tenant context를 통과해야 한다.\n\n### 왜 이렇게까지\n협업툴은 다른 회사의 소스코드·이슈·내부 문서를 보관하는 만큼, 단일 서비스 침해가 전체 테넌트로 번지지 않도록 **\"모든 내부 호출을 명시적으로 인증\"**(제로 트러스트에 가까운) 원칙을 코드와 플랫폼에 박아 넣었다. 성능 비용(매 홉마다 JWT 서명·검증)을 감수하더라도, 격리 보증과 컴플라이언스(SOC2/FedRAMP/data residency) 충족이 사업 자체의 전제이기 때문이다."
     }
    ],
    "github": {
@@ -11048,40 +11084,40 @@
      {
       "name": "atlassian/react-beautiful-dnd",
       "url": "https://github.com/atlassian/react-beautiful-dnd",
-      "desc": "Jira 보드의 드래그앤드롭을 위해 만든 접근성 우선 React DnD 라이브러리",
+      "desc": "Jira 보드의 드래그앤드롭을 위해 만든 인기 React 라이브러리",
       "lang": "JavaScript",
-      "stars": 33985
+      "stars": 33987
      },
      {
       "name": "atlassian/pragmatic-drag-and-drop",
       "url": "https://github.com/atlassian/pragmatic-drag-and-drop",
-      "desc": "react-beautiful-dnd의 후속, 프레임워크 비종속 고성능 드래그앤드롭 코어",
+      "desc": "react-beautiful-dnd 후속, 프레임워크 독립 고성능 DnD 라이브러리",
       "lang": "TypeScript",
-      "stars": 12672
-     },
-     {
-      "name": "atlassian-labs/compiled",
-      "url": "https://github.com/atlassian-labs/compiled",
-      "desc": "빌드 타임 CSS-in-JS 라이브러리로 런타임 비용 최소화",
-      "lang": "TypeScript",
-      "stars": 2047
+      "stars": 12679
      },
      {
       "name": "atlassian/escalator",
       "url": "https://github.com/atlassian/escalator",
-      "desc": "배치 워크로드에 최적화된 Kubernetes 오토스케일러",
+      "desc": "Kubernetes 배치 워크로드용 빠른 노드 오토스케일러",
       "lang": "Go",
       "stars": 685
+     },
+     {
+      "name": "atlassian/smith",
+      "url": "https://github.com/atlassian/smith",
+      "desc": "Kubernetes 리소스 번들을 선언적으로 묶는 컨트롤러",
+      "lang": "Go",
+      "stars": 283
      }
     ]
    },
    "sources": [
     "https://www.atlassian.com/engineering",
-    "https://www.atlassian.com/blog/atlassian-engineering/micros-paas",
-    "https://developer.atlassian.com/platform/forge/"
+    "https://developer.atlassian.com/platform/forge/",
+    "https://www.atlassian.com/blog/atlassian-engineering/vertigo-project-cloud-migration"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "dropbox",

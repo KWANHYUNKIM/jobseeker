@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-19T06:02:28",
- "total": 777,
+ "generated_at": "2026-06-19T07:48:27",
+ "total": 779,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "AWS",
    "country": "US",
-   "count": 31
+   "count": 33
   },
   {
    "company": "Discord",
@@ -316,8 +316,9 @@
   "APM": "관측성",
   "Reverse Engineering": "보안",
   "vLLM": "LLM/생성형",
-  "Groovy": "언어",
+  "OpenGL": "그래픽/게임",
   "SolidJS": "프론트엔드",
+  "Groovy": "언어",
   "Sentry": "관측성",
   "Consensus": "알고리즘/이론",
   "React Native": "모바일",
@@ -350,8 +351,8 @@
   "eBPF": "시스템/OS",
   "Trino": "데이터",
   "Attention Mechanism": "LLM/생성형",
-  "AWS Lambda": "인프라/클라우드",
   "Deep Learning": "AI/ML",
+  "AWS Lambda": "인프라/클라우드",
   "Iceberg": "데이터",
   "Monorepo": "협업/도구",
   "Angular": "프론트엔드",
@@ -430,6 +431,7 @@
   "LlamaIndex": "LLM/생성형",
   "Express": "백엔드",
   "Dart": "언어",
+  "Vulkan": "그래픽/게임",
   "Linux Kernel": "펌웨어/임베디드",
   "Benchmark": "연구/논문",
   "Quantization": "LLM/생성형",
@@ -495,6 +497,7 @@
   "Jenkins": "인프라/클라우드",
   "LSM Tree": "알고리즘/이론",
   "JWT": "보안",
+  "DirectX": "그래픽/게임",
   "Transformer": "LLM/생성형",
   "Lua": "언어",
   "SwiftUI": "모바일",
@@ -511,6 +514,66 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Announcing Amazon EC2 G7 instances accelerated by NVIDIA RTX PRO 4500 Blackwell Server Edition GPUs",
+   "url": "https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus",
+   "published": "2026-06-18",
+   "published_ts": 1781817730.0,
+   "summary": "Announcing the general availability of Amazon Elastic Compute Cloud (Amazon EC2) G7 instances, delivering high performance GPU acceleration for AI inference, graphics, and data analytics workloads.",
+   "tags": [
+    "Amazon EC2",
+    "Compute",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Deep Learning",
+    "AWS",
+    "Kubernetes",
+    "Linux",
+    "DirectX",
+    "OpenGL",
+    "Vulkan"
+   ],
+   "categories": [
+    "AI/ML",
+    "인프라/클라우드",
+    "시스템/OS",
+    "그래픽/게임"
+   ],
+   "lang": "en",
+   "content_id": "9cc4794047a3b459"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Amazon ECS introduces new high-resolution metrics for faster service auto scaling",
+   "url": "https://aws.amazon.com/blogs/aws/amazon-ecs-introduces-new-high-resolution-metrics-for-faster-service-auto-scaling",
+   "published": "2026-06-18",
+   "published_ts": 1781816798.0,
+   "summary": "Amazon Elastic Container Service (Amazon ECS) service auto scaling automatically adjusts task counts to meet workload demand with comprehensive scaling policies, including predictive scaling for recurring traffic patterns, scheduled scaling for planned events, and target tracking to scale dynamically on real-time metrics. You can choose proactive scaling by using predictive scaling (automatic) and scheduled scaling […]",
+   "tags": [
+    "Amazon Elastic Container Service",
+    "Auto Scaling",
+    "Compute",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "AWS"
+   ],
+   "categories": [
+    "AI/ML",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "452c82b1b6146dfc"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",
