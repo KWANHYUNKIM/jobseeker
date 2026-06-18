@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T04:20:37",
+ "generated_at": "2026-06-19T06:06:55",
  "total": 100,
  "countries": [
   {
@@ -210,7 +210,7 @@
     },
     {
      "name": "Kotlin",
-     "count": 10
+     "count": 11
     },
     {
      "name": "JavaScript",
@@ -229,7 +229,7 @@
     "backend": [
      {
       "name": "gRPC",
-      "count": 12
+      "count": 11
      },
      {
       "name": "Spring Boot",
@@ -248,16 +248,16 @@
       "count": 3
      },
      {
+      "name": "gRPC + Protobuf",
+      "count": 3
+     },
+     {
       "name": "Spring Cloud",
       "count": 3
      },
      {
       "name": "Spring WebFlux",
       "count": 3
-     },
-     {
-      "name": "gRPC + Protobuf",
-      "count": 2
      },
      {
       "name": "Java",
@@ -294,6 +294,10 @@
       "count": 2
      },
      {
+      "name": "design-system component libs",
+      "count": 1
+     },
+     {
       "name": "Dust.js",
       "count": 1
      },
@@ -303,10 +307,6 @@
      },
      {
       "name": "GraphQL",
-      "count": 1
-     },
-     {
-      "name": "Market Design System",
       "count": 1
      }
     ],
@@ -370,6 +370,10 @@
       "count": 5
      },
      {
+      "name": "Datadog",
+      "count": 4
+     },
+     {
       "name": "Grafana",
       "count": 4
      },
@@ -386,10 +390,6 @@
       "count": 3
      },
      {
-      "name": "Datadog",
-      "count": 3
-     },
-     {
       "name": "Prometheus + Grafana",
       "count": 3
      }
@@ -401,12 +401,12 @@
      "count": 5
     },
     {
-     "name": "Microservices",
+     "name": "MSA",
      "count": 5
     },
     {
-     "name": "MSA",
-     "count": 5
+     "name": "Microservices",
+     "count": 4
     },
     {
      "name": "Event-Driven",
@@ -10432,47 +10432,52 @@
    ],
    "stack": {
     "backend": [
-     "Spring Boot",
-     "Node.js (Kraken/Express)",
-     "gRPC",
-     "Dropwizard-style JAX-RS services",
-     "Resilience4j/Hystrix-style circuit breakers"
+     "Spring Boot (JAX-RS/Jersey)",
+     "gRPC + Protobuf",
+     "Node.js (Kraken.js/Express)",
+     "Resilience4j/Hystrix circuit breakers",
+     "Akka/squbs reactive services",
+     "OAuth2 + tokenization/vault"
     ],
     "frontend": [
      "React",
-     "Node.js (Kraken.js)",
+     "Kraken.js (Node.js BFF)",
      "Dust.js (legacy templating)",
-     "Webpack"
+     "Webpack",
+     "Less/CSS",
+     "design-system component libs"
     ],
     "data": [
-     "Oracle",
+     "Oracle (core ledger/OLTP)",
+     "JunoDB (자체 분산 KV)",
      "Couchbase",
-     "Aerospike",
-     "Apache Kafka",
+     "Aerospike (feature store)",
      "Cassandra",
+     "Apache Kafka",
      "Apache Spark",
-     "Hadoop",
-     "Apache Flink"
+     "Apache Flink",
+     "Hadoop + Gimel"
     ],
     "infra": [
      "Kubernetes",
-     "OpenStack",
-     "Hybrid cloud (on-prem + Google Cloud/AWS)",
+     "OpenStack (on-prem private cloud)",
+     "Hybrid cloud (Google Cloud + AWS)",
      "Envoy/Istio service mesh",
      "Nginx",
-     "Jenkins/Spinnaker-style CD"
+     "Jenkins + Spinnaker CD",
+     "HERA DB proxy"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Service-oriented (SOA)",
-    "Event-driven",
-    "Multi-datacenter active-active"
+    "Microservices / SOA",
+    "Event-driven (Kafka backbone)",
+    "Multi-datacenter active-active",
+    "Polyglot persistence + CQRS-style read paths"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web / Mobile<br/>React + Node.js\"]\n    SDK[\"Checkout SDK<br/>JS / Braintree\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    LB[\"Global LB + WAF<br/>Nginx + GSLB\"]\n    GW[\"API Gateway<br/>Envoy + Istio mesh\"]\n  end\n  subgraph Core[\"Core Payment Services\"]\n    KR[\"Frontend BFF<br/>Kraken.js Node\"]\n    PAY[\"Payment Orchestration<br/>Spring Boot\"]\n    RISK[\"Risk / Fraud<br/>Java + ML scoring\"]\n    LED[\"Ledger / Accounting<br/>Java double-entry\"]\n    WALLET[\"Wallet / Funding<br/>Spring Boot\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    ORA[\"Oracle<br/>system of record\"]\n    AERO[\"Aerospike<br/>low-latency KV\"]\n    CB[\"Couchbase<br/>session / profile\"]\n    CAS[\"Cassandra<br/>wide-column\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Apache Kafka<br/>event bus\"]\n    FLINK[\"Flink / Spark<br/>stream + batch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>on OpenStack\"]\n    HYB[\"Hybrid Cloud<br/>on-prem + GCP\"]\n  end\n  WEB --> LB\n  SDK --> LB\n  LB --> GW\n  GW -->|HTTP| KR\n  KR -->|gRPC| PAY\n  PAY -->|gRPC| RISK\n  PAY -->|gRPC| LED\n  PAY -->|gRPC| WALLET\n  RISK --> AERO\n  LED --> ORA\n  WALLET --> ORA\n  KR --> CB\n  PAY --> CAS\n  PAY -->|publish| KAFKA\n  RISK -->|features| KAFKA\n  KAFKA --> FLINK\n  FLINK --> AERO\n  Core --- K8S\n  K8S --- HYB",
-   "why_language": "초당 수만 건의 결제를 처리하며 강한 정합성·낮은 지연·수십 년 누적된 도메인 로직을 다뤄야 하므로, JVM 생태계(Java/Spring Boot)가 코어 결제·정산·리스크 서비스의 중심입니다. 사용자 대면 BFF와 체크아웃 경험은 React + Node.js(Kraken)로 빠른 반복 개발과 SSR을 확보하고, 데이터·ML 파이프라인은 Python/Spark, 고성능 인프라 컴포넌트는 C++/Go로 보완합니다. 즉 '돈을 다루는 코어는 안정적 JVM, 경험·데이터·인프라는 적합한 언어로' 분리하는 전략입니다.",
-   "why_architecture": "글로벌 결제는 한 트랜잭션이 인증·리스크·정산·환율·규제 준수 등 수많은 독립 도메인을 거치므로, 각 도메인을 독립 배포·확장 가능한 마이크로서비스로 쪼개고 gRPC와 service mesh로 연결했습니다. 결제 이벤트를 Kafka 기반 이벤트 드리븐으로 흘려 사기 탐지·정산·알림을 비동기로 디커플링하고, 멀티 데이터센터 active-active로 단일 리전 장애에도 결제가 멈추지 않도록 설계했습니다. 가용성과 정합성을 동시에 만족시키기 위한 필연적 선택입니다.",
-   "summary": "JVM 코어 결제 + Node/React 경험 레이어 + Kafka 이벤트 드리븐을 멀티 DC active-active 위에 올린 핀테크 마이크로서비스",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    WEB[\"Web/Mobile<br/>React + Kraken.js\"]\n    CDN[\"Edge/CDN<br/>Akamai + Nginx\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n    AUTH[\"Identity/Auth<br/>OAuth2 + Tokenization\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PAY[\"Payments Orchestrator<br/>Java/Spring Boot\"]\n    RISK[\"Risk/Fraud Engine<br/>Java + Aerospike\"]\n    LEDGER[\"Ledger Service<br/>Double-entry\"]\n    WALLET[\"Wallet/Account<br/>Spring + gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    JUNO[\"JunoDB<br/>Distributed KV Go/C++\"]\n    ORA[\"Oracle + Cassandra<br/>Ledger/OLTP\"]\n    CACHE[\"Couchbase/Aerospike<br/>Cache + Feature Store\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka Backbone<br/>~1.3T msg/day\"]\n    STREAM[\"Spark/Flink<br/>Risk + Analytics\"]\n    LAKE[\"Hadoop/Gimel<br/>Data Lake\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>OpenStack + Google Cloud\"]\n    CICD[\"CI/CD<br/>Jenkins + Spinnaker\"]\n  end\n  WEB --> CDN --> GW\n  GW -->|OAuth2| AUTH\n  GW -->|gRPC| PAY\n  PAY -->|gRPC| RISK\n  PAY --> LEDGER\n  PAY --> WALLET\n  RISK -->|low-latency read| CACHE\n  WALLET --> JUNO\n  LEDGER --> ORA\n  PAY -->|events| KAFKA\n  RISK -->|events| KAFKA\n  KAFKA --> STREAM\n  STREAM --> CACHE\n  STREAM --> LAKE\n  K8S -.runs.-> PAY\n  K8S -.runs.-> RISK\n  CICD -.deploy.-> K8S",
+   "why_language": "결제·정산처럼 강한 타입 안정성과 성숙한 트랜잭션·동시성 생태계가 필요한 코어는 Java/Spring으로, 초기 C++ 모놀리스의 고성능 경로는 여전히 C++로 유지한다. 사용자 대면 BFF·웹은 Node.js(Kraken.js)로 빠르게 개발하고, 데이터·리스크 분석은 Python/Spark로, JunoDB·HERA 같은 인프라 컴포넌트는 저지연·고동시성을 위해 Go/C++로 작성한다. 즉 '돈을 다루는 코어는 Java, I/O 많은 엣지는 Node, 인프라 핫패스는 Go/C++'라는 폴리글랏 전략이다.",
+   "why_architecture": "초당 수만 건의 결제를 200여 개국·다중 통화로 24/365 무중단 처리해야 하므로, 단일 모놀리스로는 배포·확장·장애격리가 불가능해 수천 개 마이크로서비스/SOA로 분해했다. 결제 상태 변화·리스크 신호·정산을 느슨하게 결합하기 위해 Kafka 기반 이벤트 드리븐을 백본으로 삼고, 어느 데이터센터가 죽어도 거래가 끊기지 않도록 멀티 DC active-active로 운영한다. 정합성이 생명인 회계는 강한 일관성(Oracle/ledger)을, 조회·피처는 저지연 스토어(JunoDB/Aerospike/Couchbase)를 쓰는 폴리글랏 퍼시스턴스로 분리했다.",
+   "summary": "Java/Spring 코어 + Node.js 엣지 + Kafka 이벤트 백본으로 굴러가는, 멀티 DC active-active 폴리글랏 핀테크 마이크로서비스",
    "deep_dive": [
     {
      "topic": "결제 요청 처리 흐름 end-to-end",
@@ -10505,6 +10510,22 @@
     {
      "topic": "복원력 패턴: 서킷 브레이커·격벽·idempotency로 '돈을 잃지 않게' 설계하기",
      "body": "### 결제 도메인의 복원력은 '느려도 틀리면 안 됨'\n일반 웹과 달리 결제는 실패보다 **중복 청구/유실**이 더 치명적입니다. PayPal은 이를 위해 여러 복원력 패턴을 코어에 박아두었습니다.\n\n### 핵심 메커니즘\n- **Circuit Breaker**: 다운스트림(예: 외부 카드 네트워크, 환율 서비스)이 타임아웃을 연발하면 회로를 열어(open) 빠르게 실패시키고, 일정 시간 후 half-open으로 소수 요청만 흘려 회복을 탐지합니다. Resilience4j/Hystrix 계열 패턴으로 캐스케이딩 장애를 차단합니다.\n- **Bulkhead(격벽)**: 서비스별·다운스트림별로 스레드풀/커넥션풀을 격리해, 한 의존성의 지연이 전체 스레드를 잠식하지 못하게 합니다. 느린 발급사 하나가 전체 결제를 멈추는 사태를 방지합니다.\n- **Idempotency 키**: 클라이언트가 동일 결제를 재시도해도 단 한 번만 반영되도록, 모든 결제 요청에 idempotency key를 부여하고 KV 스토어(JunoDB/Aerospike)에서 키의 처리 상태를 원자적으로 체크합니다. 네트워크 재시도가 이중 출금으로 번지지 않게 하는 결정적 장치입니다.\n- **Saga/보상 트랜잭션**: 분산 트랜잭션을 2PC로 묶는 대신, 각 단계가 실패하면 보상(compensating) 액션으로 되돌리는 saga 패턴을 씁니다. funding은 잡았는데 정산이 실패하면 hold를 자동 해제하는 식입니다.\n- **Active-Active Failover**: 한 데이터센터가 죽어도 다른 DC가 같은 트래픽을 이미 처리 중이므로 사용자 입장에선 무중단입니다. 다만 cross-DC 데이터 정합성을 위해 ledger 같은 system-of-record는 신중한 복제·충돌 해소 규칙을 갖습니다.\n\n### 트레이드오프\n이 모든 안전장치는 지연·복잡도를 추가합니다. 하지만 핀테크에서 '한 번의 잘못된 출금'은 신뢰·규제·금전 손실로 직결되므로, PayPal은 일관되게 **'가용성과 정합성 둘 다, 성능은 그 다음'** 순서로 트레이드오프를 잡습니다."
+    },
+    {
+     "topic": "Kafka 메시징 백본: 하루 ~1.3조 메시지를 나르는 신경망",
+     "body": "### PayPal에서 Kafka가 차지하는 위치\n\nPayPal은 세계 최대 규모의 Apache Kafka 운영 사례 중 하나다. 공개된 엔지니어링 블로그 기준으로 **85개 이상의 클러스터, 1,500개 이상의 브로커, 하루 약 1.3조(trillion) 메시지, 피크 시 초당 2,100만 메시지 이상**을 처리한다. Kafka는 단순 로그 버스가 아니라 결제 상태 변화·리스크 신호·DB 변경 캡처(CDC)·애널리틱스·트레이싱을 잇는 **이벤트 백본**이다.\n\n### 왜 Kafka인가 — 결제 도메인 맥락\n\n결제는 본질적으로 '상태 기계'다. `AUTH → RISK_CHECK → CAPTURE → SETTLE → POST_TO_LEDGER` 각 단계가 동기 RPC로 강결합되면 한 컴포넌트의 지연이 전체 거래를 막는다. PayPal은 코어 결제 경로의 **부수효과(정산 알림, 리스크 재평가, 데이터 웨어하우스 적재, 알림/이메일)를 Kafka 토픽으로 비동기 분리**한다. 결제 트랜잭션은 ledger에 강한 일관성으로 커밋되고, 그 결과 이벤트가 토픽에 발행되면 수십 개 다운스트림 컨슈머가 각자 속도로 소비한다.\n\n### 자체 관리 레이어\n\n수천 개 토픽을 수백 팀이 셀프서비스로 쓰게 하려면 운영 자동화가 필수다. PayPal은 Kafka 위에 자체 플랫폼 계층을 얹었다.\n\n- **PayPal Kafka Config Service / Management System**: 토픽 생성·ACL·쿼터·파티션을 API와 UI로 셀프서비스. 보안팀이 정한 정책(암호화, 인증)을 강제.\n- **클라이언트 라이브러리(Producer/Consumer 래퍼)**: 개발자가 브로커 주소·직렬화·재시도·SSL을 직접 다루지 않도록 추상화. 토픽을 '논리 이름'으로 디스커버리.\n- **QoS/모니터링**: 컨슈머 랙(lag)·처리량을 중앙 관측 파이프라인으로 모아 SLA 위반 시 알림.\n\n### 멀티 DC 미러링과 active-active\n\nPayPal은 멀티 데이터센터 active-active다. Kafka도 단일 DC에 갇히면 안 된다. 클러스터 간 **미러링(MirrorMaker류 + 자체 도구)**으로 토픽을 복제하되, 결제 정합성이 걸린 이벤트는 '어느 DC에서 소비해도 중복 처리되지 않도록' 컨슈머 측 **idempotency 키**와 dedup 스토어(JunoDB/Aerospike)를 함께 쓴다. 즉 Kafka는 at-least-once를 보장하고, 정확히-한-번 효과는 애플리케이션이 멱등키로 만든다.\n\n### 트레이드오프\n\n- **장점**: 컴포넌트 간 시간적 결합 제거, 트래픽 스파이크(블프·연말) 시 버퍼 역할, 재처리/리플레이로 데이터 복구.\n- **비용**: 수천 토픽의 스키마 거버넌스(스키마 레지스트리·호환성), 컨슈머 랙 폭증 시 메모리/디스크 압박, 정확히-한-번을 애플리케이션이 책임져야 하는 복잡성. PayPal은 이를 플랫폼 팀이 흡수해 제품 팀은 '토픽에 쓰고 읽기'만 신경 쓰도록 설계했다."
+    },
+    {
+     "topic": "CI/CD와 카나리 배포: 수천 개 서비스를 매일 무중단으로 굴리기",
+     "body": "### 규모의 문제\n\n수천 개 마이크로서비스를 멀티 DC active-active로 운영하면서 매일 다수 배포를 하려면, 배포 자체가 '돈을 잃지 않는' 안전장치를 내장해야 한다. PayPal의 파이프라인은 대체로 **Git → Jenkins(빌드/테스트) → 아티팩트 레지스트리 → Spinnaker 스타일 오케스트레이션 → Kubernetes 롤아웃** 형태다.\n\n### 단계별 게이트\n\n1. **빌드·정적분석**: 커밋마다 컴파일, 유닛 테스트, 보안 스캔(SCA/SAST), 라이선스 체크를 통과해야 머지.\n2. **불변 아티팩트**: 컨테이너 이미지로 패키징해 환경 간 동일 바이너리를 보장(dev에서 통과한 것과 prod에 뜨는 것이 동일).\n3. **단계적 환경 승격**: dev → QA/통합 → stage → prod. 각 단계에서 통합·계약(contract) 테스트, 성능 회귀 체크.\n4. **카나리 분석**: prod의 한 DC, 한 셀(cell), 또는 트래픽 1~5%에만 신버전을 띄우고 **에러율·지연(p99)·결제 성공률·리스크 거절률** 같은 비즈니스+시스템 메트릭을 기준선과 자동 비교. 임계 이탈 시 자동 롤백.\n5. **점진 확장 또는 자동 롤백**: 카나리 통과 시 region/DC 단위로 단계 확대. 실패 시 이전 안정 버전으로 즉시 복귀.\n\n### 왜 카나리가 결제에서 특히 중요한가\n\n일반 웹 서비스의 버그는 '에러 페이지'지만, 결제 서비스의 버그는 **잘못된 청구·이중 인출·정산 불일치**다. 따라서 PayPal의 카나리는 인프라 메트릭만 보지 않고 **'결제 성공률/승인율/환불율' 같은 도메인 KPI**를 게이트로 삼는다. 신버전이 승인율을 0.5%만 떨어뜨려도 매출·신뢰에 직결되므로 자동 차단된다.\n\n### active-active와 배포\n\n멀티 DC active-active이므로 한 DC를 통째로 배포 대상으로 빼도 다른 DC가 트래픽을 받는다. 이는 **DC 단위 블루-그린/롤링**을 가능케 한다: DC-A를 신버전으로 올리는 동안 트래픽을 DC-B로 드레인 → 검증 → 전환. 이 구조 자체가 배포 리스크를 격리한다.\n\n### 트레이드오프\n\n점진 배포·카나리·다단계 게이트는 '배포 리드타임'을 늘린다. PayPal은 빠른 배포 속도보다 **안전성과 회귀 방지**를 우선하는 선택을 했고, 대신 파이프라인 자동화·셀프서비스로 팀당 마찰을 줄여 균형을 맞춘다."
+    },
+    {
+     "topic": "실시간 리스크/ML 결정 파이프라인: 수십 ms 안에 사기를 가려내기",
+     "body": "### 결정 예산(latency budget)\n\n결제 승인은 사용자가 버튼을 누른 뒤 **수십~수백 ms 안**에 끝나야 한다. 그 짧은 창 안에 PayPal은 '이 거래가 사기인가, 자금세탁인가, 한도 위반인가'를 판단해야 한다. 그래서 리스크 결정은 **온라인(실시간)** 과 **오프라인(모델 학습)** 두 평면으로 나뉜다.\n\n### 온라인 경로 — 피처 스토어 + 모델 서빙\n\n1. 결제 오케스트레이터가 리스크 엔진에 `gRPC`로 거래 컨텍스트(계정, 금액, 디바이스, IP, 가맹점)를 전달.\n2. 리스크 엔진은 **저지연 피처 스토어(Aerospike/Couchbase)**에서 사전 계산된 피처를 조회한다 — 예: 최근 1시간 거래 빈도, 디바이스 평판, 계정 나이, 속도(velocity) 카운터. 이들은 Kafka 스트림을 Flink로 집계해 **미리 갱신**해 둔 값이라 조회는 ms 단위다.\n3. 조회한 피처를 **모델 앙상블(그래디언트 부스팅·신경망·룰 엔진)**에 넣어 위험 점수를 산출.\n4. 점수와 정책 룰을 결합해 `APPROVE / REVIEW / DECLINE / STEP_UP(2차 인증)`을 반환.\n\n핵심은 **'무거운 계산은 미리, 요청 시점엔 조회+추론만'** 이라는 분리다. 실시간 경로에서 풀스캔이나 조인을 하면 예산을 못 맞추므로, 비싼 집계는 스트리밍으로 선반영해 둔다.\n\n### 오프라인 경로 — 학습과 피처 엔지니어링\n\n- **데이터 레이크(Hadoop) + Spark/Gimel**로 과거 수년치 거래·사기 라벨을 학습 데이터셋으로 가공.\n- 데이터 사이언티스트가 Python/Spark로 피처를 정의·검증하고 모델을 학습.\n- 학습된 모델은 검증·셰도우(shadow) 단계를 거쳐 서빙 계층에 배포. **셰도우 모드**에서는 신모델이 실거래에 영향 없이 점수만 기록해 기존 모델과 성능을 비교한다.\n\n### online/offline 피처 일관성\n\nML에서 악명 높은 함정이 **training-serving skew**다 — 학습 때 쓴 피처 정의와 서빙 때 계산 방식이 달라 모델이 엉뚱하게 동작하는 것. PayPal은 피처 스토어를 '단일 정의 소스'로 두고, 같은 로직으로 오프라인(배치)과 온라인(스트리밍)을 채워 학습/추론 간 피처를 일치시킨다.\n\n### 트레이드오프\n\n- 미리 계산해 두는 만큼 **신선도(freshness) vs 비용** 트레이드오프가 생긴다. velocity 카운터를 너무 자주 갱신하면 비싸고, 늦으면 빠른 연쇄 사기를 놓친다 → Flink 윈도우로 균형.\n- 점수가 너무 보수적이면 정상 거래를 막아(false positive) 매출·UX를 해치고, 너무 느슨하면 사기 손실. PayPal은 임계값을 가맹점·통화·세그먼트별로 튜닝하고 A/B·셰도우로 지속 보정한다."
+    },
+    {
+     "topic": "모놀리스→마이크로서비스 마이그레이션 히스토리: C++ 코어와 Dust.js의 유산",
+     "body": "### 출발점 — C++ 모놀리스 시대\n\nPayPal의 원래 코어는 거대한 **C++ 모놀리스**(흔히 'WebScr' 등으로 불린 결제 처리 코드베이스)였다. 2000년대 결제 로직·정산·리스크가 한 덩어리에 묶여 있었고, 이는 고성능이었지만 **빌드·배포·팀 확장의 병목**이었다. 한 줄 바꾸려 해도 전체를 다시 빌드/배포해야 했고, 변경 리스크가 컸다.\n\n### 1차 전환 — Java/Spring 마이크로서비스화\n\n2010년대 PayPal은 코어를 **Java + JAX-RS/Spring 기반 수천 개 마이크로서비스/SOA**로 점진 분해했다. 빅뱅 재작성 대신 **스트랭글러 패턴**에 가깝게, 모놀리스 앞에 게이트웨이를 두고 기능을 하나씩 신규 서비스로 떼어냈다. Java를 택한 이유는 결제가 요구하는 트랜잭션·동시성·운영 도구·인재 풀의 성숙도였다. 단, 극저지연이 필요한 일부 핫패스와 레거시는 여전히 C++로 남아 폴리글랏 현실이 됐다.\n\n### 2차 전환 — 프론트엔드: Dust.js에서 React로\n\n프론트엔드는 PayPal이 직접 만든 **Kraken.js(Node.js + Express)** 와 **Dust.js 템플릿**으로 서버사이드 렌더링하던 시대가 길었다. PayPal은 Node.js를 'Java 대비 더 적은 코드·더 빠른 개발'로 채택한 초기 대기업 사례로 유명하다(Java 대비 동일 기능을 더 적은 LOC·더 짧은 응답시간으로 구현했다는 공개 사례). 이후 SPA·컴포넌트 재사용 흐름에 맞춰 **React**로 이행했고, 현재 Dust.js는 레거시 자산으로 남아 있다. Node 계층은 사라지지 않고 **BFF(Backend-for-Frontend)**로 역할을 바꿔, 브라우저와 Java 백엔드 사이에서 데이터 조합·세션·보안을 담당한다.\n\n### 3차 전환 — 데이터·인프라\n\n- **데이터**: Oracle 중심의 강한 일관성 코어는 유지하되, 조회·세션·피처처럼 Oracle로 감당 안 되는 영역은 **자체 JunoDB(분산 KV)**, Couchbase, Aerospike, Cassandra로 분산. Oracle 커넥션 폭증 문제는 **HERA**(커넥션 멀티플렉싱·샤딩 프록시)로 흡수.\n- **인프라**: 사설 데이터센터의 **OpenStack 프라이빗 클라우드**와 Kubernetes를 기반으로 하되, 탄력 용량과 데이터/ML 워크로드를 위해 **Google Cloud 등 퍼블릭 클라우드와의 하이브리드**로 확장.\n\n### 마이그레이션에서 배운 트레이드오프\n\n- **점진주의의 대가**: 빅뱅 재작성을 피한 대신 오랜 기간 '구·신 시스템 공존'을 감내해야 했다(C++/Java, Dust/React 병존). 이는 운영 복잡성을 키우지만 결제 중단 리스크를 0에 가깝게 유지.\n- **폴리글랏의 비용**: 언어·스토어가 늘수록 플랫폼/표준화 팀의 부담이 커진다. PayPal은 Kraken·squbs·HERA·Kafka 클라이언트 같은 **사내 표준 프레임워크**로 다양성을 통제 가능한 범위에 묶는 전략을 택했다."
     }
    ],
    "github": {
@@ -10513,35 +10534,35 @@
      {
       "name": "krakenjs/kraken-js",
       "url": "https://github.com/krakenjs/kraken-js",
-      "desc": "PayPal이 만든 Express 기반 Node.js 보안·구조화 프론트엔드 플랫폼",
+      "desc": "Express 기반 보안·설정 컨벤션을 더한 PayPal의 Node.js 웹 애플리케이션 프레임워크",
       "lang": "JavaScript",
       "stars": 4919
      },
      {
       "name": "paypal/junodb",
       "url": "https://github.com/paypal/junodb",
-      "desc": "PayPal이 자체 개발·오픈소스화한 분산 키-값 저장소(Go), 보안·확장성 중심의 핵심 데이터 인프라",
+      "desc": "PayPal이 자체 개발해 오픈소스화한 분산 키-값 스토어로 보안·저지연 데이터 액세스를 담당",
       "lang": "Go",
       "stars": 2643
      },
      {
       "name": "paypal/squbs",
       "url": "https://github.com/paypal/squbs",
-      "desc": "Akka 기반 대규모 리액티브 서비스 운영을 위한 Scala/Java 표준 스택",
+      "desc": "Akka/Akka Stream 기반 리액티브 서비스를 프로덕션에서 운영하기 위한 표준화 스택",
       "lang": "Scala",
       "stars": 1432
      },
      {
       "name": "paypal/hera",
       "url": "https://github.com/paypal/hera",
-      "desc": "DB 연결 풀링·고가용성을 위한 미들웨어(High Efficiency Reliable Access to data stores)",
+      "desc": "DB 커넥션을 멀티플렉싱·샤딩하는 고가용 데이터 액세스 게이트웨이(High Efficiency Reliable Access)",
       "lang": "Go",
       "stars": 303
      },
      {
       "name": "paypal/gimel",
       "url": "https://github.com/paypal/gimel",
-      "desc": "Spark 위에 올린 통합 데이터 액세스 플랫폼(PaaS), 다양한 스토어를 단일 API로 추상화",
+      "desc": "Spark 위에서 다양한 저장소를 단일 API로 추상화하는 빅데이터 처리 플랫폼",
       "lang": "Scala",
       "stars": 252
      }
@@ -10550,10 +10571,10 @@
    "sources": [
     "https://medium.com/paypal-tech",
     "https://github.com/paypal/junodb",
-    "https://www.infoq.com/news/2023/05/paypal-junodb-database/"
+    "https://medium.com/paypal-tech/scaling-kafka-to-support-paypals-data-growth-1-3-trillion-messages-a-day"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "robinhood",
@@ -10565,7 +10586,8 @@
     "Go",
     "TypeScript",
     "Java",
-    "Rust"
+    "Rust",
+    "Kotlin"
    ],
    "stack": {
     "backend": [
@@ -10573,39 +10595,48 @@
      "Go services",
      "gRPC",
      "Faust (Kafka stream processing)",
-     "Celery"
+     "Celery",
+     "Protobuf",
+     "GraphQL (BFF)"
     ],
     "frontend": [
      "React",
      "React Native",
      "TypeScript",
-     "Redux"
+     "Redux",
+     "Relay/GraphQL"
     ],
     "data": [
      "PostgreSQL",
      "Kafka",
      "Cassandra",
      "Redis",
-     "Vitess/MySQL"
+     "Vitess/MySQL",
+     "TimescaleDB",
+     "S3",
+     "Snowflake/Spark (analytics)"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
+     "Kubernetes (EKS)",
      "Envoy",
      "Spinnaker",
-     "Terraform"
+     "Terraform",
+     "Vault",
+     "Prometheus/Grafana",
+     "Datadog"
     ]
    },
    "architecture": [
     "Microservices",
-    "Event-driven / Event sourcing",
-    "Monolith decomposition",
-    "Service mesh"
+    "Event-driven / Event sourcing (Kafka)",
+    "Monolith decomposition (Django strangler)",
+    "Service mesh (Envoy + gRPC)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    MOB[\"Mobile App<br/>React Native + TS\"]\n    WEB[\"Web App<br/>React + TS\"]\n  end\n  subgraph Edge\n    LB[\"Edge LB<br/>AWS ALB\"]\n    ENV[\"Service Mesh<br/>Envoy sidecar\"]\n  end\n  subgraph Core\n    API[\"API / BFF<br/>Django + Python\"]\n    OMS[\"Order Mgmt<br/>Go + gRPC\"]\n    MD[\"Market Data<br/>Go services\"]\n    LEDGER[\"Ledger / Booking<br/>Go + PostgreSQL\"]\n    RISK[\"Risk / Fraud<br/>Python ML\"]\n  end\n  subgraph Stream\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FAUST[\"Stream Workers<br/>Faust Python\"]\n  end\n  subgraph Data\n    PG[\"Primary DB<br/>PostgreSQL\"]\n    CASS[\"Wide Column<br/>Cassandra\"]\n    REDIS[\"Cache<br/>Redis\"]\n  end\n  subgraph Infra\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n  end\n  MOB --> LB\n  WEB --> LB\n  LB --> ENV\n  ENV -->|gRPC| API\n  API -->|gRPC| OMS\n  API -->|gRPC| MD\n  OMS --> LEDGER\n  OMS -->|publish| KAFKA\n  MD -->|stream| KAFKA\n  KAFKA --> FAUST\n  FAUST --> RISK\n  FAUST --> CASS\n  LEDGER --> PG\n  API --> REDIS\n  MD --> REDIS\n  OMS --> PG\n  ENV --- K8S\n  KAFKA --- K8S",
-   "why_language": "초기 빠른 제품 개발을 위해 Python/Django 모놀리스로 시작했고, 지금도 BFF·리스크·데이터 파이프라인 등 생산성이 중요한 영역에 Python을 유지한다. 반면 주문 체결·market data·ledger처럼 낮은 지연시간과 높은 동시성이 필수인 핵심 거래 경로는 Go로 재작성해 GIL 한계를 벗어나고 gRPC 기반 마이크로서비스로 분리했으며, 일부 초저지연 컴포넌트에는 Rust를 도입하고 있다.",
-   "why_architecture": "단일 Django 모놀리스로는 폭발적 사용자 증가와 거래량(특히 2020~2021 밈주식 랠리)을 감당할 수 없어 도메인별 마이크로서비스로 점진 분해했다. 주문·체결·정산은 본질적으로 상태 전이 이벤트의 연속이라 Kafka 기반 이벤트 소싱·비동기 처리로 결합도를 낮추고 재처리·감사(audit)·복원력을 확보했으며, Envoy 서비스 메시로 수백 개 서비스 간 통신·관측성을 표준화했다.",
-   "summary": "Django 모놀리스에서 Go·gRPC 마이크로서비스와 Kafka 이벤트 소싱으로 진화한 핀테크 거래 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + TypeScript\"]\n    WEB[\"Web App<br/>React + Redux\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    EDGE[\"Edge Gateway<br/>Envoy + TLS\"]\n    BFF[\"BFF / API Layer<br/>GraphQL + gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    BROK[\"Brokerage / Order Svc<br/>Python Django + Go\"]\n    ACCT[\"Accounts / Auth Svc<br/>Go + gRPC\"]\n    LEDGER[\"Ledger Svc<br/>Double-entry + PostgreSQL\"]\n    MKT[\"Market Data Svc<br/>Go + WebSocket\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FAUST[\"Stream Processors<br/>Faust Python\"]\n    CELERY[\"Task Workers<br/>Celery\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"OLTP<br/>PostgreSQL\"]\n    VT[\"Sharded SQL<br/>Vitess + MySQL\"]\n    CASS[\"Wide-column<br/>Cassandra\"]\n    REDIS[\"Cache<br/>Redis\"]\n    TS[\"Time-series<br/>TimescaleDB\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes EKS\"]\n    SPIN[\"Deploy<br/>Spinnaker\"]\n    OBS[\"Observability<br/>Prometheus + Datadog\"]\n  end\n  APP --> EDGE\n  WEB --> EDGE\n  EDGE --> BFF\n  BFF -->|gRPC| BROK\n  BFF -->|gRPC| ACCT\n  BFF -->|gRPC| MKT\n  BROK --> LEDGER\n  BROK -->|publish| KAFKA\n  ACCT -->|publish| KAFKA\n  KAFKA --> FAUST\n  KAFKA --> CELERY\n  FAUST --> LEDGER\n  BROK --> PG\n  LEDGER --> PG\n  ACCT --> VT\n  MKT --> TS\n  MKT --> CASS\n  BROK --> REDIS\n  Core --> K8S\n  Stream --> K8S\n  SPIN --> K8S\n  K8S --> OBS",
+   "why_language": "초기 brokerage 코어를 Django(Python)로 빠르게 구축해 금융 도메인 로직과 결제·정산 워크플로를 신속히 검증했고, 트래픽이 폭증하면서 지연·동시성에 민감한 주문 라우팅·market data·인증 같은 경로를 Go로 분리해 처리량과 p99 지연을 확보했다. 모바일 우선 핀테크 특성상 iOS/Android를 React Native + TypeScript로 단일 코드베이스화하고, 일부 성능 임계 경로와 데이터 처리에는 Rust/Java를 선택적으로 도입한다.",
+   "why_architecture": "단일 Django 모놀리스로는 실시간 주식 주문·정산이라는 강한 일관성 요구와 GME 같은 트래픽 스파이크를 감당하기 어려워, strangler 패턴으로 도메인별 마이크로서비스를 떼어내며 점진적으로 분해했다. 금융 거래는 'truth는 이벤트 로그'라는 원칙에 따라 Kafka 기반 이벤트 소싱과 double-entry ledger로 정합성을 보장하고, Envoy 서비스 메시와 gRPC로 서비스 간 통신의 관측성·재시도·로드밸런싱을 표준화했다.",
+   "summary": "Django 모놀리스를 Go 마이크로서비스로 분해하고 Kafka 이벤트 소싱·double-entry ledger로 금융 정합성을 지키는 핀테크 아키텍처",
    "deep_dive": [
     {
      "topic": "Django 모놀리스 분해와 마이크로서비스 전환",
@@ -10638,6 +10669,18 @@
     {
      "topic": "Ledger와 더블엔트리 회계 — 금융 데이터 일관성 전략",
      "body": "### 핀테크의 진짜 난제는 '돈의 일관성'\n증권 브로커리지에서 가장 타협할 수 없는 것은 **모든 자금/포지션 이동이 정확히 한 번, 손실 없이, 감사 가능하게 기록**되는 것이다. 한 계좌의 매수 체결은 현금 차감·주식 포지션 증가·수수료·정산(T+1/T+2) 등 여러 장부 항목을 원자적으로 만들어야 한다. Robinhood는 이를 위해 전통적인 CRUD 업데이트 대신 **더블엔트리(double-entry) ledger** 모델을 핵심에 둔다.\n\n### 동작 원리\n- 모든 금융 사건은 **차변(debit)/대변(credit)이 항상 0으로 합산되는 불변(immutable) 거래 기록**으로 append-only 저장된다. 잔액은 행을 덮어쓰는 게 아니라 항목의 합으로 도출된다.\n- 이렇게 하면 어떤 시점의 잔액도 과거 항목을 재생해 재구성할 수 있어 **감사·정산·분쟁 해결**에 강하다. 이는 Kafka 이벤트 소싱 철학과도 자연스럽게 맞물린다.\n- 강한 일관성이 필요한 ledger 본체는 트랜잭션이 견고한 `PostgreSQL` 위에 올린다. 단일 계좌 내 자금 이동은 DB 트랜잭션으로 원자성을 보장한다.\n\n### 일관성·샤딩 전략\n- **샤딩 키 = 계좌(account)**: 한 계좌의 모든 ledger 항목이 같은 샤드에 모이도록 계좌 단위로 파티셔닝한다. 대부분의 정합성 검증(잔액 합 = 0)이 단일 샤드 안에서 끝나 분산 트랜잭션을 피한다.\n- **여러 계좌에 걸친 이체**는 분산 트랜잭션 대신 **이벤트 + saga/2단계 상태기계**로 처리한다. 'pending → settled/failed' 같은 상태를 이벤트로 전이시키고, 실패 시 보상(compensating) 항목을 기록해 결과적 일관성을 맞춘다.\n- 읽기 부하(잔고 조회, 화면 표시)는 `Redis` 캐시와 읽기 전용 복제본으로 흡수하되, 표시값과 권위 있는 ledger 잔액을 주기적으로 reconcile(대사)한다.\n\n### 정산(clearing)과의 연결\n자체 클리어링(Robinhood Clearing) 도입 이후, 주문 체결 이벤트는 ledger에 즉시 'pending' 항목을 만들고, 외부 정산 사이클(T+1)에 맞춰 'settled'로 전이된다. 이 모든 전이가 이벤트로 남기 때문에 사후 감사와 재처리가 가능하다.\n\n### 트레이드오프\nappend-only 더블엔트리는 저장 비용과 잔액 계산 비용(또는 스냅샷 관리 복잡도)을 늘린다. 하지만 금융 데이터에서 '되돌릴 수 없는 정확성과 감사 가능성'은 성능보다 우선하므로, Robinhood는 핫패스에는 캐시/스냅샷을 두고 권위 데이터는 불변 장부로 유지하는 절충을 택한다."
+    },
+    {
+     "topic": "Vitess 기반 수평 샤딩 — Django ORM을 깨지 않고 MySQL을 무한 확장하기",
+     "body": "### 왜 Vitess였나\nRobinhood의 코어 brokerage 데이터(계좌, 포지션, 주문 메타)는 오랫동안 단일 PostgreSQL/MySQL에 적재되었지만, 사용자가 수백만에서 수천만으로 늘면서 **단일 primary의 write 한계**와 **테이블 크기로 인한 인덱스·백업·장애복구 비용**이 한계에 도달했다. 애플리케이션을 전부 다시 쓰지 않고 수평 샤딩을 얻는 길로 `Vitess`(YouTube가 만든 MySQL 샤딩 미들웨어)를 도입한다.\n\n### 동작 원리\n- `VTGate`라는 프록시가 애플리케이션과 MySQL 사이에 서서, 들어온 SQL을 파싱하고 **sharding key(예: account_id)** 기준으로 어느 shard로 보낼지 라우팅한다. 애플리케이션 입장에서는 여전히 하나의 MySQL처럼 보인다.\n- 각 shard는 `VTTablet`이 감싼 독립 MySQL 인스턴스이며, primary 1 + replica N 구성. `keyspace`를 range 기반으로 쪼개고, 데이터가 한쪽으로 쏠리면 **resharding**(shard split)으로 온라인 재분배한다.\n- cross-shard 쿼리(여러 계좌를 한 번에 조회)는 VTGate가 scatter-gather로 처리하지만 비싸기 때문에, 스키마/쿼리를 **shard key 안에서 닫히도록** 설계하는 것이 핵심 트레이드오프다.\n\n### 트레이드오프\n| 항목 | 이득 | 비용 |\n|------|------|------|\n| Write 확장 | shard 수만큼 선형 증가 | cross-shard 트랜잭션 불가/비쌈 |\n| 운영 | 온라인 resharding, 자동 failover | VTGate/VTTablet 운영 복잡도 |\n| 호환성 | 기존 MySQL 쿼리 대부분 그대로 | 일부 SQL·JOIN 제약 |\n\n### 핵심 교훈\n금융 데이터는 강한 일관성이 필요해 NoSQL로 도망치기 어렵다. Vitess는 **\"MySQL의 트랜잭션 보장을 유지하면서 수평 확장\"**이라는 어려운 두 마리 토끼를 잡는 선택이었고, 샤딩 키 설계가 곧 성능 설계가 된다는 점이 핵심이다."
+    },
+    {
+     "topic": "Idempotency와 정확히 한 번 — 금융 거래에서 중복 주문을 막는 메커니즘",
+     "body": "### 문제: 네트워크는 거짓말을 한다\n사용자가 매수 버튼을 눌렀는데 응답이 늦어 한 번 더 누르거나, 모바일 네트워크가 끊겨 클라이언트가 자동 재시도하면 **같은 주문이 두 번 체결**될 수 있다. 핀테크에서 이는 곧 금전 사고다. Robinhood는 이를 분산 시스템의 일급 문제로 다룬다.\n\n### Idempotency Key 패턴\n- 클라이언트(또는 BFF)가 주문마다 **고유한 `idempotency_key`(UUID)**를 생성해 요청 헤더/페이로드에 실어 보낸다.\n- 서버는 주문을 처리하기 전에 이 key를 `Redis` 또는 트랜잭션 테이블에 **원자적으로 선점(SET NX)**한다. 이미 존재하면 새 주문을 만들지 않고 **기존 결과를 그대로 반환**한다.\n- 결제·정산 같은 다단계 워크플로에서는 각 단계가 자신의 idempotent 마커를 가져, 재시도가 발생해도 이미 완료된 단계는 건너뛴다(at-least-once 전달 + idempotent 소비 = effectively-once).\n\n### 이벤트 파이프라인에서의 확장\nKafka는 기본적으로 at-least-once다. 따라서 `Faust` 스트림 프로세서나 `Celery` 워커가 같은 이벤트를 두 번 받을 수 있고, **소비자 측 idempotency**(처리한 event_id를 기록하고 중복은 무시)가 정합성의 최후 방어선이 된다. ledger 기입은 `(account_id, idempotency_key)` 유니크 제약으로 DB 레벨에서도 중복을 거부한다.\n\n### 트레이드오프\n- key 저장소(Redis)가 SPOF가 되지 않도록 TTL·영속 백업 설계가 필요하다.\n- 완벽한 'exactly-once'는 분산 시스템에서 불가능에 가깝기 때문에, **at-least-once + idempotent consumer**라는 현실적 조합으로 'effectively-once'를 달성하는 것이 실무 정답이다."
+    },
+    {
+     "topic": "관측성과 SRE — GME 이후 만든 캐파시티·서킷브레이커 문화",
+     "body": "### 배경\n2021년 GME/AMC 밈스톡 사태에서 트래픽이 폭증하며 일부 서비스가 한계에 부딪혔고, 이후 Robinhood는 **관측성(observability)과 용량 계획(capacity planning)**을 엔지니어링 1순위로 끌어올렸다.\n\n### 3대 신호의 수집\n- **Metrics**: `Prometheus`/`Datadog`으로 서비스별 RED 지표(Rate, Errors, Duration)와 큐 깊이, Kafka consumer lag을 초 단위로 추적한다. 주문 체결 지연 p99, market data fan-out 지연이 핵심 SLI다.\n- **Tracing**: Envoy 서비스 메시가 모든 gRPC 호출에 trace context를 전파해, 한 주문이 BFF→brokerage→ledger→Kafka를 거치는 **end-to-end 분산 트레이스**를 잇는다. 병목 서비스를 클릭 한 번으로 찾는다.\n- **Logging**: 구조화 로그를 중앙 집계해, idempotency key·order id로 한 거래의 전 생애를 재구성할 수 있게 한다(금융 감사 요건과도 직결).\n\n### 복원력 패턴\n- **Circuit breaker**: 다운스트림(예: clearing 파트너, market data feed)이 느려지면 Envoy/클라이언트 레벨에서 회로를 열어 cascading failure를 차단하고, 사용자에겐 graceful degradation(예: 일부 차트 지연)으로 대응한다.\n- **Load shedding & rate limiting**: 스파이크 시 비핵심 요청을 먼저 떨어뜨려 **주문 체결 경로(critical path)를 보호**한다.\n- **Autoscaling**: Kubernetes(EKS)에서 HPA로 stateless 서비스를 트래픽에 맞춰 늘리되, 시장 개장(09:30 ET) 직전처럼 **예측 가능한 스파이크**는 사전 워밍업/예약 스케일링으로 대비한다.\n\n### 교훈\nGME 사태의 본질적 교훈은 코드 버그가 아니라 **'예측 가능한 극단 부하에 대한 용량·격리 설계 부재'**였고, 이후 critical path 격리·서킷브레이커·사전 캐파시티 테스트가 표준 운영 절차로 자리 잡았다."
     }
    ],
    "github": {
@@ -10646,14 +10689,14 @@
      {
       "name": "robinhood/faust",
       "url": "https://github.com/robinhood/faust",
-      "desc": "Kafka 기반 Python 스트림 처리 라이브러리 — Kafka Streams의 파이썬판으로 Robinhood가 오픈소스화",
+      "desc": "Kafka 기반 Python 스트림 처리 라이브러리(현재 faust-streaming으로 커뮤니티 포크)",
       "lang": "Python",
       "stars": 6822
      },
      {
       "name": "robinhood/aiokafka",
       "url": "https://github.com/robinhood/aiokafka",
-      "desc": "Faust가 의존하는 asyncio 기반 비동기 Kafka 클라이언트",
+      "desc": "asyncio 기반 Kafka 클라이언트로 Faust의 비동기 I/O 토대",
       "lang": "Python",
       "stars": 28
      }
@@ -10662,10 +10705,10 @@
    "sources": [
     "https://newsroom.aboutrobinhood.com/category/engineering/",
     "https://github.com/robinhood/faust",
-    "https://faust.readthedocs.io/"
+    "https://vitess.io/docs/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "stripe",
