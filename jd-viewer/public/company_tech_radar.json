@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T02:34:20",
+ "generated_at": "2026-06-19T04:20:37",
  "total": 100,
  "countries": [
   {
@@ -244,16 +244,16 @@
       "count": 6
      },
      {
+      "name": "Armeria",
+      "count": 3
+     },
+     {
       "name": "Spring Cloud",
       "count": 3
      },
      {
       "name": "Spring WebFlux",
       "count": 3
-     },
-     {
-      "name": "Armeria",
-      "count": 2
      },
      {
       "name": "gRPC + Protobuf",
@@ -279,7 +279,7 @@
      },
      {
       "name": "Next.js",
-      "count": 10
+      "count": 12
      },
      {
       "name": "React Native",
@@ -367,7 +367,7 @@
      },
      {
       "name": "Envoy",
-      "count": 4
+      "count": 5
      },
      {
       "name": "Grafana",
@@ -398,11 +398,11 @@
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 7
+     "count": 5
     },
     {
      "name": "Microservices",
-     "count": 6
+     "count": 5
     },
     {
      "name": "MSA",
@@ -413,12 +413,12 @@
      "count": 2
     },
     {
-     "name": "Service mesh",
+     "name": "Event-driven streaming",
      "count": 2
     },
     {
-     "name": "API Gateway + Service Mesh",
-     "count": 1
+     "name": "Service mesh",
+     "count": 2
     }
    ]
   },
@@ -10110,26 +10110,30 @@
    "country": "US",
    "domain": "핀테크",
    "languages": [
-    "Java",
     "Kotlin",
+    "Java",
     "Ruby",
     "Go",
-    "TypeScript"
+    "TypeScript",
+    "Swift"
    ],
    "stack": {
     "backend": [
      "Kotlin",
      "Java",
      "Misk",
+     "Guice",
      "gRPC",
      "Protocol Buffers",
-     "Ruby on Rails"
+     "Ruby on Rails",
+     "Armeria"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Market Design System",
-     "GraphQL"
+     "GraphQL",
+     "Next.js"
     ],
     "data": [
      "MySQL (Vitess)",
@@ -10137,27 +10141,30 @@
      "Cassandra",
      "DynamoDB",
      "Redis",
-     "Snowflake"
+     "Snowflake",
+     "Hadoop/Spark"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
+     "Kubernetes (EKS)",
      "Envoy",
      "Terraform",
      "Bazel",
-     "Datadog"
+     "Datadog",
+     "Jaeger/OpenTelemetry",
+     "HashiCorp Vault"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Service mesh",
-    "Event-driven",
-    "Multi-region active-active"
+    "Microservices on JVM service framework",
+    "Service mesh (Envoy/xDS)",
+    "Event-driven streaming",
+    "Cell-based multi-region active-active"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    POS[\"Square Register / Reader<br/>Kotlin + Swift SDK\"]\n    WEB[\"Seller Dashboard<br/>React + TypeScript\"]\n    CASH[\"Cash App<br/>Kotlin + Swift\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    LB[\"Edge LB<br/>Envoy\"]\n    GW[\"API Gateway<br/>Misk HTTP/gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PAY[\"Payments Service<br/>Kotlin + Misk\"]\n    LEDGER[\"Ledger / Settlement<br/>Java + Kotlin\"]\n    CATALOG[\"Catalog / Orders<br/>Kotlin\"]\n    RISK[\"Risk / Fraud<br/>Kotlin + ML\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    ENVOY[\"Sidecar Proxy<br/>Envoy + xDS\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HERMES[\"Async Jobs<br/>Misk Jobqueue + SQS\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"Sharded OLTP<br/>MySQL + Vitess\"]\n    CASS[\"Wide-column<br/>Cassandra\"]\n    DDB[\"Key-Value<br/>DynamoDB\"]\n    REDIS[\"Cache<br/>Redis\"]\n    SNOW[\"Analytics<br/>Snowflake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    DD[\"Observability<br/>Datadog + OpenTelemetry\"]\n  end\n  POS -->|gRPC| LB\n  WEB -->|GraphQL/HTTPS| LB\n  CASH -->|gRPC| LB\n  LB --> GW\n  GW -->|gRPC| ENVOY\n  ENVOY --> PAY\n  ENVOY --> CATALOG\n  PAY --> LEDGER\n  PAY --> RISK\n  PAY -->|read/write| VITESS\n  LEDGER --> VITESS\n  CATALOG --> CASS\n  RISK --> DDB\n  PAY --> REDIS\n  PAY -->|publish| KAFKA\n  LEDGER -->|publish| KAFKA\n  KAFKA --> HERMES\n  KAFKA --> SNOW\n  PAY -.-> DD\n  ENVOY -.-> DD\n  K8S --> PAY\n  K8S --> LEDGER",
-   "why_language": "Block은 결제·정산처럼 강한 정합성과 높은 처리량이 동시에 필요한 도메인이라, JVM의 성숙한 동시성·관측성·라이브러리 생태계를 핵심 백엔드의 기반으로 삼고 신규 서비스는 null 안전성과 코루틴을 갖춘 Kotlin으로 작성한다. Cash App과 Square Reader 같은 모바일·임베디드 클라이언트도 Kotlin/Swift로 통일해 서버-클라이언트 간 Protobuf 스키마와 도메인 모델을 공유하며, 초기 셀러 대시보드 등 일부 영역은 Ruby on Rails 유산이, 인프라·CLI 도구는 Go가 담당한다.",
-   "why_architecture": "단일 결제 모놀리스로는 수천 개 셀러 기능과 규제·정산 요구를 독립 배포할 수 없기에, Misk 기반 마이크로서비스를 Envoy 서비스 메시로 묶어 gRPC로 통신시키고 결제 데이터는 Vitess로 수평 샤딩한다. 카드 승인은 동기 경로로 빠르게 처리하되 정산·리워드·리스크·분석은 Kafka 이벤트로 비동기 분리해, 핵심 결제 경로의 지연을 낮추면서 멀티 리전 active-active로 가용성을 확보하는 트레이드오프를 택했다.",
-   "summary": "JVM(Kotlin/Java) + 자체 Misk 프레임워크 위에서 Envoy 메시와 Vitess 샤딩, Kafka 이벤트로 굴리는 결제 마이크로서비스 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    POS[\"Square POS / Reader<br/>iOS + Android SDK\"]\n    CASH[\"Cash App<br/>Kotlin + Swift\"]\n    WEB[\"Seller Dashboard<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GQL[\"GraphQL / BFF<br/>TypeScript\"]\n    EDGE[\"Edge Proxy<br/>Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PAY[\"Payments Service<br/>Misk + Kotlin\"]\n    LEDGER[\"Ledger / Settlement<br/>Misk + gRPC\"]\n    RISK[\"Risk / Fraud<br/>Kotlin + ML\"]\n    ACCT[\"Accounts<br/>Ruby on Rails\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FEAT[\"Feature Store<br/>Cassandra + Redis\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VT[\"Sharded OLTP<br/>MySQL + Vitess\"]\n    DDB[\"Token Vault<br/>DynamoDB\"]\n    DW[\"Warehouse<br/>Snowflake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + EKS\"]\n    MESH[\"Service Mesh<br/>Envoy xDS\"]\n    OBS[\"Observability<br/>Datadog + OpenTelemetry\"]\n  end\n  POS --> EDGE\n  CASH --> EDGE\n  WEB --> GQL\n  GQL --> EDGE\n  EDGE -->|gRPC| PAY\n  PAY -->|gRPC| LEDGER\n  PAY -->|sync score| RISK\n  EDGE --> ACCT\n  PAY --> VT\n  LEDGER --> VT\n  PAY --> DDB\n  PAY -->|emit events| KAFKA\n  KAFKA --> RISK\n  RISK --> FEAT\n  KAFKA --> DW\n  PAY -.runs on.-> MESH\n  MESH -.on.-> K8S\n  PAY -.traces.-> OBS",
+   "why_language": "결제·정산처럼 강한 타입 안정성과 동시성, 장시간 안정 가동이 필요한 도메인이라 JVM 위에서 Kotlin/Java를 핵심으로 쓴다. Kotlin은 null 안정성과 코루틴으로 모바일(Reader/Cash App)과 서버를 같은 언어로 통일해주고, 초기 셀러 제품과 사내 도구는 생산성이 높은 Ruby on Rails로, 인프라/네트워킹 계층은 Go와 Envoy 생태계로 보완한다.",
+   "why_architecture": "단일 결제 트랜잭션이 인증·리스크·원장·정산 등 여러 도메인을 거치므로 도메인별 마이크로서비스로 쪼개고, 서비스 간 호출은 gRPC와 Envoy 서비스 메시로 표준화해 재시도·서킷브레이커·동적 라우팅을 일관되게 적용한다. 금융 규제와 가용성 요구 때문에 멀티 리전 active-active와 셀(cell) 단위 격리로 장애 폭발 반경을 줄이고, 정산·분석은 Kafka 이벤트 스트림으로 비동기 분리한다.",
+   "summary": "JVM(Kotlin) 기반 Misk 마이크로서비스를 Envoy 메시와 Vitess 샤딩 위에 올린, 셀-기반 멀티리전 핀테크 결제 플랫폼",
    "deep_dive": [
     {
      "topic": "결제 흐름: 카드 탭부터 정산까지 end-to-end",
@@ -10190,6 +10197,18 @@
     {
      "topic": "Bazel 모노레포와 배포 파이프라인",
      "body": "### 대규모 폴리글랏 코드베이스의 빌드\nKotlin/Java 서비스, 모바일(Kotlin/Swift), 프론트(TypeScript)가 한데 얽힌 대규모 코드베이스를 일관되게 빌드하기 위해 Block은 **Bazel** 기반의 가설 가능한(hermetic) 빌드를 광범위하게 쓴다. 핵심 가치는 두 가지다.\n\n- **증분·캐시 빌드**: 변경된 타깃과 그 의존성만 다시 빌드/테스트한다. 수천 개 모듈에서 전체 빌드를 매번 돌리지 않고 원격 캐시를 공유해 CI 시간을 압축한다.\n- **재현성**: 입력이 같으면 출력이 같다. Protobuf 스키마(`Wire`로 코드 생성)·서비스·클라이언트가 같은 정의에서 결정론적으로 생성되어 서버-모바일 간 스키마 드리프트를 막는다.\n\n### 스키마 우선(contract-first) 개발\nBlock의 서비스 통신은 Protocol Buffers/gRPC가 기본이다. `.proto`가 단일 소스이고, 서버는 Misk gRPC 핸들러로, Android/JVM 클라이언트는 `Wire`로, 다른 언어는 표준 gRPC 스택으로 코드를 생성한다. API 변경은 스키마 호환성 검사를 통과해야 머지된다.\n\n### 배포\n- 컨테이너화된 Misk 서비스는 **Kubernetes(on AWS)** 위에서 굴러간다.\n- 롤아웃은 Envoy의 weighted routing을 활용한 **카나리/점진 배포**로, 소수 트래픽에 먼저 노출하고 메트릭(Datadog)·에러율을 보며 확장하거나 롤백한다.\n- 인프라는 `Terraform`으로 코드화해 리전·환경 간 재현 가능하게 관리한다.\n\n### 트레이드오프\nBazel은 학습 곡선과 BUILD 파일 유지 비용이 크지만, 결제 시스템처럼 '빌드 산출물의 신뢰성'이 곧 안전성인 도메인에서는 재현성과 캐시 효율이 그 비용을 상쇄한다."
+    },
+    {
+     "topic": "관측성: gRPC 메시 위에서의 분산 트레이싱과 SLO 운영",
+     "body": "### 왜 관측성이 결제에서 1급 시민인가\n결제 한 건이 `Edge Envoy → Payments → Risk → Ledger → Settlement`처럼 5~10개 서비스를 gRPC로 통과한다. 어느 한 hop이 200ms 느려지면 카드 탭 후 '승인 대기' 체감이 길어지고, 실패 시 '이중 청구' 의심으로 이어지기 때문에 **요청 단위로 끝까지 추적**할 수 있어야 한다.\n\n### 트레이스 전파 구조\n- 진입점 `Envoy`가 `x-request-id` / `traceparent`(W3C Trace Context) 헤더를 생성·전파한다. Misk 서비스는 인터셉터에서 이 컨텍스트를 받아 다음 gRPC 호출에 그대로 실어 보낸다.\n- 스팬은 `OpenTelemetry` 계열 SDK로 수집되어 `Jaeger`/`Datadog APM`으로 흘러간다. 각 스팬에는 `merchant_id`, `payment_token`(원본 카드번호 아님, 토큰), `idempotency_key` 같은 비식별 태그가 붙어 특정 가맹점의 꼬리 지연(tail latency)을 바로 필터링할 수 있다.\n\n### 메트릭·로그 3종 세트\n| 신호 | 도구 | 용도 |\n|------|------|------|\n| Metrics | `Datadog` + Prometheus 스타일 메트릭 | p50/p99 지연, 승인율(authorization rate), 에러율 SLO |\n| Tracing | `OpenTelemetry`/`Jaeger` | 단일 결제의 서비스 간 경로·병목 |\n| Logging | 구조화 JSON 로그 | request-id로 트레이스와 조인 |\n\n### SLO와 알람\n승인율(authorization success rate)은 매출에 직결되는 **비즈니스 SLO**라서 단순 5xx율보다 더 민감하게 본다. 특정 발급사(issuer) 라우트의 승인율이 임계 이하로 떨어지면 즉시 페이지가 울리고, 트레이스를 통해 '우리 쪽 지연인지, 카드 네트워크(Visa/Mastercard) 응답 지연인지'를 분리한다. 핵심 트레이드오프는 **카디널리티**다 — `merchant_id`처럼 수백만 카디널리티 태그를 메트릭에 그대로 넣으면 비용이 폭발하므로, 고카디널리티는 트레이스/로그에 두고 메트릭은 라우트·발급사 단위로 집계한다."
+    },
+    {
+     "topic": "보안: 카드 데이터 토큰화와 PCI 스코프 최소화",
+     "body": "### 문제: 원본 카드 데이터(PAN)는 만지는 순간 PCI 부담\nPCI DSS 범위 안에 들어오는 시스템이 많아질수록 감사·격리 비용이 폭증한다. Square의 핵심 전략은 **카드 원본(PAN)을 시스템 깊숙이 흘려보내지 않고 가능한 한 빨리 토큰으로 치환**해 PCI 스코프를 좁히는 것이다.\n\n### Reader → 토큰 흐름\n1. `Square Reader` 하드웨어가 카드의 EMV/마그네틱 데이터를 읽는 즉시 **단말 내부에서 암호화**한다. 휴대폰 앱(SDK)은 평문 카드번호를 보지 못하고 암호화된 페이로드만 중계한다.\n2. 백엔드의 **격리된 결제/볼트(vault) 서비스**만 복호화 권한을 가지며, 여기서 PAN을 **결제 토큰**으로 치환한다. 이후 `Payments`, `Ledger`, `Risk` 등 대부분의 서비스는 PAN이 아니라 토큰만 다룬다 → 이들 서비스는 PCI 고범위에서 빠진다.\n3. 토큰↔PAN 매핑은 강하게 격리된 저장소(예: 전용 `DynamoDB`/암호화 볼트)에 보관하고, 키는 `HSM`/`KMS`로 봉인한다.\n\n### 키 관리와 서비스 인증\n- 비밀·자격증명은 `HashiCorp Vault` 계열로 분배하고, 서비스 간 호출은 **mTLS**로 상호 인증한다. `Envoy` 메시가 사이드카에서 TLS 종단·인증서 로테이션을 담당해 애플리케이션 코드가 인증서 로직을 직접 들고 있지 않게 한다.\n- 발급사·카드 네트워크와의 외부 연동 구간은 별도의 격리 네트워크 세그먼트에 둔다.\n\n### 멱등성(idempotency)도 보안·정합성 장치\n네트워크 재시도로 인한 **이중 청구**를 막기 위해 결제 API는 `idempotency_key`를 1급 개념으로 둔다. 같은 키로 들어온 재요청은 새 청구를 만들지 않고 직전 결과를 그대로 돌려준다. 이는 '돈을 다루는 시스템에서 at-least-once 전송을 어떻게 안전하게 받아내는가'에 대한 핵심 트레이드오프 해법이다."
+    },
+    {
+     "topic": "비동기 정산과 원장: Kafka 이벤트로 분리한 'sync 승인 / async 정산'",
+     "body": "### 두 개의 시간 축\n결제는 본질적으로 **두 단계**다. (1) 카드 탭 순간의 **실시간 승인(authorization)** — 수백 ms 안에 끝나야 하는 동기 경로, (2) 실제 자금이 가맹점 계좌로 옮겨가는 **정산(settlement)** — 시간~일 단위의 비동기 경로. 이 둘을 한 트랜잭션으로 묶으면 안 되기 때문에 Square는 동기 승인과 비동기 정산을 **이벤트로 분리**한다.\n\n### 흐름\n```\nPayments(승인 성공) --emit--> Kafka(payment.authorized)\n                                  |\n        +-------------------------+--------------------------+\n        v                         v                          v\n   Ledger(원장 기재)        Risk(사후 모니터링)        Analytics(Snowflake 적재)\n```\n- `Payments` 서비스는 승인이 끝나면 `payment.authorized` 이벤트를 `Kafka`에 발행하고 즉시 클라이언트에 응답한다(빠른 사용자 체감).\n- `Ledger`/`Settlement`는 이벤트를 구독해 복식부기 원장에 기재하고, 배치 윈도우에 맞춰 카드 네트워크와 자금 이동을 정산한다.\n- 같은 이벤트가 `Snowflake` 웨어하우스로도 흘러 리포팅·정산 대사(reconciliation)에 쓰인다.\n\n### 정합성: 이벤트와 DB 쓰기를 어떻게 원자적으로?\n'DB에 결제는 썼는데 Kafka 발행은 실패' 같은 부분 실패를 막기 위해 **outbox 패턴**(트랜잭션 내에서 동일 DB의 outbox 테이블에 이벤트를 함께 기록 → 별도 릴레이가 Kafka로 발행)을 쓴다. 소비자는 이벤트 키 기반 멱등 처리로 중복 수신을 견딘다. 결과적으로 **exactly-once 환상**을 'at-least-once 전송 + 멱등 소비'로 구현한다.\n\n### 트레이드오프\n비동기 분리의 대가는 **결과적 일관성(eventual consistency)** — 승인은 됐지만 원장·정산 반영에는 지연이 생긴다. 그래서 가맹점 대시보드는 '승인됨/정산 예정/정산 완료'를 구분해 보여주고, 대사 잡이 매일 카드 네트워크 리포트와 내부 원장을 맞춰 누락·중복을 잡아낸다."
     }
    ],
    "github": {
@@ -10198,35 +10217,35 @@
      {
       "name": "square/okhttp",
       "url": "https://github.com/square/okhttp",
-      "desc": "JVM/Android의 사실상 표준 HTTP 클라이언트, 모든 모바일·서버 통신의 기반",
+      "desc": "Android/JVM 표준 HTTP 클라이언트 — 모바일 SDK 네트워킹의 핵심",
       "lang": "Kotlin",
       "stars": 46973
      },
      {
       "name": "square/retrofit",
       "url": "https://github.com/square/retrofit",
-      "desc": "타입 안전한 REST 클라이언트, OkHttp 위에서 API 호출을 인터페이스로 추상화",
+      "desc": "타입 안전한 REST 클라이언트 — 모바일·서버 API 호출에 광범위 사용",
       "lang": "HTML",
-      "stars": 43893
+      "stars": 43901
      },
      {
       "name": "sqldelight/sqldelight",
       "url": "https://github.com/sqldelight/sqldelight",
-      "desc": "SQL로부터 타입 안전한 Kotlin API를 생성하는 멀티플랫폼 영속화 라이브러리",
+      "desc": "SQL로부터 타입 안전한 Kotlin API를 생성하는 멀티플랫폼 DB 라이브러리",
       "lang": "Kotlin",
-      "stars": 6813
+      "stars": 6820
      },
      {
       "name": "square/wire",
       "url": "https://github.com/square/wire",
-      "desc": "경량 Protocol Buffers/gRPC 런타임·코드 생성기, 모바일에 최적화",
+      "desc": "경량 Protocol Buffers/gRPC 구현 — 모바일 친화적 protobuf 런타임",
       "lang": "Kotlin",
-      "stars": 4420
+      "stars": 4419
      },
      {
       "name": "cashapp/misk",
       "url": "https://github.com/cashapp/misk",
-      "desc": "Block이 만든 Kotlin 마이크로서비스 프레임워크 — DI·서비스 생명주기·gRPC/HTTP·잡큐 통합",
+      "desc": "Square가 만든 Kotlin 기반 마이크로서비스 프레임워크 — DI/서빙/액션 추상화",
       "lang": "Kotlin",
       "stars": 469
      }
@@ -10238,7 +10257,7 @@
     "https://code.cash.app/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "coinbase",
@@ -10247,51 +10266,56 @@
    "domain": "핀테크",
    "languages": [
     "Go",
-    "Ruby",
     "TypeScript",
+    "Ruby",
     "Python",
-    "Solidity"
+    "Solidity",
+    "Rust"
    ],
    "stack": {
     "backend": [
-     "Go microservices",
+     "Go microservices (주력)",
      "Ruby on Rails (legacy monolith)",
-     "gRPC + Protobuf",
-     "Temporal (durable workflows)"
+     "gRPC + Protobuf (서비스 간 통신)",
+     "Temporal (durable workflow orchestration)",
+     "mongobetween (Mongo 연결 프록시)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "React Native",
-     "OnchainKit"
+     "React Native (모바일)",
+     "OnchainKit / wagmi + viem",
+     "Next.js"
     ],
     "data": [
-     "MongoDB (primary OLTP)",
+     "MongoDB (주 OLTP)",
      "PostgreSQL",
      "DynamoDB",
-     "Redis",
-     "Kafka",
-     "Snowflake"
+     "Redis (캐시/레이트리밋)",
+     "Kafka (이벤트 스트리밍)",
+     "Snowflake (데이터 웨어하우스)",
+     "Databricks / Spark (배치·ML)"
     ],
     "infra": [
      "AWS",
      "Kubernetes (EKS)",
-     "Codeflow (internal CD)",
+     "Codeflow (내부 CD)",
      "Terraform",
      "HashiCorp Vault",
-     "Datadog"
+     "Datadog",
+     "Envoy (service mesh / edge)"
     ]
    },
    "architecture": [
-    "Microservices (gRPC)",
-    "Event-driven (Kafka)",
+    "Microservices (gRPC + Protobuf)",
+    "Event-driven streaming (Kafka)",
     "Durable workflow orchestration (Temporal)",
-    "Blockchain integration / on-chain indexing"
+    "Blockchain integration / on-chain indexing (Base L2 포함)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + TypeScript\"]\n    MOB[\"Mobile<br/>React Native\"]\n    DAPP[\"Onchain dApp<br/>OnchainKit + viem\"]\n  end\n  subgraph Edge\n    CF[\"Edge / CDN<br/>CloudFront + ALB\"]\n    GW[\"API Gateway<br/>Edge service in Go\"]\n  end\n  subgraph Core\n    MONO[\"Legacy Monolith<br/>Ruby on Rails\"]\n    SVC[\"Go Microservices<br/>gRPC + Protobuf\"]\n    MATCH[\"Matching Engine<br/>Go in-memory order book\"]\n    WALLET[\"Wallet / Signing Svc<br/>Go + HSM\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    TEMPORAL[\"Workflow Engine<br/>Temporal\"]\n  end\n  subgraph Data\n    MONGO[\"Primary OLTP<br/>MongoDB via mongobetween\"]\n    PG[\"Relational<br/>PostgreSQL\"]\n    DDB[\"KV / Hot Path<br/>DynamoDB + Redis\"]\n    SNOW[\"Analytics<br/>Snowflake\"]\n  end\n  subgraph Chain\n    NODES[\"Blockchain Nodes<br/>BTC ETH Base etc\"]\n    INDEX[\"Indexer / Deposit Detect<br/>Go ingestion\"]\n    HSM[\"Key Mgmt<br/>HSM + Vault\"]\n  end\n  subgraph Platform\n    EKS[\"Compute<br/>AWS EKS Kubernetes\"]\n    CD[\"Deploy<br/>Codeflow + Terraform\"]\n    OBS[\"Observability<br/>Datadog\"]\n  end\n  WEB --> CF\n  MOB --> CF\n  DAPP --> NODES\n  CF --> GW\n  GW -->|gRPC| SVC\n  GW --> MONO\n  SVC -->|gRPC| MATCH\n  SVC --> WALLET\n  SVC --> MONGO\n  MONO --> PG\n  SVC --> DDB\n  SVC -->|produce| KAFKA\n  KAFKA --> TEMPORAL\n  TEMPORAL --> WALLET\n  WALLET --> HSM\n  WALLET --> NODES\n  INDEX --> NODES\n  INDEX -->|deposit events| KAFKA\n  KAFKA --> SNOW\n  SVC -.runs on.-> EKS\n  CD -.deploys.-> EKS\n  SVC -.metrics.-> OBS",
-   "why_language": "Go는 gRPC 기반 마이크로서비스의 동시성·낮은 지연·작은 메모리 풋프린트가 거래소의 핫 패스(매칭, 지갑 서명, 입금 감지)에 맞아 Coinbase의 사실상 표준 백엔드 언어가 되었다. 초창기 Ruby on Rails 모놀리스가 제품 속도를 책임졌고 지금도 일부 잔존하지만 규모·신뢰성 요구로 Go로 점진 이전 중이며, 프런트엔드는 React/TypeScript/React Native로 웹·모바일을 통합하고 온체인 영역은 Solidity로 스마트 컨트랙트(Base 등)를 작성한다.",
-   "why_architecture": "수억 달러 자산을 다루는 규제 핀테크라 서비스 격리(blast radius 축소)와 명확한 소유권이 필수여서 gRPC 마이크로서비스로 쪼갰고, 입금·출금·정산처럼 여러 단계가 며칠에 걸쳐 진행되고 반드시 정확히 한 번 완료돼야 하는 흐름은 Kafka 이벤트 + Temporal durable workflow로 상태를 외부화해 장애 후에도 재개되도록 했다. 블록체인이라는 외부 비결정적 세계와의 경계는 노드 인덱서·HSM 서명 서비스로 캡슐화해 핵심 자금 이동을 보호한다.",
-   "summary": "AWS·Kubernetes 위 Go gRPC 마이크로서비스 + MongoDB + Kafka/Temporal로 돌아가는 규제급 암호화폐 거래 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + TypeScript\"]\n    MOB[\"Mobile App<br/>React Native\"]\n    WAL[\"Wallet / dApp<br/>OnchainKit + wagmi/viem\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway / Edge<br/>Envoy + Rate Limit\"]\n  end\n  subgraph Core\n    MONO[\"Legacy Monolith<br/>Ruby on Rails\"]\n    SVC[\"Go Microservices<br/>gRPC + Protobuf\"]\n    MATCH[\"Matching Engine<br/>Go in-memory orderbook\"]\n    WF[\"Temporal<br/>Durable Workflows\"]\n  end\n  subgraph Chain\n    IDX[\"Blockchain Indexer<br/>Go nodes + deposit scan\"]\n    BASE[\"Base L2<br/>OP Stack / Solidity\"]\n    HSM[\"Key Mgmt<br/>HSM + cold wallet\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Data\n    MONGO[\"Primary OLTP<br/>MongoDB + mongobetween\"]\n    PG[\"PostgreSQL\"]\n    DDB[\"DynamoDB\"]\n    REDIS[\"Cache<br/>Redis\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n  end\n  subgraph Platform\n    EKS[\"AWS EKS<br/>Kubernetes\"]\n    CF[\"Codeflow<br/>internal CD\"]\n    VAULT[\"HashiCorp Vault<br/>dynamic secrets\"]\n    DD[\"Datadog<br/>metrics + tracing\"]\n  end\n  WEB --> GW\n  MOB --> GW\n  WAL --> GW\n  WAL -->|tx| BASE\n  GW -->|REST| MONO\n  GW -->|gRPC| SVC\n  MONO -->|strangler| SVC\n  SVC --> MATCH\n  SVC -->|fund moves| WF\n  WF -->|exactly-once| MONGO\n  SVC --> MONGO\n  SVC --> PG\n  SVC --> DDB\n  SVC --> REDIS\n  SVC -->|publish| KAFKA\n  IDX -->|deposits| KAFKA\n  KAFKA --> SVC\n  KAFKA --> SNOW\n  IDX --> BASE\n  WF --> HSM\n  SVC -.run.-> EKS\n  CF -.deploy.-> EKS\n  VAULT -.secrets.-> SVC\n  SVC -.telemetry.-> DD",
+   "why_language": "Coinbase는 초기 Rails 모놀리스로 빠르게 제품을 출시했지만, 거래·자금이동처럼 높은 동시성과 낮은 지연이 요구되는 영역에서 Go의 경량 고루틴 동시성 모델과 정적 타입 안정성이 더 적합해 신규 서비스를 대부분 Go gRPC로 전환했다. 프론트엔드와 지갑/dApp 경험은 React·TypeScript·React Native로 통일해 웹·모바일·온체인 코드를 공유하고, 온체인 컨트랙트는 Solidity, 데이터·ML 파이프라인은 Python을 사용한다. 즉 도메인별로 '거래소 핵심=Go, 사용자 경험=TS, 온체인=Solidity, 데이터=Python'이라는 명확한 언어 분리 전략을 갖는다.",
+   "why_architecture": "암호화폐 거래소는 자금 이동에서 '단 한 번'의 정확성과 감사 가능성이 절대적이라, 분산 트랜잭션을 코드로 직접 구현하는 대신 Temporal durable workflow로 재시도·보상·멱등성을 보장하고 gRPC 마이크로서비스로 도메인을 격리했다. 입금 감지·시세·체결처럼 비동기로 퍼져야 하는 사실(fact)은 Kafka 이벤트로 전파해 서비스 간 결합을 낮추고, 온체인 인덱서가 블록체인 상태를 내부 시스템과 연결한다. 규제·보안 요구가 크기 때문에 Vault 동적 시크릿과 HSM 기반 키 분리, EKS 위 표준화된 Codeflow 배포로 일관된 통제를 적용한다.",
+   "summary": "Rails 모놀리스에서 Go gRPC 마이크로서비스로 진화한, Temporal·Kafka·온체인 인덱싱이 결합된 규제형 거래소 아키텍처",
    "deep_dive": [
     {
      "topic": "주문 요청 처리 흐름 end-to-end",
@@ -10328,6 +10352,22 @@
     {
      "topic": "Rails 모놀리스에서 Go gRPC 마이크로서비스로의 점진적 마이그레이션",
      "body": "### 출발점\nCoinbase는 2012년 **Ruby on Rails 모놀리스** 하나로 시작했다. 단일 코드베이스·단일 배포라 초기 제품 개발 속도는 최고였지만, 2017년 강세장에서 트래픽이 폭증하자 한계가 드러났다:\n- 한 부분의 장애·메모리 누수가 **전체 모놀리스를 흔드는** blast radius.\n- 팀이 늘면서 같은 코드베이스에 대한 **배포 충돌·소유권 모호**.\n- Ruby/GIL 특성상 동시성·지연이 거래소 핫 패스에 부적합.\n\n### 마이그레이션 전략 — strangler fig\n빅뱅 재작성 대신 **경계를 잘라 하나씩 떼어내는** strangler 패턴을 썼다.\n- 새 도메인·고부하 경로는 처음부터 **Go 마이크로서비스**로 신설하고, 모놀리스가 이를 호출하도록 한다.\n- 서비스 간 계약은 **Protobuf 스키마 + gRPC**로 못 박아, 언어가 달라도(잔존 Ruby ↔ 신규 Go) 타입 안전하게 통신한다.\n- 트래픽을 점진적으로 신규 서비스로 옮기고, 모놀리스의 해당 코드를 비활성화한다.\n\n### 왜 Go였나\n- **고루틴 기반 경량 동시성**으로 수많은 동시 요청·블록체인 노드 폴링을 적은 리소스로 처리.\n- 정적 타입·단일 바이너리라 **배포·운영이 단순**하고 컨테이너 풋프린트가 작아 Kubernetes에 적합.\n- gRPC/Protobuf 생태계가 성숙해 **서비스 메시·codegen** 표준화가 쉬움.\n\n### 플랫폼 표준화\n서비스가 수백 개로 늘자 각 팀이 제각각 배포하면 혼돈이라, 내부 CD 플랫폼 **Codeflow**와 Terraform/EKS 위에 **\"서비스 생성 → CI → 카나리 → 프로덕션\"을 골든 패스로 표준화**했다. 새 Go 서비스를 만들면 관측성(Datadog), mTLS, 시크릿(Vault), 배포 파이프라인이 기본 장착되게 해 마이그레이션의 한계비용을 낮췄다.\n\n### 트레이드오프\n분산 시스템이 되면서 **네트워크 호출·부분 실패·분산 트랜잭션** 복잡도가 늘었고, 이를 Kafka 이벤트와 Temporal 워크플로로 흡수했다. 즉 모놀리스의 \"단순한 일관성\"을 포기한 대가로 **격리·독립 배포·언어 적합성**을 얻은 전형적 사례다."
+    },
+    {
+     "topic": "Base L2와 온체인 인프라: OP Stack 위에서 거래소를 체인으로 확장하기",
+     "body": "### Base는 무엇이고 Coinbase 아키텍처에서 어떤 위치인가\n`Base`는 Coinbase가 만든 Ethereum L2로, Optimism의 `OP Stack`(Bedrock) 위에 구축된 Optimistic Rollup이다. 핵심은 Coinbase가 체인을 '직접 포크해서 운영'하는 게 아니라, OP Stack을 채택해 `Superchain` 생태계의 표준 컴포넌트를 재사용한다는 점이다. 이는 거래소 본체(중앙화된 CeFi)와 온체인(DeFi/지갑) 사이를 잇는 전략적 인프라다.\n\n### 동작 메커니즘 (Optimistic Rollup)\n- **실행 vs 데이터 가용성 분리**: 트랜잭션은 Base에서 저렴하게 실행되고, 압축된 batch가 L1 Ethereum에 게시된다. Bedrock 이후로는 EIP-4844 `blob` 트랜잭션을 사용해 calldata보다 훨씬 싼 비용으로 데이터 가용성(DA)을 확보한다.\n- **Sequencer**: Coinbase가 운영하는 중앙 sequencer가 트랜잭션 순서를 정하고 즉시(soft) 컨펌을 준다. 사용자 체감 지연은 ~2초 블록타임. 단일 sequencer라는 점은 검열 저항성 측면에서 트레이드오프이며, OP Stack은 force-inclusion(L1을 통한 강제 포함) 경로로 이를 완화한다.\n- **Fault Proof**: Optimistic 모델이므로 상태 전이는 '일단 맞다고 가정'하고, 분쟁 시 `fault proof`로 검증한다. 출금(Base→L1)에 challenge window(약 7일)가 존재하는 이유가 이것이다. Coinbase 지갑 UX는 이 지연을 LP/브리지로 흡수한다.\n\n### 거래소 본체와의 연결\n거래소(CeFi)에서 Base로의 자금 이동은 결국 입출금 문제로 환원된다. 내부적으로는 앞서 다룬 blockchain indexer가 Base 블록을 스캔해 입금을 감지하고, 출금은 Temporal workflow가 서명(HSM/MPC)→브로드캐스트→컨펌 대기를 멱등하게 처리한다. 즉 Base는 'Coinbase가 지원하는 또 하나의 체인'이면서, 동시에 자사가 운영비를 통제할 수 있는 체인이라는 이중 지위를 갖는다.\n\n### 프론트엔드: OnchainKit / wagmi / viem\n온체인 앱 레이어는 `OnchainKit`(React 컴포넌트 + 훅)으로 표준화되어 있고, 내부적으로 `wagmi`/`viem`로 RPC·지갑 연결·트랜잭션 시뮬레이션을 수행한다. Smart Wallet(ERC-4337 account abstraction)과 결합해 가스 대납(paymaster)·패스키 기반 서명 같은 UX를 제공하는데, 이는 '시드구문 없는 지갑'을 향한 핵심 베팅이다.\n\n### 트레이드오프\n자체 L1을 만들지 않고 OP Stack을 채택한 것은 '생태계 호환성·보안 공유 vs 완전한 통제력'에서 전자를 택한 결정이다. Superchain 표준을 따르면 브리지·툴링·감사 자산을 공유할 수 있지만, sequencer 분산화·거버넌스 같은 영역에서 Optimism Collective와 보조를 맞춰야 하는 제약이 따른다."
+    },
+    {
+     "topic": "데이터·ML 파이프라인: Kafka → Snowflake/Databricks로 흐르는 분석과 리스크 모델",
+     "body": "### 두 개의 평면: 운영(OLTP)과 분석(OLAP)\nCoinbase의 데이터는 명확히 두 평면으로 갈린다. 운영계는 MongoDB/Postgres/DynamoDB 같은 저지연 저장소이고, 분석계는 Kafka를 중심 신경망으로 한 스트리밍 → 웨어하우스 파이프라인이다. 거래소 도메인 특성상 '주문/체결/입출금'이라는 사실(fact)이 끊임없이 발생하므로, 이 이벤트들을 안정적으로 캡처해 분석·규제·ML에 재사용하는 것이 핵심 과제다.\n\n### 수집 계층\n- **이벤트 발행**: Go 서비스가 도메인 이벤트를 `Kafka`에 Protobuf로 발행한다. 스키마 호환성은 schema registry로 관리해 producer/consumer가 독립 배포되어도 깨지지 않게 한다.\n- **CDC(Change Data Capture)**: 일부 OLTP 저장소 변경은 CDC로 Kafka에 흘려보내 '서비스가 명시적으로 이벤트를 안 쏘는 경우'에도 분석계가 상태를 따라잡게 한다.\n\n### 적재·처리 계층\n- **Snowflake**: 정형 분석·BI·규제 리포팅의 중심 웨어하우스. 컴퓨트/스토리지 분리 덕에 무거운 애드혹 쿼리가 운영계에 영향을 주지 않는다.\n- **Databricks / Spark**: 대규모 배치, 피처 엔지니어링, ML 학습에 사용. Python 생태계와 결합해 데이터 과학 워크로드를 담당한다.\n- **Airflow류 오케스트레이션**: 배치 DAG 스케줄링으로 일/시간 단위 집계와 모델 재학습을 트리거한다.\n\n### ML이 실제로 쓰이는 곳\n거래소에서 ML은 추천보다 '리스크·컴플라이언스'가 압도적으로 중요하다.\n- **사기/이상거래 탐지**: 계정 탈취, 자전거래, 비정상 출금 패턴을 실시간·근실시간으로 스코어링.\n- **AML/블록체인 분석**: 온체인 그래프 분석으로 자금세탁·제재 대상 주소와의 연결을 추적(체이널리시스류 + 자체 모델).\n- **신용/리스크**: 마진·대출 상품의 익스포저 평가.\n\n### 실시간 vs 배치의 경계\n사기 탐지처럼 즉시 막아야 하는 결정은 온라인 피처(Redis 등 저지연 스토어)에서 스코어링하고, 모델 학습·백테스트·리포팅은 Snowflake/Databricks 배치에서 한다. 이 'online/offline 피처 일관성'(training-serving skew 방지)이 파이프라인 설계의 핵심 난제이며, 피처 스토어 패턴으로 같은 정의를 양쪽에서 공유하려 한다.\n\n### 왜 이렇게 했나\n규제 산업이라 '모든 사실을 재현 가능하게 보관'해야 하고(감사), 동시에 운영계 성능을 보호해야 한다. Kafka를 단일 진실의 흐름으로 두고 OLTP와 OLAP를 분리하면, 새로운 분석 요구가 생겨도 운영 서비스 코드를 건드리지 않고 consumer만 추가하면 된다는 확장성 이점이 크다."
+    },
+    {
+     "topic": "강세장 트래픽 폭증 대응: 오토스케일링·부하 차단·셀 격리로 거래소가 안 죽게 하기",
+     "body": "### 문제의 본질: 트래픽이 가격에 연동된다\n일반 서비스와 달리 거래소 부하는 시장 변동성에 비선형으로 폭증한다. 급등·급락 순간 주문·취소·시세조회·로그인이 동시에 수십 배로 튀고, 바로 그 순간 사용자에게 가장 중요한 서비스가 된다. Coinbase는 과거 강세장에서 다운타임을 겪으며 이 영역에 집중 투자해왔다.\n\n### 다층 방어 전략\n1. **수평 오토스케일링 (EKS/HPA)**: Go 서비스는 stateless하게 설계되어 Kubernetes HPA로 CPU/커스텀 메트릭(예: gRPC 큐 길이) 기반 스케일아웃. 단, 콜드스타트와 다운스트림(DB) 포화 때문에 '무한 스케일'은 불가능하므로 아래 장치들과 병행한다.\n2. **DB 커넥션 보호 (mongobetween)**: 서비스 인스턴스가 폭증하면 MongoDB 커넥션이 먼저 고갈된다. 앞서 다룬 `mongobetween` 프록시가 노드 단위로 커넥션을 공유·상한 처리해, 스케일아웃이 곧 DB 다운으로 이어지는 사슬을 끊는다.\n3. **로드 셰딩 & 레이트리밋**: 엣지(Envoy)와 게이트웨이에서 우선순위가 낮은 트래픽(예: 비핵심 조회)을 먼저 떨어뜨리고, 자금 이동·체결 같은 핵심 경로를 보호한다. 사용자/엔드포인트별 레이트리밋은 Redis로 카운팅.\n4. **백프레셔 & 큐잉**: 동기 처리량을 넘는 요청은 Kafka/Temporal로 비동기화해 spike를 평탄화한다. 즉시성이 필요 없는 작업(정산, 알림, 리워드)은 워크플로로 미뤄 핵심 경로의 지연을 막는다.\n5. **서킷브레이커 & 페일오버**: 다운스트림이 느려지면 호출측이 회로를 열어 폭주(thundering herd)를 차단하고, 타임아웃·재시도에 지수 백오프+지터를 적용한다.\n\n### 캐싱으로 읽기 폭증 흡수\n시세·오더북 스냅샷·잔고 조회처럼 '읽기'가 폭증하는 영역은 Redis 캐시와 read replica로 흡수한다. 특히 시세는 약간의 staleness를 허용하는 대신 캐시 적중률을 끌어올려 OLTP를 보호하는 전형적 트레이드오프를 택한다.\n\n### 셀/리전 격리\n폭증의 폭발 반경(blast radius)을 줄이기 위해 서비스를 셀 단위로 격리하고, AWS 멀티-AZ로 가용성을 확보한다. 한 셀의 과부하가 전체로 번지지 않게 하는 것이 '전면 다운'을 막는 마지막 안전장치다.\n\n### 트레이드오프\n핵심은 '모든 요청을 다 받겠다'가 아니라 '가장 중요한 요청만큼은 끝까지 처리한다'는 우선순위화다. 로드 셰딩은 일부 사용자에게 일시적 실패를 주지만, 그 대가로 자금 정합성과 핵심 거래 경로의 생존을 보장한다. 거래소에서는 '느린 정답'이 '빠른 다운'보다 항상 낫다."
+    },
+    {
+     "topic": "관측성(Observability): Datadog 기반 메트릭·분산 트레이싱·온콜로 분산 시스템을 디버깅하기",
+     "body": "### 왜 거래소에 관측성이 사활인가\n수백 개 Go gRPC 서비스 + Temporal 워크플로 + Kafka 스트림이 얽힌 환경에서 '돈이 어디서 멈췄는지'를 초 단위로 추적하지 못하면 신뢰가 무너진다. Coinbase의 관측성은 단순 모니터링이 아니라 자금 정합성 사고 대응(incident response)의 핵심 도구다.\n\n### 세 기둥: Metrics / Traces / Logs\n- **Metrics (Datadog)**: 서비스별 RED 지표(Rate, Errors, Duration)와 gRPC 호출 지연 분포(p50/p95/p99), Kafka consumer lag, DB 커넥션 사용률, Temporal 워크플로 성공/실패율을 대시보드화. SLO/SLA를 메트릭으로 정의하고 burn-rate 기반 알림을 건다.\n- **Distributed Tracing**: 요청이 게이트웨이→여러 Go 서비스→DB로 퍼지므로, trace context를 gRPC 메타데이터로 전파해 하나의 trace로 묶는다. OpenTelemetry 계열 계측으로 span을 수집하고 Datadog APM에서 분석한다. 비동기 경계(Kafka/Temporal)를 넘어서도 인과관계를 잇는 trace propagation이 핵심 난제다.\n- **Logs**: 구조화 로깅(JSON)으로 trace_id를 함께 남겨, 트레이스 한 건에서 관련 로그로 바로 점프(correlation)할 수 있게 한다. 민감정보(PII/시크릿)는 로깅 단계에서 마스킹.\n\n### Temporal이 주는 '공짜 관측성'\nTemporal은 워크플로의 모든 상태 전이를 event history로 보존하므로, '이 출금이 어느 액티비티에서 몇 번 재시도하다 멈췄는가'를 워크플로 단위로 그대로 볼 수 있다. 이는 분산 사가(saga)를 수동 로깅으로 추적하던 것과 비교해 디버깅 비용을 극적으로 낮춘다.\n\n### 알림과 온콜\n- **SLO 기반 알림**: 단순 임계치가 아니라 에러 버짓 소진 속도로 페이지를 울려 알림 피로를 줄인다.\n- **온콜/런북**: 핵심 자금 경로 서비스는 별도 온콜 로테이션과 런북을 두고, 사고 시 표준화된 incident process(지휘자/기록자 역할 분담)로 대응한다.\n- **카오스/게임데이**: 페일오버·서킷브레이커가 실제로 동작하는지 주기적으로 검증한다.\n\n### 트레이드오프\n고카디널리티 태그(예: 사용자/주문 단위 메트릭)는 관측성 비용을 폭증시키므로, '무엇을 메트릭으로, 무엇을 trace/log로' 둘지 의식적으로 구분한다. 모든 걸 trace하면 비용·노이즈가 감당 안 되므로 샘플링(특히 에러·고지연은 100% 보존, 정상 트래픽은 비율 샘플링)으로 신호 대 잡음비를 관리한다."
     }
    ],
    "github": {
@@ -10336,47 +10376,47 @@
      {
       "name": "coinbase/onchainkit",
       "url": "https://github.com/coinbase/onchainkit",
-      "desc": "온체인 앱을 빠르게 만드는 React 컴포넌트 키트",
+      "desc": "온체인 앱을 빠르게 만드는 React 컴포넌트·훅 SDK",
       "lang": "TypeScript",
       "stars": 1043
      },
      {
       "name": "coinbase/kryptology",
       "url": "https://github.com/coinbase/kryptology",
-      "desc": "MPC·임계 서명 등 고급 암호 프리미티브를 모은 Go 암호 라이브러리",
+      "desc": "MPC·임계서명 등 고급 암호 프리미티브 라이브러리(키 관리 기반)",
       "lang": "Go",
       "stars": 870
      },
      {
       "name": "coinbase/temporal-ruby",
       "url": "https://github.com/coinbase/temporal-ruby",
-      "desc": "Temporal 워크플로 엔진의 Ruby 클라이언트/SDK",
+      "desc": "Ruby에서 Temporal durable workflow를 작성하기 위한 클라이언트/SDK",
       "lang": "Ruby",
       "stars": 285
      },
      {
       "name": "coinbase/mesh-sdk-go",
       "url": "https://github.com/coinbase/mesh-sdk-go",
-      "desc": "블록체인 통합 표준 Rosetta API의 Go SDK",
+      "desc": "블록체인 통합을 표준화하는 Rosetta API의 Go SDK (입출금·인덱싱 표준)",
       "lang": "Go",
       "stars": 199
      },
      {
       "name": "coinbase/mongobetween",
       "url": "https://github.com/coinbase/mongobetween",
-      "desc": "MongoDB 연결 풀링을 대신 처리하는 경량 사이드카 프록시",
+      "desc": "MongoDB 연결 풀을 공유하는 사이드카 프록시로 대규모 Go 서비스의 커넥션 폭증 문제 해결",
       "lang": "Go",
       "stars": 163
      }
     ]
    },
    "sources": [
-    "https://www.coinbase.com/blog/scaling-connections-with-ruby-and-mongodb",
+    "https://www.coinbase.com/blog/engineering",
     "https://github.com/coinbase/mongobetween",
-    "https://www.coinbase.com/blog/building-coinbases-developer-platform-with-temporal"
+    "https://docs.base.org"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "paypal",
@@ -12680,6 +12720,13 @@
       "summary": "서류·코테 → 1차 기술 역량 면접 → 2차 종합 역량 면접 순으로 약 3개월간 진행된다. 1차는 CS·창의수리·논리·손코딩이 포함되어 '악명 높다'고 표현하나 열정을 보이면 좋은 평가를 받을 수 있고, 2차는 정보가 적어 1차 복기·프로젝트 경험·협업 역량을 폭넓게 준비해야 한다. 운영체제를 우선순위로 두고 '왜'에 대한 깊은 이해와 설명 연습을 강조한다.",
       "source": "velog",
       "date": "2024-06"
+     },
+     {
+      "title": "2021 하반기 네이버 신입 공채 후기",
+      "url": "https://wormwlrm.github.io/2021/12/19/Review-of-NAVER-recruitment.html",
+      "summary": "재그지그의 개발 블로그에 정리된 2021 하반기 신입 공채 후기로, 1차 면접이 3:1로 약 1시간 30분 진행됐다고 한다. 수리/추리 및 간단한 코드 문제가 섞여 인적성 같은 느낌이었고, 기술을 깊고 뾰족하게 파고드는 지원자를 선호한다고 평한다.",
+      "source": "github.io",
+      "date": "2021-12"
      }
     ]
    },
@@ -14445,6 +14492,13 @@
       "url": "https://www.coupang.jobs/en/interview-tips/",
       "summary": "쿠팡 공식 채용 사이트의 면접 준비 가이드로, 기술 면접의 구성과 라이브 코딩에서 기대하는 역량, 행동(컬쳐핏) 면접 준비 방법을 안내한다. 지원자가 사전에 참고할 수 있는 공식 인터뷰 팁을 제공한다.",
       "source": "회사블로그(채용 공식)"
+     },
+     {
+      "title": "첫번째 이직 후기",
+      "url": "https://europani.github.io/diary/2022/06/30/002-change.html",
+      "summary": "개발자의 첫 이직 과정을 정리한 글로, 코딩테스트와 라이브 코딩 중심으로 진행되는 쿠팡 채용 전형 경험을 포함한다. 알고리즘 풀이 능력과 실시간 코드 작성·설명 능력이 중요했다는 점을 강조한다.",
+      "source": "github.io",
+      "date": "2022-06"
      }
     ]
    },

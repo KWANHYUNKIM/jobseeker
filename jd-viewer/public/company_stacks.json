@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-19T02:30:37",
-  "total_jobs": 6547,
-  "company_count": 1290,
+  "generated_at": "2026-06-19T04:16:16",
+  "total_jobs": 6554,
+  "company_count": 1291,
   "min_posting": 2,
   "companies": [
     {
@@ -8446,6 +8446,13 @@
             "why": "docker, go, linux"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, go, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -8458,13 +8465,6 @@
             "company": "Slack",
             "country": "US",
             "why": "aws, kubernetes, linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, gcp, kubernetes"
           }
         ]
       }
@@ -15154,17 +15154,17 @@
             "why": "android, java, kotlin"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, jira, rust"
+          },
+          {
             "title": "온디바이스 AI 얼굴 식별 파이프라인 최적화",
             "url": "https://hyperconnect.github.io/2026/01/23/On-device-Face-Verification-Pipeline-Optimization.html",
             "company": "하이퍼커넥트",
             "country": "KR",
-            "why": "android, java, kotlin"
-          },
-          {
-            "title": "モバイルアプリのログをいい感じに収集するライブラリ「Puree」の Kotlin Multiplatform 版をリリースしました",
-            "url": "https://techlife.cookpad.com/entry/2025/04/21/090000",
-            "company": "Cookpad",
-            "country": "JP",
             "why": "android, java, kotlin"
           }
         ]
@@ -18376,11 +18376,11 @@
             "why": "python, pytorch, tensorflow"
           },
           {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
-            "why": "java, linux, python"
+            "why": "git, jira, python"
           }
         ]
       }
@@ -24047,6 +24047,429 @@
             "company": "AWS",
             "country": "US",
             "why": "ios, linux, swift"
+          }
+        ]
+      }
+    },
+    {
+      "name": "(주)하이브랩",
+      "norm": "하이브랩",
+      "size": "대기업",
+      "size_alias": "하이브",
+      "posting_count": 8,
+      "sites": [
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "프론트엔드": 5,
+        "AI/ML": 5,
+        "백엔드": 4,
+        "풀스택": 2,
+        "DevOps/인프라": 2,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "TypeScript",
+          "count": 5
+        },
+        {
+          "name": "React",
+          "count": 5
+        },
+        {
+          "name": "Next.js",
+          "count": 5
+        },
+        {
+          "name": "HTML",
+          "count": 4
+        },
+        {
+          "name": "CSS",
+          "count": 4
+        },
+        {
+          "name": "Git",
+          "count": 4
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 3
+        },
+        {
+          "name": "AWS",
+          "count": 3
+        },
+        {
+          "name": "Kubernetes",
+          "count": 3
+        },
+        {
+          "name": "Terraform",
+          "count": 3
+        },
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "Node.js",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "TypeScript",
+            "count": 5
+          },
+          {
+            "name": "Python",
+            "count": 2
+          },
+          {
+            "name": "JavaScript",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Node.js",
+            "count": 2
+          },
+          {
+            "name": "Django",
+            "count": 2
+          },
+          {
+            "name": "FastAPI",
+            "count": 2
+          },
+          {
+            "name": "GraphQL",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 5
+          },
+          {
+            "name": "Next.js",
+            "count": 5
+          },
+          {
+            "name": "HTML",
+            "count": 4
+          },
+          {
+            "name": "CSS",
+            "count": 4
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "PostgreSQL",
+            "count": 3
+          },
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "MongoDB",
+            "count": 2
+          },
+          {
+            "name": "Redis",
+            "count": 1
+          },
+          {
+            "name": "DynamoDB",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 3
+          },
+          {
+            "name": "Kubernetes",
+            "count": 3
+          },
+          {
+            "name": "Terraform",
+            "count": 3
+          },
+          {
+            "name": "GCP",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 2
+          },
+          {
+            "name": "GitHub Actions",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "LangChain",
+            "count": 2
+          },
+          {
+            "name": "OpenAI",
+            "count": 2
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 4
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 12,
+          "evidence": [
+            "채용",
+            "HR",
+            "이력서"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 11,
+          "evidence": [
+            "SaaS",
+            "B2B",
+            "그룹웨어",
+            "솔루션"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS/GCP)",
+          "why": "AWS, GCP 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        },
+        {
+          "label": "SSR · 풀스택 프레임워크",
+          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
+        }
+      ],
+      "titles": [
+        "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
+        "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
+        "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
+        "[하이브랩] Front-end Developer 채용 (AI FE)",
+        "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
+        "[하이브랩] UI 디자이너 (AI Native) 채용 (3년차 이상)",
+        "[하이브랩] AI 서비스 기획 모집 (경력직 8년 이상/팀장급)",
+        "[하이브랩] Cloud Infrastructure Engineer 채용 (5년 이상)"
+      ],
+      "postings": [
+        {
+          "title": "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49243515?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=93&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49389304?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=92&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53984740&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43b98ce7-eae4-4a08-b31b-9c91a784f41b",
+          "site": "saramin"
+        },
+        {
+          "title": "[하이브랩] Front-end Developer 채용 (AI FE)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53985018&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28",
+          "site": "saramin"
+        },
+        {
+          "title": "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191234&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=74f28cb6-f42a-4584-8589-ea0cffb17f3f",
+          "site": "saramin"
+        },
+        {
+          "title": "[하이브랩] UI 디자이너 (AI Native) 채용 (3년차 이상)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54215026&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=51045104-9ae0-4e16-9a5b-f319b3b6bac2",
+          "site": "saramin"
+        },
+        {
+          "title": "[하이브랩] AI 서비스 기획 모집 (경력직 8년 이상/팀장급)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54216460&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=c2473d31-906e-4ee2-9e27-604870880081",
+          "site": "saramin"
+        },
+        {
+          "title": "[하이브랩] Cloud Infrastructure Engineer 채용 (5년 이상)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54041326&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=da96dc0a-06c8-43b0-8cbb-bd9fd725af46",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)하이브랩는 HR/채용 도메인의 대기업으로, 주로 프론트엔드 · AI/ML 직군을 채용하며 TypeScript, React, Next.js, HTML 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
+          "핵심 역량: TypeScript, React, Next.js 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "프론트엔드 중심(+AI/ML) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "TypeScript",
+              "Python",
+              "JavaScript"
+            ],
+            "tips": [
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
+            ]
+          },
+          {
+            "stage": "2. 프론트엔드 핵심 스킬",
+            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
+            "techs": [
+              "React",
+              "Next.js",
+              "HTML",
+              "CSS"
+            ],
+            "tips": [
+              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성",
+              "Next.js — SSR/SSG·라우팅·서버컴포넌트로 풀스택 웹 구축"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "PostgreSQL",
+              "MySQL",
+              "MongoDB",
+              "Kafka"
+            ],
+            "tips": [
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "AWS",
+              "Kubernetes",
+              "Terraform",
+              "GCP"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI",
+              "Kafka"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "css, html, node.js"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, git, kubernetes"
+          },
+          {
+            "title": "FE News 26년 3월 소식을 전해드립니다!",
+            "url": "https://d2.naver.com/news/0407747",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "css, html, next.js"
+          },
+          {
+            "title": "lambda@edge를 활용한 이미지 워터마킹",
+            "url": "https://medium.com/zigbang/lambda-edge%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9B%8C%ED%84%B0%EB%A7%88%ED%82%B9-41f1cb282682",
+            "company": "직방",
+            "country": "KR",
+            "why": "aws, css, html"
+          },
+          {
+            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
+            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, node.js, react"
+          },
+          {
+            "title": "Taming Visual Regressions with Playwright and Docker",
+            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "css, git, html"
           }
         ]
       }
@@ -30927,423 +31350,6 @@
       }
     },
     {
-      "name": "(주)하이브랩",
-      "norm": "하이브랩",
-      "size": "대기업",
-      "size_alias": "하이브",
-      "posting_count": 7,
-      "sites": [
-        "jobkorea",
-        "saramin"
-      ],
-      "roles": {
-        "프론트엔드": 5,
-        "백엔드": 4,
-        "AI/ML": 4,
-        "풀스택": 2,
-        "DevOps/인프라": 2,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "TypeScript",
-          "count": 5
-        },
-        {
-          "name": "React",
-          "count": 5
-        },
-        {
-          "name": "Next.js",
-          "count": 5
-        },
-        {
-          "name": "Git",
-          "count": 4
-        },
-        {
-          "name": "HTML",
-          "count": 3
-        },
-        {
-          "name": "CSS",
-          "count": 3
-        },
-        {
-          "name": "PostgreSQL",
-          "count": 3
-        },
-        {
-          "name": "AWS",
-          "count": 3
-        },
-        {
-          "name": "Kubernetes",
-          "count": 3
-        },
-        {
-          "name": "Terraform",
-          "count": 3
-        },
-        {
-          "name": "Python",
-          "count": 2
-        },
-        {
-          "name": "Node.js",
-          "count": 2
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "TypeScript",
-            "count": 5
-          },
-          {
-            "name": "Python",
-            "count": 2
-          },
-          {
-            "name": "JavaScript",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Node.js",
-            "count": 2
-          },
-          {
-            "name": "Django",
-            "count": 2
-          },
-          {
-            "name": "FastAPI",
-            "count": 2
-          },
-          {
-            "name": "GraphQL",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 5
-          },
-          {
-            "name": "Next.js",
-            "count": 5
-          },
-          {
-            "name": "HTML",
-            "count": 3
-          },
-          {
-            "name": "CSS",
-            "count": 3
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "PostgreSQL",
-            "count": 3
-          },
-          {
-            "name": "MySQL",
-            "count": 2
-          },
-          {
-            "name": "MongoDB",
-            "count": 2
-          },
-          {
-            "name": "Redis",
-            "count": 1
-          },
-          {
-            "name": "DynamoDB",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 3
-          },
-          {
-            "name": "Kubernetes",
-            "count": 3
-          },
-          {
-            "name": "Terraform",
-            "count": 3
-          },
-          {
-            "name": "GCP",
-            "count": 2
-          },
-          {
-            "name": "Docker",
-            "count": 2
-          },
-          {
-            "name": "GitHub Actions",
-            "count": 1
-          }
-        ],
-        "AI/ML": [
-          {
-            "name": "LangChain",
-            "count": 2
-          },
-          {
-            "name": "OpenAI",
-            "count": 2
-          }
-        ],
-        "데이터": [
-          {
-            "name": "Kafka",
-            "count": 1
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 4
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 11,
-          "evidence": [
-            "채용",
-            "HR",
-            "이력서"
-          ]
-        },
-        {
-          "name": "AI/데이터 플랫폼",
-          "score": 10,
-          "evidence": [
-            "생성형 AI",
-            "LLM",
-            "추천 시스템",
-            "AI 모델"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS/GCP)",
-          "why": "AWS, GCP 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "데이터 파이프라인 · ETL",
-          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        },
-        {
-          "label": "SSR · 풀스택 프레임워크",
-          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
-        }
-      ],
-      "titles": [
-        "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
-        "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
-        "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
-        "[하이브랩] Front-end Developer 채용 (AI FE)",
-        "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
-        "[하이브랩] AI 서비스 기획 모집 (경력직 8년 이상/팀장급)",
-        "[하이브랩] Cloud Infrastructure Engineer 채용 (5년 이상)"
-      ],
-      "postings": [
-        {
-          "title": "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49243515?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=93&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49389304?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=92&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "[하이브랩] 프론트엔드 개발자 채용 (5년차 이상)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53984740&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43b98ce7-eae4-4a08-b31b-9c91a784f41b",
-          "site": "saramin"
-        },
-        {
-          "title": "[하이브랩] Front-end Developer 채용 (AI FE)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53985018&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28",
-          "site": "saramin"
-        },
-        {
-          "title": "[하이브랩] 풀스택 AI 엔지니어 실장급 채용 (8년차 이상)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191234&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=74f28cb6-f42a-4584-8589-ea0cffb17f3f",
-          "site": "saramin"
-        },
-        {
-          "title": "[하이브랩] AI 서비스 기획 모집 (경력직 8년 이상/팀장급)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54216460&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=c2473d31-906e-4ee2-9e27-604870880081",
-          "site": "saramin"
-        },
-        {
-          "title": "[하이브랩] Cloud Infrastructure Engineer 채용 (5년 이상)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54041326&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=da96dc0a-06c8-43b0-8cbb-bd9fd725af46",
-          "site": "saramin"
-        }
-      ],
-      "summary": "(주)하이브랩는 HR/채용 도메인의 대기업으로, 주로 프론트엔드 · 백엔드 직군을 채용하며 TypeScript, React, Next.js, Git 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
-          "핵심 역량: TypeScript, React, Next.js 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "프론트엔드 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "TypeScript",
-              "Python",
-              "JavaScript"
-            ],
-            "tips": [
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
-            ]
-          },
-          {
-            "stage": "2. 프론트엔드 핵심 스킬",
-            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
-            "techs": [
-              "React",
-              "Next.js",
-              "HTML",
-              "CSS"
-            ],
-            "tips": [
-              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성",
-              "Next.js — SSR/SSG·라우팅·서버컴포넌트로 풀스택 웹 구축"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "PostgreSQL",
-              "MySQL",
-              "MongoDB",
-              "Kafka"
-            ],
-            "tips": [
-              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "AWS",
-              "Kubernetes",
-              "Terraform",
-              "GCP"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
-              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI",
-              "Kafka"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          }
-        ],
-        "tasks": [
-          "[HR/채용] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "컨테이너 기반 배포·오토스케일링 운영",
-          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "css, html, node.js"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, git, kubernetes"
-          },
-          {
-            "title": "FE News 26년 3월 소식을 전해드립니다!",
-            "url": "https://d2.naver.com/news/0407747",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "css, html, next.js"
-          },
-          {
-            "title": "lambda@edge를 활용한 이미지 워터마킹",
-            "url": "https://medium.com/zigbang/lambda-edge%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9B%8C%ED%84%B0%EB%A7%88%ED%82%B9-41f1cb282682",
-            "company": "직방",
-            "country": "KR",
-            "why": "aws, css, html"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, node.js, react"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "css, git, html"
-          }
-        ]
-      }
-    },
-    {
       "name": "브이엔티지",
       "norm": "브이엔티지",
       "size": "중소기업",
@@ -36577,6 +36583,13 @@
             "why": "git, java, javascript"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "Tracing NodeJs Applications with OpenTelemetry",
             "url": "https://medium.com/zigbang/tracing-nodejs-applications-with-opentelemetry-624958d38d4d",
             "company": "직방",
@@ -36596,13 +36609,6 @@
             "company": "Slack",
             "country": "US",
             "why": "java, kubernetes, linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "java, javascript, kubernetes"
           }
         ]
       }
@@ -41863,18 +41869,18 @@
             "why": "kubernetes, next.js, react"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
             "country": "US",
             "why": "git, kubernetes, python"
-          },
-          {
-            "title": "[디자인 시스템 어떻게 만들었어요?(3)] Tree Shaking과 구형 브라우저 대응",
-            "url": "https://techblog.yogiyo.co.kr/%EB%94%94%EC%9E%90%EC%9D%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%A7%8C%EB%93%A4%EC%97%88%EC%96%B4%EC%9A%94-3-tree-shaking%EA%B3%BC-%EA%B5%AC%ED%98%95-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EB%8C%80%EC%9D%91-d29474baf7ba",
-            "company": "요기요",
-            "country": "KR",
-            "why": "css, next.js, react"
           }
         ]
       }
@@ -47276,18 +47282,18 @@
             "why": "aws, docker, git"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
             "country": "US",
             "why": "aws, git, javascript"
-          },
-          {
-            "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
-            "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
-            "why": "aws, git, html"
           }
         ]
       }
@@ -49124,6 +49130,13 @@
             "why": "c#, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -49148,13 +49161,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -50621,6 +50627,13 @@
             "why": "aws, gcp, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, jira, python"
+          },
+          {
             "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
             "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
@@ -50633,13 +50646,6 @@
             "company": "당근",
             "country": "KR",
             "why": "gcp, postgresql, python"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, gcp, python"
           }
         ]
       }
@@ -52473,6 +52479,13 @@
             "why": "confluence, jira, kubernetes"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "How we built Cloudflare's data platform and an AI agent on top of it",
             "url": "https://blog.cloudflare.com/our-unified-data-platform",
             "company": "Cloudflare",
@@ -52499,13 +52512,6 @@
             "company": "Grab",
             "country": "SG",
             "why": "confluence, fastapi, jira"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "git, kubernetes, python"
           }
         ]
       }
@@ -57677,6 +57683,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -57708,13 +57721,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -59706,6 +59712,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -59739,13 +59752,6 @@
             "company": "Swiggy",
             "country": "IN",
             "why": "docker, git, linux"
-          },
-          {
-            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
-            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "aws, docker, kubernetes"
           }
         ]
       }
@@ -65961,8 +65967,8 @@
             "why": "azure"
           },
           {
-            "title": "Celebrating 12 years of Project Galileo",
-            "url": "https://blog.cloudflare.com/celebrating-12-years-of-project-galileo",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "인프라/클라우드"
@@ -66275,6 +66281,13 @@
             "why": "docker, kubernetes, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
             "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
             "company": "하이퍼커넥트",
@@ -66284,13 +66297,6 @@
           {
             "title": "쿠팡의 머신러닝 플랫폼을 통한 ML 개발 가속화",
             "url": "https://medium.com/coupang-engineering/%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%9D%84-%ED%86%B5%ED%95%9C-ml-%EA%B0%9C%EB%B0%9C-%EA%B0%80%EC%86%8D%ED%99%94-de29804148bb",
-            "company": "쿠팡",
-            "country": "KR",
-            "why": "docker, kubernetes, python"
-          },
-          {
-            "title": "Meet Coupang’s Machine Learning Platform",
-            "url": "https://medium.com/coupang-engineering/meet-coupangs-machine-learning-platform-cd00e9ccc172",
             "company": "쿠팡",
             "country": "KR",
             "why": "docker, kubernetes, python"
@@ -72676,6 +72682,13 @@
             "why": "aws, git, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Taming Visual Regressions with Playwright and Docker",
             "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
             "company": "Swiggy",
@@ -72702,13 +72715,6 @@
             "company": "Netflix",
             "country": "US",
             "why": "aws, kafka, typescript"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, kafka, python"
           }
         ]
       }
@@ -74530,6 +74536,13 @@
             "why": "git, react, react native"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Taming Visual Regressions with Playwright and Docker",
             "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
             "company": "Swiggy",
@@ -74549,13 +74562,6 @@
             "company": "Airbnb",
             "country": "US",
             "why": "git, python, typescript"
-          },
-          {
-            "title": "Explaining Every Rupee: How We Built Reliable LLM Support Bots for Delivery Partners",
-            "url": "https://bytes.swiggy.com/explaining-every-rupee-how-we-built-reliable-llm-support-bots-for-delivery-partners-066c4f23e875",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "python, react, redis"
           }
         ]
       }
@@ -75051,6 +75057,13 @@
             "why": "mysql, postgresql, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira, python"
+          },
+          {
             "title": "AWS Weekly Roundup: Claude Opus 4.8 on AWS, Aurora MySQL with Kiro Powers, and more (June 1, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-8-on-aws-aurora-mysql-with-kiro-powers-and-more-june-1-2026",
             "company": "AWS",
@@ -75063,13 +75076,6 @@
             "company": "Cloudflare",
             "country": "US",
             "why": "jira, postgresql"
-          },
-          {
-            "title": "The Hugo evolution: Engineering Grab's unified, one-click data ingestion platform with Apache Flink",
-            "url": "https://engineering.grab.com/one-click-data-ingestion-platform-with-apache-flink",
-            "company": "Grab",
-            "country": "SG",
-            "why": "mysql, postgresql"
           }
         ]
       }
@@ -78063,6 +78069,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
             "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
             "company": "요기요",
@@ -78096,13 +78109,6 @@
             "company": "Cloudflare",
             "country": "US",
             "why": "git, react, typescript"
-          },
-          {
-            "title": "Explaining Every Rupee: How We Built Reliable LLM Support Bots for Delivery Partners",
-            "url": "https://bytes.swiggy.com/explaining-every-rupee-how-we-built-reliable-llm-support-bots-for-delivery-partners-066c4f23e875",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "azure, python, react"
           }
         ]
       }
@@ -84706,6 +84712,13 @@
             "why": "docker, python, pytorch"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
             "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
             "company": "당근",
@@ -84718,13 +84731,6 @@
             "company": "당근",
             "country": "KR",
             "why": "git, python, pytorch"
-          },
-          {
-            "title": "Building On-Device Predictive Autocomplete in React Native",
-            "url": "https://bytes.swiggy.com/building-on-device-predictive-autocomplete-in-react-native-23c35210dc9d",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "python, pytorch, tensorflow"
           }
         ]
       }
@@ -85571,18 +85577,18 @@
             "why": "python, pytorch, tensorflow"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python, rust, typescript"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
             "country": "US",
             "why": "python, rust, typescript"
-          },
-          {
-            "title": "[디자인 시스템 어떻게 만들었어요?(3)] Tree Shaking과 구형 브라우저 대응",
-            "url": "https://techblog.yogiyo.co.kr/%EB%94%94%EC%9E%90%EC%9D%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%A7%8C%EB%93%A4%EC%97%88%EC%96%B4%EC%9A%94-3-tree-shaking%EA%B3%BC-%EA%B5%AC%ED%98%95-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EB%8C%80%EC%9D%91-d29474baf7ba",
-            "company": "요기요",
-            "country": "KR",
-            "why": "react, rust, typescript"
           }
         ]
       }
@@ -86464,18 +86470,18 @@
             "why": "aws, kotlin, mysql"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "go, python, rust"
+          },
+          {
             "title": "Give GitHub Copilot CLI real code intelligence with language servers",
             "url": "https://github.blog/ai-and-ml/github-copilot/give-github-copilot-cli-real-code-intelligence-with-language-servers",
             "company": "GitHub",
             "country": "US",
             "why": "linux, python, rust"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "aws, linux, python"
           }
         ]
       }
@@ -87384,18 +87390,18 @@
             "why": "git, go, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, go"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
             "country": "US",
             "why": "git, go, linux"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "ansible, kubernetes, linux"
           }
         ]
       }
@@ -87855,6 +87861,13 @@
             "why": "aws, git, go"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, go"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -87878,13 +87891,6 @@
           {
             "title": "쿠팡의 머신러닝 플랫폼을 통한 ML 개발 가속화",
             "url": "https://medium.com/coupang-engineering/%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%9D%84-%ED%86%B5%ED%95%9C-ml-%EA%B0%9C%EB%B0%9C-%EA%B0%80%EC%86%8D%ED%99%94-de29804148bb",
-            "company": "쿠팡",
-            "country": "KR",
-            "why": "aws, docker, kubernetes"
-          },
-          {
-            "title": "Meet Coupang’s Machine Learning Platform",
-            "url": "https://medium.com/coupang-engineering/meet-coupangs-machine-learning-platform-cd00e9ccc172",
             "company": "쿠팡",
             "country": "KR",
             "why": "aws, docker, kubernetes"
@@ -89218,11 +89224,11 @@
             "why": "aws, docker, java"
           },
           {
-            "title": "AWS Weekly Roundup: Amazon Bedrock AgentCore payments, Agent Toolkit for AWS, and more (May 11, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-amazon-bedrock-agentcore-payments-agent-toolkit-for-aws-and-more-may-11-2026",
-            "company": "AWS",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
-            "why": "aws, docker, postgresql"
+            "why": "docker, git, go"
           }
         ]
       }
@@ -89867,6 +89873,13 @@
             "why": "aws, docker, java"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -89886,13 +89899,6 @@
             "company": "우아한형제들",
             "country": "KR",
             "why": "java, python, redis"
-          },
-          {
-            "title": "왓챠 추천 서비스 MLOps 적용기 Part1",
-            "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%B6%94%EC%B2%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-mlops-%EC%A0%81%EC%9A%A9%EA%B8%B0-part1-57a1b5e29d65",
-            "company": "왓챠",
-            "country": "KR",
-            "why": "aws, docker, python"
           }
         ]
       }
@@ -91140,6 +91146,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
             "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
             "company": "Slack",
@@ -91170,13 +91183,6 @@
           {
             "title": "Scaling Camera File Processing at Netflix",
             "url": "https://netflixtechblog.com/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
-            "company": "Netflix",
-            "country": "US",
-            "why": "docker, linux, python"
-          },
-          {
-            "title": "Scaling Camera File Processing at Netflix",
-            "url": "https://medium.com/netflix-techblog/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
             "company": "Netflix",
             "country": "US",
             "why": "docker, linux, python"
@@ -96736,6 +96742,13 @@
             "why": "java, oracle, spring"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, go, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -96755,13 +96768,6 @@
             "company": "Mercari",
             "country": "JP",
             "why": "docker, go, python"
-          },
-          {
-            "title": "Scaling ArchUnit with Nebula ArchRules",
-            "url": "https://netflixtechblog.com/scaling-archunit-with-nebula-archrules-b4642c464c5a",
-            "company": "Netflix",
-            "country": "US",
-            "why": "java, spring, spring boot"
           }
         ]
       }
@@ -108532,18 +108538,18 @@
             "why": "kubernetes, node.js, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, jira, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
             "country": "US",
             "why": "kubernetes, node.js, python"
-          },
-          {
-            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
-            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "docker, grpc, kubernetes"
           }
         ]
       }
@@ -108751,10 +108757,10 @@
             "why": "grpc, python"
           },
           {
-            "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
-            "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
             "why": "go, python"
           }
         ]
@@ -109325,6 +109331,13 @@
             "why": "docker, git, html"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -109337,13 +109350,6 @@
             "company": "데브시스터즈",
             "country": "KR",
             "why": "aws, docker, git"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "aws, linux, python"
           }
         ]
       }
@@ -109518,6 +109524,13 @@
             "why": "git, swift"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -109534,13 +109547,6 @@
           {
             "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
             "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
-            "why": "git, python"
-          },
-          {
-            "title": "당근이 파이썬 공급망 공격에 대응하는 방법",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%9D%B4-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B3%B5%EA%B8%89%EB%A7%9D-%EA%B3%B5%EA%B2%A9%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-e0b4f483b574",
             "company": "당근",
             "country": "KR",
             "why": "git, python"
@@ -109645,6 +109651,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -109675,13 +109688,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -115394,6 +115400,13 @@
             "why": "c++, rust"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "rust"
+          },
+          {
             "title": "Give GitHub Copilot CLI real code intelligence with language servers",
             "url": "https://github.blog/ai-and-ml/github-copilot/give-github-copilot-cli-real-code-intelligence-with-language-servers",
             "company": "GitHub",
@@ -115420,13 +115433,6 @@
             "company": "Discord",
             "country": "US",
             "why": "rust"
-          },
-          {
-            "title": "The Pulse of India’s Supply Chain: How Flipkart Plans for 500 Million Customers — Part 1",
-            "url": "https://blog.flipkart.tech/the-pulse-of-indias-supply-chain-how-flipkart-plans-for-500-million-customers-part-1-50d241ca494f",
-            "company": "Flipkart",
-            "country": "IN",
-            "why": "c++"
           }
         ]
       }
@@ -115995,18 +116001,18 @@
             "why": "oracle, spring"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, typescript"
+          },
+          {
             "title": "AWS Weekly Roundup: Amazon Bedrock AgentCore payments, Agent Toolkit for AWS, and more (May 11, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-amazon-bedrock-agentcore-payments-agent-toolkit-for-aws-and-more-may-11-2026",
             "company": "AWS",
             "country": "US",
             "why": "docker, postgresql"
-          },
-          {
-            "title": "From firefighting to building: How AI agents restored our team’s core productivity",
-            "url": "https://engineering.grab.com/from-firefighting-to-building",
-            "company": "Grab",
-            "country": "SG",
-            "why": "fastapi, postgresql"
           }
         ]
       }
@@ -120867,6 +120873,13 @@
             "why": "git, react, typescript"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, go, typescript"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -120878,13 +120891,6 @@
             "url": "https://bytes.swiggy.com/the-micro-frontend-evolution-why-we-traded-s3-behaviors-for-module-federation-and-what-it-cost-47d993a0128e",
             "company": "Swiggy",
             "country": "IN",
-            "why": "go, react, typescript"
-          },
-          {
-            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
-            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
-            "company": "Mercari",
-            "country": "JP",
             "why": "go, react, typescript"
           }
         ]
@@ -122331,18 +122337,18 @@
             "why": "aws, node.js, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, go, python"
+          },
+          {
             "title": "RAG, 들어는 봤는데… 내 서비스엔 어떻게 쓰지?",
             "url": "https://techblog.woowahan.com/25900",
             "company": "우아한형제들",
             "country": "KR",
             "why": "java, langchain, python"
-          },
-          {
-            "title": "APACHE SPARK OPTIMISATIONS",
-            "url": "https://blog.flipkart.tech/apache-spark-optimisations-c3464f71bd38",
-            "company": "Flipkart",
-            "country": "IN",
-            "why": "gcp, go, java"
           }
         ]
       }
@@ -123888,6 +123894,13 @@
             "why": "docker, go, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, go, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -123913,13 +123926,6 @@
             "url": "https://medium.com/coupang-engineering/meet-coupangs-machine-learning-platform-cd00e9ccc172",
             "company": "쿠팡",
             "country": "KR",
-            "why": "docker, kubernetes, python"
-          },
-          {
-            "title": "LyftLearn Evolution: Rethinking ML Platform Architecture",
-            "url": "https://eng.lyft.com/lyftlearn-evolution-rethinking-ml-platform-architecture-547de6c950e1",
-            "company": "Lyft",
-            "country": "US",
             "why": "docker, kubernetes, python"
           }
         ]
@@ -125158,6 +125164,13 @@
             "why": "docker, python, pytorch"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Taming Visual Regressions with Playwright and Docker",
             "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
             "company": "Swiggy",
@@ -125170,13 +125183,6 @@
             "company": "Swiggy",
             "country": "IN",
             "why": "python, pytorch, react"
-          },
-          {
-            "title": "쿠팡의 머신러닝 플랫폼을 통한 ML 개발 가속화",
-            "url": "https://medium.com/coupang-engineering/%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%9D%84-%ED%86%B5%ED%95%9C-ml-%EA%B0%9C%EB%B0%9C-%EA%B0%80%EC%86%8D%ED%99%94-de29804148bb",
-            "company": "쿠팡",
-            "country": "KR",
-            "why": "docker, python, pytorch"
           }
         ]
       }
@@ -127312,6 +127318,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -127342,13 +127355,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -127672,6 +127678,13 @@
             "why": "aws, docker, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "AWS Weekly Roundup: Amazon Bedrock AgentCore payments, Agent Toolkit for AWS, and more (May 11, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-amazon-bedrock-agentcore-payments-agent-toolkit-for-aws-and-more-may-11-2026",
             "company": "AWS",
@@ -127691,13 +127704,6 @@
             "company": "Swiggy",
             "country": "IN",
             "why": "docker, git, react"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, react, typescript"
           }
         ]
       }
@@ -131468,18 +131474,18 @@
             "why": "jira, postgresql, sql"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira, python, typescript"
+          },
+          {
             "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
             "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
             "company": "당근",
             "country": "KR",
             "why": "gcp, postgresql, python"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "node.js, python, typescript"
           }
         ]
       }
@@ -134987,11 +134993,11 @@
             "why": "kafka, python"
           },
           {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
-            "why": "kafka, postgresql"
+            "why": "docker, python"
           }
         ]
       }
@@ -136032,18 +136038,18 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, jira, python"
+          },
+          {
             "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
             "company": "AWS",
             "country": "US",
             "why": "aws, kubernetes, python"
-          },
-          {
-            "title": "複数の AI を使い分けて新たな施策に次々と取り組んだ SRE の働き方 [DeNA インフラ SRE]",
-            "url": "https://engineering.dena.com/blog/2026/03/sre-productivity-with-ai",
-            "company": "DeNA",
-            "country": "JP",
-            "why": "aws, github actions, terraform"
           }
         ]
       }
@@ -138227,6 +138233,13 @@
             "why": "docker, linux, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, python"
+          },
+          {
             "title": "AWS Weekly Roundup: BYOM for Amazon RDS for SQL Server, AWS IoT Device SDK for Swift, and more (June 8, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-byom-for-amazon-rds-for-sql-server-aws-iot-device-sdk-for-swift-and-more-june-8-2026",
             "company": "AWS",
@@ -138239,13 +138252,6 @@
             "company": "Swiggy",
             "country": "IN",
             "why": "python, sql"
-          },
-          {
-            "title": "AWS Weekly Roundup: Amazon Bedrock AgentCore payments, Agent Toolkit for AWS, and more (May 11, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-amazon-bedrock-agentcore-payments-agent-toolkit-for-aws-and-more-may-11-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "docker, sql"
           }
         ]
       }
@@ -145111,17 +145117,17 @@
             "why": "c"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "왓챠 웹 PiP 적용기 — Document PiP는 어떻게 동작하고, 무엇이 어려웠나",
             "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%9B%B9-pip-%EC%A0%81%EC%9A%A9%EA%B8%B0-document-pip%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%8F%99%EC%9E%91%ED%95%98%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B4-%EC%96%B4%EB%A0%A4%EC%9B%A0%EB%82%98-ab7521515663",
             "company": "왓챠",
             "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
             "why": "언어"
           },
           {
@@ -149406,6 +149412,13 @@
             "why": "kubernetes, linux, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, go, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -149432,13 +149445,6 @@
             "company": "Pinterest",
             "country": "US",
             "why": "docker, kubernetes, linux"
-          },
-          {
-            "title": "Shops Monorepo Five Years Later: A Tale of Bazel and Cursor",
-            "url": "https://engineering.mercari.com/en/blog/entry/20251202-shops-monorepo-five-years-later-a-tale-of-bazel-and-cursor",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "docker, go, python"
           }
         ]
       }
@@ -153918,6 +153924,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -153950,13 +153963,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -154255,6 +154261,13 @@
             "why": "php, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -154280,13 +154293,6 @@
             "url": "https://github.blog/ai-and-ml/github-copilot/give-github-copilot-cli-real-code-intelligence-with-language-servers",
             "company": "GitHub",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -154534,9 +154540,9 @@
             "why": "android, flutter, ios"
           },
           {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
             "why": "git, python, typescript"
           }
@@ -157596,6 +157602,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "go, python"
+          },
+          {
             "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
             "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
             "company": "Razorpay",
@@ -157627,13 +157640,6 @@
             "title": "Lyft’s Feature Store: Architecture, Optimization, and Evolution",
             "url": "https://eng.lyft.com/lyfts-feature-store-architecture-optimization-and-evolution-7835f8962b99",
             "company": "Lyft",
-            "country": "US",
-            "why": "go, python"
-          },
-          {
-            "title": "Inside the feature store powering real-time AI in Dropbox Dash",
-            "url": "https://dropbox.tech/machine-learning/feature-store-powering-realtime-ai-in-dropbox-dash",
-            "company": "Dropbox",
             "country": "US",
             "why": "go, python"
           }
@@ -160119,6 +160125,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -160150,13 +160163,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -166725,6 +166731,13 @@
             "why": "confluence, jira"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira"
+          },
+          {
             "title": "How we built Cloudflare's data platform and an AI agent on top of it",
             "url": "https://blog.cloudflare.com/our-unified-data-platform",
             "company": "Cloudflare",
@@ -166744,13 +166757,6 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "c#"
-          },
-          {
-            "title": "사내 DB 관리 규정을 AI로 적용하다 : Amazon Bedrock 기반 DBA 리뷰봇 개발기",
-            "url": "https://techblog.yogiyo.co.kr/%EC%82%AC%EB%82%B4-db-%EA%B4%80%EB%A6%AC-%EA%B7%9C%EC%A0%95%EC%9D%84-ai%EB%A1%9C-%EC%A0%81%EC%9A%A9%ED%95%98%EB%8B%A4-amazon-bedrock-%EA%B8%B0%EB%B0%98-dba-%EB%A6%AC%EB%B7%B0%EB%B4%87-%EA%B0%9C%EB%B0%9C%EA%B8%B0-f845508e6055",
-            "company": "요기요",
-            "country": "KR",
-            "why": "confluence"
           }
         ]
       }
@@ -167618,6 +167624,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -167649,13 +167662,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -167755,6 +167761,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -167787,13 +167800,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -168452,6 +168458,13 @@
             "why": "c++, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -168462,13 +168475,6 @@
             "title": "Designing CherryScript: Optimizing Data-Driven Workflows via Custom Python-Based Interpreters​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
             "url": "https://stackoverflow.blog/2026/06/12/designing-cherryscript-optimizing-data-driven-workflows-via-custom-python-based-interpreters",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "Metric Semantic Layer: How Lyft Governs and Scales Key Data Definitions",
-            "url": "https://eng.lyft.com/metric-semantic-layer-how-lyft-governs-and-scales-key-data-definitions-56bee3643c29",
-            "company": "Lyft",
             "country": "US",
             "why": "python"
           }
@@ -169422,6 +169428,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -169454,13 +169467,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -169617,6 +169623,13 @@
             "why": "c++, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -169627,13 +169640,6 @@
             "title": "Metric Semantic Layer: How Lyft Governs and Scales Key Data Definitions",
             "url": "https://eng.lyft.com/metric-semantic-layer-how-lyft-governs-and-scales-key-data-definitions-56bee3643c29",
             "company": "Lyft",
-            "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "Anthropic Claude Fable 5 on AWS: Mythos-class capabilities with built-in safeguards now available",
-            "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
-            "company": "AWS",
             "country": "US",
             "why": "python"
           }
@@ -169726,6 +169732,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -169759,13 +169772,163 @@
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
+          }
+        ]
+      }
+    },
+    {
+      "name": "삼성메디슨(주)",
+      "norm": "삼성메디슨",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "dev",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 1,
+        "보안": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 1
+        },
+        {
+          "name": "C++",
+          "count": 1
+        },
+        {
+          "name": "C#",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 1
           },
           {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
+            "name": "C++",
+            "count": 1
+          },
+          {
+            "name": "C#",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 9,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 7,
+          "evidence": [
+            "정보보안",
+            "침해"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "[AI개발] '영상 AI 개발' 경력사원 채용",
+        "[보안] '정보보안' 경력사원 채용",
+        "2026년 하반기 경력사원 채용"
+      ],
+      "postings": [
+        {
+          "title": "[AI개발] '영상 AI 개발' 경력사원 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211541&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=51045104-9ae0-4e16-9a5b-f319b3b6bac2",
+          "site": "saramin"
+        },
+        {
+          "title": "[보안] '정보보안' 경력사원 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211442&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f0bc6d20-ebab-4915-91e3-2111e8ea3805",
+          "site": "saramin"
+        },
+        {
+          "title": "2026년 하반기 경력사원 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556434?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "삼성메디슨(주)는 HR/채용 도메인의 중소기업으로, 주로 AI/ML · 보안 직군을 채용하며 Python, C++, C# 기반으로 개발합니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, C++, C# 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+보안) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "C++",
+              "C#"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[HR/채용] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
             "company": "AWS",
             "country": "US",
-            "why": "LLM/생성형"
+            "why": "c#, python"
+          },
+          {
+            "title": "Building On-Device Predictive Autocomplete in React Native",
+            "url": "https://bytes.swiggy.com/building-on-device-predictive-autocomplete-in-react-native-23c35210dc9d",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "c++, python"
+          },
+          {
+            "title": "Stepping into the Software 3.0 Era",
+            "url": "https://toss.tech/article/harness-for-team-productivity-eng",
+            "company": "토스",
+            "country": "KR",
+            "why": "c++, python"
+          },
+          {
+            "title": "From Python3.8 to Python3.10: Our Journey Through a Memory Leak",
+            "url": "https://eng.lyft.com/from-python3-8-to-python3-10-our-journey-through-a-memory-leak-1fd9b43cc01e",
+            "company": "Lyft",
+            "country": "US",
+            "why": "c++, python"
+          },
+          {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
+            "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
+            "company": "AWS",
+            "country": "US",
+            "why": "python"
           }
         ]
       }
@@ -170369,15 +170532,15 @@
         ],
         "study_blogs": [
           {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
           },
           {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
+            "title": "Cloudflare DMARC Management is now generally available",
+            "url": "https://blog.cloudflare.com/dmarc-management-ga",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
@@ -175404,6 +175567,13 @@
             "why": "git, linux, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, python"
+          },
+          {
             "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
             "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
             "company": "Cloudflare",
@@ -175416,13 +175586,6 @@
             "company": "Airbnb",
             "country": "US",
             "why": "git, python"
-          },
-          {
-            "title": "Announcing Claude Managed Agents on Cloudflare",
-            "url": "https://blog.cloudflare.com/claude-managed-agents",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, linux"
           },
           {
             "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
@@ -176526,6 +176689,13 @@
             "why": "c++, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -176536,13 +176706,6 @@
             "title": "Designing CherryScript: Optimizing Data-Driven Workflows via Custom Python-Based Interpreters​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
             "url": "https://stackoverflow.blog/2026/06/12/designing-cherryscript-optimizing-data-driven-workflows-via-custom-python-based-interpreters",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "Metric Semantic Layer: How Lyft Governs and Scales Key Data Definitions",
-            "url": "https://eng.lyft.com/metric-semantic-layer-how-lyft-governs-and-scales-key-data-definitions-56bee3643c29",
-            "company": "Lyft",
             "country": "US",
             "why": "python"
           }
@@ -178864,6 +179027,13 @@
             "why": "git, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -178883,13 +179053,6 @@
             "company": "우아한형제들",
             "country": "KR",
             "why": "langchain, python"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "git, python"
           }
         ]
       }
@@ -179037,6 +179200,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -179067,13 +179237,6 @@
           {
             "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
             "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
-            "why": "git, python"
-          },
-          {
-            "title": "당근이 파이썬 공급망 공격에 대응하는 방법",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%9D%B4-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B3%B5%EA%B8%89%EB%A7%9D-%EA%B3%B5%EA%B2%A9%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-e0b4f483b574",
             "company": "당근",
             "country": "KR",
             "why": "git, python"
@@ -180465,11 +180628,11 @@
             "why": "c++, java, python"
           },
           {
-            "title": "Give GitHub Copilot CLI real code intelligence with language servers",
-            "url": "https://github.blog/ai-and-ml/github-copilot/give-github-copilot-cli-real-code-intelligence-with-language-servers",
-            "company": "GitHub",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
-            "why": "java, python"
+            "why": "git, python"
           }
         ]
       }
@@ -181895,11 +182058,11 @@
             "why": "css, git, html"
           },
           {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
-            "why": "git, java, python"
+            "why": "docker, git, python"
           }
         ]
       }
@@ -189570,6 +189733,13 @@
             "why": "go, python, redis"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "go, python, typescript"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -189596,13 +189766,6 @@
             "company": "SoundCloud",
             "country": "DE",
             "why": "go, postgresql, python"
-          },
-          {
-            "title": "The Hugo evolution: Engineering Grab's unified, one-click data ingestion platform with Apache Flink",
-            "url": "https://engineering.grab.com/one-click-data-ingestion-platform-with-apache-flink",
-            "company": "Grab",
-            "country": "SG",
-            "why": "go, postgresql"
           }
         ]
       }
@@ -189995,18 +190158,18 @@
             "why": "aws, kubernetes, linux"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "go, python, typescript"
+          },
+          {
             "title": "AWS Weekly Roundup: BYOM for Amazon RDS for SQL Server, AWS IoT Device SDK for Swift, and more (June 8, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-byom-for-amazon-rds-for-sql-server-aws-iot-device-sdk-for-swift-and-more-june-8-2026",
             "company": "AWS",
             "country": "US",
             "why": "aws, kubernetes, linux"
-          },
-          {
-            "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
-            "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
-            "why": "aws, go, python"
           }
         ]
       }
@@ -193782,6 +193945,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, jira, python"
+          },
+          {
             "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
             "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
             "company": "Cloudflare",
@@ -193813,13 +193983,6 @@
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
-            "country": "US",
-            "why": "git, python, typescript"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
             "country": "US",
             "why": "git, python, typescript"
           }
@@ -198132,6 +198295,13 @@
             "why": "kubernetes, python, rest api"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, go, python"
+          },
+          {
             "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
             "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
             "company": "당근",
@@ -198144,13 +198314,6 @@
             "company": "당근",
             "country": "KR",
             "why": "git, go, python"
-          },
-          {
-            "title": "APACHE SPARK OPTIMISATIONS",
-            "url": "https://blog.flipkart.tech/apache-spark-optimisations-c3464f71bd38",
-            "company": "Flipkart",
-            "country": "IN",
-            "why": "go, kubernetes, python"
           }
         ]
       }
@@ -200817,6 +200980,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, jira, python"
+          },
+          {
             "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
             "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
             "company": "Slack",
@@ -200850,13 +201020,6 @@
             "company": "Lyft",
             "country": "US",
             "why": "c++, kubernetes, python"
-          },
-          {
-            "title": "LyftLearn Evolution: Rethinking ML Platform Architecture",
-            "url": "https://eng.lyft.com/lyftlearn-evolution-rethinking-ml-platform-architecture-547de6c950e1",
-            "company": "Lyft",
-            "country": "US",
-            "why": "docker, kubernetes, python"
           }
         ]
       }
@@ -203590,6 +203753,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -203620,13 +203790,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -203847,6 +204010,13 @@
             "why": "php"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "왓챠 웹 PiP 적용기 — Document PiP는 어떻게 동작하고, 무엇이 어려웠나",
             "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%9B%B9-pip-%EC%A0%81%EC%9A%A9%EA%B8%B0-document-pip%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%8F%99%EC%9E%91%ED%95%98%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B4-%EC%96%B4%EB%A0%A4%EC%9B%A0%EB%82%98-ab7521515663",
             "company": "왓챠",
@@ -203872,13 +204042,6 @@
             "url": "https://d2.naver.com/helloworld/8319114",
             "company": "네이버 D2",
             "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
-            "company": "Cloudflare",
-            "country": "US",
             "why": "언어"
           }
         ]
@@ -204676,6 +204839,13 @@
             "why": "python, tensorflow"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira, python"
+          },
+          {
             "title": "From firefighting to building: How AI agents restored our team’s core productivity",
             "url": "https://engineering.grab.com/from-firefighting-to-building",
             "company": "Grab",
@@ -204688,13 +204858,6 @@
             "company": "요기요",
             "country": "KR",
             "why": "confluence, python"
-          },
-          {
-            "title": "Leveraging Real-Time User Actions to Personalize Etsy Ads",
-            "url": "https://www.etsy.com/codeascraft/leveraging-real-time-user-actions-to-personalize-etsy-ads",
-            "company": "Etsy",
-            "country": "US",
-            "why": "keras, tensorflow"
           }
         ]
       }
@@ -205278,18 +205441,18 @@
             "why": "aws, gcp, github actions"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, go, jira"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
             "country": "US",
             "why": "azure, github actions, go"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "docker, go, react"
           }
         ]
       }
@@ -215150,6 +215313,13 @@
             "why": "git, linux, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Scaling Camera File Processing at Netflix",
             "url": "https://netflixtechblog.com/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
             "company": "Netflix",
@@ -215162,13 +215332,6 @@
             "company": "Netflix",
             "country": "US",
             "why": "docker, linux, python"
-          },
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "python, react"
           }
         ]
       }
@@ -223470,18 +223633,18 @@
             "why": "kubernetes, php, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
             "country": "US",
             "why": "git, kubernetes, python"
-          },
-          {
-            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
-            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "docker, kubernetes, linux"
           }
         ]
       }
@@ -223593,6 +223756,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -223625,13 +223795,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -223732,6 +223895,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -223762,13 +223932,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -228182,18 +228345,18 @@
             "why": "git, typescript"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, typescript"
+          },
+          {
             "title": "AWS Weekly Roundup: AWS Transform at 1 year, Claude Platform on AWS, EC2 M3 Ultra Mac instances, and more (May 18, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-transform-at-1-year-claude-platform-on-aws-ec2-m3-ultra-mac-instances-and-more-may-18-2026",
             "company": "AWS",
             "country": "US",
             "why": ".net, azure"
-          },
-          {
-            "title": "Introducing Dynamic Workflows: durable execution that follows the tenant",
-            "url": "https://blog.cloudflare.com/dynamic-workflows",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, typescript"
           }
         ]
       }
@@ -230360,6 +230523,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
             "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
             "company": "당근",
@@ -230393,13 +230563,6 @@
             "company": "쿠팡",
             "country": "KR",
             "why": "docker, python"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "git, python"
           }
         ]
       }
@@ -238213,15 +238376,15 @@
         ],
         "study_blogs": [
           {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
           },
           {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
+            "title": "Cloudflare DMARC Management is now generally available",
+            "url": "https://blog.cloudflare.com/dmarc-management-ga",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
@@ -239521,17 +239684,17 @@
             "why": "docker, mysql"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker"
+          },
+          {
             "title": "Now available: Amazon EC2 M9g and M9gd instances powered by new AWS Graviton5 processors",
             "url": "https://aws.amazon.com/blogs/aws/now-available-amazon-ec2-m9g-and-m9gd-instances-powered-by-new-aws-graviton5-processors",
             "company": "AWS",
             "country": "US",
-            "why": "mysql"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
-            "country": "KR",
             "why": "mysql"
           }
         ]
@@ -241645,9 +241808,9 @@
             "why": "git, go"
           },
           {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
             "why": "git, go"
           }
@@ -244681,6 +244844,13 @@
             "why": "aws, java, node.js"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -244700,13 +244870,6 @@
             "company": "Lyft",
             "country": "US",
             "why": "aws, docker, java"
-          },
-          {
-            "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
-            "url": "https://medium.com/daangn/%EB%88%84%EA%B5%AC%EB%82%98-%EC%B0%BE%EC%95%84%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98-%EC%84%9C%EB%B2%84-llm-%EB%A6%B4%EB%A6%AC%EC%A6%88-%EB%85%B8%ED%8A%B8-%EB%8F%84%EC%9E%85%EA%B8%B0-93afe203d766",
-            "company": "당근",
-            "country": "KR",
-            "why": "git, java, jenkins"
           }
         ]
       }
@@ -247080,11 +247243,11 @@
             "why": "android, java"
           },
           {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
-            "why": "git, linux"
+            "why": "git, jira"
           }
         ]
       }
@@ -252839,6 +253002,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -252871,13 +253041,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -253666,6 +253829,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -253699,13 +253869,6 @@
             "company": "AWS",
             "country": "US",
             "why": "c#, python"
-          },
-          {
-            "title": "Building On-Device Predictive Autocomplete in React Native",
-            "url": "https://bytes.swiggy.com/building-on-device-predictive-autocomplete-in-react-native-23c35210dc9d",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "c++, python"
           }
         ]
       }
@@ -254045,6 +254208,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -254077,13 +254247,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -254665,6 +254828,13 @@
             "why": "docker, linux, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -254681,13 +254851,6 @@
           {
             "title": "쿠팡의 머신러닝 플랫폼을 통한 ML 개발 가속화",
             "url": "https://medium.com/coupang-engineering/%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%9D%84-%ED%86%B5%ED%95%9C-ml-%EA%B0%9C%EB%B0%9C-%EA%B0%80%EC%86%8D%ED%99%94-de29804148bb",
-            "company": "쿠팡",
-            "country": "KR",
-            "why": "docker, python"
-          },
-          {
-            "title": "Meet Coupang’s Machine Learning Platform",
-            "url": "https://medium.com/coupang-engineering/meet-coupangs-machine-learning-platform-cd00e9ccc172",
             "company": "쿠팡",
             "country": "KR",
             "why": "docker, python"
@@ -255029,6 +255192,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -255061,13 +255231,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -259746,6 +259909,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -259776,13 +259946,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -259999,8 +260162,8 @@
             "why": "azure"
           },
           {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "LLM/생성형, 인프라/클라우드"
@@ -265066,6 +265229,13 @@
             "why": "docker, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, python"
+          },
+          {
             "title": "RAG, 들어는 봤는데… 내 서비스엔 어떻게 쓰지?",
             "url": "https://techblog.woowahan.com/25900",
             "company": "우아한형제들",
@@ -265092,13 +265262,6 @@
             "company": "쿠팡",
             "country": "KR",
             "why": "docker, python"
-          },
-          {
-            "title": "Real-time ML Ranking in Autocomplete: Part 1",
-            "url": "https://bytes.swiggy.com/real-time-ml-ranking-in-autocomplete-part-1-3cdbbd44f85a",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "elasticsearch, python"
           }
         ]
       }
@@ -265471,6 +265634,13 @@
             "why": "c++, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -265481,13 +265651,6 @@
             "title": "Designing CherryScript: Optimizing Data-Driven Workflows via Custom Python-Based Interpreters​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
             "url": "https://stackoverflow.blog/2026/06/12/designing-cherryscript-optimizing-data-driven-workflows-via-custom-python-based-interpreters",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "Metric Semantic Layer: How Lyft Governs and Scales Key Data Definitions",
-            "url": "https://eng.lyft.com/metric-semantic-layer-how-lyft-governs-and-scales-key-data-definitions-56bee3643c29",
-            "company": "Lyft",
             "country": "US",
             "why": "python"
           }
@@ -266084,6 +266247,13 @@
             "why": "c#, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -266109,13 +266279,6 @@
             "url": "https://github.blog/ai-and-ml/github-copilot/give-github-copilot-cli-real-code-intelligence-with-language-servers",
             "company": "GitHub",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -266207,6 +266370,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -266239,13 +266409,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -266385,16 +266548,16 @@
             "why": "c++, python"
           },
           {
-            "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
-            "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
-            "company": "AWS",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
             "why": "python"
           },
           {
-            "title": "Designing CherryScript: Optimizing Data-Driven Workflows via Custom Python-Based Interpreters​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-            "url": "https://stackoverflow.blog/2026/06/12/designing-cherryscript-optimizing-data-driven-workflows-via-custom-python-based-interpreters",
-            "company": "Stack Overflow",
+            "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
+            "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
+            "company": "AWS",
             "country": "US",
             "why": "python"
           }
@@ -269726,11 +269889,11 @@
             "why": "aws, docker, redis"
           },
           {
-            "title": "AWS Weekly Roundup: Claude Opus 4.8 on AWS, Aurora MySQL with Kiro Powers, and more (June 1, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-8-on-aws-aurora-mysql-with-kiro-powers-and-more-june-1-2026",
-            "company": "AWS",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
-            "why": "aws, mysql, postgresql"
+            "why": "docker, git, typescript"
           }
         ]
       }
@@ -270009,11 +270172,11 @@
             "why": "aws, docker, git"
           },
           {
-            "title": "VoidZero is joining Cloudflare",
-            "url": "https://blog.cloudflare.com/voidzero-joins-cloudflare",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
-            "why": "next.js, node.js, react"
+            "why": "docker, git, python"
           },
           {
             "title": "GitHub Copilot app: The agent-native desktop experience",
@@ -270586,6 +270749,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "go, rust"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -270618,13 +270788,6 @@
             "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%9D%B4-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B3%B5%EA%B8%89%EB%A7%9D-%EA%B3%B5%EA%B2%A9%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-e0b4f483b574",
             "company": "당근",
             "country": "KR",
-            "why": "go"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
             "why": "go"
           }
         ]
@@ -270855,18 +271018,18 @@
             "why": "aws, linux, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
             "country": "US",
             "why": "git, linux, python"
-          },
-          {
-            "title": "Docker lazy loading at Grab: Accelerating container startup times",
-            "url": "https://engineering.grab.com/docker-lazy-loading",
-            "company": "Grab",
-            "country": "SG",
-            "why": "aws, docker, linux"
           }
         ]
       }
@@ -270953,6 +271116,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -270983,13 +271153,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -273977,6 +274140,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git"
+          },
+          {
             "title": "Scaling out Distroless adoption With AI",
             "url": "https://engineering.grab.com/scaling-out-distroless-adoption-with-ai",
             "company": "Grab",
@@ -274010,13 +274180,6 @@
             "company": "Cloudflare",
             "country": "US",
             "why": "docker, git"
-          },
-          {
-            "title": "StarRocks 운영기: Resource Group으로 멀티테넌트 워크로드 격리하기",
-            "url": "https://toss.tech/article/operating-starrocks-1",
-            "company": "토스",
-            "country": "KR",
-            "why": "docker, mysql"
           }
         ]
       }
@@ -278529,16 +278692,16 @@
             "why": "c++, python"
           },
           {
-            "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
-            "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
-            "company": "AWS",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
             "why": "python"
           },
           {
-            "title": "Designing CherryScript: Optimizing Data-Driven Workflows via Custom Python-Based Interpreters​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​‌‌‍‌‍​﻿​‍​﻿‍​​﻿‌‍​﻿​​​﻿​﻿​‍﻿‌​﻿​‍​﻿‌​​﻿‍‌​﻿‌​​‍﻿‌​﻿‌​‌‍‌‌​﻿​‌​﻿‌​​‍﻿‌‌‍​‍​﻿‌​​﻿‍‌‌‍​‍​‍﻿‌​﻿‍​​﻿‌‍‌‍‌​‌‍​‍​﻿‌‍‌‍​‍​﻿​﻿​﻿‌‌​﻿​​​﻿‌﻿‌‍​‌‌‍​‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-            "url": "https://stackoverflow.blog/2026/06/12/designing-cherryscript-optimizing-data-driven-workflows-via-custom-python-based-interpreters",
-            "company": "Stack Overflow",
+            "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
+            "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
+            "company": "AWS",
             "country": "US",
             "why": "python"
           }
@@ -278674,6 +278837,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git"
+          },
+          {
             "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
             "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
             "company": "Cloudflare",
@@ -278707,13 +278877,6 @@
             "company": "GitHub",
             "country": "US",
             "why": "c#"
-          },
-          {
-            "title": "Announcing Claude Managed Agents on Cloudflare",
-            "url": "https://blog.cloudflare.com/claude-managed-agents",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git"
           }
         ]
       }
@@ -278826,6 +278989,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -278857,13 +279027,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -280121,6 +280284,13 @@
             "why": "git, go, java"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, go, rust"
+          },
+          {
             "title": "Scaling ArchUnit with Nebula ArchRules",
             "url": "https://netflixtechblog.com/scaling-archunit-with-nebula-archrules-b4642c464c5a",
             "company": "Netflix",
@@ -280140,13 +280310,6 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "java, spring"
-          },
-          {
-            "title": "Migrating Lyft’s Android Codebase to Kotlin",
-            "url": "https://eng.lyft.com/migrating-lyfts-android-codebase-to-kotlin-53b231dfecb5",
-            "company": "Lyft",
-            "country": "US",
-            "why": "android, git, java"
           }
         ]
       }
@@ -280470,6 +280633,13 @@
             "why": "oracle"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "데이터베이스"
+          },
+          {
             "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
             "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
             "company": "Cloudflare",
@@ -280481,13 +280651,6 @@
             "url": "https://d2.naver.com/helloworld/2017402",
             "company": "네이버 D2",
             "country": "KR",
-            "why": "데이터베이스"
-          },
-          {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
-            "company": "Cloudflare",
-            "country": "US",
             "why": "데이터베이스"
           }
         ]
@@ -284794,11 +284957,11 @@
             "why": "confluence, fastapi, jira"
           },
           {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
             "country": "US",
-            "why": "java, python, typescript"
+            "why": "jira, python, typescript"
           }
         ]
       }
@@ -287469,11 +287632,11 @@
             "why": "aws, java, mysql"
           },
           {
-            "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
-            "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
-            "why": "aws, git, go"
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, go"
           }
         ]
       }
@@ -292918,6 +293081,368 @@
       }
     },
     {
+      "name": "(주)와이즈스톤",
+      "norm": "와이즈스톤",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 1,
+        "프론트엔드": 1,
+        "풀스택": 1,
+        "모바일": 1,
+        "AI/ML": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "JavaScript",
+          "count": 2
+        },
+        {
+          "name": "Jenkins",
+          "count": 2
+        },
+        {
+          "name": "GitHub Actions",
+          "count": 2
+        },
+        {
+          "name": "React",
+          "count": 1
+        },
+        {
+          "name": "Vue",
+          "count": 1
+        },
+        {
+          "name": "HTML",
+          "count": 1
+        },
+        {
+          "name": "CSS",
+          "count": 1
+        },
+        {
+          "name": "Tailwind",
+          "count": 1
+        },
+        {
+          "name": "Django",
+          "count": 1
+        },
+        {
+          "name": "MySQL",
+          "count": 1
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          },
+          {
+            "name": "JavaScript",
+            "count": 2
+          },
+          {
+            "name": "TypeScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Django",
+            "count": 1
+          },
+          {
+            "name": "REST API",
+            "count": 1
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          },
+          {
+            "name": "Vue",
+            "count": 1
+          },
+          {
+            "name": "HTML",
+            "count": 1
+          },
+          {
+            "name": "CSS",
+            "count": 1
+          },
+          {
+            "name": "Tailwind",
+            "count": 1
+          }
+        ],
+        "모바일": [
+          {
+            "name": "iOS",
+            "count": 1
+          },
+          {
+            "name": "Android",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 1
+          },
+          {
+            "name": "PostgreSQL",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Jenkins",
+            "count": 2
+          },
+          {
+            "name": "GitHub Actions",
+            "count": 2
+          },
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Kubernetes",
+            "count": 1
+          },
+          {
+            "name": "GitLab CI",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "OpenAI",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          },
+          {
+            "name": "Selenium",
+            "count": 1
+          }
+        ],
+        "기타": [
+          {
+            "name": "Appium",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 6,
+          "evidence": [
+            "채용",
+            "HR",
+            "인사"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 2,
+          "evidence": [
+            "LLM"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        },
+        {
+          "label": "SPA + REST API (프론트/백 분리)",
+          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
+        }
+      ],
+      "titles": [
+        "[와이즈스톤] 웹 애플리케이션 풀스택 개발자 채용(주35시간)",
+        "[와이즈스톤] 테스팅 자동화 솔루션 개발자 채용(주35시간)"
+      ],
+      "postings": [
+        {
+          "title": "[와이즈스톤] 웹 애플리케이션 풀스택 개발자 채용(주35시간)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54216425&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=844afcde-2578-4a0a-b640-ee934950c7b7",
+          "site": "saramin"
+        },
+        {
+          "title": "[와이즈스톤] 테스팅 자동화 솔루션 개발자 채용(주35시간)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54178700&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=2b250bfe-c22d-43fc-8119-7bb9333210e7",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)와이즈스톤는 HR/채용 도메인의 중소기업으로, 주로 백엔드 · 프론트엔드 직군을 채용하며 Python, JavaScript, Jenkins, GitHub Actions 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, JavaScript, Jenkins 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "JavaScript",
+              "TypeScript"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심",
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Django",
+              "REST API"
+            ],
+            "tips": [
+              "Django — ORM·Admin·DRF로 빠르게 API 서버 만들어 배포까지",
+              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "PostgreSQL"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "Jenkins",
+              "GitHub Actions",
+              "AWS",
+              "Docker"
+            ],
+            "tips": [
+              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)",
+              "GitHub Actions — 워크플로 YAML로 CI/CD 파이프라인 구성",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[HR/채용] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "css, html, javascript"
+          },
+          {
+            "title": "FE News 26년 6월 소식을 전해드립니다.",
+            "url": "https://d2.naver.com/news/7161766",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "css, github actions, html"
+          },
+          {
+            "title": "VoidZero is joining Cloudflare",
+            "url": "https://blog.cloudflare.com/voidzero-joins-cloudflare",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "github actions, javascript, react"
+          },
+          {
+            "title": "FE News 26년 3월 소식을 전해드립니다!",
+            "url": "https://d2.naver.com/news/0407747",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "css, html, javascript"
+          },
+          {
+            "title": "Accelerating Mobile App development at Zalando with Rendering Engine and React Native",
+            "url": "https://engineering.zalando.com/posts/2025/10/accelerating-mobile-app-development-at-zalando-with-rendering-engine-and-react-native.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "css, html, javascript"
+          },
+          {
+            "title": "왜 왓챠 웹은 Remix로 마이그레이션했을까?",
+            "url": "https://medium.com/watcha/%EC%99%9C-%EC%99%93%EC%B1%A0-%EC%9B%B9%EC%9D%80-remix%EB%A1%9C-%EB%A7%88%EC%9D%B4%EA%B7%B8%EB%A0%88%EC%9D%B4%EC%85%98%ED%96%88%EC%9D%84%EA%B9%8C-dbb710acd758",
+            "company": "왓챠",
+            "country": "KR",
+            "why": "css, html, javascript"
+          }
+        ]
+      }
+    },
+    {
       "name": "주식회사아이림프",
       "norm": "아이림프",
       "size": "중소기업",
@@ -298262,8 +298787,8 @@
             "why": "azure"
           },
           {
-            "title": "Celebrating 12 years of Project Galileo",
-            "url": "https://blog.cloudflare.com/celebrating-12-years-of-project-galileo",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "인프라/클라우드"
@@ -299470,6 +299995,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How pull request limits are cutting down the noise",
             "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
             "company": "GitHub",
@@ -299500,13 +300032,6 @@
           {
             "title": "Top announcements of the AWS Summit in New York, 2026",
             "url": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
             "why": "LLM/생성형"
@@ -300320,6 +300845,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -300352,13 +300884,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -300700,6 +301225,13 @@
             "why": "aws, azure, gcp"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira, python"
+          },
+          {
             "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
             "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
             "company": "Airbnb",
@@ -300712,13 +301244,6 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "aws, gcp"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
-            "country": "KR",
-            "why": "gcp, python"
           }
         ]
       }
@@ -301262,15 +301787,15 @@
         ],
         "study_blogs": [
           {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
           },
           {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
+            "title": "Cloudflare DMARC Management is now generally available",
+            "url": "https://blog.cloudflare.com/dmarc-management-ga",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
@@ -301534,6 +302059,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -301566,13 +302098,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -301825,15 +302350,15 @@
         ],
         "study_blogs": [
           {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
           },
           {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
+            "title": "Cloudflare DMARC Management is now generally available",
+            "url": "https://blog.cloudflare.com/dmarc-management-ga",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
@@ -301968,6 +302493,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
@@ -302001,13 +302533,6 @@
             "company": "Slack",
             "country": "US",
             "why": "python"
-          },
-          {
-            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
-            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "oracle"
           }
         ]
       }
@@ -302369,6 +302894,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -302401,13 +302933,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
@@ -303126,6 +303651,13 @@
             "why": "docker, python, pytorch"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, jira, python"
+          },
+          {
             "title": "왓챠 추천 서비스 MLOps 적용기 Part1",
             "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%B6%94%EC%B2%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-mlops-%EC%A0%81%EC%9A%A9%EA%B8%B0-part1-57a1b5e29d65",
             "company": "왓챠",
@@ -303145,13 +303677,6 @@
             "company": "당근",
             "country": "KR",
             "why": "python, pytorch"
-          },
-          {
-            "title": "Shops Monorepo Five Years Later: A Tale of Bazel and Cursor",
-            "url": "https://engineering.mercari.com/en/blog/entry/20251202-shops-monorepo-five-years-later-a-tale-of-bazel-and-cursor",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "docker, python"
           }
         ]
       }
@@ -304184,6 +304709,13 @@
             "why": "confluence, jira, mysql"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, jira, python"
+          },
+          {
             "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
             "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
             "company": "당근",
@@ -304207,13 +304739,6 @@
           {
             "title": "Scaling Camera File Processing at Netflix",
             "url": "https://netflixtechblog.com/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
-            "company": "Netflix",
-            "country": "US",
-            "why": "docker, linux, python"
-          },
-          {
-            "title": "Scaling Camera File Processing at Netflix",
-            "url": "https://medium.com/netflix-techblog/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
             "company": "Netflix",
             "country": "US",
             "why": "docker, linux, python"
@@ -304474,6 +304999,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -304505,13 +305037,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -304622,6 +305147,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -304653,13 +305185,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -305931,6 +306456,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -305962,13 +306494,6 @@
             "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
             "url": "https://toss.tech/article/skill-quality-rubric",
             "company": "토스",
-            "country": "KR",
-            "why": "python"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
             "country": "KR",
             "why": "python"
           }
@@ -306678,6 +307203,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, jira, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -306697,13 +307229,6 @@
             "company": "Airbnb",
             "country": "US",
             "why": "git, python"
-          },
-          {
-            "title": "Announcing Claude Managed Agents on Cloudflare",
-            "url": "https://blog.cloudflare.com/claude-managed-agents",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, linux"
           },
           {
             "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
@@ -306808,15 +307333,15 @@
         ],
         "study_blogs": [
           {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
           },
           {
-            "title": "Scaling Security Insights: how we achieved a 10x increase in global scanning capacity",
-            "url": "https://blog.cloudflare.com/scaling-security-scans",
+            "title": "Cloudflare DMARC Management is now generally available",
+            "url": "https://blog.cloudflare.com/dmarc-management-ga",
             "company": "Cloudflare",
             "country": "US",
             "why": "go"
@@ -308897,6 +309422,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -308930,13 +309462,6 @@
             "company": "Grab",
             "country": "SG",
             "why": "confluence, jira"
-          },
-          {
-            "title": "사내 DB 관리 규정을 AI로 적용하다 : Amazon Bedrock 기반 DBA 리뷰봇 개발기",
-            "url": "https://techblog.yogiyo.co.kr/%EC%82%AC%EB%82%B4-db-%EA%B4%80%EB%A6%AC-%EA%B7%9C%EC%A0%95%EC%9D%84-ai%EB%A1%9C-%EC%A0%81%EC%9A%A9%ED%95%98%EB%8B%A4-amazon-bedrock-%EA%B8%B0%EB%B0%98-dba-%EB%A6%AC%EB%B7%B0%EB%B4%87-%EA%B0%9C%EB%B0%9C%EA%B8%B0-f845508e6055",
-            "company": "요기요",
-            "country": "KR",
-            "why": "confluence, python"
           }
         ]
       }
@@ -310685,6 +311210,13 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
             "title": "AWS Weekly Roundup: AWS FinOps Agent in preview, Gemma 4 on Bedrock, Kiro Pro Max, and more (June 15, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-finops-agent-in-preview-gemma-4-on-bedrock-kiro-pro-max-and-more-june-15-2026",
             "company": "AWS",
@@ -310697,13 +311229,6 @@
             "company": "Airbnb",
             "country": "US",
             "why": "aws, git, kubernetes"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "azure, git, linux"
           }
         ]
       }
@@ -311413,6 +311938,13 @@
             "why": "aws, kafka, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
             "title": "GitHub Copilot app: The agent-native desktop experience",
             "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
             "company": "GitHub",
@@ -311425,13 +311957,6 @@
             "company": "Cloudflare",
             "country": "US",
             "why": "docker, git, javascript"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, javascript, typescript"
           },
           {
             "title": "왓챠 추천 서비스 MLOps 적용기 Part1",
@@ -313466,6 +313991,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "왓챠 웹 PiP 적용기 — Document PiP는 어떻게 동작하고, 무엇이 어려웠나",
             "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%9B%B9-pip-%EC%A0%81%EC%9A%A9%EA%B8%B0-document-pip%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%8F%99%EC%9E%91%ED%95%98%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B4-%EC%96%B4%EB%A0%A4%EC%9B%A0%EB%82%98-ab7521515663",
             "company": "왓챠",
@@ -313498,13 +314030,6 @@
             "url": "https://d2.naver.com/helloworld/8319114",
             "company": "네이버 D2",
             "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "Cloudflare DMARC Management is now generally available",
-            "url": "https://blog.cloudflare.com/dmarc-management-ga",
-            "company": "Cloudflare",
-            "country": "US",
             "why": "언어"
           }
         ]
@@ -314428,6 +314953,13 @@
             "why": "azure, python"
           },
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -314440,78 +314972,8 @@
             "company": "토스",
             "country": "KR",
             "why": "python"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "python"
           }
         ]
-      }
-    },
-    {
-      "name": "삼성메디슨(주)",
-      "norm": "삼성메디슨",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "dev",
-        "saramin"
-      ],
-      "roles": {
-        "보안": 1
-      },
-      "top_tech": [],
-      "tech_categories": {},
-      "domains": [
-        {
-          "name": "보안",
-          "score": 7,
-          "evidence": [
-            "정보보안",
-            "침해"
-          ]
-        },
-        {
-          "name": "HR/채용",
-          "score": 7,
-          "evidence": [
-            "채용",
-            "이력서"
-          ]
-        }
-      ],
-      "architecture": [],
-      "titles": [
-        "[보안] '정보보안' 경력사원 채용",
-        "2026년 하반기 경력사원 채용"
-      ],
-      "postings": [
-        {
-          "title": "[보안] '정보보안' 경력사원 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211442&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f0bc6d20-ebab-4915-91e3-2111e8ea3805",
-          "site": "saramin"
-        },
-        {
-          "title": "2026년 하반기 경력사원 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556434?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "삼성메디슨(주)는 보안 도메인의 중소기업으로, 주로 보안 직군을 채용합니다.",
-      "career_guide": {
-        "wants": [
-          "보안 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "보안 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
-        ],
-        "roadmap": [],
-        "tasks": [
-          "[보안] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
-        ],
-        "study_blogs": []
       }
     },
     {
@@ -318287,6 +318749,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
             "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
             "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
             "company": "AWS",
@@ -318319,13 +318788,6 @@
             "url": "https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available",
             "company": "AWS",
             "country": "US",
-            "why": "python"
-          },
-          {
-            "title": "From 750 Hours to 2 Hours: AI-Powered Security Triage at Razorpay",
-            "url": "https://engineering.razorpay.com/from-750-hours-to-2-hours-ai-powered-security-triage-at-razorpay-c8baeac3a1d3",
-            "company": "Razorpay",
-            "country": "IN",
             "why": "python"
           }
         ]
