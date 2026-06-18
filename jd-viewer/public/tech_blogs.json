@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-18T08:26:46",
- "total": 766,
+ "generated_at": "2026-06-18T10:13:47",
+ "total": 767,
  "sources": [
   {
    "company": "Etsy",
@@ -103,6 +103,11 @@
    "count": 12
   },
   {
+   "company": "CyberAgent",
+   "country": "JP",
+   "count": 11
+  },
+  {
    "company": "Dropbox",
    "country": "US",
    "count": 11
@@ -126,11 +131,6 @@
    "company": "Airbnb",
    "country": "US",
    "count": 11
-  },
-  {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 10
   },
   {
    "company": "Razorpay",
@@ -511,6 +511,32 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "約2,000人が使うClaude Codeと向き合う。",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64334",
+   "published": "2026-06-18",
+   "published_ts": 1781741158.0,
+   "summary": "作者Boris Cherny氏とのQ&Aから見えた、大規模組織でのAIエージェント活用 Q& ...",
+   "tags": [
+    "エンジニア",
+    "AI",
+    "AI Agent",
+    "Anthropic",
+    "Claude",
+    "Claude Code"
+   ],
+   "tech_stack": [
+    "Claude"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "f456d9eacdfd4500"
+  },
   {
    "key": "github",
    "company": "GitHub",
