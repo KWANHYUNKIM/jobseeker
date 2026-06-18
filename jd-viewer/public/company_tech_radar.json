@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T22:54:50",
+ "generated_at": "2026-06-19T00:47:55",
  "total": 100,
  "countries": [
   {
@@ -2173,6 +2173,10 @@
      "count": 5
     },
     {
+     "name": "Go",
+     "count": 4
+    },
+    {
      "name": "Java",
      "count": 4
     },
@@ -2182,10 +2186,6 @@
     },
     {
      "name": "C++",
-     "count": 3
-    },
-    {
-     "name": "Go",
      "count": 3
     },
     {
@@ -2216,6 +2216,10 @@
       "count": 3
      },
      {
+      "name": "Go",
+      "count": 2
+     },
+     {
       "name": "Node.js",
       "count": 2
      },
@@ -2238,10 +2242,6 @@
      {
       "name": "ASP.NET Core",
       "count": 1
-     },
-     {
-      "name": "Azure Functions",
-      "count": 1
      }
     ],
     "frontend": [
@@ -2254,11 +2254,19 @@
       "count": 3
      },
      {
+      "name": "Adobe Spectrum Web Components",
+      "count": 1
+     },
+     {
       "name": "Angular",
       "count": 1
      },
      {
       "name": "Aura",
+      "count": 1
+     },
+     {
+      "name": "Blazor",
       "count": 1
      },
      {
@@ -2276,14 +2284,6 @@
      {
       "name": "Monaco Editor",
       "count": 1
-     },
-     {
-      "name": "Next.js",
-      "count": 1
-     },
-     {
-      "name": "Paste Design System",
-      "count": 1
      }
     ],
     "data": [
@@ -2292,16 +2292,12 @@
       "count": 4
      },
      {
+      "name": "Redis",
+      "count": 4
+     },
+     {
       "name": "Elasticsearch",
       "count": 3
-     },
-     {
-      "name": "Redis",
-      "count": 3
-     },
-     {
-      "name": "Cassandra",
-      "count": 2
      },
      {
       "name": "MySQL",
@@ -2316,15 +2312,19 @@
       "count": 2
      },
      {
+      "name": "Apache Cassandra",
+      "count": 1
+     },
+     {
+      "name": "Apache Druid",
+      "count": 1
+     },
+     {
       "name": "Apache Flink",
       "count": 1
      },
      {
       "name": "Apache HBase",
-      "count": 1
-     },
-     {
-      "name": "Apache Iceberg",
       "count": 1
      }
     ],
@@ -2342,12 +2342,12 @@
       "count": 3
      },
      {
-      "name": "Terraform",
+      "name": "Envoy",
       "count": 3
      },
      {
-      "name": "Envoy",
-      "count": 2
+      "name": "Terraform",
+      "count": 3
      },
      {
       "name": "Adobe Ethos",
@@ -2362,11 +2362,11 @@
       "count": 1
      },
      {
-      "name": "ArgoCD",
+      "name": "Argo CD",
       "count": 1
      },
      {
-      "name": "Azure DevOps / GitHub Actions",
+      "name": "ArgoCD",
       "count": 1
      }
     ]
@@ -2389,11 +2389,11 @@
      "count": 1
     },
     {
-     "name": "Cloud-native",
+     "name": "Cloud-native Microservices",
      "count": 1
     },
     {
-     "name": "Cloud-native Microservices",
+     "name": "Control plane / data plane 분리",
      "count": 1
     }
    ]
@@ -9488,7 +9488,8 @@
     "Java",
     "JavaScript",
     "TypeScript",
-    "Python"
+    "Python",
+    "Go"
    ],
    "stack": {
     "backend": [
@@ -9496,30 +9497,36 @@
      "Spring Boot",
      "Node.js",
      "gRPC",
-     "Adobe I/O Runtime (OpenWhisk)"
+     "Adobe I/O Runtime (OpenWhisk)",
+     "Go"
     ],
     "frontend": [
      "React",
      "React Spectrum",
      "WebAssembly",
      "Emscripten",
-     "WebGL/WebGPU"
+     "WebGL/WebGPU",
+     "Adobe Spectrum Web Components"
     ],
     "data": [
      "Apache Kafka",
      "Apache Spark",
      "Apache Flink",
-     "Azure Data Lake (ADLS)",
+     "Azure Data Lake (ADLS Gen2)",
      "Apache HBase",
-     "Cassandra",
-     "Apache Iceberg"
+     "Apache Cassandra",
+     "Apache Iceberg",
+     "Apache Druid",
+     "Apache Pinot"
     ],
     "infra": [
      "Azure",
      "AWS",
      "Kubernetes",
+     "Adobe Ethos (internal PaaS)",
      "Adobe I/O Runtime",
-     "Adobe Ethos (internal PaaS)"
+     "Argo CD",
+     "Envoy"
     ]
    },
    "architecture": [
@@ -9528,10 +9535,10 @@
     "WASM-powered web apps",
     "Serverless (FaaS) extensibility"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web Apps<br/>React + React Spectrum\"]\n    WASM[\"In-browser Engine<br/>C++ to WASM via Emscripten\"]\n    DESK[\"Desktop Apps<br/>Photoshop/Illustrator C++\"]\n  end\n  subgraph Gateway[\"API / Edge Gateway\"]\n    CDN[\"Adobe CDN/Edge<br/>Fastly + Akamai\"]\n    GW[\"API Gateway<br/>Adobe I/O\"]\n    AUTH[\"Identity<br/>IMS OAuth/JWT\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Java + Spring Boot\"]\n    FAAS[\"I/O Runtime<br/>OpenWhisk Functions\"]\n    AEP[\"Experience Platform<br/>Profile/Segmentation\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SPARK[\"Batch<br/>Apache Spark\"]\n    FLINK[\"Stream Compute<br/>Apache Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    LAKE[\"Data Lake<br/>ADLS + Iceberg\"]\n    HBASE[\"Profile Store<br/>HBase/Cassandra\"]\n    BLOB[\"Asset Store<br/>Azure Blob + S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes (Ethos)\"]\n    CLOUD[\"Cloud<br/>Azure + AWS\"]\n  end\n  WEB --> WASM\n  WEB --> CDN\n  DESK --> CDN\n  CDN --> GW\n  GW --> AUTH\n  GW -->|gRPC/REST| SVC\n  GW --> FAAS\n  SVC --> AEP\n  SVC --> BLOB\n  AEP -->|ingest| KAFKA\n  KAFKA --> FLINK\n  KAFKA --> SPARK\n  FLINK --> HBASE\n  SPARK --> LAKE\n  AEP --> HBASE\n  SVC --> K8S\n  FAAS --> K8S\n  K8S --> CLOUD\n  BLOB --> CLOUD",
-   "why_language": "Adobe의 핵심 자산은 Photoshop·Illustrator·Premiere 같은 수십 년 된 C++ 데스크톱 엔진으로, 픽셀/벡터/영상 처리의 성능이 절대적이라 C++을 포기할 수 없고 이를 Emscripten으로 WASM 컴파일해 브라우저까지 재활용한다. 반면 Creative Cloud·Document Cloud·Experience Platform 같은 대규모 SaaS 백엔드는 JVM 생태계의 성숙도와 운영성 때문에 Java/Spring을, 확장 함수와 프런트엔드는 Node.js/TypeScript를, 데이터/ML 파이프라인은 Python을 사용한다.",
-   "why_architecture": "마케팅 클라우드(AEP)는 초당 수백만 건의 고객 이벤트를 실시간 프로파일·세그먼트로 합쳐야 하므로 Kafka 기반 이벤트 스트리밍과 Flink/Spark 컴퓨트가 중심이 되는 event-driven 구조가 필연적이다. 또한 거대한 모놀리식 데스크톱 자산과 신규 SaaS를 동시에 운영해야 하므로, 독립 배포가 가능한 마이크로서비스와 서드파티 확장을 위한 I/O Runtime 서버리스를 Kubernetes(Ethos) 위에 멀티클라우드로 얹는 cloud-native 전략을 택했다.",
-   "summary": "C++ 데스크톱 엔진을 WASM으로 브라우저에 이식하고, Kafka·Flink 기반 실시간 데이터 파이프라인과 멀티클라우드 마이크로서비스로 Creative·Experience Cloud를 운영한다",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    DESK[\"Creative Desktop<br/>C++ Photoshop/Illustrator\"]\n    WEB[\"Web Apps<br/>React + React Spectrum\"]\n    WASM[\"In-Browser Engine<br/>WASM via Emscripten + WebGL/WebGPU\"]\n    CDN[\"Edge / CDN<br/>Akamai + Fastly\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Envoy + Adobe IMS Auth\"]\n    IORT[\"Adobe I/O Runtime<br/>Apache OpenWhisk FaaS\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CC[\"Creative Cloud Services<br/>Java + Spring Boot\"]\n    AEP[\"Experience Platform<br/>Java + Spark\"]\n    SYNC[\"Asset Sync<br/>Node.js + gRPC\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Compute<br/>Apache Flink\"]\n    SPARK[\"Batch / ETL<br/>Apache Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"Profile Store<br/>Apache HBase\"]\n    ICE[\"Data Lake<br/>Iceberg on ADLS Gen2\"]\n    DRUID[\"Query / OLAP<br/>Druid + Pinot\"]\n    BLOB[\"Asset Blobs<br/>Azure Blob + S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    ETHOS[\"Adobe Ethos<br/>K8s PaaS on Azure + AWS\"]\n  end\n  DESK --> CDN\n  WEB --> WASM\n  WEB --> CDN\n  CDN --> GW\n  GW -->|REST/gRPC| CC\n  GW --> IORT\n  IORT -->|webhooks| CC\n  CC -->|gRPC| SYNC\n  CC --> AEP\n  SYNC --> BLOB\n  AEP -->|events| KAFKA\n  KAFKA --> FLINK\n  KAFKA --> SPARK\n  FLINK --> HBASE\n  SPARK --> ICE\n  ICE --> DRUID\n  HBASE --> AEP\n  CC -.runs on.-> ETHOS\n  AEP -.runs on.-> ETHOS\n  SYNC -.runs on.-> ETHOS",
+   "why_language": "Adobe의 핵심 자산인 Photoshop·Illustrator·Lightroom의 픽셀 처리·필터·GPU 파이프라인은 수십 년간 축적된 C++ 코드베이스이며, 이를 Emscripten으로 WASM 컴파일해 브라우저로 그대로 옮긴다. 반면 Creative Cloud와 Experience Platform 같은 대규모 분산 백엔드는 JVM 생태계(Java/Spring)의 성숙한 동시성·운영 도구를, 확장 SDK와 웹 UI는 JavaScript/TypeScript를, 데이터·ML 파이프라인은 Python/Spark를 쓴다. 즉 '성능 코어는 C++, 분산 서비스는 Java, 사용자 접점은 JS/TS'라는 도메인별 역할 분담이 언어 선택의 핵심이다.",
+   "why_architecture": "Creative Cloud(수천만 구독자의 자산 동기화)와 Experience Platform(초당 수백만 이벤트의 실시간 고객 프로파일)은 트래픽 특성과 SLA가 완전히 달라, 독립 배포·확장이 가능한 마이크로서비스와 Kafka·Flink 기반 이벤트 스트리밍이 필수였다. 동시에 파트너·고객이 Adobe 제품을 확장할 수 있도록 I/O Runtime(OpenWhisk FaaS)으로 서버리스 확장점을 열었고, 데스크톱급 편집 경험을 웹에서 재현하기 위해 WASM을 택했다. 이 모든 것을 멀티클라우드(Azure+AWS)에서 일관되게 운영하려고 내부 Kubernetes PaaS인 Ethos로 표준화했다.",
+   "summary": "C++ 데스크톱 코어를 WASM으로 웹에 이식하고, Kafka·Flink 스트리밍 위 Java 마이크로서비스를 멀티클라우드 Ethos K8s로 굴리는 하이브리드 스택",
    "deep_dive": [
     {
      "topic": "WASM: C++ 데스크톱 자산을 브라우저로 옮기다",
@@ -9564,6 +9571,18 @@
     {
      "topic": "데스크톱→웹 마이그레이션의 관측성·배포: Photoshop Web의 점진적 롤아웃과 카나리",
      "body": "### 배경\nPhotoshop/Illustrator를 WASM으로 브라우저에 올린 것은 기술 데모가 아니라 실제 SaaS 제품(Photoshop on the web)이다. 수백 MB급 C++ 코드베이스를 WASM으로 컴파일하면 번들 크기·메모리·브라우저 호환성이라는 새로운 운영 리스크가 생긴다. 이를 안전하게 출시하는 핵심이 점진적 배포와 관측성이다.\n\n### 점진적 롤아웃\n- **Feature flagging**: 기능을 코드 배포와 분리해 플래그로 켠다. 신규 WASM 모듈/필터를 소수 사용자에게만 노출(percentage rollout)하고, 문제 시 즉시 끈다(kill switch).\n- **Canary**: 새 빌드를 전체가 아닌 일부 트래픽/지역/사용자군에 먼저 흘려 오류율·성능 회귀를 관찰한 뒤 단계적으로 확대. WASM은 브라우저·GPU 조합이 다양해 '내 머신에선 됨' 문제가 크므로, 실사용 환경 카나리가 특히 중요하다.\n\n### 관측성 — 클라이언트가 곧 런타임\n전통 백엔드와 달리 연산의 상당수가 사용자 브라우저(WASM)에서 일어난다. 따라서 관측 포인트가 클라이언트로 이동한다.\n- **RUM(Real User Monitoring)**: 문서 로드 시간, WASM 모듈 init 시간, 필터 실행 latency, OOM/crash, GPU fallback 발생률 등을 클라이언트에서 텔레메트리로 수집.\n- **Asset/sync 트레이싱**: 로컬 편집과 Creative Cloud 동기화 사이의 충돌·지연을 추적하는 분산 트레이스.\n- **Bundle 분석**: WASM 바이너리 크기·다운로드 시간·캐시 히트율을 지속 모니터링해 회귀를 잡는다.\n\n### 캐싱·전송 최적화\n거대한 WASM 바이너리는 `CDN`(Fastly/Akamai 계열) edge 캐시 + 브라우저 캐시로 재다운로드를 피하고, streaming compilation(`WebAssembly.instantiateStreaming`)으로 다운로드와 컴파일을 겹쳐 TTI(Time To Interactive)를 줄인다. 코드 분할로 '처음 필요한 기능'만 먼저 로드하고 고급 필터는 지연 로드한다.\n\n### 트레이드오프\nC++ 자산 재사용으로 기능 패리티는 빠르게 얻지만, 메모리 모델(WASM linear memory 한계)·스레딩(SharedArrayBuffer/COOP·COEP 헤더 필요)·파일 시스템 부재 같은 웹 제약을 우회해야 한다. Adobe는 데스크톱 코어를 단일 소스로 유지하되 플랫폼 어댑터 계층에서 이 차이를 흡수하는 방식으로 유지보수 분기를 최소화한다."
+    },
+    {
+     "topic": "Creative Cloud 자산 동기화의 충돌 해결: 버전 벡터와 델타 업로드",
+     "body": "### 문제 설정\nCreative Cloud는 데스크톱 앱(Photoshop, Lightroom), 모바일, 웹이 동일한 자산을 동시에 편집할 수 있게 한다. 핵심은 **여러 디바이스가 오프라인 상태에서 같은 파일을 바꾼 뒤 동시에 올라올 때** 데이터를 잃지 않고 합치는 것이다. 단순 `last-write-wins`로는 디자이너의 작업이 통째로 사라지므로, Adobe는 자산마다 **버전 트리(version history)** 를 유지한다.\n\n### 동작 메커니즘\n- 모든 자산은 불변(immutable) 콘텐츠 블록으로 저장된다. 파일을 수정하면 새 블록이 만들어지고, 메타데이터의 포인터만 새 버전을 가리킨다. 이는 Git의 content-addressable 저장과 같은 발상이다.\n- 클라이언트는 **델타 동기화**를 쓴다. 50MB PSD에서 레이어 하나만 바꿨다면 전체를 올리지 않고 변경된 청크만 전송한다. 청크는 rolling hash로 경계를 잡아 중복 블록을 dedup한다.\n- 동시 편집 충돌은 서버가 감지해 **conflict copy**(예: `파일명 (디바이스명의 충돌본)`)를 만들어 양쪽을 모두 보존한다. 즉 자동 머지를 시도하다 데이터를 잃기보다, 충돌을 사용자에게 가시화하는 보수적 전략을 택했다.\n\n### 데이터 흐름\n```\n[Desktop edit] -> chunker(rolling hash) -> 변경 청크만 -> gRPC -> Sync Service\n   -> 콘텐츠 블록 저장(Azure Blob/S3) + 메타데이터 버전 포인터 갱신(HBase/관계형)\n   -> change event -> Kafka -> 다른 디바이스 push 알림\n```\n\n### 트레이드오프\n- **장점**: 대용량 바이너리에서 네트워크·스토리지 비용이 크게 줄고, 버전 히스토리로 롤백이 가능하다.\n- **비용**: 불변 블록 누적으로 스토리지가 늘어 주기적 GC(garbage collection)와 버전 보존 정책이 필요하다. 또 conflict copy를 사용자에게 떠넘기는 방식은 UX 마찰이 있어, Lightroom처럼 구조화된 카탈로그는 필드 단위 머지를 별도로 구현한다."
+    },
+    {
+     "topic": "Experience Platform의 Query·세그먼테이션: Iceberg 데이터레이크 위의 배치/스트리밍 이원화",
+     "body": "### 두 종류의 질의\nAdobe Experience Platform(AEP)에서 마케터는 두 가지 방식으로 고객을 분류한다. (1) **배치 세그먼트** — '지난 30일 구매 3회 이상'처럼 전체 이력을 훑는 무거운 질의, (2) **스트리밍 세그먼트** — '방금 장바구니에 담음'처럼 이벤트 도착 즉시 자격을 평가하는 질의. 같은 규칙 언어(PQL, Profile Query Language)로 작성되지만 실행 엔진이 완전히 다르다.\n\n### 저장 계층의 역할 분담\n| 계층 | 기술 | 역할 |\n|------|------|------|\n| Profile Store | `Apache HBase` | row-key = 통합 ID, 실시간 프로파일 read/write |\n| Data Lake | `Apache Iceberg on ADLS Gen2` | 원천 이벤트·배치 분석의 단일 진실 원천 |\n| OLAP | `Apache Druid / Pinot` | 대시보드·세그먼트 추정치의 저지연 집계 |\n\nIceberg를 택한 이유는 **스키마 진화와 ACID 스냅샷** 때문이다. 고객 데이터 스키마(XDM)는 끊임없이 필드가 추가되는데, Iceberg는 파일을 재작성하지 않고 메타데이터로 스키마를 진화시키고, 시간여행(time-travel) 쿼리로 특정 시점 상태를 재현해 디버깅·감사(audit)를 가능하게 한다.\n\n### 배치 vs 스트리밍 실행\n- 배치 세그먼트: PQL → `Spark` 잡으로 컴파일 → Iceberg 테이블 스캔 → 자격 결과를 Profile Store에 기록. 수억 프로파일을 수십 분 내 처리.\n- 스트리밍 세그먼트: 같은 PQL → `Flink` 연속 질의로 변환 → Kafka 이벤트마다 상태(state)와 대조해 자격 변화를 밀리초~초 단위로 발행. Flink의 keyed state와 RocksDB 백엔드로 프로파일별 윈도우 상태를 유지한다.\n\n### 트레이드오프\n동일 규칙을 두 엔진에 매핑하면 **의미 일관성(semantic parity)** 이 가장 어렵다. 'AND/OR 시간 윈도우'를 배치는 전체 스캔으로, 스트리밍은 증분 상태로 계산하므로 경계 조건에서 결과가 미세하게 달라질 수 있다. AEP는 PQL 컴파일러를 단일 IR(중간표현)로 두고 두 백엔드 코드젠을 분기시켜 이 격차를 최소화한다."
+    },
+    {
+     "topic": "Photoshop Web의 멀티스레드 WASM: SharedArrayBuffer·pthread와 GPU 오프로딩",
+     "body": "### 데스크톱급 성능을 브라우저에서\nC++ Photoshop 엔진을 Emscripten으로 WASM 컴파일했을 때 가장 큰 난관은 **스레딩**이었다. 데스크톱 Photoshop은 필터·합성을 수십 개 스레드로 병렬화하는데, 초기 WASM은 단일 스레드였다. Adobe는 `SharedArrayBuffer` + WASM threads(pthread 에뮬레이션)로 이를 해결했다.\n\n### 핵심 메커니즘\n- **pthread → Web Worker**: Emscripten은 C++의 `pthread_create`를 Web Worker 생성으로 매핑한다. 여러 Worker가 동일한 `SharedArrayBuffer`(선형 메모리)를 공유하므로, 데스크톱 코드의 메모리 공유 모델이 거의 그대로 동작한다. 단 이를 켜려면 `COOP/COEP`(Cross-Origin-Opener/Embedder-Policy) 헤더로 페이지를 **cross-origin isolated** 상태로 만들어야 한다 — Spectre 완화 이후 SharedArrayBuffer의 전제 조건이다.\n- **GPU 오프로딩**: 픽셀 합성·필터 중 병렬성이 큰 부분은 `WebGL/WebGPU` 셰이더로 내려보낸다. CPU(WASM SIMD)와 GPU 사이의 작업 분배가 데스크톱 대비 성능 격차를 메우는 핵심이다. WASM SIMD(128-bit)로 픽셀 루프를 벡터화해 스칼라 대비 수 배 가속한다.\n- **메모리 관리**: 브라우저 탭의 메모리 상한(특히 32비트 한계 회피)을 위해 WASM64(Memory64)와 점진적 메모리 grow를 활용하고, 큰 문서는 타일 단위로 로드해 작업 세트를 제한한다.\n\n### 왜 이렇게까지 했나\n대안은 '웹용 Photoshop을 JS로 새로 작성'이었지만, 30년치 픽셀 정확도(color science, blend math)를 재구현하면 데스크톱과 결과가 미묘하게 달라진다. **동일 C++ 코어를 컴파일**하면 데스크톱·웹의 픽셀 동일성(pixel parity)이 보장된다. 비용은 번들 크기(수십 MB WASM)와 초기 로드 지연인데, 이를 streaming compilation·코드 스플리팅·캐싱으로 완화한다.\n\n### 트레이드오프 요약\n- ✅ 데스크톱과 동일한 렌더링 정확도, 기존 자산 재사용\n- ⚠️ COOP/COEP 강제로 서드파티 임베드 제약, 큰 초기 다운로드, 브라우저별 WebGPU 지원 편차"
     }
    ],
    "github": {
@@ -9572,47 +9591,47 @@
      {
       "name": "adobe/brackets",
       "url": "https://github.com/adobe/brackets",
-      "desc": "웹 개발자를 위한 오픈소스 코드 에디터(아카이브)",
+      "desc": "Adobe가 만든 오픈소스 웹 중심 코드 에디터(아카이브)",
       "lang": "JavaScript",
-      "stars": 33037
+      "stars": 33035
      },
      {
       "name": "adobe/react-spectrum",
       "url": "https://github.com/adobe/react-spectrum",
-      "desc": "Adobe Spectrum 디자인 시스템을 구현한 접근성 우선 React 컴포넌트·훅 라이브러리",
+      "desc": "Adobe의 디자인 시스템 Spectrum을 구현한 접근성 우선 React 컴포넌트·훅 라이브러리",
       "lang": "TypeScript",
-      "stars": 15517
+      "stars": 15547
+     },
+     {
+      "name": "apache/openwhisk",
+      "url": "https://github.com/apache/openwhisk",
+      "desc": "Adobe I/O Runtime의 기반이 된 서버리스(FaaS) 플랫폼",
+      "lang": "Scala",
+      "stars": 6779
      },
      {
       "name": "adobe/aem-core-wcm-components",
       "url": "https://github.com/adobe/aem-core-wcm-components",
-      "desc": "Adobe Experience Manager(AEM)용 표준 WCM 컴포넌트 모음",
+      "desc": "Adobe Experience Manager의 표준 재사용 가능 콘텐츠 컴포넌트 모음",
       "lang": "Java",
       "stars": 789
      },
      {
       "name": "adobe/helix-home",
       "url": "https://github.com/adobe/helix-home",
-      "desc": "서버리스 기반 초고속 웹 퍼블리싱 플랫폼 Adobe Helix(Edge Delivery)",
+      "desc": "서버리스·엣지 기반 차세대 웹 퍼블리싱 플랫폼 Project Helix(Edge Delivery Services)",
       "lang": "HTML",
       "stars": 67
-     },
-     {
-      "name": "adobe/aepsdk-core-ios",
-      "url": "https://github.com/adobe/aepsdk-core-ios",
-      "desc": "Experience Platform 모바일 SDK의 iOS 코어 구현",
-      "lang": "Swift",
-      "stars": 35
      }
     ]
    },
    "sources": [
     "https://blog.developer.adobe.com/",
-    "https://web.dev/articles/ps-on-the-web",
-    "https://experienceleague.adobe.com/en/docs/experience-platform/profile/home"
+    "https://medium.com/adobetech",
+    "https://web.dev/articles/ps-on-the-web"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "microsoft",
@@ -9624,8 +9643,8 @@
     "TypeScript",
     "C++",
     "Rust",
-    "Python",
-    "Go"
+    "Go",
+    "Python"
    ],
    "stack": {
     "backend": [
@@ -9634,42 +9653,46 @@
      "Azure Functions",
      "Service Fabric / Reliable Services",
      "Dapr",
-     "gRPC"
+     "gRPC",
+     "Orleans (virtual actors)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Fluent UI / Fluent 2",
      "Monaco Editor",
-     "WebView2"
+     "WebView2",
+     "Blazor"
     ],
     "data": [
      "Azure SQL / SQL Server",
      "Cosmos DB",
      "Azure Storage (Blob/Table/Queue)",
-     "Azure Synapse",
      "Kusto / Azure Data Explorer",
-     "Event Hubs (Kafka 호환)"
+     "Event Hubs (Kafka 호환)",
+     "Azure Synapse",
+     "Redis (Azure Cache)"
     ],
     "infra": [
      "Azure",
      "AKS (Kubernetes)",
      "Service Fabric",
-     "Azure Front Door",
-     "Azure DevOps / GitHub Actions",
-     "Bicep / ARM"
+     "Azure Front Door / AFD",
+     "Azure DevOps + GitHub Actions",
+     "Bicep / ARM",
+     "Geneva (telemetry)"
     ]
    },
    "architecture": [
     "Cell-based architecture (stamps/scale units)",
-    "Microservices + Reliable Services",
-    "Cloud-native (control plane / data plane 분리)",
+    "Control plane / data plane 분리",
+    "Microservices + virtual-actor (Orleans/Reliable Services)",
     "Event-driven / streaming"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client & Edge\"]\n    CL[\"Clients<br/>Browser + Win32 + Mobile\"]\n    AFD[\"Edge / CDN<br/>Azure Front Door + AnyCast\"]\n  end\n  subgraph Gateway[\"API & Auth\"]\n    APIM[\"API Gateway<br/>Azure API Management\"]\n    AAD[\"Identity<br/>Entra ID (Azure AD) + OAuth2/OIDC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    ARM[\"Control Plane<br/>Azure Resource Manager\"]\n    SVC[\"Microservices<br/>.NET + ASP.NET Core + Dapr\"]\n    SF[\"Stateful Compute<br/>Service Fabric Reliable Services\"]\n    AKS[\"Container Platform<br/>AKS (Kubernetes)\"]\n    FN[\"Serverless<br/>Azure Functions\"]\n  end\n  subgraph Async[\"Streaming & Async\"]\n    EH[\"Event Streaming<br/>Event Hubs (Kafka API)\"]\n    SB[\"Messaging<br/>Service Bus + Queues\"]\n  end\n  subgraph Data[\"Data & Storage\"]\n    COS[\"Global DB<br/>Cosmos DB (multi-model)\"]\n    SQL[\"Relational<br/>Azure SQL / SQL Server\"]\n    BLOB[\"Object Store<br/>Azure Blob Storage\"]\n    KUSTO[\"Telemetry Store<br/>Kusto / ADX\"]\n  end\n  CL -->|HTTPS| AFD\n  AFD --> APIM\n  APIM --> AAD\n  APIM -->|REST/gRPC| ARM\n  ARM --> SVC\n  SVC --> SF\n  SVC --> AKS\n  SVC --> FN\n  SVC -->|publish| EH\n  SVC --> SB\n  EH --> FN\n  SVC --> COS\n  SVC --> SQL\n  SF --> BLOB\n  SVC -->|logs/metrics| KUSTO",
-   "why_language": "C#/.NET은 Microsoft가 직접 만든 런타임으로, 대규모 엔터프라이즈 워크로드에서 강타입·성숙한 비동기(async/await)·고성능 JIT/AOT와 풍부한 사내 라이브러리를 제공해 Azure 백엔드의 기본 언어가 되었다. 성능이 극한으로 중요한 스토리지·네트워킹·하이퍼바이저 계층은 C++로, 새 보안 민감 컴포넌트는 메모리 안전성을 위해 Rust로 점차 이전 중이며, 개발자 도구·웹·확장 생태계는 TypeScript가, 데이터/ML 파이프라인은 Python이 담당한다.",
-   "why_architecture": "Azure는 단일 장애가 글로벌로 번지지 않도록 리전→가용영역→'스탬프(scale unit)'로 격리하는 셀 기반 아키텍처를 채택해 장애 폭발 반경을 한 셀로 제한하고 점진적 배포(카나리/세이프 디플로이)를 가능케 한다. 상태가 있는 핵심 제어 평면은 Service Fabric의 Reliable Services로, 고객 워크로드와 신규 서비스는 AKS로 운영하며, 제어 평면(ARM)과 데이터 평면을 분리해 관리 작업과 실제 트래픽이 서로를 끌어내리지 않게 한다.",
-   "summary": "C#/.NET과 셀 기반(stamp) 클라우드 네이티브 아키텍처로 글로벌 규모의 신뢰성과 엔터프라이즈 SLA를 동시에 잡은 스택",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    CLI[\"Clients<br/>Portal + CLI + SDK\"]\n    AFD[\"Global Edge<br/>Azure Front Door + Anycast\"]\n  end\n  subgraph CP[\"Control Plane\"]\n    ARM[\"Resource Manager<br/>ARM + RBAC\"]\n    GW[\"API Gateway<br/>ASP.NET Core + gRPC\"]\n  end\n  subgraph Core[\"Core Services (per-region cells)\"]\n    SF[\"Stateful Services<br/>Service Fabric + Reliable Services\"]\n    ORL[\"Actor Layer<br/>Orleans virtual actors\"]\n    FN[\"Serverless<br/>Azure Functions + Dapr\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    COS[\"Global DB<br/>Cosmos DB\"]\n    SQL[\"Relational<br/>Azure SQL\"]\n    BLOB[\"Object Store<br/>Azure Storage\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    EH[\"Event Bus<br/>Event Hubs (Kafka)\"]\n    KUSTO[\"Telemetry<br/>Kusto / ADX\"]\n  end\n  CLI --> AFD\n  AFD -->|TLS| ARM\n  ARM --> GW\n  GW -->|gRPC| SF\n  GW --> FN\n  SF --> ORL\n  ORL --> COS\n  SF --> SQL\n  FN --> BLOB\n  SF --> EH\n  FN --> EH\n  EH --> KUSTO\n  SF -->|Geneva| KUSTO",
+   "why_language": "C#/.NET은 Azure 컨트롤·데이터 플레인의 기본 언어로, 강타입·GC·async/await·런타임 성숙도가 수십만 노드 규모의 장수 서비스 운영에 유리하기 때문이다. 성능 임계 경로(스토리지 엔진, 네트워킹, Hyper-V)는 C++/Rust로 내려가고, 개발자 도구·포털 UI는 TypeScript로 통일해 한 언어로 풀스택 생산성을 확보한다. 안전성이 중요한 신규 시스템 컴포넌트에는 메모리 안전성을 위해 Rust 채택을 확대하고 있다.",
+   "why_architecture": "글로벌 SLA(99.99%+)와 폭발 반경(blast radius) 격리를 위해 리전·가용영역마다 독립적으로 동작하는 셀(stamp/scale unit) 단위로 배포해 한 셀 장애가 전체로 번지지 않게 한다. 컨트롤 플레인(프로비저닝·메타데이터)과 데이터 플레인(실제 트래픽)을 분리해 관리 작업이 런타임 가용성에 영향을 주지 않도록 하고, 상태 서비스는 Service Fabric/Orleans의 가상 액터·복제로 강한 일관성과 자가치유를 얻는다.",
+   "summary": "Azure 규모를 떠받치는 C#/.NET 셀 기반 분산 시스템 — 컨트롤/데이터 플레인 분리와 Safe Deployment로 글로벌 가용성을 보장한다",
    "deep_dive": [
     {
      "topic": "VSCode/TypeScript: 개발 도구의 아키텍처 결정",
@@ -9698,6 +9721,22 @@
     {
      "topic": "관측성: Geneva/Kusto 기반 초대형 텔레메트리 파이프라인",
      "body": "### 규모의 문제\nAzure는 매일 수십 페타바이트(PB)급 로그·메트릭·트레이스를 생성한다. 이를 다루는 내부 관측성 플랫폼이 `Geneva`(모니터링)와 그 저장·분석 엔진인 `Kusto(= Azure Data Explorer, ADX)`다. 외부 고객에게는 `Azure Monitor`/`Application Insights`/`Log Analytics`로 같은 엔진이 노출된다.\n\n### 수집 경로\n노드마다 경량 에이전트(MA, Monitoring Agent)가 구조화된 이벤트·메트릭을 모아 파이프라인으로 보낸다. 메트릭은 시계열로, 로그/트레이스는 컬럼형 저장소로 흘러간다. 수집은 **샘플링·집계**를 거쳐 카디널리티 폭발을 막는다.\n\n### Kusto의 동작 원리 (왜 빠른가)\n- **컬럼형 + 샤딩**: 데이터를 `extent`(샤드) 단위 컬럼 저장으로 보관하고 시간 기반으로 파티셔닝한다. 시간 범위 쿼리가 대부분이라 오래된 extent는 건너뛴다.\n- **핫/콜드 캐시 계층**: 최근 데이터는 로컬 SSD(hot cache)에, 오래된 데이터는 Blob Storage(cold)에 두고 쿼리 시 필요한 부분만 끌어온다.\n- **KQL**: `|` 파이프 기반 쿼리 언어로 대규모 로그 탐색·집계·시계열 분석에 최적화. 인덱스보다 'brute-force scan을 매우 빠르게'에 가까운 설계.\n\n### 분산 트레이싱과 상관관계\n서비스 간 호출은 `W3C Trace Context`(traceparent 헤더)로 전파되어, 한 요청이 게이트웨이→여러 마이크로서비스→DB를 거치는 전체 경로를 trace로 재구성한다. .NET의 `Activity`/`DiagnosticSource` API가 이를 코드 레벨에서 표준화하고, 점차 `OpenTelemetry`로 수렴하고 있다.\n\n### 운영 활용\n앞서 설명한 SDP의 health gate, 이상탐지(anomaly detection), 인시던트 자동 알림(ICM 연동)이 모두 이 텔레메트리 위에서 돌아간다. 즉 관측성은 단순 디버깅이 아니라 **배포 안전성과 자동 복구의 신경계** 역할을 한다."
+    },
+    {
+     "topic": "Orleans 가상 액터 모델: 상태 서비스를 떠받치는 grain 런타임",
+     "body": "### 왜 가상 액터인가\nAzure의 상태 기반 서비스(예: Skype 백엔드, Halo 매치메이킹, 일부 IoT 디바이스 트윈)는 수억 개의 작은 엔티티(사용자 세션, 디바이스, 게임 룸)를 동시에 다뤄야 한다. 전통적 액터 모델(Erlang/Akka)은 액터의 **생성·배치·소멸·장애 복구**를 개발자가 직접 관리해야 한다. Orleans는 이를 **virtual actor(grain)** 추상화로 뒤집었다.\n\n### 핵심 동작 메커니즘\n- **항상 존재하는 것처럼 보이는 grain**: grain은 `GrainId`(타입 + 키)로만 참조된다. 코드에서 `GrainFactory.GetGrain<IUser>(userId)`를 호출하면, 그 grain이 메모리에 활성화돼 있는지 여부와 무관하게 즉시 프록시를 받는다. 실제로 메시지가 도착하면 런타임이 **자동으로 activation**(메모리에 인스턴스화)한다.\n- **Single-threaded turn 실행**: 하나의 grain activation은 한 번에 하나의 요청만 처리한다(turn-based concurrency). 덕분에 grain 내부 상태는 **락 없이** 안전하다 — 개발자는 동시성 버그에서 해방되고, 런타임은 수백만 grain을 협력적 스케줄링으로 돌린다.\n- **분산 디렉터리**: 어느 실리(silo, Orleans 노드)에 어떤 grain이 활성화돼 있는지는 일관된 해시 기반 분산 디렉터리에 기록된다. 클러스터 멤버십 변화(노드 추가/장애)는 gossip 형태의 membership 프로토콜로 전파된다.\n- **자동 비활성화·재배치**: 일정 시간 idle한 grain은 메모리에서 내려가고(deactivation), 다음 호출 때 **다른 노드에서 다시 활성화**될 수 있다. 노드가 죽으면 그 위 grain들은 살아있는 노드에서 재활성화되어 자가치유된다.\n\n### 상태 영속화\ngrain 상태는 `IPersistentState<T>`로 추상화돼 Cosmos DB·Azure Table·ADO.NET 등 **storage provider**에 플러그인된다. grain은 비즈니스 로직만 쓰고, 저장 백엔드 교체는 설정 한 줄이다.\n\n### 트레이드오프\n- **장점**: 위치 투명성(location transparency)으로 샤딩·리밸런싱을 런타임이 흡수, 개발 생산성 극대화.\n- **단점**: turn-based 단일 스레드라 **CPU 바운드 작업엔 부적합**(그 grain이 병목). hot grain(특정 인기 엔티티에 트래픽 집중) 문제는 stateless worker grain·캐싱으로 완화해야 한다. 디렉터리 조회·원격 호출 지연이 있어 초저지연 핫패스는 여전히 C++/Rust 서비스로 내려간다."
+    },
+    {
+     "topic": "Azure 요청 처리 end-to-end: Front Door에서 셀 내부 복제까지",
+     "body": "### 1) 글로벌 진입 — Azure Front Door(AFD)\n전 세계 200+ edge PoP가 **Anycast IP**를 광고한다. 사용자 요청은 BGP 라우팅으로 가장 가까운 PoP에 닿고, AFD가 TLS 종료·WAF·정적 캐싱·L7 라우팅을 수행한다. AFD는 **split TCP**로 클라이언트↔edge는 짧은 RTT, edge↔origin은 Microsoft 백본(WAN)으로 운반해 공인 인터넷 구간을 최소화한다.\n\n### 2) 컨트롤 플레인 — ARM\n리소스 생성·수정 같은 **관리 작업**은 Azure Resource Manager(ARM)로 들어간다. ARM은 선언적 템플릿(Bicep/ARM JSON)을 받아 RBAC·정책(Policy)·할당량을 검증하고, 각 리소스 공급자(RP, 예: Microsoft.Compute)에게 작업을 위임한다. **핵심: ARM은 데이터 플레인 트래픽 경로에 있지 않다** — VM이 돌고 스토리지에 읽기가 일어나는 동안 ARM이 죽어도 기존 워크로드는 계속 동작한다.\n\n### 3) 데이터 플레인 — 리전 내 셀로 라우팅\n실제 런타임 요청은 리전의 특정 **스탬프(scale unit/cell)**로 라우팅된다. 한 셀은 자기 완결적인 게이트웨이 + 서비스 + 스토리지 세트다. 셀 간에는 의도적으로 **공유를 최소화**해 한 셀의 과부하·버그가 다른 셀로 전파되지 않게 한다(bulkhead).\n\n### 4) 서비스 계층 — Service Fabric\n셀 내부에서 stateful 서비스는 Service Fabric 위에서 돈다. 데이터는 **partition**으로 나뉘고 각 파티션은 보통 **replica set**(1 primary + N secondary)을 가진다. 쓰기는 primary가 받아 quorum(과반)이 ACK하면 커밋되는 식으로 강한 일관성을 보장하고, primary 장애 시 secondary 중 하나가 즉시 승격된다. Service Fabric의 리소스 매니저는 노드 부하·장애 도메인을 보며 replica를 자동 재배치한다.\n\n### 5) 저장·텔레메트리\n메타데이터·세션은 Cosmos DB/Azure SQL, 대용량 객체는 Azure Storage로 간다. 모든 구간의 로그·메트릭·트레이스는 **Geneva** 에이전트가 수집해 **Kusto(ADX)**로 흘려보내며, 이게 SDP(Safe Deployment) 자동 롤백의 판단 근거가 된다.\n\n### 전체 그림\n`Client → AFD(edge) → (관리면 ARM / 데이터면 region cell) → SF gateway → partitioned stateful service(quorum 복제) → Cosmos/SQL/Blob`, 그리고 모든 hop이 Geneva→Kusto로 관측된다."
+    },
+    {
+     "topic": "Dapr 사이드카: 마이크로서비스 빌딩 블록의 런타임화",
+     "body": "### 문제의식\nMicrosoft는 사내·고객 모두에서 마이크로서비스가 반복적으로 같은 배관 코드(서비스 호출 재시도, pub/sub, 상태 저장, 시크릿 조회)를 다시 짜는 걸 봤다. Dapr(Distributed Application Runtime)는 이 공통 관심사를 **언어 중립 사이드카**로 분리한다.\n\n### 동작 방식\n- 각 애플리케이션 파드 옆에 **dapr 사이드카 프로세스**가 함께 뜬다(Kubernetes에서는 자동 인젝션). 앱은 `localhost`의 사이드카에 **HTTP/gRPC**로만 말한다.\n- 사이드카가 실제 인프라(예: 상태는 Redis/Cosmos, pub/sub는 Service Bus/Kafka, 시크릿은 Key Vault)와 통신한다. 백엔드는 **component YAML**로 선언되어, 앱 코드 변경 없이 교체된다.\n\n### 주요 빌딩 블록\n| Block | 하는 일 | 예시 백엔드 |\n|---|---|---|\n| Service Invocation | mTLS·재시도·서비스 디스커버리 붙은 호출 | 내장 |\n| State Management | key-value 상태 CRUD, 낙관적 동시성(ETag) | Cosmos DB, Redis |\n| Pub/Sub | 토픽 발행·구독, at-least-once | Service Bus, Kafka |\n| Bindings | 외부 이벤트 입출력 트리거 | Storage Queue, Event Hubs |\n| Secrets | 시크릿 추상화 | Key Vault |\n| Actors | Orleans류 가상 액터 경량판 | 상태 저장소 위 |\n\n### 트레이드오프\n- **장점**: 폴리글랏(어떤 언어든 HTTP만 되면 OK), 인프라 결합 분리, mTLS·observability를 공짜로. CNCF graduated 프로젝트로 벤더 종속성도 낮다.\n- **단점**: 사이드카 1홉 추가로 **지연·리소스 오버헤드**가 생기고, 운영해야 할 컴포넌트가 늘어난다. 초저지연·고처리량 핫패스에는 직접 SDK 호출이 더 낫다. 그래서 Microsoft 내부에서도 Dapr는 만능이 아니라 **적합한 워크로드(이벤트 기반 마이크로서비스)에 선택적으로** 쓰인다."
+    },
+    {
+     "topic": "C#에서 Rust로: 시스템 코드의 메모리 안전성 전환",
+     "body": "### 배경 수치\nMicrosoft MSRC 분석에 따르면, 매년 패치되는 보안 취약점의 **약 70%가 메모리 안전성 문제**(use-after-free, buffer overflow 등)였고, 이 대부분은 C/C++ 코드에서 발생했다. .NET(C#)은 GC로 이 문제를 회피하지만, 커널·드라이버·하이퍼바이저·스토리지 엔진처럼 **GC를 둘 수 없는 영역**은 여전히 C++였다.\n\n### Rust 채택 전선\n- **Windows 커널**: 일부 커널 컴포넌트(예: `win32kbase_rs` 그래픽 서브시스템 일부, GDI 영역)를 Rust로 재작성·신규 작성하기 시작했다. GC 없이도 컴파일 타임 소유권(ownership) 검사로 메모리 안전성을 보장하는 점이 핵심 동기다.\n- **Azure 인프라**: 보안 임계·고성능 시스템 데몬, 일부 네트워킹·스토리지 데이터 경로에서 Rust 사용을 확대.\n- **개발자 도구·생태계**: Rust용 분석기, 그리고 사내에서 안전한 C 대체를 추진.\n\n### 왜 전면 재작성이 아닌가 — 트레이드오프\n- 기존 C++/C# 코드베이스는 수억 줄 규모이고 검증된 동작·성능 특성이 있다. **호환성 우선** 문화상 전면 재작성은 리스크가 크다.\n- 따라서 전략은 **점진적**이다: 새 보안 임계 컴포넌트는 Rust로, 기존 핫스팟 중 취약점이 반복되는 모듈을 우선 교체. C++와의 FFI 경계, 빌드 시스템 통합, 사내 Rust 역량 확보가 현실적 비용이다.\n- C#은 여전히 애플리케이션·서비스 계층의 주력으로 남는다. Rust는 'GC를 둘 수 없으면서 메모리 안전성이 필요한' 좁고 중요한 영역을 정확히 겨냥한 선택이다."
     }
    ],
    "github": {
@@ -9706,47 +9745,47 @@
      {
       "name": "microsoft/vscode",
       "url": "https://github.com/microsoft/vscode",
-      "desc": "Electron+TypeScript 기반 VS Code 에디터",
+      "desc": "Electron + TypeScript 기반 코드 에디터, Monaco·LSP의 본진",
       "lang": "TypeScript",
-      "stars": 186308
+      "stars": 186502
      },
      {
       "name": "microsoft/TypeScript",
       "url": "https://github.com/microsoft/TypeScript",
-      "desc": "JavaScript에 정적 타입을 더한 TypeScript 컴파일러",
+      "desc": "JS에 정적 타입을 더한 언어·컴파일러",
       "lang": "TypeScript",
-      "stars": 109250
+      "stars": 109298
      },
      {
       "name": "dapr/dapr",
       "url": "https://github.com/dapr/dapr",
-      "desc": "분산 앱용 사이드카 런타임(상태·pub/sub·서비스호출)",
+      "desc": "마이크로서비스용 분산 애플리케이션 런타임(사이드카)",
       "lang": "Go",
-      "stars": 25822
-     },
-     {
-      "name": "microsoft/fluentui",
-      "url": "https://github.com/microsoft/fluentui",
-      "desc": "React 기반 Fluent 디자인 시스템 컴포넌트",
-      "lang": "TypeScript",
-      "stars": 20052
+      "stars": 25832
      },
      {
       "name": "dotnet/runtime",
       "url": "https://github.com/dotnet/runtime",
-      "desc": ".NET 런타임·CLR·핵심 라이브러리(BCL) 본체",
+      "desc": ".NET CLR·BCL·JIT 런타임 핵심 구현",
       "lang": "C#",
-      "stars": 17967
+      "stars": 17974
+     },
+     {
+      "name": "dotnet/orleans",
+      "url": "https://github.com/dotnet/orleans",
+      "desc": "분산 가상 액터(grain) 프레임워크, 클라우드 상태 서비스의 기반",
+      "lang": "C#",
+      "stars": 10790
      }
     ]
    },
    "sources": [
-    "https://azure.microsoft.com/en-us/blog/advancing-safe-deployment-practices/",
-    "https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels",
-    "https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/"
+    "https://learn.microsoft.com/en-us/azure/architecture/patterns/deployment-stamp",
+    "https://learn.microsoft.com/en-us/dotnet/orleans/overview",
+    "https://msrc.microsoft.com/blog/2019/07/a-proactive-approach-to-more-secure-code/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "salesforce",
@@ -14357,6 +14396,12 @@
       "url": "https://dosanhoon.github.io/posts/interview-review/",
       "summary": "기술 위주라기보다 팀 분위기와의 적합성을 보는 면접으로, React를 리딩할 사람을 찾는 인상이었다. 개발팀 분위기에 대한 질문이 많았고 페어 코딩을 한다는 안내를 받았다.",
       "source": "github.io"
+     },
+     {
+      "title": "Interview tips - 쿠팡 채용 (Coupang Careers)",
+      "url": "https://www.coupang.jobs/en/interview-tips/",
+      "summary": "쿠팡 공식 채용 사이트의 면접 준비 가이드로, 기술 면접의 구성과 라이브 코딩에서 기대하는 역량, 행동(컬쳐핏) 면접 준비 방법을 안내한다. 지원자가 사전에 참고할 수 있는 공식 인터뷰 팁을 제공한다.",
+      "source": "회사블로그(채용 공식)"
      }
     ]
    },
@@ -14370,7 +14415,7 @@
     "https://www.coupang.jobs/en/teams/engineering/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-18"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "tmon",
