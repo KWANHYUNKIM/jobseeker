@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T17:38:05",
+ "generated_at": "2026-06-18T19:24:16",
  "total": 100,
  "countries": [
   {
@@ -2453,15 +2453,15 @@
       "count": 2
      },
      {
-      "name": "Node.js",
-      "count": 2
-     },
-     {
       "name": "Spring Boot",
       "count": 2
      },
      {
       "name": "Apollo",
+      "count": 1
+     },
+     {
+      "name": "Erlang/Elixir",
       "count": 1
      },
      {
@@ -2481,7 +2481,7 @@
       "count": 1
      },
      {
-      "name": "Java",
+      "name": "Helios API",
       "count": 1
      }
     ],
@@ -2495,7 +2495,7 @@
       "count": 2
      },
      {
-      "name": "Apollo GraphQL",
+      "name": "Apollo Client",
       "count": 1
      },
      {
@@ -2504,6 +2504,10 @@
      },
      {
       "name": "Backstage",
+      "count": 1
+     },
+     {
+      "name": "Cosmos",
       "count": 1
      },
      {
@@ -2520,10 +2524,6 @@
      },
      {
       "name": "Redux",
-      "count": 1
-     },
-     {
-      "name": "SwiftUI",
       "count": 1
      }
     ],
@@ -2595,19 +2595,19 @@
       "count": 1
      },
      {
+      "name": "CloudFront",
+      "count": 1
+     },
+     {
       "name": "Custom Video CDN",
       "count": 1
      },
      {
+      "name": "ECS/Nomad-style schedulers",
+      "count": 1
+     },
+     {
       "name": "Eureka",
-      "count": 1
-     },
-     {
-      "name": "GCP",
-      "count": 1
-     },
-     {
-      "name": "Helios",
       "count": 1
      }
     ]
@@ -2622,7 +2622,7 @@
      "count": 1
     },
     {
-     "name": "Edge video delivery via custom CDN",
+     "name": "Edge-first video delivery via custom global CDN",
      "count": 1
     },
     {
@@ -8591,44 +8591,49 @@
    "stack": {
     "backend": [
      "Java",
-     "Apollo (Spotify OSS framework)",
+     "Apollo (Spotify OSS microservice framework)",
      "gRPC",
      "Protobuf",
-     "Spring Boot (일부)"
+     "Spring Boot (일부)",
+     "Helios API (레거시)"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Backstage",
-     "Web Playback SDK"
+     "Web Playback SDK",
+     "Cosmos (on-device API 레이어)"
     ],
     "data": [
      "Cassandra",
      "BigQuery",
      "Google Pub/Sub",
-     "Scio (Apache Beam Scala)",
+     "Scio (Apache Beam Scala SDK)",
      "Apache Flink",
+     "Bigtable",
      "Apache Storm (레거시)",
-     "Luigi (레거시 워크플로)"
+     "Luigi (레거시 워크플로)",
+     "Flyte/Kubeflow (ML)"
     ],
     "infra": [
      "Google Cloud Platform (GCP)",
      "Kubernetes (GKE)",
      "Backstage",
      "Tingle (CI)",
-     "Helios (구 컨테이너 오케스트레이터, 폐기됨)"
+     "Fleetshift (대규모 코드 마이그레이션)",
+     "Helios (폐기된 컨테이너 오케스트레이터)"
     ]
    },
    "architecture": [
-    "Microservices",
+    "Microservices (수천 개)",
     "Event-driven (Pub/Sub 기반)",
     "Squad/Tribe 자율 조직 (역콘웨이)",
-    "데이터 메시/배치+스트리밍 람다 지향"
+    "배치+스트리밍 데이터 메시"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Desktop / Mobile / Web<br/>Web Playback SDK\"]\n    CDN[\"Audio CDN<br/>Ogg Vorbis chunks\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"Edge / Gateway<br/>Envoy + gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Java + Apollo\"]\n    PLAY[\"Playback / Access<br/>Service\"]\n    REC[\"Recommendation<br/>BaRT (RL + CF)\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    PS[\"Event Delivery<br/>Google Pub/Sub\"]\n    BEAM[\"Scio + Dataflow<br/>Apache Beam\"]\n    FLINK[\"Apache Flink<br/>realtime\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    CASS[\"Cassandra<br/>online state\"]\n    BQ[\"BigQuery<br/>analytics warehouse\"]\n    GCS[\"Cloud Storage<br/>audio + data lake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    GKE[\"Kubernetes<br/>GKE on GCP\"]\n    BS[\"Backstage<br/>developer portal\"]\n  end\n  APP -->|gRPC| GW\n  APP -->|HTTPS range| CDN\n  GW --> SVC\n  SVC --> PLAY\n  SVC --> REC\n  PLAY --> CASS\n  SVC -->|emit events| PS\n  PS --> BEAM\n  PS --> FLINK\n  BEAM --> BQ\n  REC --> BQ\n  REC --> CASS\n  CDN --> GCS\n  SVC --- GKE\n  SVC --- BS",
-   "why_language": "수억 명의 동시 재생 트래픽과 수천 개 마이크로서비스를 안정적으로 운영해야 하므로, JVM 생태계(Java/Scala)의 성숙한 동시성·툴링·운영 노하우를 백본으로 삼는다. 대규모 데이터 파이프라인은 Beam을 함수형으로 다루기 좋은 Scala(Scio)와 ML·분석에 강한 Python을 쓰고, 개발자 도구·웹은 TypeScript, 일부 인프라성 서비스는 가볍고 배포가 단순한 Go로 작성한다.",
-   "why_architecture": "Spotify는 'Squad/Tribe' 자율 조직이 각자 서비스를 독립 배포·운영할 수 있도록 마이크로서비스를 선택했으며, 이는 조직 구조가 시스템 구조를 결정한다는 역콘웨이 전략의 산물이다. 재생·좋아요·스킵 같은 사용자 행동을 Pub/Sub 이벤트로 흘려보내 추천·분석·과금이 느슨하게 결합된 이벤트 기반 아키텍처로 확장성과 장애 격리를 동시에 확보한다.",
-   "summary": "GCP 위 JVM 마이크로서비스 + Pub/Sub 이벤트 + Beam/BigQuery 데이터 플랫폼, 그리고 이 카오스를 Backstage로 통제하는 회사",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile/Desktop App<br/>Cosmos on-device API\"]\n    WEB[\"Web Player<br/>React + Web Playback SDK\"]\n    CDN[\"Audio CDN<br/>Edge Cache + Ogg/Vorbis\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    EDGE[\"Edge / Perimeter<br/>gRPC + Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Java + Apollo + gRPC/Protobuf\"]\n    REC[\"Recommendation (BaRT)<br/>Scala + ML\"]\n    SEARCH[\"Search Service<br/>Java + Inverted Index\"]\n  end\n  subgraph Storage[\"Data / Storage\"]\n    CASS[\"Cassandra<br/>User/Playback State\"]\n    BT[\"Bigtable<br/>Feature Store\"]\n    BQ[\"BigQuery<br/>Analytics Warehouse\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    PS[\"Google Pub/Sub<br/>Event Bus\"]\n    BEAM[\"Scio / Apache Beam<br/>Dataflow Batch+Stream\"]\n    FLINK[\"Apache Flink<br/>Realtime Processing\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    GKE[\"GKE on GCP<br/>Kubernetes\"]\n    BS[\"Backstage<br/>Developer Portal\"]\n    CI[\"Tingle + Fleetshift<br/>CI / Fleet Migration\"]\n  end\n  APP -->|gRPC| EDGE\n  WEB -->|gRPC-web| EDGE\n  APP -->|HTTP range| CDN\n  EDGE --> SVC\n  SVC --> REC\n  SVC --> SEARCH\n  SVC --> CASS\n  REC --> BT\n  SVC -->|emit events| PS\n  PS --> BEAM\n  PS --> FLINK\n  BEAM --> BQ\n  FLINK --> BT\n  SVC --- GKE\n  GKE --- BS\n  GKE --- CI",
+   "why_language": "수억 사용자의 동시 스트리밍 트래픽을 안정적으로 처리하기 위해 JVM 생태계(Java)를 백엔드 서비스의 기본으로 삼고, 대규모 데이터·추천 파이프라인은 함수형·동시성 표현이 강한 Scala(Scio/Beam)로 작성한다. 데이터 사이언스/ML과 클라이언트 도구는 Python·TypeScript로, 인프라성 플랫폼 도구 일부는 Go로 보완해 각 도메인에 맞는 언어를 선택하는 폴리글랏 전략을 취한다.",
+   "why_architecture": "독립 배포 가능한 수천 개 마이크로서비스를 Squad/Tribe라는 자율 조직이 소유하게 하여(역콘웨이 전략) 조직 확장과 시스템 확장을 동시에 달성한다. 재생·좋아요·스킵 같은 사용자 행동을 Pub/Sub 이벤트로 흘려보내 추천·분석·집계를 비동기 분리함으로써, 실시간 응답성과 대규모 배치 분석을 한 람다형 데이터 플랫폼에서 함께 처리한다.",
+   "summary": "GCP 위에서 Java/Apollo 마이크로서비스와 Scala/Beam 데이터 메시를 Backstage로 통제하는 폴리글랏 스트리밍 플랫폼",
    "deep_dive": [
     {
      "topic": "이벤트 전달 시스템: 재생 1회가 데이터로 흐르는 길",
@@ -8661,6 +8666,18 @@
     {
      "topic": "관측성과 배포: 수천 개 마이크로서비스를 운영 가능하게 만드는 플랫폼",
      "body": "### 'Golden Path' — 자율성과 표준화의 균형\n\nSquad들이 완전 자율적으로 기술을 고르면 운영이 카오스가 된다. Spotify는 **Golden Path**라 부르는 '권장 기술 조합 + 자동화된 시작점'을 제공해, 새 서비스를 만들면 **CI/CD·모니터링·로깅·헬스체크·보안 기본값이 처음부터 붙어 나오게** 한다. 이 골든 패스의 사용자 진입점이 바로 **Backstage**의 소프트웨어 템플릿(Scaffolder)이다.\n\n### CI/CD: Tingle와 컨테이너 진화\n\n- Spotify는 자체 CI 시스템 **Tingle**을 운영해 왔고, 빌드·테스트·배포 파이프라인을 표준화했다.\n- 컨테이너 오케스트레이션은 초기에 자체 도구 **Helios**(Docker 기반)를 썼지만, 업계가 Kubernetes로 수렴하자 **GKE(Kubernetes on GCP)** 로 이전했다. 'NIH(자체 제작)에서 표준 매니지드로'라는 큰 흐름의 일부다.\n- 배포는 서비스 단위로 독립적이며, 위험을 줄이기 위해 **점진적 롤아웃/카나리** 패턴을 활용한다(문제 시 빠른 롤백).\n\n### 메트릭·트레이싱·로깅\n\n수천 서비스가 서로 gRPC로 호출하는 환경에서는 **분산 트레이싱**이 필수다. 한 번의 사용자 요청(예: 홈 화면 로드)이 수십 개 서비스를 거치므로, 트레이스 ID로 전체 호출 그래프를 따라가며 어디서 지연이 생겼는지 본다. 메트릭은 시계열 시스템으로 모아 **SLO/대시보드/알림**을 구성하고, 로그는 중앙 집중식으로 수집·검색한다. Spotify는 이런 관측성 신호도 Golden Path를 통해 **서비스 생성 시 자동 계측**되도록 만들어, 팀이 별도 설정 없이도 기본 관측성을 얻게 한다.\n\n### 핵심 철학\n\nSpotify 플랫폼 엔지니어링의 일관된 메시지는 **'개발자 경험(DevEx)이 곧 확장성'** 이다. 서비스가 수천 개로 늘어도 각 팀이 빠르고 안전하게 움직이려면, 인프라 복잡도를 **포털(Backstage)·골든 패스·매니지드 클라우드** 뒤로 추상화해 인지 부하를 낮추는 것이 곧 시스템 확장 전략이라는 입장이다."
+    },
+    {
+     "topic": "Fleetshift: 수천 개 리포지토리를 한 번에 고치는 함대(Fleet) 관리",
+     "body": "### 문제: 마이크로서비스의 '버전 지옥'\n\nSpotify는 수천 개의 마이크로서비스와 그만큼의 Git 리포지토리를 운영한다. 자율 조직(Squad) 모델 덕분에 개발 속도는 빨라졌지만, 대가가 있다. 보안 패치, 공통 라이브러리 버전 업, 빌드 설정 변경 같은 **횡단(cross-cutting) 변경**을 적용하려면 수천 개 리포에 똑같은 PR을 일일이 보내야 한다. 한 팀이 `Apollo` 프레임워크 보안 취약점을 고쳐도, 그 패치가 전체 함대에 퍼지는 데 몇 달이 걸리는 식이다.\n\n### Fleetshift의 동작 원리\n\nSpotify는 이를 **Fleet Management**라는 플랫폼 역량으로 끌어올렸고, 핵심 엔진이 `Fleetshift`다. 동작은 대략 이렇다.\n\n- **변환(transform)을 코드로 정의**: 변경하려는 내용을 컨테이너 이미지로 패키징한다. 이 컨테이너는 '리포 하나를 입력받아 변경된 리포를 출력하는' 순수 함수처럼 동작한다. 예: `pom.xml`의 의존성 버전을 bump하거나, deprecated API 호출을 정규식/AST로 치환.\n- **대규모 팬아웃 실행**: Fleetshift가 대상 리포 목록 전체에 대해 이 변환 컨테이너를 병렬 실행한다. 각 실행은 격리된 환경에서 돌고, 결과로 Git 커밋(diff)을 만들어낸다.\n- **자동 PR + 자동 머지**: 생성된 변경은 PR로 올라가고, CI(`Tingle`)가 통과하면 정책에 따라 **사람 개입 없이 자동 머지**될 수 있다. 빌드가 깨지는 리포는 자동으로 걸러져 소유 팀에 알림이 간다.\n\n### 왜 이게 큰 결정인가\n\n핵심 트레이드오프는 **'자율성 vs 일관성'**이다. 순수한 Squad 자율 모델에서는 각 팀이 자기 의존성을 알아서 관리하지만, 그러면 함대 전체의 보안·기술부채가 통제 불능이 된다. Fleetshift는 \"개별 팀이 직접 고치지 않아도, 중앙 플랫폼 팀이 안전하게 함대 전체를 한꺼번에 옮길 수 있다\"는 모델로 이를 해결한다. 실제로 Spotify는 이 방식으로 수만 건의 자동 PR을 만들고 대부분을 자동 머지하여, 과거 수개월 걸리던 함대 차원의 마이그레이션을 며칠 단위로 단축했다고 공개했다. 이는 '코드를 손으로 고치는 것'을 '함대에 변환을 배포하는 것'으로 재정의한 사고의 전환이다."
+    },
+    {
+     "topic": "Confidence: A/B 테스트와 실험 플랫폼이 제품 결정을 지배하는 법",
+     "body": "### Spotify는 '느낌'이 아니라 '실험'으로 결정한다\n\nSpotify의 거의 모든 제품 변경 — 새 추천 셸프, UI 색상, 자동재생 로직 — 은 전면 출시 전에 **A/B 테스트**를 거친다. 한때 동시에 수백 개의 실험이 돌아갈 정도로 실험 문화가 깊다. 이를 떠받치는 것이 사내 실험 플랫폼이며, 최근에는 `Confidence`라는 이름으로 일부를 외부에도 공개했다.\n\n### 실험이 데이터로 흐르는 길\n\n1. **할당(assignment)**: 사용자가 앱을 열면 실험 플랫폼이 해당 사용자를 특정 실험의 특정 그룹(control/treatment)에 결정론적으로 배정한다. 같은 사용자는 항상 같은 그룹에 들어가도록 해시 기반으로 버킷팅한다.\n2. **노출·행동 로깅**: 사용자의 재생/스킵/저장 같은 행동 이벤트가 클라이언트에서 발생해 `Google Pub/Sub` 이벤트 버스로 들어간다(이미 다룬 이벤트 전달 시스템 위에 올라탄다).\n3. **메트릭 집계**: 이 이벤트들이 `Scio`/`Apache Beam` 파이프라인을 거쳐 `BigQuery`에 적재되고, 실험 그룹별 지표(예: 일일 청취 시간, 리텐션)가 계산된다.\n4. **통계적 판정**: 플랫폼이 그룹 간 차이가 통계적으로 유의한지(신뢰구간, p-value 등)를 자동 산출한다. 핵심은 **여러 실험이 동시에 같은 사용자에게 겹쳐 돌 때** 상호 간섭을 통제하는 것 — 직교(orthogonal) 레이어로 실험을 분리해 한 사용자가 여러 독립 실험에 동시에 참여하면서도 결과가 오염되지 않게 한다.\n\n### 엔지니어링 트레이드오프\n\n- **속도 vs 신뢰성**: 빠르게 실험을 켜고 끄려면 할당 로직이 가볍고 결정론적이어야 한다. 그래서 무거운 서버 라운드트립 대신 SDK 수준에서 버킷팅이 이뤄지는 경우가 많다.\n- **메트릭의 진실성**: 같은 행동 이벤트가 추천 학습, 분석, 실험 판정에 **재사용**된다. 따라서 이벤트 스키마(`Protobuf`)의 일관성과 정확한 전달 보장이 실험 신뢰성의 토대가 된다. 데이터가 한 군데서 틀어지면 제품 의사결정 전체가 틀어지기 때문이다."
+    },
+    {
+     "topic": "Cosmos: 클라이언트 안에 들어있는 '미니 백엔드'",
+     "body": "### 모바일 앱이 그냥 UI가 아닌 이유\n\nSpotify 모바일/데스크톱 앱은 단순히 서버를 호출하는 얇은 화면이 아니다. 내부적으로 `Cosmos`라 불리는 **온디바이스(on-device) 로컬 서비스 레이어**를 품고 있다. 즉, 기기 안에 작은 HTTP/메시지 라우터와 여러 네이티브 모듈이 돌고, UI(React Native나 네이티브 뷰)는 이 로컬 레이어에 마치 백엔드 API를 호출하듯 요청을 보낸다.\n\n### 왜 클라이언트 안에 백엔드를 넣었나\n\n핵심 동기는 **오프라인·끊김 없는 재생 경험**과 **플랫폼 간 로직 재사용**이다.\n\n- **네트워크 추상화**: UI는 '지금 재생 중인 트랙 메타데이터를 줘'라고 Cosmos에 요청한다. Cosmos는 그것이 로컬 캐시에서 올지, 디스크의 오프라인 다운로드에서 올지, 아니면 원격 백엔드에서 가져올지를 **UI 대신 결정**한다. 덕분에 지하철에서 신호가 끊겨도 UI 코드는 바뀔 필요가 없다.\n- **C++ 코어 공유**: 플레이어 핵심 로직(버퍼링, 디코딩 조율, 캐시 관리)은 성능과 일관성을 위해 상당 부분 **C++로 작성된 공용 코어**에 있고, iOS/Android/데스크톱이 이를 공유한다. Cosmos는 이 네이티브 코어와 플랫폼별 UI 사이의 다리 역할을 한다.\n\n### 동작 흐름 예시 (재생 버튼)\n\n```\nUI(재생 탭) → Cosmos(player endpoint 호출)\n  → 네이티브 플레이어 코어가 캐시/CDN에서 오디오 청크 확보\n  → 디코드·버퍼링\n  → 재생 상태 변화를 Cosmos 이벤트로 UI에 다시 통지(구독 모델)\n```\n\n### 트레이드오프\n\nUI와 로직을 로컬 API 경계로 분리하면 **플랫폼 일관성**과 **테스트 용이성**이 크게 오른다(로직을 한 번 작성해 여러 OS에서 재사용). 대신 기기 안에서 서비스 지향 구조를 운영하는 복잡도가 생기고, 네이티브 코어와 UI 사이의 직렬화/IPC 비용을 감수해야 한다. Spotify는 '재생은 절대 끊기면 안 된다'는 제품 원칙을 위해 이 복잡도를 받아들였다."
     }
    ],
    "github": {
@@ -8669,47 +8686,47 @@
      {
       "name": "backstage/backstage",
       "url": "https://github.com/backstage/backstage",
-      "desc": "내부 개발자 포털을 표준화한 오픈소스 플랫폼, CNCF 졸업 프로젝트",
+      "desc": "마이크로서비스 카오스를 통제하는 개발자 포털 — CNCF 졸업 프로젝트",
       "lang": "TypeScript",
-      "stars": 33603
+      "stars": 33645
      },
      {
       "name": "spotify/luigi",
       "url": "https://github.com/spotify/luigi",
-      "desc": "복잡한 배치 작업 의존성을 관리하는 Python 워크플로 엔진",
+      "desc": "배치 잡 의존성·워크플로 오케스트레이션 (레거시지만 영향력 큰 OSS)",
       "lang": "Python",
-      "stars": 18742
+      "stars": 18743
      },
      {
-      "name": "spotify/annoy",
-      "url": "https://github.com/spotify/annoy",
-      "desc": "음악 추천용 근사 최근접 이웃(ANN) 검색 라이브러리",
-      "lang": "C++",
-      "stars": 14251
+      "name": "spotify/dockerfile-maven",
+      "url": "https://github.com/spotify/dockerfile-maven",
+      "desc": "Maven 빌드에서 Docker 이미지를 만드는 플러그인",
+      "lang": "Java",
+      "stars": 2739
      },
      {
       "name": "spotify/scio",
       "url": "https://github.com/spotify/scio",
-      "desc": "Apache Beam을 위한 Scala API로 대규모 배치/스트리밍 파이프라인 작성",
+      "desc": "Apache Beam을 위한 Scala API — Spotify 데이터 파이프라인의 핵심",
       "lang": "Scala",
-      "stars": 2627
+      "stars": 2628
      },
      {
-      "name": "spotify/apollo",
-      "url": "https://github.com/spotify/apollo",
-      "desc": "Spotify가 마이크로서비스를 작성하는 Java HTTP/RPC 프레임워크",
+      "name": "spotify/docker-client",
+      "url": "https://github.com/spotify/docker-client",
+      "desc": "JVM용 Docker API 클라이언트 — Helios 시절 컨테이너 운영의 산물",
       "lang": "Java",
-      "stars": 1645
+      "stars": 1433
      }
     ]
    },
    "sources": [
     "https://engineering.atspotify.com/",
     "https://backstage.io/",
-    "https://cloud.google.com/blog/products/data-analytics/spotify-chooses-google-cloud-platform"
+    "https://github.com/spotify/scio"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "twitch",
@@ -8726,17 +8743,19 @@
    "stack": {
     "backend": [
      "Go services",
-     "Twirp (RPC)",
+     "Twirp (RPC over HTTP/1.1+Protobuf)",
      "gRPC",
      "GraphQL gateway",
-     "Node.js (BFF)"
+     "Node.js BFF",
+     "Erlang/Elixir (legacy chat)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Apollo GraphQL",
+     "Apollo Client (GraphQL)",
      "Redux",
-     "WebRTC"
+     "WebRTC",
+     "Service Workers"
     ],
     "data": [
      "DynamoDB",
@@ -8744,26 +8763,29 @@
      "Apache Kafka",
      "Redis",
      "Elasticsearch",
-     "Amazon S3"
+     "Amazon S3",
+     "Redshift"
     ],
     "infra": [
      "AWS (EC2/EKS)",
      "Kubernetes",
      "Custom Video CDN (POP edge)",
-     "HLS/LHLS delivery",
-     "Spade/event pipeline"
+     "HLS/LHLS/LL-HLS delivery",
+     "Spade event pipeline",
+     "ECS/Nomad-style schedulers",
+     "CloudFront (fallback)"
     ]
    },
    "architecture": [
-    "Microservices (Go + Twirp service mesh)",
-    "Real-time streaming (ingest→transcode→edge)",
-    "Event-driven pub/sub fan-out",
-    "Edge video delivery via custom CDN"
+    "Microservices (Go + Twirp service mesh on AWS)",
+    "Real-time video pipeline (ingest → transcode → packaging → edge)",
+    "Event-driven pub/sub fan-out (Kafka + Spade)",
+    "Edge-first video delivery via custom global CDN"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    BR[\"Web/Mobile/TV<br/>React + TypeScript\"]\n    OBS[\"Broadcaster<br/>OBS / RTMP encoder\"]\n  end\n  subgraph Edge\n    ING[\"Ingest PoP<br/>RTMP/SRT receivers\"]\n    CDN[\"Video Edge CDN<br/>Custom PoP + HLS\"]\n  end\n  subgraph Gateway\n    GQL[\"API Gateway<br/>GraphQL + BFF Node.js\"]\n    EDGE[\"Edge Auth<br/>Twitch Edge service\"]\n  end\n  subgraph Core\n    TRANS[\"Transcoder<br/>C++/FFmpeg + GPU\"]\n    CHAT[\"Chat (TMI)<br/>Go pub/sub fan-out\"]\n    SVC[\"Core Services<br/>Go + Twirp/gRPC\"]\n    PUBSUB[\"PubSub/EventSub<br/>Go realtime push\"]\n  end\n  subgraph Data\n    DDB[\"DynamoDB<br/>users/streams KV\"]\n    AUR[\"Aurora MySQL<br/>relational\"]\n    RDS[\"Redis<br/>cache/presence\"]\n    ES[\"Elasticsearch<br/>search/discovery\"]\n  end\n  subgraph Async\n    KAFKA[\"Kafka / Spade<br/>event pipeline\"]\n    S3[\"S3<br/>VOD/clips storage\"]\n  end\n  OBS -->|RTMP| ING\n  ING --> TRANS\n  TRANS -->|HLS segments| CDN\n  TRANS --> S3\n  CDN -->|video| BR\n  BR -->|GraphQL| GQL\n  GQL -->|Twirp| SVC\n  GQL --> EDGE\n  BR -->|WebSocket| CHAT\n  CHAT --> PUBSUB\n  PUBSUB --> BR\n  SVC --> DDB\n  SVC --> AUR\n  SVC --> RDS\n  SVC --> ES\n  SVC --> KAFKA\n  CHAT --> KAFKA\n  KAFKA --> ES",
-   "why_language": "Twitch는 수천 개의 동시 라이브 스트림과 수백만 동시 시청자·채팅을 다뤄야 해서, 가벼운 고루틴 동시성과 빠른 컴파일을 제공하는 Go를 백엔드 서비스 메시의 기본 언어로 삼았다. 비디오 트랜스코딩·인제스트처럼 CPU/GPU 바운드의 초저지연 경로는 C++(FFmpeg 기반)로, 시청자 대면 UI는 React/TypeScript로 구성하며, 데이터 파이프라인·도구는 Python, 일부 성능 핫패스는 Rust를 도입했다.",
-   "why_architecture": "라이브 영상이라는 도메인 특성상 송출(ingest)·트랜스코딩·엣지 배포·채팅이 각기 다른 확장 곡선을 가지므로, 이를 독립 배포·확장 가능한 Go 마이크로서비스로 쪼개고 Twirp/gRPC로 연결했다. 영상은 자체 PoP 기반 CDN으로 시청자에 가까운 엣지에서 HLS로 전달해 지연과 대역폭 비용을 통제하고, 채팅·이벤트는 Kafka와 pub/sub 팬아웃으로 비동기 처리해 동시 시청 폭주(드롭 이벤트 등)에도 견딘다.",
-   "summary": "Go 마이크로서비스 + 자체 비디오 CDN으로 초대형 라이브 스트리밍과 실시간 채팅을 동시에 굴리는 미디어 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Player\"]\n    BR[\"Web/Mobile<br/>React + TypeScript\"]\n    PL[\"Video Player<br/>HLS/LL-HLS + WebRTC\"]\n    BC[\"Broadcaster<br/>OBS RTMP/SRT\"]\n  end\n  subgraph Edge[\"Edge / CDN\"]\n    POP[\"Custom Video CDN<br/>POP Edge Cache\"]\n    ING[\"Ingest PoP<br/>RTMP/SRT Receiver\"]\n  end\n  subgraph API[\"API / Gateway\"]\n    GQL[\"GraphQL Gateway<br/>Node.js BFF\"]\n    EDGE[\"Edge API<br/>Go\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Go + Twirp/gRPC\"]\n    CHAT[\"Chat Service<br/>Go (legacy Erlang)\"]\n    TRANS[\"Transcoder<br/>C++/Rust ABR\"]\n    PKG[\"Packager<br/>HLS Segmenter\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"DynamoDB<br/>KV/metadata\"]\n    SQL[\"Aurora/MySQL<br/>relational\"]\n    RDS[\"Redis<br/>cache/presence\"]\n    ES[\"Elasticsearch<br/>search/discovery\"]\n    S3[\"Amazon S3<br/>VOD/clips\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAF[\"Apache Kafka<br/>event bus\"]\n    SPADE[\"Spade<br/>event ingest\"]\n    RS[\"Redshift<br/>analytics\"]\n  end\n  BC -->|RTMP/SRT| ING\n  ING --> TRANS\n  TRANS --> PKG\n  PKG --> S3\n  PKG --> POP\n  POP -->|HLS| PL\n  BR --> GQL\n  PL --> EDGE\n  GQL -->|Twirp| SVC\n  EDGE -->|Twirp| SVC\n  BR -->|WebSocket| CHAT\n  SVC --> DDB\n  SVC --> SQL\n  SVC --> RDS\n  SVC --> ES\n  CHAT --> RDS\n  SVC -->|events| KAF\n  BR -->|telemetry| SPADE\n  SPADE --> KAF\n  KAF --> RS",
+   "why_language": "Go는 수만 개의 동시 연결과 stream-by-stream 팬아웃을 가벼운 goroutine으로 처리하고 컴파일 단순성·낮은 GC 지연 덕에 Twitch 마이크로서비스 메시의 기본 언어가 되었다. 비디오 트랜스코딩·패키징처럼 CPU 바운드의 초저지연 경로는 C++/Rust로, 데이터·ML·운영 스크립팅은 Python으로, 풍부한 실시간 UI는 TypeScript/React로 역할을 나눠 도메인별 강점을 취한다.",
+   "why_architecture": "라이브 스트리밍은 '송출→트랜스코드→패키징→엣지 전달'이라는 강한 단방향 파이프라인과, 채팅·디스커버리·추천처럼 독립적으로 스케일해야 하는 기능들이 공존하기 때문에 Go+Twirp 기반 마이크로서비스 메시로 분리했다. 동시 시청 폭주와 분석 신호는 Kafka·Spade 이벤트 파이프라인으로 비동기 흡수하고, 글로벌 지연을 줄이기 위해 자체 POP CDN으로 엣지에서 직접 비디오를 배포한다.",
+   "summary": "Go+Twirp 마이크로서비스와 자체 글로벌 비디오 CDN으로 굴러가는 초저지연 라이브 스트리밍 플랫폼",
    "deep_dive": [
     {
      "topic": "라이브 비디오 파이프라인: 송출부터 시청까지 end-to-end",
@@ -8796,6 +8818,22 @@
     {
      "topic": "관측성과 복원력: 서비스 메시에서의 장애 대응",
      "body": "### 수많은 Go 서비스의 가시성 확보\n수백 개의 Go 마이크로서비스가 `Twirp`/`gRPC`로 얽혀 있으면 한 요청이 여러 서비스를 거치므로, **분산 트레이싱·메트릭·구조적 로깅**이 없으면 장애 원인 파악이 불가능하다. Twitch는 요청에 trace context를 전파해 서비스 경계를 가로지르는 호출 체인을 따라가고, 서비스별 RED 메트릭(Rate·Errors·Duration)을 수집한다.\n\n### 프로덕션 디버깅 도구\nTwitch는 살아있는 Go 프로세스를 안전하게 들여다보기 위한 도구를 자체 개발했다. 공개된 **igvm**(twitchtv/igvm)은 Delve 기반으로 프로덕션 Go 서비스에 디버거를 붙이는 접근을 보여준다. 이는 '재현이 어려운 라이브 환경 버그'를 다루는 미디어 플랫폼 특유의 필요에서 나온 결정이다.\n\n### 복원력 패턴\n- **Timeout/Deadline 전파**: Twirp/gRPC 호출에 deadline을 걸어 느린 다운스트림이 상위 요청을 무한 대기시키지 않게 한다.\n- **Circuit breaker / 부하 차단(load shedding)**: 다운스트림이 과부하면 빠르게 실패시키고, 비핵심 기능(예: 추천, 부가 메타데이터)을 우선 degrade해 핵심 경로(영상 재생·채팅)를 보호한다.\n- **Graceful degradation**: 트랜스코딩 자원이 부족하면 source-only로 떨어뜨리는 것처럼, '전부 멈추기'보다 '품질을 낮춰 계속 제공'을 택한다.\n\n### 대형 이벤트 대응\n드롭(Drops) 캠페인이나 대형 e스포츠 중계처럼 동시 시청·채팅이 폭증하는 순간엔, 사전 용량 예약과 오토스케일링, 채팅 팬아웃 샤딩, 비핵심 쓰기 경로의 비동기화로 스파이크를 흡수한다. 핵심은 **영상과 채팅이라는 두 실시간 경로의 가용성을 최우선으로 지키는 것**이다."
+    },
+    {
+     "topic": "GraphQL 게이트웨이와 BFF: 단일 엔드포인트 뒤의 수백 개 Twirp 서비스",
+     "body": "### Twitch가 REST 대신 GraphQL을 택한 이유\n\nTwitch의 웹/모바일/콘솔/TV 앱은 모두 화면 한 장을 그리기 위해 **채널 메타데이터, 스트림 상태, 팔로우 여부, 추천, 채팅 권한, 구독/비트 잔액, 광고 정책** 등 수십 개의 도메인 데이터를 동시에 필요로 한다. 과거 REST 시절에는 한 화면을 위해 클라이언트가 10~20개의 엔드포인트를 직렬/병렬로 호출했고, 모바일 네트워크에서 round-trip 폭증과 over-fetching이 심각했다. 그래서 Twitch는 단일 **GraphQL Gateway**로 수렴했다.\n\n### 계층 구조\n\n```\nClient(React/Apollo) → GraphQL Gateway(Node.js BFF) → Twirp/gRPC → Go microservices → DynamoDB/Aurora/Redis\n```\n\n- **GraphQL Gateway**는 클라이언트가 보낸 단일 쿼리를 파싱해, 필드별로 뒤단의 **Go 마이크로서비스 수십~수백 개를 Twirp 호출로 fan-out** 한다.\n- 각 GraphQL `type`의 resolver는 내부적으로 특정 서비스의 Twirp 클라이언트를 호출하는 thin wrapper다. 즉 GraphQL 스키마는 '도메인 서비스들의 합성 뷰(composed view)'다.\n- 게이트웨이는 Node.js로 작성된 **BFF(Backend-for-Frontend)** 성격이라, 화면 지향적 데이터 가공·인증 토큰 검증·퍼시스티드 쿼리(persisted queries) 화이트리스트를 담당한다.\n\n### N+1 문제와 DataLoader 배칭\n\nGraphQL의 고질병인 N+1 (예: 추천 목록 20개 채널 각각에 대해 broadcaster 정보 20번 조회)을 막기 위해 **per-request DataLoader** 패턴으로 같은 tick 안의 요청을 batch + dedupe 한다. 게이트웨이가 동일 서비스에 대한 다수의 단건 조회를 모아 `BatchGet`성 Twirp 호출 한 번으로 누른다. 이게 DynamoDB의 `BatchGetItem`과 잘 맞아떨어진다.\n\n### 퍼시스티드 쿼리(Automatic Persisted Queries)\n\n매 요청마다 긴 GraphQL 쿼리 문자열을 보내면 대역폭 낭비 + 임의 쿼리로 인한 보안/비용 리스크가 있다. Twitch는 클라이언트가 **쿼리의 SHA-256 해시만 전송**하고 게이트웨이가 등록된 쿼리만 실행하는 APQ를 적극 사용한다. 이는 (1) 모바일 페이로드 감소, (2) 악의적/예상치 못한 고비용 쿼리 차단, (3) 캐시 키 안정화의 세 가지를 동시에 잡는다.\n\n### 트레이드오프\n\n| 항목 | 이득 | 비용 |\n|---|---|---|\n| 단일 GraphQL 엔드포인트 | 클라이언트 단순화, over/under-fetch 제거 | 게이트웨이가 SPOF·병목 → 수평 확장 필수 |\n| BFF in Node.js | 프론트팀이 빠르게 화면용 가공 | Go 서비스와 언어 이원화, 게이트웨이 GC 지연 관리 |\n| Resolver fan-out | 도메인 서비스 독립 배포 | 한 쿼리의 지연이 가장 느린 서비스에 묶임(tail latency) |\n\n결국 GraphQL은 'API 표면', Twirp는 '서비스 간 내부 배선'이라는 명확한 역할 분담이 Twitch 백엔드의 핵심 골격이다."
+    },
+    {
+     "topic": "VOD·클립·하이라이트: 라이브에서 영구 저장 미디어로의 전환",
+     "body": "### 라이브와 VOD는 같은 세그먼트에서 갈라진다\n\nTwitch의 강점은 라이브지만 트래픽의 상당 부분은 **VOD(다시보기), Clips(클립), Highlights**다. 핵심 설계 원칙은 *'라이브 송출 중에 생성되는 HLS 세그먼트를 그대로 재활용한다'*는 것이다.\n\n```\nIngest → Transcoder(ABR ladder) → Packager(HLS segments .ts/.fmp4)\n   ├─(실시간)→ Edge POP → 시청자\n   └─(병렬 저장)→ Amazon S3 → VOD 인덱스(DynamoDB) → VOD 재생\n```\n\n패키저가 만든 각 세그먼트는 엣지로 흘러가는 동시에 **S3에 비동기로 적재**되고, 세그먼트의 순서·타임스탬프·화질 래더 정보가 **DynamoDB의 VOD manifest 인덱스**에 기록된다. 방송이 끝나면 이 인덱스를 이어붙여 하나의 연속 VOD 플레이리스트로 봉인한다. 즉 VOD는 '라이브의 부산물'이라 추가 트랜스코딩 비용이 거의 없다.\n\n### Clips: 사용자가 만드는 초단위 잘라내기\n\n클립은 시청자가 '방금 그 장면'을 즉석에서 자르는 기능인데, 라이브에서 가장 어려운 부분은 **이미 흘러간 과거 구간을 잡아야 한다**는 점이다. 이를 위해 엣지/오리진에 **수십 초~수 분 길이의 DVR 윈도우(슬라이딩 버퍼)** 를 유지한다. 사용자가 클립을 누르면:\n\n1. 클립 서비스가 요청 시각 기준 과거 N초의 세그먼트 범위를 DVR 윈도우/S3에서 식별\n2. 해당 세그먼트들을 잘라 독립 미디어로 **재패키징(remux, 보통 재인코딩 없이 stream copy)**\n3. 결과물을 S3에 저장하고 별도 CDN 경로로 공개\n4. 썸네일 생성 + 메타데이터를 검색 인덱스(Elasticsearch)에 등록\n\n재인코딩 없이 컨테이너만 다시 묶기 때문에 클립 생성이 수 초 내로 끝나고, 공유 시 폭발적으로 발생하는 읽기 트래픽은 일반 CDN 캐시로 흡수한다.\n\n### 저장·수명주기 트레이드오프\n\n- VOD는 채널 등급(파트너/일반)에 따라 **보존 기간 정책**이 다르고, S3 **lifecycle 정책**으로 오래된 VOD를 저비용 스토리지로 내리거나 만료시켜 비용을 통제한다.\n- 클립은 영구 보존 성향이 강해 '바이럴 → 장기 트래픽'을 가정하고 CDN 친화적 불변(immutable) 객체로 다룬다.\n- 핵심 트레이드오프는 *스토리지 비용 vs 사용자 기대*: 모든 방송을 무한 보존하면 S3 비용이 폭발하므로, 라이브의 가치(휘발적)와 클립의 가치(영구적 바이럴)를 분리해 정책을 차등 적용한다."
+    },
+    {
+     "topic": "광고 삽입(SSAI)과 수익화 파이프라인: 비트·구독·서버사이드 광고",
+     "body": "### 왜 클라이언트가 아니라 서버에서 광고를 끼우나 (SSAI)\n\n브라우저 광고 차단기와 클라이언트측 광고 SDK 회피가 보편화되면서 Twitch는 **Server-Side Ad Insertion (SSAI)**, 즉 광고 영상 세그먼트를 **콘텐츠 HLS 플레이리스트에 직접 스티칭**하는 방식으로 이동했다. 광고와 본방송이 동일한 `.ts/.fmp4` 세그먼트 스트림으로 합쳐져 내려오기 때문에, 플레이어 입장에서는 광고와 콘텐츠가 구분되지 않아 차단이 어렵고 재생 전환이 매끄럽다.\n\n```\n방송 세그먼트 ─┐\n              ├→ Ad Stitcher(매니페스트 조작) → 합쳐진 HLS → Edge → 시청자\n광고 세그먼트 ─┘   ↑\n              Ad Decision Service(VAST/광고 서버) ← 시청자 컨텍스트(지역/세그먼트)\n```\n\n핵심 메커니즘:\n- 라이브 매니페스트에 **`#EXT-X-DATERANGE`/SCTE-35 마커**로 광고 구간(avail)을 표시한다.\n- 광고 시점이 오면 stitcher가 시청자별 타게팅 정보를 광고 결정 서버(VAST 응답)에 질의해 적절한 광고 세그먼트 URL을 매니페스트에 끼워넣는다.\n- 광고 화질을 본방송 **ABR 래더와 정합**시켜야 전환 시 버퍼링/해상도 튐이 없다. 이게 SSAI 구현에서 가장 까다로운 부분이다.\n\n### 수익화 도메인: 구독·비트·기프트\n\nTwitch 수익화는 **Subscriptions(구독), Bits(비트, 가상화폐), Gift Subs(선물구독)** 세 축이며, 각각 독립 마이크로서비스로 분리돼 있다. 이 도메인은 비디오와 달리 **강한 일관성·거래 무결성**이 요구된다.\n\n| 기능 | 일관성 요구 | 저장 |\n|---|---|---|\n| Bits 잔액/소비 | 강함(이중지불 금지) | 관계형(Aurora/MySQL) + 멱등 트랜잭션 |\n| 구독 상태/갱신 | 강함(결제 연동) | 관계형 + 결제 게이트웨이 |\n| 채팅 내 비트 연출(Cheer) | 낮음(실시간 표시) | 이벤트 팬아웃(Pub/Sub) |\n\n비트 소비 같은 결제성 작업은 **멱등 키(idempotency key)** 기반으로 처리해 네트워크 재시도 시 중복 차감을 막고, 잔액 변경은 Aurora 트랜잭션으로 ACID를 보장한다. 반면 'OO님이 1000비트 응원!' 같은 연출은 즉시성이 중요하고 손실돼도 치명적이지 않아 채팅/이벤트 팬아웃 경로로 따로 흘린다.\n\n### 트레이드오프\n\n- SSAI는 차단 회피·매끄러운 재생을 얻지만, **시청자별 개인화 매니페스트**가 늘면 CDN 캐시 적중률이 떨어진다 → 광고 구간만 개인화하고 콘텐츠 본문은 공유 캐시로 두는 하이브리드로 절충.\n- 수익화는 비디오 파이프라인의 '최종 일관성' 철학과 정반대로 '강한 일관성·감사 추적(audit log)'을 택해, 같은 회사 안에서도 도메인 특성에 따라 일관성 모델을 의도적으로 분리한다."
+    },
+    {
+     "topic": "배포·CI/CD와 멀티 리전 운영: 글로벌 라이브 서비스의 무중단 릴리스",
+     "body": "### 작은 서비스, 잦은 배포\n\nTwitch는 수백 개의 Go 마이크로서비스를 **각 팀이 독립적으로 배포**하는 구조다. 핵심은 *'한 서비스의 배포가 전체 시스템을 흔들지 않게'* 격리하는 것이다. 서비스 간 통신이 **Twirp(Protobuf 스키마)** 로 표준화돼 있어 컨트랙트 기반으로 호환성을 검증하고, 배포 단위가 작아 롤백 영향 범위가 좁다.\n\n### 카나리·점진 롤아웃\n\n라이브 트래픽이 24/7 흐르므로 'maintenance window'가 없다. 따라서:\n\n1. **카나리 배포**: 새 버전을 전체 fleet의 소수 인스턴스에만 배포하고 실시간 메트릭(에러율·p99 지연·goroutine 수)을 기준선과 비교.\n2. 이상 없으면 **단계적 비중 확대**(예: 1% → 10% → 50% → 100%), 이상 감지 시 **자동 롤백**.\n3. 비디오 엣지/CDN 같은 트래픽 민감 컴포넌트는 **POP 단위·리전 단위로 순차 롤아웃**해 한 번에 한 지역씩만 위험에 노출.\n\n### 멀티 리전·엣지 분산\n\n- 코어 서비스는 AWS 멀티 AZ/리전에 걸쳐 배포되고, 컨트롤 플레인 데이터는 **DynamoDB Global Tables** 같은 다중 리전 복제로 지역 장애에 대비한다.\n- 비디오 전달은 별도의 **자체 POP(Point of Presence) 엣지 네트워크**가 지리적으로 분산돼 있어, 특정 PoP 장애 시 **인접 PoP로 페일오버**하고 시청자를 가까운 엣지로 재라우팅한다.\n- 배포 시스템은 '코어 서비스 릴리스'와 '엣지/비디오 릴리스'를 **별도 파이프라인**으로 다룬다. 비디오 경로는 커널/네트워크 튜닝·트랜스코더 바이너리까지 얽혀 있어 일반 서비스보다 보수적으로 굴린다.\n\n### 관측성과 결합된 배포 안전망\n\n배포 자동화는 관측성 스택과 한 몸이다. 카나리 판정에 쓰이는 신호는:\n\n- **메트릭**: 서비스별 RED(Rate/Error/Duration), goroutine·GC 지연, 업스트림 Twirp 호출 성공률\n- **분산 트레이싱**: 한 GraphQL 요청이 fan-out된 수십 개 서비스 중 어디서 지연이 터졌는지 추적\n- **이벤트 신호**: Spade/Kafka로 들어오는 클라이언트측 재생 실패·버퍼링률(QoE 지표) — 서버 메트릭이 정상이어도 시청 품질이 나빠지면 롤백 트리거\n\n### 트레이드오프\n\n- 팀별 독립 배포는 속도를 주지만 **버전 스큐(version skew)** 를 상시 감수해야 한다 → Protobuf 후방호환 규칙(필드 추가만, 삭제·번호 재사용 금지)을 강제.\n- 카나리·점진 롤아웃은 배포가 느려지는 대가로 **'폭발 반경(blast radius)'을 최소화**한다. 수백만 동시 시청자 환경에서는 '빠른 전체 배포'보다 '느려도 안전한 점진 배포'가 명백히 우월하다는 판단이다."
     }
    ],
    "github": {
@@ -8804,21 +8842,21 @@
      {
       "name": "twitchtv/twirp",
       "url": "https://github.com/twitchtv/twirp",
-      "desc": "Twitch가 만든 경량 RPC 프레임워크로, protobuf 정의로 Go 서비스 간 통신을 생성한다",
+      "desc": "Twitch가 만든 Protobuf 기반 경량 RPC 프레임워크로 사내 Go 서비스 통신의 표준",
       "lang": "Go",
-      "stars": 7515
+      "stars": 7516
      },
      {
       "name": "arthurnn/twirp-ruby",
       "url": "https://github.com/arthurnn/twirp-ruby",
-      "desc": "Twirp RPC 프로토콜의 Ruby 구현체",
+      "desc": "Twirp의 Ruby 구현체로 폴리글랏 서비스 연동 지원",
       "lang": "Ruby",
       "stars": 164
      },
      {
       "name": "twitchscience/spade",
       "url": "https://github.com/twitchscience/spade",
-      "desc": "Twitch의 대규모 이벤트/분석 수집 파이프라인 컴포넌트",
+      "desc": "Twitch의 실시간 이벤트 수집·분석 파이프라인 Spade 관련 컴포넌트",
       "lang": "Go",
       "stars": 4
      }
@@ -8827,10 +8865,10 @@
    "sources": [
     "https://blog.twitch.tv/en/tags/engineering/",
     "https://github.com/twitchtv/twirp",
-    "https://blog.twitch.tv/en/2017/10/10/live-video-transcoding-at-twitch-octo-9b9b1a4f7c4c/"
+    "https://aws.amazon.com/solutions/case-studies/twitch/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "airbnb",
