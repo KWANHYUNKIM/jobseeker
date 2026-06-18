@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T21:09:52",
+ "generated_at": "2026-06-18T22:54:50",
  "total": 100,
  "countries": [
   {
@@ -458,12 +458,12 @@
      "count": 12
     },
     {
-     "name": "TypeScript",
+     "name": "Kotlin",
      "count": 11
     },
     {
-     "name": "Kotlin",
-     "count": 10
+     "name": "TypeScript",
+     "count": 11
     },
     {
      "name": "Go",
@@ -517,12 +517,12 @@
       "count": 3
      },
      {
-      "name": "QueryDSL",
+      "name": "Go",
       "count": 3
      },
      {
-      "name": "Dropwizard",
-      "count": 2
+      "name": "QueryDSL",
+      "count": 3
      }
     ],
     "frontend": [
@@ -551,6 +551,10 @@
       "count": 3
      },
      {
+      "name": "Storybook",
+      "count": 2
+     },
+     {
       "name": "Webpack",
       "count": 2
      },
@@ -560,10 +564,6 @@
      },
      {
       "name": "CloudFront 엣지 렌더링",
-      "count": 1
-     },
-     {
-      "name": "GraphQL BFF",
       "count": 1
      }
     ],
@@ -632,7 +632,7 @@
      },
      {
       "name": "Envoy",
-      "count": 4
+      "count": 5
      },
      {
       "name": "Grafana",
@@ -9197,21 +9197,26 @@
     "Python",
     "TypeScript",
     "Go",
-    "Scala"
+    "Scala",
+    "Kotlin"
    ],
    "stack": {
     "backend": [
      "Ruby on Rails",
      "Python",
+     "FastAPI",
      "gRPC",
      "Sidekiq",
-     "FastAPI"
+     "GraphQL",
+     "Go"
     ],
     "frontend": [
      "React",
      "TypeScript",
      "Next.js",
-     "React Native"
+     "React Native",
+     "GraphQL (Apollo)",
+     "Storybook"
     ],
     "data": [
      "PostgreSQL",
@@ -9220,26 +9225,30 @@
      "Kafka",
      "Elasticsearch",
      "Snowflake",
-     "Spark"
+     "Spark",
+     "ClickHouse",
+     "Flink"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
+     "Argo (CD/Workflows)",
      "Airflow",
      "Terraform",
-     "Datadog"
+     "Datadog",
+     "Envoy"
     ]
    },
    "architecture": [
-    "Rails monolith decomposition into gRPC services",
-    "ML-driven logistics & fulfillment",
-    "Three-sided marketplace (customer/shopper/retailer)",
-    "Event-driven data platform"
+    "Rails 모놀리스(Carrot)를 gRPC 기반 서비스로 점진적 분해",
+    "고객·쇼퍼·리테일러 3-sided 마켓플레이스",
+    "ML 기반 풀필먼트·로지스틱스 최적화(배치 배정·ETA)",
+    "Kafka·Snowflake 중심의 이벤트 드리븐 데이터 플랫폼"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    CUST[\"Customer App<br/>React Native + Next.js\"]\n    SHOP[\"Shopper App<br/>React Native\"]\n    RET[\"Retailer/Ads Portal<br/>React + TypeScript\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Rails API + Envoy\"]\n  end\n  subgraph Core\n    MONO[\"Carrot Monolith<br/>Ruby on Rails\"]\n    CAT[\"Catalog Service<br/>Go + gRPC\"]\n    SEARCH[\"Search Service<br/>Elasticsearch\"]\n    FUL[\"Fulfillment/Dispatch<br/>Python + gRPC\"]\n    ADS[\"Ads Service<br/>Python\"]\n  end\n  subgraph ML\n    GRIF[\"ML Platform Griffin<br/>Python + Lore\"]\n    FS[\"Feature Store<br/>Redis + Snowflake\"]\n  end\n  subgraph Data\n    PG[\"Sharded PostgreSQL<br/>Citus + makara\"]\n    REDIS[\"Cache/Queue<br/>Redis\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n    S3[\"Object Store<br/>AWS S3\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Batch ETL<br/>Spark + Airflow\"]\n  end\n  CUST -->|HTTPS| GW\n  SHOP -->|HTTPS| GW\n  RET -->|HTTPS| GW\n  GW -->|REST| MONO\n  MONO -->|gRPC| CAT\n  MONO -->|gRPC| SEARCH\n  MONO -->|gRPC| FUL\n  MONO -->|gRPC| ADS\n  FUL --> GRIF\n  ADS --> GRIF\n  SEARCH --> GRIF\n  GRIF --> FS\n  FS --> REDIS\n  MONO --> PG\n  CAT --> PG\n  MONO --> REDIS\n  MONO -->|produce| KAFKA\n  CAT -->|produce| KAFKA\n  KAFKA --> SPARK\n  SPARK --> SNOW\n  SPARK --> S3\n  SNOW --> FS",
-   "why_language": "Instacart는 초창기 Rails 모놀리스(Carrot)로 빠르게 마켓플레이스를 출시했기에 Ruby가 핵심 트랜잭션·주문 도메인의 중심으로 남아 있다. 동시에 배치 배정·수요예측·재고예측·광고 랭킹 같은 ML이 사업의 본질이라 데이터/모델링 생태계가 풍부한 Python을 대규모로 채택했고, 고처리량·저지연이 필요한 카탈로그·인프라 서비스에는 Go를, 고객·쇼퍼·리테일러 3종 클라이언트의 복잡한 UI에는 TypeScript/React를 쓴다.",
-   "why_architecture": "수백만 SKU와 실시간 쇼퍼 위치·매장 재고가 결합된 물류 문제라 모든 의사결정(배치 묶음, ETA, 대체상품, 광고)이 ML 최적화로 환원되며, 이를 모놀리스에서 분리된 gRPC 서비스와 Griffin ML 플랫폼이 담당한다. 고객·쇼퍼·리테일러라는 3면 마켓플레이스 특성상 각 면의 트래픽 패턴과 SLA가 달라 도메인별 서비스 분해와 Kafka 기반 이벤트 파이프라인으로 느슨하게 결합했다.",
-   "summary": "Rails 모놀리스 'Carrot'을 gRPC 서비스로 쪼개고 Python ML 플랫폼 Griffin이 물류·검색·광고를 구동하는 3면 마켓플레이스",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    CUS[\"Customer App<br/>React + Next.js\"]\n    SHO[\"Shopper App<br/>React Native\"]\n    RET[\"Retailer Portal<br/>TypeScript + React\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GQL[\"GraphQL BFF<br/>Apollo\"]\n    ENV[\"Edge Proxy<br/>Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MONO[\"Carrot Monolith<br/>Ruby on Rails\"]\n    SVC[\"gRPC Services<br/>Go + Python\"]\n    SRCH[\"Catalog & Search<br/>Elasticsearch\"]\n    LOG[\"Fulfillment & Dispatch<br/>Python + ML\"]\n    ADS[\"Ads Auction<br/>Go + Python\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAF[\"Event Bus<br/>Kafka\"]\n    SIDE[\"Background Jobs<br/>Sidekiq\"]\n    FLK[\"Stream Processing<br/>Flink + Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"OLTP<br/>PostgreSQL + Citus\"]\n    RDS[\"Cache<br/>Redis\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n    CH[\"Analytics<br/>ClickHouse\"]\n  end\n  subgraph Plat[\"Infra / ML Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes + Argo\"]\n    GRIF[\"ML Platform<br/>Griffin Feature Store\"]\n    OBS[\"Observability<br/>Datadog\"]\n  end\n  CUS --> GQL\n  SHO --> ENV\n  RET --> GQL\n  GQL --> MONO\n  ENV -->|gRPC| SVC\n  MONO -->|gRPC| SVC\n  SVC --> SRCH\n  SVC --> LOG\n  GQL --> ADS\n  MONO --> SIDE\n  MONO --> PG\n  SVC --> PG\n  SVC --> RDS\n  MONO -->|events| KAF\n  SVC -->|events| KAF\n  KAF --> FLK\n  FLK --> SNOW\n  FLK --> CH\n  LOG --> GRIF\n  ADS --> GRIF\n  GRIF --> SNOW\n  SVC --> K8S\n  K8S --> OBS",
+   "why_language": "초창기 빠른 제품 개발을 위해 Ruby on Rails 모놀리스로 출발해 지금도 핵심 트랜잭션 로직의 상당 부분이 Rails(Carrot)에 남아 있다. 검색·풀필먼트·ETA 예측 같은 ML/데이터 집약 워크로드는 Python과 Scala/Spark로, 지연에 민감하거나 높은 동시성이 필요한 신규 gRPC 서비스는 Go로 작성해 모놀리스에서 떼어낸다. 프런트엔드는 고객·리테일러 웹에 React/TypeScript/Next.js, 쇼퍼 모바일 앱에 React Native를 써서 코드 공유와 빠른 반복을 노린다.",
+   "why_architecture": "수요가 폭증하면서 단일 Rails 모놀리스의 배포·확장·장애 격리 한계가 드러나, 도메인 경계를 따라 gRPC 서비스로 점진적으로 분해하되 리스크를 줄이려 한 번에 부수지 않는 전략을 택했다. 식료품 배달은 매장별 실시간 재고·쇼퍼 위치·주문 타이밍이 얽힌 물류 최적화 문제이므로, 배치 배정·ETA·품절 예측을 ML로 푸는 구조와 이를 떠받치는 Kafka·Snowflake 이벤트 데이터 플랫폼이 핵심이 된다. 고객·쇼퍼·리테일러를 잇는 3-sided 마켓플레이스라 각 주체의 서로 다른 SLA와 데이터 흐름을 분리된 서비스로 다루는 것이 자연스럽다.",
+   "summary": "Rails 모놀리스(Carrot)를 gRPC 서비스로 쪼개며 ML 물류 최적화와 Kafka·Snowflake 데이터 플랫폼으로 떠받치는 3-sided 마켓플레이스",
    "deep_dive": [
     {
      "topic": "배치 배정: 쇼퍼-주문 매칭의 ML 최적화",
@@ -9272,29 +9281,34 @@
     {
      "topic": "Instacart Ads: 마켓플레이스 위에 올린 실시간 광고 경매",
      "body": "### 왜 광고가 중요한가\nInstacart의 고마진 사업은 광고다. CPG 브랜드(예: 음료·스낵 제조사)가 검색 결과·추천 슬롯에서 자사 상품 노출을 사기 때문에, 커머스 검색 위에 **실시간 입찰 경매(auction)** 시스템이 얹혀 있다. 이건 기술적으로 검색 랭킹과 가장 까다롭게 얽히는 부분이다.\n\n### 요청 흐름\n1. 고객이 'sparkling water'를 검색.\n2. 오가닉 검색 서비스가 `Elasticsearch` + 랭킹 모델로 관련 상품을 뽑는다.\n3. 동시에 광고 서비스가 해당 쿼리/사용자/매장 맥락에 대해 후보 광고를 모으고, 각 광고주의 입찰가 × 예측 클릭/전환율(pCTR/pCVR)로 **eCPM 기준 경매**를 돌린다.\n4. 스폰서 슬롯과 오가닉 결과를 블렌딩해 한 페이지로 반환 — 이때 사용자 경험(관련성)과 매출(입찰가) 사이 균형을 맞춘다.\n\n### 핵심 제약\n- **지연**: 경매·예측·블렌딩이 검색 응답 예산(수십 ms) 안에 끝나야 한다. 그래서 pCTR/pCVR 모델 피처는 온라인 피처 스토어에서 즉시 조회하고, 모델은 경량/저지연으로 서빙한다.\n- **예산 페이싱(budget pacing)**: 광고주 일예산이 하루 초반에 소진되지 않도록 노출 속도를 제어하는 분산 카운팅이 필요하다. 정확한 과금을 위해 노출·클릭 이벤트를 `Kafka`로 신뢰성 있게 집계한다.\n- **인센티브 정합성**: 관련성 낮은 광고를 돈으로 밀어 올리면 장기 고객 가치가 깎이므로, 경매에 품질 점수를 반영해 균형을 잡는다.\n\n### 트레이드오프\n오가닉 검색팀과 광고팀이 같은 SERP를 두고 경쟁하므로, 두 시스템이 같은 피처/임베딩 인프라를 공유하되 랭킹 목적함수는 분리한다. 단기 광고 매출과 장기 검색 만족도를 함께 최적화하는 멀티-목적 문제다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: 고객 장바구니 결제가 쇼퍼 앱에 뜨기까지",
+     "body": "### 한 건의 주문이 시스템을 관통하는 경로\n\nInstacart에서 고객이 \"결제\" 버튼을 누르는 순간 일어나는 일은 단순한 CRUD가 아니라 **여러 도메인 서비스와 비동기 파이프라인을 가로지르는 분산 트랜잭션**에 가깝다.\n\n1. **Edge / BFF**: 고객 웹·앱은 `GraphQL` BFF(Apollo)를 통해 들어온다. GraphQL을 쓰는 이유는 매장 카탈로그·가격·프로모션·배송 슬롯 등 여러 서비스의 데이터를 화면 한 장에 모아야 하는 마켓플레이스 UI 특성상, 클라이언트가 N번 REST 호출을 하는 대신 하나의 쿼리로 조합하기 위해서다. BFF는 내부적으로 모놀리스(Carrot)와 gRPC 서비스들을 fan-out 호출한다.\n\n2. **Carrot 모놀리스(Rails)**: 주문 생성·결제·장바구니 같은 핵심 트랜잭션 로직의 상당수는 여전히 Rails 모놀리스에 있다. 결제는 외부 PG와 연동되고, 주문 레코드는 `PostgreSQL`(고객/주문 도메인은 `Citus`로 샤딩)에 커밋된다.\n\n3. **이벤트 발행**: 주문이 확정되면 모놀리스는 `Kafka`로 `order.created` 류의 이벤트를 발행한다. 여기서부터 동기 요청-응답이 끝나고 비동기 세계로 넘어간다. 고객에게는 이미 \"주문 완료\" 응답이 돌아간 상태다.\n\n4. **Fulfillment & Dispatch(Python+ML)**: 이벤트를 구독한 풀필먼트 서비스가 이 주문을 **배치(batch)** 후보로 본다. 같은 매장·비슷한 시간대·지리적으로 가까운 주문들을 묶고, 가용 쇼퍼들과의 매칭을 최적화 모델로 푼다(배치 배정). 결과가 나오면 특정 쇼퍼의 앱(React Native)으로 푸시된다.\n\n5. **쇼퍼 실시간 루프**: 쇼퍼가 장을 보는 동안 품절이 발생하면 대체 상품(replacement) 추천이 다시 ML로 내려오고, 고객 앱에 실시간 승인 요청이 뜬다. 쇼퍼 위치는 지속적으로 스트리밍되어 ETA를 갱신한다.\n\n### 왜 이렇게 쪼갰나\n동기 경로(결제)는 짧고 강한 일관성이 필요하지만, 배치·ETA·대체상품은 **확률적·최적화 문제**라 비동기로 떼어내야 모놀리스의 응답 지연과 무관하게 독립적으로 스케일하고 모델을 교체할 수 있다. Kafka가 이 동기/비동기 경계의 분리선 역할을 한다."
+    },
+    {
+     "topic": "읽기/쓰기 분리와 makara: 모놀리스 DB 부하를 견디는 법",
+     "body": "### Rails 모놀리스가 읽기 폭증을 버티는 방식\n\nInstacart는 자사 오픈소스인 **`makara`**(Ruby gem)를 직접 만들어 운영한다. 이는 Rails `ActiveRecord` 위에 얹는 **read/write splitting 미들웨어**로, 단일 모놀리스 코드베이스가 수많은 읽기 복제본(read replica)에 트래픽을 분산하도록 한다.\n\n#### 동작 원리\n- **연결 라우팅**: `makara`는 primary(쓰기)와 여러 replica(읽기) 풀을 추상화한다. `SELECT`는 replica 풀로, `INSERT/UPDATE/DELETE`와 트랜잭션 내부 읽기는 primary로 보낸다.\n- **stickiness(점착성)**: 쓰기 직후 같은 요청·세션에서의 읽기는 일정 시간 동안 강제로 primary로 보낸다. 복제 지연(replication lag) 때문에 \"방금 장바구니에 담았는데 안 보이는\" read-after-write 불일치를 막기 위해서다. 이건 식료품 커머스에서 체감 버그로 직결되는 부분이라 중요하다.\n- **장애 처리**: replica가 죽으면 `makara`가 해당 노드를 풀에서 blacklist 처리하고 자동으로 다른 replica로 우회한다. 일정 시간 뒤 복구를 재시도한다.\n\n#### 트레이드오프\n읽기를 replica로 흘리면 primary 부하가 크게 줄어 모놀리스가 더 오래 버틸 수 있지만, 복제 지연이라는 일관성 비용이 따라온다. `makara`의 stickiness는 \"강한 일관성이 꼭 필요한 곳만 primary, 나머지는 eventual\"이라는 실용적 타협이다. 이 패턴은 \"모놀리스를 당장 부수지 않고도 데이터 계층에서 수평 확장 여지를 짜낸다\"는 Instacart의 점진적 진화 철학을 잘 보여준다. 본격적인 도메인 샤딩은 `Citus`(분산 PostgreSQL)로 보완한다."
+    },
+    {
+     "topic": "관측성과 트래픽 재생: lognplay로 안전하게 부하·리그레션 검증",
+     "body": "### 프로덕션 트래픽을 '녹화-재생'하는 테스트 전략\n\n모놀리스를 서비스로 분해하는 작업의 가장 큰 위험은 **\"새 서비스가 기존과 똑같이 동작하는가\"**를 증명하기 어렵다는 점이다. 합성 부하 테스트는 실제 트래픽의 분포·엣지케이스를 못 따라간다. Instacart는 이를 위해 **`lognplay`**(Go) 같은 트래픽 캡처/리플레이 접근을 활용한다.\n\n#### 메커니즘\n- **캡처**: 실제 프로덕션 요청 로그를 기록한다(요청 경로·파라미터·헤더 등).\n- **리플레이**: 기록된 트래픽을 스테이징이나 신규 서비스에 **실제 분포 그대로** 재생한다. 합성 시나리오가 아니라 진짜 사용자 패턴이므로 롱테일 케이스까지 노출된다.\n- **활용처**: (1) 새 gRPC 서비스가 모놀리스 엔드포인트와 동일한 응답을 내는지 비교(shadow/diff testing), (2) 오토스케일링·캐시 튜닝 전 현실적 부하 산정, (3) 대형 트래픽 이벤트(연휴·프로모션) 대비 용량 검증.\n\n### 관측성 스택\n런타임 관측은 `Datadog` 중심으로 메트릭·트레이싱·로그를 묶는다. gRPC 서비스 간 호출은 분산 트레이싱으로 추적해 BFF→모놀리스→서비스→DB로 이어지는 fan-out 경로의 병목을 찾는다. 마켓플레이스 특성상 \"느린 한 서비스가 GraphQL fan-out 전체를 지연시키는\" tail latency가 핵심 관심사라, 타임아웃·부분 응답(partial response) 전략이 BFF 레벨에서 중요하다.\n\n### 왜 중요한가\n트래픽 재생은 \"모놀리스를 한 번에 부수지 않고 서비스를 하나씩 떼어내되, 떼어낸 조각이 정말 동일한지 데이터로 증명한다\"는 점진적 마이그레이션의 안전장치다. 재생 기반 diff가 없으면 분해는 거대한 추측 게임이 된다."
     }
    ],
    "github": {
     "org": "https://github.com/instacart",
     "repos": [
      {
-      "name": "instacart/lore",
-      "url": "https://github.com/instacart/lore",
-      "desc": "ML 모델 개발·배포를 표준화한 Python 프레임워크(피처 인코딩·실험 관리·서빙)",
-      "lang": "Python",
-      "stars": 1545
-     },
-     {
-      "name": "instacart/ahab",
-      "url": "https://github.com/instacart/ahab",
-      "desc": "Docker 이벤트 스트림을 구독·처리하는 경량 Python 라이브러리",
-      "lang": "Python",
-      "stars": 139
+      "name": "instacart/makara",
+      "url": "https://github.com/instacart/makara",
+      "desc": "Rails ActiveRecord에서 읽기/쓰기 DB 연결을 분리해 읽기 복제본으로 분산하는 라이브러리",
+      "lang": "Ruby",
+      "stars": 947
      },
      {
       "name": "instacart/Snacks",
       "url": "https://github.com/instacart/Snacks",
-      "desc": "사내 디자인 시스템/UI 컴포넌트 라이브러리",
+      "desc": "Instacart의 React 기반 디자인 시스템 컴포넌트 라이브러리",
       "lang": "JavaScript",
       "stars": 82
      }
@@ -9302,11 +9316,11 @@
    },
    "sources": [
     "https://tech.instacart.com/",
-    "https://github.com/instacart/lore",
-    "https://tech.instacart.com/distributing-data-across-multiple-postgres-databases-with-rails"
+    "https://github.com/instacart",
+    "https://www.instacart.com/company/careers/engineering/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "shopify",
@@ -9318,49 +9332,58 @@
     "TypeScript",
     "JavaScript",
     "Go",
-    "Rust"
+    "Rust",
+    "Lua"
    ],
    "stack": {
     "backend": [
      "Ruby on Rails",
+     "Sorbet",
      "GraphQL",
      "gRPC",
-     "Sorbet",
-     "Temporal"
+     "Temporal",
+     "Maintenance Tasks/ShipIt",
+     "Bundler"
     ],
     "frontend": [
      "React",
      "Remix",
      "Hydrogen",
      "Polaris",
-     "TypeScript"
+     "TypeScript",
+     "Oxygen"
     ],
     "data": [
      "MySQL (Vitess)",
+     "ProxySQL",
      "Kafka",
      "Redis",
      "Memcached",
      "Elasticsearch",
-     "BigQuery"
+     "BigQuery",
+     "Apache Flink/Beam"
     ],
     "infra": [
      "Google Cloud Platform",
      "Kubernetes",
      "Shopify Cloud",
      "Envoy",
-     "Nginx/OpenResty (Lua)"
+     "Nginx/OpenResty (Lua)",
+     "Sorting Hat",
+     "Spinnaker/ShipIt",
+     "Datadog/Prometheus"
     ]
    },
    "architecture": [
-    "Modular monolith (Rails Components)",
-    "Pods 기반 멀티테넌트 샤딩",
+    "Modular monolith (Rails Components + Wedge/Packwerk)",
+    "Pods 기반 멀티테넌트 샤딩 + Sorting Hat 라우팅",
     "Vitess 수평 샤딩",
-    "이벤트 기반 비동기 처리(Kafka)"
+    "이벤트 기반 비동기 처리(Kafka + Temporal 워크플로)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Storefront\"]\n    BUYER[\"Buyer Browser<br/>Hydrogen + React\"]\n    ADMIN[\"Merchant Admin<br/>React + Polaris + Remix\"]\n  end\n  subgraph Edge[\"Edge / Routing\"]\n    OXYGEN[\"Oxygen<br/>Storefront SSR Edge\"]\n    LB[\"Edge LB + Cache<br/>Nginx + OpenResty Lua\"]\n    SORTING[\"Sorting Hat<br/>Pod Routing Lua\"]\n  end\n  subgraph Core[\"Core Application\"]\n    MONOLITH[\"Shopify Core<br/>Rails Modular Monolith\"]\n    GQL[\"GraphQL API<br/>graphql-ruby\"]\n    SVC[\"Extracted Services<br/>Go + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    JOBS[\"Background Jobs<br/>Sidekiq + Resque\"]\n    FLOW[\"Workflow Engine<br/>Temporal\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"Sharded OLTP<br/>MySQL + Vitess\"]\n    REDIS[\"Cache + Queue<br/>Redis\"]\n    MEMCACHE[\"Page Cache<br/>Memcached\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    BQ[\"Analytics<br/>BigQuery\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Pods Runtime<br/>Kubernetes on GCP\"]\n  end\n  BUYER --> OXYGEN\n  ADMIN --> LB\n  OXYGEN --> LB\n  LB --> SORTING\n  SORTING -->|pod routing| MONOLITH\n  MONOLITH --> GQL\n  MONOLITH -->|gRPC| SVC\n  MONOLITH --> VITESS\n  MONOLITH --> REDIS\n  MONOLITH --> MEMCACHE\n  MONOLITH --> ES\n  MONOLITH -->|publish| KAFKA\n  MONOLITH --> JOBS\n  JOBS --> REDIS\n  KAFKA --> FLOW\n  KAFKA --> BQ\n  SVC --> VITESS\n  MONOLITH --> K8S\n  SVC --> K8S",
-   "why_language": "Shopify는 2004년 Rails로 시작한 이래 Ruby를 핵심 비즈니스 로직 언어로 유지하며, 머천트 도메인의 복잡한 커머스 규칙을 빠르게 표현하는 생산성을 우선한다. 대신 타입 안정성을 위해 Sorbet를 자체 개발해 Ruby에 점진적 정적 타입을 입혔고, 지연·처리량이 중요한 인프라/주변 시스템은 Go(gRPC 서비스), 성능 임계 영역은 Rust로 분리한다. 프론트엔드는 TypeScript/React 기반의 Polaris·Hydrogen으로 통일해 대규모 UI를 일관되게 운영한다.",
-   "why_architecture": "수백만 머천트를 한 코드베이스로 운영하려면 마이크로서비스의 분산 복잡도보다 모듈러 모노리스가 개발 속도·일관성에서 유리하다고 판단해, Rails를 컴포넌트(bounded context)로 강제 분리하되 단일 배포 단위를 유지한다. 멀티테넌트 확장은 서비스 분해가 아니라 데이터 계층 샤딩(Vitess)과 Pods 단위 격리로 풀어, 한 Pod 장애가 전체로 번지지 않도록 폭발 반경을 제한한다. 이 구조 덕분에 BFCM 같은 초대형 트래픽에서도 Pod를 수평으로 늘려 대응한다.",
-   "summary": "Rails 모듈러 모노리스를 Vitess 샤딩과 Pods로 멀티테넌트 수평 확장하는, 'modular monolith at scale'의 대표 사례",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    BUY[\"Buyer Storefront<br/>Hydrogen + Remix\"]\n    ADMIN[\"Merchant Admin<br/>React + Polaris\"]\n    OXY[\"Edge Runtime<br/>Oxygen (Workers)\"]\n  end\n  subgraph GW[\"Routing / Gateway\"]\n    LB[\"Load Balancer<br/>Nginx + OpenResty Lua\"]\n    SH[\"Sorting Hat<br/>Lua Pod Router\"]\n    ENV[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Core[\"Core Services (Pod)\"]\n    MONO[\"Shopify Core<br/>Rails Modular Monolith + Sorbet\"]\n    GQL[\"API Layer<br/>GraphQL + gRPC\"]\n    JOBS[\"Async Jobs<br/>Sidekiq + Temporal\"]\n  end\n  subgraph Data[\"Data / Storage (Pod-local)\"]\n    VT[\"Sharded MySQL<br/>Vitess + ProxySQL\"]\n    RED[\"Cache/Queue<br/>Redis + Memcached\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KAF[\"Event Bus<br/>Kafka\"]\n    FLK[\"Stream Proc<br/>Flink / Beam\"]\n    BQ[\"Warehouse<br/>BigQuery\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on GCP\"]\n  end\n  BUY --> OXY --> LB\n  ADMIN --> LB\n  LB --> SH\n  SH -->|\"shop_id 라우팅\"| ENV\n  ENV --> MONO\n  MONO --> GQL\n  MONO -->|\"SQL\"| VT\n  MONO --> RED\n  MONO --> ES\n  MONO --> JOBS\n  JOBS -->|\"멱등 워크플로\"| VT\n  MONO -->|\"도메인 이벤트\"| KAF\n  KAF --> FLK --> BQ\n  MONO -.-> K8S\n  JOBS -.-> K8S",
+   "why_language": "Shopify는 2004년 창업 이래 Ruby on Rails 위에서 코어 커머스 로직을 쌓아왔고, 머천트의 빠른 기능 출시를 위해 동적 언어의 생산성을 유지하되 대규모 모노리스의 안전성을 위해 Sorbet으로 점진적 정적 타이핑을 입혔다. 성능이 결정적인 엣지/스토어프론트와 인프라 도구(YJIT 기여, Oxygen, 일부 시스템 컴포넌트)에는 TypeScript/Go/Rust를, Pod 라우팅 같은 핫패스에는 Nginx 위 Lua를 써서 도메인별로 언어를 분리한다. 즉 비즈니스 로직은 Ruby의 표현력으로, 인프라·핫패스는 컴파일 언어의 성능으로 가져가는 전략이다.",
+   "why_architecture": "수백만 머천트가 단일 코드베이스의 같은 기능을 공유하는 SaaS 커머스 특성상, 마이크로서비스의 네트워크·운영 복잡도 대신 경계가 명확한 '모듈러 모노리스'(Packwerk로 컴포넌트 의존성 강제)를 택해 배포 단순성과 트랜잭션 일관성을 유지한다. 동시에 단일 DB로는 BFCM 같은 폭발적 트래픽을 감당할 수 없어, 머천트를 격리된 Pod 단위로 나누고 Vitess로 MySQL을 수평 샤딩하며 Sorting Hat이 shop 단위로 요청을 해당 Pod에 라우팅한다. 결과적으로 '하나의 모놀리식 앱을 수많은 격리 셀에 복제'하는 셀룰러 아키텍처로 장애 격리와 선형 확장을 동시에 얻는다.",
+   "summary": "Rails 모듈러 모노리스를 Vitess 샤딩과 Pod 셀룰러 아키텍처로 무한 복제해 BFCM급 트래픽을 견디는 커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "모듈러 모노리스: 마이크로서비스를 거부한 결정",
@@ -9393,6 +9416,18 @@
     {
      "topic": "비동기·잡 처리와 멱등성: 결제·주문 워크플로",
      "body": "### 동기 응답에서 잘라내는 것들\n\n커머스 트랜잭션은 한 번의 HTTP 요청 안에서 모두 끝나지 않는다. 주문 생성 후 이메일 발송, 재고 동기화, 웹훅 전달, 외부 결제 캡처, 분석 적재 등은 **백그라운드로 분리**된다. Shopify는 전통적으로 `Resque`/`Sidekiq` 계열의 Redis 기반 잡 시스템으로 이 비동기 작업을 처리해 왔고, Pod마다 자체 잡 워커와 Redis를 둔다.\n\n### 멱등성과 정확히-한-번 환상\n\n분산 큐에서는 **최소 한 번(at-least-once)** 전달이 기본이라 잡이 중복 실행될 수 있다. 결제·재고처럼 중복이 치명적인 도메인에서는 **멱등성 키(idempotency key)**와 상태 머신으로 '같은 작업이 두 번 들어와도 한 번의 효과'를 보장한다. 즉 '정확히 한 번 실행'이 아니라 '여러 번 실행돼도 결과는 한 번'이 되도록 설계한다.\n\n### 장기 실행 워크플로우\n\n여러 단계가 며칠에 걸쳐 진행되거나 외부 시스템과 여러 번 왕복해야 하는 비즈니스 프로세스에는 **Temporal** 같은 워크플로우 엔진을 도입해, 단계별 상태를 내구성 있게 저장하고 실패 지점부터 재개(resume)할 수 있게 한다. 이는 '잡 하나가 실패하면 처음부터'가 아니라 '중단된 곳부터 이어서'를 가능하게 해 복잡한 다단계 커머스 플로우의 신뢰성을 끌어올린다.\n\n### 이벤트 스트리밍과의 결합\n\n도메인 이벤트(주문 생성, 결제 완료 등)는 **Kafka**로 발행되어 다수의 컨슈머가 독립적으로 소비한다. 검색 인덱싱(Elasticsearch), 분석(BigQuery), 머천트 웹훅, 사기 탐지 등이 같은 이벤트 스트림을 구독해 **읽기 모델을 각자 갱신**한다. 이렇게 쓰기(OLTP, Pod 내부)와 다양한 읽기/파생 처리(스트리밍 기반)를 분리해, 핵심 트랜잭션 경로의 부하를 낮추고 시스템 간 결합을 느슨하게 유지한다."
+    },
+    {
+     "topic": "셀룰러 아키텍처와 Pods 이동: 머천트를 통째로 옮기는 운영 기술",
+     "body": "### Pod이란 무엇인가\nShopify의 `Pod`는 단순한 DB 샤드가 아니라 **하나의 격리된 커머스 셀(cell)**이다. 각 Pod은 자체 MySQL(Vitess) 셋, Redis, Memcached, 잡 워커를 갖춘 '미니 Shopify'이며, 특정 머천트 집합의 모든 데이터와 트래픽이 그 안에서만 처리된다. 한 Pod이 장애가 나도 다른 Pod의 머천트는 영향을 받지 않는다 — 이것이 `blast radius`(장애 전파 반경)를 머천트 단위로 가두는 핵심 설계다.\n\n### Sorting Hat: 요청을 올바른 Pod으로\n모든 인입 요청은 먼저 Nginx + OpenResty(Lua)로 구현된 `Sorting Hat`을 거친다. Sorting Hat은 요청의 도메인/shop 식별자를 보고 해당 머천트가 어느 Pod에 사는지 조회한 뒤(매핑 테이블 캐시), 그 Pod의 백엔드로 프록시한다. Lua를 쓰는 이유는 이 라우팅이 **모든 요청의 핫패스**라 마이크로초 단위 오버헤드도 누적되면 치명적이기 때문이다. Ruby 앱 레이어에서 라우팅을 하면 너무 느리다.\n\n### 왜 '이동(rebalancing)'이 핵심 기술인가\n머천트는 성장한다. 작은 상점이 BFCM에 대형 셀러가 되면 그 Pod이 과부하된다. Shopify는 **무중단으로 머천트 데이터를 한 Pod에서 다른 Pod으로 옮기는** 시스템을 운영한다:\n\n1. 대상 머천트의 데이터를 새 Pod으로 복제(MySQL 스냅샷 + binlog 따라잡기)\n2. 복제 지연이 거의 0이 될 때까지 동기화\n3. 짧은 write-lock(수백 ms~수 초) 동안 cutover — Sorting Hat의 매핑을 새 Pod으로 갱신\n4. 트래픽이 새 Pod으로 흐르고 구 Pod 데이터는 정리\n\n이 `pod balancing`은 BFCM 직전 대형 머천트를 전용/저밀도 Pod으로 분리하는 용량 계획의 무기가 된다.\n\n### 트레이드오프\n- **장점**: 선형 확장(Pod을 추가하면 용량이 늘어남), 장애 격리, 지역별 데이터 거주(data residency) 대응.\n- **비용**: 크로스-Pod 쿼리가 비싸다 → 머천트 간 데이터를 한 트랜잭션에서 다루는 기능은 설계상 피하거나 비동기/분석 경로(Kafka→BigQuery)로 우회한다. 이 제약이 도메인 모델링에 강하게 반영되어 있다."
+    },
+    {
+     "topic": "관측성과 배포: 수만 회/일 배포를 받치는 ShipIt·Monorail·트레이싱",
+     "body": "### 초고빈도 배포 파이프라인\nShopify 코어는 거대한 단일 모노리스지만 **하루에도 수십~수백 번 배포**된다. 이를 가능케 하는 것이 자체 배포 오케스트레이터 `ShipIt`과 머지 큐다. 개발자는 PR을 머지 큐에 넣고, 큐가 변경을 묶어 CI를 통과시킨 뒤 순차/카나리로 롤아웃한다. 모노리스 CI는 수만 개의 테스트를 가지므로 **테스트 선택(test selection)·분산 실행**으로 변경 영향 범위만 골라 돌려 피드백 시간을 줄인다.\n\n### 카나리와 점진 롤아웃\n새 버전은 먼저 소수 Pod/인스턴스에 배포되어 에러율·레이턴시·잡 실패율을 모니터링한 뒤 전체로 확산된다. Pod 구조 덕분에 '일부 Pod에만 먼저 배포'가 자연스러운 카나리 경계가 된다. 문제가 감지되면 자동 롤백.\n\n### Monorail과 정형 이벤트\n분석·관측을 위해 Shopify는 `Monorail`이라는 사내 이벤트 파이프라인을 쓴다. 앱 코드는 스키마가 정의된 정형 이벤트를 emit하고, 이것이 Kafka로 흘러 들어가 Flink/Beam 스트림 처리를 거쳐 BigQuery 데이터 웨어하우스에 적재된다. 스키마 강제(schema registry)로 이벤트 품질을 관리해 다운스트림 분석이 깨지지 않게 한다.\n\n### 메트릭·트레이싱 스택\n- **메트릭**: StatsD/Prometheus 계열로 집계, Datadog 대시보드.\n- **트레이싱**: 분산 트레이싱으로 GraphQL 요청 → 모놀리스 내부 컴포넌트 호출 → Vitess 쿼리 → 잡 enqueue 경로를 추적. 모듈러 모노리스라 '서비스 간' 트레이싱보다 **컴포넌트 경계·DB 쿼리·외부 호출**을 추적하는 데 초점이 맞춰져 있다.\n- **로그**: 구조화 로깅 + Elasticsearch/Kibana 계열 검색.\n\n### 왜 이렇게까지\nBFCM 한 번의 가시성 공백이 수십억 원 매출 손실로 이어지므로, '배포 속도'와 '문제를 초 단위로 감지·롤백'하는 능력이 곧 비즈니스 안정성이다. 모노리스의 위험(한 번 잘못되면 전체 영향)을 카나리·Pod 격리·정밀 관측으로 상쇄하는 구조다."
+    },
+    {
+     "topic": "GraphQL을 일급 API로: 스키마 진화·버저닝·레이트리밋 설계",
+     "body": "### REST에서 GraphQL 우선으로\nShopify는 머천트·앱 개발자가 쓰는 공개 API의 **일급 인터페이스를 GraphQL**로 삼았다(Admin API, Storefront API). 이유는 커머스 데이터가 본질적으로 그래프(상점→상품→변형→재고→주문→고객)이고, 앱마다 필요한 필드 조합이 천차만별이라 REST의 고정 엔드포인트로는 오버페칭/언더페칭이 심하기 때문이다.\n\n### 버전 관리\nGraphQL은 보통 '버전이 없다'고들 하지만 Shopify는 **분기별(quarterly) 버전 릴리스**(예: `2024-01`)와 필드 단위 `@deprecated`를 병행한다. 앱은 특정 버전에 고정되고, 각 버전은 최소 1년 지원된다. 이로써 수십만 서드파티 앱 생태계가 깨지지 않으면서도 스키마를 진화시킨다.\n\n### 쿼리 비용 기반 레이트 리밋\nGraphQL의 위험은 한 쿼리가 임의로 무거워질 수 있다는 점이다. Shopify는 요청 수가 아니라 **쿼리 복잡도 점수(calculated cost)** 기반으로 레이트 리밋을 건다:\n\n| 요소 | 비용 |\n|------|------|\n| 단순 필드/객체 | 1 포인트 |\n| 커넥션(리스트) | 요청한 `first/last` 수에 비례 |\n| mutation | 더 높은 가중치 |\n\n클라이언트에는 `leaky bucket` 방식의 가용 포인트가 주어지고, 응답에 `throttleStatus`로 잔여 비용을 돌려준다. 덕분에 '무거운 쿼리 하나'와 '가벼운 쿼리 다수'를 공정하게 같은 잣대로 제어한다.\n\n### 내부 구현\n공개 GraphQL은 모놀리스 내부에서 컴포넌트 경계를 넘는 호출로 해석(resolve)되고, 서비스 간 통신이 필요한 곳은 gRPC로 연결된다. 즉 외부는 GraphQL의 유연성, 내부 서비스 경계는 gRPC의 계약·성능이라는 이중 구조다. Ruby에서 GraphQL 리졸버를 대규모로 안전하게 다루기 위해 Sorbet 타입과 결합해 N+1·타입 오류를 컴파일/CI 단계에서 잡는다."
     }
    ],
    "github": {
@@ -9401,47 +9436,47 @@
      {
       "name": "Shopify/toxiproxy",
       "url": "https://github.com/Shopify/toxiproxy",
-      "desc": "장애 주입·네트워크 카오스 테스트용 TCP 프록시",
+      "desc": "네트워크 장애를 주입해 복원력을 테스트하는 카오스 엔지니어링 프록시",
       "lang": "Go",
-      "stars": 12086
+      "stars": 12090
      },
      {
       "name": "Shopify/polaris-react",
       "url": "https://github.com/Shopify/polaris-react",
-      "desc": "머천트 Admin UI를 위한 디자인 시스템·React 컴포넌트",
+      "desc": "머천트 Admin UI를 위한 디자인 시스템·React 컴포넌트 라이브러리",
       "lang": "TypeScript",
-      "stars": 6183
+      "stars": 6184
      },
      {
       "name": "sorbet/sorbet",
       "url": "https://github.com/sorbet/sorbet",
-      "desc": "Ruby용 점진적 정적 타입 체커. Shopify가 Stripe와 함께 주도",
-      "lang": "C++",
-      "stars": 3790
-     },
-     {
-      "name": "Shopify/ruby-lsp",
-      "url": "https://github.com/Shopify/ruby-lsp",
-      "desc": "Ruby 개발자 경험을 위한 Language Server",
+      "desc": "Ruby에 점진적 정적 타입을 입히는 타입체커, Shopify가 주도 개발",
       "lang": "Ruby",
-      "stars": 2016
+      "stars": 3789
      },
      {
       "name": "Shopify/hydrogen",
       "url": "https://github.com/Shopify/hydrogen",
-      "desc": "Remix 기반 커스텀 스토어프론트 빌드 프레임워크",
+      "desc": "Remix 기반 헤드리스 커머스 스토어프론트 React 프레임워크",
       "lang": "TypeScript",
-      "stars": 1972
+      "stars": 1981
+     },
+     {
+      "name": "Shopify/packwerk",
+      "url": "https://github.com/Shopify/packwerk",
+      "desc": "Rails 모놀리스의 패키지 경계와 의존성을 강제하는 정적 분석 도구",
+      "lang": "Ruby",
+      "stars": 1878
      }
     ]
    },
    "sources": [
-    "https://shopify.engineering/shopify-monolith",
-    "https://shopify.engineering/how-shopify-scales-up-its-development-teams",
-    "https://github.com/Shopify/toxiproxy"
+    "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+    "https://shopify.engineering/how-to-decide-if-a-monolith-or-microservices-is-right-for-your-organization",
+    "https://shopify.engineering/the-story-of-why-we-migrate-to-vitess"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "adobe",

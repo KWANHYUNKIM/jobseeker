@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6573건** 공고 · **1297개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-18 21:05
+- 총 **6579건** 공고 · **1299개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-18 22:51
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -122,6 +122,13 @@ markmap:
   - [우리은행 AX 구축 AI Python 고급 개발자 채용(16개월,시청역) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49383395?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=70&sc=630)
   - [우리은행 AX 구축 AI Python 고급 개발자 채용(5개월,시청역) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53968107&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=27c6d72e-3ccc-409f-8dc3-8bc1201b4d9f)
 
+### 메가스터디교육 `중소기업` · 11건
+- **백엔드** [10건] · `Spring` `Spring Boot` `MySQL` `Java` `JavaScript` `HTML`
+  - [웹서비스(백엔드) 개발자 ↗](https://www.wanted.co.kr/wd/352728)
+  - [웹서비스(백앤드) 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54002171)
+  - [백엔드 개발 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54217050)
+  - [백엔드 개발 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54216386)
+
 ### (주)아이이에이 `중소기업` · 11건
 - **백엔드** [7건] · `Java` `React` `Spring` `Spring Boot` `JavaScript` `Oracle`
   - [(대기업 ) IT 시스템 풀스택 개발 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49309483?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=62&sc=630)
@@ -145,13 +152,6 @@ markmap:
   - [(8월 투입) 운영(SM) 개발자 모집 (Java/JSP/Python) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191751&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=d87ef922-71f7-4620-8ca4-d501e005ebae)
 - **DevOps/인프라** [1건] · `AWS` `Azure` `Kubernetes` `Terraform`
   - [(프리랜서/1년 이상 경력) 금융사 클라우드 엔지니어 채용(AWS) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54046952&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dab414a0-9993-4663-9e98-bc4aa2f1ef92)
-
-### 메가스터디교육 `중소기업` · 10건
-- **백엔드** [9건] · `Spring` `Spring Boot` `MySQL` `Java` `JavaScript` `HTML`
-  - [웹서비스(백엔드) 개발자 ↗](https://www.wanted.co.kr/wd/352728)
-  - [웹서비스(백앤드) 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54002171)
-  - [백엔드 개발 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54217050)
-  - [백엔드 개발 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54216386)
 
 ### 네비웍스 `중소기업` · 10건
 - **백엔드** [4건] · `React` `MSA` `JavaScript` `Python` `Docker` `Linux`
@@ -4921,7 +4921,7 @@ markmap:
   - [로와이드 주식회사에서 AI 솔루션 코어 & 백엔드 리드를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53816175&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=ab6c9366-0761-4503-8f06-2b9528b1e7f5)
 
 
-## 제조/하드웨어/로보틱스 (114개사)
+## 제조/하드웨어/로보틱스 (115개사)
 ### (주)인터엑스 `중소기업` · 21건
 - **백엔드** [12건] · `Python` `Docker` `MongoDB` `Git` `Elasticsearch` `REST API`
   - [풀스택 (Full-stack) 개발자 ↗](https://www.wanted.co.kr/wd/328447)
@@ -6041,6 +6041,12 @@ markmap:
 ### (주)시스콘로보틱스 `중소기업` · 2건
 - **펌웨어/임베디드** [1건] · `Python` `C++` `Linux` `Git`
   - [AMR S/W Engineer 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54191017&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=f43ee744-5a0f-462c-912b-1e75ded31ec6)
+
+### 써치스퀘어 `중소기업` · 2건
+- **DevOps/인프라** [1건] · `AWS` `GCP` `Azure` `Docker` `Kubernetes` `Linux`
+  - [정보보안 (클라우드 운영)-국내대기업 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54219966&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e7664710-cc9a-4dbe-90c5-f5b70be4b09e)
+- **보안** [1건] · `AWS` `GCP` `Azure` `Docker` `Kubernetes` `Linux`
+  - [정보보안 (클라우드 운영)-국내대기업 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54219966&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e7664710-cc9a-4dbe-90c5-f5b70be4b09e)
 
 ### 현대종합금속(주) `중소기업` · 2건
 
@@ -10753,7 +10759,7 @@ markmap:
   - [(진학사) 데이터분석 인재 채용 (경력무관) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/554113?ReturnUrl=RecruitInfo)
 
 
-## 보안 (72개사)
+## 보안 (73개사)
 ### 메가존클라우드(주) `중견기업` · 36건
 - **백엔드** [7건] · `Python` `AWS` `Azure` `React` `GCP` `Docker`
   - [AIR 부문 AI 전문 Engineer 채용 (경력) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49327201?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=70&sc=630)
@@ -11398,6 +11404,15 @@ markmap:
 - **보안** [2건] · `Java` `Linux` `Kotlin` `Spring` `Spring Boot` `PostgreSQL`
   - [(주)케이사인 본사 연구소 DB 보안솔루션 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54158381&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=49243410-6258-4e1d-ac3e-6f41a1b1afae)
   - [(주)케이사인 본사 연구소 JAVA 개발 신입/경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53609269&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=be64f2e1-f1b8-4a4b-b64a-471a1ca96423)
+
+### 삼정KPMG `중소기업` · 2건
+- **AI/ML** [1건] · `Python` `Azure`
+  - [(삼정KPMG) 정보보안팀 정보보안 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54203934&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7e0ab38e-eb14-4adc-9bea-930dd8b86d4a)
+- **DevOps/인프라** [1건] · `Python` `Azure`
+  - [(삼정KPMG) 정보보안팀 정보보안 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54203934&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7e0ab38e-eb14-4adc-9bea-930dd8b86d4a)
+- **보안** [2건] · `Python` `Azure`
+  - [(삼정KPMG) 정보보안팀 정보보안 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54203934&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7e0ab38e-eb14-4adc-9bea-930dd8b86d4a)
+  - [(삼정KPMG) 정보보안팀 개인정보보호 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54204041&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=b2a5bf6c-a334-4e84-8127-48ca4f768305)
 
 ### 삼성메디슨(주) `중소기업` · 2건
 - **보안** [1건]

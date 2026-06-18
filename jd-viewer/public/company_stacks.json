@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-18T21:05:31",
-  "total_jobs": 6573,
-  "company_count": 1297,
+  "generated_at": "2026-06-18T22:51:30",
+  "total_jobs": 6579,
+  "company_count": 1299,
   "min_posting": 2,
   "companies": [
     {
@@ -10738,6 +10738,344 @@
       }
     },
     {
+      "name": "메가스터디교육",
+      "norm": "메가스터디교육",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 11,
+      "sites": [
+        "dev",
+        "jobkorea",
+        "jumpit",
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "백엔드": 10
+      },
+      "top_tech": [
+        {
+          "name": "MySQL",
+          "count": 11
+        },
+        {
+          "name": "Spring",
+          "count": 10
+        },
+        {
+          "name": "Spring Boot",
+          "count": 10
+        },
+        {
+          "name": "Java",
+          "count": 7
+        },
+        {
+          "name": "JavaScript",
+          "count": 7
+        },
+        {
+          "name": "HTML",
+          "count": 7
+        },
+        {
+          "name": "CSS",
+          "count": 7
+        },
+        {
+          "name": "AWS",
+          "count": 7
+        },
+        {
+          "name": "Git",
+          "count": 7
+        },
+        {
+          "name": "PHP",
+          "count": 4
+        },
+        {
+          "name": "MSSQL",
+          "count": 4
+        },
+        {
+          "name": "Classic ASP",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 7
+          },
+          {
+            "name": "JavaScript",
+            "count": 7
+          },
+          {
+            "name": "PHP",
+            "count": 4
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 10
+          },
+          {
+            "name": "Spring Boot",
+            "count": 10
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "HTML",
+            "count": 7
+          },
+          {
+            "name": "CSS",
+            "count": 7
+          },
+          {
+            "name": "jQuery",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 11
+          },
+          {
+            "name": "MSSQL",
+            "count": 4
+          },
+          {
+            "name": "SQL",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 7
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 7
+          }
+        ],
+        "기타": [
+          {
+            "name": "Classic ASP",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 17,
+          "evidence": [
+            "채용",
+            "인사"
+          ]
+        },
+        {
+          "name": "교육/에듀테크",
+          "score": 11,
+          "evidence": [
+            "교육",
+            "입시"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        }
+      ],
+      "titles": [
+        "웹서비스(백엔드) 개발자",
+        "웹서비스(백앤드) 개발자 채용",
+        "백엔드 개발 경력 채용",
+        "백엔드 개발 신입 채용",
+        "[2026년 하반기] 신입/경력 백엔드 개발 채용",
+        "웹서비스(백앤드) 개발자 채용",
+        "[2026년 하반기] 신입/경력 백엔드 개발 채용",
+        "백엔드 개발 신입 채용"
+      ],
+      "postings": [
+        {
+          "title": "웹서비스(백엔드) 개발자",
+          "url": "https://www.wanted.co.kr/wd/352728",
+          "site": "wanted"
+        },
+        {
+          "title": "웹서비스(백앤드) 개발자 채용",
+          "url": "https://jumpit.saramin.co.kr/position/54002171",
+          "site": "jumpit"
+        },
+        {
+          "title": "백엔드 개발 경력 채용",
+          "url": "https://jumpit.saramin.co.kr/position/54217050",
+          "site": "jumpit"
+        },
+        {
+          "title": "백엔드 개발 신입 채용",
+          "url": "https://jumpit.saramin.co.kr/position/54216386",
+          "site": "jumpit"
+        },
+        {
+          "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49400540?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=51&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "웹서비스(백앤드) 개발자 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54002171&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367",
+          "site": "saramin"
+        },
+        {
+          "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206985&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5ef6d16a-4fbe-4a73-88e2-a27c48afd938",
+          "site": "saramin"
+        },
+        {
+          "title": "백엔드 개발 신입 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54216386&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dd58caa0-c8fa-4b61-9726-5129869b8524",
+          "site": "saramin"
+        },
+        {
+          "title": "메가스터디교육 2026년 하반기 신입/경력 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206400&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=fe6d0203-098e-4d58-9917-ee7f4de2a997",
+          "site": "saramin"
+        },
+        {
+          "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556777?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "(연장) [IT] 웹서비스(백엔드) 개발자 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/552403?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "메가스터디교육는 HR/채용 도메인의 중소기업으로, 주로 백엔드 직군을 채용하며 MySQL, Spring, Spring Boot, Java 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
+          "핵심 역량: MySQL, Spring, Spring Boot 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java",
+              "JavaScript",
+              "PHP"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Spring",
+              "Spring Boot"
+            ],
+            "tips": [
+              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
+              "Spring Boot — REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "MSSQL",
+              "SQL"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "SQL — 조인·집계·서브쿼리·윈도우 함수 등 쿼리 기본기"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
+            "techs": [
+              "AWS"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
+        ],
+        "study_blogs": [
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "html, java, mysql"
+          },
+          {
+            "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
+            "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "aws, html, javascript"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, git, java"
+          },
+          {
+            "title": "lambda@edge를 활용한 이미지 워터마킹",
+            "url": "https://medium.com/zigbang/lambda-edge%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9B%8C%ED%84%B0%EB%A7%88%ED%82%B9-41f1cb282682",
+            "company": "직방",
+            "country": "KR",
+            "why": "aws, css, html"
+          },
+          {
+            "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
+            "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "css, html, javascript"
+          },
+          {
+            "title": "FE News 26년 6월 소식을 전해드립니다.",
+            "url": "https://d2.naver.com/news/7161766",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "aws, css, html"
+          }
+        ]
+      }
+    },
+    {
       "name": "(주)아이이에이",
       "norm": "아이이에이",
       "size": "중소기업",
@@ -12470,339 +12808,6 @@
             "company": "Swiggy",
             "country": "IN",
             "why": "docker, go, react"
-          }
-        ]
-      }
-    },
-    {
-      "name": "메가스터디교육",
-      "norm": "메가스터디교육",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 10,
-      "sites": [
-        "dev",
-        "jobkorea",
-        "jumpit",
-        "saramin",
-        "wanted"
-      ],
-      "roles": {
-        "백엔드": 9
-      },
-      "top_tech": [
-        {
-          "name": "MySQL",
-          "count": 10
-        },
-        {
-          "name": "Spring",
-          "count": 9
-        },
-        {
-          "name": "Spring Boot",
-          "count": 9
-        },
-        {
-          "name": "Java",
-          "count": 6
-        },
-        {
-          "name": "JavaScript",
-          "count": 6
-        },
-        {
-          "name": "HTML",
-          "count": 6
-        },
-        {
-          "name": "CSS",
-          "count": 6
-        },
-        {
-          "name": "AWS",
-          "count": 6
-        },
-        {
-          "name": "Git",
-          "count": 6
-        },
-        {
-          "name": "PHP",
-          "count": 4
-        },
-        {
-          "name": "MSSQL",
-          "count": 4
-        },
-        {
-          "name": "Classic ASP",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Java",
-            "count": 6
-          },
-          {
-            "name": "JavaScript",
-            "count": 6
-          },
-          {
-            "name": "PHP",
-            "count": 4
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Spring",
-            "count": 9
-          },
-          {
-            "name": "Spring Boot",
-            "count": 9
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "HTML",
-            "count": 6
-          },
-          {
-            "name": "CSS",
-            "count": 6
-          },
-          {
-            "name": "jQuery",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 10
-          },
-          {
-            "name": "MSSQL",
-            "count": 4
-          },
-          {
-            "name": "SQL",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 6
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 6
-          }
-        ],
-        "기타": [
-          {
-            "name": "Classic ASP",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 16,
-          "evidence": [
-            "채용",
-            "인사"
-          ]
-        },
-        {
-          "name": "교육/에듀테크",
-          "score": 10,
-          "evidence": [
-            "교육",
-            "입시"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        }
-      ],
-      "titles": [
-        "웹서비스(백엔드) 개발자",
-        "웹서비스(백앤드) 개발자 채용",
-        "백엔드 개발 경력 채용",
-        "백엔드 개발 신입 채용",
-        "[2026년 하반기] 신입/경력 백엔드 개발 채용",
-        "웹서비스(백앤드) 개발자 채용",
-        "[2026년 하반기] 신입/경력 백엔드 개발 채용",
-        "메가스터디교육 2026년 하반기 신입/경력 채용"
-      ],
-      "postings": [
-        {
-          "title": "웹서비스(백엔드) 개발자",
-          "url": "https://www.wanted.co.kr/wd/352728",
-          "site": "wanted"
-        },
-        {
-          "title": "웹서비스(백앤드) 개발자 채용",
-          "url": "https://jumpit.saramin.co.kr/position/54002171",
-          "site": "jumpit"
-        },
-        {
-          "title": "백엔드 개발 경력 채용",
-          "url": "https://jumpit.saramin.co.kr/position/54217050",
-          "site": "jumpit"
-        },
-        {
-          "title": "백엔드 개발 신입 채용",
-          "url": "https://jumpit.saramin.co.kr/position/54216386",
-          "site": "jumpit"
-        },
-        {
-          "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49400540?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=51&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "웹서비스(백앤드) 개발자 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54002171&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367",
-          "site": "saramin"
-        },
-        {
-          "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206985&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5ef6d16a-4fbe-4a73-88e2-a27c48afd938",
-          "site": "saramin"
-        },
-        {
-          "title": "메가스터디교육 2026년 하반기 신입/경력 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54206400&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=fe6d0203-098e-4d58-9917-ee7f4de2a997",
-          "site": "saramin"
-        },
-        {
-          "title": "[2026년 하반기] 신입/경력 백엔드 개발 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556777?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "(연장) [IT] 웹서비스(백엔드) 개발자 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/552403?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "메가스터디교육는 HR/채용 도메인의 중소기업으로, 주로 백엔드 직군을 채용하며 MySQL, Spring, Spring Boot, Java 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
-          "핵심 역량: MySQL, Spring, Spring Boot 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "백엔드 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Java",
-              "JavaScript",
-              "PHP"
-            ],
-            "tips": [
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
-            ]
-          },
-          {
-            "stage": "2. 백엔드 핵심 스킬",
-            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
-            "techs": [
-              "Spring",
-              "Spring Boot"
-            ],
-            "tips": [
-              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
-              "Spring Boot — REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "MSSQL",
-              "SQL"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "SQL — 조인·집계·서브쿼리·윈도우 함수 등 쿼리 기본기"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
-            "techs": [
-              "AWS"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
-            ]
-          }
-        ],
-        "tasks": [
-          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
-        ],
-        "study_blogs": [
-          {
-            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
-            "url": "https://d2.naver.com/helloworld/6512234",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "html, java, mysql"
-          },
-          {
-            "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
-            "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "aws, html, javascript"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, git, java"
-          },
-          {
-            "title": "lambda@edge를 활용한 이미지 워터마킹",
-            "url": "https://medium.com/zigbang/lambda-edge%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9B%8C%ED%84%B0%EB%A7%88%ED%82%B9-41f1cb282682",
-            "company": "직방",
-            "country": "KR",
-            "why": "aws, css, html"
-          },
-          {
-            "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "css, html, javascript"
-          },
-          {
-            "title": "FE News 26년 6월 소식을 전해드립니다.",
-            "url": "https://d2.naver.com/news/7161766",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "aws, css, html"
           }
         ]
       }
@@ -66636,8 +66641,8 @@
             "why": "azure"
           },
           {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "title": "Celebrating 12 years of Project Galileo",
+            "url": "https://blog.cloudflare.com/celebrating-12-years-of-project-galileo",
             "company": "Cloudflare",
             "country": "US",
             "why": "인프라/클라우드"
@@ -299603,8 +299608,8 @@
             "why": "azure"
           },
           {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "title": "Celebrating 12 years of Project Galileo",
+            "url": "https://blog.cloudflare.com/celebrating-12-years-of-project-galileo",
             "company": "Cloudflare",
             "country": "US",
             "why": "인프라/클라우드"
@@ -312006,6 +312011,232 @@
       }
     },
     {
+      "name": "써치스퀘어",
+      "norm": "써치스퀘어",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "DevOps/인프라": 1,
+        "보안": 1
+      },
+      "top_tech": [
+        {
+          "name": "Docker",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 1
+        },
+        {
+          "name": "GCP",
+          "count": 1
+        },
+        {
+          "name": "Azure",
+          "count": 1
+        },
+        {
+          "name": "Kubernetes",
+          "count": 1
+        },
+        {
+          "name": "Linux",
+          "count": 1
+        },
+        {
+          "name": "Git",
+          "count": 1
+        },
+        {
+          "name": "Jira",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "인프라/DevOps": [
+          {
+            "name": "Docker",
+            "count": 2
+          },
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "GCP",
+            "count": 1
+          },
+          {
+            "name": "Azure",
+            "count": 1
+          },
+          {
+            "name": "Kubernetes",
+            "count": 1
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          },
+          {
+            "name": "Jira",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 11,
+          "evidence": [
+            "제조",
+            "로봇",
+            "로보틱스",
+            "디바이스"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 6,
+          "evidence": [
+            "정보보안",
+            "보안 솔루션",
+            "관제"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS/GCP/Azure)",
+          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        }
+      ],
+      "titles": [
+        "정보보안 (클라우드 운영)-국내대기업",
+        "로봇 통합 소프트웨어 개발자"
+      ],
+      "postings": [
+        {
+          "title": "정보보안 (클라우드 운영)-국내대기업",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54219966&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e7664710-cc9a-4dbe-90c5-f5b70be4b09e",
+          "site": "saramin"
+        },
+        {
+          "title": "로봇 통합 소프트웨어 개발자",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54146966&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=10d1f5e0-7fb8-4961-bbb2-7cdc15b15b69",
+          "site": "saramin"
+        }
+      ],
+      "summary": "써치스퀘어는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 DevOps/인프라 · 보안 직군을 채용하며 Docker, AWS, GCP, Azure 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Docker, AWS, GCP 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "DevOps/인프라 중심(+보안) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "2. DevOps/인프라 핵심 스킬",
+            "goal": "컨테이너·CI/CD로 앱을 빌드·배포·운영해 본다",
+            "techs": [
+              "Docker",
+              "AWS",
+              "GCP",
+              "Azure"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+              "Azure — App Service·AKS·Storage로 클라우드 배포 실습"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "Docker",
+              "AWS",
+              "GCP",
+              "Azure"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+              "Azure — App Service·AKS·Storage로 클라우드 배포 실습"
+            ]
+          }
+        ],
+        "tasks": [
+          "[제조/하드웨어/로보틱스] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "[제조/하드웨어/로보틱스] 취약점 점검·보안 모니터링과 침해 대응 체계 운영",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, azure, gcp"
+          },
+          {
+            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
+            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
+            "company": "Pinterest",
+            "country": "US",
+            "why": "aws, docker, kubernetes"
+          },
+          {
+            "title": "Docker lazy loading at Grab: Accelerating container startup times",
+            "url": "https://engineering.grab.com/docker-lazy-loading",
+            "company": "Grab",
+            "country": "SG",
+            "why": "aws, docker, kubernetes"
+          },
+          {
+            "title": "AWS Weekly Roundup: AWS FinOps Agent in preview, Gemma 4 on Bedrock, Kiro Pro Max, and more (June 15, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-finops-agent-in-preview-gemma-4-on-bedrock-kiro-pro-max-and-more-june-15-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, jira, linux"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, git, kubernetes"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "azure, git, linux"
+          }
+        ]
+      }
+    },
+    {
       "name": "(주)메타엠",
       "norm": "메타엠",
       "size": "중소기업",
@@ -315578,6 +315809,174 @@
           "[B2B SaaS/엔터프라이즈] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
         ],
         "study_blogs": []
+      }
+    },
+    {
+      "name": "삼정KPMG",
+      "norm": "삼정kpmg",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "보안": 2,
+        "AI/ML": 1,
+        "DevOps/인프라": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "Azure",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Azure",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "보안",
+          "score": 7,
+          "evidence": [
+            "정보보안",
+            "보안 솔루션"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 6,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (Azure)",
+          "why": "Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        }
+      ],
+      "titles": [
+        "[삼정KPMG] 정보보안팀 정보보안 담당자 채용",
+        "[삼정KPMG] 정보보안팀 개인정보보호 담당자 채용"
+      ],
+      "postings": [
+        {
+          "title": "[삼정KPMG] 정보보안팀 정보보안 담당자 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54203934&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=7e0ab38e-eb14-4adc-9bea-930dd8b86d4a",
+          "site": "saramin"
+        },
+        {
+          "title": "[삼정KPMG] 정보보안팀 개인정보보호 담당자 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54204041&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=b2a5bf6c-a334-4e84-8127-48ca4f768305",
+          "site": "saramin"
+        }
+      ],
+      "summary": "삼정KPMG는 보안 도메인의 중소기업으로, 주로 보안 · AI/ML 직군을 채용하며 Python, Azure 기반으로 개발합니다. 아키텍처는 클라우드 (Azure)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, Azure 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "보안 중심(+AI/ML) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "보안 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "클라우드 (Azure) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "2. 보안 핵심 스킬",
+            "goal": "컨테이너·CI/CD로 앱을 빌드·배포·운영해 본다",
+            "techs": [
+              "Azure"
+            ],
+            "tips": [
+              "Azure — App Service·AKS·Storage로 클라우드 배포 실습"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (Azure))",
+            "techs": [
+              "Azure"
+            ],
+            "tips": [
+              "Azure — App Service·AKS·Storage로 클라우드 배포 실습"
+            ]
+          }
+        ],
+        "tasks": [
+          "[보안] 취약점 점검·보안 모니터링과 침해 대응 체계 운영",
+          "[보안] 모델 학습·평가와 추론(서빙) 파이프라인 개발"
+        ],
+        "study_blogs": [
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "azure, python"
+          },
+          {
+            "title": "Explaining Every Rupee: How We Built Reliable LLM Support Bots for Delivery Partners",
+            "url": "https://bytes.swiggy.com/explaining-every-rupee-how-we-built-reliable-llm-support-bots-for-delivery-partners-066c4f23e875",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "azure, python"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "azure, python"
+          },
+          {
+            "title": "Announcing Web Search on Amazon Bedrock AgentCore: Ground your AI agents in current, accurate web knowledge",
+            "url": "https://aws.amazon.com/blogs/aws/announcing-web-search-on-amazon-bedrock-agentcore-ground-your-ai-agents-in-current-accurate-web-knowledge",
+            "company": "AWS",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "Skill 품질 관리를 위한 Rubric 설계와 시스템 구현",
+            "url": "https://toss.tech/article/skill-quality-rubric",
+            "company": "토스",
+            "country": "KR",
+            "why": "python"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "python"
+          }
+        ]
       }
     },
     {

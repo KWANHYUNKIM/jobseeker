@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-18T21:05:25",
-  "source_dir": "screenshots/all_통합_20260618_210518",
+  "generated_at": "2026-06-18T22:51:24",
+  "source_dir": "screenshots/all_통합_20260618_225115",
   "keyword": "통합",
   "jobs": [
     {
@@ -110352,6 +110352,52 @@
     },
     {
       "site": "saramin",
+      "company": "주식회사비큐에이아이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[인턴] AI개발자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54213638&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=87261a6f-34c5-4838-aa8f-6b57a92c92e9",
+      "career": "경력무관",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)다산카이스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "하드웨어 개발자를 모십니다. 신입/경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211467&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=afa1bd28-4906-4813-b7f7-52db65264748",
+      "career": "신입·경력",
+      "location": "경기안양시 동안구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입 / 경력 5년 이하\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능",
+      "preferences": "",
+      "main_tasks": "• 하드웨어 회로설계\n\n• 하드웨어 PCB설계\n\n• 하드웨어 제품 개발\n\n• 하드웨어 생산 Flow\n\n• 하드웨어개발팀 부서 소속, 사원/과장 직급, 팀원 직책으로 함께할 예정이에요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -123443,6 +123489,39 @@
     },
     {
       "site": "saramin",
+      "company": "메가스터디교육(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발 신입 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54216386&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dd58caa0-c8fa-4b61-9726-5129869b8524",
+      "career": "신입",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "AWS",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 신입",
+      "preferences": "• Backend 및 Frontend 개발 가능자\n\n마감일 및 근무지\n\n• 마감일 : 2026년 07월 17일",
+      "main_tasks": "• 서버 사이드 로직 개발\n- Java/Spring Boot 기반 서버 애플리케이션 개발\n• 데이터 모델링 및 쿼리 최적화\n- MySQL 스키마 설계, 쿼리 최적화 및 인덱스 관리\n• 웹 UI/UX 구현\n- HTML, CSS, JavaScript 기반의 웹 UI 개발\n• 클라우드 및 인프라 활용\n- AWS 클라우드 환경에서 서비스 운영\n• 협업 및 버전 관리\n-Git/GitHub를 활용한 버전 관리 및 협업",
+      "benefits": "ㆍ경조사 및 경조휴가 지급\nㆍ전국단위 법인콘도 이용 지원\nㆍ직계자녀 교육비 지원\nㆍ본인 및 가족 의료비 지원\nㆍ메가스터디 학원, 인터넷강좌, 그룹사 교육 할인\nㆍ장기근속자 포상휴가 및 휴가비 지급\nㆍ가족 종합검진 할인혜택"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -130697,6 +130776,48 @@
       "qualifications": "경력: 풀스택 개발 및 시스템 아키텍처 설계 경력 5년 이상 (리더급)\n\n기술 스택: React, Node.js 실무 경험 및 Git, 고성능 API, DB 구조에 대한 깊은 이해\n\n레거시 인수: 기존 서비스의 코드 리팩토링 또는 레거시 시스템을 성공적으로 인수·인계하여 안정화해 본 경험\n\n데이터 처리: 대용량 로우 데이터(Raw Data) 혹은 실시간 스트리밍 데이터를 버목 없이 처리하고 파싱해 본 경험\n\n• 신입 / 경력 5년 이상\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능",
       "preferences": "AI/ML 최적화: PyTorch/TensorFlow 등으로 개발된 AI 모델을 ONNX, TensorRT 등을 활용해 경량화하고 대형 장비나 실시간 시스템에 성공적으로 탑재·배포(Deployment)해 본 경험\n\n물리/신호 처리: 칼만 필터(Kalman Filter) 등 디지털 신호 처리(DSP) 기법을 활용해 센서 노이즈를 제어해 보았거나, 신체운동/하체 역학 물리 시뮬레이션에 이해가 있으신 분\n\n엔진 융합: C/C++ 기반의 로우레벨 데이터 처리와 상위 웹 플랫폼(Node.js/React) 간의 데이터 연동 구조를 설계할 수 있으신 분\n\n• 수석연구원 직급으로 함께할 예정이에요.",
       "main_tasks": "SIOS 플랫폼 관리 및 인수 고도화\n\n기존 코드베이스 분석 및 구조 정비 (React / Node.js 기반)\n\n프론트엔드/백엔드/API/DB 아키텍처 최적화 및 권한 체계 고도화\n\n시스템 안정화, 에러 디버깅 및 운영/배포/유지보수 체계 정비\n\nSGS G21 신체 역학 데이터 및 AI 시뮬레이션 고도화 (핵심 미션)\n\n당사 웨어러블 스마트 가드 장비(FIFA EPTS 웨어러블 디바이스)에서 실시간으로 발생하는 로우 데이터(Raw Data) 스트리밍 처리 및 파싱 모듈 최적화\n\n현재 탑재된 하체 역학 기반 AI 모델의 에지(Edge) 환경 최적화 및 추론 지연(Inference Latency) 최소화\n\n수집된 실시간 데이터를 활용한 AI 모델의 지속적인 재학습(Continual Learning) 및 MLOps 파라이프라인 빌드업",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)디비투이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[웹개발자]  JAVA 풀스택 개발(경력)  프리랜서 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54220369&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=03bfa2ca-283c-4b51-859b-3652254008a5",
+      "career": "경력3년↑",
+      "location": "경기안양시 동안구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "React",
+        "Vue",
+        "jQuery",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "PostgreSQL",
+        "AWS",
+        "Docker",
+        "Apache",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화",
+        "대용량 처리"
+      ],
+      "qualifications": "• 경력 3년 이상\n\n• 대학교졸업(4년)이상\n\n<필수조건>\n\n* Java/Spring Boot 실무 경력 3년 이상\n\n* JavaScript(React 또는 Vue) 개발 경험\n\n* MySQL, PostgreSQL 등 RDBMS 활용 경험\n\n* REST API 설계 및 개발 경험\n\n* Git 기반 협업 경험\n\n<백엔드 기술스택>\n\nJava,\n\nSpring Boot ,\n\nMyBatis,\n\nPostgreSQL,\n\nTomcat 9,\n\nMaven\n\n<프론트엔드 기술스택>\n\nJSP + JSTL + Apache Tiles 3,\n\nBootstrap 5, jQuery, 순수 JavaScript, Chart.js, SVG",
+      "preferences": "*게시판 관리자 화면 기능 개발 경험 우대",
+      "main_tasks": "* Java/Spring Boot 기반 백엔드 시스템 설계 및 개발 및 유지관리\n\n* React, Vue.js 등 프론트엔드 개발 및 유지관리\n\n* 신규 서비스 기획 참여 및 기능 개발\n\n* REST API 설계 및 외부 시스템 연동\n\n* 데이터베이스 설계 및 성능 최적화\n\n* 대용량 데이터 처리 및 마이그레이션 기능 개발\n\n* AWS, Docker 등 클라우드 환경 구축 및 운영",
       "benefits": ""
     },
     {
@@ -164061,6 +164182,37 @@
     },
     {
       "site": "saramin",
+      "company": "써치스퀘어",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "정보보안 (클라우드 운영)-국내대기업",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54219966&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e7664710-cc9a-4dbe-90c5-f5b70be4b09e",
+      "career": "경력5년↑",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라",
+        "보안"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "학력: 학사 이상\n\n경력: 클라우드 서비스 구축 또는 솔루션 운영 업무수행 경력 5년 이상 (MSP사 및 클라우드 환경 유경험자)\n\n자격: AWS, MS Azure 등 클라우드 자격, CISSP, CISA, CPPG 등\n\n전문 지식:\n클라우드 인프라 설계 및 구축/운영 경험\n\nLinux, Docker, Kubernetes 사용 경험\n\nMSP사 근무 등 클라우드 환경 유경험자 (AWS, Azure, VMware, OpenStack, Container 등)\n\n보안솔루션(WAF, IPS, UTM 등) 구축 및 운영 경험",
+      "preferences": "",
+      "main_tasks": "1. 직무개요 : 클라우드 인프라 구축 및 운영\n\n1) 클라우드 보안솔루션 운영\n\n- IDS/IPS, WAF, CSP Native Service 등 관제 연동\n\n- 클라우드 보안솔루션 로그 전송 환경 구성 지원\n\n- 클라우드 보안관제 프로세스 수립 및 고도화\n\n- 애플리케이션 또는 네트워크 이슈 트러블슈팅\n\n- 고객 대응 및 보안 솔루션 기술 지원\n\n2) 클라우드 인프라 구축\n\n- 클라우드 인프라(AWS, Azure, GCP 등) 시스템 설계·구축·관리\n\n- 서버 운영체제(Linux/Windows Server) 구축·관리\n\n- 응용 프로그램(WEB/WAS/DBMS/Docker/Kubernetes 등) 구축·관리\n\n- 보안 시스템(WAF, UTM, IPS, VPN 등) 구축·관리\n\n- 가상화 시스템(Docker Container 등) 구축·관리",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)메타엠",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -174093,6 +174245,31 @@
       "preferences": "",
       "main_tasks": "- 전사 정보보안 및 사고 예방을 위한 계획 수립 및 점검 활동\n- 전사 정보보안 및 개인정보보호 정책 및 지침 제/개정, 내부관리계획 정비\n- 전사 정보보안 정책 수립 검토 및 보안 협의체 운영\n- 임직원 및 협력사 정보보안 교육 및 점검\n- 보안사고 예방 및 대응을 위한 계획 수립 및 점검 활동\n- IT시스템 보안점검, 시설 및 출입 보안 운영 및 이슈 해결",
       "benefits": "ㆍ출퇴근 : 탄력근무제, 자율 근무제"
+    },
+    {
+      "site": "saramin",
+      "company": "삼정KPMG",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[삼정KPMG] 정보보안팀 개인정보보호 담당자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54204041&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=b2a5bf6c-a334-4e84-8127-48ca4f768305",
+      "career": "경력 10~20년",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "[경력사항] 개인정보보호 경력 3년 이상\n- 정규 4년제 대학 학사학위 이상\n- 개인정보보호 또는 정보보안 운영 경험\n- 커뮤니케이션에 능한 분",
+      "preferences": "- CPPG, PIA, ISMS-P 등 정보보안/개인정보보호 자격증 보유\n- Microsoft Purview, Symantec DLP 등 운영 경험\n- 개인정보 영향평가(PIA) 또는 (개인)정보보호 컨설팅 수행 경험\n- Python, PowerShell 등 자동화 개발 경험\n- 접속기록 분석 관련 간단한 스크립트 작성 가능한 분 또는 간단한 코드 개발에 흥미 있으신 분",
+      "main_tasks": "- 개인정보보호 운영 및 컴플라이언스 지원\n\n- 개인정보 처리 현황 점검 및 보호조치 이행 지원\n\n- 개인정보 접속기록 점검 및 분석 스크립트 작성\n\n- 개인정보접속기록 시스템 및 DLP 관리 및 점검 지원",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -197916,69 +198093,69 @@
     }
   ],
   "stats": {
-    "total": 6573,
+    "total": 6579,
     "by_size": {
-      "중소기업": 5898,
+      "중소기업": 5904,
       "대기업": 410,
       "중견기업": 265
     },
     "by_role": {
-      "기타": 863,
-      "DevOps/인프라": 955,
-      "백엔드": 2836,
+      "기타": 864,
+      "DevOps/인프라": 956,
+      "백엔드": 2839,
       "모바일": 1052,
       "AI/ML": 2200,
-      "프론트엔드": 1856,
-      "풀스택": 580,
+      "프론트엔드": 1857,
+      "풀스택": 581,
       "게임": 41,
       "데이터": 915,
       "펌웨어/임베디드": 236,
-      "보안": 270,
+      "보안": 272,
       "QA": 64
     },
     "by_site": {
       "wanted": 1466,
       "jumpit": 446,
       "jobkorea": 1214,
-      "saramin": 3157,
+      "saramin": 3163,
       "dev": 290
     },
     "top_tech": [
       [
         "Python",
-        2057
+        2059
       ],
       [
         "AWS",
-        1741
+        1744
       ],
       [
         "Java",
-        1704
+        1706
       ],
       [
         "React",
-        1427
+        1428
       ],
       [
         "Git",
-        1086
+        1088
       ],
       [
         "Docker",
-        1067
+        1069
       ],
       [
         "Spring",
-        1034
+        1036
       ],
       [
         "JavaScript",
-        995
+        997
       ],
       [
         "Linux",
-        934
+        935
       ],
       [
         "TypeScript",
@@ -197986,27 +198163,27 @@
       ],
       [
         "MySQL",
-        845
+        847
       ],
       [
         "Kubernetes",
-        738
+        739
       ],
       [
         "REST API",
-        704
+        705
       ],
       [
         "PostgreSQL",
-        700
+        702
       ],
       [
         "Spring Boot",
-        596
+        598
       ],
       [
         "GCP",
-        581
+        582
       ],
       [
         "C++",
@@ -198018,23 +198195,23 @@
       ],
       [
         "Azure",
-        499
+        500
       ],
       [
         "Next.js",
         484
       ],
       [
+        "CSS",
+        478
+      ],
+      [
         "Android",
         477
       ],
       [
-        "CSS",
-        477
-      ],
-      [
         "HTML",
-        464
+        465
       ],
       [
         "Redis",
@@ -198050,11 +198227,11 @@
       ],
       [
         "FastAPI",
-        375
+        376
       ],
       [
         "Vue",
-        374
+        375
       ],
       [
         "Kotlin",
@@ -201167,6 +201344,22 @@
         "jumpit": 563,
         "jobkorea": 1585,
         "saramin": 4150,
+        "dev": 354
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-18T22:51:21",
+      "keyword": "통합",
+      "raw_total": 8139,
+      "deduped": 7494,
+      "active": 6579,
+      "closed": 915,
+      "site_counts": {
+        "wanted": 1481,
+        "jumpit": 563,
+        "jobkorea": 1585,
+        "saramin": 4156,
         "dev": 354
       },
       "anomalies": []
