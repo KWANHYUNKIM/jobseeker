@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T19:24:16",
+ "generated_at": "2026-06-18T21:09:52",
  "total": 100,
  "countries": [
   {
@@ -450,16 +450,12 @@
    ],
    "languages": [
     {
+     "name": "Python",
+     "count": 13
+    },
+    {
      "name": "Java",
      "count": 12
-    },
-    {
-     "name": "Python",
-     "count": 12
-    },
-    {
-     "name": "JavaScript",
-     "count": 11
     },
     {
      "name": "TypeScript",
@@ -474,6 +470,10 @@
      "count": 9
     },
     {
+     "name": "JavaScript",
+     "count": 9
+    },
+    {
      "name": "Scala",
      "count": 5
     },
@@ -485,11 +485,11 @@
    "stack": {
     "backend": [
      {
-      "name": "Spring Boot",
-      "count": 12
+      "name": "gRPC",
+      "count": 11
      },
      {
-      "name": "gRPC",
+      "name": "Spring Boot",
       "count": 11
      },
      {
@@ -555,15 +555,15 @@
       "count": 2
      },
      {
-      "name": "Apollo GraphQL",
+      "name": "Apollo Client",
+      "count": 1
+     },
+     {
+      "name": "CloudFront 엣지 렌더링",
       "count": 1
      },
      {
       "name": "GraphQL BFF",
-      "count": 1
-     },
-     {
-      "name": "Hydrogen",
       "count": 1
      }
     ],
@@ -582,7 +582,7 @@
      },
      {
       "name": "MySQL",
-      "count": 12
+      "count": 11
      },
      {
       "name": "Apache Spark",
@@ -8880,57 +8880,64 @@
     "Java",
     "Kotlin",
     "TypeScript",
-    "JavaScript",
-    "Scala"
+    "Scala",
+    "Python"
    ],
    "stack": {
     "backend": [
-     "Ruby on Rails",
+     "Ruby on Rails (legacy monorail)",
      "Java",
      "Kotlin",
      "Dropwizard",
      "Spring Boot",
-     "Apache Thrift",
-     "GraphQL (Viaduct)"
+     "Apache Thrift IDL",
+     "Viaduct (GraphQL data layer)",
+     "OneTouch / SmartStack heritage"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Apollo GraphQL",
-     "Hypernova SSR",
-     "React Native"
+     "Apollo Client (GraphQL)",
+     "Hypernova (React SSR)",
+     "React Native",
+     "Happo (visual regression)",
+     "Lona / DLS design system"
     ],
     "data": [
-     "MySQL (Vitess)",
+     "MySQL on Vitess",
      "Apache Kafka",
      "Apache Spark",
      "Apache Airflow",
      "Apache Druid",
      "Apache Hive",
      "Apache Hudi",
+     "Apache Iceberg",
      "Elasticsearch",
      "Redis",
-     "HBase"
+     "HBase",
+     "Presto/Trino"
     ],
     "infra": [
      "AWS",
      "Kubernetes",
-     "Envoy",
+     "Envoy (service mesh)",
      "Apache Thrift RPC",
      "Spinnaker",
-     "Datadog"
+     "Datadog",
+     "Chef (legacy provisioning)",
+     "Bazel (build)"
     ]
    },
    "architecture": [
-    "Service-oriented architecture (SOA)",
-    "GraphQL-aggregated data layer (Viaduct)",
-    "Service mesh (Envoy)",
-    "Event-driven streaming"
+    "Service-oriented architecture (SOA) with a unified GraphQL data layer (Viaduct)",
+    "Envoy-based service mesh for service-to-service RPC",
+    "Event-driven streaming with Kafka CDC into a Hudi/Iceberg data lake",
+    "Schema-first Thrift IDL contracts across services"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n    MOBILE[\"Mobile<br/>React Native + Native\"]\n    EDGE[\"Edge / CDN<br/>AWS CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    APIGW[\"API Gateway<br/>Envoy Front Proxy\"]\n    GQL[\"Data Layer<br/>Viaduct GraphQL\"]\n  end\n  subgraph Services[\"Core Services\"]\n    MONO[\"Legacy Monolith<br/>Ruby on Rails\"]\n    SVC[\"Microservices<br/>Java + Kotlin + Dropwizard\"]\n    PRICE[\"Pricing / Search<br/>JVM Services\"]\n    PAY[\"Payments<br/>Java Services\"]\n  end\n  subgraph Mesh[\"Service Mesh\"]\n    ENVOY[\"Sidecar Mesh<br/>Envoy + Thrift RPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL + Vitess\"]\n    REDIS[\"Cache<br/>Redis\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    DRUID[\"OLAP<br/>Apache Druid\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SPARK[\"Batch / ETL<br/>Spark + Airflow\"]\n    HUDI[\"Data Lake<br/>Hudi on S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on AWS\"]\n    SPIN[\"Deploy<br/>Spinnaker\"]\n  end\n  WEB --> EDGE\n  MOBILE --> EDGE\n  EDGE --> APIGW\n  APIGW --> GQL\n  GQL -->|Thrift RPC| ENVOY\n  ENVOY --> MONO\n  ENVOY --> SVC\n  ENVOY --> PRICE\n  ENVOY --> PAY\n  SVC --> MYSQL\n  SVC --> REDIS\n  PRICE --> ES\n  SVC -->|events| KAFKA\n  KAFKA --> SPARK\n  KAFKA --> DRUID\n  SPARK --> HUDI\n  K8S --> SVC\n  SPIN --> K8S",
-   "why_language": "초기 Airbnb는 빠른 제품 반복을 위해 Ruby on Rails 모놀리스로 시작했지만, 글로벌 트래픽과 결제·검색 같은 고부하 도메인에서 JVM의 성능·동시성·타입 안정성이 필요해 Java와 Kotlin으로 핵심 서비스를 옮겼다. 프론트엔드는 대규모 컴포넌트 재사용과 SSR을 위해 React + TypeScript로 표준화했고, 데이터·ML 파이프라인에는 Spark 생태계와 맞물리는 Scala/Java를 사용한다.",
-   "why_architecture": "단일 Rails 모놀리스가 수백 명의 엔지니어와 트래픽을 감당하지 못하자 도메인 단위 SOA로 해체했고, 서비스 간 통신은 Apache Thrift 기반 RPC를 Envoy 서비스 메시로 묶어 일관된 라우팅·관측성·신뢰성을 확보했다. 클라이언트가 수십 개 서비스를 직접 호출하는 N+1 문제를 막기 위해 Viaduct(GraphQL) 데이터 게이트웨이로 스키마를 중앙 집약해 데이터 페칭을 표준화했다.",
-   "summary": "Rails 모놀리스를 Thrift·Envoy·GraphQL로 묶은 JVM 중심 SOA로 재편한 글로벌 마켓플레이스 스택",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web<br/>React + TypeScript\"]\n    MOB[\"Mobile<br/>React Native + iOS/Android\"]\n  end\n  subgraph Edge\n    AGW[\"API Gateway<br/>Apollo + Viaduct GraphQL\"]\n    HN[\"SSR<br/>Hypernova React\"]\n  end\n  subgraph CoreServices\n    SEARCH[\"Search/Listing<br/>Java + Kotlin\"]\n    BOOK[\"Booking/Reservations<br/>Java\"]\n    PAY[\"Payments<br/>Java + Thrift\"]\n    MONO[\"Legacy Monorail<br/>Ruby on Rails\"]\n    MESH[\"Service Mesh<br/>Envoy + Thrift RPC\"]\n  end\n  subgraph DataStorage\n    VT[\"OLTP<br/>MySQL on Vitess\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    RED[\"Cache<br/>Redis\"]\n    HB[\"Wide Column<br/>HBase\"]\n    DR[\"Realtime OLAP<br/>Apache Druid\"]\n  end\n  subgraph StreamingAsync\n    KAF[\"Event Bus / CDC<br/>Apache Kafka\"]\n    SPK[\"Batch/ML<br/>Spark + Airflow\"]\n    LAKE[\"Data Lake<br/>Hudi + Iceberg + Hive\"]\n  end\n  subgraph Platform\n    K8S[\"Compute<br/>Kubernetes on AWS\"]\n    SPIN[\"Deploy<br/>Spinnaker\"]\n    DD[\"Observability<br/>Datadog\"]\n  end\n  WEB --> AGW\n  MOB --> AGW\n  WEB --> HN\n  AGW --> MESH\n  MESH -->|Thrift RPC| SEARCH\n  MESH -->|Thrift RPC| BOOK\n  MESH -->|Thrift RPC| PAY\n  MESH --> MONO\n  SEARCH --> ES\n  SEARCH --> RED\n  BOOK --> VT\n  PAY --> VT\n  MONO --> VT\n  SEARCH --> HB\n  VT -->|CDC| KAF\n  KAF --> SPK\n  SPK --> LAKE\n  LAKE --> DR\n  DR --> SEARCH\n  K8S --- MESH\n  SPIN --> K8S\n  DD --- MESH",
+   "why_language": "Airbnb는 2008년 Ruby on Rails 모놀리스(Monorail)로 출발해 빠른 제품 반복으로 마켓플레이스를 키웠으나, 글로벌 트래픽과 수백 개 서비스 규모에서 타입 안정성·성능·동시성이 필요해지면서 JVM 계열(Java, 그리고 더 간결한 Kotlin)로 핵심 백엔드를 재작성했다. 데이터/ML 파이프라인은 Spark·Scala, 프런트엔드는 React 생태계에 맞춘 TypeScript로 표준화해 대규모 코드베이스의 유지보수성을 확보했다.",
+   "why_architecture": "단일 Rails 모놀리스는 배포 충돌과 빌드 지연으로 수천 명 엔지니어의 병렬 개발을 막았기 때문에 SOA로 해체하고, 서비스가 폭증하자 클라이언트가 수십 개 API를 직접 조합하는 비용을 없애기 위해 Viaduct라는 통합 GraphQL 데이터 레이어를 도입했다. 서비스 간 통신은 Thrift 스키마 계약과 Envoy 서비스 메시로 표준화해 신뢰성·관측성을 끌어올리고, 예약·결제 같은 상태 변화는 Kafka CDC로 스트리밍해 검색 인덱스와 데이터 레이크를 비동기로 일관되게 갱신한다.",
+   "summary": "Rails 모놀리스에서 Thrift+Envoy 기반 SOA와 Viaduct GraphQL 데이터 레이어로 진화한 글로벌 마켓플레이스 스택",
    "deep_dive": [
     {
      "topic": "모놀리스 해체: Rails에서 SOA로의 마이그레이션",
@@ -8959,6 +8966,22 @@
     {
      "topic": "관측성과 배포: 서비스 메시 위의 트레이싱·카나리 파이프라인",
      "body": "### 수백 개 서비스를 어떻게 들여다보나\n\nSOA로 쪼갠 뒤 한 요청이 게이트웨이 → Viaduct → 여러 백엔드 서비스 → DB를 거치며 수십 홉을 탄다. 어디서 느려지고 어디서 깨졌는지 보려면 **분산 트레이싱**이 필수다. Airbnb는 모든 트래픽이 `Envoy` 사이드카를 통과한다는 점을 활용한다:\n\n- **Envoy 메시가 곧 관측 지점**: 각 서비스 옆 Envoy 사이드카가 요청별로 trace ID를 전파하고, 지연·에러율·재시도를 자동 수집한다. 애플리케이션 코드를 거의 안 고치고도 표준 메트릭(`p50/p95/p99`, 5xx율)을 얻는다.\n- **메트릭·대시보드**: 수집된 지표는 `Datadog`/내부 시계열 시스템으로 모여 SLO 대시보드와 알림이 된다. 서비스 의존성 그래프를 자동으로 그려 장애 전파 경로를 추적한다.\n\n### 신뢰성 메커니즘 (메시 레벨)\n\nEnvoy 레이어에서 애플리케이션과 무관하게 다음을 강제한다:\n\n- **타임아웃·재시도**: 느린 다운스트림에 대한 요청 차단, 멱등 요청 자동 재시도.\n- **서킷 브레이커**: 특정 서비스의 에러/지연이 임계치를 넘으면 회로를 열어 연쇄 장애(cascading failure)를 끊는다.\n- **아웃라이어 디텍션**: 비정상 인스턴스를 로드밸런싱 풀에서 자동 격리.\n\n이 정책들이 **코드가 아니라 인프라 설정**에 있다는 게 핵심 — 모든 서비스가 일관된 신뢰성 기본값을 공짜로 얻는다.\n\n### 배포 파이프라인\n\n- **컨테이너 + Kubernetes**: 서비스는 컨테이너로 패키징돼 `AWS` 위 `Kubernetes`에 배포된다. Airbnb는 EC2 직접 운영에서 K8s 기반 플랫폼으로 이전하며 셀프서비스 배포를 표준화했다.\n- **Spinnaker 카나리**: `Spinnaker`로 배포 파이프라인을 정의하고, 새 버전을 소수 트래픽에만 흘리는 **카나리 분석**을 돌린다. 카나리와 베이스라인의 에러율·지연을 통계적으로 비교해 자동으로 롤아웃/롤백을 결정한다.\n- **점진 롤아웃**: 문제가 감지되면 메시의 트래픽 가중치를 빠르게 되돌려 폭발 반경(blast radius)을 최소화한다.\n\n결과적으로 '메시가 관측·신뢰성을, Spinnaker가 안전한 점진 배포를' 담당하는 분업 구조로, 수백 팀이 독립적으로 매일 배포하면서도 전체 시스템 안정성을 유지한다."
+    },
+    {
+     "topic": "캐싱 계층: 다단계 캐시와 일관성 무효화",
+     "body": "### Airbnb의 캐싱은 왜 어렵나\nAirbnb는 '읽기 폭증, 쓰기 정합성 중요'라는 마켓플레이스 특유의 패턴을 가진다. 숙소 상세·검색 결과·가격은 초당 수백만 건 읽히지만, 예약 가능 여부(availability)나 가격은 잘못 캐시되면 곧바로 매출·신뢰 문제가 된다. 그래서 캐시 계층을 용도별로 분리한다.\n\n### 계층 구조\n- **CDN / Edge**: 정적 자산과 일부 SSR HTML 조각. 지역별 PoP에서 응답.\n- **Hypernova SSR 캐시**: React를 서버에서 렌더링하는 `Hypernova`가 컴포넌트 단위로 마크업을 캐시해 초기 로딩(LCP)을 단축. 개인화 영역은 hole-punching으로 비캐시 처리.\n- **GraphQL/Viaduct 레벨 캐시**: 데이터 레이어가 자주 조회되는 노드(예: 리스팅 메타데이터)를 캐시하고, 클라이언트(Apollo)도 정규화된 캐시를 유지해 중복 페치를 제거.\n- **분산 캐시 (Redis / Memcached 계열)**: 서비스 앞단의 read-through 캐시. 세션, 가격 계산 중간결과, 검색 후보 등.\n- **로컬/in-process 캐시**: JVM 서비스 내부의 단기 캐시로 hot key의 네트워크 왕복 제거.\n\n### 일관성 전략\n핵심은 **Kafka CDC를 캐시 무효화 신호로 재사용**하는 것이다. MySQL(Vitess) 바이너리 로그를 Kafka로 흘려보내면, 데이터가 바뀐 순간 다운스트림 consumer가 해당 키의 캐시를 무효화하거나 갱신한다. 이로써 'TTL이 만료될 때까지 stale'한 시간을 줄인다. 가격·availability처럼 정확성이 중요한 데이터는 짧은 TTL + CDC 무효화를, 거의 안 바뀌는 메타데이터는 긴 TTL을 적용하는 **차등 TTL** 전략을 쓴다.\n\n### 트레이드오프\n- 캐시 적중률을 높이려고 TTL을 늘리면 오버부킹·가격 오류 위험 증가 → availability는 캐시를 보수적으로 운영.\n- hole-punching SSR은 캐시 효율과 개인화를 동시에 잡지만 렌더 파이프라인 복잡도가 올라간다.\n- thundering herd 방지를 위해 캐시 만료 시 single-flight(요청 합치기)와 jitter TTL을 적용."
+    },
+    {
+     "topic": "검색·랭킹을 넘어선 ML 인프라: Bighead와 Zipline Feature Store",
+     "body": "### ML이 제품 곳곳에 박혀 있다\nAirbnb는 검색 랭킹뿐 아니라 가격 추천(Smart Pricing), 사기 탐지, 고객지원 라우팅, 사진 품질 평가, 이미지 분류 등에 ML을 광범위하게 쓴다. 이를 표준화하기 위해 자체 end-to-end ML 플랫폼 **Bighead**를 만들었다.\n\n### Bighead의 구성\n- **Zipline (Feature Store)**: 학습용 피처와 서빙용 피처의 **train/serve skew**(학습 때와 추론 때 피처 계산이 달라지는 문제)를 없애는 것이 목표. 배치(Spark/Hive)와 실시간(Kafka 스트림) 양쪽에서 동일 정의로 피처를 생성하고, point-in-time correct 조인으로 과거 시점 피처를 정확히 재현한다.\n- **Redspot**: 관리형 Jupyter 환경으로 데이터 과학자의 실험을 표준 컨테이너에서 재현 가능하게 한다.\n- **Bighead Service / Deep Thought**: 모델 서빙 계층. 학습된 모델을 컨테이너로 패키징해 온라인 추론으로 배포하고 버전·롤백을 관리.\n- **ML Automator**: Airflow 위에서 주기적 재학습 파이프라인을 스케줄링.\n\n### 동작 흐름\n1. 데이터 레이크(Hive/Iceberg)와 Kafka에서 Zipline이 피처를 만든다.\n2. Spark로 학습 데이터셋을 구성하고 모델을 학습(TensorFlow/XGBoost 등).\n3. 학습된 모델을 Bighead 서빙에 배포, 온라인 요청 시 Zipline의 실시간 피처로 추론.\n4. 결과·메트릭을 Datadog/실험 플랫폼으로 모니터링, 드리프트 감지 시 재학습.\n\n### 왜 자체 플랫폼인가\n수십 개 팀이 제각기 피처 파이프라인을 만들면 중복·skew·운영 부담이 폭발한다. Zipline으로 피처 정의를 한 번만 작성해 배치/실시간에 공유함으로써 '학습 따로 서빙 따로'에서 오는 정확도 손실과 엔지니어링 낭비를 동시에 줄였다. 이는 Airbnb가 ML 모델 수백 개를 안정적으로 운영하기 위한 핵심 결정이었다."
+    },
+    {
+     "topic": "프런트엔드 렌더링 아키텍처: Hypernova SSR과 디자인 시스템(DLS)",
+     "body": "### 문제: SPA의 초기 로딩과 SEO\n순수 React SPA는 첫 화면을 그리기 전 대용량 JS를 받아 실행해야 해 LCP가 느리고, 검색엔진 크롤링(SEO)에 불리하다. 글로벌 트래픽의 상당수가 검색 유입인 Airbnb에게 SEO와 초기 속도는 매출 직결 문제다.\n\n### Hypernova: 서버 사이드 렌더링 서비스\nAirbnb는 Rails(또는 Node) 백엔드와 React 사이에 **Hypernova**라는 별도 SSR 서비스를 둔다. 동작은 다음과 같다.\n1. 서버가 페이지를 렌더링할 때, React 컴포넌트와 props를 Hypernova 서비스로 보낸다.\n2. Hypernova가 Node 런타임에서 컴포넌트를 HTML 문자열로 렌더해 돌려준다.\n3. 서버는 그 HTML을 페이지에 끼워 전송 → 사용자는 JS 실행 전에 콘텐츠를 본다.\n4. 브라우저에서 React가 같은 마크업에 **hydrate**되어 인터랙티브해진다.\n\nHypernova를 별도 서비스로 분리한 이유는 SSR이 CPU 집약적이라 메인 앱과 격리해 독립적으로 스케일·격벽(bulkhead)하기 위함이다. 렌더 실패 시 클라이언트 렌더로 graceful degradation 한다.\n\n### DLS (Design Language System)\nAirbnb는 웹/iOS/Android에서 일관된 UI를 위해 **DLS**라는 디자인 시스템을 운영한다. 컴포넌트를 토큰·스펙으로 정의해 플랫폼 간 동일한 룩앤필을 보장하고, 디자인-개발 핸드오프를 자동화하려는 `Lona` 같은 실험도 했다. React Native를 한때 공유 코드 전략으로 채택했다가, 브리지 성능·플랫폼 차이의 운영 비용 때문에 네이티브로 회귀한 유명한 의사결정도 이 영역의 트레이드오프 사례다.\n\n### 트레이드오프\n- SSR은 초기 속도/SEO를 얻지만 서버 CPU 비용과 hydration 미스매치 디버깅 부담이 생긴다.\n- 디자인 시스템은 일관성과 개발 속도를 주지만, 컴포넌트 거버넌스(누가 변경을 승인하나)와 버전 호환 관리가 새로운 과제로 등장한다."
+    },
+    {
+     "topic": "스키마 우선 서비스 계약: Thrift IDL와 SOA 거버넌스",
+     "body": "### 서비스가 수백 개일 때의 진짜 문제\nSOA로 쪼개면 배포는 빨라지지만, '어떤 서비스가 무엇을 어떻게 호출하는가'라는 계약(contract)이 깨지기 쉽다. Airbnb는 이를 **Apache Thrift IDL을 단일 진실 소스(source of truth)**로 삼아 해결한다.\n\n### 동작 원리\n- 각 서비스는 자신의 API를 `.thrift` 파일로 인터페이스(메서드, 요청/응답 struct, 에러 타입)를 선언한다.\n- 이 IDL에서 Java/Kotlin/Ruby 등 다국어 클라이언트·서버 stub을 코드 생성한다 → 타입 안전한 RPC.\n- 통신은 **Envoy 서비스 메시** 위에서 이뤄져, 재시도·타임아웃·서킷브레이커·mTLS·트래픽 라우팅을 애플리케이션 코드 밖에서 일관 적용한다.\n- 스키마 변경은 backward/forward 호환 규칙(필드 추가는 OK, 필드 번호 재사용 금지 등)을 강제해 롤링 배포 중에도 구·신 버전이 공존할 수 있게 한다.\n\n### Viaduct와의 관계\n클라이언트(웹/모바일)는 이 수많은 Thrift 서비스를 직접 호출하지 않는다. 대신 **Viaduct(GraphQL 데이터 레이어)**가 중앙 그래프 스키마를 노출하고, 리졸버가 내부적으로 적절한 Thrift 서비스를 fan-out 호출해 결과를 합친다. 즉 '내부는 강타입 Thrift RPC, 외부는 유연한 GraphQL'이라는 이중 계약 구조다.\n\n### 왜 이렇게 했나 / 트레이드오프\n- **장점**: 다국어 환경(Ruby↔JVM)에서 타입 안전성과 성능을 확보하고, 메시가 신뢰성 관심사를 표준화한다. 스키마가 문서이자 검증 도구가 된다.\n- **비용**: IDL/코드생성 빌드 파이프라인과 메시 운영(Envoy 설정, 사이드카 리소스)이 무겁다. GraphQL fan-out은 N+1·과도한 호출을 부를 수 있어 데이터로더 배칭과 쿼리 비용 제한이 필수다.\n- 이 구조 덕분에 Airbnb는 Rails 모놀리스 시절의 '하나 고치면 전체 재배포' 문제에서 벗어나 팀별 독립 배포를 달성했다."
     }
    ],
    "github": {
@@ -8967,47 +8990,47 @@
      {
       "name": "airbnb/javascript",
       "url": "https://github.com/airbnb/javascript",
-      "desc": "널리 쓰이는 JavaScript/React 스타일 가이드",
+      "desc": "업계 표준이 된 Airbnb JavaScript 스타일 가이드",
       "lang": "JavaScript",
-      "stars": 148081
+      "stars": 148085
      },
      {
-      "name": "apache/superset",
-      "url": "https://github.com/apache/superset",
-      "desc": "Airbnb가 만든 오픈소스 데이터 탐색·시각화 플랫폼",
-      "lang": "TypeScript",
-      "stars": 73292
-     },
-     {
-      "name": "airbnb/lottie-android",
-      "url": "https://github.com/airbnb/lottie-android",
-      "desc": "After Effects 애니메이션을 모바일에서 렌더링하는 라이브러리",
-      "lang": "Java",
-      "stars": 35612
+      "name": "airbnb/lottie-ios",
+      "url": "https://github.com/airbnb/lottie-ios",
+      "desc": "After Effects 애니메이션을 네이티브로 렌더링하는 라이브러리",
+      "lang": "Swift",
+      "stars": 26762
      },
      {
       "name": "airbnb/epoxy",
       "url": "https://github.com/airbnb/epoxy",
-      "desc": "Android RecyclerView를 위한 선언적 UI 빌더",
+      "desc": "Android RecyclerView용 선언형 복합 화면 구성 프레임워크",
       "lang": "Java",
-      "stars": 8557
+      "stars": 8556
      },
      {
       "name": "airbnb/mavericks",
       "url": "https://github.com/airbnb/mavericks",
-      "desc": "Android 화면 상태 관리 프레임워크",
+      "desc": "Airbnb 프로덕션에서 쓰는 Android MVI 상태 관리 프레임워크",
       "lang": "Kotlin",
       "stars": 5934
+     },
+     {
+      "name": "airbnb/streamalert",
+      "url": "https://github.com/airbnb/streamalert",
+      "desc": "서버리스 실시간 로그 분석·보안 경보 프레임워크",
+      "lang": "Python",
+      "stars": 2885
      }
     ]
    },
    "sources": [
     "https://medium.com/airbnb-engineering",
-    "https://medium.com/airbnb-engineering/airbnbs-microservices-architecture-journey-to-quality-engineering-d5a46d8b6c10",
-    "https://github.com/airbnb"
+    "https://github.com/airbnb",
+    "https://medium.com/airbnb-engineering/airbnbs-microservices-architecture-journey-to-quality-engineering-d5a46a979d35"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "amazon",
@@ -9017,51 +9040,55 @@
    "languages": [
     "Java",
     "Python",
-    "JavaScript",
-    "Go",
     "C++",
+    "JavaScript/TypeScript",
+    "Go",
     "Rust"
    ],
    "stack": {
     "backend": [
-     "Coral (internal RPC framework)",
-     "Spring",
-     "AWS Lambda",
-     "DynamoDB SDK",
-     "Apache (internal service mesh)"
+     "Coral (내부 RPC/서비스 프레임워크)",
+     "Spring / Java JVM 서비스",
+     "AWS Lambda (서버리스)",
+     "Kotlin (신규 서비스 일부)",
+     "Protocol Buffers / Smithy (API 모델링)",
+     "internal service mesh"
     ],
     "frontend": [
      "React",
-     "Server-side rendered templates",
-     "TypeScript"
+     "TypeScript",
+     "Server-side rendered 템플릿(상품 페이지)",
+     "CloudFront 엣지 렌더링"
     ],
     "data": [
      "DynamoDB",
-     "Aurora",
+     "Aurora (MySQL/PostgreSQL)",
      "Redshift",
-     "Kinesis",
-     "S3",
-     "ElastiCache/DAX",
-     "OpenSearch"
+     "Amazon Kinesis",
+     "Amazon S3",
+     "ElastiCache (Redis) / DAX",
+     "OpenSearch",
+     "Amazon SQS / SNS / EventBridge"
     ],
     "infra": [
      "AWS (EC2, ECS, EKS, Lambda)",
-     "Apollo (deployment)",
+     "Apollo (배포)",
      "Pipelines (CI/CD)",
      "Firecracker microVM",
-     "Nitro System"
+     "Nitro System (하드웨어 오프로드)",
+     "Route 53 / CloudFront (엣지)"
     ]
    },
    "architecture": [
     "Service-oriented / Microservices (API Mandate)",
-    "Cell-based architecture",
+    "Cell-based architecture (장애 격리)",
     "Event-driven & async (queues/streams)",
     "Two-pizza team ownership"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    U[\"User Browser/App<br/>React + TypeScript\"]\n    CF[\"CDN<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"Edge/API Layer<br/>API Gateway + ALB\"]\n    AUTH[\"AuthN/AuthZ<br/>IAM + internal tokens\"]\n  end\n  subgraph Core[\"Core Services (two-pizza teams)\"]\n    PROD[\"Product Detail svc<br/>Java + Coral\"]\n    CART[\"Cart/Checkout svc<br/>Java + Coral\"]\n    SRCH[\"Search/Ranking<br/>Java + C++\"]\n    REC[\"Recommendations<br/>Python ML\"]\n    ORD[\"Order/Fulfillment<br/>Java\"]\n  end\n  subgraph Cache[\"Caching\"]\n    DAX[\"DynamoDB Accelerator<br/>DAX\"]\n    EC[\"In-region cache<br/>ElastiCache Redis\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    SQS[\"Queues<br/>SQS\"]\n    KIN[\"Streams<br/>Kinesis\"]\n    SNS[\"Pub/Sub<br/>SNS/EventBridge\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"Key-value<br/>DynamoDB\"]\n    AUR[\"Relational<br/>Aurora\"]\n    S3[\"Object store<br/>S3\"]\n    RS[\"Analytics<br/>Redshift\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EC2[\"Compute<br/>EC2 + Nitro\"]\n    ECS[\"Containers<br/>ECS/EKS\"]\n    LAM[\"Serverless<br/>Lambda + Firecracker\"]\n  end\n  U --> CF --> GW\n  GW --> AUTH\n  GW -->|HTTP/Coral| PROD\n  GW -->|Coral| CART\n  GW -->|Coral| SRCH\n  PROD --> REC\n  PROD --> DAX --> DDB\n  CART --> DDB\n  SRCH --> EC\n  CART -->|order placed| SQS --> ORD\n  ORD --> AUR\n  ORD -->|events| KIN --> RS\n  REC --> S3\n  SNS --> ORD\n  PROD --- EC2\n  REC --- ECS\n  ORD --- LAM",
-   "why_language": "Amazon은 대규모 트랜잭션과 수만 개 서비스의 장기 유지보수를 위해 강타입·고성능 JVM 기반 Java를 backend 주력으로 삼고, 내부 RPC 프레임워크 Coral과 결합해 서비스 간 계약을 표준화한다. 데이터/ML 파이프라인과 운영 자동화에는 Python, 콘솔·뷰어에는 JavaScript/TypeScript, Firecracker·s2n-tls 같은 성능·보안 임계 시스템 소프트웨어에는 Rust와 C++를 선택적으로 쓴다.",
-   "why_architecture": "2002년 Bezos의 'API Mandate' 이후 모든 팀이 기능을 네트워크 서비스로만 노출하도록 강제되면서, 독립 배포·독립 확장이 가능한 SOA/마이크로서비스가 표준이 되었다. 각 서비스를 작은 자율 조직(two-pizza team)이 end-to-end로 소유하고, 장애 폭발 반경을 가두기 위해 cell 단위로 격리하며, 주문·재고 같은 흐름은 SQS/Kinesis 기반 비동기 이벤트로 느슨하게 결합해 가용성과 확장성을 동시에 확보한다.",
-   "summary": "API Mandate가 낳은 SOA 위에 Java/Coral·DynamoDB·cell 격리로 가용성과 무한 확장을 설계한 이커머스 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    U[\"User Browser/App<br/>React + TypeScript\"]\n    CF[\"CDN + DNS<br/>CloudFront + Route 53\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway / Frontend<br/>Coral + Smithy\"]\n    AUTH[\"AuthN/AuthZ<br/>internal IAM/token svc\"]\n  end\n  subgraph Core[\"Core Services (two-pizza teams)\"]\n    PROD[\"Product/Catalog<br/>Java + Coral\"]\n    SRCH[\"Search/Ranking<br/>C++ + OpenSearch\"]\n    BB[\"Buy Box/Pricing<br/>Java services\"]\n    CART[\"Cart/Checkout<br/>Java + Lambda\"]\n    ORD[\"Order/Payments<br/>idempotent saga\"]\n    REC[\"Recommendations<br/>Python + ML\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    Q[\"Queues/Events<br/>SQS + SNS + EventBridge\"]\n    KIN[\"Streams<br/>Kinesis\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"Primary KV<br/>DynamoDB\"]\n    DAX[\"Cache<br/>DAX + ElastiCache\"]\n    AUR[\"Relational<br/>Aurora\"]\n    S3[\"Objects<br/>S3\"]\n    RS[\"Analytics<br/>Redshift\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    NIT[\"Compute<br/>Nitro + Firecracker\"]\n    DEP[\"Deploy/CI-CD<br/>Apollo + Pipelines\"]\n  end\n  U --> CF --> GW\n  GW --> AUTH\n  GW -->|RPC| PROD\n  GW -->|RPC| SRCH\n  GW -->|RPC| CART\n  PROD --> BB\n  PROD --> REC\n  SRCH --> DDB\n  CART --> ORD\n  ORD -->|events| Q\n  Q --> KIN\n  PROD --> DAX --> DDB\n  BB --> DDB\n  ORD --> AUR\n  REC --> S3\n  KIN --> RS\n  Core -.runs on.-> NIT\n  DEP -.deploys.-> Core",
+   "why_language": "Amazon은 수만 개의 독립 서비스를 2-피자 팀이 소유하므로, 성숙한 동시성·툴링·운영 생태계를 가진 Java가 백엔드의 기본 언어다. 검색·인코딩·Nitro 펌웨어처럼 지연시간과 효율이 극단적으로 중요한 핫패스에는 C++와 Rust를, 데이터·ML·운영 자동화에는 Python을 쓰는 식으로 '도메인별 최적 언어'를 허용한다. 단일 언어를 강제하기보다 서비스 경계가 명확하기 때문에 팀이 언어를 자유롭게 고를 수 있다.",
+   "why_architecture": "2002년 Bezos의 'API Mandate'로 모든 팀이 네트워크 인터페이스로만 통신하게 되면서 모놀리식이 강제로 서비스화되었고, 이것이 오늘날 마이크로서비스의 원형이 되었다. 이커머스 규모에서 부분 장애가 전체로 번지지 않도록 Cell 기반으로 트래픽을 격리하고, 주문·결제·알림 같은 워크플로는 큐·스트림 기반 비동기로 분리해 가용성과 탄력성을 우선한다. 즉 '일관성보다 가용성, 결합보다 격리'가 설계 원칙이다.",
+   "summary": "API 의무화로 강제 서비스화된 초거대 마이크로서비스 위에, Cell 격리·이벤트 기반 비동기·Nitro 하드웨어 오프로드를 결합한 가용성 최우선 이커머스 플랫폼",
    "deep_dive": [
     {
      "topic": "서비스화 의무화: 2-피자 팀과 마이크로서비스의 원형",
@@ -9094,6 +9121,22 @@
     {
      "topic": "관측성: 메트릭·알람·합성 모니터링 문화",
      "body": "### '모든 것은 측정되고, 알람으로 묶인다'\n\nAmazon의 운영 철학은 **\"You build it, you run it\"** — 만든 팀이 새벽 페이지(on-call)도 받는다. 이를 지탱하는 것이 촘촘한 관측성 인프라다.\n\n#### 메트릭 중심 운영\n- 모든 서비스는 처리량, 지연(특히 p50/p90/**p99/p99.9 같은 tail latency**), 에러율, 가용성을 1급 메트릭으로 방출한다. Amazon이 평균이 아니라 **꼬리 지연**에 집착하는 이유는, 한 페이지가 수백 서비스 합성이라 어느 하나의 p99가 전체 사용자 체감을 망치기 때문이다(fan-out 환경의 tail amplification).\n- 메트릭은 `CloudWatch` 류 시스템에 쌓이고, 임계치 기반 알람이 자동으로 on-call을 호출한다.\n\n#### 합성 모니터링 (canary)\n- 실제 고객을 기다리지 않고, 합성 트랜잭션을 끊임없이 흘려 핵심 사용자 여정(검색→상품→장바구니→주문)이 살아있는지 능동 확인한다. 배포 승격·자동 롤백 판단의 신호원이기도 하다.\n\n#### 분산 추적과 로그\n- 한 요청이 수십 서비스를 거치므로 **분산 트레이싱**(`X-Ray` 계열)으로 호출 그래프와 구간별 지연을 추적한다. 어느 다운스트림이 병목인지 시각화돼 MTTR을 줄인다.\n- 로그는 구조화돼 `S3` 데이터레이크/검색 인덱스로 모인다.\n\n#### 운영 메커니즘: COE\n- 장애가 나면 **COE(Correction of Errors)**라는 표준 사후분석 문서를 쓴다. '5 Whys'로 근본 원인을 파고, 재발 방지 액션 아이템을 도출하며, 같은 부류의 실수를 **메커니즘(자동화/가드레일)**으로 바꿔 영구히 막는 것을 지향한다. 'good intentions don't work, mechanisms do'가 캐치프레이즈다.\n\n#### 왜 이렇게까지\n수억 사용자·수만 서비스 규모에서는 사람이 일일이 감시할 수 없다. **관측을 자동화하고, 대응을 메커니즘화**해야 비로소 두 명짜리 팀이 글로벌 서비스를 안정 운영할 수 있다."
+    },
+    {
+     "topic": "Nitro System과 Firecracker: 하드웨어로 가상화 세금을 없애다",
+     "body": "### 왜 만들었나\n전통적 가상화(Xen/KVM + QEMU)에서는 네트워크·스토리지·보안 처리를 호스트의 hypervisor와 host OS가 소프트웨어로 떠안는다. 이커머스/클라우드 규모에서 이 '가상화 세금'은 두 가지 문제를 만든다. (1) CPU의 상당 비율이 게스트가 아니라 인프라 처리에 소모되어 **판매 가능한 용량이 줄고**, (2) hypervisor라는 거대한 신뢰 베이스가 보안 공격면이 된다.\n\n### Nitro의 핵심 아이디어 — 오프로드\nAmazon은 EC2의 I/O 경로를 호스트 CPU에서 떼어내 **전용 Nitro 카드(ASIC + ARM 기반)** 로 옮겼다.\n\n| 기능 | 전통 방식 | Nitro 방식 |\n|---|---|---|\n| VPC 네트워킹 | host의 vSwitch(소프트웨어) | Nitro 네트워크 카드가 직접 처리 |\n| EBS 스토리지 | host가 암호화/전송 | Nitro 스토리지 카드가 NVMe로 처리 |\n| 보안/모니터링 | host OS | Nitro Security Chip + 경량 hypervisor |\n\n결과적으로 host에는 **거의 베어메탈에 가까운 얇은 hypervisor**만 남고, I/O는 카드가 라인레이트로 처리한다. 게스트는 호스트 자원의 ~100%를 쓸 수 있고, 운영자가 인스턴스 내부에 접근할 SSH 경로 자체가 없어 보안 경계가 단순해진다.\n\n### Firecracker — 서버리스를 위한 microVM\nLambda와 Fargate는 수백만 개의 짧고 작은 함수 실행을 격리해야 한다. 컨테이너만으로는 멀티테넌트 보안이 부족하고, 풀 VM은 부팅이 느리고 무겁다. Amazon은 그 사이를 메우는 **Firecracker**(Rust)를 만들었다.\n\n- **최소 디바이스 모델**: QEMU의 수백만 줄 대신, 가상 디바이스를 `virtio-net`, `virtio-block`, serial, 1개의 타이머 정도로 극단적으로 줄였다 → 공격면과 메모리 풋프린트 축소.\n- **빠른 콜드스타트**: microVM 하나가 **~125ms 내 부팅**, 메모리 오버헤드는 수 MB 수준.\n- **밀도**: 한 호스트에서 **수천 개**의 microVM을 동시에 띄워, 함수마다 VM 수준 격리를 주면서도 컨테이너급 밀도를 얻는다.\n- **언어 선택**: 메모리 안전성과 성능이 동시에 필요한 VMM이라 `Rust`를 택했다. 보안 경계를 다루는 코드에서 use-after-free 같은 클래스의 버그를 컴파일 타임에 제거하기 위함이다.\n\n### 트레이드오프\nNitro/Firecracker는 '범용성'을 일부 포기하고 **AWS 특화 워크로드에 최적화**했다. Firecracker는 GPU 패스스루나 다양한 레거시 디바이스를 지원하지 않는다. 대신 '짧고 많은 멀티테넌트 실행을 안전·고밀도로'라는 한 가지 문제를 압도적으로 잘 푼다. 이는 Amazon식 의사결정의 전형 — **일반 솔루션 대신 자기 규모에 맞춘 전용 하드웨어/소프트웨어를 직접 만든다**."
+    },
+    {
+     "topic": "Prime Day급 트래픽: 사전 스케일링·게임데이·셀 분산",
+     "body": "### 문제의 성격\nPrime Day나 블랙프라이데이는 평상시 대비 **수 배의 트래픽이 분 단위로 몰리는** 이벤트다. 단순 오토스케일링만으로는 부족한데, (1) 신규 인스턴스 부팅·캐시 워밍에 시간이 걸리고, (2) 트래픽이 급경사로 오르면 스케일이 따라붙기 전에 첫 파도에서 무너질 수 있기 때문이다.\n\n### 대응 메커니즘\n\n**1) Pre-scaling(사전 확장).** 과거 데이터 기반으로 예상 피크를 산정해 이벤트 전에 미리 용량을 확보한다. 오토스케일링은 '예측 실패에 대한 안전망'이지 1차 방어선이 아니다.\n\n**2) Load shedding & 우선순위.** 과부하 시 모든 요청을 동등하게 받지 않는다. 체크아웃·결제 같은 **수익·신뢰에 직결되는 경로를 우선**하고, 비핵심 기능(일부 추천 위젯, 부가 정보)은 우아하게 degrade하거나 캐시된 기본값으로 떨어뜨린다. 서비스는 자기 용량을 알고 초과분을 빠르게 거절(빠른 실패)해, 큐가 무한정 쌓여 전체가 늘어지는 것을 막는다.\n\n**3) Cell 분산.** 트래픽을 여러 cell로 나눠 라우팅하므로 한 cell이 포화되어도 폭발 반경이 그 cell에 갇힌다. 특정 셀의 핫 파티션 문제가 전 사용자로 번지지 않는다.\n\n**4) GameDay / 부하 테스트.** 실제 이벤트 전에 **의도적으로 장애를 주입**하고 피크의 몇 배 부하를 흘려보내며 약한 고리를 찾는다. 의존 서비스가 죽었을 때의 폴백, 타임아웃·재시도 폭주(retry storm) 여부, 캐시 미스 폭주 시 DB 보호를 미리 검증한다.\n\n**5) 캐시 보호.** 피크에는 캐시 미스가 그대로 DB 폭격이 되므로, `DAX`/`ElastiCache` 앞단에서 **request coalescing**(동일 키 동시 요청 1건으로 병합)과 음수 캐싱으로 백엔드를 보호한다.\n\n### 핵심 통찰\nAmazon의 확장성은 '무한히 늘어나는 인스턴스'가 아니라 **예측 + 격리 + 우선순위 + 사전 검증**의 조합이다. 시스템이 깨지지 않게 하는 것보다, **부분적으로 degrade하면서도 핵심 거래는 계속 처리**하는 쪽으로 설계한다."
+    },
+    {
+     "topic": "주문·결제 파이프라인: 멱등성과 Saga로 분산 트랜잭션을 푼다",
+     "body": "### 왜 어려운가\n'주문 생성'은 단일 DB 트랜잭션이 아니다. 재고 차감, 결제 승인, 배송 예약, 알림, 정산 등 **여러 서비스의 상태를 함께 바꿔야** 하는 분산 워크플로다. 마이크로서비스에서는 이들을 묶는 분산 2PC(two-phase commit)가 가용성과 확장성을 해치므로 거의 쓰지 않는다.\n\n### 멱등성(Idempotency)이 1순위\n네트워크는 언제든 끊기고 재시도된다. 사용자가 결제 버튼을 두 번 누르거나 클라이언트가 타임아웃 후 재요청하면 **중복 주문/중복 청구**가 발생할 수 있다. 그래서 결제·주문 API는 **idempotency key**(요청마다 고유 토큰)를 받는다.\n\n```\nPOST /orders\nIdempotency-Key: 4e1a... (client 생성)\n```\n\n서버는 이 키를 `DynamoDB`에 조건부 쓰기(`attribute_not_exists`)로 기록한다. 같은 키가 다시 오면 **새 처리 없이 기존 결과를 그대로 반환**한다. 이것이 '최소 한 번 전달(at-least-once)' 메시징 위에서 '실질적 정확히 한 번(effectively-once)'을 만드는 핵심이다.\n\n### Saga — 보상 트랜잭션\n전체를 한 트랜잭션으로 잠그는 대신, 각 단계를 **로컬 트랜잭션 + 실패 시 보상(compensation)** 으로 엮는다.\n\n| 단계 | 정상 동작 | 보상(롤백) |\n|---|---|---|\n| 재고 예약 | reserve | release |\n| 결제 승인 | authorize | void/refund |\n| 배송 생성 | create shipment | cancel shipment |\n\n중간 단계(결제)에서 실패하면, 앞서 성공한 단계들을 **역방향 보상 이벤트**로 되돌린다. 상태 머신(예: Step Functions류의 오케스트레이션 또는 이벤트 기반 코레오그래피)이 어디까지 진행됐는지를 추적한다.\n\n### 이벤트 기반 비동기\n주문이 확정되면 동기 응답은 빠르게 사용자에게 돌려주고, 후속 작업(창고 통지, 추천 갱신, 정산, 메일)은 `SQS`/`SNS`/`EventBridge`로 **이벤트를 발행**해 비동기로 흘린다. 이로써 느린 다운스트림이 사용자 응답 지연을 유발하지 않고, 각 소비자는 자기 속도로 처리·재시도한다. 실패 메시지는 **DLQ(dead-letter queue)** 로 격리해 독성 메시지가 큐 전체를 막지 않게 한다.\n\n### 트레이드오프\n이 설계는 **강한 일관성 대신 최종 일관성**을 택한다. 주문 직후 잠깐 '재고가 줄었지만 정산엔 아직 안 보이는' 상태가 존재할 수 있다. 비즈니스적으로 허용 가능한 이 짧은 불일치를 받아들이는 대가로, 한 서비스의 장애가 전체 주문 흐름을 잠그지 않는 **가용성과 확장성**을 얻는다."
+    },
+    {
+     "topic": "다층 캐싱 전략: DAX·ElastiCache·엣지로 DynamoDB를 보호하기",
+     "body": "### 캐싱이 곧 가용성·비용 전략인 이유\n초읽기 폭주(read-heavy) 이커머스에서 모든 읽기를 `DynamoDB`로 보내면 RCU(읽기 용량) 비용이 폭증하고, **핫 파티션**(인기 상품 한 키에 트래픽 집중)이 throttling을 유발한다. 그래서 캐싱은 단순 가속이 아니라 **백엔드 보호·비용 절감의 핵심 계층**이다.\n\n### 계층별 역할\n\n**1) 엣지 캐시 — CloudFront.** 정적 자원(이미지, JS/CSS)과 일부 페이지 조각을 사용자 근처 PoP에서 제공한다. 원본에 도달하기 전에 대부분의 정적 트래픽을 흡수한다.\n\n**2) 애플리케이션 캐시 — ElastiCache(Redis).** 세션, 가격·프로모션 계산 결과, 검색/추천 결과 같은 **계산 비용이 큰 파생 데이터**를 캐싱한다. TTL과 무효화 정책으로 신선도를 관리한다.\n\n**3) DB 인라인 캐시 — DAX(DynamoDB Accelerator).** DynamoDB 앞에 투명하게 끼는 **마이크로초 단위 인메모리 캐시**다. 애플리케이션은 같은 DynamoDB API를 호출하지만 DAX가 캐시 히트를 처리해, 밀리초→마이크로초로 지연을 줄이고 읽기 부하를 DynamoDB에서 덜어낸다. 코드 변경 없이 캐시를 끼울 수 있는 게 장점.\n\n### 핫키와 스탬피드 방지\n- **Request coalescing / single-flight**: 같은 키에 동시에 1000개의 미스가 나도 백엔드로는 **요청 1건만** 보내고 나머지는 그 결과를 공유한다. 캐시 만료 순간 DB로 쏟아지는 'cache stampede'를 막는다.\n- **TTL jitter**: 만료 시각을 살짝 랜덤화해 다수 키가 동시에 만료되며 동기화된 미스 파도를 일으키는 것을 분산한다.\n- **음수 캐싱(negative caching)**: '존재하지 않음' 결과도 짧게 캐싱해, 없는 상품을 반복 조회하는 트래픽이 DB를 때리지 못하게 한다.\n\n### 일관성 트레이드오프\n캐시는 본질적으로 **stale(낡은) 데이터 위험**을 안는다. 가격·재고처럼 정확성이 중요한 값은 TTL을 짧게 하거나 쓰기 시 명시적 무효화(write-through/invalidate)를 적용하고, 상품 설명처럼 변동이 적은 값은 길게 캐싱한다. 즉 **데이터의 변동성과 비즈니스 민감도에 따라 계층·TTL을 차등 적용**하는 것이 핵심이다."
     }
    ],
    "github": {
@@ -9102,47 +9145,47 @@
      {
       "name": "firecracker-microvm/firecracker",
       "url": "https://github.com/firecracker-microvm/firecracker",
-      "desc": "Lambda·Fargate를 떠받치는 경량 microVM 가상화 모니터, Rust 구현",
+      "desc": "Lambda·Fargate를 떠받치는 Rust 기반 경량 microVM(가상화) 모니터",
       "lang": "Rust",
-      "stars": 34928
-     },
-     {
-      "name": "aws/aws-cdk",
-      "url": "https://github.com/aws/aws-cdk",
-      "desc": "코드로 인프라를 정의하는 Cloud Development Kit",
-      "lang": "TypeScript",
-      "stars": 12797
+      "stars": 35009
      },
      {
       "name": "bottlerocket-os/bottlerocket",
       "url": "https://github.com/bottlerocket-os/bottlerocket",
-      "desc": "컨테이너 전용 최소 Linux 배포판, Rust 기반",
+      "desc": "컨테이너 전용으로 만든 최소형 Linux OS",
       "lang": "Rust",
-      "stars": 9620
+      "stars": 9624
      },
      {
-      "name": "aws/s2n-tls",
-      "url": "https://github.com/aws/s2n-tls",
-      "desc": "작고 감사 가능한 면적을 목표로 한 TLS 구현",
-      "lang": "C",
-      "stars": 4735
+      "name": "aws/karpenter-provider-aws",
+      "url": "https://github.com/aws/karpenter-provider-aws",
+      "desc": "Kubernetes(EKS)용 고속 노드 오토스케일러",
+      "lang": "Go",
+      "stars": 7655
      },
      {
-      "name": "aws/aws-sdk-js-v3",
-      "url": "https://github.com/aws/aws-sdk-js-v3",
-      "desc": "모듈식으로 재작성된 공식 JavaScript/TypeScript AWS SDK",
-      "lang": "TypeScript",
-      "stars": 3634
+      "name": "aws/aws-sdk-java-v2",
+      "url": "https://github.com/aws/aws-sdk-java-v2",
+      "desc": "DynamoDB·S3 등 AWS 서비스 호출의 표준 Java SDK",
+      "lang": "Java",
+      "stars": 2589
+     },
+     {
+      "name": "smithy-lang/smithy",
+      "url": "https://github.com/smithy-lang/smithy",
+      "desc": "Amazon 내부 Coral에서 유래한 서비스/API 모델링 IDL",
+      "lang": "Java",
+      "stars": 2285
      }
     ]
    },
    "sources": [
     "https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html",
-    "https://aws.amazon.com/builders-library/",
-    "https://www.allthingsdistributed.com/2016/03/10-lessons-from-10-years-of-aws.html"
+    "https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/",
+    "https://aws.amazon.com/ec2/nitro/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "instacart",
