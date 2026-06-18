@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-18T10:21:38",
+  "generated_at": "2026-06-18T12:07:31",
   "source": "youtube",
   "tech_count": 167,
   "curriculum_count": 20,
@@ -1809,88 +1809,6 @@
         "stage": "실전"
       }
     ],
-    "HTML": [
-      {
-        "title": "[웹개발 입문] HTML 핵심만 배우기",
-        "url": "https://www.youtube.com/watch?v=rgI930gqdaY",
-        "thumbnail": "https://i.ytimg.com/vi/rgI930gqdaY/mqdefault.jpg",
-        "channel": "아케이코딩 - 쉽게 배우는 코딩과 IT",
-        "views": 163503,
-        "length": "10:46",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
-        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
-        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 153291,
-        "length": "5:28:09",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "HTML 한번에 끝내기 HTML Full Tutorial",
-        "url": "https://www.youtube.com/watch?v=VozMYcCYvtg",
-        "thumbnail": "https://i.ytimg.com/vi/VozMYcCYvtg/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 54861,
-        "length": "1:55:18",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "코딩 초보도 10분만에 이해하는 HTML 강의",
-        "url": "https://www.youtube.com/watch?v=p87soxc5aG4",
-        "thumbnail": "https://i.ytimg.com/vi/p87soxc5aG4/mqdefault.jpg",
-        "channel": "웅니버스",
-        "views": 77,
-        "length": "11:50",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[취준생을 위한] HTML 기초 5시간 전체 강의",
-        "url": "https://www.youtube.com/watch?v=odGStixoSvw",
-        "thumbnail": "https://i.ytimg.com/vi/odGStixoSvw/mqdefault.jpg",
-        "channel": "리얼데브⸰러닝",
-        "views": 148,
-        "length": "5:09:50",
-        "published": "11개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "HTML & CSS 기초의 모든 것 | 네카라쿠배 출신 8년차 개발자 강의",
-        "url": "https://www.youtube.com/watch?v=HQ4nhdWvcpI",
-        "thumbnail": "https://i.ytimg.com/vi/HQ4nhdWvcpI/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2349,
-        "length": "1:07:21",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "html css 강좌 | 1강 html css 기초 입문 (코딩기초 )",
-        "url": "https://www.youtube.com/watch?v=UPkpKb5q-cE",
-        "thumbnail": "https://i.ytimg.com/vi/UPkpKb5q-cE/mqdefault.jpg",
-        "channel": "코딩하는 디자이너 [잘난웹디]",
-        "views": 2777,
-        "length": "15:19",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
-        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
-        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
-        "channel": "크래프트맨 멘탈리티",
-        "views": 21520,
-        "length": "6:53:58",
-        "published": "2년 전",
-        "stage": "핵심"
-      }
-    ],
     "C++": [
       {
         "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
@@ -1970,6 +1888,88 @@
         "views": 159724,
         "length": "10:22",
         "published": "4년 전",
+        "stage": "핵심"
+      }
+    ],
+    "HTML": [
+      {
+        "title": "[웹개발 입문] HTML 핵심만 배우기",
+        "url": "https://www.youtube.com/watch?v=rgI930gqdaY",
+        "thumbnail": "https://i.ytimg.com/vi/rgI930gqdaY/mqdefault.jpg",
+        "channel": "아케이코딩 - 쉽게 배우는 코딩과 IT",
+        "views": 163503,
+        "length": "10:46",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
+        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
+        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 153291,
+        "length": "5:28:09",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "HTML 한번에 끝내기 HTML Full Tutorial",
+        "url": "https://www.youtube.com/watch?v=VozMYcCYvtg",
+        "thumbnail": "https://i.ytimg.com/vi/VozMYcCYvtg/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 54861,
+        "length": "1:55:18",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "코딩 초보도 10분만에 이해하는 HTML 강의",
+        "url": "https://www.youtube.com/watch?v=p87soxc5aG4",
+        "thumbnail": "https://i.ytimg.com/vi/p87soxc5aG4/mqdefault.jpg",
+        "channel": "웅니버스",
+        "views": 77,
+        "length": "11:50",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[취준생을 위한] HTML 기초 5시간 전체 강의",
+        "url": "https://www.youtube.com/watch?v=odGStixoSvw",
+        "thumbnail": "https://i.ytimg.com/vi/odGStixoSvw/mqdefault.jpg",
+        "channel": "리얼데브⸰러닝",
+        "views": 148,
+        "length": "5:09:50",
+        "published": "11개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "HTML & CSS 기초의 모든 것 | 네카라쿠배 출신 8년차 개발자 강의",
+        "url": "https://www.youtube.com/watch?v=HQ4nhdWvcpI",
+        "thumbnail": "https://i.ytimg.com/vi/HQ4nhdWvcpI/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2349,
+        "length": "1:07:21",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "html css 강좌 | 1강 html css 기초 입문 (코딩기초 )",
+        "url": "https://www.youtube.com/watch?v=UPkpKb5q-cE",
+        "thumbnail": "https://i.ytimg.com/vi/UPkpKb5q-cE/mqdefault.jpg",
+        "channel": "코딩하는 디자이너 [잘난웹디]",
+        "views": 2777,
+        "length": "15:19",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
+        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
+        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
+        "channel": "크래프트맨 멘탈리티",
+        "views": 21520,
+        "length": "6:53:58",
+        "published": "2년 전",
         "stage": "핵심"
       }
     ],
@@ -2137,88 +2137,6 @@
         "stage": "실전"
       }
     ],
-    "FastAPI": [
-      {
-        "title": "FastAPI 강의 (1) : 시작해보기",
-        "url": "https://www.youtube.com/watch?v=Iub7-ZhEScw",
-        "thumbnail": "https://i.ytimg.com/vi/Iub7-ZhEScw/mqdefault.jpg",
-        "channel": "놀자코딩",
-        "views": 11920,
-        "length": "12:04",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "비전공자를 위한 FastAPI 백엔드 서버 기초 | 비전공자도 가능한 FastAPI 웹서버 구축 [와우내일배움카드]",
-        "url": "https://www.youtube.com/watch?v=0AXUP_Xbh_A",
-        "thumbnail": "https://i.ytimg.com/vi/0AXUP_Xbh_A/mqdefault.jpg",
-        "channel": "와우패스",
-        "views": 676,
-        "length": "35:09",
-        "published": "11개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "FastAPI (1/3) : uv 로 시작하기",
-        "url": "https://www.youtube.com/watch?v=6merMwBvg6A",
-        "thumbnail": "https://i.ytimg.com/vi/6merMwBvg6A/mqdefault.jpg",
-        "channel": "놀자코딩",
-        "views": 3673,
-        "length": "18:35",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발자의 공부법! 파이썬 FastAPI 공식문서로 처음부터 공부하기",
-        "url": "https://www.youtube.com/watch?v=ZqSpl0Ic8ik",
-        "thumbnail": "https://i.ytimg.com/vi/ZqSpl0Ic8ik/mqdefault.jpg",
-        "channel": "개발자이선생",
-        "views": 13118,
-        "length": "1:46:46",
-        "published": "스트리밍 시간: 3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "느슨해진 백엔드씬에 긴장감을 주는 FastAPI 프레임워크",
-        "url": "https://www.youtube.com/watch?v=5A67mQ2Pt9s",
-        "thumbnail": "https://i.ytimg.com/vi/5A67mQ2Pt9s/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 165870,
-        "length": "7:34",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Django vs FastAPI 차이점 | CGI부터 WSGI, ASGI까지",
-        "url": "https://www.youtube.com/watch?v=1BDV1PpByG8",
-        "thumbnail": "https://i.ytimg.com/vi/1BDV1PpByG8/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3169,
-        "length": "20:34",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "FastAPI의 장단점과 장고와 차이점 비교",
-        "url": "https://www.youtube.com/watch?v=KGlr8Adw858",
-        "thumbnail": "https://i.ytimg.com/vi/KGlr8Adw858/mqdefault.jpg",
-        "channel": "Nova AI",
-        "views": 15195,
-        "length": "5:13",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "FastAPI 실전편(1강) - FastAPI로 웹 서버를 만들고 싶다면?",
-        "url": "https://www.youtube.com/watch?v=7ll9UoGU-zM",
-        "thumbnail": "https://i.ytimg.com/vi/7ll9UoGU-zM/mqdefault.jpg",
-        "channel": "제주코딩베이스캠프",
-        "views": 1001,
-        "length": "3:21",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "iOS": [
       {
         "title": "✅ 3시간 만에 iOS 앱 개발 정복하기 🔥 Swift5 언어 기초",
@@ -2297,6 +2215,88 @@
         "channel": "kakao tech",
         "views": 1012,
         "length": "13:38",
+        "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "FastAPI": [
+      {
+        "title": "FastAPI 강의 (1) : 시작해보기",
+        "url": "https://www.youtube.com/watch?v=Iub7-ZhEScw",
+        "thumbnail": "https://i.ytimg.com/vi/Iub7-ZhEScw/mqdefault.jpg",
+        "channel": "놀자코딩",
+        "views": 11920,
+        "length": "12:04",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "비전공자를 위한 FastAPI 백엔드 서버 기초 | 비전공자도 가능한 FastAPI 웹서버 구축 [와우내일배움카드]",
+        "url": "https://www.youtube.com/watch?v=0AXUP_Xbh_A",
+        "thumbnail": "https://i.ytimg.com/vi/0AXUP_Xbh_A/mqdefault.jpg",
+        "channel": "와우패스",
+        "views": 676,
+        "length": "35:09",
+        "published": "11개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "FastAPI (1/3) : uv 로 시작하기",
+        "url": "https://www.youtube.com/watch?v=6merMwBvg6A",
+        "thumbnail": "https://i.ytimg.com/vi/6merMwBvg6A/mqdefault.jpg",
+        "channel": "놀자코딩",
+        "views": 3673,
+        "length": "18:35",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발자의 공부법! 파이썬 FastAPI 공식문서로 처음부터 공부하기",
+        "url": "https://www.youtube.com/watch?v=ZqSpl0Ic8ik",
+        "thumbnail": "https://i.ytimg.com/vi/ZqSpl0Ic8ik/mqdefault.jpg",
+        "channel": "개발자이선생",
+        "views": 13118,
+        "length": "1:46:46",
+        "published": "스트리밍 시간: 3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "느슨해진 백엔드씬에 긴장감을 주는 FastAPI 프레임워크",
+        "url": "https://www.youtube.com/watch?v=5A67mQ2Pt9s",
+        "thumbnail": "https://i.ytimg.com/vi/5A67mQ2Pt9s/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 165870,
+        "length": "7:34",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Django vs FastAPI 차이점 | CGI부터 WSGI, ASGI까지",
+        "url": "https://www.youtube.com/watch?v=1BDV1PpByG8",
+        "thumbnail": "https://i.ytimg.com/vi/1BDV1PpByG8/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3169,
+        "length": "20:34",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "FastAPI의 장단점과 장고와 차이점 비교",
+        "url": "https://www.youtube.com/watch?v=KGlr8Adw858",
+        "thumbnail": "https://i.ytimg.com/vi/KGlr8Adw858/mqdefault.jpg",
+        "channel": "Nova AI",
+        "views": 15195,
+        "length": "5:13",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "FastAPI 실전편(1강) - FastAPI로 웹 서버를 만들고 싶다면?",
+        "url": "https://www.youtube.com/watch?v=7ll9UoGU-zM",
+        "thumbnail": "https://i.ytimg.com/vi/7ll9UoGU-zM/mqdefault.jpg",
+        "channel": "제주코딩베이스캠프",
+        "views": 1001,
+        "length": "3:21",
         "published": "1년 전",
         "stage": "실전"
       }
@@ -2547,88 +2547,6 @@
         "stage": "실전"
       }
     ],
-    "Vue": [
-      {
-        "title": "Vue 3 강좌 한방에 몰아보기 - 2시간 정주행",
-        "url": "https://www.youtube.com/watch?v=m2j_Y245xew",
-        "thumbnail": "https://i.ytimg.com/vi/m2j_Y245xew/mqdefault.jpg",
-        "channel": "csslick - UI 디자인 & 코딩 팁",
-        "views": 37366,
-        "length": "1:37:32",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Vue 0강 : 카카오가 리액트냅두고 Vue 쓰는 이유",
-        "url": "https://www.youtube.com/watch?v=-tVaahsXpwk",
-        "thumbnail": "https://i.ytimg.com/vi/-tVaahsXpwk/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 229334,
-        "length": "6:51",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Vue.js/React/입문자도 이해하기 쉬운 명쾌한 비교",
-        "url": "https://www.youtube.com/watch?v=W8uxLdeev7s",
-        "thumbnail": "https://i.ytimg.com/vi/W8uxLdeev7s/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 52473,
-        "length": "1:48",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Vue.js 개발 가이드 - Full Course (feat. Composition API)",
-        "url": "https://www.youtube.com/watch?v=9lWaIhE05m8",
-        "thumbnail": "https://i.ytimg.com/vi/9lWaIhE05m8/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 23880,
-        "length": "2:30:24",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. Vue.js를 배우기 전에 알아둬야 할 것들",
-        "url": "https://www.youtube.com/watch?v=fP40BIIC2zo",
-        "thumbnail": "https://i.ytimg.com/vi/fP40BIIC2zo/mqdefault.jpg",
-        "channel": "csslick - UI 디자인 & 코딩 팁",
-        "views": 1644,
-        "length": "1:40",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Vue.js] Vue 사용자가 Pinia를 사용해야 하는 이유! (Vue Pinia)",
-        "url": "https://www.youtube.com/watch?v=95MzmkwPnLY",
-        "thumbnail": "https://i.ytimg.com/vi/95MzmkwPnLY/mqdefault.jpg",
-        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
-        "views": 85,
-        "length": "3:56",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Vue.js Tutorial - 핵심문법 1️⃣ 실습 Full 버전",
-        "url": "https://www.youtube.com/watch?v=kO43BEsYDR4",
-        "thumbnail": "https://i.ytimg.com/vi/kO43BEsYDR4/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 1018,
-        "length": "42:27",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Vue 3 강의 - 스프링부트 REST API를 이용하여 쇼핑몰 만들기(JPA, MariaDB, JWT)",
-        "url": "https://www.youtube.com/watch?v=htYYSszfzv0",
-        "thumbnail": "https://i.ytimg.com/vi/htYYSszfzv0/mqdefault.jpg",
-        "channel": "아프리카도서관",
-        "views": 44151,
-        "length": "3:08:44",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "TensorFlow": [
       {
         "title": "텐서 플로우 TensorFlow 기초",
@@ -2708,6 +2626,88 @@
         "views": 65125,
         "length": "10:00",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "Vue": [
+      {
+        "title": "Vue 3 강좌 한방에 몰아보기 - 2시간 정주행",
+        "url": "https://www.youtube.com/watch?v=m2j_Y245xew",
+        "thumbnail": "https://i.ytimg.com/vi/m2j_Y245xew/mqdefault.jpg",
+        "channel": "csslick - UI 디자인 & 코딩 팁",
+        "views": 37366,
+        "length": "1:37:32",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Vue 0강 : 카카오가 리액트냅두고 Vue 쓰는 이유",
+        "url": "https://www.youtube.com/watch?v=-tVaahsXpwk",
+        "thumbnail": "https://i.ytimg.com/vi/-tVaahsXpwk/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 229334,
+        "length": "6:51",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Vue.js/React/입문자도 이해하기 쉬운 명쾌한 비교",
+        "url": "https://www.youtube.com/watch?v=W8uxLdeev7s",
+        "thumbnail": "https://i.ytimg.com/vi/W8uxLdeev7s/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 52473,
+        "length": "1:48",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Vue.js 개발 가이드 - Full Course (feat. Composition API)",
+        "url": "https://www.youtube.com/watch?v=9lWaIhE05m8",
+        "thumbnail": "https://i.ytimg.com/vi/9lWaIhE05m8/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 23880,
+        "length": "2:30:24",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. Vue.js를 배우기 전에 알아둬야 할 것들",
+        "url": "https://www.youtube.com/watch?v=fP40BIIC2zo",
+        "thumbnail": "https://i.ytimg.com/vi/fP40BIIC2zo/mqdefault.jpg",
+        "channel": "csslick - UI 디자인 & 코딩 팁",
+        "views": 1644,
+        "length": "1:40",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Vue.js] Vue 사용자가 Pinia를 사용해야 하는 이유! (Vue Pinia)",
+        "url": "https://www.youtube.com/watch?v=95MzmkwPnLY",
+        "thumbnail": "https://i.ytimg.com/vi/95MzmkwPnLY/mqdefault.jpg",
+        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
+        "views": 85,
+        "length": "3:56",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Vue.js Tutorial - 핵심문법 1️⃣ 실습 Full 버전",
+        "url": "https://www.youtube.com/watch?v=kO43BEsYDR4",
+        "thumbnail": "https://i.ytimg.com/vi/kO43BEsYDR4/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 1018,
+        "length": "42:27",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Vue 3 강의 - 스프링부트 REST API를 이용하여 쇼핑몰 만들기(JPA, MariaDB, JWT)",
+        "url": "https://www.youtube.com/watch?v=htYYSszfzv0",
+        "thumbnail": "https://i.ytimg.com/vi/htYYSszfzv0/mqdefault.jpg",
+        "channel": "아프리카도서관",
+        "views": 44151,
+        "length": "3:08:44",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -4515,88 +4515,6 @@
         "stage": "실전"
       }
     ],
-    "Tailwind": [
-      {
-        "title": "테일윈드 CSS 튜토리얼 기본적인 클래스 설명부터 디자인 시안의 HTML 퍼블리싱 작업 라이브코딩 까지 #tailwind #tailwindcss #개발 #html #css",
-        "url": "https://www.youtube.com/watch?v=fobyJdNz9rk",
-        "thumbnail": "https://i.ytimg.com/vi/fobyJdNz9rk/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 8485,
-        "length": "16:42",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "9강 - Tailwind 시작하기 [ React 입문 코스 ]",
-        "url": "https://www.youtube.com/watch?v=-IT55XnxOpU",
-        "thumbnail": "https://i.ytimg.com/vi/-IT55XnxOpU/mqdefault.jpg",
-        "channel": "코딩개구리",
-        "views": 98,
-        "length": "20:16",
-        "published": "2개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
-        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 7809,
-        "length": "17:07",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[무료파트] TailwindCSS 완전 정복 강의 EP01 ~ EP11",
-        "url": "https://www.youtube.com/watch?v=sOiuZQo93cU",
-        "thumbnail": "https://i.ytimg.com/vi/sOiuZQo93cU/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 4912,
-        "length": "1:34:18",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Tailwind CSS v4 Full Course 2026 | Master Tailwind in One Hour",
-        "url": "https://www.youtube.com/watch?v=6biMWgD6_JY",
-        "thumbnail": "https://i.ytimg.com/vi/6biMWgD6_JY/mqdefault.jpg",
-        "channel": "JavaScript Mastery",
-        "views": 1940037,
-        "length": "54:21",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI 때문에 직원 75% 해고하고 매출 80% 하락한 Tailwind",
-        "url": "https://www.youtube.com/watch?v=X_idSUmKSBw",
-        "thumbnail": "https://i.ytimg.com/vi/X_idSUmKSBw/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 20822,
-        "length": "14:39",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
-        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
-        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 42882,
-        "length": "48:53",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[리액트 심플프로젝트] ch05. 클래스명 외우지 마세요! Tailwind CSS 공식 문서 100% 활용법 (버킷리스트 완성)",
-        "url": "https://www.youtube.com/watch?v=d7i-FsahZfk",
-        "thumbnail": "https://i.ytimg.com/vi/d7i-FsahZfk/mqdefault.jpg",
-        "channel": "오쌤의 니가스터디",
-        "views": 80,
-        "length": "18:00",
-        "published": "2개월 전",
-        "stage": "실전"
-      }
-    ],
     "OpenCV": [
       {
         "title": "OpenCV의 소개 및 기본 사용법 [ Python 데이터 분석과 이미지 처리 ]",
@@ -4676,6 +4594,88 @@
         "views": 216,
         "length": "1:48:44",
         "published": "8개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Tailwind": [
+      {
+        "title": "테일윈드 CSS 튜토리얼 기본적인 클래스 설명부터 디자인 시안의 HTML 퍼블리싱 작업 라이브코딩 까지 #tailwind #tailwindcss #개발 #html #css",
+        "url": "https://www.youtube.com/watch?v=fobyJdNz9rk",
+        "thumbnail": "https://i.ytimg.com/vi/fobyJdNz9rk/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 8485,
+        "length": "16:42",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "9강 - Tailwind 시작하기 [ React 입문 코스 ]",
+        "url": "https://www.youtube.com/watch?v=-IT55XnxOpU",
+        "thumbnail": "https://i.ytimg.com/vi/-IT55XnxOpU/mqdefault.jpg",
+        "channel": "코딩개구리",
+        "views": 98,
+        "length": "20:16",
+        "published": "2개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
+        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 7809,
+        "length": "17:07",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[무료파트] TailwindCSS 완전 정복 강의 EP01 ~ EP11",
+        "url": "https://www.youtube.com/watch?v=sOiuZQo93cU",
+        "thumbnail": "https://i.ytimg.com/vi/sOiuZQo93cU/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 4912,
+        "length": "1:34:18",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Tailwind CSS v4 Full Course 2026 | Master Tailwind in One Hour",
+        "url": "https://www.youtube.com/watch?v=6biMWgD6_JY",
+        "thumbnail": "https://i.ytimg.com/vi/6biMWgD6_JY/mqdefault.jpg",
+        "channel": "JavaScript Mastery",
+        "views": 1940037,
+        "length": "54:21",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI 때문에 직원 75% 해고하고 매출 80% 하락한 Tailwind",
+        "url": "https://www.youtube.com/watch?v=X_idSUmKSBw",
+        "thumbnail": "https://i.ytimg.com/vi/X_idSUmKSBw/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 20822,
+        "length": "14:39",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
+        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
+        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 42882,
+        "length": "48:53",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[리액트 심플프로젝트] ch05. 클래스명 외우지 마세요! Tailwind CSS 공식 문서 100% 활용법 (버킷리스트 완성)",
+        "url": "https://www.youtube.com/watch?v=d7i-FsahZfk",
+        "thumbnail": "https://i.ytimg.com/vi/d7i-FsahZfk/mqdefault.jpg",
+        "channel": "오쌤의 니가스터디",
+        "views": 80,
+        "length": "18:00",
+        "published": "2개월 전",
         "stage": "실전"
       }
     ],

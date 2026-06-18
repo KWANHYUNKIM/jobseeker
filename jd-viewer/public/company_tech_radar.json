@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T10:25:14",
+ "generated_at": "2026-06-18T12:12:01",
  "total": 100,
  "countries": [
   {
@@ -1348,7 +1348,7 @@
       "count": 1
      },
      {
-      "name": "Apache Kafka / Snowpipe Streaming",
+      "name": "Apache Lucene",
       "count": 1
      }
     ],
@@ -1397,10 +1397,6 @@
    },
    "architecture": [
     {
-     "name": "Cloud-native elastic warehouses with per-second billing",
-     "count": 1
-    },
-    {
      "name": "Conjure-typed service mesh on the JVM with Witchcraft runtime",
      "count": 1
     },
@@ -1418,6 +1414,10 @@
     },
     {
      "name": "DBaaS 멀티클라우드 control plane / data plane 분리",
+     "count": 1
+    },
+    {
+     "name": "Disaggregated inference serving",
      "count": 1
     }
    ]
@@ -1477,19 +1477,19 @@
      },
      {
       "name": "Go",
-      "count": 4
+      "count": 5
      },
      {
       "name": "Netty",
       "count": 3
      },
      {
-      "name": "Python",
+      "name": "Spring Boot",
       "count": 3
      },
      {
-      "name": "Spring Boot",
-      "count": 3
+      "name": "Python",
+      "count": 2
      },
      {
       "name": "Apache Thrift / TChannel",
@@ -1500,7 +1500,7 @@
       "count": 1
      },
      {
-      "name": "Cadence/Temporal",
+      "name": "Cadence → Temporal",
       "count": 1
      },
      {
@@ -1526,10 +1526,6 @@
       "count": 4
      },
      {
-      "name": "GraphQL",
-      "count": 2
-     },
-     {
       "name": "Next.js",
       "count": 2
      },
@@ -1542,15 +1538,19 @@
       "count": 1
      },
      {
+      "name": "GraphQL",
+      "count": 1
+     },
+     {
+      "name": "GraphQL BFF",
+      "count": 1
+     },
+     {
       "name": "Qt/QML",
       "count": 1
      },
      {
       "name": "Vue.js",
-      "count": 1
-     },
-     {
-      "name": "WebGL",
       "count": 1
      }
     ],
@@ -1614,15 +1614,15 @@
       "count": 2
      },
      {
-      "name": "Terraform",
-      "count": 2
-     },
-     {
       "name": "Argo CD + Argo Workflows",
       "count": 1
      },
      {
       "name": "ArgoCD",
+      "count": 1
+     },
+     {
+      "name": "Asgard 내부 서비스 프레임워크",
       "count": 1
      },
      {
@@ -7080,8 +7080,8 @@
    "country": "US",
    "domain": "데이터/AI",
    "languages": [
-    "Java",
     "C++",
+    "Java",
     "Scala",
     "Python",
     "Rust",
@@ -7089,45 +7089,49 @@
    ],
    "stack": {
     "backend": [
-     "Java (Cloud Services / GS)",
-     "C++ (vectorized execution engine)",
-     "Scala (query compiler / optimizer)",
-     "gRPC + Thrift RPC",
-     "Snowpark Container Services"
+     "C++ (vectorized columnar execution engine / XP)",
+     "Java (Cloud Services layer / GS)",
+     "Scala (query compiler & cost-based optimizer)",
+     "gRPC + Thrift internal RPC",
+     "Snowpark (Java/Scala/Python UDF & stored proc runtime)",
+     "Snowpark Container Services (Kubernetes-based)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Snowsight UI",
-     "D3 / ECharts visualizations"
+     "Snowsight UI (worksheet / dashboard)",
+     "D3 / ECharts visualizations",
+     "Monaco editor (SQL editing)"
     ],
     "data": [
-     "Columnar micro-partitions (PAX-style hybrid)",
-     "FoundationDB (metadata KV store)",
+     "Columnar micro-partitions (PAX-style hybrid row-columnar)",
+     "FoundationDB (metadata & transaction KV store)",
+     "FDB Record Layer (structured metadata over FDB)",
      "Object storage (S3 / Azure Blob / GCS)",
-     "Apache Kafka / Snowpipe Streaming",
-     "Apache Iceberg tables",
-     "FDB Record Layer"
+     "Apache Iceberg tables (open table format)",
+     "Snowpipe Streaming / Kafka connector",
+     "Local SSD + memory result cache"
     ],
     "infra": [
      "AWS",
      "Azure",
      "GCP",
-     "Kubernetes",
+     "Kubernetes (Snowpark Container Services)",
      "Terraform",
-     "Multi-cloud control plane"
+     "Multi-cloud control plane",
+     "Per-cloud VPC / PrivateLink isolation"
     ]
    },
    "architecture": [
     "Storage-compute separation (3-tier: Cloud Services / Virtual Warehouses / Storage)",
-    "Multi-cluster shared-data MPP",
-    "Cloud-native elastic warehouses with per-second billing",
-    "Multi-cloud / cross-region replication"
+    "Multi-cluster shared-data MPP with elastic auto-scaling",
+    "Immutable micro-partitions with metadata-driven pruning & time travel",
+    "Multi-cloud / cross-region replication & failover"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    UI[\"Snowsight UI<br/>React + TypeScript\"]\n    DRV[\"Drivers / Connectors<br/>JDBC ODBC Python Spark\"]\n    SQLAPI[\"SQL REST API<br/>HTTPS\"]\n  end\n  subgraph Cloud[\"Cloud Services (GS)<br/>Java\"]\n    AUTH[\"Auth + Access Control<br/>RBAC\"]\n    OPT[\"Query Optimizer<br/>Scala Cascades\"]\n    TXN[\"Txn + Metadata Mgr<br/>MVCC\"]\n    MC[\"Cluster Manager<br/>Auto-scale\"]\n  end\n  subgraph Compute[\"Virtual Warehouses<br/>Elastic MPP\"]\n    XP[\"Execution Engine<br/>C++ vectorized columnar\"]\n    CACHE[\"Local SSD Cache<br/>Result + Data cache\"]\n  end\n  subgraph Meta[\"Metadata Layer\"]\n    FDB[\"FoundationDB<br/>Record Layer KV\"]\n  end\n  subgraph Storage[\"Storage Layer\"]\n    OBJ[\"Object Storage<br/>S3 Azure Blob GCS\"]\n    MP[\"Micro-partitions<br/>Columnar + pruning\"]\n    ICE[\"Iceberg Tables<br/>Open format\"]\n  end\n  subgraph Stream[\"Streaming / Ingest\"]\n    KAFKA[\"Kafka Connector\"]\n    PIPE[\"Snowpipe Streaming<br/>Low-latency ingest\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>Snowpark Container Svc\"]\n    MCLOUD[\"Multi-cloud<br/>AWS Azure GCP\"]\n  end\n  UI --> SQLAPI\n  DRV --> AUTH\n  SQLAPI --> AUTH\n  AUTH --> OPT\n  OPT --> TXN\n  OPT -->|plan| XP\n  TXN --> FDB\n  MC --> Compute\n  XP --> CACHE\n  CACHE -->|miss| OBJ\n  XP -->|prune| MP\n  MP --> OBJ\n  ICE --> OBJ\n  KAFKA --> PIPE\n  PIPE --> OBJ\n  Compute --> K8S\n  Storage --> MCLOUD",
-   "why_language": "쿼리 처리의 핫패스(스캔·필터·조인·집계)는 메모리 레이아웃과 SIMD 벡터화가 성능을 좌우하므로 C++로 직접 구현해 캐시 효율과 벡터화 실행을 극대화한다. 반면 트랜잭션·메타데이터·권한·스케줄링 같은 Cloud Services 제어 평면은 안정성과 동시성 관리가 중요해 JVM(Java/Scala)으로 작성하며, 옵티마이저는 표현력이 높은 Scala로 Cascades 스타일 비용기반 최적화를 구현한다. Python/Rust는 Snowpark·커넥터·신규 시스템 컴포넌트에서 사용된다.",
-   "why_architecture": "데이터 웨어하우스 워크로드는 저장 용량과 컴퓨트 수요가 독립적으로 변하므로, 스토리지와 컴퓨트를 분리하면 동일 데이터를 여러 가상 웨어하우스가 격리된 채 공유하면서 각자 독립적으로 탄력 확장할 수 있다. 메타데이터를 FoundationDB로 분리하고 데이터는 불변 micro-partition으로 object storage에 두어, 동시성 충돌 없는 MVCC와 micro-partition pruning 기반 고속 스캔을 동시에 달성한다.",
-   "summary": "스토리지-컴퓨트를 완전 분리한 멀티클러스터 공유데이터 아키텍처 위에서 C++ 벡터화 엔진과 Java/Scala 제어평면을 결합한 클라우드 네이티브 데이터 웨어하우스",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    UI[\"Snowsight UI<br/>React + TypeScript\"]\n    DRV[\"Drivers / Connectors<br/>JDBC / ODBC / Python / Snowpark\"]\n  end\n  subgraph CS[\"Cloud Services (GS)\"]\n    AUTH[\"Auth & Access Control<br/>Java\"]\n    OPT[\"Query Optimizer<br/>Scala cost-based\"]\n    TXN[\"Transaction Manager<br/>MVCC\"]\n    META[\"Metadata Service<br/>FoundationDB + Record Layer\"]\n  end\n  subgraph VW[\"Virtual Warehouses (Compute)\"]\n    XP1[\"Exec Engine Cluster A<br/>C++ vectorized + SSD cache\"]\n    XP2[\"Exec Engine Cluster B<br/>C++ vectorized + SSD cache\"]\n    SPC[\"Snowpark Container Services<br/>Kubernetes\"]\n  end\n  subgraph Stream[\"Streaming / Ingest\"]\n    SPIPE[\"Snowpipe Streaming<br/>Kafka connector\"]\n  end\n  subgraph Storage[\"Storage\"]\n    OBJ[\"Object Storage<br/>S3 / Azure Blob / GCS\"]\n    ICE[\"Iceberg Tables<br/>micro-partitions\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes / Terraform<br/>AWS + Azure + GCP\"]\n  end\n  UI --> AUTH\n  DRV --> AUTH\n  AUTH --> OPT\n  OPT -->|plan| XP1\n  OPT -->|plan| XP2\n  OPT --> SPC\n  OPT --> META\n  TXN --> META\n  XP1 -->|pruned scan| OBJ\n  XP2 -->|pruned scan| ICE\n  SPIPE --> OBJ\n  META -.partition metadata.-> XP1\n  META -.partition metadata.-> XP2\n  K8S --- VW\n  K8S --- CS",
+   "why_language": "초당 수십 TB를 스캔하는 쿼리 핫패스는 캐시 친화적 벡터화 실행과 메모리 직접 제어가 필수라 실행 엔진(XP)을 C++로 작성한다. 반면 메타데이터·권한·트랜잭션·세션을 다루는 Cloud Services 계층은 생산성과 동시성 관리가 중요해 Java를, 복잡한 쿼리 컴파일러·비용기반 옵티마이저는 타입 안전성과 함수형 표현력이 강한 Scala를 쓴다. 사용자 확장 코드(UDF·파이프라인·ML)는 Python/Snowpark로, Snowsight 콘솔은 TypeScript/React로 제공한다.",
+   "why_architecture": "스토리지와 컴퓨트를 완전히 분리해 같은 데이터를 여러 Virtual Warehouse가 격리된 채 동시에 읽게 함으로써, 워크로드별로 컴퓨트를 독립적으로 탄력 확장하고 초 단위로 과금할 수 있다. 데이터는 불변(immutable) 미크로파티션으로 객체 스토리지에 저장하고 FoundationDB에 풍부한 메타데이터(min/max·통계)를 두어, 스캔 전에 파티션 프루닝과 Time Travel·Zero-copy Clone을 메타데이터 조작만으로 구현한다. 멀티클라우드 컨트롤 플레인으로 AWS·Azure·GCP를 동일 추상화로 묶어 크로스리전 복제와 페일오버를 제공한다.",
+   "summary": "스토리지-컴퓨트를 분리한 멀티클라우드 MPP — C++ 벡터화 엔진 + FoundationDB 메타데이터 + 불변 micro-partition",
    "deep_dive": [
     {
      "topic": "스토리지-컴퓨트 분리 3계층 아키텍처",
@@ -7156,6 +7160,18 @@
     {
      "topic": "Snowpark Container Services와 Kubernetes 위의 확장",
      "body": "### SQL 엔진을 넘어 범용 컨테이너 런타임으로\n\nSnowflake는 \"데이터가 있는 곳에서 코드를 돌린다\"는 방향으로 확장하며 **Snowpark Container Services(SPCS)** 를 내놓았다. 이는 SQL/UDF를 넘어 **임의의 컨테이너(예: GPU 기반 ML 추론, 풀스택 앱)** 를 Snowflake 보안 경계 안에서 실행하는 관리형 런타임이다.\n\n#### 동작 방식\n- 내부적으로 **Kubernetes** 기반으로 컨테이너를 오케스트레이션하지만, 사용자는 클러스터를 직접 관리하지 않는다. **compute pool**(노드 풀, CPU/GPU 종류 선택)을 정의하면 Snowflake가 그 위에 service/job 형태로 컨테이너를 스케줄링한다.\n- 컨테이너 이미지는 Snowflake가 제공하는 **image registry**에 푸시하고, 서비스는 Snowflake의 네트워크/인증/거버넌스 경계 안에서 데이터에 접근한다. 즉 데이터를 밖으로 빼지 않고 **거버넌스·RBAC가 그대로 적용**된다.\n\n#### 왜 이 선택을 했나\n- ML/AI 워크로드(LLM 추론, 임베딩 생성, 커스텀 라이브러리)는 순수 SQL로 표현하기 어렵고 특정 런타임·GPU가 필요하다. 데이터를 외부 플랫폼으로 복사하면 거버넌스·보안·비용 문제가 생긴다.\n- 따라서 **컴퓨트를 데이터 옆으로 가져오는** 기존 storage-compute 철학을, SQL warehouse에서 범용 컨테이너로 일반화한 것이다. 이는 멀티클라우드(AWS/Azure/GCP) 위에서 동일한 추상으로 제공된다.\n\n#### 트레이드오프\n범용 컨테이너를 멀티테넌트 보안 경계 안에서 돌리려면 네트워크 격리·이미지 검증·리소스 쿼터가 까다롭다. Snowflake는 compute pool 단위 격리와 자체 ingress/egress 통제로 보안과 유연성 사이를 절충한다."
+    },
+    {
+     "topic": "쿼리 결과 캐싱과 3단계 캐시 계층 (Result Cache / Local Disk Cache / Remote Storage)",
+     "body": "### Snowflake의 3단계 캐시 위계\n\nSnowflake는 스토리지-컴퓨트 분리 구조의 약점(매번 원격 객체 스토리지에서 데이터를 끌어와야 하는 지연)을 세 겹의 캐시로 메운다.\n\n| 계층 | 위치 | 수명/무효화 | 무엇을 저장 |\n|------|------|-------------|-------------|\n| **Result Cache** | Cloud Services(GS) | 24시간, 기반 데이터 변경 시 무효화 | 쿼리의 **최종 결과 집합** |\n| **Local Disk(SSD) Cache** | Virtual Warehouse 노드의 로컬 NVMe | 워크하우스 suspend 시 소멸 | 원격에서 읽어온 **micro-partition 컬럼 데이터** |\n| **Remote Storage** | S3/Blob/GCS | 영구 | 원본 micro-partition (진실의 원천) |\n\n### 1) Result Cache — 컴퓨트를 아예 안 켠다\n\n동일한 SQL 텍스트(정규화 후)가 다시 들어오고, 참조 테이블의 데이터가 그대로이며, 권한·세션 컨텍스트가 동일하면 Cloud Services가 **Virtual Warehouse를 깨우지 않고** 저장된 결과를 즉시 반환한다. 결과는 GS 계층이 관리하므로 *다른 사용자·다른 워크하우스*가 같은 쿼리를 날려도 공유된다. 단 `CURRENT_TIMESTAMP()` 같은 비결정 함수나 외부 함수가 포함되면 캐시 대상에서 제외된다. BI 대시보드처럼 같은 쿼리가 반복되는 워크로드에서 비용이 0에 수렴하는 핵심 장치다.\n\n### 2) Local Disk Cache — micro-partition을 노드에 붙들어 둔다\n\nVirtual Warehouse의 각 노드는 자신이 스캔한 micro-partition의 컬럼 청크를 로컬 SSD에 캐싱한다. 다음 쿼리가 같은 파티션·같은 컬럼을 건드리면 원격 스토리지 왕복을 건너뛴다. 여기서 중요한 설계 결정:\n\n- **Consistent hashing 기반 파티션-노드 매핑**: 특정 micro-partition은 항상 같은 노드로 라우팅돼 캐시 적중률을 높인다. 그래서 워크하우스를 키웠다 줄였다(resize) 하면 캐시가 재분배되며 잠시 적중률이 떨어진다.\n- **suspend = 캐시 소멸**: 워크하우스를 멈추면 로컬 SSD 캐시가 날아간다. 비용 절감(자동 suspend)과 캐시 워밍 사이의 트레이드오프가 여기서 발생한다. 자주 멈추면 매번 cold start.\n\n### 3) 왜 이렇게 설계했나\n\n객체 스토리지는 무한 확장·11 9s 내구성·저비용이지만 **지연(수십~수백 ms)과 처리량 한계**가 있다. Snowflake는 \"진실은 원격, 속도는 로컬\"이라는 원칙으로, 데이터 자체는 불변·공유 스토리지에 두되 읽기 성능은 컴퓨트 노드의 로컬 SSD로 끌어올린다. Result Cache는 더 위에서 컴퓨트 자체를 생략한다. 이 세 계층 덕분에 \"같은 데이터를 여러 워크하우스가 동시에, 각자의 캐시로\" 처리하는 multi-cluster shared-data 모델이 실용적인 성능을 낸다."
+    },
+    {
+     "topic": "Time Travel·Zero-copy Clone — 불변 micro-partition과 메타데이터 포인터의 마법",
+     "body": "### 불변성(immutability)이 만들어내는 기능들\n\nSnowflake에서 micro-partition은 한 번 쓰이면 **절대 수정되지 않는다(immutable)**. `UPDATE`/`DELETE`/`MERGE`는 기존 파티션을 고치는 게 아니라 **새 파티션을 쓰고, 테이블 버전이 가리키는 파티션 집합(포인터)을 교체**하는 방식으로 동작한다. 이 한 가지 결정이 Snowflake의 강력한 데이터 관리 기능들을 거의 공짜로 만든다.\n\n### Time Travel\n\n테이블의 각 버전은 \"이 시점에 유효한 micro-partition들의 집합\"을 메타데이터(FoundationDB)에 기록한다. 따라서 과거 시점 조회는 단지 *옛 파티션 집합을 가리키는 포인터*를 읽으면 된다:\n\n```sql\nSELECT * FROM orders AT(OFFSET => -60*5);        -- 5분 전\nSELECT * FROM orders BEFORE(STATEMENT => '01a2...'); -- 특정 쿼리 직전\nUNDROP TABLE orders;                                -- 실수로 지운 테이블 복구\n```\n\n- 데이터를 따로 복사·스냅샷하지 않는다. 옛 파티션은 retention 기간(Standard 1일, Enterprise 최대 90일) 동안 GC되지 않고 남아 있을 뿐이다.\n- retention이 끝나면 **Fail-safe**(추가 7일, Snowflake 운영팀만 접근)로 넘어갔다가 영구 삭제된다.\n\n### Zero-copy Clone\n\n```sql\nCREATE TABLE orders_dev CLONE orders;\n```\n\n이 명령은 테라바이트급 테이블이라도 **즉시(수 초)** 끝난다. 실제 데이터를 한 바이트도 복사하지 않고, 새 테이블 메타데이터가 *원본과 동일한 micro-partition 집합*을 가리키게만 하기 때문이다. 이후:\n\n- clone에서 행을 바꾸면 그 변경분만 **새 micro-partition**으로 쓰이고(copy-on-write), 원본은 영향받지 않는다.\n- 그래서 전체 프로덕션 DB를 복제해 개발/테스트 환경을 만드는 일이 스토리지 비용 없이 가능하다. \"dev/staging을 위해 운영 데이터 전체를 복제\"가 현실적인 워크플로가 된다.\n\n### 트레이드오프\n\n- **스토리지 증가**: 변경이 잦으면 옛 파티션과 새 파티션이 retention 동안 공존해 스토리지가 늘어난다. 빈번한 소량 `UPDATE`는 micro-partition 단편화와 비용을 유발한다.\n- **메타데이터 부하**: 테이블 버전·파티션 집합을 FoundationDB가 트랜잭션으로 관리하므로, 초고빈도 DML은 메타데이터 계층에 압력을 준다. Snowflake가 대량 배치/마이크로배치 ingest(Snowpipe)를 권장하는 이유 중 하나다.\n- 이 모든 게 **\"데이터는 불변, 변하는 건 메타데이터 포인터\"**라는 단일 원칙에서 파생된다 — 이것이 Snowflake 아키텍처를 이해하는 가장 중요한 렌즈다."
+    },
+    {
+     "topic": "Secure Data Sharing & Cross-cloud 복제 — 데이터를 복사하지 않고 공유하는 법",
+     "body": "### 데이터 공유의 통념을 뒤집다\n\n전통적으로 회사 간 데이터 공유는 ETL→파일 export→FTP/API 전송→상대방 적재의 반복이었다. Snowflake의 **Secure Data Sharing**은 이를 *메타데이터 권한 부여*로 대체한다. 공급자는 데이터를 **복사하거나 이동하지 않고** 소비자에게 읽기 권한만 부여한다.\n\n### 작동 원리\n\n1. 공급자가 `SHARE` 객체를 만들고 특정 테이블/뷰/Secure View에 대한 접근을 grant한다.\n2. 소비자 계정은 그 share로부터 읽기 전용 데이터베이스를 마운트한다.\n3. 소비자가 쿼리를 실행하면 **소비자 자신의 Virtual Warehouse(컴퓨트)** 가 공급자의 micro-partition을 직접 스캔한다. 즉 \"스토리지는 공급자 소유, 컴퓨트 비용은 소비자 부담\"으로 깔끔히 분리된다.\n\n이것이 가능한 이유는 다시 스토리지-컴퓨트 분리 구조다. 데이터는 객체 스토리지의 불변 파티션이고, 접근 제어는 Cloud Services의 메타데이터에서 결정되므로 \"누가 읽을 수 있는가\"는 grant 한 줄이다.\n\n### Cross-region / Cross-cloud 복제\n\n같은 클라우드·리전 안에서는 위처럼 데이터 복사가 전혀 없다. 하지만 소비자가 **다른 리전이나 다른 클라우드(AWS↔Azure↔GCP)** 에 있으면 물리적으로 데이터가 그쪽 객체 스토리지에 없으므로 Snowflake는 **Database Replication**으로 대상 리전에 micro-partition과 메타데이터를 비동기 복제한다. 이 메커니즘은 두 가지를 동시에 떠받친다:\n\n- **글로벌 데이터 공유**: 멀티클라우드 고객 사이 공유.\n- **재해 복구(DR) / Business Continuity**: 주 리전 장애 시 `FAILOVER`로 보조 리전을 승격. Client Redirect로 연결 엔드포인트를 전환해 애플리케이션 코드 변경 없이 페일오버.\n\n### Snowflake Marketplace로의 확장\n\nSecure Data Sharing을 제품화한 것이 **Snowflake Marketplace**다. 수천 개의 데이터셋(날씨·금융·인구통계 등)을 공급자가 등록하면 소비자는 \"마운트\" 한 번으로 자신의 SQL에서 조인할 수 있다 — 다운로드도, ETL도 없다.\n\n### 트레이드오프\n\n- 같은 리전 공유는 지연·비용이 사실상 0이지만, cross-region/cross-cloud 복제는 **네트워크 송신(egress) 비용과 복제 지연(lag)** 을 수반한다. 그래서 공유 토폴로지를 설계할 때 데이터·소비자의 물리적 위치를 맞추는 게 비용 최적화의 핵심이 된다.\n- 복제는 비동기라 RPO(복구 지점 목표)가 0이 아니다. 보조 리전은 마지막 복제 시점까지만 일관성을 보장한다."
     }
    ],
    "github": {
@@ -7164,47 +7180,47 @@
      {
       "name": "snowflakedb/snowflake-connector-python",
       "url": "https://github.com/snowflakedb/snowflake-connector-python",
-      "desc": "Python용 공식 Snowflake DB-API 커넥터",
+      "desc": "Snowflake 공식 Python 커넥터(DB-API)",
       "lang": "Python",
       "stars": 727
      },
      {
+      "name": "snowflakedb/gosnowflake",
+      "url": "https://github.com/snowflakedb/gosnowflake",
+      "desc": "Snowflake 공식 Go 드라이버",
+      "lang": "Go",
+      "stars": 357
+     },
+     {
       "name": "snowflakedb/snowpark-python",
       "url": "https://github.com/snowflakedb/snowpark-python",
-      "desc": "Snowflake에서 DataFrame 스타일로 푸시다운 실행하는 Python 클라이언트 라이브러리",
+      "desc": "DataFrame 스타일 Snowpark Python API",
       "lang": "Python",
       "stars": 336
      },
      {
-      "name": "snowflakedb/spark-snowflake",
-      "url": "https://github.com/snowflakedb/spark-snowflake",
-      "desc": "Apache Spark와 Snowflake를 연결하는 데이터소스 커넥터",
-      "lang": "Scala",
-      "stars": 231
-     },
-     {
       "name": "snowflakedb/snowflake-jdbc",
       "url": "https://github.com/snowflakedb/snowflake-jdbc",
-      "desc": "JVM 애플리케이션을 위한 공식 JDBC 드라이버",
+      "desc": "JVM용 공식 JDBC 드라이버",
       "lang": "Java",
       "stars": 201
      },
      {
       "name": "snowflakedb/snowflake-kafka-connector",
       "url": "https://github.com/snowflakedb/snowflake-kafka-connector",
-      "desc": "Kafka 토픽을 Snowflake 테이블로 적재하는 Sink 커넥터(Snowpipe Streaming)",
+      "desc": "Kafka→Snowflake 인제스트 커넥터(Snowpipe Streaming)",
       "lang": "Java",
       "stars": 173
      }
     ]
    },
    "sources": [
-    "https://www.snowflake.com/wp-content/uploads/2014/12/The-Snowflake-Elastic-Data-Warehouse-SIGMOD-2016.pdf",
     "https://docs.snowflake.com/en/user-guide/intro-key-concepts",
+    "https://www.snowflake.com/wp-content/uploads/2019/06/The-Snowflake-Elastic-Data-Warehouse-SIGMOD-2016.pdf",
     "https://www.snowflake.com/en/engineering-blog/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "doordash",
@@ -7220,50 +7236,54 @@
    ],
    "stack": {
     "backend": [
-     "Kotlin",
-     "Spring Boot / WebFlux",
+     "Kotlin (JVM)",
+     "Spring Boot / WebFlux (Reactor)",
      "gRPC + Protobuf",
-     "Cadence/Temporal",
-     "Python (legacy Django monolith)"
+     "Cadence → Temporal (워크플로 오케스트레이션)",
+     "Python / Django (레거시 모놀리스 DSJ)",
+     "Go (인프라·플랫폼 툴링)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "React Native",
-     "GraphQL (BFF)",
-     "Next.js"
+     "Next.js",
+     "React Native (소비자·Dasher·머천트 앱)",
+     "GraphQL BFF (Apollo)",
+     "Web/Mobile 공용 디자인 시스템"
     ],
     "data": [
      "CockroachDB",
-     "PostgreSQL (Aurora)",
+     "PostgreSQL (Amazon Aurora)",
      "Apache Kafka",
      "Apache Flink",
      "Cassandra",
      "Redis",
      "Elasticsearch",
      "Snowflake",
-     "Amazon S3"
+     "Amazon S3 (Data Lake)",
+     "Pinot/Druid (실시간 OLAP)"
     ],
     "infra": [
      "AWS",
      "Kubernetes (EKS)",
      "Envoy / service mesh",
      "Argo CD + Argo Workflows",
-     "Terraform",
+     "Terraform / Pulumi",
      "Prometheus + Grafana",
-     "OpenTelemetry"
+     "OpenTelemetry",
+     "Asgard 내부 서비스 프레임워크"
     ]
    },
    "architecture": [
-    "Microservices",
+    "Microservices (gRPC)",
     "Event-driven streaming",
     "Cell-based architecture",
     "CQRS / async workflow orchestration"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    CONS[\"Consumer App<br/>React Native + TS\"]\n    DASH[\"Dasher App<br/>React Native\"]\n    MERCH[\"Merchant Web<br/>React + Next.js\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    CDN[\"CDN + Envoy Edge<br/>AWS + Envoy\"]\n    BFF[\"GraphQL BFF<br/>Apollo + TS\"]\n  end\n  subgraph Core[\"Core Services (Kotlin)\"]\n    ORDER[\"Order Service<br/>Kotlin + WebFlux\"]\n    DISP[\"Dispatch DeepRed<br/>Kotlin + MIP solver\"]\n    FEED[\"Feed / Search<br/>Kotlin + Elasticsearch\"]\n    PAY[\"Payments<br/>Kotlin + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    IGUAZU[\"Iguazu Pipeline<br/>Flink\"]\n    CAD[\"Workflows<br/>Cadence/Temporal\"]\n  end\n  subgraph ML[\"ML Platform\"]\n    RIV[\"Feature Store Riviera<br/>Flink + Redis\"]\n    SIBYL[\"Prediction Sibyl<br/>Python + gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    CRDB[\"OLTP<br/>CockroachDB\"]\n    CASS[\"Cassandra<br/>+ Redis cache\"]\n    SNOW[\"Warehouse<br/>Snowflake + S3\"]\n  end\n  CONS --> CDN\n  DASH --> CDN\n  MERCH --> CDN\n  CDN --> BFF\n  BFF -->|gRPC| ORDER\n  BFF -->|gRPC| FEED\n  ORDER -->|gRPC| PAY\n  ORDER --> DISP\n  ORDER -->|publish| KAFKA\n  DISP --> CAD\n  FEED --> SIBYL\n  DISP --> SIBYL\n  SIBYL --> RIV\n  KAFKA --> IGUAZU\n  KAFKA --> RIV\n  IGUAZU --> SNOW\n  ORDER --> CRDB\n  PAY --> CRDB\n  FEED --> CASS\n  RIV --> CASS",
-   "why_language": "주문·배차 트랜잭션이 폭증하는 3-sided 마켓플레이스(소비자·가맹점·Dasher)라 JVM의 동시성·성숙한 생태계와 null-safety·코루틴을 갖춘 Kotlin을 백엔드 표준으로 삼았다. 초기 Python/Django 모놀리스는 빠른 제품 실험에 적합했으나 규모가 커지며 성능·타입 안정성 한계가 드러나 Kotlin 마이크로서비스로 이전했고, Python은 ML·데이터 영역에 남겼다. 물류 최적화·인프라 툴링엔 Go, 모든 클라이언트는 TypeScript/React Native로 통일했다.",
-   "why_architecture": "수백 개 도시에서 실시간 배차가 동시에 일어나는 만큼 도메인별 마이크로서비스로 팀 자율성과 독립 배포를 확보하고, Kafka 기반 이벤트 드리븐으로 주문·배차·결제 흐름을 비동기 분리했다. 단일 리전 장애가 전체로 번지는 것을 막기 위해 셀 기반 아키텍처로 트래픽을 격리하고, 장기 실행 주문 플로우는 Cadence/Temporal 워크플로로 내구성 있게 오케스트레이션한다. 폭발적 성장에도 수평 확장이 가능한 CockroachDB로 옮겨 샤딩·멀티리전 일관성을 확보했다.",
-   "summary": "Python 모놀리스에서 출발해 Kotlin 마이크로서비스 + Kafka/Flink 이벤트 스트리밍 + CockroachDB로 확장한 실시간 물류 마켓플레이스 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    CON[\"Consumer App<br/>React Native\"]\n    DASH[\"Dasher App<br/>React Native\"]\n    WEB[\"Web<br/>React + Next.js\"]\n  end\n  subgraph Edge[\"Gateway / BFF\"]\n    GW[\"API Gateway<br/>Envoy + Asgard\"]\n    BFF[\"GraphQL BFF<br/>Apollo + TypeScript\"]\n  end\n  subgraph Core[\"Core Services (Kotlin)\"]\n    ORD[\"Order Service<br/>Kotlin + WebFlux\"]\n    DISP[\"Dispatch / Assignment<br/>Kotlin + Go\"]\n    FEED[\"Store Feed / Search<br/>Kotlin + Elasticsearch\"]\n    WF[\"Order Workflow<br/>Cadence / Temporal\"]\n  end\n  subgraph ML[\"ML Platform\"]\n    RIV[\"Riviera<br/>Feature Eng (Flink)\"]\n    SIB[\"Sibyl<br/>Prediction Serving\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    IGZ[\"Iguazu<br/>Event Ingestion\"]\n    KAF[\"Apache Kafka\"]\n    FLK[\"Apache Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    CRDB[\"CockroachDB<br/>OLTP\"]\n    PG[\"Aurora PostgreSQL\"]\n    RED[\"Redis Cache\"]\n    ES[\"Elasticsearch\"]\n    SNOW[\"Snowflake + S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes EKS<br/>Cell-based\"]\n    ARGO[\"Argo CD<br/>GitOps\"]\n    OTEL[\"OpenTelemetry<br/>Prometheus\"]\n  end\n  CON --> GW\n  DASH --> GW\n  WEB --> BFF\n  GW --> BFF\n  BFF -->|gRPC| ORD\n  BFF -->|gRPC| FEED\n  ORD -->|gRPC| DISP\n  ORD --> WF\n  FEED --> ES\n  DISP --> SIB\n  SIB --> RIV\n  ORD --> CRDB\n  DISP --> CRDB\n  ORD --> RED\n  ORD -->|events| IGZ\n  DISP -->|events| IGZ\n  IGZ --> KAF\n  KAF --> FLK\n  FLK --> RIV\n  FLK --> SNOW\n  KAF --> ES\n  Core --> EKS\n  EKS --> ARGO\n  EKS --> OTEL",
+   "why_language": "DoorDash는 초기 Python/Django 모놀리스(DSJ)의 GIL·타입 안정성·동시성 한계가 주문 폭증 트래픽에서 병목이 되자, JVM의 성숙한 동시성·정적 타입·코루틴(WebFlux/Reactor)을 갖춘 Kotlin을 마이크로서비스 표준 언어로 채택했다. 실시간 배차·매칭처럼 지연에 민감한 경로와 인프라 툴링은 Go로, 데이터·ML 파이프라인은 Python으로, 클라이언트는 React Native/TypeScript로 분담해 도메인별로 최적 언어를 쓴다.",
+   "why_architecture": "수백 개 서비스가 주문·배차·결제·머천트를 처리하는 규모에서 단일 장애가 전체로 번지지 않도록, DoorDash는 셀(cell) 기반으로 트래픽과 인프라를 격리하고 gRPC 마이크로서비스로 도메인 경계를 나눴다. 주문 라이프사이클은 Cadence/Temporal 워크플로로 비동기 오케스트레이션하고, 모든 상태 변화는 Iguazu→Kafka→Flink 스트리밍으로 흘려 실시간 ML 피처와 분석을 동시에 충족하는 이벤트 드리븐·CQRS 구조를 택했다.",
+   "summary": "Python 모놀리스를 셀 격리 Kotlin gRPC 마이크로서비스와 Kafka/Flink 이벤트 스트리밍으로 재편한 실시간 물류 플랫폼",
    "deep_dive": [
     {
      "topic": "배차/물류 디스패치 실시간 매칭",
@@ -7292,6 +7312,22 @@
     {
      "topic": "장애 복원력과 관측성 — 셀 격리·서킷브레이커·분산 트레이싱",
      "body": "### 멀티테넌트 마켓플레이스의 장애 도전\n주문이 흐르는 critical path는 Order → Dispatch → Payment → Notification 등 **수십 개 서비스의 동기/비동기 호출 체인**이다. 한 서비스의 지연이 호출자에게 전파되어 전체가 무너지는 **cascading failure**가 최대 위험이다.\n\n### 복원력 기법\n- **Envoy 서비스 메시**: 모든 서비스 간 트래픽이 Envoy 사이드카를 거친다. 여기서 **retry, timeout, outlier detection(서킷브레이킹), load balancing**을 애플리케이션 코드 밖 인프라 레벨에서 일관 적용한다.\n- **Circuit breaker / bulkhead**: 다운스트림이 느려지면 회로를 열어 빠르게 실패시키고, 리소스 풀을 격리해 한 의존성의 고갈이 전체 스레드/커넥션을 잡아먹지 않게 한다.\n- **Cell 기반 격리**: 트래픽을 독립적인 셀(자기완결적 서비스+데이터 묶음)로 분할해, 한 셀의 장애 반경(blast radius)을 그 셀 사용자로 한정한다.\n- **Cadence/Temporal 워크플로**: 주문 라이프사이클처럼 길고 여러 단계를 거치는 플로우는 워크플로 엔진이 상태를 내구성 있게 저장하고, 중간 실패 시 **자동 재시도·보상 트랜잭션(saga)** 으로 복구한다. 서비스가 죽었다 살아나도 중단 지점부터 재개된다.\n\n### 관측성 스택\n- **메트릭**: Prometheus로 수집, Grafana로 시각화. 서비스별 SLI(지연·에러율·포화도)를 대시보드/알람으로 관리.\n- **분산 트레이싱**: OpenTelemetry로 요청이 수십 서비스를 지나는 경로를 추적해, 느린 호출의 병목을 핀포인트한다 — 마이크로서비스에서 디버깅의 필수 도구.\n- **로깅·이벤트**: 앞서 설명한 Iguazu 파이프라인이 운영 이벤트도 표준 스트림으로 흘려 보내, 사후 분석과 실시간 이상탐지를 동일 소스에서 수행한다.\n\n### 핵심 트레이드오프\n인프라 레벨(Envoy)에서 복원력을 표준화하면 모든 팀이 공짜로 혜택을 받지만, 메시·셀·워크플로 엔진을 **운영하는 플랫폼 복잡도**가 커진다. DoorDash는 이 복잡도를 전담 인프라 팀에 흡수시키고, 제품 팀은 비즈니스 로직에 집중하도록 추상화 경계를 그었다."
+    },
+    {
+     "topic": "주문 라이프사이클의 비동기 오케스트레이션 — Cadence에서 Temporal로",
+     "body": "### 왜 워크플로 엔진인가\n\nDoorDash의 한 건의 주문은 결제 승인, 머천트 주문 접수, Dasher 배차, 픽업, 배달 완료, 정산까지 **수십 분~수 시간에 걸친 장기 상태 전이(long-running stateful process)** 다. 이를 단순 요청-응답이나 cron 폴링으로 다루면 중간 단계 실패 시 부분 성공(머천트는 음식을 만들었는데 배차는 실패) 상태가 남고, 재시도·타임아웃·보상(compensation) 로직이 각 서비스에 흩어진다. DoorDash는 이를 `Cadence`(Uber 오픈소스) 기반 워크플로로 모델링했고, 이후 그 후신인 `Temporal` 로 이전하고 있다.\n\n### 동작 메커니즘\n\n- **Workflow vs Activity 분리**: 비즈니스 흐름(주문 상태 머신)은 결정론적(deterministic) `Workflow` 코드로, 외부 부수효과(결제 API 호출, 알림 발송)는 `Activity` 로 분리한다. Activity는 멱등(idempotent)하게 설계해 재시도해도 중복 청구가 없게 한다.\n- **Event sourcing 기반 복원**: 엔진은 워크플로의 모든 결정 이벤트를 히스토리로 영속화한다. 워커가 죽어도 다른 워커가 히스토리를 **재생(replay)** 해 정확히 마지막 지점부터 이어간다. 즉 워크플로 코드는 \"마치 한 번도 죽지 않은 것처럼\" 수 시간 동안 메모리에 살아있는 듯 동작한다.\n- **Durable timer**: `워크플로 내 sleep(15분)` 같은 타이머가 프로세스 재시작과 무관하게 보장된다. \"머천트가 N분간 주문을 수락하지 않으면 자동 취소\" 같은 SLA 타이머를 안정적으로 건다.\n\n### 트레이드오프\n\n결정론 제약 때문에 워크플로 코드 안에서 직접 `현재시각`·랜덤·네트워크 호출을 쓸 수 없고(반드시 Activity 경유), 학습 곡선이 가파르다. 또 히스토리가 커지면 재생 비용이 늘어 `ContinueAsNew` 로 주기적으로 히스토리를 끊어줘야 한다. 그럼에도 분산 트랜잭션을 사가(saga) 패턴으로 안전하게 구현하고, 주문 흐름의 가시성·디버깅성을 크게 높인 것이 핵심 이득이다."
+    },
+    {
+     "topic": "통합 API Gateway와 GraphQL BFF — 요청 처리 end-to-end",
+     "body": "### 모바일 우선 트래픽의 진입 계층\n\nDoorDash 트래픽의 대부분은 Consumer/Dasher/Merchant **React Native 앱**에서 온다. 클라이언트가 수백 개 내부 gRPC 마이크로서비스를 직접 알 수 없으므로, DoorDash는 두 단계 진입 계층을 둔다: 엣지의 **API Gateway(Envoy 기반)** 와 그 뒤의 **GraphQL BFF(Backend-for-Frontend)**.\n\n### 계층별 역할\n\n| 계층 | 기술 | 책임 |\n|------|------|------|\n| API Gateway | `Envoy` + 내부 라우팅 | TLS 종료, 인증·레이트리밋, 셀 라우팅, 트래픽 시프팅 |\n| BFF | `TypeScript` + GraphQL(Apollo) | 화면 단위 데이터 조립, 백엔드 gRPC 호출 팬아웃·집계 |\n| Core | `Kotlin` gRPC 서비스 | 도메인 로직(주문·배차·검색) |\n\n### end-to-end 흐름 예: 홈 피드 로딩\n\n1. 앱이 한 번의 GraphQL 쿼리로 \"내 주변 식당 피드 + 프로모션 + 카트 상태\"를 요청한다.\n2. BFF가 이 쿼리를 **여러 gRPC 호출로 팬아웃**한다 — Feed/Search 서비스, 프로모션 서비스, 카트 서비스를 병렬 호출하고 결과를 화면 스키마로 합친다.\n3. 모바일은 왕복 1회로 끝나므로 셀룰러 네트워크에서 지연·배터리·데이터 사용이 줄고, 백엔드는 서비스 경계를 클라이언트 변경 없이 자유롭게 바꿀 수 있다.\n\n### 왜 BFF인가\n\nREST를 그대로 모바일에 노출하면 화면 하나에 수십 번의 왕복(over-fetch/under-fetch)이 생긴다. GraphQL BFF는 **클라이언트가 필요한 필드만 정확히** 받게 하고, 백엔드 마이크로서비스 분해를 클라이언트로부터 캡슐화한다. 단점은 BFF가 또 하나의 배포·장애 지점이자 N+1 쿼리·스키마 거버넌스 부담을 지운다는 것으로, DoorDash는 BFF 계층에 캐싱과 persisted query, 데이터로더 배칭을 적용해 이를 완화한다."
+    },
+    {
+     "topic": "스토어 피드 검색·랭킹·개인화 시스템",
+     "body": "### 문제의 본질: 위치·시간 의존적 동적 카탈로그\n\nDoorDash의 검색/피드는 일반 전자상거래와 다르다. **결과가 사용자의 GPS 위치, 현재 시각(영업 여부), 배달 가능 반경, ETA, Dasher 수급**에 따라 매 순간 달라진다. \"내 주변 지금 배달되는 식당을, 내가 좋아할 순서로\" 보여주는 것이 핵심이다.\n\n### 2단계 검색 아키텍처: Retrieval → Ranking\n\n1. **Retrieval(후보 생성)**: `Elasticsearch` 가 지리공간(geo) 필터 + 텍스트/카테고리 매칭으로 \"배달 가능한 식당·아이템\" 수천 개를 빠르게 좁힌다. geo-distance, 영업시간, 메뉴 가용성 같은 하드 필터가 여기서 적용된다.\n2. **Ranking(정밀 랭킹)**: 후보를 `Sibyl` 예측 서빙으로 점수화한다. 전환 확률(주문할 확률), 예상 ETA, 가격, 품질, 신규성 등 다목적(multi-objective) 신호를 결합한 ML 랭킹 모델이 최종 순서를 만든다. 피처는 `Riviera` 가 만든 실시간/배치 피처(예: 해당 식당의 최근 준비시간, 사용자의 과거 취향)를 사용한다.\n\n### 개인화와 신선도\n\n- **실시간 컨텍스트**: 같은 사용자라도 점심/저녁, 비 오는 날, 배차 혼잡도에 따라 랭킹이 바뀐다. Kafka→Flink 스트림으로 계산된 near-real-time 피처가 랭킹에 즉시 반영된다.\n- **탐색-활용 균형**: 인기 식당만 노출하면 롱테일 머천트가 굶는다. 일부 슬롯에 신규/저노출 식당을 끼워 탐색(exploration)하고 그 반응으로 모델을 학습시킨다.\n\n### 트레이드오프\n\nElasticsearch는 geo 검색과 텍스트 매칭에 강하지만, 식당·메뉴·재고가 분 단위로 바뀌므로 **색인 신선도(index freshness)** 가 끊임없는 과제다. DoorDash는 Kafka 변경 이벤트로 ES 색인을 스트리밍 업데이트해 카탈로그와 검색 인덱스의 지연을 최소화한다. 정확도(무거운 ML 랭킹)와 지연(p99 latency) 사이는 후보 수 제한·피처 캐싱·모델 경량화로 조율한다."
+    },
+    {
+     "topic": "배포·CI/CD와 내부 서비스 플랫폼 — 셀 위의 GitOps 카나리",
+     "body": "### 수백 서비스를 한 손에: 골든 패스(golden path)\n\n서비스 수가 폭증하면 각 팀이 제각각 빌드·배포·관측을 구성하는 순간 운영이 붕괴한다. DoorDash는 **내부 서비스 프레임워크/플랫폼(사내 Asgard·서비스 템플릿)** 으로 \"새 Kotlin gRPC 서비스 생성 → 표준 빌드 → 표준 배포\"를 단일 골든 패스로 만든다. 신규 서비스는 protobuf 계약, 메트릭·트레이싱 계측(OpenTelemetry), 헬스체크가 기본 탑재된 상태로 출발한다.\n\n### GitOps 배포 파이프라인\n\n- **Argo CD(GitOps)**: 배포 상태의 단일 진실원천(source of truth)은 Git이다. 매니페스트가 머지되면 Argo CD가 EKS 클러스터 상태를 선언적으로 수렴시킨다. 사람이 클러스터에 직접 명령하지 않으므로 드리프트·수동 실수가 준다.\n- **Argo Workflows**: 데이터/ML 잡, 배치 파이프라인의 DAG 실행을 담당한다.\n- **카나리 + 점진 롤아웃**: 새 버전을 소수 인스턴스(또는 한 셀)에 먼저 흘리고, 에러율·지연(p99)·비즈니스 메트릭을 자동 비교해 이상 시 자동 롤백한다.\n\n### 셀 기반 배포와의 결합\n\nDoorDash의 **셀(cell) 아키텍처** 와 결합되어, 배포는 셀 단위로 점진 전파될 수 있다. 한 셀에서 카나리가 건강하면 다음 셀로 넘어가고, 문제가 생기면 **폭발 반경(blast radius)을 한 셀로 가둔다**. 이로써 \"전 글로벌 동시 배포로 전체 장애\" 같은 시나리오를 구조적으로 차단한다.\n\n### 트레이드오프\n\n표준화된 골든 패스는 온보딩·운영 일관성을 크게 높이지만, 특수 요구를 가진 팀에는 제약으로 느껴질 수 있다. 셀 단위 점진 배포는 안전하지만 전체 롤아웃 시간이 길어지고, 스키마/프로토콜 변경 시 셀 간 버전 혼재(version skew)를 견디도록 **하위 호환 protobuf 진화** 를 강제해야 한다. DoorDash는 이 비용을 감수하고 안전성·운영성을 택했다."
     }
    ],
    "github": {
@@ -7304,7 +7340,7 @@
     "https://github.com/doordash-oss"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "lyft",
