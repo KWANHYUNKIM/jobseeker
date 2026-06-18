@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-19T00:44:24",
+  "generated_at": "2026-06-19T02:30:37",
   "source": "youtube",
   "tech_count": 167,
   "curriculum_count": 20,
@@ -1399,88 +1399,6 @@
         "stage": "실전"
       }
     ],
-    "PyTorch": [
-      {
-        "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
-        "url": "https://www.youtube.com/watch?v=k60oT_8lyFw",
-        "thumbnail": "https://i.ytimg.com/vi/k60oT_8lyFw/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 130111,
-        "length": "2:52:24",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[PyTorch] 1-1강. 파이토치 기초 (basic) | torch.tensor()와 텐서의 기본 연산",
-        "url": "https://www.youtube.com/watch?v=I6Ri6iNyVPU",
-        "thumbnail": "https://i.ytimg.com/vi/I6Ri6iNyVPU/mqdefault.jpg",
-        "channel": "혁펜하임 | AI & 딥러닝 강의",
-        "views": 11006,
-        "length": "9:41",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이토치(PyTorch) 기초",
-        "url": "https://www.youtube.com/watch?v=C1P7PaIeKvU",
-        "thumbnail": "https://i.ytimg.com/vi/C1P7PaIeKvU/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 33332,
-        "length": "1:29:51",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PyTorch 초보자 기초 튜토리얼 #1",
-        "url": "https://www.youtube.com/watch?v=mpgjF9lgztI",
-        "thumbnail": "https://i.ytimg.com/vi/mpgjF9lgztI/mqdefault.jpg",
-        "channel": "수학 + 프로그래밍 + AI",
-        "views": 28,
-        "length": "53:14",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "알기 쉽게 설명하는 PyTorch 활용 딥러닝 (하루만에 끝내는 파이토치🔥)",
-        "url": "https://www.youtube.com/watch?v=LFV6wVU1VV0",
-        "thumbnail": "https://i.ytimg.com/vi/LFV6wVU1VV0/mqdefault.jpg",
-        "channel": "Firstzone",
-        "views": 569,
-        "length": "1:08",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
-        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
-        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
-        "channel": "LG디스플레이 대학생 인플루언서_디플",
-        "views": 20354,
-        "length": "1:30",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Pytorch 입문강의 1편ㅣDeep Learning 실습, torch 설치, Tensor, Attribute, Indexing - [메타코드M]",
-        "url": "https://www.youtube.com/watch?v=oYJVsyapNRc",
-        "thumbnail": "https://i.ytimg.com/vi/oYJVsyapNRc/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 13421,
-        "length": "2:30:54",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[PyTorch] 3-2강. 인공 신경망 학습 예제 코드 10분 완성! | 파이토치 선형 회귀 실습",
-        "url": "https://www.youtube.com/watch?v=WWurhDWEznw",
-        "thumbnail": "https://i.ytimg.com/vi/WWurhDWEznw/mqdefault.jpg",
-        "channel": "혁펜하임 | AI & 딥러닝 강의",
-        "views": 3914,
-        "length": "19:20",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Node.js": [
       {
         "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
@@ -1563,85 +1481,85 @@
         "stage": "실전"
       }
     ],
-    "CSS": [
+    "PyTorch": [
       {
-        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
-        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
-        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 153314,
-        "length": "5:28:09",
+        "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
+        "url": "https://www.youtube.com/watch?v=k60oT_8lyFw",
+        "thumbnail": "https://i.ytimg.com/vi/k60oT_8lyFw/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 130111,
+        "length": "2:52:24",
         "published": "4년 전",
         "stage": "입문"
       },
       {
-        "title": "CSS 강의 Ep01 - CSS란 무엇인가? | CSS 강좌 | 함께 웹 개발에 입문해 보는건 어떨까요?",
-        "url": "https://www.youtube.com/watch?v=JgolsnrdnGM",
-        "thumbnail": "https://i.ytimg.com/vi/JgolsnrdnGM/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 12810,
-        "length": "20:33",
+        "title": "[PyTorch] 1-1강. 파이토치 기초 (basic) | torch.tensor()와 텐서의 기본 연산",
+        "url": "https://www.youtube.com/watch?v=I6Ri6iNyVPU",
+        "thumbnail": "https://i.ytimg.com/vi/I6Ri6iNyVPU/mqdefault.jpg",
+        "channel": "혁펜하임 | AI & 딥러닝 강의",
+        "views": 11006,
+        "length": "9:41",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이토치(PyTorch) 기초",
+        "url": "https://www.youtube.com/watch?v=C1P7PaIeKvU",
+        "thumbnail": "https://i.ytimg.com/vi/C1P7PaIeKvU/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 33332,
+        "length": "1:29:51",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PyTorch 초보자 기초 튜토리얼 #1",
+        "url": "https://www.youtube.com/watch?v=mpgjF9lgztI",
+        "thumbnail": "https://i.ytimg.com/vi/mpgjF9lgztI/mqdefault.jpg",
+        "channel": "수학 + 프로그래밍 + AI",
+        "views": 28,
+        "length": "53:14",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "알기 쉽게 설명하는 PyTorch 활용 딥러닝 (하루만에 끝내는 파이토치🔥)",
+        "url": "https://www.youtube.com/watch?v=LFV6wVU1VV0",
+        "thumbnail": "https://i.ytimg.com/vi/LFV6wVU1VV0/mqdefault.jpg",
+        "channel": "Firstzone",
+        "views": 569,
+        "length": "1:08",
         "published": "4년 전",
         "stage": "입문"
       },
       {
-        "title": "어둠의 자식들이 좋아하는 CSS 문법 2개",
-        "url": "https://www.youtube.com/watch?v=TlRkmSEMV6w",
-        "thumbnail": "https://i.ytimg.com/vi/TlRkmSEMV6w/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 25141,
-        "length": "3:19",
-        "published": "3년 전",
+        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
+        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
+        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
+        "channel": "LG디스플레이 대학생 인플루언서_디플",
+        "views": 20354,
+        "length": "1:30",
+        "published": "5년 전",
         "stage": "핵심"
       },
       {
-        "title": "CSS 따위 안쓰는 사나이클럽 (실존함)",
-        "url": "https://www.youtube.com/watch?v=T3lEM26r_2s",
-        "thumbnail": "https://i.ytimg.com/vi/T3lEM26r_2s/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 227655,
-        "length": "4:11",
+        "title": "Pytorch 입문강의 1편ㅣDeep Learning 실습, torch 설치, Tensor, Attribute, Indexing - [메타코드M]",
+        "url": "https://www.youtube.com/watch?v=oYJVsyapNRc",
+        "thumbnail": "https://i.ytimg.com/vi/oYJVsyapNRc/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 13421,
+        "length": "2:30:54",
         "published": "2년 전",
-        "stage": "핵심"
+        "stage": "실전"
       },
       {
-        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
-        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
-        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
-        "channel": "크래프트맨 멘탈리티",
-        "views": 21549,
-        "length": "6:53:58",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
-        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 7814,
-        "length": "17:07",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS Grid 완전 정리 끝판왕 😎",
-        "url": "https://www.youtube.com/watch?v=nxi1EXmPHRs",
-        "thumbnail": "https://i.ytimg.com/vi/nxi1EXmPHRs/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 75519,
-        "length": "21:03",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
-        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
-        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 42883,
-        "length": "48:53",
-        "published": "3년 전",
+        "title": "[PyTorch] 3-2강. 인공 신경망 학습 예제 코드 10분 완성! | 파이토치 선형 회귀 실습",
+        "url": "https://www.youtube.com/watch?v=WWurhDWEznw",
+        "thumbnail": "https://i.ytimg.com/vi/WWurhDWEznw/mqdefault.jpg",
+        "channel": "혁펜하임 | AI & 딥러닝 강의",
+        "views": 3914,
+        "length": "19:20",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -1724,6 +1642,88 @@
         "views": 8037,
         "length": "3:09",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "CSS": [
+      {
+        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
+        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
+        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 153314,
+        "length": "5:28:09",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CSS 강의 Ep01 - CSS란 무엇인가? | CSS 강좌 | 함께 웹 개발에 입문해 보는건 어떨까요?",
+        "url": "https://www.youtube.com/watch?v=JgolsnrdnGM",
+        "thumbnail": "https://i.ytimg.com/vi/JgolsnrdnGM/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 12810,
+        "length": "20:33",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "어둠의 자식들이 좋아하는 CSS 문법 2개",
+        "url": "https://www.youtube.com/watch?v=TlRkmSEMV6w",
+        "thumbnail": "https://i.ytimg.com/vi/TlRkmSEMV6w/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 25141,
+        "length": "3:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 따위 안쓰는 사나이클럽 (실존함)",
+        "url": "https://www.youtube.com/watch?v=T3lEM26r_2s",
+        "thumbnail": "https://i.ytimg.com/vi/T3lEM26r_2s/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 227655,
+        "length": "4:11",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
+        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
+        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
+        "channel": "크래프트맨 멘탈리티",
+        "views": 21549,
+        "length": "6:53:58",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
+        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 7814,
+        "length": "17:07",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS Grid 완전 정리 끝판왕 😎",
+        "url": "https://www.youtube.com/watch?v=nxi1EXmPHRs",
+        "thumbnail": "https://i.ytimg.com/vi/nxi1EXmPHRs/mqdefault.jpg",
+        "channel": "드림코딩",
+        "views": 75519,
+        "length": "21:03",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
+        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
+        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 42883,
+        "length": "48:53",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -2455,88 +2455,6 @@
         "stage": "핵심"
       }
     ],
-    "TensorFlow": [
-      {
-        "title": "텐서 플로우 TensorFlow 기초",
-        "url": "https://www.youtube.com/watch?v=B961QM47g64",
-        "thumbnail": "https://i.ytimg.com/vi/B961QM47g64/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 29908,
-        "length": "1:37:50",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
-        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
-        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 68636,
-        "length": "4:20:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우(TensorFlow) 기초 1편 [머신러닝 쉽게 접근하기]",
-        "url": "https://www.youtube.com/watch?v=NU9LluOiOOQ",
-        "thumbnail": "https://i.ytimg.com/vi/NU9LluOiOOQ/mqdefault.jpg",
-        "channel": "코딩어TV",
-        "views": 4593,
-        "length": "10:08",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "ㄹㅇ쉬운 딥러닝 6강 : Tensorflow 2 기초 빠르게 정리",
-        "url": "https://www.youtube.com/watch?v=2oqix9x_bGw",
-        "thumbnail": "https://i.ytimg.com/vi/2oqix9x_bGw/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 82372,
-        "length": "16:45",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
-        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
-        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
-        "channel": "LG디스플레이 대학생 인플루언서_디플",
-        "views": 20354,
-        "length": "1:30",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "01 텐서플로우소개 #tensorflow #keras",
-        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
-        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
-        "channel": "Funny AI",
-        "views": 494,
-        "length": "25:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "tensorflow강의 1주차(분류, 회귀와 퍼셉트론 모델)",
-        "url": "https://www.youtube.com/watch?v=8S2RPxr9nkA",
-        "thumbnail": "https://i.ytimg.com/vi/8S2RPxr9nkA/mqdefault.jpg",
-        "channel": "Deep learning roading",
-        "views": 95,
-        "length": "3:59",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "8분 안에 이미지 분류 인공지능(딥러닝) 만들기 실습 구현 | ResNet ImageNet TensorFlow(텐서플로우) Colab(코랩) 머신러닝 파이썬",
-        "url": "https://www.youtube.com/watch?v=9xZa4FAfKgY",
-        "thumbnail": "https://i.ytimg.com/vi/9xZa4FAfKgY/mqdefault.jpg",
-        "channel": "꽃부리와 코딩여행",
-        "views": 65128,
-        "length": "10:00",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "MSA": [
       {
         "title": "MSA 요소 6가지 7분컷",
@@ -2783,6 +2701,88 @@
         "stage": "실전"
       }
     ],
+    "TensorFlow": [
+      {
+        "title": "텐서 플로우 TensorFlow 기초",
+        "url": "https://www.youtube.com/watch?v=B961QM47g64",
+        "thumbnail": "https://i.ytimg.com/vi/B961QM47g64/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 29908,
+        "length": "1:37:50",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
+        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
+        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 68636,
+        "length": "4:20:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "텐서플로우(TensorFlow) 기초 1편 [머신러닝 쉽게 접근하기]",
+        "url": "https://www.youtube.com/watch?v=NU9LluOiOOQ",
+        "thumbnail": "https://i.ytimg.com/vi/NU9LluOiOOQ/mqdefault.jpg",
+        "channel": "코딩어TV",
+        "views": 4593,
+        "length": "10:08",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "ㄹㅇ쉬운 딥러닝 6강 : Tensorflow 2 기초 빠르게 정리",
+        "url": "https://www.youtube.com/watch?v=2oqix9x_bGw",
+        "thumbnail": "https://i.ytimg.com/vi/2oqix9x_bGw/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 82372,
+        "length": "16:45",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
+        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
+        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
+        "channel": "LG디스플레이 대학생 인플루언서_디플",
+        "views": 20354,
+        "length": "1:30",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "01 텐서플로우소개 #tensorflow #keras",
+        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
+        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
+        "channel": "Funny AI",
+        "views": 494,
+        "length": "25:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "tensorflow강의 1주차(분류, 회귀와 퍼셉트론 모델)",
+        "url": "https://www.youtube.com/watch?v=8S2RPxr9nkA",
+        "thumbnail": "https://i.ytimg.com/vi/8S2RPxr9nkA/mqdefault.jpg",
+        "channel": "Deep learning roading",
+        "views": 95,
+        "length": "3:59",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "8분 안에 이미지 분류 인공지능(딥러닝) 만들기 실습 구현 | ResNet ImageNet TensorFlow(텐서플로우) Colab(코랩) 머신러닝 파이썬",
+        "url": "https://www.youtube.com/watch?v=9xZa4FAfKgY",
+        "thumbnail": "https://i.ytimg.com/vi/9xZa4FAfKgY/mqdefault.jpg",
+        "channel": "꽃부리와 코딩여행",
+        "views": 65128,
+        "length": "10:00",
+        "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
     "Jira": [
       {
         "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
@@ -2865,88 +2865,6 @@
         "stage": "실전"
       }
     ],
-    "Terraform": [
-      {
-        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
-        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
-        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
-        "channel": "데브아트 DevArt",
-        "views": 13865,
-        "length": "14:55",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Terraform 완전 강좌 - 초보자부터 전문가까지! (Infrastructure as Code 배우기)",
-        "url": "https://www.youtube.com/watch?v=7xngnjfIlK4",
-        "thumbnail": "https://i.ytimg.com/vi/7xngnjfIlK4/mqdefault.jpg",
-        "channel": "DevOps Directive",
-        "views": 1349881,
-        "length": "2:38:04",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
-        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
-        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 2595,
-        "length": "13:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
-        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
-        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1542,
-        "length": "13:41",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
-        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
-        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
-        "channel": "NDC",
-        "views": 4734,
-        "length": "20:43",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
-        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
-        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
-        "channel": "44BITS",
-        "views": 13136,
-        "length": "5:11",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
-        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
-        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3140,
-        "length": "36:29",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
-        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
-        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
-        "channel": "딩코딩코",
-        "views": 4196,
-        "length": "9:08",
-        "published": "5개월 전",
-        "stage": "실전"
-      }
-    ],
     "C#": [
       {
         "title": "유니티 C# 프로그래밍 기초. 한방에 정리하기 [유니티 입문 강좌 B4]",
@@ -3026,6 +2944,88 @@
         "views": 361,
         "length": "5:16",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Terraform": [
+      {
+        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
+        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
+        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
+        "channel": "데브아트 DevArt",
+        "views": 13865,
+        "length": "14:55",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Terraform 완전 강좌 - 초보자부터 전문가까지! (Infrastructure as Code 배우기)",
+        "url": "https://www.youtube.com/watch?v=7xngnjfIlK4",
+        "thumbnail": "https://i.ytimg.com/vi/7xngnjfIlK4/mqdefault.jpg",
+        "channel": "DevOps Directive",
+        "views": 1349881,
+        "length": "2:38:04",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
+        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
+        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 2595,
+        "length": "13:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
+        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
+        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1542,
+        "length": "13:41",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
+        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
+        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
+        "channel": "NDC",
+        "views": 4734,
+        "length": "20:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
+        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
+        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
+        "channel": "44BITS",
+        "views": 13136,
+        "length": "5:11",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
+        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
+        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3140,
+        "length": "36:29",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
+        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
+        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
+        "channel": "딩코딩코",
+        "views": 4196,
+        "length": "9:08",
+        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -4341,88 +4341,6 @@
         "stage": "핵심"
       }
     ],
-    "PHP": [
-      {
-        "title": "PHP 웹 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=tr-ba-wAH-I",
-        "thumbnail": "https://i.ytimg.com/vi/tr-ba-wAH-I/mqdefault.jpg",
-        "channel": "나이스코딩",
-        "views": 1299,
-        "length": "1:29:30",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[ PHP 강좌 ] #1. 코드이그나이터 설치 및 기초 설명",
-        "url": "https://www.youtube.com/watch?v=8_9mbDmXQLE",
-        "thumbnail": "https://i.ytimg.com/vi/8_9mbDmXQLE/mqdefault.jpg",
-        "channel": "코딩아빠의 개발일지",
-        "views": 3451,
-        "length": "17:00",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "26. PHP란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=fjvcUDcz7E4",
-        "thumbnail": "https://i.ytimg.com/vi/fjvcUDcz7E4/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 11694,
-        "length": "18:58",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PHP - 반복문 흐름의제어",
-        "url": "https://www.youtube.com/watch?v=D1c6Z7XbcZ4",
-        "thumbnail": "https://i.ytimg.com/vi/D1c6Z7XbcZ4/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 8271,
-        "length": "10:16",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "이렇게 쉬워도 되나 싶은 PHP 강좌 - 초급 001",
-        "url": "https://www.youtube.com/watch?v=iiqatIsBs40",
-        "thumbnail": "https://i.ytimg.com/vi/iiqatIsBs40/mqdefault.jpg",
-        "channel": "아빠는개발자",
-        "views": 6265,
-        "length": "8:13",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "php 1. HTML이란 무엇인가!",
-        "url": "https://www.youtube.com/watch?v=tJ-UkC2-6q8",
-        "thumbnail": "https://i.ytimg.com/vi/tJ-UkC2-6q8/mqdefault.jpg",
-        "channel": "유니다고",
-        "views": 5883,
-        "length": "15:10",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PHP 기초 강의 기초부터 실무까지 차근차근! PHP Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=fRG5ATR4ZKQ",
-        "thumbnail": "https://i.ytimg.com/vi/fRG5ATR4ZKQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 627,
-        "length": "26:34",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[쩡원의PHP 특강-1] 하루만에 기초 마스터 하기 (재 편집)",
-        "url": "https://www.youtube.com/watch?v=IvdnHeojzsw",
-        "thumbnail": "https://i.ytimg.com/vi/IvdnHeojzsw/mqdefault.jpg",
-        "channel": "쩡원의PHP",
-        "views": 5620,
-        "length": "40:43",
-        "published": "8년 전",
-        "stage": "실전"
-      }
-    ],
     "MSSQL": [
       {
         "title": "[MSSQL 중급 3강] 조인 기초편",
@@ -4502,6 +4420,88 @@
         "views": 1901,
         "length": "15:06",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "PHP": [
+      {
+        "title": "PHP 웹 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=tr-ba-wAH-I",
+        "thumbnail": "https://i.ytimg.com/vi/tr-ba-wAH-I/mqdefault.jpg",
+        "channel": "나이스코딩",
+        "views": 1299,
+        "length": "1:29:30",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[ PHP 강좌 ] #1. 코드이그나이터 설치 및 기초 설명",
+        "url": "https://www.youtube.com/watch?v=8_9mbDmXQLE",
+        "thumbnail": "https://i.ytimg.com/vi/8_9mbDmXQLE/mqdefault.jpg",
+        "channel": "코딩아빠의 개발일지",
+        "views": 3451,
+        "length": "17:00",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "26. PHP란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=fjvcUDcz7E4",
+        "thumbnail": "https://i.ytimg.com/vi/fjvcUDcz7E4/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 11694,
+        "length": "18:58",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PHP - 반복문 흐름의제어",
+        "url": "https://www.youtube.com/watch?v=D1c6Z7XbcZ4",
+        "thumbnail": "https://i.ytimg.com/vi/D1c6Z7XbcZ4/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 8271,
+        "length": "10:16",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "이렇게 쉬워도 되나 싶은 PHP 강좌 - 초급 001",
+        "url": "https://www.youtube.com/watch?v=iiqatIsBs40",
+        "thumbnail": "https://i.ytimg.com/vi/iiqatIsBs40/mqdefault.jpg",
+        "channel": "아빠는개발자",
+        "views": 6265,
+        "length": "8:13",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "php 1. HTML이란 무엇인가!",
+        "url": "https://www.youtube.com/watch?v=tJ-UkC2-6q8",
+        "thumbnail": "https://i.ytimg.com/vi/tJ-UkC2-6q8/mqdefault.jpg",
+        "channel": "유니다고",
+        "views": 5883,
+        "length": "15:10",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PHP 기초 강의 기초부터 실무까지 차근차근! PHP Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=fRG5ATR4ZKQ",
+        "thumbnail": "https://i.ytimg.com/vi/fRG5ATR4ZKQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 627,
+        "length": "26:34",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[쩡원의PHP 특강-1] 하루만에 기초 마스터 하기 (재 편집)",
+        "url": "https://www.youtube.com/watch?v=IvdnHeojzsw",
+        "thumbnail": "https://i.ytimg.com/vi/IvdnHeojzsw/mqdefault.jpg",
+        "channel": "쩡원의PHP",
+        "views": 5620,
+        "length": "40:43",
+        "published": "8년 전",
         "stage": "실전"
       }
     ],
@@ -5489,88 +5489,6 @@
         "stage": "실전"
       }
     ],
-    "Jest": [
-      {
-        "title": "코드커버리지가 100%여도 에러가 나는 이유 - Jest (자바스크립트 테스트) 강의 맛보기 1편",
-        "url": "https://www.youtube.com/watch?v=GnYnwfWcJfo",
-        "thumbnail": "https://i.ytimg.com/vi/GnYnwfWcJfo/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 2454,
-        "length": "4:55",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "테스트 귀찮은데 꼭 해야할까? [Jest(자바스크립트 테스트) 강의 맛보기]",
-        "url": "https://www.youtube.com/watch?v=W-fyyAHAqSU",
-        "thumbnail": "https://i.ytimg.com/vi/W-fyyAHAqSU/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 6017,
-        "length": "14:47",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Jest 강좌 #1 소개, 설치 및 간단한 테스트 작성 - 자바스크립트 테스트 프레임워크",
-        "url": "https://www.youtube.com/watch?v=g4MdUjxA-S4",
-        "thumbnail": "https://i.ytimg.com/vi/g4MdUjxA-S4/mqdefault.jpg",
-        "channel": "코딩앙마",
-        "views": 20195,
-        "length": "5:36",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Debug Jest tests with VSCode (JS/TS)",
-        "url": "https://www.youtube.com/watch?v=_usf3xQ7wys",
-        "thumbnail": "https://i.ytimg.com/vi/_usf3xQ7wys/mqdefault.jpg",
-        "channel": "Concise Developer",
-        "views": 16863,
-        "length": "7:02",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Testing with Jest Part 2-CS3380",
-        "url": "https://www.youtube.com/watch?v=d9NfuK70jdc",
-        "thumbnail": "https://i.ytimg.com/vi/d9NfuK70jdc/mqdefault.jpg",
-        "channel": "ProfessorJenson",
-        "views": 140,
-        "length": "5:30",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JEST 2026 All Details| How to apply? 45 Days study plan | Scope after Jest exam",
-        "url": "https://www.youtube.com/watch?v=YziAMghn4WE",
-        "thumbnail": "https://i.ytimg.com/vi/YziAMghn4WE/mqdefault.jpg",
-        "channel": "Physics by Aaryan",
-        "views": 2549,
-        "length": "58:45",
-        "published": "3개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JEST 2026 Physics | How to prepare? Under 100 rank in 10 weeks Full Strategy | IISC Calling",
-        "url": "https://www.youtube.com/watch?v=my5sZ4SXxPQ",
-        "thumbnail": "https://i.ytimg.com/vi/my5sZ4SXxPQ/mqdefault.jpg",
-        "channel": "Physics by Aaryan",
-        "views": 3984,
-        "length": "1:14:14",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "toBe() or .not.toBe(): The Power of Jest Assertions (Hebrew)",
-        "url": "https://www.youtube.com/watch?v=sS2Krb68et4",
-        "thumbnail": "https://i.ytimg.com/vi/sS2Krb68et4/mqdefault.jpg",
-        "channel": "JavaScript Israel",
-        "views": 256,
-        "length": "5:42",
-        "published": "7년 전",
-        "stage": "핵심"
-      }
-    ],
     "GitHub": [
       {
         "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
@@ -5651,6 +5569,88 @@
         "length": "18:44",
         "published": "2개월 전",
         "stage": "실전"
+      }
+    ],
+    "Jest": [
+      {
+        "title": "코드커버리지가 100%여도 에러가 나는 이유 - Jest (자바스크립트 테스트) 강의 맛보기 1편",
+        "url": "https://www.youtube.com/watch?v=GnYnwfWcJfo",
+        "thumbnail": "https://i.ytimg.com/vi/GnYnwfWcJfo/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 2454,
+        "length": "4:55",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "테스트 귀찮은데 꼭 해야할까? [Jest(자바스크립트 테스트) 강의 맛보기]",
+        "url": "https://www.youtube.com/watch?v=W-fyyAHAqSU",
+        "thumbnail": "https://i.ytimg.com/vi/W-fyyAHAqSU/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 6017,
+        "length": "14:47",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Jest 강좌 #1 소개, 설치 및 간단한 테스트 작성 - 자바스크립트 테스트 프레임워크",
+        "url": "https://www.youtube.com/watch?v=g4MdUjxA-S4",
+        "thumbnail": "https://i.ytimg.com/vi/g4MdUjxA-S4/mqdefault.jpg",
+        "channel": "코딩앙마",
+        "views": 20195,
+        "length": "5:36",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Debug Jest tests with VSCode (JS/TS)",
+        "url": "https://www.youtube.com/watch?v=_usf3xQ7wys",
+        "thumbnail": "https://i.ytimg.com/vi/_usf3xQ7wys/mqdefault.jpg",
+        "channel": "Concise Developer",
+        "views": 16863,
+        "length": "7:02",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Testing with Jest Part 2-CS3380",
+        "url": "https://www.youtube.com/watch?v=d9NfuK70jdc",
+        "thumbnail": "https://i.ytimg.com/vi/d9NfuK70jdc/mqdefault.jpg",
+        "channel": "ProfessorJenson",
+        "views": 140,
+        "length": "5:30",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JEST 2026 All Details| How to apply? 45 Days study plan | Scope after Jest exam",
+        "url": "https://www.youtube.com/watch?v=YziAMghn4WE",
+        "thumbnail": "https://i.ytimg.com/vi/YziAMghn4WE/mqdefault.jpg",
+        "channel": "Physics by Aaryan",
+        "views": 2549,
+        "length": "58:45",
+        "published": "3개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JEST 2026 Physics | How to prepare? Under 100 rank in 10 weeks Full Strategy | IISC Calling",
+        "url": "https://www.youtube.com/watch?v=my5sZ4SXxPQ",
+        "thumbnail": "https://i.ytimg.com/vi/my5sZ4SXxPQ/mqdefault.jpg",
+        "channel": "Physics by Aaryan",
+        "views": 3984,
+        "length": "1:14:14",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "toBe() or .not.toBe(): The Power of Jest Assertions (Hebrew)",
+        "url": "https://www.youtube.com/watch?v=sS2Krb68et4",
+        "thumbnail": "https://i.ytimg.com/vi/sS2Krb68et4/mqdefault.jpg",
+        "channel": "JavaScript Israel",
+        "views": 256,
+        "length": "5:42",
+        "published": "7년 전",
+        "stage": "핵심"
       }
     ],
     "Rust": [
@@ -7375,6 +7375,88 @@
         "stage": "핵심"
       }
     ],
+    "Restful API": [
+      {
+        "title": "코딩초보들이 헷갈리는 용어 : API가 뭐냐면",
+        "url": "https://www.youtube.com/watch?v=ckSdPNKM2pY",
+        "thumbnail": "https://i.ytimg.com/vi/ckSdPNKM2pY/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 425481,
+        "length": "7:40",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[10분 테코톡] 무민, 테오의 RESTful API",
+        "url": "https://www.youtube.com/watch?v=Tm2mja5_dZs",
+        "thumbnail": "https://i.ytimg.com/vi/Tm2mja5_dZs/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 4299,
+        "length": "17:41",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 소하의 RESTful API",
+        "url": "https://www.youtube.com/watch?v=713TQsfpVUA",
+        "thumbnail": "https://i.ytimg.com/vi/713TQsfpVUA/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 2094,
+        "length": "7:45",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "REST API - 이거 하나로 끝남",
+        "url": "https://www.youtube.com/watch?v=fB3MB8TXNXM",
+        "thumbnail": "https://i.ytimg.com/vi/fB3MB8TXNXM/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 49378,
+        "length": "13:01",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "면접 단골 질문! API, REST API가 뭔가요? (개발 필수지식)",
+        "url": "https://www.youtube.com/watch?v=C7yhysF_wAg",
+        "thumbnail": "https://i.ytimg.com/vi/C7yhysF_wAg/mqdefault.jpg",
+        "channel": "Code ON 코드온",
+        "views": 25794,
+        "length": "3:46",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 이해하는 REST API",
+        "url": "https://www.youtube.com/watch?v=7LbylTMlj8M",
+        "thumbnail": "https://i.ytimg.com/vi/7LbylTMlj8M/mqdefault.jpg",
+        "channel": "큰돌의터전",
+        "views": 13990,
+        "length": "18:08",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "5분만에 제대로 설계하는 ⭐️ REST API",
+        "url": "https://www.youtube.com/watch?v=4DxHX95Lq2U",
+        "thumbnail": "https://i.ytimg.com/vi/4DxHX95Lq2U/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 120889,
+        "length": "5:16",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "『스프링 부트』RESTful API 서버 만들기 #1",
+        "url": "https://www.youtube.com/watch?v=OMbryN43tbA",
+        "thumbnail": "https://i.ytimg.com/vi/OMbryN43tbA/mqdefault.jpg",
+        "channel": "슬기로운코딩생활",
+        "views": 1474,
+        "length": "30:11",
+        "published": "11개월 전",
+        "stage": "실전"
+      }
+    ],
     "CUDA": [
       {
         "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
@@ -7537,88 +7619,6 @@
         "length": "9:29",
         "published": "7년 전",
         "stage": "핵심"
-      }
-    ],
-    "Restful API": [
-      {
-        "title": "코딩초보들이 헷갈리는 용어 : API가 뭐냐면",
-        "url": "https://www.youtube.com/watch?v=ckSdPNKM2pY",
-        "thumbnail": "https://i.ytimg.com/vi/ckSdPNKM2pY/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 425481,
-        "length": "7:40",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[10분 테코톡] 무민, 테오의 RESTful API",
-        "url": "https://www.youtube.com/watch?v=Tm2mja5_dZs",
-        "thumbnail": "https://i.ytimg.com/vi/Tm2mja5_dZs/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 4299,
-        "length": "17:41",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 소하의 RESTful API",
-        "url": "https://www.youtube.com/watch?v=713TQsfpVUA",
-        "thumbnail": "https://i.ytimg.com/vi/713TQsfpVUA/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 2094,
-        "length": "7:45",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "REST API - 이거 하나로 끝남",
-        "url": "https://www.youtube.com/watch?v=fB3MB8TXNXM",
-        "thumbnail": "https://i.ytimg.com/vi/fB3MB8TXNXM/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 49378,
-        "length": "13:01",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "면접 단골 질문! API, REST API가 뭔가요? (개발 필수지식)",
-        "url": "https://www.youtube.com/watch?v=C7yhysF_wAg",
-        "thumbnail": "https://i.ytimg.com/vi/C7yhysF_wAg/mqdefault.jpg",
-        "channel": "Code ON 코드온",
-        "views": 25794,
-        "length": "3:46",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 이해하는 REST API",
-        "url": "https://www.youtube.com/watch?v=7LbylTMlj8M",
-        "thumbnail": "https://i.ytimg.com/vi/7LbylTMlj8M/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 13990,
-        "length": "18:08",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "5분만에 제대로 설계하는 ⭐️ REST API",
-        "url": "https://www.youtube.com/watch?v=4DxHX95Lq2U",
-        "thumbnail": "https://i.ytimg.com/vi/4DxHX95Lq2U/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 120889,
-        "length": "5:16",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "『스프링 부트』RESTful API 서버 만들기 #1",
-        "url": "https://www.youtube.com/watch?v=OMbryN43tbA",
-        "thumbnail": "https://i.ytimg.com/vi/OMbryN43tbA/mqdefault.jpg",
-        "channel": "슬기로운코딩생활",
-        "views": 1474,
-        "length": "30:11",
-        "published": "11개월 전",
-        "stage": "실전"
       }
     ],
     "Nuxt": [

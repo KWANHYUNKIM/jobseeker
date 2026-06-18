@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-19T00:36:23",
- "total": 773,
+ "generated_at": "2026-06-19T02:30:24",
+ "total": 776,
  "sources": [
   {
    "company": "Etsy",
@@ -20,7 +20,7 @@
   {
    "company": "Discord",
    "country": "US",
-   "count": 28
+   "count": 29
   },
   {
    "company": "Cloudflare",
@@ -83,18 +83,23 @@
    "count": 23
   },
   {
+   "company": "GitHub",
+   "country": "US",
+   "count": 20
+  },
+  {
    "company": "Netflix",
    "country": "US",
    "count": 20
   },
   {
-   "company": "GitHub",
-   "country": "US",
-   "count": 19
-  },
-  {
    "company": "왓챠",
    "country": "KR",
+   "count": 12
+  },
+  {
+   "company": "Stripe",
+   "country": "US",
    "count": 12
   },
   {
@@ -125,11 +130,6 @@
   {
    "company": "당근",
    "country": "KR",
-   "count": 11
-  },
-  {
-   "company": "Stripe",
-   "country": "US",
    "count": 11
   },
   {
@@ -512,6 +512,31 @@
  },
  "posts": [
   {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How pull request limits are cutting down the noise",
+   "url": "https://github.blog/open-source/maintainers/how-pull-request-limits-are-cutting-down-the-noise",
+   "published": "2026-06-18",
+   "published_ts": 1781798400.0,
+   "summary": "Learn how pull request limits can help manage contribution volume in your repositories, and see what’s next on the roadmap.\n\nThe post How pull request limits are cutting down the noise appeared first on The GitHub Blog.",
+   "tags": [
+    "Maintainers",
+    "Open Source",
+    "maintainers",
+    "open source",
+    "pull requests"
+   ],
+   "tech_stack": [
+    "AI Agent"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "6192ff7368c5fa5a"
+  },
+  {
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
@@ -651,6 +676,36 @@
    ],
    "lang": "en",
    "content_id": "f456d9eacdfd4500"
+  },
+  {
+   "key": "stripe",
+   "company": "Stripe",
+   "country": "US",
+   "title": "What Link data tells us about AI spending",
+   "url": "https://stripe.com/blog/what-link-data-tells-us-about-ai-spending",
+   "published": "2026-06-18",
+   "published_ts": 1781740800.0,
+   "summary": "We analyzed spending patterns across the 250 million customers paying with Link. We found that Link customers are spending more on AI than they were three months prior, investing heavily in platforms that let them build with AI.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "95f0b7d84562334d"
+  },
+  {
+   "key": "discord",
+   "company": "Discord",
+   "country": "US",
+   "title": "How to Manage Your Discord Desktop Notifications: A Complete Guide",
+   "url": "https://discord.com/blog/how-to-manage-your-discord-desktop-notifications",
+   "published": "2026-06-18",
+   "published_ts": 1781740800.0,
+   "summary": "Not getting pinged for the conversations you wanna know about? This guide walks through server and channel notifications settings, Do Not Disturb, turning off specific notification sounds, and what to check when your pings mysteriously go quiet.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "6b421db486a78b85"
   },
   {
    "key": "github",
