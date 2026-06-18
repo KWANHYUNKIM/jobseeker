@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T15:44:01",
+ "generated_at": "2026-06-18T17:38:05",
  "total": 100,
  "countries": [
   {
@@ -2426,6 +2426,10 @@
      "count": 2
     },
     {
+     "name": "Scala",
+     "count": 2
+    },
+    {
      "name": "TypeScript",
      "count": 2
     },
@@ -2436,28 +2440,24 @@
     {
      "name": "Kotlin",
      "count": 1
-    },
-    {
-     "name": "Objective-C",
-     "count": 1
     }
    ],
    "stack": {
     "backend": [
      {
       "name": "gRPC",
-      "count": 3
+      "count": 2
      },
      {
-      "name": "Spring Boot",
-      "count": 3
-     },
-     {
-      "name": "Java",
+      "name": "gRPC + Protobuf",
       "count": 2
      },
      {
       "name": "Node.js",
+      "count": 2
+     },
+     {
+      "name": "Spring Boot",
       "count": 2
      },
      {
@@ -2469,6 +2469,10 @@
       "count": 1
      },
      {
+      "name": "GraphQL",
+      "count": 1
+     },
+     {
       "name": "GraphQL Federation",
       "count": 1
      },
@@ -2477,11 +2481,7 @@
       "count": 1
      },
      {
-      "name": "gRPC + Protobuf",
-      "count": 1
-     },
-     {
-      "name": "Netty",
+      "name": "Java",
       "count": 1
      }
     ],
@@ -2499,7 +2499,7 @@
       "count": 1
      },
      {
-      "name": "AVKit / AVFoundation",
+      "name": "AVFoundation / AVKit",
       "count": 1
      },
      {
@@ -2515,19 +2515,23 @@
       "count": 1
      },
      {
+      "name": "Rasterized UI for TV devices",
+      "count": 1
+     },
+     {
       "name": "Redux",
       "count": 1
      },
      {
       "name": "SwiftUI",
       "count": 1
-     },
-     {
-      "name": "tvOS focus engine",
-      "count": 1
      }
     ],
     "data": [
+     {
+      "name": "Apache Flink",
+      "count": 3
+     },
      {
       "name": "Cassandra",
       "count": 3
@@ -2542,10 +2546,6 @@
      },
      {
       "name": "Amazon S3",
-      "count": 1
-     },
-     {
-      "name": "Apache Flink",
       "count": 1
      },
      {
@@ -2583,11 +2583,11 @@
       "count": 1
      },
      {
-      "name": "Apple HLS origin + multi-CDN",
+      "name": "Apple HLS origin",
       "count": 1
      },
      {
-      "name": "Atlas",
+      "name": "Atlas + Mantis",
       "count": 1
      },
      {
@@ -2615,10 +2615,10 @@
    "architecture": [
     {
      "name": "Microservices",
-     "count": 4
+     "count": 3
     },
     {
-     "name": "Chaos engineering / Resilience",
+     "name": "Chaos engineering & resilience-by-design",
      "count": 1
     },
     {
@@ -8186,22 +8186,23 @@
     "Java",
     "C++",
     "Objective-C",
-    "Python",
-    "Go"
+    "Go",
+    "Python"
    ],
    "stack": {
     "backend": [
-     "Java (JVM)",
-     "Vapor (Server-side Swift)",
+     "Java (JVM) / Spring Boot",
+     "Vapor (server-side Swift)",
      "gRPC + Protobuf",
-     "Spring Boot",
-     "Netty"
+     "Netty",
+     "GraphQL (BFF for tv.apple.com)"
     ],
     "frontend": [
      "SwiftUI",
      "UIKit",
-     "AVKit / AVFoundation",
+     "AVFoundation / AVKit",
      "tvOS focus engine",
+     "TVMLKit",
      "React (web tv.apple.com)"
     ],
     "data": [
@@ -8209,14 +8210,16 @@
      "Cassandra",
      "Apache Solr",
      "Apache Kafka",
-     "Redis / memcached",
-     "Apache Pinot"
+     "Apache Flink",
+     "Apache Pinot",
+     "Redis / memcached"
     ],
     "infra": [
      "Kubernetes",
      "Apache Mesos",
      "Private datacenters + AWS/GCP burst",
-     "Apple HLS origin + multi-CDN (Akamai/Limelight + Apple Edge)"
+     "Apple HLS origin",
+     "Multi-CDN (Akamai/Limelight + Apple Edge)"
     ]
    },
    "architecture": [
@@ -8225,10 +8228,10 @@
     "Edge-origin media delivery (HLS)",
     "Polyglot persistence"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Playback\"]\n    APP[\"Apple TV app<br/>SwiftUI + UIKit\"]\n    PLAYER[\"Playback Engine<br/>AVFoundation + HLS\"]\n  end\n  subgraph Edge[\"Edge / Delivery\"]\n    CDN[\"Multi-CDN<br/>Apple Edge + Akamai\"]\n    ORIGIN[\"HLS Origin<br/>fMP4 + CMAF segments\"]\n  end\n  subgraph API[\"API / Gateway\"]\n    GW[\"Edge API Gateway<br/>gRPC + HTTP2 TLS\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CATALOG[\"Catalog Service<br/>Java + Vapor\"]\n    ENTITLE[\"Entitlement / DRM<br/>FairPlay Streaming\"]\n    RECO[\"Recommendation<br/>ML ranking\"]\n    PLAYBACKSVC[\"Playback Session<br/>gRPC microservices\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    FDB[\"FoundationDB<br/>ACID layers\"]\n    CASS[\"Cassandra<br/>viewing history\"]\n    SOLR[\"Solr<br/>search index\"]\n    PINOT[\"Apache Pinot<br/>realtime OLAP\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>QoS + playback events\"]\n    FLINK[\"Stream Processing<br/>Flink / Spark\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Kubernetes + Mesos<br/>private + cloud burst\"]\n  end\n  APP --> PLAYER\n  PLAYER -->|HLS manifest| CDN\n  CDN --> ORIGIN\n  APP -->|gRPC| GW\n  GW --> CATALOG\n  GW --> ENTITLE\n  GW --> RECO\n  GW --> PLAYBACKSVC\n  ENTITLE -->|FairPlay key| PLAYER\n  CATALOG --> FDB\n  CATALOG --> SOLR\n  PLAYBACKSVC --> CASS\n  RECO --> CASS\n  PLAYER -->|QoS beacons| KAFKA\n  KAFKA --> FLINK\n  FLINK --> PINOT\n  FLINK --> CASS\n  RECO --> PINOT\n  CATALOG --> K8S\n  PLAYBACKSVC --> K8S",
-   "why_language": "Apple TV+/뮤직 같은 미디어 서비스는 클라이언트(tvOS/iOS)가 1순위 표면이라 Swift/Objective-C가 재생·UI를 지배하고, AVFoundation 기반 HLS 재생 스택은 C++로 내려간다. 반면 카탈로그·엔타이틀먼트·추천 같은 대규모 백엔드는 오래된 JVM(Java) 자산과 처리량이 핵심이라 Java가 주력이며, Apple은 server-side Swift(Vapor)와 gRPC로 점진 전환을 시도한다. 데이터·ML 파이프라인 글루는 Python, 인프라 컨트롤플레인은 Go가 맡는 폴리글랏 구조다.",
-   "why_architecture": "수억 디바이스에 글로벌 실시간 스트리밍을 제공하려면 재생(저지연 HLS origin+멀티CDN)과 메타데이터/엔타이틀먼트(마이크로서비스)를 분리해 독립 확장해야 했다. 시청 이벤트·QoS 텔레메트리는 초당 수백만 건이라 Kafka 기반 이벤트 드리븐으로 흘려보내고 Flink/Pinot로 실시간 집계하며, 일관성이 필요한 구독·엔타이틀먼트는 FoundationDB의 ACID 위에 레이어를 쌓아 강한 정합성을 보장한다. 비밀주의 문화상 서비스 사일로가 강해 gRPC 계약과 통합 검증으로 경계를 명확히 한다.",
-   "summary": "Swift 클라이언트 재생 스택 + JVM/Vapor 마이크로서비스를 FoundationDB·Kafka·멀티CDN HLS로 잇는 폴리글랏 스트리밍 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"tvOS / iOS App<br/>SwiftUI + AVFoundation\"]\n    WEB[\"tv.apple.com<br/>React\"]\n  end\n  subgraph EdgeCDN[\"Edge / CDN\"]\n    CDN[\"Multi-CDN<br/>Apple Edge + Akamai/Limelight\"]\n    ORIGIN[\"HLS Origin<br/>Segment + Manifest Store\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Netty + gRPC\"]\n    BFF[\"BFF / GraphQL<br/>Vapor + Spring Boot\"]\n  end\n  subgraph Core[\"Core Services\"]\n    PLAY[\"Playback Service<br/>Java JVM\"]\n    DRM[\"FairPlay KSM<br/>License Server\"]\n    CATALOG[\"Catalog / Metadata<br/>Spring Boot\"]\n    RECO[\"Recommendation<br/>Ranking Service\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    FDB[\"FoundationDB<br/>ACID KV layers\"]\n    CASS[\"Cassandra<br/>watch state\"]\n    SOLR[\"Apache Solr<br/>search index\"]\n    REDIS[\"Redis / memcached<br/>session cache\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Apache Kafka<br/>QoS events\"]\n    FLINK[\"Apache Flink<br/>stream processing\"]\n    PINOT[\"Apache Pinot<br/>realtime OLAP\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes + Mesos<br/>DC + AWS/GCP burst\"]\n  end\n  APP -->|HLS| CDN\n  WEB --> BFF\n  CDN --> ORIGIN\n  APP -->|gRPC| GW\n  GW --> BFF\n  BFF --> PLAY\n  BFF --> CATALOG\n  BFF --> RECO\n  PLAY --> DRM\n  PLAY --> FDB\n  CATALOG --> FDB\n  CATALOG --> SOLR\n  RECO --> CASS\n  PLAY --> REDIS\n  APP -->|telemetry| KAFKA\n  KAFKA --> FLINK\n  FLINK --> PINOT\n  FLINK --> CASS\n  Core --> K8S\n  Stream --> K8S",
+   "why_language": "디바이스 측은 Apple 플랫폼 네이티브인 Swift/Objective-C로 AVFoundation·tvOS focus engine를 직접 제어해 첫 프레임 지연과 프레임 드롭을 최소화한다. 백엔드는 수십억 디바이스 규모의 처리량과 성숙한 분산 생태계(Cassandra·Kafka·Netty) 때문에 JVM(Java)이 주력이며, 동시에 server-side Swift(Vapor)와 Go를 도입해 클라이언트-서버 간 타입 공유와 경량 네트워크 서비스의 효율을 높이고 있다.",
+   "why_architecture": "전 세계 동시 시청 피크와 라이브 이벤트(MLS·MLB) 트래픽을 흡수하려면 HLS 세그먼트를 origin에서 멀티-CDN edge로 밀어내는 edge-origin 모델이 필수다. 카탈로그·재생·DRM·추천처럼 SLA와 확장 특성이 제각각인 도메인을 독립 배포·확장하기 위해 마이크로서비스로 분리하고, QoS·시청 텔레메트리는 Kafka→Flink→Pinot의 이벤트 스트리밍으로 비동기 처리해 재생 경로의 지연에 영향을 주지 않게 한다.",
+   "summary": "Apple 네이티브 Swift 클라이언트 + JVM/Server-side Swift 마이크로서비스 위에 HLS edge-origin과 Kafka·Flink·Pinot 스트리밍을 얹은 폴리글랏 미디어 플랫폼",
    "deep_dive": [
     {
      "topic": "디바이스↔클라우드 경계: Swift 클라이언트와 분산 백엔드",
@@ -8261,6 +8264,18 @@
     {
      "topic": "JVM 모놀리스에서 gRPC·server-side Swift로의 점진적 마이그레이션",
      "body": "### Apple 백엔드의 언어 전환 트레이드오프\n\nApple의 미디어/서비스 백엔드는 역사적으로 **JVM(Java)** 자산이 두텁다. iTunes Store 시절부터 이어진 대규모 Java 서비스가 카탈로그·과금·검색을 떠받쳐 왔고, 갑자기 갈아엎을 수 없는 규모다. 동시에 Apple은 **server-side Swift(Vapor + SwiftNIO)**를 전략적으로 밀고 있다 — 그 긴장과 절충이 이 토픽의 핵심이다.\n\n#### 왜 gRPC를 경계 계약으로 삼는가\n- 폴리글랏(Java·Swift·Go·Python) 서비스들이 공존하므로, 언어 중립 계약이 필요하다. `Protobuf` 스키마 + `gRPC`가 서비스 간 인터페이스의 **단일 진실원천**이 된다. `apple/swift-protobuf`, `apple/servicetalk`(JVM reactive HTTP/gRPC) 같은 오픈소스가 이 전략의 증거다.\n- 이렇게 하면 Java 서비스를 Swift로 한 번에 다시 쓰지 않고, **서비스 단위로 뒤에서 교체**할 수 있다. 호출자는 gRPC 계약만 보므로 구현 언어가 바뀌어도 무관하다(strangler fig 패턴).\n\n#### server-side Swift를 채택하는 이유\n- **언어 통일**: 클라이언트(iOS/tvOS) 엔지니어가 Swift를 쓰는데, 백엔드도 Swift면 같은 모델 코드·도메인 로직을 공유하고 인력 풀이 겹친다.\n- **성능/메모리**: SwiftNIO 기반 Vapor는 non-blocking I/O로 높은 동시성을 내고, ARC 기반이라 GC 일시정지(JVM의 STW pause)가 없어 **꼬리 지연(tail latency)**이 예측 가능하다. 저지연이 중요한 재생 경로 서비스에 매력적이다.\n\n#### 트레이드오프 (왜 전면 전환을 안 하는가)\n| 항목 | JVM(Java) | server-side Swift |\n|---|---|---|\n| 생태계 성숙도 | 매우 높음(라이브러리·운영툴) | 성장 중, 일부 공백 |\n| GC 일시정지 | STW pause 존재 | ARC, pause 없음 |\n| 인력/기존 자산 | 방대 | 클라이언트 인력과 공유 |\n| 멀티플랫폼 운영 | 검증됨 | Linux 운영 노하우 축적 중 |\n\n결론적으로 Apple은 **리스크가 낮은 신규/주변 서비스부터 Swift로**, 핵심 대규모 트랜잭션 서비스는 JVM에 유지하면서 gRPC 계약 뒤에서 천천히 옮기는 **이중 트랙** 전략을 쓴다. 비밀주의 문화상 팀 간 사일로가 강해, 이 gRPC 계약과 통합 검증이 사일로 경계를 안전하게 만드는 접착제 역할을 한다."
+    },
+    {
+     "topic": "HLS 인코딩 래더와 멀티-CDN 스티어링: 한 편이 수백 개 변형으로 쪼개지는 법",
+     "body": "### HLS는 '파일'이 아니라 '세그먼트 + 매니페스트'다\n\nApple TV+의 한 타이틀은 사용자에게 도달하기 전 **인코딩 래더(encoding ladder)**를 통해 수십~수백 개의 변형(rendition)으로 분해된다. 마스터 mezzanine 파일이 들어오면 해상도·비트레이트·코덱(`HEVC`, `H.264`, Dolby Vision/`HDR10`), 오디오(`AAC`, Dolby Atmos), 자막 트랙별로 트랜스코딩되어 일반적으로 2~10초 단위의 `.ts`/fMP4 세그먼트로 잘린다.\n\n- **마스터 플레이리스트(`.m3u8`)** 는 변형 목록(EXT-X-STREAM-INF)을 담고, 각 변형은 자신의 **미디어 플레이리스트**(세그먼트 URL 나열)를 가진다.\n- 클라이언트의 `AVPlayer`는 측정된 throughput·버퍼 점유율을 보고 **ABR(Adaptive Bitrate)** 로직으로 변형을 오르내린다. 즉 화질 전환 결정의 상당 부분이 서버가 아니라 디바이스에서 일어난다 — 이는 Apple이 클라이언트 SDK에 강하게 투자하는 이유이기도 하다.\n\n### Content Steering: 멀티-CDN을 런타임에 바꾸기\n\nApple은 HLS 표준에 **Content Steering**을 직접 밀어넣었다. 마스터 매니페스트에 `#EXT-X-CONTENT-STEERING` 태그로 steering 서버 URL을 심으면, 플레이어가 주기적으로 steering 서버에 질의해 **CDN 우선순위(pathway)** 를 동적으로 받는다.\n\n| 메커니즘 | 동작 |\n|---|---|\n| Pathway priority | steering 서버가 `[\"appleEdge\", \"akamai\", \"limelight\"]` 식 우선순위를 JSON으로 반환 |\n| TTL | 응답에 `TTL`이 있어 N초마다 재평가 → 장애 CDN을 수 초 내 회피 |\n| Per-pathway host | 같은 세그먼트 경로를 CDN별 호스트로 치환 |\n\n이 구조 덕분에 특정 CDN이 지역적으로 혼잡하거나 장애가 나도 origin을 건드리지 않고 **플레이어 레벨에서 트래픽을 다른 CDN으로 흘려보낸다**. Apple은 자체 edge(Apple Edge/iCloud Private 네트워크)와 상용 CDN(Akamai 등)을 혼합 운용한다.\n\n### Origin 보호와 캐시 계층\n\n- Edge가 미스나면 **mid-tier shield cache → origin** 순으로 올라가며, origin은 거의 정적인 세그먼트 저장소라 캐시 적중률이 90%대 후반으로 매우 높다.\n- 라이브 이벤트(MLS Season Pass, MLB)는 세그먼트가 실시간 생성되므로 **저지연(LL-HLS)** 변형을 쓴다. LL-HLS는 partial segment(부분 세그먼트)와 `EXT-X-PRELOAD-HINT`, blocking playlist reload로 end-to-end 지연을 수 초대로 끌어내린다.\n\n### 트레이드오프\n\nABR을 클라이언트로 밀면 서버 부하는 줄지만 디바이스마다 화질 전환 품질이 달라진다. Apple은 이를 받아들이는 대신 first-party 디바이스에서 player를 직접 튜닝(버퍼 정책, startup heuristic)할 수 있다는 이점을 취한다. Content Steering은 멀티-CDN 협상력을 주지만 steering 서버 자체가 SPOF가 되지 않도록 다중화·캐시 가능한 응답으로 설계해야 한다."
+    },
+    {
+     "topic": "콘텐츠 검색·추천 랭킹: Solr 인덱스부터 시청 신호 기반 랭킹까지",
+     "body": "### 두 개의 분리된 문제: 검색과 추천\n\nApple TV 앱의 발견(discovery) 경험은 성격이 다른 두 시스템으로 나뉜다.\n\n1. **검색(Search)** — 사용자가 명시적 의도(제목·배우·장르)를 입력. 정확도·재현율과 오타 허용이 핵심.\n2. **추천(Recommendation)** — 사용자가 가만히 있을 때 홈 'Up Next', 'For You' 레인을 채움. 개인화·다양성·신선도가 핵심.\n\n### 검색: Apache Solr 기반 풀텍스트 + 엔티티\n\n- 카탈로그 메타데이터(제목, 시놉시스, 출연/제작진, 장르 태그, 다국어 로컬라이즈)가 **Apache Solr** 역색인으로 들어간다. Lucene 기반이라 다국어 분석기·동의어·edge n-gram(타이핑 중 자동완성)·퍼지 매칭을 활용한다.\n- 한 질의가 **영화/시리즈/사람/스포츠 팀/채널** 등 이종 엔티티를 동시에 친다. 따라서 멀티-인덱스 또는 타입 필드 + **federated ranking**으로 결과를 한 화면에 합친다.\n- 랭킹 신호: 텍스트 적합도(BM25) + 인기도(전역 시청량) + 가용성(해당 지역·구독에서 재생 가능한가) + 개인 신호. 'Ted Lasso'처럼 Apple Originals는 부스팅되기도 한다.\n- 카탈로그는 자주 안 바뀌므로 색인은 **near-real-time이 아닌 배치/증분** 갱신으로 충분하다. 가용성·가격 같은 빠르게 변하는 필드는 별도 룩업으로 분리해 전체 재색인을 피한다.\n\n### 추천: 시청 신호 → 피처 → 랭킹\n\n추천 파이프라인은 앞서 다룬 QoS 텔레메트리 파이프라인과 신호를 공유하지만 목적이 다르다.\n\n```\nplay/pause/scrub/complete 이벤트\n      │  (Kafka)\n      ▼\n시청 상태 집계 (Flink)  ──►  Cassandra (user × item 시청 상태)\n      │\n      ▼\n오프라인 피처/임베딩 학습 (배치, Python/Spark)\n      │\n      ▼\n온라인 Ranking Service  ──►  홈 레인 구성\n```\n\n- **후보 생성(candidate generation)**: 협업 필터링·콘텐츠 임베딩으로 수만 타이틀에서 수백 개를 추린다.\n- **랭킹(ranking)**: 추려진 후보를 사용자 컨텍스트(디바이스, 시간대, 이어보기 여부, 장르 선호)로 재정렬. 'Up Next'는 명시적으로 '이어볼 것'을 우선한다.\n- **다양성·비즈니스 제약**: 같은 장르 도배 방지, 신작·라이브 스포츠 노출 부스팅 등 규칙이 ML 점수 위에 얹힌다.\n\n### 프라이버시 제약이 설계를 바꾼다\n\nApple의 프라이버시 원칙상 개인 식별 시청 데이터를 광범위하게 모으기 어렵다. 그래서 **on-device 신호 활용**과 차등 프라이버시(differential privacy)/집계 위주 신호가 중요해지고, 추천 모델은 강한 개인 프로파일보다 **세션·컨텍스트 기반**으로 기울 유인이 크다. 이는 정밀도와 프라이버시 사이의 의식적 트레이드오프다.\n\n### 캐싱\n\n홈 화면 레인 구성 결과는 사용자별로 **Redis/memcached**에 짧은 TTL로 캐시되어, 앱을 열 때마다 전체 랭킹을 다시 돌리지 않는다. 시청 완료 같은 이벤트가 오면 해당 사용자 캐시를 무효화해 'Up Next'를 즉시 갱신한다."
+    },
+    {
+     "topic": "배포·관측성·복원력: 사일로화된 마이크로서비스를 안전하게 굴리는 법",
+     "body": "### 배포: Kubernetes/Mesos 위 점진적 롤아웃\n\nApple 백엔드는 사내 데이터센터의 **Kubernetes(과거 Apache Mesos)** 위에서 돌고, 피크 트래픽은 **AWS/GCP burst**로 흡수한다. 서비스가 도메인별로 사일로화(앞서 다룬 '비밀주의 엔지니어링')되어 있어 팀마다 배포 파이프라인이 독립적이지만, 공통적으로 다음 패턴을 쓴다.\n\n- **카나리(canary)**: 새 버전을 소수 인스턴스/소수 트래픽에 먼저 노출하고 핵심 SLI(오류율, p99 지연, 재생 실패율)를 자동 비교해 회귀가 보이면 롤백.\n- **blue-green / rolling**: 무중단 교체. 재생·DRM 같은 핵심 경로는 인플라이트 재생 세션을 끊지 않도록 connection draining을 둔다.\n- **regional staged rollout**: 한 리전에서 검증 후 전 세계로 확산. 라이브 이벤트 직전에는 변경 freeze.\n\n### 관측성: 텔레메트리가 곧 제품 지표\n\n미디어 서비스에서 관측성은 인프라 메트릭과 **사용자 체감 품질(QoE)** 이 직결된다.\n\n| 계층 | 신호 | 도구 성격 |\n|---|---|---|\n| 메트릭 | rebuffering ratio, startup time(첫 프레임), bitrate, 재생 실패율 | Kafka→Flink→Pinot 실시간 OLAP |\n| 로그 | 서비스별 구조화 로그 | 중앙 집계 |\n| 트레이싱 | gRPC 호출 체인의 분산 트레이스 | request_id 전파 |\n\n핵심은 앞 토픽들에서 다룬 **Kafka → Flink → Apache Pinot** 파이프라인이 운영 대시보드를 직접 떠받친다는 점이다. Pinot의 초저지연 집계 덕에 SRE는 '지금 이 순간 특정 CDN/리전의 rebuffering이 튀는가'를 초 단위로 본다 — 이는 단순 인프라 모니터링이 아니라 **제품 품질의 실시간 관측**이다.\n\n### 복원력: 핵심 경로를 끝까지 살린다\n\n재생 경로(playback)는 카탈로그·추천보다 우선순위가 높다. 'Up Next'가 안 떠도 시청은 계속돼야 하기 때문이다.\n\n- **graceful degradation**: 추천/검색 서비스가 죽으면 캐시된 결과나 비개인화 기본 레인으로 폴백, 재생은 영향 없음.\n- **circuit breaker / timeout / retry budget**: 한 다운스트림(예: 메타데이터 서비스)의 지연이 BFF 스레드를 잠식해 연쇄 장애로 번지지 않도록 차단.\n- **multi-CDN failover**: 앞서 설명한 Content Steering이 클라이언트 레벨 복원력을 담당 — 한 CDN 장애를 origin 부하로 옮기지 않고 다른 CDN으로 흘린다.\n- **DRM 라이선스 서버 다중화**: FairPlay KSM이 단일 실패점이 되면 신규 재생이 전부 막히므로 리전별 다중화 + 짧은 라이선스 발급 경로.\n\n### 트레이드오프\n\n사일로화된 조직은 각 팀의 자율 배포 속도를 주지만, **end-to-end 통합 검증**이 어렵다. Apple은 이를 강한 계약(gRPC/Protobuf 스키마)과 공유 텔레메트리 표준, 그리고 라이브 이벤트 전 통합 리허설/freeze로 보완한다. 즉 '느슨하게 결합하되 관측과 계약으로 묶는' 방식이다."
     }
    ],
    "github": {
@@ -8269,47 +8284,47 @@
      {
       "name": "swiftlang/swift",
       "url": "https://github.com/swiftlang/swift",
-      "desc": "클라이언트·서버 모두에 쓰이는 Swift 언어/컴파일러 본체",
+      "desc": "클라이언트와 server-side(Vapor) 양쪽을 떠받치는 Swift 컴파일러·런타임",
       "lang": "Swift",
-      "stars": 70053
+      "stars": 70052
      },
      {
       "name": "apple/foundationdb",
       "url": "https://github.com/apple/foundationdb",
-      "desc": "Apple 인프라의 핵심인 분산 ACID 키-값 스토어, 위에 레이어를 쌓는 설계",
+      "desc": "Apple이 인수·오픈소스화한 분산 ACID 키-값 스토어로 백엔드 영속성의 기반",
       "lang": "C++",
-      "stars": 16417
+      "stars": 16430
      },
      {
       "name": "apple/swift-nio",
       "url": "https://github.com/apple/swift-nio",
-      "desc": "서버사이드 Swift의 고성능 비동기 네트워킹 프레임워크(Vapor 기반)",
+      "desc": "server-side Swift 서비스의 고성능 논블로킹 네트워킹 프레임워크",
       "lang": "Swift",
-      "stars": 8464
+      "stars": 8467
      },
      {
       "name": "apple/swift-protobuf",
       "url": "https://github.com/apple/swift-protobuf",
-      "desc": "gRPC 서비스 계약을 위한 Protobuf의 Swift 구현",
+      "desc": "gRPC/Protobuf 메시지를 Swift 타입으로 생성하는 직렬화 라이브러리",
       "lang": "Swift",
-      "stars": 4933
+      "stars": 4936
      },
      {
       "name": "apple/servicetalk",
       "url": "https://github.com/apple/servicetalk",
-      "desc": "JVM 기반 반응형 마이크로서비스용 HTTP/gRPC 클라이언트-서버 라이브러리",
+      "desc": "Netty 기반 reactive 마이크로서비스용 JVM 클라이언트/서버 프레임워크",
       "lang": "Java",
       "stars": 1022
      }
     ]
    },
    "sources": [
-    "https://github.com/apple/foundationdb",
     "https://developer.apple.com/streaming/",
-    "https://www.foundationdb.org/files/fdb-paper.pdf"
+    "https://github.com/apple/foundationdb",
+    "https://www.rfc-editor.org/rfc/rfc8216"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "netflix",
@@ -8321,48 +8336,52 @@
     "Kotlin",
     "Python",
     "JavaScript",
+    "Scala",
     "Go"
    ],
    "stack": {
     "backend": [
-     "Spring Boot (Netflix flavored)",
-     "gRPC",
-     "GraphQL Federation (DGS)",
-     "Node.js"
+     "Spring Boot (Netflix-flavored)",
+     "gRPC + Protobuf",
+     "GraphQL Federation (DGS framework)",
+     "Netflix Conductor (workflow orchestration)",
+     "Node.js (Edge/BFF)"
     ],
     "frontend": [
      "React",
      "Falcor",
-     "Gatsby"
+     "Gatsby",
+     "Rasterized UI for TV devices"
     ],
     "data": [
      "Cassandra",
      "EVCache (memcached)",
      "Kafka (Keystone)",
-     "Flink",
+     "Apache Flink",
      "Apache Iceberg",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Data Gateway / Key-Value Abstraction Layer"
     ],
     "infra": [
-     "AWS",
+     "AWS (multi-region active-active)",
+     "Titus (container platform)",
      "Spinnaker",
-     "Titus",
-     "Zuul",
+     "Zuul 2",
      "Eureka",
      "Open Connect CDN",
-     "Atlas"
+     "Atlas + Mantis"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven streaming",
-    "Chaos engineering / Resilience",
-    "GraphQL Federation BFF"
+    "Microservices on a federated GraphQL BFF",
+    "Event-driven streaming (Keystone/Flink)",
+    "Multi-region active-active with regional failover",
+    "Chaos engineering & resilience-by-design"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    DEV[\"Devices<br/>TV/Mobile/Web React\"]\n    OC[\"Open Connect<br/>Self-built CDN\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    ZUUL[\"Edge Gateway<br/>Zuul 2\"]\n    GQL[\"GraphQL Federation<br/>DGS Gateway\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DGS[\"Domain Services<br/>Spring Boot + Kotlin\"]\n    EUR[\"Service Discovery<br/>Eureka\"]\n    GRPC[\"Inter-service<br/>gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    EV[\"Hot Cache<br/>EVCache\"]\n    CASS[\"Primary Store<br/>Cassandra\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka Keystone\"]\n    FLINK[\"Stream Proc<br/>Flink\"]\n    ICE[\"Data Lake<br/>Iceberg on S3\"]\n  end\n  subgraph Platform[\"Infra / Platform\"]\n    TITUS[\"Container Platform<br/>Titus on AWS\"]\n    SPIN[\"CI/CD<br/>Spinnaker\"]\n    ATLAS[\"Observability<br/>Atlas + Mantis\"]\n  end\n  DEV -->|video| OC\n  DEV -->|API| ZUUL\n  ZUUL --> GQL\n  GQL -->|federated| DGS\n  DGS --> EUR\n  DGS -->|gRPC| GRPC\n  DGS --> EV\n  EV --> CASS\n  DGS --> ES\n  DGS -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> ICE\n  DGS --> TITUS\n  SPIN -->|deploy| TITUS\n  TITUS --> ATLAS",
-   "why_language": "2억 8천만 가입자 규모의 동시 트래픽을 JVM 생태계의 성숙한 동시성·GC·라이브러리로 감당하기 위해 Java/Kotlin을 백엔드 표준으로 삼았고, 신규 서비스는 널 안정성과 코루틴을 갖춘 Kotlin으로 이동 중이다. 데이터·ML 파이프라인과 운영 자동화에는 Python을, 컨테이너 플랫폼(Titus)·CLI·고성능 인프라 도구에는 Go를 쓰는 식으로 도메인별로 언어를 분리한다.",
-   "why_architecture": "수백 개 팀이 독립적으로 배포·확장해야 하는 글로벌 규모에서 단일 모놀리스는 병목이 되므로, 각 도메인이 자율적으로 소유하는 마이크로서비스로 잘게 쪼갰다. 네트워크와 인스턴스 장애를 '정상 상태'로 가정하고 서킷브레이커·페일오버·Chaos engineering으로 복원력을 설계했으며, 클라이언트 다양성으로 인한 API 폭증은 GraphQL Federation(BFF)으로 흡수한다.",
-   "summary": "JVM 마이크로서비스 + 자체 CDN(Open Connect) + Chaos로 단련된 클라우드 네이티브 스트리밍 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client_Edge[\"Client / Edge\"]\n    DEV[\"Devices<br/>React + Falcor / TV SDK\"]\n    OC[\"Open Connect CDN<br/>ISP-embedded appliances\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    ZUUL[\"Edge Gateway<br/>Zuul 2 (async Netty)\"]\n    DGS[\"GraphQL Federation<br/>DGS Gateway\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SVC[\"Microservices<br/>Spring Boot + gRPC\"]\n    COND[\"Workflow Orchestration<br/>Conductor\"]\n    REC[\"Recommendation / Ranking<br/>ML model serving\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DAL[\"Data Gateway<br/>Key-Value Abstraction\"]\n    CASS[\"Cassandra<br/>persistent store\"]\n    EVC[\"EVCache<br/>memcached tier\"]\n    ES[\"Elasticsearch<br/>search / logs\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Keystone<br/>Kafka pipeline\"]\n    FLINK[\"Apache Flink<br/>stream processing\"]\n    ICE[\"Apache Iceberg<br/>data warehouse\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    TITUS[\"Titus<br/>container runtime\"]\n    SPIN[\"Spinnaker<br/>CD / canary\"]\n    EUREKA[\"Eureka<br/>service discovery\"]\n    ATLAS[\"Atlas + Mantis<br/>metrics / observability\"]\n  end\n  DEV -->|video bytes| OC\n  DEV -->|GraphQL| ZUUL\n  ZUUL --> DGS\n  DGS -->|gRPC| SVC\n  SVC --> COND\n  SVC --> REC\n  SVC --> DAL\n  DAL --> CASS\n  DAL --> EVC\n  SVC --> ES\n  SVC -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> ICE\n  FLINK --> EVC\n  REC --> ICE\n  SVC --- EUREKA\n  SVC -.runs on.-> TITUS\n  TITUS --- SPIN\n  SVC -.metrics.-> ATLAS",
+   "why_language": "초당 수백만 RPS와 수천 개 마이크로서비스를 견디려면 성숙한 JVM 생태계(고성능 GC·동시성·프로파일링·대규모 라이브러리)가 필요해 Java가 백본이며, 더 안전하고 간결한 서비스 개발을 위해 Kotlin을 확산시켰다. 데이터·ML 파이프라인과 사내 자동화는 Python이, 스트림 처리 프레임워크(Flink/Atlas)는 Scala가, Titus·CLI 같은 인프라 도구는 Go가 담당하는 다언어 전략이다.",
+   "why_architecture": "글로벌 무중단 스트리밍이라는 가용성 절대 우선 도메인에서 한 서비스 장애가 전체로 번지지 않도록 책임을 잘게 쪼갠 마이크로서비스와, AWS 리전 단위로 전체를 비울 수 있는 멀티리전 액티브-액티브를 택했다. 이벤트 기반 스트리밍(Keystone/Flink)으로 로깅·추천·운영을 비동기로 분리하고, Chaos 엔지니어링과 서킷브레이커로 '실패를 전제로 한 설계'를 시스템에 내재화했다.",
+   "summary": "JVM(Java/Kotlin) 마이크로서비스를 GraphQL Federation으로 묶고, AWS 멀티리전 액티브-액티브 위에서 Chaos로 단련한 '실패해도 끊기지 않는' 스트리밍 플랫폼",
    "deep_dive": [
     {
      "topic": "요청 처리 흐름: 클릭 한 번이 수백 마이크로서비스를 거치는 길",
@@ -8399,6 +8418,18 @@
     {
      "topic": "관측성: Atlas·Mantis로 초당 수십억 메트릭을 실시간으로 본다",
      "body": "### 문제 규모\n수백 개 마이크로서비스 × 수만 개 인스턴스 환경에서 '무엇이 느려졌는가/죽었는가'를 초 단위로 알아내야 한다. 일반 모니터링 도구로는 cardinality(차원 조합 폭발)와 처리량을 감당할 수 없다.\n\n### Atlas — 차원 시계열 메트릭\n- Netflix가 만든 **in-memory 시계열 데이터베이스**. 메트릭에 임의의 태그(차원)를 붙여 `name=request.latency, region=us-east-1, service=playback, status=500` 처럼 다차원으로 질의한다.\n- 최근 데이터는 메모리에 보관해 **대시보드·알림 쿼리를 초저지연**으로 처리. 오래된 데이터는 다운샘플링·외부 저장.\n- 핵심 설계: '운영 중 장애 대응(operational insight)'이 목적이므로, 장기 보존 정확도보다 **최근 데이터의 빠른 다차원 질의**에 최적화했다.\n\n### Mantis — 온디맨드 실시간 스트림 관측\n- 메트릭만으로 원인을 못 찾을 때, **이벤트 스트림 자체를 실시간으로 들여다보는** 플랫폼. 운영자가 필요할 때 쿼리를 띄워 라이브 트래픽에서 특정 패턴(예: 특정 디바이스에서만 나는 에러)을 샘플링·집계한다.\n- '항상 모든 걸 저장'하는 대신 **필요할 때 필요한 만큼만 처리(on-demand)** 해 비용을 통제한다.\n\n### 분산 트레이싱\n- 한 요청이 수십~수백 서비스를 거치므로, trace context를 전파해 호출 그래프와 각 hop의 지연을 추적한다(Edgar 등 사내 트레이싱 도구). gRPC/HTTP 헤더로 trace id를 전파.\n\n### 함께 작동하는 방식\n장애 시 흐름은 보통: **Atlas 대시보드/알림**으로 이상 징후 감지 → **트레이싱**으로 어느 서비스 hop이 문제인지 좁힘 → **Mantis**로 실시간 스트림을 파고들어 근본 원인 확인. 이 삼각 체계가 Chaos engineering(고의 장애 주입)과 짝을 이뤄, 장애를 '발생 후 디버깅'이 아니라 '항상 관측 가능한 상태'로 유지한다.\n\n### 트레이드오프\n메트릭을 메모리에 들고 다차원 질의를 빠르게 하는 대가로 메모리·인프라 비용이 크다. Netflix는 '장애 시 빠른 의사결정의 가치'가 그 비용을 압도한다고 보고 운영 관측성에 과감히 투자했다."
+    },
+    {
+     "topic": "데이터 추상화 계층: Data Gateway와 Key-Value Abstraction이 스토리지를 숨기는 법",
+     "body": "### 문제: 수천 팀이 직접 Cassandra를 만지면 안 된다\nNetflix에는 수천 개 서비스가 있고, 각 팀이 Cassandra/EVCache 클라이언트를 직접 튜닝하면 (1) 토큰 어웨어 라우팅·압축·일관성 레벨 같은 운영 지식이 파편화되고, (2) 스토리지 엔진 교체(예: Cassandra 3→4, 혹은 다른 백엔드)가 사실상 불가능해진다. 그래서 Netflix는 **Data Gateway**라는 중간 계층을 도입해 \"애플리케이션은 데이터 *모양*만 말하고, 어떤 DB에 어떻게 저장되는지는 플랫폼이 결정\"하는 구조를 만들었다.\n\n### Data Abstraction Layers (DAL)\nData Gateway 위에 도메인별 **추상화(abstraction)** 들이 올라간다. 대표적으로:\n\n- **Key-Value Abstraction**: 단순 `map<key, map<name, value>>` 모델. 내부적으로는 Cassandra가 백엔드지만, 애플리케이션은 `GetItems`, `PutItems`, `DeleteItems` 같은 gRPC API만 본다. 큰 값은 자동으로 **chunking**(여러 row로 분할)되고, 클라이언트에는 페이지네이션된 스트림으로 돌려준다. 한 파티션이 비대해지는 wide-partition 문제를 플랫폼이 흡수한다.\n- **TimeSeries Abstraction**: 이벤트/로그성 시계열을 위한 추상화. event bucketing, TTL, 시간 범위 쿼리를 표준화.\n- **Counter Abstraction**: 분산 카운터(조회수·재생수 등)를 위한 best-effort/eventually-consistent 카운팅을 별도 추상화로 제공.\n\n### 왜 gRPC + Protobuf인가\nData Gateway는 **gRPC** 인터페이스로 노출된다. 강타입 스키마(Protobuf)로 클라이언트/서버 계약을 고정하고, 다언어 클라이언트(Java/Python/Go)를 코드 생성으로 찍어낸다. 게이트웨이는 **Data Gateway Agent**가 사이드카처럼 각 추상화 인스턴스를 호스팅하고, namespace(논리적 데이터셋) 단위로 백엔드·일관성·캐싱 정책을 구성한다.\n\n### 트레이드오프\n| 얻는 것 | 잃는 것 |\n|---|---|\n| 스토리지 교체·재샤딩을 앱 코드 변경 없이 수행 | 한 단계 네트워크 홉(latency) 추가 |\n| wide partition·대용량 값 같은 함정을 플랫폼이 흡수 | 임의의 복잡한 쿼리는 불가(추상화가 허용하는 접근 패턴만) |\n| namespace별 일관성/캐싱 정책을 선언적으로 관리 | 추상화 자체가 또 하나의 운영 대상 |\n\n핵심 철학은 **\"data access pattern을 먼저 고정하고, 그 패턴을 만족하는 가장 단순한 추상화를 제공한다\"** 는 것이다. 임의 SQL 같은 자유도를 포기하는 대신, 페타바이트급 데이터에서도 예측 가능한 지연·확장을 얻는다."
+    },
+    {
+     "topic": "멀티리전 액티브-액티브와 리전 페일오버(regional evacuation)",
+     "body": "### 한 AWS 리전이 통째로 죽어도 영화는 끊기지 않는다\nNetflix는 AWS의 **여러 리전(us-east-1, us-west-2, eu-west-1 등)** 에서 **액티브-액티브**로 트래픽을 처리한다. 평상시 사용자는 지리적으로 가까운 리전으로 라우팅되지만, 한 리전이 장애를 일으키면 그 리전의 모든 트래픽을 **수 분 안에 다른 리전으로 비워낸다(evacuate)**. 이게 Netflix 복원력의 최상위 안전망이다.\n\n### 어떻게 동작하나\n1. **글로벌 트래픽 라우팅**: DNS/엣지 레벨에서 사용자→리전 매핑을 제어한다. evacuation은 결국 \"이 리전으로 가던 사용자들의 DNS/라우팅 가중치를 0으로\" 만드는 작업이다.\n2. **데이터 복제**: Cassandra가 리전 간 멀티-DC 복제로 데이터를 비동기 복제하고, EVCache도 **cross-region replication**(글로벌 캐시 워밍)을 한다. 그래서 페일오버 직후의 리전도 콜드 캐시가 아니라 데이터를 갖고 있다.\n3. **용량 헤드룸**: 액티브-액티브이므로 평소 각 리전은 **자기 정상 부하 + 흡수할 여유분**을 미리 확보한다. 3-리전 구조라면 한 리전이 빠질 때 남은 리전들이 그 부하를 나눠 받을 수 있어야 하므로, 의도적으로 활용률을 낮게 운용한다.\n\n### Kong/Chaos로 페일오버를 '연습'한다\nNetflix는 evacuation을 비상시에만 쓰지 않고 **정기적으로 리허설**한다. 이를 위한 자동화 도구가 발전해 왔으며(과거 'Kong' 등 region failover 도구), \"리전 하나를 일부러 비우는\" 훈련을 반복해 절차·자동화·런북이 실제로 동작하는지 검증한다. 이것이 ChAP(Chaos Automation Platform)·FIT(Failure Injection Testing)으로 이어지는 Chaos 엔지니어링의 큰 줄기다.\n\n### 트레이드오프\n- **비용**: 멀티리전 액티브-액티브 + 헤드룸은 단일 리전 대비 인프라 비용이 크게 증가한다. Netflix는 **가용성 > 비용**이라는 명시적 우선순위로 이를 정당화한다.\n- **데이터 일관성**: 리전 간 비동기 복제이므로 페일오버 순간 **약간의 데이터 지연/충돌** 가능성이 있다. 그래서 사용자 경험상 핵심인 데이터(재생 위치, 추천 등)는 eventual consistency로도 무방하도록 도메인 모델을 설계한다."
+    },
+    {
+     "topic": "동시성 제어의 진화: Hystrix 서킷브레이커에서 adaptive concurrency limits로",
+     "body": "### Hystrix가 풀던 문제\n초기 Netflix는 **Hystrix**로 서비스 간 호출을 격리했다. 각 의존성마다 별도 **thread pool**(bulkhead)을 두고, 타임아웃·서킷브레이커·폴백을 묶어 한 다운스트림의 지연이 호출자 전체 스레드를 잡아먹는 **cascading failure**를 막았다. 호출 실패율이 임계치를 넘으면 서킷을 **open** 시켜 빠르게 폴백으로 떨어뜨리고, 일정 시간 뒤 **half-open**으로 탐색 요청을 흘려 회복을 감지한다.\n\n### Hystrix의 한계\n- **고정 임계값의 함정**: thread pool 크기, 타임아웃, 서킷 임계값을 **사람이 손으로 튜닝**해야 했다. 트래픽 패턴이 바뀌면 이 숫자들이 금세 틀려진다.\n- **스레드 풀 오버헤드**: 의존성마다 격리 스레드 풀을 두면 컨텍스트 스위칭·메모리 비용이 든다.\n- Netflix는 결국 Hystrix를 **유지보수 모드**로 전환(신규 기능 개발 중단)했다.\n\n### adaptive concurrency limits — TCP 혼잡제어를 서비스 호출에 적용\nNetflix가 발표한 다음 세대 접근은 **고정 한계 대신 동적으로 학습하는 동시성 한계**다. 핵심 아이디어는 네트워크 **TCP congestion control**(Little's Law, AIMD, gradient 알고리즘)을 RPC 동시성에 그대로 가져온 것:\n\n- 시스템은 관측된 **RTT(지연)** 변화를 보고 \"지금 이 서비스가 동시에 처리할 수 있는 in-flight 요청 수\"를 **실시간으로 추정**한다.\n- 지연이 늘기 시작하면(=큐가 쌓이는 신호) 한계를 줄이고, 안정적이면 늘린다. 즉 **별도 부하 테스트로 magic number를 정하지 않아도** 시스템이 스스로 적정 동시성을 찾는다.\n- 한계를 넘는 요청은 빠르게 **load shedding**(거절)되어, 과부하 상태에서도 **goodput(성공 처리량)** 이 무너지지 않는다.\n\n이 로직은 `Netflix/concurrency-limits` 라이브러리로 공개되어 있고, **Zuul** 같은 엣지 게이트웨이와 서비스 양쪽에 적용된다.\n\n### 무엇이 좋아졌나\n| 항목 | Hystrix (구) | Adaptive Limits (신) |\n|---|---|---|\n| 한계값 | 사람이 수동 튜닝 | 지연 신호로 자동 적응 |\n| 격리 방식 | per-dependency thread pool | semaphore/동시성 카운트 |\n| 과부하 시 | 서킷 open → 폴백 | 동적 load shedding으로 goodput 보존 |\n| 운영 부담 | 트래픽 변하면 재튜닝 | 자가 조정 |\n\n결국 철학이 **\"미리 정한 한계로 보호한다\"** 에서 **\"시스템이 자기 한계를 스스로 측정하며 보호한다\"** 로 옮겨간 것이다. 사람이 못 따라가는 트래픽 변동성을 알고리즘에 맡긴 전형적인 사례다."
     }
    ],
    "debate": {
@@ -8505,45 +8536,45 @@
       "url": "https://github.com/Netflix/Hystrix",
       "desc": "지연·장애 격리를 위한 서킷브레이커 라이브러리(현재 유지보수 모드)",
       "lang": "Java",
-      "stars": 24456
+      "stars": 24457
      },
      {
       "name": "Netflix/zuul",
       "url": "https://github.com/Netflix/zuul",
-      "desc": "동적 라우팅·필터링을 담당하는 엣지 게이트웨이",
+      "desc": "비동기 Netty 기반 엣지 게이트웨이(라우팅·필터·복원력)",
       "lang": "Java",
-      "stars": 14025
+      "stars": 14029
      },
      {
       "name": "Netflix/conductor",
       "url": "https://github.com/Netflix/conductor",
-      "desc": "마이크로서비스 오케스트레이션 워크플로 엔진",
+      "desc": "마이크로서비스 워크플로 오케스트레이션 엔진",
       "lang": "Java",
-      "stars": 12769
+      "stars": 12767
      },
      {
       "name": "Netflix/atlas",
       "url": "https://github.com/Netflix/atlas",
-      "desc": "시계열 차원 메트릭 백엔드(관측성)",
+      "desc": "초당 수십억 시계열 메트릭을 다루는 인메모리 차원 모니터링",
       "lang": "Scala",
-      "stars": 3550
+      "stars": 3553
      },
      {
       "name": "Netflix/dgs-framework",
       "url": "https://github.com/Netflix/dgs-framework",
-      "desc": "Spring Boot 기반 GraphQL 서버 프레임워크(Federation용)",
+      "desc": "Spring Boot 위에서 GraphQL Federation 서비스를 만드는 DGS 프레임워크",
       "lang": "Kotlin",
-      "stars": 3373
+      "stars": 3375
      }
     ]
    },
    "sources": [
     "https://netflixtechblog.com/",
-    "https://netflix.github.io/",
-    "https://netflixtechblog.com/how-netflix-scales-its-api-with-graphql-federation-part-1-ae3557c187e2"
+    "https://github.com/Netflix",
+    "https://netflixtechblog.com/introducing-netflix-data-gateway-abstractions"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "spotify",

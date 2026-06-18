@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-18T15:39:27",
- "total": 768,
+ "generated_at": "2026-06-18T17:26:08",
+ "total": 771,
  "sources": [
   {
    "company": "Etsy",
@@ -48,6 +48,11 @@
    "count": 26
   },
   {
+   "company": "SoundCloud",
+   "country": "DE",
+   "count": 26
+  },
+  {
    "company": "Zalando",
    "country": "DE",
    "count": 25
@@ -55,11 +60,6 @@
   {
    "company": "컬리",
    "country": "KR",
-   "count": 25
-  },
-  {
-   "company": "SoundCloud",
-   "country": "DE",
    "count": 25
   },
   {
@@ -91,6 +91,11 @@
    "company": "GitHub",
    "country": "US",
    "count": 19
+  },
+  {
+   "company": "왓챠",
+   "country": "KR",
+   "count": 12
   },
   {
    "company": "카카오",
@@ -164,11 +169,6 @@
   },
   {
    "company": "하이퍼커넥트",
-   "country": "KR",
-   "count": 10
-  },
-  {
-   "company": "왓챠",
    "country": "KR",
    "count": 10
   },
@@ -434,8 +434,8 @@
   "Benchmark": "연구/논문",
   "Quantization": "LLM/생성형",
   "Vector Search": "LLM/생성형",
-  "iOS": "모바일",
   "HTML": "프론트엔드",
+  "iOS": "모바일",
   "OWASP": "보안",
   "Time Series": "AI/ML",
   "Redis": "데이터베이스",
@@ -527,6 +527,58 @@
    "categories": [],
    "lang": "ko",
    "content_id": "f2a3a42ac164b903"
+  },
+  {
+   "key": "watcha",
+   "company": "왓챠",
+   "country": "KR",
+   "title": "왓챠 웹 PiP 적용기 — Document PiP는 어떻게 동작하고, 무엇이 어려웠나",
+   "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%9B%B9-pip-%EC%A0%81%EC%9A%A9%EA%B8%B0-document-pip%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%8F%99%EC%9E%91%ED%95%98%EA%B3%A0-%EB%AC%B4%EC%97%87%EC%9D%B4-%EC%96%B4%EB%A0%A4%EC%9B%A0%EB%82%98-ab7521515663",
+   "published": "2026-06-18",
+   "published_ts": 1781769093.0,
+   "summary": "1부에서 “왓챠 웹이 PiP를 지원한다”고 알려드렸습니다. 이번 편은 실제 적용기 입니다. 특히 DRM 영상·자막·왓챠파티가 얽힌 실서비스에 붙이는 건 전혀 다른 일이었습니다.\n📑 목차\n\n1. 들어가기 전에 — 웹 PiP에는 두 종류가 있습니다 (#b1c2)\n2. 동작 원리 — Document PiP는 어떻게 가능한가 (#f285)\n3. 적용기 ① “옮기는 한 줄”이 React에선 안 통한다 (#8117)\n4. 적용기 ② “안 끊긴다”던 영상이, 가끔 굳는다 (#5cfd)\n5. 적용기 ③ ‘X’를 누르면 끝내는 걸까, 크게 보는 걸까 (#d231)\n6. 요약 — 적용 순서 한 눈에 보기 (#261d)\n7. Q&A — 한 발 더 들어가기 (#d392)\n8. 못다 한 것 (#27f5)\n\n들어가기 전에 — 웹 PiP에는 두 종류가 있습니다\n\n바로 Standard PiP와 Document PiP 입니다. 이 둘은 할 수 있는 일이 다릅니다.\n📌 용어 안내. 사실 “Standard PiP”는 공식 명칭이 아닙니다. 영상 하나만 띄우는 원래 API의 정식 이름은 그냥 Picture-in-Picture API이고, 나중에 나온 Document Picture-in-Pict…",
+   "tags": [
+    "documentpip",
+    "react",
+    "javascript",
+    "programming",
+    "webapi"
+   ],
+   "tech_stack": [
+    "TypeScript",
+    "CSS",
+    "HTML",
+    "React",
+    "Authentication"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "dae08bcb932e42f7"
+  },
+  {
+   "key": "watcha",
+   "company": "왓챠",
+   "country": "KR",
+   "title": "“왓챠 PiP 안 됨?” — 됩니다, 이제부터.",
+   "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-pip-%EC%95%88-%EB%90%A8-%EB%90%A9%EB%8B%88%EB%8B%A4-%EC%9D%B4%EC%A0%9C%EB%B6%80%ED%84%B0-4ef67b66af11",
+   "published": "2026-06-18",
+   "published_ts": 1781769084.0,
+   "summary": "🎬 이런 경험, 있으시죠?\n\n저는 장송의 프리렌을 정말 좋아합니다. 그래서 애니를 한켠에 틀어놓고 게임이나 일을 할 때가 많습니다. 들려오는 대사와 잠깐씩 보는 장면만으로도 충분히 좋거든요.\n\n그런데 한켠에 틀어놓으면 새 창을 띄울 때마다 영상이 그 뒤로 덮여 버리는 문제가 있습니다. 화려한 전투씬이 시작될 땐 바로 봐야 하는데 말이죠! 저만 그런 게 아닐 거라 생각했고, 그래서 만들었습니다.\n\n왓챠가 PiP(Picture-in-Picture) 모드를 지원합니다.\n\n영상을 작은 창으로 화면 위에 띄워두고, 그 아래·뒤에서 자유롭게 다른 일을 하세요. 영상은 멈추지 않습니다.\n이제는 외부 확장 프로그램까지 동원하지 않아도 됨.\n📺 PiP가 뭔가요?\n\n이름은 낯설어도, 한 번쯤 써보셨을 겁니다.\n\n📱 휴대폰으로 유튜브를 보다 홈으로 나오면 → 영상이 작게 떠서 따라다니죠\n\n💻 구글 밋 회의 중 다른 창으로 넘어가면 → 회의 화면이 작아져 어디든 따라오고요\nPiP(Picture-in-Picture, 화면 속 화면) — 재생 중인 영상을 페이지에서 떼어내, 항상 화면 맨 위에 떠 있는 작은 창으로 보여주는 기능입니다.\n다른 창을 띄우든 탭을 옮기든, PiP 창은 그…",
+   "tags": [
+    "web-development",
+    "react",
+    "watcha",
+    "programming",
+    "pip"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "1dd84fdb2d7bbdc3"
   },
   {
    "key": "cyberagent",
@@ -1137,6 +1189,36 @@
    ],
    "lang": "ko",
    "content_id": "7332fba9a048fe61"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "API Credentials from Your Terminal, and OpenAPI on GitHub",
+   "url": "https://developers.soundcloud.com/blog/api-credentials-cli-openapi-github",
+   "published": "2026-06-16",
+   "published_ts": 1781568000.0,
+   "summary": "In May we opened self-service app registration for Artist Pro subscribers. That fixed the browser flow. Two requests kept coming up anyway…",
+   "tags": [
+    "API",
+    "Announcement"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "Node.js",
+    "LLM",
+    "AWS",
+    "OAuth"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "e5a3c3b71228d354"
   },
   {
    "key": "aws",
