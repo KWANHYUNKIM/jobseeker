@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-18T13:57:41",
+ "generated_at": "2026-06-18T15:44:01",
  "total": 100,
  "countries": [
   {
@@ -1508,7 +1508,7 @@
       "count": 1
      },
      {
-      "name": "Flask-Smorest/OpenAPI",
+      "name": "Envoy service mesh",
       "count": 1
      }
     ],
@@ -1550,7 +1550,7 @@
       "count": 1
      },
      {
-      "name": "Three.js",
+      "name": "RIBs",
       "count": 1
      }
     ],
@@ -1561,7 +1561,7 @@
      },
      {
       "name": "Redis",
-      "count": 5
+      "count": 6
      },
      {
       "name": "Cassandra",
@@ -1610,7 +1610,7 @@
       "count": 3
      },
      {
-      "name": "Envoy",
+      "name": "Jaeger",
       "count": 2
      },
      {
@@ -1653,7 +1653,7 @@
      "count": 1
     },
     {
-     "name": "Cellular / multi-region",
+     "name": "Cellular / multi-region active-active",
      "count": 1
     },
     {
@@ -3497,15 +3497,15 @@
      "count": 1
     },
     {
-     "name": "Lua",
-     "count": 1
-    },
-    {
      "name": "Python",
      "count": 1
     },
     {
      "name": "Rust",
+     "count": 1
+    },
+    {
+     "name": "TypeScript",
      "count": 1
     }
    ],
@@ -3513,6 +3513,10 @@
     "backend": [
      {
       "name": "Cap'n Proto RPC",
+      "count": 1
+     },
+     {
+      "name": "Cloudflare Workers",
       "count": 1
      },
      {
@@ -3530,10 +3534,6 @@
      {
       "name": "Rust",
       "count": 1
-     },
-     {
-      "name": "Workers",
-      "count": 1
      }
     ],
     "frontend": [
@@ -3542,15 +3542,19 @@
       "count": 1
      },
      {
-      "name": "Remix/Pages",
+      "name": "Remix",
       "count": 1
      },
      {
-      "name": "Tailwind",
+      "name": "Tailwind CSS",
       "count": 1
      },
      {
       "name": "TypeScript",
+      "count": 1
+     },
+     {
+      "name": "Wrangler CLI",
       "count": 1
      }
     ],
@@ -3590,11 +3594,11 @@
     ],
     "infra": [
      {
-      "name": "Anycast edge network",
+      "name": "Anycast 엣지 네트워크",
       "count": 1
      },
      {
-      "name": "BGP",
+      "name": "BGP / Anycast 라우팅",
       "count": 1
      },
      {
@@ -3606,30 +3610,38 @@
       "count": 1
      },
      {
-      "name": "Salt/config push",
+      "name": "Salt",
+      "count": 1
+     },
+     {
+      "name": "Unimog",
       "count": 1
      },
      {
       "name": "XDP/eBPF",
+      "count": 1
+     },
+     {
+      "name": "동질 서버 플릿",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Anycast network",
+     "name": "Anycast 기반 단일 IP 글로벌 라우팅",
      "count": 1
     },
     {
-     "name": "Edge computing / globally distributed",
+     "name": "Edge computing / 글로벌 분산",
      "count": 1
     },
     {
-     "name": "Every server runs every service",
+     "name": "Serverless V8 isolate 멀티테넌시",
      "count": 1
     },
     {
-     "name": "Serverless V8 isolates",
+     "name": "동질 플릿 — 서비스별 전용 하드웨어 없이 모든 머신이 전체 스택 실행",
      "count": 1
     }
    ]
@@ -7663,44 +7675,48 @@
      "gRPC",
      "Apache Thrift / TChannel",
      "Java + Spring",
-     "Ringpop"
+     "Ringpop",
+     "Envoy service mesh"
     ],
     "frontend": [
      "React",
      "Fusion.js",
      "TypeScript",
-     "GraphQL"
+     "GraphQL",
+     "RIBs (mobile)"
     ],
     "data": [
-     "Schemaless on MySQL",
+     "Docstore (MySQL 기반)",
+     "Schemaless",
      "Cassandra",
      "Apache Kafka",
      "Apache Pinot",
      "Apache Hudi",
-     "Presto",
+     "Presto / Trino",
      "Apache Flink",
-     "Docstore"
+     "Redis (CacheFront)"
     ],
     "infra": [
      "Mesos + Peloton",
      "Kubernetes (migration)",
      "M3 (metrics)",
+     "Jaeger (tracing)",
      "Cadence",
      "H3 (geo-index)",
-     "uDeploy / Up",
-     "Envoy"
+     "Up / uDeploy",
+     "Cellular multi-region"
     ]
    },
    "architecture": [
     "Domain-Oriented Microservices (DOMA)",
-    "Event-driven streaming",
-    "Cellular / multi-region",
+    "Event-driven streaming (Kafka 중심)",
+    "Cellular / multi-region active-active",
     "Workflow orchestration (Cadence)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    RID[\"Rider/Driver App<br/>Swift + Kotlin + RIBs\"]\n    WEB[\"Web<br/>React + Fusion.js\"]\n  end\n  subgraph Edge\n    EDGE[\"Edge Gateway<br/>RAMEN + Envoy\"]\n    GQL[\"API Gateway<br/>GraphQL\"]\n  end\n  subgraph Core\n    DISP[\"Dispatch / Matching<br/>Go + Ringpop\"]\n    GEO[\"Geospatial Index<br/>H3 hexagons\"]\n    PRICE[\"Pricing / Surge<br/>Go services\"]\n    PAY[\"Payments<br/>Java + Cadence\"]\n    ML[\"ETA / Models<br/>Michelangelo\"]\n  end\n  subgraph Data\n    SL[\"Schemaless<br/>on MySQL\"]\n    CASS[\"Cassandra<br/>geo/state\"]\n    DS[\"Docstore\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Proc<br/>Apache Flink\"]\n    PINOT[\"Realtime OLAP<br/>Apache Pinot\"]\n  end\n  subgraph Platform\n    PEL[\"Scheduler<br/>Peloton + Mesos / K8s\"]\n    M3[\"Metrics<br/>M3\"]\n  end\n  RID --> EDGE\n  WEB --> GQL\n  EDGE --> GQL\n  GQL -->|gRPC/Thrift| DISP\n  DISP --> GEO\n  DISP --> PRICE\n  PRICE --> ML\n  DISP --> PAY\n  DISP --> CASS\n  PAY --> SL\n  DISP --> DS\n  DISP -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> PINOT\n  ML --> PINOT\n  PEL -.-> DISP\n  M3 -.-> DISP",
-   "why_language": "초저지연 매칭·디스패치처럼 수백만 동시 연결을 처리하는 핫패스는 GC 부담이 적고 동시성 모델(goroutine)이 단순한 Go로 작성해 효율과 운영성을 동시에 잡는다. 결제·인보이싱 등 정확성과 성숙한 생태계가 중요한 영역은 Java/Spring, 데이터 파이프라인·ML은 Python·Scala를 써서 도메인별 특성에 맞춰 언어를 분리한다.",
-   "why_architecture": "수천 개로 폭발한 마이크로서비스를 DOMA(Domain-Oriented Microservices)로 도메인 단위 게이트웨이 뒤에 묶어 의존성 복잡도를 낮췄다. 실시간 위치·이벤트가 핵심인 모빌리티 특성상 Kafka 기반 이벤트 스트리밍을 중추로 삼고, 결제·정산처럼 길게 이어지는 상태 전이는 Cadence 워크플로로 내구성 있게 오케스트레이션한다.",
-   "summary": "Go 핫패스 + 도메인 지향 마이크로서비스 + Kafka 스트리밍으로 굴러가는 글로벌 실시간 모빌리티 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Rider/Driver App<br/>Swift + Kotlin + RIBs\"]\n    WEB[\"Web<br/>React + Fusion.js\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    EDGE[\"Edge Gateway<br/>Go + Envoy\"]\n    GQL[\"GraphQL / BFF<br/>TypeScript\"]\n  end\n  subgraph Core[\"Core Services - DOMA\"]\n    DISP[\"Dispatch / Matching<br/>Go + Ringpop + H3\"]\n    TRIP[\"Trip / Pricing<br/>Go microservices\"]\n    PAY[\"Payments<br/>Java + Spring\"]\n    CAD[\"Cadence<br/>Workflow Orchestration\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Apache Kafka<br/>trillions msg/day\"]\n    FLINK[\"Apache Flink<br/>stream processing\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DOC[\"Docstore + CacheFront<br/>MySQL + Redis\"]\n    CAS[\"Cassandra<br/>geo / state\"]\n    PINOT[\"Apache Pinot<br/>real-time OLAP\"]\n    HUDI[\"Apache Hudi + Presto<br/>data lake\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    PEL[\"Peloton + Mesos / K8s<br/>scheduling\"]\n    M3[\"M3 + Jaeger<br/>metrics + tracing\"]\n    ML[\"Michelangelo<br/>ML platform\"]\n  end\n  APP -->|gRPC/HTTP| EDGE\n  WEB --> GQL\n  EDGE --> GQL\n  GQL -->|gRPC| DISP\n  GQL -->|gRPC| TRIP\n  DISP -->|gRPC| TRIP\n  TRIP --> PAY\n  TRIP --> CAD\n  DISP --> DOC\n  TRIP --> DOC\n  PAY --> CAS\n  DISP -->|events| KAFKA\n  TRIP -->|events| KAFKA\n  KAFKA --> FLINK\n  FLINK --> PINOT\n  KAFKA --> HUDI\n  DISP -.->|ETA/surge| ML\n  ML --> PINOT\n  Core --> M3\n  Core --> PEL",
+   "why_language": "Go는 매칭·dispatch처럼 초저지연·고동시성이 필요한 핫패스에서 가비지 컬렉션 부담이 작고 goroutine으로 수십만 동시 요청을 다루기 좋아 Uber의 기본 서비스 언어가 되었다. Java/Spring은 결제처럼 트랜잭션 정합성과 성숙한 생태계가 중요한 도메인에, Python은 데이터·ML 파이프라인에, TypeScript는 React/Fusion.js 프론트와 GraphQL BFF에 쓰여 도메인별 강점에 맞춰 언어를 배치한다.",
+   "why_architecture": "단일 모놀리스로는 글로벌 실시간 모빌리티의 폭증하는 서비스 수를 감당하지 못해, 수천 개 마이크로서비스를 도메인 경계로 재정비한 DOMA로 의존성 폭발을 통제한다. 매칭·요금·결제는 Kafka 이벤트 스트리밍으로 느슨하게 연결되고, 지역 장애에도 운행이 끊기지 않도록 cell 단위로 트래픽을 격리·페일오버하는 cellular 멀티리전 구조를 택했다. 길게 걸리는 운행·정산 흐름은 Cadence 워크플로로 상태를 내구성 있게 관리한다.",
+   "summary": "Go 핫패스 + DOMA 마이크로서비스 + Kafka 스트리밍 + cell 단위 멀티리전으로 글로벌 실시간 모빌리티를 떠받친다",
    "deep_dive": [
     {
      "topic": "요청 처리 흐름: 호출부터 매칭까지 end-to-end",
@@ -7741,6 +7757,22 @@
     {
      "topic": "Peloton과 Mesos: 한 클러스터에서 배치·스트리밍·서비스 워크로드를 공존시키기",
      "body": "### 문제: 클러스터가 두 동강 나 있었다\nUber 데이터센터에는 성격이 다른 워크로드가 섞여 있다. (1) 항상 떠 있어야 하는 **온라인 서비스**(디스패치·결제), (2) 밤에 몰리는 **배치 잡**(Spark/Hive ETL, ML 학습), (3) **스트리밍**(Flink), (4) **상태 저장소**(Cassandra). 전통적으로 이들은 각자 전용 클러스터에 격리됐는데, 그러면 배치 클러스터는 낮에 놀고 서비스 클러스터는 밤에 놀아 전체 활용률이 처참하게 낮아진다. 수십만 코어 규모에서 이 낭비는 막대한 비용이다.\n\n### Peloton의 해법: 통합 스케줄러\n`Peloton` 은 Mesos 위에 올라가 이 모든 워크로드를 **하나의 공유 자원 풀**에서 스케줄링한다. 핵심 메커니즘은 **elastic resource pool(탄력적 자원 풀)** 과 **선점(preemption)** 이다.\n\n- 각 팀/워크로드에 보장 쿼터(reservation)를 주되, 남는 자원은 자유롭게 빌려 쓸 수 있게 한다. 배치 잡이 밤에 서비스가 놀리는 코어를 빌려 쓰다가, 낮에 서비스 트래픽이 치솟으면 Peloton이 우선순위 낮은 배치 잡을 **선점(죽이고 재큐잉)** 해 서비스에 자원을 되돌려준다. 배치는 중단·재시작에 내성이 있으니 이 트레이드오프가 성립한다.\n- 이로써 클러스터 전체 활용률을 크게 끌어올린다.\n\n### Mesos의 역할과 규모 문제\nMesos는 2단계 스케줄링(자원 오퍼를 프레임워크에 제시 → 프레임워크가 수락)을 쓰는데, Uber 규모(수만 노드, 수백만 잡)에서는 이 오퍼 기반 방식과 Mesos master의 처리량이 병목이 됐다. Peloton은 이를 흡수하는 자체 스케줄링·상태관리 계층을 얹어 대규모 배치 잡을 효율적으로 배치한다.\n\n### Kubernetes로의 이행\nUber는 이후 업계 표준인 Kubernetes로 무게중심을 옮기는 마이그레이션을 진행했다. Mesos/Peloton의 \"통합 풀 + 선점\" 철학은 유지하되, 생태계·운영 도구가 풍부한 K8s 위에서 같은 효율을 재현하려는 방향이다. 이 전환은 \"잘 동작하던 자체 스택을 버리고 표준으로 갈 때의 비용 대 생태계 이득\"이라는 전형적인 대규모 인프라 트레이드오프 사례다.\n\n### 핵심 통찰\nPeloton의 본질은 기술이 아니라 경제다 — \"서로 다른 시간대에 피크를 치는 워크로드를 한 풀에 섞으면 피크의 합이 아니라 합의 피크만 준비하면 된다\"는, 자원 통계 다중화(statistical multiplexing) 원리를 데이터센터 규모로 구현한 것이다."
+    },
+    {
+     "topic": "Docstore와 CacheFront: MySQL 위에 Redis 캐시 계층을 통합하기",
+     "body": "### 왜 Docstore인가\nUber 초기의 `Schemaless`는 MySQL 위에 append-only 방식으로 스키마 유연성을 부여한 시스템이었지만, 시간이 지나며 더 풍부한 쿼리·트랜잭션·강한 일관성이 필요해졌다. 그 후계가 `Docstore`로, **샤딩된 MySQL을 스토리지 엔진으로 쓰는 분산 문서/관계형 데이터베이스**다. 파티션 키 기반으로 수천 개 MySQL 인스턴스에 샤드를 분산하고, 각 샤드는 Raft 유사 복제로 리더-팔로워 구성을 갖춰 강한 일관성과 자동 페일오버를 제공한다.\n\n### 계층 구조\nDocstore는 세 계층으로 나뉜다.\n- `Query Engine` : 라우팅·쿼리 플래닝·동시성 제어 담당(stateless)\n- `Storage Engine` : Raft 복제 그룹 단위로 데이터를 보관, 리더가 쓰기 직렬화\n- `Control Plane` : 샤드 배치·리밸런싱·헬스 관리\n\n### CacheFront — 캐시를 DB에 통합한 결정\n수백만 QPS의 읽기를 MySQL로 직접 받으면 비용·지연이 폭발한다. 전통적으로는 애플리케이션이 Redis를 직접 두드리지만, 그러면 **캐시 무효화·일관성 책임이 모든 서비스로 흩어진다**. Uber는 `CacheFront`로 Redis 캐시를 **Docstore 쿼리 엔진 내부**에 넣어, 캐시를 데이터베이스의 일부로 만들었다.\n\n동작 메커니즘:\n- 읽기 요청은 먼저 Redis를 조회(cache-aside)하고, miss면 MySQL에서 읽어 캐시에 채운다.\n- **무효화는 폴링이 아니라 변경 데이터 캡처(CDC)로 한다.** Docstore의 변경 스트림(`Flux`)이 MySQL binlog를 따라가며 변경된 row의 캐시 키를 즉시 무효화/갱신한다. 덕분에 stale 윈도우가 매우 짧다.\n- 일관성 보장을 위해 cache write에 버전/타임스탬프를 비교해 오래된 쓰기가 최신 값을 덮어쓰지 못하게 한다.\n\n### 성과와 트레이드오프\nUber 공개 자료 기준 CacheFront는 Docstore 읽기의 큰 비중을 흡수해 **P75/P99 지연을 수 배 낮추고**, 대형 read 워크로드를 MySQL 증설 없이 처리한다. 트레이드오프는 캐시 일관성 복잡도가 DB 팀으로 집중된다는 점인데, Uber는 이를 \"수백 개 서비스 각자 캐시를 잘못 다루는 것보다, 한 곳에서 제대로 하는 게 낫다\"는 판단으로 받아들였다. 또한 Redis 장애 시 fallback이 MySQL이므로 가용성은 유지되지만 그 순간 DB 부하 급증을 견딜 헤드룸을 항상 확보해야 한다."
+    },
+    {
+     "topic": "Cellular 아키텍처와 멀티리전 페일오버: 지역 장애에도 운행을 멈추지 않기",
+     "body": "### 문제: 실시간 모빌리티는 다운타임을 용납하지 않는다\n운행 중 매칭·결제가 멈추면 즉시 매출과 안전 문제로 이어진다. Uber는 단일 리전·단일 거대 클러스터의 'blast radius(장애 폭발 반경)'를 줄이기 위해 **cellular 아키텍처**로 이동했다.\n\n### Cell이란\n`cell`은 한 리전 안에서 **독립적으로 전체 요청을 처리할 수 있는 자족적 서비스·인프라 묶음**이다. 한 데이터센터/리전 안에 여러 cell이 존재하고, 각 cell은 자신만의 서비스 인스턴스 집합과 (논리적으로 분리된) 용량을 가진다. 핵심 원칙은 **cell 간 호출을 최소화**해, 한 cell이 망가져도 다른 cell이 영향을 받지 않게 하는 것이다(장애 격리).\n\n### 라우팅\nEdge 계층이 요청을 특정 cell로 핀(pin)한다. 보통 사용자/세션/지리 기반으로 cell을 선택해, 한 운행의 연속된 요청이 같은 cell에서 처리되도록 한다(상태 지역성). cell 헬스가 나빠지면 edge가 트래픽을 다른 cell로 **drain**해 점진적으로 빼낸다.\n\n### 멀티리전 active-active\nUber는 여러 리전에 동일 스택을 active-active로 운영한다.\n- 상태가 거의 없는 서비스는 단순히 다른 리전으로 트래픽을 옮기면 된다.\n- 상태가 있는 흐름(진행 중 운행)은 **Cadence 워크플로와 데이터 복제**로 다른 리전이 이어받게 한다. Cadence는 워크플로 상태를 내구성 있게 저장하므로, 페일오버 후에도 'pickup 대기 → 운행 중 → 정산' 같은 단계가 유실되지 않는다.\n- 리전 페일오버는 정기적으로 **계획된 drill**로 훈련한다. \"언제든 한 리전을 통째로 잃어도 된다\"를 가정하고 용량을 N+1로 잡는다.\n\n### 트레이드오프\n- 장점: 장애 격리(한 cell/리전 손실이 전체로 번지지 않음), 점진적 배포(cell 단위 카나리), 용량 단위의 명확함.\n- 비용: cell 간 통신 금지 원칙을 지키려면 데이터·트래픽 분할 설계가 까다롭고, 리전 간 active-active를 위해 **여유 용량(idle capacity)**을 상시 확보해야 해 인프라 비용이 늘어난다. Uber는 이 비용을 '신뢰성에 대한 보험료'로 본다."
+    },
+    {
+     "topic": "Apache Pinot: surge·실시간 대시보드를 떠받치는 초저지연 OLAP",
+     "body": "### 실시간 분석이라는 별도의 문제\nKafka가 이벤트를 나르고 Flink가 스트림을 가공한다면, **'방금 들어온 데이터를 수십 ms 안에 집계 쿼리'**하는 일은 또 다른 시스템이 필요하다. 트랜잭션 DB(Docstore)는 point lookup엔 좋지만 대규모 집계엔 부적합하고, 데이터 레이크(Hudi+Presto)는 분 단위 지연이라 실시간 화면엔 느리다. 그 간극을 Uber가 만든(LinkedIn 발) `Apache Pinot`가 메운다.\n\n### Pinot이 빠른 이유\n- **컬럼형 저장 + 인덱스 다양성**: inverted index, sorted index, star-tree index, range/text index 등을 컬럼별로 골라 미리 만들어, 집계·필터를 스캔 없이 처리한다. 특히 `star-tree index`는 사전 집계 트리로 high-cardinality 집계를 상수에 가깝게 만든다.\n- **실시간 + 오프라인 하이브리드**: 'realtime' 테이블은 Kafka에서 직접 ingest해 수초 내 쿼리 가능하게 하고, 동일 데이터를 주기적으로 'offline' 세그먼트로 굳혀(컴팩션) 비용·성능을 최적화한다. 쿼리는 두 소스를 투명하게 합친다.\n- **세그먼트 단위 분산**: 데이터를 segment로 쪼개 broker가 scatter-gather로 여러 server에 병렬 질의한다.\n\n### Uber에서의 실제 용도\n- **Surge pricing / 수요-공급 모니터링**: 지역별 실시간 요청·드라이버 가용성을 초 단위로 집계.\n- **Restaurant Manager / Eats 분석**: 점주가 보는 실시간 주문·매출 대시보드.\n- **내부 운영·신뢰성 대시보드**: 운행 지표를 실시간으로 슬라이스.\n- **사용자 대면 분석**: 앱 내에서 보이는 통계도 Pinot이 백엔드인 경우가 있다.\n\n### 데이터 흐름에서의 위치\n`서비스 → Kafka(이벤트) → (Flink로 가공) → Pinot(realtime ingest) → broker 쿼리 → 대시보드/서비스`. 즉 Pinot은 **'쓰기 경로의 끝, 분석 읽기 경로의 시작'**에 앉아, OLTP(Docstore)와 배치 레이크(Hudi) 사이의 실시간 OLAP 계층 역할을 한다.\n\n### 트레이드오프\nPinot은 빠른 대신 인덱스/사전집계를 미리 정해야 해 **ad-hoc 유연성이 Presto만 못하다**. 그래서 Uber는 '정해진 패턴의 초저지연 쿼리는 Pinot, 자유로운 탐색·대용량 조인은 Presto/Trino'로 역할을 나눈다."
+    },
+    {
+     "topic": "배포·CI/CD와 서비스 메시: 수천 서비스를 안전하게 굴리기",
+     "body": "### 규모의 문제\nUber는 수천 개의 마이크로서비스를 하루에도 수없이 배포한다. 이 규모에서 사람이 일일이 롤아웃을 지켜볼 수 없으므로, **자동 카나리·자동 롤백·헬스 기반 게이트**가 플랫폼에 내장돼야 한다.\n\n### 배포 플랫폼 (Up / uDeploy)\nUber의 내부 배포 플랫폼(`Up`, 이전 `uDeploy`)은 빌드 산출물을 받아 인프라(Mesos/Peloton, 점진적으로 Kubernetes) 위로 점진 롤아웃한다. 핵심 메커니즘:\n- **단계적 롤아웃(staged rollout)**: 한 번에 전부 바꾸지 않고 canary → 소수 instance → zone → cell → region 순으로 확산.\n- **헬스 기반 게이트**: 각 단계에서 `M3` 메트릭·에러율·지연(P99)·`Jaeger` 트레이스 신호를 자동 평가. 임계치를 넘으면 다음 단계로 진행하지 않고 **자동 롤백**.\n- **cell 인지 배포**: cellular 구조 덕에 한 cell만 먼저 새 버전으로 올려 'blast radius'를 한 cell로 가둘 수 있다.\n\n### 서비스 메시 (Envoy 기반)\n수천 서비스의 통신을 일관되게 다루려고 Uber는 사이드카 프록시 메시로 이행했다. 초창기 자체 RPC 스택(`TChannel` + Apache `Thrift`)에서 출발해, 지금은 **`gRPC` + `Envoy`** 조합으로 수렴 중이다. 메시가 제공하는 것:\n- **L7 라우팅·로드밸런싱**: 서비스 디스커버리 결과를 받아 envoy가 요청을 분산. cell pinning·리전 라우팅도 여기서 적용.\n- **복원력 정책**: 재시도(retry budget), 타임아웃, **서킷 브레이커**, 부하 차단(load shedding)을 코드가 아니라 메시 설정으로 통일.\n- **mTLS·관측성**: 서비스 간 통신 암호화와 자동 메트릭/트레이스 주입을 사이드카가 담당해 애플리케이션 코드가 가벼워진다.\n\n### 마이그레이션 히스토리 관점\n- RPC: `TChannel/Thrift` → `gRPC/Protobuf`(다국어 지원·생태계).\n- 스케줄링: `Mesos + Peloton` → `Kubernetes`로 점진 이행(업계 표준 수렴, 운영 도구 생태계 활용).\n- 데이터: `Schemaless` → `Docstore`(쿼리·일관성 강화).\n이 모든 이행을 'big bang'이 아니라 **메시·배포 플랫폼의 추상화 뒤에서 점진적으로** 진행해, 호출하는 서비스들이 거의 코드 변경 없이 새 백엔드로 갈아탈 수 있게 한 것이 Uber 플랫폼 엔지니어링의 일관된 패턴이다."
     }
    ],
    "debate": {
@@ -7842,49 +7874,49 @@
     "org": "https://github.com/uber",
     "repos": [
      {
-      "name": "uber-go/zap",
-      "url": "https://github.com/uber-go/zap",
-      "desc": "Go용 초고속 구조화 로깅 라이브러리",
+      "name": "jaegertracing/jaeger",
+      "url": "https://github.com/jaegertracing/jaeger",
+      "desc": "분산 트레이싱 시스템(CNCF 졸업, Uber 발 오픈소스)",
       "lang": "Go",
-      "stars": 24525
+      "stars": 22891
      },
      {
       "name": "cadence-workflow/cadence",
       "url": "https://github.com/cadence-workflow/cadence",
-      "desc": "장기 실행 비즈니스 로직을 내구성 있게 실행하는 워크플로 오케스트레이션 엔진",
+      "desc": "장기 실행 비즈니스 워크플로를 내구성 있게 오케스트레이션하는 엔진",
       "lang": "Go",
-      "stars": 9329
+      "stars": 9338
      },
      {
       "name": "uber/h3",
       "url": "https://github.com/uber/h3",
-      "desc": "육각형 계층 지리공간 인덱싱 시스템 — 매칭·수요예측의 공간 단위",
+      "desc": "육각형 계층 지리공간 인덱싱 시스템(매칭·surge의 공간 단위)",
       "lang": "C",
-      "stars": 6321
+      "stars": 6329
      },
      {
       "name": "uber/ringpop-go",
       "url": "https://github.com/uber/ringpop-go",
-      "desc": "gossip + 일관 해싱으로 상태를 노드에 분산하는 애플리케이션 계층 샤딩 라이브러리",
+      "desc": "gossip + 일관 해싱으로 상태를 노드에 분산하는 애플리케이션 샤딩 라이브러리",
       "lang": "Go",
       "stars": 880
      },
      {
       "name": "uber/peloton",
       "url": "https://github.com/uber/peloton",
-      "desc": "Mesos 기반 통합 자원 스케줄러 — 배치/스트리밍/서비스 워크로드 공존",
+      "desc": "배치·스트리밍·서비스 워크로드를 한 클러스터에 공존시키는 리소스 스케줄러",
       "lang": "Go",
       "stars": 646
      }
     ]
    },
    "sources": [
-    "https://www.uber.com/blog/microservice-architecture/",
-    "https://www.uber.com/blog/h3/",
-    "https://www.uber.com/blog/michelangelo-machine-learning-platform/"
+    "https://www.uber.com/blog/engineering/",
+    "https://www.uber.com/blog/cachefront/",
+    "https://www.uber.com/blog/architecture-of-uber-ad-system/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "cloudflare",
@@ -7895,54 +7927,57 @@
     "Rust",
     "Go",
     "JavaScript",
+    "TypeScript",
     "C",
-    "Lua",
     "Python"
    ],
    "stack": {
     "backend": [
-     "Rust (Pingora, Oxy)",
-     "Go (control plane APIs)",
-     "Workers (V8 isolates)",
+     "Rust (Pingora 프록시 프레임워크, Oxy 일반 프록시 프레임워크)",
+     "Go (control plane / API 서버, cloudflared)",
+     "Cloudflare Workers (V8 isolates, workerd 런타임)",
      "Cap'n Proto RPC",
      "gRPC",
-     "Lua (legacy FL on OpenResty/NGINX)"
+     "Lua (legacy FL — OpenResty/NGINX 기반, FL2/Pingora로 마이그레이션 중)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Remix/Pages",
-     "Tailwind"
+     "Remix (Pages)",
+     "Tailwind CSS",
+     "Wrangler CLI (Workers 개발 도구)"
     ],
     "data": [
-     "ClickHouse",
-     "Kafka",
-     "PostgreSQL",
-     "Quicksilver (KV)",
-     "Durable Objects",
-     "R2 (object storage)",
-     "D1 (edge SQLite)",
-     "Workers KV"
+     "ClickHouse (분석/관측)",
+     "Apache Kafka (이벤트 버스)",
+     "PostgreSQL (control plane 메타데이터)",
+     "Quicksilver (자체 분산 KV, 설정 전파)",
+     "Workers KV (엣지 eventually-consistent KV)",
+     "Durable Objects (단일 인스턴스 강한 일관성 상태)",
+     "R2 (S3 호환 객체 스토리지, egress 무료)",
+     "D1 (엣지 SQLite)"
     ],
     "infra": [
-     "Anycast edge network (300+ cities)",
-     "Kubernetes",
-     "BGP",
-     "XDP/eBPF (L4Drop)",
-     "Salt/config push",
-     "Linux"
+     "Anycast 엣지 네트워크 (330+ 도시)",
+     "동질 서버 플릿 (모든 서버가 모든 서비스 실행)",
+     "BGP / Anycast 라우팅",
+     "XDP/eBPF (L4Drop, Magic Firewall)",
+     "Salt (구성 관리)",
+     "Kubernetes (core 데이터센터 control plane)",
+     "Linux",
+     "Unimog (L4 로드밸런서)"
     ]
    },
    "architecture": [
-    "Edge computing / globally distributed",
-    "Anycast network",
-    "Serverless V8 isolates",
-    "Every server runs every service (homogeneous fleet)"
+    "Edge computing / 글로벌 분산 (모든 PoP에 동일 코드 배포)",
+    "Anycast 기반 단일 IP 글로벌 라우팅",
+    "Serverless V8 isolate 멀티테넌시 (프로세스 대신 isolate)",
+    "동질 플릿 — 서비스별 전용 하드웨어 없이 모든 머신이 전체 스택 실행"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    U[\"User / Browser<br/>HTTP HTTPS QUIC\"]\n  end\n  subgraph EdgePOP[\"Edge POP - Anycast\"]\n    LB[\"L4 Load Balance<br/>Unimog + XDP eBPF\"]\n    DDOS[\"DDoS Mitigation<br/>L4Drop dosd flowtrackd\"]\n    PROXY[\"HTTP Proxy<br/>Pingora / FL2 Rust\"]\n    WK[\"Workers Runtime<br/>V8 Isolates workerd\"]\n    CACHE[\"Cache Layer<br/>Tiered Cache + Reserve\"]\n  end\n  subgraph EdgeState[\"Edge State\"]\n    QS[\"Quicksilver<br/>global KV config\"]\n    DO[\"Durable Objects<br/>single-instance state\"]\n    D1[\"D1<br/>edge SQLite\"]\n  end\n  subgraph Storage[\"Storage / Origin\"]\n    R2[\"R2<br/>S3-compat object store\"]\n    PG[\"PostgreSQL<br/>control plane\"]\n    ORIGIN[\"Customer Origin<br/>via Argo Tunnel\"]\n  end\n  subgraph Analytics[\"Analytics / Async\"]\n    KAFKA[\"Kafka<br/>log pipeline\"]\n    CH[\"ClickHouse<br/>analytics OLAP\"]\n  end\n  U -->|Anycast BGP| LB\n  LB --> DDOS\n  DDOS --> PROXY\n  PROXY -->|cache miss| CACHE\n  PROXY --> WK\n  WK --> DO\n  WK --> D1\n  WK --> R2\n  CACHE -->|origin pull| ORIGIN\n  PROXY -.reads.-> QS\n  PROXY -->|request logs| KAFKA\n  KAFKA --> CH\n  PG -.config push.-> QS",
-   "why_language": "지구 전체 트래픽의 약 20%를 처리하는 엣지에서 1바이트의 메모리와 1마이크로초가 비용으로 직결되기 때문에, GC가 없고 메모리 안전성을 컴파일 타임에 보장하는 Rust를 데이터플레인(Pingora, Oxy, Workers 런타임)의 핵심 언어로 채택했다. C/Lua 기반 NGINX/OpenResty 레거시(FL)를 Rust로 대체해 메모리 취약점과 GC 멈춤을 제거했고, 개발 속도가 중요한 컨트롤플레인 API와 자동화는 Go로, 고객이 작성하는 서버리스 로직은 V8 위의 JavaScript/TypeScript로 실행한다.",
-   "why_architecture": "전 세계 어디서나 수십 밀리초 안에 응답하려면 중앙 데이터센터가 아니라 사용자 가까이에서 연산해야 하므로, Anycast로 단일 IP를 전 세계 POP이 공유하고 BGP가 가장 가까운 POP으로 라우팅한다. 또한 모든 서버가 모든 서비스(프록시·캐시·Workers·DDoS 방어)를 동일하게 실행하는 동질적 fleet 구조로 용량을 유연하게 흡수하고, 컨테이너/VM 대신 V8 아이솔레이트를 써서 콜드스타트를 사실상 제거했다.",
-   "summary": "GC 없는 Rust 데이터플레인과 V8 아이솔레이트를 전 세계 Anycast 엣지에 균질하게 깔아 지연과 비용을 동시에 잡은 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / DNS\"]\n    U[\"User Browser/App<br/>HTTP/3 QUIC\"]\n    DNS[\"Anycast DNS<br/>1.1.1.1\"]\n  end\n  subgraph EdgePOP[\"Edge PoP (330+ cities)\"]\n    XDP[\"L4 Mitigation<br/>XDP/eBPF L4Drop\"]\n    LB[\"L4 Load Balancer<br/>Unimog\"]\n    FL[\"HTTP Proxy<br/>Pingora/FL2 Rust\"]\n    WK[\"Serverless Runtime<br/>Workers workerd V8\"]\n    CACHE[\"Cache Engine<br/>Tiered Cache + NVMe\"]\n  end\n  subgraph EdgeState[\"Edge State / Storage\"]\n    QS[\"Config KV<br/>Quicksilver\"]\n    KV[\"Workers KV<br/>eventual\"]\n    DO[\"Durable Objects<br/>strong consistency\"]\n    D1[\"D1<br/>edge SQLite\"]\n    R2[\"R2 Object Store<br/>S3-compatible\"]\n  end\n  subgraph Control[\"Control Plane (core DC)\"]\n    API[\"API Servers<br/>Go + gRPC\"]\n    PG[\"PostgreSQL<br/>metadata\"]\n    K8S[\"Kubernetes\"]\n  end\n  subgraph Analytics[\"Analytics / Async\"]\n    KAFKA[\"Kafka<br/>event bus\"]\n    CH[\"ClickHouse<br/>analytics\"]\n  end\n  U -->|QUIC/TLS| XDP\n  DNS --> U\n  XDP --> LB --> FL\n  FL -->|isolate dispatch| WK\n  FL --> CACHE\n  CACHE -->|miss| R2\n  WK --> KV\n  WK --> DO\n  WK --> D1\n  FL -->|config read| QS\n  API -->|Cap'n Proto push| QS\n  API --> PG\n  K8S --- API\n  FL -->|logs| KAFKA\n  WK -->|events| KAFKA\n  KAFKA --> CH",
+   "why_language": "Cloudflare는 전 세계 PoP에서 초당 수천만 요청을 처리하는 데이터플레인을 운영하기 때문에, 메모리 안전성과 C에 준하는 성능을 동시에 주는 Rust를 프록시·런타임 핵심(Pingora, Oxy, workerd)에 채택했다. 반면 control plane API와 cloudflared 같은 서비스는 개발 생산성과 동시성 처리가 중요해 Go를 쓰고, 고객 코드 실행 계층은 V8 isolate 위에서 JavaScript/TypeScript/WASM을 직접 구동한다. 패킷 수준 DDoS 방어는 커널에서 처리해야 하므로 C와 XDP/eBPF를 사용한다.",
+   "why_architecture": "보안·CDN 도메인 특성상 사용자와 물리적으로 가까운 곳에서 트래픽을 종단(terminate)하고 공격을 흡수해야 하므로, 단일 Anycast IP로 전 세계 트래픽을 가장 가까운 PoP로 끌어오는 글로벌 엣지 구조가 핵심이다. 또한 '모든 서버가 모든 서비스를 실행'하는 동질 플릿 설계로 용량을 유연하게 재배치하고 운영 복잡도를 낮춘다. 서버리스는 컨테이너/VM 대신 V8 isolate로 멀티테넌시를 구현해 콜드스타트를 수 ms로 줄이고 한 머신에 수만 개 테넌트를 밀집시킨다.",
+   "summary": "Rust로 데이터플레인을 다시 쓰고, 단일 Anycast IP와 동질 엣지 플릿 위에 V8 isolate 서버리스를 얹은 글로벌 보안·엣지 컴퓨팅 회사",
    "deep_dive": [
     {
      "topic": "Anycast: 하나의 IP를 전 세계가 공유하는 라우팅",
@@ -7979,6 +8014,22 @@
     {
      "topic": "캐싱 계층의 구조: Tiered Cache, Cache Reserve, Argo Smart Routing",
      "body": "Cloudflare의 캐시는 단일 계층이 아니라 오리진 부하를 줄이고 hit rate를 극대화하는 다층 구조다.\n\n### 기본 — POP 로컬 캐시\n각 POP에는 디스크/메모리 기반 캐시가 있다. 사용자와 가까운 POP에서 캐시 히트가 나면 오리진까지 가지 않는다. 하지만 POP이 300개가 넘다 보니, 캐시를 POP마다 독립적으로 채우면 같은 객체를 여러 POP이 각각 오리진에서 받아와 **오리진 부하가 POP 수만큼 증폭**되는 문제가 생긴다.\n\n### Tiered Cache — 상·하위 계층 위계\n이를 풀기 위해 `Tiered Cache`는 POP을 lower-tier(사용자 근처)와 upper-tier(오리진 근처 또는 대형 허브)로 위계화한다. lower-tier에서 미스가 나면 오리진으로 직행하지 않고 **upper-tier에 먼저 물어본다.** 그 결과 오리진은 사실상 소수의 upper-tier로부터만 풀 요청을 받게 되어 오리진 적중 트래픽이 극적으로 줄고 전체 hit rate가 오른다. Argo Tiered Cache는 토폴로지를 동적으로 최적화한다.\n\n### Cache Reserve — R2 기반 영속 캐시\n`Cache Reserve`는 R2를 백엔드로 하는 영속적 캐시 계층이다. 일반 캐시는 인기도/공간에 따라 evict되지만, Cache Reserve에 넣은 객체는 장기 보존되어 잘 안 쓰이는 콘텐츠도 오리진까지 가지 않고 서빙된다. egress 무료인 R2 특성과 결합해 오리진 풀을 최소화한다.\n\n### Argo Smart Routing\n캐시 미스로 오리진까지 가야 할 때, 공용 인터넷의 혼잡 경로 대신 Cloudflare 백본에서 실시간 지연/패킷손실 측정 기반의 최적 경로로 트래픽을 보낸다. 마치 '인터넷의 웨이즈(Waze)'처럼 혼잡 구간을 우회해 오리진 왕복 지연을 줄인다.\n\n### 종합 흐름\n사용자 → lower-tier POP 캐시 → (미스) upper-tier 캐시 → (미스) Cache Reserve(R2) → (미스) Argo 최적 경로로 오리진 풀. 각 단계가 다음 단계의 부하를 흡수해, 오리진은 전체 요청의 극히 일부만 보게 된다. 이것이 'eyeball에 가까운 캐시 + 오리진 부하 집약'이라는 두 목표를 동시에 만족시키는 설계다."
+    },
+    {
+     "topic": "Oxy — Pingora를 넘어서는 차세대 프록시 프레임워크",
+     "body": "### Pingora와 Oxy의 관계\n많은 글이 Pingora만 언급하지만, Cloudflare 내부에서 Pingora는 **프록시를 만들기 위한 라이브러리/프레임워크**이고, 그 위에서 동작하는 범용 프록시 애플리케이션 프레임워크가 `Oxy`다. Pingora가 NGINX의 워커 모델·커넥션 풀·이벤트 루프를 Rust로 재구현한 '엔진'이라면, Oxy는 그 엔진을 써서 L4(TCP/UDP)부터 L7(HTTP)까지 다양한 프로토콜의 프록시를 빠르게 찍어내는 '플랫폼'이다.\n\n### 왜 NGINX를 버렸나\n기존 FL(Front Line)은 OpenResty(NGINX + Lua) 기반이었다. 문제는 세 가지였다.\n\n- **멀티프로세스 + 공유 불가 커넥션 풀**: NGINX는 워커 프로세스마다 독립적인 업스트림 커넥션 풀을 가져, 동일 오리진에 대한 커넥션 재사용률이 낮았다. Pingora는 **스레드 간 공유 커넥션 풀**을 두어 오리진 연결 재사용을 크게 높였고, 이것만으로 새 커넥션 수립(TLS 핸드셰이크 포함)을 대폭 줄였다.\n- **Lua의 성능·안전성 한계**: 핫패스 로직을 Lua로 짜다 보니 GC 지연과 타입 안전성 문제가 누적됐다.\n- **커스터마이징의 어려움**: NGINX 내부에 깊은 기능을 넣으려면 C 모듈을 작성하거나 NGINX 자체를 패치해야 했다.\n\n### 동작 메커니즘\nPingora는 Rust의 `tokio` 비동기 런타임 위에서 **work-stealing 멀티스레드** 모델로 동작한다. NGINX의 'CPU 코어당 1 프로세스, 프로세스 간 비공유' 모델과 달리, Pingora는 한 프로세스 안에서 여러 스레드가 작업 큐를 공유하므로 특정 코어로 트래픽이 몰려도 다른 코어가 일을 훔쳐가 부하가 평탄화된다.\n\n요청 수명주기는 `request_filter → upstream_peer → connected_to_upstream → response_filter → logging` 같은 **단계별 필터 훅**으로 노출되어, 각 단계에 Rust 코드로 비즈니스 로직(인증, 캐시 결정, 헤더 변조 등)을 끼워 넣는다. 이는 NGINX의 phase handler 개념을 Rust 타입 시스템으로 안전하게 옮긴 것이다.\n\n### 실제 효과 (공개 수치)\nCloudflare가 공개한 바로는 Pingora 전환 후 동일 트래픽 처리에 **CPU 약 70%, 메모리 약 67% 절감**, 오리진 커넥션 재사용 개선으로 평균 TTFB 단축. 무엇보다 Rust의 메모리 안전성 덕에 buffer overflow류 취약점 클래스가 구조적으로 사라졌다. 현재 FL2(Pingora 기반)로 기존 Lua FL 트래픽을 점진 이관 중이다."
+    },
+    {
+     "topic": "Unimog — 동질 플릿을 떠받치는 L4 로드밸런서와 일관성 해싱",
+     "body": "### '모든 서버가 모든 서비스를 실행한다'의 실제 구현\nCloudflare의 동질 플릿(homogeneous fleet) 철학은 멋진 말이지만, 실제로 트래픽을 어떻게 균등 분배하느냐가 관건이다. 그 답이 자체 L4 로드밸런서 `Unimog`다.\n\n### 문제 상황\nAnycast로 들어온 패킷은 가장 가까운 PoP의 라우터에 도착한다. 라우터는 ECMP(Equal-Cost Multi-Path)로 PoP 내 여러 서버에 패킷을 흩뿌리는데, 이때 **어떤 패킷이 어느 서버로 갈지**는 라우터의 해시에 달려 있다. 문제는 서버가 추가/제거되거나 ECMP 그룹이 바뀌면 해시 매핑이 통째로 흔들려 **기존 TCP 연결이 엉뚱한 서버로 가서 끊기는** 것이다.\n\n### Unimog의 동작\nUnimog는 각 서버에서 동작하는 eBPF/XDP 기반 분산 로드밸런서다. 핵심 아이디어:\n\n1. **라우터는 대충 뿌린다**: ECMP가 패킷을 PoP 내 아무 서버에나 보낸다.\n2. **서버가 다시 라우팅한다**: 패킷을 받은 서버는 일관성 해싱(consistent hashing)으로 '이 흐름(flow)의 진짜 주인 서버'를 계산한다. 자기 자신이면 처리하고, 아니면 GUE(Generic UDP Encapsulation)로 캡슐화해 올바른 서버로 포워딩한다.\n3. **flow 상태 추적**: 각 서버는 자신이 처리 중인 연결의 flow table을 유지해, 멤버십이 바뀌어도 진행 중인 연결은 계속 같은 서버로 보내 무중단(connection draining)을 보장한다.\n\n### 왜 중요한가\n이 구조 덕분에 Cloudflare는 **서버를 무중단으로 빼고 넣을** 수 있다. 유지보수·배포 시 특정 서버를 풀에서 drain하면 신규 연결은 다른 서버로, 기존 연결은 끝날 때까지 그 서버에서 처리된다. 결과적으로 '모든 서버가 동일하게 모든 트래픽을 받을 수 있다'는 동질 플릿이 운영상 현실이 된다. XDP에서 패킷을 커널 네트워크 스택에 올리기 전에 처리하므로 포워딩 오버헤드도 극히 낮다."
+    },
+    {
+     "topic": "Workers 배포 파이프라인 — 전 세계에 코드를 수십 초 만에 뿌리는 법",
+     "body": "### 컨테이너 배포와 근본적으로 다른 문제\n일반적인 서버리스(AWS Lambda)는 코드를 리전 단위로 배포하지만, Workers는 **330개 이상 도시의 모든 머신**에 동일 코드를 올려야 한다. 게다가 사용자가 `wrangler deploy`를 치면 수 초 내에 전 세계가 새 버전을 실행하길 기대한다. 이걸 가능케 하는 것이 Cloudflare의 설정 전파 시스템이다.\n\n### Quicksilver — 글로벌 설정 전파의 심장\nWorker 코드(번들된 JS/WASM)와 라우팅 규칙·DNS 레코드·WAF 규칙 등 거의 모든 '설정성 데이터'는 자체 분산 KV 스토어 `Quicksilver`로 전파된다. 특징:\n\n- **읽기 최적화 극단**: 모든 엣지 서버가 Quicksilver 데이터의 **완전한 로컬 복제본**을 들고 있다. 따라서 핫패스에서 설정을 읽을 때 네트워크 왕복이 0이다(로컬 디스크/메모리 읽기).\n- **쓰기는 중앙 → 팬아웃**: core 데이터센터에서 쓰기가 일어나면 글로벌로 비동기 전파된다. 공개된 목표 전파 지연은 **전 세계 p99 수 초**(대략 수백 ms~수 초) 수준이다.\n- **스토리지 엔진 진화**: 초기에는 Kyoto Tycoon 기반이었으나 확장 한계로 자체 엔진 Quicksilver로 교체했다.\n\n### Workers 코드의 실제 흐름\n1. 개발자가 `wrangler deploy` → 코드가 업로드되어 V8 isolate 스냅샷 친화적 번들로 가공된다.\n2. 메타데이터·코드 참조가 Quicksilver에 기록된다.\n3. 글로벌 팬아웃으로 모든 PoP가 새 버전을 받는다.\n4. 엣지에서 첫 요청이 오면 해당 isolate가 **콜드스타트되지만, V8 isolate는 프로세스가 아니라서 보통 5ms 미만**(스냅샷 활용 시 더 빠름)에 준비된다. 이미 다른 요청이 깨워 둔 isolate가 있으면 재사용된다.\n\n### 트레이드오프\n이 설계는 '읽기 압도적 우위, 강한 일관성 포기'를 택한 것이다. 설정 변경이 전 세계에 동시에 반영되진 않지만(eventually consistent), 핫패스 읽기가 0 왕복이라 요청 지연에 설정 조회 비용이 전혀 더해지지 않는다. 보안·성능이 생명인 데이터플레인에서 이 트레이드오프는 합리적이다."
+    },
+    {
+     "topic": "관측성 — Cap'n Proto 로그 파이프라인과 ClickHouse 집계",
+     "body": "### 초당 수천만 요청의 로그를 어떻게 다루나\n전 세계 데이터플레인이 처리하는 모든 요청은 분석·과금·보안 탐지·디버깅을 위해 메타데이터를 남겨야 한다. 절대 규모상 일반적인 JSON 로깅은 직렬화 비용만으로도 CPU를 잡아먹는다.\n\n### Cap'n Proto — 직렬화 비용 제로 지향\nCloudflare는 엣지 로그 직렬화에 `Cap'n Proto`를 광범위하게 쓴다(Cap'n Proto 자체가 Cloudflare에 합류한 Kenton Varda의 작품이며, 같은 인물이 Workers 런타임 workerd의 설계자다). Cap'n Proto는 **'인코딩 단계가 없는'** 직렬화 포맷이다 — 메모리상 구조가 곧 wire 포맷이라, 객체를 만들면 바이트를 그대로 전송할 수 있어 Protocol Buffers 대비 직렬화/역직렬화 오버헤드가 거의 없다. 핫패스에서 모든 요청마다 로그를 만드는 상황에서 이 차이는 누적되면 막대하다.\n\n### 파이프라인 흐름\n```\n엣지 서버 (FL/Pingora/Workers)\n  └─ Cap'n Proto 로그 생성\n       └─ 로컬 수집 데몬 (logfwdr 등)\n            └─ Kafka (버퍼링 / 백프레셔 흡수)\n                 └─ ClickHouse (컬럼형 집계 저장)\n                      └─ GraphQL Analytics API / 대시보드\n```\n\n- **Kafka**는 엣지에서 쏟아지는 폭발적 로그를 흡수하는 버퍼이자, 여러 소비자(분석, 보안 탐지, 과금)에게 같은 스트림을 팬아웃하는 이벤트 버스 역할을 한다.\n- **ClickHouse**는 컬럼형 + 벡터화 실행 엔진으로, '특정 zone의 지난 24시간 5xx 비율을 1분 단위로' 같은 시계열 집계를 수십억 row에서도 초 단위로 처리한다. Cloudflare는 ClickHouse를 대규모로 운영하는 대표적 사례이며, raw 이벤트를 그대로 두지 않고 **materialized view로 사전 집계(roll-up)** 해 쿼리 비용과 저장량을 동시에 줄인다.\n\n### 고객에게 노출되는 형태\n이 데이터는 GraphQL Analytics API와 대시보드로 노출된다. 흥미로운 점은 분석 쿼리 자체도 사전 집계된 aggregate 테이블 위에서 돌아, 고객이 임의 기간을 조회해도 raw 스캔이 아니라 roll-up 스캔으로 응답한다는 것이다. 이것이 '초당 수천만 이벤트'를 받으면서도 대시보드가 즉각 응답하는 비결이다."
     }
    ],
    "debate": {
@@ -8083,47 +8134,47 @@
      {
       "name": "cloudflare/pingora",
       "url": "https://github.com/cloudflare/pingora",
-      "desc": "NGINX를 대체한 Rust 비동기 HTTP 프록시 프레임워크/엔진",
+      "desc": "NGINX를 대체한 Rust 비동기 멀티스레드 프록시 프레임워크",
       "lang": "Rust",
-      "stars": 26828
+      "stars": 26836
+     },
+     {
+      "name": "cloudflare/cloudflared",
+      "url": "https://github.com/cloudflare/cloudflared",
+      "desc": "오리진과 엣지를 잇는 Tunnel 클라이언트(Go)",
+      "lang": "Go",
+      "stars": 14555
      },
      {
       "name": "cloudflare/quiche",
       "url": "https://github.com/cloudflare/quiche",
-      "desc": "QUIC 및 HTTP/3 프로토콜의 Rust 구현체",
+      "desc": "QUIC와 HTTP/3 프로토콜의 Rust 구현체",
       "lang": "Rust",
-      "stars": 11562
-     },
-     {
-      "name": "cloudflare/cfssl",
-      "url": "https://github.com/cloudflare/cfssl",
-      "desc": "PKI/TLS 인증서 발급 및 번들링 툴킷",
-      "lang": "Go",
-      "stars": 9437
+      "stars": 11566
      },
      {
       "name": "cloudflare/workerd",
       "url": "https://github.com/cloudflare/workerd",
-      "desc": "Workers를 구동하는 V8 아이솔레이트 기반 서버리스 런타임",
+      "desc": "Workers를 구동하는 오픈소스 V8 isolate 런타임",
       "lang": "C++",
-      "stars": 8307
+      "stars": 8322
      },
      {
       "name": "cloudflare/boringtun",
       "url": "https://github.com/cloudflare/boringtun",
-      "desc": "WARP에 쓰이는 WireGuard 프로토콜의 사용자공간 Rust 구현",
+      "desc": "WireGuard 프로토콜의 사용자공간 Rust 구현 (WARP 기반)",
       "lang": "Rust",
-      "stars": 7082
+      "stars": 7090
      }
     ]
    },
    "sources": [
     "https://blog.cloudflare.com/how-we-built-pingora-the-proxy-that-connects-cloudflare-to-the-internet/",
-    "https://blog.cloudflare.com/introducing-durable-objects/",
-    "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/"
+    "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+    "https://blog.cloudflare.com/moving-quicksilver-into-production/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-18"
   },
   {
    "key": "apple",
