@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6621건** 공고 · **1308개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-19 11:31
+- 총 **6637건** 공고 · **1314개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-19 13:18
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (362개사)
+## HR/채용 (366개사)
 ### (주)제이투이 `중소기업` · 21건
 - **백엔드** [6건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -892,6 +892,26 @@ markmap:
 - **데이터** [1건] · `Go` `FastAPI` `MongoDB` `Elasticsearch` `AWS` `GCP`
   - [머신러닝 엔지니어 (2년이상) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=51067949&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=2810b810-ff55-4539-bd83-af6ba03eb82e)
 
+### 피플뱅크코리아(주) `중소기업` · 4건
+- **백엔드** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
+  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
+- **프론트엔드** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
+  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
+- **풀스택** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
+  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
+- **AI/ML** [4건] · `Python` `C++` `Java` `TypeScript` `React` `Vue`
+  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
+  - [(서초) AI 인프라 솔루션 전문기업 LLM Platform Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54091677&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=ad39637b-b4c4-4a37-b01f-0fa00f007103)
+  - [(서초) AI 인프라 솔루션 전문기업 GPU 소프트웨어 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54226581&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=aca2fb10-64d0-4517-818c-c1072b8f6627)
+  - [(서초) AI 인프라 솔루션 전문기업 시스템 소프트웨어 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54226584&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=aca2fb10-64d0-4517-818c-c1072b8f6627)
+- **데이터** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
+  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
+- **DevOps/인프라** [4건] · `Python` `C++` `Java` `TypeScript` `React` `Vue`
+  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
+  - [(서초) AI 인프라 솔루션 전문기업 LLM Platform Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54091677&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=ad39637b-b4c4-4a37-b01f-0fa00f007103)
+  - [(서초) AI 인프라 솔루션 전문기업 GPU 소프트웨어 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54226581&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=aca2fb10-64d0-4517-818c-c1072b8f6627)
+  - [(서초) AI 인프라 솔루션 전문기업 시스템 소프트웨어 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54226584&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=aca2fb10-64d0-4517-818c-c1072b8f6627)
+
 ### (주)스카우트 `중소기업` · 4건
 - **백엔드** [1건] · `Java` `Python` `JavaScript` `React` `HTML`
   - [빅데이터 플랫폼 구축 (분석/설계/개발/PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54042365&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=aebb5ada-6047-4ce6-9563-218447ed0c70)
@@ -922,6 +942,13 @@ markmap:
 - **DevOps/인프라** [2건] · `AWS` `Kubernetes` `GitLab CI` `Kafka` `Jira` `Confluence`
   - [데이터분석(Business Intelligence) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54142466&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=b3b9a8c2-606c-43ba-9b88-746eea703f0a)
   - [데이터엔지니어링(ML Ops) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54142103&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=83262362-5e3e-4621-a7bd-6f1216327157)
+
+### 삼성메디슨(주) `중소기업` · 4건
+- **AI/ML** [2건] · `Python` `TensorFlow` `PyTorch` `C++` `C#`
+  - [(AI개발) '설명가능 AI (XAI) 개발' 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211527&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e035709e-01e2-4347-ba92-6689cbbb6120)
+  - [(AI개발) '영상 AI 개발' 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211541&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=51045104-9ae0-4e16-9a5b-f319b3b6bac2)
+- **보안** [1건]
+  - [(보안) '정보보안' 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211442&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f0bc6d20-ebab-4915-91e3-2111e8ea3805)
 
 ### 컴투스 `대기업` · 4건
 - **백엔드** [2건] · `MySQL` `PostgreSQL` `AWS` `Java` `Kotlin` `Express`
@@ -1459,12 +1486,6 @@ markmap:
   - [경력직 채용공고(AI 디지털전환 전략 및 기획) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199236&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=853f8cf1-3809-4e80-b77f-87fecd232609)
   - [경력직 채용공고(장기보상업무 자동화/AI기술도입) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199208&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=942702db-15c8-4f87-bba9-8ea0c70534df)
   - [경력직 채용공고(AI Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54199226&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=752f3ba1-444c-4909-9151-d508c8cc9ace)
-
-### 삼성메디슨(주) `중소기업` · 3건
-- **AI/ML** [1건] · `Python` `C++` `C#`
-  - [(AI개발) '영상 AI 개발' 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211541&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=51045104-9ae0-4e16-9a5b-f319b3b6bac2)
-- **보안** [1건]
-  - [(보안) '정보보안' 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211442&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f0bc6d20-ebab-4915-91e3-2111e8ea3805)
 
 ### 현대건설(주) `대기업` · 3건
 - **DevOps/인프라** [2건] · `AWS` `Azure`
@@ -2021,6 +2042,13 @@ markmap:
   - [(경력) 안드로이드 및 IOS 컨텐츠 QA 엔지니어 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49396796?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=76&sc=630)
 - **QA** [1건] · `Selenium` `Appium` `Jira`
   - [(경력) 안드로이드 및 IOS 컨텐츠 QA 엔지니어 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49396796?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=76&sc=630)
+
+### ㈜케이에스에이솔루션 `중소기업` · 2건
+- **백엔드** [1건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
+  - [(부산) IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630)
+- **모바일** [2건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
+  - [(부산) IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630)
+  - [(부산) IT 프로젝트 개발자 모집 (웹/IOS/Android) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225888&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1566bc64-3ef9-4f68-86cf-891d5abe7d96)
 
 ### ㈜스마트코어 `중소기업` · 2건
 - **백엔드** [2건] · `Git` `Swift` `iOS` `REST API` `Java` `Python`
@@ -2704,22 +2732,6 @@ markmap:
   - [Node.js 백엔드 경력직 개발자 모집합니다. ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54169558&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=db6fc8df-d262-4f5a-ab24-ee3325fde5b8)
   - [(주)아이티앱스에서 앱 경력 개발자를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54169567&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=c9d55545-0a0e-43c5-b18d-d776ca6b2eef)
 
-### 피플뱅크코리아(주) `중소기업` · 2건
-- **백엔드** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
-  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
-- **프론트엔드** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
-  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
-- **풀스택** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
-  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
-- **AI/ML** [2건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
-  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
-  - [(서초) AI 인프라 솔루션 전문기업 LLM Platform Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54091677&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=ad39637b-b4c4-4a37-b01f-0fa00f007103)
-- **데이터** [1건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
-  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
-- **DevOps/인프라** [2건] · `Java` `TypeScript` `React` `Vue` `Next.js` `Spring`
-  - [(마포) 공간정보 AI 기술기업 풀스택 개발자(PL) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047094&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=970d46c6-2331-47ef-85a8-3a513ab81958)
-  - [(서초) AI 인프라 솔루션 전문기업 LLM Platform Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54091677&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=ad39637b-b4c4-4a37-b01f-0fa00f007103)
-
 ### (주)시니어앤파트너즈 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `Kotlin` `Python` `Node.js` `Spring` `Spring Boot`
   - [(문래역) 웹개발자 풀스택(1년-3년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54085117&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=4c01b9f4-144f-46a1-934c-a2590abf6fdf)
@@ -2758,6 +2770,18 @@ markmap:
 - **풀스택** [2건] · `Java` `JavaScript` `TypeScript` `Spring` `Spring Boot` `MSA`
   - [Java & 웹 개발자 (풀스택) 채용. 경력 7년이상  / Senior ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53978260&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=84bf39f3-3d3e-4548-9c27-23238eed46d2)
   - [Java & 웹 개발자 (풀스택) 모집. 경력 7년이상  / Senior ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54151143&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=fd511eef-cd02-472c-8e8a-03b779ac7e02)
+
+### (주)피플케어코리아 `중소기업` · 2건
+- **백엔드** [1건] · `Java` `TypeScript` `React` `Next.js` `Node.js` `Spring`
+  - [풀스택 경력 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54096917&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=84bf39f3-3d3e-4548-9c27-23238eed46d2)
+- **프론트엔드** [1건] · `Java` `TypeScript` `React` `Next.js` `Node.js` `Spring`
+  - [풀스택 경력 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54096917&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=84bf39f3-3d3e-4548-9c27-23238eed46d2)
+- **풀스택** [1건] · `Java` `TypeScript` `React` `Next.js` `Node.js` `Spring`
+  - [풀스택 경력 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54096917&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=84bf39f3-3d3e-4548-9c27-23238eed46d2)
+- **AI/ML** [1건] · `Java` `TypeScript` `React` `Next.js` `Node.js` `Spring`
+  - [풀스택 경력 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54096917&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=84bf39f3-3d3e-4548-9c27-23238eed46d2)
+- **데이터** [1건] · `Python`
+  - [데이터 분석가 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54226311&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=55325058-f598-4bd6-8d34-1297724a713f)
 
 ### (주)와이즈스톤 `중소기업` · 2건
 - **백엔드** [1건] · `Python` `JavaScript` `React` `Vue` `HTML` `CSS`
@@ -3081,6 +3105,8 @@ markmap:
 
 ### 서울데이타통신(주) `중소기업` · 2건
 
+### (주)씨아이솔루션 `중소기업` · 2건
+
 ### (주)발렉스서비스 `중소기업` · 2건
 
 ### (주)모비핀테크놀러지 `중소기업` · 2건
@@ -3164,8 +3190,10 @@ markmap:
   - [(주)프레쉬아워에서 React Native 개발자 모시고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54134651&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=a2b35f33-5d18-4ae2-a1da-c3a610de4bc9)
   - [(주)프레쉬아워와 함께할 Server Developer를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54134744&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=d336c475-7ad6-4df5-84e9-fbedfb544533)
 
+### 한국생산기술연구원 `중소기업` · 2건
 
-## B2B SaaS/엔터프라이즈 (162개사)
+
+## B2B SaaS/엔터프라이즈 (163개사)
 ### 26도라인 `중소기업` · 14건
 - **백엔드** [9건] · `JavaScript` `REST API` `Java` `Spring` `PHP` `Node.js`
   - [JAVA 풀스택 개발자 경력 ↗](https://jumpit.saramin.co.kr/position/53739543)
@@ -4656,6 +4684,11 @@ markmap:
 - **프론트엔드** [2건] · `JavaScript` `TypeScript` `React` `Node.js` `MySQL` `PostgreSQL`
   - [(이든앤앨리스마케팅) IT개발자 Frontend / Backend Developer 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49399080?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=64&sc=630)
   - [IT 개발자(Frontend/Backend Developer) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54212596&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=ad783aec-d044-45a7-b9a1-aad1cc8f92c2)
+
+### 한진정보통신㈜ `중소기업` · 2건
+- **백엔드** [2건] · `Java` `Spring` `Spring Boot` `PostgreSQL` `Docker` `Kubernetes`
+  - [경력직 백엔드 개발자 모집 - 그룹웨어 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49409823?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=66&sc=630)
+  - [(SW개발) 경력직 백엔드 개발자 채용 - 그룹웨어 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/556881?ReturnUrl=RecruitInfo)
 
 ### ㈜트렌짓솔루션 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `Node.js` `AWS` `Docker` `Jenkins` `Git`
@@ -9458,6 +9491,17 @@ markmap:
 - **AI/ML** [1건] · `Angular`
   - [(AI 디지털헬스케어사업팀) Angular 프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/367222)
 
+### 페이민트 `중소기업` · 3건
+- **백엔드** [1건] · `Java` `Kotlin` `Spring` `MySQL` `AWS` `Docker`
+  - [서버 백엔드 개발자(Java/Kotlin) ↗](https://www.wanted.co.kr/wd/272871)
+- **프론트엔드** [2건] · `Vue` `Next.js` `TypeScript` `React`
+  - [프론트엔드 시니어 개발자 ↗](https://www.wanted.co.kr/wd/369602)
+  - [프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/284621)
+- **모바일** [1건] · `Java` `Kotlin` `Spring` `MySQL` `AWS` `Docker`
+  - [서버 백엔드 개발자(Java/Kotlin) ↗](https://www.wanted.co.kr/wd/272871)
+- **DevOps/인프라** [1건] · `Java` `Kotlin` `Spring` `MySQL` `AWS` `Docker`
+  - [서버 백엔드 개발자(Java/Kotlin) ↗](https://www.wanted.co.kr/wd/272871)
+
 ### 에이젠글로벌 `중소기업` · 3건
 - **백엔드** [2건] · `PostgreSQL` `RabbitMQ` `Git` `Python` `Django` `FastAPI`
   - [BackEnd Developer (Python) ↗](https://www.wanted.co.kr/wd/355498)
@@ -9732,16 +9776,6 @@ markmap:
 - **DevOps/인프라** [1건] · `Java` `Spring` `Spring Boot` `AWS` `Docker` `Git`
   - [백엔드 개발자 ↗](https://www.wanted.co.kr/wd/346356)
 
-### 페이민트 `중소기업` · 2건
-- **백엔드** [1건] · `Java` `Kotlin` `Spring` `MySQL` `AWS` `Docker`
-  - [서버 백엔드 개발자(Java/Kotlin) ↗](https://www.wanted.co.kr/wd/272871)
-- **프론트엔드** [1건] · `TypeScript` `React` `Vue`
-  - [프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/284621)
-- **모바일** [1건] · `Java` `Kotlin` `Spring` `MySQL` `AWS` `Docker`
-  - [서버 백엔드 개발자(Java/Kotlin) ↗](https://www.wanted.co.kr/wd/272871)
-- **DevOps/인프라** [1건] · `Java` `Kotlin` `Spring` `MySQL` `AWS` `Docker`
-  - [서버 백엔드 개발자(Java/Kotlin) ↗](https://www.wanted.co.kr/wd/272871)
-
 ### 원가람 `중소기업` · 2건
 - **백엔드** [2건] · `JavaScript` `TypeScript` `PHP` `MySQL` `Redis` `Elasticsearch`
   - [백엔드 개발자 ↗](https://www.wanted.co.kr/wd/346590)
@@ -9965,7 +9999,7 @@ markmap:
   - [Lead DevOps/AI Platform Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53762774&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
   - [DevOps 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53808785&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=a34a4bc5-348f-4758-8a01-0ff749beeef8)
 
-### 엔에이치엔클라우드 `대기업` · 13건
+### 엔에이치엔클라우드 `대기업` · 14건
 - **백엔드** [3건] · `Kubernetes` `Java` `Spring` `Python` `TypeScript` `React`
   - [AI 전환 백엔드 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/48948348?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=10&sc=630)
   - [PaaS 백엔드 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49407827?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=17&sc=630)
@@ -10013,23 +10047,23 @@ markmap:
   - [모바일 엔지니어 (Flutter) ↗](https://www.wanted.co.kr/wd/262121)
   - [프론트엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/229817)
 
-### 퍼플아카데미 `중소기업` · 9건
+### 퍼플아카데미 `중소기업` · 10건
 - **백엔드** [8건] · `TypeScript` `Git` `REST API` `JavaScript` `React` `HTML`
   - [AI 활용 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/365144)
   - [AI 활용 앱 웹 프론트앤드 개발자 ↗](https://www.wanted.co.kr/wd/365320)
   - [AI 활용 백엔드 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54040179)
   - [AI 활용 앱 웹 프론트엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54040305)
-- **프론트엔드** [5건] · `JavaScript` `TypeScript` `React` `HTML` `CSS` `Git`
+- **프론트엔드** [6건] · `TypeScript` `React` `CSS` `JavaScript` `Next.js` `HTML`
   - [AI 활용 앱 웹 프론트앤드 개발자 ↗](https://www.wanted.co.kr/wd/365320)
   - [AI 활용 앱 웹 프론트엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54040305)
+  - [AI 프로덕트 매니저 (AI Product Manager) ↗](https://jumpit.saramin.co.kr/position/54225052)
   - [(퍼플아카데미) AI 활용 앱 웹 프론트엔드 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49281984?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=10&sc=630)
-  - [AI 활용 앱 웹 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54040305&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=9e417419-8a02-41ba-ad1b-5f2e69c610e1)
 - **모바일** [4건] · `JavaScript` `TypeScript` `React` `Next.js` `HTML` `CSS`
   - [AI 활용 앱 웹 프론트앤드 개발자 ↗](https://www.wanted.co.kr/wd/365320)
   - [AI 활용 앱 웹 프론트엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54040305)
   - [(퍼플아카데미) AI 활용 앱 웹 프론트엔드 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49281984?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=10&sc=630)
   - [AI 활용 앱 웹 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54040305&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=9e417419-8a02-41ba-ad1b-5f2e69c610e1)
-- **AI/ML** [9건] · `TypeScript` `Git` `REST API` `JavaScript` `React` `HTML`
+- **AI/ML** [10건] · `TypeScript` `Git` `REST API` `React` `CSS` `AWS`
   - [AI 활용 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/365144)
   - [AI 활용 앱 웹 프론트앤드 개발자 ↗](https://www.wanted.co.kr/wd/365320)
   - [생성형 AI 영상 콘텐츠 기획·제작 ↗](https://www.wanted.co.kr/wd/367693)
@@ -10797,7 +10831,7 @@ markmap:
   - [(진학사) 데이터분석 인재 채용 (경력무관) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/554113?ReturnUrl=RecruitInfo)
 
 
-## 보안 (71개사)
+## 보안 (72개사)
 ### 메가존클라우드(주) `중견기업` · 36건
 - **백엔드** [7건] · `Python` `AWS` `Azure` `React` `GCP` `Docker`
   - [AIR 부문 AI 전문 Engineer 채용 (경력) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49327201?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=70&sc=630)
@@ -11435,6 +11469,14 @@ markmap:
 - **보안** [2건] · `Java` `Linux` `Kotlin` `Spring` `Spring Boot` `PostgreSQL`
   - [(주)케이사인 본사 연구소 DB 보안솔루션 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54158381&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=49243410-6258-4e1d-ac3e-6f41a1b1afae)
   - [(주)케이사인 본사 연구소 JAVA 개발 신입/경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53609269&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=be64f2e1-f1b8-4a4b-b64a-471a1ca96423)
+
+### (주)비와이엔블랙야크 `중소기업` · 2건
+- **DevOps/인프라** [2건]
+  - [(BYN블랙야크) 정보보안·인프라 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54174878&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=999646a7-3d63-4991-9254-c02a635f44a0)
+  - [IT(정보보안·인프라) 부문 경력 채용 (6/15(월)~6/28(일)) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557005?ReturnUrl=RecruitInfo)
+- **보안** [2건]
+  - [(BYN블랙야크) 정보보안·인프라 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54174878&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=999646a7-3d63-4991-9254-c02a635f44a0)
+  - [IT(정보보안·인프라) 부문 경력 채용 (6/15(월)~6/28(일)) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557005?ReturnUrl=RecruitInfo)
 
 ### 삼정KPMG `중소기업` · 2건
 - **AI/ML** [1건] · `Python` `Azure`

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T11:36:00",
+ "generated_at": "2026-06-19T13:21:55",
  "total": 100,
  "countries": [
   {
@@ -1697,10 +1697,6 @@
      "count": 3
     },
     {
-     "name": "Java",
-     "count": 3
-    },
-    {
      "name": "JavaScript",
      "count": 3
     },
@@ -1711,6 +1707,10 @@
     {
      "name": "Ruby",
      "count": 3
+    },
+    {
+     "name": "Java",
+     "count": 2
     }
    ],
    "stack": {
@@ -1728,11 +1728,11 @@
       "count": 3
      },
      {
-      "name": "Go services",
+      "name": "Go",
       "count": 2
      },
      {
-      "name": "gRPC",
+      "name": "Go services",
       "count": 2
      },
      {
@@ -1763,7 +1763,7 @@
      },
      {
       "name": "React",
-      "count": 6
+      "count": 5
      },
      {
       "name": "Electron",
@@ -1836,7 +1836,7 @@
       "count": 1
      },
      {
-      "name": "AWS S3",
+      "name": "Apache Solr",
       "count": 1
      }
     ],
@@ -1889,7 +1889,7 @@
      "count": 1
     },
     {
-     "name": "Block-based recursive tree data model",
+     "name": "Block-based recursive tree 데이터 모델",
      "count": 1
     },
     {
@@ -1905,7 +1905,7 @@
      "count": 1
     },
     {
-     "name": "Cellular architecture",
+     "name": "Cellular architecture — AWS AZ 단위 셀 격리로 장애 반경 축소",
      "count": 1
     }
    ]
@@ -11725,51 +11725,54 @@
     "JavaScript",
     "Rust",
     "Python",
-    "Java"
+    "Java/Scala"
    ],
    "stack": {
     "backend": [
      "Node.js",
-     "TypeScript",
-     "Rust",
-     "Express/Koa-style monolith",
-     "Apache Spark (Scala/Java)"
+     "TypeScript monolith (Express/Koa-style)",
+     "Rust (성능 핫패스·CRDT/sync)",
+     "Apache Spark (Scala/Java)",
+     "PgBouncer connection pooling"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Electron",
-     "React Native",
-     "Slate-style block editor"
+     "Slate-style 자체 block editor",
+     "Electron (데스크톱)",
+     "React Native (모바일)",
+     "Service Worker / IndexedDB 로컬 캐시"
     ],
     "data": [
-     "PostgreSQL (96 physical / thousands of logical shards)",
-     "Redis / Memcached",
-     "Elasticsearch",
+     "PostgreSQL (RDS, 96 physical / 480+ logical shards)",
+     "Redis / Memcached (ElastiCache)",
+     "Elasticsearch (검색)",
      "Apache Kafka",
+     "Debezium (CDC)",
      "Apache Hudi",
-     "Amazon S3",
-     "Snowflake"
+     "Amazon S3 (데이터 레이크)",
+     "Snowflake (웨어하우스)"
     ],
     "infra": [
      "AWS",
      "Kubernetes (EKS)",
-     "Debezium",
-     "AWS RDS",
-     "CloudFront",
-     "ElastiCache"
+     "AWS RDS (PostgreSQL)",
+     "CloudFront (CDN)",
+     "ElastiCache",
+     "Fivetran(과거)→자체 in-house CDC",
+     "Datadog/관측성"
     ]
    },
    "architecture": [
-    "Block-based recursive tree data model",
-    "Sharded multi-tenant PostgreSQL",
-    "In-house CDC data lake (Debezium→Kafka→Hudi→S3)",
-    "Offline-first reactive client with local cache"
+    "Block-based recursive tree 데이터 모델 (모든 콘텐츠가 block row)",
+    "Sharded multi-tenant PostgreSQL (workspace 단위 샤딩)",
+    "In-house CDC 데이터 레이크 (Debezium→Kafka→Hudi→S3→Spark→Snowflake)",
+    "Offline-first reactive client (로컬 캐시 + 낙관적 업데이트 동기화)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web App<br/>React + TypeScript\"]\n    DESK[\"Desktop<br/>Electron\"]\n    MOB[\"Mobile<br/>React Native\"]\n  end\n  subgraph Edge\n    CDN[\"CDN<br/>CloudFront\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n  end\n  subgraph Core\n    API[\"Monolith API<br/>Node.js + TypeScript\"]\n    BLK[\"Block Service<br/>tree + permissions\"]\n    AI[\"Notion AI / RAG<br/>Rust + LLM\"]\n    SRCH[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Storage\n    PG[\"PostgreSQL<br/>96 shards / logical sharding\"]\n    CACHE[\"Cache<br/>Redis + Memcached\"]\n    VEC[\"Vector Index<br/>embeddings\"]\n  end\n  subgraph Streaming\n    DBZ[\"CDC<br/>Debezium\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    HUDI[\"Lakehouse<br/>Apache Hudi\"]\n    S3[\"Data Lake<br/>Amazon S3\"]\n    SPARK[\"Processing<br/>Apache Spark\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n  end\n  WEB --> CDN\n  DESK --> CDN\n  MOB --> CDN\n  CDN --> ALB\n  ALB -->|HTTPS| API\n  API --> BLK\n  API --> AI\n  API --> SRCH\n  BLK -->|read/write| PG\n  BLK -->|hot cache| CACHE\n  AI --> VEC\n  AI --> BLK\n  PG -->|WAL| DBZ\n  DBZ -->|change events| KAFKA\n  KAFKA --> HUDI\n  HUDI --> S3\n  S3 --> SPARK\n  SPARK --> SNOW\n  SPARK -->|embeddings| VEC\n  KAFKA -->|index updates| SRCH",
-   "why_language": "Notion의 핵심은 브라우저·데스크톱·모바일에서 동일하게 동작하는 풍부한 에디터이므로, 클라이언트와 Node.js 백엔드를 TypeScript 단일 언어로 통일해 block 모델 타입을 공유하고 풀스택 생산성을 극대화했다. 데이터 레이크의 대규모 배치 처리는 Spark(JVM)와 Python으로, 동기화·AI 등 지연시간이 민감한 핫패스는 Rust로 보강해 모놀리스의 성능 한계를 보완한다.",
-   "why_architecture": "모든 콘텐츠를 부모-자식 관계의 `block`이라는 단일 추상으로 표현하면 페이지·텍스트·데이터베이스·임베드를 같은 재귀 트리로 다룰 수 있어 권한 상속과 동기화가 일관되게 작동한다. 수백억 개로 폭증한 block row를 한 PostgreSQL로는 감당할 수 없어 logical shard 기반 멀티테넌트 샤딩으로 수평 확장했고, 분석·AI 수요는 운영 DB에서 분리하기 위해 Debezium CDC 기반 자체 데이터 레이크로 흡수했다.",
-   "summary": "모든 것을 block 트리로 모델링하고, 샤딩된 PostgreSQL 모놀리스 위에 CDC 데이터 레이크와 Rust 핫패스를 얹은 협업툴 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web App<br/>React + TypeScript\"]\n    DESK[\"Desktop<br/>Electron\"]\n    MOB[\"Mobile<br/>React Native\"]\n    CACHE[\"Local Cache<br/>IndexedDB + Service Worker\"]\n    CDN[\"CDN<br/>CloudFront\"]\n  end\n  subgraph API[\"API / Application\"]\n    MONO[\"Monolith API<br/>Node.js + TypeScript\"]\n    SYNC[\"Sync Engine<br/>Rust hot path\"]\n    AI[\"Notion AI Service<br/>RAG + LLM\"]\n  end\n  subgraph DataL[\"Data / Storage\"]\n    PGB[\"PgBouncer<br/>Connection Pool\"]\n    PG[\"PostgreSQL<br/>RDS 96 shards / 480 logical\"]\n    REDIS[\"Cache<br/>Redis + Memcached ElastiCache\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    S3F[\"File Storage<br/>Amazon S3\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    DBZ[\"CDC<br/>Debezium\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    HUDI[\"Data Lake<br/>Apache Hudi on S3\"]\n    SPARK[\"Processing<br/>Apache Spark\"]\n    SNOW[\"Warehouse<br/>Snowflake\"]\n  end\n  WEB --> CACHE\n  DESK --> CACHE\n  MOB --> CACHE\n  CACHE -->|HTTPS| CDN\n  CDN --> MONO\n  MONO --> SYNC\n  MONO --> AI\n  MONO --> PGB\n  PGB --> PG\n  MONO --> REDIS\n  MONO --> ES\n  MONO --> S3F\n  AI -->|vector retrieval| ES\n  PG -->|WAL| DBZ\n  DBZ --> KAFKA\n  KAFKA --> HUDI\n  HUDI --> SPARK\n  SPARK --> SNOW\n  SPARK -->|reindex| ES",
+   "why_language": "Notion의 모든 콘텐츠는 재귀적 block 트리이고 클라이언트는 offline-first로 동작해야 하므로, 동일한 TypeScript 타입·검증 로직을 웹/Electron/React Native/Node.js 백엔드에서 공유하는 풀스택 TypeScript 단일언어 전략이 생산성과 일관성 면에서 최적이었다. 동기화 엔진과 충돌 해소 같은 지연·메모리에 민감한 핫패스는 Rust로 내려 성능을 확보하고, 페타바이트급 CDC 데이터 레이크 처리는 JVM 생태계가 성숙한 Apache Spark(Scala/Java), 데이터·ML 작업은 Python으로 분담한다.",
+   "why_architecture": "수십억 개의 block을 단일 PostgreSQL로 감당할 수 없어 workspace 단위로 96개 물리 인스턴스·480+ logical shard로 수평 분할했고, 다중 디바이스에서의 즉각적 편집 경험을 위해 로컬 캐시에 먼저 쓰고 낙관적으로 반영한 뒤 서버와 동기화하는 offline-first 모델을 택했다. 분석·검색·AI 수요가 폭증하면서 Fivetran 기반 ELT의 비용·지연 한계에 부딪혀, Debezium→Kafka→Hudi→S3로 이어지는 자체 CDC 데이터 레이크를 구축해 재인덱싱·웨어하우징을 직접 제어한다.",
+   "summary": "모든 것을 block으로 모델링하고 480 logical shard PostgreSQL과 offline-first 클라이언트, 자체 CDC 데이터 레이크로 떠받친 풀스택 TypeScript 협업 플랫폼",
    "deep_dive": [
     {
      "topic": "Block 데이터 모델 — 모든 것이 block이다",
@@ -11802,6 +11805,18 @@
     {
      "topic": "Notion AI와 RAG 파이프라인 — block 데이터를 LLM에 연결하기",
      "body": "### 문제 정의\nNotion AI의 \"Q&A/Enterprise Search\"는 사용자의 워크스페이스 전체(수천~수십만 페이지)에서 질문에 답해야 한다. 모든 텍스트를 프롬프트에 넣을 수 없으므로 **RAG(Retrieval-Augmented Generation)** 구조가 필수다.\n\n### 인덱싱 파이프라인 (오프라인)\n1. **소스**: 운영 DB의 block을 직접 긁지 않고, 위에서 설명한 **데이터 레이크(S3/Hudi)**의 CDC 스트림을 활용한다. block이 수정될 때마다 Kafka 이벤트가 흘러 인덱스를 **증분 갱신**한다.\n2. **청킹(chunking)**: block 트리를 의미 단위로 잘라 텍스트 chunk를 만든다. block 모델 자체가 구조화돼 있어(제목·문단·리스트 등) 자연스러운 청킹 경계를 제공한다.\n3. **임베딩**: 각 chunk를 embedding 모델로 벡터화해 **vector index**에 적재한다. 이때 원본 block의 **권한(permission) 메타데이터**를 함께 저장하는 것이 핵심 — 검색 결과가 권한 경계를 절대 넘지 않도록 한다.\n\n### 질의 파이프라인 (온라인)\n1. 사용자 질문을 임베딩 → vector index에서 **유사 chunk를 retrieval**.\n2. **권한 필터링**: 검색 후보를 사용자가 실제 접근 가능한 block으로 후처리 필터링한다. block 트리의 권한 상속 모델이 여기서 그대로 재사용된다 — AI라고 해서 권한 모델을 우회하지 않는다.\n3. 살아남은 chunk를 컨텍스트로 묶어 **LLM(Anthropic Claude, OpenAI 등 멀티 프로바이더)**에 프롬프트로 전달, 출처(citation) 링크와 함께 답변을 생성한다.\n\n### 엔지니어링 결정·트레이드오프\n- **지연시간이 민감한 경로는 Rust로**: 검색·후처리·스트리밍 응답 등 핫패스를 Node.js 모놀리스에서 떼어내 Rust 서비스로 운영하는 식으로 tail latency를 관리한다.\n- **신선도 vs 비용**: 모든 편집을 실시간 재임베딩하면 비용이 폭발하므로, CDC 기반 증분 인덱싱과 배치 임베딩을 혼합해 \"충분히 최신\" 수준의 신선도와 비용을 절충한다.\n- **권한이 1급 제약**: RAG에서 가장 위험한 실패는 \"못 보는 문서를 AI가 요약해 노출\"하는 것이다. Notion은 검색 단계와 생성 단계 양쪽에서 권한을 강제해 데이터 누출을 막는다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end — 키 입력 한 번이 서버까지 가는 길",
+     "body": "### 한 번의 편집이 거치는 전체 경로\n\nNotion에서 사용자가 block 하나를 수정하면 그 변경은 곧바로 서버로 가지 않는다. 핵심은 **offline-first + 낙관적 업데이트(optimistic update)** 다.\n\n1. **로컬 우선 반영**: 편집은 먼저 브라우저/Electron 내부의 인메모리 store와 `IndexedDB` 로컬 캐시에 transaction으로 기록된다. UI는 서버 왕복을 기다리지 않고 즉시 다시 렌더링된다. 사용자 체감 지연이 0에 가까운 이유다.\n2. **transaction 큐**: 각 변경은 `transaction` 단위(여러 block operation의 묶음)로 만들어져 outbound 큐에 쌓인다. 오프라인이면 큐에 머물다가 네트워크 복구 시 순서대로 flush된다.\n3. **API 진입**: `CloudFront` → Node.js/TypeScript monolith API로 들어간다. 요청은 대상 block의 소속 workspace로 라우팅되며, 여기서 어느 shard에 가야 하는지가 결정된다.\n4. **권한 검증**: block 트리를 거슬러 올라가며 상속된 permission을 확인한다(자세한 건 별도 토픽). 통과하면 PostgreSQL transaction으로 커밋.\n5. **충돌 처리**: 같은 block을 두 클라이언트가 동시에 고치면 operation 단위로 last-writer 또는 필드 단위 병합 규칙을 적용한다. Notion은 완전한 OT/CRDT 대신 block/property 단위의 비교적 단순한 병합 모델을 오래 사용했는데, block 자체가 잘게 쪼개져 있어 충돌 표면이 작다는 점을 활용한 트레이드오프다.\n6. **다른 디바이스로 전파**: 커밋된 변경은 구독 중인 다른 세션에 푸시되어 각자의 로컬 캐시를 갱신한다.\n\n### 왜 이렇게까지 하나\n\n협업 문서 도구에서 가장 치명적인 건 '입력이 버벅이는 것'이다. 서버 라운드트립을 편집 경로에서 제거하면 네트워크가 느리거나 끊겨도 앱이 멈추지 않는다. 대신 동기화·충돌 해소 복잡도를 클라이언트가 떠안는데, 이 부분이 Notion 엔지니어링의 가장 어려운 영역이고 일부 핫패스를 Rust로 옮기는 동기가 된다."
+    },
+    {
+     "topic": "캐싱 계층 — block 트리를 빠르게 그리기 위한 다단계 캐시",
+     "body": "### 왜 캐싱이 생사의 문제인가\n\nNotion 페이지 하나를 여는 것은 단일 row 조회가 아니라 **재귀적 block 트리 전체를 펼치는 작업**이다. 페이지 → 하위 block → 그 안의 inline/child block … 깊이가 깊으면 한 페이지 로드에 수백~수천 개 block을 모아야 한다. 매번 PostgreSQL을 때리면 샤드가 버티지 못한다.\n\n### 계층 구조\n\n| 계층 | 기술 | 역할 |\n|------|------|------|\n| L0 클라이언트 | IndexedDB + 인메모리 store | 이미 본 block은 서버 없이 즉시 렌더 |\n| L1 엣지 | CloudFront | 정적 자산·일부 캐시 가능 응답 |\n| L2 애플리케이션 | Redis / Memcached (ElastiCache) | 자주 읽는 block·권한·workspace 메타데이터 |\n| L3 DB 풀 | PgBouncer | 커넥션 재사용으로 PostgreSQL 부하 완화 |\n| L4 원본 | PostgreSQL (sharded) | 진실의 원천 |\n\n### 핵심 아이디어\n\n- **클라이언트 캐시가 1차 방어선**: 같은 페이지를 다시 열면 대부분 로컬에서 채워지고, 서버에는 '변경분 있냐'는 가벼운 동기화만 묻는다.\n- **권한 캐싱의 까다로움**: permission은 트리 상속이라 상위 block 권한이 바뀌면 하위 캐시를 무효화해야 한다. 이 invalidation을 광범위하게 하면 cache stampede가, 좁게 하면 stale 권한 노출 위험이 생긴다. 그래서 권한 관련 캐시는 TTL을 짧게 가져가거나 변경 이벤트 기반으로 무효화한다.\n- **PgBouncer의 중요성**: Node.js의 동시 요청이 많아 커넥션이 폭증하기 쉬운데, 샤드당 커넥션 수는 PostgreSQL의 hard limit이다. PgBouncer로 transaction-level pooling을 하지 않으면 샤드가 커넥션 고갈로 먼저 죽는다."
+    },
+    {
+     "topic": "Notion AI — block 데이터 레이크 위에서 동작하는 검색·RAG 재인덱싱 파이프라인",
+     "body": "### AI가 마주한 데이터 문제\n\nNotion AI(Q&A, 검색, 자동 작성)는 사용자의 **방대한 비정형 block 데이터**를 LLM이 참조하게 만들어야 한다. 문제는 (1) 데이터가 480+ logical shard에 흩어진 OLTP PostgreSQL에 있고, (2) block은 재귀 트리라 'page 단위 문서'로 평탄화해야 의미 있는 임베딩이 나오며, (3) 사용자가 편집할 때마다 거의 실시간으로 다시 인덱싱해야 한다는 점이다.\n\n### 자체 데이터 레이크가 AI의 기반이 된 이유\n\nNotion은 분석을 위해 만든 in-house CDC 파이프라인(`Debezium → Kafka → Hudi(S3) → Spark`)을 AI 인덱싱의 기반으로 재활용한다.\n\n1. PostgreSQL의 block 변경이 `Debezium`을 통해 WAL에서 캡처되어 `Kafka`로 흐른다.\n2. `Apache Hudi`가 S3 데이터 레이크에 upsert 가능한 형태로 적재한다 — 단순 append가 아니라 같은 block의 최신 상태를 유지하는 게 핵심이라 Hudi의 upsert가 결정적이었다.\n3. `Spark` 잡이 block 트리를 page/문서 단위로 평탄화하고 정규화한다.\n4. 평탄화된 텍스트가 임베딩으로 변환되어 검색 인덱스(`Elasticsearch` 및 벡터 인덱스)로 들어간다.\n5. 질의 시 retrieval된 컨텍스트가 LLM 프롬프트에 주입되는 **RAG** 구조다.\n\n### 트레이드오프\n\n- **near-real-time vs 비용**: 모든 키 입력을 즉시 재임베딩하면 비용이 폭발한다. 그래서 CDC로 변경을 모아 배치/마이크로배치로 재인덱싱하며 신선도와 비용을 절충한다.\n- **권한 일관성**: AI 검색 결과는 반드시 호출자가 볼 수 있는 block으로만 한정돼야 한다. block 권한 상속 모델이 retrieval 단계의 필터로 그대로 작동해야 하므로, 인덱스에 workspace/permission 메타데이터를 함께 실어 질의 시 필터링한다.\n- **재활용의 미학**: 분석용으로 만든 레이크가 AI 인프라로 그대로 쓰인 건, 'block을 평탄화해 둔 단일 원천'이 분석이든 RAG든 똑같이 필요했기 때문이다."
     }
    ],
    "github": {
@@ -11810,19 +11825,26 @@
      {
       "name": "makenotion/notion-sdk-js",
       "url": "https://github.com/makenotion/notion-sdk-js",
-      "desc": "공식 Notion API용 JavaScript/TypeScript SDK",
+      "desc": "Notion 공개 API용 공식 JavaScript/TypeScript 클라이언트 SDK",
       "lang": "TypeScript",
-      "stars": 5611
+      "stars": 5614
+     },
+     {
+      "name": "makenotion/notion-mcp-server",
+      "url": "https://github.com/makenotion/notion-mcp-server",
+      "desc": "LLM 에이전트가 Notion에 접근하도록 하는 공식 Model Context Protocol 서버",
+      "lang": "TypeScript",
+      "stars": 4440
      }
     ]
    },
    "sources": [
-    "https://www.notion.so/blog/sharding-postgres-at-notion",
-    "https://www.notion.so/blog/the-great-re-shard",
-    "https://www.notion.so/blog/building-and-scaling-notions-data-lake"
+    "https://www.notion.com/blog/sharding-postgres-at-notion",
+    "https://www.notion.com/blog/the-great-re-shard",
+    "https://www.notion.com/blog/building-and-scaling-notions-data-lake"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "slack",
@@ -11831,50 +11853,59 @@
    "domain": "협업툴",
    "languages": [
     "Hack",
-    "JavaScript",
     "TypeScript",
+    "JavaScript",
     "Java",
-    "Go"
+    "Go",
+    "Swift"
    ],
    "stack": {
     "backend": [
-     "Hack on HHVM (webapp monolith)",
-     "Java services",
-     "gRPC",
+     "Hack on HHVM (webapp 모놀리스)",
+     "Java services (Flannel, channel server 등)",
+     "Go (인프라/네트워킹 툴링)",
+     "gRPC + Protobuf",
      "Memcached",
-     "Redis"
+     "Redis",
+     "PHP 호환 Hacklang 타입시스템"
     ],
     "frontend": [
-     "React",
+     "React + Redux",
      "TypeScript",
-     "Electron (desktop)",
-     "Swift / Kotlin (mobile)"
+     "Electron (데스크톱 클라이언트)",
+     "Swift (iOS)",
+     "Kotlin (Android)",
+     "WebSocket 클라이언트"
     ],
     "data": [
-     "MySQL + Vitess (sharded)",
-     "Kafka",
-     "Solr (검색)",
-     "Flannel (edge cache)",
-     "AWS S3"
+     "MySQL + Vitess (수평 샤딩)",
+     "Apache Kafka",
+     "Apache Solr (메시지 검색)",
+     "Flannel (edge 메타데이터 캐시)",
+     "Mcrouter + Memcached",
+     "AWS S3 (파일/첨부)",
+     "Job Queue (Kafka + Redis)"
     ],
     "infra": [
-     "AWS",
-     "Envoy (edge + service mesh)",
-     "Consul (service discovery)",
-     "Bedrock (Kubernetes)",
-     "Nebula (overlay network)"
+     "AWS (EC2/S3 중심)",
+     "Envoy (edge proxy + service mesh)",
+     "Consul (service discovery / KV)",
+     "Bedrock (사내 Kubernetes 플랫폼)",
+     "Nebula (오버레이 네트워크, OSS)",
+     "Chef + Terraform",
+     "xDS 컨트롤 플레인"
     ]
    },
    "architecture": [
-    "Hack 모놀리스 + Java 마이크로서비스 하이브리드",
-    "WebSocket 기반 실시간 메시징",
-    "Cellular architecture (AZ 단위 격리)",
-    "Kafka 기반 비동기 Job Queue"
+    "Hack/HHVM 모놀리스 + Java/Go 마이크로서비스 하이브리드",
+    "WebSocket 기반 실시간 메시징 (channel server fan-out)",
+    "Cellular architecture — AWS AZ 단위 셀 격리로 장애 반경 축소",
+    "Edge 캐싱 계층(Flannel) + Kafka 기반 비동기 Job Queue"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web/Desktop<br/>React + TypeScript + Electron\"]\n    MOB[\"Mobile<br/>Swift / Kotlin\"]\n  end\n  subgraph Edge[\"Edge / Real-time\"]\n    ENVOY[\"Edge Proxy<br/>Envoy\"]\n    FLANNEL[\"Edge Cache<br/>Flannel\"]\n    CS[\"Channel Server<br/>Java WebSocket\"]\n  end\n  subgraph Core[\"Core Services\"]\n    WEBAPP[\"Webapp Monolith<br/>Hack on HHVM\"]\n    SVC[\"Microservices<br/>Java + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Job Queue Log<br/>Kafka\"]\n    REDIS[\"Job Scheduler<br/>Redis\"]\n    JQ[\"Job Workers<br/>Hack\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"MySQL + Vitess<br/>sharded\"]\n    SOLR[\"Search Index<br/>Solr\"]\n    S3[\"Object Store<br/>AWS S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    BEDROCK[\"Compute Platform<br/>Bedrock Kubernetes\"]\n    CONSUL[\"Service Discovery<br/>Consul\"]\n    NEBULA[\"Overlay Network<br/>Nebula\"]\n  end\n  WEB --> ENVOY\n  MOB --> ENVOY\n  WEB -->|WebSocket| CS\n  ENVOY --> FLANNEL\n  ENVOY --> WEBAPP\n  FLANNEL --> WEBAPP\n  WEBAPP -->|gRPC| SVC\n  WEBAPP --> VITESS\n  WEBAPP --> KAFKA\n  REDIS --> JQ\n  KAFKA --> JQ\n  JQ --> VITESS\n  CS --> KAFKA\n  WEBAPP --> SOLR\n  SVC --> VITESS\n  WEBAPP --> S3\n  SVC --> CONSUL\n  BEDROCK --> SVC\n  NEBULA --> SVC",
-   "why_language": "Slack은 초기 PHP 코드베이스를 버리지 않고 점진적으로 Hack(HHVM)으로 옮겨, 동적 언어의 빠른 개발 속도를 유지하면서 점진적 타입 검사·성능·동시성을 확보했다. 실시간 메시지 fan-out과 WebSocket 연결 유지처럼 동시성이 핵심인 경로는 JVM(Java) 서비스로 분리했고, 네트워킹·인프라 도구(Nebula 등)는 단일 바이너리 배포와 성능 때문에 Go를 쓴다. 클라이언트는 대규모 워크스페이스를 다루는 복잡한 UI 상태 관리를 위해 React + TypeScript로 통일했다.",
-   "why_architecture": "수억 줄 규모의 Hack 모놀리스(webapp)를 한 번에 쪼개는 대신, 실시간 메시징·검색·플로우 같은 고부하 경로만 Java/gRPC 마이크로서비스로 떼어내는 하이브리드 전략을 택해 마이그레이션 리스크를 낮췄다. 메시지 전송은 사용자에게 즉각 응답하고 무거운 작업은 Kafka Job Queue로 비동기 처리해 지연을 숨긴다. 2021년 대규모 장애 이후에는 한 가용 영역(AZ)의 문제가 전체로 번지지 않도록 트래픽을 셀(cell) 단위로 격리하고 Envoy로 드레이닝하는 Cellular architecture를 도입했다.",
-   "summary": "PHP에서 물려받은 Hack 모놀리스를 Java/gRPC 서비스와 Kafka 비동기 큐로 둘러싸고, Envoy·Vitess·셀 격리로 실시간 협업 규모를 버티는 하이브리드 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client\n    WEB[\"Web/Desktop<br/>React + TS + Electron\"]\n    MOB[\"Mobile<br/>Swift / Kotlin\"]\n  end\n  subgraph Edge\n    ENVOY[\"Edge Proxy<br/>Envoy + xDS\"]\n    FLANNEL[\"Edge Cache<br/>Flannel (user/team meta)\"]\n    CS[\"Channel Server<br/>Java + WebSocket\"]\n  end\n  subgraph Core\n    WEBAPP[\"Webapp Monolith<br/>Hack on HHVM\"]\n    SVC[\"Microservices<br/>Java / Go + gRPC\"]\n    SEARCH[\"Search Service<br/>Apache Solr\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    JQ[\"Job Queue<br/>Kafka + Redis workers\"]\n  end\n  subgraph Data\n    VITESS[\"Sharded DB<br/>MySQL + Vitess\"]\n    MC[\"Cache<br/>Memcached + Mcrouter\"]\n    S3[\"Object Store<br/>AWS S3\"]\n  end\n  subgraph Platform\n    CONSUL[\"Service Discovery<br/>Consul + KV\"]\n    BEDROCK[\"Container Platform<br/>Bedrock (Kubernetes)\"]\n  end\n  WEB --> ENVOY\n  MOB --> ENVOY\n  WEB -.->|persistent WS| CS\n  MOB -.->|persistent WS| CS\n  ENVOY --> FLANNEL\n  ENVOY -->|HTTP/gRPC| WEBAPP\n  FLANNEL --> WEBAPP\n  WEBAPP -->|gRPC| SVC\n  WEBAPP --> SEARCH\n  CS --> KAFKA\n  WEBAPP --> KAFKA\n  KAFKA --> JQ\n  JQ --> WEBAPP\n  WEBAPP --> VITESS\n  WEBAPP --> MC\n  SVC --> VITESS\n  WEBAPP --> S3\n  SEARCH --> VITESS\n  SVC --> CONSUL\n  ENVOY --> CONSUL\n  SVC --> BEDROCK\n  CS --> BEDROCK",
+   "why_language": "Slack은 PHP 모놀리스로 시작했고, 수천만 DAU 규모에서 점진적 타입 안전성과 성능이 필요해지자 Facebook이 만든 Hack/HHVM으로 마이그레이션해 기존 코드를 버리지 않고 정적 타입과 JIT 성능을 얻었다. 실시간 fan-out·네트워킹처럼 동시성과 지연시간이 중요한 영역은 Java/Go로 분리하고, 클라이언트는 단일 코드 기반의 풍부한 UI를 위해 React+TypeScript와 Electron, 네이티브 모바일은 Swift/Kotlin을 쓴다.",
+   "why_architecture": "메시지는 '쓰기 직후 모든 참여자에게 즉시 전달'되어야 하므로 polling이 아닌 영속 WebSocket과 channel server fan-out을 핵심에 두고, 무거운 비즈니스 로직은 Hack 모놀리스가 처리하되 Flannel edge 캐시로 메타데이터를 사용자 근처에서 해소해 모놀리스 부하와 지연을 줄인다. AWS AZ 단위 cellular 격리와 Vitess 샤딩으로 장애 반경과 데이터 규모를 동시에 통제하고, 알림·통합·인덱싱 같은 작업은 Kafka 기반 Job Queue로 비동기 처리해 사용자 경로의 응답성을 지킨다.",
+   "summary": "PHP 유산을 Hack/HHVM 모놀리스로 진화시키고 WebSocket·Flannel·Vitess·Kafka로 실시간 협업을 셀 단위로 격리한 하이브리드 아키텍처",
    "deep_dive": [
     {
      "topic": "Hack/HHVM — Slack 백엔드의 언어 선택",
@@ -11907,6 +11938,22 @@
     {
      "topic": "서비스 메시 — Consul에서 Envoy + xDS 컨트롤 플레인으로",
      "body": "### 출발점: Hack 모놀리스 + Consul\nSlack의 트래픽 라우팅은 오랫동안 **HAProxy + Consul** 조합에 의존했다. Consul이 서비스 등록/헬스체크를 담당하고, 각 노드의 설정 생성기가 Consul 상태를 읽어 HAProxy 설정을 다시 써 reload하는 방식이었다. 모놀리스 시절에는 충분했지만, Java/gRPC 마이크로서비스가 늘고 수백만 개의 동시 WebSocket을 다뤄야 하면서 한계가 드러났다.\n- HAProxy reload 기반은 **설정 변경이 빈번하고 대규모일 때** 비효율적이고, 동적 라우팅(가중치 조정, 셀 드레이닝)에 약했다.\n- gRPC(HTTP/2) 멀티플렉싱·로드밸런싱을 L7에서 제대로 다루기 어려웠다.\n\n### Envoy 도입과 xDS\nSlack은 edge(사용자 ↔ 데이터센터)와 내부 서비스 메시 양쪽에 **Envoy**를 채택했다. 핵심은 Envoy 자체가 아니라 그것을 **동적으로 설정하는 컨트롤 플레인**이다. Envoy는 `xDS` API(EDS/CDS/LDS/RDS)로 엔드포인트·클러스터·리스너·라우트 설정을 **런타임에 푸시**받는다. Slack은 Consul의 서비스 디스커버리 데이터를 xDS로 변환해 Envoy에 흘려보내는 컨트롤 플레인을 구축했다 — reload 없이, 핫리로드 없이, gRPC 스트림으로 설정이 갱신된다.\n\n### 수백만 WebSocket 마이그레이션\n가장 까다로운 작업은 사용자 실시간 연결을 받는 edge를 HAProxy에서 Envoy로 옮기는 것이었다. WebSocket은 **장수명 연결**이라, 단순히 새 프록시로 트래픽을 돌리면 기존 연결을 끊거나 재연결 폭풍을 일으킨다. Slack은 점진적으로 트래픽 비중을 옮기면서 연결 드레이닝을 제어해, 수백만 동시 연결을 **무중단에 가깝게** 이전했다.\n\n### Cellular architecture와의 결합\nEnvoy + xDS 컨트롤 플레인은 2021년 장애 이후 도입한 **셀 격리**의 실행 기반이기도 하다. 어떤 AZ(셀)에 문제가 생기면, 컨트롤 플레인이 xDS로 해당 셀의 엔드포인트 가중치를 0으로 떨어뜨려 **트래픽을 즉시 다른 셀로 드레이닝**한다. HAProxy reload 시절에는 불가능했던 \"초 단위 동적 트래픽 시프트\"가 이 구조 덕에 가능해졌다.\n\n### 트레이드오프\nEnvoy/xDS는 강력하지만 **컨트롤 플레인이 곧 단일 두뇌**가 된다. 컨트롤 플레인이 잘못된 설정을 푸시하면 전 메시에 동시에 퍼질 수 있어, 설정 검증·점진 롤아웃·셀 단위 격리가 더 중요해진다. Slack은 이 위험을 셀 경계와 단계적 배포로 상쇄한다."
+    },
+    {
+     "topic": "메시지 전송 end-to-end 흐름 — 클릭에서 fan-out까지",
+     "body": "### 한 개의 메시지가 거치는 전체 경로\n\nSlack에서 사용자가 메시지를 보내면 다음과 같은 단계를 거친다. 이 흐름을 이해하는 것이 Slack 아키텍처를 이해하는 핵심이다.\n\n1. **클라이언트 → Edge (Envoy)**: 메시지 전송은 영속 WebSocket이 아니라 일반 HTTP `POST` (`chat.postMessage` 류 내부 API)로 나간다. 즉 **'쓰기'와 '받기'의 경로가 분리**되어 있다. 클라이언트는 가장 가까운 AWS 리전의 Envoy edge proxy로 요청을 보낸다.\n2. **Edge → Webapp (Hack/HHVM)**: Envoy가 인증/라우팅 후 Hack 모놀리스(webapp)로 전달한다. 여기서 권한 체크(해당 채널 멤버인지), 메시지 파싱(멘션·이모지·링크 unfurl 트리거), rate limit이 수행된다.\n3. **영속화**: 메시지는 해당 team(workspace)의 **Vitess 샤드의 MySQL**에 기록된다. Slack은 team_id 기반으로 샤딩하므로 한 workspace의 데이터는 같은 샤드 군에 모인다. 메시지 행이 커밋되면 그때 비로소 '전송 성공'으로 간주된다.\n4. **Fan-out 트리거**: 모놀리스는 저장 후 **channel server**(Java)에게 '이 채널에 새 이벤트가 있다'고 알린다. Channel server는 해당 채널을 구독 중인 모든 온라인 클라이언트의 WebSocket 세션을 들고 있다.\n5. **WebSocket push**: Channel server가 구독자 각각의 WebSocket으로 메시지 이벤트를 밀어준다. 받는 쪽 클라이언트는 polling 없이 즉시 메시지를 화면에 그린다.\n6. **비동기 후처리**: 동시에 링크 unfurl, 푸시 알림(모바일), 검색 인덱싱(Solr), 봇/Workflow 트리거 등은 **Kafka Job Queue**로 던져져 사용자 경로 바깥에서 처리된다.\n\n### 왜 읽기와 쓰기를 분리했나\n\n쓰기를 WebSocket이 아닌 HTTP로 보내는 이유는 **신뢰성과 idempotency** 때문이다. HTTP는 재시도·상태코드·타임아웃 처리가 명확하고, 클라이언트가 `client_msg_id`를 붙여 중복 전송을 서버에서 dedup할 수 있다. 반면 받기는 지연이 생명이라 영속 WebSocket fan-out을 쓴다. 이 비대칭 설계가 '보낼 때는 확실하게, 받을 때는 빠르게'를 동시에 달성하는 핵심 트레이드오프다."
+    },
+    {
+     "topic": "Channel Server — 수백만 WebSocket을 들고 있는 실시간 코어",
+     "body": "### Channel Server의 역할\n\nSlack 실시간성의 심장은 `channel server`(내부적으로 종종 'CS' 또는 message server로 불림)다. Java로 작성된 이 컴포넌트는 **채널 단위의 pub/sub 라우터**다.\n\n- 각 워크스페이스의 채널은 특정 channel server 인스턴스에 매핑된다(consistent hashing 류). \n- 클라이언트는 접속 시 **flannel/edge를 통해 자신이 구독할 채널 목록**을 받고, channel server와 WebSocket을 맺는다.\n- 메시지·타이핑 인디케이터·이모지 리액션·presence(접속 상태) 변경 같은 모든 실시간 이벤트가 channel server를 통해 fan-out된다.\n\n### 왜 모놀리스에서 떼어냈나\n\nHack/HHVM 모놀리스는 본질적으로 **요청-응답(request-response)** 모델에 최적화되어 있다. 수십만 개의 idle WebSocket 연결을 오래 붙들고 있는 일은 HHVM의 스레드/요청 모델과 맞지 않는다. 반면 JVM은 Netty 류의 이벤트 루프 + epoll로 **단일 박스에서 수만~수십만 개의 동시 연결**을 효율적으로 유지할 수 있다. 그래서 '상태가 길게 유지되는 연결 관리'는 Java channel server, '무거운 비즈니스 로직'은 Hack 모놀리스로 책임을 갈랐다.\n\n### Presence와 fan-out의 비용 문제\n\nSlack에서 가장 까다로운 확장성 문제 중 하나가 **presence(누가 온라인인지)**다. 거대한 워크스페이스(수만 명)에서 한 명이 접속/이탈할 때마다 모든 사람에게 알리면 O(N²) 트래픽이 폭발한다. Slack은 이를 위해 **클라이언트가 실제로 보고 있는 사용자에 대해서만 presence를 구독(lazy subscription)**하고, 채널 멤버십·presence 메타데이터를 **Flannel edge 캐시**에서 해소하도록 설계해 channel server와 모놀리스의 부하를 크게 줄였다. 큰 워크스페이스의 채널 전환이 빠른 이유가 바로 이 edge 캐시 덕분이다."
+    },
+    {
+     "topic": "관측성 — Astra(로그 검색)와 대규모 트레이싱",
+     "body": "### 자체 로그 검색 엔진 Astra (구 KalDB)\n\nSlack은 ELK(Elasticsearch) 스택의 운영 비용과 한계를 겪은 뒤 **Astra**라는 클라우드 네이티브 로그/트레이스 검색 엔진을 직접 만들어 오픈소스화했다(`slackhq/astra`).\n\n핵심 설계 아이디어:\n\n- **Kafka를 1차 수집 버퍼로 사용**: 모든 로그는 먼저 Kafka 토픽으로 들어간다. 인덱서가 다운되어도 Kafka가 버퍼링하므로 로그 유실이 없다.\n- **스토리지/컴퓨트 분리**: 인덱싱된 청크(chunk)를 S3 같은 object store에 저장하고, 쿼리 노드는 필요한 청크만 내려받아 캐시한다. 이로써 **'뜨거운(최근) 데이터'와 '차가운(오래된) 데이터'를 비용에 맞게** 다룰 수 있다.\n- **stateless 쿼리 fan-out**: 쿼리는 여러 인덱스 노드로 흩뿌려졌다가 머지되는 scatter-gather 패턴.\n\n이 구조는 Elasticsearch처럼 '인덱스 노드가 곧 스토리지'인 모델과 달리, **로그량이 폭증해도 쿼리 용량과 저장 용량을 독립적으로 스케일**할 수 있다는 게 핵심 트레이드오프다.\n\n### 분산 트레이싱과 메트릭\n\nEnvoy가 edge와 service mesh를 모두 담당하기 때문에 Slack은 **Envoy가 생성하는 일관된 액세스 로그·트레이스 헤더**를 관측성의 1차 소스로 활용한다. 모든 inter-service 호출이 Envoy sidecar를 지나므로, 어떤 서비스가 어떤 서비스를 얼마나 느리게 호출하는지를 코드 수정 없이 균일하게 계측할 수 있다. 이것이 service mesh를 도입한 또 다른 큰 동기다 — 단순 로드밸런싱이 아니라 **'균일한 관측 가능성'**을 공짜로 얻는 것."
+    },
+    {
+     "topic": "Flannel — 글로벌 엣지에서 풀어내는 메타데이터 지연 문제",
+     "body": "### Flannel이 푸는 문제\n\nSlack 클라이언트는 시작할 때 엄청난 양의 메타데이터(채널 목록, 유저 목록, 봇, 이모지, 멤버십)를 필요로 한다. 워크스페이스가 클수록 이 'boot payload'가 수십 MB로 커져, 모놀리스가 매번 이걸 만들어 내려주면 지연도 크고 모놀리스 CPU도 탄다.\n\n**Flannel**은 전 세계 AWS 리전 edge에 배치된 **애플리케이션 인지(application-aware) 캐시 서비스**다. 단순 HTTP 캐시(Varnish)가 아니라, **Slack 객체 모델(user, channel, team)을 이해하고 쿼리에 답할 수 있는** 캐시다.\n\n### 동작 메커니즘\n\n- 클라이언트는 자신과 **지리적으로 가장 가까운 Flannel edge**에 WebSocket/HTTP로 붙는다.\n- Flannel은 해당 워크스페이스의 객체들을 **지연 로딩(lazy load)**해 메모리에 들고 있다가, 클라이언트의 자동완성·채널 전환·멤버 조회 요청을 **모놀리스까지 가지 않고 edge에서 즉시** 응답한다.\n- 객체가 바뀌면(새 채널 생성 등) 모놀리스가 변경 이벤트를 흘려보내 Flannel 캐시를 무효화/갱신한다.\n\n### 효과와 트레이드오프\n\n이 설계로 '@멘션 자동완성'이나 '채널 검색' 같은 인터랙션이 **태평양을 건너 미국 본진 모놀리스를 때리지 않고** 사용자 옆 edge에서 끝난다. 도쿄·런던 사용자도 빠른 이유다. 트레이드오프는 **캐시 일관성**이다 — edge 캐시가 stale해질 수 있으므로 Slack은 '약간 늦게 반영돼도 되는' 메타데이터(멤버 목록 등)에만 이를 적용하고, 메시지 본문 같은 강한 일관성이 필요한 것은 항상 모놀리스+Vitess의 정본을 거치게 한다."
     }
    ],
    "github": {
@@ -11915,47 +11962,33 @@
      {
       "name": "slackhq/nebula",
       "url": "https://github.com/slackhq/nebula",
-      "desc": "Slack이 만든 확장형 오버레이 네트워킹/메시 VPN, 서비스 간 보안 통신에 사용",
+      "desc": "Lighthouse 기반 P2P 메시 오버레이 네트워크(인프라 간 보안 연결)",
       "lang": "Go",
-      "stars": 17402
-     },
-     {
-      "name": "slackapi/python-slack-sdk",
-      "url": "https://github.com/slackapi/python-slack-sdk",
-      "desc": "Slack Web/RTM/이벤트 API를 다루는 공식 Python SDK",
-      "lang": "Python",
-      "stars": 4008
-     },
-     {
-      "name": "slackapi/node-slack-sdk",
-      "url": "https://github.com/slackapi/node-slack-sdk",
-      "desc": "Slack 플랫폼 연동용 공식 Node.js SDK 모음",
-      "lang": "TypeScript",
-      "stars": 3377
-     },
-     {
-      "name": "slackapi/bolt-js",
-      "url": "https://github.com/slackapi/bolt-js",
-      "desc": "Slack 앱을 빠르게 만드는 공식 JavaScript 프레임워크",
-      "lang": "TypeScript",
-      "stars": 2914
+      "stars": 17413
      },
      {
       "name": "slackhq/astra",
       "url": "https://github.com/slackhq/astra",
-      "desc": "대용량 로그를 실시간 색인·검색하는 분산 로그 검색 엔진(구 KalDB)",
+      "desc": "대규모 로그/트레이스를 위한 클라우드 네이티브 검색 엔진",
       "lang": "Java",
       "stars": 253
+     },
+     {
+      "name": "slackhq/vitess-operator",
+      "url": "https://github.com/slackhq/vitess-operator",
+      "desc": "Kubernetes에서 샤딩된 Vitess/MySQL 클러스터를 운영하는 오퍼레이터",
+      "lang": "Go",
+      "stars": 0
      }
     ]
    },
    "sources": [
-    "https://slack.engineering/scaling-slacks-job-queue/",
-    "https://slack.engineering/migrating-millions-of-concurrent-websockets-to-envoy/",
-    "https://slack.engineering/flannel-an-application-level-edge-cache-to-make-slack-scale/"
+    "https://slack.engineering/",
+    "https://github.com/slackhq/nebula",
+    "https://slack.engineering/real-time-messaging/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "samsung-smartthings",
