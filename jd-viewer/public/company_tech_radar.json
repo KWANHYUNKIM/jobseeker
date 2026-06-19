@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T22:21:01",
+ "generated_at": "2026-06-20T00:07:09",
  "total": 100,
  "countries": [
   {
@@ -1015,11 +1015,11 @@
       "count": 1
      },
      {
-      "name": "C# / .NET microservices",
+      "name": "Akka/Actor 모델",
       "count": 1
      },
      {
-      "name": "C# 게임 로직/콘텐츠 서버",
+      "name": "C# / .NET microservices",
       "count": 1
      }
     ],
@@ -1099,11 +1099,11 @@
       "count": 1
      },
      {
-      "name": "Amazon Aurora",
+      "name": "Airflow",
       "count": 1
      },
      {
-      "name": "Amazon Aurora MySQL",
+      "name": "Amazon Aurora",
       "count": 1
      }
     ],
@@ -1129,23 +1129,23 @@
       "count": 2
      },
      {
+      "name": "ELK",
+      "count": 2
+     },
+     {
       "name": "Envoy",
       "count": 2
      },
      {
+      "name": "Grafana",
+      "count": 2
+     },
+     {
+      "name": "Prometheus",
+      "count": 2
+     },
+     {
       "name": "Agones",
-      "count": 1
-     },
-     {
-      "name": "Amazon EC2",
-      "count": 1
-     },
-     {
-      "name": "ArgoCD",
-      "count": 1
-     },
-     {
-      "name": "AWS 하이브리드",
       "count": 1
      }
     ]
@@ -2114,15 +2114,15 @@
       "count": 1
      },
      {
+      "name": "Datadog/Prometheus",
+      "count": 1
+     },
+     {
       "name": "FCM/APNs",
       "count": 1
      },
      {
       "name": "real macOS/Windows/iOS/Android 호스트",
-      "count": 1
-     },
-     {
-      "name": "베어메탈 서버",
       "count": 1
      }
     ]
@@ -2141,7 +2141,7 @@
      "count": 2
     },
     {
-     "name": "API-first + 멀티플랫폼 SDK",
+     "name": "API-first + 멀티플랫폼 SDK 아키텍처",
      "count": 1
     },
     {
@@ -13648,25 +13648,29 @@
     "backend": [
      "자체 게임서버 (C++)",
      "Spring Boot",
+     "Netty",
      "Node.js",
      "gRPC",
-     "Netty"
+     "Akka/Actor 모델"
     ],
     "frontend": [
      "Unity",
      "Unreal Engine",
      "Cocos2d-x",
-     "React (운영툴)"
+     "React (운영/CMS툴)",
+     "Vue.js"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "Redis",
      "MongoDB",
+     "Couchbase",
      "Spark",
      "Hadoop",
      "Druid",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Airflow"
     ],
     "infra": [
      "AWS",
@@ -13674,19 +13678,22 @@
      "사내 데이터센터(IDC)",
      "Docker",
      "Terraform",
-     "Jenkins"
+     "Jenkins",
+     "Prometheus",
+     "Grafana",
+     "ELK"
     ]
    },
    "architecture": [
-    "권위 게임 전용 서버",
-    "글로벌 멀티리전 매치메이킹",
-    "이벤트 기반 데이터 분석 파이프라인",
-    "플랫폼 공통화(NPS/계정·결제·푸시)"
+    "권위(Authoritative) 게임 전용 서버 + 틱 루프",
+    "공통 게임 플랫폼(NPS) 기반 BaaS 멀티타이틀 백엔드",
+    "Kafka 기반 이벤트 스트리밍 분석 파이프라인",
+    "글로벌 멀티리전 배포·매치메이킹"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Device\"]\n    GAME[\"Game Client<br/>Unity + Unreal\"]\n    SDK[\"Netmarble SDK<br/>NPS Login/IAP/Push\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    LB[\"L4/L7 LB<br/>AWS NLB + Nginx\"]\n    GW[\"Platform API GW<br/>Spring Boot + gRPC\"]\n  end\n  subgraph Game[\"Realtime Game Layer\"]\n    GS[\"Authoritative Game Server<br/>C++ + Netty\"]\n    MM[\"Matchmaking<br/>C++ Service\"]\n    ROOM[\"Battle/Room Server<br/>C++ tick loop\"]\n  end\n  subgraph Platform[\"Platform Services\"]\n    ACC[\"Account/Auth<br/>Spring Boot\"]\n    PAY[\"Billing/IAP<br/>Java\"]\n    LIVE[\"LiveOps/Promotion<br/>Node.js\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RDS[\"MySQL<br/>유저/결제\"]\n    RED[\"Redis<br/>세션/랭킹\"]\n    MON[\"MongoDB<br/>게임상태/로그\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KFK[\"Kafka<br/>이벤트 버스\"]\n    SPK[\"Spark + Hadoop<br/>ETL/배치\"]\n    DRU[\"Druid + Elasticsearch<br/>실시간 지표/검색\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>플랫폼 서비스\"]\n    CLOUD[\"AWS + 사내 IDC\"]\n  end\n  GAME -->|TCP/UDP| LB\n  SDK -->|HTTPS| LB\n  LB --> GW\n  LB --> GS\n  GW -->|gRPC| ACC\n  GW --> PAY\n  GW --> LIVE\n  GS --> MM\n  MM --> ROOM\n  ROOM --> RED\n  ACC --> RDS\n  PAY --> RDS\n  GS --> MON\n  GS -->|로그 이벤트| KFK\n  PAY --> KFK\n  KFK --> SPK\n  KFK --> DRU\n  SPK --> RDS\n  ACC --> K8S\n  PAY --> K8S\n  LIVE --> K8S\n  K8S --> CLOUD\n  GS --> CLOUD",
-   "why_language": "실시간 전투·매칭처럼 지연(latency)과 메모리 제어가 핵심인 게임 서버는 C++로 직접 작성해 틱 루프와 패킷 처리를 최적화하고, Unity/Unreal 클라이언트는 C#·C++를 그대로 쓴다. 반면 계정·결제·푸시·프로모션 같은 플랫폼 공통 서비스는 생태계가 풍부한 Java(Spring Boot)와 운영 효율이 좋은 Node.js로 구축하며, 대규모 로그·지표 분석은 Python/Spark 기반으로 처리한다.",
-   "why_architecture": "수백만 동시접속과 글로벌 서비스 환경에서 치팅을 막고 일관된 게임 상태를 보장하려면 클라이언트를 신뢰하지 않는 권위 서버(authoritative server) 구조가 필수다. 또한 다수의 게임 타이틀이 계정·결제·푸시·고객지원을 공통 플랫폼(NPS)으로 재사용하도록 설계해 신작 출시 속도를 높였고, 모든 행동 로그를 Kafka로 흘려보내 실시간 LiveOps와 BI 분석을 분리·확장 가능하게 만들었다.",
-   "summary": "C++ 권위 게임서버 + Spring/Node 공통 플랫폼 + Kafka·Spark 데이터 파이프라인으로 글로벌 모바일 게임을 운영하는 멀티타이틀 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Device\"]\n    GAME[\"Game Client<br/>Unity + Unreal + Cocos2d-x\"]\n    OPS[\"Ops & CMS<br/>React + Vue.js\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    LB[\"Global LB / CDN<br/>AWS ALB + CloudFront\"]\n    GW[\"Platform Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Game[\"Realtime Game Tier\"]\n    GS[\"Authoritative Game Server<br/>C++ + Netty\"]\n    MM[\"Matchmaking<br/>Go + Redis\"]\n  end\n  subgraph Platform[\"Common Platform NPS\"]\n    ACC[\"Account / Auth<br/>Spring Boot\"]\n    PAY[\"Payment / Billing<br/>Spring Boot + Kafka\"]\n    PUSH[\"Push / Notify<br/>Node.js\"]\n  end\n  subgraph Store[\"Data / Storage\"]\n    MYSQL[\"Game DB<br/>MySQL Sharded\"]\n    REDIS[\"Session / Cache<br/>Redis + Couchbase\"]\n    MONGO[\"Profile / Log<br/>MongoDB\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Batch / ETL<br/>Spark + Hadoop\"]\n    DRUID[\"OLAP<br/>Druid + Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes + Docker\"]\n    CICD[\"CI/CD<br/>Jenkins + Terraform\"]\n    OBS[\"Observability<br/>Prometheus + Grafana + ELK\"]\n  end\n  GAME -->|TCP/UDP| GS\n  GAME -->|HTTPS| LB\n  OPS --> LB\n  LB --> GW\n  GW -->|gRPC| ACC\n  GW -->|gRPC| PAY\n  GW --> PUSH\n  GS --> MM\n  MM --> REDIS\n  GS --> REDIS\n  ACC --> MYSQL\n  PAY --> MYSQL\n  GS --> MYSQL\n  PUSH --> MONGO\n  GS -->|events| KAFKA\n  PAY -->|events| KAFKA\n  ACC --> KAFKA\n  KAFKA --> SPARK\n  KAFKA --> DRUID\n  SPARK --> MONGO\n  K8S --- GW\n  K8S --- ACC\n  CICD --> K8S\n  OBS --- GS\n  OBS --- K8S",
+   "why_language": "실시간 MMO·RPG의 권위 서버는 틱 단위 연산과 메모리·네트워크 제어가 핵심이라 C++를 게임서버 코어에, C#은 Unity 클라이언트에 쓴다. 계정·결제·푸시 같은 플랫폼 공통 서비스는 안정적인 JVM 생태계(Java/Spring Boot)로, 매치메이킹·운영 자동화·데이터 처리 글루 코드는 동시성과 생산성이 좋은 Go·Python으로 분담한다.",
+   "why_architecture": "수십 개 글로벌 타이틀을 동시에 운영하려면 타이틀마다 계정·결제·푸시를 재구현할 수 없어, 공통 게임 플랫폼(NPS)을 BaaS처럼 두고 게임 서버는 게임 로직에만 집중하게 만든다. 치팅 방지와 정합성을 위해 모든 판정을 서버가 가진 권위 서버 구조를 택하고, 유저 행동·매출 데이터는 Kafka로 흘려보내 LiveOps와 BI가 실시간에 가깝게 의사결정하도록 이벤트 기반 파이프라인을 구성한다.",
+   "summary": "C++ 권위 게임서버 + Spring 기반 공통 플랫폼(NPS) + Kafka 이벤트 파이프라인으로 글로벌 멀티타이틀을 떠받치는 게임 백엔드",
    "deep_dive": [
     {
      "topic": "권위 서버(Authoritative Server)와 틱 루프",
@@ -13723,6 +13730,18 @@
     {
      "topic": "글로벌 서비스를 위한 멀티리전 배포와 장애 복원력",
      "body": "### 왜 멀티리전인가\n넷마블 매출의 상당 부분이 해외에서 나온다. 한국 IDC에서만 서비스하면 북미·유럽·동남아 유저는 RTT가 200ms를 넘어 실시간 전투 체감이 나빠진다. 그래서 게임 서버 클러스터를 **AWS의 복수 리전**(예: 도쿄·싱가포르·버지니아·프랑크푸르트)에 배치하고, 유저를 가까운 리전으로 라우팅한다.\n\n### 배포·인프라 운영\n- 플랫폼 공통 서비스는 **Kubernetes** 위에서 컨테이너로 굴리고, 트래픽 급증 이벤트(신규 업데이트·콜라보)에 맞춰 HPA로 오토스케일한다.\n- 게임 전용 서버는 상태(stateful)·저지연이 중요해 IDC와 AWS EC2를 혼합 운용하는 **하이브리드** 구조를 택한다. 신작 런칭처럼 트래픽을 예측하기 어려운 구간은 클라우드로 탄력 대응, 안정 운영 구간은 IDC로 비용 최적화하는 식이다.\n- `Terraform`으로 인프라를 코드화하고 `Jenkins` 파이프라인으로 빌드·배포를 자동화한다.\n\n### 장애 대응 전략\n- **무중단 점검/롤링 배포** : 플랫폼 서비스는 K8s 롤링 업데이트로 무중단 갱신.\n- **리전 격리** : 한 리전 장애가 다른 리전으로 전파되지 않도록 매치메이킹·세션을 리전 단위로 격리한다.\n- **캐시 페일오버** : Redis(세션/랭킹) 장애 시 게임 서버는 토큰 재검증 폴백 경로로 전환해 로그인 폭주를 견딘다.\n- **백프레셔** : 분석 파이프라인이 밀려도 Kafka가 버퍼 역할을 해 게임 서버 쓰기를 막지 않는다.\n\n### 트레이드오프\n멀티리전은 데이터 정합성(글로벌 랭킹·계정 동기화)을 복잡하게 만든다. 계정·결제처럼 강한 일관성이 필요한 데이터는 중앙 권위 저장소를 두고, 랭킹·매칭처럼 지역성이 강한 데이터는 리전 로컬에서 처리한 뒤 비동기로 글로벌 집계하는 절충을 쓴다."
+    },
+    {
+     "topic": "게임 DB 샤딩과 데이터 일관성: '수억 유저'를 가로로 쪼개는 법",
+     "body": "### 왜 샤딩이 불가피한가\n넷마블 같은 글로벌 모바일 게임은 단일 타이틀이 누적 수천만~수억 계정을 가지며, 유저당 인벤토리·재화·진행도·우편함 row가 수십~수백 개씩 쌓인다. 단일 MySQL 인스턴스로는 write IOPS와 디스크 용량이 먼저 한계에 부딪히므로 **수평 샤딩(horizontal sharding)** 이 사실상 강제된다.\n\n### 샤드 키 선택\n게임 백엔드의 핵심 트릭은 **유저 ID(또는 캐릭터 ID)를 샤드 키로 고정**하는 것이다.\n\n- `shard_id = hash(user_id) % N` 형태로 유저를 N개 샤드에 분산.\n- 한 유저의 거의 모든 데이터(인벤토리·재화·퀘스트·우편)가 **같은 샤드에 colocate** 되도록 설계 → 게임 플레이 중 일어나는 99%의 쿼리가 단일 샤드 안에서 끝난다(cross-shard JOIN 회피).\n- 친구/길드/랭킹처럼 유저 경계를 넘는 데이터는 별도 서비스·별도 저장소(Redis sorted set, Elasticsearch)로 빼서 RDB cross-shard 조인을 원천 차단.\n\n### 리샤딩의 고통과 회피책\n`% N` 모듈러 샤딩의 약점은 샤드를 늘릴 때(N→N+1) 거의 모든 키가 재배치된다는 점이다. 게임사들은 보통:\n\n1. **논리 샤드 과다 할당** — 물리 서버는 8대지만 논리 샤드는 1024개로 잘라두고, 논리→물리 매핑 테이블만 바꿔 물리 서버를 증설(consistent-hashing 유사 효과).\n2. **신규 유저 우선 분산** — 신규 가입자만 새 샤드로 보내고 기존 유저는 그대로 둬서, 라이브 서비스 중 대규모 마이그레이션을 피한다.\n\n### 트랜잭션과 정합성\n단일 샤드 내부 연산(예: '골드 차감 + 아이템 지급')은 MySQL 로컬 트랜잭션으로 ACID 보장이 된다. 문제는 **샤드를 넘는 거래**(유저 A → 유저 B 선물)인데, 2PC는 게임 트래픽엔 너무 무겁다. 그래서:\n\n- **Saga / 보상 트랜잭션** 패턴: 'A에서 차감' → 'B에 지급' 두 단계를 이벤트로 처리하고, 실패 시 보상(차감 롤백)을 비동기로 수행.\n- 차감·지급 모든 단계에 **멱등 키(idempotency key)** 를 붙여 재시도가 중복 지급으로 이어지지 않게 한다.\n\n| 데이터 종류 | 저장소 | 일관성 모델 |\n|---|---|---|\n| 재화/인벤토리 | MySQL(샤딩) | 강한 일관성(단일 샤드 트랜잭션) |\n| 세션/락/매치 상태 | Redis | 휘발성, TTL 기반 |\n| 행동 로그/프로필 | MongoDB | 최종 일관성 |\n| 랭킹 | Redis ZSET / Druid | 근사·집계 일관성 |\n\n핵심 트레이드오프: **게임은 '유저 단위 강한 일관성'은 절대 양보하지 않지만(돈/재화), 랭킹·통계 같은 글로벌 집계는 과감하게 최종 일관성으로 푼다.**"
+    },
+    {
+     "topic": "캐싱 계층과 세션 관리: Redis가 게임서버 앞에서 하는 일",
+     "body": "### 게임 백엔드의 3-계층 캐시\n넷마블급 트래픽에서 RDB는 '최종 진실(source of truth)'일 뿐, 실제 읽기·쓰기의 대부분은 캐시에서 흡수된다.\n\n1. **L1 — 게임서버 인메모리(C++ 프로세스 힙)**: 접속 중인 유저의 캐릭터 상태는 게임서버 프로세스가 메모리에 통째로 들고 있다. 권위 서버 특성상 '현재 접속 유저의 진실'은 DB가 아니라 **게임서버 메모리**다. 플레이 중 발생하는 초당 수십 번의 상태 변경을 매번 DB에 쓰지 않고 메모리에서 처리한다.\n2. **L2 — Redis / Couchbase 분산 캐시**: 세션 토큰, 매치메이킹 큐, 로그인 락(중복 로그인 방지), 랭킹 ZSET, 빈번 조회 메타데이터(상점·이벤트 설정)를 담는다.\n3. **L3 — MySQL**: 일정 주기(예: 주기적 스냅샷) 또는 로그아웃 시점에 메모리 상태를 영속화.\n\n### Write-back과 데이터 유실 위험\n게임서버가 메모리에 변경을 쌓아두고 주기적으로만 DB에 flush하는 **write-back 패턴**은 성능엔 최적이지만, 서버 크래시 시 마지막 flush 이후 변경이 날아갈 수 있다. 이 트레이드오프를 줄이려고:\n\n- **결제·과금처럼 절대 유실 불가한 트랜잭션은 write-through**(즉시 동기 기록)로 강제.\n- 일반 진행도는 **짧은 주기 스냅샷 + 중요한 이벤트(보스 클리어, 레벨업)에서 즉시 flush** 하이브리드.\n- crash 대비 **변경 로그(WAL 유사)를 Kafka/Redis에 흘려** 복구 가능하게.\n\n### 세션과 중복 로그인 처리\n모바일 게임은 네트워크 단절·재접속이 잦다. Redis에 `session:{user_id} → {server_id, token, ttl}` 를 두고:\n\n- 새 로그인이 오면 기존 세션을 **원자적으로(SETNX/Lua script) 강제 종료**(중복 접속·계정 공유 방지).\n- TTL과 하트비트로 좀비 세션을 청소.\n\n### Cache stampede 방지\n신규 이벤트 오픈처럼 수십만 유저가 동시에 같은 설정 데이터를 조회하면 캐시 만료 순간 DB로 요청이 쏠린다(thundering herd). 대응:\n\n- 이벤트 설정 같은 **읽기 전용·저빈도 변경 데이터는 TTL을 길게 + 백그라운드 갱신**.\n- mutex/single-flight로 캐시 미스 시 DB 조회를 1건만 통과시키고 나머지는 대기."
+    },
+    {
+     "topic": "오토스케일링과 게임서버 라이프사이클: 상태 있는 서버는 어떻게 늘리고 줄이나",
+     "body": "### 스테이트리스 vs 스테이트풀의 분리\n오토스케일링은 stateless 서비스엔 쉽지만(요청을 아무 인스턴스나 처리), **게임서버는 본질적으로 stateful**(특정 유저·특정 매치가 특정 프로세스에 묶임)이라 일반적인 HPA로 다루기 어렵다. 그래서 넷마블 아키텍처는 둘을 분리한다.\n\n- **Stateless 계층**(Account/Payment/Push/Gateway, Spring Boot·Node.js): Kubernetes HPA로 CPU·RPS 기반 자동 증감. 트래픽 스파이크에 분 단위로 pod를 늘린다.\n- **Stateful 게임서버**(C++): '세션 슬롯'과 '룸/채널' 단위로 스케일. 단순 CPU가 아니라 **현재 수용 인원·룸 수** 를 기준으로 스케일링 결정을 내린다.\n\n### 게임서버 스케일 패턴\n1. **세션 매니저 / 로비 서버**가 게임서버 풀의 가용 용량을 추적.\n2. 신규 매치가 필요하면 **여유 있는 게임서버에 룸을 할당**하거나, 풀이 부족하면 새 게임서버 인스턴스를 띄움(프리워밍된 인스턴스 풀 유지 — 콜드스타트가 곧 유저 대기시간이므로).\n3. 스케일 인 시에는 **드레이닝(draining)**: 새 매치 배정을 끊고, 진행 중 매치가 자연 종료될 때까지 기다린 뒤 종료. 절대 활성 매치 중인 서버를 강제 kill하지 않는다.\n\n### 트래픽 패턴이 만드는 운영 결정\n게임 트래픽은 **극도로 예측 가능하면서 동시에 폭발적**이다.\n\n- **일일 피크**: 저녁~심야(귀가 후 플레이), 점심시간. → 시간대 기반 **예약 스케일링(scheduled scaling)** 으로 HPA보다 선제적으로 용량 확보.\n- **이벤트/업데이트 피크**: 신규 시즌·콜라보·점검 종료 직후 수십 배 동시접속. → 사전에 용량을 수동·예약으로 크게 키워두고, 점검 종료를 **계단식(staggered)** 으로 열어 thundering herd를 분산.\n- **신규 출시(소프트런치 → 글로벌 런치)**: 마케팅 집행과 연동된 트래픽이라 마케팅팀과 협의한 곡선에 맞춰 사전 프로비저닝.\n\n### IDC와 AWS의 하이브리드 이유\n넷마블은 사내 데이터센터(IDC)와 AWS를 함께 쓴다. **상시 베이스 부하·비용 민감 워크로드는 IDC**(평탄한 트래픽엔 자체 IDC가 클라우드보다 단위비용이 싸다), **글로벌 신규 출시·예측 불가 스파이크·해외 리전은 AWS**(전 세계 리전을 즉시 빌려 쓰는 탄력성). 트레이드오프는 명확하다 — IDC는 자본지출과 증설 리드타임, AWS는 운영지출과 즉시 탄력성. 게임사는 '바닥은 소유하고 봉우리는 빌린다'는 전략으로 둘을 섞는다."
     }
    ],
    "github": {
@@ -13731,11 +13750,11 @@
    },
    "sources": [
     "https://netmarble.engineering/",
-    "https://github.com/netmarble",
-    "https://www.youtube.com/@NetmarbleDev"
+    "https://www.youtube.com/@NetmarbleNDC",
+    "https://career.netmarble.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "sendbird",
@@ -13752,45 +13771,47 @@
    ],
    "stack": {
     "backend": [
-     "Go (실시간 채팅 서버)",
-     "Django/Python (API·관리 백엔드)",
-     "gRPC",
-     "WebSocket",
-     "Spring Boot"
+     "Go (실시간 채팅/연결 서버)",
+     "Django/Python (Platform API·관리 백엔드)",
+     "gRPC (내부 서비스 간 통신)",
+     "WebSocket (실시간 메시징)",
+     "Spring Boot/Java (일부 엔터프라이즈 서비스)"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "멀티플랫폼 SDK(JS/iOS/Android/Flutter/RN/Unity)",
+     "UIKit (오픈소스 UI 컴포넌트)",
+     "멀티플랫폼 Chat SDK (JS/iOS/Android/Flutter/React Native/Unity)",
      "Swift",
      "Kotlin"
     ],
     "data": [
-     "MySQL(샤딩)",
-     "Redis",
-     "Cassandra/ScyllaDB",
-     "Kafka",
-     "Elasticsearch",
-     "S3"
+     "MySQL (application_id 기반 샤딩)",
+     "Redis (Presence·세션·캐시)",
+     "Cassandra/ScyllaDB (대용량 메시지 스토어)",
+     "Kafka (이벤트 스트리밍)",
+     "Elasticsearch (메시지 검색)",
+     "S3 (파일·미디어 저장)"
     ],
     "infra": [
-     "AWS",
-     "Kubernetes(EKS)",
-     "Terraform",
-     "FCM/APNs",
-     "CloudFront"
+     "AWS (멀티리전)",
+     "Kubernetes (EKS)",
+     "Terraform (IaC)",
+     "FCM/APNs (모바일 푸시)",
+     "CloudFront (엣지·미디어 전송)",
+     "Datadog/Prometheus (관측성)"
     ]
    },
    "architecture": [
-    "멀티테넌트 SaaS(application_id 기반 격리)",
-    "WebSocket 실시간 메시징 게이트웨이",
-    "API-first + 멀티플랫폼 SDK",
-    "멀티리전 글로벌 배포"
+    "멀티테넌트 SaaS (application_id 기반 데이터·트래픽 격리)",
+    "WebSocket 실시간 게이트웨이 + REST Platform API 이중 경로",
+    "API-first + 멀티플랫폼 SDK 아키텍처",
+    "멀티리전 글로벌 배포로 저지연 보장"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / SDK Layer\"]\n    SDK[\"Platform SDKs<br/>JS/Swift/Kotlin/Flutter/RN\"]\n    WEB[\"Dashboard<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    CF[\"CDN/Edge<br/>CloudFront\"]\n    LB[\"Load Balancer<br/>AWS ALB/NLB\"]\n    WS[\"WebSocket Gateway<br/>Go\"]\n    API[\"Platform API<br/>Django + Go\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CHAT[\"Chat/Message Service<br/>Go + gRPC\"]\n    PRES[\"Presence Service<br/>Go + Redis\"]\n    PUSH[\"Push Pipeline<br/>FCM + APNs\"]\n    MOD[\"Moderation/Filter<br/>Go\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    WORK[\"Workers<br/>Go/Python\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Metadata + Channels<br/>MySQL sharded\"]\n    CASS[\"Message Store<br/>Cassandra/ScyllaDB\"]\n    REDIS[\"Cache/Presence<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    S3[\"File/Media<br/>S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes EKS\"]\n    TF[\"IaC<br/>Terraform\"]\n  end\n  SDK -->|WSS| WS\n  SDK -->|HTTPS| API\n  WEB --> CF --> API\n  WS -->|gRPC| CHAT\n  API --> CHAT\n  CHAT --> PRES\n  CHAT --> MOD\n  CHAT -->|fanout| KAFKA\n  KAFKA --> WORK\n  WORK --> PUSH\n  CHAT --> CASS\n  CHAT --> MYSQL\n  PRES --> REDIS\n  CHAT --> ES\n  CHAT --> S3\n  K8S -.-> WS\n  K8S -.-> CHAT\n  TF -.-> K8S",
-   "why_language": "수백만 동시 WebSocket 연결과 낮은 지연의 메시지 팬아웃이 핵심이라, 고루틴 기반 경량 동시성과 낮은 메모리 풋프린트를 가진 Go를 실시간 채팅 서버의 핫패스에 사용한다. 초기 제품·관리 API는 Django/Python으로 빠르게 구축됐고, 클라이언트는 각 플랫폼 네이티브 언어(Swift/Kotlin/TS)로 SDK를 제공해야 하므로 멀티 언어 구성이 자연스럽다.",
-   "why_architecture": "전 세계 앱에 채팅을 '기능으로 끼워 넣는' B2B2C SaaS이므로 application_id 단위의 멀티테넌트 격리와 API-first 설계가 필수다. 사용자 경험상 실시간성이 생명이라 HTTP 폴링 대신 WebSocket 게이트웨이를 두고, 글로벌 사용자의 지연을 줄이기 위해 AWS 멀티리전에 배포하며 Kubernetes로 연결 폭증에 맞춰 게이트웨이를 수평 확장한다.",
-   "summary": "Go 기반 WebSocket 게이트웨이로 수백만 동시 연결을 처리하는 멀티테넌트 메시징 SaaS",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / SDK Layer\"]\n    SDK[\"Multi-Platform Chat SDK<br/>JS / Swift / Kotlin / Flutter / RN / Unity\"]\n    UIKIT[\"UIKit<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    CF[\"Edge / CDN<br/>CloudFront\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n    WSGW[\"WebSocket Gateway<br/>Go\"]\n    API[\"Platform REST API<br/>Django / Python\"]\n  end\n  subgraph Core[\"Core Services\"]\n    CHAT[\"Chat / Message Server<br/>Go + gRPC\"]\n    PRES[\"Presence / Session<br/>Go + Redis\"]\n    MOD[\"Moderation / Filter<br/>Python\"]\n    PUSH[\"Push Dispatcher<br/>FCM / APNs\"]\n    SEARCHSVC[\"Search Service<br/>Java / ES Client\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Metadata Store<br/>MySQL sharded\"]\n    MSGDB[\"Message Store<br/>Cassandra / ScyllaDB\"]\n    REDIS[\"Cache / Session<br/>Redis\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    S3[\"Files / Media<br/>S3\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>EKS + Terraform\"]\n  end\n  SDK -->|\"WebSocket\"| WSGW\n  SDK -->|\"HTTPS REST\"| CF\n  UIKIT --> SDK\n  CF --> ALB\n  ALB --> API\n  WSGW -->|\"gRPC\"| CHAT\n  API -->|\"gRPC\"| CHAT\n  CHAT --> PRES\n  CHAT --> MOD\n  PRES --> REDIS\n  CHAT --> MYSQL\n  CHAT -->|\"persist\"| MSGDB\n  CHAT -->|\"publish\"| KAFKA\n  KAFKA --> PUSH\n  KAFKA --> SEARCHSVC\n  PUSH --> FCMOUT[\"FCM / APNs\"]\n  SEARCHSVC --> ES\n  API --> S3\n  CHAT --> S3\n  K8S -.-> CHAT\n  K8S -.-> API\n  K8S -.-> WSGW",
+   "why_language": "수백만 동시 WebSocket 연결을 유지해야 하는 실시간 채팅 서버는 goroutine 기반 경량 동시성과 낮은 메모리 풋프린트를 가진 Go로 작성해 연결당 비용을 최소화한다. 반면 Platform API·대시보드·관리 백엔드는 생산성과 풍부한 생태계가 중요한 Django/Python으로 빠르게 구축하며, 고객이 어떤 플랫폼에서도 붙을 수 있도록 iOS는 Swift, Android는 Kotlin, 웹은 TypeScript로 네이티브 SDK를 각각 제공한다.",
+   "why_architecture": "메시징은 '실시간 양방향 푸시'와 '신뢰성 있는 REST 제어'라는 성격이 다른 두 트래픽을 동시에 처리해야 하므로, 영속 연결을 다루는 WebSocket 게이트웨이와 멱등성·관리 작업을 다루는 REST Platform API를 분리한 이중 경로 구조를 택했다. 또한 단일 인프라 위에서 수만 개 고객 앱을 운영하기 위해 application_id로 데이터·레이트리밋·라우팅을 격리하는 멀티테넌트 SaaS로 설계했고, 글로벌 사용자의 체감 지연을 줄이기 위해 멀티리전에 게이트웨이를 분산 배치했다.",
+   "summary": "Go 기반 WebSocket 게이트웨이로 수백만 동시연결을 받고 Django REST·샤딩 데이터 계층으로 멀티테넌트 메시징을 글로벌 멀티리전에 서비스하는 API-first SaaS",
    "deep_dive": [
     {
      "topic": "멀티테넌트 채팅 SaaS 아키텍처",
@@ -13819,55 +13840,71 @@
     {
      "topic": "푸시 알림 파이프라인과 비동기 이벤트 처리",
      "body": "### 온라인이면 WebSocket, 오프라인이면 Push\n메시지가 도착했을 때 수신자가 **연결돼 있으면 WebSocket으로 즉시 전달**하지만, 백그라운드/오프라인이면 모바일 푸시로 전환해야 한다. 이 분기와 전달은 동기 경로에서 떼어내 비동기로 처리한다. 동기 전송 경로에 외부 의존성(FCM/APNs)을 넣으면 지연·실패가 채팅 전체를 막기 때문이다.\n\n### 흐름\n1. Chat Service가 메시지를 영속화하고 채널 멤버에게 팬아웃한 뒤, **'이 메시지에 대한 알림 후보'** 이벤트를 `Kafka`에 발행한다.\n2. Push Worker(Go/Python)가 컨슈머로 받아, 각 수신자에 대해 (a) 현재 presence가 오프라인인지, (b) 채널/유저별 푸시 설정·DnD(방해금지)·미독 여부, (c) 멘션 정책을 평가한다.\n3. 통과한 대상만 `FCM`(Android), `APNs`(iOS), Web Push로 라우팅한다. 토큰 만료·invalid 응답은 토큰 테이블에서 정리(reaping)한다.\n\n### Kafka를 쓰는 이유와 트레이드오프\n- **버퍼링**: 대형 그룹/오픈채널에서 한 메시지가 수만 건의 푸시로 증폭(amplification)되므로, Kafka가 스파이크를 흡수하고 워커가 자기 속도로 소비한다.\n- **재시도·격리**: APNs 일시 장애 시 파티션 단위로 재시도하고, 푸시 실패가 메시지 저장/전달을 절대 막지 않는다.\n- **순서 보장의 한계**: Kafka 파티션 내 순서만 보장되므로, 같은 (채널, 유저) 키로 파티셔닝해 한 대화 내 알림 순서를 맞춘다. 대신 서로 다른 채널 간 전역 순서는 포기한다 — 채팅 도메인에선 채널 내 순서만 의미 있기 때문에 합리적 트레이드오프다.\n\n### 추가 비동기 작업\n웹훅 전달, 메시지 모더레이션(욕설/스팸 필터), 통계 집계, Elasticsearch 인덱싱(메시지·채널 검색)도 같은 이벤트 스트림을 소비하는 별도 컨슈머 그룹으로 붙어, 코어 전송 경로를 가볍게 유지한다."
+    },
+    {
+     "topic": "메시지 전송 end-to-end 요청 흐름 (WebSocket + REST 이중 경로)",
+     "body": "### 두 개의 진입점, 하나의 진실 소스\n\nSendbird에서 메시지 하나가 전송될 때 시스템은 성격이 전혀 다른 두 경로를 거친다.\n\n- **WebSocket 경로 (실시간 양방향)**: 클라이언트 SDK는 앱 시작 시 `application_id`와 사용자 인증 정보(세션 토큰)를 들고 `WebSocket Gateway(Go)`에 영속 연결을 맺는다. 사용자가 메시지를 보내면 SDK는 `MESG` 같은 경량 커맨드 프레임을 게이트웨이로 푸시하고, 게이트웨이는 이를 내부 `gRPC` 호출로 `Chat Server`에 넘긴다.\n- **REST Platform API 경로 (서버-to-서버·제어)**: 고객사 백엔드가 봇 메시지, 어드민 작업, 대량 발송을 할 때는 `CloudFront → ALB → Django REST API`를 탄다. 멱등성과 권한 검증이 중요한 작업이 여기에 모인다.\n\n### 한 메시지의 생애주기\n\n1. **인증·테넌트 식별**: 게이트웨이가 `application_id`로 어느 테넌트인지, 세션 토큰으로 누가 보내는지 확인한다. 잘못된 토큰이나 레이트리밋 초과는 여기서 끊긴다.\n2. **모더레이션·필터**: `Moderation/Filter(Python)` 계층이 프로파니티 필터, 도메인 필터, 스팸·중복 차단 규칙을 적용한다. 차단되면 발신자에게만 에러가 돌아간다.\n3. **순번 부여·영속화**: `Chat Server`가 채널 단위로 단조 증가하는 message ID(시퀀스)를 부여하고 `Message Store`에 기록한다. 메시지 ID는 채널 내 정렬·페이지네이션·읽음처리의 기준이 된다.\n4. **팬아웃**: 채널 멤버들의 활성 연결을 찾아 게이트웨이를 통해 실시간으로 밀어 넣는다. 오프라인 멤버는 `Kafka` 이벤트로 흘러 `Push Dispatcher`가 FCM/APNs로 푸시를 보낸다.\n5. **ACK**: 발신자는 서버가 채번·저장을 끝낸 뒤 ACK를 받아 '전송 완료' UI로 전환한다. 즉 클라이언트의 낙관적 렌더링과 서버 확정 시점이 분리돼 있다.\n\n### 왜 이렇게 나눴나\n\n실시간 경로는 지연(latency)이 생명이라 프레임을 가볍게 유지하고 영속 연결 위에서 최소 홉으로 처리해야 한다. 반대로 REST는 재시도·멱등성·세밀한 권한이 핵심이라 무거워도 정확해야 한다. 둘을 같은 스택에 욱여넣으면 한쪽 특성이 다른 쪽을 망치므로, 진입점을 분리하되 `Chat Server`라는 단일 권위 소스에서 채번·저장·팬아웃을 수렴시키는 것이 핵심 설계다."
+    },
+    {
+     "topic": "멀티플랫폼 SDK 아키텍처와 API-first 계약",
+     "body": "### SDK가 곧 제품이다\n\nSendbird의 실질적 사용자 인터페이스는 대시보드가 아니라 **SDK**다. JS/iOS(Swift)/Android(Kotlin)/Flutter/React Native/Unity까지 6개 이상 플랫폼을 네이티브로 제공하는데, 이 다양성을 관리하는 핵심은 **프로토콜과 데이터 모델을 서버에서 한 번만 정의하고 모든 SDK가 동일한 계약을 따르게** 하는 API-first 원칙이다.\n\n### 공통 계약 + 플랫폼별 네이티브 구현\n\n| 계층 | 공통 여부 | 내용 |\n|------|-----------|------|\n| 와이어 프로토콜 | 공통 | WebSocket 커맨드 프레임, REST 엔드포인트 스펙 |\n| 도메인 모델 | 공통 | `Channel`, `Message`, `User`, `Reaction` 등 동일 개념 |\n| 연결·재연결 로직 | 플랫폼별 | 각 OS 네트워크 스택·백그라운드 정책에 맞춰 구현 |\n| 로컬 캐시 | 플랫폼별 | iOS/Android는 디바이스 DB(예: 로컬 메시지 캐시) |\n\n각 SDK는 **연결 상태 머신**(connecting → open → reconnecting → closed)을 내장하고, 끊겼을 때 지수 백오프로 재연결하며 끊긴 동안 누락된 메시지를 message ID 기준으로 **갭 싱크(gap sync)** 한다. 즉 단순 push 수신기가 아니라 로컬 캐시 + 서버 동기화를 책임지는 작은 데이터베이스 클라이언트에 가깝다.\n\n### UIKit — SDK 위의 한 단계\n\n`sendbird-uikit-react`, `sendbird-uikit-ios/android`는 SDK를 감싸 채팅 리스트·메시지 입력·읽음표시 같은 UI를 오픈소스로 제공한다. 고객은 코어 SDK로 자유롭게 만들거나 UIKit으로 빠르게 붙일 수 있어, 도입 속도와 커스터마이징 자유도를 동시에 만족시킨다. 이 구조의 트레이드오프는 **버전 호환성 관리 비용**이다. 서버 프로토콜이 바뀌면 6개 SDK + UIKit을 모두 호환되게 릴리스해야 하므로, 하위호환을 깨는 변경을 극도로 보수적으로 다룬다."
+    },
+    {
+     "topic": "관측성과 SLA 운영 (멀티테넌트 환경의 모니터링)",
+     "body": "### 수만 테넌트를 한 인프라에서 보는 법\n\n엔터프라이즈 메시징 SaaS의 신뢰성은 곧 매출이라, Sendbird는 99.9%+급 가용성 SLA를 약속하고 이를 뒷받침하는 관측성 체계를 운영한다. 멀티테넌트의 특수성 때문에 메트릭은 거의 항상 **`application_id` 차원으로 태깅**된다.\n\n### 무엇을 보는가\n\n- **연결 지표**: 동시 WebSocket 연결 수, 연결/재연결율, 핸드셰이크 지연 — 게이트웨이 포화의 선행 신호.\n- **메시지 지표**: 초당 메시지 처리량, 전송 ACK 지연(p50/p95/p99), 팬아웃 지연, 푸시 전달 성공률.\n- **테넌트별 격리 지표**: 특정 고객의 트래픽 스파이크가 옆 테넌트에 영향(noisy neighbor)을 주지 않는지 레이트리밋·큐 깊이로 감시.\n- **데이터 계층**: MySQL 샤드별 부하, Redis 히트율, Kafka 컨슈머 랙(lag) — 랙이 커지면 푸시·검색 인덱싱이 밀리는 신호다.\n\n### 도구와 패턴\n\n메트릭은 `Prometheus/Datadog` 계열로 수집하고, 분산된 요청은 게이트웨이→Chat Server→데이터 계층까지 trace ID로 추적한다. 알람은 단순 임계치보다 **테넌트 단위 이상탐지**가 중요하다. 전체 평균은 정상인데 한 고객만 ACK 지연이 튀는 경우를 잡아야 하기 때문이다.\n\n### 운영상의 핵심 트레이드오프\n\n메트릭을 `application_id`로 쪼개면 카디널리티가 폭발한다(테넌트 × 메트릭 × 리전). 그래서 고카디널리티 라벨은 핵심 SLA 지표에만 허용하고, 나머지는 집계 후 샘플링하는 식으로 관측성 비용과 디버깅 해상도 사이의 균형을 잡는다. 이 절제가 없으면 모니터링 시스템 자체가 채팅 시스템보다 비싸지는 역설이 발생한다."
+    },
+    {
+     "topic": "보안·인증과 액세스 제어 (세션 토큰·모더레이션)",
+     "body": "### 클라이언트를 믿지 않는 설계\n\nChat SDK는 고객의 단말(브라우저·모바일 앱)에서 직접 도는 코드라, Sendbird는 **앱 식별과 사용자 인증을 철저히 분리**한다.\n\n- **`application_id` / API Token**: `application_id`는 어떤 앱인지 식별하는 공개 키에 가깝고, 진짜 권한이 큰 **API Token(Master/Secondary)** 은 고객사 서버에만 둬야 한다. 이 토큰은 Platform REST API에서 어드민 작업에 쓰인다.\n- **세션 토큰**: 클라이언트가 채팅에 붙을 때는 고객 서버가 발급받아 단말로 내려준 **만료 있는 세션 토큰**을 쓴다. 단말에 마스터 키를 절대 두지 않는 구조라, 토큰이 유출돼도 만료·폐기로 피해를 한정한다.\n\n### 접근 제어와 모더레이션\n\n- **채널 권한**: open channel(공개)과 group channel(초대 기반)로 가시성을 나누고, operator/멤버 역할로 메시지 삭제·차단·뮤트 권한을 통제한다.\n- **콘텐츠 모더레이션**: 프로파니티 필터, 도메인 필터, 이미지 모더레이션 등을 서버 측에서 강제한다. 클라이언트 필터는 우회 가능하므로 차단 판정은 반드시 `Chat Server`/`Moderation` 계층에서 내린다.\n- **레이트리밋·격리**: 멀티테넌트라 한 테넌트가 폭주해도 다른 테넌트를 침범하지 못하도록 `application_id` 단위 레이트리밋과 쿼터를 둔다.\n\n### 데이터 보호와 컴플라이언스\n\n엔터프라이즈·헬스케어·금융 고객을 받기 위해 전송구간 TLS, 저장 암호화, 리전 데이터 거주성(data residency) 옵션, 감사 로그를 제공한다. 멀티리전 배포 자체가 '특정 국가 데이터는 그 리전을 벗어나지 않게' 하는 컴플라이언스 요구와 맞물려 있어, 보안 설계와 글로벌 인프라 설계가 분리되지 않고 함께 움직인다."
     }
    ],
    "github": {
     "org": "https://github.com/sendbird",
     "repos": [
      {
+      "name": "sendbird/sendbird-javascript-samples",
+      "url": "https://github.com/sendbird/sendbird-javascript-samples",
+      "desc": "JavaScript SDK 샘플·위젯 모음",
+      "lang": "JavaScript",
+      "stars": 346
+     },
+     {
       "name": "sendbird/sendbird-uikit-react",
       "url": "https://github.com/sendbird/sendbird-uikit-react",
-      "desc": "React용 채팅 UI 컴포넌트 키트",
+      "desc": "React 기반 채팅 UI 컴포넌트 오픈소스 UIKit",
       "lang": "TypeScript",
       "stars": 235
      },
      {
-      "name": "sendbird/sendbird-uikit-react-native",
-      "url": "https://github.com/sendbird/sendbird-uikit-react-native",
-      "desc": "React Native용 채팅 UIKit",
-      "lang": "TypeScript",
-      "stars": 94
+      "name": "sendbird/sendbird-uikit-ios",
+      "url": "https://github.com/sendbird/sendbird-uikit-ios",
+      "desc": "iOS용 Swift UIKit (채팅 화면 컴포넌트)",
+      "lang": "Swift",
+      "stars": 121
      },
      {
-      "name": "sendbird/sendbird-chat-sdk-javascript",
-      "url": "https://github.com/sendbird/sendbird-chat-sdk-javascript",
-      "desc": "웹/Node용 JavaScript·TypeScript 채팅 SDK",
-      "lang": "JavaScript",
-      "stars": 31
+      "name": "sendbird/sendbird-chat-sample-flutter",
+      "url": "https://github.com/sendbird/sendbird-chat-sample-flutter",
+      "desc": "Flutter Chat SDK 샘플 앱",
+      "lang": "Dart",
+      "stars": 63
      },
      {
-      "name": "sendbird/sendbird-chat-sdk-ios",
-      "url": "https://github.com/sendbird/sendbird-chat-sdk-ios",
-      "desc": "iOS(Swift) 채팅 SDK",
-      "lang": "Ruby",
-      "stars": 25
-     },
-     {
-      "name": "sendbird/sendbird-chat-sdk-android",
-      "url": "https://github.com/sendbird/sendbird-chat-sdk-android",
-      "desc": "Android(Kotlin/Java) 채팅 SDK",
-      "lang": "Shell",
-      "stars": 10
+      "name": "sendbird/sendbird-uikit-android",
+      "url": "https://github.com/sendbird/sendbird-uikit-android",
+      "desc": "Android용 Kotlin UIKit",
+      "lang": "Java",
+      "stars": 43
      }
     ]
    },
    "sources": [
     "https://sendbird.com/developer/tutorials",
     "https://github.com/sendbird",
-    "https://sendbird.com/blog/engineering"
+    "https://sendbird.com/blog"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "kakaomobility",
