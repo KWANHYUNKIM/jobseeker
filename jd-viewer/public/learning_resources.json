@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-19T18:38:46",
+  "generated_at": "2026-06-19T20:23:44",
   "source": "youtube",
   "tech_count": 170,
   "curriculum_count": 20,
@@ -1727,88 +1727,6 @@
         "stage": "실전"
       }
     ],
-    "Next.js": [
-      {
-        "title": "Next.js 13 강의 달린다 (1강~6강)",
-        "url": "https://www.youtube.com/watch?v=PCkiz2GUFg8",
-        "thumbnail": "https://i.ytimg.com/vi/PCkiz2GUFg8/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 133022,
-        "length": "1:00:20",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
-        "url": "https://www.youtube.com/watch?v=jYJ3ygUfPrU",
-        "thumbnail": "https://i.ytimg.com/vi/jYJ3ygUfPrU/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 222373,
-        "length": "5:32",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발자들이 Next.js를 떠나는 이유 (5가지 대안 프레임워크)",
-        "url": "https://www.youtube.com/watch?v=CqQtjS6ZKxo",
-        "thumbnail": "https://i.ytimg.com/vi/CqQtjS6ZKxo/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 41164,
-        "length": "6:24",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 혹시 그냥 쓰고계신가요? 이 강의보면 \"왜\"를 설명할 수 있게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=gqPJ-78RlZE",
-        "thumbnail": "https://i.ytimg.com/vi/gqPJ-78RlZE/mqdefault.jpg",
-        "channel": "가장 쉬운 AI 활용 개발 with Boaz",
-        "views": 13184,
-        "length": "9:30",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 13- 0. Next.js 란 무엇인가? (14 버전 호환됩니다)",
-        "url": "https://www.youtube.com/watch?v=9KOaR6QMb9A",
-        "thumbnail": "https://i.ytimg.com/vi/9KOaR6QMb9A/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 62534,
-        "length": "2:43",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js 과연 필수일까요?? 일단 저는 안 쓰고 있습니다",
-        "url": "https://www.youtube.com/watch?v=XfuYV2JxVWk",
-        "thumbnail": "https://i.ytimg.com/vi/XfuYV2JxVWk/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 17670,
-        "length": "15:35",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Next.js Full Course - Supabase를 활용한 나만의 To do list",
-        "url": "https://www.youtube.com/watch?v=fXLBVDa6J2s",
-        "thumbnail": "https://i.ytimg.com/vi/fXLBVDa6J2s/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 3003,
-        "length": "8:26:25",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NextJS 존재 이유부터 실전까지 다 알려드립니다 (개쉽게)  | 프리즈마, 도커는 덤",
-        "url": "https://www.youtube.com/watch?v=u78I5kNULYc",
-        "thumbnail": "https://i.ytimg.com/vi/u78I5kNULYc/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 16008,
-        "length": "31:11",
-        "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
     "Android": [
       {
         "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
@@ -1889,6 +1807,88 @@
         "length": "13:41",
         "published": "3년 전",
         "stage": "핵심"
+      }
+    ],
+    "Next.js": [
+      {
+        "title": "Next.js 13 강의 달린다 (1강~6강)",
+        "url": "https://www.youtube.com/watch?v=PCkiz2GUFg8",
+        "thumbnail": "https://i.ytimg.com/vi/PCkiz2GUFg8/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 133022,
+        "length": "1:00:20",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
+        "url": "https://www.youtube.com/watch?v=jYJ3ygUfPrU",
+        "thumbnail": "https://i.ytimg.com/vi/jYJ3ygUfPrU/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 222373,
+        "length": "5:32",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발자들이 Next.js를 떠나는 이유 (5가지 대안 프레임워크)",
+        "url": "https://www.youtube.com/watch?v=CqQtjS6ZKxo",
+        "thumbnail": "https://i.ytimg.com/vi/CqQtjS6ZKxo/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 41164,
+        "length": "6:24",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 혹시 그냥 쓰고계신가요? 이 강의보면 \"왜\"를 설명할 수 있게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=gqPJ-78RlZE",
+        "thumbnail": "https://i.ytimg.com/vi/gqPJ-78RlZE/mqdefault.jpg",
+        "channel": "가장 쉬운 AI 활용 개발 with Boaz",
+        "views": 13184,
+        "length": "9:30",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 13- 0. Next.js 란 무엇인가? (14 버전 호환됩니다)",
+        "url": "https://www.youtube.com/watch?v=9KOaR6QMb9A",
+        "thumbnail": "https://i.ytimg.com/vi/9KOaR6QMb9A/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 62534,
+        "length": "2:43",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js 과연 필수일까요?? 일단 저는 안 쓰고 있습니다",
+        "url": "https://www.youtube.com/watch?v=XfuYV2JxVWk",
+        "thumbnail": "https://i.ytimg.com/vi/XfuYV2JxVWk/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 17670,
+        "length": "15:35",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Next.js Full Course - Supabase를 활용한 나만의 To do list",
+        "url": "https://www.youtube.com/watch?v=fXLBVDa6J2s",
+        "thumbnail": "https://i.ytimg.com/vi/fXLBVDa6J2s/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 3003,
+        "length": "8:26:25",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NextJS 존재 이유부터 실전까지 다 알려드립니다 (개쉽게)  | 프리즈마, 도커는 덤",
+        "url": "https://www.youtube.com/watch?v=u78I5kNULYc",
+        "thumbnail": "https://i.ytimg.com/vi/u78I5kNULYc/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 16008,
+        "length": "31:11",
+        "published": "4개월 전",
+        "stage": "실전"
       }
     ],
     "C++": [
@@ -4925,88 +4925,6 @@
         "stage": "실전"
       }
     ],
-    "C": [
-      {
-        "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
-        "url": "https://www.youtube.com/watch?v=q6fPjQAzll8",
-        "thumbnail": "https://i.ytimg.com/vi/q6fPjQAzll8/mqdefault.jpg",
-        "channel": "나도코딩",
-        "views": 2019274,
-        "length": "6:46:33",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "C언어 – 문법 기초",
-        "url": "https://www.youtube.com/watch?v=I2giEjUHe0M",
-        "thumbnail": "https://i.ytimg.com/vi/I2giEjUHe0M/mqdefault.jpg",
-        "channel": "초이스 프로그래밍",
-        "views": 70030,
-        "length": "10:28",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[맨처음 C언어 기초 2시간 완성] C언어 공부를 맨처음 시작하는 분들을 위한 입문강의",
-        "url": "https://www.youtube.com/watch?v=ueYLF0NIHkE",
-        "thumbnail": "https://i.ytimg.com/vi/ueYLF0NIHkE/mqdefault.jpg",
-        "channel": "처음맨",
-        "views": 204407,
-        "length": "2:15:27",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발자로의 기로에 서게 했던 ... C언어 포인터 문제 (from 정보처리기사 정처기 문제)",
-        "url": "https://www.youtube.com/watch?v=k6HPjMyVJy0",
-        "thumbnail": "https://i.ytimg.com/vi/k6HPjMyVJy0/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 159853,
-        "length": "10:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
-        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
-        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 1525463,
-        "length": "5:44",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[무료] 코테용 C++ 핵심 정리 무료 강의 - 핵심적인 내용만 간추려서 빠르게 훑어볼 수 있는 3시간 완강가능! [홍정모 연구소]",
-        "url": "https://www.youtube.com/watch?v=UqCZda8DLGc",
-        "thumbnail": "https://i.ytimg.com/vi/UqCZda8DLGc/mqdefault.jpg",
-        "channel": "홍정모",
-        "views": 69962,
-        "length": "3:18:02",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "초급 개발자를 위한 C언어 강의 | The C Programming Language | C언어 강좌",
-        "url": "https://www.youtube.com/watch?v=mEEVrv7rvFY",
-        "thumbnail": "https://i.ytimg.com/vi/mEEVrv7rvFY/mqdefault.jpg",
-        "channel": "시골사는개발자",
-        "views": 11553,
-        "length": "5:13:48",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[공공의적! 포인터] C언어/C++ 포인터 완벽정리! | 포인터 제대로 이해 못하면 버그 지옥! | 이보다 더 자세한 설명은 없다! | 포인터 완전 정복편 | 포인터 지구 최강편!",
-        "url": "https://www.youtube.com/watch?v=bz63_WWtKc4",
-        "thumbnail": "https://i.ytimg.com/vi/bz63_WWtKc4/mqdefault.jpg",
-        "channel": "혀니C코딩",
-        "views": 46039,
-        "length": "21:12",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     ".NET": [
       {
         "title": "ASP.NET Core Full Course For Beginners (.NET 10)",
@@ -5086,6 +5004,88 @@
         "views": 606,
         "length": "10:33",
         "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
+    "C": [
+      {
+        "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
+        "url": "https://www.youtube.com/watch?v=q6fPjQAzll8",
+        "thumbnail": "https://i.ytimg.com/vi/q6fPjQAzll8/mqdefault.jpg",
+        "channel": "나도코딩",
+        "views": 2019274,
+        "length": "6:46:33",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "C언어 – 문법 기초",
+        "url": "https://www.youtube.com/watch?v=I2giEjUHe0M",
+        "thumbnail": "https://i.ytimg.com/vi/I2giEjUHe0M/mqdefault.jpg",
+        "channel": "초이스 프로그래밍",
+        "views": 70030,
+        "length": "10:28",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[맨처음 C언어 기초 2시간 완성] C언어 공부를 맨처음 시작하는 분들을 위한 입문강의",
+        "url": "https://www.youtube.com/watch?v=ueYLF0NIHkE",
+        "thumbnail": "https://i.ytimg.com/vi/ueYLF0NIHkE/mqdefault.jpg",
+        "channel": "처음맨",
+        "views": 204407,
+        "length": "2:15:27",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발자로의 기로에 서게 했던 ... C언어 포인터 문제 (from 정보처리기사 정처기 문제)",
+        "url": "https://www.youtube.com/watch?v=k6HPjMyVJy0",
+        "thumbnail": "https://i.ytimg.com/vi/k6HPjMyVJy0/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 159853,
+        "length": "10:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
+        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
+        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 1525463,
+        "length": "5:44",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[무료] 코테용 C++ 핵심 정리 무료 강의 - 핵심적인 내용만 간추려서 빠르게 훑어볼 수 있는 3시간 완강가능! [홍정모 연구소]",
+        "url": "https://www.youtube.com/watch?v=UqCZda8DLGc",
+        "thumbnail": "https://i.ytimg.com/vi/UqCZda8DLGc/mqdefault.jpg",
+        "channel": "홍정모",
+        "views": 69962,
+        "length": "3:18:02",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "초급 개발자를 위한 C언어 강의 | The C Programming Language | C언어 강좌",
+        "url": "https://www.youtube.com/watch?v=mEEVrv7rvFY",
+        "thumbnail": "https://i.ytimg.com/vi/mEEVrv7rvFY/mqdefault.jpg",
+        "channel": "시골사는개발자",
+        "views": 11553,
+        "length": "5:13:48",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[공공의적! 포인터] C언어/C++ 포인터 완벽정리! | 포인터 제대로 이해 못하면 버그 지옥! | 이보다 더 자세한 설명은 없다! | 포인터 완전 정복편 | 포인터 지구 최강편!",
+        "url": "https://www.youtube.com/watch?v=bz63_WWtKc4",
+        "thumbnail": "https://i.ytimg.com/vi/bz63_WWtKc4/mqdefault.jpg",
+        "channel": "혀니C코딩",
+        "views": 46039,
+        "length": "21:12",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],

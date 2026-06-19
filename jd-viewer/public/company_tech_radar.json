@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T18:42:12",
+ "generated_at": "2026-06-19T20:27:56",
  "total": 100,
  "countries": [
   {
@@ -965,7 +965,7 @@
     },
     {
      "name": "Go",
-     "count": 5
+     "count": 6
     },
     {
      "name": "JavaScript",
@@ -1033,8 +1033,16 @@
       "count": 6
      },
      {
+      "name": "TypeScript",
+      "count": 2
+     },
+     {
       "name": "Unreal Engine",
-      "count": 3
+      "count": 2
+     },
+     {
+      "name": "Unreal Engine 4/5",
+      "count": 2
      },
      {
       "name": "C++ 렌더러",
@@ -1054,14 +1062,6 @@
      },
      {
       "name": "React Native",
-      "count": 1
-     },
-     {
-      "name": "Roact",
-      "count": 1
-     },
-     {
-      "name": "TypeScript",
       "count": 1
      }
     ],
@@ -1087,23 +1087,23 @@
       "count": 5
      },
      {
+      "name": "Apache Spark",
+      "count": 2
+     },
+     {
       "name": "Spark",
-      "count": 3
+      "count": 2
      },
      {
       "name": "Aerospike",
       "count": 1
      },
      {
+      "name": "Amazon Aurora",
+      "count": 1
+     },
+     {
       "name": "Amazon Aurora MySQL",
-      "count": 1
-     },
-     {
-      "name": "Amazon S3",
-      "count": 1
-     },
-     {
-      "name": "Apache Druid",
       "count": 1
      }
     ],
@@ -1129,6 +1129,10 @@
       "count": 2
      },
      {
+      "name": "Envoy",
+      "count": 2
+     },
+     {
       "name": "Agones",
       "count": 1
      },
@@ -1137,23 +1141,19 @@
       "count": 1
      },
      {
+      "name": "ArgoCD",
+      "count": 1
+     },
+     {
       "name": "AWS 하이브리드",
-      "count": 1
-     },
-     {
-      "name": "CloudFront CDN",
-      "count": 1
-     },
-     {
-      "name": "ELK",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "글로벌 멀티리전 서비스",
-     "count": 2
+     "name": "Agones-based Stateful Server Fleet Orchestration",
+     "count": 1
     },
     {
      "name": "Authoritative 게임서버 + 채널/존 샤딩",
@@ -13165,47 +13165,52 @@
     "C++",
     "C#",
     "Java",
+    "TypeScript",
     "Python",
-    "TypeScript"
+    "Go"
    ],
    "stack": {
     "backend": [
      "자체 게임서버(C++ Authoritative Server)",
-     "Spring Boot",
+     "Spring Boot(STOVE 플랫폼 MSA)",
      "Node.js",
-     "gRPC"
+     "gRPC",
+     "Netty 기반 세션 게이트웨이"
     ],
     "frontend": [
-     "Unreal Engine",
-     "Unity",
-     "React"
+     "Unreal Engine(Lost Ark/CrossFire)",
+     "Unity(Epic Seven)",
+     "React(STOVE 웹/대시보드)",
+     "STOVE Launcher"
     ],
     "data": [
-     "Kafka",
-     "MySQL",
-     "Redis",
+     "MySQL(게임 영속 상태)",
+     "Redis(세션·랭킹·캐시)",
      "MongoDB",
+     "Kafka",
      "Spark",
-     "Elasticsearch"
+     "Elasticsearch",
+     "S3/오브젝트 스토리지"
     ],
     "infra": [
      "AWS",
-     "Kubernetes",
      "사내 데이터센터(IDC)",
+     "Kubernetes",
      "Terraform",
-     "Prometheus/Grafana"
+     "Prometheus/Grafana",
+     "CDN(클라이언트 패치 배포)"
     ]
    },
    "architecture": [
-    "권위 서버 기반 실시간 동기화",
-    "글로벌 멀티리전 서비스",
-    "게임-플랫폼 분리(MSA)",
-    "하이브리드 클라우드(IDC+AWS)"
+    "권위 서버(Authoritative Server) 기반 실시간 동기화",
+    "게임-플랫폼 분리(STOVE 플랫폼 MSA)",
+    "글로벌 멀티리전 + 하이브리드 클라우드(IDC+AWS)",
+    "이벤트 스트리밍 기반 실시간 분석·라이브 운영"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    GC[\"Game Client<br/>Unreal Engine / Unity\"]\n    WC[\"Web/App<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"Gateway / Edge\"]\n    LB[\"Edge LB / CDN<br/>AWS ALB + CloudFront\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Realtime[\"Realtime Game Layer\"]\n    GS[\"Authoritative Game Server<br/>C++ Dedicated Server\"]\n    MM[\"Matchmaking<br/>C++/Go Service\"]\n    AC[\"Anti-Cheat<br/>Server Validation\"]\n  end\n  subgraph Platform[\"Platform Services\"]\n    AUTH[\"Account/Auth<br/>Spring Boot\"]\n    BILL[\"Billing/Shop<br/>Spring Boot\"]\n    SOCIAL[\"Social/Community<br/>Node.js\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Analytics<br/>Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Persistent State<br/>MySQL Sharded\"]\n    REDIS[\"Session/Cache<br/>Redis\"]\n    MONGO[\"Logs/Profiles<br/>MongoDB\"]\n    ES[\"Search/Log<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    CLOUD[\"Hybrid<br/>AWS + IDC\"]\n  end\n  GC -->|UDP/TCP| GS\n  WC --> LB --> GW\n  GS --> MM\n  GS --> AC\n  GS -->|state| REDIS\n  GS -->|persist| MYSQL\n  GW --> AUTH\n  GW --> BILL\n  GW --> SOCIAL\n  AUTH --> MYSQL\n  BILL --> MYSQL\n  SOCIAL --> MONGO\n  GS -->|events| KAFKA\n  BILL --> KAFKA\n  KAFKA --> SPARK\n  KAFKA --> ES\n  SPARK --> MONGO\n  AUTH --> REDIS\n  GS --> K8S\n  Platform --> K8S\n  K8S --> CLOUD",
-   "why_language": "실시간 틱 루프와 물리·히트 판정이 핵심인 권위 게임서버는 지연·메모리 제어가 결정적이라 C++로 작성하고, 클라이언트는 Unreal/Unity 기반이라 C++·C#을 함께 쓴다. 계정·결제·커뮤니티 같은 플랫폼 백엔드는 생산성과 생태계가 풍부한 Java(Spring Boot)·Node.js로, 데이터 분석·자동화는 Python으로 분리해 도메인별 최적 언어를 채택한다.",
-   "why_architecture": "FPS·MMO 같은 장르는 클라이언트를 신뢰할 수 없어 서버가 모든 게임 상태의 단일 진실원천이 되는 권위 서버 구조가 필수이며, 글로벌 동시 서비스를 위해 멀티리전에 게임서버를 분산하고 매치메이킹으로 지연을 최소화한다. 안정적 트래픽의 게임서버는 사내 IDC로 비용을 통제하고, 신규 출시·이벤트의 탄력적 부하는 AWS로 흡수하는 하이브리드 클라우드 + Kubernetes 조합을 택했다.",
-   "summary": "C++ 권위 게임서버를 코어로, Spring/Node 플랫폼을 MSA로 분리하고 IDC+AWS 하이브리드 위에 글로벌 실시간 서비스를 운영한다",
+   "diagram": "flowchart TD\n  subgraph Client\n    GC[\"Game Client<br/>Unreal / Unity\"]\n    LN[\"STOVE Launcher<br/>패치/배포\"]\n    CDN[\"CDN<br/>클라이언트 빌드 배포\"]\n  end\n  subgraph Edge\n    LB[\"Load Balancer<br/>L4/L7\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    SG[\"Session Gateway<br/>Netty TCP/UDP\"]\n  end\n  subgraph GameServer\n    AGS[\"Authoritative Game Server<br/>C++ Tick Loop\"]\n    MM[\"Matchmaking<br/>C# / Java\"]\n  end\n  subgraph Platform\n    AUTH[\"Auth / Account<br/>Spring Boot\"]\n    PAY[\"Payment / 정산<br/>Spring Boot\"]\n    COM[\"Community / Store<br/>Spring Boot + React\"]\n  end\n  subgraph Data\n    MYSQL[\"MySQL<br/>영속 상태\"]\n    REDIS[\"Redis<br/>세션/랭킹/캐시\"]\n    MONGO[\"MongoDB<br/>로그/문서\"]\n    ES[\"Elasticsearch<br/>검색/로그\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Kafka<br/>이벤트 버스\"]\n    SPARK[\"Spark<br/>실시간/배치 분석\"]\n  end\n  subgraph Infra\n    K8S[\"Kubernetes<br/>AWS EKS + IDC\"]\n    OBS[\"Prometheus / Grafana<br/>관측성\"]\n  end\n  CDN --> LN --> GC\n  GC -->|UDP 상태동기화| SG\n  GC -->|HTTPS| LB --> GW\n  SG --> AGS\n  GW -->|gRPC| AUTH\n  GW -->|gRPC| PAY\n  GW -->|gRPC| COM\n  AGS --> MM\n  AGS --> REDIS\n  AGS --> MYSQL\n  AUTH --> MYSQL\n  PAY --> MYSQL\n  COM --> ES\n  AGS -->|이벤트| KAFKA\n  PAY -->|이벤트| KAFKA\n  KAFKA --> SPARK\n  KAFKA --> MONGO\n  SPARK --> ES\n  K8S --- AGS\n  K8S --- AUTH\n  OBS --- AGS\n  OBS --- K8S",
+   "why_language": "실시간 FPS·MMORPG의 권위 서버는 틱당 수백~수천 엔티티의 물리·충돌·히트 판정을 마이크로초 단위로 처리해야 하므로 메모리·캐시를 직접 통제하는 C++가 핵심이고, 클라이언트는 Unreal(C++)·Unity(C#)에 맞춰 게임플레이 코드를 공유한다. 반면 STOVE 플랫폼의 인증·결제·커뮤니티는 변경이 잦고 팀이 많아 생산성과 생태계가 강한 Java/Spring Boot, 웹·도구는 TypeScript/React, 데이터·운영 자동화는 Python을 쓰는 이원화 전략을 택했다.",
+   "why_architecture": "게임 본체(저지연·상태 권위)와 플랫폼(인증·결제·커뮤니티)은 SLA·배포 주기·확장 특성이 완전히 달라, 게임-플랫폼을 분리하고 플랫폼을 MSA로 구성해 각자 독립 배포·확장한다. 또한 Lost Ark 같은 글로벌 동시 출시는 폭발적 트래픽이 예측 불가능하므로 AWS 멀티리전으로 탄력 확장하되, 비용·지연이 안정적인 한국 라이브 트래픽은 자체 IDC에 두는 하이브리드 클라우드로 비용과 탄력성을 동시에 잡았다.",
+   "summary": "C++ 권위 서버로 실시간 게임을, Spring 기반 STOVE MSA로 플랫폼을 분리하고 IDC+AWS 하이브리드로 글로벌 라이브를 운영한다",
    "deep_dive": [
     {
      "topic": "권위 서버(Authoritative Server)와 틱 루프",
@@ -13242,19 +13247,35 @@
     {
      "topic": "관측성(Observability) — 게임서버 틱 지연과 매치 품질을 어떻게 보는가",
      "body": "### 게임 운영의 SLI는 웹과 다르다\n웹 서비스는 보통 p99 레이턴시·에러율을 본다. 게임은 여기에 더해 **틱 안정성**과 **매치 품질**이 핵심 지표다.\n\n- **틱 시간(tick budget)**: 권위 서버가 60틱이면 한 틱 예산은 약 16.6ms. 이 예산을 초과하면 모든 플레이어가 렉을 체감한다. 그래서 틱당 처리시간 히스토그램을 메트릭으로 뽑아, 특정 맵·플레이어 수에서 예산 초과가 나는지 모니터링한다.\n- **RTT/패킷 손실**: 리전별·ISP별 RTT 분포. 특정 리전에서 지연이 튀면 매치메이킹 라우팅을 조정.\n- **매치메이킹 큐 시간**: 매칭 대기시간 vs 매치 밸런스(실력 격차)의 트레이드오프 지표.\n\n### 스택 구성\n- **메트릭**: `Prometheus`로 게임서버·플랫폼 서비스의 메트릭 수집, `Grafana` 대시보드로 시각화. 게임서버는 push gateway 또는 사이드카로 틱·동접·메모리를 노출.\n- **로그**: 행동 로그는 `Kafka` → `Elasticsearch`로 적재해 운영툴에서 유저 단위 추적. 애플리케이션 로그는 별도 파이프라인으로 집계.\n- **트레이싱**: 플랫폼(Spring/Node) 호출은 분산 트레이싱으로 결제→지급 흐름을 추적, 어디서 지연·실패가 났는지 한눈에 본다.\n\n### 왜 중요한가 — 사고 대응\n게임은 **\"점검 후 오픈\" 순간이 가장 위험**하다. 대기하던 유저가 한꺼번에 몰려 로그인·매치메이킹·결제가 동시에 폭주한다. 이때 대시보드에서 병목(로그인 큐? DB 커넥션풀? 게임서버 부족?)을 즉시 식별해야 하고, 서킷브레이커로 결제 등 비핵심 경로를 일시 차단(graceful degradation)하면서 핵심 플레이 경로를 지킨다. 관측성이 빈약하면 \"느린데 어디가 느린지 모르는\" 상태로 장애가 길어진다."
+    },
+    {
+     "topic": "STOVE 플랫폼 — 게임과 플랫폼을 분리한 MSA가 실제로 어떻게 도는가",
+     "body": "### 왜 게임과 플랫폼을 갈랐나\n스마일게이트의 `STOVE`는 CrossFire·Lost Ark·Epic Seven 등 자사/퍼블리싱 게임이 공통으로 올라타는 **게임 플랫폼**이다. 게임 본체(Authoritative Game Server)와 플랫폼을 한 덩어리로 묶으면 다음이 충돌한다.\n\n- **배포 주기**: 게임 서버는 패치·점검 단위로 신중하게 내리지만, 커뮤니티/스토어/이벤트 페이지는 하루에도 여러 번 배포한다.\n- **확장 특성**: 게임 서버는 매치·세션 단위로 스케일하고 상태(state)를 들고 있어 무상태 오토스케일이 어렵다. 반면 플랫폼 API는 대체로 stateless라 HPA로 쉽게 늘린다.\n- **장애 격리**: 결제 모듈이 흔들려도 게임 인스턴스의 틱 루프는 살아 있어야 하고, 반대로 한 게임의 점검이 STOVE 전체 로그인을 막으면 안 된다.\n\n그래서 플랫폼을 `Auth/Account`, `Payment/Billing`, `Community`, `Store`, `Coupon/Promotion`, `Notification` 같은 도메인 서비스로 쪼갠 **MSA**로 두고, 게임 서버는 이 플랫폼을 **외부 API 소비자**처럼 호출한다.\n\n### 요청 흐름 end-to-end\n1. `STOVE Launcher`가 부팅되면 `Auth` 서비스에 로그인 → OAuth/JWT 형태의 액세스 토큰 발급.\n2. 런처가 `Store/Patch` 서비스에서 게임의 최신 빌드 메타를 조회하고, 실제 바이너리는 `CDN`에서 청크 단위로 내려받는다(아래 패치 토픽 참고).\n3. 게임을 실행하면 클라이언트는 `Session Gateway`(Netty 기반 TCP/UDP)로 붙어 게임 서버 세션을 잡고, 동시에 토큰을 게임 서버가 `Auth`에 **검증(introspect)** 요청해 신원을 확인한다.\n4. 인게임 상점 구매·재화 변동은 게임 서버가 `Payment` 서비스로 gRPC 호출 → 결제 확정 후 게임 서버가 인벤토리(영속 상태)에 반영.\n5. 모든 도메인 이벤트(로그인, 결제, 아이템 획득)는 `Kafka`로 흘려보내 분석·정산·어뷰징 탐지에서 재사용한다.\n\n### 서비스 간 통신과 경계\n- 내부 호출은 지연이 중요한 경로엔 `gRPC`, 비동기로 충분한 곳엔 `Kafka` 이벤트를 쓰는 **이원화**가 일반적이다. \"결제 확정\"처럼 강한 일관성이 필요한 경로는 동기 호출 + 멱등성으로, \"아이템 획득 로그\"처럼 결과적 일관성으로 충분한 경로는 이벤트로 분리한다.\n- 게임마다 재화·아이템 모델이 달라서, 플랫폼은 **게임 ID로 테넌트를 가르는** 멀티테넌시 구조를 갖는다. 즉 동일한 `Payment` 코드가 게임별 상품 카탈로그·환율·환불 정책을 설정으로 분기한다.\n\n### 트레이드오프\n- 장점: 팀 자율 배포, 게임/플랫폼 장애 격리, 신규 게임 온보딩 시 플랫폼을 재사용.\n- 비용: 서비스 경계가 늘면서 분산 트랜잭션(결제↔인벤토리)·관측성·네트워크 홉이 증가한다. 그래서 결제처럼 돈이 걸린 흐름은 **Saga/보상 트랜잭션 + 멱등 키**로 묶고, 호출 체인은 분산 트레이싱으로 추적한다."
+    },
+    {
+     "topic": "Lost Ark 글로벌 출시 — 로그인 대기열(Queue)과 폭발 트래픽 흡수 메커니즘",
+     "body": "### 무슨 일이 있었나\nLost Ark는 한국 라이브 이후 Amazon Games와 손잡고 북미/유럽에 글로벌 출시되며 **동시 접속 130만 명 이상**, Steam 동접 글로벌 톱급의 트래픽을 받았다. 이런 출시 트래픽은 평시의 수십 배가 짧은 시간에 몰리고, 더 중요한 건 **MMORPG는 무상태가 아니다** — 한 명이 접속하면 캐릭터/인벤토리/월드 위치 같은 무거운 상태를 메모리에 로드하므로, 무작정 다 받으면 게임 서버가 죽는다.\n\n### 그래서 '대기열'을 둔다\n핵심 아이디어는 **백엔드 처리량을 넘는 요청을 게이트 앞에서 줄 세우는 것**이다.\n\n1. 클라이언트가 로그인하면 곧장 게임 월드로 보내지 않고 `Queue` 서비스가 **대기 토큰**을 발급한다.\n2. 각 월드 서버는 \"지금 안전하게 더 받을 수 있는 입장 슬롯 수\"를 주기적으로 보고하고, `Queue`는 그만큼만 앞에서 빼서(`Redis` 정렬셋/카운터로 순번 관리) 입장시킨다.\n3. 대기 화면에는 내 순번·예상 시간이 뜨고, 이는 `Queue` 서비스가 처리 속도(초당 입장 수)와 내 위치로 추정해 내려준다.\n\n이 패턴 덕분에 **게임 서버는 항상 자기 용량 안에서만** 동작하고, 초과분은 사용자에게 \"대기\"라는 정직한 백프레셔로 전가된다. 죽지 않고 천천히 들어가는 게, 다 같이 튕기는 것보다 운영적으로 훨씬 낫다.\n\n### 트래픽을 흡수하는 다층 방어\n- **리전 분리**: NA-East/West, EU-Central 등 리전별 독립 월드 군. 트래픽을 지리로 분산하고 지연을 낮춘다. AWS 멀티리전이 여기서 빛난다 — 신규 리전/월드를 Terraform으로 빠르게 찍어낸다.\n- **캐시·세션 계층**: 로그인·캐릭터 목록처럼 읽기 폭증 구간은 `Redis`로 흡수해 `MySQL` 원본을 보호한다.\n- **오토스케일은 만능이 아니다**: stateless 플랫폼 API(`Auth`, `Store`)는 `Kubernetes` HPA로 즉시 늘리지만, 상태를 든 월드 서버는 분 단위로 따뜻하게 띄워야 해서 **출시 전 용량을 사전 프로비저닝**하고 대기열로 초과분을 다스린다.\n\n### 트레이드오프\n대기열은 '느린 입장'이라는 UX 비용을 치르는 대신 **가용성**을 산다. 핵심 교훈은 MMORPG에서 오토스케일링만으로는 출시 스파이크를 못 막는다는 것 — 상태 적재 비용 때문이다. 그래서 \"용량 사전 확보 + 대기열 백프레셔 + 리전 샤딩\"의 삼각 편대가 실전 해법이다."
+    },
+    {
+     "topic": "인게임 결제·재화 시스템 — 멱등성·정산·환불의 일관성 설계",
+     "body": "### 문제의 본질: 돈과 게임 상태는 다른 시스템에 있다\n유저가 인게임 상점에서 다이아를 사고 그걸로 아이템을 받는 한 동작은 사실 **두 시스템에 걸친 분산 트랜잭션**이다 — `Payment`(결제/원장)와 `Game Server`(인벤토리/재화). 결제는 성공했는데 아이템이 안 들어가거나, 네트워크 타임아웃으로 클라이언트가 재시도해 **이중 결제**가 나면 치명적이다.\n\n### 멱등성(Idempotency)으로 중복을 죽인다\n- 클라이언트는 구매 요청마다 **멱등 키**(주문 UUID)를 만들어 보낸다.\n- `Payment`는 멱등 키를 유니크 제약으로 저장 → 같은 키가 또 오면 **결제를 다시 하지 않고 이전 결과를 그대로 반환**한다. 그래서 타임아웃 재시도가 안전하다.\n- 애플/구글 IAP, PC 결제 등 외부 PG의 **영수증(receipt) 검증**도 같은 키에 묶어, 외부 콜백이 중복으로 와도 한 번만 처리된다.\n\n### 결제↔지급의 정합: Saga + 상태 머신\n순서는 보통 이렇다.\n1. 주문 생성(`PENDING`) — 멱등 키 기록.\n2. 외부 PG 결제 승인 → `PAID`.\n3. 게임 서버에 **재화/아이템 지급** 요청 → 성공 시 `FULFILLED`.\n4. 지급이 실패하면 **보상 트랜잭션**(환불 또는 재시도 큐)으로 `PAID`에 머문 주문을 회수한다.\n\n각 단계 전이는 이벤트로 `Kafka`에 남겨, 어디서 멈췄는지 재구동·감사가 가능하다. \"결제됐는데 미지급\" 상태가 **명시적으로 추적 가능**하다는 게 핵심 — 사라지지 않는다.\n\n### 정산·세금·환불\n- 모든 결제 이벤트는 `Kafka` → `Spark`로 흘러 **정산/매출 집계**, 게임별·국가별 통화·세금 분개의 원천이 된다.\n- 환불은 게임 상태를 되돌려야 하므로(이미 쓴 재화는?) **재화 흐름 원장**을 별도로 둬서, 차감/적립을 append-only로 기록하고 잔액은 그 합으로 계산한다. 이렇게 하면 분쟁 시 \"언제 무엇으로 썼는지\"를 재현할 수 있다.\n\n### 어뷰징 방어\n결제·재화 이벤트 스트림은 **어뷰징 탐지**의 입력이기도 하다 — 비정상 결제/환불 반복, 계정 간 재화 이전 패턴을 실시간 룰·배치로 잡아 `Auth`의 계정 제재와 연동한다.\n\n### 트레이드오프\n강한 일관성을 결제 경계에만 국한하고(동기 gRPC + 멱등), 분석·정산·탐지는 결과적 일관성(이벤트)으로 분리한 게 핵심 결정이다. 모든 걸 한 트랜잭션에 묶으면 처리량이 무너지므로, **돈이 걸린 좁은 경로만 강하게, 나머지는 이벤트로 느슨하게** 가져간다."
+    },
+    {
+     "topic": "클라이언트 패치 배포 — STOVE Launcher와 CDN 기반 차등 업데이트",
+     "body": "### 왜 어려운가\nLost Ark 같은 대형 클라이언트는 수십~100GB대다. 점검 후 동시에 수십만 명이 패치를 받으면 **출시 스파이크보다 더한 대역폭 폭발**이 일어난다. 게임 서버를 지키는 것과 별개로, '내려받기' 자체가 인프라 사건이다.\n\n### 동작 원리\n1. **빌드 메타데이터 분리**: `STOVE Launcher`는 먼저 가벼운 **매니페스트**(파일 목록 + 청크 해시 + 버전)를 플랫폼에서 받는다. 실제 바이너리는 받지 않는다.\n2. **차등(델타) 패치**: 매니페스트의 청크 해시를 로컬과 비교해 **바뀐 청크만** 내려받는다. 100GB 게임도 패치는 수백 MB로 끝나는 이유다.\n3. **CDN 팬아웃**: 실제 청크는 게임 서버/플랫폼이 아니라 `CDN` 엣지에서 받는다. 오리진(오브젝트 스토리지/S3)은 한 번만 읽히고 나머지는 엣지 캐시가 흡수해, 점검 직후의 다운로드 폭주를 origin 보호 상태로 견딘다.\n4. **무결성 검증**: 각 청크는 해시로 검증해 손상/변조를 거른다. 이는 안티치트 관점에서도 중요 — 변조된 클라이언트 파일을 탐지하는 1차선이다.\n\n### 배포 안전장치\n- **단계적 롤아웃**: 신규 클라이언트 버전을 일부 비율/리전부터 노출하고, 문제 없으면 전면 전환하는 카나리 성격의 배포를 둔다. 클라이언트는 서버 패치와 호환 버전이 맞아야 입장 가능하도록 **버전 게이트**를 건다(맞지 않으면 런처가 강제 업데이트).\n- **롤백 용이성**: 매니페스트만 이전 버전으로 가리키면 클라이언트는 직전 청크 세트로 되돌아갈 수 있어, 서버 롤백과 보조를 맞춘다.\n\n### 트레이드오프\n청크/델타 방식은 패치 빌드 파이프라인이 복잡해지고(매니페스트 생성·해시 관리) 스토리지에 다중 버전을 보관해야 하지만, **유저 대기 시간과 대역폭 비용을 한 자릿수 배로 줄인다**. 라이브 서비스에서 '점검 끝났는데 다운로드 때문에 못 들어감'은 동접·매출 직결 문제라, 패치 배포는 게임 서버만큼이나 1급 엔지니어링 대상이다."
     }
    ],
    "github": {
-    "org": "https://github.com/smilegateengineering",
+    "org": "https://github.com/smilegate",
     "repos": []
    },
    "sources": [
-    "https://smilegate.ai/",
-    "https://career.smilegate.com/",
-    "https://www.smilegate.com/"
+    "https://www.smilegate.com",
+    "https://smilegate.ai",
+    "https://aws.amazon.com/ko/blogs/korea/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "krafton",
@@ -13263,54 +13284,59 @@
    "domain": "게임",
    "languages": [
     "C++",
+    "Go",
     "C#",
     "Python",
-    "Go",
     "Java",
     "JavaScript"
    ],
    "stack": {
     "backend": [
-     "자체 Game Server (C++)",
+     "자체 Dedicated Game Server (C++)",
      "Go",
      "gRPC",
+     "Spring Boot (Java)",
      "Node.js",
-     "Spring (Java)"
+     "Protocol Buffers"
     ],
     "frontend": [
-     "Unreal Engine",
+     "Unreal Engine 4/5",
      "Unity",
-     "React"
+     "React",
+     "TypeScript"
     ],
     "data": [
      "Kafka",
      "MySQL",
-     "Aurora",
+     "Amazon Aurora",
      "Redis",
      "DynamoDB",
-     "Spark",
+     "Apache Spark",
      "ClickHouse",
-     "S3 Data Lake"
+     "S3 Data Lake",
+     "Flink"
     ],
     "infra": [
      "AWS",
      "Kubernetes (EKS)",
-     "Terraform",
      "Agones",
+     "Terraform",
      "Prometheus",
-     "Grafana"
+     "Grafana",
+     "ArgoCD",
+     "Envoy"
     ]
    },
    "architecture": [
-    "Dedicated Authoritative Game Server",
-    "Global Multi-Region Matchmaking",
-    "Event-driven Data Analytics Pipeline",
-    "Session-based Stateful Server Fleet"
+    "Dedicated Authoritative Game Server (Tick-based Simulation)",
+    "Global Multi-Region Matchmaking & Ping-based Routing",
+    "Agones-based Stateful Server Fleet Orchestration",
+    "Event-driven Telemetry & Analytics Pipeline"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    GAME[\"Game Client<br/>Unreal Engine + C++\"]\n    LAUNCH[\"Launcher / Web<br/>React + Node.js\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Go + gRPC\"]\n    MM[\"Matchmaking Service<br/>Go\"]\n  end\n  subgraph Core[\"Core Game Services\"]\n    DGS[\"Dedicated Game Server<br/>C++ Authoritative Tick Loop\"]\n    ALLOC[\"Session Allocator<br/>Agones on EKS\"]\n    AUTH[\"Auth / Account<br/>Spring + Java\"]\n    ANTI[\"Anti-Cheat<br/>Native + ML\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Account / Inventory<br/>MySQL Aurora\"]\n    REDIS[\"Session / Leaderboard<br/>Redis\"]\n    DDB[\"State Store<br/>DynamoDB\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    SPARK[\"Batch ETL<br/>Spark\"]\n    CLICK[\"Realtime OLAP<br/>ClickHouse\"]\n    LAKE[\"Data Lake<br/>S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes EKS\"]\n    TF[\"IaC<br/>Terraform\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  GAME -->|UDP State Sync| DGS\n  LAUNCH --> GW\n  GW -->|gRPC| MM\n  GW --> AUTH\n  MM -->|allocate| ALLOC\n  ALLOC --> DGS\n  DGS --> ANTI\n  AUTH --> MYSQL\n  MM --> REDIS\n  DGS --> DDB\n  DGS -->|match telemetry| KAFKA\n  KAFKA --> SPARK\n  KAFKA --> CLICK\n  SPARK --> LAKE\n  ALLOC --- K8S\n  K8S --- TF\n  DGS --> OBS",
-   "why_language": "전장 시뮬레이션과 물리·히트판정을 권위 서버에서 고정 틱으로 결정론적으로 처리해야 하므로, 지연·GC가 치명적인 게임 서버 코어는 Unreal 기반 C++로 작성한다. 매치메이킹·세션 할당·계정 같은 백엔드 마이크로서비스는 동시성과 배포 효율이 중요해 Go를, 데이터 파이프라인과 분석 도구는 생산성이 높은 Python을 사용한다.",
-   "why_architecture": "100인 배틀로얄은 한 매치의 모든 플레이어가 동일한 권위 서버 인스턴스에서 상태를 공유하는 강한 stateful 구조라, 무상태 마이크로서비스가 아니라 Agones로 게임 서버 fleet을 동적 할당하는 세션 기반 아키텍처가 필수다. 글로벌 동시 접속과 핑 최적화를 위해 멀티 리전 매치메이킹을 두고, 매치 종료 후 텔레메트리는 Kafka로 흘려보내 밸런싱·안티치트·운영 분석에 활용한다.",
-   "summary": "C++ 권위 게임서버를 Agones/EKS로 동적 할당하고 Kafka 기반 데이터 파이프라인으로 글로벌 배틀로얄을 운영하는 세션 중심 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Game Runtime\"]\n    GC[\"Game Client<br/>Unreal Engine 4/5\"]\n    LB[\"Launcher / Store<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    EG[\"Edge Gateway<br/>Envoy + UDP/TCP\"]\n    PING[\"Ping Probe<br/>Region Latency\"]\n  end\n  subgraph Platform[\"Platform Services\"]\n    AUTH[\"Auth / Account<br/>Spring Boot (Java)\"]\n    MM[\"Matchmaking<br/>Go + gRPC\"]\n    SESS[\"Session Allocator<br/>Go\"]\n  end\n  subgraph Fleet[\"Game Server Fleet\"]\n    AGO[\"Agones Allocator<br/>K8s CRD\"]\n    GS[\"Dedicated Server<br/>C++ Tick Loop\"]\n    AC[\"Anti-Cheat<br/>Native Module\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RDS[\"Account/Match DB<br/>Aurora MySQL\"]\n    RED[\"Live State Cache<br/>Redis\"]\n    DDB[\"Session KV<br/>DynamoDB\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KAF[\"Event Bus<br/>Kafka\"]\n    FLK[\"Stream Proc<br/>Flink / Spark\"]\n    CH[\"OLAP<br/>ClickHouse\"]\n    S3[\"Data Lake<br/>S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    PROM[\"Metrics<br/>Prometheus + Grafana\"]\n  end\n  GC -->|UDP state| EG\n  LB --> AUTH\n  PING --> MM\n  EG --> AUTH\n  EG -->|gRPC| MM\n  MM --> SESS\n  SESS -->|allocate| AGO\n  AGO --> GS\n  GS --> AC\n  GC -->|game session| GS\n  AUTH --> RDS\n  MM --> RED\n  SESS --> DDB\n  GS -->|telemetry| KAF\n  KAF --> FLK\n  FLK --> CH\n  KAF --> S3\n  S3 --> CH\n  AGO --- EKS\n  GS --- EKS\n  GS --> PROM\n  MM --> PROM",
+   "why_language": "PUBG처럼 100인 규모의 실시간 물리·히트판정을 64~128Hz 틱으로 돌려야 하므로 GC 멈춤이 없고 메모리·CPU를 직접 제어하는 C++로 권위 서버와 Unreal Engine 게임플레이를 작성한다. 반면 매치메이킹·세션 할당처럼 동시성과 네트워크 I/O가 핵심인 플랫폼 서비스는 경량 고루틴과 gRPC 친화성이 좋은 Go를, 계정·결제 등 안정성과 생태계가 중요한 도메인은 Spring(Java)을, 데이터·툴링은 Python을 쓴다.",
+   "why_architecture": "FPS 배틀로얄은 단 한 발의 명중 판정도 클라이언트를 믿으면 안 되므로 서버가 모든 게임 상태의 단일 진실원(authoritative)이 되어야 하고, 전 세계 플레이어를 낮은 핑으로 묶기 위해 리전별 매칭과 핑 기반 라우팅이 필수다. 매 라운드 수만 개의 짧은 수명 stateful 세션을 생성·회수해야 하므로 Agones로 게임 서버 Fleet을 동적 오케스트레이션하고, 모든 매치 이벤트는 Kafka로 흘려보내 밸런싱·안티치트·분석을 비동기로 처리한다.",
+   "summary": "C++ 권위 서버 + Go 매치메이킹 + Agones Fleet으로 100인 배틀로얄을 글로벌 멀티리전에서 굴리는 실시간 게임 인프라",
    "deep_dive": [
     {
      "topic": "권위 서버(Authoritative Server)와 틱 루프",
@@ -13343,6 +13369,22 @@
     {
      "topic": "글로벌 멀티 리전 — 핑 기반 매칭과 리전 페일오버",
      "body": "### 핑이 곧 공정성\n\nFPS 배틀로얄에서 50ms 차이는 총격전 승패를 가른다. 그래서 매치메이킹의 1차 제약은 MMR(실력)이 아니라 **네트워크 지연**이다. 클라이언트는 접속 시 AWS의 여러 리전 엔드포인트로 핑을 측정해 자신의 region별 RTT 벡터를 만들고, 매치메이커는 \"비슷한 실력 + 충분히 낮은 공통 핑\"을 만족하는 플레이어들을 같은 리전 DGS에 모은다.\n\n### 매칭의 동적 완화(relaxation)\n\n인구가 많은 리전(아시아 피크)은 좁은 MMR 밴드로도 100명이 금방 모이지만, 인구가 적은 리전·시간대(남미 새벽)는 그대로 두면 매칭이 영원히 안 잡힌다. 그래서 대기 시간이 길어질수록 제약을 단계적으로 푼다:\n\n| 대기 시간 | MMR 밴드 | 허용 핑 |\n|---|---|---|\n| 0~20s | 좁음 | 최저 리전만 |\n| 20~60s | 중간 | 인접 리전 허용 |\n| 60s+ | 넓음 | 더 높은 핑 감수 |\n\n이 trade-off(빠른 매칭 vs 공정한 매칭)는 게임 경험을 직접 좌우하므로 LiveOps가 리전·시간대별로 파라미터를 실시간 튜닝한다.\n\n### 리전 장애 복원력\n\n각 리전은 독립적으로 자기 fleet(Agones)·매치메이커·세션 스토어(`Redis`)를 운영하는 cell 구조에 가깝다. 한 리전의 EKS 클러스터나 가용영역(AZ)이 흔들리면 그 리전의 신규 매칭만 인접 리전으로 우회시키고, 이미 진행 중인 매치는 영향받지 않게 격리한다. 계정·구매 같은 **글로벌 강한 일관성**이 필요한 데이터는 별도의 권위 리전 + 글로벌 복제(예: Aurora Global Database / 글로벌 테이블)로 두고, 게임 세션 같은 **리전 로컬·휘발성** 데이터는 리전 안에서만 산다. 이렇게 일관성 요구가 다른 데이터를 물리적으로 분리하는 것이 멀티 리전 게임 백엔드의 핵심 설계 결정이다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: 게임 클라이언트가 매치에 들어가기까지",
+     "body": "### 한 판이 시작되기까지 일어나는 일\n\nPUBG 같은 배틀로얄에서 플레이어가 'PLAY'를 누른 순간부터 실제 서버에 스폰될 때까지는 여러 단계의 비동기 파이프라인을 거친다.\n\n1. **인증 핸드셰이크** — 런처/클라이언트는 먼저 `Auth/Account` 서비스(Spring Boot)에서 발급한 세션 토큰을 들고 `Edge Gateway`(Envoy)에 붙는다. 게임 트래픽은 TCP가 아니라 **UDP 기반 커스텀 프로토콜**을 쓰지만, 로비/매칭 단계의 제어 메시지는 gRPC/HTTP로 오간다.\n2. **핑 측정** — 클라이언트는 각 리전 엣지로 `Ping Probe`를 쏘아 RTT 테이블을 만든다. 이 값이 매치메이킹의 라우팅 입력이 된다.\n3. **티켓 생성** — `Matchmaking`(Go) 서비스가 플레이어의 (MMR, 지역 핑맵, 큐 타입, 파티 구성)을 묶어 **매치 티켓**을 만든다. 티켓은 Redis에 적재되어 풀(pool) 안에서 매칭 대상이 된다.\n4. **매칭 성사** — 매처가 핑·실력·대기시간을 가중치로 100인을 한 묶음으로 만들면, `Session Allocator`(Go)에게 \"이 리전에 빈 서버 하나 달라\"고 gRPC로 요청한다.\n5. **서버 할당** — `Session Allocator`는 `Agones Allocator`(K8s CRD)에 `GameServerAllocation`을 생성한다. Agones는 `Ready` 상태의 `Dedicated Server`(C++) 하나를 골라 `Allocated`로 마킹하고 그 서버의 IP:Port를 돌려준다.\n6. **접속 전환** — 매처는 100명의 클라이언트에게 동시에 해당 IP:Port를 푸시하고, 클라이언트들은 UDP로 권위 서버에 직접 붙는다. 이 시점부터 로비 서비스는 빠지고 **모든 게임 상태는 C++ 서버가 단독 소유**한다.\n\n### 트레이드오프\n- 매칭과 서버 할당을 분리(decouple)한 이유는, 서버 풀이 고갈됐을 때 매칭은 성사됐는데 서버가 없는 상황을 큐 단계에서 흡수하기 위해서다. Allocator가 실패하면 티켓을 풀로 되돌려(re-queue) 재시도한다.\n- 토큰 검증을 엣지(Envoy)에서 일부 캐싱해 매 요청마다 Auth DB를 때리지 않도록 한다."
+    },
+    {
+     "topic": "배포·CI/CD: 매 라운드 죽는 stateful 서버 바이너리를 어떻게 무중단으로 교체하나",
+     "body": "### Stateful 서버에서의 무중단 배포 딜레마\n\n웹 서비스라면 롤링 업데이트로 파드를 갈아끼우면 되지만, 게임 서버는 **진행 중인 매치(stateful)** 를 강제 종료하면 100명이 동시에 게임에서 튕긴다. 그래서 게임 서버 Fleet 배포는 일반 Deployment와 다른 전략을 쓴다.\n\n- **Fleet 단위 점진 교체** — Agones의 `Fleet` 리소스는 `RollingUpdate` 전략을 지원하지만, 핵심은 **`Allocated`(매치 진행 중) 서버는 절대 죽이지 않고, `Ready`(대기) 서버만 신버전으로 교체**한다는 점이다. 신버전 `GameServer`를 띄워 새 매치를 받게 하고, 구버전 서버는 진행 중인 판이 끝나 자연스럽게 비워지면(`drain`) 회수한다. 이를 **drain-based deployment**라 부른다.\n- **GitOps + ArgoCD** — 플랫폼/매칭 서비스(Go, Java)는 컨테이너 이미지로 빌드되어 ArgoCD가 EKS에 선언적으로 배포한다. 매니페스트는 Git이 단일 진실원이고, `krane`/`red-button` 같은 내부 도구로 멀티클러스터에 정책을 전파한다.\n- **카나리** — 매칭 알고리즘 변경처럼 플레이어 체감에 직결되는 변경은 특정 리전·특정 큐에만 먼저 흘려보내 KPI(매칭 시간, 매치 품질)를 관측한 뒤 확대한다.\n\n### Terraform로 리전 복제\n전 세계 리전마다 동일한 토폴로지(EKS + Agones + Fleet + 데이터 계층)를 띄워야 하므로, 리전 단위 인프라는 Terraform 모듈로 템플릿화해 신규 리전 개설을 코드 변경 한 번으로 처리한다."
+    },
+    {
+     "topic": "관측성: 100인 매치의 지연·이상을 어떻게 잡아내나",
+     "body": "### 게임 인프라 특화 관측성\n\n일반 서비스의 APM만으로는 부족하다. 게임 서버는 **틱 레이트(tick rate)** 자체가 가장 중요한 헬스 지표다.\n\n- **틱 예산(tick budget) 메트릭** — 64Hz 서버라면 한 틱당 약 15.6ms 안에 입력 수집·물리·히트판정·상태 브로드캐스트를 끝내야 한다. 각 서버는 `tick_duration_ms`, `tick_overrun_count`(예산 초과 횟수)를 Prometheus로 노출하고, Grafana에서 서버 부하가 임계치를 넘으면(예: 후반 자기장 축소로 플레이어 밀집) 알람이 뜬다.\n- **세션 라이프사이클 메트릭** — Agones는 `Ready`/`Allocated`/`Shutdown` 상태 게이지를 내보낸다. `Ready` 풀이 트래픽 스파이크(주말 저녁, 신규 패치) 대비 너무 낮으면 'allocation 실패율'이 오르므로, 이 둘을 묶어 **버퍼 오토스케일링**의 신호로 쓴다.\n- **분산 트레이싱** — 매칭→할당→접속 경로는 gRPC 메타데이터로 trace id를 전파해 \"이 플레이어가 큐에서 23초 기다린 이유\"를 단일 트레이스로 추적한다.\n- **텔레메트리와 분리** — 운영 메트릭(Prometheus)과 게임플레이 텔레메트리(Kafka→ClickHouse)는 목적이 다르다. 전자는 '서버가 건강한가', 후자는 '플레이어가 어떻게 플레이했나'를 본다. ClickHouse는 \"리전별 평균 매치 길이\", \"무기별 명중률\" 같은 대용량 OLAP 질의를 초 단위로 응답하도록 컬럼 지향으로 저장한다."
+    },
+    {
+     "topic": "데이터 일관성·저장 전략: 무엇을 강하게, 무엇을 느슨하게 보장하나",
+     "body": "### 데이터의 성격에 따라 저장소를 나눈다\n\n게임 백엔드는 한 종류의 DB로 모든 걸 처리하지 않고, **일관성 요구 강도**에 따라 저장소를 분리한다.\n\n| 데이터 | 저장소 | 일관성 모델 | 이유 |\n|---|---|---|---|\n| 계정·결제·소유 아이템 | Aurora MySQL | 강한 일관성(ACID, 트랜잭션) | 돈·재화는 절대 유실/중복되면 안 됨 |\n| 매치 진행 중 세션 상태 | Redis / DynamoDB | 최종 일관성, 짧은 TTL | 매치가 끝나면 버려지는 휘발성 상태, 초저지연이 우선 |\n| 매치 결과·전적·랭킹 | Aurora + ClickHouse | 쓰기는 트랜잭션, 분석은 OLAP | 정합성 필요 + 대규모 집계 동시 충족 |\n| 게임플레이 이벤트 로그 | Kafka → S3 Data Lake | append-only, 재처리 가능 | 한 번 쓰고 여러 번 읽는 분석 자산 |\n\n### 게임 내 상태는 왜 DB에 안 넣나\n100인 매치의 매 틱 상태(위치, 체력, 탄약)는 **DB에 영속화하지 않는다**. 권위 서버의 메모리 안에서만 살고, 매치가 끝날 때 결과(킬/순위/획득 재화)만 트랜잭션으로 Aurora에 커밋한다. 이렇게 해야 64Hz × 100명의 상태 쓰기가 DB를 박살내지 않는다. 매치 도중 서버가 죽으면 그 판은 복구가 사실상 불가능하므로, **서버 단위 고가용성**(빠른 재할당·풀 버퍼)으로 가용성을 확보하지 그 안의 상태를 영속화하려 하지 않는다 — 이것이 게임 서버 특유의 의도적 트레이드오프다.\n\n### 샤딩\n전적·랭킹 같은 플레이어 중심 데이터는 `player_id` 해시로 샤딩하고, 글로벌 리더보드처럼 전역 집계가 필요한 경우는 Redis Sorted Set 또는 ClickHouse 사전집계 테이블로 별도 서빙해 핫 파티션을 피한다."
     }
    ],
    "github": {
@@ -13350,12 +13392,12 @@
     "repos": []
    },
    "sources": [
-    "https://tech.krafton.com/",
+    "https://github.com/krafton-hq",
     "https://agones.dev/site/docs/",
-    "https://github.com/krafton-hq"
+    "https://aws.amazon.com/solutions/case-studies/pubg/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "pearlabyss",
