@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-20T03:33:39",
-  "source_dir": "screenshots/all_통합_20260620_033332",
+  "generated_at": "2026-06-20T05:18:40",
+  "source_dir": "screenshots/all_통합_20260620_051833",
   "keyword": "통합",
   "jobs": [
     {
@@ -112368,6 +112368,39 @@
     },
     {
       "site": "saramin",
+      "company": "(주)에이핀아이앤씨",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "금융IT 수석 개발자 채용 (경력/5년이상)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54197618&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=fafbdd05-1ee9-4d93-942b-941bfc723eec",
+      "career": "경력무관",
+      "location": "서울용산구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "Oracle",
+        "AWS",
+        "Kafka",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "대용량 처리"
+      ],
+      "qualifications": "경력 5년 이상\nJava / Spring 기반 웹 애플리케이션 개발 경험\n금융 SI 프로젝트 경험 또는 금융 서비스 시스템 개발 경험\n금융 도메인 이해 (은행 / 카드 / 증권 / 선불 / PG 등)\nREST API 기반 서비스 개발 경험\nRDBMS 기반 데이터 처리 및 SQL 작성 능력\n협업 환경에서 원활한 커뮤니케이션이 가능한 분",
+      "preferences": "FDS(Fraud Detection System) 솔루션 구축 또는 운영 경험\n대용량 트랜잭션 처리 시스템 개발 경험\nKafka, MQ 등 메시징 기반 시스템 개발 경험\n금융 데이터 분석 또는 탐지 시스템 개발 경험\n금융권 프로젝트 기술 리딩 경험\nSpring Boot 기반 서비스 아키텍처 설계 경험",
+      "main_tasks": "웹 기반 금융 시스템 개발 (Spring / Java 기반)\n금융권 FDS(Fraud Detection System) 솔루션 구축 프로젝트 참여\n데이터 수집 / 탐지 / 배치 / 프로파일링 모듈 개발\nFDS 솔루션 화면 및 기능 커스터마이징\n금융권 데이터 마이그레이션 및 시스템 연동 개발\n프로젝트 완료 후 구축 고객사 유지보수 및 고도화 지원\n금융권 프로젝트 기술 지원 및 개발 리딩",
+      "benefits": "점심 식대 무제한 지원 (개인별 법인카드 제공)\n자유로운 분위기 (연차 자율 사용, 자율 복장)\n월 2회 선택 재택근무\n경조비 / 경조휴가 지원\n업무 장비 지원 (4K 듀얼모니터, 개발용 노트북 등)"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -161267,6 +161300,53 @@
     },
     {
       "site": "saramin",
+      "company": "(주)쇼엠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[서울] 디지털마케팅 및 콘텐츠 기획자 채용 (AI 활용)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54135611&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f22fe584-9c0e-4d94-864b-bec8883f4036",
+      "career": "신입·경력",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)캐치잇플레이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[AI 학습플랫폼] Product Manager (재택근무 가능)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54214485&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f22fe584-9c0e-4d94-864b-bec8883f4036",
+      "career": "경력 5~20년",
+      "location": "제주제주시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• PM 경력 5년 이상 : 본인이 직접 출시·운영·개선한 제품 1개 이상 (B2B SaaS 또는 B2C). 5년 미만이라도 폭과 깊이가 검증되면 검토\n• Figma 등 도구로 와이어프레임·플로우·인터랙션 본인 손으로 작업, 디자이너·프론트엔드와 깊은 협업 경험\n• UX 디테일 감각: 빈 상태·에러·로딩까지 자연스럽게 챙기는 분. PRD 작성 능력• SQL 자력 + A/B 테스트 운영 경험: 가설·표본 크기·결과 해석 직접 가능\n• AI 추천·개인화 등이 적용된 제품의 PM 경험 또는 모델/데이터 조직과 협업하여 사용자 경험을 리드하며 개선한 경험 - 도메인 무관, 기획과 모델 이해도 필수",
+      "preferences": "• LLM 실무 활용 역량: ChatGPT, Claude 등 LLM 도구를 활용해 기획·분석의 병목을 해결하고 결과물의 퀄리티를 높여본 경험\n• 에듀테크 및 게이미피케이션 전문성: 온라인 학습 도메인에 대한 깊은 이해, 게이미피케이션(Gamification) 메커니즘을 통한 학습 동기 부여 설계 경험\n• B2C·B2B 프로덕트 경험: 다양한 비즈니스 모델(B2C/B2B)을 아우르는 프로덕트 기획 및 시장 출시 경험\n• 글로벌 비즈니스 및 커뮤니케이션: 일본·동남아·미국 등 글로벌 서비스 런칭 경험, 영어로 원활한 비즈니스 소통 가능\n• 시장·정책 인사이트: K-콘텐츠, 공교육 체계, AI 디지털교과서(AIDT) 등 교육 시장의 흐름과 정책에 대한 높은 이해도\n• 학술적 배경: 학습과학·인지과학·HCI·통계·심리학 등 제품 설계의 논리적 기반이 되는 분야에 대한 이해 및 관련 경험(전공·연구·실무 적용 등)\n\n마감일 및 근무지\n\n• 마감일 : 2026년 07월 17일",
+      "main_tasks": "A. 제품 설계·출시 (~60%)\n• 제품 PM 역할 : 회사 포트폴리오 관점에서 우선순위 의사결정 참여\n• 핵심 경험 설계: 학습 UX·어드민·리포트 등 주요 도메인의 정보 구조(IA), 유저플로우, 인터랙션을 직접 설계하고 검증합니다.\n• AI/UX : ML 모델의 추천·개인화 결과가 사용자 인터페이스에서 최적의 경험을 하도록 설계합니다. \n(PM은 사용자 경험의 완결성을 책임집니다.)\n• 프로덕트 사이클 리딩: PRD 작성부터 디자인 QA, 릴리즈 노트 관리까지 제품 출시의 전 과정을 관리합니다.\n• 첫 번째 사용자: 출시 전 ’첫 번째 사용자’로서 시나리오를 검수하여 프로덕트의 완성도를 높입니다.\n\nB. 데이터·실험·모델 협업 (~40%)\n• 데이터 기반 가설 수립: 10년 이상 자사의 누적 데이터를 직접 분석 → 가설 도출 → 정량적 근거를 바탕으로 PRD에 명시\n• 실험 환경 주도: A/B 테스트를 기획·운영하고, 엔지니어와 협업하여 자체 실험 인프라(노출 분배·메트릭 대시보드 등)구축 및 고도화에 기여\n• 기술 지표 번역: ML 엔지니어와 모델 작동·실패 지점 논의, 모델 지표(Macro F1·NDCG 등)를 사용자 체감 가치로 번역\n• 사용자 인터뷰 + ML·데이터·디자인·CS·영업과 로드맵 정렬",
+      "benefits": "[문제를 풀어가는 사람들]\n대표인 저를 소개하자면, 저는 MMORPG 라는 가상 세계를 중심으로 익혀온 다양한 게임적 장치들을 에듀테크 제품으로 \n녹여, 학습의 몰입을 만들어내는 전문 PO/PD 라고 할 수 있습니다.\n(요 몇년간은 AI 를 접목시켜서 더 완성도 높은 제품 개발에 집중하고 있는 중이고요.)\n대한민국 게임 대상을 받은 창세기전3 part2의 기획자로 시작하여, 테일즈위버의 PM, 리니지2 기획 멤버로 있었습니다. \n이후 청담어학원과 NCsoft가 공동 개발한 영어교육용 MMORPG 프로젝트의 시니어 기획자로서 Gamification 분야에 입문했고, \nKAIST 문화기술 대학원 석사 과정에서 Gamification 을 연구하여 스타트업 창업의 길로 들어섰습니다. \n현업의 경험과 이론적 베이스를 함께 가지고 있는 융합 분야의 specialist이자, 직접 작업에 함께 들어가 같이 고민하며 문제를 \n해결해나가는 실무형 대표라고 생각합니다. \n저희 개발팀도 경력 20년 이상의 성공적인 프로젝트 경험이 있는 웹/게임쪽의 탑티어 개발자들과 운영자로 구성이 되어 있고\n저와 손발을 10여 년 이상 맞춰 온 경험이 풍부한 전문가 집단입니다.\n\n[서울, 부산까지 연결하는 가상 사무실 + 주기적 오프모임]\n저희는 가상 사무실에서 일을 합니다. 아침에 로그인하면 출근, 로그오프하면 퇴근입니다. \n각자 캐릭터가 있고, 책상이 있고 회의실 로비가 있습니다. 다른 팀원 옆으로 가면 화상 카메라가 자동으로 activation 됩니다.\n실제 사무 실과 크게 다르지 않죠.\n전국 어디에서나 재택근무 형태로 참여가 가능합니다. (멤버들은 서울, 경기, 부산, 제주에 있습니다.)\n• 본사가 제주도에 있어서, 제주 사무실에서 일을 할 수 있는 것도 장점입니다 :)\n• 1~2개월에 한 번씩 오프모임을 합니다 (서울 권). 1년에 1~2회 주기적으로 제주도 워크숍도 진행합니다.\n[우리의 일하는 방식 - 플레이 규칙 1.0]\n캐치잇플레이에는 함께 만든 플레이 규칙 1.0이 있습니다. 채용, 협업, 평가의 기준이 되는 약속입니다.\n채용에서 저희가 가장 유념하는 것 — 이 사람은 우리의 플레이 규칙을 함께 지킬 수 있는 사람인가? \n함께 즐겁게, 성장할 수 있는 사람인가를 확인합니다~ 진지하게 지원하실 분들은~ 꼭 읽어보시길 추천드립니다! \n\n※ 플레이 규칙 1.0 자세히 보기 ※\nhttps://docs.google.com/document/d/1rNnCaJzj36o1YL_6iZVDNxiIIbeMygJolC0XBTT878c/edit?tab=t.0\n[업무 문화 및 환경]\n5년 이상 정비된 풀 재택근무 환경으로 여러 가지 시스템들이 잘 정비가 되어 있고, 현재 다양한 프로젝트들을 진행하고 있습니다. \n이미 서 비스 중인 제품 (캐치잇 잉글리시, 코리안), 조만간 런칭할 제품, 대기업과의 콜라보레이션으로 만들 예정인 제품, 중기적인 \n프로젝트 등등이 진행되고 있습니다.(B2B, B2C, B2G 모든 파이프라인 존재)\n서비스 중인 제품은 상당히 많은 부분에서 데이터를 추적할 수 있는 기반을 만들어, 여러가지 가설들을 세워서 개발 계획을 잡고 \n그 계획을 기반으로 업데이트하고 실험 결과를 보고 다시 진행하는 Growth Hacking 프로세스로 진행하고 있습니다.\n또한 빠르고 효율적인 개발을 위해서 대표와 리더들이, 회사 전체적으로 AI를 단순 툴이 아니라 OS로 쓰기 위해 노력하고 있습니다.\n[회사 건강관리 프로그램 - (캐치잇 건강관리 협회)]\n건강하게 함께 일하며 성장할 수 있도록 마음과 몸의 복지 프로그램으로 관리해드립니다. \n바쁜 회사생활이지만, 꽤 비중있게 노력하고 있는 부분이기도 합니다.\n(건강관리 프로그램은 자율 참여 기반으로 운영됩니다. 운동 챌린지, 감사일기, 리프레시 활동 등을 통해 원격근무 환경에서도 \n몸과 마음의 균형을 지킬 수 있도록 돕고 있습니다.)"
+    },
+    {
+      "site": "saramin",
       "company": "(주)플래티어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -181353,6 +181433,66 @@
     },
     {
       "site": "saramin",
+      "company": "㈜엑스소프트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "㈜엑스소프트에서 WEB/JAVA 개발자 채용합니다",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53818648&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=4a2a91c3-7578-42f3-bffd-ed8cbfe285c3",
+      "career": "경력 3~10년",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "Spring",
+        "Spring Boot"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오픈소스 기여"
+      ],
+      "qualifications": "• 경력 3년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상\n\n• Java 웹 개발 실무 경험 있으신 분\n\n• Spring 기반 개발을 해보신 분\n\n• RDB 설계와 SQL 작성 가능하신 분\n\n• 형상관리 도구로 협업 가능하신 분\n\n• 문서화와 커뮤니케이션 원활하신 분",
+      "preferences": "- 해외 출장에 결격 사유가 없는자\n\n- EDMS, 그룹웨어 솔루션 개발 경험자\n\n- 상용 DB, 오픈소스 DB 기반의 SQL 능통자\n\n• SI 프로젝트 수행 경험을 가지신 분",
+      "main_tasks": "- 당사가 보유하고 있는 솔루션(문서중앙화, EDMS)에 대해서 프로젝트 진행시 커스터마이징 및 서비스/기능 개발\n\n- Java 기반 웹 서비스 개발\n\n- 안정적이고 확장 가능한 API 설계 및 개발\n\n- 자사 제품의 서버 아키텍처 설계 및 백엔드 개발 (Java, Spring Boot/Struts 기반)\n\n- 최신 JavaScript 프레임워크 및 jQuery를 활용한 UI/UX 구현 (Front-End)",
+      "benefits": "• 년간 복리 후생비 지원\n\n• 자유로운 연/월차\n\n• 연장근무 및 휴일근무시 수당지급\n\n• 간식지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)웹라이트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "보험분야 JAVA 백엔드 시니어 개발자 구인",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54223664&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=5e8bc229-06d7-4e33-b9f5-92b32f4878f3",
+      "career": "경력7년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "PostgreSQL",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리"
+      ],
+      "qualifications": "• 경력 7년 이상\n\n• 대학졸업(2,3년)이상\n\n• IT 개발 경력 7년 이상\n\n• 보험 업무 프로세스에 대한 이해\n\n• REST API 설계·개발 가능하신 분\n\n• Java/Spring Boot 기반 백엔드 개발 역량\n\n• RDBMS(PostgreSQL) 설계 및 쿼리 최적화 경험",
+      "preferences": "• 금융권 보안/연계 솔루션(SSO, EAI, FEP 등) 경험자 우대\n\n• 금융권(은행, 보험 등) 프로젝트 상주 경험자 우대\n\n• 대용량 배치 처리 설계 및 성능 튜닝 경험\n\n• 생명보험 또는 손해보험 도메인 모두 경험\n\n• 코드리뷰로 품질 개선 즐기시는 분",
+      "main_tasks": "• 사내 ERP 계약관리 파트 시스템 설계 및 개발",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "신플렛(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -194787,6 +194927,37 @@
     },
     {
       "site": "dev",
+      "company": "메가스터디교육",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 하반기 신입/경력 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/556940?ReturnUrl=RecruitInfo",
+      "career": "신입/경력(8년 이하)",
+      "location": "서울 서초구",
+      "dday": "~06.29(월)",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "AWS",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "■전형방법\n\n서류전형\n26.06 ~ 07\n온라인 역량 검사\n26.06 ~ 07\n면접전형\n26. 07\n최종합격\n26.07\n\n서류전형 일정 : 2026.06.17(수) ~ 2026.06.29(월)\n\n온라인 역량검사는 서류전형 합격자에 한하여 개별 안내 예정입니다.\n\n면접전형 시 직무 관련 주제를 바탕으로 질의응답이 진행될 예정입니다.\n\n처우 협의는 면접전형 합격자에 한하여 진행됩니다.\n\n최종 합격자는 2026년 8월 중 입사 예정입니다.\n\n채용 일정 및 전형 절차는 회사 사정에 의해 변경될 수 있으며, 변경 시 별도 안내 예정입니다.",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": "업무에 집중할 수 있는 자유로운 복장\n\n자사 강좌 수강료 지원 및 할인 혜택\n\n가족 의료비 및 사내 대출 지원\n\n장기근속포상 및 생일 축하 선물 제공\n\n종합검진 시 제휴병원 추가 검진 지원\n\n법인 콘도 지원 (대명, 한화, 휘닉스파크)\n\n사내 동호회 지원 및 사내 카페/식당 할인\n\n자유로운 연차 사용 (반차, 반반차 제도)"
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -199847,22 +200018,22 @@
     }
   ],
   "stats": {
-    "total": 6635,
+    "total": 6641,
     "by_size": {
-      "중소기업": 5943,
+      "중소기업": 5949,
       "대기업": 423,
       "중견기업": 269
     },
     "by_role": {
       "기타": 880,
       "DevOps/인프라": 963,
-      "백엔드": 2855,
+      "백엔드": 2859,
       "모바일": 1062,
-      "AI/ML": 2228,
-      "프론트엔드": 1840,
+      "AI/ML": 2230,
+      "프론트엔드": 1841,
       "풀스택": 574,
       "게임": 39,
-      "데이터": 917,
+      "데이터": 918,
       "펌웨어/임베디드": 237,
       "보안": 279,
       "QA": 66
@@ -199871,21 +200042,21 @@
       "wanted": 1521,
       "jumpit": 449,
       "jobkorea": 1214,
-      "saramin": 3149,
-      "dev": 302
+      "saramin": 3154,
+      "dev": 303
     },
     "top_tech": [
       [
         "Python",
-        2085
+        2086
       ],
       [
         "AWS",
-        1759
+        1761
       ],
       [
         "Java",
-        1746
+        1750
       ],
       [
         "React",
@@ -199893,7 +200064,7 @@
       ],
       [
         "Git",
-        1086
+        1087
       ],
       [
         "Docker",
@@ -199901,11 +200072,11 @@
       ],
       [
         "Spring",
-        1055
+        1059
       ],
       [
         "JavaScript",
-        981
+        983
       ],
       [
         "Linux",
@@ -199917,7 +200088,7 @@
       ],
       [
         "MySQL",
-        859
+        860
       ],
       [
         "Kubernetes",
@@ -199925,15 +200096,15 @@
       ],
       [
         "PostgreSQL",
-        710
+        711
       ],
       [
         "REST API",
-        709
+        711
       ],
       [
         "Spring Boot",
-        618
+        622
       ],
       [
         "GCP",
@@ -199961,7 +200132,7 @@
       ],
       [
         "CSS",
-        472
+        473
       ],
       [
         "Redis",
@@ -199969,7 +200140,7 @@
       ],
       [
         "HTML",
-        455
+        456
       ],
       [
         "PyTorch",
@@ -199998,22 +200169,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T03:17:47",
-      "keyword": "개발자",
-      "raw_total": 622,
-      "deduped": 606,
-      "active": 606,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 189,
-        "jobkorea": 61,
-        "saramin": 225,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T03:50:34",
       "keyword": "개발자",
@@ -203195,6 +203350,22 @@
         "jobkorea": 1668,
         "saramin": 4328,
         "dev": 371
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-20T05:18:37",
+      "keyword": "통합",
+      "raw_total": 8500,
+      "deduped": 7762,
+      "active": 6641,
+      "closed": 1121,
+      "site_counts": {
+        "wanted": 1540,
+        "jumpit": 586,
+        "jobkorea": 1668,
+        "saramin": 4334,
+        "dev": 372
       },
       "anomalies": []
     }
