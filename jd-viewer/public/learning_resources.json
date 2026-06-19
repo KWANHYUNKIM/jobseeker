@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-20T00:03:15",
+  "generated_at": "2026-06-20T01:48:27",
   "source": "youtube",
   "tech_count": 170,
   "curriculum_count": 20,
@@ -2455,88 +2455,6 @@
         "stage": "핵심"
       }
     ],
-    "MSA": [
-      {
-        "title": "MSA 요소 6가지 7분컷",
-        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
-        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 20896,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
-        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
-        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 13125,
-        "length": "5:14",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SK TECH SUMMIT 2022] Cloud Native 기반 MSA 개발을 지원하는 애플리케이션 현대화 개발 플랫폼",
-        "url": "https://www.youtube.com/watch?v=UPwl7wEbB8o",
-        "thumbnail": "https://i.ytimg.com/vi/UPwl7wEbB8o/mqdefault.jpg",
-        "channel": "SK AI SUMMIT 2025",
-        "views": 137,
-        "length": "24:56",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "잡코리아 사례 | MSA 기반 클라우드 전환 구성과 인프라 현대화 - 오준호, 최고 소프트웨어 아키텍트(CSA), CNE팀, 베스핀글로벌",
-        "url": "https://www.youtube.com/watch?v=OWi0qce7DPU",
-        "thumbnail": "https://i.ytimg.com/vi/OWi0qce7DPU/mqdefault.jpg",
-        "channel": "Amazon Web Services Korea",
-        "views": 867,
-        "length": "24:05",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의 미리보기] 김병규 강사님과 MSA 전환 조건 알아보기",
-        "url": "https://www.youtube.com/watch?v=66OwESpwI1g",
-        "thumbnail": "https://i.ytimg.com/vi/66OwESpwI1g/mqdefault.jpg",
-        "channel": "패스트캠퍼스",
-        "views": 701,
-        "length": "14:49",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. MSA 소개",
-        "url": "https://www.youtube.com/watch?v=qHB5lLTuWB8",
-        "thumbnail": "https://i.ytimg.com/vi/qHB5lLTuWB8/mqdefault.jpg",
-        "channel": "Open cloud Platform Alliance(OPA)│K-PaaS",
-        "views": 436,
-        "length": "51:12",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Amazon Memory DB를 활용해 더 견고한 MSA 서비스 구축하기 - 진교선, 게이밍 솔루션즈 아키텍트, AWS",
-        "url": "https://www.youtube.com/watch?v=hcxBR21J9Xg",
-        "thumbnail": "https://i.ytimg.com/vi/hcxBR21J9Xg/mqdefault.jpg",
-        "channel": "Amazon Web Services Korea",
-        "views": 986,
-        "length": "22:39",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 2020] MSA 환경에서 API 문서 관리하기: 생성부터 배포까지",
-        "url": "https://www.youtube.com/watch?v=qguXHW0s8RY",
-        "thumbnail": "https://i.ytimg.com/vi/qguXHW0s8RY/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 5176,
-        "length": "14:05",
-        "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
     "TensorFlow": [
       {
         "title": "텐서 플로우 TensorFlow 기초",
@@ -2616,6 +2534,88 @@
         "views": 65128,
         "length": "10:00",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "MSA": [
+      {
+        "title": "MSA 요소 6가지 7분컷",
+        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
+        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 20896,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
+        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
+        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 13125,
+        "length": "5:14",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SK TECH SUMMIT 2022] Cloud Native 기반 MSA 개발을 지원하는 애플리케이션 현대화 개발 플랫폼",
+        "url": "https://www.youtube.com/watch?v=UPwl7wEbB8o",
+        "thumbnail": "https://i.ytimg.com/vi/UPwl7wEbB8o/mqdefault.jpg",
+        "channel": "SK AI SUMMIT 2025",
+        "views": 137,
+        "length": "24:56",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "잡코리아 사례 | MSA 기반 클라우드 전환 구성과 인프라 현대화 - 오준호, 최고 소프트웨어 아키텍트(CSA), CNE팀, 베스핀글로벌",
+        "url": "https://www.youtube.com/watch?v=OWi0qce7DPU",
+        "thumbnail": "https://i.ytimg.com/vi/OWi0qce7DPU/mqdefault.jpg",
+        "channel": "Amazon Web Services Korea",
+        "views": 867,
+        "length": "24:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[강의 미리보기] 김병규 강사님과 MSA 전환 조건 알아보기",
+        "url": "https://www.youtube.com/watch?v=66OwESpwI1g",
+        "thumbnail": "https://i.ytimg.com/vi/66OwESpwI1g/mqdefault.jpg",
+        "channel": "패스트캠퍼스",
+        "views": 701,
+        "length": "14:49",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. MSA 소개",
+        "url": "https://www.youtube.com/watch?v=qHB5lLTuWB8",
+        "thumbnail": "https://i.ytimg.com/vi/qHB5lLTuWB8/mqdefault.jpg",
+        "channel": "Open cloud Platform Alliance(OPA)│K-PaaS",
+        "views": 436,
+        "length": "51:12",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Amazon Memory DB를 활용해 더 견고한 MSA 서비스 구축하기 - 진교선, 게이밍 솔루션즈 아키텍트, AWS",
+        "url": "https://www.youtube.com/watch?v=hcxBR21J9Xg",
+        "thumbnail": "https://i.ytimg.com/vi/hcxBR21J9Xg/mqdefault.jpg",
+        "channel": "Amazon Web Services Korea",
+        "views": 986,
+        "length": "22:39",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 2020] MSA 환경에서 API 문서 관리하기: 생성부터 배포까지",
+        "url": "https://www.youtube.com/watch?v=qguXHW0s8RY",
+        "thumbnail": "https://i.ytimg.com/vi/qguXHW0s8RY/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 5176,
+        "length": "14:05",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -6719,6 +6719,88 @@
         "stage": "핵심"
       }
     ],
+    "JUnit": [
+      {
+        "title": "[10분 테코톡] 비버의 JUnit 5",
+        "url": "https://www.youtube.com/watch?v=uqZDt-0BDAo",
+        "thumbnail": "https://i.ytimg.com/vi/uqZDt-0BDAo/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 2531,
+        "length": "7:47",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Junit Tutorial 에서 단위 테스트 케이스 추가하고 수행하기",
+        "url": "https://www.youtube.com/watch?v=nxh4d2Nzx4U",
+        "thumbnail": "https://i.ytimg.com/vi/nxh4d2Nzx4U/mqdefault.jpg",
+        "channel": "LahmedLabs 라메드랩스 (LMLABS)",
+        "views": 425,
+        "length": "4:02",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "테스트 코드 적용하기 (JUnit, TDD)  [ 스프링 부트 (Spring Boot) ]",
+        "url": "https://www.youtube.com/watch?v=SFVWo0Z5Ppo",
+        "thumbnail": "https://i.ytimg.com/vi/SFVWo0Z5Ppo/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 27451,
+        "length": "39:02",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JUnit 5를 이용한 애플리케이션 테스트 방법",
+        "url": "https://www.youtube.com/watch?v=3rFcwHiRFo8",
+        "thumbnail": "https://i.ytimg.com/vi/3rFcwHiRFo8/mqdefault.jpg",
+        "channel": "김대협",
+        "views": 1740,
+        "length": "1:31:51",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JUnit을 이용한 테스트",
+        "url": "https://www.youtube.com/watch?v=WIun9-62cx0",
+        "thumbnail": "https://i.ytimg.com/vi/WIun9-62cx0/mqdefault.jpg",
+        "channel": "썬키스트",
+        "views": 1454,
+        "length": "30:15",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[2025 Spring] 32강 JUnit Service/Controller",
+        "url": "https://www.youtube.com/watch?v=-4Z3krcKBr0",
+        "thumbnail": "https://i.ytimg.com/vi/-4Z3krcKBr0/mqdefault.jpg",
+        "channel": "스마트인재개발원",
+        "views": 61,
+        "length": "31:17",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인프런 Junit Security Test 강의 소개",
+        "url": "https://www.youtube.com/watch?v=9NGuDTiH2hw",
+        "thumbnail": "https://i.ytimg.com/vi/9NGuDTiH2hw/mqdefault.jpg",
+        "channel": "메타코딩",
+        "views": 1036,
+        "length": "1:32",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JUnit 라이브러리",
+        "url": "https://www.youtube.com/watch?v=S85ZMBas7as",
+        "thumbnail": "https://i.ytimg.com/vi/S85ZMBas7as/mqdefault.jpg",
+        "channel": "코딩하는오후",
+        "views": 144,
+        "length": "21:26",
+        "published": "3주 전",
+        "stage": "핵심"
+      }
+    ],
     "Keras": [
       {
         "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
@@ -6962,88 +7044,6 @@
         "views": 10108,
         "length": "16:07",
         "published": "5년 전",
-        "stage": "핵심"
-      }
-    ],
-    "JUnit": [
-      {
-        "title": "[10분 테코톡] 비버의 JUnit 5",
-        "url": "https://www.youtube.com/watch?v=uqZDt-0BDAo",
-        "thumbnail": "https://i.ytimg.com/vi/uqZDt-0BDAo/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 2531,
-        "length": "7:47",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Junit Tutorial 에서 단위 테스트 케이스 추가하고 수행하기",
-        "url": "https://www.youtube.com/watch?v=nxh4d2Nzx4U",
-        "thumbnail": "https://i.ytimg.com/vi/nxh4d2Nzx4U/mqdefault.jpg",
-        "channel": "LahmedLabs 라메드랩스 (LMLABS)",
-        "views": 425,
-        "length": "4:02",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "테스트 코드 적용하기 (JUnit, TDD)  [ 스프링 부트 (Spring Boot) ]",
-        "url": "https://www.youtube.com/watch?v=SFVWo0Z5Ppo",
-        "thumbnail": "https://i.ytimg.com/vi/SFVWo0Z5Ppo/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 27451,
-        "length": "39:02",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JUnit 5를 이용한 애플리케이션 테스트 방법",
-        "url": "https://www.youtube.com/watch?v=3rFcwHiRFo8",
-        "thumbnail": "https://i.ytimg.com/vi/3rFcwHiRFo8/mqdefault.jpg",
-        "channel": "김대협",
-        "views": 1740,
-        "length": "1:31:51",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JUnit을 이용한 테스트",
-        "url": "https://www.youtube.com/watch?v=WIun9-62cx0",
-        "thumbnail": "https://i.ytimg.com/vi/WIun9-62cx0/mqdefault.jpg",
-        "channel": "썬키스트",
-        "views": 1454,
-        "length": "30:15",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[2025 Spring] 32강 JUnit Service/Controller",
-        "url": "https://www.youtube.com/watch?v=-4Z3krcKBr0",
-        "thumbnail": "https://i.ytimg.com/vi/-4Z3krcKBr0/mqdefault.jpg",
-        "channel": "스마트인재개발원",
-        "views": 61,
-        "length": "31:17",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인프런 Junit Security Test 강의 소개",
-        "url": "https://www.youtube.com/watch?v=9NGuDTiH2hw",
-        "thumbnail": "https://i.ytimg.com/vi/9NGuDTiH2hw/mqdefault.jpg",
-        "channel": "메타코딩",
-        "views": 1036,
-        "length": "1:32",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JUnit 라이브러리",
-        "url": "https://www.youtube.com/watch?v=S85ZMBas7as",
-        "thumbnail": "https://i.ytimg.com/vi/S85ZMBas7as/mqdefault.jpg",
-        "channel": "코딩하는오후",
-        "views": 144,
-        "length": "21:26",
-        "published": "3주 전",
         "stage": "핵심"
       }
     ],

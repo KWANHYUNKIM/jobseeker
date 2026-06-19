@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T00:07:09",
+ "generated_at": "2026-06-20T01:52:22",
  "total": 100,
  "countries": [
   {
@@ -1496,6 +1496,10 @@
       "count": 1
      },
      {
+      "name": "Armeria",
+      "count": 1
+     },
+     {
       "name": "C++",
       "count": 1
      },
@@ -1505,10 +1509,6 @@
      },
      {
       "name": "Envoy",
-      "count": 1
-     },
-     {
-      "name": "Envoy service mesh",
       "count": 1
      }
     ],
@@ -1576,16 +1576,16 @@
       "count": 4
      },
      {
+      "name": "Apache Druid",
+      "count": 3
+     },
+     {
       "name": "Apache Flink",
       "count": 3
      },
      {
       "name": "S3",
       "count": 3
-     },
-     {
-      "name": "Apache Druid",
-      "count": 2
      },
      {
       "name": "Apache Hudi",
@@ -2975,6 +2975,10 @@
       "count": 1
      },
      {
+      "name": "Recoil / Redux",
+      "count": 1
+     },
+     {
       "name": "Swift",
       "count": 1
      },
@@ -3017,15 +3021,15 @@
       "count": 1
      },
      {
+      "name": "Apache Spark",
+      "count": 1
+     },
+     {
       "name": "Cassandra",
       "count": 1
      },
      {
       "name": "ClickHouse",
-      "count": 1
-     },
-     {
-      "name": "Druid",
       "count": 1
      }
     ],
@@ -3067,7 +3071,7 @@
       "count": 1
      },
      {
-      "name": "Prometheus + Grafana",
+      "name": "Pinpoint / Zipkin",
       "count": 1
      }
     ]
@@ -13922,47 +13926,55 @@
    "stack": {
     "backend": [
      "Spring Boot",
-     "Spring Cloud Gateway",
+     "Spring WebFlux",
      "Kotlin Coroutines",
+     "Spring Cloud Gateway",
      "Go",
      "gRPC",
-     "Netty"
+     "Netty",
+     "Armeria"
     ],
     "frontend": [
      "React",
      "Vue.js",
      "TypeScript",
-     "Next.js"
+     "Next.js",
+     "WebSocket"
     ],
     "data": [
      "Kafka",
      "MySQL",
      "Redis",
      "Elasticsearch",
-     "Druid",
+     "Apache Druid",
      "Hadoop/Spark",
      "Cassandra",
-     "S3"
+     "Pinot",
+     "S3",
+     "Flink"
     ],
     "infra": [
      "Kubernetes",
      "AWS",
-     "사내 PaaS(DKOS/카카오 클라우드)",
+     "사내 PaaS(DKOS)",
+     "카카오 클라우드",
      "ArgoCD",
      "Prometheus",
-     "Grafana"
+     "Grafana",
+     "Jaeger/Zipkin",
+     "Vault"
     ]
    },
    "architecture": [
-    "MSA + 도메인 분리",
+    "MSA + 도메인 분리(DDD)",
     "실시간 위치/배차 스트리밍",
-    "지도/경로 엔진 (CPU-bound 전용 서비스)",
-    "이벤트 기반 비동기(Kafka)"
+    "지도/경로 엔진(CPU-bound 전용 서비스)",
+    "이벤트 기반 비동기(Kafka/Event Sourcing)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Driver/Rider App<br/>Android Kotlin + iOS Swift\"]\n    WEB[\"Web / Partner Console<br/>React + Vue + TS\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Netty\"]\n    WS[\"Realtime Location Ingest<br/>WebSocket / gRPC stream\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    DISPATCH[\"Dispatch / Matching<br/>Kotlin + Go\"]\n    ROUTE[\"Route Engine<br/>C++ / Go\"]\n    ETA[\"ETA Prediction<br/>Python ML + Go serving\"]\n    PAY[\"Payment / Settlement<br/>Spring Boot\"]\n    USER[\"User / Driver Domain<br/>Spring Boot\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    GEO[\"Geo Index Cache<br/>Redis Geo + H3\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Transactional DB<br/>MySQL\"]\n    DRUID[\"Realtime OLAP<br/>Druid\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    LAKE[\"Data Lake<br/>S3 + Spark + Hadoop\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>사내 PaaS + AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP -->|gRPC stream| WS\n  WEB --> GW\n  WS -->|location events| KAFKA\n  GW --> DISPATCH\n  GW --> ROUTE\n  GW --> PAY\n  GW --> USER\n  KAFKA --> GEO\n  KAFKA --> DRUID\n  DISPATCH -->|nearby query| GEO\n  DISPATCH -->|path/ETA| ROUTE\n  ROUTE --> ETA\n  DISPATCH --> MYSQL\n  PAY --> MYSQL\n  USER --> ES\n  KAFKA --> LAKE\n  ETA -.train.-> LAKE\n  Core --> K8S\n  Stream --> K8S\n  K8S --> OBS",
-   "why_language": "택시 호출·배차처럼 트랜잭션 정합성과 풍부한 도메인 로직이 필요한 영역은 JVM 생태계(Java/Kotlin + Spring)로 안정적으로 다루고, 위치 수집·매칭처럼 동시성과 낮은 레이턴시가 핵심인 핫패스는 Go를 쓴다. 경로 탐색 엔진은 그래프 연산이 CPU 바운드라 C++/Go로 최적화하고, ETA·수요예측 같은 ML 영역은 Python으로 학습 파이프라인을 구성한다.",
-   "why_architecture": "택시·대리·바이크·내비 등 서로 다른 비즈니스 도메인이 한 플랫폼에 공존해 도메인별 독립 배포·확장이 필수라 MSA를 택했다. 수만 대 차량의 실시간 위치가 초당 대량으로 유입되므로 동기 호출 대신 Kafka 기반 이벤트 스트리밍으로 백프레셔를 흡수하고, 배차 매칭과 경로 엔진을 별도 서비스로 떼어 트래픽 급증 구간만 독립적으로 오토스케일한다.",
-   "summary": "JVM으로 트랜잭션 도메인을, Go/C++로 실시간 위치·경로 핫패스를, Kafka로 대량 위치 이벤트를 흡수하는 모빌리티 특화 MSA",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"기사·승객 App<br/>Android Kotlin / iOS Swift\"]\n    WEB[\"운영/파트너 Web<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    WS[\"Realtime Gateway<br/>Netty + WebSocket\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DISP[\"배차 매칭 엔진<br/>Kotlin Coroutines + Go\"]\n    LOC[\"위치 수집 서비스<br/>Go + gRPC\"]\n    ROUTE[\"경로/ETA 엔진<br/>C++ CPU-bound\"]\n    GEO[\"근접 검색<br/>H3 + Redis Geo\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"실시간 집계<br/>Flink / Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"주문/결제<br/>MySQL\"]\n    REDIS[\"위치 캐시·세션<br/>Redis\"]\n    DRUID[\"실시간 분석<br/>Druid / Pinot\"]\n    ES[\"POI 검색<br/>Elasticsearch\"]\n    CASS[\"위치 이력<br/>Cassandra\"]\n    S3[\"지도타일·로그<br/>S3\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>DKOS / 카카오 클라우드\"]\n    OBS[\"관측성<br/>Prometheus + Grafana + Jaeger\"]\n  end\n  APP -->|WebSocket| WS\n  WEB -->|HTTPS| GW\n  WS --> LOC\n  GW --> DISP\n  LOC -->|gRPC| GEO\n  LOC --> KAFKA\n  DISP --> GEO\n  DISP -->|gRPC| ROUTE\n  GEO --> REDIS\n  DISP --> MYSQL\n  KAFKA --> FLINK\n  FLINK --> DRUID\n  KAFKA --> CASS\n  ROUTE --> S3\n  DISP --> ES\n  K8S -.-> Core\n  OBS -.-> Core",
+   "why_language": "초당 수십만 건의 위치 업데이트와 배차 요청을 동시에 처리해야 하므로, JVM 생태계의 안정성과 Spring 기반 운영 자산을 살리되 고동시성 영역은 Kotlin Coroutines와 Go로 가볍게 처리한다. 지도 매칭·경로 탐색처럼 밀리초 단위 지연과 CPU 효율이 생명인 연산은 C++로 분리하고, 데이터/ML 파이프라인은 Python으로 다룬다. 즉 도메인별 지연·처리량 특성에 맞춰 언어를 다중 선택한 폴리글랏 전략이다.",
+   "why_architecture": "택시·대리·내비·바이크 등 도메인마다 트래픽 패턴과 데이터 모델이 크게 달라 MSA로 분리해 독립 배포·확장이 가능하도록 했다. 실시간 위치는 끊임없이 흐르는 스트림이므로 Kafka 기반 이벤트 파이프라인으로 수집·배차·분석을 비동기로 분리하고, CPU 집약적인 경로 엔진은 별도 전용 서비스로 떼어내 수평 확장과 장애 격리를 동시에 달성한다.",
+   "summary": "폴리글랏 MSA 위에 Kafka 스트리밍과 C++ 경로 엔진을 결합한 대규모 실시간 모빌리티 플랫폼",
    "deep_dive": [
     {
      "topic": "실시간 위치 수집 파이프라인",
@@ -13995,6 +14007,18 @@
     {
      "topic": "실시간 교통 반영과 경로 엔진의 동적 가중치 갱신",
      "body": "### 핵심 질문: 정적 도로망에 어떻게 '지금의 교통'을 입히나\n\n경로 탐색은 도로망을 그래프로 보고 `Dijkstra`/`A*`/계층적 전처리(`Contraction Hierarchies`, `CRP`)로 최단경로를 푼다. 하지만 모빌리티에서 '거리 최단'은 의미가 없고 **'지금 시각에 가장 빠른 길'**이 답이라, 그래프의 **edge weight(통과 소요시간)**를 실시간으로 갱신하는 게 진짜 어려운 부분이다.\n\n### 데이터 소스: 프로브 데이터(probe data)\n\n운행 중인 차량들의 GPS 궤적 자체가 최고의 교통 센서다.\n\n```\n차량 위치 스트림(Kafka)\n   → map-matching: GPS 점을 도로 링크에 스냅\n   → 링크별 통과 속도 집계(최근 N분 윈도우)\n   → edge weight 갱신 메시지\n   → 경로 엔진 메모리 반영\n```\n\nmap-matching은 노이즈 섞인 GPS 점을 실제 도로 링크 시퀀스로 보정하는 단계로, `HMM`(Hidden Markov Model) 기반 기법이 표준이다. 이 결과로 **링크별 실시간 속도**가 나온다.\n\n### 갱신을 '스트리밍'으로 하는 이유\n\n전국 수백만 도로 링크의 가중치를 매번 배치로 다시 깔면 신선도가 떨어진다. 대신:\n\n- Kafka로 들어오는 위치 이벤트를 **윈도우 집계**(예: 최근 5분 EWMA)\n- 변화가 유의미한 링크만 **델타 업데이트** 메시지로 발행\n- 경로 엔진 인스턴스들이 이를 구독해 메모리 내 weight 배열을 in-place 갱신\n\n전처리 기반 엔진(CH 등)은 weight가 바뀌면 전처리가 무효화되는 약점이 있어, **실시간 교통은 '동적 비용'으로 분리**해 쿼리 시점에 합산하는 customizable routing(CRP류) 설계를 쓴다. 정적 구조(전처리)는 재사용하고, 가변 교통만 customization 단계에서 얹는 구조다.\n\n### ETA로의 연결\n\n경로가 정해지면 각 링크의 실시간 속도를 적분해 1차 ETA를 만들고, 여기에 **ML 보정**(요일·시간대·날씨·교차로 신호 패턴·과거 동일 구간 실주행 분포)을 곱해 최종 ETA를 낸다. 단순 합산 ETA는 신호·회전·정체 진입 같은 비선형 요소를 못 잡아서, Python으로 학습한 잔차 보정 모델을 Go 서빙 레이어에 얹는 형태가 일반적이다.\n\n### 트레이드오프\n\n- **신선도 vs 안정성**: weight를 너무 자주 갱신하면 같은 호출에도 경로가 출렁여 사용자 경험이 나빠진다 → 히스테리시스(임계 이상 변할 때만 경로 변경 권고).\n- **데이터 희소 구간**: 차량 통행이 적은 외곽 링크는 실시간 프로브가 부족 → 과거 통계(historical speed profile)로 폴백."
+    },
+    {
+     "topic": "지도 매칭(Map-Matching): GPS 노이즈를 도로망 위로 보정하기",
+     "body": "### 왜 필요한가\n승객·기사 앱이 올려보내는 raw GPS 좌표는 도심에서 건물 반사(multipath), 터널, 고가도로 때문에 실제 위치에서 수십 m씩 튄다. 이 좌표를 그대로 쓰면 \"기사가 갑자기 건물 안으로 들어갔다\"거나 \"역주행 중\"으로 보이는 문제가 생긴다. 그래서 모든 위치 데이터는 배차·요금 산정에 쓰이기 전에 **map-matching** 단계를 거쳐 가장 그럴듯한 도로 링크(link) 위의 점으로 투영(snap)된다.\n\n### 동작 원리: HMM 기반 경로 추정\n카카오모빌리티 규모의 내비/택시 서비스는 일반적으로 **Hidden Markov Model(HMM)** 기반 map-matching을 쓴다.\n\n- **관측(observation)**: 매 초 들어오는 GPS 포인트\n- **은닉 상태(hidden state)**: 해당 시점에 차량이 실제로 있었을 도로 링크 후보들\n- **방출 확률(emission)**: GPS 포인트와 링크 사이의 수직 거리 → 가까울수록 높은 확률\n- **전이 확률(transition)**: 직전 매칭된 링크에서 현재 후보 링크까지 **도로망을 따라 실제로 이동 가능한 거리**와 GPS상 직선 거리의 비율. 도로를 따라 자연스럽게 이어지면 높고, 순간이동·역주행이면 낮다.\n\n이 확률들을 곱해 **Viterbi 알고리즘**으로 가장 가능성 높은 링크 시퀀스를 디코딩한다. 핵심은 \"한 점만 보고 가장 가까운 도로에 붙이는\" 단순 snapping이 아니라, **시간적 연속성(temporal continuity)**을 함께 보기 때문에 평행한 도로(예: 본선 vs 고가도로)가 겹쳐도 흐름상 맞는 쪽을 고른다는 점이다.\n\n### 실시간 제약과 최적화\n- 실시간 배차 경로에는 전체 시퀀스를 다 모으고 디코딩할 여유가 없으므로, **sliding window** 안에서 online Viterbi를 돌려 최근 N개 포인트만으로 점진적으로 확정한다.\n- 후보 링크 추출은 **공간 인덱스(R-tree / H3 grid)**로 GPS 점 주변 반경 내 링크만 가져와 후보 수를 제한한다 — 전국 도로망 전체를 매번 탐색하면 지연이 폭발한다.\n- 이 연산은 전형적인 **CPU-bound** 작업이라 JVM보다 `C++` 전용 엔진으로 분리해, 위치 수집 서비스(Go/gRPC)가 좌표 스트림을 받아 매칭 엔진에 위임하는 구조를 갖는다.\n\n### 트레이드오프\n| 선택 | 장점 | 비용 |\n|------|------|------|\n| HMM+Viterbi | 노이즈·평행도로에 강건 | 연산량 큼 → 전용 서비스 필요 |\n| Window 크기 ↑ | 매칭 정확도 ↑ | 지연·메모리 ↑ |\n| 후보 반경 ↑ | 터널/음영 복구력 ↑ | 후보 폭증, 오매칭 위험 |\n\n결국 \"얼마나 정확히 도로에 붙일까\"와 \"얼마나 빨리 결과를 줄까\"의 균형 문제이고, 서비스(실시간 배차 vs 사후 요금정산)에 따라 window·반경 파라미터를 다르게 튜닝한다."
+    },
+    {
+     "topic": "동적 가격(Dynamic Pricing)과 수요·공급 예측 파이프라인",
+     "body": "### 문제 정의\n출퇴근·심야·우천·콘서트 같은 이벤트 때는 특정 지역의 호출(수요)이 가용 기사(공급)를 압도한다. 이때 단순 선착순 배차는 \"잡히지 않는 콜\"만 양산하고 기사·승객 모두 이탈한다. 그래서 **지역(geo-cell) × 시간대별로 수요·공급 불균형을 실시간 추정**하고, 호출 성공률을 끌어올리기 위한 신호(탄력 요금·기사 인센티브·배차 우선순위)를 만들어낸다.\n\n### 데이터 흐름 (end-to-end)\n1. **수집**: 앱의 호출 생성/취소, 기사 상태(빈차·운행중), 위치 핑이 모두 `Kafka` 토픽으로 흐른다.\n2. **공간 버킷팅**: 좌표를 **H3 인덱스**로 셀 단위(예: res 8~9)로 묶는다. 셀이 곧 수요·공급 집계의 최소 단위.\n3. **실시간 집계**: `Flink`/`Spark Streaming`이 슬라이딩 윈도우(예: 최근 1~5분)로 셀별 `호출 수`, `매칭 실패 수`, `가용 기사 수`, `평균 대기시간`을 집계한다.\n4. **피처 → 모델**: 집계 피처 + 시간/요일/날씨/이벤트 컨텍스트를 `Python` 기반 모델(수요 예측·매칭확률 모델)에 넣어 **수요/공급 비율(surge ratio)** 또는 예상 매칭확률을 산출한다.\n5. **서빙**: 산출된 셀별 계수를 `Redis`에 짧은 TTL로 캐싱하고, 배차/가격 서비스가 호출 시점에 조회한다.\n6. **분석**: 같은 이벤트 스트림이 `Druid`/`Pinot`로 들어가 운영 대시보드에서 지역별 수급 현황을 실시간 모니터링한다.\n\n### 왜 H3 인가\n사각형 격자(geohash) 대신 **H3 육각형 격자**를 쓰는 이유는, 육각형은 이웃 6개와 거리가 균일해서 \"인접 셀로 기사 유입을 유도\"하거나 \"주변 셀까지 후보를 넓히는\" 근접 연산이 왜곡 없이 깔끔하기 때문이다. 또 해상도(resolution) 계층 구조가 있어 도심은 작은 셀, 외곽은 큰 셀로 **가변 해상도 집계**가 가능하다.\n\n### 엔지니어링 트레이드오프\n- **윈도우 길이**: 짧으면 반응 빠르지만 노이즈로 가격이 출렁(flapping)인다 → EMA/hysteresis로 평활화.\n- **셀 해상도**: 너무 작으면 통계 표본이 부족해 추정이 불안정, 너무 크면 강남역과 인근 주택가가 한 셀로 뭉뚱그려진다.\n- **콜드 셀 문제**: 데이터가 드문 외곽 셀은 상위 해상도 셀의 통계로 fallback(계층적 smoothing).\n\n핵심은 이 전체가 **near-real-time 피드백 루프**라는 점 — 가격/인센티브 신호가 다시 기사 이동을 유발하고, 그 결과가 또 스트림으로 들어와 다음 추정에 반영된다."
+    },
+    {
+     "topic": "장애 복원력: 위치 스트림 폭증과 배차 엔진의 백프레셔·서킷브레이커",
+     "body": "### 트래픽 특성이 만드는 위험\n모빌리티 백엔드의 부하는 **요청-응답형이 아니라 지속 스트림형**이다. 운행 중인 모든 차량이 1~수 초마다 위치를 올리므로, 출근 피크엔 위치 이벤트가 평소의 몇 배로 솟구친다. 이 스트림이 배차·ETA·지도매칭 같은 하위 서비스로 그대로 밀려들면 한 서비스의 지연이 큐를 적체시키고 연쇄 장애(cascading failure)로 번진다. 그래서 복원력 설계의 중심은 **흐름 제어(flow control)**다.\n\n### 1) 백프레셔(Backpressure)\n위치 수집 경로는 `Netty`/`WebFlux` 같은 **reactive/non-blocking** 스택으로 짜여 있어, 다운스트림이 느려지면 상류로 \"천천히 보내라\" 신호가 전파된다. Kafka를 완충 버퍼로 두는 것도 같은 맥락 — consumer(배차/집계)가 잠시 느려져도 producer(앱 핑)는 막히지 않고, 적체는 토픽 lag으로 흡수된다. lag이 임계치를 넘으면 오토스케일러가 consumer 파드를 늘린다.\n\n### 2) 서킷브레이커 & 폴백\n배차 엔진이 경로/ETA 엔진(C++)을 `gRPC`로 호출할 때 **circuit breaker**(Resilience4j 류)를 끼운다.\n- 경로 엔진 응답이 느려지거나 에러율이 임계치를 넘으면 회로를 **open** → 호출을 즉시 차단하고\n- **폴백**: 정밀 경로 대신 **직선거리(haversine) 기반 근사 ETA**나 직전 캐시값으로 배차를 계속 진행한다. \"완벽한 ETA\"보다 \"콜이 끊기지 않는 것\"이 우선이기 때문이다.\n\n### 3) 타임아웃 예산과 부분 응답\n한 번의 호출 요청에는 **전체 지연 예산(latency budget)**이 걸려 있고, 각 하위 호출에 타임아웃을 쪼개 배분한다. 시간 내 못 받은 비핵심 데이터(예: 주변 POI 부가정보)는 빼고 **부분 응답(graceful degradation)**으로 내보낸다.\n\n### 4) 멀티 AZ / 페일오버\n- `Kubernetes`(DKOS/카카오 클라우드) 위에서 핵심 서비스는 **multi-AZ**로 분산 배치, 노드/존 장애 시 자동 재스케줄.\n- 상태 저장소(`Redis`, `MySQL`, `Cassandra`)는 복제·failover 구성. 특히 위치 캐시(Redis)는 **유실돼도 다음 핑이 곧 채우는** 성격이라 강한 일관성보다 가용성을 택한다(AP 성향).\n\n### 5) 부하 차단(Load Shedding)\n극단적 폭주 시엔 **우선순위 기반 셰딩** — 운행 중 차량의 위치/배차 트래픽은 지키고, 분석·로깅·비핵심 갱신은 샘플링하거나 일시 드롭한다.\n\n### 종합 트레이드오프\n이 모든 장치의 공통 철학은 **\"정확함보다 살아있음\"**이다. 실시간 모빌리티에서 5초 늦은 정답은 이미 오답이므로, 근사·부분응답·캐시폴백을 적극 허용하고 시스템이 절대 멈추지 않도록 설계한다. 대신 셰딩·폴백이 발동했는지를 `Prometheus` 메트릭과 분산 트레이싱으로 추적해, 사후에 어떤 품질 저하가 있었는지 정량화한다."
     }
    ],
    "github": {
@@ -14010,21 +14034,21 @@
      {
       "name": "kakao/n2",
       "url": "https://github.com/kakao/n2",
-      "desc": "대용량 벡터 근사 최근접 이웃(ANN) 검색 라이브러리",
+      "desc": "대규모 벡터 근사 최근접 이웃(ANN) 검색 라이브러리",
       "lang": "Jupyter Notebook",
       "stars": 581
      },
      {
       "name": "kakao/cuesheet",
       "url": "https://github.com/kakao/cuesheet",
-      "desc": "Spark 애플리케이션을 손쉽게 작성·배포하는 프레임워크",
+      "desc": "Spark 애플리케이션을 간결하게 작성·배포하는 프레임워크",
       "lang": "Scala",
       "stars": 84
      },
      {
       "name": "kakao/varlog",
       "url": "https://github.com/kakao/varlog",
-      "desc": "대규모 분산 로그 스토리지 시스템 (Go)",
+      "desc": "분산 환경을 위한 고성능 로그 스토리지 시스템",
       "lang": "Go",
       "stars": 53
      }
@@ -14032,11 +14056,11 @@
    },
    "sources": [
     "https://tech.kakaomobility.com/",
-    "https://tech.kakao.com/",
-    "https://github.com/kakao"
+    "https://github.com/kakao",
+    "https://if.kakao.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "woowahan",
@@ -14056,14 +14080,16 @@
      "Spring Cloud",
      "Kotlin + Spring WebFlux",
      "JPA / QueryDSL",
-     "gRPC"
+     "gRPC",
+     "Spring Batch"
     ],
     "frontend": [
      "React",
      "Next.js",
      "Vue.js",
      "TypeScript",
-     "Webpack"
+     "Webpack",
+     "Recoil / Redux"
     ],
     "data": [
      "Apache Kafka",
@@ -14071,7 +14097,8 @@
      "Redis",
      "MongoDB",
      "Elasticsearch",
-     "DynamoDB"
+     "DynamoDB",
+     "Apache Spark"
     ],
     "infra": [
      "AWS",
@@ -14079,7 +14106,8 @@
      "ArgoCD",
      "Spinnaker",
      "Terraform",
-     "Prometheus + Grafana"
+     "Prometheus + Grafana",
+     "Pinpoint / Zipkin"
     ]
    },
    "architecture": [
@@ -14088,10 +14116,10 @@
     "이벤트 소싱 / CQRS",
     "Saga 기반 분산 트랜잭션"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"배민 App / Web<br/>React + Next.js + Vue.js\"]\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    BFF[\"BFF<br/>Node.js + Kotlin\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    ORDER[\"주문 서비스<br/>Kotlin + Spring Boot\"]\n    SHOP[\"가게/메뉴 서비스<br/>Spring Boot + JPA\"]\n    MATCH[\"배민1 배차 매칭<br/>Kotlin + WebFlux\"]\n    PAY[\"결제 서비스<br/>Spring Boot\"]\n    SEARCH[\"검색/랭킹<br/>Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    ESTORE[\"Event Store<br/>이벤트 소싱\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"주문/거래 DB<br/>MySQL / Aurora\"]\n    REDIS[\"캐시/세션<br/>Redis\"]\n    MONGO[\"노출 캐시 뷰<br/>MongoDB\"]\n    ES[\"검색 인덱스<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps 배포<br/>ArgoCD + Spinnaker\"]\n    OBS[\"관측성<br/>Prometheus + Grafana\"]\n  end\n  APP --> CDN --> GW\n  APP --> GW\n  GW --> BFF\n  BFF --> ORDER\n  BFF --> SHOP\n  BFF --> SEARCH\n  ORDER -->|\"OrderCreated\"| KAFKA\n  ORDER --> MYSQL\n  ORDER --> ESTORE\n  KAFKA --> MATCH\n  KAFKA --> PAY\n  KAFKA --> MONGO\n  SHOP --> REDIS\n  SHOP --> MONGO\n  SEARCH --> ES\n  MATCH --> REDIS\n  Core --> EKS\n  ARGO --> EKS\n  EKS --> OBS",
-   "why_language": "주문·결제·정산처럼 정합성과 안정성이 중요한 대규모 트랜잭션 도메인이라 JVM 생태계(Java/Spring)의 성숙도와 운영 경험을 기반으로 한다. 동시에 신규 서비스와 배차 매칭처럼 동시성·비동기 처리가 많은 영역은 코드 간결성과 null 안정성, 코루틴을 갖춘 Kotlin으로 빠르게 전환하고 있으며, 프론트는 빠른 화면 개발과 SSR을 위해 TypeScript 기반 React/Next.js를 쓴다.",
-   "why_architecture": "전국 단위 주문·배차·결제·정산이 초당 수만 건씩 몰리는 피크(점심·저녁) 트래픽을 도메인별로 독립 확장·배포하기 위해 MSA를 채택했다. 서비스 간 강결합과 분산 트랜잭션 문제를 피하기 위해 Kafka 기반 이벤트 드리븐으로 비동기 통신하고, 주문 상태처럼 변화 이력 자체가 비즈니스인 영역은 이벤트 소싱/CQRS로 모델링해 감사·재처리·읽기 최적화를 동시에 달성한다.",
-   "summary": "JVM(Java·Kotlin)+Spring 기반 MSA를 Kafka 이벤트 드리븐과 이벤트 소싱으로 묶어 피크 트래픽을 견디는 배달 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"배민 App / Web<br/>React + Next.js + Vue\"]\n    RIDER[\"라이더 App<br/>실시간 GPS\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    BFF[\"BFF<br/>Kotlin WebFlux\"]\n  end\n  subgraph Core\n    ORDER[\"주문 서비스<br/>Spring Boot + JPA\"]\n    STORE[\"가게/메뉴 서비스<br/>Event Sourcing\"]\n    MATCH[\"배차/매칭<br/>Kotlin WebFlux\"]\n    SEARCH[\"검색/추천<br/>Spring Boot\"]\n    SETTLE[\"정산/포인트<br/>Saga + Outbox\"]\n  end\n  subgraph Async\n    KAFKA[\"Apache Kafka<br/>이벤트 버스\"]\n    SPARK[\"Spark<br/>배치/스트리밍\"]\n  end\n  subgraph Data\n    MYSQL[\"MySQL / Aurora<br/>주문·정산\"]\n    REDIS[\"Redis<br/>캐시·세션\"]\n    ES[\"Elasticsearch<br/>가게/메뉴 검색\"]\n    DYNAMO[\"DynamoDB<br/>위치·이력\"]\n    MONGO[\"MongoDB<br/>비정형 로그\"]\n  end\n  subgraph Platform\n    EKS[\"AWS EKS<br/>Kubernetes\"]\n    GITOPS[\"ArgoCD + Spinnaker<br/>GitOps/Canary\"]\n    OBS[\"Pinpoint + Prometheus<br/>Grafana\"]\n  end\n  APP --> GW\n  RIDER --> GW\n  GW --> BFF\n  BFF --> ORDER\n  BFF --> SEARCH\n  ORDER -->|이벤트 발행| KAFKA\n  STORE -->|이벤트 발행| KAFKA\n  KAFKA --> MATCH\n  KAFKA --> SETTLE\n  KAFKA --> SPARK\n  MATCH --> DYNAMO\n  ORDER --> MYSQL\n  SETTLE --> MYSQL\n  STORE --> ES\n  SEARCH --> ES\n  SEARCH --> REDIS\n  STORE --> REDIS\n  SPARK --> MONGO\n  EKS -.운영.-> ORDER\n  GITOPS -.배포.-> EKS\n  OBS -.관측.-> Core",
+   "why_language": "배민은 초창기 PHP/Ruby on Rails 모놀리식이었으나 주문 폭증과 장애를 겪으며 JVM 생태계의 안정성·성숙도·풍부한 라이브러리를 보고 Java/Spring 기반 MSA로 전면 전환했다. 이후 신규 서비스와 비동기·고동시성 영역(배차, BFF)에는 Null 안전성과 코루틴·간결한 도메인 표현이 강점인 Kotlin을 적극 도입했고, 프런트는 React/Next.js/Vue를 도메인별로 혼용한다.",
+   "why_architecture": "수백 개 팀이 가게·주문·결제·배차·정산 등 독립 도메인을 빠르게 배포해야 하므로 MSA로 분리하고, 서비스 간 강결합 대신 Kafka 이벤트로 느슨하게 연결한 Event-driven 구조를 택했다. 가게/메뉴처럼 상태 변경 이력이 중요한 도메인은 Event Sourcing/CQRS로, 결제·정산·포인트처럼 여러 서비스에 걸친 트랜잭션은 2PC 대신 Saga + Outbox로 최종 일관성을 보장한다.",
+   "summary": "PHP/Ruby 모놀리식을 JVM 기반 이벤트 드리븐 MSA로 재건한, Kafka가 중추인 대규모 배달 플랫폼",
    "deep_dive": [
     {
      "topic": "주문 요청 end-to-end 흐름",
@@ -14124,6 +14152,18 @@
     {
      "topic": "배포 파이프라인: GitOps(ArgoCD)와 Spinnaker 카나리",
      "body": "### EKS 위에서 안전하게 배포하기\n핵심 도메인이 AWS **EKS(Kubernetes)** 위에 떠 있고, 배포는 **GitOps** 모델을 따른다.\n\n- 애플리케이션의 **원하는 상태(desired state)**를 Git 레포의 매니페스트/`Helm`/`Kustomize`로 선언한다.\n- **ArgoCD**가 클러스터 실제 상태와 Git 상태를 지속 비교(diff)하고 자동으로 동기화한다. 즉 'Git에 머지 = 배포'이며, 누가 무엇을 바꿨는지가 전부 Git 히스토리로 남아 **감사·롤백이 git revert** 수준으로 단순해진다.\n\n### 카나리 / 점진적 롤아웃\n주문·결제처럼 실패가 곧 매출 손실인 서비스는 한 번에 100% 교체하지 않는다.\n\n| 단계 | 트래픽 | 판단 |\n|------|--------|------|\n| Canary | 신버전에 5~10% | 에러율·지연·비즈니스 지표 자동 평가 |\n| 확대 | 25% → 50% | 지표 정상이면 단계 상승 |\n| 완료 | 100% | 이상 시 자동 롤백 |\n\n**Spinnaker**(또는 Argo Rollouts)의 자동 카나리 분석이 Prometheus 지표를 보고 신/구 버전을 비교해 '나쁘면 자동 abort'한다. 이 덕분에 하루에도 여러 번 배포하면서 피크 시간대 장애 위험을 통제한다.\n\n### 트레이드오프\nGitOps는 일관성·추적성이 강력하지만, 긴급 핫픽스조차 'Git 머지 → 동기화'를 거쳐야 해 사람이 직접 `kubectl`로 손대는 우회를 막는 규율이 필요하다. 배민은 이 규율을 지키는 대신 *모든 변경이 재현 가능*하다는 운영 안정성을 택했다."
+    },
+    {
+     "topic": "모놀리식에서 MSA로: '프로젝트 먼데이'와 점진적 분해 히스토리",
+     "body": "### 출발점: 장애로 무너지던 모놀리식\n초기 배민은 PHP 기반 웹과 Ruby on Rails 기반 일부 서비스가 단일 DB를 공유하는 모놀리식이었다. 주문이 폭증하면서 점심·저녁 피크에 단일 RDB 커넥션이 고갈되고, 한 기능의 장애가 전체 서비스로 번지는 일이 반복됐다. 특히 **주문 테이블 하나에 모든 도메인이 의존**하는 구조가 한계의 핵심이었다.\n\n### 전환 전략: '대신증권식 한방 교체'가 아닌 점진적 스트랭글러(Strangler)\n배민은 빅뱅 재작성 대신 기존 모놀리식 앞에 새 서비스를 세우고 트래픽을 조금씩 옮기는 **Strangler Fig 패턴**을 사용했다.\n\n- **레거시 보호막**: 신규 JVM 서비스가 아직 못 받는 요청은 기존 모놀리식으로 프록시.\n- **데이터 동기화 구간**: 전환기에는 레거시 DB와 신규 DB를 **CDC/이중쓰기**로 동기화하여, 롤백 가능한 상태를 유지.\n- **도메인 단위 분리**: 가게, 메뉴, 주문, 결제, 정산, 광고를 각각 독립 서비스+독립 DB로 쪼갬. 서비스 간 직접 DB 조회를 금지하고 **API 또는 이벤트로만 통신**하도록 강제.\n\n### 핵심 트레이드오프\n| 결정 | 얻은 것 | 치른 비용 |\n|---|---|---|\n| 독립 DB per service | 장애 격리, 독립 스케일 | 조인 불가 → 데이터 중복·동기화 부담 |\n| 동기 호출 최소화 | 결합도 감소 | 최종 일관성으로 인한 복잡한 보정 로직 |\n| JVM 표준화 | 채용·운영 표준화 | 일부 팀의 언어 자율성 제약 |\n\n### 교훈\n'트래픽을 견디는 것'보다 **'장애의 폭발 반경(blast radius)을 줄이는 것'**이 MSA 전환의 진짜 목적이었다. 그래서 이벤트 기반 비동기 연결과 서킷브레이커가 분리 자체만큼 중요하게 다뤄졌다."
+    },
+    {
+     "topic": "검색·랭킹·추천: 가게 노출을 결정하는 Elasticsearch 파이프라인",
+     "body": "### 무엇을 푸는 문제인가\n사용자가 위치를 기준으로 '지금 주문 가능한' 가게를 빠르게, 그리고 **개인화된 순서**로 보여줘야 한다. 이는 단순 키워드 검색이 아니라 **위치 필터 + 영업상태 + 광고 + 개인화 랭킹**이 결합된 문제다.\n\n### 색인 파이프라인\n1. 가게/메뉴 서비스가 상태를 바꾸면 **Kafka로 변경 이벤트 발행**.\n2. 색인 컨슈머가 이벤트를 받아 가게 문서를 조립하고 **Elasticsearch에 upsert**. 가게 도메인이 이미 Event Sourcing이므로 '현재 상태'를 재생하기 쉽다.\n3. 영업시간·휴무·품절처럼 자주 바뀌는 필드는 ES 문서에 비정규화로 박아 넣어 **조회 시 추가 조인을 없앤다**.\n\n### 질의(Query) 단계\n- **1차 필터링**: `geo_distance`로 배달 가능 반경 내 가게만 추림. 영업중·최소주문금액 등 hard filter 적용.\n- **2차 랭킹**: function_score / rescore로 거리, 평점, 주문수, 광고 입찰가, 개인화 점수를 가중 합산. 광고와 오가닉 결과를 섞되 노출 규칙을 지키는 것이 핵심 난제.\n- **개인화 점수**는 별도 ML 배치(Spark)에서 사용자×가게 선호 피처를 미리 계산해 Redis/ES에 적재 → 질의 시 저비용으로 합산.\n\n### 캐싱과 일관성\n- 같은 위치·필터 조합의 검색 결과 상단은 변동성이 낮아 **Redis에 짧은 TTL로 캐시**. 단 영업상태처럼 민감한 필드는 캐시 무효화 이벤트로 즉시 갱신.\n- 트레이드오프: 완전 실시간성 대신 **수 초 단위 지연을 허용**하여 ES와 DB 부하를 크게 낮춤. 품절·마감만 빠른 경로로 별도 반영."
+    },
+    {
+     "topic": "라이더 실시간 위치와 배차(Dispatch): 고빈도 스트리밍 처리",
+     "body": "### 도메인 난이도\n수만 명의 라이더가 **수 초마다 GPS 좌표를 전송**하고, 시스템은 새 주문이 들어올 때마다 '가장 적합한 라이더'를 실시간으로 찾아 배차해야 한다. 이는 쓰기 폭주(write-heavy) + 지연 민감(latency-sensitive)이라는 까다로운 조합이다.\n\n### 왜 RDB가 아니라 별도 저장소인가\n- 위치 갱신은 **초당 수만 건의 쓰기**라 MySQL 단일 테이블로는 버티지 못한다. 그래서 최신 위치는 **Redis(또는 DynamoDB)**에 키-값으로 저장하고, 이력은 별도 스토리지로 흘려보낸다.\n- 좌표 갱신은 '마지막 값만 의미 있는' 데이터라 **덮어쓰기(last-write-wins)**가 자연스럽고, 강한 일관성보다 **저지연 읽기**가 중요하다.\n\n### 배차 흐름\n1. 주문 생성 → Kafka로 '배차 요청' 이벤트.\n2. 배차 서비스(Kotlin + WebFlux)가 주문 위치 주변 후보 라이더를 **공간 인덱스(geo)**로 조회.\n3. 거리·예상 소요시간·라이더 현재 적재량·동선을 점수화해 후보를 정렬, 최적 라이더에 제안.\n4. 라이더 수락/거절도 이벤트로 흘러 **상태 머신**을 진행. 거절·타임아웃 시 다음 후보로 재시도(보정).\n\n### 비동기·논블로킹을 택한 이유\n배차는 외부 호출(지도/ETA, 알림 푸시)이 많아 스레드를 오래 점유하면 동시성이 떨어진다. **WebFlux 코루틴/리액티브**로 I/O 대기 동안 스레드를 놓아주어 적은 인스턴스로 높은 동시성을 처리한다.\n\n### 트레이드오프\n- 정확한 '최적해'보다 **수백 ms 안에 충분히 좋은 해**를 내는 것을 우선. 완벽한 최적화는 피크에 비현실적.\n- 위치 데이터는 최종 일관성·휘발성을 허용하는 대신, 정산에 쓰이는 '실제 이동 거리/완료 이벤트'는 별도로 신뢰성 있게 영속화."
     }
    ],
    "github": {
@@ -14132,19 +14172,26 @@
      {
       "name": "woowacourse/service-apply",
       "url": "https://github.com/woowacourse/service-apply",
-      "desc": "우아한테크코스 지원·모집 플랫폼. Kotlin + Spring Boot 실서비스 오픈소스",
+      "desc": "우아한테크코스 지원 시스템 — Kotlin + Spring Boot 실서비스 오픈소스",
       "lang": "Kotlin",
       "stars": 580
+     },
+     {
+      "name": "woowacourse/javable",
+      "url": "https://github.com/woowacourse/javable",
+      "desc": "우아한테크코스 크루들이 운영하는 기술 블로그(GitHub Pages)",
+      "lang": "HTML",
+      "stars": 0
      }
     ]
    },
    "sources": [
     "https://techblog.woowahan.com/",
     "https://www.youtube.com/@woowatech",
-    "https://github.com/woowacourse"
+    "https://techblog.woowahan.com/2637/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "zigbang",

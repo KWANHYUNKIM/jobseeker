@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-20T00:02:58",
- "total": 788,
+ "generated_at": "2026-06-20T01:48:14",
+ "total": 789,
  "sources": [
   {
    "company": "Etsy",
@@ -85,7 +85,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 20
+   "count": 21
   },
   {
    "company": "Netflix",
@@ -346,10 +346,10 @@
   "File System": "시스템/OS",
   "Android": "모바일",
   "LLM": "LLM/생성형",
+  "Trino": "데이터",
   "ClickHouse": "데이터베이스",
   "Prompt Engineering": "LLM/생성형",
   "eBPF": "시스템/OS",
-  "Trino": "데이터",
   "Attention Mechanism": "LLM/생성형",
   "Deep Learning": "AI/ML",
   "AWS Lambda": "인프라/클라우드",
@@ -514,6 +514,35 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How we built an internal data analytics agent",
+   "url": "https://github.blog/ai-and-ml/github-copilot/how-we-built-an-internal-data-analytics-agent",
+   "published": "2026-06-19",
+   "published_ts": 1781884800.0,
+   "summary": "Qubot, our internal Copilot-powered analytics agent, allows any GitHub employee to ask questions about our data in plain language. Here's what we learned as we built it.\n\nThe post How we built an internal data analytics agent appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "AI agents",
+    "GitHub Copilot CLI"
+   ],
+   "tech_stack": [
+    "SQL",
+    "Model Context Protocol",
+    "ETL",
+    "Trino"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터"
+   ],
+   "lang": "en",
+   "content_id": "19742b2bd1c2871d"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",
