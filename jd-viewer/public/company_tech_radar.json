@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T09:47:39",
+ "generated_at": "2026-06-19T11:36:00",
  "total": 100,
  "countries": [
   {
@@ -1689,12 +1689,8 @@
      "count": 6
     },
     {
-     "name": "JavaScript",
-     "count": 4
-    },
-    {
      "name": "Rust",
-     "count": 4
+     "count": 5
     },
     {
      "name": "C++",
@@ -1702,6 +1698,10 @@
     },
     {
      "name": "Java",
+     "count": 3
+    },
+    {
+     "name": "JavaScript",
      "count": 3
     },
     {
@@ -1716,15 +1716,11 @@
    "stack": {
     "backend": [
      {
-      "name": "Go services",
-      "count": 3
+      "name": "Rust",
+      "count": 5
      },
      {
       "name": "GraphQL",
-      "count": 3
-     },
-     {
-      "name": "gRPC",
       "count": 3
      },
      {
@@ -1732,8 +1728,12 @@
       "count": 3
      },
      {
-      "name": "Rust",
-      "count": 3
+      "name": "Go services",
+      "count": 2
+     },
+     {
+      "name": "gRPC",
+      "count": 2
      },
      {
       "name": "Node.js",
@@ -1820,10 +1820,6 @@
       "count": 2
      },
      {
-      "name": "MySQL + Vitess",
-      "count": 2
-     },
-     {
       "name": "Redis",
       "count": 2
      },
@@ -1837,6 +1833,10 @@
      },
      {
       "name": "Apache Hudi",
+      "count": 1
+     },
+     {
+      "name": "AWS S3",
       "count": 1
      }
     ],
@@ -1870,7 +1870,7 @@
       "count": 1
      },
      {
-      "name": "Bare-metal git hosts",
+      "name": "Bare-metal Git 호스트",
       "count": 1
      },
      {
@@ -1901,11 +1901,11 @@
      "count": 1
     },
     {
-     "name": "Cellular architecture",
+     "name": "Cells — SaaS를 수평 샤딩하는 셀 기반 아키텍처로 전환 중",
      "count": 1
     },
     {
-     "name": "DBProxy 쿼리 라우팅 계층을 통한 PostgreSQL 수평 샤딩",
+     "name": "Cellular architecture",
      "count": 1
     }
    ]
@@ -11429,58 +11429,61 @@
     "Ruby",
     "Go",
     "TypeScript",
-    "JavaScript",
     "C",
+    "Rust",
     "C++"
    ],
    "stack": {
     "backend": [
-     "Ruby on Rails",
-     "Go services",
-     "gRPC",
+     "Ruby on Rails (github/github 모놀리스)",
+     "Go 서비스 (Gitaly, GLB, authzd 등)",
+     "Twirp/gRPC RPC",
      "GraphQL (graphql-ruby)",
-     "Resque/job processing",
-     "Twirp"
+     "Resque + Aqueduct (백그라운드 잡)",
+     "Rust (Blackbird code search)",
+     "Trilogy (MySQL 클라이언트)"
     ],
     "frontend": [
      "TypeScript",
-     "React",
+     "React (PR/Issues 등 일부 SPA 영역)",
      "Catalyst (Web Components)",
      "Primer Design System",
-     "Hotwire-style server-rendered ERB",
-     "Viewscreen"
+     "서버 렌더 ERB + Hotwire 스타일 점진적 향상",
+     "Viewscreen (문서/diff 렌더)"
     ],
     "data": [
-     "MySQL + Vitess",
-     "Spokes (3-replica Git storage)",
+     "MySQL 8 + Vitess (수평 샤딩)",
+     "Spokes (3-replica Git 저장)",
      "Gitaly (Git RPC)",
+     "Elasticsearch (이슈/코드 메타 검색)",
+     "Blackbird (Rust 코드 검색 인덱스)",
      "Kafka",
-     "Elasticsearch",
      "Memcached",
      "Redis",
-     "Azure Blob Storage (LFS/Actions)"
+     "Azure Blob Storage (LFS/Actions 아티팩트)"
     ],
     "infra": [
      "Azure",
      "Kubernetes",
-     "Moda (internal K8s platform)",
-     "Bare-metal git hosts",
-     "Hubot/ChatOps",
-     "GLB (GitHub Load Balancer)",
+     "Moda (사내 K8s 플랫폼)",
+     "Bare-metal Git 호스트",
+     "GLB (GitHub Load Balancer: Director + Proxy)",
      "Consul",
-     "Spokesman"
+     "freno (write throttling)",
+     "Orchestrator (MySQL 페일오버)",
+     "Hubot/ChatOps 배포"
     ]
    },
    "architecture": [
-    "Modular monolith (github/github Rails app)",
-    "Service extraction to gRPC/Go",
-    "Sharded + replicated Git storage (Spokes/Gitaly)",
-    "Functional MySQL partitioning + Vitess horizontal sharding"
+    "Modular monolith (github/github Rails) + 주변부 Go/Rust 서비스 추출",
+    "Sharded + 3-replica Git 저장 (Spokes) 위에 Gitaly RPC 라우팅",
+    "기능별 MySQL 분할에서 Vitess 기반 수평 샤딩으로 진화",
+    "Scientist 기반 무중단 점진 마이그레이션 문화"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    USR[\"Browser / Git CLI / API client\"]\n    GLB[\"GLB Load Balancer<br/>GitHub Load Balancer + HAProxy\"]\n  end\n  subgraph App[\"Application Layer\"]\n    RAILS[\"github/github<br/>Ruby on Rails Monolith\"]\n    GQL[\"GraphQL API<br/>graphql-ruby\"]\n    REST[\"REST API v3\"]\n    JOBS[\"Background Jobs<br/>Resque + Kafka\"]\n  end\n  subgraph Svc[\"Extracted Services\"]\n    AUTH[\"Authz / Token<br/>Go + gRPC\"]\n    NOTIF[\"Notifications<br/>Go services\"]\n    ACTIONS[\"Actions Runner Orchestration<br/>Go + Azure\"]\n  end\n  subgraph Git[\"Git Storage\"]\n    GITALY[\"Gitaly<br/>Git RPC layer\"]\n    SPOKES[\"Spokes<br/>3-replica repo storage\"]\n  end\n  subgraph Data[\"Data / Search\"]\n    VITESS[\"MySQL + Vitess<br/>sharded RDBMS\"]\n    ES[\"Elasticsearch<br/>code + issue search\"]\n    REDIS[\"Redis / Memcached<br/>cache + queues\"]\n    BLOB[\"Azure Blob<br/>LFS + Actions artifacts\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>events + audit\"]\n  end\n  subgraph Infra[\"Platform\"]\n    MODA[\"Moda<br/>Kubernetes on Azure\"]\n  end\n  USR --> GLB\n  GLB --> RAILS\n  RAILS --> GQL\n  RAILS --> REST\n  RAILS -->|gRPC| GITALY\n  RAILS -->|gRPC| AUTH\n  RAILS --> NOTIF\n  RAILS --> JOBS\n  GITALY --> SPOKES\n  RAILS --> VITESS\n  RAILS --> ES\n  RAILS --> REDIS\n  JOBS --> KAFKA\n  ACTIONS --> BLOB\n  RAILS --> ACTIONS\n  MODA -.runs.-> RAILS\n  MODA -.runs.-> AUTH\n  MODA -.runs.-> NOTIF",
-   "why_language": "GitHub은 2008년 Rails 모놀리스(github/github)로 출발해 제품 개발 속도와 거대한 Ruby 생태계의 생산성을 핵심 자산으로 유지하고 있어 여전히 Ruby on Rails가 코드베이스의 중심이다. Git 저장·RPC(Gitaly), 인증, Actions 오케스트레이션처럼 동시성·지연·메모리가 중요한 영역은 Go로 추출했고, Git 자체와 성능 민감 경로에는 C/C++를 쓴다. 프론트엔드는 점진적 마이그레이션과 접근성을 위해 TypeScript + Catalyst(Web Components) + React를 혼용한다.",
-   "why_architecture": "초대형 단일 코드베이스를 한 번에 마이크로서비스로 쪼개는 대신, 책임 경계를 코드 수준에서 정리하는 '모듈러 모놀리스'로 결합도를 낮추면서 배포·온보딩의 단순함을 지켰고, 진짜 분리가 필요한 부분만 gRPC 서비스로 떼어내는 점진적 전략을 택했다. 저장 계층은 단일 장애점과 핫스팟을 피하기 위해 Git 리포지토리를 3중 복제하는 Spokes와 read를 복제본으로 분산하는 Gitaly, 그리고 관계형 데이터는 기능별 분할 후 Vitess로 수평 샤딩해 read/write 규모를 확장한다.",
-   "summary": "Rails 모듈러 모놀리스를 중심에 두고 Git 저장·인증 등 핵심만 Go/gRPC로 떼어낸, Vitess 샤딩과 Spokes 3중 복제로 확장한 협업 플랫폼.",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    U[\"Git CLI / Browser / API<br/>HTTPS + SSH\"]\n    GLBD[\"GLB Director<br/>DPDK + Rendezvous Hash\"]\n    GLBP[\"GLB Proxy<br/>HAProxy + GLB-consul-template\"]\n  end\n  subgraph App[\"Application Tier\"]\n    RAILS[\"github/github<br/>Ruby on Rails Monolith\"]\n    GQL[\"GraphQL API<br/>graphql-ruby\"]\n    JOBS[\"Background Jobs<br/>Resque + Aqueduct\"]\n  end\n  subgraph Services[\"Extracted Services\"]\n    GITALY[\"Gitaly<br/>Go Git RPC\"]\n    AUTHZ[\"authzd / Twirp<br/>Go gRPC services\"]\n    BB[\"Blackbird<br/>Rust Code Search\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VITESS[\"MySQL 8 + Vitess<br/>Sharded\"]\n    SPOKES[\"Spokes<br/>3-replica Git Storage\"]\n    ES[\"Elasticsearch<br/>Issue/Meta Search\"]\n    CACHE[\"Memcached + Redis\"]\n    BLOB[\"Azure Blob<br/>LFS / Actions Artifacts\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>Events / Webhooks\"]\n    HOOK[\"Hookshot<br/>Webhook Delivery\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    MODA[\"Moda<br/>Kubernetes on Azure\"]\n    CONSUL[\"Consul<br/>Service Discovery\"]\n    FRENO[\"freno<br/>Write Throttle\"]\n  end\n  U --> GLBD --> GLBP --> RAILS\n  RAILS --> GQL\n  RAILS -->|gRPC| GITALY\n  RAILS -->|Twirp| AUTHZ\n  RAILS --> BB\n  GITALY --> SPOKES\n  RAILS --> VITESS\n  RAILS --> CACHE\n  RAILS --> ES\n  RAILS --> JOBS\n  JOBS --> KAFKA --> HOOK\n  JOBS --> BLOB\n  VITESS --- FRENO\n  RAILS --- CONSUL\n  GITALY --- MODA",
+   "why_language": "수억 개 리포지토리를 다루는 코어 제품 로직은 2008년부터 축적된 Ruby on Rails 모놀리스에 있어 개발 속도와 메타프로그래밍 유연성을 살리고, Git 데이터 평면처럼 동시성·지연이 중요한 경로는 Go(Gitaly, GLB)로 분리한다. 코드 검색처럼 수백 TB를 ngram 인덱싱해야 하는 CPU 집약 영역은 메모리 안전과 성능을 동시에 잡는 Rust(Blackbird)로 새로 작성했고, 프런트엔드는 점진적 향상이 가능한 TypeScript + Web Components를 쓴다.",
+   "why_architecture": "한 덩어리 Rails 모놀리스가 팀 협업과 트랜잭션 일관성에 유리하기에 무리하게 마이크로서비스로 쪼개지 않고, 성능·언어·격리 요구가 분명한 부분만 Gitaly·Blackbird·authzd처럼 서비스로 추출하는 '모듈러 모놀리스' 전략을 택했다. Git 저장은 단일 DB로 불가능하므로 Spokes 3-replica 샤딩 위에 Gitaly가 RPC로 라우팅하고, 관계형 데이터는 기능별 분할의 한계를 Vitess 수평 샤딩으로 넘기되 Scientist로 무중단 검증하며 점진 전환한다.",
+   "summary": "거대한 Rails 모놀리스를 Go·Rust 데이터 평면과 Vitess·Spokes 샤딩으로 떠받치는, 신중한 모듈러 모놀리스",
    "deep_dive": [
     {
      "topic": "Spokes — 3-replica Git 저장과 복구",
@@ -11517,55 +11520,64 @@
     {
      "topic": "GitHub Actions의 실행 아키텍처 — 큐, 러너 오케스트레이션, 격리",
      "body": "### GitHub Actions는 어떻게 수백만 개의 CI 잡을 돌리는가\n\nGitHub Actions는 GitHub 본체(Rails 모놀리스)와는 상당히 분리된, **Azure 위에서 도는 대규모 잡 오케스트레이션 시스템**이다.\n\n#### 잡 라이프사이클\n1. **트리거** — push/PR/스케줄/`workflow_dispatch` 이벤트가 발생하면, 본체의 post-receive 비동기 팬아웃에서 워크플로 실행이 만들어진다. `.github/workflows/*.yml`을 파싱해 잡 DAG(의존성 그래프)를 구성한다.\n2. **큐잉** — 각 잡은 `runs-on` 라벨(예: `ubuntu-latest`, `windows-latest`, self-hosted 라벨)에 따라 적절한 큐에 들어간다. 이 디스패치 계층은 Go로 작성된 서비스가 담당한다.\n3. **러너 프로비저닝** — GitHub-hosted 러너는 **잡마다 새로 띄우는 일회용 VM**이다. Azure VM 풀에서 깨끗한 이미지를 부팅해 한 잡을 실행하고 폐기한다. 이 '1 job = 1 clean VM' 모델은 잡 간 오염과 비밀 유출을 막는 강력한 격리 장치다.\n4. **Runner ↔ 서비스 통신** — VM 안에서 도는 **Actions Runner**(C#/.NET, 오픈소스 `actions/runner`)가 백엔드에 long-poll로 붙어 잡을 받아오고, 로그·상태·아티팩트를 스트리밍으로 되돌려보낸다.\n5. **로그 스트리밍** — 실시간 로그는 청크 단위로 업로드되어 UI에 거의 실시간 표시되고, 종료 후엔 **Azure Blob Storage**에 보관된다. 캐시(`actions/cache`)와 아티팩트도 Blob에 저장된다.\n\n#### 확장성·트레이드오프\n- 일회용 VM 모델은 보안·재현성 면에서 이상적이지만 **콜드 스타트 비용**이 크다. 그래서 미리 데워둔 VM 풀(warm pool)을 유지해 대기 지연을 줄인다.\n- self-hosted runner를 쓰면 사용자 인프라에서 돌릴 수 있지만 격리 책임이 사용자에게 넘어간다.\n- 거대한 동시 잡 폭주(예: 인기 OSS의 대규모 PR 머지)에 대응하려면 큐 백프레셔와 조직별 동시성 제한이 핵심이다."
+    },
+    {
+     "topic": "Blackbird — Rust로 다시 짠 코드 검색 엔진과 ngram 인덱싱",
+     "body": "### 왜 Elasticsearch를 버렸나\n\nGitHub의 기존 코드 검색은 Elasticsearch 기반이었지만, 전체 공개 코드의 일부만 색인했고 `regex` 검색·심볼 검색·정확한 substring 매칭에 약했다. 2억 개가 넘는 리포지토리, 수십억 개 문서, 페타바이트급 코드를 실시간으로 검색하려면 범용 텍스트 검색 엔진으로는 비용·지연 모두 감당이 안 됐다. 그래서 GitHub은 `Blackbird`라는 전용 검색 엔진을 **Rust**로 처음부터 작성했다.\n\n### 핵심 자료구조 — sparse ngram 인덱스\n\nBlackbird의 핵심은 코드를 **ngram(연속된 n글자)** 단위로 쪼개 역색인(inverted index)을 만드는 것이다. 단순 trigram(3-gram)은 충돌이 많아, GitHub은 *sparse grams*라는 기법을 쓴다. 인접 문자에 가중치를 매겨 '경계가 되는' 위치에서만 더 긴 gram을 선택적으로 색인해, 인덱스 크기를 줄이면서도 substring·regex 쿼리를 빠르게 만족한다.\n\n- 사용자가 `def main(`를 검색하면, 쿼리를 ngram 집합으로 분해\n- 각 ngram의 posting list를 교집합 → 후보 문서 축소\n- 후보에 대해서만 실제 정규식/substring 검증 → false positive 제거\n\n### 규모와 수치\n\n발표 기준 약 **45 TB**, 1,150억 줄 이상의 코드를 색인했고, 인덱스는 중복 제거(content-addressable, Git blob의 내용 해시 기반) 덕에 동일 파일이 여러 fork에 있어도 한 번만 저장한다. 이 dedup이 fork가 많은 GitHub 특성상 인덱스 크기를 극적으로 줄인다. Blackbird는 인덱스를 **shard**로 나눠 여러 노드에 분산하고, 쿼리를 fan-out 후 결과를 머지한다.\n\n### 증분 색인 파이프라인\n\n새 push가 들어오면 Git 이벤트가 `Kafka`로 흘러가고, ingest 크롤러가 변경된 blob만 가져와 다시 색인한다. 전체 재색인 없이 델타만 반영하므로, push 후 수 초~수십 초 내에 검색에 반영된다. 이것이 \"방금 푸시한 코드가 바로 검색된다\"는 사용자 경험을 만든다.\n\n### 트레이드오프\n\nRust를 택한 이유는 GC 일시정지 없이 예측 가능한 지연과 메모리 안전을 동시에 얻기 위해서다. ngram 인덱스는 Elasticsearch보다 substring/regex에 압도적으로 강하지만, 자연어식 랭킹(BM25 등)은 약하므로 코드 검색에 특화된 휴리스틱 랭킹(심볼 정의 우선, 경로 가중치 등)을 별도로 얹었다."
+    },
+    {
+     "topic": "GLB — GitHub Load Balancer의 2계층 설계 (Director + Proxy)",
+     "body": "### 문제\n\nGitHub은 bare-metal 데이터센터로 들어오는 거대한 HTTP/HTTPS·Git over SSH 트래픽을 받아야 하는데, 클라우드의 managed LB를 쓸 수 없는 환경(자체 IP, 자체 하드웨어)에서 ECMP 라우터 뒤에 수평 확장 가능하고, 서버를 빼고 넣어도 기존 연결이 끊기지 않는 LB가 필요했다.\n\n### 2계층 구조\n\nGLB는 두 계층으로 나뉜다.\n\n1. **GLB Director (L4)** — 라우터가 ECMP로 흩뿌린 패킷을 받는 stateless 계층. `DPDK`로 커널을 우회해 수백만 pps를 처리한다. 어떤 proxy로 보낼지는 **Rendezvous(HRW) 해싱**으로 정한다. 단순 consistent hash 대신 HRW를 쓰는 이유는, proxy 서버가 추가/제거될 때 *재배치되는 흐름을 최소화*하면서도 연결 일관성을 보장하기 위해서다.\n2. **GLB Proxy (L7)** — `HAProxy` 기반. TLS 종료, HTTP 라우팅, 백엔드(Rails 유닛, Git 호스트) 헬스체크를 담당한다.\n\n### Director의 무중단 비밀 — forwarding table의 second-chance\n\nDirector가 패킷을 캡슐화(GUE/Foo-over-UDP)해서 proxy로 넘길 때, forwarding table에 각 버킷마다 **primary와 secondary 두 proxy**를 담는다. proxy를 빼면(drain), Director는 그 흐름의 패킷을 새 primary로 보내는데, 새 primary가 \"이건 내가 모르는 기존 연결\"이라고 판단하면 **secondary(원래 서버)로 다시 포워딩**한다. 덕분에 기존 TCP 연결은 원 서버에서 정상 종료되고, 새 연결만 새 서버로 간다 — 무중단 maintenance가 가능해진다.\n\n### 왜 이렇게까지\n\n`git clone`/`push`는 수십 초~수 분 지속되는 긴 연결이 흔하고, LB 한 대만 빠져도 진행 중인 클론이 끊기면 사용자 경험이 망가진다. GLB의 second-chance 설계는 \"서버 교체 = 연결 끊김\"이라는 통념을 깨기 위한 것이다. Director(C/DPDK)와 Proxy(HAProxy) 모두 일부가 오픈소스(`github/glb-director`)로 공개돼 있다."
+    },
+    {
+     "topic": "freno + Orchestrator — 거대 MySQL 함대의 쓰기 제어와 자동 페일오버",
+     "body": "### 복제 지연이라는 적\n\nGitHub의 MySQL은 primary-replica 토폴로지로, 읽기는 대부분 replica가 받는다. 문제는 마이그레이션·백필·대량 업데이트 같은 *bulk write*가 primary를 때리면 replica가 따라잡지 못해 **복제 지연(replication lag)**이 폭증하고, lag이 큰 replica에서 읽으면 stale 데이터를 보게 된다는 점이다.\n\n### freno — 협조적 write throttling\n\n`freno`는 이 문제를 푸는 *cooperative throttler*다. 동작 원리:\n\n- freno가 모든 replica의 lag을 지속 측정\n- 대량 쓰기를 하는 클라이언트(마이그레이션 스크립트, 백필 잡)는 매 배치 전에 freno에게 `\"지금 써도 돼?\"`라고 HTTP로 물어본다\n- 어떤 replica든 lag이 임계치를 넘으면 freno가 `429`/거부 응답 → 클라이언트는 스스로 잠시 멈춤\n- lag이 회복되면 다시 진행\n\n즉 DB가 강제로 막는 게 아니라 **애플리케이션이 협조적으로 속도를 조절**한다. 덕분에 운영 트래픽의 읽기 일관성을 해치지 않으면서도 백그라운드 작업을 끊임없이 흘려보낼 수 있다. `gh-ost`(무중단 스키마 변경 도구)도 내부적으로 같은 throttling 원리를 쓴다.\n\n### Orchestrator — 토폴로지 인식 자동 페일오버\n\n`Orchestrator`는 MySQL 복제 토폴로지를 그래프로 파악하고, primary가 죽으면 가장 적합한 replica를 새 primary로 승격하며 나머지 replica의 복제 소스를 재배선한다. 단순 헬스체크가 아니라 *토폴로지 전체*를 이해하기 때문에, 연쇄 복제(intermediate master)가 죽어도 그 아래 트리를 살아있는 노드로 재부착할 수 있다. 페일오버 시 Consul/앱 설정을 갱신해 트래픽을 새 primary로 돌린다.\n\n### 전체 그림\n\n`Vitess`가 수평 샤딩으로 데이터를 나누고, 각 샤드 내부에서는 freno가 쓰기 속도를, Orchestrator가 가용성을 책임진다. 이 셋이 합쳐져 \"수천 개 테이블·수십 PB 데이터를 가진 MySQL 함대\"를 사람 개입 없이 굴러가게 한다. freno·gh-ost·orchestrator 모두 GitHub이 오픈소스로 공개했다."
+    },
+    {
+     "topic": "Webhook · 이벤트 전달 — 한 push가 수만 개 외부 통합으로 퍼지는 경로",
+     "body": "### 왜 어려운가\n\nGitHub에서 한 번의 `push`, PR 생성, issue 코멘트는 그 리포지토리에 걸린 모든 webhook, GitHub App, GitHub Actions 워크플로로 fan-out 된다. 인기 OSS 리포지토리 하나에 수백 개의 webhook이 걸려 있을 수 있고, 외부 endpoint는 느리거나, 죽었거나, 타임아웃 날 수 있다. 이 *신뢰할 수 없는 외부 세계로의 대량 전달*을 코어 모놀리스와 격리하는 것이 핵심이다.\n\n### 흐름\n\n1. Rails 모놀리스에서 도메인 이벤트(예: `PushEvent`)가 발생하면 동기 요청 경로에서는 **이벤트만 빠르게 큐에 적재**하고 응답을 반환한다. 사용자 요청은 webhook이 실제로 배달될 때까지 기다리지 않는다.\n2. 이벤트는 `Kafka`/내부 잡 큐(`Resque` + `Aqueduct`)로 흘러가고, webhook 전달 전용 시스템(내부적으로 `Hookshot` 계열)이 구독한다.\n3. 전달기는 리포지토리에 등록된 모든 webhook 구성을 조회해 각각에 대한 HTTP 배달 잡을 만든다.\n4. 각 배달은 **서명(HMAC-SHA256, `X-Hub-Signature-256`)**을 붙여 외부 endpoint로 POST 한다.\n\n### 격리와 복원력\n\n- **재시도 + 백오프**: 외부 endpoint가 5xx/타임아웃이면 지수 백오프로 재시도하고, 일정 횟수 실패하면 죽은 것으로 간주해 사용자에게 배달 실패를 노출한다(Recent Deliveries UI에서 요청/응답 전문 확인 가능).\n- **느린 소비자 격리**: 한 느린 endpoint가 전체 큐를 막지 않도록 잡을 분산하고, 문제 있는 대상은 회로 차단(circuit-break)에 가깝게 다룬다.\n- **At-least-once 의미론**: 네트워크 불확실성 때문에 같은 webhook이 중복 배달될 수 있어, 소비자는 `X-GitHub-Delivery` UUID로 멱등 처리하도록 권장된다.\n\n### 왜 비동기인가\n\n이 구조의 본질은 \"신뢰할 수 있는 내부 트랜잭션(MySQL 커밋)\"과 \"신뢰할 수 없는 외부 배달\"을 큐로 단단히 분리하는 것이다. push의 사용자 응답 지연(p99)을 외부 통합의 건강 상태와 완전히 디커플링함으로써, 인터넷 반대편의 느린 webhook 서버가 GitHub의 핵심 git 경험을 절대 느리게 만들지 못하게 한다."
     }
    ],
    "github": {
     "org": "https://github.com/github",
     "repos": [
      {
-      "name": "github/gitignore",
-      "url": "https://github.com/github/gitignore",
-      "desc": "언어·플랫폼별 .gitignore 템플릿 모음",
-      "lang": "Shell",
-      "stars": 174452
-     },
-     {
-      "name": "github/docs",
-      "url": "https://github.com/github/docs",
-      "desc": "GitHub 공식 문서 사이트 소스(Next.js)",
-      "lang": "TypeScript",
-      "stars": 20357
-     },
-     {
-      "name": "primer/css",
-      "url": "https://github.com/primer/css",
-      "desc": "GitHub UI를 떠받치는 Primer 디자인 시스템 CSS",
-      "lang": "SCSS",
-      "stars": 12972
-     },
-     {
       "name": "github/scientist",
       "url": "https://github.com/github/scientist",
-      "desc": "프로덕션 코드 리팩터링을 안전하게 검증하는 Ruby 라이브러리",
+      "desc": "운영 코드를 위험 없이 리팩터링하기 위한 Ruby 실험(병행 검증) 라이브러리",
       "lang": "Ruby",
-      "stars": 7720
+      "stars": 7722
      },
      {
-      "name": "github/catalyst",
-      "url": "https://github.com/github/catalyst",
-      "desc": "GitHub 프론트엔드의 Web Components 라이브러리",
+      "name": "primer/react",
+      "url": "https://github.com/primer/react",
+      "desc": "GitHub UI를 구성하는 Primer 디자인 시스템의 React 컴포넌트",
       "lang": "TypeScript",
-      "stars": 1429
+      "stars": 3860
+     },
+     {
+      "name": "github/glb-director",
+      "url": "https://github.com/github/glb-director",
+      "desc": "DPDK와 Rendezvous 해싱으로 만든 GitHub의 L4 로드밸런서 디렉터",
+      "lang": "C",
+      "stars": 2438
+     },
+     {
+      "name": "github/freno",
+      "url": "https://github.com/github/freno",
+      "desc": "복제 지연을 보고 대량 쓰기를 제어하는 MySQL write throttling 서비스",
+      "lang": "Go",
+      "stars": 659
      }
     ]
    },
    "sources": [
-    "https://github.blog/engineering/",
-    "https://github.blog/2021-09-27-partitioning-githubs-relational-databases-scale/",
-    "https://github.com/github/scientist"
+    "https://github.blog/engineering/the-technology-behind-githubs-new-code-search/",
+    "https://github.blog/engineering/githubs-load-balancer-glb-director/",
+    "https://github.com/github/freno"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "gitlab",
@@ -11581,48 +11593,58 @@
    ],
    "stack": {
     "backend": [
-     "Ruby on Rails",
-     "Go (Gitaly)",
+     "Ruby on Rails (modular monolith)",
+     "Go (Gitaly, Workhorse, Container Registry, Runner)",
      "Sidekiq",
      "gRPC",
-     "GraphQL",
-     "Grape REST API"
+     "GraphQL (graphql-ruby)",
+     "Grape REST API",
+     "Praefect",
+     "Rust (일부 성능 경로/도구)"
     ],
     "frontend": [
      "Vue.js",
      "TypeScript",
      "GraphQL Apollo Client",
-     "Vuex/Pinia",
-     "SCSS"
+     "Vuex / Pinia",
+     "Haml (서버 렌더링)",
+     "SCSS",
+     "GitLab UI + Storybook",
+     "Webpack"
     ],
     "data": [
-     "PostgreSQL",
+     "PostgreSQL (main/ci 분리 decomposition)",
+     "Patroni (HA)",
      "PgBouncer",
-     "Redis",
+     "Database Load Balancing (read replica)",
+     "Redis (cache/queues/shared-state 다중 인스턴스)",
      "Elasticsearch",
-     "ClickHouse",
+     "Zoekt (코드 검색)",
+     "ClickHouse (관측성·분석)",
      "Object Storage (GCS/S3)"
     ],
     "infra": [
      "Google Cloud Platform",
      "Kubernetes",
      "Cloud Native GitLab Helm Charts",
-     "Omnibus",
+     "Omnibus (단일 패키지 배포)",
      "Terraform",
-     "Prometheus",
-     "Grafana"
+     "Chef",
+     "Prometheus + Thanos",
+     "Grafana",
+     "GitLab CI/CD (자체 dogfooding)"
     ]
    },
    "architecture": [
-    "Modular monolith (Rails) + extracted Go services",
-    "Gitaly RPC storage layer with Praefect 복제",
-    "Sidekiq 기반 비동기 작업 처리",
-    "단일 코드베이스 SaaS + self-managed 동시 배포"
+    "Modular monolith (Rails) + 성능 임계 경로를 Go 서비스로 추출 (Gitaly/Workhorse)",
+    "Gitaly RPC 저장 계층 + Praefect 복제 (Gitaly Cluster)",
+    "Cells — SaaS를 수평 샤딩하는 셀 기반 아키텍처로 전환 중",
+    "단일 코드베이스로 SaaS와 self-managed 동시 배포"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    BROWSER[\"Web UI<br/>Vue.js + TypeScript\"]\n    GITCLI[\"git client<br/>HTTPS / SSH\"]\n    API_CLIENT[\"API consumers<br/>REST + GraphQL\"]\n  end\n  subgraph Gateway[\"Routing / Edge Proxy\"]\n    LB[\"Load Balancer<br/>GCP LB + HAProxy\"]\n    WORKHORSE[\"GitLab Workhorse<br/>Go reverse proxy\"]\n  end\n  subgraph App[\"Application Core\"]\n    RAILS[\"Rails Monolith<br/>Puma + Ruby\"]\n    GRAPHQL[\"GraphQL API<br/>graphql-ruby\"]\n    GRAPE[\"REST API<br/>Grape\"]\n    SIDEKIQ[\"Async Jobs<br/>Sidekiq\"]\n  end\n  subgraph Git[\"Git Storage Layer\"]\n    PRAEFECT[\"Praefect<br/>Go router\"]\n    GITALY[\"Gitaly<br/>Go RPC + git\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    PG[\"PostgreSQL<br/>main + ci 분리\"]\n    PGB[\"PgBouncer<br/>connection pool\"]\n    REDIS[\"Redis<br/>cache + queue\"]\n    ES[\"Elasticsearch<br/>code/issue search\"]\n    CH[\"ClickHouse<br/>analytics events\"]\n    OBJ[\"Object Storage<br/>GCS LFS/artifacts\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Kubernetes<br/>Helm Charts on GKE\"]\n    PROM[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  BROWSER --> LB\n  API_CLIENT --> LB\n  GITCLI --> LB\n  LB --> WORKHORSE\n  WORKHORSE -->|slow/large| OBJ\n  WORKHORSE --> RAILS\n  RAILS --> GRAPHQL\n  RAILS --> GRAPE\n  RAILS -->|enqueue| SIDEKIQ\n  RAILS -->|gRPC| PRAEFECT\n  SIDEKIQ -->|gRPC| PRAEFECT\n  PRAEFECT -->|gRPC| GITALY\n  GITALY --> OBJ\n  RAILS --> PGB --> PG\n  RAILS --> REDIS\n  SIDEKIQ --> REDIS\n  RAILS --> ES\n  SIDEKIQ --> CH\n  K8S -.deploys.-> RAILS\n  K8S -.deploys.-> GITALY\n  PROM -.scrapes.-> RAILS",
-   "why_language": "GitLab은 2011년부터 Ruby on Rails로 시작한 거대한 모놀리식 코드베이스로, 개발자 생산성과 빠른 기능 출시를 위해 Ruby를 핵심 언어로 유지한다. 다만 Git 객체 접근·네트워크 프록시처럼 성능과 동시성이 중요한 경로는 Ruby의 한계를 벗어나기 위해 Go(Gitaly, Workhorse, Praefect)로 재작성했고, CLI 도구 등 일부는 Rust도 채택한다. 프런트엔드는 Vue.js와 TypeScript로 대규모 SPA의 유지보수성을 확보한다.",
-   "why_architecture": "GitLab은 self-managed로 고객사 인프라에 단일 패키지로 배포되어야 하므로, 수십 개 마이크로서비스로 쪼개는 대신 운영이 단순한 '모듈러 모놀리스'를 의도적으로 고수한다. 대신 Git 저장처럼 모놀리스에 두기 어려운 부분만 Gitaly 같은 독립 Go 서비스로 추출하고, Praefect로 복제·HA를 구현해 확장성과 배포 단순성의 균형을 맞춘다. 동일한 Rails 코드베이스가 GitLab.com SaaS와 self-managed 양쪽을 모두 구동한다.",
-   "summary": "Rails 모듈러 모놀리스를 유지하면서 성능 임계 경로만 Go 서비스로 추출한 '단일 코드베이스, 두 배포 모델' 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    U[\"Browser / git CLI / API<br/>HTTPS + SSH\"]\n    LB[\"Load Balancer<br/>HAProxy / GCP LB\"]\n  end\n  subgraph App[\"Application Tier\"]\n    WH[\"Workhorse<br/>Go reverse proxy\"]\n    RAILS[\"GitLab Rails<br/>Ruby on Rails (Puma)\"]\n    GQL[\"GraphQL + Grape REST<br/>graphql-ruby\"]\n    SK[\"Sidekiq<br/>Async jobs (Ruby)\"]\n  end\n  subgraph Git[\"Git Storage\"]\n    PRA[\"Praefect<br/>Go router\"]\n    GIT[\"Gitaly nodes<br/>Go + libgit2\"]\n  end\n  subgraph Data[\"Data Tier\"]\n    PGB[\"PgBouncer<br/>pooler\"]\n    PG[\"PostgreSQL<br/>main + ci (Patroni)\"]\n    RD[\"Redis<br/>cache/queue/state\"]\n    ES[\"Elasticsearch + Zoekt<br/>search\"]\n    CH[\"ClickHouse<br/>observability/analytics\"]\n    OBJ[\"Object Storage<br/>GCS / S3\"]\n  end\n  subgraph CI[\"CI/CD\"]\n    REG[\"Container Registry<br/>Go\"]\n    RUN[\"GitLab Runner<br/>Go executors\"]\n  end\n  U --> LB --> WH\n  WH -->|static/large blobs| OBJ\n  WH -->|app requests| RAILS\n  RAILS --> GQL\n  RAILS -->|gRPC| PRA\n  PRA -->|gRPC| GIT\n  RAILS --> PGB --> PG\n  RAILS --> RD\n  RAILS --> ES\n  RAILS --> CH\n  RAILS -->|enqueue| SK\n  SK --> PG\n  SK --> RD\n  SK -->|gRPC| PRA\n  RUN -->|API poll| RAILS\n  RUN --> REG\n  REG --> OBJ",
+   "why_language": "Ruby on Rails는 GitLab이 빠른 제품 반복과 거대한 도메인(이슈·MR·CI·보안·패키지)을 단일 코드베이스로 표현하기에 적합해 핵심 모놀리스로 유지된다. 반면 Git 저장 접근, 대용량 파일 업로드/다운로드, 컨테이너 레지스트리처럼 CPU·I/O 집약적이고 동시성이 중요한 경로는 GC·동시성·배포 단순성이 뛰어난 Go로 분리했다. Rust는 보안 도구·일부 성능 임계 컴포넌트에 점진적으로 도입된다.",
+   "why_architecture": "GitLab은 '하나의 코드로 SaaS와 self-managed 모두 배포'한다는 제약 때문에 마이크로서비스 난립 대신 Rails 모듈러 모놀리스를 유지하고, 자가호스팅 사용자도 운영 가능한 소수의 Go 서비스(Gitaly·Workhorse 등)만 추출했다. SaaS의 단일 DB 한계가 드러나자 PostgreSQL을 main/ci로 decomposition하고, 더 나아가 테넌트를 독립 셀(Cell)로 수평 샤딩하는 Cells 아키텍처로 확장성과 격리를 동시에 확보하려 한다.",
+   "summary": "Rails 모듈러 모놀리스를 중심에 두고 Git·트래픽 임계 경로만 Go로 떼어낸 뒤, PostgreSQL decomposition과 Cells로 수평 확장하는 단일 코드베이스 SaaS+self-managed 시스템",
    "deep_dive": [
     {
      "topic": "Gitaly — Git 저장을 RPC로 추상화하다",
@@ -11655,6 +11677,22 @@
     {
      "topic": "Reference Architectures와 수평 확장 — 같은 코드로 1명부터 5만 명까지",
      "body": "### 문제: 하나의 제품이 모든 규모를 감당해야 한다\n\nGitLab의 가장 독특한 제약은 **같은 소프트웨어가 개인 개발자의 노트북부터 5만 사용자 엔터프라이즈까지 모두 돌아가야 한다**는 점이다. SaaS만 운영하는 회사와 달리, GitLab은 고객이 직접 설치·확장하는 self-managed를 지원하므로 \"어떻게 키울 것인가\"를 **문서화된 청사진**으로 제공해야 한다. 이것이 GitLab의 **`Reference Architectures`**다(예: 1k, 3k, 5k, 10k, 25k, 50k 사용자 등급).\n\n### 컴포넌트별 수평 확장 전략\n\nGitLab은 모놀리스지만, 내부적으로 **상태 없는 계층과 상태 있는 계층을 명확히 분리**해 각각 독립적으로 스케일한다.\n\n- **Stateless 앱 계층** (`Puma` 웹, `Sidekiq` 잡, `Workhorse`): 무상태이므로 그냥 노드를 추가하면 선형 확장된다. 부하는 로드밸런서가 분산.\n- **Gitaly (Git 저장)**: 상태가 있으므로 저장소를 **샤딩**해 여러 Gitaly 노드에 분산하고, HA가 필요하면 **Gitaly Cluster + Praefect**로 복제한다.\n- **PostgreSQL**: 쓰기는 primary 1대, 읽기는 다수의 streaming replica로 분산하며 앞단에 **`PgBouncer`**를 둬 커넥션 수를 통제한다(Rails는 커넥션을 많이 여는데 PG는 커넥션당 프로세스 비용이 크기 때문). 대규모에서는 `main`/`ci` 데이터베이스 분해(decomposition)로 부하를 나눈다.\n- **Redis**: 용도별로 인스턴스를 쪼갠다 — 캐시용, Sidekiq 큐용, 공유 상태(예: `Redis Sentinel`로 HA)용을 분리해 한 용도의 폭주가 다른 용도를 죽이지 않게 한다.\n\n### 두 가지 배포 패키징\n\n같은 컴포넌트를 두 방식으로 묶는다.\n\n| 패키징 | 대상 | 특징 |\n|---|---|---|\n| **Omnibus** | VM/베어메탈 self-managed | 모든 컴포넌트를 단일 deb/rpm 패키지로, `gitlab.rb` 한 파일로 설정 |\n| **Cloud Native (Helm Charts)** | Kubernetes | 컴포넌트별 컨테이너·HPA로 오토스케일, GitLab.com SaaS도 GKE 위에서 이 방식 |\n\nGitLab.com 자체는 **GKE(Google Kubernetes Engine)** 위에서 Cloud Native 차트로 운영되며, 동일한 차트를 고객도 쓸 수 있다.\n\n### 트레이드오프\n\n이 접근의 비용은 **복잡한 설정 표면**이다. 마이크로서비스라면 각 서비스가 알아서 스케일하지만, GitLab은 고객에게 \"어떤 컴포넌트를 몇 대로 늘릴지\"를 직접 결정하게 만든다. 그래서 Reference Architecture라는 **검증된 사이징 표**가 제품의 일부가 됐다. 이는 \"모놀리스의 운영 단순성\"과 \"대규모 확장성\"을 동시에 잡으려는 GitLab 특유의 절충이며, 같은 코드 한 벌로 양 극단을 모두 커버한다는 회사 철학의 직접적 결과다."
+    },
+    {
+     "topic": "Cells — SaaS를 수평 샤딩하는 셀 기반 아키텍처",
+     "body": "### 왜 Cells가 필요했나\n\nGitLab.com은 오랫동안 사실상 '하나의 거대한 Rails 인스턴스 + 하나의 PostgreSQL 클러스터'로 운영됐다. 트래픽이 커지면서 단일 DB가 수직 확장의 천장에 부딪혔고, PostgreSQL을 `main`/`ci` 두 데이터베이스로 쪼개는 **decomposition**으로 한 차례 숨통을 텄지만 이는 일시적 처방이었다. 근본 해법으로 GitLab은 **Cells** 아키텍처를 채택했다 — 전체 SaaS를 여러 개의 거의 독립적인 셀(Cell)로 나누고, 각 셀이 자기 몫의 테넌트(top-level group/organization)를 통째로 담당하게 만드는 방식이다.\n\n### 셀의 구조\n\n각 Cell은 그 자체로 **완결된 GitLab 배포본**이다. 자신의 Rails 앱, Sidekiq, Gitaly, 그리고 **자기만의 PostgreSQL 클러스터**를 가진다. 즉 한 Organization의 프로젝트·이슈·MR·CI 파이프라인 데이터는 전부 한 셀 안에 머문다. 셀이 늘어나면 부하가 셀 단위로 분산되므로, 단일 DB를 무한정 키우는 대신 **셀을 추가**하는 방식으로 수평 확장한다.\n\n```\n        Routing layer (어느 셀로 보낼지 결정)\n             |\n   +---------+---------+---------+\n   |         |         |         |\n Cell 1    Cell 2    Cell 3    Cell N\n (Rails+   (Rails+   ...\n  PG+\n  Gitaly)\n```\n\n### 가장 어려운 문제: 라우팅과 'Cluster-wide' 데이터\n\n핵심 난관은 두 가지다.\n\n1. **라우팅** — 들어온 요청이 어느 셀에 속하는지 알아내야 한다. URL의 경로(top-level namespace)를 보고 해당 테넌트가 사는 셀로 프록시해야 하며, 이를 위해 경량 라우팅 계층과 셀-테넌트 매핑이 필요하다.\n2. **클러스터 전역 데이터** — 사용자 계정, 로그인, 사용자명/이메일 유일성 같은 데이터는 특정 셀에 가둘 수 없다. 한 유저가 여러 셀의 조직에 속할 수 있기 때문이다. 그래서 데이터를 `cell-local`(셀 내부에 격리)과 `cluster-wide`(모든 셀이 공유) 두 부류로 엄격히 분류하고, 코드 전반에서 어떤 테이블이 어느 쪽인지 선언·강제하는 막대한 작업이 수반된다.\n\n### 트레이드오프\n\n- **장점**: DB 천장 제거, 장애 격리(한 셀 장애가 전체로 번지지 않음), 데이터 지역성(특정 리전에 셀 배치 가능) 확보.\n- **비용**: 기존 거대한 모놀리스 스키마를 셀-로컬/전역으로 재분류하는 마이그레이션이 엄청나게 길고, 셀 간 일관성(특히 유일성 제약)과 크로스-셀 기능(전역 검색 등)을 다시 설계해야 한다. self-managed 사용자에게는 Cells가 당장 필요 없으므로, 단일 코드베이스 안에서 셀-인지 코드가 양쪽 모두에서 깨지지 않게 유지하는 것도 부담이다."
+    },
+    {
+     "topic": "Database Load Balancing — read replica와 복제 지연을 견디는 법",
+     "body": "### 읽기를 복제본으로 흘려보내기\n\nGitLab의 PostgreSQL은 1개의 primary와 여러 개의 read replica로 구성된다(HA는 **Patroni**가 관리). 모놀리스가 단일 primary에 모든 쿼리를 보내면 금세 한계에 도달하므로, Rails 애플리케이션 레벨에서 동작하는 **Database Load Balancing**이 읽기 쿼리(`SELECT`)를 여러 복제본에 분산하고 쓰기만 primary로 보낸다. 이 분산 로직이 애플리케이션 안에 있다는 점이 특징으로, PgBouncer 같은 외부 풀러와 함께 다층으로 쓰인다.\n\n### 복제 지연이라는 함정\n\n순진하게 읽기를 복제본으로 보내면 **replication lag** 문제가 터진다. 사용자가 MR에 코멘트를 남기고(primary에 write) 곧바로 페이지를 새로고침했는데, 그 읽기가 아직 코멘트를 복제받지 못한 복제본으로 가면 방금 쓴 데이터가 사라진 것처럼 보인다(read-your-own-write 위반).\n\nGitLab은 이를 PostgreSQL의 **WAL 위치(LSN)** 추적으로 푼다:\n\n1. 쓰기가 일어나면 그 시점의 WAL 위치를 기록하고, 이후 같은 요청·세션 맥락의 읽기에 대해 **복제본이 그 LSN까지 따라잡았는지** 확인한다.\n2. 따라잡은 복제본이 있으면 거기서 읽고, 모든 복제본이 아직 뒤처져 있으면 **primary로 폴백**해 정확성을 보장한다.\n3. 웹 요청 사이의 일관성을 위해 마지막 write 위치를 Redis 등에 잠깐 저장(sticky)해 두고 다음 요청에서 참조한다.\n\n### 핵심 트레이드오프\n\n이 설계의 묘미는 **정확성을 절대 희생하지 않으면서 최대한 복제본을 쓴다**는 점이다. 복제본이 충분히 최신이면 부하를 분산해 이득을 보고, 조금이라도 의심스러우면 비싸지만 항상 옳은 primary로 안전하게 떨어진다. Sidekiq 백그라운드 잡도 같은 메커니즘을 쓰되, 잡이 의존하는 데이터가 복제본에 도달할 때까지 잠깐 대기하거나 primary를 쓰는 식으로 조정한다."
+    },
+    {
+     "topic": "GitLab Runner와 CI/CD 실행 — 폴링 기반 분산 빌드 시스템",
+     "body": "### Runner의 역할\n\nGitLab CI/CD의 실제 작업(빌드·테스트·배포)은 Rails 본체가 아니라 별도의 Go 프로그램인 **GitLab Runner**가 실행한다. Runner는 GitLab 서버 어디에나(자체 VM, Kubernetes, 사용자 노트북) 설치될 수 있고, 서버와는 느슨하게 분리되어 **HTTP 롱폴링**으로만 통신한다.\n\n### 잡이 흘러가는 과정\n\n1. 사용자가 push하면 Rails가 `.gitlab-ci.yml`을 파싱해 파이프라인과 잡(job)들을 DB에 생성한다.\n2. Runner는 주기적으로 GitLab API에 `POST /jobs/request`를 보내 **\"실행할 잡 있냐\"**고 묻는다(서버가 Runner에 푸시하지 않는 풀(pull) 모델 — 방화벽 뒤의 Runner도 동작하게 함).\n3. 매칭되는 잡이 있으면 서버가 잡 사양(스크립트, 변수, 아티팩트 의존성)을 응답으로 내려준다.\n4. Runner는 설정된 **executor**로 잡을 실행한다.\n5. 로그(trace)는 실시간으로 잡 실행 중 서버에 청크 단위로 스트리밍되고, 끝나면 **artifacts**를 Object Storage로 업로드하며 상태를 보고한다.\n\n### Executor 추상화\n\nRunner의 강력함은 다양한 **executor**에 있다 — 같은 잡 정의를 환경만 바꿔 실행한다:\n\n| Executor | 실행 방식 | 용도 |\n|---|---|---|\n| `docker` | 각 잡을 새 컨테이너에서 | 가장 흔함, 깨끗한 격리 |\n| `kubernetes` | 잡마다 Pod 생성 | 대규모 자동 확장 |\n| `shell` | 호스트에서 직접 | 단순/특수 환경 |\n| `docker-machine`/autoscale | VM 동적 생성 | 스파이크 대응 |\n\n### 확장성과 트레이드오프\n\n폴링 모델은 단순하고 방화벽 친화적이지만, 잡 수요가 폭증하면 Runner가 많은 요청을 보내 **API 부하**가 커진다. GitLab.com은 Kubernetes/autoscaling executor로 수요에 따라 워커를 늘렸다 줄였다 하며, 잡 격리(한 잡이 다른 잡 환경을 오염시키지 않게)와 비용(컨테이너 기동 오버헤드) 사이에서 executor를 선택한다. GitLab은 자기 제품으로 자기 제품을 빌드하는 **dogfooding**으로 이 시스템을 가장 가혹하게 검증한다."
+    },
+    {
+     "topic": "Redis 다중 인스턴스 분해 — 하나의 Redis가 감당 못 할 때",
+     "body": "### Redis가 떠받치는 일들\n\nGitLab에서 Redis는 단순 캐시를 한참 넘어선다 — **Sidekiq 잡 큐**, 세션 저장, 프래그먼트/뷰 캐시, 레이트 리미팅, 기능 플래그, 분산 락, 그리고 위에서 본 DB Load Balancing의 write-location 추적까지 모두 Redis에 의존한다. 초기에는 이 모든 용도가 **하나의 Redis 인스턴스**에 몰려 있었다.\n\n### 왜 쪼갰나\n\n용도가 한 인스턴스에 섞이면 서로 다른 워크로드 특성이 충돌한다:\n\n- **큐(Sidekiq)**: 데이터가 사라지면 잡이 유실되므로 **휘발되면 안 됨**.\n- **캐시**: 메모리가 차면 자유롭게 **evict해도 됨**(LRU).\n- **shared state(세션·락)**: 둘 사이의 성격.\n\n캐시가 메모리를 압박해 eviction이 일어날 때 같은 인스턴스에 있는 큐 데이터까지 위험해지거나, 한 용도의 트래픽 스파이크가 전체 Redis 지연을 끌어올리는 문제가 생긴다. 그래서 GitLab은 Redis를 **용도별 독립 인스턴스**로 분해했다:\n\n- `Redis::Cache` — 휘발 가능, `maxmemory-policy`로 eviction 허용\n- `Redis::Queues` — Sidekiq 전용, 절대 evict 안 함\n- `Redis::SharedState` — 세션·락 등\n- 그 외 트래픽이 큰 용도(rate limiting, trace chunks 등)를 추가로 분리\n\n### 효과와 운영\n\n인스턴스를 나누면 각 워크로드를 **독립적으로 튜닝·확장·격리**할 수 있다 — 캐시는 큰 메모리에 eviction 켜고, 큐는 영속성과 모니터링을 강화하는 식이다. 대규모 배포(Reference Architectures)에서는 각 Redis 용도를 **Redis Sentinel**로 HA 구성해 페일오버를 보장한다. 트레이드오프는 운영 복잡도 증가(인스턴스가 여러 개 → 모니터링·연결 설정이 늘어남)지만, 단일 Redis가 전체 GitLab의 단일 장애점이자 병목이 되는 것을 막는 대가로 충분히 가치가 있다."
     }
    ],
    "github": {
@@ -11663,19 +11701,19 @@
      {
       "name": "gitlabhq/gitlabhq",
       "url": "https://github.com/gitlabhq/gitlabhq",
-      "desc": "GitLab 본체 Rails 모놀리스의 GitHub 미러",
+      "desc": "GitLab 본체 Rails 모놀리스의 read-only 미러 (정식은 gitlab.com)",
       "lang": "Ruby",
-      "stars": 24428
+      "stars": 24443
      }
     ]
    },
    "sources": [
-    "https://docs.gitlab.com/development/architecture/",
-    "https://gitlab.com/gitlab-org/gitlab-workhorse",
-    "https://docs.gitlab.com/administration/reference_architectures/"
+    "https://docs.gitlab.com/ee/development/architecture.html",
+    "https://docs.gitlab.com/ee/architecture/blueprints/cells/",
+    "https://docs.gitlab.com/ee/development/database/load_balancing.html"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "notion",

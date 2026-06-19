@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-19T09:42:29",
- "total": 779,
+ "generated_at": "2026-06-19T11:31:24",
+ "total": 782,
  "sources": [
   {
    "company": "Etsy",
@@ -53,6 +53,11 @@
    "count": 26
   },
   {
+   "company": "토스",
+   "country": "KR",
+   "count": 25
+  },
+  {
    "company": "Zalando",
    "country": "DE",
    "count": 25
@@ -78,11 +83,6 @@
    "count": 25
   },
   {
-   "company": "토스",
-   "country": "KR",
-   "count": 23
-  },
-  {
    "company": "GitHub",
    "country": "US",
    "count": 20
@@ -91,6 +91,11 @@
    "company": "Netflix",
    "country": "US",
    "count": 20
+  },
+  {
+   "company": "Grab",
+   "country": "SG",
+   "count": 12
   },
   {
    "company": "왓챠",
@@ -120,11 +125,6 @@
   {
    "company": "Dropbox",
    "country": "US",
-   "count": 11
-  },
-  {
-   "company": "Grab",
-   "country": "SG",
    "count": 11
   },
   {
@@ -403,9 +403,9 @@
   "Linux": "시스템/OS",
   "Computer Vision": "AI/ML",
   "Bluetooth": "펌웨어/임베디드",
+  "Envoy": "인프라/클라우드",
   "Node.js": "백엔드",
   "Figma": "협업/도구",
-  "Envoy": "인프라/클라우드",
   "XGBoost": "AI/ML",
   "WebAssembly": "프론트엔드",
   "containerd": "시스템/OS",
@@ -514,6 +514,77 @@
   "Service Mesh": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "전문성 밖으로 나아가기",
+   "url": "https://toss.tech/article/technical-writing-2",
+   "published": "2026-06-19",
+   "published_ts": 1781834460.0,
+   "summary": "Technical Writer의 고민과 전문성을 '토독'이라는 제품으로 만들면서, 기존의 전문성을 더 확장하는 과정을 담았습니다.",
+   "tags": [],
+   "tech_stack": [
+    "Model Context Protocol"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "ko",
+   "content_id": "55c243904529b1ca"
+  },
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "세상에 없던 직무를 만들어가기",
+   "url": "https://toss.tech/article/technical-writing-1",
+   "published": "2026-06-19",
+   "published_ts": 1781834400.0,
+   "summary": "토스의 Technical Writer들이 어떻게 '문서를 쓰는 사람'에서 '조직의 지식 시스템을 설계하는 사람'으로 일을 넓혀왔는지 소개해요.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "d5fe56929bd17958"
+  },
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Palana (Part 1): Why Grab built a secure platform for autonomous AI Agents",
+   "url": "https://engineering.grab.com/palana-part-1-secure-platform-for-ai-agents",
+   "published": "2026-06-19",
+   "published_ts": 1781827200.0,
+   "summary": "Abstract\n\nArtificial intelligence (AI) agents are moving from experiments into everyday engineering workflows. They can read code, call application programming interfaces (APIs), run tests, create merge requests, answer Slack messages, and keep long-running state. That makes them useful, but it also changes the risk model - especially as agents get more autonomous in their use of tools. An agent with network access, credentials, tools, and memory is no longer just a chat interface. It is a workload that can act.\n\nThe more capability we give to the agents, the more valuable they get - but they…",
+   "tags": [
+    "Security",
+    "Artificial Intelligence",
+    "Kubernetes",
+    "DevSecOps",
+    "Platform",
+    "Engineering",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Claude",
+    "LLM",
+    "Envoy",
+    "Kubernetes",
+    "Vault",
+    "Security",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "4ca849fd513e4f9c"
+  },
   {
    "key": "aws",
    "company": "AWS",
