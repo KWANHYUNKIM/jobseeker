@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T01:52:22",
+ "generated_at": "2026-06-20T03:37:21",
  "total": 100,
  "countries": [
   {
@@ -3702,6 +3702,10 @@
    "stack": {
     "backend": [
      {
+      "name": "AWS Lambda",
+      "count": 1
+     },
+     {
       "name": "GraphQL",
       "count": 1
      },
@@ -3724,6 +3728,10 @@
     ],
     "frontend": [
      {
+      "name": "Apollo Client",
+      "count": 1
+     },
+     {
       "name": "Next.js",
       "count": 1
      },
@@ -3736,7 +3744,7 @@
       "count": 1
      },
      {
-      "name": "Redux/Recoil",
+      "name": "Recoil/Redux",
       "count": 1
      },
      {
@@ -3747,6 +3755,10 @@
     "data": [
      {
       "name": "Airflow",
+      "count": 1
+     },
+     {
+      "name": "Athena",
       "count": 1
      },
      {
@@ -3766,6 +3778,10 @@
       "count": 1
      },
      {
+      "name": "PostGIS/공간인덱스",
+      "count": 1
+     },
+     {
       "name": "Redis",
       "count": 1
      },
@@ -3775,6 +3791,10 @@
      }
     ],
     "infra": [
+     {
+      "name": "API Gateway",
+      "count": 1
+     },
      {
       "name": "ArgoCD",
       "count": 1
@@ -3788,7 +3808,15 @@
       "count": 1
      },
      {
+      "name": "CloudFront",
+      "count": 1
+     },
+     {
       "name": "Datadog",
+      "count": 1
+     },
+     {
+      "name": "GitHub Actions",
       "count": 1
      },
      {
@@ -3803,7 +3831,7 @@
    },
    "architecture": [
     {
-     "name": "BFF/GraphQL Gateway",
+     "name": "BFF/GraphQL Federation Gateway",
      "count": 1
     },
     {
@@ -3815,7 +3843,7 @@
      "count": 1
     },
     {
-     "name": "지도 기반 공간 검색",
+     "name": "지도 기반 공간 검색·타일링",
      "count": 1
     }
    ]
@@ -3856,6 +3884,10 @@
       "count": 1
      },
      {
+      "name": "GraphQL",
+      "count": 1
+     },
+     {
       "name": "gRPC",
       "count": 1
      },
@@ -3869,6 +3901,10 @@
      },
      {
       "name": "Spring Boot",
+      "count": 1
+     },
+     {
+      "name": "Spring Cloud Gateway",
       "count": 1
      }
     ],
@@ -3890,11 +3926,19 @@
       "count": 1
      },
      {
+      "name": "Storybook",
+      "count": 1
+     },
+     {
       "name": "TypeScript",
       "count": 1
      }
     ],
     "data": [
+     {
+      "name": "Apache Airflow",
+      "count": 1
+     },
      {
       "name": "Debezium CDC",
       "count": 1
@@ -3922,6 +3966,14 @@
      {
       "name": "Redis",
       "count": 1
+     },
+     {
+      "name": "Snowflake / Redshift",
+      "count": 1
+     },
+     {
+      "name": "Spark / EMR",
+      "count": 1
      }
     ],
     "infra": [
@@ -3938,11 +3990,23 @@
       "count": 1
      },
      {
+      "name": "Helm",
+      "count": 1
+     },
+     {
       "name": "Istio",
       "count": 1
      },
      {
+      "name": "Jaeger",
+      "count": 1
+     },
+     {
       "name": "Kubernetes",
+      "count": 1
+     },
+     {
+      "name": "OpenTelemetry",
       "count": 1
      },
      {
@@ -14200,8 +14264,8 @@
    "domain": "부동산",
    "languages": [
     "Kotlin",
-    "Java",
     "TypeScript",
+    "Java",
     "Python",
     "Go"
    ],
@@ -14210,44 +14274,51 @@
      "Spring Boot",
      "Kotlin Coroutines",
      "Node.js",
-     "GraphQL(Apollo)",
-     "gRPC"
+     "GraphQL(Apollo Federation)",
+     "gRPC",
+     "AWS Lambda(Serverless Framework)"
     ],
     "frontend": [
      "React",
      "Next.js",
      "React Native",
      "TypeScript",
-     "Redux/Recoil"
+     "Recoil/Redux",
+     "Apollo Client"
     ],
     "data": [
      "Kafka",
      "MySQL(Aurora)",
      "DynamoDB",
      "Elasticsearch",
-     "Redis",
+     "Redis(ElastiCache)",
+     "PostGIS/공간인덱스",
      "Airflow",
-     "S3"
+     "S3",
+     "Athena"
     ],
     "infra": [
      "AWS",
      "Kubernetes(EKS)",
      "AWS Lambda",
+     "API Gateway",
      "Terraform",
      "ArgoCD",
-     "Datadog"
+     "GitHub Actions",
+     "Datadog",
+     "CloudFront"
     ]
    },
    "architecture": [
     "MSA",
     "Serverless(이벤트 기반)",
-    "지도 기반 공간 검색",
-    "BFF/GraphQL Gateway"
+    "BFF/GraphQL Federation Gateway",
+    "지도 기반 공간 검색·타일링"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + Swift/Kotlin\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    CDN[\"CDN / Edge<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / BFF Layer\"]\n    GQL[\"GraphQL BFF<br/>Apollo + Node.js\"]\n    ALB[\"Ingress<br/>ALB + Nginx\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    LISTING[\"매물 Service<br/>Kotlin + Spring Boot\"]\n    GEO[\"공간검색 Service<br/>Elasticsearch geo_shape\"]\n    USER[\"User/Auth Service<br/>Spring Boot\"]\n    CHAT[\"중개/문의 Service<br/>Node.js + WebSocket\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    LAMBDA[\"Ingest/ETL<br/>AWS Lambda\"]\n    AIRFLOW[\"Batch Orchestration<br/>Airflow\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Aurora MySQL\"]\n    DYNAMO[\"DynamoDB\"]\n    ES[\"Elasticsearch\"]\n    REDIS[\"Redis Cache\"]\n    S3[\"S3<br/>이미지/원본\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>EKS\"]\n    ARGO[\"ArgoCD + Terraform\"]\n    DD[\"Datadog 관측성\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> ALB\n  ALB --> GQL\n  GQL -->|gRPC/REST| LISTING\n  GQL --> GEO\n  GQL --> USER\n  GQL --> CHAT\n  LISTING --> MYSQL\n  LISTING -->|CDC| KAFKA\n  KAFKA --> LAMBDA\n  LAMBDA --> ES\n  GEO --> ES\n  CHAT --> DYNAMO\n  GEO --> REDIS\n  AIRFLOW --> MYSQL\n  LISTING --> S3\n  S3 --> CDN\n  Core --> EKS\n  ARGO --> EKS\n  EKS --> DD",
-   "why_language": "매물·거래·인증 같은 도메인 핵심 트랜잭션은 타입 안정성과 JVM 생태계 성숙도가 필요해 Kotlin/Java(Spring Boot)로 작성하고, 지도 화면·웹은 React/Next.js와 React Native로 통합해 iOS/Android/Web 코드를 공유한다. 대량 매물 수집·정제 ETL과 데이터 파이프라인은 Python(Airflow)으로, 고처리량 인프라성 컴포넌트 일부는 Go로 운용해 도메인별로 적합한 언어를 혼용한다.",
-   "why_architecture": "지도 위에서 수백만 매물을 실시간 필터링·반경 검색해야 하므로 Elasticsearch geo 쿼리를 중심으로 한 공간 검색 서비스를 독립 MSA로 분리하고, 매물 변동·알림·집계처럼 트래픽이 spiky한 작업은 Kafka 이벤트와 Lambda 서버리스로 처리해 비용과 확장성을 동시에 잡았다. 멀티 클라이언트(앱/웹)의 화면 조립을 GraphQL BFF로 통합해 클라이언트별 오버페치를 줄이고 백엔드 서비스 경계를 깔끔하게 유지한다.",
-   "summary": "지도 공간검색은 Elasticsearch 기반 MSA로, 매물 변동은 Kafka+Lambda 서버리스로 처리하고 GraphQL BFF로 멀티클라이언트를 통합한 부동산 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    CDN[\"CDN / Edge<br/>CloudFront + S3\"]\n  end\n  subgraph Gateway[\"API / BFF\"]\n    AGW[\"API Gateway<br/>AWS API Gateway\"]\n    BFF[\"GraphQL Gateway<br/>Apollo Federation\"]\n  end\n  subgraph Core[\"Core Services\"]\n    LIST[\"Listing Service<br/>Spring Boot + Kotlin\"]\n    GEO[\"Geo Search Service<br/>Elasticsearch geo + PostGIS\"]\n    USER[\"User Auth<br/>Spring Boot\"]\n    CHAT[\"Chat / Notify<br/>Node.js\"]\n    FN[\"Event Functions<br/>AWS Lambda\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    AUR[\"Listings DB<br/>MySQL Aurora\"]\n    DDB[\"Session / Hot<br/>DynamoDB\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    RDS[\"Cache<br/>Redis ElastiCache\"]\n    OBJ[\"Media<br/>S3\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAF[\"Event Bus<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n    AF[\"Batch / ML<br/>Airflow\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Orchestration<br/>EKS\"]\n    ARGO[\"GitOps<br/>ArgoCD\"]\n    TF[\"IaC<br/>Terraform\"]\n    DD[\"Observability<br/>Datadog\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  APP --> AGW\n  WEB --> AGW\n  AGW --> BFF\n  BFF -->|gRPC| LIST\n  BFF -->|gRPC| GEO\n  BFF --> USER\n  BFF --> CHAT\n  LIST --> AUR\n  USER --> DDB\n  GEO --> ES\n  LIST --> RDS\n  GEO --> RDS\n  LIST --> OBJ\n  AUR -->|binlog| CDC\n  CDC --> KAF\n  KAF --> FN\n  FN -->|reindex| ES\n  KAF --> AF\n  AF -->|rank model| ES\n  Core -.run on.-> EKS\n  ARGO -.deploy.-> EKS\n  TF -.provision.-> Infra\n  EKS --> DD",
+   "why_language": "매물·거래 도메인의 핵심 트랜잭션 백엔드는 JVM 생태계의 안정성과 Spring 성숙도를 살려 Kotlin/Java로 작성하고, I/O 바운드가 큰 지도 검색·알림에는 Kotlin Coroutines로 동시성을 처리한다. 지도 인터랙션이 무거운 프론트는 웹/앱 코드 공유와 타입 안정성을 위해 TypeScript(React/Next.js/React Native)로 통일하고, 데이터·ML 배치와 Lambda 글루 코드는 Python/Go로 가볍게 운영한다.",
+   "why_architecture": "전국 매물 데이터의 실시간 변동(등록·거래완료·허위매물 처리)을 빠르게 반영해야 하므로 CDC→Kafka→Lambda의 이벤트 기반 파이프라인으로 검색 인덱스를 비동기 동기화한다. 클라이언트가 지도 뷰포트별로 서로 다른 데이터를 조합하므로 GraphQL Federation BFF로 over-fetching을 줄이고, 트래픽 특성이 다른 매물·검색·채팅을 MSA로 분리해 독립 확장한다.",
+   "summary": "지도 기반 공간 검색에 특화된 Kotlin MSA + GraphQL BFF + CDC/Kafka 이벤트 파이프라인",
    "deep_dive": [
     {
      "topic": "지도 기반 공간 검색",
@@ -14276,6 +14347,18 @@
     {
      "topic": "허위매물 검증과 ML 기반 랭킹·정렬 파이프라인",
      "body": "### 비즈니스 제약\n부동산 플랫폼의 신뢰는 '허위매물(낚시 매물)'을 얼마나 거르느냐에 달려 있다. 직방은 '안심중개사/허위매물 검증' 같은 신뢰 기능을 제품 핵심으로 내세워 왔고, 이는 단순 룰만으로는 부족해 데이터·ML 파이프라인이 뒤를 받친다.\n\n### 검증 파이프라인\n- **룰 기반 1차 필터**: 동일 사진·동일 전화번호·비정상적으로 낮은 시세 대비 가격·중복 등록을 규칙으로 즉시 플래깅한다. 이미지 perceptual hash(pHash)로 다른 매물에 재사용된 사진을 탐지한다.\n- **시세 이상 탐지**: 단지/지역/면적별 실거래·등록가 분포를 Airflow 배치로 집계해 통계 모델을 만들고, 신규 매물 가격이 분포에서 과도하게 벗어나면(낚시 의심) 스코어를 낮춘다.\n- **사람 검증 루프**: 의심 매물은 검증 큐로 보내 중개사 확인/CS 검수를 거치고, 그 라벨이 다시 학습 데이터로 환류된다.\n\n### 랭킹·정렬\n- 사용자가 보는 매물 순서는 단순 최신순이 아니라, 신뢰 점수·매물 신선도·중개사 응답률·이미지 품질·사용자 선호(찜/조회 패턴) 등을 결합한 스코어로 정렬한다. Elasticsearch의 `function_score`/`script_score`로 base 검색 점수에 비즈니스 신호를 곱해 재정렬하거나, 후보를 뽑은 뒤 별도 ranking 모델로 re-rank 하는 2단계(retrieval → ranking) 구조를 취하기 좋다.\n- 추천(이 매물을 본 사람이 본 다른 매물, 비슷한 조건 매물)은 사용자 행동 로그를 S3 데이터레이크에 쌓고 배치로 임베딩/유사도를 계산한 뒤, 서빙 단에서 Redis에 캐싱해 빠르게 내려주는 형태로 운영된다.\n\n### 트레이드오프\n- 신뢰 점수를 너무 공격적으로 반영하면 신규/소규모 중개사 매물이 영구히 하위에 깔리는 cold-start 편향이 생긴다. 그래서 탐색(exploration) 슬롯을 일부 섞어 신규 매물도 노출 기회를 준다.\n- 실시간성과 정확도의 균형상, 무거운 ML 스코어는 배치로 미리 계산해 매물 document에 필드로 박아두고(near-real-time), 룰 기반 즉시 차단만 동기 경로에 둔다."
+    },
+    {
+     "topic": "요청 처리 흐름 end-to-end: 지도 한 번 움직일 때 무슨 일이 일어나는가",
+     "body": "### 한 번의 지도 panning이 만드는 요청 폭풍\n\n직방의 핵심 UX는 \"지도를 움직이면 그 영역의 매물이 즉시 갱신되는\" 경험이다. 이 한 동작이 백엔드에서는 여러 단계의 처리를 일으킨다.\n\n1. **클라이언트(뷰포트 디바운싱)**: `React Native` / `Next.js` 클라이언트는 사용자가 지도를 드래그할 때마다 요청을 쏘지 않는다. `moveend` 이벤트를 100~300ms `debounce`로 묶고, 직전 요청과 bounding box(`swLat, swLng, neLat, neLng`)가 충분히 겹치면 in-flight 요청을 `AbortController`로 취소한다. 이렇게 하지 않으면 한 번의 손가락 스와이프가 수십 개의 검색 요청으로 증폭된다.\n\n2. **API Gateway → GraphQL BFF**: 요청은 `AWS API Gateway`를 거쳐 `Apollo Federation` 게이트웨이로 들어온다. 화면 하나가 매물 리스트 + 지도 마커 + 단지 정보 + 찜 상태를 동시에 필요로 하므로, BFF는 이를 단일 GraphQL 쿼리로 받아 내부적으로 `Listing`, `Geo`, `User(찜)` 서브그래프에 병렬 `gRPC` 팬아웃한다. 클라이언트가 N+1 REST 호출을 하지 않게 만드는 게 BFF의 존재 이유다.\n\n3. **Geo Search Service**: 핵심은 `Elasticsearch`의 `geo_bounding_box` / `geo_tile_grid` 집계다. 줌 레벨이 낮으면(전국·시도 단위) 개별 매물을 다 내려주지 않고 `geotile_grid` aggregation으로 \"이 타일에 매물 1,200개\"라는 **클러스터 카운트**만 반환한다. 줌 레벨이 높아지면(동·단지 단위) 개별 매물 문서를 반환한다. 이 줌-레벨 스위칭이 응답 페이로드를 수십 KB 수준으로 묶어두는 핵심 장치다.\n\n4. **캐싱 가로채기**: 동일 타일·줌·필터 조합의 클러스터 카운트는 변동성이 낮으므로 `Redis`에 타일 키(`z/x/y:filterHash`) 단위로 캐싱된다. 지도 검색의 대부분 트래픽은 인기 지역(강남·판교·마포)에 집중되므로 이 핫타일 캐시 히트율이 전체 ES 부하를 좌우한다.\n\n### 트레이드오프\n\n뷰포트 검색은 `offset/limit` 페이징과 궁합이 나쁘다. 지도를 움직이면 정렬·범위가 통째로 바뀌어 커서가 무의미해지기 때문이다. 그래서 리스트 패널과 지도 마커는 같은 쿼리를 공유하되, 리스트는 `search_after` 기반으로 별도 페이지네이션하고 지도는 viewport 전체 집계를 쓰는 **이원화된 응답 전략**을 택한다."
+    },
+    {
+     "topic": "데이터 저장·일관성: 매물의 '단일 진실'과 검색 인덱스의 eventual consistency",
+     "body": "### 두 개의 저장소, 두 개의 진실\n\n직방에서 매물 데이터는 본질적으로 두 곳에 존재한다. **원본(System of Record)**은 `MySQL Aurora`이고, **검색용 사본**은 `Elasticsearch`다. 이 둘 사이의 일관성 모델이 시스템 설계의 핵심 결정이다.\n\n| 저장소 | 역할 | 일관성 | 이유 |\n|---|---|---|---|\n| `Aurora MySQL` | 매물 등록/수정/거래완료 트랜잭션 | Strong | 돈·계약이 걸린 상태 전이는 강일관성 필수 |\n| `Elasticsearch` | 지도·리스트 검색 | Eventual | 검색은 수백ms 지연을 허용, 대신 throughput 우선 |\n| `DynamoDB` | 세션·찜·최근 본 매물 | 키 기반 빠른 R/W | 단일 키 조회가 압도적, 관계 질의 불필요 |\n| `Redis` | 타일 카운트·핫 매물 캐시 | TTL 기반 | 휘발성 허용, 읽기 가속 전용 |\n\n### 왜 검색을 Aurora에 직접 안 거는가\n\n`WHERE lat BETWEEN ? AND ? AND price < ? AND rooms = ?` 같은 다차원 + 공간 필터를 RDB에서 풀면 인덱스가 무력화되고 풀스캔에 가까워진다. 그래서 공간·다면 필터링은 `Elasticsearch`의 역인덱스 + `geo_point`에 위임하고, Aurora는 트랜잭션 정합성만 책임지도록 역할을 분리했다.\n\n### 일관성 유지: CDC가 접착제\n\n매물이 Aurora에서 바뀌면 `Debezium`이 binlog를 읽어 `Kafka`로 흘리고, `Lambda` 컨슈머가 ES 문서를 `upsert`한다. 여기서 두 가지 함정을 다룬다.\n\n- **순서 보장**: 같은 매물(`listing_id`)의 \"수정→거래완료\" 이벤트가 뒤집히면 마감된 매물이 다시 검색에 노출된다. Kafka 파티션 키를 `listing_id`로 잡아 동일 매물 이벤트의 순서를 보장한다.\n- **멱등성**: Lambda 재시도로 같은 이벤트가 두 번 와도 되도록 ES `version`(또는 이벤트 timestamp) 기반 조건부 업데이트로 stale write를 버린다.\n\n### 샤딩·확장\n\nAurora는 읽기 부하를 reader replica로 분산하되, 매물 ID는 지역이 아니라 **시간/해시 기반**으로 분산해 인기 지역 핫스팟이 특정 샤드에 몰리는 걸 피한다. ES는 인덱스를 시간/지역으로 쪼개기보다 `number_of_shards`를 트래픽에 맞춰 잡고, 재색인이 필요할 때는 alias 스위칭(blue/green reindex)으로 무중단 교체한다."
+    },
+    {
+     "topic": "관측성과 장애 복원력: MSA + Serverless 혼용 환경에서 추적하기",
+     "body": "### 분산 추적의 난이도\n\n직방 아키텍처의 어려운 점은 한 요청이 `EKS` 위의 상시 마이크로서비스와 `Lambda` 서버리스 함수를 **오가며** 처리된다는 것이다. 예컨대 매물 등록은 동기(Spring) → Kafka → 비동기(Lambda) → ES로 이어지므로, 단일 trace로 묶지 않으면 \"왜 이 매물이 검색에 안 뜨지?\"를 디버깅할 수 없다.\n\n- **분산 트레이싱**: `Datadog APM`으로 `trace_id`를 API Gateway부터 전파한다. Kafka 메시지 헤더에 trace context를 실어 동기 구간과 비동기 Lambda 구간을 한 trace로 연결한다. 이게 없으면 서버리스 구간이 trace의 블랙홀이 된다.\n- **메트릭**: 지도 검색은 p99 latency가 UX 체감을 좌우하므로 평균이 아니라 percentile 알람을 건다. ES 쿼리 latency, Redis 히트율, Kafka consumer lag, Lambda cold start 비율이 핵심 골든 시그널이다.\n\n### Kafka consumer lag = 검색 신선도\n\n`CDC → Kafka → Lambda → ES` 파이프라인에서 **consumer lag이 곧 검색 인덱스의 지연**이다. lag이 커지면 \"방금 거래완료된 매물이 아직 검색에 떠 있는\" 상태가 길어진다. 그래서 lag을 직접 SLO로 잡고, 임계치를 넘으면 Lambda 동시성(reserved concurrency)을 끌어올리거나 컨슈머를 스케일아웃한다.\n\n### 복원력 패턴\n\n- **서킷 브레이커**: BFF가 `Geo`/`Listing` 서브그래프에 gRPC 호출할 때, 특정 서비스가 느려지면 게이트웨이 전체가 멈추지 않도록 타임아웃 + 서킷브레이커로 끊고, 지도 마커는 비더라도 리스트는 보여주는 **partial response**로 graceful degradation 한다.\n- **백프레셔**: 매물 대량 변동(예: 특정 중개사무소 일괄 업로드) 시 Kafka가 버퍼 역할을 해 ES write를 평탄화한다. ES가 못 따라오면 Lambda가 즉시 실패시키지 않고 DLQ(Dead Letter Queue)로 보내 나중에 재처리한다.\n- **멱등 + 재처리**: 위 멱등성 설계 덕분에 DLQ에서 이벤트를 통째로 리플레이해도 중복 색인이 안전하다.\n\n### 배포\n\n`GitHub Actions`로 빌드·테스트 후 이미지를 푸시하고, `ArgoCD`가 GitOps로 `EKS`에 동기화한다. 인프라는 `Terraform`으로 코드화해 검색 인덱스 스펙이나 Lambda 동시성 같은 용량 파라미터까지 PR 리뷰 대상으로 만든다."
     }
    ],
    "github": {
@@ -14288,7 +14371,7 @@
     "https://www.zigbang.com"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "yanolja",
@@ -14306,25 +14389,31 @@
     "backend": [
      "Spring Boot",
      "Kotlin + Spring WebFlux",
+     "Spring Cloud Gateway",
      "Node.js (NestJS)",
      "Go",
-     "gRPC"
+     "gRPC",
+     "GraphQL (BFF)"
     ],
     "frontend": [
      "React",
      "Next.js",
      "TypeScript",
      "React Native",
-     "Flutter"
+     "Flutter",
+     "Storybook (Design System)"
     ],
     "data": [
      "Apache Kafka",
      "MySQL (Aurora)",
      "MongoDB",
      "Elasticsearch / OpenSearch",
-     "Redis",
+     "Redis (ElastiCache)",
      "DynamoDB",
-     "Debezium CDC"
+     "Debezium CDC",
+     "Apache Airflow",
+     "Spark / EMR",
+     "Snowflake / Redshift"
     ],
     "infra": [
      "AWS",
@@ -14332,20 +14421,23 @@
      "ArgoCD",
      "Istio",
      "Terraform",
+     "Helm",
      "Prometheus + Grafana",
-     "Datadog"
+     "Datadog",
+     "OpenTelemetry",
+     "Jaeger"
     ]
    },
    "architecture": [
     "MSA (Microservices)",
-    "Event-driven (Kafka)",
-    "Cloud-native (K8s)",
-    "Multi-tenant SaaS (Yanolja Cloud)"
+    "Event-driven (Kafka + CDC)",
+    "Cloud-native (EKS + Service Mesh)",
+    "Multi-tenant SaaS (Yanolja Cloud / Global PMS)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + Flutter\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    CDN[\"Edge / CDN<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    MESH[\"Service Mesh<br/>Istio + Envoy\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    SEARCH[\"Search / Pricing<br/>Go + Elasticsearch\"]\n    BOOK[\"Reservation<br/>Spring Boot + Kotlin\"]\n    INV[\"Inventory / Channel Mgr<br/>Java + gRPC\"]\n    PAY[\"Payment<br/>Spring Boot\"]\n    PMS[\"Yanolja Cloud PMS<br/>Multi-tenant SaaS\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"OLTP<br/>MySQL Aurora\"]\n    MONGO[\"Catalog / Docs<br/>MongoDB\"]\n    REDIS[\"Cache / Lock<br/>Redis\"]\n    ES[\"Search Index<br/>Elasticsearch\"]\n    DYNAMO[\"High-write<br/>DynamoDB\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps<br/>ArgoCD\"]\n    OBS[\"Observability<br/>Prometheus + Datadog\"]\n  end\n  APP --> CDN --> GW\n  WEB --> CDN\n  GW --> MESH\n  MESH --> SEARCH\n  MESH --> BOOK\n  MESH --> INV\n  MESH --> PAY\n  MESH --> PMS\n  SEARCH --> ES\n  SEARCH --> REDIS\n  BOOK -->|lock| REDIS\n  BOOK --> MYSQL\n  BOOK -->|event| KAFKA\n  INV --> MYSQL\n  INV -->|sync| KAFKA\n  PAY --> MYSQL\n  PMS --> MONGO\n  PMS --> DYNAMO\n  MYSQL -->|CDC| CDC --> KAFKA\n  KAFKA -->|index| ES\n  KAFKA --> INV\n  Core --- EKS\n  EKS --- ARGO\n  EKS --- OBS",
-   "why_language": "예약·결제·정산처럼 트랜잭션 정합성과 안정성이 핵심인 도메인은 JVM 생태계(Java/Kotlin + Spring)의 성숙한 트랜잭션·동시성 제어와 풍부한 라이브러리가 유리해 백엔드의 중심축이 된다. 검색·가격·재고처럼 고동시성·저지연이 필요한 영역은 Go로, 글로벌 PMS·SaaS 콘솔과 앱은 TypeScript(Next.js)·React Native로, 데이터·LLM 파이프라인은 Python으로 분업해 도메인 특성에 언어를 맞춘다.",
-   "why_architecture": "야놀자는 국내 숙박·레저 예약을 넘어 Yanolja Cloud(인터파크·이지테크노시스·고글로벌트래블 인수)로 전 세계 호텔 PMS·채널관리 SaaS를 운영하기 때문에, 멀티테넌트와 지역별 독립 확장이 가능한 MSA·클라우드 네이티브가 필수다. 예약·재고·채널 동기화가 실시간으로 얽혀 있어 Kafka 기반 이벤트 드리븐으로 서비스 간 결합도를 낮추고 성수기 트래픽 급증에 K8s 오토스케일링으로 대응한다.",
-   "summary": "예약·결제는 JVM(Spring)으로 견고하게, 검색·재고는 Go로 빠르게 — Kafka 이벤트 드리븐 MSA를 AWS·EKS 위에 멀티테넌트 SaaS로 글로벌 확장",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Mobile App<br/>React Native + Flutter\"]\n    WEB[\"Web<br/>Next.js + React\"]\n    OTA[\"External OTAs<br/>Booking/Agoda/Expedia\"]\n    PMS[\"Hotel Front Desk<br/>Yanolja Cloud PMS\"]\n  end\n  subgraph Edge\n    CDN[\"CDN + WAF<br/>CloudFront\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Istio\"]\n    BFF[\"BFF<br/>NestJS + GraphQL\"]\n  end\n  subgraph Core\n    SEARCH[\"Search/Pricing<br/>Kotlin WebFlux\"]\n    BOOK[\"Booking/Inventory<br/>Spring Boot\"]\n    PAY[\"Payment<br/>Spring Boot\"]\n    CHMGR[\"Channel Manager<br/>Go + gRPC\"]\n    PMSVC[\"Multi-tenant PMS<br/>Spring Boot\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n    ETL[\"Batch/ETL<br/>Airflow + Spark\"]\n  end\n  subgraph Data\n    AUR[\"OLTP<br/>MySQL Aurora\"]\n    REDIS[\"Cache/Lock<br/>Redis\"]\n    ES[\"Search Index<br/>OpenSearch\"]\n    DDB[\"Inventory/Session<br/>DynamoDB\"]\n    DW[\"Warehouse<br/>Snowflake/Redshift\"]\n  end\n  subgraph Platform\n    EKS[\"Kubernetes<br/>AWS EKS\"]\n    ARGO[\"GitOps<br/>ArgoCD\"]\n    OBS[\"Observability<br/>Datadog + Prometheus + OTel\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  PMS --> GW\n  CDN --> GW\n  GW --> BFF\n  BFF -->|gRPC| SEARCH\n  BFF -->|gRPC| BOOK\n  BFF --> PAY\n  OTA <-->|rate/inventory sync| CHMGR\n  SEARCH --> ES\n  SEARCH --> REDIS\n  BOOK --> AUR\n  BOOK --> REDIS\n  BOOK --> DDB\n  PAY --> AUR\n  CHMGR --> BOOK\n  PMSVC --> AUR\n  BOOK -->|events| KAFKA\n  CHMGR -->|events| KAFKA\n  AUR --> CDC\n  CDC --> KAFKA\n  KAFKA --> ES\n  KAFKA --> ETL\n  ETL --> DW\n  EKS --- ARGO\n  EKS --- OBS",
+   "why_language": "예약·결제·정산처럼 강한 정합성과 안정적인 JVM 생태계가 필요한 핵심 도메인은 Java/Spring Boot로, 검색·가격·재고 노출처럼 높은 동시성과 논블로킹 I/O가 중요한 영역은 Kotlin + WebFlux의 리액티브 스택으로 처리한다. Channel Manager처럼 수많은 외부 OTA와 대량 동기화를 낮은 지연·적은 리소스로 돌려야 하는 영역엔 Go를, 추천·데이터 파이프라인엔 Python을, 앱/웹 풀스택 생산성엔 TypeScript를 채택해 도메인 특성별로 언어를 분리했다.",
+   "why_architecture": "성수기·연휴에 트래픽이 수십 배로 튀고 객실 재고는 1건 단위로 다투기 때문에, 서비스를 도메인별로 쪼개 독립 확장하는 MSA와 EKS 오토스케일을 기반으로 한다. 야놀자 → 외부 OTA → 호텔 PMS 사이의 재고·요금을 거의 실시간으로 맞춰야 하므로 Kafka 이벤트 버스와 Debezium CDC로 비동기 동기화하고, Yanolja Cloud는 전 세계 호텔이 한 플랫폼을 공유하는 멀티테넌트 SaaS 구조로 글로벌 확장과 운영 효율을 동시에 잡았다.",
+   "summary": "예약 정합성은 JVM, 검색·동기화는 Kotlin/Go, 전부 Kafka·EKS 위에 올린 멀티테넌트 트래블 슈퍼앱 + 글로벌 PMS SaaS",
    "deep_dive": [
     {
      "topic": "예약 정합성과 동시성",
@@ -14378,6 +14470,22 @@
     {
      "topic": "CI/CD와 GitOps: ArgoCD 기반 카나리 배포",
      "body": "### 배포가 어려운 이유\n수백 개 마이크로서비스를 각 팀이 독립적으로 하루에도 여러 번 배포한다. 수작업 배포는 불가능하고, 한 서비스의 잘못된 배포가 예약 흐름 전체를 끊을 수 있다.\n\n### GitOps 파이프라인\n```\n개발자 push -> CI(빌드/테스트/이미지) -> 컨테이너 레지스트리(ECR)\n  -> manifest(Git) 업데이트(이미지 태그)\n  -> ArgoCD가 Git을 단일 진실로 보고 클러스터 상태를 동기화\n  -> EKS에 롤아웃\n```\n핵심은 **Git이 배포 상태의 단일 소스**라는 점이다. 클러스터에 직접 `kubectl apply` 하지 않고 Git을 바꾸면 ArgoCD가 desired state와 actual state의 drift를 감지해 맞춘다. 롤백은 Git revert 한 번으로 끝나고, 누가 무엇을 언제 배포했는지 감사 추적이 자동으로 남는다.\n\n### 점진적 배포(Progressive Delivery)\n예약·결제처럼 사고 영향이 큰 서비스는 전면 교체(빅뱅)가 위험하다. 그래서 Argo Rollouts/Istio로:\n- **Canary**: 새 버전에 트래픽 5% -> 25% -> 50% -> 100% 단계적 증가.\n- **자동 분석(analysis)**: 각 단계마다 Prometheus 메트릭(에러율, p99 latency)을 자동 평가해 임계 초과 시 **자동 롤백**.\n- **Blue/Green**: 신구 버전을 동시에 띄우고 트래픽 스위치, 문제 시 즉시 되돌림.\n\n### 트레이드오프\n카나리는 안전하지만 배포 시간이 길어지고, 신구 버전이 공존하는 동안 **하위 호환 스키마**(DB 컬럼 추가는 OK, 즉시 삭제는 금지)와 **이벤트 스키마 버저닝**(Schema Registry)이 필수다. 이를 안 지키면 카나리 중 구버전이 신버전 데이터를 못 읽어 깨진다."
+    },
+    {
+     "topic": "재고·세션 데이터 모델: DynamoDB와 MySQL Aurora의 역할 분담, 그리고 일관성 전략",
+     "body": "### 왜 단일 DB가 아니라 폴리글랏인가\n야놀자의 예약 도메인은 두 가지 상반된 요구를 동시에 갖는다. 하나는 **결제·정산·예약 원장(原帳)의 강한 정합성**이고, 다른 하나는 **객실 재고·달력·세션 조회의 초고빈도 읽기/쓰기**다. 이 둘을 하나의 RDB로 풀면 성수기 피크에서 핫 로우(hot row) 경합과 커넥션 폭증으로 무너지기 때문에 저장소를 분리한다.\n\n- `MySQL (Aurora)` — 예약 확정, 결제, 정산, 회원 등 **Source of Truth(SoT)** 성격의 트랜잭션 원장. Aurora의 스토리지 분리 아키텍처로 read replica를 빠르게 늘려 읽기 부하를 분산하고, 쓰기는 단일 writer로 모아 정합성을 보장한다.\n- `DynamoDB` — 객실별·날짜별 재고 카운터, 세션/장바구니, 대량 fan-out 조회처럼 **키 기반 단건 액세스가 압도적인** 워크로드. 파티션 키를 `propertyId#roomTypeId#date` 식으로 잡아 특정 객실/날짜에 트래픽이 몰려도 파티션 단위로 수평 분산된다.\n\n### 재고 차감의 동시성 제어\n같은 객실 마지막 1실을 동시에 여러 명이 누르는 상황이 핵심 난제다. 일반적으로 다음 계층을 둔다.\n\n1. **Redis 분산 락 / 원자적 카운터**: `DECR` 또는 Lua 스크립트로 \"재고 확인 + 차감\"을 원자화해 오버부킹을 1차 차단.\n2. **DB 조건부 업데이트**: 최종 확정 시 `UPDATE ... WHERE remaining > 0` 같은 조건부 쓰기(또는 DynamoDB `ConditionExpression`)로 음수 재고를 물리적으로 불가능하게 만든다.\n3. **멱등 키(Idempotency Key)**: 결제 재시도·네트워크 중복 요청에 대비해 예약 요청마다 멱등 키를 부여, 동일 요청이 두 번 확정되지 않게 한다.\n\n### 트레이드오프\nRedis 카운터는 빠르지만 휘발성이라 SoT가 될 수 없다. 그래서 \"Redis는 빠른 게이트, DB/DynamoDB는 최종 진실\"이라는 2단 구조를 쓰고, 둘 사이의 드리프트는 후술할 CDC/배치로 주기적으로 보정한다. 이 분리 덕분에 조회 트래픽(검색·달력)은 DynamoDB/Redis가 흡수하고 Aurora writer는 실제 확정 트랜잭션만 받아 피크에도 견딘다."
+    },
+    {
+     "topic": "검색·랭킹 파이프라인: OpenSearch 인덱싱과 개인화 랭킹",
+     "body": "### 인덱스가 항상 신선해야 하는 이유\n숙소 검색 결과는 \"지금 이 날짜에 예약 가능하고, 이 가격인\" 상태를 반영해야 한다. 가격·재고·프로모션은 분 단위로 바뀌므로, 검색 인덱스(`OpenSearch`)를 배치로만 갱신하면 \"검색엔 떴는데 예약하려니 마감\"이라는 최악의 UX가 발생한다.\n\n### 인덱싱 흐름 (near-real-time)\n```\nMySQL(Aurora) --Debezium CDC--> Kafka(topic: property.changed)\n                                   |\n          Kafka Streams/Consumer (조인·비정규화)\n                                   v\n                         OpenSearch bulk upsert\n```\n- 상품 마스터 변경, 가격 변경, 재고 이벤트를 각각 Kafka 토픽으로 흘리고, 컨슈머가 이를 **검색용 비정규화 문서 하나로 머지**한다(숙소 정적 정보 + 동적 가격/재고 + 평점/리뷰 집계).\n- 정적 속성과 동적 속성의 갱신 주기가 다르므로, 정적은 풀 reindex, 동적(가격/재고)은 partial update로 분리해 쓰기 증폭을 줄인다.\n\n### 랭킹 2단 구조\n1. **Retrieval(후보 생성)**: 위치(geo_distance), 날짜 가용성, 필터(가격대·편의시설)로 OpenSearch가 수백~수천 후보를 BM25 + 필터로 빠르게 추린다.\n2. **Ranking(재정렬)**: 후보를 개인화 피처(클릭/예약 이력, 지역 선호, CTR/CVR, 가격 민감도)로 ML 모델이 재정렬. 이 피처는 Kafka 행동 로그 → 배치/스트리밍으로 만든 피처 스토어에서 가져온다.\n\n### 트레이드오프\n완전 실시간 가격을 인덱스에 다 넣으면 OpenSearch 쓰기가 폭증한다. 그래서 \"검색엔 대표가/최저가만, 정확한 날짜별 요금은 상세 진입 시 가격 서비스(Kotlin WebFlux)에 재조회\"하는 식으로 인덱스 부담과 정확도를 절충한다. 검색은 근사치를 빠르게, 확정 직전엔 정확치를 동기 조회하는 패턴이다."
+    },
+    {
+     "topic": "글로벌 트래픽과 멀티 리전: Yanolja Cloud의 테넌트 격리·확장 전략",
+     "body": "### 한국 OTA를 넘어 글로벌 호스피탈리티 테크로\n야놀자는 인터파크·고글로벌트래블(GoGlobal)·이지테크노시스(eZee) 등을 인수하며 전 세계 수만 개 호텔이 쓰는 **PMS/SaaS 사업(Yanolja Cloud)**으로 확장했다. 이 도메인은 B2C 트래블 슈퍼앱과 요구사항이 다르다.\n\n### 멀티테넌트 격리 모델\nSaaS PMS는 \"한 코드베이스, 여러 호텔(테넌트)\"이다. 격리 수준을 다음처럼 혼합한다.\n- **공유 DB + tenant_id 파티셔닝**: 대다수 중소 호텔은 한 스키마를 공유하되 모든 쿼리에 `tenant_id`를 강제(row-level isolation)해 비용 효율을 확보.\n- **전용 스키마/인스턴스**: 대형 체인이나 규제 요구가 강한 테넌트는 별도 스키마/DB로 물리 격리.\n- 테넌트 라우팅은 인증 토큰의 tenant claim → 게이트웨이/미들웨어에서 컨텍스트 주입 → ORM 레벨 필터로 일관 적용한다.\n\n### 리전·데이터 주권\n글로벌 PMS는 데이터 레지던시(EU/인도/동남아 등) 규제를 받기 때문에, EKS 클러스터를 **리전별로 배치**하고 테넌트를 가까운 리전에 핀(pin)한다. 공통 메타데이터·요금 플랜은 글로벌, 운영 데이터는 리전 로컬에 두는 하이브리드 분할이 전형적이다.\n\n### 트레이드오프\n공유 테넌시는 비용·운영 효율이 높지만 \"시끄러운 이웃(noisy neighbor)\" 문제와 블라스트 반경(한 버그가 전 테넌트 영향)을 키운다. 그래서 테넌트별 rate limit·쿼터, 그리고 셀(cell) 기반 분할로 한 셀 장애가 전체로 번지지 않게 막는다. 글로벌 확장의 본질은 기능 차이가 아니라 **격리·규제·리전 라우팅을 코드 한 줄까지 일관되게 강제**하는 운영 규율이다."
+    },
+    {
+     "topic": "AI/추천과 LLM: Yanolja NEXT와 트래블 인텔리전스",
+     "body": "### 데이터 자산을 제품화하다\n야놀자는 예약·검색·리뷰·가격 변동이라는 대규모 트래블 데이터를 보유하고, 이를 추천과 생성형 AI로 제품화하는 `Yanolja NEXT`/리서치 조직을 운영한다(한국어 특화 LLM `EEVE`, `Gemma` 한국어 파인튜닝 등 공개 모델 작업이 대표적).\n\n### 추천 파이프라인 (배치 + 스트리밍 하이브리드)\n```\n행동로그(클릭/예약/검색) --> Kafka --> Spark/EMR(배치 피처)\n                                  --> 스트리밍(실시간 세션 피처)\n         두 피처 --> Feature Store --> 모델 서빙(추천 API)\n```\n- **배치**: 사용자×숙소 임베딩, 협업필터링/딥러닝 후보군을 Airflow 스케줄로 주기 생성해 데이터 웨어하우스(Snowflake/Redshift)와 피처 스토어에 적재.\n- **스트리밍**: 방금 본 숙소·지역·가격대 같은 세션 시그널을 실시간 반영해 \"지금 의도\"에 맞춘 재정렬.\n\n### LLM 활용 영역\n- **여행 플래닝/대화형 검색**: 자연어 질의(\"가성비 좋은 제주 오션뷰 펜션\")를 구조화 필터로 변환해 검색에 연결하는 NL→query 매핑.\n- **리뷰 요약·CS 자동화**: 대량 리뷰를 요약하고, 운영/CS 응대를 LLM으로 보조.\n- **한국어 성능**: 영어권 모델이 약한 한국어 도메인을 직접 파인튜닝해 보완(공개 벤치/모델로 검증).\n\n### 트레이드오프\n추천은 실시간성과 정확도가 상충한다. 무거운 딥러닝 후보 생성은 배치로 미리 만들어 두고(latency 절약), 가벼운 재정렬만 요청 시점에 실시간으로 돌리는 분리가 핵심이다. LLM은 환각·비용·지연 때문에 \"검색·예약 같은 정합성 경로엔 직접 끼우지 않고, 의도 해석·요약 같은 보조 레이어\"에 두는 경계 설정이 중요하다."
     }
    ],
    "github": {
@@ -14390,7 +14498,7 @@
     "https://www.yanoljacloud.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "11st",
