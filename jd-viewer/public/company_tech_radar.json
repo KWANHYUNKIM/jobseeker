@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T16:56:48",
+ "generated_at": "2026-06-19T18:42:12",
  "total": 100,
  "countries": [
   {
@@ -881,6 +881,10 @@
       "count": 2
      },
      {
+      "name": "Grafana",
+      "count": 2
+     },
+     {
       "name": "Achilles Autoscaler",
       "count": 1
      },
@@ -894,10 +898,6 @@
      },
      {
       "name": "ArgoCD",
-      "count": 1
-     },
-     {
-      "name": "AWS EC2/S3",
       "count": 1
      }
     ]
@@ -969,7 +969,7 @@
     },
     {
      "name": "JavaScript",
-     "count": 3
+     "count": 4
     },
     {
      "name": "Rust",
@@ -1079,12 +1079,12 @@
       "count": 6
      },
      {
-      "name": "MongoDB",
+      "name": "Elasticsearch",
       "count": 5
      },
      {
-      "name": "Elasticsearch",
-      "count": 4
+      "name": "MongoDB",
+      "count": 5
      },
      {
       "name": "Spark",
@@ -1141,11 +1141,11 @@
       "count": 1
      },
      {
-      "name": "CDN",
+      "name": "CloudFront CDN",
       "count": 1
      },
      {
-      "name": "CloudFront CDN",
+      "name": "ELK",
       "count": 1
      }
     ]
@@ -1160,11 +1160,11 @@
      "count": 1
     },
     {
-     "name": "C++ Authoritative 실시간 게임 서버",
+     "name": "C++ Authoritative 실시간 게임 서버 + tick 기반 권위적 시뮬레이션",
      "count": 1
     },
     {
-     "name": "Channel·Shard·World 분리 동시접속 확장",
+     "name": "Channel·Shard·World 분리로 동시접속 수평 확장",
      "count": 1
     },
     {
@@ -12332,8 +12332,8 @@
     "Go",
     "C++",
     "Python",
-    "Java",
-    "Swift"
+    "Swift",
+    "Java"
    ],
    "stack": {
     "backend": [
@@ -12342,10 +12342,11 @@
      "Go",
      "gRPC",
      "WebRTC SFU",
-     "Envoy"
+     "Envoy",
+     "Protocol Buffers"
     ],
     "frontend": [
-     "Android Native",
+     "Android Native (Kotlin)",
      "iOS Native (Swift)",
      "React",
      "TypeScript"
@@ -12356,28 +12357,30 @@
      "Redis",
      "Cassandra",
      "BigQuery",
-     "Elasticsearch"
+     "Elasticsearch",
+     "Pub/Sub"
     ],
     "infra": [
      "GCP",
      "AWS",
-     "Kubernetes",
+     "Kubernetes (GKE)",
      "Istio",
      "ArgoCD",
      "Terraform",
-     "Prometheus"
+     "Prometheus",
+     "Grafana"
     ]
    },
    "architecture": [
-    "실시간 미디어 SFU 기반 MSA",
-    "글로벌 멀티리전 저지연",
-    "이벤트 드리븐(Kafka)",
-    "ML 실시간 추론 파이프라인"
+    "WebRTC SFU 기반 실시간 미디어 MSA",
+    "글로벌 멀티리전 저지연 매칭",
+    "이벤트 드리븐(Kafka) 비동기 처리",
+    "ML 실시간 추론(필터·모더레이션) 파이프라인"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>Android Kotlin + iOS Swift\"]\n    WEBC[\"Web Client<br/>React + TypeScript\"]\n    TURN[\"TURN / STUN<br/>coturn (글로벌 분산)\"]\n  end\n  subgraph Media[\"Realtime Media\"]\n    SFU[\"Media Server SFU<br/>WebRTC + C++\"]\n    MLF[\"ML Filter / AR<br/>TensorFlow Lite + C++\"]\n    TRANS[\"Realtime Translate<br/>STT/MT/TTS Python\"]\n  end\n  subgraph Gateway[\"API / Mesh\"]\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Matching Service<br/>Go + gRPC\"]\n    USER[\"User / Auth<br/>Kotlin Spring Boot\"]\n    BILL[\"Billing / Item<br/>Kotlin Spring Boot\"]\n    MOD[\"Moderation<br/>Go + ML\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    REDIS[\"Redis<br/>세션/매칭 큐\"]\n    MYSQL[\"MySQL<br/>트랜잭션 데이터\"]\n    CASS[\"Cassandra<br/>세션/메시지 이력\"]\n    ES[\"Elasticsearch<br/>검색/필터\"]\n  end\n  subgraph Async[\"Streaming / Analytics\"]\n    KAFKA[\"Kafka<br/>이벤트 버스\"]\n    BQ[\"BigQuery<br/>분석/ML 학습\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"Kubernetes<br/>GCP + AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP -->|WebRTC| SFU\n  WEBC -->|WebRTC| SFU\n  APP -.NAT traversal.-> TURN\n  TURN --> SFU\n  SFU --> MLF\n  SFU --> TRANS\n  APP -->|gRPC/HTTPS| GW\n  GW -->|gRPC| MATCH\n  GW -->|gRPC| USER\n  GW -->|gRPC| BILL\n  SFU --> MOD\n  MATCH --> REDIS\n  USER --> MYSQL\n  BILL --> MYSQL\n  MATCH --> CASS\n  USER --> ES\n  MATCH --> KAFKA\n  MOD --> KAFKA\n  BILL --> KAFKA\n  KAFKA --> BQ\n  BQ --> MLF\n  Core --> K8S\n  Media --> K8S\n  K8S --> OBS",
-   "why_language": "Azar·Hakuna 같은 실시간 영상 제품은 모바일 네이티브 경험과 저지연 미디어 처리가 핵심이라, 안드로이드/서버 도메인 로직은 Kotlin(Spring Boot, Coroutines), iOS는 Swift로 작성한다. 초당 수만 건의 매칭과 시그널링을 처리하는 매칭·미디어 시그널링 서비스는 경량 동시성과 낮은 GC 오버헤드가 중요해 Go로 구현하고, WebRTC 미디어 파이프라인·AR 필터의 실시간 영상 처리는 성능이 절대적이라 C++로 작성한다. ML 학습·실시간 번역 파이프라인은 생태계가 풍부한 Python을 사용한다.",
-   "why_architecture": "전 세계 사용자를 1:1로 즉시 연결해야 하므로 미디어는 P2P보다 확장·녹화·필터링에 유리한 SFU 기반 구조를 택했고, 지역별 엣지 미디어 서버와 글로벌 분산 TURN으로 RTT를 줄여 저지연을 확보한다. 매칭·과금·인증·모더레이션을 독립 마이크로서비스로 쪼개 gRPC와 Istio 메시로 통신시켜 장애 격리와 개별 오토스케일링을 가능하게 했고, 매칭·모더레이션·과금 이벤트는 Kafka로 비동기 전파해 분석(BigQuery)과 ML 재학습 루프까지 느슨하게 연결한다.",
-   "summary": "WebRTC SFU 미디어 + Go/Kotlin gRPC MSA로 전 세계 실시간 1:1 영상을 저지연으로 매칭하는 글로벌 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    AND[\"Android Native<br/>Kotlin + WebRTC SDK\"]\n    IOS[\"iOS Native<br/>Swift + WebRTC SDK\"]\n    WEB[\"Web Console<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"API / Signaling\"]\n    LB[\"Edge LB<br/>GCP GLB + Envoy\"]\n    SIG[\"Signaling Service<br/>Kotlin Coroutines + gRPC\"]\n    TURN[\"TURN/STUN<br/>coturn Edge\"]\n  end\n  subgraph Core[\"Core Services\"]\n    MATCH[\"Match Service<br/>Go + gRPC\"]\n    USER[\"User/Profile<br/>Spring Boot Kotlin\"]\n    SFU[\"Media SFU<br/>C++ WebRTC\"]\n    MOD[\"Moderation<br/>Python ML Inference\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    PS[\"GCP Pub/Sub\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    REDIS[\"Match Queue/Session<br/>Redis\"]\n    CASS[\"Session State<br/>Cassandra\"]\n    MYSQL[\"Transactional<br/>MySQL\"]\n    ES[\"Search<br/>Elasticsearch\"]\n    BQ[\"Analytics<br/>BigQuery\"]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"GKE + Istio\"]\n    ARGO[\"ArgoCD + Terraform\"]\n    PROM[\"Prometheus + Grafana\"]\n  end\n  AND -->|gRPC/WSS| LB\n  IOS -->|gRPC/WSS| LB\n  WEB --> LB\n  LB --> SIG\n  SIG -->|gRPC| MATCH\n  SIG --> USER\n  MATCH -->|enqueue| REDIS\n  MATCH -->|allocate| SFU\n  AND -->|SRTP media| TURN\n  TURN --> SFU\n  SFU -->|frames| MOD\n  MOD -->|events| KAFKA\n  MATCH -->|events| KAFKA\n  USER --> MYSQL\n  SIG --> CASS\n  KAFKA --> BQ\n  KAFKA --> PS\n  USER --> ES\n  K8S -.-> Core\n  ARGO -.-> K8S\n  PROM -.-> Core",
+   "why_language": "초저지연 실시간 영상이 핵심이라 미디어 코덱·SFU 같은 핫패스는 C++(libwebrtc)로, 대량 동시 매칭과 시그널링은 고동시성에 강한 Go와 Kotlin Coroutines(논블로킹)로 처리한다. 비즈니스 로직·결제·프로필은 Spring Boot/Kotlin으로 안정적으로 다루고, ML 영상 필터·모더레이션 추론은 생태계가 풍부한 Python으로 구현한다. 클라이언트는 카메라·코덱 제어가 필수라 Android/iOS 네이티브(Kotlin/Swift)를 고수한다.",
+   "why_architecture": "1:1 랜덤 영상이라는 도메인 특성상 전 세계 사용자를 수백 ms 내에 매칭하고 미디어를 연결해야 하므로, 멀티리전 엣지에 SFU와 TURN을 분산 배치해 경로를 최적화한다. 매칭·시그널링·미디어·모더레이션을 독립 MSA로 분리해 한 컴포넌트 장애가 전체 통화를 끊지 않도록 격리하고, 상태 변화는 Kafka 이벤트로 비동기 전파해 분석·추천·정산을 디커플링한다. ML 추론은 통화 흐름과 분리된 파이프라인으로 실시간 필터·유해 콘텐츠 차단을 동시에 수행한다.",
+   "summary": "C++ SFU와 Go/Kotlin MSA로 전 세계 1:1 영상을 수백 ms에 매칭·연결하는 글로벌 실시간 미디어 플랫폼",
    "deep_dive": [
     {
      "topic": "WebRTC 실시간 미디어: SFU 기반 영상 처리 흐름",
@@ -12410,6 +12413,22 @@
     {
      "topic": "글로벌 멀티리전 배포와 관측성·복원력",
      "body": "### 멀티 클라우드·멀티 리전\nAzar/Hakuna 사용자는 특정 국가에 몰려 있지 않고 전 세계에 흩어져 있다. 그래서 인프라는 `GCP`와 `AWS`를 함께 쓰는 멀티 클라우드에, `Kubernetes` + `Istio` 서비스 메시로 리전별 클러스터를 운영한다. 미디어(SFU)·TURN은 사용자에게 물리적으로 가까운 엣지 리전에 배치해 RTT를 줄이고, 상태성 코어 서비스는 데이터 지역성을 고려해 배치한다.\n\n### 서비스 메시가 주는 것\n`Istio/Envoy`를 깔면 애플리케이션 코드를 건드리지 않고 다음을 얻는다.\n- **mTLS**: 서비스 간 통신 암호화/인증 자동화\n- **트래픽 셰이핑**: 가중치 기반 카나리 배포, 리전 라우팅\n- **복원력 정책**: 재시도, 타임아웃, **서킷 브레이커**, outlier detection을 사이드카에서 일괄 적용\n- **L7 관측성**: 모든 gRPC 호출의 지연·에러율 자동 수집\n\n### 관측성 스택\n`Prometheus`로 메트릭을 긁고 `Grafana`로 대시보드를 구성한다. 미디어 품질 지표(패킷 손실률, 지터, 매칭 성공률, p99 시그널링 지연)는 일반 백엔드 SLO와 함께 별도로 모니터링된다. 영상 서비스 특성상 \"요청은 성공했지만 영상 품질이 나빴다\"는 상황을 잡아야 하므로 RTC 레벨 텔레메트리가 핵심이다.\n\n### 복원력 설계\n- **장애 격리**: MSA로 쪼갰기 때문에 Billing 장애가 매칭/미디어로 전파되지 않는다. 매칭·미디어 같은 핵심 경로는 과금 같은 부가 경로와 의존성을 끊어 \"돈은 못 받아도 영상은 연결된다\"를 유지한다.\n- **페일오버**: 한 리전 SFU/TURN이 죽으면 클라이언트는 차선 리전으로 재연결한다(ICE 재협상).\n- **백프레셔**: Kafka가 분석·모더레이션 후처리를 비동기 버퍼링해, 다운스트림(BigQuery, ML)이 느려도 실시간 매칭 경로는 영향을 받지 않는다.\n\n### 배포\n선언적 GitOps(`ArgoCD`)와 `Terraform` IaC로 멀티 리전 인프라를 코드로 관리하고, 메시 가중치 라우팅을 이용한 카나리로 신규 버전을 일부 트래픽에만 노출해 안전하게 롤아웃한다."
+    },
+    {
+     "topic": "시그널링과 미디어 평면 분리: Control Plane vs Data Plane",
+     "body": "### 두 개의 평면으로 나누는 이유\n하이퍼커넥트의 통화는 **시그널링(control plane)** 과 **미디어 전송(data plane)** 이 물리적으로 분리되어 있다. 시그널링은 \"누구와 연결할지, 어떤 코덱·해상도로 협상할지\"를 결정하는 메타데이터 교환이고, 실제 영상/음성 비트스트림은 별도 경로(SRTP over UDP)로 흐른다.\n\n- **Signaling Service**: Kotlin Coroutines + gRPC(또는 WSS)로 구현. 통화당 수십 개의 작은 메시지(offer/answer SDP, ICE candidate, 통화 종료 신호)를 주고받는다. 메시지는 작지만 동시 세션 수가 수십만이라 **스레드-퍼-커넥션 모델은 메모리가 폭발**한다. 그래서 코루틴 기반 논블로킹으로 커넥션 하나당 비용을 KB 단위로 줄인다.\n- **Media SFU**: C++ libwebrtc 기반. 송신자 1명의 영상을 받아 수신자에게 **선택적으로(Selective Forwarding)** 중계한다. 트랜스코딩을 하지 않고 포워딩만 하므로 CPU를 아끼고 지연을 최소화한다.\n\n### SDP 협상 흐름\n```\nClient A --offer(SDP)--> Signaling --> Client B\nClient B --answer(SDP)--> Signaling --> Client A\nA,B <--ICE candidates--> Signaling (trickle ICE)\nA,B --SRTP media--> TURN/SFU (시그널링 거치지 않음)\n```\n핵심 트레이드오프는 **\"왜 SFU인가\"** 이다. P2P mesh는 서버 비용이 없지만 모바일 업링크가 약하고 NAT 통과 실패율이 높다. MCU는 서버에서 합성해 클라이언트는 편하지만 트랜스코딩 비용이 통화 수에 비례해 폭발한다. 하이퍼커넥트는 **1:1이 다수이지만 그룹/라이브 확장을 염두**에 두고, 트랜스코딩 비용 없이 확장 가능한 SFU를 선택했다. 1:1에서도 SFU를 끼우면 NAT 통과(TURN relay)와 모더레이션용 프레임 추출이 쉬워지는 부가 이점이 있다."
+    },
+    {
+     "topic": "글로벌 매칭 큐의 샤딩과 일관성 전략",
+     "body": "### 매칭 큐는 왜 어려운가\n랜덤 영상 매칭은 본질적으로 **분산 환경의 짝짓기 문제**다. 전 세계에서 동시에 \"지금 통화하고 싶다\"는 사용자가 큐에 쏟아지고, 시스템은 이들을 **선호 조건(성별·언어·지역·관심사) + 저지연(가까운 리전)** 기준으로 수백 ms 내에 두 명씩 매칭해야 한다.\n\n### Redis 기반 큐 + 샤딩\n- 대기 중인 사용자는 **Redis**에 후보 풀로 보관된다. 단일 글로벌 큐로 두면 락 경합과 네트워크 왕복으로 매칭 지연이 커지므로, **리전·언어·조건별로 큐를 샤딩**한다.\n- 매칭 워커(Go)는 자신이 담당하는 샤드의 후보를 폴링/이벤트로 가져와 짝을 만든다. **두 워커가 같은 사용자를 동시에 매칭하는 race condition**을 막기 위해 Redis의 원자적 연산(`Lua script`, `SETNX`/`pop` 패턴)으로 \"이 사용자를 점유했다\"는 클레임을 건다.\n- 매칭 성사 순간 사용자는 큐에서 제거되고, 결과는 양쪽 시그널링 세션으로 푸시된다.\n\n### 일관성 vs 지연 트레이드오프\n매칭은 **강한 일관성보다 낮은 지연이 우선**이다. 한 사용자가 아주 짧은 순간 두 후보에 보일 수 있어도, 점유 클레임이 빠르게 한쪽을 무효화하면 사용자 체감상 문제가 없다. 반대로 글로벌 락으로 완벽한 일관성을 추구하면 매칭이 수 초씩 느려져 이탈한다.\n\n### 세션 상태는 Cassandra로\n매칭이 끝나 통화가 시작되면, 통화 세션의 상태(참여자, 시작 시각, 미디어 서버 위치, 모더레이션 플래그)는 **쓰기 처리량이 크고 멀티리전 복제가 쉬운 Cassandra**에 저장한다. MySQL은 결제·구독처럼 트랜잭션 정합성이 필요한 데이터에 한정하고, **수명이 짧고 양이 많은 세션 데이터는 Cassandra/Redis**로 분리하는 것이 핵심 설계 결정이다."
+    },
+    {
+     "topic": "GKE 위의 멀티리전 트래픽 라우팅과 오토스케일링",
+     "body": "### 트래픽을 가장 가까운 리전으로\n사용자는 **GCP Global Load Balancer**의 Anycast IP로 들어오고, GLB가 출발지에 가장 가까운 리전의 **GKE 클러스터**로 라우팅한다. 미디어는 시그널링과 달리 가까운 **엣지 TURN/SFU**에 직접 붙어 RTT를 줄인다. 한국 사용자와 브라질 사용자가 매칭되면, SFU는 둘의 중간/한쪽 엣지에 배치해 양쪽 지연 합을 최소화하는 식으로 미디어 서버 위치를 고른다.\n\n### 서비스 메시(Istio/Envoy)\n클러스터 내부 서비스 간 호출은 **gRPC over Istio**로 흐른다. Envoy 사이드카가 **mTLS, 재시도, 서킷브레이킹, 지역 인지 라우팅(locality-aware LB)**을 처리한다. 매칭 서비스가 같은 존의 유저 서비스를 우선 호출하게 해 크로스-존 트래픽 비용과 지연을 줄인다.\n\n### 오토스케일링의 두 축\n| 대상 | 스케일 기준 | 특징 |\n|------|-------------|------|\n| 시그널링/매칭 (stateless) | CPU + 동시 세션 수(custom metric) | HPA로 빠르게 증감 |\n| Media SFU (stateful 통화) | 진행 중 통화 수 / 대역폭 | **draining** 필요 — 통화 중인 노드는 즉시 못 죽임 |\n\nSFU 스케일다운의 핵심 난점은 **\"통화 중인 노드를 죽이면 통화가 끊긴다\"**는 점이다. 그래서 스케일다운 시 신규 매칭만 차단(cordon)하고 기존 통화가 끝날 때까지 graceful drain한 뒤 종료한다. 트래픽은 저녁·주말에 몰리는 강한 일별/주별 주기성을 보여, 예측 기반 사전 스케일업으로 콜드스타트(특히 SFU 미디어 노드의 커널/UDP 버퍼 워밍)를 방지한다.\n\n### 배포: ArgoCD GitOps + 카나리\n인프라는 **Terraform**으로 코드화하고, 애플리케이션 배포는 **ArgoCD GitOps**로 선언적 동기화한다. 실시간 통화는 배포 실수의 영향이 즉각적이라 **카나리 배포**로 소수 트래픽에 먼저 적용하고 통화 성공률·미디어 품질 지표(MOS, 패킷 손실)를 Prometheus로 관찰한 뒤 전면 롤아웃한다."
+    },
+    {
+     "topic": "관측성: 통화 품질(QoE)을 메트릭으로 추적하기",
+     "body": "### 일반 메트릭으로는 부족하다\n웹 서비스는 보통 요청 지연·에러율(RED 메트릭)이면 충분하지만, 실시간 영상은 **HTTP 200이어도 사용자 경험이 망가질 수 있다**. 통화는 연결됐는데 화면이 끊기거나(jitter), 소리가 밀리거나(latency), 화질이 깨지면(packet loss) 그 자체가 장애다.\n\n### 수집하는 통화 품질 지표\n- **RTT / Jitter / Packet Loss**: WebRTC `getStats()` API로 클라이언트와 SFU 양쪽에서 수집.\n- **연결 성공률(Connection Success Rate)**: ICE 협상이 TURN relay까지 실패하는 비율. NAT 환경·통신사별로 쪼개 본다.\n- **매칭 지연(Time-to-Match)**: 큐 진입부터 상대 배정까지. 조건·리전별 분포.\n- **미디어 설정 시간(Time-to-First-Frame)**: 매칭 후 첫 영상 프레임까지.\n\n### 파이프라인\n```\nClient getStats / SFU stats\n   --> Kafka (대량 텔레메트리 이벤트)\n   --> BigQuery (배치 분석 / 리전·통신사·기기별 슬라이싱)\n   --> Prometheus + Grafana (실시간 대시보드 / 알람)\n```\n실시간 알람은 **Prometheus**로 \"특정 리전 연결 성공률 급락\" 같은 이상을 즉시 잡고, 장기 추세·코호트 분석(예: 신규 단말 모델에서만 화질 저하)은 **BigQuery**에서 SQL로 파고든다. 분산 트레이싱은 한 통화의 시그널링→매칭→SFU 할당 경로를 trace ID로 묶어, \"이 통화는 어디서 200ms를 잃었나\"를 추적한다.\n\n### 왜 이렇게까지 하나\n랜덤 영상은 **첫 통화 경험이 리텐션을 좌우**한다. 첫 매칭이 5초 걸리거나 화면이 깨지면 사용자는 바로 이탈한다. 그래서 QoE 지표를 비즈니스 KPI와 동급으로 두고, 배포·인프라 변경의 성공 판정 기준 자체를 \"통화 품질 회귀 여부\"로 삼는다."
     }
    ],
    "github": {
@@ -12419,10 +12438,10 @@
    "sources": [
     "https://hyperconnect.github.io/",
     "https://github.com/hyperconnect",
-    "https://hyperconnect.com/"
+    "https://webrtc.org/getting-started/overview"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "kakao",
@@ -13026,49 +13045,55 @@
     "C++",
     "C#",
     "Python",
+    "Java",
     "Rust",
-    "Java"
+    "JavaScript"
    ],
    "stack": {
     "backend": [
      "자체 게임서버 엔진(C++)",
-     "C# 게임서버",
-     "Spring Boot",
-     "Node.js",
-     "gRPC/사내 RPC"
+     "C# 게임서버(.NET)",
+     "Spring Boot(플랫폼/빌링/계정)",
+     "Node.js(웹·런처 API)",
+     "gRPC/사내 RPC",
+     "Netty 기반 비동기 I/O"
     ],
     "frontend": [
      "Unreal Engine 5",
      "Unity",
-     "React",
-     "사내 런처/Patcher"
+     "자체 게임 클라이언트 엔진",
+     "React(포털·운영툴)",
+     "사내 런처/Patcher",
+     "WebGL/Canvas(웹게임)"
     ],
     "data": [
-     "MySQL(샤딩)",
-     "Redis",
+     "MySQL(계정·인벤토리 샤딩)",
+     "Redis(세션·랭킹·캐시)",
      "MongoDB",
-     "Kafka",
+     "Kafka(로그 스트림)",
      "Hadoop/Spark",
-     "Druid/ClickHouse류 OLAP"
+     "Druid/ClickHouse류 OLAP",
+     "Elasticsearch(검색·운영로그)"
     ],
     "infra": [
      "사내 IDC(베어메탈)",
      "AWS",
      "Kubernetes",
-     "CDN",
-     "NGS(Nexon Game Security)"
+     "글로벌 CDN(패치 배포)",
+     "NGS(Nexon Game Security)",
+     "Prometheus/Grafana 관측성"
     ]
    },
    "architecture": [
-    "C++ Authoritative 실시간 게임 서버",
-    "Channel·Shard·World 분리 동시접속 확장",
-    "Kafka→Hadoop/Spark 대규모 로그 분석 파이프라인",
-    "라이브 운영(LiveOps) 중심 배포·핫픽스 구조"
+    "C++ Authoritative 실시간 게임 서버 + tick 기반 권위적 시뮬레이션",
+    "Channel·Shard·World 분리로 동시접속 수평 확장",
+    "Kafka→Hadoop/Spark 대규모 로그 분석 + Nexon Intelligence Labs ML 파이프라인",
+    "LiveOps 중심 무중단·핫픽스·CDN 패치 배포 구조"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    C[\"Game Client<br/>Unreal Engine 5 / Unity\"]\n    P[\"Patcher<br/>CDN + Diff Patch\"]\n  end\n  subgraph Edge\n    GW[\"Login Gateway<br/>Auth + Session\"]\n    MM[\"Matchmaking<br/>C++ Service\"]\n  end\n  subgraph Core\n    WS[\"World Server<br/>C++ Authoritative\"]\n    CH[\"Channel / Shard<br/>Zone Servers\"]\n    RT[\"Chat / Realtime<br/>Redis PubSub\"]\n    AC[\"Anti-cheat<br/>NGS Client+Server\"]\n  end\n  subgraph DataLayer\n    DB[\"Game DB<br/>MySQL Sharded\"]\n    RC[\"Cache<br/>Redis\"]\n    MG[\"Log / Profile<br/>MongoDB\"]\n  end\n  subgraph Analytics\n    KF[\"Event Bus<br/>Kafka\"]\n    HD[\"Data Lake<br/>Hadoop + Spark\"]\n    ML[\"Intelligence Labs<br/>ML 이탈/추천\"]\n  end\n  subgraph Platform\n    IN[\"Infra<br/>IDC + AWS + K8s\"]\n  end\n  P -->|HTTPS| C\n  C -->|TCP login| GW\n  GW --> MM\n  MM --> WS\n  C -->|UDP/TCP game packets| WS\n  WS --> CH\n  WS --> RT\n  WS --> AC\n  WS --> DB\n  WS --> RC\n  WS -->|events| KF\n  DB --> MG\n  KF --> HD\n  HD --> ML\n  ML -->|타겟팅/추천| GW\n  IN --- Core\n  IN --- DataLayer",
-   "why_language": "수십 ms의 tick 안에 수천 명의 상태를 권위적으로 시뮬레이션해야 하는 MMO·실시간 대전 장르 특성상, 메모리·CPU를 직접 제어할 수 있는 C++가 게임 서버의 중심이며 일부 신작·툴은 C#로 작성된다. 데이터 분석·운영 자동화·ML 파이프라인은 생산성이 높은 Python, 결제·플랫폼 백오피스는 Java(Spring) 계열을 쓰고, Embark Studios 인수를 통해 렌더링·툴링 영역에서 Rust 자산도 보유한다.",
-   "why_architecture": "동시접속이 채널·서버 단위로 폭증하는 온라인 게임에서는 단일 프로세스로 확장이 불가능하므로 World→Channel→Shard로 공간을 분할해 수평 확장하고, 치팅을 막기 위해 서버가 모든 판정을 쥐는 Authoritative 구조를 택했다. 동시에 결제·이탈·밸런싱을 데이터로 운영해야 하므로 게임 로그를 Kafka로 흘려 Hadoop/Spark 레이크에 적재하고 Intelligence Labs의 ML로 되먹이는 대규모 분석 파이프라인을 핵심에 두었다.",
-   "summary": "C++ 권위적 게임 서버 + 채널·샤드 수평 확장 + Kafka·Hadoop 기반 데이터 드리븐 라이브 운영",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    GC[\"Game Client<br/>UE5 + Unity + 자체엔진\"]\n    LN[\"Launcher / Patcher<br/>사내 런처 + CDN\"]\n    WEB[\"Web Portal<br/>React\"]\n  end\n  subgraph Edge[\"Gateway / Security\"]\n    LB[\"Login / Gateway<br/>L4 LB + 사내 RPC\"]\n    NGS[\"Anti-cheat<br/>NGS\"]\n  end\n  subgraph Core[\"Game Core Services\"]\n    GS[\"Game Server<br/>C++ Authoritative tick\"]\n    CS[\"C# Game Server<br/>.NET\"]\n    MM[\"Matchmaking / Session<br/>사내 RPC\"]\n    PLT[\"Platform / Billing<br/>Spring Boot\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MY[\"MySQL Shards<br/>계정 인벤토리\"]\n    RD[\"Redis<br/>세션 랭킹 캐시\"]\n    MG[\"MongoDB<br/>로그 메타\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KF[\"Kafka<br/>게임 로그 스트림\"]\n    HD[\"Hadoop / Spark<br/>배치 분석\"]\n    OL[\"OLAP<br/>Druid ClickHouse류\"]\n    ML[\"ML Platform<br/>Nexon Intelligence Labs\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    IDC[\"IDC Bare-metal + AWS\"]\n    K8S[\"Kubernetes\"]\n  end\n  GC -->|사내 RPC/UDP| LB\n  LN -->|패치 다운로드| GC\n  WEB --> PLT\n  GC --- NGS\n  LB --> GS\n  LB --> CS\n  GS --> MM\n  GS --> RD\n  GS -->|영속화| MY\n  CS --> MY\n  PLT --> MY\n  GS -->|이벤트 로그| KF\n  CS -->|이벤트 로그| KF\n  KF --> HD\n  KF --> OL\n  HD --> ML\n  ML -->|이탈예측 이상탐지| PLT\n  GS --> MG\n  PLT --> K8S\n  K8S --> IDC",
+   "why_language": "실시간 MMO·대전 게임은 수십 ms tick 안에 수천 객체의 물리·전투를 처리해야 해 GC 정지가 없고 메모리·CPU를 직접 통제하는 C++가 코어 게임 서버의 기본이다. 메이플스토리2·일부 신작은 생산성과 .NET 생태계를 위해 C#을, 계정·빌링·웹 플랫폼은 안정적 트랜잭션과 채용 풀이 넓은 Java/Spring Boot를, 대규모 로그 분석과 ML은 Python을 쓰는 식으로 도메인별로 언어를 분리했다.",
+   "why_architecture": "동시접속이 폭발하는 MMO 특성상 단일 서버로는 부하를 감당할 수 없어 Channel·Shard·World로 공간과 인구를 쪼개 수평 확장하고, 치팅이 매출과 직결되므로 서버를 권위(Authoritative)로 두고 클라 입력을 전부 검증한다. 또한 게임은 출시가 아니라 운영이 본질이라 무중단 핫픽스·정기점검·CDN 패치로 라이브 콘텐츠를 지속 공급하는 LiveOps 구조와, 모든 행동을 Kafka로 흘려 Hadoop/Spark·ML로 되먹이는 데이터 드리븐 운영을 핵심에 뒀다.",
+   "summary": "C++ 권위 게임서버 + 샤드/월드 수평확장에 Kafka·Spark·ML 데이터 파이프라인을 얹은 LiveOps 중심 게임 플랫폼",
    "deep_dive": [
     {
      "topic": "C++ Authoritative 게임 서버: tick loop와 권위적 시뮬레이션",
@@ -13105,55 +13130,31 @@
     {
      "topic": "데이터 드리븐 운영과 ML: Nexon Intelligence Labs의 이탈예측·추천·이상탐지",
      "body": "### 게임 회사가 사실은 데이터 회사인 이유\n\n부분유료화(F2P) 게임의 매출은 소수 핵심 유저의 잔존·결제에 크게 좌우된다. 넥슨이 **Nexon Intelligence Labs(인텔리전스랩스)**라는 별도 데이터/AI 조직을 둔 이유가 여기 있다. 핵심은 \"게임에서 나오는 **초당 수백만 건의 행동 로그**를 분석 가능한 자산으로 바꿔 운영에 되먹이는 것\"이다.\n\n### 로그 수집 → 레이크 → 분석 흐름\n\n```\n게임 서버  --이벤트-->  Kafka  -->  적재(배치/스트림)  -->  Hadoop/HDFS 데이터 레이크\n                                   |--> Spark 배치 분석\n                                   |--> OLAP(Druid/ClickHouse류) 대시보드\n                                   |--> 피처 저장소 --> ML 모델\n```\n\n- **Kafka**는 게임 서버와 분석계를 느슨하게 분리하는 버퍼다. 분석 파이프라인이 느려져도 게임 서버 tick에는 영향을 주지 않는다(백프레셔 격리).\n- **Hadoop/Spark**는 전수 로그에 대한 대규모 배치(코호트 분석, 리텐션 곡선, 경제 시뮬레이션)를 돌린다.\n- 실시간성이 필요한 대시보드는 **컬럼형 OLAP 엔진**으로 분리해 운영팀이 지표를 즉시 본다.\n\n### 대표 ML 적용\n\n| 영역 | 동작 | 운영 액션 |\n|---|---|---|\n| **이탈 예측(churn)** | 최근 접속 패턴·결제·진행도로 이탈 확률 산출 | 위험 유저에 복귀 보상/쿠폰 타겟팅 |\n| **추천/개인화** | 플레이 성향 기반 콘텐츠·상품 추천 | 상점 노출·이벤트 개인화 |\n| **이상탐지(작업장/봇)** | 행동 시퀀스가 정상 분포에서 벗어나는지 탐지 | 매크로·골드파밍·결제사기 차단(anti-cheat 보강) |\n| **밸런싱** | 직업·아이템별 승률·사용률 통계 | 점검 때 수치 패치 근거 |\n\n### 엔지니어링 트레이드오프\n\n- **배치 vs 스트림**: 정확하지만 지연이 큰 Spark 배치와, 빠르지만 근사적인 스트림 처리를 용도별로 나눠 쓴다(이탈 점수는 일배치, 어뷰징 차단은 준실시간).\n- **개인정보·규제**: 결제·개인정보가 섞이므로 로그는 가명화/접근통제 하에 다루고, 분석계와 운영계의 데이터 권한을 분리한다.\n- 이 데이터 루프가 결국 'C++ 게임 서버'와 'Hadoop 분석계'를 하나의 제품으로 묶는 접착제이며, 넥슨이 단순 게임 개발이 아니라 **라이브 서비스 운영 역량**으로 경쟁하는 근거다."
+    },
+    {
+     "topic": "패치 배포 파이프라인: 차분 패치(Delta Patch)와 CDN 엣지 분산",
+     "body": "### 왜 패치가 게임 인프라의 핵심인가\n넥슨 같은 라이브 게임에서 클라이언트 빌드는 수십 GB에 달하고, 정기점검(보통 주 1회 목요일 새벽)마다 수백만 유저가 **동시에** 런처를 켜 패치를 받는다. 만약 전체 빌드를 매번 다시 받게 하면 점검 직후 트래픽이 수십 Tbps로 치솟아 어떤 단일 IDC도 버틸 수 없다. 그래서 핵심은 두 가지다: ① 받는 양을 최소화하는 **차분 패치**, ② 받는 곳을 분산하는 **CDN 엣지**.\n\n### 차분 패치(Delta / Binary Diff)\n- 클라이언트 리소스는 보통 `.pack`/`.nrm` 같은 **아카이브 단위**로 묶여 있고, 각 파일은 버전별 해시(`SHA-256` 등)와 함께 매니페스트(manifest)에 기록된다.\n- 런처가 켜지면 로컬 매니페스트 버전 vs 서버 최신 매니페스트를 비교해 **바뀐 청크만** 계산한다. 텍스처 한 장이 바뀌어도 전체 아카이브가 아니라 `bsdiff`/`xdelta` 류로 만든 바이너리 델타만 내려준다.\n- 결과적으로 \"클라 10GB 중 콘텐츠 업데이트는 실제 200~500MB만 다운로드\" 같은 구조가 된다. 이 매니페스트 비교 로직이 런처의 심장이다.\n\n### CDN 엣지 분산과 오리진 보호\n- 패치 바이너리는 정적 파일이므로 **글로벌 CDN**(상용 CDN + 넥슨 자체 캐시 노드)에 올린다. 유저는 가장 가까운 엣지에서 받고, IDC 오리진은 캐시 미스일 때만 때린다.\n- 점검 종료 시각에 트래픽이 한 번에 몰리는 **thundering herd**를 막기 위해, 런처는 다운로드 시작에 랜덤 지터를 주거나, CDN은 오리진으로 가는 요청을 **request coalescing**(같은 파일 동시 요청을 1건으로 합침)으로 묶는다.\n- 패치 무결성은 다운로드 후 청크 해시 재검증으로 보장하고, 변조된 클라는 NGS 단계에서 다시 걸러진다.\n\n### 트레이드오프\n| 선택 | 장점 | 비용 |\n|---|---|---|\n| 차분 패치 | 다운로드량·점검 트래픽 급감 | 빌드 시 델타 생성·버전 매트릭스 관리 복잡 |\n| 아카이브 묶음 | I/O·파일핸들 효율, 변조 방어 | 작은 변경에도 청크 재생성 필요 |\n| CDN 엣지 | 오리진 부하 분산, 글로벌 지연 감소 | CDN 비용, 캐시 무효화 타이밍 관리 |\n\n실무에서 가장 까다로운 건 **캐시 무효화 타이밍**이다. 새 매니페스트를 CDN에 다 퍼뜨리기 전에 게임 서버가 신버전을 요구하면 유저는 \"패치 파일을 못 찾음\" 에러를 본다. 그래서 보통 *바이너리를 먼저 전 엣지에 전파 → 매니페스트(포인터)를 마지막에 교체*하는 순서를 강제한다."
+    },
+    {
+     "topic": "관측성: tick 단위 게임 서버의 메트릭·트레이싱과 장애 조기탐지",
+     "body": "### 게임 서버 관측성이 일반 웹과 다른 이유\n웹 서비스는 요청-응답 단위로 latency를 보면 되지만, 권위적 게임 서버는 **고정 tick 루프**(예: 30Hz=33ms, 60Hz=16ms)로 돈다. 여기서 가장 중요한 단일 지표는 **tick budget 초과 여부**다. 한 tick 안에 물리·AI·전투·네트워크 송신을 다 끝내지 못하면 `tick overrun`이 발생하고, 그게 누적되면 유저 체감으로 \"렉(rubber-banding)\"이 된다.\n\n### 핵심 메트릭\n- `tick_duration_ms` (p50/p95/p99): tick 처리 시간 분포. p99가 tick 주기에 근접하면 위험.\n- `players_per_channel` / `entities_per_world`: 채널·월드별 부하. 특정 채널에 인구가 쏠리면 매치메이킹/채널 배정이 분산을 못 하고 있다는 신호.\n- `rpc_inflight`, `db_write_latency`: 영속화(인벤토리 저장)가 게임 루프를 블로킹하지 않는지. 그래서 보통 DB 쓰기는 **비동기 큐**로 빼고 메인 tick은 절대 동기 DB 호출을 하지 않는다.\n- `packet_loss` / `rtt`: 클라이언트 네트워크 품질. 지연 보상(lag compensation) 파라미터 튜닝의 근거.\n\n### 수집·저장 파이프라인\n- 서버 프로세스는 메트릭을 in-memory 카운터로 모았다가 주기적으로 Prometheus exporter나 사내 에이전트로 push/scrape 한다. tick 루프 안에서 메트릭 전송을 하면 그 자체가 overrun을 유발하므로 **별도 스레드/링버퍼**로 분리한다.\n- 행위 로그(전투, 결제, 아이템 획득)는 메트릭과 별개로 **Kafka**에 흘려 Hadoop/Spark·OLAP로 가고, 운영툴 검색용으로 Elasticsearch에 색인한다. 즉 \"실시간 헬스 = Prometheus/Grafana, 사후 분석 = Kafka→Spark/OLAP, 단건 추적 = ES\"로 3중 분리한다.\n\n### 이상탐지와 자동 알림\n넥슨 규모에서 사람이 대시보드를 계속 볼 수 없으니, tick overrun 비율·동접 급변·결제 실패율 같은 지표에 **임계치·이상탐지(anomaly detection)**를 걸어 점검/장애 징후를 조기에 잡는다. 이 이상탐지 로직은 어뷰징·핵 탐지(예: 비정상적으로 빠른 이동·획득 속도)와도 모델·피처를 상당 부분 공유한다 — 둘 다 \"정상 분포에서 벗어난 행동\"을 찾는 문제이기 때문이다."
+    },
+    {
+     "topic": "장애 대응·복원력: 월드 격리, 무중단 핫픽스, 세션 페일오버",
+     "body": "### 게임 서버의 장애는 '폭발 반경'을 줄이는 게 전부\n수백만 동접 환경에서 단일 장애로 전체 서비스가 내려가면 매출·평판 타격이 막대하다. 넥슨식 설계의 핵심은 **격리(isolation)로 폭발 반경(blast radius)을 좁히는 것**이다.\n\n### 1) 월드·채널 단위 격리\n- 유저는 특정 World(서버군)와 Channel에 배정되며, 한 월드의 프로세스가 죽어도 **다른 월드는 멀쩡하다**. 장애가 \"서비스 전체 다운\"이 아니라 \"○○월드 일시 접속 불가\"로 국소화된다.\n- 채널은 동적으로 추가/제거(스케일 아웃/인)되므로, 인구가 몰리면 채널을 늘리고 한산하면 합친다. 이때 채널 이동은 유저에게 로딩 화면 한 번으로 보인다.\n\n### 2) 무중단 핫픽스 vs 정기점검\n게임 변경은 두 종류로 나뉜다:\n- **데이터/설정 핫픽스**: 아이템 확률, 밸런스 수치, 이벤트 ON/OFF 같은 건 클라 재배포 없이 서버가 **설정 테이블을 리로드**해 즉시 반영한다(LiveOps의 핵심). 그래서 게임 로직을 가능한 한 **데이터 드리븐**으로 설계해, 코드 재배포 없이 운영팀이 값만 바꿔 대응한다.\n- **바이너리/스키마 변경**: 게임 서버 엔진이나 DB 스키마가 바뀌면 점검(maintenance)이 필요하다. 이때는 공지→로그인 차단→유저 graceful drain→배포→검증→오픈 순서를 밟는다.\n\n### 3) 세션·상태 복원\n- 게임 서버는 상태(인벤토리, 위치, 버프)를 메모리에 들고 있어 프로세스가 죽으면 휘발된다. 그래서 **체크포인트(주기적 영속화)**가 중요하다 — 마지막 저장 시점까지는 롤백되더라도 계정·재화 같은 핵심 자산은 보호된다.\n- 결제·재화처럼 **절대 유실되면 안 되는 트랜잭션**은 게임 루프와 분리된 플랫폼(Spring Boot/MySQL) 쪽에서 트랜잭션·멱등키(idempotency key)로 보장한다. \"게임 진행 상태는 약간 롤백 허용, 돈은 절대 불가\"라는 **일관성 등급 차등**이 핵심 설계 결정이다.\n\n### 트레이드오프\n메모리 권위 서버는 빠르지만 휘발성이 크다. 이를 무한정 잦은 DB 저장으로 메우면 DB가 병목이 된다. 그래서 \"핵심 자산은 즉시·강하게, 휘발 가능한 전투 상태는 느슨하게\" 저장 빈도를 **데이터 가치에 비례**시키는 게 실전 균형점이다."
     }
    ],
    "github": {
-    "org": "https://github.com/EmbarkStudios",
-    "repos": [
-     {
-      "name": "EmbarkStudios/rust-gpu",
-      "url": "https://github.com/EmbarkStudios/rust-gpu",
-      "desc": "Rust 코드를 SPIR-V GPU 셰이더로 컴파일하는 실험적 컴파일러",
-      "lang": "Rust",
-      "stars": 7574
-     },
-     {
-      "name": "EmbarkStudios/kajiya",
-      "url": "https://github.com/EmbarkStudios/kajiya",
-      "desc": "실시간 글로벌 일루미네이션을 탐구하는 실험적 Vulkan 렌더러",
-      "lang": "Rust",
-      "stars": 5334
-     },
-     {
-      "name": "EmbarkStudios/cargo-deny",
-      "url": "https://github.com/EmbarkStudios/cargo-deny",
-      "desc": "Rust 의존성의 라이선스·보안 취약점·중복을 감사하는 CI 도구",
-      "lang": "Rust",
-      "stars": 2338
-     },
-     {
-      "name": "EmbarkStudios/puffin",
-      "url": "https://github.com/EmbarkStudios/puffin",
-      "desc": "게임/실시간 앱용 경량 인스트루멘테이션 프로파일러",
-      "lang": "Rust",
-      "stars": 1715
-     },
-     {
-      "name": "EmbarkStudios/physx-rs",
-      "url": "https://github.com/EmbarkStudios/physx-rs",
-      "desc": "NVIDIA PhysX 물리 엔진의 Rust 바인딩",
-      "lang": "Rust",
-      "stars": 730
-     }
-    ]
+    "org": "https://github.com/nexon",
+    "repos": []
    },
    "sources": [
-    "https://ndc.nexon.com/",
-    "https://www.intelligencelabs.tech/",
-    "https://github.com/EmbarkStudios"
+    "https://www.intelligencelabs.nexon.com/",
+    "https://career.nexon.com/",
+    "https://www.nexon.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "smilegate",
