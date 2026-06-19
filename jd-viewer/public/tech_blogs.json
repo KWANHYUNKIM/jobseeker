@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-19T13:18:23",
- "total": 782,
+ "generated_at": "2026-06-19T15:03:47",
+ "total": 783,
  "sources": [
   {
    "company": "Etsy",
@@ -10,7 +10,7 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 36
+   "count": 37
   },
   {
    "company": "AWS",
@@ -515,10 +515,39 @@
  },
  "posts": [
   {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "You don’t understand DNS like you think you do​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍​﻿‌‍‌‌‌‍​﻿​﻿‌‌‌‍​‌​﻿​‍​﻿‍‌​﻿‍​​‍﻿‌​﻿​‍​﻿​‍​﻿​​​﻿​﻿​‍﻿‌​﻿‌​‌‍​‍​﻿​​​﻿‌﻿​‍﻿‌‌‍​‍​﻿‍​‌‍‌​‌‍​﻿​‍﻿‌​﻿‍‌​﻿‌‌‌‍​‍‌‍​‌​﻿‌‌​﻿​﻿​﻿​‌‌‍​‌‌‍‌​‌‍​﻿​﻿‌‌​﻿‌​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍​﻿‌‍‌‌‌‍​﻿​﻿‌‌‌‍​‌​﻿​‍​﻿‍‌​﻿‍​​‍﻿‌​﻿​‍​﻿​‍​﻿​​​﻿​﻿​‍﻿‌​﻿‌​‌‍​‍​﻿​​​﻿‌﻿​‍﻿‌‌‍​‍​﻿‍​‌‍‌​‌‍​﻿​‍﻿‌​﻿‍‌​﻿‌‌‌‍​‍‌‍​‌​﻿‌‌​﻿​﻿​﻿​‌‌‍​‌‌‍‌​‌‍​﻿​﻿‌‌​﻿‌​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/06/19/you-don-t-understand-dns-like-you-think-you-do",
+   "published": "2026-06-19",
+   "published_ts": 1781854800.0,
+   "summary": "Ryan welcomes Cricket Liu, DNS expert and Chief Evangelist at Infoblox, to the show to talk all things DNS. They cover the evolution of one of the oldest DNS server implementations, BIND, and what the future holds for protected DNS configurations; the realities of security threats like DDoS and DNS spoofing; and why outages often trace back to a lack of understanding of DNS’s fundamental role.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌…",
+   "tags": [
+    "podcast",
+    "se-tech",
+    "se-stackoverflow",
+    "infrastructure-management",
+    "ai-agents",
+    "outages",
+    "security",
+    "se-tech"
+   ],
+   "tech_stack": [
+    "DDoS",
+    "Security"
+   ],
+   "categories": [
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "bc56599e3905178a"
+  },
+  {
    "key": "toss",
    "company": "토스",
    "country": "KR",
-   "title": "전문성 밖으로 나아가기",
+   "title": "2. 전문성 밖으로 나아가기",
    "url": "https://toss.tech/article/technical-writing-2",
    "published": "2026-06-19",
    "published_ts": 1781834460.0,
@@ -537,7 +566,7 @@
    "key": "toss",
    "company": "토스",
    "country": "KR",
-   "title": "세상에 없던 직무를 만들어가기",
+   "title": "1. 세상에 없던 직무를 만들어가기",
    "url": "https://toss.tech/article/technical-writing-1",
    "published": "2026-06-19",
    "published_ts": 1781834400.0,
