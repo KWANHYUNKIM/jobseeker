@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T08:00:25",
+ "generated_at": "2026-06-19T09:47:39",
  "total": 100,
  "countries": [
   {
@@ -1716,15 +1716,15 @@
    "stack": {
     "backend": [
      {
-      "name": "gRPC",
-      "count": 4
-     },
-     {
       "name": "Go services",
       "count": 3
      },
      {
       "name": "GraphQL",
+      "count": 3
+     },
+     {
+      "name": "gRPC",
       "count": 3
      },
      {
@@ -1748,11 +1748,11 @@
       "count": 1
      },
      {
-      "name": "Atlas service framework",
+      "name": "Async Task Framework",
       "count": 1
      },
      {
-      "name": "DBProxy",
+      "name": "Atlas 서비스 프레임워크",
       "count": 1
      }
     ],
@@ -1778,11 +1778,11 @@
       "count": 1
      },
      {
-      "name": "Bedrock design system",
+      "name": "Bedrock 디자인 시스템",
       "count": 1
      },
      {
-      "name": "C++ → WebAssembly",
+      "name": "C++ rendering engine compiled to WebAssembly",
       "count": 1
      },
      {
@@ -1790,7 +1790,7 @@
       "count": 1
      },
      {
-      "name": "Emscripten",
+      "name": "Emscripten toolchain",
       "count": 1
      },
      {
@@ -1828,15 +1828,15 @@
       "count": 2
      },
      {
+      "name": "Redis / Memcached",
+      "count": 2
+     },
+     {
       "name": "Amazon SQS/SNS/Kinesis",
       "count": 1
      },
      {
       "name": "Apache Hudi",
-      "count": 1
-     },
-     {
-      "name": "AWS S3",
       "count": 1
      }
     ],
@@ -1854,10 +1854,6 @@
       "count": 2
      },
      {
-      "name": "Atlas/Watchman CI",
-      "count": 1
-     },
-     {
       "name": "AWS Lambda",
       "count": 1
      },
@@ -1870,11 +1866,15 @@
       "count": 1
      },
      {
+      "name": "Bandaid",
+      "count": 1
+     },
+     {
       "name": "Bare-metal git hosts",
       "count": 1
      },
      {
-      "name": "Bazel monorepo",
+      "name": "Bazel 모노레포",
       "count": 1
      },
      {
@@ -1885,7 +1885,7 @@
    },
    "architecture": [
     {
-     "name": "Async task framework 기반 이벤트 처리",
+     "name": "Async/이벤트 기반 백그라운드 처리",
      "count": 1
     },
     {
@@ -1893,7 +1893,7 @@
      "count": 1
     },
     {
-     "name": "C++→WASM 렌더링 엔진 + WebGL 타일 렌더러",
+     "name": "C++→WASM 렌더링 엔진 + 타일 기반 WebGL 캔버스로 브라우저에서 네이티브급 벡터 렌더링",
      "count": 1
     },
     {
@@ -1905,7 +1905,7 @@
      "count": 1
     },
     {
-     "name": "Custom exabyte 스토리지 인프라",
+     "name": "DBProxy 쿼리 라우팅 계층을 통한 PostgreSQL 수평 샤딩",
      "count": 1
     }
    ]
@@ -11133,45 +11133,52 @@
    ],
    "stack": {
     "backend": [
-     "Python 3 (asyncio)",
-     "Go services",
-     "Rust (Nucleus)",
+     "Python 3 (asyncio, mypy 타입체크)",
+     "Go services (godropbox)",
+     "Rust (Nucleus 동기화 엔진)",
      "gRPC / Courier RPC",
-     "Atlas service framework"
+     "Atlas 서비스 프레임워크",
+     "Async Task Framework (ATF)",
+     "Cap'n Proto 직렬화"
     ],
     "frontend": [
      "React",
      "TypeScript",
-     "Pyxl/server-rendered legacy",
-     "Bedrock design system"
+     "Pyxl (서버 렌더 레거시)",
+     "Bedrock 디자인 시스템",
+     "Webpack 빌드"
     ],
     "data": [
-     "Edgestore (MySQL/Vitess-style sharding)",
-     "Magic Pocket (자체 blob storage)",
-     "Panda (filesystem metadata)",
+     "Edgestore (MySQL/Vitess 샤딩 메타데이터)",
+     "Magic Pocket (자체 exabyte blob storage)",
+     "Panda (filesystem namespace 메타데이터)",
+     "Nautilus (검색 인덱스)",
      "Kafka",
-     "Redis/Memcached",
-     "Vitess"
+     "Redis / Memcached",
+     "Vitess",
+     "HBase (구버전 분석)"
     ],
     "infra": [
      "Hybrid (자체 데이터센터 + AWS)",
      "Kubernetes",
-     "Bazel monorepo",
-     "Envoy/Courier service mesh",
+     "Bazel 모노레포",
+     "Envoy / Courier 서비스 메시",
+     "Bandaid (자체 L7 로드밸런서)",
+     "Edge PoP 네트워크",
      "Vortex 메트릭",
-     "Atlas/Watchman CI"
+     "Changes / Atlas CI"
     ]
    },
    "architecture": [
-    "Service-Oriented Architecture (SOA)",
-    "Custom exabyte 스토리지 인프라",
-    "Sharded metadata + dedup",
-    "Async task framework 기반 이벤트 처리"
+    "Service-Oriented Architecture (gRPC 기반 SOA)",
+    "자체 exabyte 스토리지 + 샤딩 메타데이터 + content-defined dedup",
+    "Async/이벤트 기반 백그라운드 처리 (ATF + Kafka)",
+    "Hybrid 인프라 (on-prem Magic Pocket + AWS 엣지 컴퓨트)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Desktop/Mobile/Web<br/>Nucleus (Rust) sync\"]\n    EDGE[\"Edge POPs<br/>Envoy + custom proxy\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Courier (gRPC) + Envoy\"]\n    ATLAS[\"Atlas<br/>Python service framework\"]\n  end\n  subgraph Core[\"Core Services\"]\n    META[\"Metadata Service<br/>Python/Go\"]\n    BLOCK[\"Block Server<br/>Go\"]\n    NOTIF[\"Notification/Sync<br/>Go (longpoll)\"]\n    ATF[\"Async Task Framework<br/>Python/Go\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    EDGE_S[\"Edgestore<br/>MySQL + Vitess sharding\"]\n    PANDA[\"Panda<br/>filesystem metadata\"]\n    MP[\"Magic Pocket<br/>exabyte blob store\"]\n    CACHE[\"Cache<br/>Memcached/Redis\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka\"]\n    VORTEX[\"Vortex<br/>metrics pipeline\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes\"]\n    BAZEL[\"Bazel monorepo CI\"]\n  end\n  APP -->|gRPC| EDGE --> GW\n  GW -->|Courier gRPC| ATLAS --> META\n  META --> EDGE_S\n  META --> PANDA\n  META --> CACHE\n  APP -->|block upload| BLOCK -->|dedup chunks| MP\n  META --> NOTIF --> APP\n  META --> ATF --> KAFKA\n  ATF --> EDGE_S\n  Core --> VORTEX\n  K8S -.runs.-> Core\n  BAZEL -.deploys.-> Core",
-   "why_language": "Python은 Dropbox 창업 초기부터 제품 개발 속도를 끌어올린 핵심 언어로 수백만 줄 규모의 모놀리스와 서비스에 여전히 쓰이지만, GIL과 동적 타이핑의 한계 때문에 throughput이 중요한 동기화·블록 서버·인프라 컴포넌트는 Go로 옮겨졌다. 동기화 엔진(Nucleus)처럼 정확성과 메모리 안전성이 절대적인 영역은 C++ 대신 Rust로 재작성했고, 스토리지 핫패스(Magic Pocket)는 Go와 Rust/C++를 혼용한다. 즉 '제품 속도는 Python, 처리량은 Go, 안전성·성능 임계 경로는 Rust'라는 도메인별 분업이 명확하다.",
-   "why_architecture": "수억 명 사용자의 파일을 exabyte 규모로 저장·동기화해야 하므로 범용 클라우드 스토리지에 의존하기보다 Magic Pocket이라는 자체 blob 인프라를 만들어 비용과 내구성을 직접 통제했다. 메타데이터는 Edgestore에서 샤딩된 MySQL로 수평 확장하고, 파일 블록은 content-addressed dedup으로 중복을 제거해 저장량과 대역폭을 동시에 줄인다. 단일 모놀리스의 한계를 넘기 위해 Courier(gRPC) 기반 SOA로 분리하고 비동기 작업은 ATF로 흡수해 사용자 요청 경로의 지연을 최소화한다.",
-   "summary": "Python 제품속도 + Go 처리량 + Rust 안전성으로, 자체 exabyte 스토리지(Magic Pocket)와 샤딩 메타데이터(Edgestore) 위에 SOA를 얹은 대규모 파일 동기화 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Desktop / Mobile<br/>Nucleus sync engine Rust\"]\n    WEB[\"Web App<br/>React + TypeScript\"]\n    EDGE[\"Edge PoP<br/>Bandaid L7 LB + TLS\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    API[\"API Gateway<br/>Envoy + Courier gRPC\"]\n    NOTIF[\"Notification Service<br/>long-poll realtime\"]\n  end\n  subgraph Core[\"Core Services SOA\"]\n    META[\"Metadata Service<br/>Panda namespace\"]\n    BLOCK[\"Block Server<br/>dedup + chunking\"]\n    SEARCH[\"Search<br/>Nautilus\"]\n    PREVIEW[\"Preview Render<br/>Riviera\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    EDGESTORE[\"Edgestore<br/>MySQL + Vitess shards\"]\n    MP[\"Magic Pocket<br/>self-hosted blob exabyte\"]\n    CACHE[\"Cache<br/>Memcached + Redis\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>event log\"]\n    ATF[\"Async Task Framework<br/>background jobs\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>orchestration\"]\n    VORTEX[\"Vortex<br/>metrics + tracing\"]\n  end\n  APP --> EDGE\n  WEB --> EDGE\n  EDGE -->|gRPC| API\n  APP -->|delta poll| NOTIF\n  API --> META\n  API -->|chunk upload| BLOCK\n  API --> SEARCH\n  API --> PREVIEW\n  META --> EDGESTORE\n  META --> CACHE\n  BLOCK -->|dedup write| MP\n  BLOCK --> EDGESTORE\n  META -->|change event| KAFKA\n  KAFKA --> ATF\n  ATF --> SEARCH\n  ATF --> PREVIEW\n  ATF --> NOTIF\n  Core --> K8S\n  Core --> VORTEX",
+   "why_language": "수백 PB 규모의 파일·메타데이터를 다루기에, 제품 로직과 데이터 파이프라인은 개발 속도가 빠른 Python으로(자체 mypy 타입체크와 한때 Pyston JIT로 약점을 보완), 처리량이 중요한 스토리지·네트워크 서비스는 GC 효율과 동시성이 좋은 Go로 작성한다. 동기화 엔진처럼 정확성·메모리 안전성·성능이 동시에 필요한 핵심 경로는 Rust(Nucleus)로 재작성했고, 성능 임계 라이브러리와 일부 스토리지 계층은 C++을 쓴다. 프런트엔드는 대규모 협업 UI의 유지보수성을 위해 TypeScript + React로 통일했다.",
+   "why_architecture": "수억 사용자의 파일을 저장하면서 AWS S3 비용이 과도해지자 자체 데이터센터에 Magic Pocket이라는 exabyte 스토리지를 구축(Exodus)하고, 그 위에 샤딩된 메타데이터(Edgestore/Panda)와 content-defined dedup으로 저장 비용과 트래픽을 극적으로 줄였다. 모놀리식 Python 코드베이스의 성장 한계를 gRPC 기반 SOA(Courier/Atlas)로 분해해 팀별 독립 배포와 장애 격리를 확보했다. 사용자 요청 경로에서 무거운 작업(인덱싱·프리뷰·알림)은 Kafka와 ATF로 비동기 분리해 응답 지연을 낮추고 확장성을 확보했다.",
+   "summary": "AWS를 벗어나 자체 exabyte 스토리지(Magic Pocket)를 짓고, Python으로 빠르게·Rust/Go로 핵심 경로를 단단하게 만든 하이브리드 SOA",
    "deep_dive": [
     {
      "topic": "Magic Pocket — 자체 exabyte 스토리지 시스템",
@@ -11208,55 +11215,71 @@
     {
      "topic": "Async Task Framework(ATF) — 사용자 요청 경로 밖으로 일을 밀어내기",
      "body": "### 문제: 동기 경로에 무거운 작업을 둘 수 없다\n파일 업로드 한 번에 부수적으로 일어나야 하는 일이 많다 — 썸네일/프리뷰 생성, 전문 검색 인덱싱, 공유 멤버에게 노티 발송, 바이러스/콘텐츠 스캔, 사용량 집계, 외부 연동(웹훅) 등. 이를 사용자 요청 경로에서 동기적으로 처리하면 latency가 치솟고, 한 다운스트림 장애가 업로드 자체를 실패시킨다. 그래서 Dropbox는 이런 일을 **Async Task Framework(ATF)** 로 비동기화한다.\n\n### 동작 원리\n- **태스크 제출**: 코어 서비스(메타데이터 등)가 작업을 동기 처리하지 않고 ATF에 '태스크'로 enqueue. 사용자에게는 즉시 응답을 돌려준다.\n- **내구성 큐**: 태스크는 내구성 있는 저장소(샤딩된 DB/큐, Kafka 연계)에 기록되어 워커 크래시·재시작에도 유실되지 않는다. 이것이 '응답은 빨리, 일은 반드시'를 동시에 만족시키는 핵심.\n- **워커 풀**: 태스크 타입별 워커가 큐를 소비해 실행. 실패하면 지수 백오프로 재시도하고, 일정 횟수 초과 시 dead-letter로 격리.\n- **at-least-once 의미론**: 대부분의 비동기 시스템처럼 같은 태스크가 두 번 실행될 수 있으므로, 핸들러는 멱등(idempotent)하게 설계해야 한다(예: 썸네일은 덮어쓰기, 노티는 dedup 키 사용).\n\n### 스트리밍과의 결합\n무거운 fan-out(검색 인덱싱, 분석)은 **Kafka**로 이벤트를 흘려보내 다운스트림 컨슈머가 독립 속도로 처리하게 한다. ATF가 '신뢰성 있는 단위 작업'을, Kafka가 '대량 이벤트 스트림'을 담당하는 분업 구조다.\n\n### 백프레셔와 격리\n비동기 시스템의 진짜 난제는 폭주다. 대량 업로드 이벤트(예: 한 팀이 수십만 파일을 한꺼번에 동기화)가 들어오면 인덱싱 큐가 폭발할 수 있다. ATF는 태스크 타입별 우선순위·rate limit·격리된 큐로 한 워크로드가 다른 워크로드를 굶기지 않게(noisy neighbor 방지) 한다. 사용자 대면 노티 같은 latency 민감 태스크와 배치 분석 태스크를 분리하는 식이다.\n\n### 트레이드오프\n비동기화의 대가는 **결과적 일관성(eventual consistency)** 이다. 업로드 직후 검색에 안 잡히거나 프리뷰가 잠깐 안 보일 수 있다 — UX상 허용 가능한 지연으로 설계해 동기 경로의 속도·안정성과 맞바꾼 것이다. 또한 at-least-once 때문에 모든 핸들러를 멱등하게 만들어야 하는 설계 규율이 전사적으로 강제된다."
+    },
+    {
+     "topic": "Nautilus — 수백억 파일을 검색하는 자체 풀텍스트 엔진",
+     "body": "### 왜 직접 만들었나\nDropbox는 사용자별로 격리된 수백억 개의 파일을 검색해야 한다. 일반적인 멀티테넌트 검색과 달리 **검색 결과는 절대로 다른 사용자의 파일을 노출해선 안 되고**, 권한(공유 폴더 멤버십)이 실시간으로 바뀌며, 인덱싱 대상이 텍스트뿐 아니라 OCR된 이미지·PDF 본문까지 포함된다. 초기에는 오픈소스 검색엔진을 썼지만 규모와 권한 모델, 비용 때문에 `Nautilus`라는 자체 엔진으로 갈아탔다.\n\n### 두 개의 하위 시스템\nNautilus는 크게 둘로 나뉜다.\n\n- **Indexing 파이프라인**: 파일이 바뀌면 Edgestore의 변경 이벤트가 Kafka로 흘러가고, ATF 워커가 이를 받아 콘텐츠를 추출(텍스트 추출, 이미지 OCR, 문서 파싱)한 뒤 토큰화해 역색인(inverted index)에 반영한다. 무거운 추출 작업이 전부 사용자 요청 경로 **밖**에서 일어나는 게 핵심이다.\n- **Serving(검색) 시스템**: 사용자가 쿼리를 던지면 먼저 해당 사용자가 접근 가능한 namespace 집합을 구하고, 그 범위로 역색인을 조회한 뒤 랭킹한다.\n\n### 랭킹\n랭킹은 단순 BM25류 텍스트 점수에 더해 **개인화 신호**(최근 열어본 파일, 수정 빈도, 공유 관계, 파일 종류)를 ML 모델로 결합한다. 사람마다 같은 키워드라도 원하는 파일이 다르기 때문에, '내 워크스페이스에서 이 단어가 든 가장 관련 높은 문서'를 맞추는 게 목표다.\n\n### 어려운 부분 — 권한과 일관성\n검색에서 가장 까다로운 건 **인덱스의 신선도와 권한의 정합성**이다. 공유가 해제된 파일이 검색에 잠깐이라도 뜨면 보안 사고다. 그래서 Nautilus는 인덱스에 콘텐츠와 권한 메타데이터를 함께 두기보다, 검색 시점에 Edgestore의 권한 상태를 다시 확인(post-filtering)하는 방식으로 'stale 인덱스가 절대 권한을 위반하지 않도록' 설계한다. 인덱스가 약간 늦어도 권한은 항상 최신을 신뢰하는 트레이드오프다."
+    },
+    {
+     "topic": "Bandaid와 글로벌 엣지 네트워크 — 요청이 백엔드에 닿기 전",
+     "body": "### 엣지의 역할\nDropbox 트래픽은 대용량 파일 업/다운로드가 큰 비중을 차지한다. 사용자와 가까운 곳에서 TCP/TLS를 끝내고 RTT를 줄이는 게 체감 속도에 직결되기 때문에, Dropbox는 전 세계에 **Edge PoP(Point of Presence)** 를 운영한다. 사용자는 가장 가까운 PoP에 붙고, PoP에서 코어 데이터센터까지는 미리 데워둔(warm) 장거리 연결을 재사용해 핸드셰이크 비용을 분산한다.\n\n### Bandaid — 자체 L7 로드밸런서\n엣지와 내부에서 트래픽을 분배하는 핵심이 `Bandaid`라는 Dropbox 자체 L7 로드밸런서다(초기엔 Nginx 기반에서 출발해 Go로 자체 구현으로 발전). Bandaid가 단순 라운드로빈을 넘어 신경 쓰는 것들:\n\n- **부하 인지 라우팅**: 백엔드의 실시간 부하/지연을 보고 가장 여유 있는 인스턴스로 보낸다. 거대한 파일 요청 하나가 특정 노드를 포화시키지 않도록.\n- **재시도와 헤징(hedging)**: 느린 백엔드에 대해 다른 인스턴스로 재시도해 꼬리 지연(tail latency)을 줄인다.\n- **서비스 디스커버리 연동**: SOA 환경에서 수많은 서비스의 엔드포인트가 끊임없이 바뀌므로, Bandaid는 디스커버리와 연동해 헬스 상태를 반영한다.\n\n### 업로드/다운로드 분리\n메타데이터 API 트래픽과 실제 블록(파일 본문) 트래픽은 경로가 다르다. 컨트롤 플레인(메타데이터, 인증, 동기화 협상)은 작고 빈번한 RPC라 일반 API 게이트웨이를 타고, 블록 데이터는 별도의 block server 경로로 빠진다. 이렇게 분리해야 큰 파일 전송이 작은 제어 요청의 지연을 망치지 않는다.\n\n### TLS와 BBR\n장거리 대용량 전송 성능을 위해 Dropbox는 커널/네트워크 스택 튜닝에도 깊이 관여한다. 혼잡 제어(BBR 등) 실험, TLS 세션 재사용, 연결 풀링으로 '느린 네트워크에서도 빠른 동기화'를 추구한다."
+    },
+    {
+     "topic": "Riviera — 파일 프리뷰(썸네일·문서 렌더링) 파이프라인",
+     "body": "### 문제: 모든 포맷을 안전하게 렌더링하기\nDropbox는 업로드된 거의 모든 포맷(이미지, 동영상, PDF, MS Office, CAD, HEIC 등 수백 종)에 대해 웹/모바일에서 즉시 보이는 미리보기를 제공해야 한다. 이걸 담당하는 게 `Riviera`라는 프리뷰 렌더링 시스템이다.\n\n### 동작 흐름\n1. **트리거**: 파일이 들어오면 Kafka 이벤트 → ATF 워커가 프리뷰 생성을 비동기로 시작한다. 사용자가 파일을 열 때 실시간 렌더링을 기다리지 않도록, 가능하면 미리 생성(pre-warm)한다.\n2. **변환(conversion)**: 포맷별 converter가 원본을 중간 표현(예: PDF, 이미지 타일)으로 바꾼다. 신뢰할 수 없는 사용자 파일을 파싱하므로 각 converter는 **강하게 샌드박싱**된다(임의 파일이 RCE로 이어지지 않도록 격리·리소스 제한).\n3. **렌더링/타일링**: 결과를 여러 해상도의 썸네일·타일로 만들어 캐시한다.\n4. **캐싱**: 생성된 프리뷰는 Magic Pocket/캐시 계층에 저장되어 재요청 시 즉시 서빙된다. 원본이 바뀌면 무효화된다.\n\n### 트레이드오프\n- **지연 vs 비용**: 모든 파일을 미리 렌더링하면 빠르지만 막대한 컴퓨트가 든다. 그래서 접근 가능성이 높은 파일(최근 업로드, 공유된 파일)을 우선 pre-warm하고 나머지는 on-demand로 처리하는 하이브리드 정책을 쓴다.\n- **보안 우선**: 외부에서 들어온 파일을 파싱하는 코드는 본질적으로 공격 표면이다. Riviera 설계의 핵심은 성능보다 '망가진/악성 파일이 인프라를 뚫지 못하게 하는 격리'다.\n- **포맷 다양성**: 새 포맷이 끊임없이 추가되므로 converter를 플러그인처럼 끼우는 구조로 확장성을 확보한다."
+    },
+    {
+     "topic": "mypy와 Pyston — 거대한 Python 코드베이스를 길들인 방법",
+     "body": "### 왜 중요한가\nDropbox 백엔드의 큰 부분은 수백만 줄의 Python이고, 수천 명의 엔지니어가 한 모노레포에서 작업한다. 동적 타입 언어로 이 규모를 운영하면 '런타임에야 터지는 버그'와 '리팩터링 공포'가 생긴다. Dropbox는 이를 언어 도구에 직접 투자해 해결했다.\n\n### mypy — 점진적 정적 타입\nDropbox는 `mypy`(파이썬 정적 타입 체커)를 사실상 키워낸 회사다. Python 창시자 Guido van Rossum이 Dropbox 재직 시 mypy/type hints 작업에 깊이 관여했고, Dropbox는 자사 코드에 타입 애너테이션을 대규모로 도입했다. 효과:\n\n- **점진적 도입(gradual typing)**: 전체를 한 번에 고칠 필요 없이 모듈 단위로 타입을 추가한다.\n- **리팩터링 안전망**: 함수 시그니처가 바뀌면 호출부의 타입 오류가 CI에서 잡힌다.\n- **성능 문제**: 수백만 줄을 매번 체크하면 느리다. Dropbox는 mypy에 **증분 체크와 데몬 모드(`dmypy`)**, 내부적으로 mypy를 C로 컴파일하는 `mypyc`까지 만들어 체크 속도를 끌어올렸다.\n\n### Pyston — Python을 더 빠르게\nCPython의 실행 속도가 비용·지연의 병목이 되자 Dropbox는 한때 `Pyston`이라는 **JIT를 단 CPython 호환 인터프리터**를 개발했다. 목표는 '코드를 거의 안 고치고도 의미 있는 속도 향상'이었다. 결과적으로 유지 비용 대비 효과 판단에 따라 사내 활용은 정리됐지만, 이후 Pyston은 외부에서 이어졌고 그 아이디어(인라인 캐싱, 호환성 우선 최적화)는 이후 CPython 고속화 흐름에도 영향을 줬다.\n\n### 교훈\nDropbox 사례의 핵심은 '언어가 한계면 라이브러리만 갈아끼우는 게 아니라 **타입체커·컴파일러·런타임 같은 언어 인프라 자체에 투자**한다'는 점이다. 정확성(mypy)과 성능(Pyston/mypyc)을 도구 레벨에서 해결해, 생산성 높은 Python을 대규모에서도 유지했다."
     }
    ],
    "github": {
     "org": "https://github.com/dropbox",
     "repos": [
      {
-      "name": "pyston/pyston_v1",
-      "url": "https://github.com/pyston/pyston_v1",
-      "desc": "CPython 호환 고성능 Python 구현(JIT)으로 Python 워크로드 가속을 위한 프로젝트",
-      "lang": "C++",
-      "stars": 4847
+      "name": "dropbox/zxcvbn",
+      "url": "https://github.com/dropbox/zxcvbn",
+      "desc": "실사용 패턴 기반 비밀번호 강도 추정기, 웹 전반에서 널리 사용",
+      "lang": "CoffeeScript",
+      "stars": 15991
      },
      {
       "name": "dropbox/godropbox",
       "url": "https://github.com/dropbox/godropbox",
-      "desc": "Dropbox 백엔드 Go 서비스에서 쓰는 공통 라이브러리 모음",
+      "desc": "Dropbox의 Go 공통 라이브러리 모음(커넥션 풀, 캐싱, 동시성 유틸)",
       "lang": "Go",
       "stars": 4205
      },
      {
-      "name": "dropbox/PyHive",
-      "url": "https://github.com/dropbox/PyHive",
-      "desc": "Presto/Hive에 접속하는 Python DB-API·SQLAlchemy 인터페이스",
+      "name": "dropbox/securitybot",
+      "url": "https://github.com/dropbox/securitybot",
+      "desc": "보안 알림을 채팅으로 자동 검증하는 분산 알림 봇",
       "lang": "Python",
-      "stars": 1696
-     },
-     {
-      "name": "dropbox/dropbox-sdk-js",
-      "url": "https://github.com/dropbox/dropbox-sdk-js",
-      "desc": "공식 JavaScript/TypeScript API SDK",
-      "lang": "JavaScript",
-      "stars": 968
+      "stars": 990
      },
      {
       "name": "dropbox/changes",
       "url": "https://github.com/dropbox/changes",
-      "desc": "대규모 분산 CI를 위해 만든 빌드/테스트 오케스트레이션 시스템",
+      "desc": "대규모 테스트 분산 실행을 위한 자체 CI 시스템",
       "lang": "Python",
       "stars": 749
+     },
+     {
+      "name": "dropbox/dbx_build_tools",
+      "url": "https://github.com/dropbox/dbx_build_tools",
+      "desc": "Bazel 기반 모노레포 빌드를 위한 Dropbox 내부 빌드 툴체인",
+      "lang": "Go",
+      "stars": 209
      }
     ]
    },
    "sources": [
-    "https://dropbox.tech/infrastructure",
-    "https://dropbox.tech/infrastructure/atlas-our-journey-from-a-python-monolith-to-a-managed-platform",
-    "https://dropbox.tech/infrastructure/courier-dropbox-migration-to-grpc"
+    "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+    "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+    "https://dropbox.tech/application/how-we-migrated-dropbox-from-nginx-to-envoy"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "figma",
@@ -11272,42 +11295,44 @@
    ],
    "stack": {
     "backend": [
-     "Ruby on Rails",
+     "Ruby on Rails (core monolith)",
      "Go services",
-     "Rust (multiplayer)",
-     "gRPC",
-     "DBProxy"
+     "Rust (Multiplayer / LiveGraph hot paths)",
+     "gRPC + Envoy",
+     "DBProxy (shard router)"
     ],
     "frontend": [
      "TypeScript",
-     "React",
-     "C++ → WebAssembly",
-     "WebGL (tile-based renderer)",
-     "Emscripten"
+     "React (app shell / UI chrome)",
+     "C++ rendering engine compiled to WebAssembly",
+     "Emscripten toolchain",
+     "Tile-based WebGL canvas renderer"
     ],
     "data": [
-     "PostgreSQL (horizontally sharded)",
-     "DynamoDB",
+     "PostgreSQL (horizontally sharded on AWS)",
+     "DynamoDB (document/object metadata)",
      "Redis / ElastiCache",
-     "Kafka"
+     "Kafka",
+     "S3 (file/asset blobs)"
     ],
     "infra": [
-     "AWS (EC2, S3)",
+     "AWS (EC2, S3, ALB, ElastiCache)",
      "Kubernetes",
-     "LiveGraph",
-     "Envoy / gRPC"
+     "Envoy service mesh + gRPC",
+     "LiveGraph realtime query layer",
+     "DataDog / OpenTelemetry observability"
     ]
    },
    "architecture": [
-    "C++→WASM 렌더링 엔진 + WebGL 타일 렌더러",
-    "Rust 기반 Multiplayer(LWW Properties) 실시간 동기화",
-    "DBProxy를 통한 PostgreSQL 수평 샤딩",
-    "LiveGraph 실시간 쿼리 구독"
+    "C++→WASM 렌더링 엔진 + 타일 기반 WebGL 캔버스로 브라우저에서 네이티브급 벡터 렌더링",
+    "Rust 기반 Multiplayer 서버 + Properties-as-LWW 동기화 모델로 실시간 협업",
+    "DBProxy 쿼리 라우팅 계층을 통한 PostgreSQL 수평 샤딩",
+    "LiveGraph 실시간 쿼리 구독으로 서버 상태를 클라이언트에 푸시"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    UI[\"React UI<br/>TypeScript\"]\n    WASM[\"Rendering Engine<br/>C++ to WebAssembly\"]\n    GL[\"GPU Renderer<br/>WebGL tile based\"]\n  end\n  subgraph Edge\n    API[\"Web API<br/>Ruby on Rails\"]\n    GO[\"Microservices<br/>Go + gRPC\"]\n  end\n  subgraph Realtime\n    MP[\"Multiplayer<br/>Rust + WebSocket\"]\n    LG[\"LiveGraph<br/>Realtime Query Sub\"]\n  end\n  subgraph Data\n    PROXY[\"DBProxy<br/>Shard Router Go\"]\n    PG[\"PostgreSQL<br/>Horizontally Sharded\"]\n    DDB[\"DynamoDB<br/>Document Chunks\"]\n    REDIS[\"Redis<br/>Cache + Presence\"]\n    KAFKA[\"Kafka<br/>Event Streaming\"]\n  end\n  subgraph Infra\n    AWS[\"AWS<br/>EC2 + S3\"]\n    K8S[\"Kubernetes<br/>Orchestration\"]\n  end\n  UI --> WASM --> GL\n  UI -->|HTTPS| API\n  UI -->|WebSocket| MP\n  UI -->|subscribe| LG\n  API --> GO\n  GO -->|gRPC| PROXY\n  LG --> PROXY\n  MP --> DDB\n  MP --> KAFKA\n  PROXY --> PG\n  API --> REDIS\n  LG --> KAFKA\n  GO --> K8S\n  PG --> AWS\n  DDB --> AWS\n  K8S --> AWS",
-   "why_language": "Figma의 핵심 가치는 브라우저에서 네이티브급 60fps 벡터 편집 성능을 내는 것이라, 렌더링·문서 모델은 C++로 작성해 Emscripten으로 WebAssembly로 컴파일하고 UI 크롬은 TypeScript/React로 분리했다. 실시간 협업 서버는 원래 TypeScript(Node)였으나 GC 지연과 메모리 한계로 Rust로 재작성해 수만 명 동시 편집의 지연·안정성을 확보했고, 제품 백엔드는 Ruby on Rails로 빠르게 시작한 뒤 성능이 중요한 신규 서비스는 Go로 분리하는 다언어 전략을 취한다.",
-   "why_architecture": "디자인 파일은 수천 개 노드를 가진 거대한 트리이고 다수 사용자가 동시에 같은 객체를 편집하므로, 전체 CRDT 대신 객체 속성 단위 Last-Writer-Wins(서버가 권위) 모델로 단순화해 충돌 처리 비용과 메모리를 줄였다. 데이터가 조직·파일 단위로 자연스럽게 분할되는 특성을 이용해 PostgreSQL을 DBProxy 기반으로 수평 샤딩하고, 클라이언트가 항상 최신 상태를 보도록 LiveGraph로 쿼리 결과를 실시간 구독시키는 read-path를 별도로 두었다.",
-   "summary": "C++→WASM 렌더러와 Rust 멀티플레이어로 브라우저에서 네이티브급 협업 디자인을 구현하고, PostgreSQL 수평 샤딩으로 규모를 받친 다언어 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client\n    Browser[\"Browser App<br/>TypeScript + React\"]\n    Engine[\"Render Engine<br/>C++ to WASM via Emscripten\"]\n    Canvas[\"Canvas Renderer<br/>Tile-based WebGL\"]\n  end\n  subgraph Edge\n    LB[\"Load Balancer<br/>AWS ALB\"]\n    Envoy[\"Service Mesh<br/>Envoy + gRPC\"]\n  end\n  subgraph Core\n    Rails[\"App Monolith<br/>Ruby on Rails\"]\n    MP[\"Multiplayer Server<br/>Rust\"]\n    LG[\"LiveGraph<br/>Realtime Subscriptions\"]\n    GoSvc[\"Microservices<br/>Go\"]\n  end\n  subgraph Data\n    DBProxy[\"DBProxy<br/>Shard Router in Go\"]\n    PG[\"PostgreSQL<br/>Horizontally Sharded\"]\n    Dynamo[\"DynamoDB<br/>Doc Metadata\"]\n    Redis[\"Cache<br/>Redis / ElastiCache\"]\n    S3[\"Object Store<br/>AWS S3\"]\n    Kafka[\"Event Bus<br/>Kafka\"]\n  end\n  Browser --> Engine\n  Engine --> Canvas\n  Browser -->|HTTPS| LB\n  LB --> Envoy\n  Browser -->|WebSocket| MP\n  Envoy -->|gRPC| Rails\n  Envoy -->|gRPC| GoSvc\n  Rails --> LG\n  LG -->|push updates| Browser\n  Rails --> DBProxy\n  GoSvc --> DBProxy\n  DBProxy --> PG\n  MP --> S3\n  MP --> Kafka\n  Rails --> Redis\n  Rails --> Dynamo\n  Engine -->|load document| S3\n  Kafka --> LG",
+   "why_language": "Figma는 브라우저 안에서 네이티브 디자인 툴 수준의 성능을 내야 하므로, 핵심 렌더링·기하 연산은 C++로 작성해 WebAssembly로 컴파일하고 UI 셸과 플러그인은 TypeScript/React로 구현한다. 실시간 협업처럼 지연·메모리 안정성이 생명인 경로는 GC가 없는 Rust로 재작성했고, 제품 로직의 대부분은 개발 생산성이 높은 Ruby on Rails 모놀리스에 두되 성능이 중요한 신규 서비스는 Go로 분리한다.",
+   "why_architecture": "디자인 파일은 수만 개의 노드를 가진 거대한 가변 문서이자 동시에 여러 명이 편집하는 공유 상태이기 때문에, Figma는 렌더링(C++→WASM/WebGL)과 동기화(Rust Multiplayer)를 분리하고 서버 상태 변화를 LiveGraph로 구독·푸시하는 구조를 택했다. 사용자·파일 수가 폭증하면서 단일 PostgreSQL이 한계에 도달하자, 애플리케이션 코드를 거의 바꾸지 않고 샤딩하기 위해 DBProxy라는 쿼리 라우팅 계층을 도입해 수평 확장을 떠받친다.",
+   "summary": "브라우저 안의 네이티브 캔버스(C++→WASM) + Rust 실시간 협업 코어 + DBProxy로 샤딩한 PostgreSQL을 결합한 협업툴 아키텍처",
    "deep_dive": [
     {
      "topic": "Multiplayer 서버 — Rust로 재작성한 실시간 협업 코어",
@@ -11340,48 +11365,60 @@
     {
      "topic": "타일 기반 WebGL 렌더러: 브라우저에서 60fps 벡터 캔버스를 그리는 법",
      "body": "### 'C++을 WASM으로 컴파일했다'는 절반의 이야기일 뿐\n\nFigma의 렌더링이 빠른 진짜 이유는 언어가 아니라 **렌더링 아키텍처**에 있다. 디자인 캔버스는 수천~수만 개의 벡터 객체로 이뤄지는데, 매 프레임 전부를 다시 그리면 절대 60fps가 안 나온다. 그래서 핵심은 **'무엇을 다시 그리지 않을지'** 를 결정하는 데 있다.\n\n- **Tile 기반 렌더링**: 화면(과 그 주변)을 격자 타일로 나누고, 각 타일의 렌더 결과를 GPU 텍스처로 캐싱한다. 객체가 바뀌면 그 객체가 겹치는 타일만 다시 그린다. 화면 한구석의 텍스트를 수정해도 캔버스 전체를 재렌더하지 않는다.\n- **Retained-mode 씬 그래프**: WASM 엔진이 문서의 객체 트리를 계속 들고 있으며(retained mode), 변경된 부분만 GPU 명령으로 변환한다. DOM처럼 매번 새로 만드는 immediate 방식이 아니다.\n- **WebGL 직접 제어**: 브라우저 DOM/SVG 렌더링을 우회하고 단일 `<canvas>` 위에서 WebGL로 직접 삼각형·텍스처를 그린다. 안티앨리어싱, 벡터의 곡선 테셀레이션, 텍스트 글리프 아틀라스 등을 자체 구현해 브라우저별 렌더링 편차를 없앤다.\n\n### 왜 DOM이 아니라 WebGL인가\n\n수천 개 레이어를 DOM 노드로 만들면 브라우저 레이아웃·합성 엔진이 무너진다. 대신 모든 것을 한 장의 GPU 캔버스로 통일하면, 줌/팬 시 전체를 매끄럽게 변환할 수 있고 픽셀 수준 일관성을 보장한다. 대신 텍스트 선택, 입력 커서, 접근성 같은 'DOM이 공짜로 주는 것들'을 전부 직접 구현해야 하는 큰 비용을 떠안는다.\n\n### WASM을 고른 이유와 한계\n\nJavaScript는 JIT·GC 특성상 거대한 객체 트리를 다룰 때 지터(jitter)가 생긴다. C++→WASM은 선형 메모리에 객체를 빽빽이 배치(cache-friendly)하고 예측 가능한 성능을 내며, 데스크톱 앱과 동일한 C++ 코어를 웹·일렉트론에서 공유할 수 있다. 한계는 WASM↔JS 경계 비용과 메모리 상한(특히 거대 파일에서의 힙 압박)이며, Figma는 문서 본문을 청크 단위로 로드하고 가시 영역 위주로 작업하는 식으로 이를 완화한다."
+    },
+    {
+     "topic": "이미지·썸네일·익스포트: 서버 사이드 헤드리스 렌더링 파이프라인",
+     "body": "### 왜 서버에서도 렌더링이 필요한가\n\nFigma의 1차 렌더링은 브라우저 안의 `C++ → WASM + WebGL` 엔진이 담당하지만, **사용자가 파일을 열지 않은 상태에서도 픽셀이 필요한 경우**가 많다. 파일 브라우저의 썸네일, 팀/프로젝트 카드 미리보기, Slack·Notion 같은 외부 서비스의 링크 unfurl, REST API의 `GET /images` 응답, PNG/PDF/SVG export가 모두 그렇다. 이때 클라이언트가 없으니 **동일한 렌더링 엔진을 서버에서 헤드리스로 다시 돌려야** 한다.\n\n### 한 엔진, 두 실행 환경\n\nFigma의 핵심 자산은 렌더 엔진이 **단일 C++ 코드베이스**라는 점이다. 이 코드는 두 가지 타깃으로 빌드된다.\n\n- 클라이언트: `Emscripten`으로 WASM 컴파일 → 브라우저 WebGL 컨텍스트\n- 서버: 동일 C++를 **네이티브 바이너리**로 빌드 → 헤드리스 GPU/소프트웨어 래스터라이저\n\n같은 기하·텍스트 레이아웃·블렌딩 코드를 쓰기 때문에 *클라이언트에서 보이는 것과 서버가 만든 썸네일이 픽셀 단위로 일치*한다. 만약 서버 렌더러를 별도 구현(예: 별도 SVG 변환기)으로 만들었다면 폰트 힌팅, 블러, 마스크, 블렌드 모드에서 미묘한 차이가 났을 것이다.\n\n### 렌더링 워커 아키텍처\n\n렌더 요청은 대략 다음 흐름을 탄다.\n\n1. Rails/Go 서비스가 렌더 잡을 큐에 넣는다(파일 키, 노드 ID, 배율, 포맷).\n2. **렌더 워커 풀**(네이티브 엔진을 임베드한 서비스, 보통 GPU 인스턴스)이 잡을 집어 `S3`에서 해당 문서를 로드한다.\n3. 필요한 노드 서브트리만 평가해서 래스터화 → PNG/PDF 등으로 인코딩.\n4. 결과물을 `S3`에 저장하고 `CDN` 뒤에 캐시. 메타데이터(체크섬, 버전)는 DB/`Redis`에 기록한다.\n\n### 캐시 무효화가 핵심 난제\n\n썸네일은 파일이 편집될 때마다 낡는다. Figma는 문서 버전/콘텐츠 해시를 키로 써서, **편집 이벤트(`Kafka`) → 썸네일 stale 표시 → lazy 재렌더** 식으로 처리한다. 모든 편집마다 즉시 재렌더하면 활발히 협업 중인 파일에서 렌더 워커가 폭주하므로, 보통 디바운스/throttle을 걸어 \"마지막 편집 후 일정 시간\" 또는 \"파일 닫힘\" 시점에 갱신한다. 이 trade-off 덕분에 썸네일이 잠깐 과거 상태일 수 있지만, 렌더 비용을 수십 배 줄인다.\n\n### 트레이드오프 정리\n\n| 결정 | 이득 | 비용 |\n|---|---|---|\n| 단일 C++ 엔진을 서버에서도 실행 | 클라이언트와 픽셀 일치, 코드 중복 제거 | 네이티브 빌드/GPU 인프라 운영 부담 |\n| Lazy 재렌더 + 콘텐츠 해시 캐시 | 렌더 비용 급감, CDN 적중률↑ | 썸네일이 일시적으로 stale |\n| 노드 서브트리만 평가 | export/썸네일 지연 최소화 | 의존 노드 추적 로직 복잡 |"
+    },
+    {
+     "topic": "비동기·이벤트 처리: Kafka 이벤트 버스와 LiveGraph fan-out",
+     "body": "### 동기 요청만으로는 안 되는 이유\n\nFigma에서 사용자가 코멘트를 달거나, 파일 권한이 바뀌거나, 누군가 파일을 편집하면 그 변화는 **여러 구독자와 여러 시스템**에 전파돼야 한다. 화면에 떠 있는 다른 사용자의 파일 목록, 알림(notification), 검색 인덱스, 썸네일 stale 마킹, 활동 로그(analytics)가 전부 같은 이벤트를 소비한다. 이를 동기 호출로 처리하면 쓰기 경로가 다운스트림 전부에 강결합되어 느려지고 깨지기 쉽다. 그래서 Figma는 **`Kafka` 이벤트 버스**를 중심에 둔다.\n\n### 쓰기 → 이벤트 → 다수 소비자\n\n전형적 흐름:\n\n1. Rails/Go 서비스가 `PostgreSQL`(DBProxy 경유)에 변경을 커밋.\n2. 변경 사실을 `Kafka` 토픽에 이벤트로 발행(파일 메타 변경, 권한 변경, 코멘트 등 토픽 분리).\n3. 독립적인 컨슈머 그룹들이 각자 처리: 검색 인덱서, 알림 서비스, 썸네일 무효화, analytics 적재, audit 로그.\n\n이렇게 하면 쓰기 경로는 \"DB 커밋 + 이벤트 발행\"만 책임지고, 나머지는 **비동기로 디커플링**된다. 컨슈머 하나가 느려도 다른 경로를 막지 않는다.\n\n### LiveGraph: 실시간 구독을 떠받치는 fan-out\n\nFigma UI의 '살아있는' 부분(파일 목록이 실시간으로 갱신되고, 누가 들어왔는지 보이는 것)은 **LiveGraph**가 담당한다. LiveGraph는 클라이언트가 \"이 쿼리 결과를 구독하겠다\"고 선언하면, 서버 데이터가 바뀔 때 **변경된 부분만 클라이언트로 push**해주는 실시간 쿼리 계층이다. 즉 클라이언트는 폴링하지 않고, 서버가 의존성 그래프를 추적하다가 관련 row가 바뀌면 해당 구독자에게만 델타를 보낸다.\n\nKafka가 \"무엇이 바뀌었나\"를 시스템 간에 전달한다면, LiveGraph는 \"그 변화를 지금 보고 있는 클라이언트들\"에게 정확히 라우팅하는 역할이다. 둘이 합쳐져 **백엔드 쓰기 한 번 → 관련 사용자 화면 즉시 갱신**이 성립한다.\n\n### Multiplayer는 별도 고속 경로\n\n주의할 점은, **캔버스 위 객체 편집(드래그, 타이핑)** 같은 초저지연 동기화는 이 Kafka/LiveGraph 경로가 아니라 **Rust Multiplayer 서버 + WebSocket** 경로를 탄다는 것이다. Figma는 \"문서 내부 실시간 협업\"(Multiplayer, 수십 ms 단위)과 \"앱 메타데이터 실시간성\"(LiveGraph, 사람이 인지하는 수준)과 \"시스템 간 비동기 처리\"(Kafka)를 **세 개의 다른 지연 등급**으로 나눠 각기 다른 인프라에 맡긴다. 이 계층 분리가 Figma 백엔드의 핵심 설계 결정이다.\n\n### 트레이드오프\n\n- **장점**: 쓰기 경로가 가볍고, 다운스트림을 자유롭게 추가/장애 격리 가능, 실시간 UX를 폴링 없이 구현.\n- **비용**: 이벤트 순서·중복(at-least-once) 처리, 컨슈머 idempotency 보장 필요, LiveGraph의 구독 의존성 추적이 복잡하고 핫 파일에서 fan-out 비용이 커진다."
+    },
+    {
+     "topic": "관측성과 안전 배포: 모놀리스 + 다언어 환경에서의 deploy 전략",
+     "body": "### 거대한 Rails 모놀리스를 안전하게 배포하기\n\nFigma 백엔드의 중심은 여전히 **하나의 큰 Ruby on Rails 모놀리스**다. 이런 단일 배포 단위는 수백 명의 엔지니어가 동시에 머지하기 때문에, 배포 한 번에 수많은 변경이 섞여 들어간다. 따라서 \"누가 무엇을 망가뜨렸는가\"를 빠르게 좁히는 **점진 배포 + 빠른 롤백**이 생명이다.\n\n전형적 안전장치:\n\n- **카나리 배포**: 새 버전을 전체 fleet의 일부에만 먼저 올리고 에러율·지연·포화도(saturation)를 비교. 이상 시 자동 중단.\n- **빠른 롤백**: 모놀리스이기 때문에 \"이전 빌드로 되돌리기\"가 단순·확실. 의심되면 원인 분석보다 롤백을 우선.\n- **feature flag**: 코드 배포와 기능 노출을 분리해, 배포된 코드라도 플래그로 점진 노출/즉시 차단.\n\n### 클라이언트/서버 버전 skew 문제\n\nFigma처럼 클라이언트가 **C++→WASM 엔진을 포함한 무거운 SPA**인 경우, 사용자가 탭을 며칠씩 열어두면 **오래된 클라이언트가 최신 서버와 통신**하는 skew가 생긴다. 직렬화 포맷(특히 Multiplayer의 문서 스키마)이 바뀌면 깨질 수 있다. 그래서 Figma는 문서/메시지 포맷을 **하위호환 가능하게 진화**시키고(필드 추가는 OK, 의미 변경은 버전 게이트), 너무 낡은 클라이언트는 부드럽게 리로드를 유도한다. Multiplayer의 LWW 모델 자체가 \"필드 단위 last-writer-wins\"라 새 속성이 추가돼도 기존 클라이언트가 모르는 필드를 무시하며 공존하기 쉽다는 점이 여기서 도움이 된다.\n\n### 관측성: 세 갈래 신호\n\n다언어(Ruby/Go/Rust)·다계층(WASM 클라이언트 ~ DBProxy ~ PostgreSQL) 시스템이라 **end-to-end 추적**이 어렵다. Figma는 일반적으로:\n\n- **메트릭**: 요청율·에러율·지연(p50/p95/p99)·포화도를 서비스/엔드포인트/샤드 단위로 수집(DataDog 등). DBProxy·각 샤드의 커넥션·쿼리 지연이 핵심 지표.\n- **분산 트레이싱**: gRPC/Envoy 경계를 가로지르는 trace로 \"파일 열기\"가 어느 계층에서 느린지 분해.\n- **로그/이벤트**: 구조화 로그 + 위에서 설명한 Kafka 기반 audit/analytics 스트림.\n\n특히 **클라이언트 측 성능 계측**이 Figma에선 1급 시민이다. \"파일 열기 첫 픽셀까지\", WASM 로드 시간, 프레임 드랍, 메모리 사용 같은 지표를 실제 사용자(RUM) 기준으로 모아, 캔버스 렌더 성능 회귀를 잡는다. 서버 메트릭만으로는 Figma의 체감 성능을 설명할 수 없기 때문이다.\n\n### 샤딩 환경의 관측 난제\n\nPostgreSQL을 DBProxy로 수평 샤딩한 뒤로는 \"평균\"이 거짓말을 한다. **특정 샤드의 핫스팟**(대형 조직·인기 파일이 한 샤드에 몰림)이 전체 평균에는 안 보이지만 그 샤드 사용자에겐 치명적이다. 그래서 샤드별·shard key 분포별 관측이 필요하고, 핫 샤드는 split/rebalance 대상이 된다. 이 \"샤드 단위 관측 → 재분배\" 루프가 Figma 데이터 인프라 운영의 일상적 트레이드오프다."
     }
    ],
    "github": {
     "org": "https://github.com/figma",
     "repos": [
      {
+      "name": "figma/plugin-samples",
+      "url": "https://github.com/figma/plugin-samples",
+      "desc": "공식 플러그인 API 예제 모음으로 플러그인 개발의 레퍼런스",
+      "lang": "TypeScript",
+      "stars": 1820
+     },
+     {
       "name": "figma/code-connect",
       "url": "https://github.com/figma/code-connect",
-      "desc": "디자인 컴포넌트를 실제 코드 컴포넌트에 연결하는 Dev Mode 도구",
+      "desc": "디자인 컴포넌트를 실제 코드 컴포넌트에 연결해 Dev Mode에서 코드 스니펫을 보여주는 도구",
       "lang": "TypeScript",
-      "stars": 1521
+      "stars": 1524
      },
      {
       "name": "figma/plugin-typings",
       "url": "https://github.com/figma/plugin-typings",
-      "desc": "Figma 플러그인 API의 공식 TypeScript 타입 정의",
+      "desc": "플러그인 API의 TypeScript 타입 정의 패키지",
       "lang": "Shell",
-      "stars": 248
+      "stars": 249
      },
      {
       "name": "figma/rest-api-spec",
       "url": "https://github.com/figma/rest-api-spec",
-      "desc": "Figma REST API의 OpenAPI 스펙 및 타입",
+      "desc": "Figma 공개 REST API의 OpenAPI 스펙과 타입",
       "lang": "TypeScript",
-      "stars": 213
-     },
-     {
-      "name": "figma/widget-typings",
-      "url": "https://github.com/figma/widget-typings",
-      "desc": "FigJam/Figma 위젯 API TypeScript 타입 정의",
-      "lang": "Shell",
-      "stars": 16
+      "stars": 214
      }
     ]
    },
    "sources": [
     "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
-    "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
-    "https://www.figma.com/blog/rust-in-production-at-figma/"
+    "https://www.figma.com/blog/rust-in-production-at-figma/",
+    "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-15"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "github",
