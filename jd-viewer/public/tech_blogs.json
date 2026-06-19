@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-19T15:03:47",
- "total": 783,
+ "generated_at": "2026-06-19T16:52:55",
+ "total": 784,
  "sources": [
   {
    "company": "Etsy",
@@ -43,6 +43,11 @@
    "count": 27
   },
   {
+   "company": "토스",
+   "country": "KR",
+   "count": 26
+  },
+  {
    "company": "네이버 D2",
    "country": "KR",
    "count": 26
@@ -51,11 +56,6 @@
    "company": "SoundCloud",
    "country": "DE",
    "count": 26
-  },
-  {
-   "company": "토스",
-   "country": "KR",
-   "count": 25
   },
   {
    "company": "Zalando",
@@ -542,6 +542,36 @@
    ],
    "lang": "en",
    "content_id": "bc56599e3905178a"
+  },
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "Spark Connect on Kubernetes #1: 견고한 Spark Connect 만들기",
+   "url": "https://toss.tech/article/spark-connect-on-kubernetes-1",
+   "published": "2026-06-19",
+   "published_ts": 1781854500.0,
+   "summary": "Spark Connect 서버에 세션이 몰리면, 무거운 작업이 다른 사용자까지 느리게 만들고 그 서버가 죽는 순간 모두가 실패합니다. 이 문제들을 어떻게 풀었는지 공유합니다.",
+   "tags": [],
+   "tech_stack": [
+    "SQL",
+    "gRPC",
+    "Spark",
+    "Redis",
+    "Istio",
+    "Kubernetes",
+    "Authentication"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "데이터",
+    "데이터베이스",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "898fe50e10079fcd"
   },
   {
    "key": "toss",

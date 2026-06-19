@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T15:11:12",
+ "generated_at": "2026-06-19T16:56:48",
  "total": 100,
  "countries": [
   {
@@ -701,7 +701,7 @@
    "languages": [
     {
      "name": "Python",
-     "count": 8
+     "count": 9
     },
     {
      "name": "C++",
@@ -712,12 +712,12 @@
      "count": 6
     },
     {
-     "name": "JavaScript",
+     "name": "Kotlin",
      "count": 6
     },
     {
-     "name": "Kotlin",
-     "count": 6
+     "name": "JavaScript",
+     "count": 5
     },
     {
      "name": "Scala",
@@ -851,12 +851,12 @@
       "count": 2
      },
      {
-      "name": "Spark",
+      "name": "MongoDB",
       "count": 2
      },
      {
-      "name": "Amazon S3",
-      "count": 1
+      "name": "Spark",
+      "count": 2
      }
     ],
     "infra": [
@@ -3370,11 +3370,15 @@
    "stack": {
     "backend": [
      {
-      "name": "Akka/Reactive",
+      "name": "Akka/Reactive Streams",
       "count": 1
      },
      {
       "name": "AWS Lambda",
+      "count": 1
+     },
+     {
+      "name": "GraphQL",
       "count": 1
      },
      {
@@ -3400,11 +3404,15 @@
       "count": 1
      },
      {
-      "name": "React",
+      "name": "React/TypeScript",
       "count": 1
      },
      {
-      "name": "SmartThings One UI",
+      "name": "SmartThings WebView",
+      "count": 1
+     },
+     {
+      "name": "Tizen Web",
       "count": 1
      }
     ],
@@ -3414,15 +3422,19 @@
       "count": 1
      },
      {
+      "name": "Amazon DynamoDB",
+      "count": 1
+     },
+     {
       "name": "Amazon S3",
       "count": 1
      },
      {
-      "name": "DynamoDB",
+      "name": "Amazon Timestream",
       "count": 1
      },
      {
-      "name": "Elasticsearch",
+      "name": "Elasticsearch/OpenSearch",
       "count": 1
      },
      {
@@ -3440,6 +3452,10 @@
       "count": 1
      },
      {
+      "name": "AWS Greengrass/Edge",
+      "count": 1
+     },
+     {
       "name": "AWS IoT Core/MQTT",
       "count": 1
      },
@@ -3448,11 +3464,15 @@
       "count": 1
      },
      {
-      "name": "Terraform",
+      "name": "Matter SDK",
       "count": 1
      },
      {
-      "name": "사내 Samsung Cloud",
+      "name": "Samsung Cloud",
+      "count": 1
+     },
+     {
+      "name": "Terraform",
       "count": 1
      }
     ]
@@ -11999,50 +12019,55 @@
     "Java",
     "Kotlin",
     "TypeScript",
+    "Go",
     "Swift",
-    "C++",
-    "Go"
+    "C++"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Node.js",
      "AWS Lambda",
-     "Akka/Reactive",
-     "gRPC"
+     "gRPC",
+     "Akka/Reactive Streams",
+     "GraphQL"
     ],
     "frontend": [
      "Android(Kotlin/Jetpack Compose)",
      "iOS(Swift)",
-     "React",
-     "SmartThings One UI(WebView)"
+     "SmartThings WebView(One UI)",
+     "React/TypeScript",
+     "Tizen Web(.NET/Web)"
     ],
     "data": [
      "Apache Kafka",
-     "DynamoDB",
+     "Amazon DynamoDB",
      "Amazon Aurora/MySQL",
-     "Elasticsearch",
+     "Elasticsearch/OpenSearch",
      "Redis/ElastiCache",
-     "Amazon S3"
+     "Amazon S3",
+     "Amazon Timestream"
     ],
     "infra": [
      "AWS(multi-region)",
      "Kubernetes(EKS)",
      "AWS IoT Core/MQTT",
-     "사내 Samsung Cloud",
-     "Terraform"
+     "Samsung Cloud(사내)",
+     "Terraform",
+     "AWS Greengrass/Edge",
+     "Matter SDK"
     ]
    },
    "architecture": [
-    "IoT 클라우드 플랫폼",
-    "이벤트 기반 디바이스 제어(Event-driven)",
+    "IoT 클라우드 플랫폼(Device-to-Cloud)",
+    "이벤트 기반 디바이스 제어(Event-driven/CQRS)",
     "MSA(Microservices)",
     "Edge-Cloud 하이브리드(Hub/Edge Driver)"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"SmartThings App<br/>Android Kotlin / iOS Swift\"]\n    HUB[\"SmartThings Hub<br/>Edge Drivers Lua\"]\n    DEV[\"IoT Devices<br/>Zigbee / Z-Wave / Matter / WiFi\"]\n  end\n  subgraph Conn[\"Connectivity Layer\"]\n    MQTT[\"Device Gateway<br/>MQTT / WebSocket / AWS IoT Core\"]\n    API[\"API Gateway<br/>REST + gRPC\"]\n  end\n  subgraph Core[\"Core Services MSA\"]\n    DEVSVC[\"Device Service<br/>Spring Boot / Kotlin\"]\n    CAP[\"Capability / Schema<br/>Device Handler Model\"]\n    RULE[\"Rules / Automation<br/>AWS Lambda Node.js\"]\n    AUTH[\"Auth / OAuth2<br/>Samsung Account\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"Device State<br/>DynamoDB\"]\n    AUR[\"Metadata<br/>Aurora MySQL\"]\n    ES[\"Search / Logs<br/>Elasticsearch\"]\n    REDIS[\"Cache<br/>Redis ElastiCache\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS multi-region\"]\n  end\n  DEV --> HUB\n  HUB -->|MQTT/TLS| MQTT\n  APP -->|HTTPS| API\n  MQTT --> DEVSVC\n  API --> DEVSVC\n  API --> AUTH\n  DEVSVC --> CAP\n  DEVSVC -->|publish state| KAFKA\n  KAFKA --> RULE\n  RULE -->|command| DEVSVC\n  DEVSVC --> DDB\n  DEVSVC --> REDIS\n  CAP --> AUR\n  KAFKA --> ES\n  DEVSVC -.runs on.-> EKS\n  RULE -.serverless.-> EKS",
-   "why_language": "디바이스 펌웨어·앱(Android Kotlin, iOS Swift)부터 클라우드(Java/Kotlin Spring Boot)까지 전 계층을 다루기 때문에 JVM 계열을 백본으로 삼아 대규모 동시 디바이스 세션을 안정적으로 처리한다. 룰 엔진·서버리스 automation은 빠른 배포와 가벼운 함수 단위 실행이 중요해 Node.js(TypeScript) Lambda를 쓰고, Edge Driver는 Hub의 제한된 리소스에서 동작해야 해 Lua를 채택했다. 즉 '제어 지연이 중요한 곳은 JVM/네이티브, 유연성이 중요한 자동화는 TS/Node'라는 분리가 핵심이다.",
-   "why_architecture": "수억 대의 이기종 디바이스를 '상태 변화 이벤트' 단위로 다뤄야 하므로 동기 호출이 아닌 Kafka 기반 event-driven으로 상태 전파와 룰 트리거를 비동기 분리했다. 디바이스 종류·제조사가 폭발적으로 늘어나기 때문에 Capability/Device Handler 추상화 위에 MSA를 두어 신규 디바이스 온보딩이 핵심 서비스 변경 없이 가능하게 했고, 네트워크 단절·클라우드 장애 시에도 로컬 제어가 끊기지 않도록 Hub의 Edge Driver로 제어 로직을 엣지로 내려 hybrid 구조를 택했다.",
-   "summary": "이기종 IoT 디바이스를 Capability 추상화 + Kafka 이벤트 + Edge-Cloud 하이브리드로 묶은 대규모 IoT 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"SmartThings App<br/>Kotlin Compose + Swift\"]\n    HUB[\"SmartThings Hub<br/>Lua Edge Driver + Matter/Thread\"]\n    DEV[\"Devices<br/>MQTT / Matter / BLE\"]\n  end\n  subgraph Gateway[\"Connectivity / Gateway\"]\n    MQTT[\"AWS IoT Core<br/>MQTT Broker\"]\n    WS[\"WebSocket / Sync Service<br/>Node.js\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + gRPC\"]\n  end\n  subgraph Core[\"Core Services\"]\n    DEVSVC[\"Device Service<br/>Spring Boot\"]\n    CAP[\"Capability/Schema<br/>Java + GraphQL\"]\n    RULE[\"Rules Engine<br/>AWS Lambda + Go\"]\n    AUTH[\"Samsung Account<br/>OAuth2 / OIDC\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Apache Kafka<br/>Event Bus\"]\n    REACT[\"Akka Reactive<br/>Stream Processing\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DDB[\"DynamoDB<br/>Device State\"]\n    AUR[\"Aurora/MySQL<br/>Metadata\"]\n    TS[\"Timestream<br/>Telemetry\"]\n    ES[\"OpenSearch<br/>Search/Logs\"]\n    REDIS[\"ElastiCache Redis<br/>Session/Cache\"]\n  end\n  DEV --> HUB\n  DEV -->|MQTT| MQTT\n  HUB -->|MQTT/TLS| MQTT\n  APP -->|WSS| WS\n  APP -->|HTTPS| GW\n  MQTT --> KAFKA\n  WS --> GW\n  GW -->|OAuth2| AUTH\n  GW -->|gRPC| DEVSVC\n  GW --> CAP\n  DEVSVC --> KAFKA\n  KAFKA --> RULE\n  KAFKA --> REACT\n  RULE --> DEVSVC\n  DEVSVC --> DDB\n  DEVSVC --> REDIS\n  CAP --> AUR\n  REACT --> TS\n  REACT --> ES\n  RULE -->|command| MQTT",
+   "why_language": "수억 대 디바이스의 실시간 상태 동기화와 안정적 클라우드 백엔드를 위해 JVM 생태계(Java/Kotlin)와 Spring Boot를 핵심으로 쓰며, 동시성·낮은 메모리 풋프린트가 중요한 IoT 게이트웨이·룰 처리 영역에는 Go를 채택한다. 클라이언트는 Android(Kotlin/Compose)·iOS(Swift) 네이티브와 WebView 기반 One UI(TypeScript)를 혼합해 빠른 화면 갱신과 플랫폼 일관성을 동시에 확보한다.",
+   "why_architecture": "전 세계 다양한 제조사·프로토콜(Zigbee/Z-Wave/Matter/Thread/Wi-Fi)의 디바이스를 단일 추상화(Capability)로 통합해야 하므로, 디바이스 이벤트를 Kafka 기반 이벤트 스트림으로 흘려보내는 Event-driven MSA를 택했다. 네트워크 단절·지연이 빈번한 IoT 특성상 Hub의 Lua Edge Driver로 로컬 실행을 지원하는 Edge-Cloud 하이브리드를 두어 클라우드 장애 시에도 핵심 자동화가 끊기지 않게 한다.",
+   "summary": "Spring/Kotlin 기반 이벤트 드리븐 MSA 위에 AWS IoT Core·Kafka·Edge Driver를 얹은, 수억 디바이스용 Edge-Cloud 하이브리드 IoT 플랫폼",
    "deep_dive": [
     {
      "topic": "디바이스 연결 end-to-end: MQTT/WebSocket부터 클라우드 이벤트까지",
@@ -12075,6 +12100,18 @@
     {
      "topic": "관측성: 수억 디바이스 이벤트의 로깅·트레이싱·메트릭",
      "body": "### 문제의 규모\n수억 대 디바이스가 상태 변화를 push하면 초당 수십만 건 이상의 이벤트가 발생한다. 단순 로그 적재로는 비용과 노이즈가 폭증하므로, 관측성은 '샘플링 + 집계 + 분산 추적'의 조합으로 설계된다.\n\n### 구성\n- **메트릭**: 디바이스 연결 수, 명령 성공/실패율, 룰 트리거 지연(latency p50/p95/p99), Kafka consumer lag 같은 골든 시그널을 시계열로 수집한다. consumer lag은 이벤트 처리 적체를 가장 먼저 드러내는 핵심 지표다.\n- **분산 트레이싱**: 앱 명령 → API Gateway → Device Service → Kafka → Lambda 룰 실행 → 디바이스 ack까지 하나의 trace id로 묶어, '사용자가 불 켰는데 1초 늦게 켜진' 류의 꼬리 지연을 어느 hop에서 났는지 짚는다.\n- **로깅**: 전량 적재 대신 에러/이상 이벤트 위주로 `Elasticsearch`에 색인하고, 정상 이벤트는 집계 후 폐기하거나 콜드 스토리지(S3)로 내린다.\n\n### 트레이드오프\n- 풀 트레이싱을 전 트래픽에 켜면 오버헤드와 비용이 감당 불가라, head-based sampling으로 일부만 추적하되 에러 trace는 강제 보존하는 식의 정책을 둔다.\n- region 분산 구조라 관측 데이터도 region별로 흩어지므로, 글로벌 장애 판단을 위해서는 region 메트릭을 상위에서 다시 합치는 aggregation 레이어가 필요하다."
+    },
+    {
+     "topic": "Lua Edge Driver와 Hub-Cloud 양방향 실행 모델: 로컬 자동화가 끊기지 않는 이유",
+     "body": "### 왜 Hub 안에서 코드를 돌리나\n2021년 SmartThings는 기존 Groovy 기반 클라우드 DTH(Device Type Handler)를 폐기하고 **Lua로 작성된 Edge Driver**를 Hub(SmartThings Station, Aeotec/Ahub, 일부 삼성 TV·냉장고 내장 Hub)에서 직접 실행하는 구조로 전환했다. 이유는 명확하다. Zigbee 전구를 켜는 단순 명령조차 `App → 클라우드 → DTH 실행 → 다시 Hub` 라운드트립을 돌면 **수백 ms~수 초의 지연**이 생기고, 인터넷이 끊기면 집 안의 조명 스위치조차 동작하지 않는다. Edge Driver는 이 실행 로직을 Hub 로컬로 내려보낸다.\n\n### Edge Driver의 동작 구조\n- 각 드라이버는 `driver` 객체에 **capability handler**와 **lifecycle handler**를 등록한다. 예: `switch` capability의 `on`/`off` 커맨드 핸들러, Zigbee `attribute report` 수신 핸들러.\n- Hub의 런타임은 격리된 **Lua VM(LuaJIT 계열, 샌드박스)** 에서 각 드라이버를 돌린다. 한 드라이버가 죽어도 다른 드라이버·Hub 코어에 영향이 없도록 프로세스/메모리를 분리한다. 메모리가 수십 MB로 제약된 Hub 하드웨어 특성상 Lua의 가벼운 풋프린트가 결정적이었다.\n- 드라이버는 `cosock`(coroutine 기반 비동기 소켓 라이브러리)으로 네트워크 I/O를 논블로킹 처리한다. 단일 OS 스레드 위에서 수십 개 디바이스의 LAN 통신(예: LIFX, Hue 브리지)을 coroutine으로 멀티플렉싱한다.\n\n### 로컬 실행 vs 클라우드 실행 결정\nHub는 디바이스 이벤트를 받으면 **먼저 로컬 Rules(로컬 자동화)** 와 매칭을 시도한다. 조건·액션이 모두 같은 Hub에 연결된 디바이스이고 로컬 실행 가능한 capability면 클라우드를 거치지 않고 즉시 실행한다. 클라우드 의존 기능(예: 외부 API 호출, ML 기반 루틴, 푸시 알림)만 클라우드로 올린다. 이로써 **인터넷 단절 시에도 'motion sensor → light on' 류 핵심 자동화가 그대로 작동**한다.\n\n### 상태 동기화의 트레이드오프\n로컬에서 상태가 바뀌면 Hub는 그 이벤트를 클라우드로 **eventually-consistent하게 업스트림** 한다(MQTT over TLS). 즉 앱 UI의 디바이스 상태는 클라우드 미러를 보지만, 실제 제어 권한은 Hub에 있다. 이 때문에 '앱에는 켜짐인데 실제는 꺼짐' 같은 일시적 불일치가 생길 수 있고, SmartThings는 주기적 **state refresh/health check**와 디바이스의 attribute report로 보정한다."
+    },
+    {
+     "topic": "디바이스 명령의 멱등성·순서 보장과 명령 큐잉 메커니즘",
+     "body": "### IoT 명령이 어려운 이유\n클라우드에서 디바이스로 가는 명령(command)은 일반 웹 요청과 다르다. 디바이스가 오프라인일 수 있고, 무선 메시(Zigbee/Thread) 위에서 패킷이 유실되며, 사용자가 'on'을 두 번 빠르게 누르면 두 명령이 경쟁한다. SmartThings는 이를 **이벤트(상태 보고)와 명령(상태 변경 요청)을 분리한 CQRS 변형** 으로 다룬다.\n\n### 명령 전달 경로\n1. 앱/룰 엔진이 `device commands` API(`{ \"capability\": \"switch\", \"command\": \"on\" }`)를 호출.\n2. Device Service가 **명령을 검증**(capability 스키마·권한·디바이스 소유권)하고 대상 Hub/직접연결 디바이스의 라우팅을 결정.\n3. 직접연결(WiFi/클라우드-투-클라우드) 디바이스면 제조사 클라우드로 webhook 또는 AWS IoT Core MQTT topic으로 publish, Hub 연결 디바이스면 Hub의 MQTT 다운스트림 토픽으로 전달.\n4. 디바이스가 실제 상태를 바꾸면 **별도의 event(attribute report)** 로 다시 올라오고, 이 이벤트가 'ground truth'가 된다. 즉 명령 ACK이 아니라 **실제 상태 보고**로 성공을 확정한다.\n\n### 멱등성과 중복 억제\n- 명령에는 사실상 **상태 수렴형(state-convergent)** 성질을 부여한다. `setLevel:50`을 두 번 보내도 결과는 같다. on/off 같은 토글성 명령도 명시적 `on`/`off`로 표현해 멱등으로 만든다.\n- Hub/드라이버 레벨에서 **command dedup**과 **rate limiting**을 둔다. Zigbee처럼 대역폭이 좁은 메시에 명령을 폭주시키면 네트워크가 마비되므로, 드라이버가 명령을 큐잉하고 디바이스 응답 속도에 맞춰 throttle한다.\n\n### 오프라인 디바이스 처리\n오프라인 디바이스로의 명령은 무한정 보관하지 않는다. SmartThings는 대체로 **명령을 짧은 TTL로만 유지하거나 즉시 실패** 처리한다(스마트홈 명령은 'stale command'가 위험하다 — 12시간 뒤 갑자기 문이 열리면 안 된다). 대신 디바이스 health 상태를 `ONLINE/OFFLINE`로 표기해 사용자에게 명령 불가를 즉시 알린다."
+    },
+    {
+     "topic": "Capability 기반 GraphQL/REST 스키마 진화와 디바이스 추상화의 버저닝",
+     "body": "### Capability = 디바이스 기능의 타입 시스템\nSmartThings의 핵심 추상화는 **Capability**다. `switch`, `switchLevel`, `colorControl`, `thermostatCoolingSetpoint` 처럼 '디바이스가 무엇을 할 수 있는가'를 표준 스키마로 정의한다. 각 capability는 **attributes(읽기 상태)** 와 **commands(쓰기 동작)** 를 가지며, 제조사·프로토콜과 무관하게 동일한 인터페이스를 노출한다. 덕분에 앱·룰 엔진은 'Philips Hue인지 삼성 전구인지' 몰라도 `switch.on`만 호출하면 된다.\n\n### 스키마 정의와 검증\n- Capability는 JSON 스키마로 선언되며 attribute의 타입·단위·enum·range까지 명시한다. 예: `switchLevel.level`은 0~100 integer, `temperatureMeasurement.temperature`는 단위(`C`/`F`)를 가진 number.\n- 디바이스가 보고하는 모든 이벤트는 이 스키마로 **server-side validation** 된다. 범위를 벗어난 값(예: level 150)은 거부하거나 클램프한다. 이는 수만 종 디바이스에서 올라오는 더러운 데이터를 정규화하는 1차 방어선이다.\n- 제조사는 **Custom Capability**를 직접 정의해 표준에 없는 기능(예: 로봇청소기의 특정 모드)을 추가할 수 있고, 네임스페이스로 격리된다.\n\n### Proactive State / API 진화\nSmartThings는 REST API와 함께 **GraphQL(특히 신형 디바이스 상세·proactive state 조회)** 을 운용한다. 디바이스 종류가 폭발적으로 늘면서 클라이언트가 필요한 필드만 선택적으로 가져오는 GraphQL이 over-fetching을 줄이는 데 유리했다. capability는 **deprecation 정책**을 두고 버전을 관리한다 — 한 번 배포된 capability 스키마는 수억 디바이스·서드파티 통합이 의존하므로 breaking change를 피하고, 새 기능은 새 attribute/capability 추가로 확장(backward compatible)한다.\n\n### Presentation 분리\n기능(capability)과 **UI 표현(device presentation/VID)** 을 분리한 것도 핵심 결정이다. 같은 `switch` capability라도 전구·플러그·보일러는 다르게 보여야 하므로, presentation 메타데이터로 어떤 capability를 대시보드/상세 화면 어디에 어떤 위젯으로 그릴지 선언적으로 정의한다. 이로써 새 디바이스 추가 시 앱 코드 배포 없이 서버 메타데이터만으로 UI를 구성할 수 있다."
     }
    ],
    "github": {
@@ -12083,40 +12120,47 @@
      {
       "name": "SmartThingsCommunity/smartthings-cli",
       "url": "https://github.com/SmartThingsCommunity/smartthings-cli",
-      "desc": "디바이스·자동화·스키마를 관리하는 공식 개발자 CLI",
+      "desc": "디바이스·앱·드라이버 관리를 위한 공식 CLI 도구",
       "lang": "TypeScript",
-      "stars": 342
+      "stars": 343
      },
      {
       "name": "SmartThingsCommunity/SmartThingsEdgeDrivers",
       "url": "https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers",
-      "desc": "Hub에서 로컬 실행되는 공식 Edge Driver(Lua) 모음 — 엣지 제어 로직",
+      "desc": "Hub에서 로컬 실행되는 공식 Lua 기반 Edge Driver 모음",
       "lang": "Lua",
       "stars": 339
      },
      {
+      "name": "SmartThingsCommunity/smartapp-sdk-nodejs",
+      "url": "https://github.com/SmartThingsCommunity/smartapp-sdk-nodejs",
+      "desc": "SmartApp 자동화를 만드는 Node.js SDK",
+      "lang": "JavaScript",
+      "stars": 148
+     },
+     {
       "name": "SmartThingsCommunity/smartthings-core-sdk",
       "url": "https://github.com/SmartThingsCommunity/smartthings-core-sdk",
-      "desc": "SmartThings REST API용 공식 TypeScript/Node SDK",
+      "desc": "SmartThings REST API용 TypeScript 코어 SDK",
       "lang": "TypeScript",
       "stars": 127
      },
      {
-      "name": "SmartThingsCommunity/st-schema-nodejs",
-      "url": "https://github.com/SmartThingsCommunity/st-schema-nodejs",
-      "desc": "외부 클라우드 디바이스를 연동하는 ST Schema 커넥터 SDK",
+      "name": "SmartThingsCommunity/api-app-subscription-example-js",
+      "url": "https://github.com/SmartThingsCommunity/api-app-subscription-example-js",
+      "desc": "이벤트 구독·콜백 처리 예제 애플리케이션",
       "lang": "JavaScript",
-      "stars": 35
+      "stars": 12
      }
     ]
    },
    "sources": [
-    "https://github.com/SmartThingsCommunity",
-    "https://developer.smartthings.com/docs/devices/capabilities/capabilities-reference",
-    "https://developer.smartthings.com/docs/edge-device-drivers/"
+    "https://developer.smartthings.com/docs/devices/hub-connected/get-started",
+    "https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers",
+    "https://developer.smartthings.com/docs/devices/capabilities/capabilities-reference"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "line",
@@ -12127,8 +12171,9 @@
     "Java",
     "Kotlin",
     "Scala",
-    "JavaScript",
-    "C++"
+    "TypeScript",
+    "C++",
+    "Python"
    ],
    "stack": {
     "backend": [
@@ -12136,13 +12181,15 @@
      "Spring Boot",
      "Thrift",
      "gRPC",
-     "Netty"
+     "Netty",
+     "Decaton"
     ],
     "frontend": [
      "React",
      "Vue.js",
      "TypeScript",
-     "Next.js"
+     "Next.js",
+     "Nuxt.js"
     ],
     "data": [
      "Kafka",
@@ -12150,26 +12197,29 @@
      "Redis",
      "Elasticsearch",
      "MySQL",
-     "Cassandra"
+     "Cassandra",
+     "MongoDB"
     ],
     "infra": [
      "Kubernetes",
      "Verda(사내 PaaS)",
      "Central Dogma",
      "Prometheus",
-     "OpenStack"
+     "Promgen",
+     "OpenStack",
+     "Zipkin"
     ]
    },
    "architecture": [
     "MSA",
-    "RPC 기반 통신(Thrift/gRPC)",
-    "이벤트 드리븐 스트리밍",
-    "멀티 데이터센터/지오 에지"
+    "Thrift/gRPC 기반 RPC 통신",
+    "이벤트 드리븐 비동기 스트리밍",
+    "멀티 데이터센터 + 글로벌 에지(LEGY)"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    APP[\"LINE App<br/>iOS / Android / Desktop\"]\n    LEGY[\"LEGY Edge Gateway<br/>SPDY/HTTP2 + Thrift\"]\n  end\n  subgraph Core[\"Core Services\"]\n    TALK[\"Talk-Server<br/>Java + Armeria\"]\n    AUTH[\"Auth / Channel<br/>Spring Boot\"]\n    PUSH[\"Push Delivery<br/>APNs / FCM Bridge\"]\n    CD[\"Central Dogma<br/>Git 설정/디스커버리\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>이벤트 버스\"]\n    FLINK[\"Stream Proc<br/>Flink / Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"HBase<br/>메시지 스토어\"]\n    REDIS[\"Redis<br/>세션/캐시\"]\n    MYSQL[\"MySQL<br/>유저/관계\"]\n    ES[\"Elasticsearch<br/>검색/로그\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    VERDA[\"Verda PaaS<br/>OpenStack + K8s\"]\n    PROM[\"Prometheus<br/>메트릭/관측성\"]\n  end\n  APP -->|SPDY long-conn| LEGY\n  LEGY -->|Thrift RPC| TALK\n  LEGY -->|Thrift RPC| AUTH\n  TALK -->|write| HBASE\n  TALK -->|session| REDIS\n  TALK -->|event| KAFKA\n  AUTH --> MYSQL\n  TALK --> PUSH\n  KAFKA --> FLINK\n  FLINK --> ES\n  CD -.config.-> TALK\n  CD -.config.-> AUTH\n  TALK --- VERDA\n  VERDA --- PROM",
-   "why_language": "글로벌 수억 MAU 메시징의 동시 접속·낮은 지연 처리를 위해 JVM 생태계(Java/Kotlin/Scala)를 중심으로 채택했으며, Netty/Armeria 기반 비동기 I/O로 대규모 커넥션을 효율적으로 다룬다. Scala는 Kafka·스트리밍 데이터 처리에, Kotlin은 신규 서버·안드로이드 개발 생산성에 활용되고, 에지 게이트웨이(LEGY) 같은 극한 성능 구간은 C++로 최적화한다.",
-   "why_architecture": "메시지·콜·결제·커머스 등 도메인이 폭증하면서 독립 배포·장애 격리가 가능한 MSA로 분리했고, 내부 통신은 스키마 명확하고 빠른 Thrift/gRPC RPC로 묶었다. 전 세계 사용자에게 일정한 지연을 제공하기 위해 LEGY 에지 + 멀티 데이터센터 구조를 택했고, 비동기 후처리는 Kafka 이벤트 스트림으로 분리해 코어 전송 경로를 가볍게 유지한다.",
-   "summary": "JVM·RPC·LEGY 에지로 수억 MAU 실시간 메시징을 떠받치는 대규모 MSA",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"LINE App<br/>iOS / Android / Desktop\"]\n  end\n  subgraph Edge\n    LEGY[\"LEGY Edge Gateway<br/>SPDY / HTTP2 + Thrift\"]\n  end\n  subgraph Core\n    TALK[\"Talk-Server<br/>Java + Armeria\"]\n    AUTH[\"Auth / Session<br/>Spring Boot\"]\n    CHANNEL[\"Channel / Bot / Pay<br/>MSA + gRPC\"]\n  end\n  subgraph Config\n    CD[\"Central Dogma<br/>Git-based Config + Discovery\"]\n  end\n  subgraph Async\n    KAFKA[\"Kafka<br/>Event Bus\"]\n    DECATON[\"Decaton<br/>High-throughput Consumer\"]\n  end\n  subgraph Storage\n    HBASE[\"HBase<br/>Message Store + Sharding\"]\n    REDIS[\"Redis<br/>Cache / Presence\"]\n    MYSQL[\"MySQL<br/>Relational\"]\n    ES[\"Elasticsearch<br/>Search\"]\n  end\n  subgraph Platform\n    VERDA[\"Verda PaaS<br/>OpenStack + Kubernetes\"]\n    PROM[\"Prometheus + Promgen<br/>Zipkin Tracing\"]\n  end\n  APP -->|SPDY| LEGY\n  LEGY -->|Thrift| TALK\n  TALK --> AUTH\n  TALK -->|gRPC| CHANNEL\n  TALK -.discovery.-> CD\n  CHANNEL -.discovery.-> CD\n  TALK -->|write| HBASE\n  TALK --> REDIS\n  CHANNEL --> MYSQL\n  CHANNEL --> ES\n  TALK -->|publish| KAFKA\n  KAFKA --> DECATON\n  DECATON -->|push fanout| LEGY\n  TALK -.metrics.-> PROM\n  CHANNEL -.runs on.-> VERDA",
+   "why_language": "글로벌 수억 사용자의 메시징 트래픽을 처리하기 위해 JVM 생태계(Java/Kotlin/Scala)를 중심으로 Armeria·Netty 기반 고성능 비동기 RPC를 구축했고, JVM의 성숙한 동시성·GC·운영 도구가 대규모 상시 연결 서버에 적합하기 때문이다. 프런트엔드와 LIFF 같은 웹 플랫폼은 TypeScript/React/Vue로, 미디어·코덱 등 성능 임계 영역은 C++로 보완한다.",
+   "why_architecture": "전 세계에 분산된 사용자에게 낮은 지연으로 실시간 메시지를 전달하기 위해 LEGY 글로벌 에지 게이트웨이로 연결을 종단하고, 내부는 Thrift/gRPC 기반 MSA로 도메인(Talk, Pay, Bot 등)을 독립 확장한다. 메시지 저장은 HBase로 수평 샤딩하고 푸시·후속 처리는 Kafka/Decaton 이벤트 스트리밍으로 비동기 분리해 장애 격리와 처리량을 동시에 확보한다.",
+   "summary": "JVM(Armeria) 기반 RPC MSA에 LEGY 에지·HBase·Kafka를 결합한 글로벌 실시간 메시징 플랫폼",
    "deep_dive": [
     {
      "topic": "메시지 종단간 흐름: send → store → push",
@@ -12206,6 +12256,22 @@
     {
      "topic": "멀티 데이터센터·복원력: 페일오버와 장애 격리",
      "body": "### 왜 멀티 DC인가\n\nLINE은 일본을 핵심으로 글로벌 사용자를 서비스하며, 단일 데이터센터 장애가 곧 국가 단위 통신 마비로 이어질 수 있어 **멀티 데이터센터·다중 가용영역**을 전제로 설계된다. 메시지 저장소인 `HBase`는 여러 리전·랙에 걸쳐 복제되고, 사용자/관계 데이터의 `MySQL`은 샤딩+레플리카로 읽기 부하와 페일오버를 동시에 처리한다.\n\n### 복원력 메커니즘\n\n- **서킷 브레이커·재시도·타임아웃**: `Armeria` 클라이언트에 내장된 circuit breaker가 다운스트림 서비스의 연쇄 장애(cascading failure)를 차단한다. 느린 서비스로의 호출을 빠르게 끊고 백오프 재시도해, 한 서비스의 지연이 전체로 번지지 않게 한다.\n- **서비스 디스커버리 기반 페일오버**: `Central Dogma`/내부 디스커버리로 엔드포인트 목록을 동적으로 관리해, 인스턴스가 죽으면 트래픽을 건강한 노드로 재라우팅한다.\n- **에지 분산(LEGY PoP)**: 특정 PoP/리전 장애 시 클라이언트를 다른 에지로 재연결시켜 글로벌 가용성을 유지한다.\n\n### 트레이드오프\n\n강한 일관성(특히 메시지 순서·중복 방지)과 멀티 DC 가용성은 충돌하므로, LINE은 메시지 도메인 특성에 맞춰 **키(채팅방) 단위 순서 보장 + 최종적 일관성**을 받아들이는 식으로 균형을 잡는다. 전 세계 어디서나 일정한 지연으로 \"끊기지 않는\" 메신저를 제공하는 것이 최우선 설계 목표다."
+    },
+    {
+     "topic": "프로토콜 선택의 진화: Thrift에서 gRPC·Armeria 통합 RPC로",
+     "body": "### 왜 처음엔 Thrift였나\nLINE의 내부 통신은 초창기부터 Apache `Thrift`를 표준 RPC IDL로 채택했다. 2011년 서비스 출범 당시 폴리글랏 환경(Java 중심에 일부 C++/Scala)에서 언어 중립적인 직렬화와 컴팩트한 바이너리 인코딩이 필요했고, JSON/REST 대비 페이로드와 파싱 비용이 작은 Thrift의 `TCompactProtocol`이 모바일-서버, 서버-서버 양쪽에서 유리했다. 특히 LEGY 에지와 Talk-Server 사이의 클라이언트 프로토콜도 Thrift 기반으로 설계되어, IDL 하나로 클라이언트/서버 스텁을 동시에 생성하는 워크플로가 자리잡았다.\n\n### Thrift의 한계와 Armeria의 등장\n순정 Thrift는 동기 블로킹 모델, 빈약한 비동기 지원, HTTP/2 미지원, 관측성 부재 같은 운영상의 약점이 있었다. LINE은 이를 해결하기 위해 사내에서 `Armeria`를 개발해 오픈소스화했다. Armeria의 핵심은 **하나의 포트에서 여러 프로토콜을 동시에 서빙**하는 것이다.\n\n- 같은 서버가 `Thrift`(레거시 클라이언트), `gRPC`(신규 서비스 간), `REST/JSON`(외부 연동·디버깅)을 동시에 받는다.\n- Netty 기반 완전 비동기 I/O로, 응답을 `CompletableFuture`/`Reactor`로 논블로킹 처리한다.\n- 내장 `Documentation Service`로 IDL 스키마를 브라우저에서 탐색하고 테스트 요청을 쏠 수 있다.\n\n### 마이그레이션 전략\nLINE은 빅뱅 전환 대신 점진적 마이그레이션을 택했다. 기존 Thrift 엔드포인트를 유지한 채 Armeria 서버 위에 gRPC 서비스를 함께 노출하고, 신규 마이크로서비스부터 gRPC를 우선 적용했다. 이 과정에서 Armeria의 `decorator`(미들웨어) 모델로 인증·서킷브레이커·재시도·분산 트레이싱을 프로토콜과 무관하게 주입할 수 있어, 프로토콜이 섞인 과도기에도 일관된 횡단 관심사 처리가 가능했다.\n\n| 항목 | 순정 Thrift | Armeria(gRPC/Thrift) |\n|------|-------------|----------------------|\n| I/O 모델 | 블로킹 위주 | Netty 비동기 |\n| 전송 | TCP 커스텀 | HTTP/2 멀티플렉싱 |\n| 관측성 | 별도 구현 | 내장 트레이싱·메트릭 |\n| 멀티 프로토콜 | 불가 | 단일 포트 동시 서빙 |\n\n결과적으로 LINE은 \"레거시 Thrift 자산을 버리지 않으면서 gRPC/HTTP2의 멀티플렉싱·흐름제어 이점\"을 취하는 절충점을 Armeria로 구현했다."
+    },
+    {
+     "topic": "LINE Pay·금융 도메인의 일관성과 분리된 데이터 전략",
+     "body": "### 메시징과 다른 데이터 요구\n메시징(Talk)은 가용성과 처리량을 위해 HBase 기반의 최종적 일관성 모델을 쓰지만, `LINE Pay`·뱅킹 같은 금융 도메인은 정반대의 요구를 가진다. 잔액·결제·정산은 **강한 일관성(strong consistency)과 트랜잭션 무결성**이 필수이므로, 이 도메인은 메시징 스택과 데이터 계층을 명확히 분리한다.\n\n### 핵심 설계 포인트\n- **RDBMS 중심 트랜잭션**: 결제·원장(ledger) 데이터는 `MySQL` 기반 관계형 저장소에서 ACID 트랜잭션으로 처리한다. 메시지처럼 NoSQL에 던지지 않는다.\n- **멱등성(idempotency) 키**: 네트워크 재시도·중복 결제 요청을 막기 위해 모든 결제 API는 멱등 키를 요구하고, 동일 키 재요청은 같은 결과를 반환한다. 분산 환경에서 \"정확히 한 번\"에 가까운 효과를 애플리케이션 레벨에서 보장한다.\n- **사가(Saga) 패턴 / 보상 트랜잭션**: 결제→포인트 적립→정산처럼 여러 서비스에 걸친 흐름은 분산 트랜잭션 대신 사가로 모델링해, 실패 시 보상 단계로 롤백한다.\n- **이벤트 소싱 성격의 원장**: 잔액을 직접 덮어쓰기보다 거래 이벤트를 추가(append)하고 합산해 잔액을 도출하는 방식으로 감사 추적(audit trail)과 정합성 검증을 용이하게 한다.\n\n### 규제·보안 격리\n금융 데이터는 일반 메시징 인프라와 네트워크·접근 권한을 분리하고, 개인정보·결제정보는 별도 보안 영역에서 암호화 저장한다. 이는 각국 금융 규제(전자금융거래법 등) 준수와 장애 도메인 격리를 동시에 만족시키기 위한 의도적 결정이다. 즉 LINE은 \"하나의 거대 모놀리식\"이 아니라 도메인 특성(가용성 vs 일관성)에 따라 데이터 패러다임 자체를 다르게 가져가는 폴리글랏 퍼시스턴스를 실천한다."
+    },
+    {
+     "topic": "Central Dogma 기반 동적 설정과 클라이언트 사이드 서비스 디스커버리",
+     "body": "### 설정을 코드처럼 다루기\nLINE은 수천 개의 마이크로서비스 인스턴스를 운영하면서 설정 변경을 무중단으로 전파해야 한다. 이를 위해 사내 개발·오픈소스화한 `Central Dogma`를 설정/디스커버리의 단일 진실 공급원(SSOT)으로 쓴다. 핵심은 **Git을 백엔드로 하는 버전 관리형 설정 저장소**라는 점이다.\n\n- 모든 설정(JSON/YAML/텍스트)이 Git 리포지토리에 커밋되어 **변경 이력·diff·롤백**이 자연스럽게 지원된다.\n- 잘못된 설정 배포 시 이전 커밋으로 되돌리면 즉시 복구된다 — 설정 장애의 MTTR을 크게 줄인다.\n- JSON 경로 단위 쿼리(JSON path)와 스키마 검증으로 부분 설정만 안전하게 읽고 갱신한다.\n\n### Watch 기반 실시간 반영\nCentral Dogma의 진가는 **long-polling/watch 메커니즘**이다. 클라이언트(Armeria 서비스)는 특정 파일/경로를 watch하고, 값이 바뀌면 폴링 없이 거의 즉시 콜백으로 새 값을 받는다. 덕분에 기능 플래그, 트래픽 가중치, 타임아웃·재시도 정책 같은 운영 파라미터를 **재배포 없이 런타임에** 바꿀 수 있다.\n\n### 디스커버리와 로드밸런싱의 결합\nArmeria 클라이언트는 Central Dogma에 저장된 엔드포인트 목록을 watch해 **클라이언트 사이드 로드밸런싱**을 수행한다. 별도 사이드카 프록시 없이도:\n\n- 엔드포인트 가중치 조정으로 카나리·점진 트래픽 이전을 구현하고,\n- 헬스 상태에 따라 비정상 인스턴스를 풀에서 제외하며,\n- 데이터센터 인지 라우팅(가까운 DC 우선)을 적용한다.\n\n이 조합(Armeria + Central Dogma)은 \"설정·디스커버리·LB·기능 플래그\"를 별도 시스템 4개로 쪼개지 않고 git 기반 한 축으로 통합한 LINE 특유의 엔지니어링 결정이며, 운영 단순성과 변경 안전성을 동시에 노린 트레이드오프다."
+    },
+    {
+     "topic": "상시 연결(persistent connection)과 푸시 fanout의 확장성 기법",
+     "body": "### 메신저의 본질적 도전: 수억 개의 항상 켜진 소켓\n메시징 서비스의 가장 큰 인프라 부담은 요청량(QPS)이 아니라 **동시에 유지되는 long-lived connection의 수**다. LINE은 전 세계 수억 사용자의 단말이 푸시 수신을 위해 상시 연결을 유지하므로, 연결 자체가 1급 자원이다.\n\n### LEGY 에지에서의 연결 종단\n클라이언트의 상시 연결은 가장 가까운 글로벌 에지인 `LEGY`에서 종단된다. LEGY는 경량 SPDY 계열 프로토콜로 모바일 네트워크의 불안정성(셀룰러 전환, 패킷 손실)을 흡수하고, 하나의 연결 위에서 여러 요청을 멀티플렉싱한다. 핵심은 **내부 코어 서버(Talk-Server)가 수억 개의 raw 소켓을 직접 떠안지 않도록** LEGY가 연결 풀과 세션을 대리한다는 점이다. 에지에서 TLS·연결 유지·재연결 backoff를 처리하므로 코어는 메시지 로직에 집중한다.\n\n### 푸시 fanout 처리\n1:1 메시지는 단순하지만 대규모 그룹·공식계정 브로드캐스트는 **fanout 폭발** 문제를 낳는다. 한 번의 발신이 수만~수십만 수신자 푸시로 증폭된다. LINE은 이를 동기 경로에서 분리한다:\n\n- 발신은 HBase에 메시지를 쓰고 즉시 ACK를 반환(쓰기 경로 최적화).\n- 수신자별 푸시 전달은 `Kafka`에 이벤트로 publish하고 `Decaton` 컨슈머가 비동기로 fanout한다.\n- Decaton은 키별 순서 보장을 유지하면서도 파티션 내 병렬도를 높여, 단순 Kafka 컨슈머보다 높은 처리량으로 대량 푸시를 흘려보낸다.\n- 오프라인 사용자는 즉시 푸시 대신 단말 재접속 시 sync API로 미수신 메시지를 끌어오는 **pull 보완**을 사용해 푸시 시스템 부하를 평탄화한다.\n\n### 프레즌스·세션 상태\n온라인 여부, 마지막 접속, 타이핑 표시 같은 프레즌스 상태는 변화가 잦고 영속성이 덜 중요하므로 `Redis` 같은 인메모리 계층에 둔다. 영속 메시지(HBase)와 휘발성 상태(Redis)를 분리해, 각 데이터의 수명·일관성 요구에 맞는 저장소를 쓰는 것이 확장의 핵심이다.\n\n이처럼 LINE의 확장성은 \"에지에서 연결 종단 → 쓰기 경로 단축 → 푸시 fanout 비동기화 → 저장소 분리\"라는 계층적 분리로 달성된다."
     }
    ],
    "github": {
@@ -12214,35 +12280,35 @@
      {
       "name": "line/armeria",
       "url": "https://github.com/line/armeria",
-      "desc": "HTTP/2·gRPC·Thrift·REST를 한 포트에서 다루는 비동기 마이크로서비스 프레임워크",
+      "desc": "LINE의 비동기 멀티 프로토콜(HTTP/2, gRPC, Thrift) RPC/REST 마이크로서비스 프레임워크",
       "lang": "Java",
-      "stars": 5115
+      "stars": 5117
      },
      {
       "name": "line/promgen",
       "url": "https://github.com/line/promgen",
-      "desc": "Prometheus 설정·알림을 관리하는 웹 UI/프록시",
+      "desc": "Prometheus 설정·알림 규칙을 관리하는 웹 UI/서비스",
       "lang": "JavaScript",
       "stars": 1125
      },
      {
       "name": "line/centraldogma",
       "url": "https://github.com/line/centraldogma",
-      "desc": "Git 기반 고가용 설정·서비스 디스커버리 저장소",
+      "desc": "Git 기반 고가용 설정/서비스 디스커버리 저장소",
       "lang": "Java",
       "stars": 663
      },
      {
       "name": "line/line-bot-sdk-java",
       "url": "https://github.com/line/line-bot-sdk-java",
-      "desc": "LINE Messaging API 공식 Java SDK",
+      "desc": "LINE Messaging API용 공식 Java Bot SDK",
       "lang": "Java",
       "stars": 641
      },
      {
       "name": "line/decaton",
       "url": "https://github.com/line/decaton",
-      "desc": "Kafka 컨슈머의 고처리량 동시 처리 스트리밍 라이브러리",
+      "desc": "Kafka 위에서 동작하는 고처리량 비동기 태스크 처리 라이브러리",
       "lang": "Java",
       "stars": 371
      }
@@ -12251,10 +12317,10 @@
    "sources": [
     "https://engineering.linecorp.com/en/blog",
     "https://github.com/line/armeria",
-    "https://github.com/line/decaton"
+    "https://github.com/line/centraldogma"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "hyperconnect",
@@ -14686,6 +14752,13 @@
       "summary": "개발자의 첫 이직 과정을 정리한 글로, 코딩테스트와 라이브 코딩 중심으로 진행되는 쿠팡 채용 전형 경험을 포함한다. 알고리즘 풀이 능력과 실시간 코드 작성·설명 능력이 중요했다는 점을 강조한다.",
       "source": "github.io",
       "date": "2022-06"
+     },
+     {
+      "title": "쿠팡에서의 개발자 면접과 업무 방식 이해하기",
+      "url": "https://f-lab.ai/en/insight/understanding-coupang-developer-interview-20250227",
+      "summary": "쿠팡은 이력서보다 코딩테스트와 기술 면접 역량 중심으로 평가하며, 4시간 이상 진행되는 깊이 있는 기술 평가와 팀원 합의(2명 이상 반대 시 탈락) 제도가 특징이다. 다양한 언어/기술 스택을 다루고 설계부터 구현까지 주도적 역할을 요구하므로 자율성·책임감을 강조하는 OKR 기반 문화에 맞춘 준비가 필요하다.",
+      "source": "회사블로그(f-lab insight)",
+      "date": "2025-02"
      }
     ]
    },
