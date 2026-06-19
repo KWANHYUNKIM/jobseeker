@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-19T20:27:56",
+ "generated_at": "2026-06-19T22:21:01",
  "total": 100,
  "countries": [
   {
@@ -983,10 +983,6 @@
    "stack": {
     "backend": [
      {
-      "name": "Node.js",
-      "count": 5
-     },
-     {
       "name": "Spring Boot",
       "count": 5
      },
@@ -995,11 +991,11 @@
       "count": 4
      },
      {
-      "name": "Go",
-      "count": 2
+      "name": "Node.js",
+      "count": 4
      },
      {
-      "name": "gRPC/Protobuf",
+      "name": "Go",
       "count": 2
      },
      {
@@ -1021,16 +1017,20 @@
      {
       "name": "C# / .NET microservices",
       "count": 1
+     },
+     {
+      "name": "C# 게임 로직/콘텐츠 서버",
+      "count": 1
      }
     ],
     "frontend": [
      {
-      "name": "React",
-      "count": 7
-     },
-     {
       "name": "Unity",
       "count": 6
+     },
+     {
+      "name": "React",
+      "count": 5
      },
      {
       "name": "TypeScript",
@@ -1043,6 +1043,10 @@
      {
       "name": "Unreal Engine 4/5",
       "count": 2
+     },
+     {
+      "name": "BlackSpace Engine 자체 게임 클라이언트",
+      "count": 1
      },
      {
       "name": "C++ 렌더러",
@@ -1058,10 +1062,6 @@
      },
      {
       "name": "React + TypeScript",
-      "count": 1
-     },
-     {
-      "name": "React Native",
       "count": 1
      }
     ],
@@ -1110,7 +1110,7 @@
     "infra": [
      {
       "name": "Kubernetes",
-      "count": 8
+      "count": 7
      },
      {
       "name": "AWS",
@@ -1122,10 +1122,10 @@
      },
      {
       "name": "사내 데이터센터",
-      "count": 4
+      "count": 3
      },
      {
-      "name": "Docker",
+      "name": "CDN",
       "count": 2
      },
      {
@@ -1156,10 +1156,6 @@
      "count": 1
     },
     {
-     "name": "Authoritative 게임서버 + 채널/존 샤딩",
-     "count": 1
-    },
-    {
      "name": "C++ Authoritative 실시간 게임 서버 + tick 기반 권위적 시뮬레이션",
      "count": 1
     },
@@ -1173,6 +1169,10 @@
     },
     {
      "name": "CQRS + read-heavy caching",
+     "count": 1
+    },
+    {
+     "name": "Dedicated Authoritative Game Server",
      "count": 1
     }
    ]
@@ -13407,54 +13407,55 @@
    "languages": [
     "C++",
     "C#",
-    "Python",
     "Go",
-    "JavaScript",
-    "Java"
+    "Java",
+    "Python",
+    "JavaScript"
    ],
    "stack": {
     "backend": [
-     "자체 엔진(BlackSpace Engine) C++ 게임서버",
-     "C# 게임 로직",
-     "Go/Java 플랫폼 서비스",
-     "Node.js",
-     "gRPC/Protobuf"
+     "자체 엔진(BlackSpace Engine) 기반 C++ Authoritative 게임서버",
+     "C# 게임 로직/콘텐츠 서버",
+     "Go/Java 플랫폼·계정·결제 마이크로서비스",
+     "Node.js 웹/내부 API",
+     "gRPC/Protobuf 서비스 간 통신"
     ],
     "frontend": [
-     "자체 게임 클라이언트(BlackSpace Engine)",
-     "Unity(일부 모바일/사내 툴)",
-     "React"
+     "BlackSpace Engine 자체 게임 클라이언트(검은사막/붉은사막)",
+     "Unity(일부 모바일·사내 툴)",
+     "React 웹 포털·운영툴",
+     "전용 Launcher/Patcher(델타 패치)"
     ],
     "data": [
-     "MySQL",
-     "Redis",
-     "Kafka",
-     "Elasticsearch",
-     "MongoDB",
-     "Cassandra/Scylla(대규모 로그·랭킹)",
-     "S3"
+     "MySQL(계정·캐릭터·인벤토리 샤딩)",
+     "Redis(세션·랭킹·핫 캐시)",
+     "Kafka(이벤트·로그 스트리밍)",
+     "Cassandra/ScyllaDB(대규모 행동로그·랭킹)",
+     "Elasticsearch(로그 검색·분석)",
+     "MongoDB(콘텐츠/메타데이터)",
+     "S3(에셋·백업·데이터레이크)"
     ],
     "infra": [
-     "AWS",
-     "사내 데이터센터(자체 IDC)",
-     "Kubernetes",
-     "Docker",
-     "Terraform",
+     "AWS(글로벌 멀티리전)",
+     "사내 데이터센터(자체 IDC) 하이브리드",
+     "Kubernetes + Docker",
+     "Terraform(IaC)",
      "Jenkins/GitLab CI",
      "Prometheus + Grafana",
-     "ELK"
+     "ELK(Elasticsearch·Logstash·Kibana)",
+     "CDN(글로벌 패치 배포)"
     ]
    },
    "architecture": [
-    "자체 엔진 기반 심리스 오픈월드",
-    "Authoritative 게임서버 + 채널/존 샤딩",
-    "글로벌 멀티리전 서비스",
-    "이벤트 기반 비동기 파이프라인(Kafka)"
+    "자체 엔진 기반 심리스 오픈월드 + Authoritative 게임서버",
+    "존/채널 샤딩과 동적 핸드오프",
+    "글로벌 멀티리전 + 사내 IDC 하이브리드 서비스",
+    "Kafka 기반 이벤트 스트리밍으로 게임로직과 로그·정산 분리"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    GC[\"Game Client<br/>BlackSpace Engine C++\"]\n    LAUNCH[\"Launcher/Patcher<br/>CDN Delta Patch\"]\n  end\n  subgraph Edge\n    LB[\"Load Balancer<br/>AWS NLB + 자체 IDC L4\"]\n    GW[\"Login/Gateway<br/>C++ TCP/UDP Front\"]\n  end\n  subgraph GameServers\n    AUTH[\"Auth/Session<br/>C# + Redis\"]\n    ZONE[\"Zone/Channel Server<br/>Authoritative C++ Tick Loop\"]\n    MM[\"Matchmaking/Instance<br/>Battle Arena\"]\n    AOI[\"World State/AOI<br/>Interest Management\"]\n  end\n  subgraph Platform\n    PLAT[\"Platform Services<br/>Go/Java gRPC\"]\n    BILL[\"Billing/Shop<br/>Payment Gateway\"]\n    ANTI[\"Anti-Cheat<br/>Server Validation\"]\n  end\n  subgraph DataStreaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Processing<br/>Log/Analytics\"]\n  end\n  subgraph Storage\n    MYSQL[\"Game DB<br/>MySQL Sharded\"]\n    REDIS[\"Cache/Session<br/>Redis Cluster\"]\n    ES[\"Search/Logs<br/>Elasticsearch\"]\n    NOSQL[\"Logs/Ranking<br/>Cassandra/Scylla\"]\n    S3[\"Object Store<br/>S3\"]\n  end\n  subgraph Infra\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    OBS[\"Observability<br/>Prometheus + Grafana + ELK\"]\n  end\n  GC -->|TCP/UDP| LB\n  LAUNCH -->|HTTPS| S3\n  LB --> GW\n  GW --> AUTH\n  AUTH --> REDIS\n  GW -->|Session| ZONE\n  ZONE --> AOI\n  ZONE --> MM\n  ZONE -->|Persist| MYSQL\n  ZONE -->|Hot State| REDIS\n  ZONE -->|Validate| ANTI\n  ZONE -->|Events| KAFKA\n  PLAT --> BILL\n  PLAT --> MYSQL\n  KAFKA --> FLINK\n  FLINK --> NOSQL\n  FLINK --> ES\n  PLAT -.gRPC.-> ZONE\n  K8S --- PLAT\n  K8S --- FLINK\n  OBS -.scrape.-> ZONE\n  OBS -.scrape.-> PLAT",
-   "why_language": "MMORPG의 심리스 오픈월드와 대규모 실시간 전투는 마이크로초 단위 틱 루프와 메모리 제어가 핵심이라, 게임 서버·클라이언트 모두 자체 엔진(BlackSpace) 위에서 C++로 작성된다. 게임 콘텐츠·룰 로직은 생산성과 GC 안정성의 균형을 위해 C#로 다루고, 플랫폼·빌링·운영 서비스는 Go/Java로 분리한다. 데이터 파이프라인·자동화·툴링은 Python, 웹 콘솔·런처 UI는 JavaScript/React를 쓴다.",
-   "why_architecture": "검은사막처럼 로딩 경계 없는 거대한 단일 월드를 글로벌로 서비스하려면, 권위 서버(Authoritative Server)가 모든 시뮬레이션을 검증하고 월드를 채널·존으로 샤딩해 부하를 분산해야 한다. 관심 영역(AOI) 기반 상태 동기화로 대규모 거점전의 네트워크 비용을 줄이고, AWS 멀티리전과 사내 IDC를 병행해 지연·비용·데이터 주권을 동시에 만족시킨다. 로그·랭킹·정산은 Kafka 이벤트 스트림으로 게임 루프에서 분리해 결합도를 낮춘다.",
-   "summary": "자체 BlackSpace 엔진과 C++ Authoritative 서버로 심리스 오픈월드 MMO를 글로벌 멀티리전 서비스하는 게임 인프라",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Launcher\"]\n    GC[\"Game Client<br/>BlackSpace Engine C++\"]\n    LP[\"Launcher / Patcher<br/>Delta Patch\"]\n  end\n  subgraph Edge[\"Edge\"]\n    CDN[\"Global CDN<br/>Patch and Asset\"]\n    GLB[\"Global LB / Anycast<br/>Region Routing\"]\n  end\n  subgraph Gateway[\"Auth / Gateway\"]\n    AUTH[\"Login and Auth<br/>Go + JWT\"]\n    GGW[\"Game Gateway<br/>C++ TCP/UDP\"]\n  end\n  subgraph Core[\"Core Services\"]\n    GS[\"Authoritative Game Server<br/>C++ Tick Loop\"]\n    ZONE[\"Zone / Channel Shards<br/>AOI + Handoff\"]\n    PLAT[\"Platform Services<br/>Go / Java / gRPC\"]\n    MM[\"Matchmaking<br/>Redis Queue\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL<br/>Account / Character Shards\"]\n    REDIS[\"Redis<br/>Session / Rank Cache\"]\n    SCYLLA[\"Cassandra / ScyllaDB<br/>Logs / Ranking\"]\n    ES[\"Elasticsearch<br/>Log Search\"]\n    S3[\"S3<br/>Assets / Datalake\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka<br/>Event Bus\"]\n    SETTLE[\"Settlement / Analytics<br/>Stream Consumers\"]\n  end\n  subgraph Infra[\"Infra\"]\n    K8S[\"Kubernetes + Docker<br/>AWS + IDC\"]\n    OBS[\"Prometheus + Grafana<br/>ELK\"]\n  end\n  LP -->|patch| CDN\n  GC --> GLB\n  GLB --> AUTH\n  GLB --> GGW\n  AUTH --> MYSQL\n  AUTH --> REDIS\n  GGW -->|UDP state| GS\n  GS --> ZONE\n  GS --> MM\n  GS -->|gRPC| PLAT\n  ZONE --> REDIS\n  PLAT --> MYSQL\n  MM --> REDIS\n  GS -->|events| KAFKA\n  KAFKA --> SETTLE\n  SETTLE --> SCYLLA\n  SETTLE --> S3\n  SCYLLA --> ES\n  GS --> OBS\n  PLAT --> OBS\n  K8S --- PLAT\n  K8S --- AUTH",
+   "why_language": "MMORPG의 심리스 오픈월드는 수천 명의 동시 접속자 상태를 밀리초 단위 틱으로 처리해야 하므로, GC 정지와 메모리 오버헤드를 통제할 수 있는 C++로 자체 엔진과 권위 게임서버를 직접 작성한다. 콘텐츠·게임로직은 생산성이 높은 C#으로, 계정·결제·랭킹 같은 플랫폼 서비스는 동시성과 배포가 쉬운 Go/Java로 분리해 도메인별 특성에 맞춘다. Python은 데이터·자동화, JavaScript/React는 운영툴과 웹 포털에 쓰인다.",
+   "why_architecture": "오픈월드 게임은 치팅 방지와 일관된 월드 상태를 위해 서버가 모든 판정을 갖는 Authoritative 구조가 필수이고, 한 월드에 모든 유저를 담을 수 없어 존/채널 샤딩과 핸드오프로 부하를 수평 분산한다. 글로벌 동시 출시·낮은 지연을 위해 AWS 멀티리전에 게임서버를 배치하되 비용·데이터 주권이 중요한 핵심 데이터는 자체 IDC에 두는 하이브리드를 택한다. 게임로직과 로그·정산을 Kafka로 비동기 분리해 실시간 처리 지연 없이 대규모 행동 데이터를 수집·분석한다.",
+   "summary": "자체 BlackSpace Engine C++ 권위 게임서버 + 존/채널 샤딩에, AWS·사내 IDC 하이브리드와 Kafka 이벤트 파이프라인을 결합한 글로벌 MMORPG 인프라",
    "deep_dive": [
     {
      "topic": "권위 서버(Authoritative Server)와 틱 루프",
@@ -13491,6 +13492,18 @@
     {
      "topic": "AWS 멀티리전과 사내 IDC 하이브리드 운영",
      "body": "### 왜 둘 다 쓰는가\n글로벌 MMO는 북미·유럽·아시아·남미 플레이어의 핑을 낮추려면 리전을 분산해야 한다. 동시에 게임 서버는 **상태 풀(stateful)** 워크로드라 클라우드만으로는 비용이 비싸고, 한국 본진은 자체 IDC가 더 경제적이다. 그래서:\n\n- **엣지 게임 서버**: AWS 각 리전에 배치해 현지 플레이어의 RTT를 줄인다.\n- **코어/중앙 서비스**: 계정·정산·글로벌 랭킹 같은 단일 진실 소스는 사내 IDC 또는 특정 리전에 둔다.\n- **DR/탄력 용량**: 신규 출시·이벤트 트래픽 스파이크는 클라우드로 흡수하고, 평시 안정 부하는 IDC로 처리한다.\n\n### 리전 토폴로지의 난점\n- **글로벌 vs 리전 데이터**: 캐릭터·재화는 리전에 묶이는 경우가 많고(데이터 주권·정합성), 친구·랭킹 같은 글로벌 데이터는 별도 동기화 계층이 필요하다.\n- **결정적 권위의 단일성**: 한 캐릭터의 권위 서버는 한 시점에 하나여야 한다. 리전 간 캐릭터 이전은 마이그레이션 잡으로 처리하지, 실시간 멀티마스터로 풀지 않는다.\n\n### 배포·운영\n게임 서버 군집은 `Kubernetes`로 오케스트레이션하되, 매치/존 서버처럼 상태가 강한 것은 StatefulSet 또는 전용 노드풀에 핀하고, 무상태 플랫폼 서비스(빌링·웹 API)는 일반 디플로이먼트로 굴린다. 관측성은 `Prometheus + Grafana`로 틱 시간·세션 수·큐 적체를 보고, 로그는 `ELK`로 모은다. 패치는 런처가 `CDN` 델타 패치로 클라이언트를 갱신하고, 서버는 점검 윈도우·롤링 배포로 교체한다."
+    },
+    {
+     "topic": "게임 클라이언트 패치 배포 파이프라인 (Launcher·델타 패치·글로벌 CDN)",
+     "body": "### 왜 게임에서 '패치 배포'가 별도 시스템인가\nMMORPG는 클라이언트 용량이 수십 GB에 달하고, 정기 점검마다 수백만 사용자가 동시에 패치를 내려받는다. 웹 서비스처럼 서버만 바꾸면 끝이 아니라, **거대한 바이너리·에셋을 전 세계에 안정적으로 전달**하는 것이 운영의 핵심 난제다. 펄어비스의 검은사막은 전용 Launcher가 이 과정을 전담한다.\n\n### 델타 패치(증분 패치) 메커니즘\n- 전체 클라이언트를 매번 재다운로드하면 비용·시간이 폭증하므로, **변경된 청크만 내려받는 델타 패치**를 쓴다.\n- 에셋은 `.pad`/패키지 형태로 묶이고, 각 파일/블록에 대해 해시(예: CRC/SHA)를 계산해 **매니페스트(manifest)** 로 관리한다.\n- Launcher는 로컬 매니페스트와 서버 최신 매니페스트를 비교 → **차이 나는 블록 목록**만 산출 → 해당 블록을 CDN에서 받아 기존 패키지에 패치한다.\n- 다운로드 후 **해시 검증**으로 무결성을 확인하고, 손상 블록은 재요청한다. 이는 안티치트 관점에서도 클라이언트 변조 탐지의 1차 방어선이 된다.\n\n### 글로벌 CDN 계층\n| 계층 | 역할 |\n|------|------|\n| Origin(S3/IDC) | 빌드 산출물·매니페스트의 단일 원본 |\n| CDN Edge | 지역별 캐시로 사용자 근처에서 블록 서빙 |\n| Launcher | 병렬 멀티커넥션 다운로드 + 재개(resume) |\n\n- 점검 직후 **thundering herd**(동시 폭주)를 흡수하기 위해 CDN 에지 캐시가 origin을 보호한다. origin 트래픽을 최소화하려 매니페스트와 블록을 **불변(immutable) 객체**로 두고 버전 경로로 캐시 적중률을 높인다.\n- 글로벌 동시 서비스 특성상 리전별로 다른 에지 PoP를 사용하며, 대용량 신규 빌드는 사전 **prewarm(캐시 워밍)** 으로 점검 종료 시점에 맞춰 준비한다.\n\n### 트레이드오프\n- 델타 패치는 다운로드량을 크게 줄이지만, **패치 적용(merge)이 복잡**하고 중간 손상 시 복구 로직이 까다롭다. 그래서 매니페스트·해시 기반 검증과 블록 단위 재시도가 필수다.\n- CDN 비용은 트래픽에 비례하므로, 대형 업데이트는 **사전 분산 다운로드**(점검 전 미리 받기)로 피크를 평탄화한다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩 전략 (MySQL 캐릭터 샤딩 + Redis 핫 캐시)",
+     "body": "### 무엇을 어디에 저장하는가\nMMORPG의 데이터는 성격이 극단적으로 갈린다. **반드시 손실되면 안 되는 트랜잭션성 데이터**(계정, 캐릭터, 인벤토리, 거래, 결제)와 **막대한 양의 휘발성/분석성 데이터**(행동 로그, 위치, 전투 이벤트)다. 펄어비스는 전자를 MySQL+Redis로, 후자를 Cassandra/ScyllaDB+Kafka로 분리한다.\n\n### MySQL 샤딩 전략\n- 단일 RDB로는 수천만 캐릭터의 인벤토리/거래 쓰기를 감당할 수 없어 **수평 샤딩**을 한다. 일반적으로 `account_id` 또는 `character_id` 해시를 샤드 키로 사용해 한 캐릭터의 데이터가 한 샤드에 모이도록 한다(로컬리티 확보).\n- 샤드 키를 캐릭터 기준으로 잡으면 **단일 캐릭터 내 트랜잭션(아이템 이동, 골드 차감)은 한 샤드 안에서 ACID로 처리**된다. 반면 유저 간 거래·우편처럼 두 샤드에 걸친 작업은 분산 트랜잭션 대신 **2단계 상태머신(보류→확정/롤백)** 으로 멱등하게 처리한다.\n- 각 샤드는 **Primary-Replica 복제**로 읽기 부하 분산·페일오버를 지원한다.\n\n### 인벤토리/거래의 일관성\n- 아이템 복사 버그(item duplication)는 MMO의 치명적 사고이므로, 거래·강화 같은 핵심 경제 행위는 **게임서버 권위 + DB 트랜잭션** 으로 직렬화한다.\n- 게임서버는 메모리에 상태를 두고 플레이하다가 주기적/이벤트 시점에 DB에 **비동기 저장(write-behind)** 하되, 결제·거래 등 금전 관련은 **동기 확정**으로 안전성을 우선한다.\n\n### Redis 핫 캐시·세션\n- 로그인 세션, 채널/존 라우팅 정보, 실시간 랭킹(Sorted Set), 쿨다운, 매치메이킹 큐 등 **읽기·갱신이 폭발적인 데이터**는 Redis로 흡수해 MySQL 부하를 줄인다.\n- 랭킹은 `ZADD`/`ZRANGE` 기반 Sorted Set으로 O(log N)에 처리하고, 영속 집계는 Cassandra/Scylla로 내려보낸다.\n\n### 트레이드오프\n- 샤딩은 확장성을 주지만 **크로스 샤드 조인·전역 검색이 어렵다**. 그래서 전역 검색·분석은 Elasticsearch/데이터레이크로 별도 분리한다.\n- write-behind 캐시는 성능을 주지만 **서버 크래시 시 미저장 데이터 손실 위험**이 있어, 저장 주기·체크포인트와 결제류의 동기 처리로 균형을 맞춘다."
+    },
+    {
+     "topic": "관측성(Observability): 게임 텔레메트리·메트릭·로그·트레이싱",
+     "body": "### 게임 운영에서 관측성의 특수성\n웹 API는 HTTP 상태코드·레이턴시 중심이지만, MMORPG는 **틱 레이트(tick rate)·존당 동접·핸드오프 실패·전투 처리 지연·경제 지표(골드 인플레이션)** 까지 봐야 한다. 펄어비스는 Prometheus+Grafana, ELK를 인프라 관측에, 자체 텔레메트리 파이프라인을 게임 도메인 관측에 쓴다.\n\n### 메트릭 계층 (Prometheus + Grafana)\n- 게임서버는 프로세스 메트릭(CPU, 메모리, GC)과 함께 **게임 고유 메트릭**을 노출한다: `tick_duration_ms`, `players_per_zone`, `handoff_count`, `packet_in/out`, `ai_update_time`.\n- 특히 **틱 예산 초과(tick overrun)** 는 곧 렉으로 직결되므로 핵심 SLI다. 거점전·공성전 같은 대규모 이벤트에서 틱 지연 히스토그램을 실시간 모니터링해 부하 제어(스로틀링·관심영역 축소)를 트리거한다.\n- 리전·존·채널별로 라벨링해 **어느 샤드가 뜨거운지** 즉시 식별한다.\n\n### 로그 계층 (Kafka → ELK)\n- 게임서버가 직접 디스크에 로그를 쓰면 I/O가 틱을 막으므로, **로그를 Kafka로 비동기 송출**하고 컨슈머가 Elasticsearch에 적재한다(게임로직과 로그 분리의 연장선).\n- Kibana로 사건(아이템 거래, 비정상 접속, 핵 의심 행동)을 검색·대시보드화한다. 대규모 행동 로그는 Cassandra/Scylla·데이터레이크(S3)로 장기 보관한다.\n\n### 분산 트레이싱\n- 로그인→게이트웨이→게임서버→플랫폼(gRPC)으로 이어지는 요청은 **trace id 전파**로 추적한다. 결제·거래처럼 여러 서비스를 거치는 흐름에서 병목·실패 지점을 한 트레이스로 본다.\n\n### 게임 분석 텔레메트리\n- 플레이어 행동(퀘스트 진행, 이탈 지점, 과금 전환, 사냥터 혼잡도)은 Kafka로 수집 → 데이터레이크 → 분석/ML로 흘려 **라이브 운영(밸런싱·이벤트 설계·이상탐지)** 에 쓴다.\n\n### 트레이드오프\n- 모든 이벤트를 풀 로깅하면 비용이 폭증하므로, **고빈도 이벤트는 샘플링/집계**하고 금전·보안 관련 이벤트만 풀 보존한다. 메트릭은 카디널리티(존×채널×리전×플레이어) 폭발을 막기 위해 플레이어 단위가 아닌 **집계 단위로 라벨링**한다."
     }
    ],
    "github": {
@@ -13498,12 +13511,12 @@
     "repos": []
    },
    "sources": [
-    "https://www.pearlabyss.com/en-US/Company/About/Technology",
-    "https://career.pearlabyss.com/",
+    "https://www.pearlabyss.com/en-US/Company/About/TechBlog",
+    "https://www.pearlabyss.com/ko-KR/Company/Recruit",
     "https://www.gdcvault.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "ncsoft",
@@ -13520,44 +13533,47 @@
    "stack": {
     "backend": [
      "자체 게임서버 엔진(C++)",
-     "Spring Boot 플랫폼 서비스",
+     "Spring Boot 플랫폼 서비스(Java)",
      "gRPC/Protobuf",
-     "Redis",
-     "Netty"
+     "Netty(비동기 I/O)",
+     "Redis(핫 스테이트)",
+     "Node.js 일부 게이트웨이"
     ],
     "frontend": [
-     "Unreal Engine 4/5",
-     "Unity",
-     "React",
-     "사내 게임 클라이언트 프레임워크"
+     "Unreal Engine 4/5(클라이언트)",
+     "Unity(모바일/일부 타이틀)",
+     "사내 게임 클라이언트 프레임워크",
+     "React/TypeScript(NC 포털·운영 툴·웹)"
     ],
     "data": [
-     "Apache Kafka",
-     "MySQL",
+     "Apache Kafka(이벤트 스트리밍)",
+     "MySQL(샤드 영속화)",
      "Hadoop/HDFS",
      "Apache Spark",
-     "PyTorch",
      "Elasticsearch",
-     "VARCO LLM"
+     "PyTorch",
+     "VARCO LLM",
+     "Triton/TensorRT 추론"
     ],
     "infra": [
      "사내 데이터센터(IDC)",
      "Kubernetes",
      "GPU 클러스터(A100/H100)",
      "AWS 하이브리드",
-     "사내 CI/CD"
+     "사내 CI/CD",
+     "Prometheus/Grafana 관측"
     ]
    },
    "architecture": [
-    "권위 서버 기반 실시간 MMORPG 아키텍처",
-    "샤드/채널 기반 월드 분산",
-    "이벤트 스트리밍 + 람다 분석 파이프라인",
-    "GPU 기반 ML/LLM 서빙 플랫폼"
+    "권위 서버(Authoritative Server) 기반 실시간 MMORPG 아키텍처",
+    "샤드/채널 기반 월드 분산과 동적 채널 스폰",
+    "Kafka 이벤트 스트리밍 + 람다(배치/스트림) 분석 파이프라인",
+    "GPU 기반 ML/LLM 학습-서빙 플랫폼(VARCO)"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    GC[\"Game Client<br/>Unreal Engine 5\"]\n    WEB[\"Web/Launcher<br/>React + TS\"]\n  end\n  subgraph Gateway[\"Gateway / Session\"]\n    LB[\"Login/Auth GW<br/>Spring Boot\"]\n    GS[\"Game Session GW<br/>C++ TCP/UDP\"]\n  end\n  subgraph Core[\"Core Game Services\"]\n    WS[\"World/Zone Server<br/>Self-built C++ Engine\"]\n    AOI[\"AOI/Sync<br/>Tick Loop\"]\n    MM[\"Matchmaking/Party<br/>C++ + Redis\"]\n    PLAT[\"Platform Services<br/>Spring Boot + gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MY[\"Game DB<br/>MySQL Sharded\"]\n    RD[\"State Cache<br/>Redis\"]\n    ES[\"Search/Log<br/>Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KF[\"Event Bus<br/>Apache Kafka\"]\n    SP[\"Batch/ETL<br/>Spark + Hadoop\"]\n  end\n  subgraph AI[\"AI Platform\"]\n    GPU[\"GPU Cluster<br/>PyTorch + A100/H100\"]\n    LLM[\"VARCO LLM Serving<br/>Triton\"]\n  end\n  subgraph Infra[\"Infra\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    IDC[\"On-prem IDC<br/>+ AWS Hybrid\"]\n  end\n  GC -->|TCP/UDP| GS\n  WEB -->|HTTPS| LB\n  GS --> WS\n  WS --> AOI\n  WS --> MM\n  LB --> PLAT\n  WS -->|persist| MY\n  WS -->|hot state| RD\n  PLAT --> MY\n  WS -->|events| KF\n  KF --> SP\n  SP --> ES\n  SP --> GPU\n  GPU --> LLM\n  LLM -->|API| PLAT\n  K8S --- PLAT\n  K8S --- GPU\n  IDC --- K8S",
-   "why_language": "실시간 대규모 MMORPG의 권위 서버는 수천 명 동시 접속 객체의 틱 단위 시뮬레이션과 마이크로초급 지연이 관건이라 메모리·스레드를 직접 제어하는 C++로 자체 게임 엔진과 월드 서버를 작성한다. 결제·랭킹·길드 같은 플랫폼 서비스는 생산성과 생태계가 풍부한 Java/Spring Boot로, AI Lab의 VARCO LLM과 음성·비전 연구는 PyTorch 생태계인 Python으로 분리해 도메인별 최적 언어를 쓴다.",
-   "why_architecture": "MMORPG는 모든 전투·이동·아이템 판정을 서버가 단독으로 결정하는 권위 서버 구조여야 치팅을 막고 월드 일관성을 유지할 수 있으며, 단일 서버로는 동접을 감당할 수 없어 존(Zone)/채널/샤드로 월드를 수평 분할한다. 운영·과금·이상탐지·AI 학습에 필요한 방대한 로그는 게임 루프와 분리해 Kafka로 흘려보내고 Spark/Hadoop으로 배치 분석하며, 사내 GPU 클러스터를 Kubernetes로 묶어 게임 트래픽과 독립된 ML/LLM 플랫폼을 운영한다.",
-   "summary": "C++ 자체 게임엔진의 권위 서버로 실시간 MMORPG를 구동하고, Kafka·Spark 분석과 사내 GPU 기반 VARCO LLM 플랫폼을 결합한 게임×AI 하이브리드 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    GC[\"Game Client<br/>Unreal 4/5 + Unity\"]\n    WEB[\"Web / Ops UI<br/>React + TypeScript\"]\n  end\n  subgraph Gateway[\"Gateway / Session\"]\n    LB[\"Edge LB / Auth GW<br/>Netty + TLS\"]\n    LOGIN[\"Login / Lobby<br/>Spring Boot\"]\n    MM[\"Matchmaking / Channel Mgr<br/>C++ + Redis\"]\n  end\n  subgraph Core[\"Core Game Servers\"]\n    WS[\"World / Zone Server<br/>C++ Tick Loop\"]\n    CH[\"Channel / Shard Instances<br/>AOI + State Sync\"]\n    PLAT[\"Platform Services<br/>Spring Boot + gRPC\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RD[\"Hot State<br/>Redis Cluster\"]\n    DB[\"Persistent DB<br/>MySQL Shards\"]\n    ES[\"Search / Log<br/>Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Analytics\"]\n    KF[\"Event Bus<br/>Apache Kafka\"]\n    SP[\"Batch + Stream<br/>Spark + HDFS\"]\n  end\n  subgraph AI[\"AI / GPU Platform\"]\n    GPU[\"GPU Cluster<br/>A100 / H100 + K8s\"]\n    LLM[\"VARCO LLM Serving<br/>Triton + TensorRT\"]\n  end\n  GC -->|TCP/UDP| LB\n  WEB --> LB\n  LB --> LOGIN\n  LOGIN --> MM\n  MM -->|assign channel| WS\n  WS --> CH\n  CH -->|gRPC| PLAT\n  CH -->|hot read/write| RD\n  RD -->|write-behind| DB\n  PLAT --> DB\n  CH -->|game events| KF\n  KF --> SP\n  SP --> DB\n  SP --> ES\n  SP -->|features| GPU\n  GPU --> LLM\n  LLM -->|inference| PLAT",
+   "why_language": "실시간 MMORPG의 틱 루프와 수천 명 동시 시뮬레이션은 GC 정지가 없는 결정적 성능이 필수라 게임 서버·엔진 코어는 C++로, 클라이언트는 Unreal/Unity 생태계 때문에 C++/C#로 작성한다. 반면 회원·결제·운영 같은 플랫폼 서비스는 생산성과 사내 인력 풀이 두꺼운 Java(Spring Boot)로, 데이터·AI 파이프라인은 PyTorch 생태계를 활용하기 위해 Python으로 양분된 폴리글랏 구조다.",
+   "why_architecture": "MMORPG는 부정행위 방지와 일관된 월드 상태를 위해 모든 판정을 서버가 쥐는 권위 서버가 사실상 표준이며, 단일 월드에 수만 명을 담을 수 없으니 샤드/채널로 분산하고 부하에 따라 채널을 동적으로 스폰한다. 동시에 운영·밸런싱·AI 학습에 필요한 방대한 플레이 로그를 다루기 위해 Kafka 기반 이벤트 스트리밍과 배치/스트림을 결합한 람다 파이프라인, 그리고 VARCO를 서빙하는 GPU 플랫폼을 별도 계층으로 분리했다.",
+   "summary": "C++ 권위 게임서버 + 채널 샤딩에 Kafka 람다 분석과 VARCO GPU 플랫폼을 결합한 게임·AI 폴리글랏 아키텍처",
    "deep_dive": [
     {
      "topic": "권위 서버(Authoritative Server)와 틱 루프",
@@ -13590,6 +13606,18 @@
     {
      "topic": "샤딩·캐싱·영속성: MySQL 샤드와 Redis 핫 스테이트의 일관성 전략",
      "body": "### 저장 계층 3단\nMMORPG의 캐릭터 상태(인벤토리·스탯·위치·퀘스트)는 **읽기/쓰기가 매우 빈번**하지만 매 변경을 디스크에 동기 커밋하면 DB가 못 버틴다. 그래서 보통 3계층으로 나눈다.\n\n| 계층 | 기술 | 역할 | 일관성 |\n|---|---|---|---|\n| In-memory | 월드 서버 프로세스 메모리(C++) | 진행 중 세션의 실시간 상태(source of truth during play) | 강함(단일 권위 서버) |\n| Cache | `Redis` | 세션·랭킹·매치메이킹·교차 서버 공유 상태 | 최종 일관성 |\n| Durable | `MySQL`(샤딩) | 로그아웃/세이브 포인트 시점의 영속 상태 | 강함 |\n\n### 샤딩 전략\n- **수평 샤딩 키**는 보통 `server/world id` 또는 `account/character id` 해시. 같은 월드의 유저는 같은 샤드에 모아 조인·랭킹 쿼리의 cross-shard 비용을 줄인다.\n- 길드·우편·거래소처럼 **샤드를 가로지르는 기능**은 별도 글로벌 서비스(Spring Boot)로 빼서, 게임 DB 샤드에 분산 트랜잭션을 강요하지 않는다.\n\n### 영속화 패턴\n- 플레이 중 상태는 메모리에 두고, **주기적 스냅샷(periodic save)** + 주요 이벤트(거래·아이템 강화·로그아웃) 시점의 **즉시 저장**을 조합한다. 크래시 시 마지막 세이브 포인트로 복구되며, 그 사이 손실을 줄이려고 중요한 재화 변동은 별도 트랜잭션 로그(또는 Kafka)로 이중 기록한다.\n- **아이템 복제(dupe) 버그 방지**가 영속성 설계의 최우선 과제다. 거래·강화처럼 재화가 이동하는 연산은 **단일 권위 서버 내 원자적 처리**로 묶고, 교차 서버 거래는 2단계 커밋 유사 프로토콜이나 분산 락(Redis)으로 직렬화한다.\n\n### 트레이드오프\n메모리를 source of truth로 두면 빠르지만 서버 크래시 시 마지막 저장 이후가 날아갈 위험이 있어, **저장 빈도(데이터 안전) vs DB 부하(성능)** 사이를 콘텐츠 중요도별로 차등 조정한다 — 위치/이동은 느슨하게, 재화/아이템은 즉시 저장."
+    },
+    {
+     "topic": "무중단 라이브옵스 배포: 정기점검·핫픽스·카나리와 콘텐츠 패치 파이프라인",
+     "body": "### 라이브 게임의 배포는 무상태 웹과 근본적으로 다르다\nMMORPG 서버는 수만 명의 세션 상태(위치, 인벤토리, 전투 상태)를 메모리에 들고 있는 **stateful 프로세스**다. 그래서 일반 웹의 롤링 배포처럼 인스턴스를 그냥 죽였다 살리면 진행 중인 전투와 거래가 통째로 날아간다. NCSOFT 같은 라이브 게임 운영의 배포 전략은 이 제약을 중심으로 짜인다.\n\n### 배포 단위를 두 가지로 분리한다\n- **클라이언트 패치**: Unreal/Unity 빌드 + 에셋(`.pak`). CDN으로 선배포하고, 서버 점검 시점에 클라이언트 강제 업데이트로 버전을 맞춘다. 에셋이 수십 GB라 **델타 패치**(변경 청크만 내려받기)와 CDN 캐시 워밍이 핵심이다.\n- **서버 빌드**: 게임 로직(C++ 월드 서버) + 플랫폼 서비스(Spring Boot). 플랫폼 서비스는 stateless에 가까워 K8s 롤링/카나리가 가능하지만, 월드 서버는 점검을 끼고 교체한다.\n\n### 정기 점검(maintenance) vs 핫픽스\n| 유형 | 방식 | 다운타임 |\n|------|------|----------|\n| 정기 점검 | 전체 월드 셧다운 → 서버 바이너리 + DB 스키마 마이그레이션 → 재기동 | 수 시간 |\n| 핫픽스 | 데이터 테이블(밸런스 수치, 드롭률)만 교체, 바이너리 유지 | 무중단~짧은 채널 단위 |\n\n핵심 트릭은 **로직과 데이터의 분리**다. 스킬 계수, 몬스터 스탯, 드롭 테이블 같은 밸런싱 값은 코드가 아니라 외부 데이터(테이블/스크립트)로 빼두고 핫리로드한다. 그래서 \"버그로 특정 스킬 데미지 10배\" 같은 사고는 바이너리 재배포 없이 데이터 핫픽스로 분 단위 대응이 가능하다.\n\n### 카나리는 '채널' 단위로 한다\n웹에서 트래픽 5%를 새 버전으로 보내듯, 게임에서는 **새 채널/일부 서버군에만 신규 빌드를 띄우고** 소수 유저(또는 사내 QA 길드)를 유입시켜 크래시율·틱 지연·메모리 누수를 관측한 뒤 전체로 확대한다. 채널은 본래 부하 분산 단위이므로 카나리 경계로 재활용하기 좋다.\n\n### DB 스키마 마이그레이션이 진짜 위험 구간\n수억 행 규모의 캐릭터/인벤토리 테이블에 `ALTER`를 거는 건 점검 시간을 폭발시킨다. 그래서 **expand-contract(확장-수축)** 패턴을 쓴다: ① 신규 컬럼을 nullable로 추가(expand), ② 신/구 코드가 둘 다 읽을 수 있게 배포, ③ 백필, ④ 구 컬럼 제거(contract)를 여러 점검에 걸쳐 나눈다. 온라인 스키마 변경 도구(`gh-ost`/`pt-osc` 류)로 점검 다운타임을 줄이는 것도 표준이다.\n\n### CI/CD\n사내 CI에서 C++ 서버를 빌드하면 **컴파일+링크 시간 자체가 큰 비용**이라 분산 빌드(ccache/distcc류)와 incremental link를 적극 쓴다. 빌드 산출물은 사내 아티팩트 저장소로, 배포는 IDC의 베어메탈/VM과 K8s가 섞인 환경으로 나간다. 자동화 회귀 테스트로 봇 클라이언트를 대량 접속시켜 부하/기능 스모크를 돌리는 것이 일반적이다."
+    },
+    {
+     "topic": "관측성(Observability): 수만 동접 월드에서 틱 지연·렉을 추적하는 법",
+     "body": "### 게임 서버의 SLI는 웹의 SLI와 다르다\n웹은 p99 레이턴시·에러율을 보지만, 실시간 게임의 1순위 지표는 **틱 예산 준수율**이다. 월드 서버가 20Hz로 돈다면 한 틱은 50ms 안에 모든 플레이어 입력·AI·물리·충돌을 처리해야 한다. 이 50ms를 넘기면 그게 곧 유저가 체감하는 '렉'이다. 그래서 관측 스택의 핵심 메트릭은 다음과 같다:\n- `tick_duration_ms` (히스토그램, 채널별/맵별)\n- `tick_overrun_count` (예산 초과 횟수)\n- 채널별 동접(CCU), AOI 브로드캐스트 패킷량, 엔티티 수\n- Redis 핫 스테이트 RTT, MySQL write-behind 큐 적체\n\n### 메트릭: Prometheus/Grafana + 고카디널리티 문제\n채널·맵·인스턴스 단위로 메트릭을 쪼개면 **카디널리티가 폭발**한다(채널 수천 × 맵 수백). 그래서 캐릭터 ID 같은 무한 카디널리티 라벨은 메트릭에 넣지 않고, 대신 샘플링된 트레이스/로그로 보낸다. 집계는 채널·서버군 수준에서만 한다.\n\n### 로깅: 모든 게임 이벤트가 곧 로그\n전투, 거래, 아이템 획득, 접속/종료가 전부 Kafka로 흘러가는 **이벤트 로그**다(이벤트 스트리밍 파이프라인과 동일 인프라). 이 로그는 세 군데로 분기한다:\n1. **운영/CS**: \"이 유저가 어제 이 아이템을 어디서 얻었나\" 추적 → Elasticsearch 색인으로 빠른 조회\n2. **어뷰징/봇 탐지**: 비정상 패턴(초당 거래, 순간이동) 스트림 분석\n3. **밸런싱/분석**: Spark 배치로 클래스별 승률, 경제 인플레이션 집계\n\n### 트레이싱: 분산 트레이스의 경계\n로그인→로비→매치메이킹→채널 입장처럼 **서비스 간 호출은 분산 트레이싱**(trace id 전파)으로 본다. 그러나 월드 서버 내부의 틱 루프는 마이크로초 단위라 OpenTelemetry span을 거기까지 박으면 오버헤드가 더 크다. 그래서 틱 내부는 자체 경량 프로파일러/플레임그래프로, 서비스 경계는 표준 트레이싱으로 **이원화**한다.\n\n### 크래시·덤프 파이프라인\n클라이언트/서버 크래시 시 미니덤프를 수집해 심볼 서버로 역추적(symbolication)하고, 동일 콜스택끼리 묶어 '크래시 클러스터'로 집계한다. 빌드별 크래시율을 카나리 게이트로 써서, 신규 빌드의 크래시율이 임계치를 넘으면 확대 배포를 막는다.\n\n### 왜 이렇게까지 하나\n게임은 한 번의 대규모 렉/롤백이 곧 환불·이탈·여론 악화로 직결된다. 그래서 '사후에 원인 찾기'보다 **틱 예산 초과를 실시간으로 잡아 해당 채널을 분리·재기동**하는 능동 대응에 관측성을 건다."
+    },
+    {
+     "topic": "장애 대응과 복원력: 채널 격리, 페일오버, 롤백 그리고 '진행 손실 최소화'",
+     "body": "### 게임의 가용성 목표는 '죽지 않기'가 아니라 '진행을 잃지 않기'\n무상태 웹은 인스턴스가 죽어도 재시도하면 끝이다. 하지만 게임에서 월드 서버가 죽으면 **그 채널 안의 모든 유저의 직전 몇 분 진행(아이템·경험치·위치)**이 위험해진다. 그래서 복원력 설계의 1순위는 '얼마나 자주 살아있나'가 아니라 '죽었을 때 얼마만큼만 잃는가'다.\n\n### 1) 폭발 반경을 채널로 가둔다\n월드를 채널/샤드로 쪼갠 1차 효과는 부하 분산이지만, 2차 효과는 **장애 격리**다. 한 채널 프로세스가 크래시해도 다른 채널은 멀쩡하다. 운영툴에서 문제 채널만 격리(신규 입장 차단)하고 비우거나 재기동할 수 있다.\n\n### 2) 잦은 스냅샷으로 데이터 손실 창을 좁힌다\n캐릭터 상태는 Redis 핫 스테이트에 있고 MySQL로 **write-behind(비동기 영속화)**된다. 비동기라 빠르지만, 크래시 시 마지막 flush 이후 변경은 날아간다. 그래서 ① 중요 트랜잭션(거래 완료, 유료 아이템 사용)은 동기 커밋으로 강제하고, ② 일반 상태는 주기적 스냅샷 + 이벤트 로그(Kafka)로 재구성이 가능하게 한다. 최악의 경우 Kafka 로그를 리플레이해 직전 상태를 복원하는 것이 이벤트 소싱적 안전망이 된다.\n\n### 3) 서비스 계층의 서킷 브레이커\n플랫폼 서비스(결제, 친구, 길드)는 gRPC로 묶여 있어, 한 서비스의 지연이 전체로 번지는 캐스케이딩 장애가 위험하다. 여기엔 표준적으로 **서킷 브레이커 + 타임아웃 + 폴백**을 적용한다. 예: 랭킹 서비스가 느리면 차단하고 캐시된 랭킹을 보여주되, 게임 플레이(전투) 자체는 절대 막히지 않게 의존성을 끊어둔다. '결제가 죽어도 게임은 돈다'가 원칙이다.\n\n### 4) 페일오버와 상태 인계\n- **Stateless 서비스**: K8s가 죽은 파드를 자동 재스케줄, LB가 헬스체크로 빼낸다.\n- **Stateful 월드 서버**: 자동 페일오버가 어렵다(상태 인계 비용). 대신 **빠른 재기동 + 스냅샷 복원**으로 다운타임을 분 단위로 줄이고, 유저는 자동 재접속으로 같은/대체 채널에 복귀시킨다.\n- **Redis/MySQL**: 복제(replica) + 자동 승격(failover)으로 데이터 계층 단일 장애점을 제거한다.\n\n### 5) 롤백과 보상\n신규 빌드가 심각한 버그(아이템 복사, 경제 붕괴)를 내면, 단순 코드 롤백으로 끝나지 않고 **이미 오염된 데이터까지 되돌려야** 한다. 그래서 점검 전 스냅샷을 확보하고, 최악의 경우 특정 시점으로 **서버 롤백(point-in-time)** 후 그 사이 정상 플레이한 유저에게 보상(우편 지급)을 하는 운영 프로세스가 기술 스택과 한 몸으로 붙어 있다.\n\n### 트레이드오프 요약\nwrite-behind(성능) vs 동기 커밋(안전), 자동 페일오버(복잡·상태 인계) vs 빠른 재기동(단순·짧은 다운), 마이크로서비스 분리(격리) vs gRPC 의존성(캐스케이딩 위험) — 게임 도메인은 일관되게 **플레이 흐름은 절대 막지 않되, 데이터 정합성은 돈이 걸린 트랜잭션에 한해 강하게** 보장하는 쪽으로 균형을 잡는다."
     }
    ],
    "github": {
@@ -13597,12 +13625,12 @@
     "repos": []
    },
    "sources": [
-    "https://github.com/ncsoft/VARCO-Arena",
-    "https://kr.ncsoft.com/kr/index.do",
-    "https://huggingface.co/NCSOFT"
+    "https://github.com/ncsoft/varco-arena",
+    "https://varco.ai",
+    "https://ncsoft.github.io"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-19"
   },
   {
    "key": "netmarble",

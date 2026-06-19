@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6723건** 공고 · **1339개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-19 20:23
+- 총 **6728건** 공고 · **1339개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-19 22:09
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1388,6 +1388,14 @@ markmap:
   - [UI/UX 프론트엔드(디자인+퍼블리싱) 모집(경력必) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53668627&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
   - [플러터(Flutter) 네이티브 앱 개발자 모집(경력 필수) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53668615&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=f06846fb-f880-4c79-b166-8127526a083f)
 
+### 코리아써치 `중소기업` · 3건
+- **프론트엔드** [1건] · `TypeScript` `React`
+  - [/프론트엔드 엔지니어(React, TypeScript 웹 개발 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148515&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c2b9ec6d-8e4d-4f37-9116-773edfaf4f6f)
+- **데이터** [1건] · `Python`
+  - [(데이터 분석가(Python 또는 R)) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54231266&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=ecb22cfc-806e-4c7e-b7bf-a95aeb540a13)
+- **DevOps/인프라** [1건] · `Docker` `Kubernetes`
+  - [/클라우드 엔지니어(인프라/플랫폼 엔지니어링 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148593&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1292edd7-0d32-4e3a-99b7-3a57d6d801d5)
+
 ### (주)엠바스 `중소기업` · 3건
 - **백엔드** [3건] · `Git` `Python` `React` `HTML` `Node.js` `PHP`
   - [웹(앱) 개발자 모집 (프론트엔드 - 정규직) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54160474&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=519691c1-56d1-4d7c-9975-0040b4c4f8f2)
@@ -2632,12 +2640,6 @@ markmap:
 - **프론트엔드** [2건] · `JavaScript` `Go` `React` `Vue` `SCSS` `Tailwind`
   - [(외국계 영상 보안 솔루션 기업) Frontend Junior Engineer 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54042983&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1af7ded4-a26d-4052-9c21-c24e66bb6f28)
   - [(외국계 영상 보안 솔루션 기업) Frontend Senior Engineer 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54042944&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0b942ae4-7dd9-4f4f-8bd7-34e0d98f0920)
-
-### 코리아써치 `중소기업` · 2건
-- **프론트엔드** [1건] · `TypeScript` `React`
-  - [/프론트엔드 엔지니어(React, TypeScript 웹 개발 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148515&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c2b9ec6d-8e4d-4f37-9116-773edfaf4f6f)
-- **DevOps/인프라** [1건] · `Docker` `Kubernetes`
-  - [/클라우드 엔지니어(인프라/플랫폼 엔지니어링 경험) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54148593&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1292edd7-0d32-4e3a-99b7-3a57d6d801d5)
 
 ### 주식회사 워크포트 `중소기업` · 2건
 - **백엔드** [2건] · `Git` `REST API` `JavaScript` `TypeScript` `React` `Cypress`
@@ -5634,6 +5636,13 @@ markmap:
   - [AI 데이터 매니저 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49147849?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=100&sc=630)
   - [AI 데이터 라벨링 재택 프리랜서 모집 (포토샵 활용) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54112031&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f6eb5f26-1a1a-450d-9a91-dbea822a7b8d)
 
+### 심플랫폼 `중소기업` · 3건
+- **AI/ML** [2건] · `Kubernetes` `OpenAI` `TypeScript`
+  - [AI Agent & LLM Engineer - 병역특례 ↗](https://www.wanted.co.kr/wd/368660)
+  - [AI Agent & LLM Engineer - 시니어 ↗](https://www.wanted.co.kr/wd/368678)
+- **DevOps/인프라** [1건] · `Python` `AWS` `Docker` `Kubernetes` `GitLab CI` `가상화`
+  - [인프라/devops ↗](https://www.wanted.co.kr/wd/309847)
+
 ### 다겸 `중소기업` · 3건
 - **백엔드** [2건] · `Python` `C#` `FastAPI` `TensorFlow` `PyTorch` `Keras`
   - [ML Engineer (전문연구요원 가능) ↗](https://www.wanted.co.kr/wd/354815)
@@ -5833,12 +5842,6 @@ markmap:
   - [(Data Infra Engineer) 함께 성장할 동료를 구합니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=28ee596a-7588-40be-97db-6f10fb0cd6d9)
 - **DevOps/인프라** [1건] · `Java` `Python` `MongoDB` `Cassandra` `Docker` `Kubernetes`
   - [(Data Infra Engineer) 함께 성장할 동료를 구합니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=28ee596a-7588-40be-97db-6f10fb0cd6d9)
-
-### 심플랫폼 `중소기업` · 2건
-- **AI/ML** [1건] · `Kubernetes` `OpenAI`
-  - [AI Agent & LLM Engineer - 병역특례 ↗](https://www.wanted.co.kr/wd/368660)
-- **DevOps/인프라** [1건] · `Python` `AWS` `Docker` `Kubernetes` `GitLab CI` `가상화`
-  - [인프라/devops ↗](https://www.wanted.co.kr/wd/309847)
 
 ### 아키스케치 `중소기업` · 2건
 - **모바일** [1건] · `Java` `Kotlin` `Python` `AWS` `Kubernetes`
