@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6674건** 공고 · **1334개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 17:51
+- 총 **6678건** 공고 · **1336개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 19:36
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -6142,7 +6142,7 @@ markmap:
   - [(코스맥스그룹) 26년 6~7월 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54216620&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=da92180c-73ad-4b51-8224-e220e07d9b04)
 
 
-## 의료/헬스케어/바이오 (100개사)
+## 의료/헬스케어/바이오 (102개사)
 ### 넛지헬스케어(주) `중견기업` · 22건
 - **백엔드** [9건] · `AWS` `REST API` `GraphQL` `iOS` `Next.js` `DynamoDB`
   - [(캐시워크-병역특례) 프론트엔드개발 병역특례 대상자 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49324901?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=98&sc=630)
@@ -7031,6 +7031,20 @@ markmap:
   - [(외국계/정규직) 백엔드 / 풀스택 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49253375?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=36&sc=630)
   - [(외국계/정규직) 백엔드 / 풀스택 엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53998932&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=4c01b9f4-144f-46a1-934c-a2590abf6fdf)
 
+### 아리닷에이아이 `중소기업` · 2건
+- **백엔드** [2건] · `Java` `Kotlin` `Python` `React` `Vue` `Next.js`
+  - [AI헬스케어 서비스 개발 ( 풀스택 개발자 ) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49382317?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=54&sc=630)
+  - [풀스택 개발자 경력 5년 이상 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235649&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=079c148e-58b5-4b8f-bbdc-72e59a9fd8da)
+- **프론트엔드** [2건] · `Java` `Kotlin` `Python` `React` `Vue` `Next.js`
+  - [AI헬스케어 서비스 개발 ( 풀스택 개발자 ) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49382317?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=54&sc=630)
+  - [풀스택 개발자 경력 5년 이상 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235649&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=079c148e-58b5-4b8f-bbdc-72e59a9fd8da)
+- **풀스택** [2건] · `Java` `Kotlin` `Python` `React` `Vue` `Next.js`
+  - [AI헬스케어 서비스 개발 ( 풀스택 개발자 ) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49382317?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=54&sc=630)
+  - [풀스택 개발자 경력 5년 이상 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235649&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=079c148e-58b5-4b8f-bbdc-72e59a9fd8da)
+- **모바일** [2건] · `Java` `Kotlin` `Python` `React` `Vue` `Next.js`
+  - [AI헬스케어 서비스 개발 ( 풀스택 개발자 ) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49382317?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=54&sc=630)
+  - [풀스택 개발자 경력 5년 이상 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235649&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=079c148e-58b5-4b8f-bbdc-72e59a9fd8da)
+
 ### ㈜에스디웨이브 `중소기업` · 2건
 - **모바일** [2건] · `Android`
   - [(서울) 의료기기 안드로이드 UI 및 펌웨어 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49244552?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=30&sc=630)
@@ -7104,6 +7118,13 @@ markmap:
   - [(의료 AI) AI Research Scientist 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047050&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=33cd6d6d-e23a-43a2-884d-d448522f5d2e)
 - **DevOps/인프라** [1건] · `Python` `React` `Vue` `Next.js` `Node.js` `Django`
   - [주식회사 아슬론 의료IT 풀스택 개발자/프로젝트 관리자 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54160433&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=ec20c196-a9b4-4bb6-97be-a0d335ab9431)
+
+### 주식회사 아이큐로닉스 `중소기업` · 2건
+- **백엔드** [1건] · `Java` `Kotlin` `C++` `Android` `Linux` `Git`
+  - [안드로이드 통합 엔지니어를 구합니다. ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235757&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0182a0fa-1a41-4ea5-b02e-084a66232ad0)
+- **모바일** [2건] · `Java` `Kotlin` `C++` `Android` `Linux` `Git`
+  - [Android Platform integration Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54122234&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=145c8136-a205-4c48-bebd-9695eefd1d03)
+  - [안드로이드 통합 엔지니어를 구합니다. ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235757&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0182a0fa-1a41-4ea5-b02e-084a66232ad0)
 
 ### (주)인바디 `중소기업` · 2건
 - **모바일** [2건] · `iOS` `Android` `Python` `C++` `C#`
