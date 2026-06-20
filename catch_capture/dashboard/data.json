@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-20T19:36:46",
-  "source_dir": "screenshots/all_통합_20260620_193637",
+  "generated_at": "2026-06-20T21:54:25",
+  "source_dir": "screenshots/all_통합_20260620_215346",
   "keyword": "통합",
   "jobs": [
     {
@@ -133196,6 +133196,42 @@
     },
     {
       "site": "saramin",
+      "company": "(주)컬처릿",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Vision 기술 풀스택 개발자 경력 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235788&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=59444488-156d-40ea-8330-18ece8721f7d",
+      "career": "경력",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "React",
+        "Spring",
+        "Spring Boot",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화"
+      ],
+      "qualifications": "• 경력 (연수 무관)\n\n• 학력무관\n\nPython 기반 AI 서비스 개발 경험\n\nJava(Spring Boot) 또는 유사 백엔드 프레임워크 개발 경험\n\nReactJS 또는 현대적인 Front-end Framework 개발 경험\n\nComputer Vision 또는 AI 모델 활용 프로젝트 경험\n\n데이터베이스 설계 및 활용 경험\n\n원활한 커뮤니케이션 능력 및 문제 해결 역량\n\n제조 현장 방문 및 고객사 협업이 가능한 분",
+      "preferences": "고객과의 요구사항 정의 및 컨설팅 경험\n\nVLM(Vision Language Model) 활용 경험\n\n제조업, 물류, 스마트팩토리 프로젝트 경험\n\nWMS, MES, ERP 구축 또는 운영 경험\n\nVibe Coding(AI 기반 개발도구 활용) 경험",
+      "main_tasks": "* AI Vision 기반 물류·안전관리 솔루션 개발\n\n- CCTV 영상 기반 객체 탐지 및 추적(Object Detection & Tracking) 기술 개발\n\n- 제조업 및 물류 환경의 재고 관리, 자재 추적, 안전관리 비즈니스 로직 개발\n\n* AI 모델 개발 및 운영\n\n- YOLO, RT-DETR, Grounding DINO 등 AI Vision 모델 학습 및 파인튜닝\n\n- VLM(Vision Language Model) 기반 영상 분석 및 질의응답 기능 개발\n\n- AI 모델 성능 개선 및 운영 최적화\n\n* 플랫폼 및 서비스 개발\n\n- Python, Java 기반 백엔드 서비스 개발\n\n- ReactJS 기반 웹 서비스 개발\n\n- AI 모델과 웹 서비스 연동\n\n- REST API, WebSocket 등 실시간 서비스 개발\n\n* 고객 현장 및 프로젝트 수행\n\n- 제조업 현장 요구사항 분석 및 업무 정의\n\n- WMS, MES, ERP 등 기간계 시스템 연동\n\n- PoC 및 실증사업 수행",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)헬릭스테크",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -154639,6 +154675,32 @@
       "preferences": "• 관련분야 경력 3년 이상\n\n• Vector DB(FAISS, Milvus, Qdrant 등) 기반 RAG 서비스 개발 경험자\n\n• AI 관련 프로젝트 경험, 공모전 수상, 논문 실적 보유자\n\n• Figma 등 협업 및 인터페이스 관련 도구 활용 경험\n\n• 석/박사학위 수여자\n\n• 기타 :\n\n- 신기술에 대한 도전정신이 있는 분\n\n- 배움에 대한 열정이 있는 분\n\n- 오픈소스와 최신 개발 트렌드에 관심이 많으신 분\n\n- 원활한 커뮤니케이션 능력을 보유하신 분",
       "main_tasks": "• AI 서비스\n\n- 생성형 AI 기반 서비스 개발\n\n- AI Full Stack 개발 (Frontend, Backend 개발 포함)\n\n- AI 신뢰성/보안성 검증 솔루션 개발\n\n• 지능형 항만 솔루션 설계/개발\n\n- 항만특화 AI를 위한 모델 설계, 학습 및 최적화\n\n- 데이터 수집, 전처리, 분석 및 AI 학습 파이프라인 구축\n\n- AI 기술을 활용한 항만 운영 솔루션 기획 및 구현\n\n- AI 기반 항만 내 이상 탐지(선박, 화물 등) 및 항만물류 최적화 알고리즘 개발\n\n• 항만섹션 부서 소속, 사원/연구원/선임연구원 직급으로 함께할 예정이에요.",
       "benefits": "• 교육/생활 : 신규 입사자 교육(OJT)\n\n• 급여제도 : 퇴직금\n\n• 선물 : 명절선물/인센티브\n\n• 근무 환경 : 회의실, 공기청정기, 스마트기기, 사무용품 지급, 최고 성능 컴퓨터"
+    },
+    {
+      "site": "saramin",
+      "company": "주식회사컷백",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[컷백] AI Engineer (인턴)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54214827&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=bf67eff2-0623-4be1-99ff-37fcfb0680a8",
+      "career": "신입",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ChatGPT나 Claude 등 LLM을 일상적으로 활용하고 계신 분\n\n논리적으로 문제를 풀고, 전략적으로 접근하는 걸 즐기시는 분\n\n알고리즘, 자료 구조 등 컴퓨터 과학 기초 개념에 대한 이해를 갖추고 있는 분\n\n스타트업의 빠른 속도와 도전적인 환경을 경험해 보고 싶은 분\n\n강도 높은 업무 환경을 좋아하시는 분",
+      "preferences": "컴퓨터 공학 또는 유사 학문 전공\n\nPython 기반 개발 경험\n\n영상 편집 도메인에 대한 관심 또는 사용 경험\n\nLLM을 이용한 프로젝트나 자동화 도구를 만들어본 경험\n\n멀티모달 및 에이전트 개발 및 활용 경험",
+      "main_tasks": "이 포지션은 단순한 인턴십이 아닙니다. 전문 영상 편집자가 수행하는 복잡한 작업 중 하나를 맡아, 전문가와 동일하거나 그 이상의 수준으로 자동화하는 미션이 주어집니다. 세계 최고를 만들어본 전문가들과 함께 아직 아무도 풀지 못한 문제를 해결하며, AI 연구, 실무 엔지니어링, 성장하는 회사를 동시에 경험할 수 있습니다.\n\n다음과 같은 업무를 수행합니다.\n\n전문가 수준의 AI 에이전트를 위한 모듈 개발, 연구: 영상 편집 워크플로의 특정 단계를 전담하여, 스스로 판단하고 작업을 수행하는 지능형 에이전트를 설계하고 개발합니다.\n\n세계 최고 성능(SOTA) 달성을 위한 연구: 목표 달성을 위해 수단과 방법을 가리지 않습니다. 프롬프트 엔지니어링, 애플리케이션 개발, 자체 모델 제작 등 모든 기술을 총동원하여 세계 최고의 성능을 달성할 수 있는 최적의 방법을 연구하고 구현합니다.\n\nEnd-to-End 파이프라인 구축: 아직 해결되지 않은 문제를 스스로 정의하고, 필요한 데이터 수집 및 모델 검증 파이프라인을 구축하며 최첨단 멀티모달 AI 모델을 실험합니다.\n\n제품 통합 및 배포: 연구 결과를 실제 제품에 통합하여, 전 세계 수천 명의 전문가와 크리에이터가 사용하는 서비스로 배포하는 과정까지 경험합니다.\n\n다음과 같은 경험을 얻을 수 있습니다.\n\n불가능을 현실로 만드는 경험: 우리는 인턴에게 한계를 두지 않습니다. 실제로 이전 두 명의 인턴은 입사 후 단 6주 만에 세계 최고 수준(SOTA)의 모델을 개발하는 데 핵심적인 역할을 수행했습니다.\n\n압도적인 성장과 최고의 동료: 유니콘 성공 경험을 가진 창업자들, 미국 빅테크 출신의 숙련된 AI 엔지니어들과 긴밀하게 협업하며 세계 최고 수준의 기준을 배웁니다.\n\n실질적인 임팩트 창출: 당신의 아이디어와 결과물이 빠르게 성장하는 제품에 즉시 반영되어, 전 세계 사용자의 워크플로를 혁신하는 과정을 목격합니다.\n\n폭넓은 역량 개발: AI 연구와 실무 엔지니어링을 동시에 경험하며, 데이터 엔지니어링부터 머신러닝, 제품 통합까지 폭넓은 역량을 키울 수 있습니다.",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -201085,20 +201147,20 @@
     }
   ],
   "stats": {
-    "total": 6678,
+    "total": 6680,
     "by_size": {
-      "중소기업": 5985,
+      "중소기업": 5987,
       "대기업": 423,
       "중견기업": 270
     },
     "by_role": {
       "기타": 882,
       "DevOps/인프라": 971,
-      "백엔드": 2871,
+      "백엔드": 2872,
       "모바일": 1071,
-      "AI/ML": 2250,
-      "프론트엔드": 1846,
-      "풀스택": 577,
+      "AI/ML": 2252,
+      "프론트엔드": 1847,
+      "풀스택": 578,
       "게임": 39,
       "데이터": 928,
       "펌웨어/임베디드": 239,
@@ -201109,25 +201171,25 @@
       "wanted": 1538,
       "jumpit": 449,
       "jobkorea": 1215,
-      "saramin": 3173,
+      "saramin": 3175,
       "dev": 303
     },
     "top_tech": [
       [
         "Python",
-        2096
+        2098
       ],
       [
         "AWS",
-        1770
+        1771
       ],
       [
         "Java",
-        1759
+        1760
       ],
       [
         "React",
-        1424
+        1425
       ],
       [
         "Git",
@@ -201139,11 +201201,11 @@
       ],
       [
         "Spring",
-        1065
+        1066
       ],
       [
         "JavaScript",
-        986
+        987
       ],
       [
         "Linux",
@@ -201163,7 +201225,7 @@
       ],
       [
         "REST API",
-        714
+        715
       ],
       [
         "PostgreSQL",
@@ -201171,7 +201233,7 @@
       ],
       [
         "Spring Boot",
-        625
+        626
       ],
       [
         "GCP",
@@ -201236,22 +201298,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T08:01:30",
-      "keyword": "개발자",
-      "raw_total": 686,
-      "deduped": 667,
-      "active": 667,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 267,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T08:32:53",
       "keyword": "개발자",
@@ -204432,6 +204478,22 @@
         "jumpit": 587,
         "jobkorea": 1669,
         "saramin": 4365,
+        "dev": 372
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-20T21:54:07",
+      "keyword": "통합",
+      "raw_total": 8555,
+      "deduped": 7801,
+      "active": 6680,
+      "closed": 1121,
+      "site_counts": {
+        "wanted": 1559,
+        "jumpit": 587,
+        "jobkorea": 1669,
+        "saramin": 4368,
         "dev": 372
       },
       "anomalies": []
