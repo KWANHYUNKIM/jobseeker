@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6662건** 공고 · **1332개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 12:27
+- 총 **6669건** 공고 · **1333개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 14:21
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (366개사)
+## HR/채용 (367개사)
 ### (주)제이투이 `중소기업` · 21건
 - **백엔드** [6건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -897,6 +897,13 @@ markmap:
   - [데이터분석(Business Intelligence) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54142466&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=b3b9a8c2-606c-43ba-9b88-746eea703f0a)
   - [데이터엔지니어링(ML Ops) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54142103&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=83262362-5e3e-4621-a7bd-6f1216327157)
 
+### 라이트밸런스(주) `중소기업` · 4건
+- **AI/ML** [1건] · `Java` `C++` `PyTorch`
+  - [(파이썬/업무자동화) 사내 시스템 개발 및 효율화 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54207401&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=a0c0e84b-312d-4aa4-a8da-b3ade4882a8d)
+- **데이터** [2건]
+  - [(쿠팡·네이버 상품관리 MD) 데이터 분석 및 상품기획 담당 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54087547&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=480afee7-bcc6-48e8-8ad6-443f8b32eafa)
+  - [(벤처기업) 쿠팡·네이버 데이터 분석/상품관리 경력자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54157981&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=cc790f70-b711-44a9-b216-442d57d91592)
+
 ### 삼성메디슨(주) `중소기업` · 4건
 - **AI/ML** [2건] · `Python` `TensorFlow` `PyTorch` `C++` `C#`
   - [(AI개발) '설명가능 AI (XAI) 개발' 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54211527&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e035709e-01e2-4347-ba92-6689cbbb6120)
@@ -1459,13 +1466,6 @@ markmap:
 - **DevOps/인프라** [2건] · `Kubernetes` `Apache` `Python` `AWS` `GCP` `Azure`
   - [그로윈(주) 데이터 플랫폼 엔지니어(Data Engineer) 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54011246&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=65a741bd-d171-471a-842c-8ee3ea22c30b)
   - [오픈소스 기반 플랫폼 엔지니어 (미들웨어/컨테이너/CI·CD) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53958003&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d)
-
-### 라이트밸런스(주) `중소기업` · 3건
-- **AI/ML** [1건] · `Java` `C++` `PyTorch`
-  - [(파이썬/업무자동화) 사내 시스템 개발 및 효율화 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54207401&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=a0c0e84b-312d-4aa4-a8da-b3ade4882a8d)
-- **데이터** [2건]
-  - [(쿠팡·네이버 상품관리 MD) 데이터 분석 및 상품기획 담당 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54087547&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=480afee7-bcc6-48e8-8ad6-443f8b32eafa)
-  - [(벤처기업) 쿠팡·네이버 데이터 분석/상품관리 경력자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54157981&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=cc790f70-b711-44a9-b216-442d57d91592)
 
 ### (주)이노메트리 `중소기업` · 3건
 - **AI/ML** [3건] · `Python` `C++` `C#` `PyTorch`
@@ -2485,6 +2485,16 @@ markmap:
   - [(주)디더블유아이에서 AI 분석 서비스 개발자 모십니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53805697&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1721e7bc-05c0-4ed7-8543-b3393dd58791)
 - **데이터** [1건] · `Python` `Flask` `FastAPI` `AWS` `GCP` `TensorFlow`
   - [(주)디더블유아이에서 AI 분석 서비스 개발자 모십니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53805697&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1721e7bc-05c0-4ed7-8543-b3393dd58791)
+
+### (주)미소정보기술 `중소기업` · 2건
+- **백엔드** [1건] · `Java` `JavaScript` `React` `Vue` `HTML` `CSS`
+  - [(미소정보기술 대전R&D센터) 웹 어플리케이션 개발자(경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54046766&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=57478535-0e0b-4931-8612-994780262d93)
+- **프론트엔드** [1건] · `Java` `JavaScript` `React` `Vue` `HTML` `CSS`
+  - [(미소정보기술 대전R&D센터) 웹 어플리케이션 개발자(경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54046766&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=57478535-0e0b-4931-8612-994780262d93)
+- **풀스택** [1건] · `Java` `JavaScript` `React` `Vue` `HTML` `CSS`
+  - [(미소정보기술 대전R&D센터) 웹 어플리케이션 개발자(경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54046766&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=57478535-0e0b-4931-8612-994780262d93)
+- **AI/ML** [1건] · `Python`
+  - [(미소정보기술-강원지사) Agent AI (SmartBiG, ActifyAgentic) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54229811&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=c3b32506-bc38-4b11-99ab-3a9a3674cd34)
 
 ### (주)에스엠메이커스 `중소기업` · 2건
 - **게임** [1건]
@@ -11040,6 +11050,22 @@ markmap:
   - [정보보안 (보안관제) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49363954?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=28&sc=630)
   - [정보보안 컨설팅 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49364068?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=100&sc=630)
 
+### 에스케이쉴더스(주) `중소기업` · 9건
+- **백엔드** [1건] · `Spring` `Spring Boot` `Git`
+  - [웹 개발자 경력직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49379669?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=89&sc=630)
+- **모바일** [2건] · `Android` `iOS`
+  - [취약점 진단 및 모의해킹 경력직 채용(인천) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54194156&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=1ced88e9-45c4-4637-8395-52c7586a9f21)
+  - [사이버보안 컨설턴트(취약점 진단/모의해킹) 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54230717&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a37a9e7f-b349-46af-9905-b45371ffe07a)
+- **데이터** [1건] · `Python`
+  - [데이터 분석가 경력직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49348267?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=76&sc=630)
+- **DevOps/인프라** [2건] · `Kubernetes`
+  - [MSS사업 Hybrid 보안관제 경력직 상시 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53473721&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=8d95bdc7-7006-4b98-bda9-25d564327fdd)
+  - [보안 교육 플랫폼 인프라 및 운영 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54229794&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=ca1e12c3-b24d-4139-8293-4e8a87297763)
+- **보안** [3건] · `Android` `Python` `SCSS` `iOS`
+  - [SK쉴더스 정보보안 상시 채용(SK하이닉스 근무) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49379168?Oem_Code=C1&logpath=1&stext=iOS&listno=79&sc=630)
+  - [취약점 진단 및 모의해킹 경력직 채용(인천) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54194156&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=1ced88e9-45c4-4637-8395-52c7586a9f21)
+  - [사이버보안 컨설턴트(취약점 진단/모의해킹) 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54230717&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a37a9e7f-b349-46af-9905-b45371ffe07a)
+
 ### (주)이글루코퍼레이션 `중견기업` · 8건
 - **백엔드** [3건] · `Python` `Spring` `Spring Boot` `MySQL` `Oracle` `Docker`
   - [웹어플리케이션 백엔드 개발자(2년↑) ↗](https://jumpit.saramin.co.kr/position/54124332)
@@ -11051,21 +11077,6 @@ markmap:
 - **보안** [2건] · `Go` `AWS`
   - [(보안관제센터) 취약점진단 및 모의해킹 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54028543&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=1e659f0f-7e5c-475a-a447-34d8df0921a5)
   - [정보보안 기획 및 협업 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54157445&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=108b70e4-8ad0-434e-9e94-57958bc74ee8)
-
-### 에스케이쉴더스(주) `중소기업` · 8건
-- **백엔드** [1건] · `Spring` `Spring Boot` `Git`
-  - [웹 개발자 경력직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49379669?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=89&sc=630)
-- **모바일** [2건] · `Android` `iOS`
-  - [취약점 진단 및 모의해킹 경력직 채용(인천) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54194156&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=1ced88e9-45c4-4637-8395-52c7586a9f21)
-  - [사이버보안 컨설턴트(취약점 진단/모의해킹) 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54230717&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a37a9e7f-b349-46af-9905-b45371ffe07a)
-- **데이터** [1건] · `Python`
-  - [데이터 분석가 경력직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49348267?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=76&sc=630)
-- **DevOps/인프라** [1건]
-  - [MSS사업 Hybrid 보안관제 경력직 상시 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53473721&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=8d95bdc7-7006-4b98-bda9-25d564327fdd)
-- **보안** [3건] · `Android` `Python` `SCSS` `iOS`
-  - [SK쉴더스 정보보안 상시 채용(SK하이닉스 근무) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49379168?Oem_Code=C1&logpath=1&stext=iOS&listno=79&sc=630)
-  - [취약점 진단 및 모의해킹 경력직 채용(인천) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54194156&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=1ced88e9-45c4-4637-8395-52c7586a9f21)
-  - [사이버보안 컨설턴트(취약점 진단/모의해킹) 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54230717&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a37a9e7f-b349-46af-9905-b45371ffe07a)
 
 ### 티시스아이티 `중소기업` · 7건
 - **AI/ML** [2건] · `LangChain`

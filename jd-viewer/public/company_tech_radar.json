@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T12:39:44",
+ "generated_at": "2026-06-20T14:25:07",
  "total": 100,
  "countries": [
   {
@@ -294,6 +294,10 @@
       "count": 2
      },
      {
+      "name": "Babel",
+      "count": 1
+     },
+     {
       "name": "design-system component libs",
       "count": 1
      },
@@ -303,10 +307,6 @@
      },
      {
       "name": "Flutter",
-      "count": 1
-     },
-     {
-      "name": "GraphQL",
       "count": 1
      }
     ],
@@ -4252,6 +4252,10 @@
       "count": 1
      },
      {
+      "name": "Kotlin Coroutines",
+      "count": 1
+     },
+     {
       "name": "Netty",
       "count": 1
      },
@@ -4300,6 +4304,10 @@
       "count": 1
      },
      {
+      "name": "Iceberg",
+      "count": 1
+     },
+     {
       "name": "Kafka",
       "count": 1
      },
@@ -4317,10 +4325,6 @@
      },
      {
       "name": "Redis",
-      "count": 1
-     },
-     {
-      "name": "Spark",
       "count": 1
      }
     ],
@@ -4350,14 +4354,26 @@
       "count": 1
      },
      {
-      "name": "사내 클라우드",
+      "name": "TACO",
+      "count": 1
+     },
+     {
+      "name": "Triton Inference Server",
+      "count": 1
+     },
+     {
+      "name": "vLLM",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "LLM 기반 AI 에이전트 플랫폼",
+     "name": "CDC 기반 이벤트 스트리밍",
+     "count": 1
+    },
+    {
+     "name": "LLM/RAG AI 에이전트 플랫폼",
      "count": 1
     },
     {
@@ -4365,11 +4381,7 @@
      "count": 1
     },
     {
-     "name": "대규모 데이터 레이크하우스",
-     "count": 1
-    },
-    {
-     "name": "이벤트 스트리밍",
+     "name": "데이터 레이크하우스",
      "count": 1
     }
    ]
@@ -16347,7 +16359,8 @@
      "Spring Cloud",
      "FastAPI",
      "Netty",
-     "gRPC"
+     "gRPC",
+     "Kotlin Coroutines"
     ],
     "frontend": [
      "React",
@@ -16357,10 +16370,11 @@
     ],
     "data": [
      "Kafka",
-     "Hadoop",
      "Spark",
      "Flink",
+     "Iceberg",
      "Druid",
+     "Hadoop",
      "Oracle",
      "MariaDB",
      "Redis",
@@ -16370,23 +16384,25 @@
     "infra": [
      "Kubernetes",
      "OpenStack",
-     "사내 클라우드",
+     "TACO(사내 클라우드)",
      "Istio",
      "ArgoCD",
      "Prometheus",
-     "Grafana"
+     "Grafana",
+     "Triton Inference Server",
+     "vLLM"
     ]
    },
    "architecture": [
     "MSA",
-    "대규모 데이터 레이크하우스",
-    "이벤트 스트리밍(CDC)",
-    "LLM 기반 AI 에이전트 플랫폼"
+    "데이터 레이크하우스(Lakehouse)",
+    "CDC 기반 이벤트 스트리밍",
+    "LLM/RAG AI 에이전트 플랫폼"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"A. (에이닷) App<br/>React Native + Native\"]\n    WEB[\"T world Web<br/>Next.js + React\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    APIM[\"API Gateway<br/>Spring Cloud Gateway + Istio\"]\n    AUTH[\"Auth / 인증<br/>OAuth2 + OIDC\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    SVC[\"Telco/과금 Services<br/>Spring Boot + Kotlin\"]\n    AIORCH[\"AI Orchestrator<br/>FastAPI + LangGraph\"]\n    LLM[\"LLM Serving<br/>vLLM + Triton + A.X\"]\n    RAG[\"RAG / Retrieval<br/>Milvus + Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n    FLINK[\"Stream Proc<br/>Spark + Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    OLTP[\"OLTP<br/>Oracle + MariaDB\"]\n    CACHE[\"Cache<br/>Redis\"]\n    LAKE[\"Data Lake<br/>Hadoop + Iceberg\"]\n    OLAP[\"OLAP<br/>Druid\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + OpenStack\"]\n    GPU[\"GPU Cluster<br/>NVIDIA + Kubeflow\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> APIM\n  WEB --> APIM\n  APIM --> AUTH\n  APIM -->|REST/gRPC| SVC\n  APIM -->|gRPC| AIORCH\n  AIORCH --> LLM\n  AIORCH --> RAG\n  LLM --> GPU\n  RAG --> OLAP\n  SVC --> OLTP\n  SVC --> CACHE\n  SVC -->|produce| KAFKA\n  OLTP --> CDC\n  CDC --> KAFKA\n  KAFKA --> FLINK\n  FLINK --> LAKE\n  LAKE --> OLAP\n  SVC --> K8S\n  AIORCH --> K8S\n  K8S --> OBS",
-   "why_language": "통신 과금·고객관리 같은 미션크리티컬 백엔드는 안정성과 방대한 Spring/JVM 생태계, 트랜잭션 정합성 때문에 Java/Kotlin을 핵심으로 쓴다. 반면 에이닷(A.)과 A.X LLM, 추천·데이터 파이프라인은 모델 서빙·전처리 생태계가 압도적인 Python을, 대규모 배치/스트림 처리는 Spark·Flink와 맞물린 Scala를 택해 도메인별로 언어를 분리한다.",
-   "why_architecture": "수천만 가입자의 과금·인증·트래픽을 무중단으로 처리하려면 장애 격리와 독립 배포가 필수라 MSA와 자체 클라우드(OpenStack/K8s)를 채택했다. 동시에 통화·결제·로그 이벤트를 실시간 분석하고 AI 에이전트에 컨텍스트로 공급해야 하므로 Kafka 기반 이벤트 스트리밍과 Hadoop/Iceberg 레이크하우스, LLM 서빙 플랫폼을 한 축으로 묶었다.",
-   "summary": "통신 미션크리티컬은 JVM·MSA로, AI·데이터는 Python·Kafka·LLM 플랫폼으로 양분한 하이브리드 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"A. 에이닷 App<br/>iOS Android React Native\"]\n    WEB[\"T world Web<br/>Next.js React\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Istio\"]\n    ASR[\"음성 인식 STT/TTS<br/>NUGU Speech Engine\"]\n  end\n  subgraph Core[\"Core Services\"]\n    AGENT[\"AI Agent Orchestrator<br/>FastAPI + LangGraph\"]\n    BIZ[\"통신 과금 고객 서비스<br/>Spring Boot MSA\"]\n    RAG[\"RAG Retriever<br/>FastAPI gRPC\"]\n  end\n  subgraph Serving[\"LLM Serving\"]\n    LLM[\"A.X LLM 서빙<br/>vLLM + Triton on GPU\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    VEC[\"Vector Store<br/>Milvus\"]\n    OLTP[\"운영 DB<br/>Oracle MariaDB\"]\n    CACHE[\"Cache<br/>Redis\"]\n    LAKE[\"Lakehouse<br/>Iceberg on S3 HDFS\"]\n    SRCH[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Stream[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka + CDC Debezium\"]\n    SPARK[\"배치 스트리밍 처리<br/>Spark Flink\"]\n    DRUID[\"실시간 OLAP<br/>Druid\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>TACO OpenStack\"]\n    CD[\"배포<br/>ArgoCD\"]\n    OBS[\"관측성<br/>Prometheus Grafana\"]\n  end\n  APP -->|gRPC HTTPS| GW\n  WEB --> GW\n  APP --> ASR\n  ASR --> AGENT\n  GW --> AGENT\n  GW --> BIZ\n  AGENT -->|tool call| BIZ\n  AGENT --> RAG\n  AGENT -->|prompt| LLM\n  RAG --> VEC\n  RAG --> SRCH\n  BIZ --> OLTP\n  BIZ --> CACHE\n  OLTP -->|CDC| KAFKA\n  KAFKA --> SPARK\n  SPARK --> LAKE\n  KAFKA --> DRUID\n  LAKE --> VEC\n  K8S --- CD\n  K8S --- OBS",
+   "why_language": "통신 과금·고객(BSS/OSS)처럼 수십 년간 축적된 미션크리티컬 트랜잭션 시스템은 안정성과 풍부한 엔터프라이즈 생태계를 갖춘 Java/Spring으로 운영하고, 신규 MSA에는 간결한 Kotlin을 도입한다. 반면 에이닷·A.X 같은 AI/LLM 서빙과 RAG 파이프라인은 PyTorch·Transformers·vLLM 생태계가 사실상 표준인 Python(FastAPI)으로 구현한다. 대규모 데이터 레이크하우스는 Spark/Flink 친화적인 Scala, 고성능 네트워크·인프라 컴포넌트는 Go를 선택해 도메인별로 언어를 분리한다.",
+   "why_architecture": "전국민 규모의 통신 트래픽과 빠르게 진화하는 AI 서비스를 한 시스템에서 동시에 감당해야 하므로, 도메인을 독립 배포·확장 가능한 MSA로 쪼개고 자체 클라우드(TACO) 위 Kubernetes로 운영한다. 과금·고객·망 데이터를 단일 분석 기반으로 모으기 위해 CDC(Debezium)로 OLTP 변경을 Kafka에 흘려 Iceberg 레이크하우스에 적재하고, 에이닷은 LLM 단독으로는 보장 못 하는 최신 요금제·약관 정확도를 위해 Milvus 벡터검색 기반 RAG로 사실을 주입하는 에이전트 아키텍처를 택했다.",
+   "summary": "통신 BSS는 Java/Spring 안정성, AI는 Python/LLM 생태계 — MSA·레이크하우스·RAG로 통신과 AI를 한 플랫폼에 통합",
    "deep_dive": [
     {
      "topic": "대규모 데이터 플랫폼(Hadoop/Spark)",
@@ -16419,22 +16435,45 @@
     {
      "topic": "RAG: LLM에 '진짜 통신 지식'을 붙이는 검색 계층",
      "body": "### 문제 정의\n\nLLM은 SKT의 최신 요금제·약관·부가서비스·고객별 가입 정보를 *모른다*. 그리고 이런 정보는 수시로 바뀐다. 모델을 매번 재학습할 수 없으니, **RAG(Retrieval-Augmented Generation)** 로 외부 지식을 실시간 검색해 프롬프트에 주입한다.\n\n### 파이프라인\n\n```\n요금제/약관/FAQ 문서\n   │ 임베딩(embedding)\n   ▼\nMilvus (Vector DB) ◄──┐\n                       │ 하이브리드 검색\nElasticsearch (BM25) ◄─┘\n   │ top-k 문서\n   ▼\nRe-ranker → 프롬프트 컨텍스트 → LLM 생성\n```\n\n- **인덱싱**: 약관·요금제·FAQ 문서를 청크로 쪼개 임베딩 모델로 벡터화하고 `Milvus` 같은 벡터 DB에 저장한다. 동시에 `Elasticsearch`에 원문을 색인한다.\n- **하이브리드 검색**: 벡터 검색(의미 유사도)만으로는 \"5G 슬림\" 같은 정확한 고유명사 매칭을 놓칠 수 있다. 그래서 **BM25(키워드) + dense vector(의미)** 를 결합해 둘의 장점을 합친다.\n- **Re-ranking**: 1차로 넉넉히 top-k를 뽑은 뒤, cross-encoder 재정렬기로 질문과의 실제 관련도를 다시 매겨 상위 몇 개만 LLM에 넣는다. 컨텍스트 길이(=비용·지연)를 아끼면서 정확도를 올린다.\n- **생성**: 검색된 근거 문서를 컨텍스트로 주고 \"이 자료에 근거해서만 답하라\"고 제약해 환각을 억제하고, 출처를 함께 제시한다.\n\n### 트레이드오프와 운영 포인트\n\n- **신선도**: 요금제가 바뀌면 벡터 인덱스를 즉시 갱신해야 한다. CDC/배치로 문서 변경을 감지해 재임베딩하는 파이프라인이 붙는다.\n- **개인화 vs 보안**: 고객별 가입 정보를 RAG로 끌어오면 강력하지만, 권한 검증(누구의 데이터를 검색할 수 있는가)을 검색 계층에서 엄격히 필터링해야 한다. SKT는 통신 도메인 특성상 이 부분을 Gateway 인증과 결합해 *검색 결과 자체를 사용자 권한으로 스코프* 한다.\n- **비용**: 벡터 검색·재정렬·LLM 생성이 누적되면 지연이 커진다. 자주 묻는 질문은 응답 캐싱으로, 검색은 근사최근접(ANN, HNSW 인덱스)으로 가속해 균형을 맞춘다."
+    },
+    {
+     "topic": "에이닷 멀티 에이전트 오케스트레이션: 하나의 발화가 여러 전문 에이전트로 분기되는 방식",
+     "body": "### 왜 단일 LLM이 아니라 '에이전트 라우팅'인가\n에이닷은 통화 요약, 일정/알림, 음악(FLO), 요금제 상담, 일반 대화 등 성격이 완전히 다른 기능을 한 입구에서 받는다. 이걸 거대한 단일 프롬프트로 처리하면 컨텍스트가 비대해지고 한 도메인의 실수가 전체 품질을 떨어뜨린다. 그래서 입력을 먼저 분류·라우팅한 뒤 도메인별 전문 에이전트로 위임하는 구조를 쓴다.\n\n### 처리 단계\n1. **Intent Routing**: 사용자 발화가 STT를 거쳐 텍스트가 되면, 경량 분류 모델 또는 LLM 기반 router가 `요금제`, `통화요약`, `일정`, `잡담` 등으로 분류한다. 비용·지연을 줄이기 위해 라우터는 본 LLM보다 작은 모델을 쓰는 경우가 많다.\n2. **Tool / Sub-agent 호출**: 라우팅 결과에 따라 `LangGraph` 스타일의 상태 그래프가 해당 sub-agent를 활성화한다. 각 sub-agent는 자기 도메인의 system prompt, few-shot, 그리고 호출 가능한 tool 목록(예: `getPlanInfo()`, `searchTariffDoc()`, `createCalendarEvent()`)을 가진다.\n3. **Tool 실행 → 백엔드 연계**: tool은 실제로는 `gRPC`/REST로 통신 과금·고객 MSA를 때린다. 즉 LLM이 '요금제 추천'을 말로만 하지 않고, 실제 고객의 현재 요금제·사용량을 BSS에서 조회해 근거로 삼는다.\n4. **응답 합성·검증**: 결과를 LLM이 자연어로 합성하고, 민감 영역(과금 금액 등)은 규칙 기반 후처리로 환각을 차단한다.\n\n### 트레이드오프\n- **장점**: 도메인 격리로 회귀 위험이 줄고, 각 에이전트를 독립 배포·튜닝할 수 있다.\n- **비용**: 라우팅 1홉 + tool 1~N홉 + 합성 1홉으로 latency budget이 빡빡해진다. 그래서 라우터 경량화, tool 병렬 호출, streaming 응답(부분 토큰 먼저 내보내기)으로 체감 지연을 줄인다."
+    },
+    {
+     "topic": "통신 BSS의 트랜잭션 정합성과 멱등성: 과금/개통은 왜 절대 틀리면 안 되는가",
+     "body": "### 도메인 제약\n통신 BSS(Business Support System)는 개통, 요금제 변경, 부가서비스 가입, 과금/정산을 다룬다. 여기서 한 건의 중복 처리나 누락은 곧 '고객 요금 오류'로 직결되어 환불·민원·규제 리스크가 된다. 그래서 일반 웹 서비스보다 훨씬 보수적인 일관성 모델을 쓴다.\n\n### 핵심 메커니즘\n- **강한 일관성 코어 + 최종 일관성 주변부**: 과금 원장·잔액 같은 핵심은 Oracle 등 RDBMS 트랜잭션으로 강한 일관성을 지키고, 알림·로그·분석 같은 주변부는 Kafka 이벤트로 비동기 처리(eventual consistency)한다.\n- **멱등성 키(Idempotency Key)**: 개통/결제 요청은 네트워크 재시도로 중복 도착할 수 있다. 요청마다 고유 키를 부여해 같은 키의 재요청은 한 번만 반영되도록 한다.\n- **Saga / 보상 트랜잭션**: 여러 MSA(고객·과금·망)에 걸친 작업은 단일 DB 트랜잭션으로 묶을 수 없으므로, 단계별 로컬 트랜잭션 + 실패 시 보상(rollback) 액션으로 Saga 패턴을 구성한다. 예: '요금제 변경 → 과금 반영 실패' 시 변경을 되돌린다.\n- **Outbox + CDC**: 비즈니스 DB 변경과 Kafka 발행을 원자적으로 묶기 위해 같은 트랜잭션에서 outbox 테이블에 이벤트를 쓰고, Debezium CDC가 그 변경을 읽어 Kafka로 안전하게 전파한다(이중 쓰기 문제 회피).\n\n### 왜 이렇게까지\n수천만 가입자 × 매일 발생하는 과금 이벤트 규모에서는 '대충 맞음'이 허용되지 않는다. 정확성을 위해 일부 처리량/지연을 희생하는 것이 명백히 옳은 트레이드오프다."
+    },
+    {
+     "topic": "A.X LLM 서빙 최적화: GPU 위에서 처리량을 끌어올리는 실제 기법",
+     "body": "### 문제: GPU는 비싸고, LLM 추론은 메모리·지연 병목\nSKT는 자체 모델 `A.X`를 운영하므로 추론 인프라 효율이 곧 비용이다. 핵심은 한정된 GPU에서 동시 사용자 처리량(throughput)과 응답 지연(latency)을 동시에 맞추는 것.\n\n### 적용 기법\n- **Continuous Batching**: 요청을 고정 배치로 묶지 않고, 토큰 생성 단위로 들어오고 끝나는 요청을 동적으로 배치에 넣고 뺀다(`vLLM`의 핵심). GPU 유휴를 없애 throughput을 크게 올린다.\n- **PagedAttention**: KV cache를 OS 페이징처럼 블록 단위로 관리해 메모리 단편화를 줄이고, 같은 GPU 메모리로 더 많은 동시 시퀀스를 담는다.\n- **Quantization**: FP16 → INT8/FP8/AWQ 등으로 가중치를 양자화해 메모리 사용량과 지연을 줄인다. 품질 손실을 보며 모델별로 적용 수위를 조절.\n- **Tensor / Pipeline Parallelism**: 대형 모델은 단일 GPU에 안 올라가므로 여러 GPU에 텐서를 쪼개 분산한다. `Triton Inference Server`가 모델 인스턴스·스케일링·멀티모델 서빙을 관장.\n- **Speculative Decoding / Prompt Caching**: 작은 draft 모델로 토큰을 미리 추정하거나, 반복되는 system prompt의 KV를 캐싱해 TTFT(첫 토큰 지연)를 줄인다.\n\n### 운영\nGPU 노드는 Kubernetes 위에서 노드풀로 격리하고, 트래픽에 따라 replica를 오토스케일한다. 다만 GPU는 cold start가 비싸 미리 워밍·최소 replica를 유지하는 보수적 스케일링을 쓴다."
+    },
+    {
+     "topic": "관측성과 장애 복원력: 통신 인프라에서 SLA를 지키는 방법",
+     "body": "### 통신은 '다운되면 뉴스가 되는' 서비스\n통신망·과금·에이닷은 장애 임팩트가 사회적이라, 관측성과 복원력 투자가 평균적 IT 기업보다 깊다.\n\n### 관측성(Observability)\n- **Metrics**: `Prometheus`로 서비스/노드/큐 지표를 수집하고 `Grafana`로 대시보드화. 과금 처리량, Kafka consumer lag, LLM TTFT/토큰처리율 같은 도메인 지표를 SLO로 관리.\n- **Tracing**: MSA·에이전트 호출이 여러 홉을 거치므로 분산 트레이싱으로 '느린 한 홉'을 찾는다. 에이닷처럼 router→sub-agent→tool→LLM로 이어지는 호출 체인 가시화가 특히 중요.\n- **Logging**: 로그는 Kafka→Elasticsearch로 모아 검색. 과금 같은 영역은 감사(audit) 목적으로 보존 정책을 길게 가져간다.\n\n### 복원력(Resilience)\n- **Circuit Breaker / Timeout / Retry**: 한 MSA(예: LLM 서빙)가 느려질 때 호출측이 빠르게 차단·폴백하도록 서킷브레이커를 건다. LLM 장애 시 '잠시 후 다시 시도' 같은 graceful degradation.\n- **Istio 기반 트래픽 제어**: 서비스 메시에서 재시도·타임아웃·mTLS·트래픽 분할을 코드 밖에서 일괄 적용.\n- **Failover / 다중화**: 과금·고객 코어는 이중화/다중 AZ로 구성, Kafka는 복제로 메시지 유실 방지.\n- **Canary 배포(ArgoCD)**: 신버전을 소수 트래픽에 먼저 흘려 지표 악화 시 자동 롤백. 미션크리티컬 코어일수록 카나리 비율을 작게, 관측 기간을 길게 가져간다."
     }
    ],
    "github": {
-    "org": "https://github.com/sktelecom",
+    "org": "https://github.com/SKT-AI",
     "repos": [
      {
       "name": "SKT-AI/KoGPT2",
       "url": "https://github.com/SKT-AI/KoGPT2",
-      "desc": "한국어 GPT-2 사전학습 모델, 국내 NLP 연구의 기준 모델",
+      "desc": "한국어 특화 GPT-2 사전학습 모델",
       "lang": "Python",
       "stars": 558
      },
      {
+      "name": "SKT-AI/KoBART",
+      "url": "https://github.com/SKT-AI/KoBART",
+      "desc": "한국어 BART 사전학습 모델(요약·생성)",
+      "lang": "Python",
+      "stars": 467
+     },
+     {
       "name": "SKT-AI/A.X-4.0",
       "url": "https://github.com/SKT-AI/A.X-4.0",
-      "desc": "SKT가 공개한 한국어 특화 대형 언어모델(A.X) 가중치·추론 코드",
+      "desc": "SKT 자체 개발 대형언어모델 A.X 4.0 공개 모델·추론 코드",
       "lang": "Python",
       "stars": 158
      }
@@ -16442,11 +16481,11 @@
    },
    "sources": [
     "https://devocean.sk.com/",
-    "https://github.com/SKT-AI",
-    "https://www.sktelecom.com/en/tech/"
+    "https://github.com/SKT-AI/A.X-4.0",
+    "https://www.sktelecom.com/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "naverfin",
@@ -16467,14 +16506,16 @@
      "Armeria",
      "gRPC",
      "Reactor (WebFlux)",
-     "Netty"
+     "Netty",
+     "MyBatis/JPA"
     ],
     "frontend": [
      "React",
      "Next.js",
      "TypeScript",
      "Recoil",
-     "Webpack"
+     "Webpack",
+     "Babel"
     ],
     "data": [
      "Kafka",
@@ -16482,7 +16523,8 @@
      "Redis",
      "Elasticsearch",
      "MongoDB",
-     "Apache Hadoop/Spark"
+     "Apache Hadoop/Spark",
+     "HBase"
     ],
     "infra": [
      "Kubernetes",
@@ -16490,19 +16532,20 @@
      "nGrinder",
      "Pinpoint",
      "Jenkins/ArgoCD",
-     "Nelo(로그)"
+     "Nelo",
+     "C3(사내 CD)"
     ]
    },
    "architecture": [
-    "MSA",
-    "장애 격리(Bulkhead)와 서킷브레이커",
-    "이벤트 기반 비동기 정산",
-    "금융 보안·이중화"
+    "MSA (도메인 분리)",
+    "장애 격리(Bulkhead) + 서킷브레이커",
+    "이벤트 기반 비동기 정산(Kafka)",
+    "원장 기반 복식부기 + 금융 이중화"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"네이버페이 App/Web<br/>React + Next.js\"]\n    NPAY[\"가맹점 SDK/결제창<br/>JavaScript SDK\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Armeria + Spring Cloud Gateway\"]\n    AUTH[\"인증/인가<br/>OAuth2 + 간편결제 인증\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    PAY[\"결제 서비스<br/>Spring Boot\"]\n    SETTLE[\"정산 서비스<br/>Kotlin + Spring\"]\n    POINT[\"포인트/적립<br/>Spring Boot\"]\n    LOAN[\"대출/금융상품<br/>Spring Boot\"]\n    RISK[\"이상거래탐지 FDS<br/>Spark + ML\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    OUTBOX[\"Transactional Outbox<br/>멱등 소비\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"원장/거래<br/>MySQL (샤딩)\"]\n    REDIS[\"캐시/분산락<br/>Redis\"]\n    ES[\"거래 검색/조회<br/>Elasticsearch\"]\n    HADOOP[\"데이터 레이크<br/>Hadoop + Spark\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>NCP\"]\n    OBS[\"관측성<br/>Pinpoint + Nelo\"]\n  end\n  APP --> GW\n  NPAY --> GW\n  GW --> AUTH\n  GW -->|REST/gRPC| PAY\n  PAY --> POINT\n  PAY -->|결제 확정 이벤트| KAFKA\n  PAY --> OUTBOX --> KAFKA\n  KAFKA --> SETTLE\n  KAFKA --> RISK\n  SETTLE --> MYSQL\n  PAY --> MYSQL\n  PAY --> REDIS\n  SETTLE --> ES\n  RISK --> HADOOP\n  Core --> K8S\n  Core --> OBS",
-   "why_language": "결제·정산·원장처럼 강한 트랜잭션 정합성과 JVM 생태계의 성숙한 금융 라이브러리가 필요한 영역은 Java/Spring을 기본으로 쓰고, 신규 정산·도메인 서비스는 null-safety와 불변성·코루틴 표현력이 좋은 Kotlin으로 작성한다. 사용자 접점인 네이버페이 앱/웹은 React·Next.js 기반이라 TypeScript/JavaScript 비중이 높고, FDS·데이터 분석 파이프라인에는 Python/Spark를 곁들인다.",
-   "why_architecture": "초당 대량의 결제·송금·포인트 트래픽을 다루면서 한 도메인 장애가 전체 결제로 번지지 않도록 서비스를 잘게 쪼갠 MSA에 Bulkhead·서킷브레이커로 장애를 격리한다. 결제 확정과 정산을 동기 호출로 묶으면 외부 금융망 지연이 결제 응답을 막기 때문에, Kafka 이벤트와 Transactional Outbox·멱등 소비로 비동기 분리해 정합성과 가용성을 동시에 확보한다.",
-   "summary": "JVM(Java/Kotlin) 기반 금융 MSA에 Kafka 이벤트로 결제·정산을 분리하고 NCP·Kubernetes 위에서 장애 격리와 정합성을 동시에 잡은 핀테크 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"NaverPay App/Web<br/>React + Next.js\"]\n    MERCH[\"가맹점 SDK<br/>JS / REST\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Armeria + Spring Cloud Gateway\"]\n    AUTH[\"인증/토큰화<br/>OAuth + Naver Login\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    PAY[\"결제 서비스<br/>Spring Boot + Kotlin\"]\n    SETTLE[\"정산 서비스<br/>Reactor WebFlux\"]\n    LEDGER[\"원장 서비스<br/>복식부기 Engine\"]\n    FDS[\"FDS 이상거래탐지<br/>Java + ML Serving\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    SPARK[\"배치/집계<br/>Spark + Hadoop\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"거래/원장 DB<br/>MySQL Sharded\"]\n    REDIS[\"캐시/세션<br/>Redis\"]\n    ES[\"조회/검색<br/>Elasticsearch\"]\n    MONGO[\"이력/문서<br/>MongoDB\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes on NCP<br/>ArgoCD Canary\"]\n    OBS[\"관측성<br/>Pinpoint + Nelo\"]\n  end\n  APP -->|HTTPS| GW\n  MERCH -->|REST| GW\n  GW --> AUTH\n  GW -->|gRPC| PAY\n  PAY -->|이벤트 발행| KAFKA\n  PAY --> LEDGER\n  KAFKA -->|멱등 소비| SETTLE\n  SETTLE --> LEDGER\n  PAY --> FDS\n  KAFKA --> FDS\n  LEDGER -->|복식부기 기록| MYSQL\n  PAY --> REDIS\n  SETTLE --> MYSQL\n  KAFKA --> SPARK\n  SPARK --> ES\n  PAY --> MONGO\n  K8S -.운영.-> PAY\n  K8S -.운영.-> SETTLE\n  OBS -.추적.-> PAY\n  OBS -.추적.-> SETTLE",
+   "why_language": "대규모 트래픽과 트랜잭션 정합성이 핵심인 금융 도메인이라 JVM 생태계(Java/Kotlin)의 성숙한 동시성·검증된 프레임워크·강한 타입 안정성을 백본으로 삼는다. 신규 서비스는 Null 안정성과 코루틴을 갖춘 Kotlin으로 작성하고, 사용자 접점은 React/Next.js·TypeScript로 SSR과 타입 안정성을 확보하며, 데이터·ML 영역은 Python으로 보완한다.",
+   "why_architecture": "결제·정산·원장·인증처럼 책임이 다른 도메인을 MSA로 분리해 독립 배포와 장애 격리(Bulkhead)를 달성하고, 한 서비스 장애가 결제 전체로 번지지 않도록 서킷브레이커로 차단한다. 정산은 결제와 강결합하면 지연·실패가 전이되므로 Kafka 기반 이벤트로 비동기 분리하고 멱등 소비로 정확히 한 번 효과를 보장하며, 돈의 흐름은 원장(복식부기)으로 이중 검증해 정합성을 지킨다.",
+   "summary": "JVM(Java/Kotlin) 기반 MSA에 Kafka 비동기 정산과 원장 복식부기를 얹어 정합성과 장애 격리를 동시에 잡은 핀테크 스택",
    "deep_dive": [
     {
      "topic": "네이버페이 결제·정산 흐름과 정합성",
@@ -16535,6 +16578,18 @@
     {
      "topic": "배포·복원력: Kubernetes on NCP, 카나리, 서킷브레이커",
      "body": "### 플랫폼\n서비스는 `네이버클라우드(NCP)` 위 `Kubernetes`에 컨테이너로 배포된다. 금융 시스템 특성상 멀티 AZ(가용영역) 이중화로 한 영역 장애가 결제 중단으로 이어지지 않게 한다. 트래픽은 다수 AZ에 걸친 파드로 분산되고, DB는 동기/준동기 복제로 페일오버를 준비한다.\n\n### 배포 전략\n결제처럼 무중단이 필수인 서비스는 한 번에 전체를 교체하지 않는다.\n\n| 전략 | 용도 |\n|---|---|\n| Rolling update | 일반 서비스 무중단 교체 |\n| Canary | 새 버전을 소수 트래픽에만 흘려 오류율·지연 관찰 후 확대 |\n| Blue-Green | 결제 코어처럼 즉시 롤백이 중요한 경우 |\n\n`Jenkins`/`ArgoCD` 류 파이프라인으로 빌드→테스트→이미지→GitOps 배포가 자동화되고, 카나리 단계에서 `Pinpoint` 지표(에러율·응답시간)가 임계를 넘으면 자동 롤백한다.\n\n### 복원력 패턴\n- **서킷브레이커**: 외부 카드사·금융망 호출이 느려지면 회로를 열어 빠르게 실패시키고, 결제 응답 스레드가 외부 지연에 묶이지 않게 한다(`resilience4j`/Armeria 데코레이터).\n- **Bulkhead(격벽)**: 도메인별 스레드풀·커넥션풀을 분리해 한 의존성의 포화가 다른 결제 흐름을 마비시키지 않게 한다.\n- **Timeout + Retry(멱등 전제)**: 짧은 타임아웃과 멱등 키 기반 재시도를 결합한다. 멱등성이 보장되지 않는 호출은 재시도하지 않는다.\n- **Backpressure**: Kafka 컨슈머는 처리 속도에 맞춰 파티션 소비를 조절해 정산 폭주 시에도 다운스트림이 무너지지 않게 한다.\n\n### 부하 검증\n대형 트래픽 이벤트(프로모션·결제 피크) 전에는 `nGrinder`로 분산 부하 테스트를 돌려 오토스케일링 임계와 병목을 사전에 찾는다.\n\n### 트레이드오프\n카나리·블루그린·다AZ 이중화는 인프라 비용과 운영 복잡도를 키우지만, 금융 서비스에서 단 몇 분의 결제 장애가 주는 신뢰·매출 손실이 훨씬 크기 때문에 가용성에 비용을 더 쓰는 선택을 한다."
+    },
+    {
+     "topic": "결제 요청 end-to-end 처리 흐름과 동기/비동기 경계 설계",
+     "body": "### 한 번의 결제가 시스템을 통과하는 경로\n\n네이버페이 결제는 사용자에게는 1~2초의 단순한 경험이지만, 내부적으로는 **'사용자에게 즉시 응답해야 하는 동기 구간'**과 **'돈의 최종 확정을 다루는 비동기 구간'**을 의도적으로 분리한 구조로 동작한다.\n\n#### 1) 동기 구간 (Critical Path, 사용자 응답까지)\n\n1. 가맹점 SDK/앱 → `API Gateway`(Armeria/Spring Cloud Gateway). 여기서 TLS 종료, 가맹점 인증, rate limit, 토큰 검증이 끝난다.\n2. Gateway → `결제 서비스`로 gRPC 호출. 결제 서비스는 다음을 **하나의 짧은 트랜잭션 윈도우** 안에서 처리한다:\n   - 멱등키(`idempotency-key`) 확인 → 중복 결제 차단\n   - 잔액/한도/수단(포인트·계좌·카드) 검증\n   - `FDS`에 **동기 inline 스코어링** 요청 (수십 ms 예산). 위험도가 임계치 미만이면 통과, 초과면 추가 인증 또는 거절\n   - 원장에 **'예약(pending) 기표'** 만 먼저 기록 (실제 확정은 뒤에)\n3. 사용자에게는 '결제 성공'을 빠르게 반환한다. 이 시점까지 걸리는 외부 의존은 최대한 줄여, 외부 카드사·은행 같은 느린 의존은 타임아웃·서킷브레이커로 감싼다.\n\n#### 2) 비동기 구간 (정산·확정)\n\n결제 서비스는 성공과 동시에 `payment.completed` 이벤트를 `Kafka`에 발행한다. 이후의 무거운 작업은 전부 컨슈머가 가져간다:\n\n- **정산 서비스**가 이벤트를 소비해 가맹점별 정산 원장을 누적\n- **원장 서비스**가 pending → confirmed 로 상태 전이(복식부기 확정)\n- **FDS 배치**가 사후 재평가 (실시간에서 놓친 패턴을 배치로 보강)\n- 알림/영수증/마이데이터 반영 등 부가 작업\n\n#### 왜 이렇게 나눴나 (트레이드오프)\n\n| 구간 | 우선순위 | 실패 시 전략 |\n|------|----------|--------------|\n| 동기(결제) | **낮은 지연·높은 가용성** | 빠른 실패, 사용자 재시도 |\n| 비동기(정산) | **정확성·정합성** | 재시도·DLQ·멱등 소비로 결국 일치 |\n\n핵심 인사이트는 **'사용자 경험의 SLA'와 '돈의 정합성 SLA'가 다르다**는 것이다. 사용자는 100ms를 기다리기 싫어하지만, 정산은 몇 초~몇 분 늦어도 '정확하기만 하면' 된다. 그래서 빠르게 응답하되 돈의 최종 확정은 이벤트로 미루는 구조가 핀테크에서 사실상 표준이 되었고, 네이버페이도 이 경계를 명확히 설계했다."
+    },
+    {
+     "topic": "Redis 캐싱 계층과 한도·멱등성·세션의 일관성 전략",
+     "body": "### 금융에서 캐시는 '성능'이 아니라 '정합성 보조 장치'다\n\n일반 서비스에서 Redis는 DB 부하를 줄이는 read cache로 쓰지만, 결제에서 Redis는 **정합성을 지키는 동기화 지점**으로 더 중요하게 쓰인다.\n\n#### 1) 멱등성(idempotency) 저장소\n\n결제·정산은 네트워크 재시도가 일상이라 **같은 요청이 두 번 들어와도 한 번만 처리**되어야 한다. 클라이언트가 보낸 `idempotency-key`를 Redis에 `SET key value NX EX <ttl>`로 선점한다.\n\n- `NX` 성공 → 최초 요청, 처리 진행\n- `NX` 실패 → 이미 처리 중/완료된 요청, 저장된 결과를 그대로 반환\n\n이 패턴으로 '버튼 두 번 눌러 이중 결제' 같은 사고를 애플리케이션 레벨에서 차단한다. TTL은 짧지 않게 두되, 최종 확정 결과는 MySQL 원장에도 남겨 Redis가 비어도 DB로 재판정할 수 있게 한다(캐시는 fast-path, DB는 source of truth).\n\n#### 2) 분산 락 (한도·잔액 동시성)\n\n동일 사용자의 동시 결제, 포인트 동시 차감 같은 race를 막기 위해 Redis 기반 분산 락(Redisson 류)을 쓴다. 단, 락은 **짧게** 잡고 진짜 정합성은 DB의 트랜잭션·낙관적 락(version 컬럼)으로 이중 확인한다. Redis 락만 믿지 않는 이유는 네트워크 분단·노드 장애 시 락이 깨질 수 있기 때문이다.\n\n#### 3) Hot key·세션·시세성 데이터\n\n- 결제 수단 목록, 가맹점 메타, 이벤트성 할인 정보처럼 **읽기 폭주 + 변경 드묾** 데이터는 TTL 캐시\n- 대형 프로모션(쇼핑 라이브, 적립 이벤트) 때 특정 가맹점/상품에 **hot key 쏠림**이 발생하므로, 로컬 캐시(Caffeine 등) + Redis 2단 캐시로 단일 키 폭주를 흡수\n\n#### 캐시 무효화의 함정\n\n금융 데이터에서 가장 위험한 건 '오래된 잔액을 캐시가 보여주는' 것이다. 그래서 잔액·한도 같은 **돈에 직접 영향을 주는 값은 캐시하지 않거나, 변경 즉시 무효화(write-through/evict-on-write)** 하고, 캐시 미스 시 DB를 읽는 비용을 감수한다. '틀린 빠른 답'보다 '느려도 맞는 답'을 택하는 것이 도메인 원칙이다."
+    },
+    {
+     "topic": "서킷브레이커·Bulkhead·페일오버로 짜는 복원력 계층",
+     "body": "### '내가 못 버티는 것'과 '남이 못 버티는 것'을 분리한다\n\n결제 시스템은 카드사·은행·계좌이체·본인인증 등 **통제 불가능한 외부 의존**이 많다. 외부 한 곳이 느려지면 그 호출을 잡고 있는 스레드가 쌓이고, 결국 결제 전체가 마비되는 cascading failure가 가장 무서운 시나리오다. 이를 막는 세 가지 장치가 겹겹이 들어간다.\n\n#### 1) Bulkhead (격벽 격리)\n\n배의 격벽처럼, **의존성별로 스레드풀/커넥션풀을 분리**한다. 예를 들어 'A카드사 호출 풀'과 'B은행 호출 풀'을 나눠두면, A카드사가 응답 지연으로 풀을 다 써도 B은행 결제와 포인트 결제는 멀쩡히 동작한다. 하나의 공용 풀을 쓰면 한 곳의 장애가 전체 자원을 잠식하지만, 격벽이 있으면 **장애 반경(blast radius)** 이 그 의존성으로 한정된다.\n\n#### 2) Circuit Breaker (서킷브레이커)\n\n- **Closed**: 정상 호출\n- 실패율/지연이 임계치를 넘으면 **Open**: 일정 시간 동안 그 의존성 호출을 즉시 차단하고 fast-fail (느린 타임아웃을 기다리지 않음)\n- 잠시 후 **Half-Open**: 소수 요청만 흘려보내 회복 여부 탐색 → 정상이면 Closed 복귀\n\nReactor/WebFlux 비동기 스택과 Resilience4j 류 라이브러리로 구현하며, Open 됐을 때는 fallback(대체 결제수단 유도, 나중에 재시도하는 큐잉)으로 사용자 경험을 덜 깨지게 만든다.\n\n#### 3) 타임아웃·재시도·페일오버\n\n- 모든 외부 호출에 **짧고 명시적인 타임아웃** (무한 대기 금지)\n- 재시도는 **멱등한 작업에만**, 지수 백오프 + jitter 로 thundering herd 방지\n- 핵심 컴포넌트(DB, Redis, Kafka)는 다중 AZ/이중화로 페일오버. 금융 규제상 DR(재해복구) 구성과 정기 훈련이 요구된다\n\n#### 관측과의 결합\n\n이 모든 차단·재시도는 `Pinpoint` 분산 추적과 `Nelo` 로그로 가시화된다. 어느 서비스의 어느 외부 호출에서 서킷이 열렸는지, 어떤 트랜잭션이 어디서 끊겼는지를 trace로 따라갈 수 있어야 장애 대응이 분 단위로 끝난다. **복원력 설계와 관측성은 한 쌍**으로 움직인다."
     }
    ],
    "github": {
@@ -16543,14 +16598,28 @@
      {
       "name": "pinpoint-apm/pinpoint",
       "url": "https://github.com/pinpoint-apm/pinpoint",
-      "desc": "대규모 분산 시스템용 APM·분산 추적 도구로 결제 트랜잭션 관측성에 사용",
+      "desc": "대규모 분산 시스템용 APM·분산 추적 플랫폼으로 네이버페이 관측성의 핵심",
       "lang": "Java",
-      "stars": 13828
+      "stars": 13835
+     },
+     {
+      "name": "line/armeria",
+      "url": "https://github.com/line/armeria",
+      "desc": "Netty 기반 비동기 HTTP/gRPC 마이크로서비스 프레임워크(네이버 계열 채택)",
+      "lang": "Java",
+      "stars": 5118
+     },
+     {
+      "name": "naver/d2codingfont",
+      "url": "https://github.com/naver/d2codingfont",
+      "desc": "네이버가 공개한 개발자용 코딩 폰트",
+      "lang": "Shell",
+      "stars": 2158
      },
      {
       "name": "naver/ngrinder",
       "url": "https://github.com/naver/ngrinder",
-      "desc": "분산 부하 테스트 플랫폼으로 결제 트래픽 대비 성능 검증에 활용",
+      "desc": "분산 부하 테스트 플랫폼으로 결제 트래픽 성능 검증에 사용",
       "lang": "Java",
       "stars": 2103
      }
@@ -16558,11 +16627,11 @@
    },
    "sources": [
     "https://medium.com/naverfinancial",
-    "https://github.com/naver/armeria",
-    "https://github.com/naver/pinpoint"
+    "https://github.com/naver/pinpoint",
+    "https://github.com/line/armeria"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "toss",

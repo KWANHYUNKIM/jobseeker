@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-20T12:35:32",
+  "generated_at": "2026-06-20T14:21:38",
   "source": "youtube",
   "tech_count": 172,
   "curriculum_count": 20,
@@ -1727,6 +1727,88 @@
         "stage": "핵심"
       }
     ],
+    "CSS": [
+      {
+        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
+        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
+        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 153328,
+        "length": "5:28:09",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "HTML & CSS 기초의 모든 것 | 네카라쿠배 출신 8년차 개발자 강의",
+        "url": "https://www.youtube.com/watch?v=HQ4nhdWvcpI",
+        "thumbnail": "https://i.ytimg.com/vi/HQ4nhdWvcpI/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2355,
+        "length": "1:07:21",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CSS 강의 Ep01 - CSS란 무엇인가? | CSS 강좌 | 함께 웹 개발에 입문해 보는건 어떨까요?",
+        "url": "https://www.youtube.com/watch?v=JgolsnrdnGM",
+        "thumbnail": "https://i.ytimg.com/vi/JgolsnrdnGM/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 12814,
+        "length": "20:33",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "어둠의 자식들이 좋아하는 CSS 문법 2개",
+        "url": "https://www.youtube.com/watch?v=TlRkmSEMV6w",
+        "thumbnail": "https://i.ytimg.com/vi/TlRkmSEMV6w/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 25142,
+        "length": "3:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 따위 안쓰는 사나이클럽 (실존함)",
+        "url": "https://www.youtube.com/watch?v=T3lEM26r_2s",
+        "thumbnail": "https://i.ytimg.com/vi/T3lEM26r_2s/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 227692,
+        "length": "4:11",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
+        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
+        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
+        "channel": "크래프트맨 멘탈리티",
+        "views": 21587,
+        "length": "6:53:58",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
+        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 7818,
+        "length": "17:07",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
+        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
+        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 42889,
+        "length": "48:53",
+        "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
     "Android": [
       {
         "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
@@ -1868,88 +1950,6 @@
         "views": 495,
         "length": "4:57",
         "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
-    "CSS": [
-      {
-        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
-        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
-        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 153328,
-        "length": "5:28:09",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "HTML & CSS 기초의 모든 것 | 네카라쿠배 출신 8년차 개발자 강의",
-        "url": "https://www.youtube.com/watch?v=HQ4nhdWvcpI",
-        "thumbnail": "https://i.ytimg.com/vi/HQ4nhdWvcpI/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2355,
-        "length": "1:07:21",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CSS 강의 Ep01 - CSS란 무엇인가? | CSS 강좌 | 함께 웹 개발에 입문해 보는건 어떨까요?",
-        "url": "https://www.youtube.com/watch?v=JgolsnrdnGM",
-        "thumbnail": "https://i.ytimg.com/vi/JgolsnrdnGM/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 12814,
-        "length": "20:33",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "어둠의 자식들이 좋아하는 CSS 문법 2개",
-        "url": "https://www.youtube.com/watch?v=TlRkmSEMV6w",
-        "thumbnail": "https://i.ytimg.com/vi/TlRkmSEMV6w/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 25142,
-        "length": "3:19",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS 따위 안쓰는 사나이클럽 (실존함)",
-        "url": "https://www.youtube.com/watch?v=T3lEM26r_2s",
-        "thumbnail": "https://i.ytimg.com/vi/T3lEM26r_2s/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 227692,
-        "length": "4:11",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
-        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
-        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
-        "channel": "크래프트맨 멘탈리티",
-        "views": 21587,
-        "length": "6:53:58",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
-        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 7818,
-        "length": "17:07",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
-        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
-        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 42889,
-        "length": "48:53",
-        "published": "3년 전",
         "stage": "실전"
       }
     ],
