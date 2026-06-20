@@ -75,3 +75,16 @@ def get(key: str) -> dict[str, Any] | None:
         if job_key(j) == key:
             return j
     return None
+
+
+def all_jobs() -> list[dict[str, Any]]:
+    return _load()
+
+
+def matches_query(job: dict[str, Any], terms: list[str]) -> bool:
+    if not terms:
+        return True
+    hay = " ".join(str(job.get(k, "")) for k in
+                   ("company", "title", "tech_stack", "qualifications",
+                    "preferences", "main_tasks", "location")).lower()
+    return all(t in hay for t in terms)

@@ -36,6 +36,7 @@ function toast(msg) {
 // ── 라우팅 ──────────────────────────────────────────────────
 const TABS = [
   { id: "jobs", label: "JD 검색·생성" },
+  { id: "fit", label: "자동 적합도" },
   { id: "forms", label: "지원 폼" },
   { id: "watch", label: "재공고 추적" },
   { id: "profile", label: "사실 프로필" },
@@ -56,7 +57,7 @@ function route() {
   renderNav();
   const v = document.getElementById("view");
   v.innerHTML = "";
-  ({ jobs: viewJobs, forms: viewForms, watch: viewWatch, profile: viewProfile, apps: viewApps, settings: viewSettings }[current])(v);
+  ({ jobs: viewJobs, fit: viewFit, forms: viewForms, watch: viewWatch, profile: viewProfile, apps: viewApps, settings: viewSettings }[current])(v);
 }
 
 async function refreshAIState() {
@@ -161,6 +162,88 @@ async function doGenerate(key, kind, out) {
 async function addToApps(job) {
   try {
     await postJSON("/api/applications", { job: { site: job.site, idx: job.idx, company: job.company, title: job.title, url: job.url }, status: "관심" });
+    toast("지원 현황에 추가됨");
+  } catch (e) { toast("오류: " + e.message); }
+}
+
+// ── 자동 적합도 분석 ────────────────────────────────────────
+const scoreClass = (s) => (s >= 70 ? "good" : s >= 45 ? "mid" : "low");
+
+function viewFit(v) {
+  const minScore = el("input", { type: "number", value: "50", min: "0", max: "100", style: "max-width:90px" });
+  const kw = el("input", { placeholder: "키워드 필터 (예: 백엔드, 임베디드)", style: "max-width:240px" });
+  const domainSel = el("select", { style: "max-width:200px" }, el("option", { value: "" }, "전체 도메인"));
+  const meta = el("div", { class: "small muted", style: "margin-top:8px" });
+  const results = el("div");
+
+  const controls = el("div", { class: "card" },
+    el("h2", null, "자동 적합도 분석"),
+    el("div", { class: "muted small", style: "margin-bottom:8px" }, "사실 프로필 기준으로 전체 공고를 자동 점수화·랭킹합니다. (규칙 기반·즉시) 상위 공고는 'AI 정밀분석'으로 더 깊게 볼 수 있어요."),
+    el("div", { class: "flex", style: "flex-wrap:wrap; align-items:flex-end" },
+      el("div", null, el("label", null, "최소 점수"), minScore),
+      el("div", null, el("label", null, "도메인"), domainSel),
+      el("div", { style: "flex:1; min-width:180px" }, el("label", null, "키워드"), kw),
+      el("button", { class: "btn", style: "margin-bottom:1px", onclick: () => run() }, "분석")),
+    meta);
+  v.append(controls, results);
+
+  async function run() {
+    results.innerHTML = "<div class='muted'>전체 공고 분석 중… (수초)</div>";
+    const params = new URLSearchParams({ limit: "60", min_score: minScore.value || "0", q: kw.value.trim(), domain: domainSel.value });
+    let d;
+    try { d = await getJSON("/api/fit?" + params.toString()); }
+    catch (e) { results.innerHTML = "<div class='muted'>오류: " + esc(e.message) + "</div>"; return; }
+    if (d.warning) { results.innerHTML = ""; results.append(el("div", { class: "card muted" }, d.warning)); return; }
+
+    meta.innerHTML = "";
+    meta.append("내 기술 " + (d.profile_terms || []).length + "개 인식: " + (d.profile_terms || []).join(", "));
+    // 도메인 드롭다운 갱신(선택 유지)
+    const cur = domainSel.value;
+    domainSel.innerHTML = "";
+    domainSel.append(el("option", { value: "" }, "전체 도메인 (" + d.scanned + "건)"));
+    (d.facets || []).forEach((f) => domainSel.append(el("option", { value: f.name, selected: f.name === cur ? "selected" : null }, f.name + " (" + f.count + ")")));
+
+    results.innerHTML = "";
+    if (!d.items.length) { results.append(el("div", { class: "card muted" }, "조건에 맞는 공고가 없습니다. 최소 점수를 낮춰보세요.")); return; }
+    d.items.forEach((it, i) => results.append(fitCard(it, i + 1)));
+  }
+
+  function fitCard(it, rank) {
+    const out = el("div");
+    const detail = el("div", { class: "hide small muted", style: "margin-top:8px; white-space:pre-wrap" });
+    const toggle = () => {
+      detail.classList.toggle("hide");
+      if (!detail.dataset.loaded) {
+        detail.textContent = "주요업무:\n" + (it.main_tasks || "(정보 없음)") + "\n\n자격요건:\n" + (it.qualifications || "(정보 없음)") + (it.preferences ? "\n\n우대:\n" + it.preferences : "");
+        detail.dataset.loaded = "1";
+      }
+    };
+    return el("div", { class: "rowitem" },
+      el("div", { class: "flex" },
+        el("span", { class: "score " + scoreClass(it.score), style: "font-size:22px; min-width:64px" }, it.score + "점"),
+        el("div", { style: "flex:1; min-width:0" },
+          el("div", null, el("b", null, "#" + rank + " " + esc(it.company)), it.dday ? el("span", { class: "muted small" }, "  " + esc(it.dday)) : null),
+          el("div", { class: "small muted" }, esc(it.title) + (it.career ? " · " + esc(it.career) : "")),
+          el("div", { style: "margin-top:4px" }, ...(it.domains || []).map((dm) => el("span", { class: "chip" }, dm)), it.low_confidence ? el("span", { class: "chip", style: "color:var(--warn)" }, "기술정보 적음") : null)),
+        it.url ? el("a", { href: it.url, target: "_blank", class: "small" }, "원문 ↗") : null),
+      el("div", { style: "margin-top:6px" },
+        ...(it.matched || []).map((m) => el("span", { class: "chip", style: "color:var(--good)" }, "✓ " + m)),
+        ...(it.missing || []).slice(0, 8).map((m) => el("span", { class: "chip", style: "color:var(--warn)" }, m))),
+      el("div", { class: "flex", style: "margin-top:8px; flex-wrap:wrap" },
+        el("button", { class: "btn sm", onclick: () => doAnalyze(it.key, out) }, "AI 정밀분석"),
+        el("button", { class: "btn sm ghost", onclick: () => doGenerate(it.key, "resume", out) }, "이력서 생성"),
+        el("button", { class: "btn sm ghost", onclick: toggle }, "주요업무/자격요건"),
+        el("button", { class: "btn sm ghost", onclick: () => addToWatch({ key: it.key, company: it.company }) }, "추적 추가"),
+        el("button", { class: "btn sm ghost", onclick: () => addAppByKey(it) }, "지원에 추가")),
+      detail, out);
+  }
+  run();
+}
+
+async function addAppByKey(it) {
+  const [site, idx] = (it.key || "").split(":");
+  try {
+    await postJSON("/api/applications", { job: { site, idx, company: it.company, title: it.title, url: it.url }, status: "관심" });
     toast("지원 현황에 추가됨");
   } catch (e) { toast("오류: " + e.message); }
 }

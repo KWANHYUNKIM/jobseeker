@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import jobs, store
+from . import domains, jobs, match, store
 
 HOST = "127.0.0.1"  # 고정 — 절대 외부 바인딩 금지
 PORT = int(os.environ.get("ADMIN_PORT", "8910"))
@@ -94,6 +94,8 @@ class Handler(BaseHTTPRequestHandler):
                 limit = min(int(qs.get("limit", ["50"])[0] or 50), 200)
                 offset = int(qs.get("offset", ["0"])[0] or 0)
                 self._json(jobs.search(q, limit, offset))
+            elif path == "/api/fit":
+                self._fit(qs)
             elif path == "/api/job":
                 key = qs.get("key", [""])[0]
                 job = jobs.get(key)
@@ -183,6 +185,55 @@ class Handler(BaseHTTPRequestHandler):
                 self._err("unknown endpoint", 404)
         except Exception as e:  # noqa: BLE001
             self._err(f"server error: {e}", 500)
+
+    # ── 자동 적합도 분석 (규칙 기반, 전체 랭킹) ──────────────
+    def _fit(self, qs: dict) -> None:
+        profile = store.get_profile()
+        have = match.profile_terms(profile)
+        if not have:
+            return self._json({"items": [], "facets": {"domains": []},
+                               "profile_terms": [], "scanned": 0,
+                               "warning": "프로필에 인식된 기술이 없습니다. 사실 프로필의 스킬/경력을 먼저 채우세요."})
+        q = (qs.get("q", [""])[0]).strip().lower()
+        terms = q.split()
+        min_score = int(qs.get("min_score", ["0"])[0] or 0)
+        limit = min(int(qs.get("limit", ["50"])[0] or 50), 200)
+        domain_filter = qs.get("domain", [""])[0]
+
+        scored = []
+        for j in jobs.all_jobs():
+            if not jobs.matches_query(j, terms):
+                continue
+            s = match.score(have, j)
+            if s["score"] < min_score:
+                continue
+            doms = domains.classify(j)
+            if domain_filter and domain_filter not in doms:
+                continue
+            scored.append((s, doms, j))
+
+        # 도메인 facet(필터 결과 기준)
+        facet: dict[str, int] = {}
+        for _, doms, _ in scored:
+            for d in doms:
+                facet[d] = facet.get(d, 0) + 1
+        facets = sorted(({"name": k, "count": v} for k, v in facet.items()),
+                        key=lambda x: -x["count"])
+
+        scored.sort(key=lambda t: (t[0]["score"], len(t[0]["matched"])), reverse=True)
+        items = []
+        for s, doms, j in scored[:limit]:
+            items.append({
+                "key": jobs.job_key(j), "company": j.get("company"), "title": j.get("title"),
+                "url": j.get("url"), "career": j.get("career"), "dday": j.get("dday"),
+                "score": s["score"], "matched": s["matched"], "missing": s["missing"],
+                "low_confidence": s["low_confidence"], "domains": doms,
+                "main_tasks": str(j.get("main_tasks") or "")[:800],
+                "qualifications": str(j.get("qualifications") or "")[:800],
+                "preferences": str(j.get("preferences") or "")[:600],
+            })
+        self._json({"items": items, "facets": facets,
+                    "profile_terms": sorted(have), "scanned": len(scored)})
 
     # ── 재공고 추적 ──────────────────────────────────────────
     def _add_watch(self, body: dict) -> None:
