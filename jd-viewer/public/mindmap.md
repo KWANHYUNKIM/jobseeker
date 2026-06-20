@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6673건** 공고 · **1334개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 16:06
+- 총 **6674건** 공고 · **1334개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 17:51
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -5136,6 +5136,27 @@ markmap:
   - [이리온 C++ 어플리케이션 개발자(서울) ↗](https://jumpit.saramin.co.kr/position/54074328)
   - [펌웨어 개발자 (임베디드 펌웨어) ↗](https://jumpit.saramin.co.kr/position/54207186)
 
+### 아이벡스 `중소기업` · 8건
+- **백엔드** [2건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `Docker`
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
+- **프론트엔드** [3건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `Docker`
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
+  - [프론트엔드엔지니어-MLOps,Vision AI ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630)
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
+- **AI/ML** [7건] · `Docker` `TypeScript` `React` `Next.js` `CSS` `Tailwind`
+  - [Industrial AI Vision Project Manager (딥러닝 PM) ↗](https://www.wanted.co.kr/wd/369560)
+  - [3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology ↗](https://www.wanted.co.kr/wd/352371)
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
+  - [(전문연구요원)로봇 시스템 비전 소프트웨어 엔지니어 ↗](https://jumpit.saramin.co.kr/position/54055697)
+- **데이터** [2건]
+  - [Industrial AI Vision Project Manager (딥러닝 PM) ↗](https://www.wanted.co.kr/wd/369560)
+  - [Industrial AI Vision Project Manager (DL PM) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225797&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d89ebbe1-98ba-49e8-87b5-894bbe3919fd)
+- **DevOps/인프라** [3건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `Docker`
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
+  - [프론트엔드엔지니어-MLOps,Vision AI ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630)
+  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
+
 ### 에너자이 `중소기업` · 8건
 - **백엔드** [1건] · `Kotlin` `C++` `C` `Swift` `React` `Django`
   - [(병역특례 가능) Runtime 소프트웨어 엔지니어 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49276158?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=97&sc=630)
@@ -5161,26 +5182,6 @@ markmap:
   - [Frontend 개발자 ↗](https://www.wanted.co.kr/wd/365751)
   - [Backend (Python) 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49124267?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=42&sc=630)
   - [Backend (Python) 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54060893&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=a3ec879b-2a76-4a2a-ba04-f5948f8b9742)
-
-### 아이벡스 `중소기업` · 7건
-- **백엔드** [2건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `Docker`
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
-- **프론트엔드** [3건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `Docker`
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
-  - [프론트엔드엔지니어-MLOps,Vision AI ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630)
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
-- **AI/ML** [6건] · `Docker` `TypeScript` `React` `Next.js` `CSS` `Tailwind`
-  - [Industrial AI Vision Project Manager (딥러닝 PM) ↗](https://www.wanted.co.kr/wd/369560)
-  - [3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology ↗](https://www.wanted.co.kr/wd/352371)
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
-  - [(전문연구요원)로봇 시스템 비전 소프트웨어 엔지니어 ↗](https://jumpit.saramin.co.kr/position/54055697)
-- **데이터** [1건]
-  - [Industrial AI Vision Project Manager (딥러닝 PM) ↗](https://www.wanted.co.kr/wd/369560)
-- **DevOps/인프라** [3건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `Docker`
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://jumpit.saramin.co.kr/position/53970784)
-  - [프론트엔드엔지니어-MLOps,Vision AI ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630)
-  - [(머신비전/장비 제조업) Frontend Engineer (MLOps, Vision AI Platform) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422)
 
 ### LG CNS `대기업` · 7건
 - **백엔드** [1건] · `Oracle` `AWS` `GCP` `Azure` `Kubernetes` `Jenkins`

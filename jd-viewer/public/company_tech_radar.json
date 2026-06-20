@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T16:10:32",
+ "generated_at": "2026-06-20T17:55:38",
  "total": 100,
  "countries": [
   {
@@ -252,6 +252,10 @@
       "count": 3
      },
      {
+      "name": "Protobuf",
+      "count": 3
+     },
+     {
       "name": "Spring Cloud",
       "count": 3
      },
@@ -261,10 +265,6 @@
      },
      {
       "name": "Java",
-      "count": 2
-     },
-     {
-      "name": "Kotlin",
       "count": 2
      }
     ],
@@ -3156,11 +3156,11 @@
       "count": 1
      },
      {
-      "name": "Armeria",
+      "name": "Apps Framework",
       "count": 1
      },
      {
-      "name": "Borg",
+      "name": "Armeria",
       "count": 1
      },
      {
@@ -3169,6 +3169,10 @@
      },
      {
       "name": "gRPC",
+      "count": 1
+     },
+     {
+      "name": "Guice/Spring",
       "count": 1
      },
      {
@@ -3186,10 +3190,6 @@
      {
       "name": "Spring Cloud",
       "count": 1
-     },
-     {
-      "name": "Stubby/gRPC",
-      "count": 1
      }
     ],
     "frontend": [
@@ -3199,6 +3199,10 @@
      },
      {
       "name": "Closure",
+      "count": 1
+     },
+     {
+      "name": "JSCompiler",
       "count": 1
      },
      {
@@ -3256,6 +3260,10 @@
       "count": 1
      },
      {
+      "name": "F1",
+      "count": 1
+     },
+     {
       "name": "Hadoop",
       "count": 1
      },
@@ -3265,10 +3273,6 @@
      },
      {
       "name": "Kafka",
-      "count": 1
-     },
-     {
-      "name": "Mesa",
       "count": 1
      }
     ],
@@ -3290,10 +3294,6 @@
       "count": 1
      },
      {
-      "name": "GCP/Kubernetes",
-      "count": 1
-     },
-     {
       "name": "GFE",
       "count": 1
      },
@@ -3302,30 +3302,34 @@
       "count": 1
      },
      {
+      "name": "Jupiter Fabric",
+      "count": 1
+     },
+     {
       "name": "Kubernetes",
       "count": 1
      },
      {
-      "name": "Maglev",
+      "name": "Kubernetes/GCP",
       "count": 1
      },
      {
-      "name": "Monarch",
+      "name": "Maglev",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "Cluster-scheduled platform",
+     "name": "Cluster-scheduled container platform on shared datacenter fabric",
      "count": 1
     },
     {
-     "name": "Distributed microservices",
+     "name": "Distributed microservices over Stubby/gRPC + Protocol Buffers",
      "count": 1
     },
     {
-     "name": "Globally consistent storage",
+     "name": "Globally consistent, disaggregated storage",
      "count": 1
     },
     {
@@ -3333,7 +3337,7 @@
      "count": 1
     },
     {
-     "name": "Sharded root-leaf fan-out serving",
+     "name": "Sharded root-leaf fan-out serving for low-latency query",
      "count": 1
     },
     {
@@ -5725,52 +5729,58 @@
    "languages": [
     "C++",
     "Java",
-    "Python",
     "Go",
+    "Python",
     "TypeScript"
    ],
    "stack": {
     "backend": [
      "Stubby/gRPC",
      "Protocol Buffers",
-     "Borg",
      "Abseil",
-     "Flume/Dataflow"
+     "Flume/Dataflow",
+     "Guice/Spring",
+     "Apps Framework"
     ],
     "frontend": [
      "Angular",
      "Closure",
+     "Wiz",
      "Web Components/Lit",
-     "Wiz"
+     "JSCompiler"
     ],
     "data": [
      "Bigtable",
      "Spanner",
      "Colossus",
      "BigQuery/Dremel",
+     "Mesa",
      "Pub/Sub",
-     "Mesa"
+     "F1"
     ],
     "infra": [
      "Borg",
      "Bazel",
+     "Piper/CitC",
+     "TAP",
      "Maglev",
      "GFE",
+     "Jupiter Fabric",
      "Dapper",
      "Monarch",
-     "GCP/Kubernetes"
+     "Kubernetes/GCP"
     ]
    },
    "architecture": [
-    "Distributed microservices (Stubby/gRPC)",
-    "Sharded root-leaf fan-out serving",
-    "Cluster-scheduled platform (Borg)",
-    "Globally consistent storage (Spanner/Colossus)"
+    "Distributed microservices over Stubby/gRPC + Protocol Buffers",
+    "Sharded root-leaf fan-out serving for low-latency query",
+    "Cluster-scheduled container platform (Borg) on shared datacenter fabric",
+    "Globally consistent, disaggregated storage (Spanner/Colossus)"
    ],
-   "diagram": "flowchart TD\n  subgraph Edge[\"Client / Edge\"]\n    U[\"User Browser<br/>Search + Ads UI\"]\n    GSLB[\"Global LB<br/>Maglev + GSLB DNS\"]\n    GFE[\"Google Front End<br/>GFE TLS + routing\"]\n  end\n  subgraph Serve[\"Core Serving\"]\n    MIX[\"Query Mixer / Root<br/>Stubby + Protobuf\"]\n    RANK[\"Ranking + RankBrain<br/>TensorFlow serving\"]\n    LEAF[\"Index Leaf Shards<br/>Inverted index in RAM\"]\n    ADS[\"Ads Auction<br/>GSP RTB engine\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    BT[\"Bigtable<br/>wide-column\"]\n    SPAN[\"Spanner<br/>TrueTime SQL\"]\n    COL[\"Colossus<br/>distributed FS\"]\n    BQ[\"BigQuery / Dremel<br/>columnar OLAP\"]\n  end\n  subgraph Async[\"Pipelines / Async\"]\n    CRAWL[\"Crawler + Caffeine<br/>incremental index\"]\n    DF[\"Dataflow / Flume<br/>batch + stream\"]\n    PS[\"Pub/Sub<br/>event bus\"]\n  end\n  subgraph Infra[\"Platform / Infra\"]\n    BORG[\"Borg<br/>cluster scheduler\"]\n    DAP[\"Dapper + Monarch<br/>trace + metrics\"]\n  end\n  U -->|HTTPS| GSLB --> GFE\n  GFE -->|gRPC| MIX\n  MIX -->|fan-out| LEAF\n  MIX --> RANK\n  MIX --> ADS\n  LEAF --> COL\n  ADS -->|bids| SPAN\n  RANK --> BT\n  CRAWL --> COL\n  CRAWL --> CAFF[\"Index Build\"] --> LEAF\n  DF --> BQ\n  PS --> DF\n  ADS --> PS\n  BORG -.schedules.-> MIX\n  BORG -.schedules.-> LEAF\n  BORG -.schedules.-> ADS\n  DAP -.traces.-> MIX\n  DAP -.traces.-> ADS",
-   "why_language": "C++는 검색 인덱스 서빙·랭킹·광고 경매처럼 밀리초 단위 레이턴시와 메모리 효율이 생명인 핫패스를 장악하고, Java는 대규모 분산 백엔드와 데이터 파이프라인, Python은 도구·ML 실험·자동화에 쓰인다. Go는 인프라/네트워크 컴포넌트(컨테이너·gRPC·운영 도구)에서 동시성과 배포 단순성 때문에 채택됐고, 모든 언어는 Protocol Buffers와 Bazel로 단일 monorepo에서 통합된다.",
-   "why_architecture": "초당 수십만 쿼리를 수십 밀리초 안에 처리하려면 인덱스를 수천 개 leaf 샤드로 쪼개 root가 fan-out/fan-in하는 구조가 불가피하고, 모든 서비스는 Stubby/gRPC + Protobuf로 통신하는 미세 분리된 서비스로 구성된다. Borg가 수만 대 머신에 워크로드를 빈패킹해 활용률을 끌어올리고, Spanner·Colossus 같은 전역 일관성 스토리지가 데이터 계층을 떠받쳐 단일 리전 장애에도 서비스가 지속된다.",
-   "summary": "C++ 핫패스 + Stubby/gRPC 마이크로서비스를 Borg 위에서 돌리고 Spanner·Colossus·Bigtable로 떠받치는, 행성 규모 검색·광고 분산 시스템",
+   "diagram": "flowchart TD\n  subgraph Edge[\"Client & Edge\"]\n    U[\"User<br/>Browser / Android\"]\n    GFE[\"Google Front End<br/>GFE + TLS termination\"]\n    MGLV[\"L4 Load Balancer<br/>Maglev consistent hashing\"]\n  end\n  subgraph Serving[\"Serving Tier\"]\n    ROOT[\"Query Root / Mixer<br/>fan-out coordinator\"]\n    LEAF[\"Leaf Shards<br/>index serving C++\"]\n    ADS[\"Ads Mixer<br/>RTB + GSP auction\"]\n    WIZ[\"Web UI<br/>Wiz + Angular/Lit\"]\n  end\n  subgraph RPC[\"RPC & Async\"]\n    STUBBY[\"Stubby/gRPC<br/>Protocol Buffers\"]\n    PUBSUB[\"Pub/Sub<br/>async events\"]\n    DATAFLOW[\"Flume/Dataflow<br/>batch + streaming\"]\n  end\n  subgraph Data[\"Storage & Data\"]\n    BT[\"Bigtable<br/>wide-column\"]\n    SPAN[\"Spanner/F1<br/>TrueTime SQL\"]\n    COL[\"Colossus<br/>distributed FS\"]\n    BQ[\"BigQuery/Dremel<br/>columnar analytics\"]\n    MESA[\"Mesa<br/>ads warehouse\"]\n  end\n  subgraph Infra[\"Platform & Observability\"]\n    BORG[\"Borg<br/>cluster scheduler\"]\n    JUP[\"Jupiter Fabric<br/>datacenter network\"]\n    DAP[\"Dapper<br/>tracing\"]\n    MON[\"Monarch<br/>metrics\"]\n  end\n  U --> GFE --> MGLV --> ROOT\n  GFE --> WIZ\n  ROOT -->|gRPC fan-out| LEAF\n  ROOT --> ADS\n  ROOT -.->|Stubby| STUBBY\n  LEAF --> BT\n  LEAF --> COL\n  ADS --> SPAN\n  ADS --> MESA\n  ADS --> PUBSUB --> DATAFLOW --> BQ\n  SPAN --> COL\n  BT --> COL\n  ROOT --> BORG\n  LEAF --> BORG\n  BORG --> JUP\n  ROOT -.-> DAP\n  ROOT -.-> MON",
+   "why_language": "검색·광고의 코어 serving은 마이크로초 단위 지연과 수만 대 규모의 메모리 효율이 생명이라 C++가 인덱스 leaf·랭킹 경로를 지배하고, 대규모 비즈니스 로직과 인프라 제어 평면은 JVM 생태계의 Java가 맡는다. 네트워킹·컨트롤 플레인·CLI류는 동시성과 배포 단순성 때문에 Go(사내 탄생)로, 데이터 파이프라인·ML 글루·자동화는 Python으로 작성한다. 사용자 대면 UI는 대규모 컴파일·타입 안전을 위해 Closure에서 TypeScript/Angular로 수렴했다.",
+   "why_architecture": "단일 검색 쿼리가 수천억 문서를 수십 ms 안에 훑어야 하므로 인덱스를 수천 개 leaf로 샤딩하고 root가 fan-out/병합하는 구조가 필수다. 모든 서비스를 Protocol Buffers 스키마 위 Stubby/gRPC로 분리해 언어·팀 독립 배포를 가능케 하고, Borg가 단일 클러스터에서 batch와 latency-sensitive 작업을 함께 bin-packing해 수만 대의 활용률을 끌어올린다. 스토리지는 Colossus 위에 Bigtable·Spanner를 얹어 컴퓨트와 디스크를 분리(disaggregation)함으로써 독립 확장과 전역 일관성을 동시에 얻는다.",
+   "summary": "C++ 코어 serving + Protocol Buffers/gRPC 마이크로서비스를 Borg 위에 올리고 Colossus·Spanner로 떠받치는, 행성 규모로 검증된 분산 시스템.",
    "deep_dive": [
     {
      "topic": "Spanner와 TrueTime — 전역 외부 일관성",
@@ -5803,6 +5813,18 @@
     {
      "topic": "관측성: Dapper 분산 트레이싱과 Monarch 시계열",
      "body": "### 수천 대 fan-out을 어떻게 디버깅하나\n\n검색 한 번이 수천 RPC로 갈라지는 시스템에서 \"왜 이 요청이 느렸나\"를 로그만으로는 절대 못 잡는다. 그래서 구글은 **분산 트레이싱**을 일찍부터 표준화했다 — 그게 `Dapper`(2010 논문), 오늘날 OpenTelemetry/Zipkin/Jaeger의 직접적 원조다.\n\n### Dapper의 동작 원리\n\n- 요청이 GFE에 들어올 때 **trace ID**를 부여하고, 이후 모든 하위 RPC에 **span**(시작·끝 타임스탬프, 부모 span 참조)을 달아 propagate한다. Stubby/gRPC 계층에 트레이싱 훅이 박혀 있어 애플리케이션 코드가 거의 손 안 대도 전파된다.\n- 전수 수집은 비용이 감당 안 되므로 **샘플링**한다(예: 일부 비율만 trace 저장). 그래도 통계적으로 충분한 커버리지가 나온다 — 느린 요청 패턴은 반복되기 때문.\n- 수집된 span은 Bigtable류 저장소에 모여, 한 요청의 전체 호출 트리(어느 leaf가 느렸나, 어디서 직렬화 병목이 있나)를 시각화한다.\n\n핵심 설계 원칙은 **low overhead, application-transparent, ubiquitous**(항상 켜져 있음). 사후에 켜는 게 아니라 상시 깔려 있어야 진짜 장애 때 쓸 수 있다.\n\n### Monarch: 행성 규모 시계열\n\n메트릭(QPS, 레이턴시 분포, 에러율, 리소스 사용량)은 `Monarch`가 담당한다. 초기 `Borgmon`(Prometheus의 사상적 조상)에서 진화한 시스템이다.\n\n- **In-memory, regional** 아키텍처 — 시계열을 메모리에 들고 리전별로 분산 저장해, 스토리지 장애 시에도 모니터링 자체는 살아 있도록(모니터링이 모니터링 대상 시스템에 의존하면 안 된다는 원칙) 설계됐다.\n- 쿼리는 리전들에 fan-out 되어 집계되고, 알림(alerting)과 SLO 평가가 그 위에서 돈다.\n- 카디널리티가 엄청나서(수조 개 시계열) push 기반 수집과 강한 다운샘플링/롤업을 쓴다.\n\n### SRE 문화와의 결합\n\n이 관측성 스택은 단순 도구가 아니라 **SRE 운영 모델**의 토대다. SLO(예: 99.9% 가용성)와 **error budget**을 Monarch 메트릭으로 정량화하고, budget이 소진되면 기능 출시를 멈추고 안정화에 투입하는 식의 의사결정이 데이터로 굴러간다. Dapper로 근본 원인을 좁히고 Monarch로 영향 범위와 추세를 본다 — 둘이 한 쌍으로 동작한다."
+    },
+    {
+     "topic": "모노레포의 엔지니어링: Piper + CitC + Bazel + TAP",
+     "body": "### 한 덩어리로 사는 코드베이스\n구글은 거의 전 회사가 **단일 모노레포**(약 90억 줄 이상, 수백 TB)에서 산다. 이 규모를 가능케 하는 네 개의 기둥이 있다.\n\n- **Piper**: 자체 분산 버전관리 시스템. 기존 Perforce를 대체했고, 여러 데이터센터에 샤딩된 백엔드를 둬 전 세계 엔지니어가 같은 리포에 동시에 커밋한다. 초당 수만 건의 read/write 트래픽을 견딘다.\n- **CitC (Clients in the Cloud)**: 로컬에 리포를 clone하지 않는다. FUSE 기반 가상 파일시스템이 필요한 파일만 lazy-load하고, 수정한 파일만 오버레이로 들고 있다. 그래서 `head` 전체를 즉시 보면서도 작업 공간 생성이 수 초면 끝난다.\n- **Blaze/Bazel**: 모든 빌드는 명시적 `BUILD` 의존성 그래프로 기술된다. 동일 입력 → 동일 출력의 **hermetic·reproducible 빌드**를 보장하고, 액션 결과를 전사 **remote cache**에 저장해 남이 이미 컴파일한 산출물을 재사용한다. 수천 대의 remote executor로 한 빌드를 병렬 분산한다.\n\n### TAP — 세계 최대급 CI\n변경(CL) 하나가 제출되면 **TAP(Test Automation Platform)**가 그 변경에 의존성으로 도달 가능한 모든 테스트 타깃을 골라 돌린다. 하루 수십억 테스트 케이스가 실행된다. 핵심 트릭은 두 가지다.\n\n- **의존성 기반 테스트 선택**: Bazel 그래프로 \"이 파일이 바뀌면 영향받는 타깃\"만 정밀 타깃팅 → 전수 실행을 피한다.\n- **누가 깨뜨렸나 이분 탐색(culprit finding)**: 여러 CL이 묶여 들어간 묶음에서 회귀가 나면 자동으로 범인 CL을 좁혀낸다.\n\n제출 전엔 글로벌 코드 리뷰 도구 **Critique**와 자동 포매터/린터(Tricorder)가 게이트한다. 이 모든 구조의 트레이드오프는 분명하다: 단일 atomic 커밋으로 라이브러리 API와 모든 호출처를 한 번에 바꾸는 **대규모 리팩터링(atomic refactoring)**이 가능해지는 대신, 도구 인프라에 막대한 투자가 든다. 외부엔 Bazel·Copybara·Tricorder 일부가 공개돼 있다."
+    },
+    {
+     "topic": "Dremel/BigQuery — 초 단위로 수조 행을 스캔하는 컬럼 엔진",
+     "body": "### MapReduce로는 너무 느린 대화형 분석\n로그·광고 데이터에 \"방금 떠오른 질문\"을 던지고 몇 초 안에 답을 받으려면 배치(MapReduce)는 부적합하다. **Dremel**(외부 제품명 **BigQuery**)은 이 대화형 분석을 위한 분산 컬럼 쿼리 엔진이다.\n\n### 두 가지 핵심 아이디어\n1. **Columnar storage + record shredding**: 중첩(Protocol Buffers 같은) 레코드를 컬럼별로 분해해 저장한다. 각 값에 **repetition level / definition level**을 붙여 중첩·반복·NULL 구조를 손실 없이 컬럼만으로 복원한다(Apache Parquet/Arrow가 이 모델을 차용). 쿼리가 건드리는 컬럼만 읽으니 I/O가 수십~수백 배 줄고, 같은 타입이 모여 있어 압축률도 높다.\n2. **다단계 serving tree**: 쿼리를 root → intermediate → leaf로 펼치는 트리에 뿌린다. leaf가 Colossus에서 컬럼 데이터를 스캔하며 부분 집계를 하고, 상위 노드가 점진적으로 합친다. 검색의 root-leaf fan-out과 같은 철학이다.\n\n### 분리(disaggregation)가 만든 탄력성\n현대 BigQuery는 **컴퓨트(Dremel slots)·스토리지(Colossus)·셔플(in-memory shuffle)**을 완전히 분리했다. 셔플을 RAM 기반 분산 계층으로 빼면서 스테이지 간 데이터를 디스크 없이 주고받아 join·group-by가 빨라졌고, 쿼리 단위로 slot을 동적 할당해 수천 코어를 몇 초만 빌렸다 반납한다. 트레이드오프: 트랜잭션·잦은 point-update에는 부적합한 **append/analytics 전용** 설계라는 점이다(그건 Spanner/Bigtable의 영역)."
+    },
+    {
+     "topic": "Maglev와 Jupiter — 로드밸런싱과 데이터센터 네트워크 패브릭",
+     "body": "### 소프트웨어 L4 로드밸런서, Maglev\nGFE 앞단의 트래픽 분산은 전용 하드웨어 어플라이언스가 아니라 **commodity 서버 위에서 도는 Maglev**가 맡는다. 특징은 다음과 같다.\n\n- **ECMP + 수평 확장**: 라우터가 ECMP로 패킷을 여러 Maglev 인스턴스에 흩뿌리고, 인스턴스를 추가하면 용량이 선형 증가한다. 단일 머신이 line-rate(수백만 pps)를 처리하도록 커널 우회·배치 처리로 튜닝됐다.\n- **consistent hashing + connection tracking**: 백엔드가 추가/제거되거나 Maglev 인스턴스가 죽어도 같은 5-tuple은 가능한 한 같은 백엔드로 간다. 이를 위해 특수한 consistent hash(\"Maglev hashing\")로 lookup 테이블을 만들어 재해싱 시 흔들림(disruption)을 최소화한다.\n- **DSR(Direct Server Return)**: 응답 트래픽은 LB를 거치지 않고 백엔드가 클라이언트로 직접 보내 LB 대역폭 병목을 없앤다.\n\n### Jupiter — 빌딩 전체를 한 대의 스위치처럼\n이 모든 fan-out·스토리지 disaggregation이 성립하려면 데이터센터 내부 대역폭이 사실상 무한해야 한다. **Jupiter**는 값싼 상용 스위치 칩을 **Clos topology**로 엮어 빌딩 규모 패브릭을 만든 구글의 자체 네트워크다.\n\n- **bisection bandwidth 페타비트급**: 수만 대 서버가 서로 거의 full-bandwidth로 통신 → \"어느 서버에 두든 비슷하다\"는 가정이 성립해 Borg가 자유롭게 스케줄하고 컴퓨트와 스토리지를 분리할 수 있다.\n- **중앙집중 SDN 제어**: 분산 라우팅 프로토콜 대신 중앙 컨트롤러가 토폴로지를 알고 경로를 계산한다. 후기 세대는 **Optical Circuit Switch(OCS)**를 도입해 전통적 spine 계층을 걷어내고 광경로를 동적으로 재구성, 점진적 증설과 전력 효율을 잡았다. 트레이드오프: 제어 평면 복잡도와 운영 난도가 크게 오르지만, 상용 장비 비용으로 행성 규모 대역폭을 얻는다."
     }
    ],
    "interview": {
@@ -5981,49 +6003,49 @@
     "org": "https://github.com/google",
     "repos": [
      {
-      "name": "tensorflow/tensorflow",
-      "url": "https://github.com/tensorflow/tensorflow",
-      "desc": "RankBrain 등 랭킹·추천 ML을 떠받친 딥러닝 프레임워크",
-      "lang": "C++",
-      "stars": 195732
-     },
-     {
       "name": "protocolbuffers/protobuf",
       "url": "https://github.com/protocolbuffers/protobuf",
-      "desc": "사내 전 서비스의 직렬화·RPC 스키마 표준인 Protocol Buffers",
+      "desc": "사내 전역 RPC·저장의 직렬화 표준인 Protocol Buffers 오픈소스 구현",
       "lang": "C++",
-      "stars": 71359
+      "stars": 71370
+     },
+     {
+      "name": "grpc/grpc",
+      "url": "https://github.com/grpc/grpc",
+      "desc": "Stubby를 외부화한 고성능 다국어 RPC 프레임워크",
+      "lang": "C++",
+      "stars": 44900
      },
      {
       "name": "google/leveldb",
       "url": "https://github.com/google/leveldb",
-      "desc": "Bigtable의 SSTable 설계를 계승한 LSM 키-값 스토어",
+      "desc": "Bigtable의 SSTable·LSM 아이디어를 담은 임베디드 키-값 스토어",
       "lang": "C++",
-      "stars": 39153
+      "stars": 39155
      },
      {
       "name": "bazelbuild/bazel",
       "url": "https://github.com/bazelbuild/bazel",
-      "desc": "monorepo를 빌드하는 Blaze의 오픈소스판 빌드 시스템",
+      "desc": "사내 Blaze를 공개한 대규모 모노레포용 재현 가능 빌드 시스템",
       "lang": "Java",
-      "stars": 25517
+      "stars": 25520
      },
      {
       "name": "abseil/abseil-cpp",
       "url": "https://github.com/abseil/abseil-cpp",
-      "desc": "구글 C++ 코드베이스에서 추출한 공통 기반 라이브러리",
+      "desc": "구글 C++ 코드베이스에서 추출한 기반 라이브러리(Abseil)",
       "lang": "C++",
-      "stars": 17334
+      "stars": 17339
      }
     ]
    },
    "sources": [
-    "https://research.google/pubs/",
-    "https://sre.google/sre-book/table-of-contents/",
-    "https://research.google/pubs/the-tail-at-scale/"
+    "https://research.google/pubs/large-scale-cluster-management-at-google-with-borg/",
+    "https://cacm.acm.org/research/why-google-stores-billions-of-lines-of-code-in-a-single-repository/",
+    "https://research.google/pubs/dremel-interactive-analysis-of-web-scale-datasets-2/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "roblox",
@@ -16670,15 +16692,17 @@
      "Spring Boot",
      "Spring WebFlux",
      "Reactor",
+     "Armeria",
      "gRPC",
-     "Armeria"
+     "Protobuf"
     ],
     "frontend": [
      "React",
      "Next.js",
      "TypeScript",
      "React Native",
-     "Server-Driven UI"
+     "Server-Driven UI",
+     "Monorepo(Yarn Berry)"
     ],
     "data": [
      "Kafka",
@@ -16692,8 +16716,9 @@
      "Kubernetes",
      "AWS",
      "사내 PaaS",
-     "GitOps/ArgoCD",
-     "Istio/Envoy"
+     "ArgoCD/GitOps",
+     "Istio/Envoy",
+     "Prometheus/Grafana"
     ]
    },
    "architecture": [
@@ -16702,10 +16727,10 @@
     "Event-Driven(Kafka/CDC)",
     "Server-Driven UI"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Toss App<br/>React Native + SDUI\"]\n    WEB[\"Web<br/>React + Next.js\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway + Envoy\"]\n    SDUI[\"SDUI Renderer<br/>Server-Driven UI JSON\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    AUTH[\"Auth/Identity<br/>Kotlin + Spring\"]\n    PAY[\"Payment/Transfer<br/>Kotlin + Spring WebFlux\"]\n    LEDGER[\"Ledger/Account<br/>Kotlin + Reactor\"]\n    BANK[\"Bank Adapter<br/>금융망 연동\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Sharded RDB<br/>MySQL\"]\n    REDIS[\"Cache/Lock<br/>Redis\"]\n    MONGO[\"Document Store<br/>MongoDB\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>Kubernetes + 사내 PaaS\"]\n    AWS[\"Cloud<br/>AWS\"]\n  end\n  APP --> GW\n  WEB --> GW\n  APP --> SDUI\n  SDUI --> GW\n  GW -->|gRPC| AUTH\n  GW -->|gRPC| PAY\n  PAY -->|gRPC| LEDGER\n  PAY --> BANK\n  PAY --> REDIS\n  LEDGER --> MYSQL\n  MYSQL --> CDC\n  CDC --> KAFKA\n  PAY --> KAFKA\n  KAFKA --> ES\n  KAFKA --> MONGO\n  AUTH --> REDIS\n  Core --> K8S\n  K8S --> AWS",
-   "why_language": "송금·결제·원장 처리는 강한 타입 안정성과 JVM 생태계의 성숙한 트랜잭션·동시성 라이브러리가 필수라, 토스는 Java 자산을 흡수하면서도 null 안전성과 간결한 코루틴/함수형 표현이 가능한 Kotlin을 백엔드 표준으로 삼았다. 프론트는 앱·웹·SDUI 스키마를 한 언어로 다루기 위해 TypeScript로 통일해 클라이언트-서버 계약을 타입으로 강제한다.",
-   "why_architecture": "초당 수만 건의 금융 거래에서 한 도메인의 장애가 전체 송금을 막으면 안 되므로, 토스는 서비스를 잘게 쪼갠 MSA 위에 'Server Unit' 단위로 인프라까지 격리해 특정 기능 장애가 다른 기능으로 전파되지 않게 했다. 동시에 화면 로직을 서버가 내려주는 SDUI로 앱 배포 주기에 묶이지 않고 UI를 즉시 바꾸고, Kafka/CDC 기반 이벤트로 원장·정산·알림을 비동기로 분리해 핵심 거래 경로의 지연을 최소화한다.",
-   "summary": "Kotlin/Spring MSA를 Server Unit 단위로 장애 격리하고, SDUI와 Kafka·CDC 이벤트로 금융 트래픽의 복원력·민첩성을 동시에 잡은 핀테크 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Toss App<br/>React Native + SDUI\"]\n    WEB[\"Web<br/>React + Next.js\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Armeria + Envoy\"]\n    SDUI[\"SDUI Server<br/>Spring Boot\"]\n  end\n  subgraph Core[\"Core Services (Server Unit)\"]\n    PAY[\"송금/결제<br/>Kotlin + Spring WebFlux\"]\n    ACC[\"계좌/원장<br/>Kotlin + Reactor\"]\n    USER[\"인증/유저<br/>Spring Boot\"]\n    EVT[\"이벤트(만보기/퀴즈)<br/>WebFlux\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Backbone<br/>Kafka\"]\n    CDC[\"CDC<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"원장 DB<br/>MySQL (Sharded)\"]\n    MONGO[\"문서 저장<br/>MongoDB\"]\n    REDIS[\"캐시/세션<br/>Redis\"]\n    ES[\"검색<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Kubernetes<br/>사내 PaaS\"]\n    ARGO[\"배포<br/>ArgoCD + GitOps\"]\n    OBS[\"관측성<br/>Prometheus + Grafana\"]\n  end\n  APP --> GW\n  WEB --> GW\n  APP -->|JSON UI Spec| SDUI\n  GW -->|gRPC| PAY\n  GW -->|gRPC| USER\n  SDUI --> EVT\n  PAY -->|gRPC| ACC\n  PAY --> MYSQL\n  ACC --> MYSQL\n  USER --> REDIS\n  EVT --> REDIS\n  MYSQL --> CDC\n  CDC --> KAFKA\n  KAFKA --> ACC\n  KAFKA --> ES\n  PAY -.-> KAFKA\n  K8S --- Core\n  ARGO --> K8S\n  OBS --- Core",
+   "why_language": "송금·결제처럼 강한 타입 안정성과 동시성 제어가 필요한 금융 도메인에서 JVM 생태계의 성숙도를 활용하면서도, Kotlin의 널 안정성·코루틴·간결한 문법으로 Java 대비 결함을 줄이기 위해 Kotlin을 백엔드 주력으로 삼는다. 대규모 트래픽을 적은 스레드로 처리하기 위해 Reactor 기반 리액티브 스택을 채택했고, 프론트는 React/React Native와 SDUI를 묶기 위해 TypeScript로 통일했다.",
+   "why_architecture": "토스는 하나의 앱 안에 송금·증권·보험·결제 등 수십 개 도메인이 공존하기 때문에, 한 서비스 장애가 전체로 번지지 않도록 'Server Unit' 단위로 서비스·DB·네트워크를 통째로 격리하는 아키텍처를 만들었다. 도메인 간 결합을 낮추고 결과적 일관성을 확보하기 위해 Debezium CDC와 Kafka로 이벤트 백본을 구성해 Event-Driven으로 연결하며, 앱 출시 없이 UI를 바꾸기 위해 Server-Driven UI를 전사 표준으로 운영한다.",
+   "summary": "Kotlin/Reactive Spring + Armeria gRPC MSA를 Server Unit으로 격리하고, Kafka·CDC 이벤트 백본과 SDUI로 묶은 핀테크 슈퍼앱 아키텍처",
    "deep_dive": [
     {
      "topic": "서버 단위 장애 격리(Server Unit) 아키텍처",
@@ -16742,6 +16767,22 @@
     {
      "topic": "사내 PaaS와 GitOps 기반 배포·카나리 파이프라인",
      "body": "### 왜 사내 PaaS인가\n수백 개 마이크로서비스를 각 팀이 직접 `Kubernetes` 매니페스트를 짜서 배포하면, 팀마다 설정이 제각각이고 금융 규제(접근통제·감사로그)를 일관되게 강제하기 어렵다. 토스는 이를 추상화한 **사내 PaaS(내부 개발자 플랫폼, IDP)** 를 만들어, 개발자가 인프라 세부사항 대신 '내 서비스'만 신경 쓰게 한다. 서비스 정의(리소스 한도, 오토스케일링, 시크릿, 네트워크 정책)를 선언하면 플랫폼이 표준 템플릿으로 K8s 리소스를 생성한다.\n\n### 배포 흐름 (GitOps)\n```\ngit push -> CI(빌드/테스트/이미지) -> 이미지 레지스트리\n   -> 매니페스트 리포 갱신 -> ArgoCD가 desired state 동기화 -> K8s 반영\n```\n선언적 GitOps라서 **현재 운영 상태 = Git에 적힌 상태**가 보장되고, 문제 시 Git revert만으로 롤백이 된다. 누가 언제 무엇을 바꿨는지가 커밋으로 남아 금융 감사 요건과도 잘 맞는다.\n\n### 카나리/점진 배포\n새 버전을 한 번에 100% 띄우지 않고 **카나리 배포**로 트래픽 일부(예: 1%→10%→50%→100%)만 신버전에 보낸다. 이때 `Istio/Envoy` 서비스 메시가 트래픽 비율을 제어하고, 신버전의 에러율·latency 메트릭이 임계치를 넘으면 자동으로 롤백(또는 진행 중단)한다. 금융 거래는 한 번의 잘못된 배포가 곧 돈 문제이므로, *작은 단위로 내보내고 빠르게 되돌리는* 능력이 핵심이다.\n\n### Server Unit과의 결합\nServer Unit 단위로 인프라가 격리돼 있으므로, 한 서비스의 배포 사고가 다른 서비스로 번지지 않는다. 카나리 도중 장애가 나도 폭발 반경(blast radius)이 그 Server Unit 안으로 제한된다 — '자주, 작게, 안전하게 배포한다'는 토스 배포 철학의 인프라적 토대다."
+    },
+    {
+     "topic": "Armeria 기반 gRPC 서비스 메시: 토스가 서비스 간 통신을 다루는 방법",
+     "body": "### 왜 Armeria인가\n토스의 수백 개 마이크로서비스는 서로를 REST가 아니라 대부분 `gRPC`로 호출한다. 이때 서버/클라이언트 양쪽 런타임으로 LINE이 오픈소스로 공개한 `Armeria`를 광범위하게 사용한다. Armeria는 Netty 위에 올라간 비동기 마이크로서비스 프레임워크로, 한 포트에서 `gRPC`, `REST(HTTP/1.1·HTTP/2)`, `Thrift`, 정적 문서를 동시에 서빙할 수 있다. 토스가 Armeria를 선택한 핵심 이유는 다음과 같다.\n\n- **HTTP/2 멀티플렉싱 + 비동기**: Reactor/WebFlux 스택과 궁합이 좋아, 적은 수의 이벤트 루프 스레드로 수만 개의 동시 gRPC 호출을 처리한다. 스레드 풀이 블로킹되지 않으므로 송금 같은 fan-out 호출에서 스레드 고갈이 잘 일어나지 않는다.\n- **풍부한 Decorator 체인**: 인증, 분산 트레이싱(`tracing`), 메트릭(`Micrometer`/`Prometheus`), 서킷브레이커, 재시도, 로깅을 모두 Decorator로 끼워 넣는다. 비즈니스 코드를 건드리지 않고 횡단 관심사를 일관되게 주입할 수 있다.\n- **클라이언트 측 로드밸런싱·헬스체크**: Armeria 클라이언트가 엔드포인트 그룹을 직접 들고 라운드로빈/가중치 LB와 헬스체크를 수행한다. 덕분에 L7 프록시 한 곳에 트래픽이 몰리지 않고, Server Unit 단위로 엔드포인트를 갈아끼우는 격리 전략과 잘 맞물린다.\n\n### 스키마 우선(Schema-First) 계약\n서비스 간 인터페이스는 `Protobuf` IDL로 먼저 정의된다. proto 파일이 곧 팀 간 API 계약이 되고, 코드 제너레이터가 Kotlin 스텁을 만들어낸다. 이 방식의 실질적 이득은 다음과 같다.\n\n| 항목 | 효과 |\n|------|------|\n| 타입 안정성 | 필드 추가/삭제가 컴파일·schema 호환성 규칙으로 강제됨 |\n| 직렬화 효율 | JSON 대비 작은 페이로드, 빠른 (역)직렬화 → 내부 latency 절감 |\n| 다언어 호환 | 일부 Java/Kotlin/Python 서비스가 같은 proto로 통신 가능 |\n\n### 서킷브레이커와 재시도의 결합\ngRPC 호출에는 Armeria의 `CircuitBreakerClient`와 `RetryingClient`가 함께 붙는다. 다운스트림 서비스가 느려지면 서킷이 열려 빠르게 실패(fail-fast)하고, 일시적 오류는 지수 백오프로 재시도한다. 다만 송금처럼 **부수효과가 있는 호출은 멱등 키(idempotency key)** 가 보장될 때만 재시도하도록 정책을 나눈다 — 멱등성이 없는 쓰기 호출을 무지성 재시도하면 이중 출금이 날 수 있기 때문이다. 이 'fail-fast + 선택적 재시도' 조합이 한 서비스의 지연이 호출 체인을 타고 전체 시스템으로 번지는 retry storm을 막는 1차 방어선이다."
+    },
+    {
+     "topic": "Reactor/WebFlux 리액티브 스택과 백프레셔: 적은 스레드로 대량 트래픽을 버티는 원리",
+     "body": "### 블로킹 모델의 한계와 리액티브 선택\n전통적인 `Spring MVC + Tomcat` 모델은 요청 하나당 스레드 하나(thread-per-request)를 점유한다. 송금 한 건이 계좌·한도·사기탐지·원장 등 여러 다운스트림을 직렬/병렬로 호출하는 토스에서는, 다운스트림이 조금만 느려져도 스레드가 대기 상태로 묶이고 스레드 풀이 고갈되며 연쇄 장애로 번진다. 토스가 `Spring WebFlux + Reactor`를 주력으로 쓰는 이유가 여기 있다.\n\n- **이벤트 루프 + 논블로킹 I/O**: 다운스트림 응답을 기다리는 동안 스레드를 반납하므로, CPU 코어 수에 가까운 소수의 이벤트 루프 스레드로 수만 개의 in-flight 요청을 처리한다.\n- **선언적 조합**: `Mono`/`Flux` 파이프라인으로 여러 gRPC 호출을 `zip`(병렬), `flatMap`(연쇄), `timeout`, `retryWhen`으로 합성한다. 송금 플로우의 'A 끝나면 B, B와 C는 동시에' 같은 흐름을 코드로 명확히 표현한다.\n\n### 백프레셔(Backpressure)가 실제로 하는 일\n리액티브 스트림의 핵심은 **소비자가 감당할 수 있는 만큼만 생산자가 데이터를 흘려보내도록** 신호를 거꾸로 보내는 백프레셔다. 만보기·행운퀴즈처럼 순간 트래픽이 폭증하는 이벤트에서, 다운스트림(예: DB, Redis)이 처리 가능한 속도를 넘어서는 요청이 들어오면 백프레셔로 상류 속도를 제어하거나 `onBackpressureBuffer`/`onBackpressureDrop` 전략으로 넘치는 부분을 버퍼링·드롭한다. 이로써 폭주 트래픽이 그대로 DB를 때려 전체를 무너뜨리는 대신, 시스템이 우아하게 성능을 떨어뜨리며 버틴다(graceful degradation).\n\n### 리액티브의 트레이드오프\n리액티브는 공짜가 아니다. 토스 엔지니어링 글에서도 반복적으로 언급되는 비용이 있다.\n\n- **디버깅 난이도**: 스택트레이스가 이벤트 루프 경계에서 끊긴다. 이를 보완하려고 `Reactor`의 `checkpoint()`, `Hooks.onOperatorDebug()`, 그리고 컨텍스트 전파(`Context`)로 트레이스 ID를 흘려보낸다.\n- **블로킹 코드 금지 규율**: 파이프라인 안에서 JDBC 같은 블로킹 호출을 한 번이라도 하면 이벤트 루프가 멈춘다. 그래서 드라이버도 `R2DBC`/논블로킹 클라이언트를 쓰거나, 불가피한 블로킹은 별도 `boundedElastic` 스케줄러로 격리한다.\n- **러닝커브**: 명령형 코드에 익숙한 개발자에게 진입장벽이 높다. 토스는 사내 라이브러리·컨벤션·코드리뷰로 이 규율을 표준화한다.\n\n결국 토스의 선택은 '복잡성을 개발 단계에서 떠안는 대신, 런타임의 자원 효율과 장애 격리를 얻는다'는 트레이드오프다."
+    },
+    {
+     "topic": "인증·보안: 핀테크 슈퍼앱의 본인인증, 토큰, 서비스 간 신뢰",
+     "body": "### 사용자 인증: 본인인증과 디바이스 신뢰\n토스는 금융 규제 대상이므로 단순 ID/PW를 넘어선 다층 인증을 운영한다.\n\n- **본인인증/실명확인**: 계좌 개설·송금 한도 변경 같은 민감 행위는 통신사 본인확인·계좌 1원 인증·생체인증(지문/Face ID)과 결합된다. 디바이스 바인딩으로 '이 기기 + 이 사용자' 조합을 신뢰 단위로 삼는다.\n- **토큰 기반 세션**: 로그인 이후에는 짧은 수명의 access token과 갱신용 refresh token으로 세션을 유지한다. 토큰 검증·발급은 인증 전용 서비스로 분리되어 있고, 검증된 사용자 컨텍스트(유저 ID, 권한, 디바이스)가 다운스트림 호출에 전파된다.\n- **민감 행위 단계 인증(step-up)**: 송금·결제 같은 고위험 트랜잭션은 일반 세션만으로 부족하고, 추가 인증(비밀번호/생체)을 그 순간 다시 요구해 거래 직전 신원을 재확인한다.\n\n### 서비스 간 신뢰: mTLS와 서비스 메시\n수백 개 마이크로서비스가 내부에서 gRPC로 통신할 때, '내부 네트워크니까 안전하다'는 가정(perimeter security)에 의존하지 않는다. `Istio`/`Envoy` 기반 서비스 메시에서 **사이드카 간 mTLS**로 서비스 신원을 상호 인증하고 트래픽을 암호화한다. 즉 서비스 A가 B를 호출할 때, B는 호출자의 인증서로 'A가 맞는지'를 검증한다. 이는 제로 트러스트(zero-trust)에 가까운 내부 통신 모델이다.\n\n### 데이터 보호와 권한 분리\n- **암호화**: 주민번호·계좌번호 같은 민감 데이터는 저장 시 암호화(at-rest)되고, 전송 구간(in-transit)도 TLS/mTLS로 보호된다. 키 관리는 전용 KMS/시크릿 관리 체계로 분리한다.\n- **최소 권한·감사 로그**: 어떤 서비스가 어떤 데이터에 접근하는지를 권한으로 좁히고, 금융 거래는 모든 단계가 감사 로그로 남아 추적 가능해야 한다. 이는 규제 대응(전자금융감독규정 등)과 사고 시 포렌식 모두를 위한 것이다.\n\n### 사기·이상거래 탐지(FDS)\n인증을 통과한 정상 사용자라도, 거래 패턴이 비정상이면(평소와 다른 시간·금액·수취인) 실시간 이상거래탐지 시스템이 개입한다. 이벤트 백본(Kafka)을 타고 흐르는 거래 스트림을 룰·모델로 평가해 위험 거래를 보류·추가인증·차단한다. 인증이 '문을 여는 열쇠'라면 FDS는 '들어온 뒤의 행동 감시'로, 두 층이 함께 핀테크의 보안을 구성한다."
+    },
+    {
+     "topic": "프론트엔드 모노레포와 패키지 생태계: SDUI를 떠받치는 공통 기반",
+     "body": "### 한 앱, 수십 팀, 하나의 모노레포\n토스 앱은 송금·증권·보험·대출·결제 등 독립 팀이 만든 화면이 한 슈퍼앱에 모인 구조다. 이 많은 팀이 일관된 UX와 코드 품질을 유지하려면 공통 기반이 필요하다. 토스 프론트엔드는 `Yarn Berry(PnP)` 기반 모노레포에 디자인 시스템(TDS, Toss Design System), 공통 훅·유틸, 네트워크 레이어, SDUI 렌더러를 패키지로 두고 전 팀이 공유한다.\n\n- **디자인 시스템 컴포넌트**: 버튼·시트·리스트 같은 UI를 표준 컴포넌트로 통일해, 어느 팀 화면이든 같은 톤앤매너를 갖는다. SDUI가 서버에서 내려보내는 'UI 스펙'도 결국 이 컴포넌트 카탈로그에 매핑된다.\n- **공통 데이터 페칭**: `React Query` 기반 비동기 상태 관리에 토스 사내 컨벤션을 얹어, 로딩/에러/리트라이를 선언적으로 처리한다. `suspensive` 같은 오픈소스가 이 맥락(Suspense를 선언적으로 다루기)에서 나왔다.\n\n### 오픈소스로 환원된 사내 도구\n토스의 프론트엔드 문화는 사내에서 검증된 도구를 오픈소스로 공개하는 것으로도 유명하다. 이들은 단순 홍보용이 아니라 실제 프로덕션에서 쓰이는 코드의 추출본이다.\n\n| 라이브러리 | 해결하는 문제 |\n|-----------|--------------|\n| `es-toolkit` | Lodash보다 작고 빠른 모던 JS 유틸 — 번들 크기·성능이 중요한 앱 환경에 맞춤 |\n| `suspensive` | React Suspense/ErrorBoundary를 선언적으로 — 로딩·에러 UI 일관화 |\n| `overlay-kit` | 모달·바텀시트 같은 오버레이를 명령형 ref 없이 함수 호출로 |\n| `slash` | 도메인 검증·포맷팅 등 범용 유틸 모음 |\n\n### SDUI와의 연결고리\n이 공통 기반이 있기에 Server-Driven UI가 성립한다. 서버가 'BottomSheet 안에 Button과 ListRow를 배치하라'는 식의 추상 스펙(JSON)을 내려보내면, 클라이언트의 SDUI 렌더러가 모노레포의 디자인 시스템 컴포넌트로 그 스펙을 실제 화면으로 그린다. 즉 **컴포넌트 카탈로그가 서버와 클라이언트가 공유하는 어휘(vocabulary)** 가 되고, 앱 배포 없이 서버 응답만 바꿔 화면 구성·실험(A/B)·긴급 수정이 가능하다. 모노레포·디자인 시스템·SDUI는 서로 떼어놓고 볼 수 없는 하나의 설계 결정이다."
     }
    ],
    "debate": {
@@ -17010,37 +17051,30 @@
      {
       "name": "toss/es-toolkit",
       "url": "https://github.com/toss/es-toolkit",
-      "desc": "Lodash를 대체하는 고성능·경량 모던 JavaScript 유틸리티 라이브러리",
+      "desc": "Lodash를 대체하는 고성능 모던 JavaScript 유틸리티 라이브러리",
       "lang": "TypeScript",
-      "stars": 11147
+      "stars": 11152
      },
      {
       "name": "toss/slash",
       "url": "https://github.com/toss/slash",
-      "desc": "토스 프론트엔드 팀이 실서비스에서 쓰는 React/JS 유틸리티 모음",
+      "desc": "토스 프론트엔드 챕터가 운영하는 범용 TypeScript/React 유틸리티 컬렉션",
       "lang": "JavaScript",
       "stars": 2970
      },
      {
-      "name": "toss/frontend-fundamentals",
-      "url": "https://github.com/toss/frontend-fundamentals",
-      "desc": "좋은 프론트엔드 코드 기준을 정리한 토스의 가이드 문서",
-      "lang": "TypeScript",
-      "stars": 1964
-     },
-     {
       "name": "toss/suspensive",
       "url": "https://github.com/toss/suspensive",
-      "desc": "React Suspense를 선언적으로 다루게 해주는 라이브러리",
+      "desc": "React Suspense를 선언적으로 다루기 위한 컴포넌트·훅 모음",
       "lang": "TypeScript",
-      "stars": 1026
+      "stars": 1028
      },
      {
       "name": "toss/overlay-kit",
       "url": "https://github.com/toss/overlay-kit",
-      "desc": "모달·토스트 등 오버레이를 명령형 없이 선언적으로 관리하는 라이브러리",
+      "desc": "모달·토스트 등 오버레이를 명령형 없이 선언적으로 관리하는 React 라이브러리",
       "lang": "TypeScript",
-      "stars": 713
+      "stars": 714
      }
     ]
    },
@@ -17050,7 +17084,7 @@
     "https://toss.tech/article/slash23-server-unit"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "dunamu",

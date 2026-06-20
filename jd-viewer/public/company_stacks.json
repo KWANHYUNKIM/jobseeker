@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-20T16:06:25",
-  "total_jobs": 6673,
+  "generated_at": "2026-06-20T17:51:23",
+  "total_jobs": 6674,
   "company_count": 1334,
   "min_posting": 2,
   "companies": [
@@ -23887,6 +23887,357 @@
       }
     },
     {
+      "name": "아이벡스",
+      "norm": "아이벡스",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 8,
+      "sites": [
+        "jobkorea",
+        "jumpit",
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 7,
+        "프론트엔드": 3,
+        "DevOps/인프라": 3,
+        "데이터": 2,
+        "백엔드": 2
+      },
+      "top_tech": [
+        {
+          "name": "Docker",
+          "count": 5
+        },
+        {
+          "name": "C++",
+          "count": 3
+        },
+        {
+          "name": "TypeScript",
+          "count": 3
+        },
+        {
+          "name": "React",
+          "count": 3
+        },
+        {
+          "name": "Next.js",
+          "count": 3
+        },
+        {
+          "name": "CSS",
+          "count": 3
+        },
+        {
+          "name": "Tailwind",
+          "count": 3
+        },
+        {
+          "name": "Kubernetes",
+          "count": 3
+        },
+        {
+          "name": "REST API",
+          "count": 2
+        },
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "Git",
+          "count": 2
+        },
+        {
+          "name": "Playwright",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "C++",
+            "count": 3
+          },
+          {
+            "name": "TypeScript",
+            "count": 3
+          },
+          {
+            "name": "Python",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "REST API",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 3
+          },
+          {
+            "name": "Next.js",
+            "count": 3
+          },
+          {
+            "name": "CSS",
+            "count": 3
+          },
+          {
+            "name": "Tailwind",
+            "count": 3
+          },
+          {
+            "name": "Zustand",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Docker",
+            "count": 5
+          },
+          {
+            "name": "Kubernetes",
+            "count": 3
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "OpenCV",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 2
+          }
+        ],
+        "기타": [
+          {
+            "name": "Playwright",
+            "count": 1
+          },
+          {
+            "name": "Sentry",
+            "count": 1
+          },
+          {
+            "name": "Storybook",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 28,
+          "evidence": [
+            "제조",
+            "로봇",
+            "디바이스",
+            "센서"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 11,
+          "evidence": [
+            "SaaS",
+            "B2B",
+            "솔루션"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        },
+        {
+          "label": "SSR · 풀스택 프레임워크",
+          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
+        }
+      ],
+      "titles": [
+        "Industrial AI Vision Project Manager (딥러닝 PM)",
+        "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
+        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
+        "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
+        "프론트엔드엔지니어-MLOps,Vision AI",
+        "Industrial AI Vision Project Manager (DL PM)",
+        "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
+        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)"
+      ],
+      "postings": [
+        {
+          "title": "Industrial AI Vision Project Manager (딥러닝 PM)",
+          "url": "https://www.wanted.co.kr/wd/369560",
+          "site": "wanted"
+        },
+        {
+          "title": "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
+          "url": "https://www.wanted.co.kr/wd/352371",
+          "site": "wanted"
+        },
+        {
+          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
+          "url": "https://jumpit.saramin.co.kr/position/53970784",
+          "site": "jumpit"
+        },
+        {
+          "title": "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
+          "url": "https://jumpit.saramin.co.kr/position/54055697",
+          "site": "jumpit"
+        },
+        {
+          "title": "프론트엔드엔지니어-MLOps,Vision AI",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "Industrial AI Vision Project Manager (DL PM)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225797&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d89ebbe1-98ba-49e8-87b5-894bbe3919fd",
+          "site": "saramin"
+        },
+        {
+          "title": "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53859732&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d",
+          "site": "saramin"
+        },
+        {
+          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422",
+          "site": "saramin"
+        }
+      ],
+      "summary": "아이벡스는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 AI/ML · 프론트엔드 직군을 채용하며 Docker, C++, TypeScript, React 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Docker, C++, TypeScript 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "C++",
+              "TypeScript",
+              "Python"
+            ],
+            "tips": [
+              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용",
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "OpenCV"
+            ],
+            "tips": []
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "Docker",
+              "Kubernetes",
+              "Linux"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[제조/하드웨어/로보틱스] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[제조/하드웨어/로보틱스] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "css, python, react"
+          },
+          {
+            "title": "Taming Visual Regressions with Playwright and Docker",
+            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "css, docker, git"
+          },
+          {
+            "title": "FE News 26년 3월 소식을 전해드립니다!",
+            "url": "https://d2.naver.com/news/0407747",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "css, next.js, react"
+          },
+          {
+            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
+            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "kubernetes, next.js, react"
+          },
+          {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "git, kubernetes, python"
+          }
+        ]
+      }
+    },
+    {
       "name": "에스피코리아",
       "norm": "에스피코리아",
       "size": "중소기업",
@@ -30628,351 +30979,6 @@
             "company": "우아한형제들",
             "country": "KR",
             "why": "langchain, python"
-          }
-        ]
-      }
-    },
-    {
-      "name": "아이벡스",
-      "norm": "아이벡스",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 7,
-      "sites": [
-        "jobkorea",
-        "jumpit",
-        "saramin",
-        "wanted"
-      ],
-      "roles": {
-        "AI/ML": 6,
-        "프론트엔드": 3,
-        "DevOps/인프라": 3,
-        "백엔드": 2,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "Docker",
-          "count": 5
-        },
-        {
-          "name": "C++",
-          "count": 3
-        },
-        {
-          "name": "TypeScript",
-          "count": 3
-        },
-        {
-          "name": "React",
-          "count": 3
-        },
-        {
-          "name": "Next.js",
-          "count": 3
-        },
-        {
-          "name": "CSS",
-          "count": 3
-        },
-        {
-          "name": "Tailwind",
-          "count": 3
-        },
-        {
-          "name": "Kubernetes",
-          "count": 3
-        },
-        {
-          "name": "REST API",
-          "count": 2
-        },
-        {
-          "name": "Python",
-          "count": 2
-        },
-        {
-          "name": "Git",
-          "count": 2
-        },
-        {
-          "name": "Playwright",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "C++",
-            "count": 3
-          },
-          {
-            "name": "TypeScript",
-            "count": 3
-          },
-          {
-            "name": "Python",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "REST API",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 3
-          },
-          {
-            "name": "Next.js",
-            "count": 3
-          },
-          {
-            "name": "CSS",
-            "count": 3
-          },
-          {
-            "name": "Tailwind",
-            "count": 3
-          },
-          {
-            "name": "Zustand",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Docker",
-            "count": 5
-          },
-          {
-            "name": "Kubernetes",
-            "count": 3
-          },
-          {
-            "name": "Linux",
-            "count": 1
-          }
-        ],
-        "AI/ML": [
-          {
-            "name": "OpenCV",
-            "count": 1
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 2
-          }
-        ],
-        "기타": [
-          {
-            "name": "Playwright",
-            "count": 1
-          },
-          {
-            "name": "Sentry",
-            "count": 1
-          },
-          {
-            "name": "Storybook",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "제조/하드웨어/로보틱스",
-          "score": 26,
-          "evidence": [
-            "제조",
-            "로봇",
-            "디바이스",
-            "센서"
-          ]
-        },
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 9,
-          "evidence": [
-            "SaaS",
-            "B2B",
-            "솔루션"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        },
-        {
-          "label": "SSR · 풀스택 프레임워크",
-          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
-        }
-      ],
-      "titles": [
-        "Industrial AI Vision Project Manager (딥러닝 PM)",
-        "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
-        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
-        "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
-        "프론트엔드엔지니어-MLOps,Vision AI",
-        "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
-        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)"
-      ],
-      "postings": [
-        {
-          "title": "Industrial AI Vision Project Manager (딥러닝 PM)",
-          "url": "https://www.wanted.co.kr/wd/369560",
-          "site": "wanted"
-        },
-        {
-          "title": "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
-          "url": "https://www.wanted.co.kr/wd/352371",
-          "site": "wanted"
-        },
-        {
-          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
-          "url": "https://jumpit.saramin.co.kr/position/53970784",
-          "site": "jumpit"
-        },
-        {
-          "title": "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
-          "url": "https://jumpit.saramin.co.kr/position/54055697",
-          "site": "jumpit"
-        },
-        {
-          "title": "프론트엔드엔지니어-MLOps,Vision AI",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53859732&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d",
-          "site": "saramin"
-        },
-        {
-          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422",
-          "site": "saramin"
-        }
-      ],
-      "summary": "아이벡스는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 AI/ML · 프론트엔드 직군을 채용하며 Docker, C++, TypeScript, React 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Docker, C++, TypeScript 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "C++",
-              "TypeScript",
-              "Python"
-            ],
-            "tips": [
-              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용",
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "2. AI/ML 핵심 스킬",
-            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
-            "techs": [
-              "OpenCV"
-            ],
-            "tips": []
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "Docker",
-              "Kubernetes",
-              "Linux"
-            ],
-            "tips": [
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
-            ]
-          }
-        ],
-        "tasks": [
-          "[제조/하드웨어/로보틱스] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[제조/하드웨어/로보틱스] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "컨테이너 기반 배포·오토스케일링 운영",
-          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
-        ],
-        "study_blogs": [
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "css, python, react"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "css, docker, git"
-          },
-          {
-            "title": "FE News 26년 3월 소식을 전해드립니다!",
-            "url": "https://d2.naver.com/news/0407747",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "css, next.js, react"
-          },
-          {
-            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
-            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "kubernetes, next.js, react"
-          },
-          {
-            "title": "Build your own vulnerability harness",
-            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "docker, git, python"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "git, kubernetes, python"
           }
         ]
       }
