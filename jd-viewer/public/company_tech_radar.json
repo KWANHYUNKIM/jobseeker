@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T10:44:45",
+ "generated_at": "2026-06-20T12:39:44",
  "total": 100,
  "countries": [
   {
@@ -2666,6 +2666,10 @@
      "count": 2
     },
     {
+     "name": "JavaScript",
+     "count": 2
+    },
+    {
      "name": "Kotlin",
      "count": 2
     },
@@ -2678,11 +2682,7 @@
      "count": 2
     },
     {
-     "name": "JavaScript",
-     "count": 1
-    },
-    {
-     "name": "PHP",
+     "name": "Ruby",
      "count": 1
     }
    ],
@@ -2693,11 +2693,11 @@
       "count": 4
      },
      {
-      "name": "Akka",
-      "count": 2
+      "name": "Go",
+      "count": 3
      },
      {
-      "name": "Go",
+      "name": "Akka",
       "count": 2
      },
      {
@@ -2721,7 +2721,7 @@
       "count": 1
      },
      {
-      "name": "Flask/FastAPI",
+      "name": "FastAPI/Flask",
       "count": 1
      },
      {
@@ -2752,6 +2752,10 @@
      },
      {
       "name": "JavaScript",
+      "count": 1
+     },
+     {
+      "name": "Reader.js",
       "count": 1
      }
     ],
@@ -2811,12 +2815,12 @@
       "count": 3
      },
      {
-      "name": "CloudFront",
+      "name": "ArgoCD",
       "count": 2
      },
      {
-      "name": "ArgoCD",
-      "count": 1
+      "name": "CloudFront",
+      "count": 2
      },
      {
       "name": "Datadog",
@@ -16093,20 +16097,22 @@
     "TypeScript",
     "Kotlin",
     "Go",
-    "PHP"
+    "JavaScript"
    ],
    "stack": {
     "backend": [
      "Django",
-     "Flask/FastAPI",
+     "FastAPI/Flask",
      "Spring Boot (Kotlin)",
-     "Node.js"
+     "Node.js (BFF)",
+     "Go (DRM/license)"
     ],
     "frontend": [
      "React",
      "Next.js",
      "TypeScript",
-     "GraphQL (Apollo)"
+     "GraphQL (Apollo)",
+     "Reader.js (EPUB viewer engine)"
     ],
     "data": [
      "MySQL/Aurora",
@@ -16120,19 +16126,20 @@
      "EKS/Kubernetes",
      "Terraform",
      "CloudFront",
-     "GitHub Actions/ArgoCD"
+     "GitHub Actions",
+     "ArgoCD"
     ]
    },
    "architecture": [
     "MSA + BFF/GraphQL Gateway",
-    "이벤트 기반 비동기 처리",
+    "이벤트 기반 비동기 처리 (Kafka)",
     "DRM 라이선스 분리형 콘텐츠 전송",
-    "콘텐츠 파싱·패키징 파이프라인"
+    "콘텐츠 인입·파싱·패키징 파이프라인"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Device\"]\n    WEB[\"Web<br/>React + Next.js\"]\n    APP[\"iOS / Android App<br/>Swift / Kotlin\"]\n    PAPER[\"RIDI Paper e-reader<br/>Viewer + DRM\"]\n  end\n  subgraph Edge[\"Edge\"]\n    CDN[\"CDN<br/>CloudFront\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n  end\n  subgraph Gateway[\"API / BFF\"]\n    BFF[\"GraphQL BFF<br/>Node.js + Apollo\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    AUTH[\"Account / Auth<br/>Django\"]\n    CAT[\"Catalog<br/>Django / FastAPI\"]\n    PAY[\"Purchase / Pay<br/>Spring Boot (Kotlin)\"]\n    LIB[\"Library<br/>Python\"]\n    DRM[\"DRM License<br/>Go\"]\n    SEARCH[\"Search / Recsys<br/>Python\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"MySQL / Aurora\"]\n    REDIS[\"Redis Cache\"]\n    ES[\"Elasticsearch\"]\n    S3[\"Encrypted Content<br/>S3\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Kafka\"]\n    PARSER[\"Content Pipeline<br/>epub/comic-parser\"]\n  end\n  subgraph Infra[\"Platform\"]\n    EKS[\"EKS / Kubernetes\"]\n    TF[\"Terraform\"]\n  end\n  WEB --> CDN\n  APP --> CDN\n  PAPER --> CDN\n  CDN --> ALB\n  ALB --> BFF\n  BFF -->|gRPC/REST| AUTH\n  BFF --> CAT\n  BFF --> PAY\n  BFF --> LIB\n  BFF --> SEARCH\n  PAPER -->|license req| DRM\n  PAY -->|event| KAFKA\n  KAFKA --> LIB\n  PARSER --> S3\n  DRM --> S3\n  CAT --> MYSQL\n  PAY --> MYSQL\n  AUTH --> REDIS\n  SEARCH --> ES\n  KAFKA --> PARSER\n  EKS --- Core\n  TF -.-> Infra",
-   "why_language": "전자책·콘텐츠 도메인은 카탈로그·구매·라이브러리 같은 데이터 중심 CRUD가 핵심이라 생산성이 높은 Python(Django)으로 초기 백엔드를 빠르게 구축했고, 트래픽과 결제 정합성 요구가 커지면서 JVM 기반 Kotlin(Spring Boot)으로 정산·결제 같은 고신뢰 도메인을 점진적으로 이관했다. 프런트는 뷰어·웹·BFF를 모두 TypeScript로 통일해 epub/comic 파서 같은 라이브러리를 서버·클라이언트가 공유하고, DRM 라이선스 발급처럼 동시성·저지연이 중요한 경로는 Go로 분리했다.",
-   "why_architecture": "구매·라이브러리·뷰어·검색이 서로 다른 확장 특성을 가지므로 도메인별 MSA로 쪼개고, 결제 완료 같은 이벤트를 Kafka로 비동기 전파해 '구매 즉시 라이브러리 반영'을 느슨하게 결합했다. 콘텐츠 자체는 암호화해 S3+CloudFront로 대용량 전송하되 복호화 권한은 DRM 라이선스 서비스로 분리하는 '콘텐츠/권한 분리' 구조를 택해, CDN 캐싱 이점과 저작권 보호를 동시에 달성했다.",
-   "summary": "Python으로 빠르게 세운 콘텐츠 플랫폼을 Kotlin·Go로 고신뢰·저지연 도메인부터 이관하며, DRM 분리형 전송과 이벤트 기반 MSA로 굳힌 전자책 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"RIDI App<br/>iOS/Android Native + Reader.js\"]\n    WEB[\"Web Viewer<br/>React + Next.js + TS\"]\n    CDN[\"CDN/Edge<br/>CloudFront + S3\"]\n  end\n  subgraph Gateway[\"API / BFF\"]\n    BFF[\"BFF Gateway<br/>GraphQL Apollo + Node.js\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    CAT[\"Catalog/Store<br/>Django + Python\"]\n    ORDER[\"Purchase/Order<br/>Spring Boot Kotlin\"]\n    DRM[\"DRM License<br/>Go\"]\n    RECO[\"Search/Reco<br/>FastAPI + Python\"]\n  end\n  subgraph Async[\"Streaming / Pipeline\"]\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    PIPE[\"Content Pipeline<br/>content-parser + EPUB Packaging\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    DB[(\"Aurora MySQL\")]\n    REDIS[(\"Redis Cache\")]\n    ES[(\"Elasticsearch\")]\n    S3C[(\"Encrypted Content<br/>S3\")]\n  end\n  subgraph Infra[\"Platform\"]\n    K8S[\"EKS/Kubernetes<br/>ArgoCD + Terraform\"]\n  end\n  APP -->|HTTPS| CDN\n  WEB -->|GraphQL| BFF\n  APP -->|GraphQL| BFF\n  CDN -->|encrypted file| APP\n  BFF -->|gRPC/REST| CAT\n  BFF --> ORDER\n  BFF --> RECO\n  ORDER -->|issue license| DRM\n  APP -->|license req| DRM\n  CAT --> DB\n  ORDER --> DB\n  CAT --> REDIS\n  RECO --> ES\n  ORDER -->|events| KAFKA\n  KAFKA --> RECO\n  PIPE -->|packaged epub| S3C\n  PIPE --> KAFKA\n  S3C --> CDN\n  Core --> K8S\n  PIPE --> K8S",
+   "why_language": "콘텐츠 메타데이터·스토어·정산 같은 비즈니스 로직은 초기부터 Django/Python으로 빠르게 구축해 생산성과 풍부한 데이터/ML 생태계를 활용한다. 결제·구독처럼 트랜잭션 정합성과 정적 타입이 중요한 영역은 Kotlin+Spring Boot로, DRM 라이선스 발급처럼 낮은 지연·높은 동시성이 필요한 핫패스는 Go로 분리하는 점진적 다언어화 전략을 쓴다. 뷰어·웹은 TypeScript/React로 통일해 EPUB 렌더링 엔진(Reader.js)부터 스토어 UI까지 일관된 프런트엔드 역량을 유지한다.",
+   "why_architecture": "전자책은 '구매·라이선스 관리'와 '암호화된 대용량 콘텐츠 전송'의 성격이 완전히 달라, DRM/라이선스 서버와 콘텐츠 CDN 전송 경로를 분리해 각각 독립적으로 확장·보안 통제한다. 다양한 클라이언트(앱·웹·뷰어)의 화면 요구를 GraphQL BFF로 흡수해 백엔드 MSA를 클라이언트 변화로부터 격리하고, 구매·소장·추천처럼 강결합이 불필요한 후속 처리는 Kafka 이벤트로 비동기화해 결제 응답 지연과 장애 전파를 줄인다.",
+   "summary": "Python 스토어 + Kotlin 결제 + Go DRM을 GraphQL BFF로 묶고, 암호화 콘텐츠는 CDN으로, 후속 처리는 Kafka로 흘려보내는 전자책 특화 MSA",
    "deep_dive": [
     {
      "topic": "전자책 DRM과 뷰어 동작 원리",
@@ -16161,34 +16168,50 @@
     {
      "topic": "AWS EKS 기반 배포·CI/CD·관측성",
      "body": "### 다언어 MSA를 한 플랫폼 위에서 굴리는 법\n\nPython·Kotlin·Go·Node.js가 섞인 MSA를 운영하려면 '언어와 무관한 공통 배포·관측 레이어'가 필요하다. RIDI 스택의 `EKS/Kubernetes` + `Terraform` 조합이 그 역할이다.\n\n### 패키징·배포\n- 각 서비스는 언어가 달라도 **컨테이너 이미지**로 통일된다. Python 서비스든 Kotlin 서비스든 쿠버네티스 입장에서는 동일한 Pod 단위로 다뤄지므로, 배포 파이프라인을 언어마다 새로 만들 필요가 없다.\n- 인프라는 `Terraform`으로 코드화(IaC)해 VPC·EKS 클러스터·`Aurora`·`Elasticsearch`·`MSK(Kafka)` 같은 매니지드 리소스를 선언적으로 관리한다. 클러스터/네트워크 변경이 코드 리뷰를 거치므로 휴먼 에러와 드리프트가 줄어든다.\n\n### CI/CD\n- 일반적 패턴은 `GitHub Actions`로 빌드·테스트·이미지 푸시까지 수행하고, 배포는 `ArgoCD` 같은 GitOps 도구가 매니페스트 저장소 상태를 클러스터로 수렴시키는 방식이다. '원하는 상태'가 Git에 남으므로 롤백이 곧 revert다.\n- 결제처럼 위험한 도메인은 한 번에 100% 교체하지 않고 **카나리/점진 롤아웃**으로 일부 트래픽만 새 버전에 흘려 지표를 보고 확대한다.\n\n### 관측성\n- 다수 서비스를 가로지르는 한 번의 요청(BFF→Catalog→Pay→Kafka→Library)을 추적하려면 **분산 트레이싱**이 사실상 필수다. 요청에 trace id를 심어 서비스 경계를 넘어 전파하면, '구매가 느리다'는 신고를 어느 서비스/쿼리 구간에서 막혔는지로 좁힐 수 있다.\n- 메트릭(요청량·에러율·지연 p95/p99)과 구조화 로그를 중앙 수집해, 트래픽 급증(신간/프로모션) 때 오토스케일링과 경보의 근거로 쓴다.\n\n### 왜 이 선택인가\n언어를 통일하는 대신 **배포·관측 레이어를 통일**한 것이 핵심 결정이다. 덕분에 '도메인에 맞는 언어를 고르는 자유'(Python의 생산성, Kotlin의 정합성, Go의 저지연)를 유지하면서도, 운영 표준은 하나로 수렴시켜 다언어 MSA의 운영 비용을 억제한다."
+    },
+    {
+     "topic": "구매→라이선스→복호화: DRM 핫패스의 분리 설계와 오프라인 열람",
+     "body": "### 왜 DRM 경로를 따로 떼어내는가\n전자책 서비스의 트래픽은 크게 두 종류다. (1) 스토어 탐색·구매 같은 **일반 비즈니스 트랜잭션**, (2) 책을 열 때마다 발생하는 **라이선스 검증 + 암호화 콘텐츠 다운로드**. 후자는 사용자가 책장을 열 때마다, 기기를 바꿀 때마다 발생하므로 호출량이 크고 지연에 민감하다. 그래서 RIDI는 라이선스 발급/검증을 Django 스토어 모놀리식 안에 두지 않고 별도 서비스(저지연 특성상 `Go`가 적합한 핫패스)로 분리한다.\n\n### end-to-end 흐름\n1. **구매**: 클라이언트가 GraphQL BFF를 통해 주문 서비스(Spring Boot/Kotlin)에 결제를 요청한다. 결제 정합성이 핵심이라 RDB(Aurora MySQL) 트랜잭션으로 `소유권(entitlement)` 레코드를 확정한다.\n2. **이벤트 발행**: 구매 확정 시 `purchase.completed` 이벤트가 `Kafka`로 발행된다. 추천 갱신, 내 서재 동기화, 정산 집계 등은 모두 이 이벤트를 구독해 비동기로 처리한다 → 결제 응답이 후속 작업에 묶이지 않는다.\n3. **다운로드 요청**: 책을 열면 클라이언트가 DRM/라이선스 서비스에 '이 기기 + 이 유저 + 이 책'의 열람 권한을 묻는다. 서비스는 entitlement를 확인하고 **콘텐츠 키를 기기에 바인딩한 라이선스 토큰**을 발급한다.\n4. **콘텐츠 전송**: 실제 EPUB/이미지 패키지는 서버가 직접 스트리밍하지 않는다. **암호화된 파일은 S3에 있고 CloudFront로 전송**되며, 클라이언트는 발급받은 라이선스로 로컬에서 복호화한다.\n5. **로컬 열람**: 복호화된 콘텐츠를 `Reader.js`(웹/하이브리드) 또는 네이티브 뷰어가 렌더링한다. 라이선스를 기기에 캐싱해 **오프라인에서도 열람**이 되도록 한다.\n\n### 트레이드오프\n- **장점**: 콘텐츠 바이트는 CDN이 나르므로 origin 서버는 '권한 판정'이라는 가벼운 일만 한다. 트래픽 급증(신간 오픈, 무료 프로모션) 시 CDN이 흡수한다.\n- **비용**: 키 관리·기기 바인딩·재발급 정책이 복잡해진다. 기기 변경/초기화 시 라이선스 재발급 한도, 동시 기기 수 제한 같은 정책 로직이 DRM 서비스에 집중된다.\n- **보안 경계**: 복호화는 결국 클라이언트에서 일어나므로, 키 노출을 막기 위해 라이선스 토큰의 만료·기기 핑거프린트·서버측 무효화(revocation) 메커니즘이 필수다."
+    },
+    {
+     "topic": "GraphQL BFF가 흡수하는 멀티클라이언트 복잡도와 캐싱 계층",
+     "body": "### BFF가 푸는 문제\nRIDI는 iOS/Android 네이티브 앱, 모바일 웹, PC 웹, 뷰어 등 화면 요구가 제각각인 클라이언트를 동시에 운영한다. 각 클라이언트가 수십 개의 MSA(카탈로그, 가격, 프로모션, 리뷰, 내 서재, 추천)를 직접 호출하면 N×M 결합과 over-fetching이 폭발한다. **GraphQL BFF(Apollo + Node.js)** 는 이 조합을 한 곳에서 해결한다.\n\n- 클라이언트는 화면에 필요한 필드만 선언적으로 요청한다 → 모바일은 가볍게, PC는 풍부하게 같은 그래프에서 가져간다.\n- BFF는 여러 백엔드 호출을 **fan-out**한 뒤 하나의 응답으로 합성한다. 책 상세 화면 하나가 카탈로그+가격+소장여부+리뷰요약+연관추천을 병렬 조회해 합친다.\n- 백엔드 MSA의 내부 구조가 바뀌어도 GraphQL 스키마가 안정적이면 클라이언트는 영향을 받지 않는다(앱 스토어 심사 주기 때문에 클라이언트 변경 비용이 특히 비싸다).\n\n### 캐싱 계층 (3단)\n전자책 스토어 데이터는 **읽기 압도적 우위 + 변경 빈도 낮음**이라 캐시 친화적이다.\n\n| 계층 | 위치 | 대상 | 효과 |\n|------|------|------|------|\n| CDN | CloudFront | 표지 이미지, 정적 카탈로그 조각, 암호화 콘텐츠 | origin 보호, 글로벌 전송 |\n| 분산 캐시 | Redis | 베스트셀러 랭킹, 가격/프로모션, 세션·라이선스 상태 | DB 부하 감소, 핫키 가속 |\n| 검색 인덱스 | Elasticsearch | 도서 검색, 패싯/필터, 일부 추천 후보 | 풀텍스트·정렬을 RDB에서 분리 |\n\n### N+1과 일관성\nGraphQL의 고질병인 **resolver N+1**은 `DataLoader` 류 배치/캐시로 완화한다(한 요청 안에서 동일 키 조회를 모아 한 번에). 가격·프로모션처럼 변동이 잦은 데이터는 Redis TTL을 짧게, 카탈로그 메타처럼 안정적인 데이터는 길게 둬 **신선도와 부하의 균형**을 잡는다. 구매 직후 '내 서재' 같은 강한 일관성이 필요한 화면은 캐시를 우회하거나 이벤트 기반으로 즉시 무효화한다."
+    },
+    {
+     "topic": "콘텐츠 인입 파이프라인: content-parser와 EPUB 패키징·암호화",
+     "body": "### 원본은 더럽고 제각각이다\n출판사·작가로부터 들어오는 원본은 EPUB(2/3), PDF, 만화용 이미지 아카이브(CBZ류), 웹소설 텍스트 등 포맷이 천차만별이고 메타데이터·인코딩·이미지 해상도가 일관되지 않다. 그대로 서비스에 올릴 수 없으므로 **인입(ingest) → 검증 → 정규화 → 패키징 → 암호화** 파이프라인을 거친다. RIDI가 오픈소스로 공개한 `@ridi/content-parser`가 이 영역의 핵심 도구다.\n\n### content-parser가 하는 일\n- **EpubParser / PdfParser / ComicParser**를 제공해 아카이브를 풀고 spine(읽기 순서), TOC(목차), manifest(리소스 목록), 메타데이터를 구조화한다.\n- **읽기(read) 시 복호화 훅**을 지원한다. 즉 패키징 단계에서 AES류로 암호화한 리소스를 파서 레벨에서 `cryptoProvider`로 풀어 읽을 수 있게 설계돼, 패키징(암호화)과 뷰잉(복호화)이 같은 추상화를 공유한다.\n- spine 단위로 잘라 **부분 로딩(lazy)** 이 가능하다 → 수백 MB짜리 만화책도 보는 페이지 주변만 내려받게 한다.\n\n### 파이프라인 단계 (개념)\n1. **검증**: EPUB 규격 적합성, 누락 리소스, 폰트 라이선스, 이미지 손상 검사.\n2. **정규화**: 인코딩 통일, 이미지 리사이즈/포맷 변환, 목차 보정, 메타데이터 표준화(저자/시리즈/카테고리).\n3. **패키징**: 뷰어가 빠르게 페이지네이션할 수 있는 형태로 재패키징하고, 콘텐츠 키로 **리소스 암호화**.\n4. **저장·배포**: 암호화 산출물을 S3에 올리고 CloudFront로 배포 경로를 연다. 변환 완료 이벤트를 Kafka로 발행해 카탈로그 노출/검색 인덱싱을 트리거한다.\n\n### 왜 이렇게 하나\n- 변환은 **CPU·메모리 집약적이고 산발적**이라 상시 서버보다 큐 기반 비동기 워커(쿠버네티스 잡/오토스케일)로 처리해 비용을 통제한다.\n- 파싱·암호화 로직을 라이브러리로 **재사용**하면 인입 파이프라인(암호화)과 클라이언트 뷰어(복호화)가 같은 규격을 공유해 호환성 버그가 줄어든다. content-parser를 외부 공개한 것도 이 공용 규격의 산물이다."
+    },
+    {
+     "topic": "검색·추천: Elasticsearch 후보생성과 Kafka 이벤트 기반 시그널 갱신",
+     "body": "### 두 단계로 나뉜 발견(discovery) 시스템\n전자책 스토어에서 매출의 상당 부분은 '무엇을 보여주느냐'에 달려 있어 검색·추천이 1급 시스템이다. 보통 **후보 생성(candidate generation) → 랭킹(ranking)** 2단계로 구성된다.\n\n1. **후보 생성**: 사용자 질의·맥락에 맞는 수백~수천 권을 빠르게 추린다. 풀텍스트 검색·패싯 필터·시리즈/카테고리 매칭은 `Elasticsearch`가 담당한다(한국어 형태소 분석·자동완성·오타교정 포함). 협업필터링/콘텐츠 기반 후보는 `Python`(FastAPI 등) 서비스가 벡터/유사도 기반으로 생성한다.\n2. **랭킹**: 후보를 클릭·구매·열람시간 같은 시그널로 재정렬한다. 신간 부스팅, 프로모션 가중치, 개인화 점수를 합산해 최종 노출 순서를 만든다.\n\n### 시그널은 어떻게 최신으로 유지되나\n추천 품질은 **행동 데이터의 신선도**에 좌우된다. RIDI의 이벤트 기반 구조가 여기서 빛난다.\n- 구매(`purchase.completed`), 열람(`reading.progress`), 찜/리뷰 같은 행동이 `Kafka`로 흐른다.\n- 추천/검색 서비스는 이 스트림을 구독해 **인기·연관·개인화 시그널을 점진 갱신**한다. 베스트셀러·실시간 랭킹은 Redis에 집계해 저지연으로 서빙한다.\n- 무거운 임베딩 재학습·배치 집계는 별도 오프라인 파이프라인에서 주기적으로 돌려 Elasticsearch 인덱스/모델을 갱신한다(온라인 서빙은 그 산출물을 읽기만).\n\n### 트레이드오프\n- **읽기/쓰기 분리**: 검색 인덱스를 RDB와 분리하면 복잡한 정렬·패싯이 빨라지지만, RDB→ES **인덱싱 지연(eventual consistency)** 이 생긴다. 신간 즉시 노출 같은 케이스는 이벤트 기반으로 인덱싱을 당겨 지연을 줄인다.\n- **콜드스타트**: 행동 데이터가 없는 신규 유저/신간은 콘텐츠 기반(메타·시리즈·장르) 추천으로 메우고, 데이터가 쌓이면 협업필터링 비중을 높이는 하이브리드로 보완한다."
     }
    ],
    "github": {
     "org": "https://github.com/ridi",
     "repos": [
      {
-      "name": "ridi/react-viewer",
-      "url": "https://github.com/ridi/react-viewer",
-      "desc": "React 기반 전자책/만화 뷰어 컴포넌트",
-      "lang": "JavaScript",
-      "stars": 64
-     },
-     {
       "name": "ridi/content-parser",
       "url": "https://github.com/ridi/content-parser",
-      "desc": "epub·comic·pdf 등 전자책 포맷을 파싱하는 JS 라이브러리 모음",
+      "desc": "EPUB·PDF·만화 아카이브를 파싱·복호화하는 Node.js 콘텐츠 파서 라이브러리 (@ridi/content-parser)",
       "lang": "JavaScript",
       "stars": 28
+     },
+     {
+      "name": "ridi/Reader.js",
+      "url": "https://github.com/ridi/Reader.js",
+      "desc": "RIDI 뷰어의 EPUB 콘텐츠 파싱·페이지네이션·렌더링을 담당하는 JavaScript 엔진",
+      "lang": "JavaScript",
+      "stars": 24
      }
     ]
    },
    "sources": [
-    "https://ridicorp.com/story/",
-    "https://github.com/ridi",
-    "https://github.com/ridi/content-parser"
+    "https://www.ridicorp.com/blog/",
+    "https://github.com/ridi/content-parser",
+    "https://github.com/ridi/Reader.js"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "lgcns",
@@ -16200,55 +16223,57 @@
     "TypeScript",
     "Python",
     "Kotlin",
-    "JavaScript",
-    "Go"
+    "Go",
+    "JavaScript"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
      "Spring Cloud",
      "Spring Batch",
+     "Spring Security",
      "Node.js",
      "FastAPI"
     ],
     "frontend": [
      "React",
+     "Next.js",
      "Vue.js",
      "Angular",
-     "TypeScript",
-     "Next.js"
+     "TypeScript"
     ],
     "data": [
      "Oracle",
+     "Tibero",
      "PostgreSQL",
-     "Kafka",
-     "Elasticsearch",
-     "Redis",
      "MySQL",
-     "Tibero"
+     "Kafka",
+     "Redis",
+     "Elasticsearch"
     ],
     "infra": [
      "AWS",
      "Azure",
      "Kubernetes",
+     "Docker",
      "Terraform",
      "Jenkins",
      "ArgoCD",
-     "Docker",
      "Prometheus",
-     "Grafana"
+     "Grafana",
+     "GitLab CI"
     ]
    },
    "architecture": [
-    "MSA",
-    "엔터프라이즈 클라우드 마이그레이션",
-    "DX 플랫폼(DAP/AIXR)",
-    "이벤트 드리븐 아키텍처"
+    "엔터프라이즈 MSA",
+    "멀티 클라우드 마이그레이션",
+    "이벤트 드리븐 아키텍처",
+    "제로트러스트·망분리 보안"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Channel\"]\n    WEB[\"Web Portal<br/>React + Vue.js\"]\n    MOB[\"Mobile / Kiosk<br/>Hybrid App\"]\n    EXT[\"B2B System<br/>EAI / API Caller\"]\n  end\n  subgraph Edge[\"Edge / Gateway\"]\n    LB[\"Load Balancer<br/>AWS ALB / Azure FrontDoor\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    AUTH[\"AuthN / AuthZ<br/>OAuth2 + Keycloak\"]\n  end\n  subgraph Core[\"Core Services (MSA)\"]\n    SVC1[\"Domain Service<br/>Spring Boot\"]\n    SVC2[\"Domain Service<br/>Spring Boot\"]\n    BATCH[\"Batch / ETL<br/>Spring Batch\"]\n    AISVC[\"AI/ML Service<br/>Python + FastAPI\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RDB[\"RDB<br/>Oracle / PostgreSQL / Tibero\"]\n    CACHE[\"Cache<br/>Redis\"]\n    SEARCH[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Infra[\"Infra / Platform (DevOps)\"]\n    K8S[\"Orchestration<br/>Kubernetes\"]\n    IAC[\"IaC<br/>Terraform\"]\n    CICD[\"CI/CD<br/>Jenkins + ArgoCD\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  WEB --> LB\n  MOB --> LB\n  EXT --> LB\n  LB --> GW\n  GW --> AUTH\n  GW -->|REST| SVC1\n  GW -->|REST| SVC2\n  GW -->|REST| AISVC\n  SVC1 -->|event| KAFKA\n  SVC2 -->|event| KAFKA\n  KAFKA --> BATCH\n  BATCH --> RDB\n  SVC1 --> RDB\n  SVC2 --> RDB\n  SVC1 --> CACHE\n  SVC2 --> SEARCH\n  AISVC --> RDB\n  K8S -.-> Core\n  CICD -.-> K8S\n  IAC -.-> K8S\n  OBS -.-> Core",
-   "why_language": "LG CNS는 금융·공공·제조 대기업 SI/SM이 핵심이라 엔터프라이즈 표준성과 인력 수급이 검증된 Java/Spring을 백엔드 기본으로 삼는다. 동시에 클라우드 전환(MSP)과 DX·생성형 AI 사업 확대로 데이터·ML 영역은 Python을, 프론트와 풀스택 신규 과제는 TypeScript(React/Vue)를 채택해 레거시 안정성과 신기술 생산성을 분리 운영한다.",
-   "why_architecture": "수백 개 고객사의 이질적 레거시를 다루기 때문에 단일 모놀리식보다 도메인별로 분리·독립 배포가 가능한 MSA가 운영·확장에 유리하다. 또한 AWS/Azure 멀티 클라우드 마이그레이션을 사업화하면서 Terraform·Kubernetes로 인프라를 코드화하고, DAP·AIXR 같은 사내 DX 플랫폼으로 반복되는 구축 패턴을 표준 자산화해 프로젝트 납기와 품질을 동시에 잡는 전략을 택했다.",
-   "summary": "Java/Spring 엔터프라이즈 표준 위에 멀티 클라우드 MSA와 DX 플랫폼을 얹어 대기업 SI를 자산화한 스택",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Channel\"]\n    WEB[\"Web Portal<br/>React + Next.js\"]\n    MOB[\"Mobile / Partner<br/>TypeScript + REST\"]\n  end\n  subgraph Edge[\"Edge / Security\"]\n    WAF[\"WAF + L7 LB<br/>Cloud LB + ModSecurity\"]\n    IAM[\"Identity / SSO<br/>Spring Security + OAuth2/OIDC\"]\n  end\n  subgraph Gateway[\"API Layer\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    REG[\"Service Discovery<br/>Eureka + Config\"]\n  end\n  subgraph Core[\"Core Services - MSA\"]\n    SVC1[\"Domain Services<br/>Spring Boot\"]\n    SVC2[\"Batch / ETL<br/>Spring Batch\"]\n    AI[\"GenAI / RAG API<br/>FastAPI + Python\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    CDC[\"CDC / Outbox<br/>Debezium\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    RDB[\"OLTP<br/>Oracle + Tibero\"]\n    PG[\"PostgreSQL / MySQL\"]\n    CACHE[\"Cache<br/>Redis\"]\n    ES[\"Search / Vector<br/>Elasticsearch\"]\n  end\n  subgraph Platform[\"Infra / Platform - DAP\"]\n    K8S[\"Kubernetes<br/>EKS + AKS\"]\n    CD[\"GitOps CD<br/>ArgoCD + Jenkins\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  WEB --> WAF\n  MOB --> WAF\n  WAF --> IAM\n  IAM --> GW\n  GW --> REG\n  GW --> SVC1\n  GW --> AI\n  SVC1 -->|produce| KAFKA\n  CDC --> KAFKA\n  KAFKA --> SVC2\n  SVC1 --> RDB\n  SVC1 --> CACHE\n  RDB --> CDC\n  SVC2 --> PG\n  AI --> ES\n  SVC1 --> ES\n  SVC1 --> K8S\n  CD --> K8S\n  K8S --> OBS",
+   "why_language": "공공·금융·제조 대기업 SI/SM이 핵심 도메인이라 안정성·인력 풀·레거시 호환이 검증된 Java/Spring을 표준으로 삼는다. 프런트엔드와 BFF는 TypeScript(React/Next.js), 생성형 AI·데이터 파이프라인은 Python(FastAPI)으로 분리하고, 일부 고성능·클라우드 네이티브 컴포넌트에 Go/Kotlin을 선택적으로 도입한다.",
+   "why_architecture": "수백 개 고객사 시스템을 클라우드로 옮기고 운영해야 하므로, 모놀리식 레거시를 Strangler Fig로 점진 분해한 엔터프라이즈 MSA가 기본이다. AWS·Azure 멀티 클라우드 위에 Kafka 기반 이벤트 드리븐으로 시스템 간 결합을 낮추고, 공공·금융 규제 대응을 위해 망분리·제로트러스트 보안을 아키텍처 1급 요건으로 둔다.",
+   "summary": "검증된 Java/Spring 표준성 위에 멀티 클라우드 MSA와 규제 대응 보안을 얹은 엔터프라이즈 SI 스택",
    "deep_dive": [
     {
      "topic": "엔터프라이즈 클라우드 마이그레이션 방법론",
@@ -16277,19 +16302,31 @@
     {
      "topic": "DX 플랫폼(DAP)과 생성형 AI 사업의 작동 원리 — RAG 기반 엔터프라이즈 AI",
      "body": "### LG CNS의 AI 포지셔닝\nLG CNS는 자체 LLM을 만드는 회사가 아니라 **기업 내부 데이터에 LLM을 붙여주는** AX(AI Transformation) 사업자다. 핵심은 고객사의 사내 문서·DB를 안전하게 활용하는 **RAG(Retrieval-Augmented Generation)** 파이프라인이다.\n\n### RAG 파이프라인 end-to-end\n```\n사내문서(PDF/HWP/Confluence)\n   → 청킹(chunking) + 임베딩(embedding model)\n   → Vector Store 적재\n   → [질의] 사용자 질문 임베딩 → 유사도 검색(top-k)\n   → 검색된 컨텍스트 + 프롬프트 → LLM\n   → 출처(citation) 포함 답변\n```\n- **벡터 저장소**: `Elasticsearch`(kNN 플러그인) 또는 전용 Vector DB. 이미 운영 중인 ES 클러스터에 dense_vector 필드를 추가해 키워드+벡터 **하이브리드 검색**을 하는 방식이 엔터프라이즈에서 선호된다(기존 인프라 재활용).\n- **LLM 선택**: 보안 등급에 따라 외부 API(Azure OpenAI 등)와 사내망 전용 오픈 모델을 분리. 공공·금융은 망분리 때문에 **on-prem GPU에 올린 오픈 LLM** 요구가 강하다.\n\n### 왜 RAG인가 (Fine-tuning 대비 트레이드오프)\n| 항목 | RAG | Fine-tuning |\n|------|-----|-------------|\n| 최신 데이터 반영 | 문서만 갱신하면 즉시 | 재학습 필요 |\n| 출처 추적 | 가능(citation) | 어려움 |\n| 초기 비용 | 낮음 | 높음(GPU 학습) |\n| 환각(hallucination) | 컨텍스트로 억제 | 상대적 취약 |\n\n엔터프라이즈는 \"왜 이 답이 나왔는지\" 감사·추적이 필수라 출처를 명시할 수 있는 RAG가 기본 선택이다.\n\n### 플랫폼 자산화\nLG CNS는 이런 RAG·MLOps 파이프라인을 매 프로젝트마다 새로 짜지 않고 **DAP(Digital Application Platform)** 같은 사내 플랫폼에 컴포넌트(데이터 커넥터, 임베딩 잡, 프롬프트 관리, 가드레일)로 표준화해두고, 고객사별로 조립·커스터마이징한다. 이것이 SI의 반복 비용을 줄이고 품질을 균질화하는 핵심 엔지니어링 결정이다."
+    },
+    {
+     "topic": "공공·금융 SI의 망분리와 제로트러스트 인증 아키텍처",
+     "body": "### 왜 보안이 아키텍처의 1급 제약인가\nLG CNS의 주력 고객은 공공기관·금융·대기업 그룹사다. 이들 환경은 `국가정보보안기본지침`, 금융권의 `전자금융감독규정`, 그리고 망분리(논리적/물리적 internal-external network separation) 의무를 받는다. 그래서 일반 인터넷 서비스 회사처럼 '하나의 VPC에서 모든 게 통신한다'는 전제가 깨진다. 아키텍처를 그릴 때 **보안 경계(zone)가 먼저 정의되고 그 위에 서비스가 배치**된다.\n\n### 네트워크 존(zone) 분리\n전형적인 구성은 다음과 같이 계층화된다.\n\n| Zone | 역할 | 대표 기술 |\n|------|------|-----------|\n| DMZ | 외부 인입, WAF/L7 | Cloud LB, ModSecurity, Reverse Proxy |\n| Web/AP Zone | 애플리케이션 | Spring Boot on K8s |\n| DB Zone | 데이터 | Oracle/Tibero, 접근통제 |\n| 관리망 | 운영자 접근 | Bastion, PAM(특권접근관리) |\n\n각 존 사이는 **방화벽 정책으로 화이트리스트 통신만 허용**하고, 운영자는 DB에 직접 붙지 못하고 반드시 Bastion + PAM(Privileged Access Management)을 경유한다. 클라우드에서는 이를 Security Group + NACL + Transit Gateway 라우팅으로 구현하고, AWS PrivateLink/Azure Private Endpoint로 데이터 평면이 퍼블릭 인터넷을 타지 않도록 묶는다.\n\n### 제로트러스트로의 진화\n전통적 망분리는 '내부망은 신뢰한다'는 경계 보안인데, 클라우드·재택·SaaS가 늘면서 LG CNS는 제로트러스트(ZTA)를 결합한다. 핵심 원칙은 *never trust, always verify*다.\n\n- **인증/인가**: 모든 요청은 `Spring Security` + OAuth2/OIDC 기반 토큰을 들고 다니고, 게이트웨이(Spring Cloud Gateway)에서 JWT 검증·스코프 확인 후에야 내부 서비스로 라우팅된다.\n- **서비스 간 통신**: 내부 MSA 호출도 무조건 신뢰하지 않고 mTLS(서비스 메시 또는 사이드카)로 상호 인증한다.\n- **최소 권한**: IAM Role/RBAC를 서비스 단위로 잘게 쪼개고, 임시 자격증명(STS, short-lived token)으로 장기 키 노출을 줄인다.\n- **상시 검증·로깅**: 접근 로그를 SIEM(보안관제)으로 모아 이상행위를 탐지한다. LG CNS는 자체 보안관제(MSS) 사업도 운영해 이 파이프라인이 내재화돼 있다.\n\n### 트레이드오프\n망분리는 보안성을 크게 높이지만 **개발 생산성과 클라우드 네이티브 자유도를 희생**한다. 예컨대 외부 패키지 저장소(npm, Maven Central)를 직접 못 쓰니 사내 Nexus/Artifactory 미러를 둬야 하고, CI 러너도 폐쇄망 안에서 돌려야 한다. 그래서 LG CNS의 DevOps는 '폐쇄망에서도 동작하는 GitOps'를 핵심 역량으로 만든다 — 인터넷 의존성을 미리 캐싱하고, 이미지를 사내 레지스트리에서만 끌어오는 식이다. 이 제약이 곧 차별화 포인트이기도 하다."
+    },
+    {
+     "topic": "GitOps 기반 배포 파이프라인과 폐쇄망 카나리 전략",
+     "body": "### 배포의 출발점: 표준 파이프라인\nSI 특성상 프로젝트마다 기술이 제각각이면 운영이 불가능하다. 그래서 LG CNS는 DAP(Digital Application Platform) 같은 내부 표준 플랫폼으로 **빌드→테스트→이미지→배포** 파이프라인을 템플릿화한다. 일반적 흐름:\n\n```\nGitLab/Git push\n   → Jenkins (or GitLab CI) 빌드\n   → 단위/정적분석(SonarQube) + 보안 스캔(SAST, 이미지 취약점)\n   → Container Registry push (사내 Harbor/Nexus)\n   → ArgoCD 가 Git 매니페스트 변화 감지\n   → Kubernetes(EKS/AKS) 에 동기화\n```\n\n핵심은 **ArgoCD의 pull 기반 GitOps**다. CI가 클러스터에 직접 `kubectl apply`로 밀어넣는 push 방식 대신, 배포 상태의 단일 진실 원천(single source of truth)을 Git 매니페스트 저장소로 두고 ArgoCD가 클러스터를 그 상태로 수렴시킨다. 이 구조가 SI/규제 환경에서 특히 유리한 이유:\n\n- **감사 추적성**: 누가 언제 무엇을 바꿨는지 Git 히스토리에 남는다(공공/금융 감사 대응 필수).\n- **드리프트 교정**: 누가 클러스터를 손으로 바꿔도 ArgoCD가 Git 상태로 되돌린다.\n- **폐쇄망 친화**: 외부에서 클러스터 API에 직접 접근할 필요 없이, 클러스터 안의 ArgoCD가 Git만 당겨오면 된다 → 망분리 환경과 궁합이 좋다.\n\n### 카나리/블루그린\n무중단·저위험 배포를 위해 점진 배포를 쓴다.\n\n- **블루그린**: 신규(green) 버전을 기존(blue)과 병렬로 띄우고 LB 라우팅을 한 번에 전환. 롤백이 라우팅 스위치 한 번이라 금융 코어처럼 '실패 시 즉시 복구'가 중요한 곳에 적합.\n- **카나리**: Argo Rollouts 등으로 트래픽을 5%→25%→50%→100%로 단계 증분하며, 각 단계에서 Prometheus 메트릭(에러율, p99 레이턴시)을 자동 분석해 임계 초과 시 자동 롤백.\n\n### 폐쇄망에서의 현실적 제약\n인터넷이 막힌 고객사에서는 이미지를 외부에서 못 끌어온다. 그래서 실제 운영에서는:\n\n1. 외부망에서 검증된 이미지를 **사내 레지스트리(Harbor)로 미러링/승인**.\n2. 보안팀의 이미지 스캔·서명(image signing) 통과분만 운영 레지스트리로 승격(promotion).\n3. 운영 클러스터의 ArgoCD는 **오직 사내 레지스트리·사내 Git**만 바라본다.\n\n이 '승격 게이트' 때문에 배포 속도는 인터넷 서비스 회사보다 느리지만, 변경 통제(change control)와 추적성을 얻는다. SI에서는 빠른 배포보다 **예측 가능하고 감사 가능한 배포**가 더 큰 가치다."
+    },
+    {
+     "topic": "Kafka 기반 이벤트 스트리밍과 CDC — 레거시·신규 시스템의 데이터 정합 유지",
+     "body": "### 문제: 마이그레이션 중에는 항상 '두 개의 진실'이 공존한다\nLG CNS의 전형적 과제는 거대한 레거시(메인프레임/모놀리식 + Oracle)를 클라우드 MSA로 옮기는 일이다. 빅뱅 전환은 위험하므로 Strangler Fig로 일부 기능만 신규 서비스로 떼어내는데, 이때 **레거시 DB와 신규 서비스 DB가 동시에 살아 있고** 서로 데이터가 어긋나면 안 된다. 이 정합성 문제를 동기 호출로 풀면 강결합·장애 전파가 생긴다. 그래서 Kafka 이벤트 백본과 CDC를 쓴다.\n\n### CDC(Change Data Capture)로 레거시 변화를 이벤트화\n`Debezium` 같은 CDC 커넥터가 Oracle/Tibero의 redo log(또는 트랜잭션 로그)를 읽어 **테이블 변경을 그대로 Kafka 토픽 이벤트로 흘려보낸다**. 애플리케이션 코드를 거의 안 건드리고 레거시의 데이터 변화를 신규 세계로 복제할 수 있는 게 강점이다.\n\n```\nOracle redo log → Debezium → Kafka topic(orders.cdc)\n   → 신규 MSA 컨슈머가 자기 PostgreSQL에 투영(projection)\n```\n\n### Outbox 패턴으로 신규 서비스의 이벤트 신뢰성 확보\n반대로 신규 서비스가 이벤트를 발행할 때, 'DB 커밋'과 'Kafka 발행'을 따로 하면 한쪽만 성공하는 이중 쓰기(dual write) 문제가 생긴다. 그래서 같은 로컬 트랜잭션 안에서 비즈니스 테이블과 `outbox` 테이블에 함께 기록하고, 별도 릴레이(또는 Debezium outbox 커넥터)가 outbox를 읽어 Kafka로 publish한다. → **at-least-once 보장**, 컨슈머는 멱등(idempotent) 처리로 중복 흡수.\n\n### 토폴로지에서 신경 쓰는 운영 포인트\n- **순서 보장**: 같은 엔티티(예: 주문 ID)의 이벤트는 같은 파티션으로 보내(key=orderId) 파티션 내 순서를 유지. 처리량을 위해 파티션 수를 늘리되 순서가 필요한 단위로만 키를 잡는다.\n- **스키마 진화**: `Schema Registry`(Avro/Protobuf)로 프로듀서·컨슈머 간 호환(backward/forward compatibility)을 강제 → 마이그레이션 중 양쪽 버전이 공존해도 깨지지 않게.\n- **장애 격리**: 컨슈머 실패 시 무한 재시도로 토픽을 막지 않도록 retry 토픽 + DLQ(dead-letter queue)로 빼낸다.\n- **백프레셔/재처리**: Kafka는 로그를 보관하므로 컨슈머가 죽었다 살아나도 오프셋부터 재생(replay) 가능 → 마이그레이션 검증 시 '레거시와 신규 데이터 비교 후 재투영'을 쉽게 돌린다.\n\n### 트레이드오프\n이벤트 드리븐은 결합도를 낮추고 레거시-신규 공존기를 안전하게 만들지만, **최종 일관성(eventual consistency)**을 받아들여야 한다. 즉 신규 서비스가 보는 데이터가 레거시보다 수십~수백 ms 늦을 수 있다. 금융 잔액처럼 강한 일관성이 필요한 경계는 여전히 동기 트랜잭션이나 Saga 보상 트랜잭션으로 처리하고, 조회성·통계성·연동성 데이터에 이벤트 투영을 적용하는 식으로 **도메인별로 일관성 등급을 나누는** 게 LG CNS식 엔터프라이즈 설계의 실전 노하우다."
     }
    ],
    "github": {
-    "org": "https://github.com/LG-CNS",
+    "org": "https://github.com/lgcns",
     "repos": []
    },
    "sources": [
-    "https://www.lgcns.com/tech-blog/",
-    "https://github.com/LG-CNS",
+    "https://www.lgcns.com/blog/",
+    "https://github.com/lgcns",
     "https://www.lgcns.com/business/cloud/"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "skt",

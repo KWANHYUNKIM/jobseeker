@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-20T10:40:13",
-  "total_jobs": 6644,
-  "company_count": 1331,
+  "generated_at": "2026-06-20T12:27:23",
+  "total_jobs": 6662,
+  "company_count": 1332,
   "min_posting": 2,
   "companies": [
     {
@@ -11942,6 +11942,399 @@
       }
     },
     {
+      "name": "㈜더블미디어",
+      "norm": "더블미디어",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 11,
+      "sites": [
+        "jobkorea",
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "DevOps/인프라": 5,
+        "백엔드": 3,
+        "프론트엔드": 2,
+        "데이터": 1,
+        "모바일": 1,
+        "QA": 1
+      },
+      "top_tech": [
+        {
+          "name": "Go",
+          "count": 5
+        },
+        {
+          "name": "Docker",
+          "count": 5
+        },
+        {
+          "name": "Kubernetes",
+          "count": 5
+        },
+        {
+          "name": "Terraform",
+          "count": 5
+        },
+        {
+          "name": "Java",
+          "count": 3
+        },
+        {
+          "name": "PHP",
+          "count": 3
+        },
+        {
+          "name": "MSA",
+          "count": 3
+        },
+        {
+          "name": "TypeScript",
+          "count": 2
+        },
+        {
+          "name": "React",
+          "count": 2
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "MariaDB",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Go",
+            "count": 5
+          },
+          {
+            "name": "Java",
+            "count": 3
+          },
+          {
+            "name": "PHP",
+            "count": 3
+          },
+          {
+            "name": "TypeScript",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "MSA",
+            "count": 3
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 2
+          }
+        ],
+        "모바일": [
+          {
+            "name": "iOS",
+            "count": 1
+          },
+          {
+            "name": "Android",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "MariaDB",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Docker",
+            "count": 5
+          },
+          {
+            "name": "Kubernetes",
+            "count": 5
+          },
+          {
+            "name": "Terraform",
+            "count": 5
+          },
+          {
+            "name": "AWS",
+            "count": 2
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Confluence",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "콘텐츠/미디어/광고",
+          "score": 12,
+          "evidence": [
+            "미디어",
+            "스트리밍"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 7,
+          "evidence": [
+            "채용",
+            "HR"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "MSA · 마이크로서비스",
+          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
+        },
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "백엔드 엔지니어 (5년 이상/서울)",
+        "클라우드 엔지니어 (신입~20년 이하/서울)",
+        "프론트엔드 엔지니어 (부산)",
+        "백엔드 엔지니어",
+        "백엔드 엔지니어 (부산)",
+        "클라우드 엔지니어",
+        "클라우드 엔지니어 (부산)",
+        "프론트엔드 엔지니어 (부산)"
+      ],
+      "postings": [
+        {
+          "title": "백엔드 엔지니어 (5년 이상/서울)",
+          "url": "https://www.wanted.co.kr/wd/361757",
+          "site": "wanted"
+        },
+        {
+          "title": "클라우드 엔지니어 (신입~20년 이하/서울)",
+          "url": "https://www.wanted.co.kr/wd/361756",
+          "site": "wanted"
+        },
+        {
+          "title": "프론트엔드 엔지니어 (부산)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49197850?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=5&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "백엔드 엔지니어",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49197895?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=78&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "백엔드 엔지니어 (부산)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49189913?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=83&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "클라우드 엔지니어",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49197932?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=80&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "클라우드 엔지니어 (부산)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49168900?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=84&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "프론트엔드 엔지니어 (부산)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53903759&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876",
+          "site": "saramin"
+        },
+        {
+          "title": "QA 엔지니어 (부산)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53920002&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=8dd5ae4a-b210-4f26-b241-b44c722f335c",
+          "site": "saramin"
+        },
+        {
+          "title": "클라우드 엔지니어 (서울)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53919951&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=289ca54d-c505-4925-af5b-b56337df7f22",
+          "site": "saramin"
+        },
+        {
+          "title": "클라우드 엔지니어 (부산)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53886134&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=29fd5b62-d5e6-420c-9df0-9e038b02a145",
+          "site": "saramin"
+        }
+      ],
+      "summary": "㈜더블미디어는 콘텐츠/미디어/광고 도메인의 중소기업으로, 주로 DevOps/인프라 · 백엔드 직군을 채용하며 Go, Docker, Kubernetes, Terraform 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
+          "핵심 역량: Go, Docker, Kubernetes 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "DevOps/인프라 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "콘텐츠/미디어/광고 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Go",
+              "Java",
+              "PHP"
+            ],
+            "tips": [
+              "Go — 고루틴·채널 동시성 모델과 표준 net/http로 서버 만들기",
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
+            ]
+          },
+          {
+            "stage": "2. DevOps/인프라 핵심 스킬",
+            "goal": "컨테이너·CI/CD로 앱을 빌드·배포·운영해 본다",
+            "techs": [
+              "Docker",
+              "Kubernetes",
+              "Terraform",
+              "AWS"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "MariaDB",
+              "Kafka"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
+            "techs": [
+              "Docker",
+              "Kubernetes",
+              "Terraform",
+              "AWS"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI",
+              "Kafka"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[콘텐츠/미디어/광고] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "[콘텐츠/미디어/광고] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, go, java"
+          },
+          {
+            "title": "SoundCloud Echo: Next-Level Humane Registry with Backstage",
+            "url": "https://developers.soundcloud.com/blog/soundcloud-echo-next-level-backstage",
+            "company": "SoundCloud",
+            "country": "DE",
+            "why": "go, kubernetes, mysql"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, java, kubernetes"
+          },
+          {
+            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
+            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "go, kubernetes, react"
+          },
+          {
+            "title": "Tracing NodeJs Applications with OpenTelemetry",
+            "url": "https://medium.com/zigbang/tracing-nodejs-applications-with-opentelemetry-624958d38d4d",
+            "company": "직방",
+            "country": "KR",
+            "why": "docker, kubernetes, mysql"
+          },
+          {
+            "title": "Taming Visual Regressions with Playwright and Docker",
+            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "docker, go, react"
+          }
+        ]
+      }
+    },
+    {
       "name": "(주)하이브랩",
       "norm": "하이브랩",
       "size": "대기업",
@@ -13748,380 +14141,6 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "css, html, javascript"
-          }
-        ]
-      }
-    },
-    {
-      "name": "㈜더블미디어",
-      "norm": "더블미디어",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 10,
-      "sites": [
-        "jobkorea",
-        "saramin",
-        "wanted"
-      ],
-      "roles": {
-        "DevOps/인프라": 5,
-        "프론트엔드": 2,
-        "백엔드": 2,
-        "모바일": 1,
-        "QA": 1
-      },
-      "top_tech": [
-        {
-          "name": "Docker",
-          "count": 5
-        },
-        {
-          "name": "Kubernetes",
-          "count": 5
-        },
-        {
-          "name": "Terraform",
-          "count": 5
-        },
-        {
-          "name": "Go",
-          "count": 4
-        },
-        {
-          "name": "TypeScript",
-          "count": 2
-        },
-        {
-          "name": "React",
-          "count": 2
-        },
-        {
-          "name": "Java",
-          "count": 2
-        },
-        {
-          "name": "PHP",
-          "count": 2
-        },
-        {
-          "name": "MSA",
-          "count": 2
-        },
-        {
-          "name": "MySQL",
-          "count": 2
-        },
-        {
-          "name": "MariaDB",
-          "count": 2
-        },
-        {
-          "name": "AWS",
-          "count": 2
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Go",
-            "count": 4
-          },
-          {
-            "name": "TypeScript",
-            "count": 2
-          },
-          {
-            "name": "Java",
-            "count": 2
-          },
-          {
-            "name": "PHP",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "MSA",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 2
-          }
-        ],
-        "모바일": [
-          {
-            "name": "iOS",
-            "count": 1
-          },
-          {
-            "name": "Android",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 2
-          },
-          {
-            "name": "MariaDB",
-            "count": 2
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Docker",
-            "count": 5
-          },
-          {
-            "name": "Kubernetes",
-            "count": 5
-          },
-          {
-            "name": "Terraform",
-            "count": 5
-          },
-          {
-            "name": "AWS",
-            "count": 2
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Confluence",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "콘텐츠/미디어/광고",
-          "score": 10,
-          "evidence": [
-            "미디어",
-            "스트리밍"
-          ]
-        },
-        {
-          "name": "HR/채용",
-          "score": 7,
-          "evidence": [
-            "채용",
-            "HR"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "MSA · 마이크로서비스",
-          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
-        },
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        }
-      ],
-      "titles": [
-        "클라우드 엔지니어 (신입~20년 이하/서울)",
-        "프론트엔드 엔지니어 (부산)",
-        "백엔드 엔지니어",
-        "백엔드 엔지니어 (부산)",
-        "클라우드 엔지니어",
-        "클라우드 엔지니어 (부산)",
-        "프론트엔드 엔지니어 (부산)",
-        "QA 엔지니어 (부산)"
-      ],
-      "postings": [
-        {
-          "title": "클라우드 엔지니어 (신입~20년 이하/서울)",
-          "url": "https://www.wanted.co.kr/wd/361756",
-          "site": "wanted"
-        },
-        {
-          "title": "프론트엔드 엔지니어 (부산)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49197850?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=5&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "백엔드 엔지니어",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49197895?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=78&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "백엔드 엔지니어 (부산)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49189913?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=83&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "클라우드 엔지니어",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49197932?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=80&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "클라우드 엔지니어 (부산)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49168900?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=84&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "프론트엔드 엔지니어 (부산)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53903759&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876",
-          "site": "saramin"
-        },
-        {
-          "title": "QA 엔지니어 (부산)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53920002&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=8dd5ae4a-b210-4f26-b241-b44c722f335c",
-          "site": "saramin"
-        },
-        {
-          "title": "클라우드 엔지니어 (서울)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53919951&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=289ca54d-c505-4925-af5b-b56337df7f22",
-          "site": "saramin"
-        },
-        {
-          "title": "클라우드 엔지니어 (부산)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53886134&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=29fd5b62-d5e6-420c-9df0-9e038b02a145",
-          "site": "saramin"
-        }
-      ],
-      "summary": "㈜더블미디어는 콘텐츠/미디어/광고 도메인의 중소기업으로, 주로 DevOps/인프라 · 프론트엔드 직군을 채용하며 Docker, Kubernetes, Terraform, Go 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
-          "핵심 역량: Docker, Kubernetes, Terraform 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "DevOps/인프라 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "콘텐츠/미디어/광고 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Go",
-              "TypeScript",
-              "Java"
-            ],
-            "tips": [
-              "Go — 고루틴·채널 동시성 모델과 표준 net/http로 서버 만들기",
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
-            ]
-          },
-          {
-            "stage": "2. DevOps/인프라 핵심 스킬",
-            "goal": "컨테이너·CI/CD로 앱을 빌드·배포·운영해 본다",
-            "techs": [
-              "Docker",
-              "Kubernetes",
-              "Terraform",
-              "AWS"
-            ],
-            "tips": [
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "MariaDB"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
-            "techs": [
-              "Docker",
-              "Kubernetes",
-              "Terraform",
-              "AWS"
-            ],
-            "tips": [
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
-            ]
-          }
-        ],
-        "tasks": [
-          "[콘텐츠/미디어/광고] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
-          "[콘텐츠/미디어/광고] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
-          "컨테이너 기반 배포·오토스케일링 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, go, java"
-          },
-          {
-            "title": "SoundCloud Echo: Next-Level Humane Registry with Backstage",
-            "url": "https://developers.soundcloud.com/blog/soundcloud-echo-next-level-backstage",
-            "company": "SoundCloud",
-            "country": "DE",
-            "why": "go, kubernetes, mysql"
-          },
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, java, kubernetes"
-          },
-          {
-            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
-            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "go, kubernetes, react"
-          },
-          {
-            "title": "Tracing NodeJs Applications with OpenTelemetry",
-            "url": "https://medium.com/zigbang/tracing-nodejs-applications-with-opentelemetry-624958d38d4d",
-            "company": "직방",
-            "country": "KR",
-            "why": "docker, kubernetes, mysql"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "docker, go, react"
           }
         ]
       }
@@ -30609,6 +30628,351 @@
       }
     },
     {
+      "name": "아이벡스",
+      "norm": "아이벡스",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 7,
+      "sites": [
+        "jobkorea",
+        "jumpit",
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 6,
+        "프론트엔드": 3,
+        "DevOps/인프라": 3,
+        "백엔드": 2,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "Docker",
+          "count": 5
+        },
+        {
+          "name": "C++",
+          "count": 3
+        },
+        {
+          "name": "TypeScript",
+          "count": 3
+        },
+        {
+          "name": "React",
+          "count": 3
+        },
+        {
+          "name": "Next.js",
+          "count": 3
+        },
+        {
+          "name": "CSS",
+          "count": 3
+        },
+        {
+          "name": "Tailwind",
+          "count": 3
+        },
+        {
+          "name": "Kubernetes",
+          "count": 3
+        },
+        {
+          "name": "REST API",
+          "count": 2
+        },
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "Git",
+          "count": 2
+        },
+        {
+          "name": "Playwright",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "C++",
+            "count": 3
+          },
+          {
+            "name": "TypeScript",
+            "count": 3
+          },
+          {
+            "name": "Python",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "REST API",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 3
+          },
+          {
+            "name": "Next.js",
+            "count": 3
+          },
+          {
+            "name": "CSS",
+            "count": 3
+          },
+          {
+            "name": "Tailwind",
+            "count": 3
+          },
+          {
+            "name": "Zustand",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Docker",
+            "count": 5
+          },
+          {
+            "name": "Kubernetes",
+            "count": 3
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "OpenCV",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 2
+          }
+        ],
+        "기타": [
+          {
+            "name": "Playwright",
+            "count": 1
+          },
+          {
+            "name": "Sentry",
+            "count": 1
+          },
+          {
+            "name": "Storybook",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 26,
+          "evidence": [
+            "제조",
+            "로봇",
+            "디바이스",
+            "센서"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 9,
+          "evidence": [
+            "SaaS",
+            "B2B",
+            "솔루션"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        },
+        {
+          "label": "SSR · 풀스택 프레임워크",
+          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
+        }
+      ],
+      "titles": [
+        "Industrial AI Vision Project Manager (딥러닝 PM)",
+        "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
+        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
+        "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
+        "프론트엔드엔지니어-MLOps,Vision AI",
+        "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
+        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)"
+      ],
+      "postings": [
+        {
+          "title": "Industrial AI Vision Project Manager (딥러닝 PM)",
+          "url": "https://www.wanted.co.kr/wd/369560",
+          "site": "wanted"
+        },
+        {
+          "title": "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
+          "url": "https://www.wanted.co.kr/wd/352371",
+          "site": "wanted"
+        },
+        {
+          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
+          "url": "https://jumpit.saramin.co.kr/position/53970784",
+          "site": "jumpit"
+        },
+        {
+          "title": "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
+          "url": "https://jumpit.saramin.co.kr/position/54055697",
+          "site": "jumpit"
+        },
+        {
+          "title": "프론트엔드엔지니어-MLOps,Vision AI",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53859732&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d",
+          "site": "saramin"
+        },
+        {
+          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422",
+          "site": "saramin"
+        }
+      ],
+      "summary": "아이벡스는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 AI/ML · 프론트엔드 직군을 채용하며 Docker, C++, TypeScript, React 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Docker, C++, TypeScript 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "C++",
+              "TypeScript",
+              "Python"
+            ],
+            "tips": [
+              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용",
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "OpenCV"
+            ],
+            "tips": []
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "Docker",
+              "Kubernetes",
+              "Linux"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[제조/하드웨어/로보틱스] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[제조/하드웨어/로보틱스] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "css, python, react"
+          },
+          {
+            "title": "Taming Visual Regressions with Playwright and Docker",
+            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "css, docker, git"
+          },
+          {
+            "title": "FE News 26년 3월 소식을 전해드립니다!",
+            "url": "https://d2.naver.com/news/0407747",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "css, next.js, react"
+          },
+          {
+            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
+            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "kubernetes, next.js, react"
+          },
+          {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, python"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "git, kubernetes, python"
+          }
+        ]
+      }
+    },
+    {
       "name": "티맵모빌리티㈜",
       "norm": "티맵모빌리티",
       "size": "중소기업",
@@ -37294,6 +37658,390 @@
       }
     },
     {
+      "name": "원프레딕트(onepredict)",
+      "norm": "원프레딕트onepredict",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 6,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "프론트엔드": 3,
+        "DevOps/인프라": 3,
+        "데이터": 3,
+        "백엔드": 2,
+        "AI/ML": 2,
+        "QA": 2,
+        "풀스택": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 4
+        },
+        {
+          "name": "Git",
+          "count": 4
+        },
+        {
+          "name": "React",
+          "count": 3
+        },
+        {
+          "name": "Docker",
+          "count": 3
+        },
+        {
+          "name": "Kubernetes",
+          "count": 3
+        },
+        {
+          "name": "Jira",
+          "count": 3
+        },
+        {
+          "name": "Confluence",
+          "count": 3
+        },
+        {
+          "name": "Django",
+          "count": 2
+        },
+        {
+          "name": "FastAPI",
+          "count": 2
+        },
+        {
+          "name": "Kafka",
+          "count": 2
+        },
+        {
+          "name": "RabbitMQ",
+          "count": 2
+        },
+        {
+          "name": "REST API",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 4
+          },
+          {
+            "name": "JavaScript",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Django",
+            "count": 2
+          },
+          {
+            "name": "FastAPI",
+            "count": 2
+          },
+          {
+            "name": "REST API",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 3
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 1
+          },
+          {
+            "name": "PostgreSQL",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Docker",
+            "count": 3
+          },
+          {
+            "name": "Kubernetes",
+            "count": 3
+          },
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "GitHub Actions",
+            "count": 1
+          },
+          {
+            "name": "Terraform",
+            "count": 1
+          },
+          {
+            "name": "Ansible",
+            "count": 1
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "LangChain",
+            "count": 1
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 2
+          },
+          {
+            "name": "RabbitMQ",
+            "count": 2
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 4
+          },
+          {
+            "name": "Jira",
+            "count": 3
+          },
+          {
+            "name": "Confluence",
+            "count": 3
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 20,
+          "evidence": [
+            "제조",
+            "IoT",
+            "센서",
+            "공정"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 10,
+          "evidence": [
+            "솔루션",
+            "업무 자동화",
+            "워크플로우"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        },
+        {
+          "label": "SPA + REST API (프론트/백 분리)",
+          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
+        }
+      ],
+      "titles": [
+        "Backend Developer(백엔드 개발자)",
+        "산업 AI 솔루션 Field Engineer (현장 기술 엔지니어)",
+        "DevOps Engineer",
+        "Data Analyst",
+        "Frontend Developer(프론트엔드 개발자)",
+        "Full-stack 개발자 (고객사 상주)"
+      ],
+      "postings": [
+        {
+          "title": "Backend Developer(백엔드 개발자)",
+          "url": "https://www.wanted.co.kr/wd/348231",
+          "site": "wanted"
+        },
+        {
+          "title": "산업 AI 솔루션 Field Engineer (현장 기술 엔지니어)",
+          "url": "https://www.wanted.co.kr/wd/369379",
+          "site": "wanted"
+        },
+        {
+          "title": "DevOps Engineer",
+          "url": "https://www.wanted.co.kr/wd/348225",
+          "site": "wanted"
+        },
+        {
+          "title": "Data Analyst",
+          "url": "https://www.wanted.co.kr/wd/348227",
+          "site": "wanted"
+        },
+        {
+          "title": "Frontend Developer(프론트엔드 개발자)",
+          "url": "https://www.wanted.co.kr/wd/348230",
+          "site": "wanted"
+        },
+        {
+          "title": "Full-stack 개발자 (고객사 상주)",
+          "url": "https://www.wanted.co.kr/wd/356345",
+          "site": "wanted"
+        }
+      ],
+      "summary": "원프레딕트(onepredict)는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 프론트엔드 · DevOps/인프라 직군을 채용하며 Python, Git, React, Docker 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, Git, React 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "프론트엔드 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "JavaScript"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
+            ]
+          },
+          {
+            "stage": "2. 프론트엔드 핵심 스킬",
+            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
+            "techs": [
+              "React"
+            ],
+            "tips": [
+              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "PostgreSQL",
+              "Kafka",
+              "RabbitMQ"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "Docker",
+              "Kubernetes",
+              "AWS",
+              "GitHub Actions"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "GitHub Actions — 워크플로 YAML로 CI/CD 파이프라인 구성"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI",
+              "Kafka",
+              "RabbitMQ"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[제조/하드웨어/로보틱스] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "[제조/하드웨어/로보틱스] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "SoundCloud Echo: Next-Level Humane Registry with Backstage",
+            "url": "https://developers.soundcloud.com/blog/soundcloud-echo-next-level-backstage",
+            "company": "SoundCloud",
+            "country": "DE",
+            "why": "confluence, jira, kubernetes"
+          },
+          {
+            "title": "Build your own vulnerability harness",
+            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "docker, git, jira"
+          },
+          {
+            "title": "How we built Cloudflare's data platform and an AI agent on top of it",
+            "url": "https://blog.cloudflare.com/our-unified-data-platform",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "jira, kafka, kubernetes"
+          },
+          {
+            "title": "Search Quality Assurance with AI as a Judge",
+            "url": "https://engineering.zalando.com/posts/2026/03/search-quality-assurance-with-llm-judge.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "docker, kafka, kubernetes"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "kubernetes, python, rest api"
+          },
+          {
+            "title": "From firefighting to building: How AI agents restored our team’s core productivity",
+            "url": "https://engineering.grab.com/from-firefighting-to-building",
+            "company": "Grab",
+            "country": "SG",
+            "why": "confluence, fastapi, jira"
+          }
+        ]
+      }
+    },
+    {
       "name": "온택트헬스",
       "norm": "온택트헬스",
       "size": "중소기업",
@@ -42790,344 +43538,6 @@
             "company": "당근",
             "country": "KR",
             "why": "aws"
-          }
-        ]
-      }
-    },
-    {
-      "name": "아이벡스",
-      "norm": "아이벡스",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 6,
-      "sites": [
-        "jobkorea",
-        "jumpit",
-        "saramin",
-        "wanted"
-      ],
-      "roles": {
-        "AI/ML": 5,
-        "프론트엔드": 3,
-        "DevOps/인프라": 3,
-        "백엔드": 2
-      },
-      "top_tech": [
-        {
-          "name": "Docker",
-          "count": 5
-        },
-        {
-          "name": "C++",
-          "count": 3
-        },
-        {
-          "name": "TypeScript",
-          "count": 3
-        },
-        {
-          "name": "React",
-          "count": 3
-        },
-        {
-          "name": "Next.js",
-          "count": 3
-        },
-        {
-          "name": "CSS",
-          "count": 3
-        },
-        {
-          "name": "Tailwind",
-          "count": 3
-        },
-        {
-          "name": "Kubernetes",
-          "count": 3
-        },
-        {
-          "name": "REST API",
-          "count": 2
-        },
-        {
-          "name": "Python",
-          "count": 2
-        },
-        {
-          "name": "Git",
-          "count": 2
-        },
-        {
-          "name": "Playwright",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "C++",
-            "count": 3
-          },
-          {
-            "name": "TypeScript",
-            "count": 3
-          },
-          {
-            "name": "Python",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "REST API",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 3
-          },
-          {
-            "name": "Next.js",
-            "count": 3
-          },
-          {
-            "name": "CSS",
-            "count": 3
-          },
-          {
-            "name": "Tailwind",
-            "count": 3
-          },
-          {
-            "name": "Zustand",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Docker",
-            "count": 5
-          },
-          {
-            "name": "Kubernetes",
-            "count": 3
-          },
-          {
-            "name": "Linux",
-            "count": 1
-          }
-        ],
-        "AI/ML": [
-          {
-            "name": "OpenCV",
-            "count": 1
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 2
-          }
-        ],
-        "기타": [
-          {
-            "name": "Playwright",
-            "count": 1
-          },
-          {
-            "name": "Sentry",
-            "count": 1
-          },
-          {
-            "name": "Storybook",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "제조/하드웨어/로보틱스",
-          "score": 25,
-          "evidence": [
-            "제조",
-            "로봇",
-            "디바이스",
-            "센서"
-          ]
-        },
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 8,
-          "evidence": [
-            "SaaS",
-            "B2B",
-            "솔루션"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        },
-        {
-          "label": "SSR · 풀스택 프레임워크",
-          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
-        }
-      ],
-      "titles": [
-        "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
-        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
-        "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
-        "프론트엔드엔지니어-MLOps,Vision AI",
-        "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
-        "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)"
-      ],
-      "postings": [
-        {
-          "title": "3D 컴퓨터 비전 엔지니어 (검사/계측)_Point Cloud/Metrology",
-          "url": "https://www.wanted.co.kr/wd/352371",
-          "site": "wanted"
-        },
-        {
-          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
-          "url": "https://jumpit.saramin.co.kr/position/53970784",
-          "site": "jumpit"
-        },
-        {
-          "title": "[전문연구요원]로봇 시스템 비전 소프트웨어 엔지니어",
-          "url": "https://jumpit.saramin.co.kr/position/54055697",
-          "site": "jumpit"
-        },
-        {
-          "title": "프론트엔드엔지니어-MLOps,Vision AI",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49232898?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=58&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "[전문연구요원]로봇 제어 플랫폼 개발 엔지니어",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53859732&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d",
-          "site": "saramin"
-        },
-        {
-          "title": "[머신비전/장비 제조업] Frontend Engineer (MLOps, Vision AI Platform)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53970784&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4bd49cf3-befb-4d52-a201-fac228a8e422",
-          "site": "saramin"
-        }
-      ],
-      "summary": "아이벡스는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 AI/ML · 프론트엔드 직군을 채용하며 Docker, C++, TypeScript, React 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Docker, C++, TypeScript 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+프론트엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "C++",
-              "TypeScript",
-              "Python"
-            ],
-            "tips": [
-              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용",
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "2. AI/ML 핵심 스킬",
-            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
-            "techs": [
-              "OpenCV"
-            ],
-            "tips": []
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "Docker",
-              "Kubernetes",
-              "Linux"
-            ],
-            "tips": [
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
-            ]
-          }
-        ],
-        "tasks": [
-          "[제조/하드웨어/로보틱스] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[제조/하드웨어/로보틱스] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "컨테이너 기반 배포·오토스케일링 운영",
-          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
-        ],
-        "study_blogs": [
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "css, python, react"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "css, docker, git"
-          },
-          {
-            "title": "FE News 26년 3월 소식을 전해드립니다!",
-            "url": "https://d2.naver.com/news/0407747",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "css, next.js, react"
-          },
-          {
-            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
-            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "kubernetes, next.js, react"
-          },
-          {
-            "title": "Build your own vulnerability harness",
-            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "docker, git, python"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "git, kubernetes, python"
           }
         ]
       }
@@ -53477,383 +53887,6 @@
             "company": "하이퍼커넥트",
             "country": "KR",
             "why": "linux, node.js, python"
-          }
-        ]
-      }
-    },
-    {
-      "name": "원프레딕트(onepredict)",
-      "norm": "원프레딕트onepredict",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 5,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {
-        "프론트엔드": 3,
-        "DevOps/인프라": 3,
-        "데이터": 3,
-        "백엔드": 2,
-        "QA": 2,
-        "AI/ML": 1,
-        "풀스택": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 4
-        },
-        {
-          "name": "Git",
-          "count": 4
-        },
-        {
-          "name": "React",
-          "count": 3
-        },
-        {
-          "name": "Docker",
-          "count": 3
-        },
-        {
-          "name": "Kubernetes",
-          "count": 3
-        },
-        {
-          "name": "Jira",
-          "count": 3
-        },
-        {
-          "name": "Confluence",
-          "count": 3
-        },
-        {
-          "name": "Django",
-          "count": 2
-        },
-        {
-          "name": "FastAPI",
-          "count": 2
-        },
-        {
-          "name": "Kafka",
-          "count": 2
-        },
-        {
-          "name": "RabbitMQ",
-          "count": 2
-        },
-        {
-          "name": "REST API",
-          "count": 2
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 4
-          },
-          {
-            "name": "JavaScript",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Django",
-            "count": 2
-          },
-          {
-            "name": "FastAPI",
-            "count": 2
-          },
-          {
-            "name": "REST API",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 3
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 1
-          },
-          {
-            "name": "PostgreSQL",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Docker",
-            "count": 3
-          },
-          {
-            "name": "Kubernetes",
-            "count": 3
-          },
-          {
-            "name": "AWS",
-            "count": 1
-          },
-          {
-            "name": "GitHub Actions",
-            "count": 1
-          },
-          {
-            "name": "Terraform",
-            "count": 1
-          },
-          {
-            "name": "Ansible",
-            "count": 1
-          },
-          {
-            "name": "Linux",
-            "count": 1
-          }
-        ],
-        "AI/ML": [
-          {
-            "name": "LangChain",
-            "count": 1
-          }
-        ],
-        "데이터": [
-          {
-            "name": "Kafka",
-            "count": 2
-          },
-          {
-            "name": "RabbitMQ",
-            "count": 2
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 4
-          },
-          {
-            "name": "Jira",
-            "count": 3
-          },
-          {
-            "name": "Confluence",
-            "count": 3
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "제조/하드웨어/로보틱스",
-          "score": 11,
-          "evidence": [
-            "제조",
-            "IoT",
-            "공정"
-          ]
-        },
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 8,
-          "evidence": [
-            "솔루션",
-            "업무 자동화",
-            "워크플로우"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "데이터 파이프라인 · ETL",
-          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        },
-        {
-          "label": "SPA + REST API (프론트/백 분리)",
-          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
-        }
-      ],
-      "titles": [
-        "Backend Developer(백엔드 개발자)",
-        "DevOps Engineer",
-        "Data Analyst",
-        "Frontend Developer(프론트엔드 개발자)",
-        "Full-stack 개발자 (고객사 상주)"
-      ],
-      "postings": [
-        {
-          "title": "Backend Developer(백엔드 개발자)",
-          "url": "https://www.wanted.co.kr/wd/348231",
-          "site": "wanted"
-        },
-        {
-          "title": "DevOps Engineer",
-          "url": "https://www.wanted.co.kr/wd/348225",
-          "site": "wanted"
-        },
-        {
-          "title": "Data Analyst",
-          "url": "https://www.wanted.co.kr/wd/348227",
-          "site": "wanted"
-        },
-        {
-          "title": "Frontend Developer(프론트엔드 개발자)",
-          "url": "https://www.wanted.co.kr/wd/348230",
-          "site": "wanted"
-        },
-        {
-          "title": "Full-stack 개발자 (고객사 상주)",
-          "url": "https://www.wanted.co.kr/wd/356345",
-          "site": "wanted"
-        }
-      ],
-      "summary": "원프레딕트(onepredict)는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 프론트엔드 · DevOps/인프라 직군을 채용하며 Python, Git, React, Docker 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python, Git, React 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "프론트엔드 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python",
-              "JavaScript"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
-            ]
-          },
-          {
-            "stage": "2. 프론트엔드 핵심 스킬",
-            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
-            "techs": [
-              "React"
-            ],
-            "tips": [
-              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "PostgreSQL",
-              "Kafka",
-              "RabbitMQ"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "Docker",
-              "Kubernetes",
-              "AWS",
-              "GitHub Actions"
-            ],
-            "tips": [
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "GitHub Actions — 워크플로 YAML로 CI/CD 파이프라인 구성"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI",
-              "Kafka",
-              "RabbitMQ"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          }
-        ],
-        "tasks": [
-          "[제조/하드웨어/로보틱스] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "[제조/하드웨어/로보틱스] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
-          "컨테이너 기반 배포·오토스케일링 운영",
-          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "SoundCloud Echo: Next-Level Humane Registry with Backstage",
-            "url": "https://developers.soundcloud.com/blog/soundcloud-echo-next-level-backstage",
-            "company": "SoundCloud",
-            "country": "DE",
-            "why": "confluence, jira, kubernetes"
-          },
-          {
-            "title": "Build your own vulnerability harness",
-            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "docker, git, jira"
-          },
-          {
-            "title": "How we built Cloudflare's data platform and an AI agent on top of it",
-            "url": "https://blog.cloudflare.com/our-unified-data-platform",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "jira, kafka, kubernetes"
-          },
-          {
-            "title": "Search Quality Assurance with AI as a Judge",
-            "url": "https://engineering.zalando.com/posts/2026/03/search-quality-assurance-with-llm-judge.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "docker, kafka, kubernetes"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "kubernetes, python, rest api"
-          },
-          {
-            "title": "From firefighting to building: How AI agents restored our team’s core productivity",
-            "url": "https://engineering.grab.com/from-firefighting-to-building",
-            "company": "Grab",
-            "country": "SG",
-            "why": "confluence, fastapi, jira"
           }
         ]
       }
@@ -76989,6 +77022,319 @@
             "company": "Cookpad",
             "country": "JP",
             "why": "android, ios, java"
+          }
+        ]
+      }
+    },
+    {
+      "name": "페이민트",
+      "norm": "페이민트",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 4,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "모바일": 2,
+        "DevOps/인프라": 2,
+        "프론트엔드": 2
+      },
+      "top_tech": [
+        {
+          "name": "Java",
+          "count": 2
+        },
+        {
+          "name": "Kotlin",
+          "count": 2
+        },
+        {
+          "name": "Spring",
+          "count": 2
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "Vue",
+          "count": 2
+        },
+        {
+          "name": "MSA",
+          "count": 1
+        },
+        {
+          "name": "Next.js",
+          "count": 1
+        },
+        {
+          "name": "Docker",
+          "count": 1
+        },
+        {
+          "name": "Jenkins",
+          "count": 1
+        },
+        {
+          "name": "Git",
+          "count": 1
+        },
+        {
+          "name": "TypeScript",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 2
+          },
+          {
+            "name": "Kotlin",
+            "count": 2
+          },
+          {
+            "name": "TypeScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 2
+          },
+          {
+            "name": "MSA",
+            "count": 1
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "Vue",
+            "count": 2
+          },
+          {
+            "name": "Next.js",
+            "count": 1
+          },
+          {
+            "name": "React",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Jenkins",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "핀테크/금융",
+          "score": 29,
+          "evidence": [
+            "금융",
+            "핀테크",
+            "결제",
+            "간편결제"
+          ]
+        },
+        {
+          "name": "모빌리티/자율주행",
+          "score": 2,
+          "evidence": [
+            "택시"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "MSA · 마이크로서비스",
+          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
+        },
+        {
+          "label": "컨테이너 기반 배포 (Docker)",
+          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "SSR · 풀스택 프레임워크",
+          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
+        },
+        {
+          "label": "네이티브 모바일 앱",
+          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
+        }
+      ],
+      "titles": [
+        "백엔드 시니어 개발자(Java/Kotlin)",
+        "프론트엔드 시니어 개발자",
+        "서버 백엔드 개발자(Java/Kotlin)",
+        "프론트엔드 개발자"
+      ],
+      "postings": [
+        {
+          "title": "백엔드 시니어 개발자(Java/Kotlin)",
+          "url": "https://www.wanted.co.kr/wd/369598",
+          "site": "wanted"
+        },
+        {
+          "title": "프론트엔드 시니어 개발자",
+          "url": "https://www.wanted.co.kr/wd/369602",
+          "site": "wanted"
+        },
+        {
+          "title": "서버 백엔드 개발자(Java/Kotlin)",
+          "url": "https://www.wanted.co.kr/wd/272871",
+          "site": "wanted"
+        },
+        {
+          "title": "프론트엔드 개발자",
+          "url": "https://www.wanted.co.kr/wd/284621",
+          "site": "wanted"
+        }
+      ],
+      "summary": "페이민트는 핀테크/금융 도메인의 중소기업으로, 주로 백엔드 · 모바일 직군을 채용하며 Java, Kotlin, Spring, MySQL 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Java, Kotlin, Spring 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+모바일) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java",
+              "Kotlin",
+              "TypeScript"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기",
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Spring",
+              "MSA"
+            ],
+            "tips": [
+              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
+              "MSA — 도메인 분리·서비스 경계·통신/트랜잭션 패턴 학습"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
+            "techs": [
+              "AWS",
+              "Docker",
+              "Jenkins"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
+            ]
+          }
+        ],
+        "tasks": [
+          "[핀테크/금융] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[핀테크/금융] iOS/Android 앱 화면·기능 개발과 스토어 배포",
+          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, git, java"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "aws, java, kotlin"
+          },
+          {
+            "title": "사운드 리소스 전달 WebApp 만들기",
+            "url": "https://tech.devsisters.com/posts/building-a-sound-vcs-webapp",
+            "company": "데브시스터즈",
+            "country": "KR",
+            "why": "aws, docker, git"
+          },
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "java, mysql, spring"
+          },
+          {
+            "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
+            "url": "https://medium.com/daangn/%EB%88%84%EA%B5%AC%EB%82%98-%EC%B0%BE%EC%95%84%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98-%EC%84%9C%EB%B2%84-llm-%EB%A6%B4%EB%A6%AC%EC%A6%88-%EB%85%B8%ED%8A%B8-%EB%8F%84%EC%9E%85%EA%B8%B0-93afe203d766",
+            "company": "당근",
+            "country": "KR",
+            "why": "git, java, jenkins"
+          },
+          {
+            "title": "왓챠 추천 서비스 MLOps 적용기 Part2",
+            "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%B6%94%EC%B2%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-mlops-%EC%A0%81%EC%9A%A9%EA%B8%B0-part2-74e07ca33709",
+            "company": "왓챠",
+            "country": "KR",
+            "why": "aws, docker, java"
           }
         ]
       }
@@ -113284,6 +113630,321 @@
       }
     },
     {
+      "name": "청림인베스트",
+      "norm": "청림인베스트",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "DevOps/인프라": 2,
+        "프론트엔드": 1,
+        "풀스택": 1,
+        "AI/ML": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "Java",
+          "count": 2
+        },
+        {
+          "name": "Spring",
+          "count": 2
+        },
+        {
+          "name": "Spring Boot",
+          "count": 2
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "Redis",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "Docker",
+          "count": 2
+        },
+        {
+          "name": "JPA",
+          "count": 2
+        },
+        {
+          "name": "MongoDB",
+          "count": 1
+        },
+        {
+          "name": "JavaScript",
+          "count": 1
+        },
+        {
+          "name": "React",
+          "count": 1
+        },
+        {
+          "name": "jQuery",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 2
+          },
+          {
+            "name": "JavaScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 2
+          },
+          {
+            "name": "Spring Boot",
+            "count": 2
+          },
+          {
+            "name": "JPA",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          },
+          {
+            "name": "jQuery",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "Redis",
+            "count": 2
+          },
+          {
+            "name": "MongoDB",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 2
+          }
+        ],
+        "기타": [
+          {
+            "name": "SaaS",
+            "count": 1
+          },
+          {
+            "name": "데이터 분석",
+            "count": 1
+          },
+          {
+            "name": "콘텐츠 제작",
+            "count": 1
+          },
+          {
+            "name": "블로그",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "콘텐츠/미디어/광고",
+          "score": 9,
+          "evidence": [
+            "콘텐츠",
+            "광고",
+            "마케팅 플랫폼"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 9,
+          "evidence": [
+            "SaaS",
+            "B2B",
+            "솔루션",
+            "업무 자동화"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 기반 배포 (Docker)",
+          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "SPA + REST API (프론트/백 분리)",
+          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
+        }
+      ],
+      "titles": [
+        "백엔드 개발자",
+        "풀스택 개발자",
+        "AI 기반 SaaS 콘텐츠 마케터"
+      ],
+      "postings": [
+        {
+          "title": "백엔드 개발자",
+          "url": "https://www.wanted.co.kr/wd/363967",
+          "site": "wanted"
+        },
+        {
+          "title": "풀스택 개발자",
+          "url": "https://www.wanted.co.kr/wd/363973",
+          "site": "wanted"
+        },
+        {
+          "title": "AI 기반 SaaS 콘텐츠 마케터",
+          "url": "https://www.wanted.co.kr/wd/369135",
+          "site": "wanted"
+        }
+      ],
+      "summary": "청림인베스트는 콘텐츠/미디어/광고 도메인의 중소기업으로, 주로 백엔드 · DevOps/인프라 직군을 채용하며 Java, Spring, Spring Boot, MySQL 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Java, Spring, Spring Boot 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "콘텐츠/미디어/광고 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 기반 배포 (Docker) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java",
+              "JavaScript"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Spring",
+              "Spring Boot",
+              "JPA"
+            ],
+            "tips": [
+              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
+              "Spring Boot — REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기",
+              "JPA — 엔티티 매핑·연관관계·N+1 문제와 페치 전략 이해"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "Redis",
+              "MongoDB"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "Redis — 캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
+              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 기반 배포 (Docker))",
+            "techs": [
+              "AWS",
+              "Docker"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화"
+            ]
+          }
+        ],
+        "tasks": [
+          "[콘텐츠/미디어/광고] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[콘텐츠/미디어/광고] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "왓챠 추천 서비스 MLOps 적용기 Part2",
+            "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%B6%94%EC%B2%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-mlops-%EC%A0%81%EC%9A%A9%EA%B8%B0-part2-74e07ca33709",
+            "company": "왓챠",
+            "country": "KR",
+            "why": "aws, docker, java"
+          },
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "java, mysql, spring"
+          },
+          {
+            "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
+            "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "aws, javascript, mysql"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, java, javascript"
+          },
+          {
+            "title": "Apache Flink + RocksDB 튜닝으로 광고 Frequency Capping 실시간 집계를 일주일까지 확장하기",
+            "url": "https://toss.tech/article/flink-realtime-frequency-capping",
+            "company": "토스",
+            "country": "KR",
+            "why": "java, redis, spring"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "aws, java, mysql"
+          }
+        ]
+      }
+    },
+    {
       "name": "넵튠(Neptune)",
       "norm": "넵튠neptune",
       "size": "중견기업",
@@ -116291,6 +116952,324 @@
       }
     },
     {
+      "name": "아드리엘(Adriel)",
+      "norm": "아드리엘adriel",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 2,
+        "DevOps/인프라": 1,
+        "백엔드": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "TypeScript",
+          "count": 3
+        },
+        {
+          "name": "Node.js",
+          "count": 3
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "LangChain",
+          "count": 2
+        },
+        {
+          "name": "Elasticsearch",
+          "count": 1
+        },
+        {
+          "name": "Docker",
+          "count": 1
+        },
+        {
+          "name": "Kubernetes",
+          "count": 1
+        },
+        {
+          "name": "GitLab CI",
+          "count": 1
+        },
+        {
+          "name": "GitHub Actions",
+          "count": 1
+        },
+        {
+          "name": "JavaScript",
+          "count": 1
+        },
+        {
+          "name": "REST API",
+          "count": 1
+        },
+        {
+          "name": "Kafka",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "TypeScript",
+            "count": 3
+          },
+          {
+            "name": "JavaScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Node.js",
+            "count": 3
+          },
+          {
+            "name": "REST API",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "Elasticsearch",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Kubernetes",
+            "count": 1
+          },
+          {
+            "name": "GitLab CI",
+            "count": 1
+          },
+          {
+            "name": "GitHub Actions",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "LangChain",
+            "count": 2
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 1
+          },
+          {
+            "name": "RabbitMQ",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 9,
+          "evidence": [
+            "SaaS",
+            "B2B",
+            "솔루션",
+            "업무 자동화"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 5,
+          "evidence": [
+            "생성형 AI",
+            "LLM"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "[B2B SaaS] 인프라 & AI 개발자",
+        "[B2B SaaS] Jr. 백엔드 개발자",
+        "[B2B SaaS] AI Agent Engineer (LLM)"
+      ],
+      "postings": [
+        {
+          "title": "[B2B SaaS] 인프라 & AI 개발자",
+          "url": "https://www.wanted.co.kr/wd/359705",
+          "site": "wanted"
+        },
+        {
+          "title": "[B2B SaaS] Jr. 백엔드 개발자",
+          "url": "https://www.wanted.co.kr/wd/359700",
+          "site": "wanted"
+        },
+        {
+          "title": "[B2B SaaS] AI Agent Engineer (LLM)",
+          "url": "https://www.wanted.co.kr/wd/368576",
+          "site": "wanted"
+        }
+      ],
+      "summary": "아드리엘(Adriel)는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 TypeScript, Node.js, AWS, LangChain 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: TypeScript, Node.js, AWS 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "TypeScript",
+              "JavaScript"
+            ],
+            "tips": [
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
+            ]
+          },
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "LangChain"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "Elasticsearch",
+              "Kafka",
+              "RabbitMQ"
+            ],
+            "tips": [
+              "Elasticsearch — 역색인·분석기·검색 쿼리로 검색 기능 구현",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "AWS",
+              "Docker",
+              "Kubernetes",
+              "GitLab CI"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI",
+              "Kafka",
+              "RabbitMQ"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[B2B SaaS/엔터프라이즈] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[B2B SaaS/엔터프라이즈] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, javascript, kubernetes"
+          },
+          {
+            "title": "Tracing NodeJs Applications with OpenTelemetry",
+            "url": "https://medium.com/zigbang/tracing-nodejs-applications-with-opentelemetry-624958d38d4d",
+            "company": "직방",
+            "country": "KR",
+            "why": "docker, javascript, kubernetes"
+          },
+          {
+            "title": "Turborepo Remote Cache: Accelerating CI to “Move Fast”",
+            "url": "https://engineering.mercari.com/en/blog/entry/20260216-turborepo-remote-cache-accelerating-ci-to-move-fast",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "docker, github actions, javascript"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "aws, javascript, kubernetes"
+          },
+          {
+            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
+            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "github actions, javascript, node.js"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, javascript, kubernetes"
+          }
+        ]
+      }
+    },
+    {
       "name": "㈜시옷",
       "norm": "시옷",
       "size": "중소기업",
@@ -118682,6 +119661,269 @@
             "company": "Slack",
             "country": "US",
             "why": "css, javascript, python"
+          }
+        ]
+      }
+    },
+    {
+      "name": "(주)고투엑스코리아",
+      "norm": "고투엑스코리아",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "AI/ML": 2
+      },
+      "top_tech": [
+        {
+          "name": "Java",
+          "count": 2
+        },
+        {
+          "name": "Spring",
+          "count": 2
+        },
+        {
+          "name": "Spring Boot",
+          "count": 2
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "OpenAI",
+          "count": 2
+        },
+        {
+          "name": "REST API",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 2
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 2
+          },
+          {
+            "name": "Spring Boot",
+            "count": 2
+          },
+          {
+            "name": "REST API",
+            "count": 2
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "PostgreSQL",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 2
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "OpenAI",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 8,
+          "evidence": [
+            "생성형 AI",
+            "LLM",
+            "AI 모델"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 4,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "[인턴] AI 백엔드 개발자",
+        "(주)고투엑스코리아 AI 백엔드 개발자 인턴 채용(정규직 전환형)",
+        "(주)레버리지히어로 AI서비스 · 바이브 코딩 빌더 인턴 채용 공고"
+      ],
+      "postings": [
+        {
+          "title": "[인턴] AI 백엔드 개발자",
+          "url": "https://www.wanted.co.kr/wd/369695",
+          "site": "wanted"
+        },
+        {
+          "title": "(주)고투엑스코리아 AI 백엔드 개발자 인턴 채용(정규직 전환형)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54161116&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b167ecb4-3db0-469e-bb28-25cb3b5722ed",
+          "site": "saramin"
+        },
+        {
+          "title": "(주)레버리지히어로 AI서비스 · 바이브 코딩 빌더 인턴 채용 공고",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54027964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=76c368c0-77df-49a0-b917-1204f2fba0d1",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)고투엑스코리아는 AI/데이터 플랫폼 도메인의 중소기업으로, 주로 백엔드 · AI/ML 직군을 채용하며 Java, Spring, Spring Boot, MySQL 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
+          "핵심 역량: Java, Spring, Spring Boot 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+AI/ML) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "AI/데이터 플랫폼 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Spring",
+              "Spring Boot",
+              "REST API"
+            ],
+            "tips": [
+              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
+              "Spring Boot — REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기",
+              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "PostgreSQL"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
+            "techs": [
+              "AWS"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[AI/데이터 플랫폼] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[AI/데이터 플랫폼] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "Now available: Amazon EC2 M9g and M9gd instances powered by new AWS Graviton5 processors",
+            "url": "https://aws.amazon.com/blogs/aws/now-available-amazon-ec2-m9g-and-m9gd-instances-powered-by-new-aws-graviton5-processors",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, java, mysql"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "aws, java, rest api"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.8 on AWS, Aurora MySQL with Kiro Powers, and more (June 1, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-8-on-aws-aurora-mysql-with-kiro-powers-and-more-june-1-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, mysql, postgresql"
+          },
+          {
+            "title": "5년 동안 못 푼 배민 다국어 숙제, AI와 함께 한 달 만에 끝내기",
+            "url": "https://techblog.woowahan.com/26162",
+            "company": "우아한형제들",
+            "country": "KR",
+            "why": "aws, java, spring"
+          },
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "java, mysql, spring"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "aws, java, mysql"
           }
         ]
       }
@@ -121690,6 +122932,389 @@
       }
     },
     {
+      "name": "고위드",
+      "norm": "고위드",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "데이터": 2,
+        "DevOps/인프라": 2,
+        "백엔드": 1,
+        "프론트엔드": 1,
+        "보안": 1
+      },
+      "top_tech": [
+        {
+          "name": "Kubernetes",
+          "count": 3
+        },
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "Redis",
+          "count": 2
+        },
+        {
+          "name": "Kafka",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        },
+        {
+          "name": "GCP",
+          "count": 2
+        },
+        {
+          "name": "Terraform",
+          "count": 2
+        },
+        {
+          "name": "Java",
+          "count": 1
+        },
+        {
+          "name": "TypeScript",
+          "count": 1
+        },
+        {
+          "name": "React",
+          "count": 1
+        },
+        {
+          "name": "HTML",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          },
+          {
+            "name": "Java",
+            "count": 1
+          },
+          {
+            "name": "TypeScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Node.js",
+            "count": 1
+          },
+          {
+            "name": "Spring",
+            "count": 1
+          },
+          {
+            "name": "Spring Boot",
+            "count": 1
+          },
+          {
+            "name": "REST API",
+            "count": 1
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          },
+          {
+            "name": "HTML",
+            "count": 1
+          },
+          {
+            "name": "CSS",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "Redis",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Kubernetes",
+            "count": 3
+          },
+          {
+            "name": "AWS",
+            "count": 2
+          },
+          {
+            "name": "GCP",
+            "count": 2
+          },
+          {
+            "name": "Terraform",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Azure",
+            "count": 1
+          },
+          {
+            "name": "Jenkins",
+            "count": 1
+          },
+          {
+            "name": "Nginx",
+            "count": 1
+          },
+          {
+            "name": "Apache",
+            "count": 1
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          },
+          {
+            "name": "Grafana",
+            "count": 1
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 2
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          },
+          {
+            "name": "GitHub",
+            "count": 1
+          }
+        ],
+        "기타": [
+          {
+            "name": "VM웨어",
+            "count": 1
+          },
+          {
+            "name": "방화벽",
+            "count": 1
+          },
+          {
+            "name": "VPN",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "핀테크/금융",
+          "score": 15,
+          "evidence": [
+            "금융",
+            "핀테크",
+            "결제",
+            "카드사"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 7,
+          "evidence": [
+            "정보보안",
+            "보안 솔루션",
+            "침해",
+            "취약점"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "MSA · 마이크로서비스",
+          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
+        },
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS/GCP/Azure)",
+          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "SPA + REST API (프론트/백 분리)",
+          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
+        }
+      ],
+      "titles": [
+        "[핀테크] Frontend Engineer (프론트엔드 엔지니어)",
+        "DevOps Engineer (데브옵스 엔지니어)",
+        "정보보안 팀장 (Security Lead)"
+      ],
+      "postings": [
+        {
+          "title": "[핀테크] Frontend Engineer (프론트엔드 엔지니어)",
+          "url": "https://www.wanted.co.kr/wd/363290",
+          "site": "wanted"
+        },
+        {
+          "title": "DevOps Engineer (데브옵스 엔지니어)",
+          "url": "https://www.wanted.co.kr/wd/216369",
+          "site": "wanted"
+        },
+        {
+          "title": "정보보안 팀장 (Security Lead)",
+          "url": "https://www.wanted.co.kr/wd/369768",
+          "site": "wanted"
+        }
+      ],
+      "summary": "고위드는 핀테크/금융 도메인의 중소기업으로, 주로 데이터 · DevOps/인프라 직군을 채용하며 Kubernetes, Python, MySQL, Redis 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
+          "핵심 역량: Kubernetes, Python, MySQL 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "데이터 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "Java",
+              "TypeScript"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성"
+            ]
+          },
+          {
+            "stage": "2. 데이터 핵심 스킬",
+            "goal": "수집→적재→가공(ETL) 파이프라인을 한 번 끝까지 만든다",
+            "techs": [
+              "Kafka"
+            ],
+            "tips": [
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "Redis",
+              "Kafka"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "Redis — 캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
+            "techs": [
+              "Kubernetes",
+              "AWS",
+              "GCP",
+              "Terraform"
+            ],
+            "tips": [
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리"
+            ]
+          }
+        ],
+        "tasks": [
+          "[핀테크/금융] 데이터 수집·가공(ETL)과 분석·지표 파이프라인 구축",
+          "[핀테크/금융] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
+          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "aws, gcp, java"
+          },
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "html, java, kafka"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, java, kubernetes"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, gcp, java"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "aws, java, kubernetes"
+          },
+          {
+            "title": "Apache Flink + RocksDB 튜닝으로 광고 Frequency Capping 실시간 집계를 일주일까지 확장하기",
+            "url": "https://toss.tech/article/flink-realtime-frequency-capping",
+            "company": "토스",
+            "country": "KR",
+            "why": "java, kafka, kubernetes"
+          }
+        ]
+      }
+    },
+    {
       "name": "콕스웨이브",
       "norm": "콕스웨이브",
       "size": "중소기업",
@@ -124435,306 +126060,6 @@
       }
     },
     {
-      "name": "페이민트",
-      "norm": "페이민트",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 3,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {
-        "프론트엔드": 2,
-        "백엔드": 1,
-        "모바일": 1,
-        "DevOps/인프라": 1
-      },
-      "top_tech": [
-        {
-          "name": "Vue",
-          "count": 2
-        },
-        {
-          "name": "Next.js",
-          "count": 1
-        },
-        {
-          "name": "Java",
-          "count": 1
-        },
-        {
-          "name": "Kotlin",
-          "count": 1
-        },
-        {
-          "name": "Spring",
-          "count": 1
-        },
-        {
-          "name": "MySQL",
-          "count": 1
-        },
-        {
-          "name": "AWS",
-          "count": 1
-        },
-        {
-          "name": "Docker",
-          "count": 1
-        },
-        {
-          "name": "Jenkins",
-          "count": 1
-        },
-        {
-          "name": "Git",
-          "count": 1
-        },
-        {
-          "name": "TypeScript",
-          "count": 1
-        },
-        {
-          "name": "React",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Java",
-            "count": 1
-          },
-          {
-            "name": "Kotlin",
-            "count": 1
-          },
-          {
-            "name": "TypeScript",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Spring",
-            "count": 1
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "Vue",
-            "count": 2
-          },
-          {
-            "name": "Next.js",
-            "count": 1
-          },
-          {
-            "name": "React",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 1
-          },
-          {
-            "name": "Docker",
-            "count": 1
-          },
-          {
-            "name": "Jenkins",
-            "count": 1
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "핀테크/금융",
-          "score": 23,
-          "evidence": [
-            "금융",
-            "핀테크",
-            "결제",
-            "간편결제"
-          ]
-        },
-        {
-          "name": "모빌리티/자율주행",
-          "score": 2,
-          "evidence": [
-            "택시"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 기반 배포 (Docker)",
-          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
-        },
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "SSR · 풀스택 프레임워크",
-          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
-        },
-        {
-          "label": "네이티브 모바일 앱",
-          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
-        }
-      ],
-      "titles": [
-        "프론트엔드 시니어 개발자",
-        "서버 백엔드 개발자(Java/Kotlin)",
-        "프론트엔드 개발자"
-      ],
-      "postings": [
-        {
-          "title": "프론트엔드 시니어 개발자",
-          "url": "https://www.wanted.co.kr/wd/369602",
-          "site": "wanted"
-        },
-        {
-          "title": "서버 백엔드 개발자(Java/Kotlin)",
-          "url": "https://www.wanted.co.kr/wd/272871",
-          "site": "wanted"
-        },
-        {
-          "title": "프론트엔드 개발자",
-          "url": "https://www.wanted.co.kr/wd/284621",
-          "site": "wanted"
-        }
-      ],
-      "summary": "페이민트는 핀테크/금융 도메인의 중소기업으로, 주로 프론트엔드 · 백엔드 직군을 채용하며 Vue, Next.js, Java, Kotlin 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Vue, Next.js, Java 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "프론트엔드 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 기반 배포 (Docker) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Java",
-              "Kotlin",
-              "TypeScript"
-            ],
-            "tips": [
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
-              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기",
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성"
-            ]
-          },
-          {
-            "stage": "2. 프론트엔드 핵심 스킬",
-            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
-            "techs": [
-              "Vue",
-              "Next.js",
-              "React"
-            ],
-            "tips": [
-              "Vue — 반응형 시스템·컴포지션 API로 화면 구성",
-              "Next.js — SSR/SSG·라우팅·서버컴포넌트로 풀스택 웹 구축",
-              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 기반 배포 (Docker))",
-            "techs": [
-              "AWS",
-              "Docker",
-              "Jenkins"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
-            ]
-          }
-        ],
-        "tasks": [
-          "[핀테크/금융] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
-          "[핀테크/금융] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "컨테이너 기반 배포·오토스케일링 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, git, java"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, java, kotlin"
-          },
-          {
-            "title": "Taming Visual Regressions with Playwright and Docker",
-            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
-            "company": "Swiggy",
-            "country": "IN",
-            "why": "docker, git, react"
-          },
-          {
-            "title": "[디자인 시스템 어떻게 만들었어요?(3)] Tree Shaking과 구형 브라우저 대응",
-            "url": "https://techblog.yogiyo.co.kr/%EB%94%94%EC%9E%90%EC%9D%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%A7%8C%EB%93%A4%EC%97%88%EC%96%B4%EC%9A%94-3-tree-shaking%EA%B3%BC-%EA%B5%AC%ED%98%95-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EB%8C%80%EC%9D%91-d29474baf7ba",
-            "company": "요기요",
-            "country": "KR",
-            "why": "java, next.js, react"
-          },
-          {
-            "title": "Accelerating Mobile App development at Zalando with Rendering Engine and React Native",
-            "url": "https://engineering.zalando.com/posts/2025/10/accelerating-mobile-app-development-at-zalando-with-rendering-engine-and-react-native.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "git, kotlin, react"
-          },
-          {
-            "title": "사운드 리소스 전달 WebApp 만들기",
-            "url": "https://tech.devsisters.com/posts/building-a-sound-vcs-webapp",
-            "company": "데브시스터즈",
-            "country": "KR",
-            "why": "aws, docker, git"
-          }
-        ]
-      }
-    },
-    {
       "name": "블록체인랩스",
       "norm": "블록체인랩스",
       "size": "중소기업",
@@ -127107,6 +128432,276 @@
       }
     },
     {
+      "name": "루닛(Lunit)",
+      "norm": "루닛lunit",
+      "size": "중견기업",
+      "size_alias": "루닛",
+      "posting_count": 3,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 2,
+        "백엔드": 1,
+        "모바일": 1,
+        "DevOps/인프라": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 2
+        },
+        {
+          "name": "Kubernetes",
+          "count": 2
+        },
+        {
+          "name": "Kotlin",
+          "count": 1
+        },
+        {
+          "name": "Rust",
+          "count": 1
+        },
+        {
+          "name": "Spring",
+          "count": 1
+        },
+        {
+          "name": "Docker",
+          "count": 1
+        },
+        {
+          "name": "OpenCV",
+          "count": 1
+        },
+        {
+          "name": "GCP",
+          "count": 1
+        },
+        {
+          "name": "Azure",
+          "count": 1
+        },
+        {
+          "name": "GitHub Actions",
+          "count": 1
+        },
+        {
+          "name": "Terraform",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          },
+          {
+            "name": "Kotlin",
+            "count": 1
+          },
+          {
+            "name": "Rust",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Kubernetes",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "GCP",
+            "count": 1
+          },
+          {
+            "name": "Azure",
+            "count": 1
+          },
+          {
+            "name": "GitHub Actions",
+            "count": 1
+          },
+          {
+            "name": "Terraform",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "OpenCV",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "의료/헬스케어/바이오",
+          "score": 20,
+          "evidence": [
+            "의료",
+            "병원",
+            "바이오",
+            "진단"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 3,
+          "evidence": [
+            "AI 모델"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (GCP/Azure)",
+          "why": "GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "네이티브 모바일 앱",
+          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
+        }
+      ],
+      "titles": [
+        "Senior Backend Engineer(ML Serving)",
+        "Biomedical Research Scientist",
+        "DevOps Engineer"
+      ],
+      "postings": [
+        {
+          "title": "Senior Backend Engineer(ML Serving)",
+          "url": "https://www.wanted.co.kr/wd/369655",
+          "site": "wanted"
+        },
+        {
+          "title": "Biomedical Research Scientist",
+          "url": "https://www.wanted.co.kr/wd/356755",
+          "site": "wanted"
+        },
+        {
+          "title": "DevOps Engineer",
+          "url": "https://www.wanted.co.kr/wd/362539",
+          "site": "wanted"
+        }
+      ],
+      "summary": "루닛(Lunit)는 의료/헬스케어/바이오 도메인의 중견기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 Python, Kubernetes, Kotlin, Rust 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
+          "핵심 역량: Python, Kubernetes, Kotlin 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "의료/헬스케어/바이오 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "Kotlin",
+              "Rust"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기",
+              "Rust — 소유권·라이프타임·트레잇 — 소규모 CLI로 메모리 모델 체득"
+            ]
+          },
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "OpenCV"
+            ],
+            "tips": []
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "Kubernetes",
+              "Docker",
+              "GCP",
+              "Azure"
+            ],
+            "tips": [
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+              "Azure — App Service·AKS·Storage로 클라우드 배포 실습"
+            ]
+          }
+        ],
+        "tasks": [
+          "[의료/헬스케어/바이오] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[의료/헬스케어/바이오] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "azure, gcp, kubernetes"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "azure, github actions, python"
+          },
+          {
+            "title": "Turborepo Remote Cache: Accelerating CI to “Move Fast”",
+            "url": "https://engineering.mercari.com/en/blog/entry/20260216-turborepo-remote-cache-accelerating-ci-to-move-fast",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "docker, gcp, github actions"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "gcp, github actions, kotlin"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "kubernetes, python, rust"
+          },
+          {
+            "title": "Enabling AI usage at Mercari with Secure Devin Management",
+            "url": "https://engineering.mercari.com/en/blog/entry/20260403-secure-devin-management",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "gcp, github actions, terraform"
+          }
+        ]
+      }
+    },
+    {
       "name": "트리플렛",
       "norm": "트리플렛",
       "size": "중소기업",
@@ -128406,6 +130001,244 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "java, mysql, spring"
+          }
+        ]
+      }
+    },
+    {
+      "name": "알로스타",
+      "norm": "알로스타",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 3,
+        "백엔드": 1,
+        "프론트엔드": 1,
+        "DevOps/인프라": 1,
+        "풀스택": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "React",
+          "count": 1
+        },
+        {
+          "name": "AWS",
+          "count": 1
+        },
+        {
+          "name": "GCP",
+          "count": 1
+        },
+        {
+          "name": "Docker",
+          "count": 1
+        },
+        {
+          "name": "Jenkins",
+          "count": 1
+        },
+        {
+          "name": "GitHub Actions",
+          "count": 1
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "PostgreSQL",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "GCP",
+            "count": 1
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Jenkins",
+            "count": 1
+          },
+          {
+            "name": "GitHub Actions",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "의료/헬스케어/바이오",
+          "score": 16,
+          "evidence": [
+            "헬스케어",
+            "바이오",
+            "진단"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 6,
+          "evidence": [
+            "B2B",
+            "솔루션"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 기반 배포 (Docker)",
+          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
+        },
+        {
+          "label": "클라우드 (AWS/GCP)",
+          "why": "AWS, GCP 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "[AI 헬스케어] 풀스택 개발자",
+        "[AI헬스케어] 데이터 엔지니어",
+        "[AI 헬스케어] 전략기획 및 사업개발 담당"
+      ],
+      "postings": [
+        {
+          "title": "[AI 헬스케어] 풀스택 개발자",
+          "url": "https://www.wanted.co.kr/wd/320768",
+          "site": "wanted"
+        },
+        {
+          "title": "[AI헬스케어] 데이터 엔지니어",
+          "url": "https://www.wanted.co.kr/wd/363631",
+          "site": "wanted"
+        },
+        {
+          "title": "[AI 헬스케어] 전략기획 및 사업개발 담당",
+          "url": "https://www.wanted.co.kr/wd/369627",
+          "site": "wanted"
+        }
+      ],
+      "summary": "알로스타는 의료/헬스케어/바이오 도메인의 중소기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 React, AWS, GCP, Docker 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: React, AWS, GCP 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "의료/헬스케어/바이오 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 기반 배포 (Docker) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "PostgreSQL"
+            ],
+            "tips": [
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 기반 배포 (Docker))",
+            "techs": [
+              "AWS",
+              "GCP",
+              "Docker",
+              "Jenkins"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[의료/헬스케어/바이오] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[의료/헬스케어/바이오] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "FE News 26년 6월 소식을 전해드립니다.",
+            "url": "https://d2.naver.com/news/7161766",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "aws, gcp, github actions"
+          },
+          {
+            "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
+            "url": "https://medium.com/daangn/%EB%88%84%EA%B5%AC%EB%82%98-%EC%B0%BE%EC%95%84%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98-%EC%84%9C%EB%B2%84-llm-%EB%A6%B4%EB%A6%AC%EC%A6%88-%EB%85%B8%ED%8A%B8-%EB%8F%84%EC%9E%85%EA%B8%B0-93afe203d766",
+            "company": "당근",
+            "country": "KR",
+            "why": "github actions, jenkins, postgresql"
+          },
+          {
+            "title": "AWS Weekly Roundup: Amazon Bedrock AgentCore payments, Agent Toolkit for AWS, and more (May 11, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-amazon-bedrock-agentcore-payments-agent-toolkit-for-aws-and-more-may-11-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, postgresql"
+          },
+          {
+            "title": "複数の AI を使い分けて新たな施策に次々と取り組んだ SRE の働き方 [DeNA インフラ SRE]",
+            "url": "https://engineering.dena.com/blog/2026/03/sre-productivity-with-ai",
+            "company": "DeNA",
+            "country": "JP",
+            "why": "aws, gcp, github actions"
+          },
+          {
+            "title": "Turborepo Remote Cache: Accelerating CI to “Move Fast”",
+            "url": "https://engineering.mercari.com/en/blog/entry/20260216-turborepo-remote-cache-accelerating-ci-to-move-fast",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "docker, gcp, github actions"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "aws, gcp, github actions"
           }
         ]
       }
@@ -176089,293 +177922,6 @@
       }
     },
     {
-      "name": "청림인베스트",
-      "norm": "청림인베스트",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {
-        "백엔드": 2,
-        "DevOps/인프라": 2,
-        "프론트엔드": 1,
-        "풀스택": 1
-      },
-      "top_tech": [
-        {
-          "name": "Java",
-          "count": 2
-        },
-        {
-          "name": "Spring",
-          "count": 2
-        },
-        {
-          "name": "Spring Boot",
-          "count": 2
-        },
-        {
-          "name": "MySQL",
-          "count": 2
-        },
-        {
-          "name": "Redis",
-          "count": 2
-        },
-        {
-          "name": "AWS",
-          "count": 2
-        },
-        {
-          "name": "Docker",
-          "count": 2
-        },
-        {
-          "name": "JPA",
-          "count": 2
-        },
-        {
-          "name": "MongoDB",
-          "count": 1
-        },
-        {
-          "name": "JavaScript",
-          "count": 1
-        },
-        {
-          "name": "React",
-          "count": 1
-        },
-        {
-          "name": "jQuery",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Java",
-            "count": 2
-          },
-          {
-            "name": "JavaScript",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Spring",
-            "count": 2
-          },
-          {
-            "name": "Spring Boot",
-            "count": 2
-          },
-          {
-            "name": "JPA",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 1
-          },
-          {
-            "name": "jQuery",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 2
-          },
-          {
-            "name": "Redis",
-            "count": 2
-          },
-          {
-            "name": "MongoDB",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 2
-          },
-          {
-            "name": "Docker",
-            "count": 2
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 5,
-          "evidence": [
-            "B2B",
-            "솔루션",
-            "업무 자동화"
-          ]
-        },
-        {
-          "name": "핀테크/금융",
-          "score": 4,
-          "evidence": [
-            "핀테크",
-            "결제"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 기반 배포 (Docker)",
-          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
-        },
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "SPA + REST API (프론트/백 분리)",
-          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
-        }
-      ],
-      "titles": [
-        "백엔드 개발자",
-        "풀스택 개발자"
-      ],
-      "postings": [
-        {
-          "title": "백엔드 개발자",
-          "url": "https://www.wanted.co.kr/wd/363967",
-          "site": "wanted"
-        },
-        {
-          "title": "풀스택 개발자",
-          "url": "https://www.wanted.co.kr/wd/363973",
-          "site": "wanted"
-        }
-      ],
-      "summary": "청림인베스트는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 백엔드 · DevOps/인프라 직군을 채용하며 Java, Spring, Spring Boot, MySQL 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Java, Spring, Spring Boot 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "백엔드 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 기반 배포 (Docker) 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Java",
-              "JavaScript"
-            ],
-            "tips": [
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
-            ]
-          },
-          {
-            "stage": "2. 백엔드 핵심 스킬",
-            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
-            "techs": [
-              "Spring",
-              "Spring Boot",
-              "JPA"
-            ],
-            "tips": [
-              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
-              "Spring Boot — REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기",
-              "JPA — 엔티티 매핑·연관관계·N+1 문제와 페치 전략 이해"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "Redis",
-              "MongoDB"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "Redis — 캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
-              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 기반 배포 (Docker))",
-            "techs": [
-              "AWS",
-              "Docker"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화"
-            ]
-          }
-        ],
-        "tasks": [
-          "[B2B SaaS/엔터프라이즈] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "[B2B SaaS/엔터프라이즈] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
-          "컨테이너 기반 배포·오토스케일링 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "왓챠 추천 서비스 MLOps 적용기 Part2",
-            "url": "https://medium.com/watcha/%EC%99%93%EC%B1%A0-%EC%B6%94%EC%B2%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-mlops-%EC%A0%81%EC%9A%A9%EA%B8%B0-part2-74e07ca33709",
-            "company": "왓챠",
-            "country": "KR",
-            "why": "aws, docker, java"
-          },
-          {
-            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
-            "url": "https://d2.naver.com/helloworld/6512234",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "java, mysql, spring"
-          },
-          {
-            "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
-            "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "aws, javascript, mysql"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, java, javascript"
-          },
-          {
-            "title": "Apache Flink + RocksDB 튜닝으로 광고 Frequency Capping 실시간 집계를 일주일까지 확장하기",
-            "url": "https://toss.tech/article/flink-realtime-frequency-capping",
-            "company": "토스",
-            "country": "KR",
-            "why": "java, redis, spring"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, java, mysql"
-          }
-        ]
-      }
-    },
-    {
       "name": "렛유인에듀",
       "norm": "렛유인에듀",
       "size": "중소기업",
@@ -182049,8 +183595,8 @@
       }
     },
     {
-      "name": "아드리엘(Adriel)",
-      "norm": "아드리엘adriel",
+      "name": "넥스트랩",
+      "norm": "넥스트랩",
       "size": "중소기업",
       "size_alias": null,
       "posting_count": 2,
@@ -182058,102 +183604,47 @@
         "wanted"
       ],
       "roles": {
-        "AI/ML": 1,
-        "DevOps/인프라": 1,
-        "백엔드": 1
+        "AI/ML": 2,
+        "펌웨어/임베디드": 1
       },
       "top_tech": [
-        {
-          "name": "TypeScript",
-          "count": 2
-        },
-        {
-          "name": "Node.js",
-          "count": 2
-        },
-        {
-          "name": "AWS",
-          "count": 2
-        },
-        {
-          "name": "Elasticsearch",
-          "count": 1
-        },
-        {
-          "name": "Docker",
-          "count": 1
-        },
-        {
-          "name": "Kubernetes",
-          "count": 1
-        },
-        {
-          "name": "GitLab CI",
-          "count": 1
-        },
-        {
-          "name": "GitHub Actions",
-          "count": 1
-        },
         {
           "name": "LangChain",
           "count": 1
         },
         {
-          "name": "JavaScript",
+          "name": "PLC",
           "count": 1
         },
         {
-          "name": "REST API",
+          "name": "센서",
+          "count": 1
+        },
+        {
+          "name": "이더넷",
+          "count": 1
+        },
+        {
+          "name": "와이파이",
+          "count": 1
+        },
+        {
+          "name": "셀룰러",
+          "count": 1
+        },
+        {
+          "name": "FCC",
+          "count": 1
+        },
+        {
+          "name": "광케이블",
           "count": 1
         }
       ],
       "tech_categories": {
-        "언어": [
+        "펌웨어/임베디드": [
           {
-            "name": "TypeScript",
-            "count": 2
-          },
-          {
-            "name": "JavaScript",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Node.js",
-            "count": 2
-          },
-          {
-            "name": "REST API",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "Elasticsearch",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 2
-          },
-          {
-            "name": "Docker",
-            "count": 1
-          },
-          {
-            "name": "Kubernetes",
-            "count": 1
-          },
-          {
-            "name": "GitLab CI",
-            "count": 1
-          },
-          {
-            "name": "GitHub Actions",
+            "name": "PLC",
             "count": 1
           }
         ],
@@ -182162,77 +183653,85 @@
             "name": "LangChain",
             "count": 1
           }
+        ],
+        "기타": [
+          {
+            "name": "센서",
+            "count": 1
+          },
+          {
+            "name": "이더넷",
+            "count": 1
+          },
+          {
+            "name": "와이파이",
+            "count": 1
+          },
+          {
+            "name": "셀룰러",
+            "count": 1
+          },
+          {
+            "name": "FCC",
+            "count": 1
+          },
+          {
+            "name": "광케이블",
+            "count": 1
+          }
         ]
       },
       "domains": [
         {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 5,
+          "name": "제조/하드웨어/로보틱스",
+          "score": 13,
           "evidence": [
-            "SaaS",
-            "B2B",
-            "워크플로우"
+            "제조",
+            "디바이스",
+            "센서",
+            "양산"
           ]
         },
         {
           "name": "AI/데이터 플랫폼",
-          "score": 2,
+          "score": 9,
           "evidence": [
-            "LLM"
+            "LLM",
+            "자연어처리"
           ]
         }
       ],
       "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
         {
           "label": "LLM · 생성형 AI 애플리케이션",
           "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
         }
       ],
       "titles": [
-        "[B2B SaaS] 인프라 & AI 개발자",
-        "[B2B SaaS] Jr. 백엔드 개발자"
+        "[연구개발] LLM RAG 시스템 개발자 (3년 이상)",
+        "회로개발 (AI 융합 품질측정 하드웨어) 3년 이상"
       ],
       "postings": [
         {
-          "title": "[B2B SaaS] 인프라 & AI 개발자",
-          "url": "https://www.wanted.co.kr/wd/359705",
+          "title": "[연구개발] LLM RAG 시스템 개발자 (3년 이상)",
+          "url": "https://www.wanted.co.kr/wd/347136",
           "site": "wanted"
         },
         {
-          "title": "[B2B SaaS] Jr. 백엔드 개발자",
-          "url": "https://www.wanted.co.kr/wd/359700",
+          "title": "회로개발 (AI 융합 품질측정 하드웨어) 3년 이상",
+          "url": "https://www.wanted.co.kr/wd/368778",
           "site": "wanted"
         }
       ],
-      "summary": "아드리엘(Adriel)는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 TypeScript, Node.js, AWS, Elasticsearch 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "summary": "넥스트랩는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 AI/ML · 펌웨어/임베디드 직군을 채용하며 LangChain, PLC, 센서, 이더넷 기반으로 개발합니다. 아키텍처는 LLM · 생성형 AI 애플리케이션로 추정됩니다.",
       "career_guide": {
         "wants": [
-          "핵심 역량: TypeScript, Node.js, AWS 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
+          "핵심 역량: LangChain, PLC, 센서 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+펌웨어/임베디드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "LLM · 생성형 AI 애플리케이션 같은 구조에 대한 이해·운영 경험"
         ],
         "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "TypeScript",
-              "JavaScript"
-            ],
-            "tips": [
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성",
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심"
-            ]
-          },
           {
             "stage": "2. AI/ML 핵심 스킬",
             "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
@@ -182241,31 +183740,6 @@
             ],
             "tips": [
               "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "Elasticsearch"
-            ],
-            "tips": [
-              "Elasticsearch — 역색인·분석기·검색 쿼리로 검색 기능 구현"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "AWS",
-              "Docker",
-              "Kubernetes",
-              "GitLab CI"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일"
             ]
           },
           {
@@ -182282,53 +183756,52 @@
           }
         ],
         "tasks": [
-          "[B2B SaaS/엔터프라이즈] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[B2B SaaS/엔터프라이즈] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
-          "컨테이너 기반 배포·오토스케일링 운영",
+          "[제조/하드웨어/로보틱스] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[제조/하드웨어/로보틱스] 디바이스 펌웨어·하드웨어 제어 SW 개발",
           "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
         ],
         "study_blogs": [
           {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "aws, javascript, kubernetes"
-          },
-          {
-            "title": "Tracing NodeJs Applications with OpenTelemetry",
-            "url": "https://medium.com/zigbang/tracing-nodejs-applications-with-opentelemetry-624958d38d4d",
-            "company": "직방",
-            "country": "KR",
-            "why": "docker, javascript, kubernetes"
-          },
-          {
-            "title": "Turborepo Remote Cache: Accelerating CI to “Move Fast”",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260216-turborepo-remote-cache-accelerating-ci-to-move-fast",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "docker, github actions, javascript"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "github actions, javascript, node.js"
-          },
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
+            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
             "company": "AWS",
             "country": "US",
-            "why": "aws, javascript, kubernetes"
+            "why": "langchain"
           },
           {
-            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
-            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
-            "company": "하이퍼커넥트",
+            "title": "Modernize your workflows: Amazon WorkSpaces now gives AI agents their own desktop (preview)",
+            "url": "https://aws.amazon.com/blogs/aws/modernize-your-workflows-amazon-workspaces-now-gives-ai-agents-their-own-desktop-preview",
+            "company": "AWS",
+            "country": "US",
+            "why": "langchain"
+          },
+          {
+            "title": "우아한공방의 새로운 동료, 시스템 맥락을 가진 챗봇서비스 개발기(feat. RAG)",
+            "url": "https://techblog.woowahan.com/26319",
+            "company": "우아한형제들",
             "country": "KR",
-            "why": "aws, javascript, kubernetes"
+            "why": "langchain"
+          },
+          {
+            "title": "RAG, 들어는 봤는데… 내 서비스엔 어떻게 쓰지?",
+            "url": "https://techblog.woowahan.com/25900",
+            "company": "우아한형제들",
+            "country": "KR",
+            "why": "langchain"
+          },
+          {
+            "title": "Growing the Cloudflare AI team with talent from Ensemble AI",
+            "url": "https://blog.cloudflare.com/ensemble-ai-talent-joins-cloudflare",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "AI/ML, LLM/생성형"
+          },
+          {
+            "title": "MLXP : Kubernetes LLM Serving  최적화 기술 도입기",
+            "url": "https://d2.naver.com/helloworld/1059238",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "AI/ML, LLM/생성형"
           }
         ]
       }
@@ -188571,373 +190044,6 @@
             "company": "우아한형제들",
             "country": "KR",
             "why": "bash, react, typescript"
-          }
-        ]
-      }
-    },
-    {
-      "name": "고위드",
-      "norm": "고위드",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {
-        "데이터": 2,
-        "백엔드": 1,
-        "프론트엔드": 1,
-        "DevOps/인프라": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 2
-        },
-        {
-          "name": "MySQL",
-          "count": 2
-        },
-        {
-          "name": "Redis",
-          "count": 2
-        },
-        {
-          "name": "Kubernetes",
-          "count": 2
-        },
-        {
-          "name": "Kafka",
-          "count": 2
-        },
-        {
-          "name": "Java",
-          "count": 1
-        },
-        {
-          "name": "TypeScript",
-          "count": 1
-        },
-        {
-          "name": "React",
-          "count": 1
-        },
-        {
-          "name": "HTML",
-          "count": 1
-        },
-        {
-          "name": "CSS",
-          "count": 1
-        },
-        {
-          "name": "Node.js",
-          "count": 1
-        },
-        {
-          "name": "Spring",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 2
-          },
-          {
-            "name": "Java",
-            "count": 1
-          },
-          {
-            "name": "TypeScript",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Node.js",
-            "count": 1
-          },
-          {
-            "name": "Spring",
-            "count": 1
-          },
-          {
-            "name": "Spring Boot",
-            "count": 1
-          },
-          {
-            "name": "REST API",
-            "count": 1
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 1
-          },
-          {
-            "name": "HTML",
-            "count": 1
-          },
-          {
-            "name": "CSS",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 2
-          },
-          {
-            "name": "Redis",
-            "count": 2
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Kubernetes",
-            "count": 2
-          },
-          {
-            "name": "Docker",
-            "count": 1
-          },
-          {
-            "name": "AWS",
-            "count": 1
-          },
-          {
-            "name": "GCP",
-            "count": 1
-          },
-          {
-            "name": "Azure",
-            "count": 1
-          },
-          {
-            "name": "Jenkins",
-            "count": 1
-          },
-          {
-            "name": "Terraform",
-            "count": 1
-          },
-          {
-            "name": "Nginx",
-            "count": 1
-          },
-          {
-            "name": "Apache",
-            "count": 1
-          },
-          {
-            "name": "Linux",
-            "count": 1
-          }
-        ],
-        "데이터": [
-          {
-            "name": "Kafka",
-            "count": 2
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 1
-          },
-          {
-            "name": "GitHub",
-            "count": 1
-          }
-        ],
-        "기타": [
-          {
-            "name": "VM웨어",
-            "count": 1
-          },
-          {
-            "name": "방화벽",
-            "count": 1
-          },
-          {
-            "name": "VPN",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "핀테크/금융",
-          "score": 9,
-          "evidence": [
-            "금융",
-            "핀테크",
-            "결제"
-          ]
-        },
-        {
-          "name": "보안",
-          "score": 2,
-          "evidence": [
-            "취약점"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "MSA · 마이크로서비스",
-          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
-        },
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS/GCP/Azure)",
-          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "데이터 파이프라인 · ETL",
-          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
-        },
-        {
-          "label": "SPA + REST API (프론트/백 분리)",
-          "why": "SPA 프레임워크 + 서버 프레임워크 — 화면/서버를 API로 분리한 구조"
-        }
-      ],
-      "titles": [
-        "[핀테크] Frontend Engineer (프론트엔드 엔지니어)",
-        "DevOps Engineer (데브옵스 엔지니어)"
-      ],
-      "postings": [
-        {
-          "title": "[핀테크] Frontend Engineer (프론트엔드 엔지니어)",
-          "url": "https://www.wanted.co.kr/wd/363290",
-          "site": "wanted"
-        },
-        {
-          "title": "DevOps Engineer (데브옵스 엔지니어)",
-          "url": "https://www.wanted.co.kr/wd/216369",
-          "site": "wanted"
-        }
-      ],
-      "summary": "고위드는 핀테크/금융 도메인의 중소기업으로, 주로 데이터 · 백엔드 직군을 채용하며 Python, MySQL, Redis, Kubernetes 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python, MySQL, Redis 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "데이터 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python",
-              "Java",
-              "TypeScript"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
-              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성"
-            ]
-          },
-          {
-            "stage": "2. 데이터 핵심 스킬",
-            "goal": "수집→적재→가공(ETL) 파이프라인을 한 번 끝까지 만든다",
-            "techs": [
-              "Kafka"
-            ],
-            "tips": [
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "Redis",
-              "Kafka"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "Redis — 캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
-            "techs": [
-              "Kubernetes",
-              "Docker",
-              "AWS",
-              "GCP"
-            ],
-            "tips": [
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해"
-            ]
-          }
-        ],
-        "tasks": [
-          "[핀테크/금융] 데이터 수집·가공(ETL)과 분석·지표 파이프라인 구축",
-          "[핀테크/금융] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
-          "컨테이너 기반 배포·오토스케일링 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
-            "url": "https://d2.naver.com/helloworld/6512234",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "html, java, kafka"
-          },
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "css, html, node.js"
-          },
-          {
-            "title": "Apache Flink + RocksDB 튜닝으로 광고 Frequency Capping 실시간 집계를 일주일까지 확장하기",
-            "url": "https://toss.tech/article/flink-realtime-frequency-capping",
-            "company": "토스",
-            "country": "KR",
-            "why": "java, kafka, kubernetes"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "java, kubernetes, node.js"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "java, kafka, mysql"
-          },
-          {
-            "title": "Tracing NodeJs Applications with OpenTelemetry",
-            "url": "https://medium.com/zigbang/tracing-nodejs-applications-with-opentelemetry-624958d38d4d",
-            "company": "직방",
-            "country": "KR",
-            "why": "kubernetes, mysql, node.js"
           }
         ]
       }
@@ -199650,237 +200756,6 @@
       }
     },
     {
-      "name": "알로스타",
-      "norm": "알로스타",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {
-        "AI/ML": 2,
-        "백엔드": 1,
-        "프론트엔드": 1,
-        "DevOps/인프라": 1,
-        "풀스택": 1,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "React",
-          "count": 1
-        },
-        {
-          "name": "AWS",
-          "count": 1
-        },
-        {
-          "name": "GCP",
-          "count": 1
-        },
-        {
-          "name": "Docker",
-          "count": 1
-        },
-        {
-          "name": "Jenkins",
-          "count": 1
-        },
-        {
-          "name": "GitHub Actions",
-          "count": 1
-        },
-        {
-          "name": "PostgreSQL",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "PostgreSQL",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 1
-          },
-          {
-            "name": "GCP",
-            "count": 1
-          },
-          {
-            "name": "Docker",
-            "count": 1
-          },
-          {
-            "name": "Jenkins",
-            "count": 1
-          },
-          {
-            "name": "GitHub Actions",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "의료/헬스케어/바이오",
-          "score": 12,
-          "evidence": [
-            "헬스케어",
-            "바이오",
-            "진단"
-          ]
-        },
-        {
-          "name": "콘텐츠/미디어/광고",
-          "score": 3,
-          "evidence": [
-            "광고"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 기반 배포 (Docker)",
-          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
-        },
-        {
-          "label": "클라우드 (AWS/GCP)",
-          "why": "AWS, GCP 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        }
-      ],
-      "titles": [
-        "[AI 헬스케어] 풀스택 개발자",
-        "[AI헬스케어] 데이터 엔지니어"
-      ],
-      "postings": [
-        {
-          "title": "[AI 헬스케어] 풀스택 개발자",
-          "url": "https://www.wanted.co.kr/wd/320768",
-          "site": "wanted"
-        },
-        {
-          "title": "[AI헬스케어] 데이터 엔지니어",
-          "url": "https://www.wanted.co.kr/wd/363631",
-          "site": "wanted"
-        }
-      ],
-      "summary": "알로스타는 의료/헬스케어/바이오 도메인의 중소기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 React, AWS, GCP, Docker 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: React, AWS, GCP 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "의료/헬스케어/바이오 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 기반 배포 (Docker) 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "PostgreSQL"
-            ],
-            "tips": [
-              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 기반 배포 (Docker))",
-            "techs": [
-              "AWS",
-              "GCP",
-              "Docker",
-              "Jenkins"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
-            ]
-          }
-        ],
-        "tasks": [
-          "[의료/헬스케어/바이오] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[의료/헬스케어/바이오] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "컨테이너 기반 배포·오토스케일링 운영",
-          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
-        ],
-        "study_blogs": [
-          {
-            "title": "FE News 26년 6월 소식을 전해드립니다.",
-            "url": "https://d2.naver.com/news/7161766",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "aws, gcp, github actions"
-          },
-          {
-            "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
-            "url": "https://medium.com/daangn/%EB%88%84%EA%B5%AC%EB%82%98-%EC%B0%BE%EC%95%84%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98-%EC%84%9C%EB%B2%84-llm-%EB%A6%B4%EB%A6%AC%EC%A6%88-%EB%85%B8%ED%8A%B8-%EB%8F%84%EC%9E%85%EA%B8%B0-93afe203d766",
-            "company": "당근",
-            "country": "KR",
-            "why": "github actions, jenkins, postgresql"
-          },
-          {
-            "title": "AWS Weekly Roundup: Amazon Bedrock AgentCore payments, Agent Toolkit for AWS, and more (May 11, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-amazon-bedrock-agentcore-payments-agent-toolkit-for-aws-and-more-may-11-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, docker, postgresql"
-          },
-          {
-            "title": "複数の AI を使い分けて新たな施策に次々と取り組んだ SRE の働き方 [DeNA インフラ SRE]",
-            "url": "https://engineering.dena.com/blog/2026/03/sre-productivity-with-ai",
-            "company": "DeNA",
-            "country": "JP",
-            "why": "aws, gcp, github actions"
-          },
-          {
-            "title": "Turborepo Remote Cache: Accelerating CI to “Move Fast”",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260216-turborepo-remote-cache-accelerating-ci-to-move-fast",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "docker, gcp, github actions"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, gcp, github actions"
-          }
-        ]
-      }
-    },
-    {
       "name": "블리츠다이나믹스",
       "norm": "블리츠다이나믹스",
       "size": "중소기업",
@@ -206094,208 +206969,6 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "html, mysql, sql"
-          }
-        ]
-      }
-    },
-    {
-      "name": "루닛(Lunit)",
-      "norm": "루닛lunit",
-      "size": "중견기업",
-      "size_alias": "루닛",
-      "posting_count": 2,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {
-        "AI/ML": 1,
-        "DevOps/인프라": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 1
-        },
-        {
-          "name": "GCP",
-          "count": 1
-        },
-        {
-          "name": "Azure",
-          "count": 1
-        },
-        {
-          "name": "Kubernetes",
-          "count": 1
-        },
-        {
-          "name": "GitHub Actions",
-          "count": 1
-        },
-        {
-          "name": "Terraform",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "GCP",
-            "count": 1
-          },
-          {
-            "name": "Azure",
-            "count": 1
-          },
-          {
-            "name": "Kubernetes",
-            "count": 1
-          },
-          {
-            "name": "GitHub Actions",
-            "count": 1
-          },
-          {
-            "name": "Terraform",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "의료/헬스케어/바이오",
-          "score": 17,
-          "evidence": [
-            "의료",
-            "바이오",
-            "진단",
-            "임상"
-          ]
-        },
-        {
-          "name": "프롭테크/부동산",
-          "score": 3,
-          "evidence": [
-            "중개",
-            "공간"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (GCP/Azure)",
-          "why": "GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        }
-      ],
-      "titles": [
-        "Biomedical Research Scientist",
-        "DevOps Engineer"
-      ],
-      "postings": [
-        {
-          "title": "Biomedical Research Scientist",
-          "url": "https://www.wanted.co.kr/wd/356755",
-          "site": "wanted"
-        },
-        {
-          "title": "DevOps Engineer",
-          "url": "https://www.wanted.co.kr/wd/362539",
-          "site": "wanted"
-        }
-      ],
-      "summary": "루닛(Lunit)는 의료/헬스케어/바이오 도메인의 중견기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 Python, GCP, Azure, Kubernetes 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python, GCP, Azure 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "의료/헬스케어/바이오 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "GCP",
-              "Azure",
-              "Kubernetes",
-              "GitHub Actions"
-            ],
-            "tips": [
-              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
-              "Azure — App Service·AKS·Storage로 클라우드 배포 실습",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
-              "GitHub Actions — 워크플로 YAML로 CI/CD 파이프라인 구성"
-            ]
-          }
-        ],
-        "tasks": [
-          "[의료/헬스케어/바이오] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[의료/헬스케어/바이오] CI/CD·컨테이너 배포와 모니터링·인프라 운영",
-          "컨테이너 기반 배포·오토스케일링 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "azure, gcp, kubernetes"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "azure, github actions, python"
-          },
-          {
-            "title": "Enabling AI usage at Mercari with Secure Devin Management",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260403-secure-devin-management",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "gcp, github actions, terraform"
-          },
-          {
-            "title": "複数の AI を使い分けて新たな施策に次々と取り組んだ SRE の働き方 [DeNA インフラ SRE]",
-            "url": "https://engineering.dena.com/blog/2026/03/sre-productivity-with-ai",
-            "company": "DeNA",
-            "country": "JP",
-            "why": "gcp, github actions, terraform"
-          },
-          {
-            "title": "Turborepo Remote Cache: Accelerating CI to “Move Fast”",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260216-turborepo-remote-cache-accelerating-ci-to-move-fast",
-            "company": "Mercari",
-            "country": "JP",
-            "why": "gcp, github actions, kubernetes"
-          },
-          {
-            "title": "APACHE SPARK OPTIMISATIONS",
-            "url": "https://blog.flipkart.tech/apache-spark-optimisations-c3464f71bd38",
-            "company": "Flipkart",
-            "country": "IN",
-            "why": "gcp, kubernetes, python"
           }
         ]
       }
@@ -297000,262 +297673,6 @@
             "company": "Grab",
             "country": "SG",
             "why": "grpc"
-          }
-        ]
-      }
-    },
-    {
-      "name": "(주)고투엑스코리아",
-      "norm": "고투엑스코리아",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "saramin"
-      ],
-      "roles": {
-        "백엔드": 1,
-        "AI/ML": 1
-      },
-      "top_tech": [
-        {
-          "name": "Java",
-          "count": 1
-        },
-        {
-          "name": "Spring",
-          "count": 1
-        },
-        {
-          "name": "Spring Boot",
-          "count": 1
-        },
-        {
-          "name": "MySQL",
-          "count": 1
-        },
-        {
-          "name": "PostgreSQL",
-          "count": 1
-        },
-        {
-          "name": "AWS",
-          "count": 1
-        },
-        {
-          "name": "OpenAI",
-          "count": 1
-        },
-        {
-          "name": "REST API",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Java",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Spring",
-            "count": 1
-          },
-          {
-            "name": "Spring Boot",
-            "count": 1
-          },
-          {
-            "name": "REST API",
-            "count": 1
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 1
-          },
-          {
-            "name": "PostgreSQL",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 1
-          }
-        ],
-        "AI/ML": [
-          {
-            "name": "OpenAI",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "AI/데이터 플랫폼",
-          "score": 6,
-          "evidence": [
-            "생성형 AI",
-            "LLM",
-            "AI 모델"
-          ]
-        },
-        {
-          "name": "HR/채용",
-          "score": 4,
-          "evidence": [
-            "채용",
-            "이력서"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "클라우드 (AWS)",
-          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        }
-      ],
-      "titles": [
-        "(주)고투엑스코리아 AI 백엔드 개발자 인턴 채용(정규직 전환형)",
-        "(주)레버리지히어로 AI서비스 · 바이브 코딩 빌더 인턴 채용 공고"
-      ],
-      "postings": [
-        {
-          "title": "(주)고투엑스코리아 AI 백엔드 개발자 인턴 채용(정규직 전환형)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54161116&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b167ecb4-3db0-469e-bb28-25cb3b5722ed",
-          "site": "saramin"
-        },
-        {
-          "title": "(주)레버리지히어로 AI서비스 · 바이브 코딩 빌더 인턴 채용 공고",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54027964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=76c368c0-77df-49a0-b917-1204f2fba0d1",
-          "site": "saramin"
-        }
-      ],
-      "summary": "(주)고투엑스코리아는 AI/데이터 플랫폼 도메인의 중소기업으로, 주로 백엔드 · AI/ML 직군을 채용하며 Java, Spring, Spring Boot, MySQL 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
-          "핵심 역량: Java, Spring, Spring Boot 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "백엔드 중심(+AI/ML) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "AI/데이터 플랫폼 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Java"
-            ],
-            "tips": [
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
-            ]
-          },
-          {
-            "stage": "2. 백엔드 핵심 스킬",
-            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
-            "techs": [
-              "Spring",
-              "Spring Boot",
-              "REST API"
-            ],
-            "tips": [
-              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트",
-              "Spring Boot — REST API·JPA·검증·예외처리로 CRUD 서비스 완성해 보기",
-              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "PostgreSQL"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
-            "techs": [
-              "AWS"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
-            ]
-          }
-        ],
-        "tasks": [
-          "[AI/데이터 플랫폼] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "[AI/데이터 플랫폼] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
-        ],
-        "study_blogs": [
-          {
-            "title": "Now available: Amazon EC2 M9g and M9gd instances powered by new AWS Graviton5 processors",
-            "url": "https://aws.amazon.com/blogs/aws/now-available-amazon-ec2-m9g-and-m9gd-instances-powered-by-new-aws-graviton5-processors",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, java, mysql"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "aws, java, rest api"
-          },
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.8 on AWS, Aurora MySQL with Kiro Powers, and more (June 1, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-8-on-aws-aurora-mysql-with-kiro-powers-and-more-june-1-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, mysql, postgresql"
-          },
-          {
-            "title": "5년 동안 못 푼 배민 다국어 숙제, AI와 함께 한 달 만에 끝내기",
-            "url": "https://techblog.woowahan.com/26162",
-            "company": "우아한형제들",
-            "country": "KR",
-            "why": "aws, java, spring"
-          },
-          {
-            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
-            "url": "https://d2.naver.com/helloworld/6512234",
-            "company": "네이버 D2",
-            "country": "KR",
-            "why": "java, mysql, spring"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, java, mysql"
           }
         ]
       }
