@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-21T03:06:53",
-  "source_dir": "screenshots/all_통합_20260621_030637",
+  "generated_at": "2026-06-21T04:58:10",
+  "source_dir": "screenshots/all_통합_20260621_045754",
   "keyword": "통합",
   "jobs": [
     {
@@ -161240,6 +161240,68 @@
     },
     {
       "site": "saramin",
+      "company": "강원대학교병원 의생명연구원",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "강원대병원 의생명연구원 AI 및 데이터 연구과제수행 인력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54217635&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=da645298-11b7-429a-99b8-0fa017fed148",
+      "career": "경력무관",
+      "location": "강원춘천시 | 3,800 만원",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능",
+      "preferences": "Python, SQL\n\n의료데이터 지식\n\n연구행정 업무능력\n\n컴퓨터공학, AI, LLM 전공자",
+      "main_tasks": "[데이터 활용 연구 지원]\n\nAI, 데이터 외부연구과제수행 및 기타행정\n\n*보수수준 : 학사 - 세전 3천8백만원 / 석사 - 세전 4천만원\n\n*계약기간 : 채용일 ~ 2027. 12. 31.\n\n• 강원대학교병원 의생명연구원 부서 소속으로 함께할 예정이에요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "주식회사 메디바이블",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 개발. 바이브코딩. 클로드코드 실무 경험자 채용합니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54234879&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=da645298-11b7-429a-99b8-0fa017fed148",
+      "career": "경력무관",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "TypeScript",
+        "React",
+        "Next.js",
+        "CSS",
+        "Tailwind",
+        "NestJS",
+        "PostgreSQL",
+        "AWS",
+        "Docker"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관, 졸업 예정자 지원가능\n\n- AI 활용 경험 3년 이상\n\n- Gemini, Claude, ChatGPT, Cursor AI, Codex 등 관련 툴 능숙자, 바이브 코딩 가능자\n\n- AI 역량 : Harness engineering, CLAUDE.ai, Skills, Plugin 등 AI 친화적인 개발환경 구축 역량.\n\n- 문제 해결 : 기술적 트러블 슈팅능력이 뛰어나며, 복잡한 시스템간의 연동 이슈를 해결해 본 경험.",
+      "preferences": "- DevOps 및 시스템 아키텍처 구현 경험\n\n- 백엔드를 포함하여 실제 가입자를 확보한 웹사이트를 운영한 경험\n\n- 업무 자동화 또는 데이터 분석에 AI 도구 활용 경험\n\n- 미용의료 전반에 대한 관련직군 업무 경험 혹은 관심",
+      "main_tasks": "- 바이브 코딩 기반 (claude code / codex) 웹사이트 개발\n\n- AI 에이전트 기반으로 자료수집 자동화 및 업무 내 커뮤니케이션 시스템 구축 및 운영\n\n- 시스템 및 인프라 관리 (AWS 기반)\n\n- 서비스 배포 및 운영 자동화 (CI/CD)\n\n- 서버 및 데이터베이스 운영 관리\n\n- 로그 및 모니터링 시스템 운영\n\n- 서비스 장애 대응 및 복구\n\n- 보안 및 접근 권한 관리",
+      "benefits": "- 유연한 근무제도를 운영합니다\n\n- 직무 교육과 성장을 지원합니다\n\n- 성과에 따른 보상을 제공합니다\n\n- 자율적 개발문화로 협업합니다"
+    },
+    {
+      "site": "saramin",
       "company": "(주)플래티어",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -187159,6 +187221,37 @@
     },
     {
       "site": "saramin",
+      "company": "(주)콘텐츠펙토리상상역",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "웹 개발자 채용(정규직)-경력직",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54224188&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=34c9819f-d347-45b6-b1e5-cf137ea8aed4",
+      "career": "경력 5~10년",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "PHP",
+        "Node.js",
+        "Express",
+        "MySQL",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍ웹 개발 경력 5년 이상\n\nㆍ백엔드 개발 이력 필수\n\n📋 스킬\n\nㆍAPI, Javascript, MySQL, Node.js, Linux, JAVA",
+      "preferences": "ㆍnode.js / express 개발 경험\n\nㆍphp 개발 경험\n\nㆍCloud 인프라 운영\n\nㆍ앱 개발\n\nㆍCSAP SaaS 인증 제도 경험\n\nㆍ정보처리기사, 정보보안기사 자격증 중 하나의 자격증 소유\n\nㆍ공공기관 IT 인프라 유지보수 경험\n\nㆍ컴퓨터 프로그래밍 언어의 특성을 알고 활용 및 응용을 통한 개발 구현 가능 자\n\nㆍ개발 및 구현에 대한 관심이 높으며 협업을 통해 시너지를 높일 수 있는 자\n\nㆍ새로운 것에 도전하는 열정을 가진 자\n\nㆍ조직 적응력이 좋으며 협업툴을 잘 사용하고 팀웍을 향상 시키는 자\n\nㆍ커뮤니케이션 및 문서 정리 능력이 뛰어난 자",
+      "main_tasks": "ㆍCloud 인프라에서 온라인 교육 웹/모바일 개발 및 운영\n\nㆍCSAP 인증 환경에서 LMS 플랫폼 개발 및 운영",
+      "benefits": "• 급여제도 : 장기근속자 포상, 4대 보험\n\n• 교육/생활 : 점심식사 제공\n\n• 조직 문화 : 회식강요 안함, 자유복장"
+    },
+    {
+      "site": "saramin",
       "company": "주식회사엠에이치앤티(MH&T)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -199283,19 +199376,19 @@
     }
   ],
   "stats": {
-    "total": 6616,
+    "total": 6619,
     "by_size": {
-      "중소기업": 5927,
+      "중소기업": 5930,
       "대기업": 421,
       "중견기업": 268
     },
     "by_role": {
       "기타": 877,
       "DevOps/인프라": 959,
-      "백엔드": 2846,
+      "백엔드": 2848,
       "모바일": 1059,
-      "AI/ML": 2235,
-      "프론트엔드": 1829,
+      "AI/ML": 2237,
+      "프론트엔드": 1830,
       "풀스택": 576,
       "게임": 40,
       "데이터": 913,
@@ -199307,25 +199400,25 @@
       "wanted": 1539,
       "jumpit": 449,
       "jobkorea": 1208,
-      "saramin": 3117,
+      "saramin": 3120,
       "dev": 303
     },
     "top_tech": [
       [
         "Python",
-        2082
+        2083
       ],
       [
         "AWS",
-        1753
+        1754
       ],
       [
         "Java",
-        1741
+        1742
       ],
       [
         "React",
-        1409
+        1410
       ],
       [
         "Git",
@@ -199333,7 +199426,7 @@
       ],
       [
         "Docker",
-        1076
+        1077
       ],
       [
         "Spring",
@@ -199341,19 +199434,19 @@
       ],
       [
         "JavaScript",
-        973
+        974
       ],
       [
         "Linux",
-        949
+        950
       ],
       [
         "TypeScript",
-        903
+        904
       ],
       [
         "MySQL",
-        858
+        859
       ],
       [
         "Kubernetes",
@@ -199361,7 +199454,7 @@
       ],
       [
         "PostgreSQL",
-        712
+        713
       ],
       [
         "REST API",
@@ -199385,11 +199478,11 @@
       ],
       [
         "Node.js",
-        509
+        510
       ],
       [
         "Next.js",
-        473
+        474
       ],
       [
         "Android",
@@ -199397,7 +199490,7 @@
       ],
       [
         "CSS",
-        469
+        470
       ],
       [
         "Redis",
@@ -199434,22 +199527,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T10:07:02",
-      "keyword": "개발자",
-      "raw_total": 687,
-      "deduped": 668,
-      "active": 668,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 268,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T10:38:23",
       "keyword": "개발자",
@@ -202630,6 +202707,22 @@
         "jumpit": 594,
         "jobkorea": 1690,
         "saramin": 4377,
+        "dev": 372
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-21T04:58:04",
+      "keyword": "통합",
+      "raw_total": 8597,
+      "deduped": 7827,
+      "active": 6619,
+      "closed": 1208,
+      "site_counts": {
+        "wanted": 1561,
+        "jumpit": 594,
+        "jobkorea": 1690,
+        "saramin": 4380,
         "dev": 372
       },
       "anomalies": []
