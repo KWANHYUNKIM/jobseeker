@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-20T21:54:25",
-  "source_dir": "screenshots/all_통합_20260620_215346",
+  "generated_at": "2026-06-20T23:38:44",
+  "source_dir": "screenshots/all_통합_20260620_233826",
   "keyword": "통합",
   "jobs": [
     {
@@ -112924,6 +112924,32 @@
     },
     {
       "site": "saramin",
+      "company": "(주)케이에스에이솔루션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[부산] 웹 개발 IT 프로젝트 외국인 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225817&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=c84017c7-16cd-4145-a0d9-50e706ec8ba5",
+      "career": "경력6년↑",
+      "location": "부산남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "jQuery"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍ경력 : 고급\n\nㆍ학력 : 무관\n\nㆍ필요기술 : java, jsp, jquery\n\nㆍ외국 국적 우대 (외국인등록증 및 외국인 비자 보유자)\n\n비자 : F-2, F-4, F-5, F-6, E-7 (근무처 변경 가능자), D-10",
+      "preferences": "· 대인관계가 원만하신 분\n\n· 습득력이 좋고 성실하신분\n\n· 정보처리기사 자격증 소지자\n\n· 한국어으로 비즈니스 소통이 가능하신 분\n\n· 일본, 중국, 베트남, 네팔, 우즈베키스탄, 캄보디아, 인도네시아, 미얀마, 필리핀, 태국, 러시아, 카자흐스탄, 몽골, 스리랑카, 방글라데시 국적자",
+      "main_tasks": "프로그램 웹 개발 업무",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -193212,6 +193238,43 @@
       "benefits": ""
     },
     {
+      "site": "saramin",
+      "company": "(주)보라비트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)보라비트에서 백엔드 개발자 모십니다(거래소 유경험자)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54236342&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f9edf82b-e0b3-46c8-9ba4-cb3fbed5cfe7",
+      "career": "경력3년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Node.js",
+        "Django",
+        "MySQL",
+        "PostgreSQL",
+        "Docker",
+        "RabbitMQ",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 3년 이상\n\n• 학력무관\n\n* 경력 3년 이상 (혹은 그에 준하는 실력을 갖추신 분)\n\n* Python (Django/DRF) 프레임워크 사용에 능숙하신 분\n\n* RDBMS(MySQL/PostgreSQL)에 대한 이해와 쿼리 작성 능력이 있으신 분\n\n* Linux 환경 및 Git을 활용한 협업(Code Review)에 익숙하신 분\n\n* Docker 등 컨테이너 환경에서의 애플리케이션 배포/운영 경험이 있으신 분",
+      "preferences": "* 가상화폐 거래소 또는 핀테크(결제, 뱅킹), 증권 서비스 개발 및 운영 경험자\n\n* 블록체인(Smart Contract, Web3.js, 가상자산 지갑 등) 관련 기술 이해도가 높으신 분\n\n* Node.js 프레임워크 사용에 능숙하신 분\n\n* WebSocket을 이용한 실시간 데이터 처리 경험 (Socket.io, Channels 등)\n\n* TDD(테스트 주도 개발) 및 CI/CD 환경에 대한 이해도가 높으신 분",
+      "main_tasks": "* 거래소 API 서버 개발 및 운영: Python(Django), Node.js 기반의 RESTful API 설계 및 개발\n\n* 체결 엔진 및 워커 시스템 고도화: RabbitMQ/Redis를 활용한 비동기 작업 처리 및 주문 체결 로직 최적화\n\n* 데이터베이스 성능 튜닝: MySQL, PostgreSQL 쿼리 최적화 및 대용량 데이터 처리\n\n* 외부 인터페이스 연동: 블록체인 노드 및 외부 핀테크 솔루션(SMS, 본인인증 등) 연동",
+      "benefits": "• 점심시간 1시간 30분 제공 (근무시간 09:00 ~ 18:00)"
+    },
+    {
       "site": "dev",
       "company": "LG전자",
       "company_size": "대기업",
@@ -201147,16 +201210,16 @@
     }
   ],
   "stats": {
-    "total": 6680,
+    "total": 6682,
     "by_size": {
-      "중소기업": 5987,
+      "중소기업": 5989,
       "대기업": 423,
       "중견기업": 270
     },
     "by_role": {
-      "기타": 882,
-      "DevOps/인프라": 971,
-      "백엔드": 2872,
+      "기타": 883,
+      "DevOps/인프라": 972,
+      "백엔드": 2873,
       "모바일": 1071,
       "AI/ML": 2252,
       "프론트엔드": 1847,
@@ -201171,13 +201234,13 @@
       "wanted": 1538,
       "jumpit": 449,
       "jobkorea": 1215,
-      "saramin": 3175,
+      "saramin": 3177,
       "dev": 303
     },
     "top_tech": [
       [
         "Python",
-        2098
+        2099
       ],
       [
         "AWS",
@@ -201185,7 +201248,7 @@
       ],
       [
         "Java",
-        1760
+        1761
       ],
       [
         "React",
@@ -201197,7 +201260,7 @@
       ],
       [
         "Docker",
-        1084
+        1085
       ],
       [
         "Spring",
@@ -201209,7 +201272,7 @@
       ],
       [
         "Linux",
-        959
+        960
       ],
       [
         "TypeScript",
@@ -201217,7 +201280,7 @@
       ],
       [
         "MySQL",
-        864
+        865
       ],
       [
         "Kubernetes",
@@ -201229,7 +201292,7 @@
       ],
       [
         "PostgreSQL",
-        713
+        714
       ],
       [
         "Spring Boot",
@@ -201245,7 +201308,7 @@
       ],
       [
         "Node.js",
-        515
+        516
       ],
       [
         "Azure",
@@ -201298,22 +201361,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T08:32:53",
-      "keyword": "개발자",
-      "raw_total": 686,
-      "deduped": 667,
-      "active": 667,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 267,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T09:04:15",
       "keyword": "개발자",
@@ -204494,6 +204541,22 @@
         "jumpit": 587,
         "jobkorea": 1669,
         "saramin": 4368,
+        "dev": 372
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-20T23:38:38",
+      "keyword": "통합",
+      "raw_total": 8559,
+      "deduped": 7803,
+      "active": 6682,
+      "closed": 1121,
+      "site_counts": {
+        "wanted": 1560,
+        "jumpit": 587,
+        "jobkorea": 1669,
+        "saramin": 4371,
         "dev": 372
       },
       "anomalies": []

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-20T21:54:46",
-  "total_jobs": 6680,
+  "generated_at": "2026-06-20T23:38:55",
+  "total_jobs": 6682,
   "company_count": 1336,
   "min_posting": 2,
   "companies": [
@@ -157173,6 +157173,209 @@
       }
     },
     {
+      "name": "(주)케이에스에이솔루션",
+      "norm": "케이에스에이솔루션",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "모바일": 2,
+        "백엔드": 1
+      },
+      "top_tech": [
+        {
+          "name": "Java",
+          "count": 3
+        },
+        {
+          "name": "jQuery",
+          "count": 3
+        },
+        {
+          "name": "Kotlin",
+          "count": 2
+        },
+        {
+          "name": "Swift",
+          "count": 2
+        },
+        {
+          "name": "iOS",
+          "count": 2
+        },
+        {
+          "name": "Android",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 3
+          },
+          {
+            "name": "Kotlin",
+            "count": 2
+          },
+          {
+            "name": "Swift",
+            "count": 2
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "jQuery",
+            "count": 3
+          }
+        ],
+        "모바일": [
+          {
+            "name": "iOS",
+            "count": 2
+          },
+          {
+            "name": "Android",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 5,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 1,
+          "evidence": [
+            "솔루션"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "네이티브 모바일 앱",
+          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
+        }
+      ],
+      "titles": [
+        "[부산] IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등)",
+        "[부산] 웹 개발 IT 프로젝트 외국인 개발자 모집",
+        "[부산] IT 프로젝트 개발자 모집 (웹/IOS/Android)"
+      ],
+      "postings": [
+        {
+          "title": "[부산] IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[부산] 웹 개발 IT 프로젝트 외국인 개발자 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225817&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=c84017c7-16cd-4145-a0d9-50e706ec8ba5",
+          "site": "saramin"
+        },
+        {
+          "title": "[부산] IT 프로젝트 개발자 모집 (웹/IOS/Android)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225888&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1566bc64-3ef9-4f68-86cf-891d5abe7d96",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)케이에스에이솔루션는 HR/채용 도메인의 중소기업으로, 주로 모바일 · 백엔드 직군을 채용하며 Java, jQuery, Kotlin, Swift 기반으로 개발합니다. 아키텍처는 네이티브 모바일 앱로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Java, jQuery, Kotlin 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "모바일 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "네이티브 모바일 앱 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java",
+              "Kotlin",
+              "Swift"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기",
+              "Swift — 옵셔널·프로토콜 지향, SwiftUI로 화면 만들어 보기"
+            ]
+          },
+          {
+            "stage": "2. 모바일 핵심 스킬",
+            "goal": "네이티브/크로스플랫폼으로 앱을 만들어 스토어 흐름까지 경험한다",
+            "techs": [
+              "iOS",
+              "Android"
+            ],
+            "tips": [
+              "iOS — Swift + UIKit/SwiftUI, 생명주기·네트워킹·앱스토어 배포",
+              "Android — Kotlin + Jetpack(아키텍처 컴포넌트)로 앱 구조 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] iOS/Android 앱 화면·기능 개발과 스토어 배포",
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
+        ],
+        "study_blogs": [
+          {
+            "title": "モバイルアプリのログをいい感じに収集するライブラリ「Puree」の Kotlin Multiplatform 版をリリースしました",
+            "url": "https://techlife.cookpad.com/entry/2025/04/21/090000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "android, ios, java"
+          },
+          {
+            "title": "Accelerating Mobile App development at Zalando with Rendering Engine and React Native",
+            "url": "https://engineering.zalando.com/posts/2025/10/accelerating-mobile-app-development-at-zalando-with-rendering-engine-and-react-native.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "android, ios, kotlin"
+          },
+          {
+            "title": "Migrating Lyft’s Android Codebase to Kotlin",
+            "url": "https://eng.lyft.com/migrating-lyfts-android-codebase-to-kotlin-53b231dfecb5",
+            "company": "Lyft",
+            "country": "US",
+            "why": "android, ios, java"
+          },
+          {
+            "title": "DeNA × AI Day 2026 イベントレポート ── 内定者が見たAIオールインの現在地",
+            "url": "https://engineering.dena.com/blog/2026/03/ai-day2026-intern-event-report",
+            "company": "DeNA",
+            "country": "JP",
+            "why": "android, ios, kotlin"
+          },
+          {
+            "title": "Gradle Composite Build を用いたビルドロジックの共通化について",
+            "url": "https://techlife.cookpad.com/entry/2024/11/20/130000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "android, java, kotlin"
+          },
+          {
+            "title": "온디바이스 AI 얼굴 식별 파이프라인 최적화",
+            "url": "https://hyperconnect.github.io/2026/01/23/On-device-Face-Verification-Pipeline-Optimization.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "android, java, kotlin"
+          }
+        ]
+      }
+    },
+    {
       "name": "퓨렌스(주)",
       "norm": "퓨렌스",
       "size": "중소기업",
@@ -257106,203 +257309,6 @@
             "company": "Lyft",
             "country": "US",
             "why": "android, git, java"
-          }
-        ]
-      }
-    },
-    {
-      "name": "㈜케이에스에이솔루션",
-      "norm": "케이에스에이솔루션",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "jobkorea",
-        "saramin"
-      ],
-      "roles": {
-        "모바일": 2,
-        "백엔드": 1
-      },
-      "top_tech": [
-        {
-          "name": "Java",
-          "count": 2
-        },
-        {
-          "name": "Kotlin",
-          "count": 2
-        },
-        {
-          "name": "Swift",
-          "count": 2
-        },
-        {
-          "name": "jQuery",
-          "count": 2
-        },
-        {
-          "name": "iOS",
-          "count": 2
-        },
-        {
-          "name": "Android",
-          "count": 2
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Java",
-            "count": 2
-          },
-          {
-            "name": "Kotlin",
-            "count": 2
-          },
-          {
-            "name": "Swift",
-            "count": 2
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "jQuery",
-            "count": 2
-          }
-        ],
-        "모바일": [
-          {
-            "name": "iOS",
-            "count": 2
-          },
-          {
-            "name": "Android",
-            "count": 2
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 4,
-          "evidence": [
-            "채용",
-            "이력서"
-          ]
-        },
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 1,
-          "evidence": [
-            "솔루션"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "네이티브 모바일 앱",
-          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
-        }
-      ],
-      "titles": [
-        "[부산] IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등)",
-        "[부산] IT 프로젝트 개발자 모집 (웹/IOS/Android)"
-      ],
-      "postings": [
-        {
-          "title": "[부산] IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "[부산] IT 프로젝트 개발자 모집 (웹/IOS/Android)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225888&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1566bc64-3ef9-4f68-86cf-891d5abe7d96",
-          "site": "saramin"
-        }
-      ],
-      "summary": "㈜케이에스에이솔루션는 HR/채용 도메인의 중소기업으로, 주로 모바일 · 백엔드 직군을 채용하며 Java, Kotlin, Swift, jQuery 기반으로 개발합니다. 아키텍처는 네이티브 모바일 앱로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Java, Kotlin, Swift 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "모바일 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "네이티브 모바일 앱 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Java",
-              "Kotlin",
-              "Swift"
-            ],
-            "tips": [
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
-              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기",
-              "Swift — 옵셔널·프로토콜 지향, SwiftUI로 화면 만들어 보기"
-            ]
-          },
-          {
-            "stage": "2. 모바일 핵심 스킬",
-            "goal": "네이티브/크로스플랫폼으로 앱을 만들어 스토어 흐름까지 경험한다",
-            "techs": [
-              "iOS",
-              "Android"
-            ],
-            "tips": [
-              "iOS — Swift + UIKit/SwiftUI, 생명주기·네트워킹·앱스토어 배포",
-              "Android — Kotlin + Jetpack(아키텍처 컴포넌트)로 앱 구조 설계"
-            ]
-          }
-        ],
-        "tasks": [
-          "[HR/채용] iOS/Android 앱 화면·기능 개발과 스토어 배포",
-          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
-        ],
-        "study_blogs": [
-          {
-            "title": "モバイルアプリのログをいい感じに収集するライブラリ「Puree」の Kotlin Multiplatform 版をリリースしました",
-            "url": "https://techlife.cookpad.com/entry/2025/04/21/090000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "android, ios, java"
-          },
-          {
-            "title": "Accelerating Mobile App development at Zalando with Rendering Engine and React Native",
-            "url": "https://engineering.zalando.com/posts/2025/10/accelerating-mobile-app-development-at-zalando-with-rendering-engine-and-react-native.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "android, ios, kotlin"
-          },
-          {
-            "title": "Migrating Lyft’s Android Codebase to Kotlin",
-            "url": "https://eng.lyft.com/migrating-lyfts-android-codebase-to-kotlin-53b231dfecb5",
-            "company": "Lyft",
-            "country": "US",
-            "why": "android, ios, java"
-          },
-          {
-            "title": "DeNA × AI Day 2026 イベントレポート ── 内定者が見たAIオールインの現在地",
-            "url": "https://engineering.dena.com/blog/2026/03/ai-day2026-intern-event-report",
-            "company": "DeNA",
-            "country": "JP",
-            "why": "android, ios, kotlin"
-          },
-          {
-            "title": "Gradle Composite Build を用いたビルドロジックの共通化について",
-            "url": "https://techlife.cookpad.com/entry/2024/11/20/130000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "android, java, kotlin"
-          },
-          {
-            "title": "온디바이스 AI 얼굴 식별 파이프라인 최적화",
-            "url": "https://hyperconnect.github.io/2026/01/23/On-device-Face-Verification-Pipeline-Optimization.html",
-            "company": "하이퍼커넥트",
-            "country": "KR",
-            "why": "android, java, kotlin"
           }
         ]
       }

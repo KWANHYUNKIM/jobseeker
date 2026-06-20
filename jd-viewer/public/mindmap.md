@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6680건** 공고 · **1336개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 21:54
+- 총 **6682건** 공고 · **1336개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-20 23:38
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1256,6 +1256,13 @@ markmap:
 - **모바일** [1건]
   - [(주)알로이스 안드로이드 앱 개발자 경력 채용 공고 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49195115?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=17&sc=630)
 
+### (주)케이에스에이솔루션 `중소기업` · 3건
+- **백엔드** [1건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
+  - [(부산) IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630)
+- **모바일** [2건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
+  - [(부산) IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630)
+  - [(부산) IT 프로젝트 개발자 모집 (웹/IOS/Android) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225888&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1566bc64-3ef9-4f68-86cf-891d5abe7d96)
+
 ### 퓨렌스(주) `중소기업` · 3건
 - **백엔드** [2건] · `Java` `Kotlin` `iOS` `Android` `Git` `Spring`
   - [(퓨렌스) 모바일 앱 개발 경력 직원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53831219&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2c858be9-a61e-40b0-a0c2-3d885f5dd940)
@@ -2058,13 +2065,6 @@ markmap:
   - [(경력) 안드로이드 및 IOS 컨텐츠 QA 엔지니어 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49396796?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=76&sc=630)
 - **QA** [1건] · `Selenium` `Appium` `Jira`
   - [(경력) 안드로이드 및 IOS 컨텐츠 QA 엔지니어 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49396796?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=76&sc=630)
-
-### ㈜케이에스에이솔루션 `중소기업` · 2건
-- **백엔드** [1건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
-  - [(부산) IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630)
-- **모바일** [2건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
-  - [(부산) IT 프로젝트 웹 개발자 모집 (IOS(Swift)/Android(Kotlin) 개발 등) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49412001?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=88&sc=630)
-  - [(부산) IT 프로젝트 개발자 모집 (웹/IOS/Android) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225888&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1566bc64-3ef9-4f68-86cf-891d5abe7d96)
 
 ### ㈜스마트코어 `중소기업` · 2건
 - **백엔드** [2건] · `Git` `Swift` `iOS` `REST API` `Java` `Python`
