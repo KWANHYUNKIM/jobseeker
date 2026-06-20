@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-20T14:25:07",
+ "generated_at": "2026-06-20T16:10:32",
  "total": 100,
  "countries": [
   {
@@ -283,7 +283,7 @@
      },
      {
       "name": "React Native",
-      "count": 9
+      "count": 10
      },
      {
       "name": "Redux",
@@ -344,11 +344,11 @@
       "count": 5
      },
      {
-      "name": "ClickHouse",
+      "name": "Apache Flink",
       "count": 3
      },
      {
-      "name": "DynamoDB",
+      "name": "ClickHouse",
       "count": 3
      }
     ],
@@ -390,7 +390,7 @@
       "count": 3
      },
      {
-      "name": "Prometheus + Grafana",
+      "name": "Istio",
       "count": 3
      }
     ]
@@ -885,6 +885,10 @@
       "count": 2
      },
      {
+      "name": "Terraform",
+      "count": 2
+     },
+     {
       "name": "Achilles Autoscaler",
       "count": 1
      },
@@ -894,10 +898,6 @@
      },
      {
       "name": "Argo CD",
-      "count": 1
-     },
-     {
-      "name": "ArgoCD",
       "count": 1
      }
     ]
@@ -4402,12 +4402,13 @@
    ],
    "stack": {
     "backend": [
-     "Elixir/Erlang OTP (Gateway/실시간)",
-     "Rust (data services / 핫패스)",
-     "Python (HTTP API)",
-     "Go (인프라 툴링)",
-     "gRPC",
-     "Manifold (Elixir fan-out)"
+     "Elixir/Erlang OTP (실시간 Gateway·Session·Guild 액터)",
+     "Rust (read-states·데이터 서비스·핫패스)",
+     "Python (HTTP REST API)",
+     "Go (인프라/플랫폼 툴링)",
+     "gRPC (서비스 간 통신)",
+     "Manifold (Elixir 분산 fan-out)",
+     "Rustler NIF (Elixir↔Rust 바인딩)"
     ],
     "frontend": [
      "React",
@@ -4415,7 +4416,8 @@
      "Electron (desktop)",
      "React Native (mobile)",
      "Redux/Flux",
-     "WebRTC (voice/video)"
+     "WebRTC (voice/video)",
+     "Opus codec"
     ],
     "data": [
      "ScyllaDB (Cassandra에서 마이그레이션)",
@@ -4424,27 +4426,29 @@
      "Apache Kafka",
      "Google Cloud Pub/Sub",
      "BigQuery",
-     "Snowflake",
+     "Snowflake (데이터 웨어하우스)",
      "MongoDB (legacy)"
     ],
     "infra": [
-     "Google Cloud Platform",
+     "Google Cloud Platform (GCP)",
      "Kubernetes",
      "Envoy (service mesh)",
-     "Cloudflare",
-     "gRPC"
+     "Cloudflare (edge/DDoS)",
+     "gRPC",
+     "Terraform",
+     "Prometheus/Grafana"
     ]
    },
    "architecture": [
-    "Real-time WebSocket Gateway + Actor-model (Elixir/Erlang OTP 프로세스)",
-    "Event-driven pub/sub fan-out (Guild→Session 메시지 전파)",
-    "Rust 핫패스 데이터 서비스 + request coalescing",
+    "Real-time WebSocket Gateway + Actor-model (Elixir/Erlang OTP의 Session/Guild 프로세스)",
+    "Event-driven pub/sub fan-out (Guild→Session 메시지 전파, Manifold 기반)",
+    "Rust 핫패스 데이터 서비스 + request coalescing으로 핫 파티션 방어",
     "gRPC 마이크로서비스 + Envoy 메시 on GCP/Kubernetes"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    DESK[\"Desktop App<br/>Electron + React + TS\"]\n    MOB[\"Mobile App<br/>React Native\"]\n  end\n  subgraph Edge\n    CF[\"Edge / CDN<br/>Cloudflare\"]\n  end\n  subgraph Realtime\n    GW[\"WebSocket Gateway<br/>Elixir OTP\"]\n    SESS[\"Session Processes<br/>Elixir GenServer\"]\n    GUILD[\"Guild Processes<br/>Elixir + Manifold\"]\n    VOICE[\"Voice Servers<br/>WebRTC SFU\"]\n  end\n  subgraph CoreServices\n    API[\"HTTP API<br/>Python\"]\n    DATA[\"Data Services<br/>Rust + gRPC\"]\n    MESH[\"Service Mesh<br/>Envoy\"]\n  end\n  subgraph Storage\n    SCYLLA[\"Messages<br/>ScyllaDB\"]\n    REDIS[\"Cache / State<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka + Pub/Sub\"]\n    BQ[\"Analytics<br/>BigQuery + Snowflake\"]\n  end\n  subgraph Platform\n    GCP[\"Cloud Platform<br/>GCP + Kubernetes\"]\n  end\n  DESK --> CF\n  MOB --> CF\n  CF -->|WebSocket| GW\n  CF -->|HTTPS| API\n  GW --> SESS\n  SESS --> GUILD\n  GUILD -->|fan-out| SESS\n  DESK -.->|UDP/RTP| VOICE\n  API -->|gRPC| MESH\n  MESH --> DATA\n  DATA --> SCYLLA\n  DATA --> REDIS\n  API --> ES\n  DATA -->|CDC events| KAFKA\n  KAFKA --> BQ\n  KAFKA --> ES\n  GCP --- GW\n  GCP --- DATA",
-   "why_language": "수백만 동시 접속 게이트웨이는 경량 프로세스와 메시지 패싱에 특화된 Erlang/Elixir OTP로 처리해 한 노드에서 수백만 개의 세션·길드 액터를 격리 실행한다. BEAM의 GC·스케줄링 한계가 드러나는 핫패스(read-states, 데이터 서비스)는 예측 가능한 지연과 무GC 메모리 제어가 가능한 Rust로 재작성했고, 빠른 개발이 필요한 HTTP API는 Python, 일반 백엔드/툴링은 Go를 쓴다.",
-   "why_architecture": "메시지는 본질적으로 길드(서버) 단위로 fan-out되는 실시간 이벤트이므로, 각 길드와 사용자 세션을 독립 액터로 모델링해 장애를 격리하고 상태를 인메모리로 유지하는 actor-model이 도메인에 정확히 들어맞는다. 저장은 쓰기 폭주와 핫 파티션을 견디도록 ScyllaDB의 LSM 기반 분산 저장 위에 Rust 데이터 서비스로 request coalescing을 얹어 동일 데이터에 대한 중복 쿼리를 한 번으로 합친다.",
-   "summary": "Elixir 액터 모델로 실시간 fan-out을, Rust 핫패스와 ScyllaDB로 수조 건 메시지 저장을 감당하는 GCP 기반 실시간 메시징 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client\"]\n    APP[\"Desktop/Mobile App<br/>Electron + React Native\"]\n    WEB[\"Web Client<br/>React + TypeScript\"]\n  end\n  subgraph Edge[\"Edge\"]\n    CF[\"Edge/DDoS<br/>Cloudflare\"]\n    LB[\"L7 LB + Mesh<br/>Envoy on GCP\"]\n  end\n  subgraph Gateway[\"Realtime Gateway\"]\n    WS[\"Gateway WS<br/>Elixir/Erlang OTP\"]\n    SESS[\"Session Process<br/>Elixir GenServer\"]\n    GUILD[\"Guild Process<br/>Elixir Actor\"]\n    MAN[\"Fan-out<br/>Manifold\"]\n  end\n  subgraph API[\"API Layer\"]\n    HTTP[\"HTTP REST API<br/>Python\"]\n    GRPC[\"Service Mesh<br/>gRPC + Envoy\"]\n  end\n  subgraph Core[\"Core Services\"]\n    READ[\"Read States<br/>Rust + Tokio\"]\n    DATA[\"Data Services<br/>Rust coalescing\"]\n    VOICE[\"Voice SFU<br/>Rust/C++ WebRTC\"]\n  end\n  subgraph Store[\"Data Stores\"]\n    SCY[\"Messages<br/>ScyllaDB\"]\n    REDIS[\"Cache<br/>Redis\"]\n    ES[\"Search<br/>Elasticsearch\"]\n  end\n  subgraph Async[\"Streaming/Analytics\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    PUBSUB[\"Pub/Sub<br/>Google Cloud Pub/Sub\"]\n    BQ[\"Warehouse<br/>BigQuery + Snowflake\"]\n  end\n  APP -->|WSS| CF\n  WEB -->|HTTPS| CF\n  CF --> LB\n  LB -->|WebSocket| WS\n  LB -->|REST| HTTP\n  WS --> SESS\n  SESS --> GUILD\n  GUILD -->|fan-out| MAN\n  MAN --> SESS\n  HTTP -->|gRPC| GRPC\n  GRPC --> READ\n  GRPC --> DATA\n  HTTP --> VOICE\n  DATA -->|coalesced read/write| SCY\n  READ --> SCY\n  DATA --> REDIS\n  HTTP --> ES\n  GUILD -->|events| KAFKA\n  KAFKA --> PUBSUB\n  KAFKA --> ES\n  PUBSUB --> BQ",
+   "why_language": "수억 동시접속의 실시간 fan-out은 경량 프로세스·메시지 패싱에 강한 Erlang BEAM(Elixir)이 가장 자연스러워 Gateway 핵심에 채택했고, GC 지터와 메모리 압박이 치명적인 read-states·데이터 서비스 같은 핫패스는 예측 가능한 지연과 무 GC를 주는 Rust로 재작성했다. HTTP API는 개발 속도가 중요한 비즈니스 로직 영역이라 Python을, 인프라 자동화 툴링은 GCP/k8s 생태계와 맞물려 Go를 쓴다.",
+   "why_architecture": "하나의 서버(Guild)에 수만 명이 모여 메시지를 즉시 받아야 하는 도메인 특성상, 각 Guild와 Session을 독립 액터 프로세스로 모델링하고 Manifold로 fan-out하는 actor 모델이 상태 격리·장애 격리·수평 확장에 가장 잘 맞는다. 동시에 ScyllaDB 같은 단일 스토어에 트래픽이 몰리면 핫 파티션이 생기므로, Rust 데이터 서비스가 동일 키 요청을 request coalescing으로 합쳐 DB 부하를 평탄화하는 계층을 앞단에 둔다.",
+   "summary": "Elixir 액터 모델로 실시간 fan-out을 떠받치고, Rust 핫패스와 ScyllaDB로 수십억 메시지의 지연·핫파티션을 길들이는 GCP 기반 아키텍처.",
    "deep_dive": [
     {
      "topic": "실시간 게이트웨이와 길드 액터 모델",
@@ -4477,6 +4481,22 @@
     {
      "topic": "메시지 검색 인프라: Elasticsearch 멀티 클러스터와 비동기 인덱싱",
      "body": "### 요구사항\n채팅 검색은 '특정 길드·채널·작성자·기간 안에서 키워드'를 빠르게 찾아야 하고, 길드 단위로 권한이 철저히 격리돼야 한다. 또 메시지는 매 순간 막대하게 쌓이므로 인덱싱이 실시간 채팅 경로를 느리게 해서는 안 된다.\n\n### 비동기 인덱싱 파이프라인\n메시지 검색 색인은 쓰기 경로에 동기적으로 끼우지 않는다. 메시지가 저장되면 인덱싱 작업이 **큐(Pub/Sub/Kafka 류)를 거쳐 비동기로** Elasticsearch에 반영된다. 이렇게 하면 메시지 전송 지연과 검색 색인 지연을 분리할 수 있고, ES 클러스터가 잠시 느려져도 채팅 자체는 영향받지 않는다(인덱싱은 뒤따라 catch-up).\n\n### 길드 단위 샤딩과 라우팅\nDiscord는 ES를 단일 거대 인덱스가 아니라, **길드를 단위로 라우팅·분산**하는 구조로 운영한다. 검색 쿼리는 항상 특정 길드 범위로 라우팅되므로 해당 길드의 샤드만 조회하면 되고, 권한 격리도 자연스럽게 보장된다. 활동량이 큰 길드와 작은 길드를 같은 클러스터에 섞되, 핫한 길드가 작은 길드의 검색을 방해하지 않도록 클러스터/풀을 나눠 운영한다.\n\n### 운영상의 과제\nElasticsearch는 색인 세그먼트 머지, 매핑 폭발, 노드 재배치 시 리밸런싱 비용 등 운영 난도가 높다. Discord는 인덱싱을 비동기 + 배치로 묶어 ES에 가해지는 쓰기 압력을 평탄화하고, 색인 실패·지연 시 재시도/백필을 큐에서 처리해 결과적 일관성(eventual consistency)으로 수렴시킨다. 검색은 '실시간성보다 정확성·격리·안정성'이 우선인 기능이라는 도메인 판단이 이 설계 전반에 깔려 있다."
+    },
+    {
+     "topic": "메시지 전송 end-to-end: 클라이언트 한 번의 send가 거치는 전체 경로",
+     "body": "### 한 메시지가 화면에 뜨기까지\n\n사용자가 채널에 메시지를 보내면 Discord 내부에서는 **두 개의 분리된 경로**가 동시에 작동한다. 하나는 *영속화*(persist)를 위한 HTTP 경로, 다른 하나는 *실시간 전파*(fan-out)를 위한 WebSocket 경로다. 이 둘을 의도적으로 분리한 것이 Discord 아키텍처의 핵심 골격이다.\n\n#### 1) 쓰기 경로 (HTTP REST API)\n\n1. 클라이언트(Electron/RN/Web)는 메시지를 `POST /channels/{id}/messages` 로 보낸다. 이 요청은 먼저 `Cloudflare` 엣지를 통과하며 TLS 종료·DDoS 필터링·레이트리밋 1차 방어를 받는다.\n2. `GCP` 내부로 들어오면 `Envoy` L7 메시가 받아 `Python` HTTP API 서비스로 라우팅한다. 여기서 권한 검사(채널 멤버십, 권한 비트), 스팸/안전 필터, 멘션 파싱이 일어난다.\n3. 메시지에는 `Snowflake` ID가 부여된다. 64bit 정수로 상위 42bit가 Discord epoch 기준 밀리초 타임스탬프라, **ID 자체가 시간순 정렬키**가 된다. 이것이 뒤의 ScyllaDB 파티셔닝과 페이지네이션의 기반이다.\n4. API는 `gRPC`로 Rust 데이터 서비스를 호출해 메시지를 `ScyllaDB`에 영속화한다.\n\n#### 2) 전파 경로 (WebSocket Gateway)\n\n1. 영속화와 (거의) 동시에, 이 채널이 속한 `Guild Process`(Elixir 액터)에게 \"새 메시지\" 이벤트가 전달된다.\n2. Guild 프로세스는 자신을 구독 중인 모든 `Session Process` 목록을 알고 있고, `Manifold`를 통해 이 이벤트를 각 세션이 사는 노드들로 fan-out한다. Manifold는 같은 원격 노드로 가는 메시지를 묶어 노드당 단일 메시지로 보내 BEAM의 프로세스 간 통신 오버헤드를 줄인다.\n3. 각 Session 프로세스는 자기가 들고 있는 WebSocket으로 `MESSAGE_CREATE` Gateway 이벤트를 push한다. 클라이언트는 이걸 받아 *낙관적으로 이미 그려둔* 메시지를 확정하거나 새로 렌더한다.\n\n#### 왜 두 경로를 쪼갰나\n\n- **지연 특성이 다르다.** 전파는 수십 ms 안에 수만 명에게 가야 하지만 DB write의 일관성·내구성 요구와는 결이 다르다. 묶어두면 한쪽 지연이 다른 쪽을 오염시킨다.\n- **장애 격리.** ScyllaDB가 느려져도 실시간 전파는 BEAM 안에서 계속 돌 수 있고, 반대로 Gateway 한 노드가 죽어도 메시지는 이미 영속화돼 있어 재접속 시 `lazy load`로 복구된다.\n- **읽기는 또 다른 경로.** 채널을 열면 클라이언트는 Gateway가 아니라 HTTP로 `GET .../messages`를 쳐서 ScyllaDB에서 과거 메시지를 페이지네이션으로 가져온다. 실시간 스트림과 히스토리 조회가 완전히 분리돼 있다."
+    },
+    {
+     "topic": "ScyllaDB 데이터 모델링: Snowflake·버킷팅·샤드-어웨어 드라이버",
+     "body": "### 수조 개 메시지를 어떻게 나눠 담나\n\nCassandra에서 ScyllaDB로 옮긴 이유(GC pause·tail latency 제거, C++ shard-per-core)는 이미 알려져 있지만, **실제 데이터 모델링 디테일**이 성능의 진짜 원천이다.\n\n#### 파티션 키 = (channel_id, bucket)\n\n메시지를 순진하게 `channel_id` 하나로 파티셔닝하면, 활발한 대형 채널의 파티션이 무한정 커져 **단일 파티션이 수GB로 비대해지는** 문제가 생긴다(Cassandra 시절 실제로 겪은 통증). 그래서 Discord는 파티션 키를 `(channel_id, bucket)` 복합키로 잡는다. `bucket`은 메시지 Snowflake의 타임스탬프를 일정 시간 창(예: 약 10일 단위)으로 나눈 값이다.\n\n| 설계 | 효과 |\n|---|---|\n| `channel_id`만 키 | 핫·대형 파티션, 무한 성장 |\n| `(channel_id, bucket)` | 시간 창 단위로 파티션 분할, 크기 상한 |\n| clustering key = `message_id DESC` | 최신 메시지부터 자연 정렬, 페이지네이션 효율 |\n\n#### Snowflake가 파티셔닝과 맞물리는 지점\n\nSnowflake ID의 상위 비트가 곧 시간이므로, `message_id`만으로 어떤 `bucket`에 속하는지 **계산**할 수 있다. 즉 `before=<message_id>` 페이지네이션 요청이 오면, 그 ID로부터 bucket을 역산해 정확히 한두 개의 파티션만 조회하면 된다. 별도 인덱스 없이 ID 산술만으로 라우팅되는 것이다.\n\n#### shard-per-core와 토큰 어웨어 드라이버\n\nScyllaDB는 노드 안에서 CPU 코어마다 독립 shard를 두는 `shared-nothing` 구조다. Discord의 Rust 데이터 서비스는 **shard-aware 드라이버**를 써서, 쿼리의 파티션 키로부터 어느 노드의 어느 코어 shard가 owner인지 계산해 그 코어로 직접 요청을 꽂는다. 코디네이터 hop과 코어 간 라우팅이 사라져 tail latency가 크게 준다.\n\n#### 트레이드오프\n\n- bucket 경계를 넘나드는 조회(예: 한 페이지가 두 bucket에 걸침)는 멀티 파티션 읽기가 되어 약간 비싸진다. 대신 평균/최악 파티션 크기를 통제할 수 있어 전체 시스템의 예측가능성을 산다.\n- 삭제·수정은 tombstone을 만들지만, 시간 버킷 구조 덕에 오래된 bucket은 통째로 회수·압축하기 쉽다."
+    },
+    {
+     "topic": "Elixir와 Rust의 결합: Rustler NIF로 BEAM 핫패스 가속",
+     "body": "### \"Elixir는 빠르지만, 충분히 빠르지 않은 곳\"\n\nElixir/BEAM은 수백만 경량 프로세스의 동시성·내결함성에는 탁월하지만, **CPU 바운드한 좁은 루프**(직렬화, 압축, 대량 자료구조 변환)에서는 네이티브 언어 대비 느리다. Discord는 이 간극을 `Rustler`(Elixir↔Rust NIF 바인딩)로 메운다.\n\n#### NIF의 위험과 Rust가 답인 이유\n\nNIF(Native Implemented Function)는 BEAM VM 안에서 직접 실행되는 네이티브 코드다. 전통적으로 C로 짠 NIF는 **두 가지로 VM 전체를 죽일 수 있다**:\n\n- 메모리 안전성 위반(세그폴트) → BEAM 노드 전체 크래시\n- 너무 오래 도는 NIF가 스케줄러 스레드를 점유 → 수백만 프로세스의 공정 스케줄링 붕괴\n\n`Rust`는 컴파일 타임 메모리 안전성으로 첫 번째 문제를 구조적으로 제거하고, Rustler는 `dirty scheduler`(CPU-bound 작업을 별도 스레드 풀로 보내는 BEAM 메커니즘)와 잘 통합돼 두 번째를 완화한다. 그래서 \"안전하게 BEAM에 네이티브 성능을 주입\"하는 조합이 성립한다.\n\n#### 어디에 쓰나 (대표 패턴)\n\n- **Gateway 페이로드 직렬화/압축**: 같은 메시지를 수만 세션에 fan-out하기 전 한 번 직렬화·`zlib` 압축해두면 N배의 CPU를 아낀다. 이 무거운 인코딩을 Rust NIF로 내린다.\n- **대량 권한 계산·자료구조 처리** 등 좁고 뜨거운 루프.\n\n#### 더 큰 결정: 통째로 Rust 서비스로 빼기\n\nNIF로도 부족하거나 BEAM 안에 둘 이유가 없는 컴포넌트(read-states, 데이터 서비스)는 아예 **독립 Rust 마이크로서비스**로 분리해 gRPC로 통신한다. 즉 Discord의 Rust 채택은 두 층위로 일어난다 — (1) Elixir 안에서 NIF로 가속, (2) Elixir 밖으로 빼내 독립 서비스화. 어느 쪽이든 동기는 같다: **예측 가능한 지연과 GC 없는 메모리 거동**."
+    },
+    {
+     "topic": "관측성·복원력: 장애를 BEAM 철학으로 다루기",
+     "body": "### \"Let it crash\"를 실서비스 규모로\n\nDiscord의 복원력 전략은 Erlang/OTP의 \"실패하면 그냥 죽이고 supervisor가 재시작\" 철학과, 마이크로서비스 표준 패턴(circuit breaker·backpressure)이 겹쳐 있다.\n\n#### 프로세스 격리 = 장애 반경 최소화\n\n각 `Guild`와 `Session`이 독립 BEAM 프로세스이므로, 한 길드의 버그·과부하가 그 프로세스만 죽이고 supervisor 트리가 재시작한다. 다른 수백만 길드는 영향받지 않는다. 모놀리식 스레드 모델이라면 하나의 예외가 광범위하게 번질 일이, 프로세스 격리 덕에 국소화된다.\n\n#### 핫 파티션 방어: request coalescing\n\n유명인의 메시지나 대형 이벤트로 동일 키(같은 채널/유저)에 읽기가 폭주하면 ScyllaDB의 특정 파티션이 핫스팟이 된다. Rust 데이터 서비스는 **동일 키에 대해 in-flight인 요청이 있으면 새 요청을 거기에 합류시키고, DB에는 단 한 번만 친 뒤 그 결과를 모두에게 돌려준다**(request coalescing). 1만 개의 동시 읽기가 1개의 DB 쿼리로 접힌다. 이것이 사실상 애플리케이션 레벨의 backpressure이자 thundering-herd 방어다.\n\n#### 엣지·메시 레벨 방어\n\n- `Cloudflare`가 외곽에서 DDoS·봇 트래픽을 흡수하고 레이트리밋을 건다.\n- `Envoy` 메시가 서비스 간 호출에 타임아웃·재시도·circuit breaker·outlier detection을 일괄 적용해, 느려진 다운스트림이 업스트림 스레드를 잡아먹는 연쇄 장애를 끊는다.\n\n#### 관측성 스택\n\n- 메트릭은 `Prometheus`/`Grafana` 계열로 수집·시각화하고, BEAM의 프로세스 수·메시지 큐 길이·스케줄러 사용률 같은 VM 고유 지표를 함께 본다(메시지 큐가 쌓이는 것은 fan-out 병목의 조기 신호다).\n- 이벤트·로그·분석 데이터는 `Kafka`→`Google Cloud Pub/Sub`을 거쳐 `BigQuery`/`Snowflake`로 흘러가, 사후 분석과 안전(스팸·어뷰즈) 모델링에 쓰인다.\n\n#### 트레이드오프\n\ncoalescing과 캐시는 강한 일관성을 약간 양보(stale read 허용)하는 대신 가용성·지연을 산다. 채팅이라는 도메인이 \"몇십 ms 늦거나 약간 오래된 read-state\"를 견딜 수 있기에 가능한 선택이다."
     }
    ],
    "debate": {
@@ -4585,28 +4605,28 @@
     "org": "https://github.com/discord",
     "repos": [
      {
-      "name": "discord/lilliput",
-      "url": "https://github.com/discord/lilliput",
-      "desc": "Go용 고성능 이미지 리사이즈/트랜스코딩 라이브러리(미디어 처리)",
-      "lang": "C++",
-      "stars": 2047
+      "name": "discord/discord-api-docs",
+      "url": "https://github.com/discord/discord-api-docs",
+      "desc": "공식 Discord REST/Gateway/Bot API 문서 저장소",
+      "lang": "MDX",
+      "stars": 6426
      },
      {
-      "name": "discord/erlpack",
-      "url": "https://github.com/discord/erlpack",
-      "desc": "Erlang External Term Format 고속 직렬화(게이트웨이 페이로드)",
-      "lang": "Cython",
-      "stars": 249
+      "name": "discord/manifold",
+      "url": "https://github.com/discord/manifold",
+      "desc": "다수 원격 노드로 메시지를 효율적으로 fan-out하는 Elixir 라이브러리(Gateway 전파 핵심)",
+      "lang": "Elixir",
+      "stars": 1842
      }
     ]
    },
    "sources": [
     "https://discord.com/blog/how-discord-stores-trillions-of-messages",
-    "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
-    "https://discord.com/blog/why-discord-is-switching-from-go-to-rust"
+    "https://discord.com/blog/why-discord-is-switching-from-go-to-rust",
+    "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "linkedin",
@@ -17051,14 +17071,16 @@
      "Kotlin Coroutines",
      "Go",
      "gRPC",
-     "Netty"
+     "Netty",
+     "Disruptor (LMAX)"
     ],
     "frontend": [
      "React",
      "Next.js",
      "TypeScript",
      "WebSocket",
-     "Redux"
+     "Redux",
+     "React Native"
     ],
     "data": [
      "Apache Kafka",
@@ -17066,7 +17088,8 @@
      "Redis",
      "Elasticsearch",
      "ClickHouse",
-     "Apache Spark"
+     "Apache Spark",
+     "Apache Flink"
     ],
     "infra": [
      "AWS",
@@ -17075,19 +17098,20 @@
      "ArgoCD",
      "Prometheus",
      "Grafana",
-     "Vault/HSM"
+     "Vault/HSM",
+     "Istio"
     ]
    },
    "architecture": [
     "MSA (Microservices)",
-    "초저지연 인메모리 매칭 엔진",
+    "초저지연 인메모리 매칭 엔진 (single-writer event loop)",
     "이벤트 소싱·CQRS 기반 원장",
-    "다중화 고가용성·핫/콜드 월렛 분리"
+    "Hot/Cold Wallet 분리 + HSM/다중 서명 보안"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile / Web<br/>React + Next.js + TS\"]\n    WS[\"Realtime Feed<br/>WebSocket\"]\n    CDN[\"Edge / WAF<br/>AWS CloudFront + WAF\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    AUTH[\"Auth / 2FA / KYC<br/>OAuth2 + OTP\"]\n  end\n  subgraph Core[\"Core Trading Services\"]\n    ORD[\"Order Service<br/>Spring Boot + Kotlin\"]\n    ME[\"Matching Engine<br/>In-memory Java + Netty\"]\n    LED[\"Ledger / Wallet<br/>Go + gRPC\"]\n    MKT[\"Market Data<br/>Go fan-out\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KFK[\"Event Bus<br/>Apache Kafka\"]\n    SPK[\"Stream Processing<br/>Spark / Kafka Streams\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    SQL[\"Orders / Ledger<br/>MySQL\"]\n    RDS[\"Cache / Orderbook<br/>Redis\"]\n    ES[\"Search / Logs<br/>Elasticsearch\"]\n    CH[\"Analytics / OLAP<br/>ClickHouse\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Container Platform<br/>AWS EKS + ArgoCD\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n    KMS[\"Key Mgmt / Wallet<br/>HSM + Vault\"]\n  end\n  APP --> CDN --> GW\n  WS --> MKT\n  GW --> AUTH\n  GW -->|REST| ORD\n  ORD -->|gRPC| ME\n  ME -->|fills| LED\n  ME --> KFK\n  LED --> KFK\n  KFK --> MKT\n  KFK --> SPK\n  ME --> RDS\n  ORD --> SQL\n  LED --> SQL\n  SPK --> CH\n  GW --> ES\n  LED --> KMS\n  K8S -.-> Core\n  OBS -.-> Core",
-   "why_language": "초저지연 매칭과 원장 정합성이 핵심이라 JVM(Java/Kotlin) 기반의 성숙한 동시성·GC 튜닝 생태계와 Spring 프레임워크로 거래 핵심 로직을 구현한다. 시세 팬아웃, 지갑·블록체인 연동처럼 높은 동시성과 낮은 메모리 풋프린트가 필요한 영역은 Go로, 데이터 분석·자동화는 Python으로 분담한다. 프론트는 실시간 호가/차트 렌더링 요구로 React+TypeScript를 채택한다.",
-   "why_architecture": "단일 장애가 전체 거래 중단으로 이어지지 않도록 주문·매칭·원장·시세·지갑을 독립 서비스로 분리한 MSA를 택했고, 순간 폭증하는 트래픽을 흡수하기 위해 Kafka 기반 이벤트 스트리밍으로 비동기 결합을 두었다. 매칭 엔진은 디스크 I/O를 배제한 인메모리 단일 스레드 결정성 구조로 마이크로초 수준 체결을 보장하고, 자산 보관은 핫/콜드 월렛을 물리적으로 분리해 보안과 가용성을 동시에 확보한다.",
-   "summary": "JVM 기반 인메모리 매칭 엔진 + Go 시세·지갑 + Kafka 이벤트 스트리밍으로 묶은 초저지연·고가용성 가상자산 거래 플랫폼",
+   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    WEB[\"Web App<br/>Next.js + React\"]\n    APP[\"Mobile App<br/>React Native\"]\n    WS[\"Realtime Feed<br/>WebSocket\"]\n  end\n  subgraph Edge[\"API / Gateway\"]\n    CF[\"CDN + WAF<br/>CloudFront\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n    AUTH[\"Auth / KYC<br/>OAuth2 + FDS\"]\n  end\n  subgraph Core[\"Core Trading Services\"]\n    ORD[\"Order Service<br/>Spring Boot + Kotlin\"]\n    ME[\"Matching Engine<br/>Netty + Disruptor (in-memory)\"]\n    LEDGER[\"Ledger / Balance<br/>Event Sourcing + CQRS\"]\n    WALLET[\"Wallet Service<br/>Go + gRPC\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Processing<br/>Flink + Spark\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    MYSQL[\"Sharded RDBMS<br/>MySQL\"]\n    REDIS[\"Cache / Quotes<br/>Redis\"]\n    ES[\"Search / Logs<br/>Elasticsearch\"]\n    CH[\"Analytics / Candles<br/>ClickHouse\"]\n  end\n  subgraph Sec[\"Wallet Security\"]\n    HOT[\"Hot Wallet<br/>HSM signed\"]\n    COLD[\"Cold Wallet<br/>Multi-sig offline\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Kubernetes<br/>AWS EKS + Istio\"]\n    GITOPS[\"GitOps<br/>ArgoCD + Terraform\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  WEB --> CF\n  APP --> CF\n  CF --> GW\n  WS -->|push| REDIS\n  GW --> AUTH\n  AUTH --> ORD\n  ORD -->|sequenced| ME\n  ME -->|fills| LEDGER\n  ME -->|trade events| KAFKA\n  LEDGER --> MYSQL\n  ORD --> MYSQL\n  KAFKA --> FLINK\n  FLINK --> CH\n  FLINK --> REDIS\n  KAFKA --> ES\n  LEDGER --> WALLET\n  WALLET --> HOT\n  WALLET --> COLD\n  EKS --- ORD\n  EKS --- ME\n  GITOPS --> EKS\n  OBS --- EKS",
+   "why_language": "초저지연 매칭과 원장 정합성이 핵심인 거래소 특성상 JVM(Java/Kotlin)의 성숙한 동시성·GC 튜닝·Disruptor/Netty 생태계가 주문 처리의 표준이 되었고, Kotlin Coroutines로 비동기 I/O 코드를 간결하게 유지한다. 지갑·블록체인 노드 연동처럼 가볍고 동시성이 많은 네트워크 서비스에는 Go를, 데이터 파이프라인과 FDS 분석에는 Python을 사용해 도메인별로 언어를 분리한다.",
+   "why_architecture": "수십 종 마켓별로 독립적으로 스케일·배포해야 하므로 MSA를 택했고, 체결 순간의 결정성과 마이크로초 단위 지연을 위해 매칭은 단일 라이터 인메모리 이벤트 루프로 분리했다. 자산 이동의 모든 변화를 불변 이벤트로 적재하는 Event Sourcing·CQRS로 원장 정합성과 감사 추적성을 확보하고, 자산 보관은 Hot/Cold 분리와 HSM·다중 서명으로 보안을 물리적으로 격리한다.",
+   "summary": "JVM 기반 인메모리 매칭 엔진과 Event Sourcing 원장 위에 Kafka 스트리밍과 EKS MSA를 얹은 초저지연·고정합성 가상자산 거래소 스택",
    "deep_dive": [
     {
      "topic": "초저지연 매칭 엔진과 주문북",
@@ -17120,6 +17144,22 @@
     {
      "topic": "장애 대응과 복원력 (서킷브레이커, 백프레셔, 페일오버)",
      "body": "### 폭증 트래픽이 만드는 연쇄 장애\n비트코인 급등락 시 트래픽이 평소의 수십 배로 튄다. 이때 한 서비스가 느려지면 호출하는 상류 서비스의 스레드가 묶이고, 그 압력이 도미노처럼 번지는 **cascading failure**가 거래소의 전형적 장애 패턴이다.\n\n### 서킷브레이커\n서비스 간 호출에 `Resilience4j` 류의 서킷브레이커를 둔다. 하류 서비스의 에러율/지연이 임계치를 넘으면 회로를 `OPEN`시켜 즉시 실패(fail-fast)시키고, 일정 시간 후 `HALF_OPEN`으로 일부 요청만 흘려 회복을 탐지한다. 이를 통해 죽어가는 서비스에 요청을 쌓아 함께 죽는 것을 막는다.\n\n### 백프레셔와 부하 차단\n매칭 엔진처럼 처리량 상한이 명확한 컴포넌트 앞에는 큐와 rate limit을 두어 과부하 시 초과 주문을 빠르게 거절(load shedding)한다. \"느린 성공\"보다 \"빠른 실패\"가 전체 시스템 안정에 유리하기 때문이다. Kafka가 이벤트 버퍼 역할을 해 순간 스파이크를 흡수하고 컨슈머가 자기 속도로 소화한다.\n\n### 다중화와 페일오버\n- **AZ 다중화**: AWS 여러 가용영역에 서비스·DB를 분산. 단일 AZ 장애를 견딘다.\n- **DB**: MySQL은 primary-replica로 구성, 읽기는 replica로 분산하고 primary 장애 시 자동 승격(failover).\n- **매칭 엔진**: active-standby. 모든 주문 이벤트가 Kafka에 적재되어 있어, standby는 이벤트 로그를 **리플레이**해 동일한 결정적 상태를 복원할 수 있다. 이것이 인메모리 구조임에도 내구성을 확보하는 핵심 메커니즘이다.\n\n### 점검 모드\n블록체인 네트워크 이슈나 중대 장애 시 입출금만 선택적으로 중단하는 등 **부분 기능 격리(graceful degradation)**가 가능하도록 기능이 모듈화되어 있다. 전체를 내리지 않고 영향 범위를 최소화하는 것이 운영 철학이다."
+    },
+    {
+     "topic": "데이터 저장·일관성·샤딩 전략: 원장과 주문의 분리 보관",
+     "body": "### 왜 단일 DB로는 안 되는가\n업비트 규모에서 단일 `MySQL` 인스턴스는 두 가지 한계에 부딪힌다. 첫째, 마켓별 주문·체결 데이터의 쓰기 처리량(write throughput)이 한 노드의 IOPS를 초과한다. 둘째, 잔고·원장은 절대적 정합성이 필요한 반면 주문 이력·시세는 대량·고속 append 특성이라 요구사항이 정반대다. 그래서 데이터 도메인을 성격별로 쪼개 저장소를 분리한다.\n\n### 계층별 저장 전략\n\n| 데이터 도메인 | 저장소 | 일관성 모델 | 샤딩 키 |\n|---|---|---|---|\n| 잔고/원장(Ledger) | `MySQL` + Event Store | 강한 일관성, 단일 라이터 | account_id |\n| 주문/체결 이력 | `MySQL` (샤딩) | 최종 일관성 허용 | market / time |\n| 실시간 시세·호가 | `Redis` | 휘발성, 캐시 | market |\n| 캔들·체결 분석 | `ClickHouse` | 컬럼 지향, 배치 | market + interval |\n| 거래 로그·검색 | `Elasticsearch` | 비동기 색인 | time-based index |\n\n### 샤딩과 라우팅\n주문 데이터는 **마켓 단위 수평 샤딩**이 자연스럽다. KRW-BTC, KRW-ETH 등 마켓이 독립적이므로 마켓을 샤드 키로 잡으면 핫 마켓(BTC)이 다른 마켓에 영향을 주지 않도록 격리할 수 있다. 다만 인기 마켓 한 곳에 부하가 쏠리는 **hot shard** 문제가 남으므로, 시계열(time-based) 파티셔닝을 결합해 과거 데이터는 별도 테이블/아카이브로 롤오버한다.\n\n### 원장의 정합성을 지키는 핵심\n잔고는 절대 음수가 되면 안 되고 이중 차감이 일어나서도 안 된다. 그래서 원장은 샤딩하지 않고 **계정 단위 단일 라이터**로 직렬화하거나, Event Sourcing의 append-only 이벤트 스트림에 **낙관적 락(optimistic concurrency, version 컬럼)** 을 걸어 동시 갱신 충돌을 감지한다. 읽기(잔고 조회)는 CQRS의 read model로 분리해 `Redis`/replica에서 처리하므로 쓰기 경로의 락 경합을 줄인다. 즉 '쓰기는 정확성, 읽기는 확장성'을 물리적으로 분리한 것이 핵심 트레이드오프다."
+    },
+    {
+     "topic": "캐싱 계층: 시세·호가·잔고 조회를 받아내는 다층 캐시",
+     "body": "### 캐시가 곧 서비스 품질인 도메인\n거래소에서 가장 빈번한 요청은 주문이 아니라 **조회**다. 시세 화면을 켜둔 수십만 사용자가 호가·체결·잔고를 끊임없이 폴링/구독하므로, 이 트래픽이 그대로 `MySQL`로 가면 DB가 즉시 무너진다. 그래서 읽기 경로 대부분을 캐시에서 끝낸다.\n\n### 다층 구조\n\n- **L1 로컬 캐시 (in-process)**: 각 서비스 인스턴스의 JVM 힙에 마켓 메타데이터, 수수료 정책처럼 거의 안 변하는 값을 `Caffeine` 류로 캐싱. 네트워크 홉이 없어 마이크로초 단위.\n- **L2 분산 캐시 (`Redis`)**: 실시간 호가/체결가/24h 통계 같은 가변 데이터. 매칭 엔진이 체결을 낼 때마다 `Redis`에 최신 시세를 push하고, WebSocket fanout 계층이 이를 구독해 클라이언트로 밀어낸다.\n- **read replica**: 캐시 미스 시 fallback은 마스터가 아니라 `MySQL` 읽기 복제본으로 보내 마스터의 쓰기 성능을 보호.\n\n### 캐시 일관성의 어려움\n잔고 같은 민감 데이터를 캐싱하면 **stale read**가 자금 사고로 이어질 수 있다. 그래서 잔고는 보통 캐시하지 않거나, 캐싱하더라도 원장 이벤트가 발생하면 즉시 무효화(invalidate)하는 **write-through / write-invalidate** 패턴을 쓴다. 반대로 시세는 1초만 지나도 무의미하므로 **짧은 TTL + 덮어쓰기**로 단순하게 운영한다.\n\n### Thundering herd 방어\n인기 마켓의 캐시 키가 동시에 만료되면 수많은 요청이 한꺼번에 DB로 몰리는 **cache stampede**가 발생한다. 이를 막기 위해 (1) 키별 분산 락으로 한 요청만 재계산하게 하거나, (2) 만료 직전 백그라운드 갱신(refresh-ahead), (3) TTL에 jitter를 줘 만료 시점을 분산한다. 거래량 급증 이벤트(상장·급등) 때 이 방어가 시스템 생존을 가른다."
+    },
+    {
+     "topic": "FDS(이상거래탐지)와 실시간 스트림 분석 파이프라인",
+     "body": "### 왜 거래소에 FDS가 필수인가\n가상자산 거래소는 자금세탁(AML), 시세조종, 계정 탈취, 보이스피싱 연계 출금 등 금융 범죄의 표적이다. 두나무는 자체 FDS(Fraud Detection System)를 운영하며, 이는 단순 규칙이 아니라 **실시간 스트림 + ML 점수화**의 결합이다.\n\n### 데이터 흐름 (end-to-end)\n\n1. **이벤트 수집**: 로그인, 주문, 입출금, 기기/IP 변경 등 모든 행위가 `Kafka` 토픽으로 흘러든다. 거래 자체의 이벤트 소싱 스트림이 그대로 분석 소스가 된다.\n2. **실시간 처리**: `Flink`/`Spark Streaming`이 토픽을 구독해 슬라이딩 윈도우 집계(예: '10분 내 동일 IP에서 N개 신규 계정 출금')와 패턴 매칭을 수행한다. 상태 저장 스트림 처리(stateful streaming)로 사용자별 행동 프로파일을 메모리에 유지한다.\n3. **피처·룰 평가**: 거래 빈도, 평소 대비 금액 편차, 신규 수취 주소 여부, 디바이스 핑거프린트 같은 피처를 만들어 룰 엔진과 ML 모델(`Python` 기반)에 통과시켜 위험 점수를 매긴다.\n4. **대응**: 점수가 임계치를 넘으면 출금 보류, 추가 인증(2FA/영상통화), 거래 제한 같은 액션을 트리거한다. 특히 **출금은 비동기 큐**에 들어가 FDS 통과 후에야 Hot Wallet 서명 단계로 넘어간다.\n\n### 분석·집계 저장소\n장기 행동 분석과 시세조종 탐지는 대량 시계열을 빠르게 훑어야 하므로 컬럼 지향 `ClickHouse`에 체결·주문을 적재해 OLAP 쿼리로 본다. 검색·감사 추적은 `Elasticsearch`로 색인한다.\n\n### 트레이드오프\nFDS는 **지연(latency) vs 안전(safety)** 의 균형 문제다. 실시간 거래 경로를 막으면 사용자 경험이 나빠지므로, 매수/매도 같은 실시간 경로는 가볍게 통과시키고 **출금처럼 되돌릴 수 없는 행위에만 무거운 검사를 비동기로** 건다. 즉 '취소 가능한 행위는 빠르게, 비가역적 행위는 신중하게'가 설계 원칙이다."
+    },
+    {
+     "topic": "인증·보안 아키텍처: KYC/세션·시크릿 관리·계정 보호",
+     "body": "### 신뢰의 경계를 어디에 두는가\n거래소는 '돈이 직접 움직이는' 시스템이라 인증·인가가 곧 보안의 1차 방어선이다. 두나무는 게이트웨이에서 신원과 토큰을 검증하고, 그 안쪽 MSA는 검증된 컨텍스트만 신뢰하는 구조를 쓴다.\n\n### 인증/세션\n- **OAuth2/토큰 기반 인증**: API Gateway(`Spring Cloud Gateway`)에서 액세스 토큰을 검증하고, 내부 서비스 간에는 짧은 수명의 토큰/`mTLS`(Istio)로 호출 주체를 보증한다.\n- **단계별 인증(step-up auth)**: 단순 조회는 토큰만으로 통과하지만, 출금·API 키 발급·기기 변경 같은 고위험 행위는 2FA, 카카오페이 인증, 출금 주소 등록 후 일정 시간 잠금 같은 추가 관문을 둔다.\n- **KYC/AML**: 신규 가입·실명확인은 외부 신원확인 기관과 연동되며, 이 결과가 사용자 등급(거래·출금 한도)을 결정한다.\n\n### 시크릿·키 관리\n- **`Vault`/`HSM`**: DB 패스워드, API 시크릿, 서명 키 같은 민감 정보는 코드/설정에 두지 않고 `Vault`로 중앙 관리하며 동적 발급·자동 회전(rotation)한다.\n- **지갑 서명 키**: 절대 평문으로 메모리에 노출하지 않고 `HSM` 내부에서만 서명이 일어난다. Cold Wallet의 다중 서명 키는 물리적으로 분리·오프라인 보관된다(이미 다룬 지갑 보안과 연결).\n\n### 계정 탈취 방어\n로그인 이상 징후(새 기기/지역, 비정상 시도)는 앞의 FDS 파이프라인과 연동되어 추가 인증을 강제한다. 출금 주소 화이트리스트, 출금 후 일정 시간 추가 출금 제한 같은 **시간 기반 안전장치**로 '탈취되더라도 즉시 자금이 빠져나가지 못하게' 만드는 것이 핵심 설계다.\n\n### 트레이드오프\n보안 관문을 늘릴수록 자금은 안전하지만 사용자 마찰(friction)이 커진다. 그래서 위험도에 비례해 인증 강도를 동적으로 조절하는 **risk-based authentication**으로, 평상시에는 매끄럽고 위험할 때만 빡빡하게 동작하도록 균형을 맞춘다."
     }
    ],
    "github": {
@@ -17127,12 +17167,12 @@
     "repos": []
    },
    "sources": [
-    "https://dunamu.com",
-    "https://upbit.com",
-    "https://www.dunamu.com/careers"
+    "https://danawalab.github.io/",
+    "https://github.com/dunamu",
+    "https://upbit.com/service_center/notice"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-16"
+   "updated_at": "2026-06-20"
   },
   {
    "key": "kakaopay",
