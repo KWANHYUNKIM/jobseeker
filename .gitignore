@@ -49,3 +49,6 @@ jd-viewer/bin/.refresh-learning.lock/
 # Local Claude settings
 .claude/settings.local.json
 .claude/worktrees/
+
+# 런타임 생성 학습 갱신 타임스탬프
+.learning_refresh.stamp

@@ -1,0 +1,7 @@
+node_modules
+dist
+.git
+.vscode
+*.log
+# 데이터 JSON 은 빌드에 박지 않는다(런타임에 /data 볼륨으로 서빙) → 이미지 경량화
+public/*.json

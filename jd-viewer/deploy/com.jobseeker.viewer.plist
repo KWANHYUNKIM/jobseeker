@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.jobseeker.viewer</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/python3</string>
+    <string>/Users/kwanhyun/jobseeker/jd-viewer/bin/serve_viewer.py</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>VIEWER_PORT</key>
+    <string>8137</string>
+    <key>VIEWER_HOST</key>
+    <string>0.0.0.0</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/kwanhyun/jobseeker/jd-viewer</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/kwanhyun/Library/Logs/jobseeker-viewer.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/kwanhyun/Library/Logs/jobseeker-viewer.err.log</string>
+</dict>
+</plist>
