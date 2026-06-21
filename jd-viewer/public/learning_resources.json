@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21T10:17:37",
+  "generated_at": "2026-06-21T12:01:08",
   "source": "youtube",
   "tech_count": 172,
   "curriculum_count": 20,
@@ -3931,88 +3931,6 @@
         "stage": "실전"
       }
     ],
-    "Swift": [
-      {
-        "title": "짱쉬운 스위프트 기초 | 30분만에 뽀개기",
-        "url": "https://www.youtube.com/watch?v=3iG1LfXt9hc",
-        "thumbnail": "https://i.ytimg.com/vi/3iG1LfXt9hc/mqdefault.jpg",
-        "channel": "리디의 삶은개발",
-        "views": 2120,
-        "length": "30:07",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "왕초보 스위프트(Swift6) 언어 무료 강의 - 3-1강 xcode 설치와 playground 세팅 | 8시간 앱개발 기초 무료 강의",
-        "url": "https://www.youtube.com/watch?v=yLXfuzToYyo",
-        "thumbnail": "https://i.ytimg.com/vi/yLXfuzToYyo/mqdefault.jpg",
-        "channel": "밤낮코딩",
-        "views": 269,
-        "length": "10:54",
-        "published": "9개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "예제와 함께 공부하는 Swift 기초 문법 무료 강의 #1 - Xcode 15 버전",
-        "url": "https://www.youtube.com/watch?v=n2lzUnWPxeE",
-        "thumbnail": "https://i.ytimg.com/vi/n2lzUnWPxeE/mqdefault.jpg",
-        "channel": "KxCoding",
-        "views": 6976,
-        "length": "10:21:43",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "왕초보 스위프트(Swift6) 언어 무료 강의 - 14-4강 클래스의 상속 | 8시간 앱개발 기초 무료 강의",
-        "url": "https://www.youtube.com/watch?v=a5Uwe7ZUqoU",
-        "thumbnail": "https://i.ytimg.com/vi/a5Uwe7ZUqoU/mqdefault.jpg",
-        "channel": "밤낮코딩",
-        "views": 15,
-        "length": "18:42",
-        "published": "9개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "예제와 함께 공부하는 Swift 기초 문법 무료 강의 #2 - Xcode 15 버전",
-        "url": "https://www.youtube.com/watch?v=32p0r4Ofisc",
-        "thumbnail": "https://i.ytimg.com/vi/32p0r4Ofisc/mqdefault.jpg",
-        "channel": "KxCoding",
-        "views": 1734,
-        "length": "10:10:24",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Swift? SwiftUI? 뭐 부터 시작해야할지 망설이는 당신에게",
-        "url": "https://www.youtube.com/watch?v=vIPiydAQFLk",
-        "thumbnail": "https://i.ytimg.com/vi/vIPiydAQFLk/mqdefault.jpg",
-        "channel": "개발자리",
-        "views": 398,
-        "length": "9:32",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "1시간에 정리하는 Swift 문법 리뷰, swift 강좌",
-        "url": "https://www.youtube.com/watch?v=R8OWOgCNt4M",
-        "thumbnail": "https://i.ytimg.com/vi/R8OWOgCNt4M/mqdefault.jpg",
-        "channel": "Smile Han",
-        "views": 18000,
-        "length": "1:02:50",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "취준생을 위한 스위프트UI 앱만들기 앱 아키텍쳐 TCA 알아보기 / SwiftUi fundamental Tutorial (2022) - composable Architecture",
-        "url": "https://www.youtube.com/watch?v=fYQ9YnbvasU",
-        "thumbnail": "https://i.ytimg.com/vi/fYQ9YnbvasU/mqdefault.jpg",
-        "channel": "개발하는 정대리",
-        "views": 7512,
-        "length": "53:44",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "OpenAI": [
       {
         "title": "OpenAi Agent Builder 초기초부터 10분안에 알려드립니다",
@@ -4092,6 +4010,88 @@
         "views": 1312,
         "length": "4:01",
         "published": "8개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Swift": [
+      {
+        "title": "짱쉬운 스위프트 기초 | 30분만에 뽀개기",
+        "url": "https://www.youtube.com/watch?v=3iG1LfXt9hc",
+        "thumbnail": "https://i.ytimg.com/vi/3iG1LfXt9hc/mqdefault.jpg",
+        "channel": "리디의 삶은개발",
+        "views": 2120,
+        "length": "30:07",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "왕초보 스위프트(Swift6) 언어 무료 강의 - 3-1강 xcode 설치와 playground 세팅 | 8시간 앱개발 기초 무료 강의",
+        "url": "https://www.youtube.com/watch?v=yLXfuzToYyo",
+        "thumbnail": "https://i.ytimg.com/vi/yLXfuzToYyo/mqdefault.jpg",
+        "channel": "밤낮코딩",
+        "views": 269,
+        "length": "10:54",
+        "published": "9개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "예제와 함께 공부하는 Swift 기초 문법 무료 강의 #1 - Xcode 15 버전",
+        "url": "https://www.youtube.com/watch?v=n2lzUnWPxeE",
+        "thumbnail": "https://i.ytimg.com/vi/n2lzUnWPxeE/mqdefault.jpg",
+        "channel": "KxCoding",
+        "views": 6976,
+        "length": "10:21:43",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "왕초보 스위프트(Swift6) 언어 무료 강의 - 14-4강 클래스의 상속 | 8시간 앱개발 기초 무료 강의",
+        "url": "https://www.youtube.com/watch?v=a5Uwe7ZUqoU",
+        "thumbnail": "https://i.ytimg.com/vi/a5Uwe7ZUqoU/mqdefault.jpg",
+        "channel": "밤낮코딩",
+        "views": 15,
+        "length": "18:42",
+        "published": "9개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "예제와 함께 공부하는 Swift 기초 문법 무료 강의 #2 - Xcode 15 버전",
+        "url": "https://www.youtube.com/watch?v=32p0r4Ofisc",
+        "thumbnail": "https://i.ytimg.com/vi/32p0r4Ofisc/mqdefault.jpg",
+        "channel": "KxCoding",
+        "views": 1734,
+        "length": "10:10:24",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Swift? SwiftUI? 뭐 부터 시작해야할지 망설이는 당신에게",
+        "url": "https://www.youtube.com/watch?v=vIPiydAQFLk",
+        "thumbnail": "https://i.ytimg.com/vi/vIPiydAQFLk/mqdefault.jpg",
+        "channel": "개발자리",
+        "views": 398,
+        "length": "9:32",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "1시간에 정리하는 Swift 문법 리뷰, swift 강좌",
+        "url": "https://www.youtube.com/watch?v=R8OWOgCNt4M",
+        "thumbnail": "https://i.ytimg.com/vi/R8OWOgCNt4M/mqdefault.jpg",
+        "channel": "Smile Han",
+        "views": 18000,
+        "length": "1:02:50",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "취준생을 위한 스위프트UI 앱만들기 앱 아키텍쳐 TCA 알아보기 / SwiftUi fundamental Tutorial (2022) - composable Architecture",
+        "url": "https://www.youtube.com/watch?v=fYQ9YnbvasU",
+        "thumbnail": "https://i.ytimg.com/vi/fYQ9YnbvasU/mqdefault.jpg",
+        "channel": "개발하는 정대리",
+        "views": 7512,
+        "length": "53:44",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],

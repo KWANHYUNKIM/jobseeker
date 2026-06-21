@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6622건** 공고 · **1321개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-21 10:09
+- 총 **6623건** 공고 · **1322개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-21 12:01
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -10060,7 +10060,7 @@ markmap:
   - [26년 하반기 신입사원 공개채용 #공채 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555520?ReturnUrl=RecruitInfo)
 
 
-## 교육/에듀테크 (84개사)
+## 교육/에듀테크 (85개사)
 ### (주)비상교육 `중소기업` · 15건
 - **백엔드** [3건] · `Java` `React` `MariaDB` `Spring` `Spring Boot` `Docker`
   - [Backend 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53879449&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=41c06a60-8271-44a5-a8ea-fef14ba725c4)
@@ -10683,6 +10683,23 @@ markmap:
 - **AI/ML** [2건] · `Java` `Kotlin` `TypeScript` `Swift` `React` `Next.js`
   - [그로비랩스 풀스택 개발자 7~9년 ↗](https://www.wanted.co.kr/wd/369418)
   - [그로비랩스 풀스택 경력 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54227412&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7f92fae8-cdc3-4f9f-a457-63bbcce596c3)
+
+### 소리튠 `중소기업` · 2건
+- **백엔드** [2건] · `Python` `AWS` `GCP` `OpenAI`
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.wanted.co.kr/wd/369006)
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047784&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d213b3d7-ede6-49d4-997e-f5ffb62a56e3)
+- **프론트엔드** [2건] · `Python` `AWS` `GCP` `OpenAI`
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.wanted.co.kr/wd/369006)
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047784&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d213b3d7-ede6-49d4-997e-f5ffb62a56e3)
+- **풀스택** [2건] · `Python` `AWS` `GCP` `OpenAI`
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.wanted.co.kr/wd/369006)
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047784&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d213b3d7-ede6-49d4-997e-f5ffb62a56e3)
+- **AI/ML** [2건] · `Python` `AWS` `GCP` `OpenAI`
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.wanted.co.kr/wd/369006)
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047784&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d213b3d7-ede6-49d4-997e-f5ffb62a56e3)
+- **DevOps/인프라** [2건] · `Python` `AWS` `GCP` `OpenAI`
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.wanted.co.kr/wd/369006)
+  - [AI Product Developer (또는 AI Product Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54047784&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d213b3d7-ede6-49d4-997e-f5ffb62a56e3)
 
 ### 터틀날리지 `중견기업` · 2건
 - **AI/ML** [1건] · `AWS`
