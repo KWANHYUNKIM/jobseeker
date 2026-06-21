@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import domains, jobs, match, store
+from . import company_tier, domains, embed, jobs, match, seniority, store
 
 HOST = "127.0.0.1"  # 고정 — 절대 외부 바인딩 금지
 PORT = int(os.environ.get("ADMIN_PORT", "8910"))
@@ -96,6 +96,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(jobs.search(q, limit, offset))
             elif path == "/api/fit":
                 self._fit(qs)
+            elif path == "/api/learn":
+                self._learn()
             elif path == "/api/job":
                 key = qs.get("key", [""])[0]
                 job = jobs.get(key)
@@ -190,50 +192,130 @@ class Handler(BaseHTTPRequestHandler):
     def _fit(self, qs: dict) -> None:
         profile = store.get_profile()
         have = match.profile_terms(profile)
-        if not have:
+        profile_vec = embed.profile_vector(profile)  # 의미 매칭용(없으면 키워드만)
+        # 키워드도 의미벡터도 못 만들면 평가 불가. (산문만 있어도 의미벡터는 생기므로 통과)
+        if not have and profile_vec is None:
             return self._json({"items": [], "facets": {"domains": []},
                                "profile_terms": [], "scanned": 0,
-                               "warning": "프로필에 인식된 기술이 없습니다. 사실 프로필의 스킬/경력을 먼저 채우세요."})
+                               "warning": "프로필에 인식된 내용이 없습니다. 사실 프로필의 스킬/경력/소개를 먼저 채우세요."})
         q = (qs.get("q", [""])[0]).strip().lower()
         terms = q.split()
         min_score = int(qs.get("min_score", ["0"])[0] or 0)
-        limit = min(int(qs.get("limit", ["50"])[0] or 50), 200)
+        limit = min(int(qs.get("limit", ["50"])[0] or 50), 8000)
         domain_filter = qs.get("domain", [""])[0]
+        tier_filter = qs.get("tier", [""])[0]
+        site_filter = qs.get("site", [""])[0]
+        tech_filter = qs.get("tech", [""])[0].lower()
+        order = qs.get("order", ["best"])[0]  # best=적합 높은순, worst=낮은순
 
         scored = []
-        for j in jobs.all_jobs():
-            if not jobs.matches_query(j, terms):
-                continue
+        dfacet: dict[str, int] = {}
+        tfacet: dict[str, int] = {}
+        sfacet: dict[str, int] = {}
+        techfacet: dict[str, int] = {}
+        candidates = [j for j in jobs.all_jobs() if jobs.matches_query(j, terms)]
+        embed.ensure_jobs(candidates)  # 의미 벡터 배치 준비(캐시 미스만 인코딩)
+        my_years = seniority.profile_years(profile)  # 연차 매칭용(1회 계산)
+        for j in candidates:
             s = match.score(have, j)
-            if s["score"] < min_score:
+            sem = embed.semantic_score(profile_vec, j)  # 의미 적합도 0~100
+            # 키워드 기술정보도 없고 의미점수도 0이면 평가 불가 → 제외
+            if s["n_job_terms"] == 0 and sem == 0:
+                continue
+            sen = seniority.assess(my_years, seniority.required_years(j))
+            final = embed.blend(s["score"], sem)  # 키워드+의미 종합
+            final = max(0, final - sen["penalty"])  # 연차 미달 시 감점
+            if final < min_score:
+                continue
+            jterms = set(s["matched"]) | set(s["missing"])
+            if tech_filter and tech_filter not in jterms:
+                continue
+            site = j.get("site", "")
+            if site_filter and site != site_filter:
                 continue
             doms = domains.classify(j)
-            if domain_filter and domain_filter not in doms:
+            dom_names = [d["name"] for d in doms]
+            if domain_filter and domain_filter not in dom_names:
                 continue
-            scored.append((s, doms, j))
+            tier = company_tier.classify(j.get("company"))
+            if tier_filter and tier != tier_filter:
+                continue
+            scored.append((s, sem, final, sen, doms, tier, j))
+            for dn in dom_names:
+                dfacet[dn] = dfacet.get(dn, 0) + 1
+            tfacet[tier] = tfacet.get(tier, 0) + 1
+            sfacet[site] = sfacet.get(site, 0) + 1
+            for t in jterms:
+                techfacet[t] = techfacet.get(t, 0) + 1
 
-        # 도메인 facet(필터 결과 기준)
-        facet: dict[str, int] = {}
-        for _, doms, _ in scored:
-            for d in doms:
-                facet[d] = facet.get(d, 0) + 1
-        facets = sorted(({"name": k, "count": v} for k, v in facet.items()),
-                        key=lambda x: -x["count"])
+        facets = sorted(({"name": k, "count": v} for k, v in dfacet.items()), key=lambda x: -x["count"])
+        tier_facets = sorted(({"name": k, "count": v} for k, v in tfacet.items()),
+                             key=lambda x: company_tier.ORDER.index(x["name"]) if x["name"] in company_tier.ORDER else 99)
+        site_facets = sorted(({"name": k, "count": v} for k, v in sfacet.items() if k), key=lambda x: -x["count"])
+        tech_facets = sorted(({"name": k, "count": v} for k, v in techfacet.items()), key=lambda x: -x["count"])[:40]
 
-        scored.sort(key=lambda t: (t[0]["score"], len(t[0]["matched"])), reverse=True)
+        embed.save_cache()  # 이번에 새로 계산한 잡 벡터 저장(다음 스캔 즉시)
+
+        # 적합 높은순(best) 또는 낮은순(worst) — 종합점수(final) 기준
+        scored.sort(key=lambda t: (t[2], len(t[0]["matched"])), reverse=(order != "worst"))
         items = []
-        for s, doms, j in scored[:limit]:
+        for s, sem, final, sen, doms, tier, j in scored[:limit]:
+            # 전체(수천 건) 반환 가능하도록 목록은 경량화 — 주요업무/자격요건은
+            # 카드에서 펼칠 때 /api/job 으로 개별 조회.
             items.append({
                 "key": jobs.job_key(j), "company": j.get("company"), "title": j.get("title"),
                 "url": j.get("url"), "career": j.get("career"), "dday": j.get("dday"),
-                "score": s["score"], "matched": s["matched"], "missing": s["missing"],
-                "low_confidence": s["low_confidence"], "domains": doms,
-                "main_tasks": str(j.get("main_tasks") or "")[:800],
-                "qualifications": str(j.get("qualifications") or "")[:800],
-                "preferences": str(j.get("preferences") or "")[:600],
+                "score": final, "kw_score": s["score"], "sem_score": sem,
+                "matched": s["matched"], "missing": s["missing"],
+                "low_confidence": s["low_confidence"], "domains": doms, "tier": tier,
+                "seniority": {k: sen[k] for k in ("status", "label", "req_min", "my_years")},
             })
-        self._json({"items": items, "facets": facets,
+        self._json({"items": items, "facets": facets, "tier_facets": tier_facets,
+                    "site_facets": site_facets, "tech_facets": tech_facets,
                     "profile_terms": sorted(have), "scanned": len(scored)})
+
+    # ── 학습 추천 (수요·트렌드 / 갭 / 도메인 약점) ───────────
+    def _learn(self) -> None:
+        profile = store.get_profile()
+        have = match.profile_terms(profile)
+        if not have:
+            return self._json({"warning": "사실 프로필의 스킬/경력을 먼저 채우세요.",
+                               "demand": [], "gaps": [], "domains": [], "profile_terms": []})
+        demand: dict[str, int] = {}
+        dom_jobs: dict[str, int] = {}
+        dom_score: dict[str, int] = {}
+        dom_missing: dict[str, dict[str, int]] = {}
+        for j in jobs.all_jobs():
+            s = match.score(have, j)
+            if s["n_job_terms"] == 0:
+                continue
+            for t in s["matched"]:
+                demand[t] = demand.get(t, 0) + 1
+            for t in s["missing"]:
+                demand[t] = demand.get(t, 0) + 1
+            for d in domains.classify(j):
+                dn = d["name"]
+                dom_jobs[dn] = dom_jobs.get(dn, 0) + 1
+                dom_score[dn] = dom_score.get(dn, 0) + s["score"]
+                mm = dom_missing.setdefault(dn, {})
+                for t in s["missing"]:
+                    mm[t] = mm.get(t, 0) + 1
+
+        demand_list = sorted(({"tech": k, "count": v, "have": k in have} for k, v in demand.items()),
+                             key=lambda x: -x["count"])
+        gaps = [{"tech": d["tech"], "count": d["count"]} for d in demand_list if not d["have"]][:20]
+        dom_stats = []
+        for dn, n in dom_jobs.items():
+            if n < 15:   # 표본 적은 도메인은 노이즈 → 제외
+                continue
+            top_missing = sorted(dom_missing.get(dn, {}).items(), key=lambda x: -x[1])[:5]
+            dom_stats.append({
+                "name": dn, "jobs": n, "avg_score": round(dom_score[dn] / n, 1),
+                "top_missing": [{"tech": t, "count": c} for t, c in top_missing],
+            })
+        dom_stats.sort(key=lambda x: x["avg_score"])  # 약한 도메인 먼저
+        self._json({"demand": demand_list, "gaps": gaps, "domains": dom_stats,
+                    "profile_terms": sorted(have)})
 
     # ── 재공고 추적 ──────────────────────────────────────────
     def _add_watch(self, body: dict) -> None:

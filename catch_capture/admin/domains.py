@@ -6,7 +6,6 @@
 """
 from __future__ import annotations
 
-import re
 from typing import Any
 
 # 도메인 → 키워드(한/영). 소문자 비교.
@@ -38,9 +37,6 @@ DOMAIN_KEYWORDS: dict[str, list[str]] = {
     "커뮤니티/SNS": ["sns", "커뮤니티", "소셜", "메신저", "메시징", "community", "social"],
 }
 
-_DOMAIN_RE = {dom: re.compile("|".join(re.escape(k) for k in kws), re.I)
-              for dom, kws in DOMAIN_KEYWORDS.items()}
-
 _FIELDS = ("company", "title", "main_tasks", "qualifications", "preferences")
 
 
@@ -52,14 +48,18 @@ def _job_text(job: dict[str, Any]) -> str:
     return " ".join(out).lower()
 
 
-def classify(job: dict[str, Any], top: int = 2) -> list[str]:
+def classify(job: dict[str, Any], top: int = 2) -> list[dict[str, Any]]:
+    """도메인 + 근거 키워드('무엇을 개발하는지' 신호) 반환.
+
+    예: [{"name":"핀테크","evidence":["결제","정산"]}, ...]
+    """
     text = _job_text(job)
-    hits = []
-    for dom, rx in _DOMAIN_RE.items():
-        n = len(rx.findall(text))
-        if n:
-            hits.append((n, dom))
-    if not hits:
-        return ["기타"]
-    hits.sort(reverse=True)
-    return [d for _, d in hits[:top]]
+    scored = []
+    for dom, kws in DOMAIN_KEYWORDS.items():
+        found = [k.strip() for k in kws if k in text]
+        if found:
+            scored.append((len(found), dom, found))
+    if not scored:
+        return [{"name": "기타", "evidence": []}]
+    scored.sort(key=lambda x: -x[0])
+    return [{"name": d, "evidence": sorted(set(f))[:4]} for _, d, f in scored[:top]]

@@ -1,2 +1,5 @@
 playwright==1.49.0
 anthropic>=0.111.0
+# 의미 기반 적합도(임베딩) — 로컬 정적 임베딩, torch 불필요
+model2vec>=0.8.0
+numpy>=2.0.0

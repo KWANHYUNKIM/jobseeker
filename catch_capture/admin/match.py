@@ -82,7 +82,12 @@ def score(profile_have: set[str], job: dict[str, Any]) -> dict[str, Any]:
     jt = job_terms(job)
     matched = sorted(jt & profile_have)
     missing = sorted(jt - profile_have)
-    pct = round(100 * len(matched) / len(jt)) if jt else 0
+    m, ms = len(matched), len(missing)
+    # 단순 비율(matched/job_terms)은 기술 1~2개짜리 희소 JD를 무조건 100점으로 부풀린다.
+    # 보유 수를 보상하고 부족 수를 감점하며, 평활 상수(SMOOTH)로 희소 JD 과대평가를 막아
+    # 모든 공고를 같은 척도로 비교 가능하게 한다.
+    SMOOTH = 2
+    pct = round(100 * m / (m + ms + SMOOTH)) if jt else 0
     return {
         "score": pct,
         "matched": matched,

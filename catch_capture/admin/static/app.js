@@ -37,6 +37,7 @@ function toast(msg) {
 const TABS = [
   { id: "jobs", label: "JD 검색·생성" },
   { id: "fit", label: "자동 적합도" },
+  { id: "learn", label: "학습 추천" },
   { id: "forms", label: "지원 폼" },
   { id: "watch", label: "재공고 추적" },
   { id: "profile", label: "사실 프로필" },
@@ -57,7 +58,7 @@ function route() {
   renderNav();
   const v = document.getElementById("view");
   v.innerHTML = "";
-  ({ jobs: viewJobs, fit: viewFit, forms: viewForms, watch: viewWatch, profile: viewProfile, apps: viewApps, settings: viewSettings }[current])(v);
+  ({ jobs: viewJobs, fit: viewFit, learn: viewLearn, forms: viewForms, watch: viewWatch, profile: viewProfile, apps: viewApps, settings: viewSettings }[current])(v);
 }
 
 async function refreshAIState() {
@@ -169,53 +170,157 @@ async function addToApps(job) {
 // ── 자동 적합도 분석 ────────────────────────────────────────
 const scoreClass = (s) => (s >= 70 ? "good" : s >= 45 ? "mid" : "low");
 
+// ── 학습 추천 (트렌드·갭·도메인 약점) ───────────────────────
+async function viewLearn(v) {
+  v.append(el("div", { class: "muted" }, "분석 중… (수초)"));
+  let d;
+  try { d = await getJSON("/api/learn"); } catch (e) { v.innerHTML = ""; v.append(el("div", { class: "card muted" }, "오류: " + e.message)); return; }
+  v.innerHTML = "";
+  if (d.warning) { v.append(el("div", { class: "card muted" }, d.warning)); return; }
+
+  // A) 공부 우선순위 (수요 높은데 미보유) — 막대
+  const maxGap = (d.gaps[0] && d.gaps[0].count) || 1;
+  const gapRows = (d.gaps || []).slice(0, 15).map((g) =>
+    el("div", { style: "display:flex; align-items:center; gap:8px; margin:4px 0" },
+      el("div", { style: "width:120px; font-size:13px" }, esc(g.tech)),
+      el("div", { style: "flex:1; background:var(--panel2); border-radius:4px; overflow:hidden" },
+        el("div", { style: `height:16px; width:${Math.round(g.count / maxGap * 100)}%; background:var(--accent)` })),
+      el("div", { class: "small muted", style: "width:80px; text-align:right" }, g.count + "건")));
+  v.append(el("div", { class: "card" },
+    el("h2", null, "📚 공부 우선순위"),
+    el("div", { class: "muted small", style: "margin-bottom:8px" }, "수요는 많은데 내 프로필엔 없는 기술 — 배우면 매칭되는 공고가 가장 많이 늘어나는 순서입니다."),
+    ...gapRows));
+
+  // B) 수요·트렌드 (보유 표시)
+  v.append(el("div", { class: "card" },
+    el("h2", null, "📈 기술 수요 · 트렌드 (상위 30)"),
+    el("div", { class: "muted small", style: "margin-bottom:8px" }, "전체 공고에서 가장 많이 요구되는 기술. ✓ = 내가 보유."),
+    el("div", { class: "chips" }, ...(d.demand || []).slice(0, 30).map((x) =>
+      el("span", { class: "chip", style: x.have ? "color:var(--good); border:1px solid var(--good)" : "" },
+        (x.have ? "✓ " : "") + x.tech + " · " + x.count)))));
+
+  // C) 도메인별 내 약점
+  const rows = (d.domains || []).map((dm) =>
+    el("tr", null,
+      el("td", null, el("b", null, esc(dm.name))),
+      el("td", null, dm.jobs + "건"),
+      el("td", null, el("span", { class: "score " + (dm.avg_score >= 40 ? "mid" : "low"), style: "font-size:16px" }, dm.avg_score + "점")),
+      el("td", null, ...(dm.top_missing || []).map((m) => el("span", { class: "chip", style: "color:var(--warn)" }, m.tech + " (" + m.count + ")")))));
+  v.append(el("div", { class: "card" },
+    el("h2", null, "🧭 도메인별 내 적합도 (약한 순)"),
+    el("div", { class: "muted small", style: "margin-bottom:8px" }, "평균 점수가 낮은 도메인 = 그 분야에서 내가 부족하다는 뜻. '주로 부족한 스킬'이 점수가 낮은 직접적 원인입니다."),
+    el("table", null,
+      el("thead", null, el("tr", null, el("th", null, "도메인"), el("th", null, "공고수"), el("th", null, "내 평균점수"), el("th", null, "주로 부족한 스킬 (그 도메인 공고 중 N건이 요구)"))),
+      el("tbody", null, ...rows))));
+
+  v.append(el("div", { class: "card muted small" }, "내 기술 " + (d.profile_terms || []).length + "개 인식: " + (d.profile_terms || []).join(", ") +
+    " — git·linux 등 기본기를 쓰는데 빠졌다면 '사실 프로필'에 추가하면 점수·추천이 더 정확해집니다."));
+}
+
+// 사이드바 칩 그룹 (JD 뷰어 스타일)
+function chipGroup(title, options, activeValue, onPick) {
+  const box = el("div", { class: "chips" });
+  options.forEach((o) => {
+    const active = activeValue === o.value;
+    box.append(el("button", { class: "chipbtn" + (active ? " active" : ""), onclick: () => onPick(o.value) },
+      o.label + (o.count != null ? " (" + o.count + ")" : "")));
+  });
+  return el("div", { style: "margin-bottom:14px" }, el("h3", { class: "side-h" }, title), box);
+}
+
 function viewFit(v) {
-  const minScore = el("input", { type: "number", value: "50", min: "0", max: "100", style: "max-width:90px" });
-  const kw = el("input", { placeholder: "키워드 필터 (예: 백엔드, 임베디드)", style: "max-width:240px" });
-  const domainSel = el("select", { style: "max-width:200px" }, el("option", { value: "" }, "전체 도메인"));
-  const meta = el("div", { class: "small muted", style: "margin-top:8px" });
-  const results = el("div");
+  const filters = { q: "", min_score: 0, order: "best", tier: "", domain: "", site: "", tech: "" };
+  let full = [], facetData = {}, allItems = [], page = 0;
+  const PAGE = 24;
 
-  const controls = el("div", { class: "card" },
-    el("h2", null, "자동 적합도 분석"),
-    el("div", { class: "muted small", style: "margin-bottom:8px" }, "사실 프로필 기준으로 전체 공고를 자동 점수화·랭킹합니다. (규칙 기반·즉시) 상위 공고는 'AI 정밀분석'으로 더 깊게 볼 수 있어요."),
-    el("div", { class: "flex", style: "flex-wrap:wrap; align-items:flex-end" },
-      el("div", null, el("label", null, "최소 점수"), minScore),
-      el("div", null, el("label", null, "도메인"), domainSel),
-      el("div", { style: "flex:1; min-width:180px" }, el("label", null, "키워드"), kw),
-      el("button", { class: "btn", style: "margin-bottom:1px", onclick: () => run() }, "분석")),
-    meta);
-  v.append(controls, results);
+  const search = el("input", { type: "search", placeholder: "회사/제목/기술 검색", oninput: () => { filters.q = search.value.trim().toLowerCase(); page = 0; apply(); } });
+  const header = el("div");
+  const sideDyn = el("div");
+  const sidebar = el("div", { class: "sidebar card" }, header, el("div", { style: "margin:10px 0" }, search), sideDyn);
+  const results = el("div", { style: "flex:1; min-width:0" });
+  v.append(el("div", { class: "fitwrap" }, sidebar, results));
 
-  async function run() {
+  async function load() {
     results.innerHTML = "<div class='muted'>전체 공고 분석 중… (수초)</div>";
-    const params = new URLSearchParams({ limit: "60", min_score: minScore.value || "0", q: kw.value.trim(), domain: domainSel.value });
     let d;
-    try { d = await getJSON("/api/fit?" + params.toString()); }
+    try { d = await getJSON("/api/fit?limit=8000&min_score=0&order=best"); }
     catch (e) { results.innerHTML = "<div class='muted'>오류: " + esc(e.message) + "</div>"; return; }
-    if (d.warning) { results.innerHTML = ""; results.append(el("div", { class: "card muted" }, d.warning)); return; }
+    if (d.warning) { header.innerHTML = ""; header.append(el("h2", null, "자동 적합도")); results.innerHTML = ""; results.append(el("div", { class: "card muted" }, d.warning)); return; }
+    full = d.items || [];
+    facetData = d;
+    renderSide();
+    apply();
+  }
 
-    meta.innerHTML = "";
-    meta.append("내 기술 " + (d.profile_terms || []).length + "개 인식: " + (d.profile_terms || []).join(", "));
-    // 도메인 드롭다운 갱신(선택 유지)
-    const cur = domainSel.value;
-    domainSel.innerHTML = "";
-    domainSel.append(el("option", { value: "" }, "전체 도메인 (" + d.scanned + "건)"));
-    (d.facets || []).forEach((f) => domainSel.append(el("option", { value: f.name, selected: f.name === cur ? "selected" : null }, f.name + " (" + f.count + ")")));
+  function facetGroup(title, facets, key) {
+    return chipGroup(title, (facets || []).map((f) => ({ value: f.name, label: f.name, count: f.count })), filters[key],
+      (val) => { filters[key] = filters[key] === val ? "" : val; page = 0; renderSide(); apply(); });
+  }
 
+  function renderSide() {
+    header.innerHTML = "";
+    header.append(
+      el("h2", { style: "margin:0" }, "자동 적합도"),
+      el("p", { class: "small muted", style: "margin:2px 0 0" }, full.length + "건 · 내 기술 " + (facetData.profile_terms || []).length + "개 인식"),
+      el("div", { style: "margin-top:6px" }, el("button", { class: "btn sm ghost", onclick: () => load() }, "↻ 새로고침")));
+    sideDyn.innerHTML = "";
+    sideDyn.append(
+      chipGroup("정렬", [{ value: "best", label: "적합 높은순" }, { value: "worst", label: "낮은순" }], filters.order, (val) => { filters.order = val; page = 0; renderSide(); apply(); }),
+      chipGroup("최소 점수", [{ value: 0, label: "전체" }, { value: 30, label: "30+" }, { value: 50, label: "50+" }, { value: 70, label: "70+" }], filters.min_score, (val) => { filters.min_score = val; page = 0; renderSide(); apply(); }),
+      facetGroup("기업유형", facetData.tier_facets, "tier"),
+      facetGroup("도메인", facetData.facets, "domain"),
+      facetGroup("사이트", facetData.site_facets, "site"),
+      facetGroup("기술스택", facetData.tech_facets, "tech"));
+  }
+
+  function apply() {
+    const f = filters;
+    const arr = full.filter((it) => {
+      if (it.score < f.min_score) return false;
+      if (f.tier && it.tier !== f.tier) return false;
+      if (f.domain && !(it.domains || []).some((d) => d.name === f.domain)) return false;
+      if (f.site && !(it.key || "").startsWith(f.site + ":")) return false;
+      if (f.tech && !((it.matched || []).includes(f.tech) || (it.missing || []).includes(f.tech))) return false;
+      if (f.q) {
+        const hay = (it.company + " " + it.title + " " + (it.matched || []).join(" ") + " " + (it.missing || []).join(" ")).toLowerCase();
+        if (!f.q.split(/\s+/).every((t) => hay.includes(t))) return false;
+      }
+      return true;
+    });
+    arr.sort((a, b) => f.order === "worst" ? (a.score - b.score) || (a.matched.length - b.matched.length) : (b.score - a.score) || (b.matched.length - a.matched.length));
+    allItems = arr;
+    draw();
+  }
+
+  function pager() {
+    const total = Math.max(1, Math.ceil(allItems.length / PAGE));
+    return el("div", { class: "flex", style: "margin:8px 0; align-items:center; gap:10px" },
+      el("button", { class: "btn sm ghost", disabled: page <= 0 ? "" : null, onclick: () => { if (page > 0) { page--; draw(); window.scrollTo(0, 0); } } }, "← 이전"),
+      el("span", { class: "small muted" }, (page + 1) + " / " + total + " 페이지 · 총 " + allItems.length + "건"),
+      el("button", { class: "btn sm ghost", disabled: page >= total - 1 ? "" : null, onclick: () => { if (page < total - 1) { page++; draw(); window.scrollTo(0, 0); } } }, "다음 →"));
+  }
+
+  function draw() {
     results.innerHTML = "";
-    if (!d.items.length) { results.append(el("div", { class: "card muted" }, "조건에 맞는 공고가 없습니다. 최소 점수를 낮춰보세요.")); return; }
-    d.items.forEach((it, i) => results.append(fitCard(it, i + 1)));
+    if (!allItems.length) { results.append(el("div", { class: "card muted" }, "조건에 맞는 공고가 없습니다.")); return; }
+    const start = page * PAGE;
+    const grid = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:10px" });
+    allItems.slice(start, start + PAGE).forEach((it, i) => grid.append(fitCard(it, start + i + 1)));
+    results.append(pager(), grid, pager());
   }
 
   function fitCard(it, rank) {
     const out = el("div");
     const detail = el("div", { class: "hide small muted", style: "margin-top:8px; white-space:pre-wrap" });
-    const toggle = () => {
+    const toggle = async () => {
       detail.classList.toggle("hide");
       if (!detail.dataset.loaded) {
-        detail.textContent = "주요업무:\n" + (it.main_tasks || "(정보 없음)") + "\n\n자격요건:\n" + (it.qualifications || "(정보 없음)") + (it.preferences ? "\n\n우대:\n" + it.preferences : "");
+        detail.textContent = "불러오는 중…";
         detail.dataset.loaded = "1";
+        try {
+          const j = await getJSON("/api/job?key=" + encodeURIComponent(it.key));
+          detail.textContent = "주요업무:\n" + (j.main_tasks || "(정보 없음)") + "\n\n자격요건:\n" + (j.qualifications || "(정보 없음)") + (j.preferences ? "\n\n우대:\n" + j.preferences : "");
+        } catch (e) { detail.textContent = "오류: " + e.message; detail.dataset.loaded = ""; }
       }
     };
     return el("div", { class: "rowitem" },
@@ -224,7 +329,14 @@ function viewFit(v) {
         el("div", { style: "flex:1; min-width:0" },
           el("div", null, el("b", null, "#" + rank + " " + esc(it.company)), it.dday ? el("span", { class: "muted small" }, "  " + esc(it.dday)) : null),
           el("div", { class: "small muted" }, esc(it.title) + (it.career ? " · " + esc(it.career) : "")),
-          el("div", { style: "margin-top:4px" }, ...(it.domains || []).map((dm) => el("span", { class: "chip" }, dm)), it.low_confidence ? el("span", { class: "chip", style: "color:var(--warn)" }, "기술정보 적음") : null)),
+          el("div", { style: "margin-top:4px" },
+            it.tier ? el("span", { class: "chip", style: "color:var(--accent)" }, "🏢 " + esc(it.tier)) : null,
+            ...(it.domains || []).map((dm) => el("span", { class: "chip" }, dm.name + (dm.evidence && dm.evidence.length ? " · " + dm.evidence.join(", ") : ""))),
+            (it.sem_score != null) ? el("span", { class: "chip", style: "color:var(--accent)" }, "의미 " + it.sem_score) : null,
+            (it.kw_score != null) ? el("span", { class: "chip muted" }, "키워드 " + it.kw_score) : null,
+            (it.seniority && it.seniority.status === "under") ? el("span", { class: "chip", style: "color:var(--warn)" }, "⏳ " + it.seniority.label) : null,
+            (it.seniority && it.seniority.status === "ok" && it.seniority.req_min) ? el("span", { class: "chip", style: "color:var(--good)" }, "⏳ " + it.seniority.label) : null,
+            it.low_confidence ? el("span", { class: "chip", style: "color:var(--warn)" }, "기술정보 적음") : null)),
         it.url ? el("a", { href: it.url, target: "_blank", class: "small" }, "원문 ↗") : null),
       el("div", { style: "margin-top:6px" },
         ...(it.matched || []).map((m) => el("span", { class: "chip", style: "color:var(--good)" }, "✓ " + m)),
@@ -237,7 +349,7 @@ function viewFit(v) {
         el("button", { class: "btn sm ghost", onclick: () => addAppByKey(it) }, "지원에 추가")),
       detail, out);
   }
-  run();
+  load();
 }
 
 async function addAppByKey(it) {
