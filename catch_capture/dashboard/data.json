@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-21T08:25:45",
-  "source_dir": "screenshots/all_통합_20260621_082531",
+  "generated_at": "2026-06-21T10:09:51",
+  "source_dir": "screenshots/all_통합_20260621_100936",
   "keyword": "통합",
   "jobs": [
     {
@@ -125394,6 +125394,39 @@
     },
     {
       "site": "saramin",
+      "company": "(주)넷트루컨설팅그룹",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)넷트루컨설팅그룹 AX전략사업부 개발파트 SI백엔드 연동개발",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54228459&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a25a425-8157-4d69-a67d-b8ca811758fd",
+      "career": "경력9년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "Oracle",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "문제해결",
+        "대용량 처리",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 9년 이상\n\n• 학력무관\n\n- Java 17 / Spring Boot 3.x 기반 백엔드 개발 경험\n\n- RDBMS(MySQL, Oracle 등) 설계 및 SQL/Stored Procedure 개발 경험\n\n- REST API 설계·개발 및 시스템 간 연계(I/F) 개발 경험\n\n- 인증·권한·보안 처리 및 트랜잭션 관리 경험\n\n- 대용량 데이터 연동 및 배치 처리 경험",
+      "preferences": "- 금융권 계정계·처리계 연동 프로젝트 경험\n\n- 레거시 연계(전문 변환/Mapping, MCI, Interface Table 등) 경험\n\n- AICC·챗봇·AI 시스템 백엔드 연동 경험\n\n- 전자금융감독규정·개인정보보호 등 금융 보안 요건 대응 경험\n\n- 형상관리(Git) 및 CI/CD 운영 경험",
+      "main_tasks": "- Java/Spring 기반 백엔드 서비스 설계 및 개발\n\n- 외부·레거시 시스템 연계 인터페이스 개발\n\n- 인증/권한 처리, 세션 관리 및 상태 동기화 로직 개발\n\n- DB 설계·구현 및 데이터 연동, 처리 이력·감사로그(Audit Log) 관리 기능 개발\n\n- 연계 장애 대응(Timeout/Retry/Error Handling) 및 예외·재시도 처리 구현",
+      "benefits": "• 교육/생활 : 워크샵, 도서구입비지원, 교육비 지원, 간식 제공, 음료제공(차,커피), 점심시간 연장제도\n\n• 리프레시 : 연차, 반차, 근로자의날 휴무, 포상휴가, 산전 후 휴가, 육아휴직, 남성출산휴가\n\n• 급여제도 : 인센티브제, 장기근속자 포상, 우수사원포상, 퇴직금, 성과급, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원, 자녀학자금\n\n• 조직 문화 : 회식강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 장기근속 선물\n\n• 출퇴근 : 야간교통비지급"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -136148,6 +136181,42 @@
       "company_size_matched": null,
       "title": "안드로이드 통합 엔지니어를 구합니다.",
       "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235757&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0182a0fa-1a41-4ea5-b02e-084a66232ad0",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "C++",
+        "C/C++",
+        "Android",
+        "Linux",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "오픈소스 기여",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학교졸업(4년)이상\n\n• Kotlin/Java 개발 경험이 있으신 분\n\n• Android OS 구조 이해가 있으신 분\n\n• Gradle 빌드 설정이 가능하신 분\n\n• 문제 원인 분석을 즐기시는 분\n\n• 협업 도구로 소통할 수 있는 분",
+      "preferences": "• AOSP 기반 개발 경험이 있으신 분\n\n• CI/CD 구축·운영 경험이 있으신 분\n\n• 테스트 자동화 경험을 가진 분\n\n• 성능 튜닝 경험이 있으신 분\n\n• 문서화와 표준화에 강하신 분",
+      "main_tasks": "안드로이드 플랫폼 통합 엔지니어 (Android Platform Integration Engineer)\n\n서울 소재의 하이 임팩트(High-impact) 팀에서 세계 시장을 선도하는 글로벌 운영체제를 함께 이끌어갈 우수한 안드로이드 플랫폼 통합 엔지니어를 모십니다.\n\n본 포지션은 전 세계 수억 명의 사용자가 경험하는 안드로이드 플랫폼을 통합, 커스텀(맞춤화) 및 유지 관리하는 핵심적인 역할을 수행합니다. 글로벌 업계 표준을 엄격히 준수하는 동시에, 시스템의 압도적인 안정성과 최상위 성능을 이끌어내는 것이 이 역할의 주요 미션입니다. 거대한 기술 생태계의 중심에서 플랫폼 리더십을 경험하고 함께 성장할 엔지니어분들의 많은 지원 바랍니다.\n\n1. 코어 플랫폼 개발 (Core Platform Development)\n\n하드웨어 인터페이스: C/C++ 기반의 탄탄한 기술력을 바탕으로 하드웨어 드라이버 및 HAL(하드웨어 추상화 계층) 개발·유지 관리\n\n시스템 서비스: 리눅스(Linux) 커널과 직접 상호작용하는 시스템 레벨 서비스 설계 및 최적화\n\nAOSP 관리: 특정 요구사항에 맞춘 AOSP(안드로이드 오픈소스 프로젝트) 소스 코드 컴파일, 커스텀 및 관리\n\n최신 언어 지원: Java 및 Kotlin을 활용한 고수준(High-level) 시스템 통합 및 기능 구현\n\n2. 유지 관리 및 빌드 엔지니어링 (Build Engineering & Maintenance)\n\n소스 제어: Git 및 Repo를 활용하여 대규모 코드베이스를 관리하고, 멀티 리포지토리 환경에서 고도화된 브랜칭·머지·리베이스 작업 수행\n\n빌드 시스템: Make 및 Soong을 활용하여 다양한 하드웨어 플랫폼의 빌드 구성 최적화 및 관리\n\n트러블슈팅: 하드웨어 및 소프트웨어 전반의 빌드/컴파일 오류를 신속하게 진단하고 해결\n\n3. 품질 보증 및 성능 최적화 (QA & Performance)\n\n새니티 테스트 자동화: 플랫폼 업데이트 시 핵심 기능(부팅, 필수 앱, 통신 등)의 안정성을 검증하는 Sanity Test 설계 및 자동화\n\n컴플라이언스 검증: CTS(호환성 테스트 수트) 및 VTS(벤더 테스트 수트) 구축·실행을 통한 안드로이드 공식 표준 만족 여부 검증\n\n심층 디버깅: ADB, systrace, logcat 등을 활용한 시스템 레벨의 성능 병목 현상 개선 및 복잡한 이슈 해결\n\n• 안드로이드 플랫폼 구조를 설계해요\n\n• 공통 모듈과 SDK를 개발해요\n\n• 빌드·배포 파이프라인을 개선해요\n\n• 성능·안정성 이슈를 분석해요\n\n• 개발 표준과 가이드를 정리해요",
+      "benefits": "• 유연한 근무 방식으로 일할 수 있어요\n\n• 업무 장비와 툴을 지원해드려요\n\n• 교육·세미나 참여를 지원해드려요\n\n• 수평적인 협업 문화를 제공해요\n\n• 성과를 함께 나누는 제도가 있어요"
+    },
+    {
+      "site": "saramin",
+      "company": "주식회사 아이큐로닉스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "안드로이드 통합 엔지니어 모집합니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54236950&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=74486d52-7b00-4766-b375-0d2230792db2",
       "career": "경력무관",
       "location": "서울강남구",
       "dday": "",
@@ -165453,6 +165522,35 @@
       "preferences": "- Kueue, Kubeflow 등 GPU 스케줄링·ML 워크플로 도구 활용 경험.\n\n- vLLM · Triton · KServe 등을 활용한 대규모 모델 서빙·추론 최적화 경험.\n\n- 멀티테넌트 SaaS 또는 소버린/온프레미스 클라우드 플랫폼 구축 경험.\n\n- GPU 성능 튜닝, 분산 학습, HPC 환경 운영 경험.\n\n- ArgoCD 등 GitOps 도구로 배포 파이프라인을 표준화한 경험.\n\n- Go 기반 백엔드 또는 클라우드 네이티브 시스템 개발 경험.\n\n- 오픈소스 컨트리뷰션 경험.\n\n- 유연하고 자율적인 개발 문화에 대한 관심과 적응력",
       "main_tasks": "- MLOps 플랫폼 아키텍처 설계\n\n- 멀티테넌트 모델 서빙 ?\n\n- GPU 자원 오케스트레이션\n\n- GitOps 기반 배포 자동화\n\n- 관측성·신뢰성\n\n- 모델 거버넌스\n\n- 보안·데이터 주권\n\n- 비용·효율 최적화\n\n- 기술 리더십",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "씨엠티정보통신(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "씨엠티정보통신(주) 클라우드 보안 플랫폼 구축 SE 경력 채용(XSIAM)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54012914&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dc9976ba-cc57-4c1f-89e5-6e1ce28787ab",
+      "career": "경력2년↑",
+      "location": "서울성동구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "AWS",
+        "GCP",
+        "Azure"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결"
+      ],
+      "qualifications": "• 경력 2년 이상\n\n• 학력무관\n\n• Python, Cloud, SIEM, EDR, SOAR, XDR, XSIAM 유경험자\n\n• SIEM·SOAR 솔루션 운영 또는 구축 경험 있으신 분\n\n• 네트워크/보안 엔지니어링 경험, Palo Alto NGFW 또는 Cortex 제품(XDR, XSOAR 등)\n\n• 네트워크·시스템 보안 이해도 있으신 분\n\n• 문서화 및 고객 커뮤니케이션 가능하신 분",
+      "preferences": "• XSIAM 구축·연동 경험 있으신 분\n\n• AWS·Azure·GCP 보안 설정 경험 있으신 분\n\n• API 연동 및 스크립트 작성 가능하신 분\n\n• 보안 인증·컴플라이언스 대응 경험 있으신 분",
+      "main_tasks": "• XSIAM 기반 보안 플랫폼 구축합니다\n\n• 클라우드 보안 아키텍처 설계합니다\n\n• Palo Alto Cortex XSIAM 보안 엔지니어\n\n• Cortex XSIAM 구축/운영 엔지니어\n\n• 필드 엔지니어 (XSIAM / XDR / XSOAR 담당)\n\n• SOC Transformation Consultant (XSIAM 중심)\n\n• 운영 안정화 및 장애 대응 체계 수립합니다",
+      "benefits": "• 직무 역량 강화를 위한 교육 지원합니다\n\n• 프로젝트 성과 기반 보상 제도 운영합니다\n\n• 업무 장비 및 소프트웨어 제공합니다\n\n• 유연한 휴가 사용을 지원합니다\n\n• 안정적 근무환경과 협업체계 제공합니다"
     },
     {
       "site": "saramin",
@@ -199376,45 +199474,45 @@
     }
   ],
   "stats": {
-    "total": 6619,
+    "total": 6622,
     "by_size": {
-      "중소기업": 5930,
+      "중소기업": 5933,
       "대기업": 421,
       "중견기업": 268
     },
     "by_role": {
       "기타": 877,
       "DevOps/인프라": 959,
-      "백엔드": 2848,
-      "모바일": 1059,
+      "백엔드": 2850,
+      "모바일": 1060,
       "AI/ML": 2237,
       "프론트엔드": 1830,
       "풀스택": 576,
       "게임": 40,
       "데이터": 913,
       "펌웨어/임베디드": 238,
-      "보안": 280,
+      "보안": 281,
       "QA": 67
     },
     "by_site": {
       "wanted": 1539,
       "jumpit": 449,
       "jobkorea": 1208,
-      "saramin": 3120,
+      "saramin": 3123,
       "dev": 303
     },
     "top_tech": [
       [
         "Python",
-        2083
+        2084
       ],
       [
         "AWS",
-        1754
+        1755
       ],
       [
         "Java",
-        1742
+        1744
       ],
       [
         "React",
@@ -199422,7 +199520,7 @@
       ],
       [
         "Git",
-        1084
+        1086
       ],
       [
         "Docker",
@@ -199430,7 +199528,7 @@
       ],
       [
         "Spring",
-        1055
+        1056
       ],
       [
         "JavaScript",
@@ -199438,7 +199536,7 @@
       ],
       [
         "Linux",
-        950
+        951
       ],
       [
         "TypeScript",
@@ -199446,7 +199544,7 @@
       ],
       [
         "MySQL",
-        859
+        860
       ],
       [
         "Kubernetes",
@@ -199458,23 +199556,23 @@
       ],
       [
         "REST API",
-        706
+        707
       ],
       [
         "Spring Boot",
-        621
+        622
       ],
       [
         "GCP",
-        590
+        591
       ],
       [
         "C++",
-        555
+        556
       ],
       [
         "Azure",
-        511
+        512
       ],
       [
         "Node.js",
@@ -199486,7 +199584,7 @@
       ],
       [
         "Android",
-        472
+        473
       ],
       [
         "CSS",
@@ -199510,7 +199608,7 @@
       ],
       [
         "Kotlin",
-        384
+        385
       ],
       [
         "FastAPI",
@@ -199527,22 +199625,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T11:41:06",
-      "keyword": "개발자",
-      "raw_total": 687,
-      "deduped": 668,
-      "active": 668,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 268,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T12:12:28",
       "keyword": "개발자",
@@ -202723,6 +202805,22 @@
         "jumpit": 594,
         "jobkorea": 1690,
         "saramin": 4380,
+        "dev": 372
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-21T10:09:46",
+      "keyword": "통합",
+      "raw_total": 8600,
+      "deduped": 7830,
+      "active": 6622,
+      "closed": 1208,
+      "site_counts": {
+        "wanted": 1561,
+        "jumpit": 594,
+        "jobkorea": 1690,
+        "saramin": 4383,
         "dev": 372
       },
       "anomalies": []
