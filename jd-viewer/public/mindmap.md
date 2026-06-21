@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6623건** 공고 · **1322개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-21 12:01
+- 총 **6629건** 공고 · **1326개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-21 13:44
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (362개사)
+## HR/채용 (364개사)
 ### (주)제이투이 `중소기업` · 21건
 - **백엔드** [6건] · `Java` `AWS` `Spring` `PostgreSQL` `Redis` `React`
   - [(JAVA SI 서울) HR 인사시스템 구축 PL (4) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039413&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -1537,6 +1537,17 @@ markmap:
 - **프론트엔드** [1건] · `JavaScript` `React` `Vue` `jQuery` `HTML` `CSS`
   - [(아더에러) 프론트앤드 개발자 ↗](https://www.wanted.co.kr/wd/358761)
 
+### 판옵티콘 `중소기업` · 2건
+- **백엔드** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
+  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
+  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
+- **프론트엔드** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
+  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
+  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
+- **모바일** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
+  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
+  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
+
 ### 뷰리드 강남오피스 `중소기업` · 2건
 - **백엔드** [1건] · `PHP` `Laravel` `MySQL` `AWS` `Docker` `Linux`
   - [백엔드 개발자 (5년 이상) ↗](https://www.wanted.co.kr/wd/341067)
@@ -1649,6 +1660,8 @@ markmap:
   - [Full-stack Developer (데이터 플랫폼 개발/과장급) 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/556400?ReturnUrl=RecruitInfo)
 - **데이터** [1건] · `Java` `Python` `Vue` `Spring` `Spring Boot` `Azure`
   - [Full-stack Developer (데이터 플랫폼 개발/과장급) 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/556400?ReturnUrl=RecruitInfo)
+
+### 모두모아컴퍼니 `중소기업` · 2건
 
 ### 이노버스 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `Spring` `MySQL` `PostgreSQL` `AWS` `Amazon CloudFront`
@@ -4936,7 +4949,7 @@ markmap:
   - [로와이드 주식회사에서 AI 솔루션 코어 & 백엔드 리드를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53816175&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=ab6c9366-0761-4503-8f06-2b9528b1e7f5)
 
 
-## 제조/하드웨어/로보틱스 (118개사)
+## 제조/하드웨어/로보틱스 (119개사)
 ### (주)인터엑스 `중소기업` · 21건
 - **백엔드** [12건] · `Python` `Docker` `MongoDB` `Git` `Elasticsearch` `REST API`
   - [풀스택 (Full-stack) 개발자 ↗](https://www.wanted.co.kr/wd/328447)
@@ -5742,6 +5755,10 @@ markmap:
   - [(Data Infra Engineer) 함께 성장할 동료를 구합니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=28ee596a-7588-40be-97db-6f10fb0cd6d9)
 - **DevOps/인프라** [1건] · `Java` `Python` `MongoDB` `Cassandra` `Docker` `Kubernetes`
   - [(Data Infra Engineer) 함께 성장할 동료를 구합니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54039935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=28ee596a-7588-40be-97db-6f10fb0cd6d9)
+
+### 투모로로보틱스 `중소기업` · 2건
+- **AI/ML** [1건] · `PyTorch`
+  - [Physical AI Researcher ↗](https://www.wanted.co.kr/wd/357972)
 
 ### 아키스케치 `중소기업` · 2건
 - **모바일** [1건] · `Java` `Kotlin` `Python` `AWS` `Kubernetes`
@@ -13367,7 +13384,7 @@ markmap:
   - [단일세포·공간전사체 데이터분석 및 파이프라인 개발 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54228870&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=e733415c-9f00-45e1-b555-236d7b6f8259)
 
 
-## 블록체인/웹3 (3개사)
+## 블록체인/웹3 (4개사)
 ### 디라티오 `중소기업` · 4건
 - **프론트엔드** [2건] · `JavaScript` `TypeScript` `React` `Vue` `HTML` `CSS`
   - [시니어 프론트엔드 개발자 (5년 이상, 리드급) ↗](https://www.wanted.co.kr/wd/296740)
@@ -13401,6 +13418,13 @@ markmap:
 - **모바일** [2건] · `JavaScript` `TypeScript` `Go` `Swift` `React` `Next.js`
   - [Junior Frontend Developer ↗](https://www.wanted.co.kr/wd/348913)
   - [Junior Backend Developer ↗](https://www.wanted.co.kr/wd/348916)
+
+### 람다256 `중소기업` · 2건
+- **백엔드** [2건] · `Go` `Rust` `AWS` `Docker` `Kubernetes` `Linux`
+  - [블록체인 코어 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/369128)
+  - [블록체인 노드 운영 담당자 ↗](https://www.wanted.co.kr/wd/317715)
+- **데이터** [1건] · `Go` `Rust` `PostgreSQL` `MongoDB` `Redis` `Elasticsearch`
+  - [블록체인 코어 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/369128)
 
 
 ## 푸드테크 (2개사)

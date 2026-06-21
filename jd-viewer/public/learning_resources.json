@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21T12:01:08",
+  "generated_at": "2026-06-21T13:45:01",
   "source": "youtube",
   "tech_count": 172,
   "curriculum_count": 20,
@@ -1481,88 +1481,6 @@
         "stage": "실전"
       }
     ],
-    "Node.js": [
-      {
-        "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
-        "url": "https://www.youtube.com/watch?v=Tt_tKhhhJqY",
-        "thumbnail": "https://i.ytimg.com/vi/Tt_tKhhhJqY/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 320130,
-        "length": "1:00:36",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "NodeJS 백엔드 가장 쉽게 알려드림 | 100명의 비전공자를 취업시킨 전설의 강의 그 마지막 풀스택 코스",
-        "url": "https://www.youtube.com/watch?v=2pfw5kElIb8",
-        "thumbnail": "https://i.ytimg.com/vi/2pfw5kElIb8/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 14850,
-        "length": "4:37",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Node.js란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=d91lIBQJ9GM",
-        "thumbnail": "https://i.ytimg.com/vi/d91lIBQJ9GM/mqdefault.jpg",
-        "channel": "개발같은소리하네",
-        "views": 743,
-        "length": "14:46",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Bun 서버가 4배 빠르다는건 진짜인가 (vs Node.js)",
-        "url": "https://www.youtube.com/watch?v=a8uPDppckQk",
-        "thumbnail": "https://i.ytimg.com/vi/a8uPDppckQk/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 57970,
-        "length": "4:32",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
-        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
-        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 11791,
-        "length": "3:20:44",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "얄코의 Node.js",
-        "url": "https://www.youtube.com/watch?v=xuEn4zqW7fY",
-        "thumbnail": "https://i.ytimg.com/vi/xuEn4zqW7fY/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 7664,
-        "length": "1:01:01",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발지식 - Node js의 동작원리",
-        "url": "https://www.youtube.com/watch?v=oRQz3r38kfs",
-        "thumbnail": "https://i.ytimg.com/vi/oRQz3r38kfs/mqdefault.jpg",
-        "channel": "안되면 될때까지, 근성가이!",
-        "views": 292,
-        "length": "12:08",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(Ep.2-1) Node.js가 뭔지 알아보자 (Node.js + MongoDB로 2시간만에 웹서버 만들기)",
-        "url": "https://www.youtube.com/watch?v=pTm5E3jcOeY",
-        "thumbnail": "https://i.ytimg.com/vi/pTm5E3jcOeY/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 97955,
-        "length": "4:44",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     "Redis": [
       {
         "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
@@ -1642,6 +1560,88 @@
         "views": 8050,
         "length": "3:09",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "Node.js": [
+      {
+        "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
+        "url": "https://www.youtube.com/watch?v=Tt_tKhhhJqY",
+        "thumbnail": "https://i.ytimg.com/vi/Tt_tKhhhJqY/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 320130,
+        "length": "1:00:36",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "NodeJS 백엔드 가장 쉽게 알려드림 | 100명의 비전공자를 취업시킨 전설의 강의 그 마지막 풀스택 코스",
+        "url": "https://www.youtube.com/watch?v=2pfw5kElIb8",
+        "thumbnail": "https://i.ytimg.com/vi/2pfw5kElIb8/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 14850,
+        "length": "4:37",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Node.js란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=d91lIBQJ9GM",
+        "thumbnail": "https://i.ytimg.com/vi/d91lIBQJ9GM/mqdefault.jpg",
+        "channel": "개발같은소리하네",
+        "views": 743,
+        "length": "14:46",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Bun 서버가 4배 빠르다는건 진짜인가 (vs Node.js)",
+        "url": "https://www.youtube.com/watch?v=a8uPDppckQk",
+        "thumbnail": "https://i.ytimg.com/vi/a8uPDppckQk/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 57970,
+        "length": "4:32",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
+        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
+        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 11791,
+        "length": "3:20:44",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "얄코의 Node.js",
+        "url": "https://www.youtube.com/watch?v=xuEn4zqW7fY",
+        "thumbnail": "https://i.ytimg.com/vi/xuEn4zqW7fY/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 7664,
+        "length": "1:01:01",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발지식 - Node js의 동작원리",
+        "url": "https://www.youtube.com/watch?v=oRQz3r38kfs",
+        "thumbnail": "https://i.ytimg.com/vi/oRQz3r38kfs/mqdefault.jpg",
+        "channel": "안되면 될때까지, 근성가이!",
+        "views": 292,
+        "length": "12:08",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(Ep.2-1) Node.js가 뭔지 알아보자 (Node.js + MongoDB로 2시간만에 웹서버 만들기)",
+        "url": "https://www.youtube.com/watch?v=pTm5E3jcOeY",
+        "thumbnail": "https://i.ytimg.com/vi/pTm5E3jcOeY/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 97955,
+        "length": "4:44",
+        "published": "6년 전",
         "stage": "실전"
       }
     ],
@@ -3603,88 +3603,6 @@
         "stage": "실전"
       }
     ],
-    "GitLab CI": [
-      {
-        "title": "[인포그랩] GitLab CI/CD 파이프라인 데모로 해보기 - 기본편 #basic #gitlab #파이프라인 #infograb #devops #devsecops",
-        "url": "https://www.youtube.com/watch?v=8VKKLhKZU3A",
-        "thumbnail": "https://i.ytimg.com/vi/8VKKLhKZU3A/mqdefault.jpg",
-        "channel": "InfoGrab",
-        "views": 1267,
-        "length": "5:10",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
-        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
-        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 213208,
-        "length": "7:32",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[DevOps 로그] GitLab CI/CD와 GitHub Actions 뭐가 달라요? #GitLabCICD #GitHub #githubactions",
-        "url": "https://www.youtube.com/watch?v=UeEtT4YTsMw",
-        "thumbnail": "https://i.ytimg.com/vi/UeEtT4YTsMw/mqdefault.jpg",
-        "channel": "InfoGrab",
-        "views": 1817,
-        "length": "2:42",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT]GitLab CI/CD 사용법 (1/2)",
-        "url": "https://www.youtube.com/watch?v=bCbBlBHchsk",
-        "thumbnail": "https://i.ytimg.com/vi/bCbBlBHchsk/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 1016,
-        "length": "16:09",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] gitlab CI/CD를 소개하고 사용하는 방법 안내 (0/8) - Intro",
-        "url": "https://www.youtube.com/watch?v=mSSS-JefnbY",
-        "thumbnail": "https://i.ytimg.com/vi/mSSS-JefnbY/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 148,
-        "length": "2:03",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
-        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
-        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 19500,
-        "length": "23:05",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[개발] git 14 - gitlab 서비스 서버 구축하기 (docker 사용)",
-        "url": "https://www.youtube.com/watch?v=C1xQnbZ-aoQ",
-        "thumbnail": "https://i.ytimg.com/vi/C1xQnbZ-aoQ/mqdefault.jpg",
-        "channel": "컴달인 - 컴퓨터 달인",
-        "views": 3945,
-        "length": "31:28",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "GitLab을 활용한 빠르고 안전한 배포 파이프라인 (CI/CD) 만들기│gitops를 해야 하는 이유? DevSecOps를 경험해보세요.",
-        "url": "https://www.youtube.com/watch?v=F3gEkZirFMU",
-        "thumbnail": "https://i.ytimg.com/vi/F3gEkZirFMU/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 1824,
-        "length": "7:48",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Confluence": [
       {
         "title": "Confluence 사용법 : 초보자를 위한 Atlassian Confluence 튜토리얼 (문서 협업 툴)/컨플루언스 무료 강의",
@@ -3765,6 +3683,88 @@
         "length": "4:53",
         "published": "2년 전",
         "stage": "핵심"
+      }
+    ],
+    "GitLab CI": [
+      {
+        "title": "[인포그랩] GitLab CI/CD 파이프라인 데모로 해보기 - 기본편 #basic #gitlab #파이프라인 #infograb #devops #devsecops",
+        "url": "https://www.youtube.com/watch?v=8VKKLhKZU3A",
+        "thumbnail": "https://i.ytimg.com/vi/8VKKLhKZU3A/mqdefault.jpg",
+        "channel": "InfoGrab",
+        "views": 1267,
+        "length": "5:10",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
+        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
+        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
+        "channel": "드림코딩",
+        "views": 213208,
+        "length": "7:32",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[DevOps 로그] GitLab CI/CD와 GitHub Actions 뭐가 달라요? #GitLabCICD #GitHub #githubactions",
+        "url": "https://www.youtube.com/watch?v=UeEtT4YTsMw",
+        "thumbnail": "https://i.ytimg.com/vi/UeEtT4YTsMw/mqdefault.jpg",
+        "channel": "InfoGrab",
+        "views": 1817,
+        "length": "2:42",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT]GitLab CI/CD 사용법 (1/2)",
+        "url": "https://www.youtube.com/watch?v=bCbBlBHchsk",
+        "thumbnail": "https://i.ytimg.com/vi/bCbBlBHchsk/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 1016,
+        "length": "16:09",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] gitlab CI/CD를 소개하고 사용하는 방법 안내 (0/8) - Intro",
+        "url": "https://www.youtube.com/watch?v=mSSS-JefnbY",
+        "thumbnail": "https://i.ytimg.com/vi/mSSS-JefnbY/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 148,
+        "length": "2:03",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
+        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
+        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
+        "channel": "큰돌의터전",
+        "views": 19500,
+        "length": "23:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[개발] git 14 - gitlab 서비스 서버 구축하기 (docker 사용)",
+        "url": "https://www.youtube.com/watch?v=C1xQnbZ-aoQ",
+        "thumbnail": "https://i.ytimg.com/vi/C1xQnbZ-aoQ/mqdefault.jpg",
+        "channel": "컴달인 - 컴퓨터 달인",
+        "views": 3945,
+        "length": "31:28",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "GitLab을 활용한 빠르고 안전한 배포 파이프라인 (CI/CD) 만들기│gitops를 해야 하는 이유? DevSecOps를 경험해보세요.",
+        "url": "https://www.youtube.com/watch?v=F3gEkZirFMU",
+        "thumbnail": "https://i.ytimg.com/vi/F3gEkZirFMU/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 1824,
+        "length": "7:48",
+        "published": "2년 전",
+        "stage": "실전"
       }
     ],
     "Django": [
@@ -5489,88 +5489,6 @@
         "stage": "실전"
       }
     ],
-    "Express": [
-      {
-        "title": "MEN튜토리얼02-Express개념",
-        "url": "https://www.youtube.com/watch?v=PDlq3uznl5w",
-        "thumbnail": "https://i.ytimg.com/vi/PDlq3uznl5w/mqdefault.jpg",
-        "channel": "Insoo Kim",
-        "views": 4,
-        "length": "2:31",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[Express 튜토리얼] Ch.0-1 강의 소개",
-        "url": "https://www.youtube.com/watch?v=XlKC2veosn0",
-        "thumbnail": "https://i.ytimg.com/vi/XlKC2veosn0/mqdefault.jpg",
-        "channel": "판다코딩",
-        "views": 458,
-        "length": "3:38",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Express 튜토리얼] Ch.0-2 서버와 Node, 그리고 Express",
-        "url": "https://www.youtube.com/watch?v=dcgwLAwHKUk",
-        "thumbnail": "https://i.ytimg.com/vi/dcgwLAwHKUk/mqdefault.jpg",
-        "channel": "판다코딩",
-        "views": 137,
-        "length": "8:57",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Web Tutorial - 개발 환경 세팅] 내 컴퓨터에 Node와 Express 설치",
-        "url": "https://www.youtube.com/watch?v=CUf9YcndeBk",
-        "thumbnail": "https://i.ytimg.com/vi/CUf9YcndeBk/mqdefault.jpg",
-        "channel": "이원섭 교수의 HandongHCI (아카이브)",
-        "views": 404,
-        "length": "37:34",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(renewal) Node.js 교과서 - express 서버 사용해보기",
-        "url": "https://www.youtube.com/watch?v=pUwKVOUqR18",
-        "thumbnail": "https://i.ytimg.com/vi/pUwKVOUqR18/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 105,
-        "length": "11:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Express 핵심 기능 총정리｜ 미들웨어 · 라우터를 중심으로",
-        "url": "https://www.youtube.com/watch?v=UHMRZ1kXmLg",
-        "thumbnail": "https://i.ytimg.com/vi/UHMRZ1kXmLg/mqdefault.jpg",
-        "channel": "코드잇",
-        "views": 58,
-        "length": "1:18",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Node.js 프로그래밍 13강 Express | T아카데미",
-        "url": "https://www.youtube.com/watch?v=1zQcgIwmQKE",
-        "thumbnail": "https://i.ytimg.com/vi/1zQcgIwmQKE/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 2996,
-        "length": "20:19",
-        "published": "9년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Express 서버 구축 - 기본 | 예제로 마스터하는 Node.js 25제 입문 Part.3 Express 서버구축 및 미들웨어 | 취업·실무·창업 | 에어클래스",
-        "url": "https://www.youtube.com/watch?v=sR-21-dCdww",
-        "thumbnail": "https://i.ytimg.com/vi/sR-21-dCdww/mqdefault.jpg",
-        "channel": "에어클래스",
-        "views": 166,
-        "length": "29:15",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "Rust": [
       {
         "title": "러스트 공략 초보자 가이드 1편 이것만 보면 생존 가능 RUST",
@@ -5650,6 +5568,88 @@
         "views": 47079,
         "length": "4:46",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "Express": [
+      {
+        "title": "MEN튜토리얼02-Express개념",
+        "url": "https://www.youtube.com/watch?v=PDlq3uznl5w",
+        "thumbnail": "https://i.ytimg.com/vi/PDlq3uznl5w/mqdefault.jpg",
+        "channel": "Insoo Kim",
+        "views": 4,
+        "length": "2:31",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[Express 튜토리얼] Ch.0-1 강의 소개",
+        "url": "https://www.youtube.com/watch?v=XlKC2veosn0",
+        "thumbnail": "https://i.ytimg.com/vi/XlKC2veosn0/mqdefault.jpg",
+        "channel": "판다코딩",
+        "views": 458,
+        "length": "3:38",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Express 튜토리얼] Ch.0-2 서버와 Node, 그리고 Express",
+        "url": "https://www.youtube.com/watch?v=dcgwLAwHKUk",
+        "thumbnail": "https://i.ytimg.com/vi/dcgwLAwHKUk/mqdefault.jpg",
+        "channel": "판다코딩",
+        "views": 137,
+        "length": "8:57",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Web Tutorial - 개발 환경 세팅] 내 컴퓨터에 Node와 Express 설치",
+        "url": "https://www.youtube.com/watch?v=CUf9YcndeBk",
+        "thumbnail": "https://i.ytimg.com/vi/CUf9YcndeBk/mqdefault.jpg",
+        "channel": "이원섭 교수의 HandongHCI (아카이브)",
+        "views": 404,
+        "length": "37:34",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(renewal) Node.js 교과서 - express 서버 사용해보기",
+        "url": "https://www.youtube.com/watch?v=pUwKVOUqR18",
+        "thumbnail": "https://i.ytimg.com/vi/pUwKVOUqR18/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 105,
+        "length": "11:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Express 핵심 기능 총정리｜ 미들웨어 · 라우터를 중심으로",
+        "url": "https://www.youtube.com/watch?v=UHMRZ1kXmLg",
+        "thumbnail": "https://i.ytimg.com/vi/UHMRZ1kXmLg/mqdefault.jpg",
+        "channel": "코드잇",
+        "views": 58,
+        "length": "1:18",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Node.js 프로그래밍 13강 Express | T아카데미",
+        "url": "https://www.youtube.com/watch?v=1zQcgIwmQKE",
+        "thumbnail": "https://i.ytimg.com/vi/1zQcgIwmQKE/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 2996,
+        "length": "20:19",
+        "published": "9년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Express 서버 구축 - 기본 | 예제로 마스터하는 Node.js 25제 입문 Part.3 Express 서버구축 및 미들웨어 | 취업·실무·창업 | 에어클래스",
+        "url": "https://www.youtube.com/watch?v=sR-21-dCdww",
+        "thumbnail": "https://i.ytimg.com/vi/sR-21-dCdww/mqdefault.jpg",
+        "channel": "에어클래스",
+        "views": 166,
+        "length": "29:15",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -5981,6 +5981,88 @@
         "stage": "실전"
       }
     ],
+    "Selenium": [
+      {
+        "title": "Selenium 웹 자동화 기초",
+        "url": "https://www.youtube.com/watch?v=qRQ_EG7Nk0Q",
+        "thumbnail": "https://i.ytimg.com/vi/qRQ_EG7Nk0Q/mqdefault.jpg",
+        "channel": "코드잇",
+        "views": 126,
+        "length": "3:57",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 크롤링 첫 시작!  Selenium 준비하기",
+        "url": "https://www.youtube.com/watch?v=KLvI4TMYNLM",
+        "thumbnail": "https://i.ytimg.com/vi/KLvI4TMYNLM/mqdefault.jpg",
+        "channel": "데이터공방_Datago0ba0",
+        "views": 6012,
+        "length": "14:04",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[4강] Selenium의 핵심 기능, 보조 도구 설명해드림",
+        "url": "https://www.youtube.com/watch?v=1JPdrYWWeXk",
+        "thumbnail": "https://i.ytimg.com/vi/1JPdrYWWeXk/mqdefault.jpg",
+        "channel": "코딩 개발 강의 김지유",
+        "views": 5471,
+        "length": "15:41",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 selenium 크롤링 30분만 투자해봅시다. (ft. 이렇게 쉽다고?)",
+        "url": "https://www.youtube.com/watch?v=vZ8wG_D624I",
+        "thumbnail": "https://i.ytimg.com/vi/vZ8wG_D624I/mqdefault.jpg",
+        "channel": "비현코 - 시민개발자의시대",
+        "views": 5401,
+        "length": "23:43",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 자동화 selenium 사용법 브라우저 매크로 프로그램 만들기",
+        "url": "https://www.youtube.com/watch?v=ZFmTwbRQ0uc",
+        "thumbnail": "https://i.ytimg.com/vi/ZFmTwbRQ0uc/mqdefault.jpg",
+        "channel": "프로그래머 김플 스튜디오",
+        "views": 95123,
+        "length": "12:09",
+        "published": "6년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "머신러닝, 딥러닝 실전 개발 입문 버전 대응 1강 - Selenium과 ChromeDriver",
+        "url": "https://www.youtube.com/watch?v=9164BXkMofs",
+        "thumbnail": "https://i.ytimg.com/vi/9164BXkMofs/mqdefault.jpg",
+        "channel": "윤인성",
+        "views": 4144,
+        "length": "10:56",
+        "published": "8년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[SWTT] Selenium을 활용한 Web Scraping 실습 - 배민",
+        "url": "https://www.youtube.com/watch?v=qrnrd4dJsTs",
+        "thumbnail": "https://i.ytimg.com/vi/qrnrd4dJsTs/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 107,
+        "length": "28:39",
+        "published": "5년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[SWTT] Selenium 4를 이용한 동적 웹 크롤링 실습",
+        "url": "https://www.youtube.com/watch?v=3A0XfPIwlHA",
+        "thumbnail": "https://i.ytimg.com/vi/3A0XfPIwlHA/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 305,
+        "length": "20:06",
+        "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
     "SVN": [
       {
         "title": "1강. Git의 세계로 역사와 SVN 알아보기",
@@ -6142,88 +6224,6 @@
         "views": 10586,
         "length": "10:57",
         "published": "8년 전",
-        "stage": "실전"
-      }
-    ],
-    "Selenium": [
-      {
-        "title": "Selenium 웹 자동화 기초",
-        "url": "https://www.youtube.com/watch?v=qRQ_EG7Nk0Q",
-        "thumbnail": "https://i.ytimg.com/vi/qRQ_EG7Nk0Q/mqdefault.jpg",
-        "channel": "코드잇",
-        "views": 126,
-        "length": "3:57",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 크롤링 첫 시작!  Selenium 준비하기",
-        "url": "https://www.youtube.com/watch?v=KLvI4TMYNLM",
-        "thumbnail": "https://i.ytimg.com/vi/KLvI4TMYNLM/mqdefault.jpg",
-        "channel": "데이터공방_Datago0ba0",
-        "views": 6012,
-        "length": "14:04",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[4강] Selenium의 핵심 기능, 보조 도구 설명해드림",
-        "url": "https://www.youtube.com/watch?v=1JPdrYWWeXk",
-        "thumbnail": "https://i.ytimg.com/vi/1JPdrYWWeXk/mqdefault.jpg",
-        "channel": "코딩 개발 강의 김지유",
-        "views": 5471,
-        "length": "15:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 selenium 크롤링 30분만 투자해봅시다. (ft. 이렇게 쉽다고?)",
-        "url": "https://www.youtube.com/watch?v=vZ8wG_D624I",
-        "thumbnail": "https://i.ytimg.com/vi/vZ8wG_D624I/mqdefault.jpg",
-        "channel": "비현코 - 시민개발자의시대",
-        "views": 5401,
-        "length": "23:43",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 자동화 selenium 사용법 브라우저 매크로 프로그램 만들기",
-        "url": "https://www.youtube.com/watch?v=ZFmTwbRQ0uc",
-        "thumbnail": "https://i.ytimg.com/vi/ZFmTwbRQ0uc/mqdefault.jpg",
-        "channel": "프로그래머 김플 스튜디오",
-        "views": 95123,
-        "length": "12:09",
-        "published": "6년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "머신러닝, 딥러닝 실전 개발 입문 버전 대응 1강 - Selenium과 ChromeDriver",
-        "url": "https://www.youtube.com/watch?v=9164BXkMofs",
-        "thumbnail": "https://i.ytimg.com/vi/9164BXkMofs/mqdefault.jpg",
-        "channel": "윤인성",
-        "views": 4144,
-        "length": "10:56",
-        "published": "8년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[SWTT] Selenium을 활용한 Web Scraping 실습 - 배민",
-        "url": "https://www.youtube.com/watch?v=qrnrd4dJsTs",
-        "thumbnail": "https://i.ytimg.com/vi/qrnrd4dJsTs/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 107,
-        "length": "28:39",
-        "published": "5년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[SWTT] Selenium 4를 이용한 동적 웹 크롤링 실습",
-        "url": "https://www.youtube.com/watch?v=3A0XfPIwlHA",
-        "thumbnail": "https://i.ytimg.com/vi/3A0XfPIwlHA/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 305,
-        "length": "20:06",
-        "published": "1년 전",
         "stage": "실전"
       }
     ],
