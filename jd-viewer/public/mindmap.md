@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6634건** 공고 · **1327개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-21 17:11
+- 총 **6636건** 공고 · **1327개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-21 19:03
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1343,6 +1343,16 @@ markmap:
   - [MLOps / AI 플랫폼 R&D 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49417231?Oem_Code=C1&logpath=1&stext=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=39&sc=630)
   - [AI 인프라 플랫폼 개발/운영 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49417142?Oem_Code=C1&logpath=1&stext=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=49&sc=630)
 
+### (주)무한정보기술 `중소기업` · 3건
+- **백엔드** [2건] · `AWS` `GCP` `Docker` `Kubernetes` `Jenkins` `GitHub Actions`
+  - [인프라 엔지니어 (DevOps) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49392781?Oem_Code=C1&logpath=1&stext=SRE&listno=27&sc=630)
+  - [(주)무한정보기술 인프라 엔지니어(DevOps)로 함께 성장해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54237637&location=ts&searchword=SRE&searchType=search&paid_fl=n&search_uuid=bb6bcbf5-539d-4a9f-ba71-80f020bb03fe)
+- **AI/ML** [1건]
+  - [인공지능(AI) 머신러닝부문 전문 연구원 정규직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53921973&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=2810b810-ff55-4539-bd83-af6ba03eb82e)
+- **DevOps/인프라** [2건] · `AWS` `GCP` `Docker` `Kubernetes` `Jenkins` `GitHub Actions`
+  - [인프라 엔지니어 (DevOps) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49392781?Oem_Code=C1&logpath=1&stext=SRE&listno=27&sc=630)
+  - [(주)무한정보기술 인프라 엔지니어(DevOps)로 함께 성장해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54237637&location=ts&searchword=SRE&searchType=search&paid_fl=n&search_uuid=bb6bcbf5-539d-4a9f-ba71-80f020bb03fe)
+
 ### (주)애니로직 `중소기업` · 3건
 - **AI/ML** [3건] · `Python`
   - [파이썬 및 인공지능 개발자를 모집합니다. ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49346938?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=79&sc=630)
@@ -2212,14 +2222,6 @@ markmap:
 ### 티지360테크놀로지스 `중소기업` · 2건
 - **DevOps/인프라** [1건] · `AWS` `GCP` `Docker` `Kubernetes` `Linux`
   - [시스템 엔지니어(SE) 경력 채용합니다. ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54061528&location=ts&searchword=SRE&searchType=search&paid_fl=n&search_uuid=60290df7-ff85-48e0-9467-4a28fb35bb8e)
-
-### ㈜무한정보기술 `중소기업` · 2건
-- **백엔드** [1건] · `AWS` `GCP` `Docker` `Kubernetes` `Jenkins` `GitHub Actions`
-  - [인프라 엔지니어 (DevOps) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49392781?Oem_Code=C1&logpath=1&stext=SRE&listno=27&sc=630)
-- **AI/ML** [1건]
-  - [인공지능(AI) 머신러닝부문 전문 연구원 정규직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53921973&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=2810b810-ff55-4539-bd83-af6ba03eb82e)
-- **DevOps/인프라** [1건] · `AWS` `GCP` `Docker` `Kubernetes` `Jenkins` `GitHub Actions`
-  - [인프라 엔지니어 (DevOps) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49392781?Oem_Code=C1&logpath=1&stext=SRE&listno=27&sc=630)
 
 ### ㈜링네트 `중소기업` · 2건
 - **보안** [2건] · `Linux`
