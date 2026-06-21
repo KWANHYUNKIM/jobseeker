@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-21T19:03:19",
-  "source_dir": "screenshots/all_통합_20260621_190305",
+  "generated_at": "2026-06-21T21:57:15",
+  "source_dir": "screenshots/all_통합_20260621_215659",
   "keyword": "통합",
   "jobs": [
     {
@@ -194838,6 +194838,54 @@
     },
     {
       "site": "dev",
+      "company": "다날",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)다날 [경력] 결제서비스관련 업무시스템 개발/운영",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/557141?ReturnUrl=RecruitInfo",
+      "career": "경력(3년 이상)",
+      "location": "경기 성남시 분당구",
+      "dday": "~06.29(월)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "- 결제 서비스 관련 내부 프로세스 지원\n- 대외 정보 제공을 위한 관리 시스템 구축 및 운영\n- 업무 자동화 시스템 구현을 통한 효율성 향상\n\n모집인원\n0명\n\n경력여부\n경력(3년이상)",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "다날",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)다날 [경력] Payment 정산 플랫폼 BE 개발자",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/557140?ReturnUrl=RecruitInfo",
+      "career": "경력(3~10년)",
+      "location": "경기 성남시 분당구",
+      "dday": "~06.29(월)",
+      "tech_stack": [
+        "Spring",
+        "Spring Boot",
+        "Oracle"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "대용량 처리"
+      ],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "- Spring Boot 기반 서비스 개발\n- Spring Batch 기반 대용량 데이터 처리 및 배치 시스템 설계\n- 기존 레거시 정산 시스템 분석 및 구조 개선\n- Oracle 기반 데이터 모델링 및 서능 최적화\n\n모집인원\n0명\n\n경력여부\n경력(3년이상~10년 이하)",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -195871,6 +195919,27 @@
       "qualifications": "대학교(학사) 이상\n\n문서 ​작성 및 ​데이터 ​분석 Tool ​활용 ​가능자\n[우대 ​요건]\n\nSQL, Python, SAS ​등 ​활용 가능자\n\nBigData 관련 ​자격증 ​보유자\n\n웹 ​기획 및 데이터 ​시각화 경력 ​보유자\n\n데이터 ​분석 업무 ​및 프로젝트 ​경험자\n\n관련 ​전공자 우대(통계학, 산업공학, ​상경계열 등)",
       "preferences": "",
       "main_tasks": "빅데이터 ​분석 ​및 ​데이터 시각화 ​기획\n\n고객사 관리 및 상품/서비스 ​마케팅 ​관련 업무 ​지원",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "다날",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)다날 [경력] 데이터분석가 및 모델러",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/557138?ReturnUrl=RecruitInfo",
+      "career": "경력(2~5년)",
+      "location": "경기 성남시 분당구",
+      "dday": "~06.29(월)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
       "benefits": ""
     },
     {
@@ -199898,22 +199967,22 @@
     }
   ],
   "stats": {
-    "total": 6636,
+    "total": 6639,
     "by_size": {
-      "중소기업": 5946,
+      "중소기업": 5949,
       "대기업": 421,
       "중견기업": 269
     },
     "by_role": {
-      "기타": 879,
+      "기타": 880,
       "DevOps/인프라": 963,
-      "백엔드": 2857,
+      "백엔드": 2858,
       "모바일": 1063,
       "AI/ML": 2242,
       "프론트엔드": 1835,
       "풀스택": 578,
       "게임": 40,
-      "데이터": 916,
+      "데이터": 917,
       "펌웨어/임베디드": 239,
       "보안": 281,
       "QA": 67
@@ -199923,7 +199992,7 @@
       "jumpit": 449,
       "jobkorea": 1208,
       "saramin": 3130,
-      "dev": 303
+      "dev": 306
     },
     "top_tech": [
       [
@@ -199952,7 +200021,7 @@
       ],
       [
         "Spring",
-        1057
+        1058
       ],
       [
         "JavaScript",
@@ -199984,7 +200053,7 @@
       ],
       [
         "Spring Boot",
-        622
+        623
       ],
       [
         "GCP",
@@ -200049,22 +200118,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T14:49:31",
-      "keyword": "개발자",
-      "raw_total": 689,
-      "deduped": 670,
-      "active": 670,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 270,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T15:20:53",
       "keyword": "개발자",
@@ -203246,6 +203299,22 @@
         "jobkorea": 1691,
         "saramin": 4398,
         "dev": 372
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-21T21:57:08",
+      "keyword": "통합",
+      "raw_total": 8627,
+      "deduped": 7846,
+      "active": 6639,
+      "closed": 1207,
+      "site_counts": {
+        "wanted": 1568,
+        "jumpit": 594,
+        "jobkorea": 1691,
+        "saramin": 4399,
+        "dev": 375
       },
       "anomalies": []
     }
