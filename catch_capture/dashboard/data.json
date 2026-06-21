@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-22T01:34:24",
-  "source_dir": "screenshots/all_통합_20260622_013402",
+  "generated_at": "2026-06-22T03:19:00",
+  "source_dir": "screenshots/all_통합_20260622_031847",
   "keyword": "통합",
   "jobs": [
     {
@@ -89598,6 +89598,34 @@
     },
     {
       "site": "jobkorea",
+      "company": "아타드㈜(ATAD Corp.",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[클라우드] 클라우드 엔지니어 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49420125?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=42&sc=630",
+      "career": "경력1년↑",
+      "location": "서울 서초구",
+      "dday": "",
+      "tech_stack": [
+        "Oracle",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Kubernetes"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 초대졸이상 (졸업예정자 가능)\n\nㆍ경력 : 경력1년↑",
+      "preferences": "ㆍ관련 전공자\n\nㆍ관련 자격증",
+      "main_tasks": "ㆍ클라우드 운용 및 관리 (AWS, Azure, GCP, OCI)\n\nㆍ자빅스, 쿠버네티스를 활용한 개발\n\n스킬\n\nㆍAWS, Azure, Docker, GCP, Hadoop, kubernetes, Oracle",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜스냅컴퍼니",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -92289,6 +92317,29 @@
       "qualifications": "ㆍ정보보안, 사이버보안 또는 개인정보보호 관련 근무경력 2년 이상\n\nㆍ병역필 또는 면제자로, 해외여행에 결격사유가 없는 분",
       "preferences": "ㆍ정보보안, 컴퓨터 공학 관련 전공자\n\nㆍ정보보안 유관 자격증 보유자(정보보안기사, 저보처리기사, CISSP, CISA, CPPG 등)\n\nㆍ정보보안 유관 업무 경험 보유자\n\n(모의해킹, 취약점 진단, 네트워크 보안장비 운영, 보안점검 기획/수행 등)\n\nㆍISMS, ISO27001 등 보안관리 인증체계 경험자\n\nㆍ어학능력 우수자(TOEIC / TEPS / TOEIC Speaking / OPIc)",
       "main_tasks": "ㆍ전사 중장기 정보보호/개인정보보호 전략 기획\n\nㆍ클라우드 보안 인프라 설계 및 구축\n\nㆍ정보보호시스템 운영관리 및 보안점검\n\nㆍ네트워크(유/무선) 취약점 분석 및 대응\n\nㆍ국내외 법률 및 정보보호 관리체계 보안 인증 취득·유지",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜헥토파이낸셜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[헥토파이낸셜] 정보보안 담당자",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49420019?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=91&sc=630",
+      "career": "경력10년↑",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "- 경력 10년 이상, 학사 이상\n\n- 핀테크 / 금융회사 등 금융보안 실무 경험\n\n- 전자금융거래법 및 전자금융 감독규정 기반의\n\n보안체계 구축 가능하신 분\n\n- ISMS-P / ISO / PCI-DSS 인증심사\n\n대응경험 및 이해가 높으신 분\n\n- 기술보안(보안장비, 모의해킹, 취약점 진단) 이해가 높으신 분",
+      "preferences": "- ISMS-P / PCI-DSS 인증심사원 자격증 소지자\n\n- 마이데이터, 커머스 , 신용정보회사 등의\n\n개인(신용)정보 업무 경험자\n\n- AI/클라우드 서비스 도입 시\n\n보안정책 검토 및 리스크 평가 경험자",
+      "main_tasks": "- 취약점 진단 및 보안솔루션 운영\n\n- 정보보안 정책 / 관리체계 수립 및 운영\n\n- 정보보안 기획 및 내부통제\n\n(자체 보안성 심의, 신사업 보안성 검토, 내부감사 등)\n\n- 정보보안 인증 취득 및 유지\n\n(ISMS-P, ISO27001, PCI-DSS)\n\n- 금융당국 규제 대응 및 외부 감사 수검 대응",
       "benefits": ""
     },
     {
@@ -96876,6 +96927,32 @@
       "competencies": [],
       "qualifications": "",
       "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "nodejs, javascript, 라즈베리파이, 임베디드 개발자 초빙",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49419646?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&listno=3&sc=630",
+      "career": "경력무관",
+      "location": "경기 군포시",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "JavaScript"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "영어 가능"
+      ],
+      "qualifications": "모집인원\n\nnodejs, javascript,\n라즈베리파이, 임베디드 개발자\n\n학력: 학력무관\n\n경력: 신입",
+      "preferences": "컴퓨터활용능력 우수자\n\n인근거주자\n\n차량소지자\n\n청년층\n\n영어가능자\n\n즉시출근 가능자\n\n전공: 전산학·컴퓨터공학, 정보·통신공학, 응용소프트웨어공학",
       "main_tasks": "",
       "benefits": ""
     },
@@ -111206,6 +111283,27 @@
       "tech_tags": [],
       "roles": [
         "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)아이케미스트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[신입/경력] 언리얼 클라이언트 개발자 채용(취업축하금 지급)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53805369&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d1b08e52-513d-4cbe-a741-4aaeb75baa75",
+      "career": "경력무관",
+      "location": "서울금천구 | 4,500 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "게임"
       ],
       "competencies": [],
       "qualifications": "",
@@ -195176,41 +195274,41 @@
     }
   ],
   "stats": {
-    "total": 6468,
+    "total": 6472,
     "by_size": {
-      "중소기업": 5808,
+      "중소기업": 5812,
       "대기업": 395,
       "중견기업": 265
     },
     "by_role": {
       "기타": 838,
-      "DevOps/인프라": 944,
+      "DevOps/인프라": 945,
       "백엔드": 2810,
       "모바일": 1036,
       "AI/ML": 2189,
       "프론트엔드": 1799,
       "풀스택": 569,
-      "게임": 39,
+      "게임": 40,
       "데이터": 897,
-      "펌웨어/임베디드": 237,
-      "보안": 267,
+      "펌웨어/임베디드": 238,
+      "보안": 268,
       "QA": 66
     },
     "by_site": {
       "wanted": 1546,
       "jumpit": 449,
-      "jobkorea": 1161,
-      "saramin": 3024,
+      "jobkorea": 1164,
+      "saramin": 3025,
       "dev": 288
     },
     "top_tech": [
       [
         "Python",
-        2036
+        2037
       ],
       [
         "AWS",
-        1742
+        1743
       ],
       [
         "Java",
@@ -195226,7 +195324,7 @@
       ],
       [
         "Docker",
-        1052
+        1053
       ],
       [
         "Spring",
@@ -195234,7 +195332,7 @@
       ],
       [
         "JavaScript",
-        956
+        957
       ],
       [
         "Linux",
@@ -195250,7 +195348,7 @@
       ],
       [
         "Kubernetes",
-        727
+        728
       ],
       [
         "REST API",
@@ -195266,7 +195364,7 @@
       ],
       [
         "GCP",
-        580
+        581
       ],
       [
         "C++",
@@ -195274,7 +195372,7 @@
       ],
       [
         "Azure",
-        501
+        502
       ],
       [
         "Node.js",
@@ -195327,22 +195425,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T16:23:36",
-      "keyword": "개발자",
-      "raw_total": 690,
-      "deduped": 671,
-      "active": 671,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 271,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T16:54:57",
       "keyword": "개발자",
@@ -198523,6 +198605,22 @@
         "jumpit": 596,
         "jobkorea": 1694,
         "saramin": 4408,
+        "dev": 375
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-22T03:18:55",
+      "keyword": "통합",
+      "raw_total": 8648,
+      "deduped": 7861,
+      "active": 6472,
+      "closed": 1389,
+      "site_counts": {
+        "wanted": 1568,
+        "jumpit": 596,
+        "jobkorea": 1700,
+        "saramin": 4409,
         "dev": 375
       },
       "anomalies": []

@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **6468건** 공고 · **1290개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-22 01:34
+- 총 **6472건** 공고 · **1290개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-22 03:19
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -3185,6 +3185,19 @@ markmap:
 - **QA** [1건] · `Java` `React` `Next.js` `Spring` `Spring Boot` `iOS`
   - [(위펀) AI Native QA Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53820716&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=8dd5ae4a-b210-4f26-b241-b44c722f335c)
 
+### 아타드㈜(ATAD Corp. `중소기업` · 7건
+- **백엔드** [3건] · `Java` `Python` `Node.js` `AWS` `Azure` `REST API`
+  - [백엔드 개발자 ↗](https://www.wanted.co.kr/wd/346637)
+  - [프론트엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263634?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=21&sc=630)
+  - [백엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263743?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=97&sc=630)
+- **프론트엔드** [2건] · `React` `Vue` `HTML` `CSS` `TypeScript` `Next.js`
+  - [프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/356257)
+  - [프론트엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263634?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=21&sc=630)
+- **DevOps/인프라** [3건] · `AWS` `GCP` `Azure` `Oracle` `Kubernetes` `Terraform`
+  - [클라우드 엔지니어 ↗](https://www.wanted.co.kr/wd/346638)
+  - [클라우드 엔지니어 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263732?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=57&sc=630)
+  - [(클라우드) 클라우드 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49420125?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=42&sc=630)
+
 ### 소만사 `중견기업` · 7건
 - **프론트엔드** [1건] · `JavaScript` `C++` `C` `React` `Linux`
   - [VPN 개발자(C++) 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49292572?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&listno=63&sc=630)
@@ -3289,18 +3302,6 @@ markmap:
 - **보안** [2건] · `AWS`
   - [정보보안 담당자 ↗](https://www.wanted.co.kr/wd/344783)
   - [정보보안 팀장(정보보호 관리자) ↗](https://www.wanted.co.kr/wd/344789)
-
-### 아타드(ATAD) `중소기업` · 6건
-- **백엔드** [3건] · `Java` `Python` `Node.js` `AWS` `Azure` `REST API`
-  - [백엔드 개발자 ↗](https://www.wanted.co.kr/wd/346637)
-  - [프론트엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263634?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=21&sc=630)
-  - [백엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263743?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=97&sc=630)
-- **프론트엔드** [2건] · `React` `Vue` `HTML` `CSS` `TypeScript` `Next.js`
-  - [프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/356257)
-  - [프론트엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263634?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=21&sc=630)
-- **DevOps/인프라** [2건] · `AWS` `GCP` `Azure` `Oracle` `Kubernetes` `Terraform`
-  - [클라우드 엔지니어 ↗](https://www.wanted.co.kr/wd/346638)
-  - [클라우드 엔지니어 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49263732?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=57&sc=630)
 
 ### 시제 `중소기업` · 6건
 - **백엔드** [4건] · `JavaScript` `TypeScript` `React` `Node.js` `NestJS` `MySQL`
