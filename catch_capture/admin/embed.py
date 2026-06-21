@@ -41,8 +41,9 @@ _COS_HIGH = 0.75
 _HI_W = 0.7
 _LO_W = 0.3
 
-# JD/프로필에서 의미 비교에 쓸 텍스트 필드.
-_JOB_FIELDS = ("title", "tech_stack", "main_tasks", "qualifications", "preferences")
+# JD 섹션 배점(지원자격 > 주요업무 > 우대). 잡 벡터를 섹션별로 만들어 가중 평균한다.
+# required = 지원자격+기술스택+제목(필수), tasks = 주요업무, preferred = 우대(가산점).
+SECTION_WEIGHTS = {"required": 0.5, "tasks": 0.3, "preferred": 0.2}
 
 _model = None
 _load_failed = False
@@ -94,8 +95,26 @@ def _flat(v: Any) -> str:
     return str(v or "")
 
 
-def _job_text(job: dict[str, Any]) -> str:
-    return "\n".join(p for p in (_flat(job.get(k)) for k in _JOB_FIELDS) if p.strip()).strip()
+def _job_weighted(job: dict[str, Any]) -> tuple[str | None, list[float], list[str]]:
+    """JD 섹션 → (캐시해시, 가중치들, 텍스트들). 빈 섹션 제외 후 가중치 재정규화."""
+    from . import jd_sections
+    secs = jd_sections.sections(job)
+    pairs = [(SECTION_WEIGHTS[k], secs[k]) for k in ("required", "tasks", "preferred")
+             if secs[k].strip()]
+    if not pairs:
+        return None, [], []
+    tot = sum(w for w, _ in pairs)
+    weights = [w / tot for w, _ in pairs]
+    texts = [t for _, t in pairs]
+    h = _hash("||".join(f"{w:.3f}:{t}" for w, t in zip(weights, texts)))
+    return h, weights, texts
+
+
+def _combine(vecs: np.ndarray, weights: list[float]) -> np.ndarray:
+    """섹션 벡터들의 가중 평균 → 정규화(코사인용)."""
+    v = np.average(vecs, axis=0, weights=weights).astype(np.float32)
+    n = float(np.linalg.norm(v)) or 1.0
+    return v / n
 
 
 def _profile_text(profile: dict[str, Any]) -> str:
@@ -170,24 +189,25 @@ def ensure_jobs(jobs: list[dict[str, Any]]) -> None:
         return
     from .jobs import job_key
     cache = _load_cache()
-    texts, keys, hashes = [], [], []
+    pending: list[tuple[str, str, list[float], int]] = []  # (key, hash, weights, n_sections)
+    flat: list[str] = []
     for j in jobs:
-        text = _job_text(j)
-        if not text:
+        h, weights, texts = _job_weighted(j)
+        if not texts:
             continue
         key = job_key(j)
-        h = _hash(text)
         cur = cache.get(key)
         if cur and cur[0] == h:
             continue
-        texts.append(text)
-        keys.append(key)
-        hashes.append(h)
-    if not texts:
+        pending.append((key, h, weights, len(texts)))
+        flat.extend(texts)
+    if not pending:
         return
-    vecs = _encode(texts)
-    for key, h, v in zip(keys, hashes, vecs):
-        cache[key] = (h, v)
+    vecs = _encode(flat)  # 전 섹션 한 번에 인코딩 → 잡별로 가중 결합
+    off = 0
+    for key, h, weights, n in pending:
+        cache[key] = (h, _combine(vecs[off:off + n], weights))
+        off += n
     _dirty = True
 
 
@@ -200,10 +220,10 @@ def semantic_score(profile_vec: np.ndarray | None, job: dict[str, Any]) -> int:
     if cur is not None:
         vec = cur[1]
     else:  # ensure_jobs 미경유 — 단건 인코딩(캐시는 안 함)
-        text = _job_text(job)
-        if not text:
+        h, weights, texts = _job_weighted(job)
+        if not texts:
             return 0
-        vec = _encode([text])[0]
+        vec = _combine(_encode(texts), weights)
     cos = float(np.dot(profile_vec, vec))
     pct = (cos - _COS_LOW) / (_COS_HIGH - _COS_LOW)
     return max(0, min(100, round(pct * 100)))
