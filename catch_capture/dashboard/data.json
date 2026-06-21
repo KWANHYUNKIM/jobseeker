@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-21T13:44:49",
-  "source_dir": "screenshots/all_통합_20260621_134435",
+  "generated_at": "2026-06-21T15:28:31",
+  "source_dir": "screenshots/all_통합_20260621_152818",
   "keyword": "통합",
   "jobs": [
     {
@@ -125634,6 +125634,43 @@
     },
     {
       "site": "saramin",
+      "company": "(주)키스템프그룹",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[정규직/영등포] 유명기업  AI플랫폼 백엔드 개발자 경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54230857&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=5c1a220c-bd49-451e-b57c-528117cf6382",
+      "career": "경력10년↑",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Vue",
+        "Docker",
+        "Kubernetes",
+        "LangChain",
+        "Kafka",
+        "RabbitMQ",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "- 고졸이상\n\n- 유관 경력 2년이상\n\n- 필수 기술 스택\n\n- Java 또는 Python 기반 백엔드 서비스 개발 경험이 있으신 분\n\n- Kafka, RabbitMQ 등 메시지 큐 기반 시스템 운영 경험이 있으신 분\n\n- Docker, Kubernetes 기반 서비스 개발 및 운영 경험이 있으신 분\n\n- REST API 설계 및 개발 경험이 있으신 분\n\n- 다양한 이해관계자와의 원활한 커뮤니케이션 및 협업 역량을 보유하신 분",
+      "preferences": "- PM(Project Manager) 경력을 보유하신 분\n\n- AI/LLM 기반 서비스 또는 플랫폼 개발 경험이 있으신 분\n\n- LangChain, LangGraph 등 AI Agent 프레임워크 기반 프로젝트 수행 경험이 있으신 분\n\n- RAG 아키텍처 설계 및 개발 경험이 있으신 분\n\n- Vector DB 활용 경험이 있으신 분\n\n- Vue.js 등을 활용한 관리자 대시보드 또는 AI 서비스 UI 개발 경험이 있으신 분\n\n● 해당 기업 소속 정규직 채용 건 입니다.\n\n● 단순 기업 명 문의 사절합니다.",
+      "main_tasks": "",
+      "benefits": "[해당 기업 측 복리후생]\n\n* 4대보험, 주5일, 연차\n\n- 계약연봉 외 고정상여\n\n- 비고정 상여/성과급/인센티브 등\n\n- 사내카페, 생일자 쿠폰\n\n*해당 복리후생은 기업사정에 따라 지급 여부 및 금액 변동 가능성 有\n\n- 채용형태 : 정규직\n[해당 기업 소속]"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -140406,6 +140443,41 @@
     },
     {
       "site": "saramin",
+      "company": "엠앤앤에이치",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "공간 영상 3D AI 소프트웨어 개발자 (주4일 근무 - 격주)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54231257&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=fe951c54-dfbd-4c70-8a86-71bdad4206c7",
+      "career": "신입·경력",
+      "location": "서울성동구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++",
+        "C#",
+        "iOS",
+        "Android",
+        "AWS",
+        "Azure",
+        "OpenCV"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성",
+        "오픈소스 기여"
+      ],
+      "qualifications": "4년제 대졸 이상 관련학과 졸업자\n\n신입 ~ 경력 3년 이하\n\nC, C++, C#, Python 프로그래밍\n\n오픈소스 크로스 빌드\n\n기본적인 이미지 영상 처리 기술 이해\n\n기본적인 3D 그래픽 기술 이해\n\n기본적인 딥런닝 기술 이해\n\n개발에 필요한 영어 독해력\n\n자기주도 업무 진행 및 자기 관리\n\n컴퓨터공학, 소프트웨어공학 전공 (필수)",
+      "preferences": "신입개발자\n\nOpenGL 개발 경험\n\nOpenCV 개발 경험\n\n유니티 또는 언리얼 게임엔진 개발 경험\n\n리액트 웹 클라이언트 개발 경험\n\nAWS, Azure 클라우드 사용 경험\n\n3D / 영상처리 / 인공지능 관련 전문 지식 또는 개발 경험\n\nMacOS, 리눅스, Android, iOS 등 다종 OS 환경 개발 경험\n\nAI Agent 협업 개발 경험",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)바이오리서치에이아이",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -148418,6 +148490,31 @@
       "preferences": "- OMOP-CDM, FHIR, HL7 등 의료 데이터 표준 경험 또는 이해\n\n- RWD, RWE 구축 경험\n\n- 코호트 기반 분석 또는 임상 연구 데이터 경험\n\n- AI/머신러닝 모델 개발 또는 검증 경험\n\n- BI툴 활용 경험\n\n- 스타트업 환경에서 데이터 체계 구축 경험",
       "main_tasks": "",
       "benefits": "- 수습기간 : 3개월\n\n- 수습기간 중 급여 지급 : 100% 지급\n\n- 근무요일 : 월~금\n\n- 근무시간 : 9~18시\n\n- 급여일자 : 5일\n\n- 상여금/성과급/보너스 : 없지만 회사에서 다양한 이벤트 많이 함\n\n- 연차수당 지급여부 : 당연 지급\n\n- 퇴직금 지급 여부 : 당연함\n\n- 식사 제공 : 연봉에 포함해서 식대 지급\n\n- 기숙사 제공 : 없음\n\n- 통근차량 운행 또는 교통비 지급 : 없음\n\n- 기타 수당 또는 기타 처우 : 사내 복지가 좋은 편, 개인의 발전을 아낌없이 지원함\n\n- 자회사 제품 직원 할인가 제공\n\n- 무한 간식바, 커피 머신 제공\n\n- 지하철 7호선 학동역 도보 5분거리\n\n- 생일자 조기퇴근, 생일파티, 생일 축하금 지급\n\n- 자유로운 연차/반차 사용\n\n- 매월 1시간 근무 중 휴식하는 리프레쉬 타임 제도\n\n- 자기개발 도서 구입비 지원\n\n- 다양한 온라인 강의 수강 지원\n\n- 외부 세미나 및 컨퍼런스 참여 지원\n\n- 다양한 사내 공모전 개최 및 시상 진행"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)에이치알비즈코리아",
+      "company_size": "중견기업",
+      "company_size_matched": null,
+      "title": "데이터 분석( SQL, Python) FPS게임/세계적게임사",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54237380&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=b2cd0599-2df2-4388-9491-2ec803814f83",
+      "career": "경력 3~9년",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "- 3년 이상 데이터 분석 업무 경험이 있으신 분\n\n- 게임 및 게임 산업에 대한 이해도가 높으신 분\n\n- SQL, Python 등의 언어를 통해 데이터를 가공한 경험이 있으신 분\n\n- 데이터 분석 업무 프로세스에 대한 이해도가 높으신 분\n\n- 다양한 직군 및 직급의 이해 관계자와 커뮤니케이션이 원활한 분",
+      "preferences": "- 통계, 수학, 재무 또는 분석 관련 학과 학사 학위 소지하신 분\n\n- 3년 이상 게임 업계 경력이 있으신 분\n\n- 3년 이상 데이터분석 조직을 이끌어본 경험이 있으신 분\n\n판교근무\n\n헤드헌터 이사 16년 재직 중\nrecruit@hrbiz.co.kr / 010-2330-8214",
+      "main_tasks": "- 데이터 기반의 게임 제작 및 사업 방향 의사 결정 지원\n\n- 게임 개발 과정에서 필요한 데이터 분석 업무 프로세스 정립 및 실행\n\n- 분석 설계, 데이터 추출 및 가공, 인사이트 도출, 리포팅 개발\n\n- 다양한 이해관계자(PD, 개발, 사업, 운영 등)와의 협업 및 컨설팅",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -161575,6 +161672,29 @@
       "preferences": "- DevOps 및 시스템 아키텍처 구현 경험\n\n- 백엔드를 포함하여 실제 가입자를 확보한 웹사이트를 운영한 경험\n\n- 업무 자동화 또는 데이터 분석에 AI 도구 활용 경험\n\n- 미용의료 전반에 대한 관련직군 업무 경험 혹은 관심",
       "main_tasks": "- 바이브 코딩 기반 (claude code / codex) 웹사이트 개발\n\n- AI 에이전트 기반으로 자료수집 자동화 및 업무 내 커뮤니케이션 시스템 구축 및 운영\n\n- 시스템 및 인프라 관리 (AWS 기반)\n\n- 서비스 배포 및 운영 자동화 (CI/CD)\n\n- 서버 및 데이터베이스 운영 관리\n\n- 로그 및 모니터링 시스템 운영\n\n- 서비스 장애 대응 및 복구\n\n- 보안 및 접근 권한 관리",
       "benefits": "- 유연한 근무제도를 운영합니다\n\n- 직무 교육과 성장을 지원합니다\n\n- 성과에 따른 보상을 제공합니다\n\n- 자율적 개발문화로 협업합니다"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)비엔비케이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경영기획] 스포츠 데이터·AI 중장기 전략 직원 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235881&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=1e26baa3-1b1f-4085-b5b8-eb31460e2512",
+      "career": "신입·경력",
+      "location": "서울송파구 | 5,000 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 신입 / 경력 3년 이상 ~ 7년 이하\n\n• 대학교졸업(4년)이상",
+      "preferences": "• 경영기획 경험자 또는 신규 사업 개척 경험자\n\n• IoT · 데이터 플랫폼 기업에서 경영기획을 경험해 보신 분\n\n• AI 도구 운영 및 데이터 관리 역량을 보유하신 분",
+      "main_tasks": "• 경영진 보고용 전략 문서 작성 및 경영회의 자료 관리\n\n• 신규 사업 기회 발굴을 위한 시장 조사 및 사업성 분석 (ROI · NPV)\n\n• 유관 부문(세일즈, 운영, R&D) 간 전략 실행 조율 및 협업 체계 운영\n\n• 데이터 기반 인사이트 도출을 통한 사업 포트폴리오 고도화 지원\n\n• AI 도구를 활용한 데이터 분석 및 사업 기획 업무 지원\n\n• 대표이사 업무 수행 지원",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -175876,6 +175996,27 @@
       "preferences": "- 금융보안원, 금감원, KISA 등 내·외부 기관의 보안 점검 및 컴플라이언스 대응 경험이 있으신 분\n\n- 개인정보보호법, 금융감독규정 등 관련 법령에 대한 이해도가 있으신 분\n\n- 다양한 보안 솔루션(WAF, IPS 등)의 커스터마이징 및 정책 최적화 경험자\n\n- ChatGPT, Gemini 등 생성형 AI 툴을 실무(스크립트 작성, 로그 분석, 문서화 등)에 활용하여 업무 효율화를 추구하시는 분\n\n- 정보보안기사, CISA, CISSP, CPPG 등 직무 관련 자격증 소지자",
       "main_tasks": "• 기술 보안 담당자\n\n1. 보안 솔루션 운영 및 고도화\n\n- 시스템 / 네트워크 / DB / EndPoint 및 클라우드 보안 솔루션 구축·운영\n\n- 인프라 전반의 보안 정책 설정 및 최적화 관리\n\n2. 보안 위협 예방 및 침해 대응\n\n- 인프라 및 애플리케이션 취약점 진단 및 예방 활동\n\n- 보안 관제 모니터링 기반 침해 시도 조기 탐지 및 대응 체계 수립\n\n3. 보안 거버넌스 및 인식 제고\n\n- 내·외부 보안 컴플라이언스(ISMS 등) 대응 지원\n\n- 임직원 보안 인식 제고를 위한 사내 캠페인 기획 및 운영",
       "benefits": "[건강한 사내 문화]\n\n•정시 출퇴근, 자유로은 연차, 회식 강요 안해요\n\n•사우회/사내 동호회 운영\n[개인의 성장]\n\n•자기개발비 지급(도서 구입, 피트니스, 교육 등 연 60만원 지원)\n\n•본인 혹은 자녀 학자금 지원\n\n• 점심 식비 지급(연 120만 페이코 포인트 지원)\n\n•직무 관련 교육(세미나 참가) 및 도서 무제한 지원\n[평화로운 가정]\n\n• 질병 치료, 수술 등 의료비 지원(연 최대 300만원)\n\n• 본인 포함 가족 중 1인 건강검진비 지급(100만원 상당)\n[든든한 포상]\n\n• 매년 우수사원 표창\n\n• 장기근속사원 포상금 지급\n[특별한 날]\n\n• 생일축하금 지급\n\n• 창립기념일 선물 제공\n\n• 명절 선물 지급\n\n• 대명 및 한화 콘도 이용 요금 지원\n\n• 결혼과 출산, 가족 경조사 선물과 비용 지급"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)트루시스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[정규직 채용 ] 2026년 상반기 사이버 보안 관제 신입 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54235609&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=06a3e310-e3e2-46e6-bd14-86c5c0f113e7",
+      "career": "신입",
+      "location": "대전유성구 | 2,800 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 대졸 이상 (2,3년)\n\n보안관제 0명\n\nㆍ경력 : 신입 (사원급)\n\nㆍ기타 필수 사항\n\n- 컴퓨터/시스템공학",
+      "preferences": "ㆍ정보처리기사, 정보처리산업기사",
+      "main_tasks": "ㆍ",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -199681,22 +199822,22 @@
     }
   ],
   "stats": {
-    "total": 6629,
+    "total": 6634,
     "by_size": {
-      "중소기업": 5940,
+      "중소기업": 5944,
       "대기업": 421,
-      "중견기업": 268
+      "중견기업": 269
     },
     "by_role": {
-      "기타": 878,
-      "DevOps/인프라": 961,
-      "백엔드": 2854,
-      "모바일": 1061,
-      "AI/ML": 2239,
-      "프론트엔드": 1833,
+      "기타": 879,
+      "DevOps/인프라": 962,
+      "백엔드": 2855,
+      "모바일": 1062,
+      "AI/ML": 2242,
+      "프론트엔드": 1834,
       "풀스택": 578,
       "게임": 40,
-      "데이터": 914,
+      "데이터": 916,
       "펌웨어/임베디드": 239,
       "보안": 281,
       "QA": 67
@@ -199705,21 +199846,21 @@
       "wanted": 1546,
       "jumpit": 449,
       "jobkorea": 1208,
-      "saramin": 3123,
+      "saramin": 3128,
       "dev": 303
     },
     "top_tech": [
       [
         "Python",
-        2087
+        2090
       ],
       [
         "AWS",
-        1759
+        1760
       ],
       [
         "Java",
-        1745
+        1746
       ],
       [
         "React",
@@ -199731,7 +199872,7 @@
       ],
       [
         "Docker",
-        1078
+        1079
       ],
       [
         "Spring",
@@ -199755,7 +199896,7 @@
       ],
       [
         "Kubernetes",
-        747
+        748
       ],
       [
         "PostgreSQL",
@@ -199763,7 +199904,7 @@
       ],
       [
         "REST API",
-        708
+        709
       ],
       [
         "Spring Boot",
@@ -199775,23 +199916,23 @@
       ],
       [
         "C++",
-        556
+        557
       ],
       [
         "Azure",
-        512
+        513
       ],
       [
         "Node.js",
         511
       ],
       [
-        "Next.js",
+        "Android",
         474
       ],
       [
-        "Android",
-        473
+        "Next.js",
+        474
       ],
       [
         "CSS",
@@ -199811,7 +199952,7 @@
       ],
       [
         "iOS",
-        421
+        422
       ],
       [
         "Kotlin",
@@ -199823,31 +199964,15 @@
       ],
       [
         "Vue",
-        368
+        369
       ],
       [
         "C#",
-        355
+        356
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-07T13:15:19",
-      "keyword": "개발자",
-      "raw_total": 689,
-      "deduped": 670,
-      "active": 670,
-      "closed": 0,
-      "site_counts": {
-        "wanted": 116,
-        "jumpit": 210,
-        "jobkorea": 62,
-        "saramin": 270,
-        "dev": 31
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-07T13:46:47",
       "keyword": "개발자",
@@ -203028,6 +203153,22 @@
         "jumpit": 594,
         "jobkorea": 1690,
         "saramin": 4385,
+        "dev": 372
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-21T15:28:26",
+      "keyword": "통합",
+      "raw_total": 8619,
+      "deduped": 7841,
+      "active": 6634,
+      "closed": 1207,
+      "site_counts": {
+        "wanted": 1568,
+        "jumpit": 594,
+        "jobkorea": 1691,
+        "saramin": 4394,
         "dev": 372
       },
       "anomalies": []
