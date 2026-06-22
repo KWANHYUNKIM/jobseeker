@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-22T08:41:15",
- "total": 789,
+ "generated_at": "2026-06-22T10:26:49",
+ "total": 792,
  "sources": [
   {
    "company": "Etsy",
@@ -28,6 +28,11 @@
    "count": 29
   },
   {
+   "company": "Mercari",
+   "country": "JP",
+   "count": 28
+  },
+  {
    "company": "토스",
    "country": "KR",
    "count": 28
@@ -35,11 +40,6 @@
   {
    "company": "LINE",
    "country": "KR",
-   "count": 27
-  },
-  {
-   "company": "Mercari",
-   "country": "JP",
    "count": 27
   },
   {
@@ -93,6 +93,11 @@
    "count": 20
   },
   {
+   "company": "CyberAgent",
+   "country": "JP",
+   "count": 13
+  },
+  {
    "company": "Grab",
    "country": "SG",
    "count": 12
@@ -116,11 +121,6 @@
    "company": "Lyft",
    "country": "US",
    "count": 12
-  },
-  {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 11
   },
   {
    "company": "Dropbox",
@@ -514,6 +514,74 @@
   "Bloom Filter": "알고리즘/이론"
  },
  "posts": [
+  {
+   "key": "mercari",
+   "company": "Mercari",
+   "country": "JP",
+   "title": "Scaling Myself: How I Run 22 Claude Code Sessions for DS4 Migration",
+   "url": "https://engineering.mercari.com/en/blog/entry/20260619-scaling-myself-how-i-run-22-claude-code-sessions-for-ds4-migration",
+   "published": "2026-06-22",
+   "published_ts": 1782122424.0,
+   "summary": "This article is the 15th entry in Merpay & Mercoin Tech Openness Month 2026. In this age of AI, most of us have built our own work setups around it. This article is not a proclamation that mine is the best; other setups might work better for other people. But this is the one that […]",
+   "tags": [],
+   "tech_stack": [
+    "iOS",
+    "AI Agent",
+    "Claude",
+    "Vault",
+    "Git"
+   ],
+   "categories": [
+    "모바일",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "04603c2aac40b662"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Claude Managed Agents を利用して Linear/GitHub Issue で PR 作成からレビューループまで回す方法",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64391",
+   "published": "2026-06-22",
+   "published_ts": 1782090142.0,
+   "summary": "開発者が手作業によるコンテキストスイッチから解放され、Issue ドリブンな開発フローをより滑らかに ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "Claude"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "a4226bf5de9b9eca"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Local LLMでのデータ分析を試してみた",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64382",
+   "published": "2026-06-22",
+   "published_ts": 1782088007.0,
+   "summary": "本記事では、その検証結果を共有します。",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "LLM"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "70d5efca6ab20ee3"
+  },
   {
    "key": "github",
    "company": "GitHub",

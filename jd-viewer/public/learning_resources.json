@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-22T08:41:41",
+  "generated_at": "2026-06-22T10:27:16",
   "source": "youtube",
   "tech_count": 173,
   "curriculum_count": 20,
@@ -2455,88 +2455,6 @@
         "stage": "실전"
       }
     ],
-    "TensorFlow": [
-      {
-        "title": "텐서 플로우 TensorFlow 기초",
-        "url": "https://www.youtube.com/watch?v=B961QM47g64",
-        "thumbnail": "https://i.ytimg.com/vi/B961QM47g64/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 29911,
-        "length": "1:37:50",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
-        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
-        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 68651,
-        "length": "4:20:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우(TensorFlow) 기초 1편 [머신러닝 쉽게 접근하기]",
-        "url": "https://www.youtube.com/watch?v=NU9LluOiOOQ",
-        "thumbnail": "https://i.ytimg.com/vi/NU9LluOiOOQ/mqdefault.jpg",
-        "channel": "코딩어TV",
-        "views": 4594,
-        "length": "10:08",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "ㄹㅇ쉬운 딥러닝 6강 : Tensorflow 2 기초 빠르게 정리",
-        "url": "https://www.youtube.com/watch?v=2oqix9x_bGw",
-        "thumbnail": "https://i.ytimg.com/vi/2oqix9x_bGw/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 82399,
-        "length": "16:45",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
-        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
-        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
-        "channel": "LG디스플레이 대학생 인플루언서_디플",
-        "views": 20368,
-        "length": "1:30",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "01 텐서플로우소개 #tensorflow #keras",
-        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
-        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
-        "channel": "Funny AI",
-        "views": 495,
-        "length": "25:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
-        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
-        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 19,
-        "length": "13:56",
-        "published": "2개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "8분 안에 이미지 분류 인공지능(딥러닝) 만들기 실습 구현 | ResNet ImageNet TensorFlow(텐서플로우) Colab(코랩) 머신러닝 파이썬",
-        "url": "https://www.youtube.com/watch?v=9xZa4FAfKgY",
-        "thumbnail": "https://i.ytimg.com/vi/9xZa4FAfKgY/mqdefault.jpg",
-        "channel": "꽃부리와 코딩여행",
-        "views": 65137,
-        "length": "10:00",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "MSA": [
       {
         "title": "[MSA 강의 11강] SAGA 패턴 완전 정복 — 분산 트랜잭션을 로컬 트랜잭션으로 분해하는 법",
@@ -2698,6 +2616,88 @@
         "views": 1018,
         "length": "42:27",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "TensorFlow": [
+      {
+        "title": "텐서 플로우 TensorFlow 기초",
+        "url": "https://www.youtube.com/watch?v=B961QM47g64",
+        "thumbnail": "https://i.ytimg.com/vi/B961QM47g64/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 29911,
+        "length": "1:37:50",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
+        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
+        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 68651,
+        "length": "4:20:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "텐서플로우(TensorFlow) 기초 1편 [머신러닝 쉽게 접근하기]",
+        "url": "https://www.youtube.com/watch?v=NU9LluOiOOQ",
+        "thumbnail": "https://i.ytimg.com/vi/NU9LluOiOOQ/mqdefault.jpg",
+        "channel": "코딩어TV",
+        "views": 4594,
+        "length": "10:08",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "ㄹㅇ쉬운 딥러닝 6강 : Tensorflow 2 기초 빠르게 정리",
+        "url": "https://www.youtube.com/watch?v=2oqix9x_bGw",
+        "thumbnail": "https://i.ytimg.com/vi/2oqix9x_bGw/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 82399,
+        "length": "16:45",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
+        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
+        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
+        "channel": "LG디스플레이 대학생 인플루언서_디플",
+        "views": 20368,
+        "length": "1:30",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "01 텐서플로우소개 #tensorflow #keras",
+        "url": "https://www.youtube.com/watch?v=4T3-qYV7-p0",
+        "thumbnail": "https://i.ytimg.com/vi/4T3-qYV7-p0/mqdefault.jpg",
+        "channel": "Funny AI",
+        "views": 495,
+        "length": "25:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
+        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
+        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 19,
+        "length": "13:56",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "8분 안에 이미지 분류 인공지능(딥러닝) 만들기 실습 구현 | ResNet ImageNet TensorFlow(텐서플로우) Colab(코랩) 머신러닝 파이썬",
+        "url": "https://www.youtube.com/watch?v=9xZa4FAfKgY",
+        "thumbnail": "https://i.ytimg.com/vi/9xZa4FAfKgY/mqdefault.jpg",
+        "channel": "꽃부리와 코딩여행",
+        "views": 65137,
+        "length": "10:00",
+        "published": "4년 전",
         "stage": "실전"
       }
     ],
