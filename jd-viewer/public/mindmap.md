@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7017건** 공고 · **1370개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-26 05:45
+- 총 **7019건** 공고 · **1370개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-26 07:24
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1517,6 +1517,12 @@ markmap:
   - [((주)애니로직) (경력5년~)파이썬 인공지능 개발 직원, 계약직 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54147918&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=6b2f9758-f0d4-44de-9e47-0fb536b41fee)
   - [((주)애니로직) (경력5년~)파이썬 인공지능 개발 프리랜서 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54147984&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=6b2f9758-f0d4-44de-9e47-0fb536b41fee)
 
+### ㈜게임엔 `중소기업` · 3건
+- **백엔드** [3건] · `Python` `Django` `FastAPI` `MySQL` `Linux` `Git`
+  - [백엔드 python 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49446506?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=33&sc=630)
+  - [(산업기능요원 / 보충역) 백엔드 python 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49446695?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=67&sc=630)
+  - [백엔드(python) 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54271876&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=375a4e47-a4bb-45ab-b656-d8c9218454c6)
+
 ### ㈜이원정보기술 `중소기업` · 3건
 - **백엔드** [2건] · `React` `Spring` `Spring Boot` `PostgreSQL`
   - [이원정보기술 React 경력 SM개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49438983?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=12&sc=630)
@@ -2578,11 +2584,6 @@ markmap:
   - [파이썬(딥러닝) 개발자 모집 (신입) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54056067&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=a83b91e1-66d3-4312-a435-805c44bc46ac)
 
 ### 케이엠아이시스템㈜ `중소기업` · 2건
-
-### ㈜게임엔 `중소기업` · 2건
-- **백엔드** [2건] · `Python` `Django` `FastAPI` `MySQL` `Linux` `Git`
-  - [백엔드 python 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49446506?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=33&sc=630)
-  - [백엔드(python) 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54271876&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=375a4e47-a4bb-45ab-b656-d8c9218454c6)
 
 ### 피엠에스컨설팅 `중소기업` · 2건
 - **AI/ML** [1건] · `Python` `PostgreSQL`

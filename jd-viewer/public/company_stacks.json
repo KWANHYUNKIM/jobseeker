@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-26T05:45:49",
-  "total_jobs": 7017,
+  "generated_at": "2026-06-26T07:24:09",
+  "total_jobs": 7019,
   "company_count": 1370,
   "min_posting": 2,
   "companies": [
@@ -95216,7 +95216,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -168988,6 +168988,237 @@
       }
     },
     {
+      "name": "㈜게임엔",
+      "norm": "게임엔",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 3
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 3
+        },
+        {
+          "name": "Django",
+          "count": 3
+        },
+        {
+          "name": "FastAPI",
+          "count": 3
+        },
+        {
+          "name": "MySQL",
+          "count": 3
+        },
+        {
+          "name": "Linux",
+          "count": 3
+        },
+        {
+          "name": "Git",
+          "count": 3
+        },
+        {
+          "name": "REST API",
+          "count": 3
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 3
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Django",
+            "count": 3
+          },
+          {
+            "name": "FastAPI",
+            "count": 3
+          },
+          {
+            "name": "REST API",
+            "count": 3
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 3
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Linux",
+            "count": 3
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 3
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 3,
+          "evidence": [
+            "채용"
+          ]
+        },
+        {
+          "name": "게임",
+          "score": 1,
+          "evidence": [
+            "게임"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "모놀리식 (추정)",
+          "why": "단일 서버 프레임워크 중심, 분산/컨테이너 신호 약함 — 모놀리식 추정"
+        }
+      ],
+      "titles": [
+        "백엔드 python 개발자 채용",
+        "[산업기능요원 / 보충역] 백엔드 python 개발자 채용",
+        "백엔드(python) 개발자 채용"
+      ],
+      "postings": [
+        {
+          "title": "백엔드 python 개발자 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49446506?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=33&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[산업기능요원 / 보충역] 백엔드 python 개발자 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49446695?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=67&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "백엔드(python) 개발자 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54271876&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=375a4e47-a4bb-45ab-b656-d8c9218454c6",
+          "site": "saramin"
+        }
+      ],
+      "summary": "㈜게임엔는 HR/채용 도메인의 중소기업으로, 주로 백엔드 직군을 채용하며 Python, Django, FastAPI, MySQL 기반으로 개발합니다. 아키텍처는 모놀리식 (추정)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, Django, FastAPI 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "모놀리식 (추정) 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Django",
+              "FastAPI",
+              "REST API"
+            ],
+            "tips": [
+              "Django — ORM·Admin·DRF로 빠르게 API 서버 만들어 배포까지",
+              "FastAPI — 비동기 + Pydantic 검증으로 ML/일반 API 서빙 실습",
+              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 모놀리식 (추정))",
+            "techs": [
+              "Linux"
+            ],
+            "tips": [
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
+        ],
+        "study_blogs": [
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "linux, python, rest api"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git, linux, python"
+          },
+          {
+            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
+            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "git, linux"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "git, python"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "linux, python"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "mysql, python"
+          }
+        ]
+      }
+    },
+    {
       "name": "㈜이원정보기술",
       "norm": "이원정보기술",
       "size": "중소기업",
@@ -180846,7 +181077,7 @@
             "why": "go"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -181409,7 +181640,7 @@
             "why": "go"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -183557,7 +183788,7 @@
             "why": "go"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -191484,7 +191715,7 @@
             "why": "langchain"
           },
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -193860,7 +194091,7 @@
             "why": "langchain"
           },
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -220190,7 +220421,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -222401,7 +222632,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -242841,7 +243072,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -246421,7 +246652,7 @@
             "why": "AI/ML, 인프라/클라우드"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -250810,7 +251041,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -256971,7 +257202,7 @@
             "why": "go"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -276203,7 +276434,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -276540,7 +276771,7 @@
             "why": "langchain"
           },
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -286558,231 +286789,6 @@
       }
     },
     {
-      "name": "㈜게임엔",
-      "norm": "게임엔",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "jobkorea",
-        "saramin"
-      ],
-      "roles": {
-        "백엔드": 2
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 2
-        },
-        {
-          "name": "Django",
-          "count": 2
-        },
-        {
-          "name": "FastAPI",
-          "count": 2
-        },
-        {
-          "name": "MySQL",
-          "count": 2
-        },
-        {
-          "name": "Linux",
-          "count": 2
-        },
-        {
-          "name": "Git",
-          "count": 2
-        },
-        {
-          "name": "REST API",
-          "count": 2
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Django",
-            "count": 2
-          },
-          {
-            "name": "FastAPI",
-            "count": 2
-          },
-          {
-            "name": "REST API",
-            "count": 2
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 2
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Linux",
-            "count": 2
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 2
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 2,
-          "evidence": [
-            "채용"
-          ]
-        },
-        {
-          "name": "게임",
-          "score": 1,
-          "evidence": [
-            "게임"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "모놀리식 (추정)",
-          "why": "단일 서버 프레임워크 중심, 분산/컨테이너 신호 약함 — 모놀리식 추정"
-        }
-      ],
-      "titles": [
-        "백엔드 python 개발자 채용",
-        "백엔드(python) 개발자 채용"
-      ],
-      "postings": [
-        {
-          "title": "백엔드 python 개발자 채용",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49446506?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=33&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "백엔드(python) 개발자 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54271876&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=375a4e47-a4bb-45ab-b656-d8c9218454c6",
-          "site": "saramin"
-        }
-      ],
-      "summary": "㈜게임엔는 HR/채용 도메인의 중소기업으로, 주로 백엔드 직군을 채용하며 Python, Django, FastAPI, MySQL 기반으로 개발합니다. 아키텍처는 모놀리식 (추정)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python, Django, FastAPI 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "백엔드 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "모놀리식 (추정) 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "2. 백엔드 핵심 스킬",
-            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
-            "techs": [
-              "Django",
-              "FastAPI",
-              "REST API"
-            ],
-            "tips": [
-              "Django — ORM·Admin·DRF로 빠르게 API 서버 만들어 배포까지",
-              "FastAPI — 비동기 + Pydantic 검증으로 ML/일반 API 서빙 실습",
-              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 모놀리식 (추정))",
-            "techs": [
-              "Linux"
-            ],
-            "tips": [
-              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
-            ]
-          }
-        ],
-        "tasks": [
-          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
-        ],
-        "study_blogs": [
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "linux, python, rest api"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "git, linux, python"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, linux"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "git, python"
-          },
-          {
-            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
-            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
-            "company": "하이퍼커넥트",
-            "country": "KR",
-            "why": "linux, python"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "mysql, python"
-          }
-        ]
-      }
-    },
-    {
       "name": "피엠에스컨설팅",
       "norm": "피엠에스컨설팅",
       "size": "중소기업",
@@ -295142,7 +295148,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -318542,7 +318548,7 @@
             "why": "langchain"
           },
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -319196,7 +319202,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -320288,7 +320294,7 @@
         ],
         "study_blogs": [
           {
-            "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+            "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
             "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
             "company": "Dropbox",
             "country": "US",
@@ -323034,7 +323040,7 @@
             "why": "go, pytorch"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -326736,7 +326742,7 @@
             "why": "go"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",
@@ -339635,7 +339641,7 @@
             "why": "go"
           },
           {
-            "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+            "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
             "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
             "company": "Cloudflare",
             "country": "US",

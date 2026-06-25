@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-26T05:45:22",
+ "generated_at": "2026-06-26T07:23:43",
  "total": 844,
  "sources": [
   {
@@ -521,7 +521,7 @@
    "key": "dropbox",
    "company": "Dropbox",
    "country": "US",
-   "title": "How we used DSPy to turn AI evaluations into better responses in Dash Chat",
+   "title": "How we used DSPy to turn AI evaluations into better responses in Dash chat",
    "url": "https://dropbox.tech/machine-learning/how-we-turned-ai-evaluations-into-better-responses-in-dash-chat",
    "published": "2026-06-25",
    "published_ts": 1782405000.0,
@@ -819,11 +819,11 @@
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
-   "title": "The post-quantum EO is an important milestone. Now it’s time to get to work",
+   "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
    "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
    "published": "2026-06-23",
    "published_ts": 1782239118.0,
-   "summary": "The new post-quantum executive order sets a 2030 migration deadline and establishes a powerful foundation for post-quantum resilience. We look at what it gets right, where it can go further, and our migration playbook for government and industry.",
+   "summary": "The new executive order sets a 2030 migration deadline and establishes a powerful foundation for post-quantum resilience. We look at what it gets right, where it can go further, and our migration playbook for government and industry.",
    "tags": [
     "Post-Quantum",
     "Security",

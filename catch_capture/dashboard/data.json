@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-26T05:45:37",
-  "source_dir": "screenshots/all_통합_20260626_054522",
+  "generated_at": "2026-06-26T07:23:57",
+  "source_dir": "screenshots/all_통합_20260626_072343",
   "keyword": "통합",
   "jobs": [
     {
@@ -102411,6 +102411,35 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜게임엔",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[산업기능요원 / 보충역] 백엔드 python 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49446695?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=67&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Django",
+        "FastAPI",
+        "MySQL",
+        "Linux",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "티엔에이치㈜",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -133361,6 +133390,35 @@
       "preferences": "",
       "main_tasks": "• Weverse Account 백엔드 개발 및 운영\n• 계정 관련 기능 개발\n• 보안 관련 기능 개발\n• 서비스 모니터링 및 장애 대응\n• 서비스 관리 및 운영 툴 개발",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "이너뷰",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[이너뷰] 백엔드 개발자 경력직 모집(4.5일제 운영)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54282292&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3ee3faa7-25c1-4019-8c04-b4bbbbec2d94",
+      "career": "경력 5~10년",
+      "location": "서울구로구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "MySQL",
+        "AWS",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "대용량 처리"
+      ],
+      "qualifications": "• 경력 5년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상\n\n• 보유역량: 해당직무 근무경험",
+      "preferences": "• 전공: 컴퓨터/시스템공학\n\n• 보유역량: 문서작성 우수자, FrontEnd 개발 경험",
+      "main_tasks": "- 카페24 쇼핑몰 연동 커스텀 앱 설계 및 개발\n\n- 카페24 API 연동을 통한 주문, 상품, 회원, 쿠폰, 적립금 데이터 관리 시스템 개발\n\n- 카페24 앱스토어 등록 및 운영을 위한 SaaS형 서비스 개발\n\n- 다수 쇼핑몰 회원 통합(SSO) 시스템 설계 및 개발\n\n- 관리자(Admin) 페이지 및 운영 시스템 백엔드 개발\n\n- 쇼핑몰 운영 자동화 기능 개발 및 유지보수\n\n- 데이터베이스 설계 및 성능 최적화\n\n- 대용량 회원 및 주문 데이터 처리 시스템 개발\n\n- AWS 및 Linux 기반 서버 인프라 운영\n\n- 로그 수집 및 모니터링 환경 구축\n\n- 기존 서비스 유지보수 및 기능 고도화\n\n• 개발팀 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 리프레시 : 연차, 반차\n\n• 급여제도 : 퇴직금, 4대 보험\n\n• 교육/생활 : 점심식사 제공, 간식 제공, 음료제공(차,커피)\n\n• 선물 : 명절선물/귀향비, 생일자 조기퇴근"
     },
     {
       "site": "saramin",
@@ -210697,16 +210755,16 @@
     }
   ],
   "stats": {
-    "total": 7017,
+    "total": 7019,
     "by_size": {
-      "중소기업": 6321,
+      "중소기업": 6323,
       "대기업": 414,
       "중견기업": 282
     },
     "by_role": {
       "기타": 968,
       "DevOps/인프라": 1015,
-      "백엔드": 3028,
+      "백엔드": 3030,
       "모바일": 1113,
       "AI/ML": 2340,
       "프론트엔드": 1973,
@@ -210720,14 +210778,14 @@
     "by_site": {
       "wanted": 1645,
       "jumpit": 472,
-      "jobkorea": 1265,
-      "saramin": 3285,
+      "jobkorea": 1266,
+      "saramin": 3286,
       "dev": 350
     },
     "top_tech": [
       [
         "Python",
-        2164
+        2165
       ],
       [
         "Java",
@@ -210735,7 +210793,7 @@
       ],
       [
         "AWS",
-        1816
+        1817
       ],
       [
         "React",
@@ -210743,7 +210801,7 @@
       ],
       [
         "Git",
-        1162
+        1163
       ],
       [
         "Docker",
@@ -210755,7 +210813,7 @@
       ],
       [
         "JavaScript",
-        1021
+        1022
       ],
       [
         "TypeScript",
@@ -210763,15 +210821,15 @@
       ],
       [
         "Linux",
-        951
+        953
       ],
       [
         "MySQL",
-        891
+        893
       ],
       [
         "REST API",
-        779
+        780
       ],
       [
         "Kubernetes",
@@ -210835,7 +210893,7 @@
       ],
       [
         "FastAPI",
-        394
+        395
       ],
       [
         "Vue",
@@ -210848,22 +210906,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-08T02:44:43",
-      "keyword": "통합",
-      "raw_total": 4729,
-      "deduped": 4666,
-      "active": 4655,
-      "closed": 11,
-      "site_counts": {
-        "wanted": 1038,
-        "jumpit": 389,
-        "jobkorea": 912,
-        "saramin": 2232,
-        "dev": 158
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-08T04:10:59",
       "keyword": "통합",
@@ -214044,6 +214086,22 @@
         "jumpit": 652,
         "jobkorea": 1954,
         "saramin": 5056,
+        "dev": 490
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-26T07:23:52",
+      "keyword": "통합",
+      "raw_total": 9834,
+      "deduped": 8759,
+      "active": 7019,
+      "closed": 1740,
+      "site_counts": {
+        "wanted": 1680,
+        "jumpit": 652,
+        "jobkorea": 1955,
+        "saramin": 5057,
         "dev": 490
       },
       "anomalies": []
