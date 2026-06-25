@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T02:29:05",
+  "generated_at": "2026-06-26T04:07:23",
   "source": "youtube",
   "tech_count": 173,
   "curriculum_count": 20,
@@ -825,88 +825,6 @@
         "stage": "실전"
       }
     ],
-    "Kubernetes": [
-      {
-        "title": "쿠버네티스(Kubernetes) 기본 개념, 필요성 30분만에 쉽고 빠르게",
-        "url": "https://www.youtube.com/watch?v=2M9eB_DMsVA",
-        "thumbnail": "https://i.ytimg.com/vi/2M9eB_DMsVA/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2662,
-        "length": "30:05",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "개발자를 위한 쉬운 도커 (2024 NEW) | 컨테이너, 도커, 쿠버네티스의 개념을 엄청 쉽게 알려드려요.",
-        "url": "https://www.youtube.com/watch?v=eRfHp16qJq8",
-        "thumbnail": "https://i.ytimg.com/vi/eRfHp16qJq8/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 68505,
-        "length": "7:28",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Kubernetes 개념 잡기",
-        "url": "https://www.youtube.com/watch?v=7CPFJZZF60E",
-        "thumbnail": "https://i.ytimg.com/vi/7CPFJZZF60E/mqdefault.jpg",
-        "channel": "Tucker Programming",
-        "views": 20687,
-        "length": "46:40",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "쿠버네티스 서비스와 인그레스 쉽게 이해하기!",
-        "url": "https://www.youtube.com/watch?v=US2E8xvw_Hk",
-        "thumbnail": "https://i.ytimg.com/vi/US2E8xvw_Hk/mqdefault.jpg",
-        "channel": "감테크",
-        "views": 1015,
-        "length": "7:52",
-        "published": "9개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "5분만에 Kubernetes 리소스 9개 이해하기",
-        "url": "https://www.youtube.com/watch?v=bM6-AbChWPE",
-        "thumbnail": "https://i.ytimg.com/vi/bM6-AbChWPE/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 21259,
-        "length": "6:05",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 22] K8s 도입하면서 겪은 일들",
-        "url": "https://www.youtube.com/watch?v=JBGsqsoGxEo",
-        "thumbnail": "https://i.ytimg.com/vi/JBGsqsoGxEo/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 11435,
-        "length": "39:21",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따배쿠] 10. Kubernetes ConfigMap",
-        "url": "https://www.youtube.com/watch?v=xyGTvkKzrB4",
-        "thumbnail": "https://i.ytimg.com/vi/xyGTvkKzrB4/mqdefault.jpg",
-        "channel": "TTABAE-LEARN",
-        "views": 10388,
-        "length": "34:24",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따배쿠] 4-1. 쿠버네티스 아키텍처 - Kubernetes 동작원리",
-        "url": "https://www.youtube.com/watch?v=Iue9TC13vPQ",
-        "thumbnail": "https://i.ytimg.com/vi/Iue9TC13vPQ/mqdefault.jpg",
-        "channel": "TTABAE-LEARN",
-        "views": 35334,
-        "length": "20:11",
-        "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
     "MySQL": [
       {
         "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
@@ -986,6 +904,88 @@
         "views": 63885,
         "length": "40:45",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "Kubernetes": [
+      {
+        "title": "쿠버네티스(Kubernetes) 기본 개념, 필요성 30분만에 쉽고 빠르게",
+        "url": "https://www.youtube.com/watch?v=2M9eB_DMsVA",
+        "thumbnail": "https://i.ytimg.com/vi/2M9eB_DMsVA/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2662,
+        "length": "30:05",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "개발자를 위한 쉬운 도커 (2024 NEW) | 컨테이너, 도커, 쿠버네티스의 개념을 엄청 쉽게 알려드려요.",
+        "url": "https://www.youtube.com/watch?v=eRfHp16qJq8",
+        "thumbnail": "https://i.ytimg.com/vi/eRfHp16qJq8/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 68505,
+        "length": "7:28",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Kubernetes 개념 잡기",
+        "url": "https://www.youtube.com/watch?v=7CPFJZZF60E",
+        "thumbnail": "https://i.ytimg.com/vi/7CPFJZZF60E/mqdefault.jpg",
+        "channel": "Tucker Programming",
+        "views": 20687,
+        "length": "46:40",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "쿠버네티스 서비스와 인그레스 쉽게 이해하기!",
+        "url": "https://www.youtube.com/watch?v=US2E8xvw_Hk",
+        "thumbnail": "https://i.ytimg.com/vi/US2E8xvw_Hk/mqdefault.jpg",
+        "channel": "감테크",
+        "views": 1015,
+        "length": "7:52",
+        "published": "9개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "5분만에 Kubernetes 리소스 9개 이해하기",
+        "url": "https://www.youtube.com/watch?v=bM6-AbChWPE",
+        "thumbnail": "https://i.ytimg.com/vi/bM6-AbChWPE/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 21259,
+        "length": "6:05",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 22] K8s 도입하면서 겪은 일들",
+        "url": "https://www.youtube.com/watch?v=JBGsqsoGxEo",
+        "thumbnail": "https://i.ytimg.com/vi/JBGsqsoGxEo/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 11435,
+        "length": "39:21",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따배쿠] 10. Kubernetes ConfigMap",
+        "url": "https://www.youtube.com/watch?v=xyGTvkKzrB4",
+        "thumbnail": "https://i.ytimg.com/vi/xyGTvkKzrB4/mqdefault.jpg",
+        "channel": "TTABAE-LEARN",
+        "views": 10388,
+        "length": "34:24",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따배쿠] 4-1. 쿠버네티스 아키텍처 - Kubernetes 동작원리",
+        "url": "https://www.youtube.com/watch?v=Iue9TC13vPQ",
+        "thumbnail": "https://i.ytimg.com/vi/Iue9TC13vPQ/mqdefault.jpg",
+        "channel": "TTABAE-LEARN",
+        "views": 35334,
+        "length": "20:11",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -2547,88 +2547,6 @@
         "stage": "핵심"
       }
     ],
-    "MSA": [
-      {
-        "title": "MSA 요소 6가지 7분컷",
-        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
-        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 21209,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "잡코리아 사례 | MSA 기반 클라우드 전환 구성과 인프라 현대화 - 오준호, 최고 소프트웨어 아키텍트(CSA), CNE팀, 베스핀글로벌",
-        "url": "https://www.youtube.com/watch?v=OWi0qce7DPU",
-        "thumbnail": "https://i.ytimg.com/vi/OWi0qce7DPU/mqdefault.jpg",
-        "channel": "Amazon Web Services Korea",
-        "views": 867,
-        "length": "24:05",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SK TECH SUMMIT 2022] Cloud Native 기반 MSA 개발을 지원하는 애플리케이션 현대화 개발 플랫폼",
-        "url": "https://www.youtube.com/watch?v=UPwl7wEbB8o",
-        "thumbnail": "https://i.ytimg.com/vi/UPwl7wEbB8o/mqdefault.jpg",
-        "channel": "SK AI SUMMIT 2025",
-        "views": 137,
-        "length": "24:56",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스타트업 딜레마! 모놀리스냐 MSA냐?",
-        "url": "https://www.youtube.com/watch?v=ZRqFd7Rwjcg",
-        "thumbnail": "https://i.ytimg.com/vi/ZRqFd7Rwjcg/mqdefault.jpg",
-        "channel": "코딩하는기술사",
-        "views": 4841,
-        "length": "9:53",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "사람들이 MSA에 정답이 없다고 말하는 이유",
-        "url": "https://www.youtube.com/watch?v=LcjMZ1HseFQ",
-        "thumbnail": "https://i.ytimg.com/vi/LcjMZ1HseFQ/mqdefault.jpg",
-        "channel": "패스트캠퍼스",
-        "views": 43123,
-        "length": "1:01",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[5분순삭]소프트웨어공학 05. MSA(Microservice Architecture)",
-        "url": "https://www.youtube.com/watch?v=6j4Fa0zsLxA",
-        "thumbnail": "https://i.ytimg.com/vi/6j4Fa0zsLxA/mqdefault.jpg",
-        "channel": "kpc기술사회",
-        "views": 1114,
-        "length": "5:42",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSA 입문·실전 - 3.2. 데이터 조회 기능을 구현하는 방식 (모놀리식 vs MSA)",
-        "url": "https://www.youtube.com/watch?v=Q8CwZ570nkM",
-        "thumbnail": "https://i.ytimg.com/vi/Q8CwZ570nkM/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 167,
-        "length": "5:24",
-        "published": "9개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[NHN FORWARD 2020] MSA 환경에서 API 문서 관리하기: 생성부터 배포까지",
-        "url": "https://www.youtube.com/watch?v=qguXHW0s8RY",
-        "thumbnail": "https://i.ytimg.com/vi/qguXHW0s8RY/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 5176,
-        "length": "14:05",
-        "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
     "Jira": [
       {
         "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
@@ -2708,6 +2626,88 @@
         "views": 3433,
         "length": "49:08",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "MSA": [
+      {
+        "title": "MSA 요소 6가지 7분컷",
+        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
+        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 21209,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "잡코리아 사례 | MSA 기반 클라우드 전환 구성과 인프라 현대화 - 오준호, 최고 소프트웨어 아키텍트(CSA), CNE팀, 베스핀글로벌",
+        "url": "https://www.youtube.com/watch?v=OWi0qce7DPU",
+        "thumbnail": "https://i.ytimg.com/vi/OWi0qce7DPU/mqdefault.jpg",
+        "channel": "Amazon Web Services Korea",
+        "views": 867,
+        "length": "24:05",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SK TECH SUMMIT 2022] Cloud Native 기반 MSA 개발을 지원하는 애플리케이션 현대화 개발 플랫폼",
+        "url": "https://www.youtube.com/watch?v=UPwl7wEbB8o",
+        "thumbnail": "https://i.ytimg.com/vi/UPwl7wEbB8o/mqdefault.jpg",
+        "channel": "SK AI SUMMIT 2025",
+        "views": 137,
+        "length": "24:56",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스타트업 딜레마! 모놀리스냐 MSA냐?",
+        "url": "https://www.youtube.com/watch?v=ZRqFd7Rwjcg",
+        "thumbnail": "https://i.ytimg.com/vi/ZRqFd7Rwjcg/mqdefault.jpg",
+        "channel": "코딩하는기술사",
+        "views": 4841,
+        "length": "9:53",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "사람들이 MSA에 정답이 없다고 말하는 이유",
+        "url": "https://www.youtube.com/watch?v=LcjMZ1HseFQ",
+        "thumbnail": "https://i.ytimg.com/vi/LcjMZ1HseFQ/mqdefault.jpg",
+        "channel": "패스트캠퍼스",
+        "views": 43123,
+        "length": "1:01",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[5분순삭]소프트웨어공학 05. MSA(Microservice Architecture)",
+        "url": "https://www.youtube.com/watch?v=6j4Fa0zsLxA",
+        "thumbnail": "https://i.ytimg.com/vi/6j4Fa0zsLxA/mqdefault.jpg",
+        "channel": "kpc기술사회",
+        "views": 1114,
+        "length": "5:42",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSA 입문·실전 - 3.2. 데이터 조회 기능을 구현하는 방식 (모놀리식 vs MSA)",
+        "url": "https://www.youtube.com/watch?v=Q8CwZ570nkM",
+        "thumbnail": "https://i.ytimg.com/vi/Q8CwZ570nkM/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 167,
+        "length": "5:24",
+        "published": "9개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[NHN FORWARD 2020] MSA 환경에서 API 문서 관리하기: 생성부터 배포까지",
+        "url": "https://www.youtube.com/watch?v=qguXHW0s8RY",
+        "thumbnail": "https://i.ytimg.com/vi/qguXHW0s8RY/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 5176,
+        "length": "14:05",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
