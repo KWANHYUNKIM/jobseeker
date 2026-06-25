@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7011건** 공고 · **1368개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-06-26 04:07
+- 총 **7017건** 공고 · **1370개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-06-26 05:45
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (377개사)
+## HR/채용 (378개사)
 ### (주)사람인에이치에스 `중소기업` · 24건
 - **백엔드** [8건] · `Java` `Spring` `Spring Boot` `JavaScript` `React` `iOS`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -1072,6 +1072,10 @@ markmap:
   - [제약 MES 솔루션 개발자 채용 React, C# ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53832309&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=271c554b-139b-4074-9975-0b5ba9f90042)
   - [(C#, React) 품질관리시스템 (LIMS, QMS, SDMS) 개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54200429&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=19738aef-e1a6-4811-b665-1f89271a396e)
   - [제약 MES 솔루션 개발자 채용 React, C#(천안) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54200474&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=19738aef-e1a6-4811-b665-1f89271a396e)
+
+### 포스코DX `대기업` · 4건
+- **AI/ML** [1건]
+  - [(포항/광양) IT&AI 분야 경력사원 채용 (정규직) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557979?ReturnUrl=RecruitInfo)
 
 ### 서북 `중소기업` · 3건
 - **백엔드** [2건] · `Java` `C#` `Node.js` `Spring` `.NET` `MySQL`
@@ -7615,7 +7619,7 @@ markmap:
 ### 하이비젼시스템 `중소기업` · 2건
 
 
-## 교육/에듀테크 (88개사)
+## 교육/에듀테크 (89개사)
 ### (주)비상교육 `중소기업` · 24건
 - **백엔드** [8건] · `Java` `Spring` `Spring Boot` `Docker` `React` `MariaDB`
   - [Backend 개발자(AI Speak) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49442998?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=56&sc=630)
@@ -8532,6 +8536,8 @@ markmap:
 - **프론트엔드** [2건] · `Java` `Python` `JavaScript` `C#` `React`
   - [(CAL/ 일본 근무) WEB/ IT 개발자 채용, 미경험 신입 대환영 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54076544&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=df604872-1cbe-450d-bd8c-86f50ae224c5)
   - [(CAL/일본근무) 경력자 채용 / WEB개발자, IT엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54076541&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=0a97ab7a-f9bc-4bf1-8de8-241296f7c473)
+
+### 현대종합금속 `중소기업` · 2건
 
 ### 코드잇 `중소기업` · 2건
 - **백엔드** [1건] · `Java` `Kotlin` `JavaScript` `Spring` `MySQL` `MongoDB`
@@ -12590,6 +12596,25 @@ markmap:
 - **AI/ML** [1건]
   - [AI Agent Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54268753&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=16398d87-bf78-4e25-9ecd-911c7f71df14)
 
+### 설로인(주) `중소기업` · 5건
+- **백엔드** [4건] · `TypeScript` `Git` `REST API` `React` `Android` `GraphQL`
+  - [(설로인) 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279302&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b8364beb-1ac6-44de-851a-b4d36315e5b5)
+  - [(설로인) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279165&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b18f6ad7-2df3-4a21-8b0a-334d4774638f)
+  - [테크팀 프론트엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557765?ReturnUrl=RecruitInfo)
+  - [테크팀 백엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557859?ReturnUrl=RecruitInfo)
+- **프론트엔드** [3건] · `TypeScript` `React` `Android` `Git` `GraphQL` `REST API`
+  - [(설로인) 테크팀 프론트엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49446036?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=71&sc=630)
+  - [(설로인) 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279302&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b8364beb-1ac6-44de-851a-b4d36315e5b5)
+  - [테크팀 프론트엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557765?ReturnUrl=RecruitInfo)
+- **모바일** [4건] · `TypeScript` `Git` `REST API` `React` `Android` `GraphQL`
+  - [(설로인) 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279302&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b8364beb-1ac6-44de-851a-b4d36315e5b5)
+  - [(설로인) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279165&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b18f6ad7-2df3-4a21-8b0a-334d4774638f)
+  - [테크팀 프론트엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557765?ReturnUrl=RecruitInfo)
+  - [테크팀 백엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557859?ReturnUrl=RecruitInfo)
+- **데이터** [2건] · `Java` `Kotlin` `TypeScript` `Node.js` `Spring` `Spring Boot`
+  - [(설로인) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279165&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b18f6ad7-2df3-4a21-8b0a-334d4774638f)
+  - [테크팀 백엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557859?ReturnUrl=RecruitInfo)
+
 ### 샐러드랩 `중소기업` · 4건
 - **백엔드** [3건] · `Python` `React` `Vue` `Angular` `Django` `Flask`
   - [이커머스 솔루션(SaaS) 프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/365780)
@@ -12666,22 +12691,6 @@ markmap:
   - [(실리콘투) AWS 클라우드 보안 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53843044&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41ed72c1-2440-483b-972c-1bd0dab6c667)
 - **보안** [1건] · `AWS` `Terraform`
   - [(실리콘투) AWS 클라우드 보안 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53843044&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41ed72c1-2440-483b-972c-1bd0dab6c667)
-
-### 설로인(주) `중소기업` · 4건
-- **백엔드** [3건] · `TypeScript` `Git` `REST API` `React` `Android` `GraphQL`
-  - [(설로인) 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279302&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b8364beb-1ac6-44de-851a-b4d36315e5b5)
-  - [(설로인) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279165&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b18f6ad7-2df3-4a21-8b0a-334d4774638f)
-  - [테크팀 프론트엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557765?ReturnUrl=RecruitInfo)
-- **프론트엔드** [3건] · `TypeScript` `React` `Android` `Git` `GraphQL` `REST API`
-  - [(설로인) 테크팀 프론트엔드 개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49446036?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=71&sc=630)
-  - [(설로인) 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279302&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b8364beb-1ac6-44de-851a-b4d36315e5b5)
-  - [테크팀 프론트엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557765?ReturnUrl=RecruitInfo)
-- **모바일** [3건] · `TypeScript` `Git` `REST API` `React` `Android` `GraphQL`
-  - [(설로인) 프론트엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279302&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b8364beb-1ac6-44de-851a-b4d36315e5b5)
-  - [(설로인) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279165&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b18f6ad7-2df3-4a21-8b0a-334d4774638f)
-  - [테크팀 프론트엔드 개발자 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/557765?ReturnUrl=RecruitInfo)
-- **데이터** [1건] · `Java` `Kotlin` `TypeScript` `Node.js` `Spring` `Spring Boot`
-  - [(설로인) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54279165&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b18f6ad7-2df3-4a21-8b0a-334d4774638f)
 
 ### (주)알티올 `중소기업` · 3건
 - **백엔드** [3건] · `Java` `Jenkins` `Git` `C#` `Spring` `Spring Boot`
