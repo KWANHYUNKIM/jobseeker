@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-26T00:42:29",
- "total": 841,
+ "generated_at": "2026-06-26T02:28:38",
+ "total": 843,
  "sources": [
   {
    "company": "Etsy",
@@ -33,17 +33,17 @@
    "count": 33
   },
   {
+   "company": "Discord",
+   "country": "US",
+   "count": 30
+  },
+  {
    "company": "네이버 D2",
    "country": "KR",
    "count": 29
   },
   {
    "company": "Netflix",
-   "country": "US",
-   "count": 29
-  },
-  {
-   "company": "Discord",
    "country": "US",
    "count": 29
   },
@@ -108,6 +108,11 @@
    "count": 13
   },
   {
+   "company": "Pinterest",
+   "country": "US",
+   "count": 12
+  },
+  {
    "company": "Grab",
    "country": "SG",
    "count": 12
@@ -121,11 +126,6 @@
    "company": "Lyft",
    "country": "US",
    "count": 12
-  },
-  {
-   "company": "Pinterest",
-   "country": "US",
-   "count": 11
   },
   {
    "company": "Meta",
@@ -331,8 +331,8 @@
   "Babel": "프론트엔드",
   "Garbage Collection": "알고리즘/이론",
   "Game Engine": "그래픽/게임",
-  "AWS": "인프라/클라우드",
   "Embedding": "LLM/생성형",
+  "AWS": "인프라/클라우드",
   "Pulsar": "데이터",
   "WAF": "보안",
   "Blockchain": "블록체인",
@@ -518,6 +518,42 @@
  },
  "posts": [
   {
+   "key": "pinterest",
+   "company": "Pinterest",
+   "country": "US",
+   "title": "Achieving Near-Linear Training Scalability for Pinterest’s Foundation Models",
+   "url": "https://medium.com/pinterest-engineering/achieving-near-linear-training-scalability-for-pinterests-foundation-models-14d4f59fe6f6",
+   "published": "2026-06-25",
+   "published_ts": 1782403262.0,
+   "summary": "Sheng Huang | Software Engineer, AI Platform; Pong Eksombatchai | Machine Learning Engineer, Applied Sciences; Saurabh Vishwas Joshi | Software Engineer, AI Platform; Gaurav Arora | Software Engineer, AI Platform; Karthik Anantha Padmanabhan | Engineering Director, AI Platform\n\nAt Pinterest, foundation models power recommendations for over 600 million monthly active users. Our latest Foundation Model (ACM RecSys 2025) pre-trains on two years of user activity data and is deployed into Home feed and Related Pins ranking, the platform’s two most important recommendation systems. Multi-node distri…",
+   "tags": [
+    "machine-learning",
+    "pinterest",
+    "distributed-training",
+    "foundation-models",
+    "engineering"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "PyTorch",
+    "Triton",
+    "Embedding",
+    "Fine-tuning",
+    "Quantization",
+    "Transformer",
+    "AWS",
+    "Kernel"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "시스템/OS"
+   ],
+   "lang": "en",
+   "content_id": "fbceeabadab63af8"
+  },
+  {
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
@@ -576,6 +612,21 @@
    "categories": [],
    "lang": "ko",
    "content_id": "a5e9a67a07fcd0b8"
+  },
+  {
+   "key": "discord",
+   "company": "Discord",
+   "country": "US",
+   "title": "Discord Update: June 25, 2026 Changelog",
+   "url": "https://discord.com/blog/discord-update-june-25-2026-changelog",
+   "published": "2026-06-25",
+   "published_ts": 1782345600.0,
+   "summary": "Here's the Discord Changelog from June 25, 2026, so you can stay informed on what’s new in recent app updates!",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "a596598351b47180"
   },
   {
    "key": "pinterest",
