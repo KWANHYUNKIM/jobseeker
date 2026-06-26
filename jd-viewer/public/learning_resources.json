@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T09:10:14",
+  "generated_at": "2026-06-26T10:50:15",
   "source": "youtube",
   "tech_count": 173,
   "curriculum_count": 20,
@@ -1973,88 +1973,6 @@
         "stage": "핵심"
       }
     ],
-    "Kafka": [
-      {
-        "title": "카프카 기본개념 빠르고 쉽게",
-        "url": "https://www.youtube.com/watch?v=Nh3AZx8D9KY",
-        "thumbnail": "https://i.ytimg.com/vi/Nh3AZx8D9KY/mqdefault.jpg",
-        "channel": "5분개발지식",
-        "views": 25786,
-        "length": "6:11",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "카프카(Kafka) 기본 개념, 필요성 30분만에 쉽고 빠르게",
-        "url": "https://www.youtube.com/watch?v=H7iIqYTKYNI",
-        "thumbnail": "https://i.ytimg.com/vi/H7iIqYTKYNI/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2199,
-        "length": "28:34",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
-        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
-        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 22222,
-        "length": "10:22",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
-        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
-        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
-        "channel": "데브원영 DVWY",
-        "views": 54682,
-        "length": "3:54",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "kafka 조금 아는 척하기 1 (개발자용)",
-        "url": "https://www.youtube.com/watch?v=0Ssx7jJJADI",
-        "thumbnail": "https://i.ytimg.com/vi/0Ssx7jJJADI/mqdefault.jpg",
-        "channel": "최범균",
-        "views": 47781,
-        "length": "13:42",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
-        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
-        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 13163,
-        "length": "5:14",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "요즘 데이터 엔지니어들, Kafka부터 배우는 이유 | 실무에서 왜 필수가 됐을까?",
-        "url": "https://www.youtube.com/watch?v=RqLyyY-pQMU",
-        "thumbnail": "https://i.ytimg.com/vi/RqLyyY-pQMU/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 4226,
-        "length": "36:02",
-        "published": "6개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Kafka 입문·실전 - 1.1. Kafka를 왜 배워야할까",
-        "url": "https://www.youtube.com/watch?v=_E6tlgpoJUI",
-        "thumbnail": "https://i.ytimg.com/vi/_E6tlgpoJUI/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 1120,
-        "length": "3:43",
-        "published": "10개월 전",
-        "stage": "실전"
-      }
-    ],
     "Android": [
       {
         "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
@@ -2134,6 +2052,88 @@
         "views": 4640,
         "length": "20:29",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "Kafka": [
+      {
+        "title": "카프카 기본개념 빠르고 쉽게",
+        "url": "https://www.youtube.com/watch?v=Nh3AZx8D9KY",
+        "thumbnail": "https://i.ytimg.com/vi/Nh3AZx8D9KY/mqdefault.jpg",
+        "channel": "5분개발지식",
+        "views": 25786,
+        "length": "6:11",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "카프카(Kafka) 기본 개념, 필요성 30분만에 쉽고 빠르게",
+        "url": "https://www.youtube.com/watch?v=H7iIqYTKYNI",
+        "thumbnail": "https://i.ytimg.com/vi/H7iIqYTKYNI/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2199,
+        "length": "28:34",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
+        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
+        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 22222,
+        "length": "10:22",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
+        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
+        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
+        "channel": "데브원영 DVWY",
+        "views": 54682,
+        "length": "3:54",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "kafka 조금 아는 척하기 1 (개발자용)",
+        "url": "https://www.youtube.com/watch?v=0Ssx7jJJADI",
+        "thumbnail": "https://i.ytimg.com/vi/0Ssx7jJJADI/mqdefault.jpg",
+        "channel": "최범균",
+        "views": 47781,
+        "length": "13:42",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
+        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
+        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 13163,
+        "length": "5:14",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "요즘 데이터 엔지니어들, Kafka부터 배우는 이유 | 실무에서 왜 필수가 됐을까?",
+        "url": "https://www.youtube.com/watch?v=RqLyyY-pQMU",
+        "thumbnail": "https://i.ytimg.com/vi/RqLyyY-pQMU/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 4226,
+        "length": "36:02",
+        "published": "6개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Kafka 입문·실전 - 1.1. Kafka를 왜 배워야할까",
+        "url": "https://www.youtube.com/watch?v=_E6tlgpoJUI",
+        "thumbnail": "https://i.ytimg.com/vi/_E6tlgpoJUI/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 1120,
+        "length": "3:43",
+        "published": "10개월 전",
         "stage": "실전"
       }
     ],
@@ -4925,88 +4925,6 @@
         "stage": "실전"
       }
     ],
-    "jQuery": [
-      {
-        "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
-        "url": "https://www.youtube.com/watch?v=047bll8o9To",
-        "thumbnail": "https://i.ytimg.com/vi/047bll8o9To/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 56152,
-        "length": "12:54",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #2 JQuery Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=RL09jOaIbxg",
-        "thumbnail": "https://i.ytimg.com/vi/RL09jOaIbxg/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 467,
-        "length": "8:13:23",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #1 JQuery Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=zkjORN77APA",
-        "thumbnail": "https://i.ytimg.com/vi/zkjORN77APA/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 90,
-        "length": "1:37:06",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "웹동네 핵심만쏙쏙! jQuery 초보탈출 강의 - 결과물 03 : 열리고닫히는 FAQ",
-        "url": "https://www.youtube.com/watch?v=8b2U3zyTAWk",
-        "thumbnail": "https://i.ytimg.com/vi/8b2U3zyTAWk/mqdefault.jpg",
-        "channel": "김춘경",
-        "views": 320,
-        "length": "1:49",
-        "published": "13년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제이쿼리(jQuery) 프로그래밍 1강 - jQuery란 무엇이며 우리는 무엇을 배우게 될 것인가?",
-        "url": "https://www.youtube.com/watch?v=mwwC4-dhDZI",
-        "thumbnail": "https://i.ytimg.com/vi/mwwC4-dhDZI/mqdefault.jpg",
-        "channel": "뉴렉처",
-        "views": 9135,
-        "length": "14:07",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "웹동네 핵심만쏙쏙! jQuery 초보탈출 강의 소개",
-        "url": "https://www.youtube.com/watch?v=htYTvbYVdc4",
-        "thumbnail": "https://i.ytimg.com/vi/htYTvbYVdc4/mqdefault.jpg",
-        "channel": "김춘경",
-        "views": 2361,
-        "length": "7:50",
-        "published": "13년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[서기의 jQuery 강의] 1. css에 대해 이해해보자",
-        "url": "https://www.youtube.com/watch?v=eDBLlQhuVW8",
-        "thumbnail": "https://i.ytimg.com/vi/eDBLlQhuVW8/mqdefault.jpg",
-        "channel": "유니다고",
-        "views": 870,
-        "length": "8:55",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JQUERY 강의 PART.1 -  실무에 사용되는 JQUERY 첫번째",
-        "url": "https://www.youtube.com/watch?v=7w28N1LBQBE",
-        "thumbnail": "https://i.ytimg.com/vi/7w28N1LBQBE/mqdefault.jpg",
-        "channel": "사케누",
-        "views": 811,
-        "length": "18:11",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     "C": [
       {
         "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
@@ -5086,6 +5004,88 @@
         "views": 46117,
         "length": "21:12",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "jQuery": [
+      {
+        "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
+        "url": "https://www.youtube.com/watch?v=047bll8o9To",
+        "thumbnail": "https://i.ytimg.com/vi/047bll8o9To/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 56152,
+        "length": "12:54",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #2 JQuery Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=RL09jOaIbxg",
+        "thumbnail": "https://i.ytimg.com/vi/RL09jOaIbxg/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 467,
+        "length": "8:13:23",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #1 JQuery Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=zkjORN77APA",
+        "thumbnail": "https://i.ytimg.com/vi/zkjORN77APA/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 90,
+        "length": "1:37:06",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "웹동네 핵심만쏙쏙! jQuery 초보탈출 강의 - 결과물 03 : 열리고닫히는 FAQ",
+        "url": "https://www.youtube.com/watch?v=8b2U3zyTAWk",
+        "thumbnail": "https://i.ytimg.com/vi/8b2U3zyTAWk/mqdefault.jpg",
+        "channel": "김춘경",
+        "views": 320,
+        "length": "1:49",
+        "published": "13년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제이쿼리(jQuery) 프로그래밍 1강 - jQuery란 무엇이며 우리는 무엇을 배우게 될 것인가?",
+        "url": "https://www.youtube.com/watch?v=mwwC4-dhDZI",
+        "thumbnail": "https://i.ytimg.com/vi/mwwC4-dhDZI/mqdefault.jpg",
+        "channel": "뉴렉처",
+        "views": 9135,
+        "length": "14:07",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "웹동네 핵심만쏙쏙! jQuery 초보탈출 강의 소개",
+        "url": "https://www.youtube.com/watch?v=htYTvbYVdc4",
+        "thumbnail": "https://i.ytimg.com/vi/htYTvbYVdc4/mqdefault.jpg",
+        "channel": "김춘경",
+        "views": 2361,
+        "length": "7:50",
+        "published": "13년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[서기의 jQuery 강의] 1. css에 대해 이해해보자",
+        "url": "https://www.youtube.com/watch?v=eDBLlQhuVW8",
+        "thumbnail": "https://i.ytimg.com/vi/eDBLlQhuVW8/mqdefault.jpg",
+        "channel": "유니다고",
+        "views": 870,
+        "length": "8:55",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JQUERY 강의 PART.1 -  실무에 사용되는 JQUERY 첫번째",
+        "url": "https://www.youtube.com/watch?v=7w28N1LBQBE",
+        "thumbnail": "https://i.ytimg.com/vi/7w28N1LBQBE/mqdefault.jpg",
+        "channel": "사케누",
+        "views": 811,
+        "length": "18:11",
+        "published": "6년 전",
         "stage": "실전"
       }
     ],
@@ -8349,6 +8349,88 @@
         "stage": "실전"
       }
     ],
+    "Cassandra": [
+      {
+        "title": "DataStax Apollo — Apache Cassandra™ made EASY in the cloud | DataStax",
+        "url": "https://www.youtube.com/watch?v=-pIVgQxPUt8",
+        "thumbnail": "https://i.ytimg.com/vi/-pIVgQxPUt8/mqdefault.jpg",
+        "channel": "DataStax",
+        "views": 776,
+        "length": "1:20",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Cassandra for Pythonistas by sebastibe",
+        "url": "https://www.youtube.com/watch?v=RiRiAtZAoM4",
+        "thumbnail": "https://i.ytimg.com/vi/RiRiAtZAoM4/mqdefault.jpg",
+        "channel": "PyCon JP",
+        "views": 384,
+        "length": "27:33",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Cassandra Basics | NoSQL Tutorial #5",
+        "url": "https://www.youtube.com/watch?v=VsQ4OuH-K1I",
+        "thumbnail": "https://i.ytimg.com/vi/VsQ4OuH-K1I/mqdefault.jpg",
+        "channel": "Telusko",
+        "views": 29433,
+        "length": "15:45",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lecture 1: Apache Cassandra v3 NoSQL. Data backup with Python3 and python-cassandra-cli AWS S3.",
+        "url": "https://www.youtube.com/watch?v=GFf781SLvWo",
+        "thumbnail": "https://i.ytimg.com/vi/GFf781SLvWo/mqdefault.jpg",
+        "channel": "DATECH ACADEMY",
+        "views": 290,
+        "length": "4:32",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lesson 3: Cassandra - Cassandra Data Model",
+        "url": "https://www.youtube.com/watch?v=X-_vS8q4nu4",
+        "thumbnail": "https://i.ytimg.com/vi/X-_vS8q4nu4/mqdefault.jpg",
+        "channel": "Learn With Uma",
+        "views": 27850,
+        "length": "13:29",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "When should I use Cassandra?",
+        "url": "https://www.youtube.com/watch?v=4YGK0v2EJds",
+        "thumbnail": "https://i.ytimg.com/vi/4YGK0v2EJds/mqdefault.jpg",
+        "channel": "Better Dev with Anubhav",
+        "views": 1026,
+        "length": "17:30",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[2020 데이터 컨퍼런스] \"Spark+Cassandra 기반 빅데이터를 활용한 추천시스템 서빙 파이프라인 최적화\" / 박수성 SSG.COM 파트너",
+        "url": "https://www.youtube.com/watch?v=CQD-85a-NRs",
+        "thumbnail": "https://i.ytimg.com/vi/CQD-85a-NRs/mqdefault.jpg",
+        "channel": "컴퓨터월드 / IT DAILY",
+        "views": 579,
+        "length": "36:07",
+        "published": "5년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Cassandra 아키텍처: 읽기 및 쓰기가 수행되는 방식",
+        "url": "https://www.youtube.com/watch?v=JEwkI0W-wAk",
+        "thumbnail": "https://i.ytimg.com/vi/JEwkI0W-wAk/mqdefault.jpg",
+        "channel": "Developers Checkpoint",
+        "views": 16334,
+        "length": "10:40",
+        "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
     "Firmware": [
       {
         "title": "마이컴 펌웨어(FirmWare) 기초개념",
@@ -8510,88 +8592,6 @@
         "views": 2036,
         "length": "15:36",
         "published": "6개월 전",
-        "stage": "실전"
-      }
-    ],
-    "Cassandra": [
-      {
-        "title": "DataStax Apollo — Apache Cassandra™ made EASY in the cloud | DataStax",
-        "url": "https://www.youtube.com/watch?v=-pIVgQxPUt8",
-        "thumbnail": "https://i.ytimg.com/vi/-pIVgQxPUt8/mqdefault.jpg",
-        "channel": "DataStax",
-        "views": 776,
-        "length": "1:20",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Cassandra for Pythonistas by sebastibe",
-        "url": "https://www.youtube.com/watch?v=RiRiAtZAoM4",
-        "thumbnail": "https://i.ytimg.com/vi/RiRiAtZAoM4/mqdefault.jpg",
-        "channel": "PyCon JP",
-        "views": 384,
-        "length": "27:33",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Cassandra Basics | NoSQL Tutorial #5",
-        "url": "https://www.youtube.com/watch?v=VsQ4OuH-K1I",
-        "thumbnail": "https://i.ytimg.com/vi/VsQ4OuH-K1I/mqdefault.jpg",
-        "channel": "Telusko",
-        "views": 29433,
-        "length": "15:45",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lecture 1: Apache Cassandra v3 NoSQL. Data backup with Python3 and python-cassandra-cli AWS S3.",
-        "url": "https://www.youtube.com/watch?v=GFf781SLvWo",
-        "thumbnail": "https://i.ytimg.com/vi/GFf781SLvWo/mqdefault.jpg",
-        "channel": "DATECH ACADEMY",
-        "views": 290,
-        "length": "4:32",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lesson 3: Cassandra - Cassandra Data Model",
-        "url": "https://www.youtube.com/watch?v=X-_vS8q4nu4",
-        "thumbnail": "https://i.ytimg.com/vi/X-_vS8q4nu4/mqdefault.jpg",
-        "channel": "Learn With Uma",
-        "views": 27850,
-        "length": "13:29",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "When should I use Cassandra?",
-        "url": "https://www.youtube.com/watch?v=4YGK0v2EJds",
-        "thumbnail": "https://i.ytimg.com/vi/4YGK0v2EJds/mqdefault.jpg",
-        "channel": "Better Dev with Anubhav",
-        "views": 1026,
-        "length": "17:30",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[2020 데이터 컨퍼런스] \"Spark+Cassandra 기반 빅데이터를 활용한 추천시스템 서빙 파이프라인 최적화\" / 박수성 SSG.COM 파트너",
-        "url": "https://www.youtube.com/watch?v=CQD-85a-NRs",
-        "thumbnail": "https://i.ytimg.com/vi/CQD-85a-NRs/mqdefault.jpg",
-        "channel": "컴퓨터월드 / IT DAILY",
-        "views": 579,
-        "length": "36:07",
-        "published": "5년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Cassandra 아키텍처: 읽기 및 쓰기가 수행되는 방식",
-        "url": "https://www.youtube.com/watch?v=JEwkI0W-wAk",
-        "thumbnail": "https://i.ytimg.com/vi/JEwkI0W-wAk/mqdefault.jpg",
-        "channel": "Developers Checkpoint",
-        "views": 16334,
-        "length": "10:40",
-        "published": "4년 전",
         "stage": "실전"
       }
     ],
@@ -10635,6 +10635,88 @@
         "stage": "실전"
       }
     ],
+    "R": [
+      {
+        "title": "하루만에 끝내는 R기초 \"전체 강의 모아보기\"",
+        "url": "https://www.youtube.com/watch?v=0DYFRSykkXQ",
+        "thumbnail": "https://i.ytimg.com/vi/0DYFRSykkXQ/mqdefault.jpg",
+        "channel": "통계의 도구들 Statools",
+        "views": 36677,
+        "length": "1:00:12",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R 프로그래밍 기초 강의 - [카이스트 석사 출신 AI기업 현직자] - 메타코드",
+        "url": "https://www.youtube.com/watch?v=yicfFo_A-KY",
+        "thumbnail": "https://i.ytimg.com/vi/yicfFo_A-KY/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 4818,
+        "length": "3:41:03",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R 프로그래밍 기초 강의 3일만에 끝내기: 6장-2 데이터 가공하기 (변수추출,정렬하기,변수추가) (select, arrange, mutate) [R 프로그램, R 언어]",
+        "url": "https://www.youtube.com/watch?v=CzkPpBShQQo",
+        "thumbnail": "https://i.ytimg.com/vi/CzkPpBShQQo/mqdefault.jpg",
+        "channel": "만만한 수학TV [이상준 경희대 수학과 교수]",
+        "views": 4431,
+        "length": "13:14",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "R 데이터분석 기초 강의 01-1 - 데이터의 개념 및 빅데이터 분석의 특성",
+        "url": "https://www.youtube.com/watch?v=7ZoS5vIt1M8",
+        "thumbnail": "https://i.ytimg.com/vi/7ZoS5vIt1M8/mqdefault.jpg",
+        "channel": "K-ICT 빅데이터센터",
+        "views": 28344,
+        "length": "12:13",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[R강의] 128. 엑셀 데이터 불러와서 통계량,그래프,t검정 하기 (템플릿)",
+        "url": "https://www.youtube.com/watch?v=8eYT9_w0J08",
+        "thumbnail": "https://i.ytimg.com/vi/8eYT9_w0J08/mqdefault.jpg",
+        "channel": "통계의 도구들 Statools",
+        "views": 16537,
+        "length": "15:19",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[얼불춤 공략 #1] R 깨는법",
+        "url": "https://www.youtube.com/watch?v=ghgnm6Wh33Y",
+        "thumbnail": "https://i.ytimg.com/vi/ghgnm6Wh33Y/mqdefault.jpg",
+        "channel": "Platster",
+        "views": 13673,
+        "length": "2:49",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[R쌤] 주식도 어려운데 환율까지 봐야하는 이유",
+        "url": "https://www.youtube.com/watch?v=ZiDW6a1vQOE",
+        "thumbnail": "https://i.ytimg.com/vi/ZiDW6a1vQOE/mqdefault.jpg",
+        "channel": "머니코믹스 Money Comics",
+        "views": 1213583,
+        "length": "30:00",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[2025ver] (3과목) ADsP 완벽 요약강의 | 요약강의 | 데이터분석 | 최단시간 최대효율👍 | 핵심 요약노트 | 빅데이터분석 준전문가",
+        "url": "https://www.youtube.com/watch?v=CmSNtW0Qt7s",
+        "thumbnail": "https://i.ytimg.com/vi/CmSNtW0Qt7s/mqdefault.jpg",
+        "channel": "IT의 답을 터득하다, 아답터",
+        "views": 342433,
+        "length": "1:54:53",
+        "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
     "FPGA": [
       {
         "title": "[설계독학] [FPGA 예고편] Xilinx FPGA 를 처음 공부할 때 봤으면 하는 영상... (부제. 함께 공부해요.)",
@@ -11783,88 +11865,6 @@
         "stage": "실전"
       }
     ],
-    "R": [
-      {
-        "title": "하루만에 끝내는 R기초 \"전체 강의 모아보기\"",
-        "url": "https://www.youtube.com/watch?v=0DYFRSykkXQ",
-        "thumbnail": "https://i.ytimg.com/vi/0DYFRSykkXQ/mqdefault.jpg",
-        "channel": "통계의 도구들 Statools",
-        "views": 36677,
-        "length": "1:00:12",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R 프로그래밍 기초 강의 - [카이스트 석사 출신 AI기업 현직자] - 메타코드",
-        "url": "https://www.youtube.com/watch?v=yicfFo_A-KY",
-        "thumbnail": "https://i.ytimg.com/vi/yicfFo_A-KY/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 4818,
-        "length": "3:41:03",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R 프로그래밍 기초 강의 3일만에 끝내기: 6장-2 데이터 가공하기 (변수추출,정렬하기,변수추가) (select, arrange, mutate) [R 프로그램, R 언어]",
-        "url": "https://www.youtube.com/watch?v=CzkPpBShQQo",
-        "thumbnail": "https://i.ytimg.com/vi/CzkPpBShQQo/mqdefault.jpg",
-        "channel": "만만한 수학TV [이상준 경희대 수학과 교수]",
-        "views": 4431,
-        "length": "13:14",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "R 데이터분석 기초 강의 01-1 - 데이터의 개념 및 빅데이터 분석의 특성",
-        "url": "https://www.youtube.com/watch?v=7ZoS5vIt1M8",
-        "thumbnail": "https://i.ytimg.com/vi/7ZoS5vIt1M8/mqdefault.jpg",
-        "channel": "K-ICT 빅데이터센터",
-        "views": 28344,
-        "length": "12:13",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[R강의] 128. 엑셀 데이터 불러와서 통계량,그래프,t검정 하기 (템플릿)",
-        "url": "https://www.youtube.com/watch?v=8eYT9_w0J08",
-        "thumbnail": "https://i.ytimg.com/vi/8eYT9_w0J08/mqdefault.jpg",
-        "channel": "통계의 도구들 Statools",
-        "views": 16537,
-        "length": "15:19",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[얼불춤 공략 #1] R 깨는법",
-        "url": "https://www.youtube.com/watch?v=ghgnm6Wh33Y",
-        "thumbnail": "https://i.ytimg.com/vi/ghgnm6Wh33Y/mqdefault.jpg",
-        "channel": "Platster",
-        "views": 13673,
-        "length": "2:49",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[R쌤] 주식도 어려운데 환율까지 봐야하는 이유",
-        "url": "https://www.youtube.com/watch?v=ZiDW6a1vQOE",
-        "thumbnail": "https://i.ytimg.com/vi/ZiDW6a1vQOE/mqdefault.jpg",
-        "channel": "머니코믹스 Money Comics",
-        "views": 1213583,
-        "length": "30:00",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[2025ver] (3과목) ADsP 완벽 요약강의 | 요약강의 | 데이터분석 | 최단시간 최대효율👍 | 핵심 요약노트 | 빅데이터분석 준전문가",
-        "url": "https://www.youtube.com/watch?v=CmSNtW0Qt7s",
-        "thumbnail": "https://i.ytimg.com/vi/CmSNtW0Qt7s/mqdefault.jpg",
-        "channel": "IT의 답을 터득하다, 아답터",
-        "views": 342433,
-        "length": "1:54:53",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Hadoop": [
       {
         "title": "SQL/Hadoop-빅데이터 기초분석강의 (1)",
@@ -12491,6 +12491,88 @@
         "stage": "실전"
       }
     ],
+    "VPN": [
+      {
+        "title": "시스코(Cisco) CCNA #53(VPN가상사설망) Part1 (VPN개념 및 종류)",
+        "url": "https://www.youtube.com/watch?v=gzOIS39ytj4",
+        "thumbnail": "https://i.ytimg.com/vi/gzOIS39ytj4/mqdefault.jpg",
+        "channel": "여의도 공대 아저씨",
+        "views": 269,
+        "length": "35:24",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "VPN?? 그럼 PN(Private Network)이 무엇인지는 알고 있는 거죠?",
+        "url": "https://www.youtube.com/watch?v=6w1F6qnPQiE",
+        "thumbnail": "https://i.ytimg.com/vi/6w1F6qnPQiE/mqdefault.jpg",
+        "channel": "널널한 개발자 TV",
+        "views": 29943,
+        "length": "16:15",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "14.[IPSec VPN] VPN 터널 연결 및 데이터 전달 과정",
+        "url": "https://www.youtube.com/watch?v=AehIhudU7yk",
+        "thumbnail": "https://i.ytimg.com/vi/AehIhudU7yk/mqdefault.jpg",
+        "channel": "NetworkingClass",
+        "views": 9096,
+        "length": "15:57",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자는 알아야 할 VPN 작동원리",
+        "url": "https://www.youtube.com/watch?v=Q0EgiHhw-E4",
+        "thumbnail": "https://i.ytimg.com/vi/Q0EgiHhw-E4/mqdefault.jpg",
+        "channel": "널널한 개발자 TV",
+        "views": 43073,
+        "length": "16:30",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "네트워크 전문가 따라잡기 기술 세미나 영상 -VPN",
+        "url": "https://www.youtube.com/watch?v=0c7B1CPvVUY",
+        "thumbnail": "https://i.ytimg.com/vi/0c7B1CPvVUY/mqdefault.jpg",
+        "channel": "윤석훈",
+        "views": 7680,
+        "length": "57:42",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "정보보안기사 시험 대비  VPN에 대한 설명입니다.",
+        "url": "https://www.youtube.com/watch?v=GjqCYZyMHLE",
+        "thumbnail": "https://i.ytimg.com/vi/GjqCYZyMHLE/mqdefault.jpg",
+        "channel": "IT 자격증은 스터디노트",
+        "views": 8929,
+        "length": "20:06",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. [MPLS VPN] 기업 네트웍 망 구조와 MPLS VPN (why vpn?)",
+        "url": "https://www.youtube.com/watch?v=0kjQ9lbGQG4",
+        "thumbnail": "https://i.ytimg.com/vi/0kjQ9lbGQG4/mqdefault.jpg",
+        "channel": "NetworkingClass",
+        "views": 6699,
+        "length": "12:04",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "07.Client VPN으로 프라이빗 리소스 접근하기",
+        "url": "https://www.youtube.com/watch?v=eDxzHbwGgFc",
+        "thumbnail": "https://i.ytimg.com/vi/eDxzHbwGgFc/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 4,
+        "length": "14:13",
+        "published": "3개월 전",
+        "stage": "핵심"
+      }
+    ],
     "XML": [
       {
         "title": "xml 기초 강의 1시간 몰아보기! 이걸로 끝! 시리즈 1",
@@ -12899,88 +12981,6 @@
         "length": "26:54",
         "published": "10개월 전",
         "stage": "실전"
-      }
-    ],
-    "VPN": [
-      {
-        "title": "시스코(Cisco) CCNA #53(VPN가상사설망) Part1 (VPN개념 및 종류)",
-        "url": "https://www.youtube.com/watch?v=gzOIS39ytj4",
-        "thumbnail": "https://i.ytimg.com/vi/gzOIS39ytj4/mqdefault.jpg",
-        "channel": "여의도 공대 아저씨",
-        "views": 269,
-        "length": "35:24",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "VPN?? 그럼 PN(Private Network)이 무엇인지는 알고 있는 거죠?",
-        "url": "https://www.youtube.com/watch?v=6w1F6qnPQiE",
-        "thumbnail": "https://i.ytimg.com/vi/6w1F6qnPQiE/mqdefault.jpg",
-        "channel": "널널한 개발자 TV",
-        "views": 29943,
-        "length": "16:15",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "14.[IPSec VPN] VPN 터널 연결 및 데이터 전달 과정",
-        "url": "https://www.youtube.com/watch?v=AehIhudU7yk",
-        "thumbnail": "https://i.ytimg.com/vi/AehIhudU7yk/mqdefault.jpg",
-        "channel": "NetworkingClass",
-        "views": 9096,
-        "length": "15:57",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자는 알아야 할 VPN 작동원리",
-        "url": "https://www.youtube.com/watch?v=Q0EgiHhw-E4",
-        "thumbnail": "https://i.ytimg.com/vi/Q0EgiHhw-E4/mqdefault.jpg",
-        "channel": "널널한 개발자 TV",
-        "views": 43073,
-        "length": "16:30",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "네트워크 전문가 따라잡기 기술 세미나 영상 -VPN",
-        "url": "https://www.youtube.com/watch?v=0c7B1CPvVUY",
-        "thumbnail": "https://i.ytimg.com/vi/0c7B1CPvVUY/mqdefault.jpg",
-        "channel": "윤석훈",
-        "views": 7680,
-        "length": "57:42",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "정보보안기사 시험 대비  VPN에 대한 설명입니다.",
-        "url": "https://www.youtube.com/watch?v=GjqCYZyMHLE",
-        "thumbnail": "https://i.ytimg.com/vi/GjqCYZyMHLE/mqdefault.jpg",
-        "channel": "IT 자격증은 스터디노트",
-        "views": 8929,
-        "length": "20:06",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. [MPLS VPN] 기업 네트웍 망 구조와 MPLS VPN (why vpn?)",
-        "url": "https://www.youtube.com/watch?v=0kjQ9lbGQG4",
-        "thumbnail": "https://i.ytimg.com/vi/0kjQ9lbGQG4/mqdefault.jpg",
-        "channel": "NetworkingClass",
-        "views": 6699,
-        "length": "12:04",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "07.Client VPN으로 프라이빗 리소스 접근하기",
-        "url": "https://www.youtube.com/watch?v=eDxzHbwGgFc",
-        "thumbnail": "https://i.ytimg.com/vi/eDxzHbwGgFc/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 4,
-        "length": "14:13",
-        "published": "3개월 전",
-        "stage": "핵심"
       }
     ],
     "SaaS": [

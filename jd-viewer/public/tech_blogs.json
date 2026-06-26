@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-26T09:09:45",
- "total": 846,
+ "generated_at": "2026-06-26T10:49:47",
+ "total": 848,
  "sources": [
   {
    "company": "Etsy",
@@ -13,6 +13,11 @@
    "count": 41
   },
   {
+   "company": "토스",
+   "country": "KR",
+   "count": 35
+  },
+  {
    "company": "LINE",
    "country": "KR",
    "count": 35
@@ -21,11 +26,6 @@
    "company": "AWS",
    "country": "US",
    "count": 35
-  },
-  {
-   "company": "토스",
-   "country": "KR",
-   "count": 34
   },
   {
    "company": "Cloudflare",
@@ -108,6 +108,11 @@
    "count": 13
   },
   {
+   "company": "Grab",
+   "country": "SG",
+   "count": 13
+  },
+  {
    "company": "Meta",
    "country": "US",
    "count": 12
@@ -120,11 +125,6 @@
   {
    "company": "Pinterest",
    "country": "US",
-   "count": 12
-  },
-  {
-   "company": "Grab",
-   "country": "SG",
    "count": 12
   },
   {
@@ -308,8 +308,8 @@
   "Graph Neural Network": "AI/ML",
   "Python": "언어",
   "Remix": "프론트엔드",
-  "File System": "시스템/OS",
   "Prometheus": "관측성",
+  "File System": "시스템/OS",
   "Qwik": "프론트엔드",
   "Envoy": "인프라/클라우드",
   "MySQL": "데이터베이스",
@@ -370,8 +370,8 @@
   "Penetration Testing": "보안",
   "Fine-tuning": "LLM/생성형",
   "BigQuery": "데이터베이스",
-  "Angular": "프론트엔드",
   "Service Mesh": "인프라/클라우드",
+  "Angular": "프론트엔드",
   "Vite": "프론트엔드",
   "Docker": "인프라/클라우드",
   "Feature Store": "AI/ML",
@@ -517,6 +517,21 @@
   "Model Context Protocol": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "누군가는 토스를 테스트하는 동안, 우리는 테스트하는 법을 만듭니다.",
+   "url": "https://toss.tech/article/50893",
+   "published": "2026-06-26",
+   "published_ts": 1782435360.0,
+   "summary": "빠른 변화가 품질과 함께 흐르도록",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "2b677a0528cef4c9"
+  },
   {
    "key": "github",
    "company": "GitHub",
@@ -1732,6 +1747,52 @@
    ],
    "lang": "en",
    "content_id": "b918f7e142d10d60"
+  },
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Palana (Part 2): Architecting isolation, identity, and auditability for AI agents",
+   "url": "https://engineering.grab.com/part-2-palana-architecture",
+   "published": "2026-06-21",
+   "published_ts": 1782000000.0,
+   "summary": "Introduction\n\nIn Part 1, we introduced Palana, Grab’s Kubernetes-native secure execution platform for autonomous AI agents. We discussed the underlying need for isolated environments and covered its core design principles: treating isolation as the unit of trust, keeping credentials out of agent hands, and mediating all network access. In this second part, we’ll dive under the hood into Palana’s architecture, look at the agent lifecycle, and share the key lessons we learned from putting this system into production.\n\nArchitecture overview\n\nThe core request path looks like this:\n\nFigure 1. Palan…",
+   "tags": [
+    "Security",
+    "Artificial Intelligence",
+    "Kubernetes",
+    "DevSecOps",
+    "Platform",
+    "Engineering",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "LLM",
+    "AWS",
+    "Kubernetes",
+    "Service Mesh",
+    "Terraform",
+    "Vault",
+    "Observability",
+    "Prometheus",
+    "File System",
+    "Authentication",
+    "OAuth",
+    "Security",
+    "TLS",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "시스템/OS",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "754e79493d5e197c"
   },
   {
    "key": "netflix",
