@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-26T07:23:57",
-  "source_dir": "screenshots/all_통합_20260626_072343",
+  "generated_at": "2026-06-26T09:10:01",
+  "source_dir": "screenshots/all_통합_20260626_090945",
   "keyword": "통합",
   "jobs": [
     {
@@ -140792,6 +140792,56 @@
     },
     {
       "site": "saramin",
+      "company": "(주)로챗",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[급구] Node.js 기반 풀스택 개발자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54287874&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=0f8da388-bb67-4fae-843c-d305793ab9ea",
+      "career": "경력3년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "CSS",
+        "Tailwind",
+        "Node.js",
+        "FastAPI",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "K8s",
+        "GitHub Actions",
+        "LangChain",
+        "OpenAI",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화",
+        "CI/CD"
+      ],
+      "qualifications": "\" 경력: 3년 이상\n\n\" JavaScript / TypeScript 기반 풀스택 개발 경험\n\n\" IaC를 통한 Docker / K8S 등 컨테이너 활용 및 AWS / GCP / Azure 등 클라우드 서비스 경험\n\n\" Git(Git Flow) 기반 협업 경험\n\n\" REST API 작성 및 데이터베이스 활용 경험\n\n\" ESLint / Prettier 등 Linter / Formatter를 통한 개발 환경 통합 경험",
+      "preferences": "\" Python / FastAPI 등 백엔드 프레임워크 경험\n\n\" AWS Lambda / GCP Cloud Run 등 서버리스 컴퓨팅 경험\n\n\" GitHub Actions / Skaffold 등 CI/CD 도구 폭넓은 경험\n\n\" React 기반 프론트엔드 개발 경험\n\n\" Redis · 메시지 큐(BullMQ 등) · 검색엔진(Meilisearch 등) 운영 경험\n\n\" LLM 프롬프트 엔지니어링 및 파인튜닝 이해\n\n\" LangGraph / LangChain 멀티 에이전트 오케스트레이션 경험",
+      "main_tasks": "\" Node.js 기반 애플리케이션 설계 및 개발\n\n\" MongoDB / MySQL 데이터 모델링·마이그레이션 / Redis 기반 세션·캐시 운영 / BullMQ 워커 운영\n\n\" K8S 기반 배포 환경 구성 및 운영\n\n\" LLM 프로바이더(Vertex AI / OpenAI / Anthropic / Hugging Face) 연동 및 스트리밍 처리\n\n\" Claude Code / Cursor / Codex 등 AI 도구를 활용한 풀스택 개발",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)헬릭스테크",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -144639,6 +144689,31 @@
       "qualifications": "4년제 대졸 이상 관련학과 졸업자\n\n신입 ~ 경력 4년 이하\n\n유니티(또는 언리얼) 개발 경험, 포트폴리오\n\nC, C++, C#, Python 프로그래밍\n\n게임엔진 사용 이해도 (렌더링, 라이트닝, 에셋 등)\n\n기본적인 3D 그래픽 기술 이해\n\n개발에 필요한 영어 독해력\n\n자기주도 업무 진행 및 자기 관리\n\n컴퓨터공학, 소프트웨어공학 전공 (필수)",
       "preferences": "신입 개발자\n\n유니티 언리얼 게임엔진 개발 능숙자\n\n쉐이더 코딩 개발 가능자\n\nOpenGL 개발 또는 기술 이해도\n\nWebGL, WebGPU 클라이언트 웹 개발 경험\n\nAWS, Azure 클라우드 사용 경험\n\n오픈소스 사용 및 크로스 빌드 능숙자\n\nMacOS, 리눅스, Android, iOS 등 다종 OS 환경 개발 경험\n\nAI Agent 협업 개발 경험",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "에이치제이네트웍스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(대전) 한화AS SI 개발, App, Nexacro, 모바일 WAS, 중급이상",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54282740&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=d20c028d-3136-41c2-a98b-d8dc983eeaef",
+      "career": "경력7년↑",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "React",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 7년 이상\n\n• 대학졸업(2,3년)이상",
+      "preferences": "",
+      "main_tasks": "1. App 개발자\n\n• 근무기간 : 26년 8월 ~ 27년 01월 (이후 연장 예정)\n\n• 근무장소 : 창원, 대전, 보은 중 근무지 확정 예정\n\n2. Nexacro 개발자\n\n• 근무기간 : 26년 8월 ~ 27년 01월 (이후 연장 예정)\n\n• 근무장소 : 창원, 대전, 보은 중 근무지 확정 예정\n\n3. 모바일 WAS 개발자 개발자\n\n• 근무기간 : 26년 8월 ~ 27년 03월 (이후 연장 예정)\n\n• 근무장소 : 창원, 대전, 보은 중 근무지 확정 예정\n\n※ 공통사항 : 지방 출장 가능자 (월 1~2회 창원 출장)\n\n※ 출장비 지원 : 교통비, 숙박비, 활동비(일비)",
       "benefits": ""
     },
     {
@@ -194469,6 +194544,35 @@
     },
     {
       "site": "saramin",
+      "company": "(주)게임엔",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[산업기능요원/보충역] 백엔드(python) 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54271901&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=d22bde2f-9603-47cd-b4e6-85b15efcbac8",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Django",
+        "FastAPI",
+        "MySQL",
+        "Linux",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사 윈어시",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -197779,6 +197883,31 @@
       "preferences": "[솔루션 개발 및 운영지원]\n\nㆍ제약바이오 산업 관련 IT 프로젝트 개발/운영 경험자\n\nㆍ소스 현상관리 도구 사용경험(Git, SVN)\n\nㆍ애자일 프로세스 기반의 개발 프로세스 경험 보유\n\nㆍ한가지 이상의 ORM 사용경험\n[풀스택 개발자]\n\nㆍRESTful API 설계 경험\n\nㆍClean Architecture 또는 구조 설계 경험\n\nㆍJWT / OAuth 인증 경험\n\nㆍ상태관리 라이브러리 사용 경험 (Redux, Zustand 등)\n\nㆍAnt Design, MUI 등 UI 라이브러리 경험\n\nㆍ클라우드 환경(AWS, Azure 등) 배포 경험\n\nㆍSwagger / OpenAPI 문서화 경험\n\nㆍDevExpress(DevExtreme) 경험\n\nㆍ제약 / GMP / MES 도메인 경험\n\nㆍ팀원 멘토링 또는 기술 리딩 경험",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)엘프프로페셔널",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] 웹 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54281476&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=801bb3f4-f9e5-419e-a366-eff476c5bbfb",
+      "career": "경력3년↑",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 3년 이상\n\n• 대학졸업(2,3년)이상",
+      "preferences": "",
+      "main_tasks": "• 홈페이지(웹) 개발 및 유지보수\n\n• DB 구축 및 개발\n\n• 백엔드 API 설계 및 개발\n\n• 홈페이지 리뉴얼\n\n• 연구소 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 창립일행사, 구내식당(사원식당), 점심식사 제공, 식비 지원, 음료제공(차,커피)\n\n• 리프레시 : 연차, 반차, 여름휴가, 경조휴가제, 근로자의날 휴무, 공휴일 휴무\n\n• 급여제도 : 퇴직연금, 장기근속자 포상, 우수사원포상, 퇴직금, 4대 보험, 연차수당\n\n• 지원금/보험 : 건강검진, 직원대출제도, 자녀학자금\n\n• 조직 문화 : 자유복장"
     },
     {
       "site": "saramin",
@@ -205515,6 +205644,56 @@
     },
     {
       "site": "dev",
+      "company": "로챗",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[급구] Node.js 기반 풀스택 개발자 예정",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/558109?ReturnUrl=RecruitInfo",
+      "career": "경력(3년 이상)",
+      "location": "연봉 21,568만원 이상 (면접 후 결정) | 서울 서초구",
+      "dday": "예정",
+      "tech_stack": [
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "CSS",
+        "Tailwind",
+        "Node.js",
+        "FastAPI",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "K8s",
+        "GitHub Actions",
+        "LangChain",
+        "OpenAI",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화",
+        "CI/CD"
+      ],
+      "qualifications": "\" 경력: 3년 이상\n\n\" JavaScript / TypeScript 기반 풀스택 개발 경험\n\n\" IaC를 통한 Docker / K8S 등 컨테이너 활용 및 AWS / GCP / Azure 등 클라우드 서비스 경험\n\n\" Git(Git Flow) 기반 협업 경험\n\n\" REST API 작성 및 데이터베이스 활용 경험\n\n\" ESLint / Prettier 등 Linter / Formatter를 통한 개발 환경 통합 경험",
+      "preferences": "\" Python / FastAPI 등 백엔드 프레임워크 경험\n\n\" AWS Lambda / GCP Cloud Run 등 서버리스 컴퓨팅 경험\n\n\" GitHub Actions / Skaffold 등 CI/CD 도구 폭넓은 경험\n\n\" React 기반 프론트엔드 개발 경험\n\n\" Redis · 메시지 큐(BullMQ 등) · 검색엔진(Meilisearch 등) 운영 경험\n\n\" LLM 프롬프트 엔지니어링 및 파인튜닝 이해\n\n\" LangGraph / LangChain 멀티 에이전트 오케스트레이션 경험",
+      "main_tasks": "\" Node.js 기반 애플리케이션 설계 및 개발\n\n\" MongoDB / MySQL 데이터 모델링·마이그레이션 / Redis 기반 세션·캐시 운영 / BullMQ 워커 운영\n\n\" K8S 기반 배포 환경 구성 및 운영\n\n\" LLM 프로바이더(Vertex AI / OpenAI / Anthropic / Hugging Face) 연동 및 스트리밍 처리\n\n\" Claude Code / Cursor / Codex 등 AI 도구를 활용한 풀스택 개발",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -210755,20 +210934,20 @@
     }
   ],
   "stats": {
-    "total": 7019,
+    "total": 7024,
     "by_size": {
-      "중소기업": 6323,
+      "중소기업": 6328,
       "대기업": 414,
       "중견기업": 282
     },
     "by_role": {
-      "기타": 968,
+      "기타": 969,
       "DevOps/인프라": 1015,
-      "백엔드": 3030,
+      "백엔드": 3033,
       "모바일": 1113,
-      "AI/ML": 2340,
-      "프론트엔드": 1973,
-      "풀스택": 626,
+      "AI/ML": 2342,
+      "프론트엔드": 1976,
+      "풀스택": 628,
       "게임": 42,
       "데이터": 966,
       "펌웨어/임베디드": 242,
@@ -210779,33 +210958,33 @@
       "wanted": 1645,
       "jumpit": 472,
       "jobkorea": 1266,
-      "saramin": 3286,
-      "dev": 350
+      "saramin": 3290,
+      "dev": 351
     },
     "top_tech": [
       [
         "Python",
-        2165
+        2168
       ],
       [
         "Java",
-        1852
+        1854
       ],
       [
         "AWS",
-        1817
+        1819
       ],
       [
         "React",
-        1493
+        1496
       ],
       [
         "Git",
-        1163
+        1166
       ],
       [
         "Docker",
-        1121
+        1123
       ],
       [
         "Spring",
@@ -210813,23 +210992,23 @@
       ],
       [
         "JavaScript",
-        1022
+        1025
       ],
       [
         "TypeScript",
-        956
+        958
       ],
       [
         "Linux",
-        953
+        955
       ],
       [
         "MySQL",
-        893
+        896
       ],
       [
         "REST API",
-        780
+        783
       ],
       [
         "Kubernetes",
@@ -210845,7 +211024,7 @@
       ],
       [
         "GCP",
-        613
+        615
       ],
       [
         "C++",
@@ -210853,15 +211032,15 @@
       ],
       [
         "Node.js",
-        553
+        555
+      ],
+      [
+        "Azure",
+        514
       ],
       [
         "Next.js",
         513
-      ],
-      [
-        "Azure",
-        512
       ],
       [
         "Android",
@@ -210869,15 +211048,15 @@
       ],
       [
         "CSS",
-        489
+        491
       ],
       [
         "Redis",
-        478
+        480
       ],
       [
         "HTML",
-        478
+        479
       ],
       [
         "PyTorch",
@@ -210893,7 +211072,7 @@
       ],
       [
         "FastAPI",
-        395
+        398
       ],
       [
         "Vue",
@@ -210906,22 +211085,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-08T04:10:59",
-      "keyword": "통합",
-      "raw_total": 4787,
-      "deduped": 4723,
-      "active": 4712,
-      "closed": 11,
-      "site_counts": {
-        "wanted": 1039,
-        "jumpit": 389,
-        "jobkorea": 913,
-        "saramin": 2288,
-        "dev": 158
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-08T05:36:57",
       "keyword": "통합",
@@ -214103,6 +214266,22 @@
         "jobkorea": 1955,
         "saramin": 5057,
         "dev": 490
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-06-26T09:09:54",
+      "keyword": "통합",
+      "raw_total": 9843,
+      "deduped": 8764,
+      "active": 7024,
+      "closed": 1740,
+      "site_counts": {
+        "wanted": 1680,
+        "jumpit": 652,
+        "jobkorea": 1955,
+        "saramin": 5065,
+        "dev": 491
       },
       "anomalies": []
     }

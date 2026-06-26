@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-26T07:23:43",
- "total": 844,
+ "generated_at": "2026-06-26T09:09:45",
+ "total": 846,
  "sources": [
   {
    "company": "Etsy",
@@ -73,6 +73,11 @@
    "count": 26
   },
   {
+   "company": "GitHub",
+   "country": "US",
+   "count": 25
+  },
+  {
    "company": "컬리",
    "country": "KR",
    "count": 25
@@ -88,11 +93,6 @@
    "count": 25
   },
   {
-   "company": "GitHub",
-   "country": "US",
-   "count": 24
-  },
-  {
    "company": "CyberAgent",
    "country": "JP",
    "count": 14
@@ -106,6 +106,11 @@
    "company": "Stripe",
    "country": "US",
    "count": 13
+  },
+  {
+   "company": "Meta",
+   "country": "US",
+   "count": 12
   },
   {
    "company": "Dropbox",
@@ -131,11 +136,6 @@
    "company": "Lyft",
    "country": "US",
    "count": 12
-  },
-  {
-   "company": "Meta",
-   "country": "US",
-   "count": 11
   },
   {
    "company": "우아한형제들",
@@ -365,8 +365,8 @@
   "GraphQL": "백엔드",
   "arXiv": "연구/논문",
   "systemd": "시스템/OS",
-  "Flask": "백엔드",
   "Claude": "LLM/생성형",
+  "Flask": "백엔드",
   "Penetration Testing": "보안",
   "Fine-tuning": "LLM/생성형",
   "BigQuery": "데이터베이스",
@@ -404,8 +404,8 @@
   "Unreal Engine": "그래픽/게임",
   "Computer Vision": "AI/ML",
   "WebGL": "프론트엔드",
-  "Embedded": "펌웨어/임베디드",
   "GPT": "LLM/생성형",
+  "Embedded": "펌웨어/임베디드",
   "ARM": "펌웨어/임베디드",
   "LSM Tree": "알고리즘/이론",
   "OpenGL": "그래픽/게임",
@@ -473,8 +473,8 @@
   "Express": "백엔드",
   "Kernel": "시스템/OS",
   "Raft": "알고리즘/이론",
-  "Virtualization": "시스템/OS",
   "Multimodal": "LLM/생성형",
+  "Virtualization": "시스템/OS",
   "Bluetooth": "펌웨어/임베디드",
   "Knowledge Distillation": "AI/ML",
   "Bloom Filter": "알고리즘/이론",
@@ -517,6 +517,75 @@
   "Model Context Protocol": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Evaluating performance and efficiency of the GitHub Copilot agentic harness across models and tasks",
+   "url": "https://github.blog/ai-and-ml/github-copilot/evaluating-performance-and-efficiency-of-the-github-copilot-agentic-harness-across-models-and-tasks",
+   "published": "2026-06-25",
+   "published_ts": 1782428385.0,
+   "summary": "Explore how the GitHub Copilot agentic harness delivers strong results across multiple benchmarks and leading token efficiency, while maintaining flexibility to choose among more than 20 models.\n\nThe post Evaluating performance and efficiency of the GitHub Copilot agentic harness across models and tasks appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "agentic AI",
+    "benchmarking"
+   ],
+   "tech_stack": [
+    "Python",
+    "AI Agent",
+    "Claude",
+    "Gemini",
+    "GPT",
+    "Model Context Protocol",
+    "Benchmark"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "b6ca7e75baf6db1e"
+  },
+  {
+   "key": "meta",
+   "company": "Meta",
+   "country": "US",
+   "title": "Privacy-Aware Infrastructure in the AI-Native Era: An Asset Classification Case Study",
+   "url": "https://engineering.fb.com/2026/06/25/security/privacy-aware-infrastructure-in-the-ai-native-era-an-asset-classification-case-study",
+   "published": "2026-06-25",
+   "published_ts": 1782426651.0,
+   "summary": "Privacy controls — systems that enforce retention, access, allowed-purpose, downstream-sharing, or anonymization policies — require a reliable understanding of data to function. Before such a control can operate effectively, it must know exactly what it is looking at. This can be complex, as demonstrated by a field simply named “age“: In one context, it might [...]\n\nRead More...\n\nThe post Privacy-Aware Infrastructure in the AI-Native Era: An Asset Classification Case Study appeared first on Engineering at Meta.",
+   "tags": [
+    "ML Applications",
+    "Security & Privacy"
+   ],
+   "tech_stack": [
+    "Assembly",
+    "Python",
+    "SQL",
+    "Jetpack Compose",
+    "Machine Learning",
+    "Embedding",
+    "LLM",
+    "Multimodal",
+    "Prompt Engineering",
+    "Observability",
+    "Consensus"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "AI/ML",
+    "LLM/생성형",
+    "관측성",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "effc298f76764ec0"
+  },
   {
    "key": "dropbox",
    "company": "Dropbox",
