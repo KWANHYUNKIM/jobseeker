@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-26T10:49:47",
- "total": 848,
+ "generated_at": "2026-06-26T12:28:50",
+ "total": 851,
  "sources": [
   {
    "company": "Etsy",
@@ -13,12 +13,12 @@
    "count": 41
   },
   {
-   "company": "토스",
+   "company": "LINE",
    "country": "KR",
-   "count": 35
+   "count": 37
   },
   {
-   "company": "LINE",
+   "company": "토스",
    "country": "KR",
    "count": 35
   },
@@ -38,6 +38,11 @@
    "count": 30
   },
   {
+   "company": "DeNA",
+   "country": "JP",
+   "count": 29
+  },
+  {
    "company": "네이버 D2",
    "country": "KR",
    "count": 29
@@ -46,11 +51,6 @@
    "company": "Netflix",
    "country": "US",
    "count": 29
-  },
-  {
-   "company": "DeNA",
-   "country": "JP",
-   "count": 28
   },
   {
    "company": "Mercari",
@@ -239,8 +239,8 @@
   "협업/도구"
  ],
  "tag_categories": {
-  "LoRA": "LLM/생성형",
   "OpenTelemetry": "관측성",
+  "LoRA": "LLM/생성형",
   "SCSS": "프론트엔드",
   "WebSocket": "백엔드",
   "A/B Test": "협업/도구",
@@ -518,6 +518,42 @@
  },
  "posts": [
   {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "프롬프팅에서 워크플로로, AI로 프런트엔드 개발 생산성 끌어올리기",
+   "url": "https://techblog.lycorp.co.jp/ko/techverse2026-10",
+   "published": "2026-06-26",
+   "published_ts": 1782439200.0,
+   "summary": "LY Corporation의 기술 컨퍼런스인 Tech-Verse 2026의 공식 기사입니다.AI 생성 이미지코딩 속도는 더 이상 가장 큰 병목이 아닙니다. 이제 병목은 입력이 여러...",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "ko",
+   "content_id": "a24d4176f2d0a81b"
+  },
+  {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "임베딩 안정화로 검색 리랭킹의 콜드 스타트 문제를 해결하다: LINE Part Time Jobs 적용 사례",
+   "url": "https://techblog.lycorp.co.jp/ko/techverse2026-62",
+   "published": "2026-06-26",
+   "published_ts": 1782439200.0,
+   "summary": "LY Corporation의 기술 컨퍼런스인 Tech-Verse 2026의 공식 기사입니다.안녕하세요. LY Corporation에서 머신러닝 플랫폼을 개발하고 있는 Kenta K...",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "Embedding"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "ko",
+   "content_id": "2d7b913ec77d55b8"
+  },
+  {
    "key": "toss",
    "company": "토스",
    "country": "KR",
@@ -666,6 +702,33 @@
    ],
    "lang": "en",
    "content_id": "fbceeabadab63af8"
+  },
+  {
+   "key": "dena",
+   "company": "DeNA",
+   "country": "JP",
+   "title": "社内申請が行われるたびにプロンプトがどんどん育つAIエージェントを支えるDevin",
+   "url": "https://engineering.dena.com/blog/2026/06/devin-prompt-improvement-cycle",
+   "published": "2026-06-26",
+   "published_ts": 1782399600.0,
+   "summary": "はじめに こんにちは。IT本部 AI・データ戦略統括部 データ基盤部 AIジャーニー推進グループで、エンジニアをしている小野寺です。\n私たちのチームは、ふだんの開発に AI 駆動開発をどんどん組み込もうとしています。スクラムのスプリントに Devin を「もう一人のメンバー」として組み入れ、外部ツールの利用申請への記入といった定型作業を少しずつ AI に任せてきました。今回紹介するのは、その申請エージェントのプロンプトを AI 自身に毎週改善させる取り組みです。",
+   "tags": [],
+   "tech_stack": [
+    "Claude",
+    "LLM",
+    "GCP",
+    "GitHub Actions",
+    "OpenTelemetry",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "7962a5b46b69524c"
   },
   {
    "key": "cloudflare",

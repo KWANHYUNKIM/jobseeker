@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T10:50:15",
+  "generated_at": "2026-06-26T12:29:18",
   "source": "youtube",
   "tech_count": 173,
   "curriculum_count": 20,
@@ -7611,88 +7611,6 @@
         "stage": "실전"
       }
     ],
-    "CUDA": [
-      {
-        "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
-        "url": "https://www.youtube.com/watch?v=F_SvRKSZ7B4",
-        "thumbnail": "https://i.ytimg.com/vi/F_SvRKSZ7B4/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 27055,
-        "length": "6:30",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(11-0) CUDA의 기본 개념",
-        "url": "https://www.youtube.com/watch?v=PbDrSO2Bqxg",
-        "thumbnail": "https://i.ytimg.com/vi/PbDrSO2Bqxg/mqdefault.jpg",
-        "channel": "Jae Dong Noh",
-        "views": 858,
-        "length": "28:45",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "1강. 병렬프로그래밍 (Parallel Programming ) - CUDA 2019",
-        "url": "https://www.youtube.com/watch?v=vpUADAVyIrQ",
-        "thumbnail": "https://i.ytimg.com/vi/vpUADAVyIrQ/mqdefault.jpg",
-        "channel": "한림대SW중심대학",
-        "views": 3149,
-        "length": "39:25",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CPU와 GPU의 차이 및 OpenCL과 CUDA에 관한 가장 쉬운설명 by 엄의섭",
-        "url": "https://www.youtube.com/watch?v=x0_-Ca1lVMQ",
-        "thumbnail": "https://i.ytimg.com/vi/x0_-Ca1lVMQ/mqdefault.jpg",
-        "channel": "Jeonghan Eom (엄정한)",
-        "views": 634,
-        "length": "17:56",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI칩이 쏟아져도... NVIDIA 무기 CUDA가 무엇이길래 압도적인가 | 다른 GPU/AI가속기 성능 좋아도 대체가 불가능한 현 상황",
-        "url": "https://www.youtube.com/watch?v=sdjeSBye9sY",
-        "thumbnail": "https://i.ytimg.com/vi/sdjeSBye9sY/mqdefault.jpg",
-        "channel": "안될공학 - IT 테크 신기술",
-        "views": 180280,
-        "length": "18:51",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[MP] Hello CUDA (Introduction to CUDA Week1-1) / CUDA 강의",
-        "url": "https://www.youtube.com/watch?v=ve9wk6I0cOE",
-        "thumbnail": "https://i.ytimg.com/vi/ve9wk6I0cOE/mqdefault.jpg",
-        "channel": "SPIN Lab",
-        "views": 7520,
-        "length": "14:13",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인공지능 전문가 대상 CUDA 강의",
-        "url": "https://www.youtube.com/watch?v=dSUMt_q05Kw",
-        "thumbnail": "https://i.ytimg.com/vi/dSUMt_q05Kw/mqdefault.jpg",
-        "channel": "마음AI",
-        "views": 457,
-        "length": "1:14",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[MP] CUDA Thread Hierarchy (Introduction to CUDA Week1-3) / CUDA 강의",
-        "url": "https://www.youtube.com/watch?v=my1U4QY59Bg",
-        "thumbnail": "https://i.ytimg.com/vi/my1U4QY59Bg/mqdefault.jpg",
-        "channel": "SPIN Lab",
-        "views": 3920,
-        "length": "35:26",
-        "published": "7년 전",
-        "stage": "핵심"
-      }
-    ],
     "JPA": [
       {
         "title": "JPA 강의를 시작합니다. [ JPA (Java Persistence API) ]",
@@ -7773,6 +7691,88 @@
         "length": "10:50",
         "published": "5개월 전",
         "stage": "실전"
+      }
+    ],
+    "CUDA": [
+      {
+        "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
+        "url": "https://www.youtube.com/watch?v=F_SvRKSZ7B4",
+        "thumbnail": "https://i.ytimg.com/vi/F_SvRKSZ7B4/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 27055,
+        "length": "6:30",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(11-0) CUDA의 기본 개념",
+        "url": "https://www.youtube.com/watch?v=PbDrSO2Bqxg",
+        "thumbnail": "https://i.ytimg.com/vi/PbDrSO2Bqxg/mqdefault.jpg",
+        "channel": "Jae Dong Noh",
+        "views": 858,
+        "length": "28:45",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "1강. 병렬프로그래밍 (Parallel Programming ) - CUDA 2019",
+        "url": "https://www.youtube.com/watch?v=vpUADAVyIrQ",
+        "thumbnail": "https://i.ytimg.com/vi/vpUADAVyIrQ/mqdefault.jpg",
+        "channel": "한림대SW중심대학",
+        "views": 3149,
+        "length": "39:25",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CPU와 GPU의 차이 및 OpenCL과 CUDA에 관한 가장 쉬운설명 by 엄의섭",
+        "url": "https://www.youtube.com/watch?v=x0_-Ca1lVMQ",
+        "thumbnail": "https://i.ytimg.com/vi/x0_-Ca1lVMQ/mqdefault.jpg",
+        "channel": "Jeonghan Eom (엄정한)",
+        "views": 634,
+        "length": "17:56",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI칩이 쏟아져도... NVIDIA 무기 CUDA가 무엇이길래 압도적인가 | 다른 GPU/AI가속기 성능 좋아도 대체가 불가능한 현 상황",
+        "url": "https://www.youtube.com/watch?v=sdjeSBye9sY",
+        "thumbnail": "https://i.ytimg.com/vi/sdjeSBye9sY/mqdefault.jpg",
+        "channel": "안될공학 - IT 테크 신기술",
+        "views": 180280,
+        "length": "18:51",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[MP] Hello CUDA (Introduction to CUDA Week1-1) / CUDA 강의",
+        "url": "https://www.youtube.com/watch?v=ve9wk6I0cOE",
+        "thumbnail": "https://i.ytimg.com/vi/ve9wk6I0cOE/mqdefault.jpg",
+        "channel": "SPIN Lab",
+        "views": 7520,
+        "length": "14:13",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인공지능 전문가 대상 CUDA 강의",
+        "url": "https://www.youtube.com/watch?v=dSUMt_q05Kw",
+        "thumbnail": "https://i.ytimg.com/vi/dSUMt_q05Kw/mqdefault.jpg",
+        "channel": "마음AI",
+        "views": 457,
+        "length": "1:14",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[MP] CUDA Thread Hierarchy (Introduction to CUDA Week1-3) / CUDA 강의",
+        "url": "https://www.youtube.com/watch?v=my1U4QY59Bg",
+        "thumbnail": "https://i.ytimg.com/vi/my1U4QY59Bg/mqdefault.jpg",
+        "channel": "SPIN Lab",
+        "views": 3920,
+        "length": "35:26",
+        "published": "7년 전",
+        "stage": "핵심"
       }
     ],
     "NLP": [
@@ -8267,88 +8267,6 @@
         "stage": "핵심"
       }
     ],
-    "Airflow": [
-      {
-        "title": "Airflow 3.0 Architecture 기초의 모든것, 이 영상 10분만 투자하세요ㅣArchitecture, DAG Parsing 프로세스",
-        "url": "https://www.youtube.com/watch?v=KoTjvLbIChA",
-        "thumbnail": "https://i.ytimg.com/vi/KoTjvLbIChA/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 1166,
-        "length": "16:23",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Airflow 기본 개념, 필요성 15분만에 쉽고 빠르게",
-        "url": "https://www.youtube.com/watch?v=zIy04t6AuR8",
-        "thumbnail": "https://i.ytimg.com/vi/zIy04t6AuR8/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 1512,
-        "length": "15:51",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[데이터 엔지니어링 with Airflow] 1강. Airflow 소개 및 비교",
-        "url": "https://www.youtube.com/watch?v=qNOGVu4v4xA",
-        "thumbnail": "https://i.ytimg.com/vi/qNOGVu4v4xA/mqdefault.jpg",
-        "channel": "슬기로운통계생활",
-        "views": 11015,
-        "length": "7:19",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Apache Airflow(에어플로우) EP1: Introduction(소개)",
-        "url": "https://www.youtube.com/watch?v=tqbis9fX2TU",
-        "thumbnail": "https://i.ytimg.com/vi/tqbis9fX2TU/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 5244,
-        "length": "17:03",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Airflow를 활용한 Semantic Layer 구축 전략 최지현 님 | Airflow한국사용자모임 3회 밋업",
-        "url": "https://www.youtube.com/watch?v=iNjMh6Permg",
-        "thumbnail": "https://i.ytimg.com/vi/iNjMh6Permg/mqdefault.jpg",
-        "channel": "Airflow한국사용자모임",
-        "views": 227,
-        "length": "42:13",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
-        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
-        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1470,
-        "length": "29:18",
-        "published": "4개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Apache Airflow 설치 완전 정복: 설치 전 필수 개념부터 실습까지",
-        "url": "https://www.youtube.com/watch?v=LmQhHcueJs0",
-        "thumbnail": "https://i.ytimg.com/vi/LmQhHcueJs0/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1641,
-        "length": "18:23",
-        "published": "1년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[데이터 엔지니어링 with Airflow] Bash operator DAG 만들기",
-        "url": "https://www.youtube.com/watch?v=hN3PP5a2kqI",
-        "thumbnail": "https://i.ytimg.com/vi/hN3PP5a2kqI/mqdefault.jpg",
-        "channel": "슬기로운통계생활",
-        "views": 5815,
-        "length": "24:13",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Cassandra": [
       {
         "title": "DataStax Apollo — Apache Cassandra™ made EASY in the cloud | DataStax",
@@ -8428,6 +8346,88 @@
         "views": 16334,
         "length": "10:40",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "Airflow": [
+      {
+        "title": "Airflow 3.0 Architecture 기초의 모든것, 이 영상 10분만 투자하세요ㅣArchitecture, DAG Parsing 프로세스",
+        "url": "https://www.youtube.com/watch?v=KoTjvLbIChA",
+        "thumbnail": "https://i.ytimg.com/vi/KoTjvLbIChA/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 1166,
+        "length": "16:23",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Airflow 기본 개념, 필요성 15분만에 쉽고 빠르게",
+        "url": "https://www.youtube.com/watch?v=zIy04t6AuR8",
+        "thumbnail": "https://i.ytimg.com/vi/zIy04t6AuR8/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 1512,
+        "length": "15:51",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[데이터 엔지니어링 with Airflow] 1강. Airflow 소개 및 비교",
+        "url": "https://www.youtube.com/watch?v=qNOGVu4v4xA",
+        "thumbnail": "https://i.ytimg.com/vi/qNOGVu4v4xA/mqdefault.jpg",
+        "channel": "슬기로운통계생활",
+        "views": 11015,
+        "length": "7:19",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Apache Airflow(에어플로우) EP1: Introduction(소개)",
+        "url": "https://www.youtube.com/watch?v=tqbis9fX2TU",
+        "thumbnail": "https://i.ytimg.com/vi/tqbis9fX2TU/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 5244,
+        "length": "17:03",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Airflow를 활용한 Semantic Layer 구축 전략 최지현 님 | Airflow한국사용자모임 3회 밋업",
+        "url": "https://www.youtube.com/watch?v=iNjMh6Permg",
+        "thumbnail": "https://i.ytimg.com/vi/iNjMh6Permg/mqdefault.jpg",
+        "channel": "Airflow한국사용자모임",
+        "views": 227,
+        "length": "42:13",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
+        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
+        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1470,
+        "length": "29:18",
+        "published": "4개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Apache Airflow 설치 완전 정복: 설치 전 필수 개념부터 실습까지",
+        "url": "https://www.youtube.com/watch?v=LmQhHcueJs0",
+        "thumbnail": "https://i.ytimg.com/vi/LmQhHcueJs0/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1641,
+        "length": "18:23",
+        "published": "1년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[데이터 엔지니어링 with Airflow] Bash operator DAG 만들기",
+        "url": "https://www.youtube.com/watch?v=hN3PP5a2kqI",
+        "thumbnail": "https://i.ytimg.com/vi/hN3PP5a2kqI/mqdefault.jpg",
+        "channel": "슬기로운통계생활",
+        "views": 5815,
+        "length": "24:13",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
