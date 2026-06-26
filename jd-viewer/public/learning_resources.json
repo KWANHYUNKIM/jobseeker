@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T17:45:04",
+  "generated_at": "2026-06-26T19:24:20",
   "source": "youtube",
   "tech_count": 174,
   "curriculum_count": 20,
@@ -5909,6 +5909,88 @@
         "stage": "실전"
       }
     ],
+    "Scikit-learn": [
+      {
+        "title": "사이킷런 scikit-learn 제대로 시작하기",
+        "url": "https://www.youtube.com/watch?v=eVxGhCRN-xA",
+        "thumbnail": "https://i.ytimg.com/vi/eVxGhCRN-xA/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 37283,
+        "length": "1:48:12",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
+        "url": "https://www.youtube.com/watch?v=2VPFth2UqoI",
+        "thumbnail": "https://i.ytimg.com/vi/2VPFth2UqoI/mqdefault.jpg",
+        "channel": "K-ICT 빅데이터센터",
+        "views": 10589,
+        "length": "32:27",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[3] 파이썬 머신러닝 라이브러리(Scikit-learn) 핵심 개발자의 슬라이드로 기계학습 개념 정리하기 - classification 모델 비교와 시각화 강좌",
+        "url": "https://www.youtube.com/watch?v=jzuz-FCL3i8",
+        "thumbnail": "https://i.ytimg.com/vi/jzuz-FCL3i8/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 5424,
+        "length": "14:58",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[토크ON세미나] Scikit-Learn으로 다지는 머신러닝 기초 4강 - 분류 (Classification) | T아카데미",
+        "url": "https://www.youtube.com/watch?v=pVvlh2ciR64",
+        "thumbnail": "https://i.ytimg.com/vi/pVvlh2ciR64/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 1321,
+        "length": "44:56",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "머신런닝으로 자동매매 전략구현 feat.scikit learn",
+        "url": "https://www.youtube.com/watch?v=-6SE73MBJzU",
+        "thumbnail": "https://i.ytimg.com/vi/-6SE73MBJzU/mqdefault.jpg",
+        "channel": "존버킴",
+        "views": 978,
+        "length": "19:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "도서리뷰 [개정2판] 사이킷런(Scikit-Learn) 핵심 개발자가 쓴 머신러닝과 데이터 과학 실무서",
+        "url": "https://www.youtube.com/watch?v=DyldYDj3v1s",
+        "thumbnail": "https://i.ytimg.com/vi/DyldYDj3v1s/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 2529,
+        "length": "23:24",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "30.Scikit-learn 시작하기 완벽 가이드",
+        "url": "https://www.youtube.com/watch?v=9be9aU9zsWw",
+        "thumbnail": "https://i.ytimg.com/vi/9be9aU9zsWw/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 9,
+        "length": "14:22",
+        "published": "5개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "머신러닝, 딥러닝 실전 개발 입문 14강 - scikit learn 기본 구성",
+        "url": "https://www.youtube.com/watch?v=a_F6Zu2-B1k",
+        "thumbnail": "https://i.ytimg.com/vi/a_F6Zu2-B1k/mqdefault.jpg",
+        "channel": "윤인성",
+        "views": 10587,
+        "length": "10:57",
+        "published": "8년 전",
+        "stage": "실전"
+      }
+    ],
     "DynamoDB": [
       {
         "title": "Amazon DynamoDB와 함께 모든 규모에서 모던 애플리케이션 구축하기 - 이혁, DynamoDB 스페셜리스트, AWS",
@@ -6070,88 +6152,6 @@
         "views": 414,
         "length": "5:21",
         "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
-    "Scikit-learn": [
-      {
-        "title": "사이킷런 scikit-learn 제대로 시작하기",
-        "url": "https://www.youtube.com/watch?v=eVxGhCRN-xA",
-        "thumbnail": "https://i.ytimg.com/vi/eVxGhCRN-xA/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 37283,
-        "length": "1:48:12",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
-        "url": "https://www.youtube.com/watch?v=2VPFth2UqoI",
-        "thumbnail": "https://i.ytimg.com/vi/2VPFth2UqoI/mqdefault.jpg",
-        "channel": "K-ICT 빅데이터센터",
-        "views": 10589,
-        "length": "32:27",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[3] 파이썬 머신러닝 라이브러리(Scikit-learn) 핵심 개발자의 슬라이드로 기계학습 개념 정리하기 - classification 모델 비교와 시각화 강좌",
-        "url": "https://www.youtube.com/watch?v=jzuz-FCL3i8",
-        "thumbnail": "https://i.ytimg.com/vi/jzuz-FCL3i8/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 5424,
-        "length": "14:58",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[토크ON세미나] Scikit-Learn으로 다지는 머신러닝 기초 4강 - 분류 (Classification) | T아카데미",
-        "url": "https://www.youtube.com/watch?v=pVvlh2ciR64",
-        "thumbnail": "https://i.ytimg.com/vi/pVvlh2ciR64/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 1321,
-        "length": "44:56",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "머신런닝으로 자동매매 전략구현 feat.scikit learn",
-        "url": "https://www.youtube.com/watch?v=-6SE73MBJzU",
-        "thumbnail": "https://i.ytimg.com/vi/-6SE73MBJzU/mqdefault.jpg",
-        "channel": "존버킴",
-        "views": 978,
-        "length": "19:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "도서리뷰 [개정2판] 사이킷런(Scikit-Learn) 핵심 개발자가 쓴 머신러닝과 데이터 과학 실무서",
-        "url": "https://www.youtube.com/watch?v=DyldYDj3v1s",
-        "thumbnail": "https://i.ytimg.com/vi/DyldYDj3v1s/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 2529,
-        "length": "23:24",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "30.Scikit-learn 시작하기 완벽 가이드",
-        "url": "https://www.youtube.com/watch?v=9be9aU9zsWw",
-        "thumbnail": "https://i.ytimg.com/vi/9be9aU9zsWw/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 9,
-        "length": "14:22",
-        "published": "5개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "머신러닝, 딥러닝 실전 개발 입문 14강 - scikit learn 기본 구성",
-        "url": "https://www.youtube.com/watch?v=a_F6Zu2-B1k",
-        "thumbnail": "https://i.ytimg.com/vi/a_F6Zu2-B1k/mqdefault.jpg",
-        "channel": "윤인성",
-        "views": 10587,
-        "length": "10:57",
-        "published": "8년 전",
         "stage": "실전"
       }
     ],
@@ -10665,88 +10665,6 @@
         "stage": "실전"
       }
     ],
-    "MQTT": [
-      {
-        "title": "(번외편) LoRa와 MQTT를 왜 배울까? 뭘사야하지?",
-        "url": "https://www.youtube.com/watch?v=gXgKQuFOu_s",
-        "thumbnail": "https://i.ytimg.com/vi/gXgKQuFOu_s/mqdefault.jpg",
-        "channel": "DS1UMG | 만들기",
-        "views": 233,
-        "length": "29:38",
-        "published": "17시간 전",
-        "stage": "입문"
-      },
-      {
-        "title": "스마트팜(원격제어), IOT 제어 통신 방식 MQTT 개념의 이해",
-        "url": "https://www.youtube.com/watch?v=ZZLGJZYyzUI",
-        "thumbnail": "https://i.ytimg.com/vi/ZZLGJZYyzUI/mqdefault.jpg",
-        "channel": "김박사와 함께하는 스마트팜 직접 구축하기",
-        "views": 7452,
-        "length": "14:22",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "IoT 프로토콜 MQTT 특징, 3분 정리",
-        "url": "https://www.youtube.com/watch?v=O-OJ_odghS8",
-        "thumbnail": "https://i.ytimg.com/vi/O-OJ_odghS8/mqdefault.jpg",
-        "channel": "친절한코딩",
-        "views": 6759,
-        "length": "3:14",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MQTT vs HTTP, IoT에 적합한 프로토콜은?",
-        "url": "https://www.youtube.com/watch?v=fkldoAgD5oc",
-        "thumbnail": "https://i.ytimg.com/vi/fkldoAgD5oc/mqdefault.jpg",
-        "channel": "친절한코딩",
-        "views": 6083,
-        "length": "7:02",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[8] ESP32 MQTT 이론 PART 1",
-        "url": "https://www.youtube.com/watch?v=0m7YoLdLIdc",
-        "thumbnail": "https://i.ytimg.com/vi/0m7YoLdLIdc/mqdefault.jpg",
-        "channel": "KodeJUN",
-        "views": 1023,
-        "length": "10:33",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MQTT 통신의 개요",
-        "url": "https://www.youtube.com/watch?v=Zh6Yhn8-Iw8",
-        "thumbnail": "https://i.ytimg.com/vi/Zh6Yhn8-Iw8/mqdefault.jpg",
-        "channel": "김샘자바",
-        "views": 3525,
-        "length": "23:12",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "이렇게 쓰면 합격합니다! 정보통신기술사 122회 1교시 MQTT 프로토콜",
-        "url": "https://www.youtube.com/watch?v=GPjZNM0weGc",
-        "thumbnail": "https://i.ytimg.com/vi/GPjZNM0weGc/mqdefault.jpg",
-        "channel": "테크타임",
-        "views": 22,
-        "length": "5:10",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Mosquitto MQTT 브로커 완벽 구축 가이드 (SSL/TLS 적용)  [김팔복TV]",
-        "url": "https://www.youtube.com/watch?v=eOJvcNUPLf8",
-        "thumbnail": "https://i.ytimg.com/vi/eOJvcNUPLf8/mqdefault.jpg",
-        "channel": "김팔복",
-        "views": 222,
-        "length": "28:54",
-        "published": "2개월 전",
-        "stage": "실전"
-      }
-    ],
     "R": [
       {
         "title": "하루만에 끝내는 R기초 \"전체 강의 모아보기\"",
@@ -10826,6 +10744,88 @@
         "views": 4867,
         "length": "1:57:29",
         "published": "스트리밍 시간: 4년 전",
+        "stage": "실전"
+      }
+    ],
+    "MQTT": [
+      {
+        "title": "(번외편) LoRa와 MQTT를 왜 배울까? 뭘사야하지?",
+        "url": "https://www.youtube.com/watch?v=gXgKQuFOu_s",
+        "thumbnail": "https://i.ytimg.com/vi/gXgKQuFOu_s/mqdefault.jpg",
+        "channel": "DS1UMG | 만들기",
+        "views": 233,
+        "length": "29:38",
+        "published": "17시간 전",
+        "stage": "입문"
+      },
+      {
+        "title": "스마트팜(원격제어), IOT 제어 통신 방식 MQTT 개념의 이해",
+        "url": "https://www.youtube.com/watch?v=ZZLGJZYyzUI",
+        "thumbnail": "https://i.ytimg.com/vi/ZZLGJZYyzUI/mqdefault.jpg",
+        "channel": "김박사와 함께하는 스마트팜 직접 구축하기",
+        "views": 7452,
+        "length": "14:22",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "IoT 프로토콜 MQTT 특징, 3분 정리",
+        "url": "https://www.youtube.com/watch?v=O-OJ_odghS8",
+        "thumbnail": "https://i.ytimg.com/vi/O-OJ_odghS8/mqdefault.jpg",
+        "channel": "친절한코딩",
+        "views": 6759,
+        "length": "3:14",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MQTT vs HTTP, IoT에 적합한 프로토콜은?",
+        "url": "https://www.youtube.com/watch?v=fkldoAgD5oc",
+        "thumbnail": "https://i.ytimg.com/vi/fkldoAgD5oc/mqdefault.jpg",
+        "channel": "친절한코딩",
+        "views": 6083,
+        "length": "7:02",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[8] ESP32 MQTT 이론 PART 1",
+        "url": "https://www.youtube.com/watch?v=0m7YoLdLIdc",
+        "thumbnail": "https://i.ytimg.com/vi/0m7YoLdLIdc/mqdefault.jpg",
+        "channel": "KodeJUN",
+        "views": 1023,
+        "length": "10:33",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MQTT 통신의 개요",
+        "url": "https://www.youtube.com/watch?v=Zh6Yhn8-Iw8",
+        "thumbnail": "https://i.ytimg.com/vi/Zh6Yhn8-Iw8/mqdefault.jpg",
+        "channel": "김샘자바",
+        "views": 3525,
+        "length": "23:12",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "이렇게 쓰면 합격합니다! 정보통신기술사 122회 1교시 MQTT 프로토콜",
+        "url": "https://www.youtube.com/watch?v=GPjZNM0weGc",
+        "thumbnail": "https://i.ytimg.com/vi/GPjZNM0weGc/mqdefault.jpg",
+        "channel": "테크타임",
+        "views": 22,
+        "length": "5:10",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Mosquitto MQTT 브로커 완벽 구축 가이드 (SSL/TLS 적용)  [김팔복TV]",
+        "url": "https://www.youtube.com/watch?v=eOJvcNUPLf8",
+        "thumbnail": "https://i.ytimg.com/vi/eOJvcNUPLf8/mqdefault.jpg",
+        "channel": "김팔복",
+        "views": 222,
+        "length": "28:54",
+        "published": "2개월 전",
         "stage": "실전"
       }
     ],
@@ -12459,88 +12459,6 @@
         "stage": "실전"
       }
     ],
-    "ethernet": [
-      {
-        "title": "데이터통신 제20강 이더넷(Ethernet)",
-        "url": "https://www.youtube.com/watch?v=952TgXq0mKA",
-        "thumbnail": "https://i.ytimg.com/vi/952TgXq0mKA/mqdefault.jpg",
-        "channel": "한국기술교육대학교박승철교수",
-        "views": 6134,
-        "length": "1:00:06",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[NJ EtherNet/IP 기초] 1장 EtherNetIP 통신의 특징",
-        "url": "https://www.youtube.com/watch?v=AmdN-6YApvw",
-        "thumbnail": "https://i.ytimg.com/vi/AmdN-6YApvw/mqdefault.jpg",
-        "channel": "[공식] 한국오므론제어기기 OMRON Korea",
-        "views": 2326,
-        "length": "5:17",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "데이터통신 제21강 이더넷 스위치(Ethernet Switch)",
-        "url": "https://www.youtube.com/watch?v=K6TM6IcUlds",
-        "thumbnail": "https://i.ytimg.com/vi/K6TM6IcUlds/mqdefault.jpg",
-        "channel": "한국기술교육대학교박승철교수",
-        "views": 1838,
-        "length": "52:39",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[자동제어] 통신RS485, Ethernet, Hart",
-        "url": "https://www.youtube.com/watch?v=jGbPXgVO69A",
-        "thumbnail": "https://i.ytimg.com/vi/jGbPXgVO69A/mqdefault.jpg",
-        "channel": "제어용이",
-        "views": 15422,
-        "length": "12:28",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Ethernet 관련 전반 설명",
-        "url": "https://www.youtube.com/watch?v=z1TjPdksHKc",
-        "thumbnail": "https://i.ytimg.com/vi/z1TjPdksHKc/mqdefault.jpg",
-        "channel": "Sangwon Min",
-        "views": 288,
-        "length": "46:42",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "서비스, Some/IP Ethernet 그리고 고성능 제어기 설계",
-        "url": "https://www.youtube.com/watch?v=oA9lVbG6WBc",
-        "thumbnail": "https://i.ytimg.com/vi/oA9lVbG6WBc/mqdefault.jpg",
-        "channel": "VECTOR Korea",
-        "views": 2320,
-        "length": "31:01",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "패킷 데이터그램 전송의 이해(Ethernet, HDLC, LAN, WAN)",
-        "url": "https://www.youtube.com/watch?v=zuEQfeP8p-Q",
-        "thumbnail": "https://i.ytimg.com/vi/zuEQfeP8p-Q/mqdefault.jpg",
-        "channel": "류프리",
-        "views": 800,
-        "length": "56:45",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ICND 1 2장 Ethernet LAN 8(L2 스위치 포트 보안 및 설정 실습)",
-        "url": "https://www.youtube.com/watch?v=T6livZfi9LQ",
-        "thumbnail": "https://i.ytimg.com/vi/T6livZfi9LQ/mqdefault.jpg",
-        "channel": "Cisco Network로의 여행",
-        "views": 214,
-        "length": "33:55",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "VPN": [
       {
         "title": "시스코(Cisco) CCNA #53(VPN가상사설망) Part1 (VPN개념 및 종류)",
@@ -12621,6 +12539,88 @@
         "length": "2:14",
         "published": "4년 전",
         "stage": "핵심"
+      }
+    ],
+    "ethernet": [
+      {
+        "title": "데이터통신 제20강 이더넷(Ethernet)",
+        "url": "https://www.youtube.com/watch?v=952TgXq0mKA",
+        "thumbnail": "https://i.ytimg.com/vi/952TgXq0mKA/mqdefault.jpg",
+        "channel": "한국기술교육대학교박승철교수",
+        "views": 6134,
+        "length": "1:00:06",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[NJ EtherNet/IP 기초] 1장 EtherNetIP 통신의 특징",
+        "url": "https://www.youtube.com/watch?v=AmdN-6YApvw",
+        "thumbnail": "https://i.ytimg.com/vi/AmdN-6YApvw/mqdefault.jpg",
+        "channel": "[공식] 한국오므론제어기기 OMRON Korea",
+        "views": 2326,
+        "length": "5:17",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "데이터통신 제21강 이더넷 스위치(Ethernet Switch)",
+        "url": "https://www.youtube.com/watch?v=K6TM6IcUlds",
+        "thumbnail": "https://i.ytimg.com/vi/K6TM6IcUlds/mqdefault.jpg",
+        "channel": "한국기술교육대학교박승철교수",
+        "views": 1838,
+        "length": "52:39",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[자동제어] 통신RS485, Ethernet, Hart",
+        "url": "https://www.youtube.com/watch?v=jGbPXgVO69A",
+        "thumbnail": "https://i.ytimg.com/vi/jGbPXgVO69A/mqdefault.jpg",
+        "channel": "제어용이",
+        "views": 15422,
+        "length": "12:28",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Ethernet 관련 전반 설명",
+        "url": "https://www.youtube.com/watch?v=z1TjPdksHKc",
+        "thumbnail": "https://i.ytimg.com/vi/z1TjPdksHKc/mqdefault.jpg",
+        "channel": "Sangwon Min",
+        "views": 288,
+        "length": "46:42",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "서비스, Some/IP Ethernet 그리고 고성능 제어기 설계",
+        "url": "https://www.youtube.com/watch?v=oA9lVbG6WBc",
+        "thumbnail": "https://i.ytimg.com/vi/oA9lVbG6WBc/mqdefault.jpg",
+        "channel": "VECTOR Korea",
+        "views": 2320,
+        "length": "31:01",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "패킷 데이터그램 전송의 이해(Ethernet, HDLC, LAN, WAN)",
+        "url": "https://www.youtube.com/watch?v=zuEQfeP8p-Q",
+        "thumbnail": "https://i.ytimg.com/vi/zuEQfeP8p-Q/mqdefault.jpg",
+        "channel": "류프리",
+        "views": 800,
+        "length": "56:45",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ICND 1 2장 Ethernet LAN 8(L2 스위치 포트 보안 및 설정 실습)",
+        "url": "https://www.youtube.com/watch?v=T6livZfi9LQ",
+        "thumbnail": "https://i.ytimg.com/vi/T6livZfi9LQ/mqdefault.jpg",
+        "channel": "Cisco Network로의 여행",
+        "views": 214,
+        "length": "33:55",
+        "published": "2년 전",
+        "stage": "실전"
       }
     ],
     "XML": [
