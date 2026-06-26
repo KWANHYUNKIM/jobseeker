@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-06-26T15:54:46",
- "total": 853,
+ "generated_at": "2026-06-26T17:44:35",
+ "total": 854,
  "sources": [
   {
    "company": "Etsy",
@@ -143,6 +143,11 @@
    "count": 12
   },
   {
+   "company": "Razorpay",
+   "country": "IN",
+   "count": 11
+  },
+  {
    "company": "당근",
    "country": "KR",
    "count": 11
@@ -151,11 +156,6 @@
    "company": "Airbnb",
    "country": "US",
    "count": 11
-  },
-  {
-   "company": "Razorpay",
-   "country": "IN",
-   "count": 10
   },
   {
    "company": "Swiggy",
@@ -517,6 +517,34 @@
   "Model Context Protocol": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "razorpay",
+   "company": "Razorpay",
+   "country": "IN",
+   "title": "Turning Scattered Data Into Queryable Segments at Scale: How Razorpay Built Its Customer Data…",
+   "url": "https://engineering.razorpay.com/turning-scattered-data-into-queryable-segments-at-scale-how-razorpay-built-its-customer-data-3937c4b012de",
+   "published": "2026-06-26",
+   "published_ts": 1782461193.0,
+   "summary": "Turning Scattered Data Into Queryable Segments at Scale: How Razorpay Built Its Customer Data Platform\n\nA consent-native CDP that serves audience segments across 500M+ user profiles in under 30ms, with PII isolated to the source systems.\n\nThe Problem We Were Solving\n\nA customer opens her favourite online shopping app, adds a few items to her cart, and pays ₹1,200 via UPI, powered invisibly by Razorpay. A week later she returns and pays using a saved Visa card from her laptop. Later that month, she places a larger ₹8,500 order through net banking from work.\n\nThree transactions. Three different…",
+   "tags": [],
+   "tech_stack": [
+    "Airflow",
+    "Kafka",
+    "Spark",
+    "DynamoDB",
+    "PostgreSQL",
+    "Hash Table",
+    "Security"
+   ],
+   "categories": [
+    "데이터",
+    "데이터베이스",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "8211b0f4158b1269"
+  },
   {
    "key": "woowahan",
    "company": "우아한형제들",
