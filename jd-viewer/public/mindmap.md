@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7158건** 공고 · **1340개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-04 07:08
+- 총 **7159건** 공고 · **1341개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-04 08:54
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -7500,7 +7500,7 @@ markmap:
 ### 하이비젼시스템 `중소기업` · 2건
 
 
-## 핀테크/금융 (93개사)
+## 핀테크/금융 (94개사)
 ### 다우기술 `중견기업` · 20건
 - **백엔드** [11건] · `JavaScript` `SVN` `Java` `C++` `Git` `Jira`
   - [증권 MTS 채널 개발 ↗](https://www.wanted.co.kr/wd/277452)
@@ -8409,6 +8409,17 @@ markmap:
   - [(NHN KCP) 웹퍼블리싱 담당(3년 이상) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54289468&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=c4f36120-1e80-49f3-a6d7-6a4cddc31ba8)
 - **모바일** [1건] · `Java` `Kotlin` `Spring` `PostgreSQL` `Redis` `Oracle`
   - [(NHN KCP) 백엔드(API) 개발 담당 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54085892&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dbf6cd93-a80d-49e8-92d2-31c0387d85f9)
+
+### 우리에프아이에스(주) `중소기업` · 2건
+- **백엔드** [1건] · `Java` `JavaScript` `C++` `Android` `Oracle` `Linux`
+  - [(우리FIS) 26년 7월 개발 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367269&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=61dd180a-3b23-4e4f-829b-596aab6653a8)
+- **프론트엔드** [2건] · `Java` `C++` `Oracle` `Linux` `JavaScript` `Android`
+  - [(우리FIS) 26년 7월 개발 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367269&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=61dd180a-3b23-4e4f-829b-596aab6653a8)
+  - [(우리FIS) 26년 7월 인프라 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367074&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=99f87426-2b22-4457-a35c-2ee7f5c0cf5f)
+- **모바일** [1건] · `Java` `JavaScript` `C++` `Android` `Oracle` `Linux`
+  - [(우리FIS) 26년 7월 개발 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367269&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=61dd180a-3b23-4e4f-829b-596aab6653a8)
+- **DevOps/인프라** [1건] · `Java` `Python` `C++` `C#` `React` `Vue`
+  - [(우리FIS) 26년 7월 인프라 부문 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367074&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=99f87426-2b22-4457-a35c-2ee7f5c0cf5f)
 
 ### (주)커리어라이즈 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `iOS` `Android` `Kotlin` `JavaScript` `C++`
