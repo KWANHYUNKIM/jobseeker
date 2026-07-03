@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T05:30:16",
-  "source_dir": "screenshots/all_통합_20260704_053000",
+  "generated_at": "2026-07-04T07:08:37",
+  "source_dir": "screenshots/all_통합_20260704_070821",
   "keyword": "통합",
   "jobs": [
     {
@@ -149202,6 +149202,36 @@
     },
     {
       "site": "saramin",
+      "company": "우리에프아이에스(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[우리FIS] 26년 7월 개발 부문 경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367269&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=61dd180a-3b23-4e4f-829b-596aab6653a8",
+      "career": "경력 4~14년",
+      "location": "서울마포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "C++",
+        "Android",
+        "Oracle",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "-관련 경력 4년 ~ 7년\n\n-Javascript 기반 중급 이상 프론트엔드 개발 역량\n\n-Java, JSP 중급 이상 개발 역량\n\n-Tibero, Oracle SQL 작성 능력\n\n-인터페이스(Json, EAI 등) 개발 경험\n\n-Linux 경험\n\n-SAP 모듈 5년 이상 경험자\n\n-※ 모듈 : FI(재무회계), CO(관리회계), AM(자산), TR(자금), SD(청구), MM(구매), PM(실물)\n\n-현업 부서의 요구사항 분석을 통한 ERP 프로세스 개선 및 최적화 경험\n\n-시스템 오류 발생 시 데이터 관련 신속한 원인 분석 및 트러블슈팅 능력",
+      "preferences": "-금융권 IT 프로젝트 개발/운영 경험\n\n-Android(Java) 개발 역량\n\n-우리은행 공통 F/W 개발 경험\n\n개발\n\n-SAP ABAP Certification 자격증 우대\n\n-금융권 IT 개발 및 운영 경험",
+      "main_tasks": "-우리금융그룹 內 업무시스템 개발/운영\n\n-SAP ERP 관리회계(예산관리) 업무 및 재무회계 업무\n\n-SAP ERP 자산/자금 업무 및 실물자산 업무\n\n-SAP ERP 구매 업무 (취득업무, 유지보수 업무)\n\n-SAP ERP 청구관리 업무",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "네이버웹툰(유)",
       "company_size": "대기업",
       "company_size_matched": "네이버웹툰",
@@ -214762,19 +214792,19 @@
     }
   ],
   "stats": {
-    "total": 7157,
+    "total": 7158,
     "by_size": {
-      "중소기업": 6449,
+      "중소기업": 6450,
       "대기업": 398,
       "중견기업": 310
     },
     "by_role": {
       "기타": 977,
       "DevOps/인프라": 1043,
-      "백엔드": 3094,
-      "모바일": 1104,
+      "백엔드": 3095,
+      "모바일": 1105,
       "AI/ML": 2459,
-      "프론트엔드": 1981,
+      "프론트엔드": 1982,
       "풀스택": 651,
       "게임": 38,
       "데이터": 937,
@@ -214786,7 +214816,7 @@
       "wanted": 1818,
       "jumpit": 523,
       "jobkorea": 1212,
-      "saramin": 3238,
+      "saramin": 3239,
       "dev": 366
     },
     "top_tech": [
@@ -214796,7 +214826,7 @@
       ],
       [
         "Java",
-        1844
+        1845
       ],
       [
         "AWS",
@@ -214820,11 +214850,11 @@
       ],
       [
         "JavaScript",
-        1002
+        1003
       ],
       [
         "Linux",
-        979
+        980
       ],
       [
         "TypeScript",
@@ -214856,7 +214886,7 @@
       ],
       [
         "C++",
-        616
+        617
       ],
       [
         "Node.js",
@@ -214872,7 +214902,7 @@
       ],
       [
         "Android",
-        499
+        500
       ],
       [
         "PyTorch",
@@ -214913,22 +214943,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-08T21:34:02",
-      "keyword": "통합",
-      "raw_total": 5083,
-      "deduped": 4984,
-      "active": 4973,
-      "closed": 11,
-      "site_counts": {
-        "wanted": 1073,
-        "jumpit": 416,
-        "jobkorea": 951,
-        "saramin": 2468,
-        "dev": 175
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-08T23:00:12",
       "keyword": "통합",
@@ -218109,6 +218123,22 @@
         "jumpit": 792,
         "jobkorea": 2281,
         "saramin": 6066,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-04T07:08:31",
+      "keyword": "통합",
+      "raw_total": 11623,
+      "deduped": 10018,
+      "active": 7158,
+      "closed": 2860,
+      "site_counts": {
+        "wanted": 1887,
+        "jumpit": 792,
+        "jobkorea": 2281,
+        "saramin": 6067,
         "dev": 596
       },
       "anomalies": []
