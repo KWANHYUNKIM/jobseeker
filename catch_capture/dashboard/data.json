@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T02:11:43",
-  "source_dir": "screenshots/all_통합_20260704_021125",
+  "generated_at": "2026-07-04T03:50:43",
+  "source_dir": "screenshots/all_통합_20260704_035026",
   "keyword": "통합",
   "jobs": [
     {
@@ -73018,6 +73018,73 @@
     },
     {
       "site": "jumpit",
+      "company": "엠투아이코퍼레이션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "펌웨어 개발 신입 채용",
+      "url": "https://jumpit.saramin.co.kr/position/54321693",
+      "career": "신입",
+      "location": "경기 안양시 동안구 시민대로327번길11-35\n지도보기·\n주소복사",
+      "dday": "D-25",
+      "tech_stack": [
+        "C++",
+        "C#",
+        "C/C++",
+        "Linux"
+      ],
+      "tech_tags": [
+        "C",
+        "C#",
+        "C++",
+        "Linux",
+        "Embedded Linux",
+        "Zephyr",
+        "Yocto",
+        "Scope"
+      ],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ대학 4년 이상\nㆍ신입\nㆍ컴퓨터, 전자, 정보통신 전공 전공자\nㆍC/C++ 능숙자\nㆍlinux device driver 개발 경험 또는 RTOS 제품 개발 경험\n(신입의 경우 이에 준하는 사항 기재)\nㆍ오실로스코프 사용 가능자",
+      "preferences": "ㆍROS(Robot Operating System) 경험자 우대\nㆍ EtherCAT Master 개발 경험자 우대\nㆍ 리눅스 개발 경험자 우대\nㆍ Yocto File system 개발 경험자 우대",
+      "main_tasks": "ㆍEmbedded Linux 제품 개발\nㆍZephyr 펌웨어 개발",
+      "benefits": "하나. 선택적 복지제도\nㆍ본인이 원하는 취미, 문화, 외식 등 지원\n둘. 임직원 건강관리\nㆍ2년마다 종합건강검진 지원\nㆍ사내 헬스센터 운영\n셋. 식사 제공\nㆍ사내식당에서 따뜻한 식사 제공\n넷. 장기근속자 포상\nㆍ리프레시 휴가 및 휴가비 지원\n다섯. 직무교육 지원\nㆍ직무 관련 외부교육 아낌없이 지원\n여섯. 기념일 지원\nㆍ생일, 출산 상품권 지급\n일곱. 경조사 지원\nㆍ경조휴가 및 경조금\nㆍ자녀 입학 축하금\n여덟. 여가활동 지원\nㆍ제휴 리조트 할인가 이용 가능\nㆍ사내 동호회 지원금"
+    },
+    {
+      "site": "jumpit",
+      "company": "블루닷",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "코덱 소프트웨어 엔지니어 (경력)",
+      "url": "https://jumpit.saramin.co.kr/position/54289618",
+      "career": "경력 3~12년",
+      "location": "서울 강남구 언주로527, 2, 4층\n지도보기·\n주소복사",
+      "dday": "D-22",
+      "tech_stack": [
+        "C++",
+        "C/C++"
+      ],
+      "tech_tags": [
+        "Embedded",
+        "FPGA"
+      ],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결"
+      ],
+      "qualifications": "• C/C++ 능숙\n• 임베디드 환경(SoC, FPGA, HW 플랫폼 등) 개발 경험\n• 업무 자동화를 위한 스크립팅 경험\n• 멀티미디어 시스템 혹은 비디오 코덱 소프트웨어 사용/통합 경험",
+      "preferences": "• Embedded SW/FW 개발 경험 (SoC, FPGA, HW 플랫폼 등)\n• 고객사 대상 SDK/Driver 배포 및 기술 지원 경험\n• 영상처리/코덱 상위 레벨 기능 구현 경험 (인코더 제어, 트랜스코딩, 스트리밍 적용 등)",
+      "main_tasks": "• 코덱 소프트웨어 및 임베디드 펌웨어 구현 및 최적화\n• 임베디드 환경(SoC, FPGA, HW 플랫폼 등)에서의 코덱 기능 통합 및 성능 검증\n• 고객사 대상 SDK/라이브러리 제공 및 기술 지원\n• 고객 환경에 맞춘 코덱 통합, Customizing, 문제 해결 지원\n• 내부 시스템 소프트웨어/반도체 설계팀과 협업",
+      "benefits": "블루닷은 직원의 행복한 삶을 응원합니다.\n\n[Life]\n• 점심비 지원\n맛있는 점심을 드실 수 있도록 점심비를 지원합니다. (최대 12,000원)\n• 복지포인트 지급\n자기개발, 여가/취미 활동지원을 위한 복지포인트를 지급합니다.(연 최대 100만원)\n• 경조사 지원\n결혼, 출산, 장례 등 중요한 경조사에 축하 및 조의를 전하며 화환 및 경조비를 지급합니다.\n• 명절 및 기념일 선물\n명절과 기념일에 감사의 마음을 전하기 위해 소정의 선물을 지급합니다.\n\n[Wellness]\n• 종합건강검진 지원\n직원의 건강관리를 위한 종합건강검진을 지원합니다.(연 1회, 100만원 상당)\n\n[Work]\n• 자율근무 및 휴가제도 운영\n최적의 시간과 공간을 선택할 수 있는 자율 근무와 자율 휴가 제도를 운영합니다.\n(정해진 근무시간 없이 자유롭게 출근하시고, 법정 휴가 소진하셨어도 일정에 맞게 휴가 사용하실 수\n있습니다:))\n• 업무성장 지원\n직원의 성장을 위해 업무 관련 도서 및 외부 교육을 지원합니다.\n• 팀활동비 지원\n팀의 원활한 협업과 소통을 위한 팀활동비를 지원합니다.\n• 스카우트 리워드\n함께 일하고 싶은 동료를 추천해주세요! 그럼 스카우트 리워드가 지급됩니다.\n• 업무환경 개선\n최고의 퍼포먼스를 위해 업무환경을 끊임없이 개선하고자 노력합니다."
+    },
+    {
+      "site": "jumpit",
       "company": "바이트사이즈",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -75052,43 +75119,6 @@
     },
     {
       "site": "jumpit",
-      "company": "엠투아이코퍼레이션",
-      "company_size": "중소기업",
-      "company_size_matched": null,
-      "title": "펌웨어 개발 신입 채용",
-      "url": "https://jumpit.saramin.co.kr/position/54026058",
-      "career": "신입",
-      "location": "경기 안양시 동안구 시민대로327번길11-35\n지도보기·\n주소복사",
-      "dday": "D-22",
-      "tech_stack": [
-        "C++",
-        "C#",
-        "C/C++",
-        "Linux"
-      ],
-      "tech_tags": [
-        "C",
-        "C#",
-        "C++",
-        "Linux",
-        "Embedded Linux",
-        "Zephyr",
-        "Yocto",
-        "Scope"
-      ],
-      "roles": [
-        "펌웨어/임베디드"
-      ],
-      "competencies": [
-        "석박사 우대"
-      ],
-      "qualifications": "ㆍ대학 4년 이상\nㆍ신입\nㆍ컴퓨터, 전자, 정보통신 전공 전공자\nㆍC/C++ 능숙자\nㆍlinux device driver 개발 경험 또는 RTOS 제품 개발 경험\n(신입의 경우 이에 준하는 사항 기재)\nㆍ오실로스코프 사용 가능자",
-      "preferences": "ㆍROS(Robot Operating System) 경험자 우대\nㆍ EtherCAT Master 개발 경험자 우대\nㆍ 리눅스 개발 경험자 우대\nㆍ Yocto File system 개발 경험자 우대",
-      "main_tasks": "ㆍEmbedded Linux 제품 개발\nㆍZephyr 펌웨어 개발",
-      "benefits": "하나. 선택적 복지제도\nㆍ본인이 원하는 취미, 문화, 외식 등 지원\n둘. 임직원 건강관리\nㆍ2년마다 종합건강검진 지원\nㆍ사내 헬스센터 운영\n셋. 식사 제공\nㆍ사내식당에서 따뜻한 식사 제공\n넷. 장기근속자 포상\nㆍ리프레시 휴가 및 휴가비 지원\n다섯. 직무교육 지원\nㆍ직무 관련 외부교육 아낌없이 지원\n여섯. 기념일 지원\nㆍ생일, 출산 상품권 지급\n일곱. 경조사 지원\nㆍ경조휴가 및 경조금\nㆍ자녀 입학 축하금\n여덟. 여가활동 지원\nㆍ제휴 리조트 할인가 이용 가능\nㆍ사내 동호회 지원금"
-    },
-    {
-      "site": "jumpit",
       "company": "디지털포토",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -75630,36 +75660,6 @@
       "preferences": "- GCP / AWS 데이터 서비스 경험\n\n- 모델링 경험\n\n- AI/LLM 서비스 데이터 파이프라인경험\n\n- 대규모 DW/DM 설계·운영 경험",
       "main_tasks": "1) 데이터 파이프라인\n\n- AI/LLM 서비스 데이터 파이프라인 개발 및 구축\n\n- ETL/ELT 프로세스 설계 및 자동화\n\n- 실시간 데이터 처리 및 배치 처리 파이프라인 운영 관리\n\n- MLOps 파이프라인 구축 (모델 학습 데이터 자동 공급)\n\n- 데이터 수집, 정제, 적재, 검증 프로세스 표준화\n\n2) 데이터 아키텍처\n\n- 추천 및 검색 시스템 연계를 위한 데이터 구조 설계\n\n- 데이터 아키텍처 설계및 기술 방향성 수립 지원\n\n- 통합 데이터 웨어하우스 구축\n\n- genser / gelatto 데이터 통합 전략 수립 지원\n\n3. 데이터 모델링\n\n- 데이터 모델링 체계 구축 및 표준 수립\n\n- 데이터 마트 논리적 설계 검증 및 리뷰 (DA 지원)\n\n- 데이터 마트 물리적 구현\n\n- 데이터 품질 관리 운영\n\n4. 데이터 분석 및 리포트 지원\n\n- 데이터 리포트 및 운영 지표 데이터셋 구축\n\n- 비즈니스 분석용 데이터 추출 및 가공\n\n- 운영 지표 및 서비스 성과 분석\n\n- 분석 자동화 및 데이터 리포트 운영\n\n- 데이터 기반 인사이트 도출 지원",
       "benefits": "[ 기본적인 것은 확실하게]\n• 4대 보험 가입\n• 내일 채움 공제 지원\n• 단체 상해 보험 (실비 보험) 가입\n• 연 30만 복지포인트 지급\n\n[여러분의 성장을 응원합니다]\n• 자유롭게 스터디 및 각종 컨퍼런스에 참석할 수 있어요. 물론 비용도 지원!\n• 장비 지원금 (노트북 / 디지털 장비)을 제공해요.\n• 업무 관련된 도서비 구입 비용도 지원 해드려요.\n\n[팀내 / 팀간 긍정적 에너지를 통해 업무 능률 쑥쑥]\n• 각종 동호회 활동 비용을 지원해 드려요.\n• 팀별 회식비도 지원 해드려요.\n\n[일과 삶의 균형도 중요하죠]\n• 빠른데이 (매월 셋째 주 수요일 5시 퇴근) 문화가 있어요\n• 유연 근무제(8시 ~ 10시반 자율 선택)를 시행하고 있어요.\n• 설날, 추석, 창립기념일은 따뜻하게 보내세요(상여급 지급)\n• 자유로운 연차 사용을 보장해요.\n\n[즐거운 일과 슬픈 일에도 함께해요]\n• 생일자에게 기프티콘 지급!\n• 각종 경조사비 경조휴가 지원해드려요.\n\n[쾌적하고 즐겁게 일할 수 있어요]\n• 휴게 공간에 안마의자와 각종 음료수, 커피머신이 있어요\n• 스트레스 해소를 위한 게임기를 보유하고 있어요.\n• 딥러닝 모델링을 위한 고사양 워크스테이션을 보유하고 있어요"
-    },
-    {
-      "site": "jumpit",
-      "company": "블루닷",
-      "company_size": "중소기업",
-      "company_size_matched": null,
-      "title": "코덱 소프트웨어 엔지니어 (경력)",
-      "url": "https://jumpit.saramin.co.kr/position/54000870",
-      "career": "경력 3~12년",
-      "location": "서울 강남구 언주로527 강남텔레피아빌딩\n지도보기·\n주소복사",
-      "dday": "D-19",
-      "tech_stack": [
-        "C++",
-        "C/C++"
-      ],
-      "tech_tags": [
-        "Embedded",
-        "FPGA"
-      ],
-      "roles": [
-        "펌웨어/임베디드"
-      ],
-      "competencies": [
-        "협업/커뮤니케이션",
-        "문제해결"
-      ],
-      "qualifications": "• C/C++ 능숙\n• 임베디드 환경(SoC, FPGA, HW 플랫폼 등) 개발 경험\n• 업무 자동화를 위한 스크립팅 경험\n• 멀티미디어 시스템 혹은 비디오 코덱 소프트웨어 사용/통합 경험",
-      "preferences": "• Embedded SW/FW 개발 경험 (SoC, FPGA, HW 플랫폼 등)\n• 고객사 대상 SDK/Driver 배포 및 기술 지원 경험\n• 영상처리/코덱 상위 레벨 기능 구현 경험 (인코더 제어, 트랜스코딩, 스트리밍 적용 등)",
-      "main_tasks": "• 코덱 소프트웨어 및 임베디드 펌웨어 구현 및 최적화\n• 임베디드 환경(SoC, FPGA, HW 플랫폼 등)에서의 코덱 기능 통합 및 성능 검증\n• 고객사 대상 SDK/라이브러리 제공 및 기술 지원\n• 고객 환경에 맞춘 코덱 통합, Customizing, 문제 해결 지원\n• 내부 시스템 소프트웨어/반도체 설계팀과 협업",
-      "benefits": "블루닷은 직원의 행복한 삶을 응원합니다.\n\n[Life]\n• 점심비 지원\n맛있는 점심을 드실 수 있도록 점심비를 지원합니다. (최대 12,000원)\n• 복지포인트 지급\n자기개발, 여가/취미 활동지원을 위한 복지포인트를 지급합니다.(연 최대 100만원)\n• 경조사 지원\n결혼, 출산, 장례 등 중요한 경조사에 축하 및 조의를 전하며 화환 및 경조비를 지급합니다.\n• 명절 및 기념일 선물\n명절과 기념일에 감사의 마음을 전하기 위해 소정의 선물을 지급합니다.\n\n[Wellness]\n• 종합건강검진 지원\n직원의 건강관리를 위한 종합건강검진을 지원합니다.(연 1회, 100만원 상당)\n\n[Work]\n• 자율근무 및 휴가제도 운영\n최적의 시간과 공간을 선택할 수 있는 자율 근무와 자율 휴가 제도를 운영합니다.\n(정해진 근무시간 없이 자유롭게 출근하시고, 법정 휴가 소진하셨어도 일정에 맞게 휴가 사용하실 수\n있습니다:))\n• 업무성장 지원\n직원의 성장을 위해 업무 관련 도서 및 외부 교육을 지원합니다.\n• 팀활동비 지원\n팀의 원활한 협업과 소통을 위한 팀활동비를 지원합니다.\n• 스카우트 리워드\n함께 일하고 싶은 동료를 추천해주세요! 그럼 스카우트 리워드가 지급됩니다.\n• 업무환경 개선\n최고의 퍼포먼스를 위해 업무환경을 끊임없이 개선하고자 노력합니다."
     },
     {
       "site": "jumpit",
@@ -80159,6 +80159,62 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜핑거",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(계약직) 스마트뱅킹 개발자를 모십니다",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49512459?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=66&sc=630",
+      "career": "경력8년↑",
+      "location": "서울 영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "React",
+        "Spring",
+        "Spring Boot",
+        "PostgreSQL",
+        "Oracle",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "대용량 처리",
+        "MSA/분산"
+      ],
+      "qualifications": "ㆍJAVA, Jsp, JavaScript, React, Spring/Spring Boot, MSA, Oracle 또는 PostgreSQL\n\nㆍ대용량 데이터 처리 및 SQL 튜닝 경험\n\n근무 장소\n\nㆍ인덕원\n\nㆍ을지로, 또는 서울 시청 주변",
+      "preferences": "",
+      "main_tasks": "ㆍ스마트뱅킹 개발(채널)",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "핫셀러",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "신입 개발자 채용 (경력 2년 이하)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49512827?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=86&sc=630",
+      "career": "신입 개발자 채용 (경력 2년 이하)",
+      "location": "서울 동대문구 외 4",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜에이블리코퍼레이션",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -83683,6 +83739,77 @@
       "qualifications": "ㆍ학력 : 초대졸이상\n\nㆍ경력 : 경력3년↑",
       "preferences": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요",
       "main_tasks": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요\n\n스킬\n\nㆍJavascript, Jquery, three.js, Docker, JAVA, MariaDB, Python, Elasticsearch",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "우성오토콘㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "React 프론트엔드(Front-end) 개발",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49504914?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=40&sc=630",
+      "career": "경력무관",
+      "location": "서울 금천구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜더존테크윌",
+      "company_size": "중견기업",
+      "company_size_matched": "더존",
+      "title": "프론트엔드 개발자, react 리액트, typescript, 타입스크립트",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49505825?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=57&sc=630",
+      "career": "경력1년↑",
+      "location": "경기 하남시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "TypeScript",
+        "PHP",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 경력1년↑",
+      "preferences": "ㆍ자격증 : 정보처리기사",
+      "main_tasks": "ㆍ웹 플랫폼 프론트엔드 서비스 개발 및 UI/UX 구현\nㆍReact 기반 컴포넌트 설계 및 재사용성 높은 코드 작성\nㆍTypeScript 기반의 안정적인 프론트엔드 코드 개발\nㆍ백엔드 API 연동 및 데이터 상태 관리 최적화\nㆍ기존 웹 서비스의 퍼블리싱 고도화 및 반응형 웹 구현\nㆍ사용자 요구사항에 따른 신규 화면 및 기능 설계·구현\nㆍPython, PHP, Java 등 다양한 백엔드 환경과의 연동 및 협업\nㆍ서비스 기획, 디자인, 백엔드 개발 조직과의 기능 개선 협업\nㆍ웹 서비스 성능, 접근성, 유지보수성을 고려한 화면 구조 개선\n\n스킬\n\nㆍReact, TypeScript\n\n핵심역량\n\nㆍ\n성장지향성,\n계획성, 성실성, 협동심, 메타인지",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜바로인터랙티브",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[파트타임] 웹 프론트엔드 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49499613?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=73&sc=630",
+      "career": "경력1년↑",
+      "location": "서울 금천구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 학력무관",
+      "preferences": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요",
+      "main_tasks": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요",
       "benefits": ""
     },
     {
@@ -137003,6 +137130,44 @@
     },
     {
       "site": "saramin",
+      "company": "(주)아이에이드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)아이에이드와 의료영상 AI 서비스 백엔드/운영을 함께해요",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359974&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=64a327d0-116a-4a6a-89c4-cb2490444469",
+      "career": "경력 2~5년",
+      "location": "서울송파구 | 6,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "Django",
+        "FastAPI",
+        "MySQL",
+        "Redis",
+        "AWS",
+        "Docker",
+        "GitHub Actions",
+        "Nginx",
+        "Linux",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "• 경력 2년 이상 ~ 5년 이하\n\n• 학력무관\n\n• Java / Spring Boot 기반 백엔드 개발 또는 유지보수 경험\n\n• REST API 개발 및 연동 경험\n\n• MySQL 등 RDB 사용 경험\n\n• Git을 이용한 형상관리 경험이 있는 분\n\n• 서버 로그를 보고 문제를 추적하고 해결할 수 있는 분\n\n• 기존 프로젝트 코드를 읽고 구조를 파악할 수 있는 분\n\n• 운영 중인 서비스의 안정성과 장애 대응을 중요하게 생각하는 분",
+      "preferences": "- 의료영상, DICOM, PACS, Web Viewer 관련 경험\n\n- Spring Boot 멀티모듈 프로젝트 경험\n\n- AWS S3 또는 파일 업로드/다운로드 기능 개발 경험\n\n- 병원 시스템, EMR/HIS, EAI 연동 경험\n\n- 병원 시스템 또는 헬스케어 서비스 연동 경험\n\n- 기존 프로젝트를 인수인계 받아 구조를 파악하고 안정화해본 경험",
+      "main_tasks": "1. 외부 시스템 연동\n\n- 병원/외부 시스템과의 API 연동 유지보수\n\n- PACS/DICOM 전송, 파일 업로드, 이메일 알림 등 연동 기능 관리\n\n- 기존 Spring Boot 기반 미들웨어 서버 인수인계 및 유지보수\n\n2. 의료영상 AI 웹서비스 운영 및 개발\n\n- 자사 의료영상 AI 분석 서비스의 백엔드 유지보수 및 기능 개선\n\n- 회원가입, 로그인, JWT 인증, 사용자 관리, 결제 연동 기능 유지보수\n\n- 분석 요청, 분석 상태 조회, 결과 다운로드 등 서비스 API 관리\n\n- 관리자 페이지 및 운영 기능 개선\n\n3. 서버 배포 및 인프라 운영\n\n- FastAPI, Django, Spring Boot 기반 서버 실행 및 장애 대응\n\n- Nginx 리버스 프록시, SSL 인증서, 도메인 라우팅 설정 관리\n\n- Windows/Linux 서버 환경에서 서비스 실행 상태 점검\n\n- 로그 확인, 서버 재시작, 환경변수 관리, 장애 원인 분석",
+      "benefits": "- 유연근무제 운영\n\n- 주 1회 재택근무 가능\n\n- 자유로운 연차 사용\n\n- 업무용 장비 지원\n\n- 업무 관련 교육/도서 지원\n\n- 4대 보험 및 퇴직연금\n\n- 명절 선물 및 경조사 지원"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -188469,6 +188634,114 @@
     },
     {
       "site": "saramin",
+      "company": "(주)트랜스코스모스코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[판교/평일] 카카오뱅크 정보보안 기술지원 담당자 MBs5",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54364806&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=71bb7da6-1fd0-499c-a9bc-a217656fe432",
+      "career": "경력무관",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)신한디에스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "보안운영 경력직 수시채용(침해대응)(~채용 시 마감)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54252529&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=34c23225-3060-472e-9220-a2a94dba85a1",
+      "career": "경력",
+      "location": "경기용인시 수지구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "- 위협탐지 솔루션 구축 및 운영 경험\n- 서버 및 보안 유관 지식 보유자\n- 인수인계 및 회의 시 서울 중구 출근 가능자",
+      "preferences": "",
+      "main_tasks": "- 위협탐지 및 위협관리 솔루션 운영\n- 위협정보 기반 보안조치 지원",
+      "benefits": "ㆍ선물 : 임신/출산 선물\nㆍ리프레시 : 연차\nㆍ교육/생활 : 자격증취득지원, 사내동호회 운영\nㆍ지원금/보험 : 건강검진, 각종 경조사 지원, 복지카드/포인트"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)신한디에스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "보안운영 경력직 수시채용(네트워크보안)(~채용 시 마감)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54252425&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=34c23225-3060-472e-9220-a2a94dba85a1",
+      "career": "경력4년↑",
+      "location": "경기용인시 수지구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "- 네트워크 보안시스템 운영 경력 4년 이상\n- 네트워크 모니터링 및 트러블 슈팅\n- 네트워크 지식 보유자",
+      "preferences": "",
+      "main_tasks": "- 네트워크보안 솔루션 운영 및 관리(방화벽/ IPS / DDOS / WAF 등)\n- 금융IT 감사 및 인중심사 대용(금감원 감사, ISMS, ISO27001 등)",
+      "benefits": "ㆍ선물 : 임신/출산 선물\nㆍ리프레시 : 연차\nㆍ교육/생활 : 자격증취득지원, 사내동호회 운영\nㆍ지원금/보험 : 건강검진, 각종 경조사 지원, 복지카드/포인트"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)다우기술",
+      "company_size": "중견기업",
+      "company_size_matched": "다우기술",
+      "title": "AI 보안 엔지니어",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54296319&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=34c23225-3060-472e-9220-a2a94dba85a1",
+      "career": "경력 3~10년",
+      "location": "경기성남시 수정구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "관련 업무 경험이 있는 분 (3~10년 이상 / 선임~책임급)\n• AI 모델 개발\n• 소프트웨어 취약점 분석 및 Poc 분석\n• 모의해킹 및 취약점 대응 전략 수립",
+      "preferences": "• AI 모델 개발, 분석 경험 보유\n• AI 모델 학습 전략 수립 및 데이터 셋 구축, 최적화 경험 보유\n• AI 모델 취약점 분석 경험 보유\n• Security for AI, Security By AI 전략 수립 및 운영 경험 보유\n\n마감일 및 근무지\n\n• 마감일 : 2026년 07월 07일",
+      "main_tasks": "• AI 모델 취약점 분석\n• AI 모델 방어 전략 수립\n• AI 공격 탐지 모델 개발",
+      "benefits": "• 동종업계 최고 수준의 근무환경, 기업문화, 보상\n　- 인적자원개발우수기업\n　- 대한민국 일하기 좋은 100대 기업 선정(GWP)\n　- 맥북 등 최신 개발 장비 지급\n　- 유연근무제(선택적 근로시간제) 실시\n　- 개발자/엔지니어 연봉 인상\n\n• 회사와 임직원의 동반성장을 위한 다양한 자기개발지원제도와 복지제도\n　- 자기개발비 지급\n　- 온/오프라인 교육 및 도서구매 지원\n　- 해외 컨퍼런스 지원, 사내 세미나, 전사 특강\n　- 자녀교육비 지원, 주택자금 대출, 복지포인트 지급\n　- 콘도/연수원 운영, 도서관 운영\n　- 출퇴근셔틀버스 운행 등"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)헥토파이낸셜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[헥토파이낸셜] 정보보안 담당자 (팀장급)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54338407&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=34c23225-3060-472e-9220-a2a94dba85a1",
+      "career": "경력10년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "- 경력 10년 이상, 학사 이상\n\n- 핀테크 / 금융회사 등 금융보안 실무 경험\n\n- 전자금융거래법 및 전자금융 감독규정 기반의\n\n보안체계 구축 가능하신 분\n\n- ISMS-P / ISO / PCI-DSS 인증심사\n\n대응경험 및 이해가 높으신 분\n\n- 기술보안(보안장비, 모의해킹, 취약점 진단) 이해가 높으신 분",
+      "preferences": "- ISMS-P / PCI-DSS 인증심사원 자격증 소지자\n\n- 마이데이터, 커머스 , 신용정보회사 등의\n\n개인(신용)정보 업무 경험자\n\n- AI/클라우드 서비스 도입 시\n\n보안정책 검토 및 리스크 평가 경험자",
+      "main_tasks": "- 취약점 진단 및 보안솔루션 운영\n\n- 정보보안 정책 / 관리체계 수립 및 운영\n\n- 정보보안 기획 및 내부통제\n\n(자체 보안성 심의, 신사업 보안성 검토, 내부감사 등)\n\n- 정보보안 인증 취득 및 유지\n\n(ISMS-P, ISO27001, PCI-DSS)\n\n- 금융당국 규제 대응 및 외부 감사 수검 대응",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)미디어로그",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -194071,6 +194344,60 @@
       "qualifications": "• 경력 3년 이상 ~ 7년 이하\n\n• 학력무관",
       "preferences": "",
       "main_tasks": "- 리눅스 서버 관련 업무 처리 필요\n\n- Frontend AngularJS 1.x Ionic Framework (Hybrid App) JavaScript / HTML5 / CSS\n\n- Backend Java 8 이상 Spring Boot Spring MVC REST API\n\n- AngluarJs 프로젝트 개발 경험\n\n- Database\n\nOracle (주 DB)\n\nDB2 (legacy 연동)\n\nMySQL (특정 모듈)",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "윤디스크㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[JAVA/JSP] 개발자 모집 - 과장급",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54363243&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=bc61e397-1d76-4ad5-9c40-fb147b95a18b",
+      "career": "경력3년↑",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "iOS",
+        "Android",
+        "Docker",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일"
+      ],
+      "competencies": [
+        "성능 최적화"
+      ],
+      "qualifications": "• 과장급 이상\n• 대학졸업(2, 3년 이상)\n• 웹 개발/운영 실무 경력 3년 이상\n• 스프링 등 표준프레임워크를 이용한 개발 경험이 있는 분\n• JAVA 개발이 가능한 분",
+      "preferences": "• 전공 : 공학계열(관련 자격증 소지자)\n\n• 보유역량 : 인근거주자, 해당직무 근무경험, 계획성 있는 일정 관리가 가능한 분\n\n• Git, Docker 이해도가 높은 분\n\n• Chrome 개발자 도구를 활용하여 웹 서비스 성능 튜닝이 가능한 분\n\n• iOS, Android 앱 개발 또는 유지 관리 경험이 있는 분\n\n• 전자정부표준프레임워크를 이용한 개발 경험이 있는 분\n\n• 공공기관 시스템 구축/운영 경험이 있는 분\n\n• 형상관리, 시스템 구축 산출물 작성 경험이 있는 분\n\n• 외부 파견 업무 가능자 우대",
+      "main_tasks": "• JAVA/JSP 웹 개발 및 유지보수\n\n• 데이터베이스 활용 및 관리\n\n• 개발 범위 산출물 작성(ERD, 프로세스 명세서, 클래스 명세서 등)",
+      "benefits": "• 급여제도 : 4대 보험, 퇴직연금\n\n• 조직 문화 : 자유복장, 자유로운 연차사용\n\n• 선물 : 크리스마스, 명절 선물\n\n• 출퇴근 : 야간교통비 지급"
+    },
+    {
+      "site": "saramin",
+      "company": "와이에스네오(YSNEO)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[SK하이닉스 이천] JAVA 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54308904&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=6c06c8b3-5c56-4235-a5d6-e2e2ec936d3f",
+      "career": "경력6년↑",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "C#",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 6년 이상\n\n• 대학교졸업(4년)이상",
+      "preferences": "",
+      "main_tasks": "• Java , React 개발\n\n• C# , WPF 개발",
       "benefits": ""
     },
     {
@@ -203639,6 +203966,31 @@
       "tech_tags": [],
       "roles": [
         "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "비컴솔루션(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 비컴솔루션(주) 공장자동화(이천) 개발부문 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54332046&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=697064d8-c9cc-4315-b3cc-ce2147bade1b",
+      "career": "경력4년↑",
+      "location": "경기이천시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
       ],
       "competencies": [],
       "qualifications": "",
@@ -213667,81 +214019,81 @@
     }
   ],
   "stats": {
-    "total": 7115,
+    "total": 7129,
     "by_size": {
-      "중소기업": 6412,
+      "중소기업": 6424,
       "대기업": 396,
-      "중견기업": 307
+      "중견기업": 309
     },
     "by_role": {
-      "기타": 968,
-      "DevOps/인프라": 1039,
-      "백엔드": 3086,
-      "모바일": 1101,
-      "AI/ML": 2442,
-      "프론트엔드": 1972,
+      "기타": 969,
+      "DevOps/인프라": 1040,
+      "백엔드": 3088,
+      "모바일": 1102,
+      "AI/ML": 2444,
+      "프론트엔드": 1978,
       "풀스택": 651,
       "게임": 38,
       "데이터": 936,
       "펌웨어/임베디드": 264,
-      "보안": 292,
+      "보안": 296,
       "QA": 73
     },
     "by_site": {
       "wanted": 1818,
       "jumpit": 523,
-      "jobkorea": 1207,
-      "saramin": 3210,
+      "jobkorea": 1212,
+      "saramin": 3219,
       "dev": 357
     },
     "top_tech": [
       [
         "Python",
-        2233
+        2234
       ],
       [
         "Java",
-        1834
+        1840
       ],
       [
         "AWS",
-        1828
+        1829
       ],
       [
         "React",
-        1493
+        1497
       ],
       [
         "Git",
-        1191
+        1192
       ],
       [
         "Docker",
-        1148
+        1150
       ],
       [
         "Spring",
-        1072
+        1074
       ],
       [
         "JavaScript",
-        995
+        997
       ],
       [
         "Linux",
-        975
+        976
       ],
       [
         "TypeScript",
-        964
+        965
       ],
       [
         "MySQL",
-        859
+        860
       ],
       [
         "REST API",
-        803
+        804
       ],
       [
         "Kubernetes",
@@ -213749,11 +214101,11 @@
       ],
       [
         "PostgreSQL",
-        757
+        758
       ],
       [
         "Spring Boot",
-        632
+        634
       ],
       [
         "GCP",
@@ -213776,12 +214128,12 @@
         520
       ],
       [
-        "PyTorch",
+        "Android",
         498
       ],
       [
-        "Android",
-        497
+        "PyTorch",
+        498
       ],
       [
         "CSS",
@@ -213789,7 +214141,7 @@
       ],
       [
         "Redis",
-        478
+        479
       ],
       [
         "HTML",
@@ -213797,11 +214149,11 @@
       ],
       [
         "iOS",
-        433
+        434
       ],
       [
         "FastAPI",
-        422
+        423
       ],
       [
         "Kotlin",
@@ -213813,27 +214165,11 @@
       ],
       [
         "C#",
-        381
+        382
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-08T18:39:54",
-      "keyword": "통합",
-      "raw_total": 5051,
-      "deduped": 4954,
-      "active": 4943,
-      "closed": 11,
-      "site_counts": {
-        "wanted": 1072,
-        "jumpit": 413,
-        "jobkorea": 949,
-        "saramin": 2442,
-        "dev": 175
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-08T20:06:44",
       "keyword": "통합",
@@ -217014,6 +217350,22 @@
         "jumpit": 785,
         "jobkorea": 2274,
         "saramin": 6027,
+        "dev": 587
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-04T03:50:37",
+      "keyword": "통합",
+      "raw_total": 11587,
+      "deduped": 9989,
+      "active": 7129,
+      "closed": 2860,
+      "site_counts": {
+        "wanted": 1887,
+        "jumpit": 790,
+        "jobkorea": 2281,
+        "saramin": 6042,
         "dev": 587
       },
       "anomalies": []
