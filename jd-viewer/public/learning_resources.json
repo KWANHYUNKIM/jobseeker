@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-04T00:32:43",
+  "generated_at": "2026-07-04T02:11:56",
   "source": "youtube",
   "tech_count": 174,
   "curriculum_count": 20,
@@ -1973,88 +1973,6 @@
         "stage": "핵심"
       }
     ],
-    "Android": [
-      {
-        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
-        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
-        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4855,
-        "length": "7:21",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
-        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
-        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 1868,
-        "length": "43:15",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
-        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
-        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
-        "channel": "소프트캠퍼스softcampus",
-        "views": 9603,
-        "length": "4:45",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "밍짱의 안드로이드 강의 1편 - 기본 시작편",
-        "url": "https://www.youtube.com/watch?v=DLi5-R56Udc",
-        "thumbnail": "https://i.ytimg.com/vi/DLi5-R56Udc/mqdefault.jpg",
-        "channel": "밍짱",
-        "views": 982,
-        "length": "2:46",
-        "published": "9년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드NDK 기초 강의 10시간 몰아보기 이걸로 끝! #1 AndroidNDK Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=i7Z3N6qELUc",
-        "thumbnail": "https://i.ytimg.com/vi/i7Z3N6qELUc/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 126,
-        "length": "5:11:52",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드 앱 개발 영상 강의입니다.",
-        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
-        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 1516,
-        "length": "4:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
-        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
-        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
-        "channel": "널널한 교수의 코딩 클래스",
-        "views": 1161,
-        "length": "1:32:31",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 397,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      }
-    ],
     "FastAPI": [
       {
         "title": "FastAPI 강의 (1) : 시작해보기",
@@ -2135,6 +2053,88 @@
         "length": "3:21",
         "published": "1년 전",
         "stage": "실전"
+      }
+    ],
+    "Android": [
+      {
+        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
+        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
+        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4855,
+        "length": "7:21",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
+        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
+        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 1868,
+        "length": "43:15",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
+        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
+        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
+        "channel": "소프트캠퍼스softcampus",
+        "views": 9603,
+        "length": "4:45",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "밍짱의 안드로이드 강의 1편 - 기본 시작편",
+        "url": "https://www.youtube.com/watch?v=DLi5-R56Udc",
+        "thumbnail": "https://i.ytimg.com/vi/DLi5-R56Udc/mqdefault.jpg",
+        "channel": "밍짱",
+        "views": 982,
+        "length": "2:46",
+        "published": "9년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드NDK 기초 강의 10시간 몰아보기 이걸로 끝! #1 AndroidNDK Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=i7Z3N6qELUc",
+        "thumbnail": "https://i.ytimg.com/vi/i7Z3N6qELUc/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 126,
+        "length": "5:11:52",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드 앱 개발 영상 강의입니다.",
+        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
+        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 1516,
+        "length": "4:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
+        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
+        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
+        "channel": "널널한 교수의 코딩 클래스",
+        "views": 1161,
+        "length": "1:32:31",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 397,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
       }
     ],
     "Kafka": [
@@ -4629,6 +4629,88 @@
         "stage": "핵심"
       }
     ],
+    "Flask": [
+      {
+        "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
+        "url": "https://www.youtube.com/watch?v=2WloW3cBRhw",
+        "thumbnail": "https://i.ytimg.com/vi/2WloW3cBRhw/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 1626,
+        "length": "14:16",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 웹개발 Flask #1 - 플라스크 기초 및 웹서버 개발의 개념 이해",
+        "url": "https://www.youtube.com/watch?v=u2KnTZa1_WU",
+        "thumbnail": "https://i.ytimg.com/vi/u2KnTZa1_WU/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 52244,
+        "length": "2:00:59",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Flask web framework - 1. 수업소개",
+        "url": "https://www.youtube.com/watch?v=X_n6IZmieV8",
+        "thumbnail": "https://i.ytimg.com/vi/X_n6IZmieV8/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 46212,
+        "length": "5:47",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "혼자 공부하는 파이썬 개정판 93강 - Flask 외부 모듈(프레임워크) 사용해보기[종강]",
+        "url": "https://www.youtube.com/watch?v=sgzunBTOeqk",
+        "thumbnail": "https://i.ytimg.com/vi/sgzunBTOeqk/mqdefault.jpg",
+        "channel": "윤인성",
+        "views": 5985,
+        "length": "11:04",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 웹 개발 #1, flask, flask-sqlalchemy, todolist",
+        "url": "https://www.youtube.com/watch?v=zJQPXBUhvDA",
+        "thumbnail": "https://i.ytimg.com/vi/zJQPXBUhvDA/mqdefault.jpg",
+        "channel": "kwangsung choi",
+        "views": 2213,
+        "length": "35:52",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Flask의 정석] 1. 서론 (Introduction)",
+        "url": "https://www.youtube.com/watch?v=ramid7qX_V0",
+        "thumbnail": "https://i.ytimg.com/vi/ramid7qX_V0/mqdefault.jpg",
+        "channel": "코준서",
+        "views": 1761,
+        "length": "2:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 웹개발 Flask #3-1 SQL Alchemy (1/2)",
+        "url": "https://www.youtube.com/watch?v=5dfnnbCcJqM",
+        "thumbnail": "https://i.ytimg.com/vi/5dfnnbCcJqM/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 3240,
+        "length": "55:08",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬으로 5분만에 무료 홈페이지 만들기 (Flask, 약 10줄의 코딩으로 웹서버 구동)",
+        "url": "https://www.youtube.com/watch?v=RxGQVeipdjg",
+        "thumbnail": "https://i.ytimg.com/vi/RxGQVeipdjg/mqdefault.jpg",
+        "channel": "소스놀이터",
+        "views": 34871,
+        "length": "24:43",
+        "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
     "Ansible": [
       {
         "title": "Ansible(앤서블) EP1: Ansible introduction(소개) 시작합니다.",
@@ -4711,85 +4793,85 @@
         "stage": "실전"
       }
     ],
-    "Flask": [
+    "Nginx": [
       {
-        "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
-        "url": "https://www.youtube.com/watch?v=2WloW3cBRhw",
-        "thumbnail": "https://i.ytimg.com/vi/2WloW3cBRhw/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 1626,
-        "length": "14:16",
+        "title": "[10분 테코톡] 상돌의 Nginx 시작하기",
+        "url": "https://www.youtube.com/watch?v=oUroldyG1_s",
+        "thumbnail": "https://i.ytimg.com/vi/oUroldyG1_s/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 2529,
+        "length": "19:01",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시)",
+        "url": "https://www.youtube.com/watch?v=Zimhvf2B7Es",
+        "thumbnail": "https://i.ytimg.com/vi/Zimhvf2B7Es/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 87986,
+        "length": "13:46",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 🤫 피케이의 Nginx",
+        "url": "https://www.youtube.com/watch?v=6FAwAXXj5N0",
+        "thumbnail": "https://i.ytimg.com/vi/6FAwAXXj5N0/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 48762,
+        "length": "15:56",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NGINX로 Reverse Proxy 및 로드 밸런싱 이해하기",
+        "url": "https://www.youtube.com/watch?v=1WfdUtMxTLE",
+        "thumbnail": "https://i.ytimg.com/vi/1WfdUtMxTLE/mqdefault.jpg",
+        "channel": "NGINX STORE",
+        "views": 18704,
+        "length": "7:21",
         "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 웹개발 Flask #1 - 플라스크 기초 및 웹서버 개발의 개념 이해",
-        "url": "https://www.youtube.com/watch?v=u2KnTZa1_WU",
-        "thumbnail": "https://i.ytimg.com/vi/u2KnTZa1_WU/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 52244,
-        "length": "2:00:59",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Flask web framework - 1. 수업소개",
-        "url": "https://www.youtube.com/watch?v=X_n6IZmieV8",
-        "thumbnail": "https://i.ytimg.com/vi/X_n6IZmieV8/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 46212,
-        "length": "5:47",
-        "published": "4년 전",
         "stage": "핵심"
       },
       {
-        "title": "혼자 공부하는 파이썬 개정판 93강 - Flask 외부 모듈(프레임워크) 사용해보기[종강]",
-        "url": "https://www.youtube.com/watch?v=sgzunBTOeqk",
-        "thumbnail": "https://i.ytimg.com/vi/sgzunBTOeqk/mqdefault.jpg",
-        "channel": "윤인성",
-        "views": 5985,
-        "length": "11:04",
+        "title": "NGINX + HTTPS 적용하기",
+        "url": "https://www.youtube.com/watch?v=6TYwnURF09w",
+        "thumbnail": "https://i.ytimg.com/vi/6TYwnURF09w/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 18295,
+        "length": "19:16",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Nginx 셋팅을 통한 호스팅과 웹서버의 동작방식 이해",
+        "url": "https://www.youtube.com/watch?v=3P39B8ECm30",
+        "thumbnail": "https://i.ytimg.com/vi/3P39B8ECm30/mqdefault.jpg",
+        "channel": "Vibe Coding School",
+        "views": 942,
+        "length": "35:43",
         "published": "3년 전",
         "stage": "핵심"
       },
       {
-        "title": "파이썬 웹 개발 #1, flask, flask-sqlalchemy, todolist",
-        "url": "https://www.youtube.com/watch?v=zJQPXBUhvDA",
-        "thumbnail": "https://i.ytimg.com/vi/zJQPXBUhvDA/mqdefault.jpg",
-        "channel": "kwangsung choi",
-        "views": 2213,
-        "length": "35:52",
-        "published": "6년 전",
-        "stage": "핵심"
+        "title": "Nginx 입문·실전 - 2.5. Nginx 디버깅 방법",
+        "url": "https://www.youtube.com/watch?v=XXJTFr7X2jQ",
+        "thumbnail": "https://i.ytimg.com/vi/XXJTFr7X2jQ/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 556,
+        "length": "6:25",
+        "published": "1년 전",
+        "stage": "실전"
       },
       {
-        "title": "[Flask의 정석] 1. 서론 (Introduction)",
-        "url": "https://www.youtube.com/watch?v=ramid7qX_V0",
-        "thumbnail": "https://i.ytimg.com/vi/ramid7qX_V0/mqdefault.jpg",
-        "channel": "코준서",
-        "views": 1761,
-        "length": "2:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 웹개발 Flask #3-1 SQL Alchemy (1/2)",
-        "url": "https://www.youtube.com/watch?v=5dfnnbCcJqM",
-        "thumbnail": "https://i.ytimg.com/vi/5dfnnbCcJqM/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 3240,
-        "length": "55:08",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬으로 5분만에 무료 홈페이지 만들기 (Flask, 약 10줄의 코딩으로 웹서버 구동)",
-        "url": "https://www.youtube.com/watch?v=RxGQVeipdjg",
-        "thumbnail": "https://i.ytimg.com/vi/RxGQVeipdjg/mqdefault.jpg",
-        "channel": "소스놀이터",
-        "views": 34871,
-        "length": "24:43",
-        "published": "3년 전",
+        "title": "03.Nginx 기본 설정 파일 구조 완벽 가이드 | 퀴즈 8개 포함",
+        "url": "https://www.youtube.com/watch?v=nhltFsz63Iw",
+        "thumbnail": "https://i.ytimg.com/vi/nhltFsz63Iw/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 28,
+        "length": "18:10",
+        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -4954,88 +5036,6 @@
         "views": 46226,
         "length": "21:12",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "Nginx": [
-      {
-        "title": "[10분 테코톡] 상돌의 Nginx 시작하기",
-        "url": "https://www.youtube.com/watch?v=oUroldyG1_s",
-        "thumbnail": "https://i.ytimg.com/vi/oUroldyG1_s/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 2529,
-        "length": "19:01",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시)",
-        "url": "https://www.youtube.com/watch?v=Zimhvf2B7Es",
-        "thumbnail": "https://i.ytimg.com/vi/Zimhvf2B7Es/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 87986,
-        "length": "13:46",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 🤫 피케이의 Nginx",
-        "url": "https://www.youtube.com/watch?v=6FAwAXXj5N0",
-        "thumbnail": "https://i.ytimg.com/vi/6FAwAXXj5N0/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 48762,
-        "length": "15:56",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NGINX로 Reverse Proxy 및 로드 밸런싱 이해하기",
-        "url": "https://www.youtube.com/watch?v=1WfdUtMxTLE",
-        "thumbnail": "https://i.ytimg.com/vi/1WfdUtMxTLE/mqdefault.jpg",
-        "channel": "NGINX STORE",
-        "views": 18704,
-        "length": "7:21",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NGINX + HTTPS 적용하기",
-        "url": "https://www.youtube.com/watch?v=6TYwnURF09w",
-        "thumbnail": "https://i.ytimg.com/vi/6TYwnURF09w/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 18295,
-        "length": "19:16",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nginx 셋팅을 통한 호스팅과 웹서버의 동작방식 이해",
-        "url": "https://www.youtube.com/watch?v=3P39B8ECm30",
-        "thumbnail": "https://i.ytimg.com/vi/3P39B8ECm30/mqdefault.jpg",
-        "channel": "Vibe Coding School",
-        "views": 942,
-        "length": "35:43",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nginx 입문·실전 - 2.5. Nginx 디버깅 방법",
-        "url": "https://www.youtube.com/watch?v=XXJTFr7X2jQ",
-        "thumbnail": "https://i.ytimg.com/vi/XXJTFr7X2jQ/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 556,
-        "length": "6:25",
-        "published": "1년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "03.Nginx 기본 설정 파일 구조 완벽 가이드 | 퀴즈 8개 포함",
-        "url": "https://www.youtube.com/watch?v=nhltFsz63Iw",
-        "thumbnail": "https://i.ytimg.com/vi/nhltFsz63Iw/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 28,
-        "length": "18:10",
-        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -9467,88 +9467,6 @@
         "stage": "실전"
       }
     ],
-    "PLC": [
-      {
-        "title": "PLC 자동제어 쉽게 배우는 방법(일주일만에 PLC 완전히 이해하기 | 자동제어 기술자)",
-        "url": "https://www.youtube.com/watch?v=gsSk6BhnxJw",
-        "thumbnail": "https://i.ytimg.com/vi/gsSk6BhnxJw/mqdefault.jpg",
-        "channel": "전병칠",
-        "views": 169262,
-        "length": "3:13",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PLC 기초 설명",
-        "url": "https://www.youtube.com/watch?v=e7osFeJrco0",
-        "thumbnail": "https://i.ytimg.com/vi/e7osFeJrco0/mqdefault.jpg",
-        "channel": "공학적인 사고방식",
-        "views": 608916,
-        "length": "15:11",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[PLC 1편] PLC를 지나칠 정도로 자세하게 설명해 보겠습니다. - XG5000 설치방법, 메뉴구성, LS PLC 기초강의",
-        "url": "https://www.youtube.com/watch?v=mJ14tZ1SZJE",
-        "thumbnail": "https://i.ytimg.com/vi/mJ14tZ1SZJE/mqdefault.jpg",
-        "channel": "전기는빠지직(송건웅)",
-        "views": 73332,
-        "length": "20:39",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PLC 프로그램 이해(LS XGT) 원리를 이해할수 있습니다.",
-        "url": "https://www.youtube.com/watch?v=T-Ic6Klr74o",
-        "thumbnail": "https://i.ytimg.com/vi/T-Ic6Klr74o/mqdefault.jpg",
-        "channel": "아빠의공구함",
-        "views": 45612,
-        "length": "17:12",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[PDF 강의노트 제공] 90분에 끝내는 PLC 핵심정리 - 전기기사실기, 전기산업기사실기",
-        "url": "https://www.youtube.com/watch?v=i7trUDURy7s",
-        "thumbnail": "https://i.ytimg.com/vi/i7trUDURy7s/mqdefault.jpg",
-        "channel": "권동성 DASAN",
-        "views": 16444,
-        "length": "1:25:06",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "전기(산업)기사 실기 - PLC 그룹 지정 15분 만에 끝내기",
-        "url": "https://www.youtube.com/watch?v=ZXXnsGsgtWc",
-        "thumbnail": "https://i.ytimg.com/vi/ZXXnsGsgtWc/mqdefault.jpg",
-        "channel": "전기뿌수기(남민수)",
-        "views": 77093,
-        "length": "16:55",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "XGB PLC의 입력구조 설명(XBC DR20SU모델)",
-        "url": "https://www.youtube.com/watch?v=4Dm7QZxyG8Q",
-        "thumbnail": "https://i.ytimg.com/vi/4Dm7QZxyG8Q/mqdefault.jpg",
-        "channel": "전병칠",
-        "views": 191787,
-        "length": "15:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "미쯔비시 PLC 기초부터 실무까지 FULL COURSE",
-        "url": "https://www.youtube.com/watch?v=B-C7skVHbcE",
-        "thumbnail": "https://i.ytimg.com/vi/B-C7skVHbcE/mqdefault.jpg",
-        "channel": "Physical AI Lab. 깹TV",
-        "views": 81167,
-        "length": "1:54:01",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "Objective-C": [
       {
         "title": "Objective C 11강 메모리 | T아카데미",
@@ -9873,6 +9791,88 @@
         "channel": "onenzero",
         "views": 950,
         "length": "44:59",
+        "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "PLC": [
+      {
+        "title": "PLC 자동제어 쉽게 배우는 방법(일주일만에 PLC 완전히 이해하기 | 자동제어 기술자)",
+        "url": "https://www.youtube.com/watch?v=gsSk6BhnxJw",
+        "thumbnail": "https://i.ytimg.com/vi/gsSk6BhnxJw/mqdefault.jpg",
+        "channel": "전병칠",
+        "views": 169262,
+        "length": "3:13",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PLC 기초 설명",
+        "url": "https://www.youtube.com/watch?v=e7osFeJrco0",
+        "thumbnail": "https://i.ytimg.com/vi/e7osFeJrco0/mqdefault.jpg",
+        "channel": "공학적인 사고방식",
+        "views": 608916,
+        "length": "15:11",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[PLC 1편] PLC를 지나칠 정도로 자세하게 설명해 보겠습니다. - XG5000 설치방법, 메뉴구성, LS PLC 기초강의",
+        "url": "https://www.youtube.com/watch?v=mJ14tZ1SZJE",
+        "thumbnail": "https://i.ytimg.com/vi/mJ14tZ1SZJE/mqdefault.jpg",
+        "channel": "전기는빠지직(송건웅)",
+        "views": 73332,
+        "length": "20:39",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PLC 프로그램 이해(LS XGT) 원리를 이해할수 있습니다.",
+        "url": "https://www.youtube.com/watch?v=T-Ic6Klr74o",
+        "thumbnail": "https://i.ytimg.com/vi/T-Ic6Klr74o/mqdefault.jpg",
+        "channel": "아빠의공구함",
+        "views": 45612,
+        "length": "17:12",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[PDF 강의노트 제공] 90분에 끝내는 PLC 핵심정리 - 전기기사실기, 전기산업기사실기",
+        "url": "https://www.youtube.com/watch?v=i7trUDURy7s",
+        "thumbnail": "https://i.ytimg.com/vi/i7trUDURy7s/mqdefault.jpg",
+        "channel": "권동성 DASAN",
+        "views": 16444,
+        "length": "1:25:06",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "전기(산업)기사 실기 - PLC 그룹 지정 15분 만에 끝내기",
+        "url": "https://www.youtube.com/watch?v=ZXXnsGsgtWc",
+        "thumbnail": "https://i.ytimg.com/vi/ZXXnsGsgtWc/mqdefault.jpg",
+        "channel": "전기뿌수기(남민수)",
+        "views": 77093,
+        "length": "16:55",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "XGB PLC의 입력구조 설명(XBC DR20SU모델)",
+        "url": "https://www.youtube.com/watch?v=4Dm7QZxyG8Q",
+        "thumbnail": "https://i.ytimg.com/vi/4Dm7QZxyG8Q/mqdefault.jpg",
+        "channel": "전병칠",
+        "views": 191787,
+        "length": "15:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "미쯔비시 PLC 기초부터 실무까지 FULL COURSE",
+        "url": "https://www.youtube.com/watch?v=B-C7skVHbcE",
+        "thumbnail": "https://i.ytimg.com/vi/B-C7skVHbcE/mqdefault.jpg",
+        "channel": "Physical AI Lab. 깹TV",
+        "views": 81167,
+        "length": "1:54:01",
         "published": "3년 전",
         "stage": "실전"
       }
