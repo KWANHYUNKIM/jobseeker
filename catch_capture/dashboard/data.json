@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T12:11:13",
-  "source_dir": "screenshots/all_통합_20260704_121055",
+  "generated_at": "2026-07-04T13:49:49",
+  "source_dir": "screenshots/all_통합_20260704_134929",
   "keyword": "통합",
   "jobs": [
     {
@@ -73082,6 +73082,35 @@
       "preferences": "• Embedded SW/FW 개발 경험 (SoC, FPGA, HW 플랫폼 등)\n• 고객사 대상 SDK/Driver 배포 및 기술 지원 경험\n• 영상처리/코덱 상위 레벨 기능 구현 경험 (인코더 제어, 트랜스코딩, 스트리밍 적용 등)",
       "main_tasks": "• 코덱 소프트웨어 및 임베디드 펌웨어 구현 및 최적화\n• 임베디드 환경(SoC, FPGA, HW 플랫폼 등)에서의 코덱 기능 통합 및 성능 검증\n• 고객사 대상 SDK/라이브러리 제공 및 기술 지원\n• 고객 환경에 맞춘 코덱 통합, Customizing, 문제 해결 지원\n• 내부 시스템 소프트웨어/반도체 설계팀과 협업",
       "benefits": "블루닷은 직원의 행복한 삶을 응원합니다.\n\n[Life]\n• 점심비 지원\n맛있는 점심을 드실 수 있도록 점심비를 지원합니다. (최대 12,000원)\n• 복지포인트 지급\n자기개발, 여가/취미 활동지원을 위한 복지포인트를 지급합니다.(연 최대 100만원)\n• 경조사 지원\n결혼, 출산, 장례 등 중요한 경조사에 축하 및 조의를 전하며 화환 및 경조비를 지급합니다.\n• 명절 및 기념일 선물\n명절과 기념일에 감사의 마음을 전하기 위해 소정의 선물을 지급합니다.\n\n[Wellness]\n• 종합건강검진 지원\n직원의 건강관리를 위한 종합건강검진을 지원합니다.(연 1회, 100만원 상당)\n\n[Work]\n• 자율근무 및 휴가제도 운영\n최적의 시간과 공간을 선택할 수 있는 자율 근무와 자율 휴가 제도를 운영합니다.\n(정해진 근무시간 없이 자유롭게 출근하시고, 법정 휴가 소진하셨어도 일정에 맞게 휴가 사용하실 수\n있습니다:))\n• 업무성장 지원\n직원의 성장을 위해 업무 관련 도서 및 외부 교육을 지원합니다.\n• 팀활동비 지원\n팀의 원활한 협업과 소통을 위한 팀활동비를 지원합니다.\n• 스카우트 리워드\n함께 일하고 싶은 동료를 추천해주세요! 그럼 스카우트 리워드가 지급됩니다.\n• 업무환경 개선\n최고의 퍼포먼스를 위해 업무환경을 끊임없이 개선하고자 노력합니다."
+    },
+    {
+      "site": "jumpit",
+      "company": "가스디엔에이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "펌웨어 개발 및 전자회로 설계 신입",
+      "url": "https://jumpit.saramin.co.kr/position/54243272",
+      "career": "신입",
+      "location": "인천 서구 북항로193번길101\n지도보기·\n주소복사",
+      "dday": "D-17",
+      "tech_stack": [],
+      "tech_tags": [
+        "C",
+        "Orcad",
+        "FW",
+        "Analog",
+        "MCU"
+      ],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "영어 가능"
+      ],
+      "qualifications": "ㆍ학력 : 대학원 이상 (졸업예정자 가능)\nㆍ경력 : 경력무관",
+      "preferences": "ㆍ영어가능자\nㆍCAD/CAM 프로그램 능숙자\nㆍ관련 학과 전공자\nㆍ유관업무 경력자",
+      "main_tasks": "1. 펌웨어 개발\n- MCU(ATmega/STM32 계열)\n- 펌웨어(C언어 프로그래밍)\n- 통신 프로토콜 프로그램\n- Digital / Analog 회로 해석\n- 센서기반 신호처리, 분석\n- orCAD\n2. 아날로그 회로 설계\n\n. Firmware development\n- MCU(ATmega/STM32 series)\n- Firmware (C language programming)\n- Communication protocol programmer.\n- Interpret the Digital/Analog circuit.\n- Capability of sensor-based signal processing and analysis.\n- Handle OrCAD.\n2. Analog Circuit Design",
+      "benefits": "-"
     },
     {
       "site": "jumpit",
@@ -156271,6 +156300,32 @@
     },
     {
       "site": "saramin",
+      "company": "에이에스이코리아(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[ASE KOREA] IT 및 LOCAL SALES 신입/경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54346564&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=6239907f-11a1-4854-a2bc-1faaf97c249b",
+      "career": "신입·경력",
+      "location": "경기파주시",
+      "dday": "",
+      "tech_stack": [
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오픈소스 기여"
+      ],
+      "qualifications": "IT\n\n(경력 4년 이하)\n\nㆍ학력 : 4년제 학사(대졸) 이상\n\nㆍ어학 : TOEIC Speaking IM3 이상 또는\n\nOPIc IM2 이상\n\nㆍ전공 : 컴퓨터·전산 관련 전공\n\nㆍIT : 운영체제, 네트워크 등 IT에 대한\n\n일반적인 지식\n\nㆍ학력 : 4년제 졸업 또는 졸업예정자\n\nㆍ전공 : 무관(상경계열, 어문계열, 사회계열 등)\n\nㆍ어학 : TOEIC 850, OPIC IH, TOEIC\n\nSpeaking AL 이상(영어 면접 진행)\n\nㆍ경력 : 신입 ~ 경력 7년 이하",
+      "preferences": "ㆍ일산 수준의 영어 회화 가능자\n\nㆍ프로그램 개발 능력 (분석, 설계, 개발 환경 구축)\n\nㆍLinux 관리, 오픈소스 활용 또는 바이브 코딩\n\n경험 보유자\n\nLOCAL SALES\n\n(신입/경력)\n직무요약\n\n반도체 시장 동향 및 공장 운영 현황, 경쟁사 분석을\n\n기반으로 고객 관계를 관리하며, 공장 역량을 고려한\n\n견적 관리와 월간 수요 예측을 수행함.\n\n또한 고객 및 공장과 협업하여 품질 클레임 최소화.\n\nㆍ반도체 제조업 또는 OSAT 관련 경험\n\nㆍ비즈니스 영어 커뮤니케이션 역량(회화/문서)\n\n가능자\n\nㆍ대내외 협업에 강한 유연한 커뮤니케이션 역량\n\n보유자\n\nㆍ데이터 분석능력: MS Office, MES, SAP,\n\n활용능력\n\n근무장소\n\nㆍ경기도 수원시 영통구 (망포역)",
+      "main_tasks": "고객사 커뮤니케이션 및 Audit 대응\n\nㆍ국내·외 고객사와의 커뮤니케이션\n\nㆍ본사 및 고객사 IT Audit 대응\n\n(SOX, ISO27001, Cybersecurity 등)\n\nB2B 전자 문서 교환(EAI) 프로세스 개발\n\nㆍ고객사와의 데이터 연계를 위한 기능 설계 및 개발\n\nㆍ생산·재고 등 사내 데이터를 고객사 시스템과\n\n연동 및 제공\n\nㆍ고객사 송신 데이터 가공 및 처리\n\nㆍEAI 솔루션(WebMethods) 기반 B2B 업무 운영\n\nㆍ해외 고객사 시스템 관련 사내 사용자 지원\n\n사내 웹 시스템 개발 및 운영\n\nㆍ품질관리 및 Audit 관리 시스템 유지보수\n\nㆍ사내 웹 시스템 개발 및 운영 관리\n\nㆍ글로벌 반도체 및 OSAT 시장 동향 파악 및\n\n고객과의 비즈니스 관계 구축\n\nㆍASE GLOBAL 공장별 운영 현황 정비 및 보고\n\nㆍ경쟁사 최신 동향 및 사업 규모 분석\n\nㆍASE GLOBAL 각 공장의 역량과 사업 잠재력을\n\n고려한 견적 검토\n\nㆍ월간 수요 예측 미팅을 통해 고객과 함께 증설\n\n또는 저가동 상황을 논의하고 자료 정리\n\nㆍASE 전체 공장 네트워크 소개 및 고객 동반\n\n출장 주선\n\nㆍ고객 및 공장 협업을 통한 품질 클레임 사전 관리",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "㈜얼라이언스인터넷",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -165682,6 +165737,42 @@
     },
     {
       "site": "saramin",
+      "company": "(주)제이오텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)제이오텍 소프트웨어개발 부문 경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54364803&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=7f103627-a272-44e8-a265-74d63324a4a4",
+      "career": "경력2년↑",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "C++",
+        "C#",
+        "PHP",
+        "React",
+        "Flutter",
+        "TensorFlow",
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "모바일",
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "석박사 우대"
+      ],
+      "qualifications": "소프트웨어\n\n개발\n\n(대전)\n경력\n\n2년 이상\n정규직\n소프트웨어개발 엔지니어\n\n✓ 신제품 소프트웨어 설계\n\n및 개발\n\n✓ 기존 제품 유지보수 및\n\n기능 최적화\n\n✓ 자동화장비 및 장비제어 SW 개발 (C#)\n\n✓ 서버 구축 및 Web 개발\n필수\n\n✓ 학력 : 대졸(4년제) 이상\n\n업무수행시 필요지식\n\n✓ 소프트웨어 개발 방법 및 설계\n\n✓ 객체지향 프로그래밍\n\n✓ 프로그래밍 언어 및 라이브러리 활용\n\n✓ PC(C#), 모바일(Flutter), 서버 및 DB 프로그래밍\n\n✓ 다양한 프로그램 언어/기술의 습득,\n\n개발에\n거부감이 없으신 분\n\n우대\n\n✓ 관련 직무 유관 경력 2년 이상 보유자\n\n✓ 다양한 개발 언어 활용 역량 보유자\n\n- C++/C#, Python, Flutter, React, PHP, DB, Java\n\n소프트웨어\n\n개발\n\n(대전)\n경력\n\n4년 이상\n정규직\nAI 개발 엔지니어\n\n✓ 장비 데이터 해석 자동화\n\n✓ 센서, 로그, 운용데이터\n\n시계열 분석 및 모델링\n\n✓ AI 기반 잔여 수명 예측,\n\n고장분류 모델설계 및 개선\n\n✓ AI 기반 생성자동화 및\n\n불량 검출 알고리즘 개발\n\n✓ AI 모델 학습 및 평가,\n\n성능최적화\n필수\n\n✓ 학력 : 대학원 석사 졸업 이상\n\n( 또는 동등한 경력 보유자)\n\n업무수행 시 필요지식\n\n✓ Python, C#, NumPy, TensorFlow, YOLO,\n\nPyTorch 숙련\n\n✓ 딥러닝, 영상처리, PdM 등 데이터분석/처리 이해\n\n✓ 시계열 데이터 분석 및 예지보전 개발\n\n✓ AI 모델링/학습/분석/모델 개선\n\n✓ DB(SQL) / 서버/ 데이터 파이프라인 구축\n\n✓ 클라우드 및 분산 환경 개발 (Server/Client)\n\n✓ 스마트 팩토리, 물류, 로봇, 등 산업 AI 적용 프로젝트\n\n우대\n\n✓ 산업·제조 설비 데이터 분석 또는 PdM 프로젝트 경험\n\n✓ 클라우드 서비스 기반 개발 경험\n\n✓ NLP 모델 개발 경험\n\n✓ 장비 시계열 Trend 기반 AI 모델 개발 경험\n\n✓ 남성의 경우 군필 또는 면제자(군 복무 중인 경우, 입사일 이전 전역자/근무가능자)\n\n✓ 해외 여행 및 근무에 결격 사유가 없는자",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)사람인",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -174834,6 +174925,136 @@
       "preferences": "• IT/SaaS/플랫폼 영업 경험\n\n• 공공사업 및 정부과제 수행 경험\n\n• 해운·항만·물류 산업 경험\n\n• 영어 커뮤니케이션 가능\n\n• 스타트업 근무 경험",
       "main_tasks": "• 국내 선사·항만·공공기관 대상 신규 고객 발굴 및 B2B/B2G 기술영업\n\n• 자사 해양 데이터·SW 솔루션 제안, 계약 협상 및 영업 KPI 달성\n\n• 정부·공공사업 제안서 작성 및 프로젝트(PM) 일정·리스크 관리\n\n• 고객 요구사항 분석 및 개발팀과 협업하여 프로젝트 수행\n\n• 파트너사 발굴 및 협력 네트워크 구축, 기존 고객 관리 및 업셀링\n\n• 세일즈팀/사업부 부서 소속, 팀원 직책으로 함께할 예정이에요.",
       "benefits": "• 교육/생활 : 창립일행사, 워크샵, 음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무\n\n• 급여제도 : 퇴직연금, 퇴직금, 4대 보험\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 생일선물/파티, 크리스마스 선물, 도서 무제한 제공"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)지에스아이티엠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Full Stack Developer 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54365943&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=c3789dc7-dfde-4279-9c4f-020fbaf3014b",
+      "career": "경력 3~5년",
+      "location": "서울종로구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [],
+      "qualifications": "웹 서비스 개발 경력 3년 이상\nFront-end 및 Back-end 개발 경험\nAI 기반 개발 도구(Cursor, Claude Code, ChatGPT, GitHub Copilot 등)를 활용한 개발 경험\n서비스 설계부터 배포까지 수행한 경험",
+      "preferences": "생성형 AI 또는 LLM 활용 경험\nSaaS 서비스 개발 경험\n초기 단계 제품의 개발 또는 신규 서비스 런칭 경험\n\n마감일 및 근무지\n\n• 마감일 : 2026년 08월 01일",
+      "main_tasks": "• AI 기반 개발 도구를 활용한 웹 서비스 개발\n• 웹 서비스 설계, 개발 및 운영\n• 생성형 AI 기반 기능 개발\n• 서비스 품질 및 성능 개선",
+      "benefits": "[조직문화]\n개발자들의 기술역량을 발휘할 수 있는 다양한 근무환경을 제공합니다.\n• 수평적 조직문화 확산과 역할 중심의 문화\n• 직급없이 “매니저”로 호칭 일원화\n• 복장규정 캐주얼\n[경력개발]\n구성원의 자기계발을 위한 교육/자격증 취득을 지원해 드립니다.\n• 온라인(인프런 등), 오프라인 교육 지원\n• 자격증 취득 지원 (취득비용 50% 지원)\n[구성원 가족케어]\n구성원의 가족들도 GS ITM과 함께 합니다.\n• 각종 경조금 지원\n• 경조용품 및 장례(상조서비스) 지원\n• 명절선물 지급(설,추석)\n[여가활동지원]\n구성원의 리프레쉬를 응원합니다.\n• 전국 8개소 휴양소 이용가능\n• 티웨이항공 상시 할인\n• 복지포인트 제공\n[건강관리]\n구성원과 가족의 건강관리를 위한 제도를 운영합니다.\n• 매년 종합건강검진 시행\n• 배우자 건강검진 (40세 이상 격년시행)\n• 구성원 단체보험 가입\n[회사생활]\n• 5년 단위 장기근속 포상(국민관광상품권 100만원 및 휴가 5일)\n• 사내동호회 지원\n[법정 복지제도]\n• 주5일근무, 4대보험, 연차/반차/반반차 사용\n• 출산휴가\n• 육아휴직\n• 가족돌봄휴가"
+    },
+    {
+      "site": "saramin",
+      "company": "한화에어로스페이스(주)",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "LS사업부 AI 경력사원 채용 (RFM)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=bf31b694-b193-4061-94fb-c26d6cf63a88",
+      "career": "경력5년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "• 컴퓨터 비전/머신러닝 등 유관분야 석사이상\n• CVPR, NeurIPS, ICML, ICLR, CoRL, RSS 등 우수 학회 논문 게재 실적 보유자\n• VLA, World Model 또는 모방학습, 강화학습 등 피지컬 AI 관련 연구개발 경험자\n• PyTorch 등 딥러닝 프레임워크를 활용한 모델 구현 및 학습 역량 보유자\n• 온디바이스 환경 실시간 추론을 위한 모델 경량화 및 최적화 경험자\n• 유관분야 경력을 5년 이상 보유하신 분\n• 남성의 경우 병역을 마쳤거나 면제인 분\n• 해외여행에 결격사유가 없으신 분",
+      "preferences": "",
+      "main_tasks": "• RFM(Robot Foundation Model) 아키텍처 설계 및 학습 방법론 개발\n• RFM 사전학습·사후학습(SFT, RL) 성능 개선\n• 실환경/가상환경 학습 데이터셋 구축\n• VLM/VLA/WorldModel 등 최신 연구 동향 분석\n\n• 기술자료 작성\n- 기술자료 작성 및 형상관리, 규격화 수행\n- 기술문제 검토 및 기술검토서 작성\n\n• 시험평가 지원\n- 개발 장비 시험평가 기술지원\n- 시제품 제작 기술지원",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)비아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)비아 AI 활용 드론 및 로봇 관제시스템 빌더 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54366807&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=9d78bbc6-567d-437c-81b3-26ca96b6316a",
+      "career": "경력무관",
+      "location": "전북전주시 덕진구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Django",
+        "FastAPI",
+        "PostgreSQL",
+        "Docker",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "오너십/주도성",
+        "오픈소스 기여"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n- 신입 또는 신입에 준하는 개발자\n\n- Python, JavaScript 또는 TypeScript 중 하나 이상으로 개발 경험이 있는 분\n\n- React, Next.js, FastAPI, Django, Node.js 등 웹 서비스 개발 기술에 관심이 있는 분\n\n- Claude Code, Codex, Cursor 등 AI 코딩 도구를 활용해 개발해본 경험이 있거나, 적극적으로 활용할 의지가 있는 분\n\n- AI가 생성한 코드를 그대로 사용하는 것이 아니라, 동작 원리와 오류 가능성을 이해하고 검증하려는 분\n\n- Git/GitHub를 활용한 협업 방식에 익숙하거나 배우려는 분\n\n- 새로운 기술을 빠르게 학습하고 실제 제품 개발에 적용하는 데 관심이 있는 분\n\n- 드론, 로봇, 스마트농업, 재난안전, 시뮬레이션, AI 플랫폼 분야에 관심이 있는 분",
+      "preferences": "- 개인 프로젝트, 졸업작품, 공모전, 외주, 오픈소스 등 실제 개발 결과물이 있는 분\n\n- GitHub, 포트폴리오, 블로그 등을 통해 본인이 개발한 내용을 설명할 수 있는 분\n\n- AI 코딩 도구를 활용해 기능 구현, 리팩토링, 테스트, 문서화 등을 해본 경험이 있는 분\n\n- FastAPI, Django, React, Next.js, PostgreSQL, Docker 중 하나 이상을 사용해본 경험이 있는 분\n\n- WebSocket, REST API, 데이터베이스 설계, 백엔드·프론트엔드 연동 경험이 있는 분\n\n- 로봇 관제, 드론 관제, 스마트팜, 영상 AI, 데이터 플랫폼 관련 프로젝트 경험이 있는 분\n\n- 단순 구현보다 “왜 이렇게 동작하는지”를 이해하고 개선하려는 태도를 가진 분\n\n● 이런 분은 서류 통과가 어렵습니다 (솔직히 말씀드립니다)\n\n- 모르는 기술이 나와도 검색하고, 실험하고, 기록하면서 해결해보는 분\n\n- AI 도구를 빠르게 활용하되, 결과물을 비판적으로 검토할 수 있는 분\n\n- 작은 기능이라도 끝까지 완성해본 경험이 있는 분\n\n- 팀원과 소통하며 개발 방향을 맞춰갈 수 있는 분\n\n- 제품이 실제 현장에서 어떻게 쓰이는지에 관심이 있는 분\n\n● 직위 및 처우\n\n본 채용은 연구원급을 기본으로 합니다.\n\n연구원급은 연봉 3,600만 원을 기준으로 합니다.\n\n개발 경험이 부족하더라도 새로운 기술을 배우고, AI 코딩 도구를 활용해 코드를 이해·검증·개선하려는 태도가 중요합니다.\n\n단독으로 모든 기능을 완성하기보다는, 주어진 기능을 이해하고 팀의 피드백을 받아 개선해나갈 수 있어야 합니다.\n\n선임급은 연봉 4,200만 원을 기준으로 합니다.\n\n선임급은 1개의 기능 또는 소규모 프로젝트를 주도적으로 수행할 수 있어야 합니다.\n\n요구사항을 이해하고, API·화면·DB 구조를 설계하며, AI가 생성한 코드를 검증하고 실제 서비스에 맞게 수정할 수 있어야 합니다.\n\n또한 개발한 기능을 테스트하고, 오류를 추적하며, 운영 중 발생하는 문제를 일정 수준 이상 해결할 수 있어야 합니다.\n\n책임급은 연봉 4,800만 원을 기준으로 합니다.\n\n책임급은 1개의 제품 또는 프로젝트 단위의 개발을 기술적으로 책임질 수 있어야 합니다.\n\n개발 방향 설정, 구조 설계, 코드 품질 관리, 일정 관리, 배포 및 운영 대응까지 주도적으로 수행할 수 있어야 합니다.\n\n또한 후배 개발자의 코드 리뷰와 기술 지원이 가능해야 하며, AI 코딩 도구를 단순 활용하는 수준을 넘어 개발 생산성과 품질을 높이는 방식으로 활용할 수 있어야 합니다",
+      "main_tasks": "비아는 드론, 로봇, 스마트농업, 재난안전 분야에서 현장 장비와 데이터를 연결하는 관제시스템 및 운영 플랫폼을 직접 개발하는 회사입니다.\n\n이번 채용은 단순히 코드를 작성하는 개발자가 아니라, Claude Code, Codex, Cursor 같은 AI 코딩 도구를 활용해 관제 화면, API, 데이터 구조, 운영 기능을 빠르게 만들고 개선할 수 있는 개발자를 찾는 포지션입니다.\n\n경력이 많지 않아도 괜찮습니다.\n\n다만 AI가 만든 코드를 그대로 믿지 않고, 구조를 이해하고, 오류를 검증하고, 실제 서비스에 맞게 개선하려는 태도가 중요합니다.\n\n입사 후에는 비아가 개발 중인 드론·로봇·스마트농업·재난안전 플랫폼 중 한 영역을 담당하여, 관제시스템 구축 및 서비스 기능 개발을 수행하게 됩니다.\n\n- 드론, 로봇, 스마트팜, 재난안전 분야 관제시스템 개발\n\n- 운영자가 사용하는 웹 기반 대시보드 및 관리자 화면 개발\n\n- 장비 상태, 위치, 작업 현황, 분석 결과를 표시하는 관제 UI 개발\n\n- FastAPI, Django, Node.js 등을 활용한 백엔드 API 개발\n\n- React, Next.js 등을 활용한 프론트엔드 화면 개발\n\n- PostgreSQL 등 데이터베이스 기반의 데이터 저장·조회 기능 개발\n\n- WebSocket, REST API 등을 활용한 실시간 데이터 연동 기능 개발\n\n- Claude Code, Codex, Cursor 등 AI 코딩 도구를 활용한 기능 구현, 리팩토링, 테스트, 문서화\n\n- 실제 현장 운영 흐름을 이해하고 제품 기능으로 구현\n\n회사내 주요 개발 제품\n\n- agrithing.ai: 무인 자율 농작업 검정 플랫폼\n\n- FarmFlow: 스마트팜 관제 플랫폼\n\n- SkyFarm: 드론 방제 관리 애플리케이션\n\n- CraneEyes: 크레인 안전관리 애플리케이션\n\n- 단감: 농작업 대행 플랫폼\n\n- 전북바이오스퀘어: 전북 바이오 산업 통합 허브 플랫폼\n\n- PLUVERA: 방수 드론 기반 침수·홍수 모니터링 플랫폼\n\n- ArgoSim: 농업용 휴머노이드 로봇 시뮬레이션 소프트웨어\n\n- NewLearn: 농업용 이미지 AI 학습 플랫폼",
+      "benefits": "[도구 투자]\n\n- Claude Max, Cursor Pro 등 AI 개발 도구 유료 플랜 회사 지원\n[장비 지원]\n\n- MacBook Pro 또는 고사양 워크스테이션 (RTX 5090 2-Way 시스템) 지급\n\n- 연구·개발 장비 지원 (NVIDIA AGX Orin 등)\n[학습·성장]\n\n- 국내외 컨퍼런스 참가비 지원\n\n- 기술 세미나 참가 지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)딥오토",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Engineer 신입 및 경력 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54349061&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=1f64d923-fad3-474d-9928-634e339638bc",
+      "career": "경력 1~3년",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "PostgreSQL",
+        "Docker",
+        "Kubernetes",
+        "TensorFlow",
+        "PyTorch",
+        "OpenCV",
+        "LangChain",
+        "OpenAI"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "대용량 처리",
+        "오너십/주도성",
+        "오픈소스 기여"
+      ],
+      "qualifications": "ㆍ컴퓨터 공학, 인공지능, 수학/통계학 등 관련 분야 학사 학위 이상 전공자 (재학/휴학/졸업생 모두 가능) 또는 그에 준하는 프로그래밍 역량을 갖추신 분\nㆍPython 및 PyTorch 등 딥러닝 프레임워크를 능숙하게 다룰 수 있는 분\nㆍ최신 AI 논문의 핵심 아이디어를 빠르게 파악하고 코드로 구현해 보는 것을 즐기시는 분\nㆍ정답이 없는 환경에서 주도적으로 가설을 세우고, 실험을 통해 검증하는 문제 해결 능력을 갖추신 분\nㆍ동료 및 협력사와의 능동적인 커뮤니케이션을 통해 모호한 요구사항을 기술적 언어로 구체화할 수 있는 분",
+      "preferences": "ㆍNeurIPS, ICLR, ICML, EMNLP, ACL 등 글로벌 주요 AI 학회 논문 게재 경험\nㆍLangChain, LlamaIndex, AutoGen 등 Agentic AI 프레임워크 활용 경험\n[에이전트 트랙 우대사항]\nㆍPDF, DXF, SVG 등 벡터/레이어 기반 도면 및 비정형 데이터 파싱 경험\nㆍ객체 탐지(Object Detection), OCR, 그래프 기반 학습 모델 등 ML/Vision 기초 지식 보유\nㆍ설계 도면 관련 기초 지식 보유 우대 (건설, 토목, 기계, 화공 부전공 등)\n[모델 학습 트랙 우대사항]\nㆍGRPO 등 최신 LLM 강화학습 기법을 직접 적용해 본 경험\nㆍLLM 추론 최적화(vLLM, TensorRT-LLM) 및 메모리 병목 현상 해결 경험\nㆍH100/B200 등 엔터프라이즈급 서버 인프라를 다뤄 모델 Finetuning 학습을 해본 경험\n[데이터 트랙 우대사항]\nㆍ대용량 데이터의 분산 처리 및 데이터 레이크/웨어하우스 구축 경험\nㆍEzDXF, OpenCV 등을 활용한 복잡한 데이터 전처리 파이프라인 최적화 경험\nㆍHadoop, Spark, Databricks 등 빅데이터 처리 프레임워크 사용 경험\n[화학공학 플랜트 트랙 우대사항]\nㆍ화학공학/공정시스템공학 전공자 또는 Aspen Plus, HYSYS, DWSIM 등 공정 모델링/시뮬레이션 도구 활용 경험\nㆍ반응공학, 화공 열역학(상평형, 상태방정식 EOS), 공정 동역학 등 화학공학 기초 지식 보유\nㆍ수치 해석(ODE Solver), 공정 최적화(Bayesian Optimization 등) 또는 디지털 트윈/공정 제어 구현 경험\n\n마감일 및 근무지\n\n• 마감일 : 2026년 07월 31일",
+      "main_tasks": "Track 1: 에이전트 설계 및 구현 (0명)\n\n·멀티모달 에이전트 개발: PDF, Excel, CAD(AutoCAD, SolidWorks, CATIA) 등 다양한 포맷의 비정형 문서 구조를 분석하고, 객체 간의 연결 관계를 파악하는 LLM/VLM 에이전트 워크플로우를 설계합니다.\n·Agentic System 고도화: 에이전트가 복잡한 태스크를 자율적으로 수행할 수 있도록 Planning, Memory, Tool-Use 로직을 설계 및 구현합니다.\n·하이브리드 로직 최적화: 객체 병합(Bbox Merging), 경로 추적(Tracing) 등 데이터 특징 기반의 Rule-based 전처리와 AI 모델을 결합한 하이브리드 추론 시스템을 고도화합니다.\n\nTrack 2: LLM 파인튜닝 및 강화학습 기반 모델 학습 (0명)\n\n·SFT(Supervised Fine-Tuning): 오픈소스 모델을 기반으로, 지시 수행 능력 및 도메인 특화 성능 향상을 위한 파이프라인을 구축하고 학습을 수행합니다.\n·최신 강화학습(RL) 리서치 및 적용: 모델의 논리적 추론 능력 극대화를 위해 DPO 등 최신 강화학습 기법을 실험하고 서비스에 적용합니다.\n·벤치마크 평가 체계 구축: 정밀한 모델 성능 측정을 위한 자동화 평가 프레임워크를 고도화합니다.\n\nTrack 3: 데이터 레이크하우스 아키텍처 구현 (0명)\n\n·비정형 데이터 파이프라인 구축: 설계 도면, 기술 문서 등 대규모 비정형 데이터를 모델이 학습 및 추론할 수 있는 정제된 형태의 데이터셋으로 변환하고 적재하는 파이프라인을 구축합니다.\n·데이터 레이크하우스 설계: AI 에이전트와 모델 학습 환경(분산 학습 등)에서 데이터를 효율적으로 조회하고 활용할 수 있도록 확장성 있는 데이터 저장/처리 아키텍처를 구현합니다.\n\nTrack 4: 화학공학 플랜트 설계 및 해석 에이전트 구현 (0명)\n\n·공정 시뮬레이터 개발: PFD(Process Flow Diagram) 데이터 모델과 이에 바인딩되는 동역학(Dynamic) 화공 시뮬레이터를 구축하여, 설비별 온도·압력·조성의 시계열 거동을 모사하는 파이프라인을 설계합니다.\n·공정 최적화 에이전트 구현: 자연어 운전 목표를 입력받아 운전 조건(Setpoint)을 조정하고, 시뮬레이션 결과를 해석해 다음 액션을 제안하는 LLM 기반 Tool-calling 에이전트를 개발합니다.\n·자원 회계 및 상태 진단: 유틸리티·전력 등 운영 자원 소모를 추적·분석하고, 공정 상태 진단 및 KPI 기반의 자연어 보고 체계를 구현합니다.",
+      "benefits": "ㆍ서울 강남 테헤란로 신웅타워7층 신규 오피스 근무(역삼역 5분 거리)\nㆍ오전 10 시까지 자율 출근, 주 40시간 유연근무제 실행\nㆍ월 2회 재택근무를 통해 자율적으로 업무 진행\nㆍ자유로운 반차/연차 사용\nㆍ비포괄임금제 운영\nㆍ중소기업청년소득세 감면 및 퇴직 연금 가입\nㆍ자유롭고 평등한 근무 분위기\nㆍ최신식 개발 장비 및 프로그램 제공\nㆍ외근, 야근 택시비 지원\nㆍ근무시간에 따른 출근 장려 식비 지급\nㆍClaude Code, OpenAI Codex 등의 코딩 에이전트 구독"
     },
     {
       "site": "saramin",
@@ -214893,41 +215114,41 @@
     }
   ],
   "stats": {
-    "total": 7161,
+    "total": 7168,
     "by_size": {
-      "중소기업": 6453,
-      "대기업": 398,
+      "중소기업": 6459,
+      "대기업": 399,
       "중견기업": 310
     },
     "by_role": {
-      "기타": 978,
+      "기타": 979,
       "DevOps/인프라": 1044,
-      "백엔드": 3096,
-      "모바일": 1105,
-      "AI/ML": 2459,
-      "프론트엔드": 1983,
-      "풀스택": 651,
+      "백엔드": 3098,
+      "모바일": 1106,
+      "AI/ML": 2464,
+      "프론트엔드": 1986,
+      "풀스택": 652,
       "게임": 38,
       "데이터": 937,
-      "펌웨어/임베디드": 265,
+      "펌웨어/임베디드": 266,
       "보안": 296,
       "QA": 75
     },
     "by_site": {
       "wanted": 1818,
-      "jumpit": 523,
+      "jumpit": 524,
       "jobkorea": 1212,
-      "saramin": 3242,
+      "saramin": 3248,
       "dev": 366
     },
     "top_tech": [
       [
         "Python",
-        2246
+        2250
       ],
       [
         "Java",
-        1847
+        1848
       ],
       [
         "AWS",
@@ -214935,15 +215156,15 @@
       ],
       [
         "React",
-        1501
+        1503
       ],
       [
         "Git",
-        1194
+        1195
       ],
       [
         "Docker",
-        1151
+        1153
       ],
       [
         "Spring",
@@ -214951,15 +215172,15 @@
       ],
       [
         "JavaScript",
-        1004
+        1005
       ],
       [
         "Linux",
-        981
+        982
       ],
       [
         "TypeScript",
-        965
+        966
       ],
       [
         "MySQL",
@@ -214967,47 +215188,47 @@
       ],
       [
         "REST API",
-        805
+        806
       ],
       [
         "Kubernetes",
-        794
+        795
       ],
       [
         "PostgreSQL",
-        759
+        761
       ],
       [
         "Spring Boot",
         635
       ],
       [
+        "C++",
+        619
+      ],
+      [
         "GCP",
         619
       ],
       [
-        "C++",
-        618
-      ],
-      [
         "Node.js",
-        583
+        584
       ],
       [
         "Next.js",
-        537
+        538
       ],
       [
         "Azure",
         522
       ],
       [
-        "Android",
-        500
+        "PyTorch",
+        501
       ],
       [
-        "PyTorch",
-        498
+        "Android",
+        500
       ],
       [
         "CSS",
@@ -215027,7 +215248,7 @@
       ],
       [
         "FastAPI",
-        426
+        427
       ],
       [
         "Kotlin",
@@ -215039,27 +215260,11 @@
       ],
       [
         "C#",
-        383
+        384
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T03:20:53",
-      "keyword": "통합",
-      "raw_total": 5194,
-      "deduped": 5085,
-      "active": 5069,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1088,
-        "jumpit": 417,
-        "jobkorea": 1002,
-        "saramin": 2510,
-        "dev": 177
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T04:47:57",
       "keyword": "통합",
@@ -218240,6 +218445,22 @@
         "jumpit": 792,
         "jobkorea": 2281,
         "saramin": 6076,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-04T13:49:43",
+      "keyword": "통합",
+      "raw_total": 11642,
+      "deduped": 10028,
+      "active": 7168,
+      "closed": 2860,
+      "site_counts": {
+        "wanted": 1887,
+        "jumpit": 794,
+        "jobkorea": 2281,
+        "saramin": 6084,
         "dev": 596
       },
       "anomalies": []
