@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-05T03:28:14",
-  "source_dir": "screenshots/all_통합_20260705_032757",
+  "generated_at": "2026-07-05T05:07:56",
+  "source_dir": "screenshots/all_통합_20260705_050740",
   "keyword": "통합",
   "jobs": [
     {
@@ -91441,6 +91441,35 @@
     },
     {
       "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[React] Admin, Web 페이지 개발자 채용 (풀스택)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49514692?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=83&sc=630",
+      "career": "경력무관",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "CSS",
+        "Tailwind",
+        "Express",
+        "NestJS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "풀스택"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": "- 야근 시 저녁 식대 지원\n\n- 장비 지원 (맥북, 듀얼 모니터 등)\n\n- 유연한 연차 사용\n\n- 수평적인 조직 문화\n\n- 자기계발비 또는 도서비 지원"
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜알로이스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -124550,6 +124579,75 @@
     },
     {
       "site": "saramin",
+      "company": "(주)엔엠소프트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[울산]소프트웨어 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54318380&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d615014f-5fa8-46ff-a91d-32dc3d2c28fe",
+      "career": "신입·경력",
+      "location": "울산남구",
+      "dday": "",
+      "tech_stack": [
+        "C#"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "오너십/주도성"
+      ],
+      "qualifications": "• 신입 / 경력 2년 이상 ~ 20년 이하\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능\n\n• 보유역량: 인근거주자",
+      "preferences": "• 전공: 전기/전자공학, 컴퓨터/시스템공학, 산업공학\n\n• 보유역량: 운전가능자, 해당직무 근무경험",
+      "main_tasks": "• 자사 솔루션 개발 및 유지보수\n\n• C#, ASP.Net, Blazor\n\n• 스마트팩토리\n\n• MS-SQL, My-SQL\n\n• 개발이 즐거운 책임감 있는 인재를 모집합니다.\n\n• 주임/과장/부장 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 창립일행사, 워크샵\n\n• 리프레시 : 연차, 여름휴가, 경조휴가제, 반차, Refresh휴가, 근로자의날 휴무, 휴가비지원\n\n• 급여제도 : 인센티브제, 상여금, 장기근속자 포상, 우수사원포상, 퇴직금, 성과급, 연차수당, 직책수당, 자격증수당, 장기근속수당, 가족수당, 4대 보험\n\n• 지원금/보험 : 각종 경조사 지원, 자녀학자금\n\n• 선물 : 명절선물/귀향비, 창립일선물지급, 생일선물/파티, 장기근속 선물"
+    },
+    {
+      "site": "saramin",
+      "company": "주식회사 시아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)시아 임베디드개발자분 모집합니다",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54336728&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d615014f-5fa8-46ff-a91d-32dc3d2c28fe",
+      "career": "경력",
+      "location": "경북포항시 북구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "• 경력 (연수 무관)\n\n• 대학교졸업(4년)이상",
+      "preferences": "• 전공: 공학계열, 전기/전자공학, 컴퓨터/시스템공학",
+      "main_tasks": "- 키오스크 및 산업용 모듈 임베디드 펌웨어 개발\n\n- PCB 하드웨어 제어 및 기능 구현\n\n- 회로 설계지원 및 하드웨어 디버깅\n\n- 키오스크 주변장치 제어 개발\n\n- 시제품 개발 및 양산대응",
+      "benefits": "• 교육/생활 : 신규 입사자 교육(OJT), 자격증취득지원\n\n• 리프레시 : 연차, 반차, 공휴일 휴무, 여름휴가\n\n• 조직 문화 : 자유로운 연차사용, 자유복장, 회식강요 안함"
+    },
+    {
+      "site": "saramin",
+      "company": "칼주식회사(영업소)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[일본도쿄·오사카/CAL]수탁개발·프로젝트 기반 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359867&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d615014f-5fa8-46ff-a91d-32dc3d2c28fe",
+      "career": "경력1년↑",
+      "location": "일본 | 3,700 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -148272,6 +148370,34 @@
     },
     {
       "site": "saramin",
+      "company": "(주)씨브이네트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[삼성 계열사 씨브이네트] 임베디드 시스템(OS) 개발자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54294101&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=895eda33-2c94-4b6a-bf24-96155e67eee9",
+      "career": "경력3년↑",
+      "location": "서울송파구",
+      "dday": "",
+      "tech_stack": [
+        "C++",
+        "Android",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일",
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "성능 최적화"
+      ],
+      "qualifications": "• 경력 3년 이상\n\n• 학력무관",
+      "preferences": "ㆍQt Application 또는 안드로이드 앱 개발 경험\n\nㆍ영상, 음성 등 커널 드라이버 포팅 경험\n\nㆍ안드로이드 OS (HAL / NDK) 개발 경험",
+      "main_tasks": "ㆍ임베디드 기반 커널 드라이버 개발\n\nㆍ임베디드 S/W 개발 및 검증\n\nㆍ안드로이드 OS 프레임워크 튜닝\n\n• 개발팀 HW개발그룹 부서 소속, 면접 후 결정 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 창립일행사, 우수사원시상식, 워크샵, 사내동호회 운영, 식비 지원, 신규 입사자 교육(OJT), 저녁식사 제공, 음료제공(차,커피), 교육비 지원\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무, 산전 후 휴가, 육아휴직, 휴양시설 제공, 남성출산휴가, 시간제 연차, Refresh휴가, 공휴일 휴무\n\n• 급여제도 : 인센티브제, 상여금, 장기근속자 포상, 우수사원포상, 퇴직금, 성과급, 4대 보험, 퇴직연금, 직책수당\n\n• 지원금/보험 : 건강검진, 의료비지원(본인), 각종 경조사 지원, 단체 상해보험, 통신비 지원, 선택적복리후생, 자녀학자금, 복지카드/포인트"
+    },
+    {
+      "site": "saramin",
       "company": "네이버웹툰(유)",
       "company_size": "대기업",
       "company_size_matched": "네이버웹툰",
@@ -151652,6 +151778,42 @@
       "preferences": "",
       "main_tasks": "\"제로아이즈(ZeroEyes)\" 서비스의 Flutter 모바일/키오스크 App 개발 업무를 담당하게 됩니다 :)\n\n# Flutter 모바일 App 개발\n\n- 모바일 기기별 APP UI및 기능\n\n- 신용/체크카드, 빌링키 결제, 카카오페이, 삼성페이, 간편결제 등 각종 App 결제\n\n- App 배포를 위한 iOS Swift, AOS Kotlin 개발\n\n# Flutter 키오스크 App 개발\n\n- 키오스크 App UI 및 기능\n\n- 카드리더기, 스캐너, 출입제어, 열감지카메라, 복합기, 전기제어 등 IoT 제품 연동",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)블루개러지",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Software Engineer / Full Stack(3~5년)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54326542&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=ab71bbc7-00f6-4a23-952a-25b13e62e1ce",
+      "career": "경력 3~5년",
+      "location": "서울강동구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "TypeScript",
+        "React",
+        "Node.js",
+        "iOS",
+        "Android",
+        "React Native",
+        "AWS",
+        "GCP",
+        "Docker"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일",
+        "펌웨어/임베디드",
+        "풀스택"
+      ],
+      "competencies": [],
+      "qualifications": "• TypeScript 숙련\n• 실시간 통신(WebSocket/WebRTC) 연동 경험\n• RESTful API 설계 및 데이터베이스 모델링 경험\n• Python 또는 Node.js 등 백엔드 언어 활용 역량",
+      "preferences": "• AI/ML 서비스 연동 경험 (LLM, TTS 등)\n• DevOps 경험 (Docker, AWS/GCP)\n• 앱 크래시 및 성능 모니터링 운영 경험 (Sentry, Firebase Crashlytics 등)\n• 엔터테인먼트·SNS·팬덤 도메인 경험\n• 글로벌 서비스 개발 및 운영 경험\n• 기획부터 구축·운영·모니터링까지 전 과정 참여 경험\n\n마감일 및 근무지\n\n• 마감일 : 2026년 07월 29일",
+      "main_tasks": "Full Stack Engineer는 AI 아티스트와 팬들이 상호작용할 수 있는 신규 모바일 서비스의 개발을 담당하여, 프론트엔드와 백엔드의 설계, 구현, 배포 및 유지보수까지 모든 과정에 참여합니다. 다양한 팀과 협력하여 AI 모델과 데이터 분석 시스템을 긴밀히 통합하고, 서비스의 안정성과 성능을 지속적으로 개선합니다.\n\n• React Native 기반 AI 아티스트 앱 크로스 플랫폼(iOS/Android) 클라이언트 개발\n• 실시간 채팅 및 AI 생성 음성/영상 스트리밍 기반 통화 기능 구현\n• 리얼타임 AI 서비스를 위한 백엔드 시스템 아키텍처 설계 및 고성능 API 개발\n• AI 모델 연동 및 추론 파이프라인 구축\n• 서비스 품질과 성능 모니터링 및 최적화",
+      "benefits": "• 인센티브 지급 : 연 1회 지급\n• 최신 장비 지원 : 최신 PC 장비 및 기타 물품 지원\n• 중 / 석식 및 음료 제공 : JYP BOB 중/ 석식 및 Soul Cup 카페 포인트 제공\n• 경조사 및 하계휴가비 지원 : 경조금 , 경조휴가, 화환/조화, 상조회, 반려동물 경조 휴가 지원\n• 장기 근속 포상 및 리프레시 휴가, 하계 휴가비 지원\n• 건강 지원 : 건강검진, 독감 예방 접종 , 멘탈 케어 지원, 임직원 단체상해보험 가입\n• 문화활동 지원 : 아티스트 콘서트 초대권 및 스트리밍 이용권 지원\n• 유연근무제 : 선택적 근로제도, 대휴제도, 재택근무제도\n• 교육비 지원\n• 동호회 지원\n• 휴양시설 지원\n• 자녀학습지원금 지원"
     },
     {
       "site": "saramin",
@@ -173675,6 +173837,29 @@
     },
     {
       "site": "saramin",
+      "company": "(주)레브잇",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Data Assistant (1개월, 단기계약직)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54353567&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=3d0f15e7-a2e2-4d0a-9186-1a5c470b2aa5",
+      "career": "경력무관",
+      "location": "서울관악구 | 250 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n-다량의 상품 상세페이지, 후기 등 긴 텍스트를 꼼꼼하게 읽고 구조적으로 분석할 수 있는 분\n\n-텍스트에서 중요한 정보와 그렇지 않은 정보를 구분하고, 이를 명확한 기준으로 정리할 수 있는 분\n\n-반복적인 실험과 개선 과정을 통해 정확도를 높이는 작업을 즐길 수 있는 분\n\n-대면 근무가 가능하신 분",
+      "preferences": "-최대한 빠르게 합류할 수 있는 분\n\n-이커머스 상품 구조에 대한 이해도가 있는 분\n\n-데이터 라벨링, 텍스트 분류, 정보 추출 등의 작업 경험이 있는 분\n\n-LLM의 기본적인 동작 방식(Prompt, Output 특성 등)에 대한 이해가 있는 분",
+      "main_tasks": "[합류하게 될 팀]\n\n-레브잇 PMF팀은 쇼핑 AI 에이전트를 기획·개발하는 팀입니다. “구매 결정의 모든 불편을 해결한다”는 공동의 목표를 위해 레슨을 공유하고 긴밀히 협업합니다.\n\n-PMF팀에서는 다양한 카테고리의 상품을 추천하는데 필요한 기틀이 되는 카탈로그 시스템을 만들고 있습니다.\n\n-AI Data Assistant 은 카탈로그 시스템을 만드는 코어팀 소속으로, AI를 활용해 상품 상세페이지와 후기를 분석하고, 카테고리 속성 및 속성값을 예측·정제하여 카탈로그 데이터의 정확도를 지속적으로 개선합니다.\n[합류하면 함께 할 업무]\n\n-Ground Truth 데이터 생성 및 관리\n\n-상품 상세페이지, 후기 등 비정형 텍스트를 꼼꼼히 읽고 분석하여 AI 모델 학습, 평가에 쓰일 Ground Truth 데이터를 구축합니다.\n\n-일관된 품질의 Ground Truth 생성을 위해 기준과 가이드를 정리하고 개선합니다.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -187849,6 +188034,69 @@
     },
     {
       "site": "saramin",
+      "company": "㈜피앤피시큐어",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[피앤피시큐어 및 관계사] 보안솔루션 취약점분석 엔지니어 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54336291&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=86f18a69-5b15-4cbb-b683-3f09f9415b36",
+      "career": "경력3년↑",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)신세계아이앤씨",
+      "company_size": "대기업",
+      "company_size_matched": "신세계",
+      "title": "정보보호 분야 인재모집(보안솔루션운영)(채용 시 마감)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53521134&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=86f18a69-5b15-4cbb-b683-3f09f9415b36",
+      "career": "경력5년↑",
+      "location": "서울전체",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "○ 정보보호 분야 경험 최소 5년 이상 지원 가능(PJT 경험 포함) \n※ 자기소개서 內 지원 직무의 해당 업무 경험 총 합산 기간을 반드시 기재 바랍니다.\n※ 직장 근무 경력이 아닌 지원 분야 직무경험 必\n○ 보안 인프라, 보안 시스템, 보안 솔루션 구축 및 운영 경험 보유자",
+      "preferences": "",
+      "main_tasks": "○ 신세계그룹 보안솔루션/서비스 운영/관리 업무 수행\n○ 그룹 내/외부 보안솔루션/서비스를 통한 트래픽 제어을 위하여 아키텍처 설계 및 정책 수립 \n○ 수립한 정책을 통한 보안솔루션/서비스 정책 운영 및 관리, 최적화 진행\n○ 보안솔루션/서비스 신규/재구축을 위한 검증(PoC, BMT 등) 수행",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)카카오페이증권",
+      "company_size": "대기업",
+      "company_size_matched": "카카오페이",
+      "title": "네트워크 보안 담당자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54318638&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=86f18a69-5b15-4cbb-b683-3f09f9415b36",
+      "career": "경력4년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 네트워크 보안 실무 경험이 4년 이상 있는 분을 찾아요. \n• 네트워크 로그와 트래픽을 기반으로 보안 이벤트를 분석할 수 있는 분을 찾아요. \n• BGP 등 라우팅과 HA 구성, Stateful Inspection에 대한 기본 이해가 있는 분을 찾아요.",
+      "preferences": "",
+      "main_tasks": "• Cloud와 On-Prem Hybrid 환경에서 Firewall, ACL, NAT, VPN 요청을 검토하고 안정적으로 적용하고 최적화해요. \n• AI Agent, MCP, 사내 AI 도구 연계 환경에서 외부 API, 내부 시스템, 데이터 저장소로 이어지는 네트워크 접근 경로를 \nZeroTrust관점에서 검토해요. \n• DDoS, 스캔, 침투 시도 등 네트워크 기반 공격을 분석하고 대응해요. \n• 신규 네트워크 서비스 구축 시 접근 경로, 외부 노출, 보안 정책 영향도를 검토해요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)미디어로그",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -196849,6 +197097,32 @@
     },
     {
       "site": "saramin",
+      "company": "드림라인(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026 드림라인 하반기 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54282871&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=44c01662-1644-427e-b5e6-6fc6f7e7d3e1",
+      "career": "신입·경력",
+      "location": "서울구로구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "경력\n정보보호\nㆍ정보보호 관리체계 수립 및 운영\n\nㆍ정보보호/보안솔루션/정보시스템\n\n　설계 도입/구축/운영 및 성능개선\n\nㆍ보안활동 이행 및 점검\n\n　(내/외부 감사, 위/수탁사 점검 및 대응)\n\nㆍISMS-P, ISO27001 등 정보보호\n\n　인증 심사 대응\n1\n[공통사항]\n\nㆍ4년제 대학이상 졸업 및 졸업예정자\n\nㆍ컴퓨터/통신/IT/인터넷 관련 전공자 우대\n[경력사원]\n\nㆍ정보보호 담당자 경력 3년 이상\n\nㆍ보안 솔루션 운영 경험자\n\n　(방화벽, WAF, DB접근제어솔루션,\n\n　DLP, VPN 등)\n\nㆍ정보보호 관련 자격증 보유자\n\n　(정보보안기사, CPPG, CISA,\n\n　CISSP, ISMS-P 심사원 등)\n\nㆍ정보보호시스템 기획, 선정,\n\n　도입 경험자\n\nㆍISMS, ISO27001 등 정보보호\n\n　인증 심사 대응 경험자\n\nㆍ문서 보고 및 원활한 커뮤니케이션\n\n　역량 보유자\n\n신입\n기술영업\n\n및\n\n기술관리\nㆍ이동통신 3사 기술영업 및 기술지원\n\nㆍ기지국 사업 영업 및 기술감독\n\nㆍ인허가 및 각종 계약 업무\n\n　(국유지/사유지)\n\nㆍ기지국 운영관리(장애처리 및 민원처리)\n\nㆍ기지국 설치 설계 및 감독, 안전관리\n\nㆍ내부/외부 행정업무처리\n\nㆍICT 영업\n2\n[공통사항]\n\nㆍ운전가능자(필수)\n\nㆍOA(Excel,Word,PPT,한글 등)\n\n　문서작업 능력\n\nㆍ학사학위 이상보유자\n\nㆍ영어 실무 및 커뮤니케이션 가능자\n\nㆍ해외출장 결격 사유 없는 분\n\nㆍ세일즈 통해 성과 창출에 대한\n\n　열정과 도전적 사고 보유자\n\nㆍOA(Excel,Word,한글 등)\n\n　문서작업 능력\n\nㆍ학사학위 이상보유자\n\nㆍ영어 실무(문서) 및\n\n　커뮤니케이션 가능자\n\nㆍ사업 분석 및 기획/관리 역량 보유자\n\nㆍ해외출장 결격 사유 없는 분\n\nㆍOA(Excel,Word,한글 등)\n\n　문서작업 능력",
+      "preferences": "ㆍ전기(철도분야가능) 관련 자격증 소지자\n\nㆍ통신(철도분야가능) 관련 자격증 소지자\n\nㆍ소방 관련 자격증 소지자\n\nㆍ안전 관련 자격증 소지자\n[필수 확인 사항]\n\nㆍ부산지사 근무 가능자이면서\n\n　본사 6개월 이상 근무 가능자\n\nㆍ대구지사 근무 가능자이면서\n\n　본사 6개월 이상 근무 가능자\n\n신입/\n\n경력\n글로벌\n\n영업\nㆍ글로벌 고객사 대상 영업,\n\n　신규 서비스/시장 발굴 및 영업\n\n　- 국내 및 글로벌 통신사업자/ CSP /\n\n　 AI Tech 등 기업에 네트워크\n\n　 서비스/솔루션 제안 영업\n\n　- 기존 고객 관리 및 신규 고객\n\n　 발굴 영업\n\n　- 대 고객 프로젝트 및 신규 프로젝트\n\n　 수행/관리 (제안서, 견적서 작성 등)\n\nㆍ대상 서비스 : 통신 인프라\n\n　(해저케이블/백홀, 국내/국제 전용회선,\n\n　IP Transit 등)\n\nㆍ마케팅, 프로모션, 글로벌 통신 시장\n\n　분석 및 영업 전략 수립\n\n　- 영업전략 수립 및 매출 분석, 기획/관리\n\n　- 글로벌 컨퍼런스 이벤트 참석, 홍보,\n\n　 영업 및 정보 획득을 통한 서비스\n\n　 경쟁력 개선/신규 서비스 개발\n\nㆍ영업기회 발굴 및 관리\n1\n\nㆍ국내/글로벌 통신사 및 관련 업계\n\n　근무 경험자(데이터센터,\n\n　네트워크 장비/솔루션 등)\n\nㆍ일본어/중국어 등 제3외국어 가능자\n\nㆍ통신 인프라 사업 개발 및\n\n　영업 실무 경험 3년 이상\n\nㆍ글로벌 고객 (CP, CSP, 글로벌 Telco)\n\n　영업 경험자\n\nㆍ국내 통신사 및 해외 진출 대기업\n\n　대상 통신 영업 경험자\n\nㆍ프로젝트 단위 사업개발 및\n\n　영업 경험 보유자\n\n신입/\n\n경력\n글로벌\n\n사업\nㆍ글로벌 사업 기획/관리\n\n　- 글로벌 프로젝트 기획 / 관리 / 수행\n\n　- 사업자 간 협상 및 계약 체결\n\n　- 프로젝트 관련 정책 수립 및 문서화\n\nㆍ프로젝트 비용 관리\n\n　- 자금출납 및 자산 관리\n\nㆍ글로벌 통신 시장 분석 및\n\n　사업 전략 수립\n\n　- 경쟁사, 시장동향 분석 및\n\n　 사업 전략 수립\n\n　- 서비스 경쟁력 고도화/신규\n\n　 서비스 개발\n\nㆍ신규 사업 발굴\n1\n\nㆍ국내/글로벌 통신사 및\n\n　관련 업계 근무 경험자\n\nㆍ글로벌 통신 프로젝트 관리 유경험자\n\nㆍ일본어/중국어 등 제3외국어 가능자\n\nㆍ사업 개발 관련 실무 경험 3년 이상\n\nㆍ대형 프로젝트 사업개발/관리\n\n　경험 보유자\n\n※ 정보보호는 드림라인 계열사 소속인 \"드림마크원\"으로 채용 예정입니다.\n\n※ 기술영업 및 기술관리는 드림라인 계열사 소속인 \"드림타워솔루션\"으로 채용 예정입니다.\n\n부서소개\n[정보보호파트]\n\n정보 자산과 고객 데이터를 보호하기 위해 존재하는 핵심 보안 조직입니다.\n\n사이버 위협이 고도화되는 시대에, 우리는 회사의 IT 인프라 전반에 대한 보안 전략을 수립하고,\n\n실시간 위협 대응과 예방 활동을 통해 안전한 서비스 환경을 만들어갑니다.\n[타워솔루션그룹]\n\n이동통신 인프라 구축 및 운영을 담당하는 핵심 조직으로, 전국 공용화 기지국에 대하여 기획(실사/제안), 인허가, 가설계, 구축,\n\n안전관리 및 통제, 계약, 운영, 유지보수까지 전 과정을 수행하고 있습니다. 또한 사업 다각화를 위하여 ICT분야에 대하여\n\n사업 확대를 진행 중에 있습니다.\n[글로벌사업부문]\n\n글로벌사업부문은 해저케이블 및 연관 사업 전반을 여러 글로벌 사업자와 함께 만들어 갑니다.\n\n회사의 신성장동력인 해저케이블 구축, 사업, 영업과 관련된 업무를 수행하면서 전문성을 키워갈 수 있습니다.\n\n열정적으로 미래 먹거리를 함께 일궈나갈 분을 기다립니다.",
+      "main_tasks": "구분\n모집\n\n분야\n주요직무\n인원",
+      "benefits": "ㆍ종합 건강검진 패키지 제공\n\nㆍ선택적복리후생비 (年 100만원)\n\nㆍ실손보험지원 (직계가족까지)\n\nㆍ식대, 교통비, 통신비, 교육비 지원\n\nㆍ생일축하, 결혼기념일 선물지급\n\nㆍ사내동호회 활동금 지원\n\nㆍ고3 수험생 자녀 격려금 제공\n\nㆍ리조트 기업제휴\n\nㆍ장기근무 포상 및 휴가 지원\n\nㆍ사내 도서관 및 휴게실 운영\n\nㆍ경조금 및 물품 지원\n\nㆍ간식/음료/커피 제공\n\nㆍ명절선물 지급\n\nㆍ겨울근무복\n\nㆍ업무용 노트북 지급\n\nㆍ신입사원 교육(OJT), 웰컴키트 제공\n\n인사제도\n\nㆍ유연근무제(출근 : 8, 9, 10시 중 선택)\n\nㆍ자율 복장 제도\n\nㆍ장기근속자·우수사원 포상제도\n\nㆍ인재추천·사내제안 제도 운영\n\nㆍ육아휴직·남성출산휴가제도\n\nㆍ임직원 사택지원"
+    },
+    {
+      "site": "saramin",
       "company": "주식회사 윈어시",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -200122,6 +200396,36 @@
       "preferences": "정규직\n전산\n0명\nㆍ학사 이상 학력 소지자\n\n(2026년 8월 졸업예정자 포함)\n\nㆍDBMS 환경에서의 SQL / function /\n\nprocedure 작성 가능자\n\nㆍJAVA/JSP/HTML/CSS/Java_script를\n\n이용한 웹 어플리케이션 개발 가능자\nㆍ대학 학사·연구 정보시스템 개발 경력자\n\n또는 eXBuilder기반 환경 개발 경력자\n\nㆍ전산분야 자격증 소지자\n\n- 정보처리기사, 정보보안기사\n\n- DB 관련 : OCP, OCM, SQLP, DAP,\n\nSQLD, DAsP 자격증\n\nㆍ국가 유공자 등 예우 및 지원에 관한 법률에 의한 취업지원 대상자\n\nㆍ장애인 고용 촉진 및 직업 재활법에 의한 장애인\n\n채용조건\n\nㆍ임용 예정일 : 2026. 9. 1.\n\nㆍ3개월간 수습 직원으로 근무한 후, 근무 성적 평가결과에 따라 정규 일반직원으로 임용\n\nㆍ급여는 본교 보수지급 기준에 따름\n\nㆍ해당 채용분야에 적격자가 없을 시 채용하지 않음\n\nㆍ채용조건이 변경될 경우 재공고함\n\n전형방법\n\nㆍ1단계 : 서류전형\n[2026. 7. 23.(목) 합격자 발표]\n\nㆍ2단계 : 인적성검사 [2026. 7. 28.(화) 13:30 교내 지정장소 온라인 검사]\n\nㆍ3단계 : 1차 면접 [2026. 7. 31(금) 10:00 일반면접 및 기술능력면접]\n\nㆍ4단계 : 2차 면접(최종)\n[2026. 8. 6.(목) 10:00]\n\n※ 위 전형일정은 상황에 따라 변경될 수 있음",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)에이피에스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[APS] IT업무시스템 운영 담당 (대리/과장급)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54365671&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=5e2dd8bc-b9fd-4c61-8083-4993187986ed",
+      "career": "경력 4~10년",
+      "location": "경기화성시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML",
+        "MySQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 경력 4년 이상 ~ 10년 이하\n\n• 대학교졸업(4년)이상 (전산, 컴퓨터공학, 정보시스템 등 IT 관련 전공 우대)\n\n📋 필요지식\n\n• ERP, 그룹웨어 등 업무시스템 운영에 대한 이해\n\n• 데이터베이스(MS SQL 등) 및 SQL 활용 지식\n\n• 시스템 운영 프로세스 및 장애 관리에 대한 이해\n\n• 내부회계(ITGC, ITAC) 또는 IT 통제에 대한 기본 이해\n\n📋 필요능력\n\n• 업무 요구사항을 분석하고 개선 방안을 도출하는 능력\n\n• SQL을 활용한 데이터 조회 및 원인 분석 능력\n\n• 사용자 및 협력사와 원활한 커뮤니케이션 능력\n\n• 운영 이슈 발생 시 원인 분석 및 문제 해결 능력\n\n• 문서 작성 및 운영 프로세스 정리 능력\n\n📋 필요태도\n\n• 안정적인 시스템 운영에 대한 책임감\n\n• 업무 프로세스 개선에 대한 긍정적인 마인드\n\n• 새로운 업무와 시스템을 적극적으로 학습하는 자세\n\n• 다양한 부서와 협업할 수 있는 원활한 커뮤니케이션\n\n• 고객(사용자) 중심의 서비스 마인드",
+      "preferences": "• 시스템 구축 프로젝트 경험\n\n• ERP, 그룹웨어, PDM 등 업무시스템 운영 경험\n\n• 제조업 IT 운영 경험\n\n• 내부회계(ITGC, ITAC) 운영 또는 IT 감사 대응 경험",
+      "main_tasks": "• APS그룹 업무시스템(ERP, 그룹웨어, PDM 등) 운영 및 안정화\n\n• 시스템 장애 대응 및 운영 이슈 분석·개선\n\n• 시스템 간 인터페이스(I/F) 운영 및 데이터 연계 관리\n\n• MS SQL 기반 데이터 조회 및 SP 분석을 통한 운영 지원\n\n• 협력사 및 관계부서와의 운영 협의 및 개선 과제 수행\n\n• 그룹사 내부회계(ITGC, ITAC) 운영 및 통제 활동 수행\n\n• 시스템 운영 매뉴얼 및 운영 표준 관리",
+      "benefits": "• 교육/생활 : 창립일행사, 우수사원시상식, 워크샵, 신규 입사자 교육(OJT), 직무능력향상교육, 리더십 강화교육, 도서구입비지원, 외국어 교육 지원, 교육비 지원, 자기계발비 지원, 구내식당(사원식당), 점심식사 제공, 저녁식사 제공, 사내동호회 운영, 아침식사 제공, 간식 제공, 음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무, 산전 후 휴가, 육아휴직, 남성출산휴가, 휴양시설 제공\n\n• 급여제도 : 퇴직연금, 장기근속자 포상, 우수사원포상, 퇴직금, 휴일(특근)수당, 연차수당, 4대 보험\n\n• 지원금/보험 : 건강검진, 직원대출제도, 각종 경조사 지원, 선택적복리후생, 복지카드/포인트\n\n• 출퇴근 : 기숙사 운영, 통근버스 운행, 주차장제공, 회사차량 있음, 전세자금 대출, 주 52시간제 준수\n\n• 조직 문화 : 노조/노사협의회, 수평적 조직문화, 회식강요 안함, 야근강요 안함, 자유로운 연차사용\n\n• 선물 : 명절선물/귀향비, 창립일선물지급, 장기근속 선물"
     },
     {
       "site": "saramin",
@@ -213078,49 +213382,49 @@
     }
   ],
   "stats": {
-    "total": 7104,
+    "total": 7116,
     "by_size": {
-      "중소기업": 6399,
-      "대기업": 398,
+      "중소기업": 6409,
+      "대기업": 400,
       "중견기업": 307
     },
     "by_role": {
-      "기타": 972,
-      "DevOps/인프라": 1035,
-      "백엔드": 3064,
-      "모바일": 1096,
-      "AI/ML": 2454,
-      "프론트엔드": 1953,
-      "풀스택": 646,
+      "기타": 976,
+      "DevOps/인프라": 1037,
+      "백엔드": 3066,
+      "모바일": 1098,
+      "AI/ML": 2455,
+      "프론트엔드": 1955,
+      "풀스택": 648,
       "게임": 39,
       "데이터": 926,
-      "펌웨어/임베디드": 264,
-      "보안": 294,
+      "펌웨어/임베디드": 267,
+      "보안": 295,
       "QA": 75
     },
     "by_site": {
       "wanted": 1845,
       "jumpit": 524,
-      "jobkorea": 1202,
-      "saramin": 3169,
+      "jobkorea": 1203,
+      "saramin": 3180,
       "dev": 364
     },
     "top_tech": [
       [
         "Python",
-        2236
+        2238
       ],
       [
         "AWS",
-        1816
+        1817
       ],
       [
         "Java",
-        1816
+        1817
       ],
       [
         "React",
-        1472
+        1474
       ],
       [
         "Git",
@@ -213128,7 +213432,7 @@
       ],
       [
         "Docker",
-        1148
+        1149
       ],
       [
         "Spring",
@@ -213136,19 +213440,19 @@
       ],
       [
         "JavaScript",
-        978
+        979
       ],
       [
         "Linux",
-        971
+        973
       ],
       [
         "TypeScript",
-        956
+        957
       ],
       [
         "MySQL",
-        850
+        851
       ],
       [
         "REST API",
@@ -213168,15 +213472,15 @@
       ],
       [
         "C++",
-        615
+        616
       ],
       [
         "GCP",
-        614
+        615
       ],
       [
         "Node.js",
-        581
+        582
       ],
       [
         "Next.js",
@@ -213192,11 +213496,11 @@
       ],
       [
         "Android",
-        490
+        492
       ],
       [
         "CSS",
-        480
+        481
       ],
       [
         "Redis",
@@ -213204,11 +213508,11 @@
       ],
       [
         "HTML",
-        467
+        468
       ],
       [
         "iOS",
-        428
+        429
       ],
       [
         "FastAPI",
@@ -213224,27 +213528,11 @@
       ],
       [
         "C#",
-        376
+        377
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T09:07:48",
-      "keyword": "통합",
-      "raw_total": 5226,
-      "deduped": 5115,
-      "active": 5099,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1089,
-        "jumpit": 418,
-        "jobkorea": 1003,
-        "saramin": 2532,
-        "dev": 184
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T10:36:02",
       "keyword": "통합",
@@ -216425,6 +216713,22 @@
         "jumpit": 803,
         "jobkorea": 2313,
         "saramin": 6114,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-05T05:07:50",
+      "keyword": "통합",
+      "raw_total": 11758,
+      "deduped": 10105,
+      "active": 7116,
+      "closed": 2989,
+      "site_counts": {
+        "wanted": 1914,
+        "jumpit": 804,
+        "jobkorea": 2315,
+        "saramin": 6129,
         "dev": 596
       },
       "anomalies": []
