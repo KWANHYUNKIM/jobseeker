@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-05T05:07:56",
-  "source_dir": "screenshots/all_통합_20260705_050740",
+  "generated_at": "2026-07-05T06:47:23",
+  "source_dir": "screenshots/all_통합_20260705_064706",
   "keyword": "통합",
   "jobs": [
     {
@@ -106953,6 +106953,27 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜비인텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[(주)비인텍] 하반기 신입 정규직 JAVA 개발자 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49492336?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=95&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 구로구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "에즈웰플러스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -213382,14 +213403,14 @@
     }
   ],
   "stats": {
-    "total": 7116,
+    "total": 7117,
     "by_size": {
-      "중소기업": 6409,
+      "중소기업": 6410,
       "대기업": 400,
       "중견기업": 307
     },
     "by_role": {
-      "기타": 976,
+      "기타": 977,
       "DevOps/인프라": 1037,
       "백엔드": 3066,
       "모바일": 1098,
@@ -213405,7 +213426,7 @@
     "by_site": {
       "wanted": 1845,
       "jumpit": 524,
-      "jobkorea": 1203,
+      "jobkorea": 1204,
       "saramin": 3180,
       "dev": 364
     },
@@ -213533,22 +213554,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T10:36:02",
-      "keyword": "통합",
-      "raw_total": 5264,
-      "deduped": 5147,
-      "active": 5131,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1090,
-        "jumpit": 419,
-        "jobkorea": 1005,
-        "saramin": 2549,
-        "dev": 201
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T12:02:45",
       "keyword": "통합",
@@ -216728,6 +216733,22 @@
         "wanted": 1914,
         "jumpit": 804,
         "jobkorea": 2315,
+        "saramin": 6129,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-05T06:47:16",
+      "keyword": "통합",
+      "raw_total": 11759,
+      "deduped": 10106,
+      "active": 7117,
+      "closed": 2989,
+      "site_counts": {
+        "wanted": 1914,
+        "jumpit": 804,
+        "jobkorea": 2316,
         "saramin": 6129,
         "dev": 596
       },
