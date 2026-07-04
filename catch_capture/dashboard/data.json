@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T13:49:49",
-  "source_dir": "screenshots/all_통합_20260704_134929",
+  "generated_at": "2026-07-04T15:36:03",
+  "source_dir": "screenshots/all_통합_20260704_153544",
   "keyword": "통합",
   "jobs": [
     {
@@ -67356,6 +67356,31 @@
     },
     {
       "site": "jumpit",
+      "company": "보은전자방송통신",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "전관방송 H/W 개발자 경력 채용",
+      "url": "https://jumpit.saramin.co.kr/position/54363977",
+      "career": "경력 5~10년",
+      "location": "서울 강서구 양천로57길26, 701호\n지도보기·\n주소복사",
+      "dday": "D-28",
+      "tech_stack": [],
+      "tech_tags": [
+        "Orcad",
+        "PCB",
+        "Pads"
+      ],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 5년 이상 ~ 10년 이하\n• 대학졸업(2,3년)이상\n• OrCAD등 회로 설계 툴\n• PADS등 PCB 아트웍 툴",
+      "preferences": "• Micom F/W 가능자 우대",
+      "main_tasks": "- 전관방송, 비상방송, PA 시스템용 H/W 개발 및 양산\n- 회로설계\n＊ 디지털 오디오, 디지털 스피커 컨트롤러, 디지털 파워앰프, 스피커 선로 감시\n＊ Emergency Panel, 비상방송용 앰프/배터리 이중화 설계",
+      "benefits": "• 교육/생활 : 우수사원시상식, 신규 입사자 교육(OJT), 도서구입비지원, 점심식사 제공, 저녁식사 제공, 식비 지원, 음료제공(차,커피)\n• 리프레시 : 연차, 여름휴가, 경조휴가제, 반차, 근로자의날 휴무, 산전 후 휴가, 육아휴직\n• 급여제도 : 퇴직연금, 인센티브제, 장기근속자 포상, 우수사원포상, 퇴직금, 성과급, 직책수당, 장기근속수당, 4대 보험\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장, 자유로운 연차사용\n• 선물 : 명절선물/귀향비\n• 근무 환경 : 회의실, 사무용품 지급\n• 출퇴근 : 주차장제공"
+    },
+    {
+      "site": "jumpit",
       "company": "빅웨이브로보틱스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -124882,6 +124907,41 @@
     },
     {
       "site": "saramin",
+      "company": "(주)온품",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "디지털트윈 및 플랫폼 웹개발자 (Back-End) 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54364204&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=9abbdbb6-c8b5-464b-a9e2-d3eac059d222",
+      "career": "경력 5~10년",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "React",
+        "Spring",
+        "Spring Boot",
+        "PostgreSQL",
+        "Docker",
+        "Kubernetes",
+        "Nginx",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 5년 이상 ~ 10년 이하\n\n• 대학교졸업(4년)이상\n\nㆍ해외 및 지방 출장에 결격 사유가 없는 사람\n\nㆍ공공기관, 군기관 등 관련 업무에 결격 사유가 없는 사람\n\nㆍ업무상 신원조회시 결격 사유가 없는 사람\n\nㆍ학력 : 대졸\n\nㆍ경력 5년 이상 (유관업무 경력자)\n\nㆍJava 기반 개발 경험 (Spring 또는 전자정부 표준프레임워크)\n\nㆍSpring Boot 기반 백엔드 개발 경험자\n\nㆍMaven 또는 Gradle을 활용한 빌드/의존성 관리 경험자\n\nㆍPostgreSQL 등 RDBMS 활용 및 DB 설계 경험\n\nㆍWeb API 설계 및 개발 경험\n\nㆍLinux OS 기본 지식 보유\n\nㆍNginx, Tomcat 등 서버 환경 구성 및 운영 경험\n\nㆍGit을 이용한 형상관리 경험\n\nㆍVibe Coding 등 AI 코딩 도구를 활용한 개발 경험자\n\nㆍ백엔드를 주 업무로 하되, 프론트엔드 개발에도 관심 있는 분",
+      "preferences": "ㆍ적극적인 자세와 원활한 커뮤니케이션 능력을 갖추신 분\n\nㆍGIS, 디지털트윈 관련 프로젝트 경험자\n\nㆍ공공SI(SW) 사업 수행 경험자\n\nㆍ디자인, 공간정보, 지리정보 관련 학과 전공자\n\nㆍGIS 관련 DB Query 활용 경험자\n\nㆍPostgreSQL의 PostGIS Extension 사용 경험자\n\nㆍSwagger 등 API 문서화 도구 설정 경험자\n\nㆍReact 등 프론트엔드 프레임워크 활용 경험자\n\nㆍDocker/Kubernetes 등 컨테이너 오케스트레이션 활용 경험자\n\nㆍ빅데이터/AI 분야 경험이 있거나 관심 있는 분",
+      "main_tasks": "ㆍ디지털트윈 및 공간정보 플랫폼의 백엔드 시스템 설계·개발\n\nㆍWeb API(RESTful) 설계 및 개발\n\nㆍPostgreSQL 기반 데이터베이스 설계 및 운영\n\nㆍLinux 서버 환경(Nginx, Tomcat) 구성 및 운영\n\nㆍ서비스 배포 및 운영 환경 개선 (필요 시 프론트엔드 협업 포함)",
+      "benefits": "• 급여제도 : 퇴직연금, 상여금, 장기근속자 포상, 퇴직금, 성과급, 야근수당, 4대 보험\n\n• 근무 환경 : 휴게실, 회의실, 공기청정기, 전용사옥, 사내 정원, 건물 내 경사로, 휠체어용 난간, 장애인 화장실, 문턱 없음, 유니폼지급, 노트북, 사원증, 사무용품 지급, 최고 성능 컴퓨터\n\n• 출퇴근 : 야간교통비지급, 탄력근무제, 주 52시간제 준수\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 리프레시 : 연차, 경조휴가제, 근로자의날 휴무, 휴가비지원, 공휴일 휴무\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장, 자유로운 연차사용\n\n• 교육/생활 : 워크샵, 신규 입사자 교육(OJT), 직무능력향상교육, 저녁식사 제공, 사내동호회 운영, 사우회(경조사회)\n\n• 선물 : 명절선물/귀향비, 생일선물/파티, 장기근속 선물"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -175058,6 +175118,29 @@
     },
     {
       "site": "saramin",
+      "company": "한화에어로스페이스(주)",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "LS사업부 AI 경력사원 채용 (자율주행)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359023&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=42545d89-2e72-4968-b749-056f5f0e8adb",
+      "career": "경력5년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "• AI/항공우주/컴퓨터공학 등 유관분야 석사 이상\n• CVPR, ICRA, CoRL, NeurIPS, RSS, IROS, IEEEIV 등 우수학회 논문 게재 실적 보유자\n• 유관분야 경력을 5년 이상 보유하신 분\n• 남성의 경우 병역을 마쳤거나 면제인 분\n• 해외여행에 결격사유가 없으신 분",
+      "preferences": "",
+      "main_tasks": "• 자율주행(경로계획/장애물인지/주행제어 등) 알고리즘 설계 및 구현\n• 강화학습 기반 모션 플래닝 기술 개발\n• 딥러닝 기반 객체인식/장면분할 기술 개발\n• 모델 학습, 배포, 최적화\n• 시스템 통합 및 실차시험\n\n• 기술자료 작성\n- 기술자료 작성 및 형상관리, 규격화 수행\n- 기술문제 검토 및 기술검토서 작성\n\n• 시험평가 지원\n- 개발 장비 시험평가 기술지원\n- 시제품 제작 기술지원",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "토모도모(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -215114,19 +215197,19 @@
     }
   ],
   "stats": {
-    "total": 7168,
+    "total": 7171,
     "by_size": {
-      "중소기업": 6459,
-      "대기업": 399,
+      "중소기업": 6461,
+      "대기업": 400,
       "중견기업": 310
     },
     "by_role": {
-      "기타": 979,
+      "기타": 980,
       "DevOps/인프라": 1044,
-      "백엔드": 3098,
+      "백엔드": 3099,
       "모바일": 1106,
-      "AI/ML": 2464,
-      "프론트엔드": 1986,
+      "AI/ML": 2466,
+      "프론트엔드": 1987,
       "풀스택": 652,
       "게임": 38,
       "데이터": 937,
@@ -215136,9 +215219,9 @@
     },
     "by_site": {
       "wanted": 1818,
-      "jumpit": 524,
+      "jumpit": 525,
       "jobkorea": 1212,
-      "saramin": 3248,
+      "saramin": 3250,
       "dev": 366
     },
     "top_tech": [
@@ -215148,7 +215231,7 @@
       ],
       [
         "Java",
-        1848
+        1849
       ],
       [
         "AWS",
@@ -215156,7 +215239,7 @@
       ],
       [
         "React",
-        1503
+        1504
       ],
       [
         "Git",
@@ -215164,11 +215247,11 @@
       ],
       [
         "Docker",
-        1153
+        1154
       ],
       [
         "Spring",
-        1077
+        1078
       ],
       [
         "JavaScript",
@@ -215176,7 +215259,7 @@
       ],
       [
         "Linux",
-        982
+        983
       ],
       [
         "TypeScript",
@@ -215192,15 +215275,15 @@
       ],
       [
         "Kubernetes",
-        795
+        796
       ],
       [
         "PostgreSQL",
-        761
+        762
       ],
       [
         "Spring Boot",
-        635
+        636
       ],
       [
         "C++",
@@ -215265,22 +215348,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T04:47:57",
-      "keyword": "통합",
-      "raw_total": 5213,
-      "deduped": 5104,
-      "active": 5088,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1089,
-        "jumpit": 418,
-        "jobkorea": 1002,
-        "saramin": 2520,
-        "dev": 184
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T06:14:18",
       "keyword": "통합",
@@ -218461,6 +218528,22 @@
         "jumpit": 794,
         "jobkorea": 2281,
         "saramin": 6084,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-04T15:35:57",
+      "keyword": "통합",
+      "raw_total": 11647,
+      "deduped": 10031,
+      "active": 7171,
+      "closed": 2860,
+      "site_counts": {
+        "wanted": 1887,
+        "jumpit": 796,
+        "jobkorea": 2281,
+        "saramin": 6087,
         "dev": 596
       },
       "anomalies": []

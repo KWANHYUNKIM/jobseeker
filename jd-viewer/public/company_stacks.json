@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T13:50:01",
-  "total_jobs": 7168,
+  "generated_at": "2026-07-04T15:36:17",
+  "total_jobs": 7171,
   "company_count": 1341,
   "min_posting": 2,
   "companies": [
@@ -42514,6 +42514,169 @@
       }
     },
     {
+      "name": "한화에어로스페이스(주)",
+      "norm": "한화에어로스페이스",
+      "size": "대기업",
+      "size_alias": "한화에어로스페이스",
+      "posting_count": 7,
+      "sites": [
+        "dev",
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 5,
+        "보안": 1
+      },
+      "top_tech": [
+        {
+          "name": "PyTorch",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "AI/ML": [
+          {
+            "name": "PyTorch",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 13,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "교육/에듀테크",
+          "score": 11,
+          "evidence": [
+            "교육",
+            "학습"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "LS사업부 AI 경력사원 채용",
+        "LS사업부 AI 경력사원 채용 (자율교전)",
+        "LS사업부 AI 경력사원 채용 (RFM)",
+        "LS사업부 AI 경력사원 채용 (자율주행)",
+        "LS사업부 경력사원 채용 제조/기타 (해외보안)",
+        "LS사업부 AI 경력사원 채용",
+        "PGM사업부 해외사업 보안 담당자 채용"
+      ],
+      "postings": [
+        {
+          "title": "LS사업부 AI 경력사원 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49500640?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=53&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "LS사업부 AI 경력사원 채용 (자율교전)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359077&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4996a1fa-0d33-4f12-8383-0328be72d0c5",
+          "site": "saramin"
+        },
+        {
+          "title": "LS사업부 AI 경력사원 채용 (RFM)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=bf31b694-b193-4061-94fb-c26d6cf63a88",
+          "site": "saramin"
+        },
+        {
+          "title": "LS사업부 AI 경력사원 채용 (자율주행)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359023&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=42545d89-2e72-4968-b749-056f5f0e8adb",
+          "site": "saramin"
+        },
+        {
+          "title": "LS사업부 경력사원 채용 제조/기타 (해외보안)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358683&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=207f9610-9f96-49aa-861e-d1a7254859bd",
+          "site": "saramin"
+        },
+        {
+          "title": "LS사업부 AI 경력사원 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/558955?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "PGM사업부 해외사업 보안 담당자 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/557811?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "한화에어로스페이스(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · 보안 직군을 채용하며 PyTorch 기반으로 개발합니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: PyTorch 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+보안) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "PyTorch"
+            ],
+            "tips": [
+              "PyTorch — 텐서·autograd로 모델 직접 학습, 파인튜닝까지"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[HR/채용] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "10 Years of Meta’s Commitment to Python",
+            "url": "https://engineering.fb.com/2026/06/30/open-source/10-years-of-metas-commitment-to-python",
+            "company": "Meta",
+            "country": "US",
+            "why": "pytorch"
+          },
+          {
+            "title": "Achieving Near-Linear Training Scalability for Pinterest’s Foundation Models",
+            "url": "https://medium.com/pinterest-engineering/achieving-near-linear-training-scalability-for-pinterests-foundation-models-14d4f59fe6f6",
+            "company": "Pinterest",
+            "country": "US",
+            "why": "pytorch"
+          },
+          {
+            "title": "SilverTorch: Index as Model — A New Retrieval Paradigm for Recommendation Systems",
+            "url": "https://engineering.fb.com/2026/05/26/ml-applications/silvertorch-index-as-model-new-retrieval-paradigm-recommendation-systems",
+            "company": "Meta",
+            "country": "US",
+            "why": "pytorch"
+          },
+          {
+            "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
+            "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
+            "company": "당근",
+            "country": "KR",
+            "why": "pytorch"
+          },
+          {
+            "title": "당근이 파이썬 공급망 공격에 대응하는 방법",
+            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%9D%B4-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B3%B5%EA%B8%89%EB%A7%9D-%EA%B3%B5%EA%B2%A9%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-e0b4f483b574",
+            "company": "당근",
+            "country": "KR",
+            "why": "pytorch"
+          },
+          {
+            "title": "Optimizing ML Workload Network Efficiency (Part I): Feature Trimmer",
+            "url": "https://medium.com/pinterest-engineering/optimizing-ml-workload-network-efficiency-part-i-feature-trimmer-ae20beb08d69",
+            "company": "Pinterest",
+            "country": "US",
+            "why": "pytorch"
+          }
+        ]
+      }
+    },
+    {
       "name": "포스코DX",
       "norm": "포스코dx",
       "size": "대기업",
@@ -58583,163 +58746,6 @@
             "company": "왓챠",
             "country": "KR",
             "why": "css, html, javascript"
-          }
-        ]
-      }
-    },
-    {
-      "name": "한화에어로스페이스(주)",
-      "norm": "한화에어로스페이스",
-      "size": "대기업",
-      "size_alias": "한화에어로스페이스",
-      "posting_count": 6,
-      "sites": [
-        "dev",
-        "jobkorea",
-        "saramin"
-      ],
-      "roles": {
-        "AI/ML": 4,
-        "보안": 1
-      },
-      "top_tech": [
-        {
-          "name": "PyTorch",
-          "count": 2
-        }
-      ],
-      "tech_categories": {
-        "AI/ML": [
-          {
-            "name": "PyTorch",
-            "count": 2
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 11,
-          "evidence": [
-            "채용",
-            "이력서"
-          ]
-        },
-        {
-          "name": "교육/에듀테크",
-          "score": 9,
-          "evidence": [
-            "교육",
-            "학습"
-          ]
-        }
-      ],
-      "architecture": [],
-      "titles": [
-        "LS사업부 AI 경력사원 채용",
-        "LS사업부 AI 경력사원 채용 (자율교전)",
-        "LS사업부 AI 경력사원 채용 (RFM)",
-        "LS사업부 경력사원 채용 제조/기타 (해외보안)",
-        "LS사업부 AI 경력사원 채용",
-        "PGM사업부 해외사업 보안 담당자 채용"
-      ],
-      "postings": [
-        {
-          "title": "LS사업부 AI 경력사원 채용",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49500640?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=53&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "LS사업부 AI 경력사원 채용 (자율교전)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359077&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4996a1fa-0d33-4f12-8383-0328be72d0c5",
-          "site": "saramin"
-        },
-        {
-          "title": "LS사업부 AI 경력사원 채용 (RFM)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=bf31b694-b193-4061-94fb-c26d6cf63a88",
-          "site": "saramin"
-        },
-        {
-          "title": "LS사업부 경력사원 채용 제조/기타 (해외보안)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358683&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=207f9610-9f96-49aa-861e-d1a7254859bd",
-          "site": "saramin"
-        },
-        {
-          "title": "LS사업부 AI 경력사원 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/558955?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "PGM사업부 해외사업 보안 담당자 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/557811?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "한화에어로스페이스(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · 보안 직군을 채용하며 PyTorch 기반으로 개발합니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: PyTorch 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+보안) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
-        ],
-        "roadmap": [
-          {
-            "stage": "2. AI/ML 핵심 스킬",
-            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
-            "techs": [
-              "PyTorch"
-            ],
-            "tips": [
-              "PyTorch — 텐서·autograd로 모델 직접 학습, 파인튜닝까지"
-            ]
-          }
-        ],
-        "tasks": [
-          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[HR/채용] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "10 Years of Meta’s Commitment to Python",
-            "url": "https://engineering.fb.com/2026/06/30/open-source/10-years-of-metas-commitment-to-python",
-            "company": "Meta",
-            "country": "US",
-            "why": "pytorch"
-          },
-          {
-            "title": "Achieving Near-Linear Training Scalability for Pinterest’s Foundation Models",
-            "url": "https://medium.com/pinterest-engineering/achieving-near-linear-training-scalability-for-pinterests-foundation-models-14d4f59fe6f6",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "pytorch"
-          },
-          {
-            "title": "SilverTorch: Index as Model — A New Retrieval Paradigm for Recommendation Systems",
-            "url": "https://engineering.fb.com/2026/05/26/ml-applications/silvertorch-index-as-model-new-retrieval-paradigm-recommendation-systems",
-            "company": "Meta",
-            "country": "US",
-            "why": "pytorch"
-          },
-          {
-            "title": "How We Protect Karrot’s Internal PyPI Proxy from Supply Chain Attacks",
-            "url": "https://medium.com/daangn/how-we-protect-karrots-internal-pypi-proxy-from-supply-chain-attacks-0cf197205915",
-            "company": "당근",
-            "country": "KR",
-            "why": "pytorch"
-          },
-          {
-            "title": "당근이 파이썬 공급망 공격에 대응하는 방법",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EC%9D%B4-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B3%B5%EA%B8%89%EB%A7%9D-%EA%B3%B5%EA%B2%A9%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-e0b4f483b574",
-            "company": "당근",
-            "country": "KR",
-            "why": "pytorch"
-          },
-          {
-            "title": "Optimizing ML Workload Network Efficiency (Part I): Feature Trimmer",
-            "url": "https://medium.com/pinterest-engineering/optimizing-ml-workload-network-efficiency-part-i-feature-trimmer-ae20beb08d69",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "pytorch"
           }
         ]
       }

@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7168건** 공고 · **1341개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-04 13:49
+- 총 **7171건** 공고 · **1341개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-04 15:36
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -273,6 +273,15 @@ markmap:
   - [(CDO) AI/빅데이터 연구개발 경력 상시 모집 - AI Agent 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49437606?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=60&sc=630)
   - [(CDO) AI/빅데이터 연구개발 경력 상시 모집 - AI기술개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49437598?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=67&sc=630)
 
+### 한화에어로스페이스(주) `대기업` · 7건
+- **AI/ML** [5건] · `PyTorch`
+  - [LS사업부 AI 경력사원 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49500640?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=53&sc=630)
+  - [LS사업부 AI 경력사원 채용 (자율교전) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359077&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4996a1fa-0d33-4f12-8383-0328be72d0c5)
+  - [LS사업부 AI 경력사원 채용 (RFM) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=bf31b694-b193-4061-94fb-c26d6cf63a88)
+  - [LS사업부 AI 경력사원 채용 (자율주행) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359023&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=42545d89-2e72-4968-b749-056f5f0e8adb)
+- **보안** [1건]
+  - [LS사업부 경력사원 채용 제조/기타 (해외보안) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358683&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=207f9610-9f96-49aa-861e-d1a7254859bd)
+
 ### 포스코DX `대기업` · 7건
 - **백엔드** [2건] · `Python` `FastAPI` `AWS` `Azure` `Docker` `Kubernetes`
   - [(광양) IT&AI 분야 경력사원 채용 (정규직) - AI Agent ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49461553?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=61&sc=630)
@@ -397,15 +406,6 @@ markmap:
 - **DevOps/인프라** [2건] · `AWS` `GCP` `Docker` `Kubernetes` `Jenkins` `GitLab CI`
   - [(그라비티) 클라우드 DevOps 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49332948?Oem_Code=C1&logpath=1&stext=SRE&listno=14&sc=630)
   - [(그라비티) 클라우드 DevOps 엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54111486&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=54dcfd7b-5ff8-440c-8cf4-dc284b43f31b)
-
-### 한화에어로스페이스(주) `대기업` · 6건
-- **AI/ML** [4건] · `PyTorch`
-  - [LS사업부 AI 경력사원 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49500640?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=53&sc=630)
-  - [LS사업부 AI 경력사원 채용 (자율교전) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54359077&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4996a1fa-0d33-4f12-8383-0328be72d0c5)
-  - [LS사업부 AI 경력사원 채용 (RFM) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358964&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=bf31b694-b193-4061-94fb-c26d6cf63a88)
-  - [LS사업부 AI 경력사원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/558955?ReturnUrl=RecruitInfo)
-- **보안** [1건]
-  - [LS사업부 경력사원 채용 제조/기타 (해외보안) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358683&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=207f9610-9f96-49aa-861e-d1a7254859bd)
 
 ### 뷰리드 강남오피스 `중소기업` · 5건
 - **백엔드** [4건] · `PHP` `Laravel` `AWS` `REST API` `MySQL` `Docker`
