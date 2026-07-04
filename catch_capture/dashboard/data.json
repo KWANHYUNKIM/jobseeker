@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T08:54:14",
-  "source_dir": "screenshots/all_통합_20260704_085355",
+  "generated_at": "2026-07-04T10:32:30",
+  "source_dir": "screenshots/all_통합_20260704_103213",
   "keyword": "통합",
   "jobs": [
     {
@@ -182676,6 +182676,30 @@
     },
     {
       "site": "saramin",
+      "company": "비전서치",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "상장 대기업 마케팅 플랫폼 개발 Martech 엔지니어",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54370648&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=ac87616f-fd93-4428-99a1-911a1f0060ca",
+      "career": "경력5년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Node.js"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 대졸이상\n\nㆍ경력 : 경력5년↑\n\nㆍNode.js 또는 Python 기반 Backend 개발 경험\n\nㆍAPI 서버 설계 • 경력 5년 이상\n\n• 대학교졸업(4년)이상",
+      "preferences": "",
+      "main_tasks": "ㆍMarTech 플랫폼 개발 및 운영\n\nㆍCRM, 캠페인, 메시징 플랫폼 백엔드 설계 및 개발\n\nㆍ클라우드 기반 플랫폼 운영 및 성능 개선\n\n• 과장/차장/대리 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 신규 입사자 교육(OJT), 직무능력향상교육, 사내동호회 운영\n\n• 리프레시 : 연차, 휴양시설 제공\n\n• 지원금/보험 : 건강검진, 의료비지원(본인), 각종 경조사 지원, 의료비지원(가족), 선택적복리후생, 자녀학자금\n\n• 급여제도 : 성과급, 연차수당, 4대 보험\n\n• 선물 : 명절선물/귀향비, 창립일선물지급\n\n• 조직 문화 : 자유복장"
+    },
+    {
+      "site": "saramin",
       "company": "티맵모빌리티(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -214840,16 +214864,16 @@
     }
   ],
   "stats": {
-    "total": 7159,
+    "total": 7160,
     "by_size": {
-      "중소기업": 6451,
+      "중소기업": 6452,
       "대기업": 398,
       "중견기업": 310
     },
     "by_role": {
       "기타": 977,
       "DevOps/인프라": 1044,
-      "백엔드": 3095,
+      "백엔드": 3096,
       "모바일": 1105,
       "AI/ML": 2459,
       "프론트엔드": 1983,
@@ -214864,13 +214888,13 @@
       "wanted": 1818,
       "jumpit": 523,
       "jobkorea": 1212,
-      "saramin": 3240,
+      "saramin": 3241,
       "dev": 366
     },
     "top_tech": [
       [
         "Python",
-        2245
+        2246
       ],
       [
         "Java",
@@ -214938,7 +214962,7 @@
       ],
       [
         "Node.js",
-        582
+        583
       ],
       [
         "Next.js",
@@ -214991,22 +215015,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T00:26:52",
-      "keyword": "통합",
-      "raw_total": 5131,
-      "deduped": 5027,
-      "active": 5011,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1075,
-        "jumpit": 417,
-        "jobkorea": 960,
-        "saramin": 2502,
-        "dev": 177
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T01:54:02",
       "keyword": "통합",
@@ -218187,6 +218195,22 @@
         "jumpit": 792,
         "jobkorea": 2281,
         "saramin": 6069,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-04T10:32:24",
+      "keyword": "통합",
+      "raw_total": 11628,
+      "deduped": 10020,
+      "active": 7160,
+      "closed": 2860,
+      "site_counts": {
+        "wanted": 1887,
+        "jumpit": 792,
+        "jobkorea": 2281,
+        "saramin": 6072,
         "dev": 596
       },
       "anomalies": []
