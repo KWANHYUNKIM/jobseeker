@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-04T10:32:30",
-  "source_dir": "screenshots/all_통합_20260704_103213",
+  "generated_at": "2026-07-04T12:11:13",
+  "source_dir": "screenshots/all_통합_20260704_121055",
   "keyword": "통합",
   "jobs": [
     {
@@ -201797,6 +201797,35 @@
     },
     {
       "site": "saramin",
+      "company": "배재대학교",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "배재대학교 정규직원[전산] 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54358981&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=4407a0d4-1779-4d80-af52-569947465ba5",
+      "career": "신입·경력",
+      "location": "대전서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Oracle"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "ㆍ본교의 건학이념에 부합하는 기독교인\n\nㆍ공무원 임용 및 해외여행에 결격사유가 없는 자\n\nㆍ남성의 경우 병역필 또는 면제자",
+      "preferences": "정규직\n전산\n0명\nㆍ학사 이상 학력 소지자\n\n(2026년 8월 졸업예정자 포함)\n\nㆍDBMS 환경에서의 SQL / function /\n\nprocedure 작성 가능자\n\nㆍJAVA/JSP/HTML/CSS/Java_script를\n\n이용한 웹 어플리케이션 개발 가능자\nㆍ대학 학사·연구 정보시스템 개발 경력자\n\n또는 eXBuilder기반 환경 개발 경력자\n\nㆍ전산분야 자격증 소지자\n\n- 정보처리기사, 정보보안기사\n\n- DB 관련 : OCP, OCM, SQLP, DAP,\n\nSQLD, DAsP 자격증\n\nㆍ국가 유공자 등 예우 및 지원에 관한 법률에 의한 취업지원 대상자\n\nㆍ장애인 고용 촉진 및 직업 재활법에 의한 장애인\n\n채용조건\n\nㆍ임용 예정일 : 2026. 9. 1.\n\nㆍ3개월간 수습 직원으로 근무한 후, 근무 성적 평가결과에 따라 정규 일반직원으로 임용\n\nㆍ급여는 본교 보수지급 기준에 따름\n\nㆍ해당 채용분야에 적격자가 없을 시 채용하지 않음\n\nㆍ채용조건이 변경될 경우 재공고함\n\n전형방법\n\nㆍ1단계 : 서류전형\n[2026. 7. 23.(목) 합격자 발표]\n\nㆍ2단계 : 인적성검사 [2026. 7. 28.(화) 13:30 교내 지정장소 온라인 검사]\n\nㆍ3단계 : 1차 면접 [2026. 7. 31(금) 10:00 일반면접 및 기술능력면접]\n\nㆍ4단계 : 2차 면접(최종)\n[2026. 8. 6.(목) 10:00]\n\n※ 위 전형일정은 상황에 따라 변경될 수 있음",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사엠에이치앤티(MH&T)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -214864,14 +214893,14 @@
     }
   ],
   "stats": {
-    "total": 7160,
+    "total": 7161,
     "by_size": {
-      "중소기업": 6452,
+      "중소기업": 6453,
       "대기업": 398,
       "중견기업": 310
     },
     "by_role": {
-      "기타": 977,
+      "기타": 978,
       "DevOps/인프라": 1044,
       "백엔드": 3096,
       "모바일": 1105,
@@ -214888,7 +214917,7 @@
       "wanted": 1818,
       "jumpit": 523,
       "jobkorea": 1212,
-      "saramin": 3241,
+      "saramin": 3242,
       "dev": 366
     },
     "top_tech": [
@@ -214898,7 +214927,7 @@
       ],
       [
         "Java",
-        1846
+        1847
       ],
       [
         "AWS",
@@ -214922,7 +214951,7 @@
       ],
       [
         "JavaScript",
-        1003
+        1004
       ],
       [
         "Linux",
@@ -214982,7 +215011,7 @@
       ],
       [
         "CSS",
-        488
+        489
       ],
       [
         "Redis",
@@ -214990,7 +215019,7 @@
       ],
       [
         "HTML",
-        474
+        475
       ],
       [
         "iOS",
@@ -215015,22 +215044,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T01:54:02",
-      "keyword": "통합",
-      "raw_total": 5178,
-      "deduped": 5070,
-      "active": 5054,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1087,
-        "jumpit": 417,
-        "jobkorea": 989,
-        "saramin": 2508,
-        "dev": 177
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T03:20:53",
       "keyword": "통합",
@@ -218211,6 +218224,22 @@
         "jumpit": 792,
         "jobkorea": 2281,
         "saramin": 6072,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-04T12:11:06",
+      "keyword": "통합",
+      "raw_total": 11632,
+      "deduped": 10021,
+      "active": 7161,
+      "closed": 2860,
+      "site_counts": {
+        "wanted": 1887,
+        "jumpit": 792,
+        "jobkorea": 2281,
+        "saramin": 6076,
         "dev": 596
       },
       "anomalies": []
