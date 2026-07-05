@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-05T10:14:53",
-  "source_dir": "screenshots/all_통합_20260705_101435",
+  "generated_at": "2026-07-05T11:54:47",
+  "source_dir": "screenshots/all_통합_20260705_115430",
   "keyword": "통합",
   "jobs": [
     {
@@ -173942,6 +173942,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)프로그레스미디어",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[부산] Open AI 영업 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54339237&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=8e843e5d-b756-4ee9-bba0-e7b0e4db570d",
+      "career": "경력무관",
+      "location": "부산연제구 | 3,000 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -213490,9 +213511,9 @@
     }
   ],
   "stats": {
-    "total": 7120,
+    "total": 7121,
     "by_size": {
-      "중소기업": 6413,
+      "중소기업": 6414,
       "대기업": 400,
       "중견기업": 307
     },
@@ -213501,7 +213522,7 @@
       "DevOps/인프라": 1038,
       "백엔드": 3067,
       "모바일": 1098,
-      "AI/ML": 2455,
+      "AI/ML": 2456,
       "프론트엔드": 1956,
       "풀스택": 648,
       "게임": 39,
@@ -213514,7 +213535,7 @@
       "wanted": 1845,
       "jumpit": 524,
       "jobkorea": 1204,
-      "saramin": 3183,
+      "saramin": 3184,
       "dev": 364
     },
     "top_tech": [
@@ -213641,22 +213662,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T14:56:20",
-      "keyword": "통합",
-      "raw_total": 5345,
-      "deduped": 5218,
-      "active": 5202,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1095,
-        "jumpit": 423,
-        "jobkorea": 1010,
-        "saramin": 2611,
-        "dev": 206
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T16:22:40",
       "keyword": "통합",
@@ -216837,6 +216842,22 @@
         "jumpit": 804,
         "jobkorea": 2316,
         "saramin": 6133,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-05T11:54:41",
+      "keyword": "통합",
+      "raw_total": 11765,
+      "deduped": 10110,
+      "active": 7121,
+      "closed": 2989,
+      "site_counts": {
+        "wanted": 1914,
+        "jumpit": 804,
+        "jobkorea": 2316,
+        "saramin": 6135,
         "dev": 596
       },
       "anomalies": []
