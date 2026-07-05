@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-06T06:08:18",
-  "source_dir": "screenshots/all_통합_20260706_060800",
+  "generated_at": "2026-07-06T07:50:10",
+  "source_dir": "screenshots/all_통합_20260706_074949",
   "keyword": "통합",
   "jobs": [
     {
@@ -123061,6 +123061,29 @@
     },
     {
       "site": "saramin",
+      "company": "하이버스(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[하이버스(주)] 임베디드 시스템 펌웨어 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54057470&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d9bdbd61-89a2-4ab7-bc95-2905c2853fb4",
+      "career": "경력3년↑",
+      "location": "서울구로구",
+      "dday": "",
+      "tech_stack": [
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 초대졸 이상\nㆍ경력사항 : 3년 이상\n\n디스플레이연구본부솔루션개발팀\n\nㆍ임베디드 Linux OS, RTOS 펌웨어 개발 가능\nㆍFPGA(알테라, 자일링스) Soft core 펌웨어 개발 가능\nㆍMCU(ARM Cortex-M) 펌웨어 개발 가능",
+      "preferences": "ㆍ디스플레이(TFT-LCD, OLED) 검사 장비 개발 경력ㆍDisplayport, HDMI, MIPI-DSI Interface 개발 경력\nㆍFPGA SoC 소프트웨어 개발 경력",
+      "main_tasks": "ㆍ 임베디드 리눅스 펌웨어 개발\n\nㆍ FPGA(Microblaze) 펌웨어 개발\nㆍ MCU 펌웨어 개발\n\nㆍ",
+      "benefits": "ㆍ중.석식 제공 : 50여곳 이상 식당 제휴\nㆍ명절 및 휴가 상여금 지급\nㆍ장기근속 포상 : 근속 5년/8년/10년/13년/15년 등\nㆍ경조사 지원 : 유급휴가 및 경조금, 경조화환\nㆍ사내 복지몰 운영: 국내 다양한 레저시설을 할인된 가격으로 지원\nㆍ퇴직연금 운용(DB형)\nㆍ종합검진 지원 : 위/대장내시경, 초음파검사, CT 등 종합지원\nㆍ기타복지 : 생일 모바일 기프티콘 발송, 결혼기념 꽃바구니 배송, 교육비 지원, 우수사원 포상 등"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -162512,6 +162535,29 @@
       "preferences": "• 인공지능 관련 프로젝트 경험자예요\n\n• 빅데이터 처리 경험 있으면 좋아요\n\n• Python, R 등 사용 가능자예요\n\n• 클라우드 플랫폼 경험자 우대해요\n\n• 머신러닝 모델 구축 경험자예요",
       "main_tasks": "• LLM 풀스텍 프로그램 개발\n\n• 빅데이터 분석 서비스 개발\n\n• 데이터 시각화 도구 활용해요\n\n• R&D 프로젝트 협업 참여해요\n\n• 기술 문서 작성 및 정리해요",
       "benefits": "• 유연한 근무 시간 제공해요\n\n• 사내 교육 프로그램 지원해요"
+    },
+    {
+      "site": "saramin",
+      "company": "코리아이매지니어링",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "소음진동 검사 솔루션 / 산업 인공지능 사업부 엔지니어 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54373189&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=db840fce-5be3-434c-a1d5-79e9f89e8556",
+      "career": "경력무관",
+      "location": "경남창원시",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능",
+      "preferences": "• 전공: 전기/전자공학, 컴퓨터/시스템공학, 공학계열\n\n• 보유역량: 소음진동검사, 설비예지보전, 머신비전, 계측자동화, 머신러닝, LabVIEW, Python, 경험자 또는 해당 기술을 배우기를 희망하는 사람",
+      "main_tasks": "• 소음진동 데이터 분석 및 판정 알고리즘 설계\n\n• 머신러닝 학습 및 배포\n\n• 소음진동 검사 시스템 제작, 셋업, 유지보수, 관리\n\n• 소음진동 검사 솔루션 사업부, 산업 인공지능 사업부 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 도서구입비지원, 교육비 지원, 점심식사 제공\n\n• 리프레시 : 연차, 경조휴가제\n\n• 급여제도 : 인센티브제, 장기근속자 포상, 퇴직금, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 출퇴근 : 주거비 지원"
     },
     {
       "site": "saramin",
@@ -209963,9 +210009,9 @@
     }
   ],
   "stats": {
-    "total": 6997,
+    "total": 6999,
     "by_size": {
-      "중소기업": 6300,
+      "중소기업": 6302,
       "대기업": 392,
       "중견기업": 305
     },
@@ -209974,12 +210020,12 @@
       "DevOps/인프라": 1021,
       "백엔드": 3000,
       "모바일": 1083,
-      "AI/ML": 2427,
+      "AI/ML": 2428,
       "프론트엔드": 1918,
       "풀스택": 635,
       "게임": 39,
       "데이터": 912,
-      "펌웨어/임베디드": 269,
+      "펌웨어/임베디드": 270,
       "보안": 287,
       "QA": 74
     },
@@ -209987,13 +210033,13 @@
       "wanted": 1854,
       "jumpit": 525,
       "jobkorea": 1154,
-      "saramin": 3120,
+      "saramin": 3122,
       "dev": 344
     },
     "top_tech": [
       [
         "Python",
-        2213
+        2214
       ],
       [
         "AWS",
@@ -210021,7 +210067,7 @@
       ],
       [
         "Linux",
-        959
+        960
       ],
       [
         "JavaScript",
@@ -210114,22 +210160,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T22:11:33",
-      "keyword": "통합",
-      "raw_total": 5517,
-      "deduped": 5380,
-      "active": 5364,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1117,
-        "jumpit": 440,
-        "jobkorea": 1025,
-        "saramin": 2721,
-        "dev": 214
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T23:39:23",
       "keyword": "통합",
@@ -213310,6 +213340,22 @@
         "jumpit": 820,
         "jobkorea": 2327,
         "saramin": 6190,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-06T07:50:03",
+      "keyword": "통합",
+      "raw_total": 11858,
+      "deduped": 10165,
+      "active": 6999,
+      "closed": 3166,
+      "site_counts": {
+        "wanted": 1923,
+        "jumpit": 820,
+        "jobkorea": 2327,
+        "saramin": 6192,
         "dev": 596
       },
       "anomalies": []
