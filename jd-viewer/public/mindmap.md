@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7121건** 공고 · **1324개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-05 11:54
+- 총 **7122건** 공고 · **1324개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-05 13:34
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -13488,6 +13488,12 @@ markmap:
 - **DevOps/인프라** [1건] · `TypeScript` `React` `Next.js` `Node.js` `NestJS` `MySQL`
   - [(CVS) 서버 개발자 ↗](https://www.wanted.co.kr/wd/355845)
 
+### (주)민트로켓 `중소기업` · 4건
+- **게임** [1건] · `C#`
+  - [(민트로켓) 유니티 소프트웨어 엔지니어 (Senior) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54162836&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e00d2998-98bc-4d3d-906c-7423468eac75)
+- **QA** [1건] · `Jira` `Confluence`
+  - [(민트로켓) 게임플레이 QA 채용 (계약직) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53922362&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2c858be9-a61e-40b0-a0c2-3d885f5dd940)
+
 ### 매드엔진 `중소기업` · 3건
 - **AI/ML** [2건] · `Python` `Java` `AWS` `Azure`
   - [(AI 기술 센터) Senior AI TA ↗](https://www.wanted.co.kr/wd/359221)
@@ -13526,12 +13532,6 @@ markmap:
 - **DevOps/인프라** [2건] · `AWS` `Kubernetes` `Ansible`
   - [(스마일게이트) 퍼블릭 클라우드 엔지니어 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/48998612?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=67&sc=630)
   - [(스마일게이트 메가포트) 퍼블릭 클라우드 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53647782&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dab414a0-9993-4663-9e98-bc4aa2f1ef92)
-
-### (주)민트로켓 `중소기업` · 3건
-- **게임** [1건] · `C#`
-  - [(민트로켓) 유니티 소프트웨어 엔지니어 (Senior) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54162836&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e00d2998-98bc-4d3d-906c-7423468eac75)
-- **QA** [1건] · `Jira` `Confluence`
-  - [(민트로켓) 게임플레이 QA 채용 (계약직) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53922362&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2c858be9-a61e-40b0-a0c2-3d885f5dd940)
 
 ### (주)에이치알비즈코리아 `중견기업` · 3건
 - **백엔드** [1건] · `Java` `React` `Spring` `Spring Boot` `Redis` `Kafka`

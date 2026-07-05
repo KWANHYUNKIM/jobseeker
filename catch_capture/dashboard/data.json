@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-05T11:54:47",
-  "source_dir": "screenshots/all_통합_20260705_115430",
+  "generated_at": "2026-07-05T13:34:40",
+  "source_dir": "screenshots/all_통합_20260705_133423",
   "keyword": "통합",
   "jobs": [
     {
@@ -148459,6 +148459,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)민트로켓",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[민트로켓] '고질라 디펜스 포스: X' 서버 프로그래머",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54364710&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=117140a6-2458-4d51-a26c-03b1b9eb22e3",
+      "career": "경력5년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "C#",
+        "AWS",
+        "Azure"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "네이버웹툰(유)",
       "company_size": "대기업",
       "company_size_matched": "네이버웹툰",
@@ -213511,14 +213536,14 @@
     }
   ],
   "stats": {
-    "total": 7121,
+    "total": 7122,
     "by_size": {
-      "중소기업": 6414,
+      "중소기업": 6415,
       "대기업": 400,
       "중견기업": 307
     },
     "by_role": {
-      "기타": 979,
+      "기타": 980,
       "DevOps/인프라": 1038,
       "백엔드": 3067,
       "모바일": 1098,
@@ -213535,7 +213560,7 @@
       "wanted": 1845,
       "jumpit": 524,
       "jobkorea": 1204,
-      "saramin": 3184,
+      "saramin": 3185,
       "dev": 364
     },
     "top_tech": [
@@ -213544,12 +213569,12 @@
         2239
       ],
       [
-        "Java",
+        "AWS",
         1819
       ],
       [
-        "AWS",
-        1818
+        "Java",
+        1819
       ],
       [
         "React",
@@ -213617,7 +213642,7 @@
       ],
       [
         "Azure",
-        514
+        515
       ],
       [
         "PyTorch",
@@ -213657,27 +213682,11 @@
       ],
       [
         "C#",
-        377
+        378
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T16:22:40",
-      "keyword": "통합",
-      "raw_total": 5379,
-      "deduped": 5249,
-      "active": 5233,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1098,
-        "jumpit": 425,
-        "jobkorea": 1014,
-        "saramin": 2635,
-        "dev": 207
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T17:50:08",
       "keyword": "통합",
@@ -216858,6 +216867,22 @@
         "jumpit": 804,
         "jobkorea": 2316,
         "saramin": 6135,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-05T13:34:34",
+      "keyword": "통합",
+      "raw_total": 11766,
+      "deduped": 10111,
+      "active": 7122,
+      "closed": 2989,
+      "site_counts": {
+        "wanted": 1914,
+        "jumpit": 804,
+        "jobkorea": 2316,
+        "saramin": 6136,
         "dev": 596
       },
       "anomalies": []
