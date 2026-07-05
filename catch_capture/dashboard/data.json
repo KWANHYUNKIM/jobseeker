@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-06T04:28:23",
-  "source_dir": "screenshots/all_통합_20260706_042806",
+  "generated_at": "2026-07-06T06:08:18",
+  "source_dir": "screenshots/all_통합_20260706_060800",
   "keyword": "통합",
   "jobs": [
     {
@@ -96779,6 +96779,27 @@
       "qualifications": "ㆍ주식 또는 가상자산(코인) 트레이딩 경험과 시장 분석 역량 보유자\n\nㆍ각종 통계 모델 활용 경험 및 지식 보유자\n\nㆍ논리적인 분석 결과 보고서 작성 능력 보유자\n\nㆍ데이터를 가공하여 지표화 및 시각화 가능자\n\nㆍ데이터를 기반으로 사고하는 문제 해결 능력 보유자",
       "preferences": "ㆍ컴퓨터 공학, 통계학 관련 전공\n\nㆍ데이터 및 인공지능 활용 프로젝트 수행 경험 보유자",
       "main_tasks": "ㆍ데이터 분석을 위한 실험설계, 가설 검증 등 통계 분석\n\nㆍ데이터 자료 수집 및 분석업무\n\nㆍ알고리즘 개발",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[구매] 자재 관리 및 데이터 분석 담당자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49511010?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=98&sc=630",
+      "career": "경력",
+      "location": "경남 김해시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 경력",
+      "preferences": "- 즉시 출근 가능자\n\n- 구매 자재 관리 유경력자",
+      "main_tasks": "- 자재 구매 간 스케쥴링\n\n- 구매 자재 데이터화\n\n- 신규 자재 비딩\n\n- 자재 입고 검수\n\n- 자재 구매 품의\n\n- 자재 재고 관리\n\n스킬\n\nㆍExcel\n\n핵심역량\n\nㆍ\n꼼꼼함,\n성실성, 계획성, 적응성",
       "benefits": ""
     },
     {
@@ -209942,9 +209963,9 @@
     }
   ],
   "stats": {
-    "total": 6996,
+    "total": 6997,
     "by_size": {
-      "중소기업": 6299,
+      "중소기업": 6300,
       "대기업": 392,
       "중견기업": 305
     },
@@ -209957,7 +209978,7 @@
       "프론트엔드": 1918,
       "풀스택": 635,
       "게임": 39,
-      "데이터": 911,
+      "데이터": 912,
       "펌웨어/임베디드": 269,
       "보안": 287,
       "QA": 74
@@ -209965,7 +209986,7 @@
     "by_site": {
       "wanted": 1854,
       "jumpit": 525,
-      "jobkorea": 1153,
+      "jobkorea": 1154,
       "saramin": 3120,
       "dev": 344
     },
@@ -210093,22 +210114,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-09T20:44:30",
-      "keyword": "통합",
-      "raw_total": 5503,
-      "deduped": 5366,
-      "active": 5350,
-      "closed": 16,
-      "site_counts": {
-        "wanted": 1115,
-        "jumpit": 440,
-        "jobkorea": 1025,
-        "saramin": 2709,
-        "dev": 214
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-09T22:11:33",
       "keyword": "통합",
@@ -213288,6 +213293,22 @@
         "wanted": 1923,
         "jumpit": 820,
         "jobkorea": 2325,
+        "saramin": 6190,
+        "dev": 596
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-06T06:08:12",
+      "keyword": "통합",
+      "raw_total": 11856,
+      "deduped": 10163,
+      "active": 6997,
+      "closed": 3166,
+      "site_counts": {
+        "wanted": 1923,
+        "jumpit": 820,
+        "jobkorea": 2327,
         "saramin": 6190,
         "dev": 596
       },
