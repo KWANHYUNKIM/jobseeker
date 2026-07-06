@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-06T21:45:25",
-  "source_dir": "screenshots/all_통합_20260706_214504",
+  "generated_at": "2026-07-06T23:27:27",
+  "source_dir": "screenshots/all_통합_20260706_232708",
   "keyword": "통합",
   "jobs": [
     {
@@ -136700,6 +136700,105 @@
     },
     {
       "site": "saramin",
+      "company": "주식회사 탑건이노비즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[성남: 백엔드 개발 경력자] EV 전기차 충전 백엔드 개발 담당자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54382126&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=757b5135-5311-4bed-a606-7b4554e385b5",
+      "career": "경력 2~4년",
+      "location": "경기성남시 중원구 | 6,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "데이터플로",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "데이터플로에서 JAVA 백엔드 개발자 채용해요",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54385214&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9566f476-77fe-4e43-a326-80443e8bd0db",
+      "career": "경력무관",
+      "location": "서울강남구 | 6,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "AWS",
+        "Docker",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n• Java·Spring으로 개발할 수 있는 분\n\n• REST API 설계 경험을 가지신 분\n\n• RDBMS 모델링 이해가 있으신 분\n\n• Git으로 협업 개발이 가능하신 분\n\n• 문제 원인 분석을 즐기시는 분",
+      "preferences": "• Spring Boot 운영 경험이 있으신 분\n\n• JPA·MyBatis 사용 경험이 있으신 분\n\n• Docker 환경에서 개발해보신 분\n\n• AWS 등 클라우드 경험이 있으신 분\n\n• 테스트 코드 작성에 익숙하신 분",
+      "main_tasks": "• Java 기반 백엔드 API를 개발해요\n\n• 서비스 DB 설계와 쿼리 최적화해요\n\n• 배치·스케줄러로 데이터 처리해요\n\n• 로그·모니터링으로 장애 대응해요\n\n• CI/CD로 배포 자동화를 함께해요",
+      "benefits": "• 유연한 근무 환경을 제공해요\n\n• 업무 장비를 충분히 지원해드려요\n\n• 교육·세미나 참여를 지원해드려요\n\n• 수평적 소통 문화로 일할 수 있어요\n\n• 성과를 함께 나누는 제도를 운영해요"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)세르딕",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[세르딕] 백엔드 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54385867&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=55e1f1aa-1a76-4565-9f39-948ab83ef2ed",
+      "career": "신입·경력",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "Go",
+        "Node.js",
+        "MySQL",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "OpenCV",
+        "Kafka",
+        "RabbitMQ",
+        "Linux",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "펌웨어/임베디드",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "CI/CD"
+      ],
+      "qualifications": "• 컴퓨터공학, 소프트웨어공학, 정보통신공학 등 4년제 정규대학 IT 전공자\n\n• 3년 이상의 백엔드 서비스 개발 경험이 있거나 이에 준하는 실력을 보유하신 분\n\n• Python, Node.js, Java, Go 등 하나 이상의 백엔드 언어와 프레임워크 사용 경험이 있으신 분\n\n• REST API, WebSocket 등 서버 통신 구조에 대한 이해가 있으신 분\n\n• PostgreSQL, MySQL 등 RDBMS 기반 데이터 설계 및 쿼리 작성 경험이 있으신 분\n\n• Docker 기반 컨테이너 개발 환경에 익숙하신 분\n\n• Linux, Git 및 기본적인 개발·운영 환경을 이해하고 활용 가능하신 분\n\n• 서비스 요구사항을 기반으로 데이터 구조와 API 구조를 설계할 수 있으신 분\n\n• 장애 상황을 분석하고, 로그 기반으로 문제를 추적·개선할 수 있으신 분\n\n• 새로운 기술을 빠르게 학습하고 실제 서비스에 적용하는 데 적극적이신 분",
+      "preferences": "• 컴퓨터공학, 소프트웨어공학, 정보통신공학 등 IT 관련 전공자\n\n• Vision AI 관련 서비스 개발 경험이 있으신 분\n\n• AI 서비스 또는 AI 모델 추론 서버 개발 경험이 있으신 분\n\n• Vision AI 관련 서비스 개발 경험이 있으신 분\n\n예: NVIDIA DeepStream, OpenCV, TensorRT, RTSP 스트리밍, 영상 분석 파이프라인 등\n\n• CCTV, 센서, IoT, 설비 데이터 등 실시간 데이터 처리 경험이 있으신 분\n\n• WebSocket, Redis, Kafka, RabbitMQ 등 실시간·비동기 처리 기술 사용 경험이 있으신 분\n\n• 온프레미스 또는 Hybrid SaaS 서비스 개발·운영 경험이 있으신 분\n\n• 클라우드와 온프레미스 환경을 함께 고려한 시스템 아키텍처 설계 경험이 있으신 분\n\n• CI/CD 도구를 활용한 배포 자동화 및 버전 관리 경험이 있으신 분\n\n• 로그 수집, 데이터 모니터링, 시스템 상태 모니터링 환경을 구축해본 경험이 있으신 분\n\n• 대시보드, 관제 시스템, 관리자 페이지 등 산업용 웹 서비스의 백엔드 개발 경험이 있으신 분\n\n• 보안, 인증, 권한 관리, 멀티테넌시 구조에 대한 이해가 있으신 분",
+      "main_tasks": "• Hybrid SaaS 기반 백엔드 서비스 설계 및 개발\n\n• Safety AI 및 디지털 트윈 플랫폼의 API 서버 개발\n\n• Vision AI 모델 추론 결과, CCTV 영상 분석 결과, 센서 데이터 연동 구조 개발\n\n• 실시간 이벤트, 알림, 로그, 분석 데이터 처리 백엔드 개발\n\n• PostgreSQL, MySQL 등 RDBMS 기반 데이터 모델링 및 쿼리 최적화\n\n• Redis, Message Queue 등을 활용한 비동기 처리 및 실시간 데이터 처리 구조 개발\n\n• 온프레미스 및 클라우드 환경을 고려한 백엔드 아키텍처 설계\n\n• Docker 기반 개발·배포 환경 구성 및 운영\n\n• 서비스 로그, 장애 추적, 모니터링 체계 구축 및 개선\n\n• 프론트엔드, AI 엔지니어, 인프라 담당자와 협업하여 서비스 기능 구현\n\n• 세르딕 기업연구소 개발팀 부서 소속, 팀원/팀장 직책으로 함께할 예정이에요.",
+      "benefits": "• 개인 능력 평가에 따른 급여 인상 체계\n\n• 직무발명보상제도 운영\n\n• 에소프레소 머신/커피 그라인더 구비\n\n• 원하는 음료 및 간식 제공\n\n• 듀얼 모니터 및 개인 워크스테이션 제공"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -148376,6 +148475,66 @@
     },
     {
       "site": "saramin",
+      "company": "한국건설연구소(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "한국건설연구소(주)에서 프론트개발자(web, app)를 찾고 있어요.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54382087&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=faf3477a-13d2-44eb-a32c-cd7e12277da0",
+      "career": "경력무관",
+      "location": "충북청주시 상당구",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "HTML",
+        "CSS",
+        "iOS",
+        "Android",
+        "Flutter",
+        "React Native",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관\n\n• 기본적인 CS지식과 알고리즘구현 능력\n\n• AI를 활용한 높은 코드 생산성\n\n• JS 및 JS 계열 web framework 사용능력\n\n• flutter, react native 등 App 개발 능력\n\n• three.js 같은 3D 조작 및 개발 능력\n\n• HTML/CSS/JS로 구현 가능하신 분\n\n• 웹 표준·접근성 이해가 있으신 분\n\n• Git 기반 협업 흐름 익숙하신 분\n\n• 문제 원인 파악과 개선이 가능하신 분\n\n• 긍정적이고 열정적인 마인드",
+      "preferences": "• front 디자인 및 기획능력",
+      "main_tasks": "• web frontend 및 application(android/ios) 개발\n\n• 부가적인 업무",
+      "benefits": "• 안정적인 프로젝트 환경을 제공해요\n\n• 업무에 필요한 장비를 제공해요\n\n• 성과를 함께 나누는 문화를 만들어요"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)사이버테크프랜드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)사이버테크프랜드 MES 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54383284&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=46eab2a8-b275-4dcc-8539-27ffe55602f5",
+      "career": "경력 2~7년",
+      "location": "경기하남시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "C#",
+        ".NET",
+        "MSSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ경력 2년~7년(0명)\n\nㆍ학력 : 대졸(2,3년제) 이상\n\nㆍC#.Net(Winform) 개발 가능자\n\nㆍDB : MS-SQL\n\n• 경력 2년 이상 ~ 7년 이하\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능",
+      "preferences": "ㆍJava 개발경험 (웹 또는 안드로이드)\n\nㆍ스마트팩토리 관련 업무 근무경험이 있는분\n\nㆍ인근거주자",
+      "main_tasks": "• MES 시스템(생산관리, 제조실행시스템) 구축 및 개발",
+      "benefits": "• 교육/생활 : 직무능력향상교육, 교육비 지원, 자기계발비 지원, 사내동호회 운영\n\n• 리프레시 : 연차, 경조휴가제, 근로자의날 휴무\n\n• 급여제도 : 장기근속자 포상, 우수사원포상, 퇴직금, 성과급, 휴일(특근)수당, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원, 단체 상해보험, 자녀학자금\n\n• 출퇴근 : 기숙사 운영, 차량유류비지급\n\n• 선물 : 명절선물/귀향비, 생일선물/파티"
+    },
+    {
+      "site": "saramin",
       "company": "네이버웹툰(유)",
       "company_size": "대기업",
       "company_size_matched": "네이버웹툰",
@@ -159082,6 +159241,36 @@
       "preferences": "• 정보처리기사, 데이터분석가, SQL 개발자 자격증 보유자\n\n• 프로그램 경험 , 군 경력 보유자\n\n• 장교전역자\n\n• 데이터분석가, 프로그램 경력 보유자",
       "main_tasks": "• 모델 운영 및 연구분석",
       "benefits": "• 교육/생활 : 창립일행사, 워크샵, 도서구입비지원, 교육비 지원\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무, 포상휴가, 산전 후 휴가, 육아휴직, 남성출산휴가\n\n• 급여제도 : 퇴직연금, 인센티브제, 우수사원포상, 성과급, 직책수당, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 조직 문화 : 야근강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 창립일선물지급, 생일선물/파티"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)게임듀오",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] 게임 데이터 분석가",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54385735&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=a54500c2-4bf1-4269-9f5c-4df963f9bce9",
+      "career": "경력 2~7년",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "AWS",
+        "GCP"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "문제해결",
+        "대용량 처리",
+        "오너십/주도성"
+      ],
+      "qualifications": "데이터 핸들링 역량\n\n로그 설계부터 최종분석까지 전체 프로세스를 직접 경험해보신 분\n\nPython, SQL을 활용하여 분석 목적에 맞게 데이터를 가공하고 설계할 수 있는 분\n\n분석 인프라 활용 능력\n\nGCP(BigQuery), AWS 등 클라우드 환경에서 대용량 데이터 활용해본 경험이 있는 분\n\nLooker Studio, Tableau 등 BI Tool을 활용해 지표의 흐름을 한눈에 보여줄 수 있는 분\n\n문제해결 중심의 사고\n\n데이터 기반 A/B Test 설계 및 가설 검증을 통해 비즈니스 인사이트를 도출할 수 있는 분\n\n주도적으로 개선 포인트를 찾아 실행하는 오너십을 갖춘 분",
+      "preferences": "게임에 대한 진심\n\n게임을 좋아하며 다양한 장르의 메커니즘과 BM에 대한 이해도가 높은 분\n\n게임주요지표(LTV, ARPU, CPI등) 분석 기법에 대한 이해도가 높은 분\n\n분석 고도화 경험\n\n인과추론(Causal Inference) 방법론에 대한 이해 및 실제 비즈니스 문제 적용 경험이 있는 분\n\nAirflow, dbt등을 활용해 데이터 파이프라인을 자동화하고 운영해보신 분\n\nAI 활용도\n\n생성형 AI 기술을 분석 업무나 리포팅에 접목하여 생산성을 극대화해본 경험이 있는 분",
+      "main_tasks": "데이터 정제/가공/분석 및 자동화\n\n유저 행동 Raw 데이터 등 모바일 게임에서 발생하는 데이터를 정제, 가공 및 분석합니다. 이를 토대로 리포트와 대시보드를 작성하여 실제 Action Plan으로 이어질 수 있도록 기여합니다.\n\n나아가, 반복적인 분석 리포트 출력을 자동화하고 주요 지표를 시스템화하여 전사의 효율적인 데이터 활용을 돕습니다.\n\n핵심 지표/로그 설계 및 실험 분석\n\n게임 운영 및 분석에 필요한 핵심 지표와 로그 데이터를 설계하고 관리합니다. 이를 통해 목표 달성을 지원하고, 가설 검증을 위한 다양한 실험(A/B 테스트 등)을 계획하고 진행합니다.\n\n데이터 기반 의사 결정\n\n경영진, PD, 기획자, 개발자, 마케터 등 다양한 직군의 동료들과 함께 주요 의사 결정 과정에 참여합니다. 데이터 기반(Data Informed) 문제 해결방식을 제시하여 보다 효과적인 의사 결정을 지원합니다.\n\nML/DL 기술 활용\n\n데이터 분석 결과와 예측 모델을 개발하여 게임 운영에 안정적으로 반영합니다. ML/DL 기술을 활용하여 유저 경험을 개선하는 데 기여합니다.\n\n사내 데이터 문화 개선\n\n전사적인 데이터 리터러시 향상을 위한 활동에 기여합니다. 정기 데이터 세미나(분기 1-2회)를 기획/진행하거나, 데이터 인사이트 아티클을 작성 및 공유하며 데이터 기반 문화를 함께 만들어갑니다.",
+      "benefits": "코어타임(11시~16시) 기반 자율출퇴근 하기 때문에 유연하게 근무 가능합니다.\n\n월 30만원의 개인 법인카드가 지원되며 온/오프라인 자유로운 쇼핑이 가능합니다.\n\n한식, 양식, 중식 등 매일 세가지 컨셉의 요리를 제공하는 구내식당 이용이 가능합니다.\n\n사내 바리스타가 만들어 주는 다양한 카페 음료를 드실 수 있습니다.\n\n업무에 더욱 집중할 수 있도록 원하는 스낵과 음료를 주문해드리고, '무제한 무료' 입니다.\n\n사내 PC방에서 편하게 게임을 즐기며 리프레시 할 수 있습니다.\n\n최고의 인재를 위한 최고 수준의 업무용 장비(맥북, 윈도우 선택 가능)를 지원합니다.\n\n업무 리프레시 할 수 있도록 6개월 마다 개인 워케이션을 다녀올 수 있고 그 비용 또한 지원합니다.\n\n안전한 귀가를 위해 야근 택시를 지원하며, 업무에 필요한 도서를 마음껏 구매 요청할 수 있습니다.\n\n넷플릭스, 티빙 등 OTT 구독료를 포함하여 자기 개발, 건강관리 비용을 연 최대 120만원 지원해 드립니다.\n\n최고급 안마의자가 구비된 힐링존에서 언제든 편하게 휴식할 수 있습니다."
     },
     {
       "site": "saramin",
@@ -174341,6 +174530,48 @@
     },
     {
       "site": "saramin",
+      "company": "엠클라우드브리지(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7",
+      "career": "경력 5~10년",
+      "location": "서울강남구 | 7,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "React",
+        "Vue",
+        "Angular",
+        "Node.js",
+        ".NET",
+        "AWS",
+        "GCP",
+        "Azure",
+        "OpenAI",
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "AI/ML",
+        "DevOps/인프라",
+        "풀스택",
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "석박사 우대",
+        "Agile/Scrum"
+      ],
+      "qualifications": "고객 및 사업 관리\n\n고객 요구사항 분석 및 프로젝트 제안 지원\n\n프로젝트 계약 이후 Kick-off 및 운영 관리\n\n고객 만족도 및 프로젝트 성과 관리\n\n프로젝트 원가 및 수익성 관리\n\n신규 사업 및 추가 과제 발굴 지원\n\n⸻\n\nIT 프로젝트 관리 경력 5년 이상\n\nData, AI 또는 Full Stack 프로젝트 PM 경험\n\n고객 커뮤니케이션 및 문서 작성 능력\n\n프로젝트 일정 및 리스크 관리 경험\n\n제안서, WBS, 요구사항 정의서 작성 경험\n\n다양한 개발 조직과 협업 경험\n\n프로젝트 관리 도구(Jira, Azure DevOps, MS Project, Notion 등) 활용 가능\n\n⸻\n\n• 경력 5년 이상 ~ 10년 이하",
+      "preferences": "Microsoft Azure, Microsoft Fabric 프로젝트 경험\n\nAI Agent, 생성형 AI, LLM, RAG 프로젝트 경험\n\nERP, CRM, MES, 그룹웨어 구축 경험\n\nCloud(Azure, AWS, GCP) 프로젝트 경험\n\n데이터 분석 및 BI(Power BI) 프로젝트 경험\n\nPMP, Agile, Scrum Master 등 프로젝트 관리 자격증 보유\n\nSI, SaaS, MSP 기업 근무 경험\n\n영어 커뮤니케이션 가능자\n\n⸻",
+      "main_tasks": "프로젝트 관리\n\nData, AI, Full Stack 기반 프로젝트 기획 및 수행 관리\n\n프로젝트 일정, 범위(Scope), 예산, 품질 및 리스크 관리\n\n고객사 및 내부 개발 조직 간 커뮤니케이션 총괄\n\n프로젝트 산출물 및 단계별 품질 관리\n\n프로젝트 진행 현황 보고 및 이슈 관리\n\nAI / Data 프로젝트\n\nAI Agent, LLM, RAG, Copilot, 생성형 AI 구축 프로젝트 관리\n\nMicrosoft Fabric, Azure Data Platform 기반 데이터 프로젝트 관리\n\n데이터 분석, 데이터웨어하우스(DW), ETL 프로젝트 관리\n\nAI SaaS 서비스 구축 및 운영 프로젝트 관리\n\nFull Stack 개발 프로젝트\n\nWeb / Mobile 서비스 구축 프로젝트 관리\n\nFront-end 및 Back-end 개발 일정 관리\n\n개발 방법론(Agile, Scrum, Waterfall) 운영",
+      "benefits": "• 급여제도 : 퇴직금, 4대 보험"
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -188916,6 +189147,71 @@
     },
     {
       "site": "saramin",
+      "company": "(주)윌네트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "한국항공우주산업 정보시스템 Infra (네트워크, 보안 엔지니어)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54376337&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=e8dd6d12-99de-48d5-ad16-12cc5e25b276",
+      "career": "경력",
+      "location": "경남사천시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 무관\n\nKAI 정보시스템 Infra (네트워크/보안 엔지니어) 0명\n\nㆍ경력 : 무관 (신입도 지원 가능)\n\nㆍ기타 필수 사항",
+      "preferences": "ㆍ컴퓨터/시스템공학\n\nㆍCCIE (Cisco Certification Internetworking Expert), CCNA (Cisco Certification Network Associate), CCNP (Cisco Certification Network Professional)\n\nㆍ운전가능자, 차량소지자",
+      "main_tasks": "ㆍ 고객사 네트워크 장비 기술 지원 및 업무 대응\n\nㆍ 장애처리 대응 및 원인분석\n\nㆍ",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "빅씨앤에스 주식회사",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[채용] 엔드포인트보안, WinOS, AD, DLP, 네트워크 엔지니어",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367048&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=2af9b03a-f335-45f6-b019-1b5552b76a71",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입 / 경력 (연수 무관)\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능",
+      "preferences": "• AD, windowsOS 관련 엔지니어 경력자 우대\n\n• 엔드포인트 보안, 매체제어 DLP, 네트워크보안 등 보안 관련 경력자 우대\n\n• Netwrix (USA)에서 공급되는 솔루션과 유사 솔루션 경력자 우대 - 퀘스트 등..(Auditor 솔루션, AD 관련 솔루션)\n\n• 영어 기술문서 해석 및 리포트 작성 가능한 기술지원 경력 엔지니어 우대\n\n• Apple Device 관리 솔루션 - IRU ( Kandji ) 관련 경력 엔지니어 우대\n\n• 클라우드 보안 - 계정, CASB, 네트워크 등 Netskope 관련 경력자 또는 유사 분야 경력자 우대",
+      "main_tasks": "• Endpoint 보안 - 매체제어, DLP 엔지니어\n\n• Windows, Mac, Linux OS, Windows AD 관련 엔지니어\n\n• Netwrix Auditor 엔지니어\n\n• Apple & Windows Endpoint Management - IRU (Kandji) 엔지니어\n\n• 해외 보안 솔루션 한국내 기술지원\n\n• 네트워크 보안, 계정보안\n\n• Netskope 클라우드 보안 솔루션 엔지니어 - CASB, Zero Trust, Network, Account etc...",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)비플",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)비플 기업 네트워크 보안솔루션팀 신입/경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54375793&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f1cc5b0f-bd9b-407b-8663-d4d4f46c7947",
+      "career": "경력무관",
+      "location": "서울중구 | 3,500 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "㈜블루웨이브컨설팅",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -194379,6 +194675,35 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": "• 교육/생활 : 창립일행사, 우수사원시상식, 워크샵, 플레이샵, 신규 입사자 교육(OJT), 도서구입비지원, 교육비 지원, 점심식사 제공, 저녁식사 제공, 음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무, 산전 후 휴가, 육아휴직, 남성출산휴가\n\n• 급여제도 : 퇴직연금, 인센티브제, 장기근속자 포상, 우수사원포상, 퇴직금, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 생일선물/파티\n\n• 근무 환경 : 휴게실, 회의실, 공기청정기, 게임기, 장애인 화장실, 장애인 전용주차장, 문턱 없음, 사무용품 지급, 안마실/안마의자\n\n• 출퇴근 : 야간교통비지급"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)오픈마인즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[오픈마인즈] 정직원 JAVA 개발자 경력직 채용 합니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54383720&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=60bce22a-0253-49e5-9514-67db5f451b83",
+      "career": "경력 7~10년",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "React",
+        "Vue",
+        "Spring",
+        "Spring Boot"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 초대졸이상\n\nㆍ경력 : 경력 7년 이상\n\n• 경력 7년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상",
+      "preferences": "ㆍ관련 자격증 보유자\n\nㆍ자격증 : 정보처리기사\n\nㆍ전공 : 컴퓨터공학과\n\n• SI개발팀 부서 소속으로 함께할 예정이에요.\n\n• 자격증: 정보처리기사",
+      "main_tasks": "ㆍSM/SI 개발, 운영 유지보수 업무(SPRING 기반)\n\n스킬\n\nㆍJAVA, Spring, Spring Boot, Vue.js, 전자정부, React, ERP, Nexacro, Miplatform, 금융\n\n핵심역량\n\nㆍ 성실성, 성장지향성, 계획성, 성취지향성, 꼼꼼함, 협동심",
+      "benefits": "• 교육/생활 : 자격증취득지원\n\n• 리프레시 : 연차\n\n• 급여제도 : 퇴직연금, 장기근속자 포상, 성과급, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 조직 문화 : 회식강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 생일선물/파티"
     },
     {
       "site": "saramin",
@@ -201356,6 +201681,29 @@
       "tech_tags": [],
       "roles": [
         "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "마드라스체크(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "SaaS 부문 개발자 (신입/경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54383625&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=a712a3c4-3d21-4f29-b612-68fd4cbd9cf9",
+      "career": "경력무관",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
       ],
       "competencies": [],
       "qualifications": "",
@@ -213956,69 +214304,69 @@
     }
   ],
   "stats": {
-    "total": 7136,
+    "total": 7148,
     "by_size": {
-      "중소기업": 6426,
+      "중소기업": 6438,
       "대기업": 399,
       "중견기업": 311
     },
     "by_role": {
-      "기타": 974,
-      "DevOps/인프라": 1040,
-      "백엔드": 3047,
-      "모바일": 1097,
-      "AI/ML": 2473,
-      "프론트엔드": 1957,
-      "풀스택": 645,
+      "기타": 978,
+      "DevOps/인프라": 1042,
+      "백엔드": 3052,
+      "모바일": 1098,
+      "AI/ML": 2474,
+      "프론트엔드": 1960,
+      "풀스택": 646,
       "게임": 40,
-      "데이터": 925,
-      "펌웨어/임베디드": 273,
-      "보안": 297,
+      "데이터": 927,
+      "펌웨어/임베디드": 274,
+      "보안": 298,
       "QA": 74
     },
     "by_site": {
       "wanted": 1870,
       "jumpit": 530,
       "jobkorea": 1167,
-      "saramin": 3217,
+      "saramin": 3229,
       "dev": 352
     },
     "top_tech": [
       [
         "Python",
-        2247
+        2251
       ],
       [
         "AWS",
-        1833
+        1836
       ],
       [
         "Java",
-        1802
+        1809
       ],
       [
         "React",
-        1476
+        1479
       ],
       [
         "Git",
-        1170
+        1172
       ],
       [
         "Docker",
-        1143
+        1145
       ],
       [
         "Spring",
-        1044
+        1046
       ],
       [
         "Linux",
-        980
+        982
       ],
       [
         "JavaScript",
-        978
+        981
       ],
       [
         "TypeScript",
@@ -214026,7 +214374,7 @@
       ],
       [
         "MySQL",
-        846
+        847
       ],
       [
         "Kubernetes",
@@ -214034,15 +214382,15 @@
       ],
       [
         "REST API",
-        791
+        793
       ],
       [
         "PostgreSQL",
-        755
+        756
       ],
       [
         "Spring Boot",
-        624
+        626
       ],
       [
         "C++",
@@ -214050,11 +214398,11 @@
       ],
       [
         "GCP",
-        611
+        613
       ],
       [
         "Node.js",
-        598
+        600
       ],
       [
         "Next.js",
@@ -214062,7 +214410,7 @@
       ],
       [
         "Azure",
-        505
+        506
       ],
       [
         "PyTorch",
@@ -214070,19 +214418,19 @@
       ],
       [
         "Android",
-        492
+        493
       ],
       [
         "CSS",
-        484
+        485
       ],
       [
         "Redis",
-        478
+        479
       ],
       [
         "HTML",
-        468
+        469
       ],
       [
         "FastAPI",
@@ -214090,7 +214438,7 @@
       ],
       [
         "iOS",
-        429
+        430
       ],
       [
         "Kotlin",
@@ -214098,31 +214446,15 @@
       ],
       [
         "Vue",
-        387
+        389
       ],
       [
         "C#",
-        372
+        373
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-10T11:39:57",
-      "keyword": "통합",
-      "raw_total": 5700,
-      "deduped": 5528,
-      "active": 5478,
-      "closed": 50,
-      "site_counts": {
-        "wanted": 1122,
-        "jumpit": 452,
-        "jobkorea": 1106,
-        "saramin": 2801,
-        "dev": 219
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-10T13:08:26",
       "keyword": "통합",
@@ -217303,6 +217635,22 @@
         "jumpit": 828,
         "jobkorea": 2346,
         "saramin": 6331,
+        "dev": 604
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-06T23:27:20",
+      "keyword": "통합",
+      "raw_total": 12068,
+      "deduped": 10311,
+      "active": 7148,
+      "closed": 3163,
+      "site_counts": {
+        "wanted": 1942,
+        "jumpit": 828,
+        "jobkorea": 2346,
+        "saramin": 6348,
         "dev": 604
       },
       "anomalies": []

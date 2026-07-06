@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-06T21:45:04",
- "total": 894,
+ "generated_at": "2026-07-06T23:27:07",
+ "total": 895,
  "sources": [
   {
    "company": "Etsy",
@@ -18,13 +18,13 @@
    "count": 40
   },
   {
-   "company": "LINE",
-   "country": "KR",
-   "count": 38
-  },
-  {
    "company": "Cloudflare",
    "country": "US",
+   "count": 39
+  },
+  {
+   "company": "LINE",
+   "country": "KR",
    "count": 38
   },
   {
@@ -257,8 +257,8 @@
   "Vite": "프론트엔드",
   "Qdrant": "데이터베이스",
   "Kubernetes": "인프라/클라우드",
-  "Redis": "데이터베이스",
   "Svelte": "프론트엔드",
+  "Redis": "데이터베이스",
   "iOS": "모바일",
   "MongoDB": "데이터베이스",
   "CUDA": "AI/ML",
@@ -417,9 +417,9 @@
   "Spinnaker": "인프라/클라우드",
   "Keras": "AI/ML",
   "MSSQL": "데이터베이스",
+  "Remix": "프론트엔드",
   "Prompt Engineering": "LLM/생성형",
   "Machine Learning": "AI/ML",
-  "Remix": "프론트엔드",
   "CDC": "데이터",
   "Kafka": "데이터",
   "Distributed System": "알고리즘/이론",
@@ -541,6 +541,47 @@
    ],
    "lang": "ko",
    "content_id": "87e5be9521b6a6ce"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Your Worker can now have its own cache in front of it",
+   "url": "https://blog.cloudflare.com/workers-cache",
+   "published": "2026-07-06",
+   "published_ts": 1783342800.0,
+   "summary": "We are launching Workers Cache, a regionally tiered cache that sits directly in front of your Worker entrypoints. Infinitely composable, configured via standard HTTP headers",
+   "tags": [
+    "Cloudflare Workers",
+    "Cache",
+    "Tiered Cache",
+    "Performance",
+    "Developers",
+    "Serverless"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "TypeScript",
+    "Astro",
+    "HTML",
+    "Next.js",
+    "Remix",
+    "Svelte",
+    "Jetpack Compose",
+    "Cloudflare",
+    "Observability",
+    "Authentication"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "모바일",
+    "인프라/클라우드",
+    "관측성",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "34e529a2fa92844f"
   },
   {
    "key": "stackoverflow",
