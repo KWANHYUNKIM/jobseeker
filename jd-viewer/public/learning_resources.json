@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-07T03:00:24",
+  "generated_at": "2026-07-07T04:43:26",
   "source": "youtube",
   "tech_count": 177,
   "curriculum_count": 20,
@@ -1153,88 +1153,6 @@
         "stage": "실전"
       }
     ],
-    "GCP": [
-      {
-        "title": "클라우드 업계 3위 구글의 GCP에 대해 알아보자! | 구글 GCP - 클라우드 입문과정 #11 ☁️",
-        "url": "https://www.youtube.com/watch?v=pBRKkBpTXX0",
-        "thumbnail": "https://i.ytimg.com/vi/pBRKkBpTXX0/mqdefault.jpg",
-        "channel": "투마일스 - 2miles",
-        "views": 5336,
-        "length": "14:19",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[토크ON세미나] GCP기반의 데이터 엔지니어링 1강 - 미래의 데이터 엔지니어 | T아카데미",
-        "url": "https://www.youtube.com/watch?v=0TOjxSDsH7k",
-        "thumbnail": "https://i.ytimg.com/vi/0TOjxSDsH7k/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 1705,
-        "length": "32:02",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[GCP] GCP - Google Cloud Platform 소개",
-        "url": "https://www.youtube.com/watch?v=fL1ngIHoJY8",
-        "thumbnail": "https://i.ytimg.com/vi/fL1ngIHoJY8/mqdefault.jpg",
-        "channel": "JT Studio",
-        "views": 711,
-        "length": "31:39",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[GCP플러스] CS개론 OT",
-        "url": "https://www.youtube.com/watch?v=seHxoTAkN4Q",
-        "thumbnail": "https://i.ytimg.com/vi/seHxoTAkN4Q/mqdefault.jpg",
-        "channel": "티치온",
-        "views": 14,
-        "length": "3:44",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[GCP] GCP - 엔터프라이즈를 위한 Google Cloud 네트워킹 솔루션",
-        "url": "https://www.youtube.com/watch?v=KRxWQFwGs0s",
-        "thumbnail": "https://i.ytimg.com/vi/KRxWQFwGs0s/mqdefault.jpg",
-        "channel": "JT Studio",
-        "views": 350,
-        "length": "47:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "클라우드 AI 플랫폼 선택 가이드 - AWS, Azure, GCP... 어떤 구름을 타야 하나?",
-        "url": "https://www.youtube.com/watch?v=TlFufu60B6A",
-        "thumbnail": "https://i.ytimg.com/vi/TlFufu60B6A/mqdefault.jpg",
-        "channel": "Knowledge Arcadia",
-        "views": 1111,
-        "length": "5:52",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "구글 클라우드 플랫폼(GCP) - 07. 인스턴스 템플릿과 그룹 이해하기, 첫번째",
-        "url": "https://www.youtube.com/watch?v=tEkCyAA-cSc",
-        "thumbnail": "https://i.ytimg.com/vi/tEkCyAA-cSc/mqdefault.jpg",
-        "channel": "보안프로젝트[boanproject]",
-        "views": 2206,
-        "length": "12:21",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "GCP IAM 완벽 가이드: 서비스 계정/역할/권한 개념부터 Python BigQuery SDK 실습까지",
-        "url": "https://www.youtube.com/watch?v=S0YhCW05z4Y",
-        "thumbnail": "https://i.ytimg.com/vi/S0YhCW05z4Y/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 276,
-        "length": "28:13",
-        "published": "6개월 전",
-        "stage": "실전"
-      }
-    ],
     "Spring Boot": [
       {
         "title": "스프링 부트 기본기 한시간에 끝내기! [ 스프링 부트(Spring Boot) 기초 강의 ]",
@@ -1314,6 +1232,88 @@
         "views": 267,
         "length": "14:26",
         "published": "10개월 전",
+        "stage": "실전"
+      }
+    ],
+    "GCP": [
+      {
+        "title": "클라우드 업계 3위 구글의 GCP에 대해 알아보자! | 구글 GCP - 클라우드 입문과정 #11 ☁️",
+        "url": "https://www.youtube.com/watch?v=pBRKkBpTXX0",
+        "thumbnail": "https://i.ytimg.com/vi/pBRKkBpTXX0/mqdefault.jpg",
+        "channel": "투마일스 - 2miles",
+        "views": 5336,
+        "length": "14:19",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[토크ON세미나] GCP기반의 데이터 엔지니어링 1강 - 미래의 데이터 엔지니어 | T아카데미",
+        "url": "https://www.youtube.com/watch?v=0TOjxSDsH7k",
+        "thumbnail": "https://i.ytimg.com/vi/0TOjxSDsH7k/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 1705,
+        "length": "32:02",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[GCP] GCP - Google Cloud Platform 소개",
+        "url": "https://www.youtube.com/watch?v=fL1ngIHoJY8",
+        "thumbnail": "https://i.ytimg.com/vi/fL1ngIHoJY8/mqdefault.jpg",
+        "channel": "JT Studio",
+        "views": 711,
+        "length": "31:39",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[GCP플러스] CS개론 OT",
+        "url": "https://www.youtube.com/watch?v=seHxoTAkN4Q",
+        "thumbnail": "https://i.ytimg.com/vi/seHxoTAkN4Q/mqdefault.jpg",
+        "channel": "티치온",
+        "views": 14,
+        "length": "3:44",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[GCP] GCP - 엔터프라이즈를 위한 Google Cloud 네트워킹 솔루션",
+        "url": "https://www.youtube.com/watch?v=KRxWQFwGs0s",
+        "thumbnail": "https://i.ytimg.com/vi/KRxWQFwGs0s/mqdefault.jpg",
+        "channel": "JT Studio",
+        "views": 350,
+        "length": "47:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "클라우드 AI 플랫폼 선택 가이드 - AWS, Azure, GCP... 어떤 구름을 타야 하나?",
+        "url": "https://www.youtube.com/watch?v=TlFufu60B6A",
+        "thumbnail": "https://i.ytimg.com/vi/TlFufu60B6A/mqdefault.jpg",
+        "channel": "Knowledge Arcadia",
+        "views": 1111,
+        "length": "5:52",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "구글 클라우드 플랫폼(GCP) - 07. 인스턴스 템플릿과 그룹 이해하기, 첫번째",
+        "url": "https://www.youtube.com/watch?v=tEkCyAA-cSc",
+        "thumbnail": "https://i.ytimg.com/vi/tEkCyAA-cSc/mqdefault.jpg",
+        "channel": "보안프로젝트[boanproject]",
+        "views": 2206,
+        "length": "12:21",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "GCP IAM 완벽 가이드: 서비스 계정/역할/권한 개념부터 Python BigQuery SDK 실습까지",
+        "url": "https://www.youtube.com/watch?v=S0YhCW05z4Y",
+        "thumbnail": "https://i.ytimg.com/vi/S0YhCW05z4Y/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 276,
+        "length": "28:13",
+        "published": "6개월 전",
         "stage": "실전"
       }
     ],
@@ -3009,88 +3009,6 @@
         "stage": "실전"
       }
     ],
-    "C#": [
-      {
-        "title": "유니티 C# 프로그래밍 기초. 한방에 정리하기 [유니티 입문 강좌 B4]",
-        "url": "https://www.youtube.com/watch?v=j6XLEqgq-dE",
-        "thumbnail": "https://i.ytimg.com/vi/j6XLEqgq-dE/mqdefault.jpg",
-        "channel": "골드메탈",
-        "views": 582079,
-        "length": "41:49",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "유니티 C# 프로그래밍 기초 강의",
-        "url": "https://www.youtube.com/watch?v=pK-z88FKvH8",
-        "thumbnail": "https://i.ytimg.com/vi/pK-z88FKvH8/mqdefault.jpg",
-        "channel": "더블엘 DoubleL",
-        "views": 6787,
-        "length": "24:13",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[C# 기초 강의] 클래스",
-        "url": "https://www.youtube.com/watch?v=7tSEmLKdDz8",
-        "thumbnail": "https://i.ytimg.com/vi/7tSEmLKdDz8/mqdefault.jpg",
-        "channel": "아임코딩",
-        "views": 812,
-        "length": "8:43",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[C# 기초] C# 클래스 (class) 개념과 사용법",
-        "url": "https://www.youtube.com/watch?v=8iSXpxZBxdo",
-        "thumbnail": "https://i.ytimg.com/vi/8iSXpxZBxdo/mqdefault.jpg",
-        "channel": "csharpstudy",
-        "views": 24544,
-        "length": "27:20",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "\"시작하세요 C#\" 강의 #1 닷넷의 종류 (재편집)",
-        "url": "https://www.youtube.com/watch?v=PEM6Ocb2qSU",
-        "thumbnail": "https://i.ytimg.com/vi/PEM6Ocb2qSU/mqdefault.jpg",
-        "channel": "성태의 프로그래밍 이야기",
-        "views": 3642,
-        "length": "4:34",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
-        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
-        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 1526028,
-        "length": "5:44",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Visual Studio Code 사용한 C# 학습 개발 환경 구축하기(with C# Dev Kit)",
-        "url": "https://www.youtube.com/watch?v=BCHDy7Lt1i8",
-        "thumbnail": "https://i.ytimg.com/vi/BCHDy7Lt1i8/mqdefault.jpg",
-        "channel": "VisualAcademy",
-        "views": 1350,
-        "length": "27:01",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C# 기초강의 1강 - Hello, World를 만들어 보자!",
-        "url": "https://www.youtube.com/watch?v=kmnLlLyI_Lo",
-        "thumbnail": "https://i.ytimg.com/vi/kmnLlLyI_Lo/mqdefault.jpg",
-        "channel": "Coding Garage",
-        "views": 362,
-        "length": "5:16",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Oracle": [
       {
         "title": "Oracle 01 - 오라클 시작하기",
@@ -3170,6 +3088,88 @@
         "views": 1134,
         "length": "19:24",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "C#": [
+      {
+        "title": "유니티 C# 프로그래밍 기초. 한방에 정리하기 [유니티 입문 강좌 B4]",
+        "url": "https://www.youtube.com/watch?v=j6XLEqgq-dE",
+        "thumbnail": "https://i.ytimg.com/vi/j6XLEqgq-dE/mqdefault.jpg",
+        "channel": "골드메탈",
+        "views": 582079,
+        "length": "41:49",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "유니티 C# 프로그래밍 기초 강의",
+        "url": "https://www.youtube.com/watch?v=pK-z88FKvH8",
+        "thumbnail": "https://i.ytimg.com/vi/pK-z88FKvH8/mqdefault.jpg",
+        "channel": "더블엘 DoubleL",
+        "views": 6787,
+        "length": "24:13",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[C# 기초 강의] 클래스",
+        "url": "https://www.youtube.com/watch?v=7tSEmLKdDz8",
+        "thumbnail": "https://i.ytimg.com/vi/7tSEmLKdDz8/mqdefault.jpg",
+        "channel": "아임코딩",
+        "views": 812,
+        "length": "8:43",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[C# 기초] C# 클래스 (class) 개념과 사용법",
+        "url": "https://www.youtube.com/watch?v=8iSXpxZBxdo",
+        "thumbnail": "https://i.ytimg.com/vi/8iSXpxZBxdo/mqdefault.jpg",
+        "channel": "csharpstudy",
+        "views": 24544,
+        "length": "27:20",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "\"시작하세요 C#\" 강의 #1 닷넷의 종류 (재편집)",
+        "url": "https://www.youtube.com/watch?v=PEM6Ocb2qSU",
+        "thumbnail": "https://i.ytimg.com/vi/PEM6Ocb2qSU/mqdefault.jpg",
+        "channel": "성태의 프로그래밍 이야기",
+        "views": 3642,
+        "length": "4:34",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
+        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
+        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 1526028,
+        "length": "5:44",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Visual Studio Code 사용한 C# 학습 개발 환경 구축하기(with C# Dev Kit)",
+        "url": "https://www.youtube.com/watch?v=BCHDy7Lt1i8",
+        "thumbnail": "https://i.ytimg.com/vi/BCHDy7Lt1i8/mqdefault.jpg",
+        "channel": "VisualAcademy",
+        "views": 1350,
+        "length": "27:01",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C# 기초강의 1강 - Hello, World를 만들어 보자!",
+        "url": "https://www.youtube.com/watch?v=kmnLlLyI_Lo",
+        "thumbnail": "https://i.ytimg.com/vi/kmnLlLyI_Lo/mqdefault.jpg",
+        "channel": "Coding Garage",
+        "views": 362,
+        "length": "5:16",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-07T03:00:10",
-  "source_dir": "screenshots/all_통합_20260707_025951",
+  "generated_at": "2026-07-07T04:43:12",
+  "source_dir": "screenshots/all_통합_20260707_044253",
   "keyword": "통합",
   "jobs": [
     {
@@ -124640,6 +124640,52 @@
     },
     {
       "site": "saramin",
+      "company": "알티컴(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년도 하반기 소프트웨어개발자(신입,경력직)를 모십니다",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379770&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=2249a948-98f4-4c43-8037-e11d29b2116a",
+      "career": "경력무관",
+      "location": "경기군포시",
+      "dday": "",
+      "tech_stack": [
+        "C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관, 졸업 예정자 지원가능",
+      "preferences": "• 전공: 공학계열\n\n• 보유역량: 인근거주자, 해당직무 근무경험",
+      "main_tasks": "- 임베디드 시스템 개발 (LinuxC언어)C++ Visual Basic JAVA개발\n\n• 알티컴(주) 기업부설연구소 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 워크샵, 신규 입사자 교육(OJT), 직무능력향상교육, 리더십 강화교육, 자기계발비 지원, 점심식사 제공\n\n• 리프레시 : 연차, 여름휴가, 근로자의날 휴무\n\n• 급여제도 : 퇴직연금, 인센티브제, 장기근속자 포상, 퇴직금, 휴일(특근)수당, 연차수당, 4대 보험\n\n• 출퇴근 : 기숙사 운영\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 크리스마스 선물, 도서 무제한 제공"
+    },
+    {
+      "site": "saramin",
+      "company": "니즈로봇(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "IoT 및 로봇 제품, 펌웨어 개발자 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54380616&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=f70acb41-a838-49b1-b69d-82fa8ed8acd0",
+      "career": "경력1년↑",
+      "location": "서울노원구 | 4,500 만원",
+      "dday": "",
+      "tech_stack": [
+        "C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 1년 이상\n\n• 대학졸업(2,3년)이상\n\n• 전공: 공학계열",
+      "preferences": "• 관련 분야 경력자(펌웨어 개발 2년 이상)\n\n• 회로 설계 가능자 우대",
+      "main_tasks": "- IoT 및 로봇 관련 제품의 펌웨어 개발 및 유지보수\n\n- 주요 사용 MCU : ESP32 Series, nRF52 Series, STM32 Series, Microchip MCU 등)\n\n- 센서 데이터 수집 : 온습도, 적외선, 초음파, 조도, 인체감지, 근전도, hall, 가스, PM 센서 등\n\n- 통신 구현 : Wi-Fi 통신, Bluetooth 통신, RS-485 통신, UART 통신 등\n\n- 앱 연동 구현 : Wi-Fi 및 BLE 통신 기반의 모바일앱 또는 웹앱과 연동하는 펌웨어 구현\n\n- 디바이스 연동 : LCD, 모터, LTE 모듈 등 기타 상용 부품\n\n• 기업부설연구소 부서 소속, 연구원 직급으로 함께할 예정이에요.",
+      "benefits": "• 급여제도 : 인센티브제, 퇴직금, 4대 보험\n\n• 지원금/보험 : 건강검진"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -136995,6 +137041,43 @@
       "preferences": "• 컴퓨터공학, 소프트웨어공학, 정보통신공학 등 IT 관련 전공자\n\n• Vision AI 관련 서비스 개발 경험이 있으신 분\n\n• AI 서비스 또는 AI 모델 추론 서버 개발 경험이 있으신 분\n\n• Vision AI 관련 서비스 개발 경험이 있으신 분\n\n예: NVIDIA DeepStream, OpenCV, TensorRT, RTSP 스트리밍, 영상 분석 파이프라인 등\n\n• CCTV, 센서, IoT, 설비 데이터 등 실시간 데이터 처리 경험이 있으신 분\n\n• WebSocket, Redis, Kafka, RabbitMQ 등 실시간·비동기 처리 기술 사용 경험이 있으신 분\n\n• 온프레미스 또는 Hybrid SaaS 서비스 개발·운영 경험이 있으신 분\n\n• 클라우드와 온프레미스 환경을 함께 고려한 시스템 아키텍처 설계 경험이 있으신 분\n\n• CI/CD 도구를 활용한 배포 자동화 및 버전 관리 경험이 있으신 분\n\n• 로그 수집, 데이터 모니터링, 시스템 상태 모니터링 환경을 구축해본 경험이 있으신 분\n\n• 대시보드, 관제 시스템, 관리자 페이지 등 산업용 웹 서비스의 백엔드 개발 경험이 있으신 분\n\n• 보안, 인증, 권한 관리, 멀티테넌시 구조에 대한 이해가 있으신 분",
       "main_tasks": "• Hybrid SaaS 기반 백엔드 서비스 설계 및 개발\n\n• Safety AI 및 디지털 트윈 플랫폼의 API 서버 개발\n\n• Vision AI 모델 추론 결과, CCTV 영상 분석 결과, 센서 데이터 연동 구조 개발\n\n• 실시간 이벤트, 알림, 로그, 분석 데이터 처리 백엔드 개발\n\n• PostgreSQL, MySQL 등 RDBMS 기반 데이터 모델링 및 쿼리 최적화\n\n• Redis, Message Queue 등을 활용한 비동기 처리 및 실시간 데이터 처리 구조 개발\n\n• 온프레미스 및 클라우드 환경을 고려한 백엔드 아키텍처 설계\n\n• Docker 기반 개발·배포 환경 구성 및 운영\n\n• 서비스 로그, 장애 추적, 모니터링 체계 구축 및 개선\n\n• 프론트엔드, AI 엔지니어, 인프라 담당자와 협업하여 서비스 기능 구현\n\n• 세르딕 기업연구소 개발팀 부서 소속, 팀원/팀장 직책으로 함께할 예정이에요.",
       "benefits": "• 개인 능력 평가에 따른 급여 인상 체계\n\n• 직무발명보상제도 운영\n\n• 에소프레소 머신/커피 그라인더 구비\n\n• 원하는 음료 및 간식 제공\n\n• 듀얼 모니터 및 개인 워크스테이션 제공"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)무브먼츠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "서버/백엔드 개발자 채용(5년이상~10년이하)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379362&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=8185aa45-343b-4665-9f72-5cb82ba27861",
+      "career": "경력 5~10년",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Kotlin",
+        "Spring",
+        "Spring Boot",
+        "AWS",
+        "Docker",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "대용량 처리",
+        "오너십/주도성",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 5년 이상 ~ 10년 이하\n\n• 대학교졸업(4년)이상\n\n-Kotlin + Spring Boot 기반 백엔드 개발 및 운영 경험이 있으신 분\n\n-실서비스를 개발하고 운영해본 경험이 있으신 분\n\n-REST API 설계 및 개발 경험이 있으신 분\n\n-JPA, Querydsl, SQL 등 데이터 처리에 익숙하신 분\n\n-AWS 등 클라우드 환경에서 서비스를 운영해본 경험이 있으신 분\n\n-서비스 운영 환경에서 예외 처리, 성능, 장애 대응을 경험해보신 분\n\n-협업 과정에서 요구사항을 정리하고 책임감 있게 실행할 수 있는 분\n\n-AI 도구를 활용해 개발 생산성을 높여본 경험이 있으신 분",
+      "preferences": "-GIS 및 공간정보 데이터에 대한 이해 또는 관련 서비스 개발 경험\n\n-대용량 데이터, 동시성, 트랜잭션 처리에 대한 이해\n\n-Docker, CI/CD, 모니터링 환경 구축 또는 운영 경험\n\n-모바일 앱 백엔드 또는 B2B/B2G 서비스 경험\n\n-위치 기반 서비스, 공간 데이터 처리, 측량/지도 연동 경험\n\n-AI를 활용한 코드 리뷰, 테스트 작성, 장애 분석, 반복 작업 자동화 경험\n\n-LLM/AI 기능을 제품이나 운영 프로세스에 접목해본 경험",
+      "main_tasks": "• GIS솔루션 개발 유지 및 보수\n\n• 신규 솔루션 서버 개발",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -174497,6 +174580,69 @@
     },
     {
       "site": "saramin",
+      "company": "(주)이지에이아이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI컨설턴트(신입/경력)-고객과 기술을 잇는 현장형 커뮤니케이터",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54375271&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=fdddeeec-0fda-4d47-8dc9-16bf15b0c184",
+      "career": "경력무관",
+      "location": "서울마포구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 신입 / 경력 (연수 무관)\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능",
+      "preferences": "• 전공: 공학계열\n\n• 보유역량: 컴퓨터활용능력 우수, 인근거주자, 해당직무 근무경험, 문서작성 우수자, PPT능력 우수자",
+      "main_tasks": "우리는 고객의 질문에 가장 먼저 응답하고, 솔루션 교육과 현장을 자연스럽게 연결하는 실무 중심 컨설턴트를 찾고 있어요.\n\n1. 어떤 일을 하나요?\n\n문서 작성 & 일정 조율-제안 작성\n\n고객 지원 내용을 정리하고, 회신문서를 작성해요.\n\n컨설팅 일정도 고객과 내부 팀 사이에서 깔끔하게 조율하죠.\n\n️ 2. A/S 접수 및 가이드 안내\n\n고객이 남긴 A/S 요청을 정리해 기술팀에 전달해요.\n\n기술팀이 빠르게 대응할 수 있도록 상황을 미리 정리해주는 게 핵심이에요.\n\n3. 컨설턴트 업무 지원\n\n현장 방문 전 요청사항을 정리하고, 컨설턴트가 필요한 정보를 챙겨요.\n\n고객 대응이 끊김 없이 이어지도록 도와주는 역할이에요.\n\n제안서 작성 있을 수 있어요.\n\n4.국내외 전시회 운영 지원\n\n부스 운영, 방문객 응대, 현장 기록까지—함께 실무를 체험해요.\n\n필요시 해외 출장도 갈 수 있어요!\n\n#이런 분이라면 딱이에요!\n\n- 고객과 소통하는 걸 즐기고, 친절한 커뮤니케이션이 가능한 분\n\n- 문서 작성, 일정 관리 등 꼼꼼한 실무에 자신 있는 분\n\n- 여러 사람과 협업하면서 일정을 조율하는 걸 좋아하는 분\n\n• 컨설팅팀 부서 소속, 선임연구원/주임연구원/연구원 직급으로 함께할 예정이에요.",
+      "benefits": "• 급여제도 : 장기근속자 포상, 퇴직금, 4대 보험, 인센티브제\n\n• 교육/생활 : 저녁식사 제공, 음료제공(차,커피)"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)아이에이드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)아이에이드와 의료영상 AI 서비스 개발을 함께해요 (신입)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54383295&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=fdddeeec-0fda-4d47-8dc9-16bf15b0c184",
+      "career": "신입",
+      "location": "서울송파구 | 3,600 만원",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "PostgreSQL",
+        "Redis",
+        "AWS",
+        "Docker",
+        "LangChain",
+        "OpenAI",
+        "Linux",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "문제해결",
+        "오픈소스 기여"
+      ],
+      "qualifications": "• 신입\n\n• 학력무관\n\n• 컴퓨터공학 또는 관련 학과 졸업(예정) 또는 이에 준하는 역량\n\n• Java 또는 Python 개발 경험\n\n• 객체지향 프로그래밍 이해\n\n• SQL 및 데이터베이스 기초 지식\n\n• Git 사용 경험\n\n• 새로운 기술을 배우는 것을 즐기는 분",
+      "preferences": "• Spring Boot 프로젝트 경험\n\n• Python 프로젝트 경험\n\n• Docker 또는 AWS 사용 경험\n\n• REST API 개발 경험\n\n• MySQL/PostgreSQL 사용 경험\n\n• Linux 환경 사용 경험\n\n• GitHub 개인 프로젝트 또는 오픈소스 활동\n\n• 생성형 AI(LLM), Vision AI, 머신러닝에 관심이 있는 분\n\n• OpenAI API, LangChain, RAG 활용 경험\n\n• 캡스톤, 공모전, 개인 프로젝트 경험",
+      "main_tasks": "저희는 의료 AI 서비스를 개발하고 운영하는 회사입니다. 현재는 의료 AI 플랫폼의 운영 및 기능 개발을\n\n중심으로 서비스를 제공하고 있으며, 앞으로 생성형 AI와 다양한 AI 기술을 활용한 서비스로 확장해\n\n나가고 있습니다. 새로운 기술을 배우고 AI 서비스에 관심이 있는 개발자를 기다립니다.\n\n• 플랫폼 운영 및 기능 개발\n\n• Java/Spring Boot 기반 서비스 개발 및 유지보수\n\n• 고객 요구사항 반영 및 신규 기능 개발\n\n• 병원 시스템 및 외부 서비스 연동\n\n• AWS 기반 파일 및 데이터 관리\n\n• 서비스 운영 및 장애 대응\n\n• AI 서비스 연동 및 신규 기능 개발\n\n현재는 플랫폼 운영 및 유지관리가 주요 업무입니다. 앞으로 생성형 AI와 다양한 AI 기술을 서비스에\n\n적극적으로 적용해 나갈 계획입니다. AI를 공부하고 실제 서비스로 만들어 보고 싶은 분의 지원을\n\n기다립니다.",
+      "benefits": "- 유연근무제 운영\n\n- 주 1회 재택근무 가능\n\n- 자유로운 연차 사용\n\n- 업무용 장비 지원\n\n- 업무 관련 교육/도서 지원\n\n- 4대 보험 및 퇴직연금\n\n- 명절 선물 및 경조사 지원"
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -178646,6 +178792,29 @@
       "qualifications": "[메가존클라우드] 자금 담당자 채용\n\n(경력 3년 이상\n\n~10년 이하)\n\nㆍ자금운용관리(월 단위)\n\nㆍ연간(주/월/분기) 자금수지계획 작성\n\nㆍ운전자본 흐름분석\n\nㆍ자금결산(입금, 출금, 채권채무 반제처리)\n\nㆍ자금집행 및 금융관련 실무\n\nㆍ환리스크 관리(선물환 헷지 등)\n\nㆍ국내외 관계사 대여 및 정산 관리\n\nㆍ법인카드 관리\n\nㆍ회계감사 및 투자금실사 대응\n\nㆍ해외금융계좌 신고\n\nㆍ담보제공 및 지급보증 관리\n\nㆍ자금 프로젝트 수행\n\n(펌뱅킹 구축, 가상계좌 도입, SAP구축)\n\nㆍ수시 업무 보고와 이슈 핸들링에 능통하신 분\n\nㆍ성실하고 꼼꼼한 업무 수행 가능하신 분\n\nㆍ팀 내/간 구성원 커뮤니케이션 원활히 수행 가능하신 분\n\nㆍ재무제표에 대한 기본적인 이해가 있으신 분",
       "preferences": "ㆍ은행 및 금융기관 업무경험이 있으신 분\n\nㆍ상장사 업무경력이 있으신 분\n\nㆍ복합금융상품(RCPS 등)에 대한 이해도가 있으신 분\n\nㆍ자본조달 경험(증자,차입 등)이있으신 분\n\nㆍ대규모 자금운용 경험이 있으신 분\n\nㆍ자금, 재무관련 자격증이 있으신 분\n\n※ 지원서 내용, 또는 전형 진행 중 허위 사실이 있는 경우 전형 진행이 취소 될 수 있습니다.\n\n※ 보훈대상자(취업보호대상자) 및 장애인은 관련 법령에 의거해 우대됩니다.\n\n※ 필요 시 레퍼런스 체크, 인성검사가 진행 될 수 있습니다.\n\n※ 주 근무지는 과천 본사이며, 사업부서에 따라 상세근무지가 달라질 수 있습니다.",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)구디",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "웹해킹·정보보안·모의해킹·클라우드·AI보안 강사 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54385495&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c50dc45a-a604-4c9c-8176-04459ea3292e",
+      "career": "경력3년↑",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 3년 이상\n\n• 학력무관\n\n• 보안 분야 실무 경험을 보유하신 분\n\n• 강의 자료를 체계화 가능하신 분\n\n• 실습 환경 구축 경험이 있으신 분\n\n• 취약점 분석 역량을 보유하신 분\n\n• 원활한 커뮤니케이션 가능하신 분",
+      "preferences": "• 보안 교육 강의 경험이 있으신 분\n\n• 클라우드 보안 운영 경험이 있으신 분\n\n• 침해사고 대응 경험이 있으신 분\n\n• AI 모델 보안 이해가 있으신 분\n\n• 보안 자격 보유하신 분",
+      "main_tasks": "전체 교육 과정을 혼자 담당하실 필요 없이 본인의 전문 분야에 맞춰 원하시는 교과목만 선택하여 파트타임으로 매칭 및 진행하실 수 있으니 역량 있는 강사님들의 많은 관심과 지원 바랍니다.\n\n• 웹해킹 이론 및 실습을 강의합니다.\n\n• 정보보안 이론 및 실습을 강의합니다.\n\n• 모의해킹 실습 과정을 설계합니다.\n\n• 클라우드 보안 사례를 교육합니다.\n\n• AI보안 위협과 대응을 강의합니다.\n\n• 교육생 프로젝트를 지도합니다.",
       "benefits": ""
     },
     {
@@ -201614,6 +201783,30 @@
     },
     {
       "site": "saramin",
+      "company": "트랜드리서치(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "트랜드리서치 IT 시스템 개발 담당자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54385608&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=d32eb627-56a5-42cf-b425-0bb0f107e831",
+      "career": "신입·경력",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "HTML"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사엠에이치앤티(MH&T)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -208554,6 +208747,192 @@
     },
     {
       "site": "dev",
+      "company": "현대모비스",
+      "company_size": "대기업",
+      "company_size_matched": "현대모비스",
+      "title": "26년 7월 연구직 경력채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559725?ReturnUrl=RecruitInfo",
+      "career": "경력(3년 이상)",
+      "location": "서울 강남구, 경기 의왕시",
+      "dday": "~07.20(월)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "해당 분야 5년 이상 경력자 (석사 졸업자의 경우 3년 이상)\n\n해외여행에 결격 사유가 없으신 분 (남자는 병역필 또는 면제 인원)\n\n■전형절차(~7/16 공고)\n\n지원서 접수\n인성검사\n1차 면접\n2차 면접\n채용 검진\n입사\n\n지원서 접수(7/6~7/16)→ 인성검사(7~8월) → 1차 면접(8월) → 2차 면접(8~9월) → 채용 검진(9월) → 입사(10월)\n\n※ 2차 면접 시 영어 면접이 실시되오니 참고하시기 바랍니다.\n\n※ 운영 상황에 따라 일부 전형은 온라인으로 진행될 수 있으며, 전형 및 일정 또한 변경될 수 있습니다.",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "케이투코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "케이투코리아그룹 7월 각 분야별 (신입/경력) 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559721?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "서울 강남구, 성동구, 경기 여주시",
+      "dday": "~07.25(토)",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성",
+        "학사 이상"
+      ],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "사업 및 업무 전반에 대한 법률자문\n\n소송 대응, 관리\n\n공정거래위원회 등 조사 대응\n\n국/영문 계약서 검토\n\n상표 관리\n\n자격조건 및 우대사항\n\n변호사자격증 소지자 (실무수습을 완료한 자)\n\n서울\n\n(본사)\n\n경영기획실\n법무\n\n사업 및 업무 전반에 대한 법률자문\n\n소송 대응, 관리\n\n공정거래위원회 등 조사 대응\n\n국/영문 계약서 검토\n\n상표 관리\n\n자격조건 및 우대사항\n\n해당업무 경력 5년~10년차\n\n유관 산업 경력자 우대\n\n영문계약서 검토 가능자 우대\n\nMS Office 활용 가능자\n\n경영기획실\n내부감사\n\n경영진단 및 내부감사 업무 전반\n\n조직, 프로세스 진단 및 개선\n\n정기/수시 감사\n\n규정 정비, 리스크 관리 등\n\n자격조건 및 우대사항\n\n해당업무 경력 1년~10년차\n\n경영진단, 컨설팅 업무 경험자 우대\n\n전산 활용능력 우수자 우대\n\n재무 및 회계 분석 능력 보유자 우대\n\n재경부\n회계\n\n경비 마감 등\n\n부가세 신고 등\n\n자격조건 및 우대사항\n\n신입\n\n상경계열 전공자 우대\n\n회계 및 세무 관련 자격증 보유자 우대\n\nMS Office(Excel, PPT 등) 활용 가능자\n\nIT실\nERP 개발\n\nERP 유지 보수 개발 및 연계 시스템 개발\n\n자격조건 및 우대사항\n\n해당업무 경력 1년 이상\n\n기획/소싱/물류 시스템 경험자 우대\n\nJAVA + Spring Framework 개발자 우대\n\nSQL 능력자/Nexacro 경험자 우대\n\n학사 이상\n\nIT실\n네트워크 운영\n\n네트워크 및 정보보안 시스템 운영\n\n자격조건 및 우대사항\n\n해당업무 경력 2년 이상\n\n방화벽, VPN, EDR, IPS 등 보안솔루션 운영 경험자\n\n네트워크 장애 분석 및 트러블슈팅 경험자\n\n클라우드(AWS/OCI) 운영 경험자 우대\n\n네트워크 관련 자격 보유자 우대\n\n학사 이상\n\nCS CENTER\n운영지원 (행정)\n계약직\n6개월 후\n정규직\n전환 검토\n\n매입/매출 마감 및 정산관리\n\n계약서 및 행정 문서 관리\n\n자격조건 및 우대사항\n\n해당업무 경력 1년~5년차\n\n회계 업무 자격 보유자 또는 실무 경험자 우대\n\nMS Office 활용 가능자\n\n서울\n(성수)\n\nCS CENTER\n고객상담\n계약직\n(6개월 또는 1년) 후\n정규직\n전환 검토\n\n고객 및 매장 문의 응대\n\n수선 제품 접수 및 교환/반품 관련 고객 응대\n\n자격조건 및 우대사항\n\n신입 또는 해당업무 경력 2년 이내\n\n소비자전문상담사 또는 CS 관련 자격 보유자 우대\n\n고객 응대 관련 직무 경력 우대\n\nMS Office 활용 가능자\n\nCS CENTER\n고객서비스\n(대표전화)\n계약직\n(6개월 또는 1년) 후\n정규직\n전환 검토\n\nK2 KOREA GROUP 대표전화 고객상담\n\nV.O.C 분석 및 인사이트 도출\n\nRisk 관리 및 예방 업무 수행\n\n자격조건 및 우대사항\n\n신입 또는 해당업무 경력 2년 이내\n\n소비자전문상담사 또는 CS 관련 자격 보유자 우대\n\n고객 응대 관련 직무 경력 우대\n\nMS Office 활용 가능자\n\n물류부\n물류기획\n정규직\n\n그룹사 브랜드 물류 관리\n\n협력사(도급사)관리 및 센터 재고 관리\n\n본사 유관부서 커뮤니케이션 및 스케줄 관리\n\nKPI 실적 관리 및 월 마감 정산\n\n자격조건 및 우대사항\n\n신입 또는 해당업무 경력 3년 이내\n\nMS Office(Excel,PPT) 활용 능력 우수자\n\n책임감이 강하고 긍정적 마인드를 가진 분\n\n여주\n\nK2 사업본부\nK2 KOREA\n팩토리아울렛\n3개월 수습 후\n계약직 또는 정규직 전환\n\n매장판매(계산) 및 고객응대\n\n제품진열 및 재고(창고) 정리\n\n자격조건 및 우대사항\n\n신입 또는 해당업무 경력 5년 이내\n\n동종업계 및 아웃도어 판매 경력자 우대\n\n원활한 커뮤니케이션 능력 보유자\n\n㈜아이더\n\n직무\n\n의류 상품기획 총괄(아웃도어)\n\n마켓분석 및 시즌전략 수립\n\n사업계획 및 예산 편성\n\n기획 일정 관리 및 해외수주 관리\n\n매출 및 판매 분석\n\n자격조건 및 우대사항\n\n해당업무 경력 10년~15년차\n\n팀장 직책 유경험자\n\n아웃도어 유경험자 또는 동종업계 업무경력\n\n외국어 능력 및 AI Tool 활용능력 우대\n\n학사 이상\n\n서울\n(본사)\n\n㈜케이투세이프티\n\n직무\n\n시즌별 의류 상품 기획 및 입고 관리\n\n신상품, 리오더 물량 관리\n\n상품 원가 관리 및 출고가 산정\n\n업계 시장조사 및 트렌드 분석\n\n자격조건 및 우대사항\n\n해당업무 경력 3년 이상\n\n소재 기획 및 소싱을 포함한 의류기획 경험 보유자\n\nMS Office(Excel, PPT, Word 등) 활용 우수자\n\n산업안전 및 스포츠/아웃도어 MD 경력 우대\n\nAI 및 데이터 기반 업무 활용 가능자 우대\n\n서울\n\n(본사)\n\n㈜디앤에이웍스\n\n직무\n\n기능성 아웃도어 디자인 전반\n\n마켓 리서치 및 디자인 개발\n\n원자재 리서치 및 부자재 개발\n\n자격조건 및 우대사항\n\n해당업무 경력 6년~12년차\n\n아웃도어 브랜드 경력자 우대\n\n일러스트 및 그래픽 프로그램 능력 必\n\n원활한 커뮤니케이션 능력 보유자\n\n학사 이상 (디자인/패션 관련 전공)\n\n서울\n(본사)\n\nNORDISK 사업본부\n신발디자인\n계약직\n\n신발 디자인 전반\n\n마켓 리서치 및 디자인 개발\n\n원자재 리서치 및 부자재 개발\n\n자격조건 및 우대사항\n\n해당업무 경력 3년 이상\n\n아웃도어 브랜드 경력자 우대\n\n일러스트 및 그래픽 프로그램 능력 必\n\n원활한 커뮤니케이션 능력 보유자\n\n㈜더케이커넥트\n\n직무\n\nK.VILLAGE 서비스 기획 및 운영 정책 수립(FO/BO/APP)\n\n사내 시스템 및 외부 솔루션 연동 관리\n\n플랫폼 서비스 고도화 및 요구사항 정의\n\n유관부서 커뮤니케이션\n\n자격조건 및 우대사항\n\n신입 또는 해당업무 경력 8년 이내\n\n서비스 기획력 및 분석력을 갖춘 분\n\n부서 및 업체 간 원활한 커뮤니케이션 능력 소유자\n\n책임감이 강하고 긍정적인 마인드와 열정 소유자\n\n커머스 플랫폼 서비스 기획/운영 경험자 우대 (서비스 기획 관련 경력 기술 및 포트폴리오 우대 - 요구사항 정의서, 화면 설계서 등)\n\n서울\n(본사)\n\n■전형방법\n\n서류전형\n팀장 및\n본부장 면접\n임원 면접\n처우협의 및 최종합격\n\n* 합격자에 한하여 개별통보하며, 입사지원서상의 전화로 통보합니다.\n\n* 해당 과정 중 상황/직군에 따라 추가 전형이 포함될 수 있습니다.",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "한미사이언스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[한미그룹] 2026년 7월 수시채용 [각 부문별]",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559695?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "서울 송파구",
+      "dday": "~07.19(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "롯데바이오로직스",
+      "company_size": "대기업",
+      "company_size_matched": "롯데",
+      "title": "2026년 7월 경력사원 채용(정규직 일반직군)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559688?ReturnUrl=RecruitInfo",
+      "career": "경력",
+      "location": "인천 연수구, 서울 송파구",
+      "dday": "D-6",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "윈스테크넷",
+      "company_size": "중견기업",
+      "company_size_matched": "윈스",
+      "title": "2026년 7월 월간채용(신입)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559604?ReturnUrl=RecruitInfo",
+      "career": "신입",
+      "location": "경기 성남시 분당구, 과천시, 안양시, 전지역, 서울 양천구, 강서구, 전지역, 인천 연수구, 전지역, 대전 전지역, 충북 전지역, 충남 전지역\n\n펼치기",
+      "dday": "~07.19(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "윈스테크넷",
+      "company_size": "중견기업",
+      "company_size_matched": "윈스",
+      "title": "2026년 7월 월간채용(경력)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559602?ReturnUrl=RecruitInfo",
+      "career": "경력",
+      "location": "경기 성남시 분당구, 과천시, 수원시, 전지역, 서울 마포구, 서초구, 강서구, 전지역, 인천 연수구, 전지역, 대전 전지역, 부산 전지역, 충북 전지역, 충남 전지역\n\n펼치기",
+      "dday": "~07.19(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "덕성여자대학교",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026학년도 하반기 신입직원(정규직 및 무기계약직) 공개채용 #공채",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559594?ReturnUrl=RecruitInfo",
+      "career": "신입",
+      "location": "서울 도봉구",
+      "dday": "D-5",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "HTML",
+        "Spring",
+        "Oracle"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "정규직\n\n(사무직 8급)\n일반행정\n○명\n\nㆍ학사학위 이상 소지자\n\nㆍ학사학위 이상 소지자\n\nㆍJAVA 기반 웹 시스템(Spring Framework, 전자정부프레임워크,\n\nJSP, HTML, JavaScript 등) 분석·설계·개발 경력 3년 이상\n\nㆍ학사학위 이상 소지자\n\nㆍ입학사정관 실무경력 1년 이상 경력자\n\nㆍ학사학위 이상 소지자",
+      "preferences": "ㆍ대학 행정업무 경력자 우대\n\nㆍ재무·회계 업무 경력자 및 회계·세무 관련 자격증 소지자 우대\n\n전산\n\n(프로그램 개발)\n○명\n\nㆍUI/UX 개발 프레임워크(eXbuilder5, Nexacro 등) 개발 경험자\n\nㆍOracle DB를 사용한 개발 경험자\n\nㆍ대학 학사·행정 시스템 개발 또는 운영 경험자\n\n무기계약직\n입학사정관\n○명\n\nㆍ석사학위 이상 취득자 우대\n\n어학연수생\n관리\n○명\n\nㆍ외국인 어학연수생 관리 유경험자 우대\n\nㆍ외국어 능력 보유자 (영어, 제2외국어) 우대\n\n※ 공통사항\nㆍ국가공무원법상 임용에 결격사유가 없는 자\n\nㆍ남자는 병역필 또는 면제자\n\nㆍ취업지원대상자(국가보훈) 및 장애인은 관계 법령에 따라 우대\n\n※ 주의사항\n\n1. 채용분야별 중복지원 불가(1개 분야만 지원 가능)\n\n2. 채용분야에 따라 전형·평가 방식이 상이하므로 지원에 유의해야 함\n\n3. 채용분야를 오인하여 지원하는 경우 모든 책임은 응시자에게 있음\n\n■전형방법(정규직 전형 절차)\n\n서류전형\n필기전형\n(전산 분야)\n면접전형(대학)\n면접전형(법인)\n임용\n\n구분",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "효성중공업",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 7월 경력/신입사원 수시채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559096?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "서울 마포구, 중구, 경남 창원시, 경기 과천시",
+      "dday": "~07.19(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -211372,6 +211751,27 @@
     },
     {
       "site": "dev",
+      "company": "티시스아이티",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 (주)티시스아이티 부문별 경력사원 채용(~9/30)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559603?ReturnUrl=RecruitInfo",
+      "career": "경력(4년 이상)",
+      "location": "서울 중구, 종로구",
+      "dday": "채용시 마감",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "네이버클라우드",
       "company_size": "대기업",
       "company_size_matched": "네이버클라우드",
@@ -213797,6 +214197,27 @@
     },
     {
       "site": "dev",
+      "company": "티시스아이티",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 (주)티시스아이티 인프라부문 경력사원 모집(~9/30)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/559664?ReturnUrl=RecruitInfo",
+      "career": "경력(4년 이상)",
+      "location": "서울 중구",
+      "dday": "채용시 마감",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "SK하이닉스 [6월] Talent hy-way 신입 (이천/...",
       "company_size": "대기업",
       "company_size_matched": "SK하이닉스",
@@ -213818,45 +214239,45 @@
     }
   ],
   "stats": {
-    "total": 7128,
+    "total": 7145,
     "by_size": {
-      "중소기업": 6436,
-      "대기업": 381,
-      "중견기업": 311
+      "중소기업": 6449,
+      "대기업": 383,
+      "중견기업": 313
     },
     "by_role": {
-      "기타": 968,
-      "DevOps/인프라": 1041,
-      "백엔드": 3050,
-      "모바일": 1094,
-      "AI/ML": 2471,
+      "기타": 978,
+      "DevOps/인프라": 1042,
+      "백엔드": 3054,
+      "모바일": 1095,
+      "AI/ML": 2473,
       "프론트엔드": 1960,
       "풀스택": 644,
       "게임": 40,
       "데이터": 924,
-      "펌웨어/임베디드": 271,
-      "보안": 296,
+      "펌웨어/임베디드": 272,
+      "보안": 297,
       "QA": 74
     },
     "by_site": {
       "wanted": 1878,
       "jumpit": 531,
       "jobkorea": 1169,
-      "saramin": 3214,
-      "dev": 336
+      "saramin": 3221,
+      "dev": 346
     },
     "top_tech": [
       [
         "Python",
-        2245
+        2246
       ],
       [
         "AWS",
-        1836
+        1839
       ],
       [
         "Java",
-        1805
+        1808
       ],
       [
         "React",
@@ -213864,23 +214285,23 @@
       ],
       [
         "Git",
-        1172
+        1173
       ],
       [
         "Docker",
-        1145
+        1147
       ],
       [
         "Spring",
-        1042
+        1046
       ],
       [
         "Linux",
-        982
+        983
       ],
       [
         "JavaScript",
-        981
+        983
       ],
       [
         "TypeScript",
@@ -213888,7 +214309,7 @@
       ],
       [
         "MySQL",
-        842
+        843
       ],
       [
         "Kubernetes",
@@ -213896,19 +214317,19 @@
       ],
       [
         "REST API",
-        787
+        789
       ],
       [
         "PostgreSQL",
-        756
+        757
       ],
       [
         "Spring Boot",
-        627
+        629
       ],
       [
         "C++",
-        618
+        620
       ],
       [
         "GCP",
@@ -213940,11 +214361,11 @@
       ],
       [
         "Redis",
-        477
+        478
       ],
       [
         "HTML",
-        469
+        471
       ],
       [
         "FastAPI",
@@ -213956,7 +214377,7 @@
       ],
       [
         "Kotlin",
-        395
+        396
       ],
       [
         "Vue",
@@ -213969,22 +214390,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-10T16:06:41",
-      "keyword": "통합",
-      "raw_total": 5794,
-      "deduped": 5613,
-      "active": 5564,
-      "closed": 49,
-      "site_counts": {
-        "wanted": 1137,
-        "jumpit": 455,
-        "jobkorea": 1110,
-        "saramin": 2871,
-        "dev": 221
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-10T17:35:26",
       "keyword": "통합",
@@ -217166,6 +217571,22 @@
         "jobkorea": 2389,
         "saramin": 6362,
         "dev": 604
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-07T04:43:06",
+      "keyword": "통합",
+      "raw_total": 12158,
+      "deduped": 10371,
+      "active": 7145,
+      "closed": 3226,
+      "site_counts": {
+        "wanted": 1951,
+        "jumpit": 834,
+        "jobkorea": 2389,
+        "saramin": 6369,
+        "dev": 615
       },
       "anomalies": []
     }
