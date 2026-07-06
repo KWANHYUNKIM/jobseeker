@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-06T20:04:25",
+  "generated_at": "2026-07-06T21:45:41",
   "source": "youtube",
   "tech_count": 177,
   "curriculum_count": 20,
@@ -1399,88 +1399,6 @@
         "stage": "실전"
       }
     ],
-    "Redis": [
-      {
-        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
-        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
-        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 252,
-        "length": "23:09",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
-        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
-        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
-        "channel": "데브원영 DVWY",
-        "views": 54786,
-        "length": "3:54",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[우아한테크세미나] 191121 우아한레디스 by 강대명님",
-        "url": "https://www.youtube.com/watch?v=mPB2CZiAkKM",
-        "thumbnail": "https://i.ytimg.com/vi/mPB2CZiAkKM/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 54456,
-        "length": "1:39:55",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 2021] Redis 야무지게 사용하기",
-        "url": "https://www.youtube.com/watch?v=92NizoBL4uA",
-        "thumbnail": "https://i.ytimg.com/vi/92NizoBL4uA/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 51097,
-        "length": "27:39",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "BJ.53 NoSQL 설명!! RDB와는 어떤 차이가 있는지도 설명!! MongoDB, Redis 매우 간단한 예제 포함!!",
-        "url": "https://www.youtube.com/watch?v=sqVByJ5tbNA",
-        "thumbnail": "https://i.ytimg.com/vi/sqVByJ5tbNA/mqdefault.jpg",
-        "channel": "쉬운코드",
-        "views": 28084,
-        "length": "30:26",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 🤔디디의 Redis",
-        "url": "https://www.youtube.com/watch?v=Gimv7hroM8A",
-        "thumbnail": "https://i.ytimg.com/vi/Gimv7hroM8A/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 50159,
-        "length": "14:14",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "대규모 선착순 대기열. Kafka 대신 Redis를 사용하는 이유 (요약)",
-        "url": "https://www.youtube.com/watch?v=lcsRcd8so7s",
-        "thumbnail": "https://i.ytimg.com/vi/lcsRcd8so7s/mqdefault.jpg",
-        "channel": "코딩하는기술사",
-        "views": 10366,
-        "length": "5:25",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Redis 입문·실전 - 1.1. Redis란? / Redis의 장점",
-        "url": "https://www.youtube.com/watch?v=4PQs57cq84U",
-        "thumbnail": "https://i.ytimg.com/vi/4PQs57cq84U/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 8169,
-        "length": "3:09",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Next.js": [
       {
         "title": "(Next.js 0강) 요즘 프론트엔드만으로 먹고살기 힘든 이유",
@@ -1560,6 +1478,88 @@
         "views": 516,
         "length": "4:57",
         "published": "4개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Redis": [
+      {
+        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
+        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
+        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 252,
+        "length": "23:09",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
+        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
+        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
+        "channel": "데브원영 DVWY",
+        "views": 54786,
+        "length": "3:54",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[우아한테크세미나] 191121 우아한레디스 by 강대명님",
+        "url": "https://www.youtube.com/watch?v=mPB2CZiAkKM",
+        "thumbnail": "https://i.ytimg.com/vi/mPB2CZiAkKM/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 54456,
+        "length": "1:39:55",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 2021] Redis 야무지게 사용하기",
+        "url": "https://www.youtube.com/watch?v=92NizoBL4uA",
+        "thumbnail": "https://i.ytimg.com/vi/92NizoBL4uA/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 51097,
+        "length": "27:39",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "BJ.53 NoSQL 설명!! RDB와는 어떤 차이가 있는지도 설명!! MongoDB, Redis 매우 간단한 예제 포함!!",
+        "url": "https://www.youtube.com/watch?v=sqVByJ5tbNA",
+        "thumbnail": "https://i.ytimg.com/vi/sqVByJ5tbNA/mqdefault.jpg",
+        "channel": "쉬운코드",
+        "views": 28084,
+        "length": "30:26",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 🤔디디의 Redis",
+        "url": "https://www.youtube.com/watch?v=Gimv7hroM8A",
+        "thumbnail": "https://i.ytimg.com/vi/Gimv7hroM8A/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 50159,
+        "length": "14:14",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "대규모 선착순 대기열. Kafka 대신 Redis를 사용하는 이유 (요약)",
+        "url": "https://www.youtube.com/watch?v=lcsRcd8so7s",
+        "thumbnail": "https://i.ytimg.com/vi/lcsRcd8so7s/mqdefault.jpg",
+        "channel": "코딩하는기술사",
+        "views": 10366,
+        "length": "5:25",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Redis 입문·실전 - 1.1. Redis란? / Redis의 장점",
+        "url": "https://www.youtube.com/watch?v=4PQs57cq84U",
+        "thumbnail": "https://i.ytimg.com/vi/4PQs57cq84U/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 8169,
+        "length": "3:09",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
