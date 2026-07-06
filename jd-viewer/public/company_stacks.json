@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-07T04:43:25",
-  "total_jobs": 7145,
-  "company_count": 1327,
+  "generated_at": "2026-07-07T06:24:54",
+  "total_jobs": 7146,
+  "company_count": 1328,
   "min_posting": 2,
   "companies": [
     {
@@ -326243,6 +326243,68 @@
         "roadmap": [],
         "tasks": [
           "[보안] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
+        ],
+        "study_blogs": []
+      }
+    },
+    {
+      "name": "대신네트웍스(주)",
+      "norm": "대신네트웍스",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "DevOps/인프라": 1
+      },
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "보안",
+          "score": 5,
+          "evidence": [
+            "정보보안",
+            "취약점"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 5,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "네트워크 및 보안시스템 엔지니어 모집(대전)",
+        "정보시스템(서버/네트워크/보안)  유지보수 및 취약점"
+      ],
+      "postings": [
+        {
+          "title": "네트워크 및 보안시스템 엔지니어 모집(대전)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54270577&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=335119e8-05b3-440e-b0c6-ab5297d46ab9",
+          "site": "saramin"
+        },
+        {
+          "title": "정보시스템(서버/네트워크/보안)  유지보수 및 취약점",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54378970&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=406b802b-7d2e-4930-8c52-c39090d98e08",
+          "site": "saramin"
+        }
+      ],
+      "summary": "대신네트웍스(주)는 보안 도메인의 중소기업으로, 주로 DevOps/인프라 직군을 채용합니다.",
+      "career_guide": {
+        "wants": [
+          "DevOps/인프라 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "보안 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "[보안] CI/CD·컨테이너 배포와 모니터링·인프라 운영"
         ],
         "study_blogs": []
       }

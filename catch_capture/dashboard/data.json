@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-07T04:43:12",
-  "source_dir": "screenshots/all_통합_20260707_044253",
+  "generated_at": "2026-07-07T06:24:42",
+  "source_dir": "screenshots/all_통합_20260707_062423",
   "keyword": "통합",
   "jobs": [
     {
@@ -189332,6 +189332,27 @@
     },
     {
       "site": "saramin",
+      "company": "대신네트웍스(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "정보시스템(서버/네트워크/보안)  유지보수 및 취약점",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54378970&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=406b802b-7d2e-4930-8c52-c39090d98e08",
+      "career": "신입·경력",
+      "location": "강원춘천시 | 3,000 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 대졸 이상 (2,3년)\n\n정보시스템 운영 및 유지관리공공사업팀 2명\n\nㆍ경력 : 신입/경력 3년 이하(사원, 대리, 팀원급)\n\nㆍ기타 필수 사항",
+      "preferences": "ㆍ정보처리산업기사, 정보통신산업기사, 정보기기기능사, 정보보안 관련 자격\n\nㆍ컴퓨터활용능력(Excel, PPT) 우수, 인근거주자, 해당직무 근무경험",
+      "main_tasks": "ㆍ 정보시스템(서버/네트워크/보안장비 등 ) 구축 및 유지보수\n[1인]\nㆍ 주요 정보통신 시스템 취약점 점검 및 조치 등\n[1인]\n\nㆍ",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "㈜블루웨이브컨설팅",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -214239,15 +214260,15 @@
     }
   ],
   "stats": {
-    "total": 7145,
+    "total": 7146,
     "by_size": {
-      "중소기업": 6449,
+      "중소기업": 6450,
       "대기업": 383,
       "중견기업": 313
     },
     "by_role": {
       "기타": 978,
-      "DevOps/인프라": 1042,
+      "DevOps/인프라": 1043,
       "백엔드": 3054,
       "모바일": 1095,
       "AI/ML": 2473,
@@ -214263,7 +214284,7 @@
       "wanted": 1878,
       "jumpit": 531,
       "jobkorea": 1169,
-      "saramin": 3221,
+      "saramin": 3222,
       "dev": 346
     },
     "top_tech": [
@@ -214390,22 +214411,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-10T17:35:26",
-      "keyword": "통합",
-      "raw_total": 5823,
-      "deduped": 5640,
-      "active": 5591,
-      "closed": 49,
-      "site_counts": {
-        "wanted": 1142,
-        "jumpit": 455,
-        "jobkorea": 1111,
-        "saramin": 2892,
-        "dev": 223
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-10T19:03:51",
       "keyword": "통합",
@@ -217586,6 +217591,22 @@
         "jumpit": 834,
         "jobkorea": 2389,
         "saramin": 6369,
+        "dev": 615
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-07T06:24:35",
+      "keyword": "통합",
+      "raw_total": 12159,
+      "deduped": 10372,
+      "active": 7146,
+      "closed": 3226,
+      "site_counts": {
+        "wanted": 1951,
+        "jumpit": 834,
+        "jobkorea": 2389,
+        "saramin": 6370,
         "dev": 615
       },
       "anomalies": []
