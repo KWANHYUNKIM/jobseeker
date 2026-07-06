@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-07T06:24:42",
-  "source_dir": "screenshots/all_통합_20260707_062423",
+  "generated_at": "2026-07-07T08:13:55",
+  "source_dir": "screenshots/all_통합_20260707_081335",
   "keyword": "통합",
   "jobs": [
     {
@@ -198385,6 +198385,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)한국카본",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "신입/경력사원 채용 - 전산관리 / 건축기술",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54385570&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=45bc345e-cbfb-4cd0-ac80-a616152380b1",
+      "career": "신입·경력",
+      "location": "경남밀양시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "C#"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "- 정보처리(산업)기사 등 IT 관련 자격증 보유자\n\n- 네트워크, 서버, 보안 관련 기초지식 보유자\n\n- 개발 및 시스템 운영 역량 보유자\n- Java, C#, Python 등\n- SQL 및 데이터베이스 활용 가능자\n\n5. 공고 기간\n\n- 2026.7.19. (일) 까지\n\n건축기술\n\n(관리직)",
+      "main_tasks": "- 전산 자산 관리\n\n- 서버 및 네트워크 유지 관리\n\n- H/W, S/W 설치 및 유지보수\n\n2. 자격사항\n\n- 학력 : 전문대졸 이상\n- 전공 : 전산, 컴퓨터공학, 정보통신공학 등 유관 전공자\n- 경력 : 무관 (신입 지원 가능)\n\n3. 근로조건\n\n- 사내 건축 공사 안전관리 및 공정, 시공 관리\n\n- 신규 PJT 건축 관련 법규 검토 및 레이아웃 배치\n\n- 사내 건축 도면 관리\n\n- 건축물 유지 관리\n\n2. 자격사항\n\n- 학력 : 전문대졸 이상\n- 전공 : 건축 관련 전공\n- 경력 : 3~5년\n\n- 필수 경력 : 건축 현장 공사관리\n\n신설 / 증축 / 대수선 검토 및 유지 관리\n\n3. 근로조건",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사 윈어시",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -214260,14 +214285,14 @@
     }
   ],
   "stats": {
-    "total": 7146,
+    "total": 7147,
     "by_size": {
-      "중소기업": 6450,
+      "중소기업": 6451,
       "대기업": 383,
       "중견기업": 313
     },
     "by_role": {
-      "기타": 978,
+      "기타": 979,
       "DevOps/인프라": 1043,
       "백엔드": 3054,
       "모바일": 1095,
@@ -214284,13 +214309,13 @@
       "wanted": 1878,
       "jumpit": 531,
       "jobkorea": 1169,
-      "saramin": 3222,
+      "saramin": 3223,
       "dev": 346
     },
     "top_tech": [
       [
         "Python",
-        2246
+        2247
       ],
       [
         "AWS",
@@ -214298,7 +214323,7 @@
       ],
       [
         "Java",
-        1808
+        1809
       ],
       [
         "React",
@@ -214406,27 +214431,11 @@
       ],
       [
         "C#",
-        372
+        373
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-10T19:03:51",
-      "keyword": "통합",
-      "raw_total": 5845,
-      "deduped": 5661,
-      "active": 5612,
-      "closed": 49,
-      "site_counts": {
-        "wanted": 1145,
-        "jumpit": 455,
-        "jobkorea": 1112,
-        "saramin": 2909,
-        "dev": 224
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-10T20:32:43",
       "keyword": "통합",
@@ -217607,6 +217616,22 @@
         "jumpit": 834,
         "jobkorea": 2389,
         "saramin": 6370,
+        "dev": 615
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-07T08:13:49",
+      "keyword": "통합",
+      "raw_total": 12160,
+      "deduped": 10373,
+      "active": 7147,
+      "closed": 3226,
+      "site_counts": {
+        "wanted": 1951,
+        "jumpit": 834,
+        "jobkorea": 2389,
+        "saramin": 6371,
         "dev": 615
       },
       "anomalies": []
