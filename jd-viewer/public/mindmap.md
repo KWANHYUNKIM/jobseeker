@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7025건** 공고 · **1300개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-06 11:23
+- 총 **7035건** 공고 · **1301개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-06 13:05
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1160,6 +1160,13 @@ markmap:
   - [백엔드 개발자 경력직 채용 ↗](https://jumpit.saramin.co.kr/position/54248272)
   - [백엔드 개발자 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54248272&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=95e8173f-2901-4a42-83c3-acf81f3f57e6)
 
+### ㈜이젠아카데미 `중소기업` · 3건
+- **프론트엔드** [2건]
+  - [(AI취업캠프) UIUX 웹·앱디자인 프론트엔드 개발 부트캠프 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49190496?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=99&sc=630)
+  - [(AI취업캠프) UX/UI디자인&웹기획 프론트엔드 부트캠프(피그마,React.js) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49190402?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=98&sc=630)
+- **AI/ML** [1건]
+  - [(솔트룩스) AI 에이전트 서비스개발 / 엔지니어 캠프 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49511941?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=56&sc=630)
+
 ### ㈜클루닉스 `중소기업` · 3건
 - **백엔드** [2건] · `JavaScript` `PHP` `jQuery` `HTML` `CSS` `REST API`
   - [(서울) 프론트엔드 개발자 경력직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49319494?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=26&sc=630)
@@ -1842,11 +1849,6 @@ markmap:
 - **프론트엔드** [2건] · `JavaScript` `React` `Next.js` `HTML` `CSS` `AWS`
   - [(링커리어) 프론트엔드개발자 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49271396?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=77&sc=630)
   - [(링커리어) 프론트엔드개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54025418&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=cfaf408b-f32c-43cd-92d5-e0f3c0d41bcc)
-
-### ㈜이젠아카데미 `중소기업` · 2건
-- **프론트엔드** [2건]
-  - [(AI취업캠프) UIUX 웹·앱디자인 프론트엔드 개발 부트캠프 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49190496?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=99&sc=630)
-  - [(AI취업캠프) UX/UI디자인&웹기획 프론트엔드 부트캠프(피그마,React.js) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49190402?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=98&sc=630)
 
 ### ㈜뉴제스트 `중소기업` · 2건
 - **백엔드** [1건] · `JavaScript` `TypeScript` `React` `HTML` `CSS` `Git`
@@ -3514,6 +3516,14 @@ markmap:
   - [고(故)팀장 백엔드 개발자 채용 (경력 5년이상~15년이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54137807&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=y&search_uuid=7aa22781-021a-4918-9046-5a5e5dbfc17a)
   - [고(故)팀장 백엔드 개발자 채용 (경력 6년이하) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54309924&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c228a5ac-c248-4049-bd99-a378eb44ab47)
 
+### (주)아이투맥스 `중소기업` · 5건
+- **백엔드** [3건] · `Java` `JavaScript` `Git` `REST API` `Python` `AWS`
+  - [(Salesforce 업계 1위) 세일즈포스 CSS팀 개발자 신입/경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54375129&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=9f241eda-9ba0-4921-a6ce-facbe2c079f6)
+  - [(Salesforce 업계 1위) AI Solutions Engineer(FDE) 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54347436&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=30a473c9-c92b-4c81-a45e-b54b65978d4e)
+  - [(Salesforce 업계 1위) Java 개발자 경력 채용(4년 이상) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54135276&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=3dcb7606-ec03-4617-8834-433bdad8172e)
+- **AI/ML** [1건] · `Java` `Python` `JavaScript` `TypeScript` `Node.js` `AWS`
+  - [(Salesforce 업계 1위) AI Solutions Engineer(FDE) 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54347436&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=30a473c9-c92b-4c81-a45e-b54b65978d4e)
+
 ### (주)이지서티 `중소기업` · 5건
 - **백엔드** [4건] · `Java` `Spring` `Spring Boot` `AWS` `Azure` `Docker`
   - [(이지서티) 정보보안 솔루션 마케팅 담당자 (경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54134067&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=94c3bf19-b123-4379-b5b7-b3803b1c7b7e)
@@ -3815,13 +3825,6 @@ markmap:
   - [AX Agent Developer ↗](https://www.wanted.co.kr/wd/324180)
 - **펌웨어/임베디드** [1건] · `TypeScript` `React` `Next.js` `Jira` `REST API`
   - [Frontend Engineer ↗](https://www.wanted.co.kr/wd/307461)
-
-### (주)아이투맥스 `중소기업` · 4건
-- **백엔드** [2건] · `Java` `Python` `AWS` `GCP` `Azure` `JavaScript`
-  - [(Salesforce 업계 1위) AI Solutions Engineer(FDE) 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54347436&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=30a473c9-c92b-4c81-a45e-b54b65978d4e)
-  - [(Salesforce 업계 1위) Java 개발자 경력 채용(4년 이상) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54135276&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=3dcb7606-ec03-4617-8834-433bdad8172e)
-- **AI/ML** [1건] · `Java` `Python` `JavaScript` `TypeScript` `Node.js` `AWS`
-  - [(Salesforce 업계 1위) AI Solutions Engineer(FDE) 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54347436&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=30a473c9-c92b-4c81-a45e-b54b65978d4e)
 
 ### ㈜오픈테크 `중소기업` · 4건
 - **백엔드** [1건] · `React` `Azure`
@@ -9246,7 +9249,7 @@ markmap:
   - [LLM 및 빅데이터 서비스 프로그램 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54373768&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=55d3272b-5de3-46bd-9312-28b632424d84)
 
 
-## 콘텐츠/미디어/광고 (85개사)
+## 콘텐츠/미디어/광고 (86개사)
 ### 트루엔 `중소기업` · 17건
 - **백엔드** [3건] · `Go` `AWS` `Linux` `REST API`
   - [서버 개발자 (경력 5년↑) ↗](https://jumpit.saramin.co.kr/position/54122713)
@@ -10156,6 +10159,11 @@ markmap:
   - [2026 NAVER 하계 인턴십 : 프로덕트 트랙 (체험형) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/556265?ReturnUrl=RecruitInfo)
 - **데이터** [1건] · `Python` `Kubernetes`
   - [2026 NAVER 하계 인턴십 : 프로덕트 트랙 (체험형) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/556265?ReturnUrl=RecruitInfo)
+
+### (주)이노메트리 `중소기업` · 2건
+- **AI/ML** [2건] · `Python` `C++` `C#` `TensorFlow` `PyTorch` `OpenCV`
+  - [(X-Ray 및 CT 검사장비 AI 솔루션) 각 부문별 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54340266&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d07db56a-7350-41d6-9a12-dfbe20c2b25d)
+  - [(X-Ray 및 CT 검사장비 AI 솔루션) 반도체용 CT 검사기 개발 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54360511&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=4c4a3bcb-b1b6-4b31-8d3d-70ed27ac3a32)
 
 ### 주식회사리드랩스 `중소기업` · 2건
 - **AI/ML** [2건] · `HTML` `CSS`
