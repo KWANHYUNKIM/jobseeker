@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-06T23:27:07",
- "total": 895,
+ "generated_at": "2026-07-07T01:17:15",
+ "total": 896,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "AWS",
    "country": "US",
-   "count": 40
+   "count": 41
   },
   {
    "company": "Cloudflare",
@@ -403,8 +403,8 @@
   "AutoML": "AI/ML",
   "AWS": "인프라/클라우드",
   "Jetpack Compose": "모바일",
-  "JavaScript": "언어",
   "IoT": "펌웨어/임베디드",
+  "JavaScript": "언어",
   "Confluence": "협업/도구",
   "SwiftUI": "모바일",
   "GitOps": "인프라/클라우드",
@@ -519,6 +519,44 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Weekly Roundup: Claude Sonnet 5 on AWS, Amazon WorkSpaces for AI agents, AWS service availability updates, and more (July 6, 2026)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-sonnet-5-on-aws-amazon-workspaces-for-ai-agents-aws-service-availability-updates-and-more-july-6-2026",
+   "published": "2026-07-06",
+   "published_ts": 1783352803.0,
+   "summary": "A couple of editions ago I wrote about what I find so energizing about working with startups. Last week I got a fresh dose of it: I spent a few days with the AWS Startups team, listening to stories of founders talking about the problems they’re actually solving. One story that stayed with me came […]",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon CloudWatch",
+    "Amazon EC2",
+    "Amazon Elastic Kubernetes Service",
+    "Amazon OpenSearch Service",
+    "Amazon SageMaker AI",
+    "Amazon WorkSpaces",
+    "AWS Certificate Manager"
+   ],
+   "tech_stack": [
+    "Express",
+    "AI Agent",
+    "Claude",
+    "AWS",
+    "Kubernetes",
+    "IoT",
+    "TLS"
+   ],
+   "categories": [
+    "백엔드",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "펌웨어/임베디드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "ec0cbaa2af66467c"
+  },
   {
    "key": "naver-d2",
    "company": "네이버 D2",
