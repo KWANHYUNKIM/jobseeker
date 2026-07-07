@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-08T01:30:41",
- "total": 902,
+ "generated_at": "2026-07-08T03:14:21",
+ "total": 904,
  "sources": [
   {
    "company": "Etsy",
@@ -20,7 +20,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 39
+   "count": 40
   },
   {
    "company": "LINE",
@@ -38,13 +38,13 @@
    "count": 33
   },
   {
-   "company": "네이버 D2",
-   "country": "KR",
-   "count": 32
-  },
-  {
    "company": "Discord",
    "country": "US",
+   "count": 33
+  },
+  {
+   "company": "네이버 D2",
+   "country": "KR",
    "count": 32
   },
   {
@@ -546,6 +546,41 @@
    "content_id": "0f4636ce4b63a290"
   },
   {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Cloudflare proudly joins the UK government's Cyber Resilience Pledge",
+   "url": "https://blog.cloudflare.com/cloudflare-joins-uk-cyber-resilience-pledge",
+   "published": "2026-07-07",
+   "published_ts": 1783429200.0,
+   "summary": "The pledge is a voluntary framework inviting organizations to commit to foundational cyber security governance, board-level accountability, and supply chain rigor. For over a decade, Cloudflare has pioneered the core pillars of this framework: democratizing security, leadership accountability, and radical transparency.",
+   "tags": [
+    "United Kingdom",
+    "Cybersecurity",
+    "Policy & Legal",
+    "Security"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "Cloudflare",
+    "Authentication",
+    "Cryptography",
+    "DDoS",
+    "Security",
+    "TLS",
+    "Zero Trust",
+    "Benchmark"
+   ],
+   "categories": [
+    "AI/ML",
+    "인프라/클라우드",
+    "보안",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "6f4bf3e98fe8397a"
+  },
+  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -645,6 +680,21 @@
    ],
    "lang": "en",
    "content_id": "77ac098b8fa1204e"
+  },
+  {
+   "key": "discord",
+   "company": "Discord",
+   "country": "US",
+   "title": "Discord Patch Notes: July 7, 2026",
+   "url": "https://discord.com/blog/discord-patch-notes-july-7-2026",
+   "published": "2026-07-07",
+   "published_ts": 1783382400.0,
+   "summary": "Check out the finer details of the more technical fixes implemented into Discord recently.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "dc87656809dae123"
   },
   {
    "key": "aws",
