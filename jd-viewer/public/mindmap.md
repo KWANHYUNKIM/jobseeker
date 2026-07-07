@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7341건** 공고 · **1371개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-07 22:08
+- 총 **7352건** 공고 · **1371개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-07 23:49
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -9397,6 +9397,16 @@ markmap:
 - **데이터** [1건] · `Java` `Python` `React` `Next.js` `Spring` `Spring Boot`
   - [(아이브릭스) AI웹서비스 프론트엔드 및 풀스택 개발자 채용공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54311017&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=001e8857-c75b-4d0a-8595-cd0016c6d792)
 
+### ㈜이씨마이너 `중소기업` · 3건
+- **AI/ML** [3건] · `Python` `C++` `OpenCV` `Linux` `C` `Java`
+  - [빅데이터/AI 컨설턴트 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49302661?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=34&sc=630)
+  - [ECMiner 연구소 빅데이터/AI 솔루션 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49120450?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=69&sc=630)
+  - [ECMiner 연구소 빅데이터/AI 솔루션 개발자 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54389591&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=3444a2b8-1320-492a-8d2a-8825ba80902b)
+- **데이터** [3건] · `Python` `C++` `OpenCV` `Linux` `C` `Java`
+  - [빅데이터/AI 컨설턴트 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49302661?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=34&sc=630)
+  - [ECMiner 연구소 빅데이터/AI 솔루션 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49120450?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=69&sc=630)
+  - [ECMiner 연구소 빅데이터/AI 솔루션 개발자 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54389591&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=3444a2b8-1320-492a-8d2a-8825ba80902b)
+
 ### (주)이든크루 `중소기업` · 3건
 - **백엔드** [1건] · `Python` `TypeScript` `OpenAI`
   - [AI/ML 엔지니어 (시니어) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53935291&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d76be8ce-a663-4d93-8076-01af6a93706f)
@@ -9695,14 +9705,6 @@ markmap:
   - [ETL 데이터 엔지니어 채용합니다. ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49439462?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=45&sc=630)
 - **DevOps/인프라** [1건] · `AWS` `GCP` `Kubernetes` `Terraform`
   - [aws 클라우드 운영 엔지니어 채용합니다. ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54325646&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=4c9c13ad-c2dd-49a3-b036-984d9ef49fe7)
-
-### ㈜이씨마이너 `중소기업` · 2건
-- **AI/ML** [2건] · `Python` `C++` `C` `OpenCV` `Linux`
-  - [빅데이터/AI 컨설턴트 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49302661?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=34&sc=630)
-  - [ECMiner 연구소 빅데이터/AI 솔루션 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49120450?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=69&sc=630)
-- **데이터** [2건] · `Python` `C++` `C` `OpenCV` `Linux`
-  - [빅데이터/AI 컨설턴트 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49302661?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=34&sc=630)
-  - [ECMiner 연구소 빅데이터/AI 솔루션 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49120450?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=69&sc=630)
 
 ### ㈜신화엔지니어링 `중소기업` · 2건
 - **AI/ML** [2건] · `Python` `PostgreSQL` `AWS` `Linux`
@@ -13702,6 +13704,15 @@ markmap:
 - **펌웨어/임베디드** [1건] · `C++` `Linux`
   - [In-Vehicle 보안 솔루션 개발 (신입~10년 이하) ↗](https://www.wanted.co.kr/wd/321150)
 
+### (주)오토노머스에이투지 `중소기업` · 3건
+- **AI/ML** [2건] · `Python` `C++` `TensorFlow` `PyTorch` `Linux`
+  - [자율주행 AI 데이터 엔지니어 ↗](https://www.wanted.co.kr/wd/355081)
+  - [(정규직) AI 기반 E2E 자율주행 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54360492&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f5a270a6-8746-4f81-8fdf-a8c57ca52242)
+- **데이터** [1건] · `Python` `C++`
+  - [자율주행 AI 데이터 엔지니어 ↗](https://www.wanted.co.kr/wd/355081)
+- **펌웨어/임베디드** [1건] · `Python` `C++` `TensorFlow` `PyTorch` `Linux`
+  - [(정규직) AI 기반 E2E 자율주행 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54360492&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f5a270a6-8746-4f81-8fdf-a8c57ca52242)
+
 ### (주)마이렌 `중소기업` · 3건
 - **백엔드** [1건] · `Spring` `iOS` `Android` `AWS` `GCP` `Kafka`
   - [차량 안전 플랫폼 프론트, 백엔드, 서버 구축 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53893499&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=d551514b-2563-4d4d-90ab-cc27bffc24ff)
@@ -13745,15 +13756,6 @@ markmap:
 - **AI/ML** [1건] · `Python` `C++`
   - [머신러닝 research scientist (R&D) ↗](https://www.wanted.co.kr/wd/364303)
 
-### 오토노머스에이투지 `중소기업` · 2건
-- **AI/ML** [2건] · `Python` `C++` `TensorFlow` `PyTorch` `Linux`
-  - [자율주행 AI 데이터 엔지니어 ↗](https://www.wanted.co.kr/wd/355081)
-  - [(정규직) AI 기반 E2E 자율주행 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54360492&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f5a270a6-8746-4f81-8fdf-a8c57ca52242)
-- **데이터** [1건] · `Python` `C++`
-  - [자율주행 AI 데이터 엔지니어 ↗](https://www.wanted.co.kr/wd/355081)
-- **펌웨어/임베디드** [1건] · `Python` `C++` `TensorFlow` `PyTorch` `Linux`
-  - [(정규직) AI 기반 E2E 자율주행 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54360492&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f5a270a6-8746-4f81-8fdf-a8c57ca52242)
-
 ### 리트빅 `중소기업` · 2건
 - **모바일** [2건] · `C++` `Android` `Linux` `Git` `MCU` `ethernet`
   - [(주니어) 임베디드 BSP 개발자 ↗](https://jumpit.saramin.co.kr/position/53828291)
@@ -13787,10 +13789,11 @@ markmap:
 
 
 ## 게임 (22개사)
-### 슈퍼센트 `중소기업` · 9건
-- **백엔드** [2건] · `Java` `C++` `Go` `Kafka`
+### 슈퍼센트 `중소기업` · 10건
+- **백엔드** [3건] · `Java` `C++` `Go` `Kafka`
   - [(AD-Tech) 백엔드 개발자(8년 이상) ↗](https://www.wanted.co.kr/wd/356603)
   - [(AD-Tech) 백엔드 개발자(4~8년) ↗](https://www.wanted.co.kr/wd/356602)
+  - [(AD-Tech) 백엔드 개발자(4~7년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54392094&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=521f4d47-b865-4e00-8f79-f9831cd91bf0)
 - **AI/ML** [6건] · `C#`
   - [하이브리드 퍼즐 클라이언트 개발자(3~7년) ↗](https://www.wanted.co.kr/wd/358931)
   - [(AD-Tech) 머신러닝 엔지니어(7년 이상) ↗](https://www.wanted.co.kr/wd/356730)
