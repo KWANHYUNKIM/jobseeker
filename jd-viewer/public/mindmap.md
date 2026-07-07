@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7368건** 공고 · **1371개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-08 06:47
+- 총 **7370건** 공고 · **1372개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-08 08:29
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -3229,7 +3229,7 @@ markmap:
   - [데이터 분석가(Data Analyst) 담당 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/536255?ReturnUrl=RecruitInfo)
 
 
-## B2B SaaS/엔터프라이즈 (188개사)
+## B2B SaaS/엔터프라이즈 (189개사)
 ### 메가존클라우드(주) `중견기업` · 46건
 - **백엔드** [8건] · `Python` `Go` `AWS` `Azure` `Java` `Kubernetes`
   - [Backend Developer / AI Research Engineer 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630)
@@ -4683,6 +4683,10 @@ markmap:
   - [프론트엔드 개발자 3년 이상 ↗](https://www.wanted.co.kr/wd/338288)
 - **데이터** [1건] · `TypeScript` `Node.js` `Express` `NestJS` `Redis` `AWS`
   - [백엔드 개발자 3년 이상 ↗](https://www.wanted.co.kr/wd/338289)
+
+### 비에스지파트너스 `중소기업` · 2건
+- **DevOps/인프라** [1건] · `AWS` `GCP` `Kubernetes` `Linux`
+  - [(BSG) 클라우드 SA(구글.AWS) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54402365&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b98a6477-2e3a-4da3-ba58-84f753a44c8c)
 
 ### 마이프랜차이즈 `중소기업` · 2건
 - **백엔드** [2건] · `TypeScript` `AWS` `GraphQL` `React` `Next.js` `CSS`
