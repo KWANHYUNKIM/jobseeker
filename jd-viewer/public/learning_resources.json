@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-07T20:27:13",
+  "generated_at": "2026-07-07T22:08:38",
   "source": "youtube",
   "tech_count": 178,
   "curriculum_count": 20,
@@ -333,88 +333,6 @@
         "stage": "실전"
       }
     ],
-    "Git": [
-      {
-        "title": "쉽게 설명하는 Git 기초 1. add, commit",
-        "url": "https://www.youtube.com/watch?v=sly2u8BIi9E",
-        "thumbnail": "https://i.ytimg.com/vi/sly2u8BIi9E/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 144961,
-        "length": "8:02",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
-        "url": "https://www.youtube.com/watch?v=Fley6IFhlC8",
-        "thumbnail": "https://i.ytimg.com/vi/Fley6IFhlC8/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 182805,
-        "length": "6:37",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "깃, 깃허브 한번에 이해시켜드리고 포트폴리오 올리는 법까지 알려드림.  15분안에 당신은 Github 전문가가 됩니다",
-        "url": "https://www.youtube.com/watch?v=lelVripbt2M",
-        "thumbnail": "https://i.ytimg.com/vi/lelVripbt2M/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 752089,
-        "length": "16:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "git의 기본기 정리",
-        "url": "https://www.youtube.com/watch?v=-uhhTgD2thU",
-        "thumbnail": "https://i.ytimg.com/vi/-uhhTgD2thU/mqdefault.jpg",
-        "channel": "임커밋",
-        "views": 5283,
-        "length": "3:30",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Git 핵심 / 기본 다지기 강의",
-        "url": "https://www.youtube.com/watch?v=01faw6lcM_8",
-        "thumbnail": "https://i.ytimg.com/vi/01faw6lcM_8/mqdefault.jpg",
-        "channel": "깃미남 - 깃에 미친 남자",
-        "views": 1362,
-        "length": "2:03:40",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(알아두면 개발팀장가능) GitFlow vs Trunk-based 협업방식",
-        "url": "https://www.youtube.com/watch?v=EV3FZ3cWBp8",
-        "thumbnail": "https://i.ytimg.com/vi/EV3FZ3cWBp8/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 178958,
-        "length": "6:06",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Git 저장소 구조",
-        "url": "https://www.youtube.com/watch?v=Deowj6SG4Hk",
-        "thumbnail": "https://i.ytimg.com/vi/Deowj6SG4Hk/mqdefault.jpg",
-        "channel": "깃미남 - 깃에 미친 남자",
-        "views": 150,
-        "length": "2:31",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 파는 Git & GitHub (고정댓글에서 새 버전을 확인하세요!)",
-        "url": "https://www.youtube.com/watch?v=1I3hMwQU6GU",
-        "thumbnail": "https://i.ytimg.com/vi/1I3hMwQU6GU/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 268416,
-        "length": "2:21:52",
-        "published": "4년 전",
-        "stage": "핵심"
-      }
-    ],
     "Docker": [
       {
         "title": "가장 쉽게 배우는 도커",
@@ -495,6 +413,88 @@
         "length": "20:57",
         "published": "4년 전",
         "stage": "실전"
+      }
+    ],
+    "Git": [
+      {
+        "title": "쉽게 설명하는 Git 기초 1. add, commit",
+        "url": "https://www.youtube.com/watch?v=sly2u8BIi9E",
+        "thumbnail": "https://i.ytimg.com/vi/sly2u8BIi9E/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 144961,
+        "length": "8:02",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
+        "url": "https://www.youtube.com/watch?v=Fley6IFhlC8",
+        "thumbnail": "https://i.ytimg.com/vi/Fley6IFhlC8/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 182805,
+        "length": "6:37",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "깃, 깃허브 한번에 이해시켜드리고 포트폴리오 올리는 법까지 알려드림.  15분안에 당신은 Github 전문가가 됩니다",
+        "url": "https://www.youtube.com/watch?v=lelVripbt2M",
+        "thumbnail": "https://i.ytimg.com/vi/lelVripbt2M/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 752089,
+        "length": "16:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "git의 기본기 정리",
+        "url": "https://www.youtube.com/watch?v=-uhhTgD2thU",
+        "thumbnail": "https://i.ytimg.com/vi/-uhhTgD2thU/mqdefault.jpg",
+        "channel": "임커밋",
+        "views": 5283,
+        "length": "3:30",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Git 핵심 / 기본 다지기 강의",
+        "url": "https://www.youtube.com/watch?v=01faw6lcM_8",
+        "thumbnail": "https://i.ytimg.com/vi/01faw6lcM_8/mqdefault.jpg",
+        "channel": "깃미남 - 깃에 미친 남자",
+        "views": 1362,
+        "length": "2:03:40",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(알아두면 개발팀장가능) GitFlow vs Trunk-based 협업방식",
+        "url": "https://www.youtube.com/watch?v=EV3FZ3cWBp8",
+        "thumbnail": "https://i.ytimg.com/vi/EV3FZ3cWBp8/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 178958,
+        "length": "6:06",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Git 저장소 구조",
+        "url": "https://www.youtube.com/watch?v=Deowj6SG4Hk",
+        "thumbnail": "https://i.ytimg.com/vi/Deowj6SG4Hk/mqdefault.jpg",
+        "channel": "깃미남 - 깃에 미친 남자",
+        "views": 150,
+        "length": "2:31",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "제대로 파는 Git & GitHub (고정댓글에서 새 버전을 확인하세요!)",
+        "url": "https://www.youtube.com/watch?v=1I3hMwQU6GU",
+        "thumbnail": "https://i.ytimg.com/vi/1I3hMwQU6GU/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 268416,
+        "length": "2:21:52",
+        "published": "4년 전",
+        "stage": "핵심"
       }
     ],
     "Spring": [
@@ -2425,88 +2425,6 @@
         "stage": "핵심"
       }
     ],
-    "Go": [
-      {
-        "title": "C언어 쉬운버전인 Go언어를 알아보자",
-        "url": "https://www.youtube.com/watch?v=huvyxjwuBEQ",
-        "thumbnail": "https://i.ytimg.com/vi/huvyxjwuBEQ/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 97419,
-        "length": "7:09",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "나는 어떻게 Go 언어를 배웠나",
-        "url": "https://www.youtube.com/watch?v=fqnKJa02GK0",
-        "thumbnail": "https://i.ytimg.com/vi/fqnKJa02GK0/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 78002,
-        "length": "6:24",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "배워야 한다고 유난 심한 Go 언어 살펴보기",
-        "url": "https://www.youtube.com/watch?v=2_RDSLdscbE",
-        "thumbnail": "https://i.ytimg.com/vi/2_RDSLdscbE/mqdefault.jpg",
-        "channel": "저세상개발자",
-        "views": 11014,
-        "length": "7:12",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[프로그래밍] go 언어의 비밀 : 7가지 특징으로 세계를 뒤흔들다",
-        "url": "https://www.youtube.com/watch?v=u_GtNgV0J5c",
-        "thumbnail": "https://i.ytimg.com/vi/u_GtNgV0J5c/mqdefault.jpg",
-        "channel": "수줍은 개발자의 오디오북",
-        "views": 516,
-        "length": "1:56",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "구글 고(Go) 언어소개! 🥪탄생배경과 장단점 [언어탐방🔎]",
-        "url": "https://www.youtube.com/watch?v=QUbdGXe9aMc",
-        "thumbnail": "https://i.ytimg.com/vi/QUbdGXe9aMc/mqdefault.jpg",
-        "channel": "코딩하는거니",
-        "views": 44412,
-        "length": "12:47",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "7가지 용법 go / go to / go to the / go for / go on / go ~ing / go + 동사 | 모두 정복하는 끝판왕 강의!",
-        "url": "https://www.youtube.com/watch?v=Ti964UYRWBk",
-        "thumbnail": "https://i.ytimg.com/vi/Ti964UYRWBk/mqdefault.jpg",
-        "channel": "에스텔잉글리쉬EstellEnglish",
-        "views": 59135,
-        "length": "28:34",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Here you go/are, There you go/are 끝판왕 강의! 더 이상 헷갈리지 마세요🤓💙",
-        "url": "https://www.youtube.com/watch?v=RN63cEZrI-o",
-        "thumbnail": "https://i.ytimg.com/vi/RN63cEZrI-o/mqdefault.jpg",
-        "channel": "구슬쌤",
-        "views": 79372,
-        "length": "8:44",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "프로그래밍 언어 Go, Rust, Zig 비교",
-        "url": "https://www.youtube.com/watch?v=GqQIzt46peU",
-        "thumbnail": "https://i.ytimg.com/vi/GqQIzt46peU/mqdefault.jpg",
-        "channel": "반포코더 개발자 TV",
-        "views": 1278,
-        "length": "3:51",
-        "published": "1년 전",
-        "stage": "핵심"
-      }
-    ],
     "Jira": [
       {
         "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
@@ -2587,6 +2505,88 @@
         "length": "49:08",
         "published": "4년 전",
         "stage": "실전"
+      }
+    ],
+    "Go": [
+      {
+        "title": "C언어 쉬운버전인 Go언어를 알아보자",
+        "url": "https://www.youtube.com/watch?v=huvyxjwuBEQ",
+        "thumbnail": "https://i.ytimg.com/vi/huvyxjwuBEQ/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 97419,
+        "length": "7:09",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "나는 어떻게 Go 언어를 배웠나",
+        "url": "https://www.youtube.com/watch?v=fqnKJa02GK0",
+        "thumbnail": "https://i.ytimg.com/vi/fqnKJa02GK0/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 78002,
+        "length": "6:24",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "배워야 한다고 유난 심한 Go 언어 살펴보기",
+        "url": "https://www.youtube.com/watch?v=2_RDSLdscbE",
+        "thumbnail": "https://i.ytimg.com/vi/2_RDSLdscbE/mqdefault.jpg",
+        "channel": "저세상개발자",
+        "views": 11014,
+        "length": "7:12",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[프로그래밍] go 언어의 비밀 : 7가지 특징으로 세계를 뒤흔들다",
+        "url": "https://www.youtube.com/watch?v=u_GtNgV0J5c",
+        "thumbnail": "https://i.ytimg.com/vi/u_GtNgV0J5c/mqdefault.jpg",
+        "channel": "수줍은 개발자의 오디오북",
+        "views": 516,
+        "length": "1:56",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "구글 고(Go) 언어소개! 🥪탄생배경과 장단점 [언어탐방🔎]",
+        "url": "https://www.youtube.com/watch?v=QUbdGXe9aMc",
+        "thumbnail": "https://i.ytimg.com/vi/QUbdGXe9aMc/mqdefault.jpg",
+        "channel": "코딩하는거니",
+        "views": 44412,
+        "length": "12:47",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "7가지 용법 go / go to / go to the / go for / go on / go ~ing / go + 동사 | 모두 정복하는 끝판왕 강의!",
+        "url": "https://www.youtube.com/watch?v=Ti964UYRWBk",
+        "thumbnail": "https://i.ytimg.com/vi/Ti964UYRWBk/mqdefault.jpg",
+        "channel": "에스텔잉글리쉬EstellEnglish",
+        "views": 59135,
+        "length": "28:34",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Here you go/are, There you go/are 끝판왕 강의! 더 이상 헷갈리지 마세요🤓💙",
+        "url": "https://www.youtube.com/watch?v=RN63cEZrI-o",
+        "thumbnail": "https://i.ytimg.com/vi/RN63cEZrI-o/mqdefault.jpg",
+        "channel": "구슬쌤",
+        "views": 79372,
+        "length": "8:44",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "프로그래밍 언어 Go, Rust, Zig 비교",
+        "url": "https://www.youtube.com/watch?v=GqQIzt46peU",
+        "thumbnail": "https://i.ytimg.com/vi/GqQIzt46peU/mqdefault.jpg",
+        "channel": "반포코더 개발자 TV",
+        "views": 1278,
+        "length": "3:51",
+        "published": "1년 전",
+        "stage": "핵심"
       }
     ],
     "Terraform": [

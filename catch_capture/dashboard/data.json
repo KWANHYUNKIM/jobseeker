@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-07T20:18:11",
-  "source_dir": "screenshots/all_통합_20260707_201753",
+  "generated_at": "2026-07-07T22:08:24",
+  "source_dir": "screenshots/all_통합_20260707_220805",
   "keyword": "통합",
   "jobs": [
     {
@@ -126065,6 +126065,114 @@
     },
     {
       "site": "saramin",
+      "company": "(주)포스에스엠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "포스에스엠(팬오션 자회사) IT개발자 채용(육휴대체직)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54393826&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=ff5d3ad4-a2c3-4e9e-9433-74392437d951",
+      "career": "경력5년↑",
+      "location": "부산중구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "React",
+        "Spring",
+        "Spring Boot",
+        "Flutter",
+        "Oracle",
+        "Jenkins",
+        "Git",
+        "SVN"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "CI/CD"
+      ],
+      "qualifications": "• 대학교졸업(4년)이상\n\n• JAVA 기반 웹 애플리케이션 개발 경력 5년 이상(경력사항 기재 必)\n\n• Spring Framework 또는 Spring Boot 기반 개발 경험자\n\n• Oracle, MS-Sql 등 RDBMS 사용 경험자\n\n• 협업 및 사용자 커뮤니케이션이 원활한 자",
+      "preferences": "• 전공: 전산 및 컴퓨터 공학 관련 전공자(대졸 이상)\n\n• Nexacro 기반 개발 경험자\n\n• 선박/선원관리, 안전품질, 조달, OPEX 등의 업무 시스템 개발 또는 유지보수 경험자\n\n• Git, SVN, Jenkins 등 형상관리 도구 사용 경험자\n\n• 모바일 애플리케이션(Flutter, React 등) 개발 경험자",
+      "main_tasks": "선박/선원관리 업무 관련 IT개발(JAVA 웹 애플리케이션 등 개발)",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)원익피앤이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[원익PNE] GUI 개발자 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54394511&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1ed66d65-f448-4a8f-8de5-33c9b7a449a9",
+      "career": "경력3년↑",
+      "location": "경기수원시 권선구",
+      "dday": "",
+      "tech_stack": [
+        "C++",
+        "MySQL",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "■ 학사 이상\n\n■ 경력 3년 이상\n\n■ C++, MFC 개발 가능자",
+      "preferences": "■ 동종업계 경험자 우대\n\n■ 관련 학과 전공자 우대\n\n■ TCP/IP, Seiral 등 통신 프로토콜 경험자 우대\n\n■ MS SQL, MySQL 등 DB 경험자 우대",
+      "main_tasks": "■ 충방전기 SW 개발\n\n■ 고객사 신규 프로젝트 제품 개발\n\n■ 상위 IT 연동 시스템 개발 및 유지보수",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "세종기프트(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "세종기프트(주) 판촉몰 신입 개발자 정규직 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54397824&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=71d784fe-c540-41c7-ad13-5e1afca0949e",
+      "career": "경력무관",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학졸업(2,3년)이상",
+      "preferences": "• 보유역량: 해당직무 인턴경력, 해당직무 근무경험",
+      "main_tasks": "• 웹페이지, 앱 서버 개발 관련 신규개발자 모집합니다.\n\n• 자체 관리자 페이지 구축\n\n• ERP연동 관련 개발\n\n• 이외 개발팀 서브업무\n\n• 개발팀 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 리프레시 : 연차, 반차, 근로자의날 휴무\n\n• 조직 문화 : 회식강요 안함, 야근강요 안함, 자유복장\n\n• 급여제도 : 4대 보험"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)에이블인사이트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "스스로 답을 찾는 시스템 연동 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54396736&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d73a3dc2-0ce6-40bb-be1a-a113decae1ab",
+      "career": "경력무관",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "JavaScript"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "아래 항목 중 일부 경험이 있으신 분(모든 항목을 충족할 필요 없음)\n\n• Pyhton 또는 JavaScript 사용 경험\n\n• API 호출 및 데이터 연동 경험\n\n• 간단한 프로그램 또는 기능 구현 경험\n\n• 네트워크/통신에 대한 기본 이해\n\n위 경험 중 2~3가지 수준이면 충분하며 나머지는 스스로 학습하여 해결할 수 있는 의지와 능력을 중요하게 봅니다.\n\n다양한 기술과 업무 수행에 거부감이 없는 분, 스스로 학습하고 문제를 해결하려는 태도를 가지신분을 환영합니다.\n\n• 경력 무관 (신입 지원 가능)\n\n• 대학졸업(2,3년)이상",
+      "preferences": "• PCL 또는 장비 연동 경험 보유자\n\n• 영상처리(Open CV 등) 경험 보유자\n\n• Python 활용 경험 보유자\n\n• 간단한 웹 프론트 구성 경험 보유자\n\n• 외부 시스템 연동 경험 보유자\n\n• 개인 또는 팀 프로젝트 경험 보유자",
+      "main_tasks": "※ 지원 전 꼭 확인해주세요\n\n저희는 신입과 경력을 구분하기보다 스스로 학습하고 문제를 해결하려는 태도를 중요하게 생각합니다.\n\n프로젝트마다 요구사항과 사용하는 기술이 달라질 수 있으며, 장비, 외부 시스템, 데이터, 웹 화면 등을 연결하는 과정에서 처음 접하는 분야를 담당하게 될 수도 있습니다.\n\n누군가가 정답을 알려주기보다 직접 자료를 찾고 판단하여 해결해야 하는 경우가 많으며, 정해진 업무를 수행하는 것보다 새로운 문제를 해결하는 과정에서 재미를 느끼는 분이라면 잘 맞을 수 있습니다.\n\n반대로 체계적인 교육 과정이나 단계별 업무 지시를 가장 중요하게 생각한다면 기대하는 업무 환경과 다를 수 있습니다.\n\n지원 전 본인의 성향과 잘 맞는지 한 번 생각해보신 후 지원 부탁드립니다.\n\n• 장비(PLC 등) 및 외부 시스템과의 연동 개발\n\n• 영상/데이터 처리 결과를 시스템 또는 화면에 연동\n\n• 관제 시스템 관련 기능 개발 및 유지보수\n\n• 백엔드 API 연동 및 간단한 기능 구현\n\n• 필요 시 간단한 웹 화면 구성 및 테스트\n\n• 프로젝트 요구사항에 따른 다양한 개발 및 현장 대응",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -138832,6 +138940,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)버블콘",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)버블콘 LearningACID 학습데이터 솔루션 백엔드 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54380511&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=8210802b-e1f0-4132-881b-2ff7e8736a54",
+      "career": "경력5년↑",
+      "location": "서울구로구 | 8,000 만원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -146010,6 +146139,31 @@
       "qualifications": "",
       "preferences": "",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "민컴퍼니",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "java react 풀스택 프리랜서 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54398419&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=d65f84f5-bc73-44bd-8982-ff0e6be25798",
+      "career": "경력6년↑",
+      "location": "서울종로구",
+      "dday": "",
+      "tech_stack": [
+        "Java"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "풀스택",
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 2년 이상\n\n• 대학졸업(2,3년)이상\n\n일산 교육기관 운영 - 중급\n\nspriongboot\n\njava\n\n7/1~ 27.03\n\n스킬인벤토리 첨부하여 지원해 부탁드립니다",
+      "preferences": "",
+      "main_tasks": "• 프리랜서 개발자 모집\n\n•",
       "benefits": ""
     },
     {
@@ -154229,6 +154383,34 @@
       "qualifications": "• 신입 / 경력 (연수 무관)\n\n• 고등학교졸업이상",
       "preferences": "MQTT 운영 및 개발, I시계열 데이터베이스 구축 운영, Redis등 구축 운영,\n\nFront / Backend 구축 또는 운영\n\nㆍ안드로인드/IOS 보수 유지 경험자\n\nㆍC# .Net 개발 경험자\n\nㆍ 서버 또는 응용프로그램 개발 경력\n\nㆍDB연동 처리 경험자\n\nㆍCross-platform 개발 경력\n\nㆍPLC 연동 제어 경험\n\nㆍMulti-thread/ Multi-core 퍼포먼스에 대한 이해\n\nㆍESP32 , STM32 , ATmel MCU, 펌웨어 경험\n\nㆍIoT system 이해, 개발 경험\n\nㆍVLC 이용, CCTV 제어 표준 프로토콜 이해",
       "main_tasks": "ㆍC# 기반의 응용프로그램 개발\n\nC#, Linux, Docker, Docker-compose 구성 및 운영",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)아이비피",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(인천송도) 네트워크 인프라/보안 엔지니어(경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54396018&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=6f850a81-abfc-4a6d-bc9d-5707b4bcde45",
+      "career": "경력",
+      "location": "인천연수구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "iOS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일",
+        "펌웨어/임베디드",
+        "DevOps/인프라",
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "인원\n\n네트워크 엔지니어\n\n(경력)\nㆍ네트워크 관리 & 운영\n\nㆍ네트워크 인프라 & 보안\n\nㆍ계약직 (2년)\nㆍCCNA\n\n(Cisco Certified Network Associate)\n\nㆍ경력 2년 이상 (필수)\n1명",
+      "preferences": "",
+      "main_tasks": "",
       "benefits": ""
     },
     {
@@ -177879,6 +178061,39 @@
     },
     {
       "site": "saramin",
+      "company": "(주)데이타솔루션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[중견/IT] 데이타솔루션 AI 시스템 아키텍트 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54394383&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=b7a6754d-f793-4b27-a36c-1579e8973eb0",
+      "career": "경력3년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "FastAPI",
+        "AWS",
+        "GCP",
+        "Azure",
+        "GitLab"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "테스트/품질",
+        "오픈소스 기여",
+        "CI/CD"
+      ],
+      "qualifications": "ㆍ 학력 : 대학교 졸업(4년) 이상\n\nㆍ 경력 : 정보처리기사 취득 후 3년 이상의 실무 경력\n\nㆍ 개발, 테스트, 빌드, 배포 환경 구축 경험자\n\n> FastAPI 기반 개발 환경 구축\n\n> Gitlab 기반 CI/CD 활용 빌드/배포\nㆍ 코드 모듈화 및 구조개선, 리팩토링 경험자\n\nㆍ 코드 리뷰 및 Unit 테스트 경험자\n\nㆍ 보유 개발 스택에 대한 개발자 가이드 및 교육 가능한 자\n\n업무\n\nㆍ 생성형 AI 기반 서비스 개발 및 유지보수\n\nㆍ 생성형 AI 서비스 분석 / 설계 / 개발 업무\n\nㆍ API 및 오픈소스 활용 서비스 개발\n\nㆍ 최신 AI 기술 트렌드 조사 및 적용",
+      "preferences": "ㆍ LLM를 이해하고 연관 서비스 개발 및 API 사용 경험 보유\n\nㆍ AI 모델 최적화 및 서빙 경험\n\nㆍ 클라우드 플랫폼(e.g., Azure, AWS, GCP) 활용 경험자\n\nㆍ LiteLLM 구축 경험 또는 LLM Gateway 및 API Gateway 구축 경험\n\n공통사항\n\nㆍ (남자의 경우) 군필 또는 면제자\nㆍ 해외여행에 결격사유 없는 자\nㆍ 보훈대상자는 관계법령에 의거하여 우대",
+      "main_tasks": "",
+      "benefits": "오피스 사내 공간"
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -198951,6 +199166,63 @@
     },
     {
       "site": "saramin",
+      "company": "(주)에스앤케이인스티튜트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "신제품개발 경력개발자(JAVA, C)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54394344&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=8791f777-e5cf-45dc-89e9-94797093c459",
+      "career": "경력3년↑",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 3년 이상\n\n• 대학교졸업(4년)이상\n\n• 전공: 컴퓨터/시스템공학",
+      "preferences": "• 전공: 산업공학, 공학계열\n\n• 보유역량: 컴퓨터활용능력 우수, 인근거주자, 운전가능자, 해당직무 근무경험, 문서작성 우수자, 엑셀 고급능력자, PPT능력 우수자\n\n• 자격증: 정보처리기사, CPPG(개인정보관리사), 정보보안기사",
+      "main_tasks": "•솔루션 개발 매니저\n\n• 연구소 부서 소속, 연구소장/수석연구원/책임연구원 직급으로 함께할 예정이에요.",
+      "benefits": "• 교육/생활 : 워크샵, 플레이샵, 저녁식사 제공, 음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무\n\n• 급여제도 : 퇴직연금, 인센티브제, 장기근속자 포상, 우수사원포상, 4대 보험"
+    },
+    {
+      "site": "saramin",
+      "company": "마이데이터(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "삼성전자 MX MES 시스템   Java개발/AA/TA/보안운영 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54395698&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=8791f777-e5cf-45dc-89e9-94797093c459",
+      "career": "경력 6~20년",
+      "location": "서울성동구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "PostgreSQL",
+        "Apache",
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "대용량 처리"
+      ],
+      "qualifications": "Java 개발 경력 중급(대리~과장급) 또는 고급(차장급 이상) 보유자\nSpring / Spring Boot 프레임워크 활용 능숙자\nRDBMS 또는 NoSQL 활용 및 SQL 쿼리 최적화 가능자\n\nAA 또는 TA 직무 전문 경력 보유자\n\n온프라미스(On-premise) 환경에서의 시스템 설계 및 구축 경험 필수\n\n대형 SI 또는 대규모 시스템 아키텍처 리딩 경험자\n\n해당 직무(보안관제/운영) 특급 또는 고급 기술 등급 보유자\n주간 원격관제 업무 수행이 가능하신 분",
+      "preferences": "제조 실행 시스템(MES) 프로젝트 수행 경험자 우대\n대기업 대규모 트래픽 처리 및 파이프라인 구축 경험자 우대\n\n대기업 제조/MES 분야 아키텍처 설계 경험자 우대\n\n대용량 데이터 처리 및 대규모 인프라 전환 프로젝트 경험자 우대\n\n다음 솔루션 및 데이터베이스 활용 경험자 우대:\n\nWazuh, Superset, Grafana, OpenSearch, Apache Doris, PostgreSQL",
+      "main_tasks": "삼성전자 MX MES 시스템 개발 및 유지보수\nJava/Spring 기반의 백엔드 기능 개발 및 API 설계/연동\n시스템 성능 최적화 및 코드 리팩토링\n데이터베이스(SQL) 쿼리 작성 및 최적화\n\n[AA] Application Architect\n\n애플리케이션 공통 프레임워크 설계, 구축 및 표준 가이드 수립\n\n개발 표준 정의 및 소스 코드 품질 관리(리뷰), 성능 튜닝\n\n복잡한 비즈니스 로직의 공통 컴포넌트 설계\n[TA] Technical Architect\n\n온프라미스(On-premise) 인프라 환경 아키텍처 설계 및 인프라 구성\n\n서버(OS), WAS, 미들웨어 환경 구축 및 성능 최적화(Tuning)\n\n시스템 가용성, 안정성 확보를 위한 백업/이중화 및 보안 아키텍처 수립\n\n실시간 보안 이벤트 모니터링 및 1차 이상 행위 식별\n\n이벤트 트리아지(Triage) 및 기본 분석 보고서 작성\n\n위협 인텔리전스 기반 IOC 식별 및 탐지 룰 반영\n\nSIEM(Splunk), 방화벽, IDS/IPS 등 주요 보안장비 로그 검토 및 분석\n\n접근 통제 시스템 등 시스템 인증 로그 검토 및 이상 징후 탐지\n\n네트워크 트래픽 분석 시스템 활용, 네트워크 이상 징후 탐지\n\n상위 분석가(Level 2/3)와 협업하여 인시던트 이관 및 조치 지원\n\n주요 보안 시스템의 로그 수집 상황 모니터링\n\n시스템 장애 등으로 인한 로그 수집 불가 시, 장애 대응을 위한 Jira 티켓 생성",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)KH인재교육원",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -208542,31 +208814,6 @@
       "qualifications": "- 출장 가능자\n\n- MES 업무 경험(특히 공정 관련)\n\n- React\n\n• 근무기간 : 즉시 ~ 27년 04월 (이후 연장 예정)\n\n• 모집인원\n\n- 프레임워크/공통 개발 : 중급~고급 1 명\n\n- 개발 : 중급 3명\n\n• 경력 7년 이상\n\n• 대학졸업(2,3년)이상",
       "preferences": "",
       "main_tasks": "",
-      "benefits": ""
-    },
-    {
-      "site": "saramin",
-      "company": "민컴퍼니",
-      "company_size": "중소기업",
-      "company_size_matched": null,
-      "title": "java react 풀스택 프리랜서 개발자 모집",
-      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54367059&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=c5cc2d32-d6b0-4b52-ba43-75e890b5c2e9",
-      "career": "경력6년↑",
-      "location": "서울종로구",
-      "dday": "",
-      "tech_stack": [
-        "Java"
-      ],
-      "tech_tags": [],
-      "roles": [
-        "프론트엔드",
-        "풀스택",
-        "백엔드"
-      ],
-      "competencies": [],
-      "qualifications": "• 경력 2년 이상\n\n• 대학졸업(2,3년)이상\n\n일산 교육기관 운영 - 중급\n\nspriongboot\n\njava\n\n7/1~ 27.03\n\n스킬인벤토리 첨부하여 지원해 부탁드립니다",
-      "preferences": "",
-      "main_tasks": "• 프리랜서 개발자 모집\n\n•",
       "benefits": ""
     },
     {
@@ -219328,53 +219575,53 @@
     }
   ],
   "stats": {
-    "total": 7332,
+    "total": 7341,
     "by_size": {
-      "중소기업": 6618,
+      "중소기업": 6627,
       "대기업": 396,
       "중견기업": 318
     },
     "by_role": {
-      "기타": 1009,
-      "DevOps/인프라": 1069,
-      "백엔드": 3112,
-      "모바일": 1119,
-      "AI/ML": 2541,
-      "프론트엔드": 2005,
+      "기타": 1012,
+      "DevOps/인프라": 1070,
+      "백엔드": 3117,
+      "모바일": 1121,
+      "AI/ML": 2542,
+      "프론트엔드": 2006,
       "풀스택": 659,
       "게임": 42,
       "데이터": 932,
-      "펌웨어/임베디드": 274,
-      "보안": 311,
+      "펌웨어/임베디드": 275,
+      "보안": 312,
       "QA": 75
     },
     "by_site": {
       "wanted": 1897,
       "jumpit": 534,
       "jobkorea": 1181,
-      "saramin": 3357,
+      "saramin": 3366,
       "dev": 363
     },
     "top_tech": [
       [
         "Python",
-        2286
+        2289
       ],
       [
         "AWS",
-        1875
+        1876
       ],
       [
         "Java",
-        1846
+        1850
       ],
       [
         "React",
-        1506
+        1507
       ],
       [
         "Git",
-        1198
+        1199
       ],
       [
         "Docker",
@@ -219382,15 +219629,15 @@
       ],
       [
         "Spring",
-        1069
+        1071
       ],
       [
         "JavaScript",
-        1006
+        1008
       ],
       [
         "Linux",
-        1001
+        1002
       ],
       [
         "TypeScript",
@@ -219398,7 +219645,7 @@
       ],
       [
         "MySQL",
-        853
+        854
       ],
       [
         "Kubernetes",
@@ -219410,19 +219657,19 @@
       ],
       [
         "PostgreSQL",
-        772
+        773
       ],
       [
         "Spring Boot",
-        638
+        640
       ],
       [
         "C++",
-        633
+        634
       ],
       [
         "GCP",
-        623
+        624
       ],
       [
         "Node.js",
@@ -219434,7 +219681,7 @@
       ],
       [
         "Azure",
-        515
+        516
       ],
       [
         "PyTorch",
@@ -219458,11 +219705,11 @@
       ],
       [
         "FastAPI",
-        439
+        440
       ],
       [
         "iOS",
-        437
+        438
       ],
       [
         "Kotlin",
@@ -219479,22 +219726,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-11T07:39:30",
-      "keyword": "통합",
-      "raw_total": 6062,
-      "deduped": 5855,
-      "active": 5702,
-      "closed": 153,
-      "site_counts": {
-        "wanted": 1219,
-        "jumpit": 461,
-        "jobkorea": 1171,
-        "saramin": 2981,
-        "dev": 230
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-11T09:09:30",
       "keyword": "통합",
@@ -222675,6 +222906,22 @@
         "jumpit": 846,
         "jobkorea": 2401,
         "saramin": 6539,
+        "dev": 633
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-07T22:08:17",
+      "keyword": "통합",
+      "raw_total": 12403,
+      "deduped": 10565,
+      "active": 7341,
+      "closed": 3224,
+      "site_counts": {
+        "wanted": 1971,
+        "jumpit": 847,
+        "jobkorea": 2401,
+        "saramin": 6551,
         "dev": 633
       },
       "anomalies": []
