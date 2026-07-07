@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-07T23:48:47",
- "total": 901,
+ "generated_at": "2026-07-08T01:30:41",
+ "total": 902,
  "sources": [
   {
    "company": "Etsy",
@@ -33,13 +33,13 @@
    "count": 35
   },
   {
-   "company": "네이버 D2",
-   "country": "KR",
-   "count": 32
-  },
-  {
    "company": "GitHub",
    "country": "US",
+   "count": 33
+  },
+  {
+   "company": "네이버 D2",
+   "country": "KR",
    "count": 32
   },
   {
@@ -519,6 +519,32 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Q1 2026 Innovation Graph update: Open source collaboration is accelerating worldwide",
+   "url": "https://github.blog/news-insights/policy-news-and-insights/q1-2026-innovation-graph-update-open-source-collaboration-is-accelerating-worldwide",
+   "published": "2026-07-07",
+   "published_ts": 1783440000.0,
+   "summary": "New Innovation Graph data shows global developer communities growing faster than ever, with collaboration reaching new highs across many economies.\n\nThe post Q1 2026 Innovation Graph update: Open source collaboration is accelerating worldwide appeared first on The GitHub Blog.",
+   "tags": [
+    "News & insights",
+    "Policy",
+    "Innovation Graph",
+    "open source"
+   ],
+   "tech_stack": [
+    "React",
+    "Git"
+   ],
+   "categories": [
+    "프론트엔드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "0f4636ce4b63a290"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",
