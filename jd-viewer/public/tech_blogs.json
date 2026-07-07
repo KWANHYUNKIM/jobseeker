@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-07T13:21:47",
- "total": 899,
+ "generated_at": "2026-07-07T15:12:11",
+ "total": 901,
  "sources": [
   {
    "company": "Etsy",
@@ -10,7 +10,7 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 47
+   "count": 48
   },
   {
    "company": "AWS",
@@ -113,6 +113,11 @@
    "count": 14
   },
   {
+   "company": "우아한형제들",
+   "country": "KR",
+   "count": 13
+  },
+  {
    "company": "카카오",
    "country": "KR",
    "count": 13
@@ -124,11 +129,6 @@
   },
   {
    "company": "당근",
-   "country": "KR",
-   "count": 12
-  },
-  {
-   "company": "우아한형제들",
    "country": "KR",
    "count": 12
   },
@@ -519,6 +519,63 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "Agent orchestration is so two-years ago​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌​​﻿‌‌​﻿​‍‌‍​‍​﻿​﻿​﻿​﻿​﻿‌​‌‍‌‌​‍﻿‌​﻿‌​​﻿​‍​﻿​﻿​﻿​﻿​‍﻿‌​﻿‌​‌‍‌‌​﻿‌﻿‌‍‌​​‍﻿‌‌‍​‌​﻿​‌​﻿​​‌‍​‍​‍﻿‌‌‍​‍‌‍‌‍‌‍​‍‌‍​‌​﻿​‌​﻿‌​​﻿‌﻿​﻿​‍‌‍​﻿​﻿​‍‌‍‌‍‌‍​‍​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌​​﻿‌‌​﻿​‍‌‍​‍​﻿​﻿​﻿​﻿​﻿‌​‌‍‌‌​‍﻿‌​﻿‌​​﻿​‍​﻿​﻿​﻿​﻿​‍﻿‌​﻿‌​‌‍‌‌​﻿‌﻿‌‍‌​​‍﻿‌‌‍​‌​﻿​‌​﻿​​‌‍​‍​‍﻿‌‌‍​‍‌‍‌‍‌‍​‍‌‍​‌​﻿​‌​﻿‌​​﻿‌﻿​﻿​‍‌‍​﻿​﻿​‍‌‍‌‍‌‍​‍​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/07/07/agent-orchestration-is-so-two-years-ago",
+   "published": "2026-07-07",
+   "published_ts": 1783410000.0,
+   "summary": "Ryan welcomes Saahil Jain, CTO of You.com, to discuss why building agents with a 2024 mindset is a mistake as modern models improve at long-horizon tasks, why heavy orchestration layers can hurt model performance more than help it, and why the 2026 competitive edge actually comes from information retrieval and unique data paired with end-to-end evaluation.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍…",
+   "tags": [
+    "podcast",
+    "se-tech",
+    "se-stackoverflow",
+    "ai",
+    "agentic-ai",
+    "llm",
+    "architecture",
+    "se-tech"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "1dfa8f5548a81fbc"
+  },
+  {
+   "key": "woowahan",
+   "company": "우아한형제들",
+   "country": "KR",
+   "title": "AI가 내 프롬프트를 흘려듣는 이유: 원리부터 다시 본 컨텍스트 엔지니어링",
+   "url": "https://techblog.woowahan.com/26459",
+   "published": "2026-07-07",
+   "published_ts": 1783404039.0,
+   "summary": "분명 가이드에 다 적었는데, 왜 안 될까요? 분명 가이드에 다 적어놨습니다. 그런데 AI는 또 엉뚱한 코드를 내놓았습니다. 저는 디자인 시스템 안에서 MCP(Model Context Protocol) 서버 개발을 주도하고 있었습니다. AI가 우리 디자인 시스템 규칙에 맞는 코드를 생성하도록 가이드하는 게 목적이었고, 그러려면 우리가 원하는 코드가 무엇인지를 모델에게 정확히 전달해야 했습니다. 가이드라인을 짜고 실제 데이터를 넣어가며 테스트했지만 원하는 […]\n\nThe post AI가 내 프롬프트를 흘려듣는 이유: 원리부터 다시 본 컨텍스트 엔지니어링 first appeared on 우아한형제들 기술블로그.",
+   "tags": [
+    "AI",
+    "GenAI",
+    "Machine Learning",
+    "LLM",
+    "MCP"
+   ],
+   "tech_stack": [
+    "Claude",
+    "Gemini",
+    "GPT",
+    "LLM",
+    "Model Context Protocol",
+    "RLHF",
+    "Design System",
+    "Figma"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "ko",
+   "content_id": "d6bac24ff8b612bd"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",
