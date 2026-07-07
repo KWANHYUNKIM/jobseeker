@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-07T08:13:35",
- "total": 897,
+ "generated_at": "2026-07-07T09:55:43",
+ "total": 899,
  "sources": [
   {
    "company": "Etsy",
@@ -95,7 +95,7 @@
   {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 17
+   "count": 19
   },
   {
    "company": "Grab",
@@ -519,6 +519,50 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "AWS DevOps Agentの新機能カスタムエージェントで週次SREレポートをつくる",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64493",
+   "published": "2026-07-07",
+   "published_ts": 1783383866.0,
+   "summary": "本記事は、DevOps Agentの新機能のカスタムエージェントをつかって週次のSREレポートをつく ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "AWS"
+   ],
+   "categories": [
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "a9d9dd1d4967a874"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Gemini Embedding 2で作るネイティブマルチモーダルRAG",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64490",
+   "published": "2026-07-07",
+   "published_ts": 1783383767.0,
+   "summary": "本記事では、この「ネイティブ」なマルチモーダル埋め込みを活用したRAGの構築方法を解説します。",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "Embedding",
+    "Gemini",
+    "RAG"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "77ac098b8fa1204e"
+  },
   {
    "key": "aws",
    "company": "AWS",
