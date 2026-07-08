@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-09T00:06:24",
- "total": 907,
+ "generated_at": "2026-07-09T01:56:15",
+ "total": 908,
  "sources": [
   {
    "company": "Etsy",
@@ -33,13 +33,13 @@
    "count": 35
   },
   {
-   "company": "네이버 D2",
-   "country": "KR",
-   "count": 33
-  },
-  {
    "company": "GitHub",
    "country": "US",
+   "count": 34
+  },
+  {
+   "company": "네이버 D2",
+   "country": "KR",
    "count": 33
   },
   {
@@ -556,6 +556,30 @@
    ],
    "lang": "ko",
    "content_id": "ba209adf7f06caff"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How GitHub Copilot enables zero DNS configuration for GitHub Pages",
+   "url": "https://github.blog/ai-and-ml/github-copilot/how-github-copilot-enables-zero-dns-configuration-for-github-pages",
+   "published": "2026-07-08",
+   "published_ts": 1783526400.0,
+   "summary": "Go from an empty repository to a live custom domain with HTTPS in about 14 minutes, without manually editing a single DNS record.\n\nThe post How GitHub Copilot enables zero DNS configuration for GitHub Pages appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "GitHub Copilot CLI",
+    "GitHub Pages"
+   ],
+   "tech_stack": [
+    "HTML"
+   ],
+   "categories": [
+    "프론트엔드"
+   ],
+   "lang": "en",
+   "content_id": "c2a416d6e7faf313"
   },
   {
    "key": "cloudflare",

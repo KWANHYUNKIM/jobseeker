@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-09T00:15:39",
+  "generated_at": "2026-07-09T01:56:50",
   "source": "youtube",
   "tech_count": 178,
   "curriculum_count": 20,
@@ -3029,68 +3029,6 @@
         "stage": "실전"
       }
     ],
-    "Jenkins": [
-      {
-        "title": "[토크ON세미나] Jenkins를 활용한 CI/CD 1강 - 젠킨스(Jenkins) 이해 | T아카데미",
-        "url": "https://www.youtube.com/watch?v=JPDKLgX5bRg",
-        "thumbnail": "https://i.ytimg.com/vi/JPDKLgX5bRg/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 46438,
-        "length": "23:40",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "🚀 Jenkins 시작하기",
-        "url": "https://www.youtube.com/watch?v=CSlCkCHHLCo",
-        "thumbnail": "https://i.ytimg.com/vi/CSlCkCHHLCo/mqdefault.jpg",
-        "channel": "Kenu Heo",
-        "views": 2704,
-        "length": "55:20",
-        "published": "스트리밍 시간: 2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
-        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
-        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 213589,
-        "length": "7:32",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
-        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
-        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 19634,
-        "length": "23:05",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jenkins를 활용한 CI/CD - 1.4 [실습] Docker를 활용한 Jenkins 설치하기",
-        "url": "https://www.youtube.com/watch?v=FaAdXC1akUU",
-        "thumbnail": "https://i.ytimg.com/vi/FaAdXC1akUU/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 190,
-        "length": "11:59",
-        "published": "2개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Jenkins를 활용한 CI/CD 강의를 만들어 봤습니다!",
-        "url": "https://www.youtube.com/watch?v=n5eSMZre6u0",
-        "thumbnail": "https://i.ytimg.com/vi/n5eSMZre6u0/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 470,
-        "length": "4:44",
-        "published": "2개월 전",
-        "stage": "실전"
-      }
-    ],
     "Oracle": [
       {
         "title": "Oracle 01 - 오라클 시작하기",
@@ -3170,6 +3108,68 @@
         "views": 8826,
         "length": "1:59:07",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Jenkins": [
+      {
+        "title": "[토크ON세미나] Jenkins를 활용한 CI/CD 1강 - 젠킨스(Jenkins) 이해 | T아카데미",
+        "url": "https://www.youtube.com/watch?v=JPDKLgX5bRg",
+        "thumbnail": "https://i.ytimg.com/vi/JPDKLgX5bRg/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 46438,
+        "length": "23:40",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "🚀 Jenkins 시작하기",
+        "url": "https://www.youtube.com/watch?v=CSlCkCHHLCo",
+        "thumbnail": "https://i.ytimg.com/vi/CSlCkCHHLCo/mqdefault.jpg",
+        "channel": "Kenu Heo",
+        "views": 2704,
+        "length": "55:20",
+        "published": "스트리밍 시간: 2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스)",
+        "url": "https://www.youtube.com/watch?v=0Emq5FypiMM",
+        "thumbnail": "https://i.ytimg.com/vi/0Emq5FypiMM/mqdefault.jpg",
+        "channel": "드림코딩",
+        "views": 213589,
+        "length": "7:32",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제대로 이해하는 CI / CD | 개발자필수지식",
+        "url": "https://www.youtube.com/watch?v=KTHZyV9yJGY",
+        "thumbnail": "https://i.ytimg.com/vi/KTHZyV9yJGY/mqdefault.jpg",
+        "channel": "큰돌의터전",
+        "views": 19634,
+        "length": "23:05",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jenkins를 활용한 CI/CD - 1.4 [실습] Docker를 활용한 Jenkins 설치하기",
+        "url": "https://www.youtube.com/watch?v=FaAdXC1akUU",
+        "thumbnail": "https://i.ytimg.com/vi/FaAdXC1akUU/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 190,
+        "length": "11:59",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Jenkins를 활용한 CI/CD 강의를 만들어 봤습니다!",
+        "url": "https://www.youtube.com/watch?v=n5eSMZre6u0",
+        "thumbnail": "https://i.ytimg.com/vi/n5eSMZre6u0/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 470,
+        "length": "4:44",
+        "published": "2개월 전",
         "stage": "실전"
       }
     ],
