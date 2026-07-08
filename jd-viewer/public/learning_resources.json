@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T17:19:09",
+  "generated_at": "2026-07-08T19:01:57",
   "source": "youtube",
   "tech_count": 178,
   "curriculum_count": 20,
@@ -1727,88 +1727,6 @@
         "stage": "핵심"
       }
     ],
-    "PyTorch": [
-      {
-        "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
-        "url": "https://www.youtube.com/watch?v=k60oT_8lyFw",
-        "thumbnail": "https://i.ytimg.com/vi/k60oT_8lyFw/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 130633,
-        "length": "2:52:24",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[PyTorch] 1-1강. 파이토치 기초 (basic) | torch.tensor()와 텐서의 기본 연산",
-        "url": "https://www.youtube.com/watch?v=I6Ri6iNyVPU",
-        "thumbnail": "https://i.ytimg.com/vi/I6Ri6iNyVPU/mqdefault.jpg",
-        "channel": "혁펜하임 | AI & 딥러닝 강의",
-        "views": 11166,
-        "length": "9:41",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이토치(PyTorch) 기초",
-        "url": "https://www.youtube.com/watch?v=C1P7PaIeKvU",
-        "thumbnail": "https://i.ytimg.com/vi/C1P7PaIeKvU/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 33421,
-        "length": "1:29:51",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PyTorch 초보자 기초 튜토리얼 #1",
-        "url": "https://www.youtube.com/watch?v=mpgjF9lgztI",
-        "thumbnail": "https://i.ytimg.com/vi/mpgjF9lgztI/mqdefault.jpg",
-        "channel": "수학 + 프로그래밍 + AI",
-        "views": 29,
-        "length": "53:14",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PyTorch 기초 다지기",
-        "url": "https://www.youtube.com/watch?v=D6yA7ktHbrg",
-        "thumbnail": "https://i.ytimg.com/vi/D6yA7ktHbrg/mqdefault.jpg",
-        "channel": "코드잇",
-        "views": 445,
-        "length": "3:20",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
-        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
-        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
-        "channel": "LG디스플레이 대학생 인플루언서_디플",
-        "views": 20465,
-        "length": "1:30",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Pytorch 입문강의 1편ㅣDeep Learning 실습, torch 설치, Tensor, Attribute, Indexing - [메타코드M]",
-        "url": "https://www.youtube.com/watch?v=oYJVsyapNRc",
-        "thumbnail": "https://i.ytimg.com/vi/oYJVsyapNRc/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 13520,
-        "length": "2:30:54",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[PyTorch] 3-2강. 인공 신경망 학습 예제 코드 10분 완성! | 파이토치 선형 회귀 실습",
-        "url": "https://www.youtube.com/watch?v=WWurhDWEznw",
-        "thumbnail": "https://i.ytimg.com/vi/WWurhDWEznw/mqdefault.jpg",
-        "channel": "혁펜하임 | AI & 딥러닝 강의",
-        "views": 3981,
-        "length": "19:20",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "CSS": [
       {
         "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
@@ -1888,6 +1806,88 @@
         "views": 42995,
         "length": "48:53",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "PyTorch": [
+      {
+        "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
+        "url": "https://www.youtube.com/watch?v=k60oT_8lyFw",
+        "thumbnail": "https://i.ytimg.com/vi/k60oT_8lyFw/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 130633,
+        "length": "2:52:24",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[PyTorch] 1-1강. 파이토치 기초 (basic) | torch.tensor()와 텐서의 기본 연산",
+        "url": "https://www.youtube.com/watch?v=I6Ri6iNyVPU",
+        "thumbnail": "https://i.ytimg.com/vi/I6Ri6iNyVPU/mqdefault.jpg",
+        "channel": "혁펜하임 | AI & 딥러닝 강의",
+        "views": 11166,
+        "length": "9:41",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이토치(PyTorch) 기초",
+        "url": "https://www.youtube.com/watch?v=C1P7PaIeKvU",
+        "thumbnail": "https://i.ytimg.com/vi/C1P7PaIeKvU/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 33421,
+        "length": "1:29:51",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PyTorch 초보자 기초 튜토리얼 #1",
+        "url": "https://www.youtube.com/watch?v=mpgjF9lgztI",
+        "thumbnail": "https://i.ytimg.com/vi/mpgjF9lgztI/mqdefault.jpg",
+        "channel": "수학 + 프로그래밍 + AI",
+        "views": 29,
+        "length": "53:14",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PyTorch 기초 다지기",
+        "url": "https://www.youtube.com/watch?v=D6yA7ktHbrg",
+        "thumbnail": "https://i.ytimg.com/vi/D6yA7ktHbrg/mqdefault.jpg",
+        "channel": "코드잇",
+        "views": 445,
+        "length": "3:20",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
+        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
+        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
+        "channel": "LG디스플레이 대학생 인플루언서_디플",
+        "views": 20465,
+        "length": "1:30",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Pytorch 입문강의 1편ㅣDeep Learning 실습, torch 설치, Tensor, Attribute, Indexing - [메타코드M]",
+        "url": "https://www.youtube.com/watch?v=oYJVsyapNRc",
+        "thumbnail": "https://i.ytimg.com/vi/oYJVsyapNRc/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 13520,
+        "length": "2:30:54",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[PyTorch] 3-2강. 인공 신경망 학습 예제 코드 10분 완성! | 파이토치 선형 회귀 실습",
+        "url": "https://www.youtube.com/watch?v=WWurhDWEznw",
+        "thumbnail": "https://i.ytimg.com/vi/WWurhDWEznw/mqdefault.jpg",
+        "channel": "혁펜하임 | AI & 딥러닝 강의",
+        "views": 3981,
+        "length": "19:20",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -4311,88 +4311,6 @@
         "stage": "실전"
       }
     ],
-    "RabbitMQ": [
-      {
-        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
-        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
-        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 255,
-        "length": "23:09",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
-        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
-        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 22338,
-        "length": "10:22",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] rabbitMQ로 메시지 전달하기",
-        "url": "https://www.youtube.com/watch?v=IvS4pxMsyQA",
-        "thumbnail": "https://i.ytimg.com/vi/IvS4pxMsyQA/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 253,
-        "length": "23:33",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "J208. RabbitMQ + Spring Boot",
-        "url": "https://www.youtube.com/watch?v=80y2C54KPxg",
-        "thumbnail": "https://i.ytimg.com/vi/80y2C54KPxg/mqdefault.jpg",
-        "channel": "Spring",
-        "views": 3194,
-        "length": "33:27",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "메시징시스템과 RabbitMQ",
-        "url": "https://www.youtube.com/watch?v=3hDotjkeUjM",
-        "thumbnail": "https://i.ytimg.com/vi/3hDotjkeUjM/mqdefault.jpg",
-        "channel": "코딩하는오후",
-        "views": 1511,
-        "length": "21:34",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "예비 개발자를 위한 개발 영상 - 010.Rabbit MQ 큐 생성, 메시지 넣고 빼보기",
-        "url": "https://www.youtube.com/watch?v=X_23snldl4U",
-        "thumbnail": "https://i.ytimg.com/vi/X_23snldl4U/mqdefault.jpg",
-        "channel": "개발자 Foo",
-        "views": 7578,
-        "length": "10:23",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "예비 개발자를 위한 개발 영상 - 009.Rabbit MQ 도커로 띄워보기",
-        "url": "https://www.youtube.com/watch?v=KTa0qy4gpjE",
-        "thumbnail": "https://i.ytimg.com/vi/KTa0qy4gpjE/mqdefault.jpg",
-        "channel": "개발자 Foo",
-        "views": 993,
-        "length": "4:20",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "율곡선생 17강 window에 RabbitMQ 미들웨어 설치 및 실행",
-        "url": "https://www.youtube.com/watch?v=rJZ7oKp90b4",
-        "thumbnail": "https://i.ytimg.com/vi/rJZ7oKp90b4/mqdefault.jpg",
-        "channel": "서울IT교육센터온라인강좌TV",
-        "views": 230,
-        "length": "13:26",
-        "published": "2년 전",
-        "stage": "핵심"
-      }
-    ],
     "OpenCV": [
       {
         "title": "OpenCV의 소개 및 기본 사용법 [ Python 데이터 분석과 이미지 처리 ]",
@@ -4473,6 +4391,88 @@
         "length": "1:48:44",
         "published": "9개월 전",
         "stage": "실전"
+      }
+    ],
+    "RabbitMQ": [
+      {
+        "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
+        "url": "https://www.youtube.com/watch?v=3GNFlaeHT3o",
+        "thumbnail": "https://i.ytimg.com/vi/3GNFlaeHT3o/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 255,
+        "length": "23:09",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Message Broker - 카프카와 RabbitMQ를 알아보자",
+        "url": "https://www.youtube.com/watch?v=0lyrd5FlETQ",
+        "thumbnail": "https://i.ytimg.com/vi/0lyrd5FlETQ/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 22338,
+        "length": "10:22",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] rabbitMQ로 메시지 전달하기",
+        "url": "https://www.youtube.com/watch?v=IvS4pxMsyQA",
+        "thumbnail": "https://i.ytimg.com/vi/IvS4pxMsyQA/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 253,
+        "length": "23:33",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "J208. RabbitMQ + Spring Boot",
+        "url": "https://www.youtube.com/watch?v=80y2C54KPxg",
+        "thumbnail": "https://i.ytimg.com/vi/80y2C54KPxg/mqdefault.jpg",
+        "channel": "Spring",
+        "views": 3194,
+        "length": "33:27",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "메시징시스템과 RabbitMQ",
+        "url": "https://www.youtube.com/watch?v=3hDotjkeUjM",
+        "thumbnail": "https://i.ytimg.com/vi/3hDotjkeUjM/mqdefault.jpg",
+        "channel": "코딩하는오후",
+        "views": 1511,
+        "length": "21:34",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "예비 개발자를 위한 개발 영상 - 010.Rabbit MQ 큐 생성, 메시지 넣고 빼보기",
+        "url": "https://www.youtube.com/watch?v=X_23snldl4U",
+        "thumbnail": "https://i.ytimg.com/vi/X_23snldl4U/mqdefault.jpg",
+        "channel": "개발자 Foo",
+        "views": 7578,
+        "length": "10:23",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "예비 개발자를 위한 개발 영상 - 009.Rabbit MQ 도커로 띄워보기",
+        "url": "https://www.youtube.com/watch?v=KTa0qy4gpjE",
+        "thumbnail": "https://i.ytimg.com/vi/KTa0qy4gpjE/mqdefault.jpg",
+        "channel": "개발자 Foo",
+        "views": 993,
+        "length": "4:20",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "율곡선생 17강 window에 RabbitMQ 미들웨어 설치 및 실행",
+        "url": "https://www.youtube.com/watch?v=rJZ7oKp90b4",
+        "thumbnail": "https://i.ytimg.com/vi/rJZ7oKp90b4/mqdefault.jpg",
+        "channel": "서울IT교육센터온라인강좌TV",
+        "views": 230,
+        "length": "13:26",
+        "published": "2년 전",
+        "stage": "핵심"
       }
     ],
     "Ansible": [
@@ -5049,88 +5049,6 @@
         "stage": "실전"
       }
     ],
-    "jQuery": [
-      {
-        "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
-        "url": "https://www.youtube.com/watch?v=047bll8o9To",
-        "thumbnail": "https://i.ytimg.com/vi/047bll8o9To/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 56215,
-        "length": "12:54",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #2 JQuery Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=RL09jOaIbxg",
-        "thumbnail": "https://i.ytimg.com/vi/RL09jOaIbxg/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 473,
-        "length": "8:13:23",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "jQuery를 배워야할까? 5분 개념 정리해드림.",
-        "url": "https://www.youtube.com/watch?v=6FnkGKYK6iQ",
-        "thumbnail": "https://i.ytimg.com/vi/6FnkGKYK6iQ/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 118879,
-        "length": "4:30",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "jQuery | jQuery란 무엇? 그리고 사용하는 기본적인 방법은?",
-        "url": "https://www.youtube.com/watch?v=3P1T3gr-XoI",
-        "thumbnail": "https://i.ytimg.com/vi/3P1T3gr-XoI/mqdefault.jpg",
-        "channel": "혀코 Hyukho",
-        "views": 674,
-        "length": "5:54",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[2022 30분 요약 강좌 시즌 1] jQuery&Ajax - jQuery의 필터",
-        "url": "https://www.youtube.com/watch?v=bqvQr_Zivpg",
-        "thumbnail": "https://i.ytimg.com/vi/bqvQr_Zivpg/mqdefault.jpg",
-        "channel": "제주코딩베이스캠프",
-        "views": 1469,
-        "length": "3:46",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[서기의 jQuery 강의] 1. css에 대해 이해해보자",
-        "url": "https://www.youtube.com/watch?v=eDBLlQhuVW8",
-        "thumbnail": "https://i.ytimg.com/vi/eDBLlQhuVW8/mqdefault.jpg",
-        "channel": "유니다고",
-        "views": 870,
-        "length": "8:55",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JQUERY 강의 PART.1 -  실무에 사용되는 JQUERY 첫번째",
-        "url": "https://www.youtube.com/watch?v=7w28N1LBQBE",
-        "thumbnail": "https://i.ytimg.com/vi/7w28N1LBQBE/mqdefault.jpg",
-        "channel": "사케누",
-        "views": 811,
-        "length": "18:11",
-        "published": "6년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "(ENG SUB)[Javascript 기초와 활용 #1]  완전 쉬운 jQuery로 스타크래프트 만들기?!",
-        "url": "https://www.youtube.com/watch?v=z2Cu7gPMq0w",
-        "thumbnail": "https://i.ytimg.com/vi/z2Cu7gPMq0w/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 174583,
-        "length": "21:58",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     ".NET": [
       {
         "title": "C# .NET 기초강좌,  간단한 TCP 클라이언트/서버(C#동영상/C#강의/C#교육/닷넷교육/C#강좌)",
@@ -5210,6 +5128,88 @@
         "views": 606,
         "length": "10:33",
         "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
+    "jQuery": [
+      {
+        "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
+        "url": "https://www.youtube.com/watch?v=047bll8o9To",
+        "thumbnail": "https://i.ytimg.com/vi/047bll8o9To/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 56215,
+        "length": "12:54",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #2 JQuery Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=RL09jOaIbxg",
+        "thumbnail": "https://i.ytimg.com/vi/RL09jOaIbxg/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 473,
+        "length": "8:13:23",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "jQuery를 배워야할까? 5분 개념 정리해드림.",
+        "url": "https://www.youtube.com/watch?v=6FnkGKYK6iQ",
+        "thumbnail": "https://i.ytimg.com/vi/6FnkGKYK6iQ/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 118879,
+        "length": "4:30",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "jQuery | jQuery란 무엇? 그리고 사용하는 기본적인 방법은?",
+        "url": "https://www.youtube.com/watch?v=3P1T3gr-XoI",
+        "thumbnail": "https://i.ytimg.com/vi/3P1T3gr-XoI/mqdefault.jpg",
+        "channel": "혀코 Hyukho",
+        "views": 674,
+        "length": "5:54",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[2022 30분 요약 강좌 시즌 1] jQuery&Ajax - jQuery의 필터",
+        "url": "https://www.youtube.com/watch?v=bqvQr_Zivpg",
+        "thumbnail": "https://i.ytimg.com/vi/bqvQr_Zivpg/mqdefault.jpg",
+        "channel": "제주코딩베이스캠프",
+        "views": 1469,
+        "length": "3:46",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[서기의 jQuery 강의] 1. css에 대해 이해해보자",
+        "url": "https://www.youtube.com/watch?v=eDBLlQhuVW8",
+        "thumbnail": "https://i.ytimg.com/vi/eDBLlQhuVW8/mqdefault.jpg",
+        "channel": "유니다고",
+        "views": 870,
+        "length": "8:55",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JQUERY 강의 PART.1 -  실무에 사용되는 JQUERY 첫번째",
+        "url": "https://www.youtube.com/watch?v=7w28N1LBQBE",
+        "thumbnail": "https://i.ytimg.com/vi/7w28N1LBQBE/mqdefault.jpg",
+        "channel": "사케누",
+        "views": 811,
+        "length": "18:11",
+        "published": "6년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "(ENG SUB)[Javascript 기초와 활용 #1]  완전 쉬운 jQuery로 스타크래프트 만들기?!",
+        "url": "https://www.youtube.com/watch?v=z2Cu7gPMq0w",
+        "thumbnail": "https://i.ytimg.com/vi/z2Cu7gPMq0w/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 174583,
+        "length": "21:58",
+        "published": "6년 전",
         "stage": "실전"
       }
     ],
@@ -6525,6 +6525,88 @@
         "stage": "핵심"
       }
     ],
+    "Embedded Linux": [
+      {
+        "title": "가장 쉽게 배우는 리눅스! 15분 필살 강좌",
+        "url": "https://www.youtube.com/watch?v=tPWBF13JIVk",
+        "thumbnail": "https://i.ytimg.com/vi/tPWBF13JIVk/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 309773,
+        "length": "15:53",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[설계독학] 2025년 신규 강의 공지! Embedded Linux on zynq & Verilog 기술면접 문제풀이",
+        "url": "https://www.youtube.com/watch?v=qQVlcyKTgXo",
+        "thumbnail": "https://i.ytimg.com/vi/qQVlcyKTgXo/mqdefault.jpg",
+        "channel": "설계독학",
+        "views": 2127,
+        "length": "4:53",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "3- Embedded Linux Customization and Embedded System",
+        "url": "https://www.youtube.com/watch?v=6JVK7pTy67M",
+        "thumbnail": "https://i.ytimg.com/vi/6JVK7pTy67M/mqdefault.jpg",
+        "channel": "Mohamed Abdulaal - Embinux",
+        "views": 3219,
+        "length": "13:58",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Introduction to Debugging Embedded Linux Systems Training Series",
+        "url": "https://www.youtube.com/watch?v=azDLOL9K2hg",
+        "thumbnail": "https://i.ytimg.com/vi/azDLOL9K2hg/mqdefault.jpg",
+        "channel": "Texas Instruments",
+        "views": 980,
+        "length": "2:42",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따배리] 1. Linux 디렉토리 살펴보기",
+        "url": "https://www.youtube.com/watch?v=9roLmjSFfDg",
+        "thumbnail": "https://i.ytimg.com/vi/9roLmjSFfDg/mqdefault.jpg",
+        "channel": "TTABAE-LEARN",
+        "views": 17262,
+        "length": "32:34",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리얼리눅스 무료세미나: ARM아키텍쳐 알아야 하는 이유",
+        "url": "https://www.youtube.com/watch?v=6qK_H0x04OY",
+        "thumbnail": "https://i.ytimg.com/vi/6qK_H0x04OY/mqdefault.jpg",
+        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
+        "views": 8467,
+        "length": "1:26:26",
+        "published": "스트리밍 시간: 5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리눅스 우분투, 네트워크 추천강의 교육안내",
+        "url": "https://www.youtube.com/watch?v=b61e3g72wX4",
+        "thumbnail": "https://i.ytimg.com/vi/b61e3g72wX4/mqdefault.jpg",
+        "channel": "Algio Joseph",
+        "views": 1096,
+        "length": "2:53",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[임베디드 리눅스]  취준생: 시스템 개발자가 되기 위해 어떤 실무 지식을 알아야 할까?",
+        "url": "https://www.youtube.com/watch?v=poTg10-ozD4",
+        "thumbnail": "https://i.ytimg.com/vi/poTg10-ozD4/mqdefault.jpg",
+        "channel": "Austin Kim",
+        "views": 5381,
+        "length": "23:58",
+        "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
     "HuggingFace": [
       {
         "title": "HuggingFace 처음이라면? 🤗 허깅페이스로 할 수 있는 일?분류, 번역, 요약, 개체명인식, 마스크채우기.. 그리고 또 뭐가 있더라? 트랜스포머 모델 활용법",
@@ -6687,88 +6769,6 @@
         "length": "1:08:19",
         "published": "2년 전",
         "stage": "핵심"
-      }
-    ],
-    "Embedded Linux": [
-      {
-        "title": "가장 쉽게 배우는 리눅스! 15분 필살 강좌",
-        "url": "https://www.youtube.com/watch?v=tPWBF13JIVk",
-        "thumbnail": "https://i.ytimg.com/vi/tPWBF13JIVk/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 309773,
-        "length": "15:53",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[설계독학] 2025년 신규 강의 공지! Embedded Linux on zynq & Verilog 기술면접 문제풀이",
-        "url": "https://www.youtube.com/watch?v=qQVlcyKTgXo",
-        "thumbnail": "https://i.ytimg.com/vi/qQVlcyKTgXo/mqdefault.jpg",
-        "channel": "설계독학",
-        "views": 2127,
-        "length": "4:53",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "3- Embedded Linux Customization and Embedded System",
-        "url": "https://www.youtube.com/watch?v=6JVK7pTy67M",
-        "thumbnail": "https://i.ytimg.com/vi/6JVK7pTy67M/mqdefault.jpg",
-        "channel": "Mohamed Abdulaal - Embinux",
-        "views": 3219,
-        "length": "13:58",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Introduction to Debugging Embedded Linux Systems Training Series",
-        "url": "https://www.youtube.com/watch?v=azDLOL9K2hg",
-        "thumbnail": "https://i.ytimg.com/vi/azDLOL9K2hg/mqdefault.jpg",
-        "channel": "Texas Instruments",
-        "views": 980,
-        "length": "2:42",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따배리] 1. Linux 디렉토리 살펴보기",
-        "url": "https://www.youtube.com/watch?v=9roLmjSFfDg",
-        "thumbnail": "https://i.ytimg.com/vi/9roLmjSFfDg/mqdefault.jpg",
-        "channel": "TTABAE-LEARN",
-        "views": 17262,
-        "length": "32:34",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리얼리눅스 무료세미나: ARM아키텍쳐 알아야 하는 이유",
-        "url": "https://www.youtube.com/watch?v=6qK_H0x04OY",
-        "thumbnail": "https://i.ytimg.com/vi/6qK_H0x04OY/mqdefault.jpg",
-        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
-        "views": 8467,
-        "length": "1:26:26",
-        "published": "스트리밍 시간: 5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리눅스 우분투, 네트워크 추천강의 교육안내",
-        "url": "https://www.youtube.com/watch?v=b61e3g72wX4",
-        "thumbnail": "https://i.ytimg.com/vi/b61e3g72wX4/mqdefault.jpg",
-        "channel": "Algio Joseph",
-        "views": 1096,
-        "length": "2:53",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[임베디드 리눅스]  취준생: 시스템 개발자가 되기 위해 어떤 실무 지식을 알아야 할까?",
-        "url": "https://www.youtube.com/watch?v=poTg10-ozD4",
-        "thumbnail": "https://i.ytimg.com/vi/poTg10-ozD4/mqdefault.jpg",
-        "channel": "Austin Kim",
-        "views": 5381,
-        "length": "23:58",
-        "published": "5년 전",
-        "stage": "실전"
       }
     ],
     "Dart": [
@@ -7427,6 +7427,88 @@
         "stage": "실전"
       }
     ],
+    "MCU": [
+      {
+        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
+        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
+        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
+        "channel": "임땡겸(전자컴퓨터)",
+        "views": 9856,
+        "length": "11:30",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU SW 개발 입문자를 위한 필수 기초 지식 -2.MCU 개요 소개",
+        "url": "https://www.youtube.com/watch?v=DG7Ou4vOWRw",
+        "thumbnail": "https://i.ytimg.com/vi/DG7Ou4vOWRw/mqdefault.jpg",
+        "channel": "존버매니아",
+        "views": 190,
+        "length": "6:38",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "mcu 기초이론 제1강 전기의 이해",
+        "url": "https://www.youtube.com/watch?v=JqiMNdwtXPY",
+        "thumbnail": "https://i.ytimg.com/vi/JqiMNdwtXPY/mqdefault.jpg",
+        "channel": "전기자동차 기초에서 실무까지",
+        "views": 443,
+        "length": "29:48",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU SW 개발 입문자를 위한 필수 기초 지식 - 1.강의 소개",
+        "url": "https://www.youtube.com/watch?v=g8p03qhUGLk",
+        "thumbnail": "https://i.ytimg.com/vi/g8p03qhUGLk/mqdefault.jpg",
+        "channel": "존버매니아",
+        "views": 180,
+        "length": "4:25",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[임베디드 기초 뿌수기 강좌 1-4] MCU의 다양한 기능을 지원하는 입출력 모듈",
+        "url": "https://www.youtube.com/watch?v=fo-RkdWWF8g",
+        "thumbnail": "https://i.ytimg.com/vi/fo-RkdWWF8g/mqdefault.jpg",
+        "channel": "임땡겸(전자컴퓨터)",
+        "views": 1589,
+        "length": "17:20",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
+        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
+        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 2645,
+        "length": "8:19",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[강의 미리보기] 스마트폰은 도대체 어떻게 설계하는걸까? (MCU vs AP급 SoC 보드)",
+        "url": "https://www.youtube.com/watch?v=SkvT5oPxXAs",
+        "thumbnail": "https://i.ytimg.com/vi/SkvT5oPxXAs/mqdefault.jpg",
+        "channel": "회로설계 멘토 삼코치",
+        "views": 6059,
+        "length": "11:14",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1달러 MCU가 AI를 90배 빠르게 돌린다 — 하드웨어의 판이 바뀌고 있다",
+        "url": "https://www.youtube.com/watch?v=jxo5po73W5o",
+        "thumbnail": "https://i.ytimg.com/vi/jxo5po73W5o/mqdefault.jpg",
+        "channel": "AI-Craft",
+        "views": 6198,
+        "length": "7:44",
+        "published": "3개월 전",
+        "stage": "핵심"
+      }
+    ],
     "Firebase": [
       {
         "title": "서버지식없이 당근마켓 만드는 법 (Firebase로 만드는 당근마켓 2시간컷)",
@@ -7837,88 +7919,6 @@
         "stage": "실전"
       }
     ],
-    "MCU": [
-      {
-        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
-        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
-        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
-        "channel": "임땡겸(전자컴퓨터)",
-        "views": 9856,
-        "length": "11:30",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU SW 개발 입문자를 위한 필수 기초 지식 -2.MCU 개요 소개",
-        "url": "https://www.youtube.com/watch?v=DG7Ou4vOWRw",
-        "thumbnail": "https://i.ytimg.com/vi/DG7Ou4vOWRw/mqdefault.jpg",
-        "channel": "존버매니아",
-        "views": 190,
-        "length": "6:38",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "mcu 기초이론 제1강 전기의 이해",
-        "url": "https://www.youtube.com/watch?v=JqiMNdwtXPY",
-        "thumbnail": "https://i.ytimg.com/vi/JqiMNdwtXPY/mqdefault.jpg",
-        "channel": "전기자동차 기초에서 실무까지",
-        "views": 443,
-        "length": "29:48",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU SW 개발 입문자를 위한 필수 기초 지식 - 1.강의 소개",
-        "url": "https://www.youtube.com/watch?v=g8p03qhUGLk",
-        "thumbnail": "https://i.ytimg.com/vi/g8p03qhUGLk/mqdefault.jpg",
-        "channel": "존버매니아",
-        "views": 180,
-        "length": "4:25",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[임베디드 기초 뿌수기 강좌 1-4] MCU의 다양한 기능을 지원하는 입출력 모듈",
-        "url": "https://www.youtube.com/watch?v=fo-RkdWWF8g",
-        "thumbnail": "https://i.ytimg.com/vi/fo-RkdWWF8g/mqdefault.jpg",
-        "channel": "임땡겸(전자컴퓨터)",
-        "views": 1589,
-        "length": "17:20",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
-        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
-        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 2645,
-        "length": "8:19",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의 미리보기] 스마트폰은 도대체 어떻게 설계하는걸까? (MCU vs AP급 SoC 보드)",
-        "url": "https://www.youtube.com/watch?v=SkvT5oPxXAs",
-        "thumbnail": "https://i.ytimg.com/vi/SkvT5oPxXAs/mqdefault.jpg",
-        "channel": "회로설계 멘토 삼코치",
-        "views": 6059,
-        "length": "11:14",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1달러 MCU가 AI를 90배 빠르게 돌린다 — 하드웨어의 판이 바뀌고 있다",
-        "url": "https://www.youtube.com/watch?v=jxo5po73W5o",
-        "thumbnail": "https://i.ytimg.com/vi/jxo5po73W5o/mqdefault.jpg",
-        "channel": "AI-Craft",
-        "views": 6198,
-        "length": "7:44",
-        "published": "3개월 전",
-        "stage": "핵심"
-      }
-    ],
     "Cypress": [
       {
         "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
@@ -8083,6 +8083,88 @@
         "stage": "실전"
       }
     ],
+    "Firmware": [
+      {
+        "title": "마이컴 펌웨어(FirmWare) 기초개념",
+        "url": "https://www.youtube.com/watch?v=dRL3rTYSc4k",
+        "thumbnail": "https://i.ytimg.com/vi/dRL3rTYSc4k/mqdefault.jpg",
+        "channel": "아이엠솔더",
+        "views": 46813,
+        "length": "6:16",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU Firmware를 간단하게 재설계 해보자 {no.97}",
+        "url": "https://www.youtube.com/watch?v=huJpyF4oDnU",
+        "thumbnail": "https://i.ytimg.com/vi/huJpyF4oDnU/mqdefault.jpg",
+        "channel": "SEMONAN",
+        "views": 531,
+        "length": "1:18",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "펌웨어 개발자, 웹-앱 디자이너 구합니다.",
+        "url": "https://www.youtube.com/watch?v=w9LyZE7G-KY",
+        "thumbnail": "https://i.ytimg.com/vi/w9LyZE7G-KY/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 2644,
+        "length": "12:22",
+        "published": "스트리밍 시간: 3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "펌웨어 - 부트로더/펌웨어 실행방법",
+        "url": "https://www.youtube.com/watch?v=kdiXoxmikzY",
+        "thumbnail": "https://i.ytimg.com/vi/kdiXoxmikzY/mqdefault.jpg",
+        "channel": "Baram",
+        "views": 4606,
+        "length": "30:00",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C언어로 펌웨어, 윈도우 프로그램을 만든다구? 닷넷은 또 뭐고?",
+        "url": "https://www.youtube.com/watch?v=hBinYsjsuJs",
+        "thumbnail": "https://i.ytimg.com/vi/hBinYsjsuJs/mqdefault.jpg",
+        "channel": "Physical AI Lab. 깹TV",
+        "views": 6322,
+        "length": "14:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[STEP] 시스템 소프트웨어 펌웨어 구현",
+        "url": "https://www.youtube.com/watch?v=rHi9s9No4yw",
+        "thumbnail": "https://i.ytimg.com/vi/rHi9s9No4yw/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 1218,
+        "length": "6:20",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[이것]이 가능한 펌웨어 개발자 구합니다.",
+        "url": "https://www.youtube.com/watch?v=gYzP0HDfRcs",
+        "thumbnail": "https://i.ytimg.com/vi/gYzP0HDfRcs/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 7090,
+        "length": "13:20",
+        "published": "스트리밍 시간: 3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "STM32C0316-DK 펌웨어 강좌 #18 - CLI 완성",
+        "url": "https://www.youtube.com/watch?v=eWg9cd6x3lw",
+        "thumbnail": "https://i.ytimg.com/vi/eWg9cd6x3lw/mqdefault.jpg",
+        "channel": "Baram",
+        "views": 1424,
+        "length": "55:15",
+        "published": "3년 전",
+        "stage": "핵심"
+      }
+    ],
     "Svelte": [
       {
         "title": "2024 Svelte 강좌 한방에 몰아보기 - 2시간 정주행",
@@ -8245,88 +8327,6 @@
         "length": "18:23",
         "published": "1년 전",
         "stage": "실전"
-      }
-    ],
-    "Firmware": [
-      {
-        "title": "마이컴 펌웨어(FirmWare) 기초개념",
-        "url": "https://www.youtube.com/watch?v=dRL3rTYSc4k",
-        "thumbnail": "https://i.ytimg.com/vi/dRL3rTYSc4k/mqdefault.jpg",
-        "channel": "아이엠솔더",
-        "views": 46813,
-        "length": "6:16",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU Firmware를 간단하게 재설계 해보자 {no.97}",
-        "url": "https://www.youtube.com/watch?v=huJpyF4oDnU",
-        "thumbnail": "https://i.ytimg.com/vi/huJpyF4oDnU/mqdefault.jpg",
-        "channel": "SEMONAN",
-        "views": 531,
-        "length": "1:18",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "펌웨어 개발자, 웹-앱 디자이너 구합니다.",
-        "url": "https://www.youtube.com/watch?v=w9LyZE7G-KY",
-        "thumbnail": "https://i.ytimg.com/vi/w9LyZE7G-KY/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 2644,
-        "length": "12:22",
-        "published": "스트리밍 시간: 3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "펌웨어 - 부트로더/펌웨어 실행방법",
-        "url": "https://www.youtube.com/watch?v=kdiXoxmikzY",
-        "thumbnail": "https://i.ytimg.com/vi/kdiXoxmikzY/mqdefault.jpg",
-        "channel": "Baram",
-        "views": 4606,
-        "length": "30:00",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C언어로 펌웨어, 윈도우 프로그램을 만든다구? 닷넷은 또 뭐고?",
-        "url": "https://www.youtube.com/watch?v=hBinYsjsuJs",
-        "thumbnail": "https://i.ytimg.com/vi/hBinYsjsuJs/mqdefault.jpg",
-        "channel": "Physical AI Lab. 깹TV",
-        "views": 6322,
-        "length": "14:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[STEP] 시스템 소프트웨어 펌웨어 구현",
-        "url": "https://www.youtube.com/watch?v=rHi9s9No4yw",
-        "thumbnail": "https://i.ytimg.com/vi/rHi9s9No4yw/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 1218,
-        "length": "6:20",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[이것]이 가능한 펌웨어 개발자 구합니다.",
-        "url": "https://www.youtube.com/watch?v=gYzP0HDfRcs",
-        "thumbnail": "https://i.ytimg.com/vi/gYzP0HDfRcs/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 7090,
-        "length": "13:20",
-        "published": "스트리밍 시간: 3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "STM32C0316-DK 펌웨어 강좌 #18 - CLI 완성",
-        "url": "https://www.youtube.com/watch?v=eWg9cd6x3lw",
-        "thumbnail": "https://i.ytimg.com/vi/eWg9cd6x3lw/mqdefault.jpg",
-        "channel": "Baram",
-        "views": 1424,
-        "length": "55:15",
-        "published": "3년 전",
-        "stage": "핵심"
       }
     ],
     "NLP": [
@@ -11589,6 +11589,88 @@
         "stage": "실전"
       }
     ],
+    "WebRTC": [
+      {
+        "title": "WebRTC? WebSockets? 5분 개념정리!",
+        "url": "https://www.youtube.com/watch?v=5EhsjtBE7I4",
+        "thumbnail": "https://i.ytimg.com/vi/5EhsjtBE7I4/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 69436,
+        "length": "6:57",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "WebRTC - 클라이언트끼리 소통하기",
+        "url": "https://www.youtube.com/watch?v=bWcNEk0H4Y0",
+        "thumbnail": "https://i.ytimg.com/vi/bWcNEk0H4Y0/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 14025,
+        "length": "8:38",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "WebRTC를 활용한 안심콜 개발기 #우아콘2024 #우아한형제들",
+        "url": "https://www.youtube.com/watch?v=mSpaws5bDTc",
+        "thumbnail": "https://i.ytimg.com/vi/mSpaws5bDTc/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1997,
+        "length": "54:50",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "알고 있으면 너무 좋은 프론트엔드 웹 기술 : WebRTC",
+        "url": "https://www.youtube.com/watch?v=mojydI8Enqw",
+        "thumbnail": "https://i.ytimg.com/vi/mojydI8Enqw/mqdefault.jpg",
+        "channel": "GIS DEVELOPER",
+        "views": 837,
+        "length": "44:58",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "12.  WebRTC기반 블록체인 - 최성원 대표 (SuperTree)",
+        "url": "https://www.youtube.com/watch?v=D_qUCR9FWOM",
+        "thumbnail": "https://i.ytimg.com/vi/D_qUCR9FWOM/mqdefault.jpg",
+        "channel": "rtckorea",
+        "views": 207,
+        "length": "27:18",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "WebRTC 기반 게임 리모트 플레이: 실시간 커뮤니케이션 서비스를 위한 WebRTC / if(kakao)2022",
+        "url": "https://www.youtube.com/watch?v=8jryUH6xmjU",
+        "thumbnail": "https://i.ytimg.com/vi/8jryUH6xmjU/mqdefault.jpg",
+        "channel": "kakao tech",
+        "views": 7541,
+        "length": "23:17",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "구글은 실패했지만 커서 AI는 해낼까? WebRTC 화상회의 30분 컷 도전기",
+        "url": "https://www.youtube.com/watch?v=QFW_RNMhKaA",
+        "thumbnail": "https://i.ytimg.com/vi/QFW_RNMhKaA/mqdefault.jpg",
+        "channel": "바이브랩스",
+        "views": 1852,
+        "length": "9:59",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "WebRTC - 웹개발입문 심화편 09화",
+        "url": "https://www.youtube.com/watch?v=qXkOPXFK3fg",
+        "thumbnail": "https://i.ytimg.com/vi/qXkOPXFK3fg/mqdefault.jpg",
+        "channel": "코딩아재",
+        "views": 3578,
+        "length": "6:43",
+        "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
     "Mocha": [
       {
         "title": "Mocha  Beginners",
@@ -12243,88 +12325,6 @@
         "length": "16:55",
         "published": "3년 전",
         "stage": "핵심"
-      }
-    ],
-    "WebRTC": [
-      {
-        "title": "WebRTC? WebSockets? 5분 개념정리!",
-        "url": "https://www.youtube.com/watch?v=5EhsjtBE7I4",
-        "thumbnail": "https://i.ytimg.com/vi/5EhsjtBE7I4/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 69436,
-        "length": "6:57",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "WebRTC - 클라이언트끼리 소통하기",
-        "url": "https://www.youtube.com/watch?v=bWcNEk0H4Y0",
-        "thumbnail": "https://i.ytimg.com/vi/bWcNEk0H4Y0/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 14025,
-        "length": "8:38",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "WebRTC를 활용한 안심콜 개발기 #우아콘2024 #우아한형제들",
-        "url": "https://www.youtube.com/watch?v=mSpaws5bDTc",
-        "thumbnail": "https://i.ytimg.com/vi/mSpaws5bDTc/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1997,
-        "length": "54:50",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "알고 있으면 너무 좋은 프론트엔드 웹 기술 : WebRTC",
-        "url": "https://www.youtube.com/watch?v=mojydI8Enqw",
-        "thumbnail": "https://i.ytimg.com/vi/mojydI8Enqw/mqdefault.jpg",
-        "channel": "GIS DEVELOPER",
-        "views": 837,
-        "length": "44:58",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "12.  WebRTC기반 블록체인 - 최성원 대표 (SuperTree)",
-        "url": "https://www.youtube.com/watch?v=D_qUCR9FWOM",
-        "thumbnail": "https://i.ytimg.com/vi/D_qUCR9FWOM/mqdefault.jpg",
-        "channel": "rtckorea",
-        "views": 207,
-        "length": "27:18",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "WebRTC 기반 게임 리모트 플레이: 실시간 커뮤니케이션 서비스를 위한 WebRTC / if(kakao)2022",
-        "url": "https://www.youtube.com/watch?v=8jryUH6xmjU",
-        "thumbnail": "https://i.ytimg.com/vi/8jryUH6xmjU/mqdefault.jpg",
-        "channel": "kakao tech",
-        "views": 7541,
-        "length": "23:17",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "구글은 실패했지만 커서 AI는 해낼까? WebRTC 화상회의 30분 컷 도전기",
-        "url": "https://www.youtube.com/watch?v=QFW_RNMhKaA",
-        "thumbnail": "https://i.ytimg.com/vi/QFW_RNMhKaA/mqdefault.jpg",
-        "channel": "바이브랩스",
-        "views": 1852,
-        "length": "9:59",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "WebRTC - 웹개발입문 심화편 09화",
-        "url": "https://www.youtube.com/watch?v=qXkOPXFK3fg",
-        "thumbnail": "https://i.ytimg.com/vi/qXkOPXFK3fg/mqdefault.jpg",
-        "channel": "코딩아재",
-        "views": 3578,
-        "length": "6:43",
-        "published": "3년 전",
-        "stage": "실전"
       }
     ],
     "VM웨어": [

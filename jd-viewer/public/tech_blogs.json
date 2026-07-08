@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-08T17:09:58",
- "total": 905,
+ "generated_at": "2026-07-08T19:01:24",
+ "total": 906,
  "sources": [
   {
    "company": "Etsy",
@@ -33,6 +33,11 @@
    "count": 35
   },
   {
+   "company": "네이버 D2",
+   "country": "KR",
+   "count": 33
+  },
+  {
    "company": "GitHub",
    "country": "US",
    "count": 33
@@ -41,11 +46,6 @@
    "company": "Discord",
    "country": "US",
    "count": 33
-  },
-  {
-   "company": "네이버 D2",
-   "country": "KR",
-   "count": 32
   },
   {
    "company": "DeNA",
@@ -252,9 +252,9 @@
   "Rails": "백엔드",
   "Claude": "LLM/생성형",
   "Computer Vision": "AI/ML",
-  "A/B Test": "협업/도구",
-  "Elasticsearch": "데이터베이스",
   "Vite": "프론트엔드",
+  "Elasticsearch": "데이터베이스",
+  "A/B Test": "협업/도구",
   "Qdrant": "데이터베이스",
   "Kubernetes": "인프라/클라우드",
   "Svelte": "프론트엔드",
@@ -363,9 +363,9 @@
   "Vercel": "인프라/클라우드",
   "Virtualization": "시스템/OS",
   "Event Sourcing": "알고리즘/이론",
-  "Embedding": "LLM/생성형",
-  "Git": "협업/도구",
   "React Native": "모바일",
+  "Git": "협업/도구",
+  "Embedding": "LLM/생성형",
   "DirectX": "그래픽/게임",
   "RAG": "LLM/생성형",
   "systemd": "시스템/OS",
@@ -403,8 +403,8 @@
   "AutoML": "AI/ML",
   "AWS": "인프라/클라우드",
   "Jetpack Compose": "모바일",
-  "IoT": "펌웨어/임베디드",
   "JavaScript": "언어",
+  "IoT": "펌웨어/임베디드",
   "Confluence": "협업/도구",
   "SwiftUI": "모바일",
   "GitOps": "인프라/클라우드",
@@ -500,8 +500,8 @@
   "CNN": "AI/ML",
   "APM": "관측성",
   "Oracle": "데이터베이스",
-  "Monorepo": "협업/도구",
   "File System": "시스템/OS",
+  "Monorepo": "협업/도구",
   "Distributed Tracing": "관측성",
   "Express": "백엔드",
   "Shader": "그래픽/게임",
@@ -519,6 +519,44 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "FE News 26년 7월 소식을 전해드립니다.",
+   "url": "https://d2.naver.com/news/7560502",
+   "published": "2026-07-08",
+   "published_ts": 1783533140.0,
+   "summary": "주요소식\n\n26년 6월 소식에서는 다음과 같은 유용한 정보들을 만나보실 수 있습니다.\n\nTypeScript 7.0 RC\n\nGo로 재작성된 네이티브 컴파일러를 탑재한 TypeScript 7.0의 릴리스 후보(RC)가 공개되었다. 기존 타입 체크 로직과 구조를 그대로 유지한 채 포팅해 6.0보다 약 10배 빠르며, Bloomberg, Figma, Google, Slack, Vercel 등 여러 기업의 팀과 프리릴리스 빌드를 테스트해 왔다. 향후 한 달 내 정식 릴리스될 예정으로, 대규모 코드베이스에서 타입 체크와 빌드 속도로 고생해 온 팀이라면 미리 검증해 볼 가치가 있다.\n\nShip the policy, not the code\n\n프런트엔드와 백엔드처럼 별도로 배포되는 두 시스템에 동일한 비즈니스 규칙을 구현할 때 발생하는 코드 중복과 불일치 문제를 다룬다. 백엔드가 \"allowedActions\": [\"CANCEL\"] 같은 결정값을 내려보내거나, CASL이나 JSON Schema 같은 표준 형식으로 정책 자체를 데이터로 직렬화해 전송하는 방안을 제시한다. 마이크로서비스나 BFF 구조에서 규칙 일관성을 고민하는 개발자에게 실용적인 관점을 제공한다.\n\nGetting…",
+   "tags": [
+    "news"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "TypeScript",
+    "Next.js",
+    "React",
+    "Vite",
+    "React Native",
+    "Claude",
+    "Vercel",
+    "File System",
+    "Security",
+    "Figma"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "모바일",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "시스템/OS",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "ko",
+   "content_id": "ba209adf7f06caff"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",
