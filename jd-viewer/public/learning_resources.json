@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-09T03:38:10",
+  "generated_at": "2026-07-09T05:22:24",
   "source": "youtube",
   "tech_count": 178,
   "curriculum_count": 20,
@@ -1973,88 +1973,6 @@
         "stage": "핵심"
       }
     ],
-    "FastAPI": [
-      {
-        "title": "FastAPI 강의 (1) : 시작해보기",
-        "url": "https://www.youtube.com/watch?v=Iub7-ZhEScw",
-        "thumbnail": "https://i.ytimg.com/vi/Iub7-ZhEScw/mqdefault.jpg",
-        "channel": "놀자코딩",
-        "views": 12300,
-        "length": "12:04",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "비전공자를 위한 FastAPI 백엔드 서버 기초 | 비전공자도 가능한 FastAPI 웹서버 구축 [와우내일배움카드]",
-        "url": "https://www.youtube.com/watch?v=0AXUP_Xbh_A",
-        "thumbnail": "https://i.ytimg.com/vi/0AXUP_Xbh_A/mqdefault.jpg",
-        "channel": "와우패스",
-        "views": 716,
-        "length": "35:09",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "FastAPI (1/3) : uv 로 시작하기",
-        "url": "https://www.youtube.com/watch?v=6merMwBvg6A",
-        "thumbnail": "https://i.ytimg.com/vi/6merMwBvg6A/mqdefault.jpg",
-        "channel": "놀자코딩",
-        "views": 3740,
-        "length": "18:35",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "느슨해진 백엔드씬에 긴장감을 주는 FastAPI 프레임워크",
-        "url": "https://www.youtube.com/watch?v=5A67mQ2Pt9s",
-        "thumbnail": "https://i.ytimg.com/vi/5A67mQ2Pt9s/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 166474,
-        "length": "7:34",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Django vs FastAPI 차이점 | CGI부터 WSGI, ASGI까지",
-        "url": "https://www.youtube.com/watch?v=1BDV1PpByG8",
-        "thumbnail": "https://i.ytimg.com/vi/1BDV1PpByG8/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3282,
-        "length": "20:34",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "FastAPI의 장단점과 장고와 차이점 비교",
-        "url": "https://www.youtube.com/watch?v=KGlr8Adw858",
-        "thumbnail": "https://i.ytimg.com/vi/KGlr8Adw858/mqdefault.jpg",
-        "channel": "Nova AI",
-        "views": 15217,
-        "length": "5:13",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[PyCon Korea 2025] 초짜 파이썬 개발자가 FastAPI로 서비스 만들면서 겪은 좌충우돌 삽질기 - 김대현",
-        "url": "https://www.youtube.com/watch?v=wjGCBcGXfgs",
-        "thumbnail": "https://i.ytimg.com/vi/wjGCBcGXfgs/mqdefault.jpg",
-        "channel": "PyCon Korea",
-        "views": 1573,
-        "length": "30:45",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "FastAPI 실전편(1강) - FastAPI로 웹 서버를 만들고 싶다면?",
-        "url": "https://www.youtube.com/watch?v=7ll9UoGU-zM",
-        "thumbnail": "https://i.ytimg.com/vi/7ll9UoGU-zM/mqdefault.jpg",
-        "channel": "제주코딩베이스캠프",
-        "views": 1025,
-        "length": "3:21",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Android": [
       {
         "title": "안드로이드NDK 기초 강의 10시간 몰아보기 이걸로 끝! #1 AndroidNDK Basics Tutorial",
@@ -2135,6 +2053,88 @@
         "length": "13:41",
         "published": "3년 전",
         "stage": "핵심"
+      }
+    ],
+    "FastAPI": [
+      {
+        "title": "FastAPI 강의 (1) : 시작해보기",
+        "url": "https://www.youtube.com/watch?v=Iub7-ZhEScw",
+        "thumbnail": "https://i.ytimg.com/vi/Iub7-ZhEScw/mqdefault.jpg",
+        "channel": "놀자코딩",
+        "views": 12300,
+        "length": "12:04",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "비전공자를 위한 FastAPI 백엔드 서버 기초 | 비전공자도 가능한 FastAPI 웹서버 구축 [와우내일배움카드]",
+        "url": "https://www.youtube.com/watch?v=0AXUP_Xbh_A",
+        "thumbnail": "https://i.ytimg.com/vi/0AXUP_Xbh_A/mqdefault.jpg",
+        "channel": "와우패스",
+        "views": 716,
+        "length": "35:09",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "FastAPI (1/3) : uv 로 시작하기",
+        "url": "https://www.youtube.com/watch?v=6merMwBvg6A",
+        "thumbnail": "https://i.ytimg.com/vi/6merMwBvg6A/mqdefault.jpg",
+        "channel": "놀자코딩",
+        "views": 3740,
+        "length": "18:35",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "느슨해진 백엔드씬에 긴장감을 주는 FastAPI 프레임워크",
+        "url": "https://www.youtube.com/watch?v=5A67mQ2Pt9s",
+        "thumbnail": "https://i.ytimg.com/vi/5A67mQ2Pt9s/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 166474,
+        "length": "7:34",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Django vs FastAPI 차이점 | CGI부터 WSGI, ASGI까지",
+        "url": "https://www.youtube.com/watch?v=1BDV1PpByG8",
+        "thumbnail": "https://i.ytimg.com/vi/1BDV1PpByG8/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3282,
+        "length": "20:34",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "FastAPI의 장단점과 장고와 차이점 비교",
+        "url": "https://www.youtube.com/watch?v=KGlr8Adw858",
+        "thumbnail": "https://i.ytimg.com/vi/KGlr8Adw858/mqdefault.jpg",
+        "channel": "Nova AI",
+        "views": 15217,
+        "length": "5:13",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[PyCon Korea 2025] 초짜 파이썬 개발자가 FastAPI로 서비스 만들면서 겪은 좌충우돌 삽질기 - 김대현",
+        "url": "https://www.youtube.com/watch?v=wjGCBcGXfgs",
+        "thumbnail": "https://i.ytimg.com/vi/wjGCBcGXfgs/mqdefault.jpg",
+        "channel": "PyCon Korea",
+        "views": 1573,
+        "length": "30:45",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "FastAPI 실전편(1강) - FastAPI로 웹 서버를 만들고 싶다면?",
+        "url": "https://www.youtube.com/watch?v=7ll9UoGU-zM",
+        "thumbnail": "https://i.ytimg.com/vi/7ll9UoGU-zM/mqdefault.jpg",
+        "channel": "제주코딩베이스캠프",
+        "views": 1025,
+        "length": "3:21",
+        "published": "1년 전",
+        "stage": "실전"
       }
     ],
     "Kafka": [
@@ -2455,88 +2455,6 @@
         "stage": "핵심"
       }
     ],
-    "Jira": [
-      {
-        "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
-        "url": "https://www.youtube.com/watch?v=b5PL4iYfzEU",
-        "thumbnail": "https://i.ytimg.com/vi/b5PL4iYfzEU/mqdefault.jpg",
-        "channel": "일맛",
-        "views": 11641,
-        "length": "9:14",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자 잡일, 이제 AI가 다 합니다 Claude Code + Jira",
-        "url": "https://www.youtube.com/watch?v=US3SpMT0syA",
-        "thumbnail": "https://i.ytimg.com/vi/US3SpMT0syA/mqdefault.jpg",
-        "channel": "딩코딩코 및 인프런 inflearn",
-        "views": 10838,
-        "length": "9:52",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
-        "url": "https://www.youtube.com/watch?v=rjxPQaUIowM",
-        "thumbnail": "https://i.ytimg.com/vi/rjxPQaUIowM/mqdefault.jpg",
-        "channel": "Learning by Doing (러닝바이두잉)",
-        "views": 9550,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
-        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
-        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
-        "channel": "colicelab",
-        "views": 1145,
-        "length": "5:03",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인생 효율 2배로 늘리는 법 - (Jira 활용)",
-        "url": "https://www.youtube.com/watch?v=QZHSTIWDTC8",
-        "thumbnail": "https://i.ytimg.com/vi/QZHSTIWDTC8/mqdefault.jpg",
-        "channel": "라매개발자",
-        "views": 39763,
-        "length": "7:13",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, Confluence 와 AI가 만나면? [세미남700@토크아이티,  박정광매니저/오픈소스컨설팅, 아틀라시안]",
-        "url": "https://www.youtube.com/watch?v=0U6OY0RDB5g",
-        "thumbnail": "https://i.ytimg.com/vi/0U6OY0RDB5g/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 923,
-        "length": "6:33",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, 너 내 동료가 되라! - 2강 Jira 설치 및 설정",
-        "url": "https://www.youtube.com/watch?v=afUZB_IOze0",
-        "thumbnail": "https://i.ytimg.com/vi/afUZB_IOze0/mqdefault.jpg",
-        "channel": "Learning by Doing (러닝바이두잉)",
-        "views": 4029,
-        "length": "8:20",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira 사용법 : 초보자를 위한 Atlassian Jira 튜토리얼 (애자일 프로젝트 관리) /Jira 무료 강의 (아틀라시안 지라)",
-        "url": "https://www.youtube.com/watch?v=Vwa7BQ6WFYw",
-        "thumbnail": "https://i.ytimg.com/vi/Vwa7BQ6WFYw/mqdefault.jpg",
-        "channel": "Open Source Consulting - 오픈소스컨설팅",
-        "views": 49683,
-        "length": "34:27",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "Vue": [
       {
         "title": "Vue 3 강좌 한방에 몰아보기 - 2시간 정주행",
@@ -2616,6 +2534,88 @@
         "views": 69,
         "length": "9:53",
         "published": "4개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Jira": [
+      {
+        "title": "JIRA 2025 완전 분석 | Atlassian이 AI로 일하는 방식을 바꾸고 있다",
+        "url": "https://www.youtube.com/watch?v=b5PL4iYfzEU",
+        "thumbnail": "https://i.ytimg.com/vi/b5PL4iYfzEU/mqdefault.jpg",
+        "channel": "일맛",
+        "views": 11641,
+        "length": "9:14",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자 잡일, 이제 AI가 다 합니다 Claude Code + Jira",
+        "url": "https://www.youtube.com/watch?v=US3SpMT0syA",
+        "thumbnail": "https://i.ytimg.com/vi/US3SpMT0syA/mqdefault.jpg",
+        "channel": "딩코딩코 및 인프런 inflearn",
+        "views": 10838,
+        "length": "9:52",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, 너 내 동료가 되라! - 3강. Jira 이슈 관리",
+        "url": "https://www.youtube.com/watch?v=rjxPQaUIowM",
+        "thumbnail": "https://i.ytimg.com/vi/rjxPQaUIowM/mqdefault.jpg",
+        "channel": "Learning by Doing (러닝바이두잉)",
+        "views": 9550,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
+        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
+        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
+        "channel": "colicelab",
+        "views": 1145,
+        "length": "5:03",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인생 효율 2배로 늘리는 법 - (Jira 활용)",
+        "url": "https://www.youtube.com/watch?v=QZHSTIWDTC8",
+        "thumbnail": "https://i.ytimg.com/vi/QZHSTIWDTC8/mqdefault.jpg",
+        "channel": "라매개발자",
+        "views": 39763,
+        "length": "7:13",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, Confluence 와 AI가 만나면? [세미남700@토크아이티,  박정광매니저/오픈소스컨설팅, 아틀라시안]",
+        "url": "https://www.youtube.com/watch?v=0U6OY0RDB5g",
+        "thumbnail": "https://i.ytimg.com/vi/0U6OY0RDB5g/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 923,
+        "length": "6:33",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, 너 내 동료가 되라! - 2강 Jira 설치 및 설정",
+        "url": "https://www.youtube.com/watch?v=afUZB_IOze0",
+        "thumbnail": "https://i.ytimg.com/vi/afUZB_IOze0/mqdefault.jpg",
+        "channel": "Learning by Doing (러닝바이두잉)",
+        "views": 4029,
+        "length": "8:20",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira 사용법 : 초보자를 위한 Atlassian Jira 튜토리얼 (애자일 프로젝트 관리) /Jira 무료 강의 (아틀라시안 지라)",
+        "url": "https://www.youtube.com/watch?v=Vwa7BQ6WFYw",
+        "thumbnail": "https://i.ytimg.com/vi/Vwa7BQ6WFYw/mqdefault.jpg",
+        "channel": "Open Source Consulting - 오픈소스컨설팅",
+        "views": 49683,
+        "length": "34:27",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -3747,88 +3747,6 @@
         "stage": "실전"
       }
     ],
-    "Confluence": [
-      {
-        "title": "Confluence 사용법 : 초보자를 위한 Atlassian Confluence 튜토리얼 (문서 협업 툴)/컨플루언스 무료 강의",
-        "url": "https://www.youtube.com/watch?v=VSRTrHtO43A",
-        "thumbnail": "https://i.ytimg.com/vi/VSRTrHtO43A/mqdefault.jpg",
-        "channel": "Open Source Consulting - 오픈소스컨설팅",
-        "views": 28563,
-        "length": "23:02",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Atlassian Confluence 사용법 기초 (Cloud 버전)",
-        "url": "https://www.youtube.com/watch?v=HYzgXc8_w04",
-        "thumbnail": "https://i.ytimg.com/vi/HYzgXc8_w04/mqdefault.jpg",
-        "channel": "자격동스쿨",
-        "views": 1812,
-        "length": "23:02",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
-        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
-        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
-        "channel": "colicelab",
-        "views": 1145,
-        "length": "5:03",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, Confluence 와 AI가 만나면? [세미남700@토크아이티,  박정광매니저/오픈소스컨설팅, 아틀라시안]",
-        "url": "https://www.youtube.com/watch?v=0U6OY0RDB5g",
-        "thumbnail": "https://i.ytimg.com/vi/0U6OY0RDB5g/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 923,
-        "length": "6:33",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Atlassian Jira & Confluence 관리자 교육 (Cloud 버전)",
-        "url": "https://www.youtube.com/watch?v=ycnlocaOtb8",
-        "thumbnail": "https://i.ytimg.com/vi/ycnlocaOtb8/mqdefault.jpg",
-        "channel": "자격동스쿨",
-        "views": 295,
-        "length": "35:28",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Confluence Runbook] 001. 과정 소개",
-        "url": "https://www.youtube.com/watch?v=lBalsi-8IDA",
-        "thumbnail": "https://i.ytimg.com/vi/lBalsi-8IDA/mqdefault.jpg",
-        "channel": "DevOps 전문 기업 투씨드",
-        "views": 32,
-        "length": "5:11",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Claude Code로 Confluence 문서를 자동으로 정리했습니다 (생산성 미쳤습니다)",
-        "url": "https://www.youtube.com/watch?v=mlwIyDBQAdI",
-        "thumbnail": "https://i.ytimg.com/vi/mlwIyDBQAdI/mqdefault.jpg",
-        "channel": "핑크랩 PinkLAB",
-        "views": 1495,
-        "length": "14:53",
-        "published": "3개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "협업과 커뮤니케이션 기반 체계적인 요구사항 관리 - Jira, Confluence, Comala Document Control",
-        "url": "https://www.youtube.com/watch?v=KP_dXLGxkfk",
-        "thumbnail": "https://i.ytimg.com/vi/KP_dXLGxkfk/mqdefault.jpg",
-        "channel": "CURVC Corp.",
-        "views": 1081,
-        "length": "7:43",
-        "published": "8년 전",
-        "stage": "핵심"
-      }
-    ],
     "Flutter": [
       {
         "title": "요즘 전부 플러터로 앱 만드는 이유",
@@ -3909,6 +3827,88 @@
         "length": "2:15:08",
         "published": "8개월 전",
         "stage": "실전"
+      }
+    ],
+    "Confluence": [
+      {
+        "title": "Confluence 사용법 : 초보자를 위한 Atlassian Confluence 튜토리얼 (문서 협업 툴)/컨플루언스 무료 강의",
+        "url": "https://www.youtube.com/watch?v=VSRTrHtO43A",
+        "thumbnail": "https://i.ytimg.com/vi/VSRTrHtO43A/mqdefault.jpg",
+        "channel": "Open Source Consulting - 오픈소스컨설팅",
+        "views": 28563,
+        "length": "23:02",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Atlassian Confluence 사용법 기초 (Cloud 버전)",
+        "url": "https://www.youtube.com/watch?v=HYzgXc8_w04",
+        "thumbnail": "https://i.ytimg.com/vi/HYzgXc8_w04/mqdefault.jpg",
+        "channel": "자격동스쿨",
+        "views": 1812,
+        "length": "23:02",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
+        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
+        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
+        "channel": "colicelab",
+        "views": 1145,
+        "length": "5:03",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, Confluence 와 AI가 만나면? [세미남700@토크아이티,  박정광매니저/오픈소스컨설팅, 아틀라시안]",
+        "url": "https://www.youtube.com/watch?v=0U6OY0RDB5g",
+        "thumbnail": "https://i.ytimg.com/vi/0U6OY0RDB5g/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 923,
+        "length": "6:33",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Atlassian Jira & Confluence 관리자 교육 (Cloud 버전)",
+        "url": "https://www.youtube.com/watch?v=ycnlocaOtb8",
+        "thumbnail": "https://i.ytimg.com/vi/ycnlocaOtb8/mqdefault.jpg",
+        "channel": "자격동스쿨",
+        "views": 295,
+        "length": "35:28",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Confluence Runbook] 001. 과정 소개",
+        "url": "https://www.youtube.com/watch?v=lBalsi-8IDA",
+        "thumbnail": "https://i.ytimg.com/vi/lBalsi-8IDA/mqdefault.jpg",
+        "channel": "DevOps 전문 기업 투씨드",
+        "views": 32,
+        "length": "5:11",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Claude Code로 Confluence 문서를 자동으로 정리했습니다 (생산성 미쳤습니다)",
+        "url": "https://www.youtube.com/watch?v=mlwIyDBQAdI",
+        "thumbnail": "https://i.ytimg.com/vi/mlwIyDBQAdI/mqdefault.jpg",
+        "channel": "핑크랩 PinkLAB",
+        "views": 1495,
+        "length": "14:53",
+        "published": "3개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "협업과 커뮤니케이션 기반 체계적인 요구사항 관리 - Jira, Confluence, Comala Document Control",
+        "url": "https://www.youtube.com/watch?v=KP_dXLGxkfk",
+        "thumbnail": "https://i.ytimg.com/vi/KP_dXLGxkfk/mqdefault.jpg",
+        "channel": "CURVC Corp.",
+        "views": 1081,
+        "length": "7:43",
+        "published": "8년 전",
+        "stage": "핵심"
       }
     ],
     "MariaDB": [

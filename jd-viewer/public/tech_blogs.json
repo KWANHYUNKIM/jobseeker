@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-09T03:37:37",
- "total": 908,
+ "generated_at": "2026-07-09T05:21:51",
+ "total": 909,
  "sources": [
   {
    "company": "Etsy",
@@ -28,14 +28,14 @@
    "count": 38
   },
   {
-   "company": "토스",
-   "country": "KR",
+   "company": "GitHub",
+   "country": "US",
    "count": 35
   },
   {
-   "company": "GitHub",
-   "country": "US",
-   "count": 34
+   "company": "토스",
+   "country": "KR",
+   "count": 35
   },
   {
    "company": "네이버 D2",
@@ -243,8 +243,8 @@
   "Time Series": "AI/ML",
   "Beam": "데이터",
   "Fine-tuning": "LLM/생성형",
-  "Embedded": "펌웨어/임베디드",
   "GraphQL": "백엔드",
+  "Embedded": "펌웨어/임베디드",
   "ARM": "펌웨어/임베디드",
   "Sentry": "관측성",
   "jQuery": "프론트엔드",
@@ -256,9 +256,9 @@
   "Elasticsearch": "데이터베이스",
   "A/B Test": "협업/도구",
   "Qdrant": "데이터베이스",
+  "Redis": "데이터베이스",
   "Kubernetes": "인프라/클라우드",
   "Svelte": "프론트엔드",
-  "Redis": "데이터베이스",
   "iOS": "모바일",
   "MongoDB": "데이터베이스",
   "CUDA": "AI/ML",
@@ -519,6 +519,38 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "GitHub availability report: June 2026",
+   "url": "https://github.blog/news-insights/company-news/github-availability-report-june-2026",
+   "published": "2026-07-08",
+   "published_ts": 1783539351.0,
+   "summary": "In June, we experienced six incidents that resulted in degraded performance across GitHub services.\n\nThe post GitHub availability report: June 2026 appeared first on The GitHub Blog.",
+   "tags": [
+    "Company news",
+    "News & insights",
+    "GitHub Availability Report"
+   ],
+   "tech_stack": [
+    "GraphQL",
+    "Redis",
+    "Azure",
+    "GitHub Actions",
+    "Authentication",
+    "Git"
+   ],
+   "categories": [
+    "백엔드",
+    "데이터베이스",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "8c345c5dcca477ef"
+  },
   {
    "key": "naver-d2",
    "company": "네이버 D2",
