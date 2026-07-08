@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7421건** 공고 · **1376개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-09 05:22
+- 총 **7423건** 공고 · **1376개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-09 07:03
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -8270,6 +8270,11 @@ markmap:
 - **AI/ML** [1건]
   - [초등교과서 1위 아이스크림미디어, 영어교과서 개발자를 모셔요. ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54382252&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=ff790128-c1fb-464e-808a-305f7d9745ca)
 
+### (주)케이앤웍스 `중소기업` · 3건
+- **백엔드** [2건] · `Java` `Python` `PHP` `Spring` `Spring Boot` `MySQL`
+  - [(경력) 광고 플랫폼 및 운영 시스템 백엔드 개발자 (보훈대상자 우대) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49541001?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=64&sc=630)
+  - [(경력) 광고 플랫폼 및 운영 시스템 백엔드 개발자 (보훈대상자 우대) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54407754&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=37dcd24c-f83b-4c52-be01-8482c02368b2)
+
 ### 스노우 `중소기업` · 3건
 - **AI/ML** [2건]
   - [7월 전분야 체험형 인턴 (Design) - AI 영상 콘텐츠 제작 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49288362?Oem_Code=C1&logpath=1&stext=AI&listno=74&sc=630)
@@ -8668,10 +8673,6 @@ markmap:
   - [공간 영상 3D AI 소프트웨어 개발자 (주4일 근무 - 격주) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54393498&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e4d85fab-221f-4a97-99f4-409e1b0cda35)
 - **게임** [1건] · `Python` `C++` `C#` `iOS` `Android` `AWS`
   - [유니티 언리얼 개발자 (주4일 근무 - 격주) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54335770&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=89eaabeb-f4af-4849-91e8-d90a290d2531)
-
-### (주)케이앤웍스 `중소기업` · 2건
-- **백엔드** [1건] · `Java` `Python` `PHP` `Spring` `Spring Boot` `MySQL`
-  - [(경력) 광고 플랫폼 및 운영 시스템 백엔드 개발자 (보훈대상자 우대) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54407754&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=37dcd24c-f83b-4c52-be01-8482c02368b2)
 
 ### (주)보고넷 `중소기업` · 2건
 - **백엔드** [1건] · `Python` `MySQL` `PostgreSQL` `Docker` `PyTorch` `OpenCV`

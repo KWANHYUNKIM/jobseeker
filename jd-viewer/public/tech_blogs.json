@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-09T05:21:51",
- "total": 909,
+ "generated_at": "2026-07-09T07:03:08",
+ "total": 910,
  "sources": [
   {
    "company": "Etsy",
@@ -30,7 +30,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 35
+   "count": 36
   },
   {
    "company": "토스",
@@ -519,6 +519,44 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Automating cross-repo documentation with GitHub Agentic Workflows",
+   "url": "https://github.blog/ai-and-ml/github-copilot/automating-cross-repo-documentation-with-github-agentic-workflows",
+   "published": "2026-07-08",
+   "published_ts": 1783545116.0,
+   "summary": "Explore how the Aspire team turns merged product changes into SME-reviewed docs pull requests, closing the gap between release and documentation.\n\nThe post Automating cross-repo documentation with GitHub Agentic Workflows appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "Architecture & optimization",
+    "Engineering",
+    "Generative AI",
+    "GitHub Copilot",
+    "LLMs",
+    "Machine learning",
+    "agentic workflows"
+   ],
+   "tech_stack": [
+    "Bash",
+    "Astro",
+    "Rails",
+    "AI Agent",
+    "GitHub Actions",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "450af95c2f1221d9"
+  },
   {
    "key": "github",
    "company": "GitHub",

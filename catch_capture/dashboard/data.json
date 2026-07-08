@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-09T05:22:09",
-  "source_dir": "screenshots/all_통합_20260709_052151",
+  "generated_at": "2026-07-09T07:03:26",
+  "source_dir": "screenshots/all_통합_20260709_070308",
   "keyword": "통합",
   "jobs": [
     {
@@ -91067,6 +91067,27 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜케이앤웍스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] 광고 플랫폼 및 운영 시스템 백엔드 개발자 (보훈대상자 우대)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541001?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=64&sc=630",
+      "career": "[경력] 광고 플랫폼 및 운영 시스템 백엔드 개발자 (보훈대상자 우대)",
+      "location": "서울 금천구 외 1",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "나이스인베스팅㈜",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -134503,6 +134524,30 @@
       "qualifications": "",
       "preferences": "",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)노블디자인",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "ASIC Design (Front-End / Back-End) 프리랜서 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54406895&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=db8861c4-6dec-44f6-8476-b003c43aef54",
+      "career": "경력 3~10년",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 3년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상\n\nASIC 설계 경력 3년 이상\n\nFront-End 또는 Back-End 설계 경험 보유\n\n반도체 개발 프로젝트 수행 경험\n\n고객사 파견 또는 협업 프로젝트 수행 가능자\n\n대학졸업(2,3년) 이상",
+      "preferences": "삼성 Foundry 또는 TSMC 프로젝트 경험\n\nSynopsys EDA Tool 사용 경험\n\n최신 공정(28nm 이하) 프로젝트 경험\n\n대규모 SoC 개발 경험\n\n즉시 투입 가능자",
+      "main_tasks": "•FE\n\n- ASIC Design Methodology\n\n- Synthesis\n\n- Static Timing Analysis\n\n- DFT(SCAN/BIST) & ATPG\n\n- Low Power Design\n\n- Design Verification\n\n• BE\n\n- Auto P&R, RL Extract(Star RC)\n\n- PV\n\n- Red-hawk\n\n- IR-drop",
       "benefits": ""
     },
     {
@@ -221597,19 +221642,19 @@
     }
   ],
   "stats": {
-    "total": 7421,
+    "total": 7423,
     "by_size": {
-      "중소기업": 6692,
+      "중소기업": 6694,
       "대기업": 426,
       "중견기업": 303
     },
     "by_role": {
       "기타": 1016,
       "DevOps/인프라": 1086,
-      "백엔드": 3143,
+      "백엔드": 3145,
       "모바일": 1117,
       "AI/ML": 2590,
-      "프론트엔드": 2030,
+      "프론트엔드": 2031,
       "풀스택": 666,
       "게임": 41,
       "데이터": 944,
@@ -221620,8 +221665,8 @@
     "by_site": {
       "wanted": 1966,
       "jumpit": 538,
-      "jobkorea": 1208,
-      "saramin": 3320,
+      "jobkorea": 1209,
+      "saramin": 3321,
       "dev": 389
     },
     "top_tech": [
@@ -221748,22 +221793,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-14T00:40:15",
-      "keyword": "통합",
-      "raw_total": 6705,
-      "deduped": 6350,
-      "active": 5883,
-      "closed": 467,
-      "site_counts": {
-        "wanted": 1296,
-        "jumpit": 493,
-        "jobkorea": 1300,
-        "saramin": 3346,
-        "dev": 270
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-14T02:10:46",
       "keyword": "통합",
@@ -224944,6 +224973,22 @@
         "jumpit": 865,
         "jobkorea": 2524,
         "saramin": 6769,
+        "dev": 670
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-09T07:03:20",
+      "keyword": "통합",
+      "raw_total": 12885,
+      "deduped": 10914,
+      "active": 7423,
+      "closed": 3491,
+      "site_counts": {
+        "wanted": 2055,
+        "jumpit": 865,
+        "jobkorea": 2525,
+        "saramin": 6770,
         "dev": 670
       },
       "anomalies": []
