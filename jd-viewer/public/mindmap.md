@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7527건** 공고 · **1395개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-08 20:43
+- 총 **7535건** 공고 · **1396개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-08 22:25
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -4368,6 +4368,12 @@ markmap:
   - [초기 멤버 프론트엔드 개발자 (Next.js / React) ↗](https://www.wanted.co.kr/wd/367038)
   - [React · Next.js 프론트엔드 개발자 (신입 가능) ↗](https://www.wanted.co.kr/wd/371907)
 
+### 비에스지파트너스 `중소기업` · 3건
+- **백엔드** [1건] · `Java`
+  - [(BSG) SAP ABAP 개발자 (RAP) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54402361&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=c3a5f552-eb67-4996-89ba-43a661bfcc30)
+- **DevOps/인프라** [1건] · `AWS` `GCP` `Kubernetes` `Linux`
+  - [(BSG) 클라우드 SA(구글.AWS) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54402365&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b98a6477-2e3a-4da3-ba58-84f753a44c8c)
+
 ### 콕스웨이브 `중소기업` · 3건
 - **백엔드** [1건] · `Java` `Python` `TypeScript` `Go` `AWS` `GCP`
   - [(AX Workflow Builder) 백엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/363962)
@@ -4765,10 +4771,6 @@ markmap:
   - [프론트엔드 개발자 3년 이상 ↗](https://www.wanted.co.kr/wd/338288)
 - **데이터** [1건] · `TypeScript` `Node.js` `Express` `NestJS` `Redis` `AWS`
   - [백엔드 개발자 3년 이상 ↗](https://www.wanted.co.kr/wd/338289)
-
-### 비에스지파트너스 `중소기업` · 2건
-- **DevOps/인프라** [1건] · `AWS` `GCP` `Kubernetes` `Linux`
-  - [(BSG) 클라우드 SA(구글.AWS) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54402365&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b98a6477-2e3a-4da3-ba58-84f753a44c8c)
 
 ### 마이프랜차이즈 `중소기업` · 2건
 - **백엔드** [2건] · `TypeScript` `AWS` `GraphQL` `React` `Next.js` `CSS`
@@ -13695,7 +13697,7 @@ markmap:
   - [(진학사) 데이터분석 인재 채용 (경력무관) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/554113?ReturnUrl=RecruitInfo)
 
 
-## 모빌리티/자율주행 (36개사)
+## 모빌리티/자율주행 (37개사)
 ### (주)인피닉 `중소기업` · 16건
 - **백엔드** [1건]
   - [(인피닉)AI연구소 백엔드 구축 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54398618&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=104f3b62-2715-4cc7-b157-b5e7d7fada8c)
@@ -14125,6 +14127,8 @@ markmap:
   - [EV 충전기 플랫폼 SW 엔지니어 (경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=52888578&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d)
 - **펌웨어/임베디드** [1건] · `C++` `Flutter` `Linux`
   - [EV 충전기 플랫폼 SW 엔지니어 (경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=52888578&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d)
+
+### (주)엑스디노드 `중소기업` · 2건
 
 
 ## 게임 (22개사)
