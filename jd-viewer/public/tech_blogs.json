@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-08T22:24:36",
- "total": 906,
+ "generated_at": "2026-07-09T00:06:24",
+ "total": 907,
  "sources": [
   {
    "company": "Etsy",
@@ -13,14 +13,14 @@
    "count": 49
   },
   {
-   "company": "AWS",
+   "company": "Cloudflare",
    "country": "US",
    "count": 41
   },
   {
-   "company": "Cloudflare",
+   "company": "AWS",
    "country": "US",
-   "count": 40
+   "count": 41
   },
   {
    "company": "LINE",
@@ -294,8 +294,8 @@
   "DSP": "펌웨어/임베디드",
   "Firmware": "펌웨어/임베디드",
   "Pulsar": "데이터",
-  "Swift": "언어",
   "Paxos": "알고리즘/이론",
+  "Swift": "언어",
   "Reverse Engineering": "보안",
   "Java": "언어",
   "Vulkan": "그래픽/게임",
@@ -381,8 +381,8 @@
   "Bootloader": "펌웨어/임베디드",
   "Hugging Face": "LLM/생성형",
   "MySQL": "데이터베이스",
-  "Hash Table": "알고리즘/이론",
   "Raft": "알고리즘/이론",
+  "Hash Table": "알고리즘/이론",
   "NestJS": "백엔드",
   "Attention Mechanism": "LLM/생성형",
   "Security": "보안",
@@ -556,6 +556,39 @@
    ],
    "lang": "ko",
    "content_id": "ba209adf7f06caff"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Introducing Meerkat: an experiment in global consensus",
+   "url": "https://blog.cloudflare.com/meerkat-introduction",
+   "published": "2026-07-08",
+   "published_ts": 1783515600.0,
+   "summary": "Cloudflare Research is building a global consensus service called Meerkat that uses a new consensus algorithm called QuePaxa. We plan to use Meerkat to build a strongly consistent, fault-tolerant key-value store, and other applications.",
+   "tags": [
+    "Research",
+    "Network",
+    "Database",
+    "Distributed Systems",
+    "Meerkat"
+   ],
+   "tech_stack": [
+    "Rust",
+    "Cloudflare",
+    "Algorithm",
+    "Consensus",
+    "Distributed System",
+    "Paxos",
+    "Raft"
+   ],
+   "categories": [
+    "언어",
+    "인프라/클라우드",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "995cba7d0f0e8392"
   },
   {
    "key": "stackoverflow",
