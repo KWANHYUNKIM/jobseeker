@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-09T01:56:35",
-  "source_dir": "screenshots/all_통합_20260709_015615",
+  "generated_at": "2026-07-09T03:37:55",
+  "source_dir": "screenshots/all_통합_20260709_033737",
   "keyword": "통합",
   "jobs": [
     {
@@ -88479,6 +88479,53 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜링캠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "프론트엔드 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538081?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=18&sc=630",
+      "career": "경력3년↑",
+      "location": "서울 구로구",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "Next.js",
+        "CSS",
+        "Tailwind"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "- 컴퓨터공학 또는 관련 전공자\n\n- 도서관 홈페이지 구축 및 유지보수 경험이 있는 분\n\n- 공공기관 웹사이트 또는 전자정부 서비스 개발 경험이 있는 분\n\n제출자료\n\n- 경력기술서 (이전 연봉 내용 기재 요망)\n\n- 포트폴리오 또는 GitHub 링크",
+      "main_tasks": "- 솔루션 개선 및 고도화\n\n- 도서관 홈페이지 구축 및 유지보수\n\n- 화면 퍼블리싱 및 프론트엔드 개발\n\n- 신규 기능 개발 및 기존 서비스 리팩토링",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "렉스코드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "렉스코드 프론트엔드 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49542781?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=39&sc=630",
+      "career": "경력무관",
+      "location": "서울 서초구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -90669,6 +90716,47 @@
       "qualifications": "",
       "preferences": "ㆍ대규모 시스템 아키텍처 설계 및 구축 경험\n\nㆍ마이크로서비스 아키텍처와 컨테이너화 기술(docker, k8s 등)에 대한 이해 및 경험\n\nㆍ금융업 등 규제 산업의 거버넌스 환경에서의 설계/개발 및 운영 경험\n\nㆍ멀티모달 AI 기술에 대한 경험\n\nㆍLLM 서빙(vLLM 등) 또는 LLMOps 운영 경험",
       "main_tasks": "ㆍ클라우드 기반 AI 서비스 아키텍처 설계\n\n- AI 서비스에 필요한 클라우드 인프라 및 서비스 아키텍처를 설계합니다 (Azure 등)\n\n- LLM 호출, 검색(RAG), 데이터 파이프라인을 포함한 전체 서비스 구조를 그리고 결정합니다\n\nㆍAI 프로덕트의 Agentic 동작 연구 및 설계\n\n- 단순 프롬프트 호출을 넘어, Agent가 도구를 사용하고 판단하며 작업을 수행하는 동작 흐름을 연구하고 설계합니다\n\n- \"AI가 언제, 무엇을, 어떤 순서로 하게 할 것인가\"를 제품 관점에서 정의하고 구현합니다\n\n- 최신 Agent 아키텍처와 프레임워크 동향을 리서치하고, 검증을 거쳐 프로덕트에 적용합니다\n\nㆍBackend 개발\n\n- 설계한 아키텍처를 직접 개발합니다 (Python/FastAPI 중심)\n\n- 초기에는 MVP를 빠르게 만들어 검증하는 것이 핵심이며, 이후 대용량 트래픽을 감당할 수 있는 구조로 발전시킵니다\n\nㆍ타 부서와의 협업\n\n- 기획 부서와 요구사항을 구체적인 기능으로 정의합니다\n\n- 프론트엔드, 백엔드 개발자와 API 스펙을 협의하고, 기존 코어시스템 백엔드 조직과 연동 방식을 설계합니다",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜브레인벤쳐스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발자 채용 공고",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49533751?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=100&sc=630",
+      "career": "신입 지원 가능",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "대용량 처리",
+        "오너십/주도성"
+      ],
+      "qualifications": "ㆍ백엔드 개발 실무 경험 (3년 내외 또는 그에 준하는 역량)\n\nㆍJava / Kotlin + Spring Boot / JPA 기반 애플리케이션 개발 경험\n\nㆍRESTful API 설계·구현 및 RDBMS(MySQL 등) 활용 역량\n\nㆍPM·프론트엔드 등 타 직군과의 협업, 문서화·코드 일관성 중시",
+      "preferences": "ㆍ서버 아키텍처 선정·설계 경험, 개발 리드 경험\n\nㆍAWS 등 클라우드 인프라 구성·운영 경험\n\nㆍ대규모 트래픽 처리 시스템 설계·운영 경험\n\nㆍPostgreSQL·MongoDB·Redis 활용, DevOps 이해, Docker/Kubernetes 등 컨테이너 기술\n\nㆍAI를 활용한 애플리케이션 개발 경험\n\nㆍ새로운 기술을 빠르게 익히고, 주도적으로 개선을 만들어가는 성향",
+      "main_tasks": "ㆍ요구사항에 따른 기능 개발·개선 및 장애 대응\n\nㆍJava / Kotlin + Spring Boot 기반 REST API 및 Spring Batch 설계·구현\n\nㆍMySQL 등 RDS 스키마 설계, 인덱스·쿼리 최적화\n\nㆍAI팀(R&D)과 API·데이터 인터페이스 정의 및 협업\n\n스킬\n\nㆍJAVA, Kotlin, Spring Boot, JPA, MySQL, PostgreSQL, MongoDB, Redis, AWS",
       "benefits": ""
     },
     {
@@ -95023,6 +95111,221 @@
     },
     {
       "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[오디션미] React Native 풀스택 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538199?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=44&sc=630",
+      "career": "경력3년↑",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [
+        "TypeScript",
+        "React",
+        "React Native",
+        "PostgreSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "모바일",
+        "풀스택",
+        "백엔드"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "ㆍ실무 개발 경력 3년 이상 10년 이하\n\nㆍReact Native 또는 Expo 기반 앱 개발 경험\n\nㆍ앱 배포, 빌드, 심사, 업데이트 경험\n\nㆍEAS Build / Submit / Update 사용 경험\n\nㆍTypeScript 기반 개발 경험\n\nㆍPostgreSQL 등 RDB 기반 DB 설계 경험\n\nㆍAPI와 앱 상태 변화의 관계를 이해하고 개발할 수 있는 분\n\nㆍAI 도구를 개발, 설계, 디버깅, 문서화에 활용해본 분",
+      "preferences": "ㆍExpo Router, Supabase, tRPC, Drizzle 사용 경험\n\nㆍ결제/IAP/포인트/크레딧 시스템 개발 경험\n\nㆍSentry 등 모니터링 도구 운영 경험\n\nㆍ앱스토어 / 플레이스토어 심사 대응 경험\n\nㆍAI 코딩 에이전트 기반 워크플로우 또는 AX 설계 경험\n\nㆍ작은 팀에서 제품 개발과 운영을 함께 경험한 분\n\n이런 분과 잘 맞습니다\n\nㆍ앱 사용자 경험과 운영 안정성을 함께 중요하게 보는 분\n\nㆍ기능 개발 시 API, DB, 배포 영향을 함께 고려하는 분\n\nㆍAI 도구를 적극적으로 쓰되 결과를 스스로 검증할 수 있는 분\n\nㆍ기존 코드와 제품 흐름을 먼저 읽고 필요한 만큼 안전하게 수정하는 분",
+      "main_tasks": "ㆍReact Native / Expo 기반 모바일 앱 개발 및 운영\n\nㆍEAS Build, Submit, Update를 활용한 앱 배포 관리\n\nㆍ앱과 백엔드 간 API 연동 및 contract 관리\n\nㆍ포인트, 결제, 멘토링, 오디션 리포트 등 주요 기능 개발\n\nㆍSentry, 앱 빌드, 배포, 운영 이슈 대응\n\nㆍAI 코딩 에이전트 및 자동화 도구를 활용한 개발 워크플로우 개선",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜맘잉",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "풀스택 개발자 (Full-stack Engineer) 정규직 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538204?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=51&sc=630",
+      "career": "경력무관",
+      "location": "경기 용인시",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "Next.js",
+        "Node.js",
+        "Express",
+        "NestJS",
+        "PostgreSQL",
+        "OpenAI",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "",
+      "preferences": "ㆍAI(OpenAI/Claude/Gemini) API 연동 경험\n\nㆍ지도 API 사용 경험\n\nㆍSaaS/예약/교육/물류 관련 서비스 개발 경험",
+      "main_tasks": "ㆍ맘잉 내부관리 시스템 기능 개발 (지사·강사·본사 운영 시스템)\n\nㆍ수업 신청/배정/출석/정산 등 전반적인 기능 구현\n\nㆍ지도 기반 기능 개발\n\nㆍAI API 연동(요약, 추천, 자동화 기능)\n\nㆍ백오피스 관리자 페이지 개발\n\n필수자격요건\n\nㆍReact 또는 Next.js 경험\n\nㆍNode.js(NestJS/Express) 경험\n\nㆍ기본적인 DB(PostgreSQL) 사용 가능\n\nㆍGit 기반 협업 가능",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜케이비헬스케어",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[KB금융그룹 계열] KB헬스케어 풀스택 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49537723?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=61&sc=630",
+      "career": "경력5년↑",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "풀스택",
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜프로그레스미디어",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[프로그레스미디어/대전] 풀스택 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538861?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=66&sc=630",
+      "career": "경력무관",
+      "location": "워케이션제도 운영",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "풀스택",
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜이웃닷컴",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "풀스택 웹 개발자 (C#/.NET, MS-SQL) 경력직 정규직 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49536779?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=71&sc=630",
+      "career": "풀스택 웹 개발자 (C#/.NET, MS-SQL) 경력직 정규직 채용",
+      "location": "서울 송파구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "C#",
+        "Vue",
+        "jQuery",
+        "HTML",
+        "CSS",
+        "Node.js",
+        "Express",
+        ".NET",
+        "MongoDB",
+        "Redis",
+        "MSSQL",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "풀스택"
+      ],
+      "competencies": [
+        "문제해결",
+        "테스트/품질",
+        "성능 최적화"
+      ],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 4~7년\n\nㆍC# / .NET 기반 웹 애플리케이션 개발 경험 3년 이상\n\nㆍASP.NET MVC 또는 ASP.NET Core 개발 경험\n\nㆍMS-SQL 사용 경험 : 쿼리, 저장 프로시저, 함수, View, Index 설계 및 튜닝\n\nㆍORM 사용 경험 (Entity Framework 등)\n\nㆍWindows Service 또는 백그라운드 서비스 개발 경험\n\nㆍHTML / CSS / JavaScript / jQuery 기반 웹 개발 경험\n\nㆍWindows Server / IIS 환경 배포 및 운영 경험",
+      "preferences": "ㆍMongoDB 등 NoSQL 데이터베이스 사용 경험\n\nㆍRedis 캐싱 활용 경험\n\nㆍSignalR / WebSocket 기반 실시간 서비스 개발 경험\n\nㆍNode.js (Express) 서버 개발 경험\n\nㆍWebRTC 기반 화상/음성 통화 서비스 개발 경험\n\nㆍ모바일 푸시 알림(FCM, APNS) 연동 경험\n\nㆍ웹 크롤링/스크래핑 개발 경험\n\nㆍVue.js, TypeScript 등 모던 프론트엔드 기술 활용 경험\n\nㆍ.NET Framework → .NET Core 마이그레이션 경험\n\nㆍ교육(EdTech) 도메인 경험\n\nㆍ레거시 시스템 리팩토링 경험\n\n이런 분을 찾고 있습니다.\n\nㆍC#과 SQL에 강점이 있으며, 복잡한 비즈니스 로직을 깔끔하게 구현할 수 있는 분\n\nㆍ레거시 코드를 점진적으로 개선해 나갈 수 있는 분\n\nㆍ웹, 푸시, SMS, 채팅 등 다양한 서비스를 폭넓게 다룰 의지가 있는 분\n\nㆍ능동적으로 문제를 찾아 해결하는 분",
+      "main_tasks": "ㆍASP.NET MVC / ASP.NET Core 기반 웹 서비스 유지보수 및 신규 기능 개발\n\nㆍMS-SQL 데이터베이스 설계, 쿼리 최적화 및 저장 프로시저·함수·뷰·인덱스 관리\n\nㆍWindows Service 기반 백그라운드 서비스 운영 및 개선 (푸시 알림, 스케줄링, 크롤링 등)\n\nㆍ외부 API 연동 (교육 관련 공공 API, SMS, 푸시 알림 등)\n\nㆍMongoDB 기반 실시간 데이터 관리\n\nㆍ코드 리뷰, 장애 대응, 성능 개선\n\n스킬\n\nㆍC#, ASP.NET MVC, MSSQL, Javascript, Jquery, Git",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜메타엠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[메타엠] 풀스택(Full-Stack) 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49540669?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=72&sc=630",
+      "career": "경력4년↑",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "풀스택",
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜랭코드(Langcode Inc.)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 풀스택 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49542797?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=81&sc=630",
+      "career": "경력3년↑",
+      "location": "서울 서초구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "TypeScript",
+        "C#",
+        "Next.js",
+        ".NET",
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "Azure"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성",
+        "CI/CD"
+      ],
+      "qualifications": "- .NET 기반 실무 경험 3년 이상\n\n- RESTful API 설계 및 관계형·비관계형 DB 실무 경험\n\n- 고객사 요구사항을 기술 스펙으로 전환할 수 있는 분석·커뮤니케이션 역량\n\n- 해외 출장 결격 사유 없는 분 (고객사 현장 배포 및 기술 지원 포함)\n\n- 회계 감사 대응(외부 감사인과의 소통 및 자료\n작성)가능한 자\n\n- 영어 기술 문서 독해 및 외부 API 연동 경험\n\n- 출장 근무 가능한 사람",
+      "preferences": "- Clean Architecture 등 소프트웨어 아키텍처 설계 경험\n\n- 클라우드 서비스 운영 경험 (IaaS / PaaS / SaaS)\n\n- CI/CD 파이프라인 구성 및 컨테이너 기반 배포 경험\n\n- LLM 응용 애플리케이션 개발 또는 프롬프트 엔지니어링 경험\n\n- AI Coding 도구(GitHub Copilot, Cursor, Claude Code 등) 활용 경험\n\n- B2B SaaS 또는 SI 프로젝트 납품·운영 경험\n\n- 영문 이메일 작성 및 기술 커뮤니케이션 가능\n\n이런 분과 함께하고 싶습니다\n\n- 요구사항이 불명확한 상황에서도 스스로 구조를 잡고 진행할 수 있는 분\n\n- 기능 개발뿐 아니라 고객사 현장의 기술 문제를 직접 해결하는 데 보람을 느끼는 분\n\n- 빠르게 진화하는 AI 기술을 프로덕션 수준으로 적용하는 데 관심 있는 분\n\n- 소규모 팀(~10인) 환경에서 광범위한 역할을 자기주도적으로 수행해 본 분\n\n랭코드 조직문화\n랭코드는 주기적인 팀 내 스터디를 통해 변화하는 기술과 시장의 최전선에서 함께 배우고, 분석하며, 적응하는 빠른 성장 문화를 가지고 있습니다. 이러한 시스템을 바탕으로 팀원들이 새로운 인사이트를 얻고 활발하게 소통할 수 있는 환경을 조성합니다. 무엇보다 모든 구성원이 자유롭게 의견과 아이디어를 나눌 수 있는 분위기를 중요하게 생각합니다. 회사 운영에 직접 참여하여 새로운 제안을 할 수 있는 시스템을 갖추고 있습니다. 이를 통해 혁신적이고 개방적인 조직문화를 만들어가고 있습니다.",
+      "main_tasks": "백엔드 개발 (ASP.NET Core)\n\n- Clean Architecture 기반 도메인 설계 및 API 개발\n\n- EF Core를 활용한 데이터 모델링, 마이그레이션, 쿼리 최적화\n\n- SignalR을 활용한 실시간 통신 기능 개발\n\n- ASP.NET Core + Blazor 기반 운영 서비스 유지보수\n\n- Claude Code를 활용한 AI 중심 개발 워크플로우 적용\n\n프론트엔드 개발 (Next.js)\n\n- Next.js(App Router) 기반 관리자·사용자 화면 개발\n\n- TypeScript 기반 컴포넌트 설계 및 BFF 패턴 적용\n\n- 백엔드 API 연동 및 실시간 UI 구현\n\nAI 데이터 파이프라인 구축\n\n- 기업 고객 데이터(문서, ERP, DB 등) 수집·정제·색인 파이프라인 개발\n\n- Azure AI Search 기반 하이브리드 검색 운영 및 Vector DB 관리\n\n- Python을 활용한 데이터 처리 및 전처리 자동화\n\n고객사 데이터 통합 (SI)\n\n- 고객사 레거시 시스템 분석 및 데이터 연동 설계·구현\n\n- 에어갭(Air-Gap) 포함 온프레미스·클라우드 혼합 환경 배포 수행\n\n- 고객사별 커스터마이징 관리 (브랜치 전략, 배포 패키지 구성, 형상 관리)\n\n- 프로젝트 별 근무지 상이(고객사 출장 근무 또는 본사 근무)",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜알로이스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -99180,6 +99483,29 @@
     },
     {
       "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (PLM AI 솔루션 아키텍트)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541425?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=88&sc=630",
+      "career": "AI 인력 상시 경력 채용 (PLM AI 솔루션 아키텍트)",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ제품 설계 데이터 분석/전처리, 데이터 파이프라인 설계 및 운영\n\nㆍ설계 오류 예측, 품질 이상 탐지, 버전 관리 등 AI 모델 연구/프로토타입 구현\n\nㆍAI/PLM 연계 아키텍처 설계/시스템 요구사항 정의\n\nㆍCATIA 설계 특화 AI 서비스 구축, 배포 및 운영\n\nㆍAI 기반 설계 검증 플랫폼 구축, 배포 및 운영",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -100517,6 +100843,55 @@
       "qualifications": "ㆍ학력 : 학사 이상\n\nㆍ경력 : 경력무관",
       "preferences": "ㆍ반도체 장비 테스트·설비 유지보수 경험\n\nㆍLabVIEW, MATLAB, Python 등 테스트 자동화 경험",
       "main_tasks": "ㆍ반도체 장비 성능 테스트\n\nㆍ데이터 분석 및 개선\n\n스킬\n\nㆍ공학 지식, 데이터 수집 및 분석\n\n핵심역량\n\nㆍ\n계획성,\n성실성,\n꼼꼼함,\n창의성,\n성취지향성, 협동심, 성장지향성, 메타인지",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "롯데손해보험㈜",
+      "company_size": "대기업",
+      "company_size_matched": "롯데",
+      "title": "[롯데손해보험] 퇴직연금 계리, 장기보험 지원, 장기보험 데이터분석 직무",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49543219?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=8&sc=630",
+      "career": "경력",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "선도소프트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "데이터 분석 및 AI 모델 개발 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49533589?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=97&sc=630",
+      "career": "신입 지원 가능",
+      "location": "선도소프트",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "TensorFlow",
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "- 학력 : 대졸이상\n\n- 경력 : 신입·경력",
+      "preferences": "- 관련 학과 전공자\n\n- 해당 직무 유경험자\n\n- 공간 분석 도구(QGIS 등) 및 시각화 도구(Tableau 등) 활용 경험\n\n- 딥러닝 프레임워크(PyTorch, TensorFlow 등) 활용 경험\n\n- 대규모 언어모델(LLM) 개발 경험",
+      "main_tasks": "- 데이터 분석 및 AI 모델 개발\n\n- 데이터 분석 리포트 작성\n\n- 대시보드 설계 및 개발\n\n스킬\n\nㆍPython, Pandas, Pytorch, Tensorflow\n\n필수역량\n\n- 문제 해결 능력, 비판적·논리적 사고를 갖춘 분\n\n- Python 기반 데이터 분석 수행 능력\n\n- 머신러닝/딥러닝 모델링 활용 경험\n\n- 시각화 도구를 활용한 리포트 제작 경험",
       "benefits": ""
     },
     {
@@ -103298,6 +103673,369 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜코너스톤앤컴퍼니",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[CORNERSTONE] AI Engineer(ML)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538821?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=12&sc=630",
+      "career": "경력3년↑",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Elasticsearch",
+        "Docker",
+        "PyTorch",
+        "Scikit-learn",
+        "LangChain",
+        "OpenAI",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "성능 최적화"
+      ],
+      "qualifications": "ㆍPython 기반 데이터 사이언스 및 머신러닝 실무 경험 2년\n이상 혹은 그에 준하는 경력\n\nㆍScikit-learn, Pandas, NumPy를 활용한 데이터 분석 및 시각화 경험\n\nㆍOpenAI API, Hugging Face Transformers, Trl 등 LLM 생태계 이해\n\nㆍVision 모델(YOLO, Supervision 등) 개발 및 서비스 경험\n\nㆍPytorch 및 Tensorflow를 활용한 모델 개발 및\n고도화 경험\n\nㆍ상용 및\n오픈 LLM 프롬프트 엔지니어링 경험(Tuning:\nsystem prompt, instruction, temerature 등)\n\nㆍ통계적 분석\n및 실험 설계에 대한 이해\n\nㆍ학력 : 대졸이상\n\nㆍ경력 : 경력3년↑",
+      "preferences": "ㆍSQL 기반 데이터 추출 및 분석 경험\n\nㆍLangChain/LangGraph, Elasticsearch, LlamaIndex, Weaviate,\nChroma 등 RAG 관련 프레임워크 경험\n\nㆍGraphRAG, re-rank, 2step RAG 등을 활용한 챗봇 및 보고서 생성\n\nㆍLLM 기반 챗봇/검색/요약/분류 시스템 구축 경험\n\nㆍLLM 파인튜닝 또는 로컬 모델 호스팅 경험(e.g. Ollama,\nvLLM, PEFT - QLoRA/LoRA)\n\nㆍDDP 또는 FSDP 방식의 모델 분산학습 경험\n\nㆍDocker, Git, MLflow 등 MLOps 배포 환경에\n익숙한 분\n\nㆍ다양한 벤치마크\n및 성능 지표에 따른 모델 개선 경험\n\nㆍAI 모델의 활용성과 윤리성에 대한 고민과 경험",
+      "main_tasks": "ㆍ다양한 내·외부 데이터를 활용한 데이터 분석 및 모델링 수행\n\nㆍ머신러닝/딥러닝 기반 예측 모델 및 추천 시스템 개발\n\nㆍLLM(Claude, LLaMA, Mistral, Gemma 등)을\n활용한 서비스 기획 및 데이터 기반 기능 개발\n\nㆍ오픈 LLM Fine-tuning 및 고도화를 통한 시스템 최적화 모델 개발\n\nㆍRAG (Retrieval-Augmented Generation) 기반 시스템 구축 및 최적화\n\nㆍ데이터 파이프라인\n설계 및 분석 자동화 작업\n\nㆍ제품/서비스 개선을 위한 데이터 기반 인사이트 제공\n\nㆍREST API 또는 웹 애플리케이션 개발 등을 통한 모델 프로토타입 배포",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "LS사업부 AI 경력사원 채용 - RFM",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541171?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=57&sc=630",
+      "career": "LS사업부 AI 경력사원 채용 - RFM",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "ㆍ시뮬레이션(Isaac Sim 등) 환경 및 실제 로봇 플랫폼 활용 경험 보유자\n\nㆍ영어회화 및 영문서류작성 가능자",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "LS사업부 AI 경력사원 채용 - 자율교전",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541195?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=58&sc=630",
+      "career": "LS사업부 AI 경력사원 채용 - 자율교전",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "ㆍ영어회화 및 영문서류작성 가능자",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "LS사업부 AI 경력사원 채용 - 자율주행",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541181?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=59&sc=630",
+      "career": "LS사업부 AI 경력사원 채용 - 자율주행",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "ㆍ비정형 환경 자율주행/비행 관련 경력 보유자\n\nㆍ영어회화 및 영문서류작성 가능자",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (생성형 AI 서비스 기획/개발)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541392?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=69&sc=630",
+      "career": "AI 인력 상시 경력 채용 (생성형 AI 서비스 기획/개발)",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영어서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ방산 특화 AI/보안 아키텍처 설계(망분리 환경 고려)\n\nㆍLLM 시스템 파인튜닝, 평가 및 서빙, RAG 시스템 구축 및 고도화\n\nㆍLLM 기반 생성형 AI 서비스 기획, AI Agent 개발 및 배포\n\n(범용 서비스 및 SW 개발 등 특화 서비스 포함)\n\nㆍ기존 사내 시스템과 AI 모델 간 I/F 체계 정립, 시스템 연계 기반 워크플로우 자동화 설계\n\nㆍAI 서비스 운영 안정화 및 모델 성능 최적화/개선",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (선박용 AI 솔루션 개발 데이터 아키텍트)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541654?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=71&sc=630",
+      "career": "AI 인력 상시 경력 채용 (선박용 AI 솔루션 개발 데이터 아키텍트)",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ조선·해운 분야 운항 로그, 정비 이력, 기상·항로 정보, 음성 교신 기록 등 데이터 수집·정제\n\nㆍISO 19848 등 국제 표준 기반 데이터셋 구축 및 메타데이터 관리\n\nㆍ도메인 지식을 활용한 용어사전, 규칙 베이스, 온톨로지 개발\n\nㆍ외부 기관과 협력하여 LLM 학습용 데이터셋 제공 및 품질 검증",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (인지 개발(SA, ATR, ATT))",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541617?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=72&sc=630",
+      "career": "AI 인력 상시 경력 채용 (인지 개발(SA, ATR, ATT))",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ실시간 표적 탐지/추적 알고리즘 개발 및 성능 최적화\n\nㆍ드론 EO/IR 기반 표적 탐지·인지·추적 AI 모델 개발\n\nㆍ상황인식(SA) 기반 표적/위협 요소 식별 및 운용 의사결정 지원 기능 개발\n\nㆍ엣지 디바이스 적용을 위한 모델 경량화 및 최적화\nㆍ데이터 기반 성능 평가 및 검증(시나리오/환경 변화 대응)",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (Multi-sensor Fusion 항법 개발)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541596?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=73&sc=630",
+      "career": "AI 인력 상시 경력 채용 (Multi-sensor Fusion 항법 개발)",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍNon-GPS 드론 상태 추정/pose 추정 시스템 개발\n\nㆍ영상, 영상-관성 기반 항법 시스템 개발\n\nㆍ다종 센서 퓨전 및 SLAM 알고리즘 개발\n\nㆍ지도 기반 시각 위치추정 시스템 개발",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (군 임무계획/동적 의사결정 개발)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541481?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=74&sc=630",
+      "career": "AI 인력 상시 경력 채용 (군 임무계획/동적 의사결정 개발)",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ상황인식(SA)·센서퓨전 : EO/IR, LRF 및 항법/기체상태/통신·재밍 지표를 결합한\n\nSensor Fusion 기반 상황 인식 모듈 설계·개발\n\nㆍ동적 의사결정·강화학습 : 실시간 상황 인식 입력 기반 임무 우선순위/행동을 결정하는\n\nRL 기반 자율 의사결정 정책 설계·학습·적용\n\nㆍ군집 임무계획·분산 협업 : Decentralized 환경에서 이웃 기체 요약 정보 교환을 통한\n\n역할/대행/임무 우선순위 합의 및 협업 로직 설계·개발",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "서울아산병원",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "메디컬 컴퓨팅 AI개발자/연구원 모집 (서울아산병원 BMC연구팀)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49542454?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=78&sc=630",
+      "career": "경력무관",
+      "location": "메디컬 컴퓨팅 AI개발자/연구원 모집 (서울아산병원 BMC연구팀)",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ학력: 대졸 이상\n\nㆍ경력: 경력무관\n\nㆍAI, 데이터 분석, 딥러닝, 자연어처리, 컴퓨터비전 중 하나 이상에 관심 또는 경험이 있는 분\n\nㆍ개발자로서의 역량을 바탕으로 의료 AI 연구개발을 함께 수행하고 성장하고 싶은 분",
+      "preferences": "ㆍ컴퓨터활용능력 우수자\n\nㆍ유관업무 경력자\n\nㆍ즉시출근 가능자\n\nㆍ장기근무 가능자\n\nㆍ전공: 컴퓨터공학, 전산학, 인공지능, 데이터사이언스, 의료공학 관련 전공\n\nㆍ관련 학과 석사학위 이상 우대",
+      "main_tasks": "ㆍ의료 AI 모델 개발 및 실험 하니스 개발\n\nㆍ데이터 전처리, 정형화, 분석 자동화\n\nㆍ연구 논문, 과제, 기술문서 작성 지원\n\n주요 기술 키워드\n\nㆍPython\n\nㆍ데이터 전처리, 실험 자동화, 리포팅 자동화",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (AI 기반 기술자료 개발)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541733?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=89&sc=630",
+      "career": "AI 인력 상시 경력 채용 (AI 기반 기술자료 개발)",
+      "location": "서울 중구 외 1",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ국방 도메인 데이터셋 구축, AI 모델 학습/튜닝\n\nㆍ대규모 언어모델(LLM) 기반 기술자료 개발\n\nㆍ운용/정비 지원용 대화형 기술 교범 개발 등",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (수리부속 데이터 아키텍트)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541720?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=90&sc=630",
+      "career": "AI 인력 상시 경력 채용 (수리부속 데이터 아키텍트)",
+      "location": "서울 중구 외 1",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ수요예측, 재고관리, 최적화 모델 개발\n\nㆍ신규/양산(배치) 장비 Data 수집 및 분석\n\nㆍData 관리 표준화(수요예측용 기초 Data 생성 등)",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "한화에어로스페이스㈜",
+      "company_size": "대기업",
+      "company_size_matched": "한화에어로스페이스",
+      "title": "AI 인력 상시 경력 채용 (고장 예측 모델 개발)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541701?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=91&sc=630",
+      "career": "AI 인력 상시 경력 채용 (고장 예측 모델 개발)",
+      "location": "서울 중구 외 1",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "ㆍ해당 분야 유관 경력 5년 이상 보유자",
+      "preferences": "ㆍ유관분야 석사 이상 학위 보유자\n\nㆍ영어 회화 및 영문서류 작성 가능자\n\nㆍ우수 학회 논문 게재 실적 보유자",
+      "main_tasks": "ㆍ상태기반정비(CBM+)적용 대상 품목 선정\n\nㆍDigital Twin 및 AI 기반 고장예측/상태진단(PHM) 모델 개발\n\nㆍData 연동 체계 구축 및 모델 검증",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "에너자이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(병역특례 가능) AI 최적화 Researcher",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49541598?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=93&sc=630",
+      "career": "경력무관",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "AWS",
+        "TensorFlow",
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "- Python 프로젝트 개발 경험이 있으신 분\n\n- 딥러닝 프레임워크 (Pytorch, Tensorflow 등) 사용 경험이 있으신 분\n\n- 결과가 기대와 다를 때 원인을 분석하고 개선을 시도해 본 경험이 있으신 분\n\n※ 지원 시 참고 사항\n\n- 학부 4학년 이상\n\n- 해외 여행에 결격 사유가 없으신 분\n\n- 병역특례 지원 가능\n\n- 전문연구요원(현역, 보충역, 전직), 산업기능요원(보충역) 지원 가능\n\n- 해당 시 이력서에 별도 표기하여 제출 부탁드립니다.",
+      "preferences": "- vTune 등의 profiler를 이용하여 소프트웨어 최적화를 해보신 분\n\n- 컴퓨터 아키텍쳐 관련 지식이 풍부하신 분\n\n- 딥러닝 모델 경량화 및 추론 가속화 기법에 관한 경험이 있으신 분\n\n- 관련 학회 및 저널 게재 경력자\n\n- 관련 전공 석사, 박사 학위 보유 시 경력 인정\n\n에너자이가 풀어 나가는 문제\n\n실제 제품과 서비스 환경에서 AI 모델이 우수한 성능으로 동작하려면, AI 모델과 하드웨어를 모두 고려한 AI 최적화가 필수적입니다. 정확도를 포기하면 속도를 얻고 속도를 포기하면 정확도를 잃는 트레이드오프가 오랜 숙제였고, 에너자이는 업계 최고 수준의 AI 최적화 기술로 바로 이 지점을 다르게 풉니다. 이 기술은 추론 엔진 `Optimium`과 고도화된 양자화 기술로 제품화되어, 디바이스 제조사·AI 서비스 기업·반도체 팹리스/IP 기업에게 제공되고 있습니다.\n\n에너자이는 그 기술력을 시장에서 검증받아 왔습니다. 국제 저명 학회 CVPR이 주최한 Mobile AI Challenge에서 Xiaomi, Huawei 등 글로벌 기업을 제치고 입상했으며, 엣지 AI 분야 대표 글로벌 협회인 Edge AI and Vision Alliance가 산업 혁신을 주도한 기업에 수여하는 `올해의 제품상(Product of the Year Award)`을 2025년에 이어 2026년에도 수상하며 2년 연속 수상의 성과를 이어가고 있습니다.\n\n주요 제품 및 솔루션 소개\n\n- 차세대 AI 추론 엔진 Optimium (제품 홈페이지 / 소개 영상)\n\n- 학습된 AI 모델의 정확도를 유지하면서 대상 하드웨어 환경에서의 추론 속도를 획기적으로 향상시키는 AI 추론 엔진입니다.\n\n- 현재 CPU 추론 최적화를 지원하며, 지원 범위 내 기존 AI 추론 엔진 대비 압도적 성능 우위 보유 (GPU 추론 최적화 지원 예정)\n\n- 4bit 이하 Low-bit AI 모델에 최적화된 Kernel 지원\n\n- On-device AI 솔루션 (데모 시연영상)\n\n- 큰 규모의 AI 모델을 4bit 이하로 양자화하고 Optimium 기반 최적화 Kernel을 결합해, 정확도 손실은 최소화하면서 전력·메모리 사용량을 대폭 절감한 솔루션입니다.\n\n- 1.58bit Whisper 모델 기반 음성인식·번역 솔루션을 시작으로 LLM/VLM 등 다양한 모델 기반 솔루션으로 확장 중\n\n- Ampere, Synaptics, Renesas Electronics 등 글로벌 반도체 기업과 협력해 각 사 SoC 상에서 압도적 성능 달성\n\n주요 성과\n\n- 투자·검증\n\n- Bridge 투자 77억원 유치(2025)\n\n- Series A 35억원 유치(2023)\n\n- 네이버 계열 VC SpringCamp Seed 투자(2019)\n\n- 글로벌 파트너·프로그램\n\n- 인텔 Gold Tier Partner\n\n- Arm AI Partner\n\n- 엔비디아 Inception\n\n- 퀄컴 IoT Accelerator\n\n- 마이크로소프트 스타트업 프로그램\n\n- AWS GenAI US Delegation Program\n\n- Google for Startups Accelerator: AI First\n\n- 수상\n\n- Edge AI and Vision `Product of the Year Award` 수상\n\n- NextRise Awards 수상\n\n- KPAS 2025 유망 AI 스타트업 선정\n\n- 인공지능 온라인 경진대회 1위(NIPA)\n\n- 글로벌 무대·지식재산\n\n- CES 2025·2026 참가\n\n- GTC 2026 참가\n\n- 특허\n[등록 30건·출원 21건]\n\n언론 속 에너자이\n\n에너자이의 기술은 실제 제품과 산업 현장에서 검증되고 있습니다.\n\n- \"셋톱박스에 AI 탑재…IPTV `딥테크 동맹` 잇따라\"\n\n- LG유플러스와 IPTV 전용 온디바이스 AI를 공동 개발해 신형 셋톱박스에 탑재\n\n- \"에너자이, 시냅틱스와 엣지 AI 생태계 동맹 맺었다\"\n\n- 글로벌 반도체 기업 시냅틱스의 엣지 AI 소프트웨어 스택 `Torq` 컴파일러 개발 파트너로 참여\n\n- \"\n[GTC 2026] 엔비디아 어깨 올라탄 한국 스타트업\"\n\n- 엔비디아 GTC 2026에서 8GB 젯슨 오린 나노 기반 8B LLM 온디바이스 배포 성과 공개\n\n- \"`1.58비트의 마법`··· 에너자이, 초정밀도 양자화로 글로벌 엣지 AI 시장서 선전\"\n\n- 퀄컴·마이크로소프트 등과 협력하며 초저정밀도 양자화 기술로 글로벌 시장 공략\n\n더 많은 소식은 에너자이 뉴스룸에서 확인하실 수 있습니다.",
+      "main_tasks": "에너자이의 AI 최적화 Researcher는 딥러닝 모델이 타겟 하드웨어 위에서 한계까지 빠르게 동작하도록 만드는 일을 합니다. 에너자이의 추론 엔진 Optimium은 Graph·Kernel·Runtime 세 레벨로 나뉘며, 이 직군은 그중 \"Graph Level\"의 연구 개발을 담당합니다.\n\n모델 전체를 하나의 연산 그래프로 바라보며, 어떤 연산을 어떻게 융합하고 어떤 정밀도로 어느 디바이스에 배치할지를 결정하는 최적화 문제를 다룹니다. 정답이 정해져 있지 않은 이 문제들을 Reinforcement Learning, Dynamic Programming 같은 기법으로 풀어내고, 그 결과가 논문이나 실험에서 끝나지 않고 실제 추론 엔진의 성능으로 이어지는 끝까지를 직접 경험하게 됩니다.\n\n- AI 추론 엔진 딥러닝 모델 최적화 알고리즘 개발\n\n- 사내 자체 개발한 언어를 활용해 convolution, GEMM 등의 연산을 메모리 캐싱, vectorization 등을 고려해서 최적화되도록 구현\n\n- Quantization operation을 포함한 Operation fusion 알고리즘 알고리즘 개발\n\n- Reinforcement Learning, Dynamic programming 등을 활용하여 Optimium에서의 각종 최적화 문제를 풀고 연구 개발\n\n- Multi-device allocation 문제\n\n- Automatic mixed precision 알고리즘 개발\n\n- time complexity와 performance를 고려한 Auto Tuning 알고리즘 개발\n\n- LLM 최적화\n\n- SLM 추론 최적화 연구\n\n- AI 추론 엔진 소프트웨어 개발\n\n- Kubernetes를 이용한 Multi-device 자원 관리\n\n- Auto-Tuning 가속화를 위한 Database 구축",
+      "benefits": "- 함께 성장합니다\n\n- 직무 관련 도서 구입비 지급\n\n- 업무 역량 향상을 위한 교육비 지급\n\n- 팀 스터디·세미나·컨퍼런스·논문 투고 비용 지원\n\n- 직무발명보상제도 시행\n\n- 몰입할 수 있는 환경을 만듭니다\n\n- 평일 주 5일 선택 출퇴근제(9시~11시 출근 선택)\n\n- SW/IT 고성능 장비 지원\n\n- 점심 및 저녁 식대 지원\n\n- 맛있는 간식과 커피머신 상시 비치\n\n- 외근 및 야근 시 택시비 지원\n\n- 삶의 순간을 함께합니다\n\n- 생일 유급 반차 제공\n\n- 결혼·출산 시 축하금 지급\n\n- 경조금 및 상조 서비스 지원\n\n- 건강검진 검진비 지원\n\n- 근속 연수에 따른 선물 지급\n\n- 동호회비 지원\n\n채용 절차 및 일정"
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜에이엠시지(AMCG Co.,Ltd.)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AMCG 사업개발본부 알고리즘 팀장급 개발자 채용(전문연구요원 포함)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49539185?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=94&sc=630",
+      "career": "경력5년↑",
+      "location": "서울 서초구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "에스넷시스템㈜",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -104586,6 +105324,58 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜셀바스에이아이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Engineer - 경력 3년 이상",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49538399?Oem_Code=C1&logpath=1&stext=AI&listno=55&sc=630",
+      "career": "AI Engineer - 경력 3년 이상",
+      "location": "서울 금천구",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "LangChain",
+        "OpenAI"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "학사 이상"
+      ],
+      "qualifications": "ㆍ학력: 학사 이상\n\nㆍ경력: 3년 이상\n\nㆍ나이/성별: 무관\n\nㆍ해외여행에 결격 사유가 없는 자\n\nAI Enginner/ 1명\n\nㆍLLM 기반 AI Agent·Assistant 시스템 설계·개발 및 운영(Single/Multi-Agent 오케스트레이션)이 가능하신 분\n\nㆍAgentic Workflow 설계(Tool Use·Function Calling·Planning·ReAct·HITL 등) 및 구현이 가능하신 분\n\nㆍ에이전트가 사용할 지식층 설계·구축 - 문서·데이터의 압축·구조화·의미론적 연결이 가능하신 분\n\nㆍRAG 파이프라인 설계·개발 및 검색·응답 품질 최적화(GraphRAG·CRAG·Self-RAG·Hybrid RAG 등)가 가능하신 분\n\nㆍContext Engineering 및 Agent Memory 전략 - 멀티턴 대화, 단기/장기 메모리·컨텍스트 윈도우 최적화가 가능하신 분\n\nㆍ사용자가 직접 에이전트를 구성할 수 있는 LLM 기반 빌더 기능 개발이 가능하신 분\n\nㆍ자연어 지침·규정을 실행 가능한 구조(정책·워크플로)로 변환하는 기능 개발이 가능하신 분\n\nㆍsLLM 최적화·서빙 ? 양자화(Quantization) 전략 및 고효율·저비용 서빙 환경 구축이 가능하신 분\n\nㆍLLM 응답 품질 평가(Faithfulness·Relevance·Groundedness) 및 지속 개선 파이프라인 구축이 가능하신 분",
+      "preferences": "ㆍ컴퓨터공학·인공지능·데이터사이언스 등 전공 학사 이상 또는 준하는 실무 경험을 보유하신 분\n\nㆍLangChain·LangGraph·LlamaIndex·AutoGen 활용 경험을 보유하신 분\n\nㆍ문서·데이터를 지식층(RAG·Knowledge Graph·온톨로지 등)으로 설계·구축한 경험을 보유하신 분\n\nㆍVectorDB(Pinecone·Weaviate·Qdrant·pgvector·Milvus·ChromaDB 등)기반 RAG 및 임베딩 파이프라인 구축 경험을 보유하신 분\n\nㆍRAG·Context Engineering·Agent Memory 등 지식층 활용 아키텍처 설계·개발 경험을 보유하신 분.\n\nㆍ프롬프트·모델 평가·개선 사이클을 자동화 파이프라인으로 구축한 경험(RAGAS·DeepEval 등)을 보유하신 분\n\nㆍ모델 양자화(AWQ·GPTQ·GGUF) 및 파인튜닝(PEFT·LoRA) 실무 적용 경험을 보유하신 분\n\nㆍGPU 서버 기반 LLM 서빙·최적화 경험(vLLM·SGLang·Ollama·HF TGI 등)을 보유하신 분\n\nㆍMulti-Agent Framework(CrewAI·AutoGen·LangGraph 등) 기반 오케스트레이션 경험을 보유하신 분\n\nㆍMCP(Model Context Protocol) Server/Client 개발 및 Claude·OpenAI API 등 활용 경험을 보유하신 분\n\nㆍEmbedding 모델 Fine-tuning 및 Re-ranking 최적화 경험을 보유하신 분",
+      "main_tasks": "ㆍLLM 기반 AI Agent 및 Assistant 시스템 개발",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜윕스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)윕스 AI 응용 기술 개발자 모집 (신입/경력)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49539942?Oem_Code=C1&logpath=1&stext=AI&listno=57&sc=630",
+      "career": "(주)윕스 AI 응용 기술 개발자 모집 (신입/경력)",
+      "location": "서울 마포구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "학사 이상"
+      ],
+      "qualifications": "학력: 학사 이상 (전공 무관/졸업예정자 가능)\n\n경력: 무관 (신입 지원 가능)\n\n해외 여행에 결격사유가 없는 자 (여권소지자)\n\n국가공무원법 제33조의 결격사유에 해당하지 않는 자\n\n남자 지원자의 경우 군필자 또는 면제자",
+      "preferences": "논문 구현 경험이 있으신 분\n\nLLM / DL / NL 개발 경험이 있으신 분\n\nML / DL /LLM model의 service 적용 경험이 있으신 분\n\nGPU 환경 or Cloud 환경에서의 개발 경험이 있으신 분",
+      "main_tasks": "AI 응용 기술 및 개발\n\n신기술 research 및 적용",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "케이엠에스대한민국산지직송㈜",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -105714,6 +106504,58 @@
       "preferences": "ㆍWindows 또는 Linux(LPIC, RHCSA 등) 자격증 보유\n\nㆍ 마이그레이션 실무 경험 보유\n\nㆍ DB 마이그레이션 경험 보유\n\nㆍ 네트워크 및 보안 구성경험 보유(설정,관리 등)\n\nㆍ Active Directory 또는 Entra ID 의 권한설정 경험 보유\n\n접수 및 절차\n\nㆍ접수 방법 : 현 공고가 등록된 채용사이트를 통해 접수해 주세요.\n\nㆍ전형 절차 :",
       "main_tasks": "ㆍ고객 인프라 및 시스템 환경에 대한 Azure 클라우드 Assessment 수행\n\nㆍPoC(Proof of Concept) 환경 설계 및 구축\n\nㆍ온프레미스 또는 타 클라우드 환경에서 Azure로의 마이그레이션 프로젝트 수행\n\nㆍ클라우드 인프라 아키텍처 설계 및 최적화\n\nㆍ 고객사 대상 기술 워크숍, 제안, 전환 로드맵 수립 등 Pre-sales 지원",
       "benefits": "의료 지원\n\n건강검진 지원 (매년 1회, 가족지원)\n\n생활 지원\n\n매월 자연이랑 복지몰 포인트 지원, 통신비 지원, 4대보험, 퇴직연금 제도, 상여금, 연차수당 지급,\n경조사 지원, 외근교통비 지원, 유연 근무제, 반차제\n\n자기계발 지원\n\n도서구입비 지원, 업무 수행에 필요한 자격증 취득비용 지원\n\n그 외 복리후생\n\n장기 근속자 포상, 호프데이 이벤트, 동호회 지원, 명절(설날,추석) 복지몰 포인트 지급"
+    },
+    {
+      "site": "jobkorea",
+      "company": "엘지유플러스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[CTO] DevOps(클라우드컴퓨팅) 경력채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49539823?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=65&sc=630",
+      "career": "[CTO] DevOps(클라우드컴퓨팅) 경력채용",
+      "location": "서울 강서구",
+      "dday": "",
+      "tech_stack": [
+        "AWS",
+        "K8s"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "대용량 처리",
+        "오픈소스 기여"
+      ],
+      "qualifications": "ㆍ전공 무관\n\nㆍ관련직무 3년 이상 경력\n\n업무경험\n\nㆍ펀더멘털에 기반한 강력한 인프라 스트럭처 구축 및 운영\n\nㆍ대용량 하이브리드 퍼블릭 클라우드 구축 운영 경험( 보안, 안정성, 신뢰성을 보장하는 기술)\n\nㆍ퍼블릭 클라우드 인프라/서비스/시스템의 모니터링, 로그 및 알람 시스템 환경과 도구 사용 경험\n\nㆍ특정언어를 사용해서 필요한 도구를 개발\n\nㆍ퍼블릭 클라우드 및 네트워크 레이어에 대한 지식\n\nㆍ많은 오픈소스와 클라우드의 보안과 안정성을 설계할 수 있는 능력\n\nㆍSDLC 전체 기반에 대한 소스코드 작성부터 빌드, 테스트, 배포이후 모니터링 사후까지 관리할 수 있는 능력\n\nㆍClaude, Codex, Gemini 등을 통한 빠른 스크립트 자동화 및 개발 능력",
+      "preferences": "ㆍ관련직무 경력 5년 이상\n\nㆍ컴퓨터 관련 전공자\n\nㆍAWS Proffessional 또는 이에 준하는 클라우드 전문 자격 보유자",
+      "main_tasks": "ㆍ이뮤터블, 선언형형식, 오토힐링 3원칙을 지키는 인프라 설계 및 구축\n\nㆍ유플러스 핵심시스템 구축/운영\n\nㆍInfrastructure as Code, k8s 인프라 전반에 대한 기술 습득에 따른 현대화 구축/운영\n\nㆍAI를 활용한 빠른 개발을 통해 다양한 업무도구 개발",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜윈스",
+      "company_size": "중견기업",
+      "company_size_matched": "윈스",
+      "title": "[여의도]증권사 클라우드 MSP 운영 SM 프리랜서 채용(클라우드 엔지니어)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49542760?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=70&sc=630",
+      "career": "경력무관",
+      "location": "서울 영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Oracle",
+        "AWS",
+        "Terraform"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
     },
     {
       "site": "jobkorea",
@@ -107261,6 +108103,27 @@
       "qualifications": "",
       "preferences": "",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 기반 솔루션 / 플랫폼 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49531798?Oem_Code=C1&logpath=1&stext=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=97&sc=630",
+      "career": "경력3년↑",
+      "location": "세종",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 4년제 대학 졸업 이상",
+      "preferences": "ㆍ자격증 소지자 우대\n\nㆍ관련 SI 개발 경험자 우대",
+      "main_tasks": "ㆍAI 기반 솔루션 / 플랫폼 개발\n\nㆍ부설연구소 제반 업무",
       "benefits": ""
     },
     {
@@ -127623,6 +128486,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)케이앤웍스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] RPA 시스템 구축 및 운영 개발자 (A.I접목 과제 개발경험자 우대)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54406458&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=81a347fa-154f-4349-babb-318731e15c08",
+      "career": "경력2년↑",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "",
+      "preferences": "ㆍA.I 기술이 접목된 자동화 프로젝트 개발 유경험자\n\nㆍ웹(프론트엔드/백엔드) 개발 유경험자\n\nㆍUiPath, AA, Brity, BluePrism,\n\nPower Automate 등 RPA 개발도구 유경험자\n\nㆍ관련분야 전공자\n\nㆍ오피스 프로그램 활용 능력 우수\n0명",
+      "main_tasks": "필수자격 및 우대사항\n인원\n\nRPA 자동화\n\n시스템 구축 및\n\n운영 개발자\n\n경력\nㆍRPA 개발운영 업무 (A.I 접목)\n\nㆍ자동화 시스템 구축\n\nㆍ데이터 분석 및 처리\n필수자격\n\nㆍ경력사항 : 경력 2년 이상\n\nㆍPython 언어 활용자\n\nㆍ2년차 IT 개발 경력 (분야 무관)\n\nㆍ원활한 커뮤니케이션",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -140424,6 +141312,39 @@
       "preferences": "ㆍ규모 있는 레거시 코드를 개선/리팩토링하고 운영해 보신 분\n\nㆍ실제 운영 중인 서비스에서 발생하는 다양한 장애 대응을 해보신 분\n\nㆍAWS 환경에서 제공되는 다양한 제품을 활용해 서비스를 개발/운영해 보신 분\n\nㆍ동료의 의견을 경청하고 존중하며, 자신의 가치 있는 의견을 솔직하고 적극적으로 공유하시는 분\n\nㆍ다소 지겹고 반복적이거나, 일반적 인식에서 사람들이 기피할 수도 있는 일을 꾸준히 해보신 분\n\nㆍ이커머스(E-Commerce) 도메인 서비스 개발 경험이 있으신 분\n\nㆍ프론트엔드 기술에 대한 기본적인 이해(HTML/CSS/JavaScript)와 개발 경험이 있으신 분\n\nㆍ컨테이너 기반의 분산 아키텍처(Kubernetes, MSA 등) 환경에서의 개발 경험이 있으신 분\n\nㆍ업무 진행 과정에서 다양한 직군(운영/제품 조직 등 포함)과 커뮤니케이션이 원활한 분\n\nㆍ제품의 설계부터 출시까지 전체 개발 프로세스를 주도하거나 경험해 보신 분\n\n🏠 근무조건&복지\n\nㆍ근무 시간: 오전 9시 - 오후6시(오전 10시 - 오후 7시)\n\nㆍ매주 수요일 원격 근무 진행: 매주 화요일 주간 팀 회의 후 다음 원격 근무 진행 (수습 기간 이후)\n\nㆍ택시비 지원: 오후 11시 이후 퇴근 시 택시비 지원\n\nㆍ업무에 필요한 도구 적극 지원\n\nㆍ식대 일 10,000원 제공(식권대장)\n\nㆍ경조사 및 명절 상여금\n\nㆍ1년 차 신입 입사 기준 15일 휴가 부여(30분 단위로 휴가를 나눠 사용할 수 있음)\n\n📋참고 자료\n\nㆍ식스샵 서비스 소개 영상\n\n(https://www.youtube.com/watch?v=tPGRp73RESA)\n\nㆍ가장 쉬운 쇼핑몰 식스샵에서, 고도화된 웹사이트 제작부터 외부 채널 관리와 CRM을 갖춘 식스샵 프로로: 식스샵 이상민 대표 인터뷰\n\n(https://www.ppss.kr/news/articleView.html?idxno=268424)\n\nㆍ식스샵, 바이브 코딩 웹사이트 제작 기능 `블록 AI` 출시\n\n(https://n.news.naver.com/mnews/article/030/0003342934?sid=101)\n\nㆍ식스샵, 토스로 부터 80억 투자 유치\n\n(https://www.venturesquare.net/831592)\n\nㆍ식스샵, API 기반 커머스 솔루션 클레이풀 인수\n\n(https://platum.kr/archives/164098)\n\nㆍ카카오, 쇼핑몰 솔루션 `식스샵`에 20억원 전략투자...`광고·커머스` 시너지 기대\n\n(https://www.asiatoday.co.kr/view.php?key=20190516010009696)\n\nㆍ쇼핑몰 솔루션 스타트업 `식스샵`, 신한카드로부터 투자 유치\n\n(https://platum.kr/archives/94234)",
       "main_tasks": "1. 식스샵 (기존 제품)\n\nㆍ식스샵 전반의 운영 및 유지보수 (백엔드, 인프라, 프론트엔드 포괄)\n\nㆍ서비스 안정성을 위한 신규 기능 개발 및 레거시 코드 개선 (부하 개선, 보안 및 안정성 강화 등)\n\n2. 식스샵 프로\n\nㆍ식스샵 프로 내 판매/운영 주요 기능/서비스 개발 및 관리 (결제/적립금, 이메일 알림, 소셜 로그인, 주문/판매 자동화 기능, 마켓 채널 연동 등)\n\nㆍ사용자(웹사이트 운영자, 판매자)의 비즈니스 성장을 위한 신규 기능 개발\n\n3. 공통\n\nㆍ고객사 이벤트 트래픽 모니터링 및 안정적인 서비스 운영을 위한 기술적 대응 (부하 개선, 기능 안정성 확보 등)\n\nㆍ고객 지원 팀과의 협업을 통한 기술 지원(트러블슈팅) 및 운영 효율화를 위한 백오피스/자동화 환경 구축\n\nㆍ각 제품별 인프라(AWS 등) 관리 및 운영",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)넥스트그라운드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발자 (전환형 인턴)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54411028&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3cd50756-6fb7-49a8-879e-0b62119adbd8",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리"
+      ],
+      "qualifications": "JAVA언어 기반의 Spring 개발 경험을 보유하신 분\n\nMySQL 혹은 PostgreSQL과 같은 RDBMS를 활용 가능하신 분\n\nRDBMS 구조를 설계하고 확장성 있는 DB 구조를 고민해 보신 분\n\nDatabase ORM (JPA/Hibernate/Querydsl 등) 관련 기술에 대한 경험이 있으신 분\n\n캐시를 활용하여 서비스 성능개선을 경험해보신 분\n\n대학 졸업자 이상 (2027년 02월 졸업 예정자 포함)",
+      "preferences": "공공데이터 관련 활용 경험이 있거나 이해도가 높으신 분\n\nRDBMS의 실행계획을 통해 인덱스 튜닝 / 쿼리 튜닝 등을 진행해 본 경험이 있으신 분\n\n로그를 통해 상태를 분석하고 로직의 성능을 개선해보신 경험이 있으신 분\n\nSentry, Datadog등을 활용하여 실시간 오류를 분석하고 서비스를 개선해보신 경험이 있으신 분\n\n테스트 프레임 워크를 통해 테스트 코드를 작성해 보신 분\n\n모니터링 시스템을 이용해 서비스의 문제점을 분석해보신 분\n\n24/365 무중단 서비스를 경험해 보신 분",
+      "main_tasks": "집품 플랫폼의 전반적인 백엔드 개발 업무를 담당합니다.\n\n(비즈니스 로직 설계, DB 관리 및 성능최적화, RestfulAPI 제작)\n\n백엔드 API와 아키텍쳐에 대한 설계, 구현, 테스트, 문서화를 진행합니다.\n\n다양한 직군과 긴밀히 협업하여 비즈니스 임팩트를 만듭니다.\n\n서버 안정성과 API 속도향상을 위해 기능을 체크하고 개선점을 파악합니다.\n\nAI를 활용하여 더 합리적이고 효율적인 개발을 진행합니다.",
+      "benefits": "서로 존중하는 문화를 만들어요\n\n자유로운 연차 사용\n\n`님` 호칭과 `존댓말`을 통한 커뮤니케이션\n\n구성원의 성장을 적극적으로 지원해요\n\n업무 도서비 지원\n\n강의 등 수강료 지원\n\n국내외 출장비 지원\n\n쾌적한 업무 환경을 제공해요\n\n최신형 노트북 + 모니터\n\n무제한 스낵 및 음료 제공\n\n넓고 쾌적한 오피스 (스파크플러스, 강남역 7분 이내 위치)\n\n▶ 상세 채용 페이지 바로가기\n\n지금 바로 지원하세요!\n\n채용 조건: 인턴 6개월 (근무 후 평가에 따른 정규직 전환 가능)\n\n제출 서류: 경력 중심의 이력서/자기소개서, 포트폴리오\n\n채용 과정: 서류 전형 → 1차 인터뷰 → 2차 인터뷰 → 합격 안내\n\n지원서 내용, 또는 전형 진행 중 허위 사실이 있는 경우 전형 진행이 취소될 수 있습니다"
     },
     {
       "site": "saramin",
@@ -158730,6 +159651,27 @@
       "preferences": "• 보유역량: 영어능통자, 문서작성 우수자, 통계분석·리서치 능숙자\n\n• 자격증: CISSP(국제공인정보시스템보안전문가), AWS Certified Solutions Architect\n\n• 핵심역량: 성실성, 적응성, 창의성, 협동심",
       "main_tasks": "• 빅데이터/AI 관련 솔루션을 이용한 시스템 구축 및 기술지원\n\n• SIEM(보안관제), AI ITOPS(지능형 IT운영관제), BI분석 등을 위한 데이터 수집, 전처리, 분석, 시각화 구현 업무",
       "benefits": "• 교육/생활 : 구내식당(사원식당), 음료제공(차,커피), 식비 지원, 아침식사 제공, 사내동호회 운영, 직무능력향상교육, 신규 입사자 교육(OJT)\n\n• 리프레시 : 연차, 근로자의날 휴무, 산전 후 휴가, 육아휴직, 남성출산휴가, 반차, 공휴일 휴무, 경조휴가제, 휴양시설 제공\n\n• 급여제도 : 인센티브제, 우수사원포상, 4대 보험, 퇴직연금\n\n• 지원금/보험 : 건강검진, 헬스비 지급, 통신비 지원, 각종 경조사 지원\n\n• 조직 문화 : 야근강요 안함, 자유복장\n\n• 선물 : 명절선물/귀향비, 웰컴키트 지급, 창립일선물지급, 장기근속 선물\n\n• 근무 환경 : 회의실, 건물 내 경사로, 문턱 없음, 노트북, 사내 정원, 안마실/안마의자, 카페테리아, 전용사옥, 휴게실, 수유실, 사원증, 장애인 전용주차장, 콘도/리조트 이용권, 사무용품 지급\n\n• 출퇴근 : 통근버스 운행, 주 40시간제 시행, 주차장제공"
+    },
+    {
+      "site": "saramin",
+      "company": "NLCS Jeju",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "NLCS Jeju 국제학교 행정직원(정규직) 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54406603&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=9ab17fd9-8939-490a-9b6d-c8f53934aee0",
+      "career": "경력무관",
+      "location": "제주서귀포시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ인사규정 제19조의 규정에 의한 결격 사유가 없는 자\n\n1. 금치산자 또는 한정치산자\n\n2. 파산선고를 받고 복권되지 아니한 자\n\n3. 금고 이상의 형의 선고를 받고 그 집행이 종료되거나 집행을 받지 아니하기로 확정된 날로부터 5년이 경과되지 아니한 자\n\n4. 금고 이상의 형의 선고를 받고 그 집행유예의 기간이 완료된 날로부터 2년이 경과되지 아니한 자\n\n5. 금고 이상의 형의 선고유예를 받은 경우에 그 선고유예기간 중에 있는 자\n\n6. 법률 또는 법원의 판결에 의하여 자격이 상실 또는 정지된 자\n\n7. 전직 근무기관에서 징계에 의하여 해임처분을 받은 날로부터 3년 또는 파면처분을 받은 날로부터 5년이 경과되지 아니한 자\n\n8. 병역의무자로서 병역기피의 사실이 있는 자\n\nㆍ아동·청소년 성보호에 관한 법률 제56조(아동·청소년 관련 기관 등의 취업제한 등)에 따른 성범죄 경력이 없는 자\n\nㆍ만 60세 미만인 자(규정에 의한 정년 고려)\n\nㆍ해외여행에 결격사유가 없는 자\n\nㆍ영어회화 가능자\n\nㆍ국내 간호사 면허 소지자 (간호사 지원자에 한함)\n\nㆍ외국인의 경우, 국내에 취업활동을 할 수 있는 비자 소지자(F-6, F-5, 등) 또는 제주 국제학교 근무 비자(E-7) 취득에\n\n결격 사유가 없는 자",
+      "preferences": "ㆍ(공통) 취업보호대상자는 관련법에 의거하여 우대\n\n계약 사항\n\nㆍ수습기간 : 근무 시작일로부터 3개월 (평가 후 정식임용)\n\nㆍ근무시간 : *School Nurse, 학사일정 중 교대근무로 운영함\n\n*Learning Assistant (with SS Library duty), Music Tech (WS), 월~금 8:00-17:00\n\n*Learning Assistant, 월~목 8:00-17:15, 금 8:00-16:00\n\nㆍ급여 및 복리후생 : 회사내규에 따름\n\n- 일반직 6급 : 30,000,000 ~ 37,143,000 원\n\n- 교육지원직 : 25,882,560 ~ 30,791,146 원\n\n채용 일정\n\n단계\n전형내용\n\n1차 전형\n\n(서류심사)\nㆍ응시 자격 요건 충족자를 대상으로 적격여부 판단\n\n2차 전형\n\n(면접심사)\nㆍ서류 전형 합격자를 대상으로 평가 요소에 따른 면접 심사\n\nㆍ전형 결과 80점 이상인 자 중 고득점자 순으로 1순위자 합격처리\n\nㆍ합격자의 입사 포기 또는 결격 사유 발생 시 차순위자 합격처리\n\n단계\n일정\n\n1. 서류접수(공고기간)\n2026.07.08.(수) ~ 2026.07.17.(금) 23:59\n\n2. 서류심사 및 발표\n2026.07.20.(월)\n\n3. 면접심사\n2026.7월 중\n\n4. 최종합격자 발표\n2026.08.03.(월)\n\n5. 서류검증 및 신원조회\n~ 2026.08.07.(금)\n\n6. 임용\n일반직 6급 : 2026.08.10.(월) / 교육지원직 : 2026.08.17.(월)\n\n※ 학교 사정에 따라 일정이 변동될 수 있음\n\n서류 접수\n\nㆍ공고 방법 : 온라인 채용포털 사이트 내 공고 게재\n\nㆍ접수 방법 : 이메일 접수(job@nlcsjeju.kr)\n\nㆍ제출 서류(영문) : 1. NLCS Jeju 지원서(학교 홈페이지에서 다운로드한 최신 양식)\n\n2. 영문 이력서(자유양식)\n\n3. 간호사 면허증 (간호사 지원자에 한함)\n\n* 서류 미비 혹은 지원서 일부(Referee 2인 포함)를 미작성 상태로 제출하는 지원자는 서류평가 대상에서 제외\n\n* 응시분야를 반드시 표기하여야 함(중복지원 불가)\n\n* 파일 형식 : PDF 파일로 변환 후 제출\n\n서류전형 합격자 제출 서류 (면접 전 제출)\n\nㆍ주민등록초본(병역사항 기재)\n\nㆍ최종학교 졸업증명서\n\n- 대학원 졸업(재학)생은 학부 졸업증명서 포함\n\nㆍ재직․경력증명서\n\nㆍ건강보험자격득실확인서\n\nㆍ취업보호대상자 증명서(해당자에 한함)\n\n평가 절차\n\nㆍ서류전형 : 응시 자격 요건 충족자를 대상으로 평가 요소에 따라 심사\n\n- 제출 서류를 바탕으로 기본 자격 요건 충족 여부 판단\n\nㆍ면접전형 : 서류전형 합격자를 대상으로 평가 요소에 따라 심사\n\n- 모집 분야 업무와의 관련성 및 영어 면접 진행 가능자를 기준으로 평가위원 인력풀에서 선정하며,\n\n외부 평가자의 비율이 반수 이상이어야 함\n\n- 해외 거주 등을 사유로 지원자의 대면 면접이 어렵다고 판단 시, 화상 면접으로 대체할 수 있음\n\n- 평가 요소 (총 100점) : ① Attitude as a member of staff (15점), ② Expertise and practical ability (15점),\n\n③ Accuracy and logicality in expression of opinion (10점), ④ Appropriate experience level (10점),\n\n⑤ Etiquette, conduct and diligence (10점), ⑥ Creativity, willpower and potential (10점),\n\n⑦ Communication skill in English (30점)\n\nㆍ최종합격자 결정\n\n- 면접 전형에서 평균 80점 이상의 점수를 얻은 자 중 고득점자 선정\n\n- 최종 임용 전까지 합격자의 입사 포기 또는 결격 사유가 확인될 경우 차순위자 순으로 합격처리\n\n※ 동점자 발생 시, 1) 국가유공자 등 예우 및 지원에 관한 법률에 의한 취업보호 대상자\n\n2) 면접전형 결과의 편차(심사위원 최고평점-최저평점)가 작은 순으로 합격자 선정\n\n기타\n\nㆍ제출된 서류는 최종합격자 발표일로부터 14일 이내에 이메일 혹은 유선 전화로 반환청구를 한 구직자에 한해 반환하며\n\n이후 즉시 파기 예정임\n\nㆍ타당한 사유가 있을 시, 면접 전 제출하여야 하는 증빙서류의 제출 기한을 연장할 수 있으나 임용 전까지 완료하여야 함\n\nㆍ최종 합격이 확정된 이후에는 재학 및 재직 여부와 관계없이 정상출근이 가능하여야 함\n\nㆍ적격자가 없는 경우 채용하지 않을 수 있음\n\nㆍ최종 합격자라도 당사 규정상 임용결격사유에 해당 시 합격을 취소 할 수 있음\n\nㆍ전형에 합격하더라도 증빙서류를 제출하지 아니하거나 응시원서 허위기재 또는 허위 증빙자료제출 시\n\n불합격 처리될 수 있으며, 최종합격 후라도 허위사실이 밝혀지면 과실 유무와 상관없이 불합격 처리될 수 있음\n\nㆍ최종 합격자는 국제학교운영법인 ㈜제인스 소속으로, 근무지는 제주특별자치도 서귀포시 대정읍 영어교육도시 내\n\nNLCS Jeju임 (향후 법인이 운영하는 국제학교 내에서 근무장소가 변경될 수 있음)\n\nNLCS Jeju는 아동 및 청소년의 행복과 안녕을 보호하고 증진하는 데 최선을 다하고 있습니다.\n\n본교에 채용되는 모든 교직원 및 자원봉사자는 학생안전보호(세이프가딩)을 위한 노력에 동참해야 합니다.\n\n최종 채용 여부는 범죄경력 조회 및 평판조회 결과 확인 후에 결정됩니다.\n\n학교의 채용 정책은 학교 홈페이지에서 확인할 수 있습니다.\n\n채용 과정에서 적임자를 찾고, 채용 후에도 직원의 승진 및 연수 등 발전을 위한 동등한 기회를 제공하며,\n\n인종, 피부색, 국적 또는 민족, 성별, 성적 지향, 혼인 여부 또는 가족형태, 종교, 사상, 장애 또는 나이를\n\n이유로 어떤 사람도 차별하지 않는 것이 학교의 정책입니다.",
+      "main_tasks": "비고\n\n일반직 6급\nSchool Nurse\n1명\n직무기술서 참조\n\n교육지원직\nLearning Assistant\n\n(with SS Library duty)\n1명\n직무기술서 참조\n\n교육지원직\nMusic Technician (WS)\n1명\n직무기술서 참조\n\n교육지원직\nLearning Assistant\n2명\n직무기술서 참조",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -193809,6 +194751,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)트랜스코스모스코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[판교오피스/평일] 카카오뱅크 정보보안 기술지원 MBs5",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54408284&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=b187b623-6924-4bb0-bfc0-a86fcd2e8faf",
+      "career": "경력무관",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "㈜블루웨이브컨설팅",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -220081,97 +221044,97 @@
     }
   ],
   "stats": {
-    "total": 7364,
+    "total": 7401,
     "by_size": {
-      "중소기업": 6653,
-      "대기업": 412,
-      "중견기업": 299
+      "중소기업": 6676,
+      "대기업": 425,
+      "중견기업": 300
     },
     "by_role": {
-      "기타": 1007,
-      "DevOps/인프라": 1083,
-      "백엔드": 3125,
-      "모바일": 1113,
-      "AI/ML": 2563,
-      "프론트엔드": 2015,
-      "풀스택": 658,
+      "기타": 1010,
+      "DevOps/인프라": 1085,
+      "백엔드": 3135,
+      "모바일": 1115,
+      "AI/ML": 2584,
+      "프론트엔드": 2026,
+      "풀스택": 665,
       "게임": 41,
-      "데이터": 937,
+      "데이터": 941,
       "펌웨어/임베디드": 284,
-      "보안": 311,
+      "보안": 312,
       "QA": 76
     },
     "by_site": {
       "wanted": 1956,
       "jumpit": 538,
-      "jobkorea": 1175,
-      "saramin": 3313,
+      "jobkorea": 1208,
+      "saramin": 3317,
       "dev": 382
     },
     "top_tech": [
       [
         "Python",
-        2277
+        2283
       ],
       [
         "AWS",
-        1889
+        1894
       ],
       [
         "Java",
-        1836
+        1838
       ],
       [
         "React",
-        1517
+        1521
       ],
       [
         "Git",
-        1188
+        1191
       ],
       [
         "Docker",
-        1161
+        1163
       ],
       [
         "Spring",
-        1058
+        1060
+      ],
+      [
+        "TypeScript",
+        999
       ],
       [
         "Linux",
         998
       ],
       [
-        "TypeScript",
-        996
-      ],
-      [
         "JavaScript",
-        996
+        997
       ],
       [
         "MySQL",
-        843
+        845
       ],
       [
         "Kubernetes",
-        823
+        824
       ],
       [
         "REST API",
-        813
+        815
       ],
       [
         "PostgreSQL",
-        766
+        770
       ],
       [
         "Spring Boot",
-        639
+        640
       ],
       [
         "Node.js",
-        630
+        632
       ],
       [
         "C++",
@@ -220183,19 +221146,19 @@
       ],
       [
         "Next.js",
-        549
+        552
       ],
       [
         "Azure",
-        518
+        519
       ],
       [
         "PyTorch",
-        504
+        508
       ],
       [
         "CSS",
-        493
+        495
       ],
       [
         "Android",
@@ -220203,11 +221166,11 @@
       ],
       [
         "Redis",
-        481
+        485
       ],
       [
         "HTML",
-        481
+        482
       ],
       [
         "FastAPI",
@@ -220219,35 +221182,19 @@
       ],
       [
         "Kotlin",
-        403
+        404
       ],
       [
         "Vue",
-        391
+        392
       ],
       [
         "C#",
-        375
+        377
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-13T21:38:58",
-      "keyword": "통합",
-      "raw_total": 6684,
-      "deduped": 6335,
-      "active": 5953,
-      "closed": 382,
-      "site_counts": {
-        "wanted": 1293,
-        "jumpit": 490,
-        "jobkorea": 1295,
-        "saramin": 3336,
-        "dev": 270
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-13T23:09:11",
       "keyword": "통합",
@@ -223428,6 +224375,22 @@
         "jumpit": 865,
         "jobkorea": 2485,
         "saramin": 6760,
+        "dev": 663
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-09T03:37:49",
+      "keyword": "통합",
+      "raw_total": 12856,
+      "deduped": 10892,
+      "active": 7401,
+      "closed": 3491,
+      "site_counts": {
+        "wanted": 2040,
+        "jumpit": 865,
+        "jobkorea": 2524,
+        "saramin": 6764,
         "dev": 663
       },
       "anomalies": []
