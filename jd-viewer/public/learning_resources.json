@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T19:01:57",
+  "generated_at": "2026-07-08T20:43:22",
   "source": "youtube",
   "tech_count": 178,
   "curriculum_count": 20,
@@ -4229,88 +4229,6 @@
         "stage": "실전"
       }
     ],
-    "Apache": [
-      {
-        "title": "Apache Spark로 시작하는 머신러닝 입문",
-        "url": "https://www.youtube.com/watch?v=PRLz11vv7VA",
-        "thumbnail": "https://i.ytimg.com/vi/PRLz11vv7VA/mqdefault.jpg",
-        "channel": "iamprogrammer official",
-        "views": 17825,
-        "length": "2:46:50",
-        "published": "스트리밍 시간: 9년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Apache Superset: EP1 -  🚀 Apache Superset이 뭔가요?",
-        "url": "https://www.youtube.com/watch?v=b4h6AWyqQQo",
-        "thumbnail": "https://i.ytimg.com/vi/b4h6AWyqQQo/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 909,
-        "length": "6:55",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Zookeeper 에 대해 알아보자 [ 아파치 카프카 (Apache Kafka) ]",
-        "url": "https://www.youtube.com/watch?v=kQWKtacq3NI",
-        "thumbnail": "https://i.ytimg.com/vi/kQWKtacq3NI/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 783,
-        "length": "9:07",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Java - Apache CommonLang 사용법 간단 소개",
-        "url": "https://www.youtube.com/watch?v=STxjgxMhsrk",
-        "thumbnail": "https://i.ytimg.com/vi/STxjgxMhsrk/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 1919,
-        "length": "29:17",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아파치 카프카란? [ 아파치 카프카 (Apache Kafka) ]",
-        "url": "https://www.youtube.com/watch?v=ixgCViMl4Zc",
-        "thumbnail": "https://i.ytimg.com/vi/ixgCViMl4Zc/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 1265,
-        "length": "12:49",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Superset: EP2 -  🏛️ Superset 내부 구조 - 어떻게 동작할까?",
-        "url": "https://www.youtube.com/watch?v=7PrHkI4_3LE",
-        "thumbnail": "https://i.ytimg.com/vi/7PrHkI4_3LE/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 390,
-        "length": "7:29",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Spark 이론 완전정복 🚀 | 탄생 배경부터 핵심 특징·아키텍처까지 한 번에!",
-        "url": "https://www.youtube.com/watch?v=mMrpzxYWZ4s",
-        "thumbnail": "https://i.ytimg.com/vi/mMrpzxYWZ4s/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1699,
-        "length": "23:22",
-        "published": "7개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
-        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
-        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1586,
-        "length": "29:18",
-        "published": "5개월 전",
-        "stage": "실전"
-      }
-    ],
     "OpenCV": [
       {
         "title": "OpenCV의 소개 및 기본 사용법 [ Python 데이터 분석과 이미지 처리 ]",
@@ -4390,6 +4308,88 @@
         "views": 233,
         "length": "1:48:44",
         "published": "9개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Apache": [
+      {
+        "title": "Apache Spark로 시작하는 머신러닝 입문",
+        "url": "https://www.youtube.com/watch?v=PRLz11vv7VA",
+        "thumbnail": "https://i.ytimg.com/vi/PRLz11vv7VA/mqdefault.jpg",
+        "channel": "iamprogrammer official",
+        "views": 17825,
+        "length": "2:46:50",
+        "published": "스트리밍 시간: 9년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Apache Superset: EP1 -  🚀 Apache Superset이 뭔가요?",
+        "url": "https://www.youtube.com/watch?v=b4h6AWyqQQo",
+        "thumbnail": "https://i.ytimg.com/vi/b4h6AWyqQQo/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 909,
+        "length": "6:55",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Zookeeper 에 대해 알아보자 [ 아파치 카프카 (Apache Kafka) ]",
+        "url": "https://www.youtube.com/watch?v=kQWKtacq3NI",
+        "thumbnail": "https://i.ytimg.com/vi/kQWKtacq3NI/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 783,
+        "length": "9:07",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Java - Apache CommonLang 사용법 간단 소개",
+        "url": "https://www.youtube.com/watch?v=STxjgxMhsrk",
+        "thumbnail": "https://i.ytimg.com/vi/STxjgxMhsrk/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 1919,
+        "length": "29:17",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아파치 카프카란? [ 아파치 카프카 (Apache Kafka) ]",
+        "url": "https://www.youtube.com/watch?v=ixgCViMl4Zc",
+        "thumbnail": "https://i.ytimg.com/vi/ixgCViMl4Zc/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 1265,
+        "length": "12:49",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Superset: EP2 -  🏛️ Superset 내부 구조 - 어떻게 동작할까?",
+        "url": "https://www.youtube.com/watch?v=7PrHkI4_3LE",
+        "thumbnail": "https://i.ytimg.com/vi/7PrHkI4_3LE/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 390,
+        "length": "7:29",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Spark 이론 완전정복 🚀 | 탄생 배경부터 핵심 특징·아키텍처까지 한 번에!",
+        "url": "https://www.youtube.com/watch?v=mMrpzxYWZ4s",
+        "thumbnail": "https://i.ytimg.com/vi/mMrpzxYWZ4s/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1699,
+        "length": "23:22",
+        "published": "7개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
+        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
+        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1586,
+        "length": "29:18",
+        "published": "5개월 전",
         "stage": "실전"
       }
     ],
