@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7492건** 공고 · **1390개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-10 05:39
+- 총 **7493건** 공고 · **1390개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-10 07:20
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -5470,7 +5470,7 @@ markmap:
 
 
 ## 제조/하드웨어/로보틱스 (133개사)
-### (주)인터엑스 `중소기업` · 22건
+### (주)인터엑스 `중소기업` · 23건
 - **백엔드** [11건] · `Python` `Docker` `MongoDB` `Git` `AWS` `PostgreSQL`
   - [백엔드 (Backend) 개발자 ↗](https://www.wanted.co.kr/wd/328449)
   - [풀스택 (Full-stack) 개발자 ↗](https://www.wanted.co.kr/wd/328447)
@@ -5486,11 +5486,11 @@ markmap:
   - [풀스택 (Full-stack) 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53829265&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
 - **모바일** [1건] · `Java` `Kotlin` `Python` `PostgreSQL` `MongoDB` `Elasticsearch`
   - [백엔드 (Backend) 개발자 ↗](https://www.wanted.co.kr/wd/328449)
-- **AI/ML** [8건] · `Python` `AWS` `FastAPI` `Docker` `PyTorch` `PostgreSQL`
+- **AI/ML** [9건] · `Python` `AWS` `FastAPI` `Docker` `PyTorch` `LangChain`
+  - [생산 시뮬레이션 및 최적화 시스템 개발자 ↗](https://www.wanted.co.kr/wd/373721)
   - [(강남오피스) AI Agent Engineer ↗](https://www.wanted.co.kr/wd/342467)
   - [AI Agent Engineer ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49395437?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=68&sc=630)
   - [(서울) ﻿AI 비전·데이터 분석 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159584&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4171da12-d491-4582-9ca0-54d20d004d72)
-  - [(울산) ﻿AI 비전·데이터 분석 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54159529&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=4171da12-d491-4582-9ca0-54d20d004d72)
 - **데이터** [5건] · `Python` `AWS` `FastAPI` `Docker` `PyTorch` `PostgreSQL`
   - [(강남오피스) AI Agent Engineer ↗](https://www.wanted.co.kr/wd/342467)
   - [AI Agent Engineer ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49395437?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=68&sc=630)

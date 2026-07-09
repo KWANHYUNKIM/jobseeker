@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-10T05:38:47",
- "total": 914,
+ "generated_at": "2026-07-10T07:20:13",
+ "total": 915,
  "sources": [
   {
    "company": "Etsy",
@@ -113,6 +113,11 @@
    "count": 14
   },
   {
+   "company": "Lyft",
+   "country": "US",
+   "count": 13
+  },
+  {
    "company": "우아한형제들",
    "country": "KR",
    "count": 13
@@ -139,11 +144,6 @@
   },
   {
    "company": "Pinterest",
-   "country": "US",
-   "count": 12
-  },
-  {
-   "company": "Lyft",
    "country": "US",
    "count": 12
   },
@@ -256,8 +256,8 @@
   "Elasticsearch": "데이터베이스",
   "A/B Test": "협업/도구",
   "Qdrant": "데이터베이스",
-  "Redis": "데이터베이스",
   "Kubernetes": "인프라/클라우드",
+  "Redis": "데이터베이스",
   "Svelte": "프론트엔드",
   "iOS": "모바일",
   "MongoDB": "데이터베이스",
@@ -300,9 +300,9 @@
   "Java": "언어",
   "Vulkan": "그래픽/게임",
   "Unreal Engine": "그래픽/게임",
-  "PyTorch": "AI/ML",
   "Node.js": "백엔드",
   "Grafana": "관측성",
+  "PyTorch": "AI/ML",
   "Qwik": "프론트엔드",
   "UIKit": "모바일",
   "Perl": "언어",
@@ -519,6 +519,47 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "lyft",
+   "company": "Lyft",
+   "country": "US",
+   "title": "From Day 1 to Production: Building Lyft’s Analytics & Rides Intelligence Assistant as Onboarding…",
+   "url": "https://eng.lyft.com/from-day-1-to-production-building-lyfts-analytics-rides-intelligence-assistant-as-onboarding-5c5643c192d9",
+   "published": "2026-07-09",
+   "published_ts": 1783634475.0,
+   "summary": "From Day 1 to Production: Building Lyft’s Analytics & Rides Intelligence Assistant as Onboarding Project\n\nA Different Kind of Day One\n\nMost onboarding journeys follow a familiar arc: orientation sessions, benefits enrollment, setting up your laptop, and gradually finding your footing over the first few weeks. Mine followed that arc too, but with an additional thread running alongside it from the very start.\n\nI joined Lyft in March 2026 as a Senior Data Scientist — Algorithm on the Marketing, Business & Ads team, bringing close to a decade of experience in data science, first at Oracle and then…",
+   "tags": [
+    "software-engineering",
+    "front-end-development",
+    "onboarding",
+    "data-science"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "SQL",
+    "Next.js",
+    "Node.js",
+    "AI Agent",
+    "Oracle",
+    "Envoy",
+    "Grafana",
+    "Algorithm",
+    "Authentication"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "5071b22b4f579c2c"
+  },
   {
    "key": "github",
    "company": "GitHub",
