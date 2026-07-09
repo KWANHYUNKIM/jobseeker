@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T03:56:53",
+  "generated_at": "2026-07-10T05:39:22",
   "source": "youtube",
   "tech_count": 179,
   "curriculum_count": 20,
@@ -1727,88 +1727,6 @@
         "stage": "핵심"
       }
     ],
-    "CSS": [
-      {
-        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
-        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
-        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 153575,
-        "length": "5:28:09",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "HTML & CSS 기초의 모든 것 | 네카라쿠배 출신 8년차 개발자 강의",
-        "url": "https://www.youtube.com/watch?v=HQ4nhdWvcpI",
-        "thumbnail": "https://i.ytimg.com/vi/HQ4nhdWvcpI/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2397,
-        "length": "1:07:21",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CSS 강의 Ep01 - CSS란 무엇인가? | CSS 강좌 | 함께 웹 개발에 입문해 보는건 어떨까요?",
-        "url": "https://www.youtube.com/watch?v=JgolsnrdnGM",
-        "thumbnail": "https://i.ytimg.com/vi/JgolsnrdnGM/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 12872,
-        "length": "20:33",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CSS 한번에 끝내기 CSS Full Tutorial",
-        "url": "https://www.youtube.com/watch?v=J3ef9c-sZ14",
-        "thumbnail": "https://i.ytimg.com/vi/J3ef9c-sZ14/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 23309,
-        "length": "1:51:53",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CSS 따위 안쓰는 사나이클럽 (실존함)",
-        "url": "https://www.youtube.com/watch?v=T3lEM26r_2s",
-        "thumbnail": "https://i.ytimg.com/vi/T3lEM26r_2s/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 228341,
-        "length": "4:11",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
-        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
-        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
-        "channel": "크래프트맨 멘탈리티",
-        "views": 22159,
-        "length": "6:53:58",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "어둠의 자식들이 좋아하는 CSS 문법 2개",
-        "url": "https://www.youtube.com/watch?v=TlRkmSEMV6w",
-        "thumbnail": "https://i.ytimg.com/vi/TlRkmSEMV6w/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 25158,
-        "length": "3:19",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
-        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
-        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 43004,
-        "length": "48:53",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "PyTorch": [
       {
         "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
@@ -1888,6 +1806,88 @@
         "views": 3986,
         "length": "19:20",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "CSS": [
+      {
+        "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
+        "url": "https://www.youtube.com/watch?v=TrC2x4N0XqY",
+        "thumbnail": "https://i.ytimg.com/vi/TrC2x4N0XqY/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 153575,
+        "length": "5:28:09",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "HTML & CSS 기초의 모든 것 | 네카라쿠배 출신 8년차 개발자 강의",
+        "url": "https://www.youtube.com/watch?v=HQ4nhdWvcpI",
+        "thumbnail": "https://i.ytimg.com/vi/HQ4nhdWvcpI/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2397,
+        "length": "1:07:21",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CSS 강의 Ep01 - CSS란 무엇인가? | CSS 강좌 | 함께 웹 개발에 입문해 보는건 어떨까요?",
+        "url": "https://www.youtube.com/watch?v=JgolsnrdnGM",
+        "thumbnail": "https://i.ytimg.com/vi/JgolsnrdnGM/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 12872,
+        "length": "20:33",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CSS 한번에 끝내기 CSS Full Tutorial",
+        "url": "https://www.youtube.com/watch?v=J3ef9c-sZ14",
+        "thumbnail": "https://i.ytimg.com/vi/J3ef9c-sZ14/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 23309,
+        "length": "1:51:53",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CSS 따위 안쓰는 사나이클럽 (실존함)",
+        "url": "https://www.youtube.com/watch?v=T3lEM26r_2s",
+        "thumbnail": "https://i.ytimg.com/vi/T3lEM26r_2s/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 228341,
+        "length": "4:11",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "HTML, CSS, JavaScript: 웹 개발의 핵심을 단 7시간 만에 끝내기!",
+        "url": "https://www.youtube.com/watch?v=phiSW6Pr-gg",
+        "thumbnail": "https://i.ytimg.com/vi/phiSW6Pr-gg/mqdefault.jpg",
+        "channel": "크래프트맨 멘탈리티",
+        "views": 22159,
+        "length": "6:53:58",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "어둠의 자식들이 좋아하는 CSS 문법 2개",
+        "url": "https://www.youtube.com/watch?v=TlRkmSEMV6w",
+        "thumbnail": "https://i.ytimg.com/vi/TlRkmSEMV6w/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 25158,
+        "length": "3:19",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
+        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
+        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 43004,
+        "length": "48:53",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -2835,88 +2835,6 @@
         "stage": "실전"
       }
     ],
-    "LangChain": [
-      {
-        "title": "LLM 앱 개발의 시작, LangChain 구성요소 완전 정복🔎 | Flunti 강의 미리보기",
-        "url": "https://www.youtube.com/watch?v=gATptYyZ1KU",
-        "thumbnail": "https://i.ytimg.com/vi/gATptYyZ1KU/mqdefault.jpg",
-        "channel": "한국글로벌널리지",
-        "views": 328,
-        "length": "10:34",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "AI 에이전트 개발, 이 영상 하나로 끝냅니다. (LangChain + LangGraph)",
-        "url": "https://www.youtube.com/watch?v=3My9sphTxtk",
-        "thumbnail": "https://i.ytimg.com/vi/3My9sphTxtk/mqdefault.jpg",
-        "channel": "Bloom AI",
-        "views": 24582,
-        "length": "9:03:25",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "EP 2. Langchain과 Langgraph의 차이점",
-        "url": "https://www.youtube.com/watch?v=yD3SnuU6Pd8",
-        "thumbnail": "https://i.ytimg.com/vi/yD3SnuU6Pd8/mqdefault.jpg",
-        "channel": "모두의AI",
-        "views": 14239,
-        "length": "9:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "LangChain/LangGraph V1 업데이트 이후 신기능 활용하여 에이전트 제작하기!",
-        "url": "https://www.youtube.com/watch?v=Ipa6JNbFq4g",
-        "thumbnail": "https://i.ytimg.com/vi/Ipa6JNbFq4g/mqdefault.jpg",
-        "channel": "인공지능팩토리(AIFactory)",
-        "views": 4860,
-        "length": "1:49:55",
-        "published": "스트리밍 시간: 6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "#langchain 의 #RAG 파이프라인 이해해보기 - 네이버 뉴스기사 기반 Q&A 챗봇 제작",
-        "url": "https://www.youtube.com/watch?v=1scMJH93v0M",
-        "thumbnail": "https://i.ytimg.com/vi/1scMJH93v0M/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 50615,
-        "length": "21:47",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Langchain 강의 (1/n) - Langchain이 뭘까?",
-        "url": "https://www.youtube.com/watch?v=WWRCLzXxUgs",
-        "thumbnail": "https://i.ytimg.com/vi/WWRCLzXxUgs/mqdefault.jpg",
-        "channel": "모두의AI",
-        "views": 57104,
-        "length": "23:54",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "랭체인(LangChain)과 LLM을 이용해서 AI 텍스트 요약(Summarization)하기",
-        "url": "https://www.youtube.com/watch?v=qEDBG9lXgTs",
-        "thumbnail": "https://i.ytimg.com/vi/qEDBG9lXgTs/mqdefault.jpg",
-        "channel": "AISchool",
-        "views": 5134,
-        "length": "15:49",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[LangChain 강의] #streamlit 으로 ChatGPT 클론 서비스 제작하는 방법",
-        "url": "https://www.youtube.com/watch?v=ZVmLe3odQvc",
-        "thumbnail": "https://i.ytimg.com/vi/ZVmLe3odQvc/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 12884,
-        "length": "34:24",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Oracle": [
       {
         "title": "[오라클 기초 강좌] 05 - 데이터베이스 구조 - Oracle Instance, SGA, Shared Pool,  Data Buffer Cache, Redo Log Buffer",
@@ -2996,6 +2914,88 @@
         "views": 8829,
         "length": "1:59:07",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "LangChain": [
+      {
+        "title": "LLM 앱 개발의 시작, LangChain 구성요소 완전 정복🔎 | Flunti 강의 미리보기",
+        "url": "https://www.youtube.com/watch?v=gATptYyZ1KU",
+        "thumbnail": "https://i.ytimg.com/vi/gATptYyZ1KU/mqdefault.jpg",
+        "channel": "한국글로벌널리지",
+        "views": 328,
+        "length": "10:34",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "AI 에이전트 개발, 이 영상 하나로 끝냅니다. (LangChain + LangGraph)",
+        "url": "https://www.youtube.com/watch?v=3My9sphTxtk",
+        "thumbnail": "https://i.ytimg.com/vi/3My9sphTxtk/mqdefault.jpg",
+        "channel": "Bloom AI",
+        "views": 24582,
+        "length": "9:03:25",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "EP 2. Langchain과 Langgraph의 차이점",
+        "url": "https://www.youtube.com/watch?v=yD3SnuU6Pd8",
+        "thumbnail": "https://i.ytimg.com/vi/yD3SnuU6Pd8/mqdefault.jpg",
+        "channel": "모두의AI",
+        "views": 14239,
+        "length": "9:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "LangChain/LangGraph V1 업데이트 이후 신기능 활용하여 에이전트 제작하기!",
+        "url": "https://www.youtube.com/watch?v=Ipa6JNbFq4g",
+        "thumbnail": "https://i.ytimg.com/vi/Ipa6JNbFq4g/mqdefault.jpg",
+        "channel": "인공지능팩토리(AIFactory)",
+        "views": 4860,
+        "length": "1:49:55",
+        "published": "스트리밍 시간: 6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "#langchain 의 #RAG 파이프라인 이해해보기 - 네이버 뉴스기사 기반 Q&A 챗봇 제작",
+        "url": "https://www.youtube.com/watch?v=1scMJH93v0M",
+        "thumbnail": "https://i.ytimg.com/vi/1scMJH93v0M/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 50615,
+        "length": "21:47",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Langchain 강의 (1/n) - Langchain이 뭘까?",
+        "url": "https://www.youtube.com/watch?v=WWRCLzXxUgs",
+        "thumbnail": "https://i.ytimg.com/vi/WWRCLzXxUgs/mqdefault.jpg",
+        "channel": "모두의AI",
+        "views": 57104,
+        "length": "23:54",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "랭체인(LangChain)과 LLM을 이용해서 AI 텍스트 요약(Summarization)하기",
+        "url": "https://www.youtube.com/watch?v=qEDBG9lXgTs",
+        "thumbnail": "https://i.ytimg.com/vi/qEDBG9lXgTs/mqdefault.jpg",
+        "channel": "AISchool",
+        "views": 5134,
+        "length": "15:49",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[LangChain 강의] #streamlit 으로 ChatGPT 클론 서비스 제작하는 방법",
+        "url": "https://www.youtube.com/watch?v=ZVmLe3odQvc",
+        "thumbnail": "https://i.ytimg.com/vi/ZVmLe3odQvc/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 12884,
+        "length": "34:24",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -9641,6 +9641,88 @@
         "stage": "실전"
       }
     ],
+    "ML": [
+      {
+        "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
+        "url": "https://www.youtube.com/watch?v=qPMeuL2LIqY",
+        "thumbnail": "https://i.ytimg.com/vi/qPMeuL2LIqY/mqdefault.jpg",
+        "channel": "Sung Kim",
+        "views": 403616,
+        "length": "12:29",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[ML/DL] Lecture 1. Course Introduction",
+        "url": "https://www.youtube.com/watch?v=W8Zbaz44KGQ",
+        "thumbnail": "https://i.ytimg.com/vi/W8Zbaz44KGQ/mqdefault.jpg",
+        "channel": "Joonseok Lee",
+        "views": 16271,
+        "length": "1:06:39",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Unity ML-Agents 사용법부터 예제까지 완전 정복 가이드",
+        "url": "https://www.youtube.com/watch?v=XySIVXJp7qE",
+        "thumbnail": "https://i.ytimg.com/vi/XySIVXJp7qE/mqdefault.jpg",
+        "channel": "Elice 엘리스",
+        "views": 1597,
+        "length": "9:26",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ML lab 07-1: training/test dataset, learning rate, normalization",
+        "url": "https://www.youtube.com/watch?v=oSJfejG2C3w",
+        "thumbnail": "https://i.ytimg.com/vi/oSJfejG2C3w/mqdefault.jpg",
+        "channel": "Sung Kim",
+        "views": 71105,
+        "length": "11:02",
+        "published": "9년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ML] 01. 머신러닝 개론 | Machine Learning Intro",
+        "url": "https://www.youtube.com/watch?v=uvmQft6SUzw",
+        "thumbnail": "https://i.ytimg.com/vi/uvmQft6SUzw/mqdefault.jpg",
+        "channel": "지미의 공부방",
+        "views": 53,
+        "length": "48:14",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. ML과 LLM 기반 사고법을 통한 설계 ▶️ AI서비스 설계",
+        "url": "https://www.youtube.com/watch?v=-f68EuNZGz4",
+        "thumbnail": "https://i.ytimg.com/vi/-f68EuNZGz4/mqdefault.jpg",
+        "channel": "뉴런데브",
+        "views": 228,
+        "length": "4:58",
+        "published": "2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "초간단 AI, ML, DL 이해하기 | 인공지능 | 머신러닝 | 딥러닝 | 인사이트킴",
+        "url": "https://www.youtube.com/watch?v=DwFvSDtXYVU",
+        "thumbnail": "https://i.ytimg.com/vi/DwFvSDtXYVU/mqdefault.jpg",
+        "channel": "인사이트킴 insight Kim",
+        "views": 1590,
+        "length": "6:23",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "카카오 AI현직자가 알려주는 ML/데이터사이언티스트 커리어 A to Zㅣ메타코드 커리어 특강",
+        "url": "https://www.youtube.com/watch?v=-ELdSbqqEbY",
+        "thumbnail": "https://i.ytimg.com/vi/-ELdSbqqEbY/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2390,
+        "length": "19:53",
+        "published": "2년 전",
+        "stage": "핵심"
+      }
+    ],
     "MFC": [
       {
         "title": "🥞MFC 기초 강의🍿 몰아보기 #1 - 이거 하나면 끝!!! MFC Basics tutorial",
@@ -10295,88 +10377,6 @@
         "length": "6:04",
         "published": "1년 전",
         "stage": "실전"
-      }
-    ],
-    "ML": [
-      {
-        "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
-        "url": "https://www.youtube.com/watch?v=qPMeuL2LIqY",
-        "thumbnail": "https://i.ytimg.com/vi/qPMeuL2LIqY/mqdefault.jpg",
-        "channel": "Sung Kim",
-        "views": 403616,
-        "length": "12:29",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[ML/DL] Lecture 1. Course Introduction",
-        "url": "https://www.youtube.com/watch?v=W8Zbaz44KGQ",
-        "thumbnail": "https://i.ytimg.com/vi/W8Zbaz44KGQ/mqdefault.jpg",
-        "channel": "Joonseok Lee",
-        "views": 16271,
-        "length": "1:06:39",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Unity ML-Agents 사용법부터 예제까지 완전 정복 가이드",
-        "url": "https://www.youtube.com/watch?v=XySIVXJp7qE",
-        "thumbnail": "https://i.ytimg.com/vi/XySIVXJp7qE/mqdefault.jpg",
-        "channel": "Elice 엘리스",
-        "views": 1597,
-        "length": "9:26",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ML lab 07-1: training/test dataset, learning rate, normalization",
-        "url": "https://www.youtube.com/watch?v=oSJfejG2C3w",
-        "thumbnail": "https://i.ytimg.com/vi/oSJfejG2C3w/mqdefault.jpg",
-        "channel": "Sung Kim",
-        "views": 71105,
-        "length": "11:02",
-        "published": "9년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ML] 01. 머신러닝 개론 | Machine Learning Intro",
-        "url": "https://www.youtube.com/watch?v=uvmQft6SUzw",
-        "thumbnail": "https://i.ytimg.com/vi/uvmQft6SUzw/mqdefault.jpg",
-        "channel": "지미의 공부방",
-        "views": 53,
-        "length": "48:14",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. ML과 LLM 기반 사고법을 통한 설계 ▶️ AI서비스 설계",
-        "url": "https://www.youtube.com/watch?v=-f68EuNZGz4",
-        "thumbnail": "https://i.ytimg.com/vi/-f68EuNZGz4/mqdefault.jpg",
-        "channel": "뉴런데브",
-        "views": 228,
-        "length": "4:58",
-        "published": "2개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "초간단 AI, ML, DL 이해하기 | 인공지능 | 머신러닝 | 딥러닝 | 인사이트킴",
-        "url": "https://www.youtube.com/watch?v=DwFvSDtXYVU",
-        "thumbnail": "https://i.ytimg.com/vi/DwFvSDtXYVU/mqdefault.jpg",
-        "channel": "인사이트킴 insight Kim",
-        "views": 1590,
-        "length": "6:23",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "카카오 AI현직자가 알려주는 ML/데이터사이언티스트 커리어 A to Zㅣ메타코드 커리어 특강",
-        "url": "https://www.youtube.com/watch?v=-ELdSbqqEbY",
-        "thumbnail": "https://i.ytimg.com/vi/-ELdSbqqEbY/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2390,
-        "length": "19:53",
-        "published": "2년 전",
-        "stage": "핵심"
       }
     ],
     "Pandas": [
