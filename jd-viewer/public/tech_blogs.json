@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-09T08:52:29",
- "total": 910,
+ "generated_at": "2026-07-09T10:34:12",
+ "total": 912,
  "sources": [
   {
    "company": "Etsy",
@@ -95,7 +95,7 @@
   {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 19
+   "count": 21
   },
   {
    "company": "Grab",
@@ -519,6 +519,44 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "CA DATA NIGHT #10 〜データ基盤の「正解」は、Databricksにあります〜 開催レポート",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64459",
+   "published": "2026-07-09",
+   "published_ts": 1783557034.0,
+   "summary": "こんにちは。メディア統括本部 Data Science Center（DSC）の山田(@___rya ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "Databricks"
+   ],
+   "categories": [
+    "데이터베이스"
+   ],
+   "lang": "en",
+   "content_id": "81220d86c2e0ff85"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "ABEMAの広告配信周りの高速化にチャレンジしてみた",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64498",
+   "published": "2026-07-09",
+   "published_ts": 1783555477.0,
+   "summary": "はじめに はじめまして！慶應義塾大学環境情報学部3年の上野 大和です！2026年の4月の1ヶ月間、C ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "6fa2ff0123d9f446"
+  },
   {
    "key": "github",
    "company": "GitHub",

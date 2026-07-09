@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-09T08:52:49",
-  "source_dir": "screenshots/all_통합_20260709_085229",
+  "generated_at": "2026-07-09T10:34:31",
+  "source_dir": "screenshots/all_통합_20260709_103412",
   "keyword": "통합",
   "jobs": [
     {
@@ -75189,6 +75189,48 @@
     },
     {
       "site": "jumpit",
+      "company": "(주)잉클",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "데이터 엔지니어 채용",
+      "url": "https://jumpit.saramin.co.kr/position/54410475",
+      "career": "경력 3~20년",
+      "location": "경기 수원시 영통구 덕영대로1556번길16 디지털엠파이어빌딩\n지도보기·\n주소복사",
+      "dday": "D-29",
+      "tech_stack": [
+        "Python",
+        "Rust",
+        "Docker",
+        "K8s",
+        "Kafka",
+        "REST API"
+      ],
+      "tech_tags": [
+        "Docker",
+        "Kafka",
+        "Python",
+        "Rust",
+        "OLAP",
+        "REST API",
+        "AI/인공지능",
+        "Dw",
+        "Etl",
+        "PLC"
+      ],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "• 데이터 엔지니어링, 백엔드 데이터 플랫폼 개발, 또는 운영 환경에서 데이터 파이프라인·데이터 시스템을 운영한 경험 3년 이상이신 분\n• AI 도구를 적극적으로 활용하되, 생성된 코드와 설계 결과를 스스로 검증하고 최종 결과물에 책임질 수 있는 분\n• Python 등을 활용한 데이터 처리, API 서버, 배치 작업 개발 경험자\n• 메시지 큐 또는 스트리밍 기반 데이터 파이프라인 개발 경험자\n• 관계형 데이터베이스, 키-값 저장소, 컬럼 기반 저장소, 오브젝트 스토리지 중 하나 이상을 활용한 경험자\n• 로그, 시계열 데이터, 이벤트 데이터 중 하나 이상을 다뤄본 경험자\n• 데이터 정합성, 중복 처리, 재처리, 장애 복구를 고려해 개발할 수 있는 분\n• 운영 환경에서 로그와 메트릭을 기반으로 문제를 추적하고 해결한 경험",
+      "preferences": "• 제조, IoT, 설비 데이터, 산업용 프로토콜 도메인 경험자\n• Kafka 등 메시지 스트리밍 기반 시스템 운영 경험자\n• 데이터 레이크, 컬럼형 파일 포맷, 테이블 포맷 기반 저장 구조 설계 경험자\n• 워크플로우 오케스트레이션, 스케줄링, 백필 파이프라인 설계 경험자\n• K8s 기반 서비스 운영 경험자\n• 온프레미스 또는 폐쇄망 고객 환경에서 제품을 배포·운영해 본 경험자\n• ML 추론, 이상 감지, 알람 시스템과 데이터 파이프라인을 연결해 본 경험자\n• 데이터 카탈로그, 리니지, 권한 관리 등 데이터 관리 기능을 제품화해 본 경험자\n• Rust 기반 시스템 개발 경험",
+      "main_tasks": "• 설비, 센서, PLC 데이터의 실시간 수집 및 정규화 파이프라인 개발\n• 메시지 큐 또는 스트리밍 기반 데이터 처리 구조 설계 및 개선\n• 시계열 데이터의 최신값, 집계, 통계, 상태 이력, 알람 처리 로직 개발\n• 데이터 누락, 중복, 재처리, 백필을 고려한 파이프라인 기능 개발\n• 원천 데이터와 가공 데이터를 안정적으로 저장하기 위한 저장 구조 설계\n• REST API 기반 데이터 파이프라인 관리 및 운영 자동화 기능 개발\n• 온프레미스 및 폐쇄망 환경에서 안정적으로 운영 가능한 데이터 처리 구조 개선\n• 운영 로그와 메트릭을 기반으로 한 장애 분석 및 성능 개선",
+      "benefits": "• 지원금/보험 : 건강검진, 헬스비 지급, 내일채움공제\n• 급여제도 : 퇴직연금, 인센티브제, 스톡옵션, 퇴직금, 4대 보험\n• 교육/생활 : 점심식사 제공, 간식 제공, 식비 지원\n• 조직문화 : 수평적 조직문화, 회식 및 야근 강요 안함, 자유로운 연차 사용, 님/닉네임 문화\n• 리프레시 : 연차, 경조휴가제, 근로자의 날 휴"
+    },
+    {
+      "site": "jumpit",
       "company": "26도라인",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -82165,6 +82207,51 @@
       "preferences": "• 분산 시스템에 대한 이해나 관심이 있으신 분\n• IaC를 활용한 클라우드 인프라 작업에 대한 관심이 있으신 분\n• 다양한 분석 지표 요구사항을 데이터 모델링 문제로 구조화하여 해결하는 데에 관심이 있으신 분\n• 배치와 실시간 데이터를 함께 다루는 데이터 엔지니어링에 관심이 있으신 분",
       "main_tasks": "• AWS 기반 클라우드 인프라를 구축하고 운영합니다.\n• Airflow, dbt 등을 활용해 배치 파이프라인을 개발하고 운영합니다.\n• 게임 클라이언트와 게임 서버에서 발생하는 실시간 데이터를 수집하고 처리합니다.\n• 분석과 운영에 필요한 마트 테이블을 모델링하고 관리합니다.\n• 데이터 조회 및 내부 서비스 연동을 위한 API 서버를 개발합니다.\n• 데이터 수집부터 저장, 처리, 서빙까지 이어지는 E2E 데이터 플랫폼을 개선합니다.",
       "benefits": "• 경쟁력 있는 연봉과 처우\n• 개인 법인카드 지급 (점심 식대지원)\n• 업무관련 도서 무제한 지원\n• 자기계발/복지포인트 연 100만원 지급\n• 건강한 삶을 위한 체력단련비 지급\n• 성수역 근처 쾌적한 오피스\n• 최고급 하드웨어 및 소프트웨어 & 허먼밀러 의자 제공\n• 다양한 간식 및 음료 무제한 제공\n• 경조 휴가 및 경조금 지원"
+    },
+    {
+      "site": "jumpit",
+      "company": "디어유",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "SRE 포지션 (경력 3~10년)",
+      "url": "https://jumpit.saramin.co.kr/position/54415511",
+      "career": "경력 3~10년",
+      "location": "서울 강남구 언주로172길8\n지도보기·\n주소복사",
+      "dday": "D-29",
+      "tech_stack": [
+        "Python",
+        "Go",
+        "Redis",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "Kafka",
+        "Linux"
+      ],
+      "tech_tags": [
+        "Docker",
+        "Kafka",
+        "Kubernetes",
+        "Linux",
+        "Redis",
+        "Windows",
+        "AWS"
+      ],
+      "roles": [
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "CI/CD",
+        "Agile/Scrum"
+      ],
+      "qualifications": "• AWS 클라우드 기반 플랫폼 구축 경험(인프라 운영 및 관리 경험 필수)\n• Docker 및 ECS/EKS 운영 경험",
+      "preferences": "• 대규모 인프라 운영 경험\n• 프로젝트 관리 경험 및 Agile 방법론 이해\n• 시스템 아키텍쳐 설계 및 성능 튜닝, 모니터링 도구 개발 및 운영 경험\n• 스크립팅 역량 보유(Python, Go, Shellscript 등)",
+      "main_tasks": "• AWS 클라우드 기반 플랫폼 구축/운영\n• CI/CD 파이프라인 인프라 구축/운영\n• 시스템 및 서비스 장애 대응\n• 성능 테스트 및 모니터링 대응\n• 서비스 신뢰성 지표 설정 및 가용성 확보\n• 프로젝트 관리 및 팀 간 커뮤니케이션 조율\n• 서비스 개선을 위한 요구사항 수집 및 우선순위 설정",
+      "benefits": "• 출퇴근: 자율(시차)출퇴근제\n• 교육: 신입사원 교육(OJT) / 리더쉽,직무교육/ 사내 외국어 강좌운영\n• 지원금/보험: 단체상해보험 / 건강검진지원/ 독감예방접종 지원\n• 조직문화: 수평적 조직문화 / 자율복장/ 님,닉네임 문화\n• 근무환경 : 사원증지급 / 카페테리아운영/ 스낵바 운영, 웰컴KIT지급\n• 급여제도 : 4대보험/연차수당/퇴직연금/ 회식비, 중식비 지원, 임직원 우수인재 추천보상제도 운영/ 통신비 지원\n• 선물: 명절선물/귀향비 지급\n• 리프레쉬: 연차,반차/ 경조휴가 / 장기근속 포상\n• 기타: 계열사 할인"
     },
     {
       "site": "jumpit",
@@ -128935,6 +129022,29 @@
     },
     {
       "site": "saramin",
+      "company": "(주)이케이시스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "JAVA 개발자 인재 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54404964&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=3e792707-d4c4-4a2a-be40-9d8c16f347a4",
+      "career": "경력10년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -163722,6 +163832,32 @@
     },
     {
       "site": "saramin",
+      "company": "코데이터솔루션(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "ML 기반 데이터 분석 사업 프로젝트 매니저 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54415482&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=a0bc1d3e-57bd-4c39-96d8-68f81202cbb6",
+      "career": "경력3년↑",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "관련 경력 3년 이상(또는 이에 준하는 경험)\n\n- IT/데이터/ML 기반 프로젝트의 기획부터 개발/테스트/적용까지 End-to-End 관리, 리딩 경험\n\n- 분석가, ML 엔지니어, 개발자 등 기술 조직과의 협업 및 커뮤니케이션 경험\n\n- 비즈니스 요구사항을 데이터, 모델, 시스템 요구사항으로 구조화할 수 있는 역량\n\n- Excel 등 기본 분석 툴 및 프로젝트 관리 툴 활용에 무리가 없는 분\n\n- 머신러닝 기본 개념(회귀, 분류, 피처, 평가지표 등)에 대한 이해 및 데이터/ML 프로젝트 경험",
+      "preferences": "- 공공/금융/제조 산업의 데이터 분석, ML 프로젝트 기획 및 PM 경험\n\n- Python, SQL 등으로 데이터 분석 및 검증을 수행한 경험 또는 데이터 분석 실무 경험\n\n- 프리랜서, 외주사, 벤더 관리 및 온사이트 프로젝트 리딩 경험\n\n- 분석 모델의 PoC 이후 현업 적용 및 운영까지 이끈 경험\n\n- B2B/B2G 제안서 작성 및 제안 발표 경험, 다수 이해관계자와의 조율, 협상 경험\n\n진행방법\n\n1\n\n서류전형\n\n이력서 및 자기소개서 검토\n\n→\n\n2\n\n면접전형\n\n필요시 1·2차 면접 진행\n\n→\n\n3\n\n최종합격\n\n개별 안내",
+      "main_tasks": "머신러닝 기반 데이터 분석 사업 프로젝트 매니저\n\n- ML 기반 데이터 분석/구축 사업의 요구사항 정의 및 프로젝트 범위, 목표, 성공지표 설정\n\n- 고객사(공공/민간) 및 내부 이해관계자 요구사항 분석을 통한 데이터 분석/구축 프로젝트 기획전략 수립\n\n- 데이터 수집, 정제, 전처리, 레이블링 등 분석 및 모델 학습을 위한 데이터 파이프 라인 요구사항 정의 및 관리\n\n- 프로젝트 일정, 마일스톤, 리스크, 이슈 관리 및 에산/원가 등 사업 관리 수행\n\n- 데이터 분석가, ML 엔지니어, 개발자, 외주사 등 기술 조직과의 협업 및 산출물, 품질 관리\n\n- PoC(시범사업) 기획, 수행 및 결과 분석, 서비스/업무 적용, 고도화 방향성 수립\n\n- 제안요청서(RFP) 분석, 제안서 작성 등 B2B/B2G 제안 및 고객사 커뮤니케이션 지원",
+      "benefits": "🏢\n\n역세권 사무실\n\n국회의사당역 도보 3분\n\n💙\n\n건강검진 지원\n\n연 1회 건강검진 지원\n\n🎓\n\n교육지원금\n\n직무 관련 교육 지원\n\n🎁\n\n명절 선물 지급\n\n연 2회 상품권 지급\n\n🎂\n\n생일자 조기퇴근\n\n0.25일 휴가 부여\n\n⏰\n\n유연근무제 운영\n\n선택형 출근시간 제도"
+    },
+    {
+      "site": "saramin",
       "company": "(주)스카이랩스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -188529,6 +188665,43 @@
     },
     {
       "site": "saramin",
+      "company": "(주)디어유",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "SRE 포지션 (경력 3~10년)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54415511&location=ts&searchword=SRE&searchType=search&paid_fl=n&search_uuid=11fb68ca-20a5-47b6-8f96-5a3b35697dab",
+      "career": "경력 3~10년",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Go",
+        "Redis",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "Kafka",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "CI/CD",
+        "Agile/Scrum"
+      ],
+      "qualifications": "• AWS 클라우드 기반 플랫폼 구축 경험(인프라 운영 및 관리 경험 필수)\n• Docker 및 ECS/EKS 운영 경험",
+      "preferences": "• 대규모 인프라 운영 경험\n• 프로젝트 관리 경험 및 Agile 방법론 이해\n• 시스템 아키텍쳐 설계 및 성능 튜닝, 모니터링 도구 개발 및 운영 경험\n• 스크립팅 역량 보유(Python, Go, Shellscript 등)\n\n마감일 및 근무지\n\n• 마감일 : 2026년 08월 07일",
+      "main_tasks": "• AWS 클라우드 기반 플랫폼 구축/운영\n• CI/CD 파이프라인 인프라 구축/운영\n• 시스템 및 서비스 장애 대응\n• 성능 테스트 및 모니터링 대응\n• 서비스 신뢰성 지표 설정 및 가용성 확보\n• 프로젝트 관리 및 팀 간 커뮤니케이션 조율\n• 서비스 개선을 위한 요구사항 수집 및 우선순위 설정",
+      "benefits": "• 출퇴근: 자율(시차)출퇴근제\n• 교육: 신입사원 교육(OJT) / 리더쉽,직무교육/ 사내 외국어 강좌운영\n• 지원금/보험: 단체상해보험 / 건강검진지원/ 독감예방접종 지원\n• 조직문화: 수평적 조직문화 / 자율복장/ 님,닉네임 문화"
+    },
+    {
+      "site": "saramin",
       "company": "(주)다날핀테크",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -195274,6 +195447,39 @@
       "preferences": "• ERP, BOS 등 업무 시스템 구축 또는 운영 경험\n\n• Tableau, Power BI 등 BI 솔루션 및 SQL 활용 경험\n\n• AI 활용 업무혁신 또는 업무자동화 경험\n\n• AWS, Azure 등 클라우드 환경 운영 경험\n\n• ISMS 또는 개인정보보호 관련 업무 경험\n\n• PMP, 정보처리기사, 정보보안기사 자격 보유자\n\n■ 기대 역할\n\n• IT 기획, 시스템 운영 및 정보보안 실무 총괄\n\n• 현업과 IT를 연결하는 핵심 실무 담당\n\n• 전사 시스템 안정화 및 지속적인 고도화\n\n• 정보보호 및 개인정보보호 체계 구축\n\n• 외부 개발사 및 솔루션 관리 체계 확립\n\n• 데이터 및 AI 기반 업무혁신 지원",
       "main_tasks": "[ IT기획 및 정보보안 실무 총괄 ]\n\n1. IT 기획 및 프로젝트 관리\n\n• 전사 IT 전략 및 운영계획 수립 및 실행\n\n• 업무 프로세스 분석 및 시스템 개선 과제 발굴\n\n• 신규 시스템 도입 및 구축 프로젝트(PM) 수행\n\n• 현업 요구사항 분석 및 요구사항 정의\n\n• 외부 개발사 및 솔루션 업체 관리\n\n2. 시스템 운영 및 관리\n\n• 예약관리시스템(BOS) 운영 및 개선\n\n• ERP, 그룹웨어 등 주요 시스템 운영 및 관리\n\n• 시스템 운영 정책 및 표준 관리\n\n• 사용자 계정 및 권한 관리\n\n• 시스템 장애 및 운영 이슈 대응\n\n3. 정보보안 및 개인정보보호\n\n• 정보보호 및 개인정보보호 정책 운영\n\n• 개인정보보호법 및 관련 법규 준수 관리\n\n• 접근권한 및 보안정책 운영\n\n• 보안 취약점 점검 및 개선\n\n• 보안사고 예방 및 대응\n\n• 외부 보안점검, 감사 및 인증 대응",
       "benefits": "• 회사내규"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)휴이노",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "정보보안 IT 인프라 담당자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54403708&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=ae21f364-edd5-410e-9703-c80f14ad0715",
+      "career": "경력5년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "AWS",
+        "GCP",
+        "Azure"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라",
+        "보안"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성",
+        "학사 이상",
+        "CI/CD"
+      ],
+      "qualifications": "ㆍ학사 이상이신 분 (전산, 정보보호, 컴퓨터공학 등 관련 전공 우대)\n\nㆍ관련 경력이 5년 이상이신 분\n\nㆍ정보보안 및 인프라 운영 경험이 있으신 분\n\nㆍ서버, 네트워크, 클라우드(AWS, Azure, GCP 등) 운영 경험이 있으신 분\n\nㆍ보안 솔루션 운영 경험이 있으신 분 (Firewall, VPN, IDS/IPS, EDR 등)\n\nㆍ정보보안 관련 인증 경험이 있으신 분 (CISSP, CISM, ISO 27001 등)\n\nㆍ시스템 모니터링 및 장애 대응 경험이 있으신 분\n\nㆍ스크립트, 자동화 도구 사용 경험이 있으신 분 (Shell, Python 등)\n\nㆍ문제 해결 능력 및 논리적인 사고를 갖추신 분",
+      "preferences": "ㆍ금융·헬스케어·의료기기 관련 인프라/보안 운영 경험이 있으신 분\n\nㆍ클라우드 환경 설계 및 운영 경험이 있으신 분\n\nㆍDevOps, CI/CD 환경 이해 및 경험이 있으신 분\n\nㆍ외부 감사 대응 경험이 있으신 분\n\nHow We Work\n\nㆍWork as\n[One Team] : 휴이너는 원팀으로 일합니다.\n\nㆍ\n[Respect] Each Other : 휴이너는 서로를 존중합니다.\n\nㆍMake\n[Impact] : 휴이너는 혁신적인 성과를 만들어갑니다.\n\nㆍClear\n[Communication] : 휴이너는 솔직하고 명확하게 소통합니다.\n\nㆍDeep\n[Focus] : 휴이너는 업무에 집중합니다.\n\nㆍTake\n[Ownership] : 휴이너는 주도적으로 일하며, 책임을 다합니다.\n\nCulture & Benefits\n\n효율적인 근무환경을 추구합니다.\n\nㆍ주40시간 유연근무제도 & 업무 집중 시간 10-16시\n\n(유연근무제는 현재 파일럿 운영중으로 회사 상황에 따라 변경 가능)\n\nㆍSpecial Monday 운영 (11:50까지 자율 출근)\nㆍ쾌적한 근무환경과 야외 휴게공간 제공\nㆍ야근 시 교통비 지원\n\n소통하며 즐겁게 일하는 문화를 지향합니다.\nㆍ팀별 업무 추진비 지급\n\nㆍ분기별 사내 이벤트 진행\nㆍ동호회 운영\nㆍ생일 축하 지원\nㆍ입사 시 웰컴키트 제공\n\n개인의 성장을 지원합니다.\n\nㆍ직무 관련 교육 지원\n\nㆍ직무 발명 보상 비용 지급\n\nㆍ퇴직연금 가입 지원\n\n모두의 건강을 생각합니다.\nㆍ매년 종합건강검진 패키지 지원\nㆍ허리 건강 위한 전직원 모션데스크 제공\nㆍ중식 제공, 야근 시 식대 지원\nㆍ장기근속 포상 제도 운영",
+      "main_tasks": "정보보안 관리\n\nㆍ전사 정보보호 / 개인정보보호 정책 및 가이드라인 수립 및 운영 개선\n\nㆍ정보보호관리체계(ISMS, ISO 27001), 개인정보보호(PIMS 등) 인증 및 외부 규제 대응\n\nㆍ개인정보 내부관리계획, 개인정보처리방침 운영 및 개선\n\nㆍ시스템 및 서비스 취약점 진단, 보안 패치 관리, 침해사고 대응 프로세스 수립 및 운영\n\nㆍ특수권한 관리, 접근통제 정책 운영 및 개선(MFA, 계정관리, 감사로그 등)\n\nㆍ전사 시스템·솔루션 사용 가이드 제공 및 보안 교육\n\nIT 인프라 운영\n\nㆍ서버(리눅스/윈도우), 네트워크, 클라우드(AWS/Azure/GCP) 기반 인프라 운영\n\nㆍ보안 솔루션, 백업/복구 체계 운영, 모니터링 시스템 운영ㆍ\n\n인프라 용량 및 성능 모니터링, 장애 대응 및 조치\n\nㆍ신규 서비스 및 내부 시스템 도입 시 인프라 아키텍처 설계 참여",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -217145,6 +217351,27 @@
     },
     {
       "site": "dev",
+      "company": "롯데손해보험",
+      "company_size": "대기업",
+      "company_size_matched": "롯데",
+      "title": "퇴직연금계리, 장기보험 지원, 장기보험 데이터분석 직무 경력채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/560232?ReturnUrl=RecruitInfo",
+      "career": "경력(1년 이상)",
+      "location": "서울 중구",
+      "dday": "~07.20(월)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "SK텔레콤",
       "company_size": "대기업",
       "company_size_matched": "SK텔레콤",
@@ -221822,41 +222049,41 @@
     }
   ],
   "stats": {
-    "total": 7429,
+    "total": 7436,
     "by_size": {
-      "중소기업": 6700,
-      "대기업": 426,
+      "중소기업": 6706,
+      "대기업": 427,
       "중견기업": 303
     },
     "by_role": {
-      "기타": 1017,
-      "DevOps/인프라": 1087,
-      "백엔드": 3149,
+      "기타": 1018,
+      "DevOps/인프라": 1091,
+      "백엔드": 3150,
       "모바일": 1117,
-      "AI/ML": 2591,
+      "AI/ML": 2593,
       "프론트엔드": 2033,
       "풀스택": 666,
       "게임": 41,
-      "데이터": 944,
+      "데이터": 949,
       "펌웨어/임베디드": 285,
-      "보안": 315,
+      "보안": 316,
       "QA": 76
     },
     "by_site": {
       "wanted": 1967,
-      "jumpit": 538,
+      "jumpit": 540,
       "jobkorea": 1209,
-      "saramin": 3326,
-      "dev": 389
+      "saramin": 3330,
+      "dev": 390
     },
     "top_tech": [
       [
         "Python",
-        2289
+        2294
       ],
       [
         "AWS",
-        1902
+        1905
       ],
       [
         "Java",
@@ -221872,7 +222099,7 @@
       ],
       [
         "Docker",
-        1166
+        1169
       ],
       [
         "Spring",
@@ -221880,11 +222107,11 @@
       ],
       [
         "Linux",
-        1000
+        1002
       ],
       [
         "JavaScript",
-        1000
+        1001
       ],
       [
         "TypeScript",
@@ -221896,11 +222123,11 @@
       ],
       [
         "Kubernetes",
-        825
+        827
       ],
       [
         "REST API",
-        816
+        817
       ],
       [
         "PostgreSQL",
@@ -221915,11 +222142,11 @@
         633
       ],
       [
-        "C++",
-        629
+        "GCP",
+        630
       ],
       [
-        "GCP",
+        "C++",
         629
       ],
       [
@@ -221928,7 +222155,7 @@
       ],
       [
         "Azure",
-        521
+        522
       ],
       [
         "PyTorch",
@@ -221940,7 +222167,7 @@
       ],
       [
         "Redis",
-        488
+        490
       ],
       [
         "Android",
@@ -221973,22 +222200,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-14T03:40:47",
-      "keyword": "통합",
-      "raw_total": 6726,
-      "deduped": 6368,
-      "active": 5901,
-      "closed": 467,
-      "site_counts": {
-        "wanted": 1303,
-        "jumpit": 493,
-        "jobkorea": 1307,
-        "saramin": 3353,
-        "dev": 270
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-14T05:10:42",
       "keyword": "통합",
@@ -225170,6 +225381,22 @@
         "jobkorea": 2525,
         "saramin": 6777,
         "dev": 670
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-09T10:34:24",
+      "keyword": "통합",
+      "raw_total": 12908,
+      "deduped": 10926,
+      "active": 7436,
+      "closed": 3490,
+      "site_counts": {
+        "wanted": 2056,
+        "jumpit": 867,
+        "jobkorea": 2526,
+        "saramin": 6788,
+        "dev": 671
       },
       "anomalies": []
     }
