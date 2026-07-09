@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-09T20:52:38",
- "total": 912,
+ "generated_at": "2026-07-09T22:42:59",
+ "total": 913,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 41
+   "count": 42
   },
   {
    "company": "AWS",
@@ -519,6 +519,39 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Why we cannot wait for better post-quantum signature algorithms",
+   "url": "https://blog.cloudflare.com/ml-dsa-will-have-to-do",
+   "published": "2026-07-09",
+   "published_ts": 1783605600.0,
+   "summary": "NIST is advancing nine new post-quantum signature algorithms as potential candidates for future standardization. We take a closer look at all of them, and argue that while they are in the works and show great potential, we should use ML-DSA for now — the best one currently available.",
+   "tags": [
+    "Post-Quantum",
+    "Security",
+    "Research",
+    "Cryptography"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "Cloudflare",
+    "Algorithm",
+    "Authentication",
+    "Cryptography",
+    "Security",
+    "TLS"
+   ],
+   "categories": [
+    "AI/ML",
+    "인프라/클라우드",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "fe867475c1adacab"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",
