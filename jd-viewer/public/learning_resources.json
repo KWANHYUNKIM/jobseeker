@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-09T10:34:45",
+  "generated_at": "2026-07-09T12:16:45",
   "source": "youtube",
-  "tech_count": 178,
+  "tech_count": 179,
   "curriculum_count": 20,
   "search_url": "https://www.youtube.com/results?search_query={tech}+강의",
   "resources": {
@@ -6095,88 +6095,6 @@
         "stage": "실전"
       }
     ],
-    "NoSQL": [
-      {
-        "title": "무료로 MongoDB Atlas 설치부터 NoSQL 구조 이해까지, 처음 배우는 데이터베이스 개념 완전 정복! 파이썬과 함께 배우는 클라우드 기반 최신 DB 입문 강의",
-        "url": "https://www.youtube.com/watch?v=CedvzGCCgn0",
-        "thumbnail": "https://i.ytimg.com/vi/CedvzGCCgn0/mqdefault.jpg",
-        "channel": "킴영감 코딩 캠프",
-        "views": 1943,
-        "length": "37:45",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "데이터베이스? SQL? NoSQL? 4분만에 정리해드립니다. (ft. AWS Innovate)",
-        "url": "https://www.youtube.com/watch?v=IAMdPn3YCG4",
-        "thumbnail": "https://i.ytimg.com/vi/IAMdPn3YCG4/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 61912,
-        "length": "4:24",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "BJ.53 NoSQL 설명!! RDB와는 어떤 차이가 있는지도 설명!! MongoDB, Redis 매우 간단한 예제 포함!!",
-        "url": "https://www.youtube.com/watch?v=sqVByJ5tbNA",
-        "thumbnail": "https://i.ytimg.com/vi/sqVByJ5tbNA/mqdefault.jpg",
-        "channel": "쉬운코드",
-        "views": 28100,
-        "length": "30:26",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자가 NoSQL 몽고DB 좋아하는 이유  [토크아이티 세미남268]",
-        "url": "https://www.youtube.com/watch?v=WCzBiv-neDA",
-        "thumbnail": "https://i.ytimg.com/vi/WCzBiv-neDA/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 8085,
-        "length": "10:20",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[취업을 위한 CS 지식] 39강. NoSQL(완강)",
-        "url": "https://www.youtube.com/watch?v=WwPvuc8YNe0",
-        "thumbnail": "https://i.ytimg.com/vi/WwPvuc8YNe0/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 433,
-        "length": "24:33",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "원조 데이터 컨설턴트 이화식 대표가 직접 알려준다. 엔코아 스터디 'NoSQL Data Modeling' 첫번째 시간",
-        "url": "https://www.youtube.com/watch?v=qF-42JOwurI",
-        "thumbnail": "https://i.ytimg.com/vi/qF-42JOwurI/mqdefault.jpg",
-        "channel": "Korea EN-CORE",
-        "views": 2646,
-        "length": "48:25",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NoSQL 데이터베이스가 빠른 이유 | LSM Tree 완전정복 | DB 의 데이터 저장 방법",
-        "url": "https://www.youtube.com/watch?v=i_vmkaR1x-I",
-        "thumbnail": "https://i.ytimg.com/vi/i_vmkaR1x-I/mqdefault.jpg",
-        "channel": "코맹탈출 - 실리콘밸리 개발이야기",
-        "views": 6612,
-        "length": "15:33",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "원조 데이터 컨설턴트 이화식 대표가 직접 알려준다. 엔코아 스터디 'NoSQL Data Modeling' 두번째 시간",
-        "url": "https://www.youtube.com/watch?v=Ho4g8MqMFh8",
-        "thumbnail": "https://i.ytimg.com/vi/Ho4g8MqMFh8/mqdefault.jpg",
-        "channel": "Korea EN-CORE",
-        "views": 1850,
-        "length": "56:06",
-        "published": "7년 전",
-        "stage": "핵심"
-      }
-    ],
     "DeepLearning": [
       {
         "title": "이 영상 하나면 '인공지능', '머신러닝', '딥러닝' 이해가 됩니다ㅣ서울대 AI박사 6분 개념정리",
@@ -6257,6 +6175,88 @@
         "length": "2:30:54",
         "published": "2년 전",
         "stage": "실전"
+      }
+    ],
+    "NoSQL": [
+      {
+        "title": "무료로 MongoDB Atlas 설치부터 NoSQL 구조 이해까지, 처음 배우는 데이터베이스 개념 완전 정복! 파이썬과 함께 배우는 클라우드 기반 최신 DB 입문 강의",
+        "url": "https://www.youtube.com/watch?v=CedvzGCCgn0",
+        "thumbnail": "https://i.ytimg.com/vi/CedvzGCCgn0/mqdefault.jpg",
+        "channel": "킴영감 코딩 캠프",
+        "views": 1943,
+        "length": "37:45",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "데이터베이스? SQL? NoSQL? 4분만에 정리해드립니다. (ft. AWS Innovate)",
+        "url": "https://www.youtube.com/watch?v=IAMdPn3YCG4",
+        "thumbnail": "https://i.ytimg.com/vi/IAMdPn3YCG4/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 61912,
+        "length": "4:24",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "BJ.53 NoSQL 설명!! RDB와는 어떤 차이가 있는지도 설명!! MongoDB, Redis 매우 간단한 예제 포함!!",
+        "url": "https://www.youtube.com/watch?v=sqVByJ5tbNA",
+        "thumbnail": "https://i.ytimg.com/vi/sqVByJ5tbNA/mqdefault.jpg",
+        "channel": "쉬운코드",
+        "views": 28100,
+        "length": "30:26",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자가 NoSQL 몽고DB 좋아하는 이유  [토크아이티 세미남268]",
+        "url": "https://www.youtube.com/watch?v=WCzBiv-neDA",
+        "thumbnail": "https://i.ytimg.com/vi/WCzBiv-neDA/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 8085,
+        "length": "10:20",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[취업을 위한 CS 지식] 39강. NoSQL(완강)",
+        "url": "https://www.youtube.com/watch?v=WwPvuc8YNe0",
+        "thumbnail": "https://i.ytimg.com/vi/WwPvuc8YNe0/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 433,
+        "length": "24:33",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "원조 데이터 컨설턴트 이화식 대표가 직접 알려준다. 엔코아 스터디 'NoSQL Data Modeling' 첫번째 시간",
+        "url": "https://www.youtube.com/watch?v=qF-42JOwurI",
+        "thumbnail": "https://i.ytimg.com/vi/qF-42JOwurI/mqdefault.jpg",
+        "channel": "Korea EN-CORE",
+        "views": 2646,
+        "length": "48:25",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NoSQL 데이터베이스가 빠른 이유 | LSM Tree 완전정복 | DB 의 데이터 저장 방법",
+        "url": "https://www.youtube.com/watch?v=i_vmkaR1x-I",
+        "thumbnail": "https://i.ytimg.com/vi/i_vmkaR1x-I/mqdefault.jpg",
+        "channel": "코맹탈출 - 실리콘밸리 개발이야기",
+        "views": 6612,
+        "length": "15:33",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "원조 데이터 컨설턴트 이화식 대표가 직접 알려준다. 엔코아 스터디 'NoSQL Data Modeling' 두번째 시간",
+        "url": "https://www.youtube.com/watch?v=Ho4g8MqMFh8",
+        "thumbnail": "https://i.ytimg.com/vi/Ho4g8MqMFh8/mqdefault.jpg",
+        "channel": "Korea EN-CORE",
+        "views": 1850,
+        "length": "56:06",
+        "published": "7년 전",
+        "stage": "핵심"
       }
     ],
     "Selenium": [
@@ -8309,6 +8309,88 @@
         "stage": "실전"
       }
     ],
+    "MachineLearning": [
+      {
+        "title": "기계학습Machine learning 입문하기 강의 v1",
+        "url": "https://www.youtube.com/watch?v=G1ZffiP-Qtc",
+        "thumbnail": "https://i.ytimg.com/vi/G1ZffiP-Qtc/mqdefault.jpg",
+        "channel": "who??",
+        "views": 159,
+        "length": "9:53",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "기계학습Machine learning 입문하기 강의 v3",
+        "url": "https://www.youtube.com/watch?v=MCa1G6sOhT0",
+        "thumbnail": "https://i.ytimg.com/vi/MCa1G6sOhT0/mqdefault.jpg",
+        "channel": "who??",
+        "views": 40,
+        "length": "12:22",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Day1-07) 기계학습 이론 강의 - Basics of Machine Learning",
+        "url": "https://www.youtube.com/watch?v=kV-N6vC4thY",
+        "thumbnail": "https://i.ytimg.com/vi/kV-N6vC4thY/mqdefault.jpg",
+        "channel": "수리수리과학연구소",
+        "views": 124,
+        "length": "33:55",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "서동일 교수의 AI 강의 1:AI, 기계학습(Machine Learning) 그리고 딥러닝(Deep Learning Part) 소개_I",
+        "url": "https://www.youtube.com/watch?v=4zYnyYDOHHo",
+        "thumbnail": "https://i.ytimg.com/vi/4zYnyYDOHHo/mqdefault.jpg",
+        "channel": "Dongil Seo",
+        "views": 114,
+        "length": "22:21",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Stanford CS229: Machine Learning Course, Lecture 1 - Andrew Ng (Autumn 2018)",
+        "url": "https://www.youtube.com/watch?v=jGwO_UgTS7I",
+        "thumbnail": "https://i.ytimg.com/vi/jGwO_UgTS7I/mqdefault.jpg",
+        "channel": "Stanford Online",
+        "views": 4583127,
+        "length": "1:15:20",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lecture 1 \"Supervised Learning Setup\" -Cornell CS4780 Machine Learning for Decision Making SP17",
+        "url": "https://www.youtube.com/watch?v=MrLPzBxG95I",
+        "thumbnail": "https://i.ytimg.com/vi/MrLPzBxG95I/mqdefault.jpg",
+        "channel": "Kilian Weinberger",
+        "views": 274127,
+        "length": "47:49",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(ML Lecture 00-1)  Introduction of  Machine Learning",
+        "url": "https://www.youtube.com/watch?v=vOgp5sdCnyM",
+        "thumbnail": "https://i.ytimg.com/vi/vOgp5sdCnyM/mqdefault.jpg",
+        "channel": "Korean Engineers",
+        "views": 187,
+        "length": "38:57",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[딥러닝 강의] Lec 1-1. Linear Regression (Machine Learning)",
+        "url": "https://www.youtube.com/watch?v=75p562VJzBk",
+        "thumbnail": "https://i.ytimg.com/vi/75p562VJzBk/mqdefault.jpg",
+        "channel": "raid lab.",
+        "views": 235,
+        "length": "12:55",
+        "published": "7년 전",
+        "stage": "핵심"
+      }
+    ],
     "NLP": [
       {
         "title": "토큰화, 벡터화, 임베딩 무슨 차이일까? - NLP와 LLM 텍스트 데이터 기초 용어 이해하기",
@@ -8471,88 +8553,6 @@
         "length": "8:44",
         "published": "5개월 전",
         "stage": "실전"
-      }
-    ],
-    "MachineLearning": [
-      {
-        "title": "기계학습Machine learning 입문하기 강의 v1",
-        "url": "https://www.youtube.com/watch?v=G1ZffiP-Qtc",
-        "thumbnail": "https://i.ytimg.com/vi/G1ZffiP-Qtc/mqdefault.jpg",
-        "channel": "who??",
-        "views": 159,
-        "length": "9:53",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "기계학습Machine learning 입문하기 강의 v3",
-        "url": "https://www.youtube.com/watch?v=MCa1G6sOhT0",
-        "thumbnail": "https://i.ytimg.com/vi/MCa1G6sOhT0/mqdefault.jpg",
-        "channel": "who??",
-        "views": 40,
-        "length": "12:22",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Day1-07) 기계학습 이론 강의 - Basics of Machine Learning",
-        "url": "https://www.youtube.com/watch?v=kV-N6vC4thY",
-        "thumbnail": "https://i.ytimg.com/vi/kV-N6vC4thY/mqdefault.jpg",
-        "channel": "수리수리과학연구소",
-        "views": 124,
-        "length": "33:55",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "서동일 교수의 AI 강의 1:AI, 기계학습(Machine Learning) 그리고 딥러닝(Deep Learning Part) 소개_I",
-        "url": "https://www.youtube.com/watch?v=4zYnyYDOHHo",
-        "thumbnail": "https://i.ytimg.com/vi/4zYnyYDOHHo/mqdefault.jpg",
-        "channel": "Dongil Seo",
-        "views": 114,
-        "length": "22:21",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Stanford CS229: Machine Learning Course, Lecture 1 - Andrew Ng (Autumn 2018)",
-        "url": "https://www.youtube.com/watch?v=jGwO_UgTS7I",
-        "thumbnail": "https://i.ytimg.com/vi/jGwO_UgTS7I/mqdefault.jpg",
-        "channel": "Stanford Online",
-        "views": 4583127,
-        "length": "1:15:20",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lecture 1 \"Supervised Learning Setup\" -Cornell CS4780 Machine Learning for Decision Making SP17",
-        "url": "https://www.youtube.com/watch?v=MrLPzBxG95I",
-        "thumbnail": "https://i.ytimg.com/vi/MrLPzBxG95I/mqdefault.jpg",
-        "channel": "Kilian Weinberger",
-        "views": 274127,
-        "length": "47:49",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(ML Lecture 00-1)  Introduction of  Machine Learning",
-        "url": "https://www.youtube.com/watch?v=vOgp5sdCnyM",
-        "thumbnail": "https://i.ytimg.com/vi/vOgp5sdCnyM/mqdefault.jpg",
-        "channel": "Korean Engineers",
-        "views": 187,
-        "length": "38:57",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[딥러닝 강의] Lec 1-1. Linear Regression (Machine Learning)",
-        "url": "https://www.youtube.com/watch?v=75p562VJzBk",
-        "thumbnail": "https://i.ytimg.com/vi/75p562VJzBk/mqdefault.jpg",
-        "channel": "raid lab.",
-        "views": 235,
-        "length": "12:55",
-        "published": "7년 전",
-        "stage": "핵심"
       }
     ],
     "Shell": [
@@ -9949,6 +9949,88 @@
         "stage": "실전"
       }
     ],
+    "Zustand": [
+      {
+        "title": "18강 - Zustand Part 2 [ React 입문 코스 ]",
+        "url": "https://www.youtube.com/watch?v=7Sbi5hugMbo",
+        "thumbnail": "https://i.ytimg.com/vi/7Sbi5hugMbo/mqdefault.jpg",
+        "channel": "코딩개구리",
+        "views": 99,
+        "length": "35:10",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "17강 - Zustand Part 1 [ React 입문 코스 ]",
+        "url": "https://www.youtube.com/watch?v=DD4fBa5GNnw",
+        "thumbnail": "https://i.ytimg.com/vi/DD4fBa5GNnw/mqdefault.jpg",
+        "channel": "코딩개구리",
+        "views": 131,
+        "length": "26:45",
+        "published": "3개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "리액트가 쉬워지는 채신기술 Zustand",
+        "url": "https://www.youtube.com/watch?v=zNHZJ_iEMPA",
+        "thumbnail": "https://i.ytimg.com/vi/zNHZJ_iEMPA/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 64693,
+        "length": "6:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리액트 - 26강: Zustand로 상태 관리하기 上",
+        "url": "https://www.youtube.com/watch?v=X2R8WmgQxkA",
+        "thumbnail": "https://i.ytimg.com/vi/X2R8WmgQxkA/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 663,
+        "length": "9:21",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Chapter 09. 가볍고 간단한 Zustand",
+        "url": "https://www.youtube.com/watch?v=NOdAIlFreOI",
+        "thumbnail": "https://i.ytimg.com/vi/NOdAIlFreOI/mqdefault.jpg",
+        "channel": "용코딩",
+        "views": 708,
+        "length": "44:30",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Chapter 09.  Zustand를 활용하여 쇼핑카트 서비스 리팩토링",
+        "url": "https://www.youtube.com/watch?v=2oam8kJ40lY",
+        "thumbnail": "https://i.ytimg.com/vi/2oam8kJ40lY/mqdefault.jpg",
+        "channel": "용코딩",
+        "views": 676,
+        "length": "26:54",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Zustand] 5분만에 장점 + 사용법 까지 알아보자 feat. 메모웹앱 만들기",
+        "url": "https://www.youtube.com/watch?v=nrljw-UwBcU",
+        "thumbnail": "https://i.ytimg.com/vi/nrljw-UwBcU/mqdefault.jpg",
+        "channel": "잡캐헨리 - 함께 성장해요 프론트엔드 개발",
+        "views": 11651,
+        "length": "6:35",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "프론트엔드 상태관리 실전 편 with React Query & Zustand #우아콘2023 #우아한형제들",
+        "url": "https://www.youtube.com/watch?v=nkXIpGjVxWU",
+        "thumbnail": "https://i.ytimg.com/vi/nkXIpGjVxWU/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 34014,
+        "length": "36:34",
+        "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
     "Tableau": [
       {
         "title": "태블로(Tableau) Full 기초 교육 영상 Part.1 태블로 시작하기 [플랜잇]",
@@ -10848,88 +10930,6 @@
         "views": 15770,
         "length": "28:53",
         "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
-    "Zustand": [
-      {
-        "title": "18강 - Zustand Part 2 [ React 입문 코스 ]",
-        "url": "https://www.youtube.com/watch?v=7Sbi5hugMbo",
-        "thumbnail": "https://i.ytimg.com/vi/7Sbi5hugMbo/mqdefault.jpg",
-        "channel": "코딩개구리",
-        "views": 99,
-        "length": "35:10",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "17강 - Zustand Part 1 [ React 입문 코스 ]",
-        "url": "https://www.youtube.com/watch?v=DD4fBa5GNnw",
-        "thumbnail": "https://i.ytimg.com/vi/DD4fBa5GNnw/mqdefault.jpg",
-        "channel": "코딩개구리",
-        "views": 131,
-        "length": "26:45",
-        "published": "3개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "리액트가 쉬워지는 채신기술 Zustand",
-        "url": "https://www.youtube.com/watch?v=zNHZJ_iEMPA",
-        "thumbnail": "https://i.ytimg.com/vi/zNHZJ_iEMPA/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 64693,
-        "length": "6:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리액트 - 26강: Zustand로 상태 관리하기 上",
-        "url": "https://www.youtube.com/watch?v=X2R8WmgQxkA",
-        "thumbnail": "https://i.ytimg.com/vi/X2R8WmgQxkA/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 663,
-        "length": "9:21",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Chapter 09. 가볍고 간단한 Zustand",
-        "url": "https://www.youtube.com/watch?v=NOdAIlFreOI",
-        "thumbnail": "https://i.ytimg.com/vi/NOdAIlFreOI/mqdefault.jpg",
-        "channel": "용코딩",
-        "views": 708,
-        "length": "44:30",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Chapter 09.  Zustand를 활용하여 쇼핑카트 서비스 리팩토링",
-        "url": "https://www.youtube.com/watch?v=2oam8kJ40lY",
-        "thumbnail": "https://i.ytimg.com/vi/2oam8kJ40lY/mqdefault.jpg",
-        "channel": "용코딩",
-        "views": 676,
-        "length": "26:54",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Zustand] 5분만에 장점 + 사용법 까지 알아보자 feat. 메모웹앱 만들기",
-        "url": "https://www.youtube.com/watch?v=nrljw-UwBcU",
-        "thumbnail": "https://i.ytimg.com/vi/nrljw-UwBcU/mqdefault.jpg",
-        "channel": "잡캐헨리 - 함께 성장해요 프론트엔드 개발",
-        "views": 11651,
-        "length": "6:35",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "프론트엔드 상태관리 실전 편 with React Query & Zustand #우아콘2023 #우아한형제들",
-        "url": "https://www.youtube.com/watch?v=nkXIpGjVxWU",
-        "thumbnail": "https://i.ytimg.com/vi/nkXIpGjVxWU/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 34014,
-        "length": "36:34",
-        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -12724,6 +12724,88 @@
         "views": 27361,
         "length": "11:42",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Playwright": [
+      {
+        "title": "10분만에 배우는 웹크롤링! 쇼핑몰 크롤링으로 Playwright 기초 배우기!",
+        "url": "https://www.youtube.com/watch?v=K7cO8d1Wf1U",
+        "thumbnail": "https://i.ytimg.com/vi/K7cO8d1Wf1U/mqdefault.jpg",
+        "channel": "원투코딩 OneTwoCoding",
+        "views": 8607,
+        "length": "18:51",
+        "published": "8개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Playwright MCP를 쓰면 직접 클릭해가면서 테스트 할 필요 없습니다",
+        "url": "https://www.youtube.com/watch?v=feognUBShqI",
+        "thumbnail": "https://i.ytimg.com/vi/feognUBShqI/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 34269,
+        "length": "19:16",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "테스트 코드 직접 작성하지 마세요 | Cursor + Playwright",
+        "url": "https://www.youtube.com/watch?v=3zOkNHf6sik",
+        "thumbnail": "https://i.ytimg.com/vi/3zOkNHf6sik/mqdefault.jpg",
+        "channel": "개발동생",
+        "views": 16041,
+        "length": "25:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "쇼핑 트렌드 분석하기(1부) - 파이썬 Playwright 웹 자동화 첫걸음",
+        "url": "https://www.youtube.com/watch?v=TjBzCSUGw40",
+        "thumbnail": "https://i.ytimg.com/vi/TjBzCSUGw40/mqdefault.jpg",
+        "channel": "문현일 MOON HYUNIL",
+        "views": 1164,
+        "length": "10:44",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "바이브 코딩, 반드시 알아야 하는 것 (Playwright MCP 1편)",
+        "url": "https://www.youtube.com/watch?v=z4HfvrPA_kI",
+        "thumbnail": "https://i.ytimg.com/vi/z4HfvrPA_kI/mqdefault.jpg",
+        "channel": "조코딩AX파트너스",
+        "views": 11750,
+        "length": "6:13",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "알아두면 좋을 MCP 서버 5가지! Playwright, Context 7, Magic,  Task Master, Sequential Thinking  [세미남639@토크아이티]",
+        "url": "https://www.youtube.com/watch?v=Jz4Frsy_MZk",
+        "thumbnail": "https://i.ytimg.com/vi/Jz4Frsy_MZk/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 19662,
+        "length": "6:29",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jenkins를 활용한 CI/CD - 4.9 [실습] Playwright를 활용한 E2E 테스트",
+        "url": "https://www.youtube.com/watch?v=6oE_2Gk__cI",
+        "thumbnail": "https://i.ytimg.com/vi/6oE_2Gk__cI/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 58,
+        "length": "13:21",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Jenkins를 활용한 CI/CD - 4.10 [실습] Playwright 테스트 보고서 HTML로 발행하기",
+        "url": "https://www.youtube.com/watch?v=fWSUdfYXf1U",
+        "thumbnail": "https://i.ytimg.com/vi/fWSUdfYXf1U/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 46,
+        "length": "3:29",
+        "published": "2개월 전",
         "stage": "실전"
       }
     ],
