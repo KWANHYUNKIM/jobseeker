@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-10T00:24:09",
- "total": 913,
+ "generated_at": "2026-07-10T02:05:49",
+ "total": 914,
  "sources": [
   {
    "company": "Etsy",
@@ -30,7 +30,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 36
+   "count": 37
   },
   {
    "company": "토스",
@@ -312,8 +312,8 @@
   "Angular": "프론트엔드",
   "Transformer": "LLM/생성형",
   "Assembly": "언어",
-  "Android": "모바일",
   "Datadog": "관측성",
+  "Android": "모바일",
   "Vue": "프론트엔드",
   "Ansible": "인프라/클라우드",
   "pgvector": "데이터베이스",
@@ -519,6 +519,36 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How GitHub gave every repository a durable owner",
+   "url": "https://github.blog/security/application-security/how-github-gave-every-repository-a-durable-owner",
+   "published": "2026-07-09",
+   "published_ts": 1783614577.0,
+   "summary": "GitHub had over 14,000 repositories. Fewer than half had clear ownership. Here's how we gave every active repository a validated owner in under 45 days, archived the rest, and made ownership the foundation for everything that followed.\n\nThe post How GitHub gave every repository a durable owner appeared first on The GitHub Blog.",
+   "tags": [
+    "Application security",
+    "Governance & compliance",
+    "Security",
+    "governance",
+    "repository management"
+   ],
+   "tech_stack": [
+    "GitHub Actions",
+    "Kubernetes",
+    "Datadog",
+    "Security"
+   ],
+   "categories": [
+    "인프라/클라우드",
+    "관측성",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "aec348218352950e"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",
