@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-10T12:34:35",
- "total": 919,
+ "generated_at": "2026-07-10T14:16:51",
+ "total": 920,
  "sources": [
   {
    "company": "Etsy",
@@ -10,7 +10,7 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 49
+   "count": 50
   },
   {
    "company": "Cloudflare",
@@ -520,6 +520,29 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "Building more than just an agent harness​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌​​﻿‌‌​﻿​﻿‌‍‌‍​﻿‍‌​﻿​﻿​﻿‌‌​﻿‍​​‍﻿‌​﻿​﻿‌‍​‍‌‍​‍​﻿​‍​‍﻿‌​﻿‌​‌‍‌‍​﻿‌‍​﻿‍‌​‍﻿‌‌‍​‌‌‍‌‌‌‍​‍‌‍‌‌​‍﻿‌‌‍‌​​﻿​﻿​﻿​‌‌‍‌​​﻿​‌​﻿‍‌​﻿‌‌​﻿​‍​﻿​‍‌‍​﻿‌‍‌​​﻿‌​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌​​﻿‌‌​﻿​﻿‌‍‌‍​﻿‍‌​﻿​﻿​﻿‌‌​﻿‍​​‍﻿‌​﻿​﻿‌‍​‍‌‍​‍​﻿​‍​‍﻿‌​﻿‌​‌‍‌‍​﻿‌‍​﻿‍‌​‍﻿‌‌‍​‌‌‍‌‌‌‍​‍‌‍‌‌​‍﻿‌‌‍‌​​﻿​﻿​﻿​‌‌‍‌​​﻿​‌​﻿‍‌​﻿‌‌​﻿​‍​﻿​‍‌‍​﻿‌‍‌​​﻿‌​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/07/10/building-more-than-just-an-agent-harness",
+   "published": "2026-07-10",
+   "published_ts": 1783669200.0,
+   "summary": "Live from Microsoft Build, Ryan is joined by Jay Parikh, Microsoft’s VP of AI Core, for a conversation on what enterprises need to build, deploy, and run AI agents at scale with demonstrable ROI; how Microsoft built an end-to-end agent development system that goes past just the harness; and how you can evaluate for reliability and correctness in models that get more intelligent and autonomous everyday.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿…",
+   "tags": [
+    "podcast",
+    "se-tech",
+    "se-stackoverflow",
+    "ai",
+    "microsoft",
+    "agentic-ai",
+    "software-development"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "510876b51f48322c"
+  },
   {
    "key": "line",
    "company": "LINE",
