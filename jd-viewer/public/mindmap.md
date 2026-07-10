@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7453건** 공고 · **1383개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-11 02:27
+- 총 **7457건** 공고 · **1383개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-11 04:08
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -12041,6 +12041,35 @@ markmap:
   - [중급 백엔드 개발자 (8~10년) ↗](https://jumpit.saramin.co.kr/position/54011373)
   - [고급 백엔드 설계 개발자(10~12년) ↗](https://jumpit.saramin.co.kr/position/54011385)
 
+### 위밋모빌리티 `중소기업` · 6건
+- **백엔드** [4건] · `Python` `AWS` `Kubernetes` `FastAPI` `Docker` `Kafka`
+  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
+  - [AI/ML 엔지니어 ↗](https://www.wanted.co.kr/wd/364462)
+  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
+  - [(주)위밋모빌리티 AI FM 모델 개발 · MLOps 백엔드/플랫폼 경력 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54410624&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b243805b-5a5e-458f-9c1c-0d650e6ac5aa)
+- **프론트엔드** [2건] · `Python` `FastAPI` `PostgreSQL` `Redis` `AWS` `GCP`
+  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
+  - [AI/ML 엔지니어 ↗](https://www.wanted.co.kr/wd/364462)
+- **풀스택** [1건] · `Python` `FastAPI` `PostgreSQL` `Redis` `AWS` `GCP`
+  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
+- **모바일** [1건] · `Kotlin` `Go` `Node.js` `Spring` `AWS` `Kubernetes`
+  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
+- **AI/ML** [4건] · `Python` `AWS` `Kubernetes` `FastAPI` `Docker` `Kafka`
+  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
+  - [AI/ML 엔지니어 ↗](https://www.wanted.co.kr/wd/364462)
+  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
+  - [(주)위밋모빌리티 AI FM 모델 개발 · MLOps 백엔드/플랫폼 경력 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54410624&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b243805b-5a5e-458f-9c1c-0d650e6ac5aa)
+- **데이터** [2건] · `Python` `AWS` `Docker` `Kubernetes` `Kafka` `FastAPI`
+  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
+  - [(주)위밋모빌리티 AI FM 모델 개발 · MLOps 백엔드/플랫폼 경력 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54410624&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b243805b-5a5e-458f-9c1c-0d650e6ac5aa)
+- **DevOps/인프라** [5건] · `AWS` `Kubernetes` `Python` `Docker` `Terraform` `Kafka`
+  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
+  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
+  - [DevOps 개발 및 인프라 담당자 ↗](https://www.wanted.co.kr/wd/364457)
+  - [보안 엔지니어 ↗](https://www.wanted.co.kr/wd/367896)
+- **보안** [1건] · `AWS`
+  - [보안 엔지니어 ↗](https://www.wanted.co.kr/wd/367896)
+
 ### 코보시스 `중소기업` · 6건
 - **백엔드** [5건] · `Flutter` `REST API` `Java` `Go` `Dart` `iOS`
   - [Flutter 개발자 ↗](https://www.wanted.co.kr/wd/341728)
@@ -12073,32 +12102,6 @@ markmap:
   - [(플랫폼개발팀) Java 개발자 ↗](https://jumpit.saramin.co.kr/position/53957489)
 - **DevOps/인프라** [1건] · `Java` `AWS` `Docker` `Kubernetes` `Terraform` `Git`
   - [DevOps 시스템 관리자 ↗](https://jumpit.saramin.co.kr/position/53957483)
-
-### 위밋모빌리티 `중소기업` · 5건
-- **백엔드** [3건] · `Python` `FastAPI` `AWS` `Kubernetes` `PostgreSQL` `Redis`
-  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
-  - [AI/ML 엔지니어 ↗](https://www.wanted.co.kr/wd/364462)
-  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
-- **프론트엔드** [2건] · `Python` `FastAPI` `PostgreSQL` `Redis` `AWS` `GCP`
-  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
-  - [AI/ML 엔지니어 ↗](https://www.wanted.co.kr/wd/364462)
-- **풀스택** [1건] · `Python` `FastAPI` `PostgreSQL` `Redis` `AWS` `GCP`
-  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
-- **모바일** [1건] · `Kotlin` `Go` `Node.js` `Spring` `AWS` `Kubernetes`
-  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
-- **AI/ML** [3건] · `Python` `FastAPI` `AWS` `Kubernetes` `PostgreSQL` `Redis`
-  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
-  - [AI/ML 엔지니어 ↗](https://www.wanted.co.kr/wd/364462)
-  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
-- **데이터** [1건] · `Python` `FastAPI` `PostgreSQL` `Redis` `AWS` `GCP`
-  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
-- **DevOps/인프라** [4건] · `AWS` `Kubernetes` `Terraform` `Python` `FastAPI` `PostgreSQL`
-  - [AI 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/364461)
-  - [Forward Deployed Engineer (FDE) — 물류 AI 솔루션 ↗](https://www.wanted.co.kr/wd/373420)
-  - [DevOps 개발 및 인프라 담당자 ↗](https://www.wanted.co.kr/wd/364457)
-  - [보안 엔지니어 ↗](https://www.wanted.co.kr/wd/367896)
-- **보안** [1건] · `AWS`
-  - [보안 엔지니어 ↗](https://www.wanted.co.kr/wd/367896)
 
 ### 퍼플아이오 `중소기업` · 5건
 - **백엔드** [4건] · `React` `Next.js` `AWS` `GitLab CI` `Git` `REST API`

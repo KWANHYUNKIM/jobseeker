@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-11T02:26:54",
-  "source_dir": "screenshots/all_통합_20260711_022635",
+  "generated_at": "2026-07-11T04:07:58",
+  "source_dir": "screenshots/all_통합_20260711_040739",
   "keyword": "통합",
   "jobs": [
     {
@@ -142165,6 +142165,48 @@
     },
     {
       "site": "saramin",
+      "company": "(주)위밋모빌리티",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)위밋모빌리티 AI FM 모델 개발 · MLOps 백엔드/플랫폼 경력 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54410624&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b243805b-5a5e-458f-9c1c-0d650e6ac5aa",
+      "career": "경력무관",
+      "location": "서울관악구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Spring",
+        "Spring Boot",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "GitHub Actions",
+        "TensorFlow",
+        "PyTorch",
+        "Scikit-learn",
+        "Kafka",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "DevOps/인프라",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "CI/CD"
+      ],
+      "qualifications": "• 경력 무관\n\n• 학력무관\n\n• AI 모델 개발 실무 경험 있으신 분\n\n• Python 기반 개발 역량 보유하신 분\n\n• 백엔드 API 설계 경험 있으신 분\n\n• 컨테이너 운영 경험 보유하신 분\n\n• 협업 문서화 역량 갖추신 분",
+      "preferences": "• Kubeflow, MLflow, Airflow 등 MLOps/워크플로우 오케스트레이션 도구 사용 경험\n\n• 모델 서빙 및 실시간 추론 시스템 구축 경험\n\n• 시계열 예측 및 수요 예측 모델링 경험 (통계 모델, 부스팅 계열, 딥러닝 등)\n\n• Python 및 주요 ML 라이브러리(scikit-learn, PyTorch, TensorFlow 등) 활용 능력\n\n• Spark, Kafka 등 대규모 데이터 처리·스트리밍 경험\n\n• Docker, Kubernetes 기반 컨테이너 환경 운영 경험\n\n• 클라우드 환경(AWS/NCP)에서의 서비스 배포·운영 경험\n\n• CI/CD(Jenkins, GitHub Actions 등) 파이프라인 구축 경험\n\n• 모니터링/관측성 도구(Prometheus, Grafana 등) 활용 경험\n\n• Spring Boot 등 주요 백엔드 프레임워크 실무 경험\n\n• 물류/공공 바우처 등 도메인 데이터 경험",
+      "main_tasks": "• 주문/수요 예측용 데이터 수집·정제·피처 엔지니어링 및 데이터 파이프라인 설계·구축\n\n• 시계열/수요 예측 모델의 학습·검증·성능 개선\n\n• 모델 서빙 API 개발 및 백엔드 서비스와의 안정적 연동\n\n• 모델 학습–배포–운영을 자동화하는 MLOps 파이프라인 구축·운영 (CI/CD, 모델 버전 관리, 실험 추적, 피처 스토어 등)\n\n• 예측 정확도·모델 성능·데이터 드리프트 모니터링, 알림 체계 및 재학습 기준 정의\n\n• Git 기반 협업 워크플로우(브랜치 전략, 코드 리뷰, PR) 운영 및 정착",
+      "benefits": "• 유연근무제를 시행합니다\n\n• 업무 장비를 지원합니다\n\n• 교육·세미나 참여를 지원합니다\n\n• 성과에 따른 보상을 제공합니다\n\n• 자유로운 연차 사용을 지원합니다"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -200630,6 +200672,43 @@
     },
     {
       "site": "saramin",
+      "company": "(주)코드제이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "함께 근무할 JAVA 프로그램 개발자를 모집합니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54430884&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=4eab3a4e-c538-4699-97d6-b2b577b8af9d",
+      "career": "경력 5~10년",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Vue",
+        "Spring",
+        "Django",
+        "FastAPI",
+        "PostgreSQL",
+        "Oracle",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질"
+      ],
+      "qualifications": "- Java 및 Spring/SpringBoot 기반 서버 개발 경력 8년 이상이신 분\n\n- SOAP WebService(Spring WS, JAXB2, WSDL) 연동 개발 경험이 있으신 분\n\n- Spring Batch를 활용한 배치 시스템 설계 및 개발 경험이 있으신 분\n\n- Socket 통신(TCP/IP), FTP/SFTP 프로토콜 기반 데이터 연동 개발 경험이 있으신 분\n\n- 외부 시스템 연동(API, 파일, 프로토콜) 개발 및 운영 경험이 풍부하신 분\n\n- 비동기 처리(CompletableFuture, @Async, Reactor 등) 및 멀티스레드 프로그래밍 경험이 있으신 분\n\n- Git 기반 협업 및 코드 리뷰 경험이 있으신 분\n\n- 관계형 데이터베이스(PostgreSQL 또는 Oracle) 사용 경험이 있으신 분\n\n• 경력 5년 이상 ~ 10년 이하\n\n• 대학교졸업(4년)이상",
+      "preferences": "- EPP(Extensible Provisioning Protocol) 또는 TELNET/SSH 기반 장비 접근 프로토콜 개발 경험이 있으신 분\n\n- 독립 데몬 프로세스를 SpringBoot 서비스로 통합한 경험이 있으신 분\n\n- Python(Django/FastAPI) 기반 서비스 개발 경험이 있으신 분\n\n- 대규모 FTP/SFTP 배치 수집(다수 거점 순차/병렬 수집) 개발 경험이 있으신 분\n\n- SSL/TLS 인증서 관리, AES 암호화 등 보안 통신 구현 경험이 있으신 분\n\n- 배치 모니터링 및 장애 대응 체계 구축 경험이 있으신 분\n\n- 네트워크 장비(Nokia/Cisco/Juniper) 관리 프로토콜에 대한 이해가 있으신 분\n\n- 통신/ISP 분야 시스템 연동 개발 경험이 있으신 분\n\n- AI 개발 도구(Claude Code 등)를 활용한 개발 경험이 있으신 분\n\n- 경력 3년 이상 (협의가능)\n\n- Vue.js 개발 경험\n\n- Java / Spring Framework 기반 개발 경험\n\n- RESTful API 이해 및 연동 경험\n\n- SQL 작성 가능자 (기본적인 쿼리 작성 및 분석)",
+      "main_tasks": "프로젝트 수행 일정 : 8~10개월\n\n- WEB 서버와 분리된 별도의 연동 전용 SpringBoot 어플리케이션을 설계·구축하고, 외부 시스템 연동 및 스케줄러 전반을 담당합니다.\n\n- 타시스템 실시간 SOAP 연동 서비스를 SpringBoot WS로 전환합니다.\n\n- 배치 연동 100+ 건을 Spring Batch 기반 스케줄러로 전환합니다.\n\n- Python Django 3.1.4 서비스를 Django 5.x / Python 3.13으로 전환합니다.\n\n- SOAP over HTTPS, EPP over SSL/TLS, FTP→SFTP 전환 등 외부 연동 구간 통신 암호화를 유지·개선합니다.\n\n- WEB 어플리케이션과의 내부 API 인터페이스를 설계하고 연동 측 서비스를 제공합니다.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)KH인재교육원",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -204366,6 +204445,53 @@
       "location": "충북음성군",
       "dday": "",
       "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)서울커뮤니케이션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "7/20접수마감 [HL만도]판교 SW검증 채용 (연4100만 이상)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54432593&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=ff80339b-d9b9-4ae7-b680-f0db1e3c7b5d",
+      "career": "경력무관",
+      "location": "서울전체 | 4,100 만원",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)에스테이트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[일경험]인턴형 참여자 모집(경영사무/마케팅/인사/교육/사서/IT)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54433761&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=ff80339b-d9b9-4ae7-b680-f0db1e3c7b5d",
+      "career": "경력무관",
+      "location": "서울강남구 | 교육생",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
       "tech_tags": [],
       "roles": [
         "기타"
@@ -222324,23 +222450,23 @@
     }
   ],
   "stats": {
-    "total": 7453,
+    "total": 7457,
     "by_size": {
-      "중소기업": 6714,
+      "중소기업": 6718,
       "대기업": 441,
       "중견기업": 298
     },
     "by_role": {
-      "기타": 1024,
-      "DevOps/인프라": 1086,
-      "백엔드": 3143,
+      "기타": 1026,
+      "DevOps/인프라": 1087,
+      "백엔드": 3145,
       "모바일": 1120,
-      "AI/ML": 2613,
-      "프론트엔드": 2022,
+      "AI/ML": 2614,
+      "프론트엔드": 2023,
       "풀스택": 661,
       "게임": 42,
-      "데이터": 955,
-      "펌웨어/임베디드": 287,
+      "데이터": 956,
+      "펌웨어/임베디드": 288,
       "보안": 324,
       "QA": 77
     },
@@ -222348,21 +222474,21 @@
       "wanted": 2003,
       "jumpit": 547,
       "jobkorea": 1186,
-      "saramin": 3299,
+      "saramin": 3303,
       "dev": 418
     },
     "top_tech": [
       [
         "Python",
-        2276
+        2280
       ],
       [
         "AWS",
-        1900
+        1901
       ],
       [
         "Java",
-        1830
+        1831
       ],
       [
         "React",
@@ -222370,15 +222496,15 @@
       ],
       [
         "Git",
-        1184
+        1186
       ],
       [
         "Docker",
-        1164
+        1165
       ],
       [
         "Spring",
-        1054
+        1056
       ],
       [
         "JavaScript",
@@ -222398,7 +222524,7 @@
       ],
       [
         "Kubernetes",
-        822
+        823
       ],
       [
         "REST API",
@@ -222406,7 +222532,7 @@
       ],
       [
         "PostgreSQL",
-        769
+        770
       ],
       [
         "Node.js",
@@ -222414,7 +222540,7 @@
       ],
       [
         "Spring Boot",
-        632
+        633
       ],
       [
         "GCP",
@@ -222422,7 +222548,7 @@
       ],
       [
         "C++",
-        625
+        626
       ],
       [
         "Next.js",
@@ -222434,7 +222560,7 @@
       ],
       [
         "PyTorch",
-        504
+        505
       ],
       [
         "CSS",
@@ -222454,7 +222580,7 @@
       ],
       [
         "FastAPI",
-        434
+        435
       ],
       [
         "iOS",
@@ -222466,31 +222592,15 @@
       ],
       [
         "Vue",
-        387
+        388
       ],
       [
         "Kafka",
-        371
+        372
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-15T20:51:10",
-      "keyword": "통합",
-      "raw_total": 7091,
-      "deduped": 6649,
-      "active": 6019,
-      "closed": 630,
-      "site_counts": {
-        "wanted": 1349,
-        "jumpit": 510,
-        "jobkorea": 1389,
-        "saramin": 3563,
-        "dev": 280
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-15T22:25:41",
       "keyword": "통합",
@@ -225671,6 +225781,22 @@
         "jumpit": 893,
         "jobkorea": 2645,
         "saramin": 7072,
+        "dev": 704
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-11T04:07:51",
+      "keyword": "통합",
+      "raw_total": 13420,
+      "deduped": 11277,
+      "active": 7457,
+      "closed": 3820,
+      "site_counts": {
+        "wanted": 2100,
+        "jumpit": 893,
+        "jobkorea": 2645,
+        "saramin": 7078,
         "dev": 704
       },
       "anomalies": []

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T02:27:08",
+  "generated_at": "2026-07-11T04:08:11",
   "source": "youtube",
   "tech_count": 179,
   "curriculum_count": 20,
@@ -5921,88 +5921,6 @@
         "stage": "실전"
       }
     ],
-    "Embedded": [
-      {
-        "title": "아두이노중급 1강 임베디드 이론 임베디드 이해하기",
-        "url": "https://www.youtube.com/watch?v=tokMDurqbL0",
-        "thumbnail": "https://i.ytimg.com/vi/tokMDurqbL0/mqdefault.jpg",
-        "channel": "미래인재연구소",
-        "views": 2568,
-        "length": "30:48",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[임베디드 1강] 임베디드가 뭔가요?",
-        "url": "https://www.youtube.com/watch?v=hB5CafwlJLg",
-        "thumbnail": "https://i.ytimg.com/vi/hB5CafwlJLg/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 18351,
-        "length": "1:04:15",
-        "published": "스트리밍 시간: 4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "2025 임베디드 프로그래밍 공부 순서 | 공부 방법 | 로드맵【전자과 | 로봇학과 | 인공지능 | AI 공대생 필수시청】",
-        "url": "https://www.youtube.com/watch?v=Cv30BqRo1Cc",
-        "thumbnail": "https://i.ytimg.com/vi/Cv30BqRo1Cc/mqdefault.jpg",
-        "channel": "그라운드 임베디드",
-        "views": 34343,
-        "length": "7:57",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI 덕분에 전공 상관없이 누구나 임베디드 개발자 될 수 있습니다.",
-        "url": "https://www.youtube.com/watch?v=SMdNkN0Jfcs",
-        "thumbnail": "https://i.ytimg.com/vi/SMdNkN0Jfcs/mqdefault.jpg",
-        "channel": "그라운드 임베디드",
-        "views": 36871,
-        "length": "3:48",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "임베디드 개발자, 진짜 뭘 하는 직업이냐고요?",
-        "url": "https://www.youtube.com/watch?v=ROio8uqgBOM",
-        "thumbnail": "https://i.ytimg.com/vi/ROio8uqgBOM/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 13143,
-        "length": "7:25",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의 미리보기] 반도체 올인 금지! '초고속 임베디드 보드 설계'로 대기업 회로설계  합격하기",
-        "url": "https://www.youtube.com/watch?v=WzNAOtjuUUA",
-        "thumbnail": "https://i.ytimg.com/vi/WzNAOtjuUUA/mqdefault.jpg",
-        "channel": "회로설계 멘토 삼코치",
-        "views": 7817,
-        "length": "10:03",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[0번째] 임베디드 실전 강의 - 오리엔테이션 (궁금한 것 물어 보세요)",
-        "url": "https://www.youtube.com/watch?v=qiEqkPlMgt0",
-        "thumbnail": "https://i.ytimg.com/vi/qiEqkPlMgt0/mqdefault.jpg",
-        "channel": "[오제이 튜브]OJ Tube",
-        "views": 34002,
-        "length": "52:38",
-        "published": "스트리밍 시간: 4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "임베디드 개발자 학습 로드맵 완벽 정리! | 전기,전자,로봇,컴공 필수 시청!",
-        "url": "https://www.youtube.com/watch?v=G8AYOJh9SYM",
-        "thumbnail": "https://i.ytimg.com/vi/G8AYOJh9SYM/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 13660,
-        "length": "8:40",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "Scikit-learn": [
       {
         "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
@@ -6082,6 +6000,88 @@
         "views": 10,
         "length": "14:22",
         "published": "5개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Embedded": [
+      {
+        "title": "아두이노중급 1강 임베디드 이론 임베디드 이해하기",
+        "url": "https://www.youtube.com/watch?v=tokMDurqbL0",
+        "thumbnail": "https://i.ytimg.com/vi/tokMDurqbL0/mqdefault.jpg",
+        "channel": "미래인재연구소",
+        "views": 2568,
+        "length": "30:48",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[임베디드 1강] 임베디드가 뭔가요?",
+        "url": "https://www.youtube.com/watch?v=hB5CafwlJLg",
+        "thumbnail": "https://i.ytimg.com/vi/hB5CafwlJLg/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 18351,
+        "length": "1:04:15",
+        "published": "스트리밍 시간: 4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "2025 임베디드 프로그래밍 공부 순서 | 공부 방법 | 로드맵【전자과 | 로봇학과 | 인공지능 | AI 공대생 필수시청】",
+        "url": "https://www.youtube.com/watch?v=Cv30BqRo1Cc",
+        "thumbnail": "https://i.ytimg.com/vi/Cv30BqRo1Cc/mqdefault.jpg",
+        "channel": "그라운드 임베디드",
+        "views": 34343,
+        "length": "7:57",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI 덕분에 전공 상관없이 누구나 임베디드 개발자 될 수 있습니다.",
+        "url": "https://www.youtube.com/watch?v=SMdNkN0Jfcs",
+        "thumbnail": "https://i.ytimg.com/vi/SMdNkN0Jfcs/mqdefault.jpg",
+        "channel": "그라운드 임베디드",
+        "views": 36871,
+        "length": "3:48",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "임베디드 개발자, 진짜 뭘 하는 직업이냐고요?",
+        "url": "https://www.youtube.com/watch?v=ROio8uqgBOM",
+        "thumbnail": "https://i.ytimg.com/vi/ROio8uqgBOM/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 13143,
+        "length": "7:25",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[강의 미리보기] 반도체 올인 금지! '초고속 임베디드 보드 설계'로 대기업 회로설계  합격하기",
+        "url": "https://www.youtube.com/watch?v=WzNAOtjuUUA",
+        "thumbnail": "https://i.ytimg.com/vi/WzNAOtjuUUA/mqdefault.jpg",
+        "channel": "회로설계 멘토 삼코치",
+        "views": 7817,
+        "length": "10:03",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[0번째] 임베디드 실전 강의 - 오리엔테이션 (궁금한 것 물어 보세요)",
+        "url": "https://www.youtube.com/watch?v=qiEqkPlMgt0",
+        "thumbnail": "https://i.ytimg.com/vi/qiEqkPlMgt0/mqdefault.jpg",
+        "channel": "[오제이 튜브]OJ Tube",
+        "views": 34002,
+        "length": "52:38",
+        "published": "스트리밍 시간: 4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "임베디드 개발자 학습 로드맵 완벽 정리! | 전기,전자,로봇,컴공 필수 시청!",
+        "url": "https://www.youtube.com/watch?v=G8AYOJh9SYM",
+        "thumbnail": "https://i.ytimg.com/vi/G8AYOJh9SYM/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 13660,
+        "length": "8:40",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
