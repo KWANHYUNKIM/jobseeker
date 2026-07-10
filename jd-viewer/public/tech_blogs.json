@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-10T07:20:13",
+ "generated_at": "2026-07-10T09:01:03",
  "total": 915,
  "sources": [
   {
@@ -527,7 +527,7 @@
    "url": "https://eng.lyft.com/from-day-1-to-production-building-lyfts-analytics-rides-intelligence-assistant-as-onboarding-5c5643c192d9",
    "published": "2026-07-09",
    "published_ts": 1783634475.0,
-   "summary": "From Day 1 to Production: Building Lyft’s Analytics & Rides Intelligence Assistant as Onboarding Project\n\nA Different Kind of Day One\n\nMost onboarding journeys follow a familiar arc: orientation sessions, benefits enrollment, setting up your laptop, and gradually finding your footing over the first few weeks. Mine followed that arc too, but with an additional thread running alongside it from the very start.\n\nI joined Lyft in March 2026 as a Senior Data Scientist — Algorithm on the Marketing, Business & Ads team, bringing close to a decade of experience in data science, first at Oracle and then…",
+   "summary": "From Day 1 to Production: Building Lyft’s Analytics & Rides Intelligence Assistant as Onboarding Project\n\nWritten by Sagar Baronia at Lyft.\n\nA Different Kind of Day One\n\nMost onboarding journeys follow a familiar arc: orientation sessions, benefits enrollment, setting up your laptop, and gradually finding your footing over the first few weeks. Mine followed that arc too, but with an additional thread running alongside it from the very start.\n\nI joined Lyft in March 2026 as a Senior Data Scientist — Algorithm on the Marketing, Business & Ads team, bringing close to a decade of experience in dat…",
    "tags": [
     "software-engineering",
     "front-end-development",

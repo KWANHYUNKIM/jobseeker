@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-10T07:20:31",
-  "source_dir": "screenshots/all_통합_20260710_072013",
+  "generated_at": "2026-07-10T09:01:21",
+  "source_dir": "screenshots/all_통합_20260710_090103",
   "keyword": "통합",
   "jobs": [
     {
@@ -135755,6 +135755,37 @@
     },
     {
       "site": "saramin",
+      "company": "(주)세토웍스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] Shopify 프론트엔드 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54426192&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=6097e13f-c782-4d7a-a4a9-9112b2cf85f4",
+      "career": "경력2년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "Go",
+        "jQuery",
+        "HTML",
+        "CSS",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화"
+      ],
+      "qualifications": "• 학력 : 학력 무관\n\n• 경력 : 경력 2년 이상\n\n• Shopify 테마 제작 또는 커스터마이징 실무 경험이 있는 분\n\n• Liquid, HTML, CSS, JavaScript 기반 프론트엔드 개발 역량을 갖춘 분\n\n• Figma 디자인을 반응형 웹으로 구현할 수 있는 분\n\n• 반응형 웹 및 크로스 브라우징 개발 경험이 있는 분\n\n• Git 기반 협업과 원활한 커뮤니케이션이 가능한 분",
+      "preferences": "• Shopify 글로벌 쇼핑몰 구축 및 App 연동 경험이 있는 분\n\n• Webflow, Framer, WordPress 등 웹빌더 활용 경험이 있는 분\n\n• GSAP, jQuery 등을 활용한 인터랙션 구현 경험이 있는 분\n• 웹 접근성·웹 표준·SEO 및 성능 최적화에 대한 이해가 있는 분\n\n• 영어 또는 일본어가 가능하거나 글로벌 이커머스 프로젝트 경험이 있는 분\n\n• 새로운 기술과 AI 기반 개발 도구를 적극적으로 활용하는 분\n\n• 근무요일/시간 :",
+      "main_tasks": "• Shopify 기반 글로벌 쇼핑몰, 브랜드 웹사이트 및 랜딩페이지 구축·운영\n\n• Liquid, HTML, CSS, JavaScript를 활용한 반응형 테마 및 UI 개발\n\n• Shopify App, 결제·배송·다국어 등 외부 서비스 연동\n\n• 웹 성능과 SEO 최적화 및 지속적인 기능 개선\n\n• 기획·디자인·마케팅팀과 협업하여 프로젝트 구현",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)수산아이앤티",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -181361,6 +181392,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)대한오토텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] AI 기반 사내 전산/시스템 구축 및 업무 자동화 담당자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54422644&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c3b3893-8e0b-44d0-80e2-51516549734c",
+      "career": "경력3년↑",
+      "location": "경남양산시",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "오너십/주도성"
+      ],
+      "qualifications": "• 경력 3년 이상\n\n• 대학졸업(2,3년)이상",
+      "preferences": "• Python, VBA, SQL 등의 프로그래밍 언어 활용 능력이 우수하신 분\n\n• AI API 연동 및 자동화 파이프라인 구축 경험이 있으신 분\n\n• 단순 유지보수를 넘어 주도적으로 시스템을 설계하고 개선을 이끌어갈 수 있는 진취적인 성향을 가지신 분\n\n▶ 생성형 AI 툴을 활용한 업무 자동화 또는 시스템 연동 프로젝트 경험이 있으신 분, 제조업 환경의 전산 시스템(ERP/MES 등)\n\n구축 및 운영 프로세스를 이해하고 계신 분",
+      "main_tasks": "• 생성형 AI 기반 업무 자동화 : Claude, ChatGPT 등 생성형 AI를 활용한 프롬프트 엔지니어링, AI 에이전트 설계 및 연동\n\n시스템 개발을 통한 사내 업무 효율화\n\n• 최신 AI 도구 활용 소스코드 개발 : Claude Code 등을 적극 도입·활용하여 복잡한 소스코드 개발, 최적화 및 시스템 고도화\n\n작업 수행\n\n• 제조 운영 시스템(ERP·MES) 구축 및 데이터 관리 : 전사적 자원관리(ERP) 및 제조실행시스템(MES)의 구축·운영 리드,\n\n생산 데이터 수집·분석 및 시각화 대시보드 구현\n\n• 사내 인프라 및 AI Agent 구축 : 현업 부서의 요구사항을 반영하여 주도적으로 AI 기반 업무 지원 인프라 기획 및 개발",
+      "benefits": "• 출퇴근 : 통근버스 운행\n\n• 교육/생활 : 구내식당(사원식당), 저녁식사 제공, 점심식사 제공"
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -202262,6 +202318,61 @@
       "preferences": "• 요양/복지 시스템 개발 경험\n\n• SI 프로젝트 수행 경험\n\n• 장기 프로젝트 수행 경험\n\n• 원활한 커뮤니케이션 및 협업 능력",
       "main_tasks": "• 노블라이프 요양관리시스템 개발\n\n• Java 기반 백엔드 개발 및 유지보수\n\n• Vue.js 기반 화면(UI) 개발\n\n• Oracle DB 연계 개발\n\n• 시스템 기능 개발 및 운영 지원\n\n■ 프로젝트 정보\n\n• 투입기간 : 2026년 8월 ~ 2027년 2월\n\n(프로젝트 일정에 따라 1~2개월 연장 가능)",
       "benefits": "• 직무 역량 교육 참여 지원합니다\n\n• 업무 장비 및 환경 제공합니다\n\n• 연차 및 휴가 제도 운영합니다\n\n• 경조사 지원 제도 운영합니다"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)제이투이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[JAVA SM 상암] 백엔드 시스템 개발 및 운영(1)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54419581&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=0294cdb9-d52d-4c9f-a35e-765771b75690",
+      "career": "경력6년↑",
+      "location": "서울마포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL",
+        "Oracle",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "오너십/주도성"
+      ],
+      "qualifications": "",
+      "preferences": "- Node.js 개발 경험 ,TypeScript 개발 경험\n- 설계부터 개발까지 주도적으로 수행한 프로젝트 경험 보유자(고객사 내부 개발업무)\n기술등급 : 중급~ 고급\n근무기간 : 즉시(협의) ~ 장기근무(년단위 계약)\n근무장소 : 디지털미디어시티역",
+      "main_tasks": "- 백엔드 시스템 개발 및 운영\n- Java 기반 API 개발\n필수기술 : Java , API 개발, Oracle(기존 시스템)/PostgreSQL(신규 시스템)\n\nㆍ\n\nㆍ기타 필수 사항\n\n0 명",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "아이에프티(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[여의도/금융권] 생명보험 신계약(Java) 개발자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54418408&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=0294cdb9-d52d-4c9f-a35e-765771b75690",
+      "career": "경력10년↑",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 10년 이상\n\n• 학력무관\n\n• IT 개발 및 운영 경력 10년 이상 보유하신 분\n\n• 생명보험 업무 경력 6년 이상 보유하신 분\n\n• 생명보험 신계약 업무 개발 경력 4년 이상 보유하신 분\n\n• Java 개발 경험을 보유하신 분",
+      "preferences": "• 생명보험 업무 개발 프로젝트 경험\n\n• 금융권 프로젝트 수행 경험\n\n• 원활한 커뮤니케이션 및 협업 능력",
+      "main_tasks": "• 생명보험 신계약 업무 개발 및 운영\n\n• 신계약 업무 프로세스 개발 및 유지보수\n\n• Java 기반 시스템 개발 및 운영\n\n■ 프로젝트 정보\n\n• 투입기간 : 즉시 ~ 2026년 12월",
+      "benefits": "• 업무 적응을 위한 온보딩 도와드려요\n\n• 프로젝트 경험을 폭넓게 쌓을 수 있어요\n\n• 협업 중심 문화로 소통이 편해요\n\n• 업무에 필요한 장비를 제공해요"
     },
     {
       "site": "saramin",
@@ -223594,19 +223705,19 @@
     }
   ],
   "stats": {
-    "total": 7493,
+    "total": 7497,
     "by_size": {
-      "중소기업": 6752,
+      "중소기업": 6756,
       "대기업": 439,
       "중견기업": 302
     },
     "by_role": {
       "기타": 1030,
       "DevOps/인프라": 1094,
-      "백엔드": 3156,
+      "백엔드": 3158,
       "모바일": 1123,
-      "AI/ML": 2631,
-      "프론트엔드": 2033,
+      "AI/ML": 2632,
+      "프론트엔드": 2034,
       "풀스택": 670,
       "게임": 42,
       "데이터": 961,
@@ -223618,21 +223729,21 @@
       "wanted": 1988,
       "jumpit": 545,
       "jobkorea": 1218,
-      "saramin": 3337,
+      "saramin": 3341,
       "dev": 405
     },
     "top_tech": [
       [
         "Python",
-        2294
+        2295
       ],
       [
         "AWS",
-        1911
+        1912
       ],
       [
         "Java",
-        1852
+        1854
       ],
       [
         "React",
@@ -223640,7 +223751,7 @@
       ],
       [
         "Git",
-        1199
+        1200
       ],
       [
         "Docker",
@@ -223656,11 +223767,11 @@
       ],
       [
         "JavaScript",
-        1005
+        1006
       ],
       [
         "TypeScript",
-        996
+        997
       ],
       [
         "MySQL",
@@ -223676,7 +223787,7 @@
       ],
       [
         "PostgreSQL",
-        771
+        772
       ],
       [
         "Spring Boot",
@@ -223684,7 +223795,7 @@
       ],
       [
         "Node.js",
-        642
+        643
       ],
       [
         "C++",
@@ -223708,7 +223819,7 @@
       ],
       [
         "CSS",
-        499
+        500
       ],
       [
         "Redis",
@@ -223716,7 +223827,7 @@
       ],
       [
         "HTML",
-        487
+        488
       ],
       [
         "Android",
@@ -223745,22 +223856,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-15T03:14:12",
-      "keyword": "통합",
-      "raw_total": 6806,
-      "deduped": 6431,
-      "active": 5797,
-      "closed": 634,
-      "site_counts": {
-        "wanted": 1320,
-        "jumpit": 495,
-        "jobkorea": 1326,
-        "saramin": 3395,
-        "dev": 270
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-15T04:49:30",
       "keyword": "통합",
@@ -226941,6 +227036,22 @@
         "jumpit": 878,
         "jobkorea": 2597,
         "saramin": 6938,
+        "dev": 687
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-10T09:01:14",
+      "keyword": "통합",
+      "raw_total": 13187,
+      "deduped": 11133,
+      "active": 7497,
+      "closed": 3636,
+      "site_counts": {
+        "wanted": 2082,
+        "jumpit": 878,
+        "jobkorea": 2597,
+        "saramin": 6943,
         "dev": 687
       },
       "anomalies": []

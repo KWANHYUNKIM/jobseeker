@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T07:20:45",
+  "generated_at": "2026-07-10T09:01:34",
   "source": "youtube",
   "tech_count": 179,
   "curriculum_count": 20,
@@ -1727,88 +1727,6 @@
         "stage": "핵심"
       }
     ],
-    "PyTorch": [
-      {
-        "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
-        "url": "https://www.youtube.com/watch?v=k60oT_8lyFw",
-        "thumbnail": "https://i.ytimg.com/vi/k60oT_8lyFw/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 130697,
-        "length": "2:52:24",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[PyTorch] 1-1강. 파이토치 기초 (basic) | torch.tensor()와 텐서의 기본 연산",
-        "url": "https://www.youtube.com/watch?v=I6Ri6iNyVPU",
-        "thumbnail": "https://i.ytimg.com/vi/I6Ri6iNyVPU/mqdefault.jpg",
-        "channel": "혁펜하임 | AI & 딥러닝 강의",
-        "views": 11176,
-        "length": "9:41",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Pytorch 입문강의 2편ㅣMatrix Multiplication + Linear Layer + Neural  Network) - [메타코드M]",
-        "url": "https://www.youtube.com/watch?v=_3JAG9vORfo",
-        "thumbnail": "https://i.ytimg.com/vi/_3JAG9vORfo/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 2926,
-        "length": "1:02:50",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[PyTorch 강의 1강]   강의 소개",
-        "url": "https://www.youtube.com/watch?v=b5qeLM_LZ80",
-        "thumbnail": "https://i.ytimg.com/vi/b5qeLM_LZ80/mqdefault.jpg",
-        "channel": "NeoWizard",
-        "views": 14662,
-        "length": "14:32",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PyTorch 초보자 기초 튜토리얼 #1",
-        "url": "https://www.youtube.com/watch?v=mpgjF9lgztI",
-        "thumbnail": "https://i.ytimg.com/vi/mpgjF9lgztI/mqdefault.jpg",
-        "channel": "수학 + 프로그래밍 + AI",
-        "views": 29,
-        "length": "53:14",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
-        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
-        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
-        "channel": "LG디스플레이 대학생 인플루언서_디플",
-        "views": 20477,
-        "length": "1:30",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Pytorch 입문강의 1편ㅣDeep Learning 실습, torch 설치, Tensor, Attribute, Indexing - [메타코드M]",
-        "url": "https://www.youtube.com/watch?v=oYJVsyapNRc",
-        "thumbnail": "https://i.ytimg.com/vi/oYJVsyapNRc/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 13527,
-        "length": "2:30:54",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[PyTorch] 3-2강. 인공 신경망 학습 예제 코드 10분 완성! | 파이토치 선형 회귀 실습",
-        "url": "https://www.youtube.com/watch?v=WWurhDWEznw",
-        "thumbnail": "https://i.ytimg.com/vi/WWurhDWEznw/mqdefault.jpg",
-        "channel": "혁펜하임 | AI & 딥러닝 강의",
-        "views": 3986,
-        "length": "19:20",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "CSS": [
       {
         "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
@@ -1888,6 +1806,88 @@
         "views": 43004,
         "length": "48:53",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "PyTorch": [
+      {
+        "title": "파이토치 한번에 끝내기 PyTorch Full Tutorial Course",
+        "url": "https://www.youtube.com/watch?v=k60oT_8lyFw",
+        "thumbnail": "https://i.ytimg.com/vi/k60oT_8lyFw/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 130697,
+        "length": "2:52:24",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[PyTorch] 1-1강. 파이토치 기초 (basic) | torch.tensor()와 텐서의 기본 연산",
+        "url": "https://www.youtube.com/watch?v=I6Ri6iNyVPU",
+        "thumbnail": "https://i.ytimg.com/vi/I6Ri6iNyVPU/mqdefault.jpg",
+        "channel": "혁펜하임 | AI & 딥러닝 강의",
+        "views": 11176,
+        "length": "9:41",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Pytorch 입문강의 2편ㅣMatrix Multiplication + Linear Layer + Neural  Network) - [메타코드M]",
+        "url": "https://www.youtube.com/watch?v=_3JAG9vORfo",
+        "thumbnail": "https://i.ytimg.com/vi/_3JAG9vORfo/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 2926,
+        "length": "1:02:50",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[PyTorch 강의 1강]   강의 소개",
+        "url": "https://www.youtube.com/watch?v=b5qeLM_LZ80",
+        "thumbnail": "https://i.ytimg.com/vi/b5qeLM_LZ80/mqdefault.jpg",
+        "channel": "NeoWizard",
+        "views": 14662,
+        "length": "14:32",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PyTorch 초보자 기초 튜토리얼 #1",
+        "url": "https://www.youtube.com/watch?v=mpgjF9lgztI",
+        "thumbnail": "https://i.ytimg.com/vi/mpgjF9lgztI/mqdefault.jpg",
+        "channel": "수학 + 프로그래밍 + AI",
+        "views": 29,
+        "length": "53:14",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "텐서플로우? 파이토치? 딥러닝 프레임워크 1분 정리!",
+        "url": "https://www.youtube.com/watch?v=wUswG02gfg0",
+        "thumbnail": "https://i.ytimg.com/vi/wUswG02gfg0/mqdefault.jpg",
+        "channel": "LG디스플레이 대학생 인플루언서_디플",
+        "views": 20477,
+        "length": "1:30",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Pytorch 입문강의 1편ㅣDeep Learning 실습, torch 설치, Tensor, Attribute, Indexing - [메타코드M]",
+        "url": "https://www.youtube.com/watch?v=oYJVsyapNRc",
+        "thumbnail": "https://i.ytimg.com/vi/oYJVsyapNRc/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 13527,
+        "length": "2:30:54",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[PyTorch] 3-2강. 인공 신경망 학습 예제 코드 10분 완성! | 파이토치 선형 회귀 실습",
+        "url": "https://www.youtube.com/watch?v=WWurhDWEznw",
+        "thumbnail": "https://i.ytimg.com/vi/WWurhDWEznw/mqdefault.jpg",
+        "channel": "혁펜하임 | AI & 딥러닝 강의",
+        "views": 3986,
+        "length": "19:20",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -5049,88 +5049,6 @@
         "stage": "실전"
       }
     ],
-    ".NET": [
-      {
-        "title": "ASP.NET Core Full Course For Beginners (.NET 10)",
-        "url": "https://www.youtube.com/watch?v=YbRe4iIVYJk",
-        "thumbnail": "https://i.ytimg.com/vi/YbRe4iIVYJk/mqdefault.jpg",
-        "channel": "Julio Casal",
-        "views": 213107,
-        "length": "3:27:33",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "♥Smart Factory♥ VB.NET 기초강의 #1",
-        "url": "https://www.youtube.com/watch?v=JFthg1cFerk",
-        "thumbnail": "https://i.ytimg.com/vi/JFthg1cFerk/mqdefault.jpg",
-        "channel": "야매도 기술이다",
-        "views": 2784,
-        "length": "13:52",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "C# .NET 기초강좌,  간단한 TCP 클라이언트/서버(C#동영상/C#강의/C#교육/닷넷교육/C#강좌)",
-        "url": "https://www.youtube.com/watch?v=C5YH3lJEm7U",
-        "thumbnail": "https://i.ytimg.com/vi/C5YH3lJEm7U/mqdefault.jpg",
-        "channel": "오라클자바커뮤니티",
-        "views": 4091,
-        "length": "20:41",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[공개강의] .NET과 ASP.NET Core 소개(마인드맵으로 표현해 본)",
-        "url": "https://www.youtube.com/watch?v=K6VCOFiVhmQ",
-        "thumbnail": "https://i.ytimg.com/vi/K6VCOFiVhmQ/mqdefault.jpg",
-        "channel": "VisualAcademy",
-        "views": 15896,
-        "length": "21:29",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[C# 동영상 강의] .NET 어셈블리",
-        "url": "https://www.youtube.com/watch?v=zk5Lr9UqJtA",
-        "thumbnail": "https://i.ytimg.com/vi/zk5Lr9UqJtA/mqdefault.jpg",
-        "channel": "언제나 휴일- 전직 프로그래머 2회초 시작",
-        "views": 948,
-        "length": "16:28",
-        "published": "10년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ASP.NET 강의 기초부터 실습 위주의 교육",
-        "url": "https://www.youtube.com/watch?v=5aas9_-qCqE",
-        "thumbnail": "https://i.ytimg.com/vi/5aas9_-qCqE/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 2199,
-        "length": "24:45",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "ASP.NET [왕 기초] 강의 실습교육",
-        "url": "https://www.youtube.com/watch?v=TTheCGSbTfw",
-        "thumbnail": "https://i.ytimg.com/vi/TTheCGSbTfw/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 1844,
-        "length": "10:01",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[공개강의] ASP.NET Core 프로젝트인 DotNetNote 프로젝트에 Blazor Server 사용 가능하도록 설정하기",
-        "url": "https://www.youtube.com/watch?v=67jOzkK6gJc",
-        "thumbnail": "https://i.ytimg.com/vi/67jOzkK6gJc/mqdefault.jpg",
-        "channel": "VisualAcademy",
-        "views": 606,
-        "length": "10:33",
-        "published": "5년 전",
-        "stage": "실전"
-      }
-    ],
     "jQuery": [
       {
         "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
@@ -5210,6 +5128,88 @@
         "views": 811,
         "length": "18:11",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    ".NET": [
+      {
+        "title": "ASP.NET Core Full Course For Beginners (.NET 10)",
+        "url": "https://www.youtube.com/watch?v=YbRe4iIVYJk",
+        "thumbnail": "https://i.ytimg.com/vi/YbRe4iIVYJk/mqdefault.jpg",
+        "channel": "Julio Casal",
+        "views": 213107,
+        "length": "3:27:33",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "♥Smart Factory♥ VB.NET 기초강의 #1",
+        "url": "https://www.youtube.com/watch?v=JFthg1cFerk",
+        "thumbnail": "https://i.ytimg.com/vi/JFthg1cFerk/mqdefault.jpg",
+        "channel": "야매도 기술이다",
+        "views": 2784,
+        "length": "13:52",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "C# .NET 기초강좌,  간단한 TCP 클라이언트/서버(C#동영상/C#강의/C#교육/닷넷교육/C#강좌)",
+        "url": "https://www.youtube.com/watch?v=C5YH3lJEm7U",
+        "thumbnail": "https://i.ytimg.com/vi/C5YH3lJEm7U/mqdefault.jpg",
+        "channel": "오라클자바커뮤니티",
+        "views": 4091,
+        "length": "20:41",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[공개강의] .NET과 ASP.NET Core 소개(마인드맵으로 표현해 본)",
+        "url": "https://www.youtube.com/watch?v=K6VCOFiVhmQ",
+        "thumbnail": "https://i.ytimg.com/vi/K6VCOFiVhmQ/mqdefault.jpg",
+        "channel": "VisualAcademy",
+        "views": 15896,
+        "length": "21:29",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[C# 동영상 강의] .NET 어셈블리",
+        "url": "https://www.youtube.com/watch?v=zk5Lr9UqJtA",
+        "thumbnail": "https://i.ytimg.com/vi/zk5Lr9UqJtA/mqdefault.jpg",
+        "channel": "언제나 휴일- 전직 프로그래머 2회초 시작",
+        "views": 948,
+        "length": "16:28",
+        "published": "10년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ASP.NET 강의 기초부터 실습 위주의 교육",
+        "url": "https://www.youtube.com/watch?v=5aas9_-qCqE",
+        "thumbnail": "https://i.ytimg.com/vi/5aas9_-qCqE/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 2199,
+        "length": "24:45",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "ASP.NET [왕 기초] 강의 실습교육",
+        "url": "https://www.youtube.com/watch?v=TTheCGSbTfw",
+        "thumbnail": "https://i.ytimg.com/vi/TTheCGSbTfw/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 1844,
+        "length": "10:01",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[공개강의] ASP.NET Core 프로젝트인 DotNetNote 프로젝트에 Blazor Server 사용 가능하도록 설정하기",
+        "url": "https://www.youtube.com/watch?v=67jOzkK6gJc",
+        "thumbnail": "https://i.ytimg.com/vi/67jOzkK6gJc/mqdefault.jpg",
+        "channel": "VisualAcademy",
+        "views": 606,
+        "length": "10:33",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
