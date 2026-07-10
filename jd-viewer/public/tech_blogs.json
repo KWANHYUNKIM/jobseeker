@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-10T21:13:49",
- "total": 920,
+ "generated_at": "2026-07-10T22:54:38",
+ "total": 921,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 42
+   "count": 43
   },
   {
    "company": "AWS",
@@ -520,6 +520,38 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Improving Smart Tiered Cache for Public Cloud Regions",
+   "url": "https://blog.cloudflare.com/smart-tiered-cache-for-public-clouds",
+   "published": "2026-07-10",
+   "published_ts": 1783688400.0,
+   "summary": "Smart Tiered Cache allows for precise upper tier selection for origins hosted on AWS, GCP, Azure, and Oracle Cloud with customer-provided cloud region hints.",
+   "tags": [
+    "Tiered Cache",
+    "Cache",
+    "Performance",
+    "Product News",
+    "CDN",
+    "Smart Shield"
+   ],
+   "tech_stack": [
+    "Oracle",
+    "AWS",
+    "Azure",
+    "Cloudflare",
+    "GCP",
+    "Terraform"
+   ],
+   "categories": [
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "e9cb677c34a42bfa"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",
