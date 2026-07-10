@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-10T17:41:40",
-  "source_dir": "screenshots/all_통합_20260710_174122",
+  "generated_at": "2026-07-10T19:33:06",
+  "source_dir": "screenshots/all_통합_20260710_193248",
   "keyword": "통합",
   "jobs": [
     {
@@ -9612,6 +9612,30 @@
     },
     {
       "site": "wanted",
+      "company": "스쿨버스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "클라이언트(flutter) 개발자",
+      "url": "https://www.wanted.co.kr/wd/345413",
+      "career": "",
+      "location": "신입 · 계약직",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "Flutter"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "• 모집인원: 1명",
+      "preferences": "ㆍ1개 이상의 Flutter 프로젝트 경험 또는 그에 준한 경험을 보유하신 분\nㆍRESTFul 개발 경험이 있으신 분\nㆍ안드로이드 혹은 아이폰 앱 개발 프로젝트 경험\nㆍUX/UI 플랫폼 개발 환경에 대한 이해",
+      "main_tasks": "담당 업무\n통학 차량 관리 \"라이드\" 앱 클라이언트(Flutter) 개발\n모바일, PC, CMS 개발 (Flutter, GetX, Node)\n\n구글플레이 링크\nhttps://play.google.com/store/apps/details?id=com.schoolbus.ride\n\n앱스토어 링크\nhttps://apps.apple.com/kr/app/%EB%9D%BC%EC%9D%B4%EB%93%9C-ride-%ED%86%B5%ED%95%99%EC%B0%A8%EB%9F%89-%EC%96%B4%EB%A6%B0%EC%9D%B4-%ED%86%B5%ED%95%99%EB%B2%84%EC%8A%A4-%EA%B4%80%EB%A6%AC/id1583899275",
+      "benefits": "• 필요 장비 및 자기 계발 지원 (인강, 스터티)\n• 야근 없음(지금까지 야근 1회도 없음)"
+    },
+    {
+      "site": "wanted",
       "company": "엑스플랫",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -15254,6 +15278,74 @@
       "preferences": "• 프로젝트 협업 경험: 요구사항 분석, 화면설계 검토, API 명세 협의 등 다양한 직군과의 협업 경험\n• 공통 컴포넌트 또는 디자인 시스템 구축 경험: 여러 프로젝트에서 재사용 가능한 UI 컴포넌트 또는 프론트엔드 아키텍처 설계 경험\n• 성능 최적화 및 데이터 렌더링 개선 경험: 대용량 데이터 렌더링, 차트 성능 개선, 프론트엔드 성능 최적화 경험\n• 데이터 시각화 라이브러리 활용 경험: Chart.js, ECharts, D3 등 차트 라이브러리를 활용한 데이터 기반 UI 개발 경험\n• 대용량 데이터 처리 및 API 연동 경험: 대용량 데이터 조회·가공, 비동기 처리 및 REST API 연동 경험\n• 제조·산업 시스템 또는 B2B 서비스 개발 경험: MES, SCADA, IoT 등 산업 시스템 또는 데이터 중심 B2B 서비스 개발 경험\n• Git 기반 협업 및 배포 환경 경험: Git Flow 기반 협업 및 Docker 또는 CI/CD 환경에서의 개발·배포 경험",
       "main_tasks": "• 제조 데이터 기반 서비스 화면 개발: 제조 공정 데이터를 기반으로 모니터링, 분석 및 운영 지원을 위한 웹 서비스를 개발합니다.\n• AI 분석 결과 시각화 UI 개발: AI 예측 결과, 이상 탐지, 품질 분석 등의 데이터를 대시보드와 차트 형태로 시각화합니다.\n• 대용량 시계열 데이터 시각화 및 인터랙션 구현: 공정에서 발생하는 대규모 시계열 데이터를 효율적으로 처리하고, 빠르고 직관적인 데이터 탐색 UI를 구현합니다.\n• 재사용 가능한 UI 컴포넌트 및 공통 모듈 개발: 차트, 테이블, 필터 등 공통 컴포넌트를 설계하고 프로젝트 간 재사용 가능한 프론트엔드 구조를 구축합니다.\n• 기획 및 백엔드와 협업하여 서비스 고도화: 요구사항 분석, 화면설계 검토, API 명세 협의 등을 통해 안정적인 서비스를 함께 만들어갑니다.",
       "benefits": "[근무환경]\n• 선택근로제(8-10 to 5-7)를 운영하여 유연하게 근무합니다\n• 인이지의 성장을 함께한 직원분들께 성과급을 지급합니다\n• 제휴 카페를 이용할 수 있어 간단한 아침과 음료를 지원합니다\n\n[생활]\n• 원하는 복리후생을 자유롭게 선택하여 이용할 수 있도록 복지포인트를 제공합니다\n• 직원분들의 건강한 삶을 위해 건강포인트를 추가 지급하며 제휴 헬스장을 지원합니다\n• 추운 겨울 감기에 걸려 아프시지 않도록 독감 예방 접종을 지원합니다\n• 경조사에는 휴가를 제공하며 명절에는 선물을 드립니다\n\n[휴식]\n• 구성원 분들이 휴가 때 이용하실 수 있도록 리조트 멤버십을 운영합니다\n• 매년 1월 2일은 창립일로 인이지의 생일을 기념하기 위해 휴일입니다"
+    },
+    {
+      "site": "wanted",
+      "company": "그립랩스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Full-Stack Engineer",
+      "url": "https://www.wanted.co.kr/wd/90260",
+      "career": "",
+      "location": "경력 5-9년",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Vue",
+        "HTML",
+        "CSS",
+        "Node.js",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 프론트엔드 (VueJS, ReactJS) 개발 경험 5년 이상 경험하신 분 (필수 사항)\n• 백엔드 (Typescript, Python, Java) 개발 경험 5년 이상 경험하신 분 (필수 사항)\n• 팀원과의 소통을 통해 문제 해결 등의 원활한 커뮤니케이션 능력을 갖추신 분\n• 서비스, 프로덕트에 대해 깊게 고민하고 기획, 디자인, 개발자 등 동료와 적극적으로 의견을 나누고자 하는 적극성을 보유하신 분\n• 적극적이고 긍정적 성격의 소유자로 맡은 업무에 대한 책임감을 보유하신 분\n• 적극적이고 협업능력이 뛰어난 개발자\n• AI를 적극활용하여 문제해결 경험이 많은 개발자",
+      "preferences": "• 함수형 프로그래밍\n• ES5, ES6 등에 대한 탄탄한 기본기를 갖추신 분\n• Node.js 개발 경험이 있으신 분\n• 다양한 프레임워크의 사용뿐만 아니라 원리를 터득하려고 노력하는 분\n• HTML, CSS, JavaScript에 대한 이해가 깊으신 분\n• UI/UX에 대한 경험이 있으신 분\n• 퍼블리셔/디자이너 경험이 있으신 분\n• VueJS, ReactJS 둘다 경험이 있으신 분\n• RDBMS, Nosql 및 Cache를 이용한 개발 경험이 있으신 분\n• AWS 클라우스 서비스 사용 경험이 있는 분(데브옵스 경험이 있거나 관심이 있으신 분)\n• 자기 주도적인 개발을 즐기시는 분\n• 새로운 기술을 익히는데 즐거움과 갈증이 있는 분\n• 테스트 자동화 및 테스트코드 작성 경험\n• TypeScript의 경험이 있는 분 (인강/도서 적극 지원)",
+      "main_tasks": "[Main 기술 스택-필수]\n• 뉴밍앱 개발/운영 협의 - VueJS, ReactJS, Typescript, Python\n\n[기타 기술 스택-우대]\n• CMS 페이지 개발/운영 - VueJS/ReactJS + TypeScript, Python\n• 관리자 페이지 개발/운영 - VueJS/ReactJS + TypeScript, Python",
+      "benefits": "• AI를 활용한 대한민국 최고의 미디어 Tech 를 경험할 수 있습니다.\n• 다양한 AI를 활용할 수 있도록 지원됩니다.\n• 외부 건강검진센터에서 연1회의 건강검진을 제공합니다."
+    },
+    {
+      "site": "wanted",
+      "company": "스페이스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "웹 프론트엔드 QA 엔지니어",
+      "url": "https://www.wanted.co.kr/wd/374321",
+      "career": "",
+      "location": "신입-경력 5년",
+      "dday": "",
+      "tech_stack": [
+        "HTML",
+        "CSS",
+        "Selenium",
+        "Cypress"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "QA"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "* 웹 또는 웹 프론트엔드 QA 실무 경험이 있으신 분\n* HTML, CSS 및 웹 프론트엔드 구조에 대한 기본적인 이해가 있으신 분\n* 디자인 시안과 실제 구현 화면의 차이를 세밀하게 발견할 수 있으신 분\n* 픽셀 단위의 정렬, 여백, 컬러 차이 등을 꼼꼼하게 확인할 수 있으신 분\n* PC 및 모바일 웹 환경에서의 테스트 경험이 있으신 분\n* 발견한 문제를 명확하게 정리하고 관계자에게 전달할 수 있으신 분\n* 반복적인 검수 업무에서도 일정한 품질 기준을 유지할 수 있으신 분",
+      "preferences": "* 웹 프론트엔드 개발 또는 퍼블리싱 경험이 있으신 분\n* Figma 등 디자인 협업 도구를 활용한 검수 경험이 있으신 분\n* 크로스 브라우징 및 반응형 웹 테스트 경험이 있으신 분\n* 다양한 모바일 게임 플레이를 즐겨 하시는분\n* 게임, 인터랙티브 웹 콘텐츠 QA 경험이 있으신 분\n* 애니메이션, 이펙트, 사운드 등 동적 콘텐츠 검수 경험이 있으신 분\n* Playwright, Cypress, Selenium 등 테스트 자동화 도구 사용 경험이 있으신 분\n* AI 도구를 활용해 테스트 케이스 작성이나 QA 업무를 개선한 경험이 있으신 분\n* 제품의 문제를 발견하는 데 그치지 않고 개선 방향까지 제안할 수 있으신 분",
+      "main_tasks": "* 웹 서비스 및 웹 기반 게임의 기능·UI 품질 검수\n* 기획서 및 디자인 시안을 기준으로 구현 결과 확인\n* 레이아웃, 정렬, 여백, 패딩 등 화면 구성 요소 검수\n* 폰트, 컬러, 이미지, 아이콘, 애니메이션 등 시각적 일관성 확인\n* 다양한 브라우저와 화면 해상도에서의 호환성 테스트\n* 반응형 웹 및 디바이스별 UI 테스트\n* 기능 오류와 UI 이슈의 재현 조건 및 발생 원인 정리\n* 개발자·디자이너·기획자와의 이슈 공유 및 개선사항 협의\n* 테스트 케이스 및 QA 체크리스트 작성·관리\n* 반복적인 테스트 업무의 자동화 및 AI 활용 방안 제안\n* 배포 전후 서비스 품질 확인 및 이슈 추적",
+      "benefits": "* 유연한 근무 시간과 원격 근무 옵션 제공\n*직원 건강 및 복지를 위한 다양한 프로그램 지원\n*개인의 성장과 발전을 위한 교육 및 훈련 기회 제공"
     },
     {
       "site": "wanted",
@@ -86583,6 +86675,36 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜더 핸즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] 웹개발자 및 퍼블리셔 경력직 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49554285?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=67&sc=630",
+      "career": "[경력] 웹개발자 및 퍼블리셔 경력직 모집",
+      "location": "서울 영등포구 외 14",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "Spring",
+        "Linux",
+        "Git",
+        "SVN"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "- Git 또는 SVN 등 형상관리 시스템 사용 경험\n\n- 정보처리기사 등 관련 자격증 보유자\n\n- 운영 PL 또는 프로젝트 리딩 경험\n\n- 공공기관 프로젝트 수행 경험\n\n서울 영등포\n\n(본사 근무)\n\n경력 1명\n\n본사 웹퍼블리셔\n\n- 웹사이트 및 웹서비스 화면 퍼블리싱\n\n- 반응형 웹 및 모바일 화면 구현\n\n- 기존 홈페이지 화면 수정 및 유지관리\n\n- 웹 표준 및 웹 접근성을 고려한 UI 구현\n\n- 디자이너 및 개발자와의 협업\n[자격사항]\n\n- 경력 3년 이상\n\n- 학력 고졸 이상\n[기본사항]\n\n- HTML5, CSS3 및 JavaScript 활용 능력\n\n- 반응형 웹 및 크로스브라우징 구현 경험\n\n- 웹 표준 및 웹 접근성에 대한 이해\n\n- 디자인 시안을 기반으로 한 화면 구현 능력",
+      "preferences": "- 시스템 운영 및 기능 개선 경험\n\n- Git 또는 SVN 등 형상관리 시스템 사용 경험\n\n- 정보처리기사 등 관련 자격증 보유자\n\n- 공공기관 상주 프로젝트 수행 경험\n\n서울 영등포\n\n(본사 근무)\n\n경력 2명\n\n본사 웹개발자\n\n- Java 기반 응용프로그램 및 웹서비스 개발\n\n- 시스템 운영 및 유지관리\n\n- 기능 개선 및 오류 수정\n\n- 프로그램 테스트 및 관련 산출물 작성\n[자격사항]\n\n- 경력 4년 이상\n\n- 학력 고졸 이상\n[기본사항]\n\n- Java 기반 프로그래밍에 대한 이해 및 개발 역량\n\n- MVC 기반 웹서비스 구축 경험\n\n- 전자정부프레임워크 및 Spring 사용 경험\n\n- Database에 대한 이해 및 SQL 작성 능력\n\n- 시스템 운영 및 기능 개선 경험\n\n- 주니어 개발자 업무 배정 및 실무 관리 경험\n\n- 고객사 담당자와의 업무 협의 및 미팅 경험\n\n- 공공기관 홈페이지 구축 및 운영 경험\n\n- 웹 접근성 품질인증 대응 경험\n\n- Figma, Photoshop, Illustrator 등 디자인 도구 활용 가능자\n\n- JavaScript 및 jQuery를 활용한 UI 기능 구현 가능자\n\n- Git 또는 SVN 등 형상관리 시스템 사용 경험\n\n- 관련 포트폴리오 제출 가능자",
+      "main_tasks": "자격 및 우대사항\n\n경기 과천\n\n(공공기관 상주)\n\n경력 1명\n\n공공기관(과천) 상주 운영\n\n- 공공기관 시스템 운영 및 관리\n\n- 홈페이지 운영 및 유지관리\n\n- 데이터 조회 및 추출\n\n- Linux 환경 접속 및 배포\n\n- 기타 시스템 운영 관련 제반 업무\n[자격사항]\n\n- 경력 3년 이상\n\n- 학력 고졸 이상\n[기본사항]\n\n- MVC 기반 웹서비스 구축 경험\n\n- 전자정부프레임워크 및 Spring 사용 경험\n\n- Database에 대한 이해 및 SQL 작성 능력\n\n- Linux 환경에 대한 기본적인 이해",
+      "benefits": "4대보험, 연차제도\n\n경조휴가, 여름휴가노동절 휴무, 반차제도등 다양한 휴게제도\n\n사내 이벤트, 생일 이벤트\n\n자유로운 휴가문화, 주5일제, 주말 휴무\n\n건강검진, 육아휴직, 출산휴가,임신/출산 지원\n\n경조금, 명절선물/명절상여,각종 기념일 선물\n\n장기근속 포상, 장비 지원,추천비 지원, 퇴직금,회식비 지원\n\n교육/세미나/스터디\n\n멘토링 제도,자격증취득지원\n\n자율복장, 탕비실,음료/간식 제공"
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜에이블리코퍼레이션",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -101253,6 +101375,108 @@
     },
     {
       "site": "jobkorea",
+      "company": "솔트웨어㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] Data & AI Platform 데이터엔지니어 PM/PL 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49557576?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=8&sc=630",
+      "career": "[경력] Data & AI Platform 데이터엔지니어 PM/PL 채용",
+      "location": "경기 과천시",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "● 데이터 엔지니어링, AI/ML, 백엔드 또는 데이터 플랫폼 관련 실무 경력 6년 이상\n\n● Python, SQL 기반 데이터 처리 실무 경험\n\n● ETL/ELT, 데이터 모델링, 배치 파이프라인 구축 경험\n\n● PL, Tech Lead, Sub-PL 등 실무 리딩 경험 2년 이상\n\n● 고객 요구사항을 기술 설계, 일정, 산출물로 구체화한 경험\n\n● 신규 플랫폼이나 기술을 빠르게 학습하고 프로젝트에 적용할 수 있는 역량\n\n● 클라우드 환경에 대한 최소한의 이해도",
+      "preferences": "● Databricks, Snowflake, BigQuery, Redshift, Synapse 등 데이터 플랫폼 경험\n\n● Databricks Workspace, Notebook, Job, Delta Lake, Unity Catalog 등 사용 경험\n\n● PySpark 또는 Spark 기반 데이터 처리 경험\n\n● MLflow, Model Serving, Vector Search, RAG/Agent 관련 경험\n\n● 제조, 금융, 리테일 등 고객 데이터 기반 PoC/MVP 수행 경험\n\n● 고객 대상 제안서, 아키텍처, 수행계획서, 보고자료 작성 경험\n\n● 데이터 품질 검증, 성능 개선, 운영 전환 경험\n\n경력\n0명",
+      "main_tasks": "● 데이터/AI 플랫폼 과제 PM/PL 수행\n\n● 고객 요구사항 분석 및 기술 범위 정의\n\n● 데이터 파이프라인, 데이터 모델링, 권한, 운영 구조 설계 리딩\n\n● PoC/MVP 과제 일정, WBS, 산출물 관리\n\n● 고객사 IT/현업 부서와 기술 커뮤니케이션\n\n● 내부 개발 인력 업무 분배 및 품질 검토\n\n● Databricks 기반 과제 수행 시 관련 기능 학습 및 적용 리딩",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜현대그린푸드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "현대그린푸드 데이터 엔지니어 경력사원 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49555414?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=26&sc=630",
+      "career": "현대그린푸드 데이터 엔지니어 경력사원 채용",
+      "location": "경기 용인시",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Oracle",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "- 현업 요구사항을 데이터 관점에서 해석하고, 분석·AI 활용 가능한 구조로 정리하는 능력\n\n- 데이터 엔지니어링 또는 DW/ETL 구축·운영 경력 5년 이상\n\n- SQL 및 Python 기반 데이터 처리 실무 경험 보유\n\n- 클라우드 기반 데이터 파이프라인 구축 또는 운영 경험 보유\n\n- 포트폴리오 제출 필수",
+      "preferences": "- AWS Glue, SageMaker, QuickSight 활용 경험\n\n- Power BI, Teams, Power Automate 등을 활용한 리포트·알림 자동화 경험\n\n- DW, ERP, GA 등 사내·외 데이터 통합 및 AI 분석용 데이터셋·데이터마트 설계 경험\n\n- 사내 DB·API·업무시스템 데이터를 AI Agent 또는 LLM 서비스와\n\n연계하기 위한 MCP Server, API Gateway, Webhook 등 연동 구조 설계 경험\n\n- 현업 인터뷰를 통해 업무 프로세스, 지표 기준, 데이터 활용 목적을 정리하고\n\n분석·시스템 과제로 연결한 경험\n\n경기도\n용인시\n\n※포트폴리오 제출 필수\n\n◆ 채용절차 : 서류전형 → 인성검사 → 실무면접(1차) → 임원면접(2차) → 최종합격\n\n- 회사사정에 따라 채용절차는 변경될 수 있습니다.",
+      "main_tasks": "- 현업 업무흐름과 데이터 활용 목적을 이해하고,\n\n현업·IT 간 데이터 요구사항, 지표 기준, 운영 이슈 조율\n\n- 사내 DW, Oracle 등 RDB, 외부 API 데이터를 활용한\n\n데이터 수집·연계 구조 설계\n\n- AWS MLOps 기반 데이터 파이프라인 구축 및\n\n데이터 카탈로그 관리\n\n- AI 모델 및 BI 분석에 필요한 데이터셋·데이터마트 설계 및 운영\n\n- Power BI, QuickSight, Teams를 활용한 대시보드 및\n\n알림 체계 설계\n\n■ 요구능력\n\n- 현업 요구사항을 데이터 구조, 집계 기준, 분석·AI 활용 요건으로\n\n구체화하는 커뮤니케이션 역량\n\n- SQL, Python 기반 데이터 전처리 및 자동화 역량\n\n- DW, ETL, 데이터마트, 데이터 카탈로그 등 데이터 운영 구조 이해\n\n- AWS 등 클라우드 기반 데이터 처리 환경 활용 능력\n\n- Power BI 또는 QuickSight 기반 데이터 시각화 및 지표 설계 능력",
+      "benefits": "1) 선물대/휴가비/귀향여비 지급\n\n2) 현대백화점 이용시 구입금액 할인, 현대/기아차 구입시 가격 혜택\n\n3) 휴양시설 이용, 경조금 및 경조휴가, 결혼 및 애사지원\n\n4) 건강검진, 장기근속포상 등"
+    },
+    {
+      "site": "jobkorea",
+      "company": "효성ITX㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[효성ITX] 데이터 분석가",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49549595?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=73&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 영등포구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜빅밸류",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[빅밸류] AI 에이전트 연구원 채용(전문연구요원)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49554338?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=76&sc=630",
+      "career": "신입",
+      "location": "서울 성동구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "문제해결",
+        "석박사 우대"
+      ],
+      "qualifications": "· 서비스 내·외부의 정형/비정형 데이터를 분석하고, 전처리·정제·검증할 수 있는 역량을 보유한 분\n\n· 복잡한 도메인 데이터를 이해하고, 이를 Agent가 활용할 수 있는 논리적인 데이터 구조로 설계할 수 있는 분\n\n· Python 기반의 LLM/Agent 프레임워크를 활용해 실제 실제 어플리케이션을 구축해 본 경험\n\n· Agent 결과의 정확성, 근거 적절성, 실패 원인을 분석하고 개선 방향을 도출할 수 있는 분\n\n· 컴퓨터공학, 데이터 사이언스, 통계학 또는 관련 분야의 학위(석사 이상 선호) 보유자",
+      "preferences": "· 문제를 직접 정의하고, 해결 뱡항을 찾아본 증명/검층한 경험이 있는 분\n\n· 데이터 수집, 전처리, 구조화, 벡터화, Agent 적용까지의 전체 흐름을 경험해 본 분\n\n· Agent 결과의 원인을 분석하고, 데이터·구조·프롬프트·평가 기준을 재설계/개선해 본 경험이 있는 분\n\n· NLP(자연어 처리) 관련 주요 학회(ACL, EMNLP, NeurIPS 등) 논문 게재 경험자\n\n· 최신 AI 트렌드를 빠르게 습득하고 실제 프로토타입으로 구현하는 것을 즐기시는 분",
+      "main_tasks": "· Agent 구조 설계 및 구현:\n\n· + 자율적 문제 해결이 가능한 Agent 구조 설계 및 최적화 (Agent Harness, Context Engineering 등)\n\n· 도메인 특화 데이터 설계 구축 및 지식 베이스 구축:\n\n· + 서비스 내/외부의 정형 및 비정형 데이터를 심층 분석하고 구조화\n\n· + 에이전트가 활용할 수 있는 지식 베이스(Knowledge Base) 구축\n\n· 프롬프트 엔지니어링 및 Agent 행동 전략 수립:\n\n· + 복잡한 업무 로직에 맞춰 Agent가 일관된 판단과 결과를 도출할 수 있도록 프롬프트, 추론 흐름, 응답 기준 설계\n\n· 검색 및 응답 품질 고도화:\n\n· + 문서, 이미지 음성 등 멀티모달 데이터의 의미를 반영한 구조화 전략을 수립\n\n· + Agent의 검색 정확도와 응답 신뢰도 개선\n\n· 성능 평가 및 모니터링:\n\n· + Agent 결과의 정확성, 근거 적절성, 실행 효율성, 실패 유형 등을 정량적으로 평가할 수 있는 지표를 설계\n\n· + 지속적인 성능 개선 환경 구축",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -103218,32 +103442,6 @@
       "preferences": "ㆍ대규모 트레이닝/서빙 환경에서 성능·비용 최적화 경험이 있으신 분\n\nㆍLLM, AI Agent, 실시간 추론 시스템 개발 경험이 있으신 분\n\nㆍML 플랫폼 또는 AI 인프라 아키텍처 설계 경험이 있으신 분",
       "main_tasks": "ㆍML/DL 모델의 개발-서빙-모니터링 전체 파이프라인 설계 및 구축\n\nㆍMLOps 플랫폼 및 학습/추론 자동화 워크플로우 개발\n\nㆍLLM·AI Agent 기반 서비스 아키텍처 설계 및 구현\n\nㆍ대규모 데이터 처리 및 실시간 AI 서비스 엔지니어링",
       "benefits": ""
-    },
-    {
-      "site": "jobkorea",
-      "company": "효성ITX㈜",
-      "company_size": "중소기업",
-      "company_size_matched": null,
-      "title": "[효성ITX] 데이터 분석가",
-      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49116058?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=97&sc=630",
-      "career": "신입 지원 가능",
-      "location": "서울 영등포구",
-      "dday": "",
-      "tech_stack": [
-        "Python"
-      ],
-      "tech_tags": [],
-      "roles": [
-        "AI/ML",
-        "데이터"
-      ],
-      "competencies": [
-        "학사 이상"
-      ],
-      "qualifications": "- 직무 관련 전공재(통계학/컴퓨터공학/산업공학 등)\n학사 이상\n\n- 데이터 분석/씨 개발 B(R , Python 등) 능숙자\n\n- 통계 분석 및 머신러닝/팁러닝/강화학습 기반 모형\n\n- 제조공장 현장 엔지니어 분석/\n시 솔루션(10045) 구축\n\n제조데이터 분석/            -제조공장 데이터 분석/시 컨설팅\n\n대                                              박 역량\nzig ㅣ \"명 ㅣ mame aa          개발 역량\n“MBBS 현장 엔지니어 분석/ ㅣ",
-      "preferences": "시 솔루션(00045) 고도화 ㅣ .제조데이터 분석/시 컨설팅 PM 유경험자\n\n- 제조업 데이터 분석 경험 3년 이상\n\n분석 경험\n- 머신비전 관련 구축 경험\n- BI Tool(Qlik Sense, tableau 등) 능숙자",
-      "main_tasks": "",
-      "benefits": "ㆍ 사내 머린이집 운영\n\n-하계휴가비지원\n\n-설, 추석 선물대지급\n\nㆍ 의료복지 프로그램 제공\n\n. 각종경조사비지급\n\nㆍ 통신비 지원\n\nㆍ의료비지원\n\nㆍ 동호회비 지원\n\n-4대보험 및퇴직금\n\nㆍ 장기 근속자 포상 제도 운영\n\nm 기타사항\n\nㆍ 국가등록장애인 및 국가보훈대상자는 관련 법령에 의거 우대\n\nㆍ온라인 지원에 따른 제출서류는 반환이 불가하며, 관련 법규에 의거하여 접수 마감 3개월 후 폐기\nㆍ 면접전형 대상자에 한하여 증빙서류 추가제출\n\nㆍ위의 기재되지 않은 사항은 당사 취업규칙에 따름\n\nㆍ입사지원서 기재내용이 사실과 다르거나 허위 서류 제출 시 합격이 취소될 수 있음\n\nm 문의처\n\n=\n\n+ 02-2102-8488\n\nㆍ 대상 : 입사지원:\n반환 청구기간 :\n청구 방법 : 채용.\n반환 방법 : 본인\n전자우편, 홈페이지를 통해 ASE 서류 및 지원자가 자발적으로 제출한 서류는 채용절차의 공정화에\n관한 법률 제11조 제1항에 의거 반환 의무가 없음을 알려드립니다.\n\nHYOSUNG ITX"
     },
     {
       "site": "jobkorea",
@@ -130500,6 +130698,29 @@
     },
     {
       "site": "saramin",
+      "company": "(주)페스카로",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "임베디드 SW개발자 (경력 6년 이상)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54415791&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=6418e85a-6eec-4c19-8730-9fafa87af74e",
+      "career": "경력6년↑",
+      "location": "경기수원시 영통구",
+      "dday": "",
+      "tech_stack": [
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -136381,6 +136602,33 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)닉컴퍼니",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)닉컴퍼니에서 금융SI 프론트엔드 개발자를 찾고 있어요",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54433942&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9fe44ff5-bf5d-4bfa-8be2-edbf9cbe5732",
+      "career": "경력무관",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "React",
+        "Vue"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학교졸업(4년)이상\n\n• 금융 SI 프론트엔드 개발 유관 경력 4년 이상\n\n• 최신 React.js 또는 Vue.js 기반의 SPA 아키텍쳐를 이해하시는 분\n\n• 금융권 형상관리 Tool 사용 경험자\n\n• 문서화와 커뮤니케이션 잘하시는 분",
+      "preferences": "• 금융권 인터넷/모바일 뱅킹 구축이나 고도화 프로젝트 수행 경험 있으신 분\n\n• 상용 UI Tool(웹스퀘어, 넥사크로 등)을 활용한 실제 프로젝트 수행 경험이 있으신 분\n\n• 클라우드 환경에 대한 이해가 있으신 분\n\n• UI/UX 파트와 커뮤니케이션이 원활하신 분",
+      "main_tasks": "• 금융 대고객 채널(인터넷/스마트뱅킹 등) 또는 대직원 채널(단말, ERP 등) 화면을 개발해요\n\n• 백엔드 API 인터페이스 연동과 비동기 데이터 처리 코드를 구현해요\n\n• 화면단의 기본 데이터 유효성을 검증하고 처리해요",
+      "benefits": "• 프로젝트 경험으로 빠르게 성장해요\n\n• 개발환경과 장비를 제공해요\n\n• 교육·세미나 참여를 지원해드려요\n\n• 유연한 협업 문화로 일할 수 있어요"
     },
     {
       "site": "saramin",
@@ -166153,6 +166401,32 @@
     },
     {
       "site": "saramin",
+      "company": "(주)닉컴퍼니",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)닉컴퍼니와 금융 데이터 분석 컨설턴트로 함께해요",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54433709&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=637f92dc-8ae4-4074-9402-4d2bc1616d3e",
+      "career": "경력4년↑",
+      "location": "서울강서구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "대용량 처리"
+      ],
+      "qualifications": "• 경력 4년 이상\n\n• 대학교졸업(4년)이상\n\n• 금융 데이터 분석 실무 경험이 있으신 분 (4년 이상)\n\n• Python, R 등을 활용한 데이터 핸들링 및 대용량 데이터 분석/처리에 능숙하신 분\n\n• SQL로 금융 데이터 추출·가공할 수 있는 분\n\n• 텍스트마이닝이나 자연어 처리 기반의 비정형 데이터 분석 프로젝트 경험이 있으신 분\n\n• 지표 정의와 리포팅 경험을 가진 분\n\n• 문제 구조화와 가설 검증에 익숙하신 분\n\n• 유관부서와 원활히 협업하시는 분",
+      "preferences": "• 은행, 카드,핀테크 등 금융권 사업 및 데이터 분석 프로젝트 경험이 있으신 분\n\n• 금융 도메인에 대한 이해가 있으신 분\n\n• AI, 머신러닝 엔지니어와 원활한 커뮤니케이션이 가능하신 분\n\n• 데이터 모델링 개념을 이해하시는 분\n\n• 데이터 분석 결과를 바탕으로 한 컨설팅 문서 작성에 능숙하신 분",
+      "main_tasks": "• 대량의 금융 거래 데이터를 정제하고 분석해요\n\n• AI모델에 적용할 데이터를 검증하고 모니터링해요\n\n• 고객사별 비즈니스 요구사항에 맞춘 데이터 시뮬레이션 및 커스터마이징 기준을 정의해요\n\n• 분석 효율화 방법을 연구하고 인사이트를 도출해요\n\n• 고객 요구를 분석해 개선안을 제시해요",
+      "benefits": "• 유연한 근무 방식으로 일할 수 있어요\n\n• 업무 장비와 소프트웨어를 제공해요\n\n• 교육·세미나 참여를 지원해드려요\n\n• 자유로운 연차 사용을 할 수 있어요"
+    },
+    {
+      "site": "saramin",
       "company": "(주)스카이랩스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -172127,6 +172401,58 @@
       "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421819&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=f87b9bb9-25f3-46e6-9350-eb941b04341b",
       "career": "신입·경력",
       "location": "부산전체 | 교육생",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)에스지시큐리티컨설팅",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 개발자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54417130&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e8505fc2-fbcb-413c-bd49-81883fab1022",
+      "career": "경력무관",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Redis",
+        "Docker",
+        "LangChain",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결"
+      ],
+      "qualifications": "의사소통과 협업에 적극적인 자세를 가진 연구/개발자\n\nLLM 및 챗봇과 같은 자연어처리 기반 인공지능(AI) 서비스에 대한 기본적인 이해\n\nNoSQL(MilvusDB, Redis) 및 API(FAST API)와 같은 백엔드 개발 기본 지식 보유\n\nLangChain, LangGraph, AI Prompt 관련 경험\n\nPython 활용에 대한 기본 지식\n\n• 신입 / 경력 (연수 무관)\n\n• 대학교졸업(4년)이상",
+      "preferences": "Linux 환경에서의 개발 및 서버 장애 대응 경험\n\nCentOS, Ubuntu, Docker 등 서버 관련 지식 보유\n\n네트워크 관련 지식 및 경험 보유",
+      "main_tasks": "언어모델(LLM)을 활용한 자연어처리(NLP) 기술 연구 및 개발\n\n챗봇, AI 서버 등의 서비스에서 알고리즘 구현 및 모델링 (예: 텍스트 분류, 문서 요약 등)\n\n자연어처리 및 챗봇 기반 인공지능 시스템의 엔진 기능 구현 및 프로토타입(Prototype) 개발\n\n인공지능(AI) 시스템 및 서비스(챗봇, RPA 등)의 조사, 연구 및 기획",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)이노크라스코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Team Lead",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54417887&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d75388d3-d0b5-4daa-87dc-458ddf27bd90",
+      "career": "경력5년↑",
+      "location": "서울서초구",
       "dday": "",
       "tech_stack": [],
       "tech_tags": [],
@@ -182685,6 +183011,60 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)케이티밀리의서재",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 엔지니어",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54415223&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=13984fad-0eba-4503-b355-91befcac4cea",
+      "career": "경력5년↑",
+      "location": "서울마포구",
+      "dday": "",
+      "tech_stack": [
+        "AWS",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "K8s"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "DevOps/인프라"
+      ],
+      "competencies": [],
+      "qualifications": "• 5년 이상의 AI 또는 서비스 개발 경험이 있는 분을 찾아요.\n• LLM, RAG, Agent 등 생성형 AI 기술에 대한 이해가 있고 실무 경험이 있으신 분을 찾아요. \n• 추천, 개인화 등 AI 서비스 개발 및 연동 API 개발 경험이 있어야 해요. \n• AWS, Azure 등 클라우드 환경에서 AI 서비스를 개발 및 운영해본 경험이 있으신 분을 찾아요. \n• Docker, Kubernetes(K8S) 기반 AI 서비스 운영 경험이 있으신 분을 찾아요. \n• 모델 배포, 추론 API 운영, 모니터링 등 MLOps/AI 인프라 운영 경험이 있으신 분을 찾아요. \n• Grafana, Langfuse, Sentry 등의 모니터링 도구를 활용해 서비스 상태를 관찰하고 개선한 경험이 있으신 분을 찾아요.",
+      "preferences": "",
+      "main_tasks": "• 추천, 개인화 등 사용자 경험(AX/DX)을 혁신하는 AI 서비스를 설계하고 개발해요.\n• 밀리의서재 서비스에 적용되는 도서 추천, 개인화 추천, 콘텐츠 탐색 경험을 개선해요.\n• LLM, RAG, Agent 기반 AI 기능을 실제 서비스에 적용하고 운영해요.\n• 온디바이스 AI 기능을 지원하기 위한 AI 인프라 및 운영 환경을 구축하고 개선해요.\n• 대규모 데이터를 기반으로 AI/ML 모델 학습·추론 파이프라인을 구축하고 운영해요.\n• Kubernetes 기반 AI 서비스 운영 환경을 구축하고 고도화해요.\n• AI 서비스와 연동되는 API를 개발하고, 배포 자동화·모니터링·운영 환경을 개선해요.\n• 다양한 아이디어를 기술적으로 검토하고 실제 서비스에 적용해 사용자 가치를 높여요.",
+      "benefits": "ㆍ급여제도 : 야근수당, 휴일(특근)수당\nㆍ선물 : 생일자 조기퇴근\nㆍ리프레시 : 연차, 여름휴가\nㆍ교육/생활 : 우수사원시상식, 자기계발비 지원, 식비 지원\nㆍ출퇴근 : 탄력근무제, 자율 근무제"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)인터엑스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI·AX 컨설턴트 (PM)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421491&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=13984fad-0eba-4503-b355-91befcac4cea",
+      "career": "경력 5~15년",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "총 경력 5년 이상의 관련 경험 (신설팀 세팅 중)\n\n* 아래 분야 중 하나 이상의 경험을 보유하신 분\n\n1) 전략 컨설팅펌 (글로벌/국내) 출신으로 IT/디지털/AX 전략 프로젝트 수행 경험\n\n2) SI 관련기업에서 AX/DX 컨설팅 또는 대규모 IT 전략/PI 프로젝트 수행 경험\n\n3) 대기업/제조기업의 전략기획, IT기획, DX/AX 추진 부서에서 전략 수립 및 과제 리딩 경험\n\n4) 프로세스 혁신(PI), As-Is 분석, To-Be 모델 설계 및 Gap 분석 역량\n\n5) 논리적 사고를 바탕으로 한 보고서 작성 및 C-Level 대상의 설득력 있는\n\n프레젠테이션/커뮤니케이션 역량",
+      "preferences": "ㆍ제조(생산, 품질, 물류, 설비 등), ERP, SCM 등 특정 도메인에 대한 깊은 전문성\n\nㆍAI Transformation / Digital Factory / Smart Manufacturing 관련 프로젝트\n\nPM 또는 리더 경험\n\nㆍAI 기술(LLM, RAG 등)에 대한 이해를 바탕으로 AI 서비스 또는 플랫폼을 기획해 본 경험\n\nㆍ대규모 B2B/B2G 서비스 또는 프로젝트 수행 및 PM/PMO 경험\n\nㆍ데이터 거버넌스 전략 수립 또는 IT 아키텍처 설계 관련 경험",
+      "main_tasks": "ㆍEAX 전략 수립: 고객사 비전/경영 목표와 연계한 Enterprise AI Transformation(EAX) 비전\n\n및 전략 방향성 수립\n\nㆍAS-IS 진단 및 Pain Point 도출: 현업 프로세스 및 시스템 현황 분석을 통한 Pain Point 및\n\n개선 영역 도출 (AX 수준 진단)\n\nㆍAI 기반 혁신 과제 발굴/기획: Value Chain 분석, AI 적용사례 벤치마킹 등을 통해 업무 효율화\n\n및 데이터 기반 의사결정을 위한 Quick-Win/중장기 AX 과제 발굴\n\nㆍAX 실행 로드맵 수립: 발굴된 과제의 전략적 중요도, 실행 용이성, ROI 등을 고려한 우선순위 선정\n\n및 단계별 실행 로드맵 수립\n\nㆍ변화 관리 및 거버넌스 설계: 성공적인 AX 도입 및 확산을 위한 변화 관리(CM) 전략, 성과 측정,\n\nAI 거버넌스 체계 설계\n\nㆍC-Level 보고 및 커뮤니케이션: EAX 전략, 핵심 과제, 기대 효과 등 C-Level 대상의 명확하고\n\n설득력 있는 보고 및 커뮤니케이션 수행",
+      "benefits": "인터엑스에만 있는 지원\n\nㆍ직무역량 및 자기계발 교육과정 IX Academy - 직무별 커리어 성장 지원\n\nㆍ역량 진단 제도 ‘IX Expert - 성과별 보상\n\nCompensation Package\n\nㆍ3년 근속 시, 5일 휴가 or 100만원 보너스\n\nㆍ중소기업 청년 소득세 감면 지원\n\nWork Environment\n\nㆍ업무 관련 도서 구입 무한지원\n\nㆍ사내 스터디 지원 (시험 합격 시, 응시비용 전액 지원)\n\nㆍ최신식 IT 장비 지원\n\nㆍ자율 복장과 수평적인 조직문화\n\nㆍ자유로운 연차 & 1시간단위 시간차 사용\n\nRefresh\n\nㆍ효율적인 협업을 위해 팀간 협업 지원비\n\nㆍ사내동호회 운영 비용 지원\n\nㆍ생일 유급 반차\n\nㆍ경조 휴가/경조금 지원\n\n(회사의 복지제도는 상황에 따라 유연하게 변경될 수 있습니다.)"
     },
     {
       "site": "saramin",
@@ -198407,6 +198787,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)노벨오토모티브코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[자동차부품 제조업] IT, 정보보안 담당자 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54428530&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=5519e8e5-f2cf-4769-b537-c9e481376bed",
+      "career": "경력 3~6년",
+      "location": "대구달성군",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "보안"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 3년 이상 ~ 6년 이하\n\n• 대학교졸업(4년)이상",
+      "preferences": "• 전공: 컴퓨터/시스템공학, 공학계열\n\n• 보유역량: 컴퓨터활용능력 우수, 해당직무 근무경험, 관련분야 자격증 보유자 우대",
+      "main_tasks": "• 정보보호 정책/지침 수립 및 대내외 정보보안 이슈 대응\n\n• 전사 보안 점검, 보안교육 수행 등 정보보호 활동\n\n• 개인정보 및 정보보호 관련 문의사항 대응 등\n\n• 개인 정보보호관리체계(ISMS-P), ISO 27001 관련 업무\n\n• 필요 시, 컴플라이언스 분석 및 회사업무(규정 등)에 반영",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "㈜블루웨이브컨설팅",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -203958,6 +204359,49 @@
     },
     {
       "site": "saramin",
+      "company": "(주)퀸텟시스템즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[정규직] AI 솔루션 Java 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54381643&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=dfb12663-4b5d-415d-b2d1-6d7ea61c65c9",
+      "career": "신입·경력",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "React",
+        "Next.js",
+        "Spring",
+        "MySQL",
+        "PostgreSQL",
+        "Redis",
+        "Oracle",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "LangChain",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "CI/CD"
+      ],
+      "qualifications": "• 신입 / 경력 1년 이상 ~ 10년 이하\n\n• 대학졸업(2,3년)이상\n\n• Java / Spring Framework 개발 경험\n\n• REST API 설계 및 개발 경험\n\n• 기본적인 데이터베이스 모델링이 가능하신 분\n\n• 커뮤니케이션이 원활하시고 새로운 분야에 탐구심이 많으신 분\n\n• 프로젝트 수행과 제품 개발에 적극적으로 피드백이 가능하신 분\n\n• 새로운 기술을 활용하고 사용하는데 적극적인 분",
+      "preferences": "• 주요 사용 기술\n\n- Java 21+, Spring / Boot / Cloud, JPA, Gradle 기반 모듈 및 엔진 개발 경험\n\n- React 19+, Next.js App Router 16+ 기반 백오피스 UI 개발 경험 (AI 바이브코딩 경험 이상)\n\n- Jenkins, Docker, Kubernetes 기반 DevOps 및 CI/CD 관리\n\n• 아래 내용에 대한 경험\n\n- Python 기반 LangChain / LangGraph 등 경험\n\n- React, Next.js 등을 활용한 B2B 백오피스 및 관리자 UI 개발 경험\n\n- RDBMS(MySQL, PostgreSQL, Oracle, SQL Server) 및 Redis 등 경험\n\n- 모니터링/로깅(Prometheus, Grafana, ELK) 구성 경험\n\n- 클라우드 서비스(Azure, GCP, Naver Cloud) 사용 경험\n\n- DevOps(Docker, Kubernates, Jenkins 등) 사용 및 개발 경험",
+      "main_tasks": "• AIOps 및 AI Agent 솔루션 설계 및 개발\n\n- 생성형 AI 를 활용한 LLM / RAG / Agent Ops 솔루션 설계 및 개발\n\n- 다양한 AI 기반 신규 서비스 및 프로젝트 내 핵심 모듈 개발\n\n• 자사 솔루션 기반 프로젝트 수행 (내/외근)\n\n--> AI 혁신의 한가운데에서 함께 성장할 분을 모십니다!",
+      "benefits": "• 리프레시 : 연차, 산전 후 휴가, 육아휴직\n\n• 급여제도 : 인센티브제, 장기근속자 포상, 우수사원포상, 퇴직금, 4대 보험\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원\n\n• 교육/생활 : 저녁식사 제공\n\n• 선물 : 명절선물/귀향비"
+    },
+    {
+      "site": "saramin",
       "company": "(주)KH인재교육원",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -207657,6 +208101,85 @@
     },
     {
       "site": "saramin",
+      "company": "(주)디써클",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[Kotlin/Python] 백엔드 엔지니어 전환형 인턴",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54433302&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=3247ddac-5f66-4488-99e2-678476034469",
+      "career": "신입",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "Go",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Spring",
+        "Spring Boot",
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "Elasticsearch",
+        "GCP",
+        "GitHub Actions"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성",
+        "오픈소스 기여",
+        "CI/CD"
+      ],
+      "qualifications": "• 신입\n\n• 학력무관, 졸업 예정자 지원가능\n\n• 기술과 개발에 대한 깊은 열정을 바탕으로 끊임없이 학습하고 성장하고자 하시는 분\n\n• Java / Kotlin / JavaScript / TypeScript / Python / Go 등 하나 이상의 서버 개발 언어에 능숙하신 분\n\n• 자주 쓰이는 자료구조와 알고리즘의 효율성을 이해하고, 이를 코드에 녹여낼 수 있는 분\n\n• 개발 패러다임, 아키텍처, 디자인 패턴, CI/CD, 테스팅 등 본인이 경험해본 개발 분야에 대하여 깊이 있게 말할 수 있는 분\n\n• 자기 주도적으로 문제를 정의하고 해결하며, 동료와 원활하게 커뮤니케이션하실 수 있는 분",
+      "preferences": "• AI Agent, RAG, 검색, LLM 데이터 파이프라인에 관련된 프로덕트를 개발해보신 경험이 있으신 분\n\n• ML, LLM에 대한 기술적 이해와 이를 실제 서비스에 적용한 경험이 있으신 분\n\n• 안정적이고 확장 가능한 데이터 파이프라인을 설계·구현하고 운영해 본 경험이 있으신 분\n\n• 테스터블한 코드를 안정적으로 생산하기 위한 다양한 아키텍처를 유지보수해 본 경험이 있으신 분\n\n• 복잡한 비즈니스 로직을 유지보수하기 좋은 패턴으로 설계/개선한 경험이 있으신 분\n\n• 오픈소스 기여의 경험이 있으시고 해당 경험들에서 어떤 것을 얻었는지 설명하실 수 있으신 분\n\n• (선택사항) 필요시 React.js, Next.js 코드 구조를 파악하고, 간헐적인 프론트엔드 신규 개발/유지보수 작업에 참여하는 것에 열려 있으신 분",
+      "main_tasks": "• Kotlin(Spring Boot), Python, Node.js 기반 소스 코드 신규 개발 및 유지보수에 참여합니다.\n\n• 플랫폼 개발, 프로세스 자동화, AI Agent, 데이터 엔지니어링, LLM 파이프라인, 검색 엔진 등의 개발에 참여합니다.\n\n• 신규 PoC에 참여하여 기술적 가능성과 프로덕트가 주는 가치를 신속하게 검증합니다.\n\n• 깊이 있는 리서치를 통해 적절한 기술적 판단을 수행하며 체계적인 문서를 통해 공유, 논의, 회고합니다. (Tech Spec / ADR)\n\n• 생산성 높은 테스팅 전략을 고민하고 테스터블한 코드와 효과적인 Test Suite를 구현합니다.\n\n• 트래픽: 평시 200~300TPS / 피크 트래픽 1000TPS+ / 빠르게 성장중입니다.\n\n• 배치 데이터 처리량: 프로덕트/프로젝트 별로 수 GB ~ 수십 TB\n\n• 주요 기술 스택\n\n- Language: Kotlin, Python, Typescript\n\n- Web Framework: Spring Boot, Nest.js\n\n- Database & Storage: PostgreSQL, MongoDB, ElasticSearch, Redis\n\n- Infrastructure: GCP Cloud, On-Premise\n\n- CI/CD: Github actions, self-hosted runners\n\n- Data Pipeline: Dagster, GCS\n\n- Analytics: BigQuery, Posthog\n\n- Management & Document: Linear, Slack, Notion",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)쎄트렉아이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "쎄트렉아이 경력직 집중 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54422235&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=645d0305-4245-4e32-9fb8-8b27d207259b",
+      "career": "경력",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "TypeScript",
+        "C++",
+        "C#",
+        "MATLAB",
+        "React",
+        ".NET",
+        "MariaDB",
+        "MSSQL",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사 윈어시",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -211095,6 +211618,34 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "전국렌터카공제조합",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "전국렌터카공제조합 각 직무별 신입/경력 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54418930&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=abc98781-f2ab-4e30-888f-72f5c75a978c",
+      "career": "신입·경력",
+      "location": "서울광진구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "jQuery",
+        "Spring"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "부문\n\nㆍ해외여행에 결격 사유가 없는 자\n\nㆍ남성의 경우 병역 의무를 마치거나 면제된 분\n\nㆍ렌터카공제조합 직원 채용 결격사유에 해당되지 않는 자\n[렌터카공제조합 직원채용 결격사유]\n\n1. 피성년후견인 또는 피한정후견인\n\n2. 파산자로서 복권되지 아니한 자\n\n3. 금고이상의 형을 받고 그 집행이 종료되거나 집행을 아니하기로 확정된 후 3년을 경과하지 아니한 자\n\n4. 법률에 의하여 공민권이 정지 또는 박탈된 자\n\n5. 공무원 임용에 결격사유가 있는 자\n\n6. 전직에서 해직되거나 징계 면직된 자\n\n7. 병역의무자로서 병역기피 한 사실이 있는 자\n\n8. 인사에 관한 사항을 허위로 신고하거나 제출한 자\n\n9. 건강진단 결과 근무에 부적당하다고 판정된 자\n\n10. 기타결격사유가 있다고 인정되는 자\n\nRecruit Process\n\n전형방법\n\n전형일정\n\nㆍ서류전형 합격자 통보 : 개별 통보\n\nㆍ면접전형 합격자 통보 : 개별 통보\n\nㆍ최종 합격자 발표 : 개별 통보",
+      "preferences": "ㆍ손해사정사(차량 또는 3종대물)\n\n　자격증 소지자\n\n대인보상\n\n(경력)\n수도권\nㆍ자동차보험 대인보상 담당\n\nㆍ사고조사 및 면부책 판단\n\nㆍ대인 손해사정 업무\n\nㆍ공제금 지급 및 구상 업무\n자격사항\n\nㆍ대인보상 업무 1년 이상 경력자\n\nㆍ손해사정사(신체 또는 3종대인)\n\n　자격증 소지자\n\n자산운용팀\n\n여신관리직\n\n(경력)\n본점\n\n(서울)\nㆍ자동차할부 연체 관리 및\n\n　회수 업무 수행\n\n　(전화/방문/재산조사/법조치)\n\nㆍ채권별(이상징후/단기/중장기)\n\n　회수 전략 수립 및 실행, 실적 관리\n\nㆍ자산건전성 관리 및\n\n　리스크 분석 보고서 작성\n\nㆍ정상 고객 응대 및\n\n　원리금 납부 관리\n자격사항\n\nㆍ캐피탈, 저축은행 등 금융기관\n\n　여신업무 경력 1년 이상\n\nㆍ자동차 할부·리스·렌탈 금융업무\n\n　경력 1년 이상\n\nㆍ지점관리, 연체관리 또는\n\n　채권관리 업무 경력 1년 이상\n\nIT개발 기간계\n\n(경력)\nㆍ보상 기간계 시스템 개발 및 운영\n\nㆍ사고관리 시스템 개발 및 유지보수\n\nㆍ시스템 기능 개선 및 운영 지원\n자격사항\n\nㆍ개발 경력 5년 이상\n\nㆍ대졸(4년제) 이상\n\nㆍJAVA, JSP, Javascript,\n\n　Springframework, Jquery\n\n　기반 웹 개발\n\nㆍSQL Standard Query 작성 가능\n\nㆍ금융권(손해보험사, 공제조합)\n\n　기간계 시스템 개발 및\n\n　운영 5년 이상 경험자\n\nㆍ컴퓨터 및 소프트웨어 관련학과 전공자\n\nㆍ정보처리기사, PMP, SQLD 등\n\n　IT 관련 자격증 보유자\n\n인사 운영\n\n(HR Operations)\n\n(신입/경력)\nㆍ급여 및 연말정산\n\nㆍ교육 또는 채용 운영\n\nㆍ복리후생 운영\n\nㆍ근태관리 (연차 등)\n자격사항\n[신입]\n\nㆍ대졸(4년제) 졸업 이상, 전공 무관\n\nㆍ전학년 성적 평균 B학점 이상\n\n　(4.5점 만점 환산 시 3.0점 이상)\n[경력]\n\nㆍ인사 운영 업무 경력 3년 이상\n\nㆍ급여, 연말정산, 근태, 조직문화, 채용,\n\n　교육훈련, 복리후생 업무 중\n\n　3개 이상 실무 경험이 있는 분\n[공통]\n\nㆍ데이터 기반으로 문제를 정리하고\n\n　실행할 수 있는 분\n\nㆍ다양한 이해관계자와 원활한\n\n　커뮤니케이션이 가능한 분\n\nㆍ조직 상황에 맞춰 유연하고 원활한\n\n　커뮤니케이션 가능하신 분\n\nㆍ급여 ERP 사용 경험\n\nㆍ연말정산 및 원천세 신고 경험\n\nㆍ기본적인 노동관계법 이해도를 보유하신 분",
+      "main_tasks": "자격 및 우대사항\n\n대물보상\n\n(경력)\n수도권\n\n및\n\n충청권\n\n(천안)\nㆍ자동차보험 대물보상 담당\n\nㆍ사고조사 및 면부책 판단\n\nㆍ대물 손해사정 업무\n\nㆍ공제금 지급 및 구상 업무\n자격사항\n\nㆍ대물보상 업무 1년 이상 경력자",
+      "benefits": "# 우리는 건강하고 행복한 긍정적 조직문화를 추구해요\n\n2025년 노사문화 大賞 국무총리상\n\n(대기업 부문) 수상\n밀레니얼보드 운영\n\n고용노동부 주관, 노사 간 상생 및 협력의 노사문화를\n\n모범적으로 실천하고 있는 ‘노사문화 우수기업’으로 선정\nMZ세대 직원의 의견청취 및 정책참여 등\n\n긍정적인 조직문화 구축을 위한 소통채널 운영\n\n페스티벌 정기 개최\n행복한 일터를 위한 TF 운영\n\n전사 직원 화합 및 소통의 장 마련을 목적으로 체육,\n\n레크레이션 프로그램 진행\n직원들의 행복한 직장생활과 회사의 지속 가능한 경영을\n\n목적으로 HR 시스템 재점검과 개선안 논의를 위한\n\nTF 구성 및 운영\n\n우리 조합은 ‘워라밸’을 추구해요\n\nㆍ저녁있는 삶 YES! 야근 NO!\n\nㆍ매년 리프레시(체력단련) 휴가 5일 지급\n\nㆍ건강검진일 휴가 부여\n\nㆍ창립기념일 휴가 부여\n\nㆍ시차출퇴근제 운영\n\nㆍ생일 당일 오전근무만 시행\n\nㆍ폭넓은 경조휴가 제도 운영\n\nㆍ장기근속자 포상 유급휴가\n\nㆍ육아휴직 등 자유로운 모성보호제도 사용\n\n우리 조합에는 이러한 ‘복리후생’들이 있어요!\n\nㆍ현금성 복지포인트 연간 200만 포인트\n\nㆍ여름휴가비 100만원\n\nㆍ개인연금 가입 시 매월 일부 지원\n\nㆍ임직원 단체상해보험\n\nㆍ사내동호회\n\nㆍ명절상여 및 기념품\n\nㆍ생일축하 지원금\n\nㆍ결혼, 출산 축하 등 경조비\n\nㆍ장기근속자 포상금\n\nㆍ자녀학자금 및 입학선물\n\nㆍ임직원 본인 및 가족(1인) 종합건강검진 지원\n\nㆍ임직원 심리상담비용 지원\n\n우리의 ‘행동 약속’이에요!\n\nㆍ소통 : 회사와 직원이 가야할 방향을 함께 바라봄\n\nㆍ자율과책임 : 스스로 행동하고 그 행동에 책임을 짐\n\nㆍ전문성 : 회사와 동료에게 최고의 도움이 됨\n\nㆍ즐거움 : 존중과 신뢰를 통해 함께 성장함\n\nㆍ공정 : 결과를 이루는 과정에서 정직하게 행동함\n\n기타/문의 사항\n\nㆍ기타사항\n\n- 「국가유공자 등 예우 및 지원에 관한 법률」 제29조에 의한 취업지원대상자, 「장애인 고용촉 진 및 직업재활법」에 의한\n\n　 장애인지원자는 법령에 의거 우대합니다. (관련 서류 제출 必)\n\n- 전형단계별로 제출하도록 안내된 증빙서류를 제출하지 않거나 입사지원서 등 제출서류 기재 사항이 허위 혹은 위·변조임이\n\n　 판명될 경우 입사취소는 물론 추후 입사가 제한 될 수 있음을 유의하시기 바랍니다.\n\n- 응시자격 등을 확인하기 위해 공고문에 제시된 서류 외에 별도 서류제출을 요구할 수 있으며, 기한 내 서류를\n\n　 제출하지 않을 경우 입사가 제한될 수도 있음을 유의하시기 바랍니다.\n\n- 입사지원서 접수 시 작성요령을 반드시 숙지하고 지원서 제출 전에 자격증 등 각종 기재사항을 정확히 확인하여\n\n　　오기재 또는 미기재로 인한 불이익이 없도록 작성에 신중을 기하시기 바랍니다.\n\n　- 불합격자의 지원 서류는 「채용절차의 공정화에 관한 법률」 및 「개인정보보호법」에 따라 파기합니다.\n\n　- 조합 사정에 따라 채용일정 등은 변경될 수 있으며, 공고 내용 중 주요 변경사항 발생 시 홈페이지 공고 또는\n\n　 별도 통보에 의해 공지합니다.\n\nㆍ문의사항\n\n- 전국렌터카공제조합 채용담당자 070-5007-0634\n\n브랜드사이트 바로가기"
     },
     {
       "site": "saramin",
@@ -225904,113 +226455,113 @@
     }
   ],
   "stats": {
-    "total": 7575,
+    "total": 7594,
     "by_size": {
-      "중소기업": 6828,
+      "중소기업": 6847,
       "대기업": 444,
       "중견기업": 303
     },
     "by_role": {
       "기타": 1048,
-      "DevOps/인프라": 1105,
-      "백엔드": 3184,
-      "모바일": 1138,
-      "AI/ML": 2653,
-      "프론트엔드": 2049,
-      "풀스택": 673,
+      "DevOps/인프라": 1106,
+      "백엔드": 3192,
+      "모바일": 1140,
+      "AI/ML": 2660,
+      "프론트엔드": 2055,
+      "풀스택": 674,
       "게임": 43,
-      "데이터": 972,
-      "펌웨어/임베디드": 291,
-      "보안": 324,
-      "QA": 76
+      "데이터": 975,
+      "펌웨어/임베디드": 292,
+      "보안": 325,
+      "QA": 77
     },
     "by_site": {
-      "wanted": 1997,
+      "wanted": 2000,
       "jumpit": 547,
-      "jobkorea": 1219,
-      "saramin": 3393,
+      "jobkorea": 1223,
+      "saramin": 3405,
       "dev": 419
     },
     "top_tech": [
       [
         "Python",
-        2317
+        2325
       ],
       [
         "AWS",
-        1932
+        1936
       ],
       [
         "Java",
-        1870
+        1877
       ],
       [
         "React",
-        1540
+        1545
       ],
       [
         "Git",
-        1214
+        1215
       ],
       [
         "Docker",
-        1183
+        1186
       ],
       [
         "Spring",
-        1075
+        1079
       ],
       [
         "JavaScript",
-        1016
+        1021
       ],
       [
         "Linux",
-        1013
+        1017
       ],
       [
         "TypeScript",
-        1009
+        1012
       ],
       [
         "MySQL",
-        856
+        857
       ],
       [
         "Kubernetes",
-        835
+        837
       ],
       [
         "REST API",
-        824
+        825
       ],
       [
         "PostgreSQL",
-        779
+        781
       ],
       [
         "Spring Boot",
-        651
+        652
       ],
       [
         "Node.js",
-        648
+        650
       ],
       [
         "GCP",
-        637
+        639
       ],
       [
         "C++",
-        636
+        637
       ],
       [
         "Next.js",
-        557
+        559
       ],
       [
         "Azure",
-        535
+        537
       ],
       [
         "PyTorch",
@@ -226018,11 +226569,11 @@
       ],
       [
         "CSS",
-        501
+        503
       ],
       [
         "Redis",
-        497
+        500
       ],
       [
         "Android",
@@ -226030,7 +226581,7 @@
       ],
       [
         "HTML",
-        488
+        490
       ],
       [
         "FastAPI",
@@ -226042,11 +226593,11 @@
       ],
       [
         "Kotlin",
-        420
+        421
       ],
       [
         "Vue",
-        393
+        395
       ],
       [
         "Kafka",
@@ -226055,22 +226606,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-15T12:54:52",
-      "keyword": "통합",
-      "raw_total": 6934,
-      "deduped": 6524,
-      "active": 5891,
-      "closed": 633,
-      "site_counts": {
-        "wanted": 1333,
-        "jumpit": 501,
-        "jobkorea": 1371,
-        "saramin": 3455,
-        "dev": 274
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-15T14:28:16",
       "keyword": "통합",
@@ -229251,6 +229786,22 @@
         "jumpit": 887,
         "jobkorea": 2599,
         "saramin": 7030,
+        "dev": 704
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-10T19:33:00",
+      "keyword": "통합",
+      "raw_total": 13343,
+      "deduped": 11229,
+      "active": 7594,
+      "closed": 3635,
+      "site_counts": {
+        "wanted": 2097,
+        "jumpit": 888,
+        "jobkorea": 2606,
+        "saramin": 7048,
         "dev": 704
       },
       "anomalies": []
