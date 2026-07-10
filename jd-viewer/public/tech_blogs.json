@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-10T10:45:11",
- "total": 918,
+ "generated_at": "2026-07-10T12:34:35",
+ "total": 919,
  "sources": [
   {
    "company": "Etsy",
@@ -25,7 +25,7 @@
   {
    "company": "LINE",
    "country": "KR",
-   "count": 38
+   "count": 39
   },
   {
    "company": "GitHub",
@@ -520,6 +520,27 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "초당 100만 건, LINE 앱에 Apache Kafka 종단 간 암호화 적용기",
+   "url": "https://techblog.lycorp.co.jp/ko/applying-e2ee-to-apache-kafka-in-line-app",
+   "published": "2026-07-10",
+   "published_ts": 1783648800.0,
+   "summary": "들어가며: 왜 Kafka 종단 간 암호화인가?LINE 메신저에서는 매일 수십억 건의 메시지가 오갑니다. 이 방대한 데이터는 다양한 시스템으로 전달되며, 그중에는 개인 정보와 같이 ...",
+   "tags": [],
+   "tech_stack": [
+    "Kafka",
+    "Cryptography"
+   ],
+   "categories": [
+    "데이터",
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "a8962f1a7d7606e7"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",
