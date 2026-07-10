@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T14:17:24",
+  "generated_at": "2026-07-10T15:59:41",
   "source": "youtube",
   "tech_count": 179,
   "curriculum_count": 20,
@@ -2845,88 +2845,6 @@
         "stage": "실전"
       }
     ],
-    "LangChain": [
-      {
-        "title": "[#langchain 밋업 발표] R.A.G. 우리가 절대 쉽게결과물을 얻을 수 없는 이유",
-        "url": "https://www.youtube.com/watch?v=NfQrRQmDrcc",
-        "thumbnail": "https://i.ytimg.com/vi/NfQrRQmDrcc/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 64607,
-        "length": "45:21",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "LLM 앱 개발의 시작, LangChain 구성요소 완전 정복🔎 | Flunti 강의 미리보기",
-        "url": "https://www.youtube.com/watch?v=gATptYyZ1KU",
-        "thumbnail": "https://i.ytimg.com/vi/gATptYyZ1KU/mqdefault.jpg",
-        "channel": "한국글로벌널리지",
-        "views": 328,
-        "length": "10:34",
-        "published": "7개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "AI 에이전트 개발, 이 영상 하나로 끝냅니다. (LangChain + LangGraph)",
-        "url": "https://www.youtube.com/watch?v=3My9sphTxtk",
-        "thumbnail": "https://i.ytimg.com/vi/3My9sphTxtk/mqdefault.jpg",
-        "channel": "Bloom AI",
-        "views": 24602,
-        "length": "9:03:25",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "EP 2. Langchain과 Langgraph의 차이점",
-        "url": "https://www.youtube.com/watch?v=yD3SnuU6Pd8",
-        "thumbnail": "https://i.ytimg.com/vi/yD3SnuU6Pd8/mqdefault.jpg",
-        "channel": "모두의AI",
-        "views": 14244,
-        "length": "9:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "LangChain/LangGraph V1 업데이트 이후 신기능 활용하여 에이전트 제작하기!",
-        "url": "https://www.youtube.com/watch?v=Ipa6JNbFq4g",
-        "thumbnail": "https://i.ytimg.com/vi/Ipa6JNbFq4g/mqdefault.jpg",
-        "channel": "인공지능팩토리(AIFactory)",
-        "views": 4860,
-        "length": "1:49:55",
-        "published": "스트리밍 시간: 6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "#langchain 의 #RAG 파이프라인 이해해보기 - 네이버 뉴스기사 기반 Q&A 챗봇 제작",
-        "url": "https://www.youtube.com/watch?v=1scMJH93v0M",
-        "thumbnail": "https://i.ytimg.com/vi/1scMJH93v0M/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 50619,
-        "length": "21:47",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Langchain 강의 (1/n) - Langchain이 뭘까?",
-        "url": "https://www.youtube.com/watch?v=WWRCLzXxUgs",
-        "thumbnail": "https://i.ytimg.com/vi/WWRCLzXxUgs/mqdefault.jpg",
-        "channel": "모두의AI",
-        "views": 57104,
-        "length": "23:54",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "랭체인(LangChain)과 LLM을 이용해서 AI 텍스트 요약(Summarization)하기",
-        "url": "https://www.youtube.com/watch?v=qEDBG9lXgTs",
-        "thumbnail": "https://i.ytimg.com/vi/qEDBG9lXgTs/mqdefault.jpg",
-        "channel": "AISchool",
-        "views": 5134,
-        "length": "15:49",
-        "published": "2년 전",
-        "stage": "핵심"
-      }
-    ],
     "Oracle": [
       {
         "title": "[오라클 기초 강좌] 05 - 데이터베이스 구조 - Oracle Instance, SGA, Shared Pool,  Data Buffer Cache, Redo Log Buffer",
@@ -3007,6 +2925,88 @@
         "length": "1:59:07",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "LangChain": [
+      {
+        "title": "[#langchain 밋업 발표] R.A.G. 우리가 절대 쉽게결과물을 얻을 수 없는 이유",
+        "url": "https://www.youtube.com/watch?v=NfQrRQmDrcc",
+        "thumbnail": "https://i.ytimg.com/vi/NfQrRQmDrcc/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 64607,
+        "length": "45:21",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "LLM 앱 개발의 시작, LangChain 구성요소 완전 정복🔎 | Flunti 강의 미리보기",
+        "url": "https://www.youtube.com/watch?v=gATptYyZ1KU",
+        "thumbnail": "https://i.ytimg.com/vi/gATptYyZ1KU/mqdefault.jpg",
+        "channel": "한국글로벌널리지",
+        "views": 328,
+        "length": "10:34",
+        "published": "7개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "AI 에이전트 개발, 이 영상 하나로 끝냅니다. (LangChain + LangGraph)",
+        "url": "https://www.youtube.com/watch?v=3My9sphTxtk",
+        "thumbnail": "https://i.ytimg.com/vi/3My9sphTxtk/mqdefault.jpg",
+        "channel": "Bloom AI",
+        "views": 24602,
+        "length": "9:03:25",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "EP 2. Langchain과 Langgraph의 차이점",
+        "url": "https://www.youtube.com/watch?v=yD3SnuU6Pd8",
+        "thumbnail": "https://i.ytimg.com/vi/yD3SnuU6Pd8/mqdefault.jpg",
+        "channel": "모두의AI",
+        "views": 14244,
+        "length": "9:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "LangChain/LangGraph V1 업데이트 이후 신기능 활용하여 에이전트 제작하기!",
+        "url": "https://www.youtube.com/watch?v=Ipa6JNbFq4g",
+        "thumbnail": "https://i.ytimg.com/vi/Ipa6JNbFq4g/mqdefault.jpg",
+        "channel": "인공지능팩토리(AIFactory)",
+        "views": 4860,
+        "length": "1:49:55",
+        "published": "스트리밍 시간: 6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "#langchain 의 #RAG 파이프라인 이해해보기 - 네이버 뉴스기사 기반 Q&A 챗봇 제작",
+        "url": "https://www.youtube.com/watch?v=1scMJH93v0M",
+        "thumbnail": "https://i.ytimg.com/vi/1scMJH93v0M/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 50619,
+        "length": "21:47",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Langchain 강의 (1/n) - Langchain이 뭘까?",
+        "url": "https://www.youtube.com/watch?v=WWRCLzXxUgs",
+        "thumbnail": "https://i.ytimg.com/vi/WWRCLzXxUgs/mqdefault.jpg",
+        "channel": "모두의AI",
+        "views": 57104,
+        "length": "23:54",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "랭체인(LangChain)과 LLM을 이용해서 AI 텍스트 요약(Summarization)하기",
+        "url": "https://www.youtube.com/watch?v=qEDBG9lXgTs",
+        "thumbnail": "https://i.ytimg.com/vi/qEDBG9lXgTs/mqdefault.jpg",
+        "channel": "AISchool",
+        "views": 5134,
+        "length": "15:49",
+        "published": "2년 전",
+        "stage": "핵심"
       }
     ],
     "C#": [
