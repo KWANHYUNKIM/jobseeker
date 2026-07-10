@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T04:08:11",
+  "generated_at": "2026-07-11T05:49:55",
   "source": "youtube",
   "tech_count": 179,
   "curriculum_count": 20,
@@ -1973,6 +1973,78 @@
         "stage": "핵심"
       }
     ],
+    "Android": [
+      {
+        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
+        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
+        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4856,
+        "length": "7:21",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
+        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
+        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 1870,
+        "length": "43:15",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
+        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
+        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
+        "channel": "소프트캠퍼스softcampus",
+        "views": 9603,
+        "length": "4:45",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "밍짱의 안드로이드 강의 1편 - 기본 시작편",
+        "url": "https://www.youtube.com/watch?v=DLi5-R56Udc",
+        "thumbnail": "https://i.ytimg.com/vi/DLi5-R56Udc/mqdefault.jpg",
+        "channel": "밍짱",
+        "views": 982,
+        "length": "2:46",
+        "published": "9년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드 앱 개발 영상 강의입니다.",
+        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
+        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 1516,
+        "length": "4:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
+        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
+        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
+        "channel": "널널한 교수의 코딩 클래스",
+        "views": 1161,
+        "length": "1:32:31",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 398,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
+      }
+    ],
     "FastAPI": [
       {
         "title": "FastAPI 강의 (1) : 시작해보기",
@@ -2053,78 +2125,6 @@
         "length": "3:21",
         "published": "1년 전",
         "stage": "실전"
-      }
-    ],
-    "Android": [
-      {
-        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
-        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
-        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4856,
-        "length": "7:21",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
-        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
-        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 1870,
-        "length": "43:15",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
-        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
-        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
-        "channel": "소프트캠퍼스softcampus",
-        "views": 9603,
-        "length": "4:45",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "밍짱의 안드로이드 강의 1편 - 기본 시작편",
-        "url": "https://www.youtube.com/watch?v=DLi5-R56Udc",
-        "thumbnail": "https://i.ytimg.com/vi/DLi5-R56Udc/mqdefault.jpg",
-        "channel": "밍짱",
-        "views": 982,
-        "length": "2:46",
-        "published": "9년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드 앱 개발 영상 강의입니다.",
-        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
-        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 1516,
-        "length": "4:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
-        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
-        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
-        "channel": "널널한 교수의 코딩 클래스",
-        "views": 1161,
-        "length": "1:32:31",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 398,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
       }
     ],
     "Kafka": [

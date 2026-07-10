@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-11T04:07:58",
-  "source_dir": "screenshots/all_통합_20260711_040739",
+  "generated_at": "2026-07-11T05:49:42",
+  "source_dir": "screenshots/all_통합_20260711_054923",
   "keyword": "통합",
   "jobs": [
     {
@@ -41963,6 +41963,30 @@
     },
     {
       "site": "wanted",
+      "company": "스트레스솔루션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[AI 헬스케어] 정부지원사업,R&D 과제 운영 담당 사무행정(PM)",
+      "url": "https://www.wanted.co.kr/wd/374224",
+      "career": "",
+      "location": "경력 3-10년",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 정부지원사업 또는 복수 프로젝트를 주도적으로 관리한 경험\n• 다양한 이해관계자(주관기관, 컨소시엄, 내부 팀)와의 협업 경험\n• 자율적으로 업무를 이끌고 책임감 있게 끝까지 수행할 수 있는 분\n• 문서 작성(보고서·계획서·정산자료 등)에 부담이 없는 분",
+      "preferences": "• 정부지원사업·R&D 과제 중간·최종보고서 작성 경험\n• 정부사업 및 과제 전용 PMS 사용 경험\n• 산업부·중기부·KOICA·지자체 등 정부사업 수행 경험\n• 프로젝트 리딩 또는 직접 운영 경험\n• 한글, Excel, PowerPoint, Figma 등 업무 툴 활용 능력\n• 문서 정리·체계화에 강점이 있는 분\n• 유연한 사고와 원활한 팀워크를 중시하는 분\n• 시리즈 A–C 단계의 스타트업에서 정부과제·사업 운영 또는 조직 성장 과정에 직접 참여한 경험\n• 투자 유치 이후 사업 규모 확대, 관리 체계 정비, 행정·운영 고도화 경험",
+      "main_tasks": "• 정부지원 과제 및 정부지원사업 제안서 작성 및 신청 전반 주도\n• 정부지원 과제·정부사업 일정 수립 및 세부 실행 관리\n• 정부지원 과제 중간·최종보고서 작성 및 제출 총괄\n• 과제 결과물(성과물·산출물 등) 증빙 자료 정리 및 제출 관리\n• 주관기관 공지 확인 및 관련 프로그램 응대·스케줄 관리\n• 컨소시엄 참여 기관 간 커뮤니케이션 지원\n(공지 전달, 자료 요청, 일정 조율 등)\n• 내부 기획 및 사업계획서 작성, 서비스 개선을 위한 프로세스 설계·운영",
+      "benefits": "• 입사 축하금 지급 (입사 3개월 후)\n• 자율 복장\n• 생일 반차 제공\n• 자유로운 연차/반차/월차 사용\n• 음원 서비스/스피커 등 자사 제품 체험 및 제공"
+    },
+    {
+      "site": "wanted",
       "company": "씨디알아이(CDRI)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -57423,6 +57447,44 @@
       "preferences": "• 바이오/의료/산업용 장비 개발 경험자\n• 로봇 Kinematics 에 대한 이해\n• FreeRTOS 등 RTOS 기반 프로젝트 경험자\n• 회로도/하드웨어 기본 이해 보유자\n• 통신 패킷 설계 및 디버깅 경험자\n• 로봇 및 자동화 솔루션에 대한 관심이 있으신 분\n• 영어 가능하신 분",
       "main_tasks": "• 바이오 장비용 제어 보드 펌웨어 개발\n• STM32 MCU 기반 임베디드 제어 SW 개발\n• UART , SPI, I2C, CAN 등 주변장치 드라이버 제어\n• Modbus RTU/TCP/UDP 통신 구현\n• PC 제어 소프트웨어 개발 및 보드 테스트 자동화",
       "benefits": "보상.수당.지원\n· 퇴직금\n· 자기개발 지원 (도서구입비)\n· 성과금\n\n휴무 . 휴가 . 행사\n· 워크샵/MT\n· 생일 이벤트\n\n편의 . 여가 . 건강\n· 점심/저녁 식사 지원\n· 간식 제공\n\n사내시설\n· 구내식당\n· 휴식공간\n· 전용사옥\n· 쾌적한 업무공간"
+    },
+    {
+      "site": "wanted",
+      "company": "엠지알브이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Python Backend Engineer",
+      "url": "https://www.wanted.co.kr/wd/374348",
+      "career": "",
+      "location": "경력 3-10년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Django",
+        "FastAPI",
+        "PostgreSQL",
+        "Redis",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "CI/CD"
+      ],
+      "qualifications": "• 유관 경력 3년 이상 10년 이하의 백엔드 엔지니어링 실무 경험이 있으신 분\n• 대졸 이상 또는 이에 준하는 역량과 실무 경험을 보유하신 분\n• Python에 대한 깊은 이해와 실무 개발 경험이 있으신 분\n• FastAPI, Django(DRF) 등 Python 웹 프레임워크 기반 서비스 개발 경험이 있으신 분\n• RESTful API 설계 및 프론트엔드-백엔드 연동 경험이 있으신 분\n• RDBMS와 SQL에 대한 이해를 바탕으로 쿼리 작성 및 스키마 설계가 가능하신 분\n• Git 기반 협업, 코드 리뷰, 배포 프로세스에 익숙하신 분\n• 기획, 디자인, 운영 등 다양한 이해관계자와 원활하게 소통하며 문제를 해결할 수 있으신 분\n• 주어진 요구사항을 단순 구현하는 데 그치지 않고, 문제의 배경과 비즈니스 목표를 이해해 더 나은 해결책을 제안할 수 있으신 분",
+      "preferences": "• 소프트웨어 엔지니어링 관련 학사 또는 그에 준하는 학위 보유자\n• Python 비동기 프로그래밍(asyncio, async/await)에 대한 깊은 이해와 활용 경험이 있으신 분\n• PostgreSQL 등 RDBMS와 ORM을 활용한 설계 및 쿼리 최적화 경험이 있으신 분\n• Redis 등을 활용한 캐싱, 메시지 큐, 백그라운드 작업 처리 경험이 있으신 분\n• Docker, CI/CD, 클라우드(AWS/GCP/Azure) 기반 배포 및 운영 경험이 있으신 분\n• 테스트 코드, 모니터링, 로깅 등 서비스 품질과 운영 안정성 개선 경험이 있으신 분\n• 인증/인가, 계약, 결제, 예약, 입출입, 알림 등 도메인 개발 경험이 있으신 분\n• 공유주거(Co-living), 부동산 운영, 숙박, 프롭테크 또는 그와 유사한 도메인에 대한 이해가 있으신 분",
+      "main_tasks": "• Python(FastAPI/Django) 기반 백엔드 서비스 및 RESTful API 설계, 개발, 운영\n• 홈페이지, PMS, 운영 어드민, 입주/계약/결제/시설 운영 관련 백엔드 서비스의 신규 기능 개발 및 유지보수\n• 비동기(asyncio, async/await) 기반 고동시성 API 및 배치/백그라운드 작업 설계 및 구현\n• 운영 팀, PM, 프론트엔드 개발자, 디자이너와 협업하여 요구사항을 구체화하고 제품 기능으로 구현\n• RDBMS(PostgreSQL 등) 기반 데이터 모델링, SQL/ORM(SQLAlchemy·Django ORM) 작성, 성능 개선 및 데이터 정합성 관리\n• 서비스 장애 대응, 버그 수정, 성능 개선, 배포 및 운영 안정화\n• 코드 리뷰, 테스트 코드 작성, 개발 프로세스 개선을 통한 제품 품질 향상\n• 자사 공유주거 “mangrove” 운영 오퍼레이터를 위한 기술 지원 및 업무 자동화",
+      "benefits": "• 자율적 학습 문화를 지지하며, 업무 역량 개발과 성장에 필요한 컨텐츠 비용을 지원\n• 반차, 반반차 등 유연한 연차 사용 가능\n• 리프레쉬 휴가 : 근속 3년 시점마다 10 영업일의 유급휴가와 휴가비 지원\n• 특별 육아휴가 : 8세 이하 자녀가 있는 구성원에게 최대 10 영업일 유급휴가 부여 *법정 육아휴직과 별도\n• 건강검진 : 종합검진 패키지를 격년으로 지원\n\nMGRV는 아직 성장 중인 스타트업으로, 물리적인 복지의 규모는 크지 않을 수 있습니다.\n하지만 회사와 구성원의 지속가능한 성장과 연결을 꾀하며 우리의 스테이지에 부합한 지원 정책들을 진정성 있게 발전시켜 가겠습니다."
     },
     {
       "site": "wanted",
@@ -129463,6 +129525,56 @@
       "preferences": "",
       "main_tasks": "",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)밀버스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "솔루션 개발자(경력) 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54430670&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=47eabcf1-fbc7-475f-9821-d731e0a244f5",
+      "career": "경력 5~10년",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(유)타이거몰드앤베이스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "사내 ERP 구축 및 운영 웹 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54432042&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=47eabcf1-fbc7-475f-9821-d731e0a244f5",
+      "career": "경력무관",
+      "location": "서울금천구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "HTML",
+        "CSS",
+        "Django"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능\n\n•\n[필수] ChatGPT, GitHub Copilot, Cursor 등 AI 코딩 툴 활용 경험이 있으신 분 (AI를 활용해 코드 작성 및 문제 해결 속도를 높일 수 있는 분)\n\n• Python 및 Django 웹 프레임워크의 기초 지식이 있고, 직접 웹 서비스를 만들어본 경험이 있는 분\n\n• HTML, CSS, JavaScript를 활용해 기본적인 웹 화면을 구성할 수 있는 분\n\n• 모르는 에러가 발생해도 검색과 AI를 적극적으로 활용해 스스로 해결책을 찾아내는 분\n\n• 처음부터 완벽한 코드보다는, 일단 작동하는 결과물을 만들고 - 점진적으로 개선해 나가는 과정을 즐기시는 분",
+      "preferences": "",
+      "main_tasks": "• 백엔드개발자\n\n• 서버관리\n\n• 앱개발자\n\n• 반응형웹\n\n• 웹개발자\n\n• 관리팀 업무(재무/물류 업무) 진행",
+      "benefits": "• 건강보험 고용보험 국민연금 산재보험 경조휴가 공휴일 휴무 다양한 휴가제도 주5일제 상여금 성과급 퇴직금 교육/세미나/스터디 사내 외국어강좌 운영 수평적 문화 신입 사원 교육 자율복장"
     },
     {
       "site": "saramin",
@@ -216117,6 +216229,69 @@
     },
     {
       "site": "dev",
+      "company": "국가과학기술연구회",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년도 NAIS-제2차 정규직(연구직, 기술직) 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/560554?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "세종 전지역, 대전 전지역",
+      "dday": "~07.23(목)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "웨이비스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "'26년 하반기 신입사원 기수제 공개채용 #공채",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/560541?ReturnUrl=RecruitInfo",
+      "career": "신입",
+      "location": "경기 화성시, 평택시, 충남 천안시 서북구",
+      "dday": "~07.22(수)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "HL만도",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 하반기 월간 신입 채용 (7월 모집)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/560486?ReturnUrl=RecruitInfo",
+      "career": "신입",
+      "location": "경기 성남시 분당구, 강원 원주시",
+      "dday": "~07.19(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -219397,6 +219572,48 @@
     },
     {
       "site": "dev",
+      "company": "티맵모빌리티",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "API/SDK 상품운영 및 기술지원 담당자 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/560572?ReturnUrl=RecruitInfo",
+      "career": "경력(7년 이상)",
+      "location": "서울 전지역",
+      "dday": "~12.31(목)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "한국해양수산연수원",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년도 제3차 계약직 직원 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/560535?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "부산 영도구, 남구, 전지역",
+      "dday": "~07.24(금)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "네이버클라우드",
       "company_size": "대기업",
       "company_size_matched": "네이버클라우드",
@@ -222450,19 +222667,19 @@
     }
   ],
   "stats": {
-    "total": 7457,
+    "total": 7466,
     "by_size": {
-      "중소기업": 6718,
+      "중소기업": 6727,
       "대기업": 441,
       "중견기업": 298
     },
     "by_role": {
-      "기타": 1026,
+      "기타": 1031,
       "DevOps/인프라": 1087,
-      "백엔드": 3145,
+      "백엔드": 3148,
       "모바일": 1120,
-      "AI/ML": 2614,
-      "프론트엔드": 2023,
+      "AI/ML": 2616,
+      "프론트엔드": 2024,
       "풀스택": 661,
       "게임": 42,
       "데이터": 956,
@@ -222471,20 +222688,20 @@
       "QA": 77
     },
     "by_site": {
-      "wanted": 2003,
+      "wanted": 2005,
       "jumpit": 547,
       "jobkorea": 1186,
-      "saramin": 3303,
-      "dev": 418
+      "saramin": 3305,
+      "dev": 423
     },
     "top_tech": [
       [
         "Python",
-        2280
+        2282
       ],
       [
         "AWS",
-        1901
+        1902
       ],
       [
         "Java",
@@ -222496,11 +222713,11 @@
       ],
       [
         "Git",
-        1186
+        1187
       ],
       [
         "Docker",
-        1165
+        1166
       ],
       [
         "Spring",
@@ -222532,7 +222749,7 @@
       ],
       [
         "PostgreSQL",
-        770
+        771
       ],
       [
         "Node.js",
@@ -222544,7 +222761,7 @@
       ],
       [
         "GCP",
-        631
+        632
       ],
       [
         "C++",
@@ -222556,7 +222773,7 @@
       ],
       [
         "Azure",
-        529
+        530
       ],
       [
         "PyTorch",
@@ -222564,15 +222781,15 @@
       ],
       [
         "CSS",
-        495
+        496
       ],
       [
         "Redis",
-        491
+        492
       ],
       [
         "HTML",
-        481
+        482
       ],
       [
         "Android",
@@ -222580,7 +222797,7 @@
       ],
       [
         "FastAPI",
-        435
+        436
       ],
       [
         "iOS",
@@ -222601,22 +222818,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-15T22:25:41",
-      "keyword": "통합",
-      "raw_total": 7098,
-      "deduped": 6655,
-      "active": 6025,
-      "closed": 630,
-      "site_counts": {
-        "wanted": 1350,
-        "jumpit": 510,
-        "jobkorea": 1389,
-        "saramin": 3569,
-        "dev": 280
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-15T23:59:27",
       "keyword": "통합",
@@ -225798,6 +225999,22 @@
         "jobkorea": 2645,
         "saramin": 7078,
         "dev": 704
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-11T05:49:36",
+      "keyword": "통합",
+      "raw_total": 13430,
+      "deduped": 11286,
+      "active": 7466,
+      "closed": 3820,
+      "site_counts": {
+        "wanted": 2102,
+        "jumpit": 893,
+        "jobkorea": 2645,
+        "saramin": 7081,
+        "dev": 709
       },
       "anomalies": []
     }
