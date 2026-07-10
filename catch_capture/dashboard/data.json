@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-11T05:49:42",
-  "source_dir": "screenshots/all_통합_20260711_054923",
+  "generated_at": "2026-07-11T07:32:33",
+  "source_dir": "screenshots/all_통합_20260711_073214",
   "keyword": "통합",
   "jobs": [
     {
@@ -9633,6 +9633,278 @@
       "preferences": "ㆍ1개 이상의 Flutter 프로젝트 경험 또는 그에 준한 경험을 보유하신 분\nㆍRESTFul 개발 경험이 있으신 분\nㆍ안드로이드 혹은 아이폰 앱 개발 프로젝트 경험\nㆍUX/UI 플랫폼 개발 환경에 대한 이해",
       "main_tasks": "담당 업무\n통학 차량 관리 \"라이드\" 앱 클라이언트(Flutter) 개발\n모바일, PC, CMS 개발 (Flutter, GetX, Node)\n\n구글플레이 링크\nhttps://play.google.com/store/apps/details?id=com.schoolbus.ride\n\n앱스토어 링크\nhttps://apps.apple.com/kr/app/%EB%9D%BC%EC%9D%B4%EB%93%9C-ride-%ED%86%B5%ED%95%99%EC%B0%A8%EB%9F%89-%EC%96%B4%EB%A6%B0%EC%9D%B4-%ED%86%B5%ED%95%99%EB%B2%84%EC%8A%A4-%EA%B4%80%EB%A6%AC/id1583899275",
       "benefits": "• 필요 장비 및 자기 계발 지원 (인강, 스터티)\n• 야근 없음(지금까지 야근 1회도 없음)"
+    },
+    {
+      "site": "wanted",
+      "company": "랩투마켓",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[전문연구요원] Vision AI 개발자",
+      "url": "https://www.wanted.co.kr/wd/374238",
+      "career": "",
+      "location": "신입-경력 6년",
+      "dday": "",
+      "tech_stack": [
+        "OpenCV"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성",
+        "석박사 우대"
+      ],
+      "qualifications": "• 해외여행에 결격 사유가 없는 분\n• 팀워크와 커뮤니케이션 능력이 뛰어나신 분\n• 긍정적이고 자기 주도적으로 성장할 수 있는 분\n• 문제해결 능력이 뛰어난 분\n• 제어공학 또는 관련 분야 석사 학위 이상 소지자 (졸업 예정자도 지원 가능)",
+      "preferences": "• 회로설계, 아트웍, 펌웨어, 모터드라이버, Embedded Daughter Board 개발 가능자\n• Impedance/Admittance/Compliance/Force Controller 설계 및 적용 경험자\n• 산업용 카메라, Depth Camera, 협동로봇 연동 경험 우대\n• 제조 자동화, 물류 자동화, 검사 장비, Pick & Place 시스템 개발 경험 우대",
+      "main_tasks": "• YOLO 기반 객체 검출 모델 개발 및 적용\n• OpenCV 기반 영상처리 알고리즘 개발\n• 객체 중심 좌표, 방향, 각도 등 위치 정보 산출\n• 카메라 좌표계와 로봇 좌표계 간 좌표 변환\n• Camera Calibration 및 Hand-Eye Calibration\n• Vision 결과를 협동로봇/Cobot, AMR 제어 시스템과 연동\n• 현장 환경에 맞춘 객체 인식률 및 위치 정확도 개선",
+      "benefits": "함께하면 받는 혜택 및 복지\n- 점심식사 제공\n- 기본 휴가 + 여름/겨울 휴가(각 3일) = 연 21일!\n- 생일 반차\n- 2년에 한 번 건강검진 패키지 제공\n- 4.5일 근무제 곧 시행 예정\n- 장기근속자 인센티브 (2, 4, 6, 8, 10년 차)"
+    },
+    {
+      "site": "wanted",
+      "company": "둠둠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[드론] 무인항공기 시스템 개발자 (기체·임베디드)",
+      "url": "https://www.wanted.co.kr/wd/374281",
+      "career": "",
+      "location": "경력 5년 이상",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결"
+      ],
+      "qualifications": "• 임베디드 펌웨어 개발 또는 드론 조립·통합 경력 5년 이상\n• MCU 기반 펌웨어 개발 및 보드 브링업 경험\n• 센서·주변장치 인터페이스(SPI/I2C/UART/CAN) 개발 및 연동 경험\n• FC, ESC, 모터, GPS 등 드론 부품 이해 및 결선 능력\n• ArduPilot 또는 PX4 파라미터 설정·캘리브레이션 경험\n• 오실로스코프, 로직애널라이저 등 계측기를 활용한 디버깅 경험\n• 의사소통이 원활하신분",
+      "preferences": "• ArduPilot/PX4 등 비행제어 펌웨어 개발·커스터마이징 경험\n• 임베디드 리눅스 및 Python 경험\n• BLDC/FOC 모터 제어, 감속기 적용 및 장력 제어 경험\n• 드론 임무장비(Payload) 구동 시스템 개발 경험\n• RTK GNSS, 텔레메트리, 데이터링크 연동 경험\n• 초경량비행장치 조종 자격 또는 비행 경험",
+      "main_tasks": "• 드론 기체 조립·통합 (FC, ESC, 모터, GPS, 통신모듈, 페이로드)\n• 전원·신호 배선 하네스 제작 및 배선 정리\n• FC 펌웨어 설치, 센서 캘리브레이션, 파라미터 설정 (ArduPilot/PX4)\n• 드론용 MCU/SoC 기반 펌웨어 설계·개발\n• IMU, GNSS, 기압계, 지자기센서 드라이버 및 인터페이스 개발\n• BLDC 모터·ESC 제어 및 PWM/DShot/CAN 구동 로직 구현\n• 임무장비 구동 모터 제어 및 정밀 위치·장력 제어 개발\n• UART, CAN, I2C, USB, Ethernet 통신 인터페이스 구현\n• 컴패니언 컴퓨터 기반 임베디드 리눅스 개발\n• 지상시험, 시험비행, 디버깅 및 설계·성능 개선\n• 조립 기준서, 배선도, 부품 리스트 등 기술문서 작성",
+      "benefits": "• 법정휴일 준수\n• 점심식대 제공\n• 간식 무제한\n• 자율문화\n• 인센티브/상여금 지급\n• 드론 자격증 취득 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "바이다",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "응용 소프트웨어 개발자 (8년 이상)",
+      "url": "https://www.wanted.co.kr/wd/373886",
+      "career": "",
+      "location": "경력 8년 이상",
+      "dday": "",
+      "tech_stack": [
+        "C++",
+        "C/C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• C/C++/파이선 개발 가능자\n• 리눅스 또는 윈도우 환경 응용 SW 개발 경험자\n• 통신 프로토콜 기반 장비 연동 SW 개발 가능자\n• Serial, TCP/IP, UDP, MQTT, ASN.1 등 통신 개발 경험자\n• 현장 장비, 제어기, 센서 연동 SW 개발에 대한 이해 보유자\n• 해외여행 결격 사유가 없으며, 남성의 경우 병역필 또는 면제자\n• 운전 가능자",
+      "preferences": "• 교통, ITS, 스마트 횡단보도, 스마트 안전장비 등 현장 시스템 개발 경험자\n• 시스템 설계, 인터페이스 설계, 시험 및 검증 경험자\n• SW 개발 PM 또는 프로젝트 리딩 경험자\n• 고객사 요구사항 분석, 기술협의, 현장 적용 및 운영 지원 경험자",
+      "main_tasks": "통신·제어·센싱 기반 시스템 응용 SW 개발\n• SW 개발 PM 또는 프로젝트 리딩\n• 현장 장비, 제어기, 센서, 통신 모듈 연동 SW 개발\n• 리눅스/윈도우 기반 장비 운영 프로그램 개발\n• 제어기/통신모듈/센서 연동 SW 개발 및 유지보수\n• 기존 납품 SW 수정, 기능 개선 및 업그레이드\n• 고객사 요구사항 기반 SW 기능 설계 및 개발",
+      "benefits": "• 시차출퇴근제(11:00 ~ 16:00 코어타임 근무)\n• 전문자격증 수당 지급\n• 자격증 취득비 지원\n• 학비 지원\n• 종합 건강검진 시행\n• 생일자 조기퇴근날 운영\n• 퇴직연금제도 운영\n• 사내 휘트니스센터 비용 지원\n• 스낵바 운영(간식 무한 제공)"
+    },
+    {
+      "site": "wanted",
+      "company": "랩투마켓",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[전문연구요원] AMR / Cobot 제어 개발자",
+      "url": "https://www.wanted.co.kr/wd/374239",
+      "career": "",
+      "location": "신입-경력 6년",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "오너십/주도성",
+        "석박사 우대"
+      ],
+      "qualifications": "• 해외여행에 결격 사유가 없는 분\n• 팀워크와 커뮤니케이션 능력이 뛰어나신 분\n• 긍정적이고 자기 주도적으로 성장할 수 있는 분\n• 문제해결 능력이 뛰어난 분\n• 제어공학 또는 관련 분야 석사 학위 이상 소지자 (졸업 예정자도 지원 가능)",
+      "preferences": "• 회로설계, 아트웍, 펌웨어, 모터드라이버, Embedded Daughter Board 개발 가능자\n• Impedance/Admittance/Compliance/Force Controller 설계 및 적용 경험자\n• 산업용 카메라, Depth Camera, 협동로봇 연동 경험 우대\n• 제조 자동화, 물류 자동화, 검사 장비, Pick & Place 시스템 개발 경험 우대",
+      "main_tasks": "• 자율주행 AMR 주행 제어 소프트웨어 개발\n• SLAM, Localization, Mapping, Navigation 기능 개발\n• Path Planning, Path Tracking, Obstacle Avoidance 로직 개발\n• LiDAR, IMU, Encoder, Depth Camera 등 센서 연동 및 데이터 처리\n• MQTT/NATS 기반 FMS 연동 Adaptor 개발\n• 협동로봇/Cobot 작업 시퀀스 및 로봇팔 제어 개발\n• Vision 시스템에서 전달받은 좌표 기반 Pick & Place 제어\n• Gripper, Vacuum, End-effector 등 말단 장치 제어\n• PLC, 로봇 컨트롤러, 모터 드라이버, 상위 시스템과 통신 연동\n• 자동 도킹, 자동 충전, 정밀 정차, 안전 제어 로직 개발\n• 현장 테스트, 로봇 동작 튜닝, 장애 대응 및 성능 개선\n• MQTT/NATS 기반 RMS 연동 Edge agent 개발",
+      "benefits": "함께하면 받는 혜택 및 복지\n- 점심식사 제공\n- 기본 휴가 + 여름/겨울 휴가(각 3일) = 연 21일!\n- 생일 반차\n- 2년에 한 번 건강검진 패키지 제공\n- 4.5일 근무제 곧 시행 예정\n- 장기근속자 인센티브 (2, 4, 6, 8, 10년 차)"
+    },
+    {
+      "site": "wanted",
+      "company": "에이엑스지(axz)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "검색 서비스 개발자",
+      "url": "https://www.wanted.co.kr/wd/373814",
+      "career": "",
+      "location": "경력 3년 이상",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Golang",
+        "Elasticsearch",
+        "Docker",
+        "K8s"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "대용량 처리"
+      ],
+      "qualifications": "• IT 관련 학과 전공자\n• 관련 개발 경력 3년 이상 보유자\n• 리눅스 플랫폼에서의 개발 경험 보유자\n• Python, Golang, Java 중 1개 이상의 언어 사용 가능자\n• Elasticsearch 등의 검색엔진을 사용한 서비스 개발 유경험자\n• 기술적 한계에 부딪혔을 때 본질을 파악하고 구조적으로 문제를 해결하는 것을 즐기시는 분\n• 새로운 기술 도구(Tech Stack)를 빠르게 학습하고 팀에 공유하며 동반 성장을 지향하는 분",
+      "preferences": "• 정보검색(IR)이론 전공자/관련 도메인 유경험자\n• Hadoop/Spark 등 각종 Big Data eco-system 유경험자\n• 대용량 데이터 처리 플랫폼 개발 유경험자\n• 데이터 ETL pipeline 개발 유경험자\n• k8s/docker 등 각종 cloud-native 개발 방법론 유경험자\n• 벡터 검색(Vector Search), 하이브리드 검색 등 차세대 검색 엔진 도입 경험\n• Chat GPT, Claude Code 등 생성형 AI 도구를 실무에 능숙하게 활용하시는 분",
+      "main_tasks": "• 다음 포털 내 검색서비스 개발 및 운영\n• 대용량/초저지연 검색 서비스 시스템 아키텍처 수립 및 구축\n• RAG/MCP 등 AI 관련 기술에 필요한 시스템 수립 및 구축",
+      "benefits": "[근무제도]\n- 선택적 근로 시간제 : 월 총 근무시간 범위 내에서 자율적으로 몰입하여 근무할 수 있습니다.\n- 리커버리데이 : 매월 마지막 주 금요일은 크루의 휴식과 충전을 위한 리커버리데이로 운영됩니다.\n- 원격 근무 : 주 2회(월/금) 원격 근무를 지원합니다. (단, 수습기간 종료 후부터 가능)\n- 1시간 단위로 자유롭게 연차 휴가를 사용합니다.\n\n[복리후생]\n- 다양한 니즈에 활용할 수 있는 베네핏 카드 연 360만원을 지원합니다.\n- 업무 생산성 향상을 위한 AI Tool(Chat GPT, Claude 등)을 지원합니다.\n- 페이코 식권(일 8,000원)을 지원합니다.\n- 서울 및 수도권 거점에서 출발하는 통근버스를 지원합니다.\n- 크루의 각종 경조사를 지원합니다."
+    },
+    {
+      "site": "wanted",
+      "company": "로위랩코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발자 3년 이상~",
+      "url": "https://www.wanted.co.kr/wd/361535",
+      "career": "",
+      "location": "경력 3-5년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "JavaScript",
+        "React",
+        "Next.js",
+        "Node.js",
+        "React Native",
+        "PostgreSQL",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "GitHub Actions",
+        "Linux",
+        "Git",
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일",
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "대용량 처리",
+        "오너십/주도성",
+        "CI/CD"
+      ],
+      "qualifications": "· 3년 이상의 JavaScript 백엔드 개발 경험 (Node.js, Next.js)\n· PostgreSQL 기반 DB 설계, 개발 및 운영 경험\n· Firebase Authentication 연동 경험\n· AWS 기반 클라우드 인프라 설계 및 운영 경험\n· EC2, RDS, S3, Lambda, Route 53, VPC 등\n· Linux 환경에서의 서버 운영 및 모니터링 경험\n· Git, Jira 등 협업 툴 사용 경험\n· 개발팀과 기획팀 간 기술 커뮤니케이션 및 문서 작성 역량\n· 능동적인 일정 관리와 책임감 있는 협업 능력\n· 빠른 변화에 유연하게 대응할 수 있는 분\n· 반복 작업을 줄이고 재사용 가능한 구조를 만드는 데 관심 있는 분",
+      "preferences": "· DevOps 환경 구축 및 운영 경험\n· GitHub Actions, YAML, Kubernetes, Docker 등\n· React / React Native 기반 프론트엔드 개발 경험\n· 3D 에셋 또는 공간 데이터 기반 서비스 개발 경험이 있으신 분\n· 대용량 3D/이미지/영상 파일의 업로드·변환·최적화·배포 파이프라인을 다뤄본 경험이 있으신 분\n· GLB/glTF, OBJ, PLY, Gaussian Splatting 등 3D 데이터 포맷에 대한 이해가 있으신 분\n· 대용량 트래픽 또는 데이터 처리 시스템 개발 경험\n· Python 또는 ML 관련 개발 경험\n· SaaS 제품 개발 및 운영 경험\n· 영어 커뮤니케이션 가능자",
+      "main_tasks": "· SaaS 제품(3D Sales Kit / DealLock) 백엔드 아키텍처 설계 및 개발\n· 백엔드 API 서버 및 데이터베이스 설계, 개발, 운영\n· 사용자 행동 데이터 기반 서비스 구조 및 데이터 흐름 설계\n· 클라우드 인프라 운영, 모니터링 및 장애 대응\n· 개발 문서 작성 및 관리\n· 국내 기획팀 및 해외 개발팀과의 협업\n· 빠르게 변화하는 제품 방향과 요구사항에 맞춘 구조 개선 및 개발\n· 완벽한 정보가 없는 상황에서도 경험을 기반으로 설계 및 구현",
+      "benefits": "· 유연한 출퇴근 제도 (8~10시 출근, 8시간 근무 후 퇴근)\n· 야근 식대 지원\n· 간식 제공\n· 음악이 흐르는 자유로운 분위기의 사무실\n· 명절 상품권 지급\n· 자유로운 연차 사용\n· 업무에 따른 최신 장비 지급\n· 휴가비 50만원 지급\n· 경조사에 따른 화환, 지원금, 휴가 제공\n· 공휴일이 없는 달 1회 조기퇴근"
+    },
+    {
+      "site": "wanted",
+      "company": "스카이랩스(SkyLabs)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "HW개발자",
+      "url": "https://www.wanted.co.kr/wd/371670",
+      "career": "",
+      "location": "경력 7년 이상",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결"
+      ],
+      "qualifications": "[이런 분들을 모시려고 해요.]\n\n• 초대졸 이상, 공학계열(전기/전자/컴퓨터/소프트웨어 등)\n• 관련 경력 7년 이상\n• 아날로그/디지털 회로 설계 및 PCB 개발 경험\n• MCU 기반 시스템 설계 및 디버깅 경험\n• 반도체 부품 데이터시트 및 Application Note 기반 회로 설계 가능\n• 디지털 계측기 활용 능력(오실로스코프, 전력 분석기, 신호 발생기 등)\n• ORCAD(또는 동급 CAD 툴) 활용 Schematic 및 PCB 설계 가능\n• 논리적 문제 해결 능력 및 원활한 커뮤니케이션 역량",
+      "preferences": "[이런 분들을 우대합니다.]\n\n• PPG/ECG 등 생체신호 측정 시스템 개발 경험자\n• 초저전력 설계 및 배터리 최적화 경험자\n• BLE 등 저전력 무선통신 시스템 설계 경험자\n• EMC/EMI 설계 및 인증 대응 경험자\n• 고밀도 PCB 설계 및 소형화 설계 경험자\n• 공학 인증(ABEEK) 또는 관련 프로젝트/학회 활동 경험자",
+      "main_tasks": "[이런 업무를 하시게 됩니다.]\n\n1) 의료기기용 저전력 하드웨어 설계 및 개발\n• 반지형 웨어러블 디바이스용 HW 아키텍처 설계 및 구현\n• PPG 신호 품질 향상을 위한 Analog Front-End(AFE) 설계 및 노이즈 저감 설계\n• 저전력 MCU 기반 센서 데이터 수집 및 제어 회로 설계\n• 배터리 구동 환경에서의 전력 관리(PMIC, LDO, DCDC) 및 소비전류 최적화\n• MCU 디지털 인터페이스(I2C, SPI, UART, GPIO 등) 회로 설계 및 디버깅\n• RF/무선통신(BLE 등) 모듈 연동 및 신호 무결성 확보\n• 초소형, 고집적 PCB 설계\n\n2) 하드웨어 검증 및 문제 분석\n• 회로 디버깅 및 성능 검증\n• 센서 데이터 신뢰성 및 Repeatability 검증 (노이즈, drift, motion artifact 분석)\n• HW-FW 통합 디버깅 및 시스템 레벨 문제 해결\n\n3) 시제품 및 양산 대응\n• 시제품, 개발품, 양산품 등 단계별 시제품 제작 및 검증\n• 양산 이관을 위한 BOM 구성, 부품 선정 및 공급 이슈 대응\n• 제조 공정 및 품질 문제 분석(Failure analysis) 및 개선",
+      "benefits": "• 창립기념일 휴무, 생일 반차, 결혼기념일 반차\n• 명절 및 기념일 선물\n• 구내식당(중식 기본 제공, 야근 시 저녁식사 제공)\n• 건물 내 무료 피트니스센터 운영\n• 회사 내 스낵바 운영\n• 듀얼 모니터 지급"
+    },
+    {
+      "site": "wanted",
+      "company": "둠둠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[드론] 무인항공기 백엔드 개발자",
+      "url": "https://www.wanted.co.kr/wd/374277",
+      "career": "",
+      "location": "경력 5년 이상",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Node.js",
+        "PostgreSQL",
+        "MariaDB",
+        "AWS",
+        "Docker",
+        "Nginx",
+        "Linux",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "문제해결",
+        "CI/CD"
+      ],
+      "qualifications": "• 백엔드 개발 경력 3년 이상 (Python, Node.js 등)\n• MQTT, WebSocket 등 실시간 통신 프로토콜 이해\n• REST API 설계 및 DB(MariaDB/PostgreSQL 등) 경험\n• Linux 서버 운영 및 nginx 등 리버스 프록시 구성 경험\n• Docker 등 컨테이너 기반 배포 경험",
+      "preferences": "• MAVLink / mavlink-router / MAVProxy 활용 경험\n• 드론·IoT 관제 플랫폼 개발 경험\n• RTSP/SRT/WebRTC 영상 스트리밍 처리 경험\n• RTK/NTRIP 등 위치기반 서비스 연동 경험\n• 클라우드(AWS 등) 및 CI/CD 경험",
+      "main_tasks": "• 드론 관제·운영 백엔드 서버 설계·개발 (지상관제시스템 연동)\n• MAVLink 라우팅 및 텔레메트리 수집·처리 파이프라인 구축\n• MQTT 기반 IoT 디바이스 관리 및 실시간 데이터 처리\n• 영상 스트리밍 서버 (RTSP/SRT/WebRTC) 구성 및 중계\n• 비행 로그·센서 데이터 수집, DB 저장 및 API 제공\n• 클라우드 인프라 구성 및 nginx 리버스 프록시 운영\n• 펌웨어 OTA 업데이트 채널 및 무결성 검증 설계\n• 시스템 모니터링, 로그 관리, 장애 대응\n• AI 학습 모델 적용 및 비행 로직 개발\n• 라이다 및 비전 이용 비행 로직 개발",
+      "benefits": "• 법정휴일 준수\n• 점심식대 제공\n• 간식 무제한\n• 자율문화\n• 인센티브/상여금 지급\n• 드론 자격증 취득 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "와트니",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[멜팅] AI-Native 개발자",
+      "url": "https://www.wanted.co.kr/wd/373653",
+      "career": "",
+      "location": "경력 5-11년",
+      "dday": "",
+      "tech_stack": [
+        "React",
+        "React Native",
+        "PostgreSQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "모바일",
+        "AI/ML",
+        "풀스택",
+        "백엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 풀스택이 아니더라도 한 분야에서 5년 이상 일한 경험이 있습니다.\n• 복잡한 서비스 환경에서 기술 부채를 성공적으로 관리한 경험에 대해 구체적인 사례나 해결책을 제시할 수 있습니다.\n• 협업을 통한 복잡한 문제 해결 경험, 구체적 사례를 제공할 수 있습니다.\n• 직접 (서비스 혹은 기술적인) 문제를 발견하고 해결한 구체적 사례를 제공할 수 있습니다.\n• AI가 작업할 수 있도록 환경이나 구조를 설계해본 경험이 있습니다.",
+      "preferences": "• 자신의 역량 향상을 위해 지속적인 노력을 하고 계시는 분\n• 신규 서비스를 처음부터 만들어 보신 분\n• 필요에 맞추어 기술 스택을 선정해 도입해 보신 분\n• 사이드 프로젝트 혹은 창업 경험이 있는",
+      "main_tasks": "• 멜팅 서비스의 개발에 주도적으로 참여합니다.\n• FE/BE 등을 가리지 않고 기능 구현 시 필요한 부분은 직접 개발합니다.\n• 기술 스택은 SvelteKit, React Native(Expo), PostgreSQL 입니다.",
+      "benefits": "모든 복지는 일을 잘하기 위해 구성되어 있습니다.\n제일 중요한 복지는 같이 일하는 동료라고 생각하며, 좋은 동료를 채용하는 것에 진심을 다하고 있습니다.\n또한, 회사의 규칙은 '회사에 유리한가' 라는 기준 하나이며 신뢰를 바탕으로 최대한 업무 생산성을 올릴 수 있도록 합니다.\n그에 따라 복지보다는 업무 환경을 공유드리고자 합니다.\n\n일을 잘하기 위한 업무 환경\n• 유연한 출근 제도 | 오후 1시 이전 자율 출근으로 각자의 생활 리듬을 존중합니다. 업무 생산성을 가장 극대화할 수 있도록 합니다.\n• 출근 시 식비 지원 | 점심, 저녁 식대를 지원합니다.\n• 업무 효율을 위한 장비 지원 | 맥북, 모니터 등 필요한 장비를 자유롭게 요청합니다. (다만, 컴퓨터는 AI 사용을 위해 맥북으로 한정합니다.)\n• 자유로운 휴가 사용 | 별도의 승인 절차 없이 연차 자유 사용이 가능합니다. 내 컨디션을 관리하는 것도 업무 생산성 관리의 영역입니다.\n• 스톡옵션 부여 | 회사의 성장과 개인의 성장이 같은 방향이도록 기여도에 따라 스톡옵션을 부여 합니다."
     },
     {
       "site": "wanted",
@@ -21537,6 +21809,134 @@
       "preferences": "Claude, Codex 등 AI Tool 전문가\n최신 Vision-Language Model 활용 및 AI-OCR 시스템 구축 경험이 있으신 분\n복잡도 높은 다층(Multi-layer) RAG 시스템이나 OpenClaw 등 외부 에이전트 도구 연동 경험이 있으신 분\nCloudflare Tunnels 등을 이용한 안전한 원격 네트워크 환경 및 인프라 구성 경험이 있으신 분\n정부 지원 과제 등 R&D 프로젝트의 기술적 리딩 및 산출물 작성 경험이 있으신 분",
       "main_tasks": "멀티 에이전트 시스템(LLM) 개발: LangGraph 등을 활용한 에이전트 오케스트레이션 설계 및 외부 시스템/API 연동\nAI 모델 파인튜닝 및 최적화: 로컬 환경 및 서버에서의 오픈소스 언어/비전 모델(VLM) 학습, 파인튜닝 및 추론(Inference) 최적화\nAI 서비스 백엔드 개발: FastAPI 기반의 빠르고 안정적인 API 서버 구축 및 서비스 로직 구현\nRAG 및 데이터 파이프라인 구축: 도메인 특화 문서 전처리, 벡터 DB(Qdrant 등)를 활용한 고도화된 RAG 시스템 설계 및 운영\nAI Vision 연동: AI-OCR 파이프라인 등 Vision 프로젝트 관련 데이터 처리 및 모델 연동",
       "benefits": "업무에만 집중, 나머진 회사가 해드립니다 ♥\n• 유연 근무제 : 8시~9시 사이, 30분 단위로 편하게 출근합니다!\n• 장기근속 포상 : 2년 이상 재직 시 순금 열쇠 제공!\n• 우수 사원 포상 : 년 1회 우수 사원 선정 및 순금 열쇠 포상!\n• 자유로운 회식 문화 : 회식은 점심에 해야죠!\n• 크리스마스 및 생일 축하금 : 생일 축하금 10만원 지원\n• 명절 상여금 지급 : 각 20만원\n• 당연히 업무 장비는 최상급으로\n• 혹시 외근이나 출장 가시나요? 법인차량으로 다녀오세요.\n• 식사요? 회사가 지원해 드립니다. ＞ 내근 시, 1만원 / 외근 시, 1.5만원\n• 간식, 음료, 캡슐 커피. 뭐 이런 건 당연합니다.\n• 4대보험, 퇴직연금, 건강검진… 남들 있는 기본 복지는 다 있습니다."
+    },
+    {
+      "site": "wanted",
+      "company": "부릉",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Backend Engineer",
+      "url": "https://www.wanted.co.kr/wd/374155",
+      "career": "",
+      "location": "경력 5년 이상",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "PostgreSQL",
+        "Redis",
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "Kafka",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리",
+        "MSA/분산",
+        "CI/CD"
+      ],
+      "qualifications": "• 5년 이상의 Java (또는 Kotlin) 기반 서버 개발 경험\n• Spring, Spring Boot, ORM(JPA, Hibernate) 활용 실무 경험\n• MySQL, PostgreSQL 등 RDBMS 모델링과 성능 최적화 경험\n• 이벤트 기반 아키텍처 및 MSA 환경에서의 개발 경험\n• 문제를 스스로 찾아내고 적극적으로 해결하며, 제품과 서비스를 발전시키는데 기여하고자 하는 태도\n• 코드 리뷰에 긍정적이고, 테스트 코드 작성에 대한 이해와 풍부한 경험\n\n[ 사용 기술 ]\n• 주요 기술: Java, Spring Framework, JPA\n• 서비스 운영: Kubernetes\n• 저장소: MySQL, PostgreSQL, Redis\n• 클라우드: AWS\n• 메시지: Kafka, AWS SQS\n• 빌드/배포: Jenkins, ArgoCD\n• 모니터링: Grafana, ELK, Datadog",
+      "preferences": "• Docker, Kubernetes 등 컨테이너 오케스트레이션 환경에서의 서비스 운영 경험\n• 대규모 트래픽을 처리하기 위한 아키텍처를 직접 고민하고 적용해 본 경험(고가용성, 낮은 지연, 확장성 등 고려)\n• 각종 장애 극복 경험\n• AI 도구를 활용해서 생산성을 높이고 비즈니스에 기여한 경험\n• 유연한 사고를 기반으로 다양한 직군 동료들과 원활하게 소통하는 능력",
+      "main_tasks": "• 라이더 분들이 빠르고 효율적인 배송을 마치실 수 있도록 모바일 애플리케이션에 제공하는 백엔드 API 개발\n• 배송 상황을 관제하고 운행 중의 불편함을 해소할 수 있는 백오피스 API 개발\n• 비즈니스 요구사항을 이해하고, 프로덕트팀/현장팀과 협업하여 문제 정의 및 해결책 제안\n• AWS 기반 환경에서 대용량 트래픽 처리 인프라 설계, 구축 및 운영 그리고 성능 개선\n• 물류 시스템 데이터 분석을 통한 배송망 최적화",
+      "benefits": "• 생일자 지원 : 생일휴가 1일 및 상품권 증정\n• AI 툴 지원 (Claude, Cursur, Gemini 등)\n• 복지 포인트 지원 : 월 10만 원 포인트로 복리후생 목적 용도 사용가능, 체력 단련, 도서 구매 등 (연 120만 원)\n• 경조휴가 및 경조금 지원 : 경조사 발생 시, 사유에 따라 휴가 및 경조금 지원\n• 종합검진 지원 : 본인 100% 및 가족 1인 50% 지원\n• 리프레시 휴가 지원 : 장기 근속년수에 따라 연차 외 별도 휴가 부여\n• 반차 및 반반차 제도 운영\n• 36개월 미만의 자녀가 있는 분께는 매월 10만 원의 육아수당 지원\n• 교육개발 신청 제도 운영 : 개인별로 필요한 역량과 업무 스킬 향상을 위해 교육과 도서구입 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "아이제라",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Senior Backend Engineer (DX본부)",
+      "url": "https://www.wanted.co.kr/wd/373980",
+      "career": "",
+      "location": "경력 7-14년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Django",
+        "FastAPI",
+        "PostgreSQL",
+        "Redis",
+        "AWS",
+        "GitLab",
+        "REST API",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리",
+        "오너십/주도성",
+        "MSA/분산",
+        "CI/CD"
+      ],
+      "qualifications": "기술 스택: Python · FastAPI · Django Ninja · PostgreSQL · Redis · AWS · GitLab CI/CD · InfluxDB\n\n• 백엔드 개발 7년 이상 (또는 그에 준하는 역량), Python 기반 웹 프레임워크로 서비스를 설계·운영한 경험\n• RDB 설계 및 쿼리 최적화를 주도한 경험 (PostgreSQL 우대)\n• RESTful API 설계 원칙에 대한 깊은 이해와 문서화·표준화 습관\n• 비동기 처리(asyncio) 또는 메시지 큐 기반 아키텍처를 설계·운영한 경험\n• 프로덕션 환경에서 아키텍처를 주도적으로 설계하고, 그 선택의 트레이드오프를 설명할 수 있는 분\n• SaaS 멀티 테넌시 또는 대규모 트래픽 서비스를 설계·운영한 경험 (우대사항에서 승격)\n• 서비스 아키텍처 방향을 리딩하고 팀과 적극적으로 논의·조율할 수 있는 분",
+      "preferences": "• MES, WMS, ERP 등 산업용 시스템 백엔드 설계·운영 경험\n• MSA(Microservice Architecture) 기반 서비스 설계 및 운영 경험\n• 대규모 트래픽 환경에서의 성능 최적화 및 안정적 서비스 운영 경험\n• IoT / MQTT 기반 실시간 데이터 파이프라인 구축 경험\n• 식품 제조 공정, HACCP/CCP, BOM 관리 도메인 이해\n• Redis, Celery 등을 활용한 캐싱·비동기 작업 처리 경험\n• AWS 인프라(ECS, RDS, IoT Core 등) 운영 경험\n• CI/CD 파이프라인 구축 및 자동화 경험\n• 기술 조직 빌딩·채용·온보딩 프로세스 개선 기여 경험\n• AI Agent 개발에 관심이 있으신 분",
+      "main_tasks": "AIXERA는 식품제조업체를 위한 SaaS형 스마트팩토리 플랫폼을 만들고 있습니다. 공장 현장의 생산 데이터, IoT 센서, PLC설비 신호를 수집하고, 이를 MES·Smart HACCP·품질관리로 연결하는 백엔드 시스템이 제품의 핵심입니다.\n시니어 백엔드 엔지니어로서 제품의 백엔드 아키텍처 방향을 주도하고, 서비스의 안정성·확장성에 대한 기술적 의사결정을 책임질 분을 찾습니다.\n\n• FastAPI / Django Ninja 기반 REST API 아키텍처 설계 및 표준 수립\n• 멀티 테넌트 SaaS 환경의 데이터 모델링·비즈니스 로직 설계 주도 및 기술 의사결정\n• IoT 디바이스·Edge Agent 실시간 데이터 처리 파이프라인 설계 및 성능·안정성 개선\n• 생산·품질·CCP·설비 등 MES 핵심 모듈의 백엔드 아키텍처 고도화 리딩\n• AWS 클라우드 환경의 배포·모니터링·성능 최적화 전략 수립 및 운영 개선\n• 코드리뷰·기술 표준 정착, 주니어 엔지니어 멘토링 및 팀 기술 역량 향상 기여",
+      "benefits": "업무에만 집중, 나머진 회사가 해드립니다\n• 유연 근무제 : 8시~9시 사이, 30분 단위로 편하게 출근합니다!\n• 장기근속 포상 : 2년 이상 재직 시 순금 열쇠 제공!\n• 우수 사원 포상 : 년 1회 우수 사원 선정 및 순금 열쇠 포상!\n• 자유로운 회식 문화 : 회식은 점심에 해야죠!\n• 크리스마스 및 생일 축하금 : 생일 축하금 10만원 지원\n• 명절 상여금 지급 : 각 20만원\n• 당연히 업무 장비는 최상급으로\n• 혹시 외근이나 출장 가시나요? 법인차량으로 다녀오세요.\n• 식사요? 회사가 지원해 드립니다. ＞ 내근 시, 1만원 / 외근 시, 1.5만원\n• 간식, 음료, 캡슐 커피. 뭐 이런 건 당연합니다.\n• 4대보험, 퇴직연금, 건강검진… 남들 있는 기본 복지는 다 있습니다."
+    },
+    {
+      "site": "wanted",
+      "company": "헤렌",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[헤렌/공비서] 백엔드 개발자",
+      "url": "https://www.wanted.co.kr/wd/373691",
+      "career": "",
+      "location": "경력 7-12년",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "Spring",
+        "Spring Boot",
+        "Redis",
+        "MariaDB",
+        "AWS",
+        "Docker",
+        "Jenkins",
+        "GitHub Actions",
+        "JUnit",
+        "Kafka",
+        "MSA"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일",
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "성능 최적화",
+        "대용량 처리",
+        "오너십/주도성",
+        "MSA/분산",
+        "CI/CD"
+      ],
+      "qualifications": "• Back-end 개발 경력 7~12년\n• 3년 이상의 매니징 경험 (팀·파트 리딩, 구성원 성장 관리, 채용·평가 참여 등) 또는 그에 준하는 경험\n• JVM 내부 동작 원리(GC, JIT, 메모리 모델)에 대한 깊은 이해\n• Spring Framework 내부 구조 및 동작 원리 이해 (DI/AOP/트랜잭션 전파)\n• Java 또는 Kotlin + Spring Boot 기반 프로덕션 서비스 설계·운영 경험\n• RDBMS 쿼리 튜닝·실행 계획 분석·인덱스 설계 경험\n• 대규모 트래픽/대용량 데이터 환경의 성능·안정성 문제를 주도적으로 해결한 경험\n• 분산 시스템의 일관성·가용성·장애 복구 전략에 대한 이해\n• 기술 선택의 트레이드오프를 근거와 함께 설명하고, 팀 의사결정을 이끈 경험\n• AI 도구(Claude Code, Cursor 등)를 일상 워크플로우에 활용하거나 팀에 도입·정착시킨 경험 또는 의지\n\n[주요 기술 스택]\n• Java, Kotlin, Spring Boot 2.7 / 3.3\n• MariaDB, Redis, JPA, QueryDSL, Liquibase\n• AWS (ECS, RDS, S3, SQS), Kafka\n• Sentry, Prometheus\n• JUnit 5, MockK, TestContainers\n• Docker, Gradle (Kotlin DSL), Jenkins / GitHub Actions",
+      "preferences": "• 결제·정산·주문 등 정합성이 중요한 도메인 설계·운영 경험\n• 대규모 서비스의 구조적 리팩토링·MSA 전환·모듈 분리 경험\n• Redis 등 NoSQL을 활용한 대용량 데이터 캐싱·처리 경험\n• 대규모 서비스에서 백엔드 구조·품질을 한 단계 끌어올린 경험\n• AWS(ECS, Lambda 등) 및 비동기 Event Driven Architecture(SQS / Kafka) 설계·운영 경험\n• 주니어 멘토링·기술 문화 정착 등 팀 성장에 기여한 경험\n• MCP(Model Context Protocol) 서버 구축·활용 등 AI를 팀 생산성으로 연결한 경험\n• \"AI 시대에 백엔드는 어떻게 달라져야 하는가\"에 대해 본인만의 답을 가진 분",
+      "main_tasks": "• 공비서 서비스(예약·결제·고객관리·마케팅 등)의 백엔드 아키텍처 설계 및 개발\n• 대규모 예약 트래픽(월 80만 건 이상)을 안정적으로 처리하는 시스템 설계·운영\n• 핵심 도메인의 기술 의사결정에 주도적으로 참여하고, 기술 부채·구조 개선 방향 제안\n• 코드/설계 리뷰·동료 멘토링 등 시니어로서 팀의 기술 기준과 성장에 기여\n• AI 도구(Claude Code, Cursor, MCP 등)를 팀 개발 프로세스에 도입·정착\n• Sentry·Prometheus 기반 모니터링 및 운영 지표 정의·측정, 장애 대응\n• PO·FE·QA 등 유관 조직과 협업하여 요구사항을 기술적으로 풀어내기\n\n모든 것을 혼자 책임지는 역할이 아니라, 팀과 함께 방향을 만들고 중요한 의사결정을 주도하는 역할입니다.",
+      "benefits": "헤렌 기술블로그에서 다양한 내용을 확인하실 수 있습니다. 헤렌 기술블로그를 검색해 주세요!\n\n[헤렌에 합류하시면 경험하실 수 있는 복지와 혜택! 확인해보세요.]\n01. 한 걸음 더 성장하고 싶은 헤더들을 위해, GROW HERREN\n• AI 도구 계정 회사 지원 (Claude Code MAX·Cursor·Codex 등)\n• 기술협의체·코드 리뷰·설계 리뷰 상시 운영\n• 생산적인 업무를 위한 장비 지원\n• 직무 관련 자기 개발 비용 지원 / 도서 구입 및 스터디 지원\n\n02. 업무에 마음껏 몰입하고 싶은 헤더들을 위해, FOCUS HERREN\n• OKR DAY를 통한 몰입에 대한 성과 보상\n• 야근 시 더욱 걱정 없이 일하도록 식비, 택시비 지원\n• 배포 등 서비스 대응을 위한 조기 출근 시 보상휴가 지급\n• 장기근속자 포상(3년/5년)\n\n03. 동료가 최고의 복지인 헤더들을 위해, ONE TEAM HERREN\n• 존중과 수평적인 문화를 위한 닉네임+님 호칭 문화\n• 근거 및 지표로 설득하는 회의 문화\n• 빠른 적응을 위한 온보딩 프로그램 & 버디 프로그램\n• 매주 목요일 팀/파트 식사 지원\n• 공비서 스토어 임직원 특별 할인\n\n04. 걱정 없이 출근하고 싶은 헤더들을 위해, CARE HERREN\n• 매주 수요일 재택 근무\n• 출퇴근 유연근무제\n• 건강검진 비용 지원\n• 자유로운 연차 사용(1시간 단위 휴가 사용 가능) / 생일자 2시간 조기 퇴근\n• 직접 고른 간식 무제한 제공\n• 명절 선물 제공\n\n05. 헤렌만의 즐겁고 의미 있는 CULTURE PROGRAM\n• 매주 금요일마다 다양한 구성원을 만나는 랜덤 런치\n• 헤더들이 자유롭게 기획하고 회사가 지원하는 취미 모임 CAN(Culture Activity Network) 모임\n\n[헤렌의 업무환경]\n• 주 5일 근무 (09:30 ~ 18:30)\n• 뚝섬역, 성수역에서 도보 3분 거리"
     },
     {
       "site": "wanted",
@@ -41987,6 +42387,155 @@
     },
     {
       "site": "wanted",
+      "company": "모빌린트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[AI반도체] NPU Core Architect",
+      "url": "https://www.wanted.co.kr/wd/374069",
+      "career": "",
+      "location": "신입",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "오너십/주도성",
+        "학사 이상"
+      ],
+      "qualifications": "전자공학, 컴퓨터공학 또는 관련 분야 학사 이상\n• NPU/CPU/GPU/DSP/SoC 등 Processor 또는 Accelerator Architecture 설계 경험\n• Compute Datapath, Memory Hierarchy, Interconnect에 대한 이해\n• AI/DL Workload 분석 및 HW 매핑 경험\n• AI Workload의 수학적 구조에 대한 깊은 이해\n• Tensor Shape, Layout, Stride 및 Memory Access Pattern에 대한 깊은 이해\n• C++/Python 기반 Performance Model 개발 경험",
+      "preferences": "• NPU/CPU/GPU/DSP/SoC 등 Processor 또는 Accelerator Architecture 설계 경험 5년 이상\n• LLM(Prefill/Decode), VLA, Diffusion 등 최신 모델의 AI Workload 분석 및 HW 매핑 경험\n• 최신 Quantization 기법에 대한 지식\n• Floating-Point, Integer, MX-Format 등 다양한 Data Type에 대한 지식\n• NoC Topology 및 Memory Subsystem Architecture 설계 경험\n• HW/SW Co-Design 경험(Compiler, Algorithm)\n• Tape-Out 및 Silicon Bring-Up 경험\n• Advanced Process Node(4nm/3nm/2nm) 프로젝트 경험",
+      "main_tasks": "NPU IP Architecture 및 Microarchitecture 정의 (Compute, Memory, NoC, ISA)\n• AI Workload(LLM, ViT, Diffusion, VLA 등) 특성 분석 및 HW 매핑 전략 수립\n• Cycle-Accurate/Analytical Performance·Power Model 개발 및 운영\n• PPA Trade-Off 기반 Design Space Exploration 주도\n• 최신 Quantization 기법 및 Mixed-Precision(INT8/INT4, FP8, MX Format)의 HW 영향 분석 및 Datapath 방향 제시\n• Algorithm/Compiler/Runtime 팀과의 HW/SW Co-Design(Operator Fusion, Tiling, Scheduling)\n• Architecture Specification 문서화 및 RTL/DV/Implementation 팀에 대한 Specification Ownership",
+      "benefits": "[ 여러분의 성장을 응원합니다 ]\n• 전 세계가 주목하는 AI 반도체라는 인공지능, 반도체 분야의 최첨단 기술을 접할 수 있습니다.\n• AI 반도체 특성상 타 분야 엔지니어와의 교류가 필수적이며 인공지능 솔루션 기업들과 협업할 기회가 많기 때문에 다양한 경험을 통해 시야를 넓히고 융합형 인재로 성장할 수 있습니다.\n• 열정적이고 성장에 욕심 많은 멤버들을 위해 세미나 참석비 지원, 도서구입비 지원 제도를 운영하고 있습니다.\n• 직무발명보상제도를 운영하여 멤버들의 역량 증진을 장려하고 성과에 대해 보상해드리고 있습니다.\n\n[ 우리는 이렇게 일해요 ]\n• 자율출퇴근, 자유복장을 원칙으로 하고 있습니다.\n• 공공기관에 준하는 휴일, 휴가 제도를 운영하며 연차는 자유롭게 사용하실 수 있습니다.\n• 직급 없이 님을 사용하며 스스로 업무를 관리하는 수평적 조직문화를 자랑합니다.\n• 불필요한 문서 작업을 철저히 배척하고 직접적이고 빠른 의사소통으로 문제를 해결합니다.\n\n[ Low-Risk & High-Return ]\n• 열정페이가 아닌 열정이 샘솟는 페이를 지향합니다.\n• 국내 AI 반도체 선도 기업 중 규모가 작은 편으로, 지금 합류하시면 회사의 성장으로 인한 기쁨을 스톡 옵션을 통해 금전적으로도 충분히 누리실 수 있습니다.\n• AI 반도체는 차세대 비메모리 반도체 패권을 결정짓는 국가전략산업으로 미국은 2025년까지 56조원, EU는 2030년까지 182조원, 우리 정부 역시 1조 4000억원의 투자를 발표했습니다.\n모빌린트는 국내최고수준의 AI반도체 기술력을 활용하여 지금도 여러 과제에 참여하고 있으며, 앞으로도 정부 지원을 통해 안정적으로 AI 반도체 기술 국산화에 도전할 계획입니다.\n\n[ 쾌적한 근무 환경 ]\n• 멤버들이 연구 개발에 집중하실 수 있도록 편안한 환경 조성을 최우선 목표로 하고 있습니다.\n• 역삼역 3분 거리에 있는 넓고 깨끗한 사무실에서 근무합니다.\n• 신규 멤버가 입사하실 때마다 최고 사양의 컴퓨터와 듀얼 모니터를 새로 구입해드리며 필요한 소프트웨어를 요청하시면 지체 없이 지원해드립니다.\n\n[ 그 외 소소한 복지 제도 ]\n• 4대 보험 및 매년 건강검진 지원\n• 중식 및 석식 제공\n• 간식, 음료 무제한 제공\n• 고급 캡슐 커피 무제한 제공\n• 명절, 연말 등 특별한 선물"
+    },
+    {
+      "site": "wanted",
+      "company": "삼양식품",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[삼양식품] AI Transformation(AX) 전략 팀장",
+      "url": "https://www.wanted.co.kr/wd/374125",
+      "career": "",
+      "location": "경력 10-19년",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 총 경력 15년 이상 선호 (유관 경력 10년 이상 지원 가능)\n• AI/디지털 기술 기반 프로젝트 기획 및 PM 실무 경험을 바탕으로 팀을 리딩할 수 있는 역량을 갖춘 분\n• AI 활용 사례를 비즈니스 성과 관점에서 분석하여 경영진 및 유관 부서를 명확하게 설득할 수 있는 분\n• 부서 간 협업을 조율하고 다방면의 커뮤니케이션을 주도할 수 있는 리더십을 보유하신 분\n\n[공통 자격 사항]\n• 해외여행 결격 사유가 없는 자\n• 남자의 경우 병역을 필 하였거나 면제된 자\n• 국가 유공자는 관련 법에 의거하여 우대",
+      "preferences": "• 전략 컨설팅 펌 또는 대기업 전략기획/DX, AX 기획 부서에서의 조직 및 파트 리딩 경험\n• 해커톤, 교육 프로그램 설계 또는 워크숍 퍼실리테이션을 주도해 본 경험",
+      "main_tasks": "삼양식품은 글로벌 비즈니스 전반에 AI 기술을 특화 적용하고, '0 to 1' 단계부터 전사 AX(AI Transformation) 체계를 주도적으로 정립하기 위해 AX전담 부서를 신설했습니다.\n\n그 중 AX전략팀은 경영진의 비전과 현업의 주요 비즈니스 이슈를 AX 과제로 기획·정의하고, 중장기 로드맵을 리드하는 조직입니다.\n\n전사 AX 과제 포트폴리오를 총괄 관리하며, 인프라 구축 초기 단계부터 참여해 기업 전반의 변화관리를 주도하고 비즈니스와 기술을 연결하여 전사 AX 로드맵을 설계하고 실행해 나갈 분을 모시고 있습니다.\n\n• 전사 AX 전략을 수립하고 과제 포트폴리오의 우선순위 및 운영을 리딩합니다.\n• AI 기술 트렌드를 분석하여 우리 비즈니스에 특화된 적용 방안과 실행 로드맵을 제시합니다.\n• PoC 수행 후 성과 분석을 바탕으로, AX 과제의 전사 내재화 전략을 설계하고 실행을 주도합니다.\n• AX 관련 임직원 및 주요 의사결정자를 대상으로 전략 커뮤니케이션을 수행합니다.\n• 전사 AI 리터러시 교육을 기획하고 구성원들의 인식 혁신을 위한 변화관리를 추진합니다.",
+      "benefits": "• 자율복장\n• 점심 식대 지원, 간식 및 커피 무한 제공\n• 창립기념일 휴무\n• 복지포인트, 생일축하금, 하계휴가비, 휴양시설 할인, 근로자의 날 선물 제공, 단체상해보험(실손보험)\n• 경조사지원\n• 웰컴키트, 출산키트 제공\n• 교육 지원 (자격증지원제도, 직무 아카데미 등)\n• 삼양라운드힐 숙박 제공"
+    },
+    {
+      "site": "wanted",
+      "company": "미리디",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[미리캔버스] ML Engineer (GenAI/Agent/LMM)",
+      "url": "https://www.wanted.co.kr/wd/373900",
+      "career": "",
+      "location": "경력 1-7년",
+      "dday": "",
+      "tech_stack": [
+        "PyTorch"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "• 생성형 AI(GenAI) 또는 머신러닝 관련 실무 경력이 1년 이상(또는 이에 준하는 깊이 있는 프로젝트 경험)이신 분\n• Large Multimodal Model(LMM) 기반의 Fine-tuning(LoRA 등) 경험 혹은 AI Agent Workflow 설계 및 구현 경험이 있으신 분\n• PyTorch, Hugging Face 등 딥러닝 프레임워크 기반의 모델 학습 및 파이프라인 빌드 능력을 갖추신 분\n• Prompt 엔지니어링부터 자체 데이터 가공, 학습, 평가까지의 end-to-end 모델링 사이클을 경험하신 분\n• 디자인, 크리에이티브 콘텐츠, 사용자 경험(UX) 혁신에 높은 관심이 있으신 분",
+      "preferences": "• 컴퓨터 공학, 머신러닝/딥러닝 관련 석사·박사 학위 혹은 그에 준하는 연구 역량이 있으신 분\n• Top-tier 학회 논문 게재 및 제출 경험이 있으신 분\n• Kaggle, AI Hackathon 등 AI 관련 챌린지 상위 입상 경험이 있으신 분\n• 디자인 생성 모델(Layout Generation, Color/Font Adaptation, Vector Generation 등) 연구 및 개발을 경험하신 분\n• LLM/LMM 기반 서빙 인프라 구축 및 모델 경량화(Quantization, Distillation 등) 경험이 있으신 분\n• 대규모 Multi-Agent System 설계 및 시뮬레이션 평가 경험이 있으신 분\n• 실시간 유저 인터랙션이 필요한 AI 서비스 모델의 배포 및 트래픽 대응 경험이 있으신 분",
+      "main_tasks": "차세대 편집 Agentic Workflow 구축 및 자산화\n• 복잡한 디자인 태스크를 분할하고 해결하는 Multi-Agent 시스템 및 오케스트레이션 패턴을 설계합니다.\n• 디자인 도메인 메타데이터와 결합된 RAG(Retrieval-Augmented Generation) 기반 Agent의 예측 성능을 고도화합니다.\n• AI의 출력 역량 개선을 위한 Reasoning, Validation, Self-improvement(자가 피드백) 루프를 설계합니다.\n\n디자인 도메인 특화 자체 GenAI 모델 개발\n• 이미지-텍스트-구조 데이터(Scene Graph)를 아우르는 Domain-Specific LMM 및 Layout 생성 모델을 연구하고 개발합니다.\n• SFT(Supervised Fine-Tuning) 및 RLHF/DPO 등 강화학습 기반의 스타일/레이아웃 정렬(Alignment)을 고도화합니다.\n• 저비용·고효율 서빙을 위한 경량화 모델(SLM)을 탐색하고 성능을 최적화합니다.\n\n최신 GenAI/Agent 기술 연구 및 서비스 적용\n• 멀티모달 및 AI Agent 분야의 최신 논문(Top-tier 학회)을 분석하고, 구현 및 가치 검증(PoC)을 수행합니다.\n• 정성적·정량적 평가 프레임워크(Evaluation Dataset) 구축을 통해 지속 가능한 모델 모니터링 시스템을 설계합니다.",
+      "benefits": "\"미리디는 복지를 통해 나눔의 경영을 실현하고 있습니다.\"\n\n[자율과 책임의 근무 환경을 제공합니다.]\n• 시차출퇴근제 운영\n• 자유로운 휴가 사용\n• 경조사 휴가지원\n• 3년 근속 시 리프레시 휴가 제공\n\n[배움과 성장, 행복을 지원합니다.]\n• 업무 관련 비용 100% 지원\n• 업무 도서 구입비 무제한 지원\n• 외부 교육 및 기술 세미나 적극 참여 독려\n\n[열일하는 미리인 굶길 수 없다! 삼시세끼 지원]\n• 아침, 점심, 저녁 식사비 지원\n• 제휴 카페 포인트 지원\n\n[미리인의 회사 적응과 단합을 지원합니다.]\n• 직급 없이 수평적인 문화 지향\n• 신입사원 OJT, 적응 프로그램 지원\n• 미리인 동호회 지원\n• 분기별 문화이벤트 회식 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "모빌린트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[AI반도체] NPU Core Engineer (RTL)",
+      "url": "https://www.wanted.co.kr/wd/374076",
+      "career": "",
+      "location": "신입",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "학사 이상"
+      ],
+      "qualifications": "• 전자공학, 컴퓨터공학 또는 관련 분야 학사 이상\n• NPU/CPU/GPU/DSP 등의 RTL 설계 경험\n• SystemVerilog/Verilog 기반 RTL 설계 또는 검증 경험",
+      "preferences": "• RTL 설계 또는 검증 경험 3년 이상\n• 주요 AI Workload의 연산 구조와 데이터 흐름에 대한 이해\n• 최신 Quantization 기법에 대한 이해 및 관련 Datapath 구현 경험\n• Floating-Point, Integer, MX-Format 등 다양한 Data Type에 대한 지식\n• AMBA(AXI4/AHB/APB) 등 표준 Interconnect 프로토콜 이해\n• Memory Subsystem(Scratchpad, DMA, Multi-Bank SRAM 등) RTL 설계 경험\n• Advanced Process Node Tape-Out 경험\n• Synthesis, Lint, CDC, DFT 등 ASIC Design Flow 경험\n• RTL Simulation 및 Debugging Flow 경험\n• VCS, Xcelium 등 Logic Simulator 및 Verdi 등 Wave Debugger 활용 능력",
+      "main_tasks": "• NPU 주요 블록(Tensor/Vector Engine, Scheduler, Control Unit 등)의 RTL 설계 및 구현\n• AMBA AXI4 기반 Interconnect 및 Memory Subsystem(SRAM, MMU, DMA 등) RTL 설계\n• Lint, CDC, DFT, Synthesis, Timing, Low-Power 관련 RTL 품질 관리\n• Architect와의 협업을 통한 Microarchitecture 상세화 및 구현 가능성 검토\n• DV 팀과의 Test Plan, Functional Coverage, Debug, Verification Closure 협업\n• FPGA/Emulation Prototyping 및 Silicon Bring-Up 지원",
+      "benefits": "[ 여러분의 성장을 응원합니다 ]\n• 전 세계가 주목하는 AI 반도체라는 인공지능, 반도체 분야의 최첨단 기술을 접할 수 있습니다.\n• AI 반도체 특성상 타 분야 엔지니어와의 교류가 필수적이며 인공지능 솔루션 기업들과 협업할 기회가 많기 때문에 다양한 경험을 통해 시야를 넓히고 융합형 인재로 성장할 수 있습니다.\n• 열정적이고 성장에 욕심 많은 멤버들을 위해 세미나 참석비 지원, 도서구입비 지원 제도를 운영하고 있습니다.\n• 직무발명보상제도를 운영하여 멤버들의 역량 증진을 장려하고 성과에 대해 보상해드리고 있습니다.\n\n[ 우리는 이렇게 일해요 ]\n• 자율출퇴근, 자유복장을 원칙으로 하고 있습니다.\n• 공공기관에 준하는 휴일, 휴가 제도를 운영하며 연차는 자유롭게 사용하실 수 있습니다.\n• 직급 없이 님을 사용하며 스스로 업무를 관리하는 수평적 조직문화를 자랑합니다.\n• 불필요한 문서 작업을 철저히 배척하고 직접적이고 빠른 의사소통으로 문제를 해결합니다.\n\n[ Low-Risk & High-Return ]\n• 열정페이가 아닌 열정이 샘솟는 페이를 지향합니다.\n• 국내 AI 반도체 선도 기업 중 규모가 작은 편으로, 지금 합류하시면 회사의 성장으로 인한 기쁨을 스톡 옵션을 통해 금전적으로도 충분히 누리실 수 있습니다.\n• AI 반도체는 차세대 비메모리 반도체 패권을 결정짓는 국가전략산업으로 미국은 2025년까지 56조원, EU는 2030년까지 182조원, 우리 정부 역시 1조 4000억원의 투자를 발표했습니다.\n모빌린트는 국내최고수준의 AI반도체 기술력을 활용하여 지금도 여러 과제에 참여하고 있으며, 앞으로도 정부 지원을 통해 안정적으로 AI 반도체 기술 국산화에 도전할 계획입니다.\n\n[ 쾌적한 근무 환경 ]\n• 멤버들이 연구 개발에 집중하실 수 있도록 편안한 환경 조성을 최우선 목표로 하고 있습니다.\n• 역삼역 3분 거리에 있는 넓고 깨끗한 사무실에서 근무합니다.\n• 신규 멤버가 입사하실 때마다 최고 사양의 컴퓨터와 듀얼 모니터를 새로 구입해드리며 필요한 소프트웨어를 요청하시면 지체 없이 지원해드립니다.\n\n[ 그 외 소소한 복지 제도 ]\n• 4대 보험 및 매년 건강검진 지원\n• 중식 및 석식 제공\n• 간식, 음료 무제한 제공\n• 고급 캡슐 커피 무제한 제공\n• 명절, 연말 등 특별한 선물"
+    },
+    {
+      "site": "wanted",
+      "company": "위시켓",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AIDP IRE(Internal Research Engineer) (3~8년)",
+      "url": "https://www.wanted.co.kr/wd/374111",
+      "career": "",
+      "location": "경력 7-14년",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "• 총 3년 이상의 개발, 데이터 엔지니어링 또는 BI 구축 관련 실무를 경험하신 분\n• AI를 활용한 시스템 구축 및 유지관리에 충분한 역량을 보유하신 분\n• SQL을 능숙하게 다룰 수 있으며, 데이터베이스에 대한 깊은 이해를 보유하신 분",
+      "preferences": "• ERP, CRM, BI, AI, 클라우드, 인프라 영역에서 직·간접적으로 문제를 정의하고 해결한 경험\n• AI가 바꾸고 있는 세상에 대한 관심을 바탕으로 다양한 시도를 해온 경험",
+      "main_tasks": "■ 합류하면 함께 이런 일을 해요.\n• FDE들이 현장에서 업무를 수행하는 과정에서 쌓이는 모든 맥락을 수집하고, 관리하고, 구조화해나가기 위한 AIDP Internal Solution을 구축, 관리해나갑니다.\n• 고객이 장기적으로 이용할 수 있는 Solution 혹은 도구를 지속적으로 만들어내고, FDE를 통해 Delivery 합니다.\n• FDE들이 고객에게 제공한 시스템과 업무 프로세스 변화 등을 내부에서 관리하며, 고객의 변화에 기민하게 대응해 새로운 프로젝트 또는 확장으로 이어갑니다.\n• 코딩 에이전트를 포함한 다양한 도구를 활용해 개발을 주도하고, AI·데이터·소프트웨어를 결합해 실제 변화를 만듭니다.\n• 단순 구현이 아니라, ROI / TCO 관점에서 올바른 선택을 설계합니다.",
+      "benefits": "■ 업무 환경\n• 역세권에 위치해 있어서 편하게 이동할 수 있습니다. (역삼역에서 도보 5분 거리)\n• ‘빠삐‘라는 발랄한 고양이가 사무실에서 함께 생활하고 있습니다.\n• 사무실에 항상 음악이 켜져 있어 캐주얼한 분위기로 업무를 할 수 있습니다.\n• 사무 공간 외 별도의 휴식 공간이 있어서 편하게 휴식을 취할 수 있습니다.\n• LG그램/맥북, 모니터 등 업무에 필요한 장비는 모두 지원합니다.\n• 효율적으로 업무하기 위해 슬랙, Flex, Notion, 나인하이어, Tableau, 구글 이메일/캘린더/드라이브 등 다양한 툴을 사용하고 있습니다.\n\n\n■ 혜택 및 복지\n위시켓은 세상이 일하는 방식 뿐만 아니라 팀원들이 행복하게 일할 수 있는 조직문화와 업무 환경을 만드는 데에도 노력을 기울이고 있습니다.\n• Meal : 팀원들의 밥값 부담을 해소하기 위해 점심/저녁 식사를 제공합니다.\n• Present : 생일을 맞이하는 팀원에게는 생일선물을, 설과 추석에는 명절 선물을 드립니다.\n• health care : 팀원들의 건강을 위해 종합 건강 검진을 지원해 드립니다.\n• Landing Program : 새로 합류한 팀원을 위한 랜딩제도와 버디제도를 운영하고 있습니다.\n• 무제한 간식 제공 : 다양한 간식과 카페보다 맛있는 커피를 무제한으로 드실 수 있습니다.\n• 성장을 위한 지원 : 개인 성장을 위한 도서, 교육, 세미나를 지원해 드립니다.\n• 생일 조기 퇴근 : 행복한 시간을 보낼 수 있도록 2시간 조기퇴근제도를 운영하고 있습니다.\n• 동호회 지원 : 팀원들과 더욱 친해지길 바라는 마음으로 사내 동호회 운영비를 지원해 드립니다.\n• 친목활동비 : 한 달에 한 번 유닛끼리 문화생활 등을 할 수 있도록 운영비를 지원해 드립니다.\n• 독서모임 : 같은 책을 읽고 자유롭게 생각을 공유하는 모임이 있습니다. (참여 시 상품권 지급)\n• Cheerup : 사소한 일이라도 서로 칭찬하고 응원하는 문화가 있습니다. (칭찬상품권 지급)\n\n\n■AIDP IRE로 합류하면 얻게 되는 것\n• 연차와 무관하게 역량이 검증되는 즉시 보상과 처우가 결정됩니다.\n• AI가 바꿔가고 있는 세상에서 문제 해결사로서 독보적인 커리어 경쟁력\n• 제약 없는 환경에서 한계 없는 도전을 통해 성과를 직접 만들어낼 수 있는 기회\n• 다른 조직에서는 함께하기 어려운 최고의 역량을 가진 리더십과 동료들"
+    },
+    {
+      "site": "wanted",
+      "company": "모빌린트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[AI반도체] NPU Compiler Engineer",
+      "url": "https://www.wanted.co.kr/wd/374074",
+      "career": "",
+      "location": "신입",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++",
+        "C/C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• Math, CS, EE 학위 소유자, 또는 이와 비슷한 경력을 가지신 분\n• 프로그래밍 언어(Python, C/C++ 등) 활용이 능숙하신 분\n• 자기 동기부여 및 배우고자 하는 의지가 강하신 분\n• 팀원간의 협업이 매끄럽고 능숙하신 분",
+      "preferences": "• 딥러닝 컴파일러(TVM, XLA 등)와 관련된 연구 경험을 가지신 분\n• 2년 이상의 딥러닝 분야 연구 경력을 가지신 분, 또는 관련 분야 논문 실적이 있으신 분\n• 임베디드 시스템 환경에서의 딥러닝 알고리즘 개발 경험을 가지신 분\n• 딥러닝 컴파일러와 관련된 연구 및 개발 경험을 가지신 분\n• 프로그래밍 언어(Python, C/C++ 등) 활용이 능숙하신 분",
+      "main_tasks": "• 딥러닝 네트워크 모델을 모빌린트 NPU에서 수행할 수 있는 언어로 변환하는 Backend Compiler 개발\n• 학습된 딥러닝 모델을 최적화를 통해 모빌린트 NPU 상에서 추론 속도를 향상시켜 딥러닝 서비스 개선에 도움을 주는 모델 최적화 엔진 개발\n• 딥러닝 네트워크 모델 연산 최적화를 위한 Simulator 등 검증용 프로그램 개발",
+      "benefits": "[ 여러분의 성장을 응원합니다 ]\n• 전 세계가 주목하는 AI 반도체라는 인공지능, 반도체 분야의 최첨단 기술을 접할 수 있습니다.\n• AI 반도체 특성상 타 분야 엔지니어와의 교류가 필수적이며 인공지능 솔루션 기업들과 협업할 기회가 많기 때문에 다양한 경험을 통해 시야를 넓히고 융합형 인재로 성장할 수 있습니다.\n• 열정적이고 성장에 욕심 많은 멤버들을 위해 세미나 참석비 지원, 도서구입비 지원 제도를 운영하고 있습니다.\n• 직무발명보상제도를 운영하여 멤버들의 역량 증진을 장려하고 성과에 대해 보상해드리고 있습니다.\n\n[ 우리는 이렇게 일해요 ]\n• 자율출퇴근, 자유복장을 원칙으로 하고 있습니다.\n• 공공기관에 준하는 휴일, 휴가 제도를 운영하며 연차는 자유롭게 사용하실 수 있습니다.\n• 직급 없이 님을 사용하며 스스로 업무를 관리하는 수평적 조직문화를 자랑합니다.\n• 불필요한 문서 작업을 철저히 배척하고 직접적이고 빠른 의사소통으로 문제를 해결합니다.\n\n[ Low-Risk & High-Return ]\n• 열정페이가 아닌 열정이 샘솟는 페이를 지향합니다.\n• 국내 AI 반도체 선도 기업 중 규모가 작은 편으로, 지금 합류하시면 회사의 성장으로 인한 기쁨을 스톡 옵션을 통해 금전적으로도 충분히 누리실 수 있습니다.\n• AI 반도체는 차세대 비메모리 반도체 패권을 결정짓는 국가전략산업으로 미국은 2025년까지 56조원, EU는 2030년까지 182조원, 우리 정부 역시 1조 4000억원의 투자를 발표했습니다.\n모빌린트는 국내최고수준의 AI반도체 기술력을 활용하여 지금도 여러 과제에 참여하고 있으며, 앞으로도 정부 지원을 통해 안정적으로 AI 반도체 기술 국산화에 도전할 계획입니다.\n\n[ 쾌적한 근무 환경 ]\n• 멤버들이 연구 개발에 집중하실 수 있도록 편안한 환경 조성을 최우선 목표로 하고 있습니다.\n• 역삼역 3분 거리에 있는 넓고 깨끗한 사무실에서 근무합니다.\n• 신규 멤버가 입사하실 때마다 최고 사양의 컴퓨터와 듀얼 모니터를 새로 구입해드리며 필요한 소프트웨어를 요청하시면 지체 없이 지원해드립니다.\n\n[ 그 외 소소한 복지 제도 ]\n• 4대 보험 및 매년 건강검진 지원\n• 중식 및 석식 제공\n• 간식, 음료 무제한 제공\n• 고급 캡슐 커피 무제한 제공\n• 명절, 연말 등 특별한 선물"
+    },
+    {
+      "site": "wanted",
       "company": "씨디알아이(CDRI)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -57485,6 +58034,78 @@
       "preferences": "• 소프트웨어 엔지니어링 관련 학사 또는 그에 준하는 학위 보유자\n• Python 비동기 프로그래밍(asyncio, async/await)에 대한 깊은 이해와 활용 경험이 있으신 분\n• PostgreSQL 등 RDBMS와 ORM을 활용한 설계 및 쿼리 최적화 경험이 있으신 분\n• Redis 등을 활용한 캐싱, 메시지 큐, 백그라운드 작업 처리 경험이 있으신 분\n• Docker, CI/CD, 클라우드(AWS/GCP/Azure) 기반 배포 및 운영 경험이 있으신 분\n• 테스트 코드, 모니터링, 로깅 등 서비스 품질과 운영 안정성 개선 경험이 있으신 분\n• 인증/인가, 계약, 결제, 예약, 입출입, 알림 등 도메인 개발 경험이 있으신 분\n• 공유주거(Co-living), 부동산 운영, 숙박, 프롭테크 또는 그와 유사한 도메인에 대한 이해가 있으신 분",
       "main_tasks": "• Python(FastAPI/Django) 기반 백엔드 서비스 및 RESTful API 설계, 개발, 운영\n• 홈페이지, PMS, 운영 어드민, 입주/계약/결제/시설 운영 관련 백엔드 서비스의 신규 기능 개발 및 유지보수\n• 비동기(asyncio, async/await) 기반 고동시성 API 및 배치/백그라운드 작업 설계 및 구현\n• 운영 팀, PM, 프론트엔드 개발자, 디자이너와 협업하여 요구사항을 구체화하고 제품 기능으로 구현\n• RDBMS(PostgreSQL 등) 기반 데이터 모델링, SQL/ORM(SQLAlchemy·Django ORM) 작성, 성능 개선 및 데이터 정합성 관리\n• 서비스 장애 대응, 버그 수정, 성능 개선, 배포 및 운영 안정화\n• 코드 리뷰, 테스트 코드 작성, 개발 프로세스 개선을 통한 제품 품질 향상\n• 자사 공유주거 “mangrove” 운영 오퍼레이터를 위한 기술 지원 및 업무 자동화",
       "benefits": "• 자율적 학습 문화를 지지하며, 업무 역량 개발과 성장에 필요한 컨텐츠 비용을 지원\n• 반차, 반반차 등 유연한 연차 사용 가능\n• 리프레쉬 휴가 : 근속 3년 시점마다 10 영업일의 유급휴가와 휴가비 지원\n• 특별 육아휴가 : 8세 이하 자녀가 있는 구성원에게 최대 10 영업일 유급휴가 부여 *법정 육아휴직과 별도\n• 건강검진 : 종합검진 패키지를 격년으로 지원\n\nMGRV는 아직 성장 중인 스타트업으로, 물리적인 복지의 규모는 크지 않을 수 있습니다.\n하지만 회사와 구성원의 지속가능한 성장과 연결을 꾀하며 우리의 스테이지에 부합한 지원 정책들을 진정성 있게 발전시켜 가겠습니다."
+    },
+    {
+      "site": "wanted",
+      "company": "에이블랩스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "자동화 장비 제어 SW 엔지니어 (Python)",
+      "url": "https://www.wanted.co.kr/wd/259677",
+      "career": "",
+      "location": "경력 3-8년",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "MATLAB",
+        "OpenCV",
+        "Pytest",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리",
+        "학사 이상"
+      ],
+      "qualifications": "[ 이런 분과 함께 하고 싶어요! ]\n\n· 컴퓨터 공학, 전기/전자 공학, 로보틱스, 기계 공학 또는 관련 분야의 학사 이상 학위\n· Python 기반 제어 SW 실무 개발·유지보수 경험 (2년 이상)\n· 모터 제어·센서·I/O 제어 중 한 가지 이상의 HW 연동 실무 경험\n· 이슈 재현·근본 원인 분석·조치 경험\n· 유지보수·확장성을 고려한 코드 구조 설계 태도\n· 협업·커뮤니케이션 역량, 새로운 도전에 대한 의지, 자기 동기부여 능력",
+      "preferences": "[ 이런 분이면 더 좋아요! ]\n＜기술 역량＞\n· 다축 자동화 장비 제어 개발 경험 (Step/BLDC 모터)\n· RS-485, CAN, Modbus, Ethernet 등 통신 프로토콜 실무 경험\n· 모터 드라이버·IO 컨트롤러 통신 및 HW 통합 경험\n· Python 비동기 프로그래밍(asyncio) 실무 경험\n· 장비 좌표 티칭·캘리브레이션 경험 또는 이해\n· 여러 장비에 재사용 가능한 공통 코드·설정 구조 설계 경험\n· OpenCV 등 이미지 처리 라이브러리 활용 경험 (비전 기반 위치 인식)\n· 기존 코드베이스를 빠르게 읽고 구조를 파악해 기여한 경험\n＜개발 생산성＞\n· AI 코딩 도구(Claude Code, Copilot 등)를 실무에 활용한 경험\n· Git 기반 협업 경험 (브랜치 전략, Pull Request, 코드 리뷰)\n· 단위 테스트·통합 테스트 작성 경험 (pytest 등)\n· 로그 기반 디버깅 경험 (loguru, logging 등)\n＜기타＞\n· LabVIEW/MATLAB 활용 경험\n· 생명과학 또는 의료기기 관련 산업에서의 경험\n· 해외 출장에 결격 사항 없음\n· 우수한 영어 커뮤니케이션 능력",
+      "main_tasks": "[ 자동화 장비 제어 SW 엔지니어 (Python) ]\n에이블랩스의 자동화 장비는 고객의 실험·생산 공정을 자동화하기 위해 다양한 모듈·센서·분석 장비를 통합한 시스템입니다. 본 역할은 이러한 장비의 제어 소프트웨어를 개발·유지보수하며, 모터·I/O 제어부터 제품별 좌표계 정의, 티칭 로직, 외부 장비 연동까지 폭넓은 범위를 다룹니다.\n제품 요구사항은 때로 모호하게 시작되므로, 요구사항을 실행 가능한 명세로 구체화하고, 수개월·수년 이후에도 유지보수·확장 가능한 구조로 설계하는 역량이 중요합니다. 단발성 기능 구현보다 제품군 전반에 재사용되는 추상화를 만들어가는 방향에 공감하는 분을 찾습니다.\n\n1. 실험 자동화 장비 제어 시스템의 기능 개발 및 유지보수 (제품 요구사항 기반)\n2. Step/BLDC 모터 기반 다축 자동화 장비의 모션 제어 로직 개발 및 튜닝\n3. RS-485, CAN, Modbus, Ethernet 등 통신 프로토콜을 활용한 모듈 연동 및 드라이버 구현\n4. 장비 좌표계 설계 및 위치 티칭·캘리브레이션 로직 개발\n5. 장비 시스템의 하드웨어·소프트웨어 연동 구현, 이슈 재현·디버깅·테스트 및 안정화",
+      "benefits": "[ 에이블러는 이런 환경에서 일해요! ]\n\n에이블랩스에는 멋진 크루 \"에이블러(ABLER)\"가 있습니다. 에이블랩스는 에이블러의 뛰어난 역량에 걸맞은 업무 환경을 제공하기 위해 업무 시간, 문화, 장비 등 다방면에서 노력 중입니다. 에이블러들을 위한 복지는 지속적으로 추가 예정입니다.\n\n· 2023년 5월에 새롭게 인테리어를 끝낸 400평 규모의 쾌적한 공간\n· 코어타임(오전 10시~오후4시) 근무, 주40시간 기준\n· 내규에 따른 어학 지원, 교육 지원, 도서 지원 등\n· 점심/저녁 식사 제공, 간식 및 음료 제공, 커피 무제한 제공\n· 기본 연차 외 경력을 반영한 추가 연차 제공, 건강검진 유급 휴가, 반차, 반반차 가능\n· 단체 보험, 결혼 축하금, 출산 축하금, 명절 상품권 지급\n· 구성원 경조사 발생 시 화환 및 경조휴가, 경조금 지원"
+    },
+    {
+      "site": "wanted",
+      "company": "큐노바",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "소프트웨어 엔지니어",
+      "url": "https://www.wanted.co.kr/wd/308020",
+      "career": "",
+      "location": "경력 3-10년",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "C++",
+        "C/C++",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화",
+        "대용량 처리",
+        "MSA/분산",
+        "CI/CD"
+      ],
+      "qualifications": "큐노바는 새로운 기술에 대한 호기심이 많고, 빠르게 학습하며 성장할 수 있는 분을 찾고 있습니다.\n양자 컴퓨팅 경험은 필수 요건이 아니며, 입사 후 함께 학습하고 익혀갈 수 있습니다. 대신 고전적인 분산 컴퓨팅 및 시스템 개발 역량을 갖춘 분을 환영합니다.\n\n• CPU, 메모리, 스토리지, 네트워크 등 서버 자원에 대한 이해\n• Python 개발 역량(C/C++, Java 등 다른 언어 경험도 가능). 개발은 Python을 중심으로 이루어지지만, 일부 계산 라이브러리는 C/C++ 등 다른 언어로 구성되어 있습니다.\n• Git 기반 협업 및 CI/CD 도구 활용 경험\n• AWS 등 클라우드 플랫폼에서 서비스 배포 및 운영 경험\n• 컨테이너 및 오케스트레이션 도구(Docker, Kubernetes) 사용 경험\n• Infrastructure as Code(IaC) 기반 인프라 관리 경험\n• 원활한 커뮤니케이션 및 협업 역량",
+      "preferences": "•스타트업 환경에서 다양한 역할을 수행한 경험\n•영어 읽기, 쓰기 및 회화 능력\n•대용량 데이터 처리 및 분산 시스템 개발 경험\n•수치해석 소프트웨어 개발 또는 활용 경험\n•양자 컴퓨팅 개념에 대한 이해",
+      "main_tasks": "1. 양자 계산 플랫폼 설계 및 개발\n•고전 컴퓨터와 양자 컴퓨터를 연계하여 고난도 계산을 수행하는 서비스의 설계 및 개발\n•양자 시뮬레이터, 양자 하드웨어, 고전 컴퓨터 간 연동을 지원하는 통합 레이어의 설계 및 개발\n\n2. 인프라 구성 및 운영\n•AWS, GCP, Azure 등 클라우드 환경 및 폐쇄망 환경에서의 서비스 배포 및 운영 지원\n•모니터링, 로깅 등 관측 가능성(Observability) 솔루션을 분산형 고전/양자 컴퓨팅 환경에 구현\n•양자/고전 복합 컴퓨팅 시스템에서 발생할 수 있는 다양한 장애 상황에도 안정적으로 동작할 수 있는 시스템 설계 및 구현\n•양자/고전 복합 계산 시스템의 성능 최적화\n\n3. 연구팀과의 협업\n•양자 알고리즘 연구원과 협력하여 기술적 요구사항을 분석하고 시스템 설계에 반영\n•복잡한 양자 계산 개념을 실용적인 소프트웨어 솔루션으로 구현\n•양자 알고리즘 연구를 지원하는 소프트웨어 도구의 개발 및 배포",
+      "benefits": "• 근무 환경: 대전, 서울(양재) 중 조정 가능한 유연한 근무지\n• 장비 지원: 최첨단 기술 영역에서 업무에 필요한 원하는 기기 제공\n• 성장 지원: 직원들의 개인적·전문적 발전을 위한 교육비 및 컨퍼런스 참가 지원\n• 경쟁력 있는 처우: 업계 수준의 급여 및 복지 혜택"
     },
     {
       "site": "wanted",
@@ -208005,6 +208626,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)캐스트프로",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(주)캐스트프로 소프트웨어팀 서버담당자(경력 3년 이상) 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53943196&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=dc70e2bd-ab3f-4738-8694-1c51df6341da",
+      "career": "경력3년↑",
+      "location": "경기성남시 중원구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "MySQL",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 3년 이상\n\n• 학력무관",
+      "preferences": "• 전기차 충전사업자 제조사 근무 경력자\n\n• 인근거주자 (즉시 출근가능자)\n\n• 운전가능자\n\n• 관련전공자 우대",
+      "main_tasks": "•APP/서버간 통신 프로토콜 적용 및 유지 보수\n\n- 서버간 소켓 통신 이해와 사용\n\n- REST API 이해와 사용\n\n- DATABASE 이해와 사용\n\n- OPENSOURCE기반 TOOL활용",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사엠에이치앤티(MH&T)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -222667,65 +223313,65 @@
     }
   ],
   "stats": {
-    "total": 7466,
+    "total": 7487,
     "by_size": {
-      "중소기업": 6727,
+      "중소기업": 6748,
       "대기업": 441,
       "중견기업": 298
     },
     "by_role": {
-      "기타": 1031,
-      "DevOps/인프라": 1087,
-      "백엔드": 3148,
-      "모바일": 1120,
-      "AI/ML": 2616,
-      "프론트엔드": 2024,
-      "풀스택": 661,
+      "기타": 1037,
+      "DevOps/인프라": 1089,
+      "백엔드": 3155,
+      "모바일": 1124,
+      "AI/ML": 2622,
+      "프론트엔드": 2026,
+      "풀스택": 662,
       "게임": 42,
-      "데이터": 956,
-      "펌웨어/임베디드": 288,
+      "데이터": 959,
+      "펌웨어/임베디드": 292,
       "보안": 324,
       "QA": 77
     },
     "by_site": {
-      "wanted": 2005,
+      "wanted": 2025,
       "jumpit": 547,
       "jobkorea": 1186,
-      "saramin": 3305,
+      "saramin": 3306,
       "dev": 423
     },
     "top_tech": [
       [
         "Python",
-        2282
+        2291
       ],
       [
         "AWS",
-        1902
+        1908
       ],
       [
         "Java",
-        1831
+        1835
       ],
       [
         "React",
-        1522
+        1524
       ],
       [
         "Git",
-        1187
+        1190
       ],
       [
         "Docker",
-        1166
+        1172
       ],
       [
         "Spring",
-        1056
+        1058
       ],
       [
         "JavaScript",
-        1004
+        1006
       ],
       [
         "TypeScript",
@@ -222733,51 +223379,51 @@
       ],
       [
         "Linux",
-        997
+        999
       ],
       [
         "MySQL",
-        839
+        841
       ],
       [
         "Kubernetes",
-        823
+        826
       ],
       [
         "REST API",
-        808
+        811
       ],
       [
         "PostgreSQL",
-        771
+        776
       ],
       [
         "Node.js",
-        637
+        639
       ],
       [
         "Spring Boot",
-        633
+        635
       ],
       [
         "GCP",
-        632
+        633
       ],
       [
         "C++",
-        626
+        630
       ],
       [
         "Next.js",
-        556
+        557
       ],
       [
         "Azure",
-        530
+        531
       ],
       [
         "PyTorch",
-        505
+        506
       ],
       [
         "CSS",
@@ -222785,7 +223431,7 @@
       ],
       [
         "Redis",
-        492
+        495
       ],
       [
         "HTML",
@@ -222797,7 +223443,7 @@
       ],
       [
         "FastAPI",
-        436
+        437
       ],
       [
         "iOS",
@@ -222805,7 +223451,7 @@
       ],
       [
         "Kotlin",
-        418
+        420
       ],
       [
         "Vue",
@@ -222813,27 +223459,11 @@
       ],
       [
         "Kafka",
-        372
+        374
       ]
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-15T23:59:27",
-      "keyword": "통합",
-      "raw_total": 7113,
-      "deduped": 6667,
-      "active": 6037,
-      "closed": 630,
-      "site_counts": {
-        "wanted": 1350,
-        "jumpit": 510,
-        "jobkorea": 1390,
-        "saramin": 3583,
-        "dev": 280
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-16T01:42:28",
       "keyword": "통합",
@@ -226014,6 +226644,22 @@
         "jumpit": 893,
         "jobkorea": 2645,
         "saramin": 7081,
+        "dev": 709
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-11T07:32:26",
+      "keyword": "통합",
+      "raw_total": 13451,
+      "deduped": 11307,
+      "active": 7487,
+      "closed": 3820,
+      "site_counts": {
+        "wanted": 2122,
+        "jumpit": 893,
+        "jobkorea": 2645,
+        "saramin": 7082,
         "dev": 709
       },
       "anomalies": []
