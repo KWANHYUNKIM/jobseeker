@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T00:45:58",
+  "generated_at": "2026-07-11T02:27:08",
   "source": "youtube",
   "tech_count": 179,
   "curriculum_count": 20,
@@ -1973,78 +1973,6 @@
         "stage": "핵심"
       }
     ],
-    "Android": [
-      {
-        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
-        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
-        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4856,
-        "length": "7:21",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
-        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
-        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 1870,
-        "length": "43:15",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
-        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
-        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
-        "channel": "소프트캠퍼스softcampus",
-        "views": 9603,
-        "length": "4:45",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "밍짱의 안드로이드 강의 1편 - 기본 시작편",
-        "url": "https://www.youtube.com/watch?v=DLi5-R56Udc",
-        "thumbnail": "https://i.ytimg.com/vi/DLi5-R56Udc/mqdefault.jpg",
-        "channel": "밍짱",
-        "views": 982,
-        "length": "2:46",
-        "published": "9년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드 앱 개발 영상 강의입니다.",
-        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
-        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 1516,
-        "length": "4:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
-        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
-        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
-        "channel": "널널한 교수의 코딩 클래스",
-        "views": 1161,
-        "length": "1:32:31",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 398,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      }
-    ],
     "FastAPI": [
       {
         "title": "FastAPI 강의 (1) : 시작해보기",
@@ -2125,6 +2053,78 @@
         "length": "3:21",
         "published": "1년 전",
         "stage": "실전"
+      }
+    ],
+    "Android": [
+      {
+        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
+        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
+        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4856,
+        "length": "7:21",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
+        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
+        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 1870,
+        "length": "43:15",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Android(안드로이드 강의) Tutorials- 제1강 안드로이드 과정 소개(About Android)",
+        "url": "https://www.youtube.com/watch?v=cFfXstxmQd8",
+        "thumbnail": "https://i.ytimg.com/vi/cFfXstxmQd8/mqdefault.jpg",
+        "channel": "소프트캠퍼스softcampus",
+        "views": 9603,
+        "length": "4:45",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "밍짱의 안드로이드 강의 1편 - 기본 시작편",
+        "url": "https://www.youtube.com/watch?v=DLi5-R56Udc",
+        "thumbnail": "https://i.ytimg.com/vi/DLi5-R56Udc/mqdefault.jpg",
+        "channel": "밍짱",
+        "views": 982,
+        "length": "2:46",
+        "published": "9년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드 앱 개발 영상 강의입니다.",
+        "url": "https://www.youtube.com/watch?v=YeGhNSiFACg",
+        "thumbnail": "https://i.ytimg.com/vi/YeGhNSiFACg/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 1516,
+        "length": "4:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드 앱 개발 강의 Part 1 : 안드로이드의 역사, 개요, 개발도구, 안드로이드 위젯소개(강의 : 이영록)",
+        "url": "https://www.youtube.com/watch?v=vYyMz1tcbyQ",
+        "thumbnail": "https://i.ytimg.com/vi/vYyMz1tcbyQ/mqdefault.jpg",
+        "channel": "널널한 교수의 코딩 클래스",
+        "views": 1161,
+        "length": "1:32:31",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 398,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
       }
     ],
     "Kafka": [
@@ -3871,88 +3871,6 @@
         "stage": "실전"
       }
     ],
-    "Confluence": [
-      {
-        "title": "Confluence 사용법 : 초보자를 위한 Atlassian Confluence 튜토리얼 (문서 협업 툴)/컨플루언스 무료 강의",
-        "url": "https://www.youtube.com/watch?v=VSRTrHtO43A",
-        "thumbnail": "https://i.ytimg.com/vi/VSRTrHtO43A/mqdefault.jpg",
-        "channel": "Open Source Consulting - 오픈소스컨설팅",
-        "views": 28609,
-        "length": "23:02",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Atlassian Confluence 사용법 기초 (Cloud 버전)",
-        "url": "https://www.youtube.com/watch?v=HYzgXc8_w04",
-        "thumbnail": "https://i.ytimg.com/vi/HYzgXc8_w04/mqdefault.jpg",
-        "channel": "자격동스쿨",
-        "views": 1811,
-        "length": "23:02",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
-        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
-        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
-        "channel": "colicelab",
-        "views": 1158,
-        "length": "5:03",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jira, Confluence 와 AI가 만나면? [세미남700@토크아이티,  박정광매니저/오픈소스컨설팅, 아틀라시안]",
-        "url": "https://www.youtube.com/watch?v=0U6OY0RDB5g",
-        "thumbnail": "https://i.ytimg.com/vi/0U6OY0RDB5g/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 931,
-        "length": "6:33",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Atlassian Jira & Confluence 관리자 교육 (Cloud 버전)",
-        "url": "https://www.youtube.com/watch?v=ycnlocaOtb8",
-        "thumbnail": "https://i.ytimg.com/vi/ycnlocaOtb8/mqdefault.jpg",
-        "channel": "자격동스쿨",
-        "views": 295,
-        "length": "35:28",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Claude Code로 Confluence 문서를 자동으로 정리했습니다 (생산성 미쳤습니다)",
-        "url": "https://www.youtube.com/watch?v=mlwIyDBQAdI",
-        "thumbnail": "https://i.ytimg.com/vi/mlwIyDBQAdI/mqdefault.jpg",
-        "channel": "핑크랩 PinkLAB",
-        "views": 1500,
-        "length": "14:53",
-        "published": "3개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "협업과 커뮤니케이션 기반 체계적인 요구사항 관리 - Jira, Confluence, Comala Document Control",
-        "url": "https://www.youtube.com/watch?v=KP_dXLGxkfk",
-        "thumbnail": "https://i.ytimg.com/vi/KP_dXLGxkfk/mqdefault.jpg",
-        "channel": "CURVC Corp.",
-        "views": 1081,
-        "length": "7:43",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Confluence Runbook] 001. 과정 소개",
-        "url": "https://www.youtube.com/watch?v=lBalsi-8IDA",
-        "thumbnail": "https://i.ytimg.com/vi/lBalsi-8IDA/mqdefault.jpg",
-        "channel": "DevOps 전문 기업 투씨드",
-        "views": 33,
-        "length": "5:11",
-        "published": "1년 전",
-        "stage": "핵심"
-      }
-    ],
     "NestJS": [
       {
         "title": "Nest.js - 1강: 백엔드 정의와 개념 그리고 자바스크립트 엔진에 대해",
@@ -4032,6 +3950,88 @@
         "views": 161,
         "length": "4:27",
         "published": "6개월 전",
+        "stage": "핵심"
+      }
+    ],
+    "Confluence": [
+      {
+        "title": "Confluence 사용법 : 초보자를 위한 Atlassian Confluence 튜토리얼 (문서 협업 툴)/컨플루언스 무료 강의",
+        "url": "https://www.youtube.com/watch?v=VSRTrHtO43A",
+        "thumbnail": "https://i.ytimg.com/vi/VSRTrHtO43A/mqdefault.jpg",
+        "channel": "Open Source Consulting - 오픈소스컨설팅",
+        "views": 28609,
+        "length": "23:02",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Atlassian Confluence 사용법 기초 (Cloud 버전)",
+        "url": "https://www.youtube.com/watch?v=HYzgXc8_w04",
+        "thumbnail": "https://i.ytimg.com/vi/HYzgXc8_w04/mqdefault.jpg",
+        "channel": "자격동스쿨",
+        "views": 1811,
+        "length": "23:02",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "콜리스랩 - 핵심만 쏙쏙 JIRA & Confluence 인프런 강의 소개",
+        "url": "https://www.youtube.com/watch?v=zpzFLEVdY-4",
+        "thumbnail": "https://i.ytimg.com/vi/zpzFLEVdY-4/mqdefault.jpg",
+        "channel": "colicelab",
+        "views": 1158,
+        "length": "5:03",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jira, Confluence 와 AI가 만나면? [세미남700@토크아이티,  박정광매니저/오픈소스컨설팅, 아틀라시안]",
+        "url": "https://www.youtube.com/watch?v=0U6OY0RDB5g",
+        "thumbnail": "https://i.ytimg.com/vi/0U6OY0RDB5g/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 931,
+        "length": "6:33",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Atlassian Jira & Confluence 관리자 교육 (Cloud 버전)",
+        "url": "https://www.youtube.com/watch?v=ycnlocaOtb8",
+        "thumbnail": "https://i.ytimg.com/vi/ycnlocaOtb8/mqdefault.jpg",
+        "channel": "자격동스쿨",
+        "views": 295,
+        "length": "35:28",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Claude Code로 Confluence 문서를 자동으로 정리했습니다 (생산성 미쳤습니다)",
+        "url": "https://www.youtube.com/watch?v=mlwIyDBQAdI",
+        "thumbnail": "https://i.ytimg.com/vi/mlwIyDBQAdI/mqdefault.jpg",
+        "channel": "핑크랩 PinkLAB",
+        "views": 1500,
+        "length": "14:53",
+        "published": "3개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "협업과 커뮤니케이션 기반 체계적인 요구사항 관리 - Jira, Confluence, Comala Document Control",
+        "url": "https://www.youtube.com/watch?v=KP_dXLGxkfk",
+        "thumbnail": "https://i.ytimg.com/vi/KP_dXLGxkfk/mqdefault.jpg",
+        "channel": "CURVC Corp.",
+        "views": 1081,
+        "length": "7:43",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Confluence Runbook] 001. 과정 소개",
+        "url": "https://www.youtube.com/watch?v=lBalsi-8IDA",
+        "thumbnail": "https://i.ytimg.com/vi/lBalsi-8IDA/mqdefault.jpg",
+        "channel": "DevOps 전문 기업 투씨드",
+        "views": 33,
+        "length": "5:11",
+        "published": "1년 전",
         "stage": "핵심"
       }
     ],
@@ -4199,6 +4199,88 @@
         "stage": "실전"
       }
     ],
+    "Apache": [
+      {
+        "title": "Apache Spark로 시작하는 머신러닝 입문",
+        "url": "https://www.youtube.com/watch?v=PRLz11vv7VA",
+        "thumbnail": "https://i.ytimg.com/vi/PRLz11vv7VA/mqdefault.jpg",
+        "channel": "iamprogrammer official",
+        "views": 17825,
+        "length": "2:46:50",
+        "published": "스트리밍 시간: 10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Apache Superset: EP1 -  🚀 Apache Superset이 뭔가요?",
+        "url": "https://www.youtube.com/watch?v=b4h6AWyqQQo",
+        "thumbnail": "https://i.ytimg.com/vi/b4h6AWyqQQo/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 911,
+        "length": "6:55",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Zookeeper 에 대해 알아보자 [ 아파치 카프카 (Apache Kafka) ]",
+        "url": "https://www.youtube.com/watch?v=kQWKtacq3NI",
+        "thumbnail": "https://i.ytimg.com/vi/kQWKtacq3NI/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 783,
+        "length": "9:07",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Superset: EP2 -  🏛️ Superset 내부 구조 - 어떻게 동작할까?",
+        "url": "https://www.youtube.com/watch?v=7PrHkI4_3LE",
+        "thumbnail": "https://i.ytimg.com/vi/7PrHkI4_3LE/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 391,
+        "length": "7:29",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Java - Apache CommonLang 사용법 간단 소개",
+        "url": "https://www.youtube.com/watch?v=STxjgxMhsrk",
+        "thumbnail": "https://i.ytimg.com/vi/STxjgxMhsrk/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 1919,
+        "length": "29:17",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Contribution, 그 전쟁의 서막 : Apache OpenWhisk 성능 개선",
+        "url": "https://www.youtube.com/watch?v=L54vEXA3PiY",
+        "thumbnail": "https://i.ytimg.com/vi/L54vEXA3PiY/mqdefault.jpg",
+        "channel": "NAVER D2",
+        "views": 1043,
+        "length": "22:37",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Spark 이론 완전정복 🚀 | 탄생 배경부터 핵심 특징·아키텍처까지 한 번에!",
+        "url": "https://www.youtube.com/watch?v=mMrpzxYWZ4s",
+        "thumbnail": "https://i.ytimg.com/vi/mMrpzxYWZ4s/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1709,
+        "length": "23:22",
+        "published": "7개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
+        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
+        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1606,
+        "length": "29:18",
+        "published": "5개월 전",
+        "stage": "실전"
+      }
+    ],
     "RabbitMQ": [
       {
         "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
@@ -4360,88 +4442,6 @@
         "views": 1901,
         "length": "15:06",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "Apache": [
-      {
-        "title": "Apache Spark로 시작하는 머신러닝 입문",
-        "url": "https://www.youtube.com/watch?v=PRLz11vv7VA",
-        "thumbnail": "https://i.ytimg.com/vi/PRLz11vv7VA/mqdefault.jpg",
-        "channel": "iamprogrammer official",
-        "views": 17825,
-        "length": "2:46:50",
-        "published": "스트리밍 시간: 10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Apache Superset: EP1 -  🚀 Apache Superset이 뭔가요?",
-        "url": "https://www.youtube.com/watch?v=b4h6AWyqQQo",
-        "thumbnail": "https://i.ytimg.com/vi/b4h6AWyqQQo/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 911,
-        "length": "6:55",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Zookeeper 에 대해 알아보자 [ 아파치 카프카 (Apache Kafka) ]",
-        "url": "https://www.youtube.com/watch?v=kQWKtacq3NI",
-        "thumbnail": "https://i.ytimg.com/vi/kQWKtacq3NI/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 783,
-        "length": "9:07",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Superset: EP2 -  🏛️ Superset 내부 구조 - 어떻게 동작할까?",
-        "url": "https://www.youtube.com/watch?v=7PrHkI4_3LE",
-        "thumbnail": "https://i.ytimg.com/vi/7PrHkI4_3LE/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 391,
-        "length": "7:29",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Java - Apache CommonLang 사용법 간단 소개",
-        "url": "https://www.youtube.com/watch?v=STxjgxMhsrk",
-        "thumbnail": "https://i.ytimg.com/vi/STxjgxMhsrk/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 1919,
-        "length": "29:17",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Contribution, 그 전쟁의 서막 : Apache OpenWhisk 성능 개선",
-        "url": "https://www.youtube.com/watch?v=L54vEXA3PiY",
-        "thumbnail": "https://i.ytimg.com/vi/L54vEXA3PiY/mqdefault.jpg",
-        "channel": "NAVER D2",
-        "views": 1043,
-        "length": "22:37",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Spark 이론 완전정복 🚀 | 탄생 배경부터 핵심 특징·아키텍처까지 한 번에!",
-        "url": "https://www.youtube.com/watch?v=mMrpzxYWZ4s",
-        "thumbnail": "https://i.ytimg.com/vi/mMrpzxYWZ4s/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1709,
-        "length": "23:22",
-        "published": "7개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
-        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
-        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1606,
-        "length": "29:18",
-        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -7561,6 +7561,88 @@
         "stage": "실전"
       }
     ],
+    "Cypress": [
+      {
+        "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
+        "url": "https://www.youtube.com/watch?v=I5Zpc41XA9M",
+        "thumbnail": "https://i.ytimg.com/vi/I5Zpc41XA9M/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 75,
+        "length": "57:14",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Cypress Tutorial For Beginners : Part 1 ( Creating your first script )",
+        "url": "https://www.youtube.com/watch?v=vQH-2Sq0cKk",
+        "thumbnail": "https://i.ytimg.com/vi/vQH-2Sq0cKk/mqdefault.jpg",
+        "channel": "The Testing Academy",
+        "views": 43237,
+        "length": "12:57",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Cypress CVRA Presentation [KOREAN TRANSLATION]",
+        "url": "https://www.youtube.com/watch?v=0cPA63-PAP8",
+        "thumbnail": "https://i.ytimg.com/vi/0cPA63-PAP8/mqdefault.jpg",
+        "channel": "CityofCypress",
+        "views": 20,
+        "length": "15:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "End to End Testing with Cypress - Lecture",
+        "url": "https://www.youtube.com/watch?v=CwQk_jZPbTQ",
+        "thumbnail": "https://i.ytimg.com/vi/CwQk_jZPbTQ/mqdefault.jpg",
+        "channel": "Lighthouse",
+        "views": 84,
+        "length": "1:47:08",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Intro to Cypress",
+        "url": "https://www.youtube.com/watch?v=Eg-lIZkllGI",
+        "thumbnail": "https://i.ytimg.com/vi/Eg-lIZkllGI/mqdefault.jpg",
+        "channel": "Kyle Coberly",
+        "views": 14,
+        "length": "1:10:34",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "#AskRaghav | Cypress Or Selenium | Which is better automation platform |",
+        "url": "https://www.youtube.com/watch?v=2anO9t6-oT8",
+        "thumbnail": "https://i.ytimg.com/vi/2anO9t6-oT8/mqdefault.jpg",
+        "channel": "Automation Step by Step",
+        "views": 47649,
+        "length": "11:26",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Part 1: Cypress Introduction | Web Automation using Cypress",
+        "url": "https://www.youtube.com/watch?v=yM38NmF-LC4",
+        "thumbnail": "https://i.ytimg.com/vi/yM38NmF-LC4/mqdefault.jpg",
+        "channel": "SDET- QA",
+        "views": 228322,
+        "length": "19:18",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Cypress Fundamentals - by Adhithi Ravichandran",
+        "url": "https://www.youtube.com/watch?v=yBqmY2bDJMs",
+        "thumbnail": "https://i.ytimg.com/vi/yBqmY2bDJMs/mqdefault.jpg",
+        "channel": "Adhithi Ravichandran",
+        "views": 32,
+        "length": "1:55",
+        "published": "4년 전",
+        "stage": "핵심"
+      }
+    ],
     "Firmware": [
       {
         "title": "마이컴 펌웨어(FirmWare) 기초개념",
@@ -7887,88 +7969,6 @@
         "length": "28:53",
         "published": "1년 전",
         "stage": "실전"
-      }
-    ],
-    "Cypress": [
-      {
-        "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
-        "url": "https://www.youtube.com/watch?v=I5Zpc41XA9M",
-        "thumbnail": "https://i.ytimg.com/vi/I5Zpc41XA9M/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 75,
-        "length": "57:14",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Cypress Tutorial For Beginners : Part 1 ( Creating your first script )",
-        "url": "https://www.youtube.com/watch?v=vQH-2Sq0cKk",
-        "thumbnail": "https://i.ytimg.com/vi/vQH-2Sq0cKk/mqdefault.jpg",
-        "channel": "The Testing Academy",
-        "views": 43237,
-        "length": "12:57",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Cypress CVRA Presentation [KOREAN TRANSLATION]",
-        "url": "https://www.youtube.com/watch?v=0cPA63-PAP8",
-        "thumbnail": "https://i.ytimg.com/vi/0cPA63-PAP8/mqdefault.jpg",
-        "channel": "CityofCypress",
-        "views": 20,
-        "length": "15:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "End to End Testing with Cypress - Lecture",
-        "url": "https://www.youtube.com/watch?v=CwQk_jZPbTQ",
-        "thumbnail": "https://i.ytimg.com/vi/CwQk_jZPbTQ/mqdefault.jpg",
-        "channel": "Lighthouse",
-        "views": 84,
-        "length": "1:47:08",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Intro to Cypress",
-        "url": "https://www.youtube.com/watch?v=Eg-lIZkllGI",
-        "thumbnail": "https://i.ytimg.com/vi/Eg-lIZkllGI/mqdefault.jpg",
-        "channel": "Kyle Coberly",
-        "views": 14,
-        "length": "1:10:34",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "#AskRaghav | Cypress Or Selenium | Which is better automation platform |",
-        "url": "https://www.youtube.com/watch?v=2anO9t6-oT8",
-        "thumbnail": "https://i.ytimg.com/vi/2anO9t6-oT8/mqdefault.jpg",
-        "channel": "Automation Step by Step",
-        "views": 47649,
-        "length": "11:26",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Part 1: Cypress Introduction | Web Automation using Cypress",
-        "url": "https://www.youtube.com/watch?v=yM38NmF-LC4",
-        "thumbnail": "https://i.ytimg.com/vi/yM38NmF-LC4/mqdefault.jpg",
-        "channel": "SDET- QA",
-        "views": 228322,
-        "length": "19:18",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Cypress Fundamentals - by Adhithi Ravichandran",
-        "url": "https://www.youtube.com/watch?v=yBqmY2bDJMs",
-        "thumbnail": "https://i.ytimg.com/vi/yBqmY2bDJMs/mqdefault.jpg",
-        "channel": "Adhithi Ravichandran",
-        "views": 32,
-        "length": "1:55",
-        "published": "4년 전",
-        "stage": "핵심"
       }
     ],
     "JPA": [

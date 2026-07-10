@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-11T00:36:36",
- "total": 921,
+ "generated_at": "2026-07-11T02:26:35",
+ "total": 922,
  "sources": [
   {
    "company": "Etsy",
@@ -30,7 +30,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 37
+   "count": 38
   },
   {
    "company": "토스",
@@ -418,9 +418,9 @@
   "Spinnaker": "인프라/클라우드",
   "Keras": "AI/ML",
   "MSSQL": "데이터베이스",
+  "Prompt Engineering": "LLM/생성형",
   "Machine Learning": "AI/ML",
   "Remix": "프론트엔드",
-  "Prompt Engineering": "LLM/생성형",
   "CDC": "데이터",
   "Kafka": "데이터",
   "Distributed System": "알고리즘/이론",
@@ -469,8 +469,8 @@
   "Jenkins": "인프라/클라우드",
   "DynamoDB": "데이터베이스",
   "C#": "언어",
-  "Iceberg": "데이터",
   "Unix": "시스템/OS",
+  "Iceberg": "데이터",
   "Delta Lake": "데이터",
   "BigQuery": "데이터베이스",
   ".NET": "백엔드",
@@ -520,6 +520,38 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Better tools made Copilot code review worse. Here’s how we actually improved it.",
+   "url": "https://github.blog/ai-and-ml/github-copilot/better-tools-made-copilot-code-review-worse-heres-how-we-actually-improved-it",
+   "published": "2026-07-10",
+   "published_ts": 1783699067.0,
+   "summary": "How migrating Copilot code review to shared Unix-style code exploration tools reduced review cost by reshaping agent workflows around pull request evidence.\n\nThe post Better tools made Copilot code review worse. Here’s how we actually improved it. appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "Architecture & optimization",
+    "Engineering",
+    "GitHub Copilot",
+    "LLMs",
+    "agentic workflows",
+    "developer tools",
+    "GitHub Copilot code review"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "LLM",
+    "Prompt Engineering",
+    "Unix"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "시스템/OS"
+   ],
+   "lang": "en",
+   "content_id": "6e4b204fac83997a"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",
