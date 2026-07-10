@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-10T09:01:03",
- "total": 915,
+ "generated_at": "2026-07-10T10:45:11",
+ "total": 918,
  "sources": [
   {
    "company": "Etsy",
@@ -95,12 +95,12 @@
   {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 21
+   "count": 23
   },
   {
    "company": "Grab",
    "country": "SG",
-   "count": 14
+   "count": 15
   },
   {
    "company": "Meta",
@@ -265,6 +265,7 @@
   "SQL Injection": "보안",
   "Scikit-learn": "AI/ML",
   "XSS": "보안",
+  "Hudi": "데이터",
   "SCSS": "프론트엔드",
   "Envoy": "인프라/클라우드",
   "DDD": "협업/도구",
@@ -519,6 +520,78 @@
   "Julia": "언어"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "動画広告の配信基盤におけるImpressionログの処理遅延の原因調査と改善",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64547",
+   "published": "2026-07-10",
+   "published_ts": 1783644557.0,
+   "summary": "はじめに こんにちは！同志社大学大学院 修士 1年の近藤 大輔です。 2026年6月3日 〜 6月3 ...",
+   "tags": [
+    "エンジニア",
+    "AJA",
+    "インターンシップ"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "5d73cc02392243f5"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "ABEMAの課金導線を壊さずに運用負荷を改善する",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64534",
+   "published": "2026-07-10",
+   "published_ts": 1783644465.0,
+   "summary": "はじめに 2026年6月に約3週間、CA Tech Jobに参加しました、早稲田大学基幹理工学部情報 ...",
+   "tags": [
+    "エンジニア",
+    "インターンシップ"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "b6d692df0835b71c"
+  },
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+   "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+   "published": "2026-07-10",
+   "published_ts": 1783641600.0,
+   "summary": "Introduction: The evolution of Grab’s Data Lake\n\nAt Grab’s scale, managing petabytes of data across billions of S3 objects demands more than a storage layer. It demands a robust architectural primitive that supports the high-concurrency needs of a modern “Lakehouse.” Our goal is full storage-compute separation, leveraging S3 as an elastic foundation for both near-real-time metrics and large-scale batch transformations.\n\nFor years, the vast majority of our tables were Hive Parquet, managed through the Hive Metastore with a directory-based layout. This model served us well, but as data volume gr…",
+   "tags": [
+    "Data",
+    "Database",
+    "Engineering",
+    "Apache Iceberg",
+    "Spark",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "Data Lake",
+    "Hive",
+    "Hudi",
+    "Iceberg",
+    "Spark",
+    "Trino",
+    "Concurrency"
+   ],
+   "categories": [
+    "AI/ML",
+    "데이터",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "84d4c7405d04fa4d"
+  },
   {
    "key": "lyft",
    "company": "Lyft",
