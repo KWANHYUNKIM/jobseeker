@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-11T09:22:37",
-  "total_jobs": 7487,
+  "generated_at": "2026-07-11T11:04:40",
+  "total_jobs": 7488,
   "company_count": 1392,
   "min_posting": 2,
   "companies": [
@@ -162211,6 +162211,75 @@
       }
     },
     {
+      "name": "삼양식품㈜",
+      "norm": "삼양식품",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "jobkorea",
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 3
+      },
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "여행/숙박",
+          "score": 3,
+          "evidence": [
+            "여행",
+            "숙박"
+          ]
+        },
+        {
+          "name": "교육/에듀테크",
+          "score": 2,
+          "evidence": [
+            "교육"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "[삼양식품] AI Transformation(AX) 전략 팀장",
+        "[삼양식품] 헬스케어 AI 연구개발 파트장 (ML 모델 개발)",
+        "[삼양식품] AI Transformation(AX) 전략 기획"
+      ],
+      "postings": [
+        {
+          "title": "[삼양식품] AI Transformation(AX) 전략 팀장",
+          "url": "https://www.wanted.co.kr/wd/374125",
+          "site": "wanted"
+        },
+        {
+          "title": "[삼양식품] 헬스케어 AI 연구개발 파트장 (ML 모델 개발)",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49534641?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=26&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "[삼양식품] AI Transformation(AX) 전략 기획",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49554506?Oem_Code=C1&logpath=1&stext=AI&listno=100&sc=630",
+          "site": "jobkorea"
+        }
+      ],
+      "summary": "삼양식품㈜는 여행/숙박 도메인의 중소기업으로, 주로 AI/ML 직군을 채용합니다.",
+      "career_guide": {
+        "wants": [
+          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
+          "AI/ML 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "여행/숙박 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "[여행/숙박] 모델 학습·평가와 추론(서빙) 파이프라인 개발"
+        ],
+        "study_blogs": []
+      }
+    },
+    {
       "name": "(주)알체라",
       "norm": "알체라",
       "size": "중소기업",
@@ -242745,69 +242814,6 @@
             "why": "LLM/생성형"
           }
         ]
-      }
-    },
-    {
-      "name": "삼양식품",
-      "norm": "삼양식품",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "jobkorea",
-        "wanted"
-      ],
-      "roles": {
-        "AI/ML": 2
-      },
-      "top_tech": [],
-      "tech_categories": {},
-      "domains": [
-        {
-          "name": "여행/숙박",
-          "score": 3,
-          "evidence": [
-            "여행",
-            "숙박"
-          ]
-        },
-        {
-          "name": "교육/에듀테크",
-          "score": 2,
-          "evidence": [
-            "교육"
-          ]
-        }
-      ],
-      "architecture": [],
-      "titles": [
-        "[삼양식품] AI Transformation(AX) 전략 팀장",
-        "[삼양식품] 헬스케어 AI 연구개발 파트장 (ML 모델 개발)"
-      ],
-      "postings": [
-        {
-          "title": "[삼양식품] AI Transformation(AX) 전략 팀장",
-          "url": "https://www.wanted.co.kr/wd/374125",
-          "site": "wanted"
-        },
-        {
-          "title": "[삼양식품] 헬스케어 AI 연구개발 파트장 (ML 모델 개발)",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49534641?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=26&sc=630",
-          "site": "jobkorea"
-        }
-      ],
-      "summary": "삼양식품는 여행/숙박 도메인의 중소기업으로, 주로 AI/ML 직군을 채용합니다.",
-      "career_guide": {
-        "wants": [
-          "주로 시니어·리드 채용 — 주도적으로 설계·문제 해결한 경력 어필이 필요",
-          "AI/ML 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "여행/숙박 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
-        ],
-        "roadmap": [],
-        "tasks": [
-          "[여행/숙박] 모델 학습·평가와 추론(서빙) 파이프라인 개발"
-        ],
-        "study_blogs": []
       }
     },
     {

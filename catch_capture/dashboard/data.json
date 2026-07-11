@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-11T09:22:24",
-  "source_dir": "screenshots/all_통합_20260711_092204",
+  "generated_at": "2026-07-11T11:04:27",
+  "source_dir": "screenshots/all_통합_20260711_110404",
   "keyword": "통합",
   "jobs": [
     {
@@ -107350,6 +107350,27 @@
       "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49560148?Oem_Code=C1&logpath=1&stext=AI&listno=75&sc=630",
       "career": "경력8년↑",
       "location": "서울 종로구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "삼양식품㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[삼양식품] AI Transformation(AX) 전략 기획",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49554506?Oem_Code=C1&logpath=1&stext=AI&listno=100&sc=630",
+      "career": "경력3년↑",
+      "location": "서울 중구",
       "dday": "",
       "tech_stack": [],
       "tech_tags": [],
@@ -223313,9 +223334,9 @@
     }
   ],
   "stats": {
-    "total": 7487,
+    "total": 7488,
     "by_size": {
-      "중소기업": 6748,
+      "중소기업": 6749,
       "대기업": 441,
       "중견기업": 298
     },
@@ -223324,7 +223345,7 @@
       "DevOps/인프라": 1089,
       "백엔드": 3155,
       "모바일": 1124,
-      "AI/ML": 2622,
+      "AI/ML": 2623,
       "프론트엔드": 2026,
       "풀스택": 662,
       "게임": 42,
@@ -223336,7 +223357,7 @@
     "by_site": {
       "wanted": 2025,
       "jumpit": 547,
-      "jobkorea": 1186,
+      "jobkorea": 1187,
       "saramin": 3306,
       "dev": 423
     },
@@ -223464,22 +223485,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-16T03:16:44",
-      "keyword": "통합",
-      "raw_total": 7183,
-      "deduped": 6719,
-      "active": 5970,
-      "closed": 749,
-      "site_counts": {
-        "wanted": 1351,
-        "jumpit": 514,
-        "jobkorea": 1441,
-        "saramin": 3596,
-        "dev": 281
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-16T04:50:43",
       "keyword": "통합",
@@ -226660,6 +226665,22 @@
         "jumpit": 893,
         "jobkorea": 2645,
         "saramin": 7082,
+        "dev": 709
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-11T11:04:21",
+      "keyword": "통합",
+      "raw_total": 13453,
+      "deduped": 11308,
+      "active": 7488,
+      "closed": 3820,
+      "site_counts": {
+        "wanted": 2122,
+        "jumpit": 893,
+        "jobkorea": 2646,
+        "saramin": 7083,
         "dev": 709
       },
       "anomalies": []

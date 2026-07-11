@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7487건** 공고 · **1392개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-11 09:22
+- 총 **7488건** 공고 · **1392개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-11 11:04
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -14401,6 +14401,12 @@ markmap:
   - [안드로이드(AOS) 개발자 ↗](https://www.wanted.co.kr/wd/355584)
   - [iOS 개발자 ↗](https://www.wanted.co.kr/wd/362490)
 
+### 삼양식품㈜ `중소기업` · 3건
+- **AI/ML** [3건]
+  - [(삼양식품) AI Transformation(AX) 전략 팀장 ↗](https://www.wanted.co.kr/wd/374125)
+  - [(삼양식품) 헬스케어 AI 연구개발 파트장 (ML 모델 개발) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49534641?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=26&sc=630)
+  - [(삼양식품) AI Transformation(AX) 전략 기획 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49554506?Oem_Code=C1&logpath=1&stext=AI&listno=100&sc=630)
+
 ### 컨트로맥스 `중소기업` · 3건
 - **AI/ML** [3건] · `Python` `C` `MachineLearning` `AI/인공지능` `Firmware` `MCU`
   - [Physical AI (PHM/ML) Engineer ↗](https://jumpit.saramin.co.kr/position/54253381)
@@ -14469,11 +14475,6 @@ markmap:
 - **AI/ML** [2건] · `Python` `LangChain` `Java` `PHP` `Spring` `MongoDB`
   - [AI Transformation Lead(AI Lab) ↗](https://www.wanted.co.kr/wd/365232)
   - [백엔드 개발자(PHP, JAVA) ↗](https://www.wanted.co.kr/wd/360650)
-
-### 삼양식품 `중소기업` · 2건
-- **AI/ML** [2건]
-  - [(삼양식품) AI Transformation(AX) 전략 팀장 ↗](https://www.wanted.co.kr/wd/374125)
-  - [(삼양식품) 헬스케어 AI 연구개발 파트장 (ML 모델 개발) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49534641?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=26&sc=630)
 
 ### 가제트코리아 `중소기업` · 2건
 - **백엔드** [2건] · `AWS` `GitHub Actions` `Git` `REST API` `Java` `Kotlin`
