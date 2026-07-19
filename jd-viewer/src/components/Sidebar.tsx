@@ -3,12 +3,19 @@ import type { Site } from '../types'
 import { CAREER_BUCKETS } from '../types'
 import { SidePanel } from './ui'
 
-const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev']
+const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats']
+
+// remote/ats 는 원문 그대로면 뜻이 안 통해 라벨을 붙인다.
+const SITE_LABEL: Partial<Record<Site, string>> = {
+  remote: '해외·원격',
+  ats: '자체채용',
+}
 
 interface Props {
   filter: FilterState
   setFilter: (f: FilterState) => void
   topStacks: { name: string; count: number }[]
+  roleCounts: { name: string; count: number }[]
   totalCount: number
   filteredCount: number
   open: boolean
@@ -22,7 +29,7 @@ function toggle<T>(set: Set<T>, val: T): Set<T> {
   return next
 }
 
-export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCount, open, onClose }: Props) {
+export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, filteredCount, open, onClose }: Props) {
   return (
     <SidePanel side="left" desktopWidth="md:w-72" open={open} onClose={onClose}>
      <div className="p-4 overflow-y-auto flex flex-col gap-5 text-sm h-full">
@@ -56,9 +63,20 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
         {SITES.map((s) => (
           <Chip
             key={s}
-            label={s}
+            label={SITE_LABEL[s] ?? s}
             active={filter.sites.has(s)}
             onClick={() => setFilter({ ...filter, sites: toggle(filter.sites, s) })}
+          />
+        ))}
+      </FilterGroup>
+
+      <FilterGroup title="직군">
+        {roleCounts.map((r) => (
+          <Chip
+            key={r.name}
+            label={`${r.name} (${r.count})`}
+            active={filter.roles.has(r.name)}
+            onClick={() => setFilter({ ...filter, roles: toggle(filter.roles, r.name) })}
           />
         ))}
       </FilterGroup>
@@ -88,6 +106,7 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
       {(filter.sites.size > 0 ||
         filter.careers.size > 0 ||
         filter.stacks.size > 0 ||
+        filter.roles.size > 0 ||
         filter.query.length > 0) && (
         <button
           onClick={() =>
@@ -95,6 +114,7 @@ export function Sidebar({ filter, setFilter, topStacks, totalCount, filteredCoun
               sites: new Set(),
               careers: new Set(),
               stacks: new Set(),
+              roles: new Set(),
               query: '',
             })
           }

@@ -1,4 +1,4 @@
-export type Site = 'wanted' | 'jumpit' | 'jobkorea' | 'saramin' | 'dev'
+export type Site = 'wanted' | 'jumpit' | 'jobkorea' | 'saramin' | 'dev' | 'remote' | 'ats'
 
 export interface Job {
   site: Site
@@ -15,6 +15,10 @@ export interface Job {
   preferences: string
   benefits: string
   full_jd: string
+  // 해외 보드(remote) / 회사 자체 채용페이지(ats) 전용 (그 외 사이트는 undefined)
+  region?: string
+  source_board?: string
+  overseas?: boolean
 }
 
 // ── 회사 기술스택 분석 (company_stacks.json) ───────────────────────────

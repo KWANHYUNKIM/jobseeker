@@ -221,42 +221,46 @@ DEV_ROLE_RULES: dict[str, list[re.Pattern[str]]] = {
         re.compile(r"\b(API|REST|gRPC|MSA)\b", re.IGNORECASE),
         re.compile(r"\b(Spring|Spring\s*Boot|Django|Flask|FastAPI|Express|NestJS|Rails|Laravel|\.NET)\b", re.IGNORECASE),
         re.compile(r"\b(Node\.?js|Java|Kotlin|Go|Golang|Scala|Ruby|PHP)\b.*\b(개발|engineer|developer)\b", re.IGNORECASE),
+        re.compile(r"\b(Python|Rust|C#|Scala|Ruby|PHP|Elixir)\s+(developer|engineer|programmer)\b", re.IGNORECASE),
     ],
     "프론트엔드": [
         re.compile(r"프[\s-]?론[\s-]?트[\s-]?엔드|frontend|front[\s-]?end|클라이언트\s*웹", re.IGNORECASE),
         re.compile(r"\b(React|Vue|Angular|Next\.?js|Nuxt|Svelte)\b", re.IGNORECASE),
         re.compile(r"\b(웹\s*퍼블리|publisher|UI\s*개발)\b", re.IGNORECASE),
+        re.compile(r"\bweb\s+(developer|engineer)\b", re.IGNORECASE),
     ],
     "모바일": [
         re.compile(r"\b(iOS|Android|안드로이드|모바일\s*개발|모바일\s*앱|앱\s*개발)\b", re.IGNORECASE),
         re.compile(r"\b(Swift|Kotlin|Flutter|React\s*Native)\b", re.IGNORECASE),
     ],
     "AI/ML": [
-        re.compile(r"\b(AI|ML|머신러닝|딥러닝|인공지능|MLOps|데이터\s*사이언|data\s*scien)\b", re.IGNORECASE),
+        re.compile(r"\b(AI|ML|머신러닝|딥러닝|인공지능|MLOps|데이터\s*사이언티스트?|data\s*scien(?:tist|ce)?)\b", re.IGNORECASE),
         re.compile(r"\b(TensorFlow|PyTorch|Keras|Scikit[-\s]?learn|HuggingFace|LangChain|OpenAI|LLM|NLP|CV|컴퓨터\s*비전)\b", re.IGNORECASE),
         re.compile(r"\b(데이터\s*엔지니어|data\s*engineer)\b", re.IGNORECASE),
+        re.compile(r"\b(research\s*engineer|research\s*scientist|applied\s*scientist|ml\s*engineer|machine\s*learning)\b", re.IGNORECASE),
     ],
     "펌웨어/임베디드": [
         re.compile(r"펌웨어|firmware|임베디드|embedded|반도체\s*설계|SoC|RTOS|MCU|FPGA|디바이스\s*드라이버", re.IGNORECASE),
         re.compile(r"\b(C/?C\+\+|C\+\+|어셈블리|assembly)\b.*\b(임베디드|펌웨어|hw|hardware)\b", re.IGNORECASE),
     ],
     "DevOps/인프라": [
-        re.compile(r"DevOps|SRE|MLOps|infrastructure|인프라|클라우드\s*엔지니어|cloud\s*engineer|플랫폼\s*엔지니어|platform\s*engineer", re.IGNORECASE),
+        re.compile(r"DevOps|SRE|MLOps|infrastructure|인프라|클라우드\s*엔지니어|cloud\s*engineer|플랫폼\s*엔지니어|platform\s*engineer|site\s*reliability", re.IGNORECASE),
         re.compile(r"\b(Kubernetes|K8s|Docker|Terraform|Ansible|Jenkins|GitHub\s*Actions|AWS|GCP|Azure)\b.*\b(엔지니어|engineer|운영|ops)\b", re.IGNORECASE),
         re.compile(r"시스템\s*운영|시스템\s*관리", re.IGNORECASE),
     ],
     "데이터": [
         re.compile(r"데이터\s*엔지니어|data\s*engineer|데이터\s*분석|data\s*analy|빅데이터|big\s*data|BI\s*개발", re.IGNORECASE),
         re.compile(r"\b(Hadoop|Spark|Airflow|Kafka|ETL|Snowflake|BigQuery)\b", re.IGNORECASE),
+        re.compile(r"data\s*(scientist|governance|platform|warehouse|analyst)", re.IGNORECASE),
     ],
     "보안": [
-        re.compile(r"정보\s*보안|보안\s*엔지니어|security\s*engineer|침해\s*대응|모의\s*해킹|penetration|보안\s*개발", re.IGNORECASE),
+        re.compile(r"정보\s*보안|보안\s*엔지니어|security\s*engineer|침해\s*대응|모의\s*해킹|penetration|보안\s*개발|\b(appsec|infosec|cyber\s*security|cybersecurity|application\s*security|product\s*security|cloud\s*security|security\s*researcher)\b", re.IGNORECASE),
     ],
     "게임": [
         re.compile(r"게임\s*개발|game\s*dev|game\s*client|game\s*server|언리얼|unreal|유니티|unity", re.IGNORECASE),
     ],
     "QA": [
-        re.compile(r"\bQA\b|품질\s*보증|품질\s*엔지니어|test\s*engineer|테스트\s*자동화|automation\s*test", re.IGNORECASE),
+        re.compile(r"\bQA\b|품질\s*보증|품질\s*엔지니어|test\s*engineer|테스트\s*자동화|automation\s*test|automation\s*engineer|\bSDET\b", re.IGNORECASE),
     ],
     "풀스택": [
         re.compile(r"풀스택|full[\s-]?stack", re.IGNORECASE),

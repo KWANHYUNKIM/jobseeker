@@ -12,7 +12,7 @@ import { TrendView } from './components/TrendView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
-import { applyFilter, emptyFilter, stackCounts } from './lib/filter'
+import { applyFilter, emptyFilter, stackCounts, roleCounts } from './lib/filter'
 import type { Job } from './types'
 
 type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
@@ -60,6 +60,7 @@ function App() {
   const filtered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
   const stacks = useMemo(() => stackCounts(filtered), [filtered])
   const allStacks = useMemo(() => stackCounts(jobs), [jobs])
+  const allRoles = useMemo(() => roleCounts(jobs), [jobs])
 
   const toggleStack = (name: string) => {
     const next = new Set(filter.stacks)
@@ -153,6 +154,7 @@ function App() {
               filter={filter}
               setFilter={setFilter}
               topStacks={allStacks}
+              roleCounts={allRoles}
               totalCount={jobs.length}
               filteredCount={filtered.length}
               open={filterOpen}

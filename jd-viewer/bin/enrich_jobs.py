@@ -109,12 +109,20 @@ def normalize(job: dict) -> dict:
         out.setdefault("deadline", job.get("deadline", "") or "")
         return out
 
-    # wanted / jumpit / saramin / dev — already have most fields
+    # wanted / jumpit / saramin / dev / remote / ats — already have most fields
     out["career"] = job.get("career") or job.get("location", "")
     if site in ("saramin", "dev", "jumpit"):
         out["location"] = job.get("location", "")
     elif site == "wanted":
         out["location"] = ""
+
+    # 해외 보드(remote) / 회사 자체 채용페이지(ats): 위치·지역·해외여부 보존
+    if site in ("remote", "ats"):
+        out["location"] = job.get("location", "")
+        out["career"] = ""  # 이 소스는 경력 표기가 없어 location 을 career 로 쓰지 않는다
+        out["region"] = job.get("region", "") or ("global" if site == "remote" else "")
+        out["source_board"] = job.get("source_board", "")
+        out["overseas"] = out["region"] != "kr"
 
     stack = list(job.get("tech_stack") or [])
     for extra in (job.get("skills") or [], job.get("tech_tags") or []):

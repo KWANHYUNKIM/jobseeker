@@ -9,6 +9,7 @@ const RULES: Array<{ role: string; patterns: RegExp[] }> = [
       /\b(API|REST|gRPC|MSA)\b/i,
       /\b(Spring|Spring\s*Boot|Django|Flask|FastAPI|Express|NestJS|Rails|Laravel|\.NET)\b/i,
       /\b(Node\.?js|Java|Kotlin|Go|Golang|Scala|Ruby|PHP)\b.*\b(개발|engineer|developer)\b/i,
+      /\b(Python|Rust|C#|Scala|Ruby|PHP|Elixir)\s+(developer|engineer|programmer)\b/i,
     ],
   },
   {
@@ -17,6 +18,7 @@ const RULES: Array<{ role: string; patterns: RegExp[] }> = [
       /프[\s-]?론[\s-]?트[\s-]?엔드|frontend|front[\s-]?end|클라이언트\s*웹/i,
       /\b(React|Vue|Angular|Next\.?js|Nuxt|Svelte)\b/i,
       /\b(웹\s*퍼블리|publisher|UI\s*개발)\b/i,
+      /\bweb\s+(developer|engineer)\b/i,
     ],
   },
   {
@@ -29,9 +31,10 @@ const RULES: Array<{ role: string; patterns: RegExp[] }> = [
   {
     role: 'AI/ML',
     patterns: [
-      /\b(AI|ML|머신러닝|딥러닝|인공지능|MLOps|데이터\s*사이언|data\s*scien)\b/i,
+      /\b(AI|ML|머신러닝|딥러닝|인공지능|MLOps|데이터\s*사이언티스트?|data\s*scien(?:tist|ce)?)\b/i,
       /\b(TensorFlow|PyTorch|Keras|Scikit[-\s]?learn|HuggingFace|LangChain|OpenAI|LLM|NLP|CV|컴퓨터\s*비전)\b/i,
       /\b(데이터\s*엔지니어|data\s*engineer)\b/i,
+      /\b(research\s*engineer|research\s*scientist|applied\s*scientist|ml\s*engineer|machine\s*learning)\b/i,
     ],
   },
   {
@@ -44,7 +47,7 @@ const RULES: Array<{ role: string; patterns: RegExp[] }> = [
   {
     role: 'DevOps/인프라',
     patterns: [
-      /DevOps|SRE|MLOps|infrastructure|인프라|클라우드\s*엔지니어|cloud\s*engineer|플랫폼\s*엔지니어|platform\s*engineer/i,
+      /DevOps|SRE|MLOps|infrastructure|인프라|클라우드\s*엔지니어|cloud\s*engineer|플랫폼\s*엔지니어|platform\s*engineer|site\s*reliability/i,
       /\b(Kubernetes|K8s|Docker|Terraform|Ansible|Jenkins|GitHub\s*Actions|AWS|GCP|Azure)\b.*\b(엔지니어|engineer|운영|ops)\b/i,
       /시스템\s*운영|시스템\s*관리/i,
     ],
@@ -54,12 +57,13 @@ const RULES: Array<{ role: string; patterns: RegExp[] }> = [
     patterns: [
       /데이터\s*엔지니어|data\s*engineer|데이터\s*분석|data\s*analy|빅데이터|big\s*data|BI\s*개발/i,
       /\b(Hadoop|Spark|Airflow|Kafka|ETL|Snowflake|BigQuery)\b/i,
+      /data\s*(scientist|governance|platform|warehouse|analyst)/i,
     ],
   },
   {
     role: '보안',
     patterns: [
-      /정보\s*보안|보안\s*엔지니어|security\s*engineer|침해\s*대응|모의\s*해킹|penetration|보안\s*개발/i,
+      /정보\s*보안|보안\s*엔지니어|security\s*engineer|침해\s*대응|모의\s*해킹|penetration|보안\s*개발|\b(appsec|infosec|cyber\s*security|cybersecurity|application\s*security|product\s*security|cloud\s*security|security\s*researcher)\b/i,
     ],
   },
   {
@@ -68,7 +72,7 @@ const RULES: Array<{ role: string; patterns: RegExp[] }> = [
   },
   {
     role: 'QA',
-    patterns: [/\bQA\b|품질\s*보증|품질\s*엔지니어|test\s*engineer|테스트\s*자동화|automation\s*test/i],
+    patterns: [/\bQA\b|품질\s*보증|품질\s*엔지니어|test\s*engineer|테스트\s*자동화|automation\s*test|automation\s*engineer|\bSDET\b/i],
   },
   {
     role: '풀스택',
