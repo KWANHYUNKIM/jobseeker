@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-19T18:42:12",
-  "source_dir": "screenshots/all_통합_20260719_184151",
+  "generated_at": "2026-07-19T20:20:01",
+  "source_dir": "screenshots/all_통합_20260719_201939",
   "keyword": "통합",
   "jobs": [
     {
@@ -214886,22 +214886,6 @@
   },
   "history": [
     {
-      "ts": "2026-06-16T14:29:12",
-      "keyword": "통합",
-      "raw_total": 7350,
-      "deduped": 6856,
-      "active": 6107,
-      "closed": 749,
-      "site_counts": {
-        "wanted": 1394,
-        "jumpit": 525,
-        "jobkorea": 1445,
-        "saramin": 3681,
-        "dev": 305
-      },
-      "anomalies": []
-    },
-    {
       "ts": "2026-06-16T16:03:43",
       "keyword": "통합",
       "raw_total": 7390,
@@ -218081,6 +218065,22 @@
         "jumpit": 967,
         "jobkorea": 2878,
         "saramin": 7685,
+        "dev": 787
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-19T20:19:54",
+      "keyword": "통합",
+      "raw_total": 14565,
+      "deduped": 12012,
+      "active": 7162,
+      "closed": 4850,
+      "site_counts": {
+        "wanted": 2246,
+        "jumpit": 967,
+        "jobkorea": 2878,
+        "saramin": 7687,
         "dev": 787
       },
       "anomalies": []
