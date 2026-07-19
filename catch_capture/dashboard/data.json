@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-19T15:18:14",
-  "source_dir": "screenshots/all_통합_20260719_151755",
+  "generated_at": "2026-07-19T16:56:15",
+  "source_dir": "screenshots/all_통합_20260719_165556",
   "keyword": "통합",
   "jobs": [
     {
@@ -131332,6 +131332,27 @@
     },
     {
       "site": "saramin",
+      "company": "엘컴화인(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "제조업 ERP , MES , 스마트팩토리 개발자 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54447717&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d4992c8a-b0c3-44f2-84a4-3bd215b516ed",
+      "career": "신입·경력",
+      "location": "경기화성시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입 / 경력 1년 이상\n\n• 대학졸업(2,3년)이상",
+      "preferences": "• 제조업 ERP , MES 프로세스 (생산,품질,자재등) 에 대한 이해도가 있는자\n\n• 해당 업무 실무 경험자",
+      "main_tasks": "• MES 신규개발 및 유지보수 , 커스터마이징\n\n• ERP 구축 및 유지보수\n\n• 생산현장 프로세스 분석 및 데이터관리\n\n• 사내PC , 네트워크 , 소프트웨어등 IT자산관리\n\n• 전산오류 대응 및 장애처리\n\n• 경력에 따라 면접시 연봉협의",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -214498,14 +214519,14 @@
     }
   ],
   "stats": {
-    "total": 7153,
+    "total": 7154,
     "by_size": {
-      "중소기업": 6466,
+      "중소기업": 6467,
       "대기업": 384,
       "중견기업": 303
     },
     "by_role": {
-      "기타": 980,
+      "기타": 981,
       "DevOps/인프라": 1079,
       "백엔드": 3037,
       "모바일": 1094,
@@ -214522,7 +214543,7 @@
       "wanted": 2138,
       "jumpit": 569,
       "jobkorea": 1101,
-      "saramin": 2920,
+      "saramin": 2921,
       "dev": 425
     },
     "top_tech": [
@@ -214649,22 +214670,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-16T11:13:35",
-      "keyword": "통합",
-      "raw_total": 7279,
-      "deduped": 6798,
-      "active": 6049,
-      "closed": 749,
-      "site_counts": {
-        "wanted": 1387,
-        "jumpit": 517,
-        "jobkorea": 1443,
-        "saramin": 3634,
-        "dev": 298
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-16T12:47:17",
       "keyword": "통합",
@@ -217845,6 +217850,22 @@
         "jumpit": 967,
         "jobkorea": 2876,
         "saramin": 7671,
+        "dev": 787
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-19T16:56:09",
+      "keyword": "통합",
+      "raw_total": 14553,
+      "deduped": 12004,
+      "active": 7154,
+      "closed": 4850,
+      "site_counts": {
+        "wanted": 2246,
+        "jumpit": 967,
+        "jobkorea": 2876,
+        "saramin": 7677,
         "dev": 787
       },
       "anomalies": []
