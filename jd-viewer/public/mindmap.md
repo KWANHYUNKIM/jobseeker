@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **7140건** 공고 · **1332개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-19 12:02
+- 총 **7143건** 공고 · **1333개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-19 13:40
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (323개사)
+## HR/채용 (324개사)
 ### (주)사람인에이치에스 `중견기업` · 35건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -2727,6 +2727,11 @@ markmap:
 - **모바일** [2건] · `iOS`
   - [(쿠팡 오피스) IT 헬프데스크 및 자산관리 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53944794&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=5f3c3d08-eeef-430f-b1fd-41db556ec3ac)
   - [(쿠팡 사내오피스) 사내 IT 헬프데스크 및 자산관리 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54283724&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=144ae881-2584-4786-ae2a-ccfb27e4d1c9)
+
+### (주)브이유에스 `중소기업` · 2건
+- **프론트엔드** [2건] · `Java` `React` `AWS`
+  - [(VUS) 브이유에스 플랫폼 개발 사원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54335872&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=9d3475f2-1a1c-4045-ac16-906edad262c5)
+  - [(VUS) 브이유에스 플랫폼 개발 경력 사원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54497361&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=8395c431-c874-4087-9307-e86a786f80a7)
 
 ### (주)와이에이치데이타베이스 `중소기업` · 2건
 - **백엔드** [1건] · `Java` `JavaScript` `React` `jQuery` `Spring` `Spring Boot`
