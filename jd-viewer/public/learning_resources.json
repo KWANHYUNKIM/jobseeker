@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T10:24:16",
+  "generated_at": "2026-07-19T12:02:12",
   "source": "youtube",
   "tech_count": 182,
   "curriculum_count": 20,
@@ -5171,88 +5171,6 @@
         "stage": "실전"
       }
     ],
-    "jQuery": [
-      {
-        "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
-        "url": "https://www.youtube.com/watch?v=047bll8o9To",
-        "thumbnail": "https://i.ytimg.com/vi/047bll8o9To/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 56288,
-        "length": "12:54",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #2 JQuery Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=RL09jOaIbxg",
-        "thumbnail": "https://i.ytimg.com/vi/RL09jOaIbxg/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 478,
-        "length": "8:13:23",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "jQuery를 배워야할까? 5분 개념 정리해드림.",
-        "url": "https://www.youtube.com/watch?v=6FnkGKYK6iQ",
-        "thumbnail": "https://i.ytimg.com/vi/6FnkGKYK6iQ/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 118884,
-        "length": "4:30",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[2022 30분 요약 강좌 시즌 1] jQuery&Ajax - jQuery의 필터",
-        "url": "https://www.youtube.com/watch?v=bqvQr_Zivpg",
-        "thumbnail": "https://i.ytimg.com/vi/bqvQr_Zivpg/mqdefault.jpg",
-        "channel": "제주코딩베이스캠프",
-        "views": 1470,
-        "length": "3:46",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[2022 30분 요약 강좌 시즌 1] jQuery&Ajax - jQuery의 사용방법(2)",
-        "url": "https://www.youtube.com/watch?v=mNOIQGBLchw",
-        "thumbnail": "https://i.ytimg.com/vi/mNOIQGBLchw/mqdefault.jpg",
-        "channel": "제주코딩베이스캠프",
-        "views": 1353,
-        "length": "7:09",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[서기의 jQuery 강의] 1. css에 대해 이해해보자",
-        "url": "https://www.youtube.com/watch?v=eDBLlQhuVW8",
-        "thumbnail": "https://i.ytimg.com/vi/eDBLlQhuVW8/mqdefault.jpg",
-        "channel": "유니다고",
-        "views": 870,
-        "length": "8:55",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "jQuery 4 출시! React 시대에 살아남은 방법",
-        "url": "https://www.youtube.com/watch?v=9GLAtQCRLVE",
-        "thumbnail": "https://i.ytimg.com/vi/9GLAtQCRLVE/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 4492,
-        "length": "8:42",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JQUERY 강의 PART.1 -  실무에 사용되는 JQUERY 첫번째",
-        "url": "https://www.youtube.com/watch?v=7w28N1LBQBE",
-        "thumbnail": "https://i.ytimg.com/vi/7w28N1LBQBE/mqdefault.jpg",
-        "channel": "사케누",
-        "views": 811,
-        "length": "18:11",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     "SQL": [
       {
         "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
@@ -5332,6 +5250,88 @@
         "views": 118197,
         "length": "49:32",
         "published": "6개월 전",
+        "stage": "실전"
+      }
+    ],
+    "jQuery": [
+      {
+        "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
+        "url": "https://www.youtube.com/watch?v=047bll8o9To",
+        "thumbnail": "https://i.ytimg.com/vi/047bll8o9To/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 56288,
+        "length": "12:54",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "제이쿼리 기초 강의 14시간 몰아보기 이걸로 끝! #2 JQuery Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=RL09jOaIbxg",
+        "thumbnail": "https://i.ytimg.com/vi/RL09jOaIbxg/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 478,
+        "length": "8:13:23",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "jQuery를 배워야할까? 5분 개념 정리해드림.",
+        "url": "https://www.youtube.com/watch?v=6FnkGKYK6iQ",
+        "thumbnail": "https://i.ytimg.com/vi/6FnkGKYK6iQ/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 118884,
+        "length": "4:30",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[2022 30분 요약 강좌 시즌 1] jQuery&Ajax - jQuery의 필터",
+        "url": "https://www.youtube.com/watch?v=bqvQr_Zivpg",
+        "thumbnail": "https://i.ytimg.com/vi/bqvQr_Zivpg/mqdefault.jpg",
+        "channel": "제주코딩베이스캠프",
+        "views": 1470,
+        "length": "3:46",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[2022 30분 요약 강좌 시즌 1] jQuery&Ajax - jQuery의 사용방법(2)",
+        "url": "https://www.youtube.com/watch?v=mNOIQGBLchw",
+        "thumbnail": "https://i.ytimg.com/vi/mNOIQGBLchw/mqdefault.jpg",
+        "channel": "제주코딩베이스캠프",
+        "views": 1353,
+        "length": "7:09",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[서기의 jQuery 강의] 1. css에 대해 이해해보자",
+        "url": "https://www.youtube.com/watch?v=eDBLlQhuVW8",
+        "thumbnail": "https://i.ytimg.com/vi/eDBLlQhuVW8/mqdefault.jpg",
+        "channel": "유니다고",
+        "views": 870,
+        "length": "8:55",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "jQuery 4 출시! React 시대에 살아남은 방법",
+        "url": "https://www.youtube.com/watch?v=9GLAtQCRLVE",
+        "thumbnail": "https://i.ytimg.com/vi/9GLAtQCRLVE/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 4492,
+        "length": "8:42",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JQUERY 강의 PART.1 -  실무에 사용되는 JQUERY 첫번째",
+        "url": "https://www.youtube.com/watch?v=7w28N1LBQBE",
+        "thumbnail": "https://i.ytimg.com/vi/7w28N1LBQBE/mqdefault.jpg",
+        "channel": "사케누",
+        "views": 811,
+        "length": "18:11",
+        "published": "6년 전",
         "stage": "실전"
       }
     ],
@@ -9517,6 +9517,88 @@
         "stage": "실전"
       }
     ],
+    "Tableau": [
+      {
+        "title": "태블로(Tableau) Full 기초 교육 영상 Part.1 태블로 시작하기 [플랜잇]",
+        "url": "https://www.youtube.com/watch?v=qT38CVgKIfw",
+        "thumbnail": "https://i.ytimg.com/vi/qT38CVgKIfw/mqdefault.jpg",
+        "channel": "PLANIT DATAV",
+        "views": 84331,
+        "length": "1:30:51",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Tableau Server / Tableau Online 교육",
+        "url": "https://www.youtube.com/watch?v=P65f2PtRQ2c",
+        "thumbnail": "https://i.ytimg.com/vi/P65f2PtRQ2c/mqdefault.jpg",
+        "channel": "Tableau KR",
+        "views": 1912,
+        "length": "47:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Learn Tableau in Under 2 hours | Dashboards, Relationships, Visualizations + Mini Project",
+        "url": "https://www.youtube.com/watch?v=j8FSP8XuFyk",
+        "thumbnail": "https://i.ytimg.com/vi/j8FSP8XuFyk/mqdefault.jpg",
+        "channel": "Alex The Analyst",
+        "views": 396012,
+        "length": "1:30:10",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[태블로(Tableau) 초급 교육] 11. 대시보드 생성 및 액션",
+        "url": "https://www.youtube.com/watch?v=NfNFLkk4Bro",
+        "thumbnail": "https://i.ytimg.com/vi/NfNFLkk4Bro/mqdefault.jpg",
+        "channel": "BIVIZ 비비즈",
+        "views": 7873,
+        "length": "13:36",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[태블로(Tableau) 초급 교육] 1. 데이터 연결 및 소개",
+        "url": "https://www.youtube.com/watch?v=TvO3eue13x4",
+        "thumbnail": "https://i.ytimg.com/vi/TvO3eue13x4/mqdefault.jpg",
+        "channel": "BIVIZ 비비즈",
+        "views": 4603,
+        "length": "6:09",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Tableau 대시보드, 스토리 작성 및 웹 공유하기",
+        "url": "https://www.youtube.com/watch?v=Rm5FJX7_c5c",
+        "thumbnail": "https://i.ytimg.com/vi/Rm5FJX7_c5c/mqdefault.jpg",
+        "channel": "BigData Koo",
+        "views": 1815,
+        "length": "1:09:35",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[김봉군 컨설턴트]와 함께하는 Tableau 온라인 기초 실습 교육",
+        "url": "https://www.youtube.com/watch?v=FC0rtbdikk0",
+        "thumbnail": "https://i.ytimg.com/vi/FC0rtbdikk0/mqdefault.jpg",
+        "channel": "Tableau KR",
+        "views": 2019,
+        "length": "1:50:01",
+        "published": "6년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "다시보는 Best 강의 #3 (자막포함) Tableau 다양한 차트 시각화 실습",
+        "url": "https://www.youtube.com/watch?v=JEjXObiNnWU",
+        "thumbnail": "https://i.ytimg.com/vi/JEjXObiNnWU/mqdefault.jpg",
+        "channel": "BigData Koo",
+        "views": 672,
+        "length": "16:09",
+        "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
     "PLC": [
       {
         "title": "PLC 기초 설명",
@@ -9760,88 +9842,6 @@
         "views": 276,
         "length": "10:01",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "Tableau": [
-      {
-        "title": "태블로(Tableau) Full 기초 교육 영상 Part.1 태블로 시작하기 [플랜잇]",
-        "url": "https://www.youtube.com/watch?v=qT38CVgKIfw",
-        "thumbnail": "https://i.ytimg.com/vi/qT38CVgKIfw/mqdefault.jpg",
-        "channel": "PLANIT DATAV",
-        "views": 84331,
-        "length": "1:30:51",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Tableau Server / Tableau Online 교육",
-        "url": "https://www.youtube.com/watch?v=P65f2PtRQ2c",
-        "thumbnail": "https://i.ytimg.com/vi/P65f2PtRQ2c/mqdefault.jpg",
-        "channel": "Tableau KR",
-        "views": 1912,
-        "length": "47:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Learn Tableau in Under 2 hours | Dashboards, Relationships, Visualizations + Mini Project",
-        "url": "https://www.youtube.com/watch?v=j8FSP8XuFyk",
-        "thumbnail": "https://i.ytimg.com/vi/j8FSP8XuFyk/mqdefault.jpg",
-        "channel": "Alex The Analyst",
-        "views": 396012,
-        "length": "1:30:10",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[태블로(Tableau) 초급 교육] 11. 대시보드 생성 및 액션",
-        "url": "https://www.youtube.com/watch?v=NfNFLkk4Bro",
-        "thumbnail": "https://i.ytimg.com/vi/NfNFLkk4Bro/mqdefault.jpg",
-        "channel": "BIVIZ 비비즈",
-        "views": 7873,
-        "length": "13:36",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[태블로(Tableau) 초급 교육] 1. 데이터 연결 및 소개",
-        "url": "https://www.youtube.com/watch?v=TvO3eue13x4",
-        "thumbnail": "https://i.ytimg.com/vi/TvO3eue13x4/mqdefault.jpg",
-        "channel": "BIVIZ 비비즈",
-        "views": 4603,
-        "length": "6:09",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Tableau 대시보드, 스토리 작성 및 웹 공유하기",
-        "url": "https://www.youtube.com/watch?v=Rm5FJX7_c5c",
-        "thumbnail": "https://i.ytimg.com/vi/Rm5FJX7_c5c/mqdefault.jpg",
-        "channel": "BigData Koo",
-        "views": 1815,
-        "length": "1:09:35",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[김봉군 컨설턴트]와 함께하는 Tableau 온라인 기초 실습 교육",
-        "url": "https://www.youtube.com/watch?v=FC0rtbdikk0",
-        "thumbnail": "https://i.ytimg.com/vi/FC0rtbdikk0/mqdefault.jpg",
-        "channel": "Tableau KR",
-        "views": 2019,
-        "length": "1:50:01",
-        "published": "6년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "다시보는 Best 강의 #3 (자막포함) Tableau 다양한 차트 시각화 실습",
-        "url": "https://www.youtube.com/watch?v=JEjXObiNnWU",
-        "thumbnail": "https://i.ytimg.com/vi/JEjXObiNnWU/mqdefault.jpg",
-        "channel": "BigData Koo",
-        "views": 672,
-        "length": "16:09",
-        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -12459,88 +12459,6 @@
         "stage": "핵심"
       }
     ],
-    "Supabase": [
-      {
-        "title": "Supabase 입문수업",
-        "url": "https://www.youtube.com/watch?v=FbLzqoENTsg",
-        "thumbnail": "https://i.ytimg.com/vi/FbLzqoENTsg/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 47484,
-        "length": "22:51",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "supabase 강의 1편 - 인트로: AI 시대에서 살아남기",
-        "url": "https://www.youtube.com/watch?v=6E75X5A8WLA",
-        "thumbnail": "https://i.ytimg.com/vi/6E75X5A8WLA/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 4152,
-        "length": "9:55",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "비상! Supabase 취약점을 조심하세요. 바이브코딩은 이 기술로 하세요",
-        "url": "https://www.youtube.com/watch?v=78wD9bq6quw",
-        "thumbnail": "https://i.ytimg.com/vi/78wD9bq6quw/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 3370,
-        "length": "10:19",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "내가 만든 꿀잼 게임 전 세계로 런칭하기 (Supabase 쉽다 쉬워) [짱쉬운 바이브코딩, 8/16]",
-        "url": "https://www.youtube.com/watch?v=RbVOAQoaU_A",
-        "thumbnail": "https://i.ytimg.com/vi/RbVOAQoaU_A/mqdefault.jpg",
-        "channel": "G-CREATOR",
-        "views": 995,
-        "length": "37:13",
-        "published": "스트리밍 시간: 2개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Supabase MCP로 앱 찍어내는 방법",
-        "url": "https://www.youtube.com/watch?v=uJxiljfWD8A",
-        "thumbnail": "https://i.ytimg.com/vi/uJxiljfWD8A/mqdefault.jpg",
-        "channel": "조코딩AX파트너스",
-        "views": 55044,
-        "length": "12:08",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Supabase Full Course 2025 | Become a Supabase Pro in 1.5 Hours",
-        "url": "https://www.youtube.com/watch?v=kyphLGnSz6Q",
-        "thumbnail": "https://i.ytimg.com/vi/kyphLGnSz6Q/mqdefault.jpg",
-        "channel": "PedroTech",
-        "views": 404537,
-        "length": "1:26:40",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "바이브코딩, 초보 개발자도 할 수 있는 Supabase 데이터베이스 완벽 가이드",
-        "url": "https://www.youtube.com/watch?v=v-chwgvrt5M",
-        "thumbnail": "https://i.ytimg.com/vi/v-chwgvrt5M/mqdefault.jpg",
-        "channel": "고준호의 똑똑한 마케팅 ",
-        "views": 4106,
-        "length": "16:52",
-        "published": "8개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "supabase 강의 2편 - 프로젝트 세팅하기(MCP도 연결해보기)",
-        "url": "https://www.youtube.com/watch?v=O3Sd3NCxw0s",
-        "thumbnail": "https://i.ytimg.com/vi/O3Sd3NCxw0s/mqdefault.jpg",
-        "channel": "ZeroCho TV",
-        "views": 1830,
-        "length": "8:19",
-        "published": "7개월 전",
-        "stage": "실전"
-      }
-    ],
     "XML": [
       {
         "title": "xml 기초 강의 1시간 몰아보기! 이걸로 끝! 시리즈 1",
@@ -12620,6 +12538,88 @@
         "views": 212,
         "length": "10:01",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Supabase": [
+      {
+        "title": "Supabase 입문수업",
+        "url": "https://www.youtube.com/watch?v=FbLzqoENTsg",
+        "thumbnail": "https://i.ytimg.com/vi/FbLzqoENTsg/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 47484,
+        "length": "22:51",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "supabase 강의 1편 - 인트로: AI 시대에서 살아남기",
+        "url": "https://www.youtube.com/watch?v=6E75X5A8WLA",
+        "thumbnail": "https://i.ytimg.com/vi/6E75X5A8WLA/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 4152,
+        "length": "9:55",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "비상! Supabase 취약점을 조심하세요. 바이브코딩은 이 기술로 하세요",
+        "url": "https://www.youtube.com/watch?v=78wD9bq6quw",
+        "thumbnail": "https://i.ytimg.com/vi/78wD9bq6quw/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 3370,
+        "length": "10:19",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "내가 만든 꿀잼 게임 전 세계로 런칭하기 (Supabase 쉽다 쉬워) [짱쉬운 바이브코딩, 8/16]",
+        "url": "https://www.youtube.com/watch?v=RbVOAQoaU_A",
+        "thumbnail": "https://i.ytimg.com/vi/RbVOAQoaU_A/mqdefault.jpg",
+        "channel": "G-CREATOR",
+        "views": 995,
+        "length": "37:13",
+        "published": "스트리밍 시간: 2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Supabase MCP로 앱 찍어내는 방법",
+        "url": "https://www.youtube.com/watch?v=uJxiljfWD8A",
+        "thumbnail": "https://i.ytimg.com/vi/uJxiljfWD8A/mqdefault.jpg",
+        "channel": "조코딩AX파트너스",
+        "views": 55044,
+        "length": "12:08",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Supabase Full Course 2025 | Become a Supabase Pro in 1.5 Hours",
+        "url": "https://www.youtube.com/watch?v=kyphLGnSz6Q",
+        "thumbnail": "https://i.ytimg.com/vi/kyphLGnSz6Q/mqdefault.jpg",
+        "channel": "PedroTech",
+        "views": 404537,
+        "length": "1:26:40",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "바이브코딩, 초보 개발자도 할 수 있는 Supabase 데이터베이스 완벽 가이드",
+        "url": "https://www.youtube.com/watch?v=v-chwgvrt5M",
+        "thumbnail": "https://i.ytimg.com/vi/v-chwgvrt5M/mqdefault.jpg",
+        "channel": "고준호의 똑똑한 마케팅 ",
+        "views": 4106,
+        "length": "16:52",
+        "published": "8개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "supabase 강의 2편 - 프로젝트 세팅하기(MCP도 연결해보기)",
+        "url": "https://www.youtube.com/watch?v=O3Sd3NCxw0s",
+        "thumbnail": "https://i.ytimg.com/vi/O3Sd3NCxw0s/mqdefault.jpg",
+        "channel": "ZeroCho TV",
+        "views": 1830,
+        "length": "8:19",
+        "published": "7개월 전",
         "stage": "실전"
       }
     ],
@@ -13249,6 +13249,88 @@
         "stage": "실전"
       }
     ],
+    "데이터 분석": [
+      {
+        "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
+        "url": "https://www.youtube.com/watch?v=ohAsFH-YLoE",
+        "thumbnail": "https://i.ytimg.com/vi/ohAsFH-YLoE/mqdefault.jpg",
+        "channel": "카일스쿨",
+        "views": 11223,
+        "length": "9:02:10",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 코딩 무료 강의 (활용편5) - 데이터 분석 및 시각화, 이 영상 하나로 끝내세요",
+        "url": "https://www.youtube.com/watch?v=PjhlUzp_cU0",
+        "thumbnail": "https://i.ytimg.com/vi/PjhlUzp_cU0/mqdefault.jpg",
+        "channel": "나도코딩",
+        "views": 473349,
+        "length": "6:18:24",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "비전공자도 할 수 있는 파이썬 데이터 분석 핵심편",
+        "url": "https://www.youtube.com/watch?v=n3w3amaqM80",
+        "thumbnail": "https://i.ytimg.com/vi/n3w3amaqM80/mqdefault.jpg",
+        "channel": "Data Scientist 이지영",
+        "views": 15382,
+        "length": "1:53:32",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "챗GPT로 데이터 분석 완전정복(엑셀 수식 1도 몰라도 데이터 분석 전문가 되는법)",
+        "url": "https://www.youtube.com/watch?v=Zp5rdsvN2vI",
+        "thumbnail": "https://i.ytimg.com/vi/Zp5rdsvN2vI/mqdefault.jpg",
+        "channel": "퇴사한아빠",
+        "views": 16251,
+        "length": "20:20",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "챗GPT 데이터 분석, 이 영상으로 끝내세요! (다양한 분석 사례와 활용 팁)",
+        "url": "https://www.youtube.com/watch?v=Ou9X4yu0KG8",
+        "thumbnail": "https://i.ytimg.com/vi/Ou9X4yu0KG8/mqdefault.jpg",
+        "channel": "일잘러 장피엠",
+        "views": 183634,
+        "length": "1:05:01",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "2026 데이터 커리어 + 전과정 학습 및 준비 완벽 가이드 | 데이터 분석가, 과학자부터 AI 활용까지, 이 영상 하나면 끝",
+        "url": "https://www.youtube.com/watch?v=YvVzD02AEK8",
+        "thumbnail": "https://i.ytimg.com/vi/YvVzD02AEK8/mqdefault.jpg",
+        "channel": "잔재미코딩(DaveLee)",
+        "views": 3170,
+        "length": "22:15",
+        "published": "6개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "파이썬 입문 강의 (데이터분석가) - 데이터 전처리 + 자동화ㅣ마케팅 데이터분석 포트폴리오 만들어보기",
+        "url": "https://www.youtube.com/watch?v=3yAR1jFbOf8",
+        "thumbnail": "https://i.ytimg.com/vi/3yAR1jFbOf8/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 5804,
+        "length": "57:44",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "데이터, AI 커리어 + 최신 데이터 전과정 공부순서 완벽 가이드 (혼자서도 익힐 수 있는 데이터 분석가, 데이터 과학자도 가능한 최신 데이터 분석/과학 로드맵)",
+        "url": "https://www.youtube.com/watch?v=vsoAyh4D-zw",
+        "thumbnail": "https://i.ytimg.com/vi/vsoAyh4D-zw/mqdefault.jpg",
+        "channel": "잔재미코딩(DaveLee)",
+        "views": 39808,
+        "length": "22:23",
+        "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
     "Qt": [
       {
         "title": "[입문] Qt QML과 C++로 시작하는 크로스플랫폼 앱 개발 - Qt 프레임워크 소개",
@@ -13410,88 +13492,6 @@
         "views": 159371,
         "length": "26:54",
         "published": "11개월 전",
-        "stage": "실전"
-      }
-    ],
-    "데이터 분석": [
-      {
-        "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
-        "url": "https://www.youtube.com/watch?v=ohAsFH-YLoE",
-        "thumbnail": "https://i.ytimg.com/vi/ohAsFH-YLoE/mqdefault.jpg",
-        "channel": "카일스쿨",
-        "views": 11223,
-        "length": "9:02:10",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 코딩 무료 강의 (활용편5) - 데이터 분석 및 시각화, 이 영상 하나로 끝내세요",
-        "url": "https://www.youtube.com/watch?v=PjhlUzp_cU0",
-        "thumbnail": "https://i.ytimg.com/vi/PjhlUzp_cU0/mqdefault.jpg",
-        "channel": "나도코딩",
-        "views": 473349,
-        "length": "6:18:24",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "비전공자도 할 수 있는 파이썬 데이터 분석 핵심편",
-        "url": "https://www.youtube.com/watch?v=n3w3amaqM80",
-        "thumbnail": "https://i.ytimg.com/vi/n3w3amaqM80/mqdefault.jpg",
-        "channel": "Data Scientist 이지영",
-        "views": 15382,
-        "length": "1:53:32",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "챗GPT로 데이터 분석 완전정복(엑셀 수식 1도 몰라도 데이터 분석 전문가 되는법)",
-        "url": "https://www.youtube.com/watch?v=Zp5rdsvN2vI",
-        "thumbnail": "https://i.ytimg.com/vi/Zp5rdsvN2vI/mqdefault.jpg",
-        "channel": "퇴사한아빠",
-        "views": 16251,
-        "length": "20:20",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "챗GPT 데이터 분석, 이 영상으로 끝내세요! (다양한 분석 사례와 활용 팁)",
-        "url": "https://www.youtube.com/watch?v=Ou9X4yu0KG8",
-        "thumbnail": "https://i.ytimg.com/vi/Ou9X4yu0KG8/mqdefault.jpg",
-        "channel": "일잘러 장피엠",
-        "views": 183634,
-        "length": "1:05:01",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "2026 데이터 커리어 + 전과정 학습 및 준비 완벽 가이드 | 데이터 분석가, 과학자부터 AI 활용까지, 이 영상 하나면 끝",
-        "url": "https://www.youtube.com/watch?v=YvVzD02AEK8",
-        "thumbnail": "https://i.ytimg.com/vi/YvVzD02AEK8/mqdefault.jpg",
-        "channel": "잔재미코딩(DaveLee)",
-        "views": 3170,
-        "length": "22:15",
-        "published": "6개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "파이썬 입문 강의 (데이터분석가) - 데이터 전처리 + 자동화ㅣ마케팅 데이터분석 포트폴리오 만들어보기",
-        "url": "https://www.youtube.com/watch?v=3yAR1jFbOf8",
-        "thumbnail": "https://i.ytimg.com/vi/3yAR1jFbOf8/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 5804,
-        "length": "57:44",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "데이터, AI 커리어 + 최신 데이터 전과정 공부순서 완벽 가이드 (혼자서도 익힐 수 있는 데이터 분석가, 데이터 과학자도 가능한 최신 데이터 분석/과학 로드맵)",
-        "url": "https://www.youtube.com/watch?v=vsoAyh4D-zw",
-        "thumbnail": "https://i.ytimg.com/vi/vsoAyh4D-zw/mqdefault.jpg",
-        "channel": "잔재미코딩(DaveLee)",
-        "views": 39808,
-        "length": "22:23",
-        "published": "2년 전",
         "stage": "실전"
       }
     ],
