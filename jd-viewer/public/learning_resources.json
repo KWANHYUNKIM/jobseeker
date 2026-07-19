@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T17:04:06",
+  "generated_at": "2026-07-19T18:42:26",
   "source": "youtube",
   "tech_count": 182,
   "curriculum_count": 20,
@@ -10901,6 +10901,88 @@
         "stage": "실전"
       }
     ],
+    "MQTT": [
+      {
+        "title": "사물인터넷을 활용하기위한 MQTT기본 개념!",
+        "url": "https://www.youtube.com/watch?v=exmR_30AKqU",
+        "thumbnail": "https://i.ytimg.com/vi/exmR_30AKqU/mqdefault.jpg",
+        "channel": "심심한녹칸다",
+        "views": 7102,
+        "length": "4:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "IoT 프로토콜 MQTT 특징, 3분 정리",
+        "url": "https://www.youtube.com/watch?v=O-OJ_odghS8",
+        "thumbnail": "https://i.ytimg.com/vi/O-OJ_odghS8/mqdefault.jpg",
+        "channel": "친절한코딩",
+        "views": 6881,
+        "length": "3:14",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[라즈베리파이 활용] 6-1. MQTT를 이용한 메시지 통신",
+        "url": "https://www.youtube.com/watch?v=oymkTSuju5Q",
+        "thumbnail": "https://i.ytimg.com/vi/oymkTSuju5Q/mqdefault.jpg",
+        "channel": "한성대학교 소프트웨어중심대학사업단",
+        "views": 79,
+        "length": "28:23",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "자바로 MQTT사용하기(Subscriber작성)",
+        "url": "https://www.youtube.com/watch?v=JGmSUUhJWtI",
+        "thumbnail": "https://i.ytimg.com/vi/JGmSUUhJWtI/mqdefault.jpg",
+        "channel": "김샘자바",
+        "views": 792,
+        "length": "24:24",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MQTT 사용방법",
+        "url": "https://www.youtube.com/watch?v=8EgEF9PckNA",
+        "thumbnail": "https://i.ytimg.com/vi/8EgEF9PckNA/mqdefault.jpg",
+        "channel": "김샘자바",
+        "views": 4897,
+        "length": "28:13",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Jetson Nano 젯슨 나노 ] 18강  MQTT",
+        "url": "https://www.youtube.com/watch?v=OPd1WKZSDt4",
+        "thumbnail": "https://i.ytimg.com/vi/OPd1WKZSDt4/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 1203,
+        "length": "29:03",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "IBM 크라우드 MQTT통신 연결 cloud mqtt [김동일교수 두원공과대학교 AI융합과] 6-10-2",
+        "url": "https://www.youtube.com/watch?v=TNxquf8hy2A",
+        "thumbnail": "https://i.ytimg.com/vi/TNxquf8hy2A/mqdefault.jpg",
+        "channel": "김동일",
+        "views": 998,
+        "length": "19:08",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "모스키토 설치, Install Mosquitto, MQTT [김동일교수 두원공과대학교 AI융합과] 1-14",
+        "url": "https://www.youtube.com/watch?v=B8vxpTPHWLY",
+        "thumbnail": "https://i.ytimg.com/vi/B8vxpTPHWLY/mqdefault.jpg",
+        "channel": "김동일",
+        "views": 4468,
+        "length": "12:21",
+        "published": "8년 전",
+        "stage": "핵심"
+      }
+    ],
     "MyBatis": [
       {
         "title": "Mybatis 기본 가이드",
@@ -11063,88 +11145,6 @@
         "length": "5:28",
         "published": "1년 전",
         "stage": "실전"
-      }
-    ],
-    "MQTT": [
-      {
-        "title": "사물인터넷을 활용하기위한 MQTT기본 개념!",
-        "url": "https://www.youtube.com/watch?v=exmR_30AKqU",
-        "thumbnail": "https://i.ytimg.com/vi/exmR_30AKqU/mqdefault.jpg",
-        "channel": "심심한녹칸다",
-        "views": 7102,
-        "length": "4:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "IoT 프로토콜 MQTT 특징, 3분 정리",
-        "url": "https://www.youtube.com/watch?v=O-OJ_odghS8",
-        "thumbnail": "https://i.ytimg.com/vi/O-OJ_odghS8/mqdefault.jpg",
-        "channel": "친절한코딩",
-        "views": 6881,
-        "length": "3:14",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[라즈베리파이 활용] 6-1. MQTT를 이용한 메시지 통신",
-        "url": "https://www.youtube.com/watch?v=oymkTSuju5Q",
-        "thumbnail": "https://i.ytimg.com/vi/oymkTSuju5Q/mqdefault.jpg",
-        "channel": "한성대학교 소프트웨어중심대학사업단",
-        "views": 79,
-        "length": "28:23",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "자바로 MQTT사용하기(Subscriber작성)",
-        "url": "https://www.youtube.com/watch?v=JGmSUUhJWtI",
-        "thumbnail": "https://i.ytimg.com/vi/JGmSUUhJWtI/mqdefault.jpg",
-        "channel": "김샘자바",
-        "views": 792,
-        "length": "24:24",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MQTT 사용방법",
-        "url": "https://www.youtube.com/watch?v=8EgEF9PckNA",
-        "thumbnail": "https://i.ytimg.com/vi/8EgEF9PckNA/mqdefault.jpg",
-        "channel": "김샘자바",
-        "views": 4897,
-        "length": "28:13",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Jetson Nano 젯슨 나노 ] 18강  MQTT",
-        "url": "https://www.youtube.com/watch?v=OPd1WKZSDt4",
-        "thumbnail": "https://i.ytimg.com/vi/OPd1WKZSDt4/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 1203,
-        "length": "29:03",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "IBM 크라우드 MQTT통신 연결 cloud mqtt [김동일교수 두원공과대학교 AI융합과] 6-10-2",
-        "url": "https://www.youtube.com/watch?v=TNxquf8hy2A",
-        "thumbnail": "https://i.ytimg.com/vi/TNxquf8hy2A/mqdefault.jpg",
-        "channel": "김동일",
-        "views": 998,
-        "length": "19:08",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "모스키토 설치, Install Mosquitto, MQTT [김동일교수 두원공과대학교 AI융합과] 1-14",
-        "url": "https://www.youtube.com/watch?v=B8vxpTPHWLY",
-        "thumbnail": "https://i.ytimg.com/vi/B8vxpTPHWLY/mqdefault.jpg",
-        "channel": "김동일",
-        "views": 4468,
-        "length": "12:21",
-        "published": "8년 전",
-        "stage": "핵심"
       }
     ],
     "Mocha": [
