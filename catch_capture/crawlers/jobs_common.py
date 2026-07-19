@@ -72,7 +72,39 @@ DEV_PATTERNS = [
     re.compile(r"임베디드|펌웨어|반도체\s*설계", re.IGNORECASE),
     re.compile(r"데이터\s*사이언티스트", re.IGNORECASE),
     re.compile(r"블록체인", re.IGNORECASE),
+    # --- 영어 공고(해외/ATS) 대응 ---
+    re.compile(r"\b(developer|programmer)\b", re.IGNORECASE),
+    re.compile(r"\b(data\s*scientist|data\s*engineer|site\s*reliability|devops|sre|mlops)\b",
+               re.IGNORECASE),
 ]
+
+# 영어 "... Engineer" 중 개발직이 아닌 것(세일즈/지원/하드웨어 등)을 걸러내는 배제 규칙.
+# is_developer_job 의 영어 fallback 에서만 사용한다.
+NON_DEV_EN = re.compile(
+    r"\b(sales|solutions?|pre-?sales|support|customer|field|hardware|mechanical|"
+    r"electrical|civil|chemical|industrial|manufacturing|process|biomedical|"
+    r"account|marketing|recruit|talent|people|finance|legal|design|business|"
+    r"counsel|attorney|paralegal|advocate|evangelist|relations)\b",
+    re.IGNORECASE,
+)
+# is_developer_job 에서 "강한 개발 신호"로 취급하는 토큰(영어 fallback 가드용).
+# 단, "Developer Relations/Advocate/Marketing/Product ..." 같은 DevRel·마케팅 직군은
+# 코딩 직무가 아니므로 강한 신호에서 제외한다.
+_STRONG_DEV_EN = re.compile(
+    r"\b(developer|programmer)\b"
+    r"(?!\s+(relations?|advocate|marketing|product|experience|community|evangelist|success))"
+    r"|\b(devops|sre|mlops)\b",
+    re.IGNORECASE,
+)
+# 개발직임을 강하게 시사하는 영어 "Engineer" 앞 수식어.
+DEV_EN_ENGINEER = re.compile(
+    r"\b(software|backend|back-?end|frontend|front-?end|full-?stack|web|mobile|"
+    r"ios|android|game|systems?|embedded|firmware|platform|data|ml|ai|cloud|"
+    r"infrastructure|infra|security|network|blockchain|qa|test|automation|api|"
+    r"application|staff|senior|principal|lead|junior|react|node|java|python|"
+    r"golang|go|rust|kotlin|swift|scala|ruby|php|\.net|c\+\+)\b[\w\s/,+-]*\bengineer(ing)?\b",
+    re.IGNORECASE,
+)
 
 TECH_KEYWORDS = [
     "Java", "Kotlin", "Python", "JavaScript", "TypeScript", "C++", "C#", "C/C++",
@@ -199,7 +231,19 @@ def is_developer_job(*fields: str | list[str] | None) -> bool:
         else:
             texts.append(f)
     blob = " | ".join(texts)
-    return any(p.search(blob) for p in DEV_PATTERNS)
+    strong_engineer = bool(DEV_EN_ENGINEER.search(blob))  # 개발 수식어 + Engineer
+    # 영어 "... Engineer" fallback: 개발 수식어가 붙어 있고 세일즈/지원 등
+    # 비개발 키워드가 없을 때만 개발직으로 인정한다("Sales Engineer" 배제).
+    if strong_engineer and not NON_DEV_EN.search(blob):
+        return True
+    if any(p.search(blob) for p in DEV_PATTERNS):
+        # 약한 매치(예: 'AI' 단독)가 영어 비개발 제목("AI ... Marketing/Sales")에
+        # 오탐되는 것 차단: 비개발 키워드가 있고 강한 개발 신호가 없으면 제외.
+        if (NON_DEV_EN.search(blob) and not strong_engineer
+                and not _STRONG_DEV_EN.search(blob)):
+            return False
+        return True
+    return False
 
 
 def sanitize_filename(name: str) -> str:

@@ -74,6 +74,8 @@ SOURCES: dict[str, dict] = {
     "jumpit":   {"script": "crawl_jumpit.py"},
     "saramin":  {"script": "crawl_saramin.py"},
     "wanted":   {"script": "crawl_wanted.py"},
+    "remote":   {"script": "crawl_remote.py"},   # 해외/원격 보드(RemoteOK·WWR·Himalayas)
+    "ats":      {"script": "crawl_ats.py"},       # 회사 자체 채용페이지(Greenhouse·Lever·Ashby)
 }
 
 BLOG_PER_FEED_DEFAULT = 20  # 기술 블로그 피드당 기본 수집 개수

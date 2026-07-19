@@ -28,7 +28,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-SITES = ["wanted", "jumpit", "jobkorea", "saramin", "dev"]
+SITES = ["wanted", "jumpit", "jobkorea", "saramin", "dev", "remote", "ats"]
+# 키워드에 무관한 소스(해외 보드/회사 ATS): 폴더가 {site}_개발자 하나로 고정돼
+# 있어 키워드별로 반복 집계하지 않고 1회만 집계한다.
+KEYWORD_AGNOSTIC = {"remote", "ats"}
 
 
 def _norm_key(value: str | None) -> str:
@@ -72,7 +75,9 @@ def aggregate(keyword: str, keywords: list[str] | None = None,
         site_jobs: list[dict] = []
         site_out = out_dir / site
         copied_files = 0
-        for kw in kws:
+        # 키워드 무관 소스는 고정 폴더(PIN_KEYWORD="개발자") 하나만 1회 집계.
+        site_kws = ["개발자"] if site in KEYWORD_AGNOSTIC else kws
+        for kw in site_kws:
             src = latest_run_dir(screens, site, kw)
             if not src:
                 continue
