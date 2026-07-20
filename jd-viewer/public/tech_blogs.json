@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-21T02:02:45",
- "total": 948,
+ "generated_at": "2026-07-21T03:41:58",
+ "total": 949,
  "sources": [
   {
    "company": "Etsy",
@@ -118,6 +118,11 @@
    "count": 14
   },
   {
+   "company": "Dropbox",
+   "country": "US",
+   "count": 13
+  },
+  {
    "company": "당근",
    "country": "KR",
    "count": 13
@@ -145,11 +150,6 @@
   {
    "company": "Razorpay",
    "country": "IN",
-   "count": 12
-  },
-  {
-   "company": "Dropbox",
-   "country": "US",
    "count": 12
   },
   {
@@ -611,6 +611,31 @@
    "content_id": "b14ab2e7e8e4e544"
   },
   {
+   "key": "dropbox",
+   "company": "Dropbox",
+   "country": "US",
+   "title": "How our universal content processing platform Riviera evolved for AI and beyond",
+   "url": "https://dropbox.tech/infrastructure/how-our-universal-content-processing-platform-riviera-evolved-for-ai-and-beyond",
+   "published": "2026-07-20",
+   "published_ts": 1784559600.0,
+   "summary": "Riviera is the Dropbox content processing platform that’s been iteratively improving content transformation in our products for roughly a decade.",
+   "tags": [
+    "Dash",
+    "architecture",
+    "AI"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "Model Context Protocol"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "e9e103bdfdccbc0f"
+  },
+  {
    "key": "netflix",
    "company": "Netflix",
    "country": "US",
@@ -998,16 +1023,16 @@
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
-   "title": "A broken DNSSEC rollover took down .AL. Now 1.1.1.1 tells you when validation is bypassed",
+   "title": "A broken DNSSEC rollover took down .al. Now 1.1.1.1 tells you when validation is bypassed",
    "url": "https://blog.cloudflare.com/dnssec-nta-ede-33",
    "published": "2026-07-14",
    "published_ts": 1784034000.0,
-   "summary": "When a failed DNSSEC key rollover took down the .AL TLD, we deployed a Negative Trust Anchor to restore resolution. This time, though, clients didn't have to take our word for it: 1.1.1.1 returned EDE 33, a new DNS error code that signals directly in the response that DNSSEC validation was bypassed.",
+   "summary": "When a failed DNSSEC key rollover took down the .al TLD, we deployed a Negative Trust Anchor to restore resolution. This time, though, clients didn't have to take our word for it: 1.1.1.1 returned EDE 33, a new DNS error code that signals directly in the response that DNSSEC validation was bypassed.",
    "tags": [
+    "1.1.1.1",
     "DNS",
     "DNSSEC",
-    "Post Mortem",
-    "1.1.1.1",
+    "Incident Report",
     "Reliability",
     "Standards"
    ],
@@ -1277,13 +1302,13 @@
    "published_ts": 1783947600.0,
    "summary": "Precursor, our new continuous behavioral validation engine for bot management, offers visibility into how humans and bots actually interact across the full user journey. By turning session-level behavior into bot detection signals, it identifies advanced automation with higher precision — while reducing friction for legitimate users.",
    "tags": [
-    "Bot Management",
-    "Security",
-    "Turnstile",
-    "JavaScript",
     "AI",
+    "Bot Management",
+    "Cybersecurity",
+    "JavaScript",
     "Precursor",
-    "Product News"
+    "Product News",
+    "Turnstile"
    ],
    "tech_stack": [
     "JavaScript",
@@ -1403,15 +1428,15 @@
    "title": "Improving Smart Tiered Cache for Public Cloud Regions",
    "url": "https://blog.cloudflare.com/smart-tiered-cache-for-public-clouds",
    "published": "2026-07-10",
-   "published_ts": 1783688400.0,
+   "published_ts": 1783684800.0,
    "summary": "Smart Tiered Cache allows for precise upper tier selection for origins hosted on AWS, GCP, Azure, and Oracle Cloud with customer-provided cloud region hints.",
    "tags": [
-    "Tiered Cache",
     "Cache",
+    "CDN",
     "Performance",
     "Product News",
-    "CDN",
-    "Smart Shield"
+    "Smart Shield",
+    "Tiered Cache"
    ],
    "tech_stack": [
     "Oracle",
@@ -1622,14 +1647,9 @@
    "title": "Why we cannot wait for better post-quantum signature algorithms",
    "url": "https://blog.cloudflare.com/ml-dsa-will-have-to-do",
    "published": "2026-07-09",
-   "published_ts": 1783605600.0,
+   "published_ts": 1783604447.0,
    "summary": "NIST is advancing nine new post-quantum signature algorithms as potential candidates for future standardization. We take a closer look at all of them, and argue that while they are in the works and show great potential, we should use ML-DSA for now — the best one currently available.",
-   "tags": [
-    "Post-Quantum",
-    "Security",
-    "Research",
-    "Cryptography"
-   ],
+   "tags": [],
    "tech_stack": [
     "Machine Learning",
     "Cloudflare",
@@ -1827,14 +1847,14 @@
    "title": "Introducing Meerkat: an experiment in global consensus",
    "url": "https://blog.cloudflare.com/meerkat-introduction",
    "published": "2026-07-08",
-   "published_ts": 1783515600.0,
+   "published_ts": 1783512000.0,
    "summary": "Cloudflare Research is building a global consensus service called Meerkat that uses a new consensus algorithm called QuePaxa. We plan to use Meerkat to build a strongly consistent, fault-tolerant key-value store, and other applications.",
    "tags": [
-    "Research",
-    "Network",
     "Database",
     "Distributed Systems",
-    "Meerkat"
+    "Meerkat",
+    "Network",
+    "Research"
    ],
    "tech_stack": [
     "Rust",
@@ -1907,13 +1927,13 @@
    "title": "Cloudflare proudly joins the UK government's Cyber Resilience Pledge",
    "url": "https://blog.cloudflare.com/cloudflare-joins-uk-cyber-resilience-pledge",
    "published": "2026-07-07",
-   "published_ts": 1783429200.0,
+   "published_ts": 1783425600.0,
    "summary": "The pledge is a voluntary framework inviting organizations to commit to foundational cyber security governance, board-level accountability, and supply chain rigor. For over a decade, Cloudflare has pioneered the core pillars of this framework: democratizing security, leadership accountability, and radical transparency.",
    "tags": [
-    "United Kingdom",
+    "Application Security",
     "Cybersecurity",
     "Policy & Legal",
-    "Security"
+    "United Kingdom"
    ],
    "tech_stack": [
     "Machine Learning",
@@ -2148,16 +2168,15 @@
    "published_ts": 1783342800.0,
    "summary": "We are launching Workers Cache, a regionally tiered cache that sits directly in front of your Worker entrypoints. Infinitely composable, configured via standard HTTP headers",
    "tags": [
-    "Cloudflare Workers",
     "Cache",
-    "Tiered Cache",
-    "Performance",
+    "Cloudflare Workers",
     "Developers",
-    "Serverless"
+    "Performance",
+    "Serverless",
+    "Tiered Cache"
    ],
    "tech_stack": [
     "JavaScript",
-    "TypeScript",
     "Astro",
     "HTML",
     "Next.js",
@@ -2427,12 +2446,12 @@
    "published_ts": 1782910800.0,
    "summary": "We're opening the waitlist for our Monetization Gateway, which will allow you to charge for any web page, dataset, API, or MCP tool behind Cloudflare. The charges will settle in stablecoins over the x402 open protocol, with no payments stack of your own to build.",
    "tags": [
-    "Content Independence Day",
+    "AI",
     "AI Bots",
     "Bots",
-    "AI",
-    "x402",
-    "Payments"
+    "Content Independence Day",
+    "Payments",
+    "x402"
    ],
    "tech_stack": [
     "Express",
@@ -2462,12 +2481,12 @@
    "published_ts": 1782910800.0,
    "summary": "One year after declaring Content Independence Day, a dynamic market for monetized content has officially emerged. In this report, we examine how the rise of autonomous AI agents is upending traditional search referrals and detail the new infrastructure required to support a sustainable web economy.",
    "tags": [
-    "Content Independence Day",
-    "Bots",
+    "AI",
     "Bot Management",
-    "Radar",
+    "Bots",
+    "Content Independence Day",
     "Internet Traffic",
-    "AI"
+    "Radar"
    ],
    "tech_stack": [
     "Spring",
@@ -2495,11 +2514,11 @@
    "published_ts": 1782910800.0,
    "summary": "Search is how we find nearly everything on the web — creators, merchants, answers. AI is rewriting the rules, leaving creators caught between staying discoverable in an agentic era and getting paid for their work. Today we're launching two initiatives to help.",
    "tags": [
-    "Content Independence Day",
-    "Pay Per Crawl",
     "AI",
+    "AI Bots",
     "AI Search",
-    "AI Bots"
+    "Content Independence Day",
+    "Pay Per Crawl"
    ],
    "tech_stack": [
     "AI Agent",
@@ -2522,11 +2541,11 @@
    "published_ts": 1782910800.0,
    "summary": "For our second Content Independence Day, we’re giving website owners finer options to manage AI traffic. Instead of a one-size-fits-all block, all customers can now easily distinguish and manage Search, Agent, and Training bots, alongside the new ability to protect ad-monetized pages.",
    "tags": [
-    "Content Independence Day",
-    "AI Bots",
     "AI",
-    "Crawler Hints",
-    "Bot Management"
+    "AI Bots",
+    "Bot Management",
+    "Content Independence Day",
+    "Crawler Hints"
    ],
    "tech_stack": [
     "Express",
@@ -2535,7 +2554,6 @@
     "Gemini",
     "GPT",
     "Cloudflare",
-    "Penetration Testing",
     "Security"
    ],
    "categories": [
@@ -2594,10 +2612,10 @@
    "published_ts": 1782885600.0,
    "summary": "Cloudflare’s new Attribution Business Insights dashboard helps website owners understand crawler behavior, appetite, and potential value, fueling business-level conversations around crawl compensation.",
    "tags": [
-    "Content Independence Day",
     "AI",
-    "Bots",
     "Bot Management",
+    "Bots",
+    "Content Independence Day",
     "Security"
    ],
    "tech_stack": [
@@ -3488,9 +3506,9 @@
    "published_ts": 1782392400.0,
    "summary": "Cloudflare Workflows, our durable execution engine for multi-step applications, now supports saga-style rollbacks, allowing developers to specify a compensating action for each step.do().",
    "tags": [
-    "Workflows",
     "Cloudflare Workers",
-    "Developers"
+    "Developers",
+    "Workflows"
    ],
    "tech_stack": [
     "JavaScript",
@@ -3652,17 +3670,16 @@
    "published_ts": 1782280800.0,
    "summary": "Self-Managed OAuth is now available to all developers on Cloudflare. Here's how we executed a zero-downtime migration of our core OAuth engine to make it happen.",
    "tags": [
-    "Developers",
-    "API",
-    "Security",
-    "OAuth",
-    "Developer Platform",
     "Agents",
-    "Product News",
-    "Cloudflare Media Platform"
+    "API",
+    "Cloudflare Media Platform",
+    "Developer Platform",
+    "Developers",
+    "Identity",
+    "OAuth",
+    "Product News"
    ],
    "tech_stack": [
-    "Go",
     "SQL",
     "AI Agent",
     "Model Context Protocol",
@@ -3750,12 +3767,12 @@
    "published_ts": 1782239118.0,
    "summary": "The new executive order sets a 2030 migration deadline and establishes a powerful foundation for post-quantum resilience. We look at what it gets right, where it can go further, and our migration playbook for government and industry.",
    "tags": [
-    "Post-Quantum",
-    "Security",
     "Cryptography",
-    "Policy & Legal",
     "Government Innovation",
-    "Impact"
+    "Impact",
+    "Policy & Legal",
+    "Post-Quantum",
+    "Security"
    ],
    "tech_stack": [
     "Go",
@@ -4221,11 +4238,11 @@
    "published_ts": 1782151200.0,
    "summary": "By rearchitecting the Images binding, we accidentally uncovered a bug that existed in the open-source hyper library across multiple major versions.",
    "tags": [
-    "Image Optimization",
     "Cloudflare Images",
-    "Developers",
-    "Developer Platform",
     "Cloudflare Workers",
+    "Developer Platform",
+    "Developers",
+    "Image Optimization",
     "Open Source"
    ],
    "tech_stack": [
@@ -4932,9 +4949,9 @@
    "summary": "The moment an agent needs to deploy something, it slams face-first into a wall built for humans. Today we're rolling out Temporary Accounts on Cloudflare Workers. Any agent can now run wrangler deploy — temporary and get a live Worker in seconds.",
    "tags": [
     "Agents",
-    "Wrangler",
     "AI",
-    "Cloudflare Workers"
+    "Cloudflare Workers",
+    "Wrangler"
    ],
    "tech_stack": [
     "TypeScript",
@@ -5167,10 +5184,10 @@
    "published_ts": 1781805580.0,
    "summary": "We break down the technical architecture behind our multi-stage vulnerability discovery harness and automated triage loop. Learn how we manage state controls, squash false positives through adversarial review, and route around LLM context limits.",
    "tags": [
-    "Security",
     "AI",
     "Engineering",
     "Research",
+    "Security",
     "Vulnerabilities"
    ],
    "tech_stack": [
@@ -5182,14 +5199,11 @@
     "AI Agent",
     "Fine-tuning",
     "LLM",
-    "Model Context Protocol",
     "SQLite",
     "Cloudflare",
-    "Docker",
     "Security",
     "Benchmark",
-    "Git",
-    "Jira"
+    "Git"
    ],
    "categories": [
     "언어",
