@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-21T07:08:01",
- "total": 950,
+ "generated_at": "2026-07-21T08:46:18",
+ "total": 952,
  "sources": [
   {
    "company": "Etsy",
@@ -78,6 +78,11 @@
    "count": 26
   },
   {
+   "company": "CyberAgent",
+   "country": "JP",
+   "count": 25
+  },
+  {
    "company": "컬리",
    "country": "KR",
    "count": 25
@@ -91,11 +96,6 @@
    "company": "뱅크샐러드",
    "country": "KR",
    "count": 25
-  },
-  {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 23
   },
   {
    "company": "Meta",
@@ -522,6 +522,46 @@
   "Memory Management": "시스템/OS"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "要件策定から本番環境への展開までの完全自動化を目指して96プロダクトのAI活用力を強化した話｜プロダクトのキーパーソン向け施策『AIナレッジ共有会』",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64511",
+   "published": "2026-07-20",
+   "published_ts": 1784589024.0,
+   "summary": "こんにちは。株式会社サイバーエージェントの経営推進本部に所属している片岡です。 2005年に中途入社 ...",
+   "tags": [
+    "エンジニア",
+    "AI",
+    "生成AI",
+    "育成"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "2fdd1c363a94f355"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Cycloud 新基盤の全貌 第一回: 新リージョン基盤の全体像",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64643",
+   "published": "2026-07-20",
+   "published_ts": 1784588451.0,
+   "summary": "はじめに はじめまして。CyberAgent group Infrastructure Unit（C ...",
+   "tags": [
+    "エンジニア",
+    "CIU",
+    "インフラ",
+    "プライベートクラウド"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "1a4d86014bee9687"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",
