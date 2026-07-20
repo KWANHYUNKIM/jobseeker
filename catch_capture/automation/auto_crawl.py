@@ -26,6 +26,8 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))  # catch_captu
 
 import json
 import os
+import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -62,6 +64,11 @@ AUTOPUSH = os.environ.get("JOBSEEKER_AUTOPUSH") == "1"
 DEFAULT_KEYWORD = "개발자"
 DEFAULT_COUNT = 20
 DEFAULT_INTERVAL = 3600  # 1시간
+
+# 디스크 유지보수 — 무한 로그/스냅샷 누적으로 디스크가 꽉 차 데몬이 죽는 사고 방지.
+LOG_MAX_BYTES = 20 * 1024 * 1024   # auto_crawl.log 로테이션 임계치(20MB)
+SNAPSHOT_KEEP = 8                  # screenshots 타임스탬프 폴더 계열별 보관 개수
+_TS_RE = re.compile(r"_\d{8}_\d{6}$")  # <prefix>_YYYYMMDD_HHMMSS 접미사
 
 
 def _python_executable() -> str:
