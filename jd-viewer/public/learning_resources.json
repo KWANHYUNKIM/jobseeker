@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-21T05:29:59",
+  "generated_at": "2026-07-21T07:08:39",
   "source": "youtube",
   "tech_count": 183,
   "curriculum_count": 20,
@@ -6965,6 +6965,88 @@
         "stage": "핵심"
       }
     ],
+    "RTOS": [
+      {
+        "title": "Zephyr RTOS 1강",
+        "url": "https://www.youtube.com/watch?v=PDG1e65Wsz0",
+        "thumbnail": "https://i.ytimg.com/vi/PDG1e65Wsz0/mqdefault.jpg",
+        "channel": "TSN Lab",
+        "views": 2540,
+        "length": "20:11",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "2019년 arm MBED OS(RTOS 포함) 워크숍 1강/5강",
+        "url": "https://www.youtube.com/watch?v=aM4jXj1oZmc",
+        "thumbnail": "https://i.ytimg.com/vi/aM4jXj1oZmc/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 1543,
+        "length": "4:15:47",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "실시간 운영체제 (RTOS)",
+        "url": "https://www.youtube.com/watch?v=9E5YETybyII",
+        "thumbnail": "https://i.ytimg.com/vi/9E5YETybyII/mqdefault.jpg",
+        "channel": "도리의 디지털라이프",
+        "views": 256,
+        "length": "7:20",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "9강-1 STM32 FreeRTOS",
+        "url": "https://www.youtube.com/watch?v=1Ceakmtt6vA",
+        "thumbnail": "https://i.ytimg.com/vi/1Ceakmtt6vA/mqdefault.jpg",
+        "channel": "분당융합기술교육원 AI Software",
+        "views": 17439,
+        "length": "32:09",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "rtos 뭐가 다를까?",
+        "url": "https://www.youtube.com/watch?v=ww4wJSK7qNU",
+        "thumbnail": "https://i.ytimg.com/vi/ww4wJSK7qNU/mqdefault.jpg",
+        "channel": "Bulk Up Embedded",
+        "views": 5039,
+        "length": "10:02",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1장 RTOS 소개",
+        "url": "https://www.youtube.com/watch?v=8zUPQWTqlK0",
+        "thumbnail": "https://i.ytimg.com/vi/8zUPQWTqlK0/mqdefault.jpg",
+        "channel": "함운철",
+        "views": 604,
+        "length": "37:23",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "RTOS 스케줄링, 실시간 운영체제 스케줄링, RM 스케줄링, EDF 스케줄링",
+        "url": "https://www.youtube.com/watch?v=44gZmeZv9XY",
+        "thumbnail": "https://i.ytimg.com/vi/44gZmeZv9XY/mqdefault.jpg",
+        "channel": "그리타GRITA",
+        "views": 1533,
+        "length": "9:50",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Zephyr RTOS 2강",
+        "url": "https://www.youtube.com/watch?v=HEDbVe8PJKU",
+        "thumbnail": "https://i.ytimg.com/vi/HEDbVe8PJKU/mqdefault.jpg",
+        "channel": "TSN Lab",
+        "views": 1129,
+        "length": "42:51",
+        "published": "1년 전",
+        "stage": "핵심"
+      }
+    ],
     "JUnit": [
       {
         "title": "[10분 테코톡] 비버의 JUnit 5",
@@ -7129,86 +7211,86 @@
         "stage": "실전"
       }
     ],
-    "RTOS": [
+    "MCU": [
       {
-        "title": "Zephyr RTOS 1강",
-        "url": "https://www.youtube.com/watch?v=PDG1e65Wsz0",
-        "thumbnail": "https://i.ytimg.com/vi/PDG1e65Wsz0/mqdefault.jpg",
-        "channel": "TSN Lab",
-        "views": 2540,
-        "length": "20:11",
+        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
+        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
+        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
+        "channel": "임땡겸(전자컴퓨터)",
+        "views": 10160,
+        "length": "11:30",
         "published": "1년 전",
         "stage": "입문"
       },
       {
-        "title": "2019년 arm MBED OS(RTOS 포함) 워크숍 1강/5강",
-        "url": "https://www.youtube.com/watch?v=aM4jXj1oZmc",
-        "thumbnail": "https://i.ytimg.com/vi/aM4jXj1oZmc/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 1543,
-        "length": "4:15:47",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "실시간 운영체제 (RTOS)",
-        "url": "https://www.youtube.com/watch?v=9E5YETybyII",
-        "thumbnail": "https://i.ytimg.com/vi/9E5YETybyII/mqdefault.jpg",
-        "channel": "도리의 디지털라이프",
-        "views": 256,
-        "length": "7:20",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "9강-1 STM32 FreeRTOS",
-        "url": "https://www.youtube.com/watch?v=1Ceakmtt6vA",
-        "thumbnail": "https://i.ytimg.com/vi/1Ceakmtt6vA/mqdefault.jpg",
-        "channel": "분당융합기술교육원 AI Software",
-        "views": 17439,
-        "length": "32:09",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "rtos 뭐가 다를까?",
-        "url": "https://www.youtube.com/watch?v=ww4wJSK7qNU",
-        "thumbnail": "https://i.ytimg.com/vi/ww4wJSK7qNU/mqdefault.jpg",
-        "channel": "Bulk Up Embedded",
-        "views": 5039,
-        "length": "10:02",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1장 RTOS 소개",
-        "url": "https://www.youtube.com/watch?v=8zUPQWTqlK0",
-        "thumbnail": "https://i.ytimg.com/vi/8zUPQWTqlK0/mqdefault.jpg",
-        "channel": "함운철",
-        "views": 604,
-        "length": "37:23",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "RTOS 스케줄링, 실시간 운영체제 스케줄링, RM 스케줄링, EDF 스케줄링",
-        "url": "https://www.youtube.com/watch?v=44gZmeZv9XY",
-        "thumbnail": "https://i.ytimg.com/vi/44gZmeZv9XY/mqdefault.jpg",
-        "channel": "그리타GRITA",
-        "views": 1533,
-        "length": "9:50",
+        "title": "mcu 기초이론 제1강 전기의 이해",
+        "url": "https://www.youtube.com/watch?v=JqiMNdwtXPY",
+        "thumbnail": "https://i.ytimg.com/vi/JqiMNdwtXPY/mqdefault.jpg",
+        "channel": "전기자동차 기초에서 실무까지",
+        "views": 443,
+        "length": "29:48",
         "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "mcu 기초 이론 제1강 옴의 법칙",
+        "url": "https://www.youtube.com/watch?v=Uip8HDXioGE",
+        "thumbnail": "https://i.ytimg.com/vi/Uip8HDXioGE/mqdefault.jpg",
+        "channel": "전기자동차 기초에서 실무까지",
+        "views": 202,
+        "length": "26:30",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU  기초 - ADC 및 LPF",
+        "url": "https://www.youtube.com/watch?v=OLlJrru__KQ",
+        "thumbnail": "https://i.ytimg.com/vi/OLlJrru__KQ/mqdefault.jpg",
+        "channel": "광운대학교 전기공학과",
+        "views": 909,
+        "length": "10:06",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "전자회로 강의 제 12탄 - MCU를 활용한 입출력 기초",
+        "url": "https://www.youtube.com/watch?v=Gr3PhvcxX3A",
+        "thumbnail": "https://i.ytimg.com/vi/Gr3PhvcxX3A/mqdefault.jpg",
+        "channel": "Lucky7",
+        "views": 1065,
+        "length": "14:32",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
+        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
+        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 2717,
+        "length": "8:19",
+        "published": "11개월 전",
         "stage": "핵심"
       },
       {
-        "title": "Zephyr RTOS 2강",
-        "url": "https://www.youtube.com/watch?v=HEDbVe8PJKU",
-        "thumbnail": "https://i.ytimg.com/vi/HEDbVe8PJKU/mqdefault.jpg",
-        "channel": "TSN Lab",
-        "views": 1129,
-        "length": "42:51",
+        "title": "다림의 기업형  TelePresentation 화상회의 시스템 DS-MCU/Codec 출시합니다.",
+        "url": "https://www.youtube.com/watch?v=TMoDrXd1Mlo",
+        "thumbnail": "https://i.ytimg.com/vi/TMoDrXd1Mlo/mqdefault.jpg",
+        "channel": "다림시스템 Darim System istudio",
+        "views": 89,
+        "length": "15:08",
         "published": "1년 전",
         "stage": "핵심"
+      },
+      {
+        "title": "실습 기반 MCU 구동을 위한 C언어 기초 강의!",
+        "url": "https://www.youtube.com/watch?v=6tAxXiOuJsQ",
+        "thumbnail": "https://i.ytimg.com/vi/6tAxXiOuJsQ/mqdefault.jpg",
+        "channel": "Electronic's for Design and Software",
+        "views": 2206,
+        "length": "1:04",
+        "published": "7년 전",
+        "stage": "실전"
       }
     ],
     "SVN": [
@@ -7536,88 +7618,6 @@
         "views": 1561,
         "length": "30:11",
         "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
-    "MCU": [
-      {
-        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
-        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
-        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
-        "channel": "임땡겸(전자컴퓨터)",
-        "views": 10160,
-        "length": "11:30",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "mcu 기초이론 제1강 전기의 이해",
-        "url": "https://www.youtube.com/watch?v=JqiMNdwtXPY",
-        "thumbnail": "https://i.ytimg.com/vi/JqiMNdwtXPY/mqdefault.jpg",
-        "channel": "전기자동차 기초에서 실무까지",
-        "views": 443,
-        "length": "29:48",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "mcu 기초 이론 제1강 옴의 법칙",
-        "url": "https://www.youtube.com/watch?v=Uip8HDXioGE",
-        "thumbnail": "https://i.ytimg.com/vi/Uip8HDXioGE/mqdefault.jpg",
-        "channel": "전기자동차 기초에서 실무까지",
-        "views": 202,
-        "length": "26:30",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU  기초 - ADC 및 LPF",
-        "url": "https://www.youtube.com/watch?v=OLlJrru__KQ",
-        "thumbnail": "https://i.ytimg.com/vi/OLlJrru__KQ/mqdefault.jpg",
-        "channel": "광운대학교 전기공학과",
-        "views": 909,
-        "length": "10:06",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "전자회로 강의 제 12탄 - MCU를 활용한 입출력 기초",
-        "url": "https://www.youtube.com/watch?v=Gr3PhvcxX3A",
-        "thumbnail": "https://i.ytimg.com/vi/Gr3PhvcxX3A/mqdefault.jpg",
-        "channel": "Lucky7",
-        "views": 1065,
-        "length": "14:32",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
-        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
-        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 2717,
-        "length": "8:19",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "다림의 기업형  TelePresentation 화상회의 시스템 DS-MCU/Codec 출시합니다.",
-        "url": "https://www.youtube.com/watch?v=TMoDrXd1Mlo",
-        "thumbnail": "https://i.ytimg.com/vi/TMoDrXd1Mlo/mqdefault.jpg",
-        "channel": "다림시스템 Darim System istudio",
-        "views": 89,
-        "length": "15:08",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "실습 기반 MCU 구동을 위한 C언어 기초 강의!",
-        "url": "https://www.youtube.com/watch?v=6tAxXiOuJsQ",
-        "thumbnail": "https://i.ytimg.com/vi/6tAxXiOuJsQ/mqdefault.jpg",
-        "channel": "Electronic's for Design and Software",
-        "views": 2206,
-        "length": "1:04",
-        "published": "7년 전",
         "stage": "실전"
       }
     ],

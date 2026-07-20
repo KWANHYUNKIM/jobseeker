@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-21T05:21:51",
- "total": 949,
+ "generated_at": "2026-07-21T07:08:01",
+ "total": 950,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 46
+   "count": 47
   },
   {
    "company": "AWS",
@@ -254,10 +254,10 @@
   "GitLab CI": "인프라/클라우드",
   "Tailwind": "프론트엔드",
   "Saga Pattern": "알고리즘/이론",
-  "Iceberg": "데이터",
-  "Hive": "데이터",
-  "XGBoost": "AI/ML",
   "Zero Trust": "보안",
+  "Iceberg": "데이터",
+  "XGBoost": "AI/ML",
+  "Hive": "데이터",
   "Go": "언어",
   "ETL": "데이터",
   "Groovy": "언어",
@@ -522,6 +522,39 @@
   "Memory Management": "시스템/OS"
  },
  "posts": [
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Cloudflare Internal DNS is now generally available",
+   "url": "https://blog.cloudflare.com/internal-dns",
+   "published": "2026-07-20",
+   "published_ts": 1784581171.0,
+   "summary": "Cloudflare Internal DNS brings authoritative and recursive DNS for private networks to the same global network and control plane that runs Cloudflare's Zero Trust, networking, and public DNS.",
+   "tags": [
+    "Cloudflare Gateway",
+    "DNS",
+    "General Availability",
+    "Internal DNS",
+    "Networking",
+    "Product News",
+    "SASE",
+    "Zero Trust"
+   ],
+   "tech_stack": [
+    "Cloudflare",
+    "Terraform",
+    "Security",
+    "TLS",
+    "Zero Trust"
+   ],
+   "categories": [
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "ee07d4bde1d2c985"
+  },
   {
    "key": "aws",
    "company": "AWS",
@@ -1648,7 +1681,7 @@
    "url": "https://blog.cloudflare.com/ml-dsa-will-have-to-do",
    "published": "2026-07-09",
    "published_ts": 1783604447.0,
-   "summary": "NIST is advancing nine new post-quantum signature algorithms as potential candidates for future standardization. We take a closer look at all of them, and argue that while they are in the works and show great potential, we should use ML-DSA for now — the best one currently available.",
+   "summary": "NIST is advancing nine new post-quantum signature algorithms as potential candidates for future standardization. We look at all of them, and argue that while they are in the works and show great potential, we should use ML-DSA for now — the best one currently available.",
    "tags": [],
    "tech_stack": [
     "Machine Learning",
