@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-21T03:42:23",
-  "source_dir": "screenshots/all_통합_20260721_034158",
+  "generated_at": "2026-07-21T05:22:14",
+  "source_dir": "screenshots/all_통합_20260721_052151",
   "keyword": "통합",
   "jobs": [
     {
@@ -81614,6 +81614,76 @@
     },
     {
       "site": "jumpit",
+      "company": "플라잎",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Robot Application Engineer",
+      "url": "https://jumpit.saramin.co.kr/position/54292858",
+      "career": "경력 3~10년",
+      "location": "경기 성남시 분당구 정자일로239 아이파크분당 102동 801호 (정자동, 아이파크분당)\n지도보기·\n주소복사",
+      "dday": "D-5",
+      "tech_stack": [
+        "Python",
+        "C++"
+      ],
+      "tech_tags": [
+        "C++",
+        "Python",
+        "ROS"
+      ],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화"
+      ],
+      "qualifications": "• 로봇 자동화 / 제조 설비 관련 Application 또는 제어 엔지니어 경험 3년 이상\n• 산업용 로봇 또는 협동 로봇 현장 설치/운영 경험\n• 6전기·기계·제어 중 하나 이상의 실무 이해\n• 현장 통신 구조(EtherCAT, TCP/IP 등)와 개발 언어(C++ 또는 Python)에 대한 기본 이해\n• 고객사 현장 근무 및 고객 커뮤니케이션 가능",
+      "preferences": "• 양산 라인 자동화 프로젝트 경험\n• 로봇, 비전, 제어 통합 Application 경험\n• EtherCAT, PLC, HMI 연동 경험\n• 자동차, 전자, 디스플레이 제조 공정 경험\n• 스타트업 또는 R&D 중심 조직 근무 경험",
+      "main_tasks": "Robot Application Engineer는 플라잎의 AI 양팔로봇 시스템을 고객 제조 환경에 적용하는 핵심 실무자입니다. \nPoC → Pilot → 양산 단계까지 현장 이슈를 기술적으로 해결하고, 본사 R&D와 고객 사이의 기술 브릿지 역할을 수행합니다.\n\n• PoC → Pilot → 양산까지 현장에서 기술적으로 끝까지 책임\n• 고객 생산라인과 본산 R&D 사이에서 문제 정의 → 해결 → 재현성 확보까지 수행\n\n• 현장 적용 및 시스템 통합 (Field + Tech)\n- 고객사 생산라인에 플라잎 AI 양팔로봇 시스템 설치 및 구동\n- 로봇, 비전, 그리퍼, F/T 센서 등 장치 통합\n- EtherCAT, TCP/IP 등 현장 통신 구조 이해 및 설정\n\n• Application 개발 및 학습 모델 적용\n- 현장 조건을 반영해 로봇 동작 시퀀스와 제어 파라미터를 구성·조정\n- 공정 특성에 맞춰 플라잎 학습 모델을 설정·튜닝하고 실제 현장에 적용\n- 작업 데이터를 수집·정리해 학습용 데이터셋을 구성하고 모델 성능을 개선\n- 로그 분석과 기본적인 C++/Python 코드 이해를 바탕으로 문제 원인을 분석\n\n• PoC / Pilot / 양산 기술 대응\n- PoC 단계에서 고객 요구사항을 기술적으로 정리하고 적용 방안 도출\n- Pilot 단계에서 사이클 타임, 성공률, 안정성 개선 작업 수행\n- 양산 전환 시 재현성 확보를 위한 작업 기준 및 표준 정리\n\n• 기술 피드백 및 협업\n- 현장 운용 데이터 및 이슈 케이스 수집·정리\n- 개발팀과 협업하여 제품 개선사항 피드백 및 반영\n- 양산 전환 시 재현성 확보를 위한 작업 기준 및 표준 정리\n\n• 기술 피드백 및 협업\n\n• 설치 매뉴얼, 트러블슈팅 가이드, Application 노트 등 문서 정리",
+      "benefits": "[플라이퍼(Plaifer)는 이렇게 일합니다]\n- Possibility First | 안 되는 이유보다 되는 방법을 먼저 찾습니다.\n- My Game | 내 일처럼 움직이고, 내 결과로 만들어냅니다.\n- Worth the Pay | 고객이 기꺼이 돈을 낼 만한가를 스스로 묻습니다.\n- Tiki-Taka | 탁월한 동료와 함께, 서로가 서로를 더 낫게 만듭니다.\n- Last 5% | 차이를 만드는 마지막 5%를 완성합니다.\n\n[일하는 문화]\n- \"~님\" 호칭을 사용해 서로를 존중하며 일하고 있어요.\n- 서로 밝게 인사하며 함께 긍정적인 분위기를 만들어 가고 있어요.\n- 불필요한 회의를 최소화하고, 업무에 집중할 수 있는 환경을 지향해요\n- 어떤 고민이든 리더 혹은 CEO와 언제든 자유롭게 1on1 미팅을 할 수 있어요.\n\n[일하는 환경]\n- 선택적 근로시간제를 운영하고 있어요. 코어타임(10:00 ~ 16:00) 외 시간은 자유롭게 출퇴근 가능해요.\n- 점심시간은 70분으로 여유롭게 식사와 휴식을 즐기실 수 있어요.\n- 연차, 반차 등의 휴가는 구성원의 자율과 책임을 기반으로 운영하고 있어요.\n- 사내 휴식 공간에 다양한 음료와 간식을 제공해 드리고 있어요.\n\n[혜택 및 복지]\n- 장기근속자를 위한 리프레시 휴가를 제공해요. (2년 이상 5일 / 5년 이상 10일 / 10년 이상 30일)\n- 생일을 맞이한 플라이퍼에게 케이크와 조기 퇴근(오후 3시 퇴근)을 지원해요.\n- 가족들과 함께 풍성한 날을 위한 명절 선물을 제공해 드려요.\n- 플라이퍼를 위한 특별한 종합 건강 검진 프로그램을 지원해 드려요. (건강검진 반차 별도 제공)\n- 플라이퍼의 추천으로 인재가 합류하면 인센티브 100만원을 지급해요. (수습기간 이후)\n- 국내 및 해외 특허에 대해 출원과 등록 각각 50만원의 보상금을 지원해 드려요.\n- 늦은시간까지 근무하게 되면 야근 식비 및 교통비를 지원해 드려요."
+    },
+    {
+      "site": "jumpit",
+      "company": "파인디지털",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "파인뷰 펌웨어 개발 (병역특례)",
+      "url": "https://jumpit.saramin.co.kr/position/54449024",
+      "career": "신입",
+      "location": "경기 성남시 분당구 성남대로925번길41\n지도보기·\n주소복사",
+      "dday": "D-21",
+      "tech_stack": [
+        "C++",
+        "OpenCV",
+        "Linux"
+      ],
+      "tech_tags": [
+        "C++",
+        "Linux",
+        "OpenCV",
+        "DeepLearning",
+        "HW",
+        "FW",
+        "SW",
+        "Vb.net",
+        "MCU",
+        "Embedded Linux"
+      ],
+      "roles": [
+        "백엔드",
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "석박사 우대"
+      ],
+      "qualifications": "- 신입 : 전문연구요원 지원자 (병역특례/석사이상)\n\n※ 전문연구요원이란?\n이공계 석·박사 인력이 병역의무 대신 지정된 연구기관에서 36개월간 연구 인력으로 복무하는 병역 대체 복무 제도입니다.",
+      "preferences": "- Embedded Linux 환경에서 C 또는 C++ 언어에 대한 기초 지식을 갖추신 분\n- 학교 프로젝트 시 하드웨어(MCU, AP 등)와 소프트웨어를 연결해 본 경험이 있는 분",
+      "main_tasks": "- 블랙박스 System S/W 개발 (영상 기록 장치의 핵심 동작 시스템 설계 및 제어)\n- Embedded Linux S/W Application 개발 (리눅스 기반 기기에서 작동하는 사용자 기능 및 화면 앱 구현)\n- 블랙박스 개발보드 Bring-up, Linux Kernel, Device Driver 개발\n- Camera Sensor / RX Chip / Serializer, De-Serializer 등 driver 개발",
+      "benefits": "Big Profit Sharing System\n구성원들의 노력에 의해 달성한 경영성과(이익)를 구성원에게 공유\n(연봉 외 별도, 최근 3년간 0~3개월 월급에 해당하는 인센티브 지급)\n\nBest Welfare System\nGift for U-설날(10만원), 근로자의날(10만원), 창립기념일(10만원), 추석( 10만원)\nYears of FINE Man - 매년 전 직원의 10% 우수사원 선정 및 상패 & 상품권(20~200만원) 지급\nLong service Award - 5년, 10년, 15년, 20년 근속한 직원에게 장기근속상 시상"
+    },
+    {
+      "site": "jumpit",
       "company": "이스트시큐리티",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -86726,6 +86796,30 @@
       "preferences": "• AI 관련 Top-tier 학회 및 저널 게재 경험\n• LLM 성능 최적화를 위한 프롬프트 엔지니어링 또는 RAG 구조 최적화 경험\n• 서로 다른 도메인 간의 Embedding Alignment 및 Projection Layer/Adapter 설계 경험\n• AWS,GCP,Azure 등 클라우드 기반의 AI인프라 구축 및 관리 경험\n• 의료 도메인의 NLP 프로젝트 경험\n• 오픈소스 LLM(Llama, Mistral, Falcon 등) Fine-tuning 경험\n• 보통의 방법으로 풀 수 없는 엔지니어링 제약 조건을 AI 모델링 능력을 바탕으로 해결할 수 있는 역량을 갖춘 분",
       "main_tasks": "• LLM 기반 진단/예측 결과를 설명하고 치료방안을 제안하는 시스템 개발\n• LLM 학습/평가용 Data pre/post-processing RAG(Retrieval-Augmented Generation) 기반의 임상 정보 추출 시스템 구축 및 고도화",
       "benefits": "• 시차출퇴근제도 운영 (「8 to 5」, 「9 to 6」, 「10 to 7」)\n• PC-OFF 제도 운영\n• 반반차 제도 운영(2시간 단위)\n• 입사 축하금(50만원), 웰컴키트 지급\n• 연간 100만원 복지포인트 지원\n• 본인 및 가족 100만원 상당 건강검진 지원\n• 치아보험 지원\n• 사무용품비 지원\n• 근로자 휴가지원 사업 참여 기업\n• 교육 훈련 지원\n• 입사 첫돌 축하금 및 휴가 지급\n• 장기근속 포상금 및 휴가 지원\n• 팀 회식비 지원\n• 사내 동호회 활동 지원\n• 경조금 및 경조휴가 지원"
+    },
+    {
+      "site": "jumpit",
+      "company": "채비",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "펌웨어 개발(선행팀)",
+      "url": "https://jumpit.saramin.co.kr/position/54365149",
+      "career": "경력 5~15년",
+      "location": "대구 수성구 알파시티1로31길9\n지도보기·\n주소복사",
+      "dday": "D-12",
+      "tech_stack": [],
+      "tech_tags": [
+        "FW",
+        "ARM"
+      ],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력: 5년 ~ 15년(대리~과장)\n• 펌웨어 프로그래밍\n• ARM(STM32 계열) 사용 유경험자\n• 통신 프로토콜 설계 및 구현\n• 회로분석",
+      "preferences": "• 충전기 펌웨어 개발 유경험자\n• 펌웨어 형상관리 유경험자\n• 충전기 관련 국제 표준 유경험자\n• 펌웨어 관련 통신 프로그램(CAN, USART, I2C) 사용이 능숙한 자\n• 회로 분석이 가능한 자\n• 국책과제 수행 유경험자\n• 외국어 가능자 (영어)",
+      "main_tasks": "• 충전기 펌웨어 개발\n• 신규 및 이슈 차량 호환성 테스트\n• 충전 부정합 케이스 원인 분석 및 개선 대책 수립\n• 충전기 표준 분석 및 코드 구현\n• 펌웨어 형상 관리\n• 현장조치 및 원인분석 매뉴얼 제작 및 관리",
+      "benefits": "• 지원금/보험 : 건강검진\n• 급여제도 : 퇴직연금, 4대 보험\n• 선물 : 명절선물\n• 교육/생활 : 음료제공(차, 커피)\n• 근무 환경 : 회의실, 유니폼지급, 노트북, 사원증, 사무용품 지급\n• 조직문화 : 회식강요 안함, 자유복장, 자유로운 연차사용\n• 리프레시 : 연차, 여름휴가, 반차, 근로자의 날 휴무"
     },
     {
       "site": "jumpit",
@@ -137196,6 +137290,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)제닉스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "공공관 SI프로젝트 개발자 정규직 채용(경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54506153&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bc080b33-d12f-43f9-adbb-786fcbb7b4ed",
+      "career": "경력3년↑",
+      "location": "서울영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "Spring"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "• 공공기관 및 SI 프로젝트 경력 3년 이상 (또는 그에 준하는 역량)\n\n• 전자정부프레임워크 활용 가능 (필수)\n\n• JAVA / Spring / JSP 기반 웹 어플리케이션 개발 경험\n\n• Mybatis 및 RDBMS 활용 경험\n\n• 웹시스템 구축 및 운영 경험\n\n• 학력무관",
+      "preferences": "• 경력 3년 이상\n\n• 관련 학과 전공(S/W 공학 등)\n\n• 관련 자격증 보유자 (정보처리 기사 등)",
+      "main_tasks": "• 공공기관 SI 프로젝트 개발 및 유지보수\n\n• 프론트앤드 및 백앤드 개발",
+      "benefits": "• 교육/생활 : 직무능력향상교육, 도서구입비지원, 자격증취득지원, 교육비 지원, 간식 제공, 음료제공(차,커피)\n\n• 리프레시 : 연차, 반차\n\n• 급여제도 : 4대 보험"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -173637,6 +173756,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)티앤엘",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "티앤엘(Forbes Asia 200) IT 총괄 · MES 담당자 증원",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54502299&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=91c137f0-14bb-4918-b2c7-ae07f2b09f74",
+      "career": "경력 5~15년",
+      "location": "경기용인시 수지구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)사람인",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -182305,6 +182445,164 @@
       "preferences": "- 공공기관 프로젝트 수행 경험자\n\n- 관련 학과(컴퓨터공학, AI, 데이터사이언스 등) 전공자\n\n- RAG 서비스 설계·개발 경험자\n\n- Huggingface 공개 AI 모델 활용 경험자\n\n- Python 기반 챗봇 AI 서비스 개발 경험자\n\n- 벡터 DB(pgvector 등) 활용 경험자\n\n- 대기업 SI 프로젝트 수행 경험자",
       "main_tasks": "■ 우리가 찾는 사람\n\n- AI 최신 기술 트렌드에 밝은 분\n\n: LLM, RAG, 임베딩, 벡터 검색 등 최신 AI 기술을 이해하고 실무에 적용할 수 있는 분\n\n- AI를 활용해 개발하는 분\n\n: Claude Code, Codex 등 AI 코딩 도구를 능숙하게 활용해 생산성 높게 개발하는 분\n\n- 주도적으로 학습하고 실행하는 분\n\n: 새로운 기술을 스스로 익히고 문제를 끝까지 해결하는 분\n\n- ez2AI 빌더 플랫폼 기반 외부 프로젝트(SI/구축) 수행\n\n- 공공기관 프로젝트 및 대기업 업무용 웹시스템 설계·개발\n\n- RAG 기반 AI 서비스 개발 (문서 검색, 지식통합, 챗봇 등)\n\n- Huggingface 등 공개 AI 모델을 활용한 AI 기능 구현",
       "benefits": "- 최신 노트북 지급\n\n- 트리플 모니터 지급\n\n- 중식 제공"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)젬스톤",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[경력] 디지털/AI 영상 기획 및 제작 PD 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54505742&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=78932695-dbcf-4950-ab80-a1f16d4cebd6",
+      "career": "신입·경력",
+      "location": "서울서초구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 신입 / 경력 2년 이상\n\n• 대학졸업(2,3년)이상",
+      "preferences": "• 보유역량: 공모전 입상자, 해당직무 인턴경력, 문서작성 우수자, MAC/편집 전문가, PPT능력 우수자, 컴퓨터활용능력 우수\n\n• 자격증: 디지털영상편집",
+      "main_tasks": "• 창의적 광고 기획 및 제작해요\n\n• AI 영상 기획 및 제작해요\n\n• 광고 캠페인 아이데이션해요\n\n• 클라이언트 커뮤니케이션해요\n\n• 최신 디자인 아트워크 개발해요\n\n• Creative Team 부서 소속, 대리/과장/차장 직급으로 함께할 예정이에요.",
+      "benefits": "• 리프레시 : 연차, 여름휴가, 반차\n\n• 급여제도 : 우수사원포상, 퇴직금, 휴일(특근)수당, 4대 보험\n\n• 선물 : 명절선물/귀향비\n\n• 조직 문화 : 자유복장"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)스케일업",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "프리랜서 숏폼 ai 영상 편집자(재택)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54504467&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d5dcf6d1-bd16-487c-8384-aaeed0ffd281",
+      "career": "경력 1~7년",
+      "location": "인천부평구 | 50,000 원",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)엠엔비젼",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 머신비전 및 산업 안전 솔루션 기술영업 신입채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54503168&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d5dcf6d1-bd16-487c-8384-aaeed0ffd281",
+      "career": "신입",
+      "location": "대구달서구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능",
+      "preferences": "• 자격증: 2종보통운전면허",
+      "main_tasks": "• AI 머신비전 솔루션 및 3D 카메라 기술 제안\n\n• 신규 고객사 발굴 및 기존 파트너사 관리 지원\n\n• 고객사 요구사항 분석 및 기술적 대응 (Technical Support)\n\n• 전시회(WIS 등) 참여 및 제품 시연 보조\n\n• 기술영업팀 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 급여제도 : 퇴직연금, 상여금, 인센티브제\n\n• 출퇴근 : 차량유류비지급, 회사차량 있음\n\n• 교육/생활 : 점심식사 제공"
+    },
+    {
+      "site": "saramin",
+      "company": "㈜벤처피플",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[AI/Robot][스타트업] Junior HR 인사 담당자",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54504021&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d5dcf6d1-bd16-487c-8384-aaeed0ffd281",
+      "career": "경력2년↑",
+      "location": "서울성동구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "- 최소 1년 이상 HR 운영 업무 경험자 (인사 행정, 채용 운영 등)",
+      "preferences": "",
+      "main_tasks": "1) 채용 운영/관리\n- 채용 시스템(ATS) 운영 등\n2) 인사 운영/관리\n- 인사 정보 관리 (임직원 정보 등)\n3) Onboarding & Offboarding\n- 온보딩&오프보딩 관련 업무 전반\n- 인사정보 시스템(HRIS) 등록 및 업데이트\n4) 급여 및 복리후생 업무 지원\n- 4대보험 취득/상실 신고 등",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)판도플랫폼",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "헬스케어 및 AI 스마트 솔루션의 서비스 기획 및 UI/UX 기획",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54505250&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d5dcf6d1-bd16-487c-8384-aaeed0ffd281",
+      "career": "경력3년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 디지털 서비스 기획 경력 3년 이상 (웹/앱 런칭·운영 경험)\n\n• 데이터 기반 문제 정의 및 개선 경험\n\n• 개발·디자인·운영 조직과 협업 경험, 협업 도구(Jira, Notion 등) 활용 가능\n\n________________________________________\n\n• 경력 3년 이상\n\n• 대학교졸업(4년)이상",
+      "preferences": "• 헬스케어·피트니스·웰니스 또는 무인 시스템(키오스크, IoT 등) 서비스 기획 경험\n\n• 요금제·구독·정산 구조 설계 및 운영 경험\n\n• API·DB 이해, 간단한 쿼리 등 개발 디렉션 경험\n\n• Claude·Gemini·ChatGPT·Copilot, 노코드/로우코드 도구 활용 경험\n\n• SQL 기반 데이터 분석 가능, 헬스케어 관련 법·규제 이해 또는 관심\n\n• 프로젝트 PM 역할 경험 우대 (개발·디자인·QA 조직과의 협업 및 Cross-functional PM 역할)\n\n________________________________________\n\n• 보유역량: 해당직무 근무경험, FrontEnd 개발 경험",
+      "main_tasks": "• 헬스케어 및 AI·IoT 무인 시스템 기반 서비스·솔루션 기획 및 운영\n\n: 피트니스 센터, 클리닉/병원, 무인 매장 등 고객사의 비즈니스 프로세스를 이해하고\n\n이에 적합한 서비스 시나리오 및 기능을 설계합니다.\n\n• 웹/앱·키오스크·관리자 콘솔(User Flow, 정책, 기능 정의, 화면 설계) 기획\n\n: 웹/앱, 키오스크, 관리자 콘솔 등 다양한 채널에 대한 사용자 플로우, 화면 설계서, 정책 문서를 작성합니다.\n\n특히, Claude·Gemini·ChatGPT 등을 활용하여 최적의 효율과 효과의 솔루션 기획\n\n• 데이터 기반 요금제·정산·구독 모델 설계 및 개선\n\n• 운영 효율화를 위한 업무 프로세스 분석 및 자동화 기능 기획\n\n• 개발·디자인·운영 조직과의 협업, 프로젝트 일정·우선순위 관리\n\n• 주요 서비스 지표 분석 및 개선 과제 도출\n\n• 산출물 관리(PRD, 기능정의서, 플로우차트, 화면정의서)\n\n________________________________________",
+      "benefits": "• 리프레시 : 연차\n\n• 급여제도 : 퇴직금, 4대 보험\n\n• 조직 문화 : 자유복장"
+    },
+    {
+      "site": "saramin",
+      "company": "주식회사 모다랩",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[MODALAB] AI 커머스 콘텐츠 크리에이터 신입 및 경력직 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54500104&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d5dcf6d1-bd16-487c-8384-aaeed0ffd281",
+      "career": "경력무관",
+      "location": "경기포천시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능\n\n- 단순한 색 조합을 넘어, 미세한 톤(명도/채도)의 차이를 이해하고 브랜드 감도에 맞는 컬러 밸런스를 잡아낼 수 있는 분\n\n- Photoshop, Illustrator를 활용한 비주얼 콘텐츠 제작에 능숙하신 분\n\n- 동료들과 원활하게 소통하며, 긍정적인 시너지를 내며 협업할 수 있는 분\n\n- 여성 패션 및 오피스룩,스트릿 웨어 트렌드에 관심이 많으신 분(크림등)\n\n- 기본적인 엑셀 함수(SUM 등)를 활용한 데이터 관리가 가능하신 분",
+      "preferences": "- \"레드라고 다 같은 레드가 아니다\"를 포트폴리오나 감각으로 증명할 수 있는 분\n\n- 평소 핀터레스트(Pinterest)나 인스타그램에서 레퍼런스를 수집하고 디렉팅하는 것이 취미이신 분\n\n- 자기주도적으로 업무를 리드하며 성장하고 싶으신 분\n\n- AI 프롬포트 경험자(우대사항)\n\n- 영상 제작 가능한자(우대사항)\n\n- 스타트업에서 같이 성장하고 싶으신 분\n\n- 창의적인 아이디어 도출 / 직원들과 협력을 중요시 생각하는 분",
+      "main_tasks": "1. E커머스 비주얼 디자인 및 매뉴얼 관리\n\n- 브랜드 감도에 맞춘 기획전 배너, 메인 썸네일 디자인\n\n- 상품의 매력을 극돋화하는 고감도 상세페이지 제작 (컬러 밸런스 및 톤앤매너 조율)\n\n2. 홈쇼핑 웹 기술서 및 매뉴얼 디자인\n\n- 웹 기술서 구성 및 비주얼 매뉴얼 작업\n\n3.기타 디자인 지원 및 간단한 사무 운영 관리\n\n- 자사몰 및 입점 플랫폼 운영에 필요한 간단한 데이터 관리 및 사무 업무 지원\n\n• 디자인팀 부서 소속으로 함께할 예정이에요.",
+      "benefits": "• 맛있는 점심 식사 전액 지원 / 식후 카페 커피 제공\n\n• 당 충전을 위한 간식 / 커피 / 라면 무제한 제공\n\n* 양주 거주자 / 포천 근무자 출퇴근 지원 (차량 이용 등 편하게 조율 가능)"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)제네시스코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "온라인 AI 그로스 마케터로 성장하실분을 모십니다.",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54498599&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d5dcf6d1-bd16-487c-8384-aaeed0ffd281",
+      "career": "경력무관",
+      "location": "광주광산구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관, 졸업 예정자 지원가능",
+      "preferences": "",
+      "main_tasks": "ㆍAI 기반 마케팅 콘텐츠 생성 (Design & Content)\n\nㆍ퍼포먼스 마케팅 운영 (Growth & Sales)\n\nㆍ협업 및 기타 (Collaboration)\n\n\"AI 툴 사용법은 입사 후 적극적으로 지원해 드립니다\"",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -195635,6 +195933,30 @@
     },
     {
       "site": "saramin",
+      "company": "에스케이케미칼(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[SK케미칼(GC)] 사이버 보안 운영 담당 경력 구성원 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54502914&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=9381fbfb-a5bf-4e64-8c75-ac22f13ee0b2",
+      "career": "경력5년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "● 학사(4년제) 이상의 학위를 보유하신 분\n● 5년 이상의 유관 경력을 보유하신 분 \n● 시스템, 어플리케이션, 서버, 네트워크 기본 이해도를 보유하신 분\n● 자기 주도적이고 능동적인 업무 수행 및 적극적인 소통 태도를 보유하신 분\n● 내부고객 및 IT/보안 협력사 협업을 위한 원활한 커뮤니케이션 능력을 보유하신 분\n● 보안관제, 정보유출 모니터링 또는 침해 의심 행위 분석 업무 경험을 보유하신 분\n● DLP, M365 Defender, SIEM, EDR 등 보안솔루션 운영 또는 관리 경험을 보유하신 분",
+      "preferences": "",
+      "main_tasks": "● 정보유출 모니터링 및 이상징후 탐지 관리\n- 전사 정보유출 이상행위 모니터링, 분석 및 소명 프로세스 관리\n- 사용자 행위 기반 이상징후 탐지 및 대응 현황 검토\n- M365 Defender 및 DLP 기반 데이터 유출 탐지 정책 운영 관리\n\n● 보안관제 및 위협 헌팅 운영 관리\n- 협력업체의 보안관제, 이벤트 분석 및 위협 헌팅 수행 품질 관리\n- CTI 기반 공격자 TTP 분석 및 탐지 시나리오 개선 관리\n- 최신 보안 취약점 및 공격 트렌드 기반 탐지 정책 고도화 관리",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "㈜블루웨이브컨설팅",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -206051,6 +206373,35 @@
     },
     {
       "site": "saramin",
+      "company": "(주)소프트보울",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[계약직] 웹디자이너 · 웹퍼블리셔 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54506400&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=0d9050b3-1251-4d20-bf2b-ff9bd248edc3",
+      "career": "경력무관",
+      "location": "경기과천시",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "jQuery",
+        "HTML",
+        "CSS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "오너십/주도성"
+      ],
+      "qualifications": "•HTML, CSS 활용 가능자\n\n•Photoshop 또는 Figma 활용 가능자\n\n•웹디자인 및 웹퍼블리싱 실무 경험자\n\n•원활한 커뮤니케이션이 가능하신 분\n\n•책임감 있고 꼼꼼하게 업무를 수행하시는 분\n\n•학력, 나이, 경력 무관 (실무 능력 우선)",
+      "preferences": "• JavaScript, jQuery 활용 가능자\n\n•반응형 웹 제작 경험자\n\n•홈페이지 유지보수 경험자\n\n•공공기관 홈페이지 운영 경험자\n\n•즉시 출근 가능자 (최우대)",
+      "main_tasks": "• 공공기관 홈페이지 운영 및 유지보수\n\n•홈페이지 디자인 수정 및 UI 개선\n\n•HTML/CSS 기반 퍼블리싱 및 유지보수\n\n•팝업, 배너, 키비주얼 디자인 제작\n\n•서브 콘텐츠 퍼블리싱 및 이미지 편집\n\n•홈페이지 오류 수정 및 반응형 웹 대응\n\n•웹 접근성 대응\n\n•고객 요청사항 반영 및 운영 지원 (전화 응대 포함)",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "주식회사엠에이치앤티(MH&T)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -213311,6 +213662,198 @@
     },
     {
       "site": "dev",
+      "company": "아이티센엔텍",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "경력직 상시 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561859?ReturnUrl=RecruitInfo",
+      "career": "경력",
+      "location": "경기 과천시, 전지역, 전국, 인천 전지역, 서울 전지역, 부산 전지역, 세종 전지역, 대전 전지역, 울산 전지역, 충북 전지역, 전남광주 나주시, 강원 원주시\n\n펼치기",
+      "dday": "채용시 마감",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": "Financial Benefits\n\n복지포인트(반기 지급)\n\n통신비, 명절 상여(설/추석)\n\n자녀학자금, 미취학 자녀 보육지원금\n\n자녀 출산축하금\n\n경조사 지원\n\nWork-Life Balance\n\n유연근무제\n\n선택적 근로시간제, 시차출퇴근제\n\n가족친화제도 운영\n\n출산휴가, 육아휴직, 육아기근로시간 단축\n\n패밀리데이 (매월 2, 4번째 금요일 조기퇴근)\n\nRecreational Support\n\n그룹사 동호회 운영\n\n그룹 휴양소(제주도, 여수 등)\n\n사내 피트니스 운영\n\nCareer Development\n\n직무 역량 강화를 위한 교육 제공\n\n직무 관련 자격증 취득 지원\n\n학습조직 운영"
+    },
+    {
+      "site": "dev",
+      "company": "나이스평가정보",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[NICE평가정보] 7월 신입/경력 직원 상시채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561848?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "서울 영등포구",
+      "dday": "~07.31(금)",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Vue",
+        "Spring",
+        "Spring Boot",
+        "Oracle",
+        "Linux",
+        "Unix"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "대용량 처리",
+        "영어 가능",
+        "오픈소스 기여"
+      ],
+      "qualifications": "대졸(4년제) 이상 학위 보유자 또는 졸업예정자\n\nJava 개발 3년 이상 경력 보유자\n\n중급 이상의 SQL 사용 가능자\n\nUnix/Linux 환경 사용 경험 보유자\n\n자바 기반 프레임워크로 웹 애플리케이션 설계 및 개발 가능자\n\n대졸(4년제) 이상 학위 보유자 또는 졸업예정자\n\n대졸 이상(4년제, 전공제한 없음)\n\n디지털 비즈니스 내 본인확인서비스 적용 기획 혹은 운영 유경험자(실제 경험 이력서에 기재 요망, 해당 경력 최소 1년 이상)\n\n대졸(4년제) 이상 학위 보유자 또는 졸업예정자\n\n신용정보, 금융데이터 또는 공공데이터 관련 업무 경험 보유자\n\n신용평가 모형 활용을 위한 항목 개발 경험 보유자\n\n■채용 절차\n\n서류전형\n1차 면접\n(인적성검사 ​병행)\n평판조회\n2차 면접\n신체검사/\n처우협의\n최종합격\n\n​※ 중복지원 ​불가 ​: 현재 진행 ​중인 NICE평가정보 ​정규직 채용 공고 중 하나의 직무만 지원 가능합니다.",
+      "preferences": "Spring Framework, Spring Boot 기술 숙련자\n\nFrontend 언어 사용 경험 보유자 (Java Script, Vue.js 등\n\nOracle, Exadata, Tibero DBMS 경험자 및 유관 자격증 보유자\n\n컴퓨터/전산/정보/산업공학 등 IT유관 전공자\n\n다양한 오픈소스 기술에 대한 리서치 및 개발, 구축 경험 보유자\n\n해외사업 기획\n[조직 ​소개]\n\n사업기획단 해외사업팀은 NICE평가정보의 베트남 자회사인 NICE INFO VINA 및 NICE Credit Information을 지원하며 글로벌 Cross Border, 프로젝트, 대외협력 등을 함께 기획, 수행하는 역할을 합니다.\n\n비즈니스 영어 가능자\n\n기본적인 데이터분석 스킬 및 경험 보유자\n\n아래 해당 업무 중 7년 이상(합산 기준) 경력 보유자\n\n1) CB, 기업 부문 신용평가모형 개발 및 전략 수립 컨설팅 프로젝트 수행\n\n2) CB, 기업 부문 신용평가모형 관련 프로젝트 영업, 제안\n\n3) 정보서비스 기획, 개발 및 영업/마케팅\n\n4) 정보서비스 및 시스템 개발, 운영\n\n데이터서비스운영\n(신용정보서비스 기획/설계/운영)\n[조직 ​소개]\n\n정보운영실은 모두가 믿고 신뢰할 수 있는 정보를 만들어 기업과 개인이 더 나은 의사결정을 하는데 기여합니다.\n전통적인 신용정보를 기반으로 하되 다양한 정보를 유기적으로 연결하고 확장합니다.\n이를 통해 더 큰 가치를 만들어 내는 영역을 발굴하고, 이를 깊이 있게 다루는 조직입니다.\n\n상경계열/통계/수학/산업공학/금융공학/컴퓨터공학 등 전공자\n\n데이터 분석 경험 보유자(Python, SQL)\n\n대용량 DB처리 및 전산처리 경험 보유자\n\n금융 관련 리스크 관리 및 솔루션 개발 업무 경력 보유자",
+      "main_tasks": "애플리케이션 개발 담당자\n\n1. 신용정보관련 대외 웹 비즈니스 서비스 개발/운영\n\n2. JAVA기반의 웹 서비스 개발 및 운영\n\n1. 베트남 연계 업무 기획 및 지원\n\nNICE INFO VINA 사업 기획 및 운영 업무 지원\n\nNICE CI CB시스템 운영, 서비스 기획 및 업무 지원\n\n2. 대외 협력 업무\n\n해외 협력 업무 발굴 및 제휴 기획\n\n국내 협력 업무 기획 및 관리\n\n3. 네트워킹 업무\n\n해외 파트너(대관, 제휴 파트너, 고객사) 관리 지원\n\n신용정보서비스 기획/설계/운영\n\n1. 신용정보 등록/조회 서비스를 위한 전산요건 정의, 테스트 및 검수\n\n2. 신용정보시스템 업무요건 변경에 제반 서비스 변경 설계 및 지원, 데이터 처리 운영 지원\n\n3. 신용정보 관련 데이터 분석 및 신용평가모형 활용 정보 기획 및 개발, 운영",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "제이브이엠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "제이브이엠 수시채용(연구직군)",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561806?ReturnUrl=RecruitInfo",
+      "career": "신입/경력(3년 이상)",
+      "location": "대구 달서구",
+      "dday": "~08.02(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "에스에프에이반도체",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년도 부문별 신입/경력 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561801?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "충남 천안시 서북구",
+      "dday": "D-6",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "영어 가능",
+        "학사 이상"
+      ],
+      "qualifications": "",
+      "preferences": "중국어 가능자 우대\n\nOSAT 해외 고객(미주, 유럽 등) 대상 영업 또는 CS 경험자 우대\n\n천안1공장\n\n개발팀\n개발 Engineer\n정규직\n신입\n\n전자/전기공학, 반도체공학 전공자 우대\n\n반도체 관련 자격증 소지자 및 공정교육 및 관련 교육 또는 전공 이수자 우대\n\nBusiness 영어 회화 가능자 우대\n\n천안1공장\n\nPKG기술팀\nF/C 공정 Engineer\n정규직\n경력\n\n동종사 Flip Chip 공정관리 경력자 우대\n\nBusiness 영어 회화 가능자 우대\n\n공인어학성적 소지자 우대\n\n천안1공장\n\nPKG기술팀\nB/S 공정 Engineer\n정규직\n경력\n\n동종사 B/S 공정관리 경력자 우대\n\nBusiness 영어 회화 가능자 우대\n\n공인어학성적 소지자 우대\n\n천안1공장\n\nPKG기술팀\nBack-End 공정 Engineer\n정규직\n경력\n\n동종사 Back-End(F/C Back-End 포함) 공정 관리 경력자 우대\n\nBusiness 영어 회화 가능자 우대\n\n천안1공장\n\nPKG기술팀\n공정 Engineer\n정규직\n신입\n\n전자/전기공학, 반도체공학 전공자 우대\n\n반도체 관련 자격증 소지자 및 공정교육 및 관련 교육 또는 전공 이수자 우대\n\nBusiness 영어 회화 가능자 우대\n\n천안1공장\n\nDPS기술파트\nDPS공정기술 Engineer\n정규직\n경력\n\n동종사 DPS 공정관리 경력자 우대\n\nBusiness 영어 회화 가능자 우대\n\n공인어학성적 소지자 우대\n\n천안2공장\n\n범핑기술팀\nNPI(개발담당) 엔지니어\n정규직\n경력\n\n반도체 WLCSP, Bumping 제품 개발 경력자 우대\n\nBusiness 영어 회화 가능자 우대\n\n천안2공장\n\nPCS팀\n생산관리 및 CS\n정규직\n경력\n\n산업경영/산업공학 전공자 우대\n\nBusiness 영어 회화 가능자 우대\n\n반도체 제조업 생산관리 직무 경력자 우대\n\n천안1공장\n\nPCS팀\n생산관리 및 CS\n정규직\n신입\n\n산업경영/산업공학 전공자 우대\n\n제조업 생산관리 직무 인턴 경험자 우대\n\nBusiness 영어 회화 가능자 우대\n\n천안1공장\n\nDesign팀\n설계 엔지니어\n정규직\n경력\n\n반도체 후공정(동종사) Design 업무 경력자 우대\n\nBusiness 영어 회화 가능자 우대\n\n4년제 대학교 반도체 설계관련 학위 소지자 우대\n\n천안1공장\n\nIR파트\nIR담당\n정규직\n경력\n\n반도체 OSAT 기술관련 이해도 높은 자 우대\n\n반도체 OSAT IR 경력 보유자 우대\n\n상경계열 혹은 반도체/전자 관련 학사 학위 소지자 우대\n\n천안1공장\n\n사업기획팀\n제품기획 및 전략수립\n정규직\n경력\n\n반도체 OSAT 사업기획 담당 경험자 우대\n\n전기전자, 반도체공학, 경영학 전공자 우대\n\nBusiness 영어회화 가능자 우대\n\n천안1공장\n\n마케팅\n마케팅 및 시장분석\n정규직\n경력\n\n반도체 패키징 공정, 소재, 제품 설계 및 기술적 이해도가 높은 자 우대\n\n반도체 업계 내 전략 사업기획 및 기술 영업 근무 경험자 우대\n\n천안1공장\n\n제조본부\n제조 Operator\n정규직\n신입/경력\n\n반도체 후공정 Operator 경험자 우대\n\n천안1/2공장\n\n제조본부\n제조기술 Maintenance\n정규직\n신입/경력\n\n고졸의 경우 관련 경험 1~3년 이상 경력 우대\n\n반도체 후공정 설비 유지보수 경험자 우대\n\n천안1/2공장\n\n제조본부\nF/C공정 제조기술 Maintenance\n정규직\n경력\n\n반도체 동종사 F/C 설비보전 경험자 우대\n\nF/C 공정 현장 관리자 경험 우대\n\n천안1공장\n\n품질팀\n품질검사원\n정규직\n신입/경력\n\n반도체 후공정 품질 검사원 경험자 우대\n\n천안1/2공장",
+      "main_tasks": "근로조건\n구분\n\n해외 고객(미주/유럽/아시아), IDM, Fabless 고객 영업\n\n신규 해외 고객 거래선 발굴 및 신제품 확보, 견적 제안, 단가 협상\n\n해외 고객 지원 및 관리업무\n\n필수조건\n\n반도체 해외영업 경력 6년 이상(과장급 이상)\n\n영어 비즈니스 커뮤니케이션 필수\n\n해외 영업, 반도체 또는 전자부품 업종 영업/영업관리 경력 필수\n\n4년제 대학 졸업자 이상인 자\n\n반도체 PKG/Assembly 공정 관리 및 개발 직무 수행 가능 자\n\nFlip chip/Die Attach/SMT/Saw Sorter/Tape saw/Back Grind, saw\n\n신규 제품 개발에 대한 공정 개발 및 Material 개발\n\n고객사 담당 기술 대응 및 Communication\n\n필수조건\n\n4년제 대학 졸업(예정) 이상인 자\n\n공인어학성적 보유자\n\n반도체 Flip chip 공정 및 수율 관리\n\nFC Front공정(Chip Attatch, Underfill, Lid Attatch)관리\n\nFC B-end공정(Marking, Solderball Attatch, Saw Sortter, Final Test, Packing)관리\n\n제품 Yield 개선 및 공정 효율성 향상(공정 최적화 및 표준화)\n\n공정 Material 관리 및 개선\n\n공정 생산성 향상(효율개선 및 재료비 저감 활동)\n\n필수조건\n\n반도체 Flip Chip 공정기술 경력 3년 이상~8년미만(선임급)\n\n4년제 대학 졸업(예정) 이상인 자\n\n반도체 Back Grinding & Saw 공정 관리 업무 수행\n\nFront 공정(BS공정) 관리\n\n제품 Yield 개선 및 공정 효율성 향상(공정 최적화 및 표준화)\n\n공정 Material 관리 및 개선\n\n공정 생산성 향상(효율개선 및 재료비 저감 활동)\n\n필수조건\n\n반도체 B/S 공정기술 경력 3년 이상~8년미만(선임급)\n\n4년제 대학 졸업(예정) 이상인 자\n\n반도체 패키지 Back-End 공정(MK, SBA, SST, F/C Back-End) 공정관리\n\n신제품 개발 검토 및 Risk assessment\n\n공정 원부자재 Material 관리와 개선 및 Supplier 다변화 검토\n\n양산 제품 공정능력 / 수율 개선 활동\n\n품질 이슈 대응(불량원인분석 & 개선대책 수립)\n\n필수조건\n\n반도체 Back-End 경력 8년 이상(책임급)\n\n4년제 대학 졸업 이상인 자\n\n[F/C 공정 Engineer]\n\n반도체 Flip chip 공정 및 수율 관리\n\nFC Front공정(Chip Attatch, Underfill, Lid Attatch)관리\n\nFC B-end공정(Marking, Solderball Attatch, Saw Sortter, Final Test, Packing)관리\n\n제품 Yield 개선 및 공정 효율성 향상(공정 최적화 및 표준화)\n\n공정 Material 관리 및 개선\n\n공정 생산성 향상(효율개선 및 재료비 저감 활동)\n[B/S 공정 Engineer]\n\n반도체 Back Grinding & Saw 공정 및 수율관리\n\nFront 공정(BS공정) 관리\n\n제품 Yield 개선 및 공정 효율성 향상(공정 최적화 및 표준화)\n\n공정 Material 관리 및 개선\n\n공정 생산성 향상(효율개선 및 재료비 저감 활동)\n\n필수조건\n\n4년제 대학 졸업(예정) 이상인 자\n\n공인어학성적 보유자\n\n반도체 패키지 Backend 공정(Backgrinding/Sawing) 공정관리\n\n신제품 Risk assessment 및 Backend 공정 셋업\n\n양산 제품 공정능력/수율 개선 활동\n\n원가절감/생산성 향상 활동\n\n품질 이슈 대응(불량원인분석 & 개선대책 수립)\n\n필수조건\n\n반도체 DPS 공정기술(Backgrinding/Sawing) 경력 3년 이상~8년미만(선임급)\n\n4년제 대학 졸업 이상인 자\n\n제품사양 검토 및 리스크 Assessment\n\n개발제품 BOM 선정 및 원가 검토\n\n개발일정 수립 및 진도관리\n\n개발단계에서의 고객 communication 담당 및 요구사항 신속대응\n\n개발제품 공정능력 및 수율 분석(공정기술 연계 개선활동 추진)\n\n개발제품 불량개선활동(공정기술 연계) 및 환경 신뢰성 검증 (HTS, TC, Procon, HAST, etc)\n\nBuild & Qual report 작성\n\n필수조건\n\n반도체 WLCSP, Bumping 제품개발 경력자 7년 ~ 14년(선임~책임급)\n\nBump공정(photo, plating, sputter, AOI) 전반에 대한 이해도를 갖춘 자\n\n4년제 대학 졸업자 이상인 자\n\n반도체 생산관리 및 고객 CS\n\n고객 PO생성/투입/출하 관리 및 생산계획 수립\n\n생산/매출현황 모니터링 및 진척도 관리\n\n생산/매출 연간 사업계획 및 중장기 Forecast\n\n실행계획 Data 분석 및 보고자료 작성\n\n생산진도 관리 및 담당 고객 요청사항 대응 (생산진척, 원부자재, 결산 등)\n\n담당 고객, 담당 제품의 주요공정 Capa 점검 및 양산 제품 주요 원부자재 확보\n\n생산 결산 및 수불마감, Billing작업(Invoice, 세금계산서)\n\n주요 원부자재 점검 및 불용 관리\n\n담당 고객 신제품 양산이관 스케쥴 관리\n\n필수조건\n\n반도체 생산관리 및 고객 CS 업무 경력 3년이상~8년미만(대리급)\n\n전문대학 졸업 이상인 자\n\n반도체 생산관리 및 고객 CS\n\n고객 PO생성/투입/출하 관리 및 생산계획 수립\n\n생산진도 관리 및 담당 고객 요청사항 대응(생산진척, 원부자재, 결산 등)\n\n반도체 생산계획 수립/생산투입관리/생산진도 관리/제품수불 결산\n\n담당 고객, 담당 제품의 주요공정 Capa 점검 및 양산 제품 주요 원부자재 확보\n\n생산 결산 및 수불마감, Billing작업(Invoice, 세금계산서)\n\n주요 원부자재 점검 및 불용 관리\n\n담당 고객 신제품 양산이관 스케쥴 관리\n\n필수조건\n\n4년제 대학 졸업(예정) 이상인 자\n\n공인어학성적 소지자\n\nPKG Design, Lead Frame Design, IC Substrate Design, Bumping Design 업무\n\n공정 및 설계 Rule 기반한 PKG, Lead Frame, Substrate 설계 및 Package Simulation을 통한 신제품 개발\n\n필수조건\n\n반도체 PKG, Lead Frame, IC Substrate, Bumping 디자인 업무경력 3년 이상~13년이하(선임급~책임급)\n\nPKG 디자인 관련 S/W Tool 사용가능자 必\n[Allegro(Cadence) 또는 CAM350]\n\n전문대학 졸업자 이상인 자\n\nIR 자료 검토, 기관/투자자 대응 일정 관리\n\nIR 자료 작성, 기업 설명회 및 NDR 진행\n\n필수조건\n\n반도체 제조업체 IR 업무 경력 5년~10년 보유자(대리급~과장급)\n\n4년제 학사학위 이상 보유자\n\n반도체 시장 동향 분석 및 중장기 사업화 전략 검토\n\n반도체 제품별 Trend, 후공정 동향, 주요 경쟁사 분석\n\n필수조건\n\n반도체 사업기획 업무 경력 5년~10년 보유자(대리급~과장급)\n\n4년제 학사학위 이상 보유자\n\n시장동향/전망 분석\n\n사업 전략 수립 및 계획안 마련 및 투자 타당성 검토\n\n고객/제품 원가 및 수익 분석\n\n신사업 발굴 및 신사업 수립 지원\n\n대외 홍보 기획 및 지원 등\n\n필수조건\n\n반도체(IDM/Fabless, OSAT) 마케팅 업무 경력 5년~10년 보유자(대리급~과장급)\n\n반도체 패키징 및 공정기술 및 원가이해도를 갖춘 분\n\n4년제 학사학위 이상 보유자\n\nBusiness 영어회화 가능자\n\n반도체 설비 Operation(제조) 업무 수행 가능자\n\nFront 공정 : Back Lab, Saw, Die Attatch, Wire Bonding\n\nBack-end 공정 : Marking/Solder ball/Saw Sorter/Mold, SMT\n\nChip Final Test 공정\n\nBump 공정 : Incomming, Plating, Sputter/Desum, Photo, AOI/AVI 공정\n\nDPS 공정 : Wafer Back Grinding, Laser Grooving, Wafer Saw, Marking, Pick&Place, Packing 공정\n\nEDS Wafer Test, Probe Card\n\n필수조건\n\n3조 2교대 근무가능자(5근 2휴)\n\nDay(06:00~14:00)/Swing(14:00~22:00)/GY(22:00~익일 06:00)/Day2(06:00~18:00)/GY2(18:00~익일 06:00)\n\n고등학교 졸업 이상인 자(전공무관)\n\n남성의 경우 병역의무 이행을 완료한 자 必\n\n반도체 설비 유지보수(제조기술) 업무 수행 가능자\n\nFront 공정 : Back Lab, Saw, Die Attatch, Wire Bonding\n\nBack-end 공정 : Marking/Solder ball/Saw Sorter/Mold, SMT\n\nChip Final Test 공정\n\nBump 공정 : Incomming, Plating, Sputter/Desum, Photo, AOI/AVI 공정\n\nDPS 공정 : Wafer Back Grinding, Laser Grooving, Wafer Saw, Marking, Pick&Place, Packing 공정\n\nEDS Wafer Test, Probe Card\n\n필수조건\n\n3조 2교대 근무가능자(5근 2휴)\n\nDay(06:00~14:00)/Swing(14:00~22:00)/GY(22:00~익일 06:00)/Day2(06:00~18:00)/GY2(18:00~익일 06:00)\n\n전문학사 이상인 자(전자, 전기, 기계, 반도체 전공)\n\n남성의 경우 병역의무 이행을 완료한 자 必\n\n반도체 패키지 Flip Chip 공정(Chip Attatch, Lid Attatch, Underfill) 설비 Maintenance\n\n반도체 FC 공정 설비 PM, BM, Overhaul 등 설비 개조 및 개선 등\n\n필수조건\n\n반도체 패키지 Flip Chip 공정(Chip Attatch, Lid Attatch, Underfill) 설비 Maintenance 경력 2년 이상\n\nQUANTUM 8800 SERIES/SFM3/NXT SERIES/INNOVATION-DL/ZEUS-TA/ZEUS-D/PRO-2020NT/LDS-200A 설비 유지보수 경험자\n\n3조 2교대 근무가능자(5근 2휴)\n\nDay(06:00~14:00)/Swing(14:00~22:00)/GY(22:00~익일 06:00)/Day2(06:00~18:00)/GY2(18:00~익일 06:00)\n\n남성의 경우 병역의무 이행을 완료한 자 必\n\n반도체 후공정 품질 검사원 업무\n\nInprocess 품질 모니터링 업무(수입검사/출하검사, CCS, 순회검사)\n\n변경점, 양산제품 모니터링, 신제품 검사 등\n\n필수조건\n\n3조 2교대 근무가능자(5근 2휴)\n\nDay(06:00~14:00)/Swing(14:00~22:00)/GY(22:00~익일 06:00)/Day2(06:00~18:00)/GY2(18:00~익일 06:00)\n\n고등학교 졸업 이상인 자\n\n남성의 경우 병역의무 이행을 완료한 자 必",
+      "benefits": "회사생활 편의\n\n기숙사 운영, 식사제공(조식, 중식, 석식), 통근버스, 사내헬스장운영\n\n여가 문화생활\n\n휴양콘도(휘닉스, 한화, 리솜), 동호회 운영(활동비 지원)\n\n건강\n\n종합검진 및 건강검진, 단체보험 가입\n\n생활지원\n\n자녀학자금 지원(유치원, 초등학교, 중학교, 고등학교, 대학교)\n\n우수사원/장기근속 시상제도, 기념일 선물(명절, 창립기념일, 생일), 경조사 지원(휴가, 경조금)\n\n사우회/사내근로복지기금 운영(경조금, 장례비품지원), 제휴업체 할인\n\n■채용은 이렇게 진행합니다!\n\n서류전형\n1차면접\n2차면접\n최종합격\n\n상황에 따라 영어면접 진행\n\n교대직은 면접전 간단한 TEST진행"
+    },
+    {
+      "site": "dev",
+      "company": "피에스케이홀딩스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[PSK그룹] 7월 직무별 수시채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561778?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "경기 화성시, 성남시 분당구, 용인시, 평택시, 이천시, 충북 청주시",
+      "dday": "D-6",
+      "tech_stack": [
+        "Python",
+        "C++",
+        "C#",
+        "C/C++",
+        "MATLAB"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "학사 이상",
+        "석박사 우대"
+      ],
+      "qualifications": "학력사항 : 학사, 석사\n\n전공 : 산업공학 / 기계 / 전자 관련공학 전공\n\n자격 : 신입 / 경력 2년 이상 반도체 장비 및 제조 품질 관리 및 품질 예방 활동 지식 보유자\n\n영어, 일본어, 중국어 능통자 우대\n품질관리 및 관련 자격증 보유자 우대\n\n동탄/판교\n\n시스템관리\n인턴(3개월_채용전환형)\n/경력\n\n시스템 관리\nERP, PLM, 사양관리, Web Portal 및 시스템 연계 운영, 관리의 총괄 부서로서, 업무 Process와 연계하여 Process 개선 및 안정적인 System 서비스가 진행되도록 운영·관리함\n\n시스템/Tool: SAP ERP / Windchill PLM / 기타 Business Solution (CRM, KMS 등)\n\nPSK Group 시스템 관리\n\n업무연계 시스템 최적화\n\n시스템 총괄\n\n정보화 교육\n\n프로젝트 관리\n\nProcess Innovation, IT기획/설계\n\n유지보수 / 개발 파트너사 관리\n\n해외법인 시스템 관리\n\n학력사항: 학사,석사,박사\n\n전공: IT 및 경영정보 계열 / 산업공학 / 통계\n\n자격: 신입 / 경력 5년 이하\n\n경험: 제조업 시스템 도입 및 Business Solution 개선/운영 관리 경험자 우대\n\n판교\n\nIT Infra\nManagement\n인턴(3개월_채용전환형)\n/경력\n\nIT Infra 관리, PC OA 정비, 네트워크 관리, IT 헬프데스크, 유지보수 업체관리\n\nTOOL&자격 : 네트워크 관련 자격, 보안 관련 자격, MS 관련 자격, DBA 관련 자격 등 전산실 운영과 관련한 자격 or 보안관련 자격\n\nPSK Group IT Infra 관리\n\n윈도우서버 운영\n\n네트워크,방화벽,VPN 운영\n\nIT보안 솔루션 운영\n\n학력사항: 학사,석사\n\n전공: 전산관련전공 or 비전공자 자격 우대\n\n자격 : 신입 / 경력 5년 이하\n\n경험 : 전산실 / 전산 인프라 운영 경력\n\n자격증 : 정보처리기사\n\n석사, 박사 학위 취득자\n\n전공: 무관\n\n자격: 경력 10년 이상\n\n학력사항 : 학사 이상\n\n전공: 경영학, 교육학, 인사관리 관련 전공자\n\n자격: 경력 8년 이상\n\n경험: HR 관리 전반 지식과 실무 경험자\n\n지식 및 기술:\n\n어학능통자(영어)\n\nOA 역량(중급 이상)\n\nAI리터러시\n\n데이터 분석 능력\n\n학력사항: 학사,석사,박사\n\n전공: 기술경영/공학 또는 반도체 업종 경험\n\n자격: 신입/경력 3년이상\n\n지식 및 기술 : 반도체 공정, 반도체 설비\n\n학력사항: 학사,석사,박사\n\n전공: 물리, 재료, 화학, 전자, 전기등 반도체 관련학과\n\n자격: 신입/경력 3년 이상\n\n학력사항 : 학사,석사\n\n전공: 기계, 전기 기계설계공학 관련 전공자\n\n자격: 신입/경력 3년 이상\n\n경험 : 반도체 공정 장비 양산 및 개발PJT경험\n\n지식 및 기술 : 반도체 장비 기구 설계, SEMI 및 국제 안전사양 설계 유경험, 기구설계 Tool 이용 가능, 반도체 공정, 장비 기초 이해\n\n학력사항 : 학사,석사\n\n전공: 기계 공학 및 기계 설계 관련 전공\n\n자격: 신입/경력 6년 이상\n\n경험 : 반도체 장비 설계 업무 경험\n\n지식 및 기술 : CAD/CAM 프로그램, CREO 활용 능력 안전사양 설계 유경험, 기구설계 Tool 이용 가능, 반도체 공정, 장비 기초 이해\n\n학력사항 : 학사,석사\n\n전공 : 전기,전자,제어 공학 관련 전공자\n\n자격 : 신입/경력 3년 이상\n\n경험 : 반도체/디스플레이 장비 전기/전자/전장 설계 경력자로서 3년 이상 시스템 설계 경험자\n\n지식 및 기술 : 반도체 장비 전장/회로 설계, SEMI 및 국제 안전사양 설계 유경험자\n\n학력사항: 석사,박사\n\n전공: 전산유체, 기계공학, 화학공학, 원자력공학 관련 전공\n\n자격: 신입/경력, CAE Tool 경험자 (ANSYS, COMSOL, STAR-CCM 등)\n\n경험: 저압유동, 난류유동, 연소모델, 화학반응모델 또는 복사열전달모델 경험자\n\n지식 및 기술: FSI를 포함한 Multi-Physics, Reactor/Device Scale, Electromagnetic 또는 Plasma Physics에 대한 이해, 최적화 S/W 활용\n\n학력사항: 학사 이상\n\n전공: 물리, 전기/전자, 전파공학, 신소재 혹은 유관 전공\n\n자격: 경력 2년이상\n\n경험: RF Plasma 및 System 개발 유경험자\n\n지식 및 기술 : 전자기장 및 RF 부분\n\n학력사항: 석사 이상\n\n전공: 물리, 전기/전자, 신소재 혹은 유관 전공\n\n자격: 신입 / 경력 2년이상\n\n경험: RF / Plasma 및 System 개발 유경험자\n\n지식 및 기술 : 전자기학, RF / Plasma, Surface Treatment\n\n학력 : 학사 이상\n\n전공 : 컴퓨터, 전산학과 관련 전공\n\n자격 : 경력 4~8년인 자\n\n지식/기술 : C, C++, C#, DB Windows Application 개발 경험자, Easycluster, TwinCAT, CODESYS 개발 경험자\n\n학력 : 학사 이상\n\n전공 : 컴퓨터, 전산학과 관련 전공\n\n자격 : 경력 4~8년인 자\n\n지식/기술 : C, C++, C#, DB Windows Application 개발 경험자, Easycluster, TwinCAT, CODESYS 개발 경험자\n\n학력사항: 학사,석사,박사\n\n전공: 산업공학, 통계학, 경영학, 회계학\n\n자격: 신입/경력 3년 이상\n\n지식 및 기술 : 구매, 물류 및 무역 지식\n\n학력사항: 학사 이상\n\n전공: 산업, 전기, 전자, 기계 공학 전공자\n\n자격: 경력 2년 이상\n\n경험: 설계 및 공정 관련 경험자 또는 개발구매업무 경험자\n\n지식 및 기술: 반도체 장비 생산 공정 및 주요 부품 지식 보유자\n\n학력사항: 학사\n\n전공: 전기,전자,기계,메카트로닉스 및 반도체 관련학과\n\n지식 및 기술: 반도체 공정 지식\n\n해외 출장 가능자\n\n학력사항: 학사,석사,박사\n\n전공: 산업공학/전기전자/기계공학\n\n경험: 반도체 장비 및 생산 관련 경험자\n\n지식 및 기술: 반도체 생산공정 및 장비 관련 지식 보유자\n\n학력사항: 학사,석사\n\n전공: 경상계열/통계학/기계공학/전기,전자공학/산업공학\n\n자격: 신입",
+      "preferences": "IT / 보안 관련 자격증 보유자 우대\n\n중대형 전산실 근무 / 관리 경력자 우대\n\n클라우드 / IDC / SM 경력자 우대\n\n판교\n\n법무\n경력\n\nPSK그룹 법무관리 담당\n\n국내/해외 계약 및 법률 리스크 검토 및 대응\n\n계약서 검토 및 법률 자문 수행\n\n특허 및 소송 관리\n\n공정거래, 하도급 관련 법률 이슈 검토\n\n법무 및 컴플라이언스 업무 전반\n\n석사, 박사 학위 취득자\n\n경영, 경제, 법학 관련 전공자\n\n대한민국 변호사 자격증 보유자\n\n반도체 산업 및 설비 제조업 분야 경험자\n\n상장사 근무 유경험자\n\n영어 능통자(비즈니스 협상 및 프레젠테이션 가능 수준)\n\n판교\n\nGlobal HR\n경력\n\n해외법인 HR 운영관리\n\n해외법인 인원현황, 조직도, 직급체계, HR 운영 현황 관리\n\n해외법인 채용, 입퇴사, 인력운영, 평가/보상 프로세스 운영 지원\n\n해외지사 인사관리 및 노무 이슈 대응\n\n해외법인 인력운영, 조직 이슈, 노무 리스크 관리\n\n글로벌 교육체계 및 직무역량 제도 운영\n\n해외지사 대상 직무역량/리더십 교육체계 기획 및 운영\n\nHR Data & System 운영\n\n인사 데이터 운영 및 정합성 관리\n\n인원, 채용, 이직, 평가, 보상, 교육 등 주요 HR 지표 분석\n\n데이터 기반 인사이트 도출\n\n시스템/Tool : SAP/LMS\n\n해외법인 또는 글로벌 조직 대상 HR 운영 경험\n\n조직운영, 인력운영, 평가/보상, 교육, 노무 업무 관련 경험\n\n복수 국가 또는 복수 법인과 협업한 커뮤니케이션 경험\n\nHR 제도 기획부터 운영 정착까지 실행한 경험\n\n데이터 기반 HR 리포팅 및 보고서 작성 능력\n\n변화가 빠른 제조업/반도체/장비 산업 환경에 대한 이해\n\n해외지사 운영 경험자 우대\n\n반도체 산업 경력 보유자\n\nOA 자격증 보유자\n\n데이터 분석 자격증 보유자\n\n동탄/판교/용인\n\n기술영업/\n마케팅\n인턴(3개월_채용전환형)\n/경력\n\n해외영업\n반도체 고객사, 업계 기술동향 및 시장 Trend를 분석하여 회사의 Business 연속성을 위한 기술개발 방향 및 판매전략 수립을 통한 설비 판매 전반적 업무 수행\n\n프로덕트 마케팅\n전사적으로 Product별 시장조사, 경쟁사분석, 가격정책, 고객소통을 기반으로 전략적 roadmap을 제시하고 개발방향을 주도하여 경쟁력있는 Product 매출확대와 이윤을 창출함.\n\n시스템/Tool: My Service, SAP, SBMS\n\n설비 영업\n\n설비 Spec & 가격 협의\n\n설비 판매전략 수립\n\n시장, 고객사 기술 동향 분석 및 영업전략 도출\n\n매출 관리\n\n고객사 투자 FCST\n\nRevenue 관리\n\n프로덕트마케팅\n\n시장분석\n\n중장기 Forecast\n\n경쟁사분석\n\n제품 소개, 전략\n\n문서관리\n\nCM/COPQ 관리\n\n영/중/일어 능통자 우대\n\n반도체업계(IDM, 설비) 경력자 우대\n\n판교\n\n공정개발\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비 관리 및 운영, 고객사 요구 사양에 맞는 공정 조건 및 Process Kit 개발, 공정 개발,개선 및 불량 발생시 분석 Tool (성분/구조/Data) 및 결과를 해석, 개선안을 도출\n\n시스템/Tool: Minitab (Jump)\n\n사내 개발 장비 관리\n\n성능평가\n\n유지 보수 관리\n\n핵심부품 관리, 개선\n\nDemo Wafer 평가,분석\n\nDemo 완료 보고서 작성\n\n고객 미팅, 고객 Support\n\n불량 분석 및 개선안 제공\n\n고객사 공정 Set up지원\n\n외국어 능통자(영어/중국어)\n\n실험계획법 / 6 Sigma 수료자\n\n반도체 전/후공정 장비 운용 경험자\n\n다양한 Film 분석 및 특성측정 경험자\n\n동탄/판교\n\n기구설계\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비에 대한 H/W 설계 및 부품 선정\n양산제품의 경우, 고객 사양 맞춤형 CIP 설계\n개발 제품의 경우, Concept 단계부터 전체 장비 System 설계 진행하며, BOM, 작업지시서, SOP등 작성하여 생산이 가능하도록 하는 업무\n\n시스템/Tool : PRO-E, CREO, PLM PDM, SAP, Auto CAD\n\n반도체 장비 기구설계\n\n개발설비 설계 및 사양 분류 및 정의\n\n양산설비 사양관리 및 상품성 강화설계\n\n핵심부품 개발 및 Life Cycle 관리\n\nModule단위 설치 Jig 개발\n\n외주설계 및 승인도 관리\n\n반도체 장비 구조/유동 해석\n\n설비 Manual 및 SOP 작성\n\n고객사 장비 Set up지원\n\nPSK & Customer Common Spec 관리\n\n구조해석, 유동해석 유경험자\n\n기계공학 석,박사\n\n어학능력(영어,중국어 소통가능자)\n\n판교\n\n기구설계\n(LASER)\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비에 대한 H/W 설계 및 부품 선정\n양산제품의 경우, 고객 사양 맞춤형 CIP 설계\n개발 제품의 경우, Concept 단계부터 전체 장비 System 설계 진행하며, BOM, 작업지시서, SOP등 작성하여 생산이 가능하도록 하는 업무\n\n시스템/Tool : PRO-E, CREO, PLM PDM, SAP, Auto CAD\n\n반도체 장비 기구설계\n\n개발설비 설계 및 사양 분류 및 정의\n\n양산설비 사양관리 및 상품성 강화설계\n\n핵심부품 개발 및 Life Cycle 관리\n\nModule단위 설치 Jig 개발\n\n외주설계 및 승인도 관리\n\n반도체 장비 구조/유동 해석\n\n설비 Manual 및 SOP 작성\n\n고객사 장비 Set up지원\n\nPSK & Customer Common Spec 관리\n\nLaser 공정 연계 H/W 개발 경험자\n\n기계공학 석,박사\n\n반도체 SEMI Standard 이해자\n\n판교\n\n전장설계\n(LASER)\n인턴(3개월_채용전환형)\n/경력\n\n전장 설계\n\n전기를 활용하는 전기장치와 관련된 모든 설계의 업무범위를 뜻하며, 전원/제어/통신/안전/회로등 세분화된 시스템설계를 담당하여 아이디어를 현실화, 상품화하는 개발 업무와 양산 설비 전장사양 관리 및 상품성 개선 업무를 담당\n\n시스템/Tool : PLM, PDM / EPLAN, Auto CAD\n\n반도체 장비 전장설계\n\n전원/제어/통신/안전/회로 설계\n\n개발설비 설계 및 사양 분류 및 정의\n\n양산설비 사양관리 및 상품성 강화 설계\n\n광학 모듈, 제어 인터페이스, 구동부 및 센서 연계 설계\n\nX-Y 스테이지 구동 시스템 전장 설계\n\nPSK & Customer Common Spec 관리\n\n국내/해외 고객사 전장관련 기술 지원\n\n국제 규격 대응 설계(SEMI, CE, NRTL 등)\n\n설비 Safety Manual 및 SOP 작성\n\n외주설계 및 승인도 관리\n\n전기 관련 기사 자격증 소지자\n\n반도체장비개발 경험자/유사장비 경험자 우대\n\n레이저 가공/검사 반도체/디스플레이 장비 개발 경험자\n\n판교\n\nCAE\n(Computer-Aided\nEngineering)\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비 해석을 통해 설계 최적화 및 성능 향상, 개발 및 양산 장비 문제 원인 분석 및 해결방안 제시\n\n시스템/Tool: ANSYS Fluent, CREO\n\n유동 / 반응 / 구조 해석\n\n2D/ 3D CAD Tool 사용한 Model 간략화\n\n결과 분석 및 보고서 작성\n\n설계 최적화 및 Trouble Shooting\n\n반도체 관련 장비 해석 경험자\n\n어학능력(영어 소통가능자)\n\nPython기반 Machine Learning 경험자\n\n판교\n\n요소기술개발\n(레이저)\n인턴(3개월_채용전환형)\n/경력\n\nRF System development\nRF Generator, Matcher, Filter and electrode를 포함한 RF system의 개발\n\nPlasma Source 개발\nRemote ICP, CCP, Planar ICP, MW등의 개발\n\nLaser Application System 개발\n\nLaser & optics 모듈 개발 혹은 최적화\n\n레이저 미세 가공 기술의 개발\n\nPlasma Source 설계\n\n전자기장 및 Plasma Simulation\n\nPlasma 진단의 연구 및 개발\n\nRF System 개발\n\nESC 개발\n\nLaser System\n\n레이저 시스템을 활용한 공정 개발 및 시스템 최적화\n\n주요 공정 요소의 분석 및 개발\n\n영어 능통자\n\n석사 이상 소지자 우대\n\nPython, HFSS, CST, COMSOL, PSPICE 능통자\n\nPlasma RF 시스템 개발 및 진단 기술의 전문가\n\n동탄\n\n요소기술개발\n(Plasma source)\n인턴(3개월_채용전환형)\n/경력\n\nRF System Development\nRF Generator, Matcher, Filter 등을 포함한 RF system의 개발\n\nPlasma Source 개발\nRemote ICP, CCP, Planar ICP\n\nRF/Plasma Sensor 개발\nElectrical / Optical Diagnostics\n\nPlasma Source 설계\n\n전자기장 및 Plasma Simulation\n\nPlasma 진단의 연구 및 개발\n\nRF System 개발 (통신 관련이 아닌 Plasma 발생장치 관련)\n\nkHz~MHz 영역 RF Matcher, Generator 관련 개발 및 양산 대응\n\nPlasma Uniformity 개선 및 방전 안정성 확보를 위한 구조 최적화\n\nRF Circuit Simulation을 통한 등가 회로 분석\n\nRF System의 전력 효율 개선, 노이즈 저감 및 신뢰성 평가\n\nPlasma Applicator - Material 및 Surface 변화 연구\n\nSensor 개발\n\n반도체 공정 Monitoring을 위한 Sensor System 개발\n\nOES 등을 활용한 Optical Diagnostics & End Point Detection\n\nLangmuir(Single/Double/Floating) Method, RFEA 등 Electrical Diagnostics\n\n영어 능통자\n\nEM Simulation (CST, MWS, HFSS) 경험자\n\nRF/Plasma 시스템 개발 및 진단 기술의 전문가\n\nMaterial 및 Surface 분석 연구 가능자\n\nLABVIEW, Python, MATLAB 활용 Data 분석 가능자\n\n동탄\n\nSW\n경력\n\n반도체 장비 SW 개발\n'Windows Programming'기반의 반도체 설비 SW를 개발하며, SEMI Standard에 대한 이해, 사용자 편의를 위한 각종 Utility 기능 및 Data 분석을 위한 기능 개발 업무를 수행하며, 다양한 프로그램 Language(C/C++/C#) Skill 및 Algorithm 지식 필요\n\n반도체 장비 SW 개발\n\n반도체 설비 운영 및 자동화 제어 SW 개발\n\nFieldbus Interface Driver 개발\n\nFA Interface 개발 (SEMI Standard)\n\nTrouble Shooting용 각종 Utility SW 개발\n\n설비 Operation 및 자동화 Manual 작성\n\nCOS Pro, CTFL 자격증 소유자\n\n반도체장비개발 경험자 / 자동화 장비 등 유사장비 경험자\n\nSEMI Standard 이해자\n\n판교\n\nSW\n(레이저)\n경력\n\n반도체 장비 SW 개발\n'Windows Programming'기반의 반도체 설비 SW를 개발하며, SEMI Standard에 대한 이해, 사용자 편의를 위한 각종 Utility 기능 및 Data 분석을 위한 기능 개발 업무를 수행하며, 다양한 프로그램 Language(C/C++/C#) Skill 및 Algorithm 지식 필요\n\n반도체 장비 SW 개발\n\n반도체 설비 운영 및 자동화 제어 SW 개발\n\nFieldbus Interface Driver 개발\n\nFA Interface 개발 (SEMI Standard)\n\n광학 제품 및 관련 제어장치 SW 개발\n\n광학 모듈 제어, 상태 모니터링 및 인터페이스 SW 개발\n\nX-Y 스테이지 구동 및 모션 제어 SW 개발\n\n모터, 드라이버, 센서, 엔코더 연동 제어 SW 개발\n\n위치 제어, 반복 정밀도, 구동 안정성 확보를 위한 제어 로직 개발\n\nTrouble Shooting용 각종 Utility SW 개발\n\n설비 Operation 및 자동화 Manual 작성\n\nCOS Pro, CTFL 자격증 소유자\n\n반도체장비개발 경험자 / 자동화 장비 등 유사장비 경험자\n\nSEMI Standard 이해자\n\nAI Algorithm 설계자\n\nGen AI, RAG 관련 개발 경험자\n\n레이저 가공/검사 반도체/디스플레이 장비 개발 경험자\n\n판교\n\n구매관리\n인턴(3개월_채용전환형)\n/경력\n\n구매관리\n회사의 경영활동에 필요한 자재를 적절한 품질과 가격으로 적기에 공급할 수 있는 구매계획을 수립 및 실행하며, 대내외 부서간 소통을 통해 협의를 도모함.\n\n시스템/Tool: SAP\n\n구매/원가 관리\n\n납기 관리\n\n원가 관리\n\nBusiness Partner 개발\n\n원재료 수입 통관\n\n원가 관리 및 원가 기획\n\n영어 및 외국어 능통자\n\nOA 자격증 보유자 (워드, 엑셀)\n\n판교\n\n전략개발\n구매\n경력\n\n전략구매\n신기술 및 부품 공급 관련 시장정보 관리/활용 체계를 구축하며 구매가격 정책, SCM 평가 및 발주비율 관리, 원가 관리를 구매 전반적인 기획업무수행\n\n개발구매\n제품 및 부품의 개발 초기 단계부터 참여하여 개발의 궁극적인 목표를 달성하기 위해 효과적으로 지원하며 합리적인 가격을 선정하고 원활한 부품 공급을 위한 공급망 형성 및 Platform을 구축함\n\n시스템/Tool: SAP, PLM, SBMS, PEMS\n\n본사/관계사 전략개발 구매관리\n\n원자재 구매\n\n신규 Business Partner Sourcing 및 평가\n\n신규 제품 개발 지원 (원가산출 및 Sourcing)\n\n신규 부품 개발 (Process 관리, 원가 및 기술 검토)\n\n기존 및 공급 시장 동향 파악\n\n원가 관리 및 원가 기획\n\n영어 및 외국어 능통자\n\n구매관련 자격증 보유자 (KCPM, CPSM, KPM, 물류관리사 등)\n\nOA 자격증 보유자 (워드, 엑셀)\n\n판교\n\nPEE\n(Product\nEquipment\nEngineering)\n인턴(3개월_채용전환형)\n\n설비 유지 보수\n\n고객사 출하 설비의 Set up 및 최적의 가동을 위한 안정적인 유지 보수 관리 업무를 진행\n\n표준화된 업무 프로세스를 통한 반도체 장비 결함 진단 및 문제 해결 조치, 고객사 VOC 대응\n\n시스템/Tool: mySERVICE)\n\n고객사 설비 관리\n\nSet up/ Maintenance\n\n설비 초기 유동 관리(IOC)\n\nTool Performance 관리\n\n고객 대응\n\nCustomer VOC 대응\n\nCIP Management\n\n외국어 능통자(영어,중국어,일본어)\n\n전공정 Etch 장비 설비 CS 경력자\n\n화성/평택\n청주/이천\n\nMFG\n(Manufacturing\nEngineering)\n신입\n\n생산 공정을 정확하게 이해하고 숙지하여 작업을 지시·결과를 보고하고, 표준화를 통한 제품의 품질 및 생산/ Field Service의 안정화를 도모하며, 원활한 생산 업무를 위한 지원 활동을 수행함\n\n판매용 부품 물류관리\n\n판매용 부품의 입고부터 고객 납품까지의 전반적인 부품 판매 프로세스 운영 및 개선 (부품 판매 과정에서의 일련의 물류 활동 수행)\n\n시스템/Tool: SAP, SBMS, SMP, PLM, MyPSK\n\n본사 및 B.P사 생산관리\n\n생산 실무\n\n생산 공정 관리\n\n생산 설비 및 부자재 관리\n\n양산 설비 TTTM\n\n품질 개선\n\n청정실 관리\n\n창고 및 자재 관리\n\n양산 자재\n\n판매용 부품 자재\n\n창고 운영\n\n자재 입출고(ERP)\n\n고객 납품\n\n관계사 관리\n\nAuto Cad\n\n영어 능통자\n\n생산관리 관련 자격증 보유자\n\n화성/평택/판교\n\n부품영업\n인턴(3개월_채용전환형)\n\n판매 관리\n국내 고객사 및 해외 지사 After Market Sales 진행.\nDATA 분석을 통한 매출 Forecasting 및 수요량 예측.\n매출 증대를 위한 전략 마케팅 시행.\n\n장비 물류관리\n장비 양산 자재의 입/출고 및 재고 관리,\n장비 출하 관리 등 장비 판매 과정에서의 일련의 물류 활동 수행\n\n시스템/Tool: SAP/My Service/My PSK\n\n고객사/지사 판매 및 물류 관리\n\n영업/판매/전략 마케팅\n\n매출/부품 수요 Forecasting\n\n영어, 중국어 능통자\n\nOA 자격증 보유자 (워드, 엑셀)\n\n동종업계 근무 경력 보유\n\n동탄/판교\n\n필수조건: 4년제 이상, 학점 평점 3.50이상(4.5 만점 기준 / 단, 경력자 학점 무관) 공고일 기준 기졸업자 및 8월 졸업예정자에 한하여 지원가능\n\n우대사항: 영어/중국어/일본어 능통자 우대\n\n외국인 지원 가능(취업비자 발급 가능자)\n\n■채용 절차\n\n지원서 접수\n서류 전형\n통합역량 검사\n직무역량 TEST\n면접 전형\n(1/2차)\n채용 검진\n합격 발표\n\n경력직 지원자의 경우 1차 면접 이후 평판조회 진행\n\n직무역량 TEST의 경우 1차 면접 전 진행",
+      "main_tasks": "",
+      "benefits": "GWP (Great Work Place)\n사내식당 (중/석식 제공)/동호회활동 지원/패밀리데이(조기퇴근) 운영/리조트 운영\n\nBENEFIT\n주택자금/자녀 학자금/경조사비 지원, 장기근속/우수사원 포상, 복지포인트 지급\n\nHRDS\n우수인재 대학원 학자금 지원/사외교육비 지원/도서구입비 지원/모바일 영어 어학 학습 지원\n\nHEALTH\n사내 Fitness Center 운영/금연수당 지급/종합건강검진/단체상해보험 가입\n\n세부사항은 사내 규정에 의거함\n\n■급여조건\n\nPSK Holdings / PSK : 인턴(월 300만원) 신입연봉 50,000천원(4년대졸), 53,000천원(석사), 경력직: 협의, 계약직: 협의\n\n수습 6개월(단, 3개월만 급여 80% 지급)\n\n홈페이지: (PSK) https://www.pskinc.com (PSK Holdings) https://pskholding.com\n\nPSK 유튜브 채널 QR 코드"
+    },
+    {
+      "site": "dev",
+      "company": "피에스케이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[PSK그룹] 7월 직무별 수시채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561776?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "경기 화성시, 성남시 분당구, 용인시, 평택시, 이천시, 충북 청주시",
+      "dday": "D-6",
+      "tech_stack": [
+        "Python",
+        "C++",
+        "C#",
+        "C/C++",
+        "MATLAB"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "학사 이상",
+        "석박사 우대"
+      ],
+      "qualifications": "학력사항 : 학사, 석사\n\n전공 : 산업공학 / 기계 / 전자 관련공학 전공\n\n자격 : 신입 / 경력 2년 이상 반도체 장비 및 제조 품질 관리 및 품질 예방 활동 지식 보유자\n\n영어, 일본어, 중국어 능통자 우대\n품질관리 및 관련 자격증 보유자 우대\n\n동탄/판교\n\n시스템관리\n인턴(3개월_채용전환형)\n/경력\n\n시스템 관리\nERP, PLM, 사양관리, Web Portal 및 시스템 연계 운영, 관리의 총괄 부서로서, 업무 Process와 연계하여 Process 개선 및 안정적인 System 서비스가 진행되도록 운영·관리함\n\n시스템/Tool: SAP ERP / Windchill PLM / 기타 Business Solution (CRM, KMS 등)\n\nPSK Group 시스템 관리\n\n업무연계 시스템 최적화\n\n시스템 총괄\n\n정보화 교육\n\n프로젝트 관리\n\nProcess Innovation, IT기획/설계\n\n유지보수 / 개발 파트너사 관리\n\n해외법인 시스템 관리\n\n학력사항: 학사,석사,박사\n\n전공: IT 및 경영정보 계열 / 산업공학 / 통계\n\n자격: 신입 / 경력 5년 이하\n\n경험: 제조업 시스템 도입 및 Business Solution 개선/운영 관리 경험자 우대\n\n판교\n\nIT Infra\nManagement\n인턴(3개월_채용전환형)\n/경력\n\nIT Infra 관리, PC OA 정비, 네트워크 관리, IT 헬프데스크, 유지보수 업체관리\n\nTOOL&자격 : 네트워크 관련 자격, 보안 관련 자격, MS 관련 자격, DBA 관련 자격 등 전산실 운영과 관련한 자격 or 보안관련 자격\n\nPSK Group IT Infra 관리\n\n윈도우서버 운영\n\n네트워크,방화벽,VPN 운영\n\nIT보안 솔루션 운영\n\n학력사항: 학사,석사\n\n전공: 전산관련전공 or 비전공자 자격 우대\n\n자격 : 신입 / 경력 5년 이하\n\n경험 : 전산실 / 전산 인프라 운영 경력\n\n자격증 : 정보처리기사\n\n석사, 박사 학위 취득자\n\n전공: 무관\n\n자격: 경력 10년 이상\n\n학력사항 : 학사 이상\n\n전공: 경영학, 교육학, 인사관리 관련 전공자\n\n자격: 경력 8년 이상\n\n경험: HR 관리 전반 지식과 실무 경험자\n\n지식 및 기술:\n\n어학능통자(영어)\n\nOA 역량(중급 이상)\n\nAI리터러시\n\n데이터 분석 능력\n\n학력사항: 학사,석사,박사\n\n전공: 기술경영/공학 또는 반도체 업종 경험\n\n자격: 신입/경력 3년이상\n\n지식 및 기술 : 반도체 공정, 반도체 설비\n\n학력사항: 학사,석사,박사\n\n전공: 물리, 재료, 화학, 전자, 전기등 반도체 관련학과\n\n자격: 신입/경력 3년 이상\n\n학력사항 : 학사,석사\n\n전공: 기계, 전기 기계설계공학 관련 전공자\n\n자격: 신입/경력 3년 이상\n\n경험 : 반도체 공정 장비 양산 및 개발PJT경험\n\n지식 및 기술 : 반도체 장비 기구 설계, SEMI 및 국제 안전사양 설계 유경험, 기구설계 Tool 이용 가능, 반도체 공정, 장비 기초 이해\n\n학력사항 : 학사,석사\n\n전공: 기계 공학 및 기계 설계 관련 전공\n\n자격: 신입/경력 6년 이상\n\n경험 : 반도체 장비 설계 업무 경험\n\n지식 및 기술 : CAD/CAM 프로그램, CREO 활용 능력 안전사양 설계 유경험, 기구설계 Tool 이용 가능, 반도체 공정, 장비 기초 이해\n\n학력사항 : 학사,석사\n\n전공 : 전기,전자,제어 공학 관련 전공자\n\n자격 : 신입/경력 3년 이상\n\n경험 : 반도체/디스플레이 장비 전기/전자/전장 설계 경력자로서 3년 이상 시스템 설계 경험자\n\n지식 및 기술 : 반도체 장비 전장/회로 설계, SEMI 및 국제 안전사양 설계 유경험자\n\n학력사항: 석사,박사\n\n전공: 전산유체, 기계공학, 화학공학, 원자력공학 관련 전공\n\n자격: 신입/경력, CAE Tool 경험자 (ANSYS, COMSOL, STAR-CCM 등)\n\n경험: 저압유동, 난류유동, 연소모델, 화학반응모델 또는 복사열전달모델 경험자\n\n지식 및 기술: FSI를 포함한 Multi-Physics, Reactor/Device Scale, Electromagnetic 또는 Plasma Physics에 대한 이해, 최적화 S/W 활용\n\n학력사항: 학사 이상\n\n전공: 물리, 전기/전자, 전파공학, 신소재 혹은 유관 전공\n\n자격: 경력 2년이상\n\n경험: RF Plasma 및 System 개발 유경험자\n\n지식 및 기술 : 전자기장 및 RF 부분\n\n학력사항: 석사 이상\n\n전공: 물리, 전기/전자, 신소재 혹은 유관 전공\n\n자격: 신입 / 경력 2년이상\n\n경험: RF / Plasma 및 System 개발 유경험자\n\n지식 및 기술 : 전자기학, RF / Plasma, Surface Treatment\n\n학력 : 학사 이상\n\n전공 : 컴퓨터, 전산학과 관련 전공\n\n자격 : 경력 4~8년인 자\n\n지식/기술 : C, C++, C#, DB Windows Application 개발 경험자, Easycluster, TwinCAT, CODESYS 개발 경험자\n\n학력 : 학사 이상\n\n전공 : 컴퓨터, 전산학과 관련 전공\n\n자격 : 경력 4~8년인 자\n\n지식/기술 : C, C++, C#, DB Windows Application 개발 경험자, Easycluster, TwinCAT, CODESYS 개발 경험자\n\n학력사항: 학사,석사,박사\n\n전공: 산업공학, 통계학, 경영학, 회계학\n\n자격: 신입/경력 3년 이상\n\n지식 및 기술 : 구매, 물류 및 무역 지식\n\n학력사항: 학사 이상\n\n전공: 산업, 전기, 전자, 기계 공학 전공자\n\n자격: 경력 2년 이상\n\n경험: 설계 및 공정 관련 경험자 또는 개발구매업무 경험자\n\n지식 및 기술: 반도체 장비 생산 공정 및 주요 부품 지식 보유자\n\n학력사항: 학사\n\n전공: 전기,전자,기계,메카트로닉스 및 반도체 관련학과\n\n지식 및 기술: 반도체 공정 지식\n\n해외 출장 가능자\n\n학력사항: 학사,석사,박사\n\n전공: 산업공학/전기전자/기계공학\n\n경험: 반도체 장비 및 생산 관련 경험자\n\n지식 및 기술: 반도체 생산공정 및 장비 관련 지식 보유자\n\n학력사항: 학사,석사\n\n전공: 경상계열/통계학/기계공학/전기,전자공학/산업공학\n\n자격: 신입",
+      "preferences": "IT / 보안 관련 자격증 보유자 우대\n\n중대형 전산실 근무 / 관리 경력자 우대\n\n클라우드 / IDC / SM 경력자 우대\n\n판교\n\n법무\n경력\n\nPSK그룹 법무관리 담당\n\n국내/해외 계약 및 법률 리스크 검토 및 대응\n\n계약서 검토 및 법률 자문 수행\n\n특허 및 소송 관리\n\n공정거래, 하도급 관련 법률 이슈 검토\n\n법무 및 컴플라이언스 업무 전반\n\n석사, 박사 학위 취득자\n\n경영, 경제, 법학 관련 전공자\n\n대한민국 변호사 자격증 보유자\n\n반도체 산업 및 설비 제조업 분야 경험자\n\n상장사 근무 유경험자\n\n영어 능통자(비즈니스 협상 및 프레젠테이션 가능 수준)\n\n판교\n\nGlobal HR\n경력\n\n해외법인 HR 운영관리\n\n해외법인 인원현황, 조직도, 직급체계, HR 운영 현황 관리\n\n해외법인 채용, 입퇴사, 인력운영, 평가/보상 프로세스 운영 지원\n\n해외지사 인사관리 및 노무 이슈 대응\n\n해외법인 인력운영, 조직 이슈, 노무 리스크 관리\n\n글로벌 교육체계 및 직무역량 제도 운영\n\n해외지사 대상 직무역량/리더십 교육체계 기획 및 운영\n\nHR Data & System 운영\n\n인사 데이터 운영 및 정합성 관리\n\n인원, 채용, 이직, 평가, 보상, 교육 등 주요 HR 지표 분석\n\n데이터 기반 인사이트 도출\n\n시스템/Tool : SAP/LMS\n\n해외법인 또는 글로벌 조직 대상 HR 운영 경험\n\n조직운영, 인력운영, 평가/보상, 교육, 노무 업무 관련 경험\n\n복수 국가 또는 복수 법인과 협업한 커뮤니케이션 경험\n\nHR 제도 기획부터 운영 정착까지 실행한 경험\n\n데이터 기반 HR 리포팅 및 보고서 작성 능력\n\n변화가 빠른 제조업/반도체/장비 산업 환경에 대한 이해\n\n해외지사 운영 경험자 우대\n\n반도체 산업 경력 보유자\n\nOA 자격증 보유자\n\n데이터 분석 자격증 보유자\n\n동탄/판교/용인\n\n기술영업/\n마케팅\n인턴(3개월_채용전환형)\n/경력\n\n해외영업\n반도체 고객사, 업계 기술동향 및 시장 Trend를 분석하여 회사의 Business 연속성을 위한 기술개발 방향 및 판매전략 수립을 통한 설비 판매 전반적 업무 수행\n\n프로덕트 마케팅\n전사적으로 Product별 시장조사, 경쟁사분석, 가격정책, 고객소통을 기반으로 전략적 roadmap을 제시하고 개발방향을 주도하여 경쟁력있는 Product 매출확대와 이윤을 창출함.\n\n시스템/Tool: My Service, SAP, SBMS\n\n설비 영업\n\n설비 Spec & 가격 협의\n\n설비 판매전략 수립\n\n시장, 고객사 기술 동향 분석 및 영업전략 도출\n\n매출 관리\n\n고객사 투자 FCST\n\nRevenue 관리\n\n프로덕트마케팅\n\n시장분석\n\n중장기 Forecast\n\n경쟁사분석\n\n제품 소개, 전략\n\n문서관리\n\nCM/COPQ 관리\n\n영/중/일어 능통자 우대\n\n반도체업계(IDM, 설비) 경력자 우대\n\n판교\n\n공정개발\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비 관리 및 운영, 고객사 요구 사양에 맞는 공정 조건 및 Process Kit 개발, 공정 개발,개선 및 불량 발생시 분석 Tool (성분/구조/Data) 및 결과를 해석, 개선안을 도출\n\n시스템/Tool: Minitab (Jump)\n\n사내 개발 장비 관리\n\n성능평가\n\n유지 보수 관리\n\n핵심부품 관리, 개선\n\nDemo Wafer 평가,분석\n\nDemo 완료 보고서 작성\n\n고객 미팅, 고객 Support\n\n불량 분석 및 개선안 제공\n\n고객사 공정 Set up지원\n\n외국어 능통자(영어/중국어)\n\n실험계획법 / 6 Sigma 수료자\n\n반도체 전/후공정 장비 운용 경험자\n\n다양한 Film 분석 및 특성측정 경험자\n\n동탄/판교\n\n기구설계\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비에 대한 H/W 설계 및 부품 선정\n양산제품의 경우, 고객 사양 맞춤형 CIP 설계\n개발 제품의 경우, Concept 단계부터 전체 장비 System 설계 진행하며, BOM, 작업지시서, SOP등 작성하여 생산이 가능하도록 하는 업무\n\n시스템/Tool : PRO-E, CREO, PLM PDM, SAP, Auto CAD\n\n반도체 장비 기구설계\n\n개발설비 설계 및 사양 분류 및 정의\n\n양산설비 사양관리 및 상품성 강화설계\n\n핵심부품 개발 및 Life Cycle 관리\n\nModule단위 설치 Jig 개발\n\n외주설계 및 승인도 관리\n\n반도체 장비 구조/유동 해석\n\n설비 Manual 및 SOP 작성\n\n고객사 장비 Set up지원\n\nPSK & Customer Common Spec 관리\n\n구조해석, 유동해석 유경험자\n\n기계공학 석,박사\n\n어학능력(영어,중국어 소통가능자)\n\n판교\n\n기구설계\n(LASER)\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비에 대한 H/W 설계 및 부품 선정\n양산제품의 경우, 고객 사양 맞춤형 CIP 설계\n개발 제품의 경우, Concept 단계부터 전체 장비 System 설계 진행하며, BOM, 작업지시서, SOP등 작성하여 생산이 가능하도록 하는 업무\n\n시스템/Tool : PRO-E, CREO, PLM PDM, SAP, Auto CAD\n\n반도체 장비 기구설계\n\n개발설비 설계 및 사양 분류 및 정의\n\n양산설비 사양관리 및 상품성 강화설계\n\n핵심부품 개발 및 Life Cycle 관리\n\nModule단위 설치 Jig 개발\n\n외주설계 및 승인도 관리\n\n반도체 장비 구조/유동 해석\n\n설비 Manual 및 SOP 작성\n\n고객사 장비 Set up지원\n\nPSK & Customer Common Spec 관리\n\nLaser 공정 연계 H/W 개발 경험자\n\n기계공학 석,박사\n\n반도체 SEMI Standard 이해자\n\n판교\n\n전장설계\n(LASER)\n인턴(3개월_채용전환형)\n/경력\n\n전장 설계\n\n전기를 활용하는 전기장치와 관련된 모든 설계의 업무범위를 뜻하며, 전원/제어/통신/안전/회로등 세분화된 시스템설계를 담당하여 아이디어를 현실화, 상품화하는 개발 업무와 양산 설비 전장사양 관리 및 상품성 개선 업무를 담당\n\n시스템/Tool : PLM, PDM / EPLAN, Auto CAD\n\n반도체 장비 전장설계\n\n전원/제어/통신/안전/회로 설계\n\n개발설비 설계 및 사양 분류 및 정의\n\n양산설비 사양관리 및 상품성 강화 설계\n\n광학 모듈, 제어 인터페이스, 구동부 및 센서 연계 설계\n\nX-Y 스테이지 구동 시스템 전장 설계\n\nPSK & Customer Common Spec 관리\n\n국내/해외 고객사 전장관련 기술 지원\n\n국제 규격 대응 설계(SEMI, CE, NRTL 등)\n\n설비 Safety Manual 및 SOP 작성\n\n외주설계 및 승인도 관리\n\n전기 관련 기사 자격증 소지자\n\n반도체장비개발 경험자/유사장비 경험자 우대\n\n레이저 가공/검사 반도체/디스플레이 장비 개발 경험자\n\n판교\n\nCAE\n(Computer-Aided\nEngineering)\n인턴(3개월_채용전환형)\n/경력\n\nPSK Group별 담당 장비 해석을 통해 설계 최적화 및 성능 향상, 개발 및 양산 장비 문제 원인 분석 및 해결방안 제시\n\n시스템/Tool: ANSYS Fluent, CREO\n\n유동 / 반응 / 구조 해석\n\n2D/ 3D CAD Tool 사용한 Model 간략화\n\n결과 분석 및 보고서 작성\n\n설계 최적화 및 Trouble Shooting\n\n반도체 관련 장비 해석 경험자\n\n어학능력(영어 소통가능자)\n\nPython기반 Machine Learning 경험자\n\n판교\n\n요소기술개발\n(레이저)\n인턴(3개월_채용전환형)\n/경력\n\nRF System development\nRF Generator, Matcher, Filter and electrode를 포함한 RF system의 개발\n\nPlasma Source 개발\nRemote ICP, CCP, Planar ICP, MW등의 개발\n\nLaser Application System 개발\n\nLaser & optics 모듈 개발 혹은 최적화\n\n레이저 미세 가공 기술의 개발\n\nPlasma Source 설계\n\n전자기장 및 Plasma Simulation\n\nPlasma 진단의 연구 및 개발\n\nRF System 개발\n\nESC 개발\n\nLaser System\n\n레이저 시스템을 활용한 공정 개발 및 시스템 최적화\n\n주요 공정 요소의 분석 및 개발\n\n영어 능통자\n\n석사 이상 소지자 우대\n\nPython, HFSS, CST, COMSOL, PSPICE 능통자\n\nPlasma RF 시스템 개발 및 진단 기술의 전문가\n\n동탄\n\n요소기술개발\n(Plasma source)\n인턴(3개월_채용전환형)\n/경력\n\nRF System Development\nRF Generator, Matcher, Filter 등을 포함한 RF system의 개발\n\nPlasma Source 개발\nRemote ICP, CCP, Planar ICP\n\nRF/Plasma Sensor 개발\nElectrical / Optical Diagnostics\n\nPlasma Source 설계\n\n전자기장 및 Plasma Simulation\n\nPlasma 진단의 연구 및 개발\n\nRF System 개발 (통신 관련이 아닌 Plasma 발생장치 관련)\n\nkHz~MHz 영역 RF Matcher, Generator 관련 개발 및 양산 대응\n\nPlasma Uniformity 개선 및 방전 안정성 확보를 위한 구조 최적화\n\nRF Circuit Simulation을 통한 등가 회로 분석\n\nRF System의 전력 효율 개선, 노이즈 저감 및 신뢰성 평가\n\nPlasma Applicator - Material 및 Surface 변화 연구\n\nSensor 개발\n\n반도체 공정 Monitoring을 위한 Sensor System 개발\n\nOES 등을 활용한 Optical Diagnostics & End Point Detection\n\nLangmuir(Single/Double/Floating) Method, RFEA 등 Electrical Diagnostics\n\n영어 능통자\n\nEM Simulation (CST, MWS, HFSS) 경험자\n\nRF/Plasma 시스템 개발 및 진단 기술의 전문가\n\nMaterial 및 Surface 분석 연구 가능자\n\nLABVIEW, Python, MATLAB 활용 Data 분석 가능자\n\n동탄\n\nSW\n경력\n\n반도체 장비 SW 개발\n'Windows Programming'기반의 반도체 설비 SW를 개발하며, SEMI Standard에 대한 이해, 사용자 편의를 위한 각종 Utility 기능 및 Data 분석을 위한 기능 개발 업무를 수행하며, 다양한 프로그램 Language(C/C++/C#) Skill 및 Algorithm 지식 필요\n\n반도체 장비 SW 개발\n\n반도체 설비 운영 및 자동화 제어 SW 개발\n\nFieldbus Interface Driver 개발\n\nFA Interface 개발 (SEMI Standard)\n\nTrouble Shooting용 각종 Utility SW 개발\n\n설비 Operation 및 자동화 Manual 작성\n\nCOS Pro, CTFL 자격증 소유자\n\n반도체장비개발 경험자 / 자동화 장비 등 유사장비 경험자\n\nSEMI Standard 이해자\n\n판교\n\nSW\n(레이저)\n경력\n\n반도체 장비 SW 개발\n'Windows Programming'기반의 반도체 설비 SW를 개발하며, SEMI Standard에 대한 이해, 사용자 편의를 위한 각종 Utility 기능 및 Data 분석을 위한 기능 개발 업무를 수행하며, 다양한 프로그램 Language(C/C++/C#) Skill 및 Algorithm 지식 필요\n\n반도체 장비 SW 개발\n\n반도체 설비 운영 및 자동화 제어 SW 개발\n\nFieldbus Interface Driver 개발\n\nFA Interface 개발 (SEMI Standard)\n\n광학 제품 및 관련 제어장치 SW 개발\n\n광학 모듈 제어, 상태 모니터링 및 인터페이스 SW 개발\n\nX-Y 스테이지 구동 및 모션 제어 SW 개발\n\n모터, 드라이버, 센서, 엔코더 연동 제어 SW 개발\n\n위치 제어, 반복 정밀도, 구동 안정성 확보를 위한 제어 로직 개발\n\nTrouble Shooting용 각종 Utility SW 개발\n\n설비 Operation 및 자동화 Manual 작성\n\nCOS Pro, CTFL 자격증 소유자\n\n반도체장비개발 경험자 / 자동화 장비 등 유사장비 경험자\n\nSEMI Standard 이해자\n\nAI Algorithm 설계자\n\nGen AI, RAG 관련 개발 경험자\n\n레이저 가공/검사 반도체/디스플레이 장비 개발 경험자\n\n판교\n\n구매관리\n인턴(3개월_채용전환형)\n/경력\n\n구매관리\n회사의 경영활동에 필요한 자재를 적절한 품질과 가격으로 적기에 공급할 수 있는 구매계획을 수립 및 실행하며, 대내외 부서간 소통을 통해 협의를 도모함.\n\n시스템/Tool: SAP\n\n구매/원가 관리\n\n납기 관리\n\n원가 관리\n\nBusiness Partner 개발\n\n원재료 수입 통관\n\n원가 관리 및 원가 기획\n\n영어 및 외국어 능통자\n\nOA 자격증 보유자 (워드, 엑셀)\n\n판교\n\n전략개발\n구매\n경력\n\n전략구매\n신기술 및 부품 공급 관련 시장정보 관리/활용 체계를 구축하며 구매가격 정책, SCM 평가 및 발주비율 관리, 원가 관리를 구매 전반적인 기획업무수행\n\n개발구매\n제품 및 부품의 개발 초기 단계부터 참여하여 개발의 궁극적인 목표를 달성하기 위해 효과적으로 지원하며 합리적인 가격을 선정하고 원활한 부품 공급을 위한 공급망 형성 및 Platform을 구축함\n\n시스템/Tool: SAP, PLM, SBMS, PEMS\n\n본사/관계사 전략개발 구매관리\n\n원자재 구매\n\n신규 Business Partner Sourcing 및 평가\n\n신규 제품 개발 지원 (원가산출 및 Sourcing)\n\n신규 부품 개발 (Process 관리, 원가 및 기술 검토)\n\n기존 및 공급 시장 동향 파악\n\n원가 관리 및 원가 기획\n\n영어 및 외국어 능통자\n\n구매관련 자격증 보유자 (KCPM, CPSM, KPM, 물류관리사 등)\n\nOA 자격증 보유자 (워드, 엑셀)\n\n판교\n\nPEE\n(Product\nEquipment\nEngineering)\n인턴(3개월_채용전환형)\n\n설비 유지 보수\n\n고객사 출하 설비의 Set up 및 최적의 가동을 위한 안정적인 유지 보수 관리 업무를 진행\n\n표준화된 업무 프로세스를 통한 반도체 장비 결함 진단 및 문제 해결 조치, 고객사 VOC 대응\n\n시스템/Tool: mySERVICE)\n\n고객사 설비 관리\n\nSet up/ Maintenance\n\n설비 초기 유동 관리(IOC)\n\nTool Performance 관리\n\n고객 대응\n\nCustomer VOC 대응\n\nCIP Management\n\n외국어 능통자(영어,중국어,일본어)\n\n전공정 Etch 장비 설비 CS 경력자\n\n화성/평택\n청주/이천\n\nMFG\n(Manufacturing\nEngineering)\n신입\n\n생산 공정을 정확하게 이해하고 숙지하여 작업을 지시·결과를 보고하고, 표준화를 통한 제품의 품질 및 생산/ Field Service의 안정화를 도모하며, 원활한 생산 업무를 위한 지원 활동을 수행함\n\n판매용 부품 물류관리\n\n판매용 부품의 입고부터 고객 납품까지의 전반적인 부품 판매 프로세스 운영 및 개선 (부품 판매 과정에서의 일련의 물류 활동 수행)\n\n시스템/Tool: SAP, SBMS, SMP, PLM, MyPSK\n\n본사 및 B.P사 생산관리\n\n생산 실무\n\n생산 공정 관리\n\n생산 설비 및 부자재 관리\n\n양산 설비 TTTM\n\n품질 개선\n\n청정실 관리\n\n창고 및 자재 관리\n\n양산 자재\n\n판매용 부품 자재\n\n창고 운영\n\n자재 입출고(ERP)\n\n고객 납품\n\n관계사 관리\n\nAuto Cad\n\n영어 능통자\n\n생산관리 관련 자격증 보유자\n\n화성/평택/판교\n\n부품영업\n인턴(3개월_채용전환형)\n\n판매 관리\n국내 고객사 및 해외 지사 After Market Sales 진행.\nDATA 분석을 통한 매출 Forecasting 및 수요량 예측.\n매출 증대를 위한 전략 마케팅 시행.\n\n장비 물류관리\n장비 양산 자재의 입/출고 및 재고 관리,\n장비 출하 관리 등 장비 판매 과정에서의 일련의 물류 활동 수행\n\n시스템/Tool: SAP/My Service/My PSK\n\n고객사/지사 판매 및 물류 관리\n\n영업/판매/전략 마케팅\n\n매출/부품 수요 Forecasting\n\n영어, 중국어 능통자\n\nOA 자격증 보유자 (워드, 엑셀)\n\n동종업계 근무 경력 보유\n\n동탄/판교\n\n필수조건: 4년제 이상, 학점 평점 3.50이상(4.5 만점 기준 / 단, 경력자 학점 무관) 공고일 기준 기졸업자 및 8월 졸업예정자에 한하여 지원가능\n\n우대사항: 영어/중국어/일본어 능통자 우대\n\n외국인 지원 가능(취업비자 발급 가능자)\n\n■채용 절차\n\n지원서 접수\n서류 전형\n통합역량 검사\n직무역량 TEST\n면접 전형\n(1/2차)\n채용 검진\n합격 발표\n\n경력직 지원자의 경우 1차 면접 이후 평판조회 진행\n\n직무역량 TEST의 경우 1차 면접 전 진행",
+      "main_tasks": "",
+      "benefits": "GWP (Great Work Place)\n사내식당 (중/석식 제공)/동호회활동 지원/패밀리데이(조기퇴근) 운영/리조트 운영\n\nBENEFIT\n주택자금/자녀 학자금/경조사비 지원, 장기근속/우수사원 포상, 복지포인트 지급\n\nHRDS\n우수인재 대학원 학자금 지원/사외교육비 지원/도서구입비 지원/모바일 영어 어학 학습 지원\n\nHEALTH\n사내 Fitness Center 운영/금연수당 지급/종합건강검진/단체상해보험 가입\n\n세부사항은 사내 규정에 의거함\n\n■급여조건\n\nPSK Holdings / PSK : 인턴(월 300만원) 신입연봉 50,000천원(4년대졸), 53,000천원(석사), 경력직: 협의, 계약직: 협의\n\n수습 6개월(단, 3개월만 급여 80% 지급)\n\n홈페이지: (PSK) https://www.pskinc.com (PSK Holdings) https://pskholding.com\n\nPSK 유튜브 채널 QR 코드"
+    },
+    {
+      "site": "dev",
+      "company": "쎄트렉아이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[계약직] Web Front-End 개발자",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561744?ReturnUrl=RecruitInfo",
+      "career": "경력무관",
+      "location": "대전 유성구",
+      "dday": "D-5",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -214527,6 +215070,27 @@
       "competencies": [],
       "qualifications": "",
       "preferences": "금융 도메인 및 고객센터 데이터 분석 실무 경험이 있는 분\n\n1개 이상의 데이터 시각화 툴(Tableau 등)을 사용한 경험이 있는 분\n\n■공통 우대 사항\n\n국가유공자 및 장애인 등 취업보호대상자는 관계법령에 따라 우대합니다.\n\n입사지원 시 증빙서류를 첨부하는 경우에 해당하며, 증빙서류는 포트폴리오 란에 첨부해주시길 바랍니다.\n\n■근무 관련 정보",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "한국연구재단",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년도 제5차 사업위촉직 채용",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561709?ReturnUrl=RecruitInfo",
+      "career": "신입/경력",
+      "location": "위촉직 | 대전 유성구, 서울 서초구",
+      "dday": "~07.31(금)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
       "main_tasks": "",
       "benefits": ""
     },
@@ -216863,6 +217427,50 @@
       "tech_tags": [],
       "roles": [
         "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "테슬라코리아",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[Tesla Korea] 2026 대규모 공개 채용 #공채",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561751?ReturnUrl=RecruitInfo",
+      "career": "신입/경력(1년 이상)",
+      "location": "서울 강남구, 영등포구, 노원구, 강서구, 제주 전지역, 경남 창원시, 부산 전지역, 광주 전지역, 대구 전지역, 대전 전지역, 경기 안성시, 하남시, 성남시 분당구, 안양시, 전국\n\n펼치기",
+      "dday": "~07.31(금)",
+      "tech_stack": [
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "국가정보원",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[정기공채] 2026년 하반기 정기공채 #공채",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561710?ReturnUrl=RecruitInfo",
+      "career": "경력무관",
+      "location": "서울 서초구",
+      "dday": "~07.31(금)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
       ],
       "competencies": [],
       "qualifications": "",
@@ -219748,6 +220356,27 @@
       "career": "경력(2년 이상)",
       "location": "서울 영등포구",
       "dday": "~08.30(일)",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "dev",
+      "company": "교보증권",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "2026년 하반기 채용연계형 인턴 공개채용 #공채",
+      "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561917?ReturnUrl=RecruitInfo",
+      "career": "신입",
+      "location": "월급 250만원 | 서울 영등포구",
+      "dday": "~08.02(일)",
       "tech_stack": [],
       "tech_tags": [],
       "roles": [
@@ -233622,39 +234251,39 @@
     }
   ],
   "stats": {
-    "total": 7795,
+    "total": 7820,
     "by_size": {
-      "중소기업": 7053,
+      "중소기업": 7078,
       "대기업": 427,
       "중견기업": 315
     },
     "by_role": {
-      "기타": 1030,
-      "DevOps/인프라": 1182,
-      "백엔드": 3260,
+      "기타": 1041,
+      "DevOps/인프라": 1184,
+      "백엔드": 3263,
       "모바일": 1177,
-      "AI/ML": 2843,
-      "프론트엔드": 2117,
+      "AI/ML": 2850,
+      "프론트엔드": 2119,
       "풀스택": 726,
       "게임": 45,
       "데이터": 1057,
-      "펌웨어/임베디드": 314,
+      "펌웨어/임베디드": 316,
       "보안": 327,
       "QA": 97
     },
     "by_site": {
       "wanted": 2172,
-      "jumpit": 600,
+      "jumpit": 603,
       "jobkorea": 1196,
-      "saramin": 2945,
-      "dev": 397,
+      "saramin": 2956,
+      "dev": 408,
       "remote": 24,
       "ats": 461
     },
     "top_tech": [
       [
         "Python",
-        2462
+        2466
       ],
       [
         "AWS",
@@ -233662,11 +234291,11 @@
       ],
       [
         "Java",
-        1811
+        1813
       ],
       [
         "React",
-        1591
+        1592
       ],
       [
         "Docker",
@@ -233674,23 +234303,23 @@
       ],
       [
         "Git",
-        1222
+        1223
       ],
       [
         "TypeScript",
-        1141
+        1142
       ],
       [
         "Spring",
-        1036
+        1038
       ],
       [
         "JavaScript",
-        1031
+        1034
       ],
       [
         "Linux",
-        1014
+        1017
       ],
       [
         "Kubernetes",
@@ -233718,11 +234347,11 @@
       ],
       [
         "C++",
-        660
+        664
       ],
       [
         "Spring Boot",
-        609
+        610
       ],
       [
         "Azure",
@@ -233742,7 +234371,7 @@
       ],
       [
         "CSS",
-        493
+        494
       ],
       [
         "Android",
@@ -233750,7 +234379,7 @@
       ],
       [
         "HTML",
-        479
+        480
       ],
       [
         "Kotlin",
@@ -233775,22 +234404,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-17T09:44:52",
-      "keyword": "통합",
-      "raw_total": 7633,
-      "deduped": 7083,
-      "active": 6280,
-      "closed": 803,
-      "site_counts": {
-        "wanted": 1424,
-        "jumpit": 538,
-        "jobkorea": 1519,
-        "saramin": 3834,
-        "dev": 318
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-17T11:19:26",
       "keyword": "통합",
@@ -236997,6 +237610,24 @@
         "jobkorea": 3044,
         "saramin": 7910,
         "dev": 805,
+        "remote": 24,
+        "ats": 500
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-21T05:22:07",
+      "keyword": "통합",
+      "raw_total": 15615,
+      "deduped": 12862,
+      "active": 7820,
+      "closed": 5042,
+      "site_counts": {
+        "wanted": 2281,
+        "jumpit": 1026,
+        "jobkorea": 3044,
+        "saramin": 7923,
+        "dev": 817,
         "remote": 24,
         "ats": 500
       },
