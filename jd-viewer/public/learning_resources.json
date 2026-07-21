@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-22T03:20:04",
+  "generated_at": "2026-07-22T05:05:34",
   "source": "youtube",
   "tech_count": 183,
   "curriculum_count": 20,
@@ -5007,88 +5007,6 @@
         "stage": "실전"
       }
     ],
-    "Flask": [
-      {
-        "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
-        "url": "https://www.youtube.com/watch?v=2WloW3cBRhw",
-        "thumbnail": "https://i.ytimg.com/vi/2WloW3cBRhw/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 1668,
-        "length": "14:16",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 웹개발 Flask #1 - 플라스크 기초 및 웹서버 개발의 개념 이해",
-        "url": "https://www.youtube.com/watch?v=u2KnTZa1_WU",
-        "thumbnail": "https://i.ytimg.com/vi/u2KnTZa1_WU/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 52266,
-        "length": "2:00:59",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[Flask의 정석] 3. 플라스크의 기본구조",
-        "url": "https://www.youtube.com/watch?v=hIlRtSDWHHg",
-        "thumbnail": "https://i.ytimg.com/vi/hIlRtSDWHHg/mqdefault.jpg",
-        "channel": "코준서",
-        "views": 930,
-        "length": "1:45",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "장고 vs 플라스크, Flask vs Django ,  파이썬 웹 프레임워크 뭘 쓸까?",
-        "url": "https://www.youtube.com/watch?v=6IdWo49d20o",
-        "thumbnail": "https://i.ytimg.com/vi/6IdWo49d20o/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 30300,
-        "length": "3:45",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Flask의 정석] 1. 서론 (Introduction)",
-        "url": "https://www.youtube.com/watch?v=ramid7qX_V0",
-        "thumbnail": "https://i.ytimg.com/vi/ramid7qX_V0/mqdefault.jpg",
-        "channel": "코준서",
-        "views": 1764,
-        "length": "2:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Flask 강좌 1 - 오리엔테이션, 설치와 환경 구성",
-        "url": "https://www.youtube.com/watch?v=y8HPYrJHn-4",
-        "thumbnail": "https://i.ytimg.com/vi/y8HPYrJHn-4/mqdefault.jpg",
-        "channel": "샵투월드 shop2world TV",
-        "views": 3345,
-        "length": "6:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "혼자 공부하는 파이썬 개정판 93강 - Flask 외부 모듈(프레임워크) 사용해보기[종강]",
-        "url": "https://www.youtube.com/watch?v=sgzunBTOeqk",
-        "thumbnail": "https://i.ytimg.com/vi/sgzunBTOeqk/mqdefault.jpg",
-        "channel": "윤인성",
-        "views": 6007,
-        "length": "11:04",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 플라스크 프레임워크에 대한 이해 및 응용 | 파이썬 Flask(플라스크)를 이용한 웹 프로젝트 | 취업·실무·창업 | 에어클래스",
-        "url": "https://www.youtube.com/watch?v=7QhjtwQU-1M",
-        "thumbnail": "https://i.ytimg.com/vi/7QhjtwQU-1M/mqdefault.jpg",
-        "channel": "에어클래스",
-        "views": 240,
-        "length": "14:16",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "C": [
       {
         "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
@@ -5168,6 +5086,88 @@
         "views": 46512,
         "length": "21:12",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Flask": [
+      {
+        "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
+        "url": "https://www.youtube.com/watch?v=2WloW3cBRhw",
+        "thumbnail": "https://i.ytimg.com/vi/2WloW3cBRhw/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 1668,
+        "length": "14:16",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 웹개발 Flask #1 - 플라스크 기초 및 웹서버 개발의 개념 이해",
+        "url": "https://www.youtube.com/watch?v=u2KnTZa1_WU",
+        "thumbnail": "https://i.ytimg.com/vi/u2KnTZa1_WU/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 52266,
+        "length": "2:00:59",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[Flask의 정석] 3. 플라스크의 기본구조",
+        "url": "https://www.youtube.com/watch?v=hIlRtSDWHHg",
+        "thumbnail": "https://i.ytimg.com/vi/hIlRtSDWHHg/mqdefault.jpg",
+        "channel": "코준서",
+        "views": 930,
+        "length": "1:45",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "장고 vs 플라스크, Flask vs Django ,  파이썬 웹 프레임워크 뭘 쓸까?",
+        "url": "https://www.youtube.com/watch?v=6IdWo49d20o",
+        "thumbnail": "https://i.ytimg.com/vi/6IdWo49d20o/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 30300,
+        "length": "3:45",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Flask의 정석] 1. 서론 (Introduction)",
+        "url": "https://www.youtube.com/watch?v=ramid7qX_V0",
+        "thumbnail": "https://i.ytimg.com/vi/ramid7qX_V0/mqdefault.jpg",
+        "channel": "코준서",
+        "views": 1764,
+        "length": "2:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Flask 강좌 1 - 오리엔테이션, 설치와 환경 구성",
+        "url": "https://www.youtube.com/watch?v=y8HPYrJHn-4",
+        "thumbnail": "https://i.ytimg.com/vi/y8HPYrJHn-4/mqdefault.jpg",
+        "channel": "샵투월드 shop2world TV",
+        "views": 3345,
+        "length": "6:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "혼자 공부하는 파이썬 개정판 93강 - Flask 외부 모듈(프레임워크) 사용해보기[종강]",
+        "url": "https://www.youtube.com/watch?v=sgzunBTOeqk",
+        "thumbnail": "https://i.ytimg.com/vi/sgzunBTOeqk/mqdefault.jpg",
+        "channel": "윤인성",
+        "views": 6007,
+        "length": "11:04",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 플라스크 프레임워크에 대한 이해 및 응용 | 파이썬 Flask(플라스크)를 이용한 웹 프로젝트 | 취업·실무·창업 | 에어클래스",
+        "url": "https://www.youtube.com/watch?v=7QhjtwQU-1M",
+        "thumbnail": "https://i.ytimg.com/vi/7QhjtwQU-1M/mqdefault.jpg",
+        "channel": "에어클래스",
+        "views": 240,
+        "length": "14:16",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -6073,88 +6073,6 @@
         "stage": "핵심"
       }
     ],
-    "Ruby": [
-      {
-        "title": "Rails를 처음 시작한다면? | Ruby, 풀스택 프레임워크, Rails 8",
-        "url": "https://www.youtube.com/watch?v=pZrWkJgmxl8",
-        "thumbnail": "https://i.ytimg.com/vi/pZrWkJgmxl8/mqdefault.jpg",
-        "channel": "WeekdayCode 평일코딩",
-        "views": 5492,
-        "length": "22:32",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬보다 쉽고, 자바스크립트보다 일관적인 언어 루비 훑어보기",
-        "url": "https://www.youtube.com/watch?v=HHSCynhjXrs",
-        "thumbnail": "https://i.ytimg.com/vi/HHSCynhjXrs/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 4306,
-        "length": "8:03",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Ruby   루비란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=iNrT0O2_MQM",
-        "thumbnail": "https://i.ytimg.com/vi/iNrT0O2_MQM/mqdefault.jpg",
-        "channel": "코딩전도사",
-        "views": 15963,
-        "length": "3:09",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI가 더 잘하는 개발 언어는? #바이브코딩 #루비온레일즈 #파이썬 #장고 #루비 #클로드코드",
-        "url": "https://www.youtube.com/watch?v=C6x80_g-HR4",
-        "thumbnail": "https://i.ytimg.com/vi/C6x80_g-HR4/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 3544,
-        "length": "11:00",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI로 Rails 웹 프레임워크 사용한다면? | Ruby on rails AI agent",
-        "url": "https://www.youtube.com/watch?v=dGuya10eCoI",
-        "thumbnail": "https://i.ytimg.com/vi/dGuya10eCoI/mqdefault.jpg",
-        "channel": "WeekdayCode 평일코딩",
-        "views": 1802,
-        "length": "14:21",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[하루10분|Web-App] Create 구현하기 : Ruby on Rails",
-        "url": "https://www.youtube.com/watch?v=Bnf9q7yB16Y",
-        "thumbnail": "https://i.ytimg.com/vi/Bnf9q7yB16Y/mqdefault.jpg",
-        "channel": "판다코딩",
-        "views": 476,
-        "length": "5:42",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[하루10분|Web-App] 페이지 간 정보 전달하기 : Ruby on Rails",
-        "url": "https://www.youtube.com/watch?v=H9OYv3-SaPw",
-        "thumbnail": "https://i.ytimg.com/vi/H9OYv3-SaPw/mqdefault.jpg",
-        "channel": "판다코딩",
-        "views": 558,
-        "length": "11:34",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "루비 프로그래밍 언어 강의 기초부터 실습 위주의 교육",
-        "url": "https://www.youtube.com/watch?v=XTjmcegy-jg",
-        "thumbnail": "https://i.ytimg.com/vi/XTjmcegy-jg/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 598,
-        "length": "16:56",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "Embedded": [
       {
         "title": "[임베디드 입문용 38-1] 너무나도 중요한 ADC",
@@ -6235,6 +6153,88 @@
         "length": "1:36:52",
         "published": "5년 전",
         "stage": "핵심"
+      }
+    ],
+    "Ruby": [
+      {
+        "title": "Rails를 처음 시작한다면? | Ruby, 풀스택 프레임워크, Rails 8",
+        "url": "https://www.youtube.com/watch?v=pZrWkJgmxl8",
+        "thumbnail": "https://i.ytimg.com/vi/pZrWkJgmxl8/mqdefault.jpg",
+        "channel": "WeekdayCode 평일코딩",
+        "views": 5492,
+        "length": "22:32",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬보다 쉽고, 자바스크립트보다 일관적인 언어 루비 훑어보기",
+        "url": "https://www.youtube.com/watch?v=HHSCynhjXrs",
+        "thumbnail": "https://i.ytimg.com/vi/HHSCynhjXrs/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 4306,
+        "length": "8:03",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Ruby   루비란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=iNrT0O2_MQM",
+        "thumbnail": "https://i.ytimg.com/vi/iNrT0O2_MQM/mqdefault.jpg",
+        "channel": "코딩전도사",
+        "views": 15963,
+        "length": "3:09",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI가 더 잘하는 개발 언어는? #바이브코딩 #루비온레일즈 #파이썬 #장고 #루비 #클로드코드",
+        "url": "https://www.youtube.com/watch?v=C6x80_g-HR4",
+        "thumbnail": "https://i.ytimg.com/vi/C6x80_g-HR4/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 3544,
+        "length": "11:00",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI로 Rails 웹 프레임워크 사용한다면? | Ruby on rails AI agent",
+        "url": "https://www.youtube.com/watch?v=dGuya10eCoI",
+        "thumbnail": "https://i.ytimg.com/vi/dGuya10eCoI/mqdefault.jpg",
+        "channel": "WeekdayCode 평일코딩",
+        "views": 1802,
+        "length": "14:21",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[하루10분|Web-App] Create 구현하기 : Ruby on Rails",
+        "url": "https://www.youtube.com/watch?v=Bnf9q7yB16Y",
+        "thumbnail": "https://i.ytimg.com/vi/Bnf9q7yB16Y/mqdefault.jpg",
+        "channel": "판다코딩",
+        "views": 476,
+        "length": "5:42",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[하루10분|Web-App] 페이지 간 정보 전달하기 : Ruby on Rails",
+        "url": "https://www.youtube.com/watch?v=H9OYv3-SaPw",
+        "thumbnail": "https://i.ytimg.com/vi/H9OYv3-SaPw/mqdefault.jpg",
+        "channel": "판다코딩",
+        "views": 558,
+        "length": "11:34",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "루비 프로그래밍 언어 강의 기초부터 실습 위주의 교육",
+        "url": "https://www.youtube.com/watch?v=XTjmcegy-jg",
+        "thumbnail": "https://i.ytimg.com/vi/XTjmcegy-jg/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 598,
+        "length": "16:56",
+        "published": "3년 전",
+        "stage": "실전"
       }
     ],
     "Selenium": [
@@ -6811,6 +6811,88 @@
         "stage": "핵심"
       }
     ],
+    "MCU": [
+      {
+        "title": "mcu 기초이론 제1강 전기의 이해",
+        "url": "https://www.youtube.com/watch?v=JqiMNdwtXPY",
+        "thumbnail": "https://i.ytimg.com/vi/JqiMNdwtXPY/mqdefault.jpg",
+        "channel": "전기자동차 기초에서 실무까지",
+        "views": 443,
+        "length": "29:48",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
+        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
+        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
+        "channel": "임땡겸(전자컴퓨터)",
+        "views": 10179,
+        "length": "11:30",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU SW 개발 입문자 필수 기초 지식 -  3.MCU SW 사용 예시",
+        "url": "https://www.youtube.com/watch?v=enMJvlXiXIs",
+        "thumbnail": "https://i.ytimg.com/vi/enMJvlXiXIs/mqdefault.jpg",
+        "channel": "존버매니아",
+        "views": 232,
+        "length": "12:31",
+        "published": "8개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU SW 개발 입문자를 위한 필수 기초 지식 -2.MCU 개요 소개",
+        "url": "https://www.youtube.com/watch?v=DG7Ou4vOWRw",
+        "thumbnail": "https://i.ytimg.com/vi/DG7Ou4vOWRw/mqdefault.jpg",
+        "channel": "존버매니아",
+        "views": 196,
+        "length": "6:38",
+        "published": "8개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "전자회로 강의 제 12탄 - MCU를 활용한 입출력 기초",
+        "url": "https://www.youtube.com/watch?v=Gr3PhvcxX3A",
+        "thumbnail": "https://i.ytimg.com/vi/Gr3PhvcxX3A/mqdefault.jpg",
+        "channel": "Lucky7",
+        "views": 1065,
+        "length": "14:32",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
+        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
+        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 2725,
+        "length": "8:19",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "온라인강의 05 MCU보드설계하기",
+        "url": "https://www.youtube.com/watch?v=R5At1SMXS0I",
+        "thumbnail": "https://i.ytimg.com/vi/R5At1SMXS0I/mqdefault.jpg",
+        "channel": "전자공학자료실",
+        "views": 299,
+        "length": "1:05:34",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "실습 기반 MCU 구동을 위한 C언어 기초 강의!",
+        "url": "https://www.youtube.com/watch?v=6tAxXiOuJsQ",
+        "thumbnail": "https://i.ytimg.com/vi/6tAxXiOuJsQ/mqdefault.jpg",
+        "channel": "Electronic's for Design and Software",
+        "views": 2207,
+        "length": "1:04",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "Cypress": [
       {
         "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
@@ -7221,6 +7303,88 @@
         "stage": "핵심"
       }
     ],
+    "Firmware": [
+      {
+        "title": "마이컴 펌웨어(FirmWare) 기초개념",
+        "url": "https://www.youtube.com/watch?v=dRL3rTYSc4k",
+        "thumbnail": "https://i.ytimg.com/vi/dRL3rTYSc4k/mqdefault.jpg",
+        "channel": "아이엠솔더",
+        "views": 47298,
+        "length": "6:16",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MCU Firmware를 간단하게 재설계 해보자 {no.97}",
+        "url": "https://www.youtube.com/watch?v=huJpyF4oDnU",
+        "thumbnail": "https://i.ytimg.com/vi/huJpyF4oDnU/mqdefault.jpg",
+        "channel": "SEMONAN",
+        "views": 534,
+        "length": "1:18",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
+        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
+        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 2722,
+        "length": "8:19",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "임베디드 개발자, 진짜 뭘 하는 직업이냐고요?",
+        "url": "https://www.youtube.com/watch?v=ROio8uqgBOM",
+        "thumbnail": "https://i.ytimg.com/vi/ROio8uqgBOM/mqdefault.jpg",
+        "channel": "인사이드 임베디드",
+        "views": 13528,
+        "length": "7:25",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[STEP] 시스템 소프트웨어 펌웨어 구현",
+        "url": "https://www.youtube.com/watch?v=rHi9s9No4yw",
+        "thumbnail": "https://i.ytimg.com/vi/rHi9s9No4yw/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 1219,
+        "length": "6:20",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[시나공 컴활1급] 1260035 펌웨어",
+        "url": "https://www.youtube.com/watch?v=irQpB8KAMy4",
+        "thumbnail": "https://i.ytimg.com/vi/irQpB8KAMy4/mqdefault.jpg",
+        "channel": "시나공",
+        "views": 4673,
+        "length": "3:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[시나공 컴활2급] 3304602 펌웨어",
+        "url": "https://www.youtube.com/watch?v=IijxMnRVLOs",
+        "thumbnail": "https://i.ytimg.com/vi/IijxMnRVLOs/mqdefault.jpg",
+        "channel": "시나공",
+        "views": 9992,
+        "length": "1:25",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "2025 임베디드 프로그래밍 공부 순서 | 공부 방법 | 로드맵【전자과 | 로봇학과 | 인공지능 | AI 공대생 필수시청】",
+        "url": "https://www.youtube.com/watch?v=Cv30BqRo1Cc",
+        "thumbnail": "https://i.ytimg.com/vi/Cv30BqRo1Cc/mqdefault.jpg",
+        "channel": "그라운드 임베디드",
+        "views": 34794,
+        "length": "7:57",
+        "published": "1년 전",
+        "stage": "핵심"
+      }
+    ],
     "Keras": [
       {
         "title": "딥러닝기초프로그래밍) cifar10 데이터셋 활용, Keras 프로그래밍",
@@ -7303,88 +7467,6 @@
         "stage": "실전"
       }
     ],
-    "MCU": [
-      {
-        "title": "mcu 기초이론 제1강 전기의 이해",
-        "url": "https://www.youtube.com/watch?v=JqiMNdwtXPY",
-        "thumbnail": "https://i.ytimg.com/vi/JqiMNdwtXPY/mqdefault.jpg",
-        "channel": "전기자동차 기초에서 실무까지",
-        "views": 443,
-        "length": "29:48",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[임베디드 기초 뿌수기 강좌 1-1] MCU란 무엇일까요?",
-        "url": "https://www.youtube.com/watch?v=CgA9ZOocOiY",
-        "thumbnail": "https://i.ytimg.com/vi/CgA9ZOocOiY/mqdefault.jpg",
-        "channel": "임땡겸(전자컴퓨터)",
-        "views": 10179,
-        "length": "11:30",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU SW 개발 입문자 필수 기초 지식 -  3.MCU SW 사용 예시",
-        "url": "https://www.youtube.com/watch?v=enMJvlXiXIs",
-        "thumbnail": "https://i.ytimg.com/vi/enMJvlXiXIs/mqdefault.jpg",
-        "channel": "존버매니아",
-        "views": 232,
-        "length": "12:31",
-        "published": "8개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU SW 개발 입문자를 위한 필수 기초 지식 -2.MCU 개요 소개",
-        "url": "https://www.youtube.com/watch?v=DG7Ou4vOWRw",
-        "thumbnail": "https://i.ytimg.com/vi/DG7Ou4vOWRw/mqdefault.jpg",
-        "channel": "존버매니아",
-        "views": 196,
-        "length": "6:38",
-        "published": "8개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "전자회로 강의 제 12탄 - MCU를 활용한 입출력 기초",
-        "url": "https://www.youtube.com/watch?v=Gr3PhvcxX3A",
-        "thumbnail": "https://i.ytimg.com/vi/Gr3PhvcxX3A/mqdefault.jpg",
-        "channel": "Lucky7",
-        "views": 1065,
-        "length": "14:32",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
-        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
-        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 2725,
-        "length": "8:19",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "온라인강의 05 MCU보드설계하기",
-        "url": "https://www.youtube.com/watch?v=R5At1SMXS0I",
-        "thumbnail": "https://i.ytimg.com/vi/R5At1SMXS0I/mqdefault.jpg",
-        "channel": "전자공학자료실",
-        "views": 299,
-        "length": "1:05:34",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "실습 기반 MCU 구동을 위한 C언어 기초 강의!",
-        "url": "https://www.youtube.com/watch?v=6tAxXiOuJsQ",
-        "thumbnail": "https://i.ytimg.com/vi/6tAxXiOuJsQ/mqdefault.jpg",
-        "channel": "Electronic's for Design and Software",
-        "views": 2207,
-        "length": "1:04",
-        "published": "7년 전",
-        "stage": "실전"
-      }
-    ],
     "SVN": [
       {
         "title": "🛠️Git과 SVN 차이점 쉽게 이해하기 | Github 사용법 기초 #Git #SVN #Github #버전관리 #GitvsSVN #개발자 #소스관리 #깃허브",
@@ -7464,88 +7546,6 @@
         "views": 7597,
         "length": "5:55",
         "published": "14년 전",
-        "stage": "핵심"
-      }
-    ],
-    "Firmware": [
-      {
-        "title": "마이컴 펌웨어(FirmWare) 기초개념",
-        "url": "https://www.youtube.com/watch?v=dRL3rTYSc4k",
-        "thumbnail": "https://i.ytimg.com/vi/dRL3rTYSc4k/mqdefault.jpg",
-        "channel": "아이엠솔더",
-        "views": 47298,
-        "length": "6:16",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MCU Firmware를 간단하게 재설계 해보자 {no.97}",
-        "url": "https://www.youtube.com/watch?v=huJpyF4oDnU",
-        "thumbnail": "https://i.ytimg.com/vi/huJpyF4oDnU/mqdefault.jpg",
-        "channel": "SEMONAN",
-        "views": 534,
-        "length": "1:18",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "임베디드 개발자 필수 시청!  MCU 데이터시트 제대로 활용하는 5가지 꿀팁!",
-        "url": "https://www.youtube.com/watch?v=0eYhwk6_8AU",
-        "thumbnail": "https://i.ytimg.com/vi/0eYhwk6_8AU/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 2722,
-        "length": "8:19",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "임베디드 개발자, 진짜 뭘 하는 직업이냐고요?",
-        "url": "https://www.youtube.com/watch?v=ROio8uqgBOM",
-        "thumbnail": "https://i.ytimg.com/vi/ROio8uqgBOM/mqdefault.jpg",
-        "channel": "인사이드 임베디드",
-        "views": 13528,
-        "length": "7:25",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[STEP] 시스템 소프트웨어 펌웨어 구현",
-        "url": "https://www.youtube.com/watch?v=rHi9s9No4yw",
-        "thumbnail": "https://i.ytimg.com/vi/rHi9s9No4yw/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 1219,
-        "length": "6:20",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[시나공 컴활1급] 1260035 펌웨어",
-        "url": "https://www.youtube.com/watch?v=irQpB8KAMy4",
-        "thumbnail": "https://i.ytimg.com/vi/irQpB8KAMy4/mqdefault.jpg",
-        "channel": "시나공",
-        "views": 4673,
-        "length": "3:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[시나공 컴활2급] 3304602 펌웨어",
-        "url": "https://www.youtube.com/watch?v=IijxMnRVLOs",
-        "thumbnail": "https://i.ytimg.com/vi/IijxMnRVLOs/mqdefault.jpg",
-        "channel": "시나공",
-        "views": 9992,
-        "length": "1:25",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "2025 임베디드 프로그래밍 공부 순서 | 공부 방법 | 로드맵【전자과 | 로봇학과 | 인공지능 | AI 공대생 필수시청】",
-        "url": "https://www.youtube.com/watch?v=Cv30BqRo1Cc",
-        "thumbnail": "https://i.ytimg.com/vi/Cv30BqRo1Cc/mqdefault.jpg",
-        "channel": "그라운드 임베디드",
-        "views": 34794,
-        "length": "7:57",
-        "published": "1년 전",
         "stage": "핵심"
       }
     ],
@@ -9517,6 +9517,88 @@
         "stage": "실전"
       }
     ],
+    "Orcad": [
+      {
+        "title": "한동대학교 회로실험 강의 1강 -  ORCAD 프로그램 개요, 설치 및 사용법",
+        "url": "https://www.youtube.com/watch?v=QB2Kbgkk1ho",
+        "thumbnail": "https://i.ytimg.com/vi/QB2Kbgkk1ho/mqdefault.jpg",
+        "channel": "chanS class",
+        "views": 48014,
+        "length": "21:28",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "OrCAD를 이용한 회로설계 기본강의 (01강/20강)",
+        "url": "https://www.youtube.com/watch?v=WsBg3a7w8NY",
+        "thumbnail": "https://i.ytimg.com/vi/WsBg3a7w8NY/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 24274,
+        "length": "20:04",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(3일/3일) OrCAD를 이용한 회로설계 기초과정",
+        "url": "https://www.youtube.com/watch?v=IFh_-WuFL9I",
+        "thumbnail": "https://i.ytimg.com/vi/IFh_-WuFL9I/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 432,
+        "length": "2:26:48",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "OrCAD Capture 01강 Capture 입문",
+        "url": "https://www.youtube.com/watch?v=vCV-B5ZUtmc",
+        "thumbnail": "https://i.ytimg.com/vi/vCV-B5ZUtmc/mqdefault.jpg",
+        "channel": "복두TV",
+        "views": 24836,
+        "length": "34:50",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "# 01강_OrCAD PCB Design Tutorial_전자캐드기능사실기 대비_ATmega8 MCU 제어회로_Shematic Design 환경설정 및 Part Library 생성",
+        "url": "https://www.youtube.com/watch?v=FvoSe_YVlro",
+        "thumbnail": "https://i.ytimg.com/vi/FvoSe_YVlro/mqdefault.jpg",
+        "channel": "이용성 MFTS(Multi Fusion Tech Space)",
+        "views": 3606,
+        "length": "34:42",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "OrCAD Capture & PCB Editor 따라하기 1",
+        "url": "https://www.youtube.com/watch?v=Ny8_2jfNIuY",
+        "thumbnail": "https://i.ytimg.com/vi/Ny8_2jfNIuY/mqdefault.jpg",
+        "channel": "박재기",
+        "views": 26880,
+        "length": "29:49",
+        "published": "10년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[STEP] OrCAD PCB Editor 활용 기초 실습 (무료강의)",
+        "url": "https://www.youtube.com/watch?v=3O_o1_gBxnQ",
+        "thumbnail": "https://i.ytimg.com/vi/3O_o1_gBxnQ/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 42163,
+        "length": "25:03",
+        "published": "8년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[전자캐드기능사] OrCAD 02 - 프로젝트 생성&타이틀 작성",
+        "url": "https://www.youtube.com/watch?v=LopRWaDowZY",
+        "thumbnail": "https://i.ytimg.com/vi/LopRWaDowZY/mqdefault.jpg",
+        "channel": "일렉튜브",
+        "views": 34279,
+        "length": "5:20",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "ML": [
       {
         "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
@@ -10007,88 +10089,6 @@
         "length": "8:12",
         "published": "3년 전",
         "stage": "핵심"
-      }
-    ],
-    "Orcad": [
-      {
-        "title": "한동대학교 회로실험 강의 1강 -  ORCAD 프로그램 개요, 설치 및 사용법",
-        "url": "https://www.youtube.com/watch?v=QB2Kbgkk1ho",
-        "thumbnail": "https://i.ytimg.com/vi/QB2Kbgkk1ho/mqdefault.jpg",
-        "channel": "chanS class",
-        "views": 48014,
-        "length": "21:28",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "OrCAD를 이용한 회로설계 기본강의 (01강/20강)",
-        "url": "https://www.youtube.com/watch?v=WsBg3a7w8NY",
-        "thumbnail": "https://i.ytimg.com/vi/WsBg3a7w8NY/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 24274,
-        "length": "20:04",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(3일/3일) OrCAD를 이용한 회로설계 기초과정",
-        "url": "https://www.youtube.com/watch?v=IFh_-WuFL9I",
-        "thumbnail": "https://i.ytimg.com/vi/IFh_-WuFL9I/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 432,
-        "length": "2:26:48",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "OrCAD Capture 01강 Capture 입문",
-        "url": "https://www.youtube.com/watch?v=vCV-B5ZUtmc",
-        "thumbnail": "https://i.ytimg.com/vi/vCV-B5ZUtmc/mqdefault.jpg",
-        "channel": "복두TV",
-        "views": 24836,
-        "length": "34:50",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "# 01강_OrCAD PCB Design Tutorial_전자캐드기능사실기 대비_ATmega8 MCU 제어회로_Shematic Design 환경설정 및 Part Library 생성",
-        "url": "https://www.youtube.com/watch?v=FvoSe_YVlro",
-        "thumbnail": "https://i.ytimg.com/vi/FvoSe_YVlro/mqdefault.jpg",
-        "channel": "이용성 MFTS(Multi Fusion Tech Space)",
-        "views": 3606,
-        "length": "34:42",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "OrCAD Capture & PCB Editor 따라하기 1",
-        "url": "https://www.youtube.com/watch?v=Ny8_2jfNIuY",
-        "thumbnail": "https://i.ytimg.com/vi/Ny8_2jfNIuY/mqdefault.jpg",
-        "channel": "박재기",
-        "views": 26880,
-        "length": "29:49",
-        "published": "10년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[STEP] OrCAD PCB Editor 활용 기초 실습 (무료강의)",
-        "url": "https://www.youtube.com/watch?v=3O_o1_gBxnQ",
-        "thumbnail": "https://i.ytimg.com/vi/3O_o1_gBxnQ/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 42163,
-        "length": "25:03",
-        "published": "8년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[전자캐드기능사] OrCAD 02 - 프로젝트 생성&타이틀 작성",
-        "url": "https://www.youtube.com/watch?v=LopRWaDowZY",
-        "thumbnail": "https://i.ytimg.com/vi/LopRWaDowZY/mqdefault.jpg",
-        "channel": "일렉튜브",
-        "views": 34279,
-        "length": "5:20",
-        "published": "7년 전",
-        "stage": "실전"
       }
     ],
     "WPF": [
