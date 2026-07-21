@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-21T13:50:29",
- "total": 953,
+ "generated_at": "2026-07-21T15:29:35",
+ "total": 954,
  "sources": [
   {
    "company": "Etsy",
@@ -68,6 +68,11 @@
    "count": 27
   },
   {
+   "company": "CyberAgent",
+   "country": "JP",
+   "count": 26
+  },
+  {
    "company": "Zalando",
    "country": "DE",
    "count": 26
@@ -76,11 +81,6 @@
    "company": "데브시스터즈",
    "country": "KR",
    "count": 26
-  },
-  {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 25
   },
   {
    "company": "컬리",
@@ -552,6 +552,37 @@
    ],
    "lang": "en",
    "content_id": "c784e965702eada0"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "1つのLLMに聞き続けるのをやめて、Gemini・Claude・GPTを「討論・推敲・メタ認知」させるAgent Skillsを開発してみた",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64751",
+   "published": "2026-07-21",
+   "published_ts": 1784614061.0,
+   "summary": "はじめに こんにちは。サイバーエージェント AIオペレーション室の李俊浩（@buddypia）です。 ...",
+   "tags": [
+    "エンジニア",
+    "AI駆動開発",
+    "Antigravity",
+    "Claude Code",
+    "Codex",
+    "Gemini",
+    "MultiAgent",
+    "生成AI"
+   ],
+   "tech_stack": [
+    "Claude",
+    "Gemini",
+    "GPT",
+    "LLM"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "56ce436c75b6d55e"
   },
   {
    "key": "cyberagent",

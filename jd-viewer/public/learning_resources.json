@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-21T13:51:08",
+  "generated_at": "2026-07-21T15:30:13",
   "source": "youtube",
   "tech_count": 183,
   "curriculum_count": 20,
@@ -4105,88 +4105,6 @@
         "stage": "실전"
       }
     ],
-    "Ansible": [
-      {
-        "title": "Ansible(앤서블) EP1: Ansible introduction(소개) 시작합니다.",
-        "url": "https://www.youtube.com/watch?v=UZklPLM_jiI",
-        "thumbnail": "https://i.ytimg.com/vi/UZklPLM_jiI/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 2982,
-        "length": "16:42",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "앤서블(ansible) 좋긴 한데, 쉽게 쓸 수 없을까?  #GUI #결재 #권한관리 #감사 #형상관리 [토크아이티 세미남#146, 알티넷, 레드햇]",
-        "url": "https://www.youtube.com/watch?v=mL_wqMlQIuk",
-        "thumbnail": "https://i.ytimg.com/vi/mL_wqMlQIuk/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 1329,
-        "length": "13:51",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "앤서블기초 - 플레이북 & 야믈 (Playbook & YAML) 사용하기 (4편)",
-        "url": "https://www.youtube.com/watch?v=pEHmfycswWo",
-        "thumbnail": "https://i.ytimg.com/vi/pEHmfycswWo/mqdefault.jpg",
-        "channel": "힐링수",
-        "views": 2785,
-        "length": "8:29",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[네트워크]Ansible 기초  첫 자동화 플레이북.혜민버전",
-        "url": "https://www.youtube.com/watch?v=5AHyh7FJIr0",
-        "thumbnail": "https://i.ytimg.com/vi/5AHyh7FJIr0/mqdefault.jpg",
-        "channel": "천재공샘의 공부방",
-        "views": 66,
-        "length": "8:18",
-        "published": "5개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(이론) 앤서블 자동화 - 앤서블( ansible)이란?",
-        "url": "https://www.youtube.com/watch?v=S-EkKeyeUWU",
-        "thumbnail": "https://i.ytimg.com/vi/S-EkKeyeUWU/mqdefault.jpg",
-        "channel": "보안프로젝트[boanproject]",
-        "views": 3294,
-        "length": "4:42",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[서버]Ansible에게 Windows를 가르치는 법",
-        "url": "https://www.youtube.com/watch?v=ziTS2pOKGtc",
-        "thumbnail": "https://i.ytimg.com/vi/ziTS2pOKGtc/mqdefault.jpg",
-        "channel": "천재공샘의 공부방",
-        "views": 24,
-        "length": "8:10",
-        "published": "5개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06.Ansible Playbook 기초 완벽 가이드",
-        "url": "https://www.youtube.com/watch?v=jD5uvoxzlPk",
-        "thumbnail": "https://i.ytimg.com/vi/jD5uvoxzlPk/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 31,
-        "length": "15:45",
-        "published": "6개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "앤서블 ( ansible) 활용 - 인벤토리 이론 및 실습 #ansible #자동화업무",
-        "url": "https://www.youtube.com/watch?v=2cT0UeFpteg",
-        "thumbnail": "https://i.ytimg.com/vi/2cT0UeFpteg/mqdefault.jpg",
-        "channel": "보안프로젝트[boanproject]",
-        "views": 1246,
-        "length": "7:42",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Flutter": [
       {
         "title": "요즘 앱개발은 플러터로 해도 충분한듯 (플러터 설명과 장단점)",
@@ -4266,6 +4184,88 @@
         "views": 6784,
         "length": "2:15:08",
         "published": "8개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Ansible": [
+      {
+        "title": "Ansible(앤서블) EP1: Ansible introduction(소개) 시작합니다.",
+        "url": "https://www.youtube.com/watch?v=UZklPLM_jiI",
+        "thumbnail": "https://i.ytimg.com/vi/UZklPLM_jiI/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 2982,
+        "length": "16:42",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "앤서블(ansible) 좋긴 한데, 쉽게 쓸 수 없을까?  #GUI #결재 #권한관리 #감사 #형상관리 [토크아이티 세미남#146, 알티넷, 레드햇]",
+        "url": "https://www.youtube.com/watch?v=mL_wqMlQIuk",
+        "thumbnail": "https://i.ytimg.com/vi/mL_wqMlQIuk/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 1329,
+        "length": "13:51",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "앤서블기초 - 플레이북 & 야믈 (Playbook & YAML) 사용하기 (4편)",
+        "url": "https://www.youtube.com/watch?v=pEHmfycswWo",
+        "thumbnail": "https://i.ytimg.com/vi/pEHmfycswWo/mqdefault.jpg",
+        "channel": "힐링수",
+        "views": 2785,
+        "length": "8:29",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[네트워크]Ansible 기초  첫 자동화 플레이북.혜민버전",
+        "url": "https://www.youtube.com/watch?v=5AHyh7FJIr0",
+        "thumbnail": "https://i.ytimg.com/vi/5AHyh7FJIr0/mqdefault.jpg",
+        "channel": "천재공샘의 공부방",
+        "views": 66,
+        "length": "8:18",
+        "published": "5개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(이론) 앤서블 자동화 - 앤서블( ansible)이란?",
+        "url": "https://www.youtube.com/watch?v=S-EkKeyeUWU",
+        "thumbnail": "https://i.ytimg.com/vi/S-EkKeyeUWU/mqdefault.jpg",
+        "channel": "보안프로젝트[boanproject]",
+        "views": 3294,
+        "length": "4:42",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[서버]Ansible에게 Windows를 가르치는 법",
+        "url": "https://www.youtube.com/watch?v=ziTS2pOKGtc",
+        "thumbnail": "https://i.ytimg.com/vi/ziTS2pOKGtc/mqdefault.jpg",
+        "channel": "천재공샘의 공부방",
+        "views": 24,
+        "length": "8:10",
+        "published": "5개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06.Ansible Playbook 기초 완벽 가이드",
+        "url": "https://www.youtube.com/watch?v=jD5uvoxzlPk",
+        "thumbnail": "https://i.ytimg.com/vi/jD5uvoxzlPk/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 31,
+        "length": "15:45",
+        "published": "6개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "앤서블 ( ansible) 활용 - 인벤토리 이론 및 실습 #ansible #자동화업무",
+        "url": "https://www.youtube.com/watch?v=2cT0UeFpteg",
+        "thumbnail": "https://i.ytimg.com/vi/2cT0UeFpteg/mqdefault.jpg",
+        "channel": "보안프로젝트[boanproject]",
+        "views": 1246,
+        "length": "7:42",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -7139,6 +7139,88 @@
         "stage": "핵심"
       }
     ],
+    "Dart": [
+      {
+        "title": "[무료 프로그래밍 강의] 1시간만에 끝내는 Dart언어 기본기",
+        "url": "https://www.youtube.com/watch?v=3Ck42C2ZCb8",
+        "thumbnail": "https://i.ytimg.com/vi/3Ck42C2ZCb8/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 80902,
+        "length": "1:33:45",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "다트 기본 자세 l 다트 던지는 방법  l #피닉스다트",
+        "url": "https://www.youtube.com/watch?v=zlbyw2h4bsU",
+        "thumbnail": "https://i.ytimg.com/vi/zlbyw2h4bsU/mqdefault.jpg",
+        "channel": "PHOENIXDARTS",
+        "views": 102355,
+        "length": "1:52",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Dart 프로그래밍 언어 강의를 시작합니다. [ 다트 프로그래밍 (Dart Programming) ]",
+        "url": "https://www.youtube.com/watch?v=L495QdzMaK8",
+        "thumbnail": "https://i.ytimg.com/vi/L495QdzMaK8/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 2466,
+        "length": "10:03",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "슈퍼개미도 사용하는 전자공시시스템 DART 사용법!  #4",
+        "url": "https://www.youtube.com/watch?v=gptGnt2VEM8",
+        "thumbnail": "https://i.ytimg.com/vi/gptGnt2VEM8/mqdefault.jpg",
+        "channel": "슈퍼개미 이세무사TV",
+        "views": 24329,
+        "length": "12:08",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[#다트레슨] 박여준 프로의 1:1 다트 티칭 (with 레이팅 B9 유저 )",
+        "url": "https://www.youtube.com/watch?v=hAEXKiVWAAU",
+        "thumbnail": "https://i.ytimg.com/vi/hAEXKiVWAAU/mqdefault.jpg",
+        "channel": "PHOENIXDARTS",
+        "views": 79969,
+        "length": "14:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Dart 문법 총 정리 - 40분 (2022년 리뉴얼)",
+        "url": "https://www.youtube.com/watch?v=qUaou0HcpL4",
+        "thumbnail": "https://i.ytimg.com/vi/qUaou0HcpL4/mqdefault.jpg",
+        "channel": "오준석의 생존코딩",
+        "views": 9041,
+        "length": "42:09",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기업 공시(DART) 읽는 법 + AI로 공시 분석하는 법",
+        "url": "https://www.youtube.com/watch?v=3emBJubZnww",
+        "thumbnail": "https://i.ytimg.com/vi/3emBJubZnww/mqdefault.jpg",
+        "channel": "제발한번만봐주셨으면좋겠는동태인Pick",
+        "views": 93,
+        "length": "15:49",
+        "published": "1개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "30분만에 배우는 Dart 언어 (타임스탬프 있음)",
+        "url": "https://www.youtube.com/watch?v=2g8DsOSreqk",
+        "thumbnail": "https://i.ytimg.com/vi/2g8DsOSreqk/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 35680,
+        "length": "33:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      }
+    ],
     "Keras": [
       {
         "title": "[딥러닝] Keras활용CNN모델링 무료 강의!! (CNN 기초편)",
@@ -7381,88 +7463,6 @@
         "channel": "CodingJim",
         "views": 984,
         "length": "6:10",
-        "published": "5년 전",
-        "stage": "핵심"
-      }
-    ],
-    "Dart": [
-      {
-        "title": "[무료 프로그래밍 강의] 1시간만에 끝내는 Dart언어 기본기",
-        "url": "https://www.youtube.com/watch?v=3Ck42C2ZCb8",
-        "thumbnail": "https://i.ytimg.com/vi/3Ck42C2ZCb8/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 80902,
-        "length": "1:33:45",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "다트 기본 자세 l 다트 던지는 방법  l #피닉스다트",
-        "url": "https://www.youtube.com/watch?v=zlbyw2h4bsU",
-        "thumbnail": "https://i.ytimg.com/vi/zlbyw2h4bsU/mqdefault.jpg",
-        "channel": "PHOENIXDARTS",
-        "views": 102355,
-        "length": "1:52",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Dart 프로그래밍 언어 강의를 시작합니다. [ 다트 프로그래밍 (Dart Programming) ]",
-        "url": "https://www.youtube.com/watch?v=L495QdzMaK8",
-        "thumbnail": "https://i.ytimg.com/vi/L495QdzMaK8/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 2466,
-        "length": "10:03",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "슈퍼개미도 사용하는 전자공시시스템 DART 사용법!  #4",
-        "url": "https://www.youtube.com/watch?v=gptGnt2VEM8",
-        "thumbnail": "https://i.ytimg.com/vi/gptGnt2VEM8/mqdefault.jpg",
-        "channel": "슈퍼개미 이세무사TV",
-        "views": 24329,
-        "length": "12:08",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[#다트레슨] 박여준 프로의 1:1 다트 티칭 (with 레이팅 B9 유저 )",
-        "url": "https://www.youtube.com/watch?v=hAEXKiVWAAU",
-        "thumbnail": "https://i.ytimg.com/vi/hAEXKiVWAAU/mqdefault.jpg",
-        "channel": "PHOENIXDARTS",
-        "views": 79969,
-        "length": "14:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Dart 문법 총 정리 - 40분 (2022년 리뉴얼)",
-        "url": "https://www.youtube.com/watch?v=qUaou0HcpL4",
-        "thumbnail": "https://i.ytimg.com/vi/qUaou0HcpL4/mqdefault.jpg",
-        "channel": "오준석의 생존코딩",
-        "views": 9041,
-        "length": "42:09",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기업 공시(DART) 읽는 법 + AI로 공시 분석하는 법",
-        "url": "https://www.youtube.com/watch?v=3emBJubZnww",
-        "thumbnail": "https://i.ytimg.com/vi/3emBJubZnww/mqdefault.jpg",
-        "channel": "제발한번만봐주셨으면좋겠는동태인Pick",
-        "views": 93,
-        "length": "15:49",
-        "published": "1개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "30분만에 배우는 Dart 언어 (타임스탬프 있음)",
-        "url": "https://www.youtube.com/watch?v=2g8DsOSreqk",
-        "thumbnail": "https://i.ytimg.com/vi/2g8DsOSreqk/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 35680,
-        "length": "33:43",
         "published": "5년 전",
         "stage": "핵심"
       }
