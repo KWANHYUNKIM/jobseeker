@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-21T08:46:57",
+  "generated_at": "2026-07-21T10:25:31",
   "source": "youtube",
   "tech_count": 183,
   "curriculum_count": 20,
@@ -11803,88 +11803,6 @@
         "stage": "실전"
       }
     ],
-    "Pytest": [
-      {
-        "title": "[SWTT] pytest 튜토리얼 (1/3)",
-        "url": "https://www.youtube.com/watch?v=v5piUTg2XKI",
-        "thumbnail": "https://i.ytimg.com/vi/v5piUTg2XKI/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 120,
-        "length": "13:36",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jonghyun Park: 파이썬에서 편하게 테스트 케이스 작성하기: pytest, Travis CI, 그리고 도커",
-        "url": "https://www.youtube.com/watch?v=rxCjxX4tT1E",
-        "thumbnail": "https://i.ytimg.com/vi/rxCjxX4tT1E/mqdefault.jpg",
-        "channel": "PyCon Korea",
-        "views": 3718,
-        "length": "35:05",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 Pytest Chapter 1 ~ 4",
-        "url": "https://www.youtube.com/watch?v=J0dslY7QSi4",
-        "thumbnail": "https://i.ytimg.com/vi/J0dslY7QSi4/mqdefault.jpg",
-        "channel": "Software Factory",
-        "views": 608,
-        "length": "43:57",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 Pytest Chapter 5 ~ 6",
-        "url": "https://www.youtube.com/watch?v=qPMWreHLw-M",
-        "thumbnail": "https://i.ytimg.com/vi/qPMWreHLw-M/mqdefault.jpg",
-        "channel": "Software Factory",
-        "views": 160,
-        "length": "57:56",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "pytest-django 셋업하기 2022-02-01 [재활코딩]",
-        "url": "https://www.youtube.com/watch?v=vQjZ7JFBYnM",
-        "thumbnail": "https://i.ytimg.com/vi/vQjZ7JFBYnM/mqdefault.jpg",
-        "channel": "PythonicHours",
-        "views": 341,
-        "length": "24:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] pytest 튜토리얼 (3/3)",
-        "url": "https://www.youtube.com/watch?v=vXboqkw_PFU",
-        "thumbnail": "https://i.ytimg.com/vi/vXboqkw_PFU/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 63,
-        "length": "13:12",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "pytest - simple, rapid and fun testing with Python",
-        "url": "https://www.youtube.com/watch?v=h3zlTirlwp4",
-        "thumbnail": "https://i.ytimg.com/vi/h3zlTirlwp4/mqdefault.jpg",
-        "channel": "PyCon DE",
-        "views": 601,
-        "length": "1:28:13",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Python] Pytest Tutorial",
-        "url": "https://www.youtube.com/watch?v=2G7XgyGYUbo",
-        "thumbnail": "https://i.ytimg.com/vi/2G7XgyGYUbo/mqdefault.jpg",
-        "channel": "SeongHwan Kim",
-        "views": 197,
-        "length": "2:47",
-        "published": "8년 전",
-        "stage": "핵심"
-      }
-    ],
     "MES": [
       {
         "title": "스마트팩토리의 중심 MES는 무엇일까",
@@ -11965,6 +11883,88 @@
         "length": "23:51",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "Pytest": [
+      {
+        "title": "[SWTT] pytest 튜토리얼 (1/3)",
+        "url": "https://www.youtube.com/watch?v=v5piUTg2XKI",
+        "thumbnail": "https://i.ytimg.com/vi/v5piUTg2XKI/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 120,
+        "length": "13:36",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jonghyun Park: 파이썬에서 편하게 테스트 케이스 작성하기: pytest, Travis CI, 그리고 도커",
+        "url": "https://www.youtube.com/watch?v=rxCjxX4tT1E",
+        "thumbnail": "https://i.ytimg.com/vi/rxCjxX4tT1E/mqdefault.jpg",
+        "channel": "PyCon Korea",
+        "views": 3718,
+        "length": "35:05",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 Pytest Chapter 1 ~ 4",
+        "url": "https://www.youtube.com/watch?v=J0dslY7QSi4",
+        "thumbnail": "https://i.ytimg.com/vi/J0dslY7QSi4/mqdefault.jpg",
+        "channel": "Software Factory",
+        "views": 608,
+        "length": "43:57",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 Pytest Chapter 5 ~ 6",
+        "url": "https://www.youtube.com/watch?v=qPMWreHLw-M",
+        "thumbnail": "https://i.ytimg.com/vi/qPMWreHLw-M/mqdefault.jpg",
+        "channel": "Software Factory",
+        "views": 160,
+        "length": "57:56",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "pytest-django 셋업하기 2022-02-01 [재활코딩]",
+        "url": "https://www.youtube.com/watch?v=vQjZ7JFBYnM",
+        "thumbnail": "https://i.ytimg.com/vi/vQjZ7JFBYnM/mqdefault.jpg",
+        "channel": "PythonicHours",
+        "views": 341,
+        "length": "24:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] pytest 튜토리얼 (3/3)",
+        "url": "https://www.youtube.com/watch?v=vXboqkw_PFU",
+        "thumbnail": "https://i.ytimg.com/vi/vXboqkw_PFU/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 63,
+        "length": "13:12",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "pytest - simple, rapid and fun testing with Python",
+        "url": "https://www.youtube.com/watch?v=h3zlTirlwp4",
+        "thumbnail": "https://i.ytimg.com/vi/h3zlTirlwp4/mqdefault.jpg",
+        "channel": "PyCon DE",
+        "views": 601,
+        "length": "1:28:13",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Python] Pytest Tutorial",
+        "url": "https://www.youtube.com/watch?v=2G7XgyGYUbo",
+        "thumbnail": "https://i.ytimg.com/vi/2G7XgyGYUbo/mqdefault.jpg",
+        "channel": "SeongHwan Kim",
+        "views": 197,
+        "length": "2:47",
+        "published": "8년 전",
+        "stage": "핵심"
       }
     ],
     "RDB": [
