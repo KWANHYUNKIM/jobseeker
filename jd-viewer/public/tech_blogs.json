@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-21T20:36:49",
- "total": 956,
+ "generated_at": "2026-07-21T22:15:10",
+ "total": 957,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 47
+   "count": 48
   },
   {
    "company": "AWS",
@@ -546,6 +546,32 @@
    ],
    "lang": "ko",
    "content_id": "7053020abfa47f7f"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "How the 2026 World Cup affected Internet traffic",
+   "url": "https://blog.cloudflare.com/2026-world-cup-internet-traffic",
+   "published": "2026-07-21",
+   "published_ts": 1784638780.0,
+   "summary": "We analyzed global HTTP traffic to explore how kickoff times, streaming habits, and hydration breaks reshaped online activity worldwide. From late-night traffic surges to halftime browsing spikes, here is how the world connected during the global tournament.",
+   "tags": [
+    "Internet Traffic",
+    "Radar"
+   ],
+   "tech_stack": [
+    "HTML",
+    "Cloudflare",
+    "Security"
+   ],
+   "categories": [
+    "프론트엔드",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "229ebf6f1daba406"
   },
   {
    "key": "woowahan",

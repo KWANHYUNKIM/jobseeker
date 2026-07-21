@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-21T20:37:11",
-  "source_dir": "screenshots/all_통합_20260721_203649",
+  "generated_at": "2026-07-21T22:15:33",
+  "source_dir": "screenshots/all_통합_20260721_221510",
   "keyword": "통합",
   "jobs": [
     {
@@ -151014,6 +151014,45 @@
     },
     {
       "site": "saramin",
+      "company": "네이트커뮤니케이션즈(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[네이트커뮤니케이션즈] 백엔드 개발 경력자 채용 (SNS 플랫폼)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54523166&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c5598608-a191-4678-b15e-9b481f8cf195",
+      "career": "경력5년↑",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "Redis",
+        "Oracle",
+        "PyTorch",
+        "Scikit-learn",
+        "Git",
+        "Jira",
+        "Confluence"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "대용량 처리"
+      ],
+      "qualifications": "• 백엔드 개발 경력 5년 이상, 추천 또는 개인화 시스템 개발 경험 2년 이상을 보유하신 분\n\n• 학력무관\n\n이런 분을 찾고 있어요!...\n\n• 협업 필터링, Matrix Factorization, 콘텐츠 기반 추천, 랭킹 모델 등 추천 알고리즘에 대한 이해와 실무 경험이 있으신 분\n\n• Python(pandas, scikit-learn, PyTorch 등)을 활용한 데이터 분석 및 모델링 경험이 있으신 분\n\n• Java, Spring Boot, JPA 기반의 서비스 개발과 RESTful API 설계·운영 경험이 있으신 분\n\n• MySQL, Oracle 등 RDB와 Redis 등 NoSQL을 활용한 서비스 개발 경험이 있으신 분\n\n• 대용량 배치 처리 또는 실시간 추천 시스템 아키텍처를 설계하고 운영해 보신 분\n\n• Git, Jira, Confluence 등 협업 도구를 활용한 개발 경험이 있으신 분\n\n• 새로운 기술을 배우고 서비스에 적용하는 것을 즐기며, 동료와 적극적으로 소통하시는 분",
+      "preferences": "이런 분이라면 더 좋아요!...\n\n• 서비스 기획 단계부터 함께 참여하며 기술적인 의사결정을 리드해 보신 분\n\n• 벡터 검색(Vector Search)이나 임베딩 기반 검색 시스템을 구축하거나 활용해 보신 분\n\n• Spark, Airflow 등 대규모 데이터 처리 및 스케줄링 환경을 운영해 보신 분\n\n• LLM을 활용한 추천 이유 생성, 콘텐츠 임베딩 등 AI 기반 추천 시스템을 개발해 보신 분\n\n• CTR, 체류시간, 전환율 등 서비스 지표를 기반으로 A/B 테스트를 설계하고 분석해 보신 분\n\n• SNS, 뉴스, 커뮤니티 등 대규모 콘텐츠 플랫폼에서 추천 시스템을 운영해 보신 분\n\n• Feed, Creator Economy, Recommendation 분야에 관심이 많고 관련 기술을 꾸준히 탐구하시는 분\n\n• nstagram, Threads, X, Reddit, Discord 등 다양한 SNS 서비스를 즐겨 사용하며,\n\n• \"왜 이런 콘텐츠가 추천될까?\"를 고민해 보신 분",
+      "main_tasks": "새로운 SNS 플랫폼의 추천 경험을 함께 만들어갈 백엔드 개발자를 찾고 있어요.\n\n• 신규 SNS 플랫폼의 백엔드 서비스와 추천 시스템을 설계하고 개발합니다.\n\n• 사용자 행동 데이터를 기반으로 콘텐츠와 상품을 추천하는 알고리즘을 설계하고 고도화합니다.\n\n• 협업 필터링, 콘텐츠 기반 추천, 랭킹 모델 등 다양한 추천 모델을 기획하고 구현합니다.\n\n• 추천 결과를 안정적으로 제공하기 위한 API를 설계하고, 대용량 트래픽 환경에 맞는 아키텍처를 구축합니다.\n\n• 추천 시스템의 성능을 지속적으로 개선하며 더 나은 사용자 경험을 만들어갑니다.",
+      "benefits": "• 현금처럼 사용 가능한 복지카드를 드려요\n\n• 기쁜일 슬픈일 축하와 위로를 위해 경조사비를 지원해 드려요\n\n• 건강이 최고, 임직원 건강검진 및 단체 보험을 가입해 드려요"
+    },
+    {
+      "site": "saramin",
       "company": "(주)풀스택",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -162142,6 +162181,29 @@
     },
     {
       "site": "saramin",
+      "company": "(주)엔트로정보기술",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "ERP 및 MES 솔루션 개발자 (C#개발) 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54520951&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1f3fc0a4-04ab-4c72-a261-7c63a7fa7bd8",
+      "career": "경력무관",
+      "location": "서울전체",
+      "dday": "",
+      "tech_stack": [
+        "Android"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 학력무관, 졸업 예정자 지원가능",
+      "preferences": "",
+      "main_tasks": "• 주요업무는 영업, 구매, 물류, 생산, 품질, 인사, 회계등 개발자 능력과 역량에 맞게 배정할 예정임\n\n•\n\n• 솔루션 개발팀 부서 소속, 주임연구원/선임연구원/책임연구원 직급으로 함께할 예정이에요.",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "네이버웹툰(유)",
       "company_size": "대기업",
       "company_size_matched": "네이버웹툰",
@@ -172066,6 +172128,27 @@
     },
     {
       "site": "saramin",
+      "company": "(주)제이투케이바이오",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[코스닥상장사] 2026년 각 부문별 직원 채용(해외마케팅, 글로벌소싱, 기획관리, 기술영업, 미생물 기술지원, 제조, 재무, 행정지원)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54517590&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=4b30bd63-b5fd-4fbc-89c0-7045532c44e5",
+      "career": "신입·경력",
+      "location": "충북청주시 청원구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)스카이랩스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -177511,6 +177594,35 @@
       "preferences": "• Vector DB 사용 경험\n\n• CNN/딥러닝 개발 경험\n\n• C# 개발 경험\n\n• 다채널 데이터 처리\n\n• MLOps\n\n• LLM / Agent AI 경험\n\n• 경력자는 성능 개선 및 자원 최적화 경험 우대",
       "main_tasks": "• 디지털농업 분야 국가 연구과제 수행\n\n• 디지털농업 신기술 개발 (생육모니터링, 품질 및 병충해 판별 모델 개발, 디지털AI농업 플랫폼 개발 등)\n\n• 다분광/초분광 영상 분석 기술 개발",
       "benefits": "• 교육/생활 : 워크샵, 도서구입비지원, 교육비 지원, 사내동호회 운영, 음료제공(차,커피)\n\n• 리프레시 : 연차, 경조휴가제, 반차, 근로자의날 휴무\n\n• 급여제도 : 퇴직연금, 인센티브제, 장기근속자 포상, 퇴직금, 성과급, 4대 보험\n\n• 지원금/보험 : 각종 경조사 지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)숲",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[SOOP] AI 기반 개인화 추천 시스템 엔지니어",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54505898&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=96884d2a-64a3-4aaa-9b20-164381e9c883",
+      "career": "경력5년↑",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "LangChain"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "대용량 처리",
+        "오픈소스 기여"
+      ],
+      "qualifications": "AI/ML 관련 경력 5년 이상 보유하신 분\n\n실제 상용 서비스에 데이터를 배포하고, 이후 지속적인 운영 및 트러블 슈팅 경험을 보유하신 분\n\n로그 레벨의 대용량 데이터를 분석하여 개인화 및 콘텐츠 기반 추천 시스템 구축 경험을 보유하신 분\n\n검색 및 추천 도메인에서의 심도 있는 모델링 경험을 보유하신 분\n\nTersorFlow, PyTorch 등 주요 ML 프레임워크를 능숙하게 다루시는 분",
+      "preferences": "단순 모델 구현이 아닌 실시간/배치 서빙 파이프라인을 직접 설계하고 운영 이슈를 해결한 경험을 보유하신 분\n\nLangChain, LangGraph 등을 활용해 추천 로직에 LLM을 접목해 본 경험을 보유하신 분\n\nPyTorch/TersorFlow 등 딥러닝 프레임워크 실무 활용 능력이 뛰어나신 분\n\n오픈소스 및 신기술 내재화, 업무 자동화를 통한 효율화 경험을 보유하신 분",
+      "main_tasks": "초개인화 추천 모델 개발: VOD, LIVE 검색 행동 데이터를 융합하여 사용자 맥락에 맞는 정교한 추천 모델 설계\n\nEnd-to-End 서비스 운영: 추천 데이터 생성부터 프로덕트 적용 및 지속적인 모니터링, 성능 최적화\n\n검색/추천 경험 고도화: 유저 피드백 루프를 반영한 검색 정확도 개선 및 개인화 알고리즘 지속적 고도화\n\nMLOps 및 인프라 구축: 대규모 트래픽을 처리하는 안정적인 AI/ML 인프라 생성 및 운영 자동화",
+      "benefits": ""
     },
     {
       "site": "saramin",
@@ -186848,6 +186960,120 @@
       "company_size_matched": null,
       "title": "[코스닥 상장사] 공간지능 플랫폼기반 Physical AI 에이전트개발",
       "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54505619&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7365d478-4e17-4747-8bb8-251ccf051900",
+      "career": "경력무관",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)필상",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[대전/IT] 보안 AI 연구인력 채용(신입/경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54519328&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c55ffd9-272c-4230-ae7a-bedaa31a9d68",
+      "career": "경력무관",
+      "location": "대전유성구",
+      "dday": "",
+      "tech_stack": [
+        "HTML"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML",
+        "보안"
+      ],
+      "competencies": [
+        "학사 이상",
+        "석박사 우대"
+      ],
+      "qualifications": "• 경력 무관 (신입 지원 가능)\n\n• 보안 관련 전공 또는 보안 분야 학습·실무 경험 (필수)\n\n- 전공: 정보보호학과, 사이버보안학과 등 보안 관련 학과 학사 이상\n\n- 경험: 보안관제·침해대응·악성코드 분석 등 실무 경력,\n\nCTF 등 보안 경진대회 활동, 보안 동아리(정보보호 동아리 등) 활동,\n\n화이트해커 교육과정(BoB, K-Shield 등) 수료\n\n* 위 중 하나 이상 충족",
+      "preferences": "• URL 분석, HTML 파싱, 피싱 사이트 분석 등 웹 위협 분석 경험\n\n• 정보보호 분야 석사학위 수여자 또는 대학원 진학 예정자\n\n• 정보보안기사, 정보처리기사 등 자격증 보유자\n\n• CTF 등 보안 경진대회 수상 경험\n\n• 침해사고 분석 리포트, 악성코드 분석 리포트 작성 경험\n\n• 보안 학회·컨퍼런스 발표 또는 논문 게재 경험\n\n• 정부 R&D 과제 참여 경험\n\n• 데이터 분석 또는 ML 모델 개발 프로젝트 경험 (수준 무관, 입사 후 학습 지원)",
+      "main_tasks": "• 피싱 및 악성 URL 위협 분석과 탐지 모델 개발\n\n• 위협 데이터 수집·분석 및 학습데이터 구축\n\n• 탐지 시스템 개발 및 성능 검증 (오탐/미탐 분석)",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "코드비전(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "코드비전 AI 개발 책임연구원",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54508591&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ea25d887-2952-4402-ab40-522f0f0890c2",
+      "career": "신입·경력",
+      "location": "서울마포구 | 6,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Django",
+        "Flask",
+        "FastAPI",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "TensorFlow",
+        "PyTorch",
+        "Scikit-learn",
+        "LangChain",
+        "OpenAI",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "대용량 처리",
+        "오너십/주도성",
+        "석박사 우대",
+        "CI/CD"
+      ],
+      "qualifications": "코드비전은 다음 역량을 보유한 분을 찾습니다.\n\n• 박사 졸업자\n\n• 석사 졸업자의 경우 AI 개발 또는 관련 분야 경력 2년 이상인 분\n\n• 인공지능, 머신러닝, 딥러닝 관련 개발 경험 보유자\n\n• Python 개발 능력 보유자\n\n• TensorFlow, PyTorch, Scikit-learn 등 AI 개발 프레임워크 사용 경험\n\n• 데이터 전처리, 모델 학습, 모델 평가, 배포 경험\n\n• AI 서비스 또는 소프트웨어 개발 프로젝트 참여 경험\n\n• 개발팀 또는 프로젝트 리딩 경험\n\n• 문제를 기술적으로 분석하고 해결책을 제시할 수 있는 분\n\n• 기획, 개발, 운영까지 전체 흐름을 이해하고 주도할 수 있는 분\n\n※ 인공지능, 컴퓨터공학 등 AI 개발 직무 관련 전공자",
+      "preferences": "• 제조업 또는 산업 현장의 AI 프로젝트 수행 경험\n\n• 생성형 AI, LLM, RAG, 챗봇, AI Agent 개발 경험\n\n• 컴퓨터비전, OCR, 음성인식, 자연어처리 개발 경험\n\n• AWS, GCP, Azure 등 클라우드 환경 경험\n\n• AI 모델을 실제 서비스에 배포하고 운영한 경험\n\n• 고객 요구사항을 분석하여 AI 솔루션으로 구현한 경험\n\n• OpenAI API, LangChain, LlamaIndex 등 활용 경험\n\n• FastAPI, Django, Flask 등 백엔드 프레임워크 사용 경험\n\n• Docker, Git, CI/CD, MLOps 경험\n\n• 데이터 파이프라인 및 모델 운영 자동화 경험\n\n• 스타트업 또는 빠르게 성장하는 조직에서 주도적으로 일한 경험\n\n📋 코드비전이 찾는 인재상\n\n• 실행력이 있는 사람\n\n좋은 아이디어보다 중요한 것은 실행입니다. 빠르게 실험하고, 만들고, 개선할 수 있는 분을 찾습니다.\n\n• AI 기술을 서비스로 연결할 수 있는 사람\n\n모델을 만드는 것에서 끝나는 것이 아니라, 고객이 실제로 사용할 수 있는 서비스로 구현할 수 있는 분을 찾습니다.\n\n• 팀을 이끌 수 있는 사람\n\n혼자 잘하는 것보다 팀이 함께 성과를 내도록 만드는 역할이 중요합니다. 코드 리뷰, 일정 관리, 기술 방향 제시, 팀원 성장 지원이 가능한 분 을 찾습니다.\n\n• 문제 해결 중심의 사람\n\n정해진 답을 기다리기보다, 문제를 스스로 정의하고 해결 방법을 제안하는 인재를 선호합니다.\n\n• 책임감과 소통 능력이 있는 사람\n\nAI 개발은 기획, 데이터, 개발, 운영이 함께 움직이는 일입니다. 다른 직무와 명확하게 소통하고, 맡은 일에 책임감을 갖고 끝까지 완성하는 태도를 중요하게 생각합니다.\n\n📋이런 분과 함께하고 싶습니다.\n\n• AI 기술을 실제 비즈니스 성과로 연결하고 싶은 분\n\n• 개발뿐 아니라 팀과 프로젝트를 함께 성장시키고 싶은 분\n\n• 새로운 기술을 배우고 빠르게 적용하는 것을 좋아하는 분\n\n• 주도적으로 일하고 결과물을 만들어 내는 분\n\n• 코드비전의 핵심 개발 리더로 성장하고 싶은 분\n\n• 회사의 방향성과 기술 전략을 함께 만들어가고 싶은 분",
+      "main_tasks": "코드비전 입사 후 다음과 같은 업무를 담당하게 됩니다.\n\nㆍAI 개발 및 기술 리딩\n\nㆍ인공지능 모델 개발 및 고도화\n\nㆍ머신러닝, 딥러닝, 생성형 AI, LLM 기반 서비스 개발\n\nㆍ데이터 수집, 전처리, 학습, 검증, 배포 프로세스 설계\n\nㆍAI 모델 성능 개선 및 운영 안정화\n\nㆍPython 기반 AI 개발 및 백엔드 연동\n\nㆍ실제 서비스에 적용 가능한 AI 기능 기획 및 구현\n\nㆍ프로젝트 및 팀 관리\n\nㆍAI 개발 프로젝트 일정 관리 및 품질 관리\n\nㆍ개발자, 기획자, 디자이너 등과 협업하여 서비스 구현\n\nㆍ팀원 코드 리뷰 및 기술 방향성 제시\n\nㆍ신규 AI 기술 검토 및 코드비전 사업에 맞는 적용 방안 제안\n\nㆍ고객 요구사항을 기술적으로 해석하고 개발 과제로 전환\n\nㆍ서비스화 및 제품화\n\nㆍ연구 수준의 AI 기술을 실제 서비스로 구현\n\nㆍAPI, 데이터베이스, 클라우드 환경과 연동 가능한 AI 시스템 구축\n\nㆍAI 솔루션의 성능, 안정성, 확장성 개선\n\nㆍ내부 자동화 시스템 및 업무 효율화 도구 개발",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "(주)섹시쥬",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "ZOOI AI 영상 콘텐츠팀 제작자 및 크리에이터 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54518692&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ea25d887-2952-4402-ab40-522f0f0890c2",
+      "career": "신입·경력",
+      "location": "서울중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "• 신입 / 경력 1년 이상\n\n• 대학졸업(2,3년)이상, 졸업 예정자 지원가능\n\n• 영상 제작 전 과정을 해보신 분\n\n• 편집 툴을 능숙히 다룰 수 있고 종편 능력이 있는 분\n\n• 콘텐츠 기획안을 정리할 수 있는 분\n\n• 피드백을 반영해 개선하시는 분",
+      "preferences": "• AI 영상 도구 활용 경험이 있으신 분\n\n• 숏폼 트렌드에 민감하신 분\n\n• 썸네일 및 자막 디자인 감각 가진 분\n\n• SNS 채널 운영 경험이 있으신 분\n\n• 데이터로 콘텐츠를 개선해보신 분",
+      "main_tasks": "• AI 기반 영상 콘텐츠를 기획\n\n• 영상 촬영·편집으로 완성\n\n• 숏폼 포맷을 제작·운영\n\n• 콘텐츠 성과를 분석·개선\n\n• 클라이언트 프로젝트 제작 및 수행\n\n• AI 영상 콘텐츠 크레에이터팀 부서 소속, 면접 후 결정 직급, 팀원/팀장 직책으로 함께할 예정이에요.",
+      "benefits": "• 최신 제작 장비·툴을 제공해요\n\n• 콘텐츠 실험을 적극 지원해요\n\n• 자율적인 제작 방식으로 일해요\n\n• 교육·레퍼런스 비용을 지원해요\n\n• 성과는 보상으로 확실히 드려요"
+    },
+    {
+      "site": "saramin",
+      "company": "모벤시스(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "로보틱스 AI / 소프트웨어 (로봇 연구개발)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54506611&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ea25d887-2952-4402-ab40-522f0f0890c2",
       "career": "경력무관",
       "location": "경기성남시 분당구",
       "dday": "",
@@ -208585,6 +208811,29 @@
       "qualifications": "",
       "preferences": "",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "네이버클라우드(주)",
+      "company_size": "대기업",
+      "company_size_matched": "네이버클라우드",
+      "title": "HyperCLOVA X Omni-modal Model Recipe 개발 (체험형 인턴)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54519821&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=db0e332e-c329-4657-8655-db02db9406e3",
+      "career": "신입",
+      "location": "경기성남시 분당구",
+      "dday": "",
+      "tech_stack": [
+        "Python"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "• 국내/외 정규대학(학사) 재학생 또는 기졸업자\n• 인턴십 기간(약 3개월) 동안 Full-Time 근무가 가능하신 분\n• Vision Language Model(LLaVA, Qwen VL, DeepSeek VL)에 대한 기본적인 이해와 학습 과정에 활용되는 데이터에 대한 이해도를 갖추신 분\n• Python 활용 역량을 갖추신 분",
+      "preferences": "",
+      "main_tasks": "• Omni-modal LLM의 주기적인 대규모 모델 학습 수행\n• Omni-modal LLM 학습 전체 단계(PT, SFT, RL)에 걸친 학습 및 평가 데이터셋 설계\n• Agent 기반 데이터 수급 및 정제 자동화\n• Real-Time Video, VLA, Visual Agent 등의 추가 시나리오 대응\n• 광범위한 Domain & Task의 Omni-modal LLM 데이터가 상호 및 최종 성능에 미치는 영향 탐구\n• 최적의 Data Recipe 탐색을 위한 Curation Method 개발 및 모델 학습·분석",
       "benefits": ""
     },
     {
@@ -239803,31 +240052,31 @@
     }
   ],
   "stats": {
-    "total": 8013,
+    "total": 8022,
     "by_size": {
-      "중소기업": 7252,
-      "대기업": 440,
+      "중소기업": 7260,
+      "대기업": 441,
       "중견기업": 321
     },
     "by_role": {
-      "기타": 1083,
+      "기타": 1085,
       "DevOps/인프라": 1213,
-      "백엔드": 3333,
-      "모바일": 1195,
-      "AI/ML": 2917,
+      "백엔드": 3335,
+      "모바일": 1196,
+      "AI/ML": 2923,
       "프론트엔드": 2174,
       "풀스택": 743,
       "게임": 45,
-      "데이터": 1072,
+      "데이터": 1073,
       "펌웨어/임베디드": 321,
-      "보안": 337,
+      "보안": 338,
       "QA": 98
     },
     "by_site": {
       "wanted": 2204,
       "jumpit": 610,
       "jobkorea": 1213,
-      "saramin": 3079,
+      "saramin": 3088,
       "dev": 422,
       "remote": 24,
       "ats": 461
@@ -239835,15 +240084,15 @@
     "top_tech": [
       [
         "Python",
-        2526
+        2530
       ],
       [
         "AWS",
-        2127
+        2128
       ],
       [
         "Java",
-        1854
+        1855
       ],
       [
         "React",
@@ -239851,23 +240100,23 @@
       ],
       [
         "Docker",
-        1278
+        1279
       ],
       [
         "Git",
-        1248
+        1250
       ],
       [
         "TypeScript",
         1167
       ],
       [
-        "JavaScript",
+        "Spring",
         1058
       ],
       [
-        "Spring",
-        1057
+        "JavaScript",
+        1058
       ],
       [
         "Linux",
@@ -239879,7 +240128,7 @@
       ],
       [
         "MySQL",
-        855
+        856
       ],
       [
         "REST API",
@@ -239891,7 +240140,7 @@
       ],
       [
         "GCP",
-        771
+        772
       ],
       [
         "Node.js",
@@ -239903,11 +240152,11 @@
       ],
       [
         "Spring Boot",
-        623
+        624
       ],
       [
         "Azure",
-        604
+        605
       ],
       [
         "Next.js",
@@ -239915,11 +240164,11 @@
       ],
       [
         "Redis",
-        572
+        573
       ],
       [
         "PyTorch",
-        532
+        535
       ],
       [
         "CSS",
@@ -239927,11 +240176,11 @@
       ],
       [
         "Android",
-        498
+        499
       ],
       [
         "HTML",
-        493
+        494
       ],
       [
         "Kotlin",
@@ -239939,7 +240188,7 @@
       ],
       [
         "FastAPI",
-        463
+        464
       ],
       [
         "iOS",
@@ -239956,22 +240205,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-18T01:41:35",
-      "keyword": "통합",
-      "raw_total": 7869,
-      "deduped": 7286,
-      "active": 6369,
-      "closed": 917,
-      "site_counts": {
-        "wanted": 1439,
-        "jumpit": 555,
-        "jobkorea": 1526,
-        "saramin": 4010,
-        "dev": 339
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-18T03:16:01",
       "keyword": "통합",
@@ -243197,6 +243430,24 @@
         "jumpit": 1043,
         "jobkorea": 3067,
         "saramin": 8102,
+        "dev": 831,
+        "remote": 24,
+        "ats": 500
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-21T22:15:25",
+      "keyword": "통합",
+      "raw_total": 15897,
+      "deduped": 13062,
+      "active": 8022,
+      "closed": 5040,
+      "site_counts": {
+        "wanted": 2319,
+        "jumpit": 1043,
+        "jobkorea": 3067,
+        "saramin": 8113,
         "dev": 831,
         "remote": 24,
         "ats": 500
