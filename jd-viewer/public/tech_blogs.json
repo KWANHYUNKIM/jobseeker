@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-21T23:53:30",
- "total": 957,
+ "generated_at": "2026-07-22T01:32:17",
+ "total": 959,
  "sources": [
   {
    "company": "Etsy",
@@ -25,7 +25,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 41
+   "count": 42
   },
   {
    "company": "LINE",
@@ -113,6 +113,11 @@
    "count": 15
   },
   {
+   "company": "Stripe",
+   "country": "US",
+   "count": 14
+  },
+  {
    "company": "왓챠",
    "country": "KR",
    "count": 14
@@ -135,11 +140,6 @@
   {
    "company": "카카오",
    "country": "KR",
-   "count": 13
-  },
-  {
-   "company": "Stripe",
-   "country": "US",
    "count": 13
   },
   {
@@ -548,6 +548,32 @@
    "content_id": "7053020abfa47f7f"
   },
   {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How to build interactive experiences with canvases",
+   "url": "https://github.blog/ai-and-ml/github-copilot/how-to-build-interactive-experiences-with-canvases",
+   "published": "2026-07-21",
+   "published_ts": 1784649600.0,
+   "summary": "Canvases turn AI into interactive workspaces where you can visualize information, explore workflows, and take action across complex tasks.\n\nThe post How to build interactive experiences with canvases appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "canvases",
+    "GitHub Copilot app"
+   ],
+   "tech_stack": [
+    "Model Context Protocol",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "1651413fdb6b9bc9"
+  },
+  {
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
@@ -671,6 +697,21 @@
    ],
    "lang": "en",
    "content_id": "56ce436c75b6d55e"
+  },
+  {
+   "key": "stripe",
+   "company": "Stripe",
+   "country": "US",
+   "title": "Analyzing the evidence that helps businesses win “product not received” disputes",
+   "url": "https://stripe.com/blog/analyzing-the-evidence-that-helps-businesses-win-product-not-received-disputes",
+   "published": "2026-07-21",
+   "published_ts": 1784592000.0,
+   "summary": "To understand what can influence win rates, we analyzed evidence packets from one million disputes over a 16-week period. Here’s what the data shows and what it means for how you mitigate disputes.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "090f0aed439d22a0"
   },
   {
    "key": "cyberagent",
