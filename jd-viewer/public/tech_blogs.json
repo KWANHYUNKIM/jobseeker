@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-22T01:32:17",
- "total": 959,
+ "generated_at": "2026-07-22T03:19:22",
+ "total": 960,
  "sources": [
   {
    "company": "Etsy",
@@ -123,6 +123,11 @@
    "count": 14
   },
   {
+   "company": "Airbnb",
+   "country": "US",
+   "count": 13
+  },
+  {
    "company": "Dropbox",
    "country": "US",
    "count": 13
@@ -141,11 +146,6 @@
    "company": "카카오",
    "country": "KR",
    "count": 13
-  },
-  {
-   "company": "Airbnb",
-   "country": "US",
-   "count": 12
   },
   {
    "company": "Razorpay",
@@ -546,6 +546,36 @@
    ],
    "lang": "ko",
    "content_id": "7053020abfa47f7f"
+  },
+  {
+   "key": "airbnb",
+   "company": "Airbnb",
+   "country": "US",
+   "title": "Personalizing Airbnb search by learning from the guest journey",
+   "url": "https://medium.com/airbnb-engineering/personalizing-airbnb-search-by-learning-from-the-guest-journey-bcefd1915624",
+   "published": "2026-07-21",
+   "published_ts": 1784653264.0,
+   "summary": "How we built a Transformer-based sequence model that encodes years of guest behavior to surface the right listings at the right time.\n\nBy: Daochen Zha, Chun How Tan, Xin Liu, Bin Xu, Han Zhao, Xiaowei Liu, Jun Shi, Tracy Yu, Hui Gao, Huiji Gao, Liwei He, Michael Kinoti, Stephanie Moyerman, and Sanjeev Katariya\n\nIntroduction\n\nPlanning a trip on Airbnb rarely happens in a single session. A guest searching for a place to stay in San Francisco might browse dozens of listings over several days, leaving behind a trail of views. Typically, over a period of years, that same guest will have accumulated…",
+   "tags": [
+    "recommendation-system",
+    "travel",
+    "machine-learning",
+    "technology",
+    "engineering"
+   ],
+   "tech_stack": [
+    "Machine Learning",
+    "Embedding",
+    "Transformer",
+    "A/B Test"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "5dd17eb9c8dc135f"
   },
   {
    "key": "github",

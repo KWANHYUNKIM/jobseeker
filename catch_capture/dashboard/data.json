@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-22T01:32:51",
-  "source_dir": "screenshots/all_통합_20260722_013217",
+  "generated_at": "2026-07-22T03:19:47",
+  "source_dir": "screenshots/all_통합_20260722_031922",
   "keyword": "통합",
   "jobs": [
     {
@@ -95394,6 +95394,97 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜동화세상에듀코",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49618139?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=89&sc=630",
+      "career": "경력4년↑",
+      "location": "서울 동대문구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "jQuery",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "Redis",
+        "MSSQL",
+        "Jenkins",
+        "Apache",
+        "JUnit",
+        "Kafka",
+        "Linux",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "데이터"
+      ],
+      "competencies": [
+        "문제해결",
+        "테스트/품질",
+        "성능 최적화",
+        "대용량 처리",
+        "CI/CD"
+      ],
+      "qualifications": "* Java 개발 경력 5년 이상 (또는 그에 준하는 실력을 갖춘 분)\n\n* Spring Framework (4.x 이상) 및 MyBatis 기반의 웹 애플리케이션 개발 숙련도\n\n* RDBMS(MsSQL, MySQL 등) 숙련자: 복잡한 비즈니스 로직을 SQL로 구현하고 성능을 최적화할 수 있는 분\n\n* 레거시 시스템 분석 및 대응 능력: 대규모 코드베이스에서 빠르게 흐름을 파악하고 안정적으로 수정할 수 있는 분\n\n* 프론트엔드 기초 역량: JSP, jQuery, Bootstrap 기반의 UI 수정 및 데이터 바인딩 가능자",
+      "preferences": "* 메시징 시스템 경험: Apache Kafka를 이용한 비동기 데이터 연동 및 장애 대응 경험자\n\n* 캐싱 전략 활용: Redis를 활용한 데이터 캐싱 및 분산 락(Redisson) 처리 경험자\n\n* 도메인 지식: 교육 산업(ERP, LMS) 또는 커머스 주문/결제 시스템 개발 경험자\n\n* 인프라 이해도: Linux 환경에서의 서비스 배포 및 로그 분석, 쉘 스크립트 활용 가능자\n\n* 테스트 자동화: JUnit 등을 활용한 단위 테스트 코드 작성 및 검증 경험자\n\n기술스텍\n\n* Backend: Java 8, Spring / Spring Boot, MyBatis, Maven\n\n* Database: MsSQL, MySQL\n\n* Frontend: JSP, JavaScript (jQuery), Bootstrap 3\n\n* Middleware: Redis, Kafka\n\n* Tools: Git, Jenkins, IntelliJ/Eclipse\n* AI : Claude / Gemini",
+      "main_tasks": "* ERP 핵심 모듈 유지보수: 주문(Order), 실적(Accu), 수당(Settlement), 회원관리 등 핵심 비즈니스 로직 고도화 및 버그 수정\n\n* 신규 서비스 연동 개발: 외부 AI 교육 솔루션(DNSOFT 알공, 프리윌린 등)과의 API 연동 및 데이터 동기화\n\n* 레거시 코드 리팩토링: 서비스 로직의 구조 개선 및 성능 최적화\n\n* 비동기 데이터 처리: Kafka 및 Redis를 활용한 대용량 주문/메시징 처리 시스템 관리 및 확장\n\n* DB 아키텍처 관리: MsSQL 및 MySQL 기반의 복잡한 쿼리 최적화 및 데이터 무결성 관리",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "아이아이컴바인드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[GENTLE MONSTER] Unreal Engine 클라이언트 개발자",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49613956?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=91&sc=630",
+      "career": "경력3년↑",
+      "location": "서울 성동구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "게임"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜건축사사무소건원엔지니어링",
+      "company_size": "중견기업",
+      "company_size_matched": null,
+      "title": "주니어 전산개발자 정규직 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49594908?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=92&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 송파구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "HTML"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 초대졸이상\n\nㆍ경력 : 신입",
+      "preferences": "ㆍ장기근무 가능자",
+      "main_tasks": "ㆍ웹개발자, 서버관리, 시스템운영, 프론트엔트개발자, 백앤드개발자\n\n스킬\n\nㆍHTML, JAVA, Javascript, Python, SQL\n\n핵심역량\n\nㆍ\n성실성,\n꼼꼼함, 창의성, 협동심, 성장지향성",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜에이블리코퍼레이션",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -98649,6 +98740,122 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜씨앤에이아이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[CNAI] 프론트엔드 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49622691?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=32&sc=630",
+      "career": "경력5년↑",
+      "location": "서울 강서구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[유닛피아] 프론트엔드 개발자 채용 (계약직)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49620578?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=42&sc=630",
+      "career": "신입 지원 가능",
+      "location": "경기 고양시",
+      "dday": "",
+      "tech_stack": [
+        "TypeScript",
+        "React",
+        "Vue",
+        "HTML",
+        "CSS",
+        "AWS",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍ학력 : 대졸이상\n\nㆍ경력 : 신입·경력1년↑",
+      "preferences": "SaaS/ERP 서비스 개발 경험\n\nREST API 연동 경험\n\nAWS 기반 서비스 개발/배포 경험\n\n반응형 웹, 크로스브라우징 이슈 대응 경험",
+      "main_tasks": "유닛클(관리비 ERP) / 유닛보트(전자투표) 웹 서비스 화면 개발 및 개선\n\n관리비 부과·수납, 임대관리, 시설관리, 회계관리 등 각 ERP 모듈의 UI/UX 구현\n\n기존 화면 리팩토링 및 반응형/모바일 대응\n\n백엔드 개발자, 기획자와 협업하여 신규 기능 기획 단계부터 참여\n\n(필요시) 관리자용 대시보드, 통계·리포트 화면 개발\n\n스킬\n\nㆍHTML, CSS, React, Git, REST API, Vue.js, AWS, TypeScript, 크로스브라우징\n\n핵심역량\n\nㆍ\n메타인지,\n적응성,\n성실성,\n계획성,\n윤리의식,\n꼼꼼함,\n협동심,",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜더게임",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[더게임] 프론트엔드 개발자 채용 (정규직)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49622379?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=46&sc=630",
+      "career": "경력3년↑",
+      "location": "서울 성동구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 경력3년↑",
+      "preferences": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요",
+      "main_tasks": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요\n\n스킬\n\nㆍCSS3, Git, React, HTML5, Javascript, TypeScript, RestAPI, GitHub, Next.js, Redux\n\n핵심역량\n\nㆍ\n협동심,\n적응성,\n성실성,\n메타인지, 성장지향성, 윤리의식, 스트레스관리",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "메디맵㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "메디맵(주) 의료 플랫폼 프론트엔드개발자 (2년 이상)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49608747?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=86&sc=630",
+      "career": "경력2년↑",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "React",
+        "Next.js",
+        "HTML",
+        "CSS",
+        "Flutter",
+        "React Native",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "성능 최적화",
+        "CI/CD"
+      ],
+      "qualifications": "ㆍ경력 : 경력2년↑\n\nㆍ프론트엔드 개발 경력 2년 또는 그에 준하는 역량을 갖춘 분\n\nㆍ프로젝트 시작부터 완성단계까지 참여하고 실제 고객 피드백을 통한 서비스 운영 경험\n\nㆍReact, Next.js 등 최신 프레임워크 중 하나 이상에 대한 실무 경험\n\nㆍHTML/CSS/JavaScript 기반 퍼블리싱 가능하신 분\n\nㆍREST API 연동 경험 있으신 분\n\nㆍ컴포넌트 기반 UI 개발 및 재사용성 높은 코드 작성 경험\n\nㆍ성능 최적화 및 반응형 웹 개발 경험",
+      "preferences": "ㆍ스타트업 기업 문화를 잘 아시는 분\n\nㆍ플랫폼 서비스 개발 경험\n\nㆍ모바일 앱 개발 경험 (React Native, Flutter 등)\n\nㆍ 디자인 시스템 및 UI 컴포넌트 라이브러리 구축 경험\n\nㆍ웹 접근성 및 SEO 최적화 경험\n\nㆍ테스트 자동화 및 CI/CD 환경에서의 프론트엔드 배포 경험",
+      "main_tasks": "ㆍ웹 / 앱 서비스 프론트 환경 설계 및 개발\nㆍ사용자 인터페이스 성능과 사용성(UX) 극대화\nㆍ서비스 KPI 개선을 위한 기술적 해법 제시\n\n스킬\n\nㆍHTML/CSS/JavaScript, React, Next.js",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -101517,6 +101724,164 @@
       "qualifications": "",
       "preferences": "",
       "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "네이트커뮤니케이션즈㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[네이트커뮤니케이션즈] 백엔드 개발 경력자 채용 (SNS 플랫폼)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49625442?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=58&sc=630",
+      "career": "[네이트커뮤니케이션즈] 백엔드 개발 경력자 채용 (SNS 플랫폼)",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "Spring",
+        "Spring Boot",
+        "MySQL",
+        "Redis",
+        "Oracle",
+        "PyTorch",
+        "Scikit-learn",
+        "Git",
+        "Jira",
+        "Confluence"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 백엔드 개발 경력5년↑, 또는 추천",
+      "preferences": "ㆍ유관업무 경력자 (5년)",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜테크핀레이팅스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[ICT 본부] 백앤드(BE)/서버 개발자 (경력 5년 이상)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49622926?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=70&sc=630",
+      "career": "[ICT 본부] 백앤드(BE)/서버 개발자 (경력 5년 이상)",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [
+        "Spring",
+        "Spring Boot",
+        "PostgreSQL",
+        "Kafka",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "데이터"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "테스트/품질",
+        "대용량 처리"
+      ],
+      "qualifications": "[기술/경험]\nㆍ 백엔드 개발 경력 5년 이상\nㆍ Spring Framework / Spring Boot 기반 프로젝트 경험\nㆍ REST API 설계 및 개발 경험\nㆍ RDBMS(PostgreSQL 등) 활용 경험\nㆍ 대용량 데이터 처리 시스템 개발 경험\n[Soft Skill]\nㆍ 서비스 안정성 및 성능을 중시하는 태도\nㆍ 대용량 데이터의 효율적 처리에 대한 관심\nㆍ 문제의 원인을 끝까지 분석하는 문제 해결 역량\nㆍ 협업 및 코드 리뷰 문화에 대한 이해\nㆍ 새로운 기술을 적극적으로 학습하고 적용하는 태도",
+      "preferences": "ㆍ기업신용평가(CB) 시스템 개발 경험\nㆍKafka 기반 시스템 개발 경험\nㆍVertica등 DW 경험",
+      "main_tasks": "ㆍERP, 회계, 세무 등 기업 데이터를 수집·정제·가공하여 기업CB(Credit Bureau) 데이터 상품 개발\nㆍ대용량 데이터 수집 및 배치(Batch) 처리 시스템 개발 및 운영\nㆍ기업신용평가 서비스를 위한 Backend API 설계 및 개발\nㆍKafka 기반 데이터 스트리밍 및 실시간 데이터 처리 시스템 개발\nㆍ금융기관 및 제휴기관과의 전문(SFTP/API) 연계 시스템 개발\nㆍ서비스 성능 개선 및 장애 대응",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "백엔드 개발자",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49611148?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=75&sc=630",
+      "career": "경력3년↑",
+      "location": "경기 하남시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "C#",
+        "PHP",
+        "Node.js"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜이노베리",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "프리랜서 Java 백엔드 개발자 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49613905?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=85&sc=630",
+      "career": "경력5년↑",
+      "location": "서울 중구 외 1",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "Spring",
+        "PostgreSQL",
+        "Oracle",
+        "MariaDB",
+        "Git",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍKotlin/Spring, JPA 기반 백엔드 개발경험 5년 이상\n\nㆍOracle, PostgreSQL, MariaDB 등 RDBMS 사용 경험\n\nㆍGit 협업 경험",
+      "preferences": "ㆍ금융권 기간계-채널계 연계 이해 및 이슈 대응 경험자 우대",
+      "main_tasks": "ㆍKotlin/Spring 기반 Backend 개발\n\nㆍREST API 개발 및 연동\n\nㆍ시스템 유지보수 및 기능 개선",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "원소프트㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Backend 개발자(AI 프로젝트 경험자)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49610868?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=91&sc=630",
+      "career": "경력6년↑",
+      "location": "서울 종로구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Spring",
+        "Spring Boot",
+        "Oracle",
+        "MariaDB",
+        "AWS",
+        "Docker"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 초대졸이상\n\nㆍ등급 : 중급 개발자",
+      "preferences": "",
+      "main_tasks": "* Java/Spring Boot 기반의 백엔드 개발\n\n* 26.8.3.시 투입( 7개월 근무)",
       "benefits": ""
     },
     {
@@ -105983,6 +106348,217 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜싸인텔레콤",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "React Spring Boot 풀스택 웹 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49623908?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=17&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 영등포구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "React",
+        "Spring",
+        "Spring Boot",
+        "REST API"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "ㆍ신입 ~ 중급 (5년 이하)\n\nㆍJava 및 Spring Boot 개발 가능자\n\nㆍReact 개발 가능자\n\nㆍHTML5/CSS3/JavaScript 이해 높은자\n\nㆍREST API 개발 및 연동 가능자\n\nㆍSQL활용 가능자",
+      "preferences": "ㆍ만 18세 이상 ~ 만 24세 이하(청년채용 조건 부합자 우대)\n\nㆍ새로운 기술을 적극적으로 학습하고 서비스에 적용하는 것을 즐기는 분\n\nㆍ협업을 중시하며, 동료와 함께 성장하기를 즐기시는 분\n\nㆍAI 모델(LLM, RAG등)의 API 연동 및 서비스화에 관심이 많으신 분",
+      "main_tasks": "ㆍAI ITS 자율주행 관련 개발\n\nㆍReact 기반 Front-End 개발\n\nㆍSpring Boot 기반 Back-End API 개발\n\nㆍREST API 설계 및 연동\n\nㆍ신규 서비스 개발 및 유지보수\n\n스킬\n\nㆍReact, Spring Boot, RestAPI, JAVA, Javascript\n\n핵심역량\n\nㆍ\n협동심,\n성실성,\n성취지향성, 적응성, 성장지향성",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜아이이에이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[대기업] 시스템 웹·앱 풀스택 개발/TA 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49619364?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=59&sc=630",
+      "career": "경력8년↑",
+      "location": "서울 송파구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "TypeScript",
+        "Next.js",
+        "FastAPI",
+        "Flutter",
+        "PostgreSQL",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "GitHub Actions",
+        "Terraform",
+        "LangChain",
+        "OpenAI"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일",
+        "AI/ML",
+        "DevOps/인프라",
+        "풀스택"
+      ],
+      "competencies": [
+        "테스트/품질",
+        "CI/CD"
+      ],
+      "qualifications": "ㆍ웹/앱 풀스택(Flutter, Next.js, Python) 실무 경험자\n\nㆍAzure 클라우드 환경 및 AKS(Kubernetes) 구축/운영 실무 경험",
+      "preferences": "ㆍ제조/플랜트(PSM) 도메인 프로젝트 경험\n\nㆍCI/CD 구축 및 코드 리뷰 리딩 경험\n\n근무 정보\n\nㆍ근무지 : 문정역 인근 (필요시 울산 출장 체재비 지원)\nㆍ투입 : 7월 투입 후 ~ (3개월)\n\nTA\n\n(고급 1명)\n\nㆍIaC(Terraform, Bicep) 및 CI/CD 파이프라인 구축 경험\n\nㆍ공공/금융권 수준 구축 및 보안성 심의/취약점 대응 경험\n\nㆍAzure DevOps 또는 GitHub Actions 활용 경험\n\n근무 정보\n\nㆍ근무지 : 문정역 인근 (필요시 울산 출장 체재비 지원)\nㆍ투입 : 7월 투입 후 ~ (3개월)",
+      "main_tasks": "공정안전관리 시스템 풀스택 개발\nㆍWeb/App 풀스택 설계 및 개발\n\nㆍOpenAI API(LangChain) 연동 AI 기능 및 백엔드 구현\n\nㆍ데이터베이스 설계 및 쿼리 최적화 (raw SQL 기반)\n\n공정안전관리 시스템 TA\n\nㆍ시스템 Azure 인프라 아키텍처 설계 및 구축 (환경 분리)\n\nㆍAKS(Kubernetes) 기반 컨테이너 환경 구축 및 운영\n\nㆍ네트워크 및 보안(NSG, VPN, WAF, RBAC) 정책 설계\n\nㆍDB 암호화 및 인프라 모니터링/감사 로그 구축",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜엘루오씨앤씨",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 활용 웹 풀스택 개발자 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49621275?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=66&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Vue",
+        "Node.js",
+        "Spring",
+        "GCP",
+        "Git"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "AI/ML",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "문제해결",
+        "대용량 처리",
+        "오너십/주도성",
+        "CI/CD"
+      ],
+      "qualifications": "Claude Code 등 AI 코딩 도구를 활용한 개발이 가능하신 분 (필수)\n\n웹 개발 실무 경력 3~5년 (프론트엔드·백엔드 전반 개발 가능자)\n\nJavaScript/TypeScript 기반 프론트엔드(React, Vue 등) 개발 역량 보유자\n\n서버·API 개발 경험 (Java/Spring, Node.js 등 1개 이상)\n\n관계형 데이터베이스(RDB) 설계 및 쿼리 작성 가능자\n\nGit 기반 형상관리 및 협업 경험 보유자\n\n원활한 협업과 커뮤니케이션이 가능하신 분",
+      "preferences": "커머스·유통 도메인 웹/앱 개발 경험이 있으신 분\n\nGCP 등 클라우드(PaaS) 환경 개발·운영 경험이 있으신 분\n\n대규모 트래픽 서비스 개발·운영 경험이 있으신 분\n\nCI/CD, 테스트 자동화 등 개발 프로세스 개선 경험이 있으신 분\n\nAI/LLM 기능 연동·구현 경험이 있으신 분\n\n신기술 학습과 자기주도적 문제 해결에 열의가 있으신 분",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI 시대를 주도할 기획형 풀스택 개발자 (경력 2년 이상)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49623866?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=67&sc=630",
+      "career": "AI 시대를 주도할 기획형 풀스택 개발자 (경력 2년 이상)",
+      "location": "전남광주 동구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Node.js",
+        "React Native",
+        "Redis",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일",
+        "AI/ML",
+        "DevOps/인프라",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "성능 최적화",
+        "대용량 처리",
+        "오너십/주도성"
+      ],
+      "qualifications": "경력: 웹/앱 풀스택 서비스 개발 및 운영 경력 2년 이상\n\n프론트엔드: JavaScript, TypeScript, React, React Native 환경에서의 능숙한 개발 역량\n\n백엔드: Node.js, TypeScript 기반의 서버 개발 및 RESTful API 설계 경험\n\n인프라 및 DB: AWS 환경에서의 인프라 구축 및 Redis를 활용한 실시간 데이터/트래픽 처리 경험\n\n서비스 운영: 서비스 기획 단계부터 개발, 배포, 상용화 이후의 라이브 서비스 운영까지 전체 사이클을 경험해 보신 분",
+      "preferences": "LLM API 연동 및 AI 기반 비즈니스 로직 설계 경험이 있으신 분\n\n라이브 데이터, 실시간 양방향 통신 등 대규모 트래픽 처리 경험이 있으신 분\n\nB2B SaaS 솔루션 또는 플랫폼 기반 아키텍처 설계 경험이 있으신 분\n\n기획의 의도를 파악하고, 기술적인 관점에서 더 나은 대안을 제시할 수 있는 커뮤니케이션 역량을 갖추신 분",
+      "main_tasks": "풀스택 개발 및 운영: React 및 React Native 기반의 사용자 친화적인 웹/앱 프론트엔드 개발과 Node.js 기반 백엔드 API 설계 및 구현\n\n상용 서비스 인프라 구축: AWS 및 Redis를 활용한 실시간 트래픽 관리, 병목 현상 해결 및 확장 가능한 인프라 아키텍처 설계\n\n주도적 프로덕트 기획: AI 기술 트렌드를 이해하고, 이를 서비스에 접목하기 위한 신규 기능 아이디에이션 및 기술적 타당성 검토\n\n성능 최적화: 상용화 서비스의 실시간 모니터링, 로그 분석을 통한 선제적인 시스템 최적화 및 트러블슈팅",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜아이이에이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[대기업/8월 투입/고급] Java/React 풀스택 개발자 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49607117?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=79&sc=630",
+      "career": "경력6년↑",
+      "location": "경기 성남시",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "풀스택",
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ경력 : 6년 이상\n\nㆍ설계 및 개발 가능자",
+      "preferences": "ㆍ구매 시스템 구축 또는 운영 경험",
+      "main_tasks": "ㆍ대기업 구매정보시스템 구축\n\nㆍJava, React 기반 백엔드/프론트 설계 및 개발",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜트인시스템즈",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[모집] JAVA 내부 SI 개발-(풀스택-Vue 3 & SpringBoot)-마곡나루역 8/1",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49618776?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=87&sc=630",
+      "career": "경력6년↑",
+      "location": "서울 강서구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Vue",
+        "Spring",
+        "Spring Boot",
+        "MySQL"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "풀스택"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "학력 : 학력무관경력 : 6년 이상~\n필수 : 풀스택 ( Vue 3, Spring Boot )DB 이해 및 SQL 구사능력\n(Maria DB, MySql)\n[참고 사항]\n실력 있고, 소통 원할하고, 근무태도 충실한 분 지원하시면 좋겠습니다.\n\n* 추후 계속 근무 희망자 우대",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "㈜오스랩스",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -107114,6 +107690,33 @@
       "tech_tags": [],
       "roles": [
         "모바일"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜파더스랩",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "임베디드 C++ 개발자 경력 / 정규직",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49615099?Oem_Code=C1&logpath=1&stext=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&listno=78&sc=630",
+      "career": "임베디드 C++ 개발자 경력 / 정규직",
+      "location": "서울 강남구 외 5",
+      "dday": "",
+      "tech_stack": [
+        "C++",
+        "C/C++",
+        "Android",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "모바일",
+        "펌웨어/임베디드"
       ],
       "competencies": [],
       "qualifications": "",
@@ -112086,6 +112689,27 @@
     },
     {
       "site": "jobkorea",
+      "company": "하나은행",
+      "company_size": "대기업",
+      "company_size_matched": "하나은행",
+      "title": "마케팅부 [데이터분석]",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49618799?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=35&sc=630",
+      "career": "경력",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "데이터"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "ㆍ손님 데이터 분석 업무\n\nㆍ데이터 추출 및 지표 관리 업무\n\nㆍ통계프로그램(SAS, SQL) 및 엑셀 사용",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "엔에이치엔클라우드",
       "company_size": "대기업",
       "company_size_matched": "엔에이치엔",
@@ -114701,6 +115325,27 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜펀진",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "DL/ML AI 엔지니어 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49618071?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=7&sc=630",
+      "career": "경력무관",
+      "location": "서울 성동구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "에스넷시스템㈜",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -115998,6 +116643,29 @@
       "qualifications": "Python 환경에서 PyTorch, TensorFlow 등을 활용한 딥러닝 모델 학습 및 배포 역량을 보유하신 분\n\nComputer Vision(객체 인식, 비디오 행동 분석, OCR 등) 혹은 NLP/LLM 관련 프로젝트 경험이 있으신 분\n\nVision-Language Model(VLM) 혹은 최신 AI 에이전트(LLM Agent) 프레임워크 구현 능력을 갖추신 분\n\nGit을 통한 형상 관리 및 프로젝트 협업 도구(Slack, Notion, Confluence 등)에 능숙하신 분",
       "preferences": "오픈소스 LLM(Llama, Mistral 등)의 파인 튜닝(PEFT, LoRA, QLoRA 등) 및 경량화/서빙 최적화 경험이 있으신 분\n\n게임 분야 데이터(플레이 영상, 게임 자산, 유저 커뮤니티 데이터 등) 활용 및 분석 프로젝트 경험이 있으신 분\n\nAI 모델 서빙 최적화, Docker 기반 컨테이너 환경, MLOps 파이프라인(Kubeflow, MLflow 등) 설계가 가능하신 분\n\n정부 주도 R&D 국가 연구 과제 참여 경험 및 연구 산출물(논문, 특허 등) 작성 이력이 있으신 분\n\n게임의 동작 환경(PC/모바일/콘솔/아케이드)에 관심이 깊으며, 국내외 게임 등급 심사 프로세스에 이해도가 있으신 분",
       "main_tasks": "AI 에이전트 알고리즘 개발\n\n게임 등급 분류 기준(폭력성, 선정성, 사행성 등)을 정밀 분석하는 멀티모달(Vision-Language) AI 에이전트 핵심 알고리즘 개발\n\n비디오 및 멀티모달 인식 모델 개발\n\n게임 플레이 영상, 텍스트 데이터 및 기기 구동 신호 등의 멀티플랫폼 원천 데이터를 실시간/배치 분석하는 딥러닝 모델 설계\n\nR&D 플랫폼 및 파이프라인 구축\n\n자동 분석 모델을 구동하고 결과를 가시화 및 처리하는 AI 플랫폼 백엔드 아키텍처 및 파이프라인 개발\n\n데이터셋 구축 및 관리\n\nAI 모델 고도화를 위한 도메인 특화 데이터 수집, 정제 및 라벨링 프로세스 설계\n\n기술 문서 작성\n\n국가 과제 단계별 기술 보고서, 특허 출원, 학술지 논문 게재 등 연구 성과 증빙 자료 작성 및 검증 지원",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜포티투마루",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[포티투마루] AI 서비스기획, AI 프롬프트엔지니어 채용",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49620952?Oem_Code=C1&logpath=1&stext=AI&listno=90&sc=630",
+      "career": "경력1년↑",
+      "location": "서울 서초구",
+      "dday": "",
+      "tech_stack": [
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
       "benefits": ""
     },
     {
@@ -121844,6 +122512,56 @@
     },
     {
       "site": "jobkorea",
+      "company": "에스큐아이소프트㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[삼성동] B사 커머스 시스템 java 웹개발(AWS, JAVA, Vue.js)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49613404?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=64&sc=630",
+      "career": "경력6년↑",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Vue",
+        "Spring",
+        "AWS"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 경력6년↑\n\n채용형태\n\nㆍ정규직, 계약직, 프리랜서",
+      "preferences": "",
+      "main_tasks": "[프로젝트 개발] 5명\n\nㆍ커머스 시스템 JAVA 웹 개발\n\nㆍSpring, Vue.js 사용\n\n스킬\n\nㆍAWS, JAVA, Vue.js\n\n핵심역량\n\nㆍ\n성실성,\n꼼꼼함,\n성취지향성, 적응성, 창의성, 협동심, 메타인지, 성장지향성\n\n투입기간\n\nㆍ 2026년 7월 말 ~ 2026년 12월 말(4~6개월)",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜오픈테크",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "(차세대) java 중고급 개발자 모집",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49613592?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=81&sc=630",
+      "career": "경력6년↑",
+      "location": "서울 중구",
+      "dday": "",
+      "tech_stack": [
+        "Java"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "레브아트컴퓨터학원",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -123743,6 +124461,106 @@
     },
     {
       "site": "jobkorea",
+      "company": "㈜모디엠",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "Python 기반의 내비게이션 테스트 자동화 스크립트 개발",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49609522?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=57&sc=630",
+      "career": "신입 지원 가능",
+      "location": "서울 성동구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "C++"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "QA"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 초대졸이상 (졸업예정자 가능)\n\nㆍ경력 : 신입",
+      "preferences": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요",
+      "main_tasks": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요\n\n스킬\n\nㆍPython, C, C++\n\n핵심역량\n\nㆍ\n성실성,\n성취지향성,\n꼼꼼함,\n계획성, 협동심",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜퍼스널애드",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[주식회사 퍼스널애드] 풀스택 모집(QA 자동화,Python/Selenium/Appium)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49609883?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=70&sc=630",
+      "career": "경력3년↑",
+      "location": "서울 마포구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "QA",
+        "풀스택",
+        "백엔드",
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜인사이트온",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[울산] 제조 시스템 개발자 모집(Java, react, Python) 5개월",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49615766?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=80&sc=630",
+      "career": "경력5년↑",
+      "location": "[울산] 제조 시스템 개발자 모집(Java, react, Python) 5개월",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 대졸이상\n\nㆍ경력 : 경력5년↑",
+      "preferences": "ㆍ관련 자격증 보유자\n\nㆍ유관업무 경력자\n\nㆍ전공 : 정보통신공학과, 컴퓨터공학과, 응용소프트웨어공학과",
+      "main_tasks": "ㆍ대기업 제조 시스템 개발 프로젝트\n\nㆍJava, react, Python\n\nㆍ경력 5년 이상 중급, 고급\n\nㆍ8월 ~ (5~6개월)",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜에스메이트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[ Java,React,Python,AI ] 반도체, 통신사 차세대 (서울,분당)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49613778?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=87&sc=630",
+      "career": "경력6년↑",
+      "location": "[ Java,React,Python,AI ] 반도체, 통신사 차세대 (서울,분당)",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Python",
+        "React",
+        "Jira"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드",
+        "AI/ML"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
       "company": "모두투어네트워크",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -124777,6 +125595,87 @@
       "qualifications": "ㆍ학력 : 초대졸이상\n\nㆍ경력 : 신입·경력",
       "preferences": "ㆍ인근거주자\n\nㆍ관련 학과 전공자\n\nㆍ유관업무 경력자",
       "main_tasks": "ㆍ웹/앱 서비스 퍼블리싱\n\nㆍUI/UX 컴포넌트 설계\n\nㆍ웹 표준 및 접근성 준수\n\nㆍAI 기반 워크플로우 최적화\n\n스킬\n\nㆍBootstrap, CSS3, HTML5, Javascript, AI활용능력\n\n핵심역량\n\nㆍ\n성실성,\n꼼꼼함,\n협동심,\n계획성, 성취지향성, 윤리의식\n\nㆍAI에게 원하는 마크업 구조와 스타일을 정확하게 뽑아내기 위한 나만의 프롬프트 노하우가 있으신 분\n\nㆍ프레임워크 활용 및 Vue.js 또는 React 환경에서의 퍼블리싱 경험이 있으신 분\n\nㆍ반복적인 작업을 혐오하고, 어떻게든 자동화하거나 AI를 시켜서 해결하려는 효율성 집착러\nㆍ최신 AI 기술 트렌드와 퍼블리싱 트렌드를 빠르게 습득하고 팀 내에 공유하기를 즐기는 분",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "엔에이치엔링크㈜",
+      "company_size": "대기업",
+      "company_size_matched": "엔에이치엔",
+      "title": "[NHN Link] 클라이언트개발팀 FE개발 담당",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49610324?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&listno=37&sc=630",
+      "career": "경력5년↑",
+      "location": "서울 강남구",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Vue",
+        "Angular",
+        "Next.js",
+        "jQuery",
+        "HTML",
+        "CSS",
+        "Tailwind"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜케이씨엠에스",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "여의도역 BNK캐피탈 웹개발 및 운영 (t09)",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49614437?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&listno=63&sc=630",
+      "career": "경력3년↑",
+      "location": "여의도역 BNK캐피탈 웹개발 및 운영 (t09)",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "JavaScript",
+        "Oracle"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "티에스엔㈜",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "여의도 은행 통신사 초급 개발자 운영",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49613471?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&listno=96&sc=630",
+      "career": "경력3년↑",
+      "location": "여의도 은행 통신사 초급 개발자 운영",
+      "dday": "",
+      "tech_stack": [
+        "JavaScript",
+        "Spring"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드"
+      ],
+      "competencies": [],
+      "qualifications": "ㆍ학력 : 학력무관\n\nㆍ경력 : 경력3년↑",
+      "preferences": "ㆍ통신사개발경험\n\nㆍ금융권개발경험",
+      "main_tasks": "",
       "benefits": ""
     },
     {
@@ -126527,6 +127426,30 @@
       "qualifications": "ㆍ학력 : 초대졸이상\n\nㆍ경력 : 경력6년↑",
       "preferences": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요",
       "main_tasks": "ㆍ상세내용을 입력하세요\n\nㆍ상세내용을 입력하세요\n\n스킬\n\nㆍJAVA, MongoDB, MariaDB, OracleDB, Python, Spring Boot, TypeScript, RestAPI, React, Vue.js\n\n핵심역량\n\nㆍ\n성실성,\n계획성, 성취지향성, 창의성, 협동심",
+      "benefits": ""
+    },
+    {
+      "site": "jobkorea",
+      "company": "㈜에이치와이소프트",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "React, Java(9월1일/27년10월말/증미역/고급) 프로그래머를 모십니다.",
+      "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49608671?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=62&sc=630",
+      "career": "경력9년↑",
+      "location": "서울 구로구 외 1",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "React"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "프론트엔드"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "에 27년도에 3개월정도 출장이 가능한 분\n10명",
       "benefits": ""
     },
     {
@@ -139422,6 +140345,31 @@
       "preferences": "- 전력변환기(인버터·SMPS·UPS·ESS 등) 또는 산업용 전력제어 장비 개발 경험\n- Modbus RTU/TCP 프로토콜 구현 경험\n- OCPP 1.6 / 2.0.1 연동 경험\n- 충전기·인버터·ESS·UPS 등 파워 컨버터 제품 양산 경험\n\n마감일 및 근무지\n\n• 마감일 : 2026년 08월 18일",
       "main_tasks": "- 전기차 충전기(AC/DC) 파워모듈 제어 펌웨어 설계 및 개발\n- STM32 기반 MCU 펌웨어 개발 \n- 파워모듈 제어 루프 및 보호 로직 구현\n- RS-485(Modbus) 및 CAN 통신 드라이버 개발\n- FreeRTOS 기반 실시간 제어 태스크 설계 및 구현",
       "benefits": "7 to 10 시차 출퇴근\n임직원 동호회 / 운영비 지원\n우리사주 무상지급\n건강검진(70만원 매년) / 검진 휴가 반차 지원\nPF 데이 (매월 3주차 금요일)\n유급 생일반차 / 상품권 지급\n장기 근속휴가 / 포상금 지급\n경조 휴가 / 경조비 지급\n상 하반기 특별휴가 / 유급연차 지원\n자사몰 임직원 할인\n명절 상품권 지급\n유치원 대학교 등록금 지원"
+    },
+    {
+      "site": "saramin",
+      "company": "(주)누리기술",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "R&D 펌웨어 임베디드 소프트웨어 개발자 정규직 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54522580&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=cb27f650-2e9e-4750-b386-02486f60152f",
+      "career": "신입·경력",
+      "location": "대구동구",
+      "dday": "",
+      "tech_stack": [
+        "C#"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [
+        "문제해결"
+      ],
+      "qualifications": "• 신입 / 경력 1년 이상 ~ 4년 이하\n\n• 대학교졸업(4년)이상, 졸업 예정자 지원가능 (관련학과 졸업 /고졸 전무 2-3년)",
+      "preferences": "• 직접 설계한 PCB 포트폴리오\n\n2층·4층 이상 다층기판 설계 경험\n\n전원회로, 인버터, 컨버터, SMPS 경험\n\nAltium·OrCAD·PADS 사용 능력\n\n시제품 제작 후 디버깅 경험\n\n회로도, BOM, Gerber 파일 작성 가능 여부\n\n•",
+      "main_tasks": "• 하드웨어 및 펌웨어 개발 (TI C2000, STM32)\n\n• R&D 관리, 연구 관리\n\n• 연구개발부서 부서 소속, 연구원 직급으로 함께할 예정이에요.",
+      "benefits": "•사내카페 무료이용/ 간단간식제공\n\n• 월1회 회식/ 연장근무 없음/ 주말 포함 국공휴일 휴무\n\n* 출퇴근시간 엄수(8:30- 5:30 칼퇴근)"
     },
     {
       "site": "saramin",
@@ -168124,6 +169072,48 @@
     },
     {
       "site": "saramin",
+      "company": "(주)케이씨이노베이션",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "스크러버 연구개발, 기구설계, 제조, CS, 납품관리",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54516361&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e3552f87-7962-4e91-aab9-de4f624c5b52",
+      "career": "신입·경력",
+      "location": "경기화성시",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "한국사학진흥재단",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "한국사학진흥재단 2026년 2차 직원 채용 공고",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54517231&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=e3552f87-7962-4e91-aab9-de4f624c5b52",
+      "career": "신입·경력",
+      "location": "대구동구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "기타"
+      ],
+      "competencies": [],
+      "qualifications": "",
+      "preferences": "",
+      "main_tasks": "",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "다산팩 주식회사",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -186238,6 +187228,29 @@
     },
     {
       "site": "saramin",
+      "company": "네이버클라우드(주)",
+      "company_size": "대기업",
+      "company_size_matched": "네이버클라우드",
+      "title": "[NAVER Cloud] AX·AI 신사업 전략 기획 (경력)",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54516939&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=1164eb7c-28bd-4556-a0fc-271bf4545aea",
+      "career": "경력3년↑",
+      "location": "서울강남구",
+      "dday": "",
+      "tech_stack": [],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 신사업 기획, 사업 전략, B2B 영업 기획 등 유관 업무 경력을 3년 이상 보유하신 분\n• 국내외 대학 학사 학위 이상을 취득하신 분\n• AX·AI 산업에 대한 도메인 이해도를 갖추신 분\n• AI 및 클라우드 기술 트렌드에 대한 이해를 바탕으로, 비즈니스 관점에서의 해석·적용 역량을 갖추신 분 \n• 시장 분석, 사업 기회 발굴 및 실행을 위한 구조적 사고·기획 역량을 갖추신 분",
+      "preferences": "",
+      "main_tasks": "• 전사 핵심 아젠다 기반 AX·AI 산업 내 중장기 사업 전략 및 실행 로드맵 수립\n• 국내외 CSP 경쟁사 동향, 산업 내 AI·클라우드 도입 트렌드, 잠재 고객사 니즈 분석을 통한 시장 진입 기회 발굴 \n및 비즈니스 케이스 작성\n• 영업·기술·마케팅 등 유관 부서와의 협업을 통한 산업별 맞춤형 전략 수립 및 실행 조율\n• 신규 사업 발굴, 사업 모델 구체화 및 공모 제안 기획\n• 사업 파이프라인 현황 관리, 신규 사업 기획 결과물의 내부 보고 자료 작성 및 의사결정 지원",
+      "benefits": ""
+    },
+    {
+      "site": "saramin",
       "company": "(주)월급날",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -199896,6 +200909,33 @@
       "preferences": "• 정보보안 관련 학과 전공자\n\n• 정보보안기사, CISA, CISSP, CPPG 등 정보보호 및 개인정보보호 관련 자격증 보유자\n\n• ISMS, ISO 27001 등 인증심사 경험자\n\n• 클라우드 기반 서비스 환경 경험자\n\n• 네트워크 및 시스템 구조에 대한 이해도 보유자",
       "main_tasks": "• 정보보안 정책 운영\n\n- 사내 정보보안 정책 수립 및 운영, 보안 이슈 대응\n\n• 보안 시스템 운영\n\n- 방화벽, 침입탐지시스템(IDS), EDR 등 보안 솔루션 운영\n\n• 보안 사고 대응\n\n- 이상 징후 탐지 및 보안 사고 분석 및 대응\n\n• 데이터 분석\n\n- 정기적인 내부 보안 감사 및 취약점 점검 수행",
       "benefits": ""
+    },
+    {
+      "site": "saramin",
+      "company": "네이트커뮤니케이션즈(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[Nate, NateOn] 보안인프라 운영 경력직 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54522332&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=2d01c6c2-ae32-4590-8a2e-b98847f0f51d",
+      "career": "경력3년↑",
+      "location": "서울성동구",
+      "dday": "",
+      "tech_stack": [
+        "Python",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "DevOps/인프라"
+      ],
+      "competencies": [
+        "문제해결",
+        "대용량 처리"
+      ],
+      "qualifications": "• 경력 3년 이상\n\n• 학력무관\n\n- 보안장비 운영경력 3년 이상\n\n- Firewall, IDS/IPS, VPN 등 운영 경험\n\n- 보안로그 분석, 장애대응, 패치 관리 경험\n\n- 기본적인 네트워크 구성 및 트래픽 이해",
+      "preferences": "- Windows/Linux 서버 및 네트워크 운영능력\n\n- AD 운영 등 사내인프라 운영경험\n\n- 정보보안기사, 네트워크관리사 등 자격증 보유\n\n- 대규모 트래픽 환경 운영 경험자\n\n- Python 등 script 프로그램을 작성경험",
+      "main_tasks": "- ACL 관리: ACL/VPN 설정, 운영\n\n- 보안 장비 운영: 방화벽, DDOS 방어시스템, 침입탐지 시스템 운영\n\n- Cisco ASA, Fortigate, Juniper-NetScreen 사용\n\n- VPN 장비 운영: SSLVPN, LanToLan, OTP\n\n- 보안스위치, 블랙홀 라우터 운영\n\n- 보안 관제: 침해위협 정탐 이벤트 실증, 월간 보안패치 관리대장 작성 및 유지, 공역이벤트 검수/대응, 관제지표관리",
+      "benefits": "• 현금처럼 사용하는 복지카드 지급\n\n• 경조사비 지원\n\n• 구성원 단체 보험 가입"
     },
     {
       "site": "saramin",
@@ -238967,31 +240007,31 @@
     }
   ],
   "stats": {
-    "total": 7984,
+    "total": 8021,
     "by_size": {
-      "중소기업": 7224,
-      "대기업": 444,
-      "중견기업": 316
+      "중소기업": 7257,
+      "대기업": 447,
+      "중견기업": 317
     },
     "by_role": {
-      "기타": 1079,
-      "DevOps/인프라": 1208,
-      "백엔드": 3319,
-      "모바일": 1188,
-      "AI/ML": 2916,
-      "프론트엔드": 2163,
-      "풀스택": 740,
-      "게임": 45,
-      "데이터": 1069,
-      "펌웨어/임베디드": 323,
+      "기타": 1084,
+      "DevOps/인프라": 1211,
+      "백엔드": 3336,
+      "모바일": 1193,
+      "AI/ML": 2925,
+      "프론트엔드": 2180,
+      "풀스택": 747,
+      "게임": 46,
+      "데이터": 1072,
+      "펌웨어/임베디드": 325,
       "보안": 336,
-      "QA": 97
+      "QA": 99
     },
     "by_site": {
       "wanted": 2204,
       "jumpit": 610,
-      "jobkorea": 1213,
-      "saramin": 3051,
+      "jobkorea": 1245,
+      "saramin": 3056,
       "dev": 421,
       "remote": 24,
       "ats": 461
@@ -238999,118 +240039,118 @@
     "top_tech": [
       [
         "Python",
-        2517
+        2525
       ],
       [
         "AWS",
-        2116
+        2120
       ],
       [
         "Java",
-        1846
+        1862
       ],
       [
         "React",
-        1624
+        1635
       ],
       [
         "Docker",
-        1278
+        1280
       ],
       [
         "Git",
-        1244
+        1250
       ],
       [
         "TypeScript",
-        1165
+        1171
       ],
       [
         "Spring",
-        1055
+        1065
       ],
       [
         "JavaScript",
-        1050
+        1060
       ],
       [
         "Linux",
-        1038
+        1041
       ],
       [
         "Kubernetes",
-        993
+        994
       ],
       [
         "MySQL",
-        853
+        856
       ],
       [
         "REST API",
-        845
+        850
       ],
       [
         "PostgreSQL",
-        816
+        819
       ],
       [
         "GCP",
-        765
+        766
       ],
       [
         "Node.js",
-        696
+        699
       ],
       [
         "C++",
-        678
+        680
       ],
       [
         "Spring Boot",
-        623
+        629
       ],
       [
         "Azure",
-        604
+        605
       ],
       [
         "Next.js",
-        593
+        597
       ],
       [
         "Redis",
-        571
+        574
       ],
       [
         "PyTorch",
-        535
+        536
       ],
       [
         "CSS",
-        505
-      ],
-      [
-        "Android",
-        493
+        508
       ],
       [
         "HTML",
-        493
+        497
+      ],
+      [
+        "Android",
+        494
       ],
       [
         "Kotlin",
-        467
+        468
       ],
       [
         "FastAPI",
-        464
-      ],
-      [
-        "iOS",
-        434
+        465
       ],
       [
         "Kafka",
+        436
+      ],
+      [
+        "iOS",
         434
       ],
       [
@@ -239120,22 +240160,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-18T06:40:47",
-      "keyword": "통합",
-      "raw_total": 7937,
-      "deduped": 7342,
-      "active": 6425,
-      "closed": 917,
-      "site_counts": {
-        "wanted": 1442,
-        "jumpit": 555,
-        "jobkorea": 1577,
-        "saramin": 4023,
-        "dev": 340
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-18T08:26:50",
       "keyword": "통합",
@@ -242367,6 +243391,24 @@
         "jumpit": 1044,
         "jobkorea": 3082,
         "saramin": 8123,
+        "dev": 831,
+        "remote": 24,
+        "ats": 500
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-22T03:19:40",
+      "keyword": "통합",
+      "raw_total": 15967,
+      "deduped": 13116,
+      "active": 8021,
+      "closed": 5095,
+      "site_counts": {
+        "wanted": 2319,
+        "jumpit": 1044,
+        "jobkorea": 3121,
+        "saramin": 8128,
         "dev": 831,
         "remote": 24,
         "ats": 500
