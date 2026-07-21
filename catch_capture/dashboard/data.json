@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-21T22:15:33",
-  "source_dir": "screenshots/all_통합_20260721_221510",
+  "generated_at": "2026-07-21T23:53:53",
+  "source_dir": "screenshots/all_통합_20260721_235330",
   "keyword": "통합",
   "jobs": [
     {
@@ -139539,6 +139539,31 @@
     },
     {
       "site": "saramin",
+      "company": "(주)원익피앤이",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "[충전기사업부문] 펌웨어 개발자 경력 채용",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54507766&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=9246f85a-cf75-4976-b012-73049594dcc0",
+      "career": "경력 3~5년",
+      "location": "경기화성시",
+      "dday": "",
+      "tech_stack": [
+        "C++",
+        "C#",
+        "Linux"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "펌웨어/임베디드"
+      ],
+      "competencies": [],
+      "qualifications": "- 임베디드 C 펌웨어 개발 경력 3~5년 (MCU 직접 제어 경험)\n- RS-232/485 또는 CAN 통신 드라이버 설계·구현 실무 경험\n- STM32 계열 MCU 개발 경험 필수 (STM32F·STM32G·STM32H 등); NXP·TI 등 타 Cortex-M 경험자 동등 인정\n- RTOS(FreeRTOS 등) 또는 Super-loop 기반 실시간 제어 경험\n- 하드웨어 회로도 독해 가능",
+      "preferences": "- 전력변환기(인버터·SMPS·UPS·ESS 등) 또는 산업용 전력제어 장비 개발 경험\n- Modbus RTU/TCP 프로토콜 구현 경험\n- OCPP 1.6 / 2.0.1 연동 경험\n- 충전기·인버터·ESS·UPS 등 파워 컨버터 제품 양산 경험\n\n마감일 및 근무지\n\n• 마감일 : 2026년 08월 18일",
+      "main_tasks": "- 전기차 충전기(AC/DC) 파워모듈 제어 펌웨어 설계 및 개발\n- STM32 기반 MCU 펌웨어 개발 \n- 파워모듈 제어 루프 및 보호 로직 구현\n- RS-485(Modbus) 및 CAN 통신 드라이버 개발\n- FreeRTOS 기반 실시간 제어 태스크 설계 및 구현",
+      "benefits": "7 to 10 시차 출퇴근\n임직원 동호회 / 운영비 지원\n우리사주 무상지급\n건강검진(70만원 매년) / 검진 휴가 반차 지원\nPF 데이 (매월 3주차 금요일)\n유급 생일반차 / 상품권 지급\n장기 근속휴가 / 포상금 지급\n경조 휴가 / 경조비 지급\n상 하반기 특별휴가 / 유급연차 지원\n자사몰 임직원 할인\n명절 상품권 지급\n유치원 대학교 등록금 지원"
+    },
+    {
+      "site": "saramin",
       "company": "(주)앰진",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -187090,6 +187115,33 @@
     },
     {
       "site": "saramin",
+      "company": "엠클라우드브리지(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "AI Agent 프로젝트 수행 사업본부장 모집",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54514897&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=239837cd-e0c7-46ef-a50f-cd48ec8a08e7",
+      "career": "경력 10~15년",
+      "location": "서울강남구 | 12,000 만원",
+      "dday": "",
+      "tech_stack": [
+        "Oracle",
+        "Azure",
+        "OpenAI"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "AI/ML"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션"
+      ],
+      "qualifications": "• 경력 10년 이상 ~ 15년 이하",
+      "preferences": "* Microsoft Azure AI 및 Azure OpenAI 프로젝트 경험\n\n* Microsoft 365 Copilot 및 Copilot Studio 구축 경험\n\n* Azure AI Foundry 및 Azure Machine Learning 구축 경험\n\n* D365, SAP, Oracle ERP 구축 경험\n\n* 데이터웨어하우스(DW), 데이터레이크(Lakehouse), ETL/ELT 구축 경험\n\n* 제조, 금융, 공공 분야 AI 및 데이터 플랫폼 프로젝트 경험\n\n* PMP 등 프로젝트 관리 자격증 보유\n\n* 영어 또는 일본어 커뮤니케이션 가능자\n\n⸻\n\n이런 분을 찾습니다\n\n* AI와 데이터 기반 사업을 성장시킬 수 있는 리더\n\n* Microsoft Fabric 및 Databricks 기반 데이터 플랫폼 구축 경험을 보유한 전문가\n\n* AI Agent 및 생성형 AI 프로젝트를 성공적으로 수행한 사업 책임자\n\n* 고객과 조직을 성공으로 이끄는 실행 중심의 리더\n\n* 사업성과(Project P/L)와 조직 성장을 함께 만들어갈 경영형 리더\n\n* 전략 수립과 실행을 동시에 수행할 수 있는 사업본부장\n\n⸻",
+      "main_tasks": "다음은 요청하신 내용을 모두 반영한 최종 채용 공고입니다.\n\nAI Agent 프로젝트 수행 사업본부장 모집\n\n모집 분야\n\nAI Agent 프로젝트 수행 사업본부장 (Business Division Head / Executive Director)\n\n* AI Agent 구축 프로젝트 및 사업부 총괄\n\n* AI 및 데이터 분석(Data Analytics) 프로젝트 수행 및 관리\n\n* Microsoft Fabric 및 Databricks 기반 데이터 플랫폼 구축 프로젝트 총괄\n\n* AI 플랫폼 및 SaaS 서비스 구축 프로젝트 총괄\n\n* 사업부 조직 운영, 인력 관리 및 성과 관리\n\n* 프로젝트 일정, 품질, 원가 및 리스크 관리\n\n* 프로젝트 손익(P/L) 관리 및 사업 수익성 개선\n\n* 고객사 임원 및 경영진 대상 제안 및 보고\n\n* 신규 AI 사업 발굴 및 사업 전략 수립\n\n* PMO 체계 구축 및 프로젝트 표준화\n\n* 개발, 데이터, AI, 인프라 조직 간 협업 체계 운영\n\n⸻\n\n필수 자격\n\n* IT, AI 및 데이터 분석(Data Analytics) 분야 경력 10~15년 이상\n\n* AI 프로젝트 수행 및 사업부 관리 경험 5년 이상\n\n* Microsoft Fabric 또는 Databricks 기반 데이터 플랫폼 구축 프로젝트 수행 경험\n\n* Power BI, Microsoft Fabric, Databricks, Azure Data Platform 기반 데이터 분석 프로젝트 수행 경험\n\n* 생성형 AI(LLM), AI Agent 구축 프로젝트 수행 경험\n\n* AI 사업부 또는 프로젝트 조직 운영 경험\n\n* 프로젝트 손익(P/L) 관리 및 사업 운영 경험\n\n* 대기업 또는 중견기업 대상 AI·데이터 플랫폼 프로젝트 총괄 수행 경험\n\n* 고객사 임원 대상 제안 및 보고 경험\n\n* 조직 리더십 및 인력 관리 경험\n\n⸻",
+      "benefits": "• 급여제도 : 퇴직금, 4대 보험"
+    },
+    {
+      "site": "saramin",
       "company": "(주)미리디",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -214355,6 +214407,47 @@
     },
     {
       "site": "saramin",
+      "company": "한빛앤(주)",
+      "company_size": "중소기업",
+      "company_size_matched": null,
+      "title": "한빛앤과 함께할 Product Engineer를 찾습니다",
+      "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54521798&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=edf48120-088d-43ec-a18f-2da6a4d9e666",
+      "career": "경력무관",
+      "location": "서울서대문구",
+      "dday": "",
+      "tech_stack": [
+        "Java",
+        "Kotlin",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "Tailwind",
+        "Spring",
+        "Spring Boot",
+        "React Native",
+        "MySQL",
+        "PostgreSQL",
+        "AWS",
+        "GitHub Actions"
+      ],
+      "tech_tags": [],
+      "roles": [
+        "백엔드",
+        "프론트엔드",
+        "모바일"
+      ],
+      "competencies": [
+        "협업/커뮤니케이션",
+        "테스트/품질",
+        "CI/CD"
+      ],
+      "qualifications": "",
+      "preferences": "• LMS, 이러닝 또는 디지털 콘텐츠 플랫폼 개발 경험이 있으신 분\n\n• AWS 기반 인프라를 직접 설계·운영하거나 CI/CD 및 운영 자동화를 경험해 보신 분\n\n• 스타트업 또는 작은 팀에서 제품을 빠르게 개발하고 운영해 보신 분\n\n• 백엔드뿐 아니라 필요에 따라 프론트엔드 등 개발 영역을 확장시킬 수 있는 분\n\n• AI를 활용한 개발 프로세스 개선이나 생산성 향상을 실제 업무에 적용해 보신 분\n\n• 코드 리뷰, 문서화, 비동기 커뮤니케이션 등 협업 문화에 익숙하신 분\n\n함께할 동료를 위한 한마디\n\n\"한빛앤의 Product Engineer는 단순히 주어진 기능을 구현하는 데에 그치지 않아요.\"\n\n▶ 사용자가 정말 원하는 것이 무엇인지, 어떻게 하면 더 나은 학습 경험을 제공할 수 있을지 끊임없이 고민하고 개선해 나갑니다. 때로는 복잡한 기능을 더 간단하게 만들거나, 사용자가 몰랐던 니즈를 발견해서 새로운 가치를 만들어내기도 합니다. 개발자로서 기술적 역량뿐만 아니라 사용자와 비즈니스를 이해하는 Product Sense까지 함께 성장시킬 수 있어요.\n\n▶ \"IT 학습자를 위한 최고의 디지털 경험\"을 만드는 것이 우리의 목표예요. 단순히 전자책, 강의를 보여주는 뷰어가 아니라, 학습 효과를 극대화하고 성장을 도울 수 있는 혁신적인 서비스를 만들어갈 수 있습니다. 초기 단계 프로덕트의 방향성을 함께 결정하고, 새로운 기술과 아이디어로 차별화된 가치를 만들어내는 것에 큰 의미를 느끼고, 사용자 한 명 한 명의 학습 경험이 개선될 때마다 보람을 느낄 수 있는 분이라면 한빛앤 Product Engineer로 함께 성장해봐요.",
+      "main_tasks": "플랫폼 사업부 LMS 개발팀 부서 소속으로 함께할 예정이에요.\n\n• LMS 및 디지털 콘텐츠 플랫폼의 백엔드 시스템 설계·개발·운영\n\n• 비즈니스 요구사항을 바탕으로 기능을 설계하고 기술적 해결 방안을 제안\n\n• 서비스 확장에 따른 서버 아키텍처 설계, AWS 인프라 운영 및 배포 환경 개선\n\n• 운영 효율 향상을 위한 자동화 및 서비스 안정성 개선\n\n• 필요 시 웹 서비스의 프론트엔드 기능 개발 및 기존 화면 유지보수",
+      "benefits": "• 급여제도 : 퇴직연금, 인센티브제, 상여금, 장기근속자 포상, 우수사원포상, 야근수당, 휴일(특근)수당, 가족수당, 4대 보험\n\n• 근무 환경 : 휴게실, 수면실, 회의실, 공기청정기, 카페테리아, 전용사옥, 사내 정원, 건물 내 경사로, 장애인 화장실, 장애인 전용주차장, 장애인 엘리베이터, 문턱 없음, 스마트기기, 노트북, 콘도/리조트 이용권, 사무용품 지급, 안마실/안마의자\n\n• 출퇴근 : 재택근무, 주 52시간제 준수\n\n• 지원금/보험 : 건강검진, 각종 경조사 지원, 문화생활비\n\n• 리프레시 : 연차, 경조휴가제, Refresh휴가, 포상휴가, 육아휴직, 남성출산휴가, 보건휴가, 시간제 연차\n\n• 조직 문화 : 노조/노사협의회, 수평적 조직문화, 회식강요 안함, 야근강요 안함, 자유복장, 자유로운 연차사용, 님/닉네임 문화, 칼퇴근 보장\n\n• 교육/생활 : 창립일행사, 우수사원시상식, 자기계발비 지원, 사우회(경조사회), 음료제공(차,커피)\n\n• 선물 : 명절선물/귀향비, 창립일선물지급"
+    },
+    {
+      "site": "saramin",
       "company": "노드소프트(주)",
       "company_size": "중소기업",
       "company_size_matched": null,
@@ -240052,23 +240145,23 @@
     }
   ],
   "stats": {
-    "total": 8022,
+    "total": 8025,
     "by_size": {
-      "중소기업": 7260,
+      "중소기업": 7263,
       "대기업": 441,
       "중견기업": 321
     },
     "by_role": {
       "기타": 1085,
       "DevOps/인프라": 1213,
-      "백엔드": 3335,
-      "모바일": 1196,
-      "AI/ML": 2923,
-      "프론트엔드": 2174,
+      "백엔드": 3336,
+      "모바일": 1197,
+      "AI/ML": 2924,
+      "프론트엔드": 2175,
       "풀스택": 743,
       "게임": 45,
       "데이터": 1073,
-      "펌웨어/임베디드": 321,
+      "펌웨어/임베디드": 322,
       "보안": 338,
       "QA": 98
     },
@@ -240076,7 +240169,7 @@
       "wanted": 2204,
       "jumpit": 610,
       "jobkorea": 1213,
-      "saramin": 3088,
+      "saramin": 3091,
       "dev": 422,
       "remote": 24,
       "ats": 461
@@ -240088,15 +240181,15 @@
       ],
       [
         "AWS",
-        2128
+        2129
       ],
       [
         "Java",
-        1855
+        1856
       ],
       [
         "React",
-        1631
+        1632
       ],
       [
         "Docker",
@@ -240108,11 +240201,11 @@
       ],
       [
         "TypeScript",
-        1167
+        1168
       ],
       [
         "Spring",
-        1058
+        1059
       ],
       [
         "JavaScript",
@@ -240120,7 +240213,7 @@
       ],
       [
         "Linux",
-        1043
+        1044
       ],
       [
         "Kubernetes",
@@ -240128,7 +240221,7 @@
       ],
       [
         "MySQL",
-        856
+        857
       ],
       [
         "REST API",
@@ -240136,7 +240229,7 @@
       ],
       [
         "PostgreSQL",
-        818
+        819
       ],
       [
         "GCP",
@@ -240148,19 +240241,19 @@
       ],
       [
         "C++",
-        680
+        681
       ],
       [
         "Spring Boot",
-        624
+        625
       ],
       [
         "Azure",
-        605
+        606
       ],
       [
         "Next.js",
-        596
+        597
       ],
       [
         "Redis",
@@ -240184,7 +240277,7 @@
       ],
       [
         "Kotlin",
-        470
+        471
       ],
       [
         "FastAPI",
@@ -240205,22 +240298,6 @@
     ]
   },
   "history": [
-    {
-      "ts": "2026-06-18T03:16:01",
-      "keyword": "통합",
-      "raw_total": 7877,
-      "deduped": 7294,
-      "active": 6377,
-      "closed": 917,
-      "site_counts": {
-        "wanted": 1441,
-        "jumpit": 555,
-        "jobkorea": 1526,
-        "saramin": 4016,
-        "dev": 339
-      },
-      "anomalies": []
-    },
     {
       "ts": "2026-06-18T04:55:00",
       "keyword": "통합",
@@ -243448,6 +243525,24 @@
         "jumpit": 1043,
         "jobkorea": 3067,
         "saramin": 8113,
+        "dev": 831,
+        "remote": 24,
+        "ats": 500
+      },
+      "anomalies": []
+    },
+    {
+      "ts": "2026-07-21T23:53:46",
+      "keyword": "통합",
+      "raw_total": 15901,
+      "deduped": 13065,
+      "active": 8025,
+      "closed": 5040,
+      "site_counts": {
+        "wanted": 2319,
+        "jumpit": 1043,
+        "jobkorea": 3067,
+        "saramin": 8117,
         "dev": 831,
         "remote": 24,
         "ats": 500

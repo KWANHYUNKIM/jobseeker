@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **8022건** 공고 · **1556개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-21 22:15
+- 총 **8025건** 공고 · **1556개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-21 23:54
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -4977,6 +4977,24 @@ markmap:
   - [AI 솔루션 테크니컬 아키텍처 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54334417&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=30a473c9-c92b-4c81-a45e-b54b65978d4e)
   - [AWS 클라우드 TA(설계·운영) 엔지니어 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54336168&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0e277618-214e-4b54-984f-d7a8223c2b57)
 
+### 엠클라우드브리지(주) `중소기업` · 4건
+- **백엔드** [2건] · `React` `Azure` `OpenAI` `Java` `Python` `Vue`
+  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
+  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
+- **프론트엔드** [2건] · `React` `Azure` `OpenAI` `Java` `Python` `Vue`
+  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
+  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
+- **풀스택** [2건] · `React` `Azure` `OpenAI` `Java` `Python` `Vue`
+  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
+  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
+- **AI/ML** [4건] · `Azure` `OpenAI` `Jira` `React` `Java` `Python`
+  - [AI SaaS 제품 연구소 / 유지보수 / 고객 지원 경력자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54290161&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=b34e4287-eddd-426e-aac4-a52b18b21982)
+  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
+  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
+  - [AI Agent 프로젝트 수행 사업본부장 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54514897&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=239837cd-e0c7-46ef-a50f-cd48ec8a08e7)
+- **DevOps/인프라** [1건] · `Java` `Python` `React` `Vue` `Angular` `Node.js`
+  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
+
 ### 비즈테크아이 `중소기업` · 4건
 - **백엔드** [1건] · `Java`
   - [Web 기반 솔루션 개발 및 운영 담당자 (경력) 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/555002?ReturnUrl=RecruitInfo)
@@ -5431,23 +5449,6 @@ markmap:
 - **AI/ML** [2건] · `Python` `PyTorch` `HuggingFace` `Linux` `Git` `AWS`
   - [(폴라리스오피스) AI 엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54376799&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=1d359ec2-7bef-47c6-82c8-63a0d1bf29a0)
   - [AI 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/560872?ReturnUrl=RecruitInfo)
-
-### 엠클라우드브리지(주) `중소기업` · 3건
-- **백엔드** [2건] · `React` `Azure` `OpenAI` `Java` `Python` `Vue`
-  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
-  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
-- **프론트엔드** [2건] · `React` `Azure` `OpenAI` `Java` `Python` `Vue`
-  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
-  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
-- **풀스택** [2건] · `React` `Azure` `OpenAI` `Java` `Python` `Vue`
-  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
-  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
-- **AI/ML** [3건] · `Azure` `OpenAI` `Jira` `React` `Java` `Python`
-  - [AI SaaS 제품 연구소 / 유지보수 / 고객 지원 경력자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54290161&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=b34e4287-eddd-426e-aac4-a52b18b21982)
-  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
-  - [AI 기반 full stack Developer, 설계/개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471225&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=7ea43f4f-b39f-45e8-986d-c9f40d1b2fa4)
-- **DevOps/인프라** [1건] · `Java` `Python` `React` `Vue` `Angular` `Node.js`
-  - [Data / AI / Full Stack 프로젝트 관리 매니저(PM) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54379504&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=69a454ea-a873-41cc-a3f9-5673aef8e2c7)
 
 ### (주)지란지교소프트 `중견기업` · 3건
 
@@ -15331,6 +15332,15 @@ markmap:
   - [Sr. Deep Learning Algorithm Engineer ↗](https://www.wanted.co.kr/wd/315756)
   - [Sr. Embedded AI Engineer ↗](https://www.wanted.co.kr/wd/338867)
 
+### 원익피앤이 `중소기업` · 7건
+- **프론트엔드** [2건]
+  - [(충전기사업부문) 프론트엔드 개발 경력(3년 이상) 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49448178?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=65&sc=630)
+  - [(충전기사업부문) 프론트엔드 개발 경력(3년 이상) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54273383&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f42480ee-03b0-4bda-8254-6740eb80d8eb)
+- **펌웨어/임베디드** [3건] · `C++` `Linux` `C` `TCP/IP` `Embedded` `RTOS`
+  - [(충전기사업부문) 펌웨어 개발자 경력(8년 이상) 채용 ↗](https://jumpit.saramin.co.kr/position/53941812)
+  - [(충전기사업부문) 펌웨어 개발자 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54507766)
+  - [(충전기사업부문) 펌웨어 개발자 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54507766&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=9246f85a-cf75-4976-b012-73049594dcc0)
+
 ### 모다플 `중소기업` · 6건
 - **백엔드** [3건] · `Java` `Kotlin` `Python` `TypeScript` `C++` `React`
   - [풀스택 엔지니어(3년이상) ↗](https://www.wanted.co.kr/wd/364629)
@@ -15352,14 +15362,6 @@ markmap:
   - [머신러닝 엔지니어(3년이상) ↗](https://www.wanted.co.kr/wd/352814)
   - [(모다플)머신러닝 엔지니어(3년이상) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49331872?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=2&sc=630)
   - [(모다플) 머신러닝 엔지니어(3년이상) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54110241&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=67d3d2ff-6f65-4244-9243-06e2b132ac1f)
-
-### 원익피앤이 `중소기업` · 6건
-- **프론트엔드** [2건]
-  - [(충전기사업부문) 프론트엔드 개발 경력(3년 이상) 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49448178?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=65&sc=630)
-  - [(충전기사업부문) 프론트엔드 개발 경력(3년 이상) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54273383&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f42480ee-03b0-4bda-8254-6740eb80d8eb)
-- **펌웨어/임베디드** [2건] · `C++` `Linux` `C` `TCP/IP` `Embedded` `RTOS`
-  - [(충전기사업부문) 펌웨어 개발자 경력(8년 이상) 채용 ↗](https://jumpit.saramin.co.kr/position/53941812)
-  - [(충전기사업부문) 펌웨어 개발자 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54507766)
 
 ### 에이스웍스코리아 `중소기업` · 6건
 - **백엔드** [1건] · `Python` `C++` `C#` `Jenkins` `GitLab CI` `Git`
