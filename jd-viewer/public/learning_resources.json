@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-21T18:59:12",
+  "generated_at": "2026-07-21T20:37:27",
   "source": "youtube",
   "tech_count": 183,
   "curriculum_count": 20,
@@ -1973,88 +1973,6 @@
         "stage": "실전"
       }
     ],
-    "Terraform": [
-      {
-        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
-        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
-        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
-        "channel": "데브아트 DevArt",
-        "views": 13887,
-        "length": "14:55",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
-        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
-        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 2744,
-        "length": "13:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
-        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
-        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1712,
-        "length": "13:41",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
-        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
-        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3174,
-        "length": "36:29",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
-        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
-        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
-        "channel": "44BITS",
-        "views": 13162,
-        "length": "5:11",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
-        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
-        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
-        "channel": "NDC",
-        "views": 4755,
-        "length": "20:43",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[젝톡] 최재혁의 Terraform 소개",
-        "url": "https://www.youtube.com/watch?v=mdO3NOr4vuY",
-        "thumbnail": "https://i.ytimg.com/vi/mdO3NOr4vuY/mqdefault.jpg",
-        "channel": "젝트 JECT",
-        "views": 128,
-        "length": "7:17",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
-        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
-        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
-        "channel": "딩코딩코",
-        "views": 4294,
-        "length": "9:08",
-        "published": "6개월 전",
-        "stage": "실전"
-      }
-    ],
     "CSS": [
       {
         "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
@@ -2134,6 +2052,88 @@
         "views": 43058,
         "length": "48:53",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Terraform": [
+      {
+        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
+        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
+        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
+        "channel": "데브아트 DevArt",
+        "views": 13887,
+        "length": "14:55",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
+        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
+        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 2744,
+        "length": "13:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
+        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
+        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1712,
+        "length": "13:41",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
+        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
+        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3174,
+        "length": "36:29",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
+        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
+        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
+        "channel": "44BITS",
+        "views": 13162,
+        "length": "5:11",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
+        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
+        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
+        "channel": "NDC",
+        "views": 4755,
+        "length": "20:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[젝톡] 최재혁의 Terraform 소개",
+        "url": "https://www.youtube.com/watch?v=mdO3NOr4vuY",
+        "thumbnail": "https://i.ytimg.com/vi/mdO3NOr4vuY/mqdefault.jpg",
+        "channel": "젝트 JECT",
+        "views": 128,
+        "length": "7:17",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인프라 몰라도 AI가 AWS 배포 다 해줌 Terraform + Claude Code",
+        "url": "https://www.youtube.com/watch?v=UFpqXcydq_Y",
+        "thumbnail": "https://i.ytimg.com/vi/UFpqXcydq_Y/mqdefault.jpg",
+        "channel": "딩코딩코",
+        "views": 4294,
+        "length": "9:08",
+        "published": "6개월 전",
         "stage": "실전"
       }
     ],
