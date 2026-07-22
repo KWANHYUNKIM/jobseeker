@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **8085건** 공고 · **1570개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-23 06:29
+- 총 **8089건** 공고 · **1572개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-23 08:08
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (427개사)
+## HR/채용 (428개사)
 ### (주)사람인에이치에스 `중견기업` · 35건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -3467,6 +3467,11 @@ markmap:
 - **백엔드** [1건] · `Python`
   - [프론트 및 백엔드 개발자 모집 (경력자) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54394753&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c5fc79d7-c51c-4c87-b0db-02a6e87454f0)
 
+### (주)제이에너지로직 `중소기업` · 2건
+- **백엔드** [2건] · `Python` `JavaScript` `HTML` `CSS` `Flask` `FastAPI`
+  - [(주)제이에너지로직에서 EMS·BEMS 백엔드 개발자를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54462407&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=05e711fb-642b-4204-9f82-9105f1fb663f)
+  - [(주)제이에너지로직에서 EMS·BEMS 백엔드 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54523205&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f602638f-d350-43fe-afb9-6627c7c355ee)
+
 ### (주)와이즈플러스 `중소기업` · 2건
 - **백엔드** [1건] · `Java` `Kotlin` `Python` `C++` `Android` `Linux`
   - [(주)와이즈플러스 AIoT 플랫폼·백엔드 개발자 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54512310&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=bd55adf8-4fbe-49b7-bc7d-af72c4450190)
@@ -6558,7 +6563,7 @@ markmap:
   - [Product Marketing Manager, AI Capabilities & Developer Enablement ↗](https://boards.greenhouse.io/neo4j/jobs/4690258006?gh_jid=4690258006)
 
 
-## 제조/하드웨어/로보틱스 (144개사)
+## 제조/하드웨어/로보틱스 (145개사)
 ### 아이제라 `중소기업` · 22건
 - **백엔드** [13건] · `Python` `FastAPI` `Docker` `LangChain` `AI/인공지능` `Django`
   - [MES 시스템 개발자(3년 이상)(대구) ↗](https://www.wanted.co.kr/wd/342533)
@@ -7960,6 +7965,16 @@ markmap:
   - [(2026년 채용) Java Web 제조 솔루션 풀스택 개발자(서울) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54305043&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=b8561542-6ed0-4261-ae83-02807eb9bbd3)
 - **풀스택** [1건] · `Java` `JavaScript`
   - [(2026년 채용) Java Web 제조 솔루션 풀스택 개발자(서울) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54305043&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=b8561542-6ed0-4261-ae83-02807eb9bbd3)
+
+### (주)글로벌스카우트 `중소기업` · 2건
+- **백엔드** [1건] · `Python` `Ansible` `Linux` `MSA`
+  - [대기업계열사) 차세대 컨테이너 & 클라우드 인프라 아키텍처 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54509289&location=ts&searchword=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4&searchType=search&paid_fl=n&search_uuid=796cb8be-a8a9-430d-8265-54f8b8618bf4)
+- **모바일** [1건] · `Python` `C++` `iOS` `Linux`
+  - [(대기업) 메모리반도체 핵심연구원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54532853&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=e4f8dcb8-99fc-4d12-9ae7-a7a076d8cefd)
+- **DevOps/인프라** [1건] · `Python` `Ansible` `Linux` `MSA`
+  - [대기업계열사) 차세대 컨테이너 & 클라우드 인프라 아키텍처 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54509289&location=ts&searchword=%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4&searchType=search&paid_fl=n&search_uuid=796cb8be-a8a9-430d-8265-54f8b8618bf4)
+- **펌웨어/임베디드** [1건] · `Python` `C++` `iOS` `Linux`
+  - [(대기업) 메모리반도체 핵심연구원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54532853&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=e4f8dcb8-99fc-4d12-9ae7-a7a076d8cefd)
 
 ### (주)테크윙 `중소기업` · 2건
 
