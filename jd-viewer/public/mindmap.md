@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **8218건** 공고 · **1589개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-07-24 07:39
+- 총 **8224건** 공고 · **1590개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-07-24 09:26
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1782,6 +1782,16 @@ markmap:
   - [풀스택 모델 개발자 채용 React / NustJS (천안) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54474739&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=911066c4-8ff7-44f8-acac-947b94d5f273)
   - [풀스택 모델 개발자 채용 React / NustJS (서울-구로) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54474819&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=911066c4-8ff7-44f8-acac-947b94d5f273)
   - [풀스택 모델 개발자 채용 React / NustJS (대전) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54474793&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=911066c4-8ff7-44f8-acac-947b94d5f273)
+
+### 에이치알포유(주) `중소기업` · 3건
+- **백엔드** [1건] · `Java` `Python` `JavaScript` `C++` `C#` `PHP`
+  - [() 풀스택 개발 () 미국 본사 Global 레이더 회사 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54544505&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=b93c0551-ec94-42d9-ab41-f01bc3ad68d1)
+- **프론트엔드** [1건] · `Java` `Python` `JavaScript` `C++` `C#` `PHP`
+  - [() 풀스택 개발 () 미국 본사 Global 레이더 회사 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54544505&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=b93c0551-ec94-42d9-ab41-f01bc3ad68d1)
+- **풀스택** [1건] · `Java` `Python` `JavaScript` `C++` `C#` `PHP`
+  - [() 풀스택 개발 () 미국 본사 Global 레이더 회사 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54544505&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=b93c0551-ec94-42d9-ab41-f01bc3ad68d1)
+- **DevOps/인프라** [1건] · `AWS` `GCP` `Azure` `Kubernetes` `Linux`
+  - [(SAP플래티넘 파트너사(대기업 계열)) 클라우드 SA(구글.AWS) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54338705&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=4c9c13ad-c2dd-49a3-b036-984d9ef49fe7)
 
 ### 코리아써치 `중소기업` · 3건
 - **백엔드** [1건] · `Python` `FastAPI` `Docker` `PyTorch`
@@ -3634,10 +3644,6 @@ markmap:
   - [(일반계약직(AI 및 데이터 업무)) 제3차 계약직 직원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54445953&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=9362cbb1-4a6c-4ac0-86e9-6774d9ccfb3b)
 - **보안** [1건]
   - [(일반계약직(AI 및 데이터 업무)) 제3차 계약직 직원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54445953&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=9362cbb1-4a6c-4ac0-86e9-6774d9ccfb3b)
-
-### 에이치알포유(주) `중소기업` · 2건
-- **DevOps/인프라** [1건] · `AWS` `GCP` `Azure` `Kubernetes` `Linux`
-  - [(SAP플래티넘 파트너사(대기업 계열)) 클라우드 SA(구글.AWS) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54338705&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=4c9c13ad-c2dd-49a3-b036-984d9ef49fe7)
 
 ### (주)체스트넛 `중소기업` · 2건
 - **프론트엔드** [1건] · `Java` `React` `Vue`
@@ -6591,7 +6597,7 @@ markmap:
   - [Product Marketing Manager, AI Capabilities & Developer Enablement ↗](https://boards.greenhouse.io/neo4j/jobs/4690258006?gh_jid=4690258006)
 
 
-## 제조/하드웨어/로보틱스 (143개사)
+## 제조/하드웨어/로보틱스 (144개사)
 ### 아이제라 `중소기업` · 22건
 - **백엔드** [13건] · `Python` `FastAPI` `Docker` `LangChain` `AI/인공지능` `Django`
   - [MES 시스템 개발자(3년 이상)(대구) ↗](https://www.wanted.co.kr/wd/342533)
@@ -7941,6 +7947,14 @@ markmap:
 ### (주)유라 `중소기업` · 2건
 - **프론트엔드** [1건] · `TypeScript` `React`
   - [(유라) 제조 관련 웹 시스템 개발자 채용(경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54505581&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bbfcebb5-5acf-45c8-989a-f0f1da679cb6)
+
+### (주)디엔지니어 `중소기업` · 2건
+- **백엔드** [2건] · `Python` `JavaScript` `PHP` `jQuery` `Django` `MySQL`
+  - [(충남아산 출퇴근) (주)디엔지니어 제조 AI 선두 할 풀스텍 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53917314&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=2e8df514-a355-42f8-93d7-cff7b66fac7b)
+  - [(충남아산 출퇴근가능자만지원)AI 오픈소스튜닝, 학습 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54548084&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=3b6c18e2-d0ce-4871-bb7f-20075223b3d4)
+- **AI/ML** [2건] · `Python` `JavaScript` `PHP` `jQuery` `Django` `MySQL`
+  - [(충남아산 출퇴근) (주)디엔지니어 제조 AI 선두 할 풀스텍 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53917314&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=2e8df514-a355-42f8-93d7-cff7b66fac7b)
+  - [(충남아산 출퇴근가능자만지원)AI 오픈소스튜닝, 학습 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54548084&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=3b6c18e2-d0ce-4871-bb7f-20075223b3d4)
 
 ### (주)트위니 `중소기업` · 2건
 
@@ -14064,6 +14078,13 @@ markmap:
   - [정보보안 담당자 ↗](https://www.wanted.co.kr/wd/361617)
   - [정보보안 담당자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54321118&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efcd2733-664c-4942-9399-8239131b9269)
 
+### (주)트랜스코스모스코리아 `중소기업` · 7건
+- **보안** [6건]
+  - [(정보보안지원/판교) 카카오뱅크 정보보안 기술지원 ZBs5 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49637694?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=85&sc=630)
+  - [(정보보안/평일) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54448285&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f72db5f6-f1cd-41e1-9437-522d90cba239)
+  - [(정보보안지원/판교) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54485562&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=c665e76f-5dd7-4f4e-9c22-c3efc2334555)
+  - [(정보보안/판교) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54473931&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=c665e76f-5dd7-4f4e-9c22-c3efc2334555)
+
 ### 싸이터 `중소기업` · 6건
 - **백엔드** [4건] · `Spring` `Spring Boot` `MySQL` `Elasticsearch` `AWS` `Kubernetes`
   - [백엔드 개발자 (4년 이상) ↗](https://www.wanted.co.kr/wd/372417)
@@ -14110,13 +14131,6 @@ markmap:
 - **보안** [2건] · `Python` `SCSS`
   - [SK쉴더스 정보보안 상시 채용(SK하이닉스 근무) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49379168?Oem_Code=C1&logpath=1&stext=iOS&listno=79&sc=630)
   - [정보보안 솔루션 구축 PM/PL 계약직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49636541?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=1&sc=630)
-
-### (주)트랜스코스모스코리아 `중소기업` · 6건
-- **보안** [5건]
-  - [(정보보안/평일) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54448285&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=f72db5f6-f1cd-41e1-9437-522d90cba239)
-  - [(정보보안지원/판교) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54485562&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=c665e76f-5dd7-4f4e-9c22-c3efc2334555)
-  - [(정보보안/판교) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54473931&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=c665e76f-5dd7-4f4e-9c22-c3efc2334555)
-  - [(정보보안지원/평일) 카카오뱅크 정보보안 기술지원 MBs5 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54532665&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=66346a09-0536-47f5-9241-ff3c704030ae)
 
 ### (주)티빙 `중소기업` · 6건
 - **백엔드** [1건] · `Android` `MSA`
