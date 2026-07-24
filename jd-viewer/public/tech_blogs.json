@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-24T09:25:38",
- "total": 970,
+ "generated_at": "2026-07-24T11:05:00",
+ "total": 971,
  "sources": [
   {
    "company": "Etsy",
@@ -98,6 +98,11 @@
    "count": 25
   },
   {
+   "company": "Grab",
+   "country": "SG",
+   "count": 16
+  },
+  {
    "company": "Meta",
    "country": "US",
    "count": 16
@@ -105,11 +110,6 @@
   {
    "company": "우아한형제들",
    "country": "KR",
-   "count": 15
-  },
-  {
-   "company": "Grab",
-   "country": "SG",
    "count": 15
   },
   {
@@ -308,8 +308,8 @@
   "Penetration Testing": "보안",
   "ScyllaDB": "데이터베이스",
   "Distributed System": "알고리즘/이론",
-  "Flink": "데이터",
   "Assembly": "언어",
+  "Flink": "데이터",
   "Ray": "AI/ML",
   "CUDA": "AI/ML",
   "Protobuf": "백엔드",
@@ -343,8 +343,8 @@
   "Unix": "시스템/OS",
   "Scala": "언어",
   "Authentication": "보안",
-  "IoT": "펌웨어/임베디드",
   "LangChain": "LLM/생성형",
+  "IoT": "펌웨어/임베디드",
   "Rails": "백엔드",
   "GitOps": "인프라/클라우드",
   "WebSocket": "백엔드",
@@ -399,8 +399,8 @@
   "Spring": "백엔드",
   "TensorRT": "AI/ML",
   "MLOps": "AI/ML",
-  "Snowflake": "데이터베이스",
   "GPT": "LLM/생성형",
+  "Snowflake": "데이터베이스",
   "Spark": "데이터",
   "Datadog": "관측성",
   "SQL": "언어",
@@ -451,9 +451,9 @@
   "Solana": "블록체인",
   "Git": "협업/도구",
   "Zero Trust": "보안",
+  "Jira": "협업/도구",
   "Serverless": "인프라/클라우드",
   "arXiv": "연구/논문",
-  "Jira": "협업/도구",
   "SQLite": "데이터베이스",
   "Shader": "그래픽/게임",
   "Service Mesh": "인프라/클라우드",
@@ -511,9 +511,9 @@
   "Distributed Tracing": "관측성",
   "State of the Art": "연구/논문",
   "Databricks": "데이터베이스",
-  "Compiler": "알고리즘/이론",
-  "Security": "보안",
   "pgvector": "데이터베이스",
+  "Security": "보안",
+  "Compiler": "알고리즘/이론",
   "Design System": "협업/도구",
   "MQTT": "펌웨어/임베디드",
   "Go": "언어",
@@ -523,6 +523,66 @@
   "Deep Learning": "AI/ML"
  },
  "posts": [
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+   "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+   "published": "2026-07-24",
+   "published_ts": 1784851210.0,
+   "summary": "Part 1: From one support bot to a framework\n\nAt Grab, AI agents have evolved from interesting team prototypes into production services used every day by millions of merchants, drivers, and consumers. Today, more than 500 services run on our internal agent framework, over 50 Model Context Protocol (MCP) servers are registered on our remote MCP framework, and a single Large Language Model (LLM) gateway fronts every model call across the company, handling billions of tokens each month.\n\nNone of this was designed up front. It began as the plumbing behind one internal support bot, which then expand…",
+   "tags": [
+    "Engineering",
+    "Generative AI",
+    "LLM",
+    "Experiment",
+    "Machine Learning",
+    "Engineering",
+    "Design"
+   ],
+   "tech_stack": [
+    "Assembly",
+    "Go",
+    "JavaScript",
+    "Python",
+    "SQL",
+    "React",
+    "FastAPI",
+    "gRPC",
+    "Protobuf",
+    "GPT",
+    "LangChain",
+    "LLM",
+    "Model Context Protocol",
+    "pgvector",
+    "PostgreSQL",
+    "Vector Database",
+    "Consul",
+    "Istio",
+    "Kubernetes",
+    "Vault",
+    "Grafana",
+    "Observability",
+    "OpenTelemetry",
+    "State of the Art",
+    "Confluence",
+    "Jira"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성",
+    "연구/논문",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "807fe91d10d8e91c"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",

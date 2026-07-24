@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-24T09:26:17",
+  "generated_at": "2026-07-24T11:05:39",
   "source": "youtube",
   "tech_count": 187,
   "curriculum_count": 20,
@@ -169,88 +169,6 @@
         "stage": "실전"
       }
     ],
-    "React": [
-      {
-        "title": "React 기초 0강 : 리액트왜 쓰는지 알려줌 (+ 수강시 필요 사전지식)",
-        "url": "https://www.youtube.com/watch?v=LclObYwGj90",
-        "thumbnail": "https://i.ytimg.com/vi/LclObYwGj90/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 288759,
-        "length": "4:16",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "React Tutorial Full Course - Beginner to Pro (React 19, 2025)",
-        "url": "https://www.youtube.com/watch?v=TtPXvEcE11E",
-        "thumbnail": "https://i.ytimg.com/vi/TtPXvEcE11E/mqdefault.jpg",
-        "channel": "SuperSimpleDev",
-        "views": 1207302,
-        "length": "11:32:04",
-        "published": "10개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "이거 모르면 프론트엔드 개발자 못됨 | 리액트 진짜 쉽게 설명해줌 | 리액트 초보자 입문 강의 1탄",
-        "url": "https://www.youtube.com/watch?v=MeZ3FCTub3I",
-        "thumbnail": "https://i.ytimg.com/vi/MeZ3FCTub3I/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 131336,
-        "length": "9:45",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "25년 설특집 리액트 강의 몰아보기",
-        "url": "https://www.youtube.com/watch?v=vdZvsCGbTFM",
-        "thumbnail": "https://i.ytimg.com/vi/vdZvsCGbTFM/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 10284,
-        "length": "6:12:52",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리액트가 쉬워지는 채신기술 Zustand",
-        "url": "https://www.youtube.com/watch?v=zNHZJ_iEMPA",
-        "thumbnail": "https://i.ytimg.com/vi/zNHZJ_iEMPA/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 64758,
-        "length": "6:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
-        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
-        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 11954,
-        "length": "3:20:44",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "코딩에 진심인 사람을 위해 준비한 리액트 타입스크립트 | 실제 회사에서 쓰는 레벨 ver",
-        "url": "https://www.youtube.com/watch?v=V9XLst8UEtk",
-        "thumbnail": "https://i.ytimg.com/vi/V9XLst8UEtk/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 59169,
-        "length": "36:22",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "React 기초 2시간 무료 강의 - 웹 인터페이스 개발 실습까지 | \"유퀴즈 출연/코로나맵 2천만 유저\" 이동훈 개발자",
-        "url": "https://www.youtube.com/watch?v=P2cEUrtl75k",
-        "thumbnail": "https://i.ytimg.com/vi/P2cEUrtl75k/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 10229,
-        "length": "2:07:25",
-        "published": "8개월 전",
-        "stage": "실전"
-      }
-    ],
     "Java": [
       {
         "title": "자바 코딩 무료 강의 (기본편) - 9시간 뒤면 여러분도 개발자가 될 수 있어요",
@@ -330,6 +248,88 @@
         "views": 203522,
         "length": "8:39:30",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "React": [
+      {
+        "title": "React 기초 0강 : 리액트왜 쓰는지 알려줌 (+ 수강시 필요 사전지식)",
+        "url": "https://www.youtube.com/watch?v=LclObYwGj90",
+        "thumbnail": "https://i.ytimg.com/vi/LclObYwGj90/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 288759,
+        "length": "4:16",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "React Tutorial Full Course - Beginner to Pro (React 19, 2025)",
+        "url": "https://www.youtube.com/watch?v=TtPXvEcE11E",
+        "thumbnail": "https://i.ytimg.com/vi/TtPXvEcE11E/mqdefault.jpg",
+        "channel": "SuperSimpleDev",
+        "views": 1207302,
+        "length": "11:32:04",
+        "published": "10개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "이거 모르면 프론트엔드 개발자 못됨 | 리액트 진짜 쉽게 설명해줌 | 리액트 초보자 입문 강의 1탄",
+        "url": "https://www.youtube.com/watch?v=MeZ3FCTub3I",
+        "thumbnail": "https://i.ytimg.com/vi/MeZ3FCTub3I/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 131336,
+        "length": "9:45",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "25년 설특집 리액트 강의 몰아보기",
+        "url": "https://www.youtube.com/watch?v=vdZvsCGbTFM",
+        "thumbnail": "https://i.ytimg.com/vi/vdZvsCGbTFM/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 10284,
+        "length": "6:12:52",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리액트가 쉬워지는 채신기술 Zustand",
+        "url": "https://www.youtube.com/watch?v=zNHZJ_iEMPA",
+        "thumbnail": "https://i.ytimg.com/vi/zNHZJ_iEMPA/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 64758,
+        "length": "6:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
+        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
+        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 11954,
+        "length": "3:20:44",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "코딩에 진심인 사람을 위해 준비한 리액트 타입스크립트 | 실제 회사에서 쓰는 레벨 ver",
+        "url": "https://www.youtube.com/watch?v=V9XLst8UEtk",
+        "thumbnail": "https://i.ytimg.com/vi/V9XLst8UEtk/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 59169,
+        "length": "36:22",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "React 기초 2시간 무료 강의 - 웹 인터페이스 개발 실습까지 | \"유퀴즈 출연/코로나맵 2천만 유저\" 이동훈 개발자",
+        "url": "https://www.youtube.com/watch?v=P2cEUrtl75k",
+        "thumbnail": "https://i.ytimg.com/vi/P2cEUrtl75k/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 10229,
+        "length": "2:07:25",
+        "published": "8개월 전",
         "stage": "실전"
       }
     ],
@@ -8595,6 +8595,88 @@
         "stage": "실전"
       }
     ],
+    "Shell": [
+      {
+        "title": "파워쉘(Powershell)의 기본 개념 살펴보기 #powershell #업무자동화",
+        "url": "https://www.youtube.com/watch?v=Gihhe22aG6Y",
+        "thumbnail": "https://i.ytimg.com/vi/Gihhe22aG6Y/mqdefault.jpg",
+        "channel": "보안프로젝트[boanproject]",
+        "views": 2416,
+        "length": "12:58",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[MIT Lecture: Shell & Coding 1] 쉘과 터미널을 통한 컴퓨팅 | Claude Code 사용을 위한 기본지식 마스트하기 | 쉘 스크립팅 자동화",
+        "url": "https://www.youtube.com/watch?v=zLe9q_rkuNw",
+        "thumbnail": "https://i.ytimg.com/vi/zLe9q_rkuNw/mqdefault.jpg",
+        "channel": "지투지 - 지식에서 지혜로",
+        "views": 95,
+        "length": "23:22",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "필수 리눅스 터미널 명령어 정리 | 배쉬, 파워쉘 (Bash, PowerShell) 튜토리얼! 가좌아 🎸",
+        "url": "https://www.youtube.com/watch?v=EL6AQl-e3AQ",
+        "thumbnail": "https://i.ytimg.com/vi/EL6AQl-e3AQ/mqdefault.jpg",
+        "channel": "드림코딩",
+        "views": 123712,
+        "length": "27:23",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[MIT Lecture: Shell & Coding 완전정복] MIT 강의: 셀과 코딩, 완전판",
+        "url": "https://www.youtube.com/watch?v=eqmgYneweVo",
+        "thumbnail": "https://i.ytimg.com/vi/eqmgYneweVo/mqdefault.jpg",
+        "channel": "지투지 - 지식에서 지혜로",
+        "views": 75,
+        "length": "3:10:05",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따배셸] 5. Bash shell script란",
+        "url": "https://www.youtube.com/watch?v=onbFKxEEgHg",
+        "thumbnail": "https://i.ytimg.com/vi/onbFKxEEgHg/mqdefault.jpg",
+        "channel": "TTABAE-LEARN",
+        "views": 9420,
+        "length": "23:31",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lecture 1: Course Overview + Introduction to the Shell",
+        "url": "https://www.youtube.com/watch?v=MSgoeuMqUmU",
+        "thumbnail": "https://i.ytimg.com/vi/MSgoeuMqUmU/mqdefault.jpg",
+        "channel": "Missing Semester",
+        "views": 223842,
+        "length": "1:14:44",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. shell script 사용해봅시다.",
+        "url": "https://www.youtube.com/watch?v=RIKJVIcYNqE",
+        "thumbnail": "https://i.ytimg.com/vi/RIKJVIcYNqE/mqdefault.jpg",
+        "channel": "YW KO",
+        "views": 8739,
+        "length": "21:01",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따배셸] 1. Linux Shell이란? (+ Shell 구성 실습)",
+        "url": "https://www.youtube.com/watch?v=dsUyFss2Sh4",
+        "thumbnail": "https://i.ytimg.com/vi/dsUyFss2Sh4/mqdefault.jpg",
+        "channel": "TTABAE-LEARN",
+        "views": 16253,
+        "length": "12:40",
+        "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
     "NLP": [
       {
         "title": "토큰화, 벡터화, 임베딩 무슨 차이일까? - NLP와 LLM 텍스트 데이터 기초 용어 이해하기",
@@ -8921,88 +9003,6 @@
         "length": "12:55",
         "published": "7년 전",
         "stage": "핵심"
-      }
-    ],
-    "Shell": [
-      {
-        "title": "파워쉘(Powershell)의 기본 개념 살펴보기 #powershell #업무자동화",
-        "url": "https://www.youtube.com/watch?v=Gihhe22aG6Y",
-        "thumbnail": "https://i.ytimg.com/vi/Gihhe22aG6Y/mqdefault.jpg",
-        "channel": "보안프로젝트[boanproject]",
-        "views": 2416,
-        "length": "12:58",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[MIT Lecture: Shell & Coding 1] 쉘과 터미널을 통한 컴퓨팅 | Claude Code 사용을 위한 기본지식 마스트하기 | 쉘 스크립팅 자동화",
-        "url": "https://www.youtube.com/watch?v=zLe9q_rkuNw",
-        "thumbnail": "https://i.ytimg.com/vi/zLe9q_rkuNw/mqdefault.jpg",
-        "channel": "지투지 - 지식에서 지혜로",
-        "views": 95,
-        "length": "23:22",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "필수 리눅스 터미널 명령어 정리 | 배쉬, 파워쉘 (Bash, PowerShell) 튜토리얼! 가좌아 🎸",
-        "url": "https://www.youtube.com/watch?v=EL6AQl-e3AQ",
-        "thumbnail": "https://i.ytimg.com/vi/EL6AQl-e3AQ/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 123712,
-        "length": "27:23",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[MIT Lecture: Shell & Coding 완전정복] MIT 강의: 셀과 코딩, 완전판",
-        "url": "https://www.youtube.com/watch?v=eqmgYneweVo",
-        "thumbnail": "https://i.ytimg.com/vi/eqmgYneweVo/mqdefault.jpg",
-        "channel": "지투지 - 지식에서 지혜로",
-        "views": 75,
-        "length": "3:10:05",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따배셸] 5. Bash shell script란",
-        "url": "https://www.youtube.com/watch?v=onbFKxEEgHg",
-        "thumbnail": "https://i.ytimg.com/vi/onbFKxEEgHg/mqdefault.jpg",
-        "channel": "TTABAE-LEARN",
-        "views": 9420,
-        "length": "23:31",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lecture 1: Course Overview + Introduction to the Shell",
-        "url": "https://www.youtube.com/watch?v=MSgoeuMqUmU",
-        "thumbnail": "https://i.ytimg.com/vi/MSgoeuMqUmU/mqdefault.jpg",
-        "channel": "Missing Semester",
-        "views": 223842,
-        "length": "1:14:44",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. shell script 사용해봅시다.",
-        "url": "https://www.youtube.com/watch?v=RIKJVIcYNqE",
-        "thumbnail": "https://i.ytimg.com/vi/RIKJVIcYNqE/mqdefault.jpg",
-        "channel": "YW KO",
-        "views": 8739,
-        "length": "21:01",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따배셸] 1. Linux Shell이란? (+ Shell 구성 실습)",
-        "url": "https://www.youtube.com/watch?v=dsUyFss2Sh4",
-        "thumbnail": "https://i.ytimg.com/vi/dsUyFss2Sh4/mqdefault.jpg",
-        "channel": "TTABAE-LEARN",
-        "views": 16253,
-        "length": "12:40",
-        "published": "5년 전",
-        "stage": "실전"
       }
     ],
     "Prometheus": [
