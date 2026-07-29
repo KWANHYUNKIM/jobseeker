@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-26T03:27:38",
- "total": 976,
+ "generated_at": "2026-07-30T01:38:44",
+ "total": 1021,
  "sources": [
   {
    "company": "Etsy",
@@ -10,22 +10,27 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 55
+   "count": 57
   },
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 50
+   "count": 53
   },
   {
    "company": "GitHub",
    "country": "US",
-   "count": 45
+   "count": 50
+  },
+  {
+   "company": "SoundCloud",
+   "country": "DE",
+   "count": 47
   },
   {
    "company": "AWS",
    "country": "US",
-   "count": 44
+   "count": 45
   },
   {
    "company": "LINE",
@@ -33,9 +38,14 @@
    "count": 40
   },
   {
+   "company": "DeNA",
+   "country": "JP",
+   "count": 36
+  },
+  {
    "company": "네이버 D2",
    "country": "KR",
-   "count": 35
+   "count": 36
   },
   {
    "company": "토스",
@@ -43,7 +53,7 @@
    "count": 35
   },
   {
-   "company": "DeNA",
+   "company": "CyberAgent",
    "country": "JP",
    "count": 34
   },
@@ -58,11 +68,6 @@
    "count": 32
   },
   {
-   "company": "CyberAgent",
-   "country": "JP",
-   "count": 30
-  },
-  {
    "company": "Mercari",
    "country": "JP",
    "count": 29
@@ -73,14 +78,9 @@
    "count": 27
   },
   {
-   "company": "SoundCloud",
-   "country": "DE",
-   "count": 27
-  },
-  {
    "company": "데브시스터즈",
    "country": "KR",
-   "count": 26
+   "count": 27
   },
   {
    "company": "컬리",
@@ -100,6 +100,11 @@
   {
    "company": "Grab",
    "country": "SG",
+   "count": 17
+  },
+  {
+   "company": "우아한형제들",
+   "country": "KR",
    "count": 16
   },
   {
@@ -108,9 +113,19 @@
    "count": 16
   },
   {
-   "company": "우아한형제들",
+   "company": "Airbnb",
+   "country": "US",
+   "count": 14
+  },
+  {
+   "company": "Pinterest",
+   "country": "US",
+   "count": 14
+  },
+  {
+   "company": "카카오",
    "country": "KR",
-   "count": 15
+   "count": 14
   },
   {
    "company": "당근",
@@ -128,16 +143,6 @@
    "count": 14
   },
   {
-   "company": "Pinterest",
-   "country": "US",
-   "count": 13
-  },
-  {
-   "company": "Airbnb",
-   "country": "US",
-   "count": 13
-  },
-  {
    "company": "Dropbox",
    "country": "US",
    "count": 13
@@ -150,11 +155,6 @@
   {
    "company": "Lyft",
    "country": "US",
-   "count": 13
-  },
-  {
-   "company": "카카오",
-   "country": "KR",
    "count": 13
   },
   {
@@ -210,7 +210,7 @@
   {
    "company": "Spotify",
    "country": "US",
-   "count": 7
+   "count": 8
   },
   {
    "company": "Spotify R&D",
@@ -239,290 +239,895 @@
   "협업/도구"
  ],
  "tag_categories": {
-  "jQuery": "프론트엔드",
-  "MQTT": "펌웨어/임베디드",
-  "RabbitMQ": "데이터",
-  "Memory Management": "시스템/OS",
-  "Kubernetes": "인프라/클라우드",
-  "Notion": "협업/도구",
-  "SCSS": "프론트엔드",
-  "Model Context Protocol": "LLM/생성형",
-  "vLLM": "LLM/생성형",
-  "JavaScript": "언어",
-  "Multimodal": "LLM/생성형",
-  "Lua": "언어",
-  "Istio": "인프라/클라우드",
-  "CVE": "보안",
-  "Gemini": "LLM/생성형",
-  "Envoy": "인프라/클라우드",
-  "Consensus": "알고리즘/이론",
-  "Deno": "백엔드",
-  "AWS": "인프라/클라우드",
-  "GitHub Actions": "인프라/클라우드",
-  "Diffusion": "LLM/생성형",
-  "Virtualization": "시스템/OS",
-  "Presto": "데이터",
-  "Azure": "인프라/클라우드",
-  "DSP": "펌웨어/임베디드",
-  "SQLite": "데이터베이스",
-  "Raft": "알고리즘/이론",
-  "Feature Store": "AI/ML",
-  "WebSocket": "백엔드",
-  "Beam": "데이터",
-  "ETL": "데이터",
-  "Java": "언어",
-  "Vector Database": "데이터베이스",
-  "Concurrency": "알고리즘/이론",
-  "Edge Computing": "펌웨어/임베디드",
-  "GPT": "LLM/생성형",
-  "Kafka": "데이터",
-  "Astro": "프론트엔드",
-  "Kinesis": "데이터",
-  "CSS": "프론트엔드",
-  "Cloudflare": "인프라/클라우드",
-  "Rails": "백엔드",
-  "Knowledge Distillation": "AI/ML",
-  "Stream Processing": "데이터",
-  "Vue": "프론트엔드",
-  "Hudi": "데이터",
-  "Time Series": "AI/ML",
-  "HTML": "프론트엔드",
-  "Unreal Engine": "그래픽/게임",
-  "Fiber": "백엔드",
   "Bluetooth": "펌웨어/임베디드",
-  "Scala": "언어",
-  "Reinforcement Learning": "AI/ML",
-  "Express": "백엔드",
-  "RLHF": "LLM/생성형",
-  "Design System": "협업/도구",
-  "DirectX": "그래픽/게임",
-  "Vulkan": "그래픽/게임",
-  "Fine-tuning": "LLM/생성형",
-  "Solana": "블록체인",
-  "GCP": "인프라/클라우드",
-  "PWA": "프론트엔드",
-  "Service Mesh": "인프라/클라우드",
-  "DDD": "협업/도구",
-  "Tailwind": "프론트엔드",
-  "Unity": "그래픽/게임",
-  "Sentry": "관측성",
-  ".NET": "백엔드",
-  "Qdrant": "데이터베이스",
-  "Monorepo": "협업/도구",
-  "Hugging Face": "LLM/생성형",
-  "Linux Kernel": "펌웨어/임베디드",
-  "React Native": "모바일",
-  "TLS": "보안",
-  "Recommendation System": "AI/ML",
-  "Reverse Engineering": "보안",
-  "Jira": "협업/도구",
-  "Echo": "백엔드",
-  "Security": "보안",
-  "ArgoCD": "인프라/클라우드",
-  "CLIP": "LLM/생성형",
-  "Next.js": "프론트엔드",
-  "Groovy": "언어",
-  "pgvector": "데이터베이스",
-  "Data Structure": "알고리즘/이론",
-  "Rust": "언어",
-  "dbt": "데이터",
-  "AI Agent": "LLM/생성형",
-  "TensorFlow": "AI/ML",
-  "Binary Search": "알고리즘/이론",
-  "Firmware": "펌웨어/임베디드",
-  "Svelte": "프론트엔드",
   "MSSQL": "데이터베이스",
-  "Redshift": "데이터베이스",
-  "Computer Vision": "AI/ML",
-  "Graph Neural Network": "AI/ML",
-  "Consul": "인프라/클라우드",
-  "XGBoost": "AI/ML",
-  "Elasticsearch": "데이터베이스",
-  "Hadoop": "데이터",
-  "Web3": "블록체인",
-  "C++": "언어",
-  "LangChain": "LLM/생성형",
-  "Nuxt": "프론트엔드",
-  "Grafana": "관측성",
-  "PHP": "언어",
-  "Dynamic Programming": "알고리즘/이론",
-  "Claude": "LLM/생성형",
-  "GitLab CI": "인프라/클라우드",
-  "Compiler": "알고리즘/이론",
-  "Git": "협업/도구",
-  "Netty": "백엔드",
-  "Loki": "관측성",
-  "ONNX": "AI/ML",
-  "LlamaIndex": "LLM/생성형",
-  "Flutter": "모바일",
+  "MySQL": "데이터베이스",
+  "Neo4j": "데이터베이스",
+  "Linux": "시스템/OS",
+  "Vector Database": "데이터베이스",
   "Docker": "인프라/클라우드",
-  "Figma": "협업/도구",
-  "MLOps": "AI/ML",
-  "Deep Learning": "AI/ML",
+  "Serverless": "인프라/클라우드",
   "Zero Trust": "보안",
-  "Event Sourcing": "알고리즘/이론",
-  "Datadog": "관측성",
-  "JWT": "보안",
-  "Spring Boot": "백엔드",
-  "SASS": "프론트엔드",
-  "DynamoDB": "데이터베이스",
-  "File System": "시스템/OS",
-  "Flink": "데이터",
-  "Terraform": "인프라/클라우드",
-  "Saga Pattern": "알고리즘/이론",
-  "eBPF": "시스템/OS",
-  "Observability": "관측성",
-  "systemd": "시스템/OS",
-  "Algorithm": "알고리즘/이론",
-  "Spinnaker": "인프라/클라우드",
-  "Ruby": "언어",
-  "Distributed System": "알고리즘/이론",
-  "arXiv": "연구/논문",
-  "Redis": "데이터베이스",
-  "PyTorch": "AI/ML",
-  "SQL Injection": "보안",
-  "OpenGL": "그래픽/게임",
-  "Helm": "인프라/클라우드",
-  "Bare-metal": "펌웨어/임베디드",
-  "CNN": "AI/ML",
   "UIKit": "모바일",
-  "Quantization": "LLM/생성형",
-  "Qwik": "프론트엔드",
-  "AWS Lambda": "인프라/클라우드",
-  "Airflow": "데이터",
-  "Distributed Tracing": "관측성",
-  "Blockchain": "블록체인",
-  "NestJS": "백엔드",
-  "Hive": "데이터",
-  "Python": "언어",
-  "ClickHouse": "데이터베이스",
-  "Cryptography": "보안",
-  "Iceberg": "데이터",
-  "DDoS": "보안",
-  "SQL": "언어",
-  "BigQuery": "데이터베이스",
-  "Prompt Engineering": "LLM/생성형",
-  "Perl": "언어",
-  "Shader": "그래픽/게임",
-  "CQRS": "알고리즘/이론",
-  "Vite": "프론트엔드",
-  "Benchmark": "연구/논문",
-  "Kotlin": "언어",
-  "RAG": "LLM/생성형",
-  "Protobuf": "백엔드",
-  "MapReduce": "알고리즘/이론",
-  "Confluence": "협업/도구",
-  "ScyllaDB": "데이터베이스",
-  "XSS": "보안",
-  "Consistent Hashing": "알고리즘/이론",
-  "Vector Search": "LLM/생성형",
-  "ARM": "펌웨어/임베디드",
-  "gRPC": "백엔드",
-  "Authentication": "보안",
-  "Bootloader": "펌웨어/임베디드",
-  "Scikit-learn": "AI/ML",
-  "WebAssembly": "프론트엔드",
+  "CockroachDB": "데이터베이스",
   "Nginx": "인프라/클라우드",
+  "Redshift": "데이터베이스",
+  "Deep Learning": "AI/ML",
+  "containerd": "시스템/OS",
+  "Netty": "백엔드",
+  "Vite": "프론트엔드",
+  "Flutter": "모바일",
+  "Terraform": "인프라/클라우드",
+  "Data Pipeline": "데이터",
+  "Paxos": "알고리즘/이론",
+  "Ruby": "언어",
+  "Java": "언어",
+  "XGBoost": "AI/ML",
+  "LangChain": "LLM/생성형",
+  "Quantization": "LLM/생성형",
+  "Jetpack Compose": "모바일",
+  "gRPC": "백엔드",
+  "LoRA": "LLM/생성형",
+  "Design System": "협업/도구",
+  "Consensus": "알고리즘/이론",
+  "Virtualization": "시스템/OS",
+  "iOS": "모바일",
+  "NLP": "AI/ML",
+  "Hash Table": "알고리즘/이론",
+  "Benchmark": "연구/논문",
+  "Bash": "언어",
+  "dbt": "데이터",
+  "DSP": "펌웨어/임베디드",
+  "Unity": "그래픽/게임",
+  "Reverse Engineering": "보안",
+  "Oracle": "데이터베이스",
+  "Attention Mechanism": "LLM/생성형",
+  "SQLite": "데이터베이스",
+  "Vue": "프론트엔드",
+  "Webpack": "프론트엔드",
+  "OpenGL": "그래픽/게임",
+  "Redis": "데이터베이스",
+  "Elasticsearch": "데이터베이스",
+  "XSS": "보안",
+  "BigQuery": "데이터베이스",
+  "Llama": "LLM/생성형",
+  "CQRS": "알고리즘/이론",
+  "Data Lake": "데이터",
+  "Data Structure": "알고리즘/이론",
+  "Bloom Filter": "알고리즘/이론",
+  "Recommendation System": "AI/ML",
+  "DDD": "협업/도구",
+  "Consul": "인프라/클라우드",
+  "Distributed System": "알고리즘/이론",
+  "ARM": "펌웨어/임베디드",
+  "Event Sourcing": "알고리즘/이론",
+  "RLHF": "LLM/생성형",
+  "Kubernetes": "인프라/클라우드",
+  "Binary Search": "알고리즘/이론",
+  "Embedding": "LLM/생성형",
+  "Vercel": "인프라/클라우드",
+  "GitHub Actions": "인프라/클라우드",
+  "Astro": "프론트엔드",
+  "Feature Store": "AI/ML",
+  "Saga Pattern": "알고리즘/이론",
+  "State of the Art": "연구/논문",
+  "Spinnaker": "인프라/클라우드",
+  "IoT": "펌웨어/임베디드",
+  "MQTT": "펌웨어/임베디드",
+  "Vector Search": "LLM/생성형",
+  "WebGL": "프론트엔드",
+  "Rust": "언어",
+  "C#": "언어",
+  "Kafka": "데이터",
+  "Multimodal": "LLM/생성형",
+  ".NET": "백엔드",
+  "Stream Processing": "데이터",
+  "Penetration Testing": "보안",
+  "Babel": "프론트엔드",
+  "Concurrency": "알고리즘/이론",
+  "React Native": "모바일",
+  "AutoML": "AI/ML",
+  "Databricks": "데이터베이스",
+  "Transformer": "LLM/생성형",
+  "Gemini": "LLM/생성형",
+  "Mistral": "LLM/생성형",
+  "WebAssembly": "프론트엔드",
+  "WebSocket": "백엔드",
   "CI/CD": "인프라/클라우드",
+  "Spring": "백엔드",
+  "Spring Boot": "백엔드",
+  "Kinesis": "데이터",
+  "Fine-tuning": "LLM/생성형",
+  "Qdrant": "데이터베이스",
+  "Deno": "백엔드",
+  "Memory Management": "시스템/OS",
+  "Scikit-learn": "AI/ML",
+  "Debezium": "데이터",
+  "CLIP": "LLM/생성형",
+  "Linux Kernel": "펌웨어/임베디드",
+  "Ablation Study": "연구/논문",
+  "Jira": "협업/도구",
+  "Scala": "언어",
+  "Sentry": "관측성",
+  "Bootloader": "펌웨어/임베디드",
+  "Cassandra": "데이터베이스",
+  "Embedded": "펌웨어/임베디드",
+  "Flask": "백엔드",
+  "WAF": "보안",
+  "LSM Tree": "알고리즘/이론",
+  "SQL": "언어",
+  "Spark": "데이터",
+  "Datadog": "관측성",
+  "AI Agent": "LLM/생성형",
+  "Jenkins": "인프라/클라우드",
+  "Python": "언어",
+  "Keras": "AI/ML",
+  "ClickHouse": "데이터베이스",
+  "Fiber": "백엔드",
+  "FastAPI": "백엔드",
+  "Compiler": "알고리즘/이론",
+  "Figma": "협업/도구",
+  "Kubeflow": "AI/ML",
+  "Elixir": "언어",
+  "Azure": "인프라/클라우드",
+  "Perl": "언어",
+  "Kotlin": "언어",
+  "Assembly": "언어",
+  "Storybook": "프론트엔드",
+  "Cryptography": "보안",
+  "Diffusion": "LLM/생성형",
+  "Cloudflare": "인프라/클라우드",
+  "REST API": "백엔드",
+  "Kotlin Multiplatform": "모바일",
+  "OpenTelemetry": "관측성",
+  "Observability": "관측성",
+  "LlamaIndex": "LLM/생성형",
+  "Unreal Engine": "그래픽/게임",
+  "Vault": "인프라/클라우드",
+  "Protobuf": "백엔드",
+  "Delta Lake": "데이터",
+  "Android": "모바일",
+  "Garbage Collection": "알고리즘/이론",
+  "CNN": "AI/ML",
+  "JavaScript": "언어",
+  "MLOps": "AI/ML",
+  "Bare-metal": "펌웨어/임베디드",
+  "MongoDB": "데이터베이스",
+  "SQL Injection": "보안",
+  "Edge Computing": "펌웨어/임베디드",
+  "Netlify": "인프라/클라우드",
+  "Swift": "언어",
+  "MapReduce": "알고리즘/이론",
+  "CVE": "보안",
+  "ArgoCD": "인프라/클라우드",
+  "SCSS": "프론트엔드",
+  "Lua": "언어",
+  "TensorFlow": "AI/ML",
+  "AWS": "인프라/클라우드",
+  "Service Mesh": "인프라/클라우드",
+  "jQuery": "프론트엔드",
+  "Remix": "프론트엔드",
+  "Objective-C": "언어",
+  "Qwik": "프론트엔드",
+  "Groovy": "언어",
+  "DynamoDB": "데이터베이스",
+  "Blockchain": "블록체인",
+  "Hugging Face": "LLM/생성형",
+  "Security": "보안",
+  "systemd": "시스템/OS",
+  "pgvector": "데이터베이스",
+  "Web3": "블록체인",
+  "APM": "관측성",
+  "Time Series": "AI/ML",
+  "TypeScript": "언어",
+  "GCP": "인프라/클라우드",
+  "Rails": "백엔드",
+  "Git": "협업/도구",
+  "Graph Neural Network": "AI/ML",
+  "Iceberg": "데이터",
+  "Express": "백엔드",
+  "Snowflake": "데이터베이스",
+  "Authentication": "보안",
+  "Machine Learning": "AI/ML",
+  "Ansible": "인프라/클라우드",
+  "Echo": "백엔드",
+  "Grafana": "관측성",
+  "Raft": "알고리즘/이론",
+  "Solana": "블록체인",
+  "Vulkan": "그래픽/게임",
+  "GraphQL": "백엔드",
+  "Consistent Hashing": "알고리즘/이론",
+  "PWA": "프론트엔드",
+  "Hudi": "데이터",
+  "Nuxt": "프론트엔드",
+  "Airflow": "데이터",
+  "Prometheus": "관측성",
+  "Hadoop": "데이터",
   "SolidJS": "프론트엔드",
   "TensorRT": "AI/ML",
-  "Neo4j": "데이터베이스",
-  "BERT": "LLM/생성형",
-  "CUDA": "AI/ML",
-  "Vercel": "인프라/클라우드",
-  "TypeScript": "언어",
-  "NLP": "AI/ML",
-  "Serverless": "인프라/클라우드",
-  "Ray": "AI/ML",
-  "Storybook": "프론트엔드",
-  "TDD": "협업/도구",
-  "Trino": "데이터",
-  "Penetration Testing": "보안",
-  "Mistral": "LLM/생성형",
   "Node.js": "백엔드",
+  "Firmware": "펌웨어/임베디드",
+  "Claude": "LLM/생성형",
+  "SwiftUI": "모바일",
+  "TDD": "협업/도구",
+  "ONNX": "AI/ML",
+  "PHP": "언어",
+  "LightGBM": "AI/ML",
+  "RAG": "LLM/생성형",
+  "Confluence": "협업/도구",
+  "Dynamic Programming": "알고리즘/이론",
+  "Pulsar": "데이터",
+  "React": "프론트엔드",
+  "C++": "언어",
+  "Julia": "언어",
+  "Notion": "협업/도구",
+  "SASS": "프론트엔드",
+  "eBPF": "시스템/OS",
+  "vLLM": "LLM/생성형",
+  "ETL": "데이터",
+  "Go": "언어",
+  "AWS Lambda": "인프라/클라우드",
+  "Dart": "언어",
+  "Istio": "인프라/클라우드",
+  "PostgreSQL": "데이터베이스",
+  "Trino": "데이터",
+  "Envoy": "인프라/클라우드",
+  "Loki": "관측성",
+  "CUDA": "AI/ML",
+  "GPT": "LLM/생성형",
+  "Svelte": "프론트엔드",
+  "Knowledge Distillation": "AI/ML",
+  "Reinforcement Learning": "AI/ML",
+  "BERT": "LLM/생성형",
+  "ScyllaDB": "데이터베이스",
+  "RabbitMQ": "데이터",
+  "CSS": "프론트엔드",
+  "OAuth": "보안",
+  "JWT": "보안",
+  "PyTorch": "AI/ML",
   "LLM": "LLM/생성형",
   "Unix": "시스템/OS",
-  "REST API": "백엔드",
-  "Triton": "AI/ML",
-  "Oracle": "데이터베이스",
-  "Machine Learning": "AI/ML",
-  "IoT": "펌웨어/임베디드",
-  "Angular": "프론트엔드",
-  "Snowflake": "데이터베이스",
-  "Cassandra": "데이터베이스",
-  "Vault": "인프라/클라우드",
-  "OpenTelemetry": "관측성",
-  "Linux": "시스템/OS",
-  "LSM Tree": "알고리즘/이론",
-  "Prometheus": "관측성",
-  "GraphQL": "백엔드",
-  "Paxos": "알고리즘/이론",
-  "Jenkins": "인프라/클라우드",
-  "Ablation Study": "연구/논문",
-  "Spark": "데이터",
-  "MoE": "LLM/생성형",
-  "Transformer": "LLM/생성형",
-  "Jetpack Compose": "모바일",
-  "Attention Mechanism": "LLM/생성형",
-  "iOS": "모바일",
-  "Babel": "프론트엔드",
-  "State of the Art": "연구/논문",
-  "LightGBM": "AI/ML",
-  "Kotlin Multiplatform": "모바일",
-  "Embedding": "LLM/생성형",
-  "Ansible": "인프라/클라우드",
-  "Kubeflow": "AI/ML",
-  "Spring": "백엔드",
-  "OWASP": "보안",
-  "MySQL": "데이터베이스",
-  "Assembly": "언어",
-  "Delta Lake": "데이터",
-  "Keras": "AI/ML",
-  "Julia": "언어",
-  "Debezium": "데이터",
-  "Data Lake": "데이터",
-  "Bun": "백엔드",
-  "Bloom Filter": "알고리즘/이론",
-  "C#": "언어",
-  "FastAPI": "백엔드",
-  "Netlify": "인프라/클라우드",
-  "Go": "언어",
-  "GitOps": "인프라/클라우드",
-  "Game Engine": "그래픽/게임",
-  "CockroachDB": "데이터베이스",
-  "PostgreSQL": "데이터베이스",
-  "MongoDB": "데이터베이스",
-  "Flask": "백엔드",
-  "containerd": "시스템/OS",
-  "React": "프론트엔드",
-  "Data Pipeline": "데이터",
-  "Hash Table": "알고리즘/이론",
-  "WebGL": "프론트엔드",
-  "Android": "모바일",
-  "SwiftUI": "모바일",
-  "Webpack": "프론트엔드",
-  "Dart": "언어",
-  "Pulsar": "데이터",
-  "Garbage Collection": "알고리즘/이론",
-  "Swift": "언어",
-  "Objective-C": "언어",
-  "Llama": "LLM/생성형",
-  "Elixir": "언어",
-  "LoRA": "LLM/생성형",
-  "Embedded": "펌웨어/임베디드",
-  "Bash": "언어",
-  "AutoML": "AI/ML",
-  "WAF": "보안",
-  "Databricks": "데이터베이스",
-  "APM": "관측성",
-  "Kernel": "시스템/OS",
-  "Anomaly Detection": "AI/ML",
+  "Monorepo": "협업/도구",
+  "Next.js": "프론트엔드",
+  "Helm": "인프라/클라우드",
+  "DDoS": "보안",
   "A/B Test": "협업/도구",
+  "Tailwind": "프론트엔드",
+  "Prompt Engineering": "LLM/생성형",
+  "Bun": "백엔드",
+  "Hive": "데이터",
+  "Model Context Protocol": "LLM/생성형",
+  "Algorithm": "알고리즘/이론",
+  "File System": "시스템/OS",
+  "Kernel": "시스템/OS",
+  "Shader": "그래픽/게임",
+  "GitOps": "인프라/클라우드",
+  "TLS": "보안",
+  "Beam": "데이터",
+  "Game Engine": "그래픽/게임",
+  "Flink": "데이터",
+  "Ray": "AI/ML",
+  "Presto": "데이터",
+  "DirectX": "그래픽/게임",
+  "MoE": "LLM/생성형",
+  "OWASP": "보안",
+  "GitLab CI": "인프라/클라우드",
+  "Anomaly Detection": "AI/ML",
+  "NestJS": "백엔드",
+  "Distributed Tracing": "관측성",
+  "arXiv": "연구/논문",
   "CDC": "데이터",
-  "OAuth": "보안",
-  "Remix": "프론트엔드"
+  "Triton": "AI/ML",
+  "Computer Vision": "AI/ML",
+  "Angular": "프론트엔드",
+  "HTML": "프론트엔드"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
+   "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
+   "published": "2026-07-29",
+   "published_ts": 1785340800.0,
+   "summary": "Dependabot keeps your dependencies current, but its defaults can flood your repository with pull requests. Here's how grouping updates, slowing the cadence, and keeping security fixes fast cut the noise on a Microsoft open source project.\n\nThe post Tame Dependabot: Group your updates, slow the cadence, keep security fast appeared first on The GitHub Blog.",
+   "tags": [
+    "Engineering",
+    "Security",
+    "Supply chain security",
+    "Dependabot",
+    "GitHub Actions",
+    "open source",
+    "supply chain security"
+   ],
+   "tech_stack": [
+    "Java",
+    "Docker",
+    "GitHub Actions",
+    "Garbage Collection",
+    "Security",
+    "Git",
+    "Monorepo"
+   ],
+   "categories": [
+    "언어",
+    "인프라/클라우드",
+    "알고리즘/이론",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a80d2550eb70254b"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "Developers are attached to tools because tools encode trust​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍​﻿​﻿​﻿​﻿‌﻿​﻿​​‌‍‌‌​﻿‌‌​﻿‍‌​﻿‌​​‍﻿‌​﻿‌‍​﻿​​‌‍​‌​﻿‍‌​‍﻿‌​﻿‌​​﻿​‍​﻿​﻿‌‍​﻿​‍﻿‌​﻿‍​​﻿‌​​﻿​‌‌‍​‍​‍﻿‌​﻿‌​‌‍‌‌‌‍​‌​﻿​​​﻿‌﻿‌‍​‌‌‍​﻿‌‍​‍‌‍​﻿​﻿​﻿‌‍​﻿‌‍‌‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍​﻿​﻿​﻿​﻿‌﻿​﻿​​‌‍‌‌​﻿‌‌​﻿‍‌​﻿‌​​‍﻿‌​﻿‌‍​﻿​​‌‍​‌​﻿‍‌​‍﻿‌​﻿‌​​﻿​‍​﻿​﻿‌‍​﻿​‍﻿‌​﻿‍​​﻿‌​​﻿​‌‌‍​‍​‍﻿‌​﻿‌​‌‍‌‌‌‍​‌​﻿​​​﻿‌﻿‌‍​‌‌‍​﻿‌‍​‍‌‍​﻿​﻿​﻿‌‍​﻿‌‍‌‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/07/29/developers-are-attached-to-tools-because-tools-encode-trust",
+   "published": "2026-07-29",
+   "published_ts": 1785333998.0,
+   "summary": "The tools themselves are new and their capabilities are in constant flux. If your kitchen knife kept changing shape, weight, and edge, you’d have to relearn it every time; that’s a hard tool to build trust in. But it also points to a flaw in how you use that tool, the process around it, and the way the tool reinforces the process.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿…",
+   "tags": [
+    "buiilding-software",
+    "ide",
+    "dev-tools",
+    "se-tech",
+    "se-stackoverflow"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "99f40414f85b5104"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Post-quantum authentication to origins is now supported",
+   "url": "https://blog.cloudflare.com/post-quantum-authentication-to-origins",
+   "published": "2026-07-29",
+   "published_ts": 1785330000.0,
+   "summary": "Cloudflare now supports post-quantum (PQ) authentication when connecting to customer origin servers via Authenticated Origin Pulls and Custom Origin Trust Store. This is the first step towards providing PQ authentication for all Cloudflare products.",
+   "tags": [
+    "Cryptography",
+    "Cybersecurity",
+    "Post-Quantum",
+    "Research",
+    "SSL",
+    "TLS"
+   ],
+   "tech_stack": [
+    "Go",
+    "Machine Learning",
+    "Cloudflare",
+    "Nginx",
+    "Algorithm",
+    "Authentication",
+    "Cryptography",
+    "Security",
+    "TLS"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "인프라/클라우드",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "dc650289861112ed"
+  },
+  {
+   "key": "airbnb",
+   "company": "Airbnb",
+   "country": "US",
+   "title": "Eval-driven development: Lessons from evaluating GenAI at scale",
+   "url": "https://medium.com/airbnb-engineering/eval-driven-development-lessons-from-evaluating-genai-at-scale-e817e5ae5788",
+   "published": "2026-07-28",
+   "published_ts": 1785258063.0,
+   "summary": "How Airbnb teams build trustworthy Generative AI products by treating evaluation as a first-class engineering discipline; not an afterthought.\nNestled into the lush hillside, this stunning modern retreat features striking natural wood architecture, terraced balconies, and a serene landscape.\nBy: Rohit Girme, Dan Miller, Mia Zhao, Lifan Yang, Clint Kelly\n\nIntroduction\n\nGenerative AI breaks a lot of the assumptions that used to hold true for software testing. Unlike traditional software, LLM outputs are non-deterministic, and “correct” is subjective. Because so much judgment is involved, you oft…",
+   "tags": [
+    "ai",
+    "llm",
+    "engineering",
+    "genai",
+    "agentic-ai"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "LLM",
+    "Observability"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "관측성"
+   ],
+   "lang": "en",
+   "content_id": "62c0de22e0f76b07"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Disrupting supply chain attacks on npm and GitHub Actions",
+   "url": "https://github.blog/security/supply-chain-security/disrupting-supply-chain-attacks-on-npm-and-github-actions",
+   "published": "2026-07-28",
+   "published_ts": 1785254400.0,
+   "summary": "Explore the changes we've shipped across npm and GitHub Actions over the past few months to disrupt supply chain attack techniques and limit their impact.\n\nThe post Disrupting supply chain attacks on npm and GitHub Actions appeared first on The GitHub Blog.",
+   "tags": [
+    "Security",
+    "Supply chain security",
+    "GitHub Actions",
+    "npm",
+    "supply chain security"
+   ],
+   "tech_stack": [
+    "CI/CD",
+    "GitHub Actions",
+    "Authentication",
+    "OAuth",
+    "Security",
+    "Git"
+   ],
+   "categories": [
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "92290ebd73efeaa1"
+  },
+  {
+   "key": "dena",
+   "company": "DeNA",
+   "country": "JP",
+   "title": "11 の技術コミュニティが新入社員をお出迎え 〜TechTalk #95 開催レポート〜",
+   "url": "https://engineering.dena.com/blog/2026/07/tech-talk-95-community-introduction",
+   "published": "2026-07-29",
+   "published_ts": 1785250800.0,
+   "summary": "はじめに こんにちは。エンジニアリング室で内定者インターンをしている大崎です。 本イベントの運営と、当日の司会を担当しました。\nDeNA には、部署や事業を越えて、同じ技術が好きなエンジニアが集まる社内技術コミュニティがいくつもあります。 そして技術領域の枠も越えて、全社のエンジニアが集まる場が、2010 年から続く社内 LT イベント TechTalk です。 「DeNA 社員にとって一番敷居の低いイベント」を目指していて、普段はエンジニアが好きなテーマで気軽に発表しています。 新入社員が現場に合流するこの時期だけは、毎年恒例の特別回。 社内の技術コミュニティが一堂に集まり、新しく入った仲間に活動を紹介する「技術コミュニティ紹介会」です。 今年で 3 回目となるこの企画に、11 のコミュニティが参加してくれました。",
+   "tags": [],
+   "tech_stack": [
+    "C#",
+    "Go",
+    "JavaScript",
+    "Ruby",
+    "Rust",
+    "SQL",
+    "Rails",
+    "Flutter",
+    "Claude",
+    "LLM",
+    "Iceberg",
+    "Unity"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "모바일",
+    "LLM/생성형",
+    "데이터",
+    "그래픽/게임"
+   ],
+   "lang": "en",
+   "content_id": "5eb1dd64791ac65a"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Natural disasters and government interference: examining Q2 2026’s major Internet disruption events",
+   "url": "https://blog.cloudflare.com/q2-2026-internet-disruption-summary",
+   "published": "2026-07-28",
+   "published_ts": 1785243600.0,
+   "summary": "Cloudflare Radar tracked Internet disruptions driven by natural disasters, government-mandated shutdowns, and DNSSEC key rollovers over the last quarter. This post analyzes traffic telemetry to explain how these events impacted global connectivity.",
+   "tags": [
+    "AWS",
+    "Internet Shutdown",
+    "Internet Traffic",
+    "Internet Trends",
+    "Outage",
+    "Radar"
+   ],
+   "tech_stack": [
+    "AWS",
+    "Cloudflare"
+   ],
+   "categories": [
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "4fc13a075def04de"
+  },
+  {
+   "key": "stackoverflow",
+   "company": "Stack Overflow",
+   "country": "US",
+   "title": "You need reliable AI context for your site reliability​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‌​﻿​​​﻿‍‌​﻿‌​‌‍​‌‌‍​﻿​﻿‌﻿‌‍​‌​‍﻿‌‌‍‌‌‌‍​‍​﻿‌​‌‍‌‌​‍﻿‌​﻿‌​‌‍‌‍​﻿​﻿​﻿​‍​‍﻿‌​﻿‍​​﻿‍‌‌‍‌‍‌‍​‌​‍﻿‌​﻿‌‌​﻿​​‌‍‌‌​﻿‌﻿​﻿‌‍‌‍​‌​﻿​﻿‌‍‌​​﻿‍‌​﻿‌‌​﻿​﻿‌‍‌​​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‌​﻿​​​﻿‍‌​﻿‌​‌‍​‌‌‍​﻿​﻿‌﻿‌‍​‌​‍﻿‌‌‍‌‌‌‍​‍​﻿‌​‌‍‌‌​‍﻿‌​﻿‌​‌‍‌‍​﻿​﻿​﻿​‍​‍﻿‌​﻿‍​​﻿‍‌‌‍‌‍‌‍​‌​‍﻿‌​﻿‌‌​﻿​​‌‍‌‌​﻿‌﻿​﻿‌‍‌‍​‌​﻿​﻿‌‍‌​​﻿‍‌​﻿‌‌​﻿​﻿‌‍‌​​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
+   "url": "https://stackoverflow.blog/2026/07/28/you-need-reliable-ai-context-for-your-site-reliability",
+   "published": "2026-07-28",
+   "published_ts": 1785224400.0,
+   "summary": "Ryan is joined by Asaf Savich, Komodor’s AI Engineering Group Manager, to discuss why modern reliability work requires navigating massive cross-service context, what good context engineering actually likes when AI is integrated into site reliability, and how the work of human SREs is shifting towards strategy and AI agent management.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​…",
+   "tags": [
+    "podcast",
+    "se-tech",
+    "se-stackoverflow",
+    "ai",
+    "sre",
+    "site-reliability-engineering"
+   ],
+   "tech_stack": [
+    "AI Agent"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "af035fc95a1ef23c"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Cycloud 新基盤の全貌 第8回: FrontEnd 編",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64977",
+   "published": "2026-07-28",
+   "published_ts": 1785206370.0,
+   "summary": "※ この記事は、筆者が AI エージェント(Claude Code)と対話しながら執筆しました。読了 ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "Claude"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "e05d2ee6d4fc46a3"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "クラウドLLMに頼りきらない開発体験をつくる （AI Shift Local LLM Meetup #2 レポート）",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/65011",
+   "published": "2026-07-28",
+   "published_ts": 1785205544.0,
+   "summary": "第2回となる今回は、Local LLM を開発の相棒として使ってみる、1時間集中の個人参加型ハッカソ ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "LLM"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "1ce056207044b2ff"
+  },
+  {
+   "key": "woowahan",
+   "company": "우아한형제들",
+   "country": "KR",
+   "title": "BFF 서버에 SSE를 도입한 이유: 전시 서버의 통신 구조 재설계",
+   "url": "https://techblog.woowahan.com/26507",
+   "published": "2026-07-28",
+   "published_ts": 1785204007.0,
+   "summary": "들어가며 배달의민족에서 음식을 주문할 때 카테고리를 누르면 만나는 화면, 바로 가게목록입니다. 사용자가 가게를 탐색하는 첫 관문이자, 가장 트래픽이 많은 지면 중 하나입니다. 이 글은 그 가게목록 지면의 통신 구조를 재설계한 이야기입니다. 클라이언트가 여러 서버에 각각 요청을 보내던 구조를 하나의 API로 통합하고(1지면 1API), 통합이 만들어낼 병목을 SSE(Server-Sent Events) 스트리밍으로 풀어낸 두 번의 의사결정 과정을 소개합니다. ‘가게목록’이 […]\n\nThe post BFF 서버에 SSE를 도입한 이유: 전시 서버의 통신 구조 재설계 first appeared on 우아한형제들 기술블로그.",
+   "tags": [
+    "Backend",
+    "Frontend"
+   ],
+   "tech_stack": [
+    "React",
+    "REST API",
+    "Spring",
+    "Spring Boot",
+    "WebSocket",
+    "Nginx",
+    "Authentication"
+   ],
+   "categories": [
+    "프론트엔드",
+    "백엔드",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "dc8fc8a015686036"
+  },
+  {
+   "key": "spotify",
+   "company": "Spotify",
+   "country": "US",
+   "title": "Indexing the Data Lake for Online Point Queries",
+   "url": "https://engineering.atspotify.com/2026/7/indexing-the-data-lake-for-online-point-queries",
+   "published": "2026-07-27",
+   "published_ts": 1785184468.0,
+   "summary": "Companies like Spotify need vast quantities of data accessible at low latency for online services and,...\n\nThe post Indexing the Data Lake for Online Point Queries appeared first on Spotify Engineering.",
+   "tags": [
+    "Infrastructure"
+   ],
+   "tech_stack": [
+    "Data Lake"
+   ],
+   "categories": [
+    "데이터"
+   ],
+   "lang": "en",
+   "content_id": "ae736d3c24f1cd37"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "The harness is all you need (mostly)",
+   "url": "https://github.blog/company/the-harness-is-all-you-need-mostly",
+   "published": "2026-07-27",
+   "published_ts": 1785175200.0,
+   "summary": "A practical GitHub Copilot workflow for prototyping, planning, implementing, and reviewing software without chasing every new AI tool.\n\nThe post The harness is all you need (mostly) appeared first on The GitHub Blog.",
+   "tags": [
+    "Company"
+   ],
+   "tech_stack": [
+    "CSS",
+    "HTML",
+    "Jetpack Compose",
+    "Claude",
+    "GPT",
+    "Model Context Protocol"
+   ],
+   "categories": [
+    "프론트엔드",
+    "모바일",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "4da9dcd18c3042d9"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "The harness is all you need (mostly)",
+   "url": "https://github.blog/ai-and-ml/github-copilot/the-harness-is-all-you-need-mostly",
+   "published": "2026-07-27",
+   "published_ts": 1785175200.0,
+   "summary": "A practical GitHub Copilot workflow for prototyping, planning, implementing, and reviewing software without chasing every new AI tool.\n\nThe post The harness is all you need (mostly) appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot"
+   ],
+   "tech_stack": [
+    "CSS",
+    "HTML",
+    "Jetpack Compose",
+    "Claude",
+    "GPT",
+    "Model Context Protocol"
+   ],
+   "categories": [
+    "프론트엔드",
+    "모바일",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "97b8a5b6a8dc7602"
+  },
+  {
+   "key": "pinterest",
+   "company": "Pinterest",
+   "country": "US",
+   "title": "Pinner Progression: Better Use-Case Representation Driving Weekly Active User Growth at Pinterest",
+   "url": "https://medium.com/pinterest-engineering/pinner-progression-better-use-case-representation-driving-weekly-active-user-growth-at-pinterest-bd2131ab238a",
+   "published": "2026-07-27",
+   "published_ts": 1785168062.0,
+   "summary": "Part 1 of 2\n\nAuthors\n\nPersonalization (Homefeed): Yuke Yan, Chuxi Wang, Andreanne Lemay, Olafur Gudmundsson, Anna Kiyantseva, Krystal Benitez, Jongho Kim, Jiacong He, Rahul Goutam, James Li, Dylan Wang\nUser Understanding: Simin Li, Sufyan Suliman, Yingjian Ding, Hongbo Deng\nData Science: Armando Ordorica, Yan Chen, Ellie Zhang, Karim Wahba\n\nIntroduction\n\nPinterest’s mission is to help people discover the inspiration to create a life they love. Our recommendation system serves hundreds of millions of users, surfacing billions of Pins across interests ranging from home renovation to meal plannin…",
+   "tags": [
+    "recommendation-system",
+    "engineering",
+    "understanding-user",
+    "pinterest",
+    "interest-exploration"
+   ],
+   "tech_stack": [
+    "Feature Store",
+    "Recommendation System",
+    "Reinforcement Learning",
+    "Embedding",
+    "LLM",
+    "Transformer",
+    "Algorithm"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "5d32071977ea4580"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "GitHub Copilot app for Beginners: Getting started",
+   "url": "https://github.blog/ai-and-ml/github-copilot/github-copilot-app-for-beginners-getting-started",
+   "published": "2026-07-27",
+   "published_ts": 1785168000.0,
+   "summary": "New to the GitHub Copilot app? Learn how to start projects, work with AI agents, explore canvases, and streamline your development workflow.\n\nThe post GitHub Copilot app for Beginners: Getting started appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "GitHub Copilot app",
+    "GitHub Copilot app for Beginners"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "eb885d8898bd532d"
+  },
+  {
+   "key": "kakao",
+   "company": "카카오",
+   "country": "KR",
+   "title": "더 작고 강해진 Kanana SLM 개발",
+   "url": "https://tech.kakao.com/posts/826",
+   "published": "2026-07-27",
+   "published_ts": 1785164400.0,
+   "summary": "안녕하세요. 카카오의 AI 모델 개발을 담당하는 카나나 LLM 조직에서 언어모델을 개발하고 있는 Kaya, Ryan, Wavy 입니다.\n지난 “작지만 강한 Kanana Nano 효율적으로 개발하기”에서 비용 효율적으로 SLM(Small Language Model)을 개발하는 방법에 대해서 소개드렸었는데요, 이번 글에서는 더 강력해져서 돌아온 카카오의 두 번째 SLM 시리즈를 소개드리고자 합니다.\n이번에 소개해드릴 모델은 Kanana-2-3B, Kana...",
+   "tags": [
+    "blog"
+   ],
+   "tech_stack": [
+    "LLM"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "ko",
+   "content_id": "7c18d91911a2fff1"
+  },
+  {
+   "key": "dena",
+   "company": "DeNA",
+   "country": "JP",
+   "title": "kintone内製プラグインで350超アプリのカスタマイズをノーコード化した話",
+   "url": "https://engineering.dena.com/blog/2026/07/kintone-plugin",
+   "published": "2026-07-28",
+   "published_ts": 1785164400.0,
+   "summary": "はじめに こんにちは、IT本部IT戦略部テクニカルオペレーショングループの入倉です。\nDeNAグループにおけるITシステム・ツールの導入企画から運用管理、運用改善などを担当しています。\nDeNAグループでは、物品の購入申請や新規ツールの利用申請など、日々発生するさまざまな業務に「kintone アプリ」を広く活用しています。全社で広く使われるものから特定の部署内だけで利用される小規模なものまで含めると、現在稼働しているアプリ数は700を超えています。",
+   "tags": [],
+   "tech_stack": [
+    "JavaScript",
+    "Webpack"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드"
+   ],
+   "lang": "en",
+   "content_id": "57d75ec46d096384"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Weekly Roundup: Local Zone in Athens, Claude Opus 5 on AWS, Lambda durable execution for .NET, and more (July 27, 2026)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-july-27-2026",
+   "published": "2026-07-27",
+   "published_ts": 1785164081.0,
+   "summary": "Last week I had the privilege of spending three days in São Paulo with technical builders from across Latin America, brought together for a regional tech event full of deep-dive sessions, hands-on workshops, and conversations with customers and partners. What struck me most wasn’t any single session, it was the energy of a technical community […]",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon Bedrock AgentCore",
+    "Amazon Connect",
+    "Amazon SageMaker AI",
+    "Announcements",
+    "AWS Lambda",
+    "AWS Local Zones",
+    "News"
+   ],
+   "tech_stack": [
+    "C#",
+    ".NET",
+    "AI Agent",
+    "Claude",
+    "Redshift",
+    "AWS",
+    "AWS Lambda",
+    "Serverless",
+    "Observability",
+    "OpenTelemetry"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성"
+   ],
+   "lang": "en",
+   "content_id": "e83f13088d4577f2"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "We’re open-sourcing our privacy proxy CLI",
+   "url": "https://blog.cloudflare.com/open-sourcing-our-privacy-proxy-cli",
+   "published": "2026-07-27",
+   "published_ts": 1785157200.0,
+   "summary": "pvcli is a curl-like tool designed to simplify the testing of complex privacy protocols like OHTTP.",
+   "tags": [
+    "Better Internet",
+    "HTTP3",
+    "Open Source",
+    "Privacy",
+    "QUIC",
+    "Rust"
+   ],
+   "tech_stack": [
+    "Go",
+    "Rust",
+    "Cloudflare",
+    "Cryptography"
+   ],
+   "categories": [
+    "언어",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "7c2ba6f8ee876851"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Cycloud 新基盤の全貌 第七回: KaaS 編",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64884",
+   "published": "2026-07-26",
+   "published_ts": 1785107422.0,
+   "summary": "はじめに はじめまして、CyberAgent group Infrastructure Unit（C ...",
+   "tags": [
+    "エンジニア",
+    "CIU",
+    "kubernetes",
+    "インフラ",
+    "プライベートクラウド"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "f5eac69f80875aac"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Cycloud 新基盤の全貌 第六回: LB 編",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64711",
+   "published": "2026-07-25",
+   "published_ts": 1785020406.0,
+   "summary": "はじめに はじめまして。CyberAgent group Infrastructure Unit（C ...",
+   "tags": [
+    "エンジニア",
+    "未分類",
+    "CIU",
+    "インフラ",
+    "プライベートクラウド"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "e5dd64fac0456166"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",
@@ -589,6 +1194,33 @@
    "categories": [],
    "lang": "en",
    "content_id": "b0a426b793ffe745"
+  },
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "[AI 해커톤 후기] AI 해커톤 1위 팀이 AI에게 맡기지 않은 것",
+   "url": "https://d2.naver.com/helloworld/4821538",
+   "published": "2026-07-24",
+   "published_ts": 1784906733.0,
+   "summary": "기업의 업무에 AI를 도입하면 무엇이 달라질까요? 반복 업무를 자동화하고, 매달 작성하던 보고서를 대신 만들고, 업무 시스템과 연결해 사용자가 요청한 작업까지 처리할 수 있을까요?\n\n네이버 사내에서 열린 ‘모두의 Engineering Day AI 해커톤’에 참여하면서 저희도 비슷한 의문을 품었습니다. 낯선 재무 업무를 이해하고 Claude Code를 활용해 실제로 동작하는 결과물을 만들어야 하는 상황에서, 처음에는 자연스럽게 ‘AI가 무엇을 해줄 수 있을까?’부터 생각했습니다.\n\n하지만 프로젝트가 진행될수록 질문은 달라졌습니다. AI가 할 수 있는 일보다 어떤 일을 맡겨도 되는지, 결과가 그럴듯한지보다 틀렸을 때 발견하고 설명할 수 있는지, 자동화할 수 있는지보다 AI가 멈춰도 업무가 계속될 수 있는지가 더 중요해졌습니다.\n\n이 글은 하나의 재무 업무를 AI로 바꿔 보려다 문제를 어떻게 다시 정의했고, 어떤 방식으로 접근했으며, AI를 쓰며 어떤 한계를 마주했는지를 정리한 기록입니다.\n\n실제 사내 문제를 함께 해결하는 해커톤\n\n‘모두의 Engineering Day AI 해커톤’은 참가자가 각자 준비한 아이디어로 경쟁하는 일반적인 해커톤과 조금 달랐습니다. 출…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "Dart",
+    "Claude",
+    "LLM",
+    "Model Context Protocol",
+    "Authentication"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "4e78dec40c1c5429"
   },
   {
    "key": "stackoverflow",
@@ -6228,6 +6860,26 @@
    "content_id": "b6a6efb13566f339"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Less Is More: Why Audio on SoundCloud Looks Different",
+   "url": "https://developers.soundcloud.com/blog//less-is-more-why-soundcloud-low-passes-its-aac-transcodings",
+   "published": "2026-06-18",
+   "published_ts": 1781740800.0,
+   "summary": "Last year, SoundCloud upgraded its AAC encoder for the first time in over a decade. The new one (Fraunhofer’s libfdk_aac) delivers higher…",
+   "tags": [
+    "Audio",
+    "Engineering",
+    "Transcodings",
+    "Streaming"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "58577109c8009156"
+  },
+  {
    "key": "github",
    "company": "GitHub",
    "country": "US",
@@ -6858,6 +7510,36 @@
    ],
    "lang": "en",
    "content_id": "e5a3c3b71228d354"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "API Credentials from Your Terminal, and OpenAPI on GitHub",
+   "url": "https://developers.soundcloud.com/blog//api-credentials-cli-openapi-github",
+   "published": "2026-06-16",
+   "published_ts": 1781568000.0,
+   "summary": "In May we opened self-service app registration for Artist Pro subscribers. That fixed the browser flow. Two requests kept coming up anyway…",
+   "tags": [
+    "API",
+    "Announcement"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "Node.js",
+    "LLM",
+    "AWS",
+    "OAuth"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "742192141ea70a5a"
   },
   {
    "key": "aws",
@@ -9343,6 +10025,30 @@
    "content_id": "ee2ab3ec58c0faa5"
   },
   {
+   "key": "devsisters",
+   "company": "데브시스터즈",
+   "country": "KR",
+   "title": "킹덤 서버! 튜토리얼",
+   "url": "https://tech.devsisters.com/posts/ck-server-tutorial",
+   "published": "2026-06-02",
+   "published_ts": 1780358400.0,
+   "summary": "킹덤 서버 합류기를 공유합니다.",
+   "tags": [],
+   "tech_stack": [
+    "Java",
+    "Scala",
+    "Fiber",
+    "Concurrency"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "알고리즘/이론"
+   ],
+   "lang": "ko",
+   "content_id": "828bad7b854fb8c4"
+  },
+  {
    "key": "cyberagent",
    "company": "CyberAgent",
    "country": "JP",
@@ -11357,6 +12063,33 @@
    "content_id": "b270ef0a6e53e70e"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Vibe Coding with SoundCloud: Announcing New Docs for your Agents",
+   "url": "https://developers.soundcloud.com/blog//vibe-coding-ai-agent-docs-self-serve-api-keys",
+   "published": "2026-05-18",
+   "published_ts": 1779062400.0,
+   "summary": "Have you ever had a brilliant idea for a music app, a custom playlist curator, or a unique way to discover underground tracks on SoundCloud…",
+   "tags": [
+    "API",
+    "Announcements",
+    "AI"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Claude",
+    "LLM",
+    "Authentication"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "5abc564602c3ca03"
+  },
+  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -11491,6 +12224,38 @@
    ],
    "lang": "en",
    "content_id": "06e9e436e53e734e"
+  },
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "How AI is transforming analytics at Grab",
+   "url": "https://engineering.grab.com/how-ai-is-transforming-analytics-at-grab.md",
+   "published": "2026-05-15",
+   "published_ts": 1778804580.0,
+   "summary": "Introduction\n\nAt Grab, analytics sits close to almost every decision that matters. Our north star is the democratization of intelligence, ensuring that anyone making a business call has immediate access to trustworthy answers.\n\nOver the last two years, model capability has crossed a threshold enabling this shift. Agents now do in minutes what used to take a week: preparing the data, writing queries, running deep analysis and surfacing insights for business opportunities, designing the experiment and interpreting the results, drafting the commentary that follows, and more. Our throughput is no…",
+   "tags": [
+    "Engineering",
+    "Analytics",
+    "AI",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "SQL",
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "Data Lake",
+    "Embedded"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터",
+    "펌웨어/임베디드"
+   ],
+   "lang": "en",
+   "content_id": "95280f651181f0c3"
   },
   {
    "key": "aws",
@@ -21035,6 +21800,26 @@
    "content_id": "2e0af0bfb625f157"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Moving to Modern Streaming: Introducing AAC HLS on SoundCloud APIs [Deadline Extended]",
+   "url": "https://developers.soundcloud.com/blog//api-streaming-urls",
+   "published": "2025-09-15",
+   "published_ts": 1757894400.0,
+   "summary": "At SoundCloud, we’re always looking for ways to improve the listening experience for our creators, partners, and listeners. One of the…",
+   "tags": [
+    "API",
+    "Announcements",
+    "Transcodings",
+    "Streaming"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "f4e7b50a60c859d9"
+  },
+  {
    "key": "lyft",
    "company": "Lyft",
    "country": "US",
@@ -22028,6 +22813,24 @@
    "content_id": "3136714f645acc93"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Action required: Upcoming Update to SoundCloud API id fields",
+   "url": "https://developers.soundcloud.com/blog//urn-num-to-string",
+   "published": "2025-04-29",
+   "published_ts": 1745884800.0,
+   "summary": "To all developers using SoundCloud’s public API — we’re introducing an important change that will affect how you reference resources like…",
+   "tags": [
+    "API",
+    "Announcements"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "6eeeb54e3fc7874d"
+  },
+  {
    "key": "cookpad",
    "company": "Cookpad",
    "country": "JP",
@@ -22184,6 +22987,24 @@
    ],
    "lang": "ko",
    "content_id": "b3c9da9d421a1d1e"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "New artist name field on our API",
+   "url": "https://developers.soundcloud.com/blog//api-artist-metadata",
+   "published": "2025-04-03",
+   "published_ts": 1743638400.0,
+   "summary": "A while ago we made an improvement to how track and artist information is displayed on SoundCloud, making it clearer and easier to…",
+   "tags": [
+    "API",
+    "Announcements"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "530badd99e63a53b"
   },
   {
    "key": "cookpad",
@@ -23201,6 +24022,32 @@
    ],
    "lang": "en",
    "content_id": "592804debbc3d62d"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Upcoming changes to SoundCloud Access Tokens",
+   "url": "https://developers.soundcloud.com/blog//access-token-changes",
+   "published": "2024-12-02",
+   "published_ts": 1733097600.0,
+   "summary": "tl;dr: If your app doesn’t store SoundCloud access tokens outside of the context of a user’s client (i.e. a database) the following should…",
+   "tags": [
+    "Engineering",
+    "Updates",
+    "OAuth",
+    "Auth"
+   ],
+   "tech_stack": [
+    "Embedded",
+    "JWT"
+   ],
+   "categories": [
+    "펌웨어/임베디드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "9ac9073d9ce07b40"
   },
   {
    "key": "devsisters",
@@ -24430,6 +25277,32 @@
    "content_id": "bd2b671fe6e8916e"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Migration to Oauth 2.1",
+   "url": "https://developers.soundcloud.com/blog//oauth-migration",
+   "published": "2024-04-23",
+   "published_ts": 1713830400.0,
+   "summary": "Earlier this year, we updated our API Guide to let developers know that SoundCloud authentication is now operating on the OAuth 2.1 protocol…",
+   "tags": [
+    "Engineering",
+    "Updates",
+    "OAuth",
+    "Auth"
+   ],
+   "tech_stack": [
+    "Authentication",
+    "OAuth",
+    "Security"
+   ],
+   "categories": [
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "ea239616a0dcf217"
+  },
+  {
    "key": "etsy",
    "company": "Etsy",
    "country": "US",
@@ -25416,6 +26289,36 @@
    "content_id": "4e95129b8405551b"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Android Large Screen Optimization",
+   "url": "https://developers.soundcloud.com/blog//soundcloud-android-large-screen",
+   "published": "2023-07-31",
+   "published_ts": 1690761600.0,
+   "summary": "Large Screen Devices - The New Frontier SoundCloud large screen optimized Recently, the Android team at SoundCloud took on a project to…",
+   "tags": [
+    "Android",
+    "Large Screen",
+    "Optimization",
+    "Google"
+   ],
+   "tech_stack": [
+    "Kotlin",
+    "Android",
+    "Bluetooth",
+    "A/B Test"
+   ],
+   "categories": [
+    "언어",
+    "모바일",
+    "펌웨어/임베디드",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "9aec89a36a525358"
+  },
+  {
    "key": "banksalad",
    "company": "뱅크샐러드",
    "country": "KR",
@@ -25714,6 +26617,29 @@
    "content_id": "edb8225cd9256e0a"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "An update on our API: Changes to access for inactive apps",
+   "url": "https://developers.soundcloud.com/blog//an-empty-blogpost",
+   "published": "2023-06-02",
+   "published_ts": 1685664000.0,
+   "summary": "We’re working on improving our API offering. In order to do that, a few changes are coming: We need to revoke access for some of you with…",
+   "tags": [
+    "Update",
+    "API",
+    "Announcements"
+   ],
+   "tech_stack": [
+    "Security"
+   ],
+   "categories": [
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "4e7cc02e35cb8375"
+  },
+  {
    "key": "devsisters",
    "company": "데브시스터즈",
    "country": "KR",
@@ -25992,6 +26918,30 @@
    "content_id": "042363737586a0c8"
   },
   {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "What I Learned in One Year as an SRE Trainee",
+   "url": "https://developers.soundcloud.com/blog//sre-trainee",
+   "published": "2023-01-06",
+   "published_ts": 1672963200.0,
+   "summary": "I recently celebrated my one year anniversary as a Site Reliability Engineering (SRE) trainee at SoundCloud. Looking back, I had very little…",
+   "tags": [
+    "Engineering Culture",
+    "Learning",
+    "Knowledge Sharing"
+   ],
+   "tech_stack": [
+    "GCP",
+    "Kubernetes"
+   ],
+   "categories": [
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "2948fc92d250847f"
+  },
+  {
    "key": "coupang",
    "company": "쿠팡",
    "country": "KR",
@@ -26058,6 +27008,31 @@
    "key": "soundcloud",
    "company": "SoundCloud",
    "country": "DE",
+   "title": "What's New with SoundCloud, November 2022",
+   "url": "https://developers.soundcloud.com/blog//new-with-soundcloud-november-22",
+   "published": "2022-11-11",
+   "published_ts": 1668124800.0,
+   "summary": "We recently made updates to our SoundCloud iOS and Android apps to address key user experience (UX) fixes according to user feedback. We’ll…",
+   "tags": [
+    "Updates",
+    "App",
+    "iOS",
+    "Android"
+   ],
+   "tech_stack": [
+    "Android",
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "11fca7714a7697c8"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
    "title": "Bar Raiser Interview",
    "url": "https://developers.soundcloud.com/blog/bar-raiser",
    "published": "2022-10-25",
@@ -26071,6 +27046,24 @@
    "categories": [],
    "lang": "en",
    "content_id": "6b135149f6b4a552"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Bar Raiser Interview",
+   "url": "https://developers.soundcloud.com/blog//bar-raiser",
+   "published": "2022-10-25",
+   "published_ts": 1666656000.0,
+   "summary": "In an earlier blog post, we talked about how we changed the interview process during remote working as a way of improving our recruiting…",
+   "tags": [
+    "Engineering",
+    "Interviewing"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "e6f09a1a30da7d6d"
   },
   {
    "key": "soundcloud",
@@ -26101,6 +27094,31 @@
    "key": "soundcloud",
    "company": "SoundCloud",
    "country": "DE",
+   "title": "What's New with SoundCloud, October 2022",
+   "url": "https://developers.soundcloud.com/blog//new-with-soundcloud-october-22",
+   "published": "2022-10-17",
+   "published_ts": 1665964800.0,
+   "summary": "We recently made updates to our SoundCloud iOS and Android apps to address key user experience (UX) fixes according to user feedback. We’ll…",
+   "tags": [
+    "Updates",
+    "App",
+    "iOS",
+    "Android"
+   ],
+   "tech_stack": [
+    "Android",
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "95e043fdf9af66e5"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
    "title": "Android Image Loading at SoundCloud",
    "url": "https://developers.soundcloud.com/blog/android-images-at-soundcloud",
    "published": "2022-10-13",
@@ -26121,6 +27139,31 @@
    ],
    "lang": "en",
    "content_id": "5e0a86ca9ebac24e"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "Android Image Loading at SoundCloud",
+   "url": "https://developers.soundcloud.com/blog//android-images-at-soundcloud",
+   "published": "2022-10-13",
+   "published_ts": 1665619200.0,
+   "summary": "The SoundCloud Android app recently got a significant makeover: a “new year, new me” type of thing. Our remarkable design team and…",
+   "tags": [
+    "Android",
+    "Images",
+    "Picasso"
+   ],
+   "tech_stack": [
+    "Android",
+    "Data Structure"
+   ],
+   "categories": [
+    "모바일",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "a0555ec270b917d0"
   },
   {
    "key": "soundcloud",
@@ -26169,6 +27212,49 @@
    "key": "soundcloud",
    "company": "SoundCloud",
    "country": "DE",
+   "title": "SoundCloud Echo: Next-Level Humane Registry with Backstage",
+   "url": "https://developers.soundcloud.com/blog//soundcloud-echo-next-level-backstage",
+   "published": "2022-09-19",
+   "published_ts": 1663545600.0,
+   "summary": "We’ve seen considerable adoption of our internal humane registry, Services Directory, since we sanitized ownership definition and introduced…",
+   "tags": [
+    "Engineering",
+    "Humane Registry",
+    "DevXP",
+    "Tooling",
+    "Automation",
+    "Backstage"
+   ],
+   "tech_stack": [
+    "Go",
+    "SQL",
+    "React",
+    "Echo",
+    "MySQL",
+    "PostgreSQL",
+    "Kubernetes",
+    "Observability",
+    "Prometheus",
+    "Confluence",
+    "Design System",
+    "Jira"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "98a73b7b95cd1e3e"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
    "title": "WINE Workshop",
    "url": "https://developers.soundcloud.com/blog/wine-workshop",
    "published": "2022-08-02",
@@ -26193,6 +27279,30 @@
    "key": "soundcloud",
    "company": "SoundCloud",
    "country": "DE",
+   "title": "WINE Workshop",
+   "url": "https://developers.soundcloud.com/blog//wine-workshop",
+   "published": "2022-08-02",
+   "published_ts": 1659398400.0,
+   "summary": "SoundCloud has a variety of resource groups, and one such group is called Women in Engineering, or WINE. The mission statement of the group…",
+   "tags": [
+    "WINE",
+    "Engineering",
+    "Workshops",
+    "DEI"
+   ],
+   "tech_stack": [
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "0abfeb459a50eddf"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
    "title": "PR Templates for Effective Pull Requests",
    "url": "https://developers.soundcloud.com/blog/pr-templates-for-effective-pull-requests",
    "published": "2022-07-12",
@@ -26211,6 +27321,29 @@
    ],
    "lang": "en",
    "content_id": "c11c70bca6bae99f"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "PR Templates for Effective Pull Requests",
+   "url": "https://developers.soundcloud.com/blog//pr-templates-for-effective-pull-requests",
+   "published": "2022-07-12",
+   "published_ts": 1657584000.0,
+   "summary": "The first step to any code review is understanding what the code does and why. Although the author is by far the most qualified person to…",
+   "tags": [
+    "GitHub",
+    "Knowledge Sharing",
+    "Engineering Culture"
+   ],
+   "tech_stack": [
+    "Git"
+   ],
+   "categories": [
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "06624cfcb3bb79af"
   },
   {
    "key": "soundcloud",
@@ -26250,6 +27383,40 @@
    "key": "soundcloud",
    "company": "SoundCloud",
    "country": "DE",
+   "title": "Learning Scala at SoundCloud",
+   "url": "https://developers.soundcloud.com/blog//learning-scala-at-soundcloud",
+   "published": "2022-04-19",
+   "published_ts": 1650326400.0,
+   "summary": "I’m a backend developer who worked extensively writing code in Golang before joining SoundCloud. SoundCloud mostly uses Scala for its…",
+   "tags": [
+    "Engineering",
+    "Go",
+    "Scala"
+   ],
+   "tech_stack": [
+    "C++",
+    "Go",
+    "Java",
+    "Scala",
+    "SQL",
+    "Express",
+    "PostgreSQL",
+    "Compiler",
+    "Concurrency"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "데이터베이스",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "a396ac31b0c0f410"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
    "title": "The End of the Public API Strangler",
    "url": "https://developers.soundcloud.com/blog/end-of-the-strangler",
    "published": "2022-03-14",
@@ -26276,6 +27443,37 @@
    ],
    "lang": "en",
    "content_id": "48a2bf18e17f9038"
+  },
+  {
+   "key": "soundcloud",
+   "company": "SoundCloud",
+   "country": "DE",
+   "title": "The End of the Public API Strangler",
+   "url": "https://developers.soundcloud.com/blog//end-of-the-strangler",
+   "published": "2022-03-14",
+   "published_ts": 1647216000.0,
+   "summary": "This is the story of how we used the Strangler pattern to migrate our public API from a monolithic codebase to a fully fledged BFF over the…",
+   "tags": [
+    "Engineering",
+    "Architecture",
+    "BFF",
+    "Microservices"
+   ],
+   "tech_stack": [
+    "Ruby",
+    "Scala",
+    "Rails",
+    "Security",
+    "Jira"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "3ef2256ee34e5605"
   },
   {
    "key": "soundcloud",
