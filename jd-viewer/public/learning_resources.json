@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T11:52:38",
+  "generated_at": "2026-07-31T13:32:35",
   "source": "youtube",
   "tech_count": 200,
   "curriculum_count": 20,
@@ -7037,88 +7037,6 @@
         "stage": "실전"
       }
     ],
-    "RTOS": [
-      {
-        "title": "2019년 arm MBED OS(RTOS 포함) 워크숍 1강/5강",
-        "url": "https://www.youtube.com/watch?v=aM4jXj1oZmc",
-        "thumbnail": "https://i.ytimg.com/vi/aM4jXj1oZmc/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 1543,
-        "length": "4:15:47",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Zephyr RTOS 1강",
-        "url": "https://www.youtube.com/watch?v=PDG1e65Wsz0",
-        "thumbnail": "https://i.ytimg.com/vi/PDG1e65Wsz0/mqdefault.jpg",
-        "channel": "TSN Lab",
-        "views": 2595,
-        "length": "20:11",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "실시간 운영체제 (RTOS)",
-        "url": "https://www.youtube.com/watch?v=9E5YETybyII",
-        "thumbnail": "https://i.ytimg.com/vi/9E5YETybyII/mqdefault.jpg",
-        "channel": "도리의 디지털라이프",
-        "views": 277,
-        "length": "7:20",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "rtos 뭐가 다를까?",
-        "url": "https://www.youtube.com/watch?v=ww4wJSK7qNU",
-        "thumbnail": "https://i.ytimg.com/vi/ww4wJSK7qNU/mqdefault.jpg",
-        "channel": "Bulk Up Embedded",
-        "views": 5057,
-        "length": "10:02",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "9강-1 STM32 FreeRTOS",
-        "url": "https://www.youtube.com/watch?v=1Ceakmtt6vA",
-        "thumbnail": "https://i.ytimg.com/vi/1Ceakmtt6vA/mqdefault.jpg",
-        "channel": "분당융합기술교육원 AI Software",
-        "views": 17473,
-        "length": "32:09",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1장 RTOS 소개",
-        "url": "https://www.youtube.com/watch?v=8zUPQWTqlK0",
-        "thumbnail": "https://i.ytimg.com/vi/8zUPQWTqlK0/mqdefault.jpg",
-        "channel": "함운철",
-        "views": 615,
-        "length": "37:23",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ESP32 IDF의 core OS인 Free RTOS 온라인 워크숍 (1일/3일)",
-        "url": "https://www.youtube.com/watch?v=ySpj1p8r5nM",
-        "thumbnail": "https://i.ytimg.com/vi/ySpj1p8r5nM/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 4350,
-        "length": "2:30:56",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Zephyr RTOS 16강",
-        "url": "https://www.youtube.com/watch?v=4tyPllESj9A",
-        "thumbnail": "https://i.ytimg.com/vi/4tyPllESj9A/mqdefault.jpg",
-        "channel": "TSN Lab",
-        "views": 263,
-        "length": "22:09",
-        "published": "1년 전",
-        "stage": "핵심"
-      }
-    ],
     "JUnit": [
       {
         "title": "[10분 테코톡] 비버의 JUnit 5",
@@ -7198,6 +7116,88 @@
         "views": 1037,
         "length": "1:32",
         "published": "3년 전",
+        "stage": "핵심"
+      }
+    ],
+    "RTOS": [
+      {
+        "title": "2019년 arm MBED OS(RTOS 포함) 워크숍 1강/5강",
+        "url": "https://www.youtube.com/watch?v=aM4jXj1oZmc",
+        "thumbnail": "https://i.ytimg.com/vi/aM4jXj1oZmc/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 1543,
+        "length": "4:15:47",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Zephyr RTOS 1강",
+        "url": "https://www.youtube.com/watch?v=PDG1e65Wsz0",
+        "thumbnail": "https://i.ytimg.com/vi/PDG1e65Wsz0/mqdefault.jpg",
+        "channel": "TSN Lab",
+        "views": 2595,
+        "length": "20:11",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "실시간 운영체제 (RTOS)",
+        "url": "https://www.youtube.com/watch?v=9E5YETybyII",
+        "thumbnail": "https://i.ytimg.com/vi/9E5YETybyII/mqdefault.jpg",
+        "channel": "도리의 디지털라이프",
+        "views": 277,
+        "length": "7:20",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "rtos 뭐가 다를까?",
+        "url": "https://www.youtube.com/watch?v=ww4wJSK7qNU",
+        "thumbnail": "https://i.ytimg.com/vi/ww4wJSK7qNU/mqdefault.jpg",
+        "channel": "Bulk Up Embedded",
+        "views": 5057,
+        "length": "10:02",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "9강-1 STM32 FreeRTOS",
+        "url": "https://www.youtube.com/watch?v=1Ceakmtt6vA",
+        "thumbnail": "https://i.ytimg.com/vi/1Ceakmtt6vA/mqdefault.jpg",
+        "channel": "분당융합기술교육원 AI Software",
+        "views": 17473,
+        "length": "32:09",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1장 RTOS 소개",
+        "url": "https://www.youtube.com/watch?v=8zUPQWTqlK0",
+        "thumbnail": "https://i.ytimg.com/vi/8zUPQWTqlK0/mqdefault.jpg",
+        "channel": "함운철",
+        "views": 615,
+        "length": "37:23",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ESP32 IDF의 core OS인 Free RTOS 온라인 워크숍 (1일/3일)",
+        "url": "https://www.youtube.com/watch?v=ySpj1p8r5nM",
+        "thumbnail": "https://i.ytimg.com/vi/ySpj1p8r5nM/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 4350,
+        "length": "2:30:56",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Zephyr RTOS 16강",
+        "url": "https://www.youtube.com/watch?v=4tyPllESj9A",
+        "thumbnail": "https://i.ytimg.com/vi/4tyPllESj9A/mqdefault.jpg",
+        "channel": "TSN Lab",
+        "views": 263,
+        "length": "22:09",
+        "published": "1년 전",
         "stage": "핵심"
       }
     ],
