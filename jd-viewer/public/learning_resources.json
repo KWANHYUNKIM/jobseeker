@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T13:32:35",
+  "generated_at": "2026-07-31T15:12:05",
   "source": "youtube",
   "tech_count": 200,
   "curriculum_count": 20,
@@ -5561,88 +5561,6 @@
         "stage": "실전"
       }
     ],
-    "Scikit-learn": [
-      {
-        "title": "사이킷런 scikit-learn 제대로 시작하기",
-        "url": "https://www.youtube.com/watch?v=eVxGhCRN-xA",
-        "thumbnail": "https://i.ytimg.com/vi/eVxGhCRN-xA/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 37382,
-        "length": "1:48:12",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
-        "url": "https://www.youtube.com/watch?v=2VPFth2UqoI",
-        "thumbnail": "https://i.ytimg.com/vi/2VPFth2UqoI/mqdefault.jpg",
-        "channel": "K-ICT 빅데이터센터",
-        "views": 10670,
-        "length": "32:27",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[토크ON세미나] Scikit-Learn으로 다지는 머신러닝 기초 4강 - 분류 (Classification) | T아카데미",
-        "url": "https://www.youtube.com/watch?v=pVvlh2ciR64",
-        "thumbnail": "https://i.ytimg.com/vi/pVvlh2ciR64/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 1323,
-        "length": "44:56",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[3] 파이썬 머신러닝 라이브러리(Scikit-learn) 핵심 개발자의 슬라이드로 기계학습 개념 정리하기 - classification 모델 비교와 시각화 강좌",
-        "url": "https://www.youtube.com/watch?v=jzuz-FCL3i8",
-        "thumbnail": "https://i.ytimg.com/vi/jzuz-FCL3i8/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 5428,
-        "length": "14:58",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 머신러닝 강의 05-5 - 파이썬 Scikit-Learn 주요내용 정리",
-        "url": "https://www.youtube.com/watch?v=H-1pDHTm0u4",
-        "thumbnail": "https://i.ytimg.com/vi/H-1pDHTm0u4/mqdefault.jpg",
-        "channel": "K-ICT 빅데이터센터",
-        "views": 1626,
-        "length": "3:12",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "머신런닝으로 자동매매 전략구현 feat.scikit learn",
-        "url": "https://www.youtube.com/watch?v=-6SE73MBJzU",
-        "thumbnail": "https://i.ytimg.com/vi/-6SE73MBJzU/mqdefault.jpg",
-        "channel": "존버킴",
-        "views": 979,
-        "length": "19:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "도서리뷰 [개정2판] 사이킷런(Scikit-Learn) 핵심 개발자가 쓴 머신러닝과 데이터 과학 실무서",
-        "url": "https://www.youtube.com/watch?v=DyldYDj3v1s",
-        "thumbnail": "https://i.ytimg.com/vi/DyldYDj3v1s/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 2541,
-        "length": "23:24",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "30.Scikit-learn 시작하기 완벽 가이드",
-        "url": "https://www.youtube.com/watch?v=9be9aU9zsWw",
-        "thumbnail": "https://i.ytimg.com/vi/9be9aU9zsWw/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 10,
-        "length": "14:22",
-        "published": "6개월 전",
-        "stage": "실전"
-      }
-    ],
     "Jest": [
       {
         "title": "테스트 귀찮은데 꼭 해야할까? [Jest(자바스크립트 테스트) 강의 맛보기]",
@@ -5723,6 +5641,88 @@
         "length": "26:56",
         "published": "12일 전",
         "stage": "핵심"
+      }
+    ],
+    "Scikit-learn": [
+      {
+        "title": "사이킷런 scikit-learn 제대로 시작하기",
+        "url": "https://www.youtube.com/watch?v=eVxGhCRN-xA",
+        "thumbnail": "https://i.ytimg.com/vi/eVxGhCRN-xA/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 37382,
+        "length": "1:48:12",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 머신러닝 강의 05-1 - Scikit-Learn 기초 및 데이터 표현 방식 이해",
+        "url": "https://www.youtube.com/watch?v=2VPFth2UqoI",
+        "thumbnail": "https://i.ytimg.com/vi/2VPFth2UqoI/mqdefault.jpg",
+        "channel": "K-ICT 빅데이터센터",
+        "views": 10670,
+        "length": "32:27",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[토크ON세미나] Scikit-Learn으로 다지는 머신러닝 기초 4강 - 분류 (Classification) | T아카데미",
+        "url": "https://www.youtube.com/watch?v=pVvlh2ciR64",
+        "thumbnail": "https://i.ytimg.com/vi/pVvlh2ciR64/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 1323,
+        "length": "44:56",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[3] 파이썬 머신러닝 라이브러리(Scikit-learn) 핵심 개발자의 슬라이드로 기계학습 개념 정리하기 - classification 모델 비교와 시각화 강좌",
+        "url": "https://www.youtube.com/watch?v=jzuz-FCL3i8",
+        "thumbnail": "https://i.ytimg.com/vi/jzuz-FCL3i8/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 5428,
+        "length": "14:58",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 머신러닝 강의 05-5 - 파이썬 Scikit-Learn 주요내용 정리",
+        "url": "https://www.youtube.com/watch?v=H-1pDHTm0u4",
+        "thumbnail": "https://i.ytimg.com/vi/H-1pDHTm0u4/mqdefault.jpg",
+        "channel": "K-ICT 빅데이터센터",
+        "views": 1626,
+        "length": "3:12",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "머신런닝으로 자동매매 전략구현 feat.scikit learn",
+        "url": "https://www.youtube.com/watch?v=-6SE73MBJzU",
+        "thumbnail": "https://i.ytimg.com/vi/-6SE73MBJzU/mqdefault.jpg",
+        "channel": "존버킴",
+        "views": 979,
+        "length": "19:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "도서리뷰 [개정2판] 사이킷런(Scikit-Learn) 핵심 개발자가 쓴 머신러닝과 데이터 과학 실무서",
+        "url": "https://www.youtube.com/watch?v=DyldYDj3v1s",
+        "thumbnail": "https://i.ytimg.com/vi/DyldYDj3v1s/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 2541,
+        "length": "23:24",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "30.Scikit-learn 시작하기 완벽 가이드",
+        "url": "https://www.youtube.com/watch?v=9be9aU9zsWw",
+        "thumbnail": "https://i.ytimg.com/vi/9be9aU9zsWw/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 10,
+        "length": "14:22",
+        "published": "6개월 전",
+        "stage": "실전"
       }
     ],
     "Express": [
@@ -6627,170 +6627,6 @@
         "stage": "실전"
       }
     ],
-    "TCP/IP": [
-      {
-        "title": "TCP/IP 3분 개념이해 (현업에 적용하는 CS 6탄)",
-        "url": "https://www.youtube.com/watch?v=BWOJc7K9Jw8",
-        "thumbnail": "https://i.ytimg.com/vi/BWOJc7K9Jw8/mqdefault.jpg",
-        "channel": "Code ON 코드온",
-        "views": 42103,
-        "length": "3:07",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "TCP/IP와 OSI 7 Layer 통신모델의 개념이해",
-        "url": "https://www.youtube.com/watch?v=f4u1fKaZ4Jo",
-        "thumbnail": "https://i.ytimg.com/vi/f4u1fKaZ4Jo/mqdefault.jpg",
-        "channel": "IT핥기 [IT Bites]",
-        "views": 20993,
-        "length": "31:27",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[홀인원 2.08.01] TCP/IP",
-        "url": "https://www.youtube.com/watch?v=Fh1GAi63CfA",
-        "thumbnail": "https://i.ytimg.com/vi/Fh1GAi63CfA/mqdefault.jpg",
-        "channel": "최희준교수 강의실",
-        "views": 34538,
-        "length": "30:15",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "TCP/IP와 UDP의 차이점 뭐가 다르지?",
-        "url": "https://www.youtube.com/watch?v=xe-v5bRRQqw",
-        "thumbnail": "https://i.ytimg.com/vi/xe-v5bRRQqw/mqdefault.jpg",
-        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
-        "views": 4740,
-        "length": "27:39",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "TCP/IP 통신하기 동영상 강좌",
-        "url": "https://www.youtube.com/watch?v=RcO_1xBTvDo",
-        "thumbnail": "https://i.ytimg.com/vi/RcO_1xBTvDo/mqdefault.jpg",
-        "channel": "LabVIEW Master",
-        "views": 7673,
-        "length": "24:28",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 종이의 TCP/IP 모델 데이터 흐름",
-        "url": "https://www.youtube.com/watch?v=A8RlRxB1agU",
-        "thumbnail": "https://i.ytimg.com/vi/A8RlRxB1agU/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1667,
-        "length": "7:06",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[네트워크관리사 1/2급 필기] TCP/IP 이론 강의",
-        "url": "https://www.youtube.com/watch?v=sSS97FLpoKg",
-        "thumbnail": "https://i.ytimg.com/vi/sSS97FLpoKg/mqdefault.jpg",
-        "channel": "이기적 영진닷컴",
-        "views": 34260,
-        "length": "31:31",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[홀인원 1.02.09] 패킷과 TCP/IP",
-        "url": "https://www.youtube.com/watch?v=s6HG8IzOiHc",
-        "thumbnail": "https://i.ytimg.com/vi/s6HG8IzOiHc/mqdefault.jpg",
-        "channel": "최희준교수 강의실",
-        "views": 6927,
-        "length": "1:09:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      }
-    ],
-    "Dart": [
-      {
-        "title": "[무료 프로그래밍 강의] 1시간만에 끝내는 Dart언어 기본기",
-        "url": "https://www.youtube.com/watch?v=3Ck42C2ZCb8",
-        "thumbnail": "https://i.ytimg.com/vi/3Ck42C2ZCb8/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 80974,
-        "length": "1:33:45",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "다트 기본 자세 l 다트 던지는 방법  l #피닉스다트",
-        "url": "https://www.youtube.com/watch?v=zlbyw2h4bsU",
-        "thumbnail": "https://i.ytimg.com/vi/zlbyw2h4bsU/mqdefault.jpg",
-        "channel": "PHOENIXDARTS",
-        "views": 102521,
-        "length": "1:52",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Dart 프로그래밍 언어 강의를 시작합니다. [ 다트 프로그래밍 (Dart Programming) ]",
-        "url": "https://www.youtube.com/watch?v=L495QdzMaK8",
-        "thumbnail": "https://i.ytimg.com/vi/L495QdzMaK8/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 2466,
-        "length": "10:03",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Dart 기초문법",
-        "url": "https://www.youtube.com/watch?v=JpjOYjafkOA",
-        "thumbnail": "https://i.ytimg.com/vi/JpjOYjafkOA/mqdefault.jpg",
-        "channel": "알클 ALOHA CLASS",
-        "views": 95,
-        "length": "46:35",
-        "published": "스트리밍 시간: 4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "슈퍼개미도 사용하는 전자공시시스템 DART 사용법!  #4",
-        "url": "https://www.youtube.com/watch?v=gptGnt2VEM8",
-        "thumbnail": "https://i.ytimg.com/vi/gptGnt2VEM8/mqdefault.jpg",
-        "channel": "슈퍼개미 이세무사TV",
-        "views": 24375,
-        "length": "12:08",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Dart 문법 총 정리 - 40분 (2022년 리뉴얼)",
-        "url": "https://www.youtube.com/watch?v=qUaou0HcpL4",
-        "thumbnail": "https://i.ytimg.com/vi/qUaou0HcpL4/mqdefault.jpg",
-        "channel": "오준석의 생존코딩",
-        "views": 9050,
-        "length": "42:09",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Flutter 3.10 Dart 3.0 업데이트 신규 문법 총정리",
-        "url": "https://www.youtube.com/watch?v=MZRG_yD8pf4",
-        "thumbnail": "https://i.ytimg.com/vi/MZRG_yD8pf4/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 12360,
-        "length": "42:19",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기업 공시(DART) 읽는 법 + AI로 공시 분석하는 법",
-        "url": "https://www.youtube.com/watch?v=3emBJubZnww",
-        "thumbnail": "https://i.ytimg.com/vi/3emBJubZnww/mqdefault.jpg",
-        "channel": "제발한번만봐주셨으면좋겠는동태인Pick",
-        "views": 95,
-        "length": "15:49",
-        "published": "1개월 전",
-        "stage": "핵심"
-      }
-    ],
     "Cypress": [
       {
         "title": "Cypress PSoC 워크숍 1일 of 2일 - 강의시작전 영상",
@@ -6953,6 +6789,170 @@
         "length": "30:11",
         "published": "1년 전",
         "stage": "실전"
+      }
+    ],
+    "TCP/IP": [
+      {
+        "title": "TCP/IP 3분 개념이해 (현업에 적용하는 CS 6탄)",
+        "url": "https://www.youtube.com/watch?v=BWOJc7K9Jw8",
+        "thumbnail": "https://i.ytimg.com/vi/BWOJc7K9Jw8/mqdefault.jpg",
+        "channel": "Code ON 코드온",
+        "views": 42103,
+        "length": "3:07",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "TCP/IP와 OSI 7 Layer 통신모델의 개념이해",
+        "url": "https://www.youtube.com/watch?v=f4u1fKaZ4Jo",
+        "thumbnail": "https://i.ytimg.com/vi/f4u1fKaZ4Jo/mqdefault.jpg",
+        "channel": "IT핥기 [IT Bites]",
+        "views": 20993,
+        "length": "31:27",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[홀인원 2.08.01] TCP/IP",
+        "url": "https://www.youtube.com/watch?v=Fh1GAi63CfA",
+        "thumbnail": "https://i.ytimg.com/vi/Fh1GAi63CfA/mqdefault.jpg",
+        "channel": "최희준교수 강의실",
+        "views": 34538,
+        "length": "30:15",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "TCP/IP와 UDP의 차이점 뭐가 다르지?",
+        "url": "https://www.youtube.com/watch?v=xe-v5bRRQqw",
+        "thumbnail": "https://i.ytimg.com/vi/xe-v5bRRQqw/mqdefault.jpg",
+        "channel": "[리얼리눅스] 리눅스 읽어주는 남자",
+        "views": 4740,
+        "length": "27:39",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "TCP/IP 통신하기 동영상 강좌",
+        "url": "https://www.youtube.com/watch?v=RcO_1xBTvDo",
+        "thumbnail": "https://i.ytimg.com/vi/RcO_1xBTvDo/mqdefault.jpg",
+        "channel": "LabVIEW Master",
+        "views": 7673,
+        "length": "24:28",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 종이의 TCP/IP 모델 데이터 흐름",
+        "url": "https://www.youtube.com/watch?v=A8RlRxB1agU",
+        "thumbnail": "https://i.ytimg.com/vi/A8RlRxB1agU/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1667,
+        "length": "7:06",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[네트워크관리사 1/2급 필기] TCP/IP 이론 강의",
+        "url": "https://www.youtube.com/watch?v=sSS97FLpoKg",
+        "thumbnail": "https://i.ytimg.com/vi/sSS97FLpoKg/mqdefault.jpg",
+        "channel": "이기적 영진닷컴",
+        "views": 34260,
+        "length": "31:31",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[홀인원 1.02.09] 패킷과 TCP/IP",
+        "url": "https://www.youtube.com/watch?v=s6HG8IzOiHc",
+        "thumbnail": "https://i.ytimg.com/vi/s6HG8IzOiHc/mqdefault.jpg",
+        "channel": "최희준교수 강의실",
+        "views": 6927,
+        "length": "1:09:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      }
+    ],
+    "Dart": [
+      {
+        "title": "[무료 프로그래밍 강의] 1시간만에 끝내는 Dart언어 기본기",
+        "url": "https://www.youtube.com/watch?v=3Ck42C2ZCb8",
+        "thumbnail": "https://i.ytimg.com/vi/3Ck42C2ZCb8/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 80974,
+        "length": "1:33:45",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "다트 기본 자세 l 다트 던지는 방법  l #피닉스다트",
+        "url": "https://www.youtube.com/watch?v=zlbyw2h4bsU",
+        "thumbnail": "https://i.ytimg.com/vi/zlbyw2h4bsU/mqdefault.jpg",
+        "channel": "PHOENIXDARTS",
+        "views": 102521,
+        "length": "1:52",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Dart 프로그래밍 언어 강의를 시작합니다. [ 다트 프로그래밍 (Dart Programming) ]",
+        "url": "https://www.youtube.com/watch?v=L495QdzMaK8",
+        "thumbnail": "https://i.ytimg.com/vi/L495QdzMaK8/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 2466,
+        "length": "10:03",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Dart 기초문법",
+        "url": "https://www.youtube.com/watch?v=JpjOYjafkOA",
+        "thumbnail": "https://i.ytimg.com/vi/JpjOYjafkOA/mqdefault.jpg",
+        "channel": "알클 ALOHA CLASS",
+        "views": 95,
+        "length": "46:35",
+        "published": "스트리밍 시간: 4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "슈퍼개미도 사용하는 전자공시시스템 DART 사용법!  #4",
+        "url": "https://www.youtube.com/watch?v=gptGnt2VEM8",
+        "thumbnail": "https://i.ytimg.com/vi/gptGnt2VEM8/mqdefault.jpg",
+        "channel": "슈퍼개미 이세무사TV",
+        "views": 24375,
+        "length": "12:08",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Dart 문법 총 정리 - 40분 (2022년 리뉴얼)",
+        "url": "https://www.youtube.com/watch?v=qUaou0HcpL4",
+        "thumbnail": "https://i.ytimg.com/vi/qUaou0HcpL4/mqdefault.jpg",
+        "channel": "오준석의 생존코딩",
+        "views": 9050,
+        "length": "42:09",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Flutter 3.10 Dart 3.0 업데이트 신규 문법 총정리",
+        "url": "https://www.youtube.com/watch?v=MZRG_yD8pf4",
+        "thumbnail": "https://i.ytimg.com/vi/MZRG_yD8pf4/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 12360,
+        "length": "42:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기업 공시(DART) 읽는 법 + AI로 공시 분석하는 법",
+        "url": "https://www.youtube.com/watch?v=3emBJubZnww",
+        "thumbnail": "https://i.ytimg.com/vi/3emBJubZnww/mqdefault.jpg",
+        "channel": "제발한번만봐주셨으면좋겠는동태인Pick",
+        "views": 95,
+        "length": "15:49",
+        "published": "1개월 전",
+        "stage": "핵심"
       }
     ],
     "MCU": [
