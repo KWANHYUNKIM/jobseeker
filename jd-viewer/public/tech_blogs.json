@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-07-31T10:01:25",
- "total": 1033,
+ "generated_at": "2026-07-31T11:51:52",
+ "total": 1035,
  "sources": [
   {
    "company": "Etsy",
@@ -35,7 +35,7 @@
   {
    "company": "LINE",
    "country": "KR",
-   "count": 41
+   "count": 42
   },
   {
    "company": "토스",
@@ -100,7 +100,7 @@
   {
    "company": "Grab",
    "country": "SG",
-   "count": 17
+   "count": 18
   },
   {
    "company": "우아한형제들",
@@ -524,6 +524,27 @@
  },
  "posts": [
   {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "Grafana에서 자연어로 장애 원인을 분석하기: LLM 에이전트 기반 SRELens 개발기",
+   "url": "https://techblog.lycorp.co.jp/ko/analyzing-incident-root-causes-in-grafana-using-natural-language-with-llm-agent",
+   "published": "2026-07-31",
+   "published_ts": 1785463200.0,
+   "summary": "들어가며: 관측성 데이터는 많아졌지만, 분석은 여전히 어렵습니다안녕하세요. LY Corporation에서 Home 서비스의 안정성을 책임지고 있는 Home SRE(Site Reli...",
+   "tags": [],
+   "tech_stack": [
+    "LLM",
+    "Observability"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "관측성"
+   ],
+   "lang": "ko",
+   "content_id": "5c78b4609410bf07"
+  },
+  {
    "key": "etsy",
    "company": "Etsy",
    "country": "US",
@@ -815,6 +836,36 @@
    "content_id": "e4ecb0159ac18caa"
   },
   {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Crowdsourced taxonomy verification: A feedback-driven framework for refining knowledge graph relationships via online search interactions",
+   "url": "https://engineering.grab.com/crowdsourced-taxonomy-verification",
+   "published": "2026-07-30",
+   "published_ts": 1785369600.0,
+   "summary": "Introduction\n\nThe efficacy of semantic search relies on the accuracy of the underlying Knowledge Graph (KG). In high-velocity domains like on-demand food delivery or e-commerce, the catalog of entities like dishes, products, and merchants changes rapidly.\n\nCurrent methods for KG construction and maintenance face three critical challenges:\n\nInaccuracy and hallucination from Large Language Models (LLMs): Automated models often infer relationships based on statistical text co-occurrence rather than semantic reality. For instance, an LLM might incorrectly classify “Pho” as a child of “Italian Nood…",
+   "tags": [
+    "Engineering",
+    "Data",
+    "Search",
+    "Machine Learning",
+    "LLM",
+    "Graphs",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "LLM",
+    "Vector Search",
+    "Algorithm"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "알고리즘/이론"
+   ],
+   "lang": "en",
+   "content_id": "7dcbd6ddcc8d5a1b"
+  },
+  {
    "key": "cyberagent",
    "company": "CyberAgent",
    "country": "JP",
@@ -1101,7 +1152,7 @@
    "key": "cyberagent",
    "company": "CyberAgent",
    "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第8回: FrontEnd 編",
+   "title": "Cycloud 新基盤の全貌 第八回: FrontEnd 編",
    "url": "https://developers.cyberagent.co.jp/blog/archives/64977",
    "published": "2026-07-28",
    "published_ts": 1785206370.0,

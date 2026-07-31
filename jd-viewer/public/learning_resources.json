@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T10:10:55",
+  "generated_at": "2026-07-31T11:52:38",
   "source": "youtube",
   "tech_count": 200,
   "curriculum_count": 20,
@@ -1235,88 +1235,6 @@
         "stage": "실전"
       }
     ],
-    "Azure": [
-      {
-        "title": "Azure와 Azure DevOps 완전 정복!",
-        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
-        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 405,
-        "length": "1:28:14",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
-        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
-        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
-        "channel": "클루커스",
-        "views": 12468,
-        "length": "21:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
-        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
-        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 2929,
-        "length": "5:11",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
-        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
-        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 936,
-        "length": "3:57",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AZ-900 Microsoft Azure Fundamentals - 시험 및 강의 소개",
-        "url": "https://www.youtube.com/watch?v=u_MomRyVAnM",
-        "thumbnail": "https://i.ytimg.com/vi/u_MomRyVAnM/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 407,
-        "length": "4:12",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "🎯[Azureficial] 연결 관리 운영의 끝판왕! ‘Azure Arc’ A부터 Z까지! 🖥️",
-        "url": "https://www.youtube.com/watch?v=uNv1K_u9MNQ",
-        "thumbnail": "https://i.ytimg.com/vi/uNv1K_u9MNQ/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 1144,
-        "length": "15:19",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아주르 최초 땅&에어드리블 강의 , Azure latch pro dribble lesson",
-        "url": "https://www.youtube.com/watch?v=_4EVYvR3G1Q",
-        "thumbnail": "https://i.ytimg.com/vi/_4EVYvR3G1Q/mqdefault.jpg",
-        "channel": "haru",
-        "views": 32047,
-        "length": "1:38",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기초부터 실전까지: Microsoft Agent Framework 완전 정복 | Light Up Azure",
-        "url": "https://www.youtube.com/watch?v=DkcLUaHnl-o",
-        "thumbnail": "https://i.ytimg.com/vi/DkcLUaHnl-o/mqdefault.jpg",
-        "channel": "Microsoft Developer Korea",
-        "views": 529,
-        "length": "36:21",
-        "published": "7개월 전",
-        "stage": "실전"
-      }
-    ],
     "Redis": [
       {
         "title": "[Node 웹 프로그래밍] Redis 입문기초 -  Publish",
@@ -1396,6 +1314,88 @@
         "views": 4623,
         "length": "1:41:55",
         "published": "7일 전",
+        "stage": "실전"
+      }
+    ],
+    "Azure": [
+      {
+        "title": "Azure와 Azure DevOps 완전 정복!",
+        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
+        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 405,
+        "length": "1:28:14",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
+        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
+        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
+        "channel": "클루커스",
+        "views": 12468,
+        "length": "21:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
+        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
+        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 2929,
+        "length": "5:11",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
+        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
+        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 936,
+        "length": "3:57",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AZ-900 Microsoft Azure Fundamentals - 시험 및 강의 소개",
+        "url": "https://www.youtube.com/watch?v=u_MomRyVAnM",
+        "thumbnail": "https://i.ytimg.com/vi/u_MomRyVAnM/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 407,
+        "length": "4:12",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "🎯[Azureficial] 연결 관리 운영의 끝판왕! ‘Azure Arc’ A부터 Z까지! 🖥️",
+        "url": "https://www.youtube.com/watch?v=uNv1K_u9MNQ",
+        "thumbnail": "https://i.ytimg.com/vi/uNv1K_u9MNQ/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 1144,
+        "length": "15:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아주르 최초 땅&에어드리블 강의 , Azure latch pro dribble lesson",
+        "url": "https://www.youtube.com/watch?v=_4EVYvR3G1Q",
+        "thumbnail": "https://i.ytimg.com/vi/_4EVYvR3G1Q/mqdefault.jpg",
+        "channel": "haru",
+        "views": 32047,
+        "length": "1:38",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기초부터 실전까지: Microsoft Agent Framework 완전 정복 | Light Up Azure",
+        "url": "https://www.youtube.com/watch?v=DkcLUaHnl-o",
+        "thumbnail": "https://i.ytimg.com/vi/DkcLUaHnl-o/mqdefault.jpg",
+        "channel": "Microsoft Developer Korea",
+        "views": 529,
+        "length": "36:21",
+        "published": "7개월 전",
         "stage": "실전"
       }
     ],
@@ -3265,88 +3265,6 @@
         "stage": "핵심"
       }
     ],
-    "OpenAI": [
-      {
-        "title": "OpenAi Agent Builder 초기초부터 10분안에 알려드립니다",
-        "url": "https://www.youtube.com/watch?v=cnxJk1QBzVA",
-        "thumbnail": "https://i.ytimg.com/vi/cnxJk1QBzVA/mqdefault.jpg",
-        "channel": "딩코딩코",
-        "views": 6357,
-        "length": "9:44",
-        "published": "9개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "귀여운 라마로 OpenAI에 경제보복하기",
-        "url": "https://www.youtube.com/watch?v=medh_c3X97Y",
-        "thumbnail": "https://i.ytimg.com/vi/medh_c3X97Y/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 238751,
-        "length": "6:39",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "6년 걸릴 공부를 3일로 끝내는 법 — OpenAI 연구원이 인터뷰에서 직접 밝혔습니다",
-        "url": "https://www.youtube.com/watch?v=Kf1dYpnH-N4",
-        "thumbnail": "https://i.ytimg.com/vi/Kf1dYpnH-N4/mqdefault.jpg",
-        "channel": "AgentOS",
-        "views": 139038,
-        "length": "10:57",
-        "published": "1개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "챗GPT 무료 특강 #3 (OpenAI API)",
-        "url": "https://www.youtube.com/watch?v=CQhTEmHXERo",
-        "thumbnail": "https://i.ytimg.com/vi/CQhTEmHXERo/mqdefault.jpg",
-        "channel": "나도코딩",
-        "views": 21726,
-        "length": "1:41:58",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "EP 41. 박사과정 수준이 됐다고?  OpenAI Deep Research 이렇게 사용해보자",
-        "url": "https://www.youtube.com/watch?v=hR-WYI7zhe0",
-        "thumbnail": "https://i.ytimg.com/vi/hR-WYI7zhe0/mqdefault.jpg",
-        "channel": "AI Frontier Korea (노정석)",
-        "views": 6282,
-        "length": "56:06",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[OpenAI X ALINN] Codex 라이브 강의",
-        "url": "https://www.youtube.com/watch?v=erTJFm7x-6s",
-        "thumbnail": "https://i.ytimg.com/vi/erTJFm7x-6s/mqdefault.jpg",
-        "channel": "알린 ALINN",
-        "views": 1403,
-        "length": "1:45:35",
-        "published": "스트리밍 시간: 3개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "입문자를 위한 🧑‍💻 #OPENAI API로 구현하는 GPT (채팅 💬, DALLE 이미지 🎨, Whisper 오디오 🎧) 마스터 클래스",
-        "url": "https://www.youtube.com/watch?v=VmB_bSa8Jf4",
-        "thumbnail": "https://i.ytimg.com/vi/VmB_bSa8Jf4/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 17850,
-        "length": "2:40:34",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "10X AI University: OpenAI 프로젝트들을 위한 VSCode 셋업과 파이선 코드 실행하기",
-        "url": "https://www.youtube.com/watch?v=zOhCdFngliA",
-        "thumbnail": "https://i.ytimg.com/vi/zOhCdFngliA/mqdefault.jpg",
-        "channel": "10X AI Club",
-        "views": 4772,
-        "length": "9:37",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "C#": [
       {
         "title": "유니티 C# 프로그래밍 기초. 한방에 정리하기 [유니티 입문 강좌 B4]",
@@ -3426,6 +3344,88 @@
         "views": 2637,
         "length": "17:23",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "OpenAI": [
+      {
+        "title": "OpenAi Agent Builder 초기초부터 10분안에 알려드립니다",
+        "url": "https://www.youtube.com/watch?v=cnxJk1QBzVA",
+        "thumbnail": "https://i.ytimg.com/vi/cnxJk1QBzVA/mqdefault.jpg",
+        "channel": "딩코딩코",
+        "views": 6357,
+        "length": "9:44",
+        "published": "9개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "귀여운 라마로 OpenAI에 경제보복하기",
+        "url": "https://www.youtube.com/watch?v=medh_c3X97Y",
+        "thumbnail": "https://i.ytimg.com/vi/medh_c3X97Y/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 238751,
+        "length": "6:39",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "6년 걸릴 공부를 3일로 끝내는 법 — OpenAI 연구원이 인터뷰에서 직접 밝혔습니다",
+        "url": "https://www.youtube.com/watch?v=Kf1dYpnH-N4",
+        "thumbnail": "https://i.ytimg.com/vi/Kf1dYpnH-N4/mqdefault.jpg",
+        "channel": "AgentOS",
+        "views": 139038,
+        "length": "10:57",
+        "published": "1개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "챗GPT 무료 특강 #3 (OpenAI API)",
+        "url": "https://www.youtube.com/watch?v=CQhTEmHXERo",
+        "thumbnail": "https://i.ytimg.com/vi/CQhTEmHXERo/mqdefault.jpg",
+        "channel": "나도코딩",
+        "views": 21726,
+        "length": "1:41:58",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "EP 41. 박사과정 수준이 됐다고?  OpenAI Deep Research 이렇게 사용해보자",
+        "url": "https://www.youtube.com/watch?v=hR-WYI7zhe0",
+        "thumbnail": "https://i.ytimg.com/vi/hR-WYI7zhe0/mqdefault.jpg",
+        "channel": "AI Frontier Korea (노정석)",
+        "views": 6282,
+        "length": "56:06",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[OpenAI X ALINN] Codex 라이브 강의",
+        "url": "https://www.youtube.com/watch?v=erTJFm7x-6s",
+        "thumbnail": "https://i.ytimg.com/vi/erTJFm7x-6s/mqdefault.jpg",
+        "channel": "알린 ALINN",
+        "views": 1403,
+        "length": "1:45:35",
+        "published": "스트리밍 시간: 3개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "입문자를 위한 🧑‍💻 #OPENAI API로 구현하는 GPT (채팅 💬, DALLE 이미지 🎨, Whisper 오디오 🎧) 마스터 클래스",
+        "url": "https://www.youtube.com/watch?v=VmB_bSa8Jf4",
+        "thumbnail": "https://i.ytimg.com/vi/VmB_bSa8Jf4/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 17850,
+        "length": "2:40:34",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "10X AI University: OpenAI 프로젝트들을 위한 VSCode 셋업과 파이선 코드 실행하기",
+        "url": "https://www.youtube.com/watch?v=zOhCdFngliA",
+        "thumbnail": "https://i.ytimg.com/vi/zOhCdFngliA/mqdefault.jpg",
+        "channel": "10X AI Club",
+        "views": 4772,
+        "length": "9:37",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -4331,88 +4331,6 @@
         "stage": "실전"
       }
     ],
-    "GraphQL": [
-      {
-        "title": "[Node 웹 프로그래밍] GraphQL 입문  - GraphQL  기본",
-        "url": "https://www.youtube.com/watch?v=BrX7ba7xWrY",
-        "thumbnail": "https://i.ytimg.com/vi/BrX7ba7xWrY/mqdefault.jpg",
-        "channel": "패스트캠퍼스",
-        "views": 221,
-        "length": "3:29",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[입문-백엔드-6] GraphQL Subscription - 실시간 데이터 처리",
-        "url": "https://www.youtube.com/watch?v=DBKnjstiPhM",
-        "thumbnail": "https://i.ytimg.com/vi/DBKnjstiPhM/mqdefault.jpg",
-        "channel": "양반코딩 YangbanCoding",
-        "views": 182,
-        "length": "3:29",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "GraphQL - 한 방에 이해하기",
-        "url": "https://www.youtube.com/watch?v=lYuWfoWD67Q",
-        "thumbnail": "https://i.ytimg.com/vi/lYuWfoWD67Q/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 13908,
-        "length": "8:18",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "얄팍한 GraphQL & Apollo 강좌",
-        "url": "https://www.youtube.com/watch?v=9BIXcXHsj0A",
-        "thumbnail": "https://i.ytimg.com/vi/9BIXcXHsj0A/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 39014,
-        "length": "1:30:38",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인스타그램의 핵심기술, GraphQL에 대하여",
-        "url": "https://www.youtube.com/watch?v=KoRXRyx2Trg",
-        "thumbnail": "https://i.ytimg.com/vi/KoRXRyx2Trg/mqdefault.jpg",
-        "channel": "개발자 팀",
-        "views": 285,
-        "length": "9:54",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "웹과 DB를 이어주는 API 서버 REST API와 GraphQL API",
-        "url": "https://www.youtube.com/watch?v=p3rr9_DvaWI",
-        "thumbnail": "https://i.ytimg.com/vi/p3rr9_DvaWI/mqdefault.jpg",
-        "channel": "양반코딩 YangbanCoding",
-        "views": 308,
-        "length": "3:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "GraphQL 완전정복 강좌 소개",
-        "url": "https://www.youtube.com/watch?v=1jYMsiQ8vlo",
-        "thumbnail": "https://i.ytimg.com/vi/1jYMsiQ8vlo/mqdefault.jpg",
-        "channel": "INDIE \bCoder",
-        "views": 593,
-        "length": "1:36",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06.GraphQL 기초와 REST 비교 완벽 가이드 | 퀴즈 10개 포함",
-        "url": "https://www.youtube.com/watch?v=maODh64kl54",
-        "thumbnail": "https://i.ytimg.com/vi/maODh64kl54/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 10,
-        "length": "20:19",
-        "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
     "RabbitMQ": [
       {
         "title": "Message Broker 핵심 개념 총정리 | Redis, RabbitMQ, Celery",
@@ -4493,6 +4411,88 @@
         "length": "13:26",
         "published": "2년 전",
         "stage": "핵심"
+      }
+    ],
+    "GraphQL": [
+      {
+        "title": "[Node 웹 프로그래밍] GraphQL 입문  - GraphQL  기본",
+        "url": "https://www.youtube.com/watch?v=BrX7ba7xWrY",
+        "thumbnail": "https://i.ytimg.com/vi/BrX7ba7xWrY/mqdefault.jpg",
+        "channel": "패스트캠퍼스",
+        "views": 221,
+        "length": "3:29",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[입문-백엔드-6] GraphQL Subscription - 실시간 데이터 처리",
+        "url": "https://www.youtube.com/watch?v=DBKnjstiPhM",
+        "thumbnail": "https://i.ytimg.com/vi/DBKnjstiPhM/mqdefault.jpg",
+        "channel": "양반코딩 YangbanCoding",
+        "views": 182,
+        "length": "3:29",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "GraphQL - 한 방에 이해하기",
+        "url": "https://www.youtube.com/watch?v=lYuWfoWD67Q",
+        "thumbnail": "https://i.ytimg.com/vi/lYuWfoWD67Q/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 13908,
+        "length": "8:18",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "얄팍한 GraphQL & Apollo 강좌",
+        "url": "https://www.youtube.com/watch?v=9BIXcXHsj0A",
+        "thumbnail": "https://i.ytimg.com/vi/9BIXcXHsj0A/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 39014,
+        "length": "1:30:38",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인스타그램의 핵심기술, GraphQL에 대하여",
+        "url": "https://www.youtube.com/watch?v=KoRXRyx2Trg",
+        "thumbnail": "https://i.ytimg.com/vi/KoRXRyx2Trg/mqdefault.jpg",
+        "channel": "개발자 팀",
+        "views": 285,
+        "length": "9:54",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "웹과 DB를 이어주는 API 서버 REST API와 GraphQL API",
+        "url": "https://www.youtube.com/watch?v=p3rr9_DvaWI",
+        "thumbnail": "https://i.ytimg.com/vi/p3rr9_DvaWI/mqdefault.jpg",
+        "channel": "양반코딩 YangbanCoding",
+        "views": 308,
+        "length": "3:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "GraphQL 완전정복 강좌 소개",
+        "url": "https://www.youtube.com/watch?v=1jYMsiQ8vlo",
+        "thumbnail": "https://i.ytimg.com/vi/1jYMsiQ8vlo/mqdefault.jpg",
+        "channel": "INDIE \bCoder",
+        "views": 593,
+        "length": "1:36",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06.GraphQL 기초와 REST 비교 완벽 가이드 | 퀴즈 10개 포함",
+        "url": "https://www.youtube.com/watch?v=maODh64kl54",
+        "thumbnail": "https://i.ytimg.com/vi/maODh64kl54/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 10,
+        "length": "20:19",
+        "published": "4개월 전",
+        "stage": "실전"
       }
     ],
     "Tailwind": [
@@ -8021,88 +8021,6 @@
         "stage": "실전"
       }
     ],
-    "CUDA": [
-      {
-        "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
-        "url": "https://www.youtube.com/watch?v=F_SvRKSZ7B4",
-        "thumbnail": "https://i.ytimg.com/vi/F_SvRKSZ7B4/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 27202,
-        "length": "6:30",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(11-0) CUDA의 기본 개념",
-        "url": "https://www.youtube.com/watch?v=PbDrSO2Bqxg",
-        "thumbnail": "https://i.ytimg.com/vi/PbDrSO2Bqxg/mqdefault.jpg",
-        "channel": "Jae Dong Noh",
-        "views": 891,
-        "length": "28:45",
-        "published": "8개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "CPU와 GPU의 차이 및 OpenCL과 CUDA에 관한 가장 쉬운설명 by 엄의섭",
-        "url": "https://www.youtube.com/watch?v=x0_-Ca1lVMQ",
-        "thumbnail": "https://i.ytimg.com/vi/x0_-Ca1lVMQ/mqdefault.jpg",
-        "channel": "Jeonghan Eom (엄정한)",
-        "views": 709,
-        "length": "17:56",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI칩이 쏟아져도... NVIDIA 무기 CUDA가 무엇이길래 압도적인가 | 다른 GPU/AI가속기 성능 좋아도 대체가 불가능한 현 상황",
-        "url": "https://www.youtube.com/watch?v=sdjeSBye9sY",
-        "thumbnail": "https://i.ytimg.com/vi/sdjeSBye9sY/mqdefault.jpg",
-        "channel": "안될공학 - IT 테크 신기술",
-        "views": 181397,
-        "length": "18:51",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[MP] Hello CUDA (Introduction to CUDA Week1-1) / CUDA 강의",
-        "url": "https://www.youtube.com/watch?v=ve9wk6I0cOE",
-        "thumbnail": "https://i.ytimg.com/vi/ve9wk6I0cOE/mqdefault.jpg",
-        "channel": "SPIN Lab",
-        "views": 7583,
-        "length": "14:13",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "인공지능 전문가 대상 CUDA 강의",
-        "url": "https://www.youtube.com/watch?v=dSUMt_q05Kw",
-        "thumbnail": "https://i.ytimg.com/vi/dSUMt_q05Kw/mqdefault.jpg",
-        "channel": "마음AI",
-        "views": 458,
-        "length": "1:14",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[MP] Lec 11-1. Synchronization / CUDA 강의",
-        "url": "https://www.youtube.com/watch?v=hK07E_Nsoik",
-        "thumbnail": "https://i.ytimg.com/vi/hK07E_Nsoik/mqdefault.jpg",
-        "channel": "SPIN Lab",
-        "views": 1428,
-        "length": "24:19",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "GPU, cuda 란 무엇인가",
-        "url": "https://www.youtube.com/watch?v=2U3goqL8HZE",
-        "thumbnail": "https://i.ytimg.com/vi/2U3goqL8HZE/mqdefault.jpg",
-        "channel": "kwangsung choi",
-        "views": 6485,
-        "length": "2:41",
-        "published": "7년 전",
-        "stage": "핵심"
-      }
-    ],
     "MATLAB": [
       {
         "title": "Matlab (매트랩) 프로그래밍 기초",
@@ -8183,6 +8101,88 @@
         "length": "1:14:32",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "CUDA": [
+      {
+        "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
+        "url": "https://www.youtube.com/watch?v=F_SvRKSZ7B4",
+        "thumbnail": "https://i.ytimg.com/vi/F_SvRKSZ7B4/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 27202,
+        "length": "6:30",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(11-0) CUDA의 기본 개념",
+        "url": "https://www.youtube.com/watch?v=PbDrSO2Bqxg",
+        "thumbnail": "https://i.ytimg.com/vi/PbDrSO2Bqxg/mqdefault.jpg",
+        "channel": "Jae Dong Noh",
+        "views": 891,
+        "length": "28:45",
+        "published": "8개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "CPU와 GPU의 차이 및 OpenCL과 CUDA에 관한 가장 쉬운설명 by 엄의섭",
+        "url": "https://www.youtube.com/watch?v=x0_-Ca1lVMQ",
+        "thumbnail": "https://i.ytimg.com/vi/x0_-Ca1lVMQ/mqdefault.jpg",
+        "channel": "Jeonghan Eom (엄정한)",
+        "views": 709,
+        "length": "17:56",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AI칩이 쏟아져도... NVIDIA 무기 CUDA가 무엇이길래 압도적인가 | 다른 GPU/AI가속기 성능 좋아도 대체가 불가능한 현 상황",
+        "url": "https://www.youtube.com/watch?v=sdjeSBye9sY",
+        "thumbnail": "https://i.ytimg.com/vi/sdjeSBye9sY/mqdefault.jpg",
+        "channel": "안될공학 - IT 테크 신기술",
+        "views": 181397,
+        "length": "18:51",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[MP] Hello CUDA (Introduction to CUDA Week1-1) / CUDA 강의",
+        "url": "https://www.youtube.com/watch?v=ve9wk6I0cOE",
+        "thumbnail": "https://i.ytimg.com/vi/ve9wk6I0cOE/mqdefault.jpg",
+        "channel": "SPIN Lab",
+        "views": 7583,
+        "length": "14:13",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "인공지능 전문가 대상 CUDA 강의",
+        "url": "https://www.youtube.com/watch?v=dSUMt_q05Kw",
+        "thumbnail": "https://i.ytimg.com/vi/dSUMt_q05Kw/mqdefault.jpg",
+        "channel": "마음AI",
+        "views": 458,
+        "length": "1:14",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[MP] Lec 11-1. Synchronization / CUDA 강의",
+        "url": "https://www.youtube.com/watch?v=hK07E_Nsoik",
+        "thumbnail": "https://i.ytimg.com/vi/hK07E_Nsoik/mqdefault.jpg",
+        "channel": "SPIN Lab",
+        "views": 1428,
+        "length": "24:19",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "GPU, cuda 란 무엇인가",
+        "url": "https://www.youtube.com/watch?v=2U3goqL8HZE",
+        "thumbnail": "https://i.ytimg.com/vi/2U3goqL8HZE/mqdefault.jpg",
+        "channel": "kwangsung choi",
+        "views": 6485,
+        "length": "2:41",
+        "published": "7년 전",
+        "stage": "핵심"
       }
     ],
     "Rails": [
@@ -9579,6 +9579,88 @@
         "stage": "핵심"
       }
     ],
+    "BDD": [
+      {
+        "title": "비디디의 조이 운영법 : \"잘 맞히기\"",
+        "url": "https://www.youtube.com/watch?v=pMpMpKUmuM0",
+        "thumbnail": "https://i.ytimg.com/vi/pMpMpKUmuM0/mqdefault.jpg",
+        "channel": "비디디 Bdd",
+        "views": 17334,
+        "length": "7:02",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "BDD 결승 간 이유가 있다",
+        "url": "https://www.youtube.com/watch?v=7fUv82mUgBc",
+        "thumbnail": "https://i.ytimg.com/vi/7fUv82mUgBc/mqdefault.jpg",
+        "channel": "루카 롤분석",
+        "views": 7277,
+        "length": "2:57",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "월즈 준우승 BDD의 라인전 솔킬 공식? 디테일 분석",
+        "url": "https://www.youtube.com/watch?v=Ny2xW1mfXKs",
+        "thumbnail": "https://i.ytimg.com/vi/Ny2xW1mfXKs/mqdefault.jpg",
+        "channel": "루카 롤분석",
+        "views": 2985,
+        "length": "2:52",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "비디디의 라인전 꿀팁부터 월즈 비하인드까지",
+        "url": "https://www.youtube.com/watch?v=Efjmq6NI7Xw",
+        "thumbnail": "https://i.ytimg.com/vi/Efjmq6NI7Xw/mqdefault.jpg",
+        "channel": "비디디 Bdd",
+        "views": 131283,
+        "length": "12:51",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "애자일 개발을 위한 TDD & BDD   [세미남442@토크아이티,  박준성 회장 / 한국SW기술진흥협회, 윤성열 대표 / 드림플로우]",
+        "url": "https://www.youtube.com/watch?v=bRhVW8304zg",
+        "thumbnail": "https://i.ytimg.com/vi/bRhVW8304zg/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 665,
+        "length": "6:06",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 마이찬의 BDD는 방향을, TDD는 실행을 만든다(feat. Cucumber)",
+        "url": "https://www.youtube.com/watch?v=ZyG_6MR-1-g",
+        "thumbnail": "https://i.ytimg.com/vi/ZyG_6MR-1-g/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 350,
+        "length": "11:51",
+        "published": "2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[한글자막] BDD, ADR, PRD, WTF: 사람과 AI 모두를 위한 의사결정 기록 방법입니다",
+        "url": "https://www.youtube.com/watch?v=G2eDn6y-Tr4",
+        "thumbnail": "https://i.ytimg.com/vi/G2eDn6y-Tr4/mqdefault.jpg",
+        "channel": "Tech Bridge",
+        "views": 446,
+        "length": "12:50",
+        "published": "1개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Bdd 아칼리 vs 제이스: 라인전 버티기부터 2:2 교전 대승까지, 게임을 지배하는 완벽한 동선",
+        "url": "https://www.youtube.com/watch?v=LAvWRDv_wTs",
+        "thumbnail": "https://i.ytimg.com/vi/LAvWRDv_wTs/mqdefault.jpg",
+        "channel": "롤깨남",
+        "views": 352,
+        "length": "7:40",
+        "published": "5개월 전",
+        "stage": "실전"
+      }
+    ],
     "Cassandra": [
       {
         "title": "Apache Cassandra 데이터베이스 – 초보자를 위한 전체 과정",
@@ -10068,88 +10150,6 @@
         "views": 42177,
         "length": "25:03",
         "published": "8년 전",
-        "stage": "실전"
-      }
-    ],
-    "BDD": [
-      {
-        "title": "비디디의 조이 운영법 : \"잘 맞히기\"",
-        "url": "https://www.youtube.com/watch?v=pMpMpKUmuM0",
-        "thumbnail": "https://i.ytimg.com/vi/pMpMpKUmuM0/mqdefault.jpg",
-        "channel": "비디디 Bdd",
-        "views": 17334,
-        "length": "7:02",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "BDD 결승 간 이유가 있다",
-        "url": "https://www.youtube.com/watch?v=7fUv82mUgBc",
-        "thumbnail": "https://i.ytimg.com/vi/7fUv82mUgBc/mqdefault.jpg",
-        "channel": "루카 롤분석",
-        "views": 7277,
-        "length": "2:57",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "월즈 준우승 BDD의 라인전 솔킬 공식? 디테일 분석",
-        "url": "https://www.youtube.com/watch?v=Ny2xW1mfXKs",
-        "thumbnail": "https://i.ytimg.com/vi/Ny2xW1mfXKs/mqdefault.jpg",
-        "channel": "루카 롤분석",
-        "views": 2985,
-        "length": "2:52",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "비디디의 라인전 꿀팁부터 월즈 비하인드까지",
-        "url": "https://www.youtube.com/watch?v=Efjmq6NI7Xw",
-        "thumbnail": "https://i.ytimg.com/vi/Efjmq6NI7Xw/mqdefault.jpg",
-        "channel": "비디디 Bdd",
-        "views": 131283,
-        "length": "12:51",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "애자일 개발을 위한 TDD & BDD   [세미남442@토크아이티,  박준성 회장 / 한국SW기술진흥협회, 윤성열 대표 / 드림플로우]",
-        "url": "https://www.youtube.com/watch?v=bRhVW8304zg",
-        "thumbnail": "https://i.ytimg.com/vi/bRhVW8304zg/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 665,
-        "length": "6:06",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 마이찬의 BDD는 방향을, TDD는 실행을 만든다(feat. Cucumber)",
-        "url": "https://www.youtube.com/watch?v=ZyG_6MR-1-g",
-        "thumbnail": "https://i.ytimg.com/vi/ZyG_6MR-1-g/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 350,
-        "length": "11:51",
-        "published": "2개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[한글자막] BDD, ADR, PRD, WTF: 사람과 AI 모두를 위한 의사결정 기록 방법입니다",
-        "url": "https://www.youtube.com/watch?v=G2eDn6y-Tr4",
-        "thumbnail": "https://i.ytimg.com/vi/G2eDn6y-Tr4/mqdefault.jpg",
-        "channel": "Tech Bridge",
-        "views": 446,
-        "length": "12:50",
-        "published": "1개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Bdd 아칼리 vs 제이스: 라인전 버티기부터 2:2 교전 대승까지, 게임을 지배하는 완벽한 동선",
-        "url": "https://www.youtube.com/watch?v=LAvWRDv_wTs",
-        "thumbnail": "https://i.ytimg.com/vi/LAvWRDv_wTs/mqdefault.jpg",
-        "channel": "롤깨남",
-        "views": 352,
-        "length": "7:40",
-        "published": "5개월 전",
         "stage": "실전"
       }
     ],
