@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T13:50:13",
+  "generated_at": "2026-08-01T15:29:00",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -1891,88 +1891,6 @@
         "stage": "실전"
       }
     ],
-    "Kotlin": [
-      {
-        "title": "[토크ON세미나] 안드로이드 앱 개발을 위한 코틀린(Kotlin) 1강 - 코틀린(Kotlin) 기본 문법 I | T아카데미",
-        "url": "https://www.youtube.com/watch?v=R2HjKQ9mWXw",
-        "thumbnail": "https://i.ytimg.com/vi/R2HjKQ9mWXw/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 9502,
-        "length": "53:21",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "2024 설특집 코틀린 기초 강의 몰아보기",
-        "url": "https://www.youtube.com/watch?v=UWq6AA5Zi4M",
-        "thumbnail": "https://i.ytimg.com/vi/UWq6AA5Zi4M/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 9419,
-        "length": "2:27:45",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Full 2025 Kotlin Crash Course For Beginners",
-        "url": "https://www.youtube.com/watch?v=dzUc9vrsldM",
-        "thumbnail": "https://i.ytimg.com/vi/dzUc9vrsldM/mqdefault.jpg",
-        "channel": "Philipp Lackner",
-        "views": 368090,
-        "length": "3:11:50",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Kotlin 문법 총 정리 - 1시간",
-        "url": "https://www.youtube.com/watch?v=OtHkb6wAI5U",
-        "thumbnail": "https://i.ytimg.com/vi/OtHkb6wAI5U/mqdefault.jpg",
-        "channel": "오준석의 생존코딩",
-        "views": 24974,
-        "length": "48:50",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "레진코믹스는 어떻게 Kotlin을 적용하고 있을까? by 우명인",
-        "url": "https://www.youtube.com/watch?v=Z4DTCGK-FRI",
-        "thumbnail": "https://i.ytimg.com/vi/Z4DTCGK-FRI/mqdefault.jpg",
-        "channel": "JetBrains",
-        "views": 708,
-        "length": "39:26",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[CH9] Kotlin이 공식 언어가 되기까지",
-        "url": "https://www.youtube.com/watch?v=iegPKUNAxco",
-        "thumbnail": "https://i.ytimg.com/vi/iegPKUNAxco/mqdefault.jpg",
-        "channel": "Runtime Notes",
-        "views": 13,
-        "length": "4:57",
-        "published": "2개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 398,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "클래스 (이론/실습 통합편) [ 코틀린 기초 (Kotlin Basic) ]",
-        "url": "https://www.youtube.com/watch?v=SX0ZRGiQukY",
-        "thumbnail": "https://i.ytimg.com/vi/SX0ZRGiQukY/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 698,
-        "length": "10:14",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Kafka": [
       {
         "title": "카프카 기본개념 빠르고 쉽게",
@@ -2052,6 +1970,88 @@
         "views": 1221,
         "length": "3:43",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "Kotlin": [
+      {
+        "title": "[토크ON세미나] 안드로이드 앱 개발을 위한 코틀린(Kotlin) 1강 - 코틀린(Kotlin) 기본 문법 I | T아카데미",
+        "url": "https://www.youtube.com/watch?v=R2HjKQ9mWXw",
+        "thumbnail": "https://i.ytimg.com/vi/R2HjKQ9mWXw/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 9502,
+        "length": "53:21",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "2024 설특집 코틀린 기초 강의 몰아보기",
+        "url": "https://www.youtube.com/watch?v=UWq6AA5Zi4M",
+        "thumbnail": "https://i.ytimg.com/vi/UWq6AA5Zi4M/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 9419,
+        "length": "2:27:45",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Full 2025 Kotlin Crash Course For Beginners",
+        "url": "https://www.youtube.com/watch?v=dzUc9vrsldM",
+        "thumbnail": "https://i.ytimg.com/vi/dzUc9vrsldM/mqdefault.jpg",
+        "channel": "Philipp Lackner",
+        "views": 368090,
+        "length": "3:11:50",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Kotlin 문법 총 정리 - 1시간",
+        "url": "https://www.youtube.com/watch?v=OtHkb6wAI5U",
+        "thumbnail": "https://i.ytimg.com/vi/OtHkb6wAI5U/mqdefault.jpg",
+        "channel": "오준석의 생존코딩",
+        "views": 24974,
+        "length": "48:50",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "레진코믹스는 어떻게 Kotlin을 적용하고 있을까? by 우명인",
+        "url": "https://www.youtube.com/watch?v=Z4DTCGK-FRI",
+        "thumbnail": "https://i.ytimg.com/vi/Z4DTCGK-FRI/mqdefault.jpg",
+        "channel": "JetBrains",
+        "views": 708,
+        "length": "39:26",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[CH9] Kotlin이 공식 언어가 되기까지",
+        "url": "https://www.youtube.com/watch?v=iegPKUNAxco",
+        "thumbnail": "https://i.ytimg.com/vi/iegPKUNAxco/mqdefault.jpg",
+        "channel": "Runtime Notes",
+        "views": 13,
+        "length": "4:57",
+        "published": "2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 398,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "클래스 (이론/실습 통합편) [ 코틀린 기초 (Kotlin Basic) ]",
+        "url": "https://www.youtube.com/watch?v=SX0ZRGiQukY",
+        "thumbnail": "https://i.ytimg.com/vi/SX0ZRGiQukY/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 698,
+        "length": "10:14",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
