@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **8591건** 공고 · **1660개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-03 04:41
+- 총 **8594건** 공고 · **1661개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-03 06:28
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -633,6 +633,17 @@ markmap:
 - **모바일** [1건] · `Java` `Kotlin` `Swift` `jQuery` `iOS` `Android`
   - [(부산) IT 프로젝트 개발자 모집 (웹/IOS/Android) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54225888&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1566bc64-3ef9-4f68-86cf-891d5abe7d96)
 
+### ㈜포에스시스템 `중소기업` · 5건
+- **백엔드** [3건] · `Java` `React` `Spring` `Spring Boot` `C#` `Oracle`
+  - [(증미) LG엔솔 C#, Java MES CSR 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49689041?Oem_Code=C1&logpath=1&stext=%EC%9E%90%EB%B0%94&listno=100&sc=630)
+  - [(증평) 두산전자 React 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49685252?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=37&sc=630)
+  - [증평 두산전자 React 고급 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54523310&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=4ff75f5a-e82f-40f3-a2e0-db3700e304e6)
+- **프론트엔드** [4건] · `React` `Java` `Spring` `Spring Boot`
+  - [(증미) Java, React 초급 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49559673?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=55&sc=630)
+  - [(증평) 두산전자 React 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49685252?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=37&sc=630)
+  - [(증미) Java, React 신입/초급 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49695009?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=79&sc=630)
+  - [증평 두산전자 React 고급 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54523310&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=4ff75f5a-e82f-40f3-a2e0-db3700e304e6)
+
 ### (주)이에스티소프트 `중소기업` · 5건
 - **백엔드** [1건] · `C#` `React` `Spring` `Spring Boot`
   - [Infra EES 시스템 프로젝트/ Vue3, React, Spring boot / 기흥 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54585547&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=b7488353-896d-4013-877e-1cb4268dca12)
@@ -980,16 +991,6 @@ markmap:
   - [송파 AI Agent 개발자 모집 python restful API ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49693400?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=61&sc=630)
 - **데이터** [1건] · `Java` `React` `Kubernetes` `Kafka`
   - [정자 하이닉스 JAVA REACT kubernetes 개발자 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49684376?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=80&sc=630)
-
-### ㈜포에스시스템 `중소기업` · 4건
-- **백엔드** [2건] · `React` `Spring` `Spring Boot` `Java`
-  - [(증평) 두산전자 React 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49685252?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=37&sc=630)
-  - [증평 두산전자 React 고급 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54523310&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=4ff75f5a-e82f-40f3-a2e0-db3700e304e6)
-- **프론트엔드** [4건] · `React` `Java` `Spring` `Spring Boot`
-  - [(증미) Java, React 초급 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49559673?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=55&sc=630)
-  - [(증평) 두산전자 React 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49685252?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=37&sc=630)
-  - [(증미) Java, React 신입/초급 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49695009?Oem_Code=C1&logpath=1&stext=%EB%A6%AC%EC%95%A1%ED%8A%B8&listno=79&sc=630)
-  - [증평 두산전자 React 고급 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54523310&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=4ff75f5a-e82f-40f3-a2e0-db3700e304e6)
 
 ### (주)씨넷 `중소기업` · 4건
 - **백엔드** [3건] · `Java` `React` `Spring` `Spring Boot` `AWS` `GCP`
@@ -6692,7 +6693,7 @@ markmap:
   - [Product Marketing Manager, AI Capabilities & Developer Enablement ↗](https://boards.greenhouse.io/neo4j/jobs/4690258006?gh_jid=4690258006)
 
 
-## 제조/하드웨어/로보틱스 (150개사)
+## 제조/하드웨어/로보틱스 (151개사)
 ### 인터엑스 `중소기업` · 23건
 - **백엔드** [9건] · `Python` `Docker` `MongoDB` `Git` `Elasticsearch` `REST API`
   - [백엔드 (Backend) 개발자 ↗](https://www.wanted.co.kr/wd/328449)
@@ -8221,6 +8222,8 @@ markmap:
 ### LS엠트론 `중소기업` · 2건
 - **모바일** [1건] · `Kotlin` `Python` `C++` `C#`
   - [2026년 3분기 신입, 경력, 계약직 사원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/563893?ReturnUrl=RecruitInfo)
+
+### 테크윙 `중소기업` · 2건
 
 ### Samsara `중소기업` · 2건
 - **AI/ML** [2건] · `Python` `LangChain` `OpenAI` `Go` `Kubernetes`
