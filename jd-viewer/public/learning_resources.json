@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T06:28:19",
+  "generated_at": "2026-08-03T08:06:42",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -2137,6 +2137,58 @@
         "stage": "핵심"
       }
     ],
+    "Android": [
+      {
+        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
+        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
+        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 4858,
+        "length": "7:21",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[센치한 개발자] (1) 안드로이드 기초 강의 : 안드로이드 스튜디오 설명",
+        "url": "https://www.youtube.com/watch?v=epFRtZ17yow",
+        "thumbnail": "https://i.ytimg.com/vi/epFRtZ17yow/mqdefault.jpg",
+        "channel": "센치랩",
+        "views": 118286,
+        "length": "35:28",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의] 2 안드로이드 개발 도구 설치와 앱 실행하기",
+        "url": "https://www.youtube.com/watch?v=_NOkTNqj8f0",
+        "thumbnail": "https://i.ytimg.com/vi/_NOkTNqj8f0/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 9083,
+        "length": "23:13",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 398,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[센치한 개발자] (24) 안드로이드 스튜디오 기초 강의 : 핸들러(Handler)로 초간단 카운트다운 만들기",
+        "url": "https://www.youtube.com/watch?v=yhRzlAxXhw0",
+        "thumbnail": "https://i.ytimg.com/vi/yhRzlAxXhw0/mqdefault.jpg",
+        "channel": "센치랩",
+        "views": 4642,
+        "length": "20:29",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "CSS": [
       {
         "title": "제대로 파는 HTML & CSS - 가장 쉽게 배우는 웹개발",
@@ -2216,58 +2268,6 @@
         "views": 43168,
         "length": "48:53",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "Android": [
-      {
-        "title": "[코틀린 안드로이드 기초 강의_13] 리스너 이해하기",
-        "url": "https://www.youtube.com/watch?v=YhKvVhnc8Yg",
-        "thumbnail": "https://i.ytimg.com/vi/YhKvVhnc8Yg/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 4858,
-        "length": "7:21",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[센치한 개발자] (1) 안드로이드 기초 강의 : 안드로이드 스튜디오 설명",
-        "url": "https://www.youtube.com/watch?v=epFRtZ17yow",
-        "thumbnail": "https://i.ytimg.com/vi/epFRtZ17yow/mqdefault.jpg",
-        "channel": "센치랩",
-        "views": 118286,
-        "length": "35:28",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의] 2 안드로이드 개발 도구 설치와 앱 실행하기",
-        "url": "https://www.youtube.com/watch?v=_NOkTNqj8f0",
-        "thumbnail": "https://i.ytimg.com/vi/_NOkTNqj8f0/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 9083,
-        "length": "23:13",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 398,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[센치한 개발자] (24) 안드로이드 스튜디오 기초 강의 : 핸들러(Handler)로 초간단 카운트다운 만들기",
-        "url": "https://www.youtube.com/watch?v=yhRzlAxXhw0",
-        "thumbnail": "https://i.ytimg.com/vi/yhRzlAxXhw0/mqdefault.jpg",
-        "channel": "센치랩",
-        "views": 4642,
-        "length": "20:29",
-        "published": "7년 전",
         "stage": "실전"
       }
     ],

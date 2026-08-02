@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **8594건** 공고 · **1661개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-03 06:28
+- 총 **8598건** 공고 · **1661개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-03 08:06
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (431개사)
+## HR/채용 (432개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -507,6 +507,14 @@ markmap:
   - [MRO사업부 Data Analyst 경력사원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54603856&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=909ac6ad-7bbc-4d4f-8fa8-01f2495f2aa4)
 - **펌웨어/임베디드** [1건] · `Python` `C++` `gRPC`
   - [(방산) MUM-T 유·무인 통합 자율체계 AI/SW 엔지니어 경력사원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553796?ReturnUrl=RecruitInfo)
+
+### 제너러티브랩 `중견기업` · 5건
+- **백엔드** [3건]
+  - [백엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/364367)
+  - [(제너러티브랩) 졸업 & 스펙 필요 없습니다. (백엔드 엔지니어) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54002142&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=914cb972-6d90-4d12-b575-d8ddcf752695)
+  - [졸업 & 스펙 필요 없습니다. - 백엔드 엔지니어 (신입 가능) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54628093&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e9dbf3c4-e740-49f4-a1e9-8e8be33a2b57)
+- **AI/ML** [1건]
+  - [AI 컨설턴트 ↗](https://www.wanted.co.kr/wd/363287)
 
 ### 다온더케어 `중소기업` · 5건
 - **백엔드** [5건] · `React` `React Native` `REST API` `TypeScript` `Git` `Node.js`
@@ -3894,7 +3902,7 @@ markmap:
   - [Senior AI/LLM Penetration Tester ↗](http://www.bishopfox.com/jobs?gh_jid=8069668)
 
 
-## B2B SaaS/엔터프라이즈 (238개사)
+## B2B SaaS/엔터프라이즈 (237개사)
 ### 메가존클라우드(주) `중견기업` · 63건
 - **백엔드** [13건] · `Python` `AWS` `Java` `Go` `Kubernetes` `Azure`
   - [Backend Developer / AI Research Engineer 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630)
@@ -4859,13 +4867,6 @@ markmap:
 - **보안** [2건]
   - [(애경그룹) AK아이에스 정보보안 운영 경력 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54428897&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=e5dd826d-1948-4f7e-b8c5-af81ead05ccf)
   - [(애경그룹) AK아이에스 정보보안 운영 경력 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/561152?ReturnUrl=RecruitInfo)
-
-### 제너러티브랩 `중견기업` · 4건
-- **백엔드** [2건]
-  - [백엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/364367)
-  - [(제너러티브랩) 졸업 & 스펙 필요 없습니다. (백엔드 엔지니어) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54002142&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=914cb972-6d90-4d12-b575-d8ddcf752695)
-- **AI/ML** [1건]
-  - [AI 컨설턴트 ↗](https://www.wanted.co.kr/wd/363287)
 
 ### 골든플래닛 `중소기업` · 4건
 - **백엔드** [3건] · `Python` `FastAPI` `PostgreSQL` `GCP` `AWS` `Docker`
@@ -7756,6 +7757,8 @@ markmap:
 - **DevOps/인프라** [1건]
   - [Master Data Administrator 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54566984&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=41010faa-60e8-450b-9c23-27ff40013f94)
 
+### 테크윙 `중소기업` · 3건
+
 ### 한화비전 `대기업` · 3건
 - **백엔드** [1건] · `C++` `C#` `.NET` `REST API`
   - [제조혁신 SW개발자 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/561489?ReturnUrl=RecruitInfo)
@@ -8222,8 +8225,6 @@ markmap:
 ### LS엠트론 `중소기업` · 2건
 - **모바일** [1건] · `Kotlin` `Python` `C++` `C#`
   - [2026년 3분기 신입, 경력, 계약직 사원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/563893?ReturnUrl=RecruitInfo)
-
-### 테크윙 `중소기업` · 2건
 
 ### Samsara `중소기업` · 2건
 - **AI/ML** [2건] · `Python` `LangChain` `OpenAI` `Go` `Kubernetes`
@@ -16045,6 +16046,23 @@ markmap:
   - [사업본부장 (정보보안·IT 솔루션 영업) ↗](https://www.wanted.co.kr/wd/371507)
   - [모의해킹 및 보안 컨설턴트 신입/경력 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53848795&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=8dd5ae4a-b210-4f26-b241-b44c722f335c)
 
+### 와탭랩스 `중소기업` · 4건
+- **백엔드** [1건] · `Java` `Spring` `Kubernetes` `MSA` `Grafana` `Netty`
+  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872928)
+- **프론트엔드** [2건] · `React` `Git` `Java` `Kotlin` `JavaScript` `Swift`
+  - [프론트엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872970)
+  - [모바일 에이전트 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49423176?Oem_Code=C1&logpath=1&stext=iOS&listno=99&sc=630)
+- **모바일** [1건] · `Java` `Kotlin` `JavaScript` `Swift` `React` `iOS`
+  - [모바일 에이전트 개발 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49423176?Oem_Code=C1&logpath=1&stext=iOS&listno=99&sc=630)
+- **AI/ML** [1건] · `Java` `Spring` `Kubernetes` `MSA` `Grafana` `Netty`
+  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872928)
+- **DevOps/인프라** [1건] · `Java` `Spring` `Kubernetes` `MSA` `Grafana` `Netty`
+  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872928)
+- **펌웨어/임베디드** [1건] · `Java` `Python` `AWS` `GCP` `Azure` `Kubernetes`
+  - [정보보안 엔지니어 ↗](https://jumpit.saramin.co.kr/position/53872944)
+- **보안** [1건] · `Java` `Python` `AWS` `GCP` `Azure` `Kubernetes`
+  - [정보보안 엔지니어 ↗](https://jumpit.saramin.co.kr/position/53872944)
+
 ### ㈜에스앤케이인스티튜트 `중소기업` · 4건
 - **백엔드** [1건] · `Java` `Python`
   - [(C, JAVA) 암호화 솔루션 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54088452&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=f254359a-27e8-4617-b566-9954f48a109e)
@@ -16183,20 +16201,6 @@ markmap:
 - **보안** [2건] · `AWS`
   - [정보보안 담당자 ↗](https://www.wanted.co.kr/wd/376465)
   - [정보보안 담당자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54534634&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=75aa67f4-5cba-477c-a462-181ad8b32103)
-
-### 와탭랩스 `중소기업` · 3건
-- **백엔드** [1건] · `Java` `Spring` `Kubernetes` `MSA` `Grafana` `Netty`
-  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872928)
-- **프론트엔드** [1건] · `React` `Git`
-  - [프론트엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872970)
-- **AI/ML** [1건] · `Java` `Spring` `Kubernetes` `MSA` `Grafana` `Netty`
-  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872928)
-- **DevOps/인프라** [1건] · `Java` `Spring` `Kubernetes` `MSA` `Grafana` `Netty`
-  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/53872928)
-- **펌웨어/임베디드** [1건] · `Java` `Python` `AWS` `GCP` `Azure` `Kubernetes`
-  - [정보보안 엔지니어 ↗](https://jumpit.saramin.co.kr/position/53872944)
-- **보안** [1건] · `Java` `Python` `AWS` `GCP` `Azure` `Kubernetes`
-  - [정보보안 엔지니어 ↗](https://jumpit.saramin.co.kr/position/53872944)
 
 ### ㈜모니터랩 `중소기업` · 3건
 - **백엔드** [1건] · `Python` `C++` `Go` `Rust`
