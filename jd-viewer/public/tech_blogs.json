@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-03T09:45:05",
- "total": 1041,
+ "generated_at": "2026-08-03T11:25:00",
+ "total": 1042,
  "sources": [
   {
    "company": "Etsy",
@@ -100,7 +100,7 @@
   {
    "company": "Grab",
    "country": "SG",
-   "count": 18
+   "count": 19
   },
   {
    "company": "우아한형제들",
@@ -548,6 +548,38 @@
    ],
    "lang": "en",
    "content_id": "57b294c1e4405cb2"
+  },
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "How AI is transforming analytics at Grab",
+   "url": "https://engineering.grab.com/how-ai-is-transforming-analytics",
+   "published": "2026-08-01",
+   "published_ts": 1785543780.0,
+   "summary": "Introduction\n\nAt Grab, analytics sits close to almost every decision that matters. Our north star is the democratisation of intelligence, ensuring that anyone making a business call has immediate access to trustworthy answers.\n\nOver the last two years, model capability has crossed a threshold enabling this shift. Agents now do in minutes what used to take a week: preparing the data, writing queries, running deep analysis and developing insights for business opportunities, designing experiments and interpreting the results, drafting the commentary that follows, and more. Our throughput is no lo…",
+   "tags": [
+    "Engineering",
+    "Analytics",
+    "AI",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "SQL",
+    "AI Agent",
+    "Claude",
+    "Model Context Protocol",
+    "Data Lake",
+    "Embedded"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터",
+    "펌웨어/임베디드"
+   ],
+   "lang": "en",
+   "content_id": "943093dbaba5ae88"
   },
   {
    "key": "etsy",
