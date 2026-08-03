@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-03T13:12:35",
- "total": 1043,
+ "generated_at": "2026-08-03T14:52:51",
+ "total": 1044,
  "sources": [
   {
    "company": "Etsy",
@@ -45,7 +45,7 @@
   {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 36
+   "count": 37
   },
   {
    "company": "DeNA",
@@ -524,6 +524,27 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "Aurora MySQLのバックアップは本当に今の設定で安全か考える",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/65126",
+   "published": "2026-08-03",
+   "published_ts": 1785733500.0,
+   "summary": "本記事は、Aurora MySQLの安全なバックアップ設計についてまとめている記事になります なにか ...",
+   "tags": [
+    "エンジニア"
+   ],
+   "tech_stack": [
+    "MySQL"
+   ],
+   "categories": [
+    "데이터베이스"
+   ],
+   "lang": "en",
+   "content_id": "856cf18b1250b0e2"
+  },
   {
    "key": "toss",
    "company": "토스",
