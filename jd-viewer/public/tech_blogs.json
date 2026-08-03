@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-03T11:25:00",
- "total": 1042,
+ "generated_at": "2026-08-03T13:12:35",
+ "total": 1043,
  "sources": [
   {
    "company": "Etsy",
@@ -40,7 +40,7 @@
   {
    "company": "토스",
    "country": "KR",
-   "count": 37
+   "count": 38
   },
   {
    "company": "CyberAgent",
@@ -524,6 +524,27 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "DS와 MLE가 함께 일하는 법",
+   "url": "https://toss.tech/article/ds-mle-cowork",
+   "published": "2026-08-03",
+   "published_ts": 1785727500.0,
+   "summary": "노트북과 서빙 사이",
+   "tags": [],
+   "tech_stack": [
+    "Machine Learning",
+    "Monorepo"
+   ],
+   "categories": [
+    "AI/ML",
+    "협업/도구"
+   ],
+   "lang": "ko",
+   "content_id": "a3267be913e467fc"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",

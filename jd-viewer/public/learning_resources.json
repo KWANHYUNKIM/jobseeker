@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T11:34:15",
+  "generated_at": "2026-08-03T13:13:20",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -907,88 +907,6 @@
         "stage": "실전"
       }
     ],
-    "MySQL": [
-      {
-        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
-        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
-        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 216228,
-        "length": "2:52:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
-        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
-        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
-        "channel": "홍팍",
-        "views": 7881,
-        "length": "2:34:46",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MySQL 데이터베이스 한번에 끝내기 SQL Full Tutorial Course using MySQL Database",
-        "url": "https://www.youtube.com/watch?v=vgIc4ctNFbc",
-        "thumbnail": "https://i.ytimg.com/vi/vgIc4ctNFbc/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 234287,
-        "length": "1:11:11",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MySQL 기초 가이드",
-        "url": "https://www.youtube.com/watch?v=nxtgoVZYB0U",
-        "thumbnail": "https://i.ytimg.com/vi/nxtgoVZYB0U/mqdefault.jpg",
-        "channel": "알클 ALOHA CLASS",
-        "views": 36,
-        "length": "44:45",
-        "published": "스트리밍 시간: 8개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "{풀스택} MySQL 01강 - SQL 한방에 정리하기 Part 1 - DCL, DDL",
-        "url": "https://www.youtube.com/watch?v=8oEE0fgXA4M",
-        "thumbnail": "https://i.ytimg.com/vi/8oEE0fgXA4M/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 2398,
-        "length": "34:53",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "01 강의 개요 및 MySQL 설치 - MySQL 따라하며 배우기",
-        "url": "https://www.youtube.com/watch?v=Zzjgd7nqkKo",
-        "thumbnail": "https://i.ytimg.com/vi/Zzjgd7nqkKo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 14359,
-        "length": "25:45",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "고등학교 대상 MySQL SQL문법 강의 - 1",
-        "url": "https://www.youtube.com/watch?v=TPeJA5pX08k",
-        "thumbnail": "https://i.ytimg.com/vi/TPeJA5pX08k/mqdefault.jpg",
-        "channel": "개발자루카",
-        "views": 107,
-        "length": "45:49",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "40분만에 끝내는 서버 이론+실습. AWS, Nginx, Node.js, Mysql",
-        "url": "https://www.youtube.com/watch?v=8IGgeaLlYW8",
-        "thumbnail": "https://i.ytimg.com/vi/8IGgeaLlYW8/mqdefault.jpg",
-        "channel": "프로젝트 박스",
-        "views": 64204,
-        "length": "40:45",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "GCP": [
       {
         "title": "Google Compute Engine 클라우드 서버 기본 배우기 - Chapter1 Clip04 GCP 리소스 구조",
@@ -1067,6 +985,88 @@
         "channel": "JT Studio",
         "views": 506,
         "length": "45:57",
+        "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "MySQL": [
+      {
+        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
+        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
+        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 216228,
+        "length": "2:52:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
+        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
+        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
+        "channel": "홍팍",
+        "views": 7881,
+        "length": "2:34:46",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MySQL 데이터베이스 한번에 끝내기 SQL Full Tutorial Course using MySQL Database",
+        "url": "https://www.youtube.com/watch?v=vgIc4ctNFbc",
+        "thumbnail": "https://i.ytimg.com/vi/vgIc4ctNFbc/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 234287,
+        "length": "1:11:11",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MySQL 기초 가이드",
+        "url": "https://www.youtube.com/watch?v=nxtgoVZYB0U",
+        "thumbnail": "https://i.ytimg.com/vi/nxtgoVZYB0U/mqdefault.jpg",
+        "channel": "알클 ALOHA CLASS",
+        "views": 36,
+        "length": "44:45",
+        "published": "스트리밍 시간: 8개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "{풀스택} MySQL 01강 - SQL 한방에 정리하기 Part 1 - DCL, DDL",
+        "url": "https://www.youtube.com/watch?v=8oEE0fgXA4M",
+        "thumbnail": "https://i.ytimg.com/vi/8oEE0fgXA4M/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 2398,
+        "length": "34:53",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "01 강의 개요 및 MySQL 설치 - MySQL 따라하며 배우기",
+        "url": "https://www.youtube.com/watch?v=Zzjgd7nqkKo",
+        "thumbnail": "https://i.ytimg.com/vi/Zzjgd7nqkKo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 14359,
+        "length": "25:45",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "고등학교 대상 MySQL SQL문법 강의 - 1",
+        "url": "https://www.youtube.com/watch?v=TPeJA5pX08k",
+        "thumbnail": "https://i.ytimg.com/vi/TPeJA5pX08k/mqdefault.jpg",
+        "channel": "개발자루카",
+        "views": 107,
+        "length": "45:49",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "40분만에 끝내는 서버 이론+실습. AWS, Nginx, Node.js, Mysql",
+        "url": "https://www.youtube.com/watch?v=8IGgeaLlYW8",
+        "thumbnail": "https://i.ytimg.com/vi/8IGgeaLlYW8/mqdefault.jpg",
+        "channel": "프로젝트 박스",
+        "views": 64204,
+        "length": "40:45",
         "published": "4년 전",
         "stage": "실전"
       }
@@ -9077,6 +9077,88 @@
         "stage": "실전"
       }
     ],
+    "Cassandra": [
+      {
+        "title": "Apache Cassandra 데이터베이스 – 초보자를 위한 전체 과정",
+        "url": "https://www.youtube.com/watch?v=J-cSy5MeMOA",
+        "thumbnail": "https://i.ytimg.com/vi/J-cSy5MeMOA/mqdefault.jpg",
+        "channel": "freeCodeCamp.org",
+        "views": 332670,
+        "length": "1:08:40",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Intro to NO SQL - Cassandra | Tutorial for Beginners | Cassandra and Solr [Part 15] | Great Learning",
+        "url": "https://www.youtube.com/watch?v=tN7fryzPhUQ",
+        "thumbnail": "https://i.ytimg.com/vi/tN7fryzPhUQ/mqdefault.jpg",
+        "channel": "Great Learning",
+        "views": 974,
+        "length": "5:11",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "01 - Apache Cassandra Introduction Lecture 1",
+        "url": "https://www.youtube.com/watch?v=3wXpbNqsNvc",
+        "thumbnail": "https://i.ytimg.com/vi/3wXpbNqsNvc/mqdefault.jpg",
+        "channel": "Data Guru",
+        "views": 33,
+        "length": "1:02:39",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Cassandra Analytics 1 0 Unlocking Real Time Insights at Scale by Doug Rohrer",
+        "url": "https://www.youtube.com/watch?v=lgXIJecQWjo",
+        "thumbnail": "https://i.ytimg.com/vi/lgXIJecQWjo/mqdefault.jpg",
+        "channel": "PlanetCassandra",
+        "views": 172,
+        "length": "44:45",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Cassandra Track: Property-Based, Stateful, and Simulation Testing in Apache Cassandra",
+        "url": "https://www.youtube.com/watch?v=Llou6dOV2Gs",
+        "thumbnail": "https://i.ytimg.com/vi/Llou6dOV2Gs/mqdefault.jpg",
+        "channel": "The ASF",
+        "views": 98,
+        "length": "40:31",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Cassandra | Apache Cassandra 튜토리얼 | Apache Cassandra 교육 | Intellipaat",
+        "url": "https://www.youtube.com/watch?v=5vlAYjfh3FM",
+        "thumbnail": "https://i.ytimg.com/vi/5vlAYjfh3FM/mqdefault.jpg",
+        "channel": "Intellipaat",
+        "views": 5136,
+        "length": "1:05:25",
+        "published": "스트리밍 시간: 5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Performance Improvements & Upgrade Challenges: Bloomberg’s Road to Apache Cassandra 5 0 by Andres Be",
+        "url": "https://www.youtube.com/watch?v=DQDWpvI7FLw",
+        "thumbnail": "https://i.ytimg.com/vi/DQDWpvI7FLw/mqdefault.jpg",
+        "channel": "PlanetCassandra",
+        "views": 379,
+        "length": "40:31",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[2020 데이터 컨퍼런스] \"Spark+Cassandra 기반 빅데이터를 활용한 추천시스템 서빙 파이프라인 최적화\" / 박수성 SSG.COM 파트너",
+        "url": "https://www.youtube.com/watch?v=CQD-85a-NRs",
+        "thumbnail": "https://i.ytimg.com/vi/CQD-85a-NRs/mqdefault.jpg",
+        "channel": "컴퓨터월드 / IT DAILY",
+        "views": 579,
+        "length": "36:07",
+        "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
     "NumPy": [
       {
         "title": "Numpy의 기본 사용법 [ Python 데이터 분석과 이미지 처리 ]",
@@ -9485,88 +9567,6 @@
         "length": "11:51",
         "published": "2개월 전",
         "stage": "핵심"
-      }
-    ],
-    "Cassandra": [
-      {
-        "title": "Apache Cassandra 데이터베이스 – 초보자를 위한 전체 과정",
-        "url": "https://www.youtube.com/watch?v=J-cSy5MeMOA",
-        "thumbnail": "https://i.ytimg.com/vi/J-cSy5MeMOA/mqdefault.jpg",
-        "channel": "freeCodeCamp.org",
-        "views": 332670,
-        "length": "1:08:40",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Intro to NO SQL - Cassandra | Tutorial for Beginners | Cassandra and Solr [Part 15] | Great Learning",
-        "url": "https://www.youtube.com/watch?v=tN7fryzPhUQ",
-        "thumbnail": "https://i.ytimg.com/vi/tN7fryzPhUQ/mqdefault.jpg",
-        "channel": "Great Learning",
-        "views": 974,
-        "length": "5:11",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "01 - Apache Cassandra Introduction Lecture 1",
-        "url": "https://www.youtube.com/watch?v=3wXpbNqsNvc",
-        "thumbnail": "https://i.ytimg.com/vi/3wXpbNqsNvc/mqdefault.jpg",
-        "channel": "Data Guru",
-        "views": 33,
-        "length": "1:02:39",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Cassandra Analytics 1 0 Unlocking Real Time Insights at Scale by Doug Rohrer",
-        "url": "https://www.youtube.com/watch?v=lgXIJecQWjo",
-        "thumbnail": "https://i.ytimg.com/vi/lgXIJecQWjo/mqdefault.jpg",
-        "channel": "PlanetCassandra",
-        "views": 172,
-        "length": "44:45",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Cassandra Track: Property-Based, Stateful, and Simulation Testing in Apache Cassandra",
-        "url": "https://www.youtube.com/watch?v=Llou6dOV2Gs",
-        "thumbnail": "https://i.ytimg.com/vi/Llou6dOV2Gs/mqdefault.jpg",
-        "channel": "The ASF",
-        "views": 98,
-        "length": "40:31",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Cassandra | Apache Cassandra 튜토리얼 | Apache Cassandra 교육 | Intellipaat",
-        "url": "https://www.youtube.com/watch?v=5vlAYjfh3FM",
-        "thumbnail": "https://i.ytimg.com/vi/5vlAYjfh3FM/mqdefault.jpg",
-        "channel": "Intellipaat",
-        "views": 5136,
-        "length": "1:05:25",
-        "published": "스트리밍 시간: 5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Performance Improvements & Upgrade Challenges: Bloomberg’s Road to Apache Cassandra 5 0 by Andres Be",
-        "url": "https://www.youtube.com/watch?v=DQDWpvI7FLw",
-        "thumbnail": "https://i.ytimg.com/vi/DQDWpvI7FLw/mqdefault.jpg",
-        "channel": "PlanetCassandra",
-        "views": 379,
-        "length": "40:31",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[2020 데이터 컨퍼런스] \"Spark+Cassandra 기반 빅데이터를 활용한 추천시스템 서빙 파이프라인 최적화\" / 박수성 SSG.COM 파트너",
-        "url": "https://www.youtube.com/watch?v=CQD-85a-NRs",
-        "thumbnail": "https://i.ytimg.com/vi/CQD-85a-NRs/mqdefault.jpg",
-        "channel": "컴퓨터월드 / IT DAILY",
-        "views": 579,
-        "length": "36:07",
-        "published": "5년 전",
-        "stage": "실전"
       }
     ],
     "Spark": [
