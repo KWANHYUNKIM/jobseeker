@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-04T01:00:53",
- "total": 1051,
+ "generated_at": "2026-08-04T02:48:12",
+ "total": 1052,
  "sources": [
   {
    "company": "Etsy",
@@ -30,7 +30,7 @@
   {
    "company": "AWS",
    "country": "US",
-   "count": 45
+   "count": 46
   },
   {
    "company": "LINE",
@@ -525,6 +525,50 @@
  },
  "posts": [
   {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Weekly Roundup: Price reduction of GPT models in Bedrock, CloudWatch managed collectors for Prometheus metrics, and more (August 3, 2026)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-price-reduction-of-gpt-models-in-bedrock-cloudwatch-managed-collectors-for-prometheus-metrics-and-more-august-3-2026",
+   "published": "2026-08-03",
+   "published_ts": 1785773550.0,
+   "summary": "Last week I had the joy of participating in Amazon’s “Bring Your Kids to Work Day” with my 7 year old son. We commuted together into the New York City office, his first real rush hour train ride, and spent the day exploring how Amazon uses AI, machine learning, and robotics to deliver packages to […]",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon CloudWatch",
+    "Amazon S3 Tables",
+    "AWS IAM Identity Center",
+    "Week in Review"
+   ],
+   "tech_stack": [
+    "Express",
+    "Machine Learning",
+    "GPT",
+    "Data Lake",
+    "Iceberg",
+    "Kafka",
+    "Oracle",
+    "AWS",
+    "Observability",
+    "Prometheus",
+    "IoT",
+    "Security"
+   ],
+   "categories": [
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "데이터",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성",
+    "펌웨어/임베디드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "e60b4b2bd0ab84c2"
+  },
+  {
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
@@ -608,7 +652,7 @@
    "url": "https://blog.cloudflare.com/billable-usage-api",
    "published": "2026-08-03",
    "published_ts": 1785762000.0,
-   "summary": "Cloudflare has launched a new Billable Usage API for accounts, giving developers and FinOps teams single-endpoint programmatic visibility into cost and usage across all self-serve products. Built around the FOCUS specification, spend can now be tracked seamlessly alongside the rest of your cloud stack.",
+   "summary": "Cloudflare has launched a new Billable Usage API for accounts, giving developers and FinOps teams single-endpoint programmatic visibility into cost and usage across all self-serve products. Built around the FOCUS specification, track spend seamlessly alongside the rest of your cloud stack.",
    "tags": [
     "Agents Week",
     "API",
