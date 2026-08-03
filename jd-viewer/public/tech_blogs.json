@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-04T02:48:12",
- "total": 1052,
+ "generated_at": "2026-08-04T04:27:53",
+ "total": 1053,
  "sources": [
   {
    "company": "Etsy",
@@ -103,13 +103,13 @@
    "count": 19
   },
   {
-   "company": "우아한형제들",
-   "country": "KR",
-   "count": 16
-  },
-  {
    "company": "Meta",
    "country": "US",
+   "count": 17
+  },
+  {
+   "company": "우아한형제들",
+   "country": "KR",
    "count": 16
   },
   {
@@ -271,10 +271,11 @@
   "Trino": "데이터",
   "SolidJS": "프론트엔드",
   "WebRTC": "프론트엔드",
+  "Redux": "프론트엔드",
   "Flutter": "모바일",
   "MoE": "LLM/생성형",
-  "SQLite": "데이터베이스",
   "Iceberg": "데이터",
+  "SQLite": "데이터베이스",
   "Vector Search": "LLM/생성형",
   "Zero Trust": "보안",
   "Mistral": "LLM/생성형",
@@ -310,23 +311,24 @@
   "RAG": "LLM/생성형",
   "Shader": "그래픽/게임",
   "Hive": "데이터",
+  "Triton": "AI/ML",
   "Express": "백엔드",
   "Java": "언어",
-  "Triton": "AI/ML",
   "Istio": "인프라/클라우드",
   "Event Sourcing": "알고리즘/이론",
   "DDoS": "보안",
   "Fiber": "백엔드",
   "Blockchain": "블록체인",
   "Confluence": "협업/도구",
+  "GAN": "LLM/생성형",
   "GPT": "LLM/생성형",
   "LangChain": "LLM/생성형",
   "Data Structure": "알고리즘/이론",
   "CQRS": "알고리즘/이론",
   "Virtualization": "시스템/OS",
-  "Node.js": "백엔드",
-  "Concurrency": "알고리즘/이론",
   "State of the Art": "연구/논문",
+  "Concurrency": "알고리즘/이론",
+  "Node.js": "백엔드",
   "Distributed System": "알고리즘/이론",
   "arXiv": "연구/논문",
   "MapReduce": "알고리즘/이론",
@@ -524,6 +526,46 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "meta",
+   "company": "Meta",
+   "country": "US",
+   "title": "GEM Training: How Meta Doubled the Efficiency of Its LLM-Scale Ads Foundation Model",
+   "url": "https://engineering.fb.com/2026/08/03/ml-applications/training-gem-at-llm-scale-meta-ads-recommendation-foundation-model",
+   "published": "2026-08-03",
+   "published_ts": 1785780017.0,
+   "summary": "Meta’s Generative Ads Recommendation Model (GEM), the foundation model behind ads recommendations across Instagram and Facebook, now trains at LLM scale on several thousand of the latest-generation GPUs. This post goes into the details on how we achieved: doubling end-to-end (E2E) training efficiency to 20–25% Model FLOPs Utilization (MFU) while scaling training FLOPs 4x in [...]\n\nRead More...\n\nThe post GEM Training: How Meta Doubled the Efficiency of Its LLM-Scale Ads Foundation Model appeared first on Engineering at Meta.",
+   "tags": [
+    "AI Research",
+    "Data Infrastructure",
+    "ML Applications"
+   ],
+   "tech_stack": [
+    "Redux",
+    "CUDA",
+    "PyTorch",
+    "Triton",
+    "Attention Mechanism",
+    "Embedding",
+    "GAN",
+    "LLM",
+    "Quantization",
+    "Kernel",
+    "Memory Management",
+    "Compiler",
+    "State of the Art"
+   ],
+   "categories": [
+    "프론트엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "시스템/OS",
+    "알고리즘/이론",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "bff0c57bfb23c6d3"
+  },
   {
    "key": "aws",
    "company": "AWS",

@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **8741건** 공고 · **1678개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-04 02:48
+- 총 **8756건** 공고 · **1678개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-04 04:28
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -3851,7 +3851,7 @@ markmap:
   - [Senior AI/LLM Penetration Tester ↗](http://www.bishopfox.com/jobs?gh_jid=8069668)
 
 
-## B2B SaaS/엔터프라이즈 (243개사)
+## B2B SaaS/엔터프라이즈 (242개사)
 ### 메가존클라우드(주) `중견기업` · 63건
 - **백엔드** [13건] · `Python` `AWS` `Java` `Go` `Kubernetes` `Azure`
   - [Backend Developer / AI Research Engineer 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630)
@@ -3951,27 +3951,6 @@ markmap:
   - [Customer Engineer, AI, Google Cloud (Korean, English) ↗](https://www.wanted.co.kr/wd/370367)
 - **펌웨어/임베디드** [1건]
   - [Associate Google Cloud Learning Lead, gReach Program for People with Disabilities or Veterans (장애인 or 보훈대상자) (English, Korean) ↗](https://www.wanted.co.kr/wd/356868)
-
-### 업스테이지 `중견기업` · 15건
-- **백엔드** [8건] · `Python` `AWS` `GCP` `Azure` `Git` `Docker`
-  - [AI Research Engineer - Agents & Workflows ↗](https://www.wanted.co.kr/wd/267072)
-  - [(전문연구요원 신규편입 & 전직) AIRE - Agents & Workflows ↗](https://www.wanted.co.kr/wd/303570)
-  - [AI Agent Platform Engineering ↗](https://www.wanted.co.kr/wd/368946)
-  - [AI Engineer - Agents ↗](https://www.wanted.co.kr/wd/324230)
-- **AI/ML** [14건] · `Python` `Docker` `AWS` `GCP` `Azure` `Kubernetes`
-  - [AI Research Engineer - Agents & Workflows ↗](https://www.wanted.co.kr/wd/267072)
-  - [(전문연구요원 신규편입 & 전직) AIRE - Agents & Workflows ↗](https://www.wanted.co.kr/wd/303570)
-  - [(독파모) AI Model Production - LLM ↗](https://www.wanted.co.kr/wd/237208)
-  - [AI Agent Platform Engineering ↗](https://www.wanted.co.kr/wd/368946)
-- **DevOps/인프라** [6건] · `AWS` `GCP` `Python` `Docker` `Kubernetes` `Java`
-  - [AI Agent Platform Engineering ↗](https://www.wanted.co.kr/wd/368946)
-  - [Software Engineer - Console ↗](https://www.wanted.co.kr/wd/351850)
-  - [AI Solution Engineer - AI Pack partner success ↗](https://www.wanted.co.kr/wd/364631)
-  - [AI DevOps ↗](https://www.wanted.co.kr/wd/317451)
-- **펌웨어/임베디드** [1건]
-  - [Security Engineer ↗](https://www.wanted.co.kr/wd/358904)
-- **보안** [1건]
-  - [Security Engineer ↗](https://www.wanted.co.kr/wd/358904)
 
 ### 제논 `중소기업` · 11건
 - **백엔드** [3건] · `Kubernetes` `Python` `Linux` `React` `Django` `Flask`
@@ -8962,6 +8941,16 @@ markmap:
 - **DevOps/인프라** [1건] · `Java` `Python` `Go` `React` `Node.js` `Django`
   - [프론티어(Frontier) Developer ↗](https://www.wanted.co.kr/wd/356348)
 
+### 바이올렛페이 `중소기업` · 3건
+- **백엔드** [1건] · `TypeScript` `AWS` `GCP` `Kubernetes` `GitLab CI` `Kafka`
+  - [(point3) DevOps Engineer ↗](https://www.wanted.co.kr/wd/375642)
+- **프론트엔드** [1건] · `TypeScript` `React` `Cypress` `Git`
+  - [(point3) 프론트엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/367583)
+- **데이터** [1건] · `TypeScript` `AWS` `GCP` `Kubernetes` `GitLab CI` `Kafka`
+  - [(point3) DevOps Engineer ↗](https://www.wanted.co.kr/wd/375642)
+- **DevOps/인프라** [1건] · `TypeScript` `AWS` `GCP` `Kubernetes` `GitLab CI` `Kafka`
+  - [(point3) DevOps Engineer ↗](https://www.wanted.co.kr/wd/375642)
+
 ### 아이지넷(보닥) `중소기업` · 3건
 - **백엔드** [3건] · `TypeScript` `Jira` `Confluence` `Java` `PHP` `Node.js`
   - [React Native Frontend Engineer ↗](https://www.wanted.co.kr/wd/372362)
@@ -9207,16 +9196,6 @@ markmap:
   - [(Wordvice) Backend 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54615487&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=47fd880c-3dce-466c-917c-4d56c1e43b1b)
 - **AI/ML** [1건] · `Python` `FastAPI` `MySQL` `PostgreSQL` `OpenAI` `REST API`
   - [Backend 개발자 ↗](https://www.wanted.co.kr/wd/378073)
-
-### 바이올렛페이 `중소기업` · 2건
-- **백엔드** [1건] · `TypeScript` `AWS` `GCP` `Kubernetes` `GitLab CI` `Kafka`
-  - [(point3) DevOps Engineer ↗](https://www.wanted.co.kr/wd/375642)
-- **프론트엔드** [1건] · `TypeScript` `React` `Cypress` `Git`
-  - [(point3) 프론트엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/367583)
-- **데이터** [1건] · `TypeScript` `AWS` `GCP` `Kubernetes` `GitLab CI` `Kafka`
-  - [(point3) DevOps Engineer ↗](https://www.wanted.co.kr/wd/375642)
-- **DevOps/인프라** [1건] · `TypeScript` `AWS` `GCP` `Kubernetes` `GitLab CI` `Kafka`
-  - [(point3) DevOps Engineer ↗](https://www.wanted.co.kr/wd/375642)
 
 ### 앤톡(Antock) `중소기업` · 2건
 - **백엔드** [2건] · `GitLab CI` `TypeScript` `React` `Next.js` `HTML` `CSS`
@@ -9729,13 +9708,13 @@ markmap:
   - [AI운용혁신본부 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/562138?ReturnUrl=RecruitInfo)
 
 
-## AI/데이터 플랫폼 (114개사)
-### 미리디 `중소기업` · 30건
-- **백엔드** [7건] · `TypeScript` `PostgreSQL` `AWS` `Python` `React` `Docker`
+## AI/데이터 플랫폼 (115개사)
+### 미리디 `중소기업` · 31건
+- **백엔드** [8건] · `PostgreSQL` `TypeScript` `AWS` `MongoDB` `DynamoDB` `Python`
+  - [(미리캔버스) 시니어 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/278395)
   - [(미리캔버스) DevOps Engineer ↗](https://www.wanted.co.kr/wd/349598)
   - [(미리캔버스) 프론트엔드 개발자 (웹&에디터) ↗](https://www.wanted.co.kr/wd/337318)
   - [(미리캔버스) Product Engineer ↗](https://www.wanted.co.kr/wd/353860)
-  - [(미리캔버스) Node.js 개발자 (AI Agent) ↗](https://www.wanted.co.kr/wd/359674)
 - **프론트엔드** [9건] · `TypeScript` `React` `CSS` `JavaScript` `Next.js` `HTML`
   - [(미리캔버스) 시니어 프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/337323)
   - [(미리디) 프론트엔드 개발자 - 이미지 프로세싱 ↗](https://www.wanted.co.kr/wd/368161)
@@ -9744,11 +9723,11 @@ markmap:
 - **풀스택** [2건] · `TypeScript` `React` `PostgreSQL` `Docker` `OpenAI`
   - [(미리캔버스) Product Engineer ↗](https://www.wanted.co.kr/wd/353860)
   - [(미리캔버스) Product Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54116995&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=c3b86afb-cc1f-40f9-857c-49dfd60d5eef)
-- **AI/ML** [22건] · `TypeScript` `AWS` `Python` `React` `PostgreSQL` `Docker`
+- **AI/ML** [23건] · `TypeScript` `AWS` `Python` `React` `PostgreSQL` `Docker`
   - [(미리디) 프론트엔드 개발자 - 이미지 프로세싱 ↗](https://www.wanted.co.kr/wd/368161)
   - [(미리캔버스) 프론트엔드 개발자 (프로덕트) ↗](https://www.wanted.co.kr/wd/345787)
+  - [(미리캔버스) 시니어 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/278395)
   - [(미리디) 데이터 분석팀 리드 ↗](https://www.wanted.co.kr/wd/360588)
-  - [(미리캔버스) ML Engineer (Agentic AI & Search) ↗](https://www.wanted.co.kr/wd/372703)
 - **데이터** [6건] · `Python` `AWS` `Kafka` `TypeScript` `Node.js` `Kubernetes`
   - [(미리디) 데이터 분석팀 리드 ↗](https://www.wanted.co.kr/wd/360588)
   - [(미리디) 데이터 분석가 (Data Analyst) ↗](https://www.wanted.co.kr/wd/280517)
@@ -9787,6 +9766,27 @@ markmap:
   - [정보보안 담당자 (Data & Client Security) ↗](https://www.wanted.co.kr/wd/365094)
 - **보안** [1건] · `AWS` `OpenAI` `Linux` `방화벽` `백신` `ISO 27001`
   - [정보보안 담당자 (Data & Client Security) ↗](https://www.wanted.co.kr/wd/365094)
+
+### 업스테이지 `중견기업` · 16건
+- **백엔드** [8건] · `Python` `AWS` `GCP` `Azure` `Git` `Docker`
+  - [AI Research Engineer - Agents & Workflows ↗](https://www.wanted.co.kr/wd/267072)
+  - [(전문연구요원 신규편입 & 전직) AIRE - Agents & Workflows ↗](https://www.wanted.co.kr/wd/303570)
+  - [AI Agent Platform Engineering ↗](https://www.wanted.co.kr/wd/368946)
+  - [AI Engineer - Agents ↗](https://www.wanted.co.kr/wd/324230)
+- **AI/ML** [15건] · `Python` `Docker` `AWS` `GCP` `Azure` `Kubernetes`
+  - [AI Research Engineer - Agents & Workflows ↗](https://www.wanted.co.kr/wd/267072)
+  - [(전문연구요원 신규편입 & 전직) AIRE - Agents & Workflows ↗](https://www.wanted.co.kr/wd/303570)
+  - [(독파모) AI Model Production - LLM ↗](https://www.wanted.co.kr/wd/237208)
+  - [AI Agent Platform Engineering ↗](https://www.wanted.co.kr/wd/368946)
+- **DevOps/인프라** [6건] · `AWS` `GCP` `Python` `Docker` `Kubernetes` `Java`
+  - [AI Agent Platform Engineering ↗](https://www.wanted.co.kr/wd/368946)
+  - [Software Engineer - Console ↗](https://www.wanted.co.kr/wd/351850)
+  - [AI Solution Engineer - AI Pack partner success ↗](https://www.wanted.co.kr/wd/364631)
+  - [AI DevOps ↗](https://www.wanted.co.kr/wd/317451)
+- **펌웨어/임베디드** [1건]
+  - [Security Engineer ↗](https://www.wanted.co.kr/wd/358904)
+- **보안** [1건]
+  - [Security Engineer ↗](https://www.wanted.co.kr/wd/358904)
 
 ### (주)엑셈 `중소기업` · 16건
 - **백엔드** [11건] · `REST API` `Java` `Redis` `Spring` `PostgreSQL` `Docker`
