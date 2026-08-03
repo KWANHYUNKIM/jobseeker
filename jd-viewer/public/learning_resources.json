@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T20:03:05",
+  "generated_at": "2026-08-03T21:42:21",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -907,88 +907,6 @@
         "stage": "핵심"
       }
     ],
-    "MySQL": [
-      {
-        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
-        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
-        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 216234,
-        "length": "2:52:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MySQL 데이터베이스 한번에 끝내기 SQL Full Tutorial Course using MySQL Database",
-        "url": "https://www.youtube.com/watch?v=vgIc4ctNFbc",
-        "thumbnail": "https://i.ytimg.com/vi/vgIc4ctNFbc/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 234288,
-        "length": "1:11:11",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
-        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
-        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
-        "channel": "홍팍",
-        "views": 7881,
-        "length": "2:34:46",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "{풀스택} MySQL 01강 - SQL 한방에 정리하기 Part 1 - DCL, DDL",
-        "url": "https://www.youtube.com/watch?v=8oEE0fgXA4M",
-        "thumbnail": "https://i.ytimg.com/vi/8oEE0fgXA4M/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 2398,
-        "length": "34:53",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MySQL 기초 가이드",
-        "url": "https://www.youtube.com/watch?v=nxtgoVZYB0U",
-        "thumbnail": "https://i.ytimg.com/vi/nxtgoVZYB0U/mqdefault.jpg",
-        "channel": "알클 ALOHA CLASS",
-        "views": 36,
-        "length": "44:45",
-        "published": "스트리밍 시간: 8개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "01 강의 개요 및 MySQL 설치 - MySQL 따라하며 배우기",
-        "url": "https://www.youtube.com/watch?v=Zzjgd7nqkKo",
-        "thumbnail": "https://i.ytimg.com/vi/Zzjgd7nqkKo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 14363,
-        "length": "25:45",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MYSQL강의 -초급 CLASS-",
-        "url": "https://www.youtube.com/watch?v=Rc53VSXJbgI",
-        "thumbnail": "https://i.ytimg.com/vi/Rc53VSXJbgI/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 70,
-        "length": "32:34",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "40분만에 끝내는 서버 이론+실습. AWS, Nginx, Node.js, Mysql",
-        "url": "https://www.youtube.com/watch?v=8IGgeaLlYW8",
-        "thumbnail": "https://i.ytimg.com/vi/8IGgeaLlYW8/mqdefault.jpg",
-        "channel": "프로젝트 박스",
-        "views": 64205,
-        "length": "40:45",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "GCP": [
       {
         "title": "클라우드 업계 3위 구글의 GCP에 대해 알아보자! | 구글 GCP - 클라우드 입문과정 #11 ☁️",
@@ -1068,6 +986,88 @@
         "views": 303,
         "length": "28:13",
         "published": "7개월 전",
+        "stage": "실전"
+      }
+    ],
+    "MySQL": [
+      {
+        "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
+        "url": "https://www.youtube.com/watch?v=dgpBXNa9vJc",
+        "thumbnail": "https://i.ytimg.com/vi/dgpBXNa9vJc/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 216234,
+        "length": "2:52:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MySQL 데이터베이스 한번에 끝내기 SQL Full Tutorial Course using MySQL Database",
+        "url": "https://www.youtube.com/watch?v=vgIc4ctNFbc",
+        "thumbnail": "https://i.ytimg.com/vi/vgIc4ctNFbc/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 234288,
+        "length": "1:11:11",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "SQL, 데이터베이스 입문 기본편 | MySQL 무료 강의(왕초보용)",
+        "url": "https://www.youtube.com/watch?v=DoGlXWqKqBE",
+        "thumbnail": "https://i.ytimg.com/vi/DoGlXWqKqBE/mqdefault.jpg",
+        "channel": "홍팍",
+        "views": 7881,
+        "length": "2:34:46",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "{풀스택} MySQL 01강 - SQL 한방에 정리하기 Part 1 - DCL, DDL",
+        "url": "https://www.youtube.com/watch?v=8oEE0fgXA4M",
+        "thumbnail": "https://i.ytimg.com/vi/8oEE0fgXA4M/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 2398,
+        "length": "34:53",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MySQL 기초 가이드",
+        "url": "https://www.youtube.com/watch?v=nxtgoVZYB0U",
+        "thumbnail": "https://i.ytimg.com/vi/nxtgoVZYB0U/mqdefault.jpg",
+        "channel": "알클 ALOHA CLASS",
+        "views": 36,
+        "length": "44:45",
+        "published": "스트리밍 시간: 8개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "01 강의 개요 및 MySQL 설치 - MySQL 따라하며 배우기",
+        "url": "https://www.youtube.com/watch?v=Zzjgd7nqkKo",
+        "thumbnail": "https://i.ytimg.com/vi/Zzjgd7nqkKo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 14363,
+        "length": "25:45",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MYSQL강의 -초급 CLASS-",
+        "url": "https://www.youtube.com/watch?v=Rc53VSXJbgI",
+        "thumbnail": "https://i.ytimg.com/vi/Rc53VSXJbgI/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 70,
+        "length": "32:34",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "40분만에 끝내는 서버 이론+실습. AWS, Nginx, Node.js, Mysql",
+        "url": "https://www.youtube.com/watch?v=8IGgeaLlYW8",
+        "thumbnail": "https://i.ytimg.com/vi/8IGgeaLlYW8/mqdefault.jpg",
+        "channel": "프로젝트 박스",
+        "views": 64205,
+        "length": "40:45",
+        "published": "4년 전",
         "stage": "실전"
       }
     ],

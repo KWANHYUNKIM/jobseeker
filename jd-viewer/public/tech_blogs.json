@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-03T20:02:20",
- "total": 1045,
+ "generated_at": "2026-08-03T21:41:37",
+ "total": 1046,
  "sources": [
   {
    "company": "Etsy",
@@ -158,17 +158,17 @@
    "count": 13
   },
   {
+   "company": "Flipkart",
+   "country": "IN",
+   "count": 11
+  },
+  {
    "company": "Slack",
    "country": "US",
    "count": 10
   },
   {
    "company": "Swiggy",
-   "country": "IN",
-   "count": 10
-  },
-  {
-   "company": "Flipkart",
    "country": "IN",
    "count": 10
   },
@@ -524,6 +524,36 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "flipkart",
+   "company": "Flipkart",
+   "country": "IN",
+   "title": "LLMs for Relevance: Automating High-Quality Product Relevance Labeling in Flipkart Search",
+   "url": "https://blog.flipkart.tech/llms-for-relevance-automating-high-quality-product-relevance-labeling-in-flipkart-search-ddd5ca50b584",
+   "published": "2026-08-03",
+   "published_ts": 1785760003.0,
+   "summary": "Amey Patil , Shreya Malani· November 2025\n\nEvery product you see on a Flipkart search results page is there because a system decided it was relevant to what you typed. But how do we know those decisions are good? Someone — or something — has to look at a query and a product and judge: is this a good match or not? That judgment is the raw material we use to train and evaluate every search model we build. If the judgments are slow, expensive, or noisy, everything downstream suffers.\n\nThis article describes how we replaced a manual, human-driven labeling process with an LLM-based system — the Pro…",
+   "tags": [
+    "deep-learning",
+    "flipkart",
+    "llm",
+    "ai",
+    "data-science"
+   ],
+   "tech_stack": [
+    "Reinforcement Learning",
+    "Fine-tuning",
+    "LLM",
+    "Benchmark"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "6061093527936dee"
+  },
   {
    "key": "spotify-r",
    "company": "Spotify R&D",
