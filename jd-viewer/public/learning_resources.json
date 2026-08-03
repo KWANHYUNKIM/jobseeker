@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T21:42:21",
+  "generated_at": "2026-08-03T23:22:33",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -907,88 +907,6 @@
         "stage": "핵심"
       }
     ],
-    "GCP": [
-      {
-        "title": "클라우드 업계 3위 구글의 GCP에 대해 알아보자! | 구글 GCP - 클라우드 입문과정 #11 ☁️",
-        "url": "https://www.youtube.com/watch?v=pBRKkBpTXX0",
-        "thumbnail": "https://i.ytimg.com/vi/pBRKkBpTXX0/mqdefault.jpg",
-        "channel": "투마일스 - 2miles",
-        "views": 5445,
-        "length": "14:19",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Google Compute Engine 클라우드 서버 기본 배우기 - Chapter1 Clip04 GCP 리소스 구조",
-        "url": "https://www.youtube.com/watch?v=2gD_U4BvG5M",
-        "thumbnail": "https://i.ytimg.com/vi/2gD_U4BvG5M/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 136,
-        "length": "3:11",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[GCP] GCP - Google Cloud Platform 소개",
-        "url": "https://www.youtube.com/watch?v=fL1ngIHoJY8",
-        "thumbnail": "https://i.ytimg.com/vi/fL1ngIHoJY8/mqdefault.jpg",
-        "channel": "JT Studio",
-        "views": 730,
-        "length": "31:39",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] GCP의 API 사용법 소개 및 vision api와 translation api의 개발 적용 방법 소개",
-        "url": "https://www.youtube.com/watch?v=4NTLgco2_oQ",
-        "thumbnail": "https://i.ytimg.com/vi/4NTLgco2_oQ/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 248,
-        "length": "15:02",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1-3강. CSP란? AWS·Azure·GCP를 묶는 이름",
-        "url": "https://www.youtube.com/watch?v=yzyyx0gzj7M",
-        "thumbnail": "https://i.ytimg.com/vi/yzyyx0gzj7M/mqdefault.jpg",
-        "channel": "감테크",
-        "views": 177,
-        "length": "3:30",
-        "published": "10개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[구글 클라우드 X 메가존] GCP를 이용한 통합 로그분석 시스템 설계 방법",
-        "url": "https://www.youtube.com/watch?v=maF8Mh59b08",
-        "thumbnail": "https://i.ytimg.com/vi/maF8Mh59b08/mqdefault.jpg",
-        "channel": "MegazoneSoft",
-        "views": 312,
-        "length": "1:03:54",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[GCP] GCP Google Cloud Platform   컨테이너와 앱 개발, 배포 및 모니터링",
-        "url": "https://www.youtube.com/watch?v=p5bgTxmmtxs",
-        "thumbnail": "https://i.ytimg.com/vi/p5bgTxmmtxs/mqdefault.jpg",
-        "channel": "JT Studio",
-        "views": 506,
-        "length": "45:57",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "GCP IAM 완벽 가이드: 서비스 계정/역할/권한 개념부터 Python BigQuery SDK 실습까지",
-        "url": "https://www.youtube.com/watch?v=S0YhCW05z4Y",
-        "thumbnail": "https://i.ytimg.com/vi/S0YhCW05z4Y/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 303,
-        "length": "28:13",
-        "published": "7개월 전",
-        "stage": "실전"
-      }
-    ],
     "MySQL": [
       {
         "title": "왕초보용! 갖고 노는 MySQL 데이터베이스 강좌",
@@ -1068,6 +986,88 @@
         "views": 64205,
         "length": "40:45",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "GCP": [
+      {
+        "title": "클라우드 업계 3위 구글의 GCP에 대해 알아보자! | 구글 GCP - 클라우드 입문과정 #11 ☁️",
+        "url": "https://www.youtube.com/watch?v=pBRKkBpTXX0",
+        "thumbnail": "https://i.ytimg.com/vi/pBRKkBpTXX0/mqdefault.jpg",
+        "channel": "투마일스 - 2miles",
+        "views": 5445,
+        "length": "14:19",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Google Compute Engine 클라우드 서버 기본 배우기 - Chapter1 Clip04 GCP 리소스 구조",
+        "url": "https://www.youtube.com/watch?v=2gD_U4BvG5M",
+        "thumbnail": "https://i.ytimg.com/vi/2gD_U4BvG5M/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 136,
+        "length": "3:11",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[GCP] GCP - Google Cloud Platform 소개",
+        "url": "https://www.youtube.com/watch?v=fL1ngIHoJY8",
+        "thumbnail": "https://i.ytimg.com/vi/fL1ngIHoJY8/mqdefault.jpg",
+        "channel": "JT Studio",
+        "views": 730,
+        "length": "31:39",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] GCP의 API 사용법 소개 및 vision api와 translation api의 개발 적용 방법 소개",
+        "url": "https://www.youtube.com/watch?v=4NTLgco2_oQ",
+        "thumbnail": "https://i.ytimg.com/vi/4NTLgco2_oQ/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 248,
+        "length": "15:02",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1-3강. CSP란? AWS·Azure·GCP를 묶는 이름",
+        "url": "https://www.youtube.com/watch?v=yzyyx0gzj7M",
+        "thumbnail": "https://i.ytimg.com/vi/yzyyx0gzj7M/mqdefault.jpg",
+        "channel": "감테크",
+        "views": 177,
+        "length": "3:30",
+        "published": "10개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[구글 클라우드 X 메가존] GCP를 이용한 통합 로그분석 시스템 설계 방법",
+        "url": "https://www.youtube.com/watch?v=maF8Mh59b08",
+        "thumbnail": "https://i.ytimg.com/vi/maF8Mh59b08/mqdefault.jpg",
+        "channel": "MegazoneSoft",
+        "views": 312,
+        "length": "1:03:54",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[GCP] GCP Google Cloud Platform   컨테이너와 앱 개발, 배포 및 모니터링",
+        "url": "https://www.youtube.com/watch?v=p5bgTxmmtxs",
+        "thumbnail": "https://i.ytimg.com/vi/p5bgTxmmtxs/mqdefault.jpg",
+        "channel": "JT Studio",
+        "views": 506,
+        "length": "45:57",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "GCP IAM 완벽 가이드: 서비스 계정/역할/권한 개념부터 Python BigQuery SDK 실습까지",
+        "url": "https://www.youtube.com/watch?v=S0YhCW05z4Y",
+        "thumbnail": "https://i.ytimg.com/vi/S0YhCW05z4Y/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 303,
+        "length": "28:13",
+        "published": "7개월 전",
         "stage": "실전"
       }
     ],

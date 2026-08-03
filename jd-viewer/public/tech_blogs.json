@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-03T21:41:37",
- "total": 1046,
+ "generated_at": "2026-08-03T23:21:47",
+ "total": 1051,
  "sources": [
   {
    "company": "Etsy",
@@ -8,14 +8,14 @@
    "count": 81
   },
   {
+   "company": "Cloudflare",
+   "country": "US",
+   "count": 61
+  },
+  {
    "company": "Stack Overflow",
    "country": "US",
    "count": 60
-  },
-  {
-   "company": "Cloudflare",
-   "country": "US",
-   "count": 56
   },
   {
    "company": "GitHub",
@@ -273,8 +273,8 @@
   "WebRTC": "프론트엔드",
   "Flutter": "모바일",
   "MoE": "LLM/생성형",
-  "Iceberg": "데이터",
   "SQLite": "데이터베이스",
+  "Iceberg": "데이터",
   "Vector Search": "LLM/생성형",
   "Zero Trust": "보안",
   "Mistral": "LLM/생성형",
@@ -325,8 +325,8 @@
   "CQRS": "알고리즘/이론",
   "Virtualization": "시스템/OS",
   "Node.js": "백엔드",
-  "State of the Art": "연구/논문",
   "Concurrency": "알고리즘/이론",
+  "State of the Art": "연구/논문",
   "Distributed System": "알고리즘/이론",
   "arXiv": "연구/논문",
   "MapReduce": "알고리즘/이론",
@@ -486,13 +486,13 @@
   "File System": "시스템/OS",
   "Airflow": "데이터",
   "Android": "모바일",
-  "Ablation Study": "연구/논문",
   "WebAssembly": "프론트엔드",
+  "Ablation Study": "연구/논문",
   "Web3": "블록체인",
   "Ruby": "언어",
   "Unity": "그래픽/게임",
-  "Vector Database": "데이터베이스",
   "Oracle": "데이터베이스",
+  "Vector Database": "데이터베이스",
   "Spring Boot": "백엔드",
   "Service Mesh": "인프라/클라우드",
   "Saga Pattern": "알고리즘/이론",
@@ -524,6 +524,184 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Your agent needs a computer, not a container — introducing @cloudflare/computer",
+   "url": "https://blog.cloudflare.com/cloudflare-computer",
+   "published": "2026-08-03",
+   "published_ts": 1785762924.0,
+   "summary": "Agents need more than just a container to scale. We're introducing @cloudflare/computer, an agent runtime that dynamically orchestrates between fast, efficient isolates and full Linux containers to give every agent a computer of its own.",
+   "tags": [
+    "Agents",
+    "Agents Week",
+    "AI",
+    "Cloudflare Workers",
+    "Containers"
+   ],
+   "tech_stack": [
+    "Bash",
+    "JavaScript",
+    "AI Agent",
+    "Prompt Engineering",
+    "SQLite",
+    "Cloudflare",
+    "File System",
+    "Linux",
+    "Consensus",
+    "Git"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "시스템/OS",
+    "알고리즘/이론",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "6522dfbb2ee3fad4"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Cloudflare Workers and Containers now support inbound TCP connections and gRPC",
+   "url": "https://blog.cloudflare.com/grpc-workers",
+   "published": "2026-08-03",
+   "published_ts": 1785762000.0,
+   "summary": "Cloudflare Workers now support inbound TCP connections via Spectrum, allowing direct socket forwarding to Durable Objects and Containers. Developers can run full-duplex gRPC applications or leverage automatic gRPC-to-gRPC-web translation directly within Workers.",
+   "tags": [
+    "Agents Week",
+    "Cloudflare Workers",
+    "Containers",
+    "Developers",
+    "gRPC",
+    "Product News"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "Kotlin",
+    "gRPC",
+    "Protobuf",
+    "WebSocket",
+    "Cloudflare",
+    "Security",
+    "WAF"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "5c8c3f9f413d7670"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Introducing the Billable Usage API: programmatic cost visibility for Cloudflare",
+   "url": "https://blog.cloudflare.com/billable-usage-api",
+   "published": "2026-08-03",
+   "published_ts": 1785762000.0,
+   "summary": "Cloudflare has launched a new Billable Usage API for accounts, giving developers and FinOps teams single-endpoint programmatic visibility into cost and usage across all self-serve products. Built around the FOCUS specification, spend can now be tracked seamlessly alongside the rest of your cloud stack.",
+   "tags": [
+    "Agents Week",
+    "API",
+    "Billing",
+    "Developers",
+    "Engineering",
+    "Product News"
+   ],
+   "tech_stack": [
+    "Anomaly Detection",
+    "Claude",
+    "GPT",
+    "Model Context Protocol",
+    "Oracle",
+    "AWS",
+    "Azure",
+    "Cloudflare",
+    "GCP"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "fb1e9b75e4abf179"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Smaller, faster, safer: running Kimi and GLM at scale",
+   "url": "https://blog.cloudflare.com/smaller-faster-safer-models",
+   "published": "2026-08-03",
+   "published_ts": 1785762000.0,
+   "summary": "Serving frontier models like Kimi and GLM means fighting for GPU memory. Here's how we quantize KV caches, compress model weights, and add integrity checks to serve them faster, cheaper, and safely.",
+   "tags": [
+    "Agents Week",
+    "AI",
+    "Developers",
+    "Inference",
+    "Quantization",
+    "Workers AI"
+   ],
+   "tech_stack": [
+    "Cloudflare",
+    "Kernel",
+    "Concurrency",
+    "Benchmark"
+   ],
+   "categories": [
+    "인프라/클라우드",
+    "시스템/OS",
+    "알고리즘/이론",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "f98a3c9edeb8198b"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Workers RPC now works across Python and JavaScript",
+   "url": "https://blog.cloudflare.com/python-workers-rpc",
+   "published": "2026-08-03",
+   "published_ts": 1785762000.0,
+   "summary": "One coding agent can write a Python Worker and another can write a JavaScript Worker. At runtime, those Workers can exchange references to live objects and call their methods without defining APIs, schemas, or serialization code",
+   "tags": [
+    "Agents Week",
+    "Cloudflare Workers",
+    "Developers",
+    "Python Workers",
+    "RPC"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "Python",
+    "TypeScript",
+    "WebAssembly",
+    "Protobuf",
+    "Cloudflare"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "백엔드",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "02e8605bc0d6301c"
+  },
   {
    "key": "flipkart",
    "company": "Flipkart",
