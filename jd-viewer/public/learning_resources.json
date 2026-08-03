@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T18:23:40",
+  "generated_at": "2026-08-03T20:03:05",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -1399,88 +1399,6 @@
         "stage": "핵심"
       }
     ],
-    "C++": [
-      {
-        "title": "[C++ 특강] C plus plus 프로그래밍 배우기 c++ 강좌 기초 강의 연산자  컴파일러",
-        "url": "https://www.youtube.com/watch?v=JoAdRwJi-GI",
-        "thumbnail": "https://i.ytimg.com/vi/JoAdRwJi-GI/mqdefault.jpg",
-        "channel": "IB 96",
-        "views": 121835,
-        "length": "50:09",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "모던 C++  배열, 이렇게 쓰세요.  강의 강좌 프로그래밍 11강",
-        "url": "https://www.youtube.com/watch?v=rv0iBKFQF_I",
-        "thumbnail": "https://i.ytimg.com/vi/rv0iBKFQF_I/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 4062,
-        "length": "3:06",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[무료] 코테용 C++ 핵심 정리 무료 강의 - 핵심적인 내용만 간추려서 빠르게 훑어볼 수 있는 3시간 완강가능! [홍정모 연구소]",
-        "url": "https://www.youtube.com/watch?v=UqCZda8DLGc",
-        "thumbnail": "https://i.ytimg.com/vi/UqCZda8DLGc/mqdefault.jpg",
-        "channel": "홍정모",
-        "views": 71365,
-        "length": "3:18:02",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
-        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
-        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 1526891,
-        "length": "5:44",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C++ 언어 배우는 데 걸리는 시간, C++ 사용하고 있는 산업 (코딩 효과적으로 공부하는 방법)",
-        "url": "https://www.youtube.com/watch?v=FPqCG0tk1hM",
-        "thumbnail": "https://i.ytimg.com/vi/FPqCG0tk1hM/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 28326,
-        "length": "4:02",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자로의 기로에 서게 했던 ... C언어 포인터 문제 (from 정보처리기사 정처기 문제)",
-        "url": "https://www.youtube.com/watch?v=k6HPjMyVJy0",
-        "thumbnail": "https://i.ytimg.com/vi/k6HPjMyVJy0/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 162206,
-        "length": "10:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[C/C++ 강좌] 54강. 클래스 = 구조체??",
-        "url": "https://www.youtube.com/watch?v=iIQXlLv_yHI",
-        "thumbnail": "https://i.ytimg.com/vi/iIQXlLv_yHI/mqdefault.jpg",
-        "channel": "두들낙서",
-        "views": 55379,
-        "length": "14:58",
-        "published": "9년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[C++ 프로그래밍] 게임 만들기 실습 - 6. Class - Part 1 (1)",
-        "url": "https://www.youtube.com/watch?v=fT7JBLTo-hQ",
-        "thumbnail": "https://i.ytimg.com/vi/fT7JBLTo-hQ/mqdefault.jpg",
-        "channel": "김형기",
-        "views": 763,
-        "length": "11:28",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Node.js": [
       {
         "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
@@ -1560,6 +1478,88 @@
         "views": 90367,
         "length": "7:58",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "C++": [
+      {
+        "title": "[C++ 특강] C plus plus 프로그래밍 배우기 c++ 강좌 기초 강의 연산자  컴파일러",
+        "url": "https://www.youtube.com/watch?v=JoAdRwJi-GI",
+        "thumbnail": "https://i.ytimg.com/vi/JoAdRwJi-GI/mqdefault.jpg",
+        "channel": "IB 96",
+        "views": 121835,
+        "length": "50:09",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "모던 C++  배열, 이렇게 쓰세요.  강의 강좌 프로그래밍 11강",
+        "url": "https://www.youtube.com/watch?v=rv0iBKFQF_I",
+        "thumbnail": "https://i.ytimg.com/vi/rv0iBKFQF_I/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 4062,
+        "length": "3:06",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[무료] 코테용 C++ 핵심 정리 무료 강의 - 핵심적인 내용만 간추려서 빠르게 훑어볼 수 있는 3시간 완강가능! [홍정모 연구소]",
+        "url": "https://www.youtube.com/watch?v=UqCZda8DLGc",
+        "thumbnail": "https://i.ytimg.com/vi/UqCZda8DLGc/mqdefault.jpg",
+        "channel": "홍정모",
+        "views": 71365,
+        "length": "3:18:02",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
+        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
+        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 1526891,
+        "length": "5:44",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C++ 언어 배우는 데 걸리는 시간, C++ 사용하고 있는 산업 (코딩 효과적으로 공부하는 방법)",
+        "url": "https://www.youtube.com/watch?v=FPqCG0tk1hM",
+        "thumbnail": "https://i.ytimg.com/vi/FPqCG0tk1hM/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 28326,
+        "length": "4:02",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자로의 기로에 서게 했던 ... C언어 포인터 문제 (from 정보처리기사 정처기 문제)",
+        "url": "https://www.youtube.com/watch?v=k6HPjMyVJy0",
+        "thumbnail": "https://i.ytimg.com/vi/k6HPjMyVJy0/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 162206,
+        "length": "10:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[C/C++ 강좌] 54강. 클래스 = 구조체??",
+        "url": "https://www.youtube.com/watch?v=iIQXlLv_yHI",
+        "thumbnail": "https://i.ytimg.com/vi/iIQXlLv_yHI/mqdefault.jpg",
+        "channel": "두들낙서",
+        "views": 55379,
+        "length": "14:58",
+        "published": "9년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[C++ 프로그래밍] 게임 만들기 실습 - 6. Class - Part 1 (1)",
+        "url": "https://www.youtube.com/watch?v=fT7JBLTo-hQ",
+        "thumbnail": "https://i.ytimg.com/vi/fT7JBLTo-hQ/mqdefault.jpg",
+        "channel": "김형기",
+        "views": 763,
+        "length": "11:28",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -6135,6 +6135,88 @@
         "stage": "실전"
       }
     ],
+    "Selenium": [
+      {
+        "title": "Selenium 웹 자동화 기초",
+        "url": "https://www.youtube.com/watch?v=qRQ_EG7Nk0Q",
+        "thumbnail": "https://i.ytimg.com/vi/qRQ_EG7Nk0Q/mqdefault.jpg",
+        "channel": "코드잇",
+        "views": 142,
+        "length": "3:57",
+        "published": "5개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[크롤링 강의] 2. 크롤링 기본 (BeautifulSoup ~ Selenium)",
+        "url": "https://www.youtube.com/watch?v=yBIMoq8ZS_M",
+        "thumbnail": "https://i.ytimg.com/vi/yBIMoq8ZS_M/mqdefault.jpg",
+        "channel": "PlayDev",
+        "views": 183,
+        "length": "23:59",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 크롤링 첫 시작!  Selenium 준비하기",
+        "url": "https://www.youtube.com/watch?v=KLvI4TMYNLM",
+        "thumbnail": "https://i.ytimg.com/vi/KLvI4TMYNLM/mqdefault.jpg",
+        "channel": "데이터공방_Datago0ba0",
+        "views": 6014,
+        "length": "14:04",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 셀레니움 네이버 로그인을 만들면서 배우는 웹사이트 자동화 기초  # selenium 설치 # 자동 입력 방지 # 로그인 캡챠",
+        "url": "https://www.youtube.com/watch?v=fy107mUHapQ",
+        "thumbnail": "https://i.ytimg.com/vi/fy107mUHapQ/mqdefault.jpg",
+        "channel": "스타트코딩",
+        "views": 27485,
+        "length": "17:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Selenium 강의",
+        "url": "https://www.youtube.com/watch?v=izIJY3WGn6k",
+        "thumbnail": "https://i.ytimg.com/vi/izIJY3WGn6k/mqdefault.jpg",
+        "channel": "BASIL",
+        "views": 70,
+        "length": "23:09",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "requests로 잘 안되는 페이지 셀레늄(selenium)으로 크롤링 하기",
+        "url": "https://www.youtube.com/watch?v=K0oS25fVnHM",
+        "thumbnail": "https://i.ytimg.com/vi/K0oS25fVnHM/mqdefault.jpg",
+        "channel": "Kyeongrok Kim",
+        "views": 3261,
+        "length": "15:23",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 자동화 selenium 사용법 브라우저 매크로 프로그램 만들기",
+        "url": "https://www.youtube.com/watch?v=ZFmTwbRQ0uc",
+        "thumbnail": "https://i.ytimg.com/vi/ZFmTwbRQ0uc/mqdefault.jpg",
+        "channel": "프로그래머 김플 스튜디오",
+        "views": 95239,
+        "length": "12:09",
+        "published": "6년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[SWTT] Selenium을 활용한 Web Scraping 실습 - 배민",
+        "url": "https://www.youtube.com/watch?v=qrnrd4dJsTs",
+        "thumbnail": "https://i.ytimg.com/vi/qrnrd4dJsTs/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 107,
+        "length": "28:39",
+        "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
     "Scala": [
       {
         "title": "🎈스칼라 기초 강의🎉 몰아보기 #1 - 이거 하나면 끝!!! Scala Basics tutorial",
@@ -6359,88 +6441,6 @@
         "length": "12:34",
         "published": "8개월 전",
         "stage": "핵심"
-      }
-    ],
-    "Selenium": [
-      {
-        "title": "Selenium 웹 자동화 기초",
-        "url": "https://www.youtube.com/watch?v=qRQ_EG7Nk0Q",
-        "thumbnail": "https://i.ytimg.com/vi/qRQ_EG7Nk0Q/mqdefault.jpg",
-        "channel": "코드잇",
-        "views": 142,
-        "length": "3:57",
-        "published": "5개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[크롤링 강의] 2. 크롤링 기본 (BeautifulSoup ~ Selenium)",
-        "url": "https://www.youtube.com/watch?v=yBIMoq8ZS_M",
-        "thumbnail": "https://i.ytimg.com/vi/yBIMoq8ZS_M/mqdefault.jpg",
-        "channel": "PlayDev",
-        "views": 183,
-        "length": "23:59",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 크롤링 첫 시작!  Selenium 준비하기",
-        "url": "https://www.youtube.com/watch?v=KLvI4TMYNLM",
-        "thumbnail": "https://i.ytimg.com/vi/KLvI4TMYNLM/mqdefault.jpg",
-        "channel": "데이터공방_Datago0ba0",
-        "views": 6014,
-        "length": "14:04",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 셀레니움 네이버 로그인을 만들면서 배우는 웹사이트 자동화 기초  # selenium 설치 # 자동 입력 방지 # 로그인 캡챠",
-        "url": "https://www.youtube.com/watch?v=fy107mUHapQ",
-        "thumbnail": "https://i.ytimg.com/vi/fy107mUHapQ/mqdefault.jpg",
-        "channel": "스타트코딩",
-        "views": 27485,
-        "length": "17:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Selenium 강의",
-        "url": "https://www.youtube.com/watch?v=izIJY3WGn6k",
-        "thumbnail": "https://i.ytimg.com/vi/izIJY3WGn6k/mqdefault.jpg",
-        "channel": "BASIL",
-        "views": 70,
-        "length": "23:09",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "requests로 잘 안되는 페이지 셀레늄(selenium)으로 크롤링 하기",
-        "url": "https://www.youtube.com/watch?v=K0oS25fVnHM",
-        "thumbnail": "https://i.ytimg.com/vi/K0oS25fVnHM/mqdefault.jpg",
-        "channel": "Kyeongrok Kim",
-        "views": 3261,
-        "length": "15:23",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 자동화 selenium 사용법 브라우저 매크로 프로그램 만들기",
-        "url": "https://www.youtube.com/watch?v=ZFmTwbRQ0uc",
-        "thumbnail": "https://i.ytimg.com/vi/ZFmTwbRQ0uc/mqdefault.jpg",
-        "channel": "프로그래머 김플 스튜디오",
-        "views": 95239,
-        "length": "12:09",
-        "published": "6년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[SWTT] Selenium을 활용한 Web Scraping 실습 - 배민",
-        "url": "https://www.youtube.com/watch?v=qrnrd4dJsTs",
-        "thumbnail": "https://i.ytimg.com/vi/qrnrd4dJsTs/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 107,
-        "length": "28:39",
-        "published": "5년 전",
-        "stage": "실전"
       }
     ],
     "HuggingFace": [
@@ -11117,6 +11117,88 @@
         "stage": "실전"
       }
     ],
+    "Appium": [
+      {
+        "title": "Appium part 1 | Full Mobile automation using Cucumber for beginner tutorial",
+        "url": "https://www.youtube.com/watch?v=GTfnEHDNRTk",
+        "thumbnail": "https://i.ytimg.com/vi/GTfnEHDNRTk/mqdefault.jpg",
+        "channel": "Automation School",
+        "views": 4986,
+        "length": "1:09:43",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[zoom] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
+        "url": "https://www.youtube.com/watch?v=-hCCxhI7d8c",
+        "thumbnail": "https://i.ytimg.com/vi/-hCCxhI7d8c/mqdefault.jpg",
+        "channel": "달새는 달만 생각한다",
+        "views": 464,
+        "length": "1:07:07",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ifland] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
+        "url": "https://www.youtube.com/watch?v=7hAgs3JW8yQ",
+        "thumbnail": "https://i.ytimg.com/vi/7hAgs3JW8yQ/mqdefault.jpg",
+        "channel": "달새는 달만 생각한다",
+        "views": 170,
+        "length": "56:43",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Appium Tutorial 1 |  What is Appium-(Introduction to Appium)",
+        "url": "https://www.youtube.com/watch?v=XxL_lsPXB2U",
+        "thumbnail": "https://i.ytimg.com/vi/XxL_lsPXB2U/mqdefault.jpg",
+        "channel": "AppiumGuide",
+        "views": 357,
+        "length": "11:35",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "8 - NativeScript testing with Appium",
+        "url": "https://www.youtube.com/watch?v=Ns7boY6XNC0",
+        "thumbnail": "https://i.ytimg.com/vi/Ns7boY6XNC0/mqdefault.jpg",
+        "channel": "NativeScript",
+        "views": 1536,
+        "length": "38:17",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lecture 1 - Appium Tutorial in Java  | Android and iOS automation",
+        "url": "https://www.youtube.com/watch?v=vWKV8uJjFFw",
+        "thumbnail": "https://i.ytimg.com/vi/vWKV8uJjFFw/mqdefault.jpg",
+        "channel": "Sagar S (Vishal)",
+        "views": 690,
+        "length": "7:03",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Appium Tutorial 1: Appium for Mobile App Testing | Introduction to Mobile Testing and Appium",
+        "url": "https://www.youtube.com/watch?v=yTW7hZZfTYo",
+        "thumbnail": "https://i.ytimg.com/vi/yTW7hZZfTYo/mqdefault.jpg",
+        "channel": "SDET- QA",
+        "views": 441611,
+        "length": "16:56",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기본 학교 | Appium 작동 방식 | Appium 아키텍처 | 단계별 설명",
+        "url": "https://www.youtube.com/watch?v=EH9zzKT4guE",
+        "thumbnail": "https://i.ytimg.com/vi/EH9zzKT4guE/mqdefault.jpg",
+        "channel": "Automation Step by Step",
+        "views": 110599,
+        "length": "8:31",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "Mocha": [
       {
         "title": "Mocha  Beginners",
@@ -11852,88 +11934,6 @@
         "views": 55,
         "length": "3:29",
         "published": "3개월 전",
-        "stage": "실전"
-      }
-    ],
-    "Appium": [
-      {
-        "title": "Appium part 1 | Full Mobile automation using Cucumber for beginner tutorial",
-        "url": "https://www.youtube.com/watch?v=GTfnEHDNRTk",
-        "thumbnail": "https://i.ytimg.com/vi/GTfnEHDNRTk/mqdefault.jpg",
-        "channel": "Automation School",
-        "views": 4986,
-        "length": "1:09:43",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[zoom] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
-        "url": "https://www.youtube.com/watch?v=-hCCxhI7d8c",
-        "thumbnail": "https://i.ytimg.com/vi/-hCCxhI7d8c/mqdefault.jpg",
-        "channel": "달새는 달만 생각한다",
-        "views": 464,
-        "length": "1:07:07",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ifland] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
-        "url": "https://www.youtube.com/watch?v=7hAgs3JW8yQ",
-        "thumbnail": "https://i.ytimg.com/vi/7hAgs3JW8yQ/mqdefault.jpg",
-        "channel": "달새는 달만 생각한다",
-        "views": 170,
-        "length": "56:43",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Appium Tutorial 1 |  What is Appium-(Introduction to Appium)",
-        "url": "https://www.youtube.com/watch?v=XxL_lsPXB2U",
-        "thumbnail": "https://i.ytimg.com/vi/XxL_lsPXB2U/mqdefault.jpg",
-        "channel": "AppiumGuide",
-        "views": 357,
-        "length": "11:35",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "8 - NativeScript testing with Appium",
-        "url": "https://www.youtube.com/watch?v=Ns7boY6XNC0",
-        "thumbnail": "https://i.ytimg.com/vi/Ns7boY6XNC0/mqdefault.jpg",
-        "channel": "NativeScript",
-        "views": 1536,
-        "length": "38:17",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lecture 1 - Appium Tutorial in Java  | Android and iOS automation",
-        "url": "https://www.youtube.com/watch?v=vWKV8uJjFFw",
-        "thumbnail": "https://i.ytimg.com/vi/vWKV8uJjFFw/mqdefault.jpg",
-        "channel": "Sagar S (Vishal)",
-        "views": 690,
-        "length": "7:03",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Appium Tutorial 1: Appium for Mobile App Testing | Introduction to Mobile Testing and Appium",
-        "url": "https://www.youtube.com/watch?v=yTW7hZZfTYo",
-        "thumbnail": "https://i.ytimg.com/vi/yTW7hZZfTYo/mqdefault.jpg",
-        "channel": "SDET- QA",
-        "views": 441611,
-        "length": "16:56",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기본 학교 | Appium 작동 방식 | Appium 아키텍처 | 단계별 설명",
-        "url": "https://www.youtube.com/watch?v=EH9zzKT4guE",
-        "thumbnail": "https://i.ytimg.com/vi/EH9zzKT4guE/mqdefault.jpg",
-        "channel": "Automation Step by Step",
-        "views": 110599,
-        "length": "8:31",
-        "published": "7년 전",
         "stage": "실전"
       }
     ],
