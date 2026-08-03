@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-04T04:28:42",
+  "generated_at": "2026-08-04T06:08:22",
   "source": "youtube",
   "tech_count": 199,
   "curriculum_count": 20,
@@ -6289,6 +6289,88 @@
         "stage": "실전"
       }
     ],
+    "HuggingFace": [
+      {
+        "title": "HuggingFace 처음이라면? 🤗 허깅페이스로 할 수 있는 일?분류, 번역, 요약, 개체명인식, 마스크채우기.. 그리고 또 뭐가 있더라? 트랜스포머 모델 활용법",
+        "url": "https://www.youtube.com/watch?v=xbQ0DIJA0Bc",
+        "thumbnail": "https://i.ytimg.com/vi/xbQ0DIJA0Bc/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 25100,
+        "length": "20:23",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "🤗 #huggingface 에 공개된 오픈모델을 💻 로컬PC 에서 빠르게 실행🔥 해보고 테스트 하는 방법 + 모델 서빙🚀 + 업무자동화🤖 에 적용하는 방법까지!",
+        "url": "https://www.youtube.com/watch?v=bANQk--Maxs",
+        "thumbnail": "https://i.ytimg.com/vi/bANQk--Maxs/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 33424,
+        "length": "35:50",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "김현중_KoNLPy를 이용하여 Huggingface Transformers 학습하기",
+        "url": "https://www.youtube.com/watch?v=pSHWutoTu6I",
+        "thumbnail": "https://i.ytimg.com/vi/pSHWutoTu6I/mqdefault.jpg",
+        "channel": "Language",
+        "views": 2617,
+        "length": "52:19",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "허깅페이스 트랜스포머를 활용한 감성분석 (Sentiment Analysis Using Huggingface Transformer)",
+        "url": "https://www.youtube.com/watch?v=7utJC7zdeh4",
+        "thumbnail": "https://i.ytimg.com/vi/7utJC7zdeh4/mqdefault.jpg",
+        "channel": "해피AI | HAPPY AI",
+        "views": 1021,
+        "length": "2:57",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[인공지능 친해지기] Hugging Face (10)데이터 분석을 위한 데이터프레임 변환 방법",
+        "url": "https://www.youtube.com/watch?v=gfdBBwk0STA",
+        "thumbnail": "https://i.ytimg.com/vi/gfdBBwk0STA/mqdefault.jpg",
+        "channel": "AI 회계사 - Dream Factory ",
+        "views": 343,
+        "length": "11:04",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[인공지능,머신러닝,딥러닝] (심화) HuggingFace BERT 코드 구조 훑어보기",
+        "url": "https://www.youtube.com/watch?v=DnlkgaLg5eE",
+        "thumbnail": "https://i.ytimg.com/vi/DnlkgaLg5eE/mqdefault.jpg",
+        "channel": "컴달인 - 컴퓨터 달인",
+        "views": 574,
+        "length": "15:01",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "🔥Private #chatgpt 🔥 나만의 ChatGPT 만들기 (HuggingFace Open LLM 활용)",
+        "url": "https://www.youtube.com/watch?v=aECwQqBWfJM",
+        "thumbnail": "https://i.ytimg.com/vi/aECwQqBWfJM/mqdefault.jpg",
+        "channel": "테디노트 TeddyNote",
+        "views": 15472,
+        "length": "15:01",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "02.Hugging Face Transformers 라이브러리 완벽 가이드",
+        "url": "https://www.youtube.com/watch?v=INJbj5X6mps",
+        "thumbnail": "https://i.ytimg.com/vi/INJbj5X6mps/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 64,
+        "length": "9:41",
+        "published": "4개월 전",
+        "stage": "실전"
+      }
+    ],
     "NoSQL": [
       {
         "title": "NoSQL MONGODB  몽고디비 입문강좌 #12 집계함수 맵리듀스 -1",
@@ -6431,88 +6513,6 @@
         "length": "12:34",
         "published": "8개월 전",
         "stage": "핵심"
-      }
-    ],
-    "HuggingFace": [
-      {
-        "title": "HuggingFace 처음이라면? 🤗 허깅페이스로 할 수 있는 일?분류, 번역, 요약, 개체명인식, 마스크채우기.. 그리고 또 뭐가 있더라? 트랜스포머 모델 활용법",
-        "url": "https://www.youtube.com/watch?v=xbQ0DIJA0Bc",
-        "thumbnail": "https://i.ytimg.com/vi/xbQ0DIJA0Bc/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 25100,
-        "length": "20:23",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "🤗 #huggingface 에 공개된 오픈모델을 💻 로컬PC 에서 빠르게 실행🔥 해보고 테스트 하는 방법 + 모델 서빙🚀 + 업무자동화🤖 에 적용하는 방법까지!",
-        "url": "https://www.youtube.com/watch?v=bANQk--Maxs",
-        "thumbnail": "https://i.ytimg.com/vi/bANQk--Maxs/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 33424,
-        "length": "35:50",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "김현중_KoNLPy를 이용하여 Huggingface Transformers 학습하기",
-        "url": "https://www.youtube.com/watch?v=pSHWutoTu6I",
-        "thumbnail": "https://i.ytimg.com/vi/pSHWutoTu6I/mqdefault.jpg",
-        "channel": "Language",
-        "views": 2617,
-        "length": "52:19",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "허깅페이스 트랜스포머를 활용한 감성분석 (Sentiment Analysis Using Huggingface Transformer)",
-        "url": "https://www.youtube.com/watch?v=7utJC7zdeh4",
-        "thumbnail": "https://i.ytimg.com/vi/7utJC7zdeh4/mqdefault.jpg",
-        "channel": "해피AI | HAPPY AI",
-        "views": 1021,
-        "length": "2:57",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[인공지능 친해지기] Hugging Face (10)데이터 분석을 위한 데이터프레임 변환 방법",
-        "url": "https://www.youtube.com/watch?v=gfdBBwk0STA",
-        "thumbnail": "https://i.ytimg.com/vi/gfdBBwk0STA/mqdefault.jpg",
-        "channel": "AI 회계사 - Dream Factory ",
-        "views": 343,
-        "length": "11:04",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[인공지능,머신러닝,딥러닝] (심화) HuggingFace BERT 코드 구조 훑어보기",
-        "url": "https://www.youtube.com/watch?v=DnlkgaLg5eE",
-        "thumbnail": "https://i.ytimg.com/vi/DnlkgaLg5eE/mqdefault.jpg",
-        "channel": "컴달인 - 컴퓨터 달인",
-        "views": 574,
-        "length": "15:01",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "🔥Private #chatgpt 🔥 나만의 ChatGPT 만들기 (HuggingFace Open LLM 활용)",
-        "url": "https://www.youtube.com/watch?v=aECwQqBWfJM",
-        "thumbnail": "https://i.ytimg.com/vi/aECwQqBWfJM/mqdefault.jpg",
-        "channel": "테디노트 TeddyNote",
-        "views": 15472,
-        "length": "15:01",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "02.Hugging Face Transformers 라이브러리 완벽 가이드",
-        "url": "https://www.youtube.com/watch?v=INJbj5X6mps",
-        "thumbnail": "https://i.ytimg.com/vi/INJbj5X6mps/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 64,
-        "length": "9:41",
-        "published": "4개월 전",
-        "stage": "실전"
       }
     ],
     "DeepLearning": [
