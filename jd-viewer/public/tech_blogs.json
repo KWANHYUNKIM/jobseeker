@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-03T14:52:51",
- "total": 1044,
+ "generated_at": "2026-08-03T16:33:48",
+ "total": 1045,
  "sources": [
   {
    "company": "Etsy",
@@ -215,7 +215,7 @@
   {
    "company": "Spotify R&D",
    "country": "US",
-   "count": 5
+   "count": 6
   }
  ],
  "categories": [
@@ -524,6 +524,24 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "spotify-r",
+   "company": "Spotify R&D",
+   "country": "US",
+   "title": "From Models to Products: LLMs for Recommendation at Spotify Scale",
+   "url": "https://research.atspotify.com/2026/8/from-models-to-products-llms-for-recommendation-at-spotify-scale",
+   "published": "2026-08-03",
+   "published_ts": 1785737433.0,
+   "summary": "Recommender systems have become a regular part of our lives, from the home pages of our favorite apps and...\n\nThe post From Models to Products: LLMs for Recommendation at Spotify Scale appeared first on Spotify Engineering.",
+   "tags": [
+    "Artificial Intelligence",
+    "Search &amp; Recommendations"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "bc45de1a1af2f732"
+  },
   {
    "key": "cyberagent",
    "company": "CyberAgent",
