@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-04T09:34:00",
- "total": 1055,
+ "generated_at": "2026-08-04T11:13:23",
+ "total": 1056,
  "sources": [
   {
    "company": "Etsy",
@@ -118,6 +118,11 @@
    "count": 16
   },
   {
+   "company": "당근",
+   "country": "KR",
+   "count": 15
+  },
+  {
    "company": "Airbnb",
    "country": "US",
    "count": 14
@@ -125,11 +130,6 @@
   {
    "company": "Pinterest",
    "country": "US",
-   "count": 14
-  },
-  {
-   "company": "당근",
-   "country": "KR",
    "count": 14
   },
   {
@@ -378,8 +378,8 @@
   "ClickHouse": "데이터베이스",
   "CLIP": "LLM/생성형",
   "Qdrant": "데이터베이스",
-  "MySQL": "데이터베이스",
   "Notion": "협업/도구",
+  "MySQL": "데이터베이스",
   "AI Agent": "LLM/생성형",
   "Nuxt": "프론트엔드",
   "Julia": "언어",
@@ -526,6 +526,39 @@
   "vLLM": "LLM/생성형"
  },
  "posts": [
+  {
+   "key": "daangn",
+   "company": "당근",
+   "country": "KR",
+   "title": "실험을 더 편하게 설계할 수 있게: 당근 실험플랫폼 이야기",
+   "url": "https://medium.com/daangn/%EC%8B%A4%ED%97%98%EC%9D%84-%EB%8D%94-%ED%8E%B8%ED%95%98%EA%B2%8C-%EC%84%A4%EA%B3%84%ED%95%A0-%EC%88%98-%EC%9E%88%EA%B2%8C-%EB%8B%B9%EA%B7%BC-%EC%8B%A4%ED%97%98%ED%94%8C%EB%9E%AB%ED%8F%BC-%EC%9D%B4%EC%95%BC%EA%B8%B0-3fa344b4391b",
+   "published": "2026-08-04",
+   "published_ts": 1785807268.0,
+   "summary": "안녕하세요. 당근 데이터 가치화팀이에요.\n\n저희 팀은 ‘매일 데이터를 통해 사용자를 위한 의사결정을 해요’라는 비전 아래, 전사 구성원이 데이터로 더 나은 결정을 내릴 수 있도록 인프라와 도구들을 만들고 있어요. 그중 하나가 실험플랫폼이에요. 어떤 안이 더 나은지 A/B 테스트로 검증할 수 있도록, 실험의 설계부터 결과 분석까지 한곳에서 지원하는 사내 플랫폼이죠.\n\n약 3년 전, 100+ 팀원의 의사결정에 영향을 주는 Data Scientist, Decision : 실험플랫폼에서 실험플랫폼이 처음 만들어진 과정을 소개한 적이 있어요. 그때는 누적 실험이 350여 개, 실험 오너가 80여 명 수준이었어요. 지금은 누적 실험 4,600여 개, 실험 오너 280여 명, 활성 도메인도 중고거래·검색·피드·커뮤니티·동네생활·광고·알바·중고차 등 60여 개에 달해요. 월간으로 보면 당시 20개 수준이던 진행 실험이 지금은 290여 개로 약 14배 늘었어요. 규모가 커진 만큼 운영 방식을 어떻게 바꿔야 할지 고민도 점점 커졌어요.\n\n실험이 늘어나며 마주한 두 가지 문제\n\n첫째, 실험 한 사이클을 완료하기까지 너무 오랜 시간이 걸렸어요. 매주 수십 건의 실험이 진행되는 환…",
+   "tags": [
+    "data"
+   ],
+   "tech_stack": [
+    "SQL",
+    "Time Series",
+    "Claude",
+    "LLM",
+    "Model Context Protocol",
+    "Data Pipeline",
+    "BigQuery",
+    "Notion"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "데이터",
+    "데이터베이스",
+    "협업/도구"
+   ],
+   "lang": "ko",
+   "content_id": "00526edd25f7a199"
+  },
   {
    "key": "meta",
    "company": "Meta",
