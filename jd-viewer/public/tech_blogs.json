@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-04T07:46:28",
- "total": 1053,
+ "generated_at": "2026-08-04T09:34:00",
+ "total": 1055,
  "sources": [
   {
    "company": "Etsy",
@@ -108,6 +108,11 @@
    "count": 17
   },
   {
+   "company": "카카오",
+   "country": "KR",
+   "count": 16
+  },
+  {
    "company": "우아한형제들",
    "country": "KR",
    "count": 16
@@ -120,11 +125,6 @@
   {
    "company": "Pinterest",
    "country": "US",
-   "count": 14
-  },
-  {
-   "company": "카카오",
-   "country": "KR",
    "count": 14
   },
   {
@@ -458,10 +458,10 @@
   "Deep Learning": "AI/ML",
   "Binary Search": "알고리즘/이론",
   "ETL": "데이터",
-  "SQL Injection": "보안",
+  "Multimodal": "LLM/생성형",
   "Azure": "인프라/클라우드",
   "Jira": "협업/도구",
-  "Multimodal": "LLM/생성형",
+  "SQL Injection": "보안",
   "Attention Mechanism": "LLM/생성형",
   "MQTT": "펌웨어/임베디드",
   "LSM Tree": "알고리즘/이론",
@@ -609,6 +609,48 @@
    ],
    "lang": "en",
    "content_id": "e60b4b2bd0ab84c2"
+  },
+  {
+   "key": "kakao",
+   "company": "카카오",
+   "country": "KR",
+   "title": "Beyond AI That Speaks Well: Making Kanana-o Speak the Way Users Want",
+   "url": "https://tech.kakao.com/posts/828",
+   "published": "2026-08-03",
+   "published_ts": 1785769200.0,
+   "summary": "Hello, we are Martin (Daejin Jo), Abigail (Heayoung Park), and Edwin (Wooyoung Kang) from Kanana, the team responsible for developing AI models at Kakao. Our team focuses on building unified multimodal language models that can see, hear, and speak like hu...",
+   "tags": [
+    "blog"
+   ],
+   "tech_stack": [
+    "Multimodal"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "87fb43b63a410f40"
+  },
+  {
+   "key": "kakao",
+   "company": "카카오",
+   "country": "KR",
+   "title": "잘 말하는 AI를 넘어, 원하는 대로 말하는 AI로: Kanana-o 음성 생성 고도화 과정",
+   "url": "https://tech.kakao.com/posts/827",
+   "published": "2026-08-03",
+   "published_ts": 1785769200.0,
+   "summary": "Intro\n안녕하세요, 카카오의 AI 모델 개발을 담당하는 카나나(Kanana) 조직의 Martin(조대진), Abigail(박혜영), Edwin(강우영)입니다. 저희 팀에서는 사람처럼 보고, 듣고, 말하는 통합 멀티모달(Multimodal) 언어모델을 중점적으로 개발하고 있습니다.\n지난 5월, 국내 최초로 공개한 통합 멀티모달 언어모델 공개 이후, 저희는 실제 서비스 환경에서 더 나은 사용자 경험을 제공하기 위해 계속해서 모델을 고도화하고 있습니다 ....",
+   "tags": [
+    "blog"
+   ],
+   "tech_stack": [
+    "Multimodal"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "ko",
+   "content_id": "d1cf399592a81546"
   },
   {
    "key": "cloudflare",
