@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-05T20:52:48",
- "total": 1073,
+ "generated_at": "2026-08-05T22:44:54",
+ "total": 1078,
  "sources": [
   {
    "company": "Etsy",
@@ -10,7 +10,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 68
+   "count": 73
   },
   {
    "company": "Stack Overflow",
@@ -354,10 +354,10 @@
   "Qwik": "프론트엔드",
   "SQL": "언어",
   "Quantization": "LLM/생성형",
-  "PostgreSQL": "데이터베이스",
-  "Confluence": "협업/도구",
-  "SQLite": "데이터베이스",
   "Oracle": "데이터베이스",
+  "Confluence": "협업/도구",
+  "PostgreSQL": "데이터베이스",
+  "SQLite": "데이터베이스",
   "MySQL": "데이터베이스",
   "Netlify": "인프라/클라우드",
   "C++": "언어",
@@ -365,6 +365,7 @@
   "Game Engine": "그래픽/게임",
   "Keras": "AI/ML",
   "ARM": "펌웨어/임베디드",
+  "SIEM": "보안",
   "HTML": "프론트엔드",
   "Snowflake": "데이터베이스",
   "CI/CD": "인프라/클라우드",
@@ -562,6 +563,197 @@
    ],
    "lang": "ko",
    "content_id": "28392ffb960a48f6"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "The Agent Access Model",
+   "url": "https://blog.cloudflare.com/the-agent-access-model",
+   "published": "2026-08-05",
+   "published_ts": 1785934841.0,
+   "summary": "The Agent Access Model proposes a new architecture to secure task-scoped agents using strict identity brokering, continuous mediation, and stateful trust.",
+   "tags": [
+    "Agents",
+    "Agents Week",
+    "AI",
+    "Identity",
+    "Product News",
+    "SASE",
+    "Zero Trust"
+   ],
+   "tech_stack": [
+    "React",
+    "Express",
+    "Jetpack Compose",
+    "Anomaly Detection",
+    "LLM",
+    "Model Context Protocol",
+    "OpenTelemetry",
+    "OAuth",
+    "Security",
+    "SIEM",
+    "Zero Trust"
+   ],
+   "categories": [
+    "프론트엔드",
+    "백엔드",
+    "모바일",
+    "AI/ML",
+    "LLM/생성형",
+    "관측성",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "f3c5450081e7825d"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Cloudflare OS: an open platform for agents, apps, and work",
+   "url": "https://blog.cloudflare.com/cloudflare-os",
+   "published": "2026-08-05",
+   "published_ts": 1785934800.0,
+   "summary": "Cloudflare OS is an open-source platform that lets everyone in your company build apps, automate work, and safely access internal systems, shaped around what your organization knows and how it operates",
+   "tags": [
+    "Agents",
+    "Agents Week",
+    "AI",
+    "Cloudflare Access",
+    "Cloudflare OS",
+    "Cloudflare Workers",
+    "Developer Platform",
+    "Developers"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "TypeScript",
+    "Model Context Protocol",
+    "SQLite",
+    "Cloudflare",
+    "OAuth",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "5635c460a4833766"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "How we’re rethinking work at Cloudflare with Cloudflare OS",
+   "url": "https://blog.cloudflare.com/how-we-use-ai-with-cloudflare-os",
+   "published": "2026-08-05",
+   "published_ts": 1785934800.0,
+   "summary": "We built Cloudflare OS to equip our teams to safely rethink how they get work done with AI. The platform brings together the best of our technologies, from our Compute primitives to our Zero Trust suite. This post walks through our journey to give our users the best AI tools available.",
+   "tags": [
+    "Agents Week",
+    "AI",
+    "Cloudflare OS",
+    "Developer Platform",
+    "Developers",
+    "SASE",
+    "Zero Trust"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Embedding",
+    "Model Context Protocol",
+    "Cloudflare",
+    "Serverless",
+    "Security",
+    "Zero Trust",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a508453538276e2d"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "WriteGuard: fine-grained controls for MCP Servers",
+   "url": "https://blog.cloudflare.com/mcp-portal-writeguard-private-beta",
+   "published": "2026-08-05",
+   "published_ts": 1785934800.0,
+   "summary": "At Cloudflare, we knew we could not depend on every employee to configure every agent perfectly or watch every tool call. Before expanding write access across our own internal MCP servers, we built WriteGuard. We are now bringing those controls to Cloudflare MCP server portals through a private beta.",
+   "tags": [
+    "Agents",
+    "Agents Week",
+    "Cloudflare One",
+    "Developer Platform",
+    "Developers",
+    "MCP"
+   ],
+   "tech_stack": [
+    "TypeScript",
+    "AI Agent",
+    "Model Context Protocol",
+    "Cloudflare",
+    "OAuth",
+    "Jira",
+    "Monorepo"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "e0167327af718af4"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Catching rogue AI behavior with identity-aware analytics",
+   "url": "https://blog.cloudflare.com/identity-aware-ai-gateway",
+   "published": "2026-08-05",
+   "published_ts": 1785934800.0,
+   "summary": "Identity-aware AI Gateway is now in open beta. User Insights turns that traffic into a behavioral baseline for every person and agent, and flags insider risk the moment it appears.",
+   "tags": [
+    "Agents",
+    "Agents Week",
+    "AI",
+    "AI Gateway",
+    "Developer Platform",
+    "Developers",
+    "Product News"
+   ],
+   "tech_stack": [
+    "Rails",
+    "Anomaly Detection",
+    "Machine Learning",
+    "Claude",
+    "Cloudflare",
+    "Authentication",
+    "Security"
+   ],
+   "categories": [
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "74188bc25acfcf38"
   },
   {
    "key": "stackoverflow",
