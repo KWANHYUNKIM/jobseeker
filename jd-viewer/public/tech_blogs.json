@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-05T22:44:54",
- "total": 1078,
+ "generated_at": "2026-08-06T00:23:46",
+ "total": 1080,
  "sources": [
   {
    "company": "Etsy",
@@ -23,14 +23,14 @@
    "count": 54
   },
   {
-   "company": "SoundCloud",
-   "country": "DE",
+   "company": "AWS",
+   "country": "US",
    "count": 47
   },
   {
-   "company": "AWS",
-   "country": "US",
-   "count": 46
+   "company": "SoundCloud",
+   "country": "DE",
+   "count": 47
   },
   {
    "company": "LINE",
@@ -123,6 +123,11 @@
    "count": 15
   },
   {
+   "company": "Razorpay",
+   "country": "IN",
+   "count": 14
+  },
+  {
    "company": "Airbnb",
    "country": "US",
    "count": 14
@@ -145,11 +150,6 @@
   {
    "company": "Dropbox",
    "country": "US",
-   "count": 13
-  },
-  {
-   "company": "Razorpay",
-   "country": "IN",
    "count": 13
   },
   {
@@ -252,8 +252,8 @@
   "Virtualization": "시스템/OS",
   "systemd": "시스템/OS",
   "Security": "보안",
-  "Express": "백엔드",
   "Prometheus": "관측성",
+  "Express": "백엔드",
   "Unity": "그래픽/게임",
   "Kubeflow": "AI/ML",
   "Vector Database": "데이터베이스",
@@ -287,8 +287,8 @@
   "LLM": "LLM/생성형",
   "Tailwind": "프론트엔드",
   "GraphQL": "백엔드",
-  "Edge Computing": "펌웨어/임베디드",
   "Embedding": "LLM/생성형",
+  "Edge Computing": "펌웨어/임베디드",
   "pgvector": "데이터베이스",
   "gRPC": "백엔드",
   "Spring Boot": "백엔드",
@@ -529,6 +529,72 @@
  },
  "posts": [
   {
+   "key": "razorpay",
+   "company": "Razorpay",
+   "country": "IN",
+   "title": "CI Doesn’t Need On-Demand: Moving Our Build Pipelines to Spot Instances",
+   "url": "https://engineering.razorpay.com/ci-doesnt-need-on-demand-moving-our-build-pipelines-to-spot-instances-6fff1cd92ba8",
+   "published": "2026-08-05",
+   "published_ts": 1785942455.0,
+   "summary": "Contributors: Guptaanuj\n\nCI/CD pipelines have always had a money-vs-stability problem. Run on-demand AWS instances and your build infrastructure is rock solid, expensive, and predictable. Run on spot instances and your costs drop 70–90%, but AWS can pull the rug with 2 minutes of warning.\n\nFor most teams, this is a false choice. Either pay full price for reliability, or save money and accept that builds will fail in ways nobody can debug.\n\nAt Razorpay, we stopped accepting that trade-off. We built a self-healing infrastructure layer for GitHub Actions on Kubernetes that runs 80% of our CI work…",
+   "tags": [],
+   "tech_stack": [
+    "Flask",
+    "AWS",
+    "CI/CD",
+    "GitHub Actions",
+    "Kubernetes",
+    "Prometheus"
+   ],
+   "categories": [
+    "백엔드",
+    "인프라/클라우드",
+    "관측성"
+   ],
+   "lang": "en",
+   "content_id": "2de518e8da7e28fe"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "Amazon DynamoDB now supports real-time vector search at any scale",
+   "url": "https://aws.amazon.com/blogs/aws/amazon-dynamodb-now-supports-real-time-vector-search-at-any-scale",
+   "published": "2026-08-05",
+   "published_ts": 1785941110.0,
+   "summary": "DynamoDB now supports native vector search with single-digit millisecond latency at 99%+ recall. It is designed for any scale, even trillions of vectors and requires zero infrastructure management.",
+   "tags": [
+    "Amazon DynamoDB",
+    "Announcements",
+    "Artificial Intelligence",
+    "Database",
+    "Generative AI",
+    "Launch",
+    "News"
+   ],
+   "tech_stack": [
+    "Anomaly Detection",
+    "Machine Learning",
+    "AI Agent",
+    "Embedding",
+    "Model Context Protocol",
+    "RAG",
+    "Vector Search",
+    "DynamoDB",
+    "Vector Database",
+    "AWS",
+    "Serverless"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "2645b6ca7349ca46"
+  },
+  {
    "key": "naver-d2",
    "company": "네이버 D2",
    "country": "KR",
@@ -611,6 +677,43 @@
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
+   "title": "How we’re rethinking work at Cloudflare with Cloudflare OS",
+   "url": "https://blog.cloudflare.com/how-we-use-ai-with-cloudflare-os",
+   "published": "2026-08-05",
+   "published_ts": 1785934801.0,
+   "summary": "We built Cloudflare OS to equip our teams to safely rethink how they get work done with AI. The platform brings together the best of our technologies, from our Compute primitives to our Zero Trust suite. This post walks through our journey to give our users the best AI tools available.",
+   "tags": [
+    "Agents Week",
+    "AI",
+    "Cloudflare OS",
+    "Developer Platform",
+    "Developers",
+    "SASE",
+    "Zero Trust"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Embedding",
+    "Model Context Protocol",
+    "Cloudflare",
+    "Serverless",
+    "Security",
+    "Zero Trust",
+    "Git"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a508453538276e2d"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
    "title": "Cloudflare OS: an open platform for agents, apps, and work",
    "url": "https://blog.cloudflare.com/cloudflare-os",
    "published": "2026-08-05",
@@ -644,43 +747,6 @@
    ],
    "lang": "en",
    "content_id": "5635c460a4833766"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "How we’re rethinking work at Cloudflare with Cloudflare OS",
-   "url": "https://blog.cloudflare.com/how-we-use-ai-with-cloudflare-os",
-   "published": "2026-08-05",
-   "published_ts": 1785934800.0,
-   "summary": "We built Cloudflare OS to equip our teams to safely rethink how they get work done with AI. The platform brings together the best of our technologies, from our Compute primitives to our Zero Trust suite. This post walks through our journey to give our users the best AI tools available.",
-   "tags": [
-    "Agents Week",
-    "AI",
-    "Cloudflare OS",
-    "Developer Platform",
-    "Developers",
-    "SASE",
-    "Zero Trust"
-   ],
-   "tech_stack": [
-    "AI Agent",
-    "Embedding",
-    "Model Context Protocol",
-    "Cloudflare",
-    "Serverless",
-    "Security",
-    "Zero Trust",
-    "Git"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "a508453538276e2d"
   },
   {
    "key": "cloudflare",
