@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9123건** 공고 · **1728개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-08 19:33
+- 총 **9128건** 공고 · **1728개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-08 21:20
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -804,6 +804,19 @@ markmap:
 - **보안** [1건]
   - [정보보안 인증 컨설팅 및 기술 영업 담당자 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/562176?ReturnUrl=RecruitInfo)
 
+### 판옵티콘 `중소기업` · 4건
+- **백엔드** [4건] · `Java` `Git` `REST API` `Go` `React` `Flutter`
+  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
+  - [백엔드 개발 / 서비스 기획·설계 담당 ↗](https://www.wanted.co.kr/wd/379278)
+  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
+  - [(판옵티콘) 백엔드 개발 / 서비스 기획·설계 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54671486&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1c7bbe9d-e855-4a65-9b2c-2b02034ee0b0)
+- **프론트엔드** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
+  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
+  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
+- **모바일** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
+  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
+  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
+
 ### 이코드 `중소기업` · 4건
 - **백엔드** [2건] · `JavaScript` `TypeScript` `React` `HTML` `CSS` `Node.js`
   - [소프트웨어 개발자 ↗](https://www.wanted.co.kr/wd/372518)
@@ -1270,18 +1283,6 @@ markmap:
   - [(서북 / 포토이즘) Fullstack Developer 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53636609&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=2e8df514-a355-42f8-93d7-cff7b66fac7b)
 - **보안** [1건]
   - [(포토이즘) 정보보안 업무 보조 및 지원 (인턴) 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/548415?ReturnUrl=RecruitInfo)
-
-### (주)판옵티콘 `중소기업` · 3건
-- **백엔드** [3건] · `Java` `Git` `REST API` `Go` `React` `Flutter`
-  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
-  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
-  - [(판옵티콘) 백엔드 개발 / 서비스 기획·설계 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54671486&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=1c7bbe9d-e855-4a65-9b2c-2b02034ee0b0)
-- **프론트엔드** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
-  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
-  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
-- **모바일** [2건] · `Java` `React` `Flutter` `AWS` `GCP` `Git`
-  - [서비스 개발자 (백엔드) ↗](https://www.wanted.co.kr/wd/360759)
-  - [주식회사 판옵티콘 - 서비스 개발자(백엔드) 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53853313&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c0480ca4-4358-45dc-8b10-cb583fd68b9c)
 
 ### 제이와이피엔터테인먼트(JYP) `중소기업` · 3건
 - **백엔드** [1건] · `TypeScript` `React` `Next.js` `React Native` `GraphQL` `REST API`
@@ -4003,12 +4004,12 @@ markmap:
   - [클라우드 보안 엔지니어(Cloud Security Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53791610&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41ed72c1-2440-483b-972c-1bd0dab6c667)
   - [클라우드 보안 엔지니어 (신입 지원 가능) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54383300&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=0c88f686-ae52-4d5d-9e14-f5e6118ef408)
 
-### 엑스에이아이 (xAI) `중소기업` · 30건
+### 엑스에이아이 (xAI) `중소기업` · 31건
 - **백엔드** [1건] · `Rust` `Swift` `iOS` `gRPC`
   - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
 - **모바일** [1건] · `Rust` `Swift` `iOS` `gRPC`
   - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
-- **AI/ML** [28건] · `Rust` `Swift` `iOS` `gRPC`
+- **AI/ML** [29건] · `Rust` `Swift` `iOS` `gRPC`
   - [Mobile iOS Engineer ↗](https://www.wanted.co.kr/wd/357273)
   - [AI Tutor - Audio Editing ↗](https://www.wanted.co.kr/wd/357201)
   - [AI Tutor - Russian ↗](https://www.wanted.co.kr/wd/358640)
@@ -17372,6 +17373,28 @@ markmap:
   - [Backend Engineer (Fleet Management System) ↗](https://www.wanted.co.kr/wd/364803)
   - [Senior Cloud Infra Engineer (DevOps, SRE) ↗](https://www.wanted.co.kr/wd/369049)
 
+### 인피닉 `중소기업` · 11건
+- **백엔드** [3건]
+  - [((주)인피닉) AI연구소 BackEnd 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54649344&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=69e65df1-65c0-4fa8-97b2-158e698aad6b)
+  - [(인피닉)AI연구소 백엔드 구축 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54398618&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=104f3b62-2715-4cc7-b157-b5e7d7fada8c)
+  - [AI연구소 백엔드 구축 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54683607&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=f88b9558-e6e7-40d2-81dd-de6b3f26646a)
+- **프론트엔드** [1건]
+  - [((주)인피닉) AI연구소 FrontEnd 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54649497&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d7eb4454-1640-492c-87d9-faac4341f872)
+- **모바일** [4건] · `Python` `C++` `Android`
+  - [(수원/IVI) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54534366)
+  - [(수원/AVN) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54257114)
+  - [(수원/AVN) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54257043)
+  - [(수원/IVI) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54256944)
+- **AI/ML** [1건] · `Python` `C++` `PyTorch` `Linux` `Windows` `Embedded`
+  - [AI 응용개발 경력직 채용 ↗](https://jumpit.saramin.co.kr/position/54505775)
+- **펌웨어/임베디드** [1건] · `Python` `C++` `PyTorch` `Linux` `Windows` `Embedded`
+  - [AI 응용개발 경력직 채용 ↗](https://jumpit.saramin.co.kr/position/54505775)
+- **QA** [6건] · `Python` `C++` `Android`
+  - [(수원/IVI) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54534366)
+  - [(수원/AVN) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54257114)
+  - [(수원/AVN) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54257043)
+  - [(수원/IVI) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54256944)
+
 ### 스트라드비젼(STRADVISION) `중소기업` · 10건
 - **백엔드** [1건] · `React` `AWS`
   - [Frontend Engineer (3D Graphics) ↗](https://www.wanted.co.kr/wd/361257)
@@ -17391,27 +17414,6 @@ markmap:
   - [Sr. Control Algorithm Engineer ↗](https://www.wanted.co.kr/wd/301801)
   - [Sr. Deep Learning Algorithm Engineer ↗](https://www.wanted.co.kr/wd/315756)
   - [Sr. Embedded AI Engineer ↗](https://www.wanted.co.kr/wd/338867)
-
-### 인피닉 `중소기업` · 10건
-- **백엔드** [2건]
-  - [((주)인피닉) AI연구소 BackEnd 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54649344&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=69e65df1-65c0-4fa8-97b2-158e698aad6b)
-  - [(인피닉)AI연구소 백엔드 구축 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54398618&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=104f3b62-2715-4cc7-b157-b5e7d7fada8c)
-- **프론트엔드** [1건]
-  - [((주)인피닉) AI연구소 FrontEnd 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54649497&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d7eb4454-1640-492c-87d9-faac4341f872)
-- **모바일** [4건] · `Python` `C++` `Android`
-  - [(수원/IVI) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54534366)
-  - [(수원/AVN) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54257114)
-  - [(수원/AVN) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54257043)
-  - [(수원/IVI) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54256944)
-- **AI/ML** [1건] · `Python` `C++` `PyTorch` `Linux` `Windows` `Embedded`
-  - [AI 응용개발 경력직 채용 ↗](https://jumpit.saramin.co.kr/position/54505775)
-- **펌웨어/임베디드** [1건] · `Python` `C++` `PyTorch` `Linux` `Windows` `Embedded`
-  - [AI 응용개발 경력직 채용 ↗](https://jumpit.saramin.co.kr/position/54505775)
-- **QA** [6건] · `Python` `C++` `Android`
-  - [(수원/IVI) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54534366)
-  - [(수원/AVN) SW 테스트 엔지니어(QA) 경력 채용 ↗](https://jumpit.saramin.co.kr/position/54257114)
-  - [(수원/AVN) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54257043)
-  - [(수원/IVI) SW 테스트 엔지니어(QA) 신입 채용 ↗](https://jumpit.saramin.co.kr/position/54256944)
 
 ### 네비웍스 `중소기업` · 8건
 - **백엔드** [4건] · `Python` `Docker` `Linux` `JavaScript` `React` `MSA`
