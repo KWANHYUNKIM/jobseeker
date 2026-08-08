@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9092건** 공고 · **1726개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 05:42
+- 총 **9093건** 공고 · **1726개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 07:20
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -18222,6 +18222,10 @@ markmap:
 
 
 ## 여행/숙박 (20개사)
+### 펜타시큐리티 `중소기업` · 8건
+- **보안** [1건]
+  - [정보보안 R&D 연구 담당자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54256578&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=13a84419-7d17-4303-ba3c-606a29ab23e1)
+
 ### 진이어스 `중견기업` · 7건
 - **백엔드** [3건] · `PHP` `Laravel` `MySQL` `AWS` `React` `Next.js`
   - [풀스택 개발자 (5년 이상) ↗](https://www.wanted.co.kr/wd/362144)
@@ -18237,10 +18241,6 @@ markmap:
   - [풀스택 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54088257)
 - **DevOps/인프라** [1건] · `PHP` `Laravel` `MySQL` `AWS` `Infra`
   - [백엔드 개발자 채용 ↗](https://jumpit.saramin.co.kr/position/54088234)
-
-### 펜타시큐리티 `중소기업` · 7건
-- **보안** [1건]
-  - [정보보안 R&D 연구 담당자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54256578&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=13a84419-7d17-4303-ba3c-606a29ab23e1)
 
 ### 에이치투오호스피탈리티 `중소기업` · 5건
 - **백엔드** [4건] · `Java` `Spring` `Go` `Spring Boot` `MySQL` `Oracle`
