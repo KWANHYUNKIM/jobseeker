@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9086건** 공고 · **1724개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 02:17
+- 총 **9091건** 공고 · **1726개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 04:03
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -3881,7 +3881,7 @@ markmap:
   - [Senior AI/LLM Penetration Tester ↗](http://www.bishopfox.com/jobs?gh_jid=8069668)
 
 
-## B2B SaaS/엔터프라이즈 (260개사)
+## B2B SaaS/엔터프라이즈 (261개사)
 ### 메가존클라우드(주) `중견기업` · 63건
 - **백엔드** [13건] · `Python` `AWS` `Java` `Go` `Kubernetes` `Azure`
   - [Backend Developer / AI Research Engineer 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630)
@@ -5225,6 +5225,12 @@ markmap:
 - **데이터** [1건] · `Java` `Python` `C++` `Django` `MySQL` `MariaDB`
   - [AI 및 라이브 기반 반려동물 양육 플랫폼 데이터엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54016147&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=65a741bd-d171-471a-842c-8ee3ea22c30b)
 
+### 마드라스체크(주) `중소기업` · 4건
+- **AI/ML** [3건] · `Java`
+  - [(AI Work Agent 플로우) 웹 개발자 (신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54593632&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=976a2e53-2aa2-479b-b110-639919a461f9)
+  - [(AI Work Agent 플로우) FDE(Forward Deployed Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54684585&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=785d222d-3fb0-433a-aac6-84d872659ab0)
+  - [(AI Work Agent 플로우) 프로덕트 디자이너 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54684512&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=48343f43-8ee2-44f8-924b-358438c6bc46)
+
 ### (주)지란지교소프트 `중견기업` · 4건
 
 ### 액션파워 `중소기업` · 3건
@@ -5722,11 +5728,6 @@ markmap:
   - [(라이프스타일 테크 플랫폼) AI 오퍼레이션 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54024960&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d)
 - **QA** [1건] · `Jenkins` `OpenAI` `Git`
   - [(라이프스타일 테크 플랫폼) AI 오퍼레이션 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54024960&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d)
-
-### 마드라스체크(주) `중소기업` · 3건
-- **AI/ML** [2건] · `Java`
-  - [(AI Work Agent 플로우) 웹 개발자 (신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54593632&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=976a2e53-2aa2-479b-b110-639919a461f9)
-  - [(AI Work Agent 플로우) FDE(Forward Deployed Engineer) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54684585&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=785d222d-3fb0-433a-aac6-84d872659ab0)
 
 ### ㈜스마일서브 `중소기업` · 3건
 - **DevOps/인프라** [2건] · `Kubernetes` `Linux`
@@ -6810,6 +6811,14 @@ markmap:
 - **DevOps/인프라** [2건] · `Python` `Elasticsearch`
   - [한국알박크라이오(주) 사내 IT 인프라 운영 담당자 경력 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54607868&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=503a9e27-14d2-40a2-8f63-d36fcc190eab)
   - [사내 IT 인프라 운영 담당 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54648151&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=70de0bdd-c0ca-4289-8fb5-6451360a3e4a)
+
+### (주)지에스티 `중소기업` · 2건
+- **백엔드** [2건] · `Java` `JavaScript` `C#` `React` `Express` `.NET`
+  - [C# / MSSQL 개발 신입/경력 모집(부산) - 스마트공장 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54201401&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=73e57540-1d35-4ca8-b380-0efa932ec991)
+  - [C# .net 개발자 모집 (ERP, MES) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54668101&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=35aaa166-d79a-42c6-b4a7-5a479164018d)
+- **프론트엔드** [2건] · `Java` `JavaScript` `C#` `React` `Express` `.NET`
+  - [C# / MSSQL 개발 신입/경력 모집(부산) - 스마트공장 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54201401&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=73e57540-1d35-4ca8-b380-0efa932ec991)
+  - [C# .net 개발자 모집 (ERP, MES) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54668101&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=35aaa166-d79a-42c6-b4a7-5a479164018d)
 
 ### (주)문화방송 `중소기업` · 2건
 
@@ -8582,7 +8591,7 @@ markmap:
   - [Lead Machine Learning Engineer - ML Infrastructure ↗](https://www.samsara.com/company/careers/roles/7746586?gh_jid=7746586)
 
 
-## 핀테크/금융 (129개사)
+## 핀테크/금융 (130개사)
 ### 넥스트증권 `중소기업` · 32건
 - **백엔드** [22건] · `AWS` `PostgreSQL` `Kafka` `Java` `Redis` `Kubernetes`
   - [Fullstack Engineer ↗](https://www.wanted.co.kr/wd/357407)
@@ -9945,6 +9954,15 @@ markmap:
   - [프리랜서) Python 백엔드 / MCP 서버 개발 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54595153&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=0526b0a3-d44c-4bbf-86ad-e0958eb4b455)
 - **DevOps/인프라** [1건] · `Java` `JavaScript` `React` `Vue` `Node.js` `Android`
   - [프리랜서) IT 개발자 상시 모집 안내 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54594671&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=8b5513e6-d46b-47b7-b2eb-e00f2b087160)
+
+### (주)스페이스점프 `중소기업` · 2건
+- **백엔드** [1건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `REST API`
+  - [(주)스페이스점프 웹 프론트엔드 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54682072&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=43b951ff-df35-47a8-9eb7-20e2a10ba3b1)
+- **프론트엔드** [1건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `REST API`
+  - [(주)스페이스점프 웹 프론트엔드 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54682072&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=43b951ff-df35-47a8-9eb7-20e2a10ba3b1)
+- **AI/ML** [2건] · `TypeScript` `React` `Next.js` `CSS` `Tailwind` `REST API`
+  - [(주)스페이스점프 웹 프론트엔드 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54682072&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=43b951ff-df35-47a8-9eb7-20e2a10ba3b1)
+  - [(주)스페이스점프 AI 엔지니어 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54682008&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=2e73b577-ab31-4fca-9874-d947de340a32)
 
 ### (주)나나자레 `중소기업` · 2건
 - **백엔드** [1건] · `Java` `Spring` `Spring Boot` `Git`

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T02:25:40",
+  "generated_at": "2026-08-09T04:03:45",
   "source": "youtube",
   "tech_count": 204,
   "curriculum_count": 20,
@@ -5007,88 +5007,6 @@
         "stage": "실전"
       }
     ],
-    "Nginx": [
-      {
-        "title": "nginx 입문용 자료",
-        "url": "https://www.youtube.com/watch?v=hA0cxENGBQQ",
-        "thumbnail": "https://i.ytimg.com/vi/hA0cxENGBQQ/mqdefault.jpg",
-        "channel": "악분 일상",
-        "views": 17217,
-        "length": "29:33",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "NGINX로 Reverse Proxy 및 로드 밸런싱 이해하기",
-        "url": "https://www.youtube.com/watch?v=1WfdUtMxTLE",
-        "thumbnail": "https://i.ytimg.com/vi/1WfdUtMxTLE/mqdefault.jpg",
-        "channel": "NGINX STORE",
-        "views": 18878,
-        "length": "7:21",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시)",
-        "url": "https://www.youtube.com/watch?v=Zimhvf2B7Es",
-        "thumbnail": "https://i.ytimg.com/vi/Zimhvf2B7Es/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 88332,
-        "length": "13:46",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 🤫 피케이의 Nginx",
-        "url": "https://www.youtube.com/watch?v=6FAwAXXj5N0",
-        "thumbnail": "https://i.ytimg.com/vi/6FAwAXXj5N0/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 48977,
-        "length": "15:56",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nginx 셋팅을 통한 호스팅과 웹서버의 동작방식 이해",
-        "url": "https://www.youtube.com/watch?v=3P39B8ECm30",
-        "thumbnail": "https://i.ytimg.com/vi/3P39B8ECm30/mqdefault.jpg",
-        "channel": "Vibe Coding School",
-        "views": 962,
-        "length": "35:43",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nginx 입문·실전 - 2.5. Nginx 디버깅 방법",
-        "url": "https://www.youtube.com/watch?v=XXJTFr7X2jQ",
-        "thumbnail": "https://i.ytimg.com/vi/XXJTFr7X2jQ/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 575,
-        "length": "6:25",
-        "published": "1년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "03.Nginx 기본 설정 파일 구조 완벽 가이드 | 퀴즈 8개 포함",
-        "url": "https://www.youtube.com/watch?v=nhltFsz63Iw",
-        "thumbnail": "https://i.ytimg.com/vi/nhltFsz63Iw/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 37,
-        "length": "18:10",
-        "published": "6개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Nginx 입문·실전 - 2.4. [실습] Nginx 기본 문법 응용해보기 (2)",
-        "url": "https://www.youtube.com/watch?v=SIKZuK5fsxc",
-        "thumbnail": "https://i.ytimg.com/vi/SIKZuK5fsxc/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 507,
-        "length": "4:52",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     ".NET": [
       {
         "title": "[데브렉 소식] ASP.NET Core 1.0 기초 입문 동영상 강의 오픈",
@@ -5168,6 +5086,88 @@
         "views": 3099,
         "length": "21:48",
         "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
+    "Nginx": [
+      {
+        "title": "nginx 입문용 자료",
+        "url": "https://www.youtube.com/watch?v=hA0cxENGBQQ",
+        "thumbnail": "https://i.ytimg.com/vi/hA0cxENGBQQ/mqdefault.jpg",
+        "channel": "악분 일상",
+        "views": 17217,
+        "length": "29:33",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "NGINX로 Reverse Proxy 및 로드 밸런싱 이해하기",
+        "url": "https://www.youtube.com/watch?v=1WfdUtMxTLE",
+        "thumbnail": "https://i.ytimg.com/vi/1WfdUtMxTLE/mqdefault.jpg",
+        "channel": "NGINX STORE",
+        "views": 18878,
+        "length": "7:21",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시)",
+        "url": "https://www.youtube.com/watch?v=Zimhvf2B7Es",
+        "thumbnail": "https://i.ytimg.com/vi/Zimhvf2B7Es/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 88332,
+        "length": "13:46",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 🤫 피케이의 Nginx",
+        "url": "https://www.youtube.com/watch?v=6FAwAXXj5N0",
+        "thumbnail": "https://i.ytimg.com/vi/6FAwAXXj5N0/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 48977,
+        "length": "15:56",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Nginx 셋팅을 통한 호스팅과 웹서버의 동작방식 이해",
+        "url": "https://www.youtube.com/watch?v=3P39B8ECm30",
+        "thumbnail": "https://i.ytimg.com/vi/3P39B8ECm30/mqdefault.jpg",
+        "channel": "Vibe Coding School",
+        "views": 962,
+        "length": "35:43",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Nginx 입문·실전 - 2.5. Nginx 디버깅 방법",
+        "url": "https://www.youtube.com/watch?v=XXJTFr7X2jQ",
+        "thumbnail": "https://i.ytimg.com/vi/XXJTFr7X2jQ/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 575,
+        "length": "6:25",
+        "published": "1년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "03.Nginx 기본 설정 파일 구조 완벽 가이드 | 퀴즈 8개 포함",
+        "url": "https://www.youtube.com/watch?v=nhltFsz63Iw",
+        "thumbnail": "https://i.ytimg.com/vi/nhltFsz63Iw/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 37,
+        "length": "18:10",
+        "published": "6개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Nginx 입문·실전 - 2.4. [실습] Nginx 기본 문법 응용해보기 (2)",
+        "url": "https://www.youtube.com/watch?v=SIKZuK5fsxc",
+        "thumbnail": "https://i.ytimg.com/vi/SIKZuK5fsxc/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 507,
+        "length": "4:52",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -5581,88 +5581,6 @@
         "stage": "실전"
       }
     ],
-    "Angular": [
-      {
-        "title": "[웹 개발하고 싶다면 Angular(앵귤러)로 시작하자!]  Template(템플릿)이란?  | 웹 개발, Angular | 에어클래스",
-        "url": "https://www.youtube.com/watch?v=xtH9qkM1CMg",
-        "thumbnail": "https://i.ytimg.com/vi/xtH9qkM1CMg/mqdefault.jpg",
-        "channel": "에어클래스",
-        "views": 669,
-        "length": "19:29",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[시작하세요 Angular] Angular란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=06ewAbf3PuE",
-        "thumbnail": "https://i.ytimg.com/vi/06ewAbf3PuE/mqdefault.jpg",
-        "channel": "Jeado Ko",
-        "views": 1868,
-        "length": "11:42",
-        "published": "9년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[ Angular, 앵귤러 100분 핵심강의 ] 강좌정리",
-        "url": "https://www.youtube.com/watch?v=xuhzQ2uw17I",
-        "thumbnail": "https://i.ytimg.com/vi/xuhzQ2uw17I/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 2588,
-        "length": "15:11",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Angular, React, Vue가 뭔가요? (+ Single Page Application)",
-        "url": "https://www.youtube.com/watch?v=hy3mji0XuMw",
-        "thumbnail": "https://i.ytimg.com/vi/hy3mji0XuMw/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 18981,
-        "length": "8:12",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[HD]새로워진 Angular(앵귤러) 8 을 사용하여 SPA 기반 풀스택 웹개발하기 Part.1",
-        "url": "https://www.youtube.com/watch?v=vpaLL1TZtP0",
-        "thumbnail": "https://i.ytimg.com/vi/vpaLL1TZtP0/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 88,
-        "length": "11:59",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[HD] 새로워진 Angular앵귤러 8 을 사용하여 SPA 기반 풀스택 웹개발하기 Part 1",
-        "url": "https://www.youtube.com/watch?v=OaP-oagcaiY",
-        "thumbnail": "https://i.ytimg.com/vi/OaP-oagcaiY/mqdefault.jpg",
-        "channel": "모든에듀 modenedu",
-        "views": 1820,
-        "length": "30:55",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Angular 풀스택 웹개발 기초 실무 완전정복",
-        "url": "https://www.youtube.com/watch?v=U-0Fh1i8U2k",
-        "thumbnail": "https://i.ytimg.com/vi/U-0Fh1i8U2k/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 439,
-        "length": "9:29",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[더 셀렉트] Angular 마스터북 학습하기",
-        "url": "https://www.youtube.com/watch?v=4ZGjeBlJMTY",
-        "thumbnail": "https://i.ytimg.com/vi/4ZGjeBlJMTY/mqdefault.jpg",
-        "channel": "더셀렉트",
-        "views": 130,
-        "length": "4:53",
-        "published": "7년 전",
-        "stage": "실전"
-      }
-    ],
     "Express": [
       {
         "title": "바이브 코더를 위한 Express 기초 | 백엔드 이정도만 알자",
@@ -5742,6 +5660,88 @@
         "views": 176,
         "length": "8:54",
         "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "Angular": [
+      {
+        "title": "[웹 개발하고 싶다면 Angular(앵귤러)로 시작하자!]  Template(템플릿)이란?  | 웹 개발, Angular | 에어클래스",
+        "url": "https://www.youtube.com/watch?v=xtH9qkM1CMg",
+        "thumbnail": "https://i.ytimg.com/vi/xtH9qkM1CMg/mqdefault.jpg",
+        "channel": "에어클래스",
+        "views": 669,
+        "length": "19:29",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[시작하세요 Angular] Angular란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=06ewAbf3PuE",
+        "thumbnail": "https://i.ytimg.com/vi/06ewAbf3PuE/mqdefault.jpg",
+        "channel": "Jeado Ko",
+        "views": 1868,
+        "length": "11:42",
+        "published": "9년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[ Angular, 앵귤러 100분 핵심강의 ] 강좌정리",
+        "url": "https://www.youtube.com/watch?v=xuhzQ2uw17I",
+        "thumbnail": "https://i.ytimg.com/vi/xuhzQ2uw17I/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 2588,
+        "length": "15:11",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Angular, React, Vue가 뭔가요? (+ Single Page Application)",
+        "url": "https://www.youtube.com/watch?v=hy3mji0XuMw",
+        "thumbnail": "https://i.ytimg.com/vi/hy3mji0XuMw/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 18981,
+        "length": "8:12",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[HD]새로워진 Angular(앵귤러) 8 을 사용하여 SPA 기반 풀스택 웹개발하기 Part.1",
+        "url": "https://www.youtube.com/watch?v=vpaLL1TZtP0",
+        "thumbnail": "https://i.ytimg.com/vi/vpaLL1TZtP0/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 88,
+        "length": "11:59",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[HD] 새로워진 Angular앵귤러 8 을 사용하여 SPA 기반 풀스택 웹개발하기 Part 1",
+        "url": "https://www.youtube.com/watch?v=OaP-oagcaiY",
+        "thumbnail": "https://i.ytimg.com/vi/OaP-oagcaiY/mqdefault.jpg",
+        "channel": "모든에듀 modenedu",
+        "views": 1820,
+        "length": "30:55",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Angular 풀스택 웹개발 기초 실무 완전정복",
+        "url": "https://www.youtube.com/watch?v=U-0Fh1i8U2k",
+        "thumbnail": "https://i.ytimg.com/vi/U-0Fh1i8U2k/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 439,
+        "length": "9:29",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[더 셀렉트] Angular 마스터북 학습하기",
+        "url": "https://www.youtube.com/watch?v=4ZGjeBlJMTY",
+        "thumbnail": "https://i.ytimg.com/vi/4ZGjeBlJMTY/mqdefault.jpg",
+        "channel": "더셀렉트",
+        "views": 130,
+        "length": "4:53",
+        "published": "7년 전",
         "stage": "실전"
       }
     ],
