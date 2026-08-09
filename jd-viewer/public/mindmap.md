@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9100건** 공고 · **1730개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 15:41
+- 총 **9104건** 공고 · **1731개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 17:29
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (432개사)
+## HR/채용 (433개사)
 ### (주)사람인에이치에스 `중견기업` · 38건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -3344,6 +3344,14 @@ markmap:
   - [글로벌 F&B 서비스 오더나우 Frontend Developer 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54301284&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e8d332f6-964f-459f-864b-4d17f243de93)
 - **DevOps/인프라** [1건] · `Node.js` `GCP`
   - [글로벌 F&B 서비스 오더나우 Cloud Platform Engineer 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54301288&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=959926a7-2d5a-4db6-88bd-e52afe86d1a5)
+
+### (주)코리아휴먼리소시스 `중소기업` · 2건
+- **프론트엔드** [1건]
+  - [ASIC Frontend PI Engineer 경력 복수 포지션 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54236776&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e8d332f6-964f-459f-864b-4d17f243de93)
+- **AI/ML** [1건] · `Python` `MATLAB`
+  - [R&D 엔지니어 (CFD·실험) 1-12년 채용 (AI 데이터냉각 기업) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54692879&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=1097937a-89b0-418d-9587-5cb7e12d596b)
+- **펌웨어/임베디드** [1건]
+  - [ASIC Frontend PI Engineer 경력 복수 포지션 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54236776&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=e8d332f6-964f-459f-864b-4d17f243de93)
 
 ### (주)이씨오 `중소기업` · 2건
 - **백엔드** [1건] · `JavaScript` `React` `Vue` `Spring` `Oracle` `REST API`
@@ -7489,6 +7497,13 @@ markmap:
   - [Machine Learning Engineer (3~5년) ↗](https://www.wanted.co.kr/wd/356115)
   - [(에너지IT기업) Machine Learning Engineer (경력 1-3년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54472256&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e8664ac7-8444-4b97-ae0c-1c40551dae3a)
 
+### 씨드로닉스 `중소기업` · 5건
+- **AI/ML** [4건] · `C++` `Python`
+  - [Spatial AI 연구/개발 (연구원) ↗](https://www.wanted.co.kr/wd/366933)
+  - [AI 데이터 매니저(RADAR) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49633251?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=75&sc=630)
+  - [AI 데이터 매니저(CAMERA) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49633226?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=79&sc=630)
+  - [AI 데이터 매니저 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471846&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=520ba1da-6b43-4dd5-ae17-93d79e441678)
+
 ### 다겸 `중소기업` · 5건
 - **백엔드** [3건] · `Linux` `Python` `C#` `FastAPI` `TensorFlow` `PyTorch`
   - [ML Engineer (전문연구요원 가능) ↗](https://www.wanted.co.kr/wd/354815)
@@ -7515,6 +7530,12 @@ markmap:
   - [(대구) 소프트웨어 개발자 채용(경력) ↗](https://jumpit.saramin.co.kr/position/54086587)
   - [(판교) AI 소프트웨어 개발자(경력) ↗](https://jumpit.saramin.co.kr/position/54086648)
   - [SW 개발자 신입 (Android, C, C++, QT) ↗](https://jumpit.saramin.co.kr/position/54086625)
+
+### 엔클로니 `중소기업` · 5건
+- **펌웨어/임베디드** [3건] · `C++` `Git` `Jira` `Confluence` `Firmware` `FPGA`
+  - [(C/C++, C#) 검사장비 고속 제어 및 비전 SW 개발자 채용 (경력) ↗](https://jumpit.saramin.co.kr/position/53996367)
+  - [HW/FW 임베디드 개발자 채용 (경력 5년~15년) ↗](https://jumpit.saramin.co.kr/position/54409476)
+  - [HW 개발자 채용 (경력 5년~15년) ↗](https://jumpit.saramin.co.kr/position/54667467)
 
 ### 에너자이 `중소기업` · 5건
 - **모바일** [1건] · `Python` `C++` `iOS` `Android` `Linux` `C`
@@ -7677,13 +7698,6 @@ markmap:
 - **DevOps/인프라** [1건] · `AWS` `GCP` `Docker` `Kubernetes` `Terraform`
   - [Web Platform 개발자 ↗](https://www.wanted.co.kr/wd/358839)
 
-### 씨드로닉스㈜ `중소기업` · 4건
-- **AI/ML** [4건] · `C++` `Python`
-  - [Spatial AI 연구/개발 (연구원) ↗](https://www.wanted.co.kr/wd/366933)
-  - [AI 데이터 매니저(RADAR) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49633251?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=75&sc=630)
-  - [AI 데이터 매니저(CAMERA) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49633226?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=79&sc=630)
-  - [AI 데이터 매니저 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54471846&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=520ba1da-6b43-4dd5-ae17-93d79e441678)
-
 ### 니어스랩 `중소기업` · 4건
 - **펌웨어/임베디드** [2건] · `C++` `MATLAB` `Linux` `Git` `Simulink` `ROS`
   - [(개발부문) 시니어 항공 및 로보틱스 엔지니어 (GNC) ↗](https://www.wanted.co.kr/wd/356279)
@@ -7744,11 +7758,6 @@ markmap:
   - [SoC 칩개발 ↗](https://jumpit.saramin.co.kr/position/54107399)
 - **보안** [1건] · `C++` `Android` `Linux` `Android SDK` `Android Studio` `C`
   - [디바이스 인증 AGENT 보안개발 ↗](https://jumpit.saramin.co.kr/position/54432204)
-
-### 엔클로니 `중소기업` · 4건
-- **펌웨어/임베디드** [2건] · `C++` `Git` `Jira` `C#` `Linux` `C`
-  - [(C/C++, C#) 검사장비 고속 제어 및 비전 SW 개발자 채용 (경력) ↗](https://jumpit.saramin.co.kr/position/53996367)
-  - [HW/FW 임베디드 개발자 채용 (경력 5년~15년) ↗](https://jumpit.saramin.co.kr/position/54409476)
 
 ### 원익로보틱스 `중소기업` · 4건
 - **AI/ML** [1건] · `Python` `C++` `AWS` `Azure` `TensorFlow` `PyTorch`
@@ -11763,6 +11772,16 @@ markmap:
 - **보안** [1건]
   - [Jr. Information Security Manager(정보보안 담당자) ↗](https://www.wanted.co.kr/wd/362294)
 
+### 건강누리 `중소기업` · 9건
+- **모바일** [3건] · `C++` `C#` `iOS` `Android` `Flutter`
+  - [S/W 개발자 채용(대리) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54621351&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a0452df1-c7db-4028-b959-98b1d622145e)
+  - [S/W 개발자 채용(과장) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54621356&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a0452df1-c7db-4028-b959-98b1d622145e)
+  - [S/W 개발자 채용(신입) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54621344&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a0452df1-c7db-4028-b959-98b1d622145e)
+- **펌웨어/임베디드** [3건] · `C++` `C#` `C` `Firmware`
+  - [펌웨어 개발자 채용(신입) ↗](https://jumpit.saramin.co.kr/position/54321813)
+  - [펌웨어 개발자 채용(대리) ↗](https://jumpit.saramin.co.kr/position/54321822)
+  - [펌웨어 개발자 채용(과장) ↗](https://jumpit.saramin.co.kr/position/54321807)
+
 ### 메디인테크 `중소기업` · 8건
 - **AI/ML** [1건] · `Python` `TensorFlow` `PyTorch`
   - [(전문연구요원 가능) AI Research Engineer ↗](https://www.wanted.co.kr/wd/334840)
@@ -11783,16 +11802,6 @@ markmap:
   - [동물용 CT Vision AI 개발자 ↗](https://jumpit.saramin.co.kr/position/54074795)
 - **DevOps/인프라** [1건] · `Python` `MySQL` `AWS` `Docker` `Terraform` `MSA`
   - [(중견 계열사) 시스템 엔지니어 ↗](https://www.wanted.co.kr/wd/375590)
-
-### 건강누리 `중소기업` · 8건
-- **모바일** [3건] · `C++` `C#` `iOS` `Android` `Flutter`
-  - [S/W 개발자 채용(대리) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54621351&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a0452df1-c7db-4028-b959-98b1d622145e)
-  - [S/W 개발자 채용(과장) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54621356&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a0452df1-c7db-4028-b959-98b1d622145e)
-  - [S/W 개발자 채용(신입) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54621344&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a0452df1-c7db-4028-b959-98b1d622145e)
-- **펌웨어/임베디드** [3건] · `C++` `C#` `C` `Firmware`
-  - [펌웨어 개발자 채용(신입) ↗](https://jumpit.saramin.co.kr/position/54321813)
-  - [펌웨어 개발자 채용(대리) ↗](https://jumpit.saramin.co.kr/position/54321822)
-  - [펌웨어 개발자 채용(과장) ↗](https://jumpit.saramin.co.kr/position/54321807)
 
 ### 덴티움 `중소기업` · 8건
 - **백엔드** [1건] · `C++` `C#` `.NET` `MySQL` `PostgreSQL` `Oracle`

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T15:51:07",
+  "generated_at": "2026-08-09T17:30:11",
   "source": "youtube",
   "tech_count": 204,
   "curriculum_count": 20,
@@ -7519,88 +7519,6 @@
         "stage": "실전"
       }
     ],
-    "Nuxt": [
-      {
-        "title": "Nuxt 란? | Nuxt 사용하는 이유",
-        "url": "https://www.youtube.com/watch?v=5U6zDCxgFU4",
-        "thumbnail": "https://i.ytimg.com/vi/5U6zDCxgFU4/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 5093,
-        "length": "6:37",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "SSR, SSG, JAM Stack이 뭔가요? (+ CSR, SEO, Next.js, Nuxt.js, Gatsby)",
-        "url": "https://www.youtube.com/watch?v=5ILR9Vd_Vos",
-        "thumbnail": "https://i.ytimg.com/vi/5ILR9Vd_Vos/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 17432,
-        "length": "14:23",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Nuxt3 Tutorial - 공식문서 파헤치기 및 환경설정",
-        "url": "https://www.youtube.com/watch?v=kdWqU7jZWtk",
-        "thumbnail": "https://i.ytimg.com/vi/kdWqU7jZWtk/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 2724,
-        "length": "21:20",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "앱을 만들자 n4f3 5 nuxt ui 구성하기",
-        "url": "https://www.youtube.com/watch?v=llAbbdEyM-I",
-        "thumbnail": "https://i.ytimg.com/vi/llAbbdEyM-I/mqdefault.jpg",
-        "channel": "memi dev",
-        "views": 71,
-        "length": "16:08",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "앱을 만들자 n4f3 4 nuxt ui 알아보기",
-        "url": "https://www.youtube.com/watch?v=0JZihwh9fis",
-        "thumbnail": "https://i.ytimg.com/vi/0JZihwh9fis/mqdefault.jpg",
-        "channel": "memi dev",
-        "views": 145,
-        "length": "30:50",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Do it! Vue.js + Nuxt 입문] Vue.js 기초부터 Nuxt 4 실전까지, '이 책' 한 권으로 종결!",
-        "url": "https://www.youtube.com/watch?v=ZclHcS5dvso",
-        "thumbnail": "https://i.ytimg.com/vi/ZclHcS5dvso/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 702,
-        "length": "8:19",
-        "published": "5개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "Nuxt.js 왕초보도 가능한 정적 포켓몬 사이트 만들기.",
-        "url": "https://www.youtube.com/watch?v=zB38G9_jt_c",
-        "thumbnail": "https://i.ytimg.com/vi/zB38G9_jt_c/mqdefault.jpg",
-        "channel": "뚜르TV",
-        "views": 221,
-        "length": "46:36",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "율곡선생 75기 1강 Nuxt란, Nuxt 프로젝트 생성, Nuxt Nuxt의 폴더 구조",
-        "url": "https://www.youtube.com/watch?v=Chqy1yjdZ2s",
-        "thumbnail": "https://i.ytimg.com/vi/Chqy1yjdZ2s/mqdefault.jpg",
-        "channel": "서울IT교육센터온라인강좌TV",
-        "views": 431,
-        "length": "24:08",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "ROS": [
       {
         "title": "[ROS2] 입문편 한 번에 몰아보기｜R2R 입문｜민형기 강사님 무료 강의",
@@ -7681,6 +7599,88 @@
         "length": "28:34",
         "published": "7년 전",
         "stage": "핵심"
+      }
+    ],
+    "Nuxt": [
+      {
+        "title": "Nuxt 란? | Nuxt 사용하는 이유",
+        "url": "https://www.youtube.com/watch?v=5U6zDCxgFU4",
+        "thumbnail": "https://i.ytimg.com/vi/5U6zDCxgFU4/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 5093,
+        "length": "6:37",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SSR, SSG, JAM Stack이 뭔가요? (+ CSR, SEO, Next.js, Nuxt.js, Gatsby)",
+        "url": "https://www.youtube.com/watch?v=5ILR9Vd_Vos",
+        "thumbnail": "https://i.ytimg.com/vi/5ILR9Vd_Vos/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 17432,
+        "length": "14:23",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Nuxt3 Tutorial - 공식문서 파헤치기 및 환경설정",
+        "url": "https://www.youtube.com/watch?v=kdWqU7jZWtk",
+        "thumbnail": "https://i.ytimg.com/vi/kdWqU7jZWtk/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 2724,
+        "length": "21:20",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "앱을 만들자 n4f3 5 nuxt ui 구성하기",
+        "url": "https://www.youtube.com/watch?v=llAbbdEyM-I",
+        "thumbnail": "https://i.ytimg.com/vi/llAbbdEyM-I/mqdefault.jpg",
+        "channel": "memi dev",
+        "views": 71,
+        "length": "16:08",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "앱을 만들자 n4f3 4 nuxt ui 알아보기",
+        "url": "https://www.youtube.com/watch?v=0JZihwh9fis",
+        "thumbnail": "https://i.ytimg.com/vi/0JZihwh9fis/mqdefault.jpg",
+        "channel": "memi dev",
+        "views": 145,
+        "length": "30:50",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Do it! Vue.js + Nuxt 입문] Vue.js 기초부터 Nuxt 4 실전까지, '이 책' 한 권으로 종결!",
+        "url": "https://www.youtube.com/watch?v=ZclHcS5dvso",
+        "thumbnail": "https://i.ytimg.com/vi/ZclHcS5dvso/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 702,
+        "length": "8:19",
+        "published": "5개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Nuxt.js 왕초보도 가능한 정적 포켓몬 사이트 만들기.",
+        "url": "https://www.youtube.com/watch?v=zB38G9_jt_c",
+        "thumbnail": "https://i.ytimg.com/vi/zB38G9_jt_c/mqdefault.jpg",
+        "channel": "뚜르TV",
+        "views": 221,
+        "length": "46:36",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "율곡선생 75기 1강 Nuxt란, Nuxt 프로젝트 생성, Nuxt Nuxt의 폴더 구조",
+        "url": "https://www.youtube.com/watch?v=Chqy1yjdZ2s",
+        "thumbnail": "https://i.ytimg.com/vi/Chqy1yjdZ2s/mqdefault.jpg",
+        "channel": "서울IT교육센터온라인강좌TV",
+        "views": 431,
+        "length": "24:08",
+        "published": "3년 전",
+        "stage": "실전"
       }
     ],
     "SVN": [
@@ -8339,6 +8339,88 @@
         "stage": "실전"
       }
     ],
+    "MATLAB": [
+      {
+        "title": "Matlab (매트랩) 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
+        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
+        "channel": "염홍기",
+        "views": 4397,
+        "length": "1:51:35",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
+        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
+        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 178712,
+        "length": "1:59:05",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MATLAB 1강: MATLAB 기초",
+        "url": "https://www.youtube.com/watch?v=nhAGUziBA5Q",
+        "thumbnail": "https://i.ytimg.com/vi/nhAGUziBA5Q/mqdefault.jpg",
+        "channel": "손희민",
+        "views": 83,
+        "length": "1:10:03",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part2)",
+        "url": "https://www.youtube.com/watch?v=3nm7YHBGMB0",
+        "thumbnail": "https://i.ytimg.com/vi/3nm7YHBGMB0/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 57407,
+        "length": "1:58:06",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Matlab 강의 소개",
+        "url": "https://www.youtube.com/watch?v=L8lpI3fqZTA",
+        "thumbnail": "https://i.ytimg.com/vi/L8lpI3fqZTA/mqdefault.jpg",
+        "channel": "Byoungjo CHOI",
+        "views": 17124,
+        "length": "11:17",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MATLAB을 활용한 금융 데이터 가져오기 및 전처리",
+        "url": "https://www.youtube.com/watch?v=R1ogX2GhnDQ",
+        "thumbnail": "https://i.ytimg.com/vi/R1ogX2GhnDQ/mqdefault.jpg",
+        "channel": "MATLAB Korea",
+        "views": 1168,
+        "length": "8:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "로봇설계및제어 MATLAB강의 (1/2)",
+        "url": "https://www.youtube.com/watch?v=q1oLdQY_JyY",
+        "thumbnail": "https://i.ytimg.com/vi/q1oLdQY_JyY/mqdefault.jpg",
+        "channel": "mincasurong",
+        "views": 695,
+        "length": "44:05",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "KHBM2020 여름학교 강의 4-1. MATLAB basics for HBMer 박해정 교수",
+        "url": "https://www.youtube.com/watch?v=zg3qPr58CI8",
+        "thumbnail": "https://i.ytimg.com/vi/zg3qPr58CI8/mqdefault.jpg",
+        "channel": "MoNET - Yonsei University",
+        "views": 208,
+        "length": "1:25:11",
+        "published": "5년 전",
+        "stage": "핵심"
+      }
+    ],
     "CUDA": [
       {
         "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
@@ -8583,88 +8665,6 @@
         "length": "3:15",
         "published": "4년 전",
         "stage": "실전"
-      }
-    ],
-    "MATLAB": [
-      {
-        "title": "Matlab (매트랩) 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
-        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
-        "channel": "염홍기",
-        "views": 4397,
-        "length": "1:51:35",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
-        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
-        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 178712,
-        "length": "1:59:05",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MATLAB 1강: MATLAB 기초",
-        "url": "https://www.youtube.com/watch?v=nhAGUziBA5Q",
-        "thumbnail": "https://i.ytimg.com/vi/nhAGUziBA5Q/mqdefault.jpg",
-        "channel": "손희민",
-        "views": 83,
-        "length": "1:10:03",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part2)",
-        "url": "https://www.youtube.com/watch?v=3nm7YHBGMB0",
-        "thumbnail": "https://i.ytimg.com/vi/3nm7YHBGMB0/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 57407,
-        "length": "1:58:06",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Matlab 강의 소개",
-        "url": "https://www.youtube.com/watch?v=L8lpI3fqZTA",
-        "thumbnail": "https://i.ytimg.com/vi/L8lpI3fqZTA/mqdefault.jpg",
-        "channel": "Byoungjo CHOI",
-        "views": 17124,
-        "length": "11:17",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MATLAB을 활용한 금융 데이터 가져오기 및 전처리",
-        "url": "https://www.youtube.com/watch?v=R1ogX2GhnDQ",
-        "thumbnail": "https://i.ytimg.com/vi/R1ogX2GhnDQ/mqdefault.jpg",
-        "channel": "MATLAB Korea",
-        "views": 1168,
-        "length": "8:19",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "로봇설계및제어 MATLAB강의 (1/2)",
-        "url": "https://www.youtube.com/watch?v=q1oLdQY_JyY",
-        "thumbnail": "https://i.ytimg.com/vi/q1oLdQY_JyY/mqdefault.jpg",
-        "channel": "mincasurong",
-        "views": 695,
-        "length": "44:05",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "KHBM2020 여름학교 강의 4-1. MATLAB basics for HBMer 박해정 교수",
-        "url": "https://www.youtube.com/watch?v=zg3qPr58CI8",
-        "thumbnail": "https://i.ytimg.com/vi/zg3qPr58CI8/mqdefault.jpg",
-        "channel": "MoNET - Yonsei University",
-        "views": 208,
-        "length": "1:25:11",
-        "published": "5년 전",
-        "stage": "핵심"
       }
     ],
     "NLP": [
@@ -9815,6 +9815,88 @@
         "stage": "실전"
       }
     ],
+    "Orcad": [
+      {
+        "title": "한동대학교 회로실험 강의 1강 -  ORCAD 프로그램 개요, 설치 및 사용법",
+        "url": "https://www.youtube.com/watch?v=QB2Kbgkk1ho",
+        "thumbnail": "https://i.ytimg.com/vi/QB2Kbgkk1ho/mqdefault.jpg",
+        "channel": "chanS class",
+        "views": 48049,
+        "length": "21:28",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "OrCAD를 이용한 회로설계 기본강의 (01강/20강)",
+        "url": "https://www.youtube.com/watch?v=WsBg3a7w8NY",
+        "thumbnail": "https://i.ytimg.com/vi/WsBg3a7w8NY/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 24417,
+        "length": "20:04",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "OrCAD를 이용한 회로설계 기본강의 (15강/20강)",
+        "url": "https://www.youtube.com/watch?v=TnlEbNuzP1I",
+        "thumbnail": "https://i.ytimg.com/vi/TnlEbNuzP1I/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 776,
+        "length": "23:17",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(2일/3일) OrCAD를 이용한 회로설계 기초과정",
+        "url": "https://www.youtube.com/watch?v=CFURqz8Wf2A",
+        "thumbnail": "https://i.ytimg.com/vi/CFURqz8Wf2A/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 230,
+        "length": "2:42:58",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "(1일/3일) OrCAD를 이용한 회로설계 기초과정",
+        "url": "https://www.youtube.com/watch?v=4-qNLj2QnXs",
+        "thumbnail": "https://i.ytimg.com/vi/4-qNLj2QnXs/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 639,
+        "length": "2:36:38",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "전자기사, 전자산업기사 실기 orcad 강의",
+        "url": "https://www.youtube.com/watch?v=oeGtMXO_1uE",
+        "thumbnail": "https://i.ytimg.com/vi/oeGtMXO_1uE/mqdefault.jpg",
+        "channel": "박준서",
+        "views": 4661,
+        "length": "13:09",
+        "published": "9년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[STEP] OrCAD PCB Editor 활용 기초 실습 (무료강의)",
+        "url": "https://www.youtube.com/watch?v=3O_o1_gBxnQ",
+        "thumbnail": "https://i.ytimg.com/vi/3O_o1_gBxnQ/mqdefault.jpg",
+        "channel": "한기대 HRD 브릿지",
+        "views": 42188,
+        "length": "25:03",
+        "published": "8년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[전자캐드기능사] OrCAD 02 - 프로젝트 생성&타이틀 작성",
+        "url": "https://www.youtube.com/watch?v=LopRWaDowZY",
+        "thumbnail": "https://i.ytimg.com/vi/LopRWaDowZY/mqdefault.jpg",
+        "channel": "일렉튜브",
+        "views": 34352,
+        "length": "5:20",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "WPF": [
       {
         "title": "[HD]WPF(Windows Presentation Foundation) 제대로 배우기 Part.1 (기초1)",
@@ -10141,88 +10223,6 @@
         "length": "6:13",
         "published": "3년 전",
         "stage": "핵심"
-      }
-    ],
-    "Orcad": [
-      {
-        "title": "한동대학교 회로실험 강의 1강 -  ORCAD 프로그램 개요, 설치 및 사용법",
-        "url": "https://www.youtube.com/watch?v=QB2Kbgkk1ho",
-        "thumbnail": "https://i.ytimg.com/vi/QB2Kbgkk1ho/mqdefault.jpg",
-        "channel": "chanS class",
-        "views": 48049,
-        "length": "21:28",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "OrCAD를 이용한 회로설계 기본강의 (01강/20강)",
-        "url": "https://www.youtube.com/watch?v=WsBg3a7w8NY",
-        "thumbnail": "https://i.ytimg.com/vi/WsBg3a7w8NY/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 24417,
-        "length": "20:04",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "OrCAD를 이용한 회로설계 기본강의 (15강/20강)",
-        "url": "https://www.youtube.com/watch?v=TnlEbNuzP1I",
-        "thumbnail": "https://i.ytimg.com/vi/TnlEbNuzP1I/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 776,
-        "length": "23:17",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(2일/3일) OrCAD를 이용한 회로설계 기초과정",
-        "url": "https://www.youtube.com/watch?v=CFURqz8Wf2A",
-        "thumbnail": "https://i.ytimg.com/vi/CFURqz8Wf2A/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 230,
-        "length": "2:42:58",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "(1일/3일) OrCAD를 이용한 회로설계 기초과정",
-        "url": "https://www.youtube.com/watch?v=4-qNLj2QnXs",
-        "thumbnail": "https://i.ytimg.com/vi/4-qNLj2QnXs/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 639,
-        "length": "2:36:38",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "전자기사, 전자산업기사 실기 orcad 강의",
-        "url": "https://www.youtube.com/watch?v=oeGtMXO_1uE",
-        "thumbnail": "https://i.ytimg.com/vi/oeGtMXO_1uE/mqdefault.jpg",
-        "channel": "박준서",
-        "views": 4661,
-        "length": "13:09",
-        "published": "9년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[STEP] OrCAD PCB Editor 활용 기초 실습 (무료강의)",
-        "url": "https://www.youtube.com/watch?v=3O_o1_gBxnQ",
-        "thumbnail": "https://i.ytimg.com/vi/3O_o1_gBxnQ/mqdefault.jpg",
-        "channel": "한기대 HRD 브릿지",
-        "views": 42188,
-        "length": "25:03",
-        "published": "8년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[전자캐드기능사] OrCAD 02 - 프로젝트 생성&타이틀 작성",
-        "url": "https://www.youtube.com/watch?v=LopRWaDowZY",
-        "thumbnail": "https://i.ytimg.com/vi/LopRWaDowZY/mqdefault.jpg",
-        "channel": "일렉튜브",
-        "views": 34352,
-        "length": "5:20",
-        "published": "7년 전",
-        "stage": "실전"
       }
     ],
     "Pytest": [
@@ -12275,6 +12275,88 @@
         "stage": "실전"
       }
     ],
+    "Pads": [
+      {
+        "title": "전자캐드 패즈 PADS 01강 전자캐드와 자격증",
+        "url": "https://www.youtube.com/watch?v=RROOZAGd0v0",
+        "thumbnail": "https://i.ytimg.com/vi/RROOZAGd0v0/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 2302,
+        "length": "13:55",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "PADS 강의 LOGIC 부품 제작 및 설계 1 01강 (PADS 강좌)",
+        "url": "https://www.youtube.com/watch?v=PIDQoS_fdaM",
+        "thumbnail": "https://i.ytimg.com/vi/PIDQoS_fdaM/mqdefault.jpg",
+        "channel": "월간 전자연구소",
+        "views": 4447,
+        "length": "20:16",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "게임 패드 기본 키 설명 #FC온라인",
+        "url": "https://www.youtube.com/watch?v=LjxBMu5Y-z8",
+        "thumbnail": "https://i.ytimg.com/vi/LjxBMu5Y-z8/mqdefault.jpg",
+        "channel": "혁나브리",
+        "views": 143113,
+        "length": "10:18",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "전자캐드 패즈 PADS 08강 보드아웃라인",
+        "url": "https://www.youtube.com/watch?v=olVrgCVLigA",
+        "thumbnail": "https://i.ytimg.com/vi/olVrgCVLigA/mqdefault.jpg",
+        "channel": "Seoul Workshop",
+        "views": 1378,
+        "length": "19:46",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PADS VX. 무료강좌 - Logic4(회로도 작성)",
+        "url": "https://www.youtube.com/watch?v=fRRDjmXuWp0",
+        "thumbnail": "https://i.ytimg.com/vi/fRRDjmXuWp0/mqdefault.jpg",
+        "channel": "(주)이디앤씨",
+        "views": 4358,
+        "length": "7:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PADS VX2.5 무료강좌 - Layout9(디자인 검증)",
+        "url": "https://www.youtube.com/watch?v=6m_kCZYr5tg",
+        "thumbnail": "https://i.ytimg.com/vi/6m_kCZYr5tg/mqdefault.jpg",
+        "channel": "(주)이디앤씨",
+        "views": 3826,
+        "length": "6:36",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "혁나브리 패드 강의 #수동침투 #개인기 #드리블",
+        "url": "https://www.youtube.com/watch?v=DDsHwb5iQiM",
+        "thumbnail": "https://i.ytimg.com/vi/DDsHwb5iQiM/mqdefault.jpg",
+        "channel": "혁나브리",
+        "views": 89728,
+        "length": "7:34",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PCB설계 - PADS 라이브러리 만들기",
+        "url": "https://www.youtube.com/watch?v=yFPJ0KYUvto",
+        "thumbnail": "https://i.ytimg.com/vi/yFPJ0KYUvto/mqdefault.jpg",
+        "channel": "만들마루_Official",
+        "views": 13816,
+        "length": "41:53",
+        "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
     "Apache Tomcat": [
       {
         "title": "apache tomcat 연동",
@@ -13584,88 +13666,6 @@
         "views": 2939,
         "length": "17:01",
         "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
-    "Pads": [
-      {
-        "title": "전자캐드 패즈 PADS 01강 전자캐드와 자격증",
-        "url": "https://www.youtube.com/watch?v=RROOZAGd0v0",
-        "thumbnail": "https://i.ytimg.com/vi/RROOZAGd0v0/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 2302,
-        "length": "13:55",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "PADS 강의 LOGIC 부품 제작 및 설계 1 01강 (PADS 강좌)",
-        "url": "https://www.youtube.com/watch?v=PIDQoS_fdaM",
-        "thumbnail": "https://i.ytimg.com/vi/PIDQoS_fdaM/mqdefault.jpg",
-        "channel": "월간 전자연구소",
-        "views": 4447,
-        "length": "20:16",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "게임 패드 기본 키 설명 #FC온라인",
-        "url": "https://www.youtube.com/watch?v=LjxBMu5Y-z8",
-        "thumbnail": "https://i.ytimg.com/vi/LjxBMu5Y-z8/mqdefault.jpg",
-        "channel": "혁나브리",
-        "views": 143113,
-        "length": "10:18",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "전자캐드 패즈 PADS 08강 보드아웃라인",
-        "url": "https://www.youtube.com/watch?v=olVrgCVLigA",
-        "thumbnail": "https://i.ytimg.com/vi/olVrgCVLigA/mqdefault.jpg",
-        "channel": "Seoul Workshop",
-        "views": 1378,
-        "length": "19:46",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PADS VX. 무료강좌 - Logic4(회로도 작성)",
-        "url": "https://www.youtube.com/watch?v=fRRDjmXuWp0",
-        "thumbnail": "https://i.ytimg.com/vi/fRRDjmXuWp0/mqdefault.jpg",
-        "channel": "(주)이디앤씨",
-        "views": 4358,
-        "length": "7:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PADS VX2.5 무료강좌 - Layout9(디자인 검증)",
-        "url": "https://www.youtube.com/watch?v=6m_kCZYr5tg",
-        "thumbnail": "https://i.ytimg.com/vi/6m_kCZYr5tg/mqdefault.jpg",
-        "channel": "(주)이디앤씨",
-        "views": 3826,
-        "length": "6:36",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "혁나브리 패드 강의 #수동침투 #개인기 #드리블",
-        "url": "https://www.youtube.com/watch?v=DDsHwb5iQiM",
-        "thumbnail": "https://i.ytimg.com/vi/DDsHwb5iQiM/mqdefault.jpg",
-        "channel": "혁나브리",
-        "views": 89728,
-        "length": "7:34",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PCB설계 - PADS 라이브러리 만들기",
-        "url": "https://www.youtube.com/watch?v=yFPJ0KYUvto",
-        "thumbnail": "https://i.ytimg.com/vi/yFPJ0KYUvto/mqdefault.jpg",
-        "channel": "만들마루_Official",
-        "views": 13816,
-        "length": "41:53",
-        "published": "6년 전",
         "stage": "실전"
       }
     ],
@@ -15957,88 +15957,6 @@
         "stage": "실전"
       }
     ],
-    "Splunk": [
-      {
-        "title": "Splunk란 무엇인가? 초보자를 위한 기초 가이드",
-        "url": "https://www.youtube.com/watch?v=bacxvRCoNJg",
-        "thumbnail": "https://i.ytimg.com/vi/bacxvRCoNJg/mqdefault.jpg",
-        "channel": "데이터 분석 및 시각화",
-        "views": 1270,
-        "length": "2:07",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "한컴MDS 웨비나 -  What is Splunk? (스플렁크 기초) & 고객 사례 공유",
-        "url": "https://www.youtube.com/watch?v=aw6lTHKJNvk",
-        "thumbnail": "https://i.ytimg.com/vi/aw6lTHKJNvk/mqdefault.jpg",
-        "channel": "IoT Tech Tube",
-        "views": 1174,
-        "length": "39:52",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "스플렁크 활용기초 Splunk basic",
-        "url": "https://www.youtube.com/watch?v=Rjs6TtEJGP4",
-        "thumbnail": "https://i.ytimg.com/vi/Rjs6TtEJGP4/mqdefault.jpg",
-        "channel": "JSF Korea",
-        "views": 2287,
-        "length": "2:36:48",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Splunk 온라인 강의 2일차 01 개요",
-        "url": "https://www.youtube.com/watch?v=CbydhNny0gA",
-        "thumbnail": "https://i.ytimg.com/vi/CbydhNny0gA/mqdefault.jpg",
-        "channel": "Splunk",
-        "views": 964,
-        "length": "2:41",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Splunk를 활용한 방화벽 로그 기반 보안 운영 인사이트 확보",
-        "url": "https://www.youtube.com/watch?v=nhZ9DmRdDr4",
-        "thumbnail": "https://i.ytimg.com/vi/nhZ9DmRdDr4/mqdefault.jpg",
-        "channel": "allshow TV",
-        "views": 253,
-        "length": "1:08:23",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Splunk 간단하고 빠른 데이터 시각화 대시보드",
-        "url": "https://www.youtube.com/watch?v=UJUALq0jbA4",
-        "thumbnail": "https://i.ytimg.com/vi/UJUALq0jbA4/mqdefault.jpg",
-        "channel": "데이터 분석 및 시각화",
-        "views": 332,
-        "length": "3:17",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스플렁크(Splunk) 업데이트 기능 소개 및 클라우드 특장점 소개 | 가이온 | 올쇼TV",
-        "url": "https://www.youtube.com/watch?v=7cWybaZNXvY",
-        "thumbnail": "https://i.ytimg.com/vi/7cWybaZNXvY/mqdefault.jpg",
-        "channel": "allshow TV",
-        "views": 397,
-        "length": "58:28",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "SIEM 글로벌 No.1 Splunk - 모니터링부터 SoC자동화까지 \"Splunk SoC Suite으로 스윗하게 해결해드립니다.\"",
-        "url": "https://www.youtube.com/watch?v=tSf2YHWhb4E",
-        "thumbnail": "https://i.ytimg.com/vi/tSf2YHWhb4E/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 2009,
-        "length": "34:46",
-        "published": "스트리밍 시간: 6년 전",
-        "stage": "핵심"
-      }
-    ],
     "VHDL": [
       {
         "title": "3.1 기본논리게이트(VHDL)",
@@ -16119,6 +16037,88 @@
         "length": "10:01",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "Splunk": [
+      {
+        "title": "Splunk란 무엇인가? 초보자를 위한 기초 가이드",
+        "url": "https://www.youtube.com/watch?v=bacxvRCoNJg",
+        "thumbnail": "https://i.ytimg.com/vi/bacxvRCoNJg/mqdefault.jpg",
+        "channel": "데이터 분석 및 시각화",
+        "views": 1270,
+        "length": "2:07",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "한컴MDS 웨비나 -  What is Splunk? (스플렁크 기초) & 고객 사례 공유",
+        "url": "https://www.youtube.com/watch?v=aw6lTHKJNvk",
+        "thumbnail": "https://i.ytimg.com/vi/aw6lTHKJNvk/mqdefault.jpg",
+        "channel": "IoT Tech Tube",
+        "views": 1174,
+        "length": "39:52",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "스플렁크 활용기초 Splunk basic",
+        "url": "https://www.youtube.com/watch?v=Rjs6TtEJGP4",
+        "thumbnail": "https://i.ytimg.com/vi/Rjs6TtEJGP4/mqdefault.jpg",
+        "channel": "JSF Korea",
+        "views": 2287,
+        "length": "2:36:48",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Splunk 온라인 강의 2일차 01 개요",
+        "url": "https://www.youtube.com/watch?v=CbydhNny0gA",
+        "thumbnail": "https://i.ytimg.com/vi/CbydhNny0gA/mqdefault.jpg",
+        "channel": "Splunk",
+        "views": 964,
+        "length": "2:41",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Splunk를 활용한 방화벽 로그 기반 보안 운영 인사이트 확보",
+        "url": "https://www.youtube.com/watch?v=nhZ9DmRdDr4",
+        "thumbnail": "https://i.ytimg.com/vi/nhZ9DmRdDr4/mqdefault.jpg",
+        "channel": "allshow TV",
+        "views": 253,
+        "length": "1:08:23",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Splunk 간단하고 빠른 데이터 시각화 대시보드",
+        "url": "https://www.youtube.com/watch?v=UJUALq0jbA4",
+        "thumbnail": "https://i.ytimg.com/vi/UJUALq0jbA4/mqdefault.jpg",
+        "channel": "데이터 분석 및 시각화",
+        "views": 332,
+        "length": "3:17",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스플렁크(Splunk) 업데이트 기능 소개 및 클라우드 특장점 소개 | 가이온 | 올쇼TV",
+        "url": "https://www.youtube.com/watch?v=7cWybaZNXvY",
+        "thumbnail": "https://i.ytimg.com/vi/7cWybaZNXvY/mqdefault.jpg",
+        "channel": "allshow TV",
+        "views": 397,
+        "length": "58:28",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SIEM 글로벌 No.1 Splunk - 모니터링부터 SoC자동화까지 \"Splunk SoC Suite으로 스윗하게 해결해드립니다.\"",
+        "url": "https://www.youtube.com/watch?v=tSf2YHWhb4E",
+        "thumbnail": "https://i.ytimg.com/vi/tSf2YHWhb4E/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 2009,
+        "length": "34:46",
+        "published": "스트리밍 시간: 6년 전",
+        "stage": "핵심"
       }
     ],
     "Analog": [
