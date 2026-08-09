@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-09T07:21:05",
-  "total_jobs": 9093,
-  "company_count": 1726,
+  "generated_at": "2026-08-09T08:59:18",
+  "total_jobs": 9095,
+  "company_count": 1728,
   "min_posting": 2,
   "companies": [
     {
@@ -322022,6 +322022,164 @@
       }
     },
     {
+      "name": "고워드",
+      "norm": "고워드",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 2
+      },
+      "top_tech": [
+        {
+          "name": "PyTorch",
+          "count": 1
+        },
+        {
+          "name": "Scikit-learn",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "AI/ML": [
+          {
+            "name": "PyTorch",
+            "count": 1
+          },
+          {
+            "name": "Scikit-learn",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 4,
+          "evidence": [
+            "LLM",
+            "AI 모델"
+          ]
+        },
+        {
+          "name": "커머스/리테일/물류",
+          "score": 3,
+          "evidence": [
+            "물류",
+            "주문"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "Machine Learning Engineer (3년 이상)",
+        "[고워드] Machine Learning Engineer"
+      ],
+      "postings": [
+        {
+          "title": "Machine Learning Engineer (3년 이상)",
+          "url": "https://www.wanted.co.kr/wd/372564",
+          "site": "wanted"
+        },
+        {
+          "title": "[고워드] Machine Learning Engineer",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54692309&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=1b892ff1-d7b9-46d3-8b1d-0338c097243d",
+          "site": "saramin"
+        }
+      ],
+      "summary": "고워드는 AI/데이터 플랫폼 도메인의 중소기업으로, 주로 AI/ML 직군을 채용하며 PyTorch, Scikit-learn 기반으로 개발합니다. 아키텍처는 LLM · 생성형 AI 애플리케이션로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: PyTorch, Scikit-learn 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "AI/데이터 플랫폼 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "LLM · 생성형 AI 애플리케이션 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "PyTorch",
+              "Scikit-learn"
+            ],
+            "tips": [
+              "PyTorch — 텐서·autograd로 모델 직접 학습, 파인튜닝까지"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[AI/데이터 플랫폼] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "쿠팡의 머신러닝 플랫폼을 통한 ML 개발 가속화",
+            "url": "https://medium.com/coupang-engineering/%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%9D%84-%ED%86%B5%ED%95%9C-ml-%EA%B0%9C%EB%B0%9C-%EA%B0%80%EC%86%8D%ED%99%94-de29804148bb",
+            "company": "쿠팡",
+            "country": "KR",
+            "why": "pytorch, scikit-learn"
+          },
+          {
+            "title": "Meet Coupang’s Machine Learning Platform",
+            "url": "https://medium.com/coupang-engineering/meet-coupangs-machine-learning-platform-cd00e9ccc172",
+            "company": "쿠팡",
+            "country": "KR",
+            "why": "pytorch, scikit-learn"
+          },
+          {
+            "title": "GEM Training: How Meta Doubled the Efficiency of Its LLM-Scale Ads Foundation Model",
+            "url": "https://engineering.fb.com/2026/08/03/ml-applications/training-gem-at-llm-scale-meta-ads-recommendation-foundation-model",
+            "company": "Meta",
+            "country": "US",
+            "why": "pytorch"
+          },
+          {
+            "title": "In-House LLM Serving at Netflix",
+            "url": "https://netflixtechblog.com/in-house-llm-serving-at-netflix-a5a8e799ea2c",
+            "company": "Netflix",
+            "country": "US",
+            "why": "pytorch"
+          },
+          {
+            "title": "Achieving Near-Linear Training Scalability for Pinterest’s Foundation Models",
+            "url": "https://medium.com/pinterest-engineering/achieving-near-linear-training-scalability-for-pinterests-foundation-models-14d4f59fe6f6",
+            "company": "Pinterest",
+            "country": "US",
+            "why": "pytorch"
+          },
+          {
+            "title": "SilverTorch: Index as Model — A New Retrieval Paradigm for Recommendation Systems",
+            "url": "https://engineering.fb.com/2026/05/26/ml-applications/silvertorch-index-as-model-new-retrieval-paradigm-recommendation-systems",
+            "company": "Meta",
+            "country": "US",
+            "why": "pytorch"
+          }
+        ]
+      }
+    },
+    {
       "name": "퐁",
       "norm": "퐁",
       "size": "중소기업",
@@ -400609,6 +400767,171 @@
             "company": "Airbnb",
             "country": "US",
             "why": "git, go, java"
+          }
+        ]
+      }
+    },
+    {
+      "name": "(주)HR컨설팅그룹",
+      "norm": "hr컨설팅그룹",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "프론트엔드": 1,
+        "AI/ML": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "React",
+          "count": 1
+        },
+        {
+          "name": "Vue",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          },
+          {
+            "name": "Vue",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "의료/헬스케어/바이오",
+          "score": 12,
+          "evidence": [
+            "의료",
+            "헬스케어",
+            "의료기기",
+            "임상"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 11,
+          "evidence": [
+            "채용",
+            "HR",
+            "구인",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "[시중 은행] IT설계개발 엔지니어(프론트엔드)",
+        "[국내유망디지털헬스케어기업]임상데이터 분석가 / 메디컬 라이"
+      ],
+      "postings": [
+        {
+          "title": "[시중 은행] IT설계개발 엔지니어(프론트엔드)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54655596&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=48233ad5-44c2-4085-bebb-9bdcd1cadb23",
+          "site": "saramin"
+        },
+        {
+          "title": "[국내유망디지털헬스케어기업]임상데이터 분석가 / 메디컬 라이",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54690156&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=ac68908e-4730-4ece-8860-d45c15f404f6",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)HR컨설팅그룹는 의료/헬스케어/바이오 도메인의 중소기업으로, 주로 프론트엔드 · AI/ML 직군을 채용하며 React, Vue 기반으로 개발합니다. 아키텍처는 LLM · 생성형 AI 애플리케이션로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: React, Vue 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "프론트엔드 중심(+AI/ML) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "의료/헬스케어/바이오 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "LLM · 생성형 AI 애플리케이션 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "2. 프론트엔드 핵심 스킬",
+            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
+            "techs": [
+              "React",
+              "Vue"
+            ],
+            "tips": [
+              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성",
+              "Vue — 반응형 시스템·컴포지션 API로 화면 구성"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기"
+            ]
+          }
+        ],
+        "tasks": [
+          "[의료/헬스케어/바이오] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "[의료/헬스케어/바이오] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "LLM·RAG 기반 기능 개발과 프롬프트/품질 개선"
+        ],
+        "study_blogs": [
+          {
+            "title": "Introducing Kitesurf: The agent-first browser that runs in V8 isolates on Cloudflare Workers",
+            "url": "https://blog.cloudflare.com/kitesurf",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "react, vue"
+          },
+          {
+            "title": "FE News 26년 6월 소식을 전해드립니다.",
+            "url": "https://d2.naver.com/news/7161766",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "react, vue"
+          },
+          {
+            "title": "VoidZero is joining Cloudflare",
+            "url": "https://blog.cloudflare.com/voidzero-joins-cloudflare",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "react, vue"
+          },
+          {
+            "title": "Stacked sessions and pull requests in the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/stacked-sessions-and-pull-requests-in-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "react"
+          },
+          {
+            "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+            "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+            "company": "Grab",
+            "country": "SG",
+            "why": "react"
+          },
+          {
+            "title": "Claude Codeのハーネスを育てるアプリを作ってみた 〜~/.claudeには宝が眠っている〜",
+            "url": "https://engineering.dena.com/blog/2026/07/claude-code-harness-app",
+            "company": "DeNA",
+            "country": "JP",
+            "why": "react"
           }
         ]
       }

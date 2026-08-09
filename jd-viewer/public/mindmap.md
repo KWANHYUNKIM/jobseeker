@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9093건** 공고 · **1726개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 07:20
+- 총 **9095건** 공고 · **1728개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 08:59
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -10067,7 +10067,7 @@ markmap:
   - [AI Investment Strategy본부 Data Engineer 경력 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/561326?ReturnUrl=RecruitInfo)
 
 
-## AI/데이터 플랫폼 (113개사)
+## AI/데이터 플랫폼 (114개사)
 ### 미리디 `중소기업` · 31건
 - **백엔드** [7건] · `PostgreSQL` `AWS` `TypeScript` `MongoDB` `DynamoDB` `Python`
   - [(미리캔버스) 시니어 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/278395)
@@ -11315,6 +11315,11 @@ markmap:
 - **데이터** [1건] · `TypeScript` `Node.js` `NestJS` `PostgreSQL` `Redis` `AWS`
   - [백엔드 개발자 ↗](https://www.wanted.co.kr/wd/350058)
 
+### 고워드 `중소기업` · 2건
+- **AI/ML** [2건] · `PyTorch` `Scikit-learn`
+  - [Machine Learning Engineer (3년 이상) ↗](https://www.wanted.co.kr/wd/372564)
+  - [(고워드) Machine Learning Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54692309&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=1b892ff1-d7b9-46d3-8b1d-0338c097243d)
+
 ### 세명소프트 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `Python` `TypeScript` `Go` `TensorFlow` `PyTorch`
   - [(R&D 개발) AI·데이터 플랫폼 개발 팀장 ↗](https://www.wanted.co.kr/wd/357911)
@@ -11594,7 +11599,7 @@ markmap:
   - [Principal AI Engineer ↗](https://jobs.ashbyhq.com/gorgias/8cece324-7018-412f-87ff-316dcbe558e1)
 
 
-## 의료/헬스케어/바이오 (109개사)
+## 의료/헬스케어/바이오 (110개사)
 ### 넛지헬스케어(주) `중견기업` · 27건
 - **백엔드** [14건] · `AWS` `REST API` `GraphQL` `iOS` `Next.js` `DynamoDB`
   - [(캐시워크-병역특례) 프론트엔드개발 병역특례 대상자 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49324901?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=98&sc=630)
@@ -12822,6 +12827,14 @@ markmap:
 - **프론트엔드** [2건] · `TypeScript` `React` `Python` `JavaScript` `PostgreSQL` `Nginx`
   - [(주)모어다임에서 프론트엔드 & 백엔드 개발자 모셔요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53966540&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
   - [(웹개발) 프론트엔드 및 풀 스택 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54673742&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2ad4c505-a931-4366-818b-6c3053a2c77d)
+
+### (주)HR컨설팅그룹 `중소기업` · 2건
+- **프론트엔드** [1건] · `React` `Vue`
+  - [(시중 은행) IT설계개발 엔지니어(프론트엔드) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54655596&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=48233ad5-44c2-4085-bebb-9bdcd1cadb23)
+- **AI/ML** [1건] · `React` `Vue`
+  - [(시중 은행) IT설계개발 엔지니어(프론트엔드) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54655596&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=48233ad5-44c2-4085-bebb-9bdcd1cadb23)
+- **데이터** [1건]
+  - [(국내유망디지털헬스케어기업)임상데이터 분석가 / 메디컬 라이 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54690156&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=ac68908e-4730-4ece-8860-d45c15f404f6)
 
 ### (주)오티톤메디컬 `중소기업` · 2건
 - **백엔드** [1건] · `Git` `REST API`
