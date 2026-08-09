@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-09T10:46:20",
-  "total_jobs": 9095,
-  "company_count": 1728,
+  "generated_at": "2026-08-09T14:03:23",
+  "total_jobs": 9097,
+  "company_count": 1729,
   "min_posting": 2,
   "companies": [
     {
@@ -347356,6 +347356,69 @@
             "why": "jira"
           }
         ]
+      }
+    },
+    {
+      "name": "모벤시스",
+      "norm": "모벤시스",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "AI/ML": 2
+      },
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "교육/에듀테크",
+          "score": 5,
+          "evidence": [
+            "교육",
+            "학습"
+          ]
+        },
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 5,
+          "evidence": [
+            "로봇",
+            "로보틱스"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "Physical AI 제어 SW 개발자 (전문연 가능)",
+        "로보틱스 AI / 소프트웨어 (로봇 연구개발)"
+      ],
+      "postings": [
+        {
+          "title": "Physical AI 제어 SW 개발자 (전문연 가능)",
+          "url": "https://www.wanted.co.kr/wd/360825",
+          "site": "wanted"
+        },
+        {
+          "title": "로보틱스 AI / 소프트웨어 (로봇 연구개발)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54506611&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=ea25d887-2952-4402-ab40-522f0f0890c2",
+          "site": "saramin"
+        }
+      ],
+      "summary": "모벤시스는 교육/에듀테크 도메인의 중소기업으로, 주로 AI/ML 직군을 채용합니다.",
+      "career_guide": {
+        "wants": [
+          "AI/ML 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "교육/에듀테크 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "[교육/에듀테크] 모델 학습·평가와 추론(서빙) 파이프라인 개발"
+        ],
+        "study_blogs": []
       }
     },
     {
