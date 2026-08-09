@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9089건** 공고 · **1729개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-10 04:16
+- 총 **9090건** 공고 · **1729개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-10 05:55
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -11841,22 +11841,7 @@ markmap:
 - **DevOps/인프라** [1건] · `Python` `MySQL` `AWS` `Docker` `Terraform` `MSA`
   - [(중견 계열사) 시스템 엔지니어 ↗](https://www.wanted.co.kr/wd/375590)
 
-### 덴티움 `중소기업` · 8건
-- **백엔드** [1건] · `C++` `C#` `.NET` `MySQL` `PostgreSQL` `Oracle`
-  - [영상관리 SW 개발 ↗](https://jumpit.saramin.co.kr/position/54515693)
-- **펌웨어/임베디드** [3건] · `Orcad` `Pads` `C` `FPGA` `C++` `C#`
-  - [Dental CT HW개발 ↗](https://jumpit.saramin.co.kr/position/54515291)
-  - [Medical CBCT HW개발 ↗](https://jumpit.saramin.co.kr/position/53922564)
-  - [정형외과용 CT 펌웨어(FW) 개발 ↗](https://jumpit.saramin.co.kr/position/54145385)
-
-### 에스디바이오센서 `중소기업` · 7건
-- **펌웨어/임베디드** [4건] · `C++` `Git` `SVN` `Linux` `Embedded` `Embedded Linux`
-  - [(수원)임베디드 SW 개발자 ↗](https://www.wanted.co.kr/wd/376847)
-  - [하드웨어(H/W)&펌웨어(F/W) 개발자 ↗](https://jumpit.saramin.co.kr/position/54108122)
-  - [SW 개발자(3~9년) ↗](https://jumpit.saramin.co.kr/position/54380911)
-  - [SW 개발자(10~15년) ↗](https://jumpit.saramin.co.kr/position/54381037)
-
-### 삼양식품 `중소기업` · 7건
+### 삼양식품 `중소기업` · 8건
 - **백엔드** [3건] · `Python` `FastAPI` `AWS` `GCP` `Docker` `React`
   - [(삼양식품) 헬스케어 AI 연구개발 파트장 (ML 모델 개발) ↗](https://www.wanted.co.kr/wd/373416)
   - [(삼양식품) IT팀 Back end개발자 ↗](https://www.wanted.co.kr/wd/366732)
@@ -11871,10 +11856,27 @@ markmap:
   - [(삼양식품) AI Transformation(AX) 전략 팀장 ↗](https://www.wanted.co.kr/wd/374125)
   - [(삼양식품) IT팀 Back end개발자 ↗](https://www.wanted.co.kr/wd/366732)
   - [(삼양식품) AI 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/349866)
+- **데이터** [1건]
+  - [(삼양식품) SAP SD 모듈 & BI 리포트 구축 및 운영 / 데이터 분석 담당 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49706372?Oem_Code=C1&logpath=1&stext=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&listno=100&sc=630)
 - **DevOps/인프라** [3건] · `Linux` `Python` `React` `FastAPI` `MySQL` `PostgreSQL`
   - [IT 메일시스템(Ms exchange) 담당 ↗](https://www.wanted.co.kr/wd/365018)
   - [(삼양식품) IT팀 Back end개발자 ↗](https://www.wanted.co.kr/wd/366732)
   - [(삼양식품) AI 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/349866)
+
+### 덴티움 `중소기업` · 8건
+- **백엔드** [1건] · `C++` `C#` `.NET` `MySQL` `PostgreSQL` `Oracle`
+  - [영상관리 SW 개발 ↗](https://jumpit.saramin.co.kr/position/54515693)
+- **펌웨어/임베디드** [3건] · `Orcad` `Pads` `C` `FPGA` `C++` `C#`
+  - [Dental CT HW개발 ↗](https://jumpit.saramin.co.kr/position/54515291)
+  - [Medical CBCT HW개발 ↗](https://jumpit.saramin.co.kr/position/53922564)
+  - [정형외과용 CT 펌웨어(FW) 개발 ↗](https://jumpit.saramin.co.kr/position/54145385)
+
+### 에스디바이오센서 `중소기업` · 7건
+- **펌웨어/임베디드** [4건] · `C++` `Git` `SVN` `Linux` `Embedded` `Embedded Linux`
+  - [(수원)임베디드 SW 개발자 ↗](https://www.wanted.co.kr/wd/376847)
+  - [하드웨어(H/W)&펌웨어(F/W) 개발자 ↗](https://jumpit.saramin.co.kr/position/54108122)
+  - [SW 개발자(3~9년) ↗](https://jumpit.saramin.co.kr/position/54380911)
+  - [SW 개발자(10~15년) ↗](https://jumpit.saramin.co.kr/position/54381037)
 
 ### (주)바이오리서치에이아이 `중소기업` · 7건
 - **백엔드** [6건] · `Python` `FastAPI` `MariaDB` `AWS` `MongoDB` `Django`
