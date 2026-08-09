@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9097건** 공고 · **1729개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 14:03
+- 총 **9100건** 공고 · **1730개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 15:41
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -3881,7 +3881,7 @@ markmap:
   - [Senior AI/LLM Penetration Tester ↗](http://www.bishopfox.com/jobs?gh_jid=8069668)
 
 
-## B2B SaaS/엔터프라이즈 (261개사)
+## B2B SaaS/엔터프라이즈 (262개사)
 ### 메가존클라우드(주) `중견기업` · 63건
 - **백엔드** [13건] · `Python` `AWS` `Java` `Go` `Kubernetes` `Azure`
   - [Backend Developer / AI Research Engineer 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49253135?Oem_Code=C1&logpath=1&stext=%EB%B0%B1%EC%97%94%EB%93%9C&listno=72&sc=630)
@@ -6057,6 +6057,17 @@ markmap:
 - **풀스택** [2건] · `React` `Node.js`
   - [풀스택 시니어급 개발자 (더트레이딩) ↗](https://www.wanted.co.kr/wd/363356)
   - [풀스택 주니어(미들)급 개발자 (더트레이딩) ↗](https://www.wanted.co.kr/wd/363354)
+
+### 엔츠 `중소기업` · 2건
+- **백엔드** [1건] · `TypeScript` `Next.js` `FastAPI` `NestJS` `MongoDB` `AWS`
+  - [B2B 탄소회계 SaaS 백엔드 개발자 (3년 이상/풀스택 지향) ↗](https://www.wanted.co.kr/wd/365890)
+- **프론트엔드** [2건] · `TypeScript` `Next.js` `FastAPI` `NestJS` `MongoDB` `AWS`
+  - [B2B 탄소회계 SaaS 백엔드 개발자 (3년 이상/풀스택 지향) ↗](https://www.wanted.co.kr/wd/365890)
+  - [(인턴) B2B 탄소회계 SaaS 프론트엔드 개발자 ↗](https://www.wanted.co.kr/wd/379605)
+- **풀스택** [1건] · `TypeScript` `Next.js` `FastAPI` `NestJS` `MongoDB` `AWS`
+  - [B2B 탄소회계 SaaS 백엔드 개발자 (3년 이상/풀스택 지향) ↗](https://www.wanted.co.kr/wd/365890)
+- **AI/ML** [1건] · `TypeScript` `Next.js` `FastAPI` `NestJS` `MongoDB` `AWS`
+  - [B2B 탄소회계 SaaS 백엔드 개발자 (3년 이상/풀스택 지향) ↗](https://www.wanted.co.kr/wd/365890)
 
 ### 링코베이션 `중소기업` · 2건
 - **백엔드** [2건] · `React` `Next.js` `HTML` `Node.js` `NestJS` `React Native`

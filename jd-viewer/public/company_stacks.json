@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-09T14:03:23",
-  "total_jobs": 9097,
-  "company_count": 1729,
+  "generated_at": "2026-08-09T15:42:04",
+  "total_jobs": 9100,
+  "company_count": 1730,
   "min_posting": 2,
   "companies": [
     {
@@ -279019,6 +279019,273 @@
             "company": "요기요",
             "country": "KR",
             "why": "node.js, react"
+          }
+        ]
+      }
+    },
+    {
+      "name": "엔츠",
+      "norm": "엔츠",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "wanted"
+      ],
+      "roles": {
+        "프론트엔드": 2,
+        "백엔드": 1,
+        "AI/ML": 1,
+        "풀스택": 1
+      },
+      "top_tech": [
+        {
+          "name": "TypeScript",
+          "count": 1
+        },
+        {
+          "name": "Next.js",
+          "count": 1
+        },
+        {
+          "name": "FastAPI",
+          "count": 1
+        },
+        {
+          "name": "NestJS",
+          "count": 1
+        },
+        {
+          "name": "MongoDB",
+          "count": 1
+        },
+        {
+          "name": "AWS",
+          "count": 1
+        },
+        {
+          "name": "Docker",
+          "count": 1
+        },
+        {
+          "name": "React",
+          "count": 1
+        },
+        {
+          "name": "CSS",
+          "count": 1
+        },
+        {
+          "name": "Tailwind",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "TypeScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "FastAPI",
+            "count": 1
+          },
+          {
+            "name": "NestJS",
+            "count": 1
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "Next.js",
+            "count": 1
+          },
+          {
+            "name": "React",
+            "count": 1
+          },
+          {
+            "name": "CSS",
+            "count": 1
+          },
+          {
+            "name": "Tailwind",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MongoDB",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 10,
+          "evidence": [
+            "SaaS",
+            "B2B",
+            "ERP",
+            "솔루션"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 2,
+          "evidence": [
+            "데이터 플랫폼"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 기반 배포 (Docker)",
+          "why": "Docker 사용 — 컨테이너로 패키징·배포하는 환경 추정"
+        },
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "SSR · 풀스택 프레임워크",
+          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
+        }
+      ],
+      "titles": [
+        "B2B 탄소회계 SaaS 백엔드 개발자 (3년 이상/풀스택 지향)",
+        "[인턴] B2B 탄소회계 SaaS 프론트엔드 개발자"
+      ],
+      "postings": [
+        {
+          "title": "B2B 탄소회계 SaaS 백엔드 개발자 (3년 이상/풀스택 지향)",
+          "url": "https://www.wanted.co.kr/wd/365890",
+          "site": "wanted"
+        },
+        {
+          "title": "[인턴] B2B 탄소회계 SaaS 프론트엔드 개발자",
+          "url": "https://www.wanted.co.kr/wd/379605",
+          "site": "wanted"
+        }
+      ],
+      "summary": "엔츠는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 프론트엔드 · 백엔드 직군을 채용하며 TypeScript, Next.js, FastAPI, NestJS 기반으로 개발합니다. 아키텍처는 컨테이너 기반 배포 (Docker)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
+          "핵심 역량: TypeScript, Next.js, FastAPI 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "프론트엔드 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 기반 배포 (Docker) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "TypeScript"
+            ],
+            "tips": [
+              "TypeScript — 타입 시스템·제네릭·유틸리티 타입으로 안전한 JS 작성"
+            ]
+          },
+          {
+            "stage": "2. 프론트엔드 핵심 스킬",
+            "goal": "컴포넌트·상태관리로 동작하는 SPA를 만들어 배포한다",
+            "techs": [
+              "Next.js",
+              "React",
+              "CSS",
+              "Tailwind"
+            ],
+            "tips": [
+              "Next.js — SSR/SSG·라우팅·서버컴포넌트로 풀스택 웹 구축",
+              "React — 컴포넌트·훅·상태관리·렌더링 최적화로 SPA 완성",
+              "Tailwind — 유틸리티 클래스로 빠르게 반응형 UI 구성"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MongoDB"
+            ],
+            "tips": [
+              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 기반 배포 (Docker))",
+            "techs": [
+              "AWS",
+              "Docker"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화"
+            ]
+          }
+        ],
+        "tasks": [
+          "[B2B SaaS/엔터프라이즈] 사용자 화면(UI) 구현과 상태관리·렌더링 성능 최적화",
+          "[B2B SaaS/엔터프라이즈] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "css, react, tailwind"
+          },
+          {
+            "title": "Taming Visual Regressions with Playwright and Docker",
+            "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
+            "company": "Swiggy",
+            "country": "IN",
+            "why": "css, docker, react"
+          },
+          {
+            "title": "FE News 26년 3월 소식을 전해드립니다!",
+            "url": "https://d2.naver.com/news/0407747",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "css, next.js, react"
+          },
+          {
+            "title": "[디자인 시스템 어떻게 만들었어요?(3)] Tree Shaking과 구형 브라우저 대응",
+            "url": "https://techblog.yogiyo.co.kr/%EB%94%94%EC%9E%90%EC%9D%B8-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%A7%8C%EB%93%A4%EC%97%88%EC%96%B4%EC%9A%94-3-tree-shaking%EA%B3%BC-%EA%B5%AC%ED%98%95-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EB%8C%80%EC%9D%91-d29474baf7ba",
+            "company": "요기요",
+            "country": "KR",
+            "why": "css, next.js, react"
+          },
+          {
+            "title": "The Cost of Speed: A Battle against Cost, Debt, and Diverging Systems",
+            "url": "https://engineering.mercari.com/en/blog/entry/20251215-the-cost-of-speed-a-battle-against-cost-debt-and-diverging-systems",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "next.js, react, typescript"
+          },
+          {
+            "title": "왜 왓챠 웹은 Remix로 마이그레이션했을까?",
+            "url": "https://medium.com/watcha/%EC%99%9C-%EC%99%93%EC%B1%A0-%EC%9B%B9%EC%9D%80-remix%EB%A1%9C-%EB%A7%88%EC%9D%B4%EA%B7%B8%EB%A0%88%EC%9D%B4%EC%85%98%ED%96%88%EC%9D%84%EA%B9%8C-dbb710acd758",
+            "company": "왓챠",
+            "country": "KR",
+            "why": "css, next.js, react"
           }
         ]
       }
