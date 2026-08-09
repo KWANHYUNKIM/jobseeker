@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9109건** 공고 · **1733개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 21:37
+- 총 **9111건** 공고 · **1733개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-09 23:17
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -4166,6 +4166,23 @@ markmap:
   - [(아정당) 데이터 엔지니어 (5년 이상) ↗](https://www.wanted.co.kr/wd/351339)
   - [(아정당 서울) DevOps 개발자 (5년 이상~) ↗](https://www.wanted.co.kr/wd/356543)
 
+### 도슨티 `중소기업` · 9건
+- **백엔드** [7건] · `Python` `TypeScript` `FastAPI` `NestJS` `PostgreSQL` `GCP`
+  - [AI-native Problem solver PM ↗](https://www.wanted.co.kr/wd/351316)
+  - [AI-native Problem solver AI engineer ↗](https://www.wanted.co.kr/wd/218810)
+  - [AI-native Problem solver PO ↗](https://www.wanted.co.kr/wd/351317)
+  - [AI-native Problem solver Software engineer ↗](https://www.wanted.co.kr/wd/248953)
+- **프론트엔드** [2건] · `Python` `TypeScript` `React` `FastAPI` `NestJS` `PostgreSQL`
+  - [AI-native Problem solver AI engineer ↗](https://www.wanted.co.kr/wd/218810)
+  - [(도슨티AI) Full-stack Problem Solver 개발자 채용 (신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54648454&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d7eb4454-1640-492c-87d9-faac4341f872)
+- **풀스택** [1건] · `Python` `TypeScript` `React` `Next.js` `Node.js` `FastAPI`
+  - [(도슨티AI) Full-stack Problem Solver 개발자 채용 (신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54648454&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d7eb4454-1640-492c-87d9-faac4341f872)
+- **AI/ML** [9건] · `GCP` `Python` `TypeScript` `FastAPI` `NestJS` `PostgreSQL`
+  - [AI-native Problem solver 마케팅 ↗](https://www.wanted.co.kr/wd/359241)
+  - [AI-native Problem solver PM ↗](https://www.wanted.co.kr/wd/351316)
+  - [AI-native Problem solver AI engineer ↗](https://www.wanted.co.kr/wd/218810)
+  - [AI-native Problem solver PO ↗](https://www.wanted.co.kr/wd/351317)
+
 ### 위드네트웍스 `중소기업` · 9건
 - **백엔드** [4건] · `Python` `Django` `FastAPI` `PostgreSQL` `Redis` `Docker`
   - [보안 연구소 솔루션 개발자(신입) ↗](https://jumpit.saramin.co.kr/position/54585037)
@@ -4284,23 +4301,6 @@ markmap:
   - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
   - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
   - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
-
-### 도슨티 `중소기업` · 8건
-- **백엔드** [6건] · `Python` `TypeScript` `FastAPI` `NestJS` `PostgreSQL` `GCP`
-  - [AI-native Problem solver PM ↗](https://www.wanted.co.kr/wd/351316)
-  - [AI-native Problem solver AI engineer ↗](https://www.wanted.co.kr/wd/218810)
-  - [AI-native Problem solver PO ↗](https://www.wanted.co.kr/wd/351317)
-  - [AI-native Problem solver Software engineer ↗](https://www.wanted.co.kr/wd/248953)
-- **프론트엔드** [2건] · `Python` `TypeScript` `React` `FastAPI` `NestJS` `PostgreSQL`
-  - [AI-native Problem solver AI engineer ↗](https://www.wanted.co.kr/wd/218810)
-  - [(도슨티AI) Full-stack Problem Solver 개발자 채용 (신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54648454&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d7eb4454-1640-492c-87d9-faac4341f872)
-- **풀스택** [1건] · `Python` `TypeScript` `React` `Next.js` `Node.js` `FastAPI`
-  - [(도슨티AI) Full-stack Problem Solver 개발자 채용 (신입/경력) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54648454&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=d7eb4454-1640-492c-87d9-faac4341f872)
-- **AI/ML** [8건] · `GCP` `Python` `TypeScript` `FastAPI` `NestJS` `PostgreSQL`
-  - [AI-native Problem solver 마케팅 ↗](https://www.wanted.co.kr/wd/359241)
-  - [AI-native Problem solver PM ↗](https://www.wanted.co.kr/wd/351316)
-  - [AI-native Problem solver AI engineer ↗](https://www.wanted.co.kr/wd/218810)
-  - [AI-native Problem solver PO ↗](https://www.wanted.co.kr/wd/351317)
 
 ### (주)이젬코 `중소기업` · 8건
 - **백엔드** [1건] · `Java` `JavaScript` `TypeScript` `React` `CSS` `Tailwind`
@@ -11041,6 +11041,13 @@ markmap:
 - **데이터** [1건]
   - [Data Engineer Team Lead ↗](https://www.wanted.co.kr/wd/379594)
 
+### (주)고워드 `중소기업` · 3건
+- **백엔드** [1건] · `Python`
+  - [(고워드) Back-End Developer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54692294&location=ts&searchword=%ED%8C%8C%EC%9D%B4%EC%8D%AC&searchType=search&paid_fl=n&search_uuid=7cf07823-8876-4cb8-b01f-9ffa0e1e5c8e)
+- **AI/ML** [2건] · `PyTorch` `Scikit-learn`
+  - [Machine Learning Engineer (3년 이상) ↗](https://www.wanted.co.kr/wd/372564)
+  - [(고워드) Machine Learning Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54692309&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=1b892ff1-d7b9-46d3-8b1d-0338c097243d)
+
 ### 모아이스 `중소기업` · 3건
 - **백엔드** [2건] · `AWS` `GCP` `LangChain`
   - [AI/LLM 엔지니어 ↗](https://www.wanted.co.kr/wd/356735)
@@ -11349,11 +11356,6 @@ markmap:
   - [인공지능 개발자 (서비스 개발 중심) ↗](https://www.wanted.co.kr/wd/354422)
 - **데이터** [1건] · `TypeScript` `Node.js` `NestJS` `PostgreSQL` `Redis` `AWS`
   - [백엔드 개발자 ↗](https://www.wanted.co.kr/wd/350058)
-
-### 고워드 `중소기업` · 2건
-- **AI/ML** [2건] · `PyTorch` `Scikit-learn`
-  - [Machine Learning Engineer (3년 이상) ↗](https://www.wanted.co.kr/wd/372564)
-  - [(고워드) Machine Learning Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54692309&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=1b892ff1-d7b9-46d3-8b1d-0338c097243d)
 
 ### 세명소프트 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `Python` `TypeScript` `Go` `TensorFlow` `PyTorch`
