@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-09T23:26:24",
+  "generated_at": "2026-08-10T02:38:29",
   "source": "youtube",
-  "tech_count": 205,
+  "tech_count": 204,
   "curriculum_count": 20,
   "search_url": "https://www.youtube.com/results?search_query={tech}+강의",
   "resources": {
@@ -1399,88 +1399,6 @@
         "stage": "실전"
       }
     ],
-    "C++": [
-      {
-        "title": "[C++ 특강] C plus plus 프로그래밍 배우기 c++ 강좌 기초 강의 연산자  컴파일러",
-        "url": "https://www.youtube.com/watch?v=JoAdRwJi-GI",
-        "thumbnail": "https://i.ytimg.com/vi/JoAdRwJi-GI/mqdefault.jpg",
-        "channel": "IB 96",
-        "views": 121847,
-        "length": "50:09",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
-        "url": "https://www.youtube.com/watch?v=q6fPjQAzll8",
-        "thumbnail": "https://i.ytimg.com/vi/q6fPjQAzll8/mqdefault.jpg",
-        "channel": "나도코딩",
-        "views": 2027522,
-        "length": "6:46:33",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[무료] 코테용 C++ 핵심 정리 무료 강의 - 핵심적인 내용만 간추려서 빠르게 훑어볼 수 있는 3시간 완강가능! [홍정모 연구소]",
-        "url": "https://www.youtube.com/watch?v=UqCZda8DLGc",
-        "thumbnail": "https://i.ytimg.com/vi/UqCZda8DLGc/mqdefault.jpg",
-        "channel": "홍정모",
-        "views": 71522,
-        "length": "3:18:02",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
-        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
-        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
-        "channel": "노마드 코더 Nomad Coders",
-        "views": 1527088,
-        "length": "5:44",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C++ 언어 배우는 데 걸리는 시간, C++ 사용하고 있는 산업 (코딩 효과적으로 공부하는 방법)",
-        "url": "https://www.youtube.com/watch?v=FPqCG0tk1hM",
-        "thumbnail": "https://i.ytimg.com/vi/FPqCG0tk1hM/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 28372,
-        "length": "4:02",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "개발자로의 기로에 서게 했던 ... C언어 포인터 문제 (from 정보처리기사 정처기 문제)",
-        "url": "https://www.youtube.com/watch?v=k6HPjMyVJy0",
-        "thumbnail": "https://i.ytimg.com/vi/k6HPjMyVJy0/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 162420,
-        "length": "10:22",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "C++ 강좌 1-1 강의 계획서",
-        "url": "https://www.youtube.com/watch?v=WulxuBtoW5M",
-        "thumbnail": "https://i.ytimg.com/vi/WulxuBtoW5M/mqdefault.jpg",
-        "channel": "Smile Han",
-        "views": 31809,
-        "length": "3:41",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[C++ 프로그래밍] 게임 만들기 실습 - 6. Class - Part 1 (1)",
-        "url": "https://www.youtube.com/watch?v=fT7JBLTo-hQ",
-        "thumbnail": "https://i.ytimg.com/vi/fT7JBLTo-hQ/mqdefault.jpg",
-        "channel": "김형기",
-        "views": 764,
-        "length": "11:28",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "Node.js": [
       {
         "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
@@ -1560,6 +1478,88 @@
         "views": 98693,
         "length": "4:44",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "C++": [
+      {
+        "title": "[C++ 특강] C plus plus 프로그래밍 배우기 c++ 강좌 기초 강의 연산자  컴파일러",
+        "url": "https://www.youtube.com/watch?v=JoAdRwJi-GI",
+        "thumbnail": "https://i.ytimg.com/vi/JoAdRwJi-GI/mqdefault.jpg",
+        "channel": "IB 96",
+        "views": 121847,
+        "length": "50:09",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "C 언어 무료 강의 (입문부터 게임 개발까지)",
+        "url": "https://www.youtube.com/watch?v=q6fPjQAzll8",
+        "thumbnail": "https://i.ytimg.com/vi/q6fPjQAzll8/mqdefault.jpg",
+        "channel": "나도코딩",
+        "views": 2027522,
+        "length": "6:46:33",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[무료] 코테용 C++ 핵심 정리 무료 강의 - 핵심적인 내용만 간추려서 빠르게 훑어볼 수 있는 3시간 완강가능! [홍정모 연구소]",
+        "url": "https://www.youtube.com/watch?v=UqCZda8DLGc",
+        "thumbnail": "https://i.ytimg.com/vi/UqCZda8DLGc/mqdefault.jpg",
+        "channel": "홍정모",
+        "views": 71522,
+        "length": "3:18:02",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C. C++. C#. 차이점 알려드림. 5분 순삭.",
+        "url": "https://www.youtube.com/watch?v=zGrTT4k1-yc",
+        "thumbnail": "https://i.ytimg.com/vi/zGrTT4k1-yc/mqdefault.jpg",
+        "channel": "노마드 코더 Nomad Coders",
+        "views": 1527088,
+        "length": "5:44",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C++ 언어 배우는 데 걸리는 시간, C++ 사용하고 있는 산업 (코딩 효과적으로 공부하는 방법)",
+        "url": "https://www.youtube.com/watch?v=FPqCG0tk1hM",
+        "thumbnail": "https://i.ytimg.com/vi/FPqCG0tk1hM/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 28372,
+        "length": "4:02",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "개발자로의 기로에 서게 했던 ... C언어 포인터 문제 (from 정보처리기사 정처기 문제)",
+        "url": "https://www.youtube.com/watch?v=k6HPjMyVJy0",
+        "thumbnail": "https://i.ytimg.com/vi/k6HPjMyVJy0/mqdefault.jpg",
+        "channel": "기술노트with 알렉",
+        "views": 162420,
+        "length": "10:22",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "C++ 강좌 1-1 강의 계획서",
+        "url": "https://www.youtube.com/watch?v=WulxuBtoW5M",
+        "thumbnail": "https://i.ytimg.com/vi/WulxuBtoW5M/mqdefault.jpg",
+        "channel": "Smile Han",
+        "views": 31809,
+        "length": "3:41",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[C++ 프로그래밍] 게임 만들기 실습 - 6. Class - Part 1 (1)",
+        "url": "https://www.youtube.com/watch?v=fT7JBLTo-hQ",
+        "thumbnail": "https://i.ytimg.com/vi/fT7JBLTo-hQ/mqdefault.jpg",
+        "channel": "김형기",
+        "views": 764,
+        "length": "11:28",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -1973,88 +1973,6 @@
         "stage": "실전"
       }
     ],
-    "Terraform": [
-      {
-        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
-        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
-        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
-        "channel": "데브아트 DevArt",
-        "views": 13904,
-        "length": "14:55",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
-        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
-        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 2830,
-        "length": "13:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
-        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
-        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
-        "channel": "코딩하는초롱",
-        "views": 3211,
-        "length": "36:29",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
-        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
-        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 1792,
-        "length": "13:41",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
-        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
-        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
-        "channel": "44BITS",
-        "views": 13180,
-        "length": "5:11",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Terraform(테라폼) EP1: 테라폼에 대한 소개",
-        "url": "https://www.youtube.com/watch?v=FKY6wBStt8w",
-        "thumbnail": "https://i.ytimg.com/vi/FKY6wBStt8w/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 1554,
-        "length": "22:58",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
-        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
-        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
-        "channel": "NDC",
-        "views": 4780,
-        "length": "20:43",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[젝톡] 최재혁의 Terraform 소개",
-        "url": "https://www.youtube.com/watch?v=mdO3NOr4vuY",
-        "thumbnail": "https://i.ytimg.com/vi/mdO3NOr4vuY/mqdefault.jpg",
-        "channel": "젝트 JECT",
-        "views": 129,
-        "length": "7:17",
-        "published": "1년 전",
-        "stage": "핵심"
-      }
-    ],
     "Kotlin": [
       {
         "title": "[토크ON세미나] 안드로이드 앱 개발을 위한 코틀린(Kotlin) 1강 - 코틀린(Kotlin) 기본 문법 I | T아카데미",
@@ -2134,6 +2052,88 @@
         "views": 856,
         "length": "5:10",
         "published": "4년 전",
+        "stage": "핵심"
+      }
+    ],
+    "Terraform": [
+      {
+        "title": "Infrastructure as Code 의 최고 인기Terraform(테라폼) 현직 DevOps 엔지니어, AWS Hero 가 이야기하는 Terraform 기본설명!",
+        "url": "https://www.youtube.com/watch?v=3qSpwqckvXQ",
+        "thumbnail": "https://i.ytimg.com/vi/3qSpwqckvXQ/mqdefault.jpg",
+        "channel": "데브아트 DevArt",
+        "views": 13904,
+        "length": "14:55",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Terraform(테라폼) EP28: 테라폼 10분만에 끝내기",
+        "url": "https://www.youtube.com/watch?v=3ufG9tOK3UM",
+        "thumbnail": "https://i.ytimg.com/vi/3ufG9tOK3UM/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 2830,
+        "length": "13:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DevOps 엔지니어라면 알아야할 IaC tool - Terraform, Terragrunt",
+        "url": "https://www.youtube.com/watch?v=3I9s69_IyZw",
+        "thumbnail": "https://i.ytimg.com/vi/3I9s69_IyZw/mqdefault.jpg",
+        "channel": "코딩하는초롱",
+        "views": 3211,
+        "length": "36:29",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 헤일러의 Terraform으로 인프라 자동화하기",
+        "url": "https://www.youtube.com/watch?v=57FJoXsbf2s",
+        "thumbnail": "https://i.ytimg.com/vi/57FJoXsbf2s/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 1792,
+        "length": "13:41",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[4분코딩] 테라폼(Terraform): Infrastructure as Code",
+        "url": "https://www.youtube.com/watch?v=SGH0uDni-WY",
+        "thumbnail": "https://i.ytimg.com/vi/SGH0uDni-WY/mqdefault.jpg",
+        "channel": "44BITS",
+        "views": 13180,
+        "length": "5:11",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Terraform(테라폼) EP1: 테라폼에 대한 소개",
+        "url": "https://www.youtube.com/watch?v=FKY6wBStt8w",
+        "thumbnail": "https://i.ytimg.com/vi/FKY6wBStt8w/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 1554,
+        "length": "22:58",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NDC21-프로그래밍] Terraform을 이용한 IaC 기반 인프라 운영",
+        "url": "https://www.youtube.com/watch?v=aTUnOf244Cs",
+        "thumbnail": "https://i.ytimg.com/vi/aTUnOf244Cs/mqdefault.jpg",
+        "channel": "NDC",
+        "views": 4780,
+        "length": "20:43",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[젝톡] 최재혁의 Terraform 소개",
+        "url": "https://www.youtube.com/watch?v=mdO3NOr4vuY",
+        "thumbnail": "https://i.ytimg.com/vi/mdO3NOr4vuY/mqdefault.jpg",
+        "channel": "젝트 JECT",
+        "views": 129,
+        "length": "7:17",
+        "published": "1년 전",
         "stage": "핵심"
       }
     ],
@@ -3285,88 +3285,6 @@
         "stage": "실전"
       }
     ],
-    "Oracle": [
-      {
-        "title": "초보 DBA 들을 위한 Oracle DB서버 메모리, 프로세서 구조 설명",
-        "url": "https://www.youtube.com/watch?v=79cfNIPu0e4",
-        "thumbnail": "https://i.ytimg.com/vi/79cfNIPu0e4/mqdefault.jpg",
-        "channel": "쌉DBA",
-        "views": 4515,
-        "length": "35:55",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[오라클 기초 강좌] 05 - 데이터베이스 구조 - Oracle Instance, SGA, Shared Pool,  Data Buffer Cache, Redo Log Buffer",
-        "url": "https://www.youtube.com/watch?v=Ah9wAY8Hd9A",
-        "thumbnail": "https://i.ytimg.com/vi/Ah9wAY8Hd9A/mqdefault.jpg",
-        "channel": "최용진",
-        "views": 23175,
-        "length": "35:20",
-        "published": "13년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[추천SQL교육/추천오라클교육/추천SQL강의]오라클(ORACLE) UNPIVOT(오라클교육/SQL교육/오라클동영상/SQL동영상/오라클강의/SQL강의/오라클강좌/SQL강좌)",
-        "url": "https://www.youtube.com/watch?v=6jXlLe6SbYk",
-        "thumbnail": "https://i.ytimg.com/vi/6jXlLe6SbYk/mqdefault.jpg",
-        "channel": "오라클자바커뮤니티",
-        "views": 716,
-        "length": "6:25",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "이것이 오라클이다 - 09장 2교시 : [Oracle] 인덱스의 내부 작동",
-        "url": "https://www.youtube.com/watch?v=fbqJDc5PJJc",
-        "thumbnail": "https://i.ytimg.com/vi/fbqJDc5PJJc/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 2926,
-        "length": "14:30",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "2강 oracle database License 자격증 종류",
-        "url": "https://www.youtube.com/watch?v=ZyruzFzEtJc",
-        "thumbnail": "https://i.ytimg.com/vi/ZyruzFzEtJc/mqdefault.jpg",
-        "channel": "소프트캠퍼스softcampus",
-        "views": 6137,
-        "length": "10:15",
-        "published": "9년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "오라클 커서(Oracle Cursor), Shared Server vs Dedicated Server, 오라클 19C PGA, 오라클교육,ORACLE교육",
-        "url": "https://www.youtube.com/watch?v=oR_UKxk_HO4",
-        "thumbnail": "https://i.ytimg.com/vi/oR_UKxk_HO4/mqdefault.jpg",
-        "channel": "오라클자바커뮤니티",
-        "views": 1046,
-        "length": "18:17",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "오라클 기초 강의 기초부터 실무까지 차근차근! ORACLE Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=lNQnlwqO5vQ",
-        "thumbnail": "https://i.ytimg.com/vi/lNQnlwqO5vQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 715,
-        "length": "26:56",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[Oracle SQL 실무 적용 강의 2시간 완성] - 문과출신 데이터분석가 - 메타코드",
-        "url": "https://www.youtube.com/watch?v=nE7cpiJljN0",
-        "thumbnail": "https://i.ytimg.com/vi/nE7cpiJljN0/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 8895,
-        "length": "1:59:07",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
     "OpenAI": [
       {
         "title": "OpenAi Agent Builder 초기초부터 10분안에 알려드립니다",
@@ -3446,6 +3364,88 @@
         "views": 987,
         "length": "5:51",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Oracle": [
+      {
+        "title": "초보 DBA 들을 위한 Oracle DB서버 메모리, 프로세서 구조 설명",
+        "url": "https://www.youtube.com/watch?v=79cfNIPu0e4",
+        "thumbnail": "https://i.ytimg.com/vi/79cfNIPu0e4/mqdefault.jpg",
+        "channel": "쌉DBA",
+        "views": 4515,
+        "length": "35:55",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[오라클 기초 강좌] 05 - 데이터베이스 구조 - Oracle Instance, SGA, Shared Pool,  Data Buffer Cache, Redo Log Buffer",
+        "url": "https://www.youtube.com/watch?v=Ah9wAY8Hd9A",
+        "thumbnail": "https://i.ytimg.com/vi/Ah9wAY8Hd9A/mqdefault.jpg",
+        "channel": "최용진",
+        "views": 23175,
+        "length": "35:20",
+        "published": "13년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[추천SQL교육/추천오라클교육/추천SQL강의]오라클(ORACLE) UNPIVOT(오라클교육/SQL교육/오라클동영상/SQL동영상/오라클강의/SQL강의/오라클강좌/SQL강좌)",
+        "url": "https://www.youtube.com/watch?v=6jXlLe6SbYk",
+        "thumbnail": "https://i.ytimg.com/vi/6jXlLe6SbYk/mqdefault.jpg",
+        "channel": "오라클자바커뮤니티",
+        "views": 716,
+        "length": "6:25",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "이것이 오라클이다 - 09장 2교시 : [Oracle] 인덱스의 내부 작동",
+        "url": "https://www.youtube.com/watch?v=fbqJDc5PJJc",
+        "thumbnail": "https://i.ytimg.com/vi/fbqJDc5PJJc/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 2926,
+        "length": "14:30",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "2강 oracle database License 자격증 종류",
+        "url": "https://www.youtube.com/watch?v=ZyruzFzEtJc",
+        "thumbnail": "https://i.ytimg.com/vi/ZyruzFzEtJc/mqdefault.jpg",
+        "channel": "소프트캠퍼스softcampus",
+        "views": 6137,
+        "length": "10:15",
+        "published": "9년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "오라클 커서(Oracle Cursor), Shared Server vs Dedicated Server, 오라클 19C PGA, 오라클교육,ORACLE교육",
+        "url": "https://www.youtube.com/watch?v=oR_UKxk_HO4",
+        "thumbnail": "https://i.ytimg.com/vi/oR_UKxk_HO4/mqdefault.jpg",
+        "channel": "오라클자바커뮤니티",
+        "views": 1046,
+        "length": "18:17",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "오라클 기초 강의 기초부터 실무까지 차근차근! ORACLE Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=lNQnlwqO5vQ",
+        "thumbnail": "https://i.ytimg.com/vi/lNQnlwqO5vQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 715,
+        "length": "26:56",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[Oracle SQL 실무 적용 강의 2시간 완성] - 문과출신 데이터분석가 - 메타코드",
+        "url": "https://www.youtube.com/watch?v=nE7cpiJljN0",
+        "thumbnail": "https://i.ytimg.com/vi/nE7cpiJljN0/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 8895,
+        "length": "1:59:07",
+        "published": "4년 전",
         "stage": "실전"
       }
     ],
@@ -3941,88 +3941,6 @@
         "stage": "핵심"
       }
     ],
-    "Flutter": [
-      {
-        "title": "요즘 전부 플러터로 앱 만드는 이유",
-        "url": "https://www.youtube.com/watch?v=JAvpTtnXdEw",
-        "thumbnail": "https://i.ytimg.com/vi/JAvpTtnXdEw/mqdefault.jpg",
-        "channel": "저세상개발자",
-        "views": 44161,
-        "length": "5:34",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "요즘 앱개발은 플러터로 해도 충분한듯 (플러터 설명과 장단점)",
-        "url": "https://www.youtube.com/watch?v=JS-Si5GO3iA",
-        "thumbnail": "https://i.ytimg.com/vi/JS-Si5GO3iA/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 219577,
-        "length": "5:24",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "플러터로 게임만들었는데 생각보다 좋음",
-        "url": "https://www.youtube.com/watch?v=9t1oGuaaEz4",
-        "thumbnail": "https://i.ytimg.com/vi/9t1oGuaaEz4/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 263577,
-        "length": "3:52",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "플러터플로우로 앱 개발 전 알아야 할 필수 지식",
-        "url": "https://www.youtube.com/watch?v=Yon7ZsB6rOw",
-        "thumbnail": "https://i.ytimg.com/vi/Yon7ZsB6rOw/mqdefault.jpg",
-        "channel": "검색인간",
-        "views": 5781,
-        "length": "4:10",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[스타트업 멘토링 EP4] 플러터로 만들었는데 자금도 떨어지고 개발팀도 정리한 사연. 재기를 위한 아이디어들",
-        "url": "https://www.youtube.com/watch?v=PcVXszpbCoE",
-        "thumbnail": "https://i.ytimg.com/vi/PcVXszpbCoE/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 32163,
-        "length": "13:36",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[강의 미리보기] 앱 개발, Flutter 어떻게 공부해야할까? | 앱개발 종합반",
-        "url": "https://www.youtube.com/watch?v=t_IVEuYJnvA",
-        "thumbnail": "https://i.ytimg.com/vi/t_IVEuYJnvA/mqdefault.jpg",
-        "channel": "스파르타클럽",
-        "views": 803,
-        "length": "4:52",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "5분만에 배워보는 Flutter 앱개발",
-        "url": "https://www.youtube.com/watch?v=ZWLoYecgzTU",
-        "thumbnail": "https://i.ytimg.com/vi/ZWLoYecgzTU/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 10234,
-        "length": "4:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Flutter 입문 2시간 무료강의 - 모바일 앱 개발 실습 포함 | (주)올리고컴퍼니 기술이사 홍정민",
-        "url": "https://www.youtube.com/watch?v=mOtWvKkvC7A",
-        "thumbnail": "https://i.ytimg.com/vi/mOtWvKkvC7A/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 7153,
-        "length": "2:15:08",
-        "published": "9개월 전",
-        "stage": "실전"
-      }
-    ],
     "Swift": [
       {
         "title": "짱쉬운 스위프트 기초 | 30분만에 뽀개기",
@@ -4105,85 +4023,85 @@
         "stage": "핵심"
       }
     ],
-    "Apache": [
+    "Flutter": [
       {
-        "title": "Apache kafka 기본개념 및 생태계",
-        "url": "https://www.youtube.com/watch?v=catN_YhV6To",
-        "thumbnail": "https://i.ytimg.com/vi/catN_YhV6To/mqdefault.jpg",
-        "channel": "데브원영 DVWY",
-        "views": 33149,
-        "length": "36:10",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[10분 테코톡] 👃미스터코의 Apache MPM vs NGINX vs Node.js",
-        "url": "https://www.youtube.com/watch?v=QeBqwwbsBbM",
-        "thumbnail": "https://i.ytimg.com/vi/QeBqwwbsBbM/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 6849,
-        "length": "14:04",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Superset: EP1 -  🚀 Apache Superset이 뭔가요?",
-        "url": "https://www.youtube.com/watch?v=b4h6AWyqQQo",
-        "thumbnail": "https://i.ytimg.com/vi/b4h6AWyqQQo/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 949,
-        "length": "6:55",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Zookeeper 에 대해 알아보자 [ 아파치 카프카 (Apache Kafka) ]",
-        "url": "https://www.youtube.com/watch?v=kQWKtacq3NI",
-        "thumbnail": "https://i.ytimg.com/vi/kQWKtacq3NI/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 801,
-        "length": "9:07",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Contribution, 그 전쟁의 서막 : Apache OpenWhisk 성능 개선",
-        "url": "https://www.youtube.com/watch?v=L54vEXA3PiY",
-        "thumbnail": "https://i.ytimg.com/vi/L54vEXA3PiY/mqdefault.jpg",
-        "channel": "NAVER D2",
-        "views": 1044,
-        "length": "22:37",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬으로 배우는 빅데이터 EP 42: Apache Kafka for Spark data source(아파치 카프카 5분만에 이해하기)",
-        "url": "https://www.youtube.com/watch?v=iIUzDQW-Ut8",
-        "thumbnail": "https://i.ytimg.com/vi/iIUzDQW-Ut8/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 426,
-        "length": "5:02",
+        "title": "요즘 전부 플러터로 앱 만드는 이유",
+        "url": "https://www.youtube.com/watch?v=JAvpTtnXdEw",
+        "thumbnail": "https://i.ytimg.com/vi/JAvpTtnXdEw/mqdefault.jpg",
+        "channel": "저세상개발자",
+        "views": 44161,
+        "length": "5:34",
         "published": "2년 전",
         "stage": "핵심"
       },
       {
-        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
-        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
-        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1868,
-        "length": "29:18",
-        "published": "6개월 전",
-        "stage": "실전"
+        "title": "요즘 앱개발은 플러터로 해도 충분한듯 (플러터 설명과 장단점)",
+        "url": "https://www.youtube.com/watch?v=JS-Si5GO3iA",
+        "thumbnail": "https://i.ytimg.com/vi/JS-Si5GO3iA/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 219577,
+        "length": "5:24",
+        "published": "4년 전",
+        "stage": "핵심"
       },
       {
-        "title": "Apache Spark 이론 완전정복 🚀 | 탄생 배경부터 핵심 특징·아키텍처까지 한 번에!",
-        "url": "https://www.youtube.com/watch?v=mMrpzxYWZ4s",
-        "thumbnail": "https://i.ytimg.com/vi/mMrpzxYWZ4s/mqdefault.jpg",
-        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
-        "views": 1909,
-        "length": "23:22",
-        "published": "8개월 전",
+        "title": "플러터로 게임만들었는데 생각보다 좋음",
+        "url": "https://www.youtube.com/watch?v=9t1oGuaaEz4",
+        "thumbnail": "https://i.ytimg.com/vi/9t1oGuaaEz4/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 263577,
+        "length": "3:52",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "플러터플로우로 앱 개발 전 알아야 할 필수 지식",
+        "url": "https://www.youtube.com/watch?v=Yon7ZsB6rOw",
+        "thumbnail": "https://i.ytimg.com/vi/Yon7ZsB6rOw/mqdefault.jpg",
+        "channel": "검색인간",
+        "views": 5781,
+        "length": "4:10",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[스타트업 멘토링 EP4] 플러터로 만들었는데 자금도 떨어지고 개발팀도 정리한 사연. 재기를 위한 아이디어들",
+        "url": "https://www.youtube.com/watch?v=PcVXszpbCoE",
+        "thumbnail": "https://i.ytimg.com/vi/PcVXszpbCoE/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 32163,
+        "length": "13:36",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[강의 미리보기] 앱 개발, Flutter 어떻게 공부해야할까? | 앱개발 종합반",
+        "url": "https://www.youtube.com/watch?v=t_IVEuYJnvA",
+        "thumbnail": "https://i.ytimg.com/vi/t_IVEuYJnvA/mqdefault.jpg",
+        "channel": "스파르타클럽",
+        "views": 803,
+        "length": "4:52",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "5분만에 배워보는 Flutter 앱개발",
+        "url": "https://www.youtube.com/watch?v=ZWLoYecgzTU",
+        "thumbnail": "https://i.ytimg.com/vi/ZWLoYecgzTU/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 10234,
+        "length": "4:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Flutter 입문 2시간 무료강의 - 모바일 앱 개발 실습 포함 | (주)올리고컴퍼니 기술이사 홍정민",
+        "url": "https://www.youtube.com/watch?v=mOtWvKkvC7A",
+        "thumbnail": "https://i.ytimg.com/vi/mOtWvKkvC7A/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 7153,
+        "length": "2:15:08",
+        "published": "9개월 전",
         "stage": "실전"
       }
     ],
@@ -4266,6 +4184,88 @@
         "views": 1158,
         "length": "5:32",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "Apache": [
+      {
+        "title": "Apache kafka 기본개념 및 생태계",
+        "url": "https://www.youtube.com/watch?v=catN_YhV6To",
+        "thumbnail": "https://i.ytimg.com/vi/catN_YhV6To/mqdefault.jpg",
+        "channel": "데브원영 DVWY",
+        "views": 33149,
+        "length": "36:10",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[10분 테코톡] 👃미스터코의 Apache MPM vs NGINX vs Node.js",
+        "url": "https://www.youtube.com/watch?v=QeBqwwbsBbM",
+        "thumbnail": "https://i.ytimg.com/vi/QeBqwwbsBbM/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 6849,
+        "length": "14:04",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Apache Superset: EP1 -  🚀 Apache Superset이 뭔가요?",
+        "url": "https://www.youtube.com/watch?v=b4h6AWyqQQo",
+        "thumbnail": "https://i.ytimg.com/vi/b4h6AWyqQQo/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 949,
+        "length": "6:55",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Zookeeper 에 대해 알아보자 [ 아파치 카프카 (Apache Kafka) ]",
+        "url": "https://www.youtube.com/watch?v=kQWKtacq3NI",
+        "thumbnail": "https://i.ytimg.com/vi/kQWKtacq3NI/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 801,
+        "length": "9:07",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Contribution, 그 전쟁의 서막 : Apache OpenWhisk 성능 개선",
+        "url": "https://www.youtube.com/watch?v=L54vEXA3PiY",
+        "thumbnail": "https://i.ytimg.com/vi/L54vEXA3PiY/mqdefault.jpg",
+        "channel": "NAVER D2",
+        "views": 1044,
+        "length": "22:37",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬으로 배우는 빅데이터 EP 42: Apache Kafka for Spark data source(아파치 카프카 5분만에 이해하기)",
+        "url": "https://www.youtube.com/watch?v=iIUzDQW-Ut8",
+        "thumbnail": "https://i.ytimg.com/vi/iIUzDQW-Ut8/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 426,
+        "length": "5:02",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "DE 필수 도구, Apache Airflow 이론 30분만에 총 정리합니다!(개념부터 아키텍처까지)",
+        "url": "https://www.youtube.com/watch?v=uEJ8pAiGKzQ",
+        "thumbnail": "https://i.ytimg.com/vi/uEJ8pAiGKzQ/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1868,
+        "length": "29:18",
+        "published": "6개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "Apache Spark 이론 완전정복 🚀 | 탄생 배경부터 핵심 특징·아키텍처까지 한 번에!",
+        "url": "https://www.youtube.com/watch?v=mMrpzxYWZ4s",
+        "thumbnail": "https://i.ytimg.com/vi/mMrpzxYWZ4s/mqdefault.jpg",
+        "channel": "현수IT HyunsooIT - 데이터&AI의 모든 것",
+        "views": 1909,
+        "length": "23:22",
+        "published": "8개월 전",
         "stage": "실전"
       }
     ],
@@ -4679,78 +4679,6 @@
         "stage": "실전"
       }
     ],
-    "PHP": [
-      {
-        "title": "PHP 웹 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=tr-ba-wAH-I",
-        "thumbnail": "https://i.ytimg.com/vi/tr-ba-wAH-I/mqdefault.jpg",
-        "channel": "나이스코딩",
-        "views": 1359,
-        "length": "1:29:30",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "웹 개발 언어 PHP 퇴물설....",
-        "url": "https://www.youtube.com/watch?v=S80t9pXsg2I",
-        "thumbnail": "https://i.ytimg.com/vi/S80t9pXsg2I/mqdefault.jpg",
-        "channel": "저세상개발자",
-        "views": 23443,
-        "length": "4:23",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "26. PHP란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=fjvcUDcz7E4",
-        "thumbnail": "https://i.ytimg.com/vi/fjvcUDcz7E4/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 11704,
-        "length": "18:58",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PHP 3.0의 위험한 성공은 축복이자 저주였다 (웹을 바꾼 무모한 결정)",
-        "url": "https://www.youtube.com/watch?v=Uv70aacbPe0",
-        "thumbnail": "https://i.ytimg.com/vi/Uv70aacbPe0/mqdefault.jpg",
-        "channel": "개발자방16",
-        "views": 8291,
-        "length": "5:57",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "\"아빠 직업이 버튜버인데 맨날 여자목소리 내고 섹시댄스 추면서 후원 받는다 ㅅㅂ...\" 진짜 어지러운 개레전드 빌런 모음집 ㅋㅋㅋㅋㅋㅋ",
-        "url": "https://www.youtube.com/watch?v=2hBmvEoVJdk",
-        "thumbnail": "https://i.ytimg.com/vi/2hBmvEoVJdk/mqdefault.jpg",
-        "channel": "김준표",
-        "views": 118493,
-        "length": "12:50",
-        "published": "5시간 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "PHP 기초 강의 기초부터 실무까지 차근차근! PHP Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=fRG5ATR4ZKQ",
-        "thumbnail": "https://i.ytimg.com/vi/fRG5ATR4ZKQ/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 634,
-        "length": "26:34",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "웹에플리케이션 만들기 - JS, PHP 프로그래밍 14 :  함수의 입력과 출력",
-        "url": "https://www.youtube.com/watch?v=bDX60lkDS8s",
-        "thumbnail": "https://i.ytimg.com/vi/bDX60lkDS8s/mqdefault.jpg",
-        "channel": "생활코딩",
-        "views": 31258,
-        "length": "14:24",
-        "published": "11년 전",
-        "stage": "실전"
-      }
-    ],
     "SQL": [
       {
         "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
@@ -4830,6 +4758,78 @@
         "views": 143855,
         "length": "49:32",
         "published": "6개월 전",
+        "stage": "실전"
+      }
+    ],
+    "PHP": [
+      {
+        "title": "PHP 웹 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=tr-ba-wAH-I",
+        "thumbnail": "https://i.ytimg.com/vi/tr-ba-wAH-I/mqdefault.jpg",
+        "channel": "나이스코딩",
+        "views": 1359,
+        "length": "1:29:30",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "웹 개발 언어 PHP 퇴물설....",
+        "url": "https://www.youtube.com/watch?v=S80t9pXsg2I",
+        "thumbnail": "https://i.ytimg.com/vi/S80t9pXsg2I/mqdefault.jpg",
+        "channel": "저세상개발자",
+        "views": 23443,
+        "length": "4:23",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "26. PHP란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=fjvcUDcz7E4",
+        "thumbnail": "https://i.ytimg.com/vi/fjvcUDcz7E4/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 11704,
+        "length": "18:58",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PHP 3.0의 위험한 성공은 축복이자 저주였다 (웹을 바꾼 무모한 결정)",
+        "url": "https://www.youtube.com/watch?v=Uv70aacbPe0",
+        "thumbnail": "https://i.ytimg.com/vi/Uv70aacbPe0/mqdefault.jpg",
+        "channel": "개발자방16",
+        "views": 8291,
+        "length": "5:57",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "\"아빠 직업이 버튜버인데 맨날 여자목소리 내고 섹시댄스 추면서 후원 받는다 ㅅㅂ...\" 진짜 어지러운 개레전드 빌런 모음집 ㅋㅋㅋㅋㅋㅋ",
+        "url": "https://www.youtube.com/watch?v=2hBmvEoVJdk",
+        "thumbnail": "https://i.ytimg.com/vi/2hBmvEoVJdk/mqdefault.jpg",
+        "channel": "김준표",
+        "views": 118493,
+        "length": "12:50",
+        "published": "5시간 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "PHP 기초 강의 기초부터 실무까지 차근차근! PHP Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=fRG5ATR4ZKQ",
+        "thumbnail": "https://i.ytimg.com/vi/fRG5ATR4ZKQ/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 634,
+        "length": "26:34",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "웹에플리케이션 만들기 - JS, PHP 프로그래밍 14 :  함수의 입력과 출력",
+        "url": "https://www.youtube.com/watch?v=bDX60lkDS8s",
+        "thumbnail": "https://i.ytimg.com/vi/bDX60lkDS8s/mqdefault.jpg",
+        "channel": "생활코딩",
+        "views": 31258,
+        "length": "14:24",
+        "published": "11년 전",
         "stage": "실전"
       }
     ],
@@ -5243,88 +5243,6 @@
         "stage": "실전"
       }
     ],
-    "gRPC": [
-      {
-        "title": "grpc 개념",
-        "url": "https://www.youtube.com/watch?v=r1eJjMeFnnw",
-        "thumbnail": "https://i.ytimg.com/vi/r1eJjMeFnnw/mqdefault.jpg",
-        "channel": "개발자 장고",
-        "views": 2147,
-        "length": "16:33",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "API 개념정복 | REST API | gRPC",
-        "url": "https://www.youtube.com/watch?v=HmvNuI0Ku9I",
-        "thumbnail": "https://i.ytimg.com/vi/HmvNuI0Ku9I/mqdefault.jpg",
-        "channel": "코맹탈출 - 실리콘밸리 개발이야기",
-        "views": 8372,
-        "length": "14:03",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "gRPC - 알고 나면 쉬움",
-        "url": "https://www.youtube.com/watch?v=uwrR5e5_FH8",
-        "thumbnail": "https://i.ytimg.com/vi/uwrR5e5_FH8/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 23841,
-        "length": "8:22",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Protobuf, Spring gRPC 사용을 위한",
-        "url": "https://www.youtube.com/watch?v=VActQSdClm0",
-        "thumbnail": "https://i.ytimg.com/vi/VActQSdClm0/mqdefault.jpg",
-        "channel": "코딩하는오후",
-        "views": 602,
-        "length": "15:58",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CS 면접 대비 (네트워크편) - 6.2. (꼬리 질문) REST API와 gRPC의 차이는 무엇이고, gRPC는 어떤 상황에 쓰나요? ⭐️",
-        "url": "https://www.youtube.com/watch?v=LEhH8CVlTw0",
-        "thumbnail": "https://i.ytimg.com/vi/LEhH8CVlTw0/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 34,
-        "length": "5:42",
-        "published": "1개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "gRPC 사용, protocol buffers",
-        "url": "https://www.youtube.com/watch?v=LAXgizAk9yA",
-        "thumbnail": "https://i.ytimg.com/vi/LAXgizAk9yA/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 6448,
-        "length": "10:07",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Armeria로 gRPC 실전 적용하기 | 인프콘2023",
-        "url": "https://www.youtube.com/watch?v=xMHIMZ8fNuo",
-        "thumbnail": "https://i.ytimg.com/vi/xMHIMZ8fNuo/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 616,
-        "length": "36:45",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "gRPC와 프로토콜 버퍼(Protocol Buffers) 2/3 - 프로토콜 버퍼 소개 및 RpcService.Server에 proto 파일 만들기",
-        "url": "https://www.youtube.com/watch?v=OM8jDkgJwWE",
-        "thumbnail": "https://i.ytimg.com/vi/OM8jDkgJwWE/mqdefault.jpg",
-        "channel": "VisualAcademy",
-        "views": 2969,
-        "length": "23:06",
-        "published": "7년 전",
-        "stage": "실전"
-      }
-    ],
     "Flask": [
       {
         "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
@@ -5404,6 +5322,88 @@
         "views": 242,
         "length": "14:16",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "gRPC": [
+      {
+        "title": "grpc 개념",
+        "url": "https://www.youtube.com/watch?v=r1eJjMeFnnw",
+        "thumbnail": "https://i.ytimg.com/vi/r1eJjMeFnnw/mqdefault.jpg",
+        "channel": "개발자 장고",
+        "views": 2147,
+        "length": "16:33",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "API 개념정복 | REST API | gRPC",
+        "url": "https://www.youtube.com/watch?v=HmvNuI0Ku9I",
+        "thumbnail": "https://i.ytimg.com/vi/HmvNuI0Ku9I/mqdefault.jpg",
+        "channel": "코맹탈출 - 실리콘밸리 개발이야기",
+        "views": 8372,
+        "length": "14:03",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "gRPC - 알고 나면 쉬움",
+        "url": "https://www.youtube.com/watch?v=uwrR5e5_FH8",
+        "thumbnail": "https://i.ytimg.com/vi/uwrR5e5_FH8/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 23841,
+        "length": "8:22",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Protobuf, Spring gRPC 사용을 위한",
+        "url": "https://www.youtube.com/watch?v=VActQSdClm0",
+        "thumbnail": "https://i.ytimg.com/vi/VActQSdClm0/mqdefault.jpg",
+        "channel": "코딩하는오후",
+        "views": 602,
+        "length": "15:58",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CS 면접 대비 (네트워크편) - 6.2. (꼬리 질문) REST API와 gRPC의 차이는 무엇이고, gRPC는 어떤 상황에 쓰나요? ⭐️",
+        "url": "https://www.youtube.com/watch?v=LEhH8CVlTw0",
+        "thumbnail": "https://i.ytimg.com/vi/LEhH8CVlTw0/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 34,
+        "length": "5:42",
+        "published": "1개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "gRPC 사용, protocol buffers",
+        "url": "https://www.youtube.com/watch?v=LAXgizAk9yA",
+        "thumbnail": "https://i.ytimg.com/vi/LAXgizAk9yA/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 6448,
+        "length": "10:07",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Armeria로 gRPC 실전 적용하기 | 인프콘2023",
+        "url": "https://www.youtube.com/watch?v=xMHIMZ8fNuo",
+        "thumbnail": "https://i.ytimg.com/vi/xMHIMZ8fNuo/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 616,
+        "length": "36:45",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "gRPC와 프로토콜 버퍼(Protocol Buffers) 2/3 - 프로토콜 버퍼 소개 및 RpcService.Server에 proto 파일 만들기",
+        "url": "https://www.youtube.com/watch?v=OM8jDkgJwWE",
+        "thumbnail": "https://i.ytimg.com/vi/OM8jDkgJwWE/mqdefault.jpg",
+        "channel": "VisualAcademy",
+        "views": 2969,
+        "length": "23:06",
+        "published": "7년 전",
         "stage": "실전"
       }
     ],
@@ -8021,6 +8021,88 @@
         "stage": "핵심"
       }
     ],
+    "Keras": [
+      {
+        "title": "[딥러닝] Keras활용CNN모델링 무료 강의!! (CNN 기초편)",
+        "url": "https://www.youtube.com/watch?v=bnG-RLguzmY",
+        "thumbnail": "https://i.ytimg.com/vi/bnG-RLguzmY/mqdefault.jpg",
+        "channel": "스마트인재개발원",
+        "views": 1234,
+        "length": "20:52",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
+        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
+        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 68912,
+        "length": "4:20:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "TensorFlow Keras로 Deep Learning에 입문 - 영어듣기 파이썬 강의",
+        "url": "https://www.youtube.com/watch?v=xGFaTaZ2Rug",
+        "thumbnail": "https://i.ytimg.com/vi/xGFaTaZ2Rug/mqdefault.jpg",
+        "channel": "Donghan 코딩영어 어학원",
+        "views": 108,
+        "length": "19:37",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[딥러닝] Keras활용 CNN모델링 무료 강의!! (CNN 구조편1)",
+        "url": "https://www.youtube.com/watch?v=BGtFTp9cARQ",
+        "thumbnail": "https://i.ytimg.com/vi/BGtFTp9cARQ/mqdefault.jpg",
+        "channel": "스마트인재개발원",
+        "views": 986,
+        "length": "21:50",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "쉽고! 간결한! R 그리고 Keras로 CNN을 구축하여 정확도 99% 도전해 봅시다 :)",
+        "url": "https://www.youtube.com/watch?v=CeuAB9M1fr8",
+        "thumbnail": "https://i.ytimg.com/vi/CeuAB9M1fr8/mqdefault.jpg",
+        "channel": "에이림",
+        "views": 2580,
+        "length": "11:37",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Keras를 활용한 딥러닝 프로그래밍] 실제 손글씨 인식",
+        "url": "https://www.youtube.com/watch?v=aMEd3tS3vc4",
+        "thumbnail": "https://i.ytimg.com/vi/aMEd3tS3vc4/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 1482,
+        "length": "16:38",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Keras를 활용한 딥러닝 프로그래밍] 유방암 예측 Part.1",
+        "url": "https://www.youtube.com/watch?v=jyfBfJ-jkoE",
+        "thumbnail": "https://i.ytimg.com/vi/jyfBfJ-jkoE/mqdefault.jpg",
+        "channel": "인프런 inflearn",
+        "views": 1109,
+        "length": "17:30",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
+        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
+        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 34,
+        "length": "13:57",
+        "published": "4개월 전",
+        "stage": "실전"
+      }
+    ],
     "Airflow": [
       {
         "title": "Airflow 3.0 Architecture 기초의 모든것, 이 영상 10분만 투자하세요ㅣArchitecture, DAG Parsing 프로세스",
@@ -8349,88 +8431,6 @@
         "stage": "실전"
       }
     ],
-    "MATLAB": [
-      {
-        "title": "Matlab (매트랩) 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
-        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
-        "channel": "염홍기",
-        "views": 4398,
-        "length": "1:51:35",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
-        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
-        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 178717,
-        "length": "1:59:05",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MATLAB 1강: MATLAB 기초",
-        "url": "https://www.youtube.com/watch?v=nhAGUziBA5Q",
-        "thumbnail": "https://i.ytimg.com/vi/nhAGUziBA5Q/mqdefault.jpg",
-        "channel": "손희민",
-        "views": 83,
-        "length": "1:10:03",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Matlab 강의 소개",
-        "url": "https://www.youtube.com/watch?v=L8lpI3fqZTA",
-        "thumbnail": "https://i.ytimg.com/vi/L8lpI3fqZTA/mqdefault.jpg",
-        "channel": "Byoungjo CHOI",
-        "views": 17124,
-        "length": "11:17",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MATLAB을 활용한 금융 데이터 가져오기 및 전처리",
-        "url": "https://www.youtube.com/watch?v=R1ogX2GhnDQ",
-        "thumbnail": "https://i.ytimg.com/vi/R1ogX2GhnDQ/mqdefault.jpg",
-        "channel": "MATLAB Korea",
-        "views": 1168,
-        "length": "8:19",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "KHBM2020 여름학교 강의 4-1. MATLAB basics for HBMer 박해정 교수",
-        "url": "https://www.youtube.com/watch?v=zg3qPr58CI8",
-        "thumbnail": "https://i.ytimg.com/vi/zg3qPr58CI8/mqdefault.jpg",
-        "channel": "MoNET - Yonsei University",
-        "views": 208,
-        "length": "1:25:11",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "로봇설계및제어 MATLAB강의 (1/2)",
-        "url": "https://www.youtube.com/watch?v=q1oLdQY_JyY",
-        "thumbnail": "https://i.ytimg.com/vi/q1oLdQY_JyY/mqdefault.jpg",
-        "channel": "mincasurong",
-        "views": 695,
-        "length": "44:05",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "매트랩 기초 강의 기초부터 실무까지 차근차근! MATLAB Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=BGSz-eVxOh8",
-        "thumbnail": "https://i.ytimg.com/vi/BGSz-eVxOh8/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 596,
-        "length": "20:01",
-        "published": "2년 전",
-        "stage": "실전"
-      }
-    ],
     "CUDA": [
       {
         "title": "쿠다, CUDA, GPGPU 강의 강좌 1강",
@@ -8513,85 +8513,85 @@
         "stage": "핵심"
       }
     ],
-    "Keras": [
+    "Cassandra": [
       {
-        "title": "[딥러닝] Keras활용CNN모델링 무료 강의!! (CNN 기초편)",
-        "url": "https://www.youtube.com/watch?v=bnG-RLguzmY",
-        "thumbnail": "https://i.ytimg.com/vi/bnG-RLguzmY/mqdefault.jpg",
-        "channel": "스마트인재개발원",
-        "views": 1234,
-        "length": "20:52",
+        "title": "Apache Cassandra 데이터베이스 – 초보자를 위한 전체 과정",
+        "url": "https://www.youtube.com/watch?v=J-cSy5MeMOA",
+        "thumbnail": "https://i.ytimg.com/vi/J-cSy5MeMOA/mqdefault.jpg",
+        "channel": "freeCodeCamp.org",
+        "views": 332903,
+        "length": "1:08:40",
         "published": "4년 전",
         "stage": "입문"
       },
       {
-        "title": "딥러닝 한번에 끝내기 (텐서플로우, 케라스) Deep Learning Full Tutorial Course using TensorFlow and Keras",
-        "url": "https://www.youtube.com/watch?v=28QbrkRkHlo",
-        "thumbnail": "https://i.ytimg.com/vi/28QbrkRkHlo/mqdefault.jpg",
-        "channel": "이수안컴퓨터연구소",
-        "views": 68912,
-        "length": "4:20:05",
-        "published": "4년 전",
+        "title": "Learn Apache Cassandra In 1.5 Hours - Apache Cassandra Tutorial For Beginners",
+        "url": "https://www.youtube.com/watch?v=_UGxEMdPYVI",
+        "thumbnail": "https://i.ytimg.com/vi/_UGxEMdPYVI/mqdefault.jpg",
+        "channel": "LimeGuru",
+        "views": 33929,
+        "length": "1:42:04",
+        "published": "5년 전",
         "stage": "입문"
       },
       {
-        "title": "TensorFlow Keras로 Deep Learning에 입문 - 영어듣기 파이썬 강의",
-        "url": "https://www.youtube.com/watch?v=xGFaTaZ2Rug",
-        "thumbnail": "https://i.ytimg.com/vi/xGFaTaZ2Rug/mqdefault.jpg",
-        "channel": "Donghan 코딩영어 어학원",
-        "views": 108,
-        "length": "19:37",
+        "title": "Intro to NO SQL - Cassandra | Tutorial for Beginners | Cassandra and Solr [Part 15] | Great Learning",
+        "url": "https://www.youtube.com/watch?v=tN7fryzPhUQ",
+        "thumbnail": "https://i.ytimg.com/vi/tN7fryzPhUQ/mqdefault.jpg",
+        "channel": "Great Learning",
+        "views": 976,
+        "length": "5:11",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Intro to NO SQL - Cassandra | Tutorial for Beginners | Types of NO SQL [Part 2] | Great Learning",
+        "url": "https://www.youtube.com/watch?v=ugu6p6bMzfQ",
+        "thumbnail": "https://i.ytimg.com/vi/ugu6p6bMzfQ/mqdefault.jpg",
+        "channel": "Great Learning",
+        "views": 1964,
+        "length": "4:13",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "01 - Apache Cassandra Introduction Lecture 1",
+        "url": "https://www.youtube.com/watch?v=3wXpbNqsNvc",
+        "thumbnail": "https://i.ytimg.com/vi/3wXpbNqsNvc/mqdefault.jpg",
+        "channel": "Data Guru",
+        "views": 33,
+        "length": "1:02:39",
         "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[딥러닝] Keras활용 CNN모델링 무료 강의!! (CNN 구조편1)",
-        "url": "https://www.youtube.com/watch?v=BGtFTp9cARQ",
-        "thumbnail": "https://i.ytimg.com/vi/BGtFTp9cARQ/mqdefault.jpg",
-        "channel": "스마트인재개발원",
-        "views": 986,
-        "length": "21:50",
-        "published": "4년 전",
         "stage": "핵심"
       },
       {
-        "title": "쉽고! 간결한! R 그리고 Keras로 CNN을 구축하여 정확도 99% 도전해 봅시다 :)",
-        "url": "https://www.youtube.com/watch?v=CeuAB9M1fr8",
-        "thumbnail": "https://i.ytimg.com/vi/CeuAB9M1fr8/mqdefault.jpg",
-        "channel": "에이림",
-        "views": 2580,
-        "length": "11:37",
-        "published": "7년 전",
+        "title": "Cassandra Internals",
+        "url": "https://www.youtube.com/watch?v=x6YZN0Zg6Bc",
+        "thumbnail": "https://i.ytimg.com/vi/x6YZN0Zg6Bc/mqdefault.jpg",
+        "channel": "The ASF",
+        "views": 854,
+        "length": "42:27",
+        "published": "12년 전",
         "stage": "핵심"
       },
       {
-        "title": "[Keras를 활용한 딥러닝 프로그래밍] 실제 손글씨 인식",
-        "url": "https://www.youtube.com/watch?v=aMEd3tS3vc4",
-        "thumbnail": "https://i.ytimg.com/vi/aMEd3tS3vc4/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 1482,
-        "length": "16:38",
-        "published": "7년 전",
+        "title": "Apache Cassandra | Apache Cassandra 튜토리얼 | Apache Cassandra 교육 | Intellipaat",
+        "url": "https://www.youtube.com/watch?v=5vlAYjfh3FM",
+        "thumbnail": "https://i.ytimg.com/vi/5vlAYjfh3FM/mqdefault.jpg",
+        "channel": "Intellipaat",
+        "views": 5141,
+        "length": "1:05:25",
+        "published": "스트리밍 시간: 5년 전",
         "stage": "핵심"
       },
       {
-        "title": "[Keras를 활용한 딥러닝 프로그래밍] 유방암 예측 Part.1",
-        "url": "https://www.youtube.com/watch?v=jyfBfJ-jkoE",
-        "thumbnail": "https://i.ytimg.com/vi/jyfBfJ-jkoE/mqdefault.jpg",
-        "channel": "인프런 inflearn",
-        "views": 1109,
-        "length": "17:30",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06.TensorFlow와 Keras 완벽 입문 가이드",
-        "url": "https://www.youtube.com/watch?v=jSaeiR41_b8",
-        "thumbnail": "https://i.ytimg.com/vi/jSaeiR41_b8/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 34,
-        "length": "13:57",
-        "published": "4개월 전",
+        "title": "[2020 데이터 컨퍼런스] \"Spark+Cassandra 기반 빅데이터를 활용한 추천시스템 서빙 파이프라인 최적화\" / 박수성 SSG.COM 파트너",
+        "url": "https://www.youtube.com/watch?v=CQD-85a-NRs",
+        "thumbnail": "https://i.ytimg.com/vi/CQD-85a-NRs/mqdefault.jpg",
+        "channel": "컴퓨터월드 / IT DAILY",
+        "views": 579,
+        "length": "36:07",
+        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -8674,6 +8674,88 @@
         "views": 1909,
         "length": "23:22",
         "published": "8개월 전",
+        "stage": "실전"
+      }
+    ],
+    "MATLAB": [
+      {
+        "title": "Matlab (매트랩) 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
+        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
+        "channel": "염홍기",
+        "views": 4398,
+        "length": "1:51:35",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
+        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
+        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 178717,
+        "length": "1:59:05",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MATLAB 1강: MATLAB 기초",
+        "url": "https://www.youtube.com/watch?v=nhAGUziBA5Q",
+        "thumbnail": "https://i.ytimg.com/vi/nhAGUziBA5Q/mqdefault.jpg",
+        "channel": "손희민",
+        "views": 83,
+        "length": "1:10:03",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Matlab 강의 소개",
+        "url": "https://www.youtube.com/watch?v=L8lpI3fqZTA",
+        "thumbnail": "https://i.ytimg.com/vi/L8lpI3fqZTA/mqdefault.jpg",
+        "channel": "Byoungjo CHOI",
+        "views": 17124,
+        "length": "11:17",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MATLAB을 활용한 금융 데이터 가져오기 및 전처리",
+        "url": "https://www.youtube.com/watch?v=R1ogX2GhnDQ",
+        "thumbnail": "https://i.ytimg.com/vi/R1ogX2GhnDQ/mqdefault.jpg",
+        "channel": "MATLAB Korea",
+        "views": 1168,
+        "length": "8:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "KHBM2020 여름학교 강의 4-1. MATLAB basics for HBMer 박해정 교수",
+        "url": "https://www.youtube.com/watch?v=zg3qPr58CI8",
+        "thumbnail": "https://i.ytimg.com/vi/zg3qPr58CI8/mqdefault.jpg",
+        "channel": "MoNET - Yonsei University",
+        "views": 208,
+        "length": "1:25:11",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "로봇설계및제어 MATLAB강의 (1/2)",
+        "url": "https://www.youtube.com/watch?v=q1oLdQY_JyY",
+        "thumbnail": "https://i.ytimg.com/vi/q1oLdQY_JyY/mqdefault.jpg",
+        "channel": "mincasurong",
+        "views": 695,
+        "length": "44:05",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "매트랩 기초 강의 기초부터 실무까지 차근차근! MATLAB Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=BGSz-eVxOh8",
+        "thumbnail": "https://i.ytimg.com/vi/BGSz-eVxOh8/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 596,
+        "length": "20:01",
+        "published": "2년 전",
         "stage": "실전"
       }
     ],
@@ -9002,88 +9084,6 @@
         "views": 19278,
         "length": "35:49",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "Cassandra": [
-      {
-        "title": "Apache Cassandra 데이터베이스 – 초보자를 위한 전체 과정",
-        "url": "https://www.youtube.com/watch?v=J-cSy5MeMOA",
-        "thumbnail": "https://i.ytimg.com/vi/J-cSy5MeMOA/mqdefault.jpg",
-        "channel": "freeCodeCamp.org",
-        "views": 332903,
-        "length": "1:08:40",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Learn Apache Cassandra In 1.5 Hours - Apache Cassandra Tutorial For Beginners",
-        "url": "https://www.youtube.com/watch?v=_UGxEMdPYVI",
-        "thumbnail": "https://i.ytimg.com/vi/_UGxEMdPYVI/mqdefault.jpg",
-        "channel": "LimeGuru",
-        "views": 33929,
-        "length": "1:42:04",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Intro to NO SQL - Cassandra | Tutorial for Beginners | Cassandra and Solr [Part 15] | Great Learning",
-        "url": "https://www.youtube.com/watch?v=tN7fryzPhUQ",
-        "thumbnail": "https://i.ytimg.com/vi/tN7fryzPhUQ/mqdefault.jpg",
-        "channel": "Great Learning",
-        "views": 976,
-        "length": "5:11",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Intro to NO SQL - Cassandra | Tutorial for Beginners | Types of NO SQL [Part 2] | Great Learning",
-        "url": "https://www.youtube.com/watch?v=ugu6p6bMzfQ",
-        "thumbnail": "https://i.ytimg.com/vi/ugu6p6bMzfQ/mqdefault.jpg",
-        "channel": "Great Learning",
-        "views": 1964,
-        "length": "4:13",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "01 - Apache Cassandra Introduction Lecture 1",
-        "url": "https://www.youtube.com/watch?v=3wXpbNqsNvc",
-        "thumbnail": "https://i.ytimg.com/vi/3wXpbNqsNvc/mqdefault.jpg",
-        "channel": "Data Guru",
-        "views": 33,
-        "length": "1:02:39",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Cassandra Internals",
-        "url": "https://www.youtube.com/watch?v=x6YZN0Zg6Bc",
-        "thumbnail": "https://i.ytimg.com/vi/x6YZN0Zg6Bc/mqdefault.jpg",
-        "channel": "The ASF",
-        "views": 854,
-        "length": "42:27",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Apache Cassandra | Apache Cassandra 튜토리얼 | Apache Cassandra 교육 | Intellipaat",
-        "url": "https://www.youtube.com/watch?v=5vlAYjfh3FM",
-        "thumbnail": "https://i.ytimg.com/vi/5vlAYjfh3FM/mqdefault.jpg",
-        "channel": "Intellipaat",
-        "views": 5141,
-        "length": "1:05:25",
-        "published": "스트리밍 시간: 5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[2020 데이터 컨퍼런스] \"Spark+Cassandra 기반 빅데이터를 활용한 추천시스템 서빙 파이프라인 최적화\" / 박수성 SSG.COM 파트너",
-        "url": "https://www.youtube.com/watch?v=CQD-85a-NRs",
-        "thumbnail": "https://i.ytimg.com/vi/CQD-85a-NRs/mqdefault.jpg",
-        "channel": "컴퓨터월드 / IT DAILY",
-        "views": 579,
-        "length": "36:07",
-        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -10481,88 +10481,6 @@
         "stage": "실전"
       }
     ],
-    "JSP": [
-      {
-        "title": "[JSP] 서블릿 개념 핥기 1탄",
-        "url": "https://www.youtube.com/watch?v=g5KmJAIIEeI",
-        "thumbnail": "https://i.ytimg.com/vi/g5KmJAIIEeI/mqdefault.jpg",
-        "channel": "IT핥기 [IT Bites]",
-        "views": 22581,
-        "length": "35:54",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[JSP] 웹 개발을 위한 개념을 알고 갑시다.",
-        "url": "https://www.youtube.com/watch?v=dOp9XNuiESc",
-        "thumbnail": "https://i.ytimg.com/vi/dOp9XNuiESc/mqdefault.jpg",
-        "channel": "IT핥기 [IT Bites]",
-        "views": 6290,
-        "length": "10:15",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[JSP 기초 강의] 1강 JSP 설치 및 환경구축 (SONOL)",
-        "url": "https://www.youtube.com/watch?v=_zdyzHtWSPw",
-        "thumbnail": "https://i.ytimg.com/vi/_zdyzHtWSPw/mqdefault.jpg",
-        "channel": "소놀코딩[AI 생존스쿨]",
-        "views": 7060,
-        "length": "11:57",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "JSP강의 - 기초 클래스 과정-",
-        "url": "https://www.youtube.com/watch?v=3ZpTmir6L9I",
-        "thumbnail": "https://i.ytimg.com/vi/3ZpTmir6L9I/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 372,
-        "length": "29:58",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[저자 직강 | 취준생을 위한] JSP 서블릿 웹 프로그래밍 9.5시간 전체 강의",
-        "url": "https://www.youtube.com/watch?v=4AkH6C8kwrI",
-        "thumbnail": "https://i.ytimg.com/vi/4AkH6C8kwrI/mqdefault.jpg",
-        "channel": "리얼데브⸰러닝",
-        "views": 215,
-        "length": "9:47:59",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "서블릿/JSP 강의 01 - 학습 안내",
-        "url": "https://www.youtube.com/watch?v=drCj2k50j_k",
-        "thumbnail": "https://i.ytimg.com/vi/drCj2k50j_k/mqdefault.jpg",
-        "channel": "뉴렉처",
-        "views": 126841,
-        "length": "3:57",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "JSP 강의 실습교육",
-        "url": "https://www.youtube.com/watch?v=R7Wj5GPR8Q0",
-        "thumbnail": "https://i.ytimg.com/vi/R7Wj5GPR8Q0/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 280,
-        "length": "10:01",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "JSP강의 -고급 웹사이트 프로젝트 과정-",
-        "url": "https://www.youtube.com/watch?v=sLxM4asCY5g",
-        "thumbnail": "https://i.ytimg.com/vi/sLxM4asCY5g/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 106,
-        "length": "37:01",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "R": [
       {
         "title": "하루만에 끝내는 R기초 \"전체 강의 모아보기\"",
@@ -10642,6 +10560,88 @@
         "views": 2762,
         "length": "11:21",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "JSP": [
+      {
+        "title": "[JSP] 서블릿 개념 핥기 1탄",
+        "url": "https://www.youtube.com/watch?v=g5KmJAIIEeI",
+        "thumbnail": "https://i.ytimg.com/vi/g5KmJAIIEeI/mqdefault.jpg",
+        "channel": "IT핥기 [IT Bites]",
+        "views": 22581,
+        "length": "35:54",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[JSP] 웹 개발을 위한 개념을 알고 갑시다.",
+        "url": "https://www.youtube.com/watch?v=dOp9XNuiESc",
+        "thumbnail": "https://i.ytimg.com/vi/dOp9XNuiESc/mqdefault.jpg",
+        "channel": "IT핥기 [IT Bites]",
+        "views": 6290,
+        "length": "10:15",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[JSP 기초 강의] 1강 JSP 설치 및 환경구축 (SONOL)",
+        "url": "https://www.youtube.com/watch?v=_zdyzHtWSPw",
+        "thumbnail": "https://i.ytimg.com/vi/_zdyzHtWSPw/mqdefault.jpg",
+        "channel": "소놀코딩[AI 생존스쿨]",
+        "views": 7060,
+        "length": "11:57",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "JSP강의 - 기초 클래스 과정-",
+        "url": "https://www.youtube.com/watch?v=3ZpTmir6L9I",
+        "thumbnail": "https://i.ytimg.com/vi/3ZpTmir6L9I/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 372,
+        "length": "29:58",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[저자 직강 | 취준생을 위한] JSP 서블릿 웹 프로그래밍 9.5시간 전체 강의",
+        "url": "https://www.youtube.com/watch?v=4AkH6C8kwrI",
+        "thumbnail": "https://i.ytimg.com/vi/4AkH6C8kwrI/mqdefault.jpg",
+        "channel": "리얼데브⸰러닝",
+        "views": 215,
+        "length": "9:47:59",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "서블릿/JSP 강의 01 - 학습 안내",
+        "url": "https://www.youtube.com/watch?v=drCj2k50j_k",
+        "thumbnail": "https://i.ytimg.com/vi/drCj2k50j_k/mqdefault.jpg",
+        "channel": "뉴렉처",
+        "views": 126841,
+        "length": "3:57",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "JSP 강의 실습교육",
+        "url": "https://www.youtube.com/watch?v=R7Wj5GPR8Q0",
+        "thumbnail": "https://i.ytimg.com/vi/R7Wj5GPR8Q0/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 280,
+        "length": "10:01",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "JSP강의 -고급 웹사이트 프로젝트 과정-",
+        "url": "https://www.youtube.com/watch?v=sLxM4asCY5g",
+        "thumbnail": "https://i.ytimg.com/vi/sLxM4asCY5g/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 106,
+        "length": "37:01",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -11629,6 +11629,88 @@
         "stage": "실전"
       }
     ],
+    "Zustand": [
+      {
+        "title": "17강 - Zustand Part 1 [ React 입문 코스 ]",
+        "url": "https://www.youtube.com/watch?v=DD4fBa5GNnw",
+        "thumbnail": "https://i.ytimg.com/vi/DD4fBa5GNnw/mqdefault.jpg",
+        "channel": "코딩개구리",
+        "views": 147,
+        "length": "26:45",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "18강 - Zustand Part 2 [ React 입문 코스 ]",
+        "url": "https://www.youtube.com/watch?v=7Sbi5hugMbo",
+        "thumbnail": "https://i.ytimg.com/vi/7Sbi5hugMbo/mqdefault.jpg",
+        "channel": "코딩개구리",
+        "views": 105,
+        "length": "35:10",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "리액트가 쉬워지는 채신기술 Zustand",
+        "url": "https://www.youtube.com/watch?v=zNHZJ_iEMPA",
+        "thumbnail": "https://i.ytimg.com/vi/zNHZJ_iEMPA/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 64834,
+        "length": "6:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리액트 - 26강: Zustand로 상태 관리하기 上",
+        "url": "https://www.youtube.com/watch?v=X2R8WmgQxkA",
+        "thumbnail": "https://i.ytimg.com/vi/X2R8WmgQxkA/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 688,
+        "length": "9:21",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리액트 - 28강: Zustand로 상태 관리하기 下",
+        "url": "https://www.youtube.com/watch?v=rwHY8Arvyns",
+        "thumbnail": "https://i.ytimg.com/vi/rwHY8Arvyns/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 467,
+        "length": "12:16",
+        "published": "11개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Zustand] 5분만에 장점 + 사용법 까지 알아보자 feat. 메모웹앱 만들기",
+        "url": "https://www.youtube.com/watch?v=nrljw-UwBcU",
+        "thumbnail": "https://i.ytimg.com/vi/nrljw-UwBcU/mqdefault.jpg",
+        "channel": "잡캐헨리 - 함께 성장해요 프론트엔드 개발",
+        "views": 11671,
+        "length": "6:35",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "프론트엔드 상태관리 실전 편 with React Query & Zustand #우아콘2023 #우아한형제들",
+        "url": "https://www.youtube.com/watch?v=nkXIpGjVxWU",
+        "thumbnail": "https://i.ytimg.com/vi/nkXIpGjVxWU/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 34128,
+        "length": "36:34",
+        "published": "2년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[SWTT] Zustand 라이브러리로 리액트 웹 애플리케이션 상태 관리: 실습 중심 튜토리얼",
+        "url": "https://www.youtube.com/watch?v=A7m3yNmSv8A",
+        "thumbnail": "https://i.ytimg.com/vi/A7m3yNmSv8A/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 396,
+        "length": "13:24",
+        "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
     "MES": [
       {
         "title": "스토리텔링과 함께하는 MES 개론 - Chapter 4. 제조 산업군별 MES의 특징",
@@ -11791,88 +11873,6 @@
         "length": "14:27",
         "published": "5년 전",
         "stage": "핵심"
-      }
-    ],
-    "Zustand": [
-      {
-        "title": "17강 - Zustand Part 1 [ React 입문 코스 ]",
-        "url": "https://www.youtube.com/watch?v=DD4fBa5GNnw",
-        "thumbnail": "https://i.ytimg.com/vi/DD4fBa5GNnw/mqdefault.jpg",
-        "channel": "코딩개구리",
-        "views": 147,
-        "length": "26:45",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "18강 - Zustand Part 2 [ React 입문 코스 ]",
-        "url": "https://www.youtube.com/watch?v=7Sbi5hugMbo",
-        "thumbnail": "https://i.ytimg.com/vi/7Sbi5hugMbo/mqdefault.jpg",
-        "channel": "코딩개구리",
-        "views": 105,
-        "length": "35:10",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "리액트가 쉬워지는 채신기술 Zustand",
-        "url": "https://www.youtube.com/watch?v=zNHZJ_iEMPA",
-        "thumbnail": "https://i.ytimg.com/vi/zNHZJ_iEMPA/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 64834,
-        "length": "6:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리액트 - 26강: Zustand로 상태 관리하기 上",
-        "url": "https://www.youtube.com/watch?v=X2R8WmgQxkA",
-        "thumbnail": "https://i.ytimg.com/vi/X2R8WmgQxkA/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 688,
-        "length": "9:21",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리액트 - 28강: Zustand로 상태 관리하기 下",
-        "url": "https://www.youtube.com/watch?v=rwHY8Arvyns",
-        "thumbnail": "https://i.ytimg.com/vi/rwHY8Arvyns/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 467,
-        "length": "12:16",
-        "published": "11개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Zustand] 5분만에 장점 + 사용법 까지 알아보자 feat. 메모웹앱 만들기",
-        "url": "https://www.youtube.com/watch?v=nrljw-UwBcU",
-        "thumbnail": "https://i.ytimg.com/vi/nrljw-UwBcU/mqdefault.jpg",
-        "channel": "잡캐헨리 - 함께 성장해요 프론트엔드 개발",
-        "views": 11671,
-        "length": "6:35",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "프론트엔드 상태관리 실전 편 with React Query & Zustand #우아콘2023 #우아한형제들",
-        "url": "https://www.youtube.com/watch?v=nkXIpGjVxWU",
-        "thumbnail": "https://i.ytimg.com/vi/nkXIpGjVxWU/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 34128,
-        "length": "36:34",
-        "published": "2년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[SWTT] Zustand 라이브러리로 리액트 웹 애플리케이션 상태 관리: 실습 중심 튜토리얼",
-        "url": "https://www.youtube.com/watch?v=A7m3yNmSv8A",
-        "thumbnail": "https://i.ytimg.com/vi/A7m3yNmSv8A/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 396,
-        "length": "13:24",
-        "published": "2년 전",
-        "stage": "실전"
       }
     ],
     "Unity": [
@@ -12367,88 +12367,6 @@
         "stage": "핵심"
       }
     ],
-    "Apache Tomcat": [
-      {
-        "title": "apache tomcat 연동",
-        "url": "https://www.youtube.com/watch?v=4sMl67534e0",
-        "thumbnail": "https://i.ytimg.com/vi/4sMl67534e0/mqdefault.jpg",
-        "channel": "날았다고양이",
-        "views": 4687,
-        "length": "10:27",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시)",
-        "url": "https://www.youtube.com/watch?v=Zimhvf2B7Es",
-        "thumbnail": "https://i.ytimg.com/vi/Zimhvf2B7Es/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 88340,
-        "length": "13:46",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "톰캣 #01 소개",
-        "url": "https://www.youtube.com/watch?v=P3H-7G_Y3rI",
-        "thumbnail": "https://i.ytimg.com/vi/P3H-7G_Y3rI/mqdefault.jpg",
-        "channel": "Great-Stone",
-        "views": 16759,
-        "length": "10:21",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "톰캣 #09 쓰레드",
-        "url": "https://www.youtube.com/watch?v=sKiEidnV0nI",
-        "thumbnail": "https://i.ytimg.com/vi/sKiEidnV0nI/mqdefault.jpg",
-        "channel": "Great-Stone",
-        "views": 3533,
-        "length": "19:32",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "모든 톰캣에 되는 웹 공격이라고!?! Ghostcat: Tomcat Ajp 프로토콜 취약점 cve-2020-1938",
-        "url": "https://www.youtube.com/watch?v=y-xtEk7NciE",
-        "thumbnail": "https://i.ytimg.com/vi/y-xtEk7NciE/mqdefault.jpg",
-        "channel": "재즐보프",
-        "views": 2804,
-        "length": "20:49",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "리눅스 강의 46강.  톰캣 9.0 서버 설치하기",
-        "url": "https://www.youtube.com/watch?v=MbTuyNj9_0c",
-        "thumbnail": "https://i.ytimg.com/vi/MbTuyNj9_0c/mqdefault.jpg",
-        "channel": "뉴렉처",
-        "views": 6680,
-        "length": "10:50",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[T63] AWS - 03강 Java 및 Tomcat 설치",
-        "url": "https://www.youtube.com/watch?v=M-GldIG5MBg",
-        "thumbnail": "https://i.ytimg.com/vi/M-GldIG5MBg/mqdefault.jpg",
-        "channel": "Developers and Creators",
-        "views": 3365,
-        "length": "15:30",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따라學IT] 3계층 아키텍처 - 05. 아파치 톰캣 연동",
-        "url": "https://www.youtube.com/watch?v=_Io3AvpiRMo",
-        "thumbnail": "https://i.ytimg.com/vi/_Io3AvpiRMo/mqdefault.jpg",
-        "channel": "따라하면서 배우는 IT",
-        "views": 1878,
-        "length": "9:44",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     "RDB": [
       {
         "title": "컴활 1급 필기🌈3과목 :: 1강_데이터베이스 개요 핵심요약 기출문제 풀이💯(DB 정의, DBMS 기능 및 언어, RDBMS, 테이블)👨‍💻[균쌤]",
@@ -12859,6 +12777,78 @@
         "stage": "핵심"
       }
     ],
+    "VM웨어": [
+      {
+        "title": "[Windows Server 기초 강의] 2강. 1.1 VMware 설치",
+        "url": "https://www.youtube.com/watch?v=px3b2ofWTT4",
+        "thumbnail": "https://i.ytimg.com/vi/px3b2ofWTT4/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 7070,
+        "length": "8:28",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[리눅스 기초 강의] 1강. 1.1 가상머신의 개념과 VMware 종류",
+        "url": "https://www.youtube.com/watch?v=GmrEaB3nvM4",
+        "thumbnail": "https://i.ytimg.com/vi/GmrEaB3nvM4/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 12374,
+        "length": "14:31",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "세상 쉬운 VM웨어 사용 방법 및 필수 설정 방법",
+        "url": "https://www.youtube.com/watch?v=yVnX6ozG_eY",
+        "thumbnail": "https://i.ytimg.com/vi/yVnX6ozG_eY/mqdefault.jpg",
+        "channel": "모바일랩",
+        "views": 95595,
+        "length": "14:47",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(공개강의) VMware ESXi  (VMware vSphere) 소개",
+        "url": "https://www.youtube.com/watch?v=wtumA3WqWs0",
+        "thumbnail": "https://i.ytimg.com/vi/wtumA3WqWs0/mqdefault.jpg",
+        "channel": "보안프로젝트[boanproject]",
+        "views": 11562,
+        "length": "9:55",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "하이퍼바이저 - vmware vSphere (EXSi)에서 가상머신 생성하기 (1편)",
+        "url": "https://www.youtube.com/watch?v=1Kp2ykjjNUk",
+        "thumbnail": "https://i.ytimg.com/vi/1Kp2ykjjNUk/mqdefault.jpg",
+        "channel": "힐링수",
+        "views": 2600,
+        "length": "7:31",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따라學IT] 01. 가상화 소프트웨어 VMware란?",
+        "url": "https://www.youtube.com/watch?v=SY9wmMtGZY4",
+        "thumbnail": "https://i.ytimg.com/vi/SY9wmMtGZY4/mqdefault.jpg",
+        "channel": "따라하면서 배우는 IT",
+        "views": 11573,
+        "length": "13:57",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Vmware Workstation 사용하기(1)",
+        "url": "https://www.youtube.com/watch?v=RpQi88kWdUg",
+        "thumbnail": "https://i.ytimg.com/vi/RpQi88kWdUg/mqdefault.jpg",
+        "channel": "황동훈",
+        "views": 1827,
+        "length": "9:45",
+        "published": "16년 전",
+        "stage": "핵심"
+      }
+    ],
     "Azure DevOps": [
       {
         "title": "Azure DevOps 강의 맛보기",
@@ -12939,78 +12929,6 @@
         "length": "6:33",
         "published": "5년 전",
         "stage": "실전"
-      }
-    ],
-    "VM웨어": [
-      {
-        "title": "[Windows Server 기초 강의] 2강. 1.1 VMware 설치",
-        "url": "https://www.youtube.com/watch?v=px3b2ofWTT4",
-        "thumbnail": "https://i.ytimg.com/vi/px3b2ofWTT4/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 7070,
-        "length": "8:28",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[리눅스 기초 강의] 1강. 1.1 가상머신의 개념과 VMware 종류",
-        "url": "https://www.youtube.com/watch?v=GmrEaB3nvM4",
-        "thumbnail": "https://i.ytimg.com/vi/GmrEaB3nvM4/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 12374,
-        "length": "14:31",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "세상 쉬운 VM웨어 사용 방법 및 필수 설정 방법",
-        "url": "https://www.youtube.com/watch?v=yVnX6ozG_eY",
-        "thumbnail": "https://i.ytimg.com/vi/yVnX6ozG_eY/mqdefault.jpg",
-        "channel": "모바일랩",
-        "views": 95595,
-        "length": "14:47",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(공개강의) VMware ESXi  (VMware vSphere) 소개",
-        "url": "https://www.youtube.com/watch?v=wtumA3WqWs0",
-        "thumbnail": "https://i.ytimg.com/vi/wtumA3WqWs0/mqdefault.jpg",
-        "channel": "보안프로젝트[boanproject]",
-        "views": 11562,
-        "length": "9:55",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "하이퍼바이저 - vmware vSphere (EXSi)에서 가상머신 생성하기 (1편)",
-        "url": "https://www.youtube.com/watch?v=1Kp2ykjjNUk",
-        "thumbnail": "https://i.ytimg.com/vi/1Kp2ykjjNUk/mqdefault.jpg",
-        "channel": "힐링수",
-        "views": 2600,
-        "length": "7:31",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[따라學IT] 01. 가상화 소프트웨어 VMware란?",
-        "url": "https://www.youtube.com/watch?v=SY9wmMtGZY4",
-        "thumbnail": "https://i.ytimg.com/vi/SY9wmMtGZY4/mqdefault.jpg",
-        "channel": "따라하면서 배우는 IT",
-        "views": 11573,
-        "length": "13:57",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Vmware Workstation 사용하기(1)",
-        "url": "https://www.youtube.com/watch?v=RpQi88kWdUg",
-        "thumbnail": "https://i.ytimg.com/vi/RpQi88kWdUg/mqdefault.jpg",
-        "channel": "황동훈",
-        "views": 1827,
-        "length": "9:45",
-        "published": "16년 전",
-        "stage": "핵심"
       }
     ],
     "Kubeflow": [
@@ -13259,88 +13177,6 @@
         "stage": "실전"
       }
     ],
-    "Perl": [
-      {
-        "title": "Perl Bioinformatics l  Perl 프로그램 4강 기초연습",
-        "url": "https://www.youtube.com/watch?v=yCu9Aug3SFc",
-        "thumbnail": "https://i.ytimg.com/vi/yCu9Aug3SFc/mqdefault.jpg",
-        "channel": "Cassiiopeia[새찬]",
-        "views": 1254,
-        "length": "2:43:13",
-        "published": "스트리밍 시간: 6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Perl 스크립트의 악랄함 체험하기",
-        "url": "https://www.youtube.com/watch?v=Af760X1XUM4",
-        "thumbnail": "https://i.ytimg.com/vi/Af760X1XUM4/mqdefault.jpg",
-        "channel": "취미로 해킹",
-        "views": 453,
-        "length": "3:58",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Perl 생물정보학 001 - 자료형 20180910 한국어 김은배",
-        "url": "https://www.youtube.com/watch?v=rpNvxvM13-Y",
-        "thumbnail": "https://i.ytimg.com/vi/rpNvxvM13-Y/mqdefault.jpg",
-        "channel": "Research Trainer",
-        "views": 2268,
-        "length": "29:52",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Perl(펄) 설치방법, 실행방법 | perl Tutorial",
-        "url": "https://www.youtube.com/watch?v=EvKnQvYRk1E",
-        "thumbnail": "https://i.ytimg.com/vi/EvKnQvYRk1E/mqdefault.jpg",
-        "channel": "Cassiiopeia[새찬]",
-        "views": 1506,
-        "length": "2:37",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Perl 생물정보학 009 - DNA Utility 20181101 한국어 김은배",
-        "url": "https://www.youtube.com/watch?v=uPCtVnWWgVQ",
-        "thumbnail": "https://i.ytimg.com/vi/uPCtVnWWgVQ/mqdefault.jpg",
-        "channel": "Research Trainer",
-        "views": 368,
-        "length": "20:00",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "KPW2008년01-2최신 스타일 Perl로 개과천선하기 (aero eq 강차훈)[자막AI:whisper22.12large-v2-ko]",
-        "url": "https://www.youtube.com/watch?v=RpNxPmXRq14",
-        "thumbnail": "https://i.ytimg.com/vi/RpNxPmXRq14/mqdefault.jpg",
-        "channel": "hugyup",
-        "views": 8,
-        "length": "8:02",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "KPW2008년01-3최신 스타일 Perl로 개과천선하기 (aero eq 강차훈)[자막AI:whisper22.12large-v2-ko]",
-        "url": "https://www.youtube.com/watch?v=bnVeywVFjdE",
-        "thumbnail": "https://i.ytimg.com/vi/bnVeywVFjdE/mqdefault.jpg",
-        "channel": "hugyup",
-        "views": 18,
-        "length": "6:33",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "\"펄 피닉스 실전강의\"",
-        "url": "https://www.youtube.com/watch?v=SjFJQeTxYIY",
-        "thumbnail": "https://i.ytimg.com/vi/SjFJQeTxYIY/mqdefault.jpg",
-        "channel": "협준",
-        "views": 8556,
-        "length": "8:22",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "dbt": [
       {
         "title": "dbt: EP1 -  dbt, 왜 모두가 dbt를 쓰는가",
@@ -13502,88 +13338,6 @@
         "views": 757,
         "length": "14:38",
         "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
-    "Android SDK": [
-      {
-        "title": "안드로이드 기초 강좌 - SDK, AVD 설정",
-        "url": "https://www.youtube.com/watch?v=JfCunohgzxo",
-        "thumbnail": "https://i.ytimg.com/vi/JfCunohgzxo/mqdefault.jpg",
-        "channel": "HJ H",
-        "views": 1608,
-        "length": "5:29",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[얼리코딩#01] 안드로이드스튜디오 & 자바 SDK 설치 [코딩기초, 안드로이드앱개발]",
-        "url": "https://www.youtube.com/watch?v=t5AjBj4Xp1Y",
-        "thumbnail": "https://i.ytimg.com/vi/t5AjBj4Xp1Y/mqdefault.jpg",
-        "channel": "얼리코딩",
-        "views": 1645,
-        "length": "21:48",
-        "published": "8년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_3] Android에서 Log를 사용하는 방법",
-        "url": "https://www.youtube.com/watch?v=1sGnGcl2v-k",
-        "thumbnail": "https://i.ytimg.com/vi/1sGnGcl2v-k/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 10048,
-        "length": "7:43",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Ted의 개발 상식 방송 - 6회 뒷부분) API와 SDK",
-        "url": "https://www.youtube.com/watch?v=eiA3b0S4NPA",
-        "thumbnail": "https://i.ytimg.com/vi/eiA3b0S4NPA/mqdefault.jpg",
-        "channel": "Taewoo Kim",
-        "views": 2342,
-        "length": "10:11",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "안드로이드 SDK라이브러리 설치",
-        "url": "https://www.youtube.com/watch?v=2R_49x0doDw",
-        "thumbnail": "https://i.ytimg.com/vi/2R_49x0doDw/mqdefault.jpg",
-        "channel": "김샘자바",
-        "views": 1296,
-        "length": "21:48",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Do it! 안드로이드 앱 프로그래밍 [개정6판] part01 chapter01",
-        "url": "https://www.youtube.com/watch?v=bhDuvpcG4vU",
-        "thumbnail": "https://i.ytimg.com/vi/bhDuvpcG4vU/mqdefault.jpg",
-        "channel": "JAEGON JUNG",
-        "views": 23907,
-        "length": "9:08",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "생산성을 높이는 Android SDK 배포 전략",
-        "url": "https://www.youtube.com/watch?v=02HzRot53E8",
-        "thumbnail": "https://i.ytimg.com/vi/02HzRot53E8/mqdefault.jpg",
-        "channel": "NAVER D2",
-        "views": 259,
-        "length": "16:33",
-        "published": "1년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "나의 첫 안드로이드: 안드로이드 기초부터 실습까지_1",
-        "url": "https://www.youtube.com/watch?v=mvzZMjIQEyo",
-        "thumbnail": "https://i.ytimg.com/vi/mvzZMjIQEyo/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 14579,
-        "length": "1:03:27",
-        "published": "7년 전",
         "stage": "실전"
       }
     ],
@@ -13751,6 +13505,88 @@
         "stage": "실전"
       }
     ],
+    "Android SDK": [
+      {
+        "title": "안드로이드 기초 강좌 - SDK, AVD 설정",
+        "url": "https://www.youtube.com/watch?v=JfCunohgzxo",
+        "thumbnail": "https://i.ytimg.com/vi/JfCunohgzxo/mqdefault.jpg",
+        "channel": "HJ H",
+        "views": 1608,
+        "length": "5:29",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[얼리코딩#01] 안드로이드스튜디오 & 자바 SDK 설치 [코딩기초, 안드로이드앱개발]",
+        "url": "https://www.youtube.com/watch?v=t5AjBj4Xp1Y",
+        "thumbnail": "https://i.ytimg.com/vi/t5AjBj4Xp1Y/mqdefault.jpg",
+        "channel": "얼리코딩",
+        "views": 1645,
+        "length": "21:48",
+        "published": "8년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_3] Android에서 Log를 사용하는 방법",
+        "url": "https://www.youtube.com/watch?v=1sGnGcl2v-k",
+        "thumbnail": "https://i.ytimg.com/vi/1sGnGcl2v-k/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 10048,
+        "length": "7:43",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Ted의 개발 상식 방송 - 6회 뒷부분) API와 SDK",
+        "url": "https://www.youtube.com/watch?v=eiA3b0S4NPA",
+        "thumbnail": "https://i.ytimg.com/vi/eiA3b0S4NPA/mqdefault.jpg",
+        "channel": "Taewoo Kim",
+        "views": 2342,
+        "length": "10:11",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "안드로이드 SDK라이브러리 설치",
+        "url": "https://www.youtube.com/watch?v=2R_49x0doDw",
+        "thumbnail": "https://i.ytimg.com/vi/2R_49x0doDw/mqdefault.jpg",
+        "channel": "김샘자바",
+        "views": 1296,
+        "length": "21:48",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Do it! 안드로이드 앱 프로그래밍 [개정6판] part01 chapter01",
+        "url": "https://www.youtube.com/watch?v=bhDuvpcG4vU",
+        "thumbnail": "https://i.ytimg.com/vi/bhDuvpcG4vU/mqdefault.jpg",
+        "channel": "JAEGON JUNG",
+        "views": 23907,
+        "length": "9:08",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "생산성을 높이는 Android SDK 배포 전략",
+        "url": "https://www.youtube.com/watch?v=02HzRot53E8",
+        "thumbnail": "https://i.ytimg.com/vi/02HzRot53E8/mqdefault.jpg",
+        "channel": "NAVER D2",
+        "views": 259,
+        "length": "16:33",
+        "published": "1년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "나의 첫 안드로이드: 안드로이드 기초부터 실습까지_1",
+        "url": "https://www.youtube.com/watch?v=mvzZMjIQEyo",
+        "thumbnail": "https://i.ytimg.com/vi/mvzZMjIQEyo/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 14579,
+        "length": "1:03:27",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "ISMS": [
       {
         "title": "30분만에 쉽게 이해하는 ISMS-P 인증기준 강의",
@@ -13831,6 +13667,88 @@
         "length": "28:56",
         "published": "7년 전",
         "stage": "핵심"
+      }
+    ],
+    "Apache Tomcat": [
+      {
+        "title": "apache tomcat 연동",
+        "url": "https://www.youtube.com/watch?v=4sMl67534e0",
+        "thumbnail": "https://i.ytimg.com/vi/4sMl67534e0/mqdefault.jpg",
+        "channel": "날았다고양이",
+        "views": 4687,
+        "length": "10:27",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시)",
+        "url": "https://www.youtube.com/watch?v=Zimhvf2B7Es",
+        "thumbnail": "https://i.ytimg.com/vi/Zimhvf2B7Es/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 88340,
+        "length": "13:46",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "톰캣 #01 소개",
+        "url": "https://www.youtube.com/watch?v=P3H-7G_Y3rI",
+        "thumbnail": "https://i.ytimg.com/vi/P3H-7G_Y3rI/mqdefault.jpg",
+        "channel": "Great-Stone",
+        "views": 16759,
+        "length": "10:21",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "톰캣 #09 쓰레드",
+        "url": "https://www.youtube.com/watch?v=sKiEidnV0nI",
+        "thumbnail": "https://i.ytimg.com/vi/sKiEidnV0nI/mqdefault.jpg",
+        "channel": "Great-Stone",
+        "views": 3533,
+        "length": "19:32",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "모든 톰캣에 되는 웹 공격이라고!?! Ghostcat: Tomcat Ajp 프로토콜 취약점 cve-2020-1938",
+        "url": "https://www.youtube.com/watch?v=y-xtEk7NciE",
+        "thumbnail": "https://i.ytimg.com/vi/y-xtEk7NciE/mqdefault.jpg",
+        "channel": "재즐보프",
+        "views": 2804,
+        "length": "20:49",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "리눅스 강의 46강.  톰캣 9.0 서버 설치하기",
+        "url": "https://www.youtube.com/watch?v=MbTuyNj9_0c",
+        "thumbnail": "https://i.ytimg.com/vi/MbTuyNj9_0c/mqdefault.jpg",
+        "channel": "뉴렉처",
+        "views": 6680,
+        "length": "10:50",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[T63] AWS - 03강 Java 및 Tomcat 설치",
+        "url": "https://www.youtube.com/watch?v=M-GldIG5MBg",
+        "thumbnail": "https://i.ytimg.com/vi/M-GldIG5MBg/mqdefault.jpg",
+        "channel": "Developers and Creators",
+        "views": 3365,
+        "length": "15:30",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[따라學IT] 3계층 아키텍처 - 05. 아파치 톰캣 연동",
+        "url": "https://www.youtube.com/watch?v=_Io3AvpiRMo",
+        "thumbnail": "https://i.ytimg.com/vi/_Io3AvpiRMo/mqdefault.jpg",
+        "channel": "따라하면서 배우는 IT",
+        "views": 1878,
+        "length": "9:44",
+        "published": "6년 전",
+        "stage": "실전"
       }
     ],
     "SaaS": [
@@ -14469,78 +14387,6 @@
         "stage": "실전"
       }
     ],
-    "Google BigQuery": [
-      {
-        "title": "WEB프로그래밍 HDGoogle Cloud 구글 클라우드 및 Google BigQuery 구글 빅쿼리를 통한 데이터 과학자 입문 하기 Part 1",
-        "url": "https://www.youtube.com/watch?v=1jV6KfaI-G0",
-        "thumbnail": "https://i.ytimg.com/vi/1jV6KfaI-G0/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 69,
-        "length": "42:40",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[HD]Google Cloud (구글 클라우드) 및 Google BigQuery (구글 빅쿼리)를 통한 데이터 과학자 입문 하기 Part.1",
-        "url": "https://www.youtube.com/watch?v=bqvvZcIfKig",
-        "thumbnail": "https://i.ytimg.com/vi/bqvvZcIfKig/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 40,
-        "length": "43:00",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
-        "url": "https://www.youtube.com/watch?v=ohAsFH-YLoE",
-        "thumbnail": "https://i.ytimg.com/vi/ohAsFH-YLoE/mqdefault.jpg",
-        "channel": "카일스쿨",
-        "views": 11699,
-        "length": "9:02:10",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "BigQuery시작하기 3강 - SQL Basics | T아카데미",
-        "url": "https://www.youtube.com/watch?v=_tF62kYpjxM",
-        "thumbnail": "https://i.ytimg.com/vi/_tF62kYpjxM/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 2249,
-        "length": "39:19",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "BigQuery시작하기 8강 - Visualization | T아카데미",
-        "url": "https://www.youtube.com/watch?v=qyfaxIMgcU8",
-        "thumbnail": "https://i.ytimg.com/vi/qyfaxIMgcU8/mqdefault.jpg",
-        "channel": "SKplanet Tacademy",
-        "views": 1600,
-        "length": "38:58",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "구글 애널리틱스(GA4) BigQuery  : SQL 유저와 세션수 추출해보기 1편(distinct, group by,  서브쿼리). 플러스제로",
-        "url": "https://www.youtube.com/watch?v=kEEb1L5GfeM",
-        "thumbnail": "https://i.ytimg.com/vi/kEEb1L5GfeM/mqdefault.jpg",
-        "channel": "플러스제로",
-        "views": 1179,
-        "length": "10:55",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "프로젝트 만들기 | 구글 빅쿼리 사용법 공부하기 | SQL 기초 강의 | 쿼리 분석",
-        "url": "https://www.youtube.com/watch?v=lS-vTyvU5QI",
-        "thumbnail": "https://i.ytimg.com/vi/lS-vTyvU5QI/mqdefault.jpg",
-        "channel": "초튜터 with 감자나라ai",
-        "views": 4419,
-        "length": "6:25",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "GPU": [
       {
         "title": "왜 GPU 프로그래밍은 이렇게 난장판 인가? (게임 개발자에게 DirectX가 그렇게 중요하지 않은 이유)",
@@ -14702,6 +14548,78 @@
         "views": 767,
         "length": "55:34",
         "published": "6개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Google BigQuery": [
+      {
+        "title": "WEB프로그래밍 HDGoogle Cloud 구글 클라우드 및 Google BigQuery 구글 빅쿼리를 통한 데이터 과학자 입문 하기 Part 1",
+        "url": "https://www.youtube.com/watch?v=1jV6KfaI-G0",
+        "thumbnail": "https://i.ytimg.com/vi/1jV6KfaI-G0/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 69,
+        "length": "42:40",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[HD]Google Cloud (구글 클라우드) 및 Google BigQuery (구글 빅쿼리)를 통한 데이터 과학자 입문 하기 Part.1",
+        "url": "https://www.youtube.com/watch?v=bqvvZcIfKig",
+        "thumbnail": "https://i.ytimg.com/vi/bqvvZcIfKig/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 40,
+        "length": "43:00",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
+        "url": "https://www.youtube.com/watch?v=ohAsFH-YLoE",
+        "thumbnail": "https://i.ytimg.com/vi/ohAsFH-YLoE/mqdefault.jpg",
+        "channel": "카일스쿨",
+        "views": 11699,
+        "length": "9:02:10",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "BigQuery시작하기 3강 - SQL Basics | T아카데미",
+        "url": "https://www.youtube.com/watch?v=_tF62kYpjxM",
+        "thumbnail": "https://i.ytimg.com/vi/_tF62kYpjxM/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 2249,
+        "length": "39:19",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "BigQuery시작하기 8강 - Visualization | T아카데미",
+        "url": "https://www.youtube.com/watch?v=qyfaxIMgcU8",
+        "thumbnail": "https://i.ytimg.com/vi/qyfaxIMgcU8/mqdefault.jpg",
+        "channel": "SKplanet Tacademy",
+        "views": 1600,
+        "length": "38:58",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "구글 애널리틱스(GA4) BigQuery  : SQL 유저와 세션수 추출해보기 1편(distinct, group by,  서브쿼리). 플러스제로",
+        "url": "https://www.youtube.com/watch?v=kEEb1L5GfeM",
+        "thumbnail": "https://i.ytimg.com/vi/kEEb1L5GfeM/mqdefault.jpg",
+        "channel": "플러스제로",
+        "views": 1179,
+        "length": "10:55",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "프로젝트 만들기 | 구글 빅쿼리 사용법 공부하기 | SQL 기초 강의 | 쿼리 분석",
+        "url": "https://www.youtube.com/watch?v=lS-vTyvU5QI",
+        "thumbnail": "https://i.ytimg.com/vi/lS-vTyvU5QI/mqdefault.jpg",
+        "channel": "초튜터 with 감자나라ai",
+        "views": 4419,
+        "length": "6:25",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -14951,6 +14869,88 @@
         "stage": "실전"
       }
     ],
+    "Perl": [
+      {
+        "title": "Perl Bioinformatics l  Perl 프로그램 4강 기초연습",
+        "url": "https://www.youtube.com/watch?v=yCu9Aug3SFc",
+        "thumbnail": "https://i.ytimg.com/vi/yCu9Aug3SFc/mqdefault.jpg",
+        "channel": "Cassiiopeia[새찬]",
+        "views": 1254,
+        "length": "2:43:13",
+        "published": "스트리밍 시간: 6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Perl 스크립트의 악랄함 체험하기",
+        "url": "https://www.youtube.com/watch?v=Af760X1XUM4",
+        "thumbnail": "https://i.ytimg.com/vi/Af760X1XUM4/mqdefault.jpg",
+        "channel": "취미로 해킹",
+        "views": 453,
+        "length": "3:58",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Perl 생물정보학 001 - 자료형 20180910 한국어 김은배",
+        "url": "https://www.youtube.com/watch?v=rpNvxvM13-Y",
+        "thumbnail": "https://i.ytimg.com/vi/rpNvxvM13-Y/mqdefault.jpg",
+        "channel": "Research Trainer",
+        "views": 2268,
+        "length": "29:52",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Perl(펄) 설치방법, 실행방법 | perl Tutorial",
+        "url": "https://www.youtube.com/watch?v=EvKnQvYRk1E",
+        "thumbnail": "https://i.ytimg.com/vi/EvKnQvYRk1E/mqdefault.jpg",
+        "channel": "Cassiiopeia[새찬]",
+        "views": 1506,
+        "length": "2:37",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Perl 생물정보학 009 - DNA Utility 20181101 한국어 김은배",
+        "url": "https://www.youtube.com/watch?v=uPCtVnWWgVQ",
+        "thumbnail": "https://i.ytimg.com/vi/uPCtVnWWgVQ/mqdefault.jpg",
+        "channel": "Research Trainer",
+        "views": 368,
+        "length": "20:00",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "KPW2008년01-2최신 스타일 Perl로 개과천선하기 (aero eq 강차훈)[자막AI:whisper22.12large-v2-ko]",
+        "url": "https://www.youtube.com/watch?v=RpNxPmXRq14",
+        "thumbnail": "https://i.ytimg.com/vi/RpNxPmXRq14/mqdefault.jpg",
+        "channel": "hugyup",
+        "views": 8,
+        "length": "8:02",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "KPW2008년01-3최신 스타일 Perl로 개과천선하기 (aero eq 강차훈)[자막AI:whisper22.12large-v2-ko]",
+        "url": "https://www.youtube.com/watch?v=bnVeywVFjdE",
+        "thumbnail": "https://i.ytimg.com/vi/bnVeywVFjdE/mqdefault.jpg",
+        "channel": "hugyup",
+        "views": 18,
+        "length": "6:33",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "\"펄 피닉스 실전강의\"",
+        "url": "https://www.youtube.com/watch?v=SjFJQeTxYIY",
+        "thumbnail": "https://i.ytimg.com/vi/SjFJQeTxYIY/mqdefault.jpg",
+        "channel": "협준",
+        "views": 8556,
+        "length": "8:22",
+        "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
     "Modbux": [
       {
         "title": "What is Modbus and How does it Work?",
@@ -15125,6 +15125,170 @@
         "length": "26:54",
         "published": "1년 전",
         "stage": "실전"
+      }
+    ],
+    "Netty": [
+      {
+        "title": "[소프트스터디] Netty 소개",
+        "url": "https://www.youtube.com/watch?v=kk1MqUgav6c",
+        "thumbnail": "https://i.ytimg.com/vi/kk1MqUgav6c/mqdefault.jpg",
+        "channel": "TmaxSoft",
+        "views": 884,
+        "length": "11:15",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 2021] AI펭톡 TCP Gateway 서버 개발기 with Netty",
+        "url": "https://www.youtube.com/watch?v=pu2Y4nVWixo",
+        "thumbnail": "https://i.ytimg.com/vi/pu2Y4nVWixo/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 4504,
+        "length": "18:01",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "go net vs gnet vs reactor netty 소켓 서버 성능 비교",
+        "url": "https://www.youtube.com/watch?v=xqqjCTt_l3E",
+        "thumbnail": "https://i.ytimg.com/vi/xqqjCTt_l3E/mqdefault.jpg",
+        "channel": "최범균",
+        "views": 2203,
+        "length": "12:09",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Combat Arms Emnesty1 넷티의 스나강의 ㅋㅋㅋ/ teach sniper of Netty",
+        "url": "https://www.youtube.com/watch?v=8aRAtC6IDVg",
+        "thumbnail": "https://i.ytimg.com/vi/8aRAtC6IDVg/mqdefault.jpg",
+        "channel": "질우근만렙희망자",
+        "views": 3257,
+        "length": "19:26",
+        "published": "12년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "大型互联网分布式高并发通信框架Netty",
+        "url": "https://www.youtube.com/watch?v=ZvrKPgxcoG8",
+        "thumbnail": "https://i.ytimg.com/vi/ZvrKPgxcoG8/mqdefault.jpg",
+        "channel": "Distributed Java 分布式Java",
+        "views": 124,
+        "length": "2:29:02",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "UDP Communication using Java Netty Framework 4.1.55 | Step wise step Tutorial",
+        "url": "https://www.youtube.com/watch?v=70X-t-rYpj4",
+        "thumbnail": "https://i.ytimg.com/vi/70X-t-rYpj4/mqdefault.jpg",
+        "channel": "Learner's Capital",
+        "views": 674,
+        "length": "11:20",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Основы Java - Лекция № 12 - Разработка сетевых приложений на Java , Netty",
+        "url": "https://www.youtube.com/watch?v=SauP59VEuLE",
+        "thumbnail": "https://i.ytimg.com/vi/SauP59VEuLE/mqdefault.jpg",
+        "channel": "Rynosce",
+        "views": 10150,
+        "length": "1:29:53",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "스프링부트5.0 채팅서버 만들기 - 3강 비동기 Netty 서버",
+        "url": "https://www.youtube.com/watch?v=AIyBYbaIBV0",
+        "thumbnail": "https://i.ytimg.com/vi/AIyBYbaIBV0/mqdefault.jpg",
+        "channel": "메타코딩",
+        "views": 5498,
+        "length": "12:47",
+        "published": "4년 전",
+        "stage": "실전"
+      }
+    ],
+    "CISSP": [
+      {
+        "title": "임베스트 cissp 공부방법",
+        "url": "https://www.youtube.com/watch?v=tG2nZIqdW7U",
+        "thumbnail": "https://i.ytimg.com/vi/tG2nZIqdW7U/mqdefault.jpg",
+        "channel": "임베스트TV",
+        "views": 3360,
+        "length": "7:31",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(요약) CISSP자격증 특강",
+        "url": "https://www.youtube.com/watch?v=5oNiE_Adm2k",
+        "thumbnail": "https://i.ytimg.com/vi/5oNiE_Adm2k/mqdefault.jpg",
+        "channel": "세종사이버대학교 정보보호학과",
+        "views": 1279,
+        "length": "17:15",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(full) CISSP자격증 특강",
+        "url": "https://www.youtube.com/watch?v=xzkIUcaAE9k",
+        "thumbnail": "https://i.ytimg.com/vi/xzkIUcaAE9k/mqdefault.jpg",
+        "channel": "세종사이버대학교 정보보호학과",
+        "views": 2775,
+        "length": "45:22",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CISSP (국제공인 정보시스템보안전문가) 자격증 라이지움 샘플강의",
+        "url": "https://www.youtube.com/watch?v=xfWoXt_vZw0",
+        "thumbnail": "https://i.ytimg.com/vi/xfWoXt_vZw0/mqdefault.jpg",
+        "channel": "라이지움",
+        "views": 687,
+        "length": "30:13",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CISSP 도메인 1: 보안 및 위험 관리 - 전체 강의 2026",
+        "url": "https://www.youtube.com/watch?v=J-su239XmCE",
+        "thumbnail": "https://i.ytimg.com/vi/J-su239XmCE/mqdefault.jpg",
+        "channel": "Computer Networks Decoded ",
+        "views": 14120,
+        "length": "1:36:51",
+        "published": "8개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CISSP 시험 벼락치기 전체 과정(전체 8개 도메인) - 2024년 시험에 적합!",
+        "url": "https://www.youtube.com/watch?v=_nyZhYnCNLA",
+        "thumbnail": "https://i.ytimg.com/vi/_nyZhYnCNLA/mqdefault.jpg",
+        "channel": "Inside Cloud and Security",
+        "views": 1904587,
+        "length": "7:56:28",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CISSP Lecture 42 CISSP Security Operations",
+        "url": "https://www.youtube.com/watch?v=pygEVk8bpZA",
+        "thumbnail": "https://i.ytimg.com/vi/pygEVk8bpZA/mqdefault.jpg",
+        "channel": "URDUIT Academy",
+        "views": 2052,
+        "length": "11:13",
+        "published": "9년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CISSP Lecture 40 CISSP Security Operations",
+        "url": "https://www.youtube.com/watch?v=cDYK84fYSzM",
+        "thumbnail": "https://i.ytimg.com/vi/cDYK84fYSzM/mqdefault.jpg",
+        "channel": "URDUIT Academy",
+        "views": 3258,
+        "length": "28:11",
+        "published": "9년 전",
+        "stage": "핵심"
       }
     ],
     "CentOS": [
@@ -15370,170 +15534,6 @@
         "views": 22930,
         "length": "19:21",
         "published": "2년 전",
-        "stage": "핵심"
-      }
-    ],
-    "Netty": [
-      {
-        "title": "[소프트스터디] Netty 소개",
-        "url": "https://www.youtube.com/watch?v=kk1MqUgav6c",
-        "thumbnail": "https://i.ytimg.com/vi/kk1MqUgav6c/mqdefault.jpg",
-        "channel": "TmaxSoft",
-        "views": 884,
-        "length": "11:15",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 2021] AI펭톡 TCP Gateway 서버 개발기 with Netty",
-        "url": "https://www.youtube.com/watch?v=pu2Y4nVWixo",
-        "thumbnail": "https://i.ytimg.com/vi/pu2Y4nVWixo/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 4504,
-        "length": "18:01",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "go net vs gnet vs reactor netty 소켓 서버 성능 비교",
-        "url": "https://www.youtube.com/watch?v=xqqjCTt_l3E",
-        "thumbnail": "https://i.ytimg.com/vi/xqqjCTt_l3E/mqdefault.jpg",
-        "channel": "최범균",
-        "views": 2203,
-        "length": "12:09",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Combat Arms Emnesty1 넷티의 스나강의 ㅋㅋㅋ/ teach sniper of Netty",
-        "url": "https://www.youtube.com/watch?v=8aRAtC6IDVg",
-        "thumbnail": "https://i.ytimg.com/vi/8aRAtC6IDVg/mqdefault.jpg",
-        "channel": "질우근만렙희망자",
-        "views": 3257,
-        "length": "19:26",
-        "published": "12년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "大型互联网分布式高并发通信框架Netty",
-        "url": "https://www.youtube.com/watch?v=ZvrKPgxcoG8",
-        "thumbnail": "https://i.ytimg.com/vi/ZvrKPgxcoG8/mqdefault.jpg",
-        "channel": "Distributed Java 分布式Java",
-        "views": 124,
-        "length": "2:29:02",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "UDP Communication using Java Netty Framework 4.1.55 | Step wise step Tutorial",
-        "url": "https://www.youtube.com/watch?v=70X-t-rYpj4",
-        "thumbnail": "https://i.ytimg.com/vi/70X-t-rYpj4/mqdefault.jpg",
-        "channel": "Learner's Capital",
-        "views": 674,
-        "length": "11:20",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Основы Java - Лекция № 12 - Разработка сетевых приложений на Java , Netty",
-        "url": "https://www.youtube.com/watch?v=SauP59VEuLE",
-        "thumbnail": "https://i.ytimg.com/vi/SauP59VEuLE/mqdefault.jpg",
-        "channel": "Rynosce",
-        "views": 10150,
-        "length": "1:29:53",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "스프링부트5.0 채팅서버 만들기 - 3강 비동기 Netty 서버",
-        "url": "https://www.youtube.com/watch?v=AIyBYbaIBV0",
-        "thumbnail": "https://i.ytimg.com/vi/AIyBYbaIBV0/mqdefault.jpg",
-        "channel": "메타코딩",
-        "views": 5498,
-        "length": "12:47",
-        "published": "4년 전",
-        "stage": "실전"
-      }
-    ],
-    "CISSP": [
-      {
-        "title": "임베스트 cissp 공부방법",
-        "url": "https://www.youtube.com/watch?v=tG2nZIqdW7U",
-        "thumbnail": "https://i.ytimg.com/vi/tG2nZIqdW7U/mqdefault.jpg",
-        "channel": "임베스트TV",
-        "views": 3360,
-        "length": "7:31",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(요약) CISSP자격증 특강",
-        "url": "https://www.youtube.com/watch?v=5oNiE_Adm2k",
-        "thumbnail": "https://i.ytimg.com/vi/5oNiE_Adm2k/mqdefault.jpg",
-        "channel": "세종사이버대학교 정보보호학과",
-        "views": 1279,
-        "length": "17:15",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(full) CISSP자격증 특강",
-        "url": "https://www.youtube.com/watch?v=xzkIUcaAE9k",
-        "thumbnail": "https://i.ytimg.com/vi/xzkIUcaAE9k/mqdefault.jpg",
-        "channel": "세종사이버대학교 정보보호학과",
-        "views": 2775,
-        "length": "45:22",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CISSP (국제공인 정보시스템보안전문가) 자격증 라이지움 샘플강의",
-        "url": "https://www.youtube.com/watch?v=xfWoXt_vZw0",
-        "thumbnail": "https://i.ytimg.com/vi/xfWoXt_vZw0/mqdefault.jpg",
-        "channel": "라이지움",
-        "views": 687,
-        "length": "30:13",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CISSP 도메인 1: 보안 및 위험 관리 - 전체 강의 2026",
-        "url": "https://www.youtube.com/watch?v=J-su239XmCE",
-        "thumbnail": "https://i.ytimg.com/vi/J-su239XmCE/mqdefault.jpg",
-        "channel": "Computer Networks Decoded ",
-        "views": 14120,
-        "length": "1:36:51",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CISSP 시험 벼락치기 전체 과정(전체 8개 도메인) - 2024년 시험에 적합!",
-        "url": "https://www.youtube.com/watch?v=_nyZhYnCNLA",
-        "thumbnail": "https://i.ytimg.com/vi/_nyZhYnCNLA/mqdefault.jpg",
-        "channel": "Inside Cloud and Security",
-        "views": 1904587,
-        "length": "7:56:28",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CISSP Lecture 42 CISSP Security Operations",
-        "url": "https://www.youtube.com/watch?v=pygEVk8bpZA",
-        "thumbnail": "https://i.ytimg.com/vi/pygEVk8bpZA/mqdefault.jpg",
-        "channel": "URDUIT Academy",
-        "views": 2052,
-        "length": "11:13",
-        "published": "9년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CISSP Lecture 40 CISSP Security Operations",
-        "url": "https://www.youtube.com/watch?v=cDYK84fYSzM",
-        "thumbnail": "https://i.ytimg.com/vi/cDYK84fYSzM/mqdefault.jpg",
-        "channel": "URDUIT Academy",
-        "views": 3258,
-        "length": "28:11",
-        "published": "9년 전",
         "stage": "핵심"
       }
     ],
@@ -15862,88 +15862,6 @@
         "views": 642,
         "length": "4:14",
         "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
-    "JSON": [
-      {
-        "title": "자바스크립트 10. JSON 개념 정리 와 활용방법 및 유용한 사이트 공유 JavaScript JSON | 프론트엔드 개발자 입문편 (JavaScript ES6)",
-        "url": "https://www.youtube.com/watch?v=FN_D4Ihs3LE",
-        "thumbnail": "https://i.ytimg.com/vi/FN_D4Ihs3LE/mqdefault.jpg",
-        "channel": "드림코딩",
-        "views": 164230,
-        "length": "22:37",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "JSON (존슨) 은 자바스크립트 문법이 아닙니다",
-        "url": "https://www.youtube.com/watch?v=1ID6pfTViXo",
-        "thumbnail": "https://i.ytimg.com/vi/1ID6pfTViXo/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 214716,
-        "length": "7:10",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "제대로 이해하는 JSON | 개발자필수지식",
-        "url": "https://www.youtube.com/watch?v=Qi2LJ_NfzC0",
-        "thumbnail": "https://i.ytimg.com/vi/Qi2LJ_NfzC0/mqdefault.jpg",
-        "channel": "큰돌의터전",
-        "views": 14373,
-        "length": "28:10",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "2편) IT필수 지식 API, 동기/비동기, JSON/XML | 기술노트 | 바이브코딩",
-        "url": "https://www.youtube.com/watch?v=NfJFZ6TgWeI",
-        "thumbnail": "https://i.ytimg.com/vi/NfJFZ6TgWeI/mqdefault.jpg",
-        "channel": "기술노트with 알렉",
-        "views": 9200,
-        "length": "17:46",
-        "published": "8개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[넓고 얕은 IT 지식 #2] JSON이란?",
-        "url": "https://www.youtube.com/watch?v=esDYb0gYOxQ",
-        "thumbnail": "https://i.ytimg.com/vi/esDYb0gYOxQ/mqdefault.jpg",
-        "channel": "제주코딩베이스캠프",
-        "views": 4523,
-        "length": "4:41",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Claude Code 비용 80% 절감하는 settings.json 3줄과 14만명이 쓰는 everything-claude-code 설정법",
-        "url": "https://www.youtube.com/watch?v=4rN-UWKSmp0",
-        "thumbnail": "https://i.ytimg.com/vi/4rN-UWKSmp0/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 131658,
-        "length": "10:46",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "유니티에서 제이슨(Json)을 사용하는 방법",
-        "url": "https://www.youtube.com/watch?v=-Myy_fRljo0",
-        "thumbnail": "https://i.ytimg.com/vi/-Myy_fRljo0/mqdefault.jpg",
-        "channel": "오늘코딩",
-        "views": 18546,
-        "length": "15:59",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AI강의 - AI 시대 필수 문해력, JSON 완벽 가이드 | 기초 문법부터 실전 프롬프트까지",
-        "url": "https://www.youtube.com/watch?v=oTH7hLwAK9M",
-        "thumbnail": "https://i.ytimg.com/vi/oTH7hLwAK9M/mqdefault.jpg",
-        "channel": "최건TV",
-        "views": 1168,
-        "length": "8:18",
-        "published": "6개월 전",
         "stage": "실전"
       }
     ],
