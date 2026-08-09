@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-09T17:30:11",
+  "generated_at": "2026-08-09T21:37:58",
   "source": "youtube",
-  "tech_count": 204,
+  "tech_count": 205,
   "curriculum_count": 20,
   "search_url": "https://www.youtube.com/results?search_query={tech}+강의",
   "resources": {
@@ -2957,88 +2957,6 @@
         "stage": "핵심"
       }
     ],
-    "MSA": [
-      {
-        "title": "코어툴 교육 풀버전 (Core Tool Full version) APQP, PPAP, FMEA, SPC, MSA 자동차 부품 품질의 기본 툴",
-        "url": "https://www.youtube.com/watch?v=kW6RmrTdMFA",
-        "thumbnail": "https://i.ytimg.com/vi/kW6RmrTdMFA/mqdefault.jpg",
-        "channel": "품질쉐프 Qchef",
-        "views": 13603,
-        "length": "1:09:31",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MSA 요소 6가지 7분컷",
-        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
-        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
-        "channel": "코드팩토리",
-        "views": 22023,
-        "length": "7:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
-        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
-        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 13510,
-        "length": "5:14",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MSA?! 이거 보고 결정해! MSA의 모든것",
-        "url": "https://www.youtube.com/watch?v=UsWrvBaQOA4",
-        "thumbnail": "https://i.ytimg.com/vi/UsWrvBaQOA4/mqdefault.jpg",
-        "channel": "SK AX",
-        "views": 8554,
-        "length": "6:15",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[MSA 완전정복 20일차·완결] MSA 설계 원칙 총정리 & 실전 팁 — 20일간의 여정 마무리",
-        "url": "https://www.youtube.com/watch?v=FcLCgABiSqU",
-        "thumbnail": "https://i.ytimg.com/vi/FcLCgABiSqU/mqdefault.jpg",
-        "channel": "AI-Trendy",
-        "views": 116,
-        "length": "12:30",
-        "published": "3개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "MSA 입문·실전 - 3.3. [실습] 다른 마이크로서비스가 사용할 ‘사용자 조회 API’ 만들기",
-        "url": "https://www.youtube.com/watch?v=eq_7CI2WMaU",
-        "thumbnail": "https://i.ytimg.com/vi/eq_7CI2WMaU/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 195,
-        "length": "5:08",
-        "published": "10개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "MSA 입문·실전 - 1.1. MSA를 왜 배워야할까?",
-        "url": "https://www.youtube.com/watch?v=4kKwlKBa84M",
-        "thumbnail": "https://i.ytimg.com/vi/4kKwlKBa84M/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 803,
-        "length": "3:12",
-        "published": "10개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "MSA 1-5(MSA 실습 1)",
-        "url": "https://www.youtube.com/watch?v=FGfHh7mTeLk",
-        "thumbnail": "https://i.ytimg.com/vi/FGfHh7mTeLk/mqdefault.jpg",
-        "channel": "미쑤뛔리",
-        "views": 636,
-        "length": "39:51",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "LangChain": [
       {
         "title": "LLM 앱 개발의 시작, LangChain 구성요소 완전 정복🔎 | Flunti 강의 미리보기",
@@ -3118,6 +3036,88 @@
         "views": 1346,
         "length": "6:27",
         "published": "2년 전",
+        "stage": "실전"
+      }
+    ],
+    "MSA": [
+      {
+        "title": "코어툴 교육 풀버전 (Core Tool Full version) APQP, PPAP, FMEA, SPC, MSA 자동차 부품 품질의 기본 툴",
+        "url": "https://www.youtube.com/watch?v=kW6RmrTdMFA",
+        "thumbnail": "https://i.ytimg.com/vi/kW6RmrTdMFA/mqdefault.jpg",
+        "channel": "품질쉐프 Qchef",
+        "views": 13603,
+        "length": "1:09:31",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MSA 요소 6가지 7분컷",
+        "url": "https://www.youtube.com/watch?v=e8iAR3VWffM",
+        "thumbnail": "https://i.ytimg.com/vi/e8iAR3VWffM/mqdefault.jpg",
+        "channel": "코드팩토리",
+        "views": 22023,
+        "length": "7:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSA 환경, 대기업에서 카프카 kafka 쓰는이유 | 스터디 리뷰 kafka ep1",
+        "url": "https://www.youtube.com/watch?v=KNfNopXVYyc",
+        "thumbnail": "https://i.ytimg.com/vi/KNfNopXVYyc/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 13510,
+        "length": "5:14",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MSA?! 이거 보고 결정해! MSA의 모든것",
+        "url": "https://www.youtube.com/watch?v=UsWrvBaQOA4",
+        "thumbnail": "https://i.ytimg.com/vi/UsWrvBaQOA4/mqdefault.jpg",
+        "channel": "SK AX",
+        "views": 8554,
+        "length": "6:15",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[MSA 완전정복 20일차·완결] MSA 설계 원칙 총정리 & 실전 팁 — 20일간의 여정 마무리",
+        "url": "https://www.youtube.com/watch?v=FcLCgABiSqU",
+        "thumbnail": "https://i.ytimg.com/vi/FcLCgABiSqU/mqdefault.jpg",
+        "channel": "AI-Trendy",
+        "views": 116,
+        "length": "12:30",
+        "published": "3개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "MSA 입문·실전 - 3.3. [실습] 다른 마이크로서비스가 사용할 ‘사용자 조회 API’ 만들기",
+        "url": "https://www.youtube.com/watch?v=eq_7CI2WMaU",
+        "thumbnail": "https://i.ytimg.com/vi/eq_7CI2WMaU/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 195,
+        "length": "5:08",
+        "published": "10개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "MSA 입문·실전 - 1.1. MSA를 왜 배워야할까?",
+        "url": "https://www.youtube.com/watch?v=4kKwlKBa84M",
+        "thumbnail": "https://i.ytimg.com/vi/4kKwlKBa84M/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 803,
+        "length": "3:12",
+        "published": "10개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "MSA 1-5(MSA 실습 1)",
+        "url": "https://www.youtube.com/watch?v=FGfHh7mTeLk",
+        "thumbnail": "https://i.ytimg.com/vi/FGfHh7mTeLk/mqdefault.jpg",
+        "channel": "미쑤뛔리",
+        "views": 636,
+        "length": "39:51",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
@@ -14312,6 +14312,88 @@
         "views": 7626,
         "length": "2:06",
         "published": "12년 전",
+        "stage": "핵심"
+      }
+    ],
+    "yolo": [
+      {
+        "title": "YOLOV5 설치 및 기본 사용법",
+        "url": "https://www.youtube.com/watch?v=-gCB9Iotjs8",
+        "thumbnail": "https://i.ytimg.com/vi/-gCB9Iotjs8/mqdefault.jpg",
+        "channel": "충북대학교 김태경교수",
+        "views": 34331,
+        "length": "22:58",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "객체 탐지 Object Detection  - YOLO의 모든것 / 포트홀 탐지, 연기 탐지, 안전모 탐지, 주차공간 탐지",
+        "url": "https://www.youtube.com/watch?v=fdWx3QV5n44",
+        "thumbnail": "https://i.ytimg.com/vi/fdWx3QV5n44/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 71344,
+        "length": "2:23:46",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Deep Learning (딥러닝) C4M3 09 YOLO total",
+        "url": "https://www.youtube.com/watch?v=baAChNIp6RU",
+        "thumbnail": "https://i.ytimg.com/vi/baAChNIp6RU/mqdefault.jpg",
+        "channel": "모두 함께 인공지능",
+        "views": 340,
+        "length": "10:38",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Yolo 알고리즘과 openCV, chatGPT를 활용해서 객체인식을 즐겨보자!",
+        "url": "https://www.youtube.com/watch?v=Am6s8g5OpOo",
+        "thumbnail": "https://i.ytimg.com/vi/Am6s8g5OpOo/mqdefault.jpg",
+        "channel": "Ci 코듐",
+        "views": 7295,
+        "length": "1:54",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "YOLO(You Only Look Once) 모델 소개 - Object Detection 딥러닝 대표 모델",
+        "url": "https://www.youtube.com/watch?v=RLNx_tOHGiY",
+        "thumbnail": "https://i.ytimg.com/vi/RLNx_tOHGiY/mqdefault.jpg",
+        "channel": "AISchool",
+        "views": 7122,
+        "length": "13:19",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "객체 탐지 Object Detection - YOLO",
+        "url": "https://www.youtube.com/watch?v=5ev0MMBzY3E",
+        "thumbnail": "https://i.ytimg.com/vi/5ev0MMBzY3E/mqdefault.jpg",
+        "channel": "이수안컴퓨터연구소",
+        "views": 18575,
+        "length": "1:14:29",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "단 3분 만에 이해하는 YOLO 핵심 Task 5가지",
+        "url": "https://www.youtube.com/watch?v=BI4oQwGCNc8",
+        "thumbnail": "https://i.ytimg.com/vi/BI4oQwGCNc8/mqdefault.jpg",
+        "channel": "구미코딩",
+        "views": 402,
+        "length": "3:26",
+        "published": "2개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[논문미식회] CV314: YOLOX: Exceeding YOLO Series in 2021",
+        "url": "https://www.youtube.com/watch?v=WYeKMPnt__4",
+        "thumbnail": "https://i.ytimg.com/vi/WYeKMPnt__4/mqdefault.jpg",
+        "channel": "가짜연구소",
+        "views": 1146,
+        "length": "14:51",
+        "published": "4년 전",
         "stage": "핵심"
       }
     ],
