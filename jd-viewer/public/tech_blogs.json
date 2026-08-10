@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-11T04:15:32",
- "total": 1020,
+ "generated_at": "2026-08-11T05:55:03",
+ "total": 1021,
  "sources": [
   {
    "company": "Etsy",
@@ -55,7 +55,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 31
+   "count": 32
   },
   {
    "company": "Netflix",
@@ -265,8 +265,8 @@
   "GraphQL": "백엔드",
   "SQLite": "데이터베이스",
   "AI Agent": "LLM/생성형",
-  "Attention Mechanism": "LLM/생성형",
   "Compiler": "알고리즘/이론",
+  "Attention Mechanism": "LLM/생성형",
   "Ansible": "인프라/클라우드",
   "DeFi": "블록체인",
   "LightGBM": "AI/ML",
@@ -360,6 +360,7 @@
   "Event Sourcing": "알고리즘/이론",
   "Loki": "관측성",
   "Echo": "백엔드",
+  "JAX": "AI/ML",
   "Unreal Engine": "그래픽/게임",
   "Cryptography": "보안",
   "File System": "시스템/OS",
@@ -526,6 +527,50 @@
   "Flink": "데이터"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Using the GitHub Copilot SDK for Java",
+   "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
+   "published": "2026-08-10",
+   "published_ts": 1786390200.0,
+   "summary": "Enterprise Java developers have a new superpower—drive GitHub Copilot from idiomatic Java code with annotations, virtual threads, and more.\n\nThe post Using the GitHub Copilot SDK for Java appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "Engineering",
+    "GitHub Copilot SDK",
+    "java"
+   ],
+   "tech_stack": [
+    "Java",
+    "Spring",
+    "WebSocket",
+    "JAX",
+    "Recommendation System",
+    "AI Agent",
+    "AWS Lambda",
+    "Azure",
+    "Observability",
+    "File System",
+    "Compiler",
+    "Concurrency",
+    "Git"
+   ],
+   "categories": [
+    "언어",
+    "백엔드",
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "관측성",
+    "시스템/OS",
+    "알고리즘/이론",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "db6826b8265009aa"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",

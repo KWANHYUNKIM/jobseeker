@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11T04:16:24",
+  "generated_at": "2026-08-11T05:55:54",
   "source": "youtube",
   "tech_count": 204,
   "curriculum_count": 20,
@@ -1317,88 +1317,6 @@
         "stage": "실전"
       }
     ],
-    "Redis": [
-      {
-        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
-        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
-        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
-        "channel": "데브원영 DVWY",
-        "views": 55226,
-        "length": "3:54",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[우아한테크세미나] 191121 우아한레디스 by 강대명님",
-        "url": "https://www.youtube.com/watch?v=mPB2CZiAkKM",
-        "thumbnail": "https://i.ytimg.com/vi/mPB2CZiAkKM/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 54602,
-        "length": "1:39:55",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[NHN FORWARD 2021] Redis 야무지게 사용하기",
-        "url": "https://www.youtube.com/watch?v=92NizoBL4uA",
-        "thumbnail": "https://i.ytimg.com/vi/92NizoBL4uA/mqdefault.jpg",
-        "channel": "NHN Cloud",
-        "views": 51478,
-        "length": "27:39",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "대규모 예매 시스템에서 대기열에 Kafka가 아닌 Redis를 사용하는 이유",
-        "url": "https://www.youtube.com/watch?v=IjI4DJvZcAs",
-        "thumbnail": "https://i.ytimg.com/vi/IjI4DJvZcAs/mqdefault.jpg",
-        "channel": "코딩하는기술사",
-        "views": 19950,
-        "length": "6:27",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[10분 테코톡] 마크의 Redis",
-        "url": "https://www.youtube.com/watch?v=UkYdk1KKVCA",
-        "thumbnail": "https://i.ytimg.com/vi/UkYdk1KKVCA/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 3335,
-        "length": "8:33",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Redis: EP1 - 최고 인기있는 캐시서버, Redis를 소개합니다",
-        "url": "https://www.youtube.com/watch?v=m6fLg0PJtYU",
-        "thumbnail": "https://i.ytimg.com/vi/m6fLg0PJtYU/mqdefault.jpg",
-        "channel": "미쿡엔지니어",
-        "views": 1191,
-        "length": "9:37",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Redis 입문·실전 - 1.1. Redis란? / Redis의 장점",
-        "url": "https://www.youtube.com/watch?v=4PQs57cq84U",
-        "thumbnail": "https://i.ytimg.com/vi/4PQs57cq84U/mqdefault.jpg",
-        "channel": "JSCODE",
-        "views": 8459,
-        "length": "3:09",
-        "published": "1년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[연속재생] 브라우저 캐시 부터 Redis까지 | 구간별 최적화",
-        "url": "https://www.youtube.com/watch?v=sdIfMnxALuY",
-        "thumbnail": "https://i.ytimg.com/vi/sdIfMnxALuY/mqdefault.jpg",
-        "channel": "코딩하는기술사",
-        "views": 5265,
-        "length": "1:41:55",
-        "published": "2주 전",
-        "stage": "실전"
-      }
-    ],
     "Node.js": [
       {
         "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
@@ -1478,6 +1396,88 @@
         "views": 90469,
         "length": "7:58",
         "published": "6년 전",
+        "stage": "실전"
+      }
+    ],
+    "Redis": [
+      {
+        "title": "카프카, 레빗엠큐, 레디스 큐의 큰 차이점! 이벤트 브로커와 메시지 브로커에 대해 알아봅시다.",
+        "url": "https://www.youtube.com/watch?v=H_DaPyUOeTo",
+        "thumbnail": "https://i.ytimg.com/vi/H_DaPyUOeTo/mqdefault.jpg",
+        "channel": "데브원영 DVWY",
+        "views": 55226,
+        "length": "3:54",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[우아한테크세미나] 191121 우아한레디스 by 강대명님",
+        "url": "https://www.youtube.com/watch?v=mPB2CZiAkKM",
+        "thumbnail": "https://i.ytimg.com/vi/mPB2CZiAkKM/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 54602,
+        "length": "1:39:55",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[NHN FORWARD 2021] Redis 야무지게 사용하기",
+        "url": "https://www.youtube.com/watch?v=92NizoBL4uA",
+        "thumbnail": "https://i.ytimg.com/vi/92NizoBL4uA/mqdefault.jpg",
+        "channel": "NHN Cloud",
+        "views": 51478,
+        "length": "27:39",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "대규모 예매 시스템에서 대기열에 Kafka가 아닌 Redis를 사용하는 이유",
+        "url": "https://www.youtube.com/watch?v=IjI4DJvZcAs",
+        "thumbnail": "https://i.ytimg.com/vi/IjI4DJvZcAs/mqdefault.jpg",
+        "channel": "코딩하는기술사",
+        "views": 19950,
+        "length": "6:27",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[10분 테코톡] 마크의 Redis",
+        "url": "https://www.youtube.com/watch?v=UkYdk1KKVCA",
+        "thumbnail": "https://i.ytimg.com/vi/UkYdk1KKVCA/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 3335,
+        "length": "8:33",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Redis: EP1 - 최고 인기있는 캐시서버, Redis를 소개합니다",
+        "url": "https://www.youtube.com/watch?v=m6fLg0PJtYU",
+        "thumbnail": "https://i.ytimg.com/vi/m6fLg0PJtYU/mqdefault.jpg",
+        "channel": "미쿡엔지니어",
+        "views": 1191,
+        "length": "9:37",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Redis 입문·실전 - 1.1. Redis란? / Redis의 장점",
+        "url": "https://www.youtube.com/watch?v=4PQs57cq84U",
+        "thumbnail": "https://i.ytimg.com/vi/4PQs57cq84U/mqdefault.jpg",
+        "channel": "JSCODE",
+        "views": 8459,
+        "length": "3:09",
+        "published": "1년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[연속재생] 브라우저 캐시 부터 Redis까지 | 구간별 최적화",
+        "url": "https://www.youtube.com/watch?v=sdIfMnxALuY",
+        "thumbnail": "https://i.ytimg.com/vi/sdIfMnxALuY/mqdefault.jpg",
+        "channel": "코딩하는기술사",
+        "views": 5265,
+        "length": "1:41:55",
+        "published": "2주 전",
         "stage": "실전"
       }
     ],
@@ -2137,88 +2137,6 @@
         "stage": "실전"
       }
     ],
-    "Android": [
-      {
-        "title": "게임기 샀는데 어렵다고요? 안드로이드 에뮬 게임 뉴비들을 위한 기초 강의 이걸로 종결합니다!",
-        "url": "https://www.youtube.com/watch?v=WmV47cz7HS0",
-        "thumbnail": "https://i.ytimg.com/vi/WmV47cz7HS0/mqdefault.jpg",
-        "channel": "블랙애플TV",
-        "views": 63838,
-        "length": "5:20",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[센치한 개발자] (1) 안드로이드 기초 강의 : 안드로이드 스튜디오 설명",
-        "url": "https://www.youtube.com/watch?v=epFRtZ17yow",
-        "thumbnail": "https://i.ytimg.com/vi/epFRtZ17yow/mqdefault.jpg",
-        "channel": "센치랩",
-        "views": 118288,
-        "length": "35:28",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_24] 파일 다루기",
-        "url": "https://www.youtube.com/watch?v=XDD1gqrjfr0",
-        "thumbnail": "https://i.ytimg.com/vi/XDD1gqrjfr0/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 1281,
-        "length": "21:50",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
-        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
-        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 1873,
-        "length": "43:15",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드NDK 기초 강의 10시간 몰아보기 이걸로 끝! #2 AndroidNDK Basics Tutorial",
-        "url": "https://www.youtube.com/watch?v=wJtijLaUFsM",
-        "thumbnail": "https://i.ytimg.com/vi/wJtijLaUFsM/mqdefault.jpg",
-        "channel": "알지오 평생교육원",
-        "views": 79,
-        "length": "5:11:52",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "새로운 강의 소개 - 모던 안드로이드 Jetpack Compose 입문",
-        "url": "https://www.youtube.com/watch?v=0NzR7G4djPI",
-        "thumbnail": "https://i.ytimg.com/vi/0NzR7G4djPI/mqdefault.jpg",
-        "channel": "오준석의 생존코딩",
-        "views": 3296,
-        "length": "8:40",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
-        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
-        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
-        "channel": "chan chan",
-        "views": 398,
-        "length": "13:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "중앙사이버평생교육원 - 모바일로 강의 수강하기 (안드로이드)",
-        "url": "https://www.youtube.com/watch?v=UjoQXZQ03fY",
-        "thumbnail": "https://i.ytimg.com/vi/UjoQXZQ03fY/mqdefault.jpg",
-        "channel": "쥬쌤TV",
-        "views": 5867,
-        "length": "4:41",
-        "published": "3년 전",
-        "stage": "핵심"
-      }
-    ],
     "CSS": [
       {
         "title": "CSS 한번에 끝내기 CSS Full Tutorial",
@@ -2299,6 +2217,88 @@
         "length": "48:53",
         "published": "3년 전",
         "stage": "실전"
+      }
+    ],
+    "Android": [
+      {
+        "title": "게임기 샀는데 어렵다고요? 안드로이드 에뮬 게임 뉴비들을 위한 기초 강의 이걸로 종결합니다!",
+        "url": "https://www.youtube.com/watch?v=WmV47cz7HS0",
+        "thumbnail": "https://i.ytimg.com/vi/WmV47cz7HS0/mqdefault.jpg",
+        "channel": "블랙애플TV",
+        "views": 63838,
+        "length": "5:20",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[센치한 개발자] (1) 안드로이드 기초 강의 : 안드로이드 스튜디오 설명",
+        "url": "https://www.youtube.com/watch?v=epFRtZ17yow",
+        "thumbnail": "https://i.ytimg.com/vi/epFRtZ17yow/mqdefault.jpg",
+        "channel": "센치랩",
+        "views": 118288,
+        "length": "35:28",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_24] 파일 다루기",
+        "url": "https://www.youtube.com/watch?v=XDD1gqrjfr0",
+        "thumbnail": "https://i.ytimg.com/vi/XDD1gqrjfr0/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 1281,
+        "length": "21:50",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[코틀린 안드로이드 기초 강의_34]  Android AsyncTask의 구조와 제작 사항",
+        "url": "https://www.youtube.com/watch?v=UGcgohWHH-I",
+        "thumbnail": "https://i.ytimg.com/vi/UGcgohWHH-I/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 1873,
+        "length": "43:15",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드NDK 기초 강의 10시간 몰아보기 이걸로 끝! #2 AndroidNDK Basics Tutorial",
+        "url": "https://www.youtube.com/watch?v=wJtijLaUFsM",
+        "thumbnail": "https://i.ytimg.com/vi/wJtijLaUFsM/mqdefault.jpg",
+        "channel": "알지오 평생교육원",
+        "views": 79,
+        "length": "5:11:52",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "새로운 강의 소개 - 모던 안드로이드 Jetpack Compose 입문",
+        "url": "https://www.youtube.com/watch?v=0NzR7G4djPI",
+        "thumbnail": "https://i.ytimg.com/vi/0NzR7G4djPI/mqdefault.jpg",
+        "channel": "오준석의 생존코딩",
+        "views": 3296,
+        "length": "8:40",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "안드로이드를 위한 코틀린(Kotlin) 문법 - 1 - 강의소개",
+        "url": "https://www.youtube.com/watch?v=_saHaFtKt2w",
+        "thumbnail": "https://i.ytimg.com/vi/_saHaFtKt2w/mqdefault.jpg",
+        "channel": "chan chan",
+        "views": 398,
+        "length": "13:41",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "중앙사이버평생교육원 - 모바일로 강의 수강하기 (안드로이드)",
+        "url": "https://www.youtube.com/watch?v=UjoQXZQ03fY",
+        "thumbnail": "https://i.ytimg.com/vi/UjoQXZQ03fY/mqdefault.jpg",
+        "channel": "쥬쌤TV",
+        "views": 5867,
+        "length": "4:41",
+        "published": "3년 전",
+        "stage": "핵심"
       }
     ],
     "FastAPI": [
