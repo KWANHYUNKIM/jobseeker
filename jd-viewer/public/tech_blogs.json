@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-11T00:50:03",
- "total": 1018,
+ "generated_at": "2026-08-11T02:36:58",
+ "total": 1019,
  "sources": [
   {
    "company": "Etsy",
@@ -13,14 +13,14 @@
    "count": 58
   },
   {
-   "company": "Cloudflare",
+   "company": "AWS",
    "country": "US",
    "count": 49
   },
   {
-   "company": "AWS",
+   "company": "Cloudflare",
    "country": "US",
-   "count": 48
+   "count": 49
   },
   {
    "company": "SoundCloud",
@@ -371,8 +371,8 @@
   "GAN": "LLM/생성형",
   "XSS": "보안",
   "GitLab CI": "인프라/클라우드",
-  "CUDA": "AI/ML",
   "Distributed System": "알고리즘/이론",
+  "CUDA": "AI/ML",
   "Snowflake": "데이터베이스",
   "Ablation Study": "연구/논문",
   "RabbitMQ": "데이터",
@@ -408,8 +408,8 @@
   "Time Series": "AI/ML",
   "CLIP": "LLM/생성형",
   "BigQuery": "데이터베이스",
-  "Android": "모바일",
   "AWS Lambda": "인프라/클라우드",
+  "Android": "모바일",
   "Trino": "데이터",
   "ETL": "데이터",
   "Nuxt": "프론트엔드",
@@ -593,6 +593,43 @@
    ],
    "lang": "ko",
    "content_id": "2c19c0c368abbf97"
+  },
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
+   "published": "2026-08-10",
+   "published_ts": 1786376703.0,
+   "summary": "Last week, we brought together AWS Heroes from around the world to connect, collaborate, and celebrate the builders who go above and beyond for the AWS community. The AWS Heroes Summit, an invite-only annual gathering, brings global experts specializing in fields like AI, serverless, and containers together for direct collaboration, technical deep-dives, and feedback sessions […]",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon Bedrock AgentCore",
+    "Amazon DynamoDB",
+    "AWS Lambda",
+    "AWS Transform",
+    "Kiro",
+    "News",
+    "Open Source"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "GPT",
+    "Vector Search",
+    "DynamoDB",
+    "Vector Database",
+    "AWS",
+    "AWS Lambda",
+    "Serverless"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "ff7a3c721d8ce21c"
   },
   {
    "key": "cloudflare",
