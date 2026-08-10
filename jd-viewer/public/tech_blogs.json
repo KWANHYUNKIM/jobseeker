@@ -1,12 +1,7 @@
 {
- "generated_at": "2026-08-10T07:42:09",
- "total": 1107,
+ "generated_at": "2026-08-11T00:50:03",
+ "total": 1018,
  "sources": [
-  {
-   "company": "Cloudflare",
-   "country": "US",
-   "count": 84
-  },
   {
    "company": "Etsy",
    "country": "US",
@@ -15,12 +10,12 @@
   {
    "company": "Stack Overflow",
    "country": "US",
-   "count": 63
+   "count": 58
   },
   {
-   "company": "GitHub",
+   "company": "Cloudflare",
    "country": "US",
-   "count": 56
+   "count": 49
   },
   {
    "company": "AWS",
@@ -30,7 +25,7 @@
   {
    "company": "SoundCloud",
    "country": "DE",
-   "count": 47
+   "count": 46
   },
   {
    "company": "LINE",
@@ -43,14 +38,14 @@
    "count": 41
   },
   {
-   "company": "CyberAgent",
-   "country": "JP",
+   "company": "네이버 D2",
+   "country": "KR",
    "count": 39
   },
   {
    "company": "토스",
    "country": "KR",
-   "count": 38
+   "count": 39
   },
   {
    "company": "Discord",
@@ -58,14 +53,14 @@
    "count": 37
   },
   {
-   "company": "네이버 D2",
-   "country": "KR",
-   "count": 37
+   "company": "GitHub",
+   "country": "US",
+   "count": 31
   },
   {
    "company": "Netflix",
    "country": "US",
-   "count": 35
+   "count": 30
   },
   {
    "company": "Mercari",
@@ -98,8 +93,8 @@
    "count": 25
   },
   {
-   "company": "Grab",
-   "country": "SG",
+   "company": "CyberAgent",
+   "country": "JP",
    "count": 19
   },
   {
@@ -110,6 +105,11 @@
   {
    "company": "Meta",
    "country": "US",
+   "count": 18
+  },
+  {
+   "company": "Grab",
+   "country": "SG",
    "count": 18
   },
   {
@@ -239,295 +239,437 @@
   "협업/도구"
  ],
  "tag_categories": {
-  "Remix": "프론트엔드",
-  "Computer Vision": "AI/ML",
-  "ETL": "데이터",
-  "Solana": "블록체인",
-  "Echo": "백엔드",
-  "Storybook": "프론트엔드",
-  "Edge Computing": "펌웨어/임베디드",
-  "Spinnaker": "인프라/클라우드",
-  "GAN": "LLM/생성형",
-  "Nginx": "인프라/클라우드",
-  "Unix": "시스템/OS",
-  "Hugging Face": "LLM/생성형",
-  "REST API": "백엔드",
-  "Spark": "데이터",
-  "Notion": "협업/도구",
-  "Attention Mechanism": "LLM/생성형",
-  "Multimodal": "LLM/생성형",
-  "Webpack": "프론트엔드",
-  "Zero Trust": "보안",
-  "SQL Injection": "보안",
-  "ClickHouse": "데이터베이스",
-  "Bootloader": "펌웨어/임베디드",
-  "Groovy": "언어",
-  "Kinesis": "데이터",
-  "Claude": "LLM/생성형",
-  "Gemini": "LLM/생성형",
-  "Perl": "언어",
-  "Redux": "프론트엔드",
-  "Beam": "데이터",
-  "Machine Learning": "AI/ML",
-  "Benchmark": "연구/논문",
-  "JWT": "보안",
-  "Design System": "협업/도구",
-  "TypeScript": "언어",
-  "TensorRT": "AI/ML",
-  "Bun": "백엔드",
-  "WebGL": "프론트엔드",
-  "Qwik": "프론트엔드",
-  "Data Structure": "알고리즘/이론",
-  "MySQL": "데이터베이스",
-  "Virtualization": "시스템/OS",
-  "Fine-tuning": "LLM/생성형",
-  "Knowledge Distillation": "AI/ML",
-  "ONNX": "AI/ML",
-  "Keras": "AI/ML",
-  "C#": "언어",
-  "RLHF": "LLM/생성형",
+  "MSSQL": "데이터베이스",
   "Oracle": "데이터베이스",
-  "Vector Database": "데이터베이스",
-  "CUDA": "AI/ML",
-  "Bare-metal": "펌웨어/임베디드",
+  "Databricks": "데이터베이스",
+  "Airflow": "데이터",
+  "Cassandra": "데이터베이스",
+  "GitOps": "인프라/클라우드",
+  "Angular": "프론트엔드",
+  "Hadoop": "데이터",
+  "SQL": "언어",
+  "Gemini": "LLM/생성형",
+  "Shader": "그래픽/게임",
+  "Quantization": "LLM/생성형",
+  "TensorRT": "AI/ML",
+  "Storybook": "프론트엔드",
+  "Anomaly Detection": "AI/ML",
+  "Elasticsearch": "데이터베이스",
+  "ScyllaDB": "데이터베이스",
+  "Deep Learning": "AI/ML",
+  "APM": "관측성",
+  "Scala": "언어",
+  "CSS": "프론트엔드",
+  "MapReduce": "알고리즘/이론",
+  "Bluetooth": "펌웨어/임베디드",
+  "GraphQL": "백엔드",
+  "SQLite": "데이터베이스",
+  "AI Agent": "LLM/생성형",
+  "Attention Mechanism": "LLM/생성형",
+  "Compiler": "알고리즘/이론",
+  "Ansible": "인프라/클라우드",
+  "DeFi": "블록체인",
+  "LightGBM": "AI/ML",
+  "Express": "백엔드",
+  "SASS": "프론트엔드",
+  "RLHF": "LLM/생성형",
+  "Garbage Collection": "알고리즘/이론",
+  "Grafana": "관측성",
+  "MySQL": "데이터베이스",
+  "React Native": "모바일",
   "Vercel": "인프라/클라우드",
   "XGBoost": "AI/ML",
-  "MSSQL": "데이터베이스",
-  "APM": "관측성",
-  "LightGBM": "AI/ML",
-  "Paxos": "알고리즘/이론",
-  "Game Engine": "그래픽/게임",
-  "Prompt Engineering": "LLM/생성형",
-  "Kubernetes": "인프라/클라우드",
-  "Security": "보안",
-  "Embedded": "펌웨어/임베디드",
-  "Flutter": "모바일",
-  "BERT": "LLM/생성형",
-  "Stream Processing": "데이터",
-  "Firmware": "펌웨어/임베디드",
-  "Time Series": "AI/ML",
-  "Dart": "언어",
-  "Consistent Hashing": "알고리즘/이론",
-  "Ray": "AI/ML",
-  "CLIP": "LLM/생성형",
-  "Graph Neural Network": "AI/ML",
-  "NLP": "AI/ML",
-  "eBPF": "시스템/OS",
-  "Android": "모바일",
-  "Tailwind": "프론트엔드",
-  "MLOps": "AI/ML",
-  "File System": "시스템/OS",
-  "Vector Search": "LLM/생성형",
-  "ArgoCD": "인프라/클라우드",
-  "Jetpack Compose": "모바일",
-  "Airflow": "데이터",
-  "Redis": "데이터베이스",
-  "Vue": "프론트엔드",
-  "Memory Management": "시스템/OS",
-  "UIKit": "모바일",
-  "MapReduce": "알고리즘/이론",
-  "Next.js": "프론트엔드",
-  "Unreal Engine": "그래픽/게임",
-  "Elasticsearch": "데이터베이스",
-  "Kernel": "시스템/OS",
-  "Reinforcement Learning": "AI/ML",
-  "gRPC": "백엔드",
-  "CVE": "보안",
-  "Service Mesh": "인프라/클라우드",
-  "Svelte": "프론트엔드",
-  "Presto": "데이터",
-  "Databricks": "데이터베이스",
-  "Bluetooth": "펌웨어/임베디드",
-  "Data Pipeline": "데이터",
-  "BigQuery": "데이터베이스",
-  "Distributed Tracing": "관측성",
-  "Hive": "데이터",
-  "SQLite": "데이터베이스",
-  "Spring Boot": "백엔드",
-  "Llama": "LLM/생성형",
-  "Julia": "언어",
-  "Triton": "AI/ML",
-  "Datadog": "관측성",
-  "Distributed System": "알고리즘/이론",
-  "Swift": "언어",
-  "NestJS": "백엔드",
-  "Node.js": "백엔드",
-  "GitLab CI": "인프라/클라우드",
-  "Data Lake": "데이터",
-  "OpenGL": "그래픽/게임",
-  "Web3": "블록체인",
-  "Transformer": "LLM/생성형",
-  "Jenkins": "인프라/클라우드",
-  "Express": "백엔드",
-  "SIEM": "보안",
-  "Java": "언어",
-  "Kotlin Multiplatform": "모바일",
-  "RAG": "LLM/생성형",
-  "arXiv": "연구/논문",
-  "DDD": "협업/도구",
-  "AutoML": "AI/ML",
-  "Bloom Filter": "알고리즘/이론",
-  "Rust": "언어",
-  "Git": "협업/도구",
-  "Go": "언어",
-  "Terraform": "인프라/클라우드",
-  "Hadoop": "데이터",
-  "Fiber": "백엔드",
-  "WebAssembly": "프론트엔드",
-  "GCP": "인프라/클라우드",
-  "Kubeflow": "AI/ML",
-  "Delta Lake": "데이터",
-  "Scala": "언어",
-  "Binary Search": "알고리즘/이론",
-  "Unity": "그래픽/게임",
-  "React": "프론트엔드",
-  "WAF": "보안",
-  "iOS": "모바일",
-  "Pulsar": "데이터",
-  "SwiftUI": "모바일",
-  "SolidJS": "프론트엔드",
-  "Kafka": "데이터",
-  "Event Sourcing": "알고리즘/이론",
-  "Vulkan": "그래픽/게임",
-  "Netty": "백엔드",
-  "LlamaIndex": "LLM/생성형",
-  "Docker": "인프라/클라우드",
-  "Scikit-learn": "AI/ML",
-  "Hash Table": "알고리즘/이론",
-  "Concurrency": "알고리즘/이론",
-  "Sentry": "관측성",
-  "Confluence": "협업/도구",
+  "Bare-metal": "펌웨어/임베디드",
   "Elixir": "언어",
-  "Babel": "프론트엔드",
-  "RabbitMQ": "데이터",
-  "jQuery": "프론트엔드",
-  "OWASP": "보안",
-  "Trino": "데이터",
-  "Vault": "인프라/클라우드",
-  "Debezium": "데이터",
-  "Garbage Collection": "알고리즘/이론",
-  "Cloudflare": "인프라/클라우드",
-  "Grafana": "관측성",
-  "SASS": "프론트엔드",
-  "C++": "언어",
-  "LSM Tree": "알고리즘/이론",
-  "Astro": "프론트엔드",
-  "Consensus": "알고리즘/이론",
-  "CockroachDB": "데이터베이스",
-  "Netlify": "인프라/클라우드",
-  "Redshift": "데이터베이스",
-  "FastAPI": "백엔드",
-  "Ablation Study": "연구/논문",
-  "Jira": "협업/도구",
-  ".NET": "백엔드",
-  "IoT": "펌웨어/임베디드",
-  "Cassandra": "데이터베이스",
-  "Model Context Protocol": "LLM/생성형",
-  "Consul": "인프라/클라우드",
-  "Feature Store": "AI/ML",
-  "Prometheus": "관측성",
-  "Reverse Engineering": "보안",
-  "CQRS": "알고리즘/이론",
-  "Quantization": "LLM/생성형",
-  "Vite": "프론트엔드",
-  "CI/CD": "인프라/클라우드",
-  "Hudi": "데이터",
-  "systemd": "시스템/OS",
-  "Neo4j": "데이터베이스",
-  "DynamoDB": "데이터베이스",
-  "Mistral": "LLM/생성형",
-  "CNN": "AI/ML",
-  "Spring": "백엔드",
-  "GitHub Actions": "인프라/클라우드",
-  "Iceberg": "데이터",
-  "GitOps": "인프라/클라우드",
-  "Azure": "인프라/클라우드",
-  "Recommendation System": "AI/ML",
-  "MQTT": "펌웨어/임베디드",
-  "PyTorch": "AI/ML",
-  "MoE": "LLM/생성형",
-  "LangChain": "LLM/생성형",
-  "Flink": "데이터",
-  "Deno": "백엔드",
-  "Serverless": "인프라/클라우드",
-  "Lua": "언어",
-  "Raft": "알고리즘/이론",
   "containerd": "시스템/OS",
-  "TensorFlow": "AI/ML",
-  "TLS": "보안",
-  "OpenTelemetry": "관측성",
-  "Figma": "협업/도구",
-  "Saga Pattern": "알고리즘/이론",
-  "Linux": "시스템/OS",
-  "TDD": "협업/도구",
-  "Kotlin": "언어",
-  "dbt": "데이터",
-  "Flask": "백엔드",
-  "ScyllaDB": "데이터베이스",
-  "Snowflake": "데이터베이스",
-  "A/B Test": "협업/도구",
-  "Monorepo": "협업/도구",
-  "Ruby": "언어",
-  "Anomaly Detection": "AI/ML",
-  "ARM": "펌웨어/임베디드",
-  "Ansible": "인프라/클라우드",
-  "WebRTC": "프론트엔드",
-  "Algorithm": "알고리즘/이론",
-  "CSS": "프론트엔드",
-  "AWS": "인프라/클라우드",
-  "DeFi": "블록체인",
-  "PWA": "프론트엔드",
-  "CDC": "데이터",
-  "Envoy": "인프라/클라우드",
-  "Penetration Testing": "보안",
-  "XSS": "보안",
-  "OAuth": "보안",
-  "Rails": "백엔드",
-  "GPT": "LLM/생성형",
-  "Objective-C": "언어",
-  "Linux Kernel": "펌웨어/임베디드",
-  "Qdrant": "데이터베이스",
-  "PostgreSQL": "데이터베이스",
+  "Consul": "인프라/클라우드",
+  "Protobuf": "백엔드",
+  "Bootloader": "펌웨어/임베디드",
+  "pgvector": "데이터베이스",
+  "eBPF": "시스템/OS",
+  "Hash Table": "알고리즘/이론",
+  "Jenkins": "인프라/클라우드",
+  "LlamaIndex": "LLM/생성형",
+  "Deno": "백엔드",
   "Dynamic Programming": "알고리즘/이론",
-  "Loki": "관측성",
-  "SCSS": "프론트엔드",
+  "Vite": "프론트엔드",
+  "Cloudflare": "인프라/클라우드",
+  "vLLM": "LLM/생성형",
+  "Data Pipeline": "데이터",
+  "Reinforcement Learning": "AI/ML",
+  "MLOps": "AI/ML",
+  "Security": "보안",
+  "Machine Learning": "AI/ML",
+  "REST API": "백엔드",
+  "Astro": "프론트엔드",
+  "C++": "언어",
+  "TDD": "협업/도구",
+  "C#": "언어",
+  "jQuery": "프론트엔드",
   "PHP": "언어",
-  "State of the Art": "연구/논문",
-  "Authentication": "보안",
-  "AWS Lambda": "인프라/클라우드",
-  "Istio": "인프라/클라우드",
-  "DirectX": "그래픽/게임",
-  "SQL": "언어",
+  "Kinesis": "데이터",
+  "Vulkan": "그래픽/게임",
+  "Remix": "프론트엔드",
+  "GitHub Actions": "인프라/클라우드",
+  "IoT": "펌웨어/임베디드",
+  "MoE": "LLM/생성형",
+  "Model Context Protocol": "LLM/생성형",
+  "Python": "언어",
+  "Benchmark": "연구/논문",
+  "Ray": "AI/ML",
+  "SIEM": "보안",
+  "Claude": "LLM/생성형",
   "Assembly": "언어",
   "Embedding": "LLM/생성형",
-  "Compiler": "알고리즘/이론",
-  "pgvector": "데이터베이스",
-  "Nuxt": "프론트엔드",
-  "Shader": "그래픽/게임",
+  "Tailwind": "프론트엔드",
+  "Kernel": "시스템/OS",
+  "JWT": "보안",
+  "Raft": "알고리즘/이론",
+  "Triton": "AI/ML",
+  "Consistent Hashing": "알고리즘/이론",
+  "Computer Vision": "AI/ML",
+  "Redshift": "데이터베이스",
+  "Pulsar": "데이터",
+  "OAuth": "보안",
+  ".NET": "백엔드",
+  "Azure": "인프라/클라우드",
+  "Linux Kernel": "펌웨어/임베디드",
+  "NLP": "AI/ML",
+  "Jira": "협업/도구",
   "Blockchain": "블록체인",
-  "vLLM": "LLM/생성형",
-  "DDoS": "보안",
-  "MongoDB": "데이터베이스",
-  "DSP": "펌웨어/임베디드",
-  "Cryptography": "보안",
-  "AI Agent": "LLM/생성형",
-  "LLM": "LLM/생성형",
-  "Angular": "프론트엔드",
+  "gRPC": "백엔드",
   "HTML": "프론트엔드",
-  "GraphQL": "백엔드",
-  "Observability": "관측성",
-  "Protobuf": "백엔드",
-  "React Native": "모바일",
-  "Diffusion": "LLM/생성형",
+  "Linux": "시스템/OS",
+  "DDD": "협업/도구",
+  "BERT": "LLM/생성형",
+  "PWA": "프론트엔드",
+  "DSP": "펌웨어/임베디드",
+  "Keras": "AI/ML",
+  "Dart": "언어",
+  "Swift": "언어",
+  "Next.js": "프론트엔드",
+  "SolidJS": "프론트엔드",
+  "Paxos": "알고리즘/이론",
   "LoRA": "LLM/생성형",
+  "Terraform": "인프라/클라우드",
+  "SCSS": "프론트엔드",
+  "Serverless": "인프라/클라우드",
+  "Notion": "협업/도구",
+  "Hugging Face": "LLM/생성형",
+  "LLM": "LLM/생성형",
+  "Event Sourcing": "알고리즘/이론",
+  "Loki": "관측성",
+  "Echo": "백엔드",
+  "Unreal Engine": "그래픽/게임",
+  "Cryptography": "보안",
+  "File System": "시스템/OS",
+  "Transformer": "LLM/생성형",
+  "Binary Search": "알고리즘/이론",
+  "Iceberg": "데이터",
+  "Spring": "백엔드",
+  "A/B Test": "협업/도구",
+  "GAN": "LLM/생성형",
+  "XSS": "보안",
+  "GitLab CI": "인프라/클라우드",
+  "CUDA": "AI/ML",
+  "Distributed System": "알고리즘/이론",
+  "Snowflake": "데이터베이스",
+  "Ablation Study": "연구/논문",
+  "RabbitMQ": "데이터",
+  "Jetpack Compose": "모바일",
+  "Flask": "백엔드",
+  "Svelte": "프론트엔드",
+  "MQTT": "펌웨어/임베디드",
+  "Perl": "언어",
+  "iOS": "모바일",
+  "TensorFlow": "AI/ML",
+  "Rust": "언어",
+  "Saga Pattern": "알고리즘/이론",
+  "Node.js": "백엔드",
+  "OWASP": "보안",
+  "TypeScript": "언어",
+  "Distributed Tracing": "관측성",
+  "Hive": "데이터",
+  "Vector Database": "데이터베이스",
+  "Figma": "협업/도구",
+  "Unix": "시스템/OS",
+  "WebGL": "프론트엔드",
+  "Redux": "프론트엔드",
+  "Nginx": "인프라/클라우드",
+  "Envoy": "인프라/클라우드",
+  "Memory Management": "시스템/OS",
+  "Bloom Filter": "알고리즘/이론",
+  "dbt": "데이터",
+  "MongoDB": "데이터베이스",
+  "Authentication": "보안",
+  "Babel": "프론트엔드",
+  "Julia": "언어",
+  "Git": "협업/도구",
+  "Time Series": "AI/ML",
+  "CLIP": "LLM/생성형",
+  "BigQuery": "데이터베이스",
+  "Android": "모바일",
+  "AWS Lambda": "인프라/클라우드",
+  "Trino": "데이터",
+  "ETL": "데이터",
+  "Nuxt": "프론트엔드",
+  "OpenTelemetry": "관측성",
+  "PyTorch": "AI/ML",
+  "Unity": "그래픽/게임",
+  "Hudi": "데이터",
+  "Sentry": "관측성",
+  "Neo4j": "데이터베이스",
   "Helm": "인프라/클라우드",
-  "JavaScript": "언어",
-  "Python": "언어",
-  "Deep Learning": "AI/ML",
+  "Monorepo": "협업/도구",
+  "Ruby": "언어",
+  "Zero Trust": "보안",
+  "Istio": "인프라/클라우드",
+  "Netlify": "인프라/클라우드",
+  "Consensus": "알고리즘/이론",
+  "Prompt Engineering": "LLM/생성형",
+  "Firmware": "펌웨어/임베디드",
+  "Kotlin Multiplatform": "모바일",
+  "Design System": "협업/도구",
+  "Kotlin": "언어",
+  "LSM Tree": "알고리즘/이론",
+  "Solana": "블록체인",
+  "GCP": "인프라/클라우드",
+  "Go": "언어",
+  "DynamoDB": "데이터베이스",
+  "Data Lake": "데이터",
+  "ONNX": "AI/ML",
+  "systemd": "시스템/OS",
+  "Presto": "데이터",
+  "Kubeflow": "AI/ML",
+  "React": "프론트엔드",
+  "SwiftUI": "모바일",
+  "Vue": "프론트엔드",
+  "Multimodal": "LLM/생성형",
+  "Bash": "언어",
+  "Redis": "데이터베이스",
+  "Prometheus": "관측성",
+  "Fiber": "백엔드",
+  "Concurrency": "알고리즘/이론",
+  "Virtualization": "시스템/OS",
+  "Qdrant": "데이터베이스",
+  "WAF": "보안",
+  "Graph Neural Network": "AI/ML",
+  "AutoML": "AI/ML",
+  "Penetration Testing": "보안",
+  "ClickHouse": "데이터베이스",
+  "AWS": "인프라/클라우드",
+  "Algorithm": "알고리즘/이론",
+  "CDC": "데이터",
+  "Docker": "인프라/클라우드",
+  "Spinnaker": "인프라/클라우드",
+  "State of the Art": "연구/논문",
+  "Game Engine": "그래픽/게임",
+  "OpenGL": "그래픽/게임",
+  "TLS": "보안",
+  "ARM": "펌웨어/임베디드",
+  "NestJS": "백엔드",
+  "Recommendation System": "AI/ML",
+  "Kafka": "데이터",
+  "Objective-C": "언어",
+  "PostgreSQL": "데이터베이스",
+  "RAG": "LLM/생성형",
+  "DirectX": "그래픽/게임",
+  "Lua": "언어",
   "WebSocket": "백엔드",
-  "Bash": "언어"
+  "Rails": "백엔드",
+  "Kubernetes": "인프라/클라우드",
+  "CI/CD": "인프라/클라우드",
+  "LangChain": "LLM/생성형",
+  "Webpack": "프론트엔드",
+  "CVE": "보안",
+  "Service Mesh": "인프라/클라우드",
+  "Qwik": "프론트엔드",
+  "Observability": "관측성",
+  "GPT": "LLM/생성형",
+  "CockroachDB": "데이터베이스",
+  "SQL Injection": "보안",
+  "arXiv": "연구/논문",
+  "Diffusion": "LLM/생성형",
+  "Datadog": "관측성",
+  "Edge Computing": "펌웨어/임베디드",
+  "FastAPI": "백엔드",
+  "WebAssembly": "프론트엔드",
+  "Reverse Engineering": "보안",
+  "Netty": "백엔드",
+  "Llama": "LLM/생성형",
+  "Debezium": "데이터",
+  "Scikit-learn": "AI/ML",
+  "Embedded": "펌웨어/임베디드",
+  "Mistral": "LLM/생성형",
+  "CQRS": "알고리즘/이론",
+  "Spring Boot": "백엔드",
+  "ArgoCD": "인프라/클라우드",
+  "Flutter": "모바일",
+  "Feature Store": "AI/ML",
+  "Bun": "백엔드",
+  "Vector Search": "LLM/생성형",
+  "Java": "언어",
+  "Confluence": "협업/도구",
+  "Delta Lake": "데이터",
+  "CNN": "AI/ML",
+  "UIKit": "모바일",
+  "Stream Processing": "데이터",
+  "Beam": "데이터",
+  "JavaScript": "언어",
+  "Knowledge Distillation": "AI/ML",
+  "Groovy": "언어",
+  "Vault": "인프라/클라우드",
+  "Fine-tuning": "LLM/생성형",
+  "Data Structure": "알고리즘/이론",
+  "Spark": "데이터",
+  "DDoS": "보안",
+  "Flink": "데이터"
  },
  "posts": [
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "우리 팀만의 vLLM 플러그인 만들기 2편 - 모델 변환부터 배포까지 AI-native로 자동화하기",
+   "url": "https://d2.naver.com/helloworld/7337586",
+   "published": "2026-08-10",
+   "published_ts": 1786379992.0,
+   "summary": "1편에서는 검색·추천 모델을 vLLM 사용자 정의 플러그인으로 옮겨 서빙 성능을 높인 과정을 소개했습니다. 모델을 vLLM에서 실행할 수 있게 된 뒤에는 또 다른 문제가 남았습니다. 모델마다 반복해야 하는 변환 작업이 복잡하고, vLLM의 빠른 변화까지 계속 따라가야 한다는 점입니다.\n\nHugging Face 모델 하나를 vLLM에 올리는 과정은 버튼 한 번으로 끝나지 않습니다. ‘딸깍’ 한 번으로 완성할 수는 없습니다. 하지만 자동화를 우리 문제에 맞게 계속 ‘깎아’ 나갈 수는 있습니다. 저희는 변환 절차를 Claude Code Skill로 만들고, 실제 모델을 변환하며 두 번의 큰 시행착오를 거쳐 스킬 자체도 계속 개선했습니다. 이 글은 vLLM 모델 변환부터 배포까지를 AI-native로 자동화하고, 그 자동화를 어떻게 다듬어 왔는지에 대한 기록입니다.\n\n그 결과 서로 다른 유형의 모델 7개를 같은 절차로 변환해 운영에 적용했고, 변환 과정에서 발견한 주의 사항 45개를 재사용 가능한 지식으로 축적했습니다. 호출할 때마다 전체 지식을 입력하던 방식도 필요한 지식만 불러오는 구조로 바꿔, 지식 전달에 필요한 호출당 토큰 수를 6,900개에서 170개로 9…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "MLOps",
+    "Claude",
+    "Embedding",
+    "Hugging Face",
+    "vLLM",
+    "GitHub Actions",
+    "GitOps",
+    "Security",
+    "Benchmark",
+    "Git"
+   ],
+   "categories": [
+    "AI/ML",
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안",
+    "연구/논문",
+    "협업/도구"
+   ],
+   "lang": "ko",
+   "content_id": "6c51c93f8ef41694"
+  },
+  {
+   "key": "naver-d2",
+   "company": "네이버 D2",
+   "country": "KR",
+   "title": "우리 팀만의 vLLM 플러그인 만들기 1편 - 검색 AI 모델 서빙 성능 극대화하기",
+   "url": "https://d2.naver.com/helloworld/0525182",
+   "published": "2026-08-10",
+   "published_ts": 1786379965.0,
+   "summary": "네이버 플레이스 AI MLOps는 지난 1년간 검색과 추천에 사용하는 스코어링 모델의 서빙 구조를 vLLM 기반으로 전환했습니다. 이 글에서는 사내 Engineering Day에서 발표한 내용을 바탕으로, 모델 서빙 경로를 최적화해 성능을 높인 과정을 소개합니다.\n\n먼저 결과부터 살펴보겠습니다. 0.6B 재순위화(reranking) 모델을 Hugging Face Transformer.encode로 서빙했을 때 처리량은 63.85 QPS였습니다. 같은 모델과 GPU, 입력을 사용하면서 vLLM의 score 태스크로 옮기자 397.21 QPS로 약 6.2배 증가했습니다. 속성 기반 감성 모델(ABSA, Aspect-Based Sentiment Analysis)의 단건 p50 지연 시간은 101.22ms에서 16.43ms로 83.8% 감소했고, CLIP 기반 이미지 랭킹 모델의 처리량은 최적화를 다섯 단계 적용하자 3.76 img/s에서 62.2 img/s로 누적 16.5배 증가했습니다.\n\n모델은 한 줄도 더 빠르게 만들지 않았는데 어떻게 이런 차이가 났을까요? 저희가 찾은 지점은 두 군데였습니다. 하나는 모델의 순전파를 실행하는 런타임 자체의 효율이고, 다른 하…",
+   "tags": [
+    "hello world"
+   ],
+   "tech_stack": [
+    "Python",
+    "CUDA",
+    "BERT",
+    "CLIP",
+    "Embedding",
+    "Hugging Face",
+    "Multimodal",
+    "Transformer",
+    "vLLM",
+    "Kernel"
+   ],
+   "categories": [
+    "언어",
+    "AI/ML",
+    "LLM/생성형",
+    "시스템/OS"
+   ],
+   "lang": "ko",
+   "content_id": "2c19c0c368abbf97"
+  },
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "Serving the most critical missions: Cloudflare for Government achieves FedRAMP Class D (High) Certified status",
+   "url": "https://blog.cloudflare.com/fedramp-class-d-certification",
+   "published": "2026-08-10",
+   "published_ts": 1786366800.0,
+   "summary": "Cloudflare for Government achieves FedRAMP Class D (High) Certified status. We also announce our commitment to pursue DoD IL4 authorization. Cloudflare brings world-class security, performance, and developer products to the public sector.",
+   "tags": [
+    "FedRAMP",
+    "FedRAMP High",
+    "IL4"
+   ],
+   "tech_stack": [
+    "Cloudflare",
+    "DDoS",
+    "Security",
+    "Zero Trust"
+   ],
+   "categories": [
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "eeac610da22ab6ba"
+  },
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "모노리포 희망편, 절망의 리포가 희망의 리포로 부활하기까지 걸린 1년",
+   "url": "https://toss.tech/article/52209",
+   "published": "2026-08-10",
+   "published_ts": 1786329600.0,
+   "summary": "토스에서 100명이 넘는 엔지니어들이 모노리포에서 장점만을 누리기 위해 카탈로그를 도입한 이야기를 소개합니다.",
+   "tags": [],
+   "tech_stack": [
+    "Go",
+    "JavaScript",
+    "TypeScript",
+    "Next.js",
+    "React",
+    "Security"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "35947838846e337b"
+  },
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "GPUaaS基盤を支える Kubernetes カスタムコントローラ",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/64574",
+   "published": "2026-08-09",
+   "published_ts": 1786316436.0,
+   "summary": "はじめに CIU (CyberAgent group Infrastructure Unit) の ...",
+   "tags": [
+    "エンジニア",
+    "Go",
+    "kubernetes"
+   ],
+   "tech_stack": [
+    "Kubernetes"
+   ],
+   "categories": [
+    "인프라/클라우드"
+   ],
+   "lang": "en",
+   "content_id": "b3f2f5252b9f9494"
+  },
   {
    "key": "netflix",
    "company": "Netflix",
@@ -1845,139 +1987,6 @@
    "content_id": "f42f294704296f15"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "How Cloudflare enforces engineering standards using AI",
-   "url": "https://blog.cloudflare.com/engineering-standards-enforcement",
-   "published": "2026-08-04",
-   "published_ts": 1785848400.0,
-   "summary": "We created the Cloudflare Codex, a governed body of engineering standards that AI agents consume across the development lifecycle. By pairing structured RFCs with agentic reviews, teams automatically enforce consistency across code, specs, and incident reports.",
-   "tags": [
-    "Agents Week",
-    "AI",
-    "Best Practices",
-    "Developer Platform",
-    "Developers"
-   ],
-   "tech_stack": [
-    "Go",
-    "Rust",
-    "TypeScript",
-    "Astro",
-    "Embedding",
-    "LLM",
-    "Cloudflare",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "3cabc549ce720a64"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Introducing: Cloudflare Agents",
-   "url": "https://blog.cloudflare.com/agents-on-cloudflare",
-   "published": "2026-08-04",
-   "published_ts": 1785848400.0,
-   "summary": "Cloudflare Agents brings all of your deployed agent sessions into a single experience, surfacing key information and insights into how your agents perform at scale.",
-   "tags": [
-    "Agents",
-    "Agents Week",
-    "AI",
-    "Observability",
-    "Tracing"
-   ],
-   "tech_stack": [
-    "Cloudflare",
-    "Observability",
-    "OpenTelemetry"
-   ],
-   "categories": [
-    "인프라/클라우드",
-    "관측성"
-   ],
-   "lang": "en",
-   "content_id": "3bcda061e8010df8"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Your agent can now debug Workers with local tracing",
-   "url": "https://blog.cloudflare.com/local-tracing",
-   "published": "2026-08-04",
-   "published_ts": 1785848400.0,
-   "summary": "wrangler dev now produces structured traces for every local request. Your coding agent can hit a single API to pinpoint exactly what failed and why — no deployment required.",
-   "tags": [
-    "Agents",
-    "Agents Week",
-    "Cloudflare Workers",
-    "Workers Observability"
-   ],
-   "tech_stack": [
-    "Vite",
-    "REST API",
-    "SQLite",
-    "Cloudflare",
-    "Observability",
-    "OpenTelemetry"
-   ],
-   "categories": [
-    "프론트엔드",
-    "백엔드",
-    "데이터베이스",
-    "인프라/클라우드",
-    "관측성"
-   ],
-   "lang": "en",
-   "content_id": "077ee2d9734697a8"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "How we built a software factory to drive Astro’s GitHub issue count to zero",
-   "url": "https://blog.cloudflare.com/astro-issue-triage",
-   "published": "2026-08-04",
-   "published_ts": 1785848400.0,
-   "summary": "By replacing manual issue verification with isolated AI subagents running in GitHub Actions, the Astro maintainers reduced open issue count by 85%. This post explores the architecture behind automated bug reproduction, patch verification, and preview releases.",
-   "tags": [
-    "Agents",
-    "Agents Week",
-    "AI",
-    "Cloudflare Workers",
-    "Developer Platform",
-    "Developers",
-    "GitHub",
-    "Open Source"
-   ],
-   "tech_stack": [
-    "Astro",
-    "LLM",
-    "GitHub Actions",
-    "Security",
-    "Monorepo"
-   ],
-   "categories": [
-    "프론트엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "690c055d243e46f7"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -2243,184 +2252,6 @@
    "content_id": "b441a212ba8671be"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Your agent needs a computer, not a container — introducing @cloudflare/computer",
-   "url": "https://blog.cloudflare.com/cloudflare-computer",
-   "published": "2026-08-03",
-   "published_ts": 1785762924.0,
-   "summary": "Agents need more than just a container to scale. We're introducing @cloudflare/computer, an agent runtime that dynamically orchestrates between fast, efficient isolates and full Linux containers to give every agent a computer of its own.",
-   "tags": [
-    "Agents",
-    "Agents Week",
-    "AI",
-    "Cloudflare Workers",
-    "Containers"
-   ],
-   "tech_stack": [
-    "Bash",
-    "JavaScript",
-    "AI Agent",
-    "Prompt Engineering",
-    "SQLite",
-    "Cloudflare",
-    "File System",
-    "Linux",
-    "Consensus",
-    "Git"
-   ],
-   "categories": [
-    "언어",
-    "LLM/생성형",
-    "데이터베이스",
-    "인프라/클라우드",
-    "시스템/OS",
-    "알고리즘/이론",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "6522dfbb2ee3fad4"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Cloudflare Workers and Containers now support inbound TCP connections and gRPC",
-   "url": "https://blog.cloudflare.com/grpc-workers",
-   "published": "2026-08-03",
-   "published_ts": 1785762000.0,
-   "summary": "Cloudflare Workers now support inbound TCP connections via Spectrum, allowing direct socket forwarding to Durable Objects and Containers. Developers can run full-duplex gRPC applications or leverage automatic gRPC-to-gRPC-web translation directly within Workers.",
-   "tags": [
-    "Agents Week",
-    "Cloudflare Workers",
-    "Containers",
-    "Developers",
-    "gRPC",
-    "Product News"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Kotlin",
-    "gRPC",
-    "Protobuf",
-    "WebSocket",
-    "Cloudflare",
-    "Security",
-    "WAF"
-   ],
-   "categories": [
-    "언어",
-    "백엔드",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "5c8c3f9f413d7670"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Introducing the Billable Usage API: programmatic cost visibility for Cloudflare",
-   "url": "https://blog.cloudflare.com/billable-usage-api",
-   "published": "2026-08-03",
-   "published_ts": 1785762000.0,
-   "summary": "Cloudflare has launched a new Billable Usage API for accounts, giving developers and FinOps teams single-endpoint programmatic visibility into cost and usage across all self-serve products. Built around the FOCUS specification, track spend seamlessly alongside the rest of your cloud stack.",
-   "tags": [
-    "Agents Week",
-    "API",
-    "Billing",
-    "Developers",
-    "Engineering",
-    "Product News"
-   ],
-   "tech_stack": [
-    "Anomaly Detection",
-    "Claude",
-    "GPT",
-    "Model Context Protocol",
-    "Oracle",
-    "AWS",
-    "Azure",
-    "Cloudflare",
-    "GCP"
-   ],
-   "categories": [
-    "AI/ML",
-    "LLM/생성형",
-    "데이터베이스",
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "fb1e9b75e4abf179"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Smaller, faster, safer: running Kimi and GLM at scale",
-   "url": "https://blog.cloudflare.com/smaller-faster-safer-models",
-   "published": "2026-08-03",
-   "published_ts": 1785762000.0,
-   "summary": "Serving frontier models like Kimi and GLM means fighting for GPU memory. Here's how we quantize KV caches, compress model weights, and add integrity checks to serve them faster, cheaper, and safely.",
-   "tags": [
-    "Agents Week",
-    "AI",
-    "Developers",
-    "Inference",
-    "Quantization",
-    "Workers AI"
-   ],
-   "tech_stack": [
-    "Cloudflare",
-    "Kernel",
-    "Concurrency",
-    "Benchmark"
-   ],
-   "categories": [
-    "인프라/클라우드",
-    "시스템/OS",
-    "알고리즘/이론",
-    "연구/논문"
-   ],
-   "lang": "en",
-   "content_id": "f98a3c9edeb8198b"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Workers RPC now works across Python and JavaScript",
-   "url": "https://blog.cloudflare.com/python-workers-rpc",
-   "published": "2026-08-03",
-   "published_ts": 1785762000.0,
-   "summary": "One coding agent can write a Python Worker and another can write a JavaScript Worker. At runtime, those Workers can exchange references to live objects and call their methods without defining APIs, schemas, or serialization code",
-   "tags": [
-    "Agents Week",
-    "Cloudflare Workers",
-    "Developers",
-    "Python Workers",
-    "RPC"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Python",
-    "TypeScript",
-    "WebAssembly",
-    "Protobuf",
-    "Cloudflare"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "백엔드",
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "02e8605bc0d6301c"
-  },
-  {
    "key": "flipkart",
    "company": "Flipkart",
    "country": "IN",
@@ -2509,31 +2340,6 @@
    ],
    "lang": "ko",
    "content_id": "a3267be913e467fc"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Welcome to Agents Week",
-   "url": "https://blog.cloudflare.com/agents-week-welcome",
-   "published": "2026-08-02",
-   "published_ts": 1785686400.0,
-   "summary": "Agents Week explores how cloud infrastructure must evolve to serve autonomous agents rather than human browsers. Join us as we unpack the storage, execution, and security primitives needed for an agent-native web.",
-   "tags": [
-    "Agents",
-    "Agents Week",
-    "AI",
-    "Cloudflare Workers",
-    "Developer Platform"
-   ],
-   "tech_stack": [
-    "AI Agent"
-   ],
-   "categories": [
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "57b294c1e4405cb2"
   },
   {
    "key": "grab",
@@ -2680,41 +2486,6 @@
    "categories": [],
    "lang": "en",
    "content_id": "fd113fb85636bc89"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "An API for MoQ: provision your own isolated relays",
-   "url": "https://blog.cloudflare.com/moq-relays",
-   "published": "2026-07-31",
-   "published_ts": 1785502800.0,
-   "summary": "Last year we made every Cloudflare server a Media over QUIC (MoQ) relay. Now the new provisioning API lets you create your own isolated relay and control who can publish and who can only watch.",
-   "tags": [
-    "API",
-    "Developers",
-    "IETF Standards",
-    "Live Streaming",
-    "Product News",
-    "QUIC",
-    "Video",
-    "WebRTC"
-   ],
-   "tech_stack": [
-    "Go",
-    "WebRTC",
-    "Cloudflare",
-    "Authentication",
-    "TLS"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "45b0586e1de4dbf1"
   },
   {
    "key": "stackoverflow",
@@ -2874,55 +2645,6 @@
    "categories": [],
    "lang": "en",
    "content_id": "5982038873189074"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Dogfooding at scale: migrating cdnjs to Cloudflare’s Developer Platform",
-   "url": "https://blog.cloudflare.com/cdnjs-dev-platform-migration",
-   "published": "2026-07-30",
-   "published_ts": 1785416400.0,
-   "summary": "We moved cdnjs, serving 9 billion requests a day, entirely onto Cloudflare's Developer Platform. That means we’re running one of the Internet's busiest open-source CDNs on our own building blocks, and we pushed Workflows and Workers limits higher for everyone.",
-   "tags": [
-    "Cache",
-    "CDNJS",
-    "Cloudflare Queues",
-    "Cloudflare Workers",
-    "Containers",
-    "Developer Platform",
-    "Developers",
-    "Durable Objects"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Rust",
-    "CSS",
-    "HTML",
-    "jQuery",
-    "Vite",
-    "Bun",
-    "Claude",
-    "GPT",
-    "Cloudflare",
-    "GCP",
-    "Serverless",
-    "Observability",
-    "Bare-metal",
-    "Git"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "백엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "관측성",
-    "펌웨어/임베디드",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "ac6d7c759f98feac"
   },
   {
    "key": "toss",
@@ -3132,44 +2854,6 @@
    "content_id": "99f40414f85b5104"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Post-quantum authentication to origins is now supported",
-   "url": "https://blog.cloudflare.com/post-quantum-authentication-to-origins",
-   "published": "2026-07-29",
-   "published_ts": 1785330000.0,
-   "summary": "Cloudflare now supports post-quantum (PQ) authentication when connecting to customer origin servers via Authenticated Origin Pulls and Custom Origin Trust Store. This is the first step towards providing PQ authentication for all Cloudflare products.",
-   "tags": [
-    "Cryptography",
-    "Cybersecurity",
-    "Post-Quantum",
-    "Research",
-    "SSL",
-    "TLS"
-   ],
-   "tech_stack": [
-    "Go",
-    "Machine Learning",
-    "Cloudflare",
-    "Nginx",
-    "Algorithm",
-    "Authentication",
-    "Cryptography",
-    "Security",
-    "TLS"
-   ],
-   "categories": [
-    "언어",
-    "AI/ML",
-    "인프라/클라우드",
-    "알고리즘/이론",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "dc650289861112ed"
-  },
-  {
    "key": "discord",
    "company": "Discord",
    "country": "US",
@@ -3280,33 +2964,6 @@
    "content_id": "5eb1dd64791ac65a"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Natural disasters and government interference: examining Q2 2026’s major Internet disruption events",
-   "url": "https://blog.cloudflare.com/q2-2026-internet-disruption-summary",
-   "published": "2026-07-28",
-   "published_ts": 1785243600.0,
-   "summary": "Cloudflare Radar tracked Internet disruptions driven by natural disasters, government-mandated shutdowns, and DNSSEC key rollovers over the last quarter. This post analyzes traffic telemetry to explain how these events impacted global connectivity.",
-   "tags": [
-    "AWS",
-    "Internet Shutdown",
-    "Internet Traffic",
-    "Internet Trends",
-    "Outage",
-    "Radar"
-   ],
-   "tech_stack": [
-    "AWS",
-    "Cloudflare"
-   ],
-   "categories": [
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "4fc13a075def04de"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -3331,48 +2988,6 @@
    ],
    "lang": "en",
    "content_id": "af035fc95a1ef23c"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第八回: FrontEnd 編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64977",
-   "published": "2026-07-28",
-   "published_ts": 1785206370.0,
-   "summary": "※ この記事は、筆者が AI エージェント(Claude Code)と対話しながら執筆しました。読了 ...",
-   "tags": [
-    "エンジニア"
-   ],
-   "tech_stack": [
-    "Claude"
-   ],
-   "categories": [
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "e05d2ee6d4fc46a3"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "クラウドLLMに頼りきらない開発体験をつくる （AI Shift Local LLM Meetup #2 レポート）",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/65011",
-   "published": "2026-07-28",
-   "published_ts": 1785205544.0,
-   "summary": "第2回となる今回は、Local LLM を開発の相棒として使ってみる、1時間集中の個人参加型ハッカソ ...",
-   "tags": [
-    "エンジニア"
-   ],
-   "tech_stack": [
-    "LLM"
-   ],
-   "categories": [
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "1ce056207044b2ff"
   },
   {
    "key": "woowahan",
@@ -3425,34 +3040,6 @@
    ],
    "lang": "en",
    "content_id": "ae736d3c24f1cd37"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "The harness is all you need (mostly)",
-   "url": "https://github.blog/company/the-harness-is-all-you-need-mostly",
-   "published": "2026-07-27",
-   "published_ts": 1785175200.0,
-   "summary": "A practical GitHub Copilot workflow for prototyping, planning, implementing, and reviewing software without chasing every new AI tool.\n\nThe post The harness is all you need (mostly) appeared first on The GitHub Blog.",
-   "tags": [
-    "Company"
-   ],
-   "tech_stack": [
-    "CSS",
-    "HTML",
-    "Jetpack Compose",
-    "Claude",
-    "GPT",
-    "Model Context Protocol"
-   ],
-   "categories": [
-    "프론트엔드",
-    "모바일",
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "4da9dcd18c3042d9"
   },
   {
    "key": "github",
@@ -3621,126 +3208,6 @@
    "content_id": "e83f13088d4577f2"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "We’re open-sourcing our privacy proxy CLI",
-   "url": "https://blog.cloudflare.com/open-sourcing-our-privacy-proxy-cli",
-   "published": "2026-07-27",
-   "published_ts": 1785157200.0,
-   "summary": "pvcli is a curl-like tool designed to simplify the testing of complex privacy protocols like OHTTP.",
-   "tags": [
-    "Better Internet",
-    "HTTP3",
-    "Open Source",
-    "Privacy",
-    "QUIC",
-    "Rust"
-   ],
-   "tech_stack": [
-    "Go",
-    "Rust",
-    "Cloudflare",
-    "Cryptography"
-   ],
-   "categories": [
-    "언어",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "7c2ba6f8ee876851"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第七回: KaaS 編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64884",
-   "published": "2026-07-26",
-   "published_ts": 1785107422.0,
-   "summary": "はじめに はじめまして、CyberAgent group Infrastructure Unit（C ...",
-   "tags": [
-    "エンジニア",
-    "CIU",
-    "kubernetes",
-    "インフラ",
-    "プライベートクラウド"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "f5eac69f80875aac"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第六回: LB 編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64711",
-   "published": "2026-07-25",
-   "published_ts": 1785020406.0,
-   "summary": "はじめに はじめまして。CyberAgent group Infrastructure Unit（C ...",
-   "tags": [
-    "エンジニア",
-    "未分類",
-    "CIU",
-    "インフラ",
-    "プライベートクラウド"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "e5dd64fac0456166"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第五回: ComputeController 編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64873",
-   "published": "2026-07-25",
-   "published_ts": 1784941227.0,
-   "summary": "はじめに CyberAgent group Infrastructure Unit（CIU）の川原で ...",
-   "tags": [
-    "エンジニア",
-    "CIU",
-    "インフラ",
-    "プライベートクラウド"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "fd793e5dfd999a89"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "BGP ORIGIN attribute manipulation and its impact on the Internet",
-   "url": "https://blog.cloudflare.com/bgp-origin-attribute",
-   "published": "2026-07-24",
-   "published_ts": 1784913928.0,
-   "summary": "By doing in-depth testing, we found nearly 70% of BGP paths experience ORIGIN attribute rewrites by transit providers seeking traffic advantages. We examine the global impact of this practice and argue for deprecating ORIGIN in route selection.",
-   "tags": [
-    "Better Internet",
-    "BGP",
-    "Network Services",
-    "Routing",
-    "Routing Security"
-   ],
-   "tech_stack": [
-    "Express",
-    "Algorithm"
-   ],
-   "categories": [
-    "백엔드",
-    "알고리즘/이론"
-   ],
-   "lang": "en",
-   "content_id": "438a7ff3adc2a75c"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -3880,30 +3347,6 @@
    "content_id": "807fe91d10d8e91c"
   },
   {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第四回: IaaS 編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64795",
-   "published": "2026-07-23",
-   "published_ts": 1784847654.0,
-   "summary": "はじめに CIU（CyberAgent group Infrastructure Unit）で Ia ...",
-   "tags": [
-    "エンジニア",
-    "Ansible",
-    "CIU",
-    "Cycloud",
-    "IaaS",
-    "kubernetes",
-    "Open vSwitch",
-    "OpenStack"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "2b2ee0254aac5564"
-  },
-  {
    "key": "zalando",
    "company": "Zalando",
    "country": "DE",
@@ -3952,67 +3395,6 @@
    "content_id": "c64d6dc9708898a9"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Introducing Cache Response Rules",
-   "url": "https://blog.cloudflare.com/introducing-cache-response-rules",
-   "published": "2026-07-23",
-   "published_ts": 1784832038.0,
-   "summary": "Perhaps you’ve seen something that should sail out of cache get dragged back to the origin by a stray Set-Cookie or Cache-Control, headers that can be difficult to change on the origin itself. Cache Response Rules is the fix, applied at the right time.",
-   "tags": [
-    "Application Services",
-    "Cache",
-    "Cache Rules",
-    "CDN",
-    "Optimization",
-    "Product News"
-   ],
-   "tech_stack": [
-    "Go",
-    "JavaScript",
-    "Cloudflare",
-    "Terraform",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "f0d23dd320ac6d0c"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "The case for a cooldown: Why Dependabot now waits before issuing version updates",
-   "url": "https://github.blog/security/supply-chain-security/the-case-for-a-cooldown-why-dependabot-now-waits-before-issuing-version-updates",
-   "published": "2026-07-23",
-   "published_ts": 1784822400.0,
-   "summary": "A new default three-day cooldown delays version update pull requests so maintainers and security researchers can address findings in a release before it gets into your code.\n\nThe post The case for a cooldown: Why Dependabot now waits before issuing version updates appeared first on The GitHub Blog.",
-   "tags": [
-    "Security",
-    "Supply chain security",
-    "Dependabot",
-    "supply chain security"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Security",
-    "Solana",
-    "Web3"
-   ],
-   "categories": [
-    "언어",
-    "보안",
-    "블록체인"
-   ],
-   "lang": "en",
-   "content_id": "d3a2949ef689fa84"
-  },
-  {
    "key": "daangn",
    "company": "당근",
    "country": "KR",
@@ -4036,61 +3418,6 @@
    ],
    "lang": "ko",
    "content_id": "7aa0fe6f10d416b9"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第三回: NW編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64794",
-   "published": "2026-07-22",
-   "published_ts": 1784761230.0,
-   "summary": "はじめに はじめまして。CyberAgent group Infrastructure Unit（C ...",
-   "tags": [
-    "エンジニア",
-    "CIU",
-    "JANOG",
-    "インフラ",
-    "ネットワーク",
-    "プライベートクラウド"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "452031216d15d4d0"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Copilot vs. raw API access: What are you actually paying for?",
-   "url": "https://github.blog/ai-and-ml/github-copilot/copilot-vs-raw-api-access-what-are-you-actually-paying-for",
-   "published": "2026-07-22",
-   "published_ts": 1784746800.0,
-   "summary": "Copilot now bills usage at listed API rates. Compare direct model access with the coding workflow, policy, and harness work around it.\n\nThe post Copilot vs. raw API access: What are you actually paying for? appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "GitHub Copilot",
-    "AI Credits",
-    "API"
-   ],
-   "tech_stack": [
-    "AI Agent",
-    "LLM",
-    "Model Context Protocol",
-    "AWS",
-    "Azure",
-    "Security",
-    "Benchmark"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안",
-    "연구/논문"
-   ],
-   "lang": "en",
-   "content_id": "d8ab4e37a1c11a8a"
   },
   {
    "key": "pinterest",
@@ -4122,53 +3449,6 @@
    ],
    "lang": "en",
    "content_id": "35af410203e9b7aa"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Next chapter: Restructuring GitHub’s bug bounty program",
-   "url": "https://github.blog/security/next-chapter-restructuring-githubs-bug-bounty-program",
-   "published": "2026-07-22",
-   "published_ts": 1784736000.0,
-   "summary": "GitHub is making some significant changes to its bug bounty program, shifting its focus to give researchers a better experience working with the GitHub team.\n\nThe post Next chapter: Restructuring GitHub’s bug bounty program appeared first on The GitHub Blog.",
-   "tags": [
-    "Security",
-    "bug bounty",
-    "security research"
-   ],
-   "tech_stack": [
-    "Security"
-   ],
-   "categories": [
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "637ea0aeab48c91a"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第二回: HW 編",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64718",
-   "published": "2026-07-21",
-   "published_ts": 1784674815.0,
-   "summary": "はじめに はじめまして、CyberAgent group Infrastructure Unit（C ...",
-   "tags": [
-    "エンジニア",
-    "100GbE",
-    "All flash",
-    "CIU",
-    "CPU",
-    "NFS",
-    "Storage",
-    "インフラ"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "e5caf920ad083ea2"
   },
   {
    "key": "naver-d2",
@@ -4224,58 +3504,6 @@
    ],
    "lang": "en",
    "content_id": "5dd17eb9c8dc135f"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "How to build interactive experiences with canvases",
-   "url": "https://github.blog/ai-and-ml/github-copilot/how-to-build-interactive-experiences-with-canvases",
-   "published": "2026-07-21",
-   "published_ts": 1784649600.0,
-   "summary": "Canvases turn AI into interactive workspaces where you can visualize information, explore workflows, and take action across complex tasks.\n\nThe post How to build interactive experiences with canvases appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "GitHub Copilot",
-    "canvases",
-    "GitHub Copilot app"
-   ],
-   "tech_stack": [
-    "Model Context Protocol",
-    "Git"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "1651413fdb6b9bc9"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "How the 2026 World Cup affected Internet traffic",
-   "url": "https://blog.cloudflare.com/2026-world-cup-internet-traffic",
-   "published": "2026-07-21",
-   "published_ts": 1784638780.0,
-   "summary": "We analyzed global HTTP traffic to explore how kickoff times, streaming habits, and hydration breaks reshaped online activity worldwide. From late-night traffic surges to halftime browsing spikes, here is how the world connected during the global tournament.",
-   "tags": [
-    "Internet Traffic",
-    "Radar"
-   ],
-   "tech_stack": [
-    "HTML",
-    "Cloudflare",
-    "Security"
-   ],
-   "categories": [
-    "프론트엔드",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "229ebf6f1daba406"
   },
   {
    "key": "woowahan",
@@ -4349,37 +3577,6 @@
    "content_id": "c784e965702eada0"
   },
   {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "1つのLLMに聞き続けるのをやめて、Gemini・Claude・GPTを「討論・推敲・メタ認知」させるAgent Skillsを開発してみた",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64751",
-   "published": "2026-07-21",
-   "published_ts": 1784614061.0,
-   "summary": "はじめに こんにちは。サイバーエージェント AIオペレーション室の李俊浩（@buddypia）です。 ...",
-   "tags": [
-    "エンジニア",
-    "AI駆動開発",
-    "Antigravity",
-    "Claude Code",
-    "Codex",
-    "Gemini",
-    "MultiAgent",
-    "生成AI"
-   ],
-   "tech_stack": [
-    "Claude",
-    "Gemini",
-    "GPT",
-    "LLM"
-   ],
-   "categories": [
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "56ce436c75b6d55e"
-  },
-  {
    "key": "stripe",
    "company": "Stripe",
    "country": "US",
@@ -4393,79 +3590,6 @@
    "categories": [],
    "lang": "en",
    "content_id": "090f0aed439d22a0"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "要件策定から本番環境への展開までの完全自動化を目指して96プロダクトのAI活用力を強化した話｜プロダクトのキーパーソン向け施策『AIナレッジ共有会』",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64511",
-   "published": "2026-07-20",
-   "published_ts": 1784589024.0,
-   "summary": "こんにちは。株式会社サイバーエージェントの経営推進本部に所属している片岡です。 2005年に中途入社 ...",
-   "tags": [
-    "エンジニア",
-    "AI",
-    "生成AI",
-    "育成"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "2fdd1c363a94f355"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Cycloud 新基盤の全貌 第一回: 新リージョン基盤の全体像",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64643",
-   "published": "2026-07-20",
-   "published_ts": 1784588451.0,
-   "summary": "はじめに はじめまして。CyberAgent group Infrastructure Unit（C ...",
-   "tags": [
-    "エンジニア",
-    "CIU",
-    "インフラ",
-    "プライベートクラウド"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "1a4d86014bee9687"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Cloudflare Internal DNS is now generally available",
-   "url": "https://blog.cloudflare.com/internal-dns",
-   "published": "2026-07-20",
-   "published_ts": 1784581171.0,
-   "summary": "Cloudflare Internal DNS brings authoritative and recursive DNS for private networks to the same global network and control plane that runs Cloudflare's Zero Trust, networking, and public DNS.",
-   "tags": [
-    "Cloudflare Gateway",
-    "DNS",
-    "General Availability",
-    "Internal DNS",
-    "Networking",
-    "Product News",
-    "SASE",
-    "Zero Trust"
-   ],
-   "tech_stack": [
-    "Cloudflare",
-    "Terraform",
-    "Security",
-    "TLS",
-    "Zero Trust"
-   ],
-   "categories": [
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "ee07d4bde1d2c985"
   },
   {
    "key": "aws",
@@ -4529,31 +3653,6 @@
    "categories": [],
    "lang": "en",
    "content_id": "f33ed4bb3147ef6f"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "$100 million for open source: A milestone built by the community",
-   "url": "https://github.blog/open-source/maintainers/100-million-for-open-source-a-milestone-built-by-the-community",
-   "published": "2026-07-20",
-   "published_ts": 1784563200.0,
-   "summary": "Celebrating $100 million contributed by the community to the people who build and sustain open source every day.\n\nThe post $100 million for open source: A milestone built by the community appeared first on The GitHub Blog.",
-   "tags": [
-    "Maintainers",
-    "Open Source",
-    "GitHub Sponsors",
-    "maintainers",
-    "open source"
-   ],
-   "tech_stack": [
-    "JavaScript"
-   ],
-   "categories": [
-    "언어"
-   ],
-   "lang": "en",
-   "content_id": "b14ab2e7e8e4e544"
   },
   {
    "key": "dropbox",
@@ -4635,61 +3734,6 @@
    "content_id": "950d42694dcf33e8"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Cloudflare WAF protects WordPress applications from two high-severity vulnerabilities",
-   "url": "https://blog.cloudflare.com/wordpress-vulnerabilities",
-   "published": "2026-07-17",
-   "published_ts": 1784323843.0,
-   "summary": "Cloudflare has deployed two WAF rules in response to high-severity vulnerabilities disclosed to us by the WordPress security team. The new rules protect all Cloudflare customers using affected WordPress versions, but customers should still update immediately to a patched release",
-   "tags": [
-    "CVE",
-    "Vulnerabilities",
-    "WAF",
-    "WordPress"
-   ],
-   "tech_stack": [
-    "SQL",
-    "REST API",
-    "Cloudflare",
-    "CVE",
-    "Security",
-    "SQL Injection",
-    "WAF"
-   ],
-   "categories": [
-    "언어",
-    "백엔드",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "94e757d0087eed24"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "The cost of saying yes has changed",
-   "url": "https://github.blog/engineering/the-cost-of-saying-yes-has-changed",
-   "published": "2026-07-17",
-   "published_ts": 1784306807.0,
-   "summary": "The cost of writing code dropped; the cost of owning it didn't. A framework for deciding which changes are actually cheap in the AI era.\n\nThe post The cost of saying yes has changed appeared first on The GitHub Blog.",
-   "tags": [
-    "Career growth",
-    "Developer skills",
-    "Engineering",
-    "AI",
-    "code review",
-    "engineering"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "d873390f3c1aa4e3"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -4765,42 +3809,6 @@
    ],
    "lang": "ko",
    "content_id": "aeadcbc5327764ce"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "GitHub for Beginners: Your roadmap to mastering the GitHub essentials",
-   "url": "https://github.blog/developer-skills/github/github-for-beginners-your-roadmap-to-mastering-the-github-essentials",
-   "published": "2026-07-15",
-   "published_ts": 1784136571.0,
-   "summary": "New to GitHub? This beginner's guide explains version control, repositories, and pull requests—plus everything else you need to start working confidently on GitHub.\n\nThe post GitHub for Beginners: Your roadmap to mastering the GitHub essentials appeared first on The GitHub Blog.",
-   "tags": [
-    "Developer skills",
-    "GitHub",
-    "GitHub Actions",
-    "GitHub for beginners",
-    "GitHub Issues",
-    "GitHub Pages",
-    "open source",
-    "pull requests"
-   ],
-   "tech_stack": [
-    "HTML",
-    "CI/CD",
-    "GitHub Actions",
-    "Authentication",
-    "Security",
-    "Git"
-   ],
-   "categories": [
-    "프론트엔드",
-    "인프라/클라우드",
-    "보안",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "1b8ef8738a582d69"
   },
   {
    "key": "meta",
@@ -4963,32 +3971,6 @@
    ],
    "lang": "en",
    "content_id": "9c2bb755a3117c1d"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "A broken DNSSEC rollover took down .al. Now 1.1.1.1 tells you when validation is bypassed",
-   "url": "https://blog.cloudflare.com/dnssec-nta-ede-33",
-   "published": "2026-07-14",
-   "published_ts": 1784034000.0,
-   "summary": "When a failed DNSSEC key rollover took down the .al TLD, we deployed a Negative Trust Anchor to restore resolution. This time, though, clients didn't have to take our word for it: 1.1.1.1 returned EDE 33, a new DNS error code that signals directly in the response that DNSSEC validation was bypassed.",
-   "tags": [
-    "1.1.1.1",
-    "DNS",
-    "DNSSEC",
-    "Incident Report",
-    "Reliability",
-    "Standards"
-   ],
-   "tech_stack": [
-    "Cloudflare"
-   ],
-   "categories": [
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "d581d2da960fb300"
   },
   {
    "key": "stackoverflow",
@@ -5238,42 +4220,6 @@
    "content_id": "2a5fda39a41dad2c"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Introducing Precursor: detecting agentic behavior with continuous client-side signals",
-   "url": "https://blog.cloudflare.com/introducing-precursor",
-   "published": "2026-07-13",
-   "published_ts": 1783947600.0,
-   "summary": "Precursor, our new continuous behavioral validation engine for bot management, offers visibility into how humans and bots actually interact across the full user journey. By turning session-level behavior into bot detection signals, it identifies advanced automation with higher precision — while reducing friction for legitimate users.",
-   "tags": [
-    "AI",
-    "Bot Management",
-    "Cybersecurity",
-    "JavaScript",
-    "Precursor",
-    "Product News",
-    "Turnstile"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "HTML",
-    "AI Agent",
-    "Embedding",
-    "Cloudflare",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "6e82b3f37b7a84d6"
-  },
-  {
    "key": "naver-d2",
    "company": "네이버 D2",
    "country": "KR",
@@ -5376,70 +4322,6 @@
    "content_id": "c085b47b98b9bb81"
   },
   {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Better tools made Copilot code review worse. Here’s how we actually improved it.",
-   "url": "https://github.blog/ai-and-ml/github-copilot/better-tools-made-copilot-code-review-worse-heres-how-we-actually-improved-it",
-   "published": "2026-07-10",
-   "published_ts": 1783699067.0,
-   "summary": "How migrating Copilot code review to shared Unix-style code exploration tools reduced review cost by reshaping agent workflows around pull request evidence.\n\nThe post Better tools made Copilot code review worse. Here’s how we actually improved it. appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "Architecture & optimization",
-    "Engineering",
-    "GitHub Copilot",
-    "LLMs",
-    "agentic workflows",
-    "developer tools",
-    "GitHub Copilot code review"
-   ],
-   "tech_stack": [
-    "AI Agent",
-    "LLM",
-    "Prompt Engineering",
-    "Unix"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "시스템/OS"
-   ],
-   "lang": "en",
-   "content_id": "6e4b204fac83997a"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Improving Smart Tiered Cache for Public Cloud Regions",
-   "url": "https://blog.cloudflare.com/smart-tiered-cache-for-public-clouds",
-   "published": "2026-07-10",
-   "published_ts": 1783684800.0,
-   "summary": "Smart Tiered Cache allows for precise upper tier selection for origins hosted on AWS, GCP, Azure, and Oracle Cloud with customer-provided cloud region hints.",
-   "tags": [
-    "Cache",
-    "CDN",
-    "Performance",
-    "Product News",
-    "Smart Shield",
-    "Tiered Cache"
-   ],
-   "tech_stack": [
-    "Oracle",
-    "AWS",
-    "Azure",
-    "Cloudflare",
-    "GCP",
-    "Terraform"
-   ],
-   "categories": [
-    "데이터베이스",
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "e9cb677c34a42bfa"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -5482,43 +4364,6 @@
    ],
    "lang": "ko",
    "content_id": "a8962f1a7d7606e7"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "動画広告の配信基盤におけるImpressionログの処理遅延の原因調査と改善",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64547",
-   "published": "2026-07-10",
-   "published_ts": 1783644557.0,
-   "summary": "はじめに こんにちは！同志社大学大学院 修士 1年の近藤 大輔です。 2026年6月3日 〜 6月3 ...",
-   "tags": [
-    "エンジニア",
-    "AJA",
-    "インターンシップ"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "5d73cc02392243f5"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "ABEMAの課金導線を壊さずに運用負荷を改善する",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64534",
-   "published": "2026-07-10",
-   "published_ts": 1783644465.0,
-   "summary": "はじめに 2026年6月に約3週間、CA Tech Jobに参加しました、早稲田大学基幹理工学部情報 ...",
-   "tags": [
-    "エンジニア",
-    "インターンシップ"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "b6d692df0835b71c"
   },
   {
    "key": "grab",
@@ -5597,179 +4442,6 @@
    "content_id": "5071b22b4f579c2c"
   },
   {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "How GitHub gave every repository a durable owner",
-   "url": "https://github.blog/security/application-security/how-github-gave-every-repository-a-durable-owner",
-   "published": "2026-07-09",
-   "published_ts": 1783614577.0,
-   "summary": "GitHub had over 14,000 repositories. Fewer than half had clear ownership. Here's how we gave every active repository a validated owner in under 45 days, archived the rest, and made ownership the foundation for everything that followed.\n\nThe post How GitHub gave every repository a durable owner appeared first on The GitHub Blog.",
-   "tags": [
-    "Application security",
-    "Governance & compliance",
-    "Security",
-    "governance",
-    "repository management"
-   ],
-   "tech_stack": [
-    "GitHub Actions",
-    "Kubernetes",
-    "Datadog",
-    "Security"
-   ],
-   "categories": [
-    "인프라/클라우드",
-    "관측성",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "aec348218352950e"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Why we cannot wait for better post-quantum signature algorithms",
-   "url": "https://blog.cloudflare.com/ml-dsa-will-have-to-do",
-   "published": "2026-07-09",
-   "published_ts": 1783605600.0,
-   "summary": "NIST is advancing nine new post-quantum signature algorithms as potential candidates for future standardization. We take a closer look at all of them, and argue that while they are in the works and show great potential, we should use ML-DSA for now — the best currently available.",
-   "tags": [
-    "Cryptography",
-    "Post-Quantum",
-    "Research",
-    "Security"
-   ],
-   "tech_stack": [
-    "Machine Learning",
-    "Cloudflare",
-    "Algorithm",
-    "Authentication",
-    "Cryptography",
-    "Security",
-    "TLS"
-   ],
-   "categories": [
-    "AI/ML",
-    "인프라/클라우드",
-    "알고리즘/이론",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "fe867475c1adacab"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "CA DATA NIGHT #10 〜データ基盤の「正解」は、Databricksにあります〜 開催レポート",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64459",
-   "published": "2026-07-09",
-   "published_ts": 1783557034.0,
-   "summary": "こんにちは。メディア統括本部 Data Science Center（DSC）の山田(@___rya ...",
-   "tags": [
-    "エンジニア"
-   ],
-   "tech_stack": [
-    "Databricks"
-   ],
-   "categories": [
-    "데이터베이스"
-   ],
-   "lang": "en",
-   "content_id": "81220d86c2e0ff85"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "ABEMAの広告配信周りの高速化にチャレンジしてみた",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64498",
-   "published": "2026-07-09",
-   "published_ts": 1783555477.0,
-   "summary": "はじめに はじめまして！慶應義塾大学環境情報学部3年の上野 大和です！2026年の4月の1ヶ月間、C ...",
-   "tags": [
-    "エンジニア",
-    "ABEMA",
-    "インターンシップ"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "6fa2ff0123d9f446"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Automating cross-repo documentation with GitHub Agentic Workflows",
-   "url": "https://github.blog/ai-and-ml/github-copilot/automating-cross-repo-documentation-with-github-agentic-workflows",
-   "published": "2026-07-08",
-   "published_ts": 1783545116.0,
-   "summary": "Explore how the Aspire team turns merged product changes into SME-reviewed docs pull requests, closing the gap between release and documentation.\n\nThe post Automating cross-repo documentation with GitHub Agentic Workflows appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "Architecture & optimization",
-    "Engineering",
-    "Generative AI",
-    "GitHub Copilot",
-    "LLMs",
-    "Machine learning",
-    "agentic workflows"
-   ],
-   "tech_stack": [
-    "Bash",
-    "Astro",
-    "Rails",
-    "AI Agent",
-    "GitHub Actions",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "백엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "450af95c2f1221d9"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "GitHub availability report: June 2026",
-   "url": "https://github.blog/news-insights/company-news/github-availability-report-june-2026",
-   "published": "2026-07-08",
-   "published_ts": 1783539351.0,
-   "summary": "In June, we experienced six incidents that resulted in degraded performance across GitHub services.\n\nThe post GitHub availability report: June 2026 appeared first on The GitHub Blog.",
-   "tags": [
-    "Company news",
-    "News & insights",
-    "GitHub Availability Report"
-   ],
-   "tech_stack": [
-    "GraphQL",
-    "Redis",
-    "Azure",
-    "GitHub Actions",
-    "Authentication",
-    "Git"
-   ],
-   "categories": [
-    "백엔드",
-    "데이터베이스",
-    "인프라/클라우드",
-    "보안",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "8c345c5dcca477ef"
-  },
-  {
    "key": "naver-d2",
    "company": "네이버 D2",
    "country": "KR",
@@ -5808,63 +4480,6 @@
    "content_id": "ba209adf7f06caff"
   },
   {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "How GitHub Copilot enables zero DNS configuration for GitHub Pages",
-   "url": "https://github.blog/ai-and-ml/github-copilot/how-github-copilot-enables-zero-dns-configuration-for-github-pages",
-   "published": "2026-07-08",
-   "published_ts": 1783526400.0,
-   "summary": "Go from an empty repository to a live custom domain with HTTPS in about 14 minutes, without manually editing a single DNS record.\n\nThe post How GitHub Copilot enables zero DNS configuration for GitHub Pages appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "GitHub Copilot",
-    "GitHub Copilot CLI",
-    "GitHub Pages"
-   ],
-   "tech_stack": [
-    "HTML"
-   ],
-   "categories": [
-    "프론트엔드"
-   ],
-   "lang": "en",
-   "content_id": "c2a416d6e7faf313"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Introducing Meerkat: an experiment in global consensus",
-   "url": "https://blog.cloudflare.com/meerkat-introduction",
-   "published": "2026-07-08",
-   "published_ts": 1783512000.0,
-   "summary": "Cloudflare Research is building a global consensus service called Meerkat that uses a new consensus algorithm called QuePaxa. We plan to use Meerkat to build a strongly consistent, fault-tolerant key-value store, and other applications.",
-   "tags": [
-    "Database",
-    "Distributed Systems",
-    "Meerkat",
-    "Network",
-    "Research"
-   ],
-   "tech_stack": [
-    "Rust",
-    "Cloudflare",
-    "Algorithm",
-    "Consensus",
-    "Distributed System",
-    "Paxos",
-    "Raft"
-   ],
-   "categories": [
-    "언어",
-    "인프라/클라우드",
-    "알고리즘/이론"
-   ],
-   "lang": "en",
-   "content_id": "995cba7d0f0e8392"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -5884,67 +4499,6 @@
    "categories": [],
    "lang": "en",
    "content_id": "589f56b012e0d624"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Q1 2026 Innovation Graph update: Open source collaboration is accelerating worldwide",
-   "url": "https://github.blog/news-insights/policy-news-and-insights/q1-2026-innovation-graph-update-open-source-collaboration-is-accelerating-worldwide",
-   "published": "2026-07-07",
-   "published_ts": 1783440000.0,
-   "summary": "New Innovation Graph data shows global developer communities growing faster than ever, with collaboration reaching new highs across many economies.\n\nThe post Q1 2026 Innovation Graph update: Open source collaboration is accelerating worldwide appeared first on The GitHub Blog.",
-   "tags": [
-    "News & insights",
-    "Policy",
-    "Innovation Graph",
-    "open source"
-   ],
-   "tech_stack": [
-    "React",
-    "Git"
-   ],
-   "categories": [
-    "프론트엔드",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "0f4636ce4b63a290"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Cloudflare proudly joins the UK government's Cyber Resilience Pledge",
-   "url": "https://blog.cloudflare.com/cloudflare-joins-uk-cyber-resilience-pledge",
-   "published": "2026-07-07",
-   "published_ts": 1783425600.0,
-   "summary": "The pledge is a voluntary framework inviting organizations to commit to foundational cyber security governance, board-level accountability, and supply chain rigor. For over a decade, Cloudflare has pioneered the core pillars of this framework: democratizing security, leadership accountability, and radical transparency.",
-   "tags": [
-    "Application Security",
-    "Cybersecurity",
-    "Policy & Legal",
-    "United Kingdom"
-   ],
-   "tech_stack": [
-    "Machine Learning",
-    "Cloudflare",
-    "Authentication",
-    "Cryptography",
-    "DDoS",
-    "Security",
-    "TLS",
-    "Zero Trust",
-    "Benchmark"
-   ],
-   "categories": [
-    "AI/ML",
-    "인프라/클라우드",
-    "보안",
-    "연구/논문"
-   ],
-   "lang": "en",
-   "content_id": "6f4bf3e98fe8397a"
   },
   {
    "key": "stackoverflow",
@@ -6002,50 +4556,6 @@
    ],
    "lang": "ko",
    "content_id": "d6bac24ff8b612bd"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "AWS DevOps Agentの新機能カスタムエージェントで週次SREレポートをつくる",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64493",
-   "published": "2026-07-07",
-   "published_ts": 1783383866.0,
-   "summary": "本記事は、DevOps Agentの新機能のカスタムエージェントをつかって週次のSREレポートをつく ...",
-   "tags": [
-    "エンジニア"
-   ],
-   "tech_stack": [
-    "AWS"
-   ],
-   "categories": [
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "a9d9dd1d4967a874"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Gemini Embedding 2で作るネイティブマルチモーダルRAG",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64490",
-   "published": "2026-07-07",
-   "published_ts": 1783383767.0,
-   "summary": "本記事では、この「ネイティブ」なマルチモーダル埋め込みを活用したRAGの構築方法を解説します。",
-   "tags": [
-    "エンジニア"
-   ],
-   "tech_stack": [
-    "Embedding",
-    "Gemini",
-    "RAG"
-   ],
-   "categories": [
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "77ac098b8fa1204e"
   },
   {
    "key": "discord",
@@ -6150,46 +4660,6 @@
    "content_id": "87e5be9521b6a6ce"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Your Worker can now have its own cache in front of it",
-   "url": "https://blog.cloudflare.com/workers-cache",
-   "published": "2026-07-06",
-   "published_ts": 1783342800.0,
-   "summary": "We are launching Workers Cache, a regionally tiered cache that sits directly in front of your Worker entrypoints. Infinitely composable, configured via standard HTTP headers",
-   "tags": [
-    "Cache",
-    "Cloudflare Workers",
-    "Developers",
-    "Performance",
-    "Serverless",
-    "Tiered Cache"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Astro",
-    "HTML",
-    "Next.js",
-    "Remix",
-    "Svelte",
-    "Jetpack Compose",
-    "Cloudflare",
-    "Observability",
-    "Authentication"
-   ],
-   "categories": [
-    "언어",
-    "프론트엔드",
-    "모바일",
-    "인프라/클라우드",
-    "관측성",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "34e529a2fa92844f"
-  },
-  {
    "key": "stackoverflow",
    "company": "Stack Overflow",
    "country": "US",
@@ -6247,54 +4717,6 @@
    ],
    "lang": "en",
    "content_id": "705d25edb97b360b"
-  },
-  {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "BigQuery未使用テーブルをData Lineage APIで検出する監視システム",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64444",
-   "published": "2026-07-02",
-   "published_ts": 1783033250.0,
-   "summary": "はじめに ABEMA の Data Platform チームに所属している河野です。 ...",
-   "tags": [
-    "エンジニア"
-   ],
-   "tech_stack": [
-    "BigQuery"
-   ],
-   "categories": [
-    "데이터베이스"
-   ],
-   "lang": "en",
-   "content_id": "735c8c216df2991b"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "How GitHub used secret scanning to reach inbox zero",
-   "url": "https://github.blog/security/application-security/how-github-used-secret-scanning-to-reach-inbox-zero",
-   "published": "2026-07-02",
-   "published_ts": 1783008000.0,
-   "summary": "GitHub had 20,000+ secret scanning alerts across 15,000 repositories. Here's how we separated signal from noise, built remediation workflows, and reached inbox zero in nine months.\n\nThe post How GitHub used secret scanning to reach inbox zero appeared first on The GitHub Blog.",
-   "tags": [
-    "Application security",
-    "Security",
-    "GHAS",
-    "push protection",
-    "Secret Scanning"
-   ],
-   "tech_stack": [
-    "Security",
-    "Git"
-   ],
-   "categories": [
-    "보안",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "018533d607088b1f"
   },
   {
    "key": "line",
@@ -6393,170 +4815,6 @@
    "content_id": "7bec97c12fd8f61a"
   },
   {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "6 security settings every GitHub maintainer should enable this week",
-   "url": "https://github.blog/security/6-security-settings-every-github-maintainer-should-enable-this-week",
-   "published": "2026-07-01",
-   "published_ts": 1782921569.0,
-   "summary": "These six free settings will not make your project unhackable. Nothing will. What they will do is close the easy doors. Turn these on, and your project will be meaningfully harder to attack than it was before.\n\nThe post 6 security settings every GitHub maintainer should enable this week appeared first on The GitHub Blog.",
-   "tags": [
-    "Application security",
-    "Maintainers",
-    "Open Source",
-    "Security",
-    "Supply chain security",
-    "GHAS",
-    "GitHub Security Lab",
-    "open source"
-   ],
-   "tech_stack": [
-    "SQL",
-    "GitHub Actions",
-    "systemd",
-    "Security",
-    "SQL Injection"
-   ],
-   "categories": [
-    "언어",
-    "인프라/클라우드",
-    "시스템/OS",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "c7a0ee64e2cf6a39"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Announcing the Monetization Gateway: charge for any resource behind Cloudflare via x402",
-   "url": "https://blog.cloudflare.com/monetization-gateway",
-   "published": "2026-07-01",
-   "published_ts": 1782910800.0,
-   "summary": "We're opening the waitlist for our Monetization Gateway, which will allow you to charge for any web page, dataset, API, or MCP tool behind Cloudflare. The charges will settle in stablecoins over the x402 open protocol, with no payments stack of your own to build.",
-   "tags": [
-    "AI",
-    "AI Bots",
-    "Bots",
-    "Content Independence Day",
-    "Payments",
-    "x402"
-   ],
-   "tech_stack": [
-    "Express",
-    "Rails",
-    "AI Agent",
-    "Model Context Protocol",
-    "Cloudflare",
-    "Terraform",
-    "Blockchain"
-   ],
-   "categories": [
-    "백엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "블록체인"
-   ],
-   "lang": "en",
-   "content_id": "afae27bfbd6e396d"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Content Independence Day, one year on: building the business model for the agentic Internet",
-   "url": "https://blog.cloudflare.com/agentic-internet-bot-report",
-   "published": "2026-07-01",
-   "published_ts": 1782910800.0,
-   "summary": "One year after declaring Content Independence Day, a dynamic market for monetized content has officially emerged. In this report, we examine how the rise of autonomous AI agents is upending traditional search referrals and detail the new infrastructure required to support a sustainable web economy.",
-   "tags": [
-    "AI",
-    "Bot Management",
-    "Bots",
-    "Content Independence Day",
-    "Internet Traffic",
-    "Radar"
-   ],
-   "tech_stack": [
-    "Spring",
-    "AI Agent",
-    "Prompt Engineering",
-    "Cloudflare",
-    "Security"
-   ],
-   "categories": [
-    "백엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "faa365cefdf0f4b5"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Making AI search smarter",
-   "url": "https://blog.cloudflare.com/making-ai-search-smarter",
-   "published": "2026-07-01",
-   "published_ts": 1782910800.0,
-   "summary": "Search is how we find nearly everything on the web — creators, merchants, answers. AI is rewriting the rules, leaving creators caught between staying discoverable in an agentic era and getting paid for their work. Today we're launching two initiatives to help.",
-   "tags": [
-    "AI",
-    "AI Bots",
-    "AI Search",
-    "Content Independence Day",
-    "Pay Per Crawl"
-   ],
-   "tech_stack": [
-    "AI Agent",
-    "Cloudflare"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "인프라/클라우드"
-   ],
-   "lang": "en",
-   "content_id": "f9df4918a8e14436"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Your site, your rules: new AI traffic options for all customers",
-   "url": "https://blog.cloudflare.com/content-independence-day-ai-options",
-   "published": "2026-07-01",
-   "published_ts": 1782910800.0,
-   "summary": "For our second Content Independence Day, we’re giving website owners finer options to manage AI traffic. Instead of a one-size-fits-all block, all customers can now easily distinguish and manage Search, Agent, and Training bots, alongside the new ability to protect ad-monetized pages.",
-   "tags": [
-    "AI",
-    "AI Bots",
-    "Bot Management",
-    "Content Independence Day",
-    "Crawler Hints"
-   ],
-   "tech_stack": [
-    "Express",
-    "AI Agent",
-    "Claude",
-    "Gemini",
-    "GPT",
-    "Cloudflare",
-    "Security"
-   ],
-   "categories": [
-    "백엔드",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "6ed4f8aaa0e3b2e4"
-  },
-  {
    "key": "watcha",
    "company": "왓챠",
    "country": "KR",
@@ -6592,36 +4850,6 @@
    ],
    "lang": "ko",
    "content_id": "ad223fd44aaa45f2"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Unmasking the crawls with Attribution Business Insights",
-   "url": "https://blog.cloudflare.com/attribution-business-insights",
-   "published": "2026-07-01",
-   "published_ts": 1782885600.0,
-   "summary": "Cloudflare’s new Attribution Business Insights dashboard helps website owners understand crawler behavior, appetite, and potential value, fueling business-level conversations around crawl compensation.",
-   "tags": [
-    "AI",
-    "Bot Management",
-    "Bots",
-    "Content Independence Day",
-    "Security"
-   ],
-   "tech_stack": [
-    "AI Agent",
-    "LLM",
-    "Cloudflare",
-    "Security"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "bf9bca10aabd74d0"
   },
   {
    "key": "aws",
@@ -6711,32 +4939,6 @@
    ],
    "lang": "en",
    "content_id": "7ab841ec4649e32f"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "How GitHub maintains compliance for open source dependencies",
-   "url": "https://github.blog/enterprise-software/governance-and-compliance/how-github-maintains-compliance-for-open-source-dependencies",
-   "published": "2026-06-30",
-   "published_ts": 1782840496.0,
-   "summary": "Explore how the Open Source Program Office uses GitHub’s new license compliance product to manage open source dependencies at scale.\n\nThe post How GitHub maintains compliance for open source dependencies appeared first on The GitHub Blog.",
-   "tags": [
-    "Governance & compliance",
-    "Open Source",
-    "open source",
-    "open source license compliance"
-   ],
-   "tech_stack": [
-    "React",
-    "Security"
-   ],
-   "categories": [
-    "프론트엔드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "b6be81914eb0517f"
   },
   {
    "key": "meta",
@@ -6854,64 +5056,6 @@
    "content_id": "85d2fcb6634efd3c"
   },
   {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "コーディングエージェントの Human-in-the-Loop 判断パターンを計測して確認・介入のポイントを見直す",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64352",
-   "published": "2026-06-29",
-   "published_ts": 1782774003.0,
-   "summary": "はじめに アニメ Tech STUDIO ソフトウェアエンジニアの新です。 この記事では、コーディン ...",
-   "tags": [
-    "エンジニア",
-    "AI",
-    "AI Agent",
-    "Claude Code",
-    "LLM",
-    "生成AI"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "a98e321bf0cc5256"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Highlights from Git 2.55",
-   "url": "https://github.blog/open-source/git/highlights-from-git-2-55",
-   "published": "2026-06-29",
-   "published_ts": 1782753925.0,
-   "summary": "The open source Git project just released Git 2.55. Here is GitHub’s look at some of the most interesting features and changes introduced since last time.\n\nThe post Highlights from Git 2.55 appeared first on The GitHub Blog.",
-   "tags": [
-    "Git",
-    "Open Source"
-   ],
-   "tech_stack": [
-    "Perl",
-    "Jetpack Compose",
-    "Iceberg",
-    "Linux",
-    "Algorithm",
-    "Embedded",
-    "Benchmark",
-    "Git"
-   ],
-   "categories": [
-    "언어",
-    "모바일",
-    "데이터",
-    "시스템/OS",
-    "알고리즘/이론",
-    "펌웨어/임베디드",
-    "연구/논문",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "e12415de2a8e92e0"
-  },
-  {
    "key": "aws",
    "company": "AWS",
    "country": "US",
@@ -6953,39 +5097,6 @@
    ],
    "lang": "en",
    "content_id": "642f54856ab6de28"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Inside the Advisory Database and what happens when vulnerability volume breaks records",
-   "url": "https://github.blog/security/supply-chain-security/inside-the-advisory-database-and-what-happens-when-vulnerability-volume-breaks-records",
-   "published": "2026-06-29",
-   "published_ts": 1782749420.0,
-   "summary": "The GitHub Advisory Database is processing more vulnerability reports than ever before. Here's what's driving the surge, how we're responding, and how the community can help.\n\nThe post Inside the Advisory Database and what happens when vulnerability volume breaks records appeared first on The GitHub Blog.",
-   "tags": [
-    "Security",
-    "Supply chain security",
-    "GitHub Advisory Database",
-    "GitHub Security Lab",
-    "supply chain security"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Python",
-    "SQL",
-    ".NET",
-    "CVE",
-    "Security",
-    "SQL Injection"
-   ],
-   "categories": [
-    "언어",
-    "백엔드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "64f52f706f766e5a"
   },
   {
    "key": "dena",
@@ -7142,94 +5253,6 @@
    "content_id": "7eb86cc4122eb497"
   },
   {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "コーディングエージェントの実行過程を検証する Agent as a Judge をフィードバックループに導入する",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64354",
-   "published": "2026-06-28",
-   "published_ts": 1782687606.0,
-   "summary": "はじめに サイバーエージェントのアニメ Tech STUDIO でソフトウェアエンジニアをしている、 ...",
-   "tags": [
-    "エンジニア",
-    "AI",
-    "AI Agent",
-    "Claude Code",
-    "LLM",
-    "生成AI"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "377a0382d84fe5cb"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "GitHub and UNDP team up to advance development priorities in Ghana with open source",
-   "url": "https://github.blog/open-source/social-impact/github-and-undp-team-up-to-advance-development-priorities-in-ghana-with-open-source",
-   "published": "2026-06-26",
-   "published_ts": 1782492837.0,
-   "summary": "GitHub joined the United Nations Development Programme in Ghana to explore how open source governance can support one of West Africa's most ambitious digital reform efforts.\n\nThe post GitHub and UNDP team up to advance development priorities in Ghana with open source appeared first on The GitHub Blog.",
-   "tags": [
-    "Open Source",
-    "Social impact",
-    "open source"
-   ],
-   "tech_stack": [
-    "Linux"
-   ],
-   "categories": [
-    "시스템/OS"
-   ],
-   "lang": "en",
-   "content_id": "d984325238eb7678"
-  },
-  {
-   "key": "stackoverflow",
-   "company": "Stack Overflow",
-   "country": "US",
-   "title": "Paging Charity! How can engineering leaders avoid becoming Bond villains?​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‍​﻿‍​‌‍‌‌​﻿‌‌​﻿‌‍​﻿​​‌‍​‌‌‍‌‍​‍﻿‌‌‍‌‍​﻿​​‌‍​‌‌‍​‌​‍﻿‌​﻿‌​‌‍‌​​﻿‌​​﻿‌‍​‍﻿‌‌‍​‍‌‍‌​​﻿‍‌​﻿​​​‍﻿‌‌‍‌‍​﻿‌​​﻿​﻿​﻿‌‌‌‍​‌‌‍‌​​﻿‌‍​﻿​​​﻿‌​‌‍​‌‌‍​‌​﻿‌﻿​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‍​﻿‍​‌‍‌‌​﻿‌‌​﻿‌‍​﻿​​‌‍​‌‌‍‌‍​‍﻿‌‌‍‌‍​﻿​​‌‍​‌‌‍​‌​‍﻿‌​﻿‌​‌‍‌​​﻿‌​​﻿‌‍​‍﻿‌‌‍​‍‌‍‌​​﻿‍‌​﻿​​​‍﻿‌‌‍‌‍​﻿‌​​﻿​﻿​﻿‌‌‌‍​‌‌‍‌​​﻿‌‍​﻿​​​﻿‌​‌‍​‌‌‍​‌​﻿‌﻿​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-   "url": "https://stackoverflow.blog/2026/06/26/paging-charity-how-can-engineering-leaders-avoid-becoming-bond-villains",
-   "published": "2026-06-26",
-   "published_ts": 1782482427.0,
-   "summary": "If you want your values to spread throughout the industry, the best thing you can possibly do is succeed and make others want to imitate you.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿​‍​﻿‍​‌‍‌‌​﻿‌‌​﻿‌‍​﻿​​‌‍​‌‌‍‌‍​‍﻿‌‌‍‌‍​﻿​​‌‍​‌‌‍​‌​‍﻿‌​﻿‌​‌‍‌​​﻿‌​​﻿‌‍​‍﻿‌‌‍​‍‌‍‌​​﻿‍…",
-   "tags": [
-    "devex",
-    "se-tech",
-    "se-stackoverflow"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "5ea209dd77b9e644"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Transitioning as a Hubber",
-   "url": "https://github.blog/developer-skills/career-growth/transitioning-as-a-hubber",
-   "published": "2026-06-26",
-   "published_ts": 1782475200.0,
-   "summary": "How GitHub's culture and benefits helped me be the best version of myself.\n\nThe post Transitioning as a Hubber appeared first on The GitHub Blog.",
-   "tags": [
-    "Career growth",
-    "Developer skills"
-   ],
-   "tech_stack": [
-    "Python",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "f21da630141ba9e1"
-  },
-  {
    "key": "razorpay",
    "company": "Razorpay",
    "country": "IN",
@@ -7324,38 +5347,6 @@
    "categories": [],
    "lang": "ko",
    "content_id": "2b677a0528cef4c9"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "Evaluating performance and efficiency of the GitHub Copilot agentic harness across models and tasks",
-   "url": "https://github.blog/ai-and-ml/github-copilot/evaluating-performance-and-efficiency-of-the-github-copilot-agentic-harness-across-models-and-tasks",
-   "published": "2026-06-25",
-   "published_ts": 1782428385.0,
-   "summary": "Explore how the GitHub Copilot agentic harness delivers strong results across multiple benchmarks and leading token efficiency, while maintaining flexibility to choose among more than 20 models.\n\nThe post Evaluating performance and efficiency of the GitHub Copilot agentic harness across models and tasks appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "GitHub Copilot",
-    "agentic AI",
-    "benchmarking"
-   ],
-   "tech_stack": [
-    "Python",
-    "AI Agent",
-    "Claude",
-    "Gemini",
-    "GPT",
-    "Model Context Protocol",
-    "Benchmark"
-   ],
-   "categories": [
-    "언어",
-    "LLM/생성형",
-    "연구/논문"
-   ],
-   "lang": "en",
-   "content_id": "b6ca7e75baf6db1e"
   },
   {
    "key": "meta",
@@ -7488,66 +5479,6 @@
    "content_id": "7962a5b46b69524c"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "How we built saga rollbacks for Cloudflare Workflows",
-   "url": "https://blog.cloudflare.com/rollbacks-for-workflows",
-   "published": "2026-06-25",
-   "published_ts": 1782392400.0,
-   "summary": "Cloudflare Workflows, our durable execution engine for multi-step applications, now supports saga-style rollbacks, allowing developers to specify a compensating action for each step.do().",
-   "tags": [
-    "Cloudflare Workers",
-    "Developers",
-    "Workflows"
-   ],
-   "tech_stack": [
-    "JavaScript",
-    "Python",
-    "Cloudflare",
-    "Saga Pattern",
-    "Authentication"
-   ],
-   "categories": [
-    "언어",
-    "인프라/클라우드",
-    "알고리즘/이론",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "b0b23546f8beb4d8"
-  },
-  {
-   "key": "stackoverflow",
-   "company": "Stack Overflow",
-   "country": "US",
-   "title": "Code isn’t the only thing causing your production failures​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌‍​﻿‍​​﻿​﻿‌‍‌‌‌‍​‍​﻿‌‌‌‍‌‍​﻿​​​‍﻿‌​﻿​‌​﻿​‍​﻿​﻿​﻿‌﻿​‍﻿‌​﻿‌​​﻿‍​​﻿‌﻿‌‍‌‍​‍﻿‌​﻿‍​​﻿‌​‌‍‌​​﻿‍​​‍﻿‌‌‍‌‍​﻿‌﻿‌‍​‌‌‍​‍‌‍‌‍​﻿​‍​﻿​﻿​﻿​‌​﻿‍​‌‍​﻿​﻿​﻿​﻿‍‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌‍​﻿‍​​﻿​﻿‌‍‌‌‌‍​‍​﻿‌‌‌‍‌‍​﻿​​​‍﻿‌​﻿​‌​﻿​‍​﻿​﻿​﻿‌﻿​‍﻿‌​﻿‌​​﻿‍​​﻿‌﻿‌‍‌‍​‍﻿‌​﻿‍​​﻿‌​‌‍‌​​﻿‍​​‍﻿‌‌‍‌‍​﻿‌﻿‌‍​‌‌‍​‍‌‍‌‍​﻿​‍​﻿​﻿​﻿​‌​﻿‍​‌‍​﻿​﻿​﻿​﻿‍‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-   "url": "https://stackoverflow.blog/2026/06/25/code-isnt-causing-your-production-failures",
-   "published": "2026-06-25",
-   "published_ts": 1782373200.0,
-   "summary": "Ryan sits down with Anish Agarwal, CEO and co-founder of Traversal, to chat about why AI coding agents have made writing code easier but running it safely in production harder, why production failures are really caused by interactions between systems and not just the code itself, and how teams can troubleshoot more effectively when traditional observability tools are not enough for agentic AI workflows.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍…",
-   "tags": [
-    "podcast",
-    "se-tech",
-    "se-stackoverflow",
-    "agentic-ai",
-    "ai",
-    "observability",
-    "sre",
-    "site-reliability-engineering"
-   ],
-   "tech_stack": [
-    "AI Agent",
-    "Observability"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "관측성"
-   ],
-   "lang": "en",
-   "content_id": "528b03184172b0b9"
-  },
-  {
    "key": "line",
    "company": "LINE",
    "country": "KR",
@@ -7652,43 +5583,6 @@
    "content_id": "58a68f7bd302aca1"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "Unlocking the Cloudflare app ecosystem with OAuth for all",
-   "url": "https://blog.cloudflare.com/oauth-for-all",
-   "published": "2026-06-24",
-   "published_ts": 1782280800.0,
-   "summary": "Self-Managed OAuth is now available to all developers on Cloudflare. Here's how we executed a zero-downtime migration of our core OAuth engine to make it happen.",
-   "tags": [
-    "Agents",
-    "API",
-    "Cloudflare Media Platform",
-    "Developer Platform",
-    "Developers",
-    "Identity",
-    "OAuth",
-    "Product News"
-   ],
-   "tech_stack": [
-    "SQL",
-    "AI Agent",
-    "Model Context Protocol",
-    "CI/CD",
-    "Cloudflare",
-    "OAuth",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "LLM/생성형",
-    "인프라/클라우드",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "cb9bc633d2fabb02"
-  },
-  {
    "key": "toss",
    "company": "토스",
    "country": "KR",
@@ -7749,43 +5643,6 @@
    "content_id": "4f5bcde2994fc851"
   },
   {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "The White House's post-quantum executive order is an important milestone. It’s time to get to work",
-   "url": "https://blog.cloudflare.com/post-quantum-eo-2026",
-   "published": "2026-06-23",
-   "published_ts": 1782239118.0,
-   "summary": "The new executive order sets a 2030 migration deadline and establishes a powerful foundation for post-quantum resilience. We look at what it gets right, where it can go further, and our migration playbook for government and industry.",
-   "tags": [
-    "Cryptography",
-    "Government Innovation",
-    "Impact",
-    "Policy & Legal",
-    "Post-Quantum",
-    "Security"
-   ],
-   "tech_stack": [
-    "Go",
-    "Machine Learning",
-    "Cloudflare",
-    "Algorithm",
-    "Authentication",
-    "Cryptography",
-    "Security",
-    "TLS"
-   ],
-   "categories": [
-    "언어",
-    "AI/ML",
-    "인프라/클라우드",
-    "알고리즘/이론",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "55407e36caa11567"
-  },
-  {
    "key": "meta",
    "company": "Meta",
    "country": "US",
@@ -7810,60 +5667,6 @@
    ],
    "lang": "en",
    "content_id": "63ee646887cdba30"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "I automated my job (and it made me a better leader)",
-   "url": "https://github.blog/developer-skills/github/i-automated-my-job-and-it-made-me-a-better-leader",
-   "published": "2026-06-23",
-   "published_ts": 1782230400.0,
-   "summary": "Explore how my day as a senior leader looks now that I use 40 automations to help, and learn more about some of my favorites.\n\nThe post I automated my job (and it made me a better leader) appeared first on The GitHub Blog.",
-   "tags": [
-    "AI & ML",
-    "Career growth",
-    "Developer skills",
-    "GitHub",
-    "GitHub Copilot",
-    "automation",
-    "GitHub Copilot app"
-   ],
-   "tech_stack": [
-    "Model Context Protocol",
-    "Linux",
-    "Security"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "시스템/OS",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "50b0e84c9b4e847e"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "GitHub joins coalition advocating for fixes to California AI Transparency Act to protect open source",
-   "url": "https://github.blog/news-insights/policy-news-and-insights/github-joins-coalition-advocating-for-fixes-to-california-ai-transparency-act-to-protect-open-source",
-   "published": "2026-06-23",
-   "published_ts": 1782229680.0,
-   "summary": "We’re calling for targeted amendments to resolve conflicts with open source licensing and align with international transparency frameworks while preserving regulatory intent.\n\nThe post GitHub joins coalition advocating for fixes to California AI Transparency Act to protect open source appeared first on The GitHub Blog.",
-   "tags": [
-    "News & insights",
-    "Policy",
-    "policy"
-   ],
-   "tech_stack": [
-    "Hugging Face"
-   ],
-   "categories": [
-    "LLM/생성형"
-   ],
-   "lang": "en",
-   "content_id": "7c038ab6adeb2d0e"
   },
   {
    "key": "naver-d2",
@@ -7902,68 +5705,6 @@
    "categories": [],
    "lang": "ko",
    "content_id": "fff7f4ba2eb05021"
-  },
-  {
-   "key": "stackoverflow",
-   "company": "Stack Overflow",
-   "country": "US",
-   "title": "Your AI shipped a backend that boots. That is the whole problem.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌​‌‍​‍​﻿​‍​﻿​‍‌‍​﻿​﻿​‍‌‍​‌​﻿​﻿​‍﻿‌​﻿​﻿​﻿‌﻿​﻿‌﻿​﻿‍‌​‍﻿‌​﻿‌​​﻿‍‌​﻿‌‍​﻿‌‍​‍﻿‌​﻿‍‌​﻿​﻿‌‍‌‌‌‍​‍​‍﻿‌​﻿‌‌​﻿​‍​﻿​﻿​﻿​​​﻿​﻿​﻿‍‌​﻿​‌‌‍‌​‌‍​‍‌‍‌​‌‍​﻿‌‍‌‌​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌​‌‍​‍​﻿​‍​﻿​‍‌‍​﻿​﻿​‍‌‍​‌​﻿​﻿​‍﻿‌​﻿​﻿​﻿‌﻿​﻿‌﻿​﻿‍‌​‍﻿‌​﻿‌​​﻿‍‌​﻿‌‍​﻿‌‍​‍﻿‌​﻿‍‌​﻿​﻿‌‍‌‌‌‍​‍​‍﻿‌​﻿‌‌​﻿​‍​﻿​﻿​﻿​​​﻿​﻿​﻿‍‌​﻿​‌‌‍‌​‌‍​‍‌‍‌​‌‍​﻿‌‍‌‌​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-   "url": "https://stackoverflow.blog/2026/06/23/your-ai-shipped-a-backend-that-boots-that-is-the-whole-problem",
-   "published": "2026-06-23",
-   "published_ts": 1782223738.0,
-   "summary": "",
-   "tags": [
-    "contributed",
-    "ai",
-    "running-software"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "17c2712c5601eb80"
-  },
-  {
-   "key": "stackoverflow",
-   "company": "Stack Overflow",
-   "country": "US",
-   "title": "The 2026 Developer Survey is now open (for human developers only)!​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​﻿‌‍‌‍​﻿​﻿​﻿‌‍​﻿​‍‌‍‌‌​﻿​‌​‍﻿‌‌‍‌‍‌‍‌‌​﻿‌﻿‌‍​‍​‍﻿‌​﻿‌​​﻿‌‌‌‍​‌‌‍‌‍​‍﻿‌‌‍​‍​﻿‌‍​﻿‍‌‌‍​﻿​‍﻿‌​﻿‍‌​﻿​‌​﻿‌​​﻿‌﻿​﻿​﻿​﻿​‌‌‍​﻿​﻿‌‍‌‍​‌​﻿​​​﻿‌‌​﻿​‍​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​﻿‌‍‌‍​﻿​﻿​﻿‌‍​﻿​‍‌‍‌‌​﻿​‌​‍﻿‌‌‍‌‍‌‍‌‌​﻿‌﻿‌‍​‍​‍﻿‌​﻿‌​​﻿‌‌‌‍​‌‌‍‌‍​‍﻿‌‌‍​‍​﻿‌‍​﻿‍‌‌‍​﻿​‍﻿‌​﻿‍‌​﻿​‌​﻿‌​​﻿‌﻿​﻿​﻿​﻿​‌‌‍​﻿​﻿‌‍‌‍​‌​﻿​​​﻿‌‌​﻿​‍​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-   "url": "https://stackoverflow.blog/2026/06/23/the-2026-developer-survey-is-now-open-for-human-developers-only",
-   "published": "2026-06-23",
-   "published_ts": 1782223200.0,
-   "summary": "Once again, we're asking for your help to take the temperature of software development. ​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌​﻿‌‌‌‍​﻿‌‍‌‍​﻿​﻿​﻿‌‍​﻿​‍‌‍‌‌​﻿​‌​‍﻿‌‌‍‌‍‌‍‌‌​﻿‌﻿‌‍​‍​‍﻿‌​﻿‌​​﻿‌‌‌‍​‌‌‍‌‍​‍﻿‌‌‍​‍​﻿‌‍​﻿‍‌‌‍​﻿​‍﻿‌​﻿‍‌​﻿​‌​﻿‌​​﻿‌﻿​﻿​﻿​﻿​‌‌‍​﻿​﻿‌‍‌‍​‌​﻿​​​﻿‌‌…",
-   "tags": [
-    "survey",
-    "devex",
-    "community",
-    "se-tech",
-    "se-stackoverflow"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "b671658d7a02ff20"
-  },
-  {
-   "key": "stackoverflow",
-   "company": "Stack Overflow",
-   "country": "US",
-   "title": "Oh the places you’ll go with spatial data​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍﻿﻿‌‍‍‌‌‍﻿‍‌﻿‌​‌‍‌‌‌‍﻿‍‌﻿‌​​‍﻿﻿‌‍‌‌‌‍‌​‌‍‍‌‌﻿‌​​‍﻿﻿‌‍﻿‌‌‍﻿﻿‌‍‌​‌‍‌‌​﻿﻿‌‌﻿​​‌﻿​‍‌‍‌‌‌﻿​﻿‌‍‌‌‌‍﻿‍‌﻿‌​‌‍​‌‌﻿‌​‌‍‍‌‌‍﻿﻿‌‍﻿‍​﻿‍﻿‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌‌‌‍​﻿‌‍‌‍​﻿‌‍‌‍‌‍​﻿‍​​﻿‍​‌‍‌‍​‍﻿‌​﻿‍​‌‍​﻿​﻿‌​‌‍‌​​‍﻿‌​﻿‌​‌‍​‍‌‍​‌​﻿​‌​‍﻿‌​﻿‍​​﻿‍‌‌‍​‍​﻿​‌​‍﻿‌​﻿​‌​﻿​​​﻿​‍‌‍​‍​﻿‌​​﻿‌‍‌‍​﻿​﻿​‌​﻿‌​‌‍‌​​﻿‍‌​﻿‌‍​﻿‍﻿‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​﻿‍﻿‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​﻿﻿﻿‌‍​‍‌‍​‌‌﻿​﻿‌‍‌‌‌‌‌‌‌﻿​‍‌‍﻿​​﻿﻿‌‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​‍‌‌​﻿​﻿‌​​‌​‍‌‌​﻿​‍‌​‌‍​‍‌‌​﻿​‍‌​‌‍‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​‌‍​‌‌‍​﻿‌‍‍﻿‌‍﻿﻿‌﻿‌‍‌‍‌‌‌﻿​‍‌‍‌‍‌‍﻿​‌‍﻿﻿‌﻿‌﻿​‍﻿‍‌‍​﻿‌‍﻿﻿​‍‌‍‌‍‍‌‌‍‌​​﻿﻿‌‌‍‌‌‌‍​﻿‌‍‌‍​﻿‌‍‌‍‌‍​﻿‍​​﻿‍​‌‍‌‍​‍﻿‌​﻿‍​‌‍​﻿​﻿‌​‌‍‌​​‍﻿‌​﻿‌​‌‍​‍‌‍​‌​﻿​‌​‍﻿‌​﻿‍​​﻿‍‌‌‍​‍​﻿​‌​‍﻿‌​﻿​‌​﻿​​​﻿​‍‌‍​‍​﻿‌​​﻿‌‍‌‍​﻿​﻿​‌​﻿‌​‌‍‌​​﻿‍‌​﻿‌‍​‍‌‍‌﻿‌​‌﻿‍‌‌﻿​​‌‍‌‌​﻿﻿‌‌‍​‍‌‍﻿​‌‍﻿﻿‌‍‌﻿‌‌​​‌‍﻿﻿‌﻿​﻿‌﻿‌​​‍‌‍‌﻿​​‌‍​‌‌﻿‌​‌‍‍​​﻿﻿‌‌﻿‌​‌‍‍‌‌﻿‌​‌‍﻿​‌‍‌‌​‍‌‍‌﻿​​‌‍‌‌‌﻿​‍‌﻿​﻿‌﻿​​‌‍‌‌‌‍​﻿‌﻿‌​‌‍‍‌‌﻿‌‍‌‍‌‌​﻿﻿‌‌﻿​​‌﻿‌‌‌‍​‍‌‍﻿​‌‍‍‌‌﻿​﻿‌‍‍​‌‍‌‌‌‍‌​​‍​‍‌﻿﻿‌",
-   "url": "https://stackoverflow.blog/2026/06/23/oh-the-places-you-ll-go-with-spatial-data",
-   "published": "2026-06-23",
-   "published_ts": 1782200400.0,
-   "summary": "Ryan is joined by  Jeffrey Hightower, VP of Places Data at Microsoft, and Amy Rose, CTO of the Overture Maps Foundation, to chat about their partnership in bringing spatial data to the next generation of Microsoft tools; how Overture’s 50 organization members are creating open, standardized, and interoperable  global spatial data sets; and their solutions to the innate challenges of trying to digitally map the world.​​​​‌﻿‍﻿​‍​‍‌‍﻿﻿‌﻿​‍‌‍‍‌‌‍‌﻿‌‍‍‌‌‍﻿‍​‍​‍​﻿‍‍​‍​‍‌﻿​﻿‌‍​‌‌‍﻿‍‌‍‍‌‌﻿‌​‌﻿‍‌​‍﻿‍‌‍‍‌‌‍﻿﻿​‍​‍​‍﻿​​‍​‍‌‍‍​‌﻿​‍‌‍‌‌‌‍‌‍​‍​‍​﻿‍‍​‍​‍‌‍‍​‌﻿‌​‌﻿‌​‌﻿​​‌﻿​﻿​﻿‍‍​‍﻿﻿​‍﻿﻿‌‍​﻿‌‍﻿‌‌﻿​﻿​‍﻿‍‌﻿​﻿‌﻿‌​…",
-   "tags": [
-    "podcast",
-    "se-tech",
-    "se-stackoverflow",
-    "maps",
-    "microsoft",
-    "data"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "a5070af9791330b4"
   },
   {
    "key": "woowahan",
@@ -8096,31 +5837,6 @@
    "content_id": "5553e852d03528e8"
   },
   {
-   "key": "cyberagent",
-   "company": "CyberAgent",
-   "country": "JP",
-   "title": "Databricks Data + AI Summit 2026 現地参加レポート",
-   "url": "https://developers.cyberagent.co.jp/blog/archives/64400",
-   "published": "2026-06-22",
-   "published_ts": 1782171754.0,
-   "summary": "目次 はじめに Databricks Data + AI Summit とは Keynote 全体感 ...",
-   "tags": [
-    "エンジニア",
-    "AI",
-    "data",
-    "Databricks",
-    "DSC"
-   ],
-   "tech_stack": [
-    "Databricks"
-   ],
-   "categories": [
-    "데이터베이스"
-   ],
-   "lang": "en",
-   "content_id": "28283d060f6cf156"
-  },
-  {
    "key": "aws",
    "company": "AWS",
    "country": "US",
@@ -8218,71 +5934,6 @@
    ],
    "lang": "en",
    "content_id": "0cbc8f5c91ddf0b4"
-  },
-  {
-   "key": "cloudflare",
-   "company": "Cloudflare",
-   "country": "US",
-   "title": "How we found a bug in the hyper HTTP library",
-   "url": "https://blog.cloudflare.com/hyper-bug",
-   "published": "2026-06-22",
-   "published_ts": 1782151200.0,
-   "summary": "By rearchitecting the Images binding, we accidentally uncovered a bug that existed in the open-source hyper library across multiple major versions.",
-   "tags": [
-    "Cloudflare Images",
-    "Cloudflare Workers",
-    "Developer Platform",
-    "Developers",
-    "Image Optimization",
-    "Open Source"
-   ],
-   "tech_stack": [
-    "Rust",
-    "Jetpack Compose",
-    "Cloudflare",
-    "Distributed Tracing",
-    "Observability",
-    "Kernel",
-    "Unix",
-    "Concurrency",
-    "Security"
-   ],
-   "categories": [
-    "언어",
-    "모바일",
-    "인프라/클라우드",
-    "관측성",
-    "시스템/OS",
-    "알고리즘/이론",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "009e730bc0fa29bb"
-  },
-  {
-   "key": "github",
-   "company": "GitHub",
-   "country": "US",
-   "title": "From pledge to practice: Building a more inclusive open source ecosystem",
-   "url": "https://github.blog/open-source/from-pledge-to-practice-building-a-more-inclusive-open-source-ecosystem",
-   "published": "2026-06-22",
-   "published_ts": 1782148831.0,
-   "summary": "Learn about the progress we’ve made toward our accessibility goals and how you can help make open source more inclusive.\n\nThe post From pledge to practice: Building a more inclusive open source ecosystem appeared first on The GitHub Blog.",
-   "tags": [
-    "Open Source",
-    "accessibility",
-    "open source"
-   ],
-   "tech_stack": [
-    "GitHub Actions",
-    "Figma"
-   ],
-   "categories": [
-    "인프라/클라우드",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "8227013fe20b3c99"
   },
   {
    "key": "meta",
@@ -8705,183 +6356,6 @@
    "content_id": "66d10492882c471e"
   },
   {
-   "key": "netflix",
-   "company": "Netflix",
-   "country": "US",
-   "title": "Predicting Risk in Content Launches: How Data-Driven Insights can Transform Launch Planning",
-   "url": "https://netflixtechblog.com/predicting-risk-in-content-launches-how-data-driven-insights-can-transform-launch-planning-587b1f2de928",
-   "published": "2026-06-19",
-   "published_ts": 1781913227.0,
-   "summary": "by Emily Gill\n\nEach year, we bring the Analytics Engineering community together for an Analytics Summit — a multi-day internal conference to share analytical deliverables across Netflix, discuss analytic practice, and build relationships within the community. This post is one of several topics presented at the Summit highlighting the breadth and impact of Analytics work across different areas of the business.\n\nUnderstanding Risk in Content Launches\n\nEvery title you see on Netflix goes through several key phases: Development, Pre-Production, Production/Principal Photography, Post-Production, an…",
-   "tags": [
-    "regression",
-    "predictive-analytics",
-    "operations",
-    "machine-learning"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "cbbbf3478e3b19fd"
-  },
-  {
-   "key": "netflix",
-   "company": "Netflix",
-   "country": "US",
-   "title": "The Evolution of Cassandra Data Movement at Netflix",
-   "url": "https://netflixtechblog.com/the-evolution-of-cassandra-data-movement-at-netflix-6e13329c80a1",
-   "published": "2026-06-19",
-   "published_ts": 1781913210.0,
-   "summary": "By Guil Pires, Jennifer Prince, Jose Camacho, Ken Kurzweil, Phanindra Chunduru\n\nBackground\n\nIn a previous post, we introduced Data Bridge, a unified management plane for batch Data Movement at Netflix. Historically, several bespoke Data Movement connectors were developed across different engineering organizations to fulfill their specific requirements. Over the last few years, the Data Movement team has started centralizing these offerings through an abstraction that provides a catalog of connectors, along with simple UI and APIs to initiate Data Movement jobs.\n\nOne such case is the Cassandra…",
-   "tags": [
-    "cassandra",
-    "icebergs",
-    "big-data",
-    "data-movement"
-   ],
-   "tech_stack": [
-    "Java",
-    "Jetpack Compose",
-    "Time Series",
-    "Iceberg",
-    "Spark",
-    "Cassandra"
-   ],
-   "categories": [
-    "언어",
-    "모바일",
-    "AI/ML",
-    "데이터",
-    "데이터베이스"
-   ],
-   "lang": "en",
-   "content_id": "038ddad4e45a712f"
-  },
-  {
-   "key": "netflix",
-   "company": "Netflix",
-   "country": "US",
-   "title": "Thinking Fast & Slow for a Personalized Notification System",
-   "url": "https://netflixtechblog.com/thinking-fast-slow-for-a-personalized-notification-system-4d89b26525cd",
-   "published": "2026-06-19",
-   "published_ts": 1781913196.0,
-   "summary": "by Matthew Wood, Ishan Gupta, Kevin Mercurio, Devon Bryant, and Claire Dorman\n\nIn his seminal book “Thinking, Fast and Slow,” Daniel Kahneman describes two systems that drive human cognition: System 1, which operates automatically and quickly with little effort, and System 2, which allocates attention to more challenging mental activities requiring deliberate focus. This dual-process theory has profound implications not just for understanding human behavior, but for designing intelligent systems that must balance immediate responsiveness with strategic foresight. Similar “plan vs. act” decompo…",
-   "tags": [
-    "ai",
-    "notifications",
-    "recommendations",
-    "machine-learning"
-   ],
-   "tech_stack": [
-    "Feature Store",
-    "Ray",
-    "LLM",
-    "A/B Test"
-   ],
-   "categories": [
-    "AI/ML",
-    "LLM/생성형",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "1da4510c13f858f6"
-  },
-  {
-   "key": "netflix",
-   "company": "Netflix",
-   "country": "US",
-   "title": "A Human-Augmenting Agentic Workflow for Causal Inference",
-   "url": "https://netflixtechblog.com/a-human-augmenting-agentic-workflow-for-causal-inference-4623f0a9c5af",
-   "published": "2026-06-19",
-   "published_ts": 1781913186.0,
-   "summary": "By Winston Chou, Adrien Alexandre, Lars Olds, Yi Zhang, Garrett Hagemann, and Nathan Kallus\n\nIntroduction\n\nImagine asking a data agent to analyze the causal relationship between two variables, such as the effect of watching a popular Netflix show on long-term member retention. It queries your data, runs a regression, and confidently returns an answer. How much should you trust it? Can you be confident that the agent accounted for subtle biases — or does it treat passionate fans as if they were the average viewer? Without deep understanding and expertise, would you even be able to tell if it go…",
-   "tags": [
-    "ai-agent",
-    "agentic-workflow",
-    "causal-inference"
-   ],
-   "tech_stack": [
-    "Machine Learning",
-    "Time Series",
-    "AI Agent",
-    "Claude",
-    "LLM",
-    "Prompt Engineering",
-    "A/B Test"
-   ],
-   "categories": [
-    "AI/ML",
-    "LLM/생성형",
-    "협업/도구"
-   ],
-   "lang": "en",
-   "content_id": "11587c9ab45d97c9"
-  },
-  {
-   "key": "netflix",
-   "company": "Netflix",
-   "country": "US",
-   "title": "From Silos to Service Topology: Why Netflix Built a Real-Time Service Map",
-   "url": "https://netflixtechblog.com/from-silos-to-service-topology-why-netflix-built-a-real-time-service-map-0165ba13a7bc",
-   "published": "2026-06-19",
-   "published_ts": 1781913122.0,
-   "summary": "By Parth Jain, Rakesh Sukumar, Yingwu Zhao, Renzo Sanchez-Silva & Nathan Fisher\nHow we built a living map of our distributed infrastructure to help engineers understand dependencies, troubleshoot faster, and keep Netflix running smoothly for our members around the world.\n\nThe Puzzle with a Thousand Pieces\n\nPicture this: It’s 3am, and an engineer gets paged. One of our critical services is showing elevated error rates. Members trying to watch their favorite films and series are seeing degraded experiences. The clock is ticking.\nA single service at the center of a web of dependencies — services,…",
-   "tags": [
-    "distributed-systems",
-    "software-engineering",
-    "platform-engineering",
-    "microservices",
-    "observability"
-   ],
-   "tech_stack": [
-    "GraphQL",
-    "gRPC",
-    "Kafka",
-    "AWS",
-    "Distributed Tracing",
-    "Observability",
-    "eBPF",
-    "Kernel",
-    "Distributed System",
-    "Garbage Collection",
-    "Authentication"
-   ],
-   "categories": [
-    "백엔드",
-    "데이터",
-    "인프라/클라우드",
-    "관측성",
-    "시스템/OS",
-    "알고리즘/이론",
-    "보안"
-   ],
-   "lang": "en",
-   "content_id": "8e58854d07d2f7c8"
-  },
-  {
-   "key": "netflix",
-   "company": "Netflix",
-   "country": "US",
-   "title": "VMAF v1: Good Is Not Good Enough",
-   "url": "https://netflixtechblog.com/vmaf-v1-good-is-not-good-enough-60d7e4244ea8",
-   "published": "2026-06-19",
-   "published_ts": 1781913005.0,
-   "summary": "By Christos G. Bampis, Zhi Li, Kyle Swanson, Nil Fons Miret and Pavan Madhusudanarao\n\nWill this encode look good to Netflix members? Does switching to a new codec improve quality at the same bitrate and by how much? What is the best way to encode a movie title given a target bitrate budget? For years, VMAF has reliably helped us answer those questions and deliver an optimized quality of experience to our members.\n\nBut good is not good enough. If VMAF misjudges quality, that may lead to loss of detail for a suspenseful close-up or banding for a stunning wide-angle sky shot. That’s a lot of trus…",
-   "tags": [],
-   "tech_stack": [
-    "Quantization",
-    "Algorithm",
-    "arXiv"
-   ],
-   "categories": [
-    "LLM/생성형",
-    "알고리즘/이론",
-    "연구/논문"
-   ],
-   "lang": "en",
-   "content_id": "1c0e51fa321a19fc"
-  },
-  {
    "key": "github",
    "company": "GitHub",
    "country": "US",
@@ -8940,9 +6414,9 @@
    "summary": "The moment an agent needs to deploy something, it slams face-first into a wall built for humans. Today we're rolling out Temporary Accounts on Cloudflare Workers. Any agent can now run wrangler deploy — temporary and get a live Worker in seconds.",
    "tags": [
     "Agents",
+    "Wrangler",
     "AI",
-    "Cloudflare Workers",
-    "Wrangler"
+    "Cloudflare Workers"
    ],
    "tech_stack": [
     "TypeScript",
@@ -9175,10 +6649,10 @@
    "published_ts": 1781805580.0,
    "summary": "We break down the technical architecture behind our multi-stage vulnerability discovery harness and automated triage loop. Learn how we manage state controls, squash false positives through adversarial review, and route around LLM context limits.",
    "tags": [
+    "Security",
     "AI",
     "Engineering",
     "Research",
-    "Security",
     "Vulnerabilities"
    ],
    "tech_stack": [
@@ -9190,11 +6664,14 @@
     "AI Agent",
     "Fine-tuning",
     "LLM",
+    "Model Context Protocol",
     "SQLite",
     "Cloudflare",
+    "Docker",
     "Security",
     "Benchmark",
-    "Git"
+    "Git",
+    "Jira"
    ],
    "categories": [
     "언어",
@@ -9403,26 +6880,6 @@
    "categories": [],
    "lang": "en",
    "content_id": "6b421db486a78b85"
-  },
-  {
-   "key": "soundcloud",
-   "company": "SoundCloud",
-   "country": "DE",
-   "title": "Less Is More: Why Audio on SoundCloud Looks Different",
-   "url": "https://developers.soundcloud.com/blog/less-is-more-why-soundcloud-low-passes-its-aac-transcodings",
-   "published": "2026-06-18",
-   "published_ts": 1781740800.0,
-   "summary": "Last year, SoundCloud upgraded its AAC encoder for the first time in over a decade. The new one (Fraunhofer’s libfdk_aac) delivers higher…",
-   "tags": [
-    "Audio",
-    "Engineering",
-    "Transcodings",
-    "Streaming"
-   ],
-   "tech_stack": [],
-   "categories": [],
-   "lang": "en",
-   "content_id": "b6a6efb13566f339"
   },
   {
    "key": "soundcloud",
@@ -12876,6 +10333,47 @@
    "company": "Netflix",
    "country": "US",
    "title": "From Silos to Service Topology: Why Netflix Built a Real-Time Service Map",
+   "url": "https://netflixtechblog.com/from-silos-to-service-topology-why-netflix-built-a-real-time-service-map-0165ba13a7bc",
+   "published": "2026-05-29",
+   "published_ts": 1780063262.0,
+   "summary": "By Parth Jain, Rakesh Sukumar, Yingwu Zhao, Renzo Sanchez & Nathan Fisher\nHow we built a living map of our distributed infrastructure to help engineers understand dependencies, troubleshoot faster, and keep Netflix running smoothly for our members around the world.\n\nThe Puzzle with a Thousand Pieces\n\nPicture this: It’s 3am, and an engineer gets paged. One of our critical services is showing elevated error rates. Members trying to watch their favorite films and series are seeing degraded experiences. The clock is ticking.\nA single service at the center of a web of dependencies — services, data…",
+   "tags": [
+    "distributed-systems",
+    "software-engineering",
+    "platform-engineering",
+    "microservices",
+    "observability"
+   ],
+   "tech_stack": [
+    "GraphQL",
+    "gRPC",
+    "Kafka",
+    "AWS",
+    "Distributed Tracing",
+    "Observability",
+    "eBPF",
+    "Kernel",
+    "Distributed System",
+    "Garbage Collection",
+    "Authentication"
+   ],
+   "categories": [
+    "백엔드",
+    "데이터",
+    "인프라/클라우드",
+    "관측성",
+    "시스템/OS",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "8e58854d07d2f7c8"
+  },
+  {
+   "key": "netflix",
+   "company": "Netflix",
+   "country": "US",
+   "title": "From Silos to Service Topology: Why Netflix Built a Real-Time Service Map",
    "url": "https://medium.com/netflix-techblog/from-silos-to-service-topology-why-netflix-built-a-real-time-service-map-0165ba13a7bc",
    "published": "2026-05-29",
    "published_ts": 1780063262.0,
@@ -14789,38 +12287,6 @@
    ],
    "lang": "en",
    "content_id": "06e9e436e53e734e"
-  },
-  {
-   "key": "grab",
-   "company": "Grab",
-   "country": "SG",
-   "title": "How AI is transforming analytics at Grab",
-   "url": "https://engineering.grab.com/how-ai-is-transforming-analytics-at-grab.md",
-   "published": "2026-05-15",
-   "published_ts": 1778804580.0,
-   "summary": "Introduction\n\nAt Grab, analytics sits close to almost every decision that matters. Our north star is the democratization of intelligence, ensuring that anyone making a business call has immediate access to trustworthy answers.\n\nOver the last two years, model capability has crossed a threshold enabling this shift. Agents now do in minutes what used to take a week: preparing the data, writing queries, running deep analysis and surfacing insights for business opportunities, designing the experiment and interpreting the results, drafting the commentary that follows, and more. Our throughput is no…",
-   "tags": [
-    "Engineering",
-    "Analytics",
-    "AI",
-    "Engineering"
-   ],
-   "tech_stack": [
-    "SQL",
-    "AI Agent",
-    "Claude",
-    "Model Context Protocol",
-    "Data Lake",
-    "Embedded"
-   ],
-   "categories": [
-    "언어",
-    "LLM/생성형",
-    "데이터",
-    "펌웨어/임베디드"
-   ],
-   "lang": "en",
-   "content_id": "95280f651181f0c3"
   },
   {
    "key": "aws",
