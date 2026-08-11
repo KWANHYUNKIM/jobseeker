@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9650건** 공고 · **1830개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-12 05:49
+- 총 **9653건** 공고 · **1830개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-12 07:27
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -8572,6 +8572,12 @@ markmap:
   - [머신러닝 엔지니어 - 자연어 처리 (NLP) ↗](https://www.wanted.co.kr/wd/147279)
   - [Robotics SW Engineer ↗](https://www.wanted.co.kr/wd/326176)
 
+### 세코어로보틱스 `중소기업` · 3건
+- **AI/ML** [3건] · `Python` `C++` `PyTorch` `시뮬레이션` `로봇` `OpenCV`
+  - [Robot Learning Engineer 3년 이상 ↗](https://www.wanted.co.kr/wd/365872)
+  - [(로봇/AI) 3D vision Engineer (경력) ↗](https://jumpit.saramin.co.kr/position/54361338)
+  - [(로봇/AI) SLAM Engineer ↗](https://jumpit.saramin.co.kr/position/54361472)
+
 ### 심플랫폼 `중소기업` · 3건
 - **AI/ML** [2건] · `Kubernetes` `OpenAI` `TypeScript`
   - [AI Agent & LLM Engineer - 병역특례 ↗](https://www.wanted.co.kr/wd/368660)
@@ -9008,11 +9014,6 @@ markmap:
 - **AI/ML** [1건] · `AI/인공지능`
   - [로봇개발 및 운영/AI응용 프로그램개발 ↗](https://jumpit.saramin.co.kr/position/54046402)
 
-### 세코어로보틱스 `중소기업` · 2건
-- **AI/ML** [2건] · `Python` `C++` `OpenCV`
-  - [(로봇/AI) 3D vision Engineer (경력) ↗](https://jumpit.saramin.co.kr/position/54361338)
-  - [(로봇/AI) SLAM Engineer ↗](https://jumpit.saramin.co.kr/position/54361472)
-
 ### ㈜케이씨텍 `중소기업` · 2건
 - **AI/ML** [1건] · `Python` `C++` `C#` `MySQL` `PostgreSQL` `Jira`
   - [반도체 장비 제어 SW 개발자 모집(경력/동탄) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54077988&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=41e7582e-45a6-4118-b35b-79ec55d29f71)
@@ -9437,6 +9438,39 @@ markmap:
 - **보안** [1건]
   - [AI 보안 엔지니어 ↗](https://www.wanted.co.kr/wd/371350)
 
+### 핀다 `중견기업` · 11건
+- **백엔드** [4건] · `Kotlin` `Java` `Spring` `Spring Boot` `MySQL` `MongoDB`
+  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716498)
+  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
+  - [백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716498&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2166de09-6ccc-4f88-ace9-d30352bd3cf4)
+  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
+- **프론트엔드** [2건] · `Kotlin` `Android` `Jira` `Android SDK` `Android Studio` `MVVM`
+  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
+  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
+- **모바일** [5건] · `Kotlin` `Android` `Java` `Spring` `Spring Boot` `MySQL`
+  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716498)
+  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
+  - [백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716498&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2166de09-6ccc-4f88-ace9-d30352bd3cf4)
+  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
+- **AI/ML** [4건] · `Jira` `Python` `Kotlin` `Android` `CSS` `Apache`
+  - [데이터 사이언티스트 (Lead) ↗](https://jumpit.saramin.co.kr/position/54091504)
+  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
+  - [Application Security Engineer ↗](https://jumpit.saramin.co.kr/position/54644966)
+  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
+- **데이터** [3건] · `Java` `Kotlin` `Spring` `Spring Boot` `MySQL` `MongoDB`
+  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716498)
+  - [데이터 사이언티스트 (Lead) ↗](https://jumpit.saramin.co.kr/position/54091504)
+  - [백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716498&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2166de09-6ccc-4f88-ace9-d30352bd3cf4)
+- **DevOps/인프라** [3건] · `AWS` `Infra` `MySQL` `MongoDB` `SQL`
+  - [네트워크 엔지니어 ↗](https://jumpit.saramin.co.kr/position/54417143)
+  - [인프라/네트워크 엔지니어 (시니어) ↗](https://jumpit.saramin.co.kr/position/54091492)
+  - [DBA (경력) ↗](https://jumpit.saramin.co.kr/position/54091516)
+- **보안** [2건] · `Python` `AWS` `Terraform` `ISMS` `CISSP` `CPPG`
+  - [정보보안 정책 Lead ↗](https://jumpit.saramin.co.kr/position/54320479)
+  - [Application Security Engineer ↗](https://jumpit.saramin.co.kr/position/54644966)
+- **QA** [1건] · `Kotlin` `Swift` `iOS` `Android` `GitHub Actions`
+  - [App Lead ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716191&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=4093a269-8c01-432f-857c-d7f5861686f6)
+
 ### 하나금융티아이 `대기업` · 11건
 - **AI/ML** [2건]
   - [(하나금융TI) 네트워크 보안 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53965043&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=efc3558a-58f4-447b-8cc0-8ebef1e00db6)
@@ -9479,37 +9513,6 @@ markmap:
   - [접근권한통제 정보보안 담당자 ↗](https://www.wanted.co.kr/wd/346074)
 - **QA** [1건] · `Kotlin` `Spring` `Spring Boot` `Redis` `AWS` `Kubernetes`
   - [증권 서비스 백엔드 개발자(시니어) ↗](https://www.wanted.co.kr/wd/321030)
-
-### 핀다 `중견기업` · 10건
-- **백엔드** [4건] · `Kotlin` `Java` `Spring` `Spring Boot` `MySQL` `MongoDB`
-  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716498)
-  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
-  - [백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716498&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2166de09-6ccc-4f88-ace9-d30352bd3cf4)
-  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
-- **프론트엔드** [2건] · `Kotlin` `Android` `Jira` `Android SDK` `Android Studio` `MVVM`
-  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
-  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
-- **모바일** [4건] · `Kotlin` `Java` `Spring` `Spring Boot` `MySQL` `MongoDB`
-  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716498)
-  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
-  - [백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716498&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2166de09-6ccc-4f88-ace9-d30352bd3cf4)
-  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
-- **AI/ML** [4건] · `Jira` `Python` `Kotlin` `Android` `CSS` `Apache`
-  - [데이터 사이언티스트 (Lead) ↗](https://jumpit.saramin.co.kr/position/54091504)
-  - [안드로이드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716389)
-  - [Application Security Engineer ↗](https://jumpit.saramin.co.kr/position/54644966)
-  - [안드로이드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716389&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=43f954d8-b222-45a0-b590-ba0c3dd24822)
-- **데이터** [3건] · `Java` `Kotlin` `Spring` `Spring Boot` `MySQL` `MongoDB`
-  - [백엔드 개발자 ↗](https://jumpit.saramin.co.kr/position/54716498)
-  - [데이터 사이언티스트 (Lead) ↗](https://jumpit.saramin.co.kr/position/54091504)
-  - [백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716498&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=2166de09-6ccc-4f88-ace9-d30352bd3cf4)
-- **DevOps/인프라** [3건] · `AWS` `Infra` `MySQL` `MongoDB` `SQL`
-  - [네트워크 엔지니어 ↗](https://jumpit.saramin.co.kr/position/54417143)
-  - [인프라/네트워크 엔지니어 (시니어) ↗](https://jumpit.saramin.co.kr/position/54091492)
-  - [DBA (경력) ↗](https://jumpit.saramin.co.kr/position/54091516)
-- **보안** [2건] · `Python` `AWS` `Terraform` `ISMS` `CISSP` `CPPG`
-  - [정보보안 정책 Lead ↗](https://jumpit.saramin.co.kr/position/54320479)
-  - [Application Security Engineer ↗](https://jumpit.saramin.co.kr/position/54644966)
 
 ### 피에프씨테크놀로지스 `중소기업` · 9건
 - **백엔드** [1건] · `Kotlin` `Python` `Spring` `Spring Boot` `Django` `MySQL`
@@ -18398,7 +18401,7 @@ markmap:
 
 
 ## 모빌리티/자율주행 (46개사)
-### 포티투닷(42dot) `대기업` · 20건
+### 포티투닷(42dot) `대기업` · 21건
 - **백엔드** [11건] · `Kotlin` `Java` `Android` `C++` `Rust` `gRPC`
   - [System Framework Engineer ↗](https://www.wanted.co.kr/wd/310542)
   - [Backend Engineer(Software Update Platform) ↗](https://www.wanted.co.kr/wd/376296)
@@ -18409,7 +18412,8 @@ markmap:
   - [Senior Backend Engineer(Intelligence Data) ↗](https://www.wanted.co.kr/wd/376297)
   - [Android Engineer (Proximity Intelligence) ↗](https://www.wanted.co.kr/wd/292264)
   - [Android Engineer (Services) ↗](https://www.wanted.co.kr/wd/302270)
-- **AI/ML** [1건] · `Python` `PostgreSQL` `MongoDB` `Apache` `TensorFlow` `PyTorch`
+- **AI/ML** [2건] · `Python` `PyTorch` `C++` `PostgreSQL` `MongoDB` `Apache`
+  - [Physical AI Engineer (Model) ↗](https://www.wanted.co.kr/wd/366270)
   - [Senior ML Platform Engineer ↗](https://www.wanted.co.kr/wd/293656)
 - **데이터** [1건] · `Python` `PostgreSQL` `MongoDB` `Apache` `TensorFlow` `PyTorch`
   - [Senior ML Platform Engineer ↗](https://www.wanted.co.kr/wd/293656)
