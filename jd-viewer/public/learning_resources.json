@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T00:52:55",
+  "generated_at": "2026-08-12T02:31:33",
   "source": "youtube",
   "tech_count": 206,
   "curriculum_count": 20,
@@ -497,88 +497,6 @@
         "stage": "핵심"
       }
     ],
-    "Git": [
-      {
-        "title": "쉽게 설명하는 Git 기초 1. add, commit",
-        "url": "https://www.youtube.com/watch?v=sly2u8BIi9E",
-        "thumbnail": "https://i.ytimg.com/vi/sly2u8BIi9E/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 147600,
-        "length": "8:02",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
-        "url": "https://www.youtube.com/watch?v=Fley6IFhlC8",
-        "thumbnail": "https://i.ytimg.com/vi/Fley6IFhlC8/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 187933,
-        "length": "6:37",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "깃, 깃허브 한번에 이해시켜드리고 포트폴리오 올리는 법까지 알려드림.  15분안에 당신은 Github 전문가가 됩니다",
-        "url": "https://www.youtube.com/watch?v=lelVripbt2M",
-        "thumbnail": "https://i.ytimg.com/vi/lelVripbt2M/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 755835,
-        "length": "16:53",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "git의 기본기 정리",
-        "url": "https://www.youtube.com/watch?v=-uhhTgD2thU",
-        "thumbnail": "https://i.ytimg.com/vi/-uhhTgD2thU/mqdefault.jpg",
-        "channel": "임커밋",
-        "views": 5551,
-        "length": "3:30",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Git 핵심 / 기본 다지기 강의",
-        "url": "https://www.youtube.com/watch?v=01faw6lcM_8",
-        "thumbnail": "https://i.ytimg.com/vi/01faw6lcM_8/mqdefault.jpg",
-        "channel": "깃미남 - 깃에 미친 남자",
-        "views": 1385,
-        "length": "2:03:40",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "얄코의 제대로 파는 Git & GitHub",
-        "url": "https://www.youtube.com/watch?v=0TEPC1UDGM0",
-        "thumbnail": "https://i.ytimg.com/vi/0TEPC1UDGM0/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 13791,
-        "length": "2:12:52",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Git 저장소 구조",
-        "url": "https://www.youtube.com/watch?v=Deowj6SG4Hk",
-        "thumbnail": "https://i.ytimg.com/vi/Deowj6SG4Hk/mqdefault.jpg",
-        "channel": "깃미남 - 깃에 미친 남자",
-        "views": 159,
-        "length": "2:31",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Claude Code 쓸 때 꼭 알아야 할 Git, GitHub 완벽 정리 | 비개발자도 한 번만 보면 끝",
-        "url": "https://www.youtube.com/watch?v=pE5zKg7tS2U",
-        "thumbnail": "https://i.ytimg.com/vi/pE5zKg7tS2U/mqdefault.jpg",
-        "channel": "카일스쿨",
-        "views": 28711,
-        "length": "18:44",
-        "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
     "TypeScript": [
       {
         "title": "3시간 완성 타입스크립트 기초 Full Course",
@@ -659,6 +577,88 @@
         "length": "2:00",
         "published": "5년 전",
         "stage": "핵심"
+      }
+    ],
+    "Git": [
+      {
+        "title": "쉽게 설명하는 Git 기초 1. add, commit",
+        "url": "https://www.youtube.com/watch?v=sly2u8BIi9E",
+        "thumbnail": "https://i.ytimg.com/vi/sly2u8BIi9E/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 147600,
+        "length": "8:02",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Git, Github의 개념과 초간단 깃허브 코드 올리기",
+        "url": "https://www.youtube.com/watch?v=Fley6IFhlC8",
+        "thumbnail": "https://i.ytimg.com/vi/Fley6IFhlC8/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 187933,
+        "length": "6:37",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "깃, 깃허브 한번에 이해시켜드리고 포트폴리오 올리는 법까지 알려드림.  15분안에 당신은 Github 전문가가 됩니다",
+        "url": "https://www.youtube.com/watch?v=lelVripbt2M",
+        "thumbnail": "https://i.ytimg.com/vi/lelVripbt2M/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 755835,
+        "length": "16:53",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "git의 기본기 정리",
+        "url": "https://www.youtube.com/watch?v=-uhhTgD2thU",
+        "thumbnail": "https://i.ytimg.com/vi/-uhhTgD2thU/mqdefault.jpg",
+        "channel": "임커밋",
+        "views": 5551,
+        "length": "3:30",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Git 핵심 / 기본 다지기 강의",
+        "url": "https://www.youtube.com/watch?v=01faw6lcM_8",
+        "thumbnail": "https://i.ytimg.com/vi/01faw6lcM_8/mqdefault.jpg",
+        "channel": "깃미남 - 깃에 미친 남자",
+        "views": 1385,
+        "length": "2:03:40",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "얄코의 제대로 파는 Git & GitHub",
+        "url": "https://www.youtube.com/watch?v=0TEPC1UDGM0",
+        "thumbnail": "https://i.ytimg.com/vi/0TEPC1UDGM0/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 13791,
+        "length": "2:12:52",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Git 저장소 구조",
+        "url": "https://www.youtube.com/watch?v=Deowj6SG4Hk",
+        "thumbnail": "https://i.ytimg.com/vi/Deowj6SG4Hk/mqdefault.jpg",
+        "channel": "깃미남 - 깃에 미친 남자",
+        "views": 159,
+        "length": "2:31",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Claude Code 쓸 때 꼭 알아야 할 Git, GitHub 완벽 정리 | 비개발자도 한 번만 보면 끝",
+        "url": "https://www.youtube.com/watch?v=pE5zKg7tS2U",
+        "thumbnail": "https://i.ytimg.com/vi/pE5zKg7tS2U/mqdefault.jpg",
+        "channel": "카일스쿨",
+        "views": 28711,
+        "length": "18:44",
+        "published": "4개월 전",
+        "stage": "실전"
       }
     ],
     "Linux": [
@@ -4085,88 +4085,6 @@
         "stage": "실전"
       }
     ],
-    "Tailwind": [
-      {
-        "title": "테일윈드 CSS 튜토리얼 기본적인 클래스 설명부터 디자인 시안의 HTML 퍼블리싱 작업 라이브코딩 까지 #tailwind #tailwindcss #개발 #html #css",
-        "url": "https://www.youtube.com/watch?v=fobyJdNz9rk",
-        "thumbnail": "https://i.ytimg.com/vi/fobyJdNz9rk/mqdefault.jpg",
-        "channel": "헤이제임스 - AI 쉽게 배우기",
-        "views": 8531,
-        "length": "16:42",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "9강 - Tailwind 시작하기 [ React 입문 코스 ]",
-        "url": "https://www.youtube.com/watch?v=-IT55XnxOpU",
-        "thumbnail": "https://i.ytimg.com/vi/-IT55XnxOpU/mqdefault.jpg",
-        "channel": "코딩개구리",
-        "views": 111,
-        "length": "20:16",
-        "published": "4개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[필독] Tailwind CSS의 기본이 되는 크기 단위 값(REM 단위), EM 단위, PX 단위",
-        "url": "https://www.youtube.com/watch?v=8dqqUwPa8_E",
-        "thumbnail": "https://i.ytimg.com/vi/8dqqUwPa8_E/mqdefault.jpg",
-        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
-        "views": 297,
-        "length": "12:00",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
-        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
-        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
-        "channel": "코딩루팡 CodingLupine",
-        "views": 8036,
-        "length": "17:07",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[무료파트] TailwindCSS 완전 정복 강의 EP01 ~ EP11",
-        "url": "https://www.youtube.com/watch?v=sOiuZQo93cU",
-        "thumbnail": "https://i.ytimg.com/vi/sOiuZQo93cU/mqdefault.jpg",
-        "channel": "짐코딩",
-        "views": 5155,
-        "length": "1:34:18",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[필독] Tailwind CSS 이론 학습을 잘하기 위한 참고사항",
-        "url": "https://www.youtube.com/watch?v=lm8rQeGHz4g",
-        "thumbnail": "https://i.ytimg.com/vi/lm8rQeGHz4g/mqdefault.jpg",
-        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
-        "views": 306,
-        "length": "9:34",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
-        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
-        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 43242,
-        "length": "48:53",
-        "published": "3년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[리액트 심플프로젝트] ch05. 클래스명 외우지 마세요! Tailwind CSS 공식 문서 100% 활용법 (버킷리스트 완성)",
-        "url": "https://www.youtube.com/watch?v=d7i-FsahZfk",
-        "thumbnail": "https://i.ytimg.com/vi/d7i-FsahZfk/mqdefault.jpg",
-        "channel": "오쌤의 니가스터디",
-        "views": 85,
-        "length": "18:00",
-        "published": "4개월 전",
-        "stage": "실전"
-      }
-    ],
     "MariaDB": [
       {
         "title": "데이터베이스(MariaDB) 기초, 1강, DB를 배우는 이유",
@@ -4328,6 +4246,88 @@
         "views": 1923,
         "length": "23:22",
         "published": "8개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Tailwind": [
+      {
+        "title": "테일윈드 CSS 튜토리얼 기본적인 클래스 설명부터 디자인 시안의 HTML 퍼블리싱 작업 라이브코딩 까지 #tailwind #tailwindcss #개발 #html #css",
+        "url": "https://www.youtube.com/watch?v=fobyJdNz9rk",
+        "thumbnail": "https://i.ytimg.com/vi/fobyJdNz9rk/mqdefault.jpg",
+        "channel": "헤이제임스 - AI 쉽게 배우기",
+        "views": 8531,
+        "length": "16:42",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "9강 - Tailwind 시작하기 [ React 입문 코스 ]",
+        "url": "https://www.youtube.com/watch?v=-IT55XnxOpU",
+        "thumbnail": "https://i.ytimg.com/vi/-IT55XnxOpU/mqdefault.jpg",
+        "channel": "코딩개구리",
+        "views": 111,
+        "length": "20:16",
+        "published": "4개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[필독] Tailwind CSS의 기본이 되는 크기 단위 값(REM 단위), EM 단위, PX 단위",
+        "url": "https://www.youtube.com/watch?v=8dqqUwPa8_E",
+        "thumbnail": "https://i.ytimg.com/vi/8dqqUwPa8_E/mqdefault.jpg",
+        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
+        "views": 297,
+        "length": "12:00",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Tailwind CSS - 15분 후 이제 CSS 파일은 안 만들게 됩니다.",
+        "url": "https://www.youtube.com/watch?v=efSQffTqw0M",
+        "thumbnail": "https://i.ytimg.com/vi/efSQffTqw0M/mqdefault.jpg",
+        "channel": "코딩루팡 CodingLupine",
+        "views": 8036,
+        "length": "17:07",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[무료파트] TailwindCSS 완전 정복 강의 EP01 ~ EP11",
+        "url": "https://www.youtube.com/watch?v=sOiuZQo93cU",
+        "thumbnail": "https://i.ytimg.com/vi/sOiuZQo93cU/mqdefault.jpg",
+        "channel": "짐코딩",
+        "views": 5155,
+        "length": "1:34:18",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[필독] Tailwind CSS 이론 학습을 잘하기 위한 참고사항",
+        "url": "https://www.youtube.com/watch?v=lm8rQeGHz4g",
+        "thumbnail": "https://i.ytimg.com/vi/lm8rQeGHz4g/mqdefault.jpg",
+        "channel": "CodingWorks Andrew (프론트엔드 퍼블리싱)",
+        "views": 306,
+        "length": "9:34",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "CSS 기초부터 실전 구글 클론 코딩 강의 (ft. Figma, Bootstrap, Tailwindcss, Codepen)",
+        "url": "https://www.youtube.com/watch?v=tIC9MfxGOow",
+        "thumbnail": "https://i.ytimg.com/vi/tIC9MfxGOow/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 43242,
+        "length": "48:53",
+        "published": "3년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[리액트 심플프로젝트] ch05. 클래스명 외우지 마세요! Tailwind CSS 공식 문서 100% 활용법 (버킷리스트 완성)",
+        "url": "https://www.youtube.com/watch?v=d7i-FsahZfk",
+        "thumbnail": "https://i.ytimg.com/vi/d7i-FsahZfk/mqdefault.jpg",
+        "channel": "오쌤의 니가스터디",
+        "views": 85,
+        "length": "18:00",
+        "published": "4개월 전",
         "stage": "실전"
       }
     ],
