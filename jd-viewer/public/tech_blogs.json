@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-12T02:30:47",
- "total": 1025,
+ "generated_at": "2026-08-12T04:09:30",
+ "total": 1027,
  "sources": [
   {
    "company": "Etsy",
@@ -43,19 +43,19 @@
    "count": 40
   },
   {
+   "company": "Discord",
+   "country": "US",
+   "count": 39
+  },
+  {
    "company": "네이버 D2",
    "country": "KR",
    "count": 39
   },
   {
-   "company": "Discord",
-   "country": "US",
-   "count": 38
-  },
-  {
    "company": "GitHub",
    "country": "US",
-   "count": 32
+   "count": 33
   },
   {
    "company": "Netflix",
@@ -528,6 +528,34 @@
  },
  "posts": [
   {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "From coder to orchestrator: How agents shift the role of a developer",
+   "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
+   "published": "2026-08-11",
+   "published_ts": 1786473497.0,
+   "summary": "Developers are owning more of the delivery system around code, not just code itself. Join us during GitHub Universe to meet other devs, learn something new, and explore what's next.\n\nThe post From coder to orchestrator: How agents shift the role of a developer appeared first on The GitHub Blog.",
+   "tags": [
+    "Career growth",
+    "Developer skills",
+    "GitHub Universe"
+   ],
+   "tech_stack": [
+    "AI Agent",
+    "Model Context Protocol",
+    "GitHub Actions",
+    "Security"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "b11b9d0ae1abca17"
+  },
+  {
    "key": "cloudflare",
    "company": "Cloudflare",
    "country": "US",
@@ -616,6 +644,21 @@
    "categories": [],
    "lang": "en",
    "content_id": "5c1021525da46875"
+  },
+  {
+   "key": "discord",
+   "company": "Discord",
+   "country": "US",
+   "title": "Discord Update: August 11, 2026 Changelog",
+   "url": "https://discord.com/blog/discord-update-august-11-2026-changelog",
+   "published": "2026-08-11",
+   "published_ts": 1786406400.0,
+   "summary": "Here's the Discord Changelog from August 11, 2026, so you can stay informed on what’s new in recent app updates!",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "1b86fb6ac3ee1c9d"
   },
   {
    "key": "github",

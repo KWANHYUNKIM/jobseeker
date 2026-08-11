@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T02:31:33",
+  "generated_at": "2026-08-12T04:10:18",
   "source": "youtube",
   "tech_count": 206,
   "curriculum_count": 20,
@@ -497,88 +497,6 @@
         "stage": "핵심"
       }
     ],
-    "TypeScript": [
-      {
-        "title": "3시간 완성 타입스크립트 기초 Full Course",
-        "url": "https://www.youtube.com/watch?v=3jtGNiVNSbw",
-        "thumbnail": "https://i.ytimg.com/vi/3jtGNiVNSbw/mqdefault.jpg",
-        "channel": "구디사는 개발자 9Diin",
-        "views": 2978,
-        "length": "3:20:07",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "타입스크립트 진짜 쉽게 설명해줌 | 이거보고도 이해 안되면 집가라",
-        "url": "https://www.youtube.com/watch?v=GHHUjITelsA",
-        "thumbnail": "https://i.ytimg.com/vi/GHHUjITelsA/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 42572,
-        "length": "20:25",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "타입스크립트 쓰는 이유 & 필수 문법 10분 정리",
-        "url": "https://www.youtube.com/watch?v=xkpcNolC270",
-        "thumbnail": "https://i.ytimg.com/vi/xkpcNolC270/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 225749,
-        "length": "13:28",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "얄코의 타입스크립트(TypeScript)",
-        "url": "https://www.youtube.com/watch?v=QmdJZKl1znE",
-        "thumbnail": "https://i.ytimg.com/vi/QmdJZKl1znE/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 4319,
-        "length": "1:02:51",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "다 타입스크립트로 바꿔야됨 10배 빨라짐",
-        "url": "https://www.youtube.com/watch?v=sObop-Jj32Y",
-        "thumbnail": "https://i.ytimg.com/vi/sObop-Jj32Y/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 186221,
-        "length": "4:16",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
-        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
-        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 12010,
-        "length": "3:20:44",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "코딩에 진심인 사람을 위해 준비한 리액트 타입스크립트 | 실제 회사에서 쓰는 레벨 ver",
-        "url": "https://www.youtube.com/watch?v=V9XLst8UEtk",
-        "thumbnail": "https://i.ytimg.com/vi/V9XLst8UEtk/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 59338,
-        "length": "36:22",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "타입스크립트 강의 - Intro 강의에 오신걸 환영합니다! 강의 소개",
-        "url": "https://www.youtube.com/watch?v=0UMmCbcZid0",
-        "thumbnail": "https://i.ytimg.com/vi/0UMmCbcZid0/mqdefault.jpg",
-        "channel": "나무소리",
-        "views": 13248,
-        "length": "2:00",
-        "published": "5년 전",
-        "stage": "핵심"
-      }
-    ],
     "Git": [
       {
         "title": "쉽게 설명하는 Git 기초 1. add, commit",
@@ -659,6 +577,88 @@
         "length": "18:44",
         "published": "4개월 전",
         "stage": "실전"
+      }
+    ],
+    "TypeScript": [
+      {
+        "title": "3시간 완성 타입스크립트 기초 Full Course",
+        "url": "https://www.youtube.com/watch?v=3jtGNiVNSbw",
+        "thumbnail": "https://i.ytimg.com/vi/3jtGNiVNSbw/mqdefault.jpg",
+        "channel": "구디사는 개발자 9Diin",
+        "views": 2978,
+        "length": "3:20:07",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "타입스크립트 진짜 쉽게 설명해줌 | 이거보고도 이해 안되면 집가라",
+        "url": "https://www.youtube.com/watch?v=GHHUjITelsA",
+        "thumbnail": "https://i.ytimg.com/vi/GHHUjITelsA/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 42572,
+        "length": "20:25",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "타입스크립트 쓰는 이유 & 필수 문법 10분 정리",
+        "url": "https://www.youtube.com/watch?v=xkpcNolC270",
+        "thumbnail": "https://i.ytimg.com/vi/xkpcNolC270/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 225749,
+        "length": "13:28",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "얄코의 타입스크립트(TypeScript)",
+        "url": "https://www.youtube.com/watch?v=QmdJZKl1znE",
+        "thumbnail": "https://i.ytimg.com/vi/QmdJZKl1znE/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 4319,
+        "length": "1:02:51",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "다 타입스크립트로 바꿔야됨 10배 빨라짐",
+        "url": "https://www.youtube.com/watch?v=sObop-Jj32Y",
+        "thumbnail": "https://i.ytimg.com/vi/sObop-Jj32Y/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 186221,
+        "length": "4:16",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
+        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
+        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 12010,
+        "length": "3:20:44",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "코딩에 진심인 사람을 위해 준비한 리액트 타입스크립트 | 실제 회사에서 쓰는 레벨 ver",
+        "url": "https://www.youtube.com/watch?v=V9XLst8UEtk",
+        "thumbnail": "https://i.ytimg.com/vi/V9XLst8UEtk/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 59338,
+        "length": "36:22",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "타입스크립트 강의 - Intro 강의에 오신걸 환영합니다! 강의 소개",
+        "url": "https://www.youtube.com/watch?v=0UMmCbcZid0",
+        "thumbnail": "https://i.ytimg.com/vi/0UMmCbcZid0/mqdefault.jpg",
+        "channel": "나무소리",
+        "views": 13248,
+        "length": "2:00",
+        "published": "5년 전",
+        "stage": "핵심"
       }
     ],
     "Linux": [
