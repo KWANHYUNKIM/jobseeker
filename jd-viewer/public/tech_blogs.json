@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-13T07:08:55",
- "total": 1036,
+ "generated_at": "2026-08-13T08:55:49",
+ "total": 1037,
  "sources": [
   {
    "company": "Etsy",
@@ -55,7 +55,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 35
+   "count": 36
   },
   {
    "company": "Netflix",
@@ -527,6 +527,44 @@
   "Consensus": "알고리즘/이론"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "GitHub availability report: July 2026",
+   "url": "https://github.blog/news-insights/company-news/github-availability-report-july-2026",
+   "published": "2026-08-12",
+   "published_ts": 1786573052.0,
+   "summary": "In July, we experienced eight incidents that resulted in degraded performance across GitHub services.\n\nThe post GitHub availability report: July 2026 appeared first on The GitHub Blog.",
+   "tags": [
+    "Company news",
+    "News & insights",
+    "GitHub Availability Report"
+   ],
+   "tech_stack": [
+    "GraphQL",
+    "REST API",
+    "Model Context Protocol",
+    "Redis",
+    "Azure",
+    "GitHub Actions",
+    "Observability",
+    "Authentication",
+    "TLS",
+    "Git"
+   ],
+   "categories": [
+    "백엔드",
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성",
+    "보안",
+    "협업/도구"
+   ],
+   "lang": "en",
+   "content_id": "a36261e809b0b0c5"
+  },
   {
    "key": "github",
    "company": "GitHub",
