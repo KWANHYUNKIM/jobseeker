@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-12T10:52:30",
- "total": 1028,
+ "generated_at": "2026-08-12T12:31:50",
+ "total": 1029,
  "sources": [
   {
    "company": "Etsy",
@@ -118,6 +118,11 @@
    "count": 17
   },
   {
+   "company": "Stripe",
+   "country": "US",
+   "count": 15
+  },
+  {
    "company": "당근",
    "country": "KR",
    "count": 15
@@ -134,11 +139,6 @@
   },
   {
    "company": "Pinterest",
-   "country": "US",
-   "count": 14
-  },
-  {
-   "company": "Stripe",
    "country": "US",
    "count": 14
   },
@@ -695,6 +695,21 @@
    "categories": [],
    "lang": "en",
    "content_id": "1b86fb6ac3ee1c9d"
+  },
+  {
+   "key": "stripe",
+   "company": "Stripe",
+   "country": "US",
+   "title": "Mapping the AI economy",
+   "url": "https://stripe.com/blog/mapping-the-ai-economy",
+   "published": "2026-08-11",
+   "published_ts": 1786406400.0,
+   "summary": "AI companies are undergoing rapid global expansion while achieving unprecedented rates of growth. We analyzed Stripe data to understand where global demand is the strongest, and how companies can build to best capture that demand.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "2fc047b5f4a970c4"
   },
   {
    "key": "github",

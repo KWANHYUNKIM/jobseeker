@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T10:53:18",
+  "generated_at": "2026-08-12T12:32:40",
   "source": "youtube",
   "tech_count": 207,
   "curriculum_count": 20,
@@ -1235,88 +1235,6 @@
         "stage": "실전"
       }
     ],
-    "Node.js": [
-      {
-        "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
-        "url": "https://www.youtube.com/watch?v=Tt_tKhhhJqY",
-        "thumbnail": "https://i.ytimg.com/vi/Tt_tKhhhJqY/mqdefault.jpg",
-        "channel": "조코딩 JoCoding",
-        "views": 322123,
-        "length": "1:00:36",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "NodeJS 백엔드 가장 쉽게 알려드림 | 100명의 비전공자를 취업시킨 전설의 강의 그 마지막 풀스택 코스",
-        "url": "https://www.youtube.com/watch?v=2pfw5kElIb8",
-        "thumbnail": "https://i.ytimg.com/vi/2pfw5kElIb8/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 14957,
-        "length": "4:37",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
-        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
-        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 12013,
-        "length": "3:20:44",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "얄코의 Node.js",
-        "url": "https://www.youtube.com/watch?v=xuEn4zqW7fY",
-        "thumbnail": "https://i.ytimg.com/vi/xuEn4zqW7fY/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 7863,
-        "length": "1:01:01",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "맘에드는 API못 찾았을 때 보세요 | NODEJS 속성강의 👊",
-        "url": "https://www.youtube.com/watch?v=7o97MsGDsbU",
-        "thumbnail": "https://i.ytimg.com/vi/7o97MsGDsbU/mqdefault.jpg",
-        "channel": "코딩알려주는누나",
-        "views": 7723,
-        "length": "16:49",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[무료강의 풀버전] Node.js · Prisma를 활용하여 백엔드 API 서버 개발하기 | 전) 쿼타랩 백엔드 리드 김신록",
-        "url": "https://www.youtube.com/watch?v=HyRtpsAVmDI",
-        "thumbnail": "https://i.ytimg.com/vi/HyRtpsAVmDI/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 648,
-        "length": "1:52:16",
-        "published": "7개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(Ep.2-1) Node.js가 뭔지 알아보자 (Node.js + MongoDB로 2시간만에 웹서버 만들기)",
-        "url": "https://www.youtube.com/watch?v=pTm5E3jcOeY",
-        "thumbnail": "https://i.ytimg.com/vi/pTm5E3jcOeY/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 98739,
-        "length": "4:44",
-        "published": "6년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "(Ep. 1) 서버에 대해 존나쉽게 설명해드림 (Node.js + MongoDB로 2시간만에 웹서버 만들기)",
-        "url": "https://www.youtube.com/watch?v=NoLV5iP5FNY",
-        "thumbnail": "https://i.ytimg.com/vi/NoLV5iP5FNY/mqdefault.jpg",
-        "channel": "코딩애플",
-        "views": 90501,
-        "length": "7:58",
-        "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
     "Redis": [
       {
         "title": "[Node 웹 프로그래밍] Redis 입문기초 -  Publish",
@@ -1396,6 +1314,88 @@
         "views": 8478,
         "length": "3:09",
         "published": "1년 전",
+        "stage": "실전"
+      }
+    ],
+    "Node.js": [
+      {
+        "title": "한시간만에 Node.js 백엔드 기초 끝내기 (ft. API 구축)",
+        "url": "https://www.youtube.com/watch?v=Tt_tKhhhJqY",
+        "thumbnail": "https://i.ytimg.com/vi/Tt_tKhhhJqY/mqdefault.jpg",
+        "channel": "조코딩 JoCoding",
+        "views": 322123,
+        "length": "1:00:36",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "NodeJS 백엔드 가장 쉽게 알려드림 | 100명의 비전공자를 취업시킨 전설의 강의 그 마지막 풀스택 코스",
+        "url": "https://www.youtube.com/watch?v=2pfw5kElIb8",
+        "thumbnail": "https://i.ytimg.com/vi/2pfw5kElIb8/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 14957,
+        "length": "4:37",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "가장 쉬운 리액트 / 타입스크립트 / Node.js 강좌",
+        "url": "https://www.youtube.com/watch?v=jggKW0ItEmo",
+        "thumbnail": "https://i.ytimg.com/vi/jggKW0ItEmo/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 12013,
+        "length": "3:20:44",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "얄코의 Node.js",
+        "url": "https://www.youtube.com/watch?v=xuEn4zqW7fY",
+        "thumbnail": "https://i.ytimg.com/vi/xuEn4zqW7fY/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 7863,
+        "length": "1:01:01",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "맘에드는 API못 찾았을 때 보세요 | NODEJS 속성강의 👊",
+        "url": "https://www.youtube.com/watch?v=7o97MsGDsbU",
+        "thumbnail": "https://i.ytimg.com/vi/7o97MsGDsbU/mqdefault.jpg",
+        "channel": "코딩알려주는누나",
+        "views": 7723,
+        "length": "16:49",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[무료강의 풀버전] Node.js · Prisma를 활용하여 백엔드 API 서버 개발하기 | 전) 쿼타랩 백엔드 리드 김신록",
+        "url": "https://www.youtube.com/watch?v=HyRtpsAVmDI",
+        "thumbnail": "https://i.ytimg.com/vi/HyRtpsAVmDI/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 648,
+        "length": "1:52:16",
+        "published": "7개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(Ep.2-1) Node.js가 뭔지 알아보자 (Node.js + MongoDB로 2시간만에 웹서버 만들기)",
+        "url": "https://www.youtube.com/watch?v=pTm5E3jcOeY",
+        "thumbnail": "https://i.ytimg.com/vi/pTm5E3jcOeY/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 98739,
+        "length": "4:44",
+        "published": "6년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "(Ep. 1) 서버에 대해 존나쉽게 설명해드림 (Node.js + MongoDB로 2시간만에 웹서버 만들기)",
+        "url": "https://www.youtube.com/watch?v=NoLV5iP5FNY",
+        "thumbnail": "https://i.ytimg.com/vi/NoLV5iP5FNY/mqdefault.jpg",
+        "channel": "코딩애플",
+        "views": 90501,
+        "length": "7:58",
+        "published": "6년 전",
         "stage": "실전"
       }
     ],
@@ -8565,6 +8565,88 @@
         "stage": "실전"
       }
     ],
+    "NLP": [
+      {
+        "title": "토큰화, 벡터화, 임베딩 무슨 차이일까? - NLP와 LLM 텍스트 데이터 기초 용어 이해하기",
+        "url": "https://www.youtube.com/watch?v=9rbm29bCjaQ",
+        "thumbnail": "https://i.ytimg.com/vi/9rbm29bCjaQ/mqdefault.jpg",
+        "channel": "오늘코드todaycode",
+        "views": 23252,
+        "length": "33:10",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "ChatGPT의 핵심개념인 '생성형 AI'를 쉽게 이해시켜드립니다ㅣ서울대 AI박사 (LLM, NLP)",
+        "url": "https://www.youtube.com/watch?v=3dEzMRL5VMk",
+        "thumbnail": "https://i.ytimg.com/vi/3dEzMRL5VMk/mqdefault.jpg",
+        "channel": "메타코드M",
+        "views": 121820,
+        "length": "7:07",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "설기문의 NLP 특강 : NLP란 무엇인가?",
+        "url": "https://www.youtube.com/watch?v=RLBQIeD8qTY",
+        "thumbnail": "https://i.ytimg.com/vi/RLBQIeD8qTY/mqdefault.jpg",
+        "channel": "설기문TV",
+        "views": 11431,
+        "length": "44:06",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "변화와 성장으로 가는 길, \" NLP 이해 및 활용 \"으로 찾아보세요!",
+        "url": "https://www.youtube.com/watch?v=CmDybUtiK2s",
+        "thumbnail": "https://i.ytimg.com/vi/CmDybUtiK2s/mqdefault.jpg",
+        "channel": "학지사에듀 카운피아",
+        "views": 6318,
+        "length": "9:45",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "설기문의 NLP 특강 : NLP 커뮤니케이션 모델 (1)",
+        "url": "https://www.youtube.com/watch?v=iIUQ7lDm114",
+        "thumbnail": "https://i.ytimg.com/vi/iIUQ7lDm114/mqdefault.jpg",
+        "channel": "설기문TV",
+        "views": 2044,
+        "length": "25:03",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "신경언어프로그래밍의 정의와 탄생 배경 - NLP 특강 1 #nlp #코칭 #상담 #자기이해 #모델링",
+        "url": "https://www.youtube.com/watch?v=K-13RRCyh8Y",
+        "thumbnail": "https://i.ytimg.com/vi/K-13RRCyh8Y/mqdefault.jpg",
+        "channel": "혼울림TV",
+        "views": 1502,
+        "length": "4:40",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "NLP의 전제 - NLP 특강 2",
+        "url": "https://www.youtube.com/watch?v=c0cRlIZIIUw",
+        "thumbnail": "https://i.ytimg.com/vi/c0cRlIZIIUw/mqdefault.jpg",
+        "channel": "혼울림TV",
+        "views": 460,
+        "length": "6:06",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "1. NLP의 정의(1): \"주관적 경험을 바꾸기\"",
+        "url": "https://www.youtube.com/watch?v=aj55T5jXA1Q",
+        "thumbnail": "https://i.ytimg.com/vi/aj55T5jXA1Q/mqdefault.jpg",
+        "channel": "한국NLP코칭센터",
+        "views": 2376,
+        "length": "9:29",
+        "published": "7년 전",
+        "stage": "핵심"
+      }
+    ],
     "Firebase": [
       {
         "title": "파이어베이스 시작하기 | Vue 3 & Firebase 10 커뮤니티 풀스택 EP_15",
@@ -8890,88 +8972,6 @@
         "views": 14,
         "length": "25:52",
         "published": "3개월 전",
-        "stage": "핵심"
-      }
-    ],
-    "NLP": [
-      {
-        "title": "토큰화, 벡터화, 임베딩 무슨 차이일까? - NLP와 LLM 텍스트 데이터 기초 용어 이해하기",
-        "url": "https://www.youtube.com/watch?v=9rbm29bCjaQ",
-        "thumbnail": "https://i.ytimg.com/vi/9rbm29bCjaQ/mqdefault.jpg",
-        "channel": "오늘코드todaycode",
-        "views": 23252,
-        "length": "33:10",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "ChatGPT의 핵심개념인 '생성형 AI'를 쉽게 이해시켜드립니다ㅣ서울대 AI박사 (LLM, NLP)",
-        "url": "https://www.youtube.com/watch?v=3dEzMRL5VMk",
-        "thumbnail": "https://i.ytimg.com/vi/3dEzMRL5VMk/mqdefault.jpg",
-        "channel": "메타코드M",
-        "views": 121820,
-        "length": "7:07",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "설기문의 NLP 특강 : NLP란 무엇인가?",
-        "url": "https://www.youtube.com/watch?v=RLBQIeD8qTY",
-        "thumbnail": "https://i.ytimg.com/vi/RLBQIeD8qTY/mqdefault.jpg",
-        "channel": "설기문TV",
-        "views": 11431,
-        "length": "44:06",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "변화와 성장으로 가는 길, \" NLP 이해 및 활용 \"으로 찾아보세요!",
-        "url": "https://www.youtube.com/watch?v=CmDybUtiK2s",
-        "thumbnail": "https://i.ytimg.com/vi/CmDybUtiK2s/mqdefault.jpg",
-        "channel": "학지사에듀 카운피아",
-        "views": 6318,
-        "length": "9:45",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "설기문의 NLP 특강 : NLP 커뮤니케이션 모델 (1)",
-        "url": "https://www.youtube.com/watch?v=iIUQ7lDm114",
-        "thumbnail": "https://i.ytimg.com/vi/iIUQ7lDm114/mqdefault.jpg",
-        "channel": "설기문TV",
-        "views": 2044,
-        "length": "25:03",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "신경언어프로그래밍의 정의와 탄생 배경 - NLP 특강 1 #nlp #코칭 #상담 #자기이해 #모델링",
-        "url": "https://www.youtube.com/watch?v=K-13RRCyh8Y",
-        "thumbnail": "https://i.ytimg.com/vi/K-13RRCyh8Y/mqdefault.jpg",
-        "channel": "혼울림TV",
-        "views": 1502,
-        "length": "4:40",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "NLP의 전제 - NLP 특강 2",
-        "url": "https://www.youtube.com/watch?v=c0cRlIZIIUw",
-        "thumbnail": "https://i.ytimg.com/vi/c0cRlIZIIUw/mqdefault.jpg",
-        "channel": "혼울림TV",
-        "views": 460,
-        "length": "6:06",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "1. NLP의 정의(1): \"주관적 경험을 바꾸기\"",
-        "url": "https://www.youtube.com/watch?v=aj55T5jXA1Q",
-        "thumbnail": "https://i.ytimg.com/vi/aj55T5jXA1Q/mqdefault.jpg",
-        "channel": "한국NLP코칭센터",
-        "views": 2376,
-        "length": "9:29",
-        "published": "7년 전",
         "stage": "핵심"
       }
     ],
@@ -9303,6 +9303,88 @@
         "stage": "실전"
       }
     ],
+    "MachineLearning": [
+      {
+        "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
+        "url": "https://www.youtube.com/watch?v=qPMeuL2LIqY",
+        "thumbnail": "https://i.ytimg.com/vi/qPMeuL2LIqY/mqdefault.jpg",
+        "channel": "Sung Kim",
+        "views": 403993,
+        "length": "12:29",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "기계학습Machine learning 입문하기 강의 v3",
+        "url": "https://www.youtube.com/watch?v=MCa1G6sOhT0",
+        "thumbnail": "https://i.ytimg.com/vi/MCa1G6sOhT0/mqdefault.jpg",
+        "channel": "who??",
+        "views": 40,
+        "length": "12:22",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "기계학습Machine learning 입문하기 강의 v1",
+        "url": "https://www.youtube.com/watch?v=G1ZffiP-Qtc",
+        "thumbnail": "https://i.ytimg.com/vi/G1ZffiP-Qtc/mqdefault.jpg",
+        "channel": "who??",
+        "views": 159,
+        "length": "9:53",
+        "published": "10년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "서동일 교수의 AI 강의 1:AI, 기계학습(Machine Learning) 그리고 딥러닝(Deep Learning Part) 소개_I",
+        "url": "https://www.youtube.com/watch?v=4zYnyYDOHHo",
+        "thumbnail": "https://i.ytimg.com/vi/4zYnyYDOHHo/mqdefault.jpg",
+        "channel": "Dongil Seo",
+        "views": 114,
+        "length": "22:21",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Day1-07) 기계학습 이론 강의 - Basics of Machine Learning",
+        "url": "https://www.youtube.com/watch?v=kV-N6vC4thY",
+        "thumbnail": "https://i.ytimg.com/vi/kV-N6vC4thY/mqdefault.jpg",
+        "channel": "수리수리과학연구소",
+        "views": 125,
+        "length": "33:55",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lecture 11. Introduction to Machine Learning",
+        "url": "https://www.youtube.com/watch?v=x1QTQm3YSTA",
+        "thumbnail": "https://i.ytimg.com/vi/x1QTQm3YSTA/mqdefault.jpg",
+        "channel": "Soon Ki Jung",
+        "views": 112,
+        "length": "1:21:43",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Lecture 데이터 분석 파이썬] #37. Machine Learning - 머신러닝의 이해",
+        "url": "https://www.youtube.com/watch?v=HGqDGSchywE",
+        "thumbnail": "https://i.ytimg.com/vi/HGqDGSchywE/mqdefault.jpg",
+        "channel": "이래중 RaejungLee",
+        "views": 53,
+        "length": "50:23",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 머신러닝 강의 01-1 - 머신러닝(Machine Learning) 개요",
+        "url": "https://www.youtube.com/watch?v=7RtWlPpk348",
+        "thumbnail": "https://i.ytimg.com/vi/7RtWlPpk348/mqdefault.jpg",
+        "channel": "K-ICT 빅데이터센터",
+        "views": 19372,
+        "length": "3:21",
+        "published": "6년 전",
+        "stage": "핵심"
+      }
+    ],
     "Pytest": [
       {
         "title": "[SWTT] pytest 튜토리얼 (1/3)",
@@ -9465,88 +9547,6 @@
         "length": "1:31:52",
         "published": "1년 전",
         "stage": "실전"
-      }
-    ],
-    "MachineLearning": [
-      {
-        "title": "ML lec 01 - 기본적인 Machine Learning 의 용어와 개념 설명",
-        "url": "https://www.youtube.com/watch?v=qPMeuL2LIqY",
-        "thumbnail": "https://i.ytimg.com/vi/qPMeuL2LIqY/mqdefault.jpg",
-        "channel": "Sung Kim",
-        "views": 403993,
-        "length": "12:29",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "기계학습Machine learning 입문하기 강의 v3",
-        "url": "https://www.youtube.com/watch?v=MCa1G6sOhT0",
-        "thumbnail": "https://i.ytimg.com/vi/MCa1G6sOhT0/mqdefault.jpg",
-        "channel": "who??",
-        "views": 40,
-        "length": "12:22",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "기계학습Machine learning 입문하기 강의 v1",
-        "url": "https://www.youtube.com/watch?v=G1ZffiP-Qtc",
-        "thumbnail": "https://i.ytimg.com/vi/G1ZffiP-Qtc/mqdefault.jpg",
-        "channel": "who??",
-        "views": 159,
-        "length": "9:53",
-        "published": "10년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "서동일 교수의 AI 강의 1:AI, 기계학습(Machine Learning) 그리고 딥러닝(Deep Learning Part) 소개_I",
-        "url": "https://www.youtube.com/watch?v=4zYnyYDOHHo",
-        "thumbnail": "https://i.ytimg.com/vi/4zYnyYDOHHo/mqdefault.jpg",
-        "channel": "Dongil Seo",
-        "views": 114,
-        "length": "22:21",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Day1-07) 기계학습 이론 강의 - Basics of Machine Learning",
-        "url": "https://www.youtube.com/watch?v=kV-N6vC4thY",
-        "thumbnail": "https://i.ytimg.com/vi/kV-N6vC4thY/mqdefault.jpg",
-        "channel": "수리수리과학연구소",
-        "views": 125,
-        "length": "33:55",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lecture 11. Introduction to Machine Learning",
-        "url": "https://www.youtube.com/watch?v=x1QTQm3YSTA",
-        "thumbnail": "https://i.ytimg.com/vi/x1QTQm3YSTA/mqdefault.jpg",
-        "channel": "Soon Ki Jung",
-        "views": 112,
-        "length": "1:21:43",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Lecture 데이터 분석 파이썬] #37. Machine Learning - 머신러닝의 이해",
-        "url": "https://www.youtube.com/watch?v=HGqDGSchywE",
-        "thumbnail": "https://i.ytimg.com/vi/HGqDGSchywE/mqdefault.jpg",
-        "channel": "이래중 RaejungLee",
-        "views": 53,
-        "length": "50:23",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 머신러닝 강의 01-1 - 머신러닝(Machine Learning) 개요",
-        "url": "https://www.youtube.com/watch?v=7RtWlPpk348",
-        "thumbnail": "https://i.ytimg.com/vi/7RtWlPpk348/mqdefault.jpg",
-        "channel": "K-ICT 빅데이터센터",
-        "views": 19372,
-        "length": "3:21",
-        "published": "6년 전",
-        "stage": "핵심"
       }
     ],
     "Svelte": [
@@ -12337,6 +12337,88 @@
         "stage": "실전"
       }
     ],
+    "ETL": [
+      {
+        "title": "데이터 엔지니어를 위한 CDC vs ETL vs ELT  개념 요약 [ 세미남355@토크아이티, 디비투이 김명훈 대표]",
+        "url": "https://www.youtube.com/watch?v=Zlz5CkFJzYc",
+        "thumbnail": "https://i.ytimg.com/vi/Zlz5CkFJzYc/mqdefault.jpg",
+        "channel": "토크아이티(Talk IT)",
+        "views": 1952,
+        "length": "7:17",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "빅데이터분석기사 필기 ETL, DW, DM 그림으로 암기",
+        "url": "https://www.youtube.com/watch?v=b5hFloEpQFw",
+        "thumbnail": "https://i.ytimg.com/vi/b5hFloEpQFw/mqdefault.jpg",
+        "channel": "빅공남(빅데이터 공부하는 남자)",
+        "views": 12801,
+        "length": "7:52",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "클릭월드ㅣTalend ETL, Demo (씨앤텍시스템즈 김준형 연구소 부소장)",
+        "url": "https://www.youtube.com/watch?v=_LcC0O38Yhg",
+        "thumbnail": "https://i.ytimg.com/vi/_LcC0O38Yhg/mqdefault.jpg",
+        "channel": "대교CNS",
+        "views": 78,
+        "length": "12:18",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "ETL#1-  원본변경을 통한 차트 재사용, 테이블 결합",
+        "url": "https://www.youtube.com/watch?v=XorXaogl1r0",
+        "thumbnail": "https://i.ytimg.com/vi/XorXaogl1r0/mqdefault.jpg",
+        "channel": "허신 - Business Intelligence ",
+        "views": 375,
+        "length": "12:17",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SNU eTL] 교수용 매뉴얼 1 eTL소개/1.1 Moodle소개",
+        "url": "https://www.youtube.com/watch?v=fMW0gTEGXvI",
+        "thumbnail": "https://i.ytimg.com/vi/fMW0gTEGXvI/mqdefault.jpg",
+        "channel": "SNUeTL2",
+        "views": 208,
+        "length": "1:01",
+        "published": "13년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[13일차] ETL vs ELT 완전 정리 | 실무 데이터 파이프라인 설계 패턴",
+        "url": "https://www.youtube.com/watch?v=3LbKdkAd9jA",
+        "thumbnail": "https://i.ytimg.com/vi/3LbKdkAd9jA/mqdefault.jpg",
+        "channel": "AI-Trendy",
+        "views": 52,
+        "length": "18:22",
+        "published": "2개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "ETL#20-  보고서로 분석용 데이터 만들기①",
+        "url": "https://www.youtube.com/watch?v=qtOLgd9Jqjk",
+        "thumbnail": "https://i.ytimg.com/vi/qtOLgd9Jqjk/mqdefault.jpg",
+        "channel": "허신 - Business Intelligence ",
+        "views": 85,
+        "length": "10:31",
+        "published": "9개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "[14일차] Spark + Airflow 실전 연동 | 대규모 ETL 파이프라인 구축하기",
+        "url": "https://www.youtube.com/watch?v=RpreKYBRE9Y",
+        "thumbnail": "https://i.ytimg.com/vi/RpreKYBRE9Y/mqdefault.jpg",
+        "channel": "AI-Trendy",
+        "views": 42,
+        "length": "18:25",
+        "published": "2개월 전",
+        "stage": "실전"
+      }
+    ],
     "Gradle": [
       {
         "title": "vscode 세팅 3강 - gradle",
@@ -12498,88 +12580,6 @@
         "views": 13821,
         "length": "41:53",
         "published": "6년 전",
-        "stage": "실전"
-      }
-    ],
-    "ETL": [
-      {
-        "title": "데이터 엔지니어를 위한 CDC vs ETL vs ELT  개념 요약 [ 세미남355@토크아이티, 디비투이 김명훈 대표]",
-        "url": "https://www.youtube.com/watch?v=Zlz5CkFJzYc",
-        "thumbnail": "https://i.ytimg.com/vi/Zlz5CkFJzYc/mqdefault.jpg",
-        "channel": "토크아이티(Talk IT)",
-        "views": 1952,
-        "length": "7:17",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "빅데이터분석기사 필기 ETL, DW, DM 그림으로 암기",
-        "url": "https://www.youtube.com/watch?v=b5hFloEpQFw",
-        "thumbnail": "https://i.ytimg.com/vi/b5hFloEpQFw/mqdefault.jpg",
-        "channel": "빅공남(빅데이터 공부하는 남자)",
-        "views": 12801,
-        "length": "7:52",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "클릭월드ㅣTalend ETL, Demo (씨앤텍시스템즈 김준형 연구소 부소장)",
-        "url": "https://www.youtube.com/watch?v=_LcC0O38Yhg",
-        "thumbnail": "https://i.ytimg.com/vi/_LcC0O38Yhg/mqdefault.jpg",
-        "channel": "대교CNS",
-        "views": 78,
-        "length": "12:18",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "ETL#1-  원본변경을 통한 차트 재사용, 테이블 결합",
-        "url": "https://www.youtube.com/watch?v=XorXaogl1r0",
-        "thumbnail": "https://i.ytimg.com/vi/XorXaogl1r0/mqdefault.jpg",
-        "channel": "허신 - Business Intelligence ",
-        "views": 375,
-        "length": "12:17",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SNU eTL] 교수용 매뉴얼 1 eTL소개/1.1 Moodle소개",
-        "url": "https://www.youtube.com/watch?v=fMW0gTEGXvI",
-        "thumbnail": "https://i.ytimg.com/vi/fMW0gTEGXvI/mqdefault.jpg",
-        "channel": "SNUeTL2",
-        "views": 208,
-        "length": "1:01",
-        "published": "13년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[13일차] ETL vs ELT 완전 정리 | 실무 데이터 파이프라인 설계 패턴",
-        "url": "https://www.youtube.com/watch?v=3LbKdkAd9jA",
-        "thumbnail": "https://i.ytimg.com/vi/3LbKdkAd9jA/mqdefault.jpg",
-        "channel": "AI-Trendy",
-        "views": 52,
-        "length": "18:22",
-        "published": "2개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "ETL#20-  보고서로 분석용 데이터 만들기①",
-        "url": "https://www.youtube.com/watch?v=qtOLgd9Jqjk",
-        "thumbnail": "https://i.ytimg.com/vi/qtOLgd9Jqjk/mqdefault.jpg",
-        "channel": "허신 - Business Intelligence ",
-        "views": 85,
-        "length": "10:31",
-        "published": "9개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "[14일차] Spark + Airflow 실전 연동 | 대규모 ETL 파이프라인 구축하기",
-        "url": "https://www.youtube.com/watch?v=RpreKYBRE9Y",
-        "thumbnail": "https://i.ytimg.com/vi/RpreKYBRE9Y/mqdefault.jpg",
-        "channel": "AI-Trendy",
-        "views": 42,
-        "length": "18:25",
-        "published": "2개월 전",
         "stage": "실전"
       }
     ],
@@ -13974,6 +13974,88 @@
         "views": 66,
         "length": "2:36",
         "published": "9년 전",
+        "stage": "실전"
+      }
+    ],
+    "Transformers": [
+      {
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "thumbnail": "https://i.ytimg.com/vi/Ub3GoFaUcds/mqdefault.jpg",
+        "channel": "Stanford Online",
+        "views": 910406,
+        "length": "1:41:59",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Transformers, the tech behind LLMs | Deep Learning Chapter 5",
+        "url": "https://www.youtube.com/watch?v=wjZofJX0v4M",
+        "thumbnail": "https://i.ytimg.com/vi/wjZofJX0v4M/mqdefault.jpg",
+        "channel": "3Blue1Brown",
+        "views": 10873159,
+        "length": "27:14",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "딥러닝 트랜스포머 셀프어텐션, Transformer, self attention",
+        "url": "https://www.youtube.com/watch?v=DdpOpLNKRJs",
+        "thumbnail": "https://i.ytimg.com/vi/DdpOpLNKRJs/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 14260,
+        "length": "7:27",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[컴퓨터비전 2026] Lecture 10. Attention & Transformers I",
+        "url": "https://www.youtube.com/watch?v=-PLfZvx0XZ0",
+        "thumbnail": "https://i.ytimg.com/vi/-PLfZvx0XZ0/mqdefault.jpg",
+        "channel": "Joonseok Lee",
+        "views": 541,
+        "length": "1:10:15",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[컴퓨터비전 2026] Lecture 11. Transformers II",
+        "url": "https://www.youtube.com/watch?v=GVJfXEPhdWk",
+        "thumbnail": "https://i.ytimg.com/vi/GVJfXEPhdWk/mqdefault.jpg",
+        "channel": "Joonseok Lee",
+        "views": 409,
+        "length": "1:19:13",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lec 08. Architectures: Transformers",
+        "url": "https://www.youtube.com/watch?v=Q1HOKrNeh2M",
+        "thumbnail": "https://i.ytimg.com/vi/Q1HOKrNeh2M/mqdefault.jpg",
+        "channel": "MIT OpenCourseWare",
+        "views": 9908,
+        "length": "1:14:35",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Deep Learning 101] 트랜스포머, 스텝 바이 스텝",
+        "url": "https://www.youtube.com/watch?v=p216tTVxues",
+        "thumbnail": "https://i.ytimg.com/vi/p216tTVxues/mqdefault.jpg",
+        "channel": "신박Ai",
+        "views": 42176,
+        "length": "21:41",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "트랜스포머, ChatGPT가 트랜스포머로 만들어졌죠. - DL5",
+        "url": "https://www.youtube.com/watch?v=g38aoGttLhI",
+        "thumbnail": "https://i.ytimg.com/vi/g38aoGttLhI/mqdefault.jpg",
+        "channel": "3Blue1Brown 한국어",
+        "views": 165288,
+        "length": "26:54",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
@@ -15422,88 +15504,6 @@
         "views": 105009,
         "length": "10:28",
         "published": "7년 전",
-        "stage": "실전"
-      }
-    ],
-    "Transformers": [
-      {
-        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
-        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
-        "thumbnail": "https://i.ytimg.com/vi/Ub3GoFaUcds/mqdefault.jpg",
-        "channel": "Stanford Online",
-        "views": 910406,
-        "length": "1:41:59",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Transformers, the tech behind LLMs | Deep Learning Chapter 5",
-        "url": "https://www.youtube.com/watch?v=wjZofJX0v4M",
-        "thumbnail": "https://i.ytimg.com/vi/wjZofJX0v4M/mqdefault.jpg",
-        "channel": "3Blue1Brown",
-        "views": 10873159,
-        "length": "27:14",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "딥러닝 트랜스포머 셀프어텐션, Transformer, self attention",
-        "url": "https://www.youtube.com/watch?v=DdpOpLNKRJs",
-        "thumbnail": "https://i.ytimg.com/vi/DdpOpLNKRJs/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 14260,
-        "length": "7:27",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[컴퓨터비전 2026] Lecture 10. Attention & Transformers I",
-        "url": "https://www.youtube.com/watch?v=-PLfZvx0XZ0",
-        "thumbnail": "https://i.ytimg.com/vi/-PLfZvx0XZ0/mqdefault.jpg",
-        "channel": "Joonseok Lee",
-        "views": 541,
-        "length": "1:10:15",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[컴퓨터비전 2026] Lecture 11. Transformers II",
-        "url": "https://www.youtube.com/watch?v=GVJfXEPhdWk",
-        "thumbnail": "https://i.ytimg.com/vi/GVJfXEPhdWk/mqdefault.jpg",
-        "channel": "Joonseok Lee",
-        "views": 409,
-        "length": "1:19:13",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lec 08. Architectures: Transformers",
-        "url": "https://www.youtube.com/watch?v=Q1HOKrNeh2M",
-        "thumbnail": "https://i.ytimg.com/vi/Q1HOKrNeh2M/mqdefault.jpg",
-        "channel": "MIT OpenCourseWare",
-        "views": 9908,
-        "length": "1:14:35",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Deep Learning 101] 트랜스포머, 스텝 바이 스텝",
-        "url": "https://www.youtube.com/watch?v=p216tTVxues",
-        "thumbnail": "https://i.ytimg.com/vi/p216tTVxues/mqdefault.jpg",
-        "channel": "신박Ai",
-        "views": 42176,
-        "length": "21:41",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "트랜스포머, ChatGPT가 트랜스포머로 만들어졌죠. - DL5",
-        "url": "https://www.youtube.com/watch?v=g38aoGttLhI",
-        "thumbnail": "https://i.ytimg.com/vi/g38aoGttLhI/mqdefault.jpg",
-        "channel": "3Blue1Brown 한국어",
-        "views": 165288,
-        "length": "26:54",
-        "published": "1년 전",
         "stage": "실전"
       }
     ],
