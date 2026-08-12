@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-13T03:52:45",
-  "total_jobs": 9854,
-  "company_count": 1868,
+  "generated_at": "2026-08-13T05:31:33",
+  "total_jobs": 9860,
+  "company_count": 1869,
   "min_posting": 2,
   "companies": [
     {
@@ -7372,6 +7372,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -7397,13 +7404,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -131237,6 +131237,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -131262,13 +131269,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -175751,6 +175751,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -175779,18 +175786,334 @@
             "why": "LLM/생성형"
           },
           {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
             "country": "US",
             "why": "LLM/생성형"
+          }
+        ]
+      }
+    },
+    {
+      "name": "미래에셋생명보험㈜",
+      "norm": "미래에셋생명보험",
+      "size": "대기업",
+      "size_alias": "미래에셋생명",
+      "posting_count": 4,
+      "sites": [
+        "dev",
+        "jobkorea",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 4,
+        "백엔드": 3,
+        "DevOps/인프라": 2,
+        "데이터": 2
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 4
+        },
+        {
+          "name": "AWS",
+          "count": 4
+        },
+        {
+          "name": "Docker",
+          "count": 4
+        },
+        {
+          "name": "Java",
+          "count": 3
+        },
+        {
+          "name": "GCP",
+          "count": 3
+        },
+        {
+          "name": "Kubernetes",
+          "count": 3
+        },
+        {
+          "name": "Linux",
+          "count": 3
+        },
+        {
+          "name": "FastAPI",
+          "count": 3
+        },
+        {
+          "name": "Azure",
+          "count": 3
+        },
+        {
+          "name": "MySQL",
+          "count": 2
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 2
+        },
+        {
+          "name": "MongoDB",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 4
+          },
+          {
+            "name": "Java",
+            "count": 3
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "FastAPI",
+            "count": 3
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 2
+          },
+          {
+            "name": "PostgreSQL",
+            "count": 2
+          },
+          {
+            "name": "MongoDB",
+            "count": 2
+          },
+          {
+            "name": "Oracle",
+            "count": 2
+          },
+          {
+            "name": "MariaDB",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 4
+          },
+          {
+            "name": "Docker",
+            "count": 4
+          },
+          {
+            "name": "GCP",
+            "count": 3
+          },
+          {
+            "name": "Kubernetes",
+            "count": 3
+          },
+          {
+            "name": "Linux",
+            "count": 3
+          },
+          {
+            "name": "Azure",
+            "count": 3
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "핀테크/금융",
+          "score": 18,
+          "evidence": [
+            "금융",
+            "보험"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 18,
+          "evidence": [
+            "생성형 AI",
+            "LLM"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS/GCP/Azure)",
+          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "LLM · 생성형 AI 애플리케이션",
+          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "AI 운영원(AI Ops 엔지니어) 경력사원 채용",
+        "AI 엔지니어 경력사원 채용",
+        "각 분야 경력사원 채용공고",
+        "각 분야 경력사원 채용"
+      ],
+      "postings": [
+        {
+          "title": "AI 운영원(AI Ops 엔지니어) 경력사원 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49754794?Oem_Code=C1&logpath=1&stext=AI&listno=96&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "AI 엔지니어 경력사원 채용",
+          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49753249?Oem_Code=C1&logpath=1&stext=AI&listno=99&sc=630",
+          "site": "jobkorea"
+        },
+        {
+          "title": "각 분야 경력사원 채용공고",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54711000&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=9af6c668-0c2e-4d32-9237-71974a923908",
+          "site": "saramin"
+        },
+        {
+          "title": "각 분야 경력사원 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/565756?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "미래에셋생명보험㈜는 핀테크/금융 도메인의 대기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 Python, AWS, Docker, Java 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, AWS, Docker 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "핀테크/금융 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "Java"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "PostgreSQL",
+              "MongoDB",
+              "Kafka"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
+              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
+            "techs": [
+              "AWS",
+              "Docker",
+              "GCP",
+              "Kubernetes"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "LangChain",
+              "OpenAI",
+              "Kafka"
+            ],
+            "tips": [
+              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
+              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[핀테크/금융] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[핀테크/금융] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "컨테이너 기반 배포·오토스케일링 운영",
+          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, azure, gcp"
+          },
+          {
+            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
+            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
+            "company": "당근",
+            "country": "KR",
+            "why": "gcp, mongodb, mysql"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "aws, java, kubernetes"
+          },
+          {
+            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
+            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
+            "company": "쏘카",
+            "country": "KR",
+            "why": "aws, gcp, java"
+          },
+          {
+            "title": "LyftLearn Evolution: Rethinking ML Platform Architecture",
+            "url": "https://eng.lyft.com/lyftlearn-evolution-rethinking-ml-platform-architecture-547de6c950e1",
+            "company": "Lyft",
+            "country": "US",
+            "why": "aws, docker, java"
+          },
+          {
+            "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+            "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+            "company": "Grab",
+            "country": "SG",
+            "why": "fastapi, kubernetes, postgresql"
           }
         ]
       }
@@ -248375,322 +248698,6 @@
       }
     },
     {
-      "name": "미래에셋생명보험㈜",
-      "norm": "미래에셋생명보험",
-      "size": "대기업",
-      "size_alias": "미래에셋생명",
-      "posting_count": 3,
-      "sites": [
-        "jobkorea",
-        "saramin"
-      ],
-      "roles": {
-        "AI/ML": 3,
-        "백엔드": 2,
-        "DevOps/인프라": 1,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 3
-        },
-        {
-          "name": "AWS",
-          "count": 3
-        },
-        {
-          "name": "Docker",
-          "count": 3
-        },
-        {
-          "name": "Java",
-          "count": 2
-        },
-        {
-          "name": "GCP",
-          "count": 2
-        },
-        {
-          "name": "Kubernetes",
-          "count": 2
-        },
-        {
-          "name": "Linux",
-          "count": 2
-        },
-        {
-          "name": "FastAPI",
-          "count": 2
-        },
-        {
-          "name": "Azure",
-          "count": 2
-        },
-        {
-          "name": "MySQL",
-          "count": 1
-        },
-        {
-          "name": "PostgreSQL",
-          "count": 1
-        },
-        {
-          "name": "MongoDB",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 3
-          },
-          {
-            "name": "Java",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "FastAPI",
-            "count": 2
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 1
-          },
-          {
-            "name": "PostgreSQL",
-            "count": 1
-          },
-          {
-            "name": "MongoDB",
-            "count": 1
-          },
-          {
-            "name": "Oracle",
-            "count": 1
-          },
-          {
-            "name": "MariaDB",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "AWS",
-            "count": 3
-          },
-          {
-            "name": "Docker",
-            "count": 3
-          },
-          {
-            "name": "GCP",
-            "count": 2
-          },
-          {
-            "name": "Kubernetes",
-            "count": 2
-          },
-          {
-            "name": "Linux",
-            "count": 2
-          },
-          {
-            "name": "Azure",
-            "count": 2
-          }
-        ],
-        "데이터": [
-          {
-            "name": "Kafka",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "AI/데이터 플랫폼",
-          "score": 12,
-          "evidence": [
-            "생성형 AI",
-            "LLM"
-          ]
-        },
-        {
-          "name": "핀테크/금융",
-          "score": 11,
-          "evidence": [
-            "금융",
-            "보험"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS/GCP/Azure)",
-          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "데이터 파이프라인 · ETL",
-          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
-        },
-        {
-          "label": "LLM · 생성형 AI 애플리케이션",
-          "why": "LangChain/OpenAI 또는 LLM·RAG 언급 — 생성형 AI 파이프라인 추정"
-        }
-      ],
-      "titles": [
-        "AI 운영원(AI Ops 엔지니어) 경력사원 채용",
-        "AI 엔지니어 경력사원 채용",
-        "각 분야 경력사원 채용공고"
-      ],
-      "postings": [
-        {
-          "title": "AI 운영원(AI Ops 엔지니어) 경력사원 채용",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49754794?Oem_Code=C1&logpath=1&stext=AI&listno=96&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "AI 엔지니어 경력사원 채용",
-          "url": "https://www.jobkorea.co.kr/Recruit/GI_Read/49753249?Oem_Code=C1&logpath=1&stext=AI&listno=99&sc=630",
-          "site": "jobkorea"
-        },
-        {
-          "title": "각 분야 경력사원 채용공고",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54711000&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=9af6c668-0c2e-4d32-9237-71974a923908",
-          "site": "saramin"
-        }
-      ],
-      "summary": "미래에셋생명보험㈜는 AI/데이터 플랫폼 도메인의 대기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 Python, AWS, Docker, Java 기반으로 개발합니다. 아키텍처는 컨테이너 오케스트레이션 (K8s)로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python, AWS, Docker 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "AI/데이터 플랫폼 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "컨테이너 오케스트레이션 (K8s) 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python",
-              "Java"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "PostgreSQL",
-              "MongoDB",
-              "Kafka"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
-              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 컨테이너 오케스트레이션 (K8s))",
-            "techs": [
-              "AWS",
-              "Docker",
-              "GCP",
-              "Kubernetes"
-            ],
-            "tips": [
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
-              "GCP — GCE·GCS·BigQuery 중심으로 클라우드 인프라 이해",
-              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "LangChain",
-              "OpenAI",
-              "Kafka"
-            ],
-            "tips": [
-              "LangChain — 프롬프트·체인·RAG 파이프라인으로 LLM 앱 구현",
-              "OpenAI — API·함수호출·임베딩으로 생성형 기능 붙이기",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          }
-        ],
-        "tasks": [
-          "[AI/데이터 플랫폼] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[AI/데이터 플랫폼] API·서버 비즈니스 로직 개발과 DB 모델링",
-          "컨테이너 기반 배포·오토스케일링 운영",
-          "대용량 데이터의 배치/스트리밍 처리 파이프라인 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, azure, gcp"
-          },
-          {
-            "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
-            "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC-200-%EA%B0%9C-db-%EB%A5%BC-%EC%98%AE%EA%B8%B0%EB%8A%94-elt-%ED%94%8C%EB%9E%AB%ED%8F%BC-dt-platform-%EC%9D%84-%EB%A7%8C%EB%93%A0-%EC%9D%B4%EC%95%BC%EA%B8%B0-65a499b4967a",
-            "company": "당근",
-            "country": "KR",
-            "why": "gcp, mongodb, mysql"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "aws, java, kubernetes"
-          },
-          {
-            "title": "로그 파이프라인 개선기 - 기존 파이프라인 문제 정의 및 해결 방안 적용",
-            "url": "https://tech.socarcorp.kr/data/2025/02/25/log-pipeline-revamp.html",
-            "company": "쏘카",
-            "country": "KR",
-            "why": "aws, gcp, java"
-          },
-          {
-            "title": "LyftLearn Evolution: Rethinking ML Platform Architecture",
-            "url": "https://eng.lyft.com/lyftlearn-evolution-rethinking-ml-platform-architecture-547de6c950e1",
-            "company": "Lyft",
-            "country": "US",
-            "why": "aws, docker, java"
-          },
-          {
-            "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
-            "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
-            "company": "Grab",
-            "country": "SG",
-            "why": "fastapi, kubernetes, postgresql"
-          }
-        ]
-      }
-    },
-    {
       "name": "(주)스마일게이트 메가포트 지점",
       "norm": "스마일게이트메가포트지점",
       "size": "대기업",
@@ -264781,6 +264788,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -264806,13 +264820,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -266456,6 +266463,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -266481,13 +266495,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -287694,6 +287701,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -287719,13 +287733,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -307589,6 +307596,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -307614,13 +307628,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -332469,6 +332476,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -332494,13 +332508,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -344611,6 +344618,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -344636,13 +344650,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -346365,6 +346372,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -346390,13 +346404,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -347698,6 +347705,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -347723,13 +347737,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -348611,6 +348618,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -348636,13 +348650,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -351750,6 +351757,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -351775,13 +351789,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -373330,6 +373337,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -373355,13 +373369,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -432938,6 +432945,59 @@
       }
     },
     {
+      "name": "(주)무브",
+      "norm": "무브",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 1
+      },
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 1,
+          "evidence": [
+            "채용"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "MOVV 개발자 신규채용 [백엔드]",
+        "MOVV UI/UX 디자인 겸 퍼블리셔"
+      ],
+      "postings": [
+        {
+          "title": "MOVV 개발자 신규채용 [백엔드]",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54659637&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=cf6c2573-c813-4ffe-8f98-680d4ff3685f",
+          "site": "saramin"
+        },
+        {
+          "title": "MOVV UI/UX 디자인 겸 퍼블리셔",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54717579&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=4349205d-f3ab-446e-a53f-1c30b0b054b2",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)무브는 HR/채용 도메인의 중소기업으로, 주로 백엔드 직군을 채용합니다.",
+      "career_guide": {
+        "wants": [
+          "백엔드 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
+        ],
+        "study_blogs": []
+      }
+    },
+    {
       "name": "HR컨설팅(주)",
       "norm": "hr컨설팅",
       "size": "중소기업",
@@ -440570,6 +440630,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -440595,13 +440662,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {
@@ -469140,6 +469200,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Write your first prompt with the GitHub Copilot app",
+            "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Your contributors are AI-first now. Is your project?",
             "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
             "company": "GitHub",
@@ -469165,13 +469232,6 @@
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
             "country": "SG",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "From coder to orchestrator: How agents shift the role of a developer",
-            "url": "https://github.blog/developer-skills/career-growth/from-coder-to-orchestrator-how-agents-shift-the-role-of-a-developer",
-            "company": "GitHub",
-            "country": "US",
             "why": "LLM/생성형"
           },
           {

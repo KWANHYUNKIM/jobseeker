@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-13T03:51:54",
- "total": 1035,
+ "generated_at": "2026-08-13T05:30:45",
+ "total": 1036,
  "sources": [
   {
    "company": "Etsy",
@@ -55,7 +55,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 34
+   "count": 35
   },
   {
    "company": "Netflix",
@@ -527,6 +527,30 @@
   "Consensus": "알고리즘/이론"
  },
  "posts": [
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "Write your first prompt with the GitHub Copilot app",
+   "url": "https://github.blog/ai-and-ml/github-copilot/write-your-first-prompt-with-the-github-copilot-app",
+   "published": "2026-08-12",
+   "published_ts": 1786561200.0,
+   "summary": "Learn how to write your first prompt in the GitHub Copilot app, choose the right context and model, and start your first task with confidence.\n\nThe post Write your first prompt with the GitHub Copilot app appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "GitHub Copilot app",
+    "GitHub Copilot app for Beginners"
+   ],
+   "tech_stack": [
+    "Prompt Engineering"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "d0656ae81e3d6832"
+  },
   {
    "key": "github",
    "company": "GitHub",
