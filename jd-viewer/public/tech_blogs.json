@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-12T09:14:00",
- "total": 1027,
+ "generated_at": "2026-08-12T10:52:30",
+ "total": 1028,
  "sources": [
   {
    "company": "Etsy",
@@ -93,6 +93,11 @@
    "count": 25
   },
   {
+   "company": "Grab",
+   "country": "SG",
+   "count": 19
+  },
+  {
    "company": "CyberAgent",
    "country": "JP",
    "count": 19
@@ -105,11 +110,6 @@
   {
    "company": "Meta",
    "country": "US",
-   "count": 18
-  },
-  {
-   "company": "Grab",
-   "country": "SG",
    "count": 18
   },
   {
@@ -527,6 +527,42 @@
   "DDoS": "보안"
  },
  "posts": [
+  {
+   "key": "grab",
+   "company": "Grab",
+   "country": "SG",
+   "title": "Grab Bench: Evaluating AI on Grab-shaped production work",
+   "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
+   "published": "2026-08-12",
+   "published_ts": 1786492800.0,
+   "summary": "Introduction\n\nWhat worried us wasn’t the hallucination, it was the subtle plausibility. Answers an engineer could easily read past and accept: a right-looking Structured Query Language (SQL) query, a plausible tool call, an innocent profile update, or a patch that satisfied the surface tests.\n\nWhen we analyzed the row-level failures, a clear pattern emerged:\n\nSQL generation: kept the query shape but changed the underlying metric.\n\nTool calling: selected the right tool family but drifted on parameters.\n\nProfile updates: cited every event instead of only the evidence that supported the claim.\n\nC…",
+   "tags": [
+    "Artificial Intelligence",
+    "Engineering",
+    "Product",
+    "Machine Learning",
+    "Engineering"
+   ],
+   "tech_stack": [
+    "JavaScript",
+    "SQL",
+    "AI Agent",
+    "LLM",
+    "Multimodal",
+    "Oracle",
+    "Concurrency",
+    "Benchmark"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형",
+    "데이터베이스",
+    "알고리즘/이론",
+    "연구/논문"
+   ],
+   "lang": "en",
+   "content_id": "cc83f63349897bc2"
+  },
   {
    "key": "github",
    "company": "GitHub",
