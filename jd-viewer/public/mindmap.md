@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **9852건** 공고 · **1867개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-13 02:14
+- 총 **9854건** 공고 · **1868개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-13 03:52
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (487개사)
+## HR/채용 (488개사)
 ### (주)사람인에이치에스 `중견기업` · 38건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -3994,6 +3994,8 @@ markmap:
   - [기업부설연구소 ML/LLM 엔지니어 선임연구원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53719800&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d76be8ce-a663-4d93-8076-01af6a93706f)
 - **DevOps/인프라** [1건] · `Python` `Docker` `PyTorch`
   - [기업부설연구소 ML/LLM 엔지니어 선임연구원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53719800&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=d76be8ce-a663-4d93-8076-01af6a93706f)
+
+### 허드슨첨단소재코리아(주) `중소기업` · 2건
 
 ### (주)지아이텍 `중소기업` · 2건
 

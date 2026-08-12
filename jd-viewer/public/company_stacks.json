@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-13T02:14:31",
-  "total_jobs": 9852,
-  "company_count": 1867,
+  "generated_at": "2026-08-13T03:52:45",
+  "total_jobs": 9854,
+  "company_count": 1868,
   "min_posting": 2,
   "companies": [
     {
@@ -7372,6 +7372,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -7403,13 +7410,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -12567,7 +12567,7 @@
         },
         {
           "title": "[Product Center] AI Backend Engineer 채용 (신입/경력)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54118527&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=e45ad940-b718-4634-81ee-21749eed8db9",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54725970&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=c12732df-9af9-4cef-973a-40b957586afc",
           "site": "saramin"
         }
       ],
@@ -126314,10 +126314,10 @@
             "why": "flutter"
           },
           {
-            "title": "토스의 속도와 품질, 상용 도구로 충분한가 — 토션(Tossion)",
-            "url": "https://toss.tech/article/tossion",
-            "company": "토스",
-            "country": "KR",
+            "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
+            "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
+            "company": "Airbnb",
+            "country": "US",
             "why": "모바일"
           }
         ]
@@ -131237,6 +131237,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -131268,13 +131275,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -175751,6 +175751,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -175782,13 +175789,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -193689,6 +193689,13 @@
             "why": "aws, gcp, github actions"
           },
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git, github actions, graphql"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -193708,13 +193715,6 @@
             "company": "Cloudflare",
             "country": "US",
             "why": "git, github actions, react"
-          },
-          {
-            "title": "Run CI/CD for millions of repos — on your platform, on Cloudflare",
-            "url": "https://blog.cloudflare.com/ci-workflows",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "github actions, graphql, react"
           }
         ]
       }
@@ -229932,6 +229932,13 @@
             "why": "scss"
           },
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "프론트엔드"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -229955,13 +229962,6 @@
           {
             "title": "Introducing Radar Researcher: An AI tool for exploring Internet data in plain language",
             "url": "https://blog.cloudflare.com/introducing-radar-researcher",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "프론트엔드"
-          },
-          {
-            "title": "Announcing Cloudflare Ambassadors, Community Engineers, and another $1M in open-source funding",
-            "url": "https://blog.cloudflare.com/community-program-refresh",
             "company": "Cloudflare",
             "country": "US",
             "why": "프론트엔드"
@@ -236548,6 +236548,13 @@
             "why": "c"
           },
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -236559,13 +236566,6 @@
             "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
             "company": "당근",
             "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "Grab Bench: Evaluating AI on Grab-shaped production work",
-            "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
-            "company": "Grab",
-            "country": "SG",
             "why": "언어"
           }
         ]
@@ -244085,6 +244085,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "go"
+          },
+          {
             "title": "모노리포 희망편, 절망의 리포가 희망의 리포로 부활하기까지 걸린 1년",
             "url": "https://toss.tech/article/52209",
             "company": "토스",
@@ -244109,13 +244116,6 @@
             "title": "The next generation of MCP",
             "url": "https://blog.cloudflare.com/mcp-v2",
             "company": "Cloudflare",
-            "country": "US",
-            "why": "go"
-          },
-          {
-            "title": "Don’t stop early: Case-folding source code at memory speed",
-            "url": "https://github.blog/engineering/architecture-optimization/dont-stop-early-case-folding-source-code-at-memory-speed",
-            "company": "GitHub",
             "country": "US",
             "why": "go"
           },
@@ -261635,6 +261635,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
+            "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "android, ios"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -261667,13 +261674,6 @@
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
             "country": "KR",
-            "why": "android, ios"
-          },
-          {
-            "title": "Adopting AV1 for Real-Time Communication (RTC) at Scale",
-            "url": "https://engineering.fb.com/2026/06/22/video-engineering/adopting-av1-for-real-time-communication-rtc-meta",
-            "company": "Meta",
-            "country": "US",
             "why": "android, ios"
           }
         ]
@@ -264781,6 +264781,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -264812,13 +264819,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -266456,6 +266456,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -266487,13 +266494,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -273601,6 +273601,13 @@
             "why": "go, linux, python"
           },
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "github actions, go"
+          },
+          {
             "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
             "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
@@ -273619,13 +273626,6 @@
             "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
             "company": "Grab",
             "country": "SG",
-            "why": "go, python"
-          },
-          {
-            "title": "Build your own vulnerability harness",
-            "url": "https://blog.cloudflare.com/build-your-own-vulnerability-harness",
-            "company": "Cloudflare",
-            "country": "US",
             "why": "go, python"
           }
         ]
@@ -284882,6 +284882,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git"
+          },
+          {
             "title": "Using the GitHub Copilot SDK for Java",
             "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
             "company": "GitHub",
@@ -284914,13 +284921,6 @@
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ny-summit-recap-local-zone-in-hanoi-grok-4-3-in-bedrock-price-reductions-and-more-june-22-2026",
             "company": "AWS",
             "country": "US",
-            "why": "git"
-          },
-          {
-            "title": "Scaling Myself: How I Run 22 Claude Code Sessions for DS4 Migration",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260619-scaling-myself-how-i-run-22-claude-code-sessions-for-ds4-migration",
-            "company": "Mercari",
-            "country": "JP",
             "why": "git"
           }
         ]
@@ -287694,6 +287694,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -287725,13 +287732,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -307589,6 +307589,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -307620,13 +307627,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -332469,6 +332469,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -332500,13 +332507,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -344611,6 +344611,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -344642,13 +344649,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -346365,6 +346365,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -346396,13 +346403,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -347698,6 +347698,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -347729,13 +347736,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -348611,6 +348611,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -348642,13 +348649,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -351750,6 +351750,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -351781,13 +351788,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -373330,6 +373330,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -373361,13 +373368,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -378695,6 +378695,13 @@
             "why": "c"
           },
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -378706,13 +378713,6 @@
             "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
             "company": "당근",
             "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "Grab Bench: Evaluating AI on Grab-shaped production work",
-            "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
-            "company": "Grab",
-            "country": "SG",
             "why": "언어"
           }
         ]
@@ -384258,6 +384258,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -384289,13 +384296,6 @@
             "title": "How we’re rethinking work at Cloudflare with Cloudflare OS",
             "url": "https://blog.cloudflare.com/how-we-use-ai-with-cloudflare-os",
             "company": "Cloudflare",
-            "country": "US",
-            "why": "git"
-          },
-          {
-            "title": "Turn one giant AI-generated pull request to a reviewable stack",
-            "url": "https://github.blog/engineering/turn-one-giant-ai-generated-pull-request-to-a-reviewable-stack",
-            "company": "GitHub",
             "country": "US",
             "why": "git"
           }
@@ -396715,6 +396715,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
+            "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "ios"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -396747,13 +396754,6 @@
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
             "country": "KR",
-            "why": "ios"
-          },
-          {
-            "title": "Adopting AV1 for Real-Time Communication (RTC) at Scale",
-            "url": "https://engineering.fb.com/2026/06/22/video-engineering/adopting-av1-for-real-time-communication-rtc-meta",
-            "company": "Meta",
-            "country": "US",
             "why": "ios"
           }
         ]
@@ -421245,6 +421245,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
+            "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "android"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -421276,13 +421283,6 @@
             "title": "토스의 디바이스 팜 만들기",
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
-            "country": "KR",
-            "why": "android"
-          },
-          {
-            "title": "AI 에이전트를 위한 Android CLI: 대규모 모바일 개발 환경에 적용하기",
-            "url": "https://techblog.lycorp.co.jp/ko/android-cli-for-ai-agents-at-scale",
-            "company": "LINE",
             "country": "KR",
             "why": "android"
           }
@@ -429653,6 +429653,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -429686,13 +429693,6 @@
             "company": "Netflix",
             "country": "US",
             "why": "git"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "rest api"
           }
         ]
       }
@@ -438929,6 +438929,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
+            "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "android"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -438960,13 +438967,6 @@
             "title": "토스의 디바이스 팜 만들기",
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
-            "country": "KR",
-            "why": "android"
-          },
-          {
-            "title": "AI 에이전트를 위한 Android CLI: 대규모 모바일 개발 환경에 적용하기",
-            "url": "https://techblog.lycorp.co.jp/ko/android-cli-for-ai-agents-at-scale",
-            "company": "LINE",
             "country": "KR",
             "why": "android"
           }
@@ -440570,6 +440570,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -440601,13 +440608,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -441919,6 +441919,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -441935,13 +441942,6 @@
           {
             "title": "Using the GitHub Copilot SDK for Java",
             "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
-            "country": "US",
-            "why": "git"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
             "company": "GitHub",
             "country": "US",
             "why": "git"
@@ -444210,6 +444210,133 @@
       }
     },
     {
+      "name": "허드슨첨단소재코리아(주)",
+      "norm": "허드슨첨단소재코리아",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {},
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 7,
+          "evidence": [
+            "채용",
+            "인사"
+          ]
+        },
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 3,
+          "evidence": [
+            "제조",
+            "공정"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "각 부문별 신입/경력 채용",
+        "각 부문별 경력 채용"
+      ],
+      "postings": [
+        {
+          "title": "각 부문별 신입/경력 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54060583&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=9d0ac941-9b47-4d07-a8c6-3a1ecfa41d72",
+          "site": "saramin"
+        },
+        {
+          "title": "각 부문별 경력 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54723970&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=a92d6631-82fc-4356-b7cf-499aa2add99b",
+          "site": "saramin"
+        }
+      ],
+      "summary": "허드슨첨단소재코리아(주)는 HR/채용 도메인의 중소기업하며 Python 기반으로 개발합니다.",
+      "career_guide": {
+        "wants": [
+          "신입·주니어/인턴 기회 있음 — 기본기 + 완성도 있는 포트폴리오로 도전 가능",
+          "핵심 역량: Python 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          }
+        ],
+        "tasks": [
+          "채용공고 기반 — 제품 기능 개발과 운영 전반"
+        ],
+        "study_blogs": [
+          {
+            "title": "우리 팀만의 vLLM 플러그인 만들기 1편 - 검색 AI 모델 서빙 성능 극대화하기",
+            "url": "https://d2.naver.com/helloworld/0525182",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "python"
+          },
+          {
+            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
+            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
+            "company": "AWS",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "How we took malware advisories beyond npm",
+            "url": "https://github.blog/security/supply-chain-security/how-we-took-malware-advisories-beyond-npm",
+            "company": "GitHub",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "The next generation of MCP",
+            "url": "https://blog.cloudflare.com/mcp-v2",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "Kafka App? There’s a Skill for That",
+            "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
+            "company": "Etsy",
+            "country": "US",
+            "why": "python"
+          },
+          {
+            "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+            "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+            "company": "Grab",
+            "country": "SG",
+            "why": "python"
+          }
+        ]
+      }
+    },
+    {
       "name": "(주)인텍에프에이",
       "norm": "인텍에프에이",
       "size": "중소기업",
@@ -444302,6 +444429,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -444333,13 +444467,6 @@
             "title": "우리 팀만의 vLLM 플러그인 만들기 1편 - 검색 AI 모델 서빙 성능 극대화하기",
             "url": "https://d2.naver.com/helloworld/0525182",
             "company": "네이버 D2",
-            "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "모노리포 희망편, 절망의 리포가 희망의 리포로 부활하기까지 걸린 1년",
-            "url": "https://toss.tech/article/52209",
-            "company": "토스",
             "country": "KR",
             "why": "언어"
           }
@@ -469013,6 +469140,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -469044,13 +469178,6 @@
             "title": "Your tokenmaxxing is not valuemaxxing",
             "url": "https://stackoverflow.blog/2026/08/11/your-tokenmaxxing-is-not-valuemaxxing",
             "company": "Stack Overflow",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Using the GitHub Copilot SDK for Java",
-            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
-            "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
           }
@@ -470646,6 +470773,13 @@
         ],
         "study_blogs": [
           {
+            "title": "Your contributors are AI-first now. Is your project?",
+            "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+            "company": "GitHub",
+            "country": "US",
+            "why": "go"
+          },
+          {
             "title": "모노리포 희망편, 절망의 리포가 희망의 리포로 부활하기까지 걸린 1년",
             "url": "https://toss.tech/article/52209",
             "company": "토스",
@@ -470670,13 +470804,6 @@
             "title": "The next generation of MCP",
             "url": "https://blog.cloudflare.com/mcp-v2",
             "company": "Cloudflare",
-            "country": "US",
-            "why": "go"
-          },
-          {
-            "title": "Don’t stop early: Case-folding source code at memory speed",
-            "url": "https://github.blog/engineering/architecture-optimization/dont-stop-early-case-folding-source-code-at-memory-speed",
-            "company": "GitHub",
             "country": "US",
             "why": "go"
           },
