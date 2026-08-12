@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-12T12:31:50",
- "total": 1029,
+ "generated_at": "2026-08-12T14:10:59",
+ "total": 1030,
  "sources": [
   {
    "company": "Etsy",
@@ -93,13 +93,13 @@
    "count": 25
   },
   {
-   "company": "Grab",
-   "country": "SG",
-   "count": 19
-  },
-  {
    "company": "CyberAgent",
    "country": "JP",
+   "count": 20
+  },
+  {
+   "company": "Grab",
+   "country": "SG",
    "count": 19
   },
   {
@@ -527,6 +527,25 @@
   "DDoS": "보안"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "タップルのバックエンドで、100行のガードコードが教えてくれた更新イベント設計の誤り",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/65214",
+   "published": "2026-08-12",
+   "published_ts": 1786507380.0,
+   "summary": "はじめに はじめまして。東京海洋大学 海洋工学部2年の恩田梨那(@cs_riri)と申します。 今回 ...",
+   "tags": [
+    "エンジニア",
+    "インターンシップ",
+    "タップル"
+   ],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "8f9236325d3f03cd"
+  },
   {
    "key": "grab",
    "company": "Grab",
