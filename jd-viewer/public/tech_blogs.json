@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-13T08:55:49",
- "total": 1037,
+ "generated_at": "2026-08-13T10:33:31",
+ "total": 1038,
  "sources": [
   {
    "company": "Etsy",
@@ -33,14 +33,14 @@
    "count": 43
   },
   {
-   "company": "DeNA",
-   "country": "JP",
+   "company": "토스",
+   "country": "KR",
    "count": 41
   },
   {
-   "company": "토스",
-   "country": "KR",
-   "count": 40
+   "company": "DeNA",
+   "country": "JP",
+   "count": 41
   },
   {
    "company": "Discord",
@@ -527,6 +527,32 @@
   "Consensus": "알고리즘/이론"
  },
  "posts": [
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "AI에게 투자정보를 말하게 하기까지",
+   "url": "https://toss.tech/article/tech_talk_talk_1",
+   "published": "2026-08-13",
+   "published_ts": 1786582800.0,
+   "summary": "근거를 고르고, 절차를 통제하고, 실패를 다시 쓰는 세 개의 관문",
+   "tags": [],
+   "tech_stack": [
+    "React",
+    "Machine Learning",
+    "BERT",
+    "Embedding",
+    "LLM",
+    "Model Context Protocol"
+   ],
+   "categories": [
+    "프론트엔드",
+    "AI/ML",
+    "LLM/생성형"
+   ],
+   "lang": "ko",
+   "content_id": "f46122f5bdf98ffc"
+  },
   {
    "key": "github",
    "company": "GitHub",
