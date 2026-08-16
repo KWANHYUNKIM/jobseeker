@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10193건** 공고 · **1933개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-16 09:14
+- 총 **10197건** 공고 · **1933개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-16 13:05
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1662,6 +1662,14 @@ markmap:
   - [프론트엔드 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54085048&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367)
   - [(산업기능요원/보충역) 프론트엔드 개발자 채용 공고 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54085055&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
 
+### (주)에스티컴 `중소기업` · 3건
+- **백엔드** [2건] · `JavaScript` `React` `Vue` `jQuery` `Node.js` `Jira`
+  - [프론트엔드(Frontend) 개발(UI개발-중급)모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53878033&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
+  - [백엔드 개발자(Back-End Developer) 중급 모집(계약직) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54749543&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=6523837e-76d1-4d5d-8279-b28c1d897a3a)
+- **프론트엔드** [2건] · `JavaScript` `React` `Vue` `jQuery` `Node.js` `Jira`
+  - [프론트엔드(Frontend) 개발(UI개발 - 중급)모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49166129?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=29&sc=630)
+  - [프론트엔드(Frontend) 개발(UI개발-중급)모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53878033&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
+
 ### ㈜이쓰리 `중소기업` · 3건
 - **백엔드** [3건] · `Java` `Python` `Spring` `FastAPI` `PostgreSQL` `Elasticsearch`
   - [프론트엔드 개발자 (신입/경력) 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49155673?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=38&sc=630)
@@ -3063,13 +3071,6 @@ markmap:
 - **풀스택** [2건] · `Java` `TypeScript` `React` `HTML` `CSS` `Spring`
   - [풀스택 웹개발자 모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49789143?Oem_Code=C1&logpath=1&stext=%EA%B0%9C%EB%B0%9C%EC%9E%90&listno=99&sc=630)
   - [풀스택 웹개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54754112&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1d1c0537-88ae-4c37-a872-dbc88d0f3a04)
-
-### 에스티컴 `중소기업` · 2건
-- **백엔드** [1건] · `JavaScript` `React` `Vue` `jQuery` `Node.js` `Jira`
-  - [프론트엔드(Frontend) 개발(UI개발-중급)모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53878033&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
-- **프론트엔드** [2건] · `JavaScript` `React` `Vue` `jQuery` `Node.js` `Jira`
-  - [프론트엔드(Frontend) 개발(UI개발 - 중급)모집 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49166129?Oem_Code=C1&logpath=1&stext=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&listno=29&sc=630)
-  - [프론트엔드(Frontend) 개발(UI개발-중급)모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53878033&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=41692b86-6c97-4df3-a490-03766fc32876)
 
 ### ㈜휴먼웍스 `중소기업` · 2건
 - **백엔드** [2건] · `JavaScript` `React` `Next.js` `Git` `REST API`
@@ -4816,6 +4817,27 @@ markmap:
 - **DevOps/인프라** [1건] · `Java` `Spring` `Spring Boot` `MySQL` `MariaDB` `AWS`
   - [백엔드 엔지니어(운영&보안) ↗](https://jumpit.saramin.co.kr/position/53865354)
 
+### 휴머스온 `중소기업` · 11건
+- **백엔드** [6건] · `Java` `Spring` `Spring Boot` `MySQL` `PostgreSQL` `Oracle`
+  - [AOS 개발자 ↗](https://www.wanted.co.kr/wd/370727)
+  - [TasOn 메세징 개발자 ↗](https://www.wanted.co.kr/wd/375412)
+  - [TasOn 메세징 개발자(파트장급) ↗](https://www.wanted.co.kr/wd/375414)
+  - [Backend Engineer PL(Tech Lead) ↗](https://www.wanted.co.kr/wd/370400)
+- **프론트엔드** [2건] · `Java` `Spring` `Spring Boot` `MySQL` `PostgreSQL` `Oracle`
+  - [TasOn 메세징 개발자 ↗](https://www.wanted.co.kr/wd/375412)
+  - [TasOn 메세징 개발자(파트장급) ↗](https://www.wanted.co.kr/wd/375414)
+- **모바일** [1건] · `Kotlin` `Swift` `Android` `Jenkins` `GitHub Actions` `Git`
+  - [AOS 개발자 ↗](https://www.wanted.co.kr/wd/370727)
+- **AI/ML** [4건] · `PyTorch` `Java` `Python` `Spring` `Spring Boot` `FastAPI`
+  - [AI Agent 개발자 ↗](https://www.wanted.co.kr/wd/375217)
+  - [Data Engineer ↗](https://www.wanted.co.kr/wd/377984)
+  - [AI Agent PM ↗](https://www.wanted.co.kr/wd/359842)
+  - [(휴머스온) AI Agent 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49445817?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=89&sc=630)
+- **데이터** [3건] · `Java` `Spring` `Spring Boot` `Kafka` `MySQL` `PostgreSQL`
+  - [TasOn 메세징 개발자 ↗](https://www.wanted.co.kr/wd/375412)
+  - [TasOn 메세징 개발자(파트장급) ↗](https://www.wanted.co.kr/wd/375414)
+  - [Data Engineer ↗](https://www.wanted.co.kr/wd/377984)
+
 ### 제논 `중소기업` · 11건
 - **백엔드** [3건] · `Kubernetes` `Python` `Linux` `React` `Django` `Flask`
   - [풀스택_FDE(Forward Deployed Engineer) ↗](https://www.wanted.co.kr/wd/289537)
@@ -4940,27 +4962,6 @@ markmap:
   - [정보보안 담당자 ↗](https://www.wanted.co.kr/wd/377258)
 - **보안** [1건] · `AWS` `Jira` `Confluence`
   - [정보보안 담당자 ↗](https://www.wanted.co.kr/wd/377258)
-
-### 휴머스온 `중소기업` · 10건
-- **백엔드** [5건] · `Java` `Spring` `Spring Boot` `MySQL` `PostgreSQL` `Oracle`
-  - [AOS 개발자 ↗](https://www.wanted.co.kr/wd/370727)
-  - [TasOn 메세징 개발자 ↗](https://www.wanted.co.kr/wd/375412)
-  - [TasOn 메세징 개발자(파트장급) ↗](https://www.wanted.co.kr/wd/375414)
-  - [Backend Engineer PL(Tech Lead) ↗](https://www.wanted.co.kr/wd/370400)
-- **프론트엔드** [2건] · `Java` `Spring` `Spring Boot` `MySQL` `PostgreSQL` `Oracle`
-  - [TasOn 메세징 개발자 ↗](https://www.wanted.co.kr/wd/375412)
-  - [TasOn 메세징 개발자(파트장급) ↗](https://www.wanted.co.kr/wd/375414)
-- **모바일** [1건] · `Kotlin` `Swift` `Android` `Jenkins` `GitHub Actions` `Git`
-  - [AOS 개발자 ↗](https://www.wanted.co.kr/wd/370727)
-- **AI/ML** [4건] · `PyTorch` `Java` `Python` `Spring` `Spring Boot` `FastAPI`
-  - [AI Agent 개발자 ↗](https://www.wanted.co.kr/wd/375217)
-  - [Data Engineer ↗](https://www.wanted.co.kr/wd/377984)
-  - [AI Agent PM ↗](https://www.wanted.co.kr/wd/359842)
-  - [(휴머스온) AI Agent 개발자 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49445817?Oem_Code=C1&logpath=1&stext=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&listno=89&sc=630)
-- **데이터** [3건] · `Java` `Spring` `Spring Boot` `Kafka` `MySQL` `PostgreSQL`
-  - [TasOn 메세징 개발자 ↗](https://www.wanted.co.kr/wd/375412)
-  - [TasOn 메세징 개발자(파트장급) ↗](https://www.wanted.co.kr/wd/375414)
-  - [Data Engineer ↗](https://www.wanted.co.kr/wd/377984)
 
 ### (주)아정네트웍스 `중소기업` · 10건
 - **백엔드** [1건] · `Java` `Kotlin` `Python` `Node.js` `동면` `JPA`
