@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T00:24:35",
+  "generated_at": "2026-08-17T01:39:58",
   "source": "youtube",
   "tech_count": 206,
   "curriculum_count": 20,
@@ -11271,6 +11271,88 @@
         "stage": "실전"
       }
     ],
+    "Perl": [
+      {
+        "title": "Perl Bioinformatics l  Perl 프로그램 4강 기초연습",
+        "url": "https://www.youtube.com/watch?v=yCu9Aug3SFc",
+        "thumbnail": "https://i.ytimg.com/vi/yCu9Aug3SFc/mqdefault.jpg",
+        "channel": "Cassiiopeia[새찬]",
+        "views": 1255,
+        "length": "2:43:13",
+        "published": "스트리밍 시간: 6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Perl 스크립트의 악랄함 체험하기",
+        "url": "https://www.youtube.com/watch?v=Af760X1XUM4",
+        "thumbnail": "https://i.ytimg.com/vi/Af760X1XUM4/mqdefault.jpg",
+        "channel": "취미로 해킹",
+        "views": 455,
+        "length": "3:58",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Perl 생물정보학 006 - User-Defined Function 20181022 한국어 김은배",
+        "url": "https://www.youtube.com/watch?v=KoEEWra84Ss",
+        "thumbnail": "https://i.ytimg.com/vi/KoEEWra84Ss/mqdefault.jpg",
+        "channel": "Research Trainer",
+        "views": 344,
+        "length": "29:19",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Perl 생물정보학 009 - DNA Utility 20181101 한국어 김은배",
+        "url": "https://www.youtube.com/watch?v=uPCtVnWWgVQ",
+        "thumbnail": "https://i.ytimg.com/vi/uPCtVnWWgVQ/mqdefault.jpg",
+        "channel": "Research Trainer",
+        "views": 368,
+        "length": "20:00",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "KPW2008년08-2해커를 위한 Perl - Perl로 만든 익스플로잇 코드 살펴보기[자막AI:WhisperLargeV2Ko]",
+        "url": "https://www.youtube.com/watch?v=xDk1r1RKjt8",
+        "thumbnail": "https://i.ytimg.com/vi/xDk1r1RKjt8/mqdefault.jpg",
+        "channel": "hugyup",
+        "views": 41,
+        "length": "8:39",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "브롤: 오븐브레이크",
+        "url": "https://www.youtube.com/watch?v=Rr9Uqlx2xHo",
+        "thumbnail": "https://i.ytimg.com/vi/Rr9Uqlx2xHo/mqdefault.jpg",
+        "channel": "SOMEONE",
+        "views": 41341,
+        "length": "11:54",
+        "published": "6개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "내가 뜨거워지면, 너는 죽는 거야",
+        "url": "https://www.youtube.com/watch?v=QEKQwXeqZ6M",
+        "thumbnail": "https://i.ytimg.com/vi/QEKQwXeqZ6M/mqdefault.jpg",
+        "channel": "SOMEONE",
+        "views": 99434,
+        "length": "11:14",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "수많은 사람들이 요청했던 아스트라 강의 준비했습니다..",
+        "url": "https://www.youtube.com/watch?v=p8sauBT-A3c",
+        "thumbnail": "https://i.ytimg.com/vi/p8sauBT-A3c/mqdefault.jpg",
+        "channel": "행돌",
+        "views": 109325,
+        "length": "20:04",
+        "published": "5개월 전",
+        "stage": "핵심"
+      }
+    ],
     "WebRTC": [
       {
         "title": "WebRTC? WebSockets? 5분 개념정리!",
@@ -12089,88 +12171,6 @@
         "length": "13:21",
         "published": "4개월 전",
         "stage": "실전"
-      }
-    ],
-    "Perl": [
-      {
-        "title": "Perl Bioinformatics l  Perl 프로그램 4강 기초연습",
-        "url": "https://www.youtube.com/watch?v=yCu9Aug3SFc",
-        "thumbnail": "https://i.ytimg.com/vi/yCu9Aug3SFc/mqdefault.jpg",
-        "channel": "Cassiiopeia[새찬]",
-        "views": 1255,
-        "length": "2:43:13",
-        "published": "스트리밍 시간: 6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Perl 스크립트의 악랄함 체험하기",
-        "url": "https://www.youtube.com/watch?v=Af760X1XUM4",
-        "thumbnail": "https://i.ytimg.com/vi/Af760X1XUM4/mqdefault.jpg",
-        "channel": "취미로 해킹",
-        "views": 455,
-        "length": "3:58",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Perl 생물정보학 006 - User-Defined Function 20181022 한국어 김은배",
-        "url": "https://www.youtube.com/watch?v=KoEEWra84Ss",
-        "thumbnail": "https://i.ytimg.com/vi/KoEEWra84Ss/mqdefault.jpg",
-        "channel": "Research Trainer",
-        "views": 344,
-        "length": "29:19",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Perl 생물정보학 009 - DNA Utility 20181101 한국어 김은배",
-        "url": "https://www.youtube.com/watch?v=uPCtVnWWgVQ",
-        "thumbnail": "https://i.ytimg.com/vi/uPCtVnWWgVQ/mqdefault.jpg",
-        "channel": "Research Trainer",
-        "views": 368,
-        "length": "20:00",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "KPW2008년08-2해커를 위한 Perl - Perl로 만든 익스플로잇 코드 살펴보기[자막AI:WhisperLargeV2Ko]",
-        "url": "https://www.youtube.com/watch?v=xDk1r1RKjt8",
-        "thumbnail": "https://i.ytimg.com/vi/xDk1r1RKjt8/mqdefault.jpg",
-        "channel": "hugyup",
-        "views": 41,
-        "length": "8:39",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "브롤: 오븐브레이크",
-        "url": "https://www.youtube.com/watch?v=Rr9Uqlx2xHo",
-        "thumbnail": "https://i.ytimg.com/vi/Rr9Uqlx2xHo/mqdefault.jpg",
-        "channel": "SOMEONE",
-        "views": 41341,
-        "length": "11:54",
-        "published": "6개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "내가 뜨거워지면, 너는 죽는 거야",
-        "url": "https://www.youtube.com/watch?v=QEKQwXeqZ6M",
-        "thumbnail": "https://i.ytimg.com/vi/QEKQwXeqZ6M/mqdefault.jpg",
-        "channel": "SOMEONE",
-        "views": 99434,
-        "length": "11:14",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "수많은 사람들이 요청했던 아스트라 강의 준비했습니다..",
-        "url": "https://www.youtube.com/watch?v=p8sauBT-A3c",
-        "thumbnail": "https://i.ytimg.com/vi/p8sauBT-A3c/mqdefault.jpg",
-        "channel": "행돌",
-        "views": 109325,
-        "length": "20:04",
-        "published": "5개월 전",
-        "stage": "핵심"
       }
     ],
     "Android SDK": [

@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10253건** 공고 · **1943개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 00:15
+- 총 **10260건** 공고 · **1944개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 01:39
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (526개사)
+## HR/채용 (527개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -2245,6 +2245,13 @@ markmap:
 - **AI/ML** [2건] · `Python`
   - [(밸리언트데이터) AI·SW 시험평가 엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54640081&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=7e5615bf-8a66-4e0d-bc9b-0f0da8ddff4c)
   - [(밸리언트데이터) AI서비스 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54273059&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=15cb385f-b982-4c8d-99d3-7cf834538cef)
+
+### (주)맨토스파워 `중소기업` · 3건
+- **AI/ML** [2건]
+  - [(국내 유명 클라우드/AI 선도 기업) 법무팀 사내변호사 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54727850&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c2654713-649a-4c79-8524-cd6bfad08d2c)
+  - [(클라우드 AI 선도 국내기업) 법무팀 사내변호사 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54758799&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c2654713-649a-4c79-8524-cd6bfad08d2c)
+- **데이터** [1건] · `Apache`
+  - [(글로벌 컨설팅 기업)데이터엔지니어5-8년 (과장급) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54711837&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=69a22e53-cb95-4e40-a4f5-7fddc234e6a9)
 
 ### (주)마루에이치알 `중소기업` · 3건
 - **데이터** [2건]
@@ -15825,7 +15832,7 @@ markmap:
 
 
 ## 커머스/리테일/물류 (111개사)
-### 쿠팡 `대기업` · 36건
+### 쿠팡 `대기업` · 37건
 - **백엔드** [18건] · `Java` `Spring` `Python` `Kotlin` `AWS` `Redis`
   - [Staff Back-end Engineer (New Fintech) ↗](https://www.wanted.co.kr/wd/333007)
   - [(쿠팡) 백엔드 개발 팀장 ↗](https://www.wanted.co.kr/wd/358580)
@@ -15833,7 +15840,7 @@ markmap:
   - [(쿠팡) 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/367805)
 - **프론트엔드** [1건] · `React` `Vue`
   - [Staff Frontend Engineer (Coupang Eats) ↗](https://www.wanted.co.kr/wd/376128)
-- **모바일** [6건] · `Kotlin` `Java` `Spring` `AWS` `Cassandra` `Kubernetes`
+- **모바일** [7건] · `Kotlin` `Java` `Spring` `AWS` `Kubernetes` `Cassandra`
   - [Staff Back-end Engineer (New Fintech) ↗](https://www.wanted.co.kr/wd/333007)
   - [Principal Backend Engineer (Platform Services) ↗](https://www.wanted.co.kr/wd/365973)
   - [Sr Flutter Engineer (Coupang Eats) ↗](https://www.wanted.co.kr/wd/323168)
