@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10197건** 공고 · **1933개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-16 13:05
+- 총 **10199건** 공고 · **1934개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-16 14:20
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (524개사)
+## HR/채용 (525개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -4400,6 +4400,11 @@ markmap:
 ### (주)이츠인 `중소기업` · 2건
 - **보안** [1건]
   - [(이츠인) 보안관제 및 네트워크 보안 엔지니어 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54382520&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=96cc93df-6d5e-460c-b03b-629a1f3e6888)
+
+### (주)핀커스코리아 `중소기업` · 2건
+- **보안** [2건]
+  - [시큐아이(삼성SDS자회사) 정보보안 IT기술지원 상담원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54728817&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=5e210bff-31a1-4595-8ec4-c61f1100d8a0)
+  - [시큐아이(삼성SDS자회사) 정보보안 프로그램 IT 기술지원 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54747840&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=e32e3721-5ea2-4ecc-ae71-750841fe5dc4)
 
 ### 한울아이티 `중소기업` · 2건
 - **백엔드** [2건] · `Java` `JavaScript` `PHP` `jQuery` `MySQL` `Oracle`
@@ -11393,7 +11398,7 @@ markmap:
   - [(미리캔버스) Senior DevOps Engineer ↗](https://www.wanted.co.kr/wd/349603)
   - [(미리캔버스) DevOps Engineer ↗](https://www.wanted.co.kr/wd/349598)
 
-### 딥오토 `중소기업` · 20건
+### 딥오토 `중소기업` · 21건
 - **백엔드** [12건] · `Python` `OpenAI` `TypeScript` `AWS` `Go` `GCP`
   - [AI Engineer_Financial Services ↗](https://www.wanted.co.kr/wd/355817)
   - [Backend Engineer (AI Platform) 3~5년 ↗](https://www.wanted.co.kr/wd/361662)
@@ -11401,12 +11406,12 @@ markmap:
   - [Frontend Engineer ↗](https://www.wanted.co.kr/wd/293288)
 - **프론트엔드** [1건] · `React` `Next.js` `Tailwind` `FastAPI` `Docker` `Kubernetes`
   - [Frontend Engineer ↗](https://www.wanted.co.kr/wd/293288)
-- **AI/ML** [20건] · `Python` `OpenAI` `AWS` `TypeScript` `Kubernetes` `Go`
+- **AI/ML** [21건] · `Python` `OpenAI` `AWS` `TypeScript` `Kubernetes` `Go`
   - [AI Engineer_Financial Services ↗](https://www.wanted.co.kr/wd/355817)
   - [Backend Engineer (AI Platform) 3~5년 ↗](https://www.wanted.co.kr/wd/361662)
   - [AI Engineer 전문가 ↗](https://www.wanted.co.kr/wd/356006)
   - [(DeepAuto.ai) 서비스 기획자 ↗](https://www.wanted.co.kr/wd/334226)
-- **데이터** [9건] · `Python` `OpenAI` `TypeScript` `Go` `AWS` `GCP`
+- **데이터** [10건] · `Python` `OpenAI` `TypeScript` `Go` `AWS` `GCP`
   - [Backend Engineer (AI Platform) 3~5년 ↗](https://www.wanted.co.kr/wd/361662)
   - [AI Engineer 0~3년 ↗](https://www.wanted.co.kr/wd/354807)
   - [Backend Engineer (AI Platform) 0~3년 ↗](https://www.wanted.co.kr/wd/354816)

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-16T13:06:00",
-  "total_jobs": 10197,
-  "company_count": 1933,
+  "generated_at": "2026-08-16T14:20:51",
+  "total_jobs": 10199,
+  "company_count": 1934,
   "min_posting": 2,
   "companies": [
     {
@@ -6368,7 +6368,7 @@
       "norm": "딥오토",
       "size": "중소기업",
       "size_alias": null,
-      "posting_count": 20,
+      "posting_count": 21,
       "sites": [
         "jobkorea",
         "jumpit",
@@ -6376,9 +6376,9 @@
         "wanted"
       ],
       "roles": {
-        "AI/ML": 20,
+        "AI/ML": 21,
         "백엔드": 12,
-        "데이터": 9,
+        "데이터": 10,
         "DevOps/인프라": 7,
         "펌웨어/임베디드": 1,
         "보안": 1,
@@ -6387,7 +6387,7 @@
       "top_tech": [
         {
           "name": "Python",
-          "count": 17
+          "count": 18
         },
         {
           "name": "OpenAI",
@@ -6427,18 +6427,18 @@
         },
         {
           "name": "PyTorch",
-          "count": 5
+          "count": 6
         },
         {
           "name": "LangChain",
-          "count": 5
+          "count": 6
         }
       ],
       "tech_categories": {
         "언어": [
           {
             "name": "Python",
-            "count": 17
+            "count": 18
           },
           {
             "name": "TypeScript",
@@ -6483,15 +6483,15 @@
             "count": 4
           },
           {
-            "name": "PostgreSQL",
-            "count": 1
-          },
-          {
             "name": "MongoDB",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Elasticsearch",
+            "count": 2
+          },
+          {
+            "name": "PostgreSQL",
             "count": 1
           }
         ],
@@ -6532,15 +6532,15 @@
           },
           {
             "name": "PyTorch",
-            "count": 5
+            "count": 6
           },
           {
             "name": "LangChain",
-            "count": 5
+            "count": 6
           },
           {
             "name": "OpenCV",
-            "count": 4
+            "count": 5
           },
           {
             "name": "TensorFlow",
@@ -6561,11 +6561,11 @@
             "count": 3
           },
           {
-            "name": "Airflow",
-            "count": 1
+            "name": "Kafka",
+            "count": 2
           },
           {
-            "name": "Kafka",
+            "name": "Airflow",
             "count": 1
           }
         ],
@@ -6617,13 +6617,11 @@
           ]
         },
         {
-          "name": "B2B SaaS/엔터프라이즈",
+          "name": "교육/에듀테크",
           "score": 31,
           "evidence": [
-            "SaaS",
-            "B2B",
-            "솔루션",
-            "엔터프라이즈"
+            "교육",
+            "학습"
           ]
         }
       ],
@@ -6765,13 +6763,13 @@
             "techs": [
               "SQL",
               "NoSQL",
-              "PostgreSQL",
+              "MongoDB",
               "Hadoop",
               "Spark"
             ],
             "tips": [
               "SQL — 조인·집계·서브쿼리·윈도우 함수 등 쿼리 기본기",
-              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
+              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
               "Spark — 분산 처리·DataFrame API로 대용량 ETL"
             ]
           },
@@ -469952,6 +469950,67 @@
             "why": "html, javascript"
           }
         ]
+      }
+    },
+    {
+      "name": "(주)핀커스코리아",
+      "norm": "핀커스코리아",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "보안": 2
+      },
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 6,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 4,
+          "evidence": [
+            "정보보안"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "시큐아이(삼성SDS자회사) 정보보안 IT기술지원 상담원 채용",
+        "시큐아이[삼성SDS자회사] 정보보안 프로그램 IT 기술지원"
+      ],
+      "postings": [
+        {
+          "title": "시큐아이(삼성SDS자회사) 정보보안 IT기술지원 상담원 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54728817&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=5e210bff-31a1-4595-8ec4-c61f1100d8a0",
+          "site": "saramin"
+        },
+        {
+          "title": "시큐아이[삼성SDS자회사] 정보보안 프로그램 IT 기술지원",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54747840&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=e32e3721-5ea2-4ecc-ae71-750841fe5dc4",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)핀커스코리아는 HR/채용 도메인의 중소기업으로, 주로 보안 직군을 채용합니다.",
+      "career_guide": {
+        "wants": [
+          "보안 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "[HR/채용] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
+        ],
+        "study_blogs": []
       }
     },
     {
