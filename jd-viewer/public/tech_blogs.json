@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-18T01:41:05",
- "total": 1054,
+ "generated_at": "2026-08-18T03:03:03",
+ "total": 1055,
  "sources": [
   {
    "company": "Etsy",
@@ -50,7 +50,7 @@
   {
    "company": "Discord",
    "country": "US",
-   "count": 39
+   "count": 40
   },
   {
    "company": "네이버 D2",
@@ -636,6 +636,21 @@
    "categories": [],
    "lang": "en",
    "content_id": "ca065334dabdb829"
+  },
+  {
+   "key": "discord",
+   "company": "Discord",
+   "country": "US",
+   "title": "A letter to the Discord community in Brazil",
+   "url": "https://discord.com/blog/a-letter-to-the-discord-community-in-brazil",
+   "published": "2026-08-17",
+   "published_ts": 1786924800.0,
+   "summary": "On the order from Brazil's ANPD to suspend screensharing and video features in the country, how we're complying, and our commitment to our community in Brazil.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "a81ffae7479262da"
   },
   {
    "key": "stackoverflow",
