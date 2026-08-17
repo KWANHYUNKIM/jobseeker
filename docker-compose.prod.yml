@@ -89,6 +89,34 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
+  # ── 크롤 관리 대시보드 터널 (profile: dashboards) ───────────────
+  # 대시보드 서버 자체는 호스트 네이티브(launchd, deploy/setup-dashboards.sh)로
+  # 돈다. 여기서는 그 8770/8765 를 각각 별도 임시 터널로 외부에 노출한다.
+  # 주소는 각 컨테이너 로그의 *.trycloudflare.com. ⚠️ 인증 없음.
+  ops-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-ops-tunnel
+    command: tunnel --no-autoupdate --url http://host.docker.internal:8770
+    profiles: ["dashboards"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  stats-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-stats-tunnel
+    command: tunnel --no-autoupdate --url http://host.docker.internal:8765
+    profiles: ["dashboards"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
 networks:
   web:
     driver: bridge

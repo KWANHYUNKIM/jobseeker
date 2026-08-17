@@ -127,6 +127,30 @@ rsync -av <계정>@<옛서버>:jobseeker/catch_capture/screenshots/ \
 > 참고: 옛 서버는 2026-07-20부터 push가 멈춰 있었다(토큰 만료로 추정).
 > 크롤은 계속 됐지만 로컬에만 쌓여서 origin 데이터가 한 달 뒤처졌다.
 
+## 관리 대시보드
+
+크롤 상태·통계를 보는 서버 2종. 호스트 네이티브(launchd)로 돌고, 각각 별도
+임시 터널로 외부에 노출한다.
+
+| 포트 | 서버 | 역할 |
+|---|---|---|
+| 8770 | ops (`monitoring.ops_server`) | 크롤 파이프라인 **실시간** 운영 대시보드 |
+| 8765 | stats (`dashboard/serve.py`) | 공고 분류·집계 통계 대시보드 |
+
+```bash
+./deploy/setup-dashboards.sh              # 두 서버를 launchd 로 등록·기동
+# .env 의 COMPOSE_PROFILES 에 dashboards 를 넣고 배포하면 터널이 함께 뜬다
+./deploy/tunnel-url.sh                     # ops/stats 공개 주소 확인
+./deploy/setup-dashboards.sh --uninstall   # 해제
+```
+
+⚠️ **두 대시보드 모두 인증이 없다.** 터널 주소를 아는 사람은 누구나 본다.
+데이터가 채워지려면 크롤러가 돌아야 한다(그전엔 빈 화면·0건).
+
+🔒 **admin(8910, `admin/server.py`)은 절대 터널에 붙이지 않는다.** 개인 이력·
+지원 내역·API 키를 다루고, 저장소에서도 `catch_capture/admin/`이 커밋 금지다.
+필요하면 LAN(`http://192.168.45.241:8910`)이나 SSH 포트포워딩으로만 접근한다.
+
 ## 다른 컴퓨터에서 작업하기
 
 서버에 직접 붙어서 코딩할 필요는 없다. 개발은 각자 컴퓨터에서 하고,

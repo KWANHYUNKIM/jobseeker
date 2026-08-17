@@ -33,6 +33,15 @@ if docker ps --format '{{.Names}}' | grep -qx jobseeker-tunnel; then
   found=1
 fi
 
+for svc in ops stats; do
+  name="jobseeker-${svc}-tunnel"
+  if docker ps --format '{{.Names}}' | grep -qx "$name"; then
+    url=$(docker compose -f "$COMPOSE_FILE" logs "${svc}-tunnel" 2>/dev/null \
+          | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
+    [ -n "$url" ] && { printf "%-8s: %s  (인증 없음, 재시작하면 바뀜)\n" "$svc" "$url"; found=1; }
+  fi
+done
+
 if docker ps --format '{{.Names}}' | grep -qx jobseeker-viewer; then
   ip=$(ipconfig getifaddr en0 2>/dev/null || echo "?")
   echo "LAN     : http://${ip}:8080"
