@@ -1,0 +1,48 @@
+# 프로덕션 배포 — jd-viewer(nginx) + Cloudflare Tunnel
+#
+#   실행:  docker compose -f docker-compose.prod.yml up -d --build
+#   상태:  docker compose -f docker-compose.prod.yml ps
+#   로그:  docker compose -f docker-compose.prod.yml logs -f
+#   종료:  docker compose -f docker-compose.prod.yml down
+#
+# 외부 노출은 전적으로 cloudflared 가 담당한다. viewer 의 호스트 포트는
+# 127.0.0.1 에만 바인딩되므로 공유기 포트포워딩도, 방화벽 인바운드 예외도
+# 필요 없다. 터널은 아웃바운드 커넥션만 맺는다.
+services:
+  viewer:
+    build:
+      context: ./jd-viewer
+      dockerfile: Dockerfile
+    image: jobseeker-viewer:latest
+    container_name: jobseeker-viewer
+    # 로컬 디버깅 전용. 터널은 아래 cloudflared 가 web 네트워크로 직접 붙는다.
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      # read-only 볼륨 — 자동 크롤이 public/*.json 을 갱신하면 재빌드 없이 반영
+      - ./jd-viewer/public:/data:ro
+    restart: unless-stopped
+    networks: [web]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-tunnel
+    command: tunnel --no-autoupdate run
+    environment:
+      # Cloudflare 대시보드에서 발급한 터널 토큰. .env 에 넣는다.
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?CLOUDFLARE_TUNNEL_TOKEN 이 .env 에 없습니다}
+    restart: unless-stopped
+    depends_on:
+      viewer:
+        condition: service_healthy
+    networks: [web]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+networks:
+  web:
+    driver: bridge

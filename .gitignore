@@ -45,6 +45,11 @@ jd-viewer/bin/.learning_cache.json
 jd-viewer/bin/refresh-learning.log
 jd-viewer/bin/.refresh-learning.lock/
 
+# 배포 시크릿 — Cloudflare 터널 토큰 등. 절대 커밋 금지 (.env.example 만 추적)
+.env
+.env.*
+!.env.example
+
 # Editor / OS
 .DS_Store
 .vscode/
