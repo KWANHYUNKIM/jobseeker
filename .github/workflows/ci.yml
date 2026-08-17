@@ -2,11 +2,12 @@ name: CI
 
 # 배포 전 게이트. GitHub 클라우드 러너에서 돌리므로 서버 자원을 쓰지 않는다.
 on:
+  # main push 에는 paths 필터를 걸지 않는다. deploy.yml 이 이 워크플로의
+  # 체크 완료를 기다리는데, 필터에 걸려 CI 가 아예 실행되지 않으면 기다리는
+  # 체크가 영영 나타나지 않아 배포 job 이 타임아웃까지 매달린다.
+  # (예: catch_capture/ 만 바뀐 커밋)
   push:
     branches: [main]
-    paths:
-      - "jd-viewer/**"
-      - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "jd-viewer/**"

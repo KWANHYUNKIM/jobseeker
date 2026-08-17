@@ -17,6 +17,9 @@ jobs:
   deploy:
     name: 서버 배포
     runs-on: [self-hosted, macOS, ARM64]
+    # 자기 컴퓨터에서 도는 러너다. 어딘가에서 매달리면 다음 배포까지 막히므로
+    # 상한을 둔다.
+    timeout-minutes: 30
     # CI 가 실패한 커밋은 배포하지 않는다.
     steps:
       - name: CI 통과 대기
