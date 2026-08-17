@@ -5,6 +5,12 @@ name: Deploy
 on:
   push:
     branches: [main]
+    # 크롤러가 사이클마다 데이터를 커밋·push 한다(JOBSEEKER_AUTOPUSH=1).
+    # 그 데이터는 read-only 볼륨으로 마운트돼 재빌드 없이 즉시 반영되므로
+    # 재배포할 이유가 없다. 걸러내지 않으면 30분마다 배포가 돈다.
+    paths-ignore:
+      - "jd-viewer/public/**"
+      - "catch_capture/dashboard/data.json"
   workflow_dispatch:
 
 # 배포가 겹치면 컨테이너 기동이 서로 꼬인다. 최신 것만 남기되 진행 중인
