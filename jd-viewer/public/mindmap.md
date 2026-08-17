@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10280건** 공고 · **1947개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 19:39
+- 총 **10283건** 공고 · **1948개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 21:55
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (529개사)
+## HR/채용 (530개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -4138,6 +4138,10 @@ markmap:
 - **모바일** [2건] · `Android`
   - [(서초) SQA 테스트 엔지니어 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54681881&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=c76baee5-9f2d-4def-bf28-f258cf79d62e)
   - [(서현역)웹/모바일/플랫폼 SQA 테스트엔지니어 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53887306&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3645ba73-d6d9-47b2-9434-806ec813590d)
+
+### 한스컨설팅 `중소기업` · 2건
+- **데이터** [1건]
+  - [역삼동 위치 화장품, 생활용품기업 데이터분석 3-6년차 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54098370&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=17cbfaa2-c815-4a47-871d-015376994e71)
 
 ### (주)엠클라우독 `중소기업` · 2건
 - **모바일** [1건] · `Python` `iOS` `Android` `Selenium` `Appium`
@@ -14069,6 +14073,16 @@ markmap:
 - **AI/ML** [1건] · `Python` `C++` `Docker` `TensorFlow` `PyTorch`
   - [서울아산병원 의생명공학 & 의료정보학 연구실 연구원 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54607375&location=ts&searchword=%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D&searchType=search&paid_fl=n&search_uuid=e5dbea12-44ba-4bd9-bc68-07295b90f18d)
 
+### (주)투비파트너즈 `중견기업` · 3건
+- **백엔드** [2건] · `Java` `Kotlin` `Python` `Docker` `Kubernetes`
+  - [(중견 헬스케어 플랫폼) 백엔드 (컴공 전공자 only, 4-8년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034338&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3d89bc8e-cb61-46e6-817a-b9bae7e1a303)
+  - [(중견 헬스케어 플랫폼) 백엔드 (컴공 전공자 only, 5-12년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54754900&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=8c5f95a7-b580-4660-8a66-5cc95ee98c21)
+- **모바일** [2건] · `Java` `Kotlin` `Python` `Docker` `Kubernetes`
+  - [(중견 헬스케어 플랫폼) 백엔드 (컴공 전공자 only, 4-8년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034338&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3d89bc8e-cb61-46e6-817a-b9bae7e1a303)
+  - [(중견 헬스케어 플랫폼) 백엔드 (컴공 전공자 only, 5-12년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54754900&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=8c5f95a7-b580-4660-8a66-5cc95ee98c21)
+- **데이터** [1건] · `Python`
+  - [(TOP제약유통그룹) 헬스케어 데이터 분석 (팀장급 10-15년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54754902&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=d9ff56d9-8524-46e8-87fe-ef9d9bdb4d50)
+
 ### 롯데바이오로직스 `대기업` · 3건
 
 ### 아토머스(마인드카페) `중소기업` · 2건
@@ -14510,14 +14524,6 @@ markmap:
   - [(주)오티톤메디컬 어플리케이션 백엔드 개발자 채용해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53888150&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=914cb972-6d90-4d12-b575-d8ddcf752695)
 - **AI/ML** [1건]
   - [(주)오티톤메디컬에서 AI 데이터 학습·라벨링 담당자를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53566910&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=051bfb82-da44-4630-9c6b-4ff1a9a978fd)
-
-### (주)투비파트너즈 `중견기업` · 2건
-- **백엔드** [1건] · `Java` `Kotlin` `Python` `Docker` `Kubernetes`
-  - [(중견 헬스케어 플랫폼) 백엔드 (컴공 전공자 only, 4-8년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034338&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3d89bc8e-cb61-46e6-817a-b9bae7e1a303)
-- **모바일** [1건] · `Java` `Kotlin` `Python` `Docker` `Kubernetes`
-  - [(중견 헬스케어 플랫폼) 백엔드 (컴공 전공자 only, 4-8년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034338&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3d89bc8e-cb61-46e6-817a-b9bae7e1a303)
-- **데이터** [1건] · `Python`
-  - [(TOP제약유통그룹) 헬스케어 데이터 분석 (팀장급 10-15년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54754902&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=d9ff56d9-8524-46e8-87fe-ef9d9bdb4d50)
 
 ### (주)초이스테크코리아 `중소기업` · 2건
 - **백엔드** [1건] · `Java` `Python` `Node.js` `Spring` `Spring Boot` `Django`
