@@ -20,19 +20,20 @@ jobs:
     # 자기 컴퓨터에서 도는 러너다. 어딘가에서 매달리면 다음 배포까지 막히므로
     # 상한을 둔다.
     timeout-minutes: 30
-    # CI 가 실패한 커밋은 배포하지 않는다.
     steps:
-      - name: CI 통과 대기
-        uses: lewagon/wait-on-check-action@v1.3.4
-        with:
-          ref: ${{ github.sha }}
-          check-name: "빌드·타입체크"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 15
-          allowed-conclusions: success,skipped
-
-      # 러너 워크스페이스가 아니라 ~/jobseeker 에서 배포한다.
-      # 컴포즈가 ./jd-viewer/public 을 라이브 데이터 볼륨으로 마운트하는데,
-      # 그 데이터를 갱신하는 크롤러가 ~/jobseeker 에서 돌기 때문이다.
+      # 별도의 "CI 통과 대기" 단계를 두지 않는다. 이유가 둘이다.
+      #  1. GitHub 호스팅 러너를 못 쓴다(계정 결제 잠김). ubuntu-latest job 은
+      #     시작조차 못 하고 실패하므로 기다릴 체크가 성공할 수 없다.
+      #  2. 설령 CI 를 self-hosted 로 옮겨도, 러너가 한 대뿐이라 배포 job 이
+      #     그 한 자리를 점유한 채 CI 를 기다리면 CI 가 영원히 시작 못 하는
+      #     교착이 된다.
+      #
+      # 타입체크 게이트는 이미 이미지 빌드 안에 있다. Dockerfile 의 build
+      # stage 가 `tsc -b && vite build` 를 돌리므로 타입 에러면 빌드가 죽고,
+      # deploy.sh 가 거기서 멈춘다. 돌고 있던 컨테이너는 건드려지지 않는다.
+      #
+      # 러너 워크스페이스가 아니라 ~/jobseeker 에서 배포한다. 컴포즈가
+      # ./jd-viewer/public 을 라이브 데이터 볼륨으로 마운트하는데, 그 데이터를
+      # 갱신하는 크롤러가 ~/jobseeker 에서 돌기 때문이다.
       - name: 배포 실행
         run: ~/jobseeker/deploy/deploy.sh
