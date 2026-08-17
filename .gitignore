@@ -34,11 +34,21 @@ catch_capture/admin/.secrets.json
 # 기술 블로그 본문/번역 (크롤러가 서버에서 생성하는 글별 데이터 — 인덱스 tech_blogs.json만 추적)
 jd-viewer/public/blog_content/
 
+# catch_capture/screenshots(=gitignore 대상) 를 가리키는 심링크. 클론한 트리에는
+# 타겟이 없어 `vite build` 가 public/ 을 복사하다 ENOENT 로 죽는다.
+# 뷰어는 all_jobs_enriched.json 만 fetch 하므로 추적할 이유가 없다.
+jd-viewer/public/all_jobs.json
+
 # 학습 영상 수집 캐시 (build_learning.py 증분 수집용 — 결과 learning_resources.json만 추적)
 jd-viewer/bin/.learning_cache.json
 # 자동 갱신 cron 로그·락
 jd-viewer/bin/refresh-learning.log
 jd-viewer/bin/.refresh-learning.lock/
+
+# 배포 시크릿 — Cloudflare 터널 토큰 등. 절대 커밋 금지 (.env.example 만 추적)
+.env
+.env.*
+!.env.example
 
 # Editor / OS
 .DS_Store

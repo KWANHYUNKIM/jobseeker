@@ -200,8 +200,10 @@ def serve(port: int) -> None:
     socketserver.TCPServer.allow_reuse_address = True
     import os
     os.chdir(str(DASHBOARD_DIR))
-    with socketserver.TCPServer(("127.0.0.1", port), handler) as httpd:
-        url = f"http://127.0.0.1:{port}/"
+    # 기본은 loopback(안전). 터널 컨테이너가 붙는 배포에서는 DASH_HOST=0.0.0.0.
+    host = os.environ.get("DASH_HOST", "127.0.0.1")
+    with socketserver.TCPServer((host, port), handler) as httpd:
+        url = f"http://{host}:{port}/"
         print(f"\n[*] 대시보드: {url}", flush=True)
         print("[*] Ctrl+C 로 종료", flush=True)
         try:

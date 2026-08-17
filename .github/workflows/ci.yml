@@ -1,0 +1,44 @@
+name: CI
+
+# PR 전용 검증. main push 에서는 돌리지 않는다 — 거기서는 Deploy 워크플로가
+# 이미지 빌드를 하면서 같은 타입체크를 통과시키기 때문에 중복이고, 러너가
+# 한 대뿐이라 두 워크플로가 서로 자리를 뺏는다.
+on:
+  pull_request:
+    paths:
+      - "jd-viewer/**"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 빌드·타입체크
+    # GitHub 호스팅 러너(ubuntu-latest)는 계정 결제 잠김으로 job 이 시작조차
+    # 못 한다. 결제가 풀리면 ubuntu-latest 로 되돌리는 편이 서버 자원을 아낀다.
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: jd-viewer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: jd-viewer/package-lock.json
+
+      - name: 의존성 설치
+        run: npm ci
+
+      # build 스크립트가 `tsc -b && vite build` 라 타입체크까지 함께 검증된다.
+      - name: 빌드
+        run: npm run build
+
+      # 참고용. 기존 코드에 에러 13건(no-explicit-any 7, set-state-in-effect 6)이
+      # 남아 있어 차단 게이트로 두면 모든 PR 이 막힌다. 정리가 끝나면
+      # continue-on-error 를 지운다.
+      - name: 린트 (참고용)
+        run: npm run lint
+        continue-on-error: true

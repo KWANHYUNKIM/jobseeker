@@ -1,0 +1,122 @@
+# 프로덕션 배포 — jd-viewer(nginx) + 선택적 Cloudflare Tunnel
+#
+#   기본(LAN 전용):  docker compose -f docker-compose.prod.yml up -d --build
+#                    → http://<서버 IP>:8080  (같은 네트워크에서만 접근)
+#
+#   외부에서 보기:   COMPOSE_PROFILES=quick docker compose -f docker-compose.prod.yml up -d
+#                    → cloudflared 로그에 찍히는 https://*.trycloudflare.com 주소로 접속.
+#                      도메인·계정 없이 즉시 HTTPS. 단 재시작하면 주소가 바뀐다.
+#
+#   고정 주소(무료):  .env 에 NGROK_AUTHTOKEN, NGROK_DOMAIN 을 넣고
+#                    COMPOSE_PROFILES=ngrok ... → 재시작해도 주소 유지.
+#
+#   도메인 붙일 때:  .env 에 CLOUDFLARE_TUNNEL_TOKEN 을 넣고
+#                    COMPOSE_PROFILES=tunnel ... → 고정 주소 + 자동 인증서.
+#
+#   상태/로그/종료:  ... ps  /  ... logs -f  /  ... down
+services:
+  viewer:
+    build:
+      context: ./jd-viewer
+      dockerfile: Dockerfile
+    image: jobseeker-viewer:latest
+    container_name: jobseeker-viewer
+    # 기본은 LAN 공개(혼자 쓰는 서버라 같은 네트워크의 다른 컴퓨터에서 바로 본다).
+    # 카페 같은 공용 와이파이에 물릴 일이 있으면 .env 에 VIEWER_BIND=127.0.0.1 을
+    # 넣어 로컬로 좁힌다.
+    ports:
+      - "${VIEWER_BIND:-0.0.0.0}:8080:80"
+    volumes:
+      # read-only 볼륨 — 자동 크롤이 public/*.json 을 갱신하면 재빌드 없이 반영
+      - ./jd-viewer/public:/data:ro
+    restart: unless-stopped
+    networks: [web]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # 도메인 없이 외부에서 보고 싶을 때. 계정도 토큰도 필요 없다.
+  # 주소는 `docker compose logs quicktunnel` 에 찍힌다.
+  quicktunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-quicktunnel
+    command: tunnel --no-autoupdate --url http://viewer:80
+    profiles: ["quick"]
+    restart: unless-stopped
+    depends_on:
+      viewer:
+        condition: service_healthy
+    networks: [web]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # 도메인 없이 고정 주소를 쓰는 방법. ngrok 무료 플랜은 정적 도메인 1개를
+  # 주므로 재시작해도 주소가 유지된다. .env 에 NGROK_AUTHTOKEN, NGROK_DOMAIN 필요.
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: jobseeker-ngrok
+    command: http --url=${NGROK_DOMAIN:-} viewer:80
+    profiles: ["ngrok"]
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:-}
+    restart: unless-stopped
+    depends_on:
+      viewer:
+        condition: service_healthy
+    networks: [web]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # 도메인을 붙인 뒤 쓰는 고정 주소 터널. Cloudflare 대시보드에서 public
+  # hostname 을 http://viewer:80 으로 지정한다.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-tunnel
+    command: tunnel --no-autoupdate run
+    profiles: ["tunnel"]
+    environment:
+      # `:?` 를 쓰면 이 서비스가 비활성 프로필이어도 보간 단계에서 평가돼
+      # 기본 구성까지 막힌다. 값 검증은 deploy.sh 가 프로필을 보고 한다.
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    restart: unless-stopped
+    depends_on:
+      viewer:
+        condition: service_healthy
+    networks: [web]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # ── 크롤 관리 대시보드 터널 (profile: dashboards) ───────────────
+  # 대시보드 서버 자체는 호스트 네이티브(launchd, deploy/setup-dashboards.sh)로
+  # 돈다. 여기서는 그 8770/8765 를 각각 별도 임시 터널로 외부에 노출한다.
+  # 주소는 각 컨테이너 로그의 *.trycloudflare.com. ⚠️ 인증 없음.
+  ops-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-ops-tunnel
+    command: tunnel --no-autoupdate --url http://host.docker.internal:8770
+    profiles: ["dashboards"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  stats-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: jobseeker-stats-tunnel
+    command: tunnel --no-autoupdate --url http://host.docker.internal:8765
+    profiles: ["dashboards"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+networks:
+  web:
+    driver: bridge

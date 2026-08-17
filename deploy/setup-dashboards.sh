@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# 크롤 관리 대시보드 2종을 이 서버에 상시 띄우고 터널로 외부 공개한다.
+#
+#   ops (8770)  : 크롤 파이프라인 실시간 운영 대시보드 — "지금 뭘 하는지"
+#   stats(8765) : 통계 대시보드 — 공고 분류·집계
+#
+# 사용:
+#   ./deploy/setup-dashboards.sh              # 두 서버를 launchd 로 등록·기동
+#   ./deploy/setup-dashboards.sh --uninstall  # 해제
+#
+# 터널은 docker-compose.prod.yml 의 dashboards 프로필이 담당한다.
+# 이 스크립트는 파이썬 서버(호스트 네이티브)만 관리한다. 크롤러와 같은 venv 를
+# 쓰고 같은 파일을 읽으므로 컨테이너가 아니라 네이티브로 돈다.
+#
+# ⚠️ 두 대시보드 모두 인증이 없다. 터널 주소를 아는 사람은 누구나 본다.
+#    admin(8910, 개인 이력·API키)은 절대 여기 포함하지 않는다 — LAN 전용.
+set -euo pipefail
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+ROOT="${ROOT:-$HOME/jobseeker}"
+CATCH="$ROOT/catch_capture"
+VENV="$CATCH/.venv"
+UID_N="$(id -u)"
+
+log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
+warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
+die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
+
+# label / 모듈·인자 / bind 환경변수 / 포트
+SERVICES=(
+  "com.jobseeker.ops:monitoring.ops_server|--port|8770|--no-open:OPS_HOST:8770"
+  "com.jobseeker.stats:dashboard/serve.py|--port|8765:DASH_HOST:8765"
+)
+
+uninstall() {
+  for entry in "${SERVICES[@]}"; do
+    label="${entry%%:*}"
+    plist="$HOME/Library/LaunchAgents/$label.plist"
+    launchctl bootout "gui/$UID_N/$label" 2>/dev/null || true
+    rm -f "$plist"
+    log "해제: $label"
+  done
+  exit 0
+}
+[ "${1:-}" = "--uninstall" ] && uninstall
+
+[ -x "$VENV/bin/python" ] || die "venv 가 없습니다. 먼저 ./deploy/setup-crawler.sh 를 실행하세요."
+
+for entry in "${SERVICES[@]}"; do
+  label="${entry%%:*}"; rest="${entry#*:}"
+  argspec="${rest%%:*}"; rest="${rest#*:}"
+  bindvar="${rest%%:*}"; port="${rest##*:}"
+  plist="$HOME/Library/LaunchAgents/$label.plist"
+
+  # argspec 을 <string> 배열로. '|' 구분, 첫 토큰이 -m 모듈이면 -m 을 앞에 붙인다.
+  IFS='|' read -ra parts <<< "$argspec"
+  prog_args=""
+  first="${parts[0]}"
+  if [[ "$first" == *.py ]]; then
+    prog_args+="    <string>$first</string>"$'\n'
+  else
+    prog_args+="    <string>-m</string>"$'\n'"    <string>$first</string>"$'\n'
+  fi
+  for a in "${parts[@]:1}"; do prog_args+="    <string>$a</string>"$'\n'; done
+
+  log "등록: $label (포트 $port, bind 0.0.0.0)"
+  cat > "$plist" <<PLIST_EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$label</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$VENV/bin/python</string>
+$prog_args  </array>
+  <key>WorkingDirectory</key><string>$CATCH</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key><string>1</string>
+    <!-- 터널 컨테이너가 host.docker.internal 로 붙어야 하므로 loopback 이 아닌 전체 인터페이스에 바인딩 -->
+    <key>$bindvar</key><string>0.0.0.0</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/jobseeker-${label##*.}.out.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/jobseeker-${label##*.}.err.log</string>
+</dict>
+</plist>
+PLIST_EOF
+
+  plutil -lint "$plist" >/dev/null || die "plist 문법 오류: $label"
+  launchctl bootout "gui/$UID_N/$label" 2>/dev/null || true
+  launchctl bootstrap "gui/$UID_N" "$plist"
+done
+
+log "기동 확인"
+sleep 3
+for entry in "${SERVICES[@]}"; do
+  port="${entry##*:}"
+  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "http://127.0.0.1:$port/" 2>/dev/null || echo 000)
+  [ "$code" = "200" ] && log "  포트 $port → HTTP 200" || warn "  포트 $port → HTTP $code (로그 확인 필요)"
+done
+
+echo
+echo "  터널로 외부 공개:  COMPOSE_PROFILES 에 dashboards 를 추가해 배포"
+echo "     예) COMPOSE_PROFILES=quick,dashboards docker compose -f docker-compose.prod.yml up -d"
+echo "  주소 확인:         ./deploy/tunnel-url.sh"
+echo "  해제:              ./deploy/setup-dashboards.sh --uninstall"

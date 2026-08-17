@@ -3,3 +3,7 @@ anthropic>=0.111.0
 # 의미 기반 적합도(임베딩) — 로컬 정적 임베딩, torch 불필요
 model2vec>=0.8.0
 numpy>=2.0.0
+# crawl_saramin 의 HTML 파싱
+beautifulsoup4>=4.12
+# crawl_techblog_graph 의 파이프라인 그래프(LLM 없음)
+langgraph>=0.2
