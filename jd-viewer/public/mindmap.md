@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10270건** 공고 · **1945개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 09:23
+- 총 **10273건** 공고 · **1946개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 10:39
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (528개사)
+## HR/채용 (529개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -4099,6 +4099,19 @@ markmap:
 - **풀스택** [2건] · `Java` `Spring` `Spring Boot` `Vue` `PostgreSQL` `Oracle`
   - [(정규직) 중급 풀스택 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54739693&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=57c65a81-efe7-44ed-a434-af19744889a2)
   - [Java·Nexacro 풀스택 개발자 모집 (중급~고급) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761243&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=9bda2c36-5e3c-4917-88e4-3608a23e869a)
+
+### 주식회사엠에이치앤티(MH&T) `중소기업` · 2건
+- **백엔드** [2건] · `Java` `React` `Python` `JavaScript` `C#` `LangChain`
+  - [(주)엠에이치앤티에서 풀스택 BI 엔지니어를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761359&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=74b79ef9-0e5e-41cd-8ae7-75572494c85b)
+  - [주식회사엠에이치앤티(MH&T)에서 풀스택 개발자(React/Spring)로 함께해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53721345&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=271c554b-139b-4074-9975-0b5ba9f90042)
+- **프론트엔드** [2건] · `Java` `React` `Python` `JavaScript` `C#` `LangChain`
+  - [(주)엠에이치앤티에서 풀스택 BI 엔지니어를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761359&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=74b79ef9-0e5e-41cd-8ae7-75572494c85b)
+  - [주식회사엠에이치앤티(MH&T)에서 풀스택 개발자(React/Spring)로 함께해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53721345&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=271c554b-139b-4074-9975-0b5ba9f90042)
+- **풀스택** [2건] · `Java` `React` `Python` `JavaScript` `C#` `LangChain`
+  - [(주)엠에이치앤티에서 풀스택 BI 엔지니어를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761359&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=74b79ef9-0e5e-41cd-8ae7-75572494c85b)
+  - [주식회사엠에이치앤티(MH&T)에서 풀스택 개발자(React/Spring)로 함께해요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53721345&location=ts&searchword=%EB%A6%AC%EC%95%A1%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=271c554b-139b-4074-9975-0b5ba9f90042)
+- **AI/ML** [1건] · `Java` `Python` `JavaScript` `C#` `React` `LangChain`
+  - [(주)엠에이치앤티에서 풀스택 BI 엔지니어를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761359&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=74b79ef9-0e5e-41cd-8ae7-75572494c85b)
 
 ### 윌로펌프(주) `중소기업` · 2건
 - **AI/ML** [1건] · `TensorFlow` `PyTorch`
@@ -18087,6 +18100,22 @@ markmap:
   - [React / React Native 웹·앱 풀스택 AI 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54072867&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367)
   - [AI 활용 UI/UX 및 3D 콘텐츠 디자이너 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54135957&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=f637a7d2-ef3a-4223-833a-c48b8a9d99af)
 
+### (주)시니어앤파트너즈 `중소기업` · 3건
+- **백엔드** [2건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
+  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
+  - [(문래역) 풀스택 웹개발자(경력 3년~9년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761797&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=6f263965-9d44-488e-b68c-9d8d0dea018d)
+- **프론트엔드** [2건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
+  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
+  - [(문래역) 풀스택 웹개발자(경력 3년~9년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761797&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=6f263965-9d44-488e-b68c-9d8d0dea018d)
+- **풀스택** [2건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
+  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
+  - [(문래역) 풀스택 웹개발자(경력 3년~9년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761797&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=6f263965-9d44-488e-b68c-9d8d0dea018d)
+- **모바일** [1건] · `Swift` `iOS` `Android`
+  - [(충무로역) 콘텐츠 플랫폼 iOS 개발자(대리-과장급) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034038&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=46c4a5a2-25b7-444b-a523-4a48919c97ba)
+- **데이터** [2건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
+  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
+  - [(문래역) 풀스택 웹개발자(경력 3년~9년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54761797&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=6f263965-9d44-488e-b68c-9d8d0dea018d)
+
 ### (주)큐피스트 `중소기업` · 3건
 - **백엔드** [1건] · `Go` `FastAPI` `Kafka`
   - [(글로벌 AI Chat) 백엔드 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54409733&location=ts&searchword=%EB%85%B8%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9a6c027e-c6a1-4d84-8ee9-c0b3cdc647f4)
@@ -18502,18 +18531,6 @@ markmap:
 - **풀스택** [2건] · `Java` `Python` `JavaScript` `React` `MySQL` `PostgreSQL`
   - [AIVA 웹개발 / 풀스택 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53877689&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=69e966d3-6ab1-4dfb-af6c-d0376e5773d1)
   - [IPCM 웹개발 / 풀스택 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53877743&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=69e966d3-6ab1-4dfb-af6c-d0376e5773d1)
-
-### (주)시니어앤파트너즈 `중소기업` · 2건
-- **백엔드** [1건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
-  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
-- **프론트엔드** [1건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
-  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
-- **풀스택** [1건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
-  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
-- **모바일** [1건] · `Swift` `iOS` `Android`
-  - [(충무로역) 콘텐츠 플랫폼 iOS 개발자(대리-과장급) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54034038&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=46c4a5a2-25b7-444b-a523-4a48919c97ba)
-- **데이터** [1건] · `Java` `React` `Vue` `Spring` `Spring Boot` `PostgreSQL`
-  - [(문래역) 풀스택 웹개발자(경력10년~20년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54759068&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=7a0c969e-f465-4b89-abf6-a6d9a6c3f9e7)
 
 ### (주)올인원장 `중소기업` · 2건
 - **AI/ML** [1건]
