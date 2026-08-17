@@ -8,11 +8,26 @@
   - `monitoring/` : 헬스 기록·이상탐지(health)
   - `automation/` : 크롤 오케스트레이션(crawl_all) + 자동화 데몬(auto_crawl)
   - `dashboard/` : 통계 대시보드(serve.py, 8765)
+  - `semantic/` : 임베딩 기반 추천·검색 (SQLite+sqlite-vec 저장, Ollama bge-m3 증분 임베딩,
+    코사인 top-K → `public/similar_*.json`). 크롤 사이클 끝에 auto_crawl 이 자동 실행.
+    `search.py`(FTS5+벡터 RRF 하이브리드) / `server.py`(검색 API, 8771)
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
 - `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비)
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
-`python -m pipeline.aggregate 개발자`, `python -m monitoring.health report`
+`python -m pipeline.aggregate 개발자`, `python -m monitoring.health report`,
+`python -m semantic.ingest && python -m semantic.embed && python -m semantic.similar`,
+`python -m semantic.search "재택 되는 백엔드"`, `python -m semantic.server`
+
+## 로컬 서버 포트
+8765 stats(통계) / 8770 ops(크롤 운영) / 8771 search(검색 API) / 8910 admin(개인 이력, LAN 전용).
+검색 API 는 뷰어 nginx 가 `/api/` 로 프록시하므로 별도 터널이 필요 없다.
+
+## 운영 주의
+- 이 머신은 8GB M1 이다. Playwright 크롤과 Ollama 임베딩이 동시에 뜨면 컨텍스트
+  할당에 실패한다. 전량 임베딩이 필요하면 `auto_crawl stop` 후 돌린다.
+- `screenshots/` 는 타임스탬프 스냅샷이 사이클마다 쌓인다(개당 ~250MB).
+  `auto_crawl` 이 매 사이클 계열별 8개만 남기고 정리한다(`auto_crawl prune`으로 수동 실행).
 
 ## Git 워크플로
 - 커밋 메시지는 Conventional Commits 형식을 따른다: `type(scope): subject`
