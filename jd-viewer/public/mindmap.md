@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10277건** 공고 · **1946개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 18:23
+- 총 **10280건** 공고 · **1947개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-17 19:39
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -547,6 +547,20 @@ markmap:
   - [(병특 전문연) (주)일루넥스 인공지능, 빅데이터 분석 분야 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53636938&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=480afee7-bcc6-48e8-8ad6-443f8b32eafa)
   - [(주)일루넥스 인공지능, 빅데이터 분석 분야 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54270373&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=74a6c82a-1c5f-4e6d-b910-5455f5624bd4)
 
+### (주)씨넷 `중소기업` · 7건
+- **백엔드** [3건] · `Java` `React` `Spring` `Spring Boot` `AWS` `GCP`
+  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
+  - [씨넷 연구소 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54180352&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=448ebb4d-8a54-4458-af3a-b99a8344dc1d)
+  - [(부산) 연구소 개발자 채용(C++ 응용SW/Java·Spring 웹 풀스택) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421882&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1be88daa-2841-43c4-9b33-4b10ce5802b4)
+- **프론트엔드** [2건] · `Java` `React` `Spring` `Spring Boot` `MSSQL` `AWS`
+  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
+  - [(부산) 연구소 개발자 채용(C++ 응용SW/Java·Spring 웹 풀스택) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421882&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1be88daa-2841-43c4-9b33-4b10ce5802b4)
+- **풀스택** [2건] · `Java` `React` `Spring` `Spring Boot` `MSSQL` `AWS`
+  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
+  - [(부산) 연구소 개발자 채용(C++ 응용SW/Java·Spring 웹 풀스택) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421882&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1be88daa-2841-43c4-9b33-4b10ce5802b4)
+- **AI/ML** [1건] · `Java` `React` `Spring` `Spring Boot` `MSSQL` `AWS`
+  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
+
 ### 에이피써치 `중소기업` · 7건
 - **백엔드** [1건] · `TypeScript` `Node.js` `NestJS` `AWS` `Docker` `Kubernetes`
   - [(글로벌 블록체인 모빌리티 스타트업) 시니어 백엔드 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54496153&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3b03e787-5cf7-46e3-83f9-9ad3fc715e5f)
@@ -740,20 +754,6 @@ markmap:
   - [(역세권/중식제공) 삼성그룹 정보보안 프로그램 IT기술지원 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54245101&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=e2143aec-4f17-4a7b-9d48-99ebf5a65925)
   - [(월261/중식제공) 삼성그룹 정보보안 프로그램 IT기술상담 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54567414&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=063b18bf-dfc2-439e-bee0-e6bcf076c877)
   - [(역세권/스펙UP) 삼성SDS그룹 정보보안 프로그램 기술상담 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54715259&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=a674e05d-f96a-4976-897a-2714f9bb9c1b)
-
-### (주)씨넷 `중소기업` · 6건
-- **백엔드** [3건] · `Java` `React` `Spring` `Spring Boot` `AWS` `GCP`
-  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
-  - [씨넷 연구소 개발자 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54180352&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=448ebb4d-8a54-4458-af3a-b99a8344dc1d)
-  - [(부산) 연구소 개발자 채용(C++ 응용SW/Java·Spring 웹 풀스택) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421882&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1be88daa-2841-43c4-9b33-4b10ce5802b4)
-- **프론트엔드** [2건] · `Java` `React` `Spring` `Spring Boot` `MSSQL` `AWS`
-  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
-  - [(부산) 연구소 개발자 채용(C++ 응용SW/Java·Spring 웹 풀스택) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421882&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1be88daa-2841-43c4-9b33-4b10ce5802b4)
-- **풀스택** [2건] · `Java` `React` `Spring` `Spring Boot` `MSSQL` `AWS`
-  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
-  - [(부산) 연구소 개발자 채용(C++ 응용SW/Java·Spring 웹 풀스택) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54421882&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=1be88daa-2841-43c4-9b33-4b10ce5802b4)
-- **AI/ML** [1건] · `Java` `React` `Spring` `Spring Boot` `MSSQL` `AWS`
-  - [씨넷 연구소 해상/육상 통합 데이터 플랫폼 웹 풀스택 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54089046&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=bb48877f-fb0a-478d-8e5b-cb97332d7c4d)
 
 ### (주)디엑스솔루션즈 `중소기업` · 6건
 - **백엔드** [1건]
@@ -21099,7 +21099,7 @@ markmap:
   - [경력사원 채용(데이터 분석 엔지니어, 수주영업, 조리사, 보건관리, 제안서디자인, 글로벌 셰프) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54702098&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=c4211bc3-a035-44b3-a04e-63ad233d387d)
 
 
-## 기타/미상 (18개사)
+## 기타/미상 (19개사)
 ### 에프에스케이 `중소기업` · 3건
 
 ### PostHog `중소기업` · 3건
@@ -21178,6 +21178,11 @@ markmap:
 - **프론트엔드** [2건] · `React` `Git`
   - [((주)알라딘커뮤니케이션) 프론트엔드 개발자(휴직대체) 계약직 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54476772&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=54756828-4c29-4939-850c-4109a8ff6376)
   - [((주)알라딘커뮤니케이션) 프론트엔드 개발자(휴직대체) 경력직 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54660883&location=ts&searchword=%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=9acf6905-c826-4e43-b431-daf510b08821)
+
+### (유)미소 `중소기업` · 2건
+- **백엔드** [2건]
+  - [(O2O 플랫폼 miso) 백엔드 개발자 (Salesforce 경험자 우대) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54686299&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=b439aec8-84e9-457b-983f-5a2df7c1c9a0)
+  - [(O2O 플랫폼 miso) Back-end Engineer (Salesforce 경험자 우대) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54763120&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=b0b98173-b309-4a80-b241-048ed5be99ed)
 
 ### (주)캐니캐티케어 `중소기업` · 2건
 - **백엔드** [1건]
