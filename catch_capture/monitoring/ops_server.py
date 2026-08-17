@@ -194,9 +194,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 
 def serve(port: int, open_browser: bool) -> None:
+    # 기본은 loopback(안전). 터널 컨테이너가 host.docker.internal 로 붙어야 하는
+    # 배포에서는 OPS_HOST=0.0.0.0 으로 열어준다.
+    host = os.environ.get("OPS_HOST", "127.0.0.1")
     socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("127.0.0.1", port), Handler) as httpd:
-        url = f"http://127.0.0.1:{port}/"
+    with socketserver.TCPServer((host, port), Handler) as httpd:
+        url = f"http://{host}:{port}/"
         print(f"[*] 오케스트레이션 대시보드: {url}", flush=True)
         print("[*] Ctrl+C 로 종료", flush=True)
         if open_browser:
