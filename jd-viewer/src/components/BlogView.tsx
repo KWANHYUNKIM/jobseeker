@@ -177,7 +177,18 @@ export function BlogView() {
         </ul>
       </main>
 
-      {selected && <BlogDetail post={selected} onClose={() => setSelected(null)} />}
+      {selected && (
+        <BlogDetail
+          post={selected}
+          onClose={() => setSelected(null)}
+          onOpenUrl={(url) => {
+            // 추천 JSON 은 url 만 들고 있다. 필터에 걸려 목록에 없는 글도 열려야 하므로
+            // 필터된 목록이 아니라 posts 전체에서 찾는다.
+            const next = posts.find((p) => p.url === url)
+            if (next) setSelected(next)
+          }}
+        />
+      )}
     </div>
   )
 }

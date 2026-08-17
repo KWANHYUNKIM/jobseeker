@@ -1,14 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
 import { useIsLight } from '../lib/useIsLight'
+import { useSimilarJobs } from '../lib/useSimilar'
 
 interface Props {
   job: Job
   onClose: () => void
+  /** 비슷한 공고를 눌렀을 때 그 공고로 갈아끼운다. 없으면 추천 섹션을 감춘다. */
+  onOpenUrl?: (url: string) => void
 }
 
-export function JobDetail({ job, onClose }: Props) {
+export function JobDetail({ job, onClose, onOpenUrl }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -21,11 +24,20 @@ export function JobDetail({ job, onClose }: Props) {
     }
   }, [onClose])
 
+  // 추천을 눌러 다른 공고로 갈아끼면 내용만 바뀌고 스크롤은 그대로라 본문 중간이 보인다.
+  const scrollRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 })
+  }, [job.url])
+
   const isLight = useIsLight()
   const roles = classifyRoles(job.title, job.tech_stack, job.qualifications || '')
+  const { lookup } = useSimilarJobs()
+  const similar = onOpenUrl ? lookup(job.url) : []
 
   return (
     <div
+      ref={scrollRef}
       className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 sm:p-8"
       onClick={onClose}
     >
@@ -120,6 +132,41 @@ export function JobDetail({ job, onClose }: Props) {
               </summary>
               <Pre text={job.full_jd} muted />
             </details>
+          )}
+
+          {similar.length > 0 && onOpenUrl && (
+            <section className="mt-4 border-t border-(--color-border) pt-4">
+              <h3 className="text-xs uppercase tracking-wider text-(--color-muted) mb-2.5 font-medium">
+                비슷한 공고
+              </h3>
+              <ul className="space-y-1.5">
+                {similar.map((s) => (
+                  <li key={s.url}>
+                    <button
+                      onClick={() => onOpenUrl(s.url)}
+                      className="w-full text-left px-3 py-2.5 rounded border border-(--color-border) hover:bg-(--hover) hover:border-(--color-accent)/40 flex items-center gap-3"
+                    >
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-(--color-text) text-[13px] leading-snug truncate">
+                          {s.title || s.url}
+                        </span>
+                        {s.company && (
+                          <span className="block text-(--color-muted) text-xs mt-0.5 truncate">
+                            {s.company}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className="text-xs text-(--color-muted) shrink-0 tabular-nums"
+                        title={`코사인 유사도 ${s.score.toFixed(3)}`}
+                      >
+                        {Math.round(s.score * 100)}%
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
         </div>
 

@@ -12,6 +12,7 @@ import { TrendView } from './components/TrendView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
+import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, emptyFilter, stackCounts, roleCounts } from './lib/filter'
 import type { Job } from './types'
 
@@ -27,6 +28,7 @@ function App() {
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
   const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
   const [filterOpen, setFilterOpen] = useState(false)
+  const [semantic, setSemantic] = useState(false)
   const [light, setLight] = useState(
     () => typeof document !== 'undefined' && document.documentElement.classList.contains('light'),
   )
@@ -45,6 +47,13 @@ function App() {
     })
   }
 
+  // 추천 목록에서 고른 공고로 모달을 갈아끼운다. 추천 JSON 은 url 만 들고 있어서
+  // 실제 Job 객체는 여기서 찾는다(필터에 걸려 목록에 없는 공고도 열려야 하므로 jobs 전체 대상).
+  const openJobByUrl = (url: string) => {
+    const next = jobs.find((j) => j.url === url)
+    if (next) setSelected(next)
+  }
+
   const openCompany = (norm: string) => {
     setCompanyFocus(norm)
     setTab('companies')
@@ -57,7 +66,19 @@ function App() {
     setTab('trend')
   }
 
-  const filtered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
+  const searchAvailable = useSearchAvailable()
+  const semanticOn = semantic && searchAvailable
+  const { hits, loading: searching, engines } = useHybridSearch(filter.query, semanticOn, filter)
+
+  const localFiltered = useMemo(() => applyFilter(jobs, filter), [jobs, filter])
+
+  // 의미 검색이 돌 때는 API 가 매긴 관련도 순서가 결과의 핵심이라 그대로 따른다.
+  // API 는 url 만 돌려주므로 여기서 실제 Job 으로 되돌린다.
+  const filtered = useMemo(() => {
+    if (!hits) return localFiltered
+    const byUrl = new Map(jobs.map((j) => [j.url, j]))
+    return hits.map((h) => byUrl.get(h.url)).filter((j): j is Job => Boolean(j))
+  }, [hits, localFiltered, jobs])
   const stacks = useMemo(() => stackCounts(filtered), [filtered])
   const allStacks = useMemo(() => stackCounts(jobs), [jobs])
   const allRoles = useMemo(() => roleCounts(jobs), [jobs])
@@ -159,6 +180,11 @@ function App() {
               filteredCount={filtered.length}
               open={filterOpen}
               onClose={() => setFilterOpen(false)}
+              semantic={
+                searchAvailable
+                  ? { on: semantic, setOn: setSemantic, loading: searching, engines }
+                  : undefined
+              }
             />
             <main className="flex-1 min-w-0 overflow-auto">
               <MobileBar onMenu={() => setFilterOpen(true)} label="필터">
@@ -169,7 +195,13 @@ function App() {
               <TechChart data={stacks} onPick={toggleStack} highlight={filter.stacks} />
               <JobList jobs={filtered} selected={selected} onSelect={setSelected} />
             </main>
-            {selected && <JobDetail job={selected} onClose={() => setSelected(null)} />}
+            {selected && (
+              <JobDetail
+                job={selected}
+                onClose={() => setSelected(null)}
+                onOpenUrl={openJobByUrl}
+              />
+            )}
           </div>
         )
       ) : (

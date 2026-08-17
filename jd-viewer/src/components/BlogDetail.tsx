@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { BlogContent, BlogPost } from '../types'
+import { useSimilarPosts } from '../lib/useSimilar'
 
 const COUNTRY_LABEL: Record<string, string> = {
   KR: '🇰🇷 한국', US: '🇺🇸 미국', JP: '🇯🇵 일본', DE: '🇩🇪 독일',
@@ -32,10 +33,21 @@ function videoEmbed(href?: string): string | null {
 
 const VIDEO_FILE = /\.(mp4|webm|ogg)(\?|$)/i
 
-export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => void }) {
+export function BlogDetail({
+  post,
+  onClose,
+  onOpenUrl,
+}: {
+  post: BlogPost
+  onClose: () => void
+  /** 비슷한 글을 눌렀을 때 그 글로 갈아끼운다. 없으면 추천 섹션을 감춘다. */
+  onOpenUrl?: (url: string) => void
+}) {
   const [content, setContent] = useState<BlogContent | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'pending' | 'error'>('loading')
   const [view, setView] = useState<View>('ko')
+  const { lookup } = useSimilarPosts()
+  const similar = onOpenUrl ? lookup(post.url) : []
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
@@ -78,8 +90,15 @@ export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => v
   const body =
     content && (view === 'ko' && content.translated ? content.content_ko : content.content)
 
+  // 추천을 눌러 다른 글로 갈아끼면 내용만 바뀌고 스크롤은 그대로라 본문 중간이 보인다.
+  const scrollRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 })
+  }, [post.url])
+
   return (
     <div
+      ref={scrollRef}
       className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 sm:p-8"
       onClick={onClose}
     >
@@ -167,6 +186,41 @@ export function BlogDetail({ post, onClose }: { post: BlogPost; onClose: () => v
                 </ReactMarkdown>
               </article>
             </>
+          )}
+
+          {similar.length > 0 && onOpenUrl && (
+            <section className="mt-6 border-t border-(--color-border) pt-4">
+              <h3 className="text-xs uppercase tracking-wider text-(--color-muted) mb-2.5 font-medium">
+                비슷한 글
+              </h3>
+              <ul className="space-y-1.5">
+                {similar.map((s) => (
+                  <li key={s.url}>
+                    <button
+                      onClick={() => onOpenUrl(s.url)}
+                      className="w-full text-left px-3 py-2.5 rounded border border-(--color-border) hover:bg-(--hover) hover:border-(--color-accent)/40 flex items-center gap-3"
+                    >
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-(--color-text) text-[13px] leading-snug truncate">
+                          {s.title || s.url}
+                        </span>
+                        {s.company && (
+                          <span className="block text-(--color-muted) text-xs mt-0.5 truncate">
+                            {s.company}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className="text-xs text-(--color-muted) shrink-0 tabular-nums"
+                        title={`코사인 유사도 ${s.score.toFixed(3)}`}
+                      >
+                        {Math.round(s.score * 100)}%
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
         </div>
       </div>

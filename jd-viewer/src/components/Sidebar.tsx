@@ -20,6 +20,8 @@ interface Props {
   filteredCount: number
   open: boolean
   onClose: () => void
+  /** 의미 검색 토글. 검색 API 가 없는 배포에서는 넘기지 않아 UI 자체가 안 뜬다. */
+  semantic?: { on: boolean; setOn: (v: boolean) => void; loading: boolean; engines: { fts: number; vector: number } | null }
 }
 
 function toggle<T>(set: Set<T>, val: T): Set<T> {
@@ -29,7 +31,7 @@ function toggle<T>(set: Set<T>, val: T): Set<T> {
   return next
 }
 
-export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, filteredCount, open, onClose }: Props) {
+export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, filteredCount, open, onClose, semantic }: Props) {
   return (
     <SidePanel side="left" desktopWidth="md:w-72" open={open} onClose={onClose}>
      <div className="p-4 overflow-y-auto flex flex-col gap-5 text-sm h-full">
@@ -52,11 +54,41 @@ export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, 
       <div>
         <input
           type="search"
-          placeholder="회사/제목/본문 검색"
+          placeholder={semantic?.on ? '예: 재택 되는 백엔드 자리' : '회사/제목/본문 검색'}
           value={filter.query}
           onChange={(e) => setFilter({ ...filter, query: e.target.value })}
           className="w-full px-3 py-2 rounded bg-(--color-bg) border border-(--color-border) outline-none focus:border-(--color-accent)"
         />
+        {semantic && (
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              onClick={() => semantic.setOn(!semantic.on)}
+              role="switch"
+              aria-checked={semantic.on}
+              className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition ${
+                semantic.on
+                  ? 'bg-(--color-accent)/15 text-(--color-accent) border-(--color-accent)/40'
+                  : 'text-(--color-muted) border-(--color-border) hover:bg-(--hover)'
+              }`}
+              title="키워드와 의미를 함께 보는 검색 (문장으로 물어도 됩니다)"
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  semantic.on ? 'bg-(--color-accent)' : 'bg-(--color-muted)'
+                }`}
+              />
+              의미 검색
+            </button>
+            {semantic.on && semantic.loading && (
+              <span className="text-xs text-(--color-muted)">찾는 중…</span>
+            )}
+            {semantic.on && !semantic.loading && semantic.engines && (
+              <span className="text-xs text-(--color-muted) tabular-nums">
+                키워드 {semantic.engines.fts} · 의미 {semantic.engines.vector}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       <FilterGroup title="사이트">
