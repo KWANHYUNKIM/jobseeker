@@ -143,7 +143,7 @@ plutil -lint "$PLIST" >/dev/null || die "plist 문법 오류"
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
 launchctl print "gui/$(id -u)/$LABEL" >/dev/null 2>&1 \
-  && log "등록 완료 — ${INTERVAL}초마다 '$KEYWORD' $COUNT건 크롤" \
+  && log "등록 완료 — ${INTERVAL}초마다 '${KEYWORD}' ${COUNT}건 크롤" \
   || die "launchd 등록 실패"
 
 echo
