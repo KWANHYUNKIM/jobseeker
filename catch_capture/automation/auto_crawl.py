@@ -17,6 +17,7 @@
     python auto_crawl.py status
     python auto_crawl.py logs [n]
     python auto_crawl.py stop
+    python auto_crawl.py prune [keep] [--dry-run]   # 오래된 스냅샷 정리 (데몬도 매 사이클 수행)
 """
 from __future__ import annotations
 
@@ -105,6 +106,75 @@ def log(msg: str) -> None:
     print(line, flush=True)
 
 
+def prune_snapshots(keep: int = SNAPSHOT_KEEP, dry_run: bool = False) -> list[Path]:
+    """screenshots/<계열>_YYYYMMDD_HHMMSS/ 를 계열별 최신 keep 개만 남긴다.
+
+    타임스탬프가 없는 폴더(saramin_리액트 같은 고정 누적 폴더, *_latest)는
+    크롤러가 계속 덮어쓰는 현재 상태라 대상에서 제외한다.
+    반환값은 삭제한(dry_run 이면 삭제 대상) 폴더 목록.
+    """
+    if not SCREENSHOTS_DIR.exists():
+        return []
+    series: dict[str, list[Path]] = {}
+    for d in SCREENSHOTS_DIR.iterdir():
+        if not d.is_dir():
+            continue
+        m = _TS_RE.search(d.name)
+        if not m:
+            continue
+        series.setdefault(d.name[: m.start()], []).append(d)
+
+    targets: list[Path] = []
+    for dirs in series.values():
+        # 이름에 박힌 타임스탬프가 곧 생성 순서다. mtime 은 복사/rsync 로 흐트러질 수 있어
+        # 어느 스냅샷이 최신인지 판단하는 근거로 쓰지 않는다.
+        dirs.sort(key=lambda p: p.name, reverse=True)
+        targets.extend(dirs[keep:])
+
+    if dry_run:
+        return targets
+
+    removed: list[Path] = []
+    for old in targets:
+        try:
+            shutil.rmtree(old)
+            removed.append(old)
+        except OSError as e:
+            log(f"[prune] {old.name} 삭제 실패: {e}")
+    if removed:
+        log(f"[prune] 스냅샷 {len(removed)}개 삭제 (계열별 최신 {keep}개 유지)")
+    return removed
+
+
+def rotate_log() -> None:
+    """auto_crawl.log 가 임계치를 넘으면 최근 분량만 남기고 제자리에서 잘라낸다.
+
+    데몬의 stdout 은 cmd_start 가 O_APPEND 로 열어 물려준 fd 다. 파일을 rename 해서
+    새 파일로 미는 방식은 자식이 옛 inode 에 계속 써서 디스크가 돌아오지 않는다.
+    그래서 같은 inode 를 truncate 한다. 이 함수는 데몬 자신이 사이클 사이에 부르므로
+    그 시점에 동시 쓰기는 없다.
+    """
+    try:
+        size = LOG_FILE.stat().st_size
+    except OSError:
+        return
+    if size <= LOG_MAX_BYTES:
+        return
+    keep_bytes = LOG_MAX_BYTES // 4
+    try:
+        with open(LOG_FILE, "rb") as f:
+            f.seek(-keep_bytes, os.SEEK_END)
+            f.readline()  # 중간에서 잘린 첫 줄은 버린다
+            tail = f.read()
+        with open(LOG_FILE, "r+b") as f:
+            f.write(tail)
+            f.truncate()
+    except OSError as e:
+        log(f"[rotate] 로그 정리 실패: {e}")
+        return
+    log(f"[rotate] auto_crawl.log {size // (1 << 20)}MB → 최근 {len(tail) // (1 << 20)}MB 만 유지")
+
+
 def _latest_all_dir(keyword: str) -> str | None:
     if not SCREENSHOTS_DIR.exists():
         return None
@@ -135,6 +205,48 @@ def refresh_data(keyword: str) -> None:
     rc = subprocess.call(["bash", str(REFRESH_SH)], cwd=str(ROOT_DIR))
     orch.refresh_finished("viewer", rc == 0)
     log(f"[refresh] jd-viewer {'완료' if rc == 0 else f'실패(rc={rc})'}")
+
+    refresh_semantic()
+
+
+def refresh_semantic() -> None:
+    """시맨틱 갱신: 적재 → 변경분 임베딩 → 유사 공고 JSON 재생성.
+
+    public/*.json 이 갱신된 뒤에 부른다(그 파일들이 곧 입력이다). 임베딩은 증분이라
+    사이클당 실제 대상은 보통 수십~수백 건이다.
+
+    Ollama 가 꺼져 있거나 모델이 없으면 로그만 남기고 넘어간다 — 추천은 부가 기능이고,
+    이것 때문에 크롤 사이클이 멈추면 손해가 더 크다.
+    """
+    try:
+        from semantic import db as sdb, embed as sembed, ingest as singest, similar as ssim
+    except ImportError as e:
+        log(f"[semantic] 모듈 적재 실패 — 건너뜀: {e}")
+        return
+
+    conn = None
+    try:
+        conn = sdb.open_db()
+        counts = singest.run(conn)
+        log("[semantic] 적재 " + ", ".join(
+            f"{k}: 신규 {v['new']}/변경 {v['changed']}/삭제 {v['removed']}"
+            for k, v in counts.items()))
+
+        rep = sembed.run(conn, verbose=False)
+        log(f"[semantic] 임베딩 {rep['embedded']}건 "
+            f"(실패 {rep['failed']}, {rep['seconds']}s)")
+
+        if rep["embedded"] or rep["failed"] == 0:
+            sim = ssim.run(conn)
+            log("[semantic] 추천 " + ", ".join(
+                f"{k}: {v['with_similar']}/{v['documents']}건" for k, v in sim.items()))
+    except sembed.EmbedError as e:
+        log(f"[semantic] 임베딩 불가 — 건너뜀: {e}")
+    except Exception as e:
+        log(f"[semantic] 실패: {e!r}")
+    finally:
+        if conn is not None:
+            conn.close()
 
 
 def _gh_env() -> dict:
@@ -322,6 +434,12 @@ def loop(keyword: str, count: int, interval: int, run_now: bool) -> None:
             enrich_extras()  # 레이더 리파인 + 후기 데몬 보장 + 학습 재수집(크롤 결과와 무관)
         except Exception as e:
             log(f"[err] enrich 예외: {e!r}")
+        # 디스크 유지보수 — 사이클마다 스냅샷·로그가 무한히 쌓이면 결국 데몬이 디스크로 죽는다.
+        try:
+            prune_snapshots()
+            rotate_log()
+        except Exception as e:
+            log(f"[err] 유지보수 예외: {e!r}")
         next_at = (datetime.now() + timedelta(seconds=interval)).isoformat(timespec="seconds")
         orch.waiting(next_at, interval)
         log(f"[wait] 다음 크롤까지 {interval}s 대기")
@@ -434,6 +552,17 @@ def main() -> None:
         keyword = rest[0] if len(rest) > 0 else DEFAULT_KEYWORD
         count = int(rest[1]) if len(rest) > 1 else DEFAULT_COUNT
         run_cycle(keyword, count)
+    elif sub == "prune":
+        keep = int(rest[0]) if rest and rest[0].isdigit() else SNAPSHOT_KEEP
+        dry = "--dry-run" in rest
+        targets = prune_snapshots(keep, dry_run=dry)
+        if dry:
+            for t in sorted(targets, key=lambda p: p.name):
+                print(t.name, flush=True)
+            print(f"[*] 삭제 대상 {len(targets)}개 (계열별 최신 {keep}개 유지) — 실제 삭제 안 함", flush=True)
+        else:
+            print(f"[*] 스냅샷 {len(targets)}개 삭제 완료", flush=True)
+        rotate_log()
     elif sub == "__loop":
         keyword = rest[0]
         count = int(rest[1])
