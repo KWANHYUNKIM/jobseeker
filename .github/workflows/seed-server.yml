@@ -1,0 +1,142 @@
+name: Seed server data
+
+# 새 크롤 서버에 누적 데이터를 한 번 심는 일회성 복구 작업.
+#
+# 왜 필요한가:
+#   누적 공고는 catch_capture/screenshots/{사이트}_{키워드}/ 고정 폴더에 쌓이는데
+#   (pipeline/aggregate.py 의 latest_run_dir), 이 경로는 .gitignore 대상이라
+#   git 으로는 절대 넘어가지 않는다. 그래서 새 서버는 크롤을 아무리 돌려도
+#   한 사이클치(수백 건)밖에 못 만든다. 2026-08-17 기준 374건에 멈춰 있었다.
+#
+# 왜 워크플로인가:
+#   서버는 공개키 전용 SSH 만 열려 있고(화면공유·원격관리 모두 꺼짐) 등록된
+#   키가 없어 원격 접속이 불가능하다. 살아있는 실행 경로가 셀프호스티드
+#   러너뿐이라 여기를 통해 넣는다.
+#
+# 수동 전용이다. push 로는 절대 돌지 않는다 — 서버의 git 상태를 reset --hard 로
+# 되돌리는 파괴적 작업이라 사람이 명시적으로 눌러야 한다.
+on:
+  workflow_dispatch:
+    inputs:
+      seed_url:
+        description: "누적 폴더 tarball URL (옛 서버 LAN 주소)"
+        required: true
+        type: string
+      seed_sha256:
+        description: "tarball SHA-256 (무결성 확인용)"
+        required: true
+        type: string
+
+# 배포와 동시에 돌면 컨테이너 기동과 데이터 교체가 겹친다. 같은 그룹으로 묶어
+# 순서대로 흐르게 한다.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    name: 누적 데이터 시딩
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 30
+    steps:
+      # 러너 워크스페이스가 아니라 ~/jobseeker 에서 작업한다. 컴포즈가
+      # ./jd-viewer/public 을 라이브 데이터 볼륨으로 마운트하고, 크롤러도
+      # 거기서 돌기 때문이다(deploy.yml 과 같은 이유).
+      - name: 시딩 실행
+        env:
+          # 입력을 run 블록에 직접 보간하면 셸 주입이 된다. env 로 받는다.
+          SEED_URL: ${{ inputs.seed_url }}
+          SEED_SHA: ${{ inputs.seed_sha256 }}
+        run: |
+          set -euo pipefail
+          # 러너는 launchd 로 떠서 로그인 셸 PATH 를 못 물려받는다.
+          export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+          REPO="$HOME/jobseeker"
+          SCREENS="$REPO/catch_capture/screenshots"
+          ENRICHED="$REPO/jd-viewer/public/all_jobs_enriched.json"
+          cd "$REPO"
+
+          count_jobs() {
+            [ -f "$1" ] || return 0
+            python3 -c '
+          import json, sys
+          try:
+              d = json.load(open(sys.argv[1], encoding="utf-8"))
+          except Exception:
+              sys.exit(0)
+          if isinstance(d, list):
+              print(len(d))
+          ' "$1" 2>/dev/null || true
+          }
+
+          # find|wc 로 센다. ls|grep -c 는 결과가 0 일 때 grep 이 exit 1 을 내
+          # pipefail 아래에서 스크립트를 죽이거나 "0 0" 처럼 두 번 찍힌다.
+          count_seed_dirs() {
+            [ -d "$SCREENS" ] || { echo 0; return; }
+            find "$SCREENS" -maxdepth 1 -mindepth 1 -type d ! -name 'all_*' \
+              2>/dev/null | wc -l | tr -d ' '
+          }
+
+          echo "── 시작 상태 ──────────────────────────────"
+          echo "  공고 건수     : $(count_jobs "$ENRICHED") 건"
+          echo "  누적 폴더     : $(count_seed_dirs) 개"
+          echo "  HEAD          : $(git rev-parse --short HEAD) $(git log -1 --pretty=%s)"
+
+          # ── 1) tarball 내려받기 + 무결성 확인 ────────────────
+          TMP="$(mktemp -d)"
+          trap 'rm -rf "$TMP"' EXIT
+          echo "── tarball 내려받기 ───────────────────────"
+          curl -fSL --max-time 900 --retry 2 -o "$TMP/seed.tar.gz" "$SEED_URL"
+          ACTUAL="$(shasum -a 256 "$TMP/seed.tar.gz" | awk '{print $1}')"
+          if [ "$ACTUAL" != "$SEED_SHA" ]; then
+            echo "✗ SHA-256 불일치 — 전송이 깨졌거나 다른 파일입니다." >&2
+            echo "    기대: $SEED_SHA" >&2
+            echo "    실제: $ACTUAL" >&2
+            exit 1
+          fi
+          echo "  크기: $(du -h "$TMP/seed.tar.gz" | cut -f1) / SHA-256 일치"
+
+          # ── 2) 코드·뷰어 데이터를 origin/main 으로 정렬 ───────
+          # 크롤러 autocommit 이 축소된 데이터를 로컬 커밋으로 쌓아뒀을 수 있어
+          # merge --ff-only 는 실패한다. 서버에는 크롤 산출물 외 고유한 작업이
+          # 없으므로 origin/main 으로 통째 맞춘다. screenshots/ 는 gitignore
+          # 대상이라 이 명령이 건드리지 않는다(방금 받은 시드도 안전).
+          echo "── origin/main 으로 정렬 ─────────────────"
+          git fetch --prune origin
+          AHEAD="$(git rev-list --count origin/main..HEAD)"
+          # `[ ... ] && echo` 를 쓰면 조건이 거짓일 때 compound 가 1 을 반환해
+          # set -e 아래에서 스크립트가 통째로 죽는다. if 로 쓴다.
+          if [ "$AHEAD" -gt 0 ]; then
+            echo "  버려지는 로컬 커밋 ${AHEAD}개 (크롤 데이터 커밋)"
+          fi
+          git reset --hard origin/main
+          echo "  HEAD → $(git rev-parse --short HEAD) $(git log -1 --pretty=%s)"
+
+          # ── 3) 누적 폴더 풀기 ────────────────────────────────
+          # 덮어쓰되 지우지 않는다. 서버가 자체 크롤로 모은 것도 남긴다.
+          echo "── 누적 폴더 풀기 ────────────────────────"
+          mkdir -p "$SCREENS"
+          tar xzf "$TMP/seed.tar.gz" -C "$SCREENS"
+
+          echo "── 완료 상태 ──────────────────────────────"
+          echo "  공고 건수     : $(count_jobs "$ENRICHED") 건"
+          echo "  누적 폴더     : $(count_seed_dirs) 개"
+          echo "  급감 가드     : $(grep -c '급감 가드' jd-viewer/bin/refresh-data.sh || true) (1 이상이면 적용됨)"
+          echo
+          echo "  다음: 크롤을 멀티 키워드로 재등록해야 서버가 스스로 유지한다."
+          echo "        ./deploy/setup-crawler.sh --uninstall && ./deploy/setup-crawler.sh --schedule"
+
+      - name: 뷰어 응답 확인
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          # nginx 는 /data 볼륨(= 호스트 jd-viewer/public)에서 JSON 을 직접 읽으므로
+          # 컨테이너 재시작 없이 즉시 반영된다.
+          N="$(curl -fsS --max-time 120 http://127.0.0.1:8080/all_jobs_enriched.json \
+               | python3 -c 'import json,sys;print(len(json.load(sys.stdin)))')"
+          echo "뷰어가 응답한 공고 건수: ${N}건"
+          if [ "$N" -lt 1000 ]; then
+            echo "✗ 아직 축소 상태입니다 — 시딩이 반영되지 않았습니다." >&2
+            exit 1
+          fi
