@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-17T11:57:10",
- "total": 1050,
+ "generated_at": "2026-08-17T13:12:12",
+ "total": 1051,
  "sources": [
   {
    "company": "Etsy",
@@ -95,7 +95,7 @@
   {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 20
+   "count": 21
   },
   {
    "company": "Meta",
@@ -529,6 +529,30 @@
   "XSS": "보안"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "新旧MetricKitの共存 – iOS 27を見据えたタップルの戦略",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/65298",
+   "published": "2026-08-17",
+   "published_ts": 1786935630.0,
+   "summary": "株式会社タップルで内定者アルバイトをしている及川寛太 (@kanta_cky) です。 本記事では、 ...",
+   "tags": [
+    "エンジニア",
+    "iOS",
+    "MetricKit",
+    "タップル"
+   ],
+   "tech_stack": [
+    "iOS"
+   ],
+   "categories": [
+    "모바일"
+   ],
+   "lang": "en",
+   "content_id": "cce6a97779b22207"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",

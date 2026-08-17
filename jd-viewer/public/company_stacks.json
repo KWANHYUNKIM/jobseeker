@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T11:58:03",
+  "generated_at": "2026-08-17T13:13:02",
   "total_jobs": 10275,
   "company_count": 1946,
   "min_posting": 2,
@@ -136899,10 +136899,10 @@
             "why": "flutter"
           },
           {
-            "title": "How Cloudflare detects MCP traffic and helps secure it",
-            "url": "https://blog.cloudflare.com/mcp-security-updates",
-            "company": "Cloudflare",
-            "country": "US",
+            "title": "新旧MetricKitの共存 – iOS 27を見据えたタップルの戦略",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65298",
+            "company": "CyberAgent",
+            "country": "JP",
             "why": "모바일"
           }
         ]
@@ -409774,6 +409774,13 @@
         ],
         "study_blogs": [
           {
+            "title": "新旧MetricKitの共存 – iOS 27を見据えたタップルの戦略",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65298",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "ios"
+          },
+          {
             "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
             "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
             "company": "Airbnb",
@@ -409806,13 +409813,6 @@
             "url": "https://discord.com/blog/mobile-platform-support-arrives-in-discord-social-sdk",
             "company": "Discord",
             "country": "US",
-            "why": "ios"
-          },
-          {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
-            "company": "토스",
-            "country": "KR",
             "why": "ios"
           }
         ]
