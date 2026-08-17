@@ -22,14 +22,21 @@
 밖에서 봐야 할 때만 터널을 켠다. 어느 쪽이든 **인바운드 포트는 열지 않는다** —
 터널도 러너도 밖으로 나가는 커넥션만 맺는다.
 
-| 접근 방식 | 명령 | 주소 | 비고 |
+| 접근 방식 | 프로필 | 주소 | 비고 |
 |---|---|---|---|
-| LAN 전용 (기본) | `up -d` | `http://192.168.45.241:8080` | 도메인·계정 불필요 |
-| 임시 공개 | `COMPOSE_PROFILES=quick up -d` | `https://*.trycloudflare.com` | 계정 불필요, **재시작마다 주소 변경** |
-| 고정 공개 | `COMPOSE_PROFILES=tunnel up -d` | 내 도메인 | 도메인 + `.env` 토큰 필요 |
+| LAN 전용 (기본) | — | `http://192.168.45.241:8080` | 도메인·계정 불필요 |
+| 임시 공개 | `quick` | `https://*.trycloudflare.com` | 계정 불필요, **재시작마다 주소 변경** |
+| 고정 공개 (무료) | `ngrok` | `https://<내>.ngrok-free.dev` | ngrok 계정 필요, 도메인 불필요 |
+| 고정 공개 (도메인) | `tunnel` | 내 도메인 | 도메인 + Cloudflare 토큰 필요 |
 
-임시 공개 주소는 `docker compose -f docker-compose.prod.yml logs quicktunnel` 에
-찍히고, `deploy.sh` 도 배포 끝에 한 줄 남긴다.
+```bash
+COMPOSE_PROFILES=quick docker compose -f docker-compose.prod.yml up -d
+./deploy/tunnel-url.sh          # 지금 떠 있는 주소 확인
+```
+
+**밖에서 상시로 쓸 거면 `quick` 은 부적합하다.** 주소가 재시작마다 바뀌는데,
+새 주소를 알려면 서버에 붙어야 한다. 회사에서 쓸 거라면 `ngrok` 정적 도메인
+(무료 플랜에 1개 포함)으로 고정해두는 편이 낫다.
 
 ## 파일
 

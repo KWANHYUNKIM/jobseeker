@@ -90,7 +90,17 @@ case "${COMPOSE_PROFILES:-}" in
     # 임시 터널 주소는 매번 바뀌므로 배포 로그에 남겨준다.
     url=$(docker compose -f "$COMPOSE_FILE" logs quicktunnel 2>/dev/null \
           | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
-    [ -n "$url" ] && log "임시 공개 주소: $url"
+    [ -n "$url" ] && log "임시 공개 주소: $url  (재시작하면 바뀜)"
+    ;;
+  *ngrok*)
+    [ -f .env ] && . ./.env
+    [ -n "${NGROK_AUTHTOKEN:-}" ] && [ -n "${NGROK_DOMAIN:-}" ] \
+      || die "ngrok 프로필에는 .env 의 NGROK_AUTHTOKEN 과 NGROK_DOMAIN 이 필요합니다"
+    docker compose -f "$COMPOSE_FILE" ps --status running --services | grep -qx ngrok || {
+      docker compose -f "$COMPOSE_FILE" logs --tail=50 ngrok
+      die "ngrok 컨테이너가 running 상태가 아닙니다"
+    }
+    log "공개 주소: https://${NGROK_DOMAIN}"
     ;;
 esac
 
