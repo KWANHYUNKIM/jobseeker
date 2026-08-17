@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-18T06:03:22",
+ "generated_at": "2026-08-18T07:25:17",
  "total": 100,
  "countries": [
   {
@@ -969,34 +969,30 @@
     },
     {
      "name": "JavaScript",
-     "count": 4
-    },
-    {
-     "name": "Rust",
-     "count": 2
+     "count": 3
     },
     {
      "name": "TypeScript",
+     "count": 3
+    },
+    {
+     "name": "Rust",
      "count": 2
     }
    ],
    "stack": {
     "backend": [
      {
-      "name": "Spring Boot",
-      "count": 5
-     },
-     {
-      "name": "gRPC",
-      "count": 4
-     },
-     {
       "name": "Node.js",
       "count": 4
      },
      {
-      "name": "Go",
-      "count": 2
+      "name": "Spring Boot",
+      "count": 4
+     },
+     {
+      "name": "gRPC",
+      "count": 3
      },
      {
       "name": "Netty",
@@ -1011,7 +1007,7 @@
       "count": 2
      },
      {
-      "name": "Akka",
+      "name": "Akka actor services in Scala",
       "count": 1
      },
      {
@@ -1020,6 +1016,10 @@
      },
      {
       "name": "C# / .NET microservices",
+      "count": 1
+     },
+     {
+      "name": "C# 게임 로직/콘텐츠 서버",
       "count": 1
      }
     ],
@@ -1030,7 +1030,7 @@
      },
      {
       "name": "React",
-      "count": 5
+      "count": 4
      },
      {
       "name": "TypeScript",
@@ -1057,11 +1057,11 @@
       "count": 1
      },
      {
-      "name": "Luau",
+      "name": "Hermes JS engine",
       "count": 1
      },
      {
-      "name": "React + TypeScript",
+      "name": "Luau",
       "count": 1
      }
     ],
@@ -1071,11 +1071,11 @@
       "count": 8
      },
      {
-      "name": "Redis",
-      "count": 7
+      "name": "MySQL",
+      "count": 6
      },
      {
-      "name": "MySQL",
+      "name": "Redis",
       "count": 6
      },
      {
@@ -1109,11 +1109,11 @@
     ],
     "infra": [
      {
-      "name": "Kubernetes",
-      "count": 7
+      "name": "AWS",
+      "count": 6
      },
      {
-      "name": "AWS",
+      "name": "Kubernetes",
       "count": 6
      },
      {
@@ -1141,16 +1141,20 @@
       "count": 2
      },
      {
-      "name": "Prometheus",
+      "name": "Jenkins",
       "count": 2
      },
      {
-      "name": "Agones",
-      "count": 1
+      "name": "Prometheus",
+      "count": 2
      }
     ]
    },
    "architecture": [
+    {
+     "name": "190+ non-blocking microservices on Vert.x event loops",
+     "count": 1
+    },
     {
      "name": "Agones-based Stateful Server Fleet Orchestration",
      "count": 1
@@ -1168,11 +1172,7 @@
      "count": 1
     },
     {
-     "name": "CQRS + read-heavy caching",
-     "count": 1
-    },
-    {
-     "name": "Dedicated Authoritative Game Server",
+     "name": "CQRS와 Aerospike/Redis 핫 캐시 중심의 read-heavy 서빙",
      "count": 1
     }
    ]
@@ -12885,6 +12885,13 @@
       "summary": "3년차 풀스택 개발자가 10인 규모 스타트업에서 카카오로 이직한 과정을 서류→코딩테스트→화상 인터뷰→1차 대면→최종 면접 순으로 정리했다. 코딩테스트는 93분간 3문제로 HackerRank Easy보다 약간 어려운 수준이었고, 1차 대면에서는 면접관 3인이 React 성능 이슈, lit-html 같은 실무 경험을 파고들었다. 지원부터 최종 합격까지 한 달 남짓 걸렸으며, 이론 스펙보다 이전 회사에서 직접 만든 프로젝트 경험이 결정적이었다고 강조한다.",
       "source": "브런치",
       "date": "2020-06"
+     },
+     {
+      "title": "카카오 본사 수시채용 합격 후기",
+      "url": "https://unluckyjung.github.io/recruit_story/2022/03/20/KaKao/",
+      "summary": "서류(추천 기반) → 코딩테스트(210분 3문제, 평이) → 원격 인터뷰(1:1, 40분) → 1차 인터뷰(5:1, 90분) → 2차 인터뷰(2:1, 60분)로 이어진 약 40일간의 수시채용 후기다. 1차는 CS·기술스택 이해도·포트폴리오 프로젝트 심화 질문이 집중적으로 나왔고, 2차는 기술과 인성·컬처핏을 함께 봤다. 면접관들이 긴장을 풀어주려 했고, 필자는 시니어들과의 대화에서 의도적으로 농담을 섞어 소통 능력을 어필한 점을 팁으로 꼽았다.",
+      "source": "github.io",
+      "date": "2022-03"
      }
     ]
    },
@@ -15247,6 +15254,20 @@
       "url": "https://www.coupang.jobs/kr/interview-tips/",
       "summary": "쿠팡 공식 채용 페이지의 면접 안내로, 전화 인터뷰(1시간, 라이브 코딩 20~30분 포함)와 대면 인터뷰(알고리즘/코딩, 설계/구조, 리더십 원칙 질문)로 구성된다고 설명한다. 15개 리더십 원칙 숙지, 데이터에 기반한 답변, SBI(상황-행동-영향) 구조로 경험을 말하기를 준비 팁으로 제시한다. 온라인 면접은 Zoom/Teams/HackerRank로 진행되며 카메라 필수다.",
       "source": "회사블로그"
+     },
+     {
+      "title": "쿠팡이 자바 개발 경력이 없는 자바 개발자를 채용하는 이유",
+      "url": "https://news.coupang.com/archives/11351/",
+      "summary": "쿠팡 뉴스룸이 '로켓 커리어 전환 채용 프로그램'의 채용 기준을 설명한 공식 글이다. C++·C#·Python 등 다른 언어 경험자라도 프로그래밍 기본기와 학습 의지가 있으면 뽑고, 4주 교육과 팀 멘토링으로 자바를 익히게 한다. 특정 언어 경력보다 문제 해결 관점과 성장 가능성을 본다는 점이 면접 준비 방향에 참고가 된다.",
+      "source": "회사블로그(뉴스룸)",
+      "date": "2021-11"
+     },
+     {
+      "title": "쿠팡 테크 채용의 숨은 주역, Bar Raiser의 모든 것",
+      "url": "https://www.coupang.jobs/kr/life-at-coupang/employee-stories/%EC%BF%A0%ED%8C%A1-%ED%85%8C%ED%81%AC-%EC%B1%84%EC%9A%A9%EC%9D%98-%EC%88%A8%EC%9D%80-%EC%A3%BC%EC%97%AD-bar-raiser%EC%9D%98-%EB%AA%A8%EB%93%A0-%EA%B2%83/",
+      "summary": "쿠팡 공식 채용 블로그가 테크 면접의 Bar Raiser 제도를 직접 설명한 글이다. Bar Raiser는 채용팀·해당 조직과 이해관계가 없는 제3자로 참여해 직무 역량만이 아니라 15개 리더십 원칙 적용력과 조직 기준을 끌어올릴 잠재력을 평가한다. '컬처 핏'이 아니라 '컬처 기여'를 본다는 점이 핵심이라, 지원자는 리더십 원칙을 숙지하고 이를 실제로 실천한 구체적 사례를 준비하라고 권한다.",
+      "source": "회사블로그",
+      "date": "2025-09"
      }
     ]
    },
@@ -16142,6 +16163,19 @@
       "title": "자주 묻는 질문 – 전형 관련 | 당근 채용",
       "url": "https://about.daangn.com/faq/%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%92%E1%85%A7%E1%86%BC-%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%A7%E1%86%AB/",
       "summary": "당근 공식 채용 페이지가 밝힌 전형 절차: 서류 → 화상 인터뷰 → 직무 인터뷰 → 컬처핏 인터뷰 및 레퍼런스 체크 → 처우협의 → 최종 합격. 화상 인터뷰는 직무 기본 지식 확인(포지션에 따라 라이브 코딩 포함), 직무 인터뷰는 백엔드의 경우 시스템 디자인이 포함될 수 있다고 명시한다. 복장은 자율이며 서류 결과는 영업일 7일, 화상·직무 5일, 컬처핏은 10일 정도 소요된다는 안내가 있어 일정 계획에 참고할 수 있다.",
+      "source": "회사블로그"
+     },
+     {
+      "title": "프로그래머스 윈터코딩 당근마켓 클라우드 SRE 인턴 면접 후기",
+      "url": "https://lcc3108.github.io/articles/2020-11/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-SRE-%EC%9D%B8%ED%84%B4%EB%A9%B4%EC%A0%91%ED%9B%84%EA%B8%B0",
+      "summary": "클라우드 엔지니어/SRE 인턴 포지션의 화상 면접 후기로, 1분 자기소개에서 언급한 항목마다 '어떻게·왜'를 계속 되묻는 방식이었다. AWS는 무난했으나 Kubernetes 심화 질문에서 학습 깊이가 부족해 막혔다고 한다. 인프라 직군은 강의로 훑은 지식보다 직접 운영해 본 실사용 경험을 준비하라는 것이 핵심 교훈이다.",
+      "source": "github.io",
+      "date": "2020-11"
+     },
+     {
+      "title": "자주 묻는 질문 — 전형 관련 | 당근 채용",
+      "url": "https://about.daangn.com/faq/%EC%A0%84%ED%98%95-%EA%B4%80%EB%A0%A8/",
+      "summary": "당근 공식 채용 페이지가 밝힌 전형 흐름은 서류 → 화상 인터뷰 → 직무 인터뷰 → 컬처핏 인터뷰 및 레퍼런스 체크 → 처우협의 → 최종 합격이다. 포지션에 따라 과제 전형이 있고, 과제는 5일 또는 7일 안에 작성 가능한 분량으로 직무 능력과 직결된 내용이며 화상/직무 인터뷰에 함께 출제되기도 한다. 백엔드·데이터 직군은 라이브 코딩 테스트와 시스템 디자인 인터뷰가 포함될 수 있어 개인 블로그 후기와 단계 구성이 일치한다.",
       "source": "회사블로그"
      }
     ]
@@ -17212,6 +17246,13 @@
       "summary": "공채 사전과제를 치른 뒤 남긴 회고로, 과제 내용은 비공개지만 템플릿이 Kotlin 기반이라 코프링 경험이 없으면 설정과 소스 혼용에 시간을 뺏긴다고 경고한다. 테스트 코드 작성이 습관화되어 있지 않으면 제출 품질이 떨어지므로 평소에 TDD를 몸에 익히라는 것이 핵심 교훈이다. 단순 CRUD를 넘어 다각도의 고민이 필요한 프로젝트 경험과 코드리뷰를 통한 코드 품질 훈련을 준비 팁으로 제시한다.",
       "source": "velog",
       "date": "2024-02"
+     },
+     {
+      "title": "면접 회고 - 토스(ML팀)",
+      "url": "https://velog.io/@yonghyeokrhee/%EB%A9%B4%EC%A0%91-%ED%9A%8C%EA%B3%A0-%EC%9D%B8%ED%84%B0%EB%84%B7%EC%9D%80%ED%96%89%EC%82%AC-A",
+      "summary": "토스 ML팀 면접을 면접관 3인 체제로 본 탈락 회고다. 머신러닝 모델 서빙 경험, 직접 작성한 인터페이스 코드 설명, 전체 아키텍처, Factorization Machine 이론까지 기술 깊이를 요구하는 질문이 나왔다. '서빙 외에는 강점이 보이지 않는다'는 피드백을 받아, 아키텍처 전반을 설명할 수 있는 수준과 알고리즘 이론 이해가 필요하다는 교훈을 남긴다.",
+      "source": "velog",
+      "date": "2023-11"
      }
     ]
    },
@@ -18361,52 +18402,58 @@
    "languages": [
     "Java",
     "Scala",
+    "TypeScript",
     "Go",
     "Python",
-    "JavaScript",
-    "Kotlin"
+    "Lua"
    ],
    "stack": {
     "backend": [
-     "Spring Boot (Java)",
-     "Akka (Scala)",
-     "Go",
-     "Play Framework",
-     "gRPC"
+     "Vert.x reactive services in Java",
+     "Akka actor services in Scala",
+     "Kong Gateway with custom OpenResty Lua plugins",
+     "Spring Boot for legacy and internal services",
+     "Go for platform tooling and Odin CLI"
     ],
     "frontend": [
      "React Native",
-     "React",
-     "TypeScript"
+     "Hermes JS engine",
+     "TypeScript",
+     "Native Android Kotlin and iOS Swift shells",
+     "React web"
     ],
     "data": [
      "Aerospike",
      "Apache Kafka",
+     "Apache Flink",
      "Apache Druid",
-     "Amazon Aurora MySQL",
-     "Redis",
-     "Cassandra",
-     "Amazon S3"
+     "Amazon Aurora MySQL and RDS",
+     "Amazon Neptune",
+     "ElastiCache Redis",
+     "Apache Cassandra",
+     "Amazon Redshift RA3",
+     "Amazon S3 with EMR Spark"
     ],
     "infra": [
      "AWS",
-     "Kubernetes (EKS)",
-     "Amazon EC2",
-     "CloudFront CDN",
+     "Amazon EC2 and EKS",
+     "Odin deployment platform",
      "Terraform",
-     "Spinnaker/ArgoCD"
+     "Jenkins",
+     "CloudFront CDN",
+     "AWS Auto Scaling with predictive pre-warm"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven (Kafka)",
-    "CQRS + read-heavy caching",
-    "Predictive burst auto-scaling"
+    "190+ non-blocking microservices on Vert.x event loops",
+    "Kafka 이벤트 백본 기반 event-driven 스트리밍",
+    "CQRS와 Aerospike/Redis 핫 캐시 중심의 read-heavy 서빙",
+    "Kong edge에서의 circuit breaker + rate limiting 복원력 계층"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native\"]\n    WEB[\"Web<br/>React + TypeScript\"]\n    CDN[\"CDN + WAF<br/>CloudFront\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    ALB[\"Load Balancer<br/>AWS ALB\"]\n    GW[\"API Gateway<br/>Spring Cloud Gateway\"]\n  end\n  subgraph Core[\"Core Services (Microservices)\"]\n    TEAM[\"Team / Lineup Svc<br/>Java Spring Boot\"]\n    CONTEST[\"Contest / Join Svc<br/>Scala Akka\"]\n    WALLET[\"Wallet / Payments<br/>Go\"]\n    SCORE[\"Live Scoring / Rank<br/>Go + Akka\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    AERO[\"Hot KV Store<br/>Aerospike\"]\n    REDIS[\"Cache<br/>Redis\"]\n    AURORA[\"Txn DB<br/>Aurora MySQL\"]\n    DRUID[\"Realtime OLAP<br/>Apache Druid\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Proc<br/>Spark / Flink\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    EKS[\"Orchestration<br/>Kubernetes EKS\"]\n    SCALE[\"Predictive Pre-warm<br/>Match-calendar autoscaler\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> ALB --> GW\n  GW -->|REST/gRPC| TEAM\n  GW -->|REST/gRPC| CONTEST\n  GW -->|REST/gRPC| WALLET\n  TEAM --> AERO\n  TEAM --> REDIS\n  CONTEST --> AURORA\n  CONTEST -->|join events| KAFKA\n  WALLET --> AURORA\n  SCORE --> AERO\n  SCORE -->|rank updates| KAFKA\n  KAFKA --> FLINK --> DRUID\n  KAFKA --> SCORE\n  SCALE --> EKS\n  EKS --> Core",
-   "why_language": "초저지연·고동시성이 생명인 라이브 스코어링과 랭킹 집계에는 JVM 위에서 액터 모델로 백프레셔를 다루는 Scala/Akka와, GC 영향이 적고 가벼운 고루틴으로 수십만 RPS를 처리하는 Go를 쓴다. 반면 결제·콘테스트 같은 견고한 트랜잭션 도메인은 생태계가 성숙한 Java/Spring Boot로, 데이터·ML 파이프라인은 Python으로 분리해 도메인별로 가장 적합한 언어를 선택하는 polyglot 전략을 취한다.",
-   "why_architecture": "경기 라인업 발표 직후 수 분 안에 수백만 사용자가 동시에 팀을 수정하는 극단적 버스트 트래픽이 핵심 제약이라, 도메인을 마이크로서비스로 쪼개 결제·콘테스트·스코어링을 독립 확장·격리한다. 읽기가 압도적으로 많고 쓰기는 멱등성이 중요하므로 Kafka 기반 이벤트 드리븐 + CQRS로 쓰기와 조회 경로를 분리하고, 반응형 오토스케일링으로는 못 따라잡는 순간 폭증을 경기 일정 기반 예측 사전 웜업으로 대비한다.",
-   "summary": "IPL 경기 직전 수백만 동시 접속 버스트를 견디기 위해 Aerospike·Kafka·Go/Akka·예측 사전 스케일링으로 무장한 이벤트 드리븐 MSA",
+   "diagram": "flowchart TD\n  subgraph Client\n    RN[\"Mobile App<br/>React Native + Hermes\"]\n  end\n  subgraph Edge\n    KONG[\"API Gateway<br/>Kong on OpenResty\"]\n    RL[\"Resilience Layer<br/>scalable-rate-limiter + circuit-breaker\"]\n  end\n  subgraph CoreServices\n    CONTEST[\"Contest and Team Service<br/>Vert.x Java\"]\n    WALLET[\"Wallet and Payments<br/>Vert.x Java\"]\n    SCORE[\"Scoring and Leaderboard<br/>Akka Scala actors\"]\n    SOCIAL[\"Social Graph Service<br/>Amazon Neptune + ElastiCache Redis\"]\n  end\n  subgraph Storage\n    AERO[\"Hot KV Store<br/>Aerospike 7 clusters\"]\n    AUR[\"OLTP<br/>Amazon Aurora MySQL\"]\n    DRUID[\"Realtime OLAP<br/>Apache Druid\"]\n    RS[\"Warehouse<br/>Amazon Redshift RA3\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Backbone<br/>Apache Kafka\"]\n    FLINK[\"Stream Processing<br/>Apache Flink + Spark on EMR\"]\n    S3[\"Data Lake<br/>Amazon S3\"]\n  end\n  subgraph Platform\n    ODIN[\"Deploy Orchestration<br/>Odin + Terraform\"]\n    EKS[\"Runtime Fleet<br/>EC2 + EKS Auto Scaling\"]\n  end\n  RN -->|HTTPS| KONG\n  KONG --> RL\n  RL -->|REST| CONTEST\n  RL -->|REST| WALLET\n  RL -->|REST| SCORE\n  RL -->|REST| SOCIAL\n  CONTEST -->|read hot state| AERO\n  CONTEST -->|durable write| AUR\n  WALLET -->|ACID tx| AUR\n  SCORE -->|rank read write| AERO\n  SCORE -->|slice query| DRUID\n  CONTEST -->|domain events| KAFKA\n  WALLET -->|ledger events| KAFKA\n  SCORE -->|score events| KAFKA\n  KAFKA --> FLINK\n  FLINK -->|realtime index| DRUID\n  FLINK -->|raw and enriched| S3\n  S3 -->|batch load| RS\n  ODIN -->|blueprint DAG| EKS\n  EKS -.->|hosts| CONTEST\n  EKS -.->|hosts| SCORE",
+   "why_language": "Dream11은 경기 시작 직전 수백만 명이 동시에 팀을 저장·수정하는 극단적 I/O 바운드 워크로드라, JVM 위에서 이벤트 루프 기반 논블로킹을 쓰는 Java + Vert.x를 주력으로 190개 이상의 서비스를 운영한다. 점수 집계·랭킹처럼 상태를 가진 고동시성 도메인은 Scala/Akka 액터로, 배포 플랫폼과 CLI 같은 단일 바이너리 도구는 Go로, 실시간 스트림·ML 파이프라인은 Scala/Python으로 나눠 쓴다. 클라이언트는 IPL 2023을 기점으로 React Native/TypeScript로 통합해 iOS·Android 기능 배포 속도를 하나의 코드베이스로 맞췄고, 엣지 게이트웨이 확장은 Kong 위 Lua 플러그인으로 직접 작성한다.",
+   "why_architecture": "경기 라인업 마감 직전 트래픽이 평시의 수십 배로 치솟고 피크에 분당 7억 요청·동시 접속 1,600만 수준까지 가므로, 도메인별로 완전히 격리된 마이크로서비스에 Kafka 이벤트 백본을 두어 쓰기 경로와 집계 경로를 분리했다. 읽기는 Aerospike/Redis 같은 서브밀리초 저장소에서 처리하는 CQRS 형태로 흡수하고, 원장·지갑처럼 돈이 걸린 쓰기만 Aurora MySQL의 트랜잭션에 남긴다. 여기에 Kong 엣지의 서킷브레이커·레이트리미터와 경기 일정 기반 사전 스케일링을 얹어, 한 서비스의 열화가 전체 콘테스트 참가 경로를 무너뜨리지 않게 설계했다.",
+   "summary": "Java Vert.x 논블로킹 마이크로서비스 190개 + Kafka/Flink 스트리밍 + Aerospike 초저지연 서빙으로 경기 직전 분당 7억 요청을 흡수하는 AWS 네이티브 판타지 스포츠 플랫폼",
    "deep_dive": [
     {
      "topic": "경기 직전 버스트 트래픽 대응",
@@ -18439,19 +18486,64 @@
     {
      "topic": "장애 격리와 우아한 성능 저하 (Graceful Degradation)",
      "body": "### 피크 중 일부가 죽어도 코어는 살린다\n\n피크 순간엔 어떤 의존성이든 흔들릴 수 있다. Dream11의 복원력 설계는 **\"모두 완벽하게 vs 아무것도 안 됨\" 대신 기능 우선순위에 따른 우아한 저하**를 택한다.\n\n- **기능 우선순위**: \"팀 저장/콘테스트 참가\"는 절대 사수해야 할 코어다. 반면 \"라이브 순위 실시간 갱신\", \"개인화 추천\", \"소셜 피드\" 같은 부가 기능은 피크 중 의도적으로 갱신 주기를 늘리거나 잠시 비활성화할 수 있다. 부가 기능을 희생해 코어 쓰기 경로의 용량을 확보한다.\n\n### 회복 패턴\n\n- **Circuit Breaker / Bulkhead**: 서비스 간 호출에 서킷 브레이커를 두어, 느려진 다운스트림이 업스트림 스레드를 다 잡아먹는 cascading failure를 끊는다. Bulkhead로 스레드풀/커넥션을 도메인별로 격리해 한 의존성의 포화가 전체로 번지지 않게 한다.\n- **타임아웃 + 폴백**: 캐시(Aerospike/Redis) 조회가 느리면 짧은 타임아웃 후 안전한 기본값이나 약간 stale한 값으로 폴백한다. 라이브 점수가 몇 초 지연 표시되는 것은 허용하지만, 마감 검증과 결제 정합성은 절대 폴백하지 않는다.\n- **레이트 리밋 & 로드 셰딩**: 게이트웨이 단에서 사용자/엔드포인트별 레이트 리밋과 우선순위 기반 load shedding을 적용해, 과부하 시 저우선 트래픽부터 떨군다(429 반환). 전체가 무너지는 것보다 일부를 거절하는 편이 낫다.\n- **비동기 백프레셔**: Akka 기반 컴포넌트는 메일박스/스트림 백프레셔로 처리 가능한 만큼만 받아들여, 메모리 폭발 대신 흐름을 조절한다.\n\n### 관측성\n\n이 모든 의사결정은 **실시간 메트릭**(p99 지연, 큐 깊이, Kafka consumer lag, Aerospike ops/sec) 위에서 돌아간다. consumer lag이 임계치를 넘으면 부가 소비자를 줄이고 코어 소비자에 리소스를 몰아주는 식으로, 경기 중에 사람이 아니라 시스템이 우선순위를 재배분하도록 운영한다."
+    },
+    {
+     "topic": "Kong 엣지 게이트웨이: 배치 레이트리미팅과 라우트 단위 서킷브레이커",
+     "body": "### 왜 엣지에서 방어하는가\n\nDream11의 트래픽은 평탄하지 않다. 경기 시작 30분 전부터 라인업 마감 순간까지 요청이 계단식으로 치솟고, 피크에는 분당 7억 요청(700M rpm) 수준까지 올라간다. 이 규모에서 각 마이크로서비스가 개별적으로 방어 로직을 갖는 것은 비현실적이라, Dream11은 `Kong`(OpenResty/nginx + LuaJIT) 게이트웨이 계층에 **rate limiting**과 **circuit breaking**을 몰아넣고, 두 기능 모두 오픈소스 플러그인으로 직접 만들어 공개했다.\n\n### 1. kong-scalable-rate-limiter — 카운터를 Redis에 매 요청 쓰지 않는다\n\n표준 Kong `rate-limiting` 플러그인의 문제는 **요청 1건마다 Redis 글로벌 카운터를 INCR** 한다는 점이다. 초당 수십만 요청이 들어오면 Redis 자체가 병목이자 SPOF가 된다.\n\nDream11의 플러그인은 구조를 이렇게 바꾼다:\n\n- 각 Kong 노드가 `ngx.shared.dict`(노드 로컬 shared cache)에 **로컬 카운터**를 유지한다.\n- 배치 크기(예: N건)가 찰 때마다 한 번씩만 글로벌 Redis 카운터와 동기화한다.\n- **clustered Redis**(Redis Cluster)를 지원해 카운터 키를 샤딩한다.\n\n| 방식 | Redis 왕복 | 정확도 | 피크 내구성 |\n|---|---|---|---|\n| 기본 rate-limiting | 요청당 1회 | 정확 | Redis가 먼저 죽음 |\n| scalable-rate-limiter | 배치당 1회 | 배치 크기만큼 오버슈트 허용 | 노드 수만큼 선형 확장 |\n\n즉 **정확한 카운팅을 포기하고 처리량을 사는** 명시적 트레이드오프다. 판타지 스포츠에서 레이트리밋의 목적은 과금이 아니라 남용·봇 방어와 백엔드 보호이므로, 한도 근처에서 몇 건이 더 통과하는 것은 허용 가능한 오차다. 반대로 Redis가 흔들려 게이트웨이 전체가 멈추는 것은 허용 불가다.\n\n### 2. kong-circuit-breaker — 라우트 단위 fail fast\n\n서비스 하나가 느려지면 Kong의 워커가 그 업스트림을 기다리며 커넥션과 이벤트 루프 슬롯을 잡아먹고, 결과적으로 **정상 서비스로 가는 요청까지 같이 죽는다**. Dream11은 이를 막기 위해 `lua-circuit-breaker`(resilience4j에 대응하는 Lua 구현)를 만들고, 이를 감싸는 `kong-circuit-breaker` 플러그인을 route/service/global 레벨에 붙였다.\n\n동작 원리:\n\n- 각 라우트마다 독립된 브레이커 인스턴스가 최근 윈도우의 실패율/지연을 집계한다.\n- 임계치를 넘으면 `OPEN` 상태로 전환, 업스트림에 붙지 않고 **즉시 에러를 반환**한다(fail fast). 커넥션 풀과 워커가 보호된다.\n- 일정 시간 뒤 `HALF_OPEN`으로 넘어가 소수의 프로브 요청만 통과시키고, 성공하면 `CLOSED`로 복귀한다.\n- `conf.excluded_apis`로 브레이커를 걸면 안 되는 경로(예: 결제 콜백, 헬스체크)를 제외한다.\n\n### 3. 이 설계가 만드는 운영 효과\n\n- **격리 단위가 서비스가 아니라 라우트**다. 같은 서비스라도 `/leaderboard`가 흔들릴 때 `/contest/join`은 계속 살아 있다.\n- 브레이커 상태 전이가 곧 관측 신호가 된다. 어떤 라우트가 언제 OPEN 됐는지가 인시던트 타임라인의 1차 증거다.\n- Lua 레벨 구현이라 **업스트림 코드를 한 줄도 안 고치고** 190개 넘는 서비스 전체에 동일한 복원력 정책을 적용할 수 있다. Java/Scala/Go가 섞인 폴리글랏 환경에서 언어별 resilience 라이브러리를 각각 관리하는 비용을 없앤 선택이다.\n\n### 트레이드오프\n\n엣지에 로직을 몰면 게이트웨이가 새로운 위험 지점이 된다. Lua 플러그인의 버그 하나가 전 트래픽에 영향을 주고, LuaJIT 안에서 도는 코드라 디버깅·프로파일링 난이도도 높다. Dream11이 두 플러그인을 사내 도구로 두지 않고 오픈소스로 공개하고 LuaRocks에 배포한 배경에는, 이런 고위험 공용 컴포넌트일수록 외부 리뷰와 재현 가능한 테스트가 필요하다는 판단이 깔려 있다."
+    },
+    {
+     "topic": "Odin: 서비스 블루프린트와 DAG 배포로 만든 자체 딜리버리 플랫폼",
+     "body": "### 문제: Jenkins 잡 더미와 환경 드리프트\n\n600명 넘는 엔지니어가 190개 이상의 마이크로서비스를 굴리는 조직에서, 초기 Dream11의 배포는 서비스마다 손으로 만든 Jenkins 파이프라인이었다. 서비스마다 인프라 정의가 제각각이라 **dev/staging/prod 환경 패리티가 깨지고**, 새 서비스를 띄우려면 그 팀의 인프라 지식이 필수였다. Dream11은 이 문제를 CI 도구를 바꾸는 대신 **서비스를 선언적으로 기술하는 계층**을 새로 만들어 풀었고, 그 결과물이 `Odin`(Go로 작성, LGPL-3.0으로 공개)이다.\n\n### 핵심 개념: 서비스 = JSON 블루프린트\n\nOdin은 마이크로서비스를 DSL(JSON 블루프린트)로 기술한다. 블루프린트에는 코드 아티팩트뿐 아니라 그 서비스가 **필요로 하는 모든 것**이 들어간다:\n\n- 런타임(컨테이너 이미지, 리소스 요구량, 오토스케일 정책)\n- 의존 데이터스토어(예: Aerospike namespace, Aurora 스키마, Kafka 토픽)\n- 네트워크·시크릿·환경별 오버라이드\n- 다른 서비스와의 의존 관계\n\n이 선언이 존재하기 때문에 **\"define once, deploy anywhere, any number of times\"** 가 성립한다. 개발자는 대상 환경 이름만 바꿔서 같은 블루프린트를 dev, 부하테스트 환경, prod에 적용한다.\n\n### 실행 모델: 의존성 그래프 → DAG 플랜\n\n블루프린트들 사이의 의존 관계로 DAG를 만들고, Odin이 **실행 계획(execution plan)** 을 세운다.\n\n1. 변경된 블루프린트와 그 하위 의존 노드를 계산한다.\n2. 위상 정렬로 순서를 잡되, 서로 독립인 노드는 병렬로 프로비저닝한다.\n3. 인프라 리소스는 Terraform 계열 프로비저닝으로 수렴시키고, 앱은 그 위에 배포한다.\n4. 실패 시 해당 서브그래프만 롤백/재시도한다.\n\n결과적으로 \"Kafka 토픽이 없어서 배포 후 서비스가 부팅에 실패\" 같은 순서 문제가 플랫폼 레벨에서 사라진다.\n\n### Ephemeral 환경 — 판타지 스포츠에서 특히 중요한 이유\n\nDream11의 도메인은 **리허설이 불가능한 이벤트**로 이루어져 있다. IPL 개막전이나 월드컵 결승은 한 번뿐이고, 그날 라인업 마감 5분 전 트래픽은 재현하기 어렵다. Odin은 블루프린트로부터 **온디맨드 ephemeral 환경을 수 분 안에** 만들어내기 때문에, 실제 프로덕션과 동일한 토폴로지(같은 데이터스토어 종류, 같은 서비스 그래프)를 임시로 세우고 부하 테스트를 돌린 뒤 폐기할 수 있다. Dream11이 Jenkins + Scala + Spark로 만든 자체 성능 테스트 프레임워크 `Torque`가 여기에 물려 대규모 시나리오를 밀어 넣는다.\n\n### 성과와 규모\n\n| 항목 | 수치 |\n|---|---|\n| 누적 배포 | 60,000+ |\n| 사용 엔지니어 | 600+ |\n| 가동률 목표 | 99.9% |\n| 지원 클라우드 | AWS, GCP (설정 변경 최소화로 이식) |\n\n멀티클라우드 지원은 Dream11이 실제로 두 클라우드에 동시 운영해서라기보다, **추상화 계층을 강제해 특정 클라우드 API에 코드가 직접 붙지 못하게 하는 규율**의 성격이 크다. 이 규율이 있으면 인프라 대체(예: 특정 매니지드 서비스 이탈)가 개별 서비스 코드를 건드리지 않는 작업으로 축소된다.\n\n### 트레이드오프\n\n자체 PaaS를 만든다는 것은 **플랫폼 팀이 영구적인 비용**이 된다는 뜻이다. Kubernetes/ArgoCD 같은 기성 생태계를 그대로 쓸 때 얻는 커뮤니티 플러그인·문서·채용 이점을 포기한 셈이다. Dream11이 이를 감수한 이유는, 이들의 배포 단위가 \"컨테이너\"가 아니라 \"컨테이너 + Aerospike namespace + Kafka 토픽 + RDS 스키마\"라는 **복합 리소스**이기 때문이다. 앱 배포만 다루는 도구로는 환경 패리티를 보장할 수 없었다는 것이 자체 개발의 실질적 근거다."
+    },
+    {
+     "topic": "Data Highway: 하루 14TB를 흘리는 실시간·배치 이중 파이프라인",
+     "body": "### 두 개의 소비자, 하나의 백본\n\nDream11의 데이터 플랫폼(사내 명칭 **Data Highway**, 2017년 착수)은 성격이 완전히 다른 두 소비자를 동시에 만족시켜야 한다.\n\n1. **초 단위 실시간** — 경기 중 점수·랭킹·개인화 노출. 지연이 곧 제품 결함이다.\n2. **분/시간 단위 분석** — 유저 행동 수백 종의 퍼널, 콘테스트 수익성, 실험 리포팅.\n\n두 요구를 한 저장소로 만족시키려는 시도 대신, Dream11은 `Apache Kafka`를 **단일 이벤트 백본**으로 두고 그 뒤를 갈래로 찢었다. Kafka는 유저 액션, 경기 스코어, 정산, 리더보드 갱신 등 서비스 간 메시징 전체가 흐르는 척추다.\n\n### 실시간 갈래: Kafka → Flink → Druid / Cassandra\n\n- `Apache Flink`가 이벤트 enrichment, 커스텀 변환, 집계를 수행하고 **ML 모델 서빙**까지 스트림 안에서 처리한다. Dream11의 self-serve 실시간 데이터 플랫폼이 Flink 위에 서 있다.\n- 결과는 두 방향으로 나간다. 슬라이스-앤-다이스 쿼리(세그먼트별 참여율, 콘테스트별 분포)는 `Apache Druid`가 실시간 인덱싱하고, 개별 유저에게 **점수를 배달**하는 낮은 지연 조회는 `Cassandra`/`Aerospike` 계열 KV가 맡는다.\n- 이 분기가 핵심이다. Druid는 집계 쿼리에는 탁월하지만 \"이 유저의 이 팀 점수\"라는 포인트 조회를 초당 수십만 건 받아주기엔 맞지 않는다. 반대로 KV는 임의 차원 집계를 못 한다. **쿼리 형태별로 저장소를 갈라 쓰는** 전형적인 polyglot persistence다.\n\n### 배치 갈래: Kafka → S3 → EMR/Spark → Redshift RA3\n\n- 원본과 enrich된 이벤트는 `Amazon S3` 데이터 레이크에 적재된다. 하루 처리량은 **약 14TB**.\n- `Amazon EMR` 위의 Spark 잡이 정제·조인·집계를 수행한다.\n- 최종 트랜잭션성·BI 데이터는 `Amazon Redshift`로 들어가고, Dream11은 이 클러스터를 **RA3 노드로 마이그레이션**해 스토리지와 컴퓨트를 분리했다. RA3 전환의 실익은 단순 성능이 아니라, 데이터가 늘어난다고 컴퓨트 노드를 같이 늘리지 않아도 되는 **비용 곡선의 분리**다. 판타지 스포츠는 시즌성이 극심해서, 비수기에 컴퓨트만 줄일 수 있다는 것이 곧 돈이다.\n- S3를 경유해 Redshift에 적재하는 구조는 **로드를 병렬화**한다. 각 컴퓨트 노드가 S3에서 직접 자기 몫을 읽기 때문에 리더 노드의 네트워크 I/O가 병목이 되지 않는다. 리더 노드를 통과하는 INSERT 스트림 방식과 대비되는 지점이다.\n\n### 왜 Kafka가 \"공용 인프라\"가 되었나\n\nDream11은 **Java 기반 사내 Kafka 컨슈머 라이브러리**를 만들어 내부 플랫폼의 기본 구성요소로 배포한다. 오프셋 관리, 재시도, DLQ, 백프레셔, 메트릭 노출 같은 것을 각 팀이 매번 다시 구현하지 않도록 표준화한 것이다. 190개 넘는 서비스가 있는 조직에서 이 라이브러리 하나가 갖는 의미는 크다 — 컨슈머 버그의 유형이 조직 전체에서 **하나로 수렴**하고, 개선이 라이브러리 버전 업으로 전파된다.\n\n### 설계상의 긴장\n\n| 긴장 | Dream11의 선택 |\n|---|---|\n| 정확성 vs 신선도 | 실시간 갈래는 근사·재계산 가능, 배치 갈래가 정본(source of truth) |\n| 저장소 단일화 vs 쿼리 최적 | 쿼리 형태별 분리 (Druid / KV / Redshift) |\n| 자체 스트림 처리 vs 매니지드 | Flink를 사내 self-serve 플랫폼으로 감싸 팀들이 잡만 올리게 함 |\n\n실시간 집계와 배치 집계가 **다른 숫자를 낼 수 있다는 사실을 인정하고**, 사용자에게 보여주는 즉시성 있는 값과 정산·리포팅에 쓰는 확정 값을 분리한 것이 이 아키텍처의 실질적 계약이다."
+    },
+    {
+     "topic": "React Native 전면 전환: 2억 유저 앱의 시작 시간과 배포 주기를 다시 설계하다",
+     "body": "### 판돈이 큰 마이그레이션\n\nDream11의 앱은 시스템에서 **가장 고객 접점이 큰 단일 컴포넌트**다. 여기에 손을 대는 것은 기술적으로도, 조직적으로도 최고 난도의 결정이었다. 그럼에도 Dream11은 Android/iOS 네이티브 코드베이스를 `React Native`로 옮기는 대규모 전환을 감행했고, **IPL 2023을 전면 React Native로 치른 첫 대형 스포츠 이벤트**로 만들었다. 이후 2억 명 이상 규모의 유저 베이스가 이 스택 위에서 돌아간다.\n\n### 왜 굳이 RN인가 — 도메인 요구가 특이하다\n\n판타지 스포츠 앱의 릴리스 압력은 일반 커머스와 다르다.\n\n- 스포츠 캘린더가 릴리스 일정을 지배한다. IPL, 월드컵, 신규 종목 추가마다 **UI가 대규모로 바뀐다.**\n- iOS와 Android에서 **같은 날 같은 기능**이 떠야 한다. 한쪽만 늦으면 콘테스트 형평성 이슈가 된다.\n- 프로모션·콘테스트 화면은 수명이 짧고 실험 빈도가 높다.\n\n두 벌의 네이티브 코드베이스로는 이 속도를 유지하며 일관성을 보장하기 어렵다. RN은 **단일 코드베이스 + 빠른 화면 반복**을 사기 위해 네이티브의 성능 여유분을 지불한 거래다.\n\n### 성능 회복 작업 — 시작 시간이 1순위 지표\n\nDream11이 명시적으로 최우선 지표로 잡은 것은 **앱 시작 시간(startup time)** 이다. 경기 직전 몇 분 안에 앱을 열어 팀을 고치는 사용 패턴에서, 콜드 스타트 1초는 곧 이탈이다. 적용한 대표 기법:\n\n- **Hermes 바이너리 번들 활용** — JS 소스를 런타임에 파싱하지 않고, 사전 컴파일된 바이트코드를 그대로 메모리 매핑한다. JSC 대비 TTI(Time To Interactive)와 메모리 사용이 크게 개선되는 RN 최적화의 기본 축이다.\n- **Metro `inlineRequires` 플래그** — 모든 모듈을 시작 시 한 번에 평가하지 않고, 실제 참조 시점에 require가 실행되도록 변환한다. 초기 번들 평가 비용이 화면 진입 시점으로 분산된다.\n- **데이터 사전 프리페치(proactive prefetching)** — 스플래시/스켈레톤이 떠 있는 동안 첫 화면(내 콘테스트, 다가오는 매치)에 필요한 API를 미리 호출해, JS 렌더링과 네트워크를 병렬화한다.\n\n### 네이티브를 완전히 버리지는 않았다\n\n결제, 딥링크, 푸시, 보안·디바이스 무결성, 고빈도 애니메이션 등은 여전히 네이티브 프레임워크가 담당하고 RN 브리지 위에 얹힌다. \"RN으로 갔다\"는 것은 **화면 조립과 제품 로직의 무게중심이 JS로 이동했다**는 의미이지, 네이티브 계층을 없앴다는 뜻이 아니다.\n\n### 품질을 지탱하는 자동화\n\n한 코드베이스가 두 플랫폼을 커버하는 순간 회귀의 폭발 반경도 두 배가 된다. Dream11이 모바일 앱 **자동화 테스트 인프라**에 별도로 투자한 이유가 여기 있다. 대형 이벤트 직전에는 코드 프리즈가 걸리고, 그 전에 회귀 스위트가 두 플랫폼에서 동시에 돌아 릴리스 가부를 판정한다.\n\n### 남는 비용\n\n- **저사양 안드로이드 기기**가 인도 시장의 큰 비중을 차지한다. 메모리 압박 상황에서 JS 엔진과 네이티브 뷰 트리를 동시에 유지하는 비용은 실측으로만 관리 가능하고, 기기 등급별 성능 예산을 따로 잡아야 한다.\n- RN 업그레이드(New Architecture, Fabric/TurboModules 등)는 이 규모에서 **그 자체가 분기 단위 프로젝트**가 된다.\n- 성능 회귀가 조용히 누적되기 쉬워, 시작 시간·프레임 드롭 같은 지표를 CI에 게이트로 걸어두지 않으면 마이그레이션으로 얻은 속도를 다시 잃는다."
     }
    ],
    "github": {
-    "org": "https://github.com/dream-sports-labs",
-    "repos": []
+    "org": "https://github.com/dream11",
+    "repos": [
+     {
+      "name": "dream11/kong-scalable-rate-limiter",
+      "url": "https://github.com/dream11/kong-scalable-rate-limiter",
+      "desc": "카운터를 노드 로컬에서 배치 동기화해 초고처리량에서도 버티는 Kong 레이트리미터",
+      "lang": "Lua",
+      "stars": 47
+     },
+     {
+      "name": "dream11/kong-circuit-breaker",
+      "url": "https://github.com/dream11/kong-circuit-breaker",
+      "desc": "Kong 라우트 단위로 프록시 호출을 서킷브레이커로 감싸는 플러그인",
+      "lang": "Lua",
+      "stars": 44
+     },
+     {
+      "name": "dream11/lua-circuit-breaker",
+      "url": "https://github.com/dream11/lua-circuit-breaker",
+      "desc": "resilience4j 스타일 서킷브레이커 패턴을 Lua로 구현한 라이브러리",
+      "lang": "Lua",
+      "stars": 38
+     },
+     {
+      "name": "dream11/odin",
+      "url": "https://github.com/dream11/odin",
+      "desc": "서비스 정의와 배포를 JSON 블루프린트로 표준화한 멀티클라우드 배포 플랫폼 CLI",
+      "lang": "Go",
+      "stars": 7
+     }
+    ]
    },
    "sources": [
-    "https://medium.com/dream11-tech",
-    "https://aerospike.com/resources/customer-stories/",
-    "https://www.youtube.com/results?search_query=dream11+engineering+scale+architecture"
+    "https://tech.dream11.in/",
+    "https://aws.amazon.com/blogs/database/learn-how-dream11-the-worlds-largest-fantasy-sports-platform-scale-their-social-network-with-amazon-neptune-and-amazon-elasticache/",
+    "https://github.com/dream11/odin"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-08-18"
   },
   {
    "key": "ola",
