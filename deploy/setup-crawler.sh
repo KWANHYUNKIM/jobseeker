@@ -19,10 +19,18 @@ VENV="$CATCH/.venv"
 LABEL="com.jobseeker.crawler"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 
-# 크롤 주기·규모. 옛 서버가 쓰던 값(개발자 100건, 30분)을 그대로 쓴다.
-KEYWORD="${CRAWL_KEYWORD:-개발자}"
-COUNT="${CRAWL_COUNT:-100}"
-INTERVAL="${CRAWL_INTERVAL:-1800}"
+# 크롤 주기·규모 — 옛 서버(automation/start-auto-crawl.sh)와 같은 값을 쓴다.
+#
+# 여기를 단일 키워드("개발자")로 두면 안 된다. run_cycle 은 키워드가 하나면
+# all_통합_* 을 만들지 않고 all_개발자_* 만 남기는데, refresh-data.sh 는 통합
+# 폴더가 없으면 그 단일 키워드 폴더로 폴백하고 enrich_jobs.py 는 그 폴더 하나로
+# public/all_jobs_enriched.json 을 통째 덮어쓴다. 2026-08-17 에 이 조합으로
+# 누적 10,275건이 25건으로 교체됐다(refresh-data.sh 의 급감 가드가 2차 방어선).
+KEYWORD="${CRAWL_KEYWORD:-개발자,프론트엔드,백엔드,풀스택,안드로이드,iOS,데이터엔지니어,데이터분석,머신러닝,AI,데브옵스,클라우드,플랫폼엔지니어,SRE,보안,자바,파이썬,자바스크립트,리액트,노드}"
+COUNT="${CRAWL_COUNT:-50}"
+# 키워드 20개 × 5사이트라 한 사이클이 30분을 넘는다. launchd 는 실행 중인 job 을
+# 중복 기동하지 않지만, 주기는 실제 소요에 맞춰 1시간으로 둔다.
+INTERVAL="${CRAWL_INTERVAL:-3600}"
 
 log()  { printf '\033[1;34m▶\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
