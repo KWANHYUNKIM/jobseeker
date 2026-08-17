@@ -18,7 +18,9 @@ warn() { printf '\033[1;33m!\033[0m %s\n' "$*"; }
 
 # ── 1. 원격 로그인(SSH) 활성화 ─────────────────────────────
 log "SSH 원격 로그인 활성화"
-if systemsetup -setremotelogin on 2>/dev/null; then
+# -f 가 없으면 "Do you really want to turn remote login on? (yes/no)" 를 물어
+# 비대화형 실행에서 그대로 멈춘다.
+if systemsetup -f -setremotelogin on 2>/dev/null; then
   :
 else
   # systemsetup 이 Full Disk Access 부족으로 실패하면 launchd 로 직접 켠다.
