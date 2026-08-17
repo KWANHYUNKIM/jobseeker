@@ -4,12 +4,19 @@
 # enrich_jobs.py 가 all_개발자_latest 만 읽으므로 심링크 대상만 바꿔 무수정으로 통합본을 소비한다.
 set -euo pipefail
 
-SCREENSHOTS_DIR="$(cd "$(dirname "$0")/../.." && pwd)/catch_capture/screenshots"
+# 경로는 cd 하기 전에 모두 절대경로로 확정한다. 아래에서 screenshots 로 cd 한
+# 뒤 상대경로 $0 로 다시 dirname 하면(호출을 상대경로로 했을 때) 깨진다.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SCREENSHOTS_DIR="$ROOT_DIR/catch_capture/screenshots"
 cd "$SCREENSHOTS_DIR"
 
-LATEST=$(ls -1dt all_통합_* 2>/dev/null | grep -v '_latest$' | head -1)
+# set -e + pipefail 아래에서 매칭이 없으면 ls/grep 파이프라인이 exit 1 을 내
+# 폴백에 닿기도 전에 스크립트가 죽는다. 단일 키워드 크롤은 all_통합_* 을 만들지
+# 않으므로 첫 줄에서 바로 걸린다. `|| true` 로 빈 결과를 정상 처리한다.
+LATEST=$(ls -1dt all_통합_* 2>/dev/null | grep -v '_latest$' | head -1 || true)
 if [ -z "$LATEST" ]; then
-  LATEST=$(ls -1dt all_개발자_* 2>/dev/null | grep -v '_latest$' | head -1)
+  LATEST=$(ls -1dt all_개발자_* 2>/dev/null | grep -v '_latest$' | head -1 || true)
 fi
 if [ -z "$LATEST" ]; then
   echo "all_통합_* / all_개발자_* 폴더를 찾을 수 없습니다." >&2
@@ -23,8 +30,7 @@ echo "latest -> $LATEST"
 # build_company_stacks 는 company_profiles.json(crawl_company 결과)이 있으면 병합한다.
 # venv 파이썬을 쓴다 — build_learning.py 가 httpx 등 venv 의존성을 필요로 하므로
 # 시스템 python3 로 돌리면 ModuleNotFoundError 로 실패한다.
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-VENV_PY="$(cd "$(dirname "$0")/../.." && pwd)/catch_capture/.venv/bin/python"
+VENV_PY="$ROOT_DIR/catch_capture/.venv/bin/python"
 PY="$([ -x "$VENV_PY" ] && echo "$VENV_PY" || echo python3)"
 "$PY" "$SCRIPT_DIR/enrich_jobs.py"
 "$PY" "$SCRIPT_DIR/build_mindmap.py"
