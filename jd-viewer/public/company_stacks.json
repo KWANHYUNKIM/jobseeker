@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-18T00:29:02",
-  "total_jobs": 10241,
+  "generated_at": "2026-08-18T01:41:31",
+  "total_jobs": 10243,
   "company_count": 1940,
   "min_posting": 2,
   "companies": [
@@ -20378,6 +20378,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -20387,13 +20394,6 @@
           {
             "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws"
@@ -131971,6 +131971,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -131988,13 +131995,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -141228,6 +141228,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -141251,20 +141265,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -161485,6 +161485,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -161502,13 +161509,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -193320,6 +193320,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -193343,20 +193357,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -193453,6 +193453,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -193470,13 +193477,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -246834,6 +246834,13 @@
             "why": "c"
           },
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "Secure all your internal vibe-coded applications — in one click",
             "url": "https://blog.cloudflare.com/workers-protected-by-access",
             "company": "Cloudflare",
@@ -246845,13 +246852,6 @@
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
             "country": "DE",
-            "why": "언어"
-          },
-          {
-            "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
-            "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
             "why": "언어"
           }
         ]
@@ -261099,6 +261099,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -261116,13 +261123,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -276216,6 +276216,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "인프라/클라우드"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -276247,13 +276254,6 @@
             "title": "What 50 open source projects taught us about security in the AI era",
             "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
-            "country": "US",
-            "why": "인프라/클라우드"
-          },
-          {
-            "title": "How We’re Building Scam Alert on WhatsApp With End-to-End Encryption and Verifiability Guarantees",
-            "url": "https://engineering.fb.com/2026/08/12/security/how-were-building-scam-alert-whatsapp",
-            "company": "Meta",
             "country": "US",
             "why": "인프라/클라우드"
           }
@@ -278442,6 +278442,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -278465,20 +278479,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -281070,6 +281070,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -281093,20 +281107,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -281223,6 +281223,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -281232,13 +281239,6 @@
           {
             "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws"
@@ -302461,6 +302461,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -302484,20 +302498,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -322444,6 +322444,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -322467,20 +322481,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -346021,6 +346021,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -346044,20 +346058,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -358365,6 +358365,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -358388,20 +358402,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -360119,6 +360119,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -360142,20 +360156,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -361452,6 +361452,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -361475,20 +361489,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -362155,6 +362155,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -362178,20 +362192,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -365294,6 +365294,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -365317,20 +365331,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -372100,6 +372100,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -372109,13 +372116,6 @@
           {
             "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws"
@@ -387241,6 +387241,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -387264,20 +387278,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -393174,6 +393174,13 @@
             "why": "c"
           },
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "Secure all your internal vibe-coded applications — in one click",
             "url": "https://blog.cloudflare.com/workers-protected-by-access",
             "company": "Cloudflare",
@@ -393185,13 +393192,6 @@
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
             "country": "DE",
-            "why": "언어"
-          },
-          {
-            "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
-            "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
             "why": "언어"
           }
         ]
@@ -396726,6 +396726,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -396749,20 +396763,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -414732,6 +414732,13 @@
             "why": "mysql, oracle"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "oracle"
+          },
+          {
             "title": "Grab Bench: Evaluating AI on Grab-shaped production work",
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
@@ -414744,13 +414751,6 @@
             "company": "DeNA",
             "country": "JP",
             "why": "mysql"
-          },
-          {
-            "title": "AWS Weekly Roundup: Price reduction of GPT models in Bedrock, CloudWatch managed collectors for Prometheus metrics, and more (August 3, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-price-reduction-of-gpt-models-in-bedrock-cloudwatch-managed-collectors-for-prometheus-metrics-and-more-august-3-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "oracle"
           }
         ]
       }
@@ -426214,6 +426214,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -426231,13 +426238,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -427802,11 +427802,11 @@
             "why": "aws, docker, postgresql"
           },
           {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
             "company": "AWS",
             "country": "US",
-            "why": "aws, postgresql"
+            "why": "aws, docker"
           },
           {
             "title": "당근 200+개 DB 를 옮기는 ELT 플랫폼, DT Platform 을 만든 이야기",
@@ -434782,6 +434782,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -434799,13 +434806,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -437490,6 +437490,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -437507,13 +437514,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -446980,6 +446980,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -446997,13 +447004,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -456634,6 +456634,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -456657,20 +456671,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -457520,6 +457520,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "oracle"
+          },
+          {
             "title": "Grab Bench: Evaluating AI on Grab-shaped production work",
             "url": "https://engineering.grab.com/grab-bench-evaluating-ai",
             "company": "Grab",
@@ -457537,13 +457544,6 @@
             "title": "From Day 1 to Production: Building Lyft’s Analytics & Rides Intelligence Assistant as Onboarding…",
             "url": "https://eng.lyft.com/from-day-1-to-production-building-lyfts-analytics-rides-intelligence-assistant-as-onboarding-5c5643c192d9",
             "company": "Lyft",
-            "country": "US",
-            "why": "oracle"
-          },
-          {
-            "title": "AWS Weekly Roundup: Agentic CX designer for Amazon Connect Customer, EC2 AMI Watermarks, Open Governance for MySQL, and more (June 29, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-agentic-cx-designer-for-amazon-connect-customer-ec2-ami-watermarks-open-governance-for-mysql-and-more-june-29-2026",
-            "company": "AWS",
             "country": "US",
             "why": "oracle"
           },
@@ -458510,6 +458510,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -458527,13 +458534,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -461479,6 +461479,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -461502,20 +461516,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"
@@ -462357,6 +462357,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "언어"
+          },
+          {
             "title": "Secure all your internal vibe-coded applications — in one click",
             "url": "https://blog.cloudflare.com/workers-protected-by-access",
             "company": "Cloudflare",
@@ -462373,13 +462380,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "언어"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "언어"
@@ -471526,6 +471526,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -471535,13 +471542,6 @@
           {
             "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws"
@@ -471829,6 +471829,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -471838,13 +471845,6 @@
           {
             "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws"
@@ -472212,6 +472212,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -472221,13 +472228,6 @@
           {
             "title": "AWS Weekly Roundup: AWS Heroes Summit, Web Search on Amazon Bedrock, Dogwood, Kiro Crew, and more (August 10, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-heroes-summit-web-search-on-amazon-bedrock-dogwood-kiro-crew-and-more-august-10-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws"
@@ -481811,6 +481811,13 @@
         ],
         "study_blogs": [
           {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -481828,13 +481835,6 @@
             "title": "Kafka App? There’s a Skill for That",
             "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
             "company": "Etsy",
-            "country": "US",
-            "why": "java"
-          },
-          {
-            "title": "Tame Dependabot: Group your updates, slow the cadence, keep security fast",
-            "url": "https://github.blog/security/supply-chain-security/tame-dependabot-group-your-updates-slow-the-cadence-keep-security-fast",
-            "company": "GitHub",
             "country": "US",
             "why": "java"
           },
@@ -487371,6 +487371,20 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "How Cloudflare detects MCP traffic and helps secure it",
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
@@ -487394,20 +487408,6 @@
           {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "When Can LLMs Replace Humans in A/B Tests?",
-            "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
-            "company": "Spotify",
-            "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "What 50 open source projects taught us about security in the AI era",
-            "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
             "company": "GitHub",
             "country": "US",
             "why": "LLM/생성형"

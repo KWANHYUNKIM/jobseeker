@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-18T00:28:29",
- "total": 1051,
+ "generated_at": "2026-08-18T01:41:05",
+ "total": 1054,
  "sources": [
   {
    "company": "Etsy",
@@ -20,7 +20,7 @@
   {
    "company": "AWS",
    "country": "US",
-   "count": 49
+   "count": 50
   },
   {
    "company": "SoundCloud",
@@ -45,7 +45,7 @@
   {
    "company": "GitHub",
    "country": "US",
-   "count": 39
+   "count": 40
   },
   {
    "company": "Discord",
@@ -123,12 +123,12 @@
    "count": 17
   },
   {
-   "company": "Airbnb",
+   "company": "Stripe",
    "country": "US",
-   "count": 15
+   "count": 16
   },
   {
-   "company": "Stripe",
+   "company": "Airbnb",
    "country": "US",
    "count": 15
   },
@@ -280,9 +280,9 @@
   "Terraform": "인프라/클라우드",
   "State of the Art": "연구/논문",
   "RabbitMQ": "데이터",
+  "Oracle": "데이터베이스",
   "Nginx": "인프라/클라우드",
   "Virtualization": "시스템/OS",
-  "Oracle": "데이터베이스",
   "MongoDB": "데이터베이스",
   "Feature Store": "AI/ML",
   "Deno": "백엔드",
@@ -530,6 +530,75 @@
  },
  "posts": [
   {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+   "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+   "published": "2026-08-17",
+   "published_ts": 1786982556.0,
+   "summary": "Last week, the OpenSearch and Valkey teams visited Seoul to meet open source developers and contributors in the Open Source Summit Korea 2026 and MCP DevSummit Seoul 2026. At the four-day event, community leaders and users of open source projects and emerging agent AI gathered to share knowledge, collaborate on solutions, and push the projects […]",
+   "tags": [
+    "Amazon Bedrock",
+    "Amazon EC2",
+    "Amazon ElastiCache",
+    "Amazon OpenSearch Service",
+    "Amazon SageMaker JumpStart",
+    "AWS Certificate Manager",
+    "AWS Client VPN",
+    "AWS Identity and Access Management (IAM)"
+   ],
+   "tech_stack": [
+    "GPT",
+    "Model Context Protocol",
+    "Vector Search",
+    "Oracle",
+    "Redis",
+    "AWS",
+    "Docker",
+    "Observability",
+    "Security"
+   ],
+   "categories": [
+    "LLM/생성형",
+    "데이터베이스",
+    "인프라/클라우드",
+    "관측성",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "8dbe1f8470838c60"
+  },
+  {
+   "key": "github",
+   "company": "GitHub",
+   "country": "US",
+   "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+   "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+   "published": "2026-08-17",
+   "published_ts": 1786982400.0,
+   "summary": "Chat is great for intent, but agent work gets lost in the scroll. Here is how I use canvases with my agentic workflows—and why your workflow also deserves a canvas.\n\nThe post How canvases make agentic workflows visible, steerable, and cost-efficient appeared first on The GitHub Blog.",
+   "tags": [
+    "AI & ML",
+    "GitHub Copilot",
+    "awesome-copilot",
+    "canvases",
+    "developer productivity",
+    "GitHub Copilot app"
+   ],
+   "tech_stack": [
+    "Java",
+    "AI Agent",
+    "Prompt Engineering"
+   ],
+   "categories": [
+    "언어",
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "3b2aba28240096e8"
+  },
+  {
    "key": "cyberagent",
    "company": "CyberAgent",
    "country": "JP",
@@ -552,6 +621,21 @@
    ],
    "lang": "en",
    "content_id": "cce6a97779b22207"
+  },
+  {
+   "key": "stripe",
+   "company": "Stripe",
+   "country": "US",
+   "title": "New currency capabilities for global businesses to cut FX costs",
+   "url": "https://stripe.com/blog/reduce-fx-costs-with-stripe",
+   "published": "2026-08-17",
+   "published_ts": 1786924800.0,
+   "summary": "Two product upgrades make it easy for global businesses to manage FX entirely on Stripe. We’re expanding multicurrency settlement to more markets and currencies, and we’re introducing the ability to convert currencies instantly—all on Stripe.",
+   "tags": [],
+   "tech_stack": [],
+   "categories": [],
+   "lang": "en",
+   "content_id": "ca065334dabdb829"
   },
   {
    "key": "stackoverflow",
