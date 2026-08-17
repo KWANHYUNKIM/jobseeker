@@ -1,0 +1,63 @@
+name: CI
+
+# 배포 전 게이트. GitHub 클라우드 러너에서 돌리므로 서버 자원을 쓰지 않는다.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "jd-viewer/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "jd-viewer/**"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+jobs:
+  # deploy.yml 이 이 job 의 성공을 기다린다. 여기가 깨지면 배포도 멈춘다.
+  build:
+    name: 빌드·타입체크
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jd-viewer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: jd-viewer/package-lock.json
+
+      - name: 의존성 설치
+        run: npm ci
+
+      # build 스크립트가 `tsc -b && vite build` 라 타입체크까지 함께 검증된다.
+      - name: 빌드
+        run: npm run build
+
+  # 참고용. 기존 코드에 에러 13건(no-explicit-any 7, set-state-in-effect 6)이
+  # 남아 있어 지금 차단 게이트로 쓰면 배포가 영구히 막힌다. 정리가 끝나면
+  # continue-on-error 를 지우고 deploy.yml 의 check-name 에 추가할 것.
+  lint:
+    name: 린트 (참고용)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: jd-viewer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: jd-viewer/package-lock.json
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 린트
+        run: npm run lint
