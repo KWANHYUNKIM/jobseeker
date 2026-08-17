@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-18T03:03:29",
-  "total_jobs": 10244,
-  "company_count": 1940,
+  "generated_at": "2026-08-18T04:32:43",
+  "total_jobs": 10250,
+  "company_count": 1942,
   "min_posting": 2,
   "companies": [
     {
@@ -31428,15 +31428,15 @@
         ],
         "study_blogs": [
           {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
             "company": "AWS",
             "country": "US",
             "why": "aws, linux"
           },
           {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
+            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
+            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
             "country": "US",
             "why": "aws, linux"
@@ -77883,18 +77883,18 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
             "country": "DE",
             "why": "aws, docker, kubernetes"
-          },
-          {
-            "title": "From Homegrown to Flink: Migrating a Stateful Ad Event Join at Scale",
-            "url": "https://engineering.zalando.com/posts/2026/07/migrating-ad-event-processing-to-flink.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "aws, kubernetes, linux"
           }
         ]
       }
@@ -81123,18 +81123,18 @@
             "why": "java, node.js, postgresql"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "docker, linux, oracle"
+          },
+          {
             "title": "The next generation of MCP",
             "url": "https://blog.cloudflare.com/mcp-v2",
             "company": "Cloudflare",
             "country": "US",
             "why": "c#, node.js, python"
-          },
-          {
-            "title": "Scaling Camera File Processing at Netflix",
-            "url": "https://netflixtechblog.com/scaling-camera-file-processing-at-netflix-6dab2b1e80be",
-            "company": "Netflix",
-            "country": "US",
-            "why": "docker, java, linux"
           }
         ]
       }
@@ -98927,6 +98927,268 @@
       }
     },
     {
+      "name": "(주)에스더블유엠",
+      "norm": "에스더블유엠",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 6,
+      "sites": [
+        "jumpit",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 3,
+        "DevOps/인프라": 3,
+        "모바일": 2,
+        "백엔드": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "Android",
+          "count": 2
+        },
+        {
+          "name": "Foundation",
+          "count": 1
+        },
+        {
+          "name": "DeepLearning",
+          "count": 1
+        },
+        {
+          "name": "AI/인공지능",
+          "count": 1
+        },
+        {
+          "name": "PredictionIO",
+          "count": 1
+        },
+        {
+          "name": "Java",
+          "count": 1
+        },
+        {
+          "name": "Kotlin",
+          "count": 1
+        },
+        {
+          "name": "Jenkins",
+          "count": 1
+        },
+        {
+          "name": "Git",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 1
+          },
+          {
+            "name": "Kotlin",
+            "count": 1
+          }
+        ],
+        "모바일": [
+          {
+            "name": "Android",
+            "count": 2
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Jenkins",
+            "count": 1
+          }
+        ],
+        "AI/ML": [
+          {
+            "name": "DeepLearning",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          }
+        ],
+        "기타": [
+          {
+            "name": "Foundation",
+            "count": 1
+          },
+          {
+            "name": "AI/인공지능",
+            "count": 1
+          },
+          {
+            "name": "PredictionIO",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "모빌리티/자율주행",
+          "score": 21,
+          "evidence": [
+            "모빌리티",
+            "자율주행",
+            "차량",
+            "주차"
+          ]
+        },
+        {
+          "name": "AI/데이터 플랫폼",
+          "score": 5,
+          "evidence": [
+            "생성형 AI",
+            "데이터 플랫폼"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "네이티브 모바일 앱",
+          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
+        }
+      ],
+      "titles": [
+        "[SWM] 자율주행 AI 전문가 모집",
+        "[SWM] 소프트웨어 개발자 인재 채용",
+        "[SWM] 스마트사업부 Connect PIO SW 개발자 모집",
+        "[SWM] 플랫폼 HW 개발자 경력직 채용",
+        "[SWM] 자율주행 AI 전문가 모집",
+        "[SWM] 자율주행 CTO 경력직 모집"
+      ],
+      "postings": [
+        {
+          "title": "[SWM] 자율주행 AI 전문가 모집",
+          "url": "https://jumpit.saramin.co.kr/position/54714488",
+          "site": "jumpit"
+        },
+        {
+          "title": "[SWM] 소프트웨어 개발자 인재 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53851981&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367",
+          "site": "saramin"
+        },
+        {
+          "title": "[SWM] 스마트사업부 Connect PIO SW 개발자 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54710631&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=ad413686-f1b4-451c-98ac-96d23e24980c",
+          "site": "saramin"
+        },
+        {
+          "title": "[SWM] 플랫폼 HW 개발자 경력직 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53847116&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=898d0a9c-45ad-4b31-86b1-8e0bc2f02c59",
+          "site": "saramin"
+        },
+        {
+          "title": "[SWM] 자율주행 AI 전문가 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54714418&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=1b7b27a2-a8bb-48ea-9901-3d58dd556c9f",
+          "site": "saramin"
+        },
+        {
+          "title": "[SWM] 자율주행 CTO 경력직 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54673534&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=6e443fb7-d3c1-4818-be16-402af697d2f6",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)에스더블유엠는 모빌리티/자율주행 도메인의 중소기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 Android, Foundation, DeepLearning, AI/인공지능 기반으로 개발합니다. 아키텍처는 네이티브 모바일 앱로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Android, Foundation, DeepLearning 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "모빌리티/자율주행 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "네이티브 모바일 앱 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java",
+              "Kotlin"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기"
+            ]
+          },
+          {
+            "stage": "2. AI/ML 핵심 스킬",
+            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
+            "techs": [
+              "DeepLearning"
+            ],
+            "tips": []
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 네이티브 모바일 앱)",
+            "techs": [
+              "Jenkins"
+            ],
+            "tips": [
+              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
+            ]
+          }
+        ],
+        "tasks": [
+          "[모빌리티/자율주행] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[모빌리티/자율주행] CI/CD·컨테이너 배포와 모니터링·인프라 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "Migrating Lyft’s Android Codebase to Kotlin",
+            "url": "https://eng.lyft.com/migrating-lyfts-android-codebase-to-kotlin-53b231dfecb5",
+            "company": "Lyft",
+            "country": "US",
+            "why": "android, git, java"
+          },
+          {
+            "title": "온디바이스 AI 얼굴 식별 파이프라인 최적화",
+            "url": "https://hyperconnect.github.io/2026/01/23/On-device-Face-Verification-Pipeline-Optimization.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "android, java, kotlin"
+          },
+          {
+            "title": "Gradle Composite Build を用いたビルドロジックの共通化について",
+            "url": "https://techlife.cookpad.com/entry/2024/11/20/130000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "android, java, kotlin"
+          },
+          {
+            "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
+            "url": "https://medium.com/daangn/%EB%88%84%EA%B5%AC%EB%82%98-%EC%B0%BE%EC%95%84%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98-%EC%84%9C%EB%B2%84-llm-%EB%A6%B4%EB%A6%AC%EC%A6%88-%EB%85%B8%ED%8A%B8-%EB%8F%84%EC%9E%85%EA%B8%B0-93afe203d766",
+            "company": "당근",
+            "country": "KR",
+            "why": "git, java, jenkins"
+          },
+          {
+            "title": "Accelerating Mobile App development at Zalando with Rendering Engine and React Native",
+            "url": "https://engineering.zalando.com/posts/2025/10/accelerating-mobile-app-development-at-zalando-with-rendering-engine-and-react-native.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "android, git, kotlin"
+          },
+          {
+            "title": "モバイルアプリのログをいい感じに収集するライブラリ「Puree」の Kotlin Multiplatform 版をリリースしました",
+            "url": "https://techlife.cookpad.com/entry/2025/04/21/090000",
+            "company": "Cookpad",
+            "country": "JP",
+            "why": "android, java, kotlin"
+          }
+        ]
+      }
+    },
+    {
       "name": "㈜인라이플",
       "norm": "인라이플",
       "size": "중소기업",
@@ -105294,6 +105556,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
             "company": "GitHub",
@@ -105325,13 +105594,6 @@
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           }
@@ -133933,261 +134195,6 @@
       }
     },
     {
-      "name": "(주)에스더블유엠",
-      "norm": "에스더블유엠",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 5,
-      "sites": [
-        "jumpit",
-        "saramin"
-      ],
-      "roles": {
-        "AI/ML": 2,
-        "DevOps/인프라": 2,
-        "모바일": 2,
-        "백엔드": 1,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "Android",
-          "count": 2
-        },
-        {
-          "name": "Foundation",
-          "count": 1
-        },
-        {
-          "name": "DeepLearning",
-          "count": 1
-        },
-        {
-          "name": "AI/인공지능",
-          "count": 1
-        },
-        {
-          "name": "PredictionIO",
-          "count": 1
-        },
-        {
-          "name": "Java",
-          "count": 1
-        },
-        {
-          "name": "Kotlin",
-          "count": 1
-        },
-        {
-          "name": "Jenkins",
-          "count": 1
-        },
-        {
-          "name": "Git",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Java",
-            "count": 1
-          },
-          {
-            "name": "Kotlin",
-            "count": 1
-          }
-        ],
-        "모바일": [
-          {
-            "name": "Android",
-            "count": 2
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Jenkins",
-            "count": 1
-          }
-        ],
-        "AI/ML": [
-          {
-            "name": "DeepLearning",
-            "count": 1
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 1
-          }
-        ],
-        "기타": [
-          {
-            "name": "Foundation",
-            "count": 1
-          },
-          {
-            "name": "AI/인공지능",
-            "count": 1
-          },
-          {
-            "name": "PredictionIO",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "모빌리티/자율주행",
-          "score": 16,
-          "evidence": [
-            "모빌리티",
-            "자율주행",
-            "차량",
-            "주차"
-          ]
-        },
-        {
-          "name": "제조/하드웨어/로보틱스",
-          "score": 2,
-          "evidence": [
-            "양산"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "네이티브 모바일 앱",
-          "why": "Swift/Kotlin 네이티브 + 모바일 직군 — iOS/Android 앱 개발"
-        }
-      ],
-      "titles": [
-        "[SWM] 자율주행 AI 전문가 모집",
-        "[SWM] 소프트웨어 개발자 인재 채용",
-        "[SWM] 스마트사업부 Connect PIO SW 개발자 모집",
-        "[SWM] 플랫폼 HW 개발자 경력직 채용",
-        "[SWM] 자율주행 CTO 경력직 모집"
-      ],
-      "postings": [
-        {
-          "title": "[SWM] 자율주행 AI 전문가 모집",
-          "url": "https://jumpit.saramin.co.kr/position/54714488",
-          "site": "jumpit"
-        },
-        {
-          "title": "[SWM] 소프트웨어 개발자 인재 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53851981&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=e0003a86-ca61-4aec-a675-4d485f2d8367",
-          "site": "saramin"
-        },
-        {
-          "title": "[SWM] 스마트사업부 Connect PIO SW 개발자 모집",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54710631&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=ad413686-f1b4-451c-98ac-96d23e24980c",
-          "site": "saramin"
-        },
-        {
-          "title": "[SWM] 플랫폼 HW 개발자 경력직 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53847116&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=898d0a9c-45ad-4b31-86b1-8e0bc2f02c59",
-          "site": "saramin"
-        },
-        {
-          "title": "[SWM] 자율주행 CTO 경력직 모집",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54673534&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=6e443fb7-d3c1-4818-be16-402af697d2f6",
-          "site": "saramin"
-        }
-      ],
-      "summary": "(주)에스더블유엠는 모빌리티/자율주행 도메인의 중소기업으로, 주로 AI/ML · DevOps/인프라 직군을 채용하며 Android, Foundation, DeepLearning, AI/인공지능 기반으로 개발합니다. 아키텍처는 네이티브 모바일 앱로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Android, Foundation, DeepLearning 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+DevOps/인프라) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "모빌리티/자율주행 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "네이티브 모바일 앱 같은 구조에 대한 이해·운영 경험",
-          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Java",
-              "Kotlin"
-            ],
-            "tips": [
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
-              "Kotlin — 코루틴 기반 비동기와 널 안전성 — 자바 상호운용까지 익히기"
-            ]
-          },
-          {
-            "stage": "2. AI/ML 핵심 스킬",
-            "goal": "프레임워크로 모델을 직접 학습·평가하고 API로 서빙한다",
-            "techs": [
-              "DeepLearning"
-            ],
-            "tips": []
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 네이티브 모바일 앱)",
-            "techs": [
-              "Jenkins"
-            ],
-            "tips": [
-              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
-            ]
-          }
-        ],
-        "tasks": [
-          "[모빌리티/자율주행] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[모빌리티/자율주행] CI/CD·컨테이너 배포와 모니터링·인프라 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "Migrating Lyft’s Android Codebase to Kotlin",
-            "url": "https://eng.lyft.com/migrating-lyfts-android-codebase-to-kotlin-53b231dfecb5",
-            "company": "Lyft",
-            "country": "US",
-            "why": "android, git, java"
-          },
-          {
-            "title": "온디바이스 AI 얼굴 식별 파이프라인 최적화",
-            "url": "https://hyperconnect.github.io/2026/01/23/On-device-Face-Verification-Pipeline-Optimization.html",
-            "company": "하이퍼커넥트",
-            "country": "KR",
-            "why": "android, java, kotlin"
-          },
-          {
-            "title": "Gradle Composite Build を用いたビルドロジックの共通化について",
-            "url": "https://techlife.cookpad.com/entry/2024/11/20/130000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "android, java, kotlin"
-          },
-          {
-            "title": "누구나 찾아볼 수 있는 중고거래 서버 LLM 릴리즈 노트 도입기",
-            "url": "https://medium.com/daangn/%EB%88%84%EA%B5%AC%EB%82%98-%EC%B0%BE%EC%95%84%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98-%EC%84%9C%EB%B2%84-llm-%EB%A6%B4%EB%A6%AC%EC%A6%88-%EB%85%B8%ED%8A%B8-%EB%8F%84%EC%9E%85%EA%B8%B0-93afe203d766",
-            "company": "당근",
-            "country": "KR",
-            "why": "git, java, jenkins"
-          },
-          {
-            "title": "Accelerating Mobile App development at Zalando with Rendering Engine and React Native",
-            "url": "https://engineering.zalando.com/posts/2025/10/accelerating-mobile-app-development-at-zalando-with-rendering-engine-and-react-native.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "android, git, kotlin"
-          },
-          {
-            "title": "モバイルアプリのログをいい感じに収集するライブラリ「Puree」の Kotlin Multiplatform 版をリリースしました",
-            "url": "https://techlife.cookpad.com/entry/2025/04/21/090000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "android, java, kotlin"
-          }
-        ]
-      }
-    },
-    {
       "name": "(주)골프존",
       "norm": "골프존",
       "size": "중소기업",
@@ -155096,6 +155103,13 @@
             "why": "css, docker, git"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "amazon ec2, aws, docker"
+          },
+          {
             "title": "日本とアメリカの太平洋を超えたパフォーマンス改善の取り組み: CloudWatch RUM を中心としたパフォーマンス測定とデータ活用方法",
             "url": "https://techlife.cookpad.com/entry/2024/10/23/110000",
             "company": "Cookpad",
@@ -155122,13 +155136,6 @@
             "company": "Slack",
             "country": "US",
             "why": "aws, linux, rest api"
-          },
-          {
-            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
-            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
-            "company": "Pinterest",
-            "country": "US",
-            "why": "aws, docker, linux"
           }
         ]
       }
@@ -171757,6 +171764,13 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -171769,13 +171783,6 @@
             "company": "Zalando",
             "country": "DE",
             "why": "aws, kubernetes, linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, azure, linux"
           }
         ]
       }
@@ -177655,6 +177662,13 @@
             "why": "linux, python"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux, oracle"
+          },
+          {
             "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
             "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
@@ -177666,13 +177680,6 @@
             "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
             "company": "Razorpay",
             "country": "IN",
-            "why": "linux, python"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
             "why": "linux, python"
           }
         ]
@@ -186404,6 +186411,13 @@
             "why": "ansible, aws, linux"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, linux"
+          },
+          {
             "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
             "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
             "company": "AWS",
@@ -186430,13 +186444,6 @@
             "company": "Pinterest",
             "country": "US",
             "why": "aws, terraform"
-          },
-          {
-            "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
-            "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
-            "company": "Slack",
-            "country": "US",
-            "why": "aws, linux"
           }
         ]
       }
@@ -186645,6 +186652,13 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -186657,13 +186671,6 @@
             "company": "AWS",
             "country": "US",
             "why": "aws, azure, linux"
-          },
-          {
-            "title": "Running Hermes at Razorpay: a Network-isolated, Self-improving “Second Brain” for every Employee",
-            "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
-            "company": "Razorpay",
-            "country": "IN",
-            "why": "aws, kubernetes, linux"
           }
         ]
       }
@@ -193879,6 +193886,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "docker, linux"
+          },
+          {
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
@@ -193911,13 +193925,6 @@
             "url": "https://bytes.swiggy.com/taming-visual-regressions-with-playwright-and-docker-04f74db930b1",
             "company": "Swiggy",
             "country": "IN",
-            "why": "docker, linux"
-          },
-          {
-            "title": "Finding zombies in our systems: A real-world story of CPU bottlenecks",
-            "url": "https://medium.com/pinterest-engineering/finding-zombies-in-our-systems-a-real-world-story-of-cpu-bottlenecks-ea4722e552eb",
-            "company": "Pinterest",
-            "country": "US",
             "why": "docker, linux"
           }
         ]
@@ -259252,6 +259259,13 @@
             "why": "aws, java, kubernetes"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -259264,13 +259278,6 @@
             "company": "Zalando",
             "country": "DE",
             "why": "aws, java, kubernetes"
-          },
-          {
-            "title": "Docker lazy loading at Grab: Accelerating container startup times",
-            "url": "https://engineering.grab.com/docker-lazy-loading",
-            "company": "Grab",
-            "country": "SG",
-            "why": "aws, docker, kubernetes"
           }
         ]
       }
@@ -279976,6 +279983,71 @@
             "why": "css, html, react"
           }
         ]
+      }
+    },
+    {
+      "name": "서울데이타통신(주)",
+      "norm": "서울데이타통신",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {},
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 7,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 4,
+          "evidence": [
+            "정보보안",
+            "보안 솔루션"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "SE 시스템엔지니어/보안솔루션 기술지원[상암]",
+        "IT 보안 운영 엔지니어 모집[상암]",
+        "[서울/경기] 보안 운영 엔지니어 모집"
+      ],
+      "postings": [
+        {
+          "title": "SE 시스템엔지니어/보안솔루션 기술지원[상암]",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54000185&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=3b21a0e8-e97c-4aeb-b0a1-91fbead9bfa4",
+          "site": "saramin"
+        },
+        {
+          "title": "IT 보안 운영 엔지니어 모집[상암]",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54011635&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=3b21a0e8-e97c-4aeb-b0a1-91fbead9bfa4",
+          "site": "saramin"
+        },
+        {
+          "title": "[서울/경기] 보안 운영 엔지니어 모집",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54728935&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=20a13846-b3e5-46e8-a507-2bbfbc2dc229",
+          "site": "saramin"
+        }
+      ],
+      "summary": "서울데이타통신(주)는 HR/채용 도메인의 중소기업합니다.",
+      "career_guide": {
+        "wants": [
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "채용공고 기반 — 제품 기능 개발과 운영 전반"
+        ],
+        "study_blogs": []
       }
     },
     {
@@ -321201,6 +321273,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
             "company": "GitHub",
@@ -321232,13 +321311,6 @@
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           }
@@ -341877,6 +341949,13 @@
             "why": "aws, docker, java"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Scaling ArchUnit with Nebula ArchRules",
             "url": "https://netflixtechblog.com/scaling-archunit-with-nebula-archrules-b4642c464c5a",
             "company": "Netflix",
@@ -341896,13 +341975,6 @@
             "company": "Slack",
             "country": "US",
             "why": "aws, java, linux"
-          },
-          {
-            "title": "Apache Flink + RocksDB 튜닝으로 광고 Frequency Capping 실시간 집계를 일주일까지 확장하기",
-            "url": "https://toss.tech/article/flink-realtime-frequency-capping",
-            "company": "토스",
-            "country": "KR",
-            "why": "java, redis, spring"
           }
         ]
       }
@@ -369571,6 +369643,13 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -369583,13 +369662,6 @@
             "company": "Zalando",
             "country": "DE",
             "why": "aws, kubernetes, linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, azure, linux"
           }
         ]
       }
@@ -370985,16 +371057,16 @@
             "why": "azure, linux"
           },
           {
-            "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
-            "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
             "country": "US",
             "why": "linux"
           },
           {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
-            "company": "AWS",
+            "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
+            "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
+            "company": "GitHub",
             "country": "US",
             "why": "linux"
           },
@@ -384750,6 +384822,13 @@
             "why": "java, redis, spring"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux, oracle, redis"
+          },
+          {
             "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
             "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
             "company": "Slack",
@@ -384762,13 +384841,6 @@
             "company": "Pinterest",
             "country": "US",
             "why": "linux, oracle"
-          },
-          {
-            "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
-            "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "java, linux"
           }
         ]
       }
@@ -389149,6 +389221,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
             "company": "GitHub",
@@ -389180,13 +389259,6 @@
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           }
@@ -389912,16 +389984,16 @@
             "why": "embedded, linux"
           },
           {
-            "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
-            "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
-            "company": "GitHub",
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
             "country": "US",
             "why": "linux"
           },
           {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
-            "company": "AWS",
+            "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
+            "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
+            "company": "GitHub",
             "country": "US",
             "why": "linux"
           }
@@ -420358,6 +420430,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
             "company": "GitHub",
@@ -420389,13 +420468,6 @@
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           }
@@ -422207,6 +422279,13 @@
             "why": "aws, docker, kubernetes"
           },
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
+          },
+          {
             "title": "Agentic Engineering at Zalando: a snapshot",
             "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
             "company": "Zalando",
@@ -422218,13 +422297,6 @@
             "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
             "company": "Razorpay",
             "country": "IN",
-            "why": "aws, kubernetes, linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: BYOM for Amazon RDS for SQL Server, AWS IoT Device SDK for Swift, and more (June 8, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-byom-for-amazon-rds-for-sql-server-aws-iot-device-sdk-for-swift-and-more-june-8-2026",
-            "company": "AWS",
-            "country": "US",
             "why": "aws, kubernetes, linux"
           }
         ]
@@ -439199,11 +439271,11 @@
             "why": "aws, docker, next.js"
           },
           {
-            "title": "Introducing Amazon Bedrock Managed Knowledge Base for faster, more accurate enterprise AI applications",
-            "url": "https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications",
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
             "company": "AWS",
             "country": "US",
-            "why": "aws, rest api"
+            "why": "aws, docker, linux"
           },
           {
             "title": "Taming Visual Regressions with Playwright and Docker",
@@ -443403,11 +443475,11 @@
             "why": "azure, git, java"
           },
           {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
-            "why": "aws, docker, git"
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, docker, linux"
           }
         ]
       }
@@ -447872,6 +447944,312 @@
             "company": "AWS",
             "country": "US",
             "why": "aws, docker, postgresql"
+          }
+        ]
+      }
+    },
+    {
+      "name": "(주)링크앤스카우트",
+      "norm": "링크앤스카우트",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "펌웨어/임베디드": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 1
+        },
+        {
+          "name": "Node.js",
+          "count": 1
+        },
+        {
+          "name": "MySQL",
+          "count": 1
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 1
+        },
+        {
+          "name": "Docker",
+          "count": 1
+        },
+        {
+          "name": "Kubernetes",
+          "count": 1
+        },
+        {
+          "name": "Kafka",
+          "count": 1
+        },
+        {
+          "name": "Linux",
+          "count": 1
+        },
+        {
+          "name": "Git",
+          "count": 1
+        },
+        {
+          "name": "REST API",
+          "count": 1
+        },
+        {
+          "name": "MSA",
+          "count": 1
+        },
+        {
+          "name": "Java",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 1
+          },
+          {
+            "name": "Java",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Node.js",
+            "count": 1
+          },
+          {
+            "name": "REST API",
+            "count": 1
+          },
+          {
+            "name": "MSA",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 1
+          },
+          {
+            "name": "PostgreSQL",
+            "count": 1
+          },
+          {
+            "name": "Oracle",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Kubernetes",
+            "count": 1
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "제조/하드웨어/로보틱스",
+          "score": 4,
+          "evidence": [
+            "로봇",
+            "로보틱스"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 4,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "MSA · 마이크로서비스",
+          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
+        },
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        }
+      ],
+      "titles": [
+        "[대기업계열 로보틱스 기업] Web 백엔드 개발",
+        "[대형저축은행] 계정계 JAVA개발자 (계장급)"
+      ],
+      "postings": [
+        {
+          "title": "[대기업계열 로보틱스 기업] Web 백엔드 개발",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54760812&location=ts&searchword=%EB%B0%B1%EC%97%94%EB%93%9C&searchType=search&paid_fl=n&search_uuid=3c740f64-7d00-4e57-ab9e-7187e0b63bd8",
+          "site": "saramin"
+        },
+        {
+          "title": "[대형저축은행] 계정계 JAVA개발자 (계장급)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54563315&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=2096fba1-34fb-44fa-967d-5142a7a78dd5",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)링크앤스카우트는 제조/하드웨어/로보틱스 도메인의 중소기업으로, 주로 백엔드 · 펌웨어/임베디드 직군을 채용하며 Python, Node.js, MySQL, PostgreSQL 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, Node.js, MySQL 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+펌웨어/임베디드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "제조/하드웨어/로보틱스 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험",
+          "협업 역량 — Git 기반 코드리뷰·문서화·이슈 트래킹에 익숙할 것"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "Java"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
+            ]
+          },
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Node.js",
+              "REST API",
+              "MSA"
+            ],
+            "tips": [
+              "Node.js — 이벤트루프·논블로킹 IO 이해, Express/Nest로 API 구현",
+              "REST API — 리소스 설계·상태코드·버저닝 등 API 설계 원칙 체득",
+              "MSA — 도메인 분리·서비스 경계·통신/트랜잭션 패턴 학습"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "PostgreSQL",
+              "Oracle",
+              "Kafka"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "PostgreSQL — 고급 SQL·인덱스·트랜잭션 격리수준 이해",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
+            "techs": [
+              "Docker",
+              "Kubernetes",
+              "Linux"
+            ],
+            "tips": [
+              "Docker — 이미지·레이어·Dockerfile·compose로 앱 컨테이너화",
+              "Kubernetes — Pod·Service·Deployment·Ingress로 배포·오토스케일",
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "Kafka"
+            ],
+            "tips": [
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[제조/하드웨어/로보틱스] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[제조/하드웨어/로보틱스] 디바이스 펌웨어·하드웨어 제어 SW 개발",
+          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "java, kubernetes, linux"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "git, java, kubernetes"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "git, java, linux"
+          },
+          {
+            "title": "Running an Engineering Papers Reading Guild at Zalando",
+            "url": "https://engineering.zalando.com/posts/2026/01/running-an-engineering-papers-reading-guild-at-zalando.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "java, kubernetes, node.js"
+          },
+          {
+            "title": "스마트스토어센터 Oracle에서 MySQL로의 무중단 전환기",
+            "url": "https://d2.naver.com/helloworld/6512234",
+            "company": "네이버 D2",
+            "country": "KR",
+            "why": "java, kafka, kubernetes"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "kubernetes, linux, node.js"
           }
         ]
       }
@@ -469538,6 +469916,69 @@
       }
     },
     {
+      "name": "안진회계법인",
+      "norm": "안진회계법인",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 1,
+        "보안": 1
+      },
+      "top_tech": [],
+      "tech_categories": {},
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 5,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 4,
+          "evidence": [
+            "정보보안"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "[안진회계법인]회계감사부문 Digital/AI Assurance 및 ISP 경력",
+        "T&T부문 정보보안 관련 인증 서비스 부문 컨설턴트 경력직"
+      ],
+      "postings": [
+        {
+          "title": "[안진회계법인]회계감사부문 Digital/AI Assurance 및 ISP 경력",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54698423&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=1b7b27a2-a8bb-48ea-9901-3d58dd556c9f",
+          "site": "saramin"
+        },
+        {
+          "title": "T&T부문 정보보안 관련 인증 서비스 부문 컨설턴트 경력직",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54505351&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=64deb1c0-4ddb-4453-894d-9f3a6e72026b",
+          "site": "saramin"
+        }
+      ],
+      "summary": "안진회계법인는 HR/채용 도메인의 중소기업으로, 주로 AI/ML · 보안 직군을 채용합니다.",
+      "career_guide": {
+        "wants": [
+          "AI/ML 중심(+보안) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [],
+        "tasks": [
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[HR/채용] 취약점 점검·보안 모니터링과 침해 대응 체계 운영"
+        ],
+        "study_blogs": []
+      }
+    },
+    {
       "name": "한진정보통신(주)",
       "norm": "한진정보통신",
       "size": "중소기업",
@@ -470185,6 +470626,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
             "company": "GitHub",
@@ -470216,13 +470664,6 @@
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           }
@@ -472340,6 +472781,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "Your guide to GitHub Universe 2026 is here: The schedule just launched!",
             "url": "https://github.blog/news-insights/company-news/your-guide-to-github-universe-2026-is-here-the-schedule-just-launched",
             "company": "GitHub",
@@ -472371,13 +472819,6 @@
             "title": "Shipyard: How We Built Slack’s Next-Generation EC2 Platform",
             "url": "https://slack.engineering/shipyard-how-we-built-slacks-next-generation-ec2-platform",
             "company": "Slack",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           }
@@ -473943,65 +474384,6 @@
       }
     },
     {
-      "name": "서울데이타통신(주)",
-      "norm": "서울데이타통신",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "saramin"
-      ],
-      "roles": {},
-      "top_tech": [],
-      "tech_categories": {},
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 5,
-          "evidence": [
-            "채용",
-            "이력서"
-          ]
-        },
-        {
-          "name": "보안",
-          "score": 3,
-          "evidence": [
-            "정보보안",
-            "보안 솔루션"
-          ]
-        }
-      ],
-      "architecture": [],
-      "titles": [
-        "SE 시스템엔지니어/보안솔루션 기술지원[상암]",
-        "IT 보안 운영 엔지니어 모집[상암]"
-      ],
-      "postings": [
-        {
-          "title": "SE 시스템엔지니어/보안솔루션 기술지원[상암]",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54000185&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=3b21a0e8-e97c-4aeb-b0a1-91fbead9bfa4",
-          "site": "saramin"
-        },
-        {
-          "title": "IT 보안 운영 엔지니어 모집[상암]",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54011635&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=3b21a0e8-e97c-4aeb-b0a1-91fbead9bfa4",
-          "site": "saramin"
-        }
-      ],
-      "summary": "서울데이타통신(주)는 HR/채용 도메인의 중소기업합니다.",
-      "career_guide": {
-        "wants": [
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
-        ],
-        "roadmap": [],
-        "tasks": [
-          "채용공고 기반 — 제품 기능 개발과 운영 전반"
-        ],
-        "study_blogs": []
-      }
-    },
-    {
       "name": "(주)마크애니",
       "norm": "마크애니",
       "size": "중소기업",
@@ -474101,6 +474483,13 @@
         ],
         "study_blogs": [
           {
+            "title": "AWS Weekly Roundup: EC2 application status checks, IAM role manager, OpenAI Daybreak on Bedrock, and more (August 17, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "linux"
+          },
+          {
             "title": "AWS Weekly Roundup: AWS Builder Center at 1 year, Network Scanning in Security Hub, Loom for AWS, and more (July 13, 2026)",
             "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-aws-builder-center-at-one-year-network-scanning-in-security-hub-loom-for-aws-and-more-july-13-2026",
             "company": "AWS",
@@ -474111,13 +474500,6 @@
             "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
             "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
             "company": "Cloudflare",
-            "country": "US",
-            "why": "linux"
-          },
-          {
-            "title": "AWS Weekly Roundup: BYOM for Amazon RDS for SQL Server, AWS IoT Device SDK for Swift, and more (June 8, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-byom-for-amazon-rds-for-sql-server-aws-iot-device-sdk-for-swift-and-more-june-8-2026",
-            "company": "AWS",
             "country": "US",
             "why": "linux"
           },

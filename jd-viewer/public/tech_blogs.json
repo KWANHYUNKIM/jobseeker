@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-18T03:03:03",
+ "generated_at": "2026-08-18T04:32:18",
  "total": 1055,
  "sources": [
   {
@@ -537,7 +537,7 @@
    "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ec2-application-status-checks-iam-role-manager-openai-daybreak-on-bedrock-and-more-august-17-2026",
    "published": "2026-08-17",
    "published_ts": 1786982556.0,
-   "summary": "Last week, the OpenSearch and Valkey teams visited Seoul to meet open source developers and contributors in the Open Source Summit Korea 2026 and MCP DevSummit Seoul 2026. At the four-day event, community leaders and users of open source projects and emerging agent AI gathered to share knowledge, collaborate on solutions, and push the projects […]",
+   "summary": "Last week, AWS contributors joined the OpenSearch and Valkey communities at Open Source Summit Korea 2026 and MCP DevSummit Seoul 2026 to meet open source developers and contributors. At the four-day event, community leaders and users of these Linux Foundation open source projects gathered to share knowledge, collaborate on solutions, and push the projects forward. […]",
    "tags": [
     "Amazon Bedrock",
     "Amazon EC2",
@@ -557,6 +557,7 @@
     "AWS",
     "Docker",
     "Observability",
+    "Linux",
     "Security"
    ],
    "categories": [
@@ -564,6 +565,7 @@
     "데이터베이스",
     "인프라/클라우드",
     "관측성",
+    "시스템/OS",
     "보안"
    ],
    "lang": "en",
