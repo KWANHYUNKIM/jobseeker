@@ -12,3 +12,7 @@ run_events.jsonl
 trends_history.jsonl
 trends_latest.json
 trends_reports/
+# 임베딩 저장소 — 벡터 수십 MB. 뷰어가 쓰는 결과물(public/similar_*.json)만 추적한다.
+semantic.db
+semantic.db-shm
+semantic.db-wal
