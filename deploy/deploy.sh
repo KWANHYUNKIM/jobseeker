@@ -20,12 +20,18 @@ die() { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
 cd "$DEPLOY_DIR" || die "배포 디렉토리가 없습니다: $DEPLOY_DIR"
 [ -f "$COMPOSE_FILE" ] || die "$COMPOSE_FILE 이 없습니다"
+
 # .env 는 선택이다. 도메인 없이 LAN 으로만 쓰면 채울 값이 없다.
-# 단 고정 주소 터널을 켰다면 토큰이 반드시 있어야 한다. compose 쪽에서 `:?` 로
+# 다만 COMPOSE_PROFILES 를 여기 적어두면 GitHub Actions 처럼 셸 환경변수를
+# 넘겨줄 수 없는 경로에서도 터널이 함께 뜬다. compose 는 .env 의
+# COMPOSE_PROFILES 를 직접 읽지만, 아래 검증 로직도 봐야 하므로 미리 읽는다.
+[ -f .env ] && . ./.env
+export COMPOSE_PROFILES="${COMPOSE_PROFILES:-}"
+
+# 고정 주소 터널을 켰다면 토큰이 반드시 있어야 한다. compose 쪽에서 `:?` 로
 # 강제하면 비활성 프로필까지 평가돼 기본 구성이 막히므로 여기서 검사한다.
-case "${COMPOSE_PROFILES:-}" in
+case "$COMPOSE_PROFILES" in
   *tunnel*)
-    [ -f .env ] && . ./.env
     [ -n "${CLOUDFLARE_TUNNEL_TOKEN:-}" ] \
       || die "tunnel 프로필에는 .env 의 CLOUDFLARE_TUNNEL_TOKEN 이 필요합니다"
     ;;
@@ -93,7 +99,6 @@ case "${COMPOSE_PROFILES:-}" in
     [ -n "$url" ] && log "임시 공개 주소: $url  (재시작하면 바뀜)"
     ;;
   *ngrok*)
-    [ -f .env ] && . ./.env
     [ -n "${NGROK_AUTHTOKEN:-}" ] && [ -n "${NGROK_DOMAIN:-}" ] \
       || die "ngrok 프로필에는 .env 의 NGROK_AUTHTOKEN 과 NGROK_DOMAIN 이 필요합니다"
     docker compose -f "$COMPOSE_FILE" ps --status running --services | grep -qx ngrok || {
