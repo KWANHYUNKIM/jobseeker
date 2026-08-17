@@ -29,6 +29,10 @@ services:
     volumes:
       # read-only 볼륨 — 자동 크롤이 public/*.json 을 갱신하면 재빌드 없이 반영
       - ./jd-viewer/public:/data:ro
+    # nginx 의 /api/ 프록시가 호스트에서 도는 검색 서버(8771)를 찾아가는 통로.
+    # 검색 서버가 없어도 502 만 나고 뷰어는 그대로 뜬다.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     networks: [web]
     logging:

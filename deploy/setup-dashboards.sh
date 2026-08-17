@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
-# 크롤 관리 대시보드 2종을 이 서버에 상시 띄우고 터널로 외부 공개한다.
+# 호스트 네이티브 파이썬 서버들을 launchd 로 상시 띄운다.
 #
-#   ops (8770)  : 크롤 파이프라인 실시간 운영 대시보드 — "지금 뭘 하는지"
-#   stats(8765) : 통계 대시보드 — 공고 분류·집계
+#   ops (8770)   : 크롤 파이프라인 실시간 운영 대시보드 — "지금 뭘 하는지"
+#   stats(8765)  : 통계 대시보드 — 공고 분류·집계
+#   search(8771) : 하이브리드 검색 API — 뷰어가 /api/ 로 부른다
+#
+# ops·stats 는 dashboards 프로필의 터널로 외부에 직접 노출된다. search 는 다르다.
+# 뷰어 nginx 가 /api/ 를 이 포트로 프록시하므로 뷰어 주소만 열려 있으면 되고,
+# 별도 터널이 필요 없다.
 #
 # 사용:
 #   ./deploy/setup-dashboards.sh              # 두 서버를 launchd 로 등록·기동
@@ -31,6 +36,7 @@ die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 SERVICES=(
   "com.jobseeker.ops:monitoring.ops_server|--port|8770|--no-open:OPS_HOST:8770"
   "com.jobseeker.stats:dashboard/serve.py|--port|8765:DASH_HOST:8765"
+  "com.jobseeker.search:semantic.server|--port|8771:SEARCH_HOST:8771"
 )
 
 uninstall() {
