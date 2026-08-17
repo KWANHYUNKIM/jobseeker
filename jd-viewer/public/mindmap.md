@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10250건** 공고 · **1942개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-18 07:14
+- 총 **10251건** 공고 · **1942개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-18 08:36
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -6397,6 +6397,10 @@ markmap:
   - [초기 멤버 프론트엔드 개발자 (Next.js / React) ↗](https://www.wanted.co.kr/wd/367038)
   - [React · Next.js 프론트엔드 개발자 (신입 가능) ↗](https://www.wanted.co.kr/wd/371907)
 
+### 비에스지파트너스 `중소기업` · 3건
+- **DevOps/인프라** [1건] · `Python` `AWS` `Terraform` `Linux`
+  - [(BSG) 클라우드(AWS) 인프라 운영 및 유지 보수 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54762858&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=73d35b96-374a-4ddd-a22e-e96188b85b89)
+
 ### 콕스웨이브 `중소기업` · 3건
 - **백엔드** [1건] · `Java` `Python` `TypeScript` `Go` `AWS` `GCP`
   - [(AX Workflow Builder) 백엔드 엔지니어 ↗](https://www.wanted.co.kr/wd/363962)
@@ -7251,8 +7255,6 @@ markmap:
   - [프론트엔드 개발자 3년 이상 ↗](https://www.wanted.co.kr/wd/338288)
 - **데이터** [1건] · `TypeScript` `Node.js` `Express` `NestJS` `Redis` `AWS`
   - [백엔드 개발자 3년 이상 ↗](https://www.wanted.co.kr/wd/338289)
-
-### 비에스지파트너스 `중소기업` · 2건
 
 ### 마이프랜차이즈 `중소기업` · 2건
 - **백엔드** [2건] · `TypeScript` `AWS` `GraphQL` `React` `Next.js` `CSS`

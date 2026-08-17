@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-18T07:14:58",
-  "total_jobs": 10250,
+  "generated_at": "2026-08-18T08:36:45",
+  "total_jobs": 10251,
   "company_count": 1942,
   "min_posting": 2,
   "companies": [
@@ -204864,6 +204864,204 @@
       }
     },
     {
+      "name": "비에스지파트너스",
+      "norm": "비에스지파트너스",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 3,
+      "sites": [
+        "saramin",
+        "wanted"
+      ],
+      "roles": {
+        "DevOps/인프라": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 1
+        },
+        {
+          "name": "AWS",
+          "count": 1
+        },
+        {
+          "name": "Terraform",
+          "count": 1
+        },
+        {
+          "name": "Linux",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "AWS",
+            "count": 1
+          },
+          {
+            "name": "Terraform",
+            "count": 1
+          },
+          {
+            "name": "Linux",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "B2B SaaS/엔터프라이즈",
+          "score": 9,
+          "evidence": [
+            "SaaS",
+            "ERP",
+            "솔루션"
+          ]
+        },
+        {
+          "name": "HR/채용",
+          "score": 8,
+          "evidence": [
+            "채용",
+            "HR",
+            "이력서"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "클라우드 (AWS)",
+          "why": "AWS 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        }
+      ],
+      "titles": [
+        "SAP AM 5년 이상",
+        "SAP FI 컨설턴트 (퍼블릭클라우드)",
+        "[BSG] 클라우드(AWS) 인프라 운영 및 유지 보수"
+      ],
+      "postings": [
+        {
+          "title": "SAP AM 5년 이상",
+          "url": "https://www.wanted.co.kr/wd/353368",
+          "site": "wanted"
+        },
+        {
+          "title": "SAP FI 컨설턴트 (퍼블릭클라우드)",
+          "url": "https://www.wanted.co.kr/wd/353371",
+          "site": "wanted"
+        },
+        {
+          "title": "[BSG] 클라우드(AWS) 인프라 운영 및 유지 보수",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54762858&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=73d35b96-374a-4ddd-a22e-e96188b85b89",
+          "site": "saramin"
+        }
+      ],
+      "summary": "비에스지파트너스는 B2B SaaS/엔터프라이즈 도메인의 중소기업으로, 주로 DevOps/인프라 직군을 채용하며 Python, AWS, Terraform, Linux 기반으로 개발합니다. 아키텍처는 클라우드 (AWS)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, AWS, Terraform 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "DevOps/인프라 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "클라우드 (AWS) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "2. DevOps/인프라 핵심 스킬",
+            "goal": "컨테이너·CI/CD로 앱을 빌드·배포·운영해 본다",
+            "techs": [
+              "AWS",
+              "Terraform",
+              "Linux"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 클라우드 (AWS))",
+            "techs": [
+              "AWS",
+              "Terraform",
+              "Linux"
+            ],
+            "tips": [
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Terraform — IaC로 인프라를 코드화 — 상태·모듈 관리",
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본"
+            ]
+          }
+        ],
+        "tasks": [
+          "[B2B SaaS/엔터프라이즈] CI/CD·컨테이너 배포와 모니터링·인프라 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
+            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, linux, python"
+          },
+          {
+            "title": "Running Hermes at Razorpay: a Network-isolated, Self-improving “Second Brain” for every Employee",
+            "url": "https://engineering.razorpay.com/running-hermes-at-razorpay-a-network-isolated-self-improving-second-brain-for-every-employee-f91d56bea3f1",
+            "company": "Razorpay",
+            "country": "IN",
+            "why": "aws, linux, python"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "aws, linux, python"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "aws, linux, python"
+          },
+          {
+            "title": "토스의 디바이스 팜 만들기",
+            "url": "https://toss.tech/article/device-farm-nebula",
+            "company": "토스",
+            "country": "KR",
+            "why": "aws, linux"
+          },
+          {
+            "title": "From Homegrown to Flink: Migrating a Stateful Ad Event Join at Scale",
+            "url": "https://engineering.zalando.com/posts/2026/07/migrating-ad-event-processing-to-flink.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "aws, linux"
+          }
+        ]
+      }
+    },
+    {
       "name": "아이에이치더블유",
       "norm": "아이에이치더블유",
       "size": "중소기업",
@@ -330055,66 +330253,6 @@
             "why": "css, node.js, react"
           }
         ]
-      }
-    },
-    {
-      "name": "비에스지파트너스",
-      "norm": "비에스지파트너스",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 2,
-      "sites": [
-        "wanted"
-      ],
-      "roles": {},
-      "top_tech": [],
-      "tech_categories": {},
-      "domains": [
-        {
-          "name": "B2B SaaS/엔터프라이즈",
-          "score": 9,
-          "evidence": [
-            "SaaS",
-            "ERP",
-            "솔루션"
-          ]
-        },
-        {
-          "name": "HR/채용",
-          "score": 3,
-          "evidence": [
-            "채용",
-            "HR"
-          ]
-        }
-      ],
-      "architecture": [],
-      "titles": [
-        "SAP AM 5년 이상",
-        "SAP FI 컨설턴트 (퍼블릭클라우드)"
-      ],
-      "postings": [
-        {
-          "title": "SAP AM 5년 이상",
-          "url": "https://www.wanted.co.kr/wd/353368",
-          "site": "wanted"
-        },
-        {
-          "title": "SAP FI 컨설턴트 (퍼블릭클라우드)",
-          "url": "https://www.wanted.co.kr/wd/353371",
-          "site": "wanted"
-        }
-      ],
-      "summary": "비에스지파트너스는 B2B SaaS/엔터프라이즈 도메인의 중소기업합니다.",
-      "career_guide": {
-        "wants": [
-          "B2B SaaS/엔터프라이즈 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
-        ],
-        "roadmap": [],
-        "tasks": [
-          "채용공고 기반 — 제품 기능 개발과 운영 전반"
-        ],
-        "study_blogs": []
       }
     },
     {
