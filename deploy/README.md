@@ -57,16 +57,36 @@ docker compose -f docker-compose.prod.yml logs -f cloudflared
 docker compose -f docker-compose.prod.yml down
 ```
 
-## 다른 컴퓨터에서 SSH 접속
+## 다른 컴퓨터에서 작업하기
 
-개인키를 클라이언트로 옮긴 뒤:
+서버에 직접 붙어서 코딩할 필요는 없다. 개발은 각자 컴퓨터에서 하고,
+`main`에 push하면 서버가 알아서 당겨받아 재배포한다.
+
+### 1) 개발 루프 (SSH 없이)
+
+```bash
+git clone https://github.com/KWANHYUNKIM/jobseeker.git
+cd jobseeker/jd-viewer && npm ci && npm run dev   # localhost:5173
+
+# 작업 후
+git switch -c feat/something
+git commit -am "feat(viewer): ..." && git push -u origin feat/something
+# → PR을 열면 CI(빌드·타입체크)가 돌고, main에 머지되면 서버가 자동 배포
+```
+
+배포 결과는 GitHub의 Actions 탭에서 확인한다. 서버에 접속할 일이 없다.
+
+### 2) 서버 SSH 접속 (로그 확인·긴급 대응용)
+
+서버에서 만든 개인키 `~/.ssh/server_access_ed25519`를 클라이언트로 옮긴다.
+**공개키가 아니라 개인키**이므로 안전한 경로로 옮기고 서버 쪽에는 그대로 둔다.
 
 ```bash
 # 클라이언트에서
 chmod 600 ~/.ssh/jobseeker_server
 cat >> ~/.ssh/config <<'EOF'
 Host jobseeker
-  HostName 192.168.45.241     # 같은 네트워크. 외부면 Cloudflare Access 사용
+  HostName 192.168.45.241     # 같은 네트워크일 때. 외부면 아래 참고
   User user
   IdentityFile ~/.ssh/jobseeker_server
   IdentitiesOnly yes
@@ -75,8 +95,14 @@ EOF
 ssh jobseeker
 ```
 
-외부망에서 접속하려면 SSH 포트를 여는 대신 **Cloudflare Access for SSH**를
-쓰는 편이 낫다(터널을 이미 쓰고 있으므로 추가 포트 개방 불필요).
+외부망에서 붙어야 하면 SSH 포트를 여는 대신 **Cloudflare Access for SSH**를
+쓴다. 터널을 이미 쓰고 있으므로 추가 포트 개방이 필요 없고, 공인 IP가 바뀌어도
+영향이 없다.
+
+### 3) 수동 배포 트리거
+
+코드 변경 없이 다시 배포하고 싶으면 GitHub Actions 탭에서 **Deploy → Run
+workflow**를 누른다(`workflow_dispatch`). 서버 앞에 앉을 필요가 없다.
 
 ## 알아둘 것
 
