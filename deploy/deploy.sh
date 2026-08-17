@@ -20,7 +20,16 @@ die() { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
 
 cd "$DEPLOY_DIR" || die "배포 디렉토리가 없습니다: $DEPLOY_DIR"
 [ -f "$COMPOSE_FILE" ] || die "$COMPOSE_FILE 이 없습니다"
-[ -f .env ] || die ".env 가 없습니다. .env.example 을 복사해 CLOUDFLARE_TUNNEL_TOKEN 을 채우세요"
+# .env 는 선택이다. 도메인 없이 LAN 으로만 쓰면 채울 값이 없다.
+# 단 고정 주소 터널을 켰다면 토큰이 반드시 있어야 한다. compose 쪽에서 `:?` 로
+# 강제하면 비활성 프로필까지 평가돼 기본 구성이 막히므로 여기서 검사한다.
+case "${COMPOSE_PROFILES:-}" in
+  *tunnel*)
+    [ -f .env ] && . ./.env
+    [ -n "${CLOUDFLARE_TUNNEL_TOKEN:-}" ] \
+      || die "tunnel 프로필에는 .env 의 CLOUDFLARE_TUNNEL_TOKEN 이 필요합니다"
+    ;;
+esac
 
 # ── Docker 데몬 확인 ────────────────────────────────────────
 # Docker Desktop 은 사용자 앱이라 재부팅 후 로그인 전까지 안 떠 있을 수 있다.
@@ -64,12 +73,26 @@ for i in $(seq 1 30); do
   sleep 2
 done
 
-# 터널이 실제로 커넥션을 맺었는지 확인. 여기가 죽으면 뷰어가 살아있어도
+# 터널 프로필을 켠 경우에만 검사한다. 여기가 죽으면 뷰어가 살아있어도
 # 외부에서는 502 만 보인다.
-if ! docker compose -f "$COMPOSE_FILE" ps --status running cloudflared | grep -q cloudflared; then
-  docker compose -f "$COMPOSE_FILE" logs --tail=50 cloudflared
-  die "cloudflared 컨테이너가 running 상태가 아닙니다"
-fi
+case "${COMPOSE_PROFILES:-}" in
+  *tunnel*)
+    docker compose -f "$COMPOSE_FILE" ps --status running --services | grep -qx cloudflared || {
+      docker compose -f "$COMPOSE_FILE" logs --tail=50 cloudflared
+      die "cloudflared 컨테이너가 running 상태가 아닙니다"
+    }
+    ;;
+  *quick*)
+    docker compose -f "$COMPOSE_FILE" ps --status running --services | grep -qx quicktunnel || {
+      docker compose -f "$COMPOSE_FILE" logs --tail=50 quicktunnel
+      die "quicktunnel 컨테이너가 running 상태가 아닙니다"
+    }
+    # 임시 터널 주소는 매번 바뀌므로 배포 로그에 남겨준다.
+    url=$(docker compose -f "$COMPOSE_FILE" logs quicktunnel 2>/dev/null \
+          | grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' | tail -1)
+    [ -n "$url" ] && log "임시 공개 주소: $url"
+    ;;
+esac
 
 # ── 정리 ───────────────────────────────────────────────────
 log "미사용 이미지 정리"

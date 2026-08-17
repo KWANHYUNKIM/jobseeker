@@ -6,28 +6,37 @@
 
 ```
   다른 컴퓨터 ──SSH──▶ 맥북 서버 (192.168.45.241)
+       │                  │
+       └──HTTP:8080──────▶├─ jobseeker-viewer  (nginx)   ← 기본: LAN 전용
                           │
   GitHub ◀──아웃바운드───  ├─ actions-runner (launchd)
    push                   │      └ push 감지 → deploy.sh
                           │
-                          ├─ jobseeker-viewer   (nginx, 127.0.0.1:8080)
-                          └─ jobseeker-tunnel   (cloudflared)
-                                    │
-                                아웃바운드
-                                    ▼
-                          Cloudflare ──HTTPS──▶ 인터넷
+                          └─ (선택) cloudflared ──아웃바운드──▶ Cloudflare ──HTTPS──▶ 인터넷
 ```
 
-핵심은 **인바운드 포트를 하나도 열지 않는다**는 것이다. 터널도 러너도 밖으로
-나가는 커넥션만 맺으므로 공유기 포트포워딩·DDNS·인증서 갱신이 전부 불필요하다.
-HTTPS 인증서는 Cloudflare가 자동 발급·갱신한다.
+기본 구성은 **LAN 전용**이다. 도메인 없이 혼자 보는 용도라 같은 네트워크에서
+`http://192.168.45.241:8080` 으로 바로 접속한다. 공유기 포트포워딩도 DDNS도
+인증서도 필요 없다.
+
+밖에서 봐야 할 때만 터널을 켠다. 어느 쪽이든 **인바운드 포트는 열지 않는다** —
+터널도 러너도 밖으로 나가는 커넥션만 맺는다.
+
+| 접근 방식 | 명령 | 주소 | 비고 |
+|---|---|---|---|
+| LAN 전용 (기본) | `up -d` | `http://192.168.45.241:8080` | 도메인·계정 불필요 |
+| 임시 공개 | `COMPOSE_PROFILES=quick up -d` | `https://*.trycloudflare.com` | 계정 불필요, **재시작마다 주소 변경** |
+| 고정 공개 | `COMPOSE_PROFILES=tunnel up -d` | 내 도메인 | 도메인 + `.env` 토큰 필요 |
+
+임시 공개 주소는 `docker compose -f docker-compose.prod.yml logs quicktunnel` 에
+찍히고, `deploy.sh` 도 배포 끝에 한 줄 남긴다.
 
 ## 파일
 
 | 파일 | 역할 |
 |---|---|
-| `../docker-compose.prod.yml` | 뷰어 + 터널 컨테이너 정의 |
-| `../.env` | `CLOUDFLARE_TUNNEL_TOKEN` (커밋 금지) |
+| `../docker-compose.prod.yml` | 뷰어 + (선택) 터널. 터널은 compose 프로필로 분리 |
+| `../.env` | 선택. `VIEWER_BIND`, `CLOUDFLARE_TUNNEL_TOKEN` (커밋 금지) |
 | `deploy.sh` | 배포 — 동기화 → 빌드 → 기동 → 헬스체크 |
 | `setup-server.sh` | OS 설정 — SSH 켜기, 절전 해제 (sudo 필요) |
 | `setup-runner.sh` | GitHub Actions 러너 설치 |
@@ -45,7 +54,10 @@ docker compose -f docker-compose.prod.yml ps
 
 # 로그
 docker compose -f docker-compose.prod.yml logs -f viewer
-docker compose -f docker-compose.prod.yml logs -f cloudflared
+
+# 밖에서 봐야 할 때 (임시 공개 주소 발급 — 주소는 로그에 찍힌다)
+COMPOSE_PROFILES=quick docker compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml logs quicktunnel | grep trycloudflare
 
 # 수동 재배포 (origin/main 동기화 포함)
 ./deploy/deploy.sh
@@ -108,6 +120,11 @@ workflow**를 누른다(`workflow_dispatch`). 서버 앞에 앉을 필요가 없
 
 - **맥북 절전.** `setup-server.sh`가 `pmset -a disablesleep 1`을 걸어 뚜껑을 닫아도
   안 잠들게 한다. 이걸 안 하면 뚜껑 닫는 순간 터널과 러너가 같이 죽는다.
+- **뷰어는 LAN에 열려 있다.** `0.0.0.0:8080` 바인딩이라 같은 네트워크의 아무나
+  볼 수 있다. 집 네트워크면 문제없지만 카페 같은 공용 와이파이에 물릴 일이 있으면
+  `.env`에 `VIEWER_BIND=127.0.0.1`을 넣어 로컬로 좁힌다.
+- **임시 터널 주소는 공개 URL이다.** `quick` 프로필로 뜨는 `*.trycloudflare.com`
+  주소는 추측하기 어렵지만 인증이 없다. 주소를 아는 사람은 누구나 볼 수 있다.
 - **Docker Desktop은 사용자 앱이다.** 재부팅 후 *사용자가 로그인해야* 데몬이 뜬다.
   완전 무인 재부팅이 필요하면 자동 로그인을 켜거나 colima를 LaunchDaemon으로
   돌리는 쪽으로 바꿔야 한다. (colima도 이미 설치되어 있음)
