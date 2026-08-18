@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-18T09:48:40",
- "total": 1055,
+ "generated_at": "2026-08-18T11:08:44",
+ "total": 1056,
  "sources": [
   {
    "company": "Etsy",
@@ -35,7 +35,7 @@
   {
    "company": "토스",
    "country": "KR",
-   "count": 41
+   "count": 42
   },
   {
    "company": "DeNA",
@@ -529,6 +529,31 @@
   "Kubernetes": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "toss",
+   "company": "토스",
+   "country": "KR",
+   "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+   "url": "https://toss.tech/article/games-in-ads",
+   "published": "2026-08-18",
+   "published_ts": 1787014800.0,
+   "summary": "토스에서 게임 광고를 받기 위해 MRAID 기반 플레이어블 광고 SDK를 직접 만든 이야기를 소개해요.",
+   "tags": [],
+   "tech_stack": [
+    "JavaScript",
+    "TypeScript",
+    "HTML",
+    "Android",
+    "iOS"
+   ],
+   "categories": [
+    "언어",
+    "프론트엔드",
+    "모바일"
+   ],
+   "lang": "ko",
+   "content_id": "944f4819ff5c30fa"
+  },
   {
    "key": "aws",
    "company": "AWS",

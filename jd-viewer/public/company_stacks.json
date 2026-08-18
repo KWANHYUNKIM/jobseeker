@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-18T09:49:07",
-  "total_jobs": 10255,
-  "company_count": 1942,
+  "generated_at": "2026-08-18T11:09:11",
+  "total_jobs": 10258,
+  "company_count": 1943,
   "min_posting": 2,
   "companies": [
     {
@@ -23004,11 +23004,11 @@
             "why": "android, flutter, ios"
           },
           {
-            "title": "Introducing Kitesurf: The agent-first browser that runs in V8 isolates on Cloudflare Workers",
-            "url": "https://blog.cloudflare.com/kitesurf",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "css, html, javascript"
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, html, ios"
           }
         ]
       }
@@ -48455,18 +48455,18 @@
             "why": "android, flutter, ios"
           },
           {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
             "company": "토스",
             "country": "KR",
             "why": "android, ios"
           },
           {
-            "title": "11 の技術コミュニティが新入社員をお出迎え 〜TechTalk #95 開催レポート〜",
-            "url": "https://engineering.dena.com/blog/2026/07/tech-talk-95-community-introduction",
-            "company": "DeNA",
-            "country": "JP",
-            "why": "c#, flutter"
+            "title": "토스의 디바이스 팜 만들기",
+            "url": "https://toss.tech/article/device-farm-nebula",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios"
           }
         ]
       }
@@ -79246,6 +79246,458 @@
       }
     },
     {
+      "name": "(주)이스트게임즈",
+      "norm": "이스트게임즈",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 7,
+      "sites": [
+        "dev",
+        "saramin"
+      ],
+      "roles": {
+        "모바일": 4,
+        "게임": 2,
+        "보안": 2,
+        "DevOps/인프라": 1,
+        "백엔드": 1,
+        "프론트엔드": 1,
+        "데이터": 1
+      },
+      "top_tech": [
+        {
+          "name": "C#",
+          "count": 4
+        },
+        {
+          "name": "Android",
+          "count": 4
+        },
+        {
+          "name": "Linux",
+          "count": 4
+        },
+        {
+          "name": "iOS",
+          "count": 3
+        },
+        {
+          "name": "MySQL",
+          "count": 3
+        },
+        {
+          "name": "JavaScript",
+          "count": 3
+        },
+        {
+          "name": "Python",
+          "count": 3
+        },
+        {
+          "name": "C++",
+          "count": 2
+        },
+        {
+          "name": "Node.js",
+          "count": 2
+        },
+        {
+          "name": "MongoDB",
+          "count": 2
+        },
+        {
+          "name": "PHP",
+          "count": 2
+        },
+        {
+          "name": "AWS",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "C#",
+            "count": 4
+          },
+          {
+            "name": "JavaScript",
+            "count": 3
+          },
+          {
+            "name": "Python",
+            "count": 3
+          },
+          {
+            "name": "C++",
+            "count": 2
+          },
+          {
+            "name": "PHP",
+            "count": 2
+          },
+          {
+            "name": "Java",
+            "count": 1
+          },
+          {
+            "name": "TypeScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "Node.js",
+            "count": 2
+          },
+          {
+            "name": "Spring",
+            "count": 1
+          },
+          {
+            "name": "Spring Boot",
+            "count": 1
+          },
+          {
+            "name": "GraphQL",
+            "count": 1
+          },
+          {
+            "name": "REST API",
+            "count": 1
+          },
+          {
+            "name": "MSA",
+            "count": 1
+          }
+        ],
+        "프론트엔드": [
+          {
+            "name": "React",
+            "count": 1
+          },
+          {
+            "name": "Vue",
+            "count": 1
+          },
+          {
+            "name": "Next.js",
+            "count": 1
+          },
+          {
+            "name": "HTML",
+            "count": 1
+          },
+          {
+            "name": "CSS",
+            "count": 1
+          }
+        ],
+        "모바일": [
+          {
+            "name": "Android",
+            "count": 4
+          },
+          {
+            "name": "iOS",
+            "count": 3
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "MySQL",
+            "count": 3
+          },
+          {
+            "name": "MongoDB",
+            "count": 2
+          },
+          {
+            "name": "Redis",
+            "count": 1
+          },
+          {
+            "name": "MSSQL",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Linux",
+            "count": 4
+          },
+          {
+            "name": "AWS",
+            "count": 2
+          },
+          {
+            "name": "Jenkins",
+            "count": 2
+          },
+          {
+            "name": "GitLab CI",
+            "count": 2
+          },
+          {
+            "name": "Docker",
+            "count": 1
+          },
+          {
+            "name": "Kubernetes",
+            "count": 1
+          },
+          {
+            "name": "Terraform",
+            "count": 1
+          },
+          {
+            "name": "Ansible",
+            "count": 1
+          },
+          {
+            "name": "GCP",
+            "count": 1
+          },
+          {
+            "name": "Azure",
+            "count": 1
+          },
+          {
+            "name": "Apache",
+            "count": 1
+          }
+        ],
+        "데이터": [
+          {
+            "name": "Kafka",
+            "count": 1
+          }
+        ],
+        "협업/도구": [
+          {
+            "name": "Git",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "게임",
+          "score": 65,
+          "evidence": [
+            "게임",
+            "MMORPG",
+            "모바일 게임",
+            "게임 서버"
+          ]
+        },
+        {
+          "name": "보안",
+          "score": 11,
+          "evidence": [
+            "정보보안",
+            "침해",
+            "해킹",
+            "취약점"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "MSA · 마이크로서비스",
+          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
+        },
+        {
+          "label": "컨테이너 오케스트레이션 (K8s)",
+          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
+        },
+        {
+          "label": "클라우드 (AWS/GCP/Azure)",
+          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
+        },
+        {
+          "label": "데이터 파이프라인 · ETL",
+          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
+        },
+        {
+          "label": "SSR · 풀스택 프레임워크",
+          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
+        }
+      ],
+      "titles": [
+        "MMORPG 클라이언트/모바일 RTS서버 프로그래머",
+        "MMORPG/모바일 RTS 클라이언트/서버 프로그래머",
+        "산업기능요원 보충역/전직자 (클라이언트/서버 프로그래머)",
+        "DevOps 엔지니어/정보 보안 운영 관리 엔지니어",
+        "MMORPG 온라인/모바일 게임 클라이언트 프로그래머",
+        "웹 개발자 (프론트엔드/백엔드)",
+        "정보 보안 운영 관리 엔지니어 채용"
+      ],
+      "postings": [
+        {
+          "title": "MMORPG 클라이언트/모바일 RTS서버 프로그래머",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54765193&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=a498e490-77db-4f3e-aec4-e75d5421f8aa",
+          "site": "saramin"
+        },
+        {
+          "title": "MMORPG/모바일 RTS 클라이언트/서버 프로그래머",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619302&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a8d700fa-8227-49c6-81da-e7bc358fed27",
+          "site": "saramin"
+        },
+        {
+          "title": "산업기능요원 보충역/전직자 (클라이언트/서버 프로그래머)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54378672&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=55106f6e-440d-46c6-aaaf-e1831fe73425",
+          "site": "saramin"
+        },
+        {
+          "title": "DevOps 엔지니어/정보 보안 운영 관리 엔지니어",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619291&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=56aaa143-a02a-425d-9c45-1f3a5f6377f4",
+          "site": "saramin"
+        },
+        {
+          "title": "MMORPG 온라인/모바일 게임 클라이언트 프로그래머",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/525562?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "웹 개발자 (프론트엔드/백엔드)",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/525564?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "정보 보안 운영 관리 엔지니어 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/525558?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "(주)이스트게임즈는 게임 도메인의 중소기업으로, 주로 모바일 · 게임 직군을 채용하며 C#, Android, Linux, iOS 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: C#, Android, Linux 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "모바일 중심(+게임) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "게임 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "C#",
+              "JavaScript",
+              "Python"
+            ],
+            "tips": [
+              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심",
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
+            ]
+          },
+          {
+            "stage": "2. 모바일 핵심 스킬",
+            "goal": "네이티브/크로스플랫폼으로 앱을 만들어 스토어 흐름까지 경험한다",
+            "techs": [
+              "Android",
+              "iOS"
+            ],
+            "tips": [
+              "Android — Kotlin + Jetpack(아키텍처 컴포넌트)로 앱 구조 설계",
+              "iOS — Swift + UIKit/SwiftUI, 생명주기·네트워킹·앱스토어 배포"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "MySQL",
+              "MongoDB",
+              "Redis",
+              "Kafka"
+            ],
+            "tips": [
+              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
+              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
+              "Redis — 캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
+            "techs": [
+              "Linux",
+              "AWS",
+              "Jenkins",
+              "GitLab CI"
+            ],
+            "tips": [
+              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본",
+              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
+              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
+            ]
+          },
+          {
+            "stage": "5. 우대·차별화",
+            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
+            "techs": [
+              "Kafka"
+            ],
+            "tips": [
+              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
+            ]
+          }
+        ],
+        "tasks": [
+          "[게임] iOS/Android 앱 화면·기능 개발과 스토어 배포",
+          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
+          "컨테이너 기반 배포·오토스케일링 운영"
+        ],
+        "study_blogs": [
+          {
+            "title": "토스의 디바이스 팜 만들기",
+            "url": "https://toss.tech/article/device-farm-nebula",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, aws, ios"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "aws, c#, javascript"
+          },
+          {
+            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
+            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
+            "company": "요기요",
+            "country": "KR",
+            "why": "android, ios, javascript"
+          },
+          {
+            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
+            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
+            "company": "하이퍼커넥트",
+            "country": "KR",
+            "why": "aws, javascript, linux"
+          },
+          {
+            "title": "The next generation of MCP",
+            "url": "https://blog.cloudflare.com/mcp-v2",
+            "company": "Cloudflare",
+            "country": "US",
+            "why": "c#, javascript, node.js"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "aws, javascript, node.js"
+          }
+        ]
+      }
+    },
+    {
       "name": "제이앤피에이치알컨설팅",
       "norm": "제이앤피에이치알컨설팅",
       "size": "대기업",
@@ -103366,453 +103818,6 @@
             "company": "네이버 D2",
             "country": "KR",
             "why": "c#, css, html"
-          },
-          {
-            "title": "The next generation of MCP",
-            "url": "https://blog.cloudflare.com/mcp-v2",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "c#, javascript, python"
-          }
-        ]
-      }
-    },
-    {
-      "name": "(주)이스트게임즈",
-      "norm": "이스트게임즈",
-      "size": "중소기업",
-      "size_alias": null,
-      "posting_count": 6,
-      "sites": [
-        "dev",
-        "saramin"
-      ],
-      "roles": {
-        "모바일": 3,
-        "보안": 2,
-        "게임": 1,
-        "DevOps/인프라": 1,
-        "백엔드": 1,
-        "프론트엔드": 1,
-        "데이터": 1
-      },
-      "top_tech": [
-        {
-          "name": "JavaScript",
-          "count": 3
-        },
-        {
-          "name": "C#",
-          "count": 3
-        },
-        {
-          "name": "Android",
-          "count": 3
-        },
-        {
-          "name": "Python",
-          "count": 3
-        },
-        {
-          "name": "Linux",
-          "count": 3
-        },
-        {
-          "name": "iOS",
-          "count": 2
-        },
-        {
-          "name": "MySQL",
-          "count": 2
-        },
-        {
-          "name": "PHP",
-          "count": 2
-        },
-        {
-          "name": "AWS",
-          "count": 2
-        },
-        {
-          "name": "Jenkins",
-          "count": 2
-        },
-        {
-          "name": "GitLab CI",
-          "count": 2
-        },
-        {
-          "name": "C++",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "JavaScript",
-            "count": 3
-          },
-          {
-            "name": "C#",
-            "count": 3
-          },
-          {
-            "name": "Python",
-            "count": 3
-          },
-          {
-            "name": "PHP",
-            "count": 2
-          },
-          {
-            "name": "C++",
-            "count": 1
-          },
-          {
-            "name": "Java",
-            "count": 1
-          },
-          {
-            "name": "TypeScript",
-            "count": 1
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "Node.js",
-            "count": 1
-          },
-          {
-            "name": "Spring",
-            "count": 1
-          },
-          {
-            "name": "Spring Boot",
-            "count": 1
-          },
-          {
-            "name": "GraphQL",
-            "count": 1
-          },
-          {
-            "name": "REST API",
-            "count": 1
-          },
-          {
-            "name": "MSA",
-            "count": 1
-          }
-        ],
-        "프론트엔드": [
-          {
-            "name": "React",
-            "count": 1
-          },
-          {
-            "name": "Vue",
-            "count": 1
-          },
-          {
-            "name": "Next.js",
-            "count": 1
-          },
-          {
-            "name": "HTML",
-            "count": 1
-          },
-          {
-            "name": "CSS",
-            "count": 1
-          }
-        ],
-        "모바일": [
-          {
-            "name": "Android",
-            "count": 3
-          },
-          {
-            "name": "iOS",
-            "count": 2
-          }
-        ],
-        "데이터베이스": [
-          {
-            "name": "MySQL",
-            "count": 2
-          },
-          {
-            "name": "MongoDB",
-            "count": 1
-          },
-          {
-            "name": "Redis",
-            "count": 1
-          },
-          {
-            "name": "MSSQL",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Linux",
-            "count": 3
-          },
-          {
-            "name": "AWS",
-            "count": 2
-          },
-          {
-            "name": "Jenkins",
-            "count": 2
-          },
-          {
-            "name": "GitLab CI",
-            "count": 2
-          },
-          {
-            "name": "Docker",
-            "count": 1
-          },
-          {
-            "name": "Kubernetes",
-            "count": 1
-          },
-          {
-            "name": "Terraform",
-            "count": 1
-          },
-          {
-            "name": "Ansible",
-            "count": 1
-          },
-          {
-            "name": "GCP",
-            "count": 1
-          },
-          {
-            "name": "Azure",
-            "count": 1
-          },
-          {
-            "name": "Apache",
-            "count": 1
-          }
-        ],
-        "데이터": [
-          {
-            "name": "Kafka",
-            "count": 1
-          }
-        ],
-        "협업/도구": [
-          {
-            "name": "Git",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "게임",
-          "score": 51,
-          "evidence": [
-            "게임",
-            "MMORPG",
-            "모바일 게임",
-            "게임 서버"
-          ]
-        },
-        {
-          "name": "보안",
-          "score": 11,
-          "evidence": [
-            "정보보안",
-            "침해",
-            "해킹",
-            "취약점"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "MSA · 마이크로서비스",
-          "why": "MSA 언급 또는 Kafka·Kubernetes·Spring 조합 — 서비스 분리·이벤트 기반 구조 추정"
-        },
-        {
-          "label": "컨테이너 오케스트레이션 (K8s)",
-          "why": "Kubernetes 사용 — 컨테이너 기반 배포·오토스케일링 운영 추정"
-        },
-        {
-          "label": "클라우드 (AWS/GCP/Azure)",
-          "why": "AWS, GCP, Azure 사용 — 매니지드 클라우드 인프라 위에서 운영"
-        },
-        {
-          "label": "데이터 파이프라인 · ETL",
-          "why": "Kafka — 배치/스트리밍 데이터 처리 파이프라인 추정"
-        },
-        {
-          "label": "SSR · 풀스택 프레임워크",
-          "why": "Next.js/Nuxt — 서버사이드 렌더링 기반 풀스택 웹 구조"
-        }
-      ],
-      "titles": [
-        "MMORPG/모바일 RTS 클라이언트/서버 프로그래머",
-        "산업기능요원 보충역/전직자 (클라이언트/서버 프로그래머)",
-        "DevOps 엔지니어/정보 보안 운영 관리 엔지니어",
-        "MMORPG 온라인/모바일 게임 클라이언트 프로그래머",
-        "웹 개발자 (프론트엔드/백엔드)",
-        "정보 보안 운영 관리 엔지니어 채용"
-      ],
-      "postings": [
-        {
-          "title": "MMORPG/모바일 RTS 클라이언트/서버 프로그래머",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619302&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a8d700fa-8227-49c6-81da-e7bc358fed27",
-          "site": "saramin"
-        },
-        {
-          "title": "산업기능요원 보충역/전직자 (클라이언트/서버 프로그래머)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54378672&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=55106f6e-440d-46c6-aaaf-e1831fe73425",
-          "site": "saramin"
-        },
-        {
-          "title": "DevOps 엔지니어/정보 보안 운영 관리 엔지니어",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619291&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=56aaa143-a02a-425d-9c45-1f3a5f6377f4",
-          "site": "saramin"
-        },
-        {
-          "title": "MMORPG 온라인/모바일 게임 클라이언트 프로그래머",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/525562?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "웹 개발자 (프론트엔드/백엔드)",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/525564?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "정보 보안 운영 관리 엔지니어 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/525558?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "(주)이스트게임즈는 게임 도메인의 중소기업으로, 주로 모바일 · 보안 직군을 채용하며 JavaScript, C#, Android, Python 기반으로 개발합니다. 아키텍처는 MSA · 마이크로서비스로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: JavaScript, C#, Android 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "모바일 중심(+보안) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "게임 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "MSA · 마이크로서비스 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "JavaScript",
-              "C#",
-              "Python"
-            ],
-            "tips": [
-              "JavaScript — ES6+ 문법·비동기(Promise/async)·이벤트루프 이해가 핵심",
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기"
-            ]
-          },
-          {
-            "stage": "2. 모바일 핵심 스킬",
-            "goal": "네이티브/크로스플랫폼으로 앱을 만들어 스토어 흐름까지 경험한다",
-            "techs": [
-              "Android",
-              "iOS"
-            ],
-            "tips": [
-              "Android — Kotlin + Jetpack(아키텍처 컴포넌트)로 앱 구조 설계",
-              "iOS — Swift + UIKit/SwiftUI, 생명주기·네트워킹·앱스토어 배포"
-            ]
-          },
-          {
-            "stage": "3. 데이터 계층",
-            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
-            "techs": [
-              "MySQL",
-              "MongoDB",
-              "Redis",
-              "Kafka"
-            ],
-            "tips": [
-              "MySQL — 스키마 설계·인덱스·실행계획(EXPLAIN)으로 쿼리 최적화",
-              "MongoDB — 문서 모델링·인덱스, 언제 NoSQL이 유리한지 판단",
-              "Redis — 캐시·세션·랭킹·분산락 등 활용 패턴 익히기",
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: MSA · 마이크로서비스)",
-            "techs": [
-              "Linux",
-              "AWS",
-              "Jenkins",
-              "GitLab CI"
-            ],
-            "tips": [
-              "Linux — 셸·프로세스·권한·네트워크 등 서버 운영 기본",
-              "AWS — EC2·S3·RDS·IAM 기본 → VPC·로드밸런서로 배포 구성",
-              "Jenkins — 파이프라인으로 빌드·테스트·배포 자동화(CI/CD)"
-            ]
-          },
-          {
-            "stage": "5. 우대·차별화",
-            "goal": "지원서에서 돋보일 무기 — 우대 기술을 1개라도 깊게",
-            "techs": [
-              "Kafka"
-            ],
-            "tips": [
-              "Kafka — 토픽·파티션·컨슈머 그룹으로 이벤트 스트리밍 설계"
-            ]
-          }
-        ],
-        "tasks": [
-          "[게임] iOS/Android 앱 화면·기능 개발과 스토어 배포",
-          "[게임] 취약점 점검·보안 모니터링과 침해 대응 체계 운영",
-          "마이크로서비스 분리·서비스 간 연동과 장애 격리 설계",
-          "컨테이너 기반 배포·오토스케일링 운영"
-        ],
-        "study_blogs": [
-          {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
-            "company": "토스",
-            "country": "KR",
-            "why": "android, aws, ios"
-          },
-          {
-            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
-            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, c#, javascript"
-          },
-          {
-            "title": "ChatGPT에서 요기요 배달 쓰기 — MCP + 위젯 연동 개발기",
-            "url": "https://techblog.yogiyo.co.kr/chatgpt%EC%97%90%EC%84%9C-%EC%9A%94%EA%B8%B0%EC%9A%94-%EB%B0%B0%EB%8B%AC-%EC%93%B0%EA%B8%B0-mcp-%EC%9C%84%EC%A0%AF-%EC%97%B0%EB%8F%99-%EA%B0%9C%EB%B0%9C%EA%B8%B0-c6636a9a11ff",
-            "company": "요기요",
-            "country": "KR",
-            "why": "android, ios, javascript"
-          },
-          {
-            "title": "Building Resilient, High Performance ScyllaDB Clusters with Super Disk",
-            "url": "https://hyperconnect.github.io/2025/05/15/Building-Resilient-High-Performance-ScyllaDB-Clusters-with-Super-Disk.html",
-            "company": "하이퍼커넥트",
-            "country": "KR",
-            "why": "aws, javascript, linux"
-          },
-          {
-            "title": "Runtime instances: persistent compute for production AI agents on Amazon Bedrock AgentCore",
-            "url": "https://aws.amazon.com/blogs/aws/runtime-instances-persistent-compute-for-production-ai-agents-on-amazon-bedrock-agentcore",
-            "company": "AWS",
-            "country": "US",
-            "why": "aws, javascript, linux"
           },
           {
             "title": "The next generation of MCP",
@@ -136294,10 +136299,10 @@
             "why": "flutter"
           },
           {
-            "title": "新旧MetricKitの共存 – iOS 27を見据えたタップルの戦略",
-            "url": "https://developers.cyberagent.co.jp/blog/archives/65298",
-            "company": "CyberAgent",
-            "country": "JP",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
             "why": "모바일"
           }
         ]
@@ -140468,6 +140473,13 @@
             "why": "android, ios, java"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, html, ios"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -140480,13 +140492,6 @@
             "company": "당근",
             "country": "KR",
             "why": "android, css, ios"
-          },
-          {
-            "title": "Gradle Composite Build を用いたビルドロジックの共通化について",
-            "url": "https://techlife.cookpad.com/entry/2024/11/20/130000",
-            "company": "Cookpad",
-            "country": "JP",
-            "why": "android, html, java"
           }
         ]
       }
@@ -143252,6 +143257,13 @@
             "why": "android, css, html"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, html, javascript"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -143271,13 +143283,6 @@
             "company": "Cookpad",
             "country": "JP",
             "why": "android, html, java"
-          },
-          {
-            "title": "Introducing Kitesurf: The agent-first browser that runs in V8 isolates on Cloudflare Workers",
-            "url": "https://blog.cloudflare.com/kitesurf",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "css, html, javascript"
           }
         ]
       }
@@ -224834,15 +224839,15 @@
             "why": "android, ios, javascript"
           },
           {
-            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
-            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
-            "company": "당근",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
             "country": "KR",
             "why": "android, ios, javascript"
           },
           {
-            "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
-            "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
+            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
+            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
             "country": "KR",
             "why": "android, ios, javascript"
@@ -241599,6 +241604,13 @@
             "why": "scss"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "프론트엔드"
+          },
+          {
             "title": "Total eclipse of the Internet: traffic impacts in Iceland, Spain, and Portugal",
             "url": "https://blog.cloudflare.com/total-eclipse-internet-traffic-iceland-spain-portugal",
             "company": "Cloudflare",
@@ -241622,13 +241634,6 @@
           {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
-            "company": "당근",
-            "country": "KR",
-            "why": "프론트엔드"
-          },
-          {
-            "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
-            "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
             "company": "당근",
             "country": "KR",
             "why": "프론트엔드"
@@ -243270,6 +243275,13 @@
             "why": "ios, python, pytorch"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios, javascript"
+          },
+          {
             "title": "토스의 디바이스 팜 만들기",
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
@@ -243289,13 +243301,6 @@
             "company": "당근",
             "country": "KR",
             "why": "android, ios, javascript"
-          },
-          {
-            "title": "Meet Coupang’s Machine Learning Platform",
-            "url": "https://medium.com/coupang-engineering/meet-coupangs-machine-learning-platform-cd00e9ccc172",
-            "company": "쿠팡",
-            "country": "KR",
-            "why": "python, pytorch, tensorflow"
           }
         ]
       }
@@ -247044,6 +247049,13 @@
             "why": "c"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "언어"
+          },
+          {
             "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
             "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
             "company": "GitHub",
@@ -247055,13 +247067,6 @@
             "url": "https://blog.cloudflare.com/workers-protected-by-access",
             "company": "Cloudflare",
             "country": "US",
-            "why": "언어"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "언어"
           }
         ]
@@ -250584,8 +250589,8 @@
             "why": "android, ios, react"
           },
           {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
             "company": "토스",
             "country": "KR",
             "why": "android, ios, typescript"
@@ -255060,15 +255065,15 @@
             "why": "android, html, java"
           },
           {
-            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
-            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
-            "company": "당근",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
             "country": "KR",
-            "why": "android, git, ios"
+            "why": "android, html, ios"
           },
           {
-            "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
-            "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
+            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
+            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
             "country": "KR",
             "why": "android, git, ios"
@@ -255797,15 +255802,15 @@
             "why": "c#, java, javascript"
           },
           {
-            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
-            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
-            "company": "당근",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
             "country": "KR",
-            "why": "android, css, ios"
+            "why": "android, html, ios"
           },
           {
-            "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
-            "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
+            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
+            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
             "country": "KR",
             "why": "android, css, ios"
@@ -263990,18 +263995,18 @@
             "why": "android, git, ios"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, html, ios"
+          },
+          {
             "title": "react-native 에 모듈 페더레이션 더하기 (with. RePack)",
             "url": "https://medium.com/zigbang/react-native-%EC%97%90-%EB%AA%A8%EB%93%88-%ED%8E%98%EB%8D%94%EB%A0%88%EC%9D%B4%EC%85%98-%EB%8D%94%ED%95%98%EA%B8%B0-with-repack-12288f15e617",
             "company": "직방",
             "country": "KR",
             "why": "android, ios, javascript"
-          },
-          {
-            "title": "Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue",
-            "url": "https://blog.cloudflare.com/agents-platform-flue-sdk",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "git, javascript, react"
           }
         ]
       }
@@ -275917,6 +275922,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios"
+          },
+          {
             "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
             "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
             "company": "Airbnb",
@@ -275949,13 +275961,6 @@
             "url": "https://discord.com/blog/mobile-platform-support-arrives-in-discord-social-sdk",
             "company": "Discord",
             "country": "US",
-            "why": "android, ios"
-          },
-          {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
-            "company": "토스",
-            "country": "KR",
             "why": "android, ios"
           }
         ]
@@ -300585,11 +300590,11 @@
             "why": "javascript, python, rust"
           },
           {
-            "title": "The next generation of MCP",
-            "url": "https://blog.cloudflare.com/mcp-v2",
-            "company": "Cloudflare",
-            "country": "US",
-            "why": "go, javascript, python"
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios, javascript"
           }
         ]
       }
@@ -328647,15 +328652,15 @@
             "why": "ios, swift"
           },
           {
-            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
-            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
-            "company": "당근",
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
             "country": "KR",
             "why": "android, ios"
           },
           {
-            "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
-            "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
+            "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
+            "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
             "country": "KR",
             "why": "android, ios"
@@ -333396,6 +333401,13 @@
             "why": "android, ios, javascript"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios, javascript"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -333406,13 +333418,6 @@
             "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
             "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
             "company": "당근",
-            "country": "KR",
-            "why": "android, ios, javascript"
-          },
-          {
-            "title": "react-native 에 모듈 페더레이션 더하기 (with. RePack)",
-            "url": "https://medium.com/zigbang/react-native-%EC%97%90-%EB%AA%A8%EB%93%88-%ED%8E%98%EB%8D%94%EB%A0%88%EC%9D%B4%EC%85%98-%EB%8D%94%ED%95%98%EA%B8%B0-with-repack-12288f15e617",
-            "company": "직방",
             "country": "KR",
             "why": "android, ios, javascript"
           }
@@ -370993,6 +370998,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "html"
+          },
+          {
             "title": "Introducing Radar Researcher: An AI tool for exploring Internet data in plain language",
             "url": "https://blog.cloudflare.com/introducing-radar-researcher",
             "company": "Cloudflare",
@@ -371025,13 +371037,6 @@
             "url": "https://d2.naver.com/helloworld/2017402",
             "company": "네이버 D2",
             "country": "KR",
-            "why": "html"
-          },
-          {
-            "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
-            "company": "Mercari",
-            "country": "JP",
             "why": "html"
           }
         ]
@@ -393534,6 +393539,13 @@
             "why": "c"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "언어"
+          },
+          {
             "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
             "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
             "company": "GitHub",
@@ -393545,13 +393557,6 @@
             "url": "https://blog.cloudflare.com/workers-protected-by-access",
             "company": "Cloudflare",
             "country": "US",
-            "why": "언어"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "언어"
           }
         ]
@@ -412547,6 +412552,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "ios"
+          },
+          {
             "title": "新旧MetricKitの共存 – iOS 27を見据えたタップルの戦略",
             "url": "https://developers.cyberagent.co.jp/blog/archives/65298",
             "company": "CyberAgent",
@@ -412579,13 +412591,6 @@
             "url": "https://toss.tech/article/tossion",
             "company": "토스",
             "country": "KR",
-            "why": "ios"
-          },
-          {
-            "title": "General Availability of Mobile Platform Support Arrives in Discord Social SDK Version 1.10",
-            "url": "https://discord.com/blog/mobile-platform-support-arrives-in-discord-social-sdk",
-            "company": "Discord",
-            "country": "US",
             "why": "ios"
           }
         ]
@@ -413034,6 +413039,13 @@
             "why": "android, ios, java"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -413052,13 +413064,6 @@
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
             "country": "KR",
-            "why": "android, ios"
-          },
-          {
-            "title": "Ordering Biryani Without Missing a Six: The Swiggy × JioHotstar Story",
-            "url": "https://bytes.swiggy.com/ordering-biryani-without-missing-a-six-the-swiggy-jiohotstar-story-601a22cc340e",
-            "company": "Swiggy",
-            "country": "IN",
             "why": "android, ios"
           }
         ]
@@ -413888,18 +413893,18 @@
             "why": "ios, javascript"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "ios, javascript"
+          },
+          {
             "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
             "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
             "company": "당근",
             "country": "KR",
             "why": "ios, javascript"
-          },
-          {
-            "title": "기술이 없던 곳에 기술 더하기: 사내 해커톤 플랫폼 만들기",
-            "url": "https://techblog.woowahan.com/26624",
-            "company": "우아한형제들",
-            "country": "KR",
-            "why": "javascript, spring"
           }
         ]
       }
@@ -423613,6 +423618,13 @@
             "why": "html, java"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "html"
+          },
+          {
             "title": "Introducing Radar Researcher: An AI tool for exploring Internet data in plain language",
             "url": "https://blog.cloudflare.com/introducing-radar-researcher",
             "company": "Cloudflare",
@@ -423632,13 +423644,6 @@
             "company": "우아한형제들",
             "country": "KR",
             "why": "html"
-          },
-          {
-            "title": "천만 MAU를 지탱하는 커뮤니티 시스템을 소개해요",
-            "url": "https://medium.com/daangn/%EC%B2%9C%EB%A7%8C-mau%EB%A5%BC-%EC%A7%80%ED%83%B1%ED%95%98%EB%8A%94-%EC%BB%A4%EB%AE%A4%EB%8B%88%ED%8B%B0-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-090fb4021e20",
-            "company": "당근",
-            "country": "KR",
-            "why": "java"
           }
         ]
       }
@@ -434816,6 +434821,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android"
+          },
+          {
             "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
             "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
             "company": "Airbnb",
@@ -434848,13 +434860,6 @@
             "url": "https://discord.com/blog/mobile-platform-support-arrives-in-discord-social-sdk",
             "company": "Discord",
             "country": "US",
-            "why": "android"
-          },
-          {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
-            "company": "토스",
-            "country": "KR",
             "why": "android"
           }
         ]
@@ -454941,6 +454946,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android"
+          },
+          {
             "title": "Flexible Authentication: Reimagining authentication for millions of users at Airbnb",
             "url": "https://medium.com/airbnb-engineering/flexible-authentication-reimagining-authentication-for-millions-of-users-at-airbnb-3a8a4c917137",
             "company": "Airbnb",
@@ -454973,13 +454985,6 @@
             "url": "https://discord.com/blog/mobile-platform-support-arrives-in-discord-social-sdk",
             "company": "Discord",
             "country": "US",
-            "why": "android"
-          },
-          {
-            "title": "토스의 디바이스 팜 만들기",
-            "url": "https://toss.tech/article/device-farm-nebula",
-            "company": "토스",
-            "country": "KR",
             "why": "android"
           }
         ]
@@ -455918,6 +455923,13 @@
             "why": "android, ios, python"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "android, ios"
+          },
+          {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
             "company": "당근",
@@ -455936,13 +455948,6 @@
             "url": "https://toss.tech/article/device-farm-nebula",
             "company": "토스",
             "country": "KR",
-            "why": "android, ios"
-          },
-          {
-            "title": "Ordering Biryani Without Missing a Six: The Swiggy × JioHotstar Story",
-            "url": "https://bytes.swiggy.com/ordering-biryani-without-missing-a-six-the-swiggy-jiohotstar-story-601a22cc340e",
-            "company": "Swiggy",
-            "country": "IN",
             "why": "android, ios"
           }
         ]
@@ -460739,6 +460744,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "html, javascript"
+          },
+          {
             "title": "Introducing Radar Researcher: An AI tool for exploring Internet data in plain language",
             "url": "https://blog.cloudflare.com/introducing-radar-researcher",
             "company": "Cloudflare",
@@ -460771,13 +460783,6 @@
             "url": "https://d2.naver.com/helloworld/2017402",
             "company": "네이버 D2",
             "country": "KR",
-            "why": "html, javascript"
-          },
-          {
-            "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
-            "company": "Mercari",
-            "country": "JP",
             "why": "html, javascript"
           }
         ]
@@ -462885,6 +462890,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "언어"
+          },
+          {
             "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
             "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
             "company": "GitHub",
@@ -462915,13 +462927,6 @@
           {
             "title": "Laying the Rails Beyond WebView: Why Karrot Chose Lynx",
             "url": "https://medium.com/daangn/laying-the-rails-beyond-webview-why-karrot-chose-lynx-db1aa92af5e4",
-            "company": "당근",
-            "country": "KR",
-            "why": "언어"
-          },
-          {
-            "title": "웹뷰 다음의 레일을 깔다: 당근이 Lynx를 선택한 이유",
-            "url": "https://medium.com/daangn/%EC%9B%B9%EB%B7%B0-%EB%8B%A4%EC%9D%8C%EC%9D%98-%EB%A0%88%EC%9D%BC%EC%9D%84-%EA%B9%94%EB%8B%A4-%EB%8B%B9%EA%B7%BC%EC%9D%B4-lynx%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0-34dd50abbfb7",
             "company": "당근",
             "country": "KR",
             "why": "언어"
@@ -470925,6 +470930,13 @@
             "why": "html, java"
           },
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "html"
+          },
+          {
             "title": "Introducing Radar Researcher: An AI tool for exploring Internet data in plain language",
             "url": "https://blog.cloudflare.com/introducing-radar-researcher",
             "company": "Cloudflare",
@@ -470944,13 +470956,6 @@
             "company": "우아한형제들",
             "country": "KR",
             "why": "html"
-          },
-          {
-            "title": "천만 MAU를 지탱하는 커뮤니티 시스템을 소개해요",
-            "url": "https://medium.com/daangn/%EC%B2%9C%EB%A7%8C-mau%EB%A5%BC-%EC%A7%80%ED%83%B1%ED%95%98%EB%8A%94-%EC%BB%A4%EB%AE%A4%EB%8B%88%ED%8B%B0-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-090fb4021e20",
-            "company": "당근",
-            "country": "KR",
-            "why": "java"
           }
         ]
       }
@@ -475151,6 +475156,13 @@
         ],
         "study_blogs": [
           {
+            "title": "토스는 어떻게 광고 속에 게임을 넣었을까",
+            "url": "https://toss.tech/article/games-in-ads",
+            "company": "토스",
+            "country": "KR",
+            "why": "html, javascript"
+          },
+          {
             "title": "Introducing Radar Researcher: An AI tool for exploring Internet data in plain language",
             "url": "https://blog.cloudflare.com/introducing-radar-researcher",
             "company": "Cloudflare",
@@ -475183,13 +475195,6 @@
             "url": "https://d2.naver.com/helloworld/2017402",
             "company": "네이버 D2",
             "country": "KR",
-            "why": "html, javascript"
-          },
-          {
-            "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
-            "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
-            "company": "Mercari",
-            "country": "JP",
             "why": "html, javascript"
           }
         ]
@@ -477655,6 +477660,134 @@
             "company": "Cloudflare",
             "country": "US",
             "why": "gitlab ci, javascript, react"
+          }
+        ]
+      }
+    },
+    {
+      "name": "(주)내담씨앤씨",
+      "norm": "내담씨앤씨",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 1
+      },
+      "top_tech": [
+        {
+          "name": "Java",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Java",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 5,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "교육/에듀테크",
+          "score": 2,
+          "evidence": [
+            "교육"
+          ]
+        }
+      ],
+      "architecture": [],
+      "titles": [
+        "Java 경력 개발자(삼성전자, 아웃시스템즈 경험자) 정규직 채용",
+        "(주)내담씨앤씨에서 Java·아웃시스템즈 개발 프리랜서를 찾고 있어요"
+      ],
+      "postings": [
+        {
+          "title": "Java 경력 개발자(삼성전자, 아웃시스템즈 경험자) 정규직 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54766815&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=7451bb4d-b9c6-4811-a6b1-39589e1520df",
+          "site": "saramin"
+        },
+        {
+          "title": "(주)내담씨앤씨에서 Java·아웃시스템즈 개발 프리랜서를 찾고 있어요",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54767008&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=7451bb4d-b9c6-4811-a6b1-39589e1520df",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)내담씨앤씨는 HR/채용 도메인의 중소기업으로, 주로 백엔드 직군을 채용하며 Java 기반으로 개발합니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Java 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Java"
+            ],
+            "tips": [
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
+        ],
+        "study_blogs": [
+          {
+            "title": "How canvases make agentic workflows visible, steerable, and cost-efficient",
+            "url": "https://github.blog/ai-and-ml/github-copilot/how-canvases-make-agentic-workflows-visible-steerable-and-cost-efficient",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
+            "title": "Agentic Engineering at Zalando: a snapshot",
+            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "java"
+          },
+          {
+            "title": "Using the GitHub Copilot SDK for Java",
+            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java"
+          },
+          {
+            "title": "Kafka App? There’s a Skill for That",
+            "url": "https://www.etsy.com/codeascraft/kafka-app-thereas-a-skill-for-that",
+            "company": "Etsy",
+            "country": "US",
+            "why": "java"
+          },
+          {
+            "title": "From Homegrown to Flink: Migrating a Stateful Ad Event Join at Scale",
+            "url": "https://engineering.zalando.com/posts/2026/07/migrating-ad-event-processing-to-flink.html",
+            "company": "Zalando",
+            "country": "DE",
+            "why": "java"
+          },
+          {
+            "title": "In-House LLM Serving at Netflix",
+            "url": "https://netflixtechblog.com/in-house-llm-serving-at-netflix-a5a8e799ea2c",
+            "company": "Netflix",
+            "country": "US",
+            "why": "java"
           }
         ]
       }

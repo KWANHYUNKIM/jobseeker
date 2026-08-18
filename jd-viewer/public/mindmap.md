@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10255건** 공고 · **1942개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-18 09:49
+- 총 **10258건** 공고 · **1943개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-18 11:09
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (526개사)
+## HR/채용 (527개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -4516,6 +4516,10 @@ markmap:
   - [자바 웹 시스템 개발/운영 인재 채용 ( 계약직/프리랜서 ,부산) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54658271&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=2151a11b-a54a-469d-b58a-127a2f39c6fa)
 
 ### IT BLUE `중소기업` · 2건
+
+### (주)내담씨앤씨 `중소기업` · 2건
+- **백엔드** [1건] · `Java`
+  - [(주)내담씨앤씨에서 Java·아웃시스템즈 개발 프리랜서를 찾고 있어요 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54767008&location=ts&searchword=%EC%9E%90%EB%B0%94&searchType=search&paid_fl=n&search_uuid=7451bb4d-b9c6-4811-a6b1-39589e1520df)
 
 ### 포커스원 `중소기업` · 2건
 - **AI/ML** [2건]
@@ -20386,12 +20390,13 @@ markmap:
   - [게임 개발자(4~6년) ↗](https://jumpit.saramin.co.kr/position/53981267)
   - [게임 개발자(1~3년) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54552082&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=dfd44f60-6888-496d-8ae4-2c1555330c0a)
 
-### (주)이스트게임즈 `중소기업` · 6건
+### (주)이스트게임즈 `중소기업` · 7건
 - **백엔드** [1건] · `Java` `Python` `JavaScript` `TypeScript` `React` `Vue`
   - [웹 개발자 (프론트엔드/백엔드) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/525564?ReturnUrl=RecruitInfo)
 - **프론트엔드** [1건] · `Java` `Python` `JavaScript` `TypeScript` `React` `Vue`
   - [웹 개발자 (프론트엔드/백엔드) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/525564?ReturnUrl=RecruitInfo)
-- **모바일** [3건] · `Android` `JavaScript` `iOS` `C++` `C#` `Node.js`
+- **모바일** [4건] · `Android` `iOS` `C++` `C#` `Node.js` `MySQL`
+  - [MMORPG 클라이언트/모바일 RTS서버 프로그래머 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54765193&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=a498e490-77db-4f3e-aec4-e75d5421f8aa)
   - [MMORPG/모바일 RTS 클라이언트/서버 프로그래머 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619302&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a8d700fa-8227-49c6-81da-e7bc358fed27)
   - [산업기능요원 보충역/전직자 (클라이언트/서버 프로그래머) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54378672&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=55106f6e-440d-46c6-aaaf-e1831fe73425)
   - [MMORPG 온라인/모바일 게임 클라이언트 프로그래머 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/525562?ReturnUrl=RecruitInfo)
@@ -20402,7 +20407,8 @@ markmap:
 - **보안** [2건] · `Python` `C#` `PHP` `Linux` `AWS` `Docker`
   - [DevOps 엔지니어/정보 보안 운영 관리 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619291&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=56aaa143-a02a-425d-9c45-1f3a5f6377f4)
   - [정보 보안 운영 관리 엔지니어 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/525558?ReturnUrl=RecruitInfo)
-- **게임** [1건] · `JavaScript` `C++` `C#` `Node.js` `iOS` `Android`
+- **게임** [2건] · `C++` `C#` `Node.js` `iOS` `Android` `MySQL`
+  - [MMORPG 클라이언트/모바일 RTS서버 프로그래머 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54765193&location=ts&searchword=%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C&searchType=search&paid_fl=n&search_uuid=a498e490-77db-4f3e-aec4-e75d5421f8aa)
   - [MMORPG/모바일 RTS 클라이언트/서버 프로그래머 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53619302&location=ts&searchword=iOS&searchType=search&paid_fl=n&search_uuid=a8d700fa-8227-49c6-81da-e7bc358fed27)
 
 ### 제네시스네스트 `중소기업` · 5건
