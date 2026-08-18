@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10432건** 공고 · **1973개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-19 06:39
+- 총 **10434건** 공고 · **1974개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-19 08:09
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (537개사)
+## HR/채용 (538개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -201,9 +201,10 @@ markmap:
 - **DevOps/인프라** [1건] · `Java` `Python` `Elasticsearch` `Kafka`
   - [마곡 DAMS 시스템운영 java python ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49767648?Oem_Code=C1&logpath=1&stext=%ED%8C%8C%EC%9D%B4%EC%8D%AC&listno=49&sc=630)
 
-### 한화시스템(주) `대기업` · 12건
-- **백엔드** [2건] · `Python` `C++` `gRPC`
+### 한화시스템(주) `대기업` · 13건
+- **백엔드** [3건] · `Java` `JavaScript` `Oracle` `Python` `C++` `gRPC`
   - [한화시스템 AI솔루션 SW 개발 엔지니어 경력직 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54145326&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=e884883b-e96e-4431-9d77-2df520d6c85d)
+  - [금융프로젝트 시스템 개발 경력사원 채용 (계약직) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54765194&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=284ed00c-bbcf-42c9-a09b-064235aa6708)
   - [(방산) MUM-T 유·무인 통합 자율체계 AI/SW 엔지니어 경력사원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553796?ReturnUrl=RecruitInfo)
 - **프론트엔드** [1건] · `C++`
   - [MUM-T 유•무인 통합 자율체계 AI/SW (원격제어 기술) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54055981&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c9c2670-27bf-4bd2-8a34-4c786300a430)
@@ -215,6 +216,8 @@ markmap:
 - **데이터** [2건] · `Python`
   - [MRO사업부 경력사원 채용 (CBM+ Data Analyst) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010785&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=2e2bbadd-26a7-4e54-890a-8237540d3a47)
   - [MRO사업부 경력사원 채용 (Data Analyst) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=2e2bbadd-26a7-4e54-890a-8237540d3a47)
+- **DevOps/인프라** [1건] · `Java` `JavaScript` `Oracle`
+  - [금융프로젝트 시스템 개발 경력사원 채용 (계약직) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54765194&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=284ed00c-bbcf-42c9-a09b-064235aa6708)
 - **펌웨어/임베디드** [2건] · `C++` `Python` `gRPC`
   - [MUM-T 유•무인 통합 자율체계 AI/SW (원격제어 기술) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54055981&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c9c2670-27bf-4bd2-8a34-4c786300a430)
   - [(방산) MUM-T 유·무인 통합 자율체계 AI/SW 엔지니어 경력사원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553796?ReturnUrl=RecruitInfo)
@@ -4390,6 +4393,17 @@ markmap:
 - **AI/ML** [2건]
   - [(주)세보엠이씨 울산 AI 데이타센타 현장 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54073079&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=76c368c0-77df-49a0-b917-1204f2fba0d1)
   - [(주)세보엠이씨 울산 AI 데이터센터 현장 안전관리자 모집합니다 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54770512&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d286f745-ac9a-4024-886f-591502b9dd32)
+
+### (주)테크아이 `중소기업` · 2건
+- **백엔드** [2건] · `Spring`
+  - [(대전) 인프라+AI 통합 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54108204&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=8e7caef7-2616-47b1-8816-72d081613574)
+  - [(광명) 인프라+AI 통합 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54770702&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=307ee21a-6b2c-448d-ba3e-cd06ce0f525e)
+- **AI/ML** [2건] · `Spring`
+  - [(대전) 인프라+AI 통합 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54108204&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=8e7caef7-2616-47b1-8816-72d081613574)
+  - [(광명) 인프라+AI 통합 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54770702&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=307ee21a-6b2c-448d-ba3e-cd06ce0f525e)
+- **DevOps/인프라** [2건] · `Spring`
+  - [(대전) 인프라+AI 통합 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54108204&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=8e7caef7-2616-47b1-8816-72d081613574)
+  - [(광명) 인프라+AI 통합 엔지니어 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54770702&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=307ee21a-6b2c-448d-ba3e-cd06ce0f525e)
 
 ### (주)이지에이아이 `중소기업` · 2건
 - **AI/ML** [1건] · `Python` `Linux`

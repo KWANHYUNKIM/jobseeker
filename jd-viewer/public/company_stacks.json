@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-19T06:39:27",
-  "total_jobs": 10432,
-  "company_count": 1973,
+  "generated_at": "2026-08-19T08:09:22",
+  "total_jobs": 10434,
+  "company_count": 1974,
   "min_posting": 2,
   "companies": [
     {
@@ -19944,6 +19944,279 @@
       }
     },
     {
+      "name": "한화시스템(주)",
+      "norm": "한화시스템",
+      "size": "대기업",
+      "size_alias": "한화시스템",
+      "posting_count": 13,
+      "sites": [
+        "dev",
+        "saramin"
+      ],
+      "roles": {
+        "AI/ML": 7,
+        "백엔드": 3,
+        "데이터": 2,
+        "펌웨어/임베디드": 2,
+        "프론트엔드": 1,
+        "DevOps/인프라": 1
+      },
+      "top_tech": [
+        {
+          "name": "Python",
+          "count": 4
+        },
+        {
+          "name": "Java",
+          "count": 3
+        },
+        {
+          "name": "C++",
+          "count": 2
+        },
+        {
+          "name": "JavaScript",
+          "count": 1
+        },
+        {
+          "name": "Oracle",
+          "count": 1
+        },
+        {
+          "name": "gRPC",
+          "count": 1
+        },
+        {
+          "name": "Ansible",
+          "count": 1
+        }
+      ],
+      "tech_categories": {
+        "언어": [
+          {
+            "name": "Python",
+            "count": 4
+          },
+          {
+            "name": "Java",
+            "count": 3
+          },
+          {
+            "name": "C++",
+            "count": 2
+          },
+          {
+            "name": "JavaScript",
+            "count": 1
+          }
+        ],
+        "백엔드": [
+          {
+            "name": "gRPC",
+            "count": 1
+          }
+        ],
+        "데이터베이스": [
+          {
+            "name": "Oracle",
+            "count": 1
+          }
+        ],
+        "인프라/DevOps": [
+          {
+            "name": "Ansible",
+            "count": 1
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 27,
+          "evidence": [
+            "채용",
+            "인사",
+            "이력서"
+          ]
+        },
+        {
+          "name": "핀테크/금융",
+          "score": 8,
+          "evidence": [
+            "금융",
+            "보험"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "임베디드 · 펌웨어",
+          "why": "C/C++ + 임베디드 신호 — 하드웨어 제어 펌웨어/디바이스 SW"
+        }
+      ],
+      "titles": [
+        "MRO사업부 경력사원 채용 (CBM+ Data Analyst)",
+        "MRO사업부 경력사원 채용 (Data Analyst)",
+        "MUM-T 유•무인 통합 자율체계 AI/SW (원격제어 기술)",
+        "한화시스템 AI솔루션 SW 개발 엔지니어 경력직 채용",
+        "MRO사업부 경력사원 채용 (IPS Engineer)",
+        "한화시스템 해양 사이버보안 R&D 엔지니어",
+        "금융프로젝트 시스템 개발 경력사원 채용 (계약직)",
+        "[방산] 위성 지상체 및 AI솔루션 SW 개발 엔지니어 경력직 채용"
+      ],
+      "postings": [
+        {
+          "title": "MRO사업부 경력사원 채용 (CBM+ Data Analyst)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010785&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=2e2bbadd-26a7-4e54-890a-8237540d3a47",
+          "site": "saramin"
+        },
+        {
+          "title": "MRO사업부 경력사원 채용 (Data Analyst)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=2e2bbadd-26a7-4e54-890a-8237540d3a47",
+          "site": "saramin"
+        },
+        {
+          "title": "MUM-T 유•무인 통합 자율체계 AI/SW (원격제어 기술)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54055981&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c9c2670-27bf-4bd2-8a34-4c786300a430",
+          "site": "saramin"
+        },
+        {
+          "title": "한화시스템 AI솔루션 SW 개발 엔지니어 경력직 채용",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54145326&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=e884883b-e96e-4431-9d77-2df520d6c85d",
+          "site": "saramin"
+        },
+        {
+          "title": "MRO사업부 경력사원 채용 (IPS Engineer)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010854&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=a34a4bc5-348f-4758-8a01-0ff749beeef8",
+          "site": "saramin"
+        },
+        {
+          "title": "한화시스템 해양 사이버보안 R&D 엔지니어",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54145228&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=eb746df7-f684-475e-9c9f-a246eff3ef4b",
+          "site": "saramin"
+        },
+        {
+          "title": "금융프로젝트 시스템 개발 경력사원 채용 (계약직)",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54765194&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=284ed00c-bbcf-42c9-a09b-064235aa6708",
+          "site": "saramin"
+        },
+        {
+          "title": "[방산] 위성 지상체 및 AI솔루션 SW 개발 엔지니어 경력직 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554628?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "[ICT] 금융프로젝트 시스템 개발 경력사원 채용 (계약직)",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/564255?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "[ICT] SAP CO(관리회계/원가) 운영/개발 경력사원 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/566225?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "[방산] MUM-T 유·무인 통합 자율체계 AI/SW 엔지니어 경력사원 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553796?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        },
+        {
+          "title": "[ICT] AI Agent Project Manager 경력사원 채용",
+          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561169?ReturnUrl=RecruitInfo",
+          "site": "dev"
+        }
+      ],
+      "summary": "한화시스템(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · 백엔드 직군을 채용하며 Python, Java, C++, JavaScript 기반으로 개발합니다. 아키텍처는 임베디드 · 펌웨어로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Python, Java, C++ 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "AI/ML 중심(+백엔드) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "임베디드 · 펌웨어 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "1. 언어·기본기",
+            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
+            "techs": [
+              "Python",
+              "Java",
+              "C++"
+            ],
+            "tips": [
+              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
+              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지",
+              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용"
+            ]
+          },
+          {
+            "stage": "3. 데이터 계층",
+            "goal": "데이터 저장·조회를 설계하고 쿼리/인덱스를 최적화한다",
+            "techs": [
+              "Oracle"
+            ],
+            "tips": []
+          },
+          {
+            "stage": "4. 인프라·배포·아키텍처",
+            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 임베디드 · 펌웨어)",
+            "techs": [
+              "Ansible"
+            ],
+            "tips": []
+          }
+        ],
+        "tasks": [
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링"
+        ],
+        "study_blogs": [
+          {
+            "title": "In-House LLM Serving at Netflix",
+            "url": "https://netflixtechblog.com/in-house-llm-serving-at-netflix-a5a8e799ea2c",
+            "company": "Netflix",
+            "country": "US",
+            "why": "c++, grpc, java"
+          },
+          {
+            "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
+            "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
+            "company": "Grab",
+            "country": "SG",
+            "why": "grpc, javascript, python"
+          },
+          {
+            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
+            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "java, javascript, python"
+          },
+          {
+            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
+            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
+            "company": "Slack",
+            "country": "US",
+            "why": "ansible, java, python"
+          },
+          {
+            "title": "GitHub Copilot app: The agent-native desktop experience",
+            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
+            "company": "GitHub",
+            "country": "US",
+            "why": "java, javascript, python"
+          },
+          {
+            "title": "AWS Weekly Roundup: Claude Opus 4.7 in Amazon Bedrock, AWS Interconnect GA, and more (April 20, 2026)",
+            "url": "https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026",
+            "company": "AWS",
+            "country": "US",
+            "why": "java, javascript, python"
+          }
+        ]
+      }
+    },
+    {
       "name": "네이버클라우드",
       "norm": "네이버클라우드",
       "size": "대기업",
@@ -24308,252 +24581,6 @@
             "company": "Razorpay",
             "country": "IN",
             "why": "go, kubernetes, linux"
-          }
-        ]
-      }
-    },
-    {
-      "name": "한화시스템(주)",
-      "norm": "한화시스템",
-      "size": "대기업",
-      "size_alias": "한화시스템",
-      "posting_count": 12,
-      "sites": [
-        "dev",
-        "saramin"
-      ],
-      "roles": {
-        "AI/ML": 7,
-        "데이터": 2,
-        "펌웨어/임베디드": 2,
-        "백엔드": 2,
-        "프론트엔드": 1
-      },
-      "top_tech": [
-        {
-          "name": "Python",
-          "count": 4
-        },
-        {
-          "name": "C++",
-          "count": 2
-        },
-        {
-          "name": "Java",
-          "count": 2
-        },
-        {
-          "name": "gRPC",
-          "count": 1
-        },
-        {
-          "name": "Ansible",
-          "count": 1
-        }
-      ],
-      "tech_categories": {
-        "언어": [
-          {
-            "name": "Python",
-            "count": 4
-          },
-          {
-            "name": "C++",
-            "count": 2
-          },
-          {
-            "name": "Java",
-            "count": 2
-          }
-        ],
-        "백엔드": [
-          {
-            "name": "gRPC",
-            "count": 1
-          }
-        ],
-        "인프라/DevOps": [
-          {
-            "name": "Ansible",
-            "count": 1
-          }
-        ]
-      },
-      "domains": [
-        {
-          "name": "HR/채용",
-          "score": 24,
-          "evidence": [
-            "채용",
-            "인사",
-            "이력서"
-          ]
-        },
-        {
-          "name": "여행/숙박",
-          "score": 8,
-          "evidence": [
-            "여행",
-            "항공"
-          ]
-        }
-      ],
-      "architecture": [
-        {
-          "label": "임베디드 · 펌웨어",
-          "why": "C/C++ + 임베디드 신호 — 하드웨어 제어 펌웨어/디바이스 SW"
-        }
-      ],
-      "titles": [
-        "MRO사업부 경력사원 채용 (CBM+ Data Analyst)",
-        "MRO사업부 경력사원 채용 (Data Analyst)",
-        "MUM-T 유•무인 통합 자율체계 AI/SW (원격제어 기술)",
-        "한화시스템 AI솔루션 SW 개발 엔지니어 경력직 채용",
-        "MRO사업부 경력사원 채용 (IPS Engineer)",
-        "한화시스템 해양 사이버보안 R&D 엔지니어",
-        "[방산] 위성 지상체 및 AI솔루션 SW 개발 엔지니어 경력직 채용",
-        "[ICT] 금융프로젝트 시스템 개발 경력사원 채용 (계약직)"
-      ],
-      "postings": [
-        {
-          "title": "MRO사업부 경력사원 채용 (CBM+ Data Analyst)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010785&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=2e2bbadd-26a7-4e54-890a-8237540d3a47",
-          "site": "saramin"
-        },
-        {
-          "title": "MRO사업부 경력사원 채용 (Data Analyst)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010935&location=ts&searchword=%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D&searchType=search&paid_fl=n&search_uuid=2e2bbadd-26a7-4e54-890a-8237540d3a47",
-          "site": "saramin"
-        },
-        {
-          "title": "MUM-T 유•무인 통합 자율체계 AI/SW (원격제어 기술)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54055981&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c9c2670-27bf-4bd2-8a34-4c786300a430",
-          "site": "saramin"
-        },
-        {
-          "title": "한화시스템 AI솔루션 SW 개발 엔지니어 경력직 채용",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54145326&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=e884883b-e96e-4431-9d77-2df520d6c85d",
-          "site": "saramin"
-        },
-        {
-          "title": "MRO사업부 경력사원 채용 (IPS Engineer)",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54010854&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=a34a4bc5-348f-4758-8a01-0ff749beeef8",
-          "site": "saramin"
-        },
-        {
-          "title": "한화시스템 해양 사이버보안 R&D 엔지니어",
-          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54145228&location=ts&searchword=%EB%B3%B4%EC%95%88&searchType=search&paid_fl=n&search_uuid=eb746df7-f684-475e-9c9f-a246eff3ef4b",
-          "site": "saramin"
-        },
-        {
-          "title": "[방산] 위성 지상체 및 AI솔루션 SW 개발 엔지니어 경력직 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554628?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "[ICT] 금융프로젝트 시스템 개발 경력사원 채용 (계약직)",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/564255?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "[ICT] SAP CO(관리회계/원가) 운영/개발 경력사원 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/566225?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "[방산] MUM-T 유·무인 통합 자율체계 AI/SW 엔지니어 경력사원 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/553796?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "[ICT] AI Agent Project Manager 경력사원 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/561169?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        },
-        {
-          "title": "[방산] 해양 사이버보안 R&D 엔지니어 채용",
-          "url": "https://www.catch.co.kr/NCS/RecruitInfoDetails/554623?ReturnUrl=RecruitInfo",
-          "site": "dev"
-        }
-      ],
-      "summary": "한화시스템(주)는 HR/채용 도메인의 대기업으로, 주로 AI/ML · 데이터 직군을 채용하며 Python, C++, Java, gRPC 기반으로 개발합니다. 아키텍처는 임베디드 · 펌웨어로 추정됩니다.",
-      "career_guide": {
-        "wants": [
-          "핵심 역량: Python, C++, Java 실무 경험(토이프로젝트라도 동작하는 결과물)",
-          "AI/ML 중심(+데이터) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
-          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
-          "임베디드 · 펌웨어 같은 구조에 대한 이해·운영 경험"
-        ],
-        "roadmap": [
-          {
-            "stage": "1. 언어·기본기",
-            "goal": "주력 언어로 문법·자료구조/알고리즘 기본기를 다진다",
-            "techs": [
-              "Python",
-              "C++",
-              "Java"
-            ],
-            "tips": [
-              "Python — 기본 문법 후 가상환경·타입힌트, 표준 라이브러리로 작은 도구 만들기",
-              "C++ — 포인터·메모리·RAII, STL 컨테이너/알고리즘 활용",
-              "Java — JVM·OOP 기본기 → 컬렉션·제네릭·스트림, 멀티스레드 동시성까지"
-            ]
-          },
-          {
-            "stage": "4. 인프라·배포·아키텍처",
-            "goal": "배포·운영·확장 구조를 이해한다 (목표 구조: 임베디드 · 펌웨어)",
-            "techs": [
-              "Ansible"
-            ],
-            "tips": []
-          }
-        ],
-        "tasks": [
-          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발",
-          "[HR/채용] 데이터 수집·가공(ETL)과 분석·지표 파이프라인 구축"
-        ],
-        "study_blogs": [
-          {
-            "title": "In-House LLM Serving at Netflix",
-            "url": "https://netflixtechblog.com/in-house-llm-serving-at-netflix-a5a8e799ea2c",
-            "company": "Netflix",
-            "country": "US",
-            "why": "c++, grpc, java"
-          },
-          {
-            "title": "From SSH to REST: A Security-Driven Modernization of Slack’s EMR Data Pipelines",
-            "url": "https://slack.engineering/from-ssh-to-rest-a-security-driven-modernization-of-slacks-emr-data-pipelines",
-            "company": "Slack",
-            "country": "US",
-            "why": "ansible, java, python"
-          },
-          {
-            "title": "Stepping into the Software 3.0 Era",
-            "url": "https://toss.tech/article/harness-for-team-productivity-eng",
-            "company": "토스",
-            "country": "KR",
-            "why": "c++, java, python"
-          },
-          {
-            "title": "Agent platform (Part 1): How we help Grab build and run AI agents at scale",
-            "url": "https://engineering.grab.com/how-grab-builds-and-runs-ai-agents-at-scale",
-            "company": "Grab",
-            "country": "SG",
-            "why": "grpc, python"
-          },
-          {
-            "title": "Sitar-agent: Building a reliable dynamic configuration sidecar at scale",
-            "url": "https://medium.com/airbnb-engineering/sitar-agent-building-a-reliable-dynamic-configuration-sidecar-at-scale-b7e00c152068",
-            "company": "Airbnb",
-            "country": "US",
-            "why": "java, python"
-          },
-          {
-            "title": "GitHub Copilot app: The agent-native desktop experience",
-            "url": "https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience",
-            "company": "GitHub",
-            "country": "US",
-            "why": "java, python"
           }
         ]
       }
@@ -143185,6 +143212,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -143217,13 +143251,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -196280,6 +196307,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -196312,13 +196346,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -282262,6 +282289,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -282294,13 +282328,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -284969,6 +284996,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -285001,13 +285035,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -306360,6 +306387,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -306392,13 +306426,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -326139,6 +326166,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -326171,13 +326205,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -349656,6 +349683,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -349688,13 +349722,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -362000,6 +362027,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -362032,13 +362066,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -363690,6 +363717,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -363722,13 +363756,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -365023,6 +365050,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -365055,13 +365089,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -365726,6 +365753,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -365758,13 +365792,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -368865,6 +368892,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -368897,13 +368931,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -391480,6 +391507,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -391512,13 +391546,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -401174,6 +401201,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -401206,13 +401240,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -462586,6 +462613,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -462618,13 +462652,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -467473,6 +467500,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -467505,13 +467539,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -473070,6 +473097,143 @@
       }
     },
     {
+      "name": "(주)테크아이",
+      "norm": "테크아이",
+      "size": "중소기업",
+      "size_alias": null,
+      "posting_count": 2,
+      "sites": [
+        "saramin"
+      ],
+      "roles": {
+        "백엔드": 2,
+        "AI/ML": 2,
+        "DevOps/인프라": 2
+      },
+      "top_tech": [
+        {
+          "name": "Spring",
+          "count": 2
+        }
+      ],
+      "tech_categories": {
+        "백엔드": [
+          {
+            "name": "Spring",
+            "count": 2
+          }
+        ]
+      },
+      "domains": [
+        {
+          "name": "HR/채용",
+          "score": 5,
+          "evidence": [
+            "채용",
+            "이력서"
+          ]
+        },
+        {
+          "name": "핀테크/금융",
+          "score": 2,
+          "evidence": [
+            "보험"
+          ]
+        }
+      ],
+      "architecture": [
+        {
+          "label": "모놀리식 (추정)",
+          "why": "단일 서버 프레임워크 중심, 분산/컨테이너 신호 약함 — 모놀리식 추정"
+        }
+      ],
+      "titles": [
+        "[대전] 인프라+AI 통합 엔지니어",
+        "[광명] 인프라+AI 통합 엔지니어"
+      ],
+      "postings": [
+        {
+          "title": "[대전] 인프라+AI 통합 엔지니어",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54108204&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=8e7caef7-2616-47b1-8816-72d081613574",
+          "site": "saramin"
+        },
+        {
+          "title": "[광명] 인프라+AI 통합 엔지니어",
+          "url": "https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54770702&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=307ee21a-6b2c-448d-ba3e-cd06ce0f525e",
+          "site": "saramin"
+        }
+      ],
+      "summary": "(주)테크아이는 HR/채용 도메인의 중소기업으로, 주로 백엔드 · AI/ML 직군을 채용하며 Spring 기반으로 개발합니다. 아키텍처는 모놀리식 (추정)로 추정됩니다.",
+      "career_guide": {
+        "wants": [
+          "핵심 역량: Spring 실무 경험(토이프로젝트라도 동작하는 결과물)",
+          "백엔드 중심(+AI/ML) 직군 — 해당 역할의 실전 문제를 풀어본 경험",
+          "HR/채용 도메인 이해 — 해당 산업의 용어·데이터·규제를 알면 강점",
+          "모놀리식 (추정) 같은 구조에 대한 이해·운영 경험"
+        ],
+        "roadmap": [
+          {
+            "stage": "2. 백엔드 핵심 스킬",
+            "goal": "프레임워크로 REST API·인증·예외처리를 갖춘 서버를 직접 만든다",
+            "techs": [
+              "Spring"
+            ],
+            "tips": [
+              "Spring — DI/IoC·AOP 이해 후 Spring Boot로 REST API 토이프로젝트"
+            ]
+          }
+        ],
+        "tasks": [
+          "[HR/채용] API·서버 비즈니스 로직 개발과 DB 모델링",
+          "[HR/채용] 모델 학습·평가와 추론(서빙) 파이프라인 개발"
+        ],
+        "study_blogs": [
+          {
+            "title": "Using the GitHub Copilot SDK for Java",
+            "url": "https://github.blog/engineering/using-the-github-copilot-sdk-for-java",
+            "company": "GitHub",
+            "country": "US",
+            "why": "spring"
+          },
+          {
+            "title": "기술블로그 세 번째 책 《요즘 우아한 백엔드 개발》 출간",
+            "url": "https://techblog.woowahan.com/26777",
+            "company": "우아한형제들",
+            "country": "KR",
+            "why": "spring"
+          },
+          {
+            "title": "BFF 서버에 SSE를 도입한 이유: 전시 서버의 통신 구조 재설계",
+            "url": "https://techblog.woowahan.com/26507",
+            "company": "우아한형제들",
+            "country": "KR",
+            "why": "spring"
+          },
+          {
+            "title": "Four Mechanisms Behind EGP Code, an AI-Powered Landing Page Editor",
+            "url": "https://engineering.mercari.com/en/blog/entry/20260610-how-egp-code-works",
+            "company": "Mercari",
+            "country": "JP",
+            "why": "spring"
+          },
+          {
+            "title": "When history fails you, borrow from geography",
+            "url": "https://medium.com/airbnb-engineering/when-history-fails-you-borrow-from-geography-915a72b91b5c",
+            "company": "Airbnb",
+            "country": "US",
+            "why": "spring"
+          },
+          {
+            "title": "Scaling ArchUnit with Nebula ArchRules",
+            "url": "https://netflixtechblog.com/scaling-archunit-with-nebula-archrules-b4642c464c5a",
+            "company": "Netflix",
+            "country": "US",
+            "why": "spring"
+          }
+        ]
+      }
+    },
+    {
       "name": "주식회사리드랩스",
       "norm": "리드랩스",
       "size": "중소기업",
@@ -476207,6 +476371,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -476239,13 +476410,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]
@@ -494958,6 +495122,13 @@
         ],
         "study_blogs": [
           {
+            "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+            "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+            "company": "CyberAgent",
+            "country": "JP",
+            "why": "LLM/생성형"
+          },
+          {
             "title": "What does an agentic SDLC actually look like?",
             "url": "https://stackoverflow.blog/2026/08/18/what-does-an-agentic-sdlc-actually-look-like",
             "company": "Stack Overflow",
@@ -494990,13 +495161,6 @@
             "url": "https://blog.cloudflare.com/mcp-security-updates",
             "company": "Cloudflare",
             "country": "US",
-            "why": "LLM/생성형"
-          },
-          {
-            "title": "Agentic Engineering at Zalando: a snapshot",
-            "url": "https://engineering.zalando.com/posts/2026/08/agentic-engineering-at-zalando-a-snapshot.html",
-            "company": "Zalando",
-            "country": "DE",
             "why": "LLM/생성형"
           }
         ]

@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-19T06:38:58",
- "total": 1062,
+ "generated_at": "2026-08-19T08:08:53",
+ "total": 1063,
  "sources": [
   {
    "company": "Etsy",
@@ -95,7 +95,7 @@
   {
    "company": "CyberAgent",
    "country": "JP",
-   "count": 21
+   "count": 22
   },
   {
    "company": "Meta",
@@ -529,6 +529,30 @@
   "Kubernetes": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "cyberagent",
+   "company": "CyberAgent",
+   "country": "JP",
+   "title": "参加者約 5,000 人が UC Berkeley に集結 — Agentic AI Summit 2026 参加レポート",
+   "url": "https://developers.cyberagent.co.jp/blog/archives/65345",
+   "published": "2026-08-18",
+   "published_ts": 1787094055.0,
+   "summary": "UC Berkeley で開催された Agentic AI Summit 2026 の参加レポート。現地約 5,000 人・登壇者 150 名超のカンファレンスから、harness・評価基盤・セキュリティ・coding agent など Agentic AI の最前線を紹介します。",
+   "tags": [
+    "エンジニア",
+    "AI",
+    "カンファレンス",
+    "レポート"
+   ],
+   "tech_stack": [
+    "AI Agent"
+   ],
+   "categories": [
+    "LLM/생성형"
+   ],
+   "lang": "en",
+   "content_id": "af5ae8dc09405f4c"
+  },
   {
    "key": "dropbox",
    "company": "Dropbox",
