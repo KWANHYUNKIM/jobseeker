@@ -145,6 +145,11 @@ def rrf(rankings: Sequence[tuple[Sequence[int], float]], k: int = RRF_K) -> dict
 
 def _passes(row, filters: dict[str, Any]) -> bool:
     meta = json.loads(row["meta"] or "{}")
+    # 마감 공고는 색인에 남겨두되(지난 공고 기반 통계·유사도의 재료) 결과에서는 뺀다.
+    # 지원할 수 없는 공고가 상위에 앉아 있는 것만큼 검색을 못 믿게 만드는 것도 없다.
+    # status 가 없는 문서는 이 필드가 생기기 전 색인이므로 통과시킨다.
+    if not filters.get("include_closed") and meta.get("status") == "closed":
+        return False
     if (sites := filters.get("sites")) and row["site"] not in sites:
         return False
     if (careers := filters.get("careers")) and career_bucket(meta.get("career", "")) not in careers:
@@ -237,6 +242,8 @@ def main(argv: list[str]) -> int:
         filters["careers"] = {argv[argv.index("--career") + 1]}
     if "--location" in argv:
         filters["location"] = argv[argv.index("--location") + 1]
+    if "--include-closed" in argv:
+        filters["include_closed"] = True
 
     conn = dbm.open_db()
     try:

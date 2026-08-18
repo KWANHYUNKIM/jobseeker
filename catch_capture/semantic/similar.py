@@ -49,7 +49,7 @@ def load_vectors(conn, kind: str) -> tuple[list[dict], np.ndarray]:
     """kind 의 문서 메타와 벡터 행렬을 같은 순서로 돌려준다."""
     rows = conn.execute(
         """
-        SELECT d.id, d.url, d.company, d.title, v.embedding
+        SELECT d.id, d.url, d.company, d.title, d.meta, v.embedding
           FROM documents d
           JOIN vec_documents v ON v.rowid = d.rowid
          WHERE d.kind = ?
@@ -58,6 +58,10 @@ def load_vectors(conn, kind: str) -> tuple[list[dict], np.ndarray]:
         """,
         (kind,),
     ).fetchall()
+    # 마감 공고는 추천 후보에서 뺀다. 지원할 수 없는 공고를 "비슷한 공고"로 미는 건
+    # 추천이 아니라 노이즈다. 색인에는 그대로 남아 통계·재색인의 재료가 된다.
+    # (status 가 없는 문서 = 이 필드 이전 색인 → 남긴다)
+    rows = [r for r in rows if json.loads(r["meta"] or "{}").get("status") != "closed"]
     if not rows:
         return [], np.empty((0, 0), dtype=np.float32)
     meta = [
