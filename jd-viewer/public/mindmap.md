@@ -8,8 +8,8 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10251건** 공고 · **1942개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-18 08:36
+- 총 **10255건** 공고 · **1942개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-18 09:49
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
@@ -1944,6 +1944,12 @@ markmap:
 - **DevOps/인프라** [1건]
   - [클라우드 엔지니어 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49639419?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=39&sc=630)
 
+### (주)진인프라 `중소기업` · 3건
+- **DevOps/인프라** [3건] · `Linux`
+  - [(중견IT기업) 공공기관 상주 클라우드 엔지니어 채용 (대전) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49654432?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=48&sc=630)
+  - [(중견IT기업) 공공기관 상주 클라우드 엔지니어 채용 (대전) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54680603&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dec0c8f4-9196-49fe-98b5-8c8355350918)
+  - [(중견IT기업) 클라우드 엔지니어 신입 및 경력 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54754099&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=8240dbfb-c1dd-42a0-bfc6-3c0a406d3593)
+
 ### ㈜리더스시스템즈 `중소기업` · 3건
 - **AI/ML** [2건]
   - [MLOps / AI 플랫폼 R&D 엔지니어 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49417231?Oem_Code=C1&logpath=1&stext=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&listno=39&sc=630)
@@ -3641,11 +3647,6 @@ markmap:
   - [울산 AI 데이터센터 건설현장 사무·공무·안전지원 담당 계약직 채용 ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49767190?Oem_Code=C1&logpath=1&stext=AI&listno=23&sc=551&rt=B&traceId=87d115eaad4de17fdd916249639f4062)
   - [울산 AI 데이터센터 건설현장 사무·공무·안전지원 담당 계약직 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54716902&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=9178e8ac-e694-447e-8d5e-12871b87f349)
 
-### ㈜진인프라 `중소기업` · 2건
-- **DevOps/인프라** [2건] · `Linux`
-  - [(중견IT기업) 공공기관 상주 클라우드 엔지니어 채용 (대전) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49654432?Oem_Code=C1&logpath=1&stext=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&listno=48&sc=630)
-  - [(중견IT기업) 공공기관 상주 클라우드 엔지니어 채용 (대전) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54680603&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=dec0c8f4-9196-49fe-98b5-8c8355350918)
-
 ### ㈜티와이엠 `중소기업` · 2건
 - **보안** [1건]
   - [(본사) 정보보안(팀장) ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49543679?Oem_Code=C1&logpath=1&stext=%EB%B3%B4%EC%95%88&listno=37&sc=630)
@@ -5069,6 +5070,38 @@ markmap:
   - [방화벽 보안 엔지니어 모집(경력) ↗](https://jumpit.saramin.co.kr/position/53886951)
   - [네트워크 인프라/보안 엔지니어 (신입) ↗](https://jumpit.saramin.co.kr/position/54321612)
 
+### 빌드잇 `중소기업` · 9건
+- **백엔드** [9건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
+  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
+  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
+  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
+  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
+- **프론트엔드** [9건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
+  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
+  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
+  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
+  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
+- **풀스택** [4건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
+  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
+  - [(AI/솔루션) 시니어 풀스택 개발자 / Senior Product Engineer ↗](https://jumpit.saramin.co.kr/position/54461786)
+  - [(AI/솔루션) 시니어 풀스택 개발자 / Senior Product Engineer ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49188398?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=96&sc=630)
+  - [(AI/솔루션) 시니어 풀스택 개발자 / Senior Product Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53910220&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=4c01b9f4-144f-46a1-934c-a2590abf6fdf)
+- **모바일** [9건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
+  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
+  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
+  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
+  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
+- **AI/ML** [9건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
+  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
+  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
+  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
+  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
+- **데이터** [8건] · `Kotlin` `Python` `TypeScript` `React` `Vue` `Next.js`
+  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
+  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
+  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
+  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
+
 ### ㈜럽맘 `중소기업` · 9건
 - **백엔드** [9건] · `React` `Django` `Python` `JavaScript` `TypeScript` `Node.js`
   - [(럽맘) ERP 풀스택 개발자 채용 - Django / NestJS ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49558943?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=67&sc=630)
@@ -5156,38 +5189,6 @@ markmap:
 - **DevOps/인프라** [2건] · `AWS` `GCP` `Linux` `ELK` `Grafana` `Prometheus`
   - [AI 솔루션 운영 엔지니어(AI Field Engineer) ↗](https://www.wanted.co.kr/wd/372985)
   - [AI 솔루션 운영 엔지니어 ↗](https://jumpit.saramin.co.kr/position/54385378)
-
-### 빌드잇 `중소기업` · 8건
-- **백엔드** [8건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
-  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
-  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
-  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
-  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
-- **프론트엔드** [8건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
-  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
-  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
-  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
-  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
-- **풀스택** [4건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
-  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
-  - [(AI/솔루션) 시니어 풀스택 개발자 / Senior Product Engineer ↗](https://jumpit.saramin.co.kr/position/54461786)
-  - [(AI/솔루션) 시니어 풀스택 개발자 / Senior Product Engineer ↗](https://www.jobkorea.co.kr/Recruit/GI_Read/49188398?Oem_Code=C1&logpath=1&stext=%ED%92%80%EC%8A%A4%ED%83%9D&listno=96&sc=630)
-  - [(AI/솔루션) 시니어 풀스택 개발자 / Senior Product Engineer ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=53910220&location=ts&searchword=%ED%92%80%EC%8A%A4%ED%83%9D&searchType=search&paid_fl=n&search_uuid=4c01b9f4-144f-46a1-934c-a2590abf6fdf)
-- **모바일** [8건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
-  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
-  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
-  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
-  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
-- **AI/ML** [8건] · `Kotlin` `TypeScript` `React` `Vue` `Spring` `FastAPI`
-  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
-  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
-  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
-  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
-- **데이터** [7건] · `Kotlin` `Python` `TypeScript` `React` `Vue` `Next.js`
-  - [Product Engineer (Backend/Frontend, 5년 이상) ↗](https://www.wanted.co.kr/wd/375701)
-  - [시니어 풀스택 개발자 ↗](https://www.wanted.co.kr/wd/362109)
-  - [(AI/솔루션) Product Engineer (2년 이상) ↗](https://www.wanted.co.kr/wd/367914)
-  - [(AI/솔루션) 시니어 프로덕트 엔지니어 (7년 이상) ↗](https://www.wanted.co.kr/wd/378043)
 
 ### 세이지 `중소기업` · 8건
 - **백엔드** [1건] · `JavaScript` `TypeScript` `C++` `C#` `React` `Azure`
