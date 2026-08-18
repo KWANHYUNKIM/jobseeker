@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T20:55:02",
+  "generated_at": "2026-08-18T22:17:21",
   "source": "youtube",
   "tech_count": 208,
   "curriculum_count": 20,
@@ -1317,88 +1317,6 @@
         "stage": "실전"
       }
     ],
-    "Azure": [
-      {
-        "title": "애저 네트워크 기본 설계 | LIght up Azure",
-        "url": "https://www.youtube.com/watch?v=LBtFx0ijnD4",
-        "thumbnail": "https://i.ytimg.com/vi/LBtFx0ijnD4/mqdefault.jpg",
-        "channel": "Microsoft Developer Korea",
-        "views": 5836,
-        "length": "1:10:11",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "클라우드 업계 2위 마이크로소프트의 Azure에 대해 알아보자! | 마이크로소프트 Azure - 클라우드 입문과정 #10 ☁️",
-        "url": "https://www.youtube.com/watch?v=DRd6tpyFfOo",
-        "thumbnail": "https://i.ytimg.com/vi/DRd6tpyFfOo/mqdefault.jpg",
-        "channel": "투마일스 - 2miles",
-        "views": 11929,
-        "length": "21:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Azure 공부 이렇게 하면 자격증 한번에 합격! | AZ-900 Azure Fundamentals",
-        "url": "https://www.youtube.com/watch?v=ZGEDSQN2DiQ",
-        "thumbnail": "https://i.ytimg.com/vi/ZGEDSQN2DiQ/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 9676,
-        "length": "9:05",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Azure와 Azure DevOps 완전 정복!",
-        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
-        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 418,
-        "length": "1:28:14",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
-        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
-        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
-        "channel": "클루커스",
-        "views": 12494,
-        "length": "21:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
-        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
-        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 3018,
-        "length": "5:11",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
-        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
-        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 940,
-        "length": "3:57",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아주르 최초 땅&에어드리블 강의 , Azure latch pro dribble lesson",
-        "url": "https://www.youtube.com/watch?v=_4EVYvR3G1Q",
-        "thumbnail": "https://i.ytimg.com/vi/_4EVYvR3G1Q/mqdefault.jpg",
-        "channel": "haru",
-        "views": 34257,
-        "length": "1:38",
-        "published": "9개월 전",
-        "stage": "핵심"
-      }
-    ],
     "Spring Boot": [
       {
         "title": "스프링 부트 기본기 한시간에 끝내기! [ 스프링 부트(Spring Boot) 기초 강의 ]",
@@ -1479,6 +1397,88 @@
         "length": "38:49",
         "published": "9개월 전",
         "stage": "실전"
+      }
+    ],
+    "Azure": [
+      {
+        "title": "애저 네트워크 기본 설계 | LIght up Azure",
+        "url": "https://www.youtube.com/watch?v=LBtFx0ijnD4",
+        "thumbnail": "https://i.ytimg.com/vi/LBtFx0ijnD4/mqdefault.jpg",
+        "channel": "Microsoft Developer Korea",
+        "views": 5836,
+        "length": "1:10:11",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "클라우드 업계 2위 마이크로소프트의 Azure에 대해 알아보자! | 마이크로소프트 Azure - 클라우드 입문과정 #10 ☁️",
+        "url": "https://www.youtube.com/watch?v=DRd6tpyFfOo",
+        "thumbnail": "https://i.ytimg.com/vi/DRd6tpyFfOo/mqdefault.jpg",
+        "channel": "투마일스 - 2miles",
+        "views": 11929,
+        "length": "21:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Azure 공부 이렇게 하면 자격증 한번에 합격! | AZ-900 Azure Fundamentals",
+        "url": "https://www.youtube.com/watch?v=ZGEDSQN2DiQ",
+        "thumbnail": "https://i.ytimg.com/vi/ZGEDSQN2DiQ/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 9676,
+        "length": "9:05",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Azure와 Azure DevOps 완전 정복!",
+        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
+        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 418,
+        "length": "1:28:14",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
+        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
+        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
+        "channel": "클루커스",
+        "views": 12494,
+        "length": "21:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
+        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
+        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 3018,
+        "length": "5:11",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
+        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
+        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 940,
+        "length": "3:57",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아주르 최초 땅&에어드리블 강의 , Azure latch pro dribble lesson",
+        "url": "https://www.youtube.com/watch?v=_4EVYvR3G1Q",
+        "thumbnail": "https://i.ytimg.com/vi/_4EVYvR3G1Q/mqdefault.jpg",
+        "channel": "haru",
+        "views": 34257,
+        "length": "1:38",
+        "published": "9개월 전",
+        "stage": "핵심"
       }
     ],
     "Node.js": [
