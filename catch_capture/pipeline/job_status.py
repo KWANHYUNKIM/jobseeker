@@ -65,20 +65,20 @@ def parse_deadline(job: dict, today: date | None = None) -> tuple[date | None, b
     if m:
         mm, dd = int(m.group(1)), int(m.group(2))
         if 1 <= mm <= 12 and 1 <= dd <= 31:
-            for year in (today.year, today.year + 1, today.year - 1):
+            # 연도가 없으므로 작년/올해/내년 후보 중 오늘에 가장 가까운 것을 고른다.
+            # "60일 이상 과거면 내년"으로 밀던 이전 규칙은 연말 롤오버를 잡으려다
+            # 두 달 지난 마감(예: 8월에 보는 "~ 06/14")을 내년 6월로 해석해
+            # 마감 공고를 영원히 모집중으로 남겼다. 12/28 을 1월에 보면 작년이,
+            # 01/05 를 12월에 보면 내년이 가장 가깝다 — 롤오버는 그대로 잡힌다.
+            cands = []
+            for year in (today.year - 1, today.year, today.year + 1):
                 try:
-                    cand = date(year, mm, dd)
-                except ValueError:
+                    cands.append(date(year, mm, dd))
+                except ValueError:  # 2/29 같은 날짜는 해당 연도에 없을 수 있다
                     continue
-                # 60일 이상 과거면 내년 마감으로 간주(연말→연초 롤오버 대비)
-                if cand < today - timedelta(days=60):
-                    continue
-                return cand, False
-            # 모든 후보가 60일+ 과거 → 올해 기준으로 확정(=마감)
-            try:
-                return date(today.year, mm, dd), False
-            except ValueError:
-                return None, False
+            if cands:
+                return min(cands, key=lambda c: abs((c - today).days)), False
+            return None, False
     return None, False
 
 
@@ -94,3 +94,35 @@ def classify_status(job: dict, today: date | None = None) -> tuple[str, str, str
     if deadline < today:
         return "closed", f"마감일 경과({iso})", iso
     return "active", f"마감 {iso}", iso
+
+
+def _selftest() -> int:
+    """`python -m pipeline.job_status --selftest` — 연도 없는 마감 표기 회귀 방지.
+
+    이 파서는 사이트마다 표기가 다르고 연도가 없어서 조용히 틀리기 쉽다.
+    실제로 "8월에 본 06/14"를 내년으로 밀어 마감 공고가 전부 모집중으로 남은 적이 있다.
+    """
+    cases = [
+        ({"deadline": "~ 06/14(일)"}, date(2026, 8, 18), "closed"),   # 두 달 지난 마감
+        ({"deadline": "~ 08/31(월)"}, date(2026, 8, 18), "active"),   # 앞으로 올 마감
+        ({"deadline": "~ 01/05(월)"}, date(2026, 12, 20), "active"),  # 연말→연초 롤오버
+        ({"deadline": "12/28(일) 마감"}, date(2027, 1, 5), "closed"),  # 연초에 보는 작년 마감
+        ({"deadline": "상시채용"}, date(2026, 8, 18), "active"),
+        ({"dday": "D-4"}, date(2026, 8, 18), "active"),
+        ({"dday": "D-DAY"}, date(2026, 8, 18), "active"),             # 오늘 마감은 아직 모집중
+        ({}, date(2026, 8, 18), "active"),                            # 마감일 정보 없음
+    ]
+    failed = 0
+    for job, today, want in cases:
+        got, reason, _iso = classify_status(job, today)
+        if got != want:
+            failed += 1
+            print(f"FAIL {job} @{today} → {got} (기대 {want}, {reason})")
+    print(f"job_status selftest: {len(cases) - failed}/{len(cases)} 통과")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    if "--selftest" in _sys.argv:
+        raise SystemExit(_selftest())
+    raise SystemExit("사용법: python -m pipeline.job_status --selftest")
