@@ -8,12 +8,12 @@ markmap:
 # 채용 기업 맵 · 실데이터
 
 ## 📊 데이터 개요
-- 총 **10427건** 공고 · **1971개 기업** · 17개 도메인
-- 공고 2건 이상 채용 기업만 · 생성 2026-08-19 02:33
+- 총 **10432건** 공고 · **1973개 기업** · 17개 도메인
+- 공고 2건 이상 채용 기업만 · 생성 2026-08-19 03:54
 - 도메인 → 기업 → 직군 → 스택·공고 (전부 실제 크롤링 데이터)
 - 직군 옆 `코드`는 그 회사·직군 공고에서 실제 관측된 스택
 
-## HR/채용 (536개사)
+## HR/채용 (537개사)
 ### (주)사람인에이치에스 `중견기업` · 37건
 - **백엔드** [11건] · `Java` `Spring` `JavaScript` `Spring Boot` `iOS` `Python`
   - [(나주/연4,728만~) 한국우편사업진흥원 개발자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54090092&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=49eb51a0-e157-4e41-b2c7-3672a57834df)
@@ -4488,6 +4488,13 @@ markmap:
   - [(주)티에스이 클라우드 인프라 및 IT 시스템 운영 담당자 채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54392396&location=ts&searchword=%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C&searchType=search&paid_fl=n&search_uuid=74be888f-e0dd-4497-af57-3124bde2bead)
 
 ### 엘씨텍(주) `중소기업` · 2건
+
+### 한국평가데이터(주) `중소기업` · 2건
+- **AI/ML** [1건] · `Python`
+  - [기업 신용 위험관리 컨설팅, 개인CB사업 분야 정규직 수시채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54714276&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3070310a-d1b3-4141-afec-99c48960e088)
+- **데이터** [2건] · `Python`
+  - [기업 신용 위험관리 컨설팅, 개인CB사업 분야 정규직 수시채용 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54714276&location=ts&searchword=%ED%94%8C%EB%9E%AB%ED%8F%BC%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&searchType=search&paid_fl=n&search_uuid=3070310a-d1b3-4141-afec-99c48960e088)
+  - [(데이터 분석/가공 및 시각화) 계약직원 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/556344?ReturnUrl=RecruitInfo)
 
 ### (주)씨앤테크 `중소기업` · 2건
 - **백엔드** [1건] · `Python` `TypeScript` `Node.js` `AWS` `OpenAI` `REST API`
@@ -12637,6 +12644,13 @@ markmap:
   - [영상 분석 AI 기술 개발 채용 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/559340?ReturnUrl=RecruitInfo)
   - [26년도 산학장학생 채용 (AI개발) ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/559337?ReturnUrl=RecruitInfo)
 
+### 뉴로핏(주) `중소기업` · 3건
+- **AI/ML** [2건] · `TensorFlow` `PyTorch`
+  - [(의료AI기업) AI Engineer/보험등재(Market Access) 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54764941&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=64b51de5-982e-4fbd-8a30-d1e2b0f5d2ab)
+  - [(의료AI기업) AI 헬스케어 마케터/마케팅 Admin 경력 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54764951&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=78919826-bf12-4da1-b105-5538e8a3adcf)
+- **QA** [1건] · `GCP`
+  - [(의료AI기업) 의료기기 QA 엔지니어 경력 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54604989&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d10b633a-1c6c-40f8-ac83-8574b6933e15)
+
 ### 아토머스(마인드카페) `중소기업` · 2건
 - **백엔드** [2건] · `Python` `React` `Vue` `iOS` `Android` `AWS`
   - [(아토머스) 백엔드 개발자 ↗](https://www.wanted.co.kr/wd/365411)
@@ -13118,12 +13132,6 @@ markmap:
   - [((주)에이비스) FDE 채용 (병특 지원 가능) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54381305&location=ts&searchword=%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8&searchType=search&paid_fl=n&search_uuid=18d14690-75db-4df6-9bd8-6d0cf7329ae7)
 - **AI/ML** [1건] · `Python` `Docker` `PyTorch` `OpenCV` `Git` `Jira`
   - [((주)에이비스) AI연구원 채용 (전문연구요원 지원 가능) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54229930&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5ac98e15-cd21-4d14-a489-dbb4f56e3fc3)
-
-### 뉴로핏(주) `중소기업` · 2건
-- **AI/ML** [1건] · `TensorFlow` `PyTorch`
-  - [(의료AI기업) AI Engineer/보험등재(Market Access) 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54764941&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=64b51de5-982e-4fbd-8a30-d1e2b0f5d2ab)
-- **QA** [1건] · `GCP`
-  - [(의료AI기업) 의료기기 QA 엔지니어 경력 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54604989&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=d10b633a-1c6c-40f8-ac83-8574b6933e15)
 
 ### 제이앤파트너즈코리아(주) `중소기업` · 2건
 - **AI/ML** [2건] · `Python` `AWS` `Azure` `Docker` `Kubernetes` `Linux`
@@ -17601,7 +17609,7 @@ markmap:
   - [자바 풀스택 + AI 기반 KDT 개발자 취업과정｜일본 취업 연계 가능 ↗](https://www.catch.co.kr/NCS/RecruitInfoDetails/553144?ReturnUrl=RecruitInfo)
 
 
-## 콘텐츠/미디어/광고 (109개사)
+## 콘텐츠/미디어/광고 (110개사)
 ### 피아스페이스 `중소기업` · 17건
 - **백엔드** [8건] · `Node.js` `NestJS` `MySQL` `MongoDB` `Redis` `Elasticsearch`
   - [백엔드 엔지니어(5년 이상) ↗](https://www.wanted.co.kr/wd/360763)
@@ -18763,6 +18771,14 @@ markmap:
   - [(CJ 4DPLEX) Backend 개발자 인재 모집 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54022725&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=1721e7bc-05c0-4ed7-8543-b3393dd58791)
 - **AI/ML** [1건]
   - [(CJ 4DPLEX) AI Tech & Art 인재 모집 (Junior) ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54022582&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=5c9c2670-27bf-4bd2-8a34-4c786300a430)
+
+### (주)알텐코리아 `중소기업` · 2건
+- **백엔드** [1건] · `JavaScript` `jQuery` `Linux` `REST API`
+  - [Front & Backend 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54175288&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=3533667d-24c3-4c77-b142-917281921c59)
+- **프론트엔드** [1건] · `JavaScript` `jQuery` `Linux` `REST API`
+  - [Front & Backend 개발자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54175288&location=ts&searchword=%EA%B0%9C%EB%B0%9C%EC%9E%90&searchType=search&paid_fl=n&search_uuid=3533667d-24c3-4c77-b142-917281921c59)
+- **AI/ML** [1건]
+  - [AI 영상 제작 담당자 ↗](https://www.saramin.co.kr/zf_user/jobs/relay/view?view_type=search&rec_idx=54771576&location=ts&searchword=AI&searchType=search&paid_fl=n&search_uuid=78919826-bf12-4da1-b105-5538e8a3adcf)
 
 ### 픽쓰 `중소기업` · 2건
 - **백엔드** [1건] · `JavaScript` `React` `HTML` `CSS` `iOS` `Android`

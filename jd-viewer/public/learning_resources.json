@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T02:33:36",
+  "generated_at": "2026-08-19T03:54:17",
   "source": "youtube",
   "tech_count": 208,
   "curriculum_count": 20,
@@ -5325,88 +5325,6 @@
         "stage": "실전"
       }
     ],
-    "Flask": [
-      {
-        "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
-        "url": "https://www.youtube.com/watch?v=2WloW3cBRhw",
-        "thumbnail": "https://i.ytimg.com/vi/2WloW3cBRhw/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 1717,
-        "length": "14:16",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "파이썬 웹개발 Flask #1 - 플라스크 기초 및 웹서버 개발의 개념 이해",
-        "url": "https://www.youtube.com/watch?v=u2KnTZa1_WU",
-        "thumbnail": "https://i.ytimg.com/vi/u2KnTZa1_WU/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 52292,
-        "length": "2:00:59",
-        "published": "7년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "장고 vs 플라스크, Flask vs Django ,  파이썬 웹 프레임워크 뭘 쓸까?",
-        "url": "https://www.youtube.com/watch?v=6IdWo49d20o",
-        "thumbnail": "https://i.ytimg.com/vi/6IdWo49d20o/mqdefault.jpg",
-        "channel": "코드없는 프로그래밍",
-        "views": 30328,
-        "length": "3:45",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "06  Nginx   uWSGI   Flask 연동   Toy Project",
-        "url": "https://www.youtube.com/watch?v=-f69yaiRx5E",
-        "thumbnail": "https://i.ytimg.com/vi/-f69yaiRx5E/mqdefault.jpg",
-        "channel": "소프트웨어 꼰대 강의",
-        "views": 625,
-        "length": "43:58",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Flask의 정석] 1. 서론 (Introduction)",
-        "url": "https://www.youtube.com/watch?v=ramid7qX_V0",
-        "thumbnail": "https://i.ytimg.com/vi/ramid7qX_V0/mqdefault.jpg",
-        "channel": "코준서",
-        "views": 1769,
-        "length": "2:03",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "혼자 공부하는 파이썬 개정판 93강 - Flask 외부 모듈(프레임워크) 사용해보기[종강]",
-        "url": "https://www.youtube.com/watch?v=sgzunBTOeqk",
-        "thumbnail": "https://i.ytimg.com/vi/sgzunBTOeqk/mqdefault.jpg",
-        "channel": "윤인성",
-        "views": 6053,
-        "length": "11:04",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Flask 강좌 1 - 오리엔테이션, 설치와 환경 구성",
-        "url": "https://www.youtube.com/watch?v=y8HPYrJHn-4",
-        "thumbnail": "https://i.ytimg.com/vi/y8HPYrJHn-4/mqdefault.jpg",
-        "channel": "샵투월드 shop2world TV",
-        "views": 3349,
-        "length": "6:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 플라스크 프레임워크에 대한 이해 및 응용 | 파이썬 Flask(플라스크)를 이용한 웹 프로젝트 | 취업·실무·창업 | 에어클래스",
-        "url": "https://www.youtube.com/watch?v=7QhjtwQU-1M",
-        "thumbnail": "https://i.ytimg.com/vi/7QhjtwQU-1M/mqdefault.jpg",
-        "channel": "에어클래스",
-        "views": 244,
-        "length": "14:16",
-        "published": "1년 전",
-        "stage": "실전"
-      }
-    ],
     "jQuery": [
       {
         "title": "실용 자바스크립트 6강 : 리액트포기자를 위한 jQuery 빠른기초",
@@ -5486,6 +5404,88 @@
         "views": 811,
         "length": "18:11",
         "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
+    "Flask": [
+      {
+        "title": "[HD]Python(파이썬) 웹프로그래밍 - Flask(플라스크) 제대로 배우기 Part.1 (기초1)",
+        "url": "https://www.youtube.com/watch?v=2WloW3cBRhw",
+        "thumbnail": "https://i.ytimg.com/vi/2WloW3cBRhw/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 1717,
+        "length": "14:16",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "파이썬 웹개발 Flask #1 - 플라스크 기초 및 웹서버 개발의 개념 이해",
+        "url": "https://www.youtube.com/watch?v=u2KnTZa1_WU",
+        "thumbnail": "https://i.ytimg.com/vi/u2KnTZa1_WU/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 52292,
+        "length": "2:00:59",
+        "published": "7년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "장고 vs 플라스크, Flask vs Django ,  파이썬 웹 프레임워크 뭘 쓸까?",
+        "url": "https://www.youtube.com/watch?v=6IdWo49d20o",
+        "thumbnail": "https://i.ytimg.com/vi/6IdWo49d20o/mqdefault.jpg",
+        "channel": "코드없는 프로그래밍",
+        "views": 30328,
+        "length": "3:45",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "06  Nginx   uWSGI   Flask 연동   Toy Project",
+        "url": "https://www.youtube.com/watch?v=-f69yaiRx5E",
+        "thumbnail": "https://i.ytimg.com/vi/-f69yaiRx5E/mqdefault.jpg",
+        "channel": "소프트웨어 꼰대 강의",
+        "views": 625,
+        "length": "43:58",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Flask의 정석] 1. 서론 (Introduction)",
+        "url": "https://www.youtube.com/watch?v=ramid7qX_V0",
+        "thumbnail": "https://i.ytimg.com/vi/ramid7qX_V0/mqdefault.jpg",
+        "channel": "코준서",
+        "views": 1769,
+        "length": "2:03",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "혼자 공부하는 파이썬 개정판 93강 - Flask 외부 모듈(프레임워크) 사용해보기[종강]",
+        "url": "https://www.youtube.com/watch?v=sgzunBTOeqk",
+        "thumbnail": "https://i.ytimg.com/vi/sgzunBTOeqk/mqdefault.jpg",
+        "channel": "윤인성",
+        "views": 6053,
+        "length": "11:04",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Flask 강좌 1 - 오리엔테이션, 설치와 환경 구성",
+        "url": "https://www.youtube.com/watch?v=y8HPYrJHn-4",
+        "thumbnail": "https://i.ytimg.com/vi/y8HPYrJHn-4/mqdefault.jpg",
+        "channel": "샵투월드 shop2world TV",
+        "views": 3349,
+        "length": "6:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 플라스크 프레임워크에 대한 이해 및 응용 | 파이썬 Flask(플라스크)를 이용한 웹 프로젝트 | 취업·실무·창업 | 에어클래스",
+        "url": "https://www.youtube.com/watch?v=7QhjtwQU-1M",
+        "thumbnail": "https://i.ytimg.com/vi/7QhjtwQU-1M/mqdefault.jpg",
+        "channel": "에어클래스",
+        "views": 244,
+        "length": "14:16",
+        "published": "1년 전",
         "stage": "실전"
       }
     ],
