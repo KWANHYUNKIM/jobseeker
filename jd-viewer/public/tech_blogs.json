@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-18T23:39:29",
- "total": 1059,
+ "generated_at": "2026-08-19T01:10:41",
+ "total": 1060,
  "sources": [
   {
    "company": "Etsy",
@@ -15,7 +15,7 @@
   {
    "company": "Cloudflare",
    "country": "US",
-   "count": 55
+   "count": 56
   },
   {
    "company": "AWS",
@@ -529,6 +529,37 @@
   "Kubernetes": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "cloudflare",
+   "company": "Cloudflare",
+   "country": "US",
+   "title": "BGP Role model: tracking the adoption of RFC 9234",
+   "url": "https://blog.cloudflare.com/rfc9234-bgp-role-model",
+   "published": "2026-08-18",
+   "published_ts": 1787066492.0,
+   "summary": "RFC 9234 lets routers reject route leaks on their own, using BGP Roles and the Only to Customer attribute. We measured who has deployed it, and found two Tier 1 networks unexpectedly stripping OTC.",
+   "tags": [
+    "BGP",
+    "Research",
+    "Routing",
+    "Routing Security",
+    "RPKI"
+   ],
+   "tech_stack": [
+    "Express",
+    "Cloudflare",
+    "Algorithm",
+    "Security"
+   ],
+   "categories": [
+    "백엔드",
+    "인프라/클라우드",
+    "알고리즘/이론",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "4d6a95e88ad53392"
+  },
   {
    "key": "aws",
    "company": "AWS",
