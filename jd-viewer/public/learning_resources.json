@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T12:31:43",
+  "generated_at": "2026-08-18T13:53:49",
   "source": "youtube",
   "tech_count": 207,
   "curriculum_count": 20,
@@ -1317,88 +1317,6 @@
         "stage": "실전"
       }
     ],
-    "Azure": [
-      {
-        "title": "애저 네트워크 기본 설계 | LIght up Azure",
-        "url": "https://www.youtube.com/watch?v=LBtFx0ijnD4",
-        "thumbnail": "https://i.ytimg.com/vi/LBtFx0ijnD4/mqdefault.jpg",
-        "channel": "Microsoft Developer Korea",
-        "views": 5836,
-        "length": "1:10:11",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Azure와 Azure DevOps 완전 정복!",
-        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
-        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 418,
-        "length": "1:28:14",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
-        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
-        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
-        "channel": "클루커스",
-        "views": 12494,
-        "length": "21:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
-        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
-        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 3017,
-        "length": "5:11",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
-        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
-        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 940,
-        "length": "3:57",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Azure Data Service 전반의 특징과 활용 가이드 소개",
-        "url": "https://www.youtube.com/watch?v=jYVxU8qa6fw",
-        "thumbnail": "https://i.ytimg.com/vi/jYVxU8qa6fw/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 546,
-        "length": "35:22",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AZ-900 Microsoft Azure Fundamentals - 시험 및 강의 소개",
-        "url": "https://www.youtube.com/watch?v=u_MomRyVAnM",
-        "thumbnail": "https://i.ytimg.com/vi/u_MomRyVAnM/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 407,
-        "length": "4:12",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기초부터 실전까지: Microsoft Agent Framework 완전 정복 | Light Up Azure",
-        "url": "https://www.youtube.com/watch?v=DkcLUaHnl-o",
-        "thumbnail": "https://i.ytimg.com/vi/DkcLUaHnl-o/mqdefault.jpg",
-        "channel": "Microsoft Developer Korea",
-        "views": 543,
-        "length": "36:21",
-        "published": "8개월 전",
-        "stage": "실전"
-      }
-    ],
     "Spring Boot": [
       {
         "title": "스프링 부트 기본기 한시간에 끝내기! [ 스프링 부트(Spring Boot) 기초 강의 ]",
@@ -1478,6 +1396,88 @@
         "views": 3850,
         "length": "1:13:28",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Azure": [
+      {
+        "title": "애저 네트워크 기본 설계 | LIght up Azure",
+        "url": "https://www.youtube.com/watch?v=LBtFx0ijnD4",
+        "thumbnail": "https://i.ytimg.com/vi/LBtFx0ijnD4/mqdefault.jpg",
+        "channel": "Microsoft Developer Korea",
+        "views": 5836,
+        "length": "1:10:11",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Azure와 Azure DevOps 완전 정복!",
+        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
+        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 418,
+        "length": "1:28:14",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
+        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
+        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
+        "channel": "클루커스",
+        "views": 12494,
+        "length": "21:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
+        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
+        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 3017,
+        "length": "5:11",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
+        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
+        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 940,
+        "length": "3:57",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Azure Data Service 전반의 특징과 활용 가이드 소개",
+        "url": "https://www.youtube.com/watch?v=jYVxU8qa6fw",
+        "thumbnail": "https://i.ytimg.com/vi/jYVxU8qa6fw/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 546,
+        "length": "35:22",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AZ-900 Microsoft Azure Fundamentals - 시험 및 강의 소개",
+        "url": "https://www.youtube.com/watch?v=u_MomRyVAnM",
+        "thumbnail": "https://i.ytimg.com/vi/u_MomRyVAnM/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 407,
+        "length": "4:12",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기초부터 실전까지: Microsoft Agent Framework 완전 정복 | Light Up Azure",
+        "url": "https://www.youtube.com/watch?v=DkcLUaHnl-o",
+        "thumbnail": "https://i.ytimg.com/vi/DkcLUaHnl-o/mqdefault.jpg",
+        "channel": "Microsoft Developer Korea",
+        "views": 543,
+        "length": "36:21",
+        "published": "8개월 전",
         "stage": "실전"
       }
     ],
@@ -4495,88 +4495,6 @@
         "stage": "핵심"
       }
     ],
-    "GraphQL": [
-      {
-        "title": "[입문-백엔드-6] GraphQL Subscription - 실시간 데이터 처리",
-        "url": "https://www.youtube.com/watch?v=DBKnjstiPhM",
-        "thumbnail": "https://i.ytimg.com/vi/DBKnjstiPhM/mqdefault.jpg",
-        "channel": "양반코딩 YangbanCoding",
-        "views": 183,
-        "length": "3:29",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[Node 웹 프로그래밍] GraphQL 입문  - GraphQL  기본",
-        "url": "https://www.youtube.com/watch?v=BrX7ba7xWrY",
-        "thumbnail": "https://i.ytimg.com/vi/BrX7ba7xWrY/mqdefault.jpg",
-        "channel": "패스트캠퍼스",
-        "views": 221,
-        "length": "3:29",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[SWTT] 스프링부트로 시작하는 GraphQL 기초 및 문법 (2/3)",
-        "url": "https://www.youtube.com/watch?v=XPglZU7tiZw",
-        "thumbnail": "https://i.ytimg.com/vi/XPglZU7tiZw/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 39,
-        "length": "15:24",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "GraphQL - 한 방에 이해하기",
-        "url": "https://www.youtube.com/watch?v=lYuWfoWD67Q",
-        "thumbnail": "https://i.ytimg.com/vi/lYuWfoWD67Q/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 13955,
-        "length": "8:18",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "얄팍한 GraphQL & Apollo 강좌",
-        "url": "https://www.youtube.com/watch?v=9BIXcXHsj0A",
-        "thumbnail": "https://i.ytimg.com/vi/9BIXcXHsj0A/mqdefault.jpg",
-        "channel": "얄팍한 코딩사전",
-        "views": 39017,
-        "length": "1:30:38",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "GraphQL 완전정복 강좌 소개",
-        "url": "https://www.youtube.com/watch?v=1jYMsiQ8vlo",
-        "thumbnail": "https://i.ytimg.com/vi/1jYMsiQ8vlo/mqdefault.jpg",
-        "channel": "INDIE \bCoder",
-        "views": 593,
-        "length": "1:36",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "{Tips} GraphQL 실무에서 어떻게 쓸까?",
-        "url": "https://www.youtube.com/watch?v=ISMVvVwmQUk",
-        "thumbnail": "https://i.ytimg.com/vi/ISMVvVwmQUk/mqdefault.jpg",
-        "channel": "@시코 - 시니어코딩",
-        "views": 1906,
-        "length": "7:23",
-        "published": "4년 전",
-        "stage": "실전"
-      },
-      {
-        "title": "06.GraphQL 기초와 REST 비교 완벽 가이드 | 퀴즈 10개 포함",
-        "url": "https://www.youtube.com/watch?v=maODh64kl54",
-        "thumbnail": "https://i.ytimg.com/vi/maODh64kl54/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 10,
-        "length": "20:19",
-        "published": "5개월 전",
-        "stage": "실전"
-      }
-    ],
     "OpenCV": [
       {
         "title": "OpenCV 한번에 끝내기 - 컴퓨터 비전, 이미지 프로세싱의 핵심 라이브러리",
@@ -4656,6 +4574,88 @@
         "views": 254,
         "length": "1:48:44",
         "published": "10개월 전",
+        "stage": "실전"
+      }
+    ],
+    "GraphQL": [
+      {
+        "title": "[입문-백엔드-6] GraphQL Subscription - 실시간 데이터 처리",
+        "url": "https://www.youtube.com/watch?v=DBKnjstiPhM",
+        "thumbnail": "https://i.ytimg.com/vi/DBKnjstiPhM/mqdefault.jpg",
+        "channel": "양반코딩 YangbanCoding",
+        "views": 183,
+        "length": "3:29",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[Node 웹 프로그래밍] GraphQL 입문  - GraphQL  기본",
+        "url": "https://www.youtube.com/watch?v=BrX7ba7xWrY",
+        "thumbnail": "https://i.ytimg.com/vi/BrX7ba7xWrY/mqdefault.jpg",
+        "channel": "패스트캠퍼스",
+        "views": 221,
+        "length": "3:29",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[SWTT] 스프링부트로 시작하는 GraphQL 기초 및 문법 (2/3)",
+        "url": "https://www.youtube.com/watch?v=XPglZU7tiZw",
+        "thumbnail": "https://i.ytimg.com/vi/XPglZU7tiZw/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 39,
+        "length": "15:24",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "GraphQL - 한 방에 이해하기",
+        "url": "https://www.youtube.com/watch?v=lYuWfoWD67Q",
+        "thumbnail": "https://i.ytimg.com/vi/lYuWfoWD67Q/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 13955,
+        "length": "8:18",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "얄팍한 GraphQL & Apollo 강좌",
+        "url": "https://www.youtube.com/watch?v=9BIXcXHsj0A",
+        "thumbnail": "https://i.ytimg.com/vi/9BIXcXHsj0A/mqdefault.jpg",
+        "channel": "얄팍한 코딩사전",
+        "views": 39017,
+        "length": "1:30:38",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "GraphQL 완전정복 강좌 소개",
+        "url": "https://www.youtube.com/watch?v=1jYMsiQ8vlo",
+        "thumbnail": "https://i.ytimg.com/vi/1jYMsiQ8vlo/mqdefault.jpg",
+        "channel": "INDIE \bCoder",
+        "views": 593,
+        "length": "1:36",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "{Tips} GraphQL 실무에서 어떻게 쓸까?",
+        "url": "https://www.youtube.com/watch?v=ISMVvVwmQUk",
+        "thumbnail": "https://i.ytimg.com/vi/ISMVvVwmQUk/mqdefault.jpg",
+        "channel": "@시코 - 시니어코딩",
+        "views": 1906,
+        "length": "7:23",
+        "published": "4년 전",
+        "stage": "실전"
+      },
+      {
+        "title": "06.GraphQL 기초와 REST 비교 완벽 가이드 | 퀴즈 10개 포함",
+        "url": "https://www.youtube.com/watch?v=maODh64kl54",
+        "thumbnail": "https://i.ytimg.com/vi/maODh64kl54/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 10,
+        "length": "20:19",
+        "published": "5개월 전",
         "stage": "실전"
       }
     ],
@@ -8083,6 +8083,88 @@
         "stage": "실전"
       }
     ],
+    "MATLAB": [
+      {
+        "title": "Matlab (매트랩) 프로그래밍 기초",
+        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
+        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
+        "channel": "염홍기",
+        "views": 4425,
+        "length": "1:51:35",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
+        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
+        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 178880,
+        "length": "1:59:05",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "7시간만에 배우는 MATLAB 기초 (Part2)",
+        "url": "https://www.youtube.com/watch?v=3nm7YHBGMB0",
+        "thumbnail": "https://i.ytimg.com/vi/3nm7YHBGMB0/mqdefault.jpg",
+        "channel": "응용수학자",
+        "views": 57464,
+        "length": "1:58:06",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "MATLAB 1강: MATLAB 기초",
+        "url": "https://www.youtube.com/watch?v=nhAGUziBA5Q",
+        "thumbnail": "https://i.ytimg.com/vi/nhAGUziBA5Q/mqdefault.jpg",
+        "channel": "손희민",
+        "views": 84,
+        "length": "1:10:03",
+        "published": "6개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "로봇설계및제어 MATLAB강의 (1/2)",
+        "url": "https://www.youtube.com/watch?v=q1oLdQY_JyY",
+        "thumbnail": "https://i.ytimg.com/vi/q1oLdQY_JyY/mqdefault.jpg",
+        "channel": "mincasurong",
+        "views": 697,
+        "length": "44:05",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Matlab 강의 소개",
+        "url": "https://www.youtube.com/watch?v=L8lpI3fqZTA",
+        "thumbnail": "https://i.ytimg.com/vi/L8lpI3fqZTA/mqdefault.jpg",
+        "channel": "Byoungjo CHOI",
+        "views": 17124,
+        "length": "11:17",
+        "published": "11년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "MATLAB을 활용한 금융 데이터 가져오기 및 전처리",
+        "url": "https://www.youtube.com/watch?v=R1ogX2GhnDQ",
+        "thumbnail": "https://i.ytimg.com/vi/R1ogX2GhnDQ/mqdefault.jpg",
+        "channel": "MATLAB Korea",
+        "views": 1170,
+        "length": "8:19",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(1분반) 시스템모델링및제어 MATLAB/Simulink 모델링, 제어기 설계 실습",
+        "url": "https://www.youtube.com/watch?v=XvLAXyW6dbc",
+        "thumbnail": "https://i.ytimg.com/vi/XvLAXyW6dbc/mqdefault.jpg",
+        "channel": "숙대기계 김수영",
+        "views": 16738,
+        "length": "1:14:32",
+        "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
     "JPA": [
       {
         "title": "[자바 ORM 표준 JPA 프로그래밍 - 기본편] JPA 소개 - 1. SQL 중심적인 개발의 문제점",
@@ -8573,88 +8655,6 @@
         "length": "9:29",
         "published": "7년 전",
         "stage": "핵심"
-      }
-    ],
-    "MATLAB": [
-      {
-        "title": "Matlab (매트랩) 프로그래밍 기초",
-        "url": "https://www.youtube.com/watch?v=iApSo-xAIAI",
-        "thumbnail": "https://i.ytimg.com/vi/iApSo-xAIAI/mqdefault.jpg",
-        "channel": "염홍기",
-        "views": 4425,
-        "length": "1:51:35",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part1)",
-        "url": "https://www.youtube.com/watch?v=16AuurBEVuM",
-        "thumbnail": "https://i.ytimg.com/vi/16AuurBEVuM/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 178880,
-        "length": "1:59:05",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "7시간만에 배우는 MATLAB 기초 (Part2)",
-        "url": "https://www.youtube.com/watch?v=3nm7YHBGMB0",
-        "thumbnail": "https://i.ytimg.com/vi/3nm7YHBGMB0/mqdefault.jpg",
-        "channel": "응용수학자",
-        "views": 57464,
-        "length": "1:58:06",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "MATLAB 1강: MATLAB 기초",
-        "url": "https://www.youtube.com/watch?v=nhAGUziBA5Q",
-        "thumbnail": "https://i.ytimg.com/vi/nhAGUziBA5Q/mqdefault.jpg",
-        "channel": "손희민",
-        "views": 84,
-        "length": "1:10:03",
-        "published": "6개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "로봇설계및제어 MATLAB강의 (1/2)",
-        "url": "https://www.youtube.com/watch?v=q1oLdQY_JyY",
-        "thumbnail": "https://i.ytimg.com/vi/q1oLdQY_JyY/mqdefault.jpg",
-        "channel": "mincasurong",
-        "views": 697,
-        "length": "44:05",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Matlab 강의 소개",
-        "url": "https://www.youtube.com/watch?v=L8lpI3fqZTA",
-        "thumbnail": "https://i.ytimg.com/vi/L8lpI3fqZTA/mqdefault.jpg",
-        "channel": "Byoungjo CHOI",
-        "views": 17124,
-        "length": "11:17",
-        "published": "11년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "MATLAB을 활용한 금융 데이터 가져오기 및 전처리",
-        "url": "https://www.youtube.com/watch?v=R1ogX2GhnDQ",
-        "thumbnail": "https://i.ytimg.com/vi/R1ogX2GhnDQ/mqdefault.jpg",
-        "channel": "MATLAB Korea",
-        "views": 1170,
-        "length": "8:19",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(1분반) 시스템모델링및제어 MATLAB/Simulink 모델링, 제어기 설계 실습",
-        "url": "https://www.youtube.com/watch?v=XvLAXyW6dbc",
-        "thumbnail": "https://i.ytimg.com/vi/XvLAXyW6dbc/mqdefault.jpg",
-        "channel": "숙대기계 김수영",
-        "views": 16738,
-        "length": "1:14:32",
-        "published": "3년 전",
-        "stage": "실전"
       }
     ],
     "Rails": [
