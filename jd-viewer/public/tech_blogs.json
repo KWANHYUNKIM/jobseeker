@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-18T22:16:52",
- "total": 1058,
+ "generated_at": "2026-08-18T23:39:29",
+ "total": 1059,
  "sources": [
   {
    "company": "Etsy",
@@ -20,7 +20,7 @@
   {
    "company": "AWS",
    "country": "US",
-   "count": 50
+   "count": 51
   },
   {
    "company": "SoundCloud",
@@ -529,6 +529,30 @@
   "Kubernetes": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "aws",
+   "company": "AWS",
+   "country": "US",
+   "title": "In the works: AWS Builder Lofts in Berlin, Hyderabad, and São Paulo",
+   "url": "https://aws.amazon.com/blogs/aws/in-the-works-aws-builder-lofts-in-berlin-hyderabad-and-sao-paulo",
+   "published": "2026-08-18",
+   "published_ts": 1787061521.0,
+   "summary": "Each location will be a permanent community space to offer free workshops, networking events, pitch nights, content creation spaces, collaboration/co-working areas, and event hosting for developers, students, or tech professionals who want to walk through the doors.",
+   "tags": [
+    "News",
+    "AWS Loft"
+   ],
+   "tech_stack": [
+    "AWS",
+    "Security"
+   ],
+   "categories": [
+    "인프라/클라우드",
+    "보안"
+   ],
+   "lang": "en",
+   "content_id": "b98aab5f70be0f59"
+  },
   {
    "key": "stackoverflow",
    "company": "Stack Overflow",
