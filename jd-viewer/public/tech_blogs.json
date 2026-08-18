@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-19T03:53:49",
- "total": 1061,
+ "generated_at": "2026-08-19T05:16:36",
+ "total": 1062,
  "sources": [
   {
    "company": "Etsy",
@@ -133,6 +133,11 @@
    "count": 15
   },
   {
+   "company": "Dropbox",
+   "country": "US",
+   "count": 14
+  },
+  {
    "company": "Razorpay",
    "country": "IN",
    "count": 14
@@ -146,11 +151,6 @@
    "company": "왓챠",
    "country": "KR",
    "count": 14
-  },
-  {
-   "company": "Dropbox",
-   "country": "US",
-   "count": 13
   },
   {
    "company": "Lyft",
@@ -529,6 +529,31 @@
   "Kubernetes": "인프라/클라우드"
  },
  "posts": [
+  {
+   "key": "dropbox",
+   "company": "Dropbox",
+   "country": "US",
+   "title": "Improving infrastructure efficiency for growing demand in the age of AI",
+   "url": "https://dropbox.tech/infrastructure/improving-infrastructure-efficiency-for-growing-demand-in-the-age-of-ai",
+   "published": "2026-08-18",
+   "published_ts": 1787072400.0,
+   "summary": "As demand for AI continues to grow, so does the infrastructure needed to support it.",
+   "tags": [
+    "data center",
+    "Hardware",
+    "AI",
+    "Infrastructure",
+    "Optimization"
+   ],
+   "tech_stack": [
+    "Airflow"
+   ],
+   "categories": [
+    "데이터"
+   ],
+   "lang": "en",
+   "content_id": "d8b7352eec05cca4"
+  },
   {
    "key": "cloudflare",
    "company": "Cloudflare",
