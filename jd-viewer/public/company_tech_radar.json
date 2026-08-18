@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-18T14:03:35",
+ "generated_at": "2026-08-18T15:26:31",
  "total": 100,
  "countries": [
   {
@@ -6030,6 +6030,27 @@
       "url": "https://www.google.com/about/careers/applications/candidate-prep/swe",
       "summary": "구글이 직접 운영하는 소프트웨어 엔지니어 지원자용 공식 면접 준비 가이드 페이지다. 지원 → 리크루터 스크린 → 기술 면접 → 팀 매칭으로 이어지는 채용 단계와 각 단계에서 평가하는 항목(코딩, 자료구조/알고리즘, 시스템 설계, Googleyness)을 안내한다. 모든 지원자에게 동일한 정보와 준비 자료를 제공하는 것이 목적이므로, 개인 후기와 함께 프로세스의 공식 기준을 대조해 볼 때 유용하다.",
       "source": "회사 공식 채용페이지"
+     },
+     {
+      "title": "Interview Experience — Google | Senior Software Engineer | L5",
+      "url": "https://roundz.substack.com/p/interview-experience-google-senior-software-engineer-l5",
+      "summary": "L5 시니어 SWE 지원자가 폰스크린 1회 + 온사이트 5회(코딩 3, 시스템 디자인 1, Googleyness 1) 총 6라운드를 기록했다. 난이도는 미디엄~하드 수준이며 BFS/DFS 전환, API 트레이드오프 등 중간에 접근법을 바꾸는 유연성이 평가 포인트였다. 준비는 10주(본인은 6~8주면 충분하다고 평가) 동안 LeetCode 150문제 이상을 풀었고, 코딩 못지않게 시스템 디자인과 Googleyness 비중이 크다고 조언한다.",
+      "source": "Substack",
+      "date": "2025-04"
+     },
+     {
+      "title": "My Google Interview Experience (L4 Software Engineer): 8 Rounds, 6 Months, Countless Lessons",
+      "url": "https://medium.com/life-with-tech/my-google-interview-experience-l4-software-engineer-8-rounds-6-months-countless-lessons-c80e76243783",
+      "summary": "약 6개월에 걸쳐 8개 라운드를 소화한 장기전 형태의 구글 L4 전형 기록이다. 폰스크린 → 온사이트 → 추가 라운드로 이어지며 팀 매칭과 채용위원회 심사까지 대기 시간이 길었던 점이 가장 큰 변수로 꼽힌다. 단기 벼락치기보다 장기간 컨디션과 멘탈을 유지하는 전략, 라운드 사이 피드백을 반영해 보완하는 태도가 중요하다고 정리한다.",
+      "source": "Medium",
+      "date": "2025"
+     },
+     {
+      "title": "Google Interview Experience — L4",
+      "url": "https://medium.com/@neeraj_swe/google-interview-experience-l4-9266044d9923",
+      "summary": "2025년 초 링크드인으로 리크루터 연락을 받아 폰스크린부터 시작한 L4 전형 후기로, IBM 3년 반 경력 기준 지원 사례다. 기술 라운드는 문자열 처리, 실시간 사고력, 제약 하에서의 최적화가 섞인 형태였고 모두 45분 단위로 진행됐다. 정답 코드에 도달하는 속도보다 문제를 좁혀가는 과정과 최적화 논의가 평가 포인트라는 점을 강조한다.",
+      "source": "Medium",
+      "date": "2025"
      }
     ]
    },
@@ -12892,6 +12913,13 @@
       "summary": "서류(추천 기반) → 코딩테스트(210분 3문제, 평이) → 원격 인터뷰(1:1, 40분) → 1차 인터뷰(5:1, 90분) → 2차 인터뷰(2:1, 60분)로 이어진 약 40일간의 수시채용 후기다. 1차는 CS·기술스택 이해도·포트폴리오 프로젝트 심화 질문이 집중적으로 나왔고, 2차는 기술과 인성·컬처핏을 함께 봤다. 면접관들이 긴장을 풀어주려 했고, 필자는 시니어들과의 대화에서 의도적으로 농담을 섞어 소통 능력을 어필한 점을 팁으로 꼽았다.",
       "source": "github.io",
       "date": "2022-03"
+     },
+     {
+      "title": "카카오페이 신입 Android 개발자 최종합격 후기",
+      "url": "https://velog.io/@haero_kim/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%8E%98%EC%9D%B4-%EC%8B%A0%EC%9E%85-Android-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EC%B5%9C%EC%A2%85%ED%95%A9%EA%B2%A9-%ED%9B%84%EA%B8%B0",
+      "summary": "공채가 아닌 인재풀 수시채용 경로로 서류 → 사전과제 → 1차(실무진) → 2차(팀 리더+인사) 인터뷰를 거쳐 최종 합격한 후기다. 1차 면접에서만 70~80개 가까운 질문이 쏟아질 만큼 밀도가 높았고, 사전과제 코드 리뷰와 Android/Kotlin 기본기, CS 기초를 집중적으로 검증했다. 신입도 공채만 노릴 필요 없이 기술 커뮤니티 활동과 블로그로 기본기를 정리해두는 것이 유효했다고 조언한다.",
+      "source": "velog",
+      "date": "2021-12"
      }
     ]
    },
@@ -17260,6 +17288,12 @@
       "summary": "토스 ML팀 면접을 면접관 3인 체제로 본 탈락 회고다. 머신러닝 모델 서빙 경험, 직접 작성한 인터페이스 코드 설명, 전체 아키텍처, Factorization Machine 이론까지 기술 깊이를 요구하는 질문이 나왔다. '서빙 외에는 강점이 보이지 않는다'는 피드백을 받아, 아키텍처 전반을 설명할 수 있는 수준과 알고리즘 이론 이해가 필요하다는 교훈을 남긴다.",
       "source": "velog",
       "date": "2023-11"
+     },
+     {
+      "title": "토스 커뮤니티 합류 가이드(Joining the Toss Community)",
+      "url": "https://toss.im/career/joining-guide",
+      "summary": "토스 공식 채용 안내로, 지원서 작성 → (포지션별) 전화 인터뷰·코딩테스트·SQL 테스트 등 사전 검증 → 기술 인터뷰 → 컬처핏 인터뷰 → 레퍼런스 체크·처우 협의 → 온보딩 순서를 설명한다. 인터뷰는 모두 온라인(Google Meet/Zoom) 1:1로 함께 일할 동료가 진행한다. 이력서는 경험 나열이 아니라 임팩트와 배운 점 중심으로 쓰고, 개발자는 기술 스택을 명시하라고 안내한다.",
+      "source": "회사 공식 채용 페이지"
      }
     ]
    },

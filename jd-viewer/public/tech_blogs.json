@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-18T13:53:21",
- "total": 1057,
+ "generated_at": "2026-08-18T15:15:40",
+ "total": 1058,
  "sources": [
   {
    "company": "Etsy",
@@ -30,7 +30,7 @@
   {
    "company": "LINE",
    "country": "KR",
-   "count": 43
+   "count": 44
   },
   {
    "company": "토스",
@@ -556,6 +556,25 @@
    ],
    "lang": "en",
    "content_id": "589c48c32f7d11ad"
+  },
+  {
+   "key": "line",
+   "company": "LINE",
+   "country": "KR",
+   "title": "보안 업무를 위한 AI 에이전트 플랫폼 「SAGE」 개발기 1편: 판단은 사람에게 남기는 설계",
+   "url": "https://techblog.lycorp.co.jp/ko/ai-agent-platform-sage-dev-log-part-1",
+   "published": "2026-08-18",
+   "published_ts": 1787029200.0,
+   "summary": "안녕하세요. 사내 보안 업무에 AI를 접목하는 일을 하고 있는 Security Development Division(LINE Plus Security R&D)팀입니다.이 글은 사내...",
+   "tags": [],
+   "tech_stack": [
+    "Security"
+   ],
+   "categories": [
+    "보안"
+   ],
+   "lang": "ko",
+   "content_id": "8b6bd71fd1a87756"
   },
   {
    "key": "toss",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T13:53:49",
+  "generated_at": "2026-08-18T15:16:09",
   "source": "youtube",
   "tech_count": 207,
   "curriculum_count": 20,
@@ -9231,6 +9231,88 @@
         "stage": "실전"
       }
     ],
+    "Appium": [
+      {
+        "title": "Appium part 1 | Full Mobile automation using Cucumber for beginner tutorial",
+        "url": "https://www.youtube.com/watch?v=GTfnEHDNRTk",
+        "thumbnail": "https://i.ytimg.com/vi/GTfnEHDNRTk/mqdefault.jpg",
+        "channel": "Automation School",
+        "views": 4990,
+        "length": "1:09:43",
+        "published": "6년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[zoom] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
+        "url": "https://www.youtube.com/watch?v=-hCCxhI7d8c",
+        "thumbnail": "https://i.ytimg.com/vi/-hCCxhI7d8c/mqdefault.jpg",
+        "channel": "달새는 달만 생각한다",
+        "views": 469,
+        "length": "1:07:07",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[ifland] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
+        "url": "https://www.youtube.com/watch?v=7hAgs3JW8yQ",
+        "thumbnail": "https://i.ytimg.com/vi/7hAgs3JW8yQ/mqdefault.jpg",
+        "channel": "달새는 달만 생각한다",
+        "views": 172,
+        "length": "56:43",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Appium Tutorial 1 |  What is Appium-(Introduction to Appium)",
+        "url": "https://www.youtube.com/watch?v=XxL_lsPXB2U",
+        "thumbnail": "https://i.ytimg.com/vi/XxL_lsPXB2U/mqdefault.jpg",
+        "channel": "AppiumGuide",
+        "views": 361,
+        "length": "11:35",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Lecture 1 - Appium Tutorial in Java  | Android and iOS automation",
+        "url": "https://www.youtube.com/watch?v=vWKV8uJjFFw",
+        "thumbnail": "https://i.ytimg.com/vi/vWKV8uJjFFw/mqdefault.jpg",
+        "channel": "Sagar S (Vishal)",
+        "views": 691,
+        "length": "7:03",
+        "published": "6년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "8 - NativeScript testing with Appium",
+        "url": "https://www.youtube.com/watch?v=Ns7boY6XNC0",
+        "thumbnail": "https://i.ytimg.com/vi/Ns7boY6XNC0/mqdefault.jpg",
+        "channel": "NativeScript",
+        "views": 1536,
+        "length": "38:17",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Appium Tutorial 1: Appium for Mobile App Testing | Introduction to Mobile Testing and Appium",
+        "url": "https://www.youtube.com/watch?v=yTW7hZZfTYo",
+        "thumbnail": "https://i.ytimg.com/vi/yTW7hZZfTYo/mqdefault.jpg",
+        "channel": "SDET- QA",
+        "views": 442812,
+        "length": "16:56",
+        "published": "7년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기본 학교 | Appium 작동 방식 | Appium 아키텍처 | 단계별 설명",
+        "url": "https://www.youtube.com/watch?v=EH9zzKT4guE",
+        "thumbnail": "https://i.ytimg.com/vi/EH9zzKT4guE/mqdefault.jpg",
+        "channel": "Automation Step by Step",
+        "views": 110750,
+        "length": "8:31",
+        "published": "7년 전",
+        "stage": "실전"
+      }
+    ],
     "DevOps": [
       {
         "title": "[HD]클라우드 컴퓨팅 Azure(에저)와 Azure DevOps를 사용하여 데브옵스 시작하기 Part.1",
@@ -9393,88 +9475,6 @@
         "length": "25:52",
         "published": "3개월 전",
         "stage": "핵심"
-      }
-    ],
-    "Appium": [
-      {
-        "title": "Appium part 1 | Full Mobile automation using Cucumber for beginner tutorial",
-        "url": "https://www.youtube.com/watch?v=GTfnEHDNRTk",
-        "thumbnail": "https://i.ytimg.com/vi/GTfnEHDNRTk/mqdefault.jpg",
-        "channel": "Automation School",
-        "views": 4990,
-        "length": "1:09:43",
-        "published": "6년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[zoom] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
-        "url": "https://www.youtube.com/watch?v=-hCCxhI7d8c",
-        "thumbnail": "https://i.ytimg.com/vi/-hCCxhI7d8c/mqdefault.jpg",
-        "channel": "달새는 달만 생각한다",
-        "views": 469,
-        "length": "1:07:07",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[ifland] 하루 5분 투자로 월 100만원 벌기(생활코딩편) - 모바일 자동화 appium (22.11.26)",
-        "url": "https://www.youtube.com/watch?v=7hAgs3JW8yQ",
-        "thumbnail": "https://i.ytimg.com/vi/7hAgs3JW8yQ/mqdefault.jpg",
-        "channel": "달새는 달만 생각한다",
-        "views": 172,
-        "length": "56:43",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Appium Tutorial 1 |  What is Appium-(Introduction to Appium)",
-        "url": "https://www.youtube.com/watch?v=XxL_lsPXB2U",
-        "thumbnail": "https://i.ytimg.com/vi/XxL_lsPXB2U/mqdefault.jpg",
-        "channel": "AppiumGuide",
-        "views": 361,
-        "length": "11:35",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Lecture 1 - Appium Tutorial in Java  | Android and iOS automation",
-        "url": "https://www.youtube.com/watch?v=vWKV8uJjFFw",
-        "thumbnail": "https://i.ytimg.com/vi/vWKV8uJjFFw/mqdefault.jpg",
-        "channel": "Sagar S (Vishal)",
-        "views": 691,
-        "length": "7:03",
-        "published": "6년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "8 - NativeScript testing with Appium",
-        "url": "https://www.youtube.com/watch?v=Ns7boY6XNC0",
-        "thumbnail": "https://i.ytimg.com/vi/Ns7boY6XNC0/mqdefault.jpg",
-        "channel": "NativeScript",
-        "views": 1536,
-        "length": "38:17",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Appium Tutorial 1: Appium for Mobile App Testing | Introduction to Mobile Testing and Appium",
-        "url": "https://www.youtube.com/watch?v=yTW7hZZfTYo",
-        "thumbnail": "https://i.ytimg.com/vi/yTW7hZZfTYo/mqdefault.jpg",
-        "channel": "SDET- QA",
-        "views": 442812,
-        "length": "16:56",
-        "published": "7년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기본 학교 | Appium 작동 방식 | Appium 아키텍처 | 단계별 설명",
-        "url": "https://www.youtube.com/watch?v=EH9zzKT4guE",
-        "thumbnail": "https://i.ytimg.com/vi/EH9zzKT4guE/mqdefault.jpg",
-        "channel": "Automation Step by Step",
-        "views": 110750,
-        "length": "8:31",
-        "published": "7년 전",
-        "stage": "실전"
       }
     ],
     "Pandas": [
@@ -14879,6 +14879,58 @@
         "stage": "핵심"
       }
     ],
+    "Google BigQuery": [
+      {
+        "title": "WEB프로그래밍 HDGoogle Cloud 구글 클라우드 및 Google BigQuery 구글 빅쿼리를 통한 데이터 과학자 입문 하기 Part 1",
+        "url": "https://www.youtube.com/watch?v=1jV6KfaI-G0",
+        "thumbnail": "https://i.ytimg.com/vi/1jV6KfaI-G0/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 69,
+        "length": "42:40",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[HD]Google Cloud (구글 클라우드) 및 Google BigQuery (구글 빅쿼리)를 통한 데이터 과학자 입문 하기 Part.1",
+        "url": "https://www.youtube.com/watch?v=bqvvZcIfKig",
+        "thumbnail": "https://i.ytimg.com/vi/bqvvZcIfKig/mqdefault.jpg",
+        "channel": "아이티동스쿨",
+        "views": 40,
+        "length": "43:00",
+        "published": "2년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
+        "url": "https://www.youtube.com/watch?v=ohAsFH-YLoE",
+        "thumbnail": "https://i.ytimg.com/vi/ohAsFH-YLoE/mqdefault.jpg",
+        "channel": "카일스쿨",
+        "views": 11916,
+        "length": "9:02:10",
+        "published": "1년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "AS | 구글 빅쿼리 사용법 공부하기 | SQL 기초 강의 | 쿼리 분석",
+        "url": "https://www.youtube.com/watch?v=vVa3IlEJZZw",
+        "thumbnail": "https://i.ytimg.com/vi/vVa3IlEJZZw/mqdefault.jpg",
+        "channel": "초튜터 with 감자나라ai",
+        "views": 1404,
+        "length": "4:21",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "프로젝트 만들기 | 구글 빅쿼리 사용법 공부하기 | SQL 기초 강의 | 쿼리 분석",
+        "url": "https://www.youtube.com/watch?v=lS-vTyvU5QI",
+        "thumbnail": "https://i.ytimg.com/vi/lS-vTyvU5QI/mqdefault.jpg",
+        "channel": "초튜터 with 감자나라ai",
+        "views": 4429,
+        "length": "6:25",
+        "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
     "Switch": [
       {
         "title": "데이터통신 제21강 이더넷 스위치(Ethernet Switch)",
@@ -15040,58 +15092,6 @@
         "views": 87,
         "length": "44:47",
         "published": "8개월 전",
-        "stage": "실전"
-      }
-    ],
-    "Google BigQuery": [
-      {
-        "title": "WEB프로그래밍 HDGoogle Cloud 구글 클라우드 및 Google BigQuery 구글 빅쿼리를 통한 데이터 과학자 입문 하기 Part 1",
-        "url": "https://www.youtube.com/watch?v=1jV6KfaI-G0",
-        "thumbnail": "https://i.ytimg.com/vi/1jV6KfaI-G0/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 69,
-        "length": "42:40",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[HD]Google Cloud (구글 클라우드) 및 Google BigQuery (구글 빅쿼리)를 통한 데이터 과학자 입문 하기 Part.1",
-        "url": "https://www.youtube.com/watch?v=bqvvZcIfKig",
-        "thumbnail": "https://i.ytimg.com/vi/bqvvZcIfKig/mqdefault.jpg",
-        "channel": "아이티동스쿨",
-        "views": 40,
-        "length": "43:00",
-        "published": "2년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "데이터 분석가를 위한 BigQuery 사용법, SQL 강의 기초",
-        "url": "https://www.youtube.com/watch?v=ohAsFH-YLoE",
-        "thumbnail": "https://i.ytimg.com/vi/ohAsFH-YLoE/mqdefault.jpg",
-        "channel": "카일스쿨",
-        "views": 11916,
-        "length": "9:02:10",
-        "published": "1년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "AS | 구글 빅쿼리 사용법 공부하기 | SQL 기초 강의 | 쿼리 분석",
-        "url": "https://www.youtube.com/watch?v=vVa3IlEJZZw",
-        "thumbnail": "https://i.ytimg.com/vi/vVa3IlEJZZw/mqdefault.jpg",
-        "channel": "초튜터 with 감자나라ai",
-        "views": 1404,
-        "length": "4:21",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "프로젝트 만들기 | 구글 빅쿼리 사용법 공부하기 | SQL 기초 강의 | 쿼리 분석",
-        "url": "https://www.youtube.com/watch?v=lS-vTyvU5QI",
-        "thumbnail": "https://i.ytimg.com/vi/lS-vTyvU5QI/mqdefault.jpg",
-        "channel": "초튜터 with 감자나라ai",
-        "views": 4429,
-        "length": "6:25",
-        "published": "3년 전",
         "stage": "실전"
       }
     ],
