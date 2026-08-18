@@ -28,7 +28,10 @@ function App() {
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
   const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
   const [filterOpen, setFilterOpen] = useState(false)
-  const [semantic, setSemantic] = useState(false)
+  // 검색 API 가 있으면 의미 검색을 기본으로 쓴다. 키워드 필터는 사전에 있는 단어가
+  // 정확히 나와야만 잡아서, 문장으로 물으면 대개 0건이 된다 — 그게 기본값일 이유가 없다.
+  // 끄면 기존 로컬 필터로 돌아간다(API 가 없으면 토글 자체가 안 보인다).
+  const [semantic, setSemantic] = useState(true)
   const [light, setLight] = useState(
     () => typeof document !== 'undefined' && document.documentElement.classList.contains('light'),
   )

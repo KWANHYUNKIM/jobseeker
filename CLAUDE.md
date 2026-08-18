@@ -11,6 +11,8 @@
   - `semantic/` : 임베딩 기반 추천·검색 (SQLite+sqlite-vec 저장, Ollama bge-m3 증분 임베딩,
     코사인 top-K → `public/similar_*.json`). 크롤 사이클 끝에 auto_crawl 이 자동 실행.
     `search.py`(FTS5+벡터 RRF 하이브리드) / `server.py`(검색 API, 8771)
+    마감 공고는 색인에 남기되(지난 공고 통계·유사도의 재료) `meta.status` 로 표시해
+    검색·추천에서 뺀다. 검색은 `--include-closed` 로 열 수 있다.
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
 - `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비)
 
@@ -28,6 +30,11 @@
   할당에 실패한다. 전량 임베딩이 필요하면 `auto_crawl stop` 후 돌린다.
 - `screenshots/` 는 타임스탬프 스냅샷이 사이클마다 쌓인다(개당 ~250MB).
   `auto_crawl` 이 매 사이클 계열별 8개만 남기고 정리한다(`auto_crawl prune`으로 수동 실행).
+- 새 공고의 임베딩은 크롤 사이클 끝의 `refresh_semantic()` 이 증분으로 처리한다.
+  그러려면 Ollama 가 늘 떠 있어야 한다 — `brew services start ollama`.
+  꺼져 있으면 사이클은 그대로 돌고 임베딩만 조용히 건너뛴다(추천·검색이 낡아간다).
+- 검색 API(8771)는 `./deploy/setup-dashboards.sh` 가 launchd 로 상시 등록한다.
+  이게 없으면 뷰어의 `/api/` 는 SPA 폴백으로 index.html 을 200 으로 돌려준다.
 
 ## Git 워크플로
 - 커밋 메시지는 Conventional Commits 형식을 따른다: `type(scope): subject`

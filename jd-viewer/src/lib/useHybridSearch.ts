@@ -34,14 +34,20 @@ interface State {
 // 같은 오리진으로 프록시하므로 상대 경로면 된다.
 const API_BASE = import.meta.env.DEV ? 'http://127.0.0.1:8771' : ''
 
-/** 검색 API 가 떠 있는지. 없으면 UI 에서 의미 검색 자체를 감춘다. */
+/** 검색 API 가 떠 있는지. 없으면 UI 에서 의미 검색 자체를 감춘다.
+ *
+ * 상태 코드만 보면 안 된다. /api/ 프록시가 없는 배포에서는 SPA 폴백이 걸려
+ * index.html 이 200 으로 돌아오고, 그걸 "검색 살아있음"으로 읽으면 토글은 켜지는데
+ * 질의는 전부 HTML 을 받아 빈 결과가 된다(실제로 그렇게 깨져 있었다).
+ * 그래서 응답을 JSON 으로 파싱해 서버가 자기 소개한 {ok:true} 까지 확인한다.
+ */
 export function useSearchAvailable(): boolean {
   const [ok, setOk] = useState(false)
   useEffect(() => {
     let cancelled = false
     fetch(`${API_BASE}/api/health`)
-      .then((r) => r.ok)
-      .then((v) => !cancelled && setOk(v))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((body) => !cancelled && setOk(body?.ok === true))
       .catch(() => !cancelled && setOk(false))
     return () => {
       cancelled = true
