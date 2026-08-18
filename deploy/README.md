@@ -115,17 +115,25 @@ rsync -av <계정>@<옛서버>:jobseeker/catch_capture/screenshots/ \
           ~/jobseeker/catch_capture/screenshots/
 ```
 
-### 자동 커밋과 배포의 관계
+### 생성 데이터는 git 으로 나르지 않는다
 
-크롤러는 사이클마다 `jd-viewer/public`을 커밋한다. plist에 `JOBSEEKER_AUTOPUSH=1`을
-넣어 push까지 하는데, **이걸 끄면 로컬 커밋만 쌓여 origin과 갈라지고
-`deploy.sh`의 `git merge --ff-only`가 실패해 자동 배포가 멈춘다.**
+`jd-viewer/public/*.json`, `catch_capture/dashboard/data.json` 은 `.gitignore` 대상이다.
+크롤 파이프라인이 매 사이클 다시 만드는 파생물이고, git 에 넣으면 두 가지가 깨진다.
 
-대신 `deploy.yml`에 `paths-ignore`를 걸어 데이터 커밋으로는 재배포하지 않는다.
-데이터는 read-only 볼륨이라 재빌드 없이 즉시 반영되므로 배포할 이유가 없다.
+1. 사이클마다 수십 MB 가 바뀌어 이력이 데이터 커밋으로 뒤덮인다.
+2. 크롤러가 워킹트리를 상시 더럽혀 `deploy.sh` 의 `git merge --ff-only` 가 막힌다.
+   실제로 2026-08-17~18 배포가 이 이유로 연달아 실패했고, 뷰어가 낡은 이미지로
+   이틀간 서비스되면서 검색 API 프록시가 빠진 채 돌았다.
 
-> 참고: 옛 서버는 2026-07-20부터 push가 멈춰 있었다(토큰 만료로 추정).
-> 크롤은 계속 됐지만 로컬에만 쌓여서 origin 데이터가 한 달 뒤처졌다.
+그래서 크롤러의 자동 커밋(`JOBSEEKER_AUTOPUSH`)도 없앴다. 데이터는 read-only
+볼륨(`./jd-viewer/public:/data:ro`)으로 마운트되므로 파일만 바뀌면 뷰어에 즉시 반영된다.
+
+**데이터를 옮겨야 할 때**
+- 다른 서버로 이사: `./deploy/seed-server.sh <계정>@<호스트>` — 누적 폴더와 뷰어
+  데이터를 rsync 로 함께 나른다.
+- 데이터가 축소·손상됐을 때: 누적 폴더(`screenshots/{사이트}_{키워드}`)가 원본이므로
+  `jd-viewer/bin/refresh-data.sh` 로 다시 만든다. 이 스크립트에는 급감 가드가 있어
+  건수가 절반 미만으로 떨어지면 덮어쓰지 않고 멈춘다.
 
 ## 관리 대시보드
 
