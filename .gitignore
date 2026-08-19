@@ -75,3 +75,8 @@ catch_capture/dashboard/data.json
 
 # 빌더 캐시 (재수집 비용만 줄이는 로컬 파일)
 jd-viewer/bin/.inflearn_cache/
+
+# 재공고 추적 히스토리 — 사이클마다 누적되는 로컬 데이터.
+# 같은 성격의 closed_*.json 아카이브와 마찬가지로 git 밖에 둔다.
+# 지워도 build_reposts.py 가 마감 아카이브에서 다시 부트스트랩한다.
+catch_capture/job_history.jsonl
