@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T16:31:53",
+  "generated_at": "2026-08-19T17:54:19",
   "source": "youtube",
   "tech_count": 208,
   "curriculum_count": 20,
@@ -1317,88 +1317,6 @@
         "stage": "실전"
       }
     ],
-    "Spring Boot": [
-      {
-        "title": "스프링 부트 기본기 한시간에 끝내기! [ 스프링 부트(Spring Boot) 기초 강의 ]",
-        "url": "https://www.youtube.com/watch?v=AalcVuKwBUM",
-        "thumbnail": "https://i.ytimg.com/vi/AalcVuKwBUM/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 80763,
-        "length": "44:28",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "스프링 부트(Spring Boot) 기초 강의 몰아보기",
-        "url": "https://www.youtube.com/watch?v=7t6tQ4KV37g",
-        "thumbnail": "https://i.ytimg.com/vi/7t6tQ4KV37g/mqdefault.jpg",
-        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
-        "views": 33578,
-        "length": "6:44:20",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[SpringBoot 게시판(2025년최신)]  1강_강의소개",
-        "url": "https://www.youtube.com/watch?v=ahuokuXXol4",
-        "thumbnail": "https://i.ytimg.com/vi/ahuokuXXol4/mqdefault.jpg",
-        "channel": "코딩레시피",
-        "views": 1557,
-        "length": "7:00",
-        "published": "11개월 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[스프링 부트 입문 01] 스프링 부트란",
-        "url": "https://www.youtube.com/watch?v=HAlcc-HMz7k",
-        "thumbnail": "https://i.ytimg.com/vi/HAlcc-HMz7k/mqdefault.jpg",
-        "channel": "홍팍",
-        "views": 55088,
-        "length": "2:12",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "[10분 테코톡] 오잉의 Spring vs Spring Boot",
-        "url": "https://www.youtube.com/watch?v=YdE4krx0dsM",
-        "thumbnail": "https://i.ytimg.com/vi/YdE4krx0dsM/mqdefault.jpg",
-        "channel": "우아한테크",
-        "views": 19479,
-        "length": "9:34",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "SpringBoot - 주요 어노테이션 정리",
-        "url": "https://www.youtube.com/watch?v=506g8TmWUfw",
-        "thumbnail": "https://i.ytimg.com/vi/506g8TmWUfw/mqdefault.jpg",
-        "channel": "알클 ALOHA CLASS",
-        "views": 620,
-        "length": "26:55",
-        "published": "스트리밍 시간: 1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[스프링 부트 기초 강의] 11강. 8. 스프링 부트와 챗GPT 연동하기 | 마케팅 문구 생성 웹앱 만들기",
-        "url": "https://www.youtube.com/watch?v=io4hc_oDNDM",
-        "thumbnail": "https://i.ytimg.com/vi/io4hc_oDNDM/mqdefault.jpg",
-        "channel": "한빛미디어",
-        "views": 613,
-        "length": "38:49",
-        "published": "9개월 전",
-        "stage": "실전"
-      },
-      {
-        "title": "자바와 스프링 부트로 생애 최초 서버 만들기, 누구나 쉽게 개발부터 배포까지! #스프링독학 #무료영상모음",
-        "url": "https://www.youtube.com/watch?v=lqgEbqty7O4",
-        "thumbnail": "https://i.ytimg.com/vi/lqgEbqty7O4/mqdefault.jpg",
-        "channel": "공부하는 개발자",
-        "views": 3856,
-        "length": "1:13:28",
-        "published": "3년 전",
-        "stage": "실전"
-      }
-    ],
     "Azure": [
       {
         "title": "애저 네트워크 기본 설계 | LIght up Azure",
@@ -1478,6 +1396,88 @@
         "views": 543,
         "length": "36:21",
         "published": "8개월 전",
+        "stage": "실전"
+      }
+    ],
+    "Spring Boot": [
+      {
+        "title": "스프링 부트 기본기 한시간에 끝내기! [ 스프링 부트(Spring Boot) 기초 강의 ]",
+        "url": "https://www.youtube.com/watch?v=AalcVuKwBUM",
+        "thumbnail": "https://i.ytimg.com/vi/AalcVuKwBUM/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 80763,
+        "length": "44:28",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "스프링 부트(Spring Boot) 기초 강의 몰아보기",
+        "url": "https://www.youtube.com/watch?v=7t6tQ4KV37g",
+        "thumbnail": "https://i.ytimg.com/vi/7t6tQ4KV37g/mqdefault.jpg",
+        "channel": "어라운드 허브 스튜디오 - Around Hub Studio",
+        "views": 33578,
+        "length": "6:44:20",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[SpringBoot 게시판(2025년최신)]  1강_강의소개",
+        "url": "https://www.youtube.com/watch?v=ahuokuXXol4",
+        "thumbnail": "https://i.ytimg.com/vi/ahuokuXXol4/mqdefault.jpg",
+        "channel": "코딩레시피",
+        "views": 1557,
+        "length": "7:00",
+        "published": "11개월 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[스프링 부트 입문 01] 스프링 부트란",
+        "url": "https://www.youtube.com/watch?v=HAlcc-HMz7k",
+        "thumbnail": "https://i.ytimg.com/vi/HAlcc-HMz7k/mqdefault.jpg",
+        "channel": "홍팍",
+        "views": 55088,
+        "length": "2:12",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "[10분 테코톡] 오잉의 Spring vs Spring Boot",
+        "url": "https://www.youtube.com/watch?v=YdE4krx0dsM",
+        "thumbnail": "https://i.ytimg.com/vi/YdE4krx0dsM/mqdefault.jpg",
+        "channel": "우아한테크",
+        "views": 19479,
+        "length": "9:34",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "SpringBoot - 주요 어노테이션 정리",
+        "url": "https://www.youtube.com/watch?v=506g8TmWUfw",
+        "thumbnail": "https://i.ytimg.com/vi/506g8TmWUfw/mqdefault.jpg",
+        "channel": "알클 ALOHA CLASS",
+        "views": 620,
+        "length": "26:55",
+        "published": "스트리밍 시간: 1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[스프링 부트 기초 강의] 11강. 8. 스프링 부트와 챗GPT 연동하기 | 마케팅 문구 생성 웹앱 만들기",
+        "url": "https://www.youtube.com/watch?v=io4hc_oDNDM",
+        "thumbnail": "https://i.ytimg.com/vi/io4hc_oDNDM/mqdefault.jpg",
+        "channel": "한빛미디어",
+        "views": 613,
+        "length": "38:49",
+        "published": "9개월 전",
+        "stage": "실전"
+      },
+      {
+        "title": "자바와 스프링 부트로 생애 최초 서버 만들기, 누구나 쉽게 개발부터 배포까지! #스프링독학 #무료영상모음",
+        "url": "https://www.youtube.com/watch?v=lqgEbqty7O4",
+        "thumbnail": "https://i.ytimg.com/vi/lqgEbqty7O4/mqdefault.jpg",
+        "channel": "공부하는 개발자",
+        "views": 3856,
+        "length": "1:13:28",
+        "published": "3년 전",
         "stage": "실전"
       }
     ],
