@@ -21,7 +21,12 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
 sys.path.insert(0, str(ROOT / "jd-viewer" / "bin"))
 from classifier import classify_dev_roles, extract_competencies  # noqa: E402
-from build_mindmap import ROLE_PROFILE, ROLES_ORDER  # noqa: E402
+# 예전에는 build_mindmap 의 ROLE_PROFILE(직군별 '핵심스택' 큐레이션 dict)을 함께
+# 가져왔는데, b9a1efc 에서 마인드맵이 기업 중심으로 재구성되며 그 dict 가 사라져 이
+# 스크립트는 그때부터 import 에러로 죽어 있었다. 되살리는 대신 핵심 키워드를 관측
+# 데이터에서 뽑는다 — 이 저장소는 "큐레이션 텍스트는 쓰지 않는다"를 원칙으로 하고,
+# 사람이 손으로 유지하는 목록은 이렇게 조용히 낡는다.
+from build_mindmap import ROLE_ORDER as ROLES_ORDER  # noqa: E402
 from jobs_filter import active_only  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
@@ -182,11 +187,11 @@ def render(data: dict[str, dict], total: int) -> str:
     out.append("| 직군 | 핵심 키워드 | 자격요건(학력) | 자격요건(경력) | 요구 경험·역량 | 우대사항 |")
     out.append("|---|---|---|---|---|---|")
     for r in ROLES_ORDER:
-        prof = ROLE_PROFILE.get(r, {})
         d = data.get(r, {})
         n = d.get("count", 0)
-        core = prof.get("핵심스택", [])
-        tech = cell(", ".join(core[:10]))
+        # 핵심 키워드 = 그 직군 공고에서 실제로 가장 많이 관측된 스택
+        core = [t for t, _ in d.get("tech", Counter()).most_common(10)]
+        tech = cell(", ".join(core))
         edu = cell(fmt_edu(d.get("edu", Counter())))
         car = cell(fmt_career(d.get("career_new", 0), d.get("years", Counter()), n))
         exp = cell(fmt_exp(d.get("exp", Counter())))
