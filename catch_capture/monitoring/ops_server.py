@@ -25,6 +25,7 @@ import http.server
 import json
 import os
 import socketserver
+import time
 import webbrowser
 from datetime import datetime
 from pathlib import Path
@@ -156,7 +157,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     return default
         return default
 
-    def do_GET(self) -> None:
+    def do_GET(self) -> None:  # noqa: D102
         path, _, qs = self.path.partition("?")
 
         if path in STATIC:
@@ -185,12 +186,51 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send_json(_tail_jsonl(EVENTS_FILE, n))
             return
 
+        if path == "/api/builders":
+            self._send_json(_builder_outputs())
+            return
+
         if path == "/api/health":
             n = self._query_int(qs, "n", 30)
             self._send_json(_tail_jsonl(HEALTH_HISTORY, n))
             return
 
         self._send(404, b"not found", "text/plain")
+
+
+# 뷰어가 실제로 읽는 산출물. 사이클 상태(run_state)만 보면 데몬이 멈춘 뒤로는 아무것도
+# 알 수 없다 — 화면은 며칠 전 JSON 을 그대로 잘 보여주기 때문이다. 파일 자체의 수정
+# 시각을 함께 내보내야 "이 화면은 지금 며칠째 옛날 데이터" 가 드러난다.
+BUILDER_OUTPUTS = [
+    ("모집 캘린더", "job_calendar.json"),
+    ("개발 트렌드", "trends.json"),
+    ("기술 관계", "tech_relations.json"),
+    ("재공고 추적", "reposts.json"),
+    ("커리어 맵", "career_map.json"),
+    ("블로그 가이드", "blog_guides.json"),
+    ("인프런 강의", "inflearn_courses.json"),
+    ("학습 영상", "learning_resources.json"),
+    ("기업 스택", "company_stacks.json"),
+    ("직군 인사이트", "role_insights.json"),
+]
+VIEWER_PUBLIC = CATCH_DIR.parent / "jd-viewer" / "public"
+
+
+def _builder_outputs() -> list[dict]:
+    out = []
+    now = time.time()
+    for label, fname in BUILDER_OUTPUTS:
+        fp = VIEWER_PUBLIC / fname
+        if fp.exists():
+            st = fp.stat()
+            out.append({
+                "name": label, "file": fname, "exists": True,
+                "size": st.st_size, "age_sec": int(now - st.st_mtime),
+                "mtime": datetime.fromtimestamp(st.st_mtime).isoformat(timespec="seconds"),
+            })
+        else:
+            out.append({"name": label, "file": fname, "exists": False})
+    return out
 
 
 def serve(port: int, open_browser: bool) -> None:
