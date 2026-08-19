@@ -61,7 +61,7 @@ def content_hash(j: dict) -> str:
     return hashlib.sha1(payload.encode("utf-8")).hexdigest()[:16]
 
 
-def diff(old: dict, new: dict) -> list[dict]:
+def diff(old: dict, new: dict, live: dict | None = None) -> list[dict]:
     changes: list[dict] = []
     for f in SHORT_FIELDS:
         a, b = (old.get(f) or ""), (new.get(f) or "")
@@ -75,18 +75,18 @@ def diff(old: dict, new: dict) -> list[dict]:
                 "added": sorted(b - a)[:12], "removed": sorted(a - b)[:12],
             })
     for f in LONG_FIELDS:
-        a, b = (old.get(f) or ""), (new.get(f) or "")
-        if a == b:
+        (alen, asig), (blen, bsig) = _long(old.get(f)), _long(new.get(f))
+        if alen == blen and asig == bsig:
             continue
         # 한쪽이 0자면 '요구가 사라졌다'가 아니라 그 판의 본문을 못 긁은 것이다.
         # jobkorea 는 본문을 별도 txt 로 받아오는데 갓 올라온 공고는 아직 없을 수 있다.
         # 실제로 텍스트 변경 121건 중 81건(66%)이 이 경우였다 — 그대로 세면
         # "재공고하면서 자격요건을 통째로 지웠다"는 잘못된 트렌드가 만들어진다.
-        missing = (len(a) == 0) != (len(b) == 0)
+        missing = (alen == 0) != (blen == 0)
         changes.append({
             "field": f, "kind": "text", "missing": missing,
-            "from_len": len(a), "to_len": len(b),
-            "to_excerpt": b[:180],
+            "from_len": alen, "to_len": blen,
+            "to_excerpt": (live.get(f) or "")[:180] if live else "",
         })
     return changes
 
@@ -117,13 +117,37 @@ def load_history() -> dict[str, list[dict]]:
     return hist
 
 
+EXCERPT = 200
+
+
 def snapshot(j: dict, status: str) -> dict:
+    """히스토리에 남길 최소 형태.
+
+    긴 본문은 전문을 넣지 않는다. 넣었더니 파일이 51MB 가 됐는데, 정작 변경 로그가
+    쓰는 것은 길이와 앞부분뿐이다. 변화 감지는 content_hash 가 원본 전문으로 하므로
+    전문을 보관하지 않아도 정확도는 그대로다.
+    """
     rec = {f: j.get(f) for f in SHORT_FIELDS}
     rec["tech_stack"] = list(j.get("tech_stack") or [])
     for f in LONG_FIELDS:
-        rec[f] = j.get(f) or ""
+        t = j.get(f) or ""
+        # 길이 + 해시만. 앞부분 200자를 넣었을 때가 35MB, 전문을 넣었을 때가 51MB 였다.
+        # 두 판이 같은지 판단하는 데는 (길이, 해시) 가 발췌보다 오히려 정확하고,
+        # 화면에 띄울 발췌는 '지금 살아 있는 공고' 에서 그때그때 읽으면 된다.
+        rec[f] = {"len": len(t), "h": hashlib.sha1(t.encode("utf-8")).hexdigest()[:12]}
     rec["status"] = status
     return rec
+
+
+def _long(v) -> tuple[int, str]:
+    """LONG_FIELD 값을 (길이, 지문) 으로. 예전 두 포맷(전문 문자열 / head 보관)도 받는다."""
+    if isinstance(v, dict):
+        if "h" in v:
+            return int(v.get("len") or 0), str(v["h"])
+        head = str(v.get("head") or "")
+        return int(v.get("len") or 0), hashlib.sha1(head.encode("utf-8")).hexdigest()[:12]
+    t = str(v or "")
+    return len(t), hashlib.sha1(t.encode("utf-8")).hexdigest()[:12]
 
 
 def main() -> None:
@@ -208,10 +232,11 @@ def main() -> None:
             continue                    # 지금 살아 있는 자리만 '재공고'다
         # 직전의 마감 판과 비교한다
         prev_closed = closed[-1]
-        changes = diff(prev_closed["data"], latest["data"])
+        cur_live = by_key_now.get((comp, title), [None])[0]
+        changes = diff(prev_closed["data"], latest["data"], cur_live)
         if not changes:
             continue
-        cur = by_key_now.get((comp, title), [{}])[0]
+        cur = cur_live or {}
         reposts.append({
             "company": cur.get("company") or prev_closed["data"].get("site") or "",
             "title": cur.get("title") or latest["data"].get("title") or "",
