@@ -239,6 +239,35 @@ def refresh_finished(target: str, ok: bool) -> None:
     emit("refresh_done", target=target, ok=ok)
 
 
+def builder_started(name: str) -> None:
+    """뷰어 데이터 빌더 1개 시작. name 은 사람이 읽는 이름('재공고', '커리어 맵' 등).
+
+    빌더는 사이클 끝에 줄줄이 도는데, 지금까지는 실패해도 auto_crawl.log 에 한 줄
+    남는 게 전부였다. 로그를 열어보기 전에는 어떤 뷰가 며칠째 갱신되지 않고 있는지
+    알 수 없다 — 화면은 옛 JSON 을 그대로 잘 보여주기 때문이다. 상태를 여기 남겨
+    운영 대시보드가 사이클마다 보여주게 한다.
+    """
+    state = load_state()
+    b = state.setdefault("cycle", {}).setdefault("builders", {})
+    b[name] = {"status": "running", "started_at": _now_iso()}
+    save_state(state)
+    emit("builder_start", name=name)
+
+
+def builder_finished(name: str, ok: bool, elapsed: float, detail: str = "",
+                     skipped: bool = False) -> None:
+    state = load_state()
+    b = state.setdefault("cycle", {}).setdefault("builders", {})
+    b[name] = {
+        "status": "skipped" if skipped else ("done" if ok else "failed"),
+        "finished_at": _now_iso(),
+        "elapsed": round(elapsed, 1),
+        "detail": detail[:200],
+    }
+    save_state(state)
+    emit("builder_done", name=name, ok=ok, elapsed=round(elapsed, 1), skipped=skipped)
+
+
 def cycle_finished(new_data: bool, elapsed: float) -> None:
     state = load_state()
     cyc = state.setdefault("cycle", {})

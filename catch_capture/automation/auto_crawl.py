@@ -52,9 +52,17 @@ LEARNING_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_learning.py"
 CALENDAR_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_calendar.py"
 TRENDS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_trends.py"
 RELATIONS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_tech_relations.py"
+REPOSTS_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_reposts.py"
+CAREER_MAP_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_career_map.py"
+BLOG_GUIDES_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_blog_guides.py"
+INFLEARN_SCRIPT = ROOT_DIR / "jd-viewer" / "bin" / "build_inflearn.py"
 RADAR_REFINE_N = 2                     # 사이클당 레이더 점진 리파인 회사 수
 LEARNING_REFRESH_SECS = 6 * 3600       # 학습영상 캐시 무시 재수집 주기(기존 learning cron 대체)
+# 인프런은 강의 상세를 한 건씩 받아오느라 기술 24개에 6~8분이 든다. 강의 카탈로그는
+# 공고처럼 30분마다 바뀌지 않으므로 사이클마다 돌릴 이유가 없다.
+INFLEARN_REFRESH_SECS = 12 * 3600
 LEARNING_STAMP = BASE_DIR / ".learning_refresh.stamp"
+INFLEARN_STAMP = BASE_DIR / ".inflearn_refresh.stamp"
 
 # 주기적 데이터 자동 커밋 — 누적되는 생성물(레이더·후기·집계)을 사이클마다 커밋한다.
 # push 는 CLAUDE.md 규칙상 기본 OFF. 환경변수 JOBSEEKER_AUTOPUSH=1 일 때만 push 한다.
@@ -328,46 +336,62 @@ def auto_commit_data() -> None:
         log(f"[autocommit] 예외: {e!r}")
 
 
-def rebuild_calendar() -> None:
-    """모집 캘린더(job_calendar.json)를 매 사이클 재생성 — 데이터가 쌓이는 즉시 반영하고
-    상대 마감(D-N)도 오늘 기준으로 최신화한다. enriched 데이터만 있으면 빠르게 동작."""
+def run_builder(label: str, script: Path, args: list[str] | None = None,
+                stamp: Path | None = None, every_secs: int = 0) -> None:
+    """뷰어 데이터 빌더 하나를 돌리고 결과를 운영 상태에 남긴다.
+
+    빌더마다 같은 try/except 를 세 번 복사해 두었던 것을 하나로 모은다. 여기서 중요한
+    것은 예외를 삼키는 것 자체가 아니라 **삼킨 사실을 남기는 것**이다. 빌더가 실패해도
+    뷰어는 지난번 JSON 을 그대로 잘 보여주기 때문에, 기록이 없으면 어떤 화면이 며칠째
+    멈춰 있는지 아무도 모른다.
+
+    stamp/every_secs 를 주면 그 주기 안에는 건너뛴다(인프런처럼 느린 수집용).
+    """
+    if stamp is not None and every_secs:
+        try:
+            last = float(stamp.read_text()) if stamp.exists() else 0.0
+        except (OSError, ValueError):
+            last = 0.0
+        if time.time() - last < every_secs:
+            orch.builder_finished(label, True, 0.0,
+                                  f"주기 {every_secs // 3600}h 내 — 건너뜀", skipped=True)
+            return
+
+    orch.builder_started(label)
+    t0 = time.time()
     try:
-        rc = subprocess.call([_python_executable(), str(CALENDAR_SCRIPT)], cwd=str(ROOT_DIR))
-        if rc != 0:
-            log(f"[calendar] 실패(rc={rc})")
-    except Exception as e:
-        log(f"[calendar] 예외: {e!r}")
-
-
-def rebuild_trends() -> None:
-    """개발 트렌드 시계열(trends.json)을 매 사이클 재집계 — 날짜별 스냅샷이 쌓일수록 추세가 길어진다."""
-    try:
-        rc = subprocess.call([_python_executable(), str(TRENDS_SCRIPT)], cwd=str(ROOT_DIR))
-        if rc != 0:
-            log(f"[trends] 실패(rc={rc})")
-    except Exception as e:
-        log(f"[trends] 예외: {e!r}")
-
-
-def rebuild_relations() -> None:
-    """기술 관계·맥락(tech_relations.json)의 동시출현을 매 사이클 재집계(LLM context/domains 보존)."""
-    try:
-        rc = subprocess.call([_python_executable(), str(RELATIONS_SCRIPT)], cwd=str(ROOT_DIR))
-        if rc != 0:
-            log(f"[relations] 실패(rc={rc})")
-    except Exception as e:
-        log(f"[relations] 예외: {e!r}")
+        rc = subprocess.call([_python_executable(), str(script), *(args or [])],
+                             cwd=str(ROOT_DIR))
+        ok = rc == 0
+        if stamp is not None and ok:
+            stamp.write_text(str(time.time()))
+        log(f"[{label}] {'완료' if ok else f'실패(rc={rc})'} ({time.time() - t0:.0f}s)")
+        orch.builder_finished(label, ok, time.time() - t0, "" if ok else f"rc={rc}")
+    except Exception as e:                                          # noqa: BLE001
+        log(f"[{label}] 예외: {e!r}")
+        orch.builder_finished(label, False, time.time() - t0, repr(e))
 
 
 def enrich_extras() -> None:
-    """크롤과 무관하게 매 사이클 굴리는 부가 작업: 레이더 리파인 + 후기 데몬 보장 + 학습 재수집
-    + 모집 캘린더 재생성 + 개발 트렌드·관계 재집계 + 누적 데이터 자동 커밋."""
+    """크롤과 무관하게 매 사이클 굴리는 부가 작업.
+
+    순서에 의존성이 있다. 트렌드가 tracked 기술 목록을 만들고 인프런이 그것을 읽으므로
+    트렌드가 먼저다. 재공고·커리어 맵·블로그 가이드는 refresh_data/refresh_semantic 이
+    만들어 둔 enriched JSON 과 semantic.db 를 읽으므로 그 뒤에 온다.
+    """
     maybe_refresh_learning()
     enrich_radar()
     ensure_reviews_daemon()
-    rebuild_calendar()
-    rebuild_trends()
-    rebuild_relations()
+    run_builder("모집 캘린더", CALENDAR_SCRIPT)
+    run_builder("개발 트렌드", TRENDS_SCRIPT)
+    run_builder("기술 관계", RELATIONS_SCRIPT)
+    # 재공고는 매 사이클 돌아야 한다. 여기서 한 번 거르면 그 회차의 변경은 영영 기록되지
+    # 않고, 나중에 되돌아가 채울 방법도 없다(공고 원본이 이미 사라진다).
+    run_builder("재공고 추적", REPOSTS_SCRIPT)
+    run_builder("커리어 맵", CAREER_MAP_SCRIPT)
+    run_builder("블로그 가이드", BLOG_GUIDES_SCRIPT)
+    run_builder("인프런 강의", INFLEARN_SCRIPT, stamp=INFLEARN_STAMP,
+                every_secs=INFLEARN_REFRESH_SECS)
     auto_commit_data()
 
 

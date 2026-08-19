@@ -71,3 +71,6 @@ jd-viewer/bin/.learning_cache.json
 # 같은 성격의 closed_*.json 아카이브와 마찬가지로 git 밖에 둔다.
 # 지워도 build_reposts.py 가 마감 아카이브에서 다시 부트스트랩한다.
 catch_capture/job_history.jsonl
+
+# 인프런 수집 주기 스탬프 (로컬 실행 기록)
+catch_capture/.inflearn_refresh.stamp
