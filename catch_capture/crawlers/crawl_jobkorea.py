@@ -149,6 +149,46 @@ def parse_raw_meta(raw_text: str) -> dict:
     return out
 
 
+DETAIL_URL = "https://www.jobkorea.co.kr/Recruit/GI_Read/{gno}"
+_LD_RE = re.compile(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', re.S)
+_TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S)
+
+
+def fetch_company(gno: str, referer: str) -> str:
+    """검색 카드에서 회사명을 못 얻었을 때만 상세 페이지에서 한 번 더 시도한다.
+
+    카드는 로고 이미지의 alt 와 /Corp/ 링크 두 가지로 회사명을 읽는데, 일부 카드
+    변종에는 둘 다 없어 회사명이 빈 채로 저장돼 왔다(전체의 약 2.8%, 492건).
+    빈 회사명은 재공고 추적의 동일성 키를 (사이트, 제목) 으로 떨어뜨리고 기업별
+    집계에서도 통째로 빠지므로, 값 하나가 없는 것 이상의 손해가 난다.
+
+    상세 페이지는 schema.org JobPosting 을 서버 HTML 에 그대로 실어 보낸다. 이쪽이
+    DOM 클래스명보다 훨씬 안정적이라 1순위로 쓰고, 실패하면 <title> 의
+    '<회사> 채용 - <제목> | 잡코리아' 형태를 판다.
+
+    카드에서 이미 얻었으면 부르지 않으므로 추가 요청은 36건에 1번 꼴이다.
+    """
+    try:
+        raw = http_get(DETAIL_URL.format(gno=gno), referer=referer).decode("utf-8", errors="replace")
+    except Exception:
+        return ""
+    m = _LD_RE.search(raw)
+    if m:
+        try:
+            data = json.loads(m.group(1))
+            name = ((data or {}).get("hiringOrganization") or {}).get("name")
+            if name:
+                return str(name).strip()
+        except (json.JSONDecodeError, AttributeError):
+            pass
+    t = _TITLE_RE.search(raw)
+    if t:
+        head = t.group(1).split("채용 -")[0].strip()
+        if head and len(head) <= 60:
+            return head
+    return ""
+
+
 def fetch_jd(gno: str, referer: str) -> tuple[str, str]:
     url = DETAIL_IFRAME_URL.format(gno=gno)
     raw = http_get(url, referer=referer).decode("utf-8", errors="replace")
@@ -221,6 +261,14 @@ async def crawl(keyword: str, target: int, max_pages: int, use_ocr: bool) -> Non
 
             jd_html, jd_text = "", ""
             try:
+                # 카드에서 회사명을 못 얻었으면 상세 페이지에서 보충한다. JD 를 받기
+                # 직전에 하는 이유는, 여기까지 온 공고만 실제로 저장되기 때문이다
+                # (중복·비개발 공고는 위에서 이미 걸러졌다).
+                if not (job.get("company") or "").strip():
+                    got = fetch_company(job["gno"], referer=job["href"])
+                    if got:
+                        job["company"] = got
+                        print(f"       ↳ 회사명 보충: {got}", flush=True)
                 jd_html, jd_text = fetch_jd(job["gno"], referer=job["href"])
             except Exception as e:
                 print(f"       ↳ JD fetch 실패: {e}", flush=True)
