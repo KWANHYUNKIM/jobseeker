@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
 import { useIsLight } from '../lib/useIsLight'
@@ -16,9 +16,13 @@ export function JobList({ jobs, selected, onSelect }: Props) {
   const [page, setPage] = useState(0)
   const isLight = useIsLight()
 
-  useEffect(() => {
+  // 필터가 바뀌면 1페이지로 돌아간다. effect 에서 setState 하면 한 번 그린 뒤 다시 그리게
+  // 되어(잘못된 페이지가 한 프레임 보인다) React 가 권하는 '렌더 중 조정' 패턴을 쓴다.
+  const [prevJobs, setPrevJobs] = useState(jobs)
+  if (jobs !== prevJobs) {
+    setPrevJobs(jobs)
     setPage(0)
-  }, [jobs])
+  }
 
   const totalPages = Math.max(1, Math.ceil(jobs.length / PAGE_SIZE))
   const start = page * PAGE_SIZE
