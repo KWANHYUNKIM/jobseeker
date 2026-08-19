@@ -62,3 +62,7 @@ jd-viewer/bin/.refresh-learning.lock/
 
 # 런타임 생성 학습 갱신 타임스탬프
 .learning_refresh.stamp
+
+# 빌더 캐시 (재수집 비용만 줄이는 로컬 파일)
+jd-viewer/bin/.inflearn_cache/
+jd-viewer/bin/.learning_cache.json

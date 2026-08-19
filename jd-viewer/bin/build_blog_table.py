@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT / "catch_capture" / "dashboard"))
 sys.path.insert(0, str(ROOT / "jd-viewer" / "bin"))
 from classifier import classify_dev_roles, extract_competencies  # noqa: E402
 from build_mindmap import ROLE_PROFILE, ROLES_ORDER  # noqa: E402
+from jobs_filter import active_only  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 OUTPUT = ROOT / "jd-viewer" / "public" / "blog_keywords.md"
@@ -234,7 +235,10 @@ def main() -> None:
     if not INPUT.exists():
         print(f"[!] 입력 없음: {INPUT}", file=sys.stderr)
         sys.exit(1)
-    jobs = json.loads(INPUT.read_text(encoding="utf-8"))
+    # 마감 공고는 뺀다. all_jobs_enriched.json 은 이제 모집중과 마감을 함께 담는데
+    # (색인·과거 조회를 살리려고) 이 빌더의 결과는 "지금 시장"이라 만료 공고를 세면
+    # 수요가 과거에 눌린다.
+    jobs = active_only(json.loads(INPUT.read_text(encoding="utf-8")))
     print(f"[*] {len(jobs)}건 로드", flush=True)
     md = generate(jobs)
     OUTPUT.write_text(md, encoding="utf-8")

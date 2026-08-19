@@ -60,25 +60,29 @@ def parse_deadline(job: dict, today: date | None = None) -> tuple[date | None, b
     if m:
         return today + timedelta(days=int(m.group(1))), False
 
-    # MM/DD or MM.DD
+    # MM/DD or MM.DD — 연도가 없으므로 어느 해인지 골라야 한다.
+    #
+    # 예전 규칙은 "60일 이상 과거면 내년으로 간주"였다. 연말(12월)에 본 '01/05'를
+    # 내년 1월로 읽으려는 의도였지만, 조건에 연말이라는 단서가 없어서 **모든** 과거
+    # 날짜에 걸렸다. 2026-08-19 에 본 '06/07' 은 2026-06-07(73일 전)을 건너뛰고
+    # 2027-06-07 을 돌려주었고, 두 달 전에 끝난 공고가 '내년 마감'이라 모집중으로
+    # 남았다. 마감 아카이브에는 이미 들어가 있는 공고가 활성 목록에도 계속 남는
+    # 이유가 이것이다(같은 URL·같은 마감일로 1,178건).
+    #
+    # 오늘에서 가장 가까운 후보를 고른다. 연말→연초는 그대로 처리되고(12/28 에 본
+    # 01/05 는 내년 쪽이 8일 뒤라 더 가깝다) 몇 달 지난 마감은 과거로 남는다.
     m = MD_RE.search(text)
     if m:
         mm, dd = int(m.group(1)), int(m.group(2))
         if 1 <= mm <= 12 and 1 <= dd <= 31:
-            for year in (today.year, today.year + 1, today.year - 1):
+            cands = []
+            for year in (today.year - 1, today.year, today.year + 1):
                 try:
-                    cand = date(year, mm, dd)
-                except ValueError:
+                    cands.append(date(year, mm, dd))
+                except ValueError:      # 2월 29일 등 그 해에 없는 날짜
                     continue
-                # 60일 이상 과거면 내년 마감으로 간주(연말→연초 롤오버 대비)
-                if cand < today - timedelta(days=60):
-                    continue
-                return cand, False
-            # 모든 후보가 60일+ 과거 → 올해 기준으로 확정(=마감)
-            try:
-                return date(today.year, mm, dd), False
-            except ValueError:
-                return None, False
+            if cands:
+                return min(cands, key=lambda c: abs((c - today).days)), False
     return None, False
 
 
