@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useTrends } from '../lib/useTrends'
@@ -27,10 +27,13 @@ export function TrendView({
   const [mode, setMode] = useState<TrendMode>('trend')
   const [relTech, setRelTech] = useState<string | null>(null)
 
-  // "이 기술 공부하기"로 진입하면 학습·확장 모드로 전환
-  useEffect(() => {
+  // "이 기술 공부하기"로 진입하면 학습·확장 모드로 전환.
+  // effect 대신 렌더 중 조정 — effect 에서 setState 하면 전환 전 모드가 한 프레임 보인다.
+  const [prevFocus, setPrevFocus] = useState(focusTech)
+  if (focusTech !== prevFocus) {
+    setPrevFocus(focusTech)
     if (focusTech?.tech) setMode('learn')
-  }, [focusTech])
+  }
 
   const latest = data?.days[data.days.length - 1]
   const ranking = useMemo(() => {
