@@ -42,6 +42,7 @@ import re
 import sys
 import time
 import urllib.parse as up
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
@@ -49,6 +50,7 @@ import httpx
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 TRENDS = ROOT / "jd-viewer" / "public" / "trends.json"
+STACKS = ROOT / "jd-viewer" / "public" / "company_stacks.json"
 OUTPUT = ROOT / "jd-viewer" / "public" / "inflearn_courses.json"
 CACHE_DIR = Path(__file__).resolve().parent / ".inflearn_cache"
 SITEMAP_INDEX = "https://cdn.inflearn.com/sitemaps/sitemap.xml"
@@ -58,7 +60,8 @@ UA = (
     "(KHTML, like Gecko) Chrome/139.0 Safari/537.36"
 )
 DELAY = 1.5           # 상세 페이지 1건당 최소 간격(초)
-CANDIDATES = 12       # 기술당 상세를 확인할 후보 수(슬러그 매칭 상위)
+CANDIDATES = 30       # 기술당 상세를 확인할 후보 수(슬러그 매칭 상위)
+MAX_TECHS = 60        # 수집할 기술 수 상한
 KEEP = 8              # 기술당 최종 보관 수
 NEXT_DATA_RE = re.compile(r'id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 KO_COURSE_RE = re.compile(r"^https://www\.inflearn\.com/course/([^?]+)\?cid=(\d+)$")
@@ -103,7 +106,16 @@ ALIASES: dict[str, list[str]] = {
     "iOS": ["ios", "swift", "스위프트"],
     "Kotlin": ["kotlin", "코틀린"],
     "Flutter": ["flutter", "플러터"],
-    "Go": ["golang", "go-lang"],  # 'go' 단독은 오탐이 너무 많다
+    "Go": ["golang", "go-lang", "go-언어", "고랭"],  # 'go' 단독은 오탐이 너무 많다
+    "GraphQL": ["graphql"],
+    "Terraform": ["terraform", "테라폼"],
+    "Jenkins": ["jenkins", "젠킨스"],
+    "Swift": ["swift", "스위프트"],
+    "Unity": ["unity", "유니티"],
+    "Nginx": ["nginx", "엔진엑스"],
+    "Airflow": ["airflow", "에어플로"],
+    "Hadoop": ["hadoop", "하둡"],
+    "Spark": ["spark", "스파크"],
 }
 
 
@@ -260,7 +272,26 @@ def main() -> None:
     if not TRENDS.exists():
         raise SystemExit(f"[inflearn] trends.json 이 없습니다: {TRENDS}  (build_trends.py 먼저)")
     trends = json.loads(TRENDS.read_text(encoding="utf-8"))
-    techs: list[str] = trends.get("tracked") or []
+    techs: list[str] = list(trends.get("tracked") or [])
+
+    # trends 의 tracked 는 히스토리에 저장된 상위 N개라 지금은 24개뿐이다(그 값을 40 으로
+    # 올렸으므로 회차가 쌓이면 늘어난다). 그때까지 24개에 묶여 있을 이유는 없으니
+    # company_stacks 의 기술 목록으로 보충한다 — 수요 순서는 trends 쪽이 정확하므로
+    # 그쪽을 앞에 두고, 뒤를 채우는 용도로만 쓴다.
+    if STACKS.exists():
+        seen = {t.lower() for t in techs}
+        counter: Counter[str] = Counter()
+        for c in json.loads(STACKS.read_text(encoding="utf-8")).get("companies", []):
+            for t in (c.get("top_tech") or []):
+                name = t.get("name") if isinstance(t, dict) else t
+                if name:
+                    counter[name] += 1
+        for name, _ in counter.most_common():
+            if name.lower() not in seen:
+                seen.add(name.lower())
+                techs.append(name)
+
+    techs = techs[:MAX_TECHS]
     if args.limit:
         techs = techs[: args.limit]
     if not techs:
