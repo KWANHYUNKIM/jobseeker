@@ -15,6 +15,11 @@ export interface Job {
   preferences: string
   benefits: string
   full_jd: string
+  // 마감 여부. all_jobs_enriched.json 은 모집중과 마감을 함께 담는다 — 마감을 파일에서
+  // 빼면 색인·유사공고·과거 조회가 통째로 사라지므로, 숨기지 않고 구분해서 싣는다.
+  status?: 'active' | 'closed'
+  closed_reason?: string
+  deadline_date?: string
   // 해외 보드(remote) / 회사 자체 채용페이지(ats) 전용 (그 외 사이트는 undefined)
   region?: string
   source_board?: string
