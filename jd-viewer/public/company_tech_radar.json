@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-19T09:41:51",
+ "generated_at": "2026-08-19T11:04:20",
  "total": 100,
  "countries": [
   {
@@ -2890,15 +2890,15 @@
      "count": 3
     },
     {
+     "name": "Kotlin",
+     "count": 3
+    },
+    {
      "name": "Python",
      "count": 3
     },
     {
      "name": "Go",
-     "count": 2
-    },
-    {
-     "name": "Kotlin",
      "count": 2
     },
     {
@@ -2929,6 +2929,10 @@
       "count": 2
      },
      {
+      "name": "Node.js",
+      "count": 2
+     },
+     {
       "name": "Dropwizard",
       "count": 1
      },
@@ -2946,10 +2950,6 @@
      },
      {
       "name": "Netty",
-      "count": 1
-     },
-     {
-      "name": "Node.js",
       "count": 1
      },
      {
@@ -2979,6 +2979,14 @@
       "count": 1
      },
      {
+      "name": "Kotlin/Swift Native",
+      "count": 1
+     },
+     {
+      "name": "PWA",
+      "count": 1
+     },
+     {
       "name": "Recoil / Redux",
       "count": 1
      },
@@ -2988,10 +2996,6 @@
      },
      {
       "name": "Vue.js",
-      "count": 1
-     },
-     {
-      "name": "Webpack",
       "count": 1
      }
     ],
@@ -3013,6 +3017,10 @@
       "count": 2
      },
      {
+      "name": "DynamoDB",
+      "count": 2
+     },
+     {
       "name": "MySQL",
       "count": 2
      },
@@ -3030,10 +3038,6 @@
      },
      {
       "name": "Cassandra",
-      "count": 1
-     },
-     {
-      "name": "ClickHouse",
       "count": 1
      }
     ],
@@ -3075,26 +3079,26 @@
       "count": 1
      },
      {
-      "name": "Pinpoint / Zipkin",
+      "name": "CloudFront",
       "count": 1
      }
     ]
    },
    "architecture": [
     {
-     "name": "CQRS / Read-optimized stores",
-     "count": 1
-    },
-    {
-     "name": "Event-driven",
-     "count": 1
-    },
-    {
      "name": "Event-driven Architecture",
      "count": 1
     },
     {
      "name": "Event-driven logistics",
+     "count": 1
+    },
+    {
+     "name": "Event-driven Order Lifecycle on Kafka",
+     "count": 1
+    },
+    {
+     "name": "Lakehouse 기반 Batch/Streaming 통합 데이터 플랫폼",
      "count": 1
     },
     {
@@ -18968,53 +18972,63 @@
     "Go",
     "Python",
     "JavaScript",
+    "Kotlin",
     "Scala"
    ],
    "stack": {
     "backend": [
      "Spring Boot",
+     "Dropwizard",
      "Go",
      "gRPC",
-     "Dropwizard",
-     "Netty"
+     "Netty",
+     "Node.js",
+     "TensorFlow Serving"
     ],
     "frontend": [
      "React",
      "React Native",
      "Next.js",
-     "TypeScript"
+     "TypeScript",
+     "PWA",
+     "Kotlin/Swift Native"
     ],
     "data": [
      "Kafka",
      "Flink",
+     "Spark",
      "Elasticsearch",
      "MySQL",
      "Redis",
-     "Cassandra",
      "Aerospike",
+     "DynamoDB",
+     "Cassandra",
      "Druid",
-     "Spark"
+     "Delta Lake / Databricks",
+     "ZooKeeper"
     ],
     "infra": [
-     "Kubernetes",
      "AWS",
+     "Kubernetes",
      "Envoy",
      "Istio",
      "Terraform",
      "Prometheus",
-     "Grafana"
+     "Grafana",
+     "Jaeger",
+     "CloudFront"
     ]
    },
    "architecture": [
-    "Polyglot Microservices",
-    "Event-driven",
-    "Stream processing",
-    "CQRS / Read-optimized stores"
+    "Polyglot Microservices — 400+ 서비스, 130+ 가 주문 이행 경로",
+    "Event-driven Order Lifecycle on Kafka",
+    "Real-time ML Serving — Feature Store + Model Server 분리",
+    "Lakehouse 기반 Batch/Streaming 통합 데이터 플랫폼"
    ],
-   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Consumer App<br/>React Native\"]\n    PARTNER[\"Partner/Rider App<br/>React Native\"]\n    WEB[\"Web<br/>React + Next.js\"]\n  end\n  subgraph Edge\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n    BFF[\"BFF / Edge Services<br/>Go\"]\n  end\n  subgraph Core\n    ORDER[\"Order Service<br/>Spring Boot\"]\n    CART[\"Cart/Checkout<br/>Java\"]\n    DISPATCH[\"Dispatch/Assignment<br/>Go + ML\"]\n    LOC[\"Location Tracking<br/>Go\"]\n    SEARCH[\"Search/Listing<br/>Elasticsearch\"]\n    PRICE[\"Pricing/Surge<br/>Python\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Kafka\"]\n    FLINK[\"Stream Processing<br/>Flink\"]\n    SPARK[\"Batch/ML ETL<br/>Spark\"]\n  end\n  subgraph Data\n    MYSQL[\"Transactional<br/>MySQL\"]\n    CASS[\"Order/Tracking Store<br/>Cassandra\"]\n    AERO[\"Low-latency KV<br/>Aerospike\"]\n    REDIS[\"Cache<br/>Redis\"]\n    DRUID[\"Realtime OLAP<br/>Druid\"]\n  end\n  subgraph Infra\n    K8S[\"Container Platform<br/>Kubernetes on AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana\"]\n  end\n  APP --> GW\n  PARTNER --> GW\n  WEB --> GW\n  GW --> BFF\n  BFF -->|gRPC| ORDER\n  BFF -->|gRPC| SEARCH\n  BFF -->|gRPC| CART\n  ORDER --> MYSQL\n  ORDER -->|events| KAFKA\n  CART --> REDIS\n  DISPATCH --> AERO\n  LOC --> AERO\n  PARTNER -->|GPS pings| LOC\n  LOC -->|stream| KAFKA\n  KAFKA --> FLINK\n  FLINK --> DISPATCH\n  FLINK --> DRUID\n  KAFKA --> SPARK\n  SPARK --> PRICE\n  DISPATCH --> CASS\n  SEARCH --> REDIS\n  Core --> K8S\n  Streaming --> K8S\n  K8S --> OBS",
-   "why_language": "주문·결제·정산처럼 강한 일관성과 성숙한 트랜잭션 생태계가 필요한 도메인은 JVM(Java/Spring Boot)으로 구현하고, 라이더 위치 수집·디스패치·게이트웨이 같이 초당 수십만 건의 동시 연결과 낮은 지연이 핵심인 엣지 경로는 경량 고루틴 동시성을 가진 Go로 처리한다. 가격·수요예측·추천 등 ML 영역은 Python/Spark 생태계가 사실상 표준이라 데이터 사이언스 협업 비용을 최소화하기 위해 Python을 쓴다.",
-   "why_architecture": "음식 배달은 주문 생성→식당 수락→조리→라이더 배차→픽업→배달까지 이어지는 본질적으로 이벤트 흐름이라, Kafka 기반 이벤트 드리븐으로 각 단계를 비동기 상태 전이로 모델링하고 서비스 간 결합도를 낮춘다. 라이더 GPS 스트림을 Flink로 실시간 집계해 ETA와 배차 결정에 즉시 반영해야 하므로 스트림 처리가 1급 시민이며, 점심·저녁 피크의 극단적 트래픽 변동에 대응하기 위해 폴리글랏 MSA를 Kubernetes 위에서 독립적으로 오토스케일한다.",
-   "summary": "JVM으로 트랜잭션 도메인을, Go로 실시간 엣지를, Kafka+Flink로 배달 라이프사이클을 흐르게 하는 폴리글랏 이벤트 드리븐 아키텍처",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Consumer App<br/>React Native + Kotlin Swift\"]\n    DEAPP[\"Delivery Partner App<br/>Android Kotlin + gRPC\"]\n  end\n  subgraph Edge\n    CDN[\"CDN + WAF<br/>CloudFront\"]\n    GW[\"API Gateway<br/>Envoy + Istio\"]\n  end\n  subgraph CoreServices\n    ORD[\"Order + Checkout<br/>Java Spring Boot\"]\n    LIST[\"Listing + Menu<br/>Go + gRPC\"]\n    DISP[\"Dispatch Engine<br/>Go + ILP Solver\"]\n    SRCH[\"Search + Feed Ranking<br/>Go + Elasticsearch\"]\n    DSP[\"ML Runtime DSP<br/>TensorFlow Serving + gRPC\"]\n  end\n  subgraph Storage\n    SQL[\"Orders + Catalog<br/>MySQL + DynamoDB\"]\n    CACHE[\"Cache + Feature Store<br/>Redis + Aerospike\"]\n    ESIDX[\"Search Index<br/>Elasticsearch\"]\n  end\n  subgraph Streaming\n    KAFKA[\"Event Bus<br/>Apache Kafka\"]\n    FLINK[\"Stream Processing<br/>Flink + Spark Streaming\"]\n    LAKE[\"Lakehouse + OLAP<br/>Databricks Delta Lake + Druid\"]\n  end\n  subgraph Platform\n    K8S[\"Container Platform<br/>Kubernetes on AWS\"]\n    OBS[\"Observability<br/>Prometheus + Grafana + Jaeger\"]\n  end\n  APP --> CDN\n  CDN -->|HTTPS| GW\n  DEAPP -->|location ping gRPC| GW\n  GW --> ORD\n  GW --> LIST\n  GW --> SRCH\n  SRCH --> ESIDX\n  SRCH -->|gRPC ranking| DSP\n  LIST --> CACHE\n  DSP --> CACHE\n  ORD --> SQL\n  ORD -->|order events| KAFKA\n  KAFKA --> DISP\n  DISP --> SQL\n  DISP -->|assignment events| KAFKA\n  KAFKA --> FLINK\n  FLINK -->|realtime features| CACHE\n  FLINK --> LAKE\n  LAKE -->|model training| DSP\n  K8S -.-> ORD\n  K8S -.-> LIST\n  OBS -.-> GW",
+   "why_language": "주문·결제·정산처럼 트랜잭션 정합성과 오래된 도메인 로직이 쌓이는 영역은 Java/Spring Boot·Dropwizard로 운영하고, 라이더 위치 핑처럼 초당 수십만 건의 짧은 커넥션을 받아내는 엣지·리스팅 서비스는 goroutine 기반 Go로 옮겨 메모리 대비 동시성 효율을 올렸다. 디스패치·ETA·랭킹은 결국 최적화와 ML 문제여서 Python이 모델링 언어로 굳어졌고, 실서빙은 TensorFlow Serving의 C++ 바이너리에 gRPC로 붙여 언어 경계를 넘긴다. 프런트는 소비자 앱·라이더 앱·내부 PWA를 한 팀 규모로 유지해야 해서 React/React Native + TypeScript가 기본값이다.",
+   "why_architecture": "인도 전역 수백 개 도시에서 음식·Instamart 퀵커머스·Dineout이 각각 다른 SLA를 갖는데, 400개가 넘는 서비스 중 130여 개만 주문 이행 크리티컬 패스에 두어 장애 반경을 좁히고 나머지는 독립 배포하게 만들었다. 주문은 생성→수락→조리→픽업→배달의 상태 머신이라 동기 호출로 엮으면 한 홉만 죽어도 주문이 멈추므로, Kafka 이벤트를 단일 진실 흐름으로 두고 디스패치·알림·정산·분석이 각자 소비하는 이벤트 드리븐으로 뒤집었다. 피드 랭킹·ETA 예측처럼 요청당 ML 추론이 필요한 경로는 피처 계산과 모델 서빙을 분리해 사전계산 피처는 Redis/Aerospike에서 읽고 실시간 신호만 스트림으로 갱신하는 구조를 택했다.",
+   "summary": "JVM 도메인 코어 + Go 엣지를 Kafka 이벤트로 잇고, 피처 스토어와 TensorFlow Serving으로 요청마다 ML을 태우는 인도 최대급 배달 폴리글랏 MSA",
    "deep_dive": [
     {
      "topic": "배달 디스패치 최적화: 주문-라이더 매칭",
@@ -19047,19 +19061,71 @@
     {
      "topic": "관측성: 분산 트레이싱과 운영 OLAP",
      "body": "### 왜 관측성이 핵심인가\n하나의 주문이 게이트웨이→주문→카트→디스패치→위치→결제 등 수십 개 마이크로서비스를 가로지른다. 어느 단계에서 지연·실패가 났는지 추적하지 못하면 피크 시간 장애의 원인 분석이 불가능하다.\n\n### 세 기둥(three pillars)\n- **Metrics**: `Prometheus`로 서비스별 RED 지표(Rate, Errors, Duration)와 인프라 메트릭을 수집하고 `Grafana`로 시각화한다. SLO 기반 알람을 걸어 p99 지연·에러율이 임계치를 넘으면 온콜을 호출한다.\n- **Tracing**: 게이트웨이에서 trace id를 발급해 gRPC 메타데이터로 하위 서비스에 전파한다. 이로써 한 주문의 전체 호출 그래프와 각 홉의 소요 시간을 한 화면에서 본다(병목 핀포인트).\n- **Logging**: 구조화 로그를 중앙 수집해 trace id로 상호 참조한다.\n\n### 운영 실시간 분석: Druid\n비즈니스/운영팀은 \"지금 이 도시의 미배차 주문 수\", \"평균 배달 지연\", \"라이더 가동률\"을 초 단위로 봐야 한다. 이를 위해 Kafka 이벤트를 `Druid`로 실시간 인입해, 수십억 행 위에서도 sub-second 집계 쿼리가 가능한 운영 대시보드를 제공한다. 이는 엔지니어링 관측성(Prometheus/trace)과 별개로, **비즈니스 실시간 OLAP** 계층을 분리한 설계다.\n\n### 카오스/부하 검증\n피크를 견디는지 미리 확인하기 위해 정기적으로 부하 테스트와 장애 주입(특정 서비스 강제 다운 → 폴백 동작 확인)을 수행해, 서킷브레이커와 degradation 경로가 실제로 작동하는지 검증한다."
+    },
+    {
+     "topic": "DSP: 피처 스토어와 모델 서버를 분리한 실시간 ML 서빙 런타임",
+     "body": "### DSP가 담당하는 것\n\nSwiggy의 ML은 실험실이 아니라 **요청 경로 안**에 있다. 홈 피드 랭킹, 검색 결과 정렬, ETA/Predicted SLA, 라이더 배정 비용 함수, 결제 사기 탐지가 전부 주문 한 건이 만들어지기 전에 호출된다. 이걸 서비스마다 각자 구현하면 팀 수만큼 피처 정의가 갈라지므로, Swiggy는 `DSP`(Data Science Platform)라는 공용 런타임을 만들어 **피처 조회 → 모델 추론**을 표준화했다.\n\n### 요청 한 건의 흐름\n\n1. 클라이언트가 피드를 요청 → 리스팅 서비스가 후보 restaurant/SKU 집합을 뽑는다.\n2. 리스팅 서비스는 DSP 런타임에 `model_name`, `model_version`, 컨텍스트(user_id, lat/lng, 시간대, 디바이스)를 넘긴다.\n3. DSP 런타임이 **ZooKeeper**에서 해당 모델 버전이 의존하는 피처 목록을 읽는다. 모델과 피처의 결합을 코드가 아니라 **설정**으로 둔 것이 핵심 — 모델을 새 버전으로 올리면서 피처 셋이 바뀌어도 호출자 코드는 그대로다.\n4. 피처 스토어(Redis/Aerospike 계열 저지연 KV)에서 값을 **배치 조회**한다. 사전계산 피처(지난 30일 주문 빈도, 식당 평점, 유저 취향 임베딩)와 스트리밍 피처(최근 10분 식당 부하, 현재 지역 라이더 가용성)가 같은 키 공간에 섞여 있다.\n5. 피처 벡터를 **gRPC**로 모델 서버(TensorFlow Serving)에 넘긴다.\n6. 점수를 받아 정렬 후 응답.\n\n### 왜 TensorFlow Serving인가\n\n- 모델 시그니처가 표준화되어 있어 **Python 학습 코드와 서빙 계약을 분리**할 수 있다. 데이터 사이언티스트는 SavedModel만 내면 된다.\n- C++ 바이너리라 Python 인터프리터를 요청 경로에 두지 않는다 — GIL 없이 배치 추론이 가능하고, 피드 랭킹 기준 **피크 30만 QPS** 수준을 감당한다.\n- 모델 버저닝/워밍업/카나리(버전별 트래픽 분배)가 서버 자체 기능이라 별도 배포 파이프라인을 안 짜도 된다.\n\n### 사전계산 vs 실시간의 트레이드오프\n\n| 피처 종류 | 계산 위치 | 신선도 | 왜 이렇게 |\n|---|---|---|---|\n| 유저 장기 취향, 식당 통계 | Spark 배치 → 피처 스토어 적재 | 시간~일 | 요청당 계산하면 너무 비쌈. 변화도 느림 |\n| 최근 세션 행동, 식당 조리 지연, 지역 라이더 수 | Flink 스트림 → 피처 스토어 upsert | 초~분 | 점심 피크에 식당이 밀리면 ETA가 즉시 틀어짐 |\n| 요청 컨텍스트(위치·시간·디바이스) | 요청에서 직접 | 즉시 | 저장할 이유 없음 |\n\n이 분리가 없으면 랭킹 서비스가 요청마다 집계 쿼리를 때리게 되고, 그 순간 p99가 무너진다. \"**비싼 계산은 미리, 변하는 신호만 스트림으로**\"가 DSP 설계의 한 줄 요약이다.\n\n### 다목적 최적화 — Moo-GBT\n\n배달 도메인의 랭킹은 단일 목표가 아니다. 전환율만 올리면 먼 식당이 상단에 와서 배달 시간이 늘고, 배달 시간만 줄이면 선택지가 빈약해져 이탈한다. Swiggy가 오픈소스로 낸 `Moo-GBT`는 Gradient Boosted Tree에서 **주 목표(예: 전환)를 제약 하에 유지하면서 부 목표(예: ETA, 마진)를 함께 최적화**하는 라이브러리다. 실무적으로는 서로 다른 모델 점수를 사후 가중합하는 방식보다 학습 단계에서 트레이드오프를 내재화하는 쪽이 튜닝 파라미터가 줄어들고 A/B 해석이 깔끔해진다."
+    },
+    {
+     "topic": "NYE 피크: 분당 9,500 주문을 견디는 용량 계획과 오토스케일링",
+     "body": "### 왜 이 하루가 특별한가\n\n인도 배달 시장에서 12월 31일 저녁은 연중 최대 피크다. Swiggy는 NYE에 **음식 주문만 분당 9,500건(OPM)** 을 찍으며 직전 기록인 5,500 OPM을 갈아치웠고, 이후 해에는 앱 동시 활성 유저가 마지막 한 시간에 **100만 명**에 근접했다. 이건 평시 대비 완만한 증가가 아니라 **20~21시 사이에 계단식으로 꽂히는** 트래픽이라, 반응형 오토스케일링만으로는 늦는다.\n\n### OPM을 단일 용량 단위로 쓰는 이유\n\nSwiggy의 용량 계획은 서비스별 RPS가 아니라 **OPM(Orders Per Minute)** 이라는 비즈니스 단위에서 출발한다.\n\n1. 사업 팀이 그해 NYE의 **일 최대 주문 수**를 예측한다.\n2. 과거 시간대 분포로 **시간별 곡선**을 만들고 피크 OPM을 뽑는다.\n3. 각 서비스가 \"주문 1건당 내 서비스에 몇 번 호출이 오는가\"라는 **팬아웃 계수**를 갖고 있으므로, 피크 OPM × 계수 = 그 서비스가 견뎌야 할 처리량이 된다.\n4. 그 처리량으로 부하 테스트를 돌려 인스턴스 수·커넥션 풀·DB IOPS를 미리 확정한다.\n\n이 방식의 장점은 **모든 팀이 같은 숫자로 대화한다**는 것이다. 결제팀과 리스팅팀이 서로 다른 트래픽 가정을 갖는 사고를 원천 차단한다. 단점은 팬아웃 계수가 틀리면 전체 계획이 같이 틀어지므로, 계수 자체를 상시 관측성 데이터로 갱신해야 한다는 것.\n\n### 사전 스케일업 + 보호 장치\n\n- **Pre-scaling**: 반응형 HPA는 지표 수집→판단→파드 기동→워밍업까지 수 분이 걸린다. 계단형 피크에서는 이미 늦으므로 피크 수 시간 전에 목표 용량으로 고정 스케일업하고, 오토스케일링은 그 위에서만 동작하게 한다. JVM 서비스는 JIT 워밍업 때문에 특히 사전 기동이 중요하다.\n- **Feature freeze / code freeze**: 피크 주간에는 배포를 동결해 변수 자체를 줄인다.\n- **비필수 경로 차단**: 추천 재계산, 리포팅 배치, 대량 푸시 캠페인 같은 것을 피크 창에서 밀어낸다. 크리티컬 패스 130여 개 서비스에 자원을 몰아준다.\n- **Graceful degradation**: 랭킹 모델 호출이 느려지면 캐시된 정적 순위로 폴백하고, 개인화 배너 같은 것은 빈 채로 응답한다. 주문 생성만 살아 있으면 서비스는 산 것이다.\n\n### War Room 운영\n\nNYE 당일에는 엔지니어링·애널리틱스·데이터사이언스·프로덕트 옵스 **23개 팀**이 물리적으로 모이고, Slack `#warroom` 채널에 **950명 이상**이 붙어 실시간 조율한다. 대시보드는 인프라 지표가 아니라 **OPM, 주문 성공률, 배정 지연, 결제 성공률** 같은 비즈니스 지표를 상단에 둔다. CPU가 80%여도 주문이 잘 나가면 문제가 아니고, CPU가 40%인데 배정 지연이 늘면 그게 사고다. 이 지표 우선순위가 대형 이벤트 대응의 실제 노하우다."
+    },
+    {
+     "topic": "Instamart 퀵커머스: 다크스토어 재고 정합성과 10분 배달의 시스템 제약",
+     "body": "### 음식 배달과 근본적으로 다른 문제\n\n음식 주문은 \"식당이 만들 수 있는가\"만 판단하면 되지만, Instamart는 **개별 SKU의 실물 재고**를 걸고 약속한다. 여기서 시스템 제약이 완전히 달라진다.\n\n- 음식: 메뉴 = 준영구 카탈로그, 품절은 예외 상황\n- 퀵커머스: 재고 = 초 단위로 변하는 상태, 오버셀은 **환불 + 신뢰 손실**로 직결\n\nSwiggy Instamart는 주거 밀집지 인근 마이크로 웨어하우스(다크스토어) **1,000개 이상**을 운영하고, 최근에는 8,000~10,000 sq ft 규모의 mega dark store로 SKU 수를 표준 매장 15,000~20,000에서 **최대 40,000**까지 확장하고 있다. 매장 수 × SKU 수 = 수천만 개의 재고 셀이 실시간으로 갱신된다.\n\n### 재고 읽기/쓰기 경로 분리\n\n재고는 전형적인 **읽기 폭주 / 쓰기 소량** 워크로드지만, 쓰기의 정합성 요구가 극단적으로 높다.\n\n- **읽기 경로**: 카탈로그 페이지 노출은 저지연 KV 캐시(Redis/Aerospike)에서 `store_id:sku_id → available_qty` 를 읽는다. 여기서는 약간의 stale을 허용한다. 수천만 셀을 강한 일관성으로 읽으면 지연이 감당되지 않는다.\n- **쓰기 경로**: 실제 차감은 주문 트랜잭션 안에서 원자적으로 일어난다. 장바구니 담기 시점에는 **소프트 예약**(TTL이 걸린 홀드)만 잡고, 결제 확정 시 하드 차감으로 승격한다. TTL 만료 시 자동 회수되므로 결제 이탈이 재고를 영구 잠그지 않는다.\n- **피커 이벤트**: 매장에서 직원이 물건을 집을 때마다 pick 이벤트가 발생하고, 이것이 Kafka로 흘러 재고 상태를 즉시 보정한다. 실제 선반과 시스템의 드리프트를 줄이는 유일한 방법은 **작업 자체를 이벤트로 만드는 것**이다.\n\n### 오버셀을 막는 대신 감수하는 것\n\n완전한 강한 일관성을 카탈로그 노출까지 밀면 목록 API가 느려져 전환이 떨어진다. 그래서 실무 선택은 대개 이렇다:\n\n| 계층 | 일관성 | 오차 감수 |\n|---|---|---|\n| 브라우징/검색 노출 | 최종 일관성 | 품절 상품이 잠깐 보일 수 있음 |\n| 장바구니 담기 | 소프트 예약 | 동시 담기 초과 가능, 결제에서 걸림 |\n| 결제 확정 | 강한 일관성 | 여기서만 오버셀을 확정 차단 |\n\n대신 **가용 재고에 안전 버퍼**를 둬서 마지막 1~2개는 노출하지 않는 식으로 경계 케이스를 줄인다. 재고 회전이 빠른 SKU일수록 버퍼가 커진다.\n\n### 배달 약속 시간이 재고 정책을 바꾼다\n\n10분 배달을 걸려면 **어느 다크스토어에서 나갈지**가 주문 생성 전에 결정돼야 한다. 그래서 유저의 위치로 서빙 가능한 매장을 먼저 고르고, 그 매장의 재고로 카탈로그를 구성한다 — 즉 **카탈로그가 위치 함수**다. 같은 앱에서 500m 떨어진 두 유저가 다른 상품 목록을 본다. 이 구조 때문에 캐시 키에 반드시 store_id가 들어가고, 전역 캐시 히트율은 낮아진다. 대신 매장 단위로 캐시를 쪼개면 특정 매장 부하가 다른 매장에 전파되지 않는 격리 이점이 생긴다.\n\n### 수요 예측이 인프라 문제로 넘어오는 지점\n\nSKU 배치(어느 선반, 어느 매장에 무엇을 둘지)는 수요 빈도 기반 ML로 결정되고, 보충(replenishment)은 소비 패턴 예측으로 돌아간다. 이 예측이 틀리면 시스템이 아무리 정확해도 품절이 난다. 결국 퀵커머스의 신뢰도는 **소프트웨어 정합성 + 예측 정확도 + 물리 오퍼레이션**의 곱이고, 엔지니어링이 통제할 수 있는 건 앞의 둘뿐이라는 점이 이 도메인의 현실적 제약이다."
+    },
+    {
+     "topic": "Lakehouse 마이그레이션: 배치와 스트리밍을 한 저장소로 합치기",
+     "body": "### 왜 웨어하우스만으로는 안 됐나\n\n초기 Swiggy 데이터 플랫폼은 전형적인 흐름이었다 — 서비스 DB → 배치 ETL → 웨어하우스 → BI. 문제는 배달 도메인의 질문 대부분이 **지금** 을 묻는다는 것이다.\n\n- 유저가 앱을 열면 그 순간의 Predicted SLA를 계산해야 한다 → 현재 교통, 식당 부하, 라이더 가용성이 필요\n- 디스패치가 배정 비용을 계산할 때 지난주 평균이 아니라 지금 이 지역 상태가 필요\n\n반면 모델 학습, 정산, 코호트 분석은 수개월치 히스토리를 스캔한다. 두 요구를 각각 스트리밍 스택과 웨어하우스 스택으로 나누면 **같은 지표가 두 곳에서 다르게 나온다**. 배치로 계산한 \"평균 배달 시간\"과 실시간 대시보드의 값이 안 맞는 순간 팀은 숫자를 믿지 않게 된다.\n\n### Delta Lake 기반 레이크하우스\n\nSwiggy는 데이터 플랫폼을 **Databricks Lakehouse + Delta Lake** 위로 모았다. 이 선택이 실제로 푸는 문제는 세 가지다.\n\n1. **ACID on object storage**: S3 위 Parquet은 원자적 갱신이 안 돼서, 스트리밍 잡이 쓰는 도중 배치 리더가 반쯤 쓰인 파일을 읽는 사고가 난다. Delta의 트랜잭션 로그가 이걸 막는다. 덕분에 **같은 테이블에 Flink/Structured Streaming이 append 하면서 Spark 배치가 읽는** 구성이 성립한다.\n2. **Schema evolution**: 400개 넘는 서비스가 각자 이벤트를 진화시킨다. 컬럼 추가마다 파이프라인이 깨지면 플랫폼 팀이 병목이 된다. Delta의 스키마 강제/진화 규칙으로 생산자-소비자 계약을 데이터 레이어에서 관리한다.\n3. **Time travel**: 모델 재학습 시 \"그때 그 시점의 피처\"를 복원해야 학습/서빙 스큐가 안 생긴다. 버전 스냅샷 조회가 이 문제를 직접 푼다.\n\n### 계층화(medallion) 구조\n\n```\nKafka 원천 이벤트\n   ↓ (append, 스키마 최소 강제)\nBronze : 원본 그대로. 재처리의 안전망\n   ↓ (정제, 중복 제거, 타입 확정)\nSilver : 표준화된 도메인 테이블 - orders, assignments, sessions\n   ↓ (집계, 조인, 비즈니스 정의)\nGold   : 지표/피처 테이블 - 식당별 시간대 부하, 유저 취향 벡터\n```\n\nBronze를 원본 그대로 두는 게 핵심이다. Silver 로직에 버그가 발견돼도 **Bronze에서 재처리**하면 되고, 원천 서비스에 다시 요청할 필요가 없다. 배달 도메인처럼 정산·규제 이슈가 걸린 데이터에서는 이 재현성이 필수다.\n\n### 스트리밍과 배치가 만나는 지점\n\n같은 이벤트가 두 방향으로 흐른다.\n\n- **빠른 길**: Kafka → Flink → 피처 스토어(Redis/Aerospike) → DSP 추론. 지연 초 단위, 정확도보다 신선도 우선.\n- **느린 길**: Kafka → Lakehouse Bronze/Silver/Gold → 모델 학습, BI, 정산. 지연 분~시간 단위, 신선도보다 정확도·완결성 우선.\n\n두 길이 **같은 이벤트 정의**를 공유한다는 게 중요하다. 스트리밍에서 계산한 피처와 학습 때 배치로 만든 같은 이름의 피처가 다르면 모델은 프로덕션에서 조용히 성능이 떨어진다(training-serving skew). Gold 계층에서 피처 정의를 한 벌로 관리하고 스트리밍 잡이 그 정의를 따르게 강제하는 것이 이 아키텍처가 실제로 사는 조건이다.\n\n### OLAP 조회 계층\n\n운영 대시보드처럼 **초 단위 응답이 필요한 시계열 슬라이스**는 레이크하우스 스캔으로는 느리다. 이 구간은 Druid 같은 실시간 OLAP에 Kafka에서 직접 인입해 도시별·시간대별 주문/배정 지표를 밀리초~초 단위로 자른다. 즉 저장소가 하나로 통합된 게 아니라 **원천 이벤트가 하나로 통합**되고, 조회 특성에 따라 세 종류의 서빙 계층(KV 피처 스토어 / OLAP / Lakehouse)이 갈라지는 구조다. 이것이 CQRS를 데이터 플랫폼 스케일로 확장한 형태다."
     }
    ],
    "github": {
     "org": "https://github.com/Swiggy",
-    "repos": []
+    "repos": [
+     {
+      "name": "Swiggy/Moo-GBT",
+      "url": "https://github.com/Swiggy/Moo-GBT",
+      "desc": "Gradient Boosted Tree에서 다목적 최적화를 수행하는 라이브러리 — 클릭·전환·배달시간처럼 상충하는 목표를 한 모델에서 균형 잡을 때 쓴다",
+      "lang": "Python",
+      "stars": 78
+     },
+     {
+      "name": "Swiggy/ddb-ondemand-protector",
+      "url": "https://github.com/Swiggy/ddb-ondemand-protector",
+      "desc": "On-demand DynamoDB 테이블에 비용 가드레일을 씌우는 파이프라인 — 폭주하는 읽기/쓰기 과금을 자동 차단",
+      "lang": "Go",
+      "stars": 30
+     },
+     {
+      "name": "Swiggy/swipeable-tabs",
+      "url": "https://github.com/Swiggy/swipeable-tabs",
+      "desc": "내부 PWA에 네이티브 감각의 스와이프 탭을 주기 위해 만든 경량 React 탭 컴포넌트",
+      "lang": "TypeScript",
+      "stars": 25
+     },
+     {
+      "name": "Swiggy/grill",
+      "url": "https://github.com/Swiggy/grill",
+      "desc": "DynamoDB·Redis·Kafka·gRPC 의존성을 testcontainers-go로 띄워 서비스 레벨 테스트를 돌리는 Go 테스트 하네스",
+      "lang": "Go",
+      "stars": 16
+     },
+     {
+      "name": "Swiggy/redis_exporter",
+      "url": "https://github.com/Swiggy/redis_exporter",
+      "desc": "대규모 Redis 클러스터 메트릭을 Prometheus로 노출하는 익스포터 — 캐시 계층 관측성의 기반",
+      "lang": "Go",
+      "stars": 1
+     }
+    ]
    },
    "sources": [
-    "https://bytes.swiggy.com/",
-    "https://github.com/Swiggy",
-    "https://bytes.swiggy.com/swiggys-real-time-data-platform-1f3b1e3f7c1a"
+    "https://bytes.swiggy.com/designing-resilient-microservices-part-1-6a72fe964759",
+    "https://bytes.swiggy.com/enabling-data-science-at-scale-at-swiggy-the-dsp-story-208c2d85faf9",
+    "https://bytes.swiggy.com/deploying-deep-learning-models-at-scale-at-swiggy-tensorflow-serving-on-dsp-ad5da40f7a6c"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-08-19"
   },
   {
    "key": "zomato",

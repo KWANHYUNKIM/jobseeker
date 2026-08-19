@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T09:31:28",
+  "generated_at": "2026-08-19T10:53:54",
   "source": "youtube",
   "tech_count": 208,
   "curriculum_count": 20,
@@ -1317,88 +1317,6 @@
         "stage": "실전"
       }
     ],
-    "Azure": [
-      {
-        "title": "애저 네트워크 기본 설계 | LIght up Azure",
-        "url": "https://www.youtube.com/watch?v=LBtFx0ijnD4",
-        "thumbnail": "https://i.ytimg.com/vi/LBtFx0ijnD4/mqdefault.jpg",
-        "channel": "Microsoft Developer Korea",
-        "views": 5837,
-        "length": "1:10:11",
-        "published": "3년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "클라우드 업계 2위 마이크로소프트의 Azure에 대해 알아보자! | 마이크로소프트 Azure - 클라우드 입문과정 #10 ☁️",
-        "url": "https://www.youtube.com/watch?v=DRd6tpyFfOo",
-        "thumbnail": "https://i.ytimg.com/vi/DRd6tpyFfOo/mqdefault.jpg",
-        "channel": "투마일스 - 2miles",
-        "views": 11931,
-        "length": "21:05",
-        "published": "4년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Azure와 Azure DevOps 완전 정복!",
-        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
-        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
-        "channel": "이지업클래스 (easyupclass)",
-        "views": 418,
-        "length": "1:28:14",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
-        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
-        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
-        "channel": "클루커스",
-        "views": 12494,
-        "length": "21:34",
-        "published": "5년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
-        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
-        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
-        "channel": "Microsoft Korea",
-        "views": 3018,
-        "length": "5:11",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
-        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
-        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
-        "channel": "KH스마트캠퍼스",
-        "views": 941,
-        "length": "3:57",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "아주르 최초 땅&에어드리블 강의 , Azure latch pro dribble lesson",
-        "url": "https://www.youtube.com/watch?v=_4EVYvR3G1Q",
-        "thumbnail": "https://i.ytimg.com/vi/_4EVYvR3G1Q/mqdefault.jpg",
-        "channel": "haru",
-        "views": 34307,
-        "length": "1:38",
-        "published": "9개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "기초부터 실전까지: Microsoft Agent Framework 완전 정복 | Light Up Azure",
-        "url": "https://www.youtube.com/watch?v=DkcLUaHnl-o",
-        "thumbnail": "https://i.ytimg.com/vi/DkcLUaHnl-o/mqdefault.jpg",
-        "channel": "Microsoft Developer Korea",
-        "views": 543,
-        "length": "36:21",
-        "published": "8개월 전",
-        "stage": "실전"
-      }
-    ],
     "Spring Boot": [
       {
         "title": "스프링 부트 기본기 한시간에 끝내기! [ 스프링 부트(Spring Boot) 기초 강의 ]",
@@ -1478,6 +1396,88 @@
         "views": 3853,
         "length": "1:13:28",
         "published": "3년 전",
+        "stage": "실전"
+      }
+    ],
+    "Azure": [
+      {
+        "title": "애저 네트워크 기본 설계 | LIght up Azure",
+        "url": "https://www.youtube.com/watch?v=LBtFx0ijnD4",
+        "thumbnail": "https://i.ytimg.com/vi/LBtFx0ijnD4/mqdefault.jpg",
+        "channel": "Microsoft Developer Korea",
+        "views": 5837,
+        "length": "1:10:11",
+        "published": "3년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "클라우드 업계 2위 마이크로소프트의 Azure에 대해 알아보자! | 마이크로소프트 Azure - 클라우드 입문과정 #10 ☁️",
+        "url": "https://www.youtube.com/watch?v=DRd6tpyFfOo",
+        "thumbnail": "https://i.ytimg.com/vi/DRd6tpyFfOo/mqdefault.jpg",
+        "channel": "투마일스 - 2miles",
+        "views": 11931,
+        "length": "21:05",
+        "published": "4년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Azure와 Azure DevOps 완전 정복!",
+        "url": "https://www.youtube.com/watch?v=yQfpNq6mbIE",
+        "thumbnail": "https://i.ytimg.com/vi/yQfpNq6mbIE/mqdefault.jpg",
+        "channel": "이지업클래스 (easyupclass)",
+        "views": 418,
+        "length": "1:28:14",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[20분 Class] Azure 1 Day 정복하기 1편 - 핵심 Azure 서비스 살펴보기",
+        "url": "https://www.youtube.com/watch?v=aagsTCiQhyo",
+        "thumbnail": "https://i.ytimg.com/vi/aagsTCiQhyo/mqdefault.jpg",
+        "channel": "클루커스",
+        "views": 12494,
+        "length": "21:34",
+        "published": "5년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Microsoft가 직접 답해드립니다! 💬 | [마소코멘트] Azure편",
+        "url": "https://www.youtube.com/watch?v=eghlRkmZRPo",
+        "thumbnail": "https://i.ytimg.com/vi/eghlRkmZRPo/mqdefault.jpg",
+        "channel": "Microsoft Korea",
+        "views": 3018,
+        "length": "5:11",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "AZ-104 Microsoft Azure Administrator Associate - 시험 및 강의 소개",
+        "url": "https://www.youtube.com/watch?v=voNtmwhYcDY",
+        "thumbnail": "https://i.ytimg.com/vi/voNtmwhYcDY/mqdefault.jpg",
+        "channel": "KH스마트캠퍼스",
+        "views": 941,
+        "length": "3:57",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "아주르 최초 땅&에어드리블 강의 , Azure latch pro dribble lesson",
+        "url": "https://www.youtube.com/watch?v=_4EVYvR3G1Q",
+        "thumbnail": "https://i.ytimg.com/vi/_4EVYvR3G1Q/mqdefault.jpg",
+        "channel": "haru",
+        "views": 34307,
+        "length": "1:38",
+        "published": "9개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "기초부터 실전까지: Microsoft Agent Framework 완전 정복 | Light Up Azure",
+        "url": "https://www.youtube.com/watch?v=DkcLUaHnl-o",
+        "thumbnail": "https://i.ytimg.com/vi/DkcLUaHnl-o/mqdefault.jpg",
+        "channel": "Microsoft Developer Korea",
+        "views": 543,
+        "length": "36:21",
+        "published": "8개월 전",
         "stage": "실전"
       }
     ],
@@ -5663,6 +5663,88 @@
         "stage": "실전"
       }
     ],
+    "DynamoDB": [
+      {
+        "title": "AWS DynamoDB Tutorial For Beginners",
+        "url": "https://www.youtube.com/watch?v=2k2GINpO308",
+        "thumbnail": "https://i.ytimg.com/vi/2k2GINpO308/mqdefault.jpg",
+        "channel": "Be A Better Dev",
+        "views": 463950,
+        "length": "38:12",
+        "published": "5년 전",
+        "stage": "입문"
+      },
+      {
+        "title": "Amazon DynamoDB와 함께 모든 규모에서 모던 애플리케이션 구축하기 - 이혁, DynamoDB 스페셜리스트, AWS",
+        "url": "https://www.youtube.com/watch?v=t_8NmwAy4D0",
+        "thumbnail": "https://i.ytimg.com/vi/t_8NmwAy4D0/mqdefault.jpg",
+        "channel": "Amazon Web Services Korea",
+        "views": 2794,
+        "length": "25:27",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Amazon DynamoDB 키 디자인 패턴 - 이혁, DynamoDB Specialist Solutions Architect, AWS",
+        "url": "https://www.youtube.com/watch?v=I7zcRxHbo98",
+        "thumbnail": "https://i.ytimg.com/vi/I7zcRxHbo98/mqdefault.jpg",
+        "channel": "Amazon Web Services Korea",
+        "views": 7869,
+        "length": "44:31",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[AWS] AWS DynamoDB 알아보기! (AWS DynamoDB)",
+        "url": "https://www.youtube.com/watch?v=d5fXw7uyoCU",
+        "thumbnail": "https://i.ytimg.com/vi/d5fXw7uyoCU/mqdefault.jpg",
+        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
+        "views": 84,
+        "length": "4:48",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[AWS] AWS DynamoDB 사용 TIP! (AWS DynamoDB)",
+        "url": "https://www.youtube.com/watch?v=VF3Mw7M7XdQ",
+        "thumbnail": "https://i.ytimg.com/vi/VF3Mw7M7XdQ/mqdefault.jpg",
+        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
+        "views": 33,
+        "length": "3:55",
+        "published": "1년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Amazon Aurora & DynamoDB 를 함께 알아보아요!! [이론편]",
+        "url": "https://www.youtube.com/watch?v=OqNO4q5N8Vw",
+        "thumbnail": "https://i.ytimg.com/vi/OqNO4q5N8Vw/mqdefault.jpg",
+        "channel": "JT Studio",
+        "views": 356,
+        "length": "33:59",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "13.DynamoDB NoSQL로 확장 가능한 데이터 저장",
+        "url": "https://www.youtube.com/watch?v=RZXRSzzVlrs",
+        "thumbnail": "https://i.ytimg.com/vi/RZXRSzzVlrs/mqdefault.jpg",
+        "channel": "Codedeck",
+        "views": 0,
+        "length": "16:45",
+        "published": "4개월 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "(입문)DynamoDB Streams를 활용한 트위터 포스팅 봇 만들기 - Developers.IO Korea Online #02",
+        "url": "https://www.youtube.com/watch?v=i1oC9wHUzPs",
+        "thumbnail": "https://i.ytimg.com/vi/i1oC9wHUzPs/mqdefault.jpg",
+        "channel": "クラメソチャンネル | AWSや生成AIなど技術やってみた",
+        "views": 298,
+        "length": "11:12",
+        "published": "5년 전",
+        "stage": "실전"
+      }
+    ],
     "Jest": [
       {
         "title": "테스트 귀찮은데 꼭 해야할까? [Jest(자바스크립트 테스트) 강의 맛보기]",
@@ -5906,88 +5988,6 @@
         "views": 14,
         "length": "14:22",
         "published": "6개월 전",
-        "stage": "실전"
-      }
-    ],
-    "DynamoDB": [
-      {
-        "title": "AWS DynamoDB Tutorial For Beginners",
-        "url": "https://www.youtube.com/watch?v=2k2GINpO308",
-        "thumbnail": "https://i.ytimg.com/vi/2k2GINpO308/mqdefault.jpg",
-        "channel": "Be A Better Dev",
-        "views": 463950,
-        "length": "38:12",
-        "published": "5년 전",
-        "stage": "입문"
-      },
-      {
-        "title": "Amazon DynamoDB와 함께 모든 규모에서 모던 애플리케이션 구축하기 - 이혁, DynamoDB 스페셜리스트, AWS",
-        "url": "https://www.youtube.com/watch?v=t_8NmwAy4D0",
-        "thumbnail": "https://i.ytimg.com/vi/t_8NmwAy4D0/mqdefault.jpg",
-        "channel": "Amazon Web Services Korea",
-        "views": 2794,
-        "length": "25:27",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Amazon DynamoDB 키 디자인 패턴 - 이혁, DynamoDB Specialist Solutions Architect, AWS",
-        "url": "https://www.youtube.com/watch?v=I7zcRxHbo98",
-        "thumbnail": "https://i.ytimg.com/vi/I7zcRxHbo98/mqdefault.jpg",
-        "channel": "Amazon Web Services Korea",
-        "views": 7869,
-        "length": "44:31",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[AWS] AWS DynamoDB 알아보기! (AWS DynamoDB)",
-        "url": "https://www.youtube.com/watch?v=d5fXw7uyoCU",
-        "thumbnail": "https://i.ytimg.com/vi/d5fXw7uyoCU/mqdefault.jpg",
-        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
-        "views": 84,
-        "length": "4:48",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[AWS] AWS DynamoDB 사용 TIP! (AWS DynamoDB)",
-        "url": "https://www.youtube.com/watch?v=VF3Mw7M7XdQ",
-        "thumbnail": "https://i.ytimg.com/vi/VF3Mw7M7XdQ/mqdefault.jpg",
-        "channel": "디자인 AI 개발 강의 해커스캠퍼스",
-        "views": 33,
-        "length": "3:55",
-        "published": "1년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Amazon Aurora & DynamoDB 를 함께 알아보아요!! [이론편]",
-        "url": "https://www.youtube.com/watch?v=OqNO4q5N8Vw",
-        "thumbnail": "https://i.ytimg.com/vi/OqNO4q5N8Vw/mqdefault.jpg",
-        "channel": "JT Studio",
-        "views": 356,
-        "length": "33:59",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "13.DynamoDB NoSQL로 확장 가능한 데이터 저장",
-        "url": "https://www.youtube.com/watch?v=RZXRSzzVlrs",
-        "thumbnail": "https://i.ytimg.com/vi/RZXRSzzVlrs/mqdefault.jpg",
-        "channel": "Codedeck",
-        "views": 0,
-        "length": "16:45",
-        "published": "4개월 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "(입문)DynamoDB Streams를 활용한 트위터 포스팅 봇 만들기 - Developers.IO Korea Online #02",
-        "url": "https://www.youtube.com/watch?v=i1oC9wHUzPs",
-        "thumbnail": "https://i.ytimg.com/vi/i1oC9wHUzPs/mqdefault.jpg",
-        "channel": "クラメソチャンネル | AWSや生成AIなど技術やってみた",
-        "views": 298,
-        "length": "11:12",
-        "published": "5년 전",
         "stage": "실전"
       }
     ],
@@ -9507,6 +9507,88 @@
         "stage": "핵심"
       }
     ],
+    "Pytest": [
+      {
+        "title": "[SWTT] pytest 튜토리얼 (1/3)",
+        "url": "https://www.youtube.com/watch?v=v5piUTg2XKI",
+        "thumbnail": "https://i.ytimg.com/vi/v5piUTg2XKI/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 135,
+        "length": "13:36",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 Pytest Chapter 1 ~ 4",
+        "url": "https://www.youtube.com/watch?v=J0dslY7QSi4",
+        "thumbnail": "https://i.ytimg.com/vi/J0dslY7QSi4/mqdefault.jpg",
+        "channel": "Software Factory",
+        "views": 615,
+        "length": "43:57",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Jonghyun Park: 파이썬에서 편하게 테스트 케이스 작성하기: pytest, Travis CI, 그리고 도커",
+        "url": "https://www.youtube.com/watch?v=rxCjxX4tT1E",
+        "thumbnail": "https://i.ytimg.com/vi/rxCjxX4tT1E/mqdefault.jpg",
+        "channel": "PyCon Korea",
+        "views": 3721,
+        "length": "35:05",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[SWTT] pytest 튜토리얼 (3/3)",
+        "url": "https://www.youtube.com/watch?v=vXboqkw_PFU",
+        "thumbnail": "https://i.ytimg.com/vi/vXboqkw_PFU/mqdefault.jpg",
+        "channel": "Software Tool Time",
+        "views": 65,
+        "length": "13:12",
+        "published": "2년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "파이썬 Pytest Chapter 5 ~ 6",
+        "url": "https://www.youtube.com/watch?v=qPMWreHLw-M",
+        "thumbnail": "https://i.ytimg.com/vi/qPMWreHLw-M/mqdefault.jpg",
+        "channel": "Software Factory",
+        "views": 160,
+        "length": "57:56",
+        "published": "3년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "pytest-django 셋업하기 2022-02-01 [재활코딩]",
+        "url": "https://www.youtube.com/watch?v=vQjZ7JFBYnM",
+        "thumbnail": "https://i.ytimg.com/vi/vQjZ7JFBYnM/mqdefault.jpg",
+        "channel": "PythonicHours",
+        "views": 341,
+        "length": "24:37",
+        "published": "4년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "[Python] Pytest Tutorial",
+        "url": "https://www.youtube.com/watch?v=2G7XgyGYUbo",
+        "thumbnail": "https://i.ytimg.com/vi/2G7XgyGYUbo/mqdefault.jpg",
+        "channel": "SeongHwan Kim",
+        "views": 197,
+        "length": "2:47",
+        "published": "8년 전",
+        "stage": "핵심"
+      },
+      {
+        "title": "Python中級#27 pytest, fixtureで単体テストに足を踏み入れる",
+        "url": "https://www.youtube.com/watch?v=_DlSzo10Kw0",
+        "thumbnail": "https://i.ytimg.com/vi/_DlSzo10Kw0/mqdefault.jpg",
+        "channel": "IT屋のたなべ",
+        "views": 104,
+        "length": "32:37",
+        "published": "3주 전",
+        "stage": "핵심"
+      }
+    ],
     "Pandas": [
       {
         "title": "Pandas의 기본 사용법 [ Python 데이터 분석과 이미지 처리 ]",
@@ -9668,88 +9750,6 @@
         "views": 235,
         "length": "12:55",
         "published": "7년 전",
-        "stage": "핵심"
-      }
-    ],
-    "Pytest": [
-      {
-        "title": "[SWTT] pytest 튜토리얼 (1/3)",
-        "url": "https://www.youtube.com/watch?v=v5piUTg2XKI",
-        "thumbnail": "https://i.ytimg.com/vi/v5piUTg2XKI/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 135,
-        "length": "13:36",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 Pytest Chapter 1 ~ 4",
-        "url": "https://www.youtube.com/watch?v=J0dslY7QSi4",
-        "thumbnail": "https://i.ytimg.com/vi/J0dslY7QSi4/mqdefault.jpg",
-        "channel": "Software Factory",
-        "views": 615,
-        "length": "43:57",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Jonghyun Park: 파이썬에서 편하게 테스트 케이스 작성하기: pytest, Travis CI, 그리고 도커",
-        "url": "https://www.youtube.com/watch?v=rxCjxX4tT1E",
-        "thumbnail": "https://i.ytimg.com/vi/rxCjxX4tT1E/mqdefault.jpg",
-        "channel": "PyCon Korea",
-        "views": 3721,
-        "length": "35:05",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[SWTT] pytest 튜토리얼 (3/3)",
-        "url": "https://www.youtube.com/watch?v=vXboqkw_PFU",
-        "thumbnail": "https://i.ytimg.com/vi/vXboqkw_PFU/mqdefault.jpg",
-        "channel": "Software Tool Time",
-        "views": 65,
-        "length": "13:12",
-        "published": "2년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "파이썬 Pytest Chapter 5 ~ 6",
-        "url": "https://www.youtube.com/watch?v=qPMWreHLw-M",
-        "thumbnail": "https://i.ytimg.com/vi/qPMWreHLw-M/mqdefault.jpg",
-        "channel": "Software Factory",
-        "views": 160,
-        "length": "57:56",
-        "published": "3년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "pytest-django 셋업하기 2022-02-01 [재활코딩]",
-        "url": "https://www.youtube.com/watch?v=vQjZ7JFBYnM",
-        "thumbnail": "https://i.ytimg.com/vi/vQjZ7JFBYnM/mqdefault.jpg",
-        "channel": "PythonicHours",
-        "views": 341,
-        "length": "24:37",
-        "published": "4년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "[Python] Pytest Tutorial",
-        "url": "https://www.youtube.com/watch?v=2G7XgyGYUbo",
-        "thumbnail": "https://i.ytimg.com/vi/2G7XgyGYUbo/mqdefault.jpg",
-        "channel": "SeongHwan Kim",
-        "views": 197,
-        "length": "2:47",
-        "published": "8년 전",
-        "stage": "핵심"
-      },
-      {
-        "title": "Python中級#27 pytest, fixtureで単体テストに足を踏み入れる",
-        "url": "https://www.youtube.com/watch?v=_DlSzo10Kw0",
-        "thumbnail": "https://i.ytimg.com/vi/_DlSzo10Kw0/mqdefault.jpg",
-        "channel": "IT屋のたなべ",
-        "views": 104,
-        "length": "32:37",
-        "published": "3주 전",
         "stage": "핵심"
       }
     ],
