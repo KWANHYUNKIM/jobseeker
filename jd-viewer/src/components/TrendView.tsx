@@ -5,10 +5,11 @@ import { useTrends } from '../lib/useTrends'
 import { useTechRelations } from '../lib/useTechRelations'
 import { ExpansionView } from './ExpansionView'
 import { RoleInsights } from './RoleInsights'
+import { LearningView } from './LearningView'
 import { Loader, ErrorState } from './ui'
 import type { TechRelation, TrendDay } from '../types'
 
-type TrendMode = 'trend' | 'relations' | 'learn'
+type TrendMode = 'trend' | 'relations' | 'learn' | 'paths'
 
 function pct(d: TrendDay, t: string): number {
   return d.total ? Math.round((1000 * (d.tech[t] ?? 0)) / d.total) / 10 : 0
@@ -57,17 +58,22 @@ export function TrendView({
           <ModeBtn active={mode === 'trend'} onClick={() => setMode('trend')}>직군 분석</ModeBtn>
           <ModeBtn active={mode === 'relations'} onClick={() => setMode('relations')}>기술 관계·맥락</ModeBtn>
           <ModeBtn active={mode === 'learn'} onClick={() => setMode('learn')}>학습·확장</ModeBtn>
+          <ModeBtn active={mode === 'paths'} onClick={() => setMode('paths')}>요구사항 → 학습</ModeBtn>
         </div>
         <span className="text-xs text-(--color-muted)">
           {mode === 'trend'
             ? '직군별 산업·경력·학력·우대사항·자격요건 한눈에'
             : mode === 'relations'
               ? '함께 쓰이는 기술(스택 레이어)과 어디서·왜 쓰이는지'
-              : '기술 선택 → 함께 쓰는 기술 확장 추천 + 학습 커리큘럼'}
+              : mode === 'learn'
+                ? '기술 선택 → 함께 쓰는 기술 확장 추천 + 학습 커리큘럼'
+                : '우대사항이 요구하는 것 → 읽을 기술 블로그 글 + 돈 주고 볼 만한 강의'}
         </span>
       </div>
 
-      {mode === 'learn' ? (
+      {mode === 'paths' ? (
+        <LearningView />
+      ) : mode === 'learn' ? (
         <div className="flex flex-1 min-h-0 min-w-0">
           <ExpansionView onOpenCompany={onOpenCompany} focusTech={focusTech} />
         </div>
