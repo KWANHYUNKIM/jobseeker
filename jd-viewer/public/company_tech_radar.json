@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-19T12:26:40",
+ "generated_at": "2026-08-19T13:56:22",
  "total": 100,
  "countries": [
   {
@@ -459,7 +459,7 @@
     },
     {
      "name": "Kotlin",
-     "count": 11
+     "count": 12
     },
     {
      "name": "TypeScript",
@@ -471,7 +471,7 @@
     },
     {
      "name": "JavaScript",
-     "count": 9
+     "count": 8
     },
     {
      "name": "Scala",
@@ -559,11 +559,11 @@
       "count": 3
      },
      {
-      "name": "React Query",
+      "name": "Node.js BFF",
       "count": 2
      },
      {
-      "name": "Recoil",
+      "name": "React Query",
       "count": 2
      }
     ],
@@ -582,11 +582,11 @@
      },
      {
       "name": "MySQL",
-      "count": 11
+      "count": 10
      },
      {
       "name": "Apache Spark",
-      "count": 6
+      "count": 7
      },
      {
       "name": "Apache Airflow",
@@ -655,7 +655,7 @@
    "architecture": [
     {
      "name": "Event-driven",
-     "count": 7
+     "count": 6
     },
     {
      "name": "MSA",
@@ -663,10 +663,6 @@
     },
     {
      "name": "Microservices",
-     "count": 3
-    },
-    {
-     "name": "Polyglot persistence",
      "count": 2
     },
     {
@@ -675,6 +671,10 @@
     },
     {
      "name": "API Gateway + Service Discovery",
+     "count": 1
+    },
+    {
+     "name": "BFF",
      "count": 1
     }
    ]
@@ -19243,9 +19243,10 @@
    "domain": "이커머스",
    "languages": [
     "Java",
+    "JavaScript/TypeScript",
     "Go",
     "Python",
-    "JavaScript",
+    "Kotlin",
     "Scala"
    ],
    "stack": {
@@ -19255,41 +19256,56 @@
      "Guice",
      "Netty",
      "Vert.x",
-     "gRPC"
+     "Poseidon",
+     "Phantom",
+     "Hystrix",
+     "gRPC",
+     "Ranger service discovery"
     ],
     "frontend": [
      "React",
-     "Node.js",
+     "Redux",
+     "Node.js BFF",
+     "PWA Service Worker",
      "React Native",
-     "Redux"
+     "Proteus server-driven UI",
+     "Kotlin Android"
     ],
     "data": [
      "Kafka",
+     "Varadhi",
      "HBase",
      "Elasticsearch",
+     "Lucene",
      "Aerospike",
-     "MySQL",
+     "MySQL sharded",
      "Redis",
-     "Druid"
+     "Druid",
+     "Apache Spark",
+     "Apache Flink",
+     "HDFS Hive"
     ],
     "infra": [
      "Kubernetes",
+     "Docker",
      "Envoy",
-     "사내 데이터센터(FK Cloud)",
+     "ZooKeeper",
+     "Flipkart Cloud Platform private DC",
      "GCP",
-     "Docker"
+     "Foxtrot",
+     "Prometheus Grafana"
     ]
    },
    "architecture": [
-    "Microservices",
-    "Event-driven",
-    "Service Mesh",
-    "Polyglot persistence"
+    "Microservices with BFF composition",
+    "Event-driven pub/sub over Kafka and Varadhi",
+    "Service mesh plus ZooKeeper based client-side discovery",
+    "Polyglot persistence with server-driven UI clients"
    ],
-   "diagram": "flowchart TD\n  subgraph Client[\"Client / Edge\"]\n    APP[\"Mobile App<br/>React Native + Android/iOS\"]\n    WEB[\"Web<br/>React + Node.js SSR\"]\n    CDN[\"Edge / CDN<br/>Akamai + FK Image CDN\"]\n  end\n  subgraph Gateway[\"API / Gateway\"]\n    GW[\"API Gateway<br/>Netty + Dropwizard\"]\n    MESH[\"Service Mesh<br/>Envoy sidecars\"]\n  end\n  subgraph Core[\"Core Services\"]\n    SEARCH[\"Search + Ranking<br/>Elasticsearch + Lucene\"]\n    CATALOG[\"Catalog / Listing<br/>Spring Boot + HBase\"]\n    CART[\"Cart + Checkout<br/>Vert.x async\"]\n    ORDER[\"Order State Machine<br/>Java + Kafka\"]\n    PRICE[\"Pricing / Promo<br/>Aerospike\"]\n    RECO[\"Recommendation<br/>Scala + Spark\"]\n  end\n  subgraph Async[\"Streaming / Async\"]\n    KAFKA[\"Event Bus<br/>Kafka + Varadhi\"]\n    SPARK[\"Stream / Batch<br/>Spark + Flink\"]\n  end\n  subgraph Data[\"Data / Storage\"]\n    HBASE[\"Wide-column<br/>HBase\"]\n    AERO[\"Low-latency KV<br/>Aerospike\"]\n    MYSQL[\"Transactional<br/>MySQL\"]\n    DRUID[\"OLAP<br/>Druid\"]\n    REDIS[\"Cache<br/>Redis\"]\n  end\n  subgraph Infra[\"Infra / Platform\"]\n    K8S[\"Orchestration<br/>Kubernetes on FK Cloud + GCP\"]\n    FOX[\"Observability<br/>Foxtrot + ES\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> GW\n  GW --> MESH\n  MESH -->|gRPC| SEARCH\n  MESH -->|gRPC| CATALOG\n  MESH -->|gRPC| CART\n  CART --> ORDER\n  SEARCH --> RECO\n  CATALOG --> PRICE\n  ORDER -->|events| KAFKA\n  PRICE --> AERO\n  CART --> REDIS\n  CATALOG --> HBASE\n  ORDER --> MYSQL\n  KAFKA --> SPARK\n  SPARK --> DRUID\n  SPARK --> RECO\n  KAFKA --> FOX\n  MESH --> K8S\n  FOX --> DRUID",
-   "why_language": "인도 최대 이커머스로서 초당 수십만 요청을 견디는 안정적 백엔드가 핵심이라, 성숙한 JVM 생태계(Java/Scala)를 주력으로 삼아 Spring Boot·Dropwizard·Vert.x로 고동시성 서비스를 운영한다. 네트워크 프록시·CLI·인프라 도구는 경량 동시성과 단일 바이너리 배포가 강점인 Go를, 데이터/ML 파이프라인은 Python을 쓰는 폴리글랏 전략이다. 프런트는 React 기반 웹과 React Native 앱으로 코드·인력을 통합한다.",
-   "why_architecture": "Big Billion Days처럼 평시 대비 수십 배 트래픽이 몰리는 이벤트성 부하 때문에, 각 도메인(검색·카탈로그·주문·결제)을 독립 배포·독립 스케일하는 마이크로서비스가 필수다. 주문/재고/결제는 강한 비동기 의존성을 갖기에 Kafka 기반 이벤트 드리븐으로 결합을 끊어 피크 흡수와 재처리를 가능케 했고, 수천 개 서비스 간 트래픽 거버넌스·재시도·서킷브레이킹을 Envoy 서비스 메시로 표준화했다.",
-   "summary": "JVM 폴리글랏 MSA + Kafka 이벤트 드리븐 + Envoy 메시로 인도 최대 이커머스의 폭주 트래픽을 흡수하는 스택",
+   "diagram": "flowchart TD\n  subgraph Client\n    APP[\"Mobile App<br/>Android Kotlin + Proteus SDUI\"]\n    WEB[\"Web PWA<br/>React + Redux\"]\n  end\n  subgraph Edge\n    CDN[\"Edge and CDN<br/>Akamai + NGINX\"]\n    BFF[\"BFF and Gateway<br/>Node.js + Poseidon Netty\"]\n    MESH[\"Service Mesh<br/>Envoy + Ranger discovery\"]\n  end\n  subgraph Core\n    SEARCH[\"Search and Ranking<br/>Lucene + LTR models\"]\n    CART[\"Checkout and Payments<br/>Spring Boot + UPI rails\"]\n    OMS[\"Order Management<br/>Dropwizard + Guice\"]\n    EKART[\"Logistics Ekart<br/>Java + Go services\"]\n  end\n  subgraph Data\n    AERO[\"Hot KV Cache<br/>Aerospike + Redis\"]\n    HB[\"Catalog and Orders<br/>HBase + sharded MySQL\"]\n    ES[\"Search Index<br/>Elasticsearch + Lucene\"]\n  end\n  subgraph Async\n    KAFKA[\"Event Bus<br/>Kafka + Varadhi REST pubsub\"]\n    FLINK[\"Stream Processing<br/>Flink + Spark\"]\n  end\n  subgraph Platform\n    K8S[\"Flipkart Cloud Platform<br/>Kubernetes + Docker on FK DC and GCP\"]\n    FOX[\"Observability<br/>Foxtrot + Druid + Grafana\"]\n  end\n  APP --> CDN\n  WEB --> CDN\n  CDN --> BFF\n  BFF -->|gRPC| MESH\n  MESH --> SEARCH\n  MESH --> CART\n  MESH --> OMS\n  MESH --> EKART\n  SEARCH --> ES\n  CART --> AERO\n  OMS --> HB\n  EKART --> HB\n  CART -->|order events| KAFKA\n  OMS -->|state changes| KAFKA\n  KAFKA --> FLINK\n  FLINK --> ES\n  FLINK --> FOX\n  KAFKA --> FOX\n  MESH -.-> K8S\n  K8S -.-> FOX",
+   "why_language": "수백 개 마이크로서비스가 초당 수십만 건의 요청을 처리해야 하므로, JVM 생태계의 성숙한 동시성·GC 튜닝·프로파일링 도구를 갖춘 Java가 주문·결제·카탈로그 같은 핵심 트랜잭션 도메인의 기본 언어다. 클라이언트 응답 조립은 I/O 대기가 지배적이라 Node.js BFF와 Netty/Vert.x 비동기 스택이 맡고, 인도 시장 특성상 저가 안드로이드 기기가 다수라 Kotlin 앱과 서버 드리븐 UI가 중요하다. 인프라·프록시·물류 에이전트처럼 메모리 상주 비용이 중요한 영역은 Go, 검색 랭킹·수요예측·가격결정 모델링은 Python과 Scala/Spark가 담당한다.",
+   "why_architecture": "평상시 대비 수십 배로 튀는 Big Billion Days 트래픽을 도메인별로 독립 확장·격리해야 하므로, 팀 단위 소유권이 명확한 마이크로서비스와 Envoy 기반 트래픽 거버넌스를 택했다. 주문·재고·배송·정산은 실시간 동기 호출로 묶으면 장애가 전파되므로 Kafka와 Varadhi를 통한 이벤트 기반 비동기 전파로 결합도를 낮추고 최종 일관성을 받아들였다. 상품 상세 한 화면이 수십 개 서비스 응답의 조합이라 BFF에서 비동기 팬아웃·부분 실패 허용으로 조립하고, 데이터는 접근 패턴별로 Aerospike·HBase·MySQL·Elasticsearch에 나눠 저장한다.",
+   "summary": "JVM 마이크로서비스와 Kafka 이벤트 백본 위에, 인도의 저사양·저대역폭 환경을 겨냥한 서버 드리븐 UI와 자체 클라우드 플랫폼을 얹은 초대형 이커머스 스택.",
    "deep_dive": [
     {
      "topic": "Big Billion Days: 폭주 트래픽을 견디는 설계",
@@ -19326,6 +19342,22 @@
     {
      "topic": "배포·CI/CD·릴리스 안전장치: 카나리와 피크락",
      "body": "### 수천 서비스를 매일 안전하게 배포하기\n독립 배포가 마이크로서비스의 이점이지만, 동시에 '하루 수백 번 배포 중 하나가 세일을 망칠 위험'을 만든다. Flipkart는 이를 **자동화된 파이프라인 + 점진 배포 + 이벤트 기간 동결**로 통제한다.\n\n### 파이프라인 흐름\n1. **빌드/검증**: 커밋 → 빌드 → 단위·통합 테스트 → 정적분석. 보안은 자체 오픈소스 **Astra**(`flipkart-incubator/Astra`)로 REST API에 대해 인증 우회·인젝션 등 자동 보안 테스트를 CI에 끼워 넣는다.\n2. **아티팩트/컨테이너화**: `Docker` 이미지로 패키징, 레지스트리에 푸시.\n3. **오케스트레이션**: `Kubernetes`(사내 FK Cloud + `GCP`)에 배포. 서비스 메시(`Envoy`)가 트래픽 라우팅을 담당하므로 배포 도구가 가중치만 바꿔도 트래픽 비율을 조정할 수 있다.\n\n### 점진 배포(progressive delivery)\n- **카나리**: 신버전에 1~5% 트래픽만 흘려 에러율·p99 지연·비즈니스 지표(전환율)를 Foxtrot/메트릭으로 비교한다. 자동 분석이 임계치를 넘으면 **자동 롤백**.\n- **Blue-Green / rolling**: 상태가 민감한 서비스는 blue-green으로 무중단 전환, 무상태 서비스는 rolling으로 점진 교체.\n- **메시 기반 트래픽 시프트**: Envoy 가중 라우팅으로 인스턴스 교체 없이 버전 간 트래픽을 미세 조정한다.\n\n### Big Billion Days '피크락(peak lock)'\n세일 직전·기간에는 **배포 동결(change freeze)** 을 건다. 검증되지 않은 코드가 최대 매출 구간에 들어가는 리스크를 차단하기 위함이다. 이 기간에는 hotfix만 엄격한 승인 절차로 허용하고, 인프라는 미리 capacity를 확장·고정한다.\n\n### 트레이드오프\n점진 배포·자동 분석은 배포 속도를 다소 늦추지만, 수천 서비스 환경에서 **blast radius(장애 전파 범위)를 좁히는 것**이 속도보다 중요하다. 자동 롤백 임계치를 너무 민감하게 잡으면 정상 배포도 되돌려 'flaky deploy'가 생기므로, 지표 윈도우와 신뢰구간을 보수적으로 튜닝하는 것이 운영 노하우다."
+    },
+    {
+     "topic": "Varadhi: Kafka를 REST 메시징 서비스로 바꾼 이유",
+     "body": "### 문제: Kafka 클라이언트를 수백 개 팀에 나눠주면 생기는 일\n\nFlipkart는 사내에서 매우 큰 규모의 `Kafka` 클러스터를 운영하지만, 정작 애플리케이션 팀이 Kafka 컨슈머를 직접 다루게 하면 플랫폼 팀이 감당하지 못하는 문제가 쌓인다.\n\n- **폴리글랏 지옥**: Java 팀은 공식 클라이언트를 쓰지만, Node.js/Go/Python 서비스는 라이브러리 성숙도와 리밸런스 동작이 제각각이다.\n- **리밸런스 폭풍**: 컨슈머 인스턴스가 오토스케일로 뜨고 지면 그룹 리밸런스가 발생하고, 세일 피크에 하필 컨슈머를 늘리면 오히려 처리량이 떨어진다.\n- **poll 모델의 부담**: 컨슈머가 직접 `poll` 루프·오프셋 커밋·에러 처리·재시도 백오프를 구현해야 하고, 팀마다 품질이 다르다.\n- **한 소비자가 클러스터를 망가뜨림**: 특정 팀의 느린 컨슈머가 랙을 키우고 브로커 디스크를 잡아먹는다.\n\n`Varadhi`(2024년 오픈소스)는 이 문제를 **\"메시징을 HTTP API 뒤로 숨긴다\"**는 답으로 푼다.\n\n### 동작 모델: pull이 아니라 server-side push\n\n일반적인 Kafka 사용은 컨슈머가 브로커에서 당겨오는(pull) 구조다. Varadhi는 반대로 서버가 메시지를 읽어서 **소비자 서비스의 HTTP 엔드포인트로 밀어 넣는다**.\n\n```\nProducer  --HTTP POST /topics/{t}/produce-->  Varadhi Server (Vert.x)\n                                                  |\n                                              Kafka topic\n                                                  |\n                                        Varadhi Consumer Node\n                                                  |\n                                 --HTTP POST--> Subscriber service /callback\n```\n\n이 뒤집기가 주는 것:\n\n| 항목 | 직접 Kafka 컨슈머 | Varadhi push |\n|---|---|---|\n| 언어 지원 | 클라이언트 라이브러리 필요 | HTTP만 말하면 끝 |\n| 스케일 단위 | 파티션 수에 묶임 | 구독 단위 동시성 파라미터 |\n| 재시도 | 팀이 직접 구현 | 플랫폼이 백오프 재시도 |\n| 실패 격리 | 컨슈머 랙 누적 | sideline 큐로 격리 |\n\n### 핵심 기능들과 그 이유\n\n**1. Sideline / Unsideline (DLQ의 운영 가능한 버전)**\n\n재시도 정책을 다 소진한 메시지는 버리지 않고 **sideline** 상태로 별도 보관된다. 운영자는 다운스트림을 고친 뒤 `unsideline` API 한 번으로 해당 메시지를 다시 흘려보낸다. 이커머스에서 이건 필수다 — 주문 확정 이벤트나 정산 이벤트를 조용히 유실하면 돈이 사라지기 때문이다. \"DLQ에 쌓였는데 재처리 도구가 없어서 수동 스크립트를 짠다\"는 흔한 상황을 플랫폼 기능으로 승격시킨 것.\n\n**2. 그룹 키 기반 순서 보장**\n\n전역 순서는 포기하고 `groupId`(예: `orderId`, `shipmentId`) 단위 순서만 보장한다. 같은 주문의 `CREATED → PACKED → SHIPPED` 이벤트가 뒤집히면 상태 머신이 깨지지만, 서로 다른 주문 사이 순서는 아무 의미가 없다. 이 절충 덕분에 파티션 수를 늘려 수평 확장하면서도 도메인 불변식은 지킨다.\n\n**3. 구독 단위 스로틀링과 용량 정책**\n\n구독마다 QPS/동시성 상한을 선언한다. 다운스트림이 500ms 걸리는 서비스면 초당 처리량이 제한되므로, Varadhi가 밀어 넣는 속도를 조절해 **소비자를 보호한다**. 반대로 세일 기간에는 정책만 올려서 처리량을 늘린다 — 코드 배포 없이.\n\n**4. 멀티테넌시와 존 인지 라우팅**\n\n조직/팀 단위 `project`, `topic`, `subscription` 계층으로 테넌트를 분리하고 지역·존 정보를 라우팅에 반영한다. 한 팀의 폭주가 다른 팀의 SLA를 먹지 않도록 격리하는 것이 목적이다.\n\n**5. 스토리지 추상화**\n\n메시징 백엔드는 플러그인 형태로 추상화되어 있고 기본 구현이 Kafka다. 즉 애플리케이션은 Kafka를 알 필요가 없고, 플랫폼 팀은 나중에 백엔드를 바꿔도 수백 개 서비스를 건드리지 않는다.\n\n### 왜 Vert.x인가\n\nVaradhi 서버는 본질적으로 **HTTP in → Kafka → HTTP out**의 I/O 바운드 프록시다. 스레드당 요청 모델이면 수만 개의 인플라이트 푸시를 유지하는 데 스레드 수가 폭발한다. `Vert.x`의 이벤트 루프 + 논블로킹 HTTP 클라이언트로 적은 스레드로 대량 커넥션을 유지하고, 백프레셔를 이벤트 루프 수준에서 다룬다.\n\n### 트레이드오프\n\n- HTTP 홉이 하나 더 생겨 **지연이 늘어난다**. 밀리초 단위가 중요한 동기 경로에는 쓰지 않고, 비동기 워크플로에만 쓴다.\n- 정확히 한 번(exactly-once)이 아니라 **at-least-once**다. 따라서 소비자는 반드시 멱등해야 하고, 주문/결제 도메인은 `idempotency key` 기반 중복 제거를 애플리케이션에서 구현한다.\n- 푸시 모델은 소비자가 다운되면 재시도 큐가 부풀어 오른다. 그래서 sideline과 스로틀링이 옵션이 아니라 필수 설계 요소로 들어갔다."
+    },
+    {
+     "topic": "서버 드리븐 UI와 PWA: 저사양 인도 시장에 맞춘 프런트엔드 공학",
+     "body": "### 제약 조건이 아키텍처를 결정한다\n\nFlipkart의 프런트엔드 결정은 대부분 **인도 시장의 물리적 제약**에서 역산된 것이다.\n\n- 사용자 다수가 512MB~2GB RAM의 저가 안드로이드 기기를 쓴다 → APK 크기와 메모리 사용량이 곧 이탈률.\n- 2G/3G 혼재, 패킷 손실이 큰 모바일 네트워크 → 왕복 횟수와 페이로드 바이트가 곧 전환율.\n- 앱 업데이트 채택률이 느리다 → 새 버전을 배포해도 몇 주간 구버전이 트래픽의 큰 비중을 차지한다.\n- Big Billion Days마다 홈/카테고리 화면의 레이아웃·테마·배너 구조가 통째로 바뀐다.\n\n마지막 두 개가 결정적이다. **앱 릴리스 주기에 UI 변경을 묶어두면 세일을 운영할 수 없다.**\n\n### Proteus: JSON을 안드로이드 View로 런타임 인플레이트\n\n`Proteus`는 Flipkart가 오픈소스로 공개한 서버 드리븐 UI 엔진이다. 안드로이드의 XML 레이아웃을 **JSON 레이아웃으로 대체**하고, 그 JSON을 서버에서 내려받아 런타임에 네이티브 `View` 트리로 인플레이트한다.\n\n```json\n{\n  \"type\": \"LinearLayout\",\n  \"orientation\": \"vertical\",\n  \"children\": [\n    { \"type\": \"ImageView\", \"src\": \"$product.image\" },\n    { \"type\": \"TextView\", \"text\": \"$product.title\", \"textColor\": \"@color/ink\" }\n  ]\n}\n```\n\n동작의 핵심 포인트:\n\n- **네이티브 View를 그대로 쓴다.** WebView나 자체 렌더러가 아니라 `TextView`, `RecyclerView` 같은 진짜 안드로이드 위젯을 만든다. 그래서 스크롤 성능과 접근성이 네이티브와 동일하다.\n- **데이터 바인딩이 내장**되어 있다. `$product.title` 같은 경로 표현식으로 JSON 데이터와 레이아웃을 분리하고, `RecyclerView` 아이템에서 뷰를 재활용하며 바인딩만 교체한다.\n- **어트리뷰트 핸들러 등록 방식**이라 커스텀 뷰와 커스텀 속성을 앱 쪽에서 확장할 수 있다.\n- 파싱 결과를 캐시하고, XML 인플레이션 대비 오버헤드를 실사용 수준으로 억제하는 것이 엔진의 주 과제였다.\n\n결과적으로 **레이아웃 = 서버가 소유하는 데이터**가 된다. 세일 전날 홈 화면 구성을 바꿔도 스토어 심사와 업데이트 채택을 기다릴 필요가 없고, 구버전 앱까지 새 레이아웃을 받는다. A/B 테스트도 레이아웃 페이로드를 갈아끼우는 문제로 축소된다.\n\n### Flipkart Lite: 초기 PWA 사례 중 하나\n\n2015년 Flipkart는 모바일 웹을 **Progressive Web App**으로 재구축했다(`Flipkart Lite`). 당시 기준으로 공격적인 선택이었다.\n\n- `Service Worker`로 셸과 정적 자산을 캐시해 **재방문 시 네트워크 없이 UI가 먼저 뜬다**(App Shell 패턴).\n- `Add to Home Screen`으로 앱 설치 없이 홈 화면 아이콘을 확보 — APK 다운로드 수십 MB가 부담인 사용자층을 겨냥한 것.\n- 푸시 알림을 웹에서 지원해 리텐션 채널을 앱 밖으로 확장.\n- React + Redux 기반 SPA로 라우팅 전환 시 전체 문서 재로드를 없앰.\n\n이 프로젝트가 유명한 이유는 기술 자체보다 **\"앱 vs 웹\" 이분법을 버린 결정**에 있다. 인도에서는 저장공간이 없어 앱을 지우는 사용자가 많고, 그들을 잃지 않으려면 웹이 앱만큼 좋아야 했다.\n\n### 바이트 예산이라는 사고방식\n\n- 이미지: 기기 화면 밀도·네트워크 품질에 따라 서버에서 리사이즈/WebP 트랜스코딩된 변형을 고른다. 이커머스 페이지의 페이로드는 사실상 이미지가 전부다.\n- 응답 스키마: 상품 카드에 필요한 필드만 BFF에서 잘라서 내려보낸다. 전체 상품 도큐먼트를 그대로 보내지 않는다.\n- 우선순위 렌더링: 첫 화면에 보이는 카드만 우선 조립하고 나머지는 지연 로드. BFF의 부분 실패 허용과 맞물린다 — 리뷰 서비스가 느리면 리뷰 없이 페이지를 먼저 준다.\n\n### 트레이드오프\n\n서버 드리븐 UI의 대가는 명확하다. **디버깅과 타입 안전성이 나빠진다.** 잘못된 레이아웃 JSON을 배포하면 수백만 대의 기기에서 화면이 깨지므로, 레이아웃 페이로드에도 스키마 검증·버전 협상·단계적 롤아웃(카나리)을 코드와 동일하게 적용해야 한다. 또한 클라이언트 엔진이 지원하지 않는 컴포넌트를 서버가 내려보내면 안 되므로, **앱 버전별 capability negotiation**이 BFF의 필수 로직이 된다."
+    },
+    {
+     "topic": "서비스 디스커버리와 비동기 조립 계층: Ranger, Phantom, Poseidon",
+     "body": "### 상품 상세 한 화면 = 수십 개 서비스 호출\n\nFlipkart의 상품 페이지 하나를 그리려면 카탈로그, 가격, 재고, 배송 약속, 리뷰/평점, 추천, 광고, 개인화 배지, 위시리스트 상태 등 **수십 개 서비스의 응답을 합성**해야 한다. 순차 호출하면 지연이 합산되어 절대 불가능하고, 하나라도 실패하면 페이지가 통째로 죽는다. Flipkart가 오픈소스로 공개한 세 컴포넌트가 이 문제를 각각 다른 층에서 푼다.\n\n### Ranger: ZooKeeper 기반 샤드 인지 서비스 디스커버리\n\n`Ranger`는 서비스 인스턴스가 자기 정보를 `ZooKeeper`에 등록하고, 클라이언트가 그 목록을 받아 **클라이언트 사이드 로드밸런싱**을 하는 디스커버리 라이브러리다.\n\n동작:\n\n1. 서비스 인스턴스가 기동하면 `namespace/serviceName` 경로 아래 자신의 host/port와 **임의의 샤드 정보**를 담은 노드를 등록한다.\n2. 인스턴스는 주기적으로 헬스체크 결과를 반영해 노드를 갱신한다. 죽으면 ZooKeeper 세션이 끊기며 노드가 사라진다.\n3. 클라이언트는 해당 경로를 watch 하며 노드 목록을 로컬 캐시에 유지하고, 요청 시 캐시에서 후보를 골라 직접 호출한다.\n\n여기서 중요한 건 **샤드 정보가 임의의 구조화 데이터**라는 점이다. 단순 라운드로빈이 아니라 다음이 가능해진다.\n\n- 환경/존/랙 기준 라우팅 → 크로스 존 트래픽 비용과 지연 절감\n- API 버전 기준 라우팅 → 구버전 클라이언트를 구버전 인스턴스로\n- 테넌트/카테고리 기준 라우팅 → 특정 카테고리 트래픽을 전용 풀로 격리\n\nDNS 기반 디스커버리로는 TTL 캐싱과 헬스 반영 지연 때문에 이 세밀함을 얻을 수 없다. 대신 대가는 **ZooKeeper 의존성**이다. ZK 앙상블이 흔들리면 디스커버리가 흔들리므로, 클라이언트는 반드시 마지막으로 알려진 목록으로 계속 동작하는(stale-but-serving) 폴백을 가져야 한다.\n\n### Phantom: Netty 프록시 + 서킷 브레이커\n\n`Phantom`은 Netty 기반의 고성능 프록시/서비스 액세스 레이어다. 클라이언트와 백엔드 사이에 앉아서:\n\n- **Hystrix 스타일 서킷 브레이커와 스레드풀/세마포어 격리(bulkhead)**를 적용한다. 리뷰 서비스가 느려져도 그 호출은 전용 풀에서만 소진되고, 가격 조회 스레드는 멀쩡하다.\n- 프로토콜 브리징(HTTP ↔ Thrift 등)을 처리해 폴리글랏 서비스 간 접속을 통일한다.\n- 호출별 타임아웃·폴백·메트릭을 한 곳에서 강제한다.\n\n이 발상은 나중에 사이드카 프록시(Envoy)로 흡수되었지만, 라이브러리/프록시 형태로 먼저 구현되었다는 점에서 Flipkart의 문제의식이 얼마나 이른 시기였는지 보여준다.\n\n### Poseidon: 선언적 팬아웃을 위한 비동기 API 프레임워크\n\n`Poseidon`은 Netty + Hystrix 위에 만든 **API 합성(BFF) 프레임워크**다. 핵심 아이디어는 개발자가 콜백/퓨처를 직접 엮지 않고 **DataSource를 선언**하면 프레임워크가 의존 그래프를 보고 최대한 병렬로 실행해 주는 것이다.\n\n- 서로 의존 없는 호출은 자동으로 동시에 나간다 → 총 지연이 `sum`이 아니라 `max`에 수렴.\n- 각 DataSource마다 타임아웃과 폴백을 붙인다 → 추천이 늦으면 빈 추천으로 페이지를 완성.\n- 응답 조립·직렬화 계층이 분리되어 클라이언트 종류(웹/앱/구버전 앱)별로 다른 뷰를 만들 수 있다.\n\n### 세 조각이 만드는 전체 흐름\n\n```\nClient -> Edge/CDN -> BFF (Poseidon / Node.js)\n            |  DataSource 선언 → 병렬 팬아웃\n            v\n   Ranger 로 후보 인스턴스 조회 → Envoy/Phantom 경유 호출\n            |  각 호출: 타임아웃 + 서킷브레이커 + 폴백\n            v\n   Catalog / Price / Inventory / Reviews / Ads ...\n```\n\n### 설계 원칙으로 남는 것\n\n1. **부분 실패는 정상 상태다.** 20개 호출 중 1개가 죽는 건 상시 발생한다. 페이지는 그래도 렌더링되어야 한다.\n2. **격리 없는 병렬은 위험하다.** 팬아웃을 늘리면 느린 다운스트림 하나가 전체 스레드풀을 먹는다. bulkhead가 병렬화의 전제 조건이다.\n3. **꼬리 지연(tail latency)이 사용자 경험이다.** p50이 아니라 p99가 페이지 로드 시간을 결정한다. 그래서 타임아웃은 낙관적으로 짧게 잡고 폴백을 준비한다.\n4. **디스커버리는 라우팅 정책의 일부다.** \"어디로 보낼까\"를 단순 IP 목록이 아니라 메타데이터가 붙은 결정으로 만들면, 배포·격리·비용 최적화가 전부 같은 메커니즘 위에서 풀린다."
+    },
+    {
+     "topic": "Ekart 물류와 serviceability: 주문 버튼을 누르기 전에 이미 끝난 계산",
+     "body": "### 이커머스의 진짜 어려움은 결제 이후가 아니라 이전이다\n\n상품 페이지에 \"내일 도착\"이라고 쓰는 순간, 그것은 **약속(promise)**이 된다. 이 한 줄을 계산하려면 카탈로그·재고·창고·운송망·용량 정보를 실시간으로 합성해야 하고, 인도 시장에서는 여기에 지리·주소 품질·결제 방식이라는 추가 난이도가 붙는다. Flipkart가 자체 물류망 `Ekart`를 직접 만든 이유가 이것이다 — 서드파티 배송사에 의존하면 이 계산에 필요한 데이터와 통제권이 없다.\n\n### 1. Serviceability: 이 핀코드로 보낼 수 있는가\n\n모든 판단의 출발점은 `pincode`(인도 우편번호) 단위 서비스 가능성이다.\n\n- 배송 가능 여부는 상품 하나가 아니라 **(핀코드 × 상품 속성 × 판매자 위치 × 배송 방식)**의 조합으로 결정된다. 대형 가전은 되지만 액체·배터리 포함 상품은 항공 운송이 막혀 특정 지역이 불가능한 식이다.\n- COD(Cash on Delivery) 가능 여부가 별도 차원으로 존재한다. 인도에서 COD는 여전히 큰 비중이며, 지역별 반품·미수령 리스크에 따라 허용 정책이 다르다.\n- 이 매트릭스는 크고 읽기가 압도적으로 많다. 그래서 **Aerospike/Redis 같은 저지연 KV에 미리 계산된 형태로 적재**하고, 상품 리스팅 렌더링 중 수십 밀리초 안에 조회된다. 온디맨드 계산은 불가능하다.\n\n### 2. Promise Engine: 도착 예정일 계산\n\n약속 날짜는 대략 다음 요소들의 함수다.\n\n| 입력 | 의미 |\n|---|---|\n| 재고 위치 | 어느 FC/판매자 창고에 물건이 있는가 |\n| 판매자 처리 시간 | 픽업까지 며칠 걸리는 판매자인가 |\n| 컷오프 시각 | 오늘 몇 시 전 주문이 오늘 출고되는가 |\n| 레인 SLA | 출발 허브 → 도착 허브 구간의 평균/분포 소요일 |\n| 용량 | 해당 레인·허브가 오늘 더 받을 수 있는가 |\n| 캘린더 | 휴일, 지역 축제, 기상 이슈 |\n\n중요한 건 이게 **정적 룩업 테이블이 아니라 실적 데이터로 계속 보정되는 예측**이라는 점이다. 실제 배송 스캔 이벤트에서 레인별 소요 시간 분포를 학습해 SLA를 갱신하고, 약속 날짜는 평균이 아니라 **높은 분위수(예: p90)**로 잡는다. 평균으로 약속하면 절반이 지각하기 때문이다. 여기서 트레이드오프가 발생한다 — 보수적으로 잡으면 전환율이 떨어지고, 공격적으로 잡으면 약속 위반과 CS 비용이 폭증한다.\n\n### 3. 주소라는 인도 특유의 문제\n\n인도 주소는 구조화되어 있지 않은 경우가 많다. \"라마 상점 뒤 파란 문 집\" 같은 랜드마크 기반 주소가 흔하고, 같은 핀코드 안에서도 배송 기사가 찾지 못하면 실패 배송이 된다. 그래서:\n\n- 주소 텍스트를 파싱·정규화하고 **지오코딩·클러스터링으로 배송 구역(beat)에 매핑**하는 ML 파이프라인이 존재한다.\n- 과거 성공 배송의 GPS 좌표를 축적해 주소 품질 점수를 매기고, 낮으면 주문 전에 사용자에게 위치 확인을 요구한다.\n- 이 데이터는 라스트마일 라우팅 최적화(기사 한 명의 하루 동선)에 그대로 쓰인다.\n\n### 4. 스캔 이벤트 파이프라인\n\n물류의 상태는 전부 **이벤트**로 표현된다. 창고 입고, 패킹, 매니페스트, 허브 도착, 허브 출발, 아웃-포-딜리버리, 배송 완료/실패, 반품 픽업.\n\n```\n기사 앱 / 허브 스캐너\n      | 스캔 이벤트\n      v\n  Kafka / Varadhi  --> 상태 머신 서비스 --> HBase 배송 이력\n      |                                    (shipmentId 기준 row key)\n      +--> Flink 집계 --> 허브 처리량, 레인 지연, SLA 위반 알림\n      +--> Foxtrot / Druid --> 운영 대시보드 실시간 질의\n```\n\n- `HBase`에 `shipmentId` 기준 row key로 이력을 append 하면, 개별 배송 추적은 단일 row 조회로 끝난다. 수십억 건이 쌓여도 조회 비용이 일정하다.\n- 스캔은 순서가 뒤집혀 도착할 수 있다(오프라인 상태의 기사 앱이 나중에 동기화). 그래서 상태 머신은 **타임스탬프 기반 정렬과 멱등 적용**을 전제로 설계되고, 이미 지난 상태로 되돌리는 이벤트는 무시한다.\n- 실시간 집계는 \"어느 허브가 오늘 밀리고 있는가\"를 즉시 보여줘야 하므로 배치가 아니라 스트림이어야 한다. 세일 기간에는 이 신호로 물량을 다른 허브로 우회시킨다.\n\n### 5. 역물류: 반품이 절반의 시스템이다\n\n인도 이커머스는 반품률이 높고, 특히 패션 카테고리는 상당 비율이 반품된다. 반품은 정방향 배송의 단순 역전이 아니다.\n\n- 픽업 슬롯 예약, 기사 방문, 현장 품질 검수(QC), 허브 재검수, 재입고 또는 폐기, 환불 트리거까지 별도 워크플로가 필요하다.\n- 환불은 결제 수단별로 경로가 다르다. UPI/카드는 PG를 통한 역거래, COD는 계좌 이체. 각각 정산 주기와 실패 모드가 다르므로 **환불 상태 머신이 주문 상태 머신과 별도로 존재**하고, 실패 시 재시도 가능한 이벤트로 관리된다.\n- 이 모든 단계가 이벤트로 발행되기 때문에, 반품 처리 지연·환불 미완결 같은 지표가 동일한 스트리밍 인프라에서 감시된다.\n\n### 왜 이렇게까지 하는가\n\n결국 이커머스의 단위 경제성은 **한 건당 물류 비용**과 **약속 준수율**에서 결정된다. 서비스 가능성과 약속 계산을 정확히 하면 실패 배송·재시도·CS 문의·반품이 줄고, 그것이 곧 마진이다. 그래서 Flipkart는 이 계산을 광고나 추천만큼 중요한 실시간 시스템으로 취급하고, 저지연 KV·이벤트 스트림·예측 모델을 전부 여기에 투입한다."
     }
    ],
    "github": {
@@ -19334,47 +19366,47 @@
      {
       "name": "flipkart-incubator/Astra",
       "url": "https://github.com/flipkart-incubator/Astra",
-      "desc": "CI에 통합되는 REST API 자동 보안 테스트 프레임워크",
+      "desc": "CI/CD 파이프라인에 붙여 REST API 취약점을 자동 점검하는 보안 테스트 도구",
       "lang": "Python",
-      "stars": 2645
+      "stars": 2657
+     },
+     {
+      "name": "flipkart-incubator/proteus",
+      "url": "https://github.com/flipkart-incubator/proteus",
+      "desc": "JSON 레이아웃을 런타임에 View로 인플레이트하는 안드로이드 서버 드리븐 UI 엔진",
+      "lang": "Java",
+      "stars": 1312
      },
      {
       "name": "flipkart-incubator/zjsonpatch",
       "url": "https://github.com/flipkart-incubator/zjsonpatch",
-      "desc": "RFC 6902 기반 JSON diff/patch 라이브러리(이벤트 델타에 활용)",
+      "desc": "RFC 6902 JSON Patch 생성·적용 라이브러리로 업계에서 널리 쓰이는 자바 구현",
       "lang": "Java",
-      "stars": 578
-     },
-     {
-      "name": "flipkart-incubator/databuilderframework",
-      "url": "https://github.com/flipkart-incubator/databuilderframework",
-      "desc": "의존성 기반 데이터 플로우/오케스트레이션 엔진",
-      "lang": "Java",
-      "stars": 40
+      "stars": 582
      },
      {
       "name": "flipkart-incubator/varadhi",
       "url": "https://github.com/flipkart-incubator/varadhi",
-      "desc": "Kafka 위에 REST 인터페이스를 얹은 메시징-as-a-service 플랫폼",
+      "desc": "Kafka 위에 올린 REST 기반 멀티테넌트 pub-sub 메시징 서비스, Vert.x로 구현",
       "lang": "Java",
-      "stars": 30
+      "stars": 31
      },
      {
       "name": "Flipkart/foxtrot",
       "url": "https://github.com/Flipkart/foxtrot",
-      "desc": "Elasticsearch/HBase 기반 실시간 이벤트 분석·관측성 저장소",
+      "desc": "HBase와 Elasticsearch를 결합해 수십억 건 이벤트를 실시간 질의하는 관측성 저장소",
       "lang": "Java",
-      "stars": 15
+      "stars": 17
      }
     ]
    },
    "sources": [
-    "https://github.com/flipkart-incubator",
     "https://blog.flipkart.tech/",
+    "https://github.com/flipkart-incubator",
     "https://github.com/flipkart-incubator/varadhi"
    ],
    "research_status": "llm-refined",
-   "updated_at": "2026-06-17"
+   "updated_at": "2026-08-19"
   },
   {
    "key": "meesho",
