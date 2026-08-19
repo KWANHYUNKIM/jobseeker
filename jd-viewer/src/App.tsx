@@ -7,6 +7,7 @@ import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
+import { RepostView } from './components/RepostView'
 import { CalendarView } from './components/CalendarView'
 import { TrendView } from './components/TrendView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
@@ -16,9 +17,9 @@ import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, emptyFilter, stackCounts, roleCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
+type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'reposts'
 
-const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend']
+const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend', 'reposts']
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -118,6 +119,9 @@ function App() {
           <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')}>
             모집 캘린더
           </TabButton>
+          <TabButton active={tab === 'reposts'} onClick={() => setTab('reposts')}>
+            재공고
+          </TabButton>
           <TabButton active={tab === 'trend'} onClick={() => setTab('trend')}>
             개발 트렌드
           </TabButton>
@@ -159,6 +163,8 @@ function App() {
         <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
           <CalendarView />
         </div>
+      ) : tab === 'reposts' ? (
+        <RepostView />
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
           <TrendView onOpenCompany={openCompany} focusTech={techFocus} />

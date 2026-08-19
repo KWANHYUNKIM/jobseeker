@@ -8,15 +8,25 @@ export interface FilterState {
   stacks: Set<string>
   roles: Set<string>
   query: string
+  // 마감 공고 취급. 기본은 'hide' — 목록에 섞여 있으면 지원할 수 없는 자리를 계속
+  // 클릭하게 된다. 'only' 는 지난 공고만, 'show' 는 함께 보되 배지로 구분한다.
+  // 어느 쪽이든 데이터에서 지우지는 않는다(검색·색인은 그대로).
+  closed: 'hide' | 'show' | 'only'
 }
 
 export function emptyFilter(): FilterState {
-  return { sites: new Set(), careers: new Set(), stacks: new Set(), roles: new Set(), query: '' }
+  return {
+    sites: new Set(), careers: new Set(), stacks: new Set(), roles: new Set(),
+    query: '', closed: 'hide',
+  }
 }
 
 export function applyFilter(jobs: Job[], f: FilterState): Job[] {
   const q = f.query.trim().toLowerCase()
   return jobs.filter((j) => {
+    const isClosed = j.status === 'closed'
+    if (f.closed === 'hide' && isClosed) return false
+    if (f.closed === 'only' && !isClosed) return false
     if (f.sites.size && !f.sites.has(j.site)) return false
     if (f.careers.size && !f.careers.has(careerBucket(j.career))) return false
     if (f.roles.size) {

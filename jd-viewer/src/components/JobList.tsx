@@ -60,7 +60,10 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                 <span className="text-(--color-accent) truncate">{j.company}</span>
                 {j.career && <span className="ml-auto shrink-0">{j.career}</span>}
               </div>
-              <div className="text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">{j.title}</div>
+              <div className="text-(--color-text) text-sm leading-snug line-clamp-2 mb-1.5">
+                {j.status === 'closed' && <ClosedBadge reason={j.closed_reason} />}
+                {j.title}
+              </div>
               {roles.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-1.5">
                   {roles.map((r) => (
@@ -123,7 +126,10 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                     {j.company}
                   </td>
                   <td className="px-3 py-2 text-(--color-text)">
-                    <div className="line-clamp-2 leading-snug">{j.title}</div>
+                    <div className="line-clamp-2 leading-snug">
+                      {j.status === 'closed' && <ClosedBadge reason={j.closed_reason} />}
+                      {j.title}
+                    </div>
                   </td>
                   <td className="px-3 py-2">
                     <div className="flex flex-wrap gap-1">
@@ -247,5 +253,20 @@ function PgBtn({
     >
       {children}
     </button>
+  )
+}
+
+// 마감 배지. 마감 공고를 목록에서 지우지 않고 표시로 구분하는 이유는, 지운 순간
+// "예전에 이런 자리가 있었다"가 사라지기 때문이다. 검색·색인·재공고 추적은 마감 공고를
+// 계속 필요로 한다. 대신 기본 필터는 모집중만 보여주므로, 지원할 수 없는 자리를 모르고
+// 클릭하는 일은 없다.
+function ClosedBadge({ reason }: { reason?: string }) {
+  return (
+    <span
+      title={reason || '마감'}
+      className="mr-1.5 align-middle inline-block px-1.5 py-0.5 text-[10px] font-medium rounded bg-(--color-muted)/20 text-(--color-muted) border border-(--color-border)"
+    >
+      마감
+    </span>
   )
 }

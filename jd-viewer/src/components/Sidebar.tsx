@@ -1,4 +1,4 @@
-import type { FilterState } from '../lib/filter'
+import { emptyFilter, type FilterState } from '../lib/filter'
 import type { Site } from '../types'
 import { CAREER_BUCKETS } from '../types'
 import { SidePanel } from './ui'
@@ -91,6 +91,21 @@ export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, 
         )}
       </div>
 
+      <FilterGroup title="모집 상태">
+        {([
+          ['hide', '모집중만'],
+          ['show', '마감 포함'],
+          ['only', '마감만'],
+        ] as const).map(([v, label]) => (
+          <Chip
+            key={v}
+            label={label}
+            active={filter.closed === v}
+            onClick={() => setFilter({ ...filter, closed: v })}
+          />
+        ))}
+      </FilterGroup>
+
       <FilterGroup title="사이트">
         {SITES.map((s) => (
           <Chip
@@ -139,17 +154,10 @@ export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, 
         filter.careers.size > 0 ||
         filter.stacks.size > 0 ||
         filter.roles.size > 0 ||
-        filter.query.length > 0) && (
+        filter.query.length > 0 ||
+        filter.closed !== 'hide') && (
         <button
-          onClick={() =>
-            setFilter({
-              sites: new Set(),
-              careers: new Set(),
-              stacks: new Set(),
-              roles: new Set(),
-              query: '',
-            })
-          }
+          onClick={() => setFilter(emptyFilter())}
           className="mt-auto px-3 py-2 rounded border border-(--color-border) hover:border-(--color-accent) text-(--color-muted) hover:text-(--color-text) transition"
         >
           필터 초기화
