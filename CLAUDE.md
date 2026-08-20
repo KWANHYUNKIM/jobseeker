@@ -15,6 +15,10 @@
     검색·추천에서 뺀다. 검색은 `--include-closed` 로 열 수 있다.
   - `paths.py` : 공통 경로(데이터/venv 위치) 단일 소스
 - `jd-viewer/` : React/Vite 기반 JD 뷰어 (5173, public 데이터 소비)
+- `engine/` : 기업 기술 역설계 엔진 (크롤이 아니라 공개 자료 재구성).
+  `PROMPT.md`(사이클 절차) / `schema.json`(형식) / `state/`(대기열·진행) /
+  `validate.py`(커밋 전 검증). 산출물은 `jd-viewer/public/reveng/` 에 쌓이고
+  뷰어의 `기술 역설계` 탭이 읽는다. 한 회사를 완주할 때까지 다음 회사로 안 넘어간다.
 
 실행 예: `python -m automation.auto_crawl start 개발자 100 1800`,
 `python -m pipeline.aggregate 개발자`, `python -m monitoring.health report`,
