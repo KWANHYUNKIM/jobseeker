@@ -8,12 +8,17 @@
       "country": "KR",
       "category": "핀테크",
       "status": "in_progress",
-      "features_done": 1,
+      "features_done": 2,
       "one_liner": "송금에서 시작해 금융 슈퍼앱이 된 핀테크",
       "updated_at": "2026-08-20"
     }
   ],
-  "domains": ["송금원장", "코어뱅킹", "결제", "인증"],
+  "domains": [
+    "송금원장",
+    "코어뱅킹",
+    "결제",
+    "인증"
+  ],
   "countries": {
     "KR": "한국",
     "US": "미국",
