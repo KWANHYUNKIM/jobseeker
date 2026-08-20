@@ -4,10 +4,10 @@
   "name_en": "YouTube",
   "country": "US",
   "category": "스트리밍",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
-  "one_liner": "원본이 이미 망가져 있을 수 있는 곳에서 화질을 말하는 회사",
-  "business_model": "광고가 중심이다. YouTube 광고 매출은 2025년 **403.67억 달러**(2024년 361.47억, 2023년 315.10억)로, Alphabet 총매출 4,028.36억 달러의 일부다. 구독(YouTube Premium·Music·TV)은 10-K 에서 **'Google subscriptions, platforms, and devices'(2025년 480.30억 달러)** 안에 Google One·Play·기기와 함께 묶여 있어 **YouTube 몫만 따로 확인할 수 없다.**\n\nNetflix 와 같은 스트리밍이지만 **비용의 구조가 반대편에서 온다.** Netflix 는 자기가 만들거나 사 온 소수의 콘텐츠를 자기가 정한 품질로 인코딩하지만, YouTube 는 **누가 무엇을 어떤 품질로 올릴지 통제하지 못한다.** 그래서 이 회사의 기술은 '어떻게 잘 압축할까'보다 앞에서 시작한다 — **올라온 것이 무엇이고 얼마나 좋은 것인지부터 판정해야 한다.**",
+  "one_liner": "회사가 고르지 않은 카탈로그 위에서 성과의 정의부터 다시 세운 회사",
+  "business_model": "광고가 중심이다. YouTube 광고 매출은 2025년 **403.67억 달러**(2024년 361.47억, 2023년 315.10억)로, Alphabet 총매출 4,028.36억 달러의 일부다. 구독(YouTube Premium·Music·TV)은 10-K 에서 **'Google subscriptions, platforms, and devices'(2025년 480.30억 달러)** 안에 Google One·Play·기기와 함께 묶여 있어 **YouTube 몫만 따로 확인할 수 없다.**\n\nNetflix 와 같은 스트리밍이지만 **비용의 구조가 반대편에서 온다.** Netflix 는 자기가 만들거나 사 온 소수의 콘텐츠를 자기가 정한 품질로 인코딩하지만, YouTube 는 **누가 무엇을 어떤 품질로 올릴지 통제하지 못한다.** 그래서 이 회사의 기술은 '어떻게 잘 압축할까'보다 앞에서 시작한다 — **올라온 것이 무엇이고 얼마나 좋은 것인지부터 판정해야 한다.**\n\n**사내에서 같은 모양이 두 번씩 반복된다.** 첫째, **기계가 판정할 수 없는 것을 시스템 밖에 놓는다** — Content ID 는 맥락(교육적 사용·패러디)을 보지 않고 클립 길이와 비율로 근사한 뒤 나머지를 이의 제기 절차로 밀고, 추천은 모델 점수 위에 **사람이 만든 평가자 지침**을 얹어 경계선 콘텐츠를 강등한다. 둘째, **무엇을 성과라고 부를지부터 다시 정한다** — 화질은 참조 기반 계산식을 버리고 사람의 주관 점수(MOS)로 옮겼고, 추천은 클릭에서 시청 시간으로, 다시 **설문 4~5점만 세는 '가치 있는 시청 시간'**으로 옮겼다(옮길 때 조회수 20% 감소를 감수했다).\n\n**세 번째로, 미리 정할 수 없는 것은 미리 정하지 않는다.** 엣지 캐시를 선제적으로 채우지 않고 **로컬 수요가 채우게** 두는 선택이 그 예다 — 카탈로그가 올라온 것 전부라는 사정과 같은 방향이지만, **회사가 그 이유를 밝힌 적은 없다**(이 연결은 이 사이트의 해석).",
   "products": [
     "YouTube",
     "YouTube Shorts",
@@ -93,8 +93,92 @@
     {
       "name": "전송·재생",
       "why": "광고와 구독이 붙어 있는 자리는 결국 재생 화면이다. 비트가 어떤 경로로 시청자에게 닿고 재생 중 무엇이 조절되는가가 체감과 원가를 함께 정한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "GGC 엣지 노드(ISP 네트워크 내 배치)",
+          "solves": "사용자에게 가장 가까운 계층에 콘텐츠를 놓아, 캐시 가능한 트래픽의 70~90%를 ISP 안에서 끝낸다. ISP 는 내부 혼잡과 피어링·트랜짓 트래픽이 줄고, 하드웨어와 원격 운영은 Google 이 맡는다.",
+          "limits": "ISP 의 랙·전력·연결과 BGP·ACL 설정에 의존한다. 적중률은 네트워크마다 다르고 '캐시 가능한'의 정의는 밖에서 보이지 않는다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Introduction to GGC — Interconnect Help",
+              "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+              "publisher": "Google Interconnect 공식 도움말",
+              "date": "2026-08 확인",
+              "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+            },
+            {
+              "title": "Google Edge Network — Infrastructure",
+              "url": "https://peering.google.com/#/infrastructure",
+              "publisher": "Google Peering",
+              "date": "2026-08 확인",
+              "summary": "엣지 노드(GGC)는 사용자에게 가장 가까운 Google 인프라 계층으로, ISP 네트워크 안에 Google 이 공급한 서버를 놓고 그 지역 사용자에게 아주 인기 있는 정적 콘텐츠(YouTube·Google Play 포함)를 캐시한다. Google 시스템이 가장 좋은 경험을 주는 엣지 노드로 요청을 보낸다. 엣지 POP 를 통해 전 세계 100곳 넘는 상호접속 시설을 운영한다."
+            }
+          ]
+        },
+        {
+          "tech": "수요 기반 동적 캐시필(선제적 채우기 아님)",
+          "solves": "무엇이 인기일지 미리 정하지 않고 로컬 수요가 캐시를 만들게 한다. 지역마다 다른 인기가 저절로 반영된다(뒷부분은 추정).",
+          "limits": "**새 노드는 초기 캐시필 트래픽이 크고**, 캐시에 없는 것은 더 먼 곳에서 온다. Netflix Open Connect 의 선제적 fill 과 정확히 반대 선택이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cache-Fill — Interconnect Help",
+              "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+              "publisher": "Google Interconnect 공식 도움말",
+              "date": "2026-08 확인",
+              "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+            },
+            {
+              "title": "Netflix and Fill — the complex reality of global content distribution",
+              "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+              "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+              "date": "2016-08-11",
+              "summary": "Netflix 는 비피크 fill window 에 선제적으로 OCA 를 채우고, 회사는 이를 다른 상용 CDN 과의 중요한 차이로 꼽는다 — 회원이 무엇을 언제 볼지 높은 정확도로 예측할 수 있기 때문이다."
+            }
+          ]
+        },
+        {
+          "tech": "계층적 소스 선택 + 노드 간 P2P 캐시필",
+          "solves": "같은 네트워크·다른 ASN·Google 코어 중에서 가용성·용량·성능·효율을 보고 가장 나은 소스를 고른다. 노드끼리 채우면 회복력이 오르고 트랜짓이 준다.",
+          "limits": "P2P 를 쓰려면 BGP 프리픽스 광고가 필요하고, **성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다.** ACL 오설정은 이 경로를 조용히 깨뜨린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Cache-Fill — Interconnect Help",
+              "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+              "publisher": "Google Interconnect 공식 도움말",
+              "date": "2026-08 확인",
+              "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+            }
+          ]
+        },
+        {
+          "tech": "BGP 기반 유도 + 다중 노드 이중화",
+          "solves": "ISP 가 이미 쓰는 제어 수단(프리픽스 길이·AS-path·커뮤니티 태그) 위에 사용자 유도를 얹고, 용량과 이중화를 노드 수로 얻는다. 장애 시 같은 GNL → 다른 노드 → 다른 ASN → 코어로 흐른다.",
+          "limits": "같은 GNL 은 동일 프리픽스를 광고해야 하고 노드 간 지연은 10ms 이하여야 한다. **과다 프로비저닝은 지원되는 이중화 전략이 아니다.** 장애 회복은 캐시가 다시 쌓이는 속도만큼만 온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Multi-node Deployments — Interconnect Help",
+              "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+              "publisher": "Google Interconnect 공식 도움말",
+              "date": "2026-08 확인",
+              "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+            }
+          ]
+        },
+        {
+          "tech": "전송 프로토콜·재생 측 적응(ABR·QUIC 등)",
+          "solves": "— 이 사이트는 아직 1차 자료를 찾지 않았다.",
+          "limits": "GGC 공식 문서는 배치와 캐시필까지만 다룬다. Netflix 는 `adaptive-playback` 으로 이 축을 채웠지만 YouTube 쪽은 비어 있다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "ggc-edge"
+      ]
     },
     {
       "name": "추천·발견",
@@ -1668,6 +1752,487 @@
           "summary": "YouTube 추천의 실제 다목적 랭킹 모델을 대상으로, 모델이 커지고 정교해질수록 학습 손실이 수렴하지 않고 발산해 모델을 못 쓰게 되고 자원이 낭비되는 문제를 다룬다. 불안정이 일어날 때의 관찰에서 안정화 기법을 끌어냈다고 밝힌다. **이 사이트는 초록만 읽었다.**"
         }
       ]
+    },
+    {
+      "key": "ggc-edge",
+      "name": "엣지 — 미리 채우지 않고 수요가 채우게 하기",
+      "domain": "전송·재생",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**Netflix Open Connect 와 겉모습이 거의 같고 핵심이 정반대다.** 둘 다 ISP 네트워크 안에 자사 서버를 놓고, 하드웨어는 회사가 대고 ISP 는 랙 공간·전력·연결을 준다. 그런데 **무엇을 언제 그 서버에 올려놓느냐**에서 갈린다.\n\nNetflix 는 비피크 fill window 에 **선제적으로 채운다** — 회원이 무엇을 언제 볼지 높은 정확도로 예측할 수 있기 때문이고, 회사는 이를 다른 상용 CDN 과의 중요한 차이로 꼽는다. YouTube 의 GGC 는 공식 문서가 명시한다 — **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시한다.**\n\n**왜 다른지는 두 회사 모두 말하지 않는다.** 다만 카탈로그의 성격 차이(회사가 고른 소수 대 올라온 것 전부)가 이 차이와 같은 방향이라는 것이 이 사이트의 추정이다.\n\n이 도메인이 하는 일은 결국 하나다 — **비트가 ISP 의 피어링·트랜짓 링크를 지나지 않게 만드는 것.** 회사는 일반적으로 **캐시 가능한 트래픽의 70~90%**를 GGC 에서 서빙할 수 있다고 밝힌다.",
+        "metrics": [
+          {
+            "label": "캐시에서 덜어 내는 비율",
+            "value": "일반적으로 **캐시 가능한 트래픽의 70~90%**를 GGC 에서 서빙 — 실제 적중률은 네트워크마다 다르다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introduction to GGC — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+              }
+            ]
+          },
+          {
+            "label": "엣지의 위치",
+            "value": "엣지 노드(GGC)는 **사용자에게 가장 가까운 Google 인프라 계층**이고, YouTube·Google Play 등 그 지역에서 아주 인기 있는 정적 콘텐츠를 담는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Google Edge Network — Infrastructure",
+                "url": "https://peering.google.com/#/infrastructure",
+                "publisher": "Google Peering",
+                "date": "2026-08 확인",
+                "summary": "엣지 노드(GGC)는 사용자에게 가장 가까운 Google 인프라 계층으로, ISP 네트워크 안에 Google 이 공급한 서버를 놓고 그 지역 사용자에게 아주 인기 있는 정적 콘텐츠(YouTube·Google Play 포함)를 캐시한다. Google 시스템이 가장 좋은 경험을 주는 엣지 노드로 요청을 보낸다. 엣지 POP 를 통해 전 세계 100곳 넘는 상호접속 시설을 운영한다."
+              }
+            ]
+          },
+          {
+            "label": "상호접속 규모",
+            "value": "엣지 POP 를 통해 **전 세계 100곳 넘는 상호접속 시설** 운영",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Google Edge Network — Infrastructure",
+                "url": "https://peering.google.com/#/infrastructure",
+                "publisher": "Google Peering",
+                "date": "2026-08 확인",
+                "summary": "엣지 노드(GGC)는 사용자에게 가장 가까운 Google 인프라 계층으로, ISP 네트워크 안에 Google 이 공급한 서버를 놓고 그 지역 사용자에게 아주 인기 있는 정적 콘텐츠(YouTube·Google Play 포함)를 캐시한다. Google 시스템이 가장 좋은 경험을 주는 엣지 노드로 요청을 보낸다. 엣지 POP 를 통해 전 세계 100곳 넘는 상호접속 시설을 운영한다."
+              }
+            ]
+          },
+          {
+            "label": "노드 간 조건",
+            "value": "같은 배치의 노드 간 네트워크 지연은 **10ms 이하**여야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-node Deployments — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+              }
+            ]
+          },
+          {
+            "label": "역할 분담",
+            "value": "Google 이 하드웨어와 **원격 운영**을 맡고, ISP 는 **랙 공간·전력·키보드와 모니터·네트워크 연결**을 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introduction to GGC — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "마지막 구간을 어떻게 할지 정할 때",
+          "thought": "우리 데이터센터를 아무리 늘려도 사용자에게 닿는 마지막 구간은 ISP 안에 있다. 그래서 서버를 **ISP 네트워크 안에** 놓고, 하드웨어와 원격 운영은 우리가 맡고 ISP 에게는 랙 공간·전력·연결만 받기로 했다. ISP 가 얻는 것은 명확하다 — **자기 네트워크 내부 혼잡이 줄고 피어링·트랜짓 링크의 트래픽이 준다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 미리 놓을지 정하려 했을 때",
+          "thought": "**미리 채우지 않기로 했다.** 캐시는 로컬 사용자의 수요가 만든다. 그러면 새 노드는 처음에 캐시필 트래픽이 많이 들지만, 인기 있는 것이 쌓이면서 그 양이 시간이 지나며 준다. **카탈로그가 올라온 것 전부라 무엇이 인기일지 미리 고를 수 없다는 사정이 이 선택과 같은 방향이라는 것은 이 사이트의 추정이다** — 문서는 이유를 말하지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "노드 하나가 죽으면 무슨 일이 생기는지 봤을 때",
+          "thought": "다른 노드로 넘어가면 되는 것처럼 보이지만 그렇지 않다. **요청된 데이터가 아직 그 노드에 없어서 결국 Google 코어로 트래픽이 옮겨 가는 일이 흔하다.** 그리고 회복은 스위치를 켜듯 오지 않는다 — 데이터가 로컬에 다시 쌓이는 속도만큼만 돌아온다. **장애의 비용이 화면이 아니라 트랜짓 트래픽으로 나타난다는 뜻이다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "노드끼리 채우게 하면서 조건을 단 이유",
+          "thought": "노드가 서로에게서 채우면 회복력이 오르고 트랜짓이 준다. 그런데 그 경로가 느리거나 들쭉날쭉하면 **아예 끄는 것보다 GGC 효율에 더 해롭다.** 그래서 노드 간 지연을 자동으로 재서 성능이 나쁜 피어는 소스에서 뺀다. 게다가 ACL 이 잘못 설정되면 이 경로가 **조용히** 끊긴다 — 조용히 끊기는 것이 가장 나쁘다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "엣지 노드(GGC) — ISP 네트워크 안에 놓인 Google 공급 서버",
+          "GNL(GGC Network Location) — 같은 위치의 노드 묶음. 같은 프리픽스를 광고해야 한다",
+          "캐시필 소스 — 같은 네트워크의 다른 노드 · 다른 ASN 의 노드 · Google 코어 데이터 위치",
+          "BGP 프리픽스 광고 — 요청 유도와 P2P 캐시필의 전제",
+          "캐시 적중률 — 이 도메인의 성과 지표"
+        ],
+        "invariants": [
+          "노드는 미리 채워지지 않는다 — 로컬 수요가 캐시를 만든다.",
+          "같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 사용자 라우팅이 일관된다.",
+          "캐시에 없는 것은 더 먼 곳에서 온다 — 그래서 장애의 비용이 트랜짓 트래픽으로 나타난다.",
+          "노드 간 지연은 10ms 이하여야 한다.",
+          "과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "ISP 가 포털에서 배송 정보·네트워크 연락처·IP 서브넷·BGP 피어 정보·최대 이그레스 속도를 제출하고 노드를 받는다",
+            "why": "Google 이 하드웨어와 원격 운영을 맡으려면 그 네트워크의 라우팅과 용량을 알아야 한다."
+          },
+          {
+            "step": "ISP 가 GGC 서버의 프리픽스를 BGP 로 광고한다",
+            "why": "요청 유도와 노드 간 P2P 캐시필 양쪽이 이 광고 위에서 돌아간다."
+          },
+          {
+            "step": "사용자 요청이 오면 Google 시스템이 **가장 좋은 경험을 주는 엣지 노드**로 보낸다 — 같은 GNL 안에서는 표준 BGP 로직(프리픽스 길이·AS-path 길이·커뮤니티 태그)을 따른다",
+            "why": "ISP 가 이미 쓰는 제어 수단 위에 유도를 얹는다."
+          },
+          {
+            "step": "캐시에 있으면 그 자리에서 서빙한다",
+            "why": "비트가 ISP 의 피어링·트랜짓 링크를 지나지 않는다. 캐시 가능한 트래픽의 70~90%가 여기서 끝난다."
+          },
+          {
+            "step": "없으면 **계층적으로 채운다** — 같은 네트워크의 다른 GGC 노드 · 다른 ASN 의 GGC 노드 · Google 코어 중에서 동적으로 소스를 고른다",
+            "why": "데이터 가용성·소스 용량·네트워크 성능·전체 효율을 함께 보고 가장 나은 곳에서 가져온다."
+          },
+          {
+            "step": "받아 온 것을 로컬 캐시에 쌓는다",
+            "why": "미리 채우지 않으므로, 수요가 곧 캐시를 만든다. 새 노드는 초기 캐시필이 크고 시간이 지나며 줄어든다."
+          },
+          {
+            "step": "Google 이 노드 간 지연을 자동 측정해 성능이 나쁜 피어를 캐시필 소스에서 뺀다",
+            "why": "들쭉날쭉한 P2P 성능은 아예 끄는 것보다 효율에 더 해롭다."
+          },
+          {
+            "step": "노드가 죽으면 같은 GNL · 네트워크의 다른 노드 · 다른 ASN · Google 코어 순으로 넘어간다",
+            "why": "프리픽스가 존재하고 용량이 허락하는 곳으로 흘러야 서비스가 끊기지 않는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "비트가 지나갈 길을 직접 소유할 것인가",
+            "chosen": "**ISP 네트워크 안에 Google 공급 서버를 놓는다.** 하드웨어와 원격 운영은 Google 이, 랙 공간·전력·키보드와 모니터·네트워크 연결은 ISP 가 맡는다.",
+            "alternatives": [
+              "자체 백본과 POP 만으로 서빙한다",
+              "상용 CDN 을 산다"
+            ],
+            "tradeoff": "ISP 의 자원과 설정에 의존하게 되고, 그쪽 BGP·ACL 이 잘못되면 그것이 곧 우리 서비스 품질이 된다(뒷문장은 이 사이트의 추정). 대신 **사용자에게 가장 가까운 계층**을 확보하고, ISP 에게는 내부 혼잡과 피어링·트랜짓 트래픽 감소라는 대가를 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introduction to GGC — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+              },
+              {
+                "title": "Google Edge Network — Infrastructure",
+                "url": "https://peering.google.com/#/infrastructure",
+                "publisher": "Google Peering",
+                "date": "2026-08 확인",
+                "summary": "엣지 노드(GGC)는 사용자에게 가장 가까운 Google 인프라 계층으로, ISP 네트워크 안에 Google 이 공급한 서버를 놓고 그 지역 사용자에게 아주 인기 있는 정적 콘텐츠(YouTube·Google Play 포함)를 캐시한다. Google 시스템이 가장 좋은 경험을 주는 엣지 노드로 요청을 보낸다. 엣지 POP 를 통해 전 세계 100곳 넘는 상호접속 시설을 운영한다."
+              }
+            ]
+          },
+          {
+            "question": "요청이 오기 전에 채울 것인가",
+            "chosen": "**채우지 않는다.** GGC 는 미리 채우는 것이 아니라 **로컬 사용자 수요에 따라 동적으로 캐시**한다.",
+            "alternatives": [
+              "Netflix Open Connect 처럼 비피크 fill window 에 선제적으로 채운다"
+            ],
+            "tradeoff": "**새 노드는 초기에 캐시필 트래픽이 많이 들고**, 캐시에 없는 것은 더 먼 곳에서 가져와야 한다. 대신 무엇이 인기일지 미리 정하지 않아도 되고, 지역마다 다른 인기를 수요가 알아서 만든다(뒷문장은 이 사이트의 추정 — 문서는 이유를 말하지 않는다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cache-Fill — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+              },
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "Netflix 는 비피크 fill window 에 선제적으로 OCA 를 채우고, 회사는 이를 다른 상용 CDN 과의 중요한 차이로 꼽는다 — 회원이 무엇을 언제 볼지 높은 정확도로 예측할 수 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "채울 때 어디서 가져올 것인가",
+            "chosen": "**계층적 CDN 이 동적으로 고른다** — 같은 네트워크의 다른 GGC 노드, 다른 ASN 의 GGC 노드, Google 코어 데이터 위치 중에서. 기준은 데이터 가용성·소스 용량·네트워크 성능·전체 효율이다.",
+            "alternatives": [
+              "항상 Google 코어에서 직접 가져온다",
+              "고정된 상위 계층을 지정한다"
+            ],
+            "tradeoff": "소스가 매번 달라져 **트래픽 경로를 예측하기 어렵고**, ISP 입장에서 어느 링크가 얼마나 쓰일지 미리 알기 힘들다(뒷문장은 이 사이트의 추정). 대신 가장 싸고 빠른 곳에서 가져온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cache-Fill — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+              }
+            ]
+          },
+          {
+            "question": "노드끼리 채우게 할 것인가",
+            "chosen": "**켠다.** 다만 그러려면 GGC 서버의 IP 프리픽스를 후보 소스 노드들에 **BGP 로 광고**해야 하고, Google 이 노드 간 지연을 자동 측정해 **성능이 나쁜 피어는 제외**한다.",
+            "alternatives": [
+              "P2P 캐시필을 끄고 항상 상위에서 가져온다"
+            ],
+            "tradeoff": "**불량하거나 들쭉날쭉한 P2P 캐시필 성능은 아예 끄는 것보다 GGC 효율에 더 해롭다** — 회사가 직접 경고하는 지점이다. 게다가 ACL 오설정은 이 경로를 **조용히** 깨뜨린다. 대신 회복력이 오르고 트랜짓·피어링 트래픽이 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cache-Fill — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+              }
+            ]
+          },
+          {
+            "question": "사용자를 어느 노드로 보낼 것인가",
+            "chosen": "**표준 BGP 로직**을 쓴다 — 같은 GNL 안에서 동일 프리픽스가 여러 노드에서 광고되면 프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그로 정해진다.",
+            "alternatives": [
+              "자체 제어 평면이 노드별로 사용자를 직접 배정한다"
+            ],
+            "tradeoff": "유도의 정확도가 **ISP 의 BGP 설정에 달린다** — 같은 GNL 의 노드들이 동일한 프리픽스를 광고하지 않으면 사용자 라우팅이 흔들린다. 대신 ISP 가 이미 쓰는 도구 위에서 제어가 이뤄져 새 프로토콜을 요구하지 않는다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-node Deployments — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+              }
+            ]
+          },
+          {
+            "question": "노드가 죽었을 때 어디로 흘려보낼 것인가",
+            "chosen": "프리픽스가 있고 용량이 허락하는 곳으로 — 같은 GNL 의 다른 노드, 네트워크의 다른 GGC 노드, 다른 ASN 의 노드, 그리고 **Google 코어 데이터 위치**.",
+            "alternatives": [
+              "같은 GNL 안에서만 처리한다",
+              "장애 시 원본으로 전부 보낸다"
+            ],
+            "tradeoff": "**요청된 데이터가 아직 다른 노드에 없어 코어로 트래픽이 옮겨 가는 일이 흔하다** — 장애의 비용이 화면이 아니라 트랜짓으로 나타난다(마지막 표현은 이 사이트의 해석). 그리고 회복은 즉시가 아니라 **데이터가 로컬에 다시 쌓이는 속도**만큼만 온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-node Deployments — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+              }
+            ]
+          },
+          {
+            "question": "이중화를 무엇으로 살 것인가",
+            "chosen": "**다중 노드 배치**로 산다 — 데이터와 트래픽을 모든 노드의 모든 머신에 분산한다. 노드 간 지연은 10ms 이하, 같은 GNL 은 IPv6 설정을 동일하게, 네트워크 내 모든 노드 사이에 P2P 캐시필을 켠다.",
+            "alternatives": [
+              "노드 한 대를 크게 잡고 여유를 둔다(과다 프로비저닝)"
+            ],
+            "tradeoff": "배치 조건이 까다로워지고 ISP 가 맞춰야 할 항목이 늘어난다. 회사는 **과다 프로비저닝을 지원되는 이중화 전략이 아니라고 못 박는다** — 한 대를 크게 만드는 것으로는 그 한 대가 죽는 문제를 풀 수 없기 때문이다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-node Deployments — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+              }
+            ]
+          },
+          {
+            "question": "이 시스템의 성과를 무엇으로 말할 것인가",
+            "chosen": "**캐시 가능한 트래픽 중 GGC 가 서빙한 비율** — 일반적으로 70~90% 라고 밝힌다.",
+            "alternatives": [
+              "절대 트래픽량으로 말한다",
+              "사용자 체감 지표로 말한다"
+            ],
+            "tradeoff": "**적중률은 네트워크의 사용 패턴마다 다르고, '캐시 가능한'의 정의가 밖에서는 보이지 않는다**(뒷문장은 이 사이트의 추정). 대신 ISP 가 자기 링크에서 무엇이 줄어드는지를 바로 계산할 수 있는 숫자가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introduction to GGC — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "GGC 엣지 노드",
+            "role": "ISP 네트워크 안에 놓인 Google 공급 서버. 그 지역에서 인기 있는 정적 콘텐츠(YouTube·Google Play 등)를 담는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Google Edge Network — Infrastructure",
+                "url": "https://peering.google.com/#/infrastructure",
+                "publisher": "Google Peering",
+                "date": "2026-08 확인",
+                "summary": "엣지 노드(GGC)는 사용자에게 가장 가까운 Google 인프라 계층으로, ISP 네트워크 안에 Google 이 공급한 서버를 놓고 그 지역 사용자에게 아주 인기 있는 정적 콘텐츠(YouTube·Google Play 포함)를 캐시한다. Google 시스템이 가장 좋은 경험을 주는 엣지 노드로 요청을 보낸다. 엣지 POP 를 통해 전 세계 100곳 넘는 상호접속 시설을 운영한다."
+              },
+              {
+                "title": "Introduction to GGC — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+              }
+            ]
+          },
+          {
+            "tech": "수요 기반 동적 캐시필",
+            "role": "미리 채우지 않고 로컬 사용자 요청이 캐시를 만든다. 새 노드는 초기 캐시필이 크고 시간이 지나며 줄어든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cache-Fill — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+              }
+            ]
+          },
+          {
+            "tech": "계층적 소스 선택 + P2P 캐시필",
+            "role": "같은 네트워크·다른 ASN·Google 코어 중에서 데이터 가용성·용량·성능·효율을 보고 고른다. 노드 간 지연을 자동 측정해 나쁜 피어를 뺀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Cache-Fill — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+              }
+            ]
+          },
+          {
+            "tech": "BGP 기반 요청 유도",
+            "role": "프리픽스 길이·AS-path 길이·커뮤니티 태그로 사용자를 노드에 배정한다. 같은 GNL 은 동일 프리픽스를 광고해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-node Deployments — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+              }
+            ]
+          },
+          {
+            "tech": "다중 노드 배치와 장애 전이",
+            "role": "용량과 이중화를 노드 수로 얻고, 장애 시 같은 GNL → 다른 노드 → 다른 ASN → Google 코어 순으로 흘린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Multi-node Deployments — Interconnect Help",
+                "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+                "publisher": "Google Interconnect 공식 도움말",
+                "date": "2026-08 확인",
+                "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+              }
+            ]
+          },
+          {
+            "tech": "전송 프로토콜과 재생 측 적응(ABR·QUIC 등)",
+            "role": "— 이 사이트는 아직 1차 자료를 찾지 않았다. GGC 문서는 배치와 캐시필까지만 다룬다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "netflix:open-connect-fill",
+          "via": "미리 채우는가 수요가 채우는가",
+          "contract": "둘 다 ISP 안에 자사 서버를 놓고 랙·전력·연결을 받는다. 그런데 Netflix 는 비피크 fill window 에 **선제적으로** 채우고(회원이 무엇을 언제 볼지 예측할 수 있어서), GGC 는 **미리 채우지 않고 로컬 수요에 따라 동적으로** 캐시한다. 두 회사 모두 상대를 언급하지 않는다 — 대비는 이 사이트의 해석이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "watch-next-ranking",
+          "via": "수요를 만드는 쪽",
+          "contract": "추천이 무엇을 위에 올리느냐가 그 지역의 시청 쏠림을 만들고, 그 쏠림이 캐시 적중률의 재료가 된다 — 다만 두 시스템의 연결을 밝힌 자료는 없다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "uvq-quality",
+          "via": "보내는 판본",
+          "contract": "트랜스코딩이 만든 여러 판본 중 어느 것이 엣지에 남는지는 공개된 자료가 없다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 캐시를 만들기까지",
+          "question": "미리 채우지 않는데 어떻게 캐시 가능한 트래픽의 70~90%가 그 자리에서 끝나는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자 요청] --> BGP[BGP 로 엣지 노드 유도<br/>프리픽스 길이 · AS-path · 커뮤니티 태그]\n  BGP --> N[GGC 노드]\n  N --> HIT{캐시에 있나}\n  HIT -->|있다| SERVE[ISP 안에서 서빙<br/>피어링·트랜짓을 안 지난다]\n  HIT -->|없다| PICK[계층적 소스 선택<br/>가용성 · 용량 · 성능 · 효율]\n  PICK --> P1[같은 네트워크의 다른 GGC 노드]\n  PICK --> P2[다른 ASN 의 GGC 노드]\n  PICK --> P3[Google 코어 데이터 위치]\n  P1 --> FILL[캐시필]\n  P2 --> FILL\n  P3 --> FILL\n  FILL --> STORE[로컬 캐시에 쌓임]\n  STORE -.->|수요가 캐시를 만든다| HIT\n  SERVE --> DONE[캐시 가능 트래픽의 70~90%]"
+        },
+        {
+          "title": "노드 한 대의 생애",
+          "question": "새로 켠 노드는 왜 처음에 비싸고, 죽으면 무엇이 어디로 가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 설치됨: 랙 · 전력 · 연결 · BGP 광고\n  설치됨 --> 턴업중: 캐시가 비어 있다\n  note right of 턴업중\n    캐시필 트래픽이 크다\n    미리 채우지 않기 때문\n  end note\n  턴업중 --> 정상: 인기 콘텐츠가 쌓이며 캐시필 감소\n  정상 --> 피어제외: 노드 간 지연 측정에서 성능 미달\n  피어제외 --> 정상: 성능 회복\n  정상 --> 장애: 노드 다운\n  장애 --> 코어폴백: 다른 노드에 데이터가 없어 코어로\n  코어폴백 --> 재적재: 데이터가 로컬에 다시 쌓임\n  재적재 --> 정상: 쌓이는 속도만큼만 돌아온다\n  정상 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 조용히 깨지는 것들",
+          "question": "무엇이 티 나지 않게 망가지고, 그 비용은 어디에 나타나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  ACL[ACL 오설정] --> SILENT[P2P 캐시필이<br/>**조용히** 끊긴다]\n  SILENT --> CORE[모든 미스가 코어로]\n  SLOW[P2P 경로가 느리거나 들쭉날쭉] --> WORSE[아예 끄는 것보다<br/>GGC 효율에 더 해롭다]\n  WORSE --> AUTO[Google 이 지연을 측정해<br/>나쁜 피어를 소스에서 제외]\n  PFX[같은 GNL 인데 프리픽스가 다름] --> ROUTE[사용자 라우팅이 흔들린다]\n  DOWN[노드 장애] --> NODATA[다른 노드에 그 데이터가 없다]\n  NODATA --> CORE\n  CORE --> BILL[비용이 화면이 아니라<br/>트랜짓 트래픽으로 나타난다]\n  OVER[한 대를 크게 잡는 과다 프로비저닝] --> NOTRED[지원되는 이중화 전략이 아니다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Introduction to GGC — Interconnect Help",
+          "url": "https://support.google.com/interconnect/answer/9058809?hl=en",
+          "publisher": "Google Interconnect 공식 도움말",
+          "date": "2026-08 확인",
+          "summary": "GGC 로 ISP 는 특정 Google 콘텐츠를 자기 네트워크 안에서 서빙해 내부 혼잡과 피어링·트랜짓 트래픽을 줄인다. Google 이 캐시 하드웨어와 원격 운영을 맡고 ISP 는 랙 공간·전력·키보드와 모니터·네트워크 연결을 제공한다. 일반적으로 캐시 가능한 트래픽의 70~90%를 GGC 에서 서빙할 수 있다."
+        },
+        {
+          "title": "Cache-Fill — Interconnect Help",
+          "url": "https://support.google.com/interconnect/answer/7658593?hl=en",
+          "publisher": "Google Interconnect 공식 도움말",
+          "date": "2026-08 확인",
+          "summary": "캐시필은 다른 Google 데이터 위치에서 GGC 서버로 들어오는 데이터 전송이다. **미리 채우는 것이 아니라 로컬 사용자 수요에 따라 동적으로 캐시**하며, 새 노드는 초기 캐시필이 크고 인기 콘텐츠가 쌓이면서 줄어든다. 계층적 CDN 이 같은 네트워크의 노드·다른 ASN 의 노드·Google 코어 중에서 소스를 동적으로 고른다. 노드 간 P2P 캐시필은 BGP 프리픽스 광고가 필요하고, 성능이 들쭉날쭉하면 아예 끄는 것보다 해롭다."
+        },
+        {
+          "title": "Multi-node Deployments — Interconnect Help",
+          "url": "https://support.google.com/interconnect/answer/9051938?hl=en",
+          "publisher": "Google Interconnect 공식 도움말",
+          "date": "2026-08 확인",
+          "summary": "여러 노드는 저장 용량을 늘리고 데이터와 트래픽을 모든 머신에 분산한다. 요청 유도는 표준 BGP 로직(프리픽스 길이·AS-path 길이·BGP 커뮤니티 태그)을 따르고, 같은 GNL 의 노드들은 동일한 프리픽스를 광고해야 한다. 노드 장애 시 같은 GNL·다른 노드·다른 ASN·Google 코어 순으로 넘어가는데, 요청된 데이터가 아직 다른 노드에 없어 코어로 옮겨 가는 일이 흔하다. 노드 간 지연은 10ms 이하여야 하고 과다 프로비저닝은 지원되는 이중화 전략이 아니다."
+        },
+        {
+          "title": "Google Edge Network — Infrastructure",
+          "url": "https://peering.google.com/#/infrastructure",
+          "publisher": "Google Peering",
+          "date": "2026-08 확인",
+          "summary": "엣지 노드(GGC)는 사용자에게 가장 가까운 Google 인프라 계층으로, ISP 네트워크 안에 Google 이 공급한 서버를 놓고 그 지역 사용자에게 아주 인기 있는 정적 콘텐츠(YouTube·Google Play 포함)를 캐시한다. Google 시스템이 가장 좋은 경험을 주는 엣지 노드로 요청을 보낸다. 엣지 POP 를 통해 전 세계 100곳 넘는 상호접속 시설을 운영한다."
+        },
+        {
+          "title": "Netflix and Fill — the complex reality of global content distribution",
+          "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+          "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+          "date": "2016-08-11",
+          "summary": "Netflix 는 비피크 fill window 에 선제적으로 OCA 를 채우고, 회사는 이를 다른 상용 CDN 과의 중요한 차이로 꼽는다 — 회원이 무엇을 언제 볼지 높은 정확도로 예측할 수 있기 때문이다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1683,7 +2248,11 @@
     "추천 모델 구조의 세부(아키텍처·하이퍼파라미터)와 A/B 정량 결과 — 이 사이트는 세 논문의 초록만 읽었다.",
     "설문 응답 예측이 실제로 얼마나 맞는지, 그리고 그 예측이 틀렸을 때 무엇이 잡아 주는지.",
     "여러 랭킹 목표 사이의 비중을 누가 어떻게 정하는지.",
-    "화질(UVQ)과 저작권 판정(Content ID)이 추천 랭킹에 신호로 들어가는지 — 어느 자료에도 없다."
+    "화질(UVQ)과 저작권 판정(Content ID)이 추천 랭킹에 신호로 들어가는지 — 어느 자료에도 없다.",
+    "YouTube 의 전송 프로토콜과 재생 측 적응(ABR·QUIC 등) — GGC 문서는 배치와 캐시필까지만 다룬다.",
+    "GGC 가 '캐시 가능한 트래픽'을 무엇으로 정의하는지, 그리고 실제 적중률 분포.",
+    "GGC 노드 하나가 담는 콘텐츠의 선정 기준 — 문서는 '그 지역에서 인기 있는 정적 콘텐츠'까지만 말한다.",
+    "추천(무엇을 위에 올리는가)이 엣지 캐시 적중률과 실제로 맞물리는지."
   ],
   "sources": [
     {
