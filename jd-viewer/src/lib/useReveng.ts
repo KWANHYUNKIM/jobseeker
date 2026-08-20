@@ -178,6 +178,63 @@ function useJson<T>(path: string | null) {
   return { data, loading, error }
 }
 
+// 도메인 비교 문서 — 여러 회사가 같은 문제를 어떻게 다르게 풀었는지.
+// 회사 페이지가 '한 회사를 세로로' 읽는 것이라면 이쪽은 '한 문제를 가로로' 읽는다.
+export interface DomainDoc {
+  slug: string
+  title: string
+  question?: string
+  companies: string[]
+  features: string[]
+  file: string
+}
+
+export interface DomainIndex {
+  updated_at: string
+  docs: DomainDoc[]
+}
+
 export const useRevengIndex = () => useJson<RevengIndex>('/reveng/index.json')
+export const useDomainDocs = () => useJson<DomainIndex>('/reveng/domains/index.json')
 export const useCompany = (slug: string | null) =>
   useJson<Company>(slug ? `/reveng/companies/${slug}.json` : null)
+
+// 마크다운은 JSON 이 아니라 텍스트로 받는다.
+export function useMarkdown(path: string | null) {
+  const [text, setText] = useState<string | null>(null)
+  const [loading, setLoading] = useState(path !== null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (path === null) {
+      setText(null)
+      setLoading(false)
+      return
+    }
+    let cancelled = false
+    setLoading(true)
+    setError(null)
+    fetch(path)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status} - ${path}`)
+        return r.text()
+      })
+      .then((t) => {
+        if (!cancelled) {
+          setText(t)
+          setLoading(false)
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          setError(String(e))
+          setLoading(false)
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [path])
+
+  return { text, loading, error }
+}

@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { useRevengIndex, type IndexEntry } from '../lib/useReveng'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { useDomainDocs, useMarkdown, useRevengIndex, type IndexEntry } from '../lib/useReveng'
 import { CompanyTeardown } from './CompanyTeardown'
 import { Loader, ErrorState, EmptyState } from './ui'
 
@@ -12,7 +14,9 @@ import { Loader, ErrorState, EmptyState } from './ui'
 
 export function RevengView() {
   const { data, loading, error } = useRevengIndex()
+  const { data: domainDocs } = useDomainDocs()
   const [slug, setSlug] = useState<string | null>(null)
+  const [docSlug, setDocSlug] = useState<string | null>(null)
   const [country, setCountry] = useState<string | null>(null)
   const [category, setCategory] = useState<string | null>(null)
 
@@ -34,6 +38,10 @@ export function RevengView() {
   )
 
   if (slug) return <CompanyTeardown slug={slug} onBack={() => setSlug(null)} />
+  if (docSlug) {
+    const doc = domainDocs?.docs.find((d) => d.slug === docSlug)
+    if (doc) return <DomainDocView file={doc.file} title={doc.title} onBack={() => setDocSlug(null)} />
+  }
   if (loading) return <Loader label="역설계 데이터 불러오는 중…" />
   if (error)
     return (
@@ -96,12 +104,47 @@ export function RevengView() {
             ))}
           </div>
 
+          {domainDocs && domainDocs.docs.length > 0 && (
+            <section className="px-4 pb-4">
+              <h3 className="text-sm font-semibold text-(--color-text) mb-2">
+                도메인 비교{' '}
+                <span className="text-xs font-normal text-(--color-muted)">
+                  회사 페이지가 한 회사를 세로로 읽는다면, 여기는 한 문제를 가로로 읽는다
+                </span>
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {domainDocs.docs.map((doc) => (
+                  <button
+                    key={doc.slug}
+                    onClick={() => setDocSlug(doc.slug)}
+                    className="text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
+                  >
+                    <div className="text-sm font-medium text-(--color-text)">{doc.title}</div>
+                    {doc.question && (
+                      <p className="text-xs text-(--color-muted) mt-1 leading-relaxed">{doc.question}</p>
+                    )}
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {doc.features.map((f) => (
+                        <span
+                          key={f}
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)"
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+
           {data && data.domains.length > 0 && (
             <section className="px-4 pb-6">
               <h3 className="text-sm font-semibold text-(--color-text) mb-2">
                 지금까지 나온 도메인{' '}
                 <span className="text-xs font-normal text-(--color-muted)">
-                  여러 회사가 같은 문제를 어떻게 다르게 풀었는지 비교하는 축
+                  비교 문서가 아직 없는 축은 여기서 후보로 쌓인다
                 </span>
               </h3>
               <div className="flex flex-wrap gap-1.5">
@@ -118,6 +161,42 @@ export function RevengView() {
           )}
         </>
       )}
+    </div>
+  )
+}
+
+function DomainDocView({
+  file,
+  title,
+  onBack,
+}: {
+  file: string
+  title: string
+  onBack: () => void
+}) {
+  const { text, loading, error } = useMarkdown(`/reveng/domains/${file}`)
+  // 파일은 단독으로도 읽히도록 H1 을 갖고 있다. 화면에서는 헤더가 이미 제목을 보여주므로
+  // 첫 H1 한 줄만 걷어낸다.
+  const body = text?.replace(/^#\s.*\n/, '') ?? ''
+  return (
+    <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
+      <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-10">
+        <button onClick={onBack} className="text-xs text-(--color-muted) hover:text-(--color-accent) mb-1">
+          ← 회사 목록
+        </button>
+        <h2 className="text-lg font-semibold text-(--color-text)">{title}</h2>
+      </header>
+      <div className="p-4 max-w-3xl">
+        {loading ? (
+          <Loader label="비교 문서 불러오는 중…" />
+        ) : error ? (
+          <ErrorState title={`reveng/domains/${file} 로드 실패`} detail={error} />
+        ) : (
+          <div className="blog-md text-sm text-(--color-text)">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
