@@ -186,6 +186,27 @@
         "delivery-area"
       ],
       "file": "backward-compat.md"
+    },
+    {
+      "slug": "machine-cannot-judge",
+      "title": "기계가 판정할 수 없는 것을 어디에 두는가",
+      "question": "못 하는 판정을 절차로 미는가, 규칙을 얹는가, 권한을 넘기는가, 사람을 상류에 두는가, 아예 판정하지 않는가?",
+      "companies": [
+        "youtube",
+        "discord",
+        "instagram",
+        "kakao",
+        "daangn"
+      ],
+      "features": [
+        "content-id",
+        "watch-next-ranking",
+        "automod-layers",
+        "integrity-classification",
+        "taxi-dispatch",
+        "trust-score"
+      ],
+      "file": "machine-cannot-judge.md"
     }
   ]
 }
