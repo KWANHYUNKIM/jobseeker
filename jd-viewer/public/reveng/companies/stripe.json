@@ -92,8 +92,46 @@
     {
       "name": "리스크·사기 방지",
       "why": "너무 막으면 정상 매출이 막히고 너무 열면 손실이 난다 — 결제 회사에서 가장 저울이 예민한 자리다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "다중 분기 DNN 기반 실시간 사기 판단(Radar)",
+          "solves": "100밀리초 미만에 1,000가지 이상 특성을 보고 판단하며, 수십억 건의 합법 결제 중 0.1%만 잘못 막는다. 네트워크가 넓을수록 모델이 좋아지는 구조라 데이터 자체가 해자가 된다.",
+          "limits": "순수 DNN 이라 판단 근거가 드러나지 않아 설명 기능을 따로 만들어야 했고, 임계값과 미탐지율은 공개하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built it: Stripe Radar",
+              "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+              "publisher": "Stripe 엔지니어링 블로그",
+              "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+            }
+          ]
+        },
+        {
+          "tech": "특성 발굴 루프(사후 조사 · 다크웹 모니터링 · 성능 측정 후 채택)",
+          "solves": "계속 바뀌는 공격에 맞춰 새 신호를 찾고, 훈련 시간을 85% 줄여 하루에 여러 실험을 돌린다.",
+          "limits": "사람의 조사에 기대는 부분이 남고, 사람이 찾은 특성이 이미 모델에 학습돼 있는 경우도 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we built it: Stripe Radar",
+              "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+              "publisher": "Stripe 엔지니어링 블로그",
+              "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+            }
+          ]
+        },
+        {
+          "tech": "결제 이후의 사기 대응",
+          "solves": "— 확인하지 못했다.",
+          "limits": "글은 '결제 후에도 사기와 싸우는 방법'을 다음 글에서 다루겠다고만 밝힌다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "radar"
+      ]
     },
     {
       "name": "매출 운영",
@@ -928,6 +966,396 @@
           "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
         }
       ]
+    },
+    {
+      "key": "radar",
+      "name": "Radar — 100밀리초 안에 의심하기",
+      "domain": "리스크·사기 방지",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "사기 탐지는 결제 회사에서 **저울이 가장 예민한 자리**다. 너무 막으면 정상 매출이 막히고 너무 열면 손실이 난다. 게다가 시간도 없다 — 판단은 **클릭에서 결제 확인까지의 짧은 순간** 안에 끝나야 한다. 그런데 이 회사에는 남들에게 없는 재료가 하나 있다. **네트워크의 폭이다.** 한 가맹점에서 본 적 없는 공격도, 다른 가맹점에서는 이미 지나갔을 수 있다.",
+        "metrics": [
+          {
+            "label": "시간 예산",
+            "value": "**100밀리초 미만**에 결정하며, 그 안에서 잠재 거래의 **1,000가지 이상 특성**을 평가한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "label": "오차단",
+            "value": "수십억 건의 합법적 결제 중 **0.1%만** 잘못 차단한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "label": "사기의 희소성",
+            "value": "사기율은 대략 **1,000건당 1건** 수준이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "label": "구조 전환의 효과",
+            "value": "XGBoost 를 걷어내고 순수 DNN 으로 가면서 **훈련 시간 85% 단축**(2시간 미만). 대신 재현율이 1.5% 떨어져 모델의 깊이와 너비를 키워 메웠다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "시간 예산을 확인할 때",
+          "thought": "결제 확인을 기다리는 사람 앞에서 쓸 수 있는 시간은 100밀리초가 안 된다. 그 안에 1,000가지가 넘는 특성을 봐야 한다면, **모델의 정확도만이 아니라 모델을 얼마나 빨리 고쳐 낼 수 있느냐도 함께 설계 대상**이 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "XGBoost 를 뺄지 고민할 때",
+          "thought": "암기는 XGBoost 가 잘한다. 그런데 그게 전이 학습이나 임베딩 같은 기법과 맞지 않고 병렬화가 어려워 재훈련이 느리다. **지금 조금 더 정확한 것과, 앞으로 빨리 좋아질 수 있는 것 중에 골라야 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사람이 찾아낸 피처를 넣어 보고",
+          "thought": "'지금 분산 사기 공격의 대상인가'를 불린 피처로 넣어 봤더니 — **모델이 이미 그 패턴을 학습하고 있었다.** 사람이 발견한 것을 모델이 먼저 알고 있는 경우가 있다는 뜻이고, 그래서 피처는 만들기 전이 아니라 만든 뒤에 성능으로 판단해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "왜 거절됐는지 답해야 할 때",
+          "thought": "순수 DNN 으로 가면 성능은 좋아지는데 **왜 막았는지 설명할 수 없게 된다.** 가맹점 입장에서 '그냥 위험해 보였습니다'는 답이 아니다 — 설명은 부가 기능이 아니라 이 제품의 일부다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "특성(feature)",
+            "what": "한 거래를 판단하는 재료. 카드홀더 이름과 이메일의 일치, IP 에 연결된 이전 카드 개수 등 1,000가지 이상."
+          },
+          {
+            "name": "다중 분기 DNN",
+            "what": "ResNeXt 에서 영감을 받은 구조. 계산을 여러 분기로 나눠 각 출력을 합산한다."
+          },
+          {
+            "name": "Risk Insights",
+            "what": "거절에 기여한 특성을 사용자에게 보여 주는 기능(2020년)."
+          },
+          {
+            "name": "사용자 규칙",
+            "what": "Radar 의 판단 위에 가맹점이 직접 얹는 허용·차단 규칙."
+          }
+        ],
+        "invariants": [
+          "판단은 사람이 기다리는 시간 안에 끝나야 한다.",
+          "사기는 1,000건당 1건 — 정상 거래를 막는 비용이 훨씬 흔하다.",
+          "네트워크가 넓을수록 모델이 좋아진다 — 데이터가 곧 해자다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "결제 요청이 들어온다",
+            "why": "사람이 결제 버튼을 누르고 기다리는 중이다"
+          },
+          {
+            "step": "1,000가지 이상의 특성을 계산한다",
+            "why": "한 축만으로는 정상과 사기를 가를 수 없다"
+          },
+          {
+            "step": "다중 분기 DNN 이 점수를 낸다(100밀리초 미만)",
+            "why": "분기별 계산을 합산하는 구조로 암기와 일반화를 함께 얻는다"
+          },
+          {
+            "step": "좋은 거래는 통과, 위험한 거래는 차단하거나 추가 보안 검사로 보낸다",
+            "why": "이분법이 아니라 세 번째 길을 둔다"
+          },
+          {
+            "step": "가맹점이 그 위에 직접 만든 허용·차단 규칙을 얹는다",
+            "why": "모델이 모르는 그 가게만의 사정이 있다"
+          },
+          {
+            "step": "Risk Insights 가 거절에 기여한 특성을 보여 준다",
+            "why": "왜 막혔는지 설명할 수 없으면 제품이 되지 못한다"
+          },
+          {
+            "step": "지나간 공격을 사후 분석해 새 특성을 찾고 다시 학습한다",
+            "why": "공격은 계속 바뀐다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "모델 구조를 무엇으로 할 것인가",
+            "chosen": "Wide & Deep(**Wide = XGBoost 로 암기, Deep = DNN 으로 일반화**)에서 **순수 DNN** 으로 옮긴다(2022년 중반)",
+            "alternatives": [
+              "Wide & Deep 유지",
+              "로지스틱 회귀 시절로 회귀"
+            ],
+            "tradeoff": "XGBoost 를 빼자 **재현율이 1.5% 떨어졌다** — 지금 당장은 나빠지는 선택이다. 그래도 XGBoost 는 전이 학습·임베딩 같은 기법과 양립하지 않고 병렬화가 어려워 재훈련이 느렸다. **지금 조금 더 정확한 것보다 앞으로 빨리 좋아질 수 있는 것을 골랐다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "잃어버린 암기 능력을 어떻게 메울 것인가",
+            "chosen": "ResNeXt 에서 영감을 받은 **다중 분기 DNN**('Network-in-Neuron')으로 계산을 여러 분기로 나누고 출력을 합산하며, 모델의 깊이와 너비를 키운다",
+            "alternatives": [
+              "XGBoost 를 일부 유지",
+              "재현율 저하 수용"
+            ],
+            "tradeoff": "모델이 커져 추론 비용이 올라간다(추정). 대신 훈련 시간이 **85% 줄어 2시간 미만**이 됐다 — 잃은 1.5%를 모델 크기로 되사 온 셈이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "왜 훈련 속도를 그렇게 중시했는가",
+            "chosen": "복잡도보다 **실험 속도**를 택한다 — 하루 안에 여러 실험을 돌릴 수 있게 한다",
+            "alternatives": [
+              "최고 성능 구조 고정",
+              "주 단위 재훈련"
+            ],
+            "tradeoff": "구조가 단순해져 특정 시점의 최고 성능은 놓칠 수 있다. 그래도 **공격이 계속 바뀌는 도메인에서는 한 번의 정확도보다 고치는 속도가 누적 성능을 정한다**(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "학습 데이터를 얼마나 늘릴 것인가",
+            "chosen": "훈련 거래 데이터를 **10배**로 늘려 상당한 성능 향상을 확인했고, 지금은 **100배** 버전을 실험 중이다",
+            "alternatives": [
+              "샘플링 유지",
+              "최근 데이터만 사용"
+            ],
+            "tradeoff": "데이터가 늘면 훈련 시간이 선형으로 늘어나는데, 그 문제를 앞서 만든 DNN 전환이 완화했다. **두 결정이 서로를 가능하게 한 구조**다. 그리고 이 방향은 네트워크가 넓은 회사만 쓸 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "새 특성을 어디서 찾을 것인가",
+            "chosen": "지나간 사기 공격을 상세히 검토해 조사 보고서를 쓰고, 네트워크 전체의 타이밍·신호 상관을 보고, **다크웹 활동을 모니터링해 매주 팀 회의에서 공유**한다",
+            "alternatives": [
+              "자동 특성 탐색만",
+              "가맹점 신고 기반"
+            ],
+            "tradeoff": "사람의 조사에 의존하는 부분이 남고 그만큼 확장이 어렵다. 대신 임시 이메일 패턴처럼 **데이터만 봐서는 안 보이는 신호**를 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "사람이 찾은 특성을 그대로 넣을 것인가",
+            "chosen": "빠르게 구현해 **모델 성능에 미친 영향을 측정한 뒤** 판단한다",
+            "alternatives": [
+              "도메인 전문가 판단으로 채택",
+              "전부 채택"
+            ],
+            "tradeoff": "구현과 측정에 시간이 든다. 그런데 실제로 '지금 분산 사기 공격의 대상인가'를 불린 특성으로 넣어 봤더니 **모델이 이미 그 패턴을 학습하고 있었다** — 사람의 통찰이 항상 모델보다 앞서지는 않는다는 증거다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "블랙박스 문제를 어떻게 할 것인가",
+            "chosen": "**Risk Insights**(2020)로 거절에 기여한 특성을 보여 준다. 배송·구매 주소를 지도에 표시하고, Elasticsearch 로 관련 거래를 빠르게 찾아 공유한다. 내부에는 기여 특성을 정확히 보여 주는 도구가 따로 있고 나중에 사용자에게도 열 계획이다",
+            "alternatives": [
+              "점수만 노출",
+              "해석 가능한 모델 유지"
+            ],
+            "tradeoff": "설명 기능을 따로 만들어 유지해야 하고, 내부 도구와 사용자용 사이에 정보량 차이가 남는다. 그래도 순수 DNN 을 고른 순간 이 기능이 없으면 **성능을 얻고 제품을 잃는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "question": "판단을 시스템이 다 할 것인가",
+            "chosen": "위험한 거래를 차단하거나 **추가 보안 검사로 우회**시키고, 그 위에 가맹점이 **직접 만든 허용·차단 규칙**을 얹게 한다",
+            "alternatives": [
+              "전면 자동 판단",
+              "규칙 전용"
+            ],
+            "tradeoff": "규칙과 모델의 상호작용이 복잡해진다(글은 그 관계를 설명하지 않는다). 대신 통과/차단이라는 이분법 대신 **세 번째 길**이 생기고, 모델이 모르는 그 가게만의 사정을 담을 자리가 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "다중 분기 DNN (ResNeXt 영감 · Network-in-Neuron)",
+            "role": "계산을 분기로 나눠 합산하는 구조로 암기와 일반화를 함께 얻는다. 100밀리초 미만에 1,000가지 이상 특성을 평가한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "tech": "특성 발굴 파이프라인(사후 조사 · 다크웹 모니터링 · 프로토타이핑)",
+            "role": "지나간 공격에서 신호를 뽑아 빠르게 구현하고 성능 영향으로 채택 여부를 정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "tech": "Risk Insights + Elasticsearch",
+            "role": "거절 이유가 된 특성을 보여 주고, 관련 거래를 찾아 공유해 조사를 돕는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "tech": "사용자 규칙 엔진",
+            "role": "모델 판단 위에 가맹점이 허용·차단 규칙을 얹는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we built it: Stripe Radar",
+                "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+              }
+            ]
+          },
+          {
+            "tech": "임계값과 정밀도-재현율 곡선",
+            "role": "— 확인하지 못했다. 글은 오차단 0.1% 외에 임계값이나 미탐지율을 밝히지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "ledger",
+          "via": "지연 시간",
+          "contract": "회사가 직접 밝힌다 — Ledger 의 분석 주기를 분 단위로 낮추면 사기 탐지가 강화된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "idempotent-payments",
+          "via": "판단의 자리",
+          "contract": "위험한 거래를 추가 보안 검사로 보내는 것은 PaymentIntent 의 `requires_action` 과 같은 자리로 보인다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 100밀리초 안에서",
+          "question": "사람이 기다리는 동안 무슨 일이 일어나는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PAY[결제 요청] --> F[1,000가지 이상 특성 계산<br/>이름·이메일 일치 · IP 에 연결된 카드 수 등]\n  NET[(Stripe 네트워크 전체 거래)] -.->|데이터가 넓을수록 모델이 좋아진다| MODEL\n  F --> MODEL[다중 분기 DNN<br/>ResNeXt 영감 · 분기 출력 합산]\n  MODEL --> SCORE{판단 · 100ms 미만}\n  SCORE -->|좋은 거래| PASS[통과]\n  SCORE -->|위험| BLOCK[차단]\n  SCORE -->|애매| EXTRA[추가 보안 검사로 우회]\n  RULE[가맹점 커스텀 규칙] --> SCORE\n  BLOCK --> RI[Risk Insights<br/>어떤 특성이 거절에 기여했나]\n  RI -.->|관련 거래 찾기| ES[Elasticsearch]\n  BLOCK -.->|사후 조사| RES[조사 보고서 · 다크웹 모니터링]\n  RES -.->|새 특성 후보| PROTO[프로토타입 → 성능 측정]\n  PROTO -.->|효과 있으면| F"
+        },
+        {
+          "title": "모델이 지나온 세대",
+          "question": "왜 더 정확한 구조를 스스로 버렸는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 로지스틱회귀: 초기\n  로지스틱회귀 --> WideDeep: Wide = XGBoost 암기 · Deep = DNN 일반화\n  WideDeep --> 한계발견: 전이학습 · 임베딩과 양립 불가\n  WideDeep --> 재훈련느림: 병렬화가 어렵다\n  한계발견 --> 순수DNN: 2022년 중반\n  재훈련느림 --> 순수DNN\n  순수DNN --> 재현율저하: 1.5% 나빠졌다\n  재현율저하 --> 모델확대: 깊이와 너비를 키운다\n  모델확대 --> 회복\n  순수DNN --> 훈련85퍼단축: 2시간 미만\n  훈련85퍼단축 --> 데이터10배: 상당한 성능 향상\n  데이터10배 --> 데이터100배: 실험 중\n  회복 --> [*]\n  note right of 훈련85퍼단축\n    하루에 여러 실험을 돌린다.\n    고치는 속도가 누적 성능을 정한다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 저울의 양쪽",
+          "question": "막아도 문제, 열어도 문제인 자리에서 무엇이 어긋나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A{임계값} -->|너무 조인다| B[정상 결제가 막힌다]\n  B --> C[가맹점 매출이 사라진다]\n  A -->|너무 푼다| D[사기가 통과한다]\n  D --> E[손실과 분쟁]\n  F[사기는 1,000건당 1건] --> G[정상을 막는 실수가 훨씬 흔하다]\n  G -.->|그래서| H[오차단 0.1% 를 지표로 든다]\n  I[순수 DNN 으로 성능을 얻으면] --> J[왜 막았는지 설명할 수 없다]\n  J --> K[가맹점에게 답할 수 없다]\n  K -.->|그래서| L[Risk Insights]\n  M[공격이 계속 바뀐다] --> N[어제의 특성이 오늘 안 통한다]\n  N -.->|재훈련이 느리면| O[모델이 뒤처진다]\n  O -.->|그래서| P[훈련 시간 85% 단축이 성능 문제였다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How we built it: Stripe Radar",
+          "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+          "publisher": "Stripe 엔지니어링 블로그",
+          "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -937,7 +1365,10 @@
     "1.9조 달러를 실제로 어떤 인프라가 받아 내는지(엔지니어링 블로그 쪽 자료)는 이번 사이클에서 확인하지 않았다.",
     "Ledger 의 저장소와 처리 엔진은 공개돼 있지 않다 — 글은 Presto 와 gRPC 만 밝힌다.",
     "회사가 밝힌 다음 과제는 '분 단위 분석'이다. 지금의 검증 주기가 정확히 얼마인지는 4일 안에 99.99% 라는 수치 외에 나오지 않는다.",
-    "Connect(플랫폼 정산·계정)는 아직 손대지 않았다 — 도메인 이름을 자료에 맞춰 '자금 기록·검증'으로 옮기고 구멍으로 남겼다."
+    "Connect(플랫폼 정산·계정)는 아직 손대지 않았다 — 도메인 이름을 자료에 맞춰 '자금 기록·검증'으로 옮기고 구멍으로 남겼다.",
+    "Radar 의 임계값과 정밀도-재현율 곡선, 미탐지율은 공개돼 있지 않다 — 오차단 0.1% 만 밝힌다.",
+    "가맹점이 만드는 커스텀 규칙과 모델 판단이 어떤 순서로 상호작용하는지는 글에 없다.",
+    "결제 이후 단계의 사기 대응(분쟁·환불 악용 등)은 다음 글로 예고만 돼 있다."
   ],
   "sources": [
     {
@@ -966,6 +1397,12 @@
       "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
       "publisher": "Stripe 엔지니어링 블로그",
       "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+    },
+    {
+      "title": "How we built it: Stripe Radar",
+      "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
+      "publisher": "Stripe 엔지니어링 블로그",
+      "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
     }
   ]
 }

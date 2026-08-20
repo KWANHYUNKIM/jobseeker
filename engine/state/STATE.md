@@ -4,9 +4,9 @@
 
 ## 지금 파는 중
 
-**Stripe 진행 중 — 해외 첫 회사.** 도메인 5개 중 2개 완료(`idempotent-payments` 결제 API,
-`ledger` 자금 기록·검증). 남은 도메인 3개: 결제 처리·결제수단 / 리스크·사기 방지 / 매출 운영.
-검증 경고 4건(Stripe 3 + 카카오 1).
+**Stripe 진행 중 — 해외 첫 회사.** 도메인 5개 중 3개 완료(`idempotent-payments` 결제 API,
+`ledger` 자금 기록·검증, `radar` 리스크·사기 방지). 남은 도메인 2개: 결제 처리·결제수단 / 매출 운영.
+검증 경고 3건(Stripe 2 + 카카오 1).
 > `정산·계정(Connect)` 도메인을 **`자금 기록·검증` 으로 옮겼다** — 자료가 다룬 것은 Connect 가
 > 아니라 Ledger 였다. Connect 는 도메인 tech 에 `미확인` 으로 남겼다.
 > **stripe.com/blog/* 는 stripe.dev/blog/* 로 301 리다이렉트된다** — WebFetch 가 리다이렉트를
@@ -108,27 +108,28 @@ if(kakao)·medium 어디에도 엔지니어링 글이 없다. 검색에서 나�
 | 055 | 2026-08-21 | (비교) | `what-to-mix.md` — 추천: 개인화만 하면 밀려나는 것들(3사) | 해외 회사 시작 |
 | 056 | 2026-08-21 | Stripe | **해외 첫 회사.** 프로파일(도메인 5·수익원 2) + `idempotent-payments` — 연결이 끊긴 자리에서 두 번 청구하지 않기 | Stripe 결제 처리 또는 리스크 |
 | 057 | 2026-08-21 | Stripe | `ledger`(자금 기록·검증) — 기대한 일이 실제로 일어났는지 증명하기 | Stripe 리스크(Radar) 또는 결제수단 |
+| 058 | 2026-08-21 | Stripe | `radar`(리스크·사기 방지) — 100밀리초 안에 의심하기 | Stripe 결제 처리·결제수단 또는 매출 운영 |
 
 ## 다음 사이클 메모
 
-- **다음은 Stripe 리스크(Radar) 또는 결제 처리·결제수단.** 확인된 URL:
-  `https://stripe.dev/blog/how-we-built-it-stripe-radar`. 그 밖의 후보:
+- **다음은 Stripe 결제 처리·결제수단 또는 매출 운영.** 확인된 후보 URL(전부 stripe.dev):
+  `how-api-changes-flow-into-stripes-developer-products`(API 호환성 — **토스의 '가맹점 코드를 깨지
+  않는다'와 바로 대조된다**, 지금 가장 값진 후보),
   `how-stripes-document-databases-supported-99.999-uptime-with-zero-downtime-data-migrations`,
-  `how-api-changes-flow-into-stripes-developer-products`(API 버저닝 — 토스의 '가맹점 코드를 깨지
-  않는다'와 바로 대조된다), `shepherd-how-stripe-adapted-chronon-to-scale-ml-feature-development`.
-  **stripe.com → stripe.dev 리다이렉트에 주의.**
-- 이번에 나온 가장 좋은 이야기: **회계 도구가 데이터 품질 도구가 된다.** 복식부기를 물리적 자금
-  이동에만 쓰지 않고 통화 환전·보고서 파싱·추정 같은 **돈이 안 움직이는 내부 처리까지** 같은
-  개념으로 모델링했다. 그러면 데이터 처리의 결함도 '어딘가에 잔액이 남았다'로 드러난다.
-- 두 번째: **단순함이 규모에서 무기가 된다.** 하루 50억 이벤트에서 한 건의 문제를 찾는 방법이
-  '잔액이 0이 아닌 계정 찾기'라는 한 줄짜리 질문이다. 복식부기를 제대로 세운 대가로 얻은 것.
-- 세 번째: **순서를 보장하지 않고 식별자에 전부를 건다.** creation 과 release 는 완전히 독립적이고
-  business·ID 로 흐름을 맞춘다 — 그래서 ID 가 틀리면 같은 저수지가 둘로 갈라진다.
-- 네 번째: **자동화의 경계를 숫자로 정해 뒀다.** 99.999% 는 도구로 분류하고 남은 꼬리는 사람이
-  본다. 마지막 몇 건을 자동화하느라 시스템을 복잡하게 만들지 않는다.
-- 비교 축 후보가 하나 더 늘었다: **틀렸다는 걸 어떻게 아는가** — Stripe `ledger`(복식부기로
-  스스로 검사) 대 배민 `settlement` 대 네이버 `fast-settlement`. 결제·정산 도메인에서 '검증'을
-  어떻게 하는지가 회사마다 다르다.
+  `how-stripe-uses-graph-search-and-state-machines-to-auto-remediate-a-global-database-fleet`,
+  `shepherd-how-stripe-adapted-chronon-to-scale-ml-feature-development`, `how-we-built-stripe-credits`.
+  **stripe.com → stripe.dev 리다이렉트 주의.**
+- 이번에 나온 가장 좋은 이야기: **지금 조금 더 정확한 것보다 앞으로 빨리 좋아질 수 있는 것을 골랐다.**
+  XGBoost 를 빼면 재현율이 1.5% 떨어지는 걸 알면서도 뺐다 — 전이학습·임베딩과 양립하지 않고 재훈련이
+  느렸기 때문이다. 그 결과 훈련 시간이 85% 줄어 하루에 여러 실험을 돌리게 됐고, 잃은 1.5%는 모델을
+  키워 되사 왔다. **공격이 계속 바뀌는 도메인에서는 고치는 속도가 누적 성능을 정한다.**
+- 두 번째: **사람의 통찰이 항상 모델보다 앞서지는 않는다.** '지금 분산 사기 공격의 대상인가'를
+  특성으로 넣어 봤더니 모델이 이미 그 패턴을 학습하고 있었다. 그래서 특성은 만들기 전이 아니라
+  만든 뒤에 성능으로 판단한다.
+- 세 번째: **설명은 부가 기능이 아니라 제품의 일부다.** 순수 DNN 을 고르는 순간 '왜 막았는지'를
+  답할 수 없게 되므로, Risk Insights 가 없으면 성능을 얻고 제품을 잃는다.
+- 네 번째: **두 결정이 서로를 가능하게 했다.** DNN 전환이 훈련을 빠르게 만들었기에 학습 데이터를
+  10배(지금은 100배 실험)로 늘릴 수 있었다.
 
 ## 이제 무엇을 할까 — 다음 사이클의 선택지
 
