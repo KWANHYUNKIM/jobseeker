@@ -83,8 +83,55 @@
     {
       "name": "콘텐츠 전송망",
       "why": "비트가 실제로 지나가는 길. 어디에 무엇을 미리 놓아두느냐가 화질과 원가를 함께 정한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Open Connect (ISP embedded OCA · IXP 피어링)",
+          "solves": "비트가 지나갈 길을 직접 소유하지 않고 ISP 안에 장비를 무상으로 놓아, 회원과 콘텐츠 사이의 거리를 줄인다. 190개국 수천 대, ISP 파트너 1,000곳 이상.",
+          "limits": "ISP 의 랙 공간·전력·연결과 BGP 세션에 의존하고, 우리가 트래픽을 마구 쓰면 그것이 파트너의 비용이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Netflix Open Connect (공식 사이트)",
+              "url": "https://openconnect.netflix.com/en/",
+              "publisher": "Netflix Open Connect",
+              "date": "2026-08 확인",
+              "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
+            },
+            {
+              "title": "Netflix and Fill — the complex reality of global content distribution",
+              "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+              "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+              "date": "2016-08-11",
+              "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+            }
+          ]
+        },
+        {
+          "tech": "선제적 캐싱 + 계층적 fill(peer → tier → cache)",
+          "solves": "요청을 기다리지 않고 비피크에 미리 채운다. 읽기/쓰기 경합을 피하고, BGP 속성과 위치로 가장 싼 경로에서 받으며, fill master 가 먼저 받아 로컬에 나눈다.",
+          "limits": "예측이 틀리면 필요 없는 것을 채우고, fill window 가 유한해 트래픽이 오르기 전에 끝내야 한다. control plane 이 없으면 OCA 는 아무것도 모른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Netflix and Fill — the complex reality of global content distribution",
+              "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+              "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+              "date": "2016-08-11",
+              "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+            }
+          ]
+        },
+        {
+          "tech": "인기도 예측 모델",
+          "solves": "— 확인하지 못했다.",
+          "limits": "국가·지역별 popularity feed 를 어떤 방법으로 계산하는지는 이 글이 '다음 글에서 다루겠다'고만 밝힌다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "open-connect-fill"
+      ]
     },
     {
       "name": "추천·발견",
@@ -518,13 +565,426 @@
           "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
         }
       ]
+    },
+    {
+      "key": "open-connect-fill",
+      "name": "Open Connect — 요청이 오기 전에 갖다 놓기",
+      "domain": "콘텐츠 전송망",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "비트를 실어 나르는 일이 원가인 회사에서, **그 비트가 실제로 지나가는 길**을 다루는 도메인이다. 그런데 Netflix 는 그 길을 직접 소유하는 대신 **ISP 네트워크 안에 장비를 놓는다** — 자격 있는 ISP 파트너에게 **무상으로** 준다. 그러면 남는 문제는 하나다. **전 세계 수천 대의 장비에, 무엇을, 언제, 어느 경로로 갖다 놓을 것인가.**",
+        "metrics": [
+          {
+            "label": "망의 규모",
+            "value": "**190개국**에 걸쳐 **수천 대**의 OCA 가 많은 ISP 네트워크 안에 놓여 있고, ISP 파트너는 **1,000곳 이상**이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              },
+              {
+                "title": "Netflix Open Connect (공식 사이트)",
+                "url": "https://openconnect.netflix.com/en/",
+                "publisher": "Netflix Open Connect",
+                "date": "2026-08 확인",
+                "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
+              }
+            ]
+          },
+          {
+            "label": "장비의 성격",
+            "value": "OCA 는 Netflix 의 **60개 넘는 글로벌 데이터센터**에서 쓰는 것과 같은 기능의 장비이고, **자격 있는 ISP 에게 무상 제공**된다. ISP 는 소량의 랙 공간·전력·연결과 BGP 세션을 준다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix Open Connect (공식 사이트)",
+                "url": "https://openconnect.netflix.com/en/",
+                "publisher": "Netflix Open Connect",
+                "date": "2026-08 확인",
+                "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
+              }
+            ]
+          },
+          {
+            "label": "핵심 차이",
+            "value": "**선제적 캐싱** — 다른 상용 CDN 과의 중요한 차이다. 회원이 **무엇을 언제 볼지 높은 정확도로 예측**할 수 있어 비피크 대역폭으로 미리 내려받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "예측이 잘 된다는 것을 알았을 때",
+          "thought": "일반적인 CDN 은 누가 무엇을 요청할지 모르니 **요청이 온 뒤에 채운다.** 그런데 우리는 **회원이 무엇을 언제 볼지 높은 정확도로 예측할 수 있다** — 그러면 요청을 기다릴 이유가 없다. 예측 가능성이 캐싱 전략 자체를 바꾼다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "장비의 디스크를 들여다볼 때",
+          "thought": "채우는 일은 **디스크 쓰기**이고 서빙은 **디스크 읽기**다. 둘을 같은 시간에 하면 서로를 방해한다. 비피크에 채우면 **읽기를 줄이면서 쓰기를 할 수 있어 read/write 경합을 피한다** — 대역폭만이 아니라 디스크 효율의 문제이기도 하다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "OCA 에 무엇을 알려줄지 정할 때",
+          "thought": "장비 하나하나가 네트워크 전체를 알 필요는 없다. **OCA 는 다른 OCA 도, 타이틀 인기도도 저장하지 않는다** — 그건 전부 control plane 이 안다. 장비는 '내가 가져야 할 목록'과 '어디서 받으면 되는지'만 물어보면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "ISP 의 비용을 생각할 때",
+          "thought": "장비를 무상으로 주고 랙 공간을 얻는 관계에서, 우리가 트래픽을 마구 쓰면 **파트너의 비용이 된다.** 그래서 '빨리 퍼뜨리기'만이 목표일 수 없다 — **최신 콘텐츠를 가능한 한 빨리 가져가되 ISP 파트너의 대역폭 비용은 계속 줄여야 한다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "OCA",
+            "what": "Open Connect Appliance. ISP 안에 embedded 되거나 IXP 에 놓인다. 상태를 거의 갖지 않는다."
+          },
+          {
+            "name": "manifest cluster",
+            "what": "카탈로그 사본을 나눠 갖는 단위. content region(예상 스트리밍 국가 그룹) · popularity feed(인기 순 타이틀 목록) · 사본 수로 설정된다."
+          },
+          {
+            "name": "fill cluster",
+            "what": "content region 과 popularity feed 를 공유하는 manifest cluster 들의 묶음. fill escalation policy 와 fill master 수를 갖는다."
+          },
+          {
+            "name": "fill escalation policy",
+            "what": "몇 홉까지 갈 수 있고 얼마나 기다린 뒤 그럴지, 전체 망으로 갈 수 있는지, **S3 로 갈 수 있는지와 그 대기 시간**."
+          }
+        ],
+        "invariants": [
+          "채우기는 디스크 쓰기이고 서빙은 디스크 읽기다 — 같은 시간에 하면 서로를 방해한다.",
+          "OCA 는 자기 목록 말고는 아무것도 모른다.",
+          "빨리 퍼뜨리는 것과 ISP 의 대역폭 비용을 아끼는 것이 같은 방향은 아니다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "콘텐츠 제공자의 자산을 품질 관리·인코딩·재패키징해 **S3** 에 배포한다",
+            "why": "여기가 모든 fill 의 원본이다"
+          },
+          {
+            "step": "Content Operations 가 메타데이터로 릴리스 준비를 표시한다",
+            "why": "그때부터 Open Connect 가 넘겨받는다"
+          },
+          {
+            "step": "OCA 가 주기적으로 control plane 에 **manifest**(내가 가져야 할 목록)를 요청한다",
+            "why": "장비는 자기 목록만 알면 된다"
+          },
+          {
+            "step": "목록과 실제 보유분에 차이가 있으면 fill window 동안 필요한 것을 요청한다",
+            "why": "비피크에만 채운다"
+          },
+          {
+            "step": "control plane 이 **fill source 의 순위 목록**을 돌려준다",
+            "why": "가용성·fill health·경로 비용을 함께 본다"
+          },
+          {
+            "step": "**peer fill → tier fill → cache fill(S3)** 순으로 가장 싼 곳에서 받는다",
+            "why": "S3 에서 모두에게 직접 뿌리는 건 시간도 비용도 낭비다"
+          },
+          {
+            "step": "선출된 **fill master** 가 먼저 멀리서 받아 로컬에 나눠 준다",
+            "why": "한 번만 멀리 가고 나머지는 가까이서 받는다"
+          },
+          {
+            "step": "해가 서쪽으로 가면 fill window 도 다음 시간대로 옮겨 간다",
+            "why": "비피크는 지역마다 다른 시각에 온다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "요청이 온 뒤에 채울 것인가",
+            "chosen": "**선제적 캐싱** — 설정된 fill window 동안 대부분의 업데이트를 미리 내려받는다. 회사는 이를 **다른 상용 CDN 과의 중요한 차이**로 꼽는다",
+            "alternatives": [
+              "요청 기반 캐싱(일반 CDN)",
+              "전량 사전 배포"
+            ],
+            "tradeoff": "예측이 틀리면 필요 없는 것을 채우고 필요한 것은 없다. 그래도 **회원이 무엇을 언제 볼지 높은 정확도로 예측할 수 있는 회사**라 이 전략이 성립한다 — **예측 가능성이 캐싱 전략을 정한 셈이다**(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "왜 하필 비피크 시간인가",
+            "chosen": "대역폭이 한가할 때 채운다. 그리고 **디스크 읽기(서빙)를 줄이면서 쓰기(채우기)를 해 read/write 경합을 피한다**",
+            "alternatives": [
+              "상시 채우기",
+              "피크에도 일부 채우기"
+            ],
+            "tradeoff": "하루에 쓸 수 있는 시간이 유한하고, 트래픽이 오르기 전에 배치를 끝내야 한다. 그래도 피크에는 **OCA 의 용량 전부를 서빙에 쓰고 싶다** — 이유가 대역폭만이 아니라 디스크 효율에도 있다는 점이 이 결정의 핵심이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "OCA 에 얼마나 많은 것을 알려줄 것인가",
+            "chosen": "**거의 아무것도 알려주지 않는다.** OCA 는 다른 OCA 정보도 타이틀 인기도도 저장하지 않는다 — 전부 AWS control plane 에 집계된다",
+            "alternatives": [
+              "OCA 간 P2P 발견",
+              "장비에 인기도 배포"
+            ],
+            "tradeoff": "control plane 이 없으면 아무것도 못 한다. 대신 수천 대 장비가 **상태를 거의 갖지 않아** 교체·확장·설정 변경이 단순해진다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "S3 에서 모든 장비로 직접 뿌릴 것인가",
+            "chosen": "**계층적으로 간다** — `peer fill`(같은 manifest cluster 또는 같은 서브넷) → `tier fill`(클러스터 밖 OCA) → `cache fill`(S3 직접). 경로 비용은 **BGP 경로 속성과 물리적 위치(위경도)**로 계산한다",
+            "alternatives": [
+              "S3 직접 배포",
+              "고정 트리 구조"
+            ],
+            "tradeoff": "누가 무엇을 갖고 있는지를 control plane 이 계속 추적해야 한다. 그래도 S3 에서 모두에게 직접 뿌리는 것은 **시간과 비용 양쪽으로 비효율**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "모든 OCA 를 똑같이 대할 것인가",
+            "chosen": "타이틀 자산마다 지정된 수의 **fill master** 를 선출한다. 마스터에게는 **더 멀리, 덜 기다리고** 가져올 수 있는 정책을 준다",
+            "alternatives": [
+              "모두 같은 정책",
+              "지역별 고정 소스"
+            ],
+            "tradeoff": "마스터 선출과 정책을 관리해야 한다. 대신 **한 번만 멀리 가고 나머지는 가까이서 받는** 구조가 되어, 마스터가 받아 보고하면 그 다음 계층이 마스터에서 받고, 그 계층이 끝나면 또 다음이 받는 식으로 퍼진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "어느 장비에 몇 벌을 둘 것인가",
+            "chosen": "**manifest cluster** 마다 content region · popularity feed · 사본 수를 설정한다. **인기 순위는 국가·지역 등 기준별로 독립적으로 계산**한다",
+            "alternatives": [
+              "전 장비 동일 카탈로그",
+              "전역 단일 인기 순위"
+            ],
+            "tradeoff": "클러스터 설정이 늘고 순위를 여러 벌 계산해야 한다. 그래도 **어디서 무엇이 인기 있는지가 지역마다 다르다** — 전역 하나의 순위로는 어느 지역에도 맞지 않는다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "필요 없어진 콘텐츠를 언제 지울 것인가",
+            "chosen": "**delete manifest** 에 넣고, **진행 중인 라이브 세션을 끊지 않도록 일정 기간이 지난 뒤** 지운다",
+            "alternatives": [
+              "즉시 삭제",
+              "용량이 찰 때 축출"
+            ],
+            "tradeoff": "그동안 공간을 계속 쓴다. 대신 지금 그걸 보고 있는 사람의 재생이 끊기지 않는다 — **지우는 일도 시청 중인 사람 기준으로 판단한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "question": "'배포가 끝났다'를 무엇으로 판정할 것인가",
+            "chosen": "**title liveness** — 충분한 수의 클러스터가 충분한 사본을 가지면 서빙 관점에서 live 로 본다. 이 지표와 **계약 메타데이터(언제 공개해야 하는지)**를 앱이 함께 쓴다",
+            "alternatives": [
+              "전 장비 배포 완료를 기다림",
+              "시각만으로 공개"
+            ],
+            "tradeoff": "모든 장비가 갖기 전에 live 가 되므로 어떤 경로는 아직 멀리서 받아야 한다(추정). 대신 **전량 완료를 기다리지 않고 공개할 수 있고**, 카탈로그 임계 비율을 못 채운 OCA 는 알림으로 잡아 다음 주기 전에 고친다. 급한 건 out-of-cycle **fast track fill** 로 밀어 넣는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OCA (ISP embedded · IXP 피어링)",
+            "role": "Netflix 데이터센터와 같은 기능의 장비를 ISP 안에 무상으로 놓는다. ISP 는 랙 공간·전력·연결과 BGP 세션을 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix Open Connect (공식 사이트)",
+                "url": "https://openconnect.netflix.com/en/",
+                "publisher": "Netflix Open Connect",
+                "date": "2026-08 확인",
+                "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
+              }
+            ]
+          },
+          {
+            "tech": "AWS control plane + manifest",
+            "role": "인기도·보유 현황·경로 비용을 모두 여기서 집계하고, OCA 에는 '가져야 할 목록'과 'fill source 순위'만 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "tech": "계층적 fill (peer → tier → cache)",
+            "role": "BGP 속성과 물리적 위치로 경로 비용을 계산해 가장 싼 곳에서 받는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "tech": "fill master + escalation policy",
+            "role": "마스터가 먼저 멀리서 받아 로컬에 나눈다. 정책이 홉 수·대기 시간·S3 접근 여부를 정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix and Fill — the complex reality of global content distribution",
+                "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+                "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+                "date": "2016-08-11",
+                "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+              }
+            ]
+          },
+          {
+            "tech": "인기도 예측 모델",
+            "role": "— 이 글에 없다. 국가·지역별 popularity feed 를 어떤 방법으로 계산하는지는 다른 글에서 다루겠다고만 밝힌다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "per-title-encoding",
+          "via": "실어 나를 것",
+          "contract": "per-title 래더가 만든 여러 인코드가 S3 에 올라가 fill 의 원본이 된다 — 래더가 커질수록 배포·저장할 자산도 늘어난다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "재생·적응 스트리밍",
+          "via": "가까이 있는 것",
+          "contract": "클라이언트가 고를 수 있는 것은 결국 근처 OCA 에 있는 것뿐이다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 한 타이틀이 세계로 퍼지는 길",
+          "question": "S3 에서 수천 대까지 어떻게 가장 싸게 가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  CP[콘텐츠 제공자] --> OPS[Content Operations<br/>품질 관리 · 인코딩 · 재패키징]\n  OPS --> S3[(Amazon S3)]\n  OPS -.->|릴리스 플래그| CTRL\n  OCA1[OCA] -->|manifest 요청| CTRL[(AWS control plane<br/>인기도 · 보유 현황 · 경로 비용)]\n  CTRL -->|가져야 할 목록 + fill source 순위| OCA1\n  CTRL -->|master 선출| MASTER[fill master<br/>더 멀리 · 덜 기다린다]\n  S3 -->|cache fill| MASTER\n  MASTER -->|보고| CTRL\n  MASTER -->|peer fill| OCA2[같은 manifest cluster · 같은 서브넷]\n  OCA2 -->|tier fill| OCA3[클러스터 밖 OCA]\n  BGP[BGP 경로 속성 · 위경도] --> CTRL\n  OCA2 --> LIVE{title liveness<br/>충분한 클러스터 · 충분한 사본}\n  OCA3 --> LIVE\n  LIVE -->|+ 계약 메타데이터| APP[앱에서 재생 가능]\n  OLD[필요 없어진 타이틀] -.-> DEL[delete manifest<br/>라이브 세션 안 끊게 유예 후 삭제]"
+        },
+        {
+          "title": "fill window 는 해를 따라 돈다",
+          "question": "왜 한 번에 전 세계를 채우지 않는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 피크: 회원들이 보고 있다\n  피크 --> 서빙전용: 디스크는 읽기에 쓴다\n  서빙전용 --> 비피크: 트래픽이 내려간다\n  비피크 --> fill윈도우: 채우기 시작\n  fill윈도우 --> 델타확인: manifest 와 보유분 비교\n  델타확인 --> 소스요청: fill source 순위를 받는다\n  소스요청 --> peer: 같은 클러스터에 있나\n  peer --> tier: 없으면 클러스터 밖\n  tier --> cache: 그래도 없으면 S3\n  cache --> 저장됨\n  peer --> 저장됨\n  tier --> 저장됨\n  저장됨 --> 윈도우종료: 트래픽이 다시 오른다\n  윈도우종료 --> 다음시간대: 해가 서쪽으로 간다\n  다음시간대 --> fill윈도우\n  윈도우종료 --> 피크\n  note right of 서빙전용\n    읽기와 쓰기를 같이 하면\n    서로를 방해한다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 미리 갖다 놓는 일의 대가",
+          "question": "선제적으로 채우면 무엇이 위험해지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[예측해서 미리 채운다] --> B{예측이 맞나}\n  B -->|틀리면| C[필요 없는 것을 채웠다]\n  B -->|틀리면| D[필요한 것이 없다]\n  D --> E[멀리서 받아야 한다 · 느리고 비싸다]\n  F[fill window 는 유한하다] --> G[트래픽이 오르기 전에 못 끝내면]\n  G --> H[서빙 용량을 채우기에 뺏긴다]\n  I[읽기와 쓰기를 같이 하면] --> J[디스크 경합]\n  K[S3 에서 모두에게 직접 뿌리면] --> L[시간도 비용도 낭비]\n  M[control plane 이 멈추면] --> N[OCA 는 아무것도 모른다]\n  O[즉시 삭제하면] --> P[보고 있던 사람의 재생이 끊긴다]\n  Q[카탈로그 임계 비율 미달] -.->|알림| R[다음 주기 전에 교정]\n  S[급한 수정 · 잘못된 인코드] -.-> T[out-of-cycle fast track fill]\n  U[트래픽을 마구 쓰면] --> V[ISP 파트너의 비용이 된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Netflix and Fill — the complex reality of global content distribution",
+          "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+          "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+          "date": "2016-08-11",
+          "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+        },
+        {
+          "title": "Netflix Open Connect (공식 사이트)",
+          "url": "https://openconnect.netflix.com/en/",
+          "publisher": "Netflix Open Connect",
+          "date": "2026-08 확인",
+          "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
+        }
+      ]
     }
   ],
   "open_questions": [
     "per-title 인코딩을 실제로 돌리는 프로덕션 시스템의 구조와 계산 비용은 이 글에 없다 — '견고하고 확장 가능한 시스템'을 연구 질문으로만 꼽는다.",
     "클라이언트의 적응 스트리밍 알고리즘 자체(무엇을 보고 언제 전환하는지)는 다루지 않는다.",
     "Open Connect(콘텐츠 전송망)와 추천·발견 도메인은 아직 손대지 않았다.",
-    "이 글은 2015년 자료다 — per-shot 인코딩이나 AV1 같은 이후의 진전은 반영돼 있지 않다."
+    "이 글은 2015년 자료다 — per-shot 인코딩이나 AV1 같은 이후의 진전은 반영돼 있지 않다.",
+    "국가·지역별 popularity feed 를 어떤 방법으로 계산하는지는 공개되지 않았다 — 후속 글에서 다루겠다고만 밝힌다.",
+    "fill window 의 실제 길이와 시간대별 설정, 그리고 title liveness 의 '충분한 사본' 기준 수치는 밝히지 않는다."
   ],
   "sources": [
     {
@@ -540,6 +1000,20 @@
       "publisher": "Netflix IR",
       "date": "2026-01-20",
       "summary": "2025년 매출 450억 달러(+16%), 영업이익 133억 달러, 영업이익률 29.5%(2024년 26.7%). 유료 회원 3.25억 명 돌파. 광고 매출 15억 달러 이상(전년의 2.5배 이상)."
+    },
+    {
+      "title": "Netflix and Fill — the complex reality of global content distribution",
+      "url": "https://netflixtechblog.com/netflix-and-fill-c43a32b490c0",
+      "publisher": "Netflix TechBlog · Michael Costello & Ellen Livengood",
+      "date": "2016-08-11",
+      "summary": "새 타이틀이 S3 에서 전 세계 수천 대 OCA 로 퍼지는 과정. 비피크 fill window 에 선제적으로 채우고, peer → tier → cache 순으로 가장 싼 경로를 고르며, fill master 를 선출해 먼저 받아 로컬에 나눈다. fill 패턴은 해를 따라 시간대를 이동한다."
+    },
+    {
+      "title": "Netflix Open Connect (공식 사이트)",
+      "url": "https://openconnect.netflix.com/en/",
+      "publisher": "Netflix Open Connect",
+      "date": "2026-08 확인",
+      "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
     }
   ]
 }
