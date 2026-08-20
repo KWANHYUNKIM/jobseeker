@@ -97,13 +97,15 @@
     },
     {
       "slug": "spatial-units",
-      "title": "공간 — 미리 나눠 두는가, 필요할 때 재는가",
-      "question": "답이 얼마나 오래 유효한지가 공간을 다루는 방식을 어떻게 정하는가?",
+      "title": "공간 — 세는 단위, 담는 단위, 그리고 아예 안 만드는 쪽",
+      "question": "같은 격자를 만든 곳과 쓰는 곳은 왜 다르게 쓰는가?",
       "companies": [
+        "uber",
         "coupang",
         "baemin"
       ],
       "features": [
+        "h3-grid",
         "delivery-area",
         "rider-dispatch"
       ],
