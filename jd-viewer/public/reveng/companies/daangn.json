@@ -107,9 +107,23 @@
       "why": "동네 안에서 무엇을 어떤 순서로 보여줄 것인가. 검색과 달리 사용자가 원하는 것을 말하지 않은 상태에서 골라야 한다.",
       "tech": [
         {
-          "tech": "피드 인프라(노출 규칙 위임)",
-          "solves": "무엇을 보여줄지의 규칙은 각 서비스가 정하고, 피드는 순서와 우선순위만 책임진다 — 서비스가 늘어도 피드를 고치지 않는다.",
-          "limits": "규칙이 서비스마다 흩어져 전체 지면의 일관성을 한 곳에서 보기 어려워진다(추정).",
+          "tech": "노출 계약 + Viewtype/ViewTemplate",
+          "solves": "새 서비스가 피드 팀의 작업 없이 붙고, 앱 업데이트 없이도 새 콘텐츠 모양을 보여준다(당근알바는 노출 후 공고 수 100% 성장).",
+          "limits": "응답 구조가 계약으로 굳어 바꾸기 어렵고, 웹뷰라 네이티브보다 경험이 떨어진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Feed Infra팀을 소개해요!",
+              "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+              "publisher": "당근 테크 블로그",
+              "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "Feed Entity Service · Feed Mixer · Feedback Service",
+          "solves": "흩어진 콘텐츠를 모아 중앙에서 개인화하고, 추천 결과와 미성장 서비스 콘텐츠를 섞으며, 신고·차단까지 신호로 다룬다.",
+          "limits": "초기 속도를 만들어 준 위임을 되돌리는 일이라 인프라를 새로 지어야 하고, 섞는 비율만큼 당장의 개인화 품질을 내준다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -121,7 +135,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "feed-platform"
+      ]
     },
     {
       "name": "로컬 광고",
@@ -501,6 +517,369 @@
           "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
         }
       ]
+    },
+    {
+      "key": "feed-platform",
+      "name": "피드 — 위임했다가 되찾아 온 개인화",
+      "domain": "피드 노출",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "당근은 중고거래에서 시작했지만 목표는 동네의 모든 것을 잇는 것이었다. 중고차·당근알바처럼 **서로 다른 팀이 만드는 서비스들이 계속 생기는데, 그 콘텐츠가 사용자에게 닿는 통로가 피드다.** 일반 SNS 와 결정적으로 다른 점이 여기 있다 — 콘텐츠가 한 곳에서 만들어지지 않는다. 그래서 이 도메인의 첫 질문은 '무엇을 위에 놓을까'가 아니라 **'새 서비스가 어떻게 하면 피드에 붙을 수 있을까'**였다.",
+        "metrics": [
+          {
+            "label": "당근알바 사례",
+            "value": "피드 노출 이후 공고 수 100% 성장",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "label": "노출 계약",
+            "value": "index·resource(id·sid·model)·score·serialized·meta 구조만 맞추면 누구나 노출(HTTP → 이후 gRPC 도 같은 구조)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "새 서비스를 피드에 붙이려 할 때",
+          "thought": "SNS 는 콘텐츠가 한 곳에서 만들어지지만 당근은 서비스마다 다른 팀이 다른 것을 만든다. 피드가 그 모든 데이터를 직접 들고 있으려 하면 서비스가 하나 생길 때마다 피드를 고쳐야 한다 — 그러면 피드가 성장의 병목이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "앱 업데이트 속도를 봤을 때",
+          "thought": "당시 사용자에 30~60대 비중이 높고 구형 안드로이드가 많아 업데이트가 빨리 퍼지지 않았다. 새 콘텐츠 종류를 보여주려고 앱 배포를 기다려야 한다면, 서비스를 빨리 띄우는 의미가 없어진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "콘텐츠가 충분히 쌓였을 때",
+          "thought": "각 서비스가 자기 데이터로 각자 개인화하는 방식은 초기에는 빨랐지만, 사용자가 당근 안에서 만든 행동 전체를 쓰지 못한다. 중고거래에서 한 행동이 알바 추천에 쓰이지 못한다면 그건 한 앱이 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "백엔드만 있는 팀이 프론트 아이디어를 낼 때",
+          "thought": "ViewTemplate 이 될지 안 될지를 앱에서 바로 시험하면 실패 비용이 크다. 웹으로 먼저 만들어 보고, 관심피드에 실험으로 내보내 UI 오류 제보가 없는지를 봤다 — 되는지 확인하는 가장 싼 방법이었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "콘텐츠 제공 서비스",
+            "what": "중고거래·중고차·당근알바 등. 각자 자기 콘텐츠를 갖고 있다."
+          },
+          {
+            "name": "노출 계약",
+            "what": "피드에 붙기 위해 맞춰야 하는 응답 구조(index·resource·score·serialized·meta)."
+          },
+          {
+            "name": "Viewtype / ViewTemplate",
+            "what": "앱을 고치지 않고도 새 모양을 그리게 하는 표현 규격."
+          },
+          {
+            "name": "피드백",
+            "what": "관심·좋아요·댓글·채팅·신고·차단·안 보기 등 사용자가 남기는 명시적 신호."
+          }
+        ],
+        "invariants": [
+          "새 서비스가 피드에 붙는 데 피드 팀의 작업이 필요하면, 피드가 회사 성장의 병목이 된다.",
+          "새 콘텐츠 종류를 보여주는 데 앱 업데이트가 필요하면, 업데이트가 느린 사용자에게는 영영 안 보인다.",
+          "개인화를 각 서비스가 따로 하면 사용자가 당근 전체에서 만든 행동을 쓸 수 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 피드를 요청한다",
+            "why": "무엇을 보여줄지는 이 시점에 정해진다"
+          },
+          {
+            "step": "피드 서비스가 콘텐츠를 가진 서비스들에 요청해 수급한다(Phase 1)",
+            "why": "피드가 모든 데이터를 직접 들고 있지 않아도 되게 한다"
+          },
+          {
+            "step": "피드에 정의된 규칙으로 어떤 콘텐츠를 어디에 놓을지 조합한다",
+            "why": "규칙은 피드가, 콘텐츠는 각 서비스가 책임진다"
+          },
+          {
+            "step": "Viewtype 으로 앱 업데이트 없이 새 모양을 그린다",
+            "why": "업데이트가 느린 사용자에게도 새 서비스가 보여야 한다"
+          },
+          {
+            "step": "Feed Entity Service 가 모든 콘텐츠를 한데 모은다(Phase 2)",
+            "why": "개인화를 하려면 전체를 한 곳에서 봐야 한다"
+          },
+          {
+            "step": "Feed Mixer 가 추천 결과와 아직 성장하지 않은 서비스의 콘텐츠를 섞고 정책 페널티를 적용한다",
+            "why": "개인화만 하면 새 서비스가 영영 노출되지 못한다"
+          },
+          {
+            "step": "Feedback Service 가 관심·좋아요·댓글·채팅·신고·차단·안 보기를 모은다",
+            "why": "다음 개인화의 재료가 여기서 나온다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "피드가 콘텐츠를 직접 들고 있을 것인가, 각 서비스에 요청할 것인가",
+            "chosen": "각 서비스에 요청해 수급하고, 콘텐츠 서빙과 개인화를 그 서비스에 위임한다(Phase 1)",
+            "alternatives": [
+              "피드가 모든 콘텐츠를 저장",
+              "서비스별 전용 피드"
+            ],
+            "tradeoff": "새 서비스가 빠르게 붙을 수 있는 대신, 개인화가 서비스마다 흩어져 사용자의 전체 행동을 쓸 수 없게 된다 — 콘텐츠가 쌓이자 이 한계가 그대로 다음 단계의 과제가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "붙는 방법을 무엇으로 정의할 것인가",
+            "chosen": "정해진 응답 구조(index·resource·score·serialized·meta)만 맞추면 누구나 노출된다",
+            "alternatives": [
+              "서비스마다 개별 연동",
+              "피드 팀이 매번 코드 추가"
+            ],
+            "tradeoff": "그 구조가 곧 계약이 되어 바꾸기 어려워진다 — 실제로 통신 방식을 HTTP 에서 gRPC 로 바꿀 때도 같은 구조를 그대로 가져갔다. 대신 피드 팀 없이도 서비스가 붙는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "새 콘텐츠 종류를 보여주려면 앱을 고쳐야 하는가",
+            "chosen": "Viewtype 을 도입해 앱 업데이트 없이 노출하고, 클릭하면 웹뷰로 보낸다",
+            "alternatives": [
+              "앱 배포를 기다림",
+              "콘텐츠 종류를 앱이 아는 것만으로 제한"
+            ],
+            "tradeoff": "네이티브가 아닌 웹뷰라 경험이 한 단계 떨어진다. 그래도 30~60대 비중이 높고 구형 안드로이드가 많아 업데이트가 느리게 퍼지는 상황에서는 이쪽이 실제로 더 많은 사용자에게 닿는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "개인화를 계속 각 서비스에 맡길 것인가",
+            "chosen": "Feed Entity Service 로 모든 콘텐츠를 모으고 Feed Mixer 가 중앙에서 조합한다(Phase 2)",
+            "alternatives": [
+              "서비스별 개인화 유지",
+              "서비스별 추천 모델을 각자 고도화"
+            ],
+            "tradeoff": "초기 속도를 만들어 줬던 위임을 되돌리는 일이라, 흩어진 콘텐츠를 한데 모으는 인프라를 새로 지어야 한다. 대신 중고거래에서 한 행동을 알바 추천에 쓸 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "개인화 결과만으로 피드를 채울 것인가",
+            "chosen": "추천 모델의 개인화 콘텐츠와 아직 충분히 성장하지 않은 서비스의 콘텐츠를 섞는다",
+            "alternatives": [
+              "개인화 점수 순으로만 노출"
+            ],
+            "tradeoff": "당장의 개인화 품질을 조금 내준다. 대신 데이터가 없어 추천되지 못하는 새 서비스가 영영 노출되지 못하는 상황을 막는다 — 회사가 계속 새 서비스를 만드는 구조라 이 자리가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "어떤 피드백을 모을 것인가",
+            "chosen": "관심·좋아요·댓글·채팅·신고·차단·안 보기 같은 명시적 신호를 별도 서비스에 저장한다",
+            "alternatives": [
+              "클릭·노출 같은 암묵적 신호만 사용"
+            ],
+            "tradeoff": "신호의 종류를 정의하고 저장하는 부담이 생긴다. 대신 '싫다'는 신호(신고·차단·안 보기)까지 다룰 수 있어 피드가 사용자를 밀어내는 것을 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "프론트 아이디어를 어떻게 검증할 것인가",
+            "chosen": "백엔드만 있는 팀이 웹으로 먼저 만들어 보고, 관심피드에 실험으로 내보내 UI 오류 제보를 본다",
+            "alternatives": [
+              "앱에 바로 구현",
+              "프론트 인력이 생길 때까지 보류"
+            ],
+            "tradeoff": "웹에서 되는 것이 앱에서도 된다는 보장은 없다. 그래도 '될 것 같다'를 확인하는 가장 싼 방법이었고, 실험 후 오류 제보가 없다는 사실이 다음 단계의 근거가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "노출 계약(HTTP → gRPC)",
+            "role": "정해진 응답 구조만 맞추면 어떤 서비스든 피드에 붙을 수 있게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Viewtype → ViewTemplate",
+            "role": "앱 업데이트 없이 새 콘텐츠 모양을 그린다. ViewTemplate 은 Text·Image·Button 컴포넌트와 자유 스타일을 지원한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Feed Entity Service",
+            "role": "사내 모든 콘텐츠 엔터티를 모아 통합 서빙하고 실험 기반을 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Feed Mixer",
+            "role": "추천 결과와 미성장 서비스 콘텐츠를 섞고 피드 정책에 따른 페널티를 적용한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Feedback Service",
+            "role": "관심·좋아요·댓글·채팅·신고·차단·안 보기를 저장해 개인화의 재료로 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "search-infra",
+          "via": "콘텐츠 공급",
+          "contract": "검색에 색인된 문서가 피드에도 담긴다(추정). 둘 다 '동네' 조건 위에서 동작한다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "동네 인증",
+          "via": "노출 범위",
+          "contract": "피드가 보여줄 수 있는 것은 인증된 동네 범위 안의 콘텐츠다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "로컬 광고",
+          "via": "피드 지면",
+          "contract": "피드는 광고가 놓이는 자리이기도 하다 — Feed Mixer 의 정책·페널티가 그 조정 지점으로 보인다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "거래 신뢰",
+          "via": "신고·차단 피드백",
+          "contract": "신고·차단은 신뢰 도메인의 신호이면서 동시에 피드 개인화의 입력이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 위임(Phase 1)에서 통합(Phase 2)으로",
+          "question": "새 서비스를 빨리 붙이는 구조가 왜 나중에 바뀌어야 했는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[피드 요청] --> F[피드 서비스]\n  subgraph Phase1 [Phase 1 · 위임]\n    F -->|콘텐츠 요청| S1[중고거래]\n    F -->|콘텐츠 요청| S2[중고차]\n    F -->|콘텐츠 요청| S3[당근알바]\n    S1 -->|노출 계약 구조| F\n    S2 --> F\n    S3 --> F\n  end\n  subgraph Phase2 [Phase 2 · 통합]\n    FES[(Feed Entity Service<br/>모든 콘텐츠)] --> MIX[Feed Mixer]\n    REC[추천 모델] --> MIX\n    NEW[미성장 서비스 콘텐츠] --> MIX\n    POL[피드 정책 · 페널티] --> MIX\n  end\n  F --> VT[Viewtype / ViewTemplate]\n  MIX --> VT\n  VT --> APP[앱 업데이트 없이 노출]\n  APP --> FB[Feedback Service<br/>관심·좋아요·신고·차단·안 보기]\n  FB --> REC"
+        },
+        {
+          "title": "콘텐츠 하나가 피드에 오르기까지",
+          "question": "새 서비스의 콘텐츠는 어떤 단계를 지나 개인화 대상이 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 생성됨: 서비스가 콘텐츠를 만든다\n  생성됨 --> 노출가능: 노출 계약 구조로 응답\n  노출가능 --> 피드노출: 피드 규칙에 따라 배치\n  피드노출 --> 피드백수집: 관심·좋아요·차단 등\n  피드백수집 --> 개인화대상: 데이터가 충분히 쌓임\n  노출가능 --> 보정노출: 아직 데이터가 없는 서비스\n  보정노출 --> 피드백수집\n  피드노출 --> 페널티: 정책 위반\n  페널티 --> 피드노출\n  개인화대상 --> [*]\n  note right of 보정노출\n    개인화만 하면 새 서비스는\n    영영 노출되지 못한다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 위임의 대가",
+          "question": "빠르게 붙이려던 선택이 어디서 청구서로 돌아오는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  D[개인화를 각 서비스에 위임] --> FAST[새 서비스가 빨리 붙는다]\n  D --> SPLIT[사용자 행동이 서비스마다 갈린다]\n  SPLIT --> WEAK[중고거래 행동을 알바 추천에 못 쓴다]\n  WEAK --> REBUILD[Phase 2 · 콘텐츠를 다시 한데 모아야 한다]\n  C[노출 계약을 구조로 고정] --> EASY[누구나 붙는다]\n  C --> LOCK[그 구조를 바꾸기 어려워진다]\n  LOCK -.->|HTTP→gRPC 때도| SAME[같은 구조를 그대로 가져갔다]\n  V[Viewtype · 웹뷰] --> REACH[업데이트 느린 사용자에게도 닿는다]\n  V --> UX[네이티브보다 떨어지는 경험]\n  P{개인화만 한다면} -->|데이터 없는 서비스| NEVER[영영 노출되지 못한다]\n  NEVER -.->|그래서 Mixer 가| BLEND[미성장 콘텐츠를 섞는다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Feed Infra팀을 소개해요!",
+          "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+          "publisher": "당근 테크 블로그",
+          "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -509,7 +888,9 @@
     "거래 분쟁 시 플랫폼이 어디까지 개입하는지, 당근페이가 그 개입 수단인지 확인하지 못했다.",
     "ECK 도입 후 실제로 배포 시간이 얼마나 줄었는지는 글의 '결과' 절을 끝까지 읽지 못해 확인하지 못했다 — 목표(30분 이내)만 확인된 상태다.",
     "동네 인증의 판정 방식은 이번 사이클에도 공식 자료를 찾지 못했다. 검색으로 나오는 것은 GPS 우회 방법을 다룬 제3자 블로그뿐이라 근거로 쓸 수 없다.",
-    "medium.com 은 WebFetch 가 403 을 돌려준다 — 당근 기술 자료는 브라우저로만 읽을 수 있다."
+    "medium.com 은 WebFetch 가 403 을 돌려준다 — 당근 기술 자료는 브라우저로만 읽을 수 있다.",
+    "Feed Mixer 의 '정책에 따른 페널티'가 무엇을 벌하는지(스팸·중복·품질 등) 글에 구체적으로 나오지 않는다.",
+    "광고가 피드의 어느 자리에 어떤 비중으로 들어가는지, Mixer 가 그것도 조정하는지 확인하지 못했다."
   ],
   "sources": [
     {
