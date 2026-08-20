@@ -1254,7 +1254,7 @@
               "서비스가 필요할 때마다 인증 서버에 다시 물어보기",
               "사용자 ID 만 헤더로 넘기기"
             ],
-            "tradeoff": "요청마다 페이로드가 커지고 직렬화 비용이 붙는다. 더 큰 대가는 신뢰 모델이다 — 내부 서비스가 'Gateway 를 통과했으니 안전하다'고 가정하게 되므로, 내부망 자체를 신뢰하지 않는 별도의 통제(Zero Trust)가 뒤따라야 한다.",
+            "tradeoff": "요청마다 페이로드가 커지고 직렬화 비용이 붙는다. 더 큰 대가는 신뢰 모델이다 — 내부 서비스가 'Gateway 를 통과했으니 안전하다'고 가정하게 되고, 그 가정이 깨지는 순간 관문 뒤는 무방비가 된다. 토스가 사내 접근에서 '내부망이면 신뢰'를 버린 것과 같은 문제가 서비스 사이에도 있는 셈이다(사내 Zero Trust 는 임직원·기기 접근 통제 이야기로, 이 요청 경로와는 별개 프로그램이다).",
             "confidence": "confirmed",
             "sources": [
               {
@@ -1262,12 +1262,6 @@
                 "url": "https://toss.tech/article/22910",
                 "publisher": "토스 기술블로그",
                 "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
-              },
-              {
-                "title": "금융사 최초의 Zero Trust 아키텍처 도입기",
-                "url": "https://toss.tech/article/slash23-security",
-                "publisher": "토스 기술블로그 / SLASH 23",
-                "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
               }
             ]
           },
@@ -1285,6 +1279,58 @@
                 "url": "https://toss.tech/article/22910",
                 "publisher": "토스 기술블로그",
                 "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "위변조를 발견했을 때 그 요청만 막을 것인가",
+            "chosen": "요청을 막는 데서 끝내지 않고 FDS 로 넘겨 계정을 비활성화한다",
+            "alternatives": [
+              "해당 요청만 401 로 거절",
+              "로그만 남기고 통과"
+            ],
+            "tradeoff": "오탐이면 멀쩡한 사용자가 자기 계좌에 접근하지 못하고, 해제 절차와 고객센터 부담이 생긴다. 대신 조건을 바꿔 계속 두드리는 공격을 한 번에 끊는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "Gateway 가 복호화까지 맡을 것인가",
+            "chosen": "인증·인가와 함께 복호화도 관문에서 처리한다",
+            "alternatives": [
+              "각 서비스가 필요한 필드를 직접 복호화"
+            ],
+            "tradeoff": "평문이 관문에 존재하는 구간이 생기고, 관문이 CPU 를 많이 쓰는 지점이 된다. 대신 뒤에 선 서비스들이 키를 알 필요가 없어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "사내 접근에서 '내부망이면 신뢰한다'를 유지할 것인가",
+            "chosen": "위치가 아니라 사용자·기기·자산을 신뢰의 단위로 바꾼다(IAM·SASE·ZTNA·UEM·EPP 연계)",
+            "alternatives": [
+              "VPN 으로 경계를 지키고 내부는 신뢰"
+            ],
+            "tradeoff": "접근할 때마다 기기 보안 수준까지 검증되므로 절차가 늘고, 관리 도구 스택이 그만큼 늘어난다. 대신 신뢰 구간이 커질수록 위험도 같이 커지는 구조에서 벗어난다. — 고객 요청 경로가 아니라 임직원 접근 통제 이야기다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "금융사 최초의 Zero Trust 아키텍처 도입기",
+                "url": "https://toss.tech/article/slash23-security",
+                "publisher": "토스 기술블로그 / SLASH 23",
+                "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
               }
             ]
           }
@@ -1364,7 +1410,6 @@
           "confidence": "confirmed"
         }
       ],
-      "diagram": "sequenceDiagram\n  participant A as 토스 앱\n  participant G as Gateway\n  participant AU as 인증 서버\n  participant S as 내부 서비스 (송금·결제·코어뱅킹)\n  participant F as FDS\n  A->>G: API 요청 (유저 식별키 + 요청 서명)\n  G->>G: 앱 검증 · 중복 사용 · 키 유효기간\n  alt 서명 위변조\n    G->>F: 위변조 신고\n    F-->>A: 계정 비활성화\n  else 정상\n    G->>AU: Passport 요청\n    AU-->>G: Passport (기기 + 사용자)\n    G->>S: 요청 + 직렬화된 Passport\n    S-->>A: 응답\n  end",
       "sources": [
         {
           "title": "토스는 Gateway 이렇게 씁니다",
@@ -1377,6 +1422,48 @@
           "url": "https://toss.tech/article/slash23-security",
           "publisher": "토스 기술블로그 / SLASH 23",
           "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
+        }
+      ],
+      "thinking": [
+        {
+          "at": "인증을 어디에 둘지 정할 때",
+          "thought": "서비스마다 인증을 붙이면 각 팀이 조금씩 다르게 구현한다. 금융에서 '조금 다름'은 곧 가장 느슨한 한 곳이 전체의 수준이 된다는 뜻이다. 한 곳에 모으면 그 한 곳이 위험해지지만, 위험이 한 곳에 보이는 편이 여러 곳에 흩어져 안 보이는 것보다 낫다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "토큰 수명을 정할 때",
+          "thought": "긴 토큰은 편하지만 유출되면 그 편함이 그대로 공격자에게 간다. 짧게 만들면 클라이언트가 복잡해지고 시계·지연 문제로 정상 요청이 죽는데, 그 비용을 우리가 지고 사용자는 모르게 하는 쪽을 골랐다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "위변조를 발견했을 때 무엇을 할지 정할 때",
+          "thought": "거절만 하면 공격자는 조건을 바꿔 계속 두드린다. 계정을 잠그면 확실히 멈추지만 오탐이면 멀쩡한 사람이 자기 돈에 접근하지 못한다 — 이 둘 사이에서 어느 쪽 실수가 더 견딜 만한지를 골라야 했다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "관문을 비동기로 만들 때",
+          "thought": "모든 요청이 지나는 자리라 스레드 하나가 아깝다. 대신 여기서 실수하면 블로킹 한 줄이 전 서비스의 지연으로 번지고, 스택 트레이스가 끊겨 원인을 찾는 데 며칠이 걸린다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 요청이 관문을 지나 서비스에 닿기까지",
+          "question": "앱의 한 번의 호출에서 무엇이 검증되고 무엇이 만들어지는가?",
+          "kind": "sequence",
+          "code": "sequenceDiagram\n  participant A as 토스 앱\n  participant G as Gateway\n  participant AU as 인증 서버\n  participant S as 내부 서비스 (송금·결제·코어뱅킹)\n  participant F as FDS\n  A->>G: API 요청 (유저 식별키 + 요청 서명)\n  G->>G: 앱 검증 · 중복 사용 · 키 유효기간\n  alt 서명 위변조\n    G->>F: 위변조 신고\n    F-->>A: 계정 비활성화\n  else 정상\n    G->>AU: Passport 요청\n    AU-->>G: Passport (기기 + 사용자)\n    G->>S: 요청 + 직렬화된 Passport\n    S-->>A: 응답\n  end"
+        },
+        {
+          "title": "요청 한 건의 판정 상태",
+          "question": "관문은 요청을 어떤 단계로 나눠 판정하고, 어디서 떨어뜨리는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 수신: 앱 요청 도착\n  수신 --> 서명검증: 유저 식별키 + 요청 서명\n  서명검증 --> 거절: 토스 앱이 아님\n  서명검증 --> 거절: 이미 쓴 서명(재생 공격)\n  서명검증 --> 거절: 키 만료\n  서명검증 --> 차단: 위변조 탐지\n  차단 --> [*]: FDS 가 계정 비활성화\n  서명검증 --> 여권발급: 통과\n  여권발급 --> 전파: Passport 직렬화\n  전파 --> [*]: 내부 서비스가 처리\n  거절 --> [*]\n  note right of 여권발급\n    이 뒤로 내부 서비스는\n    사용자를 다시 확인하지 않는다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 관문에서 떨어질 때와 관문이 떨어질 때",
+          "question": "요청이 거절되는 경우와, 관문 자체가 멈추는 경우는 각각 어디로 가는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[앱 요청] --> G{Gateway}\n  G -->|서명 만료| R1[거절 · 앱이 새 키로 재서명]\n  G -->|중복 서명| R2[거절 · 재생 공격 차단]\n  G -->|위변조| F[FDS] --> LOCK[계정 비활성화]\n  LOCK -.->|오탐이면| CS[고객센터 해제 절차]\n  G -->|정상| S[내부 서비스]\n  G -.->|관문 자체 장애| ALL[전 서비스 접근 불가]\n  ALL -.->|공개 자료 없음| Q[이중화·축소 운영 전략은 미확인]"
         }
       ]
     },
