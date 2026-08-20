@@ -40,8 +40,8 @@
       "name_en": "Baemin",
       "country": "KR",
       "category": "커머스",
-      "status": "in_progress",
-      "features_done": 4,
+      "status": "done",
+      "features_done": 5,
       "one_liner": "음식이 식기 전에 닿아야 하는 물류를 앱으로 만든 회사",
       "updated_at": "2026-08-21"
     }
@@ -67,7 +67,6 @@
     "AI 모델",
     "주문 접수",
     "배차",
-    "위치·경로",
     "가게 노출",
     "커머스 물류(B마트)",
     "정산"
