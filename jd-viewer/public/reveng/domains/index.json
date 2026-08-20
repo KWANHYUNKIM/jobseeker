@@ -74,6 +74,21 @@
         "search-infra"
       ],
       "file": "search-intent.md"
+    },
+    {
+      "slug": "identity-trust",
+      "title": "신원과 신뢰 — 확인할 수 없을 때 무엇으로 대신하는가",
+      "question": "사람을 특정할 수 있느냐가 제재와 경고 중 무엇을 쓸 수 있는지를 어떻게 정하는가?",
+      "companies": [
+        "daangn",
+        "kakao"
+      ],
+      "features": [
+        "identity-auth",
+        "trust-score",
+        "identity-trust"
+      ],
+      "file": "identity-trust.md"
     }
   ]
 }
