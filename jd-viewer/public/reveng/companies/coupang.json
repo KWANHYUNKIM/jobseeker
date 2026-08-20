@@ -1,0 +1,508 @@
+{
+  "slug": "coupang",
+  "name": "쿠팡",
+  "name_en": "Coupang",
+  "country": "KR",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "'내일 도착한다'는 약속 하나를 지키려고 물류를 직접 소유한 커머스",
+  "business_model": "남의 물건을 중개만 하는 게 아니라 **직접 사서 직접 보관하고 직접 배송한다.** 2025년 연간 매출 345.34억 달러(49조 1,197억원) 중 프로덕트 커머스(로켓배송·로켓프레시·마켓플레이스·로켓그로스)가 295.92억 달러, 쿠팡이츠·쿠팡플레이·파페치·대만 같은 성장사업이 49.42억 달러다. 영업이익은 4.73억 달러(약 6,790억원)로 **매출 대비 이익률이 매우 얇고**, 성장사업은 연간 9.95억 달러의 EBITDA 손실을 낸다 — 커머스가 번 것을 새 사업에 붓는 구조다. 활성고객은 2,460만 명. 앞선 회사들과 다른 점은 수익원이 광고나 수수료가 아니라 **물건값 자체**이고, 그래서 물류 비용을 얼마나 줄이느냐가 곧 이익률이라는 것이다.",
+  "products": [
+    "로켓배송",
+    "로켓프레시",
+    "마켓플레이스·로켓그로스",
+    "와우 멤버십",
+    "쿠팡이츠",
+    "쿠팡플레이",
+    "파페치·대만"
+  ],
+  "domain_map": {
+    "title": "쿠팡 도메인 지도",
+    "question": "'내일 도착'이라는 약속이 어디에서 만들어지고 어디에서 돈이 되는가?",
+    "code": "flowchart TD\n  U[고객] --> SEARCH[상품 검색 · 추천]\n  SEARCH --> ORDER[주문 · 배송 약속]\n  ORDER --> FC[물류센터 · 재고 배치]\n  FC --> AREA[배송 영역 · 라스트마일]\n  AREA --> CPF[쿠팡친구가 배달한다]\n  CPF --> U\n  SELLER[셀러] -->|마켓플레이스 · 로켓그로스| FC\n  WOW[와우 멤버십] -.->|재방문| SEARCH\n  ORDER --> REV[프로덕트 커머스 295.92억 달러]\n  REV --> GROW[성장사업 49.42억 달러<br/>EBITDA -9.95억 달러]\n  AREA -.->|여기서 아낀 만큼이| MARGIN[영업이익률 약 1.4%]\n  classDef money stroke-dasharray: 3 3\n  class REV,GROW,MARGIN money"
+  },
+  "revenue_streams": [
+    {
+      "name": "프로덕트 커머스",
+      "how": "직매입 상품 판매(로켓배송·로켓프레시)와 마켓플레이스·로켓그로스. 2025년 295.92억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "쿠팡, 처음으로 분기 성장 꺾여…영업이익 97% 급감",
+          "url": "https://zdnet.co.kr/view/?no=20260227064907",
+          "publisher": "ZDNet Korea",
+          "date": "2026-02-27",
+          "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+        }
+      ]
+    },
+    {
+      "name": "성장사업",
+      "how": "쿠팡이츠·쿠팡플레이·파페치·대만. 2025년 49.42억 달러로 38% 성장했지만 EBITDA 손실 9.95억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "쿠팡, 처음으로 분기 성장 꺾여…영업이익 97% 급감",
+          "url": "https://zdnet.co.kr/view/?no=20260227064907",
+          "publisher": "ZDNet Korea",
+          "date": "2026-02-27",
+          "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "배송 영역·라스트마일",
+      "why": "'내일 도착'을 실제로 지키는 마지막 구간. 영역을 어떻게 나누느냐가 한 사람이 하루에 돌 수 있는 양을 정하고, 그게 곧 비용이 된다.",
+      "tech": [
+        {
+          "tech": "H3 육각 격자 기반 배송 영역 관리",
+          "solves": "텍스트 주소를 공간 데이터로 바꿔, 경험 많은 사람만 하던 영역 세분을 지도 위에서 누구나 하게 만들고 겹침·누락을 없앤다.",
+          "limits": "14레벨이면 한국만 217억 개 격자라 저장 설계를 뒤집어야 했고, 복잡한 폴리곤은 변환이 느려 비동기로 미룬다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+              "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+              "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+              "date": "2023-04-17",
+              "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "delivery-area"
+      ]
+    },
+    {
+      "name": "물류센터·재고 배치",
+      "why": "직접 사서 직접 보관하는 회사라, 무엇을 어디에 미리 놓아두느냐가 익일 배송의 가능 여부를 정한다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "상품 검색·추천",
+      "why": "수억 개 상품에서 살 만한 것을 찾게 하는 일. 직매입 상품과 셀러 상품이 같은 화면에서 경쟁한다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "주문·배송 약속",
+      "why": "주문 시점에 '언제 도착한다'를 말해야 하고, 그 말이 틀리면 서비스의 이름 자체가 무너진다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "마켓플레이스·셀러",
+      "why": "직매입만으로는 상품 수를 채울 수 없다. 셀러의 물건을 로켓그로스로 물류에 태우는 것이 접점이다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "delivery-area",
+      "name": "배송 영역 — 우편번호를 버리고 육각형 위에 다시 그리다",
+      "domain": "배송 영역·라스트마일",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "로켓배송은 **'내일 도착한다'는 약속**이고, 그 약속을 실제로 지키는 건 쿠팡친구(CPF)라고 부르는 배송 기사다. 그러려면 시스템이 주소를 정확히 이해하고 그 주소에 맞는 배송 영역으로 기사를 보내야 한다. 그런데 회사가 커지면서 **배송 영역을 나누는 기준 자체가 부러졌다** — 우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수가 되어 한 사람이 하루에 돌 수 없는 크기가 됐다.",
+        "metrics": [
+          {
+            "label": "기준이 부러진 지점",
+            "value": "우편번호당 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어, CPF 한 명이 하루에 감당하기엔 너무 커졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "label": "격자 크기",
+            "value": "12레벨 약 300㎡ → 채택한 14레벨은 6.3㎡. 출입구나 우편함 같은 정밀한 위치의 위경도를 대체할 수 있는 해상도다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "label": "격자 개수",
+            "value": "한국을 12레벨로 나누면 약 4.32억 개, 13레벨 31억 개, 14레벨 217억 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "우편번호가 더 이상 배송 단위가 아니게 됐을 때",
+          "thought": "우편번호는 정부가 보장하는 가장 잘 정리된 체계이고 배송 효율도 높게 최적화돼 있다. 그래서 처음엔 그걸 그대로 썼다. 그런데 **잘 만들어진 남의 기준도 우리 규모가 커지면 우리 문제에 안 맞게 된다** — 이제 쪼개는 일은 우리가 해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쪼개는 일을 누가 할 수 있는지 보고",
+          "thought": "주소가 텍스트뿐이라 공간 정보가 거의 없다. 그래서 아파트 단지 → 개별 동으로 쪼개는 판단을 **그 동네를 잘 아는 경험 많은 캠프 리더와 CPF 그룹장만** 할 수 있었다. 사람의 경험에 묶인 작업은 사람 수만큼만 확장된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "지도에 폴리곤을 그리게 하려니",
+          "thought": "지도에 도형을 그리는 건 쉬워 보이지만, 겹치지도 빠지지도 않게 모든 곳을 덮는 건 어렵다. **MECE 한 폴리곤 집합**을 유지하려면 먼저 공간의 단위부터 정의해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "텍스트 주소를 전부 공간 데이터로 바꾸고 나서",
+          "thought": "이제 배송 지표를 우편번호가 아니라 격자 단위로 볼 수 있다. **배송 영역이 바뀌어도 예전과 같은 기준으로 비교할 수 있다** — 주소 체계에 묶여 있을 때는 불가능하던 일이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "우편번호",
+            "what": "여전히 배송 영역의 기본 단위. 필요하면 그 안에서 세분한다."
+          },
+          {
+            "name": "육각 격자(H3 14레벨)",
+            "what": "6.3㎡ 크기의 공간 단위. 좌표를 넣으면 하나의 ID 로 바뀐다."
+          },
+          {
+            "name": "배송 영역",
+            "what": "격자들의 묶음. 사용자가 그린 폴리곤과 육각형으로 변환된 폴리곤 두 가지 모습을 함께 갖는다."
+          },
+          {
+            "name": "CPF (쿠팡친구)",
+            "what": "실제로 배송하는 사람. 영역이 한 사람이 하루에 돌 수 있는 크기여야 한다."
+          }
+        ],
+        "invariants": [
+          "배송 영역은 겹치거나 빠진 곳 없이 모든 지역을 덮어야 한다(MECE).",
+          "격자가 너무 크면 여러 건물이 한 칸에 들어가고, 너무 작으면 건물 하나가 여러 칸에 걸친다.",
+          "주소가 텍스트뿐이면 그 동네를 아는 사람만 영역을 나눌 수 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "목록에서 우편번호를 고르면 지도에 그 범위가 그려진다",
+            "why": "우편번호는 버린 게 아니라 여전히 기본 단위다"
+          },
+          {
+            "step": "그 안에서 자유롭게 폴리곤을 그리고 설명을 붙인다",
+            "why": "아파트 단지처럼 실제 배송이 갈리는 경계를 사람이 안다"
+          },
+          {
+            "step": "저장하면 서버가 polyfill 로 14레벨 육각형 집합으로 바꾼다",
+            "why": "격자 단위로 만들어야 겹침도 누락도 없다"
+          },
+          {
+            "step": "바깥 경계만 다시 폴리곤으로 만들어 보관한다",
+            "why": "ID 목록만으로는 복잡한 공간 분석이 어렵다"
+          },
+          {
+            "step": "좌표를 조회할 땐 14레벨 ID 로 바꿔 어느 영역 묶음에 속하는지 찾는다",
+            "why": "PostGIS 같은 지오DB 가 없는 환경에서도 포함 관계를 따질 수 있다"
+          },
+          {
+            "step": "배송 지표를 격자 단위로 쌓는다",
+            "why": "영역이 바뀌어도 같은 기준으로 비교할 수 있다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "배송 영역의 단위를 계속 우편번호로 둘 것인가",
+            "chosen": "우편번호는 기본 단위로 남기되, 그 안을 여러 처리 가능한 영역으로 쪼갠다",
+            "alternatives": [
+              "우편번호 유지",
+              "우편번호를 완전히 대체하는 자체 체계"
+            ],
+            "tradeoff": "정부가 보장하고 이미 배송 효율이 높게 최적화된 체계를 일부 떠나, 경계 관리를 스스로 떠안는다. 그래도 우편번호 하나가 세 자릿수 배송이 된 이상 한 사람이 돌 수 있는 크기로 쪼개는 것 말고는 방법이 없었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "어떤 공간 인덱스를 쓸 것인가",
+            "chosen": "Uber 의 H3 — 확장성과 구현 이점 때문에",
+            "alternatives": [
+              "W3W(3m 사각 격자)",
+              "Google S2"
+            ],
+            "tradeoff": "W3W 는 말로 위치를 전하기엔 좋지만 **해상도를 조절할 수 없어 분석에 쓸 수 없다.** H3 는 부모 격자가 자식 격자를 물리적으로 완전히 덮지 않고, 육각형이 아닌 오각형 예외도 있다 — 다만 그 예외는 주로 바다에 있어 배송 주소가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "사각형(S2)이 아니라 육각형(H3)이어야 하는 이유는",
+            "chosen": "왜곡과 이웃 관계 때문에 육각형을 고른다",
+            "alternatives": [
+              "S2 의 사각 격자"
+            ],
+            "tradeoff": "S2 는 구를 정육면체에 투영해 같은 레벨이라도 투영 중심에서 멀수록 크기가 달라진다. H3 는 축구공(풀러렌) 모양이라 육각형마다 투영 중심이 있어 왜곡이 작고, 같은 면적을 더 적은 격자로 표현한다. 대신 육각형은 이웃 격자의 면적이 커서 **구획이 상대적으로 성기게 나뉜다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "격자를 얼마나 잘게 쓸 것인가",
+            "chosen": "14레벨(6.3㎡)",
+            "alternatives": [
+              "12레벨(약 300㎡)",
+              "13레벨"
+            ],
+            "tradeoff": "12레벨은 도로로 갈린 블록과 이웃 건물을 구분하지 못한다. 14레벨이면 출입구나 우편함 위치까지 표현되지만, **한국 전체가 217억 개 격자가 된다**(12레벨 4.32억, 13레벨 31억) — 정밀도를 산 값이 곧 데이터 문제가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "217억 개를 어떻게 저장할 것인가",
+            "chosen": "격자 ID 를 행으로 두지 않는다. **배송 영역이 격자 정보를 갖게** 하고, H3 의 compaction 으로 자식 격자가 모두 있으면 부모 격자로 접는다",
+            "alternatives": [
+              "RDBMS 에 hexagon ID 를 키로",
+              "지역별 테이블 분할·샤딩"
+            ],
+            "tradeoff": "RDBMS 는 통상 1억~10억 행 범위에서 읽기·쓰기가 제약된다. 12레벨은 어떻게든 되겠지만 14레벨은 테이블을 나누지 않으면 불가능하고, **해외로 넓히면 저장 공간이 계속 늘어난다.** 뒤집은 설계는 그 문제를 없애지만 영역 하나가 수많은 격자를 갖게 되어 메모리 문제를 compaction 으로 눌러야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "격자 ID 목록으로 충분한가",
+            "chosen": "단위는 격자로 두되 실제 데이터는 폴리곤으로 저장한다 — polyfill 로 14레벨 격자로 바꾼 뒤 바깥 경계만 다시 폴리곤으로 만든다",
+            "alternatives": [
+              "ID 목록 유지"
+            ],
+            "tradeoff": "ID 목록만으로는 복잡한 공간 분석이나 '특정 지점에서 먼 배송 영역 찾기'가 어려웠다. 벡터를 비트맵으로 바꿨다가 다시 벡터로 만드는 것과 같은 구조 — 겹침·누락 없는 관리와 지오서치를 함께 얻는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "복잡한 폴리곤의 변환이 느린 문제는",
+            "chosen": "사용자가 그린 폴리곤을 먼저 저장하고, 육각형 폴리곤은 나중에 비동기로 만든다",
+            "alternatives": [
+              "동기 변환",
+              "폴리곤 복잡도 제한"
+            ],
+            "tradeoff": "저장 직후 잠깐은 두 표현이 어긋난다. 대신 지도를 그리는 사람이 서버 변환을 기다리지 않는다 — **정확성보다 편집 흐름을 먼저 지킨 선택이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "기존 시스템을 어떻게 할 것인가",
+            "chosen": "새 시스템이 레거시와 함께 쓰일 수 있게 둔다",
+            "alternatives": [
+              "전면 교체"
+            ],
+            "tradeoff": "두 체계를 동시에 유지하는 비용이 생긴다. 그래도 매일 물건이 나가는 시스템이라 한 번에 갈아엎을 수 없다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Uber H3 (14레벨, 6.3㎡)",
+            "role": "배송 영역의 공간 단위. 좌표를 격자 ID 로 바꾸고, 부모-자식 계층으로 해상도를 오르내린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "tech": "H3 compaction",
+            "role": "자식 격자가 모두 존재하면 부모 격자로 접어 저장·메모리를 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "tech": "polyfill → hexagonized polygon",
+            "role": "사용자가 그린 폴리곤을 격자 집합으로 바꾼 뒤 바깥 경계만 폴리곤으로 되돌려 저장한다. 비동기로 생성한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "tech": "배송 영역 관리 UI(지도 편집)",
+            "role": "우편번호를 고르면 범위가 그려지고, 그 안에 폴리곤을 그려 영역을 만들고 Edit 로 고친다. 경험 많은 사람만 하던 일을 모두가 하게 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "물류센터·재고 배치",
+          "via": "출고와 배송의 접점",
+          "contract": "어느 센터에서 나간 물건이 어느 영역으로 가는지가 이어져야 하는데, 이 사이트에는 아직 센터 쪽 자료가 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "주문·배송 약속",
+          "via": "도착 예정",
+          "contract": "영역별 배송 난이도와 이동 시간을 측정할 수 있게 되면 도착 예측의 재료가 된다 — 글은 이를 '앞으로 할 일'로 말한다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 그린 것을 격자로 접었다 다시 펴기",
+          "question": "사람이 그린 선이 어떻게 겹침 없는 공간 데이터가 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Z[우편번호 선택] --> MAP[지도에 범위 표시]\n  MAP --> DRAW[사람이 폴리곤을 그린다<br/>아파트 단지 · 동 단위]\n  DRAW --> SAVE[저장]\n  SAVE --> RAW[(사용자 폴리곤 그대로 저장)]\n  RAW -.->|비동기| FILL[polyfill · 14레벨 격자로 채움]\n  FILL --> COMPACT[compaction · 자식이 다 있으면 부모로 접는다]\n  COMPACT --> OUT[바깥 경계만 폴리곤으로]\n  OUT --> STORE[(육각형 폴리곤)]\n  Q[좌표 34.111 · 127.111] --> ID[14레벨 ID · 85283473fffffff]\n  ID --> LOOK[어느 영역 묶음에 속하나]\n  STORE --> LOOK\n  LOOK --> M[격자 단위 배송 지표]"
+        },
+        {
+          "title": "배송 영역이 지나는 상태",
+          "question": "사람이 그린 선과 격자로 접힌 선은 언제 어긋나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 우편번호단위: 처음엔 이걸로 충분했다\n  우편번호단위 --> 세분필요: 하루 배송이 세 자릿수\n  세분필요 --> 사람이그림: 지도에서 폴리곤\n  사람이그림 --> 저장됨: 그린 그대로 먼저 저장\n  저장됨 --> 변환대기: 복잡할수록 오래 걸린다\n  변환대기 --> 육각형화: polyfill + compaction\n  육각형화 --> 조회가능: 좌표로 찾을 수 있다\n  조회가능 --> 재편집: Edit 로 다시 그린다\n  재편집 --> 저장됨\n  조회가능 --> [*]\n  note right of 변환대기\n    이 구간에서는 사용자가 본 선과\n    시스템이 아는 선이 다르다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 주소가 텍스트뿐일 때",
+          "question": "잘 만들어진 우편번호 체계가 왜 병목이 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[텍스트 주소 · 우편번호] --> NOSPACE[공간 정보가 없다]\n  NOSPACE --> ONLYVET[그 동네를 아는 사람만 영역을 나눌 수 있다]\n  ONLYVET --> SCALE[사람 수만큼만 확장된다]\n  NOSPACE --> UPD[건물이 새로 서거나 헐리면 주소를 갱신해야 한다]\n  GROW[우편번호당 배송이 세 자릿수] --> TOOBIG[한 사람이 하루에 못 돈다]\n  TOOBIG --> SPLIT[쪼개야 한다]\n  SPLIT --> HAND{손으로 그리면}\n  HAND -->|겹치면| DUP[같은 곳에 두 번 간다]\n  HAND -->|빠지면| MISS[아무도 안 가는 곳이 생긴다]\n  BOUND[우편번호 경계가 바뀌면] -.-> NOCMP[예전 지표와 비교할 수 없다]\n  BIG[격자가 너무 크면] -.-> MANY[여러 건물이 한 칸에]\n  SMALL[너무 작으면] -.-> ONEB[건물 하나가 여러 칸에]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+          "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+          "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+          "date": "2023-04-17",
+          "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "물류센터가 무엇을 어디에 미리 배치하는지(수요 예측·재고 배치)는 아직 자료를 찾지 못했다 — 이 회사의 핵심인데 이 사이트에 비어 있다.",
+    "격자 단위 지표로 '배송 난이도'를 실제로 어떻게 계산하는지는 글이 앞으로 할 일로만 언급한다.",
+    "4분기 영업이익 97% 급감과 활성고객 감소가 개인정보 사고와 얼마나 인과가 있는지는 기사도 '추정된다'고만 쓴다 — 회사 공식 설명은 확인하지 못했다."
+  ],
+  "sources": [
+    {
+      "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+      "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+      "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+      "date": "2023-04-17",
+      "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+    },
+    {
+      "title": "쿠팡, 처음으로 분기 성장 꺾여…영업이익 97% 급감",
+      "url": "https://zdnet.co.kr/view/?no=20260227064907",
+      "publisher": "ZDNet Korea",
+      "date": "2026-02-27",
+      "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+    }
+  ]
+}
