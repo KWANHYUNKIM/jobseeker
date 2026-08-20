@@ -19,7 +19,7 @@
   "domain_map": {
     "title": "Stripe 도메인 지도",
     "question": "개발자에게 파는 회사는 무엇을 상품으로 만드는가?",
-    "code": "flowchart TD\n  DEV[가맹점 개발자] -->|API 계약| PAY[결제 API]\n  PAY --> PROC[결제 처리 · 결제수단]\n  PROC --> NET[카드망 · 은행 · 로컬 수단]\n  PAY --> RISK[리스크 · 사기 방지]\n  RISK -.->|막으면 매출도 막힌다| PROC\n  PAY --> REVN[매출 운영<br/>Billing · Invoicing · Tax]\n  PROC --> SETTLE[정산 · 계정<br/>Connect]\n  PROC --> TPV[총 결제액 1.9조 달러]\n  TPV --> REV[매출 68억 달러 · EBITDA 12억]\n  REVN -.->|연 런레이트 10억 달러 예정| REV\n  classDef money stroke-dasharray: 3 3\n  class TPV,REV money"
+    "code": "flowchart TD\n  DEV[가맹점 개발자] -->|API 계약| PAY[결제 API]\n  PAY --> PROC[결제 처리 · 결제수단]\n  PROC --> NET[카드망 · 은행 · 로컬 수단]\n  PAY --> RISK[리스크 · 사기 방지]\n  RISK -.->|막으면 매출도 막힌다| PROC\n  PAY --> REVN[매출 운영<br/>Billing · Invoicing · Tax]\n  PROC --> SETTLE[자금 기록 · 검증<br/>Ledger]\n  PROC --> TPV[총 결제액 1.9조 달러]\n  TPV --> REV[매출 68억 달러 · EBITDA 12억]\n  REVN -.->|연 런레이트 10억 달러 예정| REV\n  classDef money stroke-dasharray: 3 3\n  class TPV,REV money"
   },
   "revenue_streams": [
     {
@@ -102,10 +102,48 @@
       "features": []
     },
     {
-      "name": "정산·계정(Connect)",
-      "why": "플랫폼이 자기 판매자들에게 돈을 나눠 주려면 계정과 정산을 대신 다뤄 줘야 한다.",
-      "tech": [],
-      "features": []
+      "name": "자금 기록·검증",
+      "why": "남의 돈을 옮기는 회사에는 다른 회사에 없는 의무가 있다 — **기대한 일이 실제로 일어났는지를 내부 고객과 외부 감시자 모두에게 증명하는 것.** 135개 통화·185개국의 파트너가 저마다 다른 방식으로 보고하는 상황에서, 이 증명이 가능해야 나머지 모든 도메인이 신뢰를 얻는다.",
+      "tech": [
+        {
+          "tech": "복식부기 기반 불변 원장(Ledger)",
+          "solves": "흩어진 시스템의 자금 이동과 내부 데이터 처리를 하나의 계정 모델로 모아, '잔액이 0이 아닌 계정 찾기'라는 단순한 질문으로 결함을 잡아낸다. 하루 50억 이벤트, 자금 이동의 99.9999% 이상에 설명 가능성.",
+          "limits": "모든 시스템이 이곳으로 흘러야 하고, 불변이라 기록을 고치려면 되돌리고 재처리하는 별도 절차가 필요하다. 저장소와 처리 엔진은 공개하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ledger: Stripe's system for tracking and validating money movement",
+              "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+              "publisher": "Stripe 엔지니어링 블로그",
+              "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+            }
+          ]
+        },
+        {
+          "tech": "정산·적시성·완전성 3중 검증",
+          "solves": "흐름이 끝났는지, 제때 왔는지, 올 것이 다 왔는지를 각각 다른 방법으로 확인한다(하드 임계값, 생산자 ID 대조, 통계적 도착 시간 예측).",
+          "limits": "세 축을 각각 유지해야 하고, 99.999% 바깥의 꼬리는 사람이 수동으로 분석한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Ledger: Stripe's system for tracking and validating money movement",
+              "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+              "publisher": "Stripe 엔지니어링 블로그",
+              "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+            }
+          ]
+        },
+        {
+          "tech": "Connect(플랫폼 정산·계정 관리)",
+          "solves": "— 확인하지 못했다.",
+          "limits": "플랫폼이 자기 판매자에게 돈을 나눠 주는 구조는 이번 자료에 없다. 원래 이 도메인 이름이었으나 자료에 맞춰 '자금 기록·검증'으로 경계를 옮겼다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "ledger"
+      ]
     }
   ],
   "features": [
@@ -504,13 +542,402 @@
           "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
         }
       ]
+    },
+    {
+      "key": "ledger",
+      "name": "Ledger — 기대한 일이 실제로 일어났는지 증명하기",
+      "domain": "자금 기록·검증",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "결제 회사는 남의 돈을 옮긴다. 그런데 그 돈은 **135개 통화, 185개국의 은행과 결제망**을 지나가고, 그 파트너들은 저마다 다른 인터페이스와 데이터 모델과 동작을 갖는다. 그래서 이 회사에는 다른 회사에 없는 의무가 하나 생긴다 — **결제 처리 중에 기대한 일이 실제로 일어났는지를 내부 고객과 외부 감시자 모두에게 증명하는 것.** 다뤄야 할 사건의 범위도 넓다. 형식이 깨진 보고서와 오류 전파 같은 명백한 실패부터 **통화가 사라지거나 큰 은행이 무너지는** 거시적 변화까지.",
+        "metrics": [
+          {
+            "label": "다루는 양",
+            "value": "Ledger 는 **하루 50억 개 이벤트**를 처리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "label": "검증 속도",
+            "value": "달러 거래량의 **99.99%가 4일 안에** 완전히 수집·검증된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "label": "설명 가능성",
+            "value": "자금 이동의 **99.9999% 이상**에 대해 설명 가능성을 확보했고, 데이터 볼륨이 10배로 늘어도 유지됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "label": "피크",
+            "value": "블랙프라이데이~사이버먼데이 3억 건 · 186억 달러",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "185개국의 파트너 목록을 볼 때",
+          "thought": "은행과 결제망이 저마다 다른 인터페이스와 데이터 모델과 동작을 준다. 각 시스템이 자기 방식대로 기록하면 **개별 시스템들이 모여서 우리 재무를 올바르게 나타내고 있다는 걸 증명할 방법이 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "회계 모델을 고를 때",
+          "thought": "돈이 어디로 갔는지를 다루는 문제는 이미 수백 년 전에 풀렸다 — 복식부기다. 정상 상태라면 **말단의 저수지는 가득 차 있고 중간의 파이프는 비어 있어야 한다.** 파이프에 물이 갇혀 있으면 그게 문제다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복식부기를 어디까지 적용할지 정할 때",
+          "thought": "전통 회계는 현금이 드나든 것만 기록한다. 그런데 통화 환전, 보고서 파싱, 추정, 청구 분석처럼 **물리적으로 돈이 움직이지 않는 내부 시스템의 행동**도 결국 우리 장부를 흔든다. 같은 개념으로 모델링하지 못할 이유가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "수십억 건에서 한 건의 문제를 찾아야 할 때",
+          "thought": "이 규모에서는 **하나의 누락·지연·잘못된 거래도 감지 가능한 정확성 문제**가 된다. 그런데 복식부기를 제대로 세워 두면 찾는 방법은 아주 단순해진다 — 잔액이 0이 아닌 정산 계정을 찾으면 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Account",
+            "what": "유형으로 구분되는 돈의 양(예: `charge_unsubmitted`)과 속성(`id`, `business`)."
+          },
+          {
+            "name": "Event",
+            "what": "계정 사이에서 돈을 옮기는 사건(예: `charge.creation`, `charge.release`)."
+          },
+          {
+            "name": "Fund Flow",
+            "what": "계정 간의 논리적 자금 이동. 은행 간 이동·제3자 보고 조화·규제 보고 매칭 같은 개별 시스템을 하나로 묶는다."
+          }
+        ],
+        "invariants": [
+          "정상 상태에서 정산 저수지는 가득 차 있고, 정산 중 파이프는 비어 있어야 한다.",
+          "발행된 거래는 삭제되거나 수정될 수 없다 — 과거 상태는 언제든 이벤트를 다시 처리해 재구성한다.",
+          "이 규모에서는 한 건의 누락도 감지 가능한 정확성 문제가 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "각 시스템이 자금 이동을 이벤트로 Ledger 에 보낸다",
+            "why": "흩어진 기록을 한 곳에서 대조하려면 먼저 모여야 한다"
+          },
+          {
+            "step": "`charge.creation` 이 보류 상태의 요금을 세운다",
+            "why": "아직 확정되지 않은 돈도 어딘가에 있어야 한다"
+          },
+          {
+            "step": "`charge.release` 가 그 잔액을 다음 계정으로 옮긴다",
+            "why": "두 사건은 완전히 독립적이라 순서가 어긋날 수 있다"
+          },
+          {
+            "step": "정산(Clearing) — 잔액이 0이 아닌 계정을 찾는다",
+            "why": "파이프에 물이 갇혀 있으면 흐름이 끝나지 않은 것이다"
+          },
+          {
+            "step": "적시성(Timeliness) — 플랫폼 최초 진입 시점과 Ledger 도달 시점의 차이를 잰다",
+            "why": "늦게 온 데이터는 없는 데이터와 구별돼야 한다"
+          },
+          {
+            "step": "완전성(Completeness) — 생산자 DB 의 모든 ID 에 대응하는 이벤트가 있는지 본다",
+            "why": "안 온 것을 알아채려면 무엇이 와야 했는지를 알아야 한다"
+          },
+          {
+            "step": "99.999% 는 도구로 분류하고, 남은 꼬리는 사람이 본다",
+            "why": "전부 자동화하는 것보다 경계를 정하는 편이 낫다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "각 시스템이 자기 기록을 갖게 둘 것인가",
+            "chosen": "**모든 금융 데이터의 신뢰할 수 있는 기록 시스템**을 하나 두고, 그 위에 자동화된 데이터 품질 플랫폼을 올린다",
+            "alternatives": [
+              "시스템별 기록 유지",
+              "사후 대사(reconciliation) 배치"
+            ],
+            "tradeoff": "모든 시스템이 이곳으로 흘러야 하고 Ledger 가 회사 전체의 의존점이 된다. 대신 **개별 시스템들이 모여서 재무를 올바르게 모델링하고 있음을 증명**할 수 있다 — 각자 다른 시간 척도와 정확성 정의를 가진 시스템들을 한 자리에서 대조하는 유일한 방법이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 회계 모델을 쓸 것인가",
+            "chosen": "**복식부기(double-entry)**",
+            "alternatives": [
+              "단식 기록",
+              "이벤트 로그만"
+            ],
+            "tradeoff": "모든 이동이 두 자리를 요구해 모델링 부담이 늘어난다. 대신 **'잔액이 0이 아닌 계정을 찾는다'는 한 줄짜리 질문이 곧 결함 탐지기**가 된다 — 이 단순함이 수십억 건 규모에서 결정적이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "복식부기를 물리적 자금 이동에만 쓸 것인가",
+            "chosen": "**아니다.** 통화 환전, 보고서 파싱, 추정, 청구 분석처럼 **돈이 실제로 움직이지 않는 내부 데이터 시스템의 행동까지** 같은 개념으로 모델링한다",
+            "alternatives": [
+              "현금 출입만 기록(전통 회계)",
+              "내부 처리는 별도 로그"
+            ],
+            "tradeoff": "회계가 아닌 것을 회계의 언어로 표현해야 해서 계정 종류가 늘어난다. 대신 **데이터 처리 과정의 결함도 '어딘가에 잔액이 남았다'로 드러난다** — 회계 도구가 데이터 품질 도구가 되는 지점이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "기록을 고칠 수 있게 할 것인가",
+            "chosen": "**불변**으로 둔다. 발행된 거래는 삭제·수정할 수 없고, 그 시점까지의 이벤트를 다시 처리해 과거 상태를 언제든 재구성한다",
+            "alternatives": [
+              "수정 가능한 레코드",
+              "소프트 삭제"
+            ],
+            "tradeoff": "단순한 쿼리로 상태를 바꿀 수 없어 **이전 작업을 되돌리고 재처리하는 마이그레이션 유틸리티**를 따로 만들어야 했고, 2단계 검토와 커밋을 강제한다(CI 파이프라인처럼). 대신 감사와 데이터 포인트 재현이 언제든 가능하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "이벤트 순서를 보장할 것인가",
+            "chosen": "보장하지 않는다. `creation` 과 `release` 는 **완전히 독립적**이며, business 와 ID 식별자로 올바른 자금 흐름을 유지한다",
+            "alternatives": [
+              "전역 순서 보장",
+              "생산자 측 순서 큐"
+            ],
+            "tradeoff": "순서가 어긋난 채로 도착하는 것을 정상으로 받아들이는 대신, **식별자의 정확성에 전부를 건다** — 실제로 release 가 잘못된 business ID 로 발행되면 같은 저수지가 둘로 갈라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 품질 지표로 삼을 것인가",
+            "chosen": "**정산(Clearing) · 적시성(Timeliness) · 완전성(Completeness)** 세 가지",
+            "alternatives": [
+              "정합성 단일 지표",
+              "오류율 중심"
+            ],
+            "tradeoff": "세 축을 각각 유지·감시해야 한다. 그래도 세 질문이 다르다 — '흐름이 끝났나', '제때 왔나', '올 것이 다 왔나'. **적시성은 생산자가 타임스탬프를 만들고 하드 임계값을 두며, 완전성은 통계 모델로 예상 도착 시간을 계산해 편차를 잡는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "얼마나 자동화할 것인가",
+            "chosen": "활동의 **99.999%** 를 모니터링·분류하고 조사 도구로 다루되, **남은 꼬리는 사람이 수동으로 분석**한다",
+            "alternatives": [
+              "전면 자동화",
+              "샘플링 감사"
+            ],
+            "tradeoff": "수동 분석 인력을 계속 유지해야 한다. 대신 마지막 몇 건을 자동화하느라 시스템을 복잡하게 만들지 않는다 — **자동화의 경계를 숫자로 정해 둔 것 자체가 결정이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "question": "조사를 어떤 방식으로 하게 할 것인가",
+            "chosen": "Presto 로 애드혹 SQL 질의를 붙여 임시 뷰와 조사를 가능하게 한다",
+            "alternatives": [
+              "전용 조사 UI 만 제공",
+              "고정 리포트"
+            ],
+            "tradeoff": "쓰는 사람이 데이터 모델을 알아야 한다. 대신 예상하지 못한 형태의 문제를 그 자리에서 파고들 수 있다 — 대응해야 할 사건의 범위가 '은행 붕괴'까지 걸쳐 있는 도메인에서는 고정된 리포트로 부족하다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "복식부기 기반 이벤트 모델(Account · Event · Fund Flow)",
+            "role": "모든 자금 이동과 내부 데이터 처리를 계정 간 이동으로 표현한다. 하루 50억 이벤트.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "tech": "불변 원장 + 되돌리기·재처리 마이그레이션 유틸리티",
+            "role": "과거 상태를 언제든 재구성하고, 고쳐야 할 때는 2단계 검토를 거친 재처리로만 바꾼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "tech": "정산·적시성·완전성 3중 검증",
+            "role": "잔액 0 검사, 도착 지연의 하드 임계값, 생산자 ID 대조와 통계적 도착 시간 예측.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "tech": "Presto · gRPC",
+            "role": "애드혹 SQL 조사와 서비스 간 통신.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Ledger: Stripe's system for tracking and validating money movement",
+                "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+              }
+            ]
+          },
+          {
+            "tech": "저장소·처리 엔진",
+            "role": "— 확인하지 못했다. 글은 특정 데이터베이스나 처리 엔진을 밝히지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "idempotent-payments",
+          "via": "기록의 두 층",
+          "contract": "PaymentIntent 가 결제 하나의 상태를 붙잡는다면, Ledger 는 그 결제가 실제로 돈을 옮겼는지를 뒤에서 대조한다. 두 글은 서로를 언급하지 않는다(연결은 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "리스크·사기 방지",
+          "via": "지연 시간",
+          "contract": "회사가 직접 밝힌다 — 분 단위 분석으로 지연을 낮추면 사기 탐지가 강화되고 재무 문제 대응 시간이 개선된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 저수지와 파이프",
+          "question": "돈이 제자리에 있다는 것을 어떻게 아는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  P1[결제 시스템] --> EV[이벤트]\n  P2[은행 · 결제망 보고서<br/>135개 통화 · 185개국] --> EV\n  P3[통화 환전 · 추정 · 청구 분석<br/>돈이 안 움직이는 처리도 포함] --> EV\n  EV --> LG[(Ledger · 하루 50억 이벤트<br/>불변)]\n  LG --> A1[charge_unsubmitted]\n  A1 -->|charge.creation| A2[보류 중]\n  A2 -->|charge.release| A3[charge_undisbursed]\n  A3 --> RES[(정산 저수지 · 가득 차 있어야 한다)]\n  LG --> C{정산 · 잔액이 0 아닌 계정?}\n  LG --> T{적시성 · 하드 임계값 안에 왔나?}\n  LG --> M{완전성 · 생산자 ID 가 다 있나?}\n  C --> OK[99.999% 자동 분류]\n  T --> OK\n  M --> OK\n  OK -.->|남은 꼬리| HUMAN[사람이 본다]\n  PRESTO[Presto · 애드혹 SQL] -.-> LG"
+        },
+        {
+          "title": "요금 하나가 지나는 계정",
+          "question": "두 이벤트가 순서 없이 도착해도 왜 괜찮은가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미제출: charge_unsubmitted\n  미제출 --> 보류중: charge.creation\n  보류중 --> 미지급: charge.release\n  미지급 --> 정산완료: 자금이 저수지에 닿는다\n  정산완료 --> [*]\n  보류중 --> 순서역전: release 가 먼저 도착\n  순서역전 --> 미지급: business + ID 로 흐름을 맞춘다\n  미지급 --> 잔액남음: business ID 가 틀렸다\n  잔액남음 --> 조사대상: 정산 검사에 걸린다\n  note right of 잔액남음\n    파이프에 물이 갇혔다.\n    저수지가 둘로 갈라진 것이다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 한 건이 문제가 되는 규모",
+          "question": "무엇이 정확성을 무너뜨리고, 무엇이 그걸 잡아내는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[파트너마다 다른 인터페이스 · 데이터 모델] --> B[시스템마다 다른 시간 척도 · 정확성 정의]\n  B --> C[모여서 재무를 맞게 나타내는지 증명 불가]\n  D[release 가 잘못된 business ID 로 발행] --> E[charge_undisbursed 저수지가 둘이 된다]\n  E --> F[잔액이 0이 아닌 계정]\n  F -->|정산 검사| CATCH[잡힌다]\n  G[데이터가 늦게 도착] -->|적시성 임계값| CATCH\n  H[생산자 ID 에 대응하는 이벤트 없음] -->|완전성 검사| CATCH\n  I[수십억 건 중 한 건의 누락] --> J[감지 가능한 정확성 문제가 된다]\n  K[기록을 고쳐야 한다] -.->|불변이라| L[단순 쿼리로 못 바꾼다]\n  L -.-> M[되돌리고 재처리 · 2단계 검토]\n  N[형식 깨진 보고서 · 오류 전파] --> J\n  O[통화 소멸 · 대형 은행 붕괴] --> J"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Ledger: Stripe's system for tracking and validating money movement",
+          "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+          "publisher": "Stripe 엔지니어링 블로그",
+          "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "멱등 저장소를 어떻게 구현했는지(어디에 얼마나 저장하고 동시성을 어떻게 다루는지)는 공개돼 있지 않다 — 문서는 계약만 밝힌다.",
     "'confirm 을 너무 많이 하면 자동 취소'의 기준 횟수는 밝히지 않는다.",
     "리스크(Radar)·정산(Connect)·매출 운영은 아직 손대지 않았다.",
-    "1.9조 달러를 실제로 어떤 인프라가 받아 내는지(엔지니어링 블로그 쪽 자료)는 이번 사이클에서 확인하지 않았다."
+    "1.9조 달러를 실제로 어떤 인프라가 받아 내는지(엔지니어링 블로그 쪽 자료)는 이번 사이클에서 확인하지 않았다.",
+    "Ledger 의 저장소와 처리 엔진은 공개돼 있지 않다 — 글은 Presto 와 gRPC 만 밝힌다.",
+    "회사가 밝힌 다음 과제는 '분 단위 분석'이다. 지금의 검증 주기가 정확히 얼마인지는 4일 안에 99.99% 라는 수치 외에 나오지 않는다.",
+    "Connect(플랫폼 정산·계정)는 아직 손대지 않았다 — 도메인 이름을 자료에 맞춰 '자금 기록·검증'으로 옮기고 구멍으로 남겼다."
   ],
   "sources": [
     {
@@ -533,6 +960,12 @@
       "publisher": "Stripe 뉴스룸",
       "date": "2026",
       "summary": "2025년 총 결제액 1.9조 달러(+34%, 세계 GDP 의 약 1.6%), 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러. 블랙프라이데이~사이버먼데이 4일간 5.78억 건·400억 달러 이상."
+    },
+    {
+      "title": "Ledger: Stripe's system for tracking and validating money movement",
+      "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+      "publisher": "Stripe 엔지니어링 블로그",
+      "summary": "135개 통화·185개국의 은행과 결제망이 저마다 다른 인터페이스를 주는 상황에서, 복식부기를 물리적 자금 이동 밖으로까지 확장해 모든 금융 데이터의 기록 시스템을 만든 이야기. 하루 50억 이벤트를 다루고, 정산·적시성·완전성 세 지표로 검증한다."
     }
   ]
 }
