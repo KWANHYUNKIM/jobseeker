@@ -75,13 +75,59 @@
     {
       "name": "배차",
       "why": "어떤 라이더에게 어떤 배달을 줄 것인가. 카카오 택시 배차와 닮았지만 결정적으로 다른 점이 둘 있다 — **여러 배달을 묶을 수 있고(조합이 폭발한다), 음식이 식는다(시간 제약이 하나 더 있다).**",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "이벤트 기반 배차(Kafka · 지역 리파티션)",
+          "solves": "라이더 위치와 주문 상태가 계속 바뀌는 현실 위에서 '지금 최선'을 다시 계산할 수 있게 한다.",
+          "limits": "상시 부하가 걸리고, 주문이 몰린 지역의 파티션이 뜨거워지면 그 지역 전체의 배차가 밀린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+              "url": "https://techblog.woowahan.com/22396/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+            }
+          ]
+        },
+        {
+          "tech": "실거리 계산(OSRM) + Redis 캐시",
+          "solves": "직선거리 대신 실제 경로로 배차 입력을 맞추고, 반복 계산을 없애 피크를 감당한다.",
+          "limits": "캐시가 커지면 조회 자체가 병목이 되어 자료구조와 클러스터를 다시 설계해야 했다. 지도 데이터와 엔진 운영도 직접 떠안는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+              "url": "https://techblog.woowahan.com/22396/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "rider-dispatch"
+      ]
     },
     {
       "name": "위치·경로",
       "why": "거리와 시간을 아는 일. 배차가 옳으려면 그 입력이 옳아야 한다. 직선거리는 실제 이동 시간을 말해 주지 않는다.",
-      "tech": [],
+      "tech": [
+        {
+          "tech": "OSRM 자체 운영",
+          "solves": "호출당 과금 없이 분당 수십만 건 규모의 실거리 계산을 감당한다(초당 약 2만 건).",
+          "limits": "지도 데이터 갱신과 엔진 튜닝을 직접 해야 하고, 도로 상황 변화가 반영되기까지 시차가 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+              "url": "https://techblog.woowahan.com/22396/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+            }
+          ]
+        }
+      ],
       "features": []
     },
     {
@@ -103,11 +149,373 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "rider-dispatch",
+      "name": "배차 — 묶을수록 폭발하는 조합",
+      "domain": "배차",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 원가가 여기서 정해진다. 라이더에게 나가는 돈이 2025년 3조 1,542억(+41%)인데, 배차가 한 번 어긋날 때마다 그 돈이 더 든다. 카카오 택시 배차와 겉모습은 같지만 문제의 크기가 다르다 — **택시는 손님 한 명에 차 한 대지만 배달은 여러 건을 묶을 수 있고, 묶는 순간 따져야 할 경우의 수가 폭발한다.** 게다가 제약이 하나 더 있다. 음식은 식는다.",
+        "metrics": [
+          {
+            "label": "경로 계산 규모",
+            "value": "주말 피크 분당 15~20만 개 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "label": "묶음에 따른 거리 계산 수",
+            "value": "2건 배차 시 6건, 3건 배차 시 15건의 거리가 필요",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "label": "거리 엔진 처리량",
+            "value": "OSRM 초당 약 2만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "label": "중복 제거 효과",
+            "value": "주말 피크 분당 약 120만 건의 중복 계산을 캐시로 방지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "직선거리로 배차하던 때",
+          "thought": "직선거리는 계산이 싸지만 실제 이동을 말해 주지 않는다. 강 건너, 일방통행, 아파트 단지 뒤편 — 지도에서 가까운 것과 실제로 빨리 닿는 것은 다르다. 배차 최적화의 입력이 틀리면 그 위에 아무리 좋은 알고리즘을 올려도 결과가 틀린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "묶음배달의 경우의 수를 세어 봤을 때",
+          "thought": "2건을 묶으면 거리 6개, 3건이면 15개가 필요하다. 배달 하나가 늘 때마다 계산이 선형이 아니라 훨씬 빠르게 는다 — 그러니 '정확하게 계산한다'와 '제때 배차한다'가 정면으로 부딪힌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "피크 트래픽을 봤을 때",
+          "thought": "주말 저녁에는 분당 15~20만 개 경로를 계산해야 한다. 이건 알고리즘 문제가 아니라 인프라 문제다. 같은 두 점 사이 거리를 몇 번이고 다시 계산하고 있다면 그것부터 없애야 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "음식이 식는다는 제약을 볼 때",
+          "thought": "택시라면 손님이 조금 더 기다리면 그만이다. 배달은 늦으면 물건 자체가 나빠진다 — 도착이 늦은 것과 식은 음식이 온 것은 다른 실패다. 그래서 '언제 도착할지'를 예측하는 일이 편의 기능이 아니라 배차의 재료가 된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "배달",
+            "what": "가게에서 주문자까지의 한 건. 조리 완료 시각과 도착 기한을 함께 갖는다."
+          },
+          {
+            "name": "라이더",
+            "what": "지금 어디 있고 무엇을 들고 있는지가 계속 바뀌는 자원."
+          },
+          {
+            "name": "묶음",
+            "what": "한 라이더가 함께 나르는 배달들. 묶을수록 효율은 오르고 각 배달은 늦어진다."
+          },
+          {
+            "name": "실거리",
+            "what": "두 지점 사이의 실제 이동 거리. 배차 최적화의 입력값."
+          },
+          {
+            "name": "지역",
+            "what": "이벤트를 순서대로 처리하는 단위. 배달은 지역 안에서 서로 영향을 준다."
+          }
+        ],
+        "invariants": [
+          "배차의 옳고 그름은 알고리즘보다 먼저 입력이 정한다 — 거리가 틀리면 최적해도 틀린다.",
+          "묶음이 커질수록 필요한 거리 계산이 급격히 는다(2건 6개, 3건 15개). 정확도와 응답 시간이 정면으로 부딪힌다.",
+          "같은 지역의 배달들은 서로 영향을 준다 — 그래서 이벤트를 지역 단위로 순서대로 처리한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "배달 생성·위치 변경·완료·취소가 이벤트로 발행된다",
+            "why": "배차는 한 번의 요청이 아니라 계속 바뀌는 상태 위에서 돌아간다"
+          },
+          {
+            "step": "이벤트를 지역 ID 기준으로 리파티션해 순서대로 처리한다",
+            "why": "같은 지역의 배달들은 서로 영향을 주므로 순서가 뒤섞이면 안 된다"
+          },
+          {
+            "step": "OSRM 으로 실제 경로 기반 거리를 계산한다",
+            "why": "직선거리는 실제 이동 시간을 말해 주지 않는다"
+          },
+          {
+            "step": "계산된 거리를 Redis 해시에 저장해 재사용한다",
+            "why": "같은 두 점의 거리를 반복 계산하는 것이 피크의 주범이었다"
+          },
+          {
+            "step": "묶음 후보를 만들고 각 조합의 거리를 채운다",
+            "why": "2건이면 6개, 3건이면 15개 — 여기가 계산량의 본체다"
+          },
+          {
+            "step": "도착 예측을 함께 보고 배차를 확정한다",
+            "why": "늦는 것과 식는 것은 다른 실패다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "배차의 거리를 무엇으로 잴 것인가",
+            "chosen": "직선거리를 버리고 실제 경로 기반 실거리로 바꾼다(OSRM)",
+            "alternatives": [
+              "직선거리 유지",
+              "외부 지도 API 호출"
+            ],
+            "tradeoff": "계산 비용이 크게 올라간다 — 주말 피크에 분당 15~20만 개 경로를 계산해야 하는 부담이 이 선택에서 나온다. 대신 최적화의 입력이 현실과 맞아떨어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "거리 계산 엔진을 사서 쓸 것인가, 직접 운영할 것인가",
+            "chosen": "오픈소스 지도 데이터 기반 OSRM 을 직접 운영한다(초당 약 2만 건 처리)",
+            "alternatives": [
+              "상용 지도 API 사용"
+            ],
+            "tradeoff": "지도 데이터 갱신과 엔진 운영을 직접 떠안아야 한다. 대신 호출당 과금 없이 이 규모를 감당할 수 있다 — 분당 수십만 건을 외부 API 로 부르는 것은 비용 구조상 성립하기 어렵다(추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "같은 거리를 반복 계산하는 문제를 어떻게 할 것인가",
+            "chosen": "계산 결과를 Redis 해시에 저장해 재사용한다(주말 피크 분당 약 120만 건 중복 방지)",
+            "alternatives": [
+              "매번 새로 계산",
+              "애플리케이션 로컬 캐시만 사용"
+            ],
+            "tradeoff": "캐시가 커질수록 조회 자체가 병목이 된다 — 압축된 데이터로는 초당 3,400회 조회가 한계였고, 자료구조와 클러스터 구성을 바꿔야 했다. 캐시는 공짜가 아니라 또 다른 설계 대상이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "이벤트를 어떤 단위로 순서 보장할 것인가",
+            "chosen": "지역 ID 기준으로 리파티션해 같은 지역의 이벤트를 순서대로 처리한다",
+            "alternatives": [
+              "배달 ID 기준 파티셔닝",
+              "순서 보장 없이 처리"
+            ],
+            "tradeoff": "특정 지역에 주문이 몰리면 그 파티션이 뜨거워져 처리가 밀린다(핫 파티션). 대신 같은 지역 배달들의 상호 영향을 순서대로 반영할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "배차를 요청·응답으로 만들 것인가, 이벤트로 만들 것인가",
+            "chosen": "배달 생성·위치 변경·완료·취소를 이벤트로 발행해 계속 반응하는 구조로 둔다",
+            "alternatives": [
+              "주문 시점에 한 번 배차하고 끝내기"
+            ],
+            "tradeoff": "상태가 계속 바뀌므로 시스템이 언제나 '지금 최선'을 다시 계산해야 하고 그만큼 부하가 상시로 걸린다. 대신 라이더가 움직이고 주문이 취소되는 현실을 반영할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "'언제 도착하는가'를 어떻게 다룰 것인가",
+            "chosen": "도착 시간 예측을 AI 서비스로 만들어 운영한다",
+            "alternatives": [
+              "평균 소요 시간으로 일괄 안내",
+              "예측하지 않고 실측만 표시"
+            ],
+            "tradeoff": "모델이 틀리면 사용자에게 한 약속이 틀리는 것이고, 모델을 계속 학습·배포·감시하는 운영 부담이 생긴다(그래서 MLOps 플랫폼이 따라온다). 대신 늦는 것과 식는 것을 미리 다룰 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+                "url": "https://techblog.woowahan.com/11582/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OSRM",
+            "role": "오픈소스 지도로 실제 경로 기반 거리를 계산한다(초당 약 2만 건)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka (지역 ID 리파티션)",
+            "role": "배달 생성·위치·완료·취소를 이벤트로 흘리고 같은 지역은 순서를 지킨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "tech": "Redis (해시·클러스터)",
+            "role": "계산된 거리를 재사용해 중복 계산을 없애고 쓰기 트래픽을 분산한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "tech": "도착 시간 예측 모델 + MLOps 플랫폼",
+            "role": "언제 닿을지를 예측하고 그 모델을 지속적으로 배포·운영한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+                "url": "https://techblog.woowahan.com/11582/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "위치·경로",
+          "via": "실거리 계산 결과",
+          "contract": "배차는 거리 도메인이 내놓은 값을 입력으로 쓴다. 그 값이 틀리면 배차도 틀린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "주문 접수",
+          "via": "배달 생성 이벤트",
+          "contract": "주문이 접수돼야 배달이 생기고, 조리 시작 시각이 배차 시점을 밀어낸다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "정산",
+          "via": "완료된 배달 건",
+          "contract": "배차 결과가 라이더 지급액으로 이어진다 — 이 회사 원가의 대부분이 여기서 결정된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 계속 바뀌는 상태 위의 배차",
+          "question": "한 번의 요청이 아니라 흐르는 이벤트 위에서 배차는 어떻게 만들어지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EV[배달 생성·위치·완료·취소] --> K[(Kafka · 지역 ID 리파티션)]\n  K --> ENG[배차 엔진]\n  ENG --> NEED{거리 필요}\n  NEED -->|캐시 히트| R[(Redis 해시)]\n  NEED -->|미스| OSRM[OSRM 실거리 계산]\n  OSRM --> R\n  R --> COMB[묶음 조합 평가<br/>2건 6개 · 3건 15개]\n  ETA[도착 시간 예측] --> COMB\n  COMB --> ASSIGN[배차 확정]\n  ASSIGN --> RIDER[라이더]\n  RIDER --> EV"
+        },
+        {
+          "title": "배달 한 건의 상태",
+          "question": "주문이 들어와 배달이 끝나기까지 배차는 몇 번 다시 판단되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 생성됨: 주문 접수\n  생성됨 --> 배차대기: 조리 시작\n  배차대기 --> 배차됨: 라이더 지정\n  배차됨 --> 재배차: 라이더 이탈·취소\n  재배차 --> 배차됨\n  배차됨 --> 묶임: 다른 배달과 함께 배정\n  묶임 --> 픽업: 가게 도착\n  배차됨 --> 픽업\n  픽업 --> 배달중\n  배달중 --> 완료\n  완료 --> [*]\n  note right of 묶임\n    효율은 오르고\n    각 배달은 늦어진다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 정확도와 시간이 부딪힐 때",
+          "question": "계산이 늦거나 틀리면 어디로 번지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[주말 피크] --> LOAD[분당 15~20만 경로 계산]\n  LOAD --> C{캐시}\n  C -->|히트| FAST[빠르게 배차]\n  C -->|미스 폭증| SLOW[계산이 밀린다]\n  SLOW --> LATE[배차가 늦는다]\n  LATE --> COLD[음식이 식는다]\n  C -.->|캐시 자체가 병목| LIMIT[조회 한계 · 자료구조·클러스터 재설계]\n  HOT[한 지역에 주문 집중] --> PART[핫 파티션]\n  PART --> SLOW\n  W{거리값이 틀리면}\n  W --> BAD[엉뚱한 라이더에게 배차]\n  BAD --> COST[이동이 늘어 원가가 오른다]\n  BAD --> COLD\n  ETAX[도착 예측이 틀리면] -.-> PROMISE[사용자에게 한 약속이 틀린다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+          "url": "https://techblog.woowahan.com/22396/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+        },
+        {
+          "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+          "url": "https://techblog.woowahan.com/11582/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "배차에서 묶음배달(2건·3건)의 조합을 어디까지 탐색하는지, 어떤 기준으로 자르는지 확인해야 한다 — 이 회사 배차의 핵심 질문이다.",
     "'음식이 식는다'는 제약이 배차 알고리즘에 어떤 형태로 들어가는지(조리 완료 예상 시각 등) 아직 모른다.",
-    "가게 노출·광고 상품이 주문자 만족과 어떻게 균형을 맞추는지 공개 자료를 찾지 못했다."
+    "가게 노출·광고 상품이 주문자 만족과 어떻게 균형을 맞추는지 공개 자료를 찾지 못했다.",
+    "묶음 조합을 어디까지 탐색하고 무엇으로 자르는지(후보 수 상한·시간 예산)는 공개 자료에 없다.",
+    "도착 시간 예측 모델의 정확도와, 예측이 배차 결정에 어떤 형태로 들어가는지 확인하지 못했다.",
+    "라이더 수락·거절이 배차에 어떻게 반영되는지 모른다 — 카카오 taxi-dispatch 의 수락률 되먹임과 같은 문제가 여기에도 있는지가 궁금한 지점이다."
   ],
   "sources": [
     {
@@ -141,6 +549,12 @@
       "url": "https://techblog.woowahan.com/7894/",
       "publisher": "우아한형제들 기술블로그",
       "summary": "주문·배달을 이벤트 기반으로 처리하는 구조를 다룬 세미나 자료."
+    },
+    {
+      "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+      "url": "https://techblog.woowahan.com/11582/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
     }
   ]
 }
