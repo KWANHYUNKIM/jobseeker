@@ -128,6 +128,25 @@
         "notification-diversity"
       ],
       "file": "what-to-mix.md"
+    },
+    {
+      "slug": "prefetch",
+      "title": "어디에 무엇을 미리 놓아두는가",
+      "question": "미리 만들어 둘 수 있는지를 정하는 것은 계산 비용이 아니라 '그 답이 얼마나 오래 옳은가'다.",
+      "companies": [
+        "netflix",
+        "instagram",
+        "toss",
+        "baemin"
+      ],
+      "features": [
+        "open-connect-fill",
+        "adaptive-playback",
+        "explore-funnel",
+        "interest-accrual",
+        "store-exposure"
+      ],
+      "file": "prefetch.md"
     }
   ]
 }
