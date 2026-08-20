@@ -90,8 +90,71 @@
     {
       "name": "실시간 전달·프레즌스",
       "why": "접속하면 WebSocket 하나가 열리고 그 위로 길드·채널·메시지·프레즌스 이벤트가 흐른다. 동시 접속이 500만에 가까워지자 **큰 길드에서 이벤트 하나를 발행하는 데 900ms~2.1초**가 걸리는 지점이 왔다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Elixir / Erlang VM — 세션·길드 GenServer",
+          "solves": "연결 하나와 커뮤니티 하나를 각각 프로세스로 두어 격리하고, 길드에 발행된 것을 연결된 모든 세션으로 팬아웃한다. 동시 접속 500만까지 이 구조로 갔다.",
+          "limits": "Erlang 프로세스는 단일 스레드라 **길드 하나의 처리량이 그 커뮤니티의 상한**이다. 동시 3만 명 길드에서 메시지 큐가 밀렸고 한동안 기능을 손으로 꺼서 버텼다. **큰 길드를 여러 프로세스로 쪼개는지는 이 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        },
+        {
+          "tech": "Manifold — 노드별 묶어 보내기 + 코어별 일관 해시 분배",
+          "solves": "`send/2` 하나가 30~70μs 라 대상 수만큼 부르면 발행 하나가 900ms~2.1초가 된다. 보내는 프로세스의 호출 수를 **관여한 원격 노드 수**로 제한하고, 노드 안에서는 `:erlang.phash2/2` 로 코어별 워커에 나누되 **선형화를 보장**한다. 노드 간 네트워크 트래픽도 줄었다.",
+          "limits": "라이브러리를 직접 만들고 유지해야 하며 전달 경로에 계층이 하나 는다. 해시가 고정이라 특정 워커에 부하가 쏠릴 여지가 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        },
+        {
+          "tech": "FastGlobal — 읽기 전용 공유 힙에 놓는 상수",
+          "solves": "Erlang VM 이 항상 같은 값을 반환하는 함수의 데이터를 읽기 전용 공유 힙에 두는 성질을 이용해, 일관 해시 링 조회를 **0.3μs**(ETS 7μs)로 만든다. 재접속 조회 총시간이 17.5초에서 750ms 가 됐다.",
+          "limits": "데이터를 바꿀 때 **런타임에 모듈을 빌드해야 하고 최대 1초**가 든다 — 링이 자주 바뀌지 않아서 성립하는 방식이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        },
+        {
+          "tech": "Semaphore — `:ets.update_counter/4` 원자적 카운터",
+          "solves": "진행 중인 요청 수를 세어 동시성 상한을 걸고, 포화 시 호출자가 **일찍 포기**하게 한다. 서킷 브레이커 대신 고른 방식이다. 이후 프레즌스 장애에서 세션 서비스가 안정적으로 유지됐다.",
+          "limits": "상한값이 또 하나의 튜닝 대상이 된다(추정). 포화 순간의 그 세션은 원하는 일을 하지 못한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "presence-fanout"
+      ]
     },
     {
       "name": "음성·영상",
@@ -545,13 +608,416 @@
           "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
         }
       ]
+    },
+    {
+      "key": "presence-fanout",
+      "name": "팬아웃 — 병목을 없애면 다음 병목이 드러난다",
+      "domain": "실시간 전달·프레즌스",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "접속하면 WebSocket 하나가 열리고, 그 연결마다 **세션 프로세스(GenServer)** 가 하나 생긴다. 세션은 원격 Erlang 노드에 있는 **길드 프로세스**와 통신하고, **길드에 무언가 발행되면 연결된 모든 세션으로 팬아웃된다.** 누군가 접속하면 그 사실(프레즌스)도 같은 길로 전부에게 퍼진다.\n\n이 구조는 길드가 작을 때는 아름답다. 그런데 **/r/Overwatch 길드가 동시 3만 명**이 되자 피크 시간에 길드 프로세스가 **메시지 큐를 따라잡지 못했다.** 팀은 한동안 **메시지를 만드는 기능을 손으로 꺼서** 부하를 관리했는데, 지속 가능한 방법이 아니라는 것을 알고 있었다.\n\n그리고 이 글의 진짜 이야기는 그 다음이다 — **병목 하나를 없앨 때마다 부하가 다음 자리로 옮겨 갔고, 회사는 그것을 세 번 연달아 만났다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "동시 접속 **500만 명**에 도달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "터진 지점",
+            "value": "**/r/Overwatch 길드 동시 3만 명** — 피크에 길드 프로세스가 메시지 큐에 밀렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "범인의 크기",
+            "value": "`send/2` 호출 하나의 실제 시간이 **30~70μs**(Erlang 이 호출 프로세스를 디스케줄하기 때문). 큰 길드의 이벤트 발행 하나가 **900ms~2.1초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "링 조회",
+            "value": "ETS **7μs** → FastGlobal **0.3μs**. 재접속 시 조회 총시간 **17.5초 → 750ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "세마포어의 효과",
+            "value": "이후 프레즌스 서비스 장애 때 **세션 서비스는 안정적으로 유지**됐고 프레즌스는 몇 분 만에 회복했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "/r/Overwatch 가 동시 3만 명이 됐을 때",
+          "thought": "길드 프로세스가 피크에 메시지 큐를 따라잡지 못했다. 당장 할 수 있는 일은 **메시지를 만들어 내는 기능을 손으로 끄는 것**이었고, 실제로 그렇게 버텼다. 급한 불은 꺼지지만 **이건 방법이 아니다** — 커뮤니티가 커질수록 끌 기능이 더 필요해진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "벤치마크를 돌려 보고",
+          "thought": "범인이 뜻밖의 곳에 있었다. **`send/2` 호출 하나가 30~70μs** 였다 — Erlang 이 호출한 프로세스를 디스케줄하기 때문이다. 큰 길드에 이벤트 하나를 발행하는 데 900ms~2.1초가 걸린 이유가 우리 로직이 아니라 **보내는 횟수 그 자체**였다. 그러면 고쳐야 할 것은 무엇을 보내느냐가 아니라 **몇 번 보내느냐**가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "조회를 빠르게 만들고 나서",
+          "thought": "FastGlobal 로 링 조회가 0.3μs 가 되자 재접속 폭주가 풀렸다. 그런데 그러자 **길드 레지스트리 프로세스가 약 500만 개 세션의 동시 호출에 눌렸다.** 앞이 빨라지면 뒤가 더 많이 맞는다 — **병목을 없애는 일은 부하를 다음 자리로 옮기는 일**이기도 하다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "서킷 브레이커를 쓰지 않기로 했을 때",
+          "thought": "실패한 요청이 큐에 쌓이고 재시도가 몰리면 그 자체가 다음 장애를 만든다 — 실제로 타임아웃이 연쇄되고 결국 메모리 부족으로 죽었다. 그러면 필요한 것은 **끊는 스위치**가 아니라 **들어가기 전에 몇 개가 진행 중인지 세어 보는 것**이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "세션 프로세스 — WebSocket 연결 하나당 하나(GenServer)",
+          "길드 프로세스 — 원격 Erlang 노드에 있다. 발행의 시작점",
+          "일관 해시 링 — 어느 노드에 무엇이 있는지의 지도",
+          "Manifold.Partitioner — 노드마다 하나. 받은 PID 를 코어별 워커로 나눈다",
+          "세마포어 카운터 — 진행 중인 요청 수를 세는 ETS 카운터"
+        ],
+        "invariants": [
+          "길드에 발행된 것은 **연결된 모든 세션**으로 팬아웃된다.",
+          "Erlang 프로세스는 단일 스레드다 — **한 길드 프로세스의 처리량이 그 길드의 상한**이다.",
+          "Manifold 이후, 보내는 프로세스의 `send/2` 호출 수는 **관여한 원격 노드 수**를 넘지 않는다.",
+          "링은 자주 바뀌지 않는다 — 그래서 빌드 비용을 조회 비용과 맞바꿀 수 있다.",
+          "포화 상태에서는 기다리는 것보다 **일찍 포기하는 것**이 낫다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 WebSocket 으로 접속하면 **세션 프로세스(GenServer)** 가 뜬다",
+            "why": "연결마다 독립된 프로세스를 두면 하나가 죽어도 나머지가 영향을 받지 않는다."
+          },
+          {
+            "step": "세션이 **일관 해시 링**을 조회해 자기 길드가 어느 원격 노드에 있는지 찾는다 — 조회는 FastGlobal 로 0.3μs",
+            "why": "재접속이 몰릴 때 이 조회가 병목이 됐던 자리다."
+          },
+          {
+            "step": "길드 프로세스에 등록한다. 이때 **세마포어**가 진행 중인 요청 수를 세고, 포화면 세션이 **일찍 포기**한다",
+            "why": "실패가 큐에 쌓이면 그 적체가 다음 장애가 된다."
+          },
+          {
+            "step": "길드에 이벤트가 발행되면(메시지·프레즌스 등) 대상 세션들의 PID 를 **원격 노드별로 묶는다**(Manifold)",
+            "why": "`send/2` 하나가 30~70μs 라 대상 수만큼 부르면 발행 하나가 초 단위가 된다."
+          },
+          {
+            "step": "노드마다 하나 있는 **Manifold.Partitioner** 에 묶음을 보낸다",
+            "why": "보내는 프로세스는 관여한 노드 수만큼만 `send/2` 를 부르면 된다."
+          },
+          {
+            "step": "Partitioner 가 `:erlang.phash2/2` 일관 해시로 PID 를 **CPU 코어 수만큼의 자식 워커**에 나눈다",
+            "why": "한 프로세스가 다 보내면 그 프로세스가 다시 병목이 된다."
+          },
+          {
+            "step": "자식 워커가 실제 세션 프로세스에 메시지를 보낸다",
+            "why": "여기서 비로소 사용자에게 이벤트가 닿는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "연결과 커뮤니티를 무엇으로 모델링할 것인가",
+            "chosen": "둘 다 **프로세스**로 둔다 — WebSocket 하나당 세션 GenServer, 커뮤니티 하나당 원격 노드의 길드 GenServer. 길드에 발행되면 연결된 모든 세션으로 팬아웃한다.",
+            "alternatives": [
+              "연결을 스레드·이벤트 루프로 다루고 커뮤니티는 자료구조로 둔다",
+              "공유 메모리 브로드캐스트 버스를 쓴다"
+            ],
+            "tradeoff": "격리와 장애 봉쇄를 얻는 대신, **Erlang 프로세스는 단일 스레드라 길드 하나의 처리량이 그 커뮤니티의 상한**이 된다. 실제로 동시 3만 명 길드에서 메시지 큐가 밀렸고, 한동안 **기능을 손으로 꺼서** 버텨야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "팬아웃을 그대로 보낼 것인가",
+            "chosen": "**Manifold** 를 만든다 — 대상 PID 를 원격 노드별로 묶어 노드마다 하나뿐인 Partitioner 에 보내고, 거기서 다시 나눈다. 그러면 **보내는 프로세스의 `send/2` 호출 수가 관여한 원격 노드 수를 넘지 않는다.**",
+            "alternatives": [
+              "대상마다 `send/2` 를 그대로 부른다",
+              "발행 자체를 줄인다(기능을 끈다)"
+            ],
+            "tradeoff": "라이브러리를 직접 만들고 유지해야 하고 전달 경로에 계층이 하나 늘어난다. 대신 **30~70μs × 대상 수**였던 비용이 노드 수에 비례하게 바뀌고, 노드 간 네트워크 트래픽도 함께 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "노드 안에서 다시 나눌 때 순서를 포기할 것인가",
+            "chosen": "포기하지 않는다. Partitioner 가 `:erlang.phash2/2` **일관 해시**로 PID 를 CPU 코어 수만큼의 워커에 나누므로, 같은 대상은 항상 같은 워커를 거친다 — 회사는 이 구조가 **선형화(linearizability)를 보장한다**고 밝힌다.",
+            "alternatives": [
+              "아무 워커에나 흩어 보낸다(순서 보장 포기)",
+              "단일 프로세스가 노드 안에서 다 보낸다"
+            ],
+            "tradeoff": "해시가 고정이라 특정 워커에 부하가 쏠릴 수 있다(뒷문장은 이 사이트의 추정). 대신 **분산시키면서도 같은 대상에 대한 순서가 지켜진다** — 흩어 보내면 빨라지지만 사용자가 이벤트를 뒤바뀐 순서로 볼 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "링 데이터를 어디에 둘 것인가",
+            "chosen": "**FastGlobal** — Erlang VM 이 **항상 같은 상수를 반환하는 함수의 데이터를 읽기 전용 공유 힙에 둔다**는 성질을 이용한다(mochiglobal 의 Elixir 포팅). 조회가 **0.3μs** 가 된다.",
+            "alternatives": [
+              "ETS 에 넣는다(7μs)",
+              "프로세스마다 링을 복사해 들고 있는다"
+            ],
+            "tradeoff": "ETS 로도 7μs 까지는 갔지만 **큰 링 데이터를 들고 나는 복사 비용이 남았다.** 공유 힙 방식은 그 복사를 없애 재접속 조회 총시간을 **17.5초에서 750ms** 로 줄였다. 대가는 다음 결정에 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "런타임에 모듈을 빌드하는 비용을 받아들일 것인가",
+            "chosen": "**받아들인다.** FastGlobal 방식은 데이터를 바꿀 때 모듈을 런타임에 만들어야 하고 그 비용이 **최대 1초**다.",
+            "alternatives": [
+              "자주 바뀌는 데이터에도 같은 방식을 쓴다",
+              "조회 비용을 감수하고 ETS 에 남긴다"
+            ],
+            "tradeoff": "쓰기가 비싸진다. **링이 자주 바뀌지 않기 때문에 성립하는 선택**이고, 자주 바뀌는 데이터였다면 이 트레이드오프는 반대로 뒤집힌다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "과부하를 서킷 브레이커로 끊을 것인가",
+            "chosen": "**아니다.** `:ets.update_counter/4` 와 ETS 의 write_concurrency 를 써서 **진행 중인 요청 수를 세는 원자적 세마포어**를 만들었다.",
+            "alternatives": [
+              "서킷 브레이커로 끊는다",
+              "타임아웃만 늘린다",
+              "레지스트리 프로세스를 늘린다"
+            ],
+            "tradeoff": "동시성 상한이라는 숫자가 또 하나의 튜닝 대상이 된다(뒷문장은 이 사이트의 추정). 대신 **실패가 큐에 쌓여 재시도가 몰리고 타임아웃이 연쇄되어 메모리 부족으로 죽는 경로**를 애초에 만들지 않는다 — 끊는 것보다 **들어가기 전에 세는 것**이 먼저다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "세마포어에 걸린 세션은 무엇을 할 것인가",
+            "chosen": "**일찍 포기한다.** 레지스트리가 포화 상태면 세션 프로세스가 요청을 넣지 않고 빠진다.",
+            "alternatives": [
+              "줄을 서서 기다린다",
+              "무한히 재시도한다"
+            ],
+            "tradeoff": "그 순간 그 세션은 원하는 일을 못 한다. 대신 효과가 확인됐다 — 이후 **프레즌스 서비스에 장애가 났을 때 세션 서비스는 안정적으로 유지됐고 프레즌스는 몇 분 만에 회복**했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Elixir / Erlang VM (세션·길드 GenServer)",
+            "role": "연결 하나와 커뮤니티 하나를 각각 프로세스로 두어 격리하고, 길드 발행을 연결된 모든 세션으로 팬아웃한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "Manifold",
+            "role": "PID 를 원격 노드별로 묶어 보내 `send/2` 호출 수를 노드 수로 제한하고, 노드 안에서는 일관 해시로 코어별 워커에 나눠 선형화를 지킨다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "FastGlobal",
+            "role": "자주 바뀌지 않는 큰 데이터(일관 해시 링)를 읽기 전용 공유 힙에 두어 조회를 0.3μs 로 만든다. 쓰기(모듈 빌드)는 최대 1초.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "Semaphore(`:ets.update_counter/4`)",
+            "role": "진행 중인 요청 수를 원자적으로 세어 동시성 상한을 걸고, 포화 시 호출자가 일찍 포기하게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "길드 샤딩·프레즌스 자체의 저장 구조",
+            "role": "— 이 글에 없다. 큰 길드를 여러 프로세스로 쪼개는지, 프레즌스를 어디에 어떻게 보관하는지는 다루지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "message-storage",
+          "via": "쓰기와 전달의 갈림",
+          "contract": "보낸 메시지는 저장되면서 동시에 연결된 세션들에 팬아웃돼야 하는데, **두 경로가 어디서 갈라지고 어떤 순서를 보장하는지는 두 글 모두 다루지 않는다.**",
+          "confidence": "unknown"
+        },
+        {
+          "to": "kakao:caribe-realtime",
+          "via": "같은 문제의 다른 무게",
+          "contract": "둘 다 실시간 전달을 다루지만 부러진 자리가 다르다 — 카카오는 실시간 전달의 '성능'을 다시 정의하는 데서 출발하고, Discord 는 **한 커뮤니티가 한 프로세스**라는 구조 때문에 **팬아웃의 횟수**에서 먼저 부러졌다. 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "음성·영상",
+          "via": "같은 게이트웨이",
+          "contract": "음성 연결도 이 게이트웨이 위의 이벤트로 시작한다고 회사가 밝히지만, 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "이벤트 하나가 3만 명에게 닿는 길",
+          "question": "보내는 프로세스가 3만 번 보내지 않으려면 무엇이 중간에 있어야 하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자 접속] --> S[세션 프로세스<br/>GenServer]\n  S --> RING[링 조회 · FastGlobal 0.3μs]\n  RING --> REG{길드 레지스트리<br/>세마포어 통과?}\n  REG -->|포화| BAIL[일찍 포기]\n  REG -->|통과| G[길드 프로세스<br/>원격 노드]\n  G -->|이벤트 발행| MF[Manifold<br/>PID 를 원격 노드별로 묶는다]\n  MF -->|노드 수만큼만 send/2| P1[노드 A · Partitioner]\n  MF --> P2[노드 B · Partitioner]\n  P1 -->|phash2 일관 해시| W1[코어별 워커]\n  P2 --> W2[코어별 워커]\n  W1 --> SS1[세션들]\n  W2 --> SS2[세션들]\n  W1 -.->|같은 대상은 같은 워커| LIN[선형화 보장]"
+        },
+        {
+          "title": "세션 프로세스가 거치는 상태",
+          "question": "재접속이 몰릴 때 세션은 어디서 멈추고 어떻게 빠져나오는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 연결됨: WebSocket\n  연결됨 --> 링조회: 어느 노드의 길드인가\n  링조회 --> 등록시도\n  등록시도 --> 조기포기: 세마포어 포화\n  조기포기 --> 등록시도: 잠시 뒤 다시\n  note right of 조기포기\n    줄을 서지 않는다\n    쌓이는 것이 다음 장애가 되므로\n  end note\n  등록시도 --> 구독중: 길드에 등록\n  구독중 --> 구독중: 팬아웃된 이벤트 수신\n  구독중 --> 정리: 연결 종료\n  정리 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 병목이 옮겨 다닌 세 자리",
+          "question": "하나를 고칠 때마다 어디가 새로 터졌는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  BIG[/r/Overwatch 동시 3만 명/] --> QUEUE[길드 프로세스가<br/>메시지 큐를 못 따라감]\n  QUEUE --> MANUAL[기능을 손으로 끄기<br/>지속 가능하지 않다]\n  SEND[send/2 하나가 30~70μs] --> SLOW[발행 하나에 900ms~2.1초]\n  SLOW --> FIX1[Manifold<br/>노드 수만큼만 보낸다]\n  RECON[재접속 폭주] --> RINGSLOW[링 조회가 병목<br/>세션 서버 재시작 시 추정 30초]\n  RINGSLOW --> FIX2[FastGlobal 0.3μs<br/>17.5초 → 750ms]\n  FIX2 --> NEXT[**빨라지자 다음이 터진다**]\n  NEXT --> REGOVER[길드 레지스트리가<br/>약 500만 세션의 동시 호출에 눌림]\n  REGOVER --> PILE[실패가 쌓이고 재시도가 몰림]\n  PILE --> TIMEOUT[타임아웃 연쇄]\n  TIMEOUT --> OOM[메모리 부족으로 사망]\n  REGOVER --> FIX3[Semaphore<br/>들어가기 전에 센다]\n  FIX3 --> OK[프레즌스 장애 때도<br/>세션 서비스는 안정 유지]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+          "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+          "publisher": "Discord Blog · Stanislav Vishnevskiy",
+          "date": "2017-07-06",
+          "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "Discord 의 수익 구성 — 비상장이라 공시가 없고 1차 출처를 아직 찾지 못했다.",
     "메시지 검색과 첨부 파일 저장 — 읽은 글은 본문의 저장·조회까지만 다룬다.",
     "저장과 실시간 전달이 어디서 갈라지고 어떤 순서를 보장하는지.",
-    "실시간 전달·프레즌스, 음성·영상, 커뮤니티 운영·신뢰 세 도메인은 아직 기능을 채우지 않았다."
+    "실시간 전달·프레즌스, 음성·영상, 커뮤니티 운영·신뢰 세 도메인은 아직 기능을 채우지 않았다.",
+    "큰 길드를 여러 프로세스로 쪼개는지 — 이 글은 보내는 방식을 고치는 데까지만 다룬다.",
+    "프레즌스 자체를 어디에 어떻게 보관하는지.",
+    "세마포어의 동시성 상한을 무엇으로 정하는지."
   ],
   "sources": [
     {
