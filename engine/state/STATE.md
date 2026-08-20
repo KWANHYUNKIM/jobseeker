@@ -16,8 +16,8 @@
 4. 기능 5개의 `thinking` — 개발 당시 무슨 생각을 했는가 (전부 없음)
 5. `decisions` 보강 — instant-transfer 3개, 나머지 4개씩 → 5~8개로 쪼개기
 
-한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. 남은 순서는 interest-accrual →
-payment-approval → request-passport → identity-certificate.
+한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. 남은 순서는 payment-approval →
+request-passport → identity-certificate.
 그 뒤 domain_map 과 도메인 tech 를 채우고 다시 완주 판정한다.
 
 ## 사이클 로그
@@ -32,6 +32,7 @@ payment-approval → request-passport → identity-certificate.
 | 005 | 2026-08-20 | 토스 | 인증 `identity-certificate`(토스인증서) + **완주 판정 → done** | 네이버 프로파일 |
 | 006 | 2026-08-20 | — | STYLE.md 신설(그림·도메인 기술·생각·결정 세분화) · schema/validator/뷰어 확장 · 토스 재개 | 토스 `instant-transfer` 심화 |
 | 007 | 2026-08-20 | 토스 | `instant-transfer` 심화 — 그림 3장(흐름·상태·실패) · thinking 4 · 결정 3→7 | `interest-accrual` 심화 |
+| 008 | 2026-08-20 | 토스 | `interest-accrual` 심화 — 그림 3장 · thinking 4 · 결정 4→7 (경고 16→13) | `payment-approval` 심화 |
 
 ## 다음 사이클 메모
 
