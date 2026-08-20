@@ -44,6 +44,17 @@
       "features_done": 5,
       "one_liner": "음식이 식기 전에 닿아야 하는 물류를 앱으로 만든 회사",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "daangn",
+      "name": "당근",
+      "name_en": "Daangn",
+      "country": "KR",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "'같은 동네 사람'이라는 전제 하나로 굴러가는 로컬 플랫폼",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -69,7 +80,12 @@
     "배차",
     "가게 노출",
     "커머스 물류(B마트)",
-    "정산"
+    "정산",
+    "동네 인증",
+    "중고거래 검색",
+    "피드 노출",
+    "로컬 광고",
+    "거래 신뢰"
   ],
   "countries": {
     "KR": "한국",
