@@ -77,8 +77,48 @@
     {
       "name": "알림",
       "why": "앱을 다시 열게 하는 장치. 너무 많으면 끄고, 너무 적으면 잊는다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "곱셈형 다양성 페널티(Score = R × D)",
+          "solves": "참여 최적화가 같은 작성자·상품 표면을 반복해 밀어 올리는 문제를, 관련성을 넘어서지 않으면서 반복만 벌하는 방식으로 다룬다. 일일 알림 양을 줄이면서 CTR 을 개선했다.",
+          "limits": "임계값과 가중치가 차원 수만큼 튜닝 대상이 되고 실제 값은 공개돼 있지 않다. 여러 차원에 걸리면 점수가 매우 빠르게 떨어진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+              "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+              "publisher": "Engineering at Meta",
+              "date": "2025-09-02",
+              "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+            }
+          ]
+        },
+        {
+          "tech": "quality bar(랭킹·다양성 이중 기준)",
+          "solves": "통과할 후보가 없으면 아예 보내지 않게 해, 보내지 말았어야 할 알림을 줄인다.",
+          "limits": "기준을 어떻게 정하는지, 빈도 상한이나 예산이 따로 있는지는 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+              "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+              "publisher": "Engineering at Meta",
+              "date": "2025-09-02",
+              "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+            }
+          ]
+        },
+        {
+          "tech": "동적 페널티 · LLM 기반 다양성",
+          "solves": "— 아직이다.",
+          "limits": "알림 양과 전달 시점에 반응하는 페널티, 그리고 메시지 간 의미적 유사도를 이해하고 표현을 바꾸는 LLM 활용을 앞으로의 방향으로만 밝힌다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "notification-diversity"
+      ]
     }
   ],
   "features": [
@@ -484,13 +524,391 @@
           "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
         }
       ]
+    },
+    {
+      "key": "notification-diversity",
+      "name": "알림 — 적게 보내는 것이 성과가 될 때",
+      "domain": "알림",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "알림은 다른 지면과 성질이 다르다. **사용자가 앱을 열지 않았을 때 먼저 말을 거는 유일한 자리**이고, 그래서 잘못 쓰면 잃는 것이 그 알림 하나가 아니다 — **아예 꺼 버린다.** 그런데 이 시스템을 참여(CTR)로 최적화하면 **이미 반응했던 작성자와 상품 표면을 과하게 밀어 올리는** 성질이 생긴다. 특정 친구의 알림만 계속 오고, Stories 만 오고 Reels 는 안 온다. 그 상태가 이어지면 알림이 스팸처럼 느껴진다.",
+        "metrics": [
+          {
+            "label": "성과의 방향",
+            "value": "이 프레임워크는 **일일 알림 양을 크게 줄이면서 CTR 을 개선**했다(구체 수치는 공개되지 않았다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "label": "점수 구조",
+            "value": "`Score(c) = R(c) × D(c)` — 기본 관련성 점수에 **다양성 페널티 승수 D ∈ [0,1]** 를 곱한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "label": "페널티 계산",
+            "value": "차원마다 유사도가 임계값 τᵢ 를 넘으면 pᵢ=1, 아니면 0. 최종 승수는 **곱**으로 `D(c) = ∏(1 − wᵢ·pᵢ(c))`",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "CTR 만 보고 있을 때",
+          "thought": "참여로 최적화된 모델은 상호작용을 잘 이끌어 낸다. 그런데 그 방식은 **이미 반응했던 작성자와 상품 유형을 과도하게 우선**하게 만든다 — 잘 맞히는 것과 계속 같은 것을 보내는 것이 여기서는 같은 행동이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "'스팸처럼 느껴진다'가 무슨 뜻인지 생각할 때",
+          "thought": "한 번의 나쁜 알림이 문제가 아니다. **시간이 쌓이면서** 알림이 스팸처럼 느껴지고, 그러면 사람들이 **아예 꺼 버린다.** 알림을 끄는 것은 되돌리기 어렵다 — 그 순간 우리가 말을 걸 수 있는 통로 하나가 사라진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "다양성을 점수에 어떻게 넣을지 정할 때",
+          "thought": "관련성 점수에 **더하면** 다양성이 관련성을 이길 수도 있다. **곱하면** 다양성은 관련성을 넘어설 수 없고 오직 깎기만 한다 — 관련 없는 것을 억지로 끼워 넣지 않으면서 반복만 벌하는 방법이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "성과를 무엇으로 잴지 정할 때",
+          "thought": "알림 시스템의 성과를 '얼마나 많이 보냈나'로 재면 영원히 늘어난다. **양을 줄이면서 CTR 이 올랐다**는 것은 보내지 말았어야 할 알림이 그만큼 있었다는 뜻이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "알림 후보(c)",
+            "what": "보낼지 말지 판단할 대상."
+          },
+          {
+            "name": "관련성 점수 R(c)",
+            "what": "기존 참여 최적화 모델이 내는 점수."
+          },
+          {
+            "name": "다양성 승수 D(c)",
+            "what": "0과 1 사이의 값. 최근 보낸 알림들과 닮았을수록 작아진다."
+          },
+          {
+            "name": "차원",
+            "what": "유사도를 재는 축 — 콘텐츠 · 작성자 · 알림 유형 · 상품 표면 등."
+          }
+        ],
+        "invariants": [
+          "잘 맞히는 것과 계속 같은 것을 보내는 것이 여기서는 같은 행동이다.",
+          "알림을 끄는 결정은 되돌리기 어렵다.",
+          "다양성은 관련성을 이겨서는 안 되고, 깎기만 해야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "기존 모델이 누구에게·언제·무엇을 보낼지 후보와 관련성 점수를 만든다",
+            "why": "참여 예측 자체는 여전히 필요하다"
+          },
+          {
+            "step": "다양성 계층이 각 후보를 **최근 보낸 알림들**과 비교한다",
+            "why": "반복은 하나의 알림이 아니라 흐름에서 생긴다"
+          },
+          {
+            "step": "콘텐츠·작성자·알림 유형·상품 표면 등 차원마다 유사도를 잰다",
+            "why": "같은 사람이 반복되는 것과 같은 화면이 반복되는 것은 다른 문제다"
+          },
+          {
+            "step": "유사도가 임계값 τᵢ 를 넘으면 그 차원에 페널티가 걸린다(pᵢ=1)",
+            "why": "'닮았다/아니다'로 단순화한다"
+          },
+          {
+            "step": "차원별 강도 wᵢ 를 반영해 승수를 곱으로 합친다",
+            "why": "여러 차원에 걸릴수록 급격히 깎인다"
+          },
+          {
+            "step": "관련성에 승수를 곱해 최종 점수를 만든다",
+            "why": "다양성은 관련성을 넘어설 수 없다"
+          },
+          {
+            "step": "quality bar 가 랭킹과 다양성 기준을 **둘 다** 통과한 최상위 후보를 고른다",
+            "why": "점수만으로 정하지 않고 문턱을 하나 더 둔다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "참여 최적화만으로 둘 것인가",
+            "chosen": "**다양성 계층을 따로 얹는다** — 후보를 최근 보낸 알림들과 여러 차원에서 비교한다",
+            "alternatives": [
+              "참여 모델 개선",
+              "빈도 제한만 적용"
+            ],
+            "tradeoff": "계층이 하나 늘고 차원마다 임계값·가중치를 관리해야 한다. 그래도 참여 모델은 잘 작동할수록 **이미 반응했던 작성자와 상품 표면을 과하게 밀어 올리므로**, 같은 모델을 더 잘 만드는 것으로는 이 문제를 못 푼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "다양성을 점수에 어떻게 반영할 것인가",
+            "chosen": "**곱한다.** `Score(c) = R(c) × D(c)`, `D ∈ [0,1]`",
+            "alternatives": [
+              "가중합으로 더하기",
+              "사후 필터링"
+            ],
+            "tradeoff": "한 차원만 걸려도 전체 점수가 깎이고, 여러 차원에 걸리면 급격히 0 에 가까워진다. 대신 **다양성이 관련성을 이길 수 없고 오직 깎기만 한다** — 관련 없는 알림을 억지로 끼워 넣는 일이 생기지 않는다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "유사도를 어떻게 다룰 것인가",
+            "chosen": "차원마다 **임계값 τᵢ 로 이진화**한다 — 넘으면 pᵢ=1, 아니면 0",
+            "alternatives": [
+              "연속값 유사도 그대로 사용"
+            ],
+            "tradeoff": "임계값 근처에서 판정이 급변하고, τᵢ 자체가 튜닝 대상이 된다. 대신 각 차원의 페널티 로직을 **차원마다 다르게 만들어 붙이기 쉬워진다** — 회사가 꼽은 이점 중 하나가 '차원별 맞춤 페널티 로직의 확장성'이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "여러 차원의 페널티를 어떻게 합칠 것인가",
+            "chosen": "**곱**으로 합친다 — `D(c) = ∏(1 − wᵢ·pᵢ(c))`",
+            "alternatives": [
+              "최댓값 사용",
+              "합산 후 정규화"
+            ],
+            "tradeoff": "차원 여러 개에 동시에 걸리면 점수가 매우 빠르게 떨어진다. 그런데 **같은 사람이 같은 화면에서 같은 종류로 또 오는 것**이 정확히 가장 나쁜 경우이므로, 이 급격함이 의도에 맞는다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "차원마다 강도를 같게 둘 것인가",
+            "chosen": "**차원별 가중치 wᵢ ∈ [0,1]** 로 강등 강도를 따로 조절한다",
+            "alternatives": [
+              "단일 페널티 강도"
+            ],
+            "tradeoff": "조절할 값이 차원 수만큼 늘어난다. 대신 콘텐츠·작성자·상품 유형에 각각 다른 정도의 벌을 줄 수 있다 — 회사가 꼽은 두 번째 이점이 이 '유연성'이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "최종 후보를 점수만으로 고를 것인가",
+            "chosen": "**quality bar** 를 둔다 — 랭킹 기준과 다양성 기준을 **둘 다** 통과한 최상위 후보를 고른다",
+            "alternatives": [
+              "최고 점수 후보 선택"
+            ],
+            "tradeoff": "통과할 후보가 없으면 아예 안 보내게 되어 알림 양이 줄어든다. **그게 이 시스템이 의도한 방향**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "페널티 강도를 상황에 따라 바꿀 것인가",
+            "chosen": "**지금은 고정**이다. 알림 양과 전달 시점에 반응하는 **동적 페널티**는 앞으로 할 일로 남겨 뒀다 — 알림을 많이 받을수록 점점 강한 페널티를 주는 방향",
+            "alternatives": [
+              "처음부터 동적 페널티"
+            ],
+            "tradeoff": "지금은 많이 받은 사람과 적게 받은 사람에게 같은 기준이 적용된다. 그래도 고정된 규칙이 먼저 있어야 동적 규칙의 기준선이 생긴다(추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "question": "성과를 무엇으로 잴 것인가",
+            "chosen": "**일일 알림 양을 줄이면서 CTR 을 개선**하는 것",
+            "alternatives": [
+              "CTR 만 개선",
+              "총 참여 수 증가"
+            ],
+            "tradeoff": "구체 수치를 공개하지 않아 검증할 수 없다. 그래도 지표를 이렇게 잡았다는 것 자체가 결정이다 — **적게 보내는 것이 성과로 인정되는 구조**가 없으면 알림은 영원히 늘어난다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "다양성 계층(유사도 평가)",
+            "role": "각 후보를 최근 보낸 알림들과 콘텐츠·작성자·알림 유형·상품 표면 등 여러 차원에서 비교한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "tech": "곱셈형 페널티 승수",
+            "role": "`D(c) = ∏(1 − wᵢ·pᵢ(c))` 로 차원별 페널티를 합쳐 관련성 점수에 곱한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "tech": "quality bar (이중 기준)",
+            "role": "랭킹과 다양성 기준을 모두 통과한 최상위 후보만 선택한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+                "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+                "publisher": "Engineering at Meta",
+                "date": "2025-09-02",
+                "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+              }
+            ]
+          },
+          {
+            "tech": "동적 페널티 · LLM 다양성",
+            "role": "— 아직이다. 알림 양·전달 시점에 반응하는 페널티와, 메시지 간 의미적 유사도를 이해하고 표현을 다양하게 바꾸는 LLM 활용을 앞으로의 방향으로 밝힌다.",
+            "confidence": "unknown",
+            "sources": []
+          },
+          {
+            "tech": "임계값·가중치의 실제 값",
+            "role": "— 공개되지 않았다. τᵢ 와 wᵢ 를 어떤 값으로 두는지, 빈도 상한이나 예산이 따로 있는지는 글에 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "explore-funnel",
+          "via": "같은 함정의 다른 자리",
+          "contract": "퍼널의 최종 재랭킹에서 '같은 저자를 연달아 보여주지 않기' 규칙을 쓰는 것과 같은 문제를, 알림에서는 곱셈형 페널티로 푼다 — 두 글은 서로를 언급하지 않는다(연결은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 관련성에 다양성을 곱하기",
+          "question": "보낼지 말지가 어떻게 정해지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  M[참여 최적화 모델<br/>누구에게 · 언제 · 무엇을] --> C[알림 후보 c]\n  C --> R[기본 관련성 점수 R c]\n  RECENT[(최근 보낸 알림들)] --> DIV[다양성 계층]\n  C --> DIV\n  DIV --> D1{콘텐츠 유사도 > τ}\n  DIV --> D2{작성자 유사도 > τ}\n  DIV --> D3{알림 유형 유사도 > τ}\n  DIV --> D4{상품 표면 유사도 > τ}\n  D1 -->|p=1 또는 0| MUL\n  D2 -->|w2 로 강도 조절| MUL\n  D3 --> MUL\n  D4 --> MUL[D c = ∏ 1 − w·p]\n  R --> SCORE[Score c = R c × D c]\n  MUL --> SCORE\n  SCORE --> QB{quality bar<br/>랭킹 · 다양성 둘 다 통과}\n  QB -->|통과한 최상위| SEND[보낸다]\n  QB -->|아무도 못 통과| SKIP[안 보낸다]\n  SKIP -.->|일일 알림 양이 줄어든다| GOAL[의도한 방향]"
+        },
+        {
+          "title": "알림이 스팸이 되는 길",
+          "question": "잘 맞히는 모델이 어떻게 사용자를 잃는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 관련있음: CTR 로 최적화된 알림\n  관련있음 --> 반응함: 사용자가 누른다\n  반응함 --> 더보냄: 그 작성자 · 그 표면을 더 우선한다\n  더보냄 --> 반복노출: 같은 친구만 · Stories 만\n  반복노출 --> 스팸처럼: 시간이 쌓이면서\n  스팸처럼 --> 알림끔: 되돌리기 어렵다\n  알림끔 --> [*]\n  반복노출 --> 다양성계층: 최근 보낸 것과 비교\n  다양성계층 --> 페널티: 여러 차원에 걸리면 급격히\n  페널티 --> 문턱미달: quality bar 를 못 넘는다\n  문턱미달 --> 안보냄\n  안보냄 --> 관련있음: 다음 기회에 다른 것을\n  note right of 알림끔\n    잃는 것은 알림 하나가 아니라\n    말을 걸 수 있는 통로 전체다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 지표가 만든 함정",
+          "question": "무엇을 최적화하면 무엇이 망가지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[CTR 을 목표로 학습] --> B[이미 반응한 작성자 · 상품 표면을 우선]\n  B --> C1[특정 친구 알림만 계속 온다]\n  B --> C2[Stories 만 오고 Reels 는 안 온다]\n  C1 --> D[스팸처럼 느껴진다]\n  C2 --> D\n  D --> E[알림을 아예 끈다]\n  E --> F[말을 걸 통로가 사라진다]\n  G[다양성을 더하기로 넣으면] -.-> H[관련 없는 알림이 밀려 올라올 수 있다]\n  I[유사도를 연속값으로 두면] -.-> J[차원마다 다른 로직을 붙이기 어렵다]\n  K[페널티를 최댓값으로 합치면] -.-> L[여러 차원에 걸린 최악의 경우를 덜 벌한다]\n  M[성과를 보낸 양으로 재면] --> N[알림은 영원히 늘어난다]\n  N -.->|그래서| O[양을 줄이면서 CTR 개선을 지표로 잡았다]\n  P[페널티가 고정이면] -.-> Q[많이 받은 사람과 적게 받은 사람이 같은 기준]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+          "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+          "publisher": "Engineering at Meta",
+          "date": "2025-09-02",
+          "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "추천 콘텐츠와 광고가 같은 화면에서 어떤 규칙으로 자리를 나누는지는 이 글에 없다.",
     "값 모델의 가중치를 실제로 어떤 값으로 두는지, 누가 어떤 기준으로 바꾸는지는 공개돼 있지 않다.",
     "1단계 랭커가 2단계를 증류하면서 생기는 편향을 어떻게 다루는지는 언급되지 않는다.",
-    "Instagram 단독 매출·사용자 수는 Meta IR 에서 분리 공시되지 않는다."
+    "Instagram 단독 매출·사용자 수는 Meta IR 에서 분리 공시되지 않는다.",
+    "알림 다양성 페널티의 임계값 τ 와 가중치 w 의 실제 값, 그리고 빈도 상한·예산의 존재 여부는 공개돼 있지 않다.",
+    "'일일 알림 양을 크게 줄이면서 CTR 개선'의 구체 수치는 밝히지 않는다.",
+    "알림 해제율(disable rate)을 지표로 직접 보는지는 글에 나오지 않는다 — 스팸처럼 느껴지면 끈다는 인과만 서술한다."
   ],
   "sources": [
     {
@@ -506,6 +924,13 @@
       "publisher": "Meta IR",
       "date": "2026",
       "summary": "2025년 매출 2,009.7억 달러(+22%). 2025년 12월 평균 Family 일간 활성 이용자 35.8억 명(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%."
+    },
+    {
+      "title": "A New Ranking Framework for Better Notification Quality on Instagram",
+      "url": "https://engineering.fb.com/2025/09/02/ml-applications/a-new-ranking-framework-for-better-notification-quality-on-instagram/",
+      "publisher": "Engineering at Meta",
+      "date": "2025-09-02",
+      "summary": "참여 최적화만 하던 알림이 이미 반응했던 작성자·상품 표면을 과하게 밀어 스팸처럼 느껴지는 문제를, 관련성 점수에 다양성 페널티 승수를 곱하는 방식으로 풀었다. 일일 알림 양을 크게 줄이면서 CTR 은 개선됐다."
     }
   ]
 }
