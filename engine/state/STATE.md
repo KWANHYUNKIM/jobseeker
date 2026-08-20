@@ -16,7 +16,9 @@
 4. 기능 5개의 `thinking` — 개발 당시 무슨 생각을 했는가 (전부 없음)
 5. `decisions` 보강 — instant-transfer 3개, 나머지 4개씩 → 5~8개로 쪼개기
 
-한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. 남은 것은 identity-certificate 하나.
+한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. **기능 5개 심화 완료.** 남은 경고 5건은 전부 도메인 층이다 — `domain_map` 1건 +
+도메인 4개의 `tech[]`. 이건 기능 단위가 아니라 회사 단위 작업이라 한 사이클에 묶어 한다.
+그 뒤 완주 재판정.
 그 뒤 domain_map 과 도메인 tech 를 채우고 다시 완주 판정한다.
 
 ## 사이클 로그
@@ -34,6 +36,7 @@
 | 008 | 2026-08-20 | 토스 | `interest-accrual` 심화 — 그림 3장 · thinking 4 · 결정 4→7 (경고 16→13) | `payment-approval` 심화 |
 | 009 | 2026-08-20 | 토스 | `payment-approval` 심화 — status 8종 상태도 · 그림 3장 · thinking 4 · 결정 5→8 (경고 13→11) | `request-passport` 심화 |
 | 010 | 2026-08-20 | 토스 | `request-passport` 심화 — 그림 3장 · thinking 4 · 결정 4→7 · Zero Trust 범위 오류 수정 (경고 11→8) | `identity-certificate` 심화 |
+| 011 | 2026-08-20 | 토스 | `identity-certificate` 심화 — 그림 3장 · thinking 4 · 결정 4→6 (경고 8→5) | domain_map + 도메인 tech[] |
 
 ## 다음 사이클 메모
 
