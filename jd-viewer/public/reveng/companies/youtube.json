@@ -99,8 +99,78 @@
     {
       "name": "추천·발견",
       "why": "카탈로그가 회사가 고른 것이 아니라 사용자가 올린 것 전부라, 무엇을 위에 놓을지가 곧 이 서비스의 모양이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "성과의 정의 — 클릭 → 시청 시간 → 가치 있는 시청 시간",
+          "solves": "무엇을 좋은 추천이라 부를지를 두 번 다시 정했다. 설문 1~5점 중 4~5점만 성과로 세고, 답하지 않은 시청은 응답을 예측해 채운다.",
+          "limits": "지표를 바꿀 때마다 옛 지표는 나빠진다 — 시청 시간으로 옮길 때 조회수가 20% 떨어졌다. 그리고 설문이 희소해 만족을 재는 일이 다시 예측 문제가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "On YouTube's recommendation system",
+              "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+              "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+              "date": "2021-09-15",
+              "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+            }
+          ]
+        },
+        {
+          "tech": "후보 생성 + 랭킹 2단계 딥러닝",
+          "solves": "카탈로그가 올라온 것 전부라 전량을 정밀하게 채점할 수 없다. 가벼운 단계로 줄이고 무거운 단계로 채점한다.",
+          "limits": "앞 단계가 버린 영상은 뒤 단계가 볼 기회조차 없다(이 사이트의 해석). **이 사이트는 논문 초록만 읽었다** — 구조의 세부는 담지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Deep Neural Networks for YouTube Recommendations",
+              "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+              "publisher": "Google · RecSys 2016 (Paul Covington, Jay Adams, Emre Sargin)",
+              "date": "2016",
+              "summary": "추천을 후보 생성(candidate generation)과 랭킹(ranking) 두 단계의 딥러닝 모델로 나눈 구조를 설명한다. 이론적 진전보다 대규모 프로덕션 시스템을 설계·반복·유지하며 얻은 실무적 교훈에 무게를 둔다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+            }
+          ]
+        },
+        {
+          "tech": "MMoE(soft-parameter sharing) + Wide & Deep",
+          "solves": "서로 경쟁하는 여러 랭킹 목표를 함께 최적화하고, 사용자 피드백의 암묵적 선택 편향을 완화한다.",
+          "limits": "목표 간 비중은 여전히 사람이 정한다(추정). 편향 완화의 방법과 정량 결과는 초록에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+              "url": "https://research.google/pubs/recommending-what-video-to-watch-next-a-multitask-ranking-system/",
+              "publisher": "Google · RecSys 2019 (Zhe Zhao, Lichan Hong, Li Wei, Jilin Chen, Aniruddh Nath, Shawn Andrews, Aditee Kumthekar, Mahesh Sathiamoorthy, Xinyang Yi, Ed H. Chi)",
+              "date": "2019",
+              "summary": "대규모 다목적 랭킹 시스템. 서로 경쟁하는 여러 랭킹 목표와 사용자 피드백의 암묵적 선택 편향이 동시에 문제였고, 여러 목표를 함께 최적화하기 위해 Multi-gate Mixture-of-Experts 같은 soft-parameter sharing 기법을, 선택 편향 완화를 위해 Wide & Deep 프레임워크를 썼다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+            }
+          ]
+        },
+        {
+          "tech": "평가자 지침 기반 강등·승격 + 학습 안정화",
+          "solves": "모델 점수 위에 사람의 판정을 얹어 경계선 콘텐츠를 낮추고 권위 있는 출처를 올린다. 모델을 키울 때 손실이 발산하는 문제는 별도 기법으로 막는다.",
+          "limits": "지침 자체가 논쟁 대상이 되고(추정), 안정화 기법의 정량 결과는 사내 데이터라 공개되지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "On YouTube's recommendation system",
+              "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+              "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+              "date": "2021-09-15",
+              "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+            },
+            {
+              "title": "Improving Training Stability for Multitask Ranking Models in Recommender Systems",
+              "url": "https://research.google/pubs/improving-training-stability-for-multitask-ranking-models-in-recommender-systems/",
+              "publisher": "Google · KDD 2023 (Jiaxi Tang, Yoel Drori, Daryl Chang, Mahesh Sathiamoorthy, Justin Gilmer, Li Wei, Xinyang Yi, Lichan Hong, Ed H. Chi)",
+              "date": "2023",
+              "summary": "YouTube 추천의 실제 다목적 랭킹 모델을 대상으로, 모델이 커지고 정교해질수록 학습 손실이 수렴하지 않고 발산해 모델을 못 쓰게 되고 자원이 낭비되는 문제를 다룬다. 불안정이 일어날 때의 관찰에서 안정화 기법을 끌어냈다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+            }
+          ]
+        }
+      ],
+      "features": [
+        "watch-next-ranking"
+      ]
     },
     {
       "name": "저작권·콘텐츠 식별",
@@ -1133,6 +1203,471 @@
           "summary": "Content ID 는 교육적 사용이나 패러디 같은 맥락을 식별할 수 없고, 클립 길이와 비율 같은 기술적 대리 지표로 근사할 뿐이라고 밝힌다. 무엇이 허가된 사용인지는 권리자만이 알 수 있는 위치에 있다고 말한다."
         }
       ]
+    },
+    {
+      "key": "watch-next-ranking",
+      "name": "추천 — 지표를 바꾸면 숫자가 나빠진다는 것을 알면서",
+      "domain": "추천·발견",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**범위 주의** — 신호와 정책 이야기는 2021년 회사 글에서 왔고, 모델 구조 이야기는 **논문 초록만 읽고 정리한 것**이다(2016·2019·2023). 초록 밖의 세부(아키텍처 도면, 하이퍼파라미터, 정량 결과)는 이 사이트에 없다.\n\n앞선 회사들과 카탈로그의 성격이 다르다. Netflix 는 회사가 사거나 만든 **소수의 콘텐츠**를 고르고, Instagram 은 팔로우 그래프 위에서 고른다. YouTube 의 후보 풀은 **올라온 것 전부**다 — 회사가 고르지 않았고, 품질도 권리 관계도 제각각이며, 지금도 늘고 있다.\n\n그래서 이 도메인의 첫 결정은 알고리즘이 아니라 **무엇을 성과라고 부를 것인가**였다. 회사는 그 답을 두 번 바꿨다. 클릭에서 시청 시간으로, 그리고 시청 시간에서 **'가치 있는 시청 시간'**으로. 두 번 다 **기존 숫자가 나빠지는 것을 알면서** 바꿨다 — 시청 시간으로 옮길 때 조회수가 **20% 떨어졌다.**",
+        "metrics": [
+          {
+            "label": "다루는 정보의 규모",
+            "value": "추천 시스템이 **800억 개의 정보(signals)** 를 다룬다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "label": "지표를 바꿀 때 치른 값",
+            "value": "2012년 시청 시간으로 옮기자 **조회수가 20% 감소** — 그것을 받아들였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "label": "만족의 정의",
+            "value": "설문 1~5점 중 **4~5점을 준 시청만** '가치 있는 시청 시간(valued watchtime)'으로 센다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "label": "경계선 콘텐츠 강등의 효과",
+            "value": "2019년 강등 이후 경계선 콘텐츠 시청 시간 **70% 감소**. 현재 추천에서 오는 소비는 **1% 미만**, 목표는 전체 조회의 **0.5% 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "label": "YouTube 광고 매출",
+            "value": "2025년 403.67억 달러 — 이 추천이 만든 시청 위에 붙는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "클릭을 성과로 삼던 때",
+          "thought": "클릭은 **보고 싶다**는 뜻이지 보고 나서 좋았다는 뜻이 아니다. 그래서 2012년에 시청 시간으로 옮겼는데, 옮기면 기존 지표가 나빠질 것을 알고 있었다 — 실제로 **조회수가 20% 떨어졌다.** 그 숫자를 받아들이기로 한 것이 이 도메인에서 가장 먼저 내린 결정이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "시청 시간마저 못 믿게 됐을 때",
+          "thought": "오래 봤다는 것이 만족했다는 뜻은 아니다. 지표를 더 정교하게 계산하는 것으로는 이 간극이 메워지지 않는다 — 결국 **사람에게 직접 물어야** 한다. 그래서 설문을 도입하고 **4~5점만** 성과로 세기로 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "설문에 답하는 사람이 극히 일부라는 것을 알았을 때",
+          "thought": "설문은 정직하지만 희소하다. 그래서 답을 받은 시청을 학습 데이터 삼아 **보지 않은 영상의 설문 응답을 예측**하기로 했다. 만족을 재는 일이 다시 하나의 예측 문제가 된 셈이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "목표가 여러 개가 되고 서로 다툰다는 것을 인정했을 때",
+          "thought": "랭킹 목표가 여럿이고 서로 경쟁하는 데다, 사용자 피드백에는 **암묵적 선택 편향**이 섞여 있다 — 우리가 위에 올린 것을 사람들이 보고, 그 시청이 다시 학습 데이터가 된다. 그리고 그 문제를 다루려고 모델을 키우자 이번엔 **학습 손실이 수렴하지 않고 발산**하기 시작했다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "후보 풀 — 회사가 고른 것이 아니라 **올라온 것 전부**",
+          "신호 — 클릭 · 시청 시간 · 설문 응답 · 공유와 좋아요 · 싫어요",
+          "가치 있는 시청 시간(valued watchtime) — 설문 4~5점을 받은 시청",
+          "랭킹 목표 — 여럿이고 서로 경쟁한다",
+          "평가자 지침 — 사람이 권위성과 경계선 여부를 판정하는 기준"
+        ],
+        "invariants": [
+          "클릭은 보고 싶다는 뜻이고, 시청 시간은 봤다는 뜻이며, 설문만이 좋았다는 뜻이다.",
+          "4~5점을 받은 시청만 '가치 있는 시청 시간'으로 센다 — 나머지 시청 시간은 성과가 아니다.",
+          "우리가 위에 올린 것이 시청되고, 그 시청이 다시 학습 데이터가 된다(암묵적 선택 편향).",
+          "지표를 바꾸면 옛 지표는 나빠진다 — 그것을 감수할지가 결정의 본체다.",
+          "앞 단계(후보 생성)가 버린 영상은 뒤 단계(랭킹)가 볼 기회조차 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "올라온 영상 전부에서 **후보 생성(candidate generation)** 모델이 다룰 만한 크기로 줄인다",
+            "why": "카탈로그가 회사가 고른 것이 아니라 올라온 것 전부라, 전부를 정밀하게 채점할 수 없다."
+          },
+          {
+            "step": "**랭킹** 모델이 후보를 채점한다 — 서로 경쟁하는 여러 목표를 함께 본다",
+            "why": "목표가 하나가 아니고, 하나를 밀면 다른 하나가 밀린다."
+          },
+          {
+            "step": "여러 목표를 **Multi-gate Mixture-of-Experts 같은 soft-parameter sharing** 으로 함께 최적화한다",
+            "why": "목표마다 모델을 따로 두는 대신 표현을 나눠 쓰되 목표별로 게이트를 둔다(논문 초록이 밝힌 범위까지)."
+          },
+          {
+            "step": "사용자 피드백의 **암묵적 선택 편향**을 Wide & Deep 프레임워크로 완화한다",
+            "why": "우리가 노출한 것만 시청되고 그 시청이 학습 데이터가 되므로, 그대로 배우면 편향이 되먹임된다."
+          },
+          {
+            "step": "평가자 지침에 따라 **경계선 콘텐츠는 강등하고 권위 있는 출처는 승격**한다",
+            "why": "모델 점수만으로는 뉴스·정보 영역에서 원하는 결과가 나오지 않는다. 설문에서도 대부분의 시청자가 경계선 콘텐츠를 추천받고 싶어 하지 않는다고 답했다."
+          },
+          {
+            "step": "노출 뒤 신호를 수집한다 — 클릭 · 시청 시간 · 공유와 좋아요 · 싫어요, 그리고 **설문 1~5점**",
+            "why": "만족은 행동만으로는 알 수 없어 직접 묻는다."
+          },
+          {
+            "step": "설문에 답하지 않은 시청에 대해서는 **설문 응답을 예측**해 '가치 있는 시청 시간'을 넓힌다",
+            "why": "설문은 희소해서 그대로는 전체 학습 신호가 되지 못한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 성과라고 부를 것인가 — 클릭인가 시청 시간인가",
+            "chosen": "**시청 시간으로 옮긴다**(2012년). 클릭은 보고 싶다는 신호일 뿐이다.",
+            "alternatives": [
+              "클릭·조회수를 계속 성과로 둔다"
+            ],
+            "tradeoff": "**조회수가 20% 떨어졌다** — 지표를 바꾸면 옛 지표로 본 성적표는 나빠진다. 회사는 그 하락을 받아들였다. 그리고 시청 시간을 성과로 삼는 순간 '오래 붙잡아 두는 것'이 좋은 것이 되어 버리는데, 그 문제가 바로 다음 결정을 부른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "question": "시청 시간이면 충분한가",
+            "chosen": "**아니다.** 시청자에게 1~5점 설문을 받아 **4~5점을 준 시청만 '가치 있는 시청 시간'**으로 센다. 싫어요와 '관심 없음' 같은 부정 신호도 함께 쓴다.",
+            "alternatives": [
+              "시청 완료율·재시청 같은 행동 지표를 더 정교하게 만든다",
+              "시청 시간 하나로 계속 간다"
+            ],
+            "tradeoff": "설문은 사람의 손이 필요하고 응답이 희소하다. 대신 **오래 봤지만 후회한 시청을 성과에서 뺄 수 있다** — 행동 지표를 아무리 다듬어도 이 구분은 나오지 않는다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "question": "희소한 설문을 어떻게 전체에 적용할 것인가",
+            "chosen": "설문을 받은 시청을 학습 데이터로 삼아 **보지 않은 영상의 설문 응답을 예측**한다.",
+            "alternatives": [
+              "설문을 받은 영상에만 만족 지표를 적용한다",
+              "설문 응답률을 올리려 노력한다"
+            ],
+            "tradeoff": "만족을 재는 일이 다시 **하나의 예측 문제**가 되어, 예측이 빗나가면 '만족'이라는 이름을 단 잘못된 신호가 학습에 들어간다(뒷문장은 이 사이트의 추정). 대신 소수의 응답으로 전체를 덮을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "question": "올라온 것 전부를 한 번에 채점할 것인가",
+            "chosen": "**두 단계로 나눈다** — 후보 생성(candidate generation)으로 다룰 만한 크기까지 줄이고, 그 다음 랭킹 모델이 채점한다.",
+            "alternatives": [
+              "하나의 모델로 전부 채점한다"
+            ],
+            "tradeoff": "**앞 단계가 버린 영상은 뒤 단계가 볼 기회조차 없다**(이 문장은 이 사이트의 해석). 그래도 카탈로그가 올라온 것 전부인 이상 이 구조 말고는 방법이 없다. 회사는 이 논문에서 이론적 진전보다 **프로덕션을 설계·반복·유지하며 얻은 실무적 교훈**에 무게를 둔다고 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Neural Networks for YouTube Recommendations",
+                "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+                "publisher": "Google · RecSys 2016 (Paul Covington, Jay Adams, Emre Sargin)",
+                "date": "2016",
+                "summary": "추천을 후보 생성(candidate generation)과 랭킹(ranking) 두 단계의 딥러닝 모델로 나눈 구조를 설명한다. 이론적 진전보다 대규모 프로덕션 시스템을 설계·반복·유지하며 얻은 실무적 교훈에 무게를 둔다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "question": "서로 경쟁하는 여러 목표를 어떻게 함께 볼 것인가",
+            "chosen": "**soft-parameter sharing** 계열 기법 — **Multi-gate Mixture-of-Experts(MMoE)** 등 — 으로 여러 랭킹 목표를 함께 최적화한다.",
+            "alternatives": [
+              "목표마다 별도 모델을 만든다",
+              "단일 목표로 합쳐서 최적화한다"
+            ],
+            "tradeoff": "전문가와 게이트가 늘어 모델이 무거워지고, **목표 간 비중을 어떻게 둘지는 여전히 사람이 정해야 한다**(뒷문장은 이 사이트의 추정). 대신 목표마다 모델을 따로 두는 비용을 피하면서 목표별로 다른 표현을 쓸 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+                "url": "https://research.google/pubs/recommending-what-video-to-watch-next-a-multitask-ranking-system/",
+                "publisher": "Google · RecSys 2019 (Zhe Zhao, Lichan Hong, Li Wei, Jilin Chen, Aniruddh Nath, Shawn Andrews, Aditee Kumthekar, Mahesh Sathiamoorthy, Xinyang Yi, Ed H. Chi)",
+                "date": "2019",
+                "summary": "대규모 다목적 랭킹 시스템. 서로 경쟁하는 여러 랭킹 목표와 사용자 피드백의 암묵적 선택 편향이 동시에 문제였고, 여러 목표를 함께 최적화하기 위해 Multi-gate Mixture-of-Experts 같은 soft-parameter sharing 기법을, 선택 편향 완화를 위해 Wide & Deep 프레임워크를 썼다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "question": "사용자 피드백의 편향을 어떻게 다룰 것인가",
+            "chosen": "암묵적 선택 편향(implicit selection bias)을 문제로 명시하고 **Wide & Deep 프레임워크로 완화**한다.",
+            "alternatives": [
+              "관측된 피드백을 그대로 학습한다",
+              "무작위 노출로 편향 없는 데이터를 모은다"
+            ],
+            "tradeoff": "**초록은 '완화했다'까지만 밝히고 방법의 세부는 없다** — 이 사이트는 그 이상을 알지 못한다. 그리고 편향을 모델 안에서 보정하기로 하면, 그 보정이 옳은지 검증할 방법이 또 필요해진다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+                "url": "https://research.google/pubs/recommending-what-video-to-watch-next-a-multitask-ranking-system/",
+                "publisher": "Google · RecSys 2019 (Zhe Zhao, Lichan Hong, Li Wei, Jilin Chen, Aniruddh Nath, Shawn Andrews, Aditee Kumthekar, Mahesh Sathiamoorthy, Xinyang Yi, Ed H. Chi)",
+                "date": "2019",
+                "summary": "대규모 다목적 랭킹 시스템. 서로 경쟁하는 여러 랭킹 목표와 사용자 피드백의 암묵적 선택 편향이 동시에 문제였고, 여러 목표를 함께 최적화하기 위해 Multi-gate Mixture-of-Experts 같은 soft-parameter sharing 기법을, 선택 편향 완화를 위해 Wide & Deep 프레임워크를 썼다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "question": "경계선·권위 문제를 모델 점수로 풀 것인가",
+            "chosen": "**사람이 만든 평가 지침과 평가자의 판정**을 얹는다. 경계선 콘텐츠(잘못된 정보·음모론)는 강등하고, 뉴스·정보 영역에서는 권위 있는 출처를 승격한다.",
+            "alternatives": [
+              "모델 점수만으로 정한다",
+              "경계선 콘텐츠를 삭제한다"
+            ],
+            "tradeoff": "사람의 지침이 모델의 판단을 덮어쓰고, **그 지침 자체가 계속 논쟁 대상이 된다**(뒷문장은 이 사이트의 추정). 대신 결과가 확인됐다 — 2019년 강등 이후 경계선 시청 시간 **70% 감소**, 지금은 추천에서 오는 소비가 **1% 미만**이고 목표는 **0.5% 미만**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "question": "모델을 계속 키울 것인가",
+            "chosen": "키우되 **학습 안정성 자체를 연구 대상으로 삼는다.** 모델이 커지고 정교해질수록 손실이 수렴하지 않고 **발산**해 모델을 못 쓰게 되는데, 회사는 불안정이 일어날 때의 관찰에서 안정화 기법을 끌어냈다고 밝힌다.",
+            "alternatives": [
+              "모델 크기를 늘리지 않는다",
+              "발산하면 다시 돌린다"
+            ],
+            "tradeoff": "안정화 기법이 또 하나의 유지 대상이 되고, **사내 데이터로 검증해 정량 결과를 공개하지 못한다.** 대신 발산은 모델을 통째로 못 쓰게 만들고 자원을 크게 낭비하므로, 크기를 키우려면 먼저 풀어야 하는 문제다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving Training Stability for Multitask Ranking Models in Recommender Systems",
+                "url": "https://research.google/pubs/improving-training-stability-for-multitask-ranking-models-in-recommender-systems/",
+                "publisher": "Google · KDD 2023 (Jiaxi Tang, Yoel Drori, Daryl Chang, Mahesh Sathiamoorthy, Justin Gilmer, Li Wei, Xinyang Yi, Lichan Hong, Ed H. Chi)",
+                "date": "2023",
+                "summary": "YouTube 추천의 실제 다목적 랭킹 모델을 대상으로, 모델이 커지고 정교해질수록 학습 손실이 수렴하지 않고 발산해 모델을 못 쓰게 되고 자원이 낭비되는 문제를 다룬다. 불안정이 일어날 때의 관찰에서 안정화 기법을 끌어냈다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "후보 생성 + 랭킹 2단계 딥러닝",
+            "role": "올라온 것 전부를 다룰 만한 크기로 줄인 뒤 정밀하게 채점한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Deep Neural Networks for YouTube Recommendations",
+                "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+                "publisher": "Google · RecSys 2016 (Paul Covington, Jay Adams, Emre Sargin)",
+                "date": "2016",
+                "summary": "추천을 후보 생성(candidate generation)과 랭킹(ranking) 두 단계의 딥러닝 모델로 나눈 구조를 설명한다. 이론적 진전보다 대규모 프로덕션 시스템을 설계·반복·유지하며 얻은 실무적 교훈에 무게를 둔다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Multi-gate Mixture-of-Experts(soft-parameter sharing)",
+            "role": "서로 경쟁하는 여러 랭킹 목표를 하나의 시스템에서 함께 최적화한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+                "url": "https://research.google/pubs/recommending-what-video-to-watch-next-a-multitask-ranking-system/",
+                "publisher": "Google · RecSys 2019 (Zhe Zhao, Lichan Hong, Li Wei, Jilin Chen, Aniruddh Nath, Shawn Andrews, Aditee Kumthekar, Mahesh Sathiamoorthy, Xinyang Yi, Ed H. Chi)",
+                "date": "2019",
+                "summary": "대규모 다목적 랭킹 시스템. 서로 경쟁하는 여러 랭킹 목표와 사용자 피드백의 암묵적 선택 편향이 동시에 문제였고, 여러 목표를 함께 최적화하기 위해 Multi-gate Mixture-of-Experts 같은 soft-parameter sharing 기법을, 선택 편향 완화를 위해 Wide & Deep 프레임워크를 썼다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Wide & Deep 프레임워크",
+            "role": "사용자 피드백에 섞인 암묵적 선택 편향을 완화한다. 세부는 초록에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+                "url": "https://research.google/pubs/recommending-what-video-to-watch-next-a-multitask-ranking-system/",
+                "publisher": "Google · RecSys 2019 (Zhe Zhao, Lichan Hong, Li Wei, Jilin Chen, Aniruddh Nath, Shawn Andrews, Aditee Kumthekar, Mahesh Sathiamoorthy, Xinyang Yi, Ed H. Chi)",
+                "date": "2019",
+                "summary": "대규모 다목적 랭킹 시스템. 서로 경쟁하는 여러 랭킹 목표와 사용자 피드백의 암묵적 선택 편향이 동시에 문제였고, 여러 목표를 함께 최적화하기 위해 Multi-gate Mixture-of-Experts 같은 soft-parameter sharing 기법을, 선택 편향 완화를 위해 Wide & Deep 프레임워크를 썼다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "tech": "설문 기반 '가치 있는 시청 시간' + 설문 응답 예측 모델",
+            "role": "만족을 행동이 아니라 직접 물은 답으로 정의하고, 답하지 않은 시청에는 예측으로 채운다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "tech": "평가자 지침에 따른 강등·승격",
+            "role": "경계선 콘텐츠를 낮추고 권위 있는 출처를 올린다. 모델 위에 사람이 만든 규칙이 얹힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "On YouTube's recommendation system",
+                "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+                "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+                "date": "2021-09-15",
+                "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+              }
+            ]
+          },
+          {
+            "tech": "학습 안정화 기법",
+            "role": "모델이 커질 때 손실이 발산하는 것을 막는다. 기법의 이름과 정량 결과는 초록에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Improving Training Stability for Multitask Ranking Models in Recommender Systems",
+                "url": "https://research.google/pubs/improving-training-stability-for-multitask-ranking-models-in-recommender-systems/",
+                "publisher": "Google · KDD 2023 (Jiaxi Tang, Yoel Drori, Daryl Chang, Mahesh Sathiamoorthy, Justin Gilmer, Li Wei, Xinyang Yi, Lichan Hong, Ed H. Chi)",
+                "date": "2023",
+                "summary": "YouTube 추천의 실제 다목적 랭킹 모델을 대상으로, 모델이 커지고 정교해질수록 학습 손실이 수렴하지 않고 발산해 모델을 못 쓰게 되고 자원이 낭비되는 문제를 다룬다. 불안정이 일어날 때의 관찰에서 안정화 기법을 끌어냈다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+              }
+            ]
+          },
+          {
+            "tech": "모델 구조의 세부와 정량 결과",
+            "role": "— 이 사이트는 세 논문의 **초록만** 읽었다. 아키텍처 도면·하이퍼파라미터·A/B 수치는 담지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "content-id",
+          "via": "차단 정책",
+          "contract": "차단 정책이 걸린 영상은 해당 지역에서 볼 수 없으므로 그 지역의 추천 대상에서도 빠진다 — 다만 두 시스템이 어디서 맞물리는지 밝힌 자료는 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "uvq-quality",
+          "via": "화질과 추천",
+          "contract": "UVQ 는 업로드의 지각 화질을 판정하는데, 그 점수가 추천 랭킹에 신호로 들어가는지는 어느 자료에도 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "광고 매출",
+          "via": "시청이 지면을 만든다",
+          "contract": "추천이 만든 시청 위에 광고가 붙는다. 다만 추천 목표에 광고 수익이 어떤 비중으로 들어가는지는 공개된 자료가 없다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "올라온 것 전부에서 다음 영상까지",
+          "question": "회사가 고르지 않은 카탈로그에서 무엇을 기준으로 다음 한 편을 정하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  ALL[(올라온 것 전부<br/>회사가 고른 카탈로그가 아니다)] --> CG[후보 생성<br/>candidate generation]\n  CG --> RANK[랭킹 모델]\n  RANK --> MMOE[MMoE · soft-parameter sharing<br/>경쟁하는 여러 목표]\n  MMOE --> WD[Wide & Deep<br/>암묵적 선택 편향 완화]\n  WD --> GUIDE[평가자 지침<br/>경계선 강등 · 권위 승격]\n  GUIDE --> SHOW[노출]\n  SHOW --> SIG[신호 800억 개<br/>클릭 · 시청 시간 · 공유·좋아요 · 싫어요]\n  SHOW --> SURV[설문 1~5점]\n  SURV --> VWT[4~5점 = 가치 있는 시청 시간]\n  SURV --> PRED[설문 응답 예측 모델]\n  PRED --> VWT\n  SIG --> TRAIN[학습]\n  VWT --> TRAIN\n  TRAIN -.->|우리가 올린 것이 다시 데이터가 된다| RANK"
+        },
+        {
+          "title": "노출 하나가 성과가 되기까지",
+          "question": "같은 노출이 어디서 성과가 되고 어디서 성과가 아니게 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 노출됨\n  노출됨 --> 클릭안함: 지나침\n  노출됨 --> 시청중: 클릭\n  시청중 --> 짧게이탈\n  시청중 --> 시청시간누적\n  시청시간누적 --> 설문대상: 일부에게 1~5점 질문\n  시청시간누적 --> 예측대상: 답하지 않은 시청\n  설문대상 --> 가치있는시청: 4~5점\n  설문대상 --> 성과아님: 1~3점\n  예측대상 --> 가치있는시청: 예측 4~5점\n  시청중 --> 부정신호: 싫어요 · 관심 없음\n  note right of 성과아님\n    오래 봤어도\n    성과로 세지 않는다\n  end note\n  가치있는시청 --> [*]\n  성과아님 --> [*]\n  부정신호 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 지표가 거짓말하는 자리",
+          "question": "각 지표를 그대로 믿으면 어디서 무엇이 어긋나고, 무엇으로 막는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  CLICK[클릭만 본다] --> WANT[보고 싶었다는 뜻일 뿐]\n  WANT --> FIX1[2012년 시청 시간으로 이동<br/>대가: 조회수 20% 감소]\n  WT[시청 시간만 본다] --> LONG[오래 봤다는 뜻일 뿐]\n  LONG --> FIX2[설문 4~5점만 성과로]\n  SPARSE[설문은 희소하다] --> PRED[응답을 예측한다]\n  PRED -->|추정| RISK[예측이 틀리면<br/>'만족'이라는 이름의 잘못된 신호]\n  LOOP[우리가 올린 것이 시청된다] --> BIAS[암묵적 선택 편향]\n  BIAS --> FIX3[Wide & Deep 으로 완화<br/>세부는 초록에 없다]\n  BORDER[경계선 콘텐츠] --> FIX4[평가자 지침으로 강등<br/>시청 시간 70% 감소 · 1% 미만]\n  BIG[모델을 키운다] --> DIV[학습 손실 발산<br/>모델을 못 쓰게 된다]\n  DIV --> FIX5[안정화 기법<br/>정량 결과는 비공개]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "On YouTube's recommendation system",
+          "url": "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/",
+          "publisher": "YouTube Blog · Cristos Goodrow(VP of Engineering, YouTube)",
+          "date": "2021-09-15",
+          "summary": "추천이 무엇을 신호로 쓰는지 회사가 직접 설명한 글. 클릭·시청 시간·설문 응답·공유와 좋아요·싫어요를 쓰고, 800억 개의 정보를 다룬다. 2012년 시청 시간으로 옮길 때 조회수가 20% 떨어지는 것을 감수했고, 설문에서 4~5점을 준 것만 '가치 있는 시청 시간'으로 센다. 경계선 콘텐츠는 평가자 지침에 따라 강등한다."
+        },
+        {
+          "title": "Recommending What Video to Watch Next: A Multitask Ranking System",
+          "url": "https://research.google/pubs/recommending-what-video-to-watch-next-a-multitask-ranking-system/",
+          "publisher": "Google · RecSys 2019 (Zhe Zhao, Lichan Hong, Li Wei, Jilin Chen, Aniruddh Nath, Shawn Andrews, Aditee Kumthekar, Mahesh Sathiamoorthy, Xinyang Yi, Ed H. Chi)",
+          "date": "2019",
+          "summary": "대규모 다목적 랭킹 시스템. 서로 경쟁하는 여러 랭킹 목표와 사용자 피드백의 암묵적 선택 편향이 동시에 문제였고, 여러 목표를 함께 최적화하기 위해 Multi-gate Mixture-of-Experts 같은 soft-parameter sharing 기법을, 선택 편향 완화를 위해 Wide & Deep 프레임워크를 썼다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+        },
+        {
+          "title": "Deep Neural Networks for YouTube Recommendations",
+          "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+          "publisher": "Google · RecSys 2016 (Paul Covington, Jay Adams, Emre Sargin)",
+          "date": "2016",
+          "summary": "추천을 후보 생성(candidate generation)과 랭킹(ranking) 두 단계의 딥러닝 모델로 나눈 구조를 설명한다. 이론적 진전보다 대규모 프로덕션 시스템을 설계·반복·유지하며 얻은 실무적 교훈에 무게를 둔다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+        },
+        {
+          "title": "Improving Training Stability for Multitask Ranking Models in Recommender Systems",
+          "url": "https://research.google/pubs/improving-training-stability-for-multitask-ranking-models-in-recommender-systems/",
+          "publisher": "Google · KDD 2023 (Jiaxi Tang, Yoel Drori, Daryl Chang, Mahesh Sathiamoorthy, Justin Gilmer, Li Wei, Xinyang Yi, Lichan Hong, Ed H. Chi)",
+          "date": "2023",
+          "summary": "YouTube 추천의 실제 다목적 랭킹 모델을 대상으로, 모델이 커지고 정교해질수록 학습 손실이 수렴하지 않고 발산해 모델을 못 쓰게 되고 자원이 낭비되는 문제를 다룬다. 불안정이 일어날 때의 관찰에서 안정화 기법을 끌어냈다고 밝힌다. **이 사이트는 초록만 읽었다.**"
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1144,7 +1679,11 @@
     "Content ID 매칭 알고리즘 자체 — 무엇을 지문으로 만들고 어떻게 비교하는지, 임계값이 무엇인지는 공개돼 있지 않다.",
     "이의 제기율이 1% 미만이라는 사실이 '다툴 일이 없었다'인지 '다투기 어려웠다'인지는 자료로 갈라낼 수 없다.",
     "'반복적으로 잘못된 클레임'으로 접근 권한을 잃는 기준선이 공개돼 있지 않다.",
-    "저작권 투명성 보고의 수치는 2021년 상반기 기준이다 — 이후 규모 변화는 이 사이트에 없다."
+    "저작권 투명성 보고의 수치는 2021년 상반기 기준이다 — 이후 규모 변화는 이 사이트에 없다.",
+    "추천 모델 구조의 세부(아키텍처·하이퍼파라미터)와 A/B 정량 결과 — 이 사이트는 세 논문의 초록만 읽었다.",
+    "설문 응답 예측이 실제로 얼마나 맞는지, 그리고 그 예측이 틀렸을 때 무엇이 잡아 주는지.",
+    "여러 랭킹 목표 사이의 비중을 누가 어떻게 정하는지.",
+    "화질(UVQ)과 저작권 판정(Content ID)이 추천 랭킹에 신호로 들어가는지 — 어느 자료에도 없다."
   ],
   "sources": [
     {
