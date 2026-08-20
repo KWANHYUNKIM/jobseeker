@@ -136,8 +136,48 @@
     {
       "name": "추천·발견",
       "why": "볼 것이 많을수록 무엇을 볼지 정하는 일이 어려워진다. 구독 서비스에서는 '볼 게 없다'는 인상이 곧 해지다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "컨텍스추얼 밴딧 기반 아트워크 개인화",
+          "solves": "무엇을 추천할지 정한 뒤에도 남는 문제 — '왜 이걸 봐야 하나'에 이미지로 답한다. 한 자리에 하나만 놓을 수 있어 생기는 닫힌 루프를 통제된 탐색으로 푼다. 사전 상호작용이 없던 타이틀에서 개선이 특히 컸다.",
+          "limits": "탐색이 곧 비용이라 회원 규모가 작으면 이 방법이 성립하지 않고, 이미지를 자주 바꾸면 인식 가능성과 귀인이 함께 무너진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Artwork Personalization at Netflix",
+              "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+              "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+              "date": "2017-12-08",
+              "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+            }
+          ]
+        },
+        {
+          "tech": "replay 오프라인 평가 + 성향 로깅",
+          "solves": "실서비스에 올리기 전에 '다른 알고리즘이었다면' 을 편향 없이 되짚는다. 오프라인 결과가 온라인 A/B 와 합리적으로 상관했다.",
+          "limits": "무작위 배정과 모델 배정이 일치한 부분집합만 쓰므로 표본이 줄어든다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Artwork Personalization at Netflix",
+              "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+              "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+              "date": "2017-12-08",
+              "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+            }
+          ]
+        },
+        {
+          "tech": "페이지·세션 단위 다양성, 콜드스타트 처리",
+          "solves": "— 아직이다.",
+          "limits": "이미지를 격리해서 보면 안 된다는 문제 제기와, 컴퓨터 비전으로 콜드스타트를 다루겠다는 방향만 밝힌다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "artwork-personalization"
+      ]
     }
   ],
   "features": [
@@ -976,6 +1016,413 @@
           "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
         }
       ]
+    },
+    {
+      "key": "artwork-personalization",
+      "name": "아트워크 — 무엇을 추천할까가 끝난 자리에서",
+      "domain": "추천·발견",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "오랫동안 이 회사의 추천은 **'적절한 타이틀을 적절한 때에'**를 목표로 했다. 그런데 회사가 말하는 대로 **추천의 일은 거기서 끝나지 않는다** — 내가 왜 그 타이틀에 관심을 가져야 하나? 낯선 작품에 대해 무슨 말을 해야 흥미가 생기나? 그 답이 **아트워크**다. 이미지가 와닿으면 그건 **왜 이 타이틀이 당신에게 좋을지에 대한 시각적 '증거'**가 된다. 회사는 이를 이렇게 표현한다 — **\"우리는 하나의 제품이 아니라 1억 개가 넘는 서로 다른 제품을 갖는다.\"**",
+        "metrics": [
+          {
+            "label": "서빙 규모",
+            "value": "개인화된 이미지 선택은 **초당 2천만 건이 넘는 요청**을 낮은 지연으로 처리해야 한다 — 렌더링에 실패하면 경험이 크게 나빠진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "label": "후보의 크기",
+            "value": "타이틀당 후보 아트워크는 **최대 수십 개**. Stranger Things 는 여러 이미지가 각각 노출의 5% 이상을 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "label": "탐색의 비용",
+            "value": "**1억 명이 넘는 회원** 덕에 탐색으로 생기는 후회가 매우 작게 분산된다 — 회사는 이것을 **컨텍스추얼 밴딧을 고른 중요한 고려사항**으로 꼽는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "label": "가장 흥미로운 결과",
+            "value": "개인화의 개선 폭이 **회원이 그 타이틀과 사전 상호작용이 없던 경우에 더 컸다** — 낯선 작품일수록 이미지가 더 중요하다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "추천이 끝난 자리에서",
+          "thought": "무엇을 보여줄지는 정했다. 그런데 회원은 **왜 그것을 봐야 하는지** 모른다. 낯선 타이틀일수록 그렇다. 그러면 **추천의 마지막 한 걸음은 설득**이고, 그 설득의 언어가 이미지다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "한 자리에 하나만 보여줄 수 있다는 것을 깨달을 때",
+          "thought": "보통의 추천은 여러 개를 보여주고 **고른 것에서 선호를 배운다.** 그런데 이미지는 하나만 놓을 수 있어서 **닫힌 루프의 닭과 달걀 문제**가 된다 — 재생이 일어났다면 그건 우리가 보여주기로 한 이미지에서만 올 수 있다. 알고 싶은 건 **이 이미지가 재생을 만들었는지, 아니면 어떤 이미지였든 봤을지**다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "탐색 비용을 계산할 때",
+          "thought": "밴딧은 배우려면 일부러 최선이 아닌 것을 보여줘야 한다. 그 비용을 우리가 감당할 수 있나? **회원이 1억 명이 넘으니 각자가 카탈로그의 아주 작은 부분에만 피드백을 주면 된다** — 회원당 비용이 무시할 만해진다. **탐색 비용이 컸다면 이 방법은 애초에 맞지 않았을 것이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "페이지 전체를 볼 때",
+          "thought": "대담한 클로즈업이 통하는 건 **다른 것들과 대비되기 때문**일 수 있다. 모든 타이틀이 비슷한 이미지를 쓰면 페이지 전체가 매력적이지 않다 — **이미지 하나를 격리해서 보면 안 된다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "아트워크 풀",
+            "what": "타이틀당 최대 수십 개의 후보 이미지. 테마만이 아니라 미학도 다양해야 한다."
+          },
+          {
+            "name": "컨텍스트",
+            "what": "회원 자신 — 본 타이틀·장르·그 타이틀과의 상호작용·국가·언어·기기·시간대·요일, 그리고 추천 알고리즘이 그 타이틀을 어떻게 보는지."
+          },
+          {
+            "name": "take rate",
+            "what": "질 좋은 재생 수 ÷ 노출 수. 어떤 이미지는 본래 더 낫다."
+          },
+          {
+            "name": "replay",
+            "what": "로깅된 탐색 데이터로 '다른 알고리즘이었다면 어땠을까'를 편향 없이 되짚는 오프라인 평가."
+          }
+        ],
+        "invariants": [
+          "한 자리에 하나의 이미지만 놓을 수 있다 — 그래서 학습이 닫힌 루프가 된다.",
+          "이미지 하나의 효과는 같은 페이지의 다른 이미지들에 달려 있다.",
+          "탐색은 비용이고, 그 비용을 감당할 수 있어야 이 방법이 성립한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "아티스트·디자이너가 여러 차원으로 다양한 이미지를 만든다",
+            "why": "고를 것이 다양해야 개인화가 의미를 갖는다"
+          },
+          {
+            "step": "모델 예측에 **통제된 무작위성**을 주입해 탐색한다",
+            "why": "학습 데이터가 그렇게 만들어진다"
+          },
+          {
+            "step": "무작위화 정보를 함께 로깅한다",
+            "why": "치우친 선택 성향을 보정해야 편향 없는 오프라인 평가가 된다"
+          },
+          {
+            "step": "(회원, 타이틀, 이미지) 튜플마다 재생 여부를 기록한다",
+            "why": "참여의 질까지 봐서 레이블을 정한다"
+          },
+          {
+            "step": "컨텍스추얼 밴딧이 회원 맥락에서 각 이미지의 재생 확률을 예측한다",
+            "why": "회원이 곧 컨텍스트다"
+          },
+          {
+            "step": "확률로 정렬해 가장 높은 이미지 하나를 고른다",
+            "why": "자리는 하나뿐이다"
+          },
+          {
+            "step": "replay 로 새 알고리즘을 편향 없이 오프라인 평가한다",
+            "why": "실서비스에 올리기 전에 비교한다"
+          },
+          {
+            "step": "A/B 로 최종 확인한다",
+            "why": "오프라인 replay 와 온라인 결과가 합리적으로 상관했다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "추천을 '무엇을 보여줄까'에서 끝낼 것인가",
+            "chosen": "**어떻게 보여줄까까지** 개인화한다 — 같은 타이틀도 회원마다 다른 이미지로 보여준다",
+            "alternatives": [
+              "타이틀 선택만 개인화",
+              "모두에게 하나의 최고 이미지"
+            ],
+            "tradeoff": "**아트워크 개인화는 기존 추천 문제 위에 얹히고, 두 알고리즘이 서로 맞물려 동작해야 한다.** 그래도 낯선 타이틀 앞에서 회원에게 필요한 것은 순위가 아니라 **이유**다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 사람이 만들 것인가",
+            "chosen": "**손으로 만든 규칙을 나열하지 않고 데이터가 어떤 신호를 쓸지 알려주게 한다**",
+            "alternatives": [
+              "장르·배우 기반 수작업 규칙"
+            ],
+            "tradeoff": "왜 그 이미지가 뽑혔는지 설명하기 어려워진다(추정). 대신 '로맨스를 본 사람에게는 두 배우가 나온 이미지' 같은 명백한 경우 말고 **명백하지 않은 경우**까지 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "배치 학습과 A/B 로 갈 것인가",
+            "chosen": "**온라인 학습 — 컨텍스추얼 밴딧**으로 간다",
+            "alternatives": [
+              "배치 학습 후 A/B 테스트"
+            ],
+            "tradeoff": "배치 방식은 **후회(regret)를 낳는다 — 많은 회원이 오랫동안 더 나은 경험을 받지 못한다.** 데이터를 다 모으고, 학습하고, A/B 가 끝나기를 기다리는 동안의 손실이다. 대신 온라인 학습은 탐색 자체가 비용이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "탐색 비용을 감당할 수 있는가",
+            "chosen": "**감당할 수 있다** — 1억 명이 넘는 회원에게 분산되어 회원당 비용이 무시할 만하다. 각자가 카탈로그의 작은 부분에 대해 암묵적으로 피드백을 준다",
+            "alternatives": [
+              "탐색 없이 예측만 사용",
+              "소규모 실험 집단에만 탐색"
+            ],
+            "tradeoff": "탐색하는 세션에서는 그 회원에게 예측된 최선이 아닌 이미지를 보여준다. 회사는 이 점을 분명히 한다 — **탐색 비용이 컸다면 컨텍스추얼 밴딧은 덜 적합했을 것이다.** 규모가 방법을 가능하게 한 사례다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "이미지를 얼마나 자주 바꿀 것인가",
+            "chosen": "**너무 자주 바뀌지 않게 탐색을 통제한다**",
+            "alternatives": [
+              "매 세션 최적 이미지로 갱신"
+            ],
+            "tradeoff": "더 나은 이미지를 찾아도 바로 못 바꾼다. 그런데 계속 바꾸면 **타이틀의 인식 가능성이 떨어져 다시 찾기 어려워지고**, 무엇보다 **어떤 이미지가 관심을 끌었는지 귀인할 수 없게 된다.** 자주 바꾸는 것이 학습 자체를 망친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 성공으로 볼 것인가",
+            "chosen": "**참여의 질을 보고 레이블을 정한다** — 재생을 유도하지만 결국 낮은 질의 참여로 끝나는 **클릭베이트 이미지를 배우지 않게** 한다",
+            "alternatives": [
+              "재생 여부만 사용",
+              "클릭률 최적화"
+            ],
+            "tradeoff": "'질 좋은 참여'를 정의해야 하고 신호가 늦게 도착한다(추정). 그래도 클릭만 보면 **모델이 낚시성 이미지를 학습한다** — 아트워크 풀 자체도 각 이미지가 매력적이면서 유익하고 대표적이어야 클릭베이트를 피한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "실서비스에 올리기 전에 어떻게 비교할 것인가",
+            "chosen": "**replay** — 로깅된 탐색 데이터에서 무작위 배정과 모델 배정이 일치한 경우만 매칭해 take fraction 을 계산한다",
+            "alternatives": [
+              "온라인 실험만",
+              "오프라인 지표 대체"
+            ],
+            "tradeoff": "일치한 부분집합만 쓰므로 표본이 줄어든다. 그래도 **반사실 질문에 편향 없이 답할 수 있고**, 실제로 오프라인 replay 와 온라인 A/B 결과가 합리적으로 상관했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "question": "개인화하면 '본래 좋은 이미지'는 무의미해지는가",
+            "chosen": "**아니다.** 전체 take rate 는 여전히 중요하고, **개인화 모델도 평균적으로는 비개인화 모델의 순위와 일치하는 선택을 회복한다**",
+            "alternatives": [
+              "개인화 신호만 사용"
+            ],
+            "tradeoff": "개인화의 여지가 생각만큼 크지 않을 수 있다는 뜻이기도 하다. 그래도 **어떤 이미지는 본래 더 낫다** — 개인화는 그 위에 얹히는 것이지 그것을 대체하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "컨텍스추얼 밴딧(Thompson Sampling · LinUCB · 베이지안)",
+            "role": "회원 맥락에서 각 후보 이미지의 재생 확률을 예측하고, 예측과 탐색을 함께 다룬다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "tech": "통제된 무작위화 + 성향 로깅",
+            "role": "epsilon-greedy 부터 모델 불확실성에 따라 무작위 정도를 바꾸는 방식까지. 로깅이 있어야 편향 보정이 가능하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "tech": "replay 오프라인 평가",
+            "role": "로깅된 탐색 데이터로 다른 알고리즘의 성과를 편향 없이 되짚는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "tech": "다양성 있는 아트워크 제작",
+            "role": "아티스트·디자이너가 테마와 미학 양쪽으로 다양한 이미지를 만들고, **창작 과정에서 개인화 알고리즘을 고려한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Artwork Personalization at Netflix",
+                "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+                "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+                "date": "2017-12-08",
+                "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+              }
+            ]
+          },
+          {
+            "tech": "페이지·세션 단위 다양성",
+            "role": "— 필요하다고 밝히지만 어떻게 하는지는 이 글에 없다. 이미지를 격리해서 보면 안 된다는 문제 제기까지만 나온다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "per-title-encoding",
+          "via": "같은 사고",
+          "contract": "'모든 영상에 같은 잣대를 대지 않는다'와 '모두에게 같은 이미지를 보여주지 않는다'가 같은 모양이다 — 두 글은 서로를 언급하지 않는다(이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "open-connect-fill",
+          "via": "인기도",
+          "contract": "무엇이 인기 있을지 예측하는 일이 전송(선제 캐싱)과 발견(추천) 양쪽에 쓰인다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 하나의 자리를 채우는 길",
+          "question": "같은 타이틀이 어떻게 사람마다 다른 얼굴로 보이는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REC[추천 엔진<br/>무엇을 보여줄까] --> T[타이틀 결정]\n  POOL[(아트워크 풀 · 타이틀당 최대 수십 개<br/>테마와 미학 모두 다양)] --> RANK\n  CTX[컨텍스트 = 회원<br/>본 타이틀 · 장르 · 국가 · 언어 · 기기 · 시간대] --> RANK\n  RECSIG[추천 알고리즘이 이 타이틀을 보는 시각] --> RANK\n  T --> RANK[컨텍스추얼 밴딧<br/>재생 확률 예측]\n  RANK --> SORT[확률로 정렬]\n  SORT --> ONE[가장 높은 이미지 하나]\n  ONE --> SHOW[회원 화면 · 초당 2천만 건 이상]\n  RANK -.->|통제된 무작위성 주입| EXP[데이터 탐색]\n  EXP --> SHOW\n  SHOW --> LOG[(회원 · 타이틀 · 이미지 → 재생 여부<br/>+ 무작위화 성향 로깅)]\n  LOG -->|참여의 질로 레이블| TRAIN[학습]\n  TRAIN --> RANK\n  LOG --> REPLAY[replay · 편향 없는 오프라인 평가]\n  REPLAY --> AB[A/B 테스트]"
+        },
+        {
+          "title": "탐색과 활용 사이",
+          "question": "일부러 최선이 아닌 것을 보여줄 수 있는 이유는?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 예측: 모델이 최선을 안다고 믿는다\n  예측 --> 활용: 가장 높은 확률의 이미지를 보여준다\n  예측 --> 탐색: 통제된 무작위로 다른 것을 보여준다\n  탐색 --> 후회: 그 세션은 최선이 아니었다\n  후회 --> 분산됨: 1억 명에게 나뉜다\n  분산됨 --> 무시가능: 회원당 비용이 작다\n  탐색 --> 학습데이터: 이 이미지가 통했는지 알게 된다\n  학습데이터 --> 예측\n  활용 --> 귀인문제: 자주 바꾸면 무엇 덕인지 모른다\n  귀인문제 --> 변경억제: 너무 자주 안 바뀌게 통제\n  변경억제 --> 활용\n  무시가능 --> [*]\n  note right of 무시가능\n    탐색 비용이 컸다면\n    이 방법은 안 맞았을 것이다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 하나만 보여줄 수 있을 때",
+          "question": "이 문제가 보통의 추천과 어떻게 다른가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[자리는 하나뿐이다] --> B[여러 개를 보여주고 고른 것에서 배울 수 없다]\n  B --> C[닫힌 루프 · 닭과 달걀]\n  C --> D{이 이미지가 재생을 만들었나}\n  D -->|아니면| E[어떤 이미지였든 봤을까]\n  F[자주 바꾸면] --> G[타이틀을 다시 못 찾는다]\n  F --> H[무엇이 관심을 끌었는지 모른다]\n  H -.->|학습 자체가 망가진다| C\n  I[클릭만 최적화하면] --> J[낚시성 이미지를 배운다]\n  J -.->|그래서| K[참여의 질로 레이블을 정한다]\n  L[이미지를 격리해서 보면] --> M[모든 타이틀이 비슷해진다]\n  M --> N[페이지 전체가 매력적이지 않다]\n  O[배치 학습 + A/B] --> P[기다리는 동안의 후회]\n  Q[렌더링 실패] --> R[경험이 크게 나빠진다]\n  S[새 타이틀 출시] --> T[콜드스타트 · 빠르게 배워야 한다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Artwork Personalization at Netflix",
+          "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+          "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+          "date": "2017-12-08",
+          "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -984,7 +1431,10 @@
     "Open Connect(콘텐츠 전송망)와 추천·발견 도메인은 아직 손대지 않았다.",
     "이 글은 2015년 자료다 — per-shot 인코딩이나 AV1 같은 이후의 진전은 반영돼 있지 않다.",
     "국가·지역별 popularity feed 를 어떤 방법으로 계산하는지는 공개되지 않았다 — 후속 글에서 다루겠다고만 밝힌다.",
-    "fill window 의 실제 길이와 시간대별 설정, 그리고 title liveness 의 '충분한 사본' 기준 수치는 밝히지 않는다."
+    "fill window 의 실제 길이와 시간대별 설정, 그리고 title liveness 의 '충분한 사본' 기준 수치는 밝히지 않는다.",
+    "같은 페이지·세션 안의 아트워크 다양성을 실제로 어떻게 조정하는지는 이 글에 없다 — 필요하다는 문제 제기까지만 나온다.",
+    "새 타이틀·새 이미지의 콜드스타트를 어떻게 다루는지는 '컴퓨터 비전 활용'을 앞으로의 방향으로만 밝힌다.",
+    "'질 좋은 참여'를 어떤 기준으로 판정하는지는 공개돼 있지 않다."
   ],
   "sources": [
     {
@@ -1014,6 +1464,13 @@
       "publisher": "Netflix Open Connect",
       "date": "2026-08 확인",
       "summary": "OCA 는 Netflix 의 60개 넘는 글로벌 데이터센터에서 쓰는 것과 같은 장비로, ISP 네트워크 안에 embedded 로 놓이거나 IXP 에서 무정산 피어링으로 연결된다. 자격 있는 ISP 에게 무상 제공되며 ISP 는 랙 공간·전력·연결과 BGP 세션을 제공한다. ISP 파트너 1,000곳 이상."
+    },
+    {
+      "title": "Artwork Personalization at Netflix",
+      "url": "https://netflixtechblog.com/artwork-personalization-c589f074ad76",
+      "publisher": "Netflix TechBlog · Ashok Chandrashekar, Fernando Amat, Justin Basilico, Tony Jebara",
+      "date": "2017-12-08",
+      "summary": "무엇을 추천할지가 아니라 그 타이틀을 어떤 이미지로 보여줄지를 개인화한 이야기. 한 자리에 하나만 보여줄 수 있어 닫힌 루프가 되는 문제를 컨텍스추얼 밴딧으로 풀었고, 탐색 비용이 1억 명에 분산되는 것이 이 방법을 고른 결정적 이유였다."
     }
   ]
 }
