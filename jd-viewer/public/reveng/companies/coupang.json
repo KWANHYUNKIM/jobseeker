@@ -80,8 +80,48 @@
     {
       "name": "물류센터·재고 배치",
       "why": "직접 사서 직접 보관하는 회사라, 무엇을 어디에 미리 놓아두느냐가 익일 배송의 가능 여부를 정한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "SCM Workflow (노코드 데이터 빌더 + 로우코드 서비스 빌더)",
+          "solves": "수요 예측과 센터 간 상품 분배를 다루는 팀에서, 데이터에 닿는 일이 담당 엔지니어에게 병목되던 구조를 없앤다. 도메인이 늘어도 시스템을 새로 짓지 않는다.",
+          "limits": "알고리즘 바깥의 모든 것을 플랫폼이 정하게 되어, 플랫폼이 못 하는 일은 그 팀도 못 한다. 개인 실험 공간이 아직 없어 실험과 운영이 같은 자리에서 이뤄진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+              "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+              "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+              "date": "2022-10-28",
+              "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "커스텀 서비스 컴포넌트",
+          "solves": "도메인 엔지니어의 핵심 알고리즘을 블록으로 등록해 재사용하고, 비엔지니어도 ML 모델을 포함한 서비스를 조립하게 한다.",
+          "limits": "컴포넌트의 입출력 계약을 계속 지켜야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+              "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+              "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+              "date": "2022-10-28",
+              "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "수요 예측 · 재고 배치 알고리즘 자체",
+          "solves": "— 확인하지 못했다.",
+          "limits": "SCM 팀이 '수요를 예측하고 센터 간 분배 효율을 높이는 알고리즘을 만든다'는 사실만 공개돼 있고, 무엇을 어떤 기준으로 어디에 미리 놓는지는 자료를 찾지 못했다. **이 회사의 핵심인데 이 사이트의 가장 큰 구멍이다.**",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "scm-workflow"
+      ]
     },
     {
       "name": "상품 검색·추천",
@@ -482,12 +522,381 @@
           "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
         }
       ]
+    },
+    {
+      "key": "scm-workflow",
+      "name": "SCM 워크플로 — 알고리즘이 아니라 알고리즘을 만드는 도구",
+      "domain": "물류센터·재고 배치",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "익일 배송은 전국의 물류센터들이 만들어 낸다. SCM 팀이 하는 일은 **수요를 예측하고, 주문 처리와 물류센터 사이의 상품 분배 효율을 높이는 알고리즘·모델을 만드는 것**이다. 그런데 이 팀에는 엔지니어만 있는 게 아니라 비즈니스 분석가·데이터 사이언티스트·운영 인력이 함께 있다. 그래서 이 도메인의 실제 병목은 알고리즘이 아니라 **'그 알고리즘에 필요한 데이터를 누가 꺼낼 수 있는가'**였다.",
+        "metrics": [
+          {
+            "label": "병목의 모양",
+            "value": "간단한 데이터 작업도 여러 도구를 거쳐야 해서 담당 엔지니어 말고는 아무도 바꿀 수 없었고, BA·데이터 사이언티스트가 새 모델을 만들려면 매번 엔지니어에게 요청해야 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "반복의 모양",
+            "value": "고객 수요·주문 이행 분배·주문·상품 이동 도메인이 서로의 데이터를 쓰며 비슷한 코드를 갖게 됐다 — 메인 알고리즘을 빼면 데이터 추출·처리·공유가 전부 반복이었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "BA 가 모델 하나를 만들려고 엔지니어를 기다릴 때",
+          "thought": "요청 자체는 표준적인 작업이다. 그런데 여러 도구에 접근해야 하고 코드를 써야 해서 담당 엔지니어만 할 수 있다. **그 소통 과정이 양쪽 모두의 시간을 크게 잡아먹는다** — 일이 어려워서가 아니라 접근 권한이 한 사람에게 몰려서다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "도메인이 하나 더 늘어날 때",
+          "thought": "시스템마다 목적은 비슷한데 각자 서버·배치·설정을 따로 만들고 따로 고친다. 메인 알고리즘만 다르고 나머지는 같은 코드다. **도메인을 늘리는 데 매번 시스템을 새로 짓는 구조라면, 성장 자체가 비용이 된다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "비엔지니어에게 캔버스를 주려 할 때",
+          "thought": "블록을 늘어놓는 것만으로는 부족하다. 실행 중에 각 블록이 다른 블록의 입출력을 파라미터로 받을 수 있어야 **워크플로 하나가 하나의 프로그램처럼 동작**한다. 조건·반복·병렬까지 캔버스 위에 있어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모두가 이 플랫폼 위에서 돌기 시작할 때",
+          "thought": "편해진 만큼 여기가 멈추면 전부 멈춘다. **단일 장애점이 되지 않게** 세 개 레이어로 나누고, 각 레이어를 필요할 때 늘릴 수 있는 클러스터로 둔다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "노드 / 서비스 블록",
+            "what": "데이터를 꺼내거나 계산하는 단위. 캔버스에서 끌어다 잇는다."
+          },
+          {
+            "name": "워크플로 모델",
+            "what": "블록들의 연결. 저장하면 ID·URL·파일 경로로 남에게 공유된다."
+          },
+          {
+            "name": "워크플로 인스턴스",
+            "what": "실제로 실행된 한 번. 고유한 상태를 갖고 순차·병렬·반복으로 처리된다."
+          },
+          {
+            "name": "커스텀 서비스 컴포넌트",
+            "what": "도메인 엔지니어가 만든 핵심 알고리즘을 등록해 남들이 블록으로 쓰게 한 것."
+          }
+        ],
+        "invariants": [
+          "데이터에 닿는 사람이 한 명이면, 그 사람이 곧 팀의 처리량 상한이다.",
+          "도메인이 늘 때마다 시스템을 새로 지어야 한다면 성장 자체가 비용이 된다.",
+          "모두가 올라탄 플랫폼은 단일 장애점이 되어서는 안 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "데이터 소스에서 값을 꺼내는 노드를 만든다(Hive·Presto·MySQL·S3 등)",
+            "why": "재고와 고객 주문 데이터를 가져와야 계산이 시작된다"
+          },
+          {
+            "step": "노드마다 필요한 쿼리를 넣는다",
+            "why": "코드가 아니라 쿼리 단위라 엔지니어가 아니어도 쓴다"
+          },
+          {
+            "step": "그 데이터를 입력으로 받는 계산 노드를 만들어 잇는다",
+            "why": "예: 물류센터 간에 무엇을 얼마나 옮겨야 주문을 가장 많이 채울 수 있는가"
+          },
+          {
+            "step": "복잡한 쿼리는 여러 개로 쪼개 병렬로 돌린다",
+            "why": "하나씩 처리하는 것보다 빠르다"
+          },
+          {
+            "step": "결과를 워크플로 ID·URL·파일 경로로 공유하고 callback 으로 다른 시스템에 넘긴다",
+            "why": "오프라인 파일을 주고받을 필요가 없어진다"
+          },
+          {
+            "step": "스케줄러로 시간·일·주 단위 반복을 건다",
+            "why": "한 번 만든 워크플로가 계속 도는 파이프라인이 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "BA·데이터 사이언티스트의 데이터 요구를 엔지니어가 계속 대신 처리할 것인가",
+            "chosen": "노코드 데이터 빌더를 만들어 데이터 소스 접근·추출·연동을 직접 하게 한다",
+            "alternatives": [
+              "요청 프로세스 개선",
+              "전담 인력 증원"
+            ],
+            "tradeoff": "플랫폼 자체를 만들고 계속 유지해야 하고, 엔지니어가 아닌 사람이 만든 파이프라인이 늘어난다. 대신 **요청과 대기라는 왕복이 통째로 사라진다** — 문제가 난이도가 아니라 접근 권한이었기 때문에 효과가 크다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "도메인이 늘 때마다 시스템을 새로 만들 것인가",
+            "chosen": "반복되는 데이터 추출·처리·공유를 표준화한 로우코드 서비스 빌더를 만들고, 엔지니어는 알고리즘에만 집중한다",
+            "alternatives": [
+              "도메인별 시스템 유지",
+              "공통 라이브러리만 제공"
+            ],
+            "tradeoff": "알고리즘 바깥의 모든 것을 플랫폼이 정하게 되어, 플랫폼이 못 하는 일은 그 팀도 못 하게 된다. 대신 시스템마다 따로 하던 유지·보수가 한 곳으로 모인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "핵심 알고리즘은 플랫폼 밖에 둘 것인가",
+            "chosen": "도메인 엔지니어가 알고리즘을 **커스텀 서비스 컴포넌트로 등록**해 남들이 블록처럼 쓰게 한다",
+            "alternatives": [
+              "알고리즘은 각 시스템에 유지",
+              "플랫폼이 알고리즘까지 제공"
+            ],
+            "tradeoff": "컴포넌트의 입출력 계약을 지켜야 하는 부담이 생긴다. 그 대신 **비엔지니어가 머신러닝 모델 같은 복잡한 서비스도 조립할 수 있게 되고**, 알고리즘 하나가 여러 워크플로에서 재사용된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "캔버스를 단순한 실행 순서 지정으로 둘 것인가",
+            "chosen": "실행 중에 블록들이 서로의 입출력을 파라미터로 주고받게 해 워크플로가 하나의 프로그램처럼 동작하게 한다. 조건문·반복·병렬화도 캔버스에 올린다",
+            "alternatives": [
+              "순서만 지정하는 오케스트레이션",
+              "상용 워크플로 도구 도입"
+            ],
+            "tradeoff": "그래픽으로 프로그래밍하는 것의 한계를 그대로 떠안는다 — 복잡해질수록 캔버스가 코드보다 읽기 어려워진다(뒷문장은 추정). 회사는 이 입출력 통합을 상용 워크플로 대비 가장 큰 장점으로 꼽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "모두가 올라탄 플랫폼의 장애를 어떻게 막을 것인가",
+            "chosen": "단일 장애점이 되지 않도록 아키텍처를 **세 개 레이어로 나누고**, 각 레이어를 필요할 때 스케일아웃하는 클러스터로 둔다",
+            "alternatives": [
+              "단일 서비스",
+              "팀별 인스턴스 분리"
+            ],
+            "tradeoff": "구조가 복잡해지고 레이어 사이의 계약을 관리해야 한다. 그래도 여기가 멈추면 SCM 의 여러 시스템이 함께 멈춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "오래 걸리는 작업이 다른 작업을 막지 않게 하려면",
+            "chosen": "워크플로 엔진과 워커를 독립된 존재로 설계하고, 시간·자원을 많이 쓰는 작업은 비동기 요청으로 따로 돌린다",
+            "alternatives": [
+              "동기 실행",
+              "작업 크기 제한"
+            ],
+            "tradeoff": "실행 인스턴스마다 상태를 따로 추적해야 한다. 대신 수많은 워크플로가 동시에 돌아도 서로를 막지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "결과를 어떻게 주고받을 것인가",
+            "chosen": "워크플로 ID·URL·파일 경로로 공유하고 callback 함수로 다른 시스템에 연동한다",
+            "alternatives": [
+              "파일을 내보내 주고받기"
+            ],
+            "tradeoff": "공유가 플랫폼 안에서만 자연스럽다는 뜻이기도 하다. 대신 오프라인 파일이 돌아다니지 않아 어떤 결과가 어느 워크플로에서 나왔는지가 항상 추적된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "누구나 만들 수 있게 하면 통제는 어떻게 하나",
+            "chosen": "팀·프로젝트별 그룹 폴더에 생성·편집·삭제 권한을 건다",
+            "alternatives": [
+              "전면 개방",
+              "승인 절차"
+            ],
+            "tradeoff": "권한 관리가 또 하나의 일이 된다. 다만 개인 실험 공간은 아직 계획 단계라, **실험과 운영이 같은 자리에서 이뤄지는 상태**가 남아 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "노코드 데이터 빌더",
+            "role": "Hive·Presto·MySQL·S3 등에서 데이터를 꺼내고 가공해 다른 시스템에 넘긴다. 복잡한 쿼리는 쪼개 병렬 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "로우코드 서비스 빌더",
+            "role": "버저닝·설정·에러 로그·웹 디버깅·실시간 모니터링을 기본으로 주고, 메신저 알림·REST callback·retry·파일 처리·큐 송수신 같은 공유 컴포넌트를 제공한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "커스텀 서비스 컴포넌트",
+            "role": "도메인의 핵심 알고리즘을 블록으로 등록해 재사용하게 한다 — 비엔지니어도 ML 모델을 포함한 서비스를 조립할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "워크플로 엔진 + 독립 워커 · 3계층 클러스터",
+            "role": "실행 인스턴스별 상태를 관리하고 순차·병렬·반복으로 처리한다. 단일 장애점을 피하려 계층을 나누고 필요할 때 스케일아웃한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "delivery-area",
+          "via": "출고와 배송",
+          "contract": "센터에서 나간 물건이 어느 배송 영역으로 가는지 이어져야 하는데, 두 글은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "주문·배송 약속",
+          "via": "재고 위치",
+          "contract": "어느 센터에 무엇이 있느냐가 '언제 도착한다'를 정한다 — 글은 '주문을 가장 많이 채우는 이동량 계산'을 예로 든다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 센터 간 이동량을 계산하는 워크플로",
+          "question": "코드를 쓰지 않는 사람이 어떻게 데이터 파이프라인을 만드는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  INV[노드 · 재고 데이터<br/>Hive · Presto · MySQL · S3] --> CALC\n  ORD[노드 · 고객 주문 데이터] --> CALC[계산 노드<br/>얼마나 옮겨야 주문을 가장 많이 채우나]\n  SPLIT[복잡한 쿼리는 쪼개서] -.->|병렬| INV\n  SPLIT -.->|병렬| ORD\n  CALC --> OUT{결과}\n  OUT -->|워크플로 ID · URL · 경로| SHARE[다른 팀이 그대로 본다]\n  OUT -->|callback| SYS[다른 시스템에 연동]\n  SCHED[스케줄러 · 시간 · 일 · 주] --> CALC\n  CUSTOM[커스텀 컴포넌트<br/>도메인 엔지니어의 알고리즘] -.->|블록으로| CALC"
+        },
+        {
+          "title": "워크플로 인스턴스가 지나는 상태",
+          "question": "오래 걸리는 작업 하나가 왜 다른 작업을 막지 않는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 모델작성: 캔버스에서 블록을 잇는다\n  모델작성 --> 예약됨: 스케줄러 · 크론\n  예약됨 --> 실행중: 인스턴스가 고유 상태를 갖는다\n  실행중 --> 병렬처리: 설정에 따라\n  실행중 --> 순차처리\n  실행중 --> 비동기독립: 시간 · 자원을 많이 쓰는 작업\n  비동기독립 --> 실행중\n  병렬처리 --> 성공\n  순차처리 --> 성공\n  실행중 --> 실패: 에러 로그를 웹에서 본다\n  실패 --> 실행중: retry 컴포넌트\n  성공 --> [*]\n  note right of 비동기독립\n    엔진과 워커가 독립이라\n    서로를 막지 않는다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 한 사람만 데이터에 닿을 때, 그리고 모두가 한 곳에 올라탈 때",
+          "question": "이 플랫폼이 푼 문제와 새로 떠안은 위험은 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[데이터 작업이 여러 도구를 거친다] --> B[담당 엔지니어만 바꿀 수 있다]\n  B --> C[BA · 데이터 사이언티스트가 매번 요청한다]\n  C --> D[왕복이 양쪽 시간을 잡아먹는다]\n  D --> E[모델을 만드는 속도가 사람 한 명에 묶인다]\n  F[도메인이 늘어난다] --> G[시스템마다 서버 · 배치 · 설정을 따로]\n  G --> H[알고리즘만 다르고 나머지는 같은 코드]\n  H --> I[성장 자체가 유지보수 비용]\n  P[플랫폼이 이 둘을 푼다] -.-> RISK{그런데}\n  RISK -->|모두가 올라탄다| SPOF[여기가 멈추면 전부 멈춘다]\n  SPOF -.->|그래서| L3[3계층 분리 · 클러스터 스케일아웃]\n  RISK -->|개인 실험 공간이 아직 없다| MIX[실험과 운영이 같은 자리에]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+          "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+          "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+          "date": "2022-10-28",
+          "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "물류센터가 무엇을 어디에 미리 배치하는지(수요 예측·재고 배치)는 아직 자료를 찾지 못했다 — 이 회사의 핵심인데 이 사이트에 비어 있다.",
+    "물류센터가 무엇을 어디에 미리 배치하는지(수요 예측·재고 배치 알고리즘)는 여전히 자료를 찾지 못했다 — SCM 글은 그 알고리즘을 '만드는 도구'를 다루지 아직 알고리즘 자체를 다루지 않는다.",
     "격자 단위 지표로 '배송 난이도'를 실제로 어떻게 계산하는지는 글이 앞으로 할 일로만 언급한다.",
-    "4분기 영업이익 97% 급감과 활성고객 감소가 개인정보 사고와 얼마나 인과가 있는지는 기사도 '추정된다'고만 쓴다 — 회사 공식 설명은 확인하지 못했다."
+    "4분기 영업이익 97% 급감과 활성고객 감소가 개인정보 사고와 얼마나 인과가 있는지는 기사도 '추정된다'고만 쓴다 — 회사 공식 설명은 확인하지 못했다.",
+    "SCM Workflow 가 실제로 몇 개 워크플로를 돌리는지, 비엔지니어가 만든 비중이 얼마인지 같은 규모 수치는 공개돼 있지 않다."
   ],
   "sources": [
     {
@@ -503,6 +912,13 @@
       "publisher": "ZDNet Korea",
       "date": "2026-02-27",
       "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+    },
+    {
+      "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+      "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+      "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+      "date": "2022-10-28",
+      "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
     }
   ]
 }
