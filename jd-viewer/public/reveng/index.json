@@ -62,10 +62,10 @@
       "name_en": "Coupang",
       "country": "KR",
       "category": "커머스",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "'내일 도착한다'는 약속 하나를 지키려고 물류를 직접 소유한 커머스",
-      "features_done": 4
+      "features_done": 5
     }
   ],
   "domains": [

@@ -4,10 +4,10 @@
   "name_en": "Coupang",
   "country": "KR",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "'내일 도착한다'는 약속 하나를 지키려고 물류를 직접 소유한 커머스",
-  "business_model": "남의 물건을 중개만 하는 게 아니라 **직접 사서 직접 보관하고 직접 배송한다.** 2025년 연간 매출 345.34억 달러(49조 1,197억원) 중 프로덕트 커머스(로켓배송·로켓프레시·마켓플레이스·로켓그로스)가 295.92억 달러, 쿠팡이츠·쿠팡플레이·파페치·대만 같은 성장사업이 49.42억 달러다. 영업이익은 4.73억 달러(약 6,790억원)로 **매출 대비 이익률이 매우 얇고**, 성장사업은 연간 9.95억 달러의 EBITDA 손실을 낸다 — 커머스가 번 것을 새 사업에 붓는 구조다. 활성고객은 2,460만 명. 앞선 회사들과 다른 점은 수익원이 광고나 수수료가 아니라 **물건값 자체**이고, 그래서 물류 비용을 얼마나 줄이느냐가 곧 이익률이라는 것이다.",
+  "business_model": "남의 물건을 중개만 하는 게 아니라 **직접 사서 직접 보관하고 직접 배송한다.** 2025년 연간 매출 345.34억 달러(49조 1,197억원) 중 프로덕트 커머스(로켓배송·로켓프레시·마켓플레이스·로켓그로스)가 295.92억 달러, 쿠팡이츠·쿠팡플레이·파페치·대만 같은 성장사업이 49.42억 달러다. 영업이익은 4.73억 달러(약 6,790억원)로 **매출 대비 이익률이 매우 얇고**, 성장사업은 연간 9.95억 달러의 EBITDA 손실을 낸다 — 커머스가 번 것을 새 사업에 붓는 구조다. 활성고객은 2,460만 명. 앞선 회사들과 다른 점은 수익원이 광고나 수수료가 아니라 **물건값 자체**이고, 그래서 물류 비용을 얼마나 줄이느냐가 곧 이익률이라는 것이다.\n\n**그리고 이 회사를 다섯 도메인에 걸쳐 읽으면 같은 처방이 세 번 반복된다.** SCM Workflow(물류), Indexing Platform 2.0(검색), core serving layer 템플릿(서빙)이 전부 **'반복되는 준비 작업을 플랫폼이 가져가고 사람은 로직만 쓴다'**로 끝난다. 세 글 모두 문제 진단이 같다 — 일의 대부분이 그 일 자체가 아니라 그 일을 하기 위한 준비였고, 그래서 도메인이 늘어날수록 성장 자체가 비용이 됐다는 것. 물류 비용이 곧 이익률인 회사가 **엔지니어링 반복 비용도 같은 눈으로 본다**는 점이 이 회사의 성격을 가장 잘 보여준다(마지막 문장은 이 사이트의 해석).",
   "products": [
     "로켓배송",
     "로켓프레시",
@@ -210,9 +210,64 @@
     },
     {
       "name": "마켓플레이스·셀러",
-      "why": "직매입만으로는 상품 수를 채울 수 없다. 셀러의 물건을 로켓그로스로 물류에 태우는 것이 접점이다.",
-      "tech": [],
-      "features": []
+      "why": "직매입만으로는 상품 수를 채울 수 없다. 전 세계 셀러가 들어와 파는데, 여기서 앞선 도메인과 다른 문제가 생긴다 — **셀러도 상품도 우리 언어로 오지 않는다.** 기계가 못 알아보는 상품은 검색에도 추천에도 광고에도 오르지 못한다.",
+      "tech": [
+        {
+          "tech": "LLM 기반 상품·셀러 이해(단일 카테고리 분류기 · 속성 추출 · 번역 · 키워드 생성)",
+          "solves": "여러 언어로 들어온 상품을 하나의 모델이 이해해 카테고리와 속성을 뽑는다. 카테고리마다 모델을 두던 운영 부담을 없애면서 정밀도도 올렸다.",
+          "limits": "남의 아키텍처와 토크나이저에 얹히고, CJK 특성 때문에 토크나이저가 품질에 직접 영향을 준다. 큰 모델을 실시간에 그대로 쓸 수 없어 증류나 임베딩을 거쳐야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Accelerating Coupang's AI Journey with LLMs",
+              "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+              "publisher": "Coupang Engineering Blog · ML Platform Team",
+              "date": "2024-10-15",
+              "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "LLM 약한 레이블 생성",
+          "solves": "고품질 레이블이 없는 언어·세그먼트에서 학습을 시작할 수 있게 한다.",
+          "limits": "기계가 만든 레이블이라 품질 검사를 반드시 거쳐야 하고, 검사 기준 자체는 공개돼 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Accelerating Coupang's AI Journey with LLMs",
+              "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+              "publisher": "Coupang Engineering Blog · ML Platform Team",
+              "date": "2024-10-15",
+              "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "ML 인프라(DeepSpeed ZeRO · Triton · Ray+vLLM · 멀티리전+온프렘)",
+          "solves": "단일 GPU 에 안 들어가는 모델을 학습하고, CPU 뿐이던 서빙을 GPU 로 옮기며(vLLM 약 20배 처리량), GPU 공급 부족을 우회한다.",
+          "limits": "여러 환경에서 저장소·네트워크·개발자 경험을 일관되게 유지해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Accelerating Coupang's AI Journey with LLMs",
+              "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+              "publisher": "Coupang Engineering Blog · ML Platform Team",
+              "date": "2024-10-15",
+              "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "셀러 운영(입점·정산·로켓그로스)",
+          "solves": "— 확인하지 못했다.",
+          "limits": "셀러가 어떻게 들어오고 무엇을 정산받는지, 로켓그로스가 물류와 어떻게 맞물리는지는 공개 엔지니어링 자료를 찾지 못했다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "seller-understanding"
+      ]
     }
   ],
   "features": [
@@ -1761,6 +1816,411 @@
           "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
         }
       ]
+    },
+    {
+      "key": "seller-understanding",
+      "name": "셀러·상품 이해 — 전 세계가 올린 물건을 기계가 알아보게 하기",
+      "domain": "마켓플레이스·셀러",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "쿠팡은 직접 사서 파는 것만으로는 상품 수를 채울 수 없다. **전 세계 셀러가 들어와 파는 마켓플레이스**가 그 자리를 메우는데, 여기서 앞선 도메인들과 다른 문제가 생긴다 — **셀러도 상품도 우리 언어로 오지 않는다.** 게다가 쿠팡의 주 무대인 한국어와 중국어는 대부분의 ML 과제에서 학습 데이터가 상대적으로 적고, 상품 이미지에는 글자가 박혀 있다. 셀러의 물건을 기계가 못 알아보면 검색에도 추천에도 광고에도 오르지 못한다.",
+        "metrics": [
+          {
+            "label": "판이 다른 지점",
+            "value": "한국어·중국어는 대부분의 ML 과제에서 학습 데이터가 상대적으로 적고, 전 세계 셀러가 여러 언어로 상품을 올리며 이미지에는 글자가 박혀 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "label": "합쳐서 얻은 것",
+            "value": "카테고리마다 두던 분류 모델을 LLM 기반 단일 분류기로 바꿔 대부분의 카테고리에서 정밀도가 올라갔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "label": "인프라에서 얻은 것",
+            "value": "vLLM 으로 여러 워크로드에서 약 20배 처리량 향상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "카테고리마다 모델을 관리하고 있을 때",
+          "thought": "통합 모델을 쓰면 **꼬리 카테고리에서 예측이 지저분해진다.** 그래서 카테고리마다 모델을 하나씩 뒀는데, 이번엔 그 모델들을 전부 관리하는 것이 일이 됐다. 정확도를 위해 나눈 것이 운영 부담으로 돌아온 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "한국어·중국어 레이블을 구하려 할 때",
+          "thought": "사람이 붙인 레이블은 원래 비싸고 어려운데, **다국어면 그 어려움이 배가된다.** 그런데 새 세그먼트를 시작할 때 필요한 건 완벽한 레이블이 아니라 시작할 수 있을 만큼의 레이블이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이미지와 텍스트를 따로 다루다가",
+          "thought": "상품에는 제목·설명·질의라는 텍스트와 이미지가 함께 있다. **둘을 따로 배우게 하는 것보다 함께 모델링할 때 더 좋은 임베딩이 나온다** — 그 임베딩이 광고 검색·유사도 검색·추천의 재료가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GPU 를 못 구할 때",
+          "thought": "클라우드 GPU 는 대기 시간이 길어 실행 계획이 흔들린다. 그리고 서빙 스택이 전부 CPU 였는데, 수십억 파라미터 모델에는 너무 느리다. **모델을 바꾸는 일이 곧 인프라를 바꾸는 일이 된다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "셀러·상품 데이터",
+            "what": "제목·설명·리뷰·셀러 정보 같은 텍스트와 글자가 박힌 이미지. 여러 언어로 들어온다."
+          },
+          {
+            "name": "약한 레이블",
+            "what": "LLM 이 대량으로 만든 레이블. 품질 검사를 통과하면 학습에 쓴다."
+          },
+          {
+            "name": "임베딩",
+            "what": "이미지와 텍스트를 함께 모델링해 얻은 표현. 광고 검색·유사도 검색·추천 피처로 쓰인다."
+          },
+          {
+            "name": "소스 LLM",
+            "what": "학습을 마친 큰 모델. 실시간에 그대로 쓰지 않고 증류하거나 임베딩을 뽑아 쓴다."
+          }
+        ],
+        "invariants": [
+          "기계가 못 알아보는 상품은 검색·추천·광고 어디에도 오르지 못한다.",
+          "정확도를 위해 모델을 쪼개면 운영 부담이 그만큼 늘어난다.",
+          "학습 데이터가 적은 언어에서는 레이블 자체가 병목이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "셀러가 여러 언어로 상품을 올린다",
+            "why": "전 세계 셀러가 파는 마켓플레이스이기 때문"
+          },
+          {
+            "step": "이미지와 텍스트를 함께 모델링해 임베딩을 만든다",
+            "why": "따로 배우는 것보다 좋은 표현이 나온다"
+          },
+          {
+            "step": "LLM 단일 분류기가 카테고리와 속성을 뽑는다",
+            "why": "제목·설명·리뷰·셀러 정보를 함께 읽어 판단한다"
+          },
+          {
+            "step": "레이블이 부족한 곳은 LLM 이 만든 약한 레이블로 메운다",
+            "why": "품질 검사를 통과하면 학습에 쓸 수 있다"
+          },
+          {
+            "step": "제목을 한국어에서 중국어로 번역하고, 상품·셀러 키워드를 생성한다",
+            "why": "언어가 다르다고 노출에서 밀리지 않게"
+          },
+          {
+            "step": "소스 LLM 에서 작은 모델을 증류하거나 임베딩을 뽑아 실시간에 쓴다",
+            "why": "큰 모델을 실시간에 그대로 쓸 수 없다"
+          },
+          {
+            "step": "그 결과가 검색·광고·추천의 재료가 된다",
+            "why": "이해가 곧 노출이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "카테고리 분류를 어떻게 할 것인가",
+            "chosen": "카테고리마다 모델을 두던 방식을 버리고, 상품 데이터를 깊이 읽는 **LLM 기반 단일 분류기 하나**로 모든 카테고리를 처리한다",
+            "alternatives": [
+              "카테고리별 모델 유지",
+              "일반적인 다중 클래스 모델"
+            ],
+            "tradeoff": "원래 통합 모델을 못 쓴 이유가 **꼬리 카테고리에서 예측이 지저분해서**였다 — LLM 이 제목·설명·리뷰·셀러 정보를 함께 이해하면서 그 이유가 사라졌고, 대부분의 카테고리에서 정밀도가 올랐다. 대신 모델 하나에 더 큰 자원이 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "레이블이 부족한 언어를 어떻게 할 것인가",
+            "chosen": "LLM 으로 대량의 약한 레이블을 만들고, 품질 검사를 통과한 것만 약한 지도학습에 쓴다",
+            "alternatives": [
+              "사람 레이블 확대",
+              "레이블 많은 세그먼트만 공략"
+            ],
+            "tradeoff": "기계가 만든 레이블이라 검사 단계를 반드시 끼워야 한다. 그래도 **고품질 레이블이 없는 새 세그먼트를 시작할 수 있게 해 준다** — 내부 실험에서 relevance 모델 품질이 좋아졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "이미지와 텍스트를 따로 배울 것인가",
+            "chosen": "vision·language 트랜스포머로 **함께 모델링**한다(CLIP·TrOCR 계열)",
+            "alternatives": [
+              "각각 임베딩 후 결합"
+            ],
+            "tradeoff": "학습이 무거워진다. 대신 따로 배운 것보다 나은 임베딩이 나오고, 이미지에 박힌 글자까지 다뤄야 하는 마켓플레이스 특성에 맞는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "모델을 직접 만들 것인가",
+            "chosen": "오픈소스 아키텍처를 가져와 도메인 데이터로 파인튜닝한다. CJK 성능을 우선 보고 3B~20B 규모를 선호한다",
+            "alternatives": [
+              "자체 사전학습",
+              "가장 큰 모델 사용"
+            ],
+            "tradeoff": "남의 아키텍처와 토크나이저에 얹히게 된다 — 한국어·중국어는 띄어쓰기와 문자 기반 특성, 큰 어휘 크기 때문에 **토크나이저가 곧 모델 품질에 영향**을 준다. 대신 시간과 연산을 크게 아낀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "LLM 을 어떤 방식으로 쓸 것인가",
+            "chosen": "맥락 학습(ICL)과 지도 파인튜닝(SFT)을 주로 쓴다",
+            "alternatives": [
+              "RAG",
+              "계속 사전학습(CPT)"
+            ],
+            "tradeoff": "CPT 는 속성 추출 같은 과제에서 가장 좋은 결과를 내지만 자원이 많이 든다. RAG 는 생성과 검색을 실시간으로 맞물리게 하는 게 까다로워 병목과 오류의 소지가 된다. **가장 좋은 방법이 아니라 가장 자주 돌릴 수 있는 방법을 골랐다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "학습한 큰 모델을 실시간에 그대로 쓸 것인가",
+            "chosen": "소스 LLM 에서 작은 모델을 **증류**하거나 **임베딩을 뽑아** 작은 모델에 넣어 쓴다",
+            "alternatives": [
+              "소스 LLM 직접 서빙"
+            ],
+            "tradeoff": "원본의 성능을 일부 내준다. 대신 실시간 서빙이 가능해지고, 랭킹 문제에서는 임베딩만으로 충분한 경우가 많다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "GPU 부족을 어떻게 넘길 것인가",
+            "chosen": "아시아태평양·미국 여러 리전에 걸친 클라우드 클러스터에 **온프렘 클러스터를 더한 하이브리드**로 간다. 1B 이상 학습은 A100-80GB, 테스트·경량 학습은 A10G-24GB",
+            "alternatives": [
+              "단일 리전 클라우드",
+              "전량 온프렘"
+            ],
+            "tradeoff": "저장소·네트워크·개발자 경험을 여러 환경에서 일관되게 유지해야 한다. 그래도 클라우드 GPU 대기 시간이 실행 계획을 흔드는 상황에서는 이쪽이 낫고 전체 학습 비용도 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "CPU 뿐이던 서빙 스택을 어떻게 할 것인가",
+            "chosen": "실시간은 EKS 위의 Nvidia Triton, 배치는 Ray + vLLM 으로 옮긴다",
+            "alternatives": [
+              "기존 CPU 스택 유지",
+              "자체 서빙 엔진 개발"
+            ],
+            "tradeoff": "새 스택을 통째로 들여야 한다. 그래도 수십억 파라미터 모델에 CPU 는 너무 느렸고, 실험 결과 **vLLM 이 여러 워크로드에서 약 20배 처리량**을 냈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OSS LLM 파인튜닝 (Qwen·LLAMA·T5·Phi·Polyglot, 3B~20B)",
+            "role": "다국어(특히 CJK) 상품·셀러 이해. 카테고리 분류와 속성 추출을 단일 모델로 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "CLIP · TrOCR",
+            "role": "이미지와 텍스트를 함께 모델링해 임베딩을 만든다. 이미지에 박힌 글자를 읽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "DeepSpeed ZeRO · PytorchJob · Polyaxon (Kubernetes)",
+            "role": "단일 GPU 에 안 들어가는 모델을 모델 병렬로 학습한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "Nvidia Triton (EKS) · Ray + vLLM",
+            "role": "실시간 GPU 서빙과, CPU·GPU 가 섞인 배치·니어라인 추론을 담당한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "멀티리전 클라우드 + 온프렘 하이브리드",
+            "role": "GPU 공급 부족과 대기 시간을 우회하고 학습 비용을 낮춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "search-indexing",
+          "via": "이해가 곧 노출",
+          "contract": "LLM 이 만든 임베딩과 속성이 검색·광고 검색·추천의 피처가 된다. 회사는 Search & Discovery 팀을 LLM 초기 도입자로 밝힌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "scm-workflow",
+          "via": "예측 모델",
+          "contract": "100개가 넘는 물류센터와 수백만 상품의 가격·물류·배송에 예측 모델이 쓰인다고 밝히지만, 그 모델이 무엇인지는 이 글에 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "core-serving",
+          "via": "카탈로그 데이터",
+          "contract": "여기서 정리된 상품 정보가 Catalog 마이크로서비스를 통해 화면에 오른다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 셀러가 올린 것이 노출되기까지",
+          "question": "우리 언어로 오지 않은 상품을 어떻게 알아보는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[전 세계 셀러<br/>여러 언어 · 글자 박힌 이미지] --> RAW[제목 · 설명 · 리뷰 · 셀러 정보 · 이미지]\n  RAW --> JOINT[이미지 · 텍스트 공동 모델링<br/>CLIP · TrOCR]\n  JOINT --> EMB[임베딩]\n  RAW --> LLM[LLM 단일 분류기]\n  LLM --> CAT[카테고리 · 속성]\n  LLM --> AUX[제목 번역 · 키워드 생성 · 리뷰 요약]\n  WEAK[레이블이 부족한 언어] --> GEN[LLM 이 약한 레이블 생성]\n  GEN --> CHK{품질 검사}\n  CHK -->|통과| TRAIN[모델 학습에 사용]\n  CHK -->|불합격| DROP[버린다]\n  EMB --> PROD{프로덕션 경로}\n  PROD -->|증류| SMALL[작은 모델로 실시간 추론]\n  PROD -->|임베딩 추출| RANK[랭킹 모델의 피처]\n  CAT --> SRCH[검색 · 광고 · 추천]\n  SMALL --> SRCH\n  RANK --> SRCH"
+        },
+        {
+          "title": "LLM 을 쓰는 네 가지 방식과 그 대가",
+          "question": "가장 좋은 방법 대신 가장 자주 돌릴 수 있는 방법을 고른 이유는?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> ICL: 맥락 학습 · 학습 없음 · 가장 저렴\n  ICL --> 프로토타입: 빠르게 세우고 평가\n  프로토타입 --> SFT: 작은 데이터로 파인튜닝\n  SFT --> 운영투입\n  프로토타입 --> RAG: 외부 지식으로 근거 붙이기\n  RAG --> 실시간난이도: 생성과 검색을 맞물리기 어렵다\n  실시간난이도 --> 병목위험\n  SFT --> CPT: 큰 데이터로 계속 사전학습\n  CPT --> 최고성능: 속성 추출에 가장 좋다\n  CPT --> 자원부담: 그만큼 비싸다\n  운영투입 --> [*]\n  note right of 운영투입\n    ICL 과 SFT 가 가장 널리 쓰인다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 언어·레이블·GPU 세 겹의 제약",
+          "question": "마켓플레이스가 커질수록 무엇이 먼저 막히는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[전 세계 셀러가 여러 언어로 올린다] --> B[기계가 상품을 못 알아본다]\n  B --> C[검색 · 추천 · 광고 어디에도 못 오른다]\n  D[한국어 · 중국어 학습 데이터가 적다] --> E[사람 레이블은 비싸고 다국어면 더하다]\n  E --> F[새 세그먼트를 시작조차 못 한다]\n  G[카테고리마다 모델을 둔다] --> H[정확도는 지키지만]\n  H --> I[관리할 모델이 계속 늘어난다]\n  J[통합 모델로 합치면] -.->|예전엔| K[꼬리 카테고리 예측이 지저분]\n  L[모델을 키우면] --> M[단일 GPU RAM 에 안 들어간다]\n  M --> N[데이터 병렬만으로 부족 · 모델 병렬 필요]\n  O[서빙이 전부 CPU 였다] --> P[수십억 파라미터에 너무 느리다]\n  Q[클라우드 GPU 대기 시간] --> R[실행 계획이 흔들린다]\n  R -.->|그래서| S2[멀티리전 + 온프렘 하이브리드]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Accelerating Coupang's AI Journey with LLMs",
+          "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+          "publisher": "Coupang Engineering Blog · ML Platform Team",
+          "date": "2024-10-15",
+          "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1770,7 +2230,9 @@
     "SCM Workflow 가 실제로 몇 개 워크플로를 돌리는지, 비엔지니어가 만든 비중이 얼마인지 같은 규모 수치는 공개돼 있지 않다.",
     "쿠팡의 랭킹 모델이 무엇이고 시그널 가중치를 어떻게 정하는지는 공개돼 있지 않다 — 인덱싱 글은 시그널을 '만드는 공장'까지만 다룬다.",
     "직매입 상품과 셀러 상품이 같은 검색 결과에서 어떻게 나란히 놓이는지(그리고 광고가 그 사이 어디에 들어가는지)는 확인하지 못했다.",
-    "보장 배송일을 어떤 규칙으로 계산하는지는 공개돼 있지 않다 — 센터의 출고 여력이 입력이라는 사실만 확인했다."
+    "보장 배송일을 어떤 규칙으로 계산하는지는 공개돼 있지 않다 — 센터의 출고 여력이 입력이라는 사실만 확인했다.",
+    "셀러 입점·정산과 로켓그로스가 물류에 어떻게 맞물리는지는 공개 엔지니어링 자료를 찾지 못했다 — 이 도메인은 '상품 이해' 축만 채웠다.",
+    "LLM 이 만든 약한 레이블의 품질 검사 기준은 공개돼 있지 않다."
   ],
   "sources": [
     {
@@ -1807,6 +2269,13 @@
       "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
       "date": "2022-08-12",
       "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+    },
+    {
+      "title": "Accelerating Coupang's AI Journey with LLMs",
+      "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+      "publisher": "Coupang Engineering Blog · ML Platform Team",
+      "date": "2024-10-15",
+      "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
     }
   ]
 }
