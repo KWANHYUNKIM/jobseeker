@@ -159,8 +159,71 @@
     {
       "name": "음성·영상",
       "why": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸져 서버가 미디어를 중계해야 하고, 그래야 IP 노출을 막고 서버측 음소거 같은 운영 기능도 가능해진다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "자체 제작 C++ SFU(Selective Forwarding Unit)",
+          "solves": "채널 안에서 오디오·영상을 전달한다. 서버를 거치기 때문에 **IP 노출을 막고 제재된 사용자의 패킷을 버릴 수 있으며**, 네이티브와 브라우저 사이를 번역한다. 다자 통화에서 P2P 는 참가자가 늘수록 감당할 수 없이 비싸진다.",
+          "limits": "서버 비용을 전부 회사가 진다 — 850대 이상, 220Gbps·120Mpps. 그리고 **길드 하나가 서버 하나에 묶여** 그 서버가 죽으면 그 길드의 통화가 통째로 영향을 받는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        },
+        {
+          "tech": "Elixir 제어 3종(Gateway · Guilds · Voice 시그널링) + etcd 배정",
+          "solves": "이미 열려 있는 게이트웨이 위에서 음성 연결을 시작하고, 첫 참가자가 들어올 때 그 지역에서 **가장 덜 쓰이는 서버**를 골라 길드에 배정한다. 시그널링을 모두 Elixir 로 써서 코드를 재사용한다.",
+          "limits": "제어와 미디어가 다른 스택이라 경계를 관리해야 하고, 클라이언트는 WebSocket 을 두 개 연다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        },
+        {
+          "tech": "경량화한 WebRTC 경로(ICE 제거 · Salsa20 · SDP 약 1000바이트)",
+          "solves": "모든 클라이언트가 우리 릴레이로 오므로 ICE 가 필요 없다. DTLS/SRTP 대신 더 빠른 Salsa20 을 쓰고, 표준의 왕복 10KB 협상을 1KB 로 줄인다. 방화벽 통과는 주기적 핑으로 유지한다.",
+          "limits": "브라우저는 표준을 써야 해 **두 세계가 생기고 서버가 번역**한다. 자체 WebRTC 네이티브 라이브러리의 **잦은 업데이트가 고통스러운 작업**이라고 회사가 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        },
+        {
+          "tech": "침묵 억제 · RTCP 대역폭 통지 · 장애/DDoS 공통 재배정",
+          "solves": "침묵을 보내지 않아 대역폭과 CPU 를 아끼고, 수신자 리포트로 송신자의 영상 대역폭을 알려 준다. 서버 사망과 DDoS 를 **같은 절차**(디스커버리에서 제거 → 대체 배정 → voice state 이동 → 재연결 통지)로 처리한다.",
+          "limits": "재배정 순간 참가자가 한 번 끊겼다 붙는다. **기기 성능이 제각각인 그룹 영상과 화면 공유는 회사가 남은 과제로 밝힌 자리다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "voice-sfu"
+      ]
     },
     {
       "name": "커뮤니티 운영·신뢰",
@@ -1008,6 +1071,425 @@
           "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
         }
       ]
+    },
+    {
+      "key": "voice-sfu",
+      "name": "음성 — 서버를 거치기로 하면 얻는 것",
+      "domain": "음성·영상",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**범위 주의** — 아래는 2018년 글 하나에서 왔다. 이후의 변화(코덱 전환, 그룹 영상 개선 등)는 담겨 있지 않다.\n\n게임하면서 같이 말하는 것이 이 서비스의 출발점이라, 음성은 부가 기능이 아니라 제품 자체다. 규모는 동시 음성 **260만 명**, 이그레스 **220Gbps·120Mpps**, **13개 지역 30여 개 데이터센터에 음성 서버 850대 이상**이다.\n\n그런데 이 도메인의 첫 결정은 코덱도 프로토콜도 아니었다. **미디어를 서로에게 보낼 것인가, 서버를 거치게 할 것인가.** 회사는 서버를 거치게 했고, 이유를 세 가지로 밝힌다 — 다자 통화에서 **P2P 는 참가자가 늘수록 감당할 수 없이 비싸지고**, 서버를 거쳐야 **IP 주소가 서로에게 노출되지 않으며**, **서버측 음소거 같은 운영 기능**이 가능해진다.\n\n**비용 문제처럼 보이지만 뒤의 두 이유는 권한의 문제다**(이 문장은 이 사이트의 해석). 남의 커뮤니티에서 누군가를 조용히 시킬 수 있으려면, 그 소리가 우리 서버를 지나야 한다.",
+        "metrics": [
+          {
+            "label": "동시 음성 사용자",
+            "value": "**260만 명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "트래픽",
+            "value": "이그레스 **220Gbps 이상**, **120Mpps 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "서버 배치",
+            "value": "**13개 지역 30여 개 데이터센터에 음성 서버 850대 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "협상 크기",
+            "value": "네이티브 앱의 SDP 교환을 **약 1000바이트**로 줄였다 — 표준 WebRTC 는 왕복 **10KB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "품질 관측",
+            "value": "**클라이언트가 품질 지표를 백엔드로 보고**해 상시 관측한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "참가자가 늘어날 때 P2P 가 어떻게 되는지 따져 봤을 때",
+          "thought": "다자 통화에서 **P2P 는 참가자 수가 늘수록 감당할 수 없이 비싸진다.** 그런데 서버를 거치기로 하면 비용 말고 두 가지가 더 따라온다 — 서로의 **IP 주소가 노출되지 않고**, 문제가 된 사용자의 **오디오 패킷을 서버에서 버릴 수 있다.** 커뮤니티에 주인이 있는 서비스에서 이건 부가 기능이 아니다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "표준 WebRTC 를 그대로 쓰려다",
+          "thought": "**모든 클라이언트가 우리 릴레이 서버 하나로 오는데 ICE 로 경로 후보를 협상할 이유가 없다.** SDP 도 왕복 10KB 를 주고받을 이유가 없다 — 우리에게 필요한 것은 서버 주소와 포트, 암호화 방식과 키, 코덱, 스트림 식별자뿐이다. 그런데 브라우저는 표준을 지켜야 하니, **걷어낸 만큼을 서버가 번역**해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사람은 대부분의 시간에 말하지 않는다는 것을 이용할 때",
+          "thought": "음성 채널에 스무 명이 있어도 동시에 말하는 사람은 몇 안 된다. **침묵 구간을 아예 보내지 않으면** 대역폭과 CPU 가 크게 절약된다. 보내지 않는 것이 가장 싼 전송이다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "서버가 사라지는 일을 예외로 둘지 절차로 둘지 정할 때",
+          "thought": "음성 서버는 죽기도 하고 **DDoS 를 맞기도 한다.** 두 경우를 다르게 처리하면 대응 경로가 두 벌이 된다. 그래서 **DDoS 도 서버 장애와 같은 절차**로 처리하기로 했다 — 디스커버리에서 빼고, 대체 서버를 고르고, voice state 를 밀어 넣고, 클라이언트에 알린다. 공격이 잦아들면 다시 넣는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "Discord Gateway — 접속한 모든 클라이언트의 WebSocket. 길드·채널·메시지·프레즌스 이벤트가 흐른다",
+          "Discord Guilds — voice state 객체를 관리하고 길드에 음성 서버를 배정한다",
+          "Discord Voice — 미디어 서버. 시그널링 컴포넌트 + C++ SFU 두 부분",
+          "voice state 객체 — 누가 어느 음성 채널에 있는가",
+          "서비스 디스커버리(etcd) — 어느 서버가 얼마나 쓰이고 있는가"
+        ],
+        "invariants": [
+          "한 길드의 음성은 **하나의 음성 서버**를 거친다 — 첫 참가자가 들어올 때 정해진다.",
+          "클라이언트는 WebSocket 을 **두 개** 연다 — 게이트웨이용과 음성 서버용.",
+          "미디어는 UDP 로 흐르고, 시그널링은 WebSocket 으로 흐른다.",
+          "침묵은 보내지 않는다.",
+          "서버가 사라지는 것은 예외가 아니라 **절차**다 — 장애든 DDoS 든 같은 길로 처리한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 음성 채널에 들어가면 클라이언트가 게이트웨이 WebSocket 으로 **voice state 를 갱신**한다",
+            "why": "음성 연결도 이미 열려 있는 게이트웨이 위에서 시작한다 — 새 채널을 따로 열지 않는다."
+          },
+          {
+            "step": "Discord Guilds 가 **서비스 디스커버리(etcd)를 보고 그 지역에서 가장 덜 쓰이는 음성 서버**를 골라 길드에 배정하고, voice state 객체를 그 서버로 밀어 넣는다",
+            "why": "부하가 가장 적은 곳으로 보내면서, 그 길드의 오디오 포워딩 전체를 한 서버가 맡게 한다."
+          },
+          {
+            "step": "클라이언트에 선택된 음성 서버를 알린다",
+            "why": "클라이언트는 어디로 붙어야 할지 스스로 알 방법이 없다."
+          },
+          {
+            "step": "클라이언트가 **두 번째 WebSocket** 을 음성 서버에 연다 — 미디어 포워딩 설정과 발화 표시를 위해",
+            "why": "제어와 미디어를 분리하면 제어 채널이 미디어의 상태를 계속 반영할 수 있다."
+          },
+          {
+            "step": "클라이언트와 음성 서버가 **UDP 메시지를 교환**하고 미디어 전송을 시작한다",
+            "why": "실시간 미디어는 재전송을 기다릴 수 없다."
+          },
+          {
+            "step": "SFU 가 채널 안에서 오디오·영상을 전달한다 — **침묵은 보내지 않고**, 제재된 사용자의 오디오 패킷은 **버린다**",
+            "why": "보내지 않는 것이 가장 싸고, 서버를 지나기 때문에 버릴 수 있다."
+          },
+          {
+            "step": "수신자들의 **RTCP 리포트를 모아 송신자에게 쓸 수 있는 영상 대역폭을 알려 준다**",
+            "why": "보내는 쪽은 받는 쪽의 사정을 모른다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "미디어를 서로에게 보낼 것인가, 서버를 거치게 할 것인가",
+            "chosen": "**서버를 거친다** — 자체 제작 SFU(Selective Forwarding Unit)가 채널 안에서 미디어를 전달한다.",
+            "alternatives": [
+              "P2P·메시로 클라이언트끼리 직접 주고받는다",
+              "MCU 로 서버에서 믹싱해 하나로 내려보낸다"
+            ],
+            "tradeoff": "**서버 비용을 전부 우리가 진다** — 850대 이상, 220Gbps. 그래도 다자 통화에서 P2P 는 참가자가 늘수록 감당할 수 없이 비싸지고, 무엇보다 서버를 거쳐야 **IP 노출을 막고 서버측 음소거 같은 운영 기능**이 가능해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "길드마다 음성 서버를 어떻게 정할 것인가",
+            "chosen": "첫 참가자가 들어올 때 Discord Guilds 가 **서비스 디스커버리(etcd)를 보고 그 지역에서 가장 덜 쓰이는 서버**를 골라, **그 길드의 오디오 포워딩 전체**를 맡긴다. 길드 주인이 지역을 바꾸면 새 지역에서 다시 고른다.",
+            "alternatives": [
+              "참가자마다 가까운 서버에 붙인다",
+              "채널마다 서버를 따로 배정한다"
+            ],
+            "tradeoff": "**길드 하나가 서버 하나에 묶인다** — 그 서버가 죽으면 그 길드의 통화가 통째로 영향을 받는다(그래서 재배정 절차가 반드시 필요해진다). 대신 배정이 단순하고 그 길드의 상태가 한 곳에 모인다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "표준 WebRTC 를 어디까지 그대로 쓸 것인가",
+            "chosen": "브라우저에서는 표준 그대로(SDP·ICE·DTLS·SRTP), **네이티브 앱에서는 ICE 를 뺀다** — 모든 클라이언트가 우리 릴레이로 오기 때문이다. 대신 주기적인 핑으로 방화벽 통과를 유지한다.",
+            "alternatives": [
+              "모든 플랫폼에서 표준 WebRTC 를 그대로 쓴다",
+              "자체 프로토콜을 새로 만든다"
+            ],
+            "tradeoff": "**두 세계가 생기고 음성 서버가 그 차이를 다리 놓아야 한다.** 그리고 자체 WebRTC 네이티브 라이브러리를 유지해야 하는데, 회사는 **잦은 업데이트가 고통스러운 작업이고 자동화를 진행 중**이라고 남은 과제로 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "암호화와 협상을 얼마나 가볍게 할 것인가",
+            "chosen": "네이티브 앱에서 DTLS/SRTP 대신 **더 빠른 Salsa20** 을 쓰고, SDP 교환을 **약 1000바이트**로 최소화한다 — 서버 주소와 포트, 암호화 방식과 키, 코덱, 스트림 식별자만 주고받는다.",
+            "alternatives": [
+              "표준 DTLS/SRTP 와 전체 SDP 를 그대로 쓴다"
+            ],
+            "tradeoff": "표준에서 벗어나므로 표준만 아는 도구나 중계 장비와는 맞지 않게 된다(뒷문장은 이 사이트의 추정). 대신 표준 WebRTC 의 **왕복 10KB** 협상이 1KB 가 되어 연결이 빨리 선다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "대역폭을 어디서 아낄 것인가",
+            "chosen": "**침묵 구간을 아예 보내지 않는다.** 그리고 수신자들의 **RTCP 리포트를 모아 송신자에게 쓸 수 있는 영상 대역폭을 알려 준다.**",
+            "alternatives": [
+              "항상 일정한 비트레이트로 보낸다",
+              "송신자가 스스로 판단하게 둔다"
+            ],
+            "tradeoff": "수신자 리포트에 의존하게 되고, 리포트가 늦거나 부정확하면 조절도 어긋난다(뒷문장은 이 사이트의 추정). 대신 침묵을 안 보내는 것만으로 **대역폭과 CPU 가 크게 절약**된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "SFU 가 죽으면 클라이언트를 다시 붙일 것인가",
+            "chosen": "**아니다.** 시그널링 컴포넌트가 SFU 를 계속 감시하다가 죽으면 **즉시 재시작하고 상태를 클라이언트 개입 없이 재구성**한다 — 서비스 중단은 최소이고 패킷 몇 개가 빠지는 정도다. **같은 메커니즘으로 무중단 업데이트**도 한다.",
+            "alternatives": [
+              "SFU 가 죽으면 클라이언트에 재연결을 시킨다"
+            ],
+            "tradeoff": "상태를 밖에서 재구성하는 로직을 만들고 유지해야 한다. 대신 **장애 복구 장치가 그대로 배포 장치가 된다** — 하나를 잘 만들어 두 곳에 쓴다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "서버가 죽는 것과 공격받는 것을 다르게 다룰 것인가",
+            "chosen": "**같은 절차로 다룬다.** 헬스체크에 실패하거나 DDoS 를 맞으면 서비스 디스커버리에서 빼고, 클라이언트가 끊긴 WebSocket 을 감지해 게이트웨이로 핑을 요청하면, Guilds 가 확인 후 새 음성 서버를 배정하고 voice state 를 밀어 넣고 참가자 전원에게 재연결을 알린다. **공격이 잦아들면 그 서버를 다시 디스커버리에 넣는다.**",
+            "alternatives": [
+              "DDoS 전용 대응 경로를 따로 둔다",
+              "공격받는 서버를 그대로 두고 방어한다"
+            ],
+            "tradeoff": "재배정 순간 참가자들이 한 번 끊겼다 붙는다. 대신 **대응 경로가 하나뿐이라 자주 도는 길이 되고**, 드물게 쓰이는 특별 경로가 정작 필요할 때 작동하지 않는 일을 피한다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Elixir — Gateway · Guilds · Voice 시그널링",
+            "role": "WebSocket 연결과 voice state 관리, 음성 서버 배정과 재배정 같은 제어를 맡는다. 코드 재사용을 위해 시그널링을 모두 Elixir 로 썼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 제작 C++ SFU",
+            "role": "채널 안에서 오디오·영상을 전달하고, 제재된 사용자의 패킷을 버리며, 네이티브와 브라우저 사이를 번역한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "etcd 서비스 디스커버리",
+            "role": "어느 음성 서버가 얼마나 쓰이는지를 보고 지역별로 가장 덜 쓰이는 서버를 고르게 한다. 장애·DDoS 시 서버를 빼고 넣는 자리이기도 하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 WebRTC 네이티브 라이브러리(데스크톱·iOS·안드로이드)",
+            "role": "ICE 를 빼고 Salsa20 을 쓰며 SDP 를 약 1000바이트로 줄인 경량 경로.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "침묵 억제 + RTCP 기반 대역폭 통지",
+            "role": "말하지 않는 동안 보내지 않아 대역폭과 CPU 를 아끼고, 수신자 리포트로 송신자의 영상 비트레이트를 조절한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "이질적인 기기의 그룹 영상 / 화면 공유",
+            "role": "— 회사가 **남은 과제**로 밝힌 자리다. 그룹 안의 기기 성능이 제각각일 때 Scalable Video Coding 이 답일 수 있다고만 말하고, 화면 공유는 대역폭이 더 들어 **데스크톱에 하드웨어 인코딩을 추가하는 중**이라고 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "presence-fanout",
+          "via": "같은 게이트웨이",
+          "contract": "음성 연결은 이미 열려 있는 게이트웨이 WebSocket 위에서 **voice state 갱신**으로 시작하고, 서버 재배정 통지도 그 길로 내려온다 — 실시간 전달 도메인이 흔들리면 음성 연결의 시작과 복구가 함께 흔들린다(뒷부분은 이 사이트의 추정).",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "커뮤니티 운영·신뢰",
+          "via": "서버측 음소거",
+          "contract": "제재된 사용자의 오디오 패킷을 SFU 가 버린다 — **미디어가 서버를 지나기 때문에 가능한 운영 수단**이다. 다만 제재를 누가 어떤 기준으로 정하는지는 이 사이트에 아직 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "message-storage",
+          "via": "보관하지 않는 쪽",
+          "contract": "메시지는 수조 개가 쌓이는데 음성은 지나가면 끝난다 — 같은 회사 안에서 **남기는 도메인과 남기지 않는 도메인**이 갈린다(이 대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "음성 채널에 들어가기까지",
+          "question": "클라이언트는 어느 서버에 붙어야 할지 어떻게 알게 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자: 음성 채널 참가] -->|게이트웨이 WebSocket| GW[Discord Gateway]\n  GW -->|voice state 갱신| GU[Discord Guilds]\n  GU -->|가장 덜 쓰이는 서버 조회| ETCD[(etcd 서비스 디스커버리)]\n  ETCD --> GU\n  GU -->|voice state 객체 밀어넣기| V[Discord Voice<br/>시그널링 + C++ SFU]\n  GU -->|선택된 서버 통지| U\n  U -->|두 번째 WebSocket| V\n  U -->|UDP 미디어| SFU[SFU]\n  SFU -->|채널 안 전달| OTHERS[다른 참가자들]\n  SFU -.->|침묵은 보내지 않는다| OTHERS\n  SFU -.->|제재된 사용자 패킷은 버린다| DROP[X]\n  OTHERS -->|RTCP 리포트| SFU\n  SFU -->|쓸 수 있는 영상 대역폭| U"
+        },
+        {
+          "title": "음성 연결이 거치는 상태",
+          "question": "서버가 사라졌을 때 통화는 어떤 경로로 되살아나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미접속\n  미접속 --> 배정대기: voice state 갱신\n  배정대기 --> 시그널링연결: 음성 서버 통지 받음\n  시그널링연결 --> 통화중: UDP 미디어 수립\n  통화중 --> 통화중: 발화 · 침묵(전송 안 함)\n  통화중 --> SFU재시작: SFU 크래시\n  SFU재시작 --> 통화중: 상태 재구성(클라이언트 개입 없음)\n  note right of SFU재시작\n    패킷 몇 개 손실\n    무중단 업데이트도 같은 길\n  end note\n  통화중 --> 끊김감지: 음성 서버 사망 또는 DDoS\n  끊김감지 --> 배정대기: 게이트웨이로 핑 요청 → 새 서버 배정\n  통화중 --> 미접속: 채널 나가기\n  미접속 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 사라지는 서버와 제각각인 기기",
+          "question": "무엇이 같은 절차로 처리되고, 무엇이 아직 풀리지 않았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  CRASH[SFU 크래시] --> WATCH[시그널링이 감시 중]\n  WATCH --> RESTART[즉시 재시작 + 상태 재구성]\n  RESTART --> FEW[패킷 몇 개 손실]\n  RESTART -.->|같은 메커니즘| DEPLOY[무중단 업데이트]\n  DEAD[음성 서버 사망] --> HC[헬스체크 실패]\n  DDOS[DDoS 공격] --> HC\n  HC --> OUT[서비스 디스커버리에서 제거]\n  OUT --> DETECT[클라이언트가 끊김 감지]\n  DETECT --> PING[게이트웨이로 핑 요청]\n  PING --> REASSIGN[Guilds 가 새 서버 배정 + voice state 이동]\n  REASSIGN --> NOTIFY[참가자 전원 재연결 통지]\n  DDOS -.->|공격이 잦아들면| BACK[디스커버리에 다시 추가]\n  MIX[기기 성능이 제각각인 그룹 영상] --> HARD[**아직 과제**<br/>Scalable Video Coding 이 답일 수 있다]\n  SCREEN[화면 공유] --> BW[대역폭이 더 든다<br/>데스크톱 하드웨어 인코딩 추가 중]\n  NATIVE[자체 WebRTC 네이티브 라이브러리] --> PAIN[잦은 업데이트가 고통스럽다<br/>자동화 진행 중]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+          "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+          "publisher": "Discord Blog · Jozsef Vass",
+          "date": "2018-09-10",
+          "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1017,7 +1499,10 @@
     "실시간 전달·프레즌스, 음성·영상, 커뮤니티 운영·신뢰 세 도메인은 아직 기능을 채우지 않았다.",
     "큰 길드를 여러 프로세스로 쪼개는지 — 이 글은 보내는 방식을 고치는 데까지만 다룬다.",
     "프레즌스 자체를 어디에 어떻게 보관하는지.",
-    "세마포어의 동시성 상한을 무엇으로 정하는지."
+    "세마포어의 동시성 상한을 무엇으로 정하는지.",
+    "음성 코덱과 비트레이트 사다리 — 이 글은 코덱을 협상 항목으로만 언급한다.",
+    "기기 성능이 제각각인 그룹 영상 — 회사가 남은 과제로 밝혔고 Scalable Video Coding 을 가능성으로만 든다.",
+    "이 도메인의 자료는 2018년 글 하나다 — 이후의 변화는 반영돼 있지 않다."
   ],
   "sources": [
     {
