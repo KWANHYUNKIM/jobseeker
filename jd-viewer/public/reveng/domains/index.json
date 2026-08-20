@@ -42,6 +42,20 @@
         "bizboard-surface"
       ],
       "file": "ad-surface.md"
+    },
+    {
+      "slug": "dispatch",
+      "title": "배차 — 사람을 태우는 것과 음식을 나르는 것",
+      "question": "매칭이 1:1인지 N:1인지가 아키텍처를 어떻게 바꾸는가?",
+      "companies": [
+        "kakao",
+        "baemin"
+      ],
+      "features": [
+        "taxi-dispatch",
+        "rider-dispatch"
+      ],
+      "file": "dispatch.md"
     }
   ]
 }
