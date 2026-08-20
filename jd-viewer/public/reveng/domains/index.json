@@ -114,16 +114,18 @@
     {
       "slug": "what-to-mix",
       "title": "추천 — 개인화만 하면 밀려나는 것들",
-      "question": "잘 맞힐수록 무엇이 안 보이게 되고, 그 자리를 어디에 마련하는가?",
+      "question": "잘 맞힐수록 무엇이 안 보이게 되고, 그 자리를 옆·안·앞·뒤 중 어디에 마련하는가?",
       "companies": [
         "musinsa",
         "daangn",
-        "naver"
+        "naver",
+        "instagram"
       ],
       "features": [
         "style-personalization",
         "feed-platform",
-        "smart-block"
+        "smart-block",
+        "notification-diversity"
       ],
       "file": "what-to-mix.md"
     }
