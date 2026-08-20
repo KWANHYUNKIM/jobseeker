@@ -70,7 +70,9 @@
     {
       "name": "인증",
       "why": "본인확인과 전자서명. 모든 금융 행위의 앞단에 붙는 공통 관문이라 어느 한 서비스에 종속시킬 수 없다.",
-      "features": []
+      "features": [
+        "request-passport"
+      ]
     }
   ],
   "features": [
@@ -856,6 +858,234 @@
           "summary": "결제 취소처럼 반복되면 곤란한 API 에 멱등키를 권장, 유효기간 15일."
         }
       ]
+    },
+    {
+      "key": "request-passport",
+      "name": "요청 인증 관문 (Passport)",
+      "domain": "인증",
+      "updated_at": "2026-08-20",
+      "business": {
+        "why": "송금·이자·결제 어느 화면을 누르든 그 요청은 먼저 이 관문을 지난다. 금융 앱이라 매 요청마다 '진짜 토스 앱에서, 진짜 그 기기에서, 그 사용자로 온 요청인가'를 판정해야 하는데, 그 판정을 서비스마다 각자 구현하면 규칙이 갈라지고 한 군데만 느슨해도 전체가 뚫린다. 그래서 인증은 기능이 아니라 다른 모든 기능의 전제 조건으로 존재한다.",
+        "metrics": []
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Passport",
+            "what": "기기 정보와 사용자 정보를 함께 담은 토큰. 내부 서비스가 사용자를 아는 유일한 통로."
+          },
+          {
+            "name": "요청 서명 키",
+            "what": "매 요청에 서명하는, 유효기간이 아주 짧은 키."
+          },
+          {
+            "name": "디바이스",
+            "what": "요청이 나온 기기. 사용자와 기기가 짝을 이뤄야 정상 요청이다."
+          },
+          {
+            "name": "유저 식별키",
+            "what": "앱이 요청에 실어 보내는 사용자 식별자. 이것만으로는 아무 권한도 없다."
+          }
+        ],
+        "invariants": [
+          "내부 서비스는 스스로 사용자를 식별하지 않는다. Gateway 가 만들어 준 Passport 만 믿는다 — 이 규칙이 깨지면 서비스마다 다른 인증이 생긴다.",
+          "같은 요청 서명은 두 번 쓰이지 않는다. 가로챈 요청을 그대로 재생하는 공격이 여기서 막힌다.",
+          "서명 키는 짧게 살고, 만료된 키로 온 요청은 실패한다.",
+          "위변조가 감지된 계정은 통과시키지 않고 FDS 로 넘겨 비활성화한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "앱이 유저 식별키를 실어 API 를 호출한다",
+            "why": "식별키 자체는 권한이 아니라 '누구라고 주장하는지'일 뿐이다"
+          },
+          {
+            "step": "Gateway 가 요청 서명을 검증한다 — 토스 앱이 맞는지, 중복 사용은 아닌지, 키가 살아 있는지",
+            "why": "세 가지가 각각 위조·재생·탈취를 막는다"
+          },
+          {
+            "step": "Gateway 가 인증 서버에 Passport 를 요청한다",
+            "why": "사용자·기기 정보의 진위 판정은 게이트웨이가 아니라 인증 서버의 몫이다"
+          },
+          {
+            "step": "Gateway 가 Passport 를 직렬화해 내부 서비스로 전파한다",
+            "why": "뒤에 선 서비스들이 각자 인증을 다시 하지 않게 한다"
+          },
+          {
+            "step": "위변조가 탐지되면 FDS 로 넘겨 계정을 비활성화한다",
+            "why": "거절만 하면 공격자는 계속 시도한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "인증·인가를 각 서비스가 할 것인가, 앞단 한 곳에 모을 것인가",
+            "chosen": "Gateway 가 인증·인가·복호화를 맡고 결과를 Passport 로 내부에 전파",
+            "alternatives": [
+              "서비스마다 인증 라이브러리를 붙여 각자 판정",
+              "서비스 메시 사이드카에만 위임"
+            ],
+            "tradeoff": "게이트웨이가 전 서비스의 단일 통과점이 되어 장애 영향 범위가 최대가 되고, 모든 팀의 요구가 한 코드베이스에 쌓여 배포 병목이 된다. 대신 인증 규칙이 한 벌만 존재한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "요청의 진위를 무엇으로 증명할 것인가",
+            "chosen": "유효기간이 아주 짧은 키로 매 요청에 서명하고, 중복 사용을 막는다",
+            "alternatives": [
+              "오래 사는 액세스 토큰만 검사",
+              "세션 쿠키 기반 인증"
+            ],
+            "tradeoff": "키를 자주 갱신·배포해야 하고 시계 오차나 네트워크 지연으로 정상 요청이 만료로 죽을 수 있다. 재시도할 때마다 새로 서명해야 해서 클라이언트가 복잡해진다. 대신 토큰 하나가 유출돼도 쓸 수 있는 시간이 매우 짧다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "내부 서비스에 사용자 정보를 어떻게 넘길 것인가",
+            "chosen": "기기 정보와 사용자 정보를 담은 Passport 를 직렬화해 함께 전파",
+            "alternatives": [
+              "서비스가 필요할 때마다 인증 서버에 다시 물어보기",
+              "사용자 ID 만 헤더로 넘기기"
+            ],
+            "tradeoff": "요청마다 페이로드가 커지고 직렬화 비용이 붙는다. 더 큰 대가는 신뢰 모델이다 — 내부 서비스가 'Gateway 를 통과했으니 안전하다'고 가정하게 되므로, 내부망 자체를 신뢰하지 않는 별도의 통제(Zero Trust)가 뒤따라야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              },
+              {
+                "title": "금융사 최초의 Zero Trust 아키텍처 도입기",
+                "url": "https://toss.tech/article/slash23-security",
+                "publisher": "토스 기술블로그 / SLASH 23",
+                "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
+              }
+            ]
+          },
+          {
+            "question": "모든 요청이 지나는 관문을 어떤 실행 모델로 만들 것인가",
+            "chosen": "Spring Cloud Gateway 위에서 Reactor-Netty 비동기와 Kotlin Coroutine 으로 처리",
+            "alternatives": [
+              "요청당 스레드를 쓰는 동기 서블릿 스택"
+            ],
+            "tradeoff": "적은 스레드로 많은 연결을 감당하는 대신, 블로킹 코드 한 줄이 이벤트 루프 전체를 막고 스택 트레이스가 끊겨 디버깅이 어려워진다. 관문이라 이 실수의 비용이 가장 크게 나오는 자리이기도 하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Spring Cloud Gateway",
+            "role": "모든 외부 요청의 진입점이자 인증·인가·복호화 지점",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Reactor-Netty · Kotlin Coroutine",
+            "role": "관문에서 요청을 비동기로 처리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Istio",
+            "role": "게이트웨이 뒤 서비스 간 트래픽을 다루는 메시로 연동",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "FDS (이상거래 탐지)",
+            "role": "위변조가 탐지된 계정을 넘겨받아 비활성화",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스는 Gateway 이렇게 씁니다",
+                "url": "https://toss.tech/article/22910",
+                "publisher": "토스 기술블로그",
+                "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "instant-transfer",
+          "via": "Passport 전파",
+          "contract": "송금 요청은 Gateway 가 판정한 사용자·기기로만 실행된다. 송금 서버는 사용자를 다시 식별하지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "payment-approval",
+          "via": "결제 인증 단계",
+          "contract": "결제의 CONFIRM 은 외부 인증(카드사·은행)을 전제로 하지만, 그 앞의 앱 요청 자체는 이 관문을 통과한 것이어야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "FDS",
+          "via": "위변조 탐지 이벤트",
+          "contract": "서명 위변조가 감지되면 요청을 막는 데서 끝내지 않고 계정 비활성화까지 이어진다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagram": "sequenceDiagram\n  participant A as 토스 앱\n  participant G as Gateway\n  participant AU as 인증 서버\n  participant S as 내부 서비스 (송금·결제·코어뱅킹)\n  participant F as FDS\n  A->>G: API 요청 (유저 식별키 + 요청 서명)\n  G->>G: 앱 검증 · 중복 사용 · 키 유효기간\n  alt 서명 위변조\n    G->>F: 위변조 신고\n    F-->>A: 계정 비활성화\n  else 정상\n    G->>AU: Passport 요청\n    AU-->>G: Passport (기기 + 사용자)\n    G->>S: 요청 + 직렬화된 Passport\n    S-->>A: 응답\n  end",
+      "sources": [
+        {
+          "title": "토스는 Gateway 이렇게 씁니다",
+          "url": "https://toss.tech/article/22910",
+          "publisher": "토스 기술블로그",
+          "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+        },
+        {
+          "title": "금융사 최초의 Zero Trust 아키텍처 도입기",
+          "url": "https://toss.tech/article/slash23-security",
+          "publisher": "토스 기술블로그 / SLASH 23",
+          "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -867,7 +1097,10 @@
     "세금 메시지가 DLQ 로도 끝내 처리되지 않았을 때 사람이 개입하는 절차가 있는지 모른다.",
     "결제창 재작성에서 자동 롤백의 기준이 된 'PREPARE 대비 CONFIRM 비율'의 정상 범위가 얼마인지, 어느 단위(가맹점·결제수단)로 판정하는지 확인하지 못했다.",
     "계좌이체 결제의 자금 이동이 개인 송금과 같은 송금 서버를 타는지 확인하지 못했다(현재 inferred).",
-    "오래된 API 버전을 언제 어떤 기준으로 폐기하는지 공개된 정책을 찾지 못했다."
+    "오래된 API 버전을 언제 어떤 기준으로 폐기하는지 공개된 정책을 찾지 못했다.",
+    "Passport 의 수명과 갱신 주기, 요청 서명 키의 '아주 짧은 유효기간'이 구체적으로 얼마인지 공개 자료에 없다.",
+    "Gateway 가 전 서비스의 단일 통과점인데 그 자체의 장애·배포 전략(다중화, 카나리)을 확인하지 못했다.",
+    "토스인증서(전자서명·본인확인)는 아직 역설계하지 않았다 — 인증 도메인의 두 번째 기능으로 남아 있다."
   ],
   "sources": [
     {
@@ -882,6 +1115,12 @@
       "publisher": "토스피드",
       "date": "2025",
       "summary": "컨슈머·머천트 두 부문의 매출 구성."
+    },
+    {
+      "title": "금융사 최초의 Zero Trust 아키텍처 도입기",
+      "url": "https://toss.tech/article/slash23-security",
+      "publisher": "토스 기술블로그 / SLASH 23",
+      "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
     }
   ]
 }
