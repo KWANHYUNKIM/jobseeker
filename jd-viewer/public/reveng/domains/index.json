@@ -58,6 +58,22 @@
         "rider-dispatch"
       ],
       "file": "dispatch.md"
+    },
+    {
+      "slug": "search-intent",
+      "title": "검색 — 무엇을 위에 놓을지보다, 그걸 얼마나 자주 바꿀 수 있는지",
+      "question": "세 회사 중 둘은 왜 랭킹이 아니라 랭킹을 못 바꾸게 막던 것을 고쳤는가?",
+      "companies": [
+        "coupang",
+        "naver",
+        "daangn"
+      ],
+      "features": [
+        "search-indexing",
+        "smart-block",
+        "search-infra"
+      ],
+      "file": "search-intent.md"
     }
   ]
 }
