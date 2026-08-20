@@ -1,0 +1,272 @@
+{
+  "slug": "toss",
+  "name": "토스",
+  "name_en": "Toss",
+  "country": "KR",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-08-20",
+  "one_liner": "송금에서 시작해 금융 슈퍼앱이 된 핀테크",
+  "business_model": "개인 사용자(컨슈머)와 가맹점(머천트) 양쪽에서 거래 수수료·광고·구독으로 수익을 낸다. 송금 자체는 오랫동안 무료로 제공해 사용자를 모으고, 그 트래픽 위에 중개·광고·증권·인증 같은 수익 상품을 얹는 구조다. 2025년 상반기 연결 영업수익 1조 2,355억 원 중 컨슈머 서비스가 8,021억 원(64.9%), 머천트 서비스가 4,333억 원(35.1%)이었다.",
+  "products": ["토스 앱", "토스뱅크", "토스증권", "토스페이먼츠", "토스플레이스"],
+
+  "revenue_streams": [
+    {
+      "name": "컨슈머 서비스",
+      "how": "송금·중개·광고·간편결제·커머스·증권·세무·인증. 개인 사용자의 금융 행동에서 나오는 수수료와 광고비.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "토스, 2025년 상반기 연결 기준 영업수익 1.2조 원 돌파",
+          "url": "https://toss.im/tossfeed/article/251H",
+          "publisher": "토스피드",
+          "date": "2025",
+          "summary": "상반기 영업수익 1조 2,355억 원, 컨슈머 8,021억(64.9%)·머천트 4,333억(35.1%)."
+        }
+      ]
+    },
+    {
+      "name": "머천트 서비스",
+      "how": "토스페이먼츠(PG)와 토스플레이스(오프라인 결제 단말)로 가맹점에서 받는 결제 수수료·단말 매출.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "토스, 2025년 상반기 연결 기준 영업수익 1.2조 원 돌파",
+          "url": "https://toss.im/tossfeed/article/251H",
+          "publisher": "토스피드",
+          "date": "2025",
+          "summary": "머천트 부문은 PG와 오프라인 단말 판매를 포괄한다고 명시."
+        }
+      ]
+    }
+  ],
+
+  "domains": [
+    {
+      "name": "송금원장",
+      "why": "돈이 실제로 오간 기록. 앱 화면이 무엇을 보여주든 이 기록이 틀리면 회사가 끝난다. 외부 은행망과 내부 기록의 시점이 다르다는 점 때문에 다른 도메인과 섞을 수 없다.",
+      "features": ["instant-transfer"]
+    },
+    {
+      "name": "코어뱅킹",
+      "why": "여수신 계좌·이자·회계. 송금이 '지나가는 돈'을 다룬다면 여기는 '맡아 둔 돈'을 다룬다. 규제가 요구하는 정합성 수준이 달라 별도 원장으로 존재한다.",
+      "features": []
+    },
+    {
+      "name": "결제",
+      "why": "가맹점 결제 승인·취소. 상대가 개인이 아니라 사업자이고, 실패했을 때 되돌리는 절차(취소·환불)가 송금과 완전히 다르다.",
+      "features": []
+    },
+    {
+      "name": "인증",
+      "why": "본인확인과 전자서명. 모든 금융 행위의 앞단에 붙는 공통 관문이라 어느 한 서비스에 종속시킬 수 없다.",
+      "features": []
+    }
+  ],
+
+  "features": [
+    {
+      "key": "instant-transfer",
+      "name": "간편 송금",
+      "domain": "송금원장",
+      "updated_at": "2026-08-20",
+
+      "business": {
+        "why": "토스의 최초 서비스이자 성장을 견인한 기능이다. 송금 자체로는 돈을 벌지 않지만, 사용자가 앱을 여는 이유를 만들고 그 위에 증권·대출중개·광고를 얹는 구조라 이 기능이 느려지거나 틀리면 나머지 수익 상품 전체의 유입이 끊긴다.",
+        "metrics": [
+          {
+            "label": "개선 횟수",
+            "value": "6년간 100회 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "송금할 때 은행 이름을 꼭 입력해야 할까요?",
+                "url": "https://toss.tech/article/toss-money-transfer-bank-recommendation",
+                "publisher": "토스 기술블로그",
+                "summary": "송금이 토스의 최초 서비스이며 6년간 100번 이상 개선됐다고 밝힘."
+              }
+            ]
+          },
+          {
+            "label": "계좌번호로 은행 추론 정확도",
+            "value": "단일 추천 95% → 3개 추천 99%+",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "송금할 때 은행 이름을 꼭 입력해야 할까요?",
+                "url": "https://toss.tech/article/toss-money-transfer-bank-recommendation",
+                "publisher": "토스 기술블로그",
+                "summary": "머신러닝으로 계좌번호에서 은행을 추론, 3개 추천으로 정확도 99% 이상."
+              }
+            ]
+          }
+        ]
+      },
+
+      "domain_model": {
+        "entities": [
+          { "name": "송금요청", "what": "사용자가 '보낸다'고 누른 의도. 아직 돈은 움직이지 않았다." },
+          { "name": "출금거래", "what": "보내는 쪽 계좌에서 돈이 빠진 기록." },
+          { "name": "입금거래", "what": "받는 쪽 계좌에 돈이 꽂힌 기록." },
+          { "name": "멱등키", "what": "같은 송금요청을 두 번 실행하지 않기 위한 식별자." }
+        ],
+        "invariants": [
+          "출금과 입금은 항상 같은 금액으로 짝을 이룬다. 한쪽만 남은 기록은 장애가 아니라 사고다.",
+          "같은 송금요청은 몇 번을 다시 보내도 결과가 하나다 — 네트워크가 끊겨 응답을 못 받은 사용자는 반드시 다시 누른다.",
+          "실패한 송금의 돈은 어느 쪽에도 걸쳐 있지 않다. 중간 상태로 남는 자금이 있으면 그것은 누군가의 잔액에서 사라진 돈이다."
+        ]
+      },
+
+      "implementation": {
+        "flow": [
+          { "step": "사용자가 계좌번호를 먼저 입력한다", "why": "은행 목록 62개에서 고르게 하면 그 화면에서 사용자가 멈춘다" },
+          { "step": "머신러닝 모델이 계좌번호로 은행 후보 3개를 추천한다", "why": "번호 체계만으로 은행을 좁힐 수 있고, 단일 추천은 5%가 틀렸다" },
+          { "step": "수취인 실명을 조회해 사용자에게 확인시킨다", "why": "잘못 보낸 돈은 되돌리는 절차가 송금보다 훨씬 비싸다" },
+          { "step": "송금 서버가 자금 이체를 실행한다", "why": "이체는 독립된 서버의 책임으로 두어 호출하는 쪽(대환·정산 등)이 무엇이든 같은 경로를 쓴다" },
+          { "step": "송금 서버가 이체 결과를 Kafka 메시지로 발행한다", "why": "결과를 기다려야 하는 도메인이 하나가 아니고, 호출자가 죽어도 결과는 남아야 한다" }
+        ],
+        "decisions": [
+          {
+            "question": "송금 첫 화면에서 은행을 먼저 고르게 할 것인가, 계좌번호를 먼저 받을 것인가",
+            "chosen": "계좌번호를 먼저 받고 은행은 ML로 추론해 3개를 추천",
+            "alternatives": ["62개 은행·증권사 목록에서 사용자가 직접 선택"],
+            "tradeoff": "추론이 틀리면 사용자가 고쳐야 하고, 계좌번호 체계가 바뀌거나 신규 기관이 생기면 모델을 다시 학습시켜야 한다. 정확도를 99%로 끌어올린 방법도 '한 개를 맞히기'를 포기하고 3개를 보여준 뒤 최종 선택권을 사용자에게 남기는 것이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "송금할 때 은행 이름을 꼭 입력해야 할까요?",
+                "url": "https://toss.tech/article/toss-money-transfer-bank-recommendation",
+                "publisher": "토스 기술블로그",
+                "summary": "은행 선택 화면에서 사용자가 머뭇거리는 문제를 계좌번호 우선 입력과 ML 추론으로 해결."
+              }
+            ]
+          },
+          {
+            "question": "이체 결과를 호출한 쪽에 동기 응답으로 돌려줄 것인가, 이벤트로 흘릴 것인가",
+            "chosen": "송금 서버를 독립시키고 이체 결과를 Kafka 메시지로 발행",
+            "alternatives": ["호출한 서비스가 이체 API 응답을 그대로 기다림"],
+            "tradeoff": "호출자는 결과를 즉시 알 수 없어 상태 기계를 따로 들고 있어야 하고, 메시지는 중복 수신될 수 있어 소비하는 쪽마다 멱등 처리가 필요하다. 대신 이체를 요청한 서비스가 죽어도 결과가 유실되지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "다이내믹 스크래핑과 전월세대출 이동제의 실행",
+                "url": "https://toss.tech/article/severdeveloper_dynamic_scraping",
+                "publisher": "토스 기술블로그",
+                "summary": "대환 오케스트레이터가 독립된 송금 서버에 이체를 요청하고, 송금 서버가 결과를 Kafka로 발행한다고 서술."
+              }
+            ]
+          },
+          {
+            "question": "네트워크가 끊겨 사용자가 같은 송금을 다시 눌렀을 때 두 번 보내는 것을 어떻게 막을 것인가",
+            "chosen": "요청에 멱등키를 실어 같은 키의 재요청은 첫 결과를 그대로 돌려준다",
+            "alternatives": ["서버에서 최근 거래를 시간·금액·상대로 비교해 중복 추정", "클라이언트가 재요청하지 않도록 UI로만 막기"],
+            "tradeoff": "키를 발급·보관하는 책임이 호출자에게 생기고, 서버는 키별 결과를 일정 기간 저장해야 한다(토스페이먼츠의 경우 15일, 300자 이내, POST 한정). 그 기간이 지나면 같은 키도 새 요청이 된다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "멱등키 — 토스페이먼츠 개발자센터",
+                "url": "https://docs.tosspayments.com/guides/using-api/idempotency-key",
+                "publisher": "토스페이먼츠",
+                "summary": "멱등키와 API 키·주소·HTTP 메서드 조합으로 동일 요청을 판정, 유효기간 15일."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka",
+            "role": "이체 결과를 발행해 대환·정산 등 결과를 기다리는 도메인에 흘린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "다이내믹 스크래핑과 전월세대출 이동제의 실행",
+                "url": "https://toss.tech/article/severdeveloper_dynamic_scraping",
+                "publisher": "토스 기술블로그",
+                "summary": "송금 서버가 자금 이체 결과를 Kafka 메시지로 발행."
+              }
+            ]
+          },
+          {
+            "tech": "머신러닝 분류 모델",
+            "role": "계좌번호에서 은행 후보 3개를 추론",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "송금할 때 은행 이름을 꼭 입력해야 할까요?",
+                "url": "https://toss.tech/article/toss-money-transfer-bank-recommendation",
+                "publisher": "토스 기술블로그",
+                "summary": "머신러닝팀과 협업해 계좌번호 기반 은행 추론 모델을 만듦."
+              }
+            ]
+          },
+          {
+            "tech": "금융결제원 오픈뱅킹",
+            "role": "개별 은행과 직접 제휴하는 대신 표준 창구로 출금·입금을 실행하는 것으로 추정된다",
+            "confidence": "inferred"
+          }
+        ]
+      },
+
+      "connections": [
+        {
+          "to": "대환 오케스트레이터",
+          "via": "동기 이체 요청 + Kafka 결과 메시지",
+          "contract": "오케스트레이터가 '지금 자금 이동이 필요하다'고 요청하면 송금 서버가 실행하고, 결과는 메시지로 되돌아온다. 오케스트레이터는 그 메시지를 받아 다음 단계로 넘어간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "코어뱅킹",
+          "via": "계좌 잔액 조회·기록",
+          "contract": "토스뱅크 계좌가 출금·입금의 한쪽일 때 잔액과 거래 기록이 코어뱅킹 원장에 남는다. 두 원장이 같은 사실을 각자 기록하므로 대사(reconciliation)가 필요하다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "인증",
+          "via": "송금 전 본인확인",
+          "contract": "일정 금액 이상이거나 새 기기일 때 인증 도메인의 확인을 통과해야 이체가 실행된다.",
+          "confidence": "inferred"
+        }
+      ],
+
+      "diagram": "flowchart TD\n  U[사용자] -->|계좌번호 입력| A[송금 앱]\n  A -->|번호로 은행 추론| M[ML 은행 추천]\n  M -->|후보 3개| A\n  A -->|수취인 실명 조회| B[은행망 / 오픈뱅킹]\n  A -->|멱등키 + 이체 요청| T[송금 서버]\n  T -->|출금·입금 실행| B\n  T -->|이체 결과 발행| K[(Kafka)]\n  K --> O[대환 오케스트레이터]\n  K --> L[정산·알림 등 후속 도메인]\n  T -.->|잔액 기록| C[코어뱅킹 원장]",
+
+      "sources": [
+        {
+          "title": "송금할 때 은행 이름을 꼭 입력해야 할까요?",
+          "url": "https://toss.tech/article/toss-money-transfer-bank-recommendation",
+          "publisher": "토스 기술블로그",
+          "summary": "송금 UX를 계좌번호 우선으로 뒤집고 ML로 은행을 추론한 과정."
+        },
+        {
+          "title": "다이내믹 스크래핑과 전월세대출 이동제의 실행",
+          "url": "https://toss.tech/article/severdeveloper_dynamic_scraping",
+          "publisher": "토스 기술블로그",
+          "summary": "송금 서버가 독립 컴포넌트로 존재하며 결과를 Kafka로 발행하는 구조를 보여줌."
+        }
+      ]
+    }
+  ],
+
+  "open_questions": [
+    "송금원장과 코어뱅킹 원장의 대사(reconciliation)를 어느 주기로, 어떤 기준으로 맞추는지 공개 자료로 확인하지 못했다.",
+    "멱등키가 토스페이먼츠 Open API 밖에서, 즉 개인 송금 경로에도 같은 방식으로 쓰이는지 확인하지 못했다(현재 inferred).",
+    "오픈뱅킹 전환 이후 펌뱅킹·CMS 경로가 얼마나 남아 있는지, 어떤 경우에 어느 경로를 타는지 모른다.",
+    "이체 실패·지연 시 사용자에게 보이는 상태와 내부 재시도 정책의 관계를 확인하지 못했다."
+  ],
+
+  "sources": [
+    {
+      "title": "은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)",
+      "url": "https://toss.tech/article/slash23-corebanking",
+      "publisher": "토스 기술블로그 / SLASH 23",
+      "summary": "토스뱅크 코어뱅킹을 모놀리식에서 MSA로 옮기며 Kafka·Redis 락·Kotlin/Spring을 쓴 과정 — 다음 사이클의 코어뱅킹 도메인 재료."
+    },
+    {
+      "title": "토스, 2025년 상반기 연결 기준 영업수익 1.2조 원 돌파",
+      "url": "https://toss.im/tossfeed/article/251H",
+      "publisher": "토스피드",
+      "date": "2025",
+      "summary": "컨슈머·머천트 두 부문의 매출 구성."
+    }
+  ]
+}
