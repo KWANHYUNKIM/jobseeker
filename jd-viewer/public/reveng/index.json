@@ -121,6 +121,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "평균에 맞춘 하나의 답을 버린 회사",
       "features_done": 4
+    },
+    {
+      "slug": "youtube",
+      "name": "YouTube",
+      "name_en": "YouTube",
+      "country": "US",
+      "category": "스트리밍",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "원본이 이미 망가져 있을 수 있는 곳에서 화질을 말하는 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -175,7 +186,10 @@
     "인코딩·전송",
     "재생·적응 스트리밍",
     "콘텐츠 전송망",
-    "추천·발견"
+    "추천·발견",
+    "업로드·트랜스코딩",
+    "전송·재생",
+    "저작권·콘텐츠 식별"
   ],
   "countries": {
     "KR": "한국",

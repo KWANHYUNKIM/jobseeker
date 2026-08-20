@@ -1,0 +1,574 @@
+{
+  "slug": "youtube",
+  "name": "YouTube",
+  "name_en": "YouTube",
+  "country": "US",
+  "category": "스트리밍",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "원본이 이미 망가져 있을 수 있는 곳에서 화질을 말하는 회사",
+  "business_model": "광고가 중심이다. YouTube 광고 매출은 2025년 **403.67억 달러**(2024년 361.47억, 2023년 315.10억)로, Alphabet 총매출 4,028.36억 달러의 일부다. 구독(YouTube Premium·Music·TV)은 10-K 에서 **'Google subscriptions, platforms, and devices'(2025년 480.30억 달러)** 안에 Google One·Play·기기와 함께 묶여 있어 **YouTube 몫만 따로 확인할 수 없다.**\n\nNetflix 와 같은 스트리밍이지만 **비용의 구조가 반대편에서 온다.** Netflix 는 자기가 만들거나 사 온 소수의 콘텐츠를 자기가 정한 품질로 인코딩하지만, YouTube 는 **누가 무엇을 어떤 품질로 올릴지 통제하지 못한다.** 그래서 이 회사의 기술은 '어떻게 잘 압축할까'보다 앞에서 시작한다 — **올라온 것이 무엇이고 얼마나 좋은 것인지부터 판정해야 한다.**",
+  "products": [
+    "YouTube",
+    "YouTube Shorts",
+    "YouTube Music·Premium",
+    "YouTube TV",
+    "YouTube Partner Program"
+  ],
+  "domain_map": {
+    "title": "YouTube 도메인 지도",
+    "question": "올리는 쪽이 사용자라는 사실이 시스템의 어디까지를 바꾸는가?",
+    "code": "flowchart TD\n  C[크리에이터] -->|임의 품질 업로드| ENC[업로드 · 트랜스코딩]\n  ENC --> CDN[전송 · 재생]\n  CDN --> V[시청자]\n  REC[추천 · 발견] --> V\n  ENC --> CID[저작권 · 콘텐츠 식별]\n  CID -->|권리자에게 귀속| ADS\n  V --> ADS[광고 매출<br/>2025년 403.67억 달러]\n  V --> SUB[구독<br/>Google 구독 묶음에 포함]\n  ADS -->|수익 배분| C\n  ENC -.->|무엇이 좋은 화질인가를<br/>참조 없이 판정| REC\n  classDef money stroke-dasharray: 3 3\n  class ADS,SUB money"
+  },
+  "revenue_streams": [
+    {
+      "name": "광고",
+      "how": "YouTube 광고 매출 2025년 403.67억 달러(+11.7%). 2024년 361.47억, 2023년 315.10억.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Alphabet Inc. Form 10-K (FY2025)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+          "publisher": "Alphabet Inc. · SEC EDGAR",
+          "date": "2026-02 확인",
+          "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
+        }
+      ]
+    },
+    {
+      "name": "구독",
+      "how": "YouTube Premium·Music·TV. 10-K 의 'Google subscriptions, platforms, and devices'(2025년 480.30억 달러) 안에 Google One·Play·기기와 함께 묶여 있어 YouTube 몫은 따로 공개되지 않는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Alphabet Inc. Form 10-K (FY2025)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+          "publisher": "Alphabet Inc. · SEC EDGAR",
+          "date": "2026-02 확인",
+          "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "업로드·트랜스코딩",
+      "why": "올리는 쪽이 사용자라 **원본의 품질을 통제할 수 없다.** 그래서 이 도메인의 첫 문제가 압축이 아니라 판정이다 — 참조 영상이 없는 상태에서 무엇이 좋은 화질인지 말할 수 있어야 한다. 그 다음이 그것을 모든 기기에서 재생 가능한 여러 형식으로 만들어 내는 일이고, 그 양이 데이터센터 규모의 문제가 된다.",
+      "tech": [
+        {
+          "tech": "UVQ — 무참조 지각 화질 모델(ContentNet·DistortionNet·CompressionNet·AggregationNet)",
+          "solves": "참조가 없는 사용자 업로드의 화질을 MOS 1~5 로 판정하고, 점수와 함께 **무엇 때문에 나쁜지**(내용·왜곡·압축)를 패치 단위로 낸다.",
+          "limits": "정답이 사람의 주관 점수뿐이고 라벨은 1.5K 규모다. 왜곡은 합성으로, 압축은 쌍 비교로 배워 실제 분포와 어긋날 여지가 있다. **점수가 실제 인코딩 결정을 어떻게 바꾸는지는 공개돼 있지 않다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+              "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+              "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+              "date": "2022-08-23",
+              "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+            }
+          ]
+        },
+        {
+          "tech": "VCU(Video Coding Unit) — 트랜스코딩 전용 가속기",
+          "solves": "영상 트랜스코딩을 범용 CPU 에서 전용 하드웨어로 옮겼다. 회사는 실제 데이터센터 작업에서 **잘 튜닝된 비가속 기준 대비 효율 20~33배**를 측정했다고 밝힌다.",
+          "limits": "칩을 직접 설계·배포해야 하고, 소프트웨어 스택을 가속기에 맞춰 함께 설계해야 한다. 이 사이트는 아직 이 축을 기능으로 파지 않았다 — 지금은 도메인 tech 로만 적어 둔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Warehouse-scale Video Acceleration: Co-design and Deployment in the Wild",
+              "url": "https://research.google/pubs/pub50300/",
+              "publisher": "Google · ASPLOS 2021 (Ranganathan, Stodolsky, Calow 외 30여 명)",
+              "date": "2021",
+              "summary": "데이터센터 규모의 영상 트랜스코딩을 전용 가속기(VCU)로 옮긴 이야기. 잘 튜닝된 비가속 기준 대비 효율 20~33배를 실제 데이터센터 작업에서 측정했다고 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "uvq-quality"
+      ]
+    },
+    {
+      "name": "전송·재생",
+      "why": "광고와 구독이 붙어 있는 자리는 결국 재생 화면이다. 비트가 어떤 경로로 시청자에게 닿고 재생 중 무엇이 조절되는가가 체감과 원가를 함께 정한다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "추천·발견",
+      "why": "카탈로그가 회사가 고른 것이 아니라 사용자가 올린 것 전부라, 무엇을 위에 놓을지가 곧 이 서비스의 모양이다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "저작권·콘텐츠 식별",
+      "why": "누구나 올릴 수 있다는 사실은 **남의 것도 올라온다**는 뜻이다. 올라온 것이 누구의 것인지 판정하지 못하면 광고 매출을 누구에게 줘야 하는지도 정할 수 없다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "uvq-quality",
+      "name": "화질 — 원본이 이미 망가져 있을 때",
+      "domain": "업로드·트랜스코딩",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**Netflix 와 정확히 반대 전제에서 시작한다.** Netflix 에는 스튜디오가 만든 깨끗한 마스터가 있고, 화질을 잰다는 것은 **그 원본에 얼마나 충실한가**(PSNR·VMAF)를 재는 일이다. YouTube 에는 그 원본이 없다 — **사용자가 올린 파일이 곧 원본**이고, 그 파일은 이미 흔들렸거나 어둡거나 한 번 압축된 상태일 수 있다.\n\n회사가 밝힌 어려움은 두 가지다. 사용자 제작 콘텐츠(UGC)는 **내용과 원본 품질의 변동 폭이 대단히 크고**, 게다가 **사람들은 품질이 나쁜 업로드의 왜곡에는 좋은 업로드의 왜곡보다 덜 민감하다.** 같은 압축을 걸어도 체감 손해가 원본에 따라 다르다는 뜻이다.\n\n화질을 못 재면 인코딩을 개선할 수도, 개선했다고 말할 수도 없다. 그래서 이 회사의 인코딩 이야기는 **압축 기술이 아니라 '무엇이 좋은 화질인가를 참조 없이 판정하는 일'에서 시작한다.**",
+        "metrics": [
+          {
+            "label": "YouTube 광고 매출",
+            "value": "2025년 **403.67억 달러**(2024년 361.47억, 2023년 315.10억)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Alphabet Inc. Form 10-K (FY2025)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+                "publisher": "Alphabet Inc. · SEC EDGAR",
+                "date": "2026-02 확인",
+                "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
+              }
+            ]
+          },
+          {
+            "label": "회사 전체 규모",
+            "value": "Alphabet 2025년 총매출 4,028.36억 달러 · 영업이익 1,290.39억 달러",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Alphabet Inc. Form 10-K (FY2025)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+                "publisher": "Alphabet Inc. · SEC EDGAR",
+                "date": "2026-02 확인",
+                "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
+              }
+            ]
+          },
+          {
+            "label": "기존 UGC 화질 데이터셋의 크기",
+            "value": "LIVE-Qualcomm 은 **208개 샘플** — ImageNet·YouTube-8M 에 비하면 턱없이 작다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "label": "확장한 학습 데이터",
+            "value": "YouTube-UGC 에 **1.5K 대표 샘플**, 원본과 트랜스코딩본 **양쪽**에 품질 라벨",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "label": "점수 척도",
+            "value": "평균 의견 점수(MOS) **1~5**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "기존 화질 지표를 그대로 가져오려 했을 때",
+          "thought": "PSNR 과 VMAF 는 **깨끗한 참조 영상이 있다는 전제** 위에 서 있고, 전문 제작 콘텐츠에서는 잘 작동한다. 그런데 이곳 콘텐츠의 대부분은 사용자가 올린 것이라 그 전제가 아예 없다. 비교할 원본이 없는데 충실도를 잰다는 말이 성립하지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "라벨을 모으려 했을 때",
+          "thought": "주관 점수를 정답으로 쓰려면 사람이 봐야 하는데, 이 분야의 기존 데이터셋은 208개 규모다. ImageNet 이나 YouTube-8M 을 쓰던 감각으로 모델을 세우면 학습이 안 된다. **라벨이 필요한 부분과 필요 없는 부분을 갈라내야 한다**는 판단이 여기서 나온다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "나쁜 원본과 좋은 원본을 같은 잣대로 재려 했을 때",
+          "thought": "사람들은 **품질이 나쁜 업로드의 왜곡에 덜 민감하다.** 그러면 같은 크기의 점수 하락이 같은 크기의 불만이 아니다 — 화질을 하나의 숫자로만 다루면 이 사실이 사라진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "점수 하나로는 부족하다고 느낀 지점",
+          "thought": "점수만 내면 '나쁘다'는 것은 알아도 **무엇 때문에 나쁜지**를 모른다. 내용이 원래 그런 것인지, 촬영이 흔들린 것인지, 우리가 압축을 세게 한 것인지는 대응이 전부 다른 문제다. 그래서 판단을 갈래로 나눠 각각을 따로 내놓기로 했다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "업로드 원본 — 사용자가 올린 파일. 이보다 나은 참조는 존재하지 않는다",
+          "트랜스코딩본 — 같은 영상의 다른 형식·비트레이트 판본",
+          "패치 — 네이티브 해상도에서 잘라 낸 조각. 판단의 최소 단위",
+          "MOS(1~5) — 사람의 주관 점수 평균. 이 도메인의 유일한 정답",
+          "서브넷 피처 — 내용 · 왜곡 · 압축 세 갈래의 중간 판단",
+          "진단 리포트 — 점수와 함께 나가는 '무엇 때문에'"
+        ],
+        "invariants": [
+          "업로드가 곧 원본이다 — 참조 기반 지표의 전제가 여기서는 성립하지 않는다.",
+          "같은 압축이라도 원본 품질에 따라 사람이 느끼는 손해가 다르다.",
+          "점수의 정답은 계산식이 아니라 사람의 주관 평균(MOS)이다.",
+          "화면을 리사이즈해 넣으면 화질을 판단할 근거 자체가 훼손된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "업로드된 영상을 **네이티브 해상도의 패치**로 잘라 넣는다",
+            "why": "리사이즈하면 해상도에서 오는 세부가 사라져, 판단해야 할 대상을 판단 전에 없애 버린다."
+          },
+          {
+            "step": "ContentNet 이 내용의 상위 의미를 본다 — 어떤 종류의 영상이고 의미 있는 내용을 담고 있는가",
+            "why": "내용이 원래 그런 것인지와 화질이 나쁜 것인지를 가르려면 내용을 먼저 알아야 한다. YouTube-8M 라벨을 쓴다."
+          },
+          {
+            "step": "DistortionNet 이 촬영 단계의 왜곡을 본다 — 블러·노이즈·지터·색 양자화",
+            "why": "합성 왜곡을 입힌 영상으로 지도학습해, 무엇이 어떤 왜곡인지 구분할 수 있게 한다."
+          },
+          {
+            "step": "CompressionNet 이 압축 아티팩트를 본다 — 서로 다른 비트레이트로 압축한 **쌍**을 비교해 상대적 압축 수준을 예측한다",
+            "why": "압축은 우리가 건 것이라, 다른 비트레이트의 같은 영상끼리 비교하면 라벨 없이도 배울 수 있다."
+          },
+          {
+            "step": "AggregationNet 이 세 갈래 피처를 이어 붙여 **MOS 1~5** 로 매핑한다",
+            "why": "여기서만 사람이 매긴 정답이 필요하다."
+          },
+          {
+            "step": "종합 점수와 함께 **서브넷별 지표 · 패치 단위 피드백 · 진단 설명**을 내놓는다",
+            "why": "어디가 왜 나쁜지가 남아야 다음 대응을 정할 수 있다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "화질을 참조와 비교해서 잴 것인가",
+            "chosen": "**무참조(no-reference)로 간다.** 참조 기반 지표(PSNR·VMAF)는 깨끗한 원본을 전제하는데 UGC 에는 그 원본이 없다.",
+            "alternatives": [
+              "PSNR·VMAF 로 업로드 원본 대비 트랜스코딩본의 충실도만 잰다",
+              "업로드 시점의 메타데이터(해상도·비트레이트)로 대신한다"
+            ],
+            "tradeoff": "계산식으로 얻던 객관적 정답이 사라지고, **사람의 주관 점수(MOS)가 유일한 정답**이 된다. 정답을 만드는 데 사람이 필요해지고, 그래서 라벨이 비싸진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "하나의 모델로 화질을 배울 것인가",
+            "chosen": "**네 개의 서브넷으로 나눈다** — ContentNet(내용) · DistortionNet(왜곡) · CompressionNet(압축) · AggregationNet(종합).",
+            "alternatives": [
+              "영상을 넣으면 점수가 나오는 단일 신경망"
+            ],
+            "tradeoff": "네 개를 각각 학습하고 유지해야 하고, 어떻게 합칠지가 또 하나의 설계 대상이 된다. 대신 **'무엇 때문에 나쁜가'가 모델 구조에 남는다** — 단일 모델이면 점수만 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "라벨이 208개 규모인 분야에서 어떻게 학습할 것인가",
+            "chosen": "앞의 세 서브넷은 **라벨 없는 수백만 개의 원본 영상으로 자기지도 학습**하고, **AggregationNet 만** MOS 라벨을 쓴다.",
+            "alternatives": [
+              "MOS 라벨을 대규모로 수집한다",
+              "기존 UGC 데이터셋(208개 규모)만으로 학습한다"
+            ],
+            "tradeoff": "사람의 정답이 필요한 지점을 마지막 한 층으로 몰아 라벨 부담을 줄였다. 대신 **자기지도로 배운 신호가 실제 지각 품질과 어긋날 여지**가 앞의 세 층에 남는다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "촬영 왜곡을 무엇으로 가르칠 것인가",
+            "chosen": "**합성 왜곡**을 입힌 영상으로 지도학습한다 — 블러·노이즈·지터·색 양자화.",
+            "alternatives": [
+              "실제 왜곡 영상에 사람이 왜곡 종류를 라벨링한다"
+            ],
+            "tradeoff": "왜곡의 정답을 마음대로 만들어 낼 수 있어 데이터가 무한해진다. 대신 **합성 왜곡이 실제 촬영에서 생기는 왜곡과 다를 수 있고**, 다르면 그 차이는 모델이 배우지 못한다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "압축 수준을 절대값으로 배울 것인가",
+            "chosen": "**서로 다른 비트레이트로 압축한 쌍**을 놓고 **상대적** 압축 수준을 예측하게 한다.",
+            "alternatives": [
+              "절대 압축 강도를 라벨로 붙인다"
+            ],
+            "tradeoff": "압축은 우리가 건 것이라 쌍을 얼마든지 만들 수 있어 라벨이 공짜가 된다. 대신 배우는 것이 **상대 비교**여서, 영상 하나만 놓고 절대 압축 수준을 말하려면 기준점이 따로 필요하다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "입력을 리사이즈할 것인가",
+            "chosen": "**네이티브 해상도의 패치**로 처리한다 — DistortionNet·CompressionNet 둘 다 패치 기반이다.",
+            "alternatives": [
+              "고정 크기로 리사이즈해 넣는다"
+            ],
+            "tradeoff": "패치 수만큼 계산이 늘고 패치 결과를 어떻게 합칠지가 문제가 된다. 그래도 리사이즈는 **해상도에서 오는 세부를 지워** 판단 대상 자체를 없앤다 — 그리고 이 선택 덕에 **패치 단위 피드백**이라는 출력이 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "출력을 점수 하나로 둘 것인가",
+            "chosen": "점수와 함께 **서브넷별 지표 · 패치 단위 피드백 · 내용/왜곡/압축을 설명하는 진단**을 낸다.",
+            "alternatives": [
+              "1~5 점수만 낸다"
+            ],
+            "tradeoff": "출력이 늘고 그것을 읽는 규칙이 필요해진다. 대신 **점수 옆에 이유가 붙어**, 무엇을 고쳐야 하는지가 판단 가능해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "question": "학습 데이터를 어디까지 만들 것인가",
+            "chosen": "YouTube-UGC 데이터셋을 확장해 **원본과 트랜스코딩본 양쪽에** 정답 라벨을 붙였다. 그리고 모델을 **오픈소스로 공개**했다.",
+            "alternatives": [
+              "트랜스코딩 결과물에만 라벨을 붙인다",
+              "데이터셋을 공개하지 않는다"
+            ],
+            "tradeoff": "라벨링 비용이 두 배가 된다. 대신 **콘텐츠와 그 지각 품질의 관계**를 볼 수 있게 되고, 원본이 나쁠 때와 좋을 때 트랜스코딩이 남기는 손해를 나눠 볼 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ContentNet",
+            "role": "YouTube-8M 라벨로 영상의 상위 의미를 파악해, 내용이 원래 그런 것인지와 화질 문제를 가른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "tech": "DistortionNet",
+            "role": "합성 왜곡(블러·노이즈·지터·색 양자화)으로 지도학습해 촬영 단계 왜곡을 식별한다. 패치 기반.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "tech": "CompressionNet",
+            "role": "서로 다른 비트레이트로 압축한 쌍을 비교해 상대적 압축 수준을 예측한다. 패치 기반.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "tech": "AggregationNet",
+            "role": "세 갈래 피처를 이어 붙여 MOS 1~5 로 매핑한다. 사람이 매긴 정답이 필요한 유일한 층이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "tech": "확장된 YouTube-UGC 데이터셋",
+            "role": "1.5K 대표 샘플에 원본과 트랜스코딩본 양쪽의 품질 라벨을 붙였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+                "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+                "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+                "date": "2022-08-23",
+                "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+              }
+            ]
+          },
+          {
+            "tech": "UVQ 정확도와 실제 인코딩 결정에의 반영",
+            "role": "— 이 글은 모델 구조와 학습 방식까지만 밝힌다. 점수가 실제로 어떤 인코딩 결정을 바꾸는지는 나오지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "netflix:per-title-encoding",
+          "via": "참조가 있는가 없는가",
+          "contract": "Netflix 는 스튜디오 마스터라는 참조가 있어 PSNR·VMAF 로 **충실도**를 재고, YouTube 는 업로드가 곧 원본이라 **참조 없이** 지각 품질을 판정해야 한다. 두 회사는 서로를 언급하지 않는다 — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "전송·재생",
+          "via": "무엇을 좋은 결과라 부를 것인가",
+          "contract": "화질 판정이 있어야 어떤 인코딩·전송이 나아졌다고 말할 수 있는데, 이 사이트에는 아직 전송 쪽 자료가 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "추천·발견",
+          "via": "내용 이해",
+          "contract": "ContentNet 이 쓰는 YouTube-8M 라벨은 영상의 내용을 다루는 자원이다. 추천이 같은 자원을 쓰는지는 이 글에 없다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "업로드 하나가 점수를 받기까지",
+          "question": "참조 영상이 없는데 무엇을 보고 화질을 판정하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  UP[사용자 업로드<br/>= 이것이 곧 원본] --> PATCH[네이티브 해상도 패치]\n  PATCH --> CN[ContentNet<br/>무엇을 찍은 영상인가]\n  PATCH --> DN[DistortionNet<br/>블러·노이즈·지터·색 양자화]\n  PATCH --> KN[CompressionNet<br/>압축 쌍 비교]\n  CN --> AGG[AggregationNet]\n  DN --> AGG\n  KN --> AGG\n  MOS[사람이 매긴 MOS 1~5] -->|정답| AGG\n  AGG --> SCORE[종합 점수]\n  AGG --> DIAG[진단 리포트<br/>서브넷별 지표 · 패치 단위 피드백]\n  SELF[라벨 없는 수백만 원본 영상] -.->|자기지도| CN\n  SELF -.->|합성 왜곡| DN\n  SELF -.->|비트레이트 쌍| KN"
+        },
+        {
+          "title": "한 영상이 학습 데이터가 되기까지",
+          "question": "확장된 데이터셋에서 한 영상은 어떤 상태를 거치는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 수집됨: YouTube-UGC 대표 샘플 1.5K\n  수집됨 --> 원본라벨: 원본에 MOS 부여\n  원본라벨 --> 트랜스코딩본생성\n  트랜스코딩본생성 --> 변환본라벨: 변환본에도 MOS 부여\n  note right of 변환본라벨\n    양쪽에 라벨이 있어야\n    '원본이 나쁠 때의 손해'와\n    '좋을 때의 손해'를 나눠 본다\n  end note\n  변환본라벨 --> 쌍으로학습: AggregationNet 정답\n  쌍으로학습 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 참조가 없다는 것의 대가",
+          "question": "판정이 어긋날 수 있는 곳은 어디이고, 무엇으로 드러나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  NOREF[참조가 없다] --> ONLY[정답은 사람의 MOS 뿐]\n  ONLY --> SMALL[라벨은 1.5K 규모]\n  SMALL --> GAP{못 본 분포가 오면?}\n  GAP -->|추정| WRONG[점수가 어긋나도<br/>어긋난 줄 모른다]\n  SYN[합성 왜곡으로 배운 DistortionNet] --> DIFF{실제 촬영 왜곡과 다르면?}\n  DIFF -->|추정| MISS[그 왜곡은 배우지 못한다]\n  PAIR[압축은 쌍 비교로만 학습] --> ABS{영상 하나만 놓으면?}\n  ABS -->|추정| NEEDREF[기준점이 따로 필요하다]\n  SENS[사람은 나쁜 원본의 왜곡에 덜 민감하다] --> SAME[같은 점수 차이가<br/>같은 불만이 아니다]\n  SAME --> DIAGOUT[그래서 점수 옆에<br/>진단을 함께 낸다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+          "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+          "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+          "date": "2022-08-23",
+          "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+        },
+        {
+          "title": "Alphabet Inc. Form 10-K (FY2025)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+          "publisher": "Alphabet Inc. · SEC EDGAR",
+          "date": "2026-02 확인",
+          "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "YouTube 구독 매출의 실제 규모 — 10-K 는 Google One·Play·기기와 묶어서만 공개한다.",
+    "UVQ 의 정확도 수치와, 그 점수가 실제 인코딩·트랜스코딩 결정을 어떻게 바꾸는지.",
+    "VCU 가 어떤 코덱을 어느 비중으로 처리하는지, 그리고 소프트웨어 스택을 어떻게 함께 설계했는지 — 아직 기능으로 파지 않았다.",
+    "전송·재생, 추천·발견, 저작권·콘텐츠 식별 세 도메인은 아직 손대지 않았다.",
+    "크리에이터 수익 배분(YouTube Partner Program)의 계산 구조는 공개 엔지니어링 자료를 아직 찾지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "UVQ: Measuring YouTube's Perceptual Video Quality",
+      "url": "https://research.google/blog/uvq-measuring-youtubes-perceptual-video-quality/",
+      "publisher": "Google Research Blog · Yilin Wang(YouTube), Feng Yang(Google Research)",
+      "date": "2022-08-23",
+      "summary": "참조 영상이 없는 사용자 업로드(UGC)의 화질을 재는 UVQ 모델. ContentNet·DistortionNet·CompressionNet 세 서브넷을 라벨 없이 자기지도로 학습하고, AggregationNet 만 MOS 라벨로 맞춘다. 점수와 함께 패치 단위 진단을 낸다."
+    },
+    {
+      "title": "Warehouse-scale Video Acceleration: Co-design and Deployment in the Wild",
+      "url": "https://research.google/pubs/pub50300/",
+      "publisher": "Google · ASPLOS 2021 (Ranganathan, Stodolsky, Calow 외 30여 명)",
+      "date": "2021",
+      "summary": "데이터센터 규모의 영상 트랜스코딩을 전용 가속기(VCU)로 옮긴 이야기. 잘 튜닝된 비가속 기준 대비 효율 20~33배를 실제 데이터센터 작업에서 측정했다고 밝힌다."
+    },
+    {
+      "title": "Alphabet Inc. Form 10-K (FY2025)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+      "publisher": "Alphabet Inc. · SEC EDGAR",
+      "date": "2026-02 확인",
+      "summary": "YouTube 광고 매출 2023년 315.10억 달러 → 2024년 361.47억 달러 → 2025년 403.67억 달러. Alphabet 총매출 2025년 4,028.36억 달러, 영업이익 1,290.39억 달러. 'Google subscriptions, platforms, and devices' 는 2025년 480.30억 달러이며 YouTube 구독뿐 아니라 Google One·Play·기기를 함께 담는다."
+    }
+  ]
+}
