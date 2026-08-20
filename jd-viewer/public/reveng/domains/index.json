@@ -89,6 +89,20 @@
         "identity-trust"
       ],
       "file": "identity-trust.md"
+    },
+    {
+      "slug": "spatial-units",
+      "title": "공간 — 미리 나눠 두는가, 필요할 때 재는가",
+      "question": "답이 얼마나 오래 유효한지가 공간을 다루는 방식을 어떻게 정하는가?",
+      "companies": [
+        "coupang",
+        "baemin"
+      ],
+      "features": [
+        "delivery-area",
+        "rider-dispatch"
+      ],
+      "file": "spatial-units.md"
     }
   ]
 }
