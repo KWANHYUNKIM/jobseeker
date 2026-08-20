@@ -154,6 +154,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "남의 가게가 판 만큼 버는 회사",
       "features_done": 4
+    },
+    {
+      "slug": "figma",
+      "name": "Figma",
+      "name_en": "Figma",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -219,7 +230,11 @@
     "멀티테넌시·격리",
     "스토어프론트 렌더링",
     "체크아웃·결제",
-    "회복탄력성·용량 계획"
+    "회복탄력성·용량 계획",
+    "동시 편집·문서 동기화",
+    "실시간 데이터 구독",
+    "렌더링·클라이언트 성능",
+    "데이터 저장·확장"
   ],
   "countries": {
     "KR": "한국",

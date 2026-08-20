@@ -1,0 +1,642 @@
+{
+  "slug": "figma",
+  "name": "Figma",
+  "name_en": "Figma",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
+  "business_model": "**좌석 기반 구독으로 번다.** 2025년 매출 **10.56억 달러**(+41%), 4분기 3.038억(+40%). 순매출유지율(NDR)이 **136%** 이고 연 10만 달러 이상 쓰는 유료 고객이 **1,405곳** 이라, **이미 들어온 고객이 더 쓰면서 자라는 구조**다. non-GAAP 영업이익은 1.295억 달러(마진 12%)이고, GAAP 영업손실 13억 달러에는 **IPO 관련 일회성 주식보상비용 9.757억 달러**가 들어 있다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 자기 지면에서, Netflix 는 자기 구독에서, 쿠팡은 자기가 파는 물건에서, Shopify 는 남의 매출의 일부에서 번다. Figma 는 **일하는 사람의 자리(좌석)** 에서 번다 — 그래서 **여러 사람이 한 파일에 동시에 들어와 있는 것 자체가 제품의 값어치**가 된다(뒷문장은 이 사이트의 해석).\n\n그리고 사용자의 위치가 인프라의 제약이 된다 — **주간 활성 사용자의 80% 이상이 미국 밖**인데 인프라는 오리건 데이터센터 중심이다(2019년 기준).",
+  "products": [
+    "Figma(디자인 파일 · 동시 편집)",
+    "FigJam",
+    "Figma 플랫폼·AI 기능"
+  ],
+  "domain_map": {
+    "title": "Figma 도메인 지도",
+    "question": "여러 사람이 같은 파일을 동시에 고치는 것이 제품일 때, 무엇이 먼저 정해져야 하는가?",
+    "code": "flowchart TD\n  U[여러 사용자] -->|WebSocket| MP[동시 편집 · 문서 동기화<br/>파일 1개 = 프로세스 1개 · Rust]\n  MP --> R[렌더링 · 클라이언트 성능]\n  R --> U\n  U --> LG[실시간 데이터 구독<br/>댓글 · 팀 · 프로젝트]\n  LG --> U\n  MP -.->|메타데이터와 별개| DB[데이터 저장 · 확장<br/>단일 인스턴스의 한계]\n  LG --> DB\n  U --> SEAT[좌석 구독]\n  SEAT --> REV[매출 10.56억 달러 · +41%<br/>NDR 136%]\n  classDef money stroke-dasharray: 3 3\n  class REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "좌석 구독",
+      "how": "2025년 매출 10.56억 달러(+41%). NDR 136%, 연 10만 달러 이상 유료 고객 1,405곳 — 기존 고객이 더 쓰면서 자란다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Figma Announces Fourth Quarter and Fiscal Year 2025 Financial Results",
+          "url": "https://investor.figma.com/news-events/news/news-details/2026/Figma-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results/default.aspx",
+          "publisher": "Figma, Inc. Investor Relations",
+          "date": "2026-02-18",
+          "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "동시 편집·문서 동기화",
+      "why": "제품이 곧 **여러 사람이 같은 파일을 동시에 고치는 일**이라, '누구의 편집이 이겼는가'를 정하는 규칙이 부가 기능이 아니라 제품 자체다. 그리고 이 도메인의 첫 결정은 알고리즘을 고르는 일이 아니라 **OT 와 CRDT 를 그대로 쓰지 않기로 한 일**이었다.",
+      "tech": [
+        {
+          "tech": "속성 단위 last-writer-wins(서버가 중앙 권위)",
+          "solves": "충돌 규칙을 하나로 만든다. 같은 객체의 다른 속성끼리도, 다른 객체의 속성끼리도 애초에 충돌하지 않는다. **CRDT 가 분산을 위해 지불하는 오버헤드를 걷어내** 더 빠르고 가벼운 구현을 얻는다.",
+          "limits": "**한 속성 안에서는 병합이 없다** — 같은 텍스트 속성을 동시에 고치면 한쪽 값으로 정해진다. 그리고 서버 없이는 돌지 않는다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's multiplayer technology works",
+              "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+              "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+              "date": "2019-10-16",
+              "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+            }
+          ]
+        },
+        {
+          "tech": "클라이언트 예측(미확인 변경과 충돌하는 서버 값 폐기)",
+          "solves": "내 조작을 즉시 로컬에 적용하면서도 남의 변경이 도착할 때 화면이 깜빡이지 않게 한다.",
+          "limits": "예측이 빗나가면 잠깐 어긋난다 — 서버가 거절할 리페어런팅을 보낸 동안 **객체가 트리에서 일시적으로 사라진다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's multiplayer technology works",
+              "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+              "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+              "date": "2019-10-16",
+              "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+            }
+          ]
+        },
+        {
+          "tech": "부모 링크 속성 + 분수 인덱싱",
+          "solves": "옮겨도 객체의 정체성이 보존되고, 형제 사이 삽입이 다른 형제를 건드리지 않아 그 자체로 충돌을 만들지 않는다. 부모와 위치는 한 속성으로 원자적으로 갱신된다.",
+          "limits": "서버가 사이클을 만드는 부모 변경을 거절해야 하고, 사이에 계속 넣으면 분수가 잘게 쪼개진다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's multiplayer technology works",
+              "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+              "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+              "date": "2019-10-16",
+              "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+            }
+          ]
+        },
+        {
+          "tech": "클라이언트 생성 ID · 실행취소 버퍼 · 문서별 프로세스(Rust)",
+          "solves": "클라이언트 ID 를 포함한 고유 ID 로 오프라인에서도 객체를 만들고, 삭제된 속성은 서버가 아니라 클라이언트 버퍼에 남겨 문서가 무한히 커지지 않게 한다. 파일 하나가 프로세스 하나다.",
+          "limits": "**멀티플레이어 데이터를 실제로 어디에 어떻게 보관하는지는 이 글에 없다** — 메타데이터가 사는 Postgres 와 별개라는 것까지만 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's multiplayer technology works",
+              "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+              "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+              "date": "2019-10-16",
+              "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+            },
+            {
+              "title": "Under the hood of Figma's infrastructure",
+              "url": "https://www.figma.com/blog/under-the-hood-of-figmas-infrastructure/",
+              "publisher": "Figma Blog · Samir Goel(Director of Engineering)",
+              "date": "2019-11-21",
+              "summary": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다. 데이터베이스는 AWS 의 가장 큰 축에 드는 머신 한 대 위의 단일 인스턴스로 KISS 원칙을 따랐지만 그 구조의 한계에 다다르고 있다고 밝힌다. 주간 활성 사용자의 80% 이상이 미국 밖인데 인프라는 오리건 데이터센터 중심이라 지연 문제가 있고, LiveGraph·수평 확장·원격 프록시·지리적으로 분산된 멀티플레이어 인스턴스를 과제로 든다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "multiplayer-doc"
+      ]
+    },
+    {
+      "name": "실시간 데이터 구독",
+      "why": "파일 캔버스 밖의 것 — 댓글·팀·프로젝트 — 은 멀티플레이어 시스템을 쓰지 않는다. 그런데 그것들도 실시간으로 보여야 한다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "렌더링·클라이언트 성능",
+      "why": "디자인 툴이 브라우저에서 돈다. 동시 편집이 만든 변경이 결국 캔버스에 그려져야 하고, 그 속도가 곧 도구의 느낌이다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "데이터 저장·확장",
+      "why": "메타데이터가 **AWS 의 가장 큰 축에 드는 머신 한 대 위 단일 데이터베이스**에 있었고, 회사는 그 구조가 한계에 다다르고 있다고 밝혔다(2019년). 사용자의 80% 이상이 미국 밖이라는 사실도 이 도메인의 제약이다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "multiplayer-doc",
+      "name": "동시 편집 — 중앙 서버가 있으면 CRDT 를 다 쓰지 않아도 된다",
+      "domain": "동시 편집·문서 동기화",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 제품은 **여러 사람이 같은 파일을 동시에 고치는 것**이다. 그러니 '누구의 편집이 이겼는가'를 정하는 규칙이 부가 기능이 아니라 제품 자체다.\n\n그런데 이 도메인의 첫 결정은 알고리즘을 고르는 일이 아니라 **고르지 않는 일**이었다. 구글 독스가 쓰는 표준인 **OT(Operational Transformation)를 쓰지 않기로** 했고, 요즘 흔히 답으로 꼽히는 **CRDT 도 그대로 쓰지 않았다.** 이유는 각각 다르다 — OT 는 우리에게 과했고, CRDT 는 **우리에게 없는 문제(탈중앙)를 푸는 도구**였다.\n\n> **Figma 는 진짜 CRDT 를 쓰지 않는다 — CRDT 는 분산 시스템을 위해 설계됐는데, Figma 는\n> 중앙집중형(우리 서버가 중앙 권위)이라 시스템을 단순화할 수 있다.**\n\n**있는 것을 세는 데서 설계가 시작된 셈이다**(이 문장은 이 사이트의 해석). 권위가 하나 있다는 사실이 곧 걷어낼 수 있는 것의 목록이 됐다.",
+        "metrics": [
+          {
+            "label": "회사 규모(2025년)",
+            "value": "매출 **10.56억 달러**(+41%), 4분기 3.038억(+40%). NDR **136%**, 연 10만 달러 이상 유료 고객 **1,405곳**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Announces Fourth Quarter and Fiscal Year 2025 Financial Results",
+                "url": "https://investor.figma.com/news-events/news/news-details/2026/Figma-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results/default.aspx",
+                "publisher": "Figma, Inc. Investor Relations",
+                "date": "2026-02-18",
+                "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
+              }
+            ]
+          },
+          {
+            "label": "수익의 성격",
+            "value": "non-GAAP 영업이익 **1.295억 달러**(마진 12%). GAAP 영업손실 13억에는 **IPO 관련 일회성 주식보상비용 9.757억**이 포함",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Announces Fourth Quarter and Fiscal Year 2025 Financial Results",
+                "url": "https://investor.figma.com/news-events/news/news-details/2026/Figma-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results/default.aspx",
+                "publisher": "Figma, Inc. Investor Relations",
+                "date": "2026-02-18",
+                "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
+              }
+            ]
+          },
+          {
+            "label": "사용자의 위치",
+            "value": "**주간 활성 사용자의 80% 이상이 미국 밖**인데 인프라는 오리건 데이터센터 중심이다(2019년 기준)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Under the hood of Figma's infrastructure",
+                "url": "https://www.figma.com/blog/under-the-hood-of-figmas-infrastructure/",
+                "publisher": "Figma Blog · Samir Goel(Director of Engineering)",
+                "date": "2019-11-21",
+                "summary": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다. 데이터베이스는 AWS 의 가장 큰 축에 드는 머신 한 대 위의 단일 인스턴스로 KISS 원칙을 따랐지만 그 구조의 한계에 다다르고 있다고 밝힌다. 주간 활성 사용자의 80% 이상이 미국 밖인데 인프라는 오리건 데이터센터 중심이라 지연 문제가 있고, LiveGraph·수평 확장·원격 프록시·지리적으로 분산된 멀티플레이어 인스턴스를 과제로 든다."
+              }
+            ]
+          },
+          {
+            "label": "동시 편집의 단위",
+            "value": "**디자인 파일 하나 = 멀티플레이어 서비스 인스턴스 하나**(문서마다 별도 프로세스)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              },
+              {
+                "title": "Under the hood of Figma's infrastructure",
+                "url": "https://www.figma.com/blog/under-the-hood-of-figmas-infrastructure/",
+                "publisher": "Figma Blog · Samir Goel(Director of Engineering)",
+                "date": "2019-11-21",
+                "summary": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다. 데이터베이스는 AWS 의 가장 큰 축에 드는 머신 한 대 위의 단일 인스턴스로 KISS 원칙을 따랐지만 그 구조의 한계에 다다르고 있다고 밝힌다. 주간 활성 사용자의 80% 이상이 미국 밖인데 인프라는 오리건 데이터센터 중심이라 지연 문제가 있고, LiveGraph·수평 확장·원격 프록시·지리적으로 분산된 멀티플레이어 인스턴스를 과제로 든다."
+              }
+            ]
+          },
+          {
+            "label": "구현 언어",
+            "value": "멀티플레이어 서버는 **Rust**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "OT 를 검토할 때",
+          "thought": "구글 독스가 쓰는 표준이지만 **가능한 상태의 조합 폭발**이 생겨 추론이 매우 어렵고, 복잡한 케이스 커버리지와 **오류 나기 쉬운 증명**이 필요하다. 게다가 우리는 텍스트 편집기가 아니라 **디자인 툴**이라 그 힘이 과했다. 그래서 단순함을 골랐다 — 더 빨리 내고 유지하기 쉽게.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "CRDT 를 그대로 가져오려 할 때",
+          "thought": "CRDT 는 **분산 시스템을 위해 설계된 것**이다. 그런데 우리에겐 중앙 서버가 있다. 권위가 하나면 CRDT 가 지불하는 여분의 오버헤드를 걷어내고 **더 빠르고 가벼운 구현**을 얻을 수 있다 — 영감만 받고 전부를 가져오지는 않기로 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "화면이 튀는 것을 봤을 때",
+          "thought": "내 변경은 즉시 로컬에 적용하는데 서버에서 남의 변경이 도착하면 화면이 깜빡인다. 그래서 **아직 확인되지 않은 내 속성 변경과 충돌하는 서버 변경은 버리기로** 했다 — 서버 도착 순서에서 내가 가장 최근일 것이라고 **예측**하는 셈이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "만들기 전에 무엇을 먼저 할지 정할 때",
+          "thought": "프로덕션 코드에 손대기 전에 **세 클라이언트가 서버에 붙는 것을 시뮬레이션하고 시스템 전체 상태를 시각화하는 웹 페이지**를 만들었다. 오프라인 클라이언트와 대역폭 제한 같은 아이디어를 거기서 먼저 시험했다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "문서 — HTML DOM 같은 트리. 루트 하나, 그 아래 페이지, 그 아래 내용물",
+          "객체 — ID 와 속성 모음. 개념적으로 `Map<ObjectID, Map<Property, Value>>`",
+          "속성(property) — **병합과 충돌의 단위**",
+          "부모 링크 + 위치 — **자식 객체의 한 속성**으로 원자적으로 갱신된다",
+          "실행취소 버퍼 — 삭제된 속성이 여기 남는다(클라이언트 쪽)"
+        ],
+        "invariants": [
+          "서버가 중앙 권위다 — 어떤 속성에 대해 **마지막으로 도착한 값**이 남는다.",
+          "병합의 단위는 **속성 값**이다 — 한 속성 안에서는 병합이 없다.",
+          "같은 객체의 서로 다른 속성은 충돌하지 않고, 다른 객체의 속성도 충돌하지 않는다.",
+          "부모-자식 관계는 **자식의 속성**이다 — 그래서 옮겨도 객체의 정체성이 보존된다.",
+          "서버는 **사이클을 만드는 부모 변경을 거절**한다.",
+          "객체는 저절로 생기지 않는다 — 명시적 생성이 필요하다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 WebSocket 으로 그 문서의 멀티플레이어 프로세스에 붙는다 — **파일 하나에 인스턴스 하나**",
+            "why": "문서 사이에 상태를 공유할 이유가 없고, 하나가 죽어도 다른 문서에 번지지 않는다(뒷문장은 추정)."
+          },
+          {
+            "step": "편집이 일어나면 **속성 값 단위의 변경**을 즉시 로컬에 적용하고 서버로 보낸다",
+            "why": "내 조작이 왕복을 기다리면 도구가 느리게 느껴진다(추정)."
+          },
+          {
+            "step": "서버는 그 속성에 대해 **마지막으로 받은 값**을 유지한다(last-writer-wins)",
+            "why": "권위가 하나라 순서를 서버가 정할 수 있다."
+          },
+          {
+            "step": "클라이언트는 **아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버린다**",
+            "why": "안 그러면 내가 방금 한 조작이 남의 값으로 잠깐 되돌아가며 화면이 깜빡인다."
+          },
+          {
+            "step": "객체를 옮기면 **자식의 부모 링크 속성**이 바뀐다. 순서는 부모의 자식 배열에서 **0과 1 사이의 분수**로 표현되고, 사이에 넣을 때는 두 위치의 평균을 쓴다",
+            "why": "삭제 후 재생성이 아니라 속성 변경이라 정체성이 보존되고, 부모와 위치가 한 속성이라 따로 놀지 않는다."
+          },
+          {
+            "step": "서버는 **사이클을 만드는 부모 변경을 거절**한다",
+            "why": "트리가 아니게 되면 문서가 성립하지 않는다."
+          },
+          {
+            "step": "객체를 만들 때 클라이언트가 **자기 클라이언트 ID 를 포함한 고유 ID** 를 만든다",
+            "why": "서버와 조율하지 않아도 되므로 오프라인에서도 새 객체를 만들 수 있다."
+          },
+          {
+            "step": "오프라인이면 로컬에서 계속 편집하고, 다시 연결되면 **문서 사본을 새로 받아 오프라인 편집을 그 위에 다시 적용**한 뒤 동기화를 재개한다",
+            "why": "연결·재연결을 단순하게 두고, 복잡함은 이미 연결된 상태의 동기화에 몰아 두었다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "OT 를 쓸 것인가",
+            "chosen": "**쓰지 않는다.** 단순함을 골라 더 빨리 내고 유지하기 쉽게 하는 쪽을 택했다.",
+            "alternatives": [
+              "구글 독스처럼 OT 를 구현한다"
+            ],
+            "tradeoff": "OT 가 주는 세밀한 병합을 포기한다 — 실제로 **같은 텍스트 속성을 동시에 고치면 병합되지 않고 한쪽 값으로 정해진다.** 그래도 OT 는 **가능한 상태의 조합 폭발**을 만들어 추론이 매우 어렵고, 복잡한 케이스 커버리지와 오류 나기 쉬운 증명을 요구하며, **디자인 툴에는 과한 힘**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "CRDT 를 그대로 쓸 것인가",
+            "chosen": "**영감만 받는다.** 진짜 CRDT 는 쓰지 않고, **서버가 중앙 권위**라는 사실을 이용해 시스템을 단순화한다.",
+            "alternatives": [
+              "표준 CRDT 라이브러리를 그대로 쓴다",
+              "완전 P2P 로 간다"
+            ],
+            "tradeoff": "**서버 없이는 돌지 않는다** — 탈중앙이 주는 성질을 포기한다(뒷문장은 이 사이트의 추정). 대신 CRDT 가 분산을 위해 지불하는 여분의 오버헤드를 걷어내고 **더 빠르고 가벼운 구현**을 얻는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "문서를 무엇으로 모델링할 것인가",
+            "chosen": "HTML DOM 같은 **트리** — 루트 하나, 그 아래 페이지, 그 아래 내용물. 개념적으로는 **`Map<ObjectID, Map<Property, Value>>`** 다.",
+            "alternatives": [
+              "연산 로그를 원본으로 둔다",
+              "텍스트 문서처럼 선형 시퀀스로 다룬다"
+            ],
+            "tradeoff": "**병합의 단위가 속성 값 경계로 고정된다** — 속성 하나 안에서 일어나는 동시 편집은 다룰 수 없다. 대신 같은 객체의 다른 속성끼리도, 다른 객체의 속성끼리도 **애초에 충돌하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "충돌을 어떻게 정할 것인가",
+            "chosen": "**last-writer-wins** — 서버는 어떤 객체의 어떤 속성에 대해 클라이언트가 보낸 **최신 값**을 유지한다.",
+            "alternatives": [
+              "병합 규칙을 속성 종류마다 만든다",
+              "먼저 잡은 쪽이 이기는 락을 건다"
+            ],
+            "tradeoff": "동시에 같은 텍스트 속성을 고치면 **한쪽 값으로 정해지고 합쳐지지 않는다.** 대신 규칙이 하나라 어디서도 예외를 관리할 필요가 없다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "내 화면이 튀는 것을 어떻게 막을 것인가",
+            "chosen": "**아직 확인되지 않은 내 속성 변경과 충돌하는 서버 변경은 버린다.** 내 변경을 즉시 로컬에 적용하고, 서버 도착 순서에서 내가 가장 최근일 것으로 **예측**한다.",
+            "alternatives": [
+              "서버 확인을 기다렸다 적용한다",
+              "서버 값이 오면 무조건 덮어쓴다"
+            ],
+            "tradeoff": "예측이 빗나가면 잠깐 어긋난다 — 실제로 **서버가 거절할 리페어런팅을 보낸 상태에서는 거절이 도착할 때까지 객체가 트리에서 일시적으로 사라진다.** 대신 깜빡임 없이 즉시 반응한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "부모-자식 관계를 어디에 저장할 것인가",
+            "chosen": "**자식 객체의 속성**으로 둔다.",
+            "alternatives": [
+              "부모가 자식 목록을 들고 있는다",
+              "옮길 때 삭제하고 새로 만든다"
+            ],
+            "tradeoff": "서버가 **사이클을 만드는 부모 변경을 거절**해야 하는 부담이 생긴다. 대신 **옮겨도 객체의 정체성이 보존된다** — 삭제·재생성 방식이면 그 객체를 가리키던 다른 것들이 끊긴다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "형제들 사이의 순서를 어떻게 표현할 것인가",
+            "chosen": "**분수 인덱싱** — 부모의 자식 배열에서의 위치를 **0과 1 사이(양끝 제외)의 분수**로 두고, 둘 사이에 넣을 때는 두 위치의 평균을 쓴다. **부모 링크와 위치는 하나의 속성으로 원자적으로** 갱신된다.",
+            "alternatives": [
+              "정수 인덱스를 쓰고 삽입 시 뒤를 밀어낸다",
+              "링크드 리스트로 잇는다"
+            ],
+            "tradeoff": "사이에 계속 넣으면 **분수가 점점 잘게 쪼개진다**(뒷문장은 이 사이트의 추정). 대신 삽입이 **다른 형제들을 건드리지 않아** 그 자체로 충돌을 만들지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "question": "여러 사람이 있는 곳에서 실행취소를 어떻게 정의할 것인가",
+            "chosen": "원칙을 먼저 세웠다 — **많이 되돌리고, 무언가를 복사하고, 다시 현재까지 되돌아왔을 때 문서가 바뀌어 있으면 안 된다.** 그래서 실행취소는 **그 시점의 다시실행 히스토리를** 고치고, 다시실행은 **그 시점의 실행취소 히스토리를** 고친다.",
+            "alternatives": [
+              "전역 연산 로그를 되감는다",
+              "자기 연산만 스택에서 뽑아 되돌린다"
+            ],
+            "tradeoff": "히스토리 관리가 복잡해진다(추정). 대신 **협업자가 그 뒤에 한 편집을 덮어쓰지 않는다** — 혼자 쓰는 도구의 실행취소를 그대로 가져오면 남의 작업이 사라진다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "문서마다 별도 프로세스(WebSocket)",
+            "role": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              },
+              {
+                "title": "Under the hood of Figma's infrastructure",
+                "url": "https://www.figma.com/blog/under-the-hood-of-figmas-infrastructure/",
+                "publisher": "Figma Blog · Samir Goel(Director of Engineering)",
+                "date": "2019-11-21",
+                "summary": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다. 데이터베이스는 AWS 의 가장 큰 축에 드는 머신 한 대 위의 단일 인스턴스로 KISS 원칙을 따랐지만 그 구조의 한계에 다다르고 있다고 밝힌다. 주간 활성 사용자의 80% 이상이 미국 밖인데 인프라는 오리건 데이터센터 중심이라 지연 문제가 있고, LiveGraph·수평 확장·원격 프록시·지리적으로 분산된 멀티플레이어 인스턴스를 과제로 든다."
+              }
+            ]
+          },
+          {
+            "tech": "Rust 멀티플레이어 서버",
+            "role": "동시 편집의 서버 측 구현 언어.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "속성 단위 last-writer-wins + 클라이언트 예측",
+            "role": "충돌 규칙을 하나로 두고, 확인되지 않은 자기 변경과 충돌하는 서버 값을 버려 깜빡임을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "부모 링크 속성 + 분수 인덱싱",
+            "role": "옮겨도 정체성이 보존되고, 형제 사이 삽입이 다른 형제를 건드리지 않는다. 서버가 사이클을 거절한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "클라이언트 생성 ID + 실행취소 버퍼",
+            "role": "클라이언트 ID 를 포함한 고유 ID 로 오프라인 생성이 가능하고, 삭제된 속성은 서버가 아니라 클라이언트의 실행취소 버퍼에 남아 문서가 무한히 커지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "세 클라이언트 시뮬레이터",
+            "role": "프로덕션 코드에 손대기 전에 시스템 전체 상태를 시각화해 오프라인·대역폭 제한 아이디어를 시험했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's multiplayer technology works",
+                "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+                "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+                "date": "2019-10-16",
+                "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+              }
+            ]
+          },
+          {
+            "tech": "멀티플레이어 데이터의 실제 저장 구조",
+            "role": "— 메타데이터가 사는 Postgres 와 별개라는 것까지만 밝힌다. 어디에 어떻게 보관하는지는 이 글에 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "실시간 데이터 구독",
+          "via": "협업의 다른 층",
+          "contract": "파일 캔버스 밖의 것(댓글·팀·프로젝트)은 이 멀티플레이어 시스템을 쓰지 않는다 — 그쪽은 다른 층이 맡는다. 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "데이터 저장·확장",
+          "via": "단일 인스턴스의 한계",
+          "contract": "메타데이터는 AWS 의 큰 머신 한 대 위 단일 데이터베이스에 있고 회사는 그 구조의 한계에 다다르고 있다고 밝힌다. 멀티플레이어 데이터는 그와 별개다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "렌더링·클라이언트 성능",
+          "via": "같은 화면",
+          "contract": "동시 편집이 만든 변경이 결국 캔버스에 그려진다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "편집 하나가 다른 사람 화면에 닿기까지",
+          "question": "두 사람이 같은 것을 동시에 고치면 무엇이 남는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[클라이언트 A: 속성 변경] --> LA[즉시 로컬 적용]\n  LA --> WS1[WebSocket]\n  B[클라이언트 B: 같은 속성 변경] --> LB[즉시 로컬 적용]\n  LB --> WS2[WebSocket]\n  WS1 --> S[문서 전용 프로세스 · Rust<br/>파일 1개 = 인스턴스 1개]\n  WS2 --> S\n  S --> LWW{last-writer-wins<br/>마지막에 도착한 값}\n  LWW --> BC[모든 클라이언트에 방송]\n  BC --> CA{내 미확인 변경과 충돌하나}\n  CA -->|예| DROP[버린다 — 깜빡임 방지]\n  CA -->|아니오| APPLY[적용]\n  S -.->|사이클 만드는 부모 변경| REJ[거절]\n  REJ --> TMP[거절이 도착할 때까지<br/>객체가 트리에서 일시적으로 사라진다]"
+        },
+        {
+          "title": "속성 변경 하나가 거치는 상태",
+          "question": "내 변경은 언제 '확정'되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 로컬적용: 편집 발생\n  로컬적용 --> 미확인: 서버로 전송\n  미확인 --> 미확인: 충돌하는 서버 값 도착 → **버린다**\n  미확인 --> 확정: 서버가 이 값을 최신으로 유지\n  미확인 --> 거절됨: 사이클을 만드는 부모 변경\n  거절됨 --> 확정: 서버의 값으로 되돌아감\n  note right of 거절됨\n    그동안 객체가\n    트리에서 사라져 보인다\n  end note\n  확정 --> [*]\n  [*] --> 오프라인편집: 연결 끊김\n  오프라인편집 --> 재적용: 재연결 시 문서 사본을 새로 받아\n  재적용 --> 미확인"
+        },
+        {
+          "title": "실패 경로 — 규칙 하나로 정할 때 남는 것",
+          "question": "단순함을 고른 대가는 어디서 청구되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SIMPLE[OT 를 쓰지 않기로] --> NOMERGE[같은 텍스트 속성 동시 편집은<br/>**병합되지 않고 한쪽 값으로**]\n  MODEL[병합 단위 = 속성 값] --> INSIDE[속성 하나 안의 동시 편집은<br/>다룰 수 없다]\n  PREDICT[내가 마지막일 것이라 예측] --> WRONG{예측이 빗나가면}\n  WRONG --> TMPGONE[거절 도착까지<br/>객체가 트리에서 사라져 보인다]\n  FRAC[분수 인덱싱] -->|추정| DEEP[사이에 계속 넣으면<br/>분수가 잘게 쪼개진다]\n  CENTRAL[서버가 중앙 권위] -->|추정| NOSERVER[서버 없이는 돌지 않는다]\n  UNDO[혼자 쓰는 실행취소를 그대로 쓰면] --> OVERWRITE[협업자의 이후 편집을 덮어쓴다]\n  UNDO --> FIX[그래서 undo 는 그 시점의 redo 히스토리를,<br/>redo 는 그 시점의 undo 히스토리를 고친다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Figma's multiplayer technology works",
+          "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+          "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+          "date": "2019-10-16",
+          "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+        },
+        {
+          "title": "Under the hood of Figma's infrastructure",
+          "url": "https://www.figma.com/blog/under-the-hood-of-figmas-infrastructure/",
+          "publisher": "Figma Blog · Samir Goel(Director of Engineering)",
+          "date": "2019-11-21",
+          "summary": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다. 데이터베이스는 AWS 의 가장 큰 축에 드는 머신 한 대 위의 단일 인스턴스로 KISS 원칙을 따랐지만 그 구조의 한계에 다다르고 있다고 밝힌다. 주간 활성 사용자의 80% 이상이 미국 밖인데 인프라는 오리건 데이터센터 중심이라 지연 문제가 있고, LiveGraph·수평 확장·원격 프록시·지리적으로 분산된 멀티플레이어 인스턴스를 과제로 든다."
+        },
+        {
+          "title": "Figma Announces Fourth Quarter and Fiscal Year 2025 Financial Results",
+          "url": "https://investor.figma.com/news-events/news/news-details/2026/Figma-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results/default.aspx",
+          "publisher": "Figma, Inc. Investor Relations",
+          "date": "2026-02-18",
+          "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "멀티플레이어 데이터를 실제로 어디에 어떻게 저장하는지 — 메타데이터의 Postgres 와 별개라는 것까지만 밝힌다.",
+    "단일 데이터베이스 인스턴스에서 수평 확장으로 어떻게 옮겼는지 — 2019년 글은 계획으로만 언급한다.",
+    "미국 밖 사용자의 지연을 위해 멀티플레이어 인스턴스를 실제로 어떻게 분산했는지.",
+    "실시간 데이터 구독(LiveGraph)·렌더링·저장 세 도메인은 아직 손대지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "How Figma's multiplayer technology works",
+      "url": "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
+      "publisher": "Figma Blog · Evan Wallace(공동창업자)",
+      "date": "2019-10-16",
+      "summary": "OT 를 쓰지 않고 CRDT 에서 영감만 받아 만든 동시 편집 구조. 서버가 중앙 권위라 진짜 CRDT 가 필요 없고, 문서는 `Map<ObjectID, Map<Property, Value>>` 트리이며 속성 단위 last-writer-wins 로 충돌을 정한다. 부모-자식 관계는 자식의 속성으로 두어 리페어런팅에도 정체성이 보존되고, 순서는 0과 1 사이 분수로 표현한다. 클라이언트는 아직 확인되지 않은 자기 변경과 충돌하는 서버 변경을 버려 깜빡임을 막는다. 문서마다 별도 프로세스를 띄우고 서버는 Rust 로 썼다."
+    },
+    {
+      "title": "Under the hood of Figma's infrastructure",
+      "url": "https://www.figma.com/blog/under-the-hood-of-figmas-infrastructure/",
+      "publisher": "Figma Blog · Samir Goel(Director of Engineering)",
+      "date": "2019-11-21",
+      "summary": "디자인 파일 하나가 멀티플레이어 서비스 인스턴스 하나에 대응한다. 데이터베이스는 AWS 의 가장 큰 축에 드는 머신 한 대 위의 단일 인스턴스로 KISS 원칙을 따랐지만 그 구조의 한계에 다다르고 있다고 밝힌다. 주간 활성 사용자의 80% 이상이 미국 밖인데 인프라는 오리건 데이터센터 중심이라 지연 문제가 있고, LiveGraph·수평 확장·원격 프록시·지리적으로 분산된 멀티플레이어 인스턴스를 과제로 든다."
+    },
+    {
+      "title": "Figma Announces Fourth Quarter and Fiscal Year 2025 Financial Results",
+      "url": "https://investor.figma.com/news-events/news/news-details/2026/Figma-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results/default.aspx",
+      "publisher": "Figma, Inc. Investor Relations",
+      "date": "2026-02-18",
+      "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
+    }
+  ]
+}

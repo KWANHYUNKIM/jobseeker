@@ -9,7 +9,11 @@
 
 ## 대기 — 해외
 
-*(비어 있다 — 큐를 모두 소진했다. 새 회사를 넣을 때는 아래 규칙을 따른다.)*
+0. **Figma** (US, SaaS) — 동시 편집/문서 동기화  ← **진행 중** (도메인 4개 중 1개 완료 · 기능 1개)
+
+*(그 외에는 비어 있다. 새 회사를 넣을 때는 아래 규칙을 따른다. 후보로 확인해 둔 곳:
+Cloudflare `blog.cloudflare.com`, Airbnb `medium.com/airbnb-engineering`(브라우저 필요),
+Canva·Notion, Datadog·Grafana.)*
 
 
 ## 완료
