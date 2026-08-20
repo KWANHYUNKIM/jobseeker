@@ -4,10 +4,10 @@
   "name_en": "Shopify",
   "country": "CA",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "남의 가게가 판 만큼 버는 회사",
-  "business_model": "**구독료보다 거래에서 훨씬 많이 번다.** 2025년 매출 **115.6억 달러**(+30%) 중 머천트 솔루션이 **88.04억 달러**, 구독 솔루션이 **27.52억 달러**로 거래 쪽이 세 배 넘게 크다. 가게들이 실제로 판 금액(GMV)은 **3,784.41억 달러**(+29%), 월 반복 매출(MRR)은 2.05억 달러, 잉여현금흐름은 20억 달러(마진 17%)다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 **자기 지면**에서 벌고, Netflix 는 **자기 구독**에서 벌고, 쿠팡은 **자기가 파는 물건**에서 번다. Shopify 는 **남의 매출의 일부**를 받는다.\n\n**그래서 가용성이 자기 서비스의 문제가 아니라 남의 매출의 문제가 된다** — 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다. 이 회사의 엔지니어링 이야기가 확장보다 **격리와 복구**에 무게를 싣는 이유로 보인다(이 두 문단의 연결은 이 사이트의 해석이다).",
+  "business_model": "**구독료보다 거래에서 훨씬 많이 번다.** 2025년 매출 **115.6억 달러**(+30%) 중 머천트 솔루션이 **88.04억 달러**, 구독 솔루션이 **27.52억 달러**로 거래 쪽이 세 배 넘게 크다. 가게들이 실제로 판 금액(GMV)은 **3,784.41억 달러**(+29%), 월 반복 매출(MRR)은 2.05억 달러, 잉여현금흐름은 20억 달러(마진 17%)다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 **자기 지면**에서 벌고, Netflix 는 **자기 구독**에서 벌고, 쿠팡은 **자기가 파는 물건**에서 번다. Shopify 는 **남의 매출의 일부**를 받는다.\n\n**그래서 가용성이 자기 서비스의 문제가 아니라 남의 매출의 문제가 된다** — 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다. 이 회사의 엔지니어링 이야기가 확장보다 **격리와 복구**에 무게를 싣는 이유로 보인다(이 두 문단의 연결은 이 사이트의 해석이다).\n\n**사내에서 같은 모양이 세 번씩 반복된다.** 첫째, **격리의 단위가 곧 전환의 단위다** — pod 를 복구 데이터센터로 옮기고, BFCM 스케일 테스트에서 리전 페일오버를 돌리고, 재고 예약을 MySQL 로 옮길 때도 **pod 단위로 트래픽이 적은 곳부터** 넘겼다. 둘째, **미리 한계를 찾아 두고 되돌릴 길을 열어 둔다** — 스케일 테스트는 통과가 아니라 한계점을 찾는 것이 목적이고, 재고 예약과 스토어프론트 모두 **두 시스템을 나란히 돌려 비교한 뒤**(섀도 모드·Verifier) 킬 스위치를 열어 둔 채 옮겼으며, 성수기에는 변경 속도를 늦춘다. 셋째, **남의 매출을 대신 처리하는 회사라 '멈춤'과 '손실'의 정의가 다르다** — 복구를 속도가 아니라 **'요청이나 작업을 떨어뜨리지 않고'** 로 정의하고, 오버셀이 나면 그 비용(주문 취소·사과·지원)을 상인이 문다는 것을 설계의 출발점으로 삼는다. (이 묶음들은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "Shopify 플랫폼(온라인 스토어)",
     "Shopify Payments · Shop Pay",
@@ -121,8 +121,78 @@
     {
       "name": "스토어프론트 렌더링",
       "why": "가게마다 테마와 코드가 다른데 그 화면이 우리 인프라 위에서 그려진다. 남이 쓴 것이 우리 응답 시간이 되는 자리다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "전용 스토어프론트 렌더러(모놀리스에서 분리)",
+          "solves": "결제(정확성·가독성)와 스토어프론트(공격적 최적화)의 상충하는 요구를 갈라, 스토어프론트 트래픽만 성능에 맞춰 최적화한다. 평균 응답이 4~6배 빨라졌고 p75 45ms·p90 230ms·p99 900ms 다.",
+          "limits": "시스템이 하나 늘고 기능 동등성을 따라잡아야 한다(발표 시점 90% 이상). 관용적이지 않은 코드(제자리 수정)를 감수한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+              "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+              "publisher": "Shopify Engineering · Maxime Vaillancourt",
+              "date": "2020-08-20",
+              "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+            },
+            {
+              "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+              "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+              "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+              "date": "2020-12-10",
+              "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+            }
+          ]
+        },
+        {
+          "tech": "쿼리 목록 기록(book-keeping) + MySQL 멀티 스테이트먼트",
+          "solves": "테마가 상인의 코드라 무엇이 필요할지 정적으로 알 수 없는 문제를, 지난 요청의 관측으로 푼다. 다음 요청에서 필요한 쿼리를 한 번에 앞당겨 실행한다.",
+          "limits": "**페이지가 바뀌면 과다 페치·과소 페치가 생긴다** — 요청이 쌓이며 안정화된다고 회사는 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+              "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+              "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+              "date": "2020-12-10",
+              "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+            }
+          ]
+        },
+        {
+          "tech": "다섯 겹 캐시 + Liquid 객체 메모이저",
+          "solves": "같은 것을 반복해 부르는 남의 템플릿을 싸게 만든다. 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다.",
+          "limits": "층마다 무효화와 정합성을 관리해야 한다(추정). **테마 코드 자체가 느릴 때 회사가 무엇을 하는지는 읽은 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+              "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+              "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+              "date": "2020-12-10",
+              "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+            }
+          ]
+        },
+        {
+          "tech": "전용 읽기 복제본 · Semian 서킷 브레이커 · Verifier + nginx Lua 전환",
+          "solves": "주 라이터 부하를 덜고, 외부 의존이 죽으면 끊거나 정본으로 강등하며, 두 구현의 응답을 프로덕션에서 대조해 통과율에 따라 요청 유형별로 자동 전환한다.",
+          "limits": "복제 지연이 화면에 보일 수 있고(추정), 그림자 비교 기간에는 모든 요청을 두 번 처리한다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+              "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+              "publisher": "Shopify Engineering · Maxime Vaillancourt",
+              "date": "2020-08-20",
+              "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "storefront-renderer"
+      ]
     },
     {
       "name": "체크아웃·결제",
@@ -1635,6 +1705,472 @@
           "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
         }
       ]
+    },
+    {
+      "key": "storefront-renderer",
+      "name": "스토어프론트 — 남이 쓴 코드가 우리 응답 시간이 될 때",
+      "domain": "스토어프론트 렌더링",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "구매자가 보는 화면은 **상인이 고른 테마의 Liquid 코드**로 그려진다. 우리 서버가 그 남의 코드를 불러 데이터를 채워 HTML 로 돌려준다 — 그러니까 **남이 쓴 코드의 성능이 곧 우리 응답 시간**이 된다.\n\n그리고 그 응답 시간은 곧바로 값이 매겨진다. 트래픽이 늘면서 **첫 바이트까지의 시간이 서서히 올라갔고, 그것이 상인의 매출과 검색 순위를 직접 깎았다.**\n\n원인은 성능 튜닝의 부족이 아니라 **한 집에 사는 두 요구의 충돌**이었다. 2006년부터 같은 Rails 모놀리스가 결제·관리자 API·스토어프론트를 모두 처리했는데, **결제는 정확성과 가독성을 요구하고 스토어프론트는 공격적인 최적화를 요구한다.** 둘 다 최적일 수는 없다.",
+        "metrics": [
+          {
+            "label": "응답 시간(새 엔진)",
+            "value": "**p75 45ms · p90 230ms · p99 900ms**. 평균은 이전 구현 대비 **거의 5배** 빠르다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "label": "레거시 대비",
+            "value": "평균 서버 응답이 **4~6배** 빠르고, 상인들은 **TTFB 500ms 개선**을 보고했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "label": "Apdex 개선",
+            "value": "이전하는 상점의 Apdex 가 평균 **+0.11**, **캐시 미스에서는 +0.20**(만족 임계 200ms 기준)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "label": "메모이저가 막는 접근",
+            "value": "요청 하나당 Redis·MySQL 접근 **16~20회**, 극단적인 경우 **4,000회**까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "label": "전환 시점의 완성도",
+            "value": "발표 시점 기능 동등성 **90% 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "결제와 스토어프론트를 같은 코드베이스에서 다루려 할 때",
+          "thought": "**결제는 정확성과 가독성을 요구하고 스토어프론트는 공격적인 성능 최적화를 요구한다.** 요구가 정반대인 둘이 2006년부터 같은 모놀리스에 살고 있었다. 그러면 어느 쪽으로 코드를 써도 다른 쪽이 손해를 본다 — 문제는 튜닝이 부족한 것이 아니라 **한 집에 살고 있는 것**이었다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 미리 가져올지 정하려 할 때",
+          "thought": "**테마는 상인의 코드**라 어떤 데이터를 부를지 우리가 정적으로 알 수 없다. 그래서 미리 정하는 대신 **지난번에 무엇을 물었는지 기록해 두고, 다음번에 그것들을 한꺼번에 묻기로** 했다. 페이지가 바뀌면 어긋나지만 요청이 쌓이면서 안정화된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 객체를 몇 번이나 부르는지 세어 봤을 때",
+          "thought": "Liquid 객체 메모이저 하나가 **요청당 16~20회**, 극단적인 경우 **4,000회**의 저장소 접근을 막는다. 그 말은 **남이 쓴 템플릿이 같은 것을 그만큼 반복해서 부른다**는 뜻이다 — 우리가 고칠 수 있는 코드가 아니므로 **반복을 없애는 대신 반복이 싸지게 만들어야 한다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "다 만들고 나서 켜야 할 때",
+          "thought": "수백만 상점의 화면이라 조금만 달라도 그것이 곧 매출이다. 그래서 **두 구현에 동시에 보내 응답을 비교**하기로 했다 — 상태 코드·헤더·본문을 대조하되 시간과 난수는 예외로 두고, **통과율이 임계값을 넘은 요청 유형부터 자동으로** 새 구현으로 옮겼다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "테마(Liquid) — **상인의 코드**. 우리가 고칠 수 없다",
+          "스토어프론트 렌더러 — 테마와 데이터를 받아 HTML 을 만드는 전용 애플리케이션",
+          "쿼리 목록(book-keeping) — 이 캐시 키에서 지난번에 수행한 쿼리들",
+          "캐시 다섯 겹 — 워커 인메모리 LRU · 노드 로컬 Redis · 전체 페이지 · DB 쿼리 결과 · Liquid 객체 메모이저",
+          "Verifier — 두 구현의 응답을 비교하는 서비스"
+        ],
+        "invariants": [
+          "테마는 상인의 코드다 — **무엇을 부를지 우리가 미리 정할 수 없다.**",
+          "응답 시간이 곧 상인의 매출과 검색 순위다.",
+          "캐시가 죽으면 실패가 아니라 **정본 저장소로 내려간다.**",
+          "새 구현의 응답은 옛 구현과 같아야 한다 — 시간과 난수는 예외.",
+          "스토어프론트는 읽기만 한다 — 전용 읽기 복제본에서만 읽는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 오면 **전체 페이지 캐시**를 먼저 본다 — 있으면 HTTP 응답을 그대로 돌려준다",
+            "why": "가장 싼 렌더링은 렌더링하지 않는 것이다."
+          },
+          {
+            "step": "없으면 이 캐시 키에서 **지난번에 수행한 쿼리 목록**을 꺼낸다",
+            "why": "테마가 남의 코드라 무엇이 필요할지 정적으로 알 수 없다 — 지난번 기록이 유일한 단서다."
+          },
+          {
+            "step": "그 쿼리들을 **MySQL 멀티 스테이트먼트로 한 번에** 앞에서 실행한다(상품 페이지면 상품·변형·이미지·상점·테마를 한 번에)",
+            "why": "왕복 횟수를 줄이는 것이 지연을 줄이는 가장 큰 지렛대였기 때문으로 보인다(추정)."
+          },
+          {
+            "step": "**전용 읽기 복제본**에서 읽고, 원시 행을 그대로 **순수 루비 객체**로 만든다 — ORM 을 거치지 않는다",
+            "why": "추상화의 오버헤드를 없애고 메모리를 줄인다. 주 라이터의 부하도 함께 준다."
+          },
+          {
+            "step": "Liquid 를 렌더링한다. 같은 객체를 다시 부르면 **메모이저**가 저장소 접근 없이 돌려준다",
+            "why": "남이 쓴 템플릿이 같은 것을 반복해서 부르는데, 그 코드는 우리가 고칠 수 없다."
+          },
+          {
+            "step": "이번 요청에서 수행한 쿼리 목록을 **기록해 둔다**",
+            "why": "다음 요청이 앞에서 한꺼번에 가져갈 수 있게."
+          },
+          {
+            "step": "외부 의존이 느려지면 **Semian 서킷 브레이커**로 끊고, 캐시가 타임아웃되면 실패 대신 **정본 저장소로 내려간다**",
+            "why": "화면이 안 뜨는 것보다 조금 느린 편이 낫다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "스토어프론트를 모놀리스 안에 둘 것인가",
+            "chosen": "**전용 애플리케이션으로 떼어낸다.** 모놀리스는 결제·관리자·API 를 계속 처리하고, 스토어프론트 트래픽만 새 애플리케이션이 받는다.",
+            "alternatives": [
+              "모놀리스 안에서 계속 최적화한다",
+              "전면 재작성으로 모든 것을 옮긴다"
+            ],
+            "tradeoff": "시스템이 하나 늘고 **기능 동등성을 따라잡아야 한다**(발표 시점 90% 이상). 그래도 결제는 정확성과 가독성을, 스토어프론트는 공격적 최적화를 요구해 **한 집에서 둘 다 최적일 수 없었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 접근에 ORM 을 쓸 것인가",
+            "chosen": "**쓰지 않는다.** 손으로 쓴 SQL 멀티 셀렉트로 한 번의 왕복에 최대한 담고, 원시 행에서 **순수 루비 객체**를 만드는 얇은 매핑 계층만 둔다.",
+            "alternatives": [
+              "Rails 의 ORM 을 그대로 쓴다",
+              "경량 ORM 을 도입한다"
+            ],
+            "tradeoff": "추상화의 편의를 잃고 쿼리를 직접 관리해야 한다. 대신 불필요한 오버헤드와 메모리가 줄고 **N+1 쿼리가 구조적으로 사라진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              },
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 미리 가져올지 어떻게 정할 것인가",
+            "chosen": "**기록해 두고 다음에 쓴다(book-keeping).** 첫 요청에서 수행한 쿼리 목록을 캐시 키별로 저장하고, 같은 키의 다음 요청에서 그 쿼리들을 **앞에서 한꺼번에** 실행한다.",
+            "alternatives": [
+              "테마를 정적 분석해 필요한 데이터를 추론한다",
+              "필요할 때마다 가져온다(지연 로딩)"
+            ],
+            "tradeoff": "**페이지가 바뀌면 과다 페치·과소 페치가 생긴다** — 다만 요청이 쌓이면서 안정화된다고 회사는 밝힌다. 대신 테마가 상인의 코드라 정적으로 알 수 없는 문제를 관측으로 푼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 몇 겹으로 둘 것인가",
+            "chosen": "**다섯 겹** — 워커 안 인메모리 LRU, 같은 머신의 노드 로컬 Redis, 전체 페이지 캐시, DB 쿼리 결과 캐시(Redis), 그리고 **Liquid 객체 메모이저**.",
+            "alternatives": [
+              "전체 페이지 캐시 하나로 끝낸다",
+              "쿼리 캐시만 둔다"
+            ],
+            "tradeoff": "층마다 무효화와 정합성을 관리해야 한다(뒷문장은 이 사이트의 추정). 대신 메모이저 하나만으로 **요청당 16~20회, 극단적으로는 4,000회**의 저장소 접근이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "question": "관용적인 코드를 지킬 것인가",
+            "chosen": "**지키지 않는다.** `#map` 대신 `#map!` 같은 **제자리 수정**을 써서 트래픽이 몰릴 때의 가비지 컬렉션 부담을 줄인다.",
+            "alternatives": [
+              "관용적인 루비를 유지한다"
+            ],
+            "tradeoff": "읽기 어렵고 부작용을 조심해야 하는 코드가 된다(뒷문장은 이 사이트의 추정). 그래도 **이 애플리케이션의 요구가 애초에 가독성이 아니라 성능**이라, 모놀리스에서 떼어낸 이유가 여기서 값을 한다(이 역시 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 읽을 것인가",
+            "chosen": "**전용 읽기 복제본에서만** 읽는다(액티브-액티브 복제).",
+            "alternatives": [
+              "주 라이터에서 읽는다",
+              "일부만 복제본에서 읽는다"
+            ],
+            "tradeoff": "복제 지연이 화면에 보일 수 있다(뒷문장은 이 사이트의 추정). 대신 성능이 오르고 **주 라이터의 부하가 준다** — 그 라이터는 체크아웃이 쓰는 곳이기도 하다(이 역시 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "외부 의존이 느려지면 어떻게 할 것인가",
+            "chosen": "**Semian**(자사 오픈소스) 서킷 브레이커로 끊고, 캐시 타임아웃은 실패가 아니라 **정본 저장소로 우아하게 강등**한다. 배포 전 **Toxiproxy** 로 네트워크 장애를 흉내 내 검증한다.",
+            "alternatives": [
+              "타임아웃까지 기다린다",
+              "캐시가 죽으면 오류를 낸다"
+            ],
+            "tradeoff": "강등된 경로는 느리다 — 캐시가 하던 일을 정본이 대신 받는다(뒷문장은 이 사이트의 추정). 그래도 **화면이 안 뜨는 것보다는 느린 편이 낫고**, 연쇄 장애를 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "새 구현이 맞는지 어떻게 확인할 것인가",
+            "chosen": "**두 구현에 동시에 보내 비교한다.** nginx 의 Lua 라우팅 모듈이 처음에는 레거시로 보내면서 두 구현에 비동기로 요청을 보내고, **Verifier 서비스**가 상태 코드·헤더·본문을 대조한다(시간·난수는 예외). 통과율이 임계값을 넘으면 **그 요청 유형의 트래픽을 자동으로** 새 구현으로 옮긴다 — 비밀번호 보호 페이지부터 시작해 상품·컬렉션 페이지로 넓혔다.",
+            "alternatives": [
+              "스테이징에서 테스트하고 한 번에 전환한다",
+              "일부 상점을 골라 베타로 돌린다"
+            ],
+            "tradeoff": "모든 요청을 두 번 처리하는 기간의 비용을 진다(뒷문장은 이 사이트의 추정). 대신 **판정이 사람의 감이 아니라 통과율**이 되고, 쉬운 요청 유형부터 순서대로 넘어간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "전용 스토어프론트 렌더러(모놀리스에서 분리)",
+            "role": "스토어프론트 트래픽만 받아 성능에 맞춰 최적화한다. 모놀리스는 결제·관리자·API 를 계속 맡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "tech": "손으로 쓴 SQL 멀티 셀렉트 + 얇은 매핑 계층",
+            "role": "ORM 없이 원시 행에서 순수 루비 객체를 만들어 오버헤드와 N+1 을 없앤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              },
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "tech": "쿼리 목록 기록(book-keeping) + MySQL 멀티 스테이트먼트",
+            "role": "지난 요청에서 무엇을 물었는지 기억해 두었다가 다음 요청에서 한 번에 미리 가져온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "tech": "다섯 겹 캐시(인메모리 LRU · 노드 로컬 Redis · 전체 페이지 · 쿼리 결과 · Liquid 메모이저)",
+            "role": "같은 것을 반복해 부르는 남의 템플릿을 싸게 만든다. 메모이저만으로 요청당 16~20회(최대 4,000회) 접근을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "tech": "전용 읽기 복제본 + Semian 서킷 브레이커 + Toxiproxy",
+            "role": "주 라이터 부하를 덜고, 외부 의존이 죽으면 끊거나 정본으로 강등하며, 배포 전 장애를 흉내 내 검증한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "tech": "Verifier + nginx Lua 라우팅",
+            "role": "두 구현의 응답을 프로덕션 트래픽에서 대조하고 통과율에 따라 요청 유형별로 자동 전환한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "tech": "테마 코드 자체의 성능을 어떻게 다루는지",
+            "role": "— 상인이 쓴 Liquid 가 느릴 때 회사가 무엇을 하는지(제한·경고·자동 최적화)는 읽은 글에 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "checkout-reservations",
+          "via": "읽는 쪽과 쓰는 쪽",
+          "contract": "스토어프론트는 전용 읽기 복제본만 읽어 주 라이터의 부하를 던다 — 그 라이터가 재고 예약과 체크아웃이 쓰는 곳이기도 하다(뒷부분은 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "pods-isolation",
+          "via": "요청이 닿는 자리",
+          "contract": "스토어프론트 요청도 상점 단위로 데이터가 갈리므로 pod 위에서 처리될 것으로 보이지만, 두 글이 렌더러와 pod 의 관계를 명시하지는 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "bfcm-readiness",
+          "via": "응답 시간이 매출",
+          "contract": "첫 바이트까지의 시간이 상인의 매출과 검색 순위를 직접 깎으므로, 성수기의 부하 준비와 같은 목표를 공유한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 HTML 이 되기까지",
+          "question": "남이 쓴 테마가 무엇을 부를지 모르는데 어떻게 미리 가져오는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[스토어프론트 요청] --> FPC{전체 페이지 캐시}\n  FPC -->|적중| OUT[HTTP 응답 그대로]\n  FPC -->|미스| BK[(이 캐시 키의<br/>지난 쿼리 목록)]\n  BK --> MULTI[MySQL 멀티 스테이트먼트<br/>상품·변형·이미지·상점·테마 한 번에]\n  MULTI --> RO[(전용 읽기 복제본)]\n  RO --> OBJ[원시 행 → 순수 루비 객체<br/>ORM 없음]\n  OBJ --> LIQ[Liquid 렌더링<br/>상인의 테마 코드]\n  MEMO[Liquid 객체 메모이저] -.->|같은 객체 재요청 차단<br/>요청당 16~20회, 최대 4,000회| LIQ\n  LIQ --> HTML[HTML]\n  HTML --> OUT\n  LIQ --> REC[이번 쿼리 목록 기록]\n  REC --> BK\n  DEP[외부 의존 지연] --> SEM[Semian 서킷 브레이커]\n  SEM --> DEG[캐시 타임아웃 → 정본으로 강등]\n  DEG --> RO"
+        },
+        {
+          "title": "한 요청 유형이 새 구현으로 넘어가기까지",
+          "question": "수백만 상점의 화면을 어떻게 안 깨고 갈아 끼우는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 레거시전담: 새 구현 미완성\n  레거시전담 --> 그림자비교: nginx Lua 가 두 구현에 비동기 전송\n  그림자비교 --> 그림자비교: Verifier 가 상태코드·헤더·본문 대조\n  note right of 그림자비교\n    시간과 난수는 예외\n    응답은 여전히 레거시가 낸다\n  end note\n  그림자비교 --> 자동전환: 통과율이 임계값 초과\n  자동전환 --> 신규전담: 그 요청 유형의 트래픽 이동\n  신규전담 --> [*]\n  note left of 신규전담\n    비밀번호 보호 페이지 →\n    상품 페이지 → 컬렉션 페이지\n  end note"
+        },
+        {
+          "title": "실패 경로 — 우리가 고칠 수 없는 코드 위에서",
+          "question": "테마가 남의 것이라는 사실이 어디서 문제가 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  THEME[테마 = 상인의 Liquid 코드] --> UNKNOWN[무엇을 부를지<br/>정적으로 알 수 없다]\n  UNKNOWN --> BK[지난 쿼리 목록으로 추측]\n  BK --> CHANGE{페이지가 바뀌면}\n  CHANGE --> OVER[과다 페치]\n  CHANGE --> UNDER[과소 페치]\n  OVER --> STABLE[요청이 쌓이며 안정화]\n  UNDER --> STABLE\n  THEME --> REPEAT[같은 객체를 반복 호출]\n  REPEAT --> MEMO[메모이저로 싸게 만든다<br/>고칠 수는 없으므로]\n  SLOWTHEME[테마 자체가 느릴 때] -->|**읽은 글에 없다**| UNK[회사가 무엇을 하는지 미확인]\n  MONO[모놀리스 시절] --> CONFLICT[결제는 정확성·가독성<br/>스토어프론트는 공격적 최적화]\n  CONFLICT --> TTFB[TTFB 가 서서히 상승<br/>= 상인의 매출과 검색 순위 하락]\n  TTFB --> SPLIT[전용 애플리케이션으로 분리]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+          "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+          "publisher": "Shopify Engineering · Maxime Vaillancourt",
+          "date": "2020-08-20",
+          "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+        },
+        {
+          "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+          "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+          "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+          "date": "2020-12-10",
+          "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1647,7 +2183,10 @@
     "변경 속도를 늦추는 기간의 실제 길이와 기준.",
     "멱등 키의 보관 기간과 재생 시 응답 — Shopify 문서는 '한 번만 실행된다'까지만 밝힌다.",
     "결제 승인 자체의 상태 모델(승인·취소·환불의 상태 전이)과 결제수단 연동.",
-    "BFCM 스케일 테스트에서 나온 '체크아웃 큐'가 재고 예약과 어떻게 맞물리는지."
+    "BFCM 스케일 테스트에서 나온 '체크아웃 큐'가 재고 예약과 어떻게 맞물리는지.",
+    "상인이 쓴 테마 코드 자체가 느릴 때 회사가 무엇을 하는지(제한·경고·자동 최적화) — 읽은 글에 없다.",
+    "스토어프론트 렌더러와 pod 의 관계 — 두 글 모두 명시하지 않는다.",
+    "스토어프론트 자료는 2020년 글 두 편이다 — 이후의 변화(Hydrogen·Oxygen 등)는 반영돼 있지 않다."
   ],
   "sources": [
     {
