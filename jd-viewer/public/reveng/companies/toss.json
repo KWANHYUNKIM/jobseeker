@@ -4,7 +4,7 @@
   "name_en": "Toss",
   "country": "KR",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-20",
   "one_liner": "송금에서 시작해 금융 슈퍼앱이 된 핀테크",
   "business_model": "개인 사용자(컨슈머)와 가맹점(머천트) 양쪽에서 거래 수수료·광고·구독으로 수익을 낸다. 송금 자체는 오랫동안 무료로 제공해 사용자를 모으고, 그 트래픽 위에 중개·광고·증권·인증 같은 수익 상품을 얹는 구조다. 2025년 상반기 연결 영업수익 1조 2,355억 원 중 컨슈머 서비스가 8,021억 원(64.9%), 머천트 서비스가 4,333억 원(35.1%)이었다.",
@@ -51,6 +51,64 @@
       "why": "돈이 실제로 오간 기록. 앱 화면이 무엇을 보여주든 이 기록이 틀리면 회사가 끝난다. 외부 은행망과 내부 기록의 시점이 다르다는 점 때문에 다른 도메인과 섞을 수 없다.",
       "features": [
         "instant-transfer"
+      ],
+      "tech": [
+        {
+          "tech": "Kafka",
+          "solves": "이체 결과를 발행해 대환·정산·알림처럼 결과를 기다리는 도메인에 흘린다. 요청한 서비스가 죽어도 결과는 남는다.",
+          "limits": "순서 보장과 정확히 한 번 전달을 포기한다. 소비하는 쪽마다 중복 수신을 견디는 멱등 처리를 각자 만들어야 하고, 그 책임은 보내는 쪽이 대신 져 주지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "다이내믹 스크래핑과 전월세대출 이동제의 실행",
+              "url": "https://toss.tech/article/severdeveloper_dynamic_scraping",
+              "publisher": "토스 기술블로그",
+              "summary": "오케스트레이터가 독립된 송금 서버에 이체를 요청하고, 부분 실패 시 앞 단계를 반환 처리하며, 응답이 비정상이면 pending 으로 두고 배치가 재조회하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "독립 송금 서버",
+          "solves": "자금 이동이 필요한 모든 서비스가 같은 경로를 쓰게 해서 이체 규칙과 실패 처리를 한 곳에만 둔다.",
+          "limits": "사내 모든 자금 이동의 단일 통과점이 된다 — 이 서버가 멈추면 돈이 한 푼도 움직이지 않는다. 호출 홉도 하나 늘어난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "다이내믹 스크래핑과 전월세대출 이동제의 실행",
+              "url": "https://toss.tech/article/severdeveloper_dynamic_scraping",
+              "publisher": "토스 기술블로그",
+              "summary": "오케스트레이터가 독립된 송금 서버에 이체를 요청하고, 부분 실패 시 앞 단계를 반환 처리하며, 응답이 비정상이면 pending 으로 두고 배치가 재조회하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "머신러닝 분류 모델",
+          "solves": "계좌번호만으로 은행 후보를 좁혀, 62개 목록 앞에서 사용자가 멈추는 문제를 없앤다.",
+          "limits": "단일 추천은 5%가 틀렸다. 3개를 보여주고 마지막 선택을 사람에게 넘기는 방식으로 우회했을 뿐, 계좌번호 체계가 바뀌거나 기관이 새로 생기면 다시 학습시켜야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "송금할 때 은행 이름을 꼭 입력해야 할까요?",
+              "url": "https://toss.tech/article/toss-money-transfer-bank-recommendation",
+              "publisher": "토스 기술블로그",
+              "summary": "송금 UX를 계좌번호 우선으로 뒤집고 ML로 은행을 추론한 과정."
+            }
+          ]
+        },
+        {
+          "tech": "재조회 배치 (pending 해소)",
+          "solves": "외부 기관 응답이 비정상일 때 실패로 단정하지 않고 나중에 다시 물어본다.",
+          "limits": "사용자는 확정되지 않은 상태를 보며 기다려야 하고, pending 이 쌓일수록 배치가 무거워진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "다이내믹 스크래핑과 전월세대출 이동제의 실행",
+              "url": "https://toss.tech/article/severdeveloper_dynamic_scraping",
+              "publisher": "토스 기술블로그",
+              "summary": "오케스트레이터가 독립된 송금 서버에 이체를 요청하고, 부분 실패 시 앞 단계를 반환 처리하며, 응답이 비정상이면 pending 으로 두고 배치가 재조회하는 구조."
+            }
+          ]
+        }
       ]
     },
     {
@@ -58,6 +116,64 @@
       "why": "여수신 계좌·이자·회계. 송금이 '지나가는 돈'을 다룬다면 여기는 '맡아 둔 돈'을 다룬다. 규제가 요구하는 정합성 수준이 달라 별도 원장으로 존재한다.",
       "features": [
         "interest-accrual"
+      ],
+      "tech": [
+        {
+          "tech": "Redis Global Lock + JPA @Lock",
+          "solves": "같은 계좌에 동시 요청이 들어와도 이자가 두 번 붙지 않도록 계좌 단위로 줄을 세운다.",
+          "limits": "그 계좌의 처리량이 락에 묶이고, Redis 가 흔들리면 지급 경로가 함께 흔들린다. 타임아웃을 짧게 잡으면 정상 요청이 죽고 길게 잡으면 사용자가 기다린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)",
+              "url": "https://toss.tech/article/slash23-corebanking",
+              "publisher": "토스 기술블로그 / SLASH 23",
+              "summary": "모놀리식 코어뱅킹을 MSA로 옮기며 이자 지급 거래를 재설계한 과정."
+            }
+          ]
+        },
+        {
+          "tech": "Kafka + Dead Letter Queue",
+          "solves": "세금·회계처럼 즉시성이 없는 일을 고객이 기다리는 경로에서 떼어낸다.",
+          "limits": "이자 DB 와 세금 DB 가 잠깐 어긋나는 창을 받아들여야 한다. DLQ 에 들어간 건은 저절로 낫지 않아 결국 사람이 본다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)",
+              "url": "https://toss.tech/article/slash23-corebanking",
+              "publisher": "토스 기술블로그 / SLASH 23",
+              "summary": "모놀리식 코어뱅킹을 MSA로 옮기며 이자 지급 거래를 재설계한 과정."
+            }
+          ]
+        },
+        {
+          "tech": "Redis 캐시 (1일 만료)",
+          "solves": "하루 첫 조회에만 DB 를 읽어 이자 조회를 170배 빠르게, 지급 1건당 DML 을 80→50회로 줄인다.",
+          "limits": "'전일 최종 잔액' 이라는 규칙 위에서만 안전하다. 기준이 당일 잔액으로 바뀌는 날 이 캐시는 그대로 버그가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)",
+              "url": "https://toss.tech/article/slash23-corebanking",
+              "publisher": "토스 기술블로그 / SLASH 23",
+              "summary": "모놀리식 코어뱅킹을 MSA로 옮기며 이자 지급 거래를 재설계한 과정."
+            }
+          ]
+        },
+        {
+          "tech": "Kotlin · Spring Boot · JPA · Kubernetes",
+          "solves": "모놀리식을 도메인별 마이크로서비스로 쪼개 개별 스케일 아웃과 무중단 순차 배포를 가능하게 한다.",
+          "limits": "서비스 간 네트워크 호출로 지연과 부분 장애가 새로 생기고, 분산 추적 없이는 디버깅이 어려워진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)",
+              "url": "https://toss.tech/article/slash23-corebanking",
+              "publisher": "토스 기술블로그 / SLASH 23",
+              "summary": "모놀리식 코어뱅킹을 MSA로 옮기며 이자 지급 거래를 재설계한 과정."
+            }
+          ]
+        }
       ]
     },
     {
@@ -65,6 +181,64 @@
       "why": "가맹점 결제 승인·취소. 상대가 개인이 아니라 사업자이고, 실패했을 때 되돌리는 절차(취소·환불)가 송금과 완전히 다르다.",
       "features": [
         "payment-approval"
+      ],
+      "tech": [
+        {
+          "tech": "Converter + 도메인 객체 추상화",
+          "solves": "10년치 평평한 파라미터와 새 OpenAPI 파라미터를 각각 받아 하나의 도메인 객체로 바꾼다. 가맹점은 코드를 고치지 않는다.",
+          "limits": "변환 계층이 하나 늘어 초기 구현이 복잡해지고 다단계 변환의 오버헤드가 붙는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+              "url": "https://toss.tech/article/payments-legacy-2",
+              "publisher": "토스 기술블로그",
+              "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+            }
+          ]
+        },
+        {
+          "tech": "가맹점·기능별 카나리 + 지표 기반 자동 롤백",
+          "solves": "PREPARE 대비 CONFIRM 비율이 정상 범위를 벗어나면 자동으로 레거시로 되돌려, 문제가 난 가맹점만 원복한다.",
+          "limits": "두 시스템을 동시에 유지하는 기간이 필요하고, '정상 범위'를 판정할 지표와 관측 체계를 먼저 만들어야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+              "url": "https://toss.tech/article/payments-legacy-2",
+              "publisher": "토스 기술블로그",
+              "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+            }
+          ]
+        },
+        {
+          "tech": "API 버저닝 (버전별 완전 독립)",
+          "solves": "새 기능을 새 버전으로 확장하면서 이미 연동한 가맹점의 계약을 그대로 지킨다.",
+          "limits": "버전 수만큼 검증·응답 코드가 병존해 유지 비용이 선형으로 늘고, 오래된 버전을 언제 죽일지 아무도 모르게 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "코어 API — 토스페이먼츠 개발자센터",
+              "url": "https://docs.tosspayments.com/reference",
+              "publisher": "토스페이먼츠",
+              "summary": "Payment 의 status 값(READY·IN_PROGRESS·WAITING_FOR_DEPOSIT·DONE·CANCELED·PARTIAL_CANCELED·ABORTED·EXPIRED)과 승인 API 파라미터 정의."
+            }
+          ]
+        },
+        {
+          "tech": "Multi-Layer Cache",
+          "solves": "평소의 20배 피크에서도 결제창 응답 시간을 지킨다.",
+          "limits": "계층이 늘수록 어느 층이 낡은 값을 들고 있는지 추적하기 어려워진다(무효화 전략은 공개 자료에 없다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+              "url": "https://toss.tech/article/payments-legacy-2",
+              "publisher": "토스 기술블로그",
+              "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+            }
+          ]
+        }
       ]
     },
     {
@@ -73,6 +247,64 @@
       "features": [
         "request-passport",
         "identity-certificate"
+      ],
+      "tech": [
+        {
+          "tech": "Spring Cloud Gateway (Reactor-Netty · Kotlin Coroutine)",
+          "solves": "모든 외부 요청의 진입점에서 인증·인가·복호화를 한 번에 처리해 규칙을 한 벌로 만든다.",
+          "limits": "전 서비스의 단일 통과점이자 배포 병목이 된다. 비동기 모델이라 블로킹 한 줄이 이벤트 루프를 막고 스택 트레이스가 끊긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "토스는 Gateway 이렇게 씁니다",
+              "url": "https://toss.tech/article/22910",
+              "publisher": "토스 기술블로그",
+              "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "짧은 수명의 요청 서명 키",
+          "solves": "매 요청을 서명해 위조·재생·탈취를 한 번에 막는다. 유출돼도 쓸 수 있는 시간이 짧다.",
+          "limits": "키 갱신·배포 부담이 클라이언트로 가고, 시계 오차나 지연으로 정상 요청이 만료로 죽을 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "토스는 Gateway 이렇게 씁니다",
+              "url": "https://toss.tech/article/22910",
+              "publisher": "토스 기술블로그",
+              "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "Passport 토큰 전파",
+          "solves": "기기·사용자 정보를 담아 내부 서비스에 넘겨 뒤에 선 서비스가 인증을 다시 하지 않게 한다.",
+          "limits": "내부 서비스가 '관문을 통과했으니 안전하다'고 가정하게 된다. 관문 뒤에는 별도 방어가 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "토스는 Gateway 이렇게 씁니다",
+              "url": "https://toss.tech/article/22910",
+              "publisher": "토스 기술블로그",
+              "summary": "Gateway 가 인증·인가·복호화를 맡고 Passport 토큰으로 사용자 정보를 내부에 전파하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "클라우드 키 보관 인증서 (PIN·생체 확인)",
+          "solves": "기기를 바꿔도 인증서가 따라오고 보안 프로그램 설치가 필요 없다. 400여 기관에서 신분증처럼 쓰인다.",
+          "limits": "키가 한곳에 모여 그 서버가 최고 가치의 표적이 된다. 서버가 언제든 서명할 수 있다는 구조라 '그 순간 본인 확인' 하나가 유일한 방아쇠다. 키 보호 방식(HSM 여부)은 공개된 바 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "토스인증서, 공동인증서, 금융인증서 뭐가 다른가요?",
+              "url": "https://toss.im/tossfeed/article/certificate-difference",
+              "publisher": "토스피드",
+              "summary": "토스인증서가 클라우드 기반 사설인증서이며 3년 자동갱신·신분증 인증 필수라는 설명."
+            }
+          ]
+        }
       ]
     }
   ],
@@ -1835,5 +2067,10 @@
       "publisher": "토스 기술블로그 / SLASH 23",
       "summary": "내부망을 신뢰하지 않는 전제로 접근 통제를 다시 세운 과정."
     }
-  ]
+  ],
+  "domain_map": {
+    "title": "토스 도메인 지도",
+    "question": "돈이 어디서 들어와 어디로 흐르고, 그 길목마다 어느 도메인이 서 있는가?",
+    "code": "flowchart TD\n  U[사용자] --> AUTH[인증]\n  M[가맹점] --> PAY[결제]\n  AUTH -->|Passport 로 신원 확정| SEND[송금원장]\n  AUTH -->|전자서명으로 계약 성립| CORE[코어뱅킹]\n  AUTH -->|앱 요청 검증| PAY\n  PAY -->|계좌이체 수단일 때 자금 이동| SEND\n  CORE -->|이자 지급 = 계좌 입금| SEND\n  SEND -->|잔액·거래내역| CORE\n  PAY -->|결제 수수료| REV1[머천트 매출]\n  AUTH -->|인증 · 중개 · 광고| REV2[컨슈머 매출]\n  CORE -->|예대마진| REV2\n  SEND -.->|수익 없음 · 유입 담당| REV2\n  classDef money fill:transparent,stroke-dasharray: 3 3\n  class REV1,REV2 money"
+  }
 }
