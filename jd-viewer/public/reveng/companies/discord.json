@@ -4,10 +4,10 @@
   "name_en": "Discord",
   "country": "US",
   "category": "메시징",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
-  "one_liner": "지난 대화가 사라지지 않는 곳에서 쏠림을 다루는 회사",
-  "business_model": "**이 사이트는 아직 Discord 의 수익 구조에 대한 1차 자료를 확보하지 못했다.** 비상장이라 매출과 그 구성이 공시되지 않고, 우리가 읽은 것은 전부 엔지니어링 글이다. **모르는 것은 비워 두는 것이 이 사이트의 규칙이므로 수익 구성은 `미확인` 으로 둔다.**\n\n대신 확인된 것은 규모와 비용의 성격이다. 동시 음성 사용자 **260만 명**, 이그레스 **220Gbps·120Mpps**, 13개 지역 30여 개 데이터센터에 음성 서버 **850대 이상**(2018년). 동시 접속은 **500만 명**을 넘겼고(2017년), 메시지는 **수조 개**가 쌓여 있다(2023년).\n\n그리고 앞서 판 회사들과 눈에 띄게 다른 점이 하나 있다. 네이버·카카오·당근·Instagram·YouTube 는 전부 **지면과 광고**가 기술 이야기의 한 축이었는데, **우리가 읽은 Discord 의 엔지니어링 글에는 지면·광고·랭킹 이야기가 한 줄도 없다.** 전부 **전달하고 저장하는 비용** 이야기다. (이것은 우리가 읽은 자료의 성격에 대한 관찰이지, 이 회사가 광고를 하지 않는다는 주장이 아니다 — 이 사이트의 해석.)",
+  "one_liner": "몰리는 것을 합치고, 터지기 전에 세어 보는 회사",
+  "business_model": "**이 사이트는 아직 Discord 의 수익 구조에 대한 1차 자료를 확보하지 못했다.** 비상장이라 매출과 그 구성이 공시되지 않고, 우리가 읽은 것은 전부 엔지니어링 글이다. **모르는 것은 비워 두는 것이 이 사이트의 규칙이므로 수익 구성은 `미확인` 으로 둔다.**\n\n대신 확인된 것은 규모와 비용의 성격이다. 동시 음성 사용자 **260만 명**, 이그레스 **220Gbps·120Mpps**, 13개 지역 30여 개 데이터센터에 음성 서버 **850대 이상**(2018년). 동시 접속은 **500만 명**을 넘겼고(2017년), 메시지는 **수조 개**가 쌓여 있다(2023년).\n\n그리고 앞서 판 회사들과 눈에 띄게 다른 점이 하나 있다. 네이버·카카오·당근·Instagram·YouTube 는 전부 **지면과 광고**가 기술 이야기의 한 축이었는데, **우리가 읽은 Discord 의 엔지니어링 글에는 지면·광고·랭킹 이야기가 한 줄도 없다.** 전부 **전달하고 저장하는 비용** 이야기다. (이것은 우리가 읽은 자료의 성격에 대한 관찰이지, 이 회사가 광고를 하지 않는다는 주장이 아니다 — 이 사이트의 해석.)\n\n**사내에서 같은 모양이 두 번씩 반복된다.** 첫째, **몰리는 것을 한 곳에서 합치거나 한 번만 하게 만든다** — 같은 행에 대한 동시 요청은 쿼리 한 번으로 합치고(요청 병합), 팬아웃은 원격 노드당 `send/2` 한 번으로 줄이며(Manifold), 한 길드의 음성은 서버 한 대가 맡는다. 둘째, **터진 뒤에 끊는 대신 들어가기 전에 센다** — 레지스트리가 포화면 세션이 아예 요청을 넣지 않고(Semaphore), 침묵 구간은 애초에 전송하지 않으며, 헬스체크에 실패한 음성 서버는 요청이 가기 전에 서비스 디스커버리에서 빠지고, AutoMod 는 메시지를 **게시되기 전에** 막는다.\n\n**그리고 이 회사에는 남기는 도메인과 남기지 않는 도메인이 뚜렷이 갈린다** — 메시지는 수조 개가 쌓여 위로 올려 읽히는데, 음성은 지나가면 끝난다. (이 묶음들은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "Discord — 길드(서버)·채널·DM",
     "음성·영상 채널"
@@ -227,9 +227,86 @@
     },
     {
       "name": "커뮤니티 운영·신뢰",
-      "why": "길드는 주인이 있는 공간이라 규칙과 제재가 플랫폼과 서버 양쪽에 걸쳐 있다. 이 사이트는 아직 이 도메인의 1차 자료를 찾지 않았다.",
-      "tech": [],
-      "features": []
+      "why": "길드는 **주인이 있는 공간**이라 규칙이 두 층에 걸쳐 있다 — 플랫폼의 이용약관과 그 서버만의 규칙. 그래서 이 도메인의 첫 문제는 무엇을 금지할지가 아니라 **누가 규칙을 만들 것인가**다.",
+      "tech": [
+        {
+          "tech": "세 층 구조(사용자 신고 · 커뮤니티 자치 · 플랫폼 집행)",
+          "solves": "회사가 모든 커뮤니티의 맥락을 알아야 하는 부담을 없앤다. 서버는 자기 규칙을 만들고, 플랫폼은 이용약관을 집행하며 최고 위험 사안(아동 안전·폭력적 극단주의)을 우선한다.",
+          "limits": "**같은 행동이 서버마다 다르게 다뤄지고** 사용자는 방을 옮길 때마다 규칙을 다시 배워야 한다(추정). 서버 규칙 위반이 곧 플랫폼 위반은 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Our Approach to Content Moderation at Discord",
+              "url": "https://discord.com/safety/our-approach-to-content-moderation",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+            }
+          ]
+        },
+        {
+          "tech": "AutoMod — 게시 전 차단 · 키워드 4개 필터 · 스팸 필터 2종",
+          "solves": "서버 주인이 설정한 규칙으로 메시지를 **게시되기 전에** 막는다. 2022년 이후 4,500만 개 이상이 그렇게 걸렸다. 스레드·text-in-voice·포럼 채널에도 적용된다.",
+          "limits": "와일드카드가 **과잉 매칭**을 만들고(`*cat*` → scathing·locate), 콘텐츠 스팸 필터는 **DM 스팸·복붙·반복 메시지를 못 잡을 수 있다**고 회사가 명시한다. Manage Server·Administrator 권한자는 항상 면제된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Auto Moderation in Discord",
+              "url": "https://discord.com/safety/auto-moderation-in-discord",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+            },
+            {
+              "title": "Privacy and Safety on Discord",
+              "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+              "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+              "date": "2023-06-08",
+              "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+            }
+          ]
+        },
+        {
+          "tech": "자동 조치 3종 + 모더레이터 인계",
+          "solves": "차단·로그 채널 알림·타임아웃 중에서 서버가 고르고, 알림에는 트리거된 필터까지 담겨 모더레이터가 Actions 버튼으로 킥·밴·타임아웃을 건다 — 자동으로 끝내는 길과 사람에게 넘기는 길을 함께 둔다.",
+          "limits": "조합을 서버가 정하므로 같은 위반의 결과가 서버마다 달라진다. 링크·파일 네이티브 필터는 클라이언트 측이라 경고까지다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Auto Moderation in Discord",
+              "url": "https://discord.com/safety/auto-moderation-in-discord",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "플랫폼 선제 탐지(이미지 해싱 · ML · 네트워크 패턴 · 사람 주도 조사)",
+          "solves": "신고를 기다리지 않고 찾는다. CSAM 은 **전 서버 유형에서 파일을 스캔**해 발견 즉시 NCMEC 에 신고한다.",
+          "limits": "정책 위반 자동 탐지 도구는 **200명 이상 커뮤니티 서버**, 선제적 유해 콘텐츠 식별은 **Discoverable 서버**에 적용된다 — 서버의 크기와 공개 여부가 적용 범위를 정한다. **오탐률과 이의 제기 절차의 수치는 이 사이트에 없다**(투명성 보고서가 PDF 로만 제공된다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Privacy and Safety on Discord",
+              "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+              "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+              "date": "2023-06-08",
+              "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+            },
+            {
+              "title": "Our Approach to Content Moderation at Discord",
+              "url": "https://discord.com/safety/our-approach-to-content-moderation",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "automod-layers"
+      ]
     }
   ],
   "features": [
@@ -1490,6 +1567,484 @@
           "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
         }
       ]
+    },
+    {
+      "key": "automod-layers",
+      "name": "모더레이션 — 규칙을 누가 만들지부터 나눈다",
+      "domain": "커뮤니티 운영·신뢰",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "길드는 **주인이 있는 공간**이다. 그래서 이 도메인의 첫 문제는 '무엇을 금지할까'가 아니라 **'누가 규칙을 만들 것인가'**다.\n\n회사는 층을 셋으로 나눈다 — **사용자**(신고), **커뮤니티**(서버 주인과 자원봉사 모더레이터가 그 서버에 맞는 추가 규칙을 만들고 집행), **플랫폼**(Discord 가 이용약관을 집행하고 유해 콘텐츠를 선제적으로 찾는다). 회사가 든 예가 이 구조를 잘 보여 준다 — 어떤 서버는 **고양이 이야기를 금지하는 규칙**을 둘 수 있는데, 그건 플랫폼 규칙 위반이 아니다.\n\n그리고 자동화는 **커뮤니티 층의 도구**로 들어간다. AutoMod 는 서버 주인이 설정하고, 걸리면 **메시지가 게시되기 전에** 막힌다 — 회사는 **2022년 이후 4,500만 개가 넘는 메시지**가 그렇게 차단됐다고 밝힌다.",
+        "metrics": [
+          {
+            "label": "게시 전 차단 규모",
+            "value": "**2022년 이후 4,500만 개 이상**의 원치 않는 메시지를 게시되기 전에 차단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "label": "키워드 필터의 크기",
+            "value": "Discord 가 유지하는 목록 1개 + 커스텀 3개, **각 최대 1,000개 키워드**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "멘션 스팸 상한",
+            "value": "메시지당 **고유 멘션 최대 50개**까지 설정 가능",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "자동 탐지의 적용 범위",
+            "value": "멀웨어·스팸 스캔은 **전 서버 유형**, 정책 위반 자동 탐지 도구는 **200명 이상 커뮤니티 서버**, 선제적 유해 콘텐츠 식별은 **Discoverable 서버**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "label": "최우선 사안",
+            "value": "**아동 안전·폭력적 극단주의** 같은 최고 위험 사안을 우선 처리한다. CSAM 은 발견 즉시 **NCMEC** 에 신고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              },
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "규칙을 누가 만들지 나눌 때",
+          "thought": "회사가 모든 커뮤니티의 맥락을 알 수는 없다. 어떤 서버에서는 **고양이 이야기가 금지**일 수 있는데 그건 이용약관 위반이 아니다. 그러면 플랫폼이 할 일은 모든 규칙을 정하는 것이 아니라 **자기 규칙을 집행하고, 서버가 자기 규칙을 집행할 도구를 주는 것**이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자동 필터를 언제 걸지 정할 때",
+          "thought": "게시된 뒤에 지우면 이미 본 사람이 있다. 그래서 **게시 전에 막기로** 했고, 막힌 메시지는 보낸 사람에게만 보이는 알림으로 알린다. 2022년 이후 그렇게 걸린 것이 4,500만 개가 넘는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "와일드카드를 넣으면서",
+          "thought": "`*` 로 부분 일치를 허용하면 서버 주인이 변형된 표현까지 잡을 수 있다. 그런데 같은 규칙이 엉뚱한 것도 잡는다 — 회사는 문서에 **`*cat*` 이 'scathing' 과 'locate' 도 걸린다**는 예를 직접 적어 뒀다. **편의를 주되 과잉 차단이 일어난다는 사실을 설정하는 사람에게 미리 알려 두는 쪽**을 골랐다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "스팸 모델이 못 하는 것을 문서에 적을 때",
+          "thought": "콘텐츠 스팸 필터는 사용자가 스팸으로 신고한 메시지로 배운다. 회사는 이 필터가 **완벽하지 않고 DM 스팸·복붙·반복 메시지 같은 것은 못 잡을 수 있다**고 문서에 적는다. **못 하는 것을 계약서에 적어 두면 기대가 어긋나지 않는다**(이 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "플랫폼 규칙(이용약관·커뮤니티 가이드라인) — Discord 가 집행",
+          "서버 규칙 — 서버 주인과 자원봉사 모더레이터가 만들고 집행",
+          "AutoMod 규칙 — 키워드 필터 4개(유지 목록 1 + 커스텀 3) · 멘션 스팸 · 콘텐츠 스팸",
+          "자동 조치 — 게시 전 차단 · 로그 채널 알림 · 타임아웃",
+          "신고 — 사용자가 Safety 팀에 보내는 것"
+        ],
+        "invariants": [
+          "플랫폼 규칙과 서버 규칙은 다른 층이다 — **서버 규칙 위반이 곧 플랫폼 위반은 아니다.**",
+          "차단은 게시 전에 일어난다 — 막힌 메시지는 보낸 사람에게만 보인다.",
+          "**Manage Server·Administrator 권한자는 항상 필터에서 면제된다.**",
+          "링크·파일 네이티브 필터는 클라이언트 측이라 경고까지다 — 서버측 제거가 아니다.",
+          "자동 조치는 사람에게 넘기는 길(로그 채널 알림)을 남긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "서버 주인이 AutoMod 규칙을 설정한다 — 키워드 필터(유지 목록 1 + 커스텀 3, 각 최대 1,000개, 와일드카드 `*`), 멘션 스팸, 콘텐츠 스팸",
+            "why": "그 커뮤니티에서 무엇이 문제인지는 그 커뮤니티가 가장 잘 안다."
+          },
+          {
+            "step": "면제를 정한다 — 특정 역할과 채널은 필터를 통과시키고, **Manage Server·Administrator 권한자는 항상 면제**된다",
+            "why": "모더레이터가 자기 도구에 걸려 일을 못 하는 상황을 막기 위해서로 보인다(추정)."
+          },
+          {
+            "step": "메시지가 올라오면 **게시되기 전에** 필터를 지난다 — 스레드·text-in-voice·포럼 채널에도 적용된다",
+            "why": "게시된 뒤에 지우면 이미 본 사람이 있다."
+          },
+          {
+            "step": "걸리면 설정된 조치가 실행된다 — **차단**(보낸 사람에게만 보이는 알림) · **알림**(지정 로그 채널에 내용·발신자·채널·트리거된 필터) · **타임아웃**(메시지·반응·음성 참여 금지)",
+            "why": "자동으로 끝내는 길과 사람에게 넘기는 길을 함께 둔다."
+          },
+          {
+            "step": "모더레이터가 로그 채널에서 **Actions 버튼**으로 킥·밴·타임아웃을 건다",
+            "why": "자동 판정은 맥락을 모르므로 마지막 판단은 사람이 한다."
+          },
+          {
+            "step": "사용자는 커뮤니티 가이드라인 위반을 Discord Safety 팀에 **신고**한다",
+            "why": "서버 규칙이 아니라 플랫폼 규칙의 문제는 층이 다르다."
+          },
+          {
+            "step": "플랫폼은 신고를 처리하면서 동시에 **선제적으로** 찾는다 — 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사",
+            "why": "신고를 기다리면 아무도 신고하지 않는 종류의 피해를 놓친다."
+          },
+          {
+            "step": "CSAM 은 **모든 서버 유형에서 파일을 스캔**하고 발견 즉시 **NCMEC 에 신고**한다",
+            "why": "최고 위험 사안은 커뮤니티의 자치에 맡길 수 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "규칙을 누가 만들 것인가",
+            "chosen": "**층을 셋으로 나눈다** — 사용자(신고), 커뮤니티(서버 주인과 자원봉사 모더레이터가 서버별 추가 규칙을 만들고 집행), 플랫폼(Discord 가 이용약관을 집행하고 선제적으로 찾는다).",
+            "alternatives": [
+              "플랫폼이 모든 규칙을 정하고 집행한다",
+              "서버 자치에 전부 맡긴다"
+            ],
+            "tradeoff": "**같은 행동이 서버마다 다르게 다뤄지고**, 사용자는 방을 옮길 때마다 규칙을 다시 배워야 한다(뒷문장은 이 사이트의 추정). 대신 회사가 모든 커뮤니티의 맥락을 알아야 하는 부담에서 벗어난다 — 회사가 든 예처럼 **고양이 이야기를 금지하는 규칙**도 성립한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              }
+            ]
+          },
+          {
+            "question": "자동 조치를 게시 전에 걸 것인가 후에 걸 것인가",
+            "chosen": "**게시 전에 막는다.** 막힌 메시지는 보낸 사람에게만 보이는 알림으로 알려진다.",
+            "alternatives": [
+              "게시된 뒤 삭제한다",
+              "신고가 들어올 때만 처리한다"
+            ],
+            "tradeoff": "오탐이면 **정당한 메시지가 아예 올라가지 못하고**, 다른 사람은 무슨 일이 있었는지 모른다(뒷문장은 이 사이트의 추정). 대신 이미 본 사람이 생기지 않는다 — 2022년 이후 4,500만 개 이상이 게시되기 전에 걸렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              },
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 걸러낼 것인가",
+            "chosen": "**키워드 필터와 스팸 필터를 함께 둔다.** 키워드는 Discord 가 유지하는 목록(모욕·비속어, 성적 콘텐츠, 심한 욕설) 1개와 커스텀 3개, 각 최대 1,000개이며 `*` 와일드카드로 부분 일치를 지원한다.",
+            "alternatives": [
+              "정확 일치만 허용한다",
+              "전부 머신러닝에 맡긴다"
+            ],
+            "tradeoff": "와일드카드는 **과잉 매칭**을 만든다 — 회사가 문서에 `*cat*` 이 'scathing' 과 'locate' 도 잡는다고 직접 적는다. 대신 변형된 표현을 규칙 하나로 덮을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "스팸 모델을 무엇으로 학습시킬 것인가",
+            "chosen": "**사용자가 스팸으로 신고한 메시지**로 학습한다 — 원치 않는 메시지, 무료 Nitro 사기와 광고, 초대 스팸 같은 패턴을 잡는다.",
+            "alternatives": [
+              "규칙 기반으로만 잡는다",
+              "라벨링 팀이 정답을 만든다"
+            ],
+            "tradeoff": "신고가 정답이므로 **신고되지 않는 유형은 배우지 못한다**(뒷문장은 이 사이트의 추정). 회사도 이 필터가 완벽하지 않고 **DM 스팸·복붙·반복 메시지 같은 것은 못 잡을 수 있다**고 명시한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "자동 조치를 몇 종류로 둘 것인가",
+            "chosen": "**셋** — 차단 · 로그 채널 알림 · 타임아웃. 알림에는 메시지 내용·발신자·채널·트리거된 필터가 담기고 모더레이터가 **Actions 버튼**으로 킥·밴·타임아웃을 건다.",
+            "alternatives": [
+              "차단 하나로 끝낸다",
+              "전부 사람에게 넘긴다"
+            ],
+            "tradeoff": "서버마다 조합을 정해야 해서 같은 위반의 결과가 서버마다 달라진다. 대신 **자동으로 끝내는 길과 사람에게 넘기는 길을 함께 남긴다** — 자동 판정이 맥락을 모른다는 것을 구조가 인정하는 셈이다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "누구를 필터에서 면제할 것인가",
+            "chosen": "역할과 채널 단위로 면제를 설정할 수 있고, **Manage Server·Administrator 권한자는 항상 면제**된다.",
+            "alternatives": [
+              "예외 없이 모두에게 적용한다",
+              "면제를 서버 주인이 전부 직접 지정하게 한다"
+            ],
+            "tradeoff": "권한을 가진 사람은 필터가 막지 못한다 — 그 권한이 남용될 여지가 남는다(뒷문장은 이 사이트의 추정). 대신 모더레이터가 자기 도구에 걸려 대응을 못 하는 상황이 생기지 않는다(이 역시 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "링크와 파일은 어디서 막을 것인가",
+            "chosen": "**클라이언트 측 네이티브 필터**로 의심스러운 링크·파일을 사용자에게 경고한다 — 서버측에서 제거하지는 않는다.",
+            "alternatives": [
+              "서버에서 링크를 차단한다",
+              "아무 검사도 하지 않는다"
+            ],
+            "tradeoff": "경고까지이므로 **사용자가 무시하면 그만**이다. 대신 서버가 링크를 어떻게 다룰지에 개입하지 않는다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "플랫폼이 직접 볼 범위를 어디까지로 할 것인가",
+            "chosen": "**위험도와 서버 유형으로 나눈다.** 멀웨어·스팸 스캔과 CSAM 파일 스캔은 **전 서버 유형**에, 정책 위반 자동 탐지 도구는 **200명 이상 커뮤니티 서버**에, 선제적 유해 콘텐츠 식별은 **Discoverable 서버**에 적용한다. 우선순위는 아동 안전·폭력적 극단주의 같은 최고 위험 사안이다.",
+            "alternatives": [
+              "모든 서버를 같은 강도로 본다",
+              "신고가 들어온 것만 본다"
+            ],
+            "tradeoff": "**서버의 크기와 공개 여부에 따라 적용되는 자동 탐지가 다르다** — 작은 친구 서버는 자동 탐지 도구의 대상이 아니다. 대신 최고 위험 사안(CSAM)만은 **서버 유형과 무관하게** 스캔하고 발견 즉시 NCMEC 에 신고한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              },
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "AutoMod 키워드 필터(유지 목록 1 + 커스텀 3, 각 1,000개, 와일드카드)",
+            "role": "서버 주인이 정한 표현을 게시 전에 막는다. Discord 유지 목록은 커뮤니티 가이드라인에 맞춰 관리된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "AutoMod 스팸 필터(멘션 스팸 · 콘텐츠 스팸 ML)",
+            "role": "고유 멘션 수 상한(최대 50)과, 사용자 신고로 학습한 모델로 스팸 패턴을 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "자동 조치 3종(차단 · 로그 채널 알림 · 타임아웃)",
+            "role": "자동으로 끝내는 길과 모더레이터에게 넘기는 길을 함께 둔다. 알림에는 트리거된 필터까지 담긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "클라이언트 측 링크·파일 네이티브 필터",
+            "role": "의심스러운 링크와 파일을 사용자에게 경고한다. 서버측 제거는 아니다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "플랫폼 탐지 — 이미지 해싱 · ML · 메타데이터/네트워크 패턴 · 사람 주도 조사",
+            "role": "신고를 기다리지 않고 선제적으로 찾는다. CSAM 은 전 서버 유형 파일 스캔 후 NCMEC 에 즉시 신고.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              },
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "tech": "오탐률·이의 제기 절차·경고 시스템의 단계",
+            "role": "— 이 사이트는 아직 1차 자료를 찾지 못했다. 투명성 보고서는 PDF 로만 제공된다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "voice-sfu",
+          "via": "서버측 음소거",
+          "contract": "제재된 사용자의 오디오 패킷을 SFU 가 버린다 — **미디어가 서버를 지나기 때문에 가능한 운영 수단**이고, 이 도메인의 결정이 그 도메인의 설계를 정당화한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "presence-fanout",
+          "via": "차단은 팬아웃 이전",
+          "contract": "AutoMod 가 게시 전에 막으면 그 메시지는 애초에 팬아웃되지 않는다 — 다만 두 자료가 이 순서를 명시하지는 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "message-storage",
+          "via": "저장되지 않는 메시지",
+          "contract": "게시 전에 차단된 메시지가 저장소에 남는지는 어느 자료에도 없다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "메시지 하나가 필터를 지나는 길",
+          "question": "누가 만든 규칙이 어느 순서로 적용되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OWNER[서버 주인] -->|규칙 설정| RULES[AutoMod 규칙<br/>키워드 4 · 멘션 스팸 · 콘텐츠 스팸]\n  MSG[메시지 작성] --> EX{면제 대상인가<br/>Manage Server · Administrator}\n  EX -->|예| POST[게시]\n  EX -->|아니오| RULES\n  RULES --> HIT{걸리는가}\n  HIT -->|아니오| POST\n  HIT -->|예| ACT[설정된 조치]\n  ACT --> BLOCK[차단<br/>보낸 사람에게만 알림]\n  ACT --> LOG[로그 채널 알림<br/>내용 · 발신자 · 채널 · 트리거된 필터]\n  ACT --> TO[타임아웃]\n  LOG --> MODACT[모더레이터 Actions<br/>킥 · 밴 · 타임아웃]\n  POST --> USERS[다른 사용자]\n  USERS -->|신고| SAFETY[Discord Safety 팀]\n  PLAT[플랫폼 선제 탐지<br/>이미지 해싱 · ML · 네트워크 패턴] --> SAFETY\n  SAFETY --> ENF[경고 · 콘텐츠 제거 · 계정 정지]\n  SAFETY -.->|CSAM| NCMEC[NCMEC 즉시 신고]"
+        },
+        {
+          "title": "규칙 위반이 거치는 상태",
+          "question": "서버 규칙 위반과 플랫폼 규칙 위반은 어디서 갈라지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 작성됨\n  작성됨 --> 게시전차단: AutoMod 필터에 걸림\n  게시전차단 --> [*]: 보낸 사람에게만 알림\n  작성됨 --> 게시됨: 통과\n  게시됨 --> 모더레이터검토: 로그 채널 알림\n  모더레이터검토 --> 서버제재: 킥 · 밴 · 타임아웃\n  note right of 서버제재\n    서버 규칙의 층\n    플랫폼 위반은 아닐 수 있다\n  end note\n  게시됨 --> 신고됨: 사용자 신고\n  신고됨 --> 플랫폼심사: Safety 팀\n  게시됨 --> 플랫폼심사: 선제 탐지\n  플랫폼심사 --> 플랫폼제재: 경고 · 제거 · 계정 정지\n  플랫폼심사 --> 게시됨: 위반 아님\n  서버제재 --> [*]\n  플랫폼제재 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 과잉 차단과 놓치는 것",
+          "question": "자동 판정이 틀리는 두 방향에서 무엇이 남는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  WILD[와일드카드 `*cat*`] --> OVER[과잉 매칭<br/>scathing · locate 도 걸린다]\n  OVER --> LOST[정당한 메시지가<br/>게시조차 되지 않는다]\n  LOST -->|추정| INVIS[다른 사람은 무슨 일이 있었는지 모른다]\n  ML[콘텐츠 스팸 모델] --> TRAIN[사용자 신고로 학습]\n  TRAIN --> MISS[**회사가 밝힌 한계**<br/>DM 스팸 · 복붙 · 반복 메시지]\n  TRAIN -->|추정| BLIND[신고되지 않는 유형은 배우지 못한다]\n  LINK[링크·파일 필터] --> CLIENT[클라이언트 측 경고까지]\n  CLIENT --> IGNORE[사용자가 무시하면 그만]\n  PERM[Manage Server · Administrator] --> EXEMPT[항상 면제]\n  EXEMPT -->|추정| ABUSE[권한 남용을 필터가 막지 못한다]\n  SMALL[작은 친구 서버] --> SCOPE[정책 위반 자동 탐지 도구의 대상이 아니다]\n  SCOPE --> ONLY[다만 CSAM 스캔은 전 서버 유형에 적용]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Our Approach to Content Moderation at Discord",
+          "url": "https://discord.com/safety/our-approach-to-content-moderation",
+          "publisher": "Discord Safety",
+          "date": "2026-08 확인",
+          "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+        },
+        {
+          "title": "Auto Moderation in Discord",
+          "url": "https://discord.com/safety/auto-moderation-in-discord",
+          "publisher": "Discord Safety",
+          "date": "2026-08 확인",
+          "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+        },
+        {
+          "title": "Privacy and Safety on Discord",
+          "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+          "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+          "date": "2023-06-08",
+          "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1502,7 +2057,10 @@
     "세마포어의 동시성 상한을 무엇으로 정하는지.",
     "음성 코덱과 비트레이트 사다리 — 이 글은 코덱을 협상 항목으로만 언급한다.",
     "기기 성능이 제각각인 그룹 영상 — 회사가 남은 과제로 밝혔고 Scalable Video Coding 을 가능성으로만 든다.",
-    "이 도메인의 자료는 2018년 글 하나다 — 이후의 변화는 반영돼 있지 않다."
+    "이 도메인의 자료는 2018년 글 하나다 — 이후의 변화는 반영돼 있지 않다.",
+    "AutoMod 의 오탐률과 이의 제기 절차 — 투명성 보고서가 PDF 로만 제공돼 이 사이트가 읽지 못했다.",
+    "경고 시스템(Warning System)의 단계와 계정 정지까지의 기준.",
+    "게시 전에 차단된 메시지가 저장소에 남는지."
   ],
   "sources": [
     {
