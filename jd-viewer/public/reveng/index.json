@@ -95,10 +95,10 @@
       "name_en": "Uber",
       "country": "US",
       "category": "모빌리티",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "움직이는 사람들을 다루려고 지구를 육각형으로 덮은 회사",
-      "features_done": 2
+      "features_done": 3
     }
   ],
   "domains": [
@@ -145,7 +145,6 @@
     "데이터 인프라",
     "지리 인덱싱",
     "실시간 매칭·배차",
-    "가격·수급 조절",
     "도착 예측"
   ],
   "countries": {

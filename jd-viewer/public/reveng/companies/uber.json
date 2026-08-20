@@ -4,7 +4,7 @@
   "name_en": "Uber",
   "country": "US",
   "category": "모빌리티",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "움직이는 사람들을 다루려고 지구를 육각형으로 덮은 회사",
   "business_model": "이동과 배달을 중개하고 거래액의 일부를 가져간다. 2025년 **총 예약액 1,930억 달러**, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 월간 활성 이용자는 **2억 200만 명**이고 **하루 4,000만 건이 넘는 이동**이 일어난다. 부문별로는 모빌리티 +19%, 배달 +22%, 화물 -1%. 앞선 회사들과 다른 점은 **파는 것이 물건도 화면도 아니라 '지금 여기'라는 순간**이라는 것이다 — 수요와 공급이 둘 다 움직이고, 1분 뒤면 답이 달라진다. 그래서 이 회사의 기술은 대부분 **공간과 시간을 다룰 수 있는 단위로 쪼개는 일**에서 시작한다.",
@@ -17,7 +17,7 @@
   "domain_map": {
     "title": "Uber 도메인 지도",
     "question": "움직이는 수요와 공급을 어떻게 같은 좌표계 위에 올리는가?",
-    "code": "flowchart TD\n  R[라이더 · 수요] --> GEO[지리 인덱싱 · H3]\n  D[기사 · 공급] --> GEO\n  GEO --> MATCH[실시간 매칭 · 배차]\n  GEO --> PRICE[가격 · 수급 조절]\n  GEO --> ETA[도착 예측]\n  MATCH --> TRIP[하루 4,000만 건 이상의 이동]\n  PRICE --> TRIP\n  ETA --> TRIP\n  TRIP --> GB[총 예약액 1,930억 달러]\n  GB --> REV[매출 520억 달러]\n  EATS[배달 · 화물] --> GEO\n  EATS --> GB\n  classDef money stroke-dasharray: 3 3\n  class GB,REV money"
+    "code": "flowchart TD\n  R[라이더 · 수요] --> GEO[지리 인덱싱 · H3]\n  D[기사 · 공급] --> GEO\n  GEO --> MATCH[실시간 매칭 · 배차]\n  GEO --> PRICE[가격 · 수급 조절<br/>미확인]\n  GEO --> ETA[도착 예측]\n  MATCH --> TRIP[하루 4,000만 건 이상의 이동]\n  PRICE --> TRIP\n  ETA --> TRIP\n  TRIP --> GB[총 예약액 1,930억 달러]\n  GB --> REV[매출 520억 달러]\n  EATS[배달 · 화물] --> GEO\n  EATS --> GB\n  classDef money stroke-dasharray: 3 3\n  class GB,REV money"
   },
   "revenue_streams": [
     {
@@ -90,14 +90,63 @@
     {
       "name": "실시간 매칭·배차",
       "why": "손님 한 명에 차 한 대를 잇는 일. 1분 뒤면 답이 달라지므로 계산을 제때 끝내는 것 자체가 품질이 된다.",
-      "tech": [],
-      "features": []
-    },
-    {
-      "name": "가격·수급 조절",
-      "why": "공급이 모자라면 가격을 올려 수요를 줄이거나 공급을 부른다 — 시장을 코드로 조절하는 자리다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "오프라인 RL 가치함수 + 매칭 순위 신호",
+          "solves": "탐욕적 매칭이 만드는 미래의 불균형을 줄인다. 정책을 직접 배우지 않고 신호로 끼워 넣어 기존 매칭 시스템을 갈아엎지 않는다. 400개 넘는 도시 배포, 기사 수익 +0.52%·라이더 취소 -2.2%.",
+          "limits": "학습이 항상 한 발 늦고 현재 정책이 만든 데이터만 본다. 정책이 바뀌는 속도가 느리고 매칭 알고리즘의 나머지 규칙에 종속된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Reinforcement Learning for Modeling Marketplace Balance",
+              "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "date": "2025-07-02",
+              "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+            }
+          ]
+        },
+        {
+          "tech": "지오해시 상태 · 대비 손실 · ETA 할인 보상",
+          "solves": "위치와 시간을 상태로 삼되 공간을 평활화하고, 멀리 있는 보상을 덜 값지게 만들어 지금의 짝과 나중의 자리를 같은 저울에 올린다.",
+          "limits": "지오해시 격자의 경계 효과가 남고, 유휴를 벌하는 신호가 대기해야 마땅한 상황까지 누를 여지가 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Reinforcement Learning for Modeling Marketplace Balance",
+              "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "date": "2025-07-02",
+              "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+            }
+          ]
+        },
+        {
+          "tech": "몬테카를로 검증 + 자동 신호 감쇠",
+          "solves": "정답이 없는 문제에 기준값을 만들고, 모델이 나빠지면 시스템이 스스로 물러나게 해 수동 개입 없이 글로벌 배포한다.",
+          "limits": "상태 공간의 카디널리티가 높아 기준값 생성 자체가 비싸고, 임계값이 또 하나의 튜닝 대상이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Reinforcement Learning for Modeling Marketplace Balance",
+              "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "date": "2025-07-02",
+              "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+            }
+          ]
+        },
+        {
+          "tech": "지연된 피드백 처리",
+          "solves": "— 아직이다.",
+          "limits": "매칭 결정의 실제 영향이 몇 시간 뒤에 전개되는 문제를 회사가 남은 과제로 밝힌다. 실시간 시간차 학습 파이프라인, 궤적 피드백, 장기 보상 귀속을 앞으로 탐색한다고 했다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "marketplace-rl"
+      ]
     },
     {
       "name": "도착 예측",
@@ -932,6 +981,416 @@
           "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
         }
       ]
+    },
+    {
+      "key": "marketplace-rl",
+      "name": "매칭 — 지금 맞추면 이따가 어긋난다",
+      "domain": "실시간 매칭·배차",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "양쪽이 모두 움직이는 시장에서 기사와 수요의 균형은 **끊임없이 흔들린다.** 매칭의 과제는 겉보기엔 단순하다 — **라이더의 대기 시간을 줄이면서 기사의 수익을 키우는 것.** 그런데 여기에 함정이 있다. 지금 눈앞의 짝을 가장 잘 맞추는 **탐욕적 매칭은 그 순간의 균형은 만들지만, 도시의 다른 지역에 나중의 불균형을 만든다** — 그리고 그게 대기 시간이나 급증 가격으로 돌아온다.",
+        "metrics": [
+          {
+            "label": "배포 규모",
+            "value": "**400개가 넘는 도시**에 배포됐고, 회사는 이를 **승차 공유 마켓플레이스에서 강화학습의 최대 규모 프로덕션 배포**라고 밝힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "label": "스위치백 실험 결과",
+            "value": "**기사 수익 +0.52%**(수요가 예상되는 지점으로 위치를 정한 효과), **라이더 취소 -2.2%**(적극적인 기사 배치로 빨라진 할당)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "label": "아직 못 푼 것",
+            "value": "**매칭 결정의 실제 영향이 종종 몇 시간 뒤에 전개된다** — 지연된 피드백이 남은 과제다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "탐욕적 매칭의 결과를 나중에 볼 때",
+          "thought": "지금 가장 가까운 기사를 붙이는 게 이 순간에는 최선이다. 그런데 그 기사가 그 자리에서 빠지면서 **도시의 다른 곳에 구멍이 생긴다.** 매칭은 한 번의 선택이 아니라 **순차적 의사결정**이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실제 시장에서 배우는 걸 생각할 때",
+          "thought": "강화학습은 시도하면서 배우는데, 여기서 시도는 **진짜 사람의 이동과 수입에 영향을 준다.** 온라인으로 배우는 건 위험하다 — 그러면 배우는 건 오프라인에서 하고, 배운 것만 온라인에 신호로 넣으면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "보상을 언제 줄지 정할 때",
+          "thought": "완료된 여행은 좋은 일이고 오래 놀고 있는 기사는 나쁜 신호다. 그런데 **멀리 있는 좋은 일은 가까이 있는 좋은 일보다 덜 값지다** — 그래서 보상을 픽업 시점에 실현시키고 **ETA 로 할인**한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모델을 얼마나 믿을지 정할 때",
+          "thought": "가치함수가 나빠지면 매칭 전체가 나빠진다. 그러니 **모델이 나빠졌을 때 사람이 알아채고 끄기를 기다리면 안 된다** — 성능 지표가 떨어지면 매칭 시스템이 알아서 이 신호를 덜 쓰게 만들어야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "상태(S)",
+            "what": "기사의 컨텍스트 — **지오해시 문자열로 표현된 지리적 위치**와 시간."
+          },
+          {
+            "name": "가치함수 V(S)",
+            "what": "그 상태에 있는 기사가 앞으로 얻을 것의 추정치. 심층 신경망이 낸다."
+          },
+          {
+            "name": "보상(r)",
+            "what": "완료된 여행은 양의 신호, 오래 이어진 유휴 상태는 음의 신호. 픽업 후 실현되며 ETA 로 할인된다."
+          },
+          {
+            "name": "순위 지표",
+            "what": "매칭 알고리즘이 후보를 줄 세우는 기준. 가치함수가 여기에 신호로 들어간다."
+          }
+        ],
+        "invariants": [
+          "지금의 최적 매칭이 나중의 불균형을 만든다.",
+          "여기서의 '시도'는 진짜 사람의 이동과 수입에 영향을 준다.",
+          "매칭 결정의 실제 영향은 종종 몇 시간 뒤에 나타난다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "기사 상태 전이 기록 {S1, r, ETA, ETD, S2}를 모은다",
+            "why": "실제로 일어난 이동에서 배운다"
+          },
+          {
+            "step": "배치를 무작위로 뽑아 V_target = γ^ETA·r + γ^ETD·DNN(S2) 를 만든다",
+            "why": "시간차 원리로 가치를 전파한다"
+          },
+          {
+            "step": "DNN(S1) 과의 MSE 로 경사하강한다",
+            "why": "가치함수를 현재 정책 아래에서 맞춘다"
+          },
+          {
+            "step": "지오임베딩에 대비 손실을 걸어 쌍별 거리가 실제 거리를 따르게 한다",
+            "why": "가까운 곳의 가치가 튀지 않게 공간을 평활화한다"
+          },
+          {
+            "step": "학습된 가치함수를 매칭 알고리즘의 순위 지표에 넣는다",
+            "why": "정책을 직접 배우지 않고 신호로만 쓴다"
+          },
+          {
+            "step": "매칭이 더 높은 가치의 상태로 기사를 이끈다",
+            "why": "지금의 짝만이 아니라 다음 자리를 함께 본다"
+          },
+          {
+            "step": "바뀐 정책이 만든 새 분포로 다시 학습한다",
+            "why": "정책 반복 루프가 돈다"
+          },
+          {
+            "step": "몬테카를로 기준값과 대조하고, 성능이 나빠지면 신호 반영을 자동으로 줄인다",
+            "why": "모델이 틀릴 때 시스템이 스스로 물러난다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "매칭을 한 번의 선택으로 볼 것인가",
+            "chosen": "**순차적 의사결정 문제**로 보고 강화학습을 적용한다",
+            "alternatives": [
+              "탐욕적 매칭 유지",
+              "휴리스틱으로 미래 보정"
+            ],
+            "tradeoff": "학습·평가·배포 체계를 통째로 만들어야 한다. 그래도 탐욕적 매칭은 **그 순간의 균형은 만들지만 도시의 다른 지역에 나중의 불균형을 만들고**, 그게 대기 시간과 급증 가격으로 돌아온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "온라인으로 배울 것인가",
+            "chosen": "**오프라인 RL 로 배우고 온라인에서는 신호로만 쓴다**",
+            "alternatives": [
+              "온라인 강화학습",
+              "시뮬레이터 학습"
+            ],
+            "tradeoff": "학습이 항상 한 발 늦고 현재 정책 아래의 데이터만 본다. 그래도 여기서의 탐색은 **진짜 사람의 이동과 수입을 건드리는 일**이라 온라인 학습은 위험하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "정책을 직접 배울 것인가",
+            "chosen": "**아니다.** 가치함수만 배우고, 그것을 **온라인 매칭 알고리즘의 순위 지표에 신호로 넣는다.** 그렇게 만들어진 새 정책 분포로 다시 학습하는 반복 루프를 돈다",
+            "alternatives": [
+              "정책 경사(policy gradient)",
+              "종단 간 학습"
+            ],
+            "tradeoff": "정책이 바뀌는 속도가 느리고 매칭 알고리즘의 나머지 규칙에 종속된다. 대신 **기존 매칭 시스템을 갈아엎지 않고 신호 하나로 끼워 넣을 수 있다** — 회사는 직접 정책 학습으로 가는 것을 앞으로의 과제로 남겨 뒀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "보상을 무엇으로, 언제 줄 것인가",
+            "chosen": "완료된 여행을 양의 신호로, 오래 이어진 **유휴 상태**를 음의 신호로 둔다. 보상은 **픽업 후 실현되며 ETA 로 할인**한다",
+            "alternatives": [
+              "요금만 보상으로",
+              "즉시 보상"
+            ],
+            "tradeoff": "유휴를 벌하면 기사가 대기해야 마땅한 상황까지 눌릴 수 있다(추정). ETA 할인은 **멀리 있는 좋은 일을 덜 값지게** 만들어, 지금 가까운 짝과 나중의 좋은 자리를 같은 저울에 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "상태를 무엇으로 표현할 것인가",
+            "chosen": "**지오해시 문자열로 표현한 위치와 시간.** 지오임베딩에 **대비 손실**을 걸어 임베딩의 쌍별 거리가 실제 지리적 거리를 반영하게 감독한다",
+            "alternatives": [
+              "좌표 직접 입력",
+              "행정 구역 단위"
+            ],
+            "tradeoff": "지오해시 격자의 경계 효과를 떠안고 손실 항이 하나 늘어난다. 대신 **공간이 평활해져** 가까운 곳의 가치가 제각각 튀지 않는다 — 상태 공간이 지역별로 쪼개져 학습되는 문제에 대한 답이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "시뮬레이션으로 학습할 것인가",
+            "chosen": "**실제로 완료된 여행 데이터**를 쓴다",
+            "alternatives": [
+              "시뮬레이터 기반 학습"
+            ],
+            "tradeoff": "실제 데이터는 현재 정책이 만든 것만 담고 있어 탐색이 제한된다. 그래도 이 시장은 **네트워크 효과가 강하고 행동이 바뀌어** 정확한 시뮬레이션이 어렵다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "정답이 없는 문제를 어떻게 평가할 것인가",
+            "chosen": "**몬테카를로 기준값** — 어떤 상태에서 시작한 에이전트 롤아웃 전체의 반환값을 평균 내 그 상태의 가치로 삼는다. 예측을 **성긴 시공간 해상도로 버킷화**해 상관계수 같은 회귀 지표로 비교한다",
+            "alternatives": [
+              "오프라인 정책 평가",
+              "온라인 실험만"
+            ],
+            "tradeoff": "상태 공간의 카디널리티가 높아 기준값을 만드는 것 자체가 일이다. 그래도 이 지표가 있어야 다음 결정이 가능해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "모델이 나빠지면 어떻게 할 것인가",
+            "chosen": "**매칭 시스템이 이 신호를 자동으로 덜 반영한다.** 회귀 지표에 조정 가능한 임계값을 걸어 신호 기여도를 자동으로 조절하고, 이상 탐지와 관측 대시보드로 **수동 개입 없이 글로벌 배포**한다",
+            "alternatives": [
+              "사람이 판단해 끄기",
+              "고정 가중치"
+            ],
+            "tradeoff": "임계값 자체가 또 하나의 튜닝 대상이 된다. 대신 **모델을 얼마나 믿을지를 모델의 상태가 정하게** 만들어, 400개 넘는 도시에 사람이 일일이 붙지 않아도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "DQN 계열 가치함수 학습",
+            "role": "기사 상태 전이 {S1, r, ETA, ETD, S2}에서 시간차 원리로 V(S) 를 배운다. V_target = γ^ETA·r + γ^ETD·DNN(S2), 손실은 MSE.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "지오해시 상태 + 대비 손실 지오임베딩",
+            "role": "위치와 시간을 상태로 쓰되, 임베딩의 쌍별 거리가 실제 지리 거리를 따르게 해 공간을 평활화한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "정책 반복 루프(오프라인 학습 → 온라인 신호 → 재학습)",
+            "role": "정책을 직접 배우지 않고 가치함수를 매칭 순위 지표에 넣는다. 바뀐 정책이 만든 분포로 다시 학습한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "몬테카를로 검증 파이프라인 + 자동 신호 감쇠",
+            "role": "롤아웃 평균을 기준값으로 삼아 회귀 지표로 검증하고, 성능이 떨어지면 신호 반영을 자동으로 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "글로벌 스위치백 실험",
+            "role": "시간을 무작위화하는 AB 실험으로 검증했다(기사 수익 +0.52%, 라이더 취소 -2.2%).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "deep-eta",
+          "via": "할인율의 재료",
+          "contract": "보상을 ETA 로 할인하고 전이에 ETA·ETD 를 쓴다 — 도착 예측이 매칭의 학습에 직접 들어간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "h3-grid",
+          "via": "상태의 좌표계",
+          "contract": "상태는 지오해시 문자열로 표현한다고 밝힌다 — H3 라고는 하지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "가격·수급",
+          "via": "불균형의 결과",
+          "contract": "탐욕적 매칭이 만든 미래의 불균형이 대기 시간이나 급증 가격으로 나타난다고 밝히지만, 급증 가격의 계산 방식은 이 글에 없다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 배운 값을 신호로 넣기",
+          "question": "정책을 직접 배우지 않고 어떻게 매칭을 바꾸는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  TRIP[(실제 완료된 여행<br/>기사 상태 전이 S1 · r · ETA · ETD · S2)] --> BATCH[무작위 배치 샘플링]\n  BATCH --> TD[V_target = γ^ETA·r + γ^ETD·DNN S2]\n  TD --> LOSS[MSE 손실 · 경사하강]\n  GEO[지오해시 문자열] --> EMB[지오임베딩]\n  EMB -->|대비 손실| SMOOTH[쌍별 거리 = 실제 지리 거리]\n  SMOOTH --> DNN[가치함수 DNN]\n  LOSS --> DNN\n  DNN --> SIG[가치 추정 V S]\n  SIG --> RANK[매칭 알고리즘의 순위 지표]\n  RANK --> MATCH[기사 ↔ 라이더 매칭]\n  MATCH --> NEWPOL[새 정책 분포]\n  NEWPOL -.->|재학습| TRIP\n  MC[몬테카를로 기준값<br/>롤아웃 반환값 평균] --> CHECK{회귀 지표}\n  SIG --> CHECK\n  CHECK -->|나빠지면| LESS[신호 반영을 자동으로 줄인다]\n  LESS -.-> RANK"
+        },
+        {
+          "title": "기사 한 명의 상태가 도는 길",
+          "question": "보상은 언제 어떻게 실현되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 유휴: 어딘가에서 대기\n  유휴 --> 장기유휴: 오래 놀고 있다\n  장기유휴 --> 음의신호: 학습에 부정 신호로 들어간다\n  유휴 --> 배정됨: 매칭 알고리즘이 짝을 지운다\n  배정됨 --> 픽업이동: ETA 만큼 걸린다\n  픽업이동 --> 픽업완료: 여기서 보상이 실현된다\n  픽업완료 --> 운행중: ETD 만큼 걸린다\n  운행중 --> 여행완료: 양의 신호\n  여행완료 --> 새로운상태: 다른 지오해시 · 다른 시간\n  새로운상태 --> 유휴\n  음의신호 --> [*]\n  여행완료 --> [*]\n  note right of 픽업완료\n    보상은 ETA 로 할인된다.\n    멀리 있는 좋은 일은 덜 값지다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 지금과 나중 사이",
+          "question": "무엇이 이 문제를 어렵게 만드는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[탐욕적 매칭] --> B[지금 이 순간의 균형은 맞는다]\n  A --> C[도시의 다른 지역에 미래의 불균형]\n  C --> D[대기 시간 상승]\n  C --> E[급증 가격]\n  F[온라인으로 학습하면] --> G[진짜 사람의 이동과 수입에 영향]\n  G -.->|그래서| H[오프라인 학습 + 온라인 신호]\n  I[시뮬레이터로 배우면] --> J[강한 네트워크 효과 · 행동 변화]\n  J --> K[정확한 시뮬레이션이 어렵다]\n  L[시장이 비정상적으로 변한다] --> M{복잡한 모델 · 장기 데이터}\n  L --> N{단순한 모델 · 최근 데이터}\n  M -.->|균형을 잡아야| N\n  O[모델이 나빠지면] --> P[매칭 전체가 나빠진다]\n  P -.->|그래서| Q[성능 지표로 신호를 자동 감쇠]\n  R[매칭 결정의 영향이] --> S[몇 시간 뒤에 전개된다]\n  S -.-> T[아직 못 푼 문제 · 지연된 피드백]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Reinforcement Learning for Modeling Marketplace Balance",
+          "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+          "publisher": "Uber 엔지니어링 블로그",
+          "date": "2025-07-02",
+          "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -941,7 +1400,10 @@
     "H3 의 각 해상도가 실제 몇 제곱미터인지는 이 글에 표로 나오지 않는다 — 쿠팡 자료에서 12레벨 약 300㎡, 14레벨 6.3㎡ 라는 값을 얻었다.",
     "DeepETA 가 위경도를 양자화할 때 쓰는 격자가 H3 인지는 글에 명시돼 있지 않다.",
     "비대칭 Huber 손실의 δ·ω 를 사업 부문마다 어떤 값으로 두는지는 공개돼 있지 않다.",
-    "연속·증분 학습은 앞으로 탐색하겠다고만 밝힌 단계다."
+    "연속·증분 학습은 앞으로 탐색하겠다고만 밝힌 단계다.",
+    "급증 가격(surge)을 셀 단위 수요·공급에서 어떤 규칙으로 계산하는지는 끝내 1차 자료를 찾지 못해 도메인으로 세우지 않았다 — 매칭 글이 '불균형이 급증 가격으로 나타난다'고 결과만 언급한다.",
+    "매칭 알고리즘의 순위 지표에서 가치함수 신호가 다른 항들과 어떤 비중으로 결합되는지는 밝히지 않는다.",
+    "DISCO 등 매칭 시스템의 서비스 구조는 여전히 1차 출처를 찾지 못했다 — 널리 인용되는 설명은 3자 요약이다."
   ],
   "sources": [
     {
@@ -962,6 +1424,13 @@
       "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
       "publisher": "Uber 엔지니어링 블로그",
       "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+    },
+    {
+      "title": "Reinforcement Learning for Modeling Marketplace Balance",
+      "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+      "publisher": "Uber 엔지니어링 블로그",
+      "date": "2025-07-02",
+      "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
     }
   ]
 }
