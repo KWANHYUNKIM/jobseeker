@@ -117,10 +117,10 @@
       "name_en": "Netflix",
       "country": "US",
       "category": "스트리밍",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
-      "one_liner": "모든 영상에 같은 잣대를 대지 않기로 한 회사",
-      "features_done": 3
+      "one_liner": "평균에 맞춘 하나의 답을 버린 회사",
+      "features_done": 4
     }
   ],
   "domains": [
