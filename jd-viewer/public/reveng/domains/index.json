@@ -132,15 +132,17 @@
     {
       "slug": "prefetch",
       "title": "어디에 무엇을 미리 놓아두는가",
-      "question": "미리 만들어 둘 수 있는지를 정하는 것은 계산 비용이 아니라 '그 답이 얼마나 오래 옳은가'다.",
+      "question": "거의 같은 시스템을 지어 놓고 한쪽은 미리 채우고 한쪽은 채우지 않는다 — 무엇이 그 차이를 정하는가?",
       "companies": [
         "netflix",
+        "youtube",
         "instagram",
         "toss",
         "baemin"
       ],
       "features": [
         "open-connect-fill",
+        "ggc-edge",
         "adaptive-playback",
         "explore-funnel",
         "interest-accrual",
