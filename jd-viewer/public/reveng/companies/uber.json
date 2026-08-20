@@ -102,8 +102,60 @@
     {
       "name": "도착 예측",
       "why": "'몇 분 뒤 도착'은 약속이다. 틀리면 신뢰가 깎이고, 배차와 가격의 입력이기도 하다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "잔차 예측 하이브리드(DeepETA)",
+          "solves": "라우팅 엔진을 버리지 않고 그 오차를 딥러닝으로 배워, 지도에 담기지 않는 실제 운전 조건을 흡수한다. 새 데이터 소스와 바뀌는 요구를 엔진 리팩토링 없이 받아들인다.",
+          "limits": "두 시스템을 함께 유지해야 하고 엔진의 편향이 학습 대상이 된다. 지연 제약 때문에 다중 작업 디코더 같은 선택지는 쓰지 못한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+              "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+            }
+          ]
+        },
+        {
+          "tech": "이산화 + 다중 해시 임베딩 · Linear Transformer",
+          "solves": "수 밀리초 예산 안에서 피처 간 상호작용을 찾는다. 파라미터가 수억 개여도 한 예측이 건드리는 것은 약 0.25%다.",
+          "limits": "학습 시점에 거대한 임베딩 테이블을 만들어 둬야 하는 시공간 트레이드오프이고, 버킷 경계가 하이퍼파라미터로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+              "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+            }
+          ]
+        },
+        {
+          "tech": "구간 바이어스 조정 + 비대칭 Huber 손실",
+          "solves": "부문·거리·지역마다 다른 오차 분포를 흡수하고, 지각과 조기 도착의 비용 차이를 손실 함수에 직접 담는다.",
+          "limits": "구간을 사람이 정의해야 하고, δ·ω 를 사업 목적에 맞춰 계속 조정해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+              "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+            }
+          ]
+        },
+        {
+          "tech": "연속·증분 학습",
+          "solves": "— 아직이다.",
+          "limits": "더 신선한 데이터로 학습하기 위해 앞으로 탐색하겠다고만 밝힌다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "deep-eta"
+      ]
     }
   ],
   "features": [
@@ -485,13 +537,411 @@
           "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
         }
       ]
+    },
+    {
+      "key": "deep-eta",
+      "name": "DeepETA — 지도가 현실이 아니라는 것을 인정하고",
+      "domain": "도착 예측",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "'몇 분 뒤 도착'은 이 회사에서 화면의 숫자 하나가 아니다. **요금 계산, 픽업 시간 추정, 라이더-기사 매칭, 배송 계획**이 전부 이 값 위에 선다. 기존에는 라우팅 엔진이 도로망을 작은 구간으로 쪼개 가중치를 매기고 최단 경로를 풀어 ETA 를 냈는데, 문제는 하나였다 — **지도는 현실이 아니다.** 실제 운전 조건은 도로망 그래프에 다 담기지 않는다.",
+        "metrics": [
+          {
+            "label": "지연 예산",
+            "value": "**수 밀리초 안에** ETA 를 돌려주면서, 기존 XGBoost 대비 평균절대오차(MAE)를 유의미하게 개선하고, **모든 사업 부문에 글로벌로** 서빙해야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "label": "모델의 실제 사용량",
+            "value": "파라미터는 **수억 개**인데 **한 번의 예측이 건드리는 것은 약 0.25%**뿐이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "label": "복잡도 비교",
+            "value": "self-attention 은 O(K²d), Linear Transformer 는 O(Kd²) — 피처 40개·차원 8이면 **12,800 대 2,560**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "라우팅 엔진의 한계를 마주할 때",
+          "thought": "도로망을 구간으로 쪼개 최단 경로를 푸는 방식은 틀리지 않았다. 다만 **지도는 현실이 아니다.** 그러면 엔진을 고칠 것인가, 아니면 엔진이 틀리는 만큼을 따로 배울 것인가 — **새 데이터 소스를 받아들이고 빠르게 바뀌는 요구를 수용하기에는 뒤쪽이 훨씬 쉽다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "XGBoost 의 벽에 닿았을 때",
+          "thought": "수년간 XGBoost 앙상블로 개선해 왔고, 더 깊은 모델을 위해 **업스트림에 개선안까지 기여했다.** 그런데도 데이터셋과 모델을 더 키우는 것이 불가능해졌다 — 도구를 고쳐 쓰는 것으로는 더 못 간다는 뜻이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "밀리초 예산 안에서 Transformer 를 쓰려 할 때",
+          "thought": "self-attention 은 피처 사이의 쌍별 상호작용을 잘 찾는데 K×K 행렬이 문제다. **그런데 우리 입력은 피처 수 K 가 차원 d 보다 크다** — 그러면 커널 트릭으로 행렬 계산을 피하는 Linear Transformer 가 더 빠르다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "손실 함수를 정할 때",
+          "thought": "**1분 늦는 것과 1분 일찍 도착하는 것은 같은 오차가 아니다.** 그리고 사업 부문마다 필요한 지점 추정과 이상치 비율도 다르다. 그러면 손실 함수 자체를 매개변수로 열어 둬야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "기본 ETA",
+            "what": "라우팅 엔진이 도로망 최단 경로로 계산한 값."
+          },
+          {
+            "name": "잔차(residual)",
+            "what": "실제 관측값과 라우팅 엔진 예측의 차이. DeepETA 가 배우는 대상."
+          },
+          {
+            "name": "피처 토큰",
+            "what": "self-attention 의 각 벡터가 원점·시간대 같은 **하나의 피처**를 나타낸다."
+          },
+          {
+            "name": "구간 바이어스",
+            "what": "배송/라이드, 장/단거리, 픽업/드롭오프, 글로벌 메가 지역별로 예측을 조정하는 계층."
+          }
+        ],
+        "invariants": [
+          "지도는 현실이 아니다 — 도로망 그래프에 담기지 않는 조건이 있다.",
+          "1분 늦는 것과 1분 이른 것은 같은 오차가 아니다.",
+          "절대 오차의 분포는 사업 부문·거리·지역마다 크게 다르다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 여러 서비스를 거쳐 uRoute 에 닿는다",
+            "why": "모든 라우팅 조회의 프론트엔드다"
+          },
+          {
+            "step": "라우팅 엔진이 경로와 기본 ETA 를 만든다",
+            "why": "물리적 경로는 여전히 그래프 문제다"
+          },
+          {
+            "step": "그 ETA 와 다른 피처로 Michelangelo 온라인 예측 서비스를 호출한다",
+            "why": "엔진의 답을 버리지 않고 입력으로 쓴다"
+          },
+          {
+            "step": "연속 피처는 분위 버킷으로 나눠 임베딩한다",
+            "why": "직접 쓰는 것보다 정확했다"
+          },
+          {
+            "step": "위경도는 여러 해상도로 양자화한 뒤 다중 해시로 임베딩에 매핑한다",
+            "why": "조회가 O(1) 이고 충돌의 손실을 여러 해시로 보정한다"
+          },
+          {
+            "step": "Linear Transformer 인코더가 피처 간 상호작용을 찾는다",
+            "why": "K > d 인 우리 입력에서는 이쪽이 빠르다"
+          },
+          {
+            "step": "디코더가 구간별 바이어스를 더해 잔차를 낸다",
+            "why": "오차 분포가 부문·거리·지역마다 다르다"
+          },
+          {
+            "step": "ReLU 로 양수를 강제하고 극단값을 클램핑한다",
+            "why": "음수 ETA 는 존재할 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "라우팅 엔진을 고칠 것인가, 감쌀 것인가",
+            "chosen": "**'ETA 포스트 프로세싱'** — 라우팅 엔진의 기본 ETA 는 그대로 두고, 실제 관측값과의 **잔차를 머신러닝으로 예측**한다",
+            "alternatives": [
+              "라우팅 엔진 리팩토링",
+              "ETA 를 처음부터 학습"
+            ],
+            "tradeoff": "두 시스템을 함께 유지해야 하고 엔진의 편향이 모델의 학습 대상이 된다. 그래도 **새 데이터 소스를 흡수하고 빠르게 바뀌는 비즈니스 요구를 수용하기가 엔진을 뜯어고치는 것보다 쉽다** — 회사가 직접 밝힌 이유다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "XGBoost 를 계속 쓸 것인가",
+            "chosen": "**딥러닝으로 옮긴다.** 수년간 XGBoost 앙상블을 키워 왔고 더 깊은 모델을 위해 업스트림에 개선안까지 기여했지만, 데이터셋과 모델을 더 늘리는 것이 불가능해졌다",
+            "alternatives": [
+              "XGBoost 최적화 지속",
+              "앙상블 확대"
+            ],
+            "tradeoff": "학습·서빙 스택을 통째로 바꿔야 한다. 그래도 **도구를 고쳐 쓰는 방식이 한계에 닿았다는 것을 인정한 시점**이 있었고, 그 판단이 이 프로젝트의 출발점이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "어떤 아키텍처를 쓸 것인가",
+            "chosen": "**7가지를 비교했다** — MLP · NODE · TabNet · Sparsely Gated MoE · HyperNetworks · Transformer · Linear Transformer. 결과는 **인코더-디코더 + self-attention**",
+            "alternatives": [
+              "단일 후보로 바로 진행",
+              "기존 구조 개선"
+            ],
+            "tradeoff": "비교 자체에 시간이 든다. 대신 '왜 이 구조인가'에 대한 답이 취향이 아니라 실험 결과가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "self-attention 을 표 데이터에 어떻게 적용할 것인가",
+            "chosen": "각 벡터가 **하나의 피처**(원점·시간대 등)를 나타내게 하고, K×K 주의 행렬로 **피처 간 쌍별 상호작용**을 찾게 한다. **피처는 순서가 없으므로 위치 인코딩을 하지 않는다**",
+            "alternatives": [
+              "언어 모델처럼 토큰 시퀀스로 취급",
+              "명시적 교차 피처 설계"
+            ],
+            "tradeoff": "언어 모델의 직관을 그대로 가져올 수 없어 구조를 다시 생각해야 한다. 대신 사람이 일일이 만들던 피처 조합을 모델이 스스로 찾는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "연속 피처를 그대로 넣을 것인가",
+            "chosen": "**반직관적이지만** 연속 피처를 **분위(quantile) 버킷으로 나눈 뒤 임베딩**하는 편이 더 정확했다",
+            "alternatives": [
+              "연속값 직접 입력",
+              "균등 폭 버킷"
+            ],
+            "tradeoff": "정보를 버리는 것처럼 보이고 버킷 경계라는 하이퍼파라미터가 생긴다. 그래도 분위 버킷이 균등 폭보다 나았는데, **원본 값에 대한 정보량(비트)을 최대화하기 때문**일 것으로 회사는 추정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "위경도를 어떻게 임베딩할 것인가",
+            "chosen": "여러 해상도 격자로 양자화한 뒤 **다중 피처 해싱** — 독립적인 해시 함수 여러 개로 각각 컴팩트한 범위에 매핑한다",
+            "alternatives": [
+              "정확 인덱싱(셀마다 전용 임베딩)",
+              "단일 피처 해싱"
+            ],
+            "tradeoff": "정확 인덱싱은 메모리가 가장 많이 들고, 단일 해싱은 공간을 아끼지만 **충돌로 정보가 손실돼 정확도가 같거나 나빠졌다.** 다중 해싱은 **여러 독립 버킷의 정보를 합쳐 한 버킷의 충돌을 보정**해 정확도와 지연을 모두 잡으면서 공간도 아낀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "밀리초 예산을 어떻게 지킬 것인가",
+            "chosen": "**Linear Transformer** 로 주의 행렬 계산을 피하고(O(K²d) → O(Kd²)), 입력을 이산화해 **임베딩 조회 O(1)** 로 만든다",
+            "alternatives": [
+              "원본 Transformer",
+              "트리 구조 임베딩",
+              "완전 연결로 같은 매핑 학습"
+            ],
+            "tradeoff": "학습 시점에 거대한 임베딩 테이블을 만들어 둬야 한다 — 회사는 이를 **'부분 답을 미리 계산해 서빙 계산을 줄이는 고전적 시공간 트레이드오프'**라고 부른다. 트리는 O(log N), 완전 연결로 같은 매핑을 배우면 O(N²) 인데 해시 조회는 O(1) 이다. 그래서 파라미터가 수억 개여도 **한 예측이 건드리는 것은 약 0.25%**뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "하나의 모델로 모든 사업 부문을 감당할 것인가",
+            "chosen": "인코더 뒤에 완전 연결망과 **구간 바이어스 조정 계층**을 둔다. 그리고 손실 함수를 **비대칭 Huber**로 매개변수화한다(δ = 이상치 강건성, ω = 비대칭)",
+            "alternatives": [
+              "다중 작업 디코더",
+              "부문별 모델 분리"
+            ],
+            "tradeoff": "**다중 작업 디코더를 쓰지 않은 이유가 지연 시간 제약**이다. 절대 오차 분포는 배송/라이드·장/단거리·픽업/드롭오프·글로벌 메가 지역별로 크게 다른데, 구간마다 바이어스를 조정하는 가벼운 계층으로 그 변동을 설명한다. ω 를 조절하면 **1분 늦는 것이 1분 이른 것보다 나쁜 상황**을 손실 함수에 직접 담을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "잔차 예측 하이브리드(라우팅 엔진 + DeepETA)",
+            "role": "엔진의 기본 ETA 를 입력으로 받아 실제와의 차이를 예측한다. 시공간 특성·실시간 트래픽·요청 종류(배송 드롭오프인지 라이드 픽업인지)를 함께 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "Linear Transformer 인코더 (self-attention over features)",
+            "role": "피처 간 쌍별 상호작용을 찾되 커널 트릭으로 K×K 행렬을 피한다. 위치 인코딩 없음.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "분위 버킷 + 다중 피처 해싱 임베딩",
+            "role": "연속값과 위경도를 이산화해 O(1) 조회로 바꾼다. 독립 해시 여러 개로 충돌의 손실을 보정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "구간 바이어스 조정 디코더 + 비대칭 Huber 손실",
+            "role": "부문·거리·지역별 오차 분포 차이를 흡수하고, 지각과 조기 도착의 비용 차이를 손실에 담는다. ReLU 로 양수 강제, 극단값 클램핑.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "Michelangelo(Canvas) · uRoute",
+            "role": "모델 학습·배포와 온라인 예측. uRoute 가 라우팅 조회의 프론트엔드로서 엔진과 모델을 잇는다. 주기적 자동 재학습·검증이 돈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "h3-grid",
+          "via": "격자 위의 위치",
+          "contract": "위경도를 여러 해상도 격자로 양자화해 임베딩한다 — 글은 그 격자가 H3 라고 명시하지는 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "실시간 매칭·배차",
+          "via": "매칭의 입력",
+          "contract": "회사가 직접 밝힌다 — ETA 는 요금 계산·픽업 시간 추정·라이더-기사 매칭·배송 계획에 쓰인다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "가격·수급 조절",
+          "via": "요금 계산",
+          "contract": "ETA 가 요금 계산의 입력이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 엔진의 답에 오차를 더하기",
+          "question": "라우팅 엔진을 버리지 않고 어떻게 더 맞히는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[요청] --> UR[uRoute · 라우팅 조회의 프론트엔드]\n  UR --> ENG[라우팅 엔진<br/>도로망 최단 경로]\n  ENG --> BASE[기본 ETA]\n  BASE --> MG[Michelangelo 온라인 예측]\n  F1[원점 · 목적지 · 요청 시간] --> QB[분위 버킷 → 임베딩]\n  F2[위도 · 경도] --> MH[다중 해상도 양자화<br/>다중 피처 해싱 · O 1 조회]\n  F3[실시간 트래픽] --> QB\n  F4[요청 종류 · 배송 드롭오프 / 라이드 픽업] --> QB\n  QB --> ENC\n  MH --> ENC[Linear Transformer 인코더<br/>피처 간 쌍별 상호작용 · 위치 인코딩 없음]\n  MG --> ENC\n  ENC --> DEC[디코더 · 완전 연결 + 구간 바이어스 조정]\n  DEC --> RES[잔차 예측]\n  RES --> OUT[최종 ETA<br/>ReLU 로 양수 강제 · 극단값 클램핑]\n  OUT -.->|수 밀리초| USE[요금 · 매칭 · 픽업 · 배송 계획]\n  RETRAIN[주기적 자동 재학습 · 검증] -.-> ENC"
+        },
+        {
+          "title": "ETA 가 만들어지는 방식의 세대",
+          "question": "왜 도구를 두 번 갈아탔는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 라우팅엔진: 도로망을 구간으로 · 최단 경로\n  라우팅엔진 --> 지도는현실이아니다: 실제 조건이 다 안 담긴다\n  지도는현실이아니다 --> XGBoost: 잔차를 트리 앙상블로\n  XGBoost --> 업스트림기여: 더 깊은 모델을 위해 개선안을 냈다\n  업스트림기여 --> 한계도달: 데이터셋 · 모델을 더 못 키운다\n  한계도달 --> 아키텍처비교: 7가지를 시험\n  아키텍처비교 --> 인코더디코더: self-attention 이 최고 정확도\n  인코더디코더 --> 지연문제: K×K 주의 행렬\n  지연문제 --> LinearTransformer: K > d 이면 더 빠르다\n  LinearTransformer --> 프로덕션: 글로벌 4륜 ETA\n  프로덕션 --> [*]\n  note right of 한계도달\n    도구를 고쳐 쓰는 것으로는\n    더 못 간다는 판단.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 정확도와 밀리초 사이",
+          "question": "무엇을 잘못 고르면 이 시스템이 성립하지 않는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[원본 Transformer 를 쓰면] --> B[O K²d · 피처 40 · 차원 8 이면 12,800]\n  B --> C[밀리초 예산을 넘긴다]\n  D[임베딩을 트리에 저장하면] --> E[O log N 조회]\n  F[완전 연결로 같은 매핑을 배우면] --> G[O N² ]\n  E --> C\n  G --> C\n  H[단일 해시로 위치를 매핑하면] --> I[충돌로 정보가 손실된다]\n  I --> J[정확도가 같거나 나빠진다]\n  K[정확 인덱싱을 쓰면] --> L[메모리가 가장 많이 든다]\n  M[다중 작업 디코더를 쓰면] -.->|지연 제약| C\n  N[대칭 손실을 쓰면] --> O[1분 지각과 1분 조기 도착이 같아진다]\n  P[단일 바이어스를 쓰면] --> Q[배송 · 라이드 · 장단거리 · 지역별 오차 차이를 못 담는다]\n  R[라우팅 엔진을 직접 리팩토링하면] -.-> S[새 데이터 소스 · 바뀌는 요구를 따라가기 어렵다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+          "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+          "publisher": "Uber 엔지니어링 블로그",
+          "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+        }
+      ]
     }
   ],
   "open_questions": [
     "매칭 시스템(DISCO 등)의 실제 구조는 1차 출처를 찾지 못했다 — 널리 인용되는 설명은 대부분 3자 요약(컨퍼런스 발표의 재정리)이라 쓰지 않았다.",
     "급증 가격을 셀 단위 수요·공급에서 어떤 규칙으로 계산하는지는 확인하지 못했다.",
     "도착 예측(ETA) 모델과 그 정확도는 아직 자료를 찾지 못했다.",
-    "H3 의 각 해상도가 실제 몇 제곱미터인지는 이 글에 표로 나오지 않는다 — 쿠팡 자료에서 12레벨 약 300㎡, 14레벨 6.3㎡ 라는 값을 얻었다."
+    "H3 의 각 해상도가 실제 몇 제곱미터인지는 이 글에 표로 나오지 않는다 — 쿠팡 자료에서 12레벨 약 300㎡, 14레벨 6.3㎡ 라는 값을 얻었다.",
+    "DeepETA 가 위경도를 양자화할 때 쓰는 격자가 H3 인지는 글에 명시돼 있지 않다.",
+    "비대칭 Huber 손실의 δ·ω 를 사업 부문마다 어떤 값으로 두는지는 공개돼 있지 않다.",
+    "연속·증분 학습은 앞으로 탐색하겠다고만 밝힌 단계다."
   ],
   "sources": [
     {
@@ -506,6 +956,12 @@
       "publisher": "Uber IR",
       "date": "2026-02-04",
       "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+    },
+    {
+      "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+      "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+      "publisher": "Uber 엔지니어링 블로그",
+      "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
     }
   ]
 }
