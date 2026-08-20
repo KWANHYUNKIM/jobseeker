@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-20",
+  "updated_at": "2026-08-21",
   "companies": [
     {
       "slug": "toss",
@@ -19,9 +19,9 @@
       "country": "KR",
       "category": "검색",
       "status": "in_progress",
-      "features_done": 2,
+      "features_done": 3,
       "one_liner": "검색 지면에서 광고와 커머스로 돈을 버는 한국의 관문 포털",
-      "updated_at": "2026-08-20"
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
