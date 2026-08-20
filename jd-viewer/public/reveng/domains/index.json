@@ -17,14 +17,17 @@
     },
     {
       "slug": "payments",
-      "title": "결제 — \"언제 승인할까\"와 \"언제 줄까\"",
-      "question": "같은 이름의 도메인에서 회사의 위치가 질문을 어떻게 바꾸는가?",
+      "title": "결제 — 되돌릴 수 없는 일을 다루는 세 가지 방식",
+      "question": "실패를 상태로 남길 것인가 현재를 가리킬 것인가, 그리고 옛 계약을 어떻게 지킬 것인가?",
       "companies": [
         "toss",
+        "stripe",
         "naver"
       ],
       "features": [
         "payment-approval",
+        "idempotent-payments",
+        "api-surface",
         "fast-settlement"
       ],
       "file": "payments.md"
