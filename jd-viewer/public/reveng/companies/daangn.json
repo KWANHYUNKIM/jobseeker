@@ -1,0 +1,2289 @@
+{
+  "slug": "daangn",
+  "name": "당근",
+  "name_en": "Daangn",
+  "country": "KR",
+  "category": "커머스",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "'같은 동네 사람'이라는 전제 하나로 굴러가는 로컬 플랫폼",
+  "business_model": "거래 수수료를 받지 않는다. 개인 간 중고거래는 공짜로 두고, 그 동네 트래픽 위에 **로컬 광고**를 얹어 번다 — 2025년 연결 매출 2,707억(+43%) 중 **95% 이상이 광고**다(영업이익 146억, 순이익 230억). 앞선 회사들과 결정적으로 다른 점은 **광고주가 전국 브랜드가 아니라 그 동네 가게**라는 것이다. 그래서 '이 사람이 정말 이 동네에 있는가'가 서비스 신뢰의 문제이자 곧 광고 상품의 값어치가 된다.",
+  "products": [
+    "당근 중고거래",
+    "동네생활",
+    "당근알바",
+    "부동산·중고차",
+    "당근페이",
+    "비즈프로필(광고)"
+  ],
+  "domain_map": {
+    "title": "당근 도메인 지도",
+    "question": "'같은 동네'라는 전제가 어떻게 광고 매출로 이어지는가?",
+    "code": "flowchart TD\n  U[사용자] --> AUTH[신원 인증]\n  AUTH -->|같은 사람 · 같은 동네| FEED[피드 노출]\n  AUTH --> SEARCH[중고거래 검색]\n  SEARCH --> FEED\n  TRUST[거래 신뢰] --> FEED\n  TRUST -.->|매너온도·신고| U\n  FEED --> AD[로컬 광고]\n  AD --> REV[매출 2,707억 · 광고 95%+]\n  SHOP[동네 가게] -->|광고주| AD\n  U -->|개인 간 거래 · 수수료 없음| FREE[거래 자체는 무료]\n  FREE -.->|트래픽을 만든다| AD\n  classDef money stroke-dasharray: 3 3\n  class REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "로컬 광고",
+      "how": "동네 가게와 브랜드가 그 지역 사용자에게 노출되기 위해 내는 비용. 매출의 95% 이상.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "당근, 2025년 매출 2,707억 원…전년 대비 43% 성장",
+          "url": "https://platum.kr/archives/284275",
+          "publisher": "플래텀",
+          "date": "2026-03",
+          "summary": "매출의 95% 이상이 광고. 광고주 수 +37%, 집행 광고 수 +29%."
+        },
+        {
+          "title": "당근, 2025년 연간 실적 발표",
+          "url": "https://about.daangn.com/company/pr/archive/%EB%8B%B9%EA%B7%BC-2025%EB%85%84-%EC%97%B0%EA%B0%84-%EC%8B%A4%EC%A0%81-%EB%B0%9C%ED%91%9C/",
+          "publisher": "당근 보도자료",
+          "date": "2026-03",
+          "summary": "2025년 연결 매출 2,707억(+43%), 영업이익 146억, 순이익 230억. 별도 기준 매출 2,690억·영업이익 671억(+78%)."
+        }
+      ]
+    },
+    {
+      "name": "기타(페이·서비스)",
+      "how": "당근페이 등 나머지 사업. 비중은 5% 미만.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "당근, 2025년 매출 2,707억 원…전년 대비 43% 성장",
+          "url": "https://platum.kr/archives/284275",
+          "publisher": "플래텀",
+          "date": "2026-03",
+          "summary": "매출의 95% 이상이 광고. 광고주 수 +37%, 집행 광고 수 +29%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "신원 인증",
+      "why": "이 계정의 주인이 나라는 걸 어떻게 확인할 것인가. 당근에서는 이 질문이 두 방향으로 온다 — **계정의 주인**(번호·CI·KYC)과 **동네**(이 사람이 정말 그 동네에 있는가)다. 회사가 공개한 것은 앞쪽이고, 뒤쪽은 아직 자료가 없다. 틀리면 서비스가 나빠지는 게 아니라 '동네'라는 전제와 '사람'이라는 전제가 함께 무너진다.",
+      "tech": [
+        {
+          "tech": "SMS 점유 확인 → 본인인증(CI)",
+          "solves": "가장 낮은 문턱으로 시작한 뒤, 번호가 바뀌어도 같은 사람임을 알아보고 번호를 대량으로 만든 사기 계정을 한 사람으로 묶는다.",
+          "limits": "민감한 신원 정보를 다루게 되고 가입 문턱이 올라간다. 기존 사용자에게 확산시키는 데 오랜 시간이 필요했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+              "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+              "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+              "date": "2026-08-20",
+              "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+            }
+          ]
+        },
+        {
+          "tech": "accounts.daangn.com · OAuth 2.0/OIDC · MCP 위임",
+          "solves": "여러 서비스와 외부 파트너, 그리고 AI 클라이언트까지 같은 계정 체계 안으로 들인다.",
+          "limits": "리다이렉트가 끼어 경험이 늘고 인증이 한 도메인에 집중된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+              "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+              "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+              "date": "2026-08-20",
+              "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+            }
+          ]
+        },
+        {
+          "tech": "소셜 로그인 · Voice Call · Persona KYC",
+          "solves": "나라별 통신·법·신원 환경에 맞춘다. 문자가 안 오는 북미에서는 전화로 인증번호를 불러 주고, 공통 신원 체계가 없는 곳에서는 신분증과 셀피로 대조한다.",
+          "limits": "첫 관문을 남의 계정 체계에 맡기게 되고, 수단이 늘어난 만큼 유지 대상도 늘어난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+              "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+              "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+              "date": "2026-08-20",
+              "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+            }
+          ]
+        },
+        {
+          "tech": "동네(위치) 판정 방식",
+          "solves": "— 확인하지 못했다.",
+          "limits": "GPS·기지국 등 무엇으로 동네를 판정하고 얼마나 자주 재확인하는지는 공개 자료를 찾지 못했다. 이 사이트의 남은 구멍이다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "identity-auth"
+      ]
+    },
+    {
+      "name": "중고거래 검색",
+      "why": "개인이 올린 글에서 원하는 물건을 찾는 일. 판매자가 상인이 아니라서 제목·설명이 제각각이고 같은 물건도 다르게 쓴다 — 정형화된 카탈로그가 없는 검색이다.",
+      "tech": [
+        {
+          "tech": "Elasticsearch 클러스터(역할 분리 + 모니터링 분리)",
+          "solves": "문서 2.7억 건 위에서 초당 1K 검색을 받아 내고, 메인이 아플 때도 지표를 볼 수 있게 한다.",
+          "limits": "노드 종류와 클러스터 수가 늘어 배포·용량 산정이 복잡해진다. 그 운영 난도가 곧 검색 개선 속도의 상한이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+              "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+              "publisher": "당근 테크 블로그",
+              "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "ECK(쿠버네티스) 기반 배포 자동화",
+          "solves": "평균 5시간·전 과정 수동이던 배포를 자동화해 누구나 안전하게, 30분 이내로 하는 것을 목표로 삼았다.",
+          "limits": "검색 클러스터를 컨테이너 위로 옮기는 것 자체가 새로운 위험이라 개념 검증과 규모 검증을 따로 거쳐야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+              "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+              "publisher": "당근 테크 블로그",
+              "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "search-infra"
+      ]
+    },
+    {
+      "name": "피드 노출",
+      "why": "동네 안에서 무엇을 어떤 순서로 보여줄 것인가. 검색과 달리 사용자가 원하는 것을 말하지 않은 상태에서 골라야 한다.",
+      "tech": [
+        {
+          "tech": "노출 계약 + Viewtype/ViewTemplate",
+          "solves": "새 서비스가 피드 팀의 작업 없이 붙고, 앱 업데이트 없이도 새 콘텐츠 모양을 보여준다(당근알바는 노출 후 공고 수 100% 성장).",
+          "limits": "응답 구조가 계약으로 굳어 바꾸기 어렵고, 웹뷰라 네이티브보다 경험이 떨어진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Feed Infra팀을 소개해요!",
+              "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+              "publisher": "당근 테크 블로그",
+              "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "Feed Entity Service · Feed Mixer · Feedback Service",
+          "solves": "흩어진 콘텐츠를 모아 중앙에서 개인화하고, 추천 결과와 미성장 서비스 콘텐츠를 섞으며, 신고·차단까지 신호로 다룬다.",
+          "limits": "초기 속도를 만들어 준 위임을 되돌리는 일이라 인프라를 새로 지어야 하고, 섞는 비율만큼 당장의 개인화 품질을 내준다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Feed Infra팀을 소개해요!",
+              "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+              "publisher": "당근 테크 블로그",
+              "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "feed-platform"
+      ]
+    },
+    {
+      "name": "로컬 광고",
+      "why": "매출의 95% 이상이 나오는 자리. 광고주가 전국 브랜드가 아니라 동네 가게라서, 도달 범위가 넓을수록 좋은 것이 아니라 **정확한 동네여야** 값어치가 있다.",
+      "tech": [
+        {
+          "tech": "DSP · AdServer · DMP 3단 구조",
+          "solves": "광고를 만드는 곳(DSP), 요청마다 고르는 곳(AdServer), 결과를 기록하는 곳(DMP)을 나눠, 광고주가 전문가가 아니어도 집행이 돌아가게 한다.",
+          "limits": "회사 스스로 '아직 초기 시스템의 형태'라고 말한다 — 여러 지면·매체와 다양한 형태의 광고를 다루려면 더 고도화해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "전단지를 대체할 당근 광고의 등장",
+              "url": "https://careers.daangn.com/blog/post/당근-광고실-동네-사장님-광고/",
+              "publisher": "당근 블로그 · 광고실",
+              "summary": "DSP(광고 생성)·AdServer(광고 배치)·DMP(성과 기록)의 3단 구조와, 같은 채널이라도 파스타 가게와 칼국수 가게의 효과적인 집행 방법은 매우 다르다는 문제 인식."
+            }
+          ]
+        },
+        {
+          "tech": "간편모드 / 전문가모드 이원화",
+          "solves": "5분이면 끝나는 경로와 지면구매 전략까지 여는 경로를 나눠, 동네 사장님과 전문 광고주를 한 시스템에 담는다.",
+          "limits": "간편모드를 얼마나 간편하게 할지 경계를 계속 다시 정해야 하고, 감춘 선택지의 결과에 대한 책임이 시스템으로 넘어온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근 광고가 만들어지는 곳, DSP",
+              "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+              "publisher": "당근 블로그 · 광고실",
+              "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "요청 성격별 데이터 경로(캐싱 API · 이벤트 · DB 스냅샷)",
+          "solves": "1초에 수천 번, 수십만 개 광고를 대상으로 하는 연산에 필요한 데이터를 감당한다.",
+          "limits": "경로마다 데이터 신선도가 달라, 무엇이 어느 경로로 가는지를 계속 관리해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근 광고가 만들어지는 곳, DSP",
+              "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+              "publisher": "당근 블로그 · 광고실",
+              "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "머신러닝 광고 심사",
+          "solves": "하루 최대 수만 건 중 약 70% 를 자동으로 처리한다(연관도 분석·유해도 검사).",
+          "limits": "나머지 30% 는 여전히 사람이 보고, 자동 판단의 오차가 어느 쪽으로 얼마나 나는지는 공개돼 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근 광고가 만들어지는 곳, DSP",
+              "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+              "publisher": "당근 블로그 · 광고실",
+              "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "local-ads"
+      ]
+    },
+    {
+      "name": "거래 신뢰",
+      "why": "개인과 개인이 직접 만나 거래한다. 플랫폼이 대금을 잡고 있지 않으니 분쟁이 나면 되돌릴 수단이 적고, 사기는 곧바로 사람의 피해가 된다 — 매너온도·신고가 이 도메인의 장치다.",
+      "tech": [
+        {
+          "tech": "매너온도 / Karrot Score (비공개 알고리즘)",
+          "solves": "개인 간 직거래에서 '이 사람을 믿어도 되나'에 숫자 하나로 답한다. 국내에서는 높은 온도가 곧 신뢰라는 인식이 자리 잡았다.",
+          "limits": "산정 기준이 비공개라 낮은 점수의 이유를 설명할 수 없고, 36.5 라는 기준점의 의미가 문화 밖에서는 사라진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+              "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+              "publisher": "당근 기술 블로그 · Adeline Park",
+              "date": "2022-08-16",
+              "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+            }
+          ]
+        },
+        {
+          "tech": "리뷰 우선 노출 + 레벨 체계",
+          "solves": "유저가 실제로 가장 신뢰하는 리뷰를 프로필 최상단에 두고, 레벨로 신규 유저와 점수가 깎인 유저를 구별한다.",
+          "limits": "신규 표시가 또 다른 낙인이 될 여지가 있고, 점수 체계를 바꿀 때마다 기존 유저의 점수 의미가 이동한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+              "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+              "publisher": "당근 기술 블로그 · Ina Jeon",
+              "date": "2022-08-22",
+              "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "trust-score"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "search-infra",
+      "name": "검색 인프라 — 배포에 5시간 걸리던 클러스터",
+      "domain": "중고거래 검색",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "중고거래는 카탈로그가 없다. 판매자가 상인이 아니라 옆집 사람이라 같은 물건도 제목이 제각각이고, 팔리면 문서가 사라진다. 그런 문서 2.7억 건 위에서 초당 1K 검색을 받아 내는 것이 이 도메인의 일이다. 그런데 이 기능의 이야기는 검색 품질이 아니라 **그 검색 엔진을 어떻게 배포하느냐**다 — 한 번 배포에 다섯 시간이 들고 사람이 계속 붙어 있어야 했다면, 그 비용은 결국 검색을 개선하지 못하는 값으로 돌아온다.",
+        "metrics": [
+          {
+            "label": "검색 트래픽",
+            "value": "초당 평균 1K 요청",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "label": "문서 규모",
+            "value": "중고거래 문서 기준 약 2.7억 건 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "label": "배포 소요",
+            "value": "평균 5시간 · 데이터 노드 18대를 한 대씩 순차 처리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "label": "운영 범위",
+            "value": "한국·일본·영국·캐나다 4개 지역 × Alpha·Production 2개 환경",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "배포 절차를 적어 놓고 봤을 때",
+          "thought": "이미지 교체 → ASG 를 2배로 늘려 새 노드 생성 → 인덱스를 옮김 → 옛 노드 종료. 네 단계가 전부 사람 손이고, 옮기는 중인 샤드는 요청을 못 받으니 배포하는 사람이 계속 지켜봐야 한다. 이건 위험한 작업이 아니라 **아무도 하고 싶지 않은 작업**이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "5시간이라는 숫자를 봤을 때",
+          "thought": "데이터 노드는 종료 전에 디스크의 샤드를 전부 옮겨야 해서 시간이 길어진다. 그런데 진짜 문제는 5시간 자체가 아니라, 그 5시간 때문에 배포를 미루게 되고 그러면 플러그인·설정 개선이 밀린다는 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "목표를 정할 때",
+          "thought": "'조금 빠르게'로는 습관이 안 바뀐다. 자동화해서 **누구나** 할 수 있게 하고 시간을 30분 안쪽으로 줄여야, 배포가 특별한 이벤트가 아니라 그냥 하는 일이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쿠버네티스를 고를 때",
+          "thought": "검색 클러스터를 컨테이너 위에 올리는 것은 그 자체로 새로운 위험이다. 그래서 개념 검증과 규모 검증을 나눠 했다 — 작게 돌려 보는 것과 우리 데이터 크기에서 돌려 보는 것은 다른 질문이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "메인 ES 클러스터",
+            "what": "검색과 색인을 모두 받는 핵심. 마스터·코디네이팅·데이터 노드로 역할이 나뉜다."
+          },
+          {
+            "name": "모니터링 ES 클러스터",
+            "what": "메인의 쿼리·시스템 로그와 지표를 따로 받는 클러스터."
+          },
+          {
+            "name": "샤드",
+            "what": "데이터가 실제로 놓인 조각. 옮기는 동안에는 요청을 받지 못한다."
+          },
+          {
+            "name": "사전 파일",
+            "what": "형태소·동의어 등 검색 품질의 재료. 모든 노드가 같은 것을 봐야 한다."
+          }
+        ],
+        "invariants": [
+          "샤드를 옮기는 동안 그 샤드는 요청을 처리하지 못한다 — 배포 시간의 대부분이 여기서 나온다.",
+          "마스터 노드는 홀수로 둔다(split-brain 방지).",
+          "모니터링은 메인과 같은 클러스터에 쌓지 않는다 — 메인이 아플 때 지표까지 함께 아프면 안 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "검색 요청은 코디네이팅 노드가 받아 데이터 노드로 흩고 결과를 모은다",
+            "why": "역할을 나눠야 검색과 색인이 서로를 밀어내지 않는다"
+          },
+          {
+            "step": "검색용·색인용 로드밸런서를 따로 둔다",
+            "why": "성격이 다른 트래픽을 같은 문으로 들이지 않는다"
+          },
+          {
+            "step": "사전 파일은 EFS 로 공유하고 스냅샷은 S3 에 둔다",
+            "why": "모든 노드가 같은 사전을 보고, 데이터는 클러스터 밖에도 남아야 한다"
+          },
+          {
+            "step": "쿼리·시스템 로그와 지표는 별도 모니터링 클러스터로 보낸다",
+            "why": "메인이 흔들릴 때 그 사실을 보여 줄 곳은 메인이 아니어야 한다"
+          },
+          {
+            "step": "배포는 ASG 를 2배로 늘렸다가 인덱스를 옮기고 옛 노드를 종료한다(과거 방식)",
+            "why": "무중단을 지키려면 새 노드를 먼저 띄워야 했다"
+          },
+          {
+            "step": "쿠버네티스(ECK)로 옮겨 이 과정을 자동화한다",
+            "why": "사람이 다섯 시간 붙어 있는 절차는 결국 배포를 미루게 만든다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "검색 엔진을 무엇으로 할 것인가",
+            "chosen": "엘라스틱서치를 쓰고 풀 텍스트·준실시간 검색과 로그·지표 수집까지 함께 얹는다",
+            "alternatives": [
+              "검색 전용 엔진 자체 구축",
+              "관리형 검색 서비스"
+            ],
+            "tradeoff": "하나의 스택으로 검색과 관측을 함께 해결하는 대신, 그 클러스터의 운영 난도가 곧 검색 개선 속도의 상한이 된다 — 이 글 전체가 그 대가에 대한 이야기다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "노드 역할을 나눌 것인가",
+            "chosen": "마스터·코디네이팅·데이터 노드로 역할을 나누고 마스터는 홀수로 둔다",
+            "alternatives": [
+              "모든 노드가 모든 역할 수행"
+            ],
+            "tradeoff": "노드 종류가 늘어 배포와 용량 산정이 복잡해진다. 대신 검색 요청을 받는 층과 데이터를 든 층이 서로를 밀어내지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "모니터링 데이터를 어디에 쌓을 것인가",
+            "chosen": "메인과 분리된 모니터링 전용 ES 클러스터로 보낸다(Logstash·Metricbeat·Kibana)",
+            "alternatives": [
+              "메인 클러스터에 함께 저장"
+            ],
+            "tradeoff": "클러스터를 하나 더 운영해야 한다. 대신 메인이 아플 때 그 사실을 보여 줄 창구가 함께 무너지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "배포를 어떻게 할 것인가 (과거)",
+            "chosen": "ASG desired count 를 2배로 늘려 새 노드를 만들고 인덱스를 옮긴 뒤 옛 노드를 종료한다",
+            "alternatives": [
+              "롤링 재시작",
+              "클러스터 정지 후 교체"
+            ],
+            "tradeoff": "무중단은 지키지만 모든 단계를 사람이 직접 해야 하고, 데이터 노드 18대를 한 대씩 옮기느라 평균 5시간이 든다. 옮기는 중인 샤드는 요청을 못 받으므로 담당자가 계속 지켜봐야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "이 문제의 목표를 어디에 둘 것인가",
+            "chosen": "'배포 자동화로 누구나 안전하게' + '평균 5시간을 30분 이내로'",
+            "alternatives": [
+              "절차 문서화로 실수 줄이기",
+              "배포 빈도를 낮추기"
+            ],
+            "tradeoff": "목표를 시간과 사람 양쪽에 걸어서 부분적인 개선으로는 달성할 수 없게 만들었다 — 기존 방식을 손보는 대신 인프라를 통째로 옮겨야 한다는 뜻이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "쿠버네티스 도입을 어떻게 검증할 것인가",
+            "chosen": "개념 검증(PoC)과 규모 검증을 나눠서 한다",
+            "alternatives": [
+              "작은 환경에서 확인 후 바로 전환"
+            ],
+            "tradeoff": "검증 단계가 길어진다. 대신 '작게 돌아간다'와 '2.7억 문서에서도 돌아간다'가 다른 질문이라는 것을 인정한 절차다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "여러 지역·환경을 어떻게 다룰 것인가",
+            "chosen": "한국·일본·영국·캐나다 4개 지역과 Alpha·Production 2개 환경에 같은 구성을 둔다",
+            "alternatives": [
+              "지역별로 다른 구성",
+              "단일 글로벌 클러스터"
+            ],
+            "tradeoff": "같은 작업을 8벌 해야 해서 수동 절차의 비용이 그만큼 곱해진다 — 자동화의 값어치도 같은 배수로 커진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Elasticsearch",
+            "role": "풀 텍스트·준실시간 검색과 로그·지표 저장을 함께 맡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "ECK (Elastic Cloud on Kubernetes)",
+            "role": "수동 배포를 쿠버네티스 위에서 자동화하기 위해 도입한 운영 방식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "EFS · S3",
+            "role": "사전 파일 공유와 스냅샷 보관",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "Logstash · Metricbeat · Kibana · Prometheus · Grafana",
+            "role": "쿼리·시스템 로그와 지표를 별도 클러스터에 모아 관측한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "피드 노출",
+          "via": "색인된 문서 공급",
+          "contract": "검색에 없는 문서는 피드에도 담기지 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "동네 인증",
+          "via": "지역 조건 필터",
+          "contract": "검색 결과는 '내 동네'라는 조건 위에서만 의미가 있다 — 인증이 정한 범위가 곧 검색 범위다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "로컬 광고",
+          "via": "검색 지면",
+          "contract": "검색 결과 지면이 광고가 놓이는 자리이기도 하다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 역할을 나눈 클러스터",
+          "question": "검색 요청과 색인 요청이 어떻게 다른 길로 들어가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[검색 요청 · 초당 1K] --> LB1[검색 LB]\n  IDX[색인 요청] --> LB2[색인 LB]\n  LB1 --> CO[코디네이팅 노드]\n  CO --> D[(데이터 노드 18대<br/>문서 2.7억+)]\n  LB2 --> D\n  M[마스터 노드 · 홀수] -.->|클러스터 상태| D\n  EFS[(EFS · 사전 파일)] --> D\n  D --> S3[(S3 · 스냅샷)]\n  D -->|쿼리·시스템 로그| MON[(모니터링 ES 클러스터)]\n  MON --> KIB[Kibana · Grafana]\n  CO --> R[검색 결과]"
+        },
+        {
+          "title": "배포 한 번의 상태 (과거 방식)",
+          "question": "왜 다섯 시간이 걸리고 사람이 붙어 있어야 했는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 이미지교체: 새 ES docker image 적용\n  이미지교체 --> 노드2배: ASG desired count ×2\n  노드2배 --> 샤드이동: 인덱스를 새 데이터 노드로\n  샤드이동 --> 샤드이동: 18대를 한 대씩 순차\n  샤드이동 --> 옛노드종료: ASG ÷2\n  옛노드종료 --> 완료\n  완료 --> [*]\n  샤드이동 --> 감시: 이동 중 샤드는 요청 불가\n  감시 --> 샤드이동\n  note right of 샤드이동\n    평균 5시간.\n    그 시간이 배포를 미루게 만든다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 배포가 비싸지면 생기는 일",
+          "question": "운영 난도가 왜 검색 품질의 문제가 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  COST[배포 1회 5시간 · 사람 상주] --> DELAY[배포를 미루게 된다]\n  DELAY --> OLD[플러그인·설정 개선이 밀린다]\n  OLD --> QUALITY[검색 품질 개선 속도가 떨어진다]\n  COST --> MULT[4개 지역 × 2개 환경 = 8벌]\n  MULT --> COST\n  MOVE{샤드 이동 중}\n  MOVE -->|요청 처리 불가| WATCH[담당자가 계속 지켜봐야 한다]\n  MOVE -->|설정 잘못| SLOW[CPU 급증 · 더 느려진다]\n  WATCH -.->|사람에 의존| RISK[특정 사람만 할 수 있는 작업이 된다]\n  RISK -.->|그래서 목표를| GOAL[자동화 + 30분 이내]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+          "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+          "publisher": "당근 테크 블로그",
+          "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+        }
+      ]
+    },
+    {
+      "key": "feed-platform",
+      "name": "피드 — 위임했다가 되찾아 온 개인화",
+      "domain": "피드 노출",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "당근은 중고거래에서 시작했지만 목표는 동네의 모든 것을 잇는 것이었다. 중고차·당근알바처럼 **서로 다른 팀이 만드는 서비스들이 계속 생기는데, 그 콘텐츠가 사용자에게 닿는 통로가 피드다.** 일반 SNS 와 결정적으로 다른 점이 여기 있다 — 콘텐츠가 한 곳에서 만들어지지 않는다. 그래서 이 도메인의 첫 질문은 '무엇을 위에 놓을까'가 아니라 **'새 서비스가 어떻게 하면 피드에 붙을 수 있을까'**였다.",
+        "metrics": [
+          {
+            "label": "당근알바 사례",
+            "value": "피드 노출 이후 공고 수 100% 성장",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "label": "노출 계약",
+            "value": "index·resource(id·sid·model)·score·serialized·meta 구조만 맞추면 누구나 노출(HTTP → 이후 gRPC 도 같은 구조)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "새 서비스를 피드에 붙이려 할 때",
+          "thought": "SNS 는 콘텐츠가 한 곳에서 만들어지지만 당근은 서비스마다 다른 팀이 다른 것을 만든다. 피드가 그 모든 데이터를 직접 들고 있으려 하면 서비스가 하나 생길 때마다 피드를 고쳐야 한다 — 그러면 피드가 성장의 병목이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "앱 업데이트 속도를 봤을 때",
+          "thought": "당시 사용자에 30~60대 비중이 높고 구형 안드로이드가 많아 업데이트가 빨리 퍼지지 않았다. 새 콘텐츠 종류를 보여주려고 앱 배포를 기다려야 한다면, 서비스를 빨리 띄우는 의미가 없어진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "콘텐츠가 충분히 쌓였을 때",
+          "thought": "각 서비스가 자기 데이터로 각자 개인화하는 방식은 초기에는 빨랐지만, 사용자가 당근 안에서 만든 행동 전체를 쓰지 못한다. 중고거래에서 한 행동이 알바 추천에 쓰이지 못한다면 그건 한 앱이 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "백엔드만 있는 팀이 프론트 아이디어를 낼 때",
+          "thought": "ViewTemplate 이 될지 안 될지를 앱에서 바로 시험하면 실패 비용이 크다. 웹으로 먼저 만들어 보고, 관심피드에 실험으로 내보내 UI 오류 제보가 없는지를 봤다 — 되는지 확인하는 가장 싼 방법이었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "콘텐츠 제공 서비스",
+            "what": "중고거래·중고차·당근알바 등. 각자 자기 콘텐츠를 갖고 있다."
+          },
+          {
+            "name": "노출 계약",
+            "what": "피드에 붙기 위해 맞춰야 하는 응답 구조(index·resource·score·serialized·meta)."
+          },
+          {
+            "name": "Viewtype / ViewTemplate",
+            "what": "앱을 고치지 않고도 새 모양을 그리게 하는 표현 규격."
+          },
+          {
+            "name": "피드백",
+            "what": "관심·좋아요·댓글·채팅·신고·차단·안 보기 등 사용자가 남기는 명시적 신호."
+          }
+        ],
+        "invariants": [
+          "새 서비스가 피드에 붙는 데 피드 팀의 작업이 필요하면, 피드가 회사 성장의 병목이 된다.",
+          "새 콘텐츠 종류를 보여주는 데 앱 업데이트가 필요하면, 업데이트가 느린 사용자에게는 영영 안 보인다.",
+          "개인화를 각 서비스가 따로 하면 사용자가 당근 전체에서 만든 행동을 쓸 수 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 피드를 요청한다",
+            "why": "무엇을 보여줄지는 이 시점에 정해진다"
+          },
+          {
+            "step": "피드 서비스가 콘텐츠를 가진 서비스들에 요청해 수급한다(Phase 1)",
+            "why": "피드가 모든 데이터를 직접 들고 있지 않아도 되게 한다"
+          },
+          {
+            "step": "피드에 정의된 규칙으로 어떤 콘텐츠를 어디에 놓을지 조합한다",
+            "why": "규칙은 피드가, 콘텐츠는 각 서비스가 책임진다"
+          },
+          {
+            "step": "Viewtype 으로 앱 업데이트 없이 새 모양을 그린다",
+            "why": "업데이트가 느린 사용자에게도 새 서비스가 보여야 한다"
+          },
+          {
+            "step": "Feed Entity Service 가 모든 콘텐츠를 한데 모은다(Phase 2)",
+            "why": "개인화를 하려면 전체를 한 곳에서 봐야 한다"
+          },
+          {
+            "step": "Feed Mixer 가 추천 결과와 아직 성장하지 않은 서비스의 콘텐츠를 섞고 정책 페널티를 적용한다",
+            "why": "개인화만 하면 새 서비스가 영영 노출되지 못한다"
+          },
+          {
+            "step": "Feedback Service 가 관심·좋아요·댓글·채팅·신고·차단·안 보기를 모은다",
+            "why": "다음 개인화의 재료가 여기서 나온다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "피드가 콘텐츠를 직접 들고 있을 것인가, 각 서비스에 요청할 것인가",
+            "chosen": "각 서비스에 요청해 수급하고, 콘텐츠 서빙과 개인화를 그 서비스에 위임한다(Phase 1)",
+            "alternatives": [
+              "피드가 모든 콘텐츠를 저장",
+              "서비스별 전용 피드"
+            ],
+            "tradeoff": "새 서비스가 빠르게 붙을 수 있는 대신, 개인화가 서비스마다 흩어져 사용자의 전체 행동을 쓸 수 없게 된다 — 콘텐츠가 쌓이자 이 한계가 그대로 다음 단계의 과제가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "붙는 방법을 무엇으로 정의할 것인가",
+            "chosen": "정해진 응답 구조(index·resource·score·serialized·meta)만 맞추면 누구나 노출된다",
+            "alternatives": [
+              "서비스마다 개별 연동",
+              "피드 팀이 매번 코드 추가"
+            ],
+            "tradeoff": "그 구조가 곧 계약이 되어 바꾸기 어려워진다 — 실제로 통신 방식을 HTTP 에서 gRPC 로 바꿀 때도 같은 구조를 그대로 가져갔다. 대신 피드 팀 없이도 서비스가 붙는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "새 콘텐츠 종류를 보여주려면 앱을 고쳐야 하는가",
+            "chosen": "Viewtype 을 도입해 앱 업데이트 없이 노출하고, 클릭하면 웹뷰로 보낸다",
+            "alternatives": [
+              "앱 배포를 기다림",
+              "콘텐츠 종류를 앱이 아는 것만으로 제한"
+            ],
+            "tradeoff": "네이티브가 아닌 웹뷰라 경험이 한 단계 떨어진다. 그래도 30~60대 비중이 높고 구형 안드로이드가 많아 업데이트가 느리게 퍼지는 상황에서는 이쪽이 실제로 더 많은 사용자에게 닿는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "개인화를 계속 각 서비스에 맡길 것인가",
+            "chosen": "Feed Entity Service 로 모든 콘텐츠를 모으고 Feed Mixer 가 중앙에서 조합한다(Phase 2)",
+            "alternatives": [
+              "서비스별 개인화 유지",
+              "서비스별 추천 모델을 각자 고도화"
+            ],
+            "tradeoff": "초기 속도를 만들어 줬던 위임을 되돌리는 일이라, 흩어진 콘텐츠를 한데 모으는 인프라를 새로 지어야 한다. 대신 중고거래에서 한 행동을 알바 추천에 쓸 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "개인화 결과만으로 피드를 채울 것인가",
+            "chosen": "추천 모델의 개인화 콘텐츠와 아직 충분히 성장하지 않은 서비스의 콘텐츠를 섞는다",
+            "alternatives": [
+              "개인화 점수 순으로만 노출"
+            ],
+            "tradeoff": "당장의 개인화 품질을 조금 내준다. 대신 데이터가 없어 추천되지 못하는 새 서비스가 영영 노출되지 못하는 상황을 막는다 — 회사가 계속 새 서비스를 만드는 구조라 이 자리가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "어떤 피드백을 모을 것인가",
+            "chosen": "관심·좋아요·댓글·채팅·신고·차단·안 보기 같은 명시적 신호를 별도 서비스에 저장한다",
+            "alternatives": [
+              "클릭·노출 같은 암묵적 신호만 사용"
+            ],
+            "tradeoff": "신호의 종류를 정의하고 저장하는 부담이 생긴다. 대신 '싫다'는 신호(신고·차단·안 보기)까지 다룰 수 있어 피드가 사용자를 밀어내는 것을 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "question": "프론트 아이디어를 어떻게 검증할 것인가",
+            "chosen": "백엔드만 있는 팀이 웹으로 먼저 만들어 보고, 관심피드에 실험으로 내보내 UI 오류 제보를 본다",
+            "alternatives": [
+              "앱에 바로 구현",
+              "프론트 인력이 생길 때까지 보류"
+            ],
+            "tradeoff": "웹에서 되는 것이 앱에서도 된다는 보장은 없다. 그래도 '될 것 같다'를 확인하는 가장 싼 방법이었고, 실험 후 오류 제보가 없다는 사실이 다음 단계의 근거가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "노출 계약(HTTP → gRPC)",
+            "role": "정해진 응답 구조만 맞추면 어떤 서비스든 피드에 붙을 수 있게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Viewtype → ViewTemplate",
+            "role": "앱 업데이트 없이 새 콘텐츠 모양을 그린다. ViewTemplate 은 Text·Image·Button 컴포넌트와 자유 스타일을 지원한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Feed Entity Service",
+            "role": "사내 모든 콘텐츠 엔터티를 모아 통합 서빙하고 실험 기반을 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Feed Mixer",
+            "role": "추천 결과와 미성장 서비스 콘텐츠를 섞고 피드 정책에 따른 페널티를 적용한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "Feedback Service",
+            "role": "관심·좋아요·댓글·채팅·신고·차단·안 보기를 저장해 개인화의 재료로 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Feed Infra팀을 소개해요!",
+                "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+                "publisher": "당근 테크 블로그",
+                "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "search-infra",
+          "via": "콘텐츠 공급",
+          "contract": "검색에 색인된 문서가 피드에도 담긴다(추정). 둘 다 '동네' 조건 위에서 동작한다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "동네 인증",
+          "via": "노출 범위",
+          "contract": "피드가 보여줄 수 있는 것은 인증된 동네 범위 안의 콘텐츠다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "로컬 광고",
+          "via": "피드 지면",
+          "contract": "피드는 광고가 놓이는 자리이기도 하다 — Feed Mixer 의 정책·페널티가 그 조정 지점으로 보인다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "거래 신뢰",
+          "via": "신고·차단 피드백",
+          "contract": "신고·차단은 신뢰 도메인의 신호이면서 동시에 피드 개인화의 입력이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 위임(Phase 1)에서 통합(Phase 2)으로",
+          "question": "새 서비스를 빨리 붙이는 구조가 왜 나중에 바뀌어야 했는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[피드 요청] --> F[피드 서비스]\n  subgraph Phase1 [Phase 1 · 위임]\n    F -->|콘텐츠 요청| S1[중고거래]\n    F -->|콘텐츠 요청| S2[중고차]\n    F -->|콘텐츠 요청| S3[당근알바]\n    S1 -->|노출 계약 구조| F\n    S2 --> F\n    S3 --> F\n  end\n  subgraph Phase2 [Phase 2 · 통합]\n    FES[(Feed Entity Service<br/>모든 콘텐츠)] --> MIX[Feed Mixer]\n    REC[추천 모델] --> MIX\n    NEW[미성장 서비스 콘텐츠] --> MIX\n    POL[피드 정책 · 페널티] --> MIX\n  end\n  F --> VT[Viewtype / ViewTemplate]\n  MIX --> VT\n  VT --> APP[앱 업데이트 없이 노출]\n  APP --> FB[Feedback Service<br/>관심·좋아요·신고·차단·안 보기]\n  FB --> REC"
+        },
+        {
+          "title": "콘텐츠 하나가 피드에 오르기까지",
+          "question": "새 서비스의 콘텐츠는 어떤 단계를 지나 개인화 대상이 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 생성됨: 서비스가 콘텐츠를 만든다\n  생성됨 --> 노출가능: 노출 계약 구조로 응답\n  노출가능 --> 피드노출: 피드 규칙에 따라 배치\n  피드노출 --> 피드백수집: 관심·좋아요·차단 등\n  피드백수집 --> 개인화대상: 데이터가 충분히 쌓임\n  노출가능 --> 보정노출: 아직 데이터가 없는 서비스\n  보정노출 --> 피드백수집\n  피드노출 --> 페널티: 정책 위반\n  페널티 --> 피드노출\n  개인화대상 --> [*]\n  note right of 보정노출\n    개인화만 하면 새 서비스는\n    영영 노출되지 못한다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 위임의 대가",
+          "question": "빠르게 붙이려던 선택이 어디서 청구서로 돌아오는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  D[개인화를 각 서비스에 위임] --> FAST[새 서비스가 빨리 붙는다]\n  D --> SPLIT[사용자 행동이 서비스마다 갈린다]\n  SPLIT --> WEAK[중고거래 행동을 알바 추천에 못 쓴다]\n  WEAK --> REBUILD[Phase 2 · 콘텐츠를 다시 한데 모아야 한다]\n  C[노출 계약을 구조로 고정] --> EASY[누구나 붙는다]\n  C --> LOCK[그 구조를 바꾸기 어려워진다]\n  LOCK -.->|HTTP→gRPC 때도| SAME[같은 구조를 그대로 가져갔다]\n  V[Viewtype · 웹뷰] --> REACH[업데이트 느린 사용자에게도 닿는다]\n  V --> UX[네이티브보다 떨어지는 경험]\n  P{개인화만 한다면} -->|데이터 없는 서비스| NEVER[영영 노출되지 못한다]\n  NEVER -.->|그래서 Mixer 가| BLEND[미성장 콘텐츠를 섞는다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Feed Infra팀을 소개해요!",
+          "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+          "publisher": "당근 테크 블로그",
+          "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+        }
+      ]
+    },
+    {
+      "key": "trust-score",
+      "name": "매너온도 — 신뢰를 숫자 하나로 만들 때 생기는 일",
+      "domain": "거래 신뢰",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "당근에서는 **개인이 개인을 직접 만나 거래한다.** 플랫폼이 대금을 붙잡고 있지 않으니 잘못돼도 되돌릴 수단이 적고, 결국 거래 직전에 남는 질문은 하나다 — **이 사람을 믿어도 되나.** 매너온도는 그 질문에 숫자 하나로 답하려는 장치다. 이 기능이 흥미로운 건 성공한 이야기와 **그 성공이 국경을 넘자마자 깨진 이야기**가 같은 문서에 남아 있다는 점이다.",
+        "metrics": [
+          {
+            "label": "국내에서의 성공",
+            "value": "매너온도가 높으면 '믿을 만하다'는 인식이 생겨, SNS 에 99도 유저와의 거래를 자랑하는 글이 올라올 정도가 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          },
+          {
+            "label": "해외에서의 실패",
+            "value": "인터뷰한 20여 명 중 36.5도를 체온으로 떠올린 사람은 간호사 1명뿐이었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "신뢰를 무엇으로 보여줄지 정할 때",
+          "thought": "별점은 누구나 안다. 하지만 별점은 '평균'이라 나쁜 거래 몇 번이면 회복이 안 되고, 무엇보다 어느 서비스에나 있어서 당근의 것이 되지 못한다. 온도는 쌓이는 숫자고, 36.5 라는 출발점이 '사람'을 떠올리게 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "영국에서 '우리 동네 기온인가요?'라는 말을 들었을 때",
+          "thought": "36.5 가 체온이라는 건 설명이 필요 없는 상식인 줄 알았다. 그런데 영국에서는 정상 체온을 하나의 숫자가 아니라 범위로 말하고, 부위와 나이에 따라 다르다고 여긴다. **우리가 공유된 의미라고 믿었던 것이 사실은 한 문화 안에서만 통하는 약속이었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "'100점 만점에 30점대라니'라는 반응을 봤을 때",
+          "thought": "같은 숫자가 시작점으로 읽히지 않고 성적표로 읽히고 있었다. 점수 체계가 문제가 아니라, 이 숫자가 무엇에서 출발해 무엇으로 쌓이는지가 화면에 없었던 게 문제다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "신규 유저를 어떻게 보이게 할지 고민할 때",
+          "thought": "점수가 낮은 사람과 아직 점수가 없는 사람은 완전히 다른 사람인데 화면에서는 똑같이 보인다. 신규 유입이 계속 들어오는 시장에서 이건 개인의 문제가 아니라 **플랫폼 전체가 못 믿을 곳처럼 보이는 문제**가 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "매너온도 / Karrot Score",
+            "what": "활동으로 개별 유저에게 부여되는 점수. 국내는 36.5 시작·최대 99도."
+          },
+          {
+            "name": "신뢰 판단 정보 3계층",
+            "what": "① 상대가 남긴 조작 불가능한 정보(리뷰·피드백·거래 횟수·추천 비율) ② 오래 쌓인 이력(가입일·게시글·응답 시간·뱃지) ③ 데모그래픽을 추론하게 하는 정보(프로필 이미지·닉네임·자기소개·동네명)."
+          },
+          {
+            "name": "레벨",
+            "what": "점수를 보조하는 상태 표시. Novice → Rookie → Skilled → Pro → Expert, 1,000점만 Legendary."
+          }
+        ],
+        "invariants": [
+          "점수가 낮은 사람과 아직 점수가 없는 사람은 화면에서 구별돼야 한다.",
+          "대부분의 유저가 '못 믿을 점수'로 보이면 그건 유저가 아니라 플랫폼의 문제가 된다.",
+          "숫자의 의미가 문화에 기대고 있으면, 문화를 벗어나는 순간 의미가 사라진다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "활동에 따라 점수가 오르내린다(알고리즘은 비공개)",
+            "why": "공개하면 점수를 목적으로 하는 행동을 유도하게 된다(추정)"
+          },
+          {
+            "step": "프로필에서 점수·리뷰·이력이 함께 보인다",
+            "why": "유저가 실제로 가장 신뢰하는 것은 상대가 남긴 리뷰였다"
+          },
+          {
+            "step": "해외에서 같은 화면이 다르게 읽힌다",
+            "why": "36.5 라는 기준점이 문화에 기대고 있었다"
+          },
+          {
+            "step": "현장 인터뷰로 인식을 확인한다(영국·캐나다 20여 명, 이후 12명 심층)",
+            "why": "시안을 고치기 전에 무엇이 안 통하는지부터 알아야 했다"
+          },
+          {
+            "step": "온도 개념을 버리고 Karrot Score 로 바꾼다(기본 36.5 → 30)",
+            "why": "체온이라는 은유가 통하지 않는 곳에서는 은유가 방해가 된다"
+          },
+          {
+            "step": "시작 점수를 30 → 0 으로 내린다",
+            "why": "쌓아 올린 점수와 처음 받은 점수를 구별하기 위해"
+          },
+          {
+            "step": "만점을 1,000점으로 올리고 레벨을 붙인다",
+            "why": "평균이 낮아 보이는 문제와 신규 유저가 나빠 보이는 문제를 한 번에 다룬다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "신뢰를 별점으로 표현할 것인가, 쌓이는 점수로 표현할 것인가",
+            "chosen": "36.5도에서 시작해 최대 99도까지 쌓이는 '매너온도'",
+            "alternatives": [
+              "5점 만점 별점(경쟁사 방식)",
+              "거래 횟수만 노출"
+            ],
+            "tradeoff": "익숙한 방식을 버린 대가로 학습이 필요해진다. 실제로 인터뷰에서 유저들이 별점 화면을 보여주며 'Why reinvent the wheel?' 이라고 물었다. 대신 국내에서는 이 낯선 숫자가 당근을 대표하는 브랜드 요소가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          },
+          {
+            "question": "점수 산정 알고리즘을 공개할 것인가",
+            "chosen": "정확한 알고리즘은 공개하지 않는다",
+            "alternatives": [
+              "산정 기준 공개"
+            ],
+            "tradeoff": "공개하지 않으면 점수를 노린 행동을 막기 쉽지만, **'왜 내 점수가 이렇게 낮냐'는 질문에 답할 수 없게 된다** — 해외에서 실제로 그 불만이 나왔다. (비공개와 불만은 확인된 사실, 그 인과는 추정)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          },
+          {
+            "question": "해외에서 점수가 안 통할 때 화면을 고칠 것인가, 인식을 먼저 조사할 것인가",
+            "chosen": "영국·캐나다 출장에서 유저에게 화면을 보여주고 무엇으로 보이는지 직접 물었다",
+            "alternatives": [
+              "막대를 온도계 모양으로 바꿔 본다",
+              "설명 문구를 추가한다"
+            ],
+            "tradeoff": "시간과 비용이 크게 든다. 그런데 온도계 모양·네이밍 시안은 이미 시도했고 통하지 않았다 — 문제가 표현이 아니라 전제에 있었기 때문에, 조사 없이는 무엇을 고쳐야 하는지조차 알 수 없었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          },
+          {
+            "question": "체온이라는 은유를 해외에서도 유지할 것인가",
+            "chosen": "온도 개념을 제외하고 매너온도(Neighbour Meter)를 'Karrot Score'로, 기본 점수를 36.5 에서 30 으로 바꾼다",
+            "alternatives": [
+              "온도계 UI 로 은유를 더 강조",
+              "설명으로 학습시킨다"
+            ],
+            "tradeoff": "국내에서 가장 강력한 브랜드 자산을 해외에서는 스스로 포기하는 선택이다. 그래도 20여 명 중 1명만 알아본 은유를 설명으로 메우는 비용이 더 컸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          },
+          {
+            "question": "가장 먼저 보여줄 정보는 무엇인가",
+            "chosen": "리뷰를 프로필 화면 최상단으로 올린다",
+            "alternatives": [
+              "점수를 더 크게 보여준다"
+            ],
+            "tradeoff": "점수의 존재감이 줄어든다. 하지만 12명 인터뷰에서 유저가 실제로 가장 신뢰한 것은 점수가 아니라 상대가 남긴 리뷰였고, 특히 부정적인 내용이 있는지를 봤다 — **화면의 순서를 실제 판단 순서에 맞춘 것.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+                "publisher": "당근 기술 블로그 · Ina Jeon",
+                "date": "2022-08-22",
+                "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+              }
+            ]
+          },
+          {
+            "question": "시작 점수를 몇 점으로 둘 것인가",
+            "chosen": "30점에서 0점으로 내린다",
+            "alternatives": [
+              "30점 유지",
+              "중간값에서 시작"
+            ],
+            "tradeoff": "기존 유저의 점수가 내려갈 수 있다는 부작용이 곧바로 따라왔다. 대신 '활동으로 쌓은 점수'와 '그냥 받은 점수'가 구별되어, 낮은 점수가 나쁜 행동의 결과인지 아닌지를 읽을 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+                "publisher": "당근 기술 블로그 · Ina Jeon",
+                "date": "2022-08-22",
+                "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+              }
+            ]
+          },
+          {
+            "question": "점수 체계 자체를 어떻게 다시 세울 것인가",
+            "chosen": "1,000점 만점으로 바꾸고 레벨(Novice → Rookie → Skilled → Pro → Expert, 1,000점은 Legendary)을 함께 도입한다",
+            "alternatives": [
+              "100점 만점 유지",
+              "점수만 조정"
+            ],
+            "tradeoff": "체계를 한 번 더 갈아엎는 비용을 치른다. 그 대신 세 가지가 한꺼번에 풀린다 — 평균이 낮아 보이던 문제(당시 평균 40점 이하), 점수를 리뷰 평균으로 오해하던 문제, 그리고 포인트를 쌓는다는 감각.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+                "publisher": "당근 기술 블로그 · Ina Jeon",
+                "date": "2022-08-22",
+                "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+              }
+            ]
+          },
+          {
+            "question": "신규 유저를 어떻게 표시할 것인가",
+            "chosen": "'Novice Karroter' 레벨로 0점이 신규 유저라는 것을 알린다",
+            "alternatives": [
+              "가입일만 노출",
+              "별도 표시 없음"
+            ],
+            "tradeoff": "신규라는 사실 자체가 하나의 낙인이 될 여지는 남는다. 그래도 아무 표시가 없으면 0점이 곧 나쁜 유저로 읽히고, 신규 유입이 많은 초기 시장에서는 그 오해가 플랫폼 전체의 신뢰 문제로 번진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+                "publisher": "당근 기술 블로그 · Ina Jeon",
+                "date": "2022-08-22",
+                "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "비공개 점수 알고리즘",
+            "role": "활동을 하나의 숫자로 환산해 거래 상대의 신뢰도를 짐작하게 한다. 국내는 36.5 시작·최대 99도.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              }
+            ]
+          },
+          {
+            "tech": "사용자 조사(현장 인터뷰)",
+            "role": "무엇이 안 통하는지 전제부터 확인한다. 영국·캐나다 20여 명 인식 조사 → 중고거래 경험자 12명 심층 인터뷰.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+                "publisher": "당근 기술 블로그 · Adeline Park",
+                "date": "2022-08-16",
+                "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+              },
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+                "publisher": "당근 기술 블로그 · Ina Jeon",
+                "date": "2022-08-22",
+                "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+              }
+            ]
+          },
+          {
+            "tech": "레벨 체계",
+            "role": "점수를 보조해 신규 유저와 저점 유저를 구별하고, 점수를 쌓는 동기를 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+                "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+                "publisher": "당근 기술 블로그 · Ina Jeon",
+                "date": "2022-08-22",
+                "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "feed-platform",
+          "via": "신고·차단 신호",
+          "contract": "피드백 서비스가 모으는 신고·차단·안 보기는 신뢰 도메인의 신호이면서 동시에 피드 개인화의 입력이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "동네 인증",
+          "via": "신원의 다른 축",
+          "contract": "점수가 '어떻게 거래해 왔는가'라면 인증은 '어디 사람인가'다. 둘이 함께 신뢰를 만든다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "search-infra",
+          "via": "판매자 노출",
+          "contract": "검색 결과에서 어떤 판매자를 위에 둘지에 신뢰 신호가 쓰이는지는 확인하지 못했다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 유저가 실제로 신뢰를 판단하는 순서",
+          "question": "숫자 하나가 신뢰의 전부인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[거래를 앞둔 유저] --> P[상대 프로필을 연다]\n  subgraph L1 [① 조작 불가능한 정보 · 가장 신뢰]\n    R[리뷰 · 피드백] --> NEG{부정적인 내용이 있나}\n    CNT[거래 횟수 · 추천 비율]\n  end\n  subgraph L2 [② 쌓인 이력]\n    J[가입 일자] \n    POST[작성한 게시글]\n    RES[응답 시간 · 뱃지]\n  end\n  subgraph L3 [③ 데모그래픽 추론]\n    PIC[프로필 이미지 · 닉네임]\n    BIO[자기소개 · 동네명]\n  end\n  P --> L1\n  P --> L2\n  P --> L3\n  SCORE[Karrot Score · Level] --> P\n  L1 --> D[믿을지 결정]\n  L2 --> D\n  L3 --> D\n  NEG -->|있다| STOP[거래하지 않는다]"
+        },
+        {
+          "title": "점수 체계가 지나온 상태",
+          "question": "하나의 숫자를 고치는 데 왜 세 번의 변경이 필요했나?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 매너온도: 36.5 시작 · 최대 99\n  매너온도 --> 국내정착: 높으면 믿을 만하다는 인식\n  매너온도 --> 해외혼란: 36.5 가 무엇인지 모른다\n  해외혼란 --> 시안수정: 온도계 UI · 네이밍 변경\n  시안수정 --> 해외혼란: 전제가 문제라 안 통함\n  해외혼란 --> 현장조사: 영국·캐나다 20여 명\n  현장조사 --> KarrotScore: 온도 개념 제거 · 기본 30점\n  KarrotScore --> 시작0점: 신규와 하락을 구별\n  시작0점 --> 부작용: 기존 유저 점수가 내려간다\n  부작용 --> 천점만점: 1,000점 + 레벨제\n  천점만점 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 숫자 하나에 신뢰를 담을 때",
+          "question": "개인의 점수 문제가 어떻게 플랫폼의 문제가 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[36.5 라는 기준점] --> C{그 의미가 문화에 기대나}\n  C -->|한국| OK[설명 없이 통한다]\n  C -->|영국·캐나다| LOST[기온인가? 이상한 숫자다]\n  LOST --> READ[100점 만점에 30점대로 읽힌다]\n  READ --> DISTRUST[믿을 수 없는 유저가 많아 보인다]\n  Z[0점 신규 유저] --> SAME[낮은 점수와 똑같이 보인다]\n  SAME --> DISTRUST\n  AVG[평균 점수 40점 이하] --> DISTRUST\n  DISTRUST --> PLATFORM[플랫폼 자체를 못 믿게 된다]\n  PLATFORM -.->|초기 시장은 신규 유입이 많다| GROWTH[성장이 막힌다]\n  HIDE[알고리즘 비공개] -.->|왜 낮은지 답할 수 없다| DISTRUST"
+        }
+      ],
+      "sources": [
+        {
+          "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+          "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+          "publisher": "당근 기술 블로그 · Adeline Park",
+          "date": "2022-08-16",
+          "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+        },
+        {
+          "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+          "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+          "publisher": "당근 기술 블로그 · Ina Jeon",
+          "date": "2022-08-22",
+          "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+        }
+      ]
+    },
+    {
+      "key": "identity-auth",
+      "name": "인증 — 번호가 곧 계정이던 시절부터 AI에게 권한을 나눠 주기까지",
+      "domain": "신원 인증",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "모든 인증이 하려는 일은 결국 하나다 — **'이 계정의 주인이 나'라는 걸 확인하는 것.** 당근에서 이 질문은 두 방향으로 청구서가 온다. 확인이 약하면 사기꾼이 번호를 바꿔 가며 돌아오고, 확인이 무거우면 가입 자체가 막힌다. 이 기능의 역사는 그 사이에서 **문턱을 낮추는 결정과 높이는 결정을 번갈아 내린 기록**이다.",
+        "metrics": [
+          {
+            "label": "번호가 계정이던 시절의 비용",
+            "value": "\"번호를 변경해서 인증은 못 하지만 이 계정은 분명히 제 것\"이라는 문의가 매일 들어왔고, 고객센터가 통신사 서류로 닉네임·동네·번호를 대조해 손으로 옮겨 줘야 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "label": "글로벌의 가장 큰 장벽",
+            "value": "한국에서는 거부감 없던 휴대전화 인증이 북미·일본에서는 가입 퍼널의 가장 큰 장벽이 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "첫 인증 수단을 고를 때",
+          "thought": "모바일 앱으로 시작한 서비스니 기기가 문자를 받을 수 있다. 문자로 온 번호를 입력할 수 있다는 건 '그 번호를 쓰는 단말기를 지금 손에 쥐고 있다'는 뜻이다 — 동네 사람끼리 중고거래하는 데는 이 정도 확인으로 충분하고, 무엇보다 문턱이 낮다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "계정을 잃었다는 문의를 매일 받을 때",
+          "thought": "전화번호는 영원히 내 것이 아니다. 해지하면 통신사가 일정 기간 뒤 다른 사람에게 다시 준다. **번호를 신원으로 삼는 순간, 번호가 바뀐 사람은 시스템에서 그냥 사라진다.** 번호 말고는 이 사람이 예전의 그 사람이라는 걸 확인할 방법이 없었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이미 쓰고 있는 수천만 명을 마주할 때",
+          "thought": "어려운 건 본인인증을 붙이는 일이 아니라 이미 잘 쓰고 있는 사람들이었다. 어느 날 앱을 열었더니 '본인인증을 해야 계속 쓸 수 있다'고 하면, 그건 우리 사정이지 그 사람의 사정이 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "MCP 인증 요구사항을 봤을 때",
+          "thought": "AI 클라이언트가 사용자 대신 접근하는 시대가 왔는데, 다행히 SSO 를 처음부터 OAuth 표준 위에 지어 뒀다. **'이 계정의 주인이 나'를 확인하던 인증이 '내가 허락한 만큼만 위임하는' 인증으로 넓어진다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "번호 점유",
+            "what": "문자로 온 인증번호를 입력할 수 있다 = 그 번호를 쓰는 단말기를 지금 쥐고 있다."
+          },
+          {
+            "name": "CI(연계정보)",
+            "what": "주민등록번호를 비가역적으로 한 번 암호화한 값. 서비스가 달라도 같은 사람이면 같은 값이 나온다."
+          },
+          {
+            "name": "accounts.daangn.com",
+            "what": "모든 당근 서비스의 웹 인증이 모이는 하나의 도메인. OAuth 2.0/OIDC 위에서 동작한다."
+          },
+          {
+            "name": "위임된 권한",
+            "what": "AI 클라이언트가 사용자 동의를 거쳐 필요한 만큼만 잘라 받는 접근 권한."
+          }
+        ],
+        "invariants": [
+          "번호를 신원으로 삼으면, 번호가 바뀐 사람은 시스템에서 사라진다.",
+          "번호를 쉽게 여러 개 만들 수 있으면, 제재는 되돌릴 수 있는 비용이 된다.",
+          "인증을 강하게 만들수록 가입은 어려워진다 — 두 지표는 항상 반대로 움직인다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "SMS 인증으로 번호 점유를 확인한다",
+            "why": "가입 문턱을 최대한 낮춰 더 많은 사람이 쓰게 한다"
+          },
+          {
+            "step": "본인확인기관을 통해 실명과 CI 를 확인한다",
+            "why": "번호가 바뀌어도 같은 사람이라는 걸 알 수 있다"
+          },
+          {
+            "step": "기존 사용자에게는 강제 대신 인증할 이유를 만든다",
+            "why": "이미 잘 쓰고 있는 사람에게 갑자기 요구하면 그건 우리 사정일 뿐이다"
+          },
+          {
+            "step": "웹은 accounts.daangn.com 으로 리다이렉트해 인증한다",
+            "why": "부동산·중고차·알바가 모두 같은 계정을 써야 한다"
+          },
+          {
+            "step": "환경에 맞는 수단을 고른다 — PC 는 QR, 모바일 웹은 '당근앱으로 로그인'",
+            "why": "휴대기기 브라우저에서는 QR 을 찍을 대상이 없다"
+          },
+          {
+            "step": "글로벌은 소셜 로그인·Voice Call·Persona KYC 로 갈라진다",
+            "why": "통신·법·신원 환경이 나라마다 다르다"
+          },
+          {
+            "step": "AI 클라이언트는 OAuth 2.1 위에서 사용자 동의를 거쳐 권한을 받는다",
+            "why": "표준 위에 지어 뒀기에 새 종류의 사용자도 같은 문 안으로 들어온다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "첫 인증을 무엇으로 할 것인가",
+            "chosen": "SMS 인증으로 번호의 '점유'만 확인한다",
+            "alternatives": [
+              "가입 시 본인확인",
+              "이메일 가입"
+            ],
+            "tradeoff": "동네 중고거래에는 충분하고 문턱이 가장 낮다. 대신 **번호가 곧 계정이 되어**, 번호가 바뀌면 그 사람을 알아볼 방법이 사라진다 — 이 대가는 몇 년 뒤 매일 들어오는 계정 분실 문의로 청구됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "계정 분실을 무엇으로 대비할 것인가",
+            "chosen": "이메일 인증을 백업 수단으로 추가했지만 실효가 없었다",
+            "alternatives": [
+              "고객센터 수동 이관 유지",
+              "본인확인 도입"
+            ],
+            "tradeoff": "붙이는 비용은 작았지만, **미리 등록해 두는 사용자가 많지 않았다.** 정작 계정을 잃은 사람에게는 그 수단이 없다 — 사용자가 미리 준비해야 작동하는 안전장치의 한계가 그대로 드러난 사례다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "번호를 대량으로 만들어 오는 사기꾼을 어떻게 막을 것인가",
+            "chosen": "본인확인기관을 통해 실명과 CI 를 확인하는 본인인증을 도입한다",
+            "alternatives": [
+              "번호 발급 패턴 탐지",
+              "제재 강화"
+            ],
+            "tradeoff": "가입 문턱이 다시 올라가고 민감한 신원 정보를 다루게 된다. 대신 CI 는 사람마다 하나뿐이라 **번호를 수백 개 만들어도 같은 사람으로 묶인다** — 제재가 비로소 되돌릴 수 없는 비용이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "이미 쓰고 있는 수천만 명에게도 강제할 것인가",
+            "chosen": "신규 가입자에게는 강제하고, 기존 사용자에게는 **본인인증을 할 이유를 만들어 준다**(생년월일이 필요한 사주 서비스 등)",
+            "alternatives": [
+              "전면 강제",
+              "기존 사용자는 면제"
+            ],
+            "tradeoff": "확산에 오랜 시간이 걸리고, 그동안 인증한 사람과 안 한 사람이 섞여 있는 상태를 감수해야 한다. 그래도 어느 날 갑자기 앱이 막히는 경험을 만들지 않는다 — **'신년 운세를 보려면 본인인증'이 강제 공지보다 잘 통했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "서비스마다 로그인을 따로 만들 것인가",
+            "chosen": "웹 인증을 accounts.daangn.com 하나로 통합하고 OAuth 2.0/OIDC 표준 위에 올린다",
+            "alternatives": [
+              "서비스별 자체 로그인",
+              "당근만의 방식"
+            ],
+            "tradeoff": "리다이렉트가 끼어 경험이 한 단계 늘고, 인증이 한 도메인에 집중된다. 대신 새 서비스가 로그인 화면을 만들 필요가 없고, **표준을 따른 덕분에 몇 년 뒤 MCP(OAuth 2.1)까지 같은 기반 위에서 받아낼 수 있었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "모바일 웹에서는 어떻게 로그인시킬 것인가",
+            "chosen": "'당근앱으로 로그인' — 버튼을 누르면 이미 로그인된 당근 앱이 열려 인증을 확인한다",
+            "alternatives": [
+              "QR 로그인 유지",
+              "문자 인증으로 되돌리기"
+            ],
+            "tradeoff": "앱이 깔려 있다는 전제가 필요하다. PC 에서는 QR 이 잘 됐지만 **휴대기기 브라우저에는 QR 을 찍을 다른 기기가 없다** — 같은 수단이 화면 크기 하나로 무용지물이 되는 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "글로벌에서도 전화번호 인증을 첫 관문으로 둘 것인가",
+            "chosen": "소셜 로그인을 도입한다. 일본은 LINE·Google·Apple 처럼 나라별로 많이 쓰는 계정을 붙인다",
+            "alternatives": [
+              "전화번호 인증 유지",
+              "이메일 가입"
+            ],
+            "tradeoff": "남의 계정 체계에 첫 관문을 맡기게 된다. 그래도 아직 알려지지 않은 앱이 전화번호부터 요구하면 상당수가 그 자리에서 이탈한다 — **한국에서 통하던 것이 인지도에 기대고 있었다는 뜻이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "question": "문자가 오지 않는 사용자를 어떻게 할 것인가",
+            "chosen": "Voice Call 인증을 도입한다. SNA(SIM 기반 무음 인증)는 실험 후 배포하지 않았다",
+            "alternatives": [
+              "SNA 도입",
+              "재전송만 제공"
+            ],
+            "tradeoff": "SNA 는 인증 정확도와 사용성이 실제로 좋아졌지만 **기대했던 가입 전환율 상승이 끝내 검증되지 않아 접었다.** 좋아진 지표가 있어도 목표 지표가 아니면 배포하지 않는다는 기준을 지킨 것 — 대신 그동안 들인 실험 비용은 회수되지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "SMS 인증 / Voice Call",
+            "role": "번호의 점유를 확인한다. 북미는 땅이 넓고 통신사가 제각각이라 문자가 늦거나 스팸 정책에 차단되는 일이 잦아, 같은 번호로 전화를 걸어 음성으로 인증번호를 불러 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "tech": "본인확인기관 · CI(연계정보)",
+            "role": "실명과 CI 로 '같은 사람'을 식별한다. 번호나 기기가 바뀌어도 계정을 이어 쓸 수 있고, 번호를 여러 개 만든 사기 계정을 한 사람으로 묶는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "tech": "accounts.daangn.com (OAuth 2.0/OIDC)",
+            "role": "모든 서비스의 웹 인증을 한 도메인으로 모으고 2차 인증 등을 그 위에 얹는다. 외부 서비스도 당근 계정으로 로그인한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "tech": "소셜 로그인 · Persona(KYC)",
+            "role": "나라별 신원 환경에 맞춘다. 북미에는 한국의 본인인증 같은 공통 신원 체계가 없어, 정부 발급 신분증 촬영으로 위조를 확인하고 셀피로 대조한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          },
+          {
+            "tech": "MCP · OAuth 2.1 위임",
+            "role": "AI 클라이언트가 사용자 동의를 거쳐 필요한 만큼만 잘라낸 권한으로 당근에 접근한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+                "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+                "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+                "date": "2026-08-20",
+                "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "trust-score",
+          "via": "신원과 이력",
+          "contract": "본인인증은 '이 사람이 누구인가'를, 매너온도는 '어떻게 거래해 왔는가'를 답한다. 북미에서 본인인증이 없자 그 공백을 Persona KYC 로 메운 것이 두 축이 같은 문제를 나눠 맡고 있다는 증거다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "feed-platform",
+          "via": "계정 통합",
+          "contract": "부동산·중고차·알바가 모두 같은 당근 계정을 쓰기 때문에, 한 계정의 행동을 모아 개인화할 수 있다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "로컬 광고",
+          "via": "광고주 로그인",
+          "contract": "당근 SSO 로 기업부터 소상공인까지 외부 서비스가 당근 계정으로 로그인한다 — 광고주 도구도 이 위에 선다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 상황마다 문이 갈린다",
+          "question": "왜 인증 수단이 하나로 정리되지 않는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  APP[앱] -->|SMS 점유 확인| ACC\n  PC[PC 웹] -->|QR 로그인| ACC\n  MW[모바일 웹] -->|당근앱으로 로그인| ACC\n  GL[글로벌 · Karrot] -->|소셜 로그인 / Voice Call| ACC\n  AI[AI 클라이언트 · MCP] -->|OAuth 2.1 · 사용자 동의| ACC\n  ACC[accounts.daangn.com<br/>OAuth 2.0 / OIDC] --> CI[본인확인기관 · CI]\n  ACC --> KYC[Persona KYC<br/>신분증 + 셀피]\n  ACC --> R[realty.daangn.com]\n  ACC --> C[중고차]\n  ACC --> J[알바]\n  ACC --> EXT[외부 서비스 · 당근 SSO]\n  CI -.->|같은 사람은 같은 값| ONE[번호가 바뀌어도 계정 유지]"
+        },
+        {
+          "title": "계정이 주인을 잃고, 다시 찾기까지",
+          "question": "번호가 신원일 때와 CI 가 신원일 때, 같은 사건이 어떻게 갈리는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 번호로가입\n  번호로가입 --> 번호해지: 사용자가 번호를 바꾼다\n  번호해지 --> 번호재배정: 통신사가 일정 기간 뒤 다른 사람에게 준다\n  번호재배정 --> 로그인불가: 새 번호로는 예전 계정에 못 들어간다\n  로그인불가 --> 고객센터: 통신사 서류로 닉네임·동네·번호 대조\n  고객센터 --> 수동이관: 며칠을 기다린다\n  수동이관 --> [*]\n  번호로가입 --> 본인인증완료: 이유를 만들어 유도\n  본인인증완료 --> 번호변경: CI 는 그대로다\n  번호변경 --> 계정유지: 기다림도 서류도 없다\n  계정유지 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 번호가 곧 계정일 때",
+          "question": "약한 확인은 어느 방향으로 새는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[번호 점유만 확인] --> G[선의의 사용자]\n  P --> B[악의의 사용자]\n  G --> CH[번호 변경 · 기기 변경]\n  CH --> LOST[예전의 그 사람임을 증명할 방법이 없다]\n  LOST --> CS[매일 들어오는 계정 문의]\n  CS --> COST[고객센터 수동 이관 · 사용자는 며칠 대기]\n  B --> CHEAP[알뜰폰 등으로 번호를 쉽게 발급]\n  CHEAP --> MASS[번호 수백 개로 계정을 찍어낸다]\n  MASS --> BAN[한 계정이 제재된다]\n  BAN -->|다른 번호로| MASS\n  EM[이메일 백업] -.->|미리 등록한 사람이 적다| LOST\n  MASS --> FRAUD[사기가 돌아온다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+          "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+          "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+          "date": "2026-08-20",
+          "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+        }
+      ]
+    },
+    {
+      "key": "local-ads",
+      "name": "로컬 광고 — 전단지를 돌리던 사람에게 광고 도구를 쥐여 줄 때",
+      "domain": "로컬 광고",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "당근은 개인 간 거래에서 수수료를 받지 않는다. **그래서 돈은 전부 옆 도메인에서 걷는다** — 거래와 커뮤니티가 만든 트래픽 위에 동네 가게 광고를 얹는 구조다. 그런데 이 광고주는 네이버·카카오의 광고주와 다르다. **점심시간에 전단지를 돌리던 필라테스·헬스장·식당 사장님이다.** 광고 전문가가 아닌 사람에게 광고 도구를 쥐여 주는 일 자체가 이 도메인의 핵심 과제가 된다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "누적 가입자 4,300만 · 누적 광고주 390만+ (2026년 1월 기준)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근비즈니스 — 당근 광고란?",
+                "url": "https://business.daangn.com/ads/about",
+                "publisher": "당근비즈니스",
+                "date": "2026-01",
+                "summary": "누적 가입자 4,300만·누적 광고주 390만+. 디스플레이·검색(간편모드 전용)·카탈로그 상품광고(전문가모드 전용). 지역 타겟팅은 동네부터 전국 단위까지."
+              }
+            ]
+          },
+          {
+            "label": "DSP 의 크기",
+            "value": "약 17만 줄 코드 · 60개 테이블 · 150개가 넘는 API",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "실시간 처리",
+            "value": "1초에 수천 번, 수십만 개의 광고를 대상으로 연산",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "심사 자동화",
+            "value": "하루 최대 수만 개 중 약 70% 를 자동 심사",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "광고주가 누구인지 다시 볼 때",
+          "thought": "점심시간에 받는 전단지에는 걸어갈 만한 동네 필라테스·헬스장·식당이 있다. 이 사람들이 우리 광고주다. **광고 대행사를 쓰는 회사가 아니라 가게를 보면서 직접 광고를 만드는 사람**이라는 게 도구의 모양을 전부 바꾼다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 화면을 두 사장님이 볼 때",
+          "thought": "파스타 가게와 칼국수 가게는 같은 채널을 써도 효과적으로 집행하는 방법이 매우 다르다. 그러니 **하나의 정답 화면을 줄 수 없다** — 얼마나 정하게 하고 얼마나 대신 정해 줄지를 고르는 문제다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "DSP 의 목표를 정할 때",
+          "thought": "광고 효율(ROAS)만 올리라고 하면 DSP 는 확실한 지면만 골라 사게 된다. 그러면 숫자는 예뻐지는데 **광고주 예산이 남는다.** 돈을 다 못 쓴 광고주는 다음 달에 돌아오지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "하루 수만 건의 심사를 앞에 두고",
+          "thought": "사람이 다 보는 건 불가능하고, 다 자동으로 넘기는 건 위험하다. 지금 약 70% 를 자동으로 처리하고 있는데, 연관도와 유해도를 기계가 판단하게 만드는 일은 아직 진행 중인 과제다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "DSP",
+            "what": "광고주가 목표·대상·전략을 정해 광고를 만드는 시스템. 간편모드와 전문가모드로 나뉜다."
+          },
+          {
+            "name": "AdServer",
+            "what": "사용자가 가장 좋아할 만한 광고를 그때그때 골라 지면에 배치한다."
+          },
+          {
+            "name": "DMP",
+            "what": "노출 수, 클릭 수, 목표에 맞는 행동을 한 사용자 수를 기록한다."
+          },
+          {
+            "name": "지면",
+            "what": "앱 안의 여러 화면 — 피드, 검색 결과 상단, 카탈로그 상품 영역."
+          }
+        ],
+        "invariants": [
+          "광고주가 광고 전문가가 아니라면, 전문가만 이해하는 선택지는 도구가 아니라 장벽이다.",
+          "효율만 올리면 지면을 보수적으로 사게 되고, 그 결과 광고주 예산이 남는다.",
+          "지면은 거래와 커뮤니티가 만든 트래픽 위에 있다 — 지면을 늘리면 그 트래픽을 깎는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "광고주가 DSP 에서 목표와 대상을 정한다",
+            "why": "동네·성별·연령처럼 직접 정할 것과 시스템이 대신 정할 것을 나눈다"
+          },
+          {
+            "step": "약 70% 는 자동으로, 나머지는 사람이 심사한다",
+            "why": "하루 최대 수만 건을 사람이 다 볼 수 없다"
+          },
+          {
+            "step": "AdServer 가 요청마다 어떤 광고를 보여줄지 고른다",
+            "why": "사용자가 가장 좋아할 만한 광고를 그때그때 제공한다"
+          },
+          {
+            "step": "피드·검색 결과 상단·카탈로그 영역에 노출된다",
+            "why": "지면마다 사용자가 온 이유가 다르다"
+          },
+          {
+            "step": "DMP 가 노출·클릭·목표 행동을 기록한다",
+            "why": "무엇이 통했는지 알아야 다음 집행이 나아진다"
+          },
+          {
+            "step": "그 기록이 다시 DSP 의 판단 재료가 된다",
+            "why": "예산을 어디에 얼마나 쓸지가 여기서 갱신된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "광고주를 누구로 볼 것인가",
+            "chosen": "전단지를 돌리던 동네 사장님을 1급 광고주로 놓는다",
+            "alternatives": [
+              "대형 브랜드 중심",
+              "대행사 경유 판매"
+            ],
+            "tradeoff": "광고 전문가가 아닌 사람이 직접 쓰는 도구를 만들어야 하고, 광고 하나의 단가가 작아 수가 많아야 규모가 된다(수 자체는 확인 — 누적 광고주 390만+). 대신 네이버·카카오가 채우지 못하는 자리를 가진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "전단지를 대체할 당근 광고의 등장",
+                "url": "https://careers.daangn.com/blog/post/당근-광고실-동네-사장님-광고/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP(광고 생성)·AdServer(광고 배치)·DMP(성과 기록)의 3단 구조와, 같은 채널이라도 파스타 가게와 칼국수 가게의 효과적인 집행 방법은 매우 다르다는 문제 인식."
+              },
+              {
+                "title": "당근비즈니스 — 당근 광고란?",
+                "url": "https://business.daangn.com/ads/about",
+                "publisher": "당근비즈니스",
+                "date": "2026-01",
+                "summary": "누적 가입자 4,300만·누적 광고주 390만+. 디스플레이·검색(간편모드 전용)·카탈로그 상품광고(전문가모드 전용). 지역 타겟팅은 동네부터 전국 단위까지."
+              }
+            ]
+          },
+          {
+            "question": "도구를 하나로 만들 것인가",
+            "chosen": "간편모드와 전문가모드로 나눈다 — 간편모드는 연령·성별 같은 직관적 타겟팅만, 전문가모드는 지면구매 전략까지 세세하게",
+            "alternatives": [
+              "단일 화면",
+              "설정을 모두 노출"
+            ],
+            "tradeoff": "두 벌을 유지해야 하고, **'간편모드를 얼마나 간편하게 할 것인가'를 계속 다시 정해야 한다** — 한 번 정하고 끝나는 경계가 아니다. 광고 종류도 갈린다(검색 광고는 간편모드 전용, 카탈로그 상품광고는 전문가모드 전용).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              },
+              {
+                "title": "당근비즈니스 — 당근 광고란?",
+                "url": "https://business.daangn.com/ads/about",
+                "publisher": "당근비즈니스",
+                "date": "2026-01",
+                "summary": "누적 가입자 4,300만·누적 광고주 390만+. 디스플레이·검색(간편모드 전용)·카탈로그 상품광고(전문가모드 전용). 지역 타겟팅은 동네부터 전국 단위까지."
+              }
+            ]
+          },
+          {
+            "question": "입찰과 예산 소진 방식을 광고주에게 맡길 것인가",
+            "chosen": "간편모드에서는 헷갈릴 수 있는 선택지를 아예 제공하지 않는다",
+            "alternatives": [
+              "기본값만 제공하고 열어 둔다",
+              "전부 노출"
+            ],
+            "tradeoff": "광고주에게서 통제권을 가져오는 결정이다. 잘못 고르게 하느니 안 보여주는 쪽을 택했지만, 그만큼 **시스템이 대신 고른 결과에 대한 책임도 시스템으로 넘어온다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "DSP 를 무엇에 최적화할 것인가",
+            "chosen": "ROAS 극대화 하나만 좇지 않는다",
+            "alternatives": [
+              "ROAS 극대화",
+              "예산 소진율 극대화"
+            ],
+            "tradeoff": "**ROAS 에 매몰되면 DSP 는 지면을 보수적으로 구매하고, 그것이 곧 광고주 예산 미소진으로 이어진다.** 효율 지표와 소진 지표가 정면으로 부딪히는 자리 — 어느 쪽을 놓아도 반대쪽이 나빠진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "하루 수만 건의 광고 심사를 어떻게 감당할 것인가",
+            "chosen": "약 70% 를 자동 심사하고, 머신러닝 기반 연관도 분석·유해도 검사를 계속 넓힌다",
+            "alternatives": [
+              "전수 수동 심사",
+              "사후 신고 기반"
+            ],
+            "tradeoff": "자동 판단은 틀릴 수 있고, 틀린 방향에 따라 정상 광고가 막히거나 나쁜 광고가 통과한다. 그래도 사람이 전수로 보는 건 불가능하다 — 나머지 30% 를 어디까지 줄일지가 아직 진행 중인 과제다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "막대한 요청량에 데이터를 어떻게 줄 것인가",
+            "chosen": "요청의 성격에 따라 나눈다 — 일부는 캐싱을 붙인 API, 일부는 이벤트, 일부는 데이터베이스 스냅샷",
+            "alternatives": [
+              "모두 실시간 API",
+              "모두 비동기"
+            ],
+            "tradeoff": "경로가 셋이라 데이터의 신선도가 서로 다르고, 어떤 요청이 어느 경로로 가는지를 계속 관리해야 한다. 대신 1초에 수천 번의 연산을 감당한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "60개 테이블·150개 API 로 자란 도메인을 어떻게 다룰 것인가",
+            "chosen": "주요 기능 개발 전에 테크 스펙으로 구현 배경·방안·위험요소를 함께 논의하고, 테스트 코드와 코드 리뷰·통합 테스트·점진적 배포로 받친다",
+            "alternatives": [
+              "빠른 구현 후 수정",
+              "서비스 분할"
+            ],
+            "tradeoff": "합의에 시간이 든다. 그래도 광고는 잘못 나가면 광고주의 돈이 실제로 사라지는 도메인이라, 되돌릴 수 없는 실수의 비용이 속도보다 크다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "DSP (간편모드 / 전문가모드)",
+            "role": "광고주가 목표·대상·전략을 정하는 곳. 약 17만 줄·60개 테이블·150개 넘는 API. 간편모드는 입찰·예산 소진 방식 같은 선택지를 감추고, 전문가모드는 지면구매 전략까지 연다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "AdServer",
+            "role": "요청마다 사용자가 가장 좋아할 만한 광고를 골라 우선순위를 정한다. 1초에 수천 번, 수십만 개 광고를 대상으로 연산한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "전단지를 대체할 당근 광고의 등장",
+                "url": "https://careers.daangn.com/blog/post/당근-광고실-동네-사장님-광고/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP(광고 생성)·AdServer(광고 배치)·DMP(성과 기록)의 3단 구조와, 같은 채널이라도 파스타 가게와 칼국수 가게의 효과적인 집행 방법은 매우 다르다는 문제 인식."
+              },
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "DMP",
+            "role": "노출 수·클릭 수·목표에 맞는 행동을 한 사용자 수를 기록해 다음 집행의 재료로 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "전단지를 대체할 당근 광고의 등장",
+                "url": "https://careers.daangn.com/blog/post/당근-광고실-동네-사장님-광고/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP(광고 생성)·AdServer(광고 배치)·DMP(성과 기록)의 3단 구조와, 같은 채널이라도 파스타 가게와 칼국수 가게의 효과적인 집행 방법은 매우 다르다는 문제 인식."
+              }
+            ]
+          },
+          {
+            "tech": "머신러닝 기반 광고 심사",
+            "role": "연관도 분석과 유해도 검사로 하루 최대 수만 건 중 약 70% 를 자동 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근 광고가 만들어지는 곳, DSP",
+                "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+                "publisher": "당근 블로그 · 광고실",
+                "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "feed-platform",
+          "via": "지면",
+          "contract": "광고가 놓이는 자리가 곧 피드다. Feed Mixer 가 정책과 페널티로 콘텐츠를 조합하는 단계와 광고 배치가 어떻게 맞물리는지는 확인하지 못했다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "search-infra",
+          "via": "검색 지면",
+          "contract": "검색 광고는 검색 결과 상단에 붙는다 — 검색 품질과 광고 노출이 같은 화면을 나눠 쓴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "identity-auth",
+          "via": "광고주 계정",
+          "contract": "당근 SSO 로 기업부터 소상공인까지 외부 서비스가 당근 계정으로 로그인한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "trust-score",
+          "via": "무료 거래가 만드는 트래픽",
+          "contract": "개인 간 거래는 수수료가 없다. 그 거래와 신뢰가 만든 방문 위에 광고 지면이 선다 — 수익을 옆 도메인에서 걷는 구조다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 만들고, 고르고, 기록한다",
+          "question": "동네 사장님의 광고가 이웃 화면에 닿기까지 무엇을 지나는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OWNER[동네 사장님] --> MODE{어느 모드}\n  MODE -->|간편 · 5분| EASY[연령 · 성별 · 동네만 고른다<br/>입찰 · 예산 소진 방식은 감춘다]\n  MODE -->|전문가| PRO[지면구매 전략까지 직접]\n  EASY --> DSP[DSP · 광고 생성]\n  PRO --> DSP\n  DSP --> REVIEW{심사}\n  REVIEW -->|약 70% 자동| OK[집행 시작]\n  REVIEW -->|나머지| HUMAN[사람이 본다]\n  HUMAN --> OK\n  OK --> ADS[AdServer · 1초에 수천 번<br/>수십만 개 중에서 고른다]\n  ADS --> F[피드]\n  ADS --> S[검색 결과 상단]\n  ADS --> C[카탈로그 상품 영역]\n  F --> DMP[(DMP · 노출 · 클릭 · 목표 행동)]\n  S --> DMP\n  C --> DMP\n  DMP -->|다음 집행의 재료| DSP"
+        },
+        {
+          "title": "광고 하나가 지나는 상태",
+          "question": "예산이 남은 채 끝나는 광고는 어디서 갈라지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 작성됨\n  작성됨 --> 자동심사: 약 70%\n  작성됨 --> 수동심사: 나머지\n  자동심사 --> 집행중: 통과\n  수동심사 --> 집행중: 통과\n  자동심사 --> 반려\n  수동심사 --> 반려\n  집행중 --> 지면구매: AdServer 가 자리를 산다\n  지면구매 --> 집행중\n  집행중 --> 예산소진: 끝까지 쓴다\n  집행중 --> 예산미소진: 보수적으로 사서 돈이 남는다\n  예산소진 --> [*]\n  예산미소진 --> [*]\n  note right of 예산미소진\n    효율은 좋아 보이는데\n    광고주는 돈을 다 못 썼다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 효율만 좇을 때",
+          "question": "잘 만든 최적화가 어떻게 광고주를 잃게 하는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[ROAS 극대화에 매몰] --> CONS[DSP 가 지면을 보수적으로 구매]\n  CONS --> LEFT[광고주 예산 미소진]\n  LEFT --> CHURN[돈을 다 못 쓴 광고주는 돌아오지 않는다]\n  O[반대로 소진만 좇으면] --> WASTE[효율이 나쁜 지면까지 산다]\n  WASTE --> BAD[성과가 안 나온다]\n  BAD --> CHURN\n  E{간편모드를 너무 간편하게} -->|고를 게 없다| NOFIT[가게마다 다른 사정을 못 담는다]\n  E2{너무 열어 두면} -->|전문 용어| GIVEUP[전단지 돌리던 사장님이 포기한다]\n  AUTO[자동 심사 70%] -.->|틀리는 방향에 따라| TWO[정상 광고가 막히거나<br/>나쁜 광고가 통과한다]\n  ADD[지면을 늘려 매출을 키우면] -.-> BASE[거래 · 커뮤니티가 만든 방문을 깎는다]\n  BASE -.->|지면의 값어치가 거기서 나온다| ADD"
+        }
+      ],
+      "sources": [
+        {
+          "title": "당근 광고가 만들어지는 곳, DSP",
+          "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+          "publisher": "당근 블로그 · 광고실",
+          "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+        },
+        {
+          "title": "전단지를 대체할 당근 광고의 등장",
+          "url": "https://careers.daangn.com/blog/post/당근-광고실-동네-사장님-광고/",
+          "publisher": "당근 블로그 · 광고실",
+          "summary": "DSP(광고 생성)·AdServer(광고 배치)·DMP(성과 기록)의 3단 구조와, 같은 채널이라도 파스타 가게와 칼국수 가게의 효과적인 집행 방법은 매우 다르다는 문제 인식."
+        },
+        {
+          "title": "당근비즈니스 — 당근 광고란?",
+          "url": "https://business.daangn.com/ads/about",
+          "publisher": "당근비즈니스",
+          "date": "2026-01",
+          "summary": "누적 가입자 4,300만·누적 광고주 390만+. 디스플레이·검색(간편모드 전용)·카탈로그 상품광고(전문가모드 전용). 지역 타겟팅은 동네부터 전국 단위까지."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "동네 인증을 무엇으로 판정하는지(GPS·기지국·인증 주기·이동 허용 범위) 공개 자료를 찾아야 한다 — 이 회사의 가장 중요한 판단인데 아직 비어 있다.",
+    "로컬 광고의 노출 범위(반경·행정동 단위 등)를 어떻게 정하는지 모른다.",
+    "거래 분쟁 시 플랫폼이 어디까지 개입하는지, 당근페이가 그 개입 수단인지 확인하지 못했다.",
+    "ECK 도입 후 실제로 배포 시간이 얼마나 줄었는지는 글의 '결과' 절을 끝까지 읽지 못해 확인하지 못했다 — 목표(30분 이내)만 확인된 상태다.",
+    "동네 인증의 판정 방식은 이번 사이클에도 공식 자료를 찾지 못했다. 검색으로 나오는 것은 GPS 우회 방법을 다룬 제3자 블로그뿐이라 근거로 쓸 수 없다.",
+    "medium.com 은 WebFetch 가 403 을 돌려준다 — 당근 기술 자료는 브라우저로만 읽을 수 있다.",
+    "Feed Mixer 의 '정책에 따른 페널티'가 무엇을 벌하는지(스팸·중복·품질 등) 글에 구체적으로 나오지 않는다.",
+    "광고가 피드의 어느 자리에 어떤 비중으로 들어가는지, Mixer 가 그것도 조정하는지 확인하지 못했다.",
+    "매너온도가 실제로 어떤 행동에 얼마의 가중치를 주는지는 회사가 공개하지 않는다 — 점수 조작·계정 거래에 대한 대응도 마찬가지로 확인하지 못했다.",
+    "국내 매너온도도 Karrot Score 처럼 바뀌었는지, 두 체계가 지금도 따로 가는지는 확인하지 못했다.",
+    "이 회사의 '동네 인증'(GPS 등으로 위치를 판정하는 쪽)은 여전히 공개 자료가 없다 — 2026-08-20 자 인증 글은 계정·신원 축만 다룬다.",
+    "AdServer 가 '사용자가 가장 좋아할 만한 광고'를 어떤 신호로 고르는지, Feed Mixer 의 콘텐츠 조합과 어디서 맞물리는지는 확인하지 못했다.",
+    "광고 노출 빈도의 상한과 광고 피로를 무엇으로 재는지는 공개돼 있지 않다 — 네이버·카카오도 마찬가지로 비어 있는 자리다."
+  ],
+  "sources": [
+    {
+      "title": "당근, 2025년 연간 실적 발표",
+      "url": "https://about.daangn.com/company/pr/archive/%EB%8B%B9%EA%B7%BC-2025%EB%85%84-%EC%97%B0%EA%B0%84-%EC%8B%A4%EC%A0%81-%EB%B0%9C%ED%91%9C/",
+      "publisher": "당근 보도자료",
+      "date": "2026-03",
+      "summary": "2025년 연결 매출 2,707억(+43%), 영업이익 146억, 순이익 230억. 별도 기준 매출 2,690억·영업이익 671억(+78%)."
+    },
+    {
+      "title": "당근, 2025년 매출 2,707억 원…전년 대비 43% 성장",
+      "url": "https://platum.kr/archives/284275",
+      "publisher": "플래텀",
+      "date": "2026-03",
+      "summary": "매출의 95% 이상이 광고. 광고주 수 +37%, 집행 광고 수 +29%."
+    },
+    {
+      "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+      "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+      "publisher": "당근 테크 블로그",
+      "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+    },
+    {
+      "title": "Feed Infra팀을 소개해요!",
+      "url": "https://medium.com/daangn/feed-infra%ED%8C%80%EC%9D%84-%EC%86%8C%EA%B0%9C%ED%95%B4%EC%9A%94-e77d132afbdf",
+      "publisher": "당근 테크 블로그",
+      "summary": "피드 서비스가 콘텐츠 노출 규칙을 각 서비스에 위임하고, 피드는 노출 순서와 우선순위를 정하는 구조."
+    },
+    {
+      "title": "당근마켓 '매너온도' 글로벌 수출기 (1) — 사용자조사로 유저의 목소리 듣기",
+      "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-1-사용자조사로-유저의-목소리-듣기-4d90cb46553e",
+      "publisher": "당근 기술 블로그 · Adeline Park",
+      "date": "2022-08-16",
+      "summary": "매너온도는 36.5도에서 시작해 최대 99도. 알고리즘은 비공개. 영국·캐나다 현장 인터뷰에서 20여 명 중 체온을 아는 사람은 간호사 1명뿐이었고, 결국 온도 개념을 버리고 Karrot Score 로 바꿨다."
+    },
+    {
+      "title": "당근마켓 '매너온도' 글로벌 수출기 (2) — 프로덕트 디자이너의 Karrot score 신뢰 지표 만들기",
+      "url": "https://medium.com/daangn/글로벌-유저를-위한-매너온도-만들기-2-691b9039845c",
+      "publisher": "당근 기술 블로그 · Ina Jeon",
+      "date": "2022-08-22",
+      "summary": "중고거래 경험이 많은 유저 12명 인터뷰로 신뢰 판단 근거를 3계층으로 정리하고, 시작 점수를 30→0 으로, 만점을 1,000점으로 바꾸며 레벨제를 도입한 과정."
+    },
+    {
+      "title": "당근의 인증은 어떻게 달라져 왔을까요?",
+      "url": "https://medium.com/daangn/당근의-인증은-어떻게-달라져-왔을까요-a50dd4b7b44c",
+      "publisher": "당근 기술 블로그 · Key Kim (Identity Service Team)",
+      "date": "2026-08-20",
+      "summary": "SMS 점유 확인으로 시작한 인증이 계정 분실·번호 대량 발급 사기를 만나 본인인증(CI)으로, 웹 확장을 만나 accounts.daangn.com 단일 SSO(OAuth 2.0/OIDC)로, 글로벌에서 소셜 로그인·Voice Call·Persona KYC 로, 그리고 MCP 시대의 AI 위임 인증으로 이어진 연대기."
+    },
+    {
+      "title": "당근 광고가 만들어지는 곳, DSP",
+      "url": "https://careers.daangn.com/blog/post/당근-광고-개발자-dsp/",
+      "publisher": "당근 블로그 · 광고실",
+      "summary": "DSP 는 약 17만 줄 코드·60개 테이블·150개 넘는 API. 광고의 약 70% 를 자동 심사하고(하루 최대 수만 개), 1초에 수천 번 수십만 개 광고를 대상으로 연산한다. ROAS 극대화에 매몰되면 지면을 보수적으로 사서 광고주 예산이 미소진된다는 딜레마를 밝힌다."
+    },
+    {
+      "title": "전단지를 대체할 당근 광고의 등장",
+      "url": "https://careers.daangn.com/blog/post/당근-광고실-동네-사장님-광고/",
+      "publisher": "당근 블로그 · 광고실",
+      "summary": "DSP(광고 생성)·AdServer(광고 배치)·DMP(성과 기록)의 3단 구조와, 같은 채널이라도 파스타 가게와 칼국수 가게의 효과적인 집행 방법은 매우 다르다는 문제 인식."
+    },
+    {
+      "title": "당근비즈니스 — 당근 광고란?",
+      "url": "https://business.daangn.com/ads/about",
+      "publisher": "당근비즈니스",
+      "date": "2026-01",
+      "summary": "누적 가입자 4,300만·누적 광고주 390만+. 디스플레이·검색(간편모드 전용)·카탈로그 상품광고(전문가모드 전용). 지역 타겟팅은 동네부터 전국 단위까지."
+    }
+  ]
+}

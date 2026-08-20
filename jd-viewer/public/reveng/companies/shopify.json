@@ -1,0 +1,2207 @@
+{
+  "slug": "shopify",
+  "name": "Shopify",
+  "name_en": "Shopify",
+  "country": "CA",
+  "category": "커머스",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "남의 가게가 판 만큼 버는 회사",
+  "business_model": "**구독료보다 거래에서 훨씬 많이 번다.** 2025년 매출 **115.6억 달러**(+30%) 중 머천트 솔루션이 **88.04억 달러**, 구독 솔루션이 **27.52억 달러**로 거래 쪽이 세 배 넘게 크다. 가게들이 실제로 판 금액(GMV)은 **3,784.41억 달러**(+29%), 월 반복 매출(MRR)은 2.05억 달러, 잉여현금흐름은 20억 달러(마진 17%)다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 **자기 지면**에서 벌고, Netflix 는 **자기 구독**에서 벌고, 쿠팡은 **자기가 파는 물건**에서 번다. Shopify 는 **남의 매출의 일부**를 받는다.\n\n**그래서 가용성이 자기 서비스의 문제가 아니라 남의 매출의 문제가 된다** — 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다. 이 회사의 엔지니어링 이야기가 확장보다 **격리와 복구**에 무게를 싣는 이유로 보인다(이 두 문단의 연결은 이 사이트의 해석이다).\n\n**사내에서 같은 모양이 세 번씩 반복된다.** 첫째, **격리의 단위가 곧 전환의 단위다** — pod 를 복구 데이터센터로 옮기고, BFCM 스케일 테스트에서 리전 페일오버를 돌리고, 재고 예약을 MySQL 로 옮길 때도 **pod 단위로 트래픽이 적은 곳부터** 넘겼다. 둘째, **미리 한계를 찾아 두고 되돌릴 길을 열어 둔다** — 스케일 테스트는 통과가 아니라 한계점을 찾는 것이 목적이고, 재고 예약과 스토어프론트 모두 **두 시스템을 나란히 돌려 비교한 뒤**(섀도 모드·Verifier) 킬 스위치를 열어 둔 채 옮겼으며, 성수기에는 변경 속도를 늦춘다. 셋째, **남의 매출을 대신 처리하는 회사라 '멈춤'과 '손실'의 정의가 다르다** — 복구를 속도가 아니라 **'요청이나 작업을 떨어뜨리지 않고'** 로 정의하고, 오버셀이 나면 그 비용(주문 취소·사과·지원)을 상인이 문다는 것을 설계의 출발점으로 삼는다. (이 묶음들은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
+  "products": [
+    "Shopify 플랫폼(온라인 스토어)",
+    "Shopify Payments · Shop Pay",
+    "B2B"
+  ],
+  "domain_map": {
+    "title": "Shopify 도메인 지도",
+    "question": "남의 가게가 판 만큼 버는 회사에서, 멈추지 않는다는 것은 무슨 뜻인가?",
+    "code": "flowchart TD\n  M[가게 주인] --> ST[스토어프론트 렌더링]\n  B[구매자] --> ST\n  ST --> CO[체크아웃 · 결제<br/>Shop Pay]\n  ST --> MT[멀티테넌시 · 격리<br/>pod]\n  CO --> MT\n  MT --> RES[회복탄력성 · 용량 계획]\n  RES --> MT\n  CO --> GMV[GMV 3,784억 달러]\n  GMV --> MS[머천트 솔루션 88.04억 달러]\n  M --> SUB[구독 솔루션 27.52억 달러<br/>MRR 2.05억]\n  MS --> REV[매출 115.6억 달러 · +30%]\n  SUB --> REV\n  MT -.->|멈추면 남의 매출이 멈춘다| GMV\n  classDef money stroke-dasharray: 3 3\n  class REV,GMV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "머천트 솔루션",
+      "how": "결제 처리·환전 수수료 등 거래에 붙는 수익. 2025년 88.04억 달러(2024년 65.30억). GMV 3,784.41억 달러를 따라간다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+          "publisher": "Shopify Inc. · SEC EDGAR",
+          "date": "2026-02-11",
+          "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+        }
+      ]
+    },
+    {
+      "name": "구독 솔루션",
+      "how": "플랫폼 구독료. 2025년 27.52억 달러(2024년 23.50억), MRR 2.05억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+          "publisher": "Shopify Inc. · SEC EDGAR",
+          "date": "2026-02-11",
+          "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "멀티테넌시·격리",
+      "why": "수백만 개의 남의 가게가 한 플랫폼 위에 있다. 그래서 이 도메인의 문제는 '어떻게 크게 만들까'가 아니라 **'한 곳의 실패가 어디까지 번지게 둘 것인가'**다. 2015년 샤딩으로 확장을 얻었지만 **샤드 하나의 실패가 플랫폼 전체의 실패**가 되면서, 회복력을 다시 사 오는 일이 이 도메인의 본체가 됐다.",
+      "tech": [
+        {
+          "tech": "pod — 완전히 격리된 데이터스토어 위의 상점 집합",
+          "solves": "한 pod 의 실패가 플랫폼 장애로 번지지 않게 blast radius 를 pod 크기로 묶는다. 샤딩으로 잃은 회복력을 되사 오는 장치다.",
+          "limits": "pod 단위로 용량과 배치를 관리해야 하고 **여러 pod 에 걸친 기능은 만들 수 없다**(뒷부분은 추정). 큰 상점의 부하를 어떻게 다루는지는 이 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        },
+        {
+          "tech": "Sorting Hat + pod 식별 헤더",
+          "solves": "로드밸런서가 규칙으로 요청을 pod 에 매칭하고 헤더를 붙여, 앱 서버가 pod 지도를 몰라도 올바른 데이터스토어로 가게 한다.",
+          "limits": "라우팅 판단이 로드밸런서 계층에 집중돼 그 계층이 중요한 단일 관문이 된다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        },
+        {
+          "tech": "단일 pod 통신 제약 + 크로스 pod 금지",
+          "solves": "공유 자원(잡 워커·앱 서버·LB)이 한 번에 하나의 pod 하고만 통신하게 해, 데이터 격리가 계산 계층에서 무너지지 않게 한다. 작업 단위 자체가 하나의 pod 만 대상으로 한다.",
+          "limits": "계산 자원을 pod 사이에서 자유롭게 굴리지 못해 활용도가 떨어질 수 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        },
+        {
+          "tech": "Pod Mover + 짝 복구 데이터센터",
+          "solves": "**요청이나 작업을 떨어뜨리지 않고 약 1분** 만에 pod 를 복구 데이터센터로 옮긴다. 이동의 단위가 플랫폼이 아니라 pod 다.",
+          "limits": "데이터센터를 짝으로 유지하는 비용이 들고 이동 중인 pod 를 관리해야 한다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "pods-isolation"
+      ]
+    },
+    {
+      "name": "스토어프론트 렌더링",
+      "why": "가게마다 테마와 코드가 다른데 그 화면이 우리 인프라 위에서 그려진다. 남이 쓴 것이 우리 응답 시간이 되는 자리다.",
+      "tech": [
+        {
+          "tech": "전용 스토어프론트 렌더러(모놀리스에서 분리)",
+          "solves": "결제(정확성·가독성)와 스토어프론트(공격적 최적화)의 상충하는 요구를 갈라, 스토어프론트 트래픽만 성능에 맞춰 최적화한다. 평균 응답이 4~6배 빨라졌고 p75 45ms·p90 230ms·p99 900ms 다.",
+          "limits": "시스템이 하나 늘고 기능 동등성을 따라잡아야 한다(발표 시점 90% 이상). 관용적이지 않은 코드(제자리 수정)를 감수한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+              "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+              "publisher": "Shopify Engineering · Maxime Vaillancourt",
+              "date": "2020-08-20",
+              "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+            },
+            {
+              "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+              "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+              "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+              "date": "2020-12-10",
+              "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+            }
+          ]
+        },
+        {
+          "tech": "쿼리 목록 기록(book-keeping) + MySQL 멀티 스테이트먼트",
+          "solves": "테마가 상인의 코드라 무엇이 필요할지 정적으로 알 수 없는 문제를, 지난 요청의 관측으로 푼다. 다음 요청에서 필요한 쿼리를 한 번에 앞당겨 실행한다.",
+          "limits": "**페이지가 바뀌면 과다 페치·과소 페치가 생긴다** — 요청이 쌓이며 안정화된다고 회사는 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+              "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+              "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+              "date": "2020-12-10",
+              "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+            }
+          ]
+        },
+        {
+          "tech": "다섯 겹 캐시 + Liquid 객체 메모이저",
+          "solves": "같은 것을 반복해 부르는 남의 템플릿을 싸게 만든다. 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다.",
+          "limits": "층마다 무효화와 정합성을 관리해야 한다(추정). **테마 코드 자체가 느릴 때 회사가 무엇을 하는지는 읽은 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+              "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+              "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+              "date": "2020-12-10",
+              "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+            }
+          ]
+        },
+        {
+          "tech": "전용 읽기 복제본 · Semian 서킷 브레이커 · Verifier + nginx Lua 전환",
+          "solves": "주 라이터 부하를 덜고, 외부 의존이 죽으면 끊거나 정본으로 강등하며, 두 구현의 응답을 프로덕션에서 대조해 통과율에 따라 요청 유형별로 자동 전환한다.",
+          "limits": "복제 지연이 화면에 보일 수 있고(추정), 그림자 비교 기간에는 모든 요청을 두 번 처리한다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+              "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+              "publisher": "Shopify Engineering · Maxime Vaillancourt",
+              "date": "2020-08-20",
+              "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "storefront-renderer"
+      ]
+    },
+    {
+      "name": "체크아웃·결제",
+      "why": "머천트 솔루션 매출이 GMV 를 따라가므로, 이 경로가 곧 회사의 매출 경로다. Shop Pay GMV 는 2025년 62% 늘었다.",
+      "tech": [
+        {
+          "tech": "MySQL 재고 예약(SKIP LOCKED · 판매 단위당 1행 · bounded pool)",
+          "solves": "결제 중 재고를 붙잡아 오버셀을 막되, 동시 요청이 서로 다른 행을 집어 기다리지 않게 한다. 예약과 원장이 같은 트랜잭션에 들어와 오버셀·언더셀·예약 유실 세 갈래 실패가 사라졌다.",
+          "limits": "행 수가 재고량에 비례하고, 플래시 세일에 풀이 마르면 보충을 기다리는 구간이 생긴다. 격리 수준을 READ COMMITTED 로 내리는 일반적 함의도 떠안는다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+              "url": "https://shopify.engineering/scaling-inventory-reservations",
+              "publisher": "Shopify Engineering · Emilie Noel",
+              "date": "2026-05-12",
+              "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+            }
+          ]
+        },
+        {
+          "tech": "커넥션 귀속 계측(SQL 주석 태그 + ProxySQL)",
+          "solves": "비즈니스 프로세스별 커넥션 보유 시간을 재서, 쿼리 성능·CPU 로는 보이지 않던 커넥션 풀 병목을 찾아낸다. 전체 경로 정리로 읽기 50%·트랜잭션 33% 감소.",
+          "limits": "모든 SQL 에 태그를 심고 프록시 계층에 계측을 넣어야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+              "url": "https://shopify.engineering/scaling-inventory-reservations",
+              "publisher": "Shopify Engineering · Emilie Noel",
+              "date": "2026-05-12",
+              "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+            }
+          ]
+        },
+        {
+          "tech": "결제 회복탄력성 관행(멱등 키 ULID · 낮은 타임아웃 · 대조 · 서킷 브레이커)",
+          "solves": "이중 청구를 막고(UUIDv4→ULID 로 INSERT 시간 50% 감소), 오픈 1초·읽기/쓰기 5초를 출발점으로 타임아웃을 낮추며, 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하고, 실패한 서비스는 타임아웃을 기다리지 않고 끊는다.",
+          "limits": "대조는 불일치를 사후에 찾는 장치라 그 사이의 창은 남는다(추정). 리틀의 법칙 기준 **70~80% 지점부터 큐가 자라** 완전 포화는 안전하게 도달할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "10 Tips for Building Resilient Payment Systems",
+              "url": "https://shopify.engineering/building-resilient-payment-systems",
+              "publisher": "Shopify Engineering · Bart de Water",
+              "date": "2022-07-28",
+              "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+            }
+          ]
+        },
+        {
+          "tech": "공개 API 의 멱등성 계약",
+          "solves": "카드 결제·구독 청구 시도·매출 확정에 `idempotencyKey` 나 `@idempotent(key:)` 를 받아, 같은 파라미터의 반복 요청이 몇 번을 재시도해도 한 번만 실행되게 한다.",
+          "limits": "**키 보관 기간과 재생 시 무엇을 돌려주는지는 문서에 없다** — Stripe 가 '첫 요청의 상태 코드와 본문을 그대로, 최소 24시간'까지 밝히는 것과 대비된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Idempotent requests — Shopify.dev",
+              "url": "https://shopify.dev/docs/api/usage/idempotent-requests",
+              "publisher": "Shopify 공식 개발자 문서",
+              "date": "2026-08 확인",
+              "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
+            }
+          ]
+        },
+        {
+          "tech": "결제 승인 자체의 상태 모델과 결제수단 연동",
+          "solves": "— 이 사이트는 아직 1차 자료를 찾지 않았다.",
+          "limits": "읽은 글은 재고 예약과 회복탄력성 관행까지다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "checkout-reservations"
+      ]
+    },
+    {
+      "name": "회복탄력성·용량 계획",
+      "why": "1년의 매출이 며칠에 몰리는 사업이라 평시 용량이 아니라 **최대 순간**에 맞춰 준비해야 한다. 이 사이트는 아직 이 도메인의 기능을 채우지 않았다.",
+      "tech": [
+        {
+          "tech": "자원 영역별 용량 산정 + 페일오버 버퍼",
+          "solves": "데이터 사이언스의 트래픽 예측(불확실하면 여러 시나리오)을 GCP 프로젝트 단위의 머신 타입·수량·지리 분포·스토리지로 번역하고, 페일오버와 리전 이중화 여유를 미리 넣는다.",
+          "limits": "상위 10개 자원 영역을 시니어 오너가 직접 산정하는 사람 묶인 작업이라 확장이 어렵다(추정). 평시에는 버퍼가 놀고 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Capacity Planning at Scale",
+              "url": "https://shopify.engineering/capacity-planning-shopify",
+              "publisher": "Shopify Engineering · Kathryn Tang, Kir Shatrov",
+              "date": "2020-12-03",
+              "summary": "데이터 사이언스 팀이 BFCM 트래픽을 예측하는데, 2020년에는 불확실성 때문에 하나가 아니라 여러 시나리오와 각각의 클라우드 배치 요구를 예측했다. GCP 프로젝트 단위(Memcache·Kafka·MySQL 등)로 머신 타입·수량·지리적 분포·CPU·스토리지와 안전 마진을 산정하고, 상위 10개 자원 영역은 시니어 오너가 상세 내역을 만든다. 페일오버와 리전 이중화를 위한 버퍼를 더한다."
+            }
+          ]
+        },
+        {
+          "tech": "Genghis(자체 부하 테스트) + Toxiproxy",
+          "solves": "사용자 행동을 흉내 내며 트래픽을 점진적으로 올려 **한계점을 찾는다.** 3개 GCP 리전 동시, 플래시 세일 버스트 주입, 네트워크 장애·파티션 주입까지 한다. 4~10월 다섯 번.",
+          "limits": "테스트 자체가 반년짜리 프로그램이 된다. 그리고 **부하가 예측을 넘었을 때 무엇을 먼저 버리는지(부하 차단 우선순위)는 읽은 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we prepare Shopify for BFCM",
+              "url": "https://shopify.engineering/bfcm-readiness-2025",
+              "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+              "date": "2025-11-20",
+              "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+            }
+          ]
+        },
+        {
+          "tech": "Game Days + Resiliency Matrix",
+          "solves": "BFCM 규모의 프로덕션 장애를 시뮬레이션해 체크아웃·결제·주문 생성·이행을 확인하고, 결과를 서비스 상태·실패 시나리오·복구 절차·플레이북·온콜이 담긴 중앙 문서로 모은다. 실패 모드를 **사용자 경험**에 대응시킨다.",
+          "limits": "중앙 문서를 계속 최신으로 유지해야 하고, 훈련이 실제 장애와 다를 수 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Resiliency Planning for High-Traffic Events",
+              "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+              "publisher": "Shopify Engineering · Ryan McIlmoyl",
+              "date": "2020-12-10",
+              "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+            },
+            {
+              "title": "How we prepare Shopify for BFCM",
+              "url": "https://shopify.engineering/bfcm-readiness-2025",
+              "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+              "date": "2025-11-20",
+              "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+            }
+          ]
+        },
+        {
+          "tech": "변경 속도 조절",
+          "solves": "'변경은 새로운 형태의 실패를 만든다'는 이유로, BFCM 이 다가오면 변경을 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다.",
+          "limits": "1년 중 가장 주목받는 시기에 제품이 앞으로 나아가지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Resiliency Planning for High-Traffic Events",
+              "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+              "publisher": "Shopify Engineering · Ryan McIlmoyl",
+              "date": "2020-12-10",
+              "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "bfcm-readiness"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "pods-isolation",
+      "name": "Pod — 확장을 얻고 잃은 회복력을 되사기",
+      "domain": "멀티테넌시·격리",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사는 **남의 가게를 대신 돌려 준다.** 그리고 매출의 대부분이 구독료가 아니라 **그 가게들이 실제로 판 만큼**에서 나온다 — 2025년 머천트 솔루션 **88.04억 달러** 대 구독 솔루션 **27.52억 달러**로, **거래 쪽이 세 배 넘게 크다.**\n\n그러면 이 회사의 가용성은 자기 서비스의 문제가 아니라 **남의 매출의 문제**가 된다. 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다(이 문장은 이 사이트의 해석).\n\n그런데 확장을 위해 한 일이 바로 그 가용성을 깎았다. 2015년 샤딩으로 수평 확장을 얻었는데, **샤드 하나가 실패하면 그 동작이 플랫폼 전체에서 불가능해졌다.** 성능과 확장성을 사면서 회복력을 내준 셈이고, pod 아키텍처는 **그 회복력을 다시 사 오는 이야기**다.",
+        "metrics": [
+          {
+            "label": "매출 구성(2025년)",
+            "value": "총 **115.6억 달러**(+30%) — 머천트 솔루션 **88.04억**, 구독 솔루션 **27.52억**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "가게들이 판 금액(GMV)",
+            "value": "**3,784.41억 달러**(+29%). 2024년 2,922.75억",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "구독의 크기",
+            "value": "월 반복 매출(MRR) **2.05억 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "현금 창출",
+            "value": "잉여현금흐름 **20억 달러**, 마진 **17%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "복구 속도",
+            "value": "Pod Mover 로 **요청이나 작업을 떨어뜨리지 않고 약 1분** 만에 복구 데이터센터로 이동",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "2015년 샤딩을 도입하고 나서",
+          "thought": "수평 확장은 얻었는데 **회복력을 잃었다.** 샤드 하나가 실패하면 그 동작이 **플랫폼 전체에서** 불가능해졌기 때문이다. 확장과 격리가 같은 방향이 아니라는 것 — 나눠서 커지는 대신 나눈 조각 하나가 전체를 멈출 수 있게 됐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "blast radius 를 어디까지 좁힐지 정할 때",
+          "thought": "데이터스토어만 나눠서는 부족하다. 잡 워커나 앱 서버가 여러 샤드를 넘나들면 **거기서 다시 번진다.** 그래서 공유 자원을 두되 **한 번에 하나의 pod 하고만 통신**하게 못 박았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "크로스 pod 통신을 금지할 때",
+          "thought": "편의를 위해 한 번만 열어 주면 격리는 그 순간 사라진다. 그래서 예외를 두지 않고 **작업 단위(웹 요청·지연 작업)가 하나의 pod 만 대상으로 하게** 만들었다 — 규칙이 아니라 구조로 막은 셈이다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복구를 어떻게 정의할지 정할 때",
+          "thought": "'몇 분 안에 복구'가 아니라 **'요청이나 작업을 떨어뜨리지 않고' 약 1분**이다. 얼마나 빨리가 아니라 **무엇을 잃지 않을 것인가**를 먼저 정한 것으로 보인다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "상점(shop) — 격리의 단위",
+          "pod — 완전히 격리된 데이터스토어 위에 사는 상점들의 집합",
+          "공유 자원 — 잡 워커 · 앱 서버 · 로드밸런서",
+          "Sorting Hat — 요청을 pod 에 매칭하는 로드밸런서 컴포넌트",
+          "Pod Mover — pod 를 복구 데이터센터로 옮기는 도구"
+        ],
+        "invariants": [
+          "한 pod 의 데이터스토어는 다른 pod 와 완전히 분리된다.",
+          "공유 자원은 **한 번에 하나의 pod 하고만** 통신한다.",
+          "작업 단위(웹 요청 · 지연 작업)는 **하나의 pod 만** 대상으로 한다 — 크로스 pod 통신은 없다.",
+          "요청이 어느 pod 로 갈지는 로드밸런서가 정하고 **헤더로 전달**된다.",
+          "pod 마다 짝이 되는 복구 데이터센터가 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 들어오면 **Sorting Hat** 이 규칙에 따라 그 요청이 속한 pod 를 정한다",
+            "why": "어느 상점의 요청인지에 따라 데이터가 어디 있는지가 결정된다."
+          },
+          {
+            "step": "Sorting Hat 이 **pod 를 식별하는 헤더를 붙인다**",
+            "why": "애플리케이션이 pod 지도를 직접 들고 있지 않아도 되게 한다."
+          },
+          {
+            "step": "앱 서버가 그 헤더를 보고 **해당 pod 의 격리된 데이터스토어**로 라우팅한다",
+            "why": "공유 자원이지만 그 순간에는 한 pod 하고만 통신한다."
+          },
+          {
+            "step": "지연 작업(delayed job)도 같은 규칙을 따른다 — 하나의 작업은 하나의 pod 만 대상으로 한다",
+            "why": "작업 하나가 두 pod 를 건드리면 격리가 무너진다."
+          },
+          {
+            "step": "pod 하나에 장애가 나면 그 pod 의 상점들만 영향을 받는다",
+            "why": "blast radius 를 pod 크기로 묶는 것이 이 구조의 목적이다."
+          },
+          {
+            "step": "필요하면 **Pod Mover** 로 그 pod 를 짝이 되는 복구 데이터센터로 옮긴다 — **요청이나 작업을 떨어뜨리지 않고 약 1분**",
+            "why": "복구를 '무엇을 잃지 않는가'로 정의했기 때문이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수평 확장을 어떻게 얻을 것인가",
+            "chosen": "**샤딩**(2015년) — 데이터베이스를 나눠 수평으로 늘린다.",
+            "alternatives": [
+              "수직 확장을 계속한다",
+              "읽기 복제본만 늘린다"
+            ],
+            "tradeoff": "성능과 확장성을 얻는 대신 **회복력을 잃었다** — 샤드 하나가 실패하면 그 동작이 **플랫폼 전체에서** 불가능해졌다. 이 대가가 그대로 다음 결정의 출발점이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "잃은 회복력을 어떻게 되사 올 것인가",
+            "chosen": "**pod** — 상점들의 집합이 **완전히 격리된 데이터스토어** 위에 살게 한다. 한 pod 의 실패가 플랫폼 장애로 번지지 않게 blast radius 를 묶는다.",
+            "alternatives": [
+              "샤드를 더 잘게 나눈다",
+              "장애 시 전체를 읽기 전용으로 돌린다"
+            ],
+            "tradeoff": "pod 단위로 용량과 배치를 관리해야 하고, 상점이 어느 pod 에 있는지가 운영의 1급 정보가 된다(뒷문장은 이 사이트의 추정). 대신 **실패의 크기가 pod 크기로 상한이 잡힌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 격리하고 무엇을 공유할 것인가",
+            "chosen": "**데이터스토어는 완전히 격리**하고, 잡 워커·앱 서버·로드밸런서 같은 계산 자원은 **공유하되 한 번에 하나의 pod 하고만 통신**하게 한다.",
+            "alternatives": [
+              "계산 자원까지 pod 마다 따로 둔다",
+              "데이터만 나누고 계산은 자유롭게 공유한다"
+            ],
+            "tradeoff": "계산 자원을 pod 사이에서 자유롭게 굴리지 못해 활용도가 떨어질 수 있다(뒷문장은 이 사이트의 추정). 그래도 **공유 자원이 여러 pod 를 넘나들면 격리가 거기서 무너진다** — 데이터만 나누는 것으로는 부족하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "pod 사이 통신을 허용할 것인가",
+            "chosen": "**금지한다.** 각 작업 단위(웹 요청·지연 작업)는 하나의 pod 만 대상으로 하며, pod 간 의존을 없앤다.",
+            "alternatives": [
+              "필요할 때만 크로스 pod 호출을 허용한다",
+              "pod 간 조회용 읽기 경로를 하나 연다"
+            ],
+            "tradeoff": "**여러 pod 에 걸친 기능은 이 구조 안에서 만들 수 없다**(뒷문장은 이 사이트의 추정). 대신 예외가 없으므로 격리가 규칙이 아니라 구조로 지켜진다 — 한 번 열어 주면 그때부터 격리는 보장이 아니라 관행이 된다(이 역시 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "요청을 어느 pod 로 보낼지 누가 정할 것인가",
+            "chosen": "로드밸런서 컴포넌트 **Sorting Hat** 이 규칙으로 매칭하고 **pod 를 식별하는 헤더를 붙인다.** 앱 서버는 그 헤더를 보고 라우팅한다.",
+            "alternatives": [
+              "애플리케이션이 매 요청마다 pod 를 조회한다",
+              "DNS 로 pod 별 엔드포인트를 나눈다"
+            ],
+            "tradeoff": "라우팅 판단이 로드밸런서 계층에 집중되어 그 계층이 중요한 단일 관문이 된다(뒷문장은 이 사이트의 추정). 대신 **애플리케이션은 pod 지도를 몰라도 되고**, 상점을 옮길 때 규칙만 바꾸면 된다(이 역시 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "재해 복구를 어떻게 준비할 것인가",
+            "chosen": "pod 마다 **짝이 되는 복구 데이터센터**를 두고, **Pod Mover** 로 옮긴다 — **요청이나 작업을 떨어뜨리지 않고 약 1분.**",
+            "alternatives": [
+              "전체 데이터센터 단위로만 장애 조치한다",
+              "백업에서 복원한다"
+            ],
+            "tradeoff": "데이터센터를 짝으로 유지하는 비용이 들고 이동 중인 pod 를 관리해야 한다(뒷문장은 이 사이트의 추정). 대신 **이동의 단위가 플랫폼이 아니라 pod** 라서, 문제가 난 부분만 옮길 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "복구를 무엇으로 정의할 것인가",
+            "chosen": "속도가 아니라 **손실 없음**으로 먼저 정의한다 — '요청이나 작업을 떨어뜨리지 않고' 약 1분.",
+            "alternatives": [
+              "목표 복구 시간(RTO)만 정한다",
+              "일부 요청 실패를 허용하고 더 빨리 옮긴다"
+            ],
+            "tradeoff": "떨어뜨리지 않으려면 이동 절차가 복잡해진다(뒷문장은 이 사이트의 추정). 대신 **가게의 주문 하나가 사라지지 않는다** — 남의 매출을 대신 처리하는 회사에서는 이 정의가 다를 수 없다(이 역시 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "pod — 완전히 격리된 데이터스토어 집합",
+            "role": "상점들을 묶어 실패의 크기를 pod 단위로 상한 짓는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "Sorting Hat(로드밸런서 컴포넌트)",
+            "role": "규칙으로 요청을 pod 에 매칭하고 헤더를 붙여 앱 서버가 올바른 데이터스토어로 가게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "단일 pod 통신 제약",
+            "role": "공유 자원(잡 워커·앱 서버·LB)이 한 번에 하나의 pod 하고만 통신하게 해, 데이터 격리가 계산 계층에서 무너지지 않게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "Pod Mover + 짝 복구 데이터센터",
+            "role": "요청이나 작업을 떨어뜨리지 않고 약 1분 만에 pod 를 복구 데이터센터로 옮긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "pod 별 용량 배분과 상점 재배치 기준",
+            "role": "— 이 글에 없다. 어떤 상점이 어느 pod 에 가는지, 큰 상점의 부하를 어떻게 다루는지는 다루지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "체크아웃·결제",
+          "via": "매출이 걸린 경로",
+          "contract": "머천트 솔루션 매출이 GMV 를 따라가므로 결제가 멈추면 매출이 멈춘다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "회복탄력성·용량 계획",
+          "via": "장애의 단위",
+          "contract": "pod 가 격리의 단위이자 이동의 단위이므로 부하 대응과 용량 계획도 그 단위 위에서 이뤄질 것으로 보인다 — 이 사이트는 아직 확인하지 않았다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "stripe:docdb-migrations",
+          "via": "무중단을 무엇으로 정의하는가",
+          "contract": "Stripe 는 '멈추지 않는다'를 **애플리케이션의 재시도 예산**으로 정의해 핵심 단계를 2초 미만으로 두고, Shopify 는 **'요청이나 작업을 떨어뜨리지 않고 약 1분'**으로 정의한다. 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 pod 를 찾아가는 길",
+          "question": "애플리케이션이 pod 지도를 모르는데 어떻게 올바른 데이터에 닿는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[요청 · 어느 상점] --> SH[Sorting Hat<br/>로드밸런서 컴포넌트]\n  SH -->|규칙으로 매칭| HDR[pod 식별 헤더 부착]\n  HDR --> APP[앱 서버 · 공유 자원]\n  APP -->|헤더를 보고| P1[(Pod A<br/>격리된 데이터스토어)]\n  APP -.->|한 번에 한 pod 하고만| P2[(Pod B)]\n  JOB[지연 작업] --> APP\n  P1 --> RESP[응답]\n  P1 -.->|짝 데이터센터| DR[(복구 DC)]\n  MOVER[Pod Mover] -.->|요청·작업 손실 없이 약 1분| DR\n  X[크로스 pod 통신] -.->|금지| P2\n  classDef ban stroke-dasharray: 4 4\n  class X ban"
+        },
+        {
+          "title": "pod 하나가 거치는 상태",
+          "question": "장애가 났을 때 무엇이 어느 단위로 움직이는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 정상: 상점들이 이 pod 의 데이터스토어를 쓴다\n  정상 --> 부분장애: 이 pod 의 데이터스토어 문제\n  note right of 부분장애\n    영향 범위는 이 pod 의 상점들\n    플랫폼 전체가 아니다\n  end note\n  부분장애 --> 정상: 복구\n  부분장애 --> 이동중: Pod Mover 실행\n  이동중 --> 복구DC: 약 1분 · 요청·작업 손실 없음\n  복구DC --> 정상: 원래 DC 복구 후 되돌림\n  정상 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 격리가 무너지는 자리",
+          "question": "데이터만 나누면 왜 부족한가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SHARD[2015 샤딩] --> SCALE[수평 확장 획득]\n  SHARD --> LOSS[**회복력 상실**]\n  LOSS --> ALL[샤드 하나 실패 →<br/>그 동작이 플랫폼 전체에서 불가]\n  ALL --> POD[pod 로 blast radius 격리]\n  SHARE[공유 자원이 여러 샤드를 넘나든다] --> SPREAD[격리가 계산 계층에서 무너진다]\n  SPREAD --> RULE[**한 번에 하나의 pod 하고만 통신**]\n  CROSS[크로스 pod 호출을 한 번 허용] -->|추정| WEAK[격리가 보장이 아니라 관행이 된다]\n  CROSS --> BAN[작업 단위를 하나의 pod 로 못 박음]\n  BIG[아주 큰 상점] -->|추정| HOT[그 pod 에 부하가 몰린다<br/>이 글에는 다루지 않음]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "A Pods Architecture To Allow Shopify To Scale",
+          "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+          "publisher": "Shopify Engineering · Xavier Denis",
+          "date": "2018-03-02",
+          "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+        },
+        {
+          "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+          "publisher": "Shopify Inc. · SEC EDGAR",
+          "date": "2026-02-11",
+          "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+        }
+      ]
+    },
+    {
+      "key": "bfcm-readiness",
+      "name": "BFCM 준비 — 가장 중요한 날에 가장 적게 바꾸기",
+      "domain": "회복탄력성·용량 계획",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 한 해는 **며칠에 결정된다.** 남의 가게가 판 만큼 버는 구조라 블랙 프라이데이·사이버 먼데이(BFCM) 주말에 트래픽이 몰리고, 그때 멈추면 수백만 가게의 판매가 함께 멈춘다.\n\n규모를 보면 왜 이것이 별도의 도메인인지가 드러난다. 2024년 BFCM 실측으로 **엣지 요청 피크가 분당 2억 8,400만 건**, 앱 서버는 **분당 8,000만 건**, 데이터 처리량은 **분당 12테라바이트**였다. 한 시즌에 데이터 **57.3페타바이트**, 데이터베이스 쿼리 **10.5조 건**이 지나갔다.\n\n그래서 이 도메인의 일은 '용량을 늘린다'가 아니다. **1년 중 며칠을 위해 3월부터 준비하고, 예측을 믿는 대신 다섯 번 시험하고, 가장 중요한 시기에는 가장 적게 바꾸는 것**이다.",
+        "metrics": [
+          {
+            "label": "2024 BFCM 실측 피크",
+            "value": "엣지 **분당 2억 8,400만 요청**, 앱 서버 **분당 8,000만**, 데이터 처리량 **분당 12TB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "label": "한 시즌의 총량",
+            "value": "데이터 **57.3PB**, DB 쿼리 **10.5조**, 엣지 요청 **1.19조**, DB 쓰기 **1.17조**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "label": "검증한 한계",
+            "value": "스케일 테스트 4회차 **분당 1억 4,600만 요청 · 분당 8만+ 체크아웃**, 5회차 p99 **분당 2억 요청**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "label": "준비 기간",
+            "value": "**3월~10월** 연중 준비, **4~10월 다섯 번**의 대규모 스케일 테스트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "label": "테스트 범위",
+            "value": "**3개 GCP 리전**(us-central · us-east · europe-west4)에서 동시에, 플래시 세일 버스트를 주입",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "1년 매출이 며칠에 몰린다는 것을 인정할 때",
+          "thought": "평시 용량 계획으로는 이 사업을 감당할 수 없다. 그래서 준비가 **3월에 시작해 10월까지 이어지고**, 그 사이에 다섯 번의 대규모 스케일 테스트가 예측 트래픽을 점점 올려 가며 돈다. **1년의 대부분을 며칠을 위해 쓰는 셈이다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "2020년에 과거 추세를 믿을 수 없게 됐을 때",
+          "thought": "코로나로 수요가 어떻게 될지 알 수 없었다. 그때 한 일은 예측을 포기하는 것이 아니라 **하나의 답을 포기하는 것**이었다 — **여러 시나리오와 각각의 클라우드 배치 요구를 함께 예측**해, 리더십이 어느 쪽에 얼마를 걸지 근거를 갖고 정하게 했다(마지막 절은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "부하 테스트를 통과했을 때",
+          "thought": "통과는 목적이 아니다. Genghis 는 **트래픽을 점진적으로 올려 한계점을 찾는** 도구다. 실제로 다섯 번의 테스트가 **체크아웃 큐 적체, 마이그레이션 검증 공백, 계획에 없던 페일오버 트리거, 리전 재균형 지연**을 찾아냈다 — **문제를 찾은 테스트가 성공한 테스트다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "BFCM 이 다가올 때",
+          "thought": "**변경은 새로운 형태의 실패를 만든다.** 그래서 이 시기에는 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다. **1년에서 가장 중요한 며칠을 앞두고 가장 적게 바꾸기로 한 것**이다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "트래픽 예측 — 데이터 사이언스 팀이 만든다. 불확실하면 여러 시나리오",
+          "자원 영역 — GCP 프로젝트 단위(Memcache · Kafka · MySQL 등)",
+          "스케일 테스트 — 4~10월 다섯 번, 예측 트래픽을 점점 올린다",
+          "Game Day — BFCM 규모의 프로덕션 장애를 시뮬레이션하는 카오스 엔지니어링 훈련",
+          "Resiliency Matrix — 서비스 상태 · 실패 시나리오 · 복구 절차 · 플레이북 · 온콜을 담은 중앙 문서"
+        ],
+        "invariants": [
+          "1년의 결과가 며칠에 결정된다 — 평시 용량이 아니라 **최대 순간**에 맞춘다.",
+          "예측은 시험으로만 확인된다.",
+          "테스트의 성공은 통과가 아니라 **한계점과 문제를 찾는 것**이다.",
+          "**변경은 새로운 형태의 실패를 만든다.**",
+          "과거 트래픽 이력이 없는 시스템은 시뮬레이션으로만 준비할 수 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "데이터 사이언스 팀이 BFCM 트래픽을 예측한다 — 불확실하면 **여러 시나리오**와 각각의 클라우드 배치 요구를 함께 낸다",
+            "why": "하나의 숫자를 믿고 투자하면 그 숫자가 틀렸을 때 되돌릴 수 없다."
+          },
+          {
+            "step": "예측을 **GCP 프로젝트 단위**(Memcache·Kafka·MySQL 등)로 쪼개 머신 타입·수량·지리적 분포·CPU·스토리지와 **안전 마진**을 산정한다. 상위 10개 자원 영역은 **시니어 오너**가 상세 내역을 만든다",
+            "why": "'트래픽 2배'는 인프라 주문서가 되지 못한다. 누군가 그것을 머신 수로 옮겨야 한다."
+          },
+          {
+            "step": "**페일오버와 리전 이중화를 위한 버퍼**를 더한다",
+            "why": "장애 조치를 하려면 받아 줄 여유가 미리 있어야 한다."
+          },
+          {
+            "step": "3월부터 10월까지 **용량 모델링 · 인프라 로드맵 검토 · 위험 평가** 세 갈래를 동시에 돌린다",
+            "why": "세 가지가 서로의 입력이 되기 때문으로 보인다(추정)."
+          },
+          {
+            "step": "**Genghis** 로 부하 테스트를 돌린다 — 사용자 행동을 시뮬레이션하며 트래픽을 점진적으로 올려 **한계점을 찾고**, 3개 리전에서 동시에, 플래시 세일 버스트를 주입한다. **Toxiproxy** 로 네트워크 장애와 파티션을 넣는다",
+            "why": "예측이 맞는지는 시험해 봐야만 안다."
+          },
+          {
+            "step": "**Game Day** — BFCM 규모에서 프로덕션 장애를 시뮬레이션한다. 체크아웃·결제 처리·주문 생성·이행 같은 **중요 여정**에 집중하고, 프론트엔드 팀은 버그 배시를 돈다",
+            "why": "문서에 적힌 복구 절차가 실제로 작동하는지는 해 봐야 안다."
+          },
+          {
+            "step": "찾아낸 것을 **Resiliency Matrix** 에 모은다 — 서비스 상태, 실패 시나리오, 복구 절차, 운영 플레이북, 온콜 커버리지",
+            "why": "흩어진 지식은 새벽 3시에 쓸 수 없다(추정)."
+          },
+          {
+            "step": "BFCM 이 가까워지면 **변경 속도를 늦추고** 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다",
+            "why": "변경은 새로운 형태의 실패를 만들기 때문이다."
+          },
+          {
+            "step": "주말에는 24/7 인시던트 대응, 리전별 실시간 대시보드, 판매자 커뮤니케이션, 실시간 튜닝을 돌리고 끝나면 사후 분석을 한다",
+            "why": "준비한 것과 실제로 일어난 것을 맞춰 봐야 다음 해가 나아진다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수요를 하나의 숫자로 예측할 것인가",
+            "chosen": "불확실할 때는 **여러 시나리오**를 예측한다 — 2020년 코로나로 과거 추세를 믿기 어려워지자 시나리오별로 클라우드 배치 요구를 함께 냈다.",
+            "alternatives": [
+              "과거 성장률로 하나의 예측치를 낸다",
+              "최악의 경우에만 맞춘다"
+            ],
+            "tradeoff": "시나리오마다 투자 규모가 달라 **결국 사람이 어느 쪽에 걸지 결정해야 한다**(뒷문장은 이 사이트의 해석). 대신 그 결정이 감이 아니라 근거 위에서 이뤄진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Capacity Planning at Scale",
+                "url": "https://shopify.engineering/capacity-planning-shopify",
+                "publisher": "Shopify Engineering · Kathryn Tang, Kir Shatrov",
+                "date": "2020-12-03",
+                "summary": "데이터 사이언스 팀이 BFCM 트래픽을 예측하는데, 2020년에는 불확실성 때문에 하나가 아니라 여러 시나리오와 각각의 클라우드 배치 요구를 예측했다. GCP 프로젝트 단위(Memcache·Kafka·MySQL 등)로 머신 타입·수량·지리적 분포·CPU·스토리지와 안전 마진을 산정하고, 상위 10개 자원 영역은 시니어 오너가 상세 내역을 만든다. 페일오버와 리전 이중화를 위한 버퍼를 더한다."
+              }
+            ]
+          },
+          {
+            "question": "예측을 무엇으로 인프라에 옮길 것인가",
+            "chosen": "**GCP 프로젝트 단위**(Memcache·Kafka·MySQL 등)로 쪼개 머신 타입·수량·지리적 분포·CPU·스토리지·안전 마진을 산정하고, **상위 10개 자원 영역은 시니어 오너가 직접** 상세 내역을 만든다.",
+            "alternatives": [
+              "전체 용량을 하나의 배수로 늘린다",
+              "자동 확장에 맡긴다"
+            ],
+            "tradeoff": "사람에 묶인 작업이라 자원 영역이 늘수록 확장이 어렵다(뒷문장은 이 사이트의 추정). 대신 **'트래픽 2배'가 실제 머신 주문서로 번역**된다 — 그 번역을 아무도 안 하면 예측은 문서로만 남는다(이 역시 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Capacity Planning at Scale",
+                "url": "https://shopify.engineering/capacity-planning-shopify",
+                "publisher": "Shopify Engineering · Kathryn Tang, Kir Shatrov",
+                "date": "2020-12-03",
+                "summary": "데이터 사이언스 팀이 BFCM 트래픽을 예측하는데, 2020년에는 불확실성 때문에 하나가 아니라 여러 시나리오와 각각의 클라우드 배치 요구를 예측했다. GCP 프로젝트 단위(Memcache·Kafka·MySQL 등)로 머신 타입·수량·지리적 분포·CPU·스토리지와 안전 마진을 산정하고, 상위 10개 자원 영역은 시니어 오너가 상세 내역을 만든다. 페일오버와 리전 이중화를 위한 버퍼를 더한다."
+              }
+            ]
+          },
+          {
+            "question": "페일오버 여유를 용량에 포함할 것인가",
+            "chosen": "**포함한다.** 페일오버와 리전 이중화를 위한 버퍼를 산정에 더한다.",
+            "alternatives": [
+              "필요할 때 늘린다",
+              "이중화 없이 최대치만 맞춘다"
+            ],
+            "tradeoff": "평시에 놀고 있는 용량 값을 낸다. 대신 **장애 조치를 하려면 받아 줄 여유가 그전에 있어야 한다** — 없으면 옮길 곳이 없다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Capacity Planning at Scale",
+                "url": "https://shopify.engineering/capacity-planning-shopify",
+                "publisher": "Shopify Engineering · Kathryn Tang, Kir Shatrov",
+                "date": "2020-12-03",
+                "summary": "데이터 사이언스 팀이 BFCM 트래픽을 예측하는데, 2020년에는 불확실성 때문에 하나가 아니라 여러 시나리오와 각각의 클라우드 배치 요구를 예측했다. GCP 프로젝트 단위(Memcache·Kafka·MySQL 등)로 머신 타입·수량·지리적 분포·CPU·스토리지와 안전 마진을 산정하고, 상위 10개 자원 영역은 시니어 오너가 상세 내역을 만든다. 페일오버와 리전 이중화를 위한 버퍼를 더한다."
+              }
+            ]
+          },
+          {
+            "question": "예측을 믿을 것인가 시험할 것인가",
+            "chosen": "**시험한다.** 자체 도구 **Genghis** 로 사용자 행동을 흉내 내며 트래픽을 점진적으로 올려 **한계점을 찾고**, 3개 GCP 리전에서 동시에 돌리며 플래시 세일 버스트를 주입한다. **Toxiproxy** 로 네트워크 장애·파티션을 넣는다.",
+            "alternatives": [
+              "과거 피크를 재생한다",
+              "프로덕션에서 관측만 한다"
+            ],
+            "tradeoff": "테스트 자체가 **4~10월에 걸친 다섯 번의 대규모 프로그램**이 되어 그만한 인력과 비용을 쓴다. 대신 4회차에서 분당 1억 4,600만 요청·8만 체크아웃, 5회차 p99 분당 2억 요청까지 확인된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "question": "테스트의 성공을 무엇으로 볼 것인가",
+            "chosen": "**문제를 찾는 것**을 성공으로 본다. 실제로 다섯 번의 테스트가 **체크아웃 큐 적체, 마이그레이션 검증 공백, 계획에 없던 페일오버 트리거, 리전 재균형 지연**을 드러냈다.",
+            "alternatives": [
+              "목표 부하를 통과하면 성공으로 본다"
+            ],
+            "tradeoff": "매번 고칠 것이 나오므로 **테스트가 끝나도 안심할 수 없다**(뒷문장은 이 사이트의 해석). 대신 아키텍처 스케일업·정상 부하·리전 페일오버·연쇄 장애까지 시나리오를 넓혀 잡을 이유가 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "question": "장애 대비 지식을 어디에 둘 것인가",
+            "chosen": "**Resiliency Matrix** 하나로 모은다 — 서비스 상태, 실패 시나리오, 복구 절차, 운영 플레이북, 온콜 커버리지. 원래는 **의존성과 그 실패 모드를 사용자 경험에 대응시키는**(둘러볼 수 있는가·결제할 수 있는가) 문서에서 출발했다.",
+            "alternatives": [
+              "팀마다 런북을 따로 관리한다",
+              "장애가 나면 그때 파악한다"
+            ],
+            "tradeoff": "중앙 문서를 계속 최신으로 유지해야 한다. 대신 **실패를 시스템 이름이 아니라 사용자가 무엇을 못 하게 되는지로 적게 된다** — 그러면 우선순위가 저절로 정해진다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Resiliency Planning for High-Traffic Events",
+                "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+                "publisher": "Shopify Engineering · Ryan McIlmoyl",
+                "date": "2020-12-10",
+                "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+              },
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "question": "가장 중요한 시기에 무엇을 할 것인가",
+            "chosen": "**가장 적게 바꾼다.** BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다 — 회사의 표현으로 **'변경은 새로운 형태의 실패를 만든다.'**",
+            "alternatives": [
+              "성수기에 맞춰 신기능을 낸다",
+              "평소 속도를 유지한다"
+            ],
+            "tradeoff": "1년 중 가장 주목받는 시기에 **제품이 앞으로 나아가지 않는다.** 대신 그 며칠에 새로 생길 실패의 종류가 줄어든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Resiliency Planning for High-Traffic Events",
+                "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+                "publisher": "Shopify Engineering · Ryan McIlmoyl",
+                "date": "2020-12-10",
+                "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "과거 데이터가 없는 새 시스템은 어떻게 준비할 것인가",
+            "chosen": "**시뮬레이션으로 만들어 낸다.** 2024년에 다시 지은 애널리틱스 플랫폼은 새 ETL 파이프라인과 API 계층이 성수기 뒤에 나와 **홀리데이 트래픽 이력이 없었다.** Game Day 로 Kafka 파티션 증가, API 메모리 최적화, 커넥션 타임아웃 튜닝, 로드밸런서 재구성을 다뤘다.",
+            "alternatives": [
+              "성수기 전에는 새 시스템을 올리지 않는다",
+              "작년 시스템의 수치를 그대로 쓴다"
+            ],
+            "tradeoff": "시뮬레이션이 실제 부하와 다를 수 있다(뒷문장은 이 사이트의 추정). 대신 **이력이 없다는 사실 자체를 위험으로 문서화하고 그 위험만 따로 훈련**할 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Genghis — 자체 부하 테스트 도구",
+            "role": "사용자 행동을 흉내 내며 트래픽을 점진적으로 올려 한계점을 찾는다. 3개 GCP 리전에서 동시에 돌리고 플래시 세일 버스트를 주입한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "tech": "Toxiproxy(오픈소스)",
+            "role": "네트워크 장애와 파티션을 주입해 연쇄 장애 시나리오를 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "tech": "Game Days(카오스 엔지니어링)",
+            "role": "BFCM 규모에서 프로덕션 장애를 시뮬레이션한다. 체크아웃·결제·주문 생성·이행 같은 중요 여정에 집중하고, 문서화된 모델을 실제 동작과 대조한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              },
+              {
+                "title": "Resiliency Planning for High-Traffic Events",
+                "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+                "publisher": "Shopify Engineering · Ryan McIlmoyl",
+                "date": "2020-12-10",
+                "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "Resiliency Matrix",
+            "role": "서비스 상태·실패 시나리오·복구 절차·플레이북·온콜을 한 곳에 모으고, 실패 모드를 사용자 경험에 대응시킨다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Resiliency Planning for High-Traffic Events",
+                "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+                "publisher": "Shopify Engineering · Ryan McIlmoyl",
+                "date": "2020-12-10",
+                "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+              },
+              {
+                "title": "How we prepare Shopify for BFCM",
+                "url": "https://shopify.engineering/bfcm-readiness-2025",
+                "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+                "date": "2025-11-20",
+                "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+              }
+            ]
+          },
+          {
+            "tech": "자원 영역별 용량 산정(GCP 프로젝트 단위)",
+            "role": "트래픽 예측을 머신 타입·수량·지리 분포·스토리지와 안전 마진으로 번역한다. 페일오버·이중화 버퍼를 포함한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Capacity Planning at Scale",
+                "url": "https://shopify.engineering/capacity-planning-shopify",
+                "publisher": "Shopify Engineering · Kathryn Tang, Kir Shatrov",
+                "date": "2020-12-03",
+                "summary": "데이터 사이언스 팀이 BFCM 트래픽을 예측하는데, 2020년에는 불확실성 때문에 하나가 아니라 여러 시나리오와 각각의 클라우드 배치 요구를 예측했다. GCP 프로젝트 단위(Memcache·Kafka·MySQL 등)로 머신 타입·수량·지리적 분포·CPU·스토리지와 안전 마진을 산정하고, 상위 10개 자원 영역은 시니어 오너가 상세 내역을 만든다. 페일오버와 리전 이중화를 위한 버퍼를 더한다."
+              }
+            ]
+          },
+          {
+            "tech": "변경 속도 조절",
+            "role": "BFCM 이 다가오면 변경을 늦추고 성능·신뢰성·확장으로 투자를 옮긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Resiliency Planning for High-Traffic Events",
+                "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+                "publisher": "Shopify Engineering · Ryan McIlmoyl",
+                "date": "2020-12-10",
+                "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "부하 차단(load shedding)의 우선순위",
+            "role": "— 무엇을 먼저 버리는지는 읽은 글 어디에도 없다. 체크아웃 큐가 존재한다는 사실만 스케일 테스트에서 드러난 문제로 언급된다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "pods-isolation",
+          "via": "격리의 단위가 대응의 단위",
+          "contract": "스케일 테스트에 **리전 페일오버와 리전 재균형**이 시나리오로 들어 있고 실제로 '리전 재균형 지연'이 문제로 나왔다 — 격리·이동의 단위 위에서 부하 대응이 이뤄진다는 뜻으로 보이지만, 두 글이 pod 와 리전의 관계를 명시하지는 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "체크아웃·결제",
+          "via": "중요 여정",
+          "contract": "Game Day 가 집중하는 중요 여정이 체크아웃·결제 처리·주문 생성·이행이고, 스케일 테스트에서 **체크아웃 큐 적체**가 문제로 드러났다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "stripe:docdb-migrations",
+          "via": "무중단을 무엇으로 정의하는가",
+          "contract": "Stripe 는 '멈추지 않는다'를 **애플리케이션의 재시도 예산**으로 정의해 핵심 단계를 2초 미만으로 두고, Shopify 는 준비 쪽에서 답을 찾는다 — **미리 한계점을 찾아 두고 가장 중요한 시기에 가장 적게 바꾼다.** 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "한 해가 며칠을 향해 가는 길",
+          "question": "3월부터 무엇을 하면 11월의 며칠을 견딜 수 있는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  DS[데이터 사이언스<br/>트래픽 예측 · 여러 시나리오] --> PLAN[자원 영역별 용량 산정<br/>Memcache · Kafka · MySQL …]\n  PLAN --> BUF[페일오버 · 리전 이중화 버퍼]\n  BUF --> PROV[클라우드 배치]\n  PROV --> TEST[스케일 테스트 5회 · 4~10월]\n  GEN[Genghis<br/>트래픽을 점진적으로 올려 한계점 탐색] --> TEST\n  TOX[Toxiproxy<br/>네트워크 장애 · 파티션] --> TEST\n  GD[Game Days<br/>체크아웃 · 결제 · 주문 · 이행] --> FIND\n  TEST --> FIND[찾아낸 문제]\n  FIND --> MATRIX[(Resiliency Matrix<br/>실패 시나리오 · 복구 절차 · 플레이북 · 온콜)]\n  MATRIX --> FIX[고치기]\n  FIX --> TEST\n  FIX --> SLOW[**변경 속도 늦추기**<br/>신기능 대신 성능·신뢰성·확장]\n  SLOW --> BFCM([BFCM 주말<br/>24/7 대응 · 실시간 튜닝])\n  BFCM --> POST[사후 분석]\n  POST -.->|다음 해의 입력| DS"
+        },
+        {
+          "title": "한 해가 거치는 상태",
+          "question": "준비의 각 단계는 무엇이 끝나야 다음으로 넘어가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 계획: 3월\n  계획 --> 용량산정: 예측을 머신 수로 번역\n  용량산정 --> 스케일테스트: 4월\n  스케일테스트 --> 문제발견: 한계점 탐색\n  note right of 문제발견\n    체크아웃 큐 적체\n    마이그레이션 검증 공백\n    계획에 없던 페일오버 트리거\n    리전 재균형 지연\n  end note\n  문제발견 --> 수정\n  수정 --> 스케일테스트: 다음 회차(총 5회, ~10월)\n  스케일테스트 --> 변경동결: BFCM 접근\n  변경동결 --> BFCM주말: 24/7 대응 · 실시간 튜닝\n  BFCM주말 --> 사후분석\n  사후분석 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 준비가 못 덮는 자리",
+          "question": "무엇이 이 준비 체계 밖에 남는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  CHANGE[변경] --> NEW[**새로운 형태의 실패**]\n  NEW --> FREEZE[그래서 성수기엔 변경을 늦춘다]\n  FREEZE --> COST[대가: 그 기간 제품이 나아가지 않는다]\n  NEWSYS[성수기 뒤에 올라간 새 시스템<br/>2024 애널리틱스 재구축] --> NOHIST[**홀리데이 트래픽 이력이 없다**]\n  NOHIST --> SIM[Game Day 시뮬레이션으로 대체<br/>Kafka 파티션 · API 메모리 · 타임아웃 · LB]\n  SIM -->|추정| GAP[시뮬레이션과 실제 부하의 차이는 남는다]\n  PASS[테스트 통과] -->|해석| FALSE[통과가 성공이 아니다<br/>문제를 찾은 테스트가 성공한 테스트다]\n  SHED[부하가 예측을 넘으면<br/>무엇을 먼저 버리는가] --> UNK[**읽은 글에 없다**<br/>체크아웃 큐의 존재만 언급된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How we prepare Shopify for BFCM",
+          "url": "https://shopify.engineering/bfcm-readiness-2025",
+          "publisher": "Shopify Engineering · Kyle Petroski, Matthew Frail",
+          "date": "2025-11-20",
+          "summary": "3월부터 10월까지 이어지는 BFCM 준비. 용량 모델링·인프라 로드맵 검토·위험 평가 세 갈래를 동시에 돌리고, Game Days(카오스 엔지니어링)로 체크아웃·결제·주문 생성·이행 같은 중요 여정을 시뮬레이션한다. 자체 부하 테스트 도구 Genghis 로 3개 GCP 리전에서 트래픽을 점진적으로 올려 한계점을 찾고 Toxiproxy 로 네트워크 장애를 주입한다. 4~10월 5회의 스케일 테스트에서 분당 1억 4,600만 요청·8만 체크아웃(4회차), p99 분당 2억 요청(5회차)을 검증했고 체크아웃 큐 적체 등 문제를 찾아냈다."
+        },
+        {
+          "title": "Capacity Planning at Scale",
+          "url": "https://shopify.engineering/capacity-planning-shopify",
+          "publisher": "Shopify Engineering · Kathryn Tang, Kir Shatrov",
+          "date": "2020-12-03",
+          "summary": "데이터 사이언스 팀이 BFCM 트래픽을 예측하는데, 2020년에는 불확실성 때문에 하나가 아니라 여러 시나리오와 각각의 클라우드 배치 요구를 예측했다. GCP 프로젝트 단위(Memcache·Kafka·MySQL 등)로 머신 타입·수량·지리적 분포·CPU·스토리지와 안전 마진을 산정하고, 상위 10개 자원 영역은 시니어 오너가 상세 내역을 만든다. 페일오버와 리전 이중화를 위한 버퍼를 더한다."
+        },
+        {
+          "title": "Resiliency Planning for High-Traffic Events",
+          "url": "https://shopify.engineering/resiliency-planning-for-high-traffic-events",
+          "publisher": "Shopify Engineering · Ryan McIlmoyl",
+          "date": "2020-12-10",
+          "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
+        }
+      ]
+    },
+    {
+      "key": "checkout-reservations",
+      "name": "체크아웃 — 결제하는 동안 물건을 붙잡아 두기",
+      "domain": "체크아웃·결제",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "머천트 솔루션 매출(2025년 88.04억 달러)이 나오는 경로가 여기다. 그리고 이 경로에는 다른 도메인에 없는 성질이 하나 있다 — **틀리면 어느 쪽으로 틀리든 상인이 손해를 본다.**\n\n결제가 진행되는 동안 그 물건을 붙잡아 두지 않으면 두 사람이 **마지막 하나**를 동시에 산다. 회사의 표현으로, 그러면 **상인이 주문을 취소하고 사과 메일을 보내고 지원 비용을 문다.** 반대로 붙잡은 것을 제때 놓지 않으면 팔 수 있는 물건을 못 판다.\n\n규모가 이 문제를 어렵게 만든다. 회사는 **미국 이커머스의 14% 이상**을 떠받치고, 2025년 블랙 프라이데이 피크에 **분당 510만 달러**가 팔렸다(전년 대비 11% 증가). **모든 거래가 이 재고 시스템을 지난다.**",
+        "metrics": [
+          {
+            "label": "피크 판매 속도",
+            "value": "2025년 블랙 프라이데이 피크 **분당 510만 달러**(전년 대비 +11%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "플랫폼의 비중",
+            "value": "미국 이커머스의 **14% 이상**을 떠받친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "행 상한",
+            "value": "아이템/로케이션 조합당 **가용 행 1,000개** — 소진되면 인라인 보충",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "전체 경로 정리 효과",
+            "value": "주 데이터베이스 **읽기 50% 감소**, **총 트랜잭션 33% 감소**. 이후 라이터 CPU **50% 미만**, 리더 CPU **16% 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "멱등 키 형식을 바꾼 효과",
+            "value": "UUIDv4 → **ULID** 로 바꾸자 한 고처리량 시스템에서 **INSERT 시간 50% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "10 Tips for Building Resilient Payment Systems",
+                "url": "https://shopify.engineering/building-resilient-payment-systems",
+                "publisher": "Shopify Engineering · Bart de Water",
+                "date": "2022-07-28",
+                "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "틀리면 어느 쪽으로 틀리는지 따져 볼 때",
+          "thought": "한쪽으로 틀리면 **두 구매자가 같은 마지막 하나를 사고**, 상인이 주문을 취소하고 사과 메일을 보내고 지원 비용을 문다. 반대로 틀리면 붙잡아 둔 것을 못 놓아 **팔 수 있는 물건을 못 판다.** 두 실패의 성격이 다르므로 어느 쪽도 '조금 틀려도 되는' 방향이 아니다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "예약과 원장이 다른 저장소에 있다는 것을 볼 때",
+          "thought": "예약은 Redis 에, 원장은 MySQL 에 있었다. 그러면 청구(claim)가 **원자적으로 묶을 수 없는 두 개의 분리된 트랜잭션**이 되고, 거기서 실패 갈래가 셋 생긴다 — 결제는 성공했는데 원장이 안 바뀌거나(오버셀), 결제는 실패했는데 청구된 채 남거나(언더셀), 상태 불일치로 예약이 사라지거나. **문제는 Redis 가 느려서가 아니라 경계가 잘못 그어져 있어서였다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "지연도 CPU 도 멀쩡한데 처리량이 안 오를 때",
+          "thought": "쿼리는 최적화됐고 P90 도 괜찮고 CPU 도 안 찼는데 목표 처리량에 못 미쳤다. 재고 예약이 병목처럼 보였지만, 실제로는 **커넥션 풀이 이미 다른 코드 때문에 고갈 직전**이었다 — 예약은 마지막 한 방울을 쓴 쪽이었을 뿐이다. **재는 것을 바꿔야 보이는 병목이 있다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "옛 가정을 다시 볼 때",
+          "thought": "5년 전에는 없던 기능(고동시성 워크로드를 위한 `SKIP LOCKED`)이 그때는 불가능하던 접근을 가능하게 만든다. 그리고 최초 배포 이후 한 번도 다시 보지 않은 설정(InnoDB 스레드 동시성)이 그대로 남아 있었다. 회사의 결론은 이렇다 — **MySQL 이 이제 전용 인프라가 필요하다고 여기던 워크로드를 감당한다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "판매 단위(sellable unit) — **행 하나가 단위 하나**다. 재고 10개면 10행",
+          "예약(reservation) — 결제 처리 동안의 일시적 홀드(보통 몇 분)",
+          "청구(claim) — 결제 성공 시 원장에서 영구히 차감",
+          "가용 풀 — 아이템/로케이션 조합당 최대 1,000행",
+          "커넥션 태그 — SQL 주석에 붙는 호출자 표시(`/* conn_tag:checkout_completion */`)"
+        ],
+        "invariants": [
+          "예약은 일시적이고, 청구되어야 원장에서 영구히 빠진다.",
+          "예약과 원장이 다른 저장소에 있으면 두 연산을 **원자적으로 묶을 수 없다.**",
+          "**재고가 있는데 품절이라고 말해서는 안 된다** — 풀이 비어도 그것은 재고 없음이 아니다.",
+          "락 순서가 연산마다 다르면 데드락이 난다.",
+          "모든 거래가 이 시스템을 지난다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "구매자가 결제를 시작하면 그 아이템의 **가용 행을 예약**한다 — `SKIP LOCKED` 로 잠긴 행을 건너뛰고 집는다",
+            "why": "동시에 들어온 다른 체크아웃이 같은 단위를 집지 못하게 하되, 서로 기다리지 않게 한다."
+          },
+          {
+            "step": "장바구니에 여러 아이템이 있으면 **`UNION ALL` 로 한 번의 왕복에 묶어** 예약한다",
+            "why": "아이템 수만큼 왕복하면 데이터베이스와의 통신이 그만큼 늘어난다."
+          },
+          {
+            "step": "가용 풀(아이템/로케이션당 1,000행)이 비면 **인라인으로 보충**한다. 락으로 **한 트랜잭션만 보충**하고 나머지 예약은 줄을 선다",
+            "why": "플래시 세일에 여러 요청이 동시에 보충하려 달려들면 스탬피드가 된다."
+          },
+          {
+            "step": "결제가 성공하면 **청구** — `reserved_quantities` 에서 DELETE 하고 원장에서 영구히 차감한다",
+            "why": "예약과 원장이 같은 데이터베이스에 있어 한 트랜잭션으로 묶인다."
+          },
+          {
+            "step": "결제가 실패하거나 시간이 지나면 예약을 놓는다",
+            "why": "붙잡은 채로 두면 팔 수 있는 물건을 못 판다."
+          },
+          {
+            "step": "모든 SQL 문에 **호출자 태그**를 달고 ProxySQL 이 그 태그로 **비즈니스 프로세스별 커넥션 보유 시간**을 잰다",
+            "why": "쿼리 성능이 아니라 커넥션 풀이 병목일 때는 이것 말고 볼 방법이 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "오버셀을 어떻게 막을 것인가",
+            "chosen": "**결제 처리 동안 일시적으로 붙잡아 두고(예약), 성공하면 원장에서 영구히 차감한다(청구).** 예약은 보통 몇 분짜리 홀드다.",
+            "alternatives": [
+              "결제 성공 후에만 차감한다",
+              "주문 시점에 바로 차감한다"
+            ],
+            "tradeoff": "붙잡은 것을 제때 놓지 못하면 **팔 수 있는 물건을 못 판다.** 그래도 안 붙잡으면 두 구매자가 같은 마지막 하나를 사고, 그 비용(주문 취소·사과·지원)은 전부 상인이 문다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "예약을 원장과 다른 저장소에 둘 것인가",
+            "chosen": "**한 데이터베이스로 합친다.** 예약을 Redis 에서 MySQL 로 옮겨 예약과 원장이 같은 트랜잭션 안에 들어오게 했다.",
+            "alternatives": [
+              "Redis 를 유지하고 이중 쓰기를 정교하게 만든다",
+              "분산 트랜잭션을 도입한다"
+            ],
+            "tradeoff": "전용 인메모리 저장소의 속도를 포기한다. 대신 **원자적으로 묶을 수 없던 두 트랜잭션이 하나가 되면서** 세 갈래 실패(오버셀·언더셀·예약 유실)가 사라지고, 별도 Redis 클러스터 운영 부담도 없어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "재고를 수량으로 저장할 것인가 행으로 저장할 것인가",
+            "chosen": "**판매 가능한 단위마다 한 행**을 둔다 — 재고 10개면 10행. 예약은 `SKIP LOCKED` 로 잠기지 않은 행을 집는다.",
+            "alternatives": [
+              "아이템당 한 행에 수량 컬럼을 둔다(Redis 시절 모델)"
+            ],
+            "tradeoff": "행 수가 재고량에 비례해 늘어난다. 대신 **동시 요청들이 서로 다른 행을 집어 기다리지 않는다** — 수량 컬럼 하나면 모두가 같은 행을 두고 줄을 선다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "행이 무한히 늘어나는 것을 어떻게 막을 것인가",
+            "chosen": "**아이템/로케이션 조합당 가용 행을 1,000개로 상한**을 두고, 소진되면 **인라인으로 보충**한다. 보충은 락으로 한 트랜잭션만 하고 나머지 예약은 줄을 선다.",
+            "alternatives": [
+              "재고 전량을 행으로 미리 만들어 둔다",
+              "상한 없이 필요할 때마다 늘린다"
+            ],
+            "tradeoff": "플래시 세일에 풀이 마르면 **보충을 기다리는 구간**이 생긴다. 그래도 이 설계가 정확성을 지킨다 — **재고가 있는 구매자에게 품절이라고 잘못 말하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "기본키를 무엇으로 할 것인가",
+            "chosen": "auto-increment ID 대신 **복합 기본키 `(shop_id, inventory_item_id, inventory_group_id, id)`** 를 쓴다.",
+            "alternatives": [
+              "auto-increment ID 와 보조 인덱스"
+            ],
+            "tradeoff": "키가 길어지고 스키마가 복잡해진다. 대신 초기 프로토타입에서 **예약마다 락 2개**(보조 인덱스 + 클러스터드 인덱스)가 필요하던 것이 **행당 락 1개**로 줄어, 규모에서 처리량이 크게 올랐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "데드락을 어떻게 없앨 것인가",
+            "chosen": "두 가지를 함께 바꿨다 — 격리 수준을 기본 `REPEATABLE READ` 에서 **`READ COMMITTED`** 로 내리고, **모든 연산의 락 순서를 통일**했다(예약: units 에서 DELETE → reserved_quantities 에 INSERT / 청구: reserved_quantities 에서 DELETE).",
+            "alternatives": [
+              "데드락이 나면 재시도한다",
+              "락 타임아웃만 조정한다"
+            ],
+            "tradeoff": "격리 수준을 내리는 일반적인 함의를 떠안는다(뒷문장은 이 사이트의 추정). 그래도 `REPEATABLE READ` 에서는 **보충을 기다리는 빈 테이블에 갭 락(supremum 의사 레코드 포함)이 걸려 삽입 자체를 막았고**, 락 순서가 다른 두 연산이 순환 대기를 만들었다 — 재시도로 덮을 문제가 아니었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "처리량이 안 오르는데 무엇을 볼 것인가",
+            "chosen": "**커넥션을 누가 얼마나 오래 잡는지를 잰다.** 앱 계층에서 모든 SQL 문에 주석 태그(`/* conn_tag:checkout_completion */`)를 달고, **ProxySQL 이 그 태그를 파싱해 비즈니스 프로세스별 커넥션 보유 시간**을 측정했다.",
+            "alternatives": [
+              "쿼리를 더 최적화한다",
+              "데이터베이스를 키운다"
+            ],
+            "tradeoff": "모든 SQL 에 태그를 심고 프록시 계층에 계측을 넣어야 한다. 그 대가로 **진짜 범인이 재고 예약이 아니라는 것**이 드러났다 — 체크아웃 경로의 다른 부분이 긴 트랜잭션으로 커넥션을 잡고 있었고, 예약은 이미 고갈 직전이던 풀의 마지막을 썼을 뿐이다. 전체 경로를 정리하자 읽기 50%·트랜잭션 33% 가 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "이 이사를 어떻게 할 것인가",
+            "chosen": "**섀도 모드** — 모든 예약을 Redis 와 MySQL 에 **이중 쓰기**하되 진실은 Redis 에 두고, 프로덕션 트래픽에서 둘을 나란히 비교한다. 검증되면 진실을 MySQL 로 옮기고 **pod 단위로 트래픽이 적은 곳부터** 점진 전환하며 킬 스위치를 상시 유지한다.",
+            "alternatives": [
+              "특정 시점에 한 번에 전환한다",
+              "새 상점부터만 새 시스템을 쓴다"
+            ],
+            "tradeoff": "이중 쓰기 기간의 비용과 복잡도를 진다. 대신 **진행 중인 예약을 수동으로 옮길 필요가 없었고**, 되돌릴 길이 내내 열려 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "MySQL + `SKIP LOCKED`, 판매 단위당 1행",
+            "role": "동시 체크아웃이 서로 다른 행을 집게 해 기다림 없이 재고를 붙잡는다. 예약과 원장이 같은 트랜잭션에 들어온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "bounded pool(1,000행) + 인라인 보충 락",
+            "role": "행 수를 억제하면서 버스트를 흡수하고, 보충 스탬피드를 막는다. 재고가 있는데 품절이라 말하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "복합 기본키 · READ COMMITTED · 락 순서 통일",
+            "role": "예약당 락을 2개에서 1개로 줄이고, 갭 락과 순환 대기로 인한 데드락을 없앤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "SQL 주석 태그 + ProxySQL 커넥션 귀속 계측",
+            "role": "비즈니스 프로세스별로 커넥션 보유 시간을 재서, 쿼리 성능으로는 보이지 않던 커넥션 풀 병목을 찾는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "섀도 모드 이중 쓰기 + pod 단위 점진 전환",
+            "role": "프로덕션 트래픽에서 두 시스템을 나란히 비교한 뒤 진실을 옮기고, 킬 스위치를 열어 둔 채 pod 단위로 굴린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "멱등 키(ULID) · 낮은 타임아웃 · 대조 · 서킷 브레이커",
+            "role": "결제 쪽 회복탄력성 관행. 멱등 키로 이중 청구를 막고(UUIDv4→ULID 로 INSERT 시간 50% 감소), 오픈 1초·읽기/쓰기 5초를 출발점으로 타임아웃을 낮추며, 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하고, 실패한 서비스는 타임아웃을 기다리지 않고 끊는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "10 Tips for Building Resilient Payment Systems",
+                "url": "https://shopify.engineering/building-resilient-payment-systems",
+                "publisher": "Shopify Engineering · Bart de Water",
+                "date": "2022-07-28",
+                "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+              }
+            ]
+          },
+          {
+            "tech": "공개 API 의 멱등성 계약",
+            "role": "카드 결제·구독 청구 시도·매출 확정에 `idempotencyKey` 인자나 `@idempotent(key:)` 디렉티브를 받는다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크는 행 단위 멱등성.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Idempotent requests — Shopify.dev",
+                "url": "https://shopify.dev/docs/api/usage/idempotent-requests",
+                "publisher": "Shopify 공식 개발자 문서",
+                "date": "2026-08 확인",
+                "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
+              }
+            ]
+          },
+          {
+            "tech": "결제 승인 자체의 상태 모델과 결제수단 연동",
+            "role": "— 이 사이트는 아직 1차 자료를 찾지 않았다. 읽은 글은 재고 예약과 회복탄력성 관행까지다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "pods-isolation",
+          "via": "전환의 단위",
+          "contract": "재고 예약을 MySQL 로 옮길 때 **pod 단위로 트래픽이 적은 곳부터** 점진 전환했다 — 격리의 단위가 그대로 배포·전환의 단위가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "bfcm-readiness",
+          "via": "중요 여정",
+          "contract": "Game Day 가 집중하는 중요 여정이 체크아웃·결제 처리·주문 생성·이행이고, 스케일 테스트에서 **체크아웃 큐 적체**가 문제로 드러났다. 다만 그 큐가 이 재고 예약과 어떻게 맞물리는지는 두 글 모두 밝히지 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "stripe:idempotent-payments",
+          "via": "멱등성의 계약",
+          "contract": "Stripe 는 **모든 POST** 에 멱등 키를 두고 첫 요청의 상태 코드와 본문을 그대로 돌려주며 최소 24시간 보관한다고 밝힌다. Shopify 는 **부작용이 있는 작업**(카드 결제·구독 청구·매출 확정)에 키를 받고 '반복 요청은 한 번만 실행된다'까지 밝히되 **보관 기간과 재생 시 응답은 문서에 없다.** 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "결제 한 건이 재고를 붙잡았다 놓기까지",
+          "question": "두 사람이 마지막 하나를 동시에 사려 할 때 무엇이 막는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  BUY[구매자: 결제 시작] --> RES{가용 행 예약<br/>SKIP LOCKED}\n  CART[여러 아이템 장바구니] -->|UNION ALL 한 번의 왕복| RES\n  RES -->|행 있음| HOLD[예약됨 · 몇 분간 홀드]\n  RES -->|풀 소진| REFILL[인라인 보충<br/>락으로 한 트랜잭션만]\n  REFILL --> HOLD\n  HOLD --> PAY{결제}\n  PAY -->|성공| CLAIM[청구: reserved_quantities DELETE<br/>원장에서 영구 차감]\n  PAY -->|실패·만료| REL[예약 해제]\n  REL --> POOL[(가용 풀 · 아이템/로케이션당 1,000행)]\n  POOL --> RES\n  TAG[모든 SQL 에 호출자 태그] --> PROXY[ProxySQL<br/>프로세스별 커넥션 보유 시간]\n  PROXY -.->|병목의 진짜 위치| PAY"
+        },
+        {
+          "title": "판매 단위 한 행이 거치는 상태",
+          "question": "행 하나가 언제 사라지고 언제 돌아오는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 가용: 풀에 존재(최대 1,000행)\n  가용 --> 예약됨: 결제 시작 · SKIP LOCKED 로 집힘\n  예약됨 --> 청구됨: 결제 성공 → 원장에서 영구 차감\n  예약됨 --> 가용: 결제 실패 또는 만료\n  가용 --> 소진: 풀이 빔\n  소진 --> 가용: 인라인 보충(한 트랜잭션만)\n  note right of 소진\n    풀이 비었다는 것이\n    재고 없음은 아니다\n  end note\n  청구됨 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 경계가 잘못 그어져 있을 때",
+          "question": "예약과 원장이 다른 저장소에 있으면 무엇이 어긋나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SPLIT[예약은 Redis · 원장은 MySQL] --> TWO[청구가 **두 개의 분리된 트랜잭션**<br/>원자적으로 묶을 수 없다]\n  TWO --> F1[결제 성공 · 원장 미갱신<br/>→ 오버셀]\n  TWO --> F2[결제 실패 · 청구된 채 남음<br/>→ 언더셀]\n  TWO --> F3[상태 불일치 → 예약 유실]\n  F1 --> COST[주문 취소 · 사과 메일 · 지원 비용<br/>= 상인의 손해]\n  RR[REPEATABLE READ] --> GAP[빈 테이블에 갭 락<br/>supremum 의사 레코드]\n  GAP --> BLOCK[보충 삽입이 막히고 데드락]\n  BLOCK --> RC[READ COMMITTED 로 해결]\n  ORDER[reserve 와 claim 의 락 순서가 다름] --> CIRC[순환 대기 → 데드락]\n  CIRC --> UNI[락 순서 통일로 해결]\n  OK[쿼리 최적화됨 · P90 양호 · CPU 여유] --> PLATEAU[그런데 처리량 정체]\n  PLATEAU --> REAL[**진짜 범인은 커넥션 풀**<br/>체크아웃 경로의 다른 긴 트랜잭션]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+          "url": "https://shopify.engineering/scaling-inventory-reservations",
+          "publisher": "Shopify Engineering · Emilie Noel",
+          "date": "2026-05-12",
+          "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+        },
+        {
+          "title": "10 Tips for Building Resilient Payment Systems",
+          "url": "https://shopify.engineering/building-resilient-payment-systems",
+          "publisher": "Shopify Engineering · Bart de Water",
+          "date": "2022-07-28",
+          "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+        },
+        {
+          "title": "Idempotent requests — Shopify.dev",
+          "url": "https://shopify.dev/docs/api/usage/idempotent-requests",
+          "publisher": "Shopify 공식 개발자 문서",
+          "date": "2026-08 확인",
+          "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
+        }
+      ]
+    },
+    {
+      "key": "storefront-renderer",
+      "name": "스토어프론트 — 남이 쓴 코드가 우리 응답 시간이 될 때",
+      "domain": "스토어프론트 렌더링",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "구매자가 보는 화면은 **상인이 고른 테마의 Liquid 코드**로 그려진다. 우리 서버가 그 남의 코드를 불러 데이터를 채워 HTML 로 돌려준다 — 그러니까 **남이 쓴 코드의 성능이 곧 우리 응답 시간**이 된다.\n\n그리고 그 응답 시간은 곧바로 값이 매겨진다. 트래픽이 늘면서 **첫 바이트까지의 시간이 서서히 올라갔고, 그것이 상인의 매출과 검색 순위를 직접 깎았다.**\n\n원인은 성능 튜닝의 부족이 아니라 **한 집에 사는 두 요구의 충돌**이었다. 2006년부터 같은 Rails 모놀리스가 결제·관리자 API·스토어프론트를 모두 처리했는데, **결제는 정확성과 가독성을 요구하고 스토어프론트는 공격적인 최적화를 요구한다.** 둘 다 최적일 수는 없다.",
+        "metrics": [
+          {
+            "label": "응답 시간(새 엔진)",
+            "value": "**p75 45ms · p90 230ms · p99 900ms**. 평균은 이전 구현 대비 **거의 5배** 빠르다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "label": "레거시 대비",
+            "value": "평균 서버 응답이 **4~6배** 빠르고, 상인들은 **TTFB 500ms 개선**을 보고했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "label": "Apdex 개선",
+            "value": "이전하는 상점의 Apdex 가 평균 **+0.11**, **캐시 미스에서는 +0.20**(만족 임계 200ms 기준)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "label": "메모이저가 막는 접근",
+            "value": "요청 하나당 Redis·MySQL 접근 **16~20회**, 극단적인 경우 **4,000회**까지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "label": "전환 시점의 완성도",
+            "value": "발표 시점 기능 동등성 **90% 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "결제와 스토어프론트를 같은 코드베이스에서 다루려 할 때",
+          "thought": "**결제는 정확성과 가독성을 요구하고 스토어프론트는 공격적인 성능 최적화를 요구한다.** 요구가 정반대인 둘이 2006년부터 같은 모놀리스에 살고 있었다. 그러면 어느 쪽으로 코드를 써도 다른 쪽이 손해를 본다 — 문제는 튜닝이 부족한 것이 아니라 **한 집에 살고 있는 것**이었다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 미리 가져올지 정하려 할 때",
+          "thought": "**테마는 상인의 코드**라 어떤 데이터를 부를지 우리가 정적으로 알 수 없다. 그래서 미리 정하는 대신 **지난번에 무엇을 물었는지 기록해 두고, 다음번에 그것들을 한꺼번에 묻기로** 했다. 페이지가 바뀌면 어긋나지만 요청이 쌓이면서 안정화된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 객체를 몇 번이나 부르는지 세어 봤을 때",
+          "thought": "Liquid 객체 메모이저 하나가 **요청당 16~20회**, 극단적인 경우 **4,000회**의 저장소 접근을 막는다. 그 말은 **남이 쓴 템플릿이 같은 것을 그만큼 반복해서 부른다**는 뜻이다 — 우리가 고칠 수 있는 코드가 아니므로 **반복을 없애는 대신 반복이 싸지게 만들어야 한다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "다 만들고 나서 켜야 할 때",
+          "thought": "수백만 상점의 화면이라 조금만 달라도 그것이 곧 매출이다. 그래서 **두 구현에 동시에 보내 응답을 비교**하기로 했다 — 상태 코드·헤더·본문을 대조하되 시간과 난수는 예외로 두고, **통과율이 임계값을 넘은 요청 유형부터 자동으로** 새 구현으로 옮겼다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "테마(Liquid) — **상인의 코드**. 우리가 고칠 수 없다",
+          "스토어프론트 렌더러 — 테마와 데이터를 받아 HTML 을 만드는 전용 애플리케이션",
+          "쿼리 목록(book-keeping) — 이 캐시 키에서 지난번에 수행한 쿼리들",
+          "캐시 다섯 겹 — 워커 인메모리 LRU · 노드 로컬 Redis · 전체 페이지 · DB 쿼리 결과 · Liquid 객체 메모이저",
+          "Verifier — 두 구현의 응답을 비교하는 서비스"
+        ],
+        "invariants": [
+          "테마는 상인의 코드다 — **무엇을 부를지 우리가 미리 정할 수 없다.**",
+          "응답 시간이 곧 상인의 매출과 검색 순위다.",
+          "캐시가 죽으면 실패가 아니라 **정본 저장소로 내려간다.**",
+          "새 구현의 응답은 옛 구현과 같아야 한다 — 시간과 난수는 예외.",
+          "스토어프론트는 읽기만 한다 — 전용 읽기 복제본에서만 읽는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 오면 **전체 페이지 캐시**를 먼저 본다 — 있으면 HTTP 응답을 그대로 돌려준다",
+            "why": "가장 싼 렌더링은 렌더링하지 않는 것이다."
+          },
+          {
+            "step": "없으면 이 캐시 키에서 **지난번에 수행한 쿼리 목록**을 꺼낸다",
+            "why": "테마가 남의 코드라 무엇이 필요할지 정적으로 알 수 없다 — 지난번 기록이 유일한 단서다."
+          },
+          {
+            "step": "그 쿼리들을 **MySQL 멀티 스테이트먼트로 한 번에** 앞에서 실행한다(상품 페이지면 상품·변형·이미지·상점·테마를 한 번에)",
+            "why": "왕복 횟수를 줄이는 것이 지연을 줄이는 가장 큰 지렛대였기 때문으로 보인다(추정)."
+          },
+          {
+            "step": "**전용 읽기 복제본**에서 읽고, 원시 행을 그대로 **순수 루비 객체**로 만든다 — ORM 을 거치지 않는다",
+            "why": "추상화의 오버헤드를 없애고 메모리를 줄인다. 주 라이터의 부하도 함께 준다."
+          },
+          {
+            "step": "Liquid 를 렌더링한다. 같은 객체를 다시 부르면 **메모이저**가 저장소 접근 없이 돌려준다",
+            "why": "남이 쓴 템플릿이 같은 것을 반복해서 부르는데, 그 코드는 우리가 고칠 수 없다."
+          },
+          {
+            "step": "이번 요청에서 수행한 쿼리 목록을 **기록해 둔다**",
+            "why": "다음 요청이 앞에서 한꺼번에 가져갈 수 있게."
+          },
+          {
+            "step": "외부 의존이 느려지면 **Semian 서킷 브레이커**로 끊고, 캐시가 타임아웃되면 실패 대신 **정본 저장소로 내려간다**",
+            "why": "화면이 안 뜨는 것보다 조금 느린 편이 낫다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "스토어프론트를 모놀리스 안에 둘 것인가",
+            "chosen": "**전용 애플리케이션으로 떼어낸다.** 모놀리스는 결제·관리자·API 를 계속 처리하고, 스토어프론트 트래픽만 새 애플리케이션이 받는다.",
+            "alternatives": [
+              "모놀리스 안에서 계속 최적화한다",
+              "전면 재작성으로 모든 것을 옮긴다"
+            ],
+            "tradeoff": "시스템이 하나 늘고 **기능 동등성을 따라잡아야 한다**(발표 시점 90% 이상). 그래도 결제는 정확성과 가독성을, 스토어프론트는 공격적 최적화를 요구해 **한 집에서 둘 다 최적일 수 없었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 접근에 ORM 을 쓸 것인가",
+            "chosen": "**쓰지 않는다.** 손으로 쓴 SQL 멀티 셀렉트로 한 번의 왕복에 최대한 담고, 원시 행에서 **순수 루비 객체**를 만드는 얇은 매핑 계층만 둔다.",
+            "alternatives": [
+              "Rails 의 ORM 을 그대로 쓴다",
+              "경량 ORM 을 도입한다"
+            ],
+            "tradeoff": "추상화의 편의를 잃고 쿼리를 직접 관리해야 한다. 대신 불필요한 오버헤드와 메모리가 줄고 **N+1 쿼리가 구조적으로 사라진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              },
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 미리 가져올지 어떻게 정할 것인가",
+            "chosen": "**기록해 두고 다음에 쓴다(book-keeping).** 첫 요청에서 수행한 쿼리 목록을 캐시 키별로 저장하고, 같은 키의 다음 요청에서 그 쿼리들을 **앞에서 한꺼번에** 실행한다.",
+            "alternatives": [
+              "테마를 정적 분석해 필요한 데이터를 추론한다",
+              "필요할 때마다 가져온다(지연 로딩)"
+            ],
+            "tradeoff": "**페이지가 바뀌면 과다 페치·과소 페치가 생긴다** — 다만 요청이 쌓이면서 안정화된다고 회사는 밝힌다. 대신 테마가 상인의 코드라 정적으로 알 수 없는 문제를 관측으로 푼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 몇 겹으로 둘 것인가",
+            "chosen": "**다섯 겹** — 워커 안 인메모리 LRU, 같은 머신의 노드 로컬 Redis, 전체 페이지 캐시, DB 쿼리 결과 캐시(Redis), 그리고 **Liquid 객체 메모이저**.",
+            "alternatives": [
+              "전체 페이지 캐시 하나로 끝낸다",
+              "쿼리 캐시만 둔다"
+            ],
+            "tradeoff": "층마다 무효화와 정합성을 관리해야 한다(뒷문장은 이 사이트의 추정). 대신 메모이저 하나만으로 **요청당 16~20회, 극단적으로는 4,000회**의 저장소 접근이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "question": "관용적인 코드를 지킬 것인가",
+            "chosen": "**지키지 않는다.** `#map` 대신 `#map!` 같은 **제자리 수정**을 써서 트래픽이 몰릴 때의 가비지 컬렉션 부담을 줄인다.",
+            "alternatives": [
+              "관용적인 루비를 유지한다"
+            ],
+            "tradeoff": "읽기 어렵고 부작용을 조심해야 하는 코드가 된다(뒷문장은 이 사이트의 추정). 그래도 **이 애플리케이션의 요구가 애초에 가독성이 아니라 성능**이라, 모놀리스에서 떼어낸 이유가 여기서 값을 한다(이 역시 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "어디서 읽을 것인가",
+            "chosen": "**전용 읽기 복제본에서만** 읽는다(액티브-액티브 복제).",
+            "alternatives": [
+              "주 라이터에서 읽는다",
+              "일부만 복제본에서 읽는다"
+            ],
+            "tradeoff": "복제 지연이 화면에 보일 수 있다(뒷문장은 이 사이트의 추정). 대신 성능이 오르고 **주 라이터의 부하가 준다** — 그 라이터는 체크아웃이 쓰는 곳이기도 하다(이 역시 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "외부 의존이 느려지면 어떻게 할 것인가",
+            "chosen": "**Semian**(자사 오픈소스) 서킷 브레이커로 끊고, 캐시 타임아웃은 실패가 아니라 **정본 저장소로 우아하게 강등**한다. 배포 전 **Toxiproxy** 로 네트워크 장애를 흉내 내 검증한다.",
+            "alternatives": [
+              "타임아웃까지 기다린다",
+              "캐시가 죽으면 오류를 낸다"
+            ],
+            "tradeoff": "강등된 경로는 느리다 — 캐시가 하던 일을 정본이 대신 받는다(뒷문장은 이 사이트의 추정). 그래도 **화면이 안 뜨는 것보다는 느린 편이 낫고**, 연쇄 장애를 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "question": "새 구현이 맞는지 어떻게 확인할 것인가",
+            "chosen": "**두 구현에 동시에 보내 비교한다.** nginx 의 Lua 라우팅 모듈이 처음에는 레거시로 보내면서 두 구현에 비동기로 요청을 보내고, **Verifier 서비스**가 상태 코드·헤더·본문을 대조한다(시간·난수는 예외). 통과율이 임계값을 넘으면 **그 요청 유형의 트래픽을 자동으로** 새 구현으로 옮긴다 — 비밀번호 보호 페이지부터 시작해 상품·컬렉션 페이지로 넓혔다.",
+            "alternatives": [
+              "스테이징에서 테스트하고 한 번에 전환한다",
+              "일부 상점을 골라 베타로 돌린다"
+            ],
+            "tradeoff": "모든 요청을 두 번 처리하는 기간의 비용을 진다(뒷문장은 이 사이트의 추정). 대신 **판정이 사람의 감이 아니라 통과율**이 되고, 쉬운 요청 유형부터 순서대로 넘어간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "전용 스토어프론트 렌더러(모놀리스에서 분리)",
+            "role": "스토어프론트 트래픽만 받아 성능에 맞춰 최적화한다. 모놀리스는 결제·관리자·API 를 계속 맡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "tech": "손으로 쓴 SQL 멀티 셀렉트 + 얇은 매핑 계층",
+            "role": "ORM 없이 원시 행에서 순수 루비 객체를 만들어 오버헤드와 N+1 을 없앤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              },
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "tech": "쿼리 목록 기록(book-keeping) + MySQL 멀티 스테이트먼트",
+            "role": "지난 요청에서 무엇을 물었는지 기억해 두었다가 다음 요청에서 한 번에 미리 가져온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "tech": "다섯 겹 캐시(인메모리 LRU · 노드 로컬 Redis · 전체 페이지 · 쿼리 결과 · Liquid 메모이저)",
+            "role": "같은 것을 반복해 부르는 남의 템플릿을 싸게 만든다. 메모이저만으로 요청당 16~20회(최대 4,000회) 접근을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+                "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+                "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+                "date": "2020-12-10",
+                "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+              }
+            ]
+          },
+          {
+            "tech": "전용 읽기 복제본 + Semian 서킷 브레이커 + Toxiproxy",
+            "role": "주 라이터 부하를 덜고, 외부 의존이 죽으면 끊거나 정본으로 강등하며, 배포 전 장애를 흉내 내 검증한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "tech": "Verifier + nginx Lua 라우팅",
+            "role": "두 구현의 응답을 프로덕션 트래픽에서 대조하고 통과율에 따라 요청 유형별로 자동 전환한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+                "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+                "publisher": "Shopify Engineering · Maxime Vaillancourt",
+                "date": "2020-08-20",
+                "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+              }
+            ]
+          },
+          {
+            "tech": "테마 코드 자체의 성능을 어떻게 다루는지",
+            "role": "— 상인이 쓴 Liquid 가 느릴 때 회사가 무엇을 하는지(제한·경고·자동 최적화)는 읽은 글에 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "checkout-reservations",
+          "via": "읽는 쪽과 쓰는 쪽",
+          "contract": "스토어프론트는 전용 읽기 복제본만 읽어 주 라이터의 부하를 던다 — 그 라이터가 재고 예약과 체크아웃이 쓰는 곳이기도 하다(뒷부분은 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "pods-isolation",
+          "via": "요청이 닿는 자리",
+          "contract": "스토어프론트 요청도 상점 단위로 데이터가 갈리므로 pod 위에서 처리될 것으로 보이지만, 두 글이 렌더러와 pod 의 관계를 명시하지는 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "bfcm-readiness",
+          "via": "응답 시간이 매출",
+          "contract": "첫 바이트까지의 시간이 상인의 매출과 검색 순위를 직접 깎으므로, 성수기의 부하 준비와 같은 목표를 공유한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 HTML 이 되기까지",
+          "question": "남이 쓴 테마가 무엇을 부를지 모르는데 어떻게 미리 가져오는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[스토어프론트 요청] --> FPC{전체 페이지 캐시}\n  FPC -->|적중| OUT[HTTP 응답 그대로]\n  FPC -->|미스| BK[(이 캐시 키의<br/>지난 쿼리 목록)]\n  BK --> MULTI[MySQL 멀티 스테이트먼트<br/>상품·변형·이미지·상점·테마 한 번에]\n  MULTI --> RO[(전용 읽기 복제본)]\n  RO --> OBJ[원시 행 → 순수 루비 객체<br/>ORM 없음]\n  OBJ --> LIQ[Liquid 렌더링<br/>상인의 테마 코드]\n  MEMO[Liquid 객체 메모이저] -.->|같은 객체 재요청 차단<br/>요청당 16~20회, 최대 4,000회| LIQ\n  LIQ --> HTML[HTML]\n  HTML --> OUT\n  LIQ --> REC[이번 쿼리 목록 기록]\n  REC --> BK\n  DEP[외부 의존 지연] --> SEM[Semian 서킷 브레이커]\n  SEM --> DEG[캐시 타임아웃 → 정본으로 강등]\n  DEG --> RO"
+        },
+        {
+          "title": "한 요청 유형이 새 구현으로 넘어가기까지",
+          "question": "수백만 상점의 화면을 어떻게 안 깨고 갈아 끼우는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 레거시전담: 새 구현 미완성\n  레거시전담 --> 그림자비교: nginx Lua 가 두 구현에 비동기 전송\n  그림자비교 --> 그림자비교: Verifier 가 상태코드·헤더·본문 대조\n  note right of 그림자비교\n    시간과 난수는 예외\n    응답은 여전히 레거시가 낸다\n  end note\n  그림자비교 --> 자동전환: 통과율이 임계값 초과\n  자동전환 --> 신규전담: 그 요청 유형의 트래픽 이동\n  신규전담 --> [*]\n  note left of 신규전담\n    비밀번호 보호 페이지 →\n    상품 페이지 → 컬렉션 페이지\n  end note"
+        },
+        {
+          "title": "실패 경로 — 우리가 고칠 수 없는 코드 위에서",
+          "question": "테마가 남의 것이라는 사실이 어디서 문제가 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  THEME[테마 = 상인의 Liquid 코드] --> UNKNOWN[무엇을 부를지<br/>정적으로 알 수 없다]\n  UNKNOWN --> BK[지난 쿼리 목록으로 추측]\n  BK --> CHANGE{페이지가 바뀌면}\n  CHANGE --> OVER[과다 페치]\n  CHANGE --> UNDER[과소 페치]\n  OVER --> STABLE[요청이 쌓이며 안정화]\n  UNDER --> STABLE\n  THEME --> REPEAT[같은 객체를 반복 호출]\n  REPEAT --> MEMO[메모이저로 싸게 만든다<br/>고칠 수는 없으므로]\n  SLOWTHEME[테마 자체가 느릴 때] -->|**읽은 글에 없다**| UNK[회사가 무엇을 하는지 미확인]\n  MONO[모놀리스 시절] --> CONFLICT[결제는 정확성·가독성<br/>스토어프론트는 공격적 최적화]\n  CONFLICT --> TTFB[TTFB 가 서서히 상승<br/>= 상인의 매출과 검색 순위 하락]\n  TTFB --> SPLIT[전용 애플리케이션으로 분리]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Shopify Reduced Storefront Response Times with a Rewrite",
+          "url": "https://shopify.engineering/how-shopify-reduced-storefront-response-times-rewrite",
+          "publisher": "Shopify Engineering · Maxime Vaillancourt",
+          "date": "2020-08-20",
+          "summary": "2006년부터 Rails 모놀리스 안에 있던 스토어프론트 렌더링을 전용 애플리케이션으로 분리한 이야기. 결제는 정확성과 가독성을, 스토어프론트는 공격적 성능 최적화를 요구해 한 집에서 둘 다 최적일 수 없었다. 손으로 쓴 SQL 멀티 셀렉트, 제자리 수정으로 GC 절감, 세 겹 캐시, 전용 읽기 복제본을 썼고, Verifier 서비스와 nginx Lua 라우팅으로 두 구현의 응답을 비교하며 요청 유형별로 자동 전환했다. 평균 응답이 레거시 대비 4~6배 빨라졌고 상인들은 TTFB 500ms 개선을 보고했다."
+        },
+        {
+          "title": "Simplify, Batch, and Cache: How We Optimized Server-side Storefront Rendering",
+          "url": "https://shopify.engineering/simplify-batch-cache-optimized-server-side-storefront-rendering",
+          "publisher": "Shopify Engineering · Celso Dantas, Maxime Vaillancourt",
+          "date": "2020-12-10",
+          "summary": "MySQL 멀티 스테이트먼트로 쿼리를 묶어 왕복을 줄이고, 첫 요청에서 수행한 쿼리 목록을 기록해 두었다가 같은 캐시 키의 다음 요청에서 한꺼번에 미리 실행한다(페이지가 바뀌면 과다·과소 페치가 생기지만 요청이 쌓이며 안정화된다). ORM 대신 손으로 쓴 쿼리와 순수 루비 객체를 쓰고, 캐시를 다섯 겹으로 둔다. Liquid 객체 메모이저만으로 요청당 Redis·MySQL 접근 16~20회를, 극단적으로는 4,000회를 막는다. 응답은 p75 45ms, p90 230ms, p99 900ms 다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "어떤 상점이 어느 pod 에 배치되는지, 아주 큰 상점의 부하를 어떻게 다루는지 — pod 글에 없다.",
+    "pod 아키텍처는 2018년 글이다 — 이후의 변화(샤드 재배치, 클라우드 이전 등)는 반영돼 있지 않다.",
+    "스토어프론트 렌더링·체크아웃·회복탄력성 세 도메인은 아직 손대지 않았다.",
+    "부하가 몰릴 때 무엇을 먼저 버리는지(부하 차단 우선순위)는 아직 1차 자료를 찾지 않았다.",
+    "부하가 예측을 넘었을 때 무엇을 먼저 버리는지(부하 차단 우선순위) — 읽은 글에 없다. 체크아웃 큐가 존재한다는 사실만 문제 사례로 언급된다.",
+    "pod 와 GCP 리전의 관계 — 리전 페일오버·재균형이 pod 단위 위에서 어떻게 이뤄지는지는 두 글 모두 명시하지 않는다.",
+    "변경 속도를 늦추는 기간의 실제 길이와 기준.",
+    "멱등 키의 보관 기간과 재생 시 응답 — Shopify 문서는 '한 번만 실행된다'까지만 밝힌다.",
+    "결제 승인 자체의 상태 모델(승인·취소·환불의 상태 전이)과 결제수단 연동.",
+    "BFCM 스케일 테스트에서 나온 '체크아웃 큐'가 재고 예약과 어떻게 맞물리는지.",
+    "상인이 쓴 테마 코드 자체가 느릴 때 회사가 무엇을 하는지(제한·경고·자동 최적화) — 읽은 글에 없다.",
+    "스토어프론트 렌더러와 pod 의 관계 — 두 글 모두 명시하지 않는다.",
+    "스토어프론트 자료는 2020년 글 두 편이다 — 이후의 변화(Hydrogen·Oxygen 등)는 반영돼 있지 않다."
+  ],
+  "sources": [
+    {
+      "title": "A Pods Architecture To Allow Shopify To Scale",
+      "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+      "publisher": "Shopify Engineering · Xavier Denis",
+      "date": "2018-03-02",
+      "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+    },
+    {
+      "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+      "publisher": "Shopify Inc. · SEC EDGAR",
+      "date": "2026-02-11",
+      "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+    }
+  ]
+}

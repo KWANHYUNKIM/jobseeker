@@ -13,12 +13,20 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = ROOT / "catch_capture" / "screenshots" / "all_개발자_latest"
 INPUT = DATA_DIR / "all_jobs.json"
+INPUT_CLOSED = DATA_DIR / "all_jobs_closed.json"
 OUTPUT = Path(__file__).resolve().parent.parent / "public" / "all_jobs_enriched.json"
+
+# 마감 판정 규칙의 소유자는 pipeline/job_status 하나다. 여기서 다시 부르는 이유는
+# 규칙을 복제하려는 게 아니라, 스냅샷이 규칙 수정 이전에 만들어졌을 수 있기 때문이다.
+# 같은 함수를 통과시키면 뷰어는 스냅샷이 낡았어도 항상 최신 규칙으로 보인다.
+sys.path.insert(0, str(ROOT / "catch_capture"))
+from pipeline.job_status import classify_status, today_date  # noqa: E402
 
 SECTION_PATTERN = re.compile(r"^\[([^\]]+)\]\s*$")
 
@@ -95,6 +103,12 @@ def normalize(job: dict) -> dict:
         "preferences": "",
         "benefits": "",
         "full_jd": "",
+        # 마감 여부는 aggregate 의 job_status 가 이미 판정해 all_jobs.json 에 실어 보낸다.
+        # normalize 가 새 dict 를 만들면서 이 세 필드를 안 옮겨서, 뷰어에 도착할 때는
+        # 전부 None 이었다 — 화면이 마감을 표시할 방법 자체가 없었다.
+        "status": job.get("status") or "active",
+        "closed_reason": job.get("closed_reason") or "",
+        "deadline_date": job.get("deadline_date") or "",
     }
 
     if site == "jobkorea":
@@ -142,11 +156,38 @@ def normalize(job: dict) -> dict:
 
 
 def main() -> None:
+    # 마감 공고도 함께 내보낸다. 숨기는 게 아니라 status 로 구분해서 내보내는 것이 요점이다 —
+    # 뷰어는 기본적으로 모집중만 보여주되 '마감' 배지로 따로 볼 수 있고, 색인(semantic
+    # ingest)·유사공고·트렌드는 이 파일 하나를 그대로 읽으므로 마감 공고도 계속 검색된다.
+    # 마감을 파일에서 빼버리면 "예전에 이런 공고가 있었다"가 통째로 사라진다.
+    today = today_date()
     raw = json.loads(INPUT.read_text(encoding="utf-8"))
-    enriched = [normalize(j) for j in raw]
+    enriched = []
+    regraded = 0
+    for j in raw:
+        e = normalize(j)
+        st, reason, iso = classify_status(j, today)
+        if st != e["status"]:
+            regraded += 1
+        e["status"], e["closed_reason"], e["deadline_date"] = st, reason, iso or ""
+        enriched.append(e)
+    if regraded:
+        print(f"  [status] 스냅샷과 달라 재판정한 공고 {regraded:,}건 (마감 규칙 최신본 적용)")
+    n_closed = sum(1 for e in enriched if e["status"] == "closed")
+    if INPUT_CLOSED.exists():
+        closed = json.loads(INPUT_CLOSED.read_text(encoding="utf-8"))
+        seen = {(j.get("site"), j.get("url")) for j in enriched}
+        for j in closed:
+            if (j.get("site"), j.get("url")) in seen:
+                continue
+            e = normalize(j)
+            e["status"] = "closed"
+            enriched.append(e)
+            n_closed += 1
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(enriched, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"wrote {len(enriched)} jobs -> {OUTPUT}")
+    active = sum(1 for e in enriched if e["status"] != "closed")
+    print(f"wrote {len(enriched)} jobs (모집중 {active:,} / 마감 {len(enriched)-active:,}) -> {OUTPUT}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,2168 @@
+{
+  "slug": "baemin",
+  "name": "배달의민족",
+  "name_en": "Baemin",
+  "country": "KR",
+  "category": "커머스",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "음식이 식기 전에 닿아야 하는 물류를 앱으로 만든 회사",
+  "business_model": "가게에서 중개 수수료와 광고비를, 주문자에게 배달비를 받고, B마트로 상품을 직접 판다. 이 회사의 손익 구조에는 앞선 세 회사에 없는 특징이 하나 있다 — **라이더에게 나가는 돈이 매출과 함께 커진다.** 2025년 매출은 5조 2,830억으로 처음 5조를 넘었지만 영업이익은 5,929억으로 7.5% 줄었고, 같은 해 라이더 외주용역비가 3조 1,542억으로 41% 늘었다. 주문이 늘수록 사람과 차가 더 움직여야 하는 사업이라, 규모가 커진다고 이익률이 따라 오르지 않는다.",
+  "products": [
+    "배달의민족 앱",
+    "배민배달(자체 배달)",
+    "가게배달",
+    "B마트",
+    "배민스토어",
+    "배민장부·사장님광장"
+  ],
+  "domain_map": {
+    "title": "배달의민족 도메인 지도",
+    "question": "주문 한 건이 식기 전에 닿기까지, 어떤 판단들이 시간을 두고 겹치는가?",
+    "code": "flowchart TD\n  U[주문자] --> LIST[가게 노출·검색]\n  LIST --> ORD[주문 접수]\n  ORD --> STORE[가게 조리]\n  ORD --> DISP[배차]\n  GEO[위치·경로] --> DISP\n  DISP --> RIDER[라이더 이동]\n  STORE --> RIDER\n  RIDER --> DONE[배달 완료]\n  MART[B마트 물류] --> DISP\n  DONE --> SETTLE[정산]\n  SETTLE -->|배달 대가| RIDERPAY[라이더 외주용역비 3.15조]\n  SETTLE -->|중개 수수료| REV1[매출 5.28조]\n  LIST -->|광고| REV1\n  MART -->|상품 판매| REV1\n  RIDERPAY -.->|매출과 함께 커진다| MARGIN[이익률 압박]\n  classDef money stroke-dasharray: 3 3\n  class REV1,RIDERPAY money"
+  },
+  "revenue_streams": [
+    {
+      "name": "중개 수수료·배달비",
+      "how": "주문 한 건이 성사될 때 가게와 주문자 양쪽에서 받는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "우아한형제들, 매출 5조 고지 달성…영업익은 7% 감소",
+          "url": "https://dealsite.co.kr/articles/160018/068030",
+          "publisher": "딜사이트",
+          "date": "2026-04",
+          "summary": "2025년 매출 5조 2,830억(첫 5조 돌파), 영업이익 5,929억(-7.5%). 라이더 외주용역비 3조 1,542억으로 41% 급증."
+        }
+      ]
+    },
+    {
+      "name": "광고",
+      "how": "가게가 목록에서 더 잘 보이기 위해 내는 돈.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "우아한형제들, 매출 5조 고지 달성…영업익은 7% 감소",
+          "url": "https://dealsite.co.kr/articles/160018/068030",
+          "publisher": "딜사이트",
+          "date": "2026-04",
+          "summary": "2025년 매출 5조 2,830억(첫 5조 돌파), 영업이익 5,929억(-7.5%). 라이더 외주용역비 3조 1,542억으로 41% 급증."
+        }
+      ]
+    },
+    {
+      "name": "상품 판매(B마트)",
+      "how": "직접 매입한 상품을 팔아 남기는 마진. 2025년 상품 매출 7,811억(+3.2%).",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "우아한형제들 작년 매출 첫 5조 돌파…이익은 줄어",
+          "url": "https://www.hankyung.com/article/202604102769i",
+          "publisher": "한국경제",
+          "date": "2026-04",
+          "summary": "매출 성장과 이익 감소가 함께 나타난 2025년 실적, B마트 중심 상품 매출 7,811억(+3.2%)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "주문 접수",
+      "why": "주문이 가게에 닿고 접수되기까지. 여기서 몇 분이 밀리면 뒤의 모든 판단이 그만큼 늦어진다. 가게가 바쁘면 거절할 수 있다는 점에서 '접수'는 성공이 보장된 단계가 아니다.",
+      "tech": [
+        {
+          "tech": "SSE 기반 단방향 알림",
+          "solves": "기존 REST 인프라 위에서 서버→가게 알림을 밀어 주고, 방화벽에 막히던 이전 방식(MQTT)의 문제를 피한다.",
+          "limits": "양방향이 필요해지면 다른 통로가 또 필요하고, HTTP 의 연결 유지·프록시 타임아웃 제약을 그대로 받는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Server-Sent Events로 실시간 알림 전달하기",
+              "url": "https://techblog.woowahan.com/23199/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+            }
+          ]
+        },
+        {
+          "tech": "CommitEvent + Last-Event-ID",
+          "solves": "'정확히 한 번'이 필요한 이벤트(주문서 프린트)의 중복·유실을 수신 확인과 재연결 보충으로 다룬다(일평균 약 4천만 건).",
+          "limits": "서버가 확인 여부와 미전송 구간을 상태로 들고 있어야 하고, 재전송 판단에 업무 규칙이 들어와 전달 계층이 도메인을 알게 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Server-Sent Events로 실시간 알림 전달하기",
+              "url": "https://techblog.woowahan.com/23199/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "order-reception"
+      ]
+    },
+    {
+      "name": "배차",
+      "why": "어떤 라이더에게 어떤 배달을 줄 것인가, 그리고 그 판단의 입력이 되는 거리·시간을 아는 일. 카카오 택시 배차와 닮았지만 결정적으로 다른 점이 둘 있다 — **여러 배달을 묶을 수 있고(조합이 폭발한다), 음식이 식는다(시간 제약이 하나 더 있다).** 거리 계산을 따로 떼어 보려 했으나 공개 자료에서 실거리 시스템은 배차와 한 몸으로 다뤄지고 있어 같은 경계로 둔다.",
+      "tech": [
+        {
+          "tech": "이벤트 기반 배차(Kafka · 지역 리파티션)",
+          "solves": "라이더 위치와 주문 상태가 계속 바뀌는 현실 위에서 '지금 최선'을 다시 계산할 수 있게 한다.",
+          "limits": "상시 부하가 걸리고, 주문이 몰린 지역의 파티션이 뜨거워지면 그 지역 전체의 배차가 밀린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+              "url": "https://techblog.woowahan.com/22396/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+            }
+          ]
+        },
+        {
+          "tech": "실거리 계산(OSRM) + Redis 캐시",
+          "solves": "직선거리 대신 실제 경로로 배차 입력을 맞추고, 반복 계산을 없애 피크를 감당한다.",
+          "limits": "캐시가 커지면 조회 자체가 병목이 되어 자료구조와 클러스터를 다시 설계해야 했다. 지도 데이터와 엔진 운영도 직접 떠안는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+              "url": "https://techblog.woowahan.com/22396/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+            }
+          ]
+        },
+        {
+          "tech": "OSRM 자체 운영",
+          "solves": "호출당 과금 없이 분당 수십만 건 규모의 실거리 계산을 감당한다(초당 약 2만 건).",
+          "limits": "지도 데이터 갱신과 엔진 튜닝을 직접 해야 하고, 도로 상황 변화가 반영되기까지 시차가 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+              "url": "https://techblog.woowahan.com/22396/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "rider-dispatch"
+      ]
+    },
+    {
+      "name": "가게 노출",
+      "why": "목록에서 어떤 가게를 먼저 보여줄 것인가. 광고 수익이 여기서 나오고, 동시에 주문자가 만족할 가게를 골라야 한다 — 네이버·카카오의 지면 문제가 여기서도 반복된다.",
+      "tech": [
+        {
+          "tech": "비동기 조합(WebFlux·Reactor) + 서킷 브레이커",
+          "solves": "십여 개 시스템의 정보를 동시에 모아 초당 수십만 조회를 감당하고, 한 곳이 느려져도 화면을 돌려준다.",
+          "limits": "블로킹 한 줄이 전체를 막고 디버깅이 어렵다. 서킷이 열리면 일부 정보 없이 화면을 그리게 되어 표시가 실제와 달라질 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+              "url": "https://techblog.woowahan.com/2667/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+            }
+          ]
+        },
+        {
+          "tech": "3단 캐시(Redis→Redis→DynamoDB)",
+          "solves": "서비스향 모양·플랫폼 원래 모양·원본을 층으로 나눠 미스를 단계적으로 흡수한다.",
+          "limits": "층마다 낡음을 추적해야 하고 갱신 순서를 지켜야 한다. 순차 갱신이라 계층 간 값이 잠깐 어긋나는 구간이 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+              "url": "https://techblog.woowahan.com/2667/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "store-exposure"
+      ]
+    },
+    {
+      "name": "커머스 물류(B마트)",
+      "why": "음식 배달과 다른 문제다. 남의 가게가 만드는 게 아니라 우리가 재고를 들고 피킹해서 내보낸다. 실패의 성격도 다르다 — 재고가 없으면 주문 자체가 성립하지 않는다.",
+      "tech": [
+        {
+          "tech": "OMS (재고 통합 + Shipment 분리)",
+          "solves": "가용·입고예정·할당 재고를 실시간으로 맞춰 '없는 것을 파는' 실패를 막고, 출고를 배달과 떼어 피크를 평준화한다.",
+          "limits": "재고 정합성을 상시 유지해야 하고, 미리 담아 둔 상품의 대기 시간과 보관 부담이 생긴다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+              "url": "https://techblog.woowahan.com/22263/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+            }
+          ]
+        },
+        {
+          "tech": "동적 출고예정시각 + 센터 파티셔닝",
+          "solves": "현장 생산성으로 준비 시각을 예측해 라이더 대기를 0.75분→0.1분으로 줄이고 처리 순서를 지킨다.",
+          "limits": "예측이 틀리면 라이더가 헛걸음하고, 특정 센터에 주문이 몰리면 그 파티션이 뜨거워진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+              "url": "https://techblog.woowahan.com/22263/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+            }
+          ]
+        },
+        {
+          "tech": "TMS (계획·실행 분리)",
+          "solves": "엑셀로 하던 물류센터 배차를 시스템으로 옮기고 고정 계약 차량과 물량 분배를 자동화한다(계획 30분 내).",
+          "limits": "엑셀의 즉석 수정 유연성을 잃는다 — 첫 버전 도입률이 0%였던 이유다. 규칙에 없는 예외는 결국 사람이 손으로 고친다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+              "url": "https://techblog.woowahan.com/17466/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "bmart-fulfillment"
+      ]
+    },
+    {
+      "name": "정산",
+      "why": "가게와 라이더에게 돈이 가는 일. 라이더 지급액이 매출과 함께 커지는 구조라 이 도메인의 규모가 곧 손익이다.",
+      "tech": [
+        {
+          "tech": "일정산 파이프라인 + 사장님광장 공개",
+          "solves": "하루 100만 건 이상 주문을 매일 계산·지급하고, 그 내역을 사장님이 직접 검증할 수 있게 한다(2019년 4월 업계 최초).",
+          "limits": "매일 정확해야 하고 잘못을 바로잡을 시간 창이 짧다. 공개하는 만큼 오류가 즉시 드러나고 문의도 늘어난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "정산시스템팀을 소개합니다",
+              "url": "https://techblog.woowahan.com/2701/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+            }
+          ]
+        },
+        {
+          "tech": "PG 이중화(9:1)와 기능 단위 차단",
+          "solves": "외부 결제 의존의 열화를 미리 감지하고, 외부 장애 때 앱 전체가 아니라 해당 기능만 멈춘다(2021년 장애의 45%가 외부 기인).",
+          "limits": "두 벤더 유지·정합성 비용이 들고, 기능이 빠진 반쪽 앱은 사용자에게 혼란스럽다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "외부 시스템 장애에 대처하는 우리의 자세",
+              "url": "https://techblog.woowahan.com/6447/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "settlement"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "rider-dispatch",
+      "name": "배차 — 묶을수록 폭발하는 조합",
+      "domain": "배차",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 원가가 여기서 정해진다. 라이더에게 나가는 돈이 2025년 3조 1,542억(+41%)인데, 배차가 한 번 어긋날 때마다 그 돈이 더 든다. 카카오 택시 배차와 겉모습은 같지만 문제의 크기가 다르다 — **택시는 손님 한 명에 차 한 대지만 배달은 여러 건을 묶을 수 있고, 묶는 순간 따져야 할 경우의 수가 폭발한다.** 게다가 제약이 하나 더 있다. 음식은 식는다.",
+        "metrics": [
+          {
+            "label": "경로 계산 규모",
+            "value": "주말 피크 분당 15~20만 개 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "label": "묶음에 따른 거리 계산 수",
+            "value": "2건 배차 시 6건, 3건 배차 시 15건의 거리가 필요",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "label": "거리 엔진 처리량",
+            "value": "OSRM 초당 약 2만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "label": "중복 제거 효과",
+            "value": "주말 피크 분당 약 120만 건의 중복 계산을 캐시로 방지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "직선거리로 배차하던 때",
+          "thought": "직선거리는 계산이 싸지만 실제 이동을 말해 주지 않는다. 강 건너, 일방통행, 아파트 단지 뒤편 — 지도에서 가까운 것과 실제로 빨리 닿는 것은 다르다. 배차 최적화의 입력이 틀리면 그 위에 아무리 좋은 알고리즘을 올려도 결과가 틀린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "묶음배달의 경우의 수를 세어 봤을 때",
+          "thought": "2건을 묶으면 거리 6개, 3건이면 15개가 필요하다. 배달 하나가 늘 때마다 계산이 선형이 아니라 훨씬 빠르게 는다 — 그러니 '정확하게 계산한다'와 '제때 배차한다'가 정면으로 부딪힌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "피크 트래픽을 봤을 때",
+          "thought": "주말 저녁에는 분당 15~20만 개 경로를 계산해야 한다. 이건 알고리즘 문제가 아니라 인프라 문제다. 같은 두 점 사이 거리를 몇 번이고 다시 계산하고 있다면 그것부터 없애야 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "음식이 식는다는 제약을 볼 때",
+          "thought": "택시라면 손님이 조금 더 기다리면 그만이다. 배달은 늦으면 물건 자체가 나빠진다 — 도착이 늦은 것과 식은 음식이 온 것은 다른 실패다. 그래서 '언제 도착할지'를 예측하는 일이 편의 기능이 아니라 배차의 재료가 된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "배달",
+            "what": "가게에서 주문자까지의 한 건. 조리 완료 시각과 도착 기한을 함께 갖는다."
+          },
+          {
+            "name": "라이더",
+            "what": "지금 어디 있고 무엇을 들고 있는지가 계속 바뀌는 자원."
+          },
+          {
+            "name": "묶음",
+            "what": "한 라이더가 함께 나르는 배달들. 묶을수록 효율은 오르고 각 배달은 늦어진다."
+          },
+          {
+            "name": "실거리",
+            "what": "두 지점 사이의 실제 이동 거리. 배차 최적화의 입력값."
+          },
+          {
+            "name": "지역",
+            "what": "이벤트를 순서대로 처리하는 단위. 배달은 지역 안에서 서로 영향을 준다."
+          }
+        ],
+        "invariants": [
+          "배차의 옳고 그름은 알고리즘보다 먼저 입력이 정한다 — 거리가 틀리면 최적해도 틀린다.",
+          "묶음이 커질수록 필요한 거리 계산이 급격히 는다(2건 6개, 3건 15개). 정확도와 응답 시간이 정면으로 부딪힌다.",
+          "같은 지역의 배달들은 서로 영향을 준다 — 그래서 이벤트를 지역 단위로 순서대로 처리한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "배달 생성·위치 변경·완료·취소가 이벤트로 발행된다",
+            "why": "배차는 한 번의 요청이 아니라 계속 바뀌는 상태 위에서 돌아간다"
+          },
+          {
+            "step": "이벤트를 지역 ID 기준으로 리파티션해 순서대로 처리한다",
+            "why": "같은 지역의 배달들은 서로 영향을 주므로 순서가 뒤섞이면 안 된다"
+          },
+          {
+            "step": "OSRM 으로 실제 경로 기반 거리를 계산한다",
+            "why": "직선거리는 실제 이동 시간을 말해 주지 않는다"
+          },
+          {
+            "step": "계산된 거리를 Redis 해시에 저장해 재사용한다",
+            "why": "같은 두 점의 거리를 반복 계산하는 것이 피크의 주범이었다"
+          },
+          {
+            "step": "묶음 후보를 만들고 각 조합의 거리를 채운다",
+            "why": "2건이면 6개, 3건이면 15개 — 여기가 계산량의 본체다"
+          },
+          {
+            "step": "도착 예측을 함께 보고 배차를 확정한다",
+            "why": "늦는 것과 식는 것은 다른 실패다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "배차의 거리를 무엇으로 잴 것인가",
+            "chosen": "직선거리를 버리고 실제 경로 기반 실거리로 바꾼다(OSRM)",
+            "alternatives": [
+              "직선거리 유지",
+              "외부 지도 API 호출"
+            ],
+            "tradeoff": "계산 비용이 크게 올라간다 — 주말 피크에 분당 15~20만 개 경로를 계산해야 하는 부담이 이 선택에서 나온다. 대신 최적화의 입력이 현실과 맞아떨어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "거리 계산 엔진을 사서 쓸 것인가, 직접 운영할 것인가",
+            "chosen": "오픈소스 지도 데이터 기반 OSRM 을 직접 운영한다(초당 약 2만 건 처리)",
+            "alternatives": [
+              "상용 지도 API 사용"
+            ],
+            "tradeoff": "지도 데이터 갱신과 엔진 운영을 직접 떠안아야 한다. 대신 호출당 과금 없이 이 규모를 감당할 수 있다 — 분당 수십만 건을 외부 API 로 부르는 것은 비용 구조상 성립하기 어렵다(추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "같은 거리를 반복 계산하는 문제를 어떻게 할 것인가",
+            "chosen": "계산 결과를 Redis 해시에 저장해 재사용한다(주말 피크 분당 약 120만 건 중복 방지)",
+            "alternatives": [
+              "매번 새로 계산",
+              "애플리케이션 로컬 캐시만 사용"
+            ],
+            "tradeoff": "캐시가 커질수록 조회 자체가 병목이 된다 — 압축된 데이터로는 초당 3,400회 조회가 한계였고, 자료구조와 클러스터 구성을 바꿔야 했다. 캐시는 공짜가 아니라 또 다른 설계 대상이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "이벤트를 어떤 단위로 순서 보장할 것인가",
+            "chosen": "지역 ID 기준으로 리파티션해 같은 지역의 이벤트를 순서대로 처리한다",
+            "alternatives": [
+              "배달 ID 기준 파티셔닝",
+              "순서 보장 없이 처리"
+            ],
+            "tradeoff": "특정 지역에 주문이 몰리면 그 파티션이 뜨거워져 처리가 밀린다(핫 파티션). 대신 같은 지역 배달들의 상호 영향을 순서대로 반영할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "배차를 요청·응답으로 만들 것인가, 이벤트로 만들 것인가",
+            "chosen": "배달 생성·위치 변경·완료·취소를 이벤트로 발행해 계속 반응하는 구조로 둔다",
+            "alternatives": [
+              "주문 시점에 한 번 배차하고 끝내기"
+            ],
+            "tradeoff": "상태가 계속 바뀌므로 시스템이 언제나 '지금 최선'을 다시 계산해야 하고 그만큼 부하가 상시로 걸린다. 대신 라이더가 움직이고 주문이 취소되는 현실을 반영할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "question": "'언제 도착하는가'를 어떻게 다룰 것인가",
+            "chosen": "도착 시간 예측을 AI 서비스로 만들어 운영한다",
+            "alternatives": [
+              "평균 소요 시간으로 일괄 안내",
+              "예측하지 않고 실측만 표시"
+            ],
+            "tradeoff": "모델이 틀리면 사용자에게 한 약속이 틀리는 것이고, 모델을 계속 학습·배포·감시하는 운영 부담이 생긴다(그래서 MLOps 플랫폼이 따라온다). 대신 늦는 것과 식는 것을 미리 다룰 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+                "url": "https://techblog.woowahan.com/11582/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OSRM",
+            "role": "오픈소스 지도로 실제 경로 기반 거리를 계산한다(초당 약 2만 건)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka (지역 ID 리파티션)",
+            "role": "배달 생성·위치·완료·취소를 이벤트로 흘리고 같은 지역은 순서를 지킨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "tech": "Redis (해시·클러스터)",
+            "role": "계산된 거리를 재사용해 중복 계산을 없애고 쓰기 트래픽을 분산한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "tech": "도착 시간 예측 모델 + MLOps 플랫폼",
+            "role": "언제 닿을지를 예측하고 그 모델을 지속적으로 배포·운영한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+                "url": "https://techblog.woowahan.com/11582/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "위치·경로",
+          "via": "실거리 계산 결과",
+          "contract": "배차는 거리 도메인이 내놓은 값을 입력으로 쓴다. 그 값이 틀리면 배차도 틀린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "주문 접수",
+          "via": "배달 생성 이벤트",
+          "contract": "주문이 접수돼야 배달이 생기고, 조리 시작 시각이 배차 시점을 밀어낸다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "정산",
+          "via": "완료된 배달 건",
+          "contract": "배차 결과가 라이더 지급액으로 이어진다 — 이 회사 원가의 대부분이 여기서 결정된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 계속 바뀌는 상태 위의 배차",
+          "question": "한 번의 요청이 아니라 흐르는 이벤트 위에서 배차는 어떻게 만들어지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EV[배달 생성·위치·완료·취소] --> K[(Kafka · 지역 ID 리파티션)]\n  K --> ENG[배차 엔진]\n  ENG --> NEED{거리 필요}\n  NEED -->|캐시 히트| R[(Redis 해시)]\n  NEED -->|미스| OSRM[OSRM 실거리 계산]\n  OSRM --> R\n  R --> COMB[묶음 조합 평가<br/>2건 6개 · 3건 15개]\n  ETA[도착 시간 예측] --> COMB\n  COMB --> ASSIGN[배차 확정]\n  ASSIGN --> RIDER[라이더]\n  RIDER --> EV"
+        },
+        {
+          "title": "배달 한 건의 상태",
+          "question": "주문이 들어와 배달이 끝나기까지 배차는 몇 번 다시 판단되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 생성됨: 주문 접수\n  생성됨 --> 배차대기: 조리 시작\n  배차대기 --> 배차됨: 라이더 지정\n  배차됨 --> 재배차: 라이더 이탈·취소\n  재배차 --> 배차됨\n  배차됨 --> 묶임: 다른 배달과 함께 배정\n  묶임 --> 픽업: 가게 도착\n  배차됨 --> 픽업\n  픽업 --> 배달중\n  배달중 --> 완료\n  완료 --> [*]\n  note right of 묶임\n    효율은 오르고\n    각 배달은 늦어진다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 정확도와 시간이 부딪힐 때",
+          "question": "계산이 늦거나 틀리면 어디로 번지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[주말 피크] --> LOAD[분당 15~20만 경로 계산]\n  LOAD --> C{캐시}\n  C -->|히트| FAST[빠르게 배차]\n  C -->|미스 폭증| SLOW[계산이 밀린다]\n  SLOW --> LATE[배차가 늦는다]\n  LATE --> COLD[음식이 식는다]\n  C -.->|캐시 자체가 병목| LIMIT[조회 한계 · 자료구조·클러스터 재설계]\n  HOT[한 지역에 주문 집중] --> PART[핫 파티션]\n  PART --> SLOW\n  W{거리값이 틀리면}\n  W --> BAD[엉뚱한 라이더에게 배차]\n  BAD --> COST[이동이 늘어 원가가 오른다]\n  BAD --> COLD\n  ETAX[도착 예측이 틀리면] -.-> PROMISE[사용자에게 한 약속이 틀린다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+          "url": "https://techblog.woowahan.com/22396/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+        },
+        {
+          "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+          "url": "https://techblog.woowahan.com/11582/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+        }
+      ]
+    },
+    {
+      "key": "store-exposure",
+      "name": "가게 노출 — 초당 수십만 번 다시 계산되는 목록",
+      "domain": "가게 노출",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "앱을 열면 가장 먼저 보이는 화면이고, 광고 매출이 여기서 나온다. 그런데 이 목록은 미리 만들어 둘 수가 없다 — **같은 가게라도 지금 몇 시인지, 사용자가 어디 있는지에 따라 주문할 수 있는 가게인지가 달라진다.** 문 닫은 가게를 보여주면 그건 광고가 아니라 사고이고, 배달 가능 지역 밖의 가게를 위에 올리면 주문 자체가 성립하지 않는다. 네이버·카카오의 지면 문제가 여기서도 반복되지만, 조건이 하나 더 붙는다 — **이 지면은 실시간으로 유효해야 한다.**",
+        "metrics": [
+          {
+            "label": "조회 규모",
+            "value": "초당 수십만 건 (앱 내 최고 트래픽)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "label": "갱신 이벤트",
+            "value": "초당 약 100여 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "label": "조합 대상",
+            "value": "십여 개 외부 시스템 · 수십 개 실시간 정보 · 십여 개 플랫폼 시스템 데이터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "목록을 미리 만들어 두려 할 때",
+          "thought": "가게 목록은 캐시하기 좋아 보인다. 그런데 영업 상태·배달 지역·예상 시간이 시시각각 바뀌고, 무엇보다 사용자의 위치에 따라 답이 달라진다. 미리 만들 수 있는 것은 '가게 정보'까지이고 '지금 이 사람에게 보일 목록'은 매번 계산해야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "십여 개 시스템을 동시에 불러야 할 때",
+          "thought": "가게 하나를 보여주는 데 필요한 정보가 여러 시스템에 흩어져 있다. 순서대로 부르면 지연이 더해지고, 그중 하나가 느려지면 화면 전체가 멈춘다 — 최전방 시스템에서 이건 곧 앱이 안 열린다는 뜻이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "캐시 계층을 정할 때",
+          "thought": "한 겹으로는 부족했다. 서비스가 쓰기 좋은 모양과 플랫폼이 준 원래 모양이 다르고, 원본까지 필요한 순간도 있다. 계층을 나누면 각 층이 다른 실패를 흡수한다 — 대신 어느 층이 낡았는지 추적할 일이 늘어난다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "광고를 이 목록에 얹을 때",
+          "thought": "노출 순서는 광고 매출이 걸린 자리인 동시에 '지금 주문 가능한가'라는 사실이 걸린 자리다. 돈을 낸 가게를 위에 올리는 것과 문 닫은 가게를 걸러내는 것은 층이 다른 판단인데, 사용자에게는 한 줄로 보인다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "가게",
+            "what": "노출 대상. 영업 상태·배달 지역·최소 주문 금액이 계속 바뀐다."
+          },
+          {
+            "name": "노출 컨텍스트",
+            "what": "지금 시각과 사용자 위치. 같은 가게도 이 값에 따라 보이거나 안 보인다."
+          },
+          {
+            "name": "조합 결과",
+            "what": "여러 시스템의 정보를 합쳐 만든 '지금 이 사람에게 보일 가게 정보'."
+          },
+          {
+            "name": "캐시 계층",
+            "what": "서비스향 재구성(1차) · 플랫폼 1:1(2차) · 원본(3차)."
+          }
+        ],
+        "invariants": [
+          "가게 정보는 캐시할 수 있어도 '지금 이 사람에게 보일 목록'은 캐시할 수 없다 — 시간과 위치가 답을 바꾼다.",
+          "문 닫았거나 배달 지역 밖인 가게를 위에 올리면 그건 노출이 아니라 오류다.",
+          "최전방 시스템은 뒤의 어느 시스템이 느려져도 화면을 돌려줘야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자 위치와 현재 시각을 컨텍스트로 받는다",
+            "why": "이 둘이 '보일 가게'를 정한다"
+          },
+          {
+            "step": "1차 캐시(Redis, 서비스향 재구성 데이터)를 본다",
+            "why": "가장 자주 쓰이는 모양을 가장 앞에 둔다"
+          },
+          {
+            "step": "없으면 2차 캐시(Redis, 플랫폼 1:1 대응 데이터)로 내려간다",
+            "why": "원본까지 가지 않고 막을 수 있는 미스가 있다"
+          },
+          {
+            "step": "그래도 없으면 원본(DynamoDB)에서 읽고 비동기로 캐시를 채운다",
+            "why": "응답을 먼저 돌려주고 갱신은 뒤에서 한다"
+          },
+          {
+            "step": "십여 개 시스템의 정보를 비동기로 모아 조합한다",
+            "why": "순서대로 부르면 지연이 더해진다"
+          },
+          {
+            "step": "느린 시스템은 서킷 브레이커로 끊는다",
+            "why": "최전방에서 한 곳의 지연이 전체 화면을 멈추게 할 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "가게 목록을 미리 만들어 둘 것인가",
+            "chosen": "시간·위치 기반으로 실시간 계산해 내려준다",
+            "alternatives": [
+              "지역별 목록을 주기적으로 만들어 캐시",
+              "가게 정보만 캐시하고 정렬은 클라이언트에서"
+            ],
+            "tradeoff": "초당 수십만 조회를 매번 계산해야 하는 부담을 진다. 대신 문 닫은 가게나 배달 지역 밖의 가게가 목록에 남는 일을 막는다 — 이 도메인에서 낡은 데이터는 느린 것보다 나쁘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "여러 시스템을 어떻게 호출할 것인가",
+            "chosen": "WebFlux·Reactor 기반 비동기 논블로킹으로 십여 개 시스템을 동시에 부른다",
+            "alternatives": [
+              "요청당 스레드를 쓰는 동기 호출",
+              "필요한 정보를 미리 복제해 두기"
+            ],
+            "tradeoff": "적은 스레드로 많은 호출을 감당하는 대신, 블로킹 코드 한 줄이 전체를 막고 스택 트레이스가 끊겨 디버깅이 어려워진다 — 최전방이라 그 실수의 비용이 가장 크다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 몇 겹으로 둘 것인가",
+            "chosen": "3단 — 서비스향 재구성(Redis) → 플랫폼 1:1(Redis) → 원본(DynamoDB)",
+            "alternatives": [
+              "단일 캐시",
+              "캐시 없이 원본 직접 조회"
+            ],
+            "tradeoff": "층마다 다른 실패를 흡수하지만, 어느 층이 낡았는지 추적할 일이 늘고 갱신 순서를 지켜야 한다(주 저장소부터 순차 갱신). 계층은 공짜가 아니라 관리 대상이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "캐시 미스일 때 어떻게 할 것인가",
+            "chosen": "폴백으로 아래 계층에서 읽어 응답하고, 캐시 갱신은 비동기로 뒤에서 한다",
+            "alternatives": [
+              "캐시를 채운 뒤 응답",
+              "미스면 실패 반환"
+            ],
+            "tradeoff": "응답이 먼저 나가는 대신 그 순간의 값이 캐시에 아직 없어 뒤이은 요청도 같은 미스를 겪을 수 있다. 대신 사용자가 기다리지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "뒤의 시스템이 느려지면 어떻게 할 것인가",
+            "chosen": "Resilience4j 서킷 브레이커로 끊는다",
+            "alternatives": [
+              "타임아웃만 걸고 계속 시도",
+              "장애 시 전체 실패"
+            ],
+            "tradeoff": "끊긴 시스템의 정보 없이 화면을 그리게 되므로 일부 정보가 빠지거나 기본값으로 나간다. 그래도 앱이 열리지 않는 것보다는 낫다는 판단이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "갱신 이벤트를 어떻게 반영할 것인가",
+            "chosen": "초당 100여 개의 이벤트로 캐시를 갱신하되 주 저장소부터 순차적으로 내려간다",
+            "alternatives": [
+              "모든 계층 동시 갱신",
+              "주기적 전체 재적재"
+            ],
+            "tradeoff": "순차 갱신이라 계층 간에 잠깐 값이 다른 구간이 생긴다. 대신 원본이 먼저 옳아지므로 폴백이 항상 더 정확한 값을 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Spring WebFlux · Reactor",
+            "role": "십여 개 시스템을 비동기로 동시에 호출해 최전방 지연을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "tech": "Redis 2단 + DynamoDB",
+            "role": "서비스향 모양·플랫폼 원래 모양·원본을 층으로 나눠 캐시한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "tech": "Resilience4j",
+            "role": "느려진 하위 시스템을 끊어 화면 전체가 멈추지 않게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "tech": "Micrometer",
+            "role": "초당 수십만 조회 위에서 무엇이 나빠졌는지 관측한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "rider-dispatch",
+          "via": "예상 배달 시간",
+          "contract": "노출 목록에 보이는 예상 시간은 배차·이동이 만들어 내는 값이다. 배차가 밀리면 목록의 약속도 틀린다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "주문 접수",
+          "via": "영업 상태·주문 가능 여부",
+          "contract": "가게가 지금 받을 수 있는지가 노출의 전제다. 이 판단이 틀리면 주문이 접수 단계에서 깨진다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "정산",
+          "via": "광고비",
+          "contract": "노출 순서가 광고 매출과 얽혀 있다 — 이 목록은 사용자에게 보이는 화면이자 판매 상품이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 캐시를 내려가며 조합한다",
+          "question": "초당 수십만 조회를 어떻게 감당하면서 실시간성을 지키는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자 · 위치 + 현재 시각] --> API[가게노출 시스템]\n  API --> C1{1차 캐시<br/>Redis · 서비스향}\n  C1 -->|히트| COMBINE[정보 조합]\n  C1 -->|미스| C2{2차 캐시<br/>Redis · 플랫폼 1:1}\n  C2 -->|히트| COMBINE\n  C2 -->|미스| DB[(DynamoDB 원본)]\n  DB --> COMBINE\n  DB -.->|비동기 갱신| C2 -.-> C1\n  EXT[십여 개 외부 시스템<br/>수십 개 실시간 정보] --> COMBINE\n  CB[Resilience4j] -.->|느리면 끊는다| EXT\n  COMBINE --> LIST[가게 목록]\n  AD[광고] --> LIST"
+        },
+        {
+          "title": "가게 하나의 노출 상태",
+          "question": "같은 가게가 왜 어떤 사람에게는 보이고 어떤 사람에게는 안 보이는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 등록됨\n  등록됨 --> 영업중: 영업 시작\n  영업중 --> 노출대상: 사용자가 배달 지역 안\n  영업중 --> 제외: 배달 지역 밖\n  노출대상 --> 노출: 목록에 포함\n  노출 --> 상위노출: 광고·정렬 기준 충족\n  영업중 --> 일시중지: 가게가 주문을 멈춤\n  일시중지 --> 영업중: 재개\n  영업중 --> 영업종료: 마감\n  영업종료 --> [*]\n  note right of 노출대상\n    이 판정은 사용자마다 다르다.\n    그래서 목록을 미리 만들 수 없다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 최전방에서 무엇이 무너지는가",
+          "question": "뒤의 시스템이 느려지거나 캐시가 낡으면 사용자는 무엇을 보는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  REQ[조회 요청] --> SLOW{하위 시스템 지연}\n  SLOW -->|서킷 오픈| PARTIAL[일부 정보 없이 화면을 그린다]\n  SLOW -->|끊지 않았다면| STUCK[앱이 안 열린다]\n  PARTIAL -.->|기본값 노출| WRONGINFO[표시가 실제와 다를 수 있다]\n  STALE{캐시가 낡았다}\n  STALE -->|영업 종료 반영 전| CLOSED[문 닫은 가게가 목록에]\n  CLOSED --> FAIL[주문이 접수 단계에서 깨진다]\n  STALE -->|배달 지역 변경 반영 전| OUT[주문 불가 지역 가게가 상위에]\n  OUT --> FAIL\n  FAIL -.->|사용자에게는| SAME[\"배민이 이상하다\" 한 문장으로 보인다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+          "url": "https://techblog.woowahan.com/2667/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+        },
+        {
+          "title": "배달의민족 광고데이터 이관기",
+          "url": "https://techblog.woowahan.com/14041/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "광고 데이터를 옮긴 과정을 다룬 글 — 가게 노출 순서가 광고와 얽혀 있음을 보여준다."
+        }
+      ]
+    },
+    {
+      "key": "bmart-fulfillment",
+      "name": "B마트 물류 — 재고를 들고 파는 쪽의 문제",
+      "domain": "커머스 물류(B마트)",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "음식 배달과 근본이 다르다. 가게가 만드는 것을 나르는 게 아니라 **우리가 재고를 사서 들고, 직접 담아 내보낸다.** 그래서 실패의 성격도 다르다 — 음식 배달에서 최악은 늦게 도착하는 것이지만 여기서는 **재고가 없으면 주문 자체가 성립하지 않는다.** 2025년 상품 매출은 7,811억(+3.2%)으로 회사 매출의 한 축이고, 이 도메인의 효율이 곧 그 마진이다.",
+        "metrics": [
+          {
+            "label": "출고 처리 시간",
+            "value": "평균 11.6분 → 9.4분 (약 19% 단축)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "label": "라이더 대기 시간",
+            "value": "평균 0.75분 → 0.1분 (86.67% 이상 감소), 5분 이상 대기율 5.9% → 0.4%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "label": "출고예정시각 편차",
+            "value": "4.9분 → 3.15분 (35.7% 감소)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "label": "TMS 전환",
+            "value": "초기 도입률 0% → 재설계 후 2024-04-01 100% 전환, 배차 계획 30분 내 완료",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+                "url": "https://techblog.woowahan.com/17466/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+              }
+            ]
+          },
+          {
+            "label": "상품 매출",
+            "value": "2025년 7,811억(+3.2%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "우아한형제들 작년 매출 첫 5조 돌파…이익은 줄어",
+                "url": "https://www.hankyung.com/article/202604102769i",
+                "publisher": "한국경제",
+                "date": "2026-04",
+                "summary": "매출 성장과 이익 감소가 함께 나타난 2025년 실적, B마트 중심 상품 매출 7,811억(+3.2%)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "재고를 직접 들기로 했을 때",
+          "thought": "가게가 만드는 것을 나르기만 할 때는 '있는가'를 가게가 답했다. 우리가 사서 들고 있으면 그 답을 우리가 해야 한다 — 가용재고·입고예정·할당까지 실시간으로 맞아야 주문을 받을 수 있다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "예약 주문이 몰리는 시간을 봤을 때",
+          "thought": "고객이 원하는 배달 시각이 몰린다고 해서 담는 작업까지 그 시각에 몰릴 이유는 없다. 출고와 배달을 한 덩어리로 보고 있었기 때문에 피크가 그대로 현장 부하가 됐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "라이더가 기다리는 0.75분을 봤을 때",
+          "thought": "짧아 보이지만 이건 원가다. 라이더가 센터 앞에서 기다리는 동안 배달은 한 건도 안 늘고 비용만 쌓인다. 고정된 시각으로 출고를 약속하면 현장이 빠른 날에도 느린 날에도 똑같이 틀린다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "엑셀을 시스템으로 바꾸려 했을 때",
+          "thought": "엑셀은 느려 보여도 즉석에서 고칠 수 있다는 강점이 있다. 그걸 이기지 못한 첫 버전은 도입률 0%였다 — 현장이 쓰지 않는 시스템은 존재하지 않는 것과 같다는 사실이 숫자로 남았다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "재고",
+            "what": "가용·입고예정·할당으로 나뉜다. 이 셋이 어긋나면 팔 수 없는 것을 팔게 된다."
+          },
+          {
+            "name": "Shipment",
+            "what": "출고의 단위. 주문 하나가 여러 건으로 나뉠 수 있다."
+          },
+          {
+            "name": "출고예정시각",
+            "what": "라이더가 언제 오면 되는지의 약속. 현장 생산성에 따라 달라진다."
+          },
+          {
+            "name": "센터",
+            "what": "물류 거점. 처리 순서를 지키는 파티션 단위이기도 하다."
+          },
+          {
+            "name": "소비기한",
+            "what": "상품이 팔릴 수 있는 시간의 끝. 마감 할인의 근거."
+          }
+        ],
+        "invariants": [
+          "재고가 없으면 주문이 성립하지 않는다 — 음식 배달의 '늦음'과 달리 이건 되돌릴 수 없는 실패다.",
+          "고객이 원하는 배달 시각과 창고가 담는 시각은 같을 이유가 없다.",
+          "출고예정시각은 약속이다. 틀리면 라이더가 기다리고, 그 대기는 그대로 원가가 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "주문이 들어오면 재고를 확인해 출고 가능 여부를 판단한다",
+            "why": "우리가 들고 있는 물건이라 '있는가'를 우리가 답해야 한다"
+          },
+          {
+            "step": "주문을 출고 단위(Shipment)로 나눈다",
+            "why": "한 주문이 여러 번에 나뉘어 나갈 수 있다"
+          },
+          {
+            "step": "출고요청과 배달요청을 분리한다",
+            "why": "담는 일은 유휴 시간에, 배달은 고객이 원하는 시각에"
+          },
+          {
+            "step": "현장 인력과 생산성으로 출고예정시각을 동적으로 계산한다",
+            "why": "고정 시각은 빠른 날에도 느린 날에도 똑같이 틀린다"
+          },
+          {
+            "step": "센터 코드로 파티셔닝해 순차 처리한다",
+            "why": "같은 센터의 작업은 순서가 뒤섞이면 안 된다"
+          },
+          {
+            "step": "소비기한이 임박한 상품은 자동으로 할인한다",
+            "why": "재고를 들고 있다는 것은 시간이 지나면 손실이 난다는 뜻이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "주문을 받을지 말지를 무엇으로 정할 것인가",
+            "chosen": "가용·입고예정·할당 재고를 실시간으로 통합 관리해 출고 가능 여부를 먼저 판단한다",
+            "alternatives": [
+              "주문을 먼저 받고 나중에 취소",
+              "일 단위 재고 스냅숏 사용"
+            ],
+            "tradeoff": "재고 정합성을 실시간으로 유지하는 부담을 진다. 대신 '주문했는데 없다'는, 이 도메인에서 가장 나쁜 실패를 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "question": "출고와 배달을 한 덩어리로 볼 것인가",
+            "chosen": "출고요청과 배달요청을 분리해 출고는 유휴 시간에, 배달은 고객 희망 시각에 처리한다",
+            "alternatives": [
+              "배달 시각에 맞춰 그때 담기",
+              "모든 주문을 즉시 출고"
+            ],
+            "tradeoff": "미리 담아 둔 상품이 대기하는 시간이 생긴다(신선도·보관 공간 부담, 추정). 대신 시간대별 주문 분포가 15~18%로 평준화되고 평균 출고 처리가 11.6분에서 9.4분으로 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "question": "출고예정시각을 고정할 것인가",
+            "chosen": "현장 인력과 생산성을 반영해 동적으로 계산한다",
+            "alternatives": [
+              "시간대별 고정 값 사용",
+              "가장 느린 경우를 기준으로 여유 있게 잡기"
+            ],
+            "tradeoff": "예측이 틀리면 라이더가 헛걸음하고, 현장 인력·생산성 데이터를 계속 모아야 한다. 대신 라이더 평균 대기가 0.75분에서 0.1분으로, 5분 이상 대기율이 5.9%에서 0.4%로 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "question": "순차 처리의 예측성을 어떻게 확보할 것인가",
+            "chosen": "센터 코드 기반으로 파티셔닝한다",
+            "alternatives": [
+              "주문 ID 기준 분산",
+              "순서 보장 없이 처리"
+            ],
+            "tradeoff": "특정 센터에 주문이 몰리면 그 파티션이 뜨거워진다 — 배차 도메인에서 지역 ID 로 나눴을 때와 같은 대가다. 대신 같은 센터의 작업 순서를 지킬 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "question": "물류센터 배차를 엑셀에서 시스템으로 옮길 것인가",
+            "chosen": "TMS 를 만들어 배차를 계획과 실행 두 단계로 나눈다",
+            "alternatives": [
+              "엑셀 운영 유지",
+              "계획·실행을 한 화면에서"
+            ],
+            "tradeoff": "엑셀의 강점이었던 '즉석에서 고치기'를 잃는다. **첫 버전의 도입률이 0%였다는 사실이 그 대가를 그대로 보여준다** — 재설계를 거쳐서야 2024-04-01 100% 전환에 도달했고, 배차 계획은 30분 안에 끝나게 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+                "url": "https://techblog.woowahan.com/17466/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+              }
+            ]
+          },
+          {
+            "question": "차량 배정과 물량 분배를 사람이 할 것인가",
+            "chosen": "고정 계약 차량은 자동 배차하고, 출고 물량은 차량 적재량과 계약 조건에 따라 자동 분배한다",
+            "alternatives": [
+              "매번 담당자가 배정",
+              "차량별 고정 물량 할당"
+            ],
+            "tradeoff": "계약과 적재량이 규칙으로 굳어, 규칙에 없는 예외 상황이 오면 결국 사람이 손으로 고쳐야 한다. 대신 반복되는 배정에서 사람의 시간을 뺀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+                "url": "https://techblog.woowahan.com/17466/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+              }
+            ]
+          },
+          {
+            "question": "재고가 시간이 지나 못 팔게 되는 문제를 어떻게 할 것인가",
+            "chosen": "소비기한 데이터를 근거로 마감 할인을 자동 적용한다",
+            "alternatives": [
+              "폐기",
+              "담당자가 수동으로 할인"
+            ],
+            "tradeoff": "할인이 자동으로 걸리면 정가 판매 기회를 스스로 줄이는 구간이 생긴다. 그래도 재고를 들고 있는 이상 안 파는 것보다는 낫다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OMS (Kotlin · Spring · JPA)",
+            "role": "재고 확인부터 출고·배송까지를 하나의 흐름으로 잇고 Shipment 단위로 관리한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "tech": "PPC 단위 멀티스레드 병렬 처리",
+            "role": "출고요청 처리를 병렬로 돌려 피크를 감당한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "tech": "센터 코드 파티셔닝",
+            "role": "같은 센터의 작업 순서를 지키며 처리 예측성을 확보한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+                "url": "https://techblog.woowahan.com/22263/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+              }
+            ]
+          },
+          {
+            "tech": "TMS",
+            "role": "물류센터 입출고 배차를 계획과 실행으로 나눠 관리하고 자동 배차·물량 분배를 수행한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+                "url": "https://techblog.woowahan.com/17466/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "rider-dispatch",
+          "via": "출고예정시각",
+          "contract": "센터가 언제 준비되는지가 라이더를 언제 보낼지를 정한다. 이 값이 틀리면 라이더가 기다리고 그 대기가 원가가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "store-exposure",
+          "via": "재고 기반 노출",
+          "contract": "재고가 없는 상품은 목록에 있어도 팔 수 없다 — 가게 노출의 '지금 주문 가능한가'가 여기서는 재고 문제로 나타난다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "주문 접수",
+          "via": "출고 가능 여부 판단",
+          "contract": "주문을 받을 수 있는지가 재고 확인에서 갈린다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 출고와 배달을 떼어 놓는다",
+          "question": "고객이 원하는 배달 시각과 창고가 담는 시각을 왜 분리했는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  O[주문] --> STK{재고 확인<br/>가용·입고예정·할당}\n  STK -->|불가| REJ[주문 불성립]\n  STK -->|가능| SHIP[Shipment 로 분리]\n  SHIP --> PICKREQ[출고요청 · 유휴 시간에]\n  SHIP --> DELREQ[배달요청 · 고객 희망 시각에]\n  PICKREQ --> CENTER[센터 작업 · 센터 코드 파티션]\n  PROD[현장 인력 · 생산성] --> ETD[출고예정시각 동적 계산]\n  ETD --> CENTER\n  ETD --> RIDER[라이더 도착 시점]\n  CENTER --> OUT[출고 완료]\n  OUT --> RIDER\n  RIDER --> DELREQ\n  EXP[소비기한] -.->|임박| SALE[마감 할인 자동 적용]"
+        },
+        {
+          "title": "주문 하나의 출고 상태",
+          "question": "재고 확인부터 라이더 인계까지 어디서 멈출 수 있는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 접수시도\n  접수시도 --> 불성립: 재고 없음\n  접수시도 --> 접수됨: 재고 할당\n  접수됨 --> 출고대기: Shipment 생성\n  출고대기 --> 피킹중: 유휴 시간에 시작\n  피킹중 --> 출고완료\n  출고완료 --> 인계대기: 라이더 도착 전\n  인계대기 --> 배달중: 라이더 인계\n  출고완료 --> 라이더대기: 라이더가 먼저 와 있음\n  라이더대기 --> 배달중\n  배달중 --> 완료\n  완료 --> [*]\n  불성립 --> [*]\n  note right of 라이더대기\n    0.75분 → 0.1분.\n    이 구간이 곧 원가다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 재고와 시각이 어긋날 때",
+          "question": "음식 배달과 다른 종류의 실패는 어디서 생기는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A{재고 정합성}\n  A -->|어긋남| SOLD[없는 것을 팔았다]\n  SOLD --> CANCEL[주문 취소 · 되돌릴 수 없는 실패]\n  B{출고예정시각}\n  B -->|너무 이르게 잡음| WAIT[라이더가 기다린다 · 원가]\n  B -->|너무 늦게 잡음| IDLE[상품이 준비됐는데 라이더가 없다]\n  IDLE --> LATE[배달이 늦는다]\n  C{센터 파티션}\n  C -->|주문 집중| HOT[핫 파티션 · 그 센터 전체가 밀린다]\n  HOT --> LATE\n  D{TMS 도입}\n  D -->|현장이 안 쓰면| ZERO[도입률 0% · 시스템이 없는 것과 같다]\n  ZERO -.->|재설계 후| FULL[100% 전환 · 배차 계획 30분]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+          "url": "https://techblog.woowahan.com/22263/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+        },
+        {
+          "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+          "url": "https://techblog.woowahan.com/17466/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+        }
+      ]
+    },
+    {
+      "key": "order-reception",
+      "name": "주문 접수 — 반드시 한 번만 울려야 하는 알림",
+      "domain": "주문 접수",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "주문이 들어왔다는 사실이 가게에 닿아야 조리가 시작된다. 이 알림이 늦으면 뒤의 모든 것이 그만큼 밀리고, 아예 안 오면 주문은 접수되지 않은 채 남는다. 그런데 이 도메인의 진짜 어려움은 속도가 아니라 **횟수**다 — 주문서가 두 번 인쇄되면 가게는 주문이 두 건인 줄 알고 두 번 만들고, 한 번도 안 나오면 새 주문이 있다는 것을 아무도 모른다. **정확히 한 번**이 요구 사항인 몇 안 되는 자리다.",
+        "metrics": [
+          {
+            "label": "이벤트 규모",
+            "value": "일평균 약 4천만 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "label": "대상 단말",
+            "value": "PC · 모바일 앱(Android·iOS) · Android POS",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "알림 전달 방식을 고를 때",
+          "thought": "이미 안정적으로 도는 REST 인프라가 있는데 프로토콜을 하나 더 들이면 운영 비용이 두 배가 된다. 필요한 것은 서버에서 가게로 밀어 주는 한 방향뿐이고, 가게가 응답하는 것은 기존 REST 로 충분했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이전 방식(MQTT)이 겪은 문제를 볼 때",
+          "thought": "가게에 놓인 단말은 우리가 관리하는 서버실이 아니라 남의 가게 네트워크에 있다. 방화벽이 막으면 아무리 좋은 프로토콜도 닿지 않는다 — 평범한 HTTP 위에 얹는 편이 실제로 더 많은 가게에 닿는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "주문서 프린트를 생각할 때",
+          "thought": "이건 알림이 아니라 신호다. 종이가 나오는 순간 조리가 시작된다. 두 번 나오면 두 번 만들고, 안 나오면 주문이 없는 것이 된다 — 소프트웨어의 중복이 현실의 음식으로 바뀌는 지점이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "재연결을 다룰 때",
+          "thought": "가게 인터넷은 끊긴다. 끊긴 동안 들어온 주문을 어떻게 할지가 이 시스템의 진짜 설계다 — 다시 이어졌을 때 그 사이의 것을 보내되, 이미 처리된 것은 보내면 안 된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "주문 접수 프로그램",
+            "what": "가게에 놓인 단말. PC·모바일·POS 로 종류가 여럿이다."
+          },
+          {
+            "name": "알림 이벤트",
+            "what": "서버가 가게로 미는 사실. 그중 일부는 반드시 한 번만 닿아야 한다."
+          },
+          {
+            "name": "CommitEvent",
+            "what": "중요한 이벤트에 붙는 확인 절차. 클라이언트가 받았다고 알려 주는 통로."
+          },
+          {
+            "name": "Last-Event-ID",
+            "what": "재연결 시 어디부터 못 받았는지를 가리키는 표식."
+          }
+        ],
+        "invariants": [
+          "주문서 프린트는 정확히 한 번이어야 한다 — 두 번이면 중복 주문으로 오인되고, 없으면 새 주문을 아무도 모른다.",
+          "가게 단말은 남의 네트워크에 있다. 끊김은 예외가 아니라 전제다.",
+          "받았다는 확인이 없는 이벤트라도, 지금의 주문 상태에서 여전히 유효할 때만 다시 보낸다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "가게 단말이 서버에 SSE 연결을 연다",
+            "why": "서버에서 가게로 미는 한 방향이면 충분하다"
+          },
+          {
+            "step": "주문이 들어오면 그 연결로 알림을 밀어 준다",
+            "why": "가게가 물어보러 오기를 기다릴 수 없다"
+          },
+          {
+            "step": "중요한 이벤트에는 commitUrl 을 함께 보낸다",
+            "why": "닿았는지를 서버가 알 방법이 필요하다"
+          },
+          {
+            "step": "클라이언트가 그 URL 을 호출해 수신을 확인한다",
+            "why": "확인이 오면 다시 보내지 않는다"
+          },
+          {
+            "step": "확인이 없으면 재전송하되, 지금 주문 상태에서 유효한 경우에만 보낸다",
+            "why": "이미 처리된 주문의 알림을 다시 울리면 그게 곧 중복이다"
+          },
+          {
+            "step": "연결이 끊겼다 이어지면 Last-Event-ID 로 못 받은 구간을 채운다",
+            "why": "가게 인터넷은 끊긴다 — 그동안의 주문이 사라지면 안 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "실시간 알림을 어떤 방식으로 보낼 것인가",
+            "chosen": "SSE(Server-Sent Events)를 쓴다",
+            "alternatives": [
+              "폴링",
+              "WebSocket",
+              "기존 MQTT 유지"
+            ],
+            "tradeoff": "양방향이 필요해지면 다른 통로를 또 만들어야 한다. 대신 이미 있는 REST 인프라 위에 얹을 수 있어 프로토콜을 하나 더 운영하는 비용을 피한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "question": "가게 네트워크의 방화벽 문제를 어떻게 할 것인가",
+            "chosen": "평범한 HTTP 위에서 도는 방식을 고른다",
+            "alternatives": [
+              "전용 포트·프로토콜 사용(이전 MQTT)"
+            ],
+            "tradeoff": "HTTP 의 제약(연결 유지 방식, 프록시·타임아웃 취급)을 그대로 받는다. 대신 남의 가게 네트워크에서 막히지 않는다 — 닿지 않는 알림은 아무 값어치가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "question": "'반드시 한 번'을 어떻게 보장할 것인가",
+            "chosen": "중요한 이벤트에 commitUrl 을 붙여 클라이언트가 수신을 확인하게 한다",
+            "alternatives": [
+              "보내고 잊기(fire-and-forget)",
+              "무조건 재전송"
+            ],
+            "tradeoff": "클라이언트가 확인 호출을 성실히 해야 하고, 서버는 확인 여부를 상태로 들고 있어야 한다. 확인이 유실되면 재전송 판단이 다시 필요해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "question": "확인이 안 온 이벤트를 무조건 다시 보낼 것인가",
+            "chosen": "지금의 주문 상태에서 여전히 유효한 경우에만 재전송한다",
+            "alternatives": [
+              "무조건 재시도",
+              "재전송하지 않음"
+            ],
+            "tradeoff": "재전송 판단에 업무 규칙이 들어와 전달 계층이 도메인을 알게 된다(순수한 메시징 계층이 아니게 된다). 대신 이미 처리된 주문의 알림이 다시 울리는 일을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "question": "연결이 끊긴 동안의 이벤트를 어떻게 할 것인가",
+            "chosen": "Last-Event-ID 로 재연결 시 못 받은 구간을 채운다",
+            "alternatives": [
+              "끊긴 동안의 이벤트는 버림",
+              "재연결 시 전체 다시 보내기"
+            ],
+            "tradeoff": "서버가 이벤트를 일정 기간 보관해야 하고, 어디까지 보냈는지를 클라이언트별로 알아야 한다. 대신 인터넷이 잠깐 끊긴 가게가 주문을 통째로 놓치지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "question": "여러 종류의 단말을 어떻게 지원할 것인가",
+            "chosen": "PC·모바일 앱·Android POS 를 같은 방식으로 지원한다",
+            "alternatives": [
+              "단말별로 다른 전달 방식"
+            ],
+            "tradeoff": "가장 제약이 많은 단말에 맞춰야 해서 각 단말의 장점을 다 살리지 못한다. 대신 '정확히 한 번'이라는 규칙을 한 곳에서만 지키면 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Server-Sent Events (HTTP)",
+            "role": "서버에서 가게 단말로 알림을 미는 단방향 통로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "tech": "CommitEvent (commitUrl)",
+            "role": "중요한 이벤트의 수신을 클라이언트가 확인하게 해 중복·유실을 판단한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "tech": "Last-Event-ID",
+            "role": "재연결 시 못 받은 구간을 이어 붙인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          },
+          {
+            "tech": "기존 REST API",
+            "role": "가게 → 서버 방향(접수·거절 등)은 이미 있는 통로를 그대로 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Server-Sent Events로 실시간 알림 전달하기",
+                "url": "https://techblog.woowahan.com/23199/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "rider-dispatch",
+          "via": "접수 시점이 조리 시작을 정한다",
+          "contract": "가게가 언제 받았는지가 조리 완료 예상 시각을 정하고, 그것이 배차 시점을 밀어낸다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "store-exposure",
+          "via": "영업·접수 가능 상태",
+          "contract": "가게가 지금 받을 수 있는지가 노출의 전제다. 이 상태가 틀리면 목록에서 고른 주문이 접수에서 깨진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "bmart-fulfillment",
+          "via": "주문 성립 판단",
+          "contract": "B마트는 가게 승낙 대신 재고가 그 자리를 대신한다 — 같은 '받을 수 있는가'를 다른 방식으로 판정한다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 밀어 주고, 받았는지 확인한다",
+          "question": "주문 알림 하나가 가게 단말에 확실히 닿기까지 무엇이 오가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  ORD[주문 발생] --> SRV[알림 서버]\n  POS[가게 단말 · PC·앱·POS] -->|SSE 연결| SRV\n  SRV -->|이벤트 + commitUrl| POS\n  POS --> PRINT[주문서 프린트]\n  PRINT --> COOK[조리 시작]\n  POS -->|commitUrl 호출| SRV\n  SRV -->|확인 없음| CHECK{지금 주문 상태에서 유효한가}\n  CHECK -->|유효| RESEND[재전송]\n  CHECK -->|이미 처리됨| DROP[보내지 않는다]\n  RESEND --> POS\n  POS -->|접수·거절| REST[기존 REST API] --> SRV"
+        },
+        {
+          "title": "알림 이벤트 하나의 상태",
+          "question": "'보냈다'와 '가게가 알았다' 사이에 무엇이 있는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 생성됨: 주문 발생\n  생성됨 --> 전송됨: SSE 로 밀어 줌\n  전송됨 --> 확인됨: commitUrl 호출\n  전송됨 --> 미확인: 확인이 오지 않음\n  미확인 --> 재전송대상: 주문 상태에서 여전히 유효\n  미확인 --> 폐기: 이미 처리된 주문\n  재전송대상 --> 전송됨\n  전송됨 --> 끊김: 연결 종료\n  끊김 --> 보충: 재연결 · Last-Event-ID\n  보충 --> 전송됨\n  확인됨 --> [*]\n  폐기 --> [*]\n  note right of 미확인\n    여기서의 판단이 곧\n    '정확히 한 번'을 만든다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 두 번 울리거나 안 울릴 때",
+          "question": "소프트웨어의 중복·유실이 현실에서 무엇이 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  E[알림 이벤트] --> D{전달}\n  D -->|두 번 도착| DUP[주문서가 두 번 인쇄된다]\n  DUP --> COOK2[가게가 두 번 만든다 · 재료와 시간 낭비]\n  D -->|도착 안 함| MISS[주문서가 안 나온다]\n  MISS --> UNKNOWN[가게가 새 주문을 모른다]\n  UNKNOWN --> LATE[접수가 밀리고 뒤의 모든 것이 밀린다]\n  N{가게 네트워크}\n  N -->|방화벽에 막힘| NEVER[아예 닿지 않는다]\n  N -->|잠깐 끊김| GAP[그 사이 주문들]\n  GAP -->|Last-Event-ID 없으면| UNKNOWN\n  DUP -.->|되돌릴 수 없다| REAL[이미 만든 음식은 남는다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Server-Sent Events로 실시간 알림 전달하기",
+          "url": "https://techblog.woowahan.com/23199/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+        }
+      ]
+    },
+    {
+      "key": "settlement",
+      "name": "정산 — 매일 돈을 내보내는 쪽",
+      "domain": "정산",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 손익이 실제로 결정되는 자리다. 한쪽으로는 사장님에게 매출을 보내고 다른 쪽으로는 라이더에게 배달 대가를 보내는데, 그 라이더 지급이 2025년 3조 1,542억으로 매출과 함께 41% 늘었다. 그리고 이 도메인의 실수는 다른 도메인과 성격이 다르다 — **검색 결과가 조금 나빠지는 것과 사장님 통장에 들어갈 금액이 틀린 것은 같은 종류의 문제가 아니다.** 게다가 계산 대상은 하루 100만 건이 넘는 주문이고, 그것을 **매일** 정산한다.",
+        "metrics": [
+          {
+            "label": "정산 주기",
+            "value": "2019년 4월 업계 최초 일정산 도입",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "label": "처리 규모",
+            "value": "하루 주문량 100만 건 이상을 일정산",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "label": "라이더 지급",
+            "value": "2025년 외주용역비 3조 1,542억 (+41%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "우아한형제들, 매출 5조 고지 달성…영업익은 7% 감소",
+                "url": "https://dealsite.co.kr/articles/160018/068030",
+                "publisher": "딜사이트",
+                "date": "2026-04",
+                "summary": "2025년 매출 5조 2,830억(첫 5조 돌파), 영업이익 5,929억(-7.5%). 라이더 외주용역비 3조 1,542억으로 41% 급증."
+              }
+            ]
+          },
+          {
+            "label": "외부 의존 비중",
+            "value": "2021년 장애의 45%가 외부 시스템에서 비롯",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "외부 시스템 장애에 대처하는 우리의 자세",
+                "url": "https://techblog.woowahan.com/6447/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "정산 주기를 정할 때",
+          "thought": "주 단위·월 단위로 묶으면 계산도 지급도 편하다. 그런데 그 사이 사장님은 자기 돈을 못 쓴다 — 작은 가게에는 그 기간이 그대로 자금 압박이다. 매일 주면 그 압박이 사라지지만 계산과 지급을 매일 정확히 해내야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "정산 내역을 공개할지 정할 때",
+          "thought": "정산 금액을 사장님이 직접 볼 수 있게 하면 우리 계산이 매일 검증받는 셈이 된다. 틀리면 바로 드러난다는 뜻인데, 그게 부담이면서 동시에 이 시스템이 신뢰받는 유일한 방법이기도 하다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "부가세 자료까지 만들어 줄지 고민할 때",
+          "thought": "우리 의무는 정산금 지급까지다. 그런데 사장님은 그 숫자로 세금 신고를 해야 하고, 그 자료를 각자 만들면 우리 데이터와 어긋난다 — 어차피 우리가 가진 데이터라면 우리가 만드는 편이 서로 덜 틀린다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "외부 시스템 의존을 볼 때",
+          "thought": "장애의 45%가 우리가 만들지 않은 것에서 온다. 사용자는 그 이유를 모르고 '배민이 안 된다'고만 느낀다 — 그러면 남의 장애도 우리 문제로 다뤄야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "주문 데이터",
+            "what": "정산의 원재료. 하루 100만 건 이상이 매일 쌓인다."
+          },
+          {
+            "name": "정산금액",
+            "what": "주문에서 수수료·할인·배달비를 정리하고 남은, 사장님에게 갈 금액."
+          },
+          {
+            "name": "지급",
+            "what": "지정된 날짜에 실제로 돈이 나가는 사건."
+          },
+          {
+            "name": "채권",
+            "what": "사장님이 우아한형제들에 지불해야 할 몫. 정산의 반대 방향."
+          },
+          {
+            "name": "회계 데이터",
+            "what": "위의 모든 것이 장부에 남는 형태."
+          }
+        ],
+        "invariants": [
+          "정산 금액은 사장님이 직접 확인할 수 있어야 한다 — 검증되지 않는 정산은 신뢰받지 못한다.",
+          "지급일은 약속이다. 연휴처럼 은행이 쉬는 날이 끼어도 그 약속이 깨지면 안 된다.",
+          "이 도메인의 오류는 사용자 경험이 나빠지는 것이 아니라 남의 통장 금액이 틀리는 것이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "매일 발생한 주문 데이터를 모아 저장한다",
+            "why": "정산의 원재료이고 하루 100만 건이 넘는다"
+          },
+          {
+            "step": "수수료·할인·배달비를 정리해 정산금액을 계산한다",
+            "why": "주문 금액과 사장님이 받을 금액은 다르다"
+          },
+          {
+            "step": "지정된 날짜에 사장님에게 지급한다",
+            "why": "일정산이라 이 일이 매일 일어난다"
+          },
+          {
+            "step": "연휴에는 지급을 앞당긴다",
+            "why": "은행이 쉬는 동안 돈이 묶이면 그 기간이 곧 자금 압박이다"
+          },
+          {
+            "step": "사장님광장에 정산내역과 지급여부를 공개한다",
+            "why": "검증할 수 없는 정산은 믿을 수 없다"
+          },
+          {
+            "step": "매출·매입 자료를 만들어 부가세 신고를 돕는다",
+            "why": "같은 데이터를 각자 만들면 서로 어긋난다"
+          },
+          {
+            "step": "채권과 회계 데이터를 함께 관리한다",
+            "why": "나가는 돈과 들어올 돈이 같은 장부에서 맞아야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "정산 주기를 얼마로 할 것인가",
+            "chosen": "일정산 — 매일 계산하고 매일 지급한다(2019년 4월, 업계 최초)",
+            "alternatives": [
+              "주 단위 정산",
+              "월 단위 정산"
+            ],
+            "tradeoff": "하루 100만 건이 넘는 주문을 매일 정확히 계산하고 지급해야 하고, 잘못된 정산을 발견해 바로잡을 시간 창이 그만큼 짧아진다. 대신 사장님의 자금이 묶이는 기간이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "question": "은행이 쉬는 연휴는 어떻게 할 것인가",
+            "chosen": "설·추석 같은 장기 연휴에는 지급을 앞당긴다",
+            "alternatives": [
+              "영업일 기준으로 밀어서 지급"
+            ],
+            "tradeoff": "매년 달라지는 예외 일정을 시스템과 운영이 계속 다뤄야 한다. 대신 연휴 동안 돈이 묶여 있는 상황을 만들지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "question": "정산 내역을 사장님에게 보여 줄 것인가",
+            "chosen": "사장님광장에서 정산내역과 지급여부를 직접 확인하게 한다",
+            "alternatives": [
+              "금액만 입금하고 내역은 문의 시 제공"
+            ],
+            "tradeoff": "우리 계산이 매일 검증받게 되어 오류가 곧바로 드러나고 문의도 그만큼 온다. 그래도 검증할 수 없는 정산은 신뢰받지 못한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "question": "세금 신고 자료까지 만들어 줄 것인가",
+            "chosen": "매출·매입 자료를 생성해 부가세 신고를 돕는다",
+            "alternatives": [
+              "정산금 지급까지만 책임"
+            ],
+            "tradeoff": "우리 의무 범위를 넘어서는 일을 떠안고, 세법이 바뀔 때마다 따라가야 한다. 대신 사장님이 따로 만든 숫자와 우리 데이터가 어긋나는 일을 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "question": "결제 같은 외부 시스템 의존을 어떻게 다룰 것인가",
+            "chosen": "PG 를 이중화하고 트래픽을 9:1 같은 비율로 나눠 흘린다 — 회사 전반의 외부 의존 정책이며 정산·결제도 그 대상이다",
+            "alternatives": [
+              "단일 벤더 사용",
+              "장애 시 수동 전환"
+            ],
+            "tradeoff": "두 벤더를 동시에 유지하고 정합성을 맞추는 비용이 든다. 대신 소수 트래픽을 늘 흘려 두기 때문에 한쪽이 나빠지는 것을 장애가 나기 전에 알아챌 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "외부 시스템 장애에 대처하는 우리의 자세",
+                "url": "https://techblog.woowahan.com/6447/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+              }
+            ]
+          },
+          {
+            "question": "외부 장애가 났을 때 무엇을 멈출 것인가",
+            "chosen": "서비스 전체가 아니라 영향받는 기능만 끈다 — 이 역시 회사 전반의 정책이다",
+            "alternatives": [
+              "전체 서비스 중단",
+              "장애를 무시하고 계속 시도"
+            ],
+            "tradeoff": "일부 기능이 빠진 반쪽짜리 앱이 되어 사용자가 혼란스러울 수 있다. 대신 앱 자체가 열리지 않는 상황은 막는다 — 2021년 장애의 45%가 외부에서 왔으므로 이 판단이 자주 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "외부 시스템 장애에 대처하는 우리의 자세",
+                "url": "https://techblog.woowahan.com/6447/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "일정산 배치·지급 파이프라인",
+            "role": "하루 100만 건 이상의 주문에서 정산금액을 계산하고 지정일에 지급한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "tech": "사장님광장 정산 조회",
+            "role": "정산내역·지급여부와 부가세용 매출·매입 자료를 사장님에게 공개한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "tech": "채권·회계 데이터 생성",
+            "role": "나가는 돈과 받을 돈을 장부에서 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "정산시스템팀을 소개합니다",
+                "url": "https://techblog.woowahan.com/2701/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+              }
+            ]
+          },
+          {
+            "tech": "PG 이중화(9:1 트래픽 분할)",
+            "role": "외부 결제 의존의 열화를 장애 전에 감지하고 전환할 수 있게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "외부 시스템 장애에 대처하는 우리의 자세",
+                "url": "https://techblog.woowahan.com/6447/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "order-reception",
+          "via": "접수된 주문 데이터",
+          "contract": "정산의 원재료는 접수·완료된 주문이다. 주문 상태가 틀리면 정산 금액이 틀린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "rider-dispatch",
+          "via": "완료된 배달 건",
+          "contract": "배차 결과가 라이더 지급으로 이어진다 — 이 회사 원가의 대부분이 이 경로로 나간다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "bmart-fulfillment",
+          "via": "상품 판매 정산",
+          "contract": "B마트는 우리가 파는 물건이라 정산의 방향이 다르다(가게 정산이 아니라 자체 매출).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "store-exposure",
+          "via": "광고비 청구",
+          "contract": "노출 상품이 만든 광고비가 사장님 채권으로 잡힌다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 매일 계산하고 매일 내보낸다",
+          "question": "주문 데이터가 사장님 통장에 닿기까지 무엇을 지나는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  ORD[하루 100만 건 이상 주문] --> STORE[정산 데이터 적재]\n  STORE --> CALC[정산금액 계산<br/>수수료·할인·배달비 정리]\n  CALC --> PAY[지정일 지급 · 일정산]\n  HOL[연휴] -.->|지급 앞당김| PAY\n  PAY --> OWNER[사장님 통장]\n  CALC --> VIEW[사장님광장 · 정산내역·지급여부]\n  CALC --> TAX[부가세용 매출·매입 자료]\n  CALC --> AR[채권 관리]\n  CALC --> ACC[회계 데이터]\n  DELIV[완료된 배달] --> RIDERPAY[라이더 지급 3.15조]\n  PG[(외부 PG · 이중화 9:1)] --> PAY"
+        },
+        {
+          "title": "정산 한 건의 상태",
+          "question": "'계산됐다'와 '돈이 나갔다' 사이에 무엇이 있는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 주문완료\n  주문완료 --> 정산대상: 일 단위 집계\n  정산대상 --> 계산됨: 수수료·할인 정리\n  계산됨 --> 공개됨: 사장님광장에 노출\n  공개됨 --> 이의: 사장님이 금액을 확인하고 문의\n  이의 --> 계산됨: 정정\n  공개됨 --> 지급대기: 지급일 도래\n  지급대기 --> 지급완료\n  지급대기 --> 지급보류: 채권 상계 등\n  지급보류 --> 지급완료\n  지급완료 --> [*]\n  note right of 공개됨\n    매일 검증받는다는 뜻이다.\n    틀리면 바로 드러난다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 금액이 틀리거나 돈이 못 나갈 때",
+          "question": "이 도메인의 실패는 다른 도메인과 어떻게 다른가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  C{정산금액}\n  C -->|틀림| WRONG[남의 통장 금액이 틀린다]\n  WRONG --> VISIBLE[사장님광장에서 바로 드러난다]\n  VISIBLE --> FIX[정정 · 그러나 신뢰는 이미 깎였다]\n  D{지급}\n  D -->|은행·PG 장애| BLOCKED[돈이 못 나간다]\n  BLOCKED -->|이중화| SWITCH[다른 PG 로 전환]\n  BLOCKED -->|단일 벤더였다면| WAIT[복구될 때까지 대기]\n  E{외부 시스템 장애}\n  E -->|기능 단위 차단| PARTIAL[일부 기능만 멈춘다]\n  E -->|차단 안 하면| ALL[앱 전체가 안 된다]\n  ALL -.->|사용자는 이유를 모른다| BLAME[\"배민이 안 된다\"]\n  WRONG -.->|다른 도메인과의 차이| DIFF[검색이 나빠지는 것과는 다른 종류의 실패다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "정산시스템팀을 소개합니다",
+          "url": "https://techblog.woowahan.com/2701/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+        },
+        {
+          "title": "외부 시스템 장애에 대처하는 우리의 자세",
+          "url": "https://techblog.woowahan.com/6447/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "배차에서 묶음배달(2건·3건)의 조합을 어디까지 탐색하는지, 어떤 기준으로 자르는지 확인해야 한다 — 이 회사 배차의 핵심 질문이다.",
+    "'음식이 식는다'는 제약이 배차 알고리즘에 어떤 형태로 들어가는지(조리 완료 예상 시각 등) 아직 모른다.",
+    "가게 노출·광고 상품이 주문자 만족과 어떻게 균형을 맞추는지 공개 자료를 찾지 못했다.",
+    "묶음 조합을 어디까지 탐색하고 무엇으로 자르는지(후보 수 상한·시간 예산)는 공개 자료에 없다.",
+    "도착 시간 예측 모델의 정확도와, 예측이 배차 결정에 어떤 형태로 들어가는지 확인하지 못했다.",
+    "라이더 수락·거절이 배차에 어떻게 반영되는지 모른다 — 카카오 taxi-dispatch 의 수락률 되먹임과 같은 문제가 여기에도 있는지가 궁금한 지점이다.",
+    "노출 순서에서 광고와 '주문 가능성·거리·예상 시간' 같은 사실이 어떤 비중으로 섞이는지는 공개 자료에 없다 — 네이버·카카오와 같은 종류의 미확인 항목이다.",
+    "라이더 수락·거절이 배차에 어떻게 반영되는지는 이번에도 찾지 못했다(비교 문서에서 드러난 구멍, 032에 이어 미해결).",
+    "미리 출고한 상품이 배달 시각까지 어디에 어떻게 대기하는지(보관·신선도 관리) 공개 자료에 없다 — 출고·배달 분리의 대가가 그 지점에 있을 텐데 확인할 수 없다.",
+    "재고 정합성이 깨졌을 때의 처리(주문 취소·대체 제안)를 다룬 자료를 찾지 못했다.",
+    "라이더 수락·거절이 배차에 어떻게 반영되는지는 네 사이클에 걸쳐 찾았으나 공개 자료가 없다 — 더 찾지 않고 미확인으로 확정한다. 카카오 taxi-dispatch 의 수락률 되먹임과 같은 문제가 있는지는 알 수 없다.",
+    "가게가 주문을 거절할 때의 처리(재배차·환불·노출 반영)를 다룬 자료를 찾지 못했다.",
+    "라이더 지급(외주용역비 3조 1,542억)의 계산·지급 시스템은 사장님 정산과 별개일 텐데 공개 자료를 찾지 못했다 — 이 회사 원가의 본체인데 비어 있다.",
+    "정산 오류가 발견됐을 때의 정정 절차와 그 빈도를 확인하지 못했다.",
+    "프로파일 단계에서 '위치·경로'를 별도 도메인으로 잡았으나, 공개 자료에서 실거리 시스템이 배차와 한 몸으로 다뤄져 배차 도메인에 합쳤다(037). 지도·경로 자체를 독립 문제로 다룬 자료가 나오면 다시 분리할 수 있다."
+  ],
+  "sources": [
+    {
+      "title": "우아한형제들, 매출 5조 고지 달성…영업익은 7% 감소",
+      "url": "https://dealsite.co.kr/articles/160018/068030",
+      "publisher": "딜사이트",
+      "date": "2026-04",
+      "summary": "2025년 매출 5조 2,830억(첫 5조 돌파), 영업이익 5,929억(-7.5%). 라이더 외주용역비 3조 1,542억으로 41% 급증."
+    },
+    {
+      "title": "우아한형제들 작년 매출 첫 5조 돌파…이익은 줄어",
+      "url": "https://www.hankyung.com/article/202604102769i",
+      "publisher": "한국경제",
+      "date": "2026-04",
+      "summary": "매출 성장과 이익 감소가 함께 나타난 2025년 실적, B마트 중심 상품 매출 7,811억(+3.2%)."
+    },
+    {
+      "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+      "url": "https://techblog.woowahan.com/22396/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+    },
+    {
+      "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+      "url": "https://techblog.woowahan.com/22263/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "B마트 주문을 물류 관점에서 관리해 출고를 최적화한 사례."
+    },
+    {
+      "title": "실시간 음식배달 플랫폼에서 활용한 분산 이벤트 스트리밍",
+      "url": "https://techblog.woowahan.com/7894/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "주문·배달을 이벤트 기반으로 처리하는 구조를 다룬 세미나 자료."
+    },
+    {
+      "title": "배민 앱에도 AI 서비스가? AI 서비스와 MLOps 도입기",
+      "url": "https://techblog.woowahan.com/11582/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+    },
+    {
+      "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+      "url": "https://techblog.woowahan.com/2667/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+    },
+    {
+      "title": "배달의민족 광고데이터 이관기",
+      "url": "https://techblog.woowahan.com/14041/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "광고 데이터를 옮긴 과정을 다룬 글 — 가게 노출 순서가 광고와 얽혀 있음을 보여준다."
+    },
+    {
+      "title": "B마트 OMS의 물류주문관리를 통한 출고 최적화",
+      "url": "https://techblog.woowahan.com/22263/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "재고 확인부터 출고·배송까지를 잇는 OMS. 출고요청과 배달요청을 분리해 피크를 평준화(처리 11.6→9.4분)하고, 출고예정시각을 동적으로 계산해 라이더 대기를 0.75→0.1분으로 줄인 과정."
+    },
+    {
+      "title": "운송 관리 시스템(TMS)의 탄생부터 현장에서 사용하기까지",
+      "url": "https://techblog.woowahan.com/17466/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "물류센터 입출고 배차를 엑셀에서 시스템으로 옮긴 과정. 계획과 실행을 분리하고 고정 계약 차량 자동 배차·출고 물량 자동 분배를 넣었으며, 초기 도입률 0%에서 재설계를 거쳐 2024-04-01 100% 전환."
+    },
+    {
+      "title": "Server-Sent Events로 실시간 알림 전달하기",
+      "url": "https://techblog.woowahan.com/23199/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "가게의 주문 접수 프로그램에 실시간 알림을 보내는 방식으로 SSE 를 고른 이유와, 주문서 프린트처럼 '반드시 한 번만' 전달해야 하는 이벤트를 CommitEvent·Last-Event-ID 로 다루는 방법. 일평균 약 4천만 건 이벤트."
+    },
+    {
+      "title": "정산시스템팀을 소개합니다",
+      "url": "https://techblog.woowahan.com/2701/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "주문 데이터로 정산금액을 계산해 지정일에 사장님께 지급하는 시스템. 2019년 4월 업계 최초 일정산 도입, 하루 100만 건 이상 주문 처리, 사장님광장에 정산내역·지급여부와 부가세 신고용 매출·매입 자료 제공, 채권 관리와 회계 데이터 생성도 담당."
+    },
+    {
+      "title": "외부 시스템 장애에 대처하는 우리의 자세",
+      "url": "https://techblog.woowahan.com/6447/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "PG·지도·메시징 등 외부 의존에서 오는 장애(2021년 장애의 45%)를 다루는 방식 — 불필요한 의존 제거, PG·지도 벤더 이중화(9:1 트래픽 분할), 기능 단위 차단, 연 1회 의존성 점검."
+    }
+  ]
+}

@@ -28,6 +28,7 @@ from classifier import (  # noqa: E402
     _norm_company,
 )
 from build_company_stacks import canon_tech, infer_domains  # noqa: E402
+from jobs_filter import active_only  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 OUTPUT = ROOT / "jd-viewer" / "public" / "mindmap.md"
@@ -282,7 +283,10 @@ def main() -> None:
     if not INPUT.exists():
         print(f"[!] 입력 파일 없음: {INPUT}", file=sys.stderr)
         sys.exit(1)
-    jobs = json.loads(INPUT.read_text(encoding="utf-8"))
+    # 마감 공고는 뺀다. all_jobs_enriched.json 은 이제 모집중과 마감을 함께 담는데
+    # (색인·과거 조회를 살리려고) 이 빌더의 결과는 "지금 시장"이라 만료 공고를 세면
+    # 수요가 과거에 눌린다.
+    jobs = active_only(json.loads(INPUT.read_text(encoding="utf-8")))
     print(f"[*] 입력 {len(jobs)}건 로드", flush=True)
     companies = build_companies(jobs)
     print(f"[*] {len(companies)}개 기업 집계 (공고 {MIN_POSTING}건 이상)", flush=True)

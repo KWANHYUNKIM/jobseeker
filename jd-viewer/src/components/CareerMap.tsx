@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { MindmapView } from './MindmapView'
 import { ClusterView } from './ClusterView'
+import { PathwayView } from './PathwayView'
 
-type View = 'cluster' | 'tree'
+type View = 'cluster' | 'tree' | 'pathway'
 
 export function CareerMap() {
   const [view, setView] = useState<View>('cluster')
@@ -19,9 +20,17 @@ export function CareerMap() {
         <ViewButton active={view === 'tree'} onClick={() => setView('tree')}>
           ⊟ 트리
         </ViewButton>
+        <ViewButton active={view === 'pathway'} onClick={() => setView('pathway')}>
+          ⇄ 이동 경로
+        </ViewButton>
+        <span className="ml-2 text-[11px] text-(--color-text)/50 hidden sm:inline">
+          {view === 'pathway'
+            ? 'JD 임베딩 군집 · 어디로 갈 수 있고 무엇이 비는지'
+            : '누가 어떤 직군을 뽑고 있는지'}
+        </span>
       </div>
       <div className="flex flex-1 min-h-0 relative">
-        {view === 'cluster' ? <ClusterView /> : <MindmapView />}
+        {view === 'cluster' ? <ClusterView /> : view === 'tree' ? <MindmapView /> : <PathwayView />}
       </div>
     </div>
   )

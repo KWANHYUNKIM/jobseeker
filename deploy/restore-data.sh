@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # 뷰어 데이터(jd-viewer/public/*.json)를 git 이력의 마지막 정상본으로 되돌린다.
 #
+# ⚠️ 2026-08-18 부터 생성 데이터는 git 이 추적하지 않는다(.gitignore). 이 스크립트가
+#    닿는 이력은 그 이전 커밋까지다. 지금 데이터를 복구해야 한다면 누적 폴더가 원본이므로
+#    `jd-viewer/bin/refresh-data.sh` 로 다시 만드는 쪽이 맞다(급감 가드 내장).
+#    다른 서버에서 통째로 받아오려면 `deploy/seed-server.sh` 를 쓴다.
+#
 #   ./deploy/restore-data.sh              # 이력에서 정상본을 찾아 복구
 #   ./deploy/restore-data.sh <rev>        # 특정 리비전에서 복구
 #   ./deploy/restore-data.sh --dry-run    # 무엇을 되돌릴지만 보여주고 끝

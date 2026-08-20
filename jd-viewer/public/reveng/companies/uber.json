@@ -1,0 +1,1436 @@
+{
+  "slug": "uber",
+  "name": "Uber",
+  "name_en": "Uber",
+  "country": "US",
+  "category": "모빌리티",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "움직이는 사람들을 다루려고 지구를 육각형으로 덮은 회사",
+  "business_model": "이동과 배달을 중개하고 거래액의 일부를 가져간다. 2025년 **총 예약액 1,930억 달러**, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 월간 활성 이용자는 **2억 200만 명**이고 **하루 4,000만 건이 넘는 이동**이 일어난다. 부문별로는 모빌리티 +19%, 배달 +22%, 화물 -1%. 앞선 회사들과 다른 점은 **파는 것이 물건도 화면도 아니라 '지금 여기'라는 순간**이라는 것이다 — 수요와 공급이 둘 다 움직이고, 1분 뒤면 답이 달라진다. 그래서 이 회사의 기술은 대부분 **공간과 시간을 다룰 수 있는 단위로 쪼개는 일**에서 시작한다.",
+  "products": [
+    "Uber(모빌리티)",
+    "Uber Eats(배달)",
+    "Uber Freight(화물)",
+    "Uber One(멤버십)"
+  ],
+  "domain_map": {
+    "title": "Uber 도메인 지도",
+    "question": "움직이는 수요와 공급을 어떻게 같은 좌표계 위에 올리는가?",
+    "code": "flowchart TD\n  R[라이더 · 수요] --> GEO[지리 인덱싱 · H3]\n  D[기사 · 공급] --> GEO\n  GEO --> MATCH[실시간 매칭 · 배차]\n  GEO --> PRICE[가격 · 수급 조절<br/>미확인]\n  GEO --> ETA[도착 예측]\n  MATCH --> TRIP[하루 4,000만 건 이상의 이동]\n  PRICE --> TRIP\n  ETA --> TRIP\n  TRIP --> GB[총 예약액 1,930억 달러]\n  GB --> REV[매출 520억 달러]\n  EATS[배달 · 화물] --> GEO\n  EATS --> GB\n  classDef money stroke-dasharray: 3 3\n  class GB,REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "모빌리티",
+      "how": "이동 중개. 2025년 총예약 +19%(고정환율).",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+          "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+          "publisher": "Uber IR",
+          "date": "2026-02-04",
+          "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+        }
+      ]
+    },
+    {
+      "name": "배달",
+      "how": "Uber Eats. 2025년 총예약 +22%로 가장 빠르게 자란다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+          "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+          "publisher": "Uber IR",
+          "date": "2026-02-04",
+          "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+        }
+      ]
+    },
+    {
+      "name": "화물",
+      "how": "Uber Freight. 2025년 총예약 -1%로 유일하게 줄었다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+          "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+          "publisher": "Uber IR",
+          "date": "2026-02-04",
+          "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "지리 인덱싱",
+      "why": "수요도 공급도 움직이는 마켓플레이스에서는 **먼저 공간을 다룰 수 있는 단위로 쪼개야** 한다. 정확한 위치 그대로 분석하는 것은 아주 어렵고 비싸기 때문이다 — 이 회사의 다른 모든 도메인이 이 격자 위에 선다.",
+      "tech": [
+        {
+          "tech": "H3 (육각 계층 공간 인덱스)",
+          "solves": "도시 전역을 규칙적인 단위로 덮어 수요·공급 집계, 급증 가격, 디스패치 최적화, 시각화를 같은 좌표계 위에서 하게 한다. 위치 하나가 64비트 정수가 된다.",
+          "limits": "셀 경계가 실제 거리·동네와 맞지 않고, 오각형 12개라는 예외가 남으며, 부모-자식 포함이 근사여서 식별자를 자르면 고정된 형태 왜곡이 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+              "url": "https://www.uber.com/blog/h3/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "h3-grid"
+      ]
+    },
+    {
+      "name": "실시간 매칭·배차",
+      "why": "손님 한 명에 차 한 대를 잇는 일. 1분 뒤면 답이 달라지므로 계산을 제때 끝내는 것 자체가 품질이 된다.",
+      "tech": [
+        {
+          "tech": "오프라인 RL 가치함수 + 매칭 순위 신호",
+          "solves": "탐욕적 매칭이 만드는 미래의 불균형을 줄인다. 정책을 직접 배우지 않고 신호로 끼워 넣어 기존 매칭 시스템을 갈아엎지 않는다. 400개 넘는 도시 배포, 기사 수익 +0.52%·라이더 취소 -2.2%.",
+          "limits": "학습이 항상 한 발 늦고 현재 정책이 만든 데이터만 본다. 정책이 바뀌는 속도가 느리고 매칭 알고리즘의 나머지 규칙에 종속된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Reinforcement Learning for Modeling Marketplace Balance",
+              "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "date": "2025-07-02",
+              "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+            }
+          ]
+        },
+        {
+          "tech": "지오해시 상태 · 대비 손실 · ETA 할인 보상",
+          "solves": "위치와 시간을 상태로 삼되 공간을 평활화하고, 멀리 있는 보상을 덜 값지게 만들어 지금의 짝과 나중의 자리를 같은 저울에 올린다.",
+          "limits": "지오해시 격자의 경계 효과가 남고, 유휴를 벌하는 신호가 대기해야 마땅한 상황까지 누를 여지가 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Reinforcement Learning for Modeling Marketplace Balance",
+              "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "date": "2025-07-02",
+              "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+            }
+          ]
+        },
+        {
+          "tech": "몬테카를로 검증 + 자동 신호 감쇠",
+          "solves": "정답이 없는 문제에 기준값을 만들고, 모델이 나빠지면 시스템이 스스로 물러나게 해 수동 개입 없이 글로벌 배포한다.",
+          "limits": "상태 공간의 카디널리티가 높아 기준값 생성 자체가 비싸고, 임계값이 또 하나의 튜닝 대상이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Reinforcement Learning for Modeling Marketplace Balance",
+              "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "date": "2025-07-02",
+              "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+            }
+          ]
+        },
+        {
+          "tech": "지연된 피드백 처리",
+          "solves": "— 아직이다.",
+          "limits": "매칭 결정의 실제 영향이 몇 시간 뒤에 전개되는 문제를 회사가 남은 과제로 밝힌다. 실시간 시간차 학습 파이프라인, 궤적 피드백, 장기 보상 귀속을 앞으로 탐색한다고 했다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "marketplace-rl"
+      ]
+    },
+    {
+      "name": "도착 예측",
+      "why": "'몇 분 뒤 도착'은 약속이다. 틀리면 신뢰가 깎이고, 배차와 가격의 입력이기도 하다.",
+      "tech": [
+        {
+          "tech": "잔차 예측 하이브리드(DeepETA)",
+          "solves": "라우팅 엔진을 버리지 않고 그 오차를 딥러닝으로 배워, 지도에 담기지 않는 실제 운전 조건을 흡수한다. 새 데이터 소스와 바뀌는 요구를 엔진 리팩토링 없이 받아들인다.",
+          "limits": "두 시스템을 함께 유지해야 하고 엔진의 편향이 학습 대상이 된다. 지연 제약 때문에 다중 작업 디코더 같은 선택지는 쓰지 못한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+              "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+            }
+          ]
+        },
+        {
+          "tech": "이산화 + 다중 해시 임베딩 · Linear Transformer",
+          "solves": "수 밀리초 예산 안에서 피처 간 상호작용을 찾는다. 파라미터가 수억 개여도 한 예측이 건드리는 것은 약 0.25%다.",
+          "limits": "학습 시점에 거대한 임베딩 테이블을 만들어 둬야 하는 시공간 트레이드오프이고, 버킷 경계가 하이퍼파라미터로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+              "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+            }
+          ]
+        },
+        {
+          "tech": "구간 바이어스 조정 + 비대칭 Huber 손실",
+          "solves": "부문·거리·지역마다 다른 오차 분포를 흡수하고, 지각과 조기 도착의 비용 차이를 손실 함수에 직접 담는다.",
+          "limits": "구간을 사람이 정의해야 하고, δ·ω 를 사업 목적에 맞춰 계속 조정해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+              "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+            }
+          ]
+        },
+        {
+          "tech": "연속·증분 학습",
+          "solves": "— 아직이다.",
+          "limits": "더 신선한 데이터로 학습하기 위해 앞으로 탐색하겠다고만 밝힌다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "deep-eta"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "h3-grid",
+      "name": "H3 — 도시를 육각형으로 덮어야 했던 이유",
+      "domain": "지리 인덱싱",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 마켓플레이스에서는 **매일 수백만 건의 이벤트**가 일어난다 — 호출, 기사의 이동, 배달 주문. 그런데 이걸 분석하려면 도시 전역을 **세밀한 입도로** 봐야 하고, **정확한 위치 그대로 분석하는 것은 아주 어렵고 비싸다.** 그래서 공간을 먼저 나눠야 하는데, 우편번호나 운영팀이 손으로 그은 경계는 모양과 크기가 제각각이고 임의로 바뀐다. **분석의 단위를 스스로 만들어야 했다.**",
+        "metrics": [
+          {
+            "label": "회사의 규모",
+            "value": "2025년 총 예약액 1,930억 달러 · 매출 520억 달러(+18%). 2억 명이 넘는 월간 이용자가 **하루 4,000만 건 넘는 이동**을 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+                "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+                "publisher": "Uber IR",
+                "date": "2026-02-04",
+                "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+              }
+            ]
+          },
+          {
+            "label": "격자의 구조",
+            "value": "정이십면체 위에 **기본 셀 122개**(면당 10개) — 그중 **12개가 오각형**이다. 해상도는 **16단계**이고 한 단계 내려갈 때마다 면적이 **1/7**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "인덱스",
+            "value": "H3 인덱스는 **64비트 정수**. `geoToH3(위도, 경도, 해상도 0~15)` 로 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "분석의 단위를 고를 때",
+          "thought": "우편번호 구역이나 운영팀이 그은 경계를 쓸 수도 있다. 그런데 그건 **모양과 크기가 제각각이고, 임의로 바뀌고, 경계가 자의적이다.** 도시끼리 비교하거나 시간에 따라 추적하려면 단위 자체가 규칙적이어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "격자의 모양을 고를 때",
+          "thought": "사각형은 이웃이 두 종류다 — 변을 맞댄 넷과 꼭짓점만 닿은 넷. 그러면 분석에 **여러 벌의 계수**가 필요해진다. 삼각형은 세 종류라 더 나쁘다. **육각형은 중심에서 이웃까지의 거리가 하나뿐**이라 분석이 단순해진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "우리 사업이 무엇인지 다시 볼 때",
+          "thought": "우리가 다루는 건 **움직이는 사람들**이다. 도시를 가로지르는 동안 격자가 바뀌면서 생기는 양자화 오차가 계속 쌓이는데, **육각형은 그 오차를 최소화**한다. 반경을 근사하기도 쉽다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "계층을 만들려는데 7로 안 나눠질 때",
+          "thought": "육각형은 **7개의 육각형으로 완벽하게 쪼개지지 않는다.** 그러니 자식 셀이 부모 안에 **대략만** 들어간다. 그래도 식별자를 잘라내면 상위 셀을 찾을 수 있으니 인덱싱은 효율적이다 — **완벽한 포함을 포기하고 효율적인 조회를 얻었다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "셀(cell)",
+            "what": "육각형 하나. 64비트 정수 인덱스로 표현된다."
+          },
+          {
+            "name": "해상도",
+            "what": "0(가장 성김)에서 15(가장 세밀)까지 16단계. 한 단계마다 면적이 1/7."
+          },
+          {
+            "name": "기본 셀",
+            "what": "정이십면체 위에 놓인 122개(면당 10개). 그중 12개가 오각형이다."
+          },
+          {
+            "name": "오각형",
+            "what": "정이십면체의 각 꼭짓점에 하나씩. 벅민스터 풀러의 구면 정이십면체 방향을 써서 **모든 꼭짓점을 물 위에** 놓았다."
+          }
+        ],
+        "invariants": [
+          "정확한 위치 그대로 분석하는 것은 아주 어렵고 비싸다.",
+          "정이십면체를 육각형만으로 타일링할 수는 없다 — 오각형이 반드시 생긴다.",
+          "육각형은 7개의 육각형으로 완벽히 나뉘지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "지구를 정이십면체에 노모닉 투영한다",
+            "why": "구면 위에 규칙적인 격자를 놓으려면 먼저 다면체로 옮겨야 한다"
+          },
+          {
+            "step": "면당 10개씩 기본 셀 122개를 놓는다",
+            "why": "그중 12개는 오각형일 수밖에 없다"
+          },
+          {
+            "step": "오각형은 정이십면체 꼭짓점에, 그 꼭짓점은 모두 물 위에 오도록 방향을 잡는다",
+            "why": "실제 작업에서 오각형을 마주치지 않게 하려고"
+          },
+          {
+            "step": "`geoToH3(위도, 경도, 해상도)` 로 좌표를 64비트 인덱스로 바꾼다",
+            "why": "위치 하나가 하나의 정수가 된다"
+          },
+          {
+            "step": "필요하면 `h3ToGeo`·`h3ToGeoBoundary` 로 되돌린다",
+            "why": "셀의 중심이나 윤곽을 그려야 할 때가 있다"
+          },
+          {
+            "step": "식별자를 잘라 상위 해상도의 셀을 찾는다",
+            "why": "집계 단위를 올리는 일이 문자열 자르기가 된다"
+          },
+          {
+            "step": "그 격자 위에서 수요·공급을 세고 가격과 배차를 정한다",
+            "why": "분석의 단위가 곧 의사결정의 단위다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "공간을 무엇으로 나눌 것인가",
+            "chosen": "**규칙적인 격자를 직접 만든다** — 우편번호 구역이나 운영팀이 손으로 그은 경계를 쓰지 않는다",
+            "alternatives": [
+              "우편번호 구역",
+              "운영팀이 정한 경계",
+              "정확한 좌표 그대로"
+            ],
+            "tradeoff": "격자 체계를 직접 만들고 유지해야 하고, **셀 경계가 도시의 거리나 동네와 맞지 않는다.** 그래도 남의 경계는 모양·크기가 제각각이고 임의로 바뀌며 자의적이라, 도시 간 비교나 시계열 추적의 기준이 될 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "격자의 모양을 무엇으로 할 것인가",
+            "chosen": "**육각형**",
+            "alternatives": [
+              "사각형",
+              "삼각형"
+            ],
+            "tradeoff": "완벽한 타일링과 완벽한 부모-자식 관계를 포기해야 한다. 대신 **사각형은 이웃이 두 종류(변 4·꼭짓점 4)라 분석에 여러 벌의 계수가 필요하고 삼각형은 세 종류**인데, 육각형은 중심에서 이웃까지의 거리가 하나뿐이라 분석과 기울기 평탄화가 크게 단순해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "왜 하필 '이동'이 기준이 됐는가",
+            "chosen": "도시를 가로지르는 사용자의 **양자화 오차를 최소화**하는 것을 중요한 기준으로 둔다",
+            "alternatives": [
+              "면적 균일성 우선",
+              "구현 단순성 우선"
+            ],
+            "tradeoff": "다른 기준(예: 격자 크기의 완전한 균일성)을 양보하게 된다. 그래도 **이 회사가 다루는 것은 움직이는 사람들**이라, 이동 중에 쌓이는 오차가 곧 분석의 오차가 된다. 반경 근사가 쉬워지는 것도 같은 이유에서 얻는 이득이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "지구를 어떻게 평면으로 옮길 것인가",
+            "chosen": "**정이십면체 면 위에 노모닉 투영**한다. 면당 10개씩 기본 셀 122개",
+            "alternatives": [
+              "단일 평면 투영",
+              "정육면체(S2 방식)"
+            ],
+            "tradeoff": "다면체가 복잡한 만큼 구현이 어렵다. 대신 면이 많을수록 투영 왜곡이 작다(추정) — 구를 정육면체에 투영하면 중심에서 멀수록 같은 레벨의 셀도 크기가 달라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "피할 수 없는 오각형 12개를 어떻게 다룰 것인가",
+            "chosen": "**벅민스터 풀러의 구면 정이십면체 방향**을 써서 **모든 꼭짓점을 물 위에** 오게 배치한다",
+            "alternatives": [
+              "오각형을 특수 케이스로 코드에서 처리",
+              "다른 다면체 사용"
+            ],
+            "tradeoff": "오각형이 사라지는 것은 아니라서 **경계 조건은 여전히 남는다.** 그래도 실제 작업에서 마주칠 일이 거의 없어진다 — **수학적으로 못 없애는 예외를 지리적 배치로 무해하게 만든 것**이다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "계층을 어떻게 구성할 것인가",
+            "chosen": "**16단계 해상도**를 두고 한 단계마다 면적을 1/7 로 줄인다. 자식은 부모 안에 **대략** 포함되지만, **식별자를 잘라내면 상위 셀을 얻는다**",
+            "alternatives": [
+              "정확한 포함 관계를 보장하는 구조",
+              "단일 해상도"
+            ],
+            "tradeoff": "육각형은 7개로 완벽히 쪼개지지 않으므로 **부모-자식 포함이 근사**이고, 식별자를 자르면 **고정된 형태 왜곡**이 생긴다. 다만 특정 해상도에서 위치를 인덱싱할 때는 셀 경계가 정확하다 — **완벽한 포함을 포기하고 효율적인 조회를 샀다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "인덱스를 무엇으로 표현할 것인가",
+            "chosen": "**64비트 정수** 하나. `geoToH3` 로 만들고 `h3ToGeo`·`h3ToGeoBoundary` 로 되돌린다",
+            "alternatives": [
+              "문자열 지오해시",
+              "좌표쌍 유지"
+            ],
+            "tradeoff": "사람이 읽을 수 없다. 대신 위치 하나가 정수 하나가 되어 저장·조인·집계가 전부 정수 연산이 된다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "이 격자를 어디에 쓸 것인가",
+            "chosen": "**가격 결정**(육각형 단위로 수요와 공급을 세어 급증 가격 계산), **디스패치 최적화**(uberPOOL 에서 한 기사에게 가까운 두 호출을 찾기), 마켓플레이스 분석 전반",
+            "alternatives": [
+              "분석 전용",
+              "지도 시각화 전용"
+            ],
+            "tradeoff": "분석의 단위가 곧 의사결정의 단위가 되므로 **격자의 한계가 그대로 상품의 한계**가 된다 — 셀 경계가 동네와 안 맞는다는 사실이 가격에도 영향을 준다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "H3 (정이십면체 노모닉 투영 · 육각 격자)",
+            "role": "지구를 122개 기본 셀로 덮고 16단계 해상도로 잘게 나눈다. 위치를 64비트 정수로 바꾼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "계층 인덱싱(식별자 절단)",
+            "role": "자식 식별자를 잘라 상위 해상도 셀을 얻는다 — 집계 단위를 올리는 일이 값 자르기가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "급증 가격(surge) 계산",
+            "role": "육각형 단위로 공급과 수요를 세어 가격을 정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "디스패치 최적화",
+            "role": "uberPOOL 에서 특정 기사에게 가까운 두 호출을 찾는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "매칭 시스템(DISCO 등)의 내부",
+            "role": "— 이번 사이클에서는 1차 출처를 찾지 못했다. 널리 인용되는 설명은 대부분 3자 요약이라 쓰지 않았다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "실시간 매칭·배차",
+          "via": "같은 격자",
+          "contract": "디스패치 최적화가 이 격자 위에서 이뤄진다고 회사가 밝힌다 — uberPOOL 에서 한 기사에게 가까운 두 호출을 찾는 데 쓴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "가격·수급",
+          "via": "셀 단위 집계",
+          "contract": "육각형 단위로 공급과 수요를 세어 급증 가격을 계산한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 위치가 정수가 되기까지",
+          "question": "좌표 하나가 어떻게 분석과 가격의 단위가 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EARTH[지구] -->|노모닉 투영| ICO[정이십면체 · 20면]\n  ICO --> BASE[기본 셀 122개 · 면당 10개]\n  BASE --> HEX[육각형 110개]\n  BASE --> PENT[오각형 12개<br/>꼭짓점 · 모두 물 위]\n  LOC[위도 · 경도] --> G[geoToH3 · 해상도 0~15]\n  HEX --> G\n  G --> IDX[(64비트 정수 인덱스)]\n  IDX -->|식별자 절단| UP[상위 해상도 셀]\n  IDX --> R1[h3ToGeo · 셀 중심]\n  IDX --> R2[h3ToGeoBoundary · 셀 윤곽]\n  IDX --> USE1[수요 · 공급 집계]\n  USE1 --> SURGE[급증 가격]\n  IDX --> USE2[디스패치 최적화<br/>uberPOOL · 가까운 두 호출]\n  IDX --> USE3[마켓플레이스 분석 · 시각화]"
+        },
+        {
+          "title": "해상도 계층",
+          "question": "단계를 내려갈 때 무엇을 얻고 무엇을 잃는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 해상도0: 가장 성긴 격자\n  해상도0 --> 해상도n: 한 단계마다 면적 1÷7\n  해상도n --> 해상도15: 가장 세밀\n  해상도n --> 근사포함: 육각형은 7개로 완벽히 안 쪼개진다\n  근사포함 --> 자식은대략: 부모 안에 대략만 들어간다\n  자식은대략 --> 식별자절단: 그래도 상위 셀은 찾을 수 있다\n  식별자절단 --> 형태왜곡: 고정된 왜곡이 생긴다\n  식별자절단 --> 효율적조회: 인덱싱은 빨라진다\n  해상도n --> 경계정확: 특정 해상도에서 인덱싱하면 경계는 정확\n  해상도15 --> [*]\n  note right of 자식은대략\n    완벽한 포함을 포기하고\n    효율적인 조회를 샀다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 격자가 하지 못하는 것",
+          "question": "규칙적인 단위를 얻는 대신 무엇을 내주었는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[정확한 위치로 분석하면] --> B[아주 어렵고 비싸다]\n  C[우편번호 · 운영팀 경계를 쓰면] --> D[모양 · 크기가 제각각]\n  C --> E[임의로 바뀐다]\n  C --> F[경계가 자의적이다]\n  D -.-> G[도시 간 비교 · 시계열 추적 불가]\n  H[규칙적인 육각 격자를 만들면] --> I{그 대신}\n  I --> J[셀 경계가 거리 · 동네와 안 맞는다]\n  I --> K[정이십면체는 육각형만으로 못 덮는다]\n  K --> L[오각형 12개가 생긴다]\n  L -.->|꼭짓점을 물 위로| M[실무에서 마주칠 일이 거의 없다]\n  I --> N[육각형은 7개로 완벽히 안 쪼개진다]\n  N --> O[부모-자식 포함이 근사]\n  O --> P[식별자 절단 시 고정된 형태 왜곡]\n  J -.->|분석 단위가 곧 가격 단위라| Q[격자의 한계가 상품의 한계가 된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+          "url": "https://www.uber.com/blog/h3/",
+          "publisher": "Uber 엔지니어링 블로그",
+          "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+        }
+      ]
+    },
+    {
+      "key": "deep-eta",
+      "name": "DeepETA — 지도가 현실이 아니라는 것을 인정하고",
+      "domain": "도착 예측",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "'몇 분 뒤 도착'은 이 회사에서 화면의 숫자 하나가 아니다. **요금 계산, 픽업 시간 추정, 라이더-기사 매칭, 배송 계획**이 전부 이 값 위에 선다. 기존에는 라우팅 엔진이 도로망을 작은 구간으로 쪼개 가중치를 매기고 최단 경로를 풀어 ETA 를 냈는데, 문제는 하나였다 — **지도는 현실이 아니다.** 실제 운전 조건은 도로망 그래프에 다 담기지 않는다.",
+        "metrics": [
+          {
+            "label": "지연 예산",
+            "value": "**수 밀리초 안에** ETA 를 돌려주면서, 기존 XGBoost 대비 평균절대오차(MAE)를 유의미하게 개선하고, **모든 사업 부문에 글로벌로** 서빙해야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "label": "모델의 실제 사용량",
+            "value": "파라미터는 **수억 개**인데 **한 번의 예측이 건드리는 것은 약 0.25%**뿐이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "label": "복잡도 비교",
+            "value": "self-attention 은 O(K²d), Linear Transformer 는 O(Kd²) — 피처 40개·차원 8이면 **12,800 대 2,560**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "라우팅 엔진의 한계를 마주할 때",
+          "thought": "도로망을 구간으로 쪼개 최단 경로를 푸는 방식은 틀리지 않았다. 다만 **지도는 현실이 아니다.** 그러면 엔진을 고칠 것인가, 아니면 엔진이 틀리는 만큼을 따로 배울 것인가 — **새 데이터 소스를 받아들이고 빠르게 바뀌는 요구를 수용하기에는 뒤쪽이 훨씬 쉽다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "XGBoost 의 벽에 닿았을 때",
+          "thought": "수년간 XGBoost 앙상블로 개선해 왔고, 더 깊은 모델을 위해 **업스트림에 개선안까지 기여했다.** 그런데도 데이터셋과 모델을 더 키우는 것이 불가능해졌다 — 도구를 고쳐 쓰는 것으로는 더 못 간다는 뜻이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "밀리초 예산 안에서 Transformer 를 쓰려 할 때",
+          "thought": "self-attention 은 피처 사이의 쌍별 상호작용을 잘 찾는데 K×K 행렬이 문제다. **그런데 우리 입력은 피처 수 K 가 차원 d 보다 크다** — 그러면 커널 트릭으로 행렬 계산을 피하는 Linear Transformer 가 더 빠르다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "손실 함수를 정할 때",
+          "thought": "**1분 늦는 것과 1분 일찍 도착하는 것은 같은 오차가 아니다.** 그리고 사업 부문마다 필요한 지점 추정과 이상치 비율도 다르다. 그러면 손실 함수 자체를 매개변수로 열어 둬야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "기본 ETA",
+            "what": "라우팅 엔진이 도로망 최단 경로로 계산한 값."
+          },
+          {
+            "name": "잔차(residual)",
+            "what": "실제 관측값과 라우팅 엔진 예측의 차이. DeepETA 가 배우는 대상."
+          },
+          {
+            "name": "피처 토큰",
+            "what": "self-attention 의 각 벡터가 원점·시간대 같은 **하나의 피처**를 나타낸다."
+          },
+          {
+            "name": "구간 바이어스",
+            "what": "배송/라이드, 장/단거리, 픽업/드롭오프, 글로벌 메가 지역별로 예측을 조정하는 계층."
+          }
+        ],
+        "invariants": [
+          "지도는 현실이 아니다 — 도로망 그래프에 담기지 않는 조건이 있다.",
+          "1분 늦는 것과 1분 이른 것은 같은 오차가 아니다.",
+          "절대 오차의 분포는 사업 부문·거리·지역마다 크게 다르다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 여러 서비스를 거쳐 uRoute 에 닿는다",
+            "why": "모든 라우팅 조회의 프론트엔드다"
+          },
+          {
+            "step": "라우팅 엔진이 경로와 기본 ETA 를 만든다",
+            "why": "물리적 경로는 여전히 그래프 문제다"
+          },
+          {
+            "step": "그 ETA 와 다른 피처로 Michelangelo 온라인 예측 서비스를 호출한다",
+            "why": "엔진의 답을 버리지 않고 입력으로 쓴다"
+          },
+          {
+            "step": "연속 피처는 분위 버킷으로 나눠 임베딩한다",
+            "why": "직접 쓰는 것보다 정확했다"
+          },
+          {
+            "step": "위경도는 여러 해상도로 양자화한 뒤 다중 해시로 임베딩에 매핑한다",
+            "why": "조회가 O(1) 이고 충돌의 손실을 여러 해시로 보정한다"
+          },
+          {
+            "step": "Linear Transformer 인코더가 피처 간 상호작용을 찾는다",
+            "why": "K > d 인 우리 입력에서는 이쪽이 빠르다"
+          },
+          {
+            "step": "디코더가 구간별 바이어스를 더해 잔차를 낸다",
+            "why": "오차 분포가 부문·거리·지역마다 다르다"
+          },
+          {
+            "step": "ReLU 로 양수를 강제하고 극단값을 클램핑한다",
+            "why": "음수 ETA 는 존재할 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "라우팅 엔진을 고칠 것인가, 감쌀 것인가",
+            "chosen": "**'ETA 포스트 프로세싱'** — 라우팅 엔진의 기본 ETA 는 그대로 두고, 실제 관측값과의 **잔차를 머신러닝으로 예측**한다",
+            "alternatives": [
+              "라우팅 엔진 리팩토링",
+              "ETA 를 처음부터 학습"
+            ],
+            "tradeoff": "두 시스템을 함께 유지해야 하고 엔진의 편향이 모델의 학습 대상이 된다. 그래도 **새 데이터 소스를 흡수하고 빠르게 바뀌는 비즈니스 요구를 수용하기가 엔진을 뜯어고치는 것보다 쉽다** — 회사가 직접 밝힌 이유다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "XGBoost 를 계속 쓸 것인가",
+            "chosen": "**딥러닝으로 옮긴다.** 수년간 XGBoost 앙상블을 키워 왔고 더 깊은 모델을 위해 업스트림에 개선안까지 기여했지만, 데이터셋과 모델을 더 늘리는 것이 불가능해졌다",
+            "alternatives": [
+              "XGBoost 최적화 지속",
+              "앙상블 확대"
+            ],
+            "tradeoff": "학습·서빙 스택을 통째로 바꿔야 한다. 그래도 **도구를 고쳐 쓰는 방식이 한계에 닿았다는 것을 인정한 시점**이 있었고, 그 판단이 이 프로젝트의 출발점이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "어떤 아키텍처를 쓸 것인가",
+            "chosen": "**7가지를 비교했다** — MLP · NODE · TabNet · Sparsely Gated MoE · HyperNetworks · Transformer · Linear Transformer. 결과는 **인코더-디코더 + self-attention**",
+            "alternatives": [
+              "단일 후보로 바로 진행",
+              "기존 구조 개선"
+            ],
+            "tradeoff": "비교 자체에 시간이 든다. 대신 '왜 이 구조인가'에 대한 답이 취향이 아니라 실험 결과가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "self-attention 을 표 데이터에 어떻게 적용할 것인가",
+            "chosen": "각 벡터가 **하나의 피처**(원점·시간대 등)를 나타내게 하고, K×K 주의 행렬로 **피처 간 쌍별 상호작용**을 찾게 한다. **피처는 순서가 없으므로 위치 인코딩을 하지 않는다**",
+            "alternatives": [
+              "언어 모델처럼 토큰 시퀀스로 취급",
+              "명시적 교차 피처 설계"
+            ],
+            "tradeoff": "언어 모델의 직관을 그대로 가져올 수 없어 구조를 다시 생각해야 한다. 대신 사람이 일일이 만들던 피처 조합을 모델이 스스로 찾는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "연속 피처를 그대로 넣을 것인가",
+            "chosen": "**반직관적이지만** 연속 피처를 **분위(quantile) 버킷으로 나눈 뒤 임베딩**하는 편이 더 정확했다",
+            "alternatives": [
+              "연속값 직접 입력",
+              "균등 폭 버킷"
+            ],
+            "tradeoff": "정보를 버리는 것처럼 보이고 버킷 경계라는 하이퍼파라미터가 생긴다. 그래도 분위 버킷이 균등 폭보다 나았는데, **원본 값에 대한 정보량(비트)을 최대화하기 때문**일 것으로 회사는 추정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "위경도를 어떻게 임베딩할 것인가",
+            "chosen": "여러 해상도 격자로 양자화한 뒤 **다중 피처 해싱** — 독립적인 해시 함수 여러 개로 각각 컴팩트한 범위에 매핑한다",
+            "alternatives": [
+              "정확 인덱싱(셀마다 전용 임베딩)",
+              "단일 피처 해싱"
+            ],
+            "tradeoff": "정확 인덱싱은 메모리가 가장 많이 들고, 단일 해싱은 공간을 아끼지만 **충돌로 정보가 손실돼 정확도가 같거나 나빠졌다.** 다중 해싱은 **여러 독립 버킷의 정보를 합쳐 한 버킷의 충돌을 보정**해 정확도와 지연을 모두 잡으면서 공간도 아낀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "밀리초 예산을 어떻게 지킬 것인가",
+            "chosen": "**Linear Transformer** 로 주의 행렬 계산을 피하고(O(K²d) → O(Kd²)), 입력을 이산화해 **임베딩 조회 O(1)** 로 만든다",
+            "alternatives": [
+              "원본 Transformer",
+              "트리 구조 임베딩",
+              "완전 연결로 같은 매핑 학습"
+            ],
+            "tradeoff": "학습 시점에 거대한 임베딩 테이블을 만들어 둬야 한다 — 회사는 이를 **'부분 답을 미리 계산해 서빙 계산을 줄이는 고전적 시공간 트레이드오프'**라고 부른다. 트리는 O(log N), 완전 연결로 같은 매핑을 배우면 O(N²) 인데 해시 조회는 O(1) 이다. 그래서 파라미터가 수억 개여도 **한 예측이 건드리는 것은 약 0.25%**뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "question": "하나의 모델로 모든 사업 부문을 감당할 것인가",
+            "chosen": "인코더 뒤에 완전 연결망과 **구간 바이어스 조정 계층**을 둔다. 그리고 손실 함수를 **비대칭 Huber**로 매개변수화한다(δ = 이상치 강건성, ω = 비대칭)",
+            "alternatives": [
+              "다중 작업 디코더",
+              "부문별 모델 분리"
+            ],
+            "tradeoff": "**다중 작업 디코더를 쓰지 않은 이유가 지연 시간 제약**이다. 절대 오차 분포는 배송/라이드·장/단거리·픽업/드롭오프·글로벌 메가 지역별로 크게 다른데, 구간마다 바이어스를 조정하는 가벼운 계층으로 그 변동을 설명한다. ω 를 조절하면 **1분 늦는 것이 1분 이른 것보다 나쁜 상황**을 손실 함수에 직접 담을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "잔차 예측 하이브리드(라우팅 엔진 + DeepETA)",
+            "role": "엔진의 기본 ETA 를 입력으로 받아 실제와의 차이를 예측한다. 시공간 특성·실시간 트래픽·요청 종류(배송 드롭오프인지 라이드 픽업인지)를 함께 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "Linear Transformer 인코더 (self-attention over features)",
+            "role": "피처 간 쌍별 상호작용을 찾되 커널 트릭으로 K×K 행렬을 피한다. 위치 인코딩 없음.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "분위 버킷 + 다중 피처 해싱 임베딩",
+            "role": "연속값과 위경도를 이산화해 O(1) 조회로 바꾼다. 독립 해시 여러 개로 충돌의 손실을 보정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "구간 바이어스 조정 디코더 + 비대칭 Huber 손실",
+            "role": "부문·거리·지역별 오차 분포 차이를 흡수하고, 지각과 조기 도착의 비용 차이를 손실에 담는다. ReLU 로 양수 강제, 극단값 클램핑.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          },
+          {
+            "tech": "Michelangelo(Canvas) · uRoute",
+            "role": "모델 학습·배포와 온라인 예측. uRoute 가 라우팅 조회의 프론트엔드로서 엔진과 모델을 잇는다. 주기적 자동 재학습·검증이 돈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+                "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "h3-grid",
+          "via": "격자 위의 위치",
+          "contract": "위경도를 여러 해상도 격자로 양자화해 임베딩한다 — 글은 그 격자가 H3 라고 명시하지는 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "실시간 매칭·배차",
+          "via": "매칭의 입력",
+          "contract": "회사가 직접 밝힌다 — ETA 는 요금 계산·픽업 시간 추정·라이더-기사 매칭·배송 계획에 쓰인다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "가격·수급 조절",
+          "via": "요금 계산",
+          "contract": "ETA 가 요금 계산의 입력이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 엔진의 답에 오차를 더하기",
+          "question": "라우팅 엔진을 버리지 않고 어떻게 더 맞히는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[요청] --> UR[uRoute · 라우팅 조회의 프론트엔드]\n  UR --> ENG[라우팅 엔진<br/>도로망 최단 경로]\n  ENG --> BASE[기본 ETA]\n  BASE --> MG[Michelangelo 온라인 예측]\n  F1[원점 · 목적지 · 요청 시간] --> QB[분위 버킷 → 임베딩]\n  F2[위도 · 경도] --> MH[다중 해상도 양자화<br/>다중 피처 해싱 · O 1 조회]\n  F3[실시간 트래픽] --> QB\n  F4[요청 종류 · 배송 드롭오프 / 라이드 픽업] --> QB\n  QB --> ENC\n  MH --> ENC[Linear Transformer 인코더<br/>피처 간 쌍별 상호작용 · 위치 인코딩 없음]\n  MG --> ENC\n  ENC --> DEC[디코더 · 완전 연결 + 구간 바이어스 조정]\n  DEC --> RES[잔차 예측]\n  RES --> OUT[최종 ETA<br/>ReLU 로 양수 강제 · 극단값 클램핑]\n  OUT -.->|수 밀리초| USE[요금 · 매칭 · 픽업 · 배송 계획]\n  RETRAIN[주기적 자동 재학습 · 검증] -.-> ENC"
+        },
+        {
+          "title": "ETA 가 만들어지는 방식의 세대",
+          "question": "왜 도구를 두 번 갈아탔는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 라우팅엔진: 도로망을 구간으로 · 최단 경로\n  라우팅엔진 --> 지도는현실이아니다: 실제 조건이 다 안 담긴다\n  지도는현실이아니다 --> XGBoost: 잔차를 트리 앙상블로\n  XGBoost --> 업스트림기여: 더 깊은 모델을 위해 개선안을 냈다\n  업스트림기여 --> 한계도달: 데이터셋 · 모델을 더 못 키운다\n  한계도달 --> 아키텍처비교: 7가지를 시험\n  아키텍처비교 --> 인코더디코더: self-attention 이 최고 정확도\n  인코더디코더 --> 지연문제: K×K 주의 행렬\n  지연문제 --> LinearTransformer: K > d 이면 더 빠르다\n  LinearTransformer --> 프로덕션: 글로벌 4륜 ETA\n  프로덕션 --> [*]\n  note right of 한계도달\n    도구를 고쳐 쓰는 것으로는\n    더 못 간다는 판단.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 정확도와 밀리초 사이",
+          "question": "무엇을 잘못 고르면 이 시스템이 성립하지 않는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[원본 Transformer 를 쓰면] --> B[O K²d · 피처 40 · 차원 8 이면 12,800]\n  B --> C[밀리초 예산을 넘긴다]\n  D[임베딩을 트리에 저장하면] --> E[O log N 조회]\n  F[완전 연결로 같은 매핑을 배우면] --> G[O N² ]\n  E --> C\n  G --> C\n  H[단일 해시로 위치를 매핑하면] --> I[충돌로 정보가 손실된다]\n  I --> J[정확도가 같거나 나빠진다]\n  K[정확 인덱싱을 쓰면] --> L[메모리가 가장 많이 든다]\n  M[다중 작업 디코더를 쓰면] -.->|지연 제약| C\n  N[대칭 손실을 쓰면] --> O[1분 지각과 1분 조기 도착이 같아진다]\n  P[단일 바이어스를 쓰면] --> Q[배송 · 라이드 · 장단거리 · 지역별 오차 차이를 못 담는다]\n  R[라우팅 엔진을 직접 리팩토링하면] -.-> S[새 데이터 소스 · 바뀌는 요구를 따라가기 어렵다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+          "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+          "publisher": "Uber 엔지니어링 블로그",
+          "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+        }
+      ]
+    },
+    {
+      "key": "marketplace-rl",
+      "name": "매칭 — 지금 맞추면 이따가 어긋난다",
+      "domain": "실시간 매칭·배차",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "양쪽이 모두 움직이는 시장에서 기사와 수요의 균형은 **끊임없이 흔들린다.** 매칭의 과제는 겉보기엔 단순하다 — **라이더의 대기 시간을 줄이면서 기사의 수익을 키우는 것.** 그런데 여기에 함정이 있다. 지금 눈앞의 짝을 가장 잘 맞추는 **탐욕적 매칭은 그 순간의 균형은 만들지만, 도시의 다른 지역에 나중의 불균형을 만든다** — 그리고 그게 대기 시간이나 급증 가격으로 돌아온다.",
+        "metrics": [
+          {
+            "label": "배포 규모",
+            "value": "**400개가 넘는 도시**에 배포됐고, 회사는 이를 **승차 공유 마켓플레이스에서 강화학습의 최대 규모 프로덕션 배포**라고 밝힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "label": "스위치백 실험 결과",
+            "value": "**기사 수익 +0.52%**(수요가 예상되는 지점으로 위치를 정한 효과), **라이더 취소 -2.2%**(적극적인 기사 배치로 빨라진 할당)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "label": "아직 못 푼 것",
+            "value": "**매칭 결정의 실제 영향이 종종 몇 시간 뒤에 전개된다** — 지연된 피드백이 남은 과제다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "탐욕적 매칭의 결과를 나중에 볼 때",
+          "thought": "지금 가장 가까운 기사를 붙이는 게 이 순간에는 최선이다. 그런데 그 기사가 그 자리에서 빠지면서 **도시의 다른 곳에 구멍이 생긴다.** 매칭은 한 번의 선택이 아니라 **순차적 의사결정**이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실제 시장에서 배우는 걸 생각할 때",
+          "thought": "강화학습은 시도하면서 배우는데, 여기서 시도는 **진짜 사람의 이동과 수입에 영향을 준다.** 온라인으로 배우는 건 위험하다 — 그러면 배우는 건 오프라인에서 하고, 배운 것만 온라인에 신호로 넣으면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "보상을 언제 줄지 정할 때",
+          "thought": "완료된 여행은 좋은 일이고 오래 놀고 있는 기사는 나쁜 신호다. 그런데 **멀리 있는 좋은 일은 가까이 있는 좋은 일보다 덜 값지다** — 그래서 보상을 픽업 시점에 실현시키고 **ETA 로 할인**한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모델을 얼마나 믿을지 정할 때",
+          "thought": "가치함수가 나빠지면 매칭 전체가 나빠진다. 그러니 **모델이 나빠졌을 때 사람이 알아채고 끄기를 기다리면 안 된다** — 성능 지표가 떨어지면 매칭 시스템이 알아서 이 신호를 덜 쓰게 만들어야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "상태(S)",
+            "what": "기사의 컨텍스트 — **지오해시 문자열로 표현된 지리적 위치**와 시간."
+          },
+          {
+            "name": "가치함수 V(S)",
+            "what": "그 상태에 있는 기사가 앞으로 얻을 것의 추정치. 심층 신경망이 낸다."
+          },
+          {
+            "name": "보상(r)",
+            "what": "완료된 여행은 양의 신호, 오래 이어진 유휴 상태는 음의 신호. 픽업 후 실현되며 ETA 로 할인된다."
+          },
+          {
+            "name": "순위 지표",
+            "what": "매칭 알고리즘이 후보를 줄 세우는 기준. 가치함수가 여기에 신호로 들어간다."
+          }
+        ],
+        "invariants": [
+          "지금의 최적 매칭이 나중의 불균형을 만든다.",
+          "여기서의 '시도'는 진짜 사람의 이동과 수입에 영향을 준다.",
+          "매칭 결정의 실제 영향은 종종 몇 시간 뒤에 나타난다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "기사 상태 전이 기록 {S1, r, ETA, ETD, S2}를 모은다",
+            "why": "실제로 일어난 이동에서 배운다"
+          },
+          {
+            "step": "배치를 무작위로 뽑아 V_target = γ^ETA·r + γ^ETD·DNN(S2) 를 만든다",
+            "why": "시간차 원리로 가치를 전파한다"
+          },
+          {
+            "step": "DNN(S1) 과의 MSE 로 경사하강한다",
+            "why": "가치함수를 현재 정책 아래에서 맞춘다"
+          },
+          {
+            "step": "지오임베딩에 대비 손실을 걸어 쌍별 거리가 실제 거리를 따르게 한다",
+            "why": "가까운 곳의 가치가 튀지 않게 공간을 평활화한다"
+          },
+          {
+            "step": "학습된 가치함수를 매칭 알고리즘의 순위 지표에 넣는다",
+            "why": "정책을 직접 배우지 않고 신호로만 쓴다"
+          },
+          {
+            "step": "매칭이 더 높은 가치의 상태로 기사를 이끈다",
+            "why": "지금의 짝만이 아니라 다음 자리를 함께 본다"
+          },
+          {
+            "step": "바뀐 정책이 만든 새 분포로 다시 학습한다",
+            "why": "정책 반복 루프가 돈다"
+          },
+          {
+            "step": "몬테카를로 기준값과 대조하고, 성능이 나빠지면 신호 반영을 자동으로 줄인다",
+            "why": "모델이 틀릴 때 시스템이 스스로 물러난다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "매칭을 한 번의 선택으로 볼 것인가",
+            "chosen": "**순차적 의사결정 문제**로 보고 강화학습을 적용한다",
+            "alternatives": [
+              "탐욕적 매칭 유지",
+              "휴리스틱으로 미래 보정"
+            ],
+            "tradeoff": "학습·평가·배포 체계를 통째로 만들어야 한다. 그래도 탐욕적 매칭은 **그 순간의 균형은 만들지만 도시의 다른 지역에 나중의 불균형을 만들고**, 그게 대기 시간과 급증 가격으로 돌아온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "온라인으로 배울 것인가",
+            "chosen": "**오프라인 RL 로 배우고 온라인에서는 신호로만 쓴다**",
+            "alternatives": [
+              "온라인 강화학습",
+              "시뮬레이터 학습"
+            ],
+            "tradeoff": "학습이 항상 한 발 늦고 현재 정책 아래의 데이터만 본다. 그래도 여기서의 탐색은 **진짜 사람의 이동과 수입을 건드리는 일**이라 온라인 학습은 위험하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "정책을 직접 배울 것인가",
+            "chosen": "**아니다.** 가치함수만 배우고, 그것을 **온라인 매칭 알고리즘의 순위 지표에 신호로 넣는다.** 그렇게 만들어진 새 정책 분포로 다시 학습하는 반복 루프를 돈다",
+            "alternatives": [
+              "정책 경사(policy gradient)",
+              "종단 간 학습"
+            ],
+            "tradeoff": "정책이 바뀌는 속도가 느리고 매칭 알고리즘의 나머지 규칙에 종속된다. 대신 **기존 매칭 시스템을 갈아엎지 않고 신호 하나로 끼워 넣을 수 있다** — 회사는 직접 정책 학습으로 가는 것을 앞으로의 과제로 남겨 뒀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "보상을 무엇으로, 언제 줄 것인가",
+            "chosen": "완료된 여행을 양의 신호로, 오래 이어진 **유휴 상태**를 음의 신호로 둔다. 보상은 **픽업 후 실현되며 ETA 로 할인**한다",
+            "alternatives": [
+              "요금만 보상으로",
+              "즉시 보상"
+            ],
+            "tradeoff": "유휴를 벌하면 기사가 대기해야 마땅한 상황까지 눌릴 수 있다(추정). ETA 할인은 **멀리 있는 좋은 일을 덜 값지게** 만들어, 지금 가까운 짝과 나중의 좋은 자리를 같은 저울에 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "상태를 무엇으로 표현할 것인가",
+            "chosen": "**지오해시 문자열로 표현한 위치와 시간.** 지오임베딩에 **대비 손실**을 걸어 임베딩의 쌍별 거리가 실제 지리적 거리를 반영하게 감독한다",
+            "alternatives": [
+              "좌표 직접 입력",
+              "행정 구역 단위"
+            ],
+            "tradeoff": "지오해시 격자의 경계 효과를 떠안고 손실 항이 하나 늘어난다. 대신 **공간이 평활해져** 가까운 곳의 가치가 제각각 튀지 않는다 — 상태 공간이 지역별로 쪼개져 학습되는 문제에 대한 답이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "시뮬레이션으로 학습할 것인가",
+            "chosen": "**실제로 완료된 여행 데이터**를 쓴다",
+            "alternatives": [
+              "시뮬레이터 기반 학습"
+            ],
+            "tradeoff": "실제 데이터는 현재 정책이 만든 것만 담고 있어 탐색이 제한된다. 그래도 이 시장은 **네트워크 효과가 강하고 행동이 바뀌어** 정확한 시뮬레이션이 어렵다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "정답이 없는 문제를 어떻게 평가할 것인가",
+            "chosen": "**몬테카를로 기준값** — 어떤 상태에서 시작한 에이전트 롤아웃 전체의 반환값을 평균 내 그 상태의 가치로 삼는다. 예측을 **성긴 시공간 해상도로 버킷화**해 상관계수 같은 회귀 지표로 비교한다",
+            "alternatives": [
+              "오프라인 정책 평가",
+              "온라인 실험만"
+            ],
+            "tradeoff": "상태 공간의 카디널리티가 높아 기준값을 만드는 것 자체가 일이다. 그래도 이 지표가 있어야 다음 결정이 가능해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "question": "모델이 나빠지면 어떻게 할 것인가",
+            "chosen": "**매칭 시스템이 이 신호를 자동으로 덜 반영한다.** 회귀 지표에 조정 가능한 임계값을 걸어 신호 기여도를 자동으로 조절하고, 이상 탐지와 관측 대시보드로 **수동 개입 없이 글로벌 배포**한다",
+            "alternatives": [
+              "사람이 판단해 끄기",
+              "고정 가중치"
+            ],
+            "tradeoff": "임계값 자체가 또 하나의 튜닝 대상이 된다. 대신 **모델을 얼마나 믿을지를 모델의 상태가 정하게** 만들어, 400개 넘는 도시에 사람이 일일이 붙지 않아도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "DQN 계열 가치함수 학습",
+            "role": "기사 상태 전이 {S1, r, ETA, ETD, S2}에서 시간차 원리로 V(S) 를 배운다. V_target = γ^ETA·r + γ^ETD·DNN(S2), 손실은 MSE.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "지오해시 상태 + 대비 손실 지오임베딩",
+            "role": "위치와 시간을 상태로 쓰되, 임베딩의 쌍별 거리가 실제 지리 거리를 따르게 해 공간을 평활화한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "정책 반복 루프(오프라인 학습 → 온라인 신호 → 재학습)",
+            "role": "정책을 직접 배우지 않고 가치함수를 매칭 순위 지표에 넣는다. 바뀐 정책이 만든 분포로 다시 학습한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "몬테카를로 검증 파이프라인 + 자동 신호 감쇠",
+            "role": "롤아웃 평균을 기준값으로 삼아 회귀 지표로 검증하고, 성능이 떨어지면 신호 반영을 자동으로 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          },
+          {
+            "tech": "글로벌 스위치백 실험",
+            "role": "시간을 무작위화하는 AB 실험으로 검증했다(기사 수익 +0.52%, 라이더 취소 -2.2%).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Reinforcement Learning for Modeling Marketplace Balance",
+                "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "date": "2025-07-02",
+                "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "deep-eta",
+          "via": "할인율의 재료",
+          "contract": "보상을 ETA 로 할인하고 전이에 ETA·ETD 를 쓴다 — 도착 예측이 매칭의 학습에 직접 들어간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "h3-grid",
+          "via": "상태의 좌표계",
+          "contract": "상태는 지오해시 문자열로 표현한다고 밝힌다 — H3 라고는 하지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "가격·수급",
+          "via": "불균형의 결과",
+          "contract": "탐욕적 매칭이 만든 미래의 불균형이 대기 시간이나 급증 가격으로 나타난다고 밝히지만, 급증 가격의 계산 방식은 이 글에 없다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 배운 값을 신호로 넣기",
+          "question": "정책을 직접 배우지 않고 어떻게 매칭을 바꾸는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  TRIP[(실제 완료된 여행<br/>기사 상태 전이 S1 · r · ETA · ETD · S2)] --> BATCH[무작위 배치 샘플링]\n  BATCH --> TD[V_target = γ^ETA·r + γ^ETD·DNN S2]\n  TD --> LOSS[MSE 손실 · 경사하강]\n  GEO[지오해시 문자열] --> EMB[지오임베딩]\n  EMB -->|대비 손실| SMOOTH[쌍별 거리 = 실제 지리 거리]\n  SMOOTH --> DNN[가치함수 DNN]\n  LOSS --> DNN\n  DNN --> SIG[가치 추정 V S]\n  SIG --> RANK[매칭 알고리즘의 순위 지표]\n  RANK --> MATCH[기사 ↔ 라이더 매칭]\n  MATCH --> NEWPOL[새 정책 분포]\n  NEWPOL -.->|재학습| TRIP\n  MC[몬테카를로 기준값<br/>롤아웃 반환값 평균] --> CHECK{회귀 지표}\n  SIG --> CHECK\n  CHECK -->|나빠지면| LESS[신호 반영을 자동으로 줄인다]\n  LESS -.-> RANK"
+        },
+        {
+          "title": "기사 한 명의 상태가 도는 길",
+          "question": "보상은 언제 어떻게 실현되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 유휴: 어딘가에서 대기\n  유휴 --> 장기유휴: 오래 놀고 있다\n  장기유휴 --> 음의신호: 학습에 부정 신호로 들어간다\n  유휴 --> 배정됨: 매칭 알고리즘이 짝을 지운다\n  배정됨 --> 픽업이동: ETA 만큼 걸린다\n  픽업이동 --> 픽업완료: 여기서 보상이 실현된다\n  픽업완료 --> 운행중: ETD 만큼 걸린다\n  운행중 --> 여행완료: 양의 신호\n  여행완료 --> 새로운상태: 다른 지오해시 · 다른 시간\n  새로운상태 --> 유휴\n  음의신호 --> [*]\n  여행완료 --> [*]\n  note right of 픽업완료\n    보상은 ETA 로 할인된다.\n    멀리 있는 좋은 일은 덜 값지다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 지금과 나중 사이",
+          "question": "무엇이 이 문제를 어렵게 만드는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[탐욕적 매칭] --> B[지금 이 순간의 균형은 맞는다]\n  A --> C[도시의 다른 지역에 미래의 불균형]\n  C --> D[대기 시간 상승]\n  C --> E[급증 가격]\n  F[온라인으로 학습하면] --> G[진짜 사람의 이동과 수입에 영향]\n  G -.->|그래서| H[오프라인 학습 + 온라인 신호]\n  I[시뮬레이터로 배우면] --> J[강한 네트워크 효과 · 행동 변화]\n  J --> K[정확한 시뮬레이션이 어렵다]\n  L[시장이 비정상적으로 변한다] --> M{복잡한 모델 · 장기 데이터}\n  L --> N{단순한 모델 · 최근 데이터}\n  M -.->|균형을 잡아야| N\n  O[모델이 나빠지면] --> P[매칭 전체가 나빠진다]\n  P -.->|그래서| Q[성능 지표로 신호를 자동 감쇠]\n  R[매칭 결정의 영향이] --> S[몇 시간 뒤에 전개된다]\n  S -.-> T[아직 못 푼 문제 · 지연된 피드백]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Reinforcement Learning for Modeling Marketplace Balance",
+          "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+          "publisher": "Uber 엔지니어링 블로그",
+          "date": "2025-07-02",
+          "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "매칭 시스템(DISCO 등)의 실제 구조는 1차 출처를 찾지 못했다 — 널리 인용되는 설명은 대부분 3자 요약(컨퍼런스 발표의 재정리)이라 쓰지 않았다.",
+    "급증 가격을 셀 단위 수요·공급에서 어떤 규칙으로 계산하는지는 확인하지 못했다.",
+    "도착 예측(ETA) 모델과 그 정확도는 아직 자료를 찾지 못했다.",
+    "H3 의 각 해상도가 실제 몇 제곱미터인지는 이 글에 표로 나오지 않는다 — 쿠팡 자료에서 12레벨 약 300㎡, 14레벨 6.3㎡ 라는 값을 얻었다.",
+    "DeepETA 가 위경도를 양자화할 때 쓰는 격자가 H3 인지는 글에 명시돼 있지 않다.",
+    "비대칭 Huber 손실의 δ·ω 를 사업 부문마다 어떤 값으로 두는지는 공개돼 있지 않다.",
+    "연속·증분 학습은 앞으로 탐색하겠다고만 밝힌 단계다.",
+    "급증 가격(surge)을 셀 단위 수요·공급에서 어떤 규칙으로 계산하는지는 끝내 1차 자료를 찾지 못해 도메인으로 세우지 않았다 — 매칭 글이 '불균형이 급증 가격으로 나타난다'고 결과만 언급한다.",
+    "매칭 알고리즘의 순위 지표에서 가치함수 신호가 다른 항들과 어떤 비중으로 결합되는지는 밝히지 않는다.",
+    "DISCO 등 매칭 시스템의 서비스 구조는 여전히 1차 출처를 찾지 못했다 — 널리 인용되는 설명은 3자 요약이다."
+  ],
+  "sources": [
+    {
+      "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+      "url": "https://www.uber.com/blog/h3/",
+      "publisher": "Uber 엔지니어링 블로그",
+      "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+    },
+    {
+      "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+      "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+      "publisher": "Uber IR",
+      "date": "2026-02-04",
+      "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+    },
+    {
+      "title": "DeepETA: How Uber Predicts Arrival Times Using Deep Learning",
+      "url": "https://www.uber.com/blog/deepeta-how-uber-predicts-arrival-times/",
+      "publisher": "Uber 엔지니어링 블로그",
+      "summary": "라우팅 엔진의 ETA 를 버리지 않고 그 오차(잔차)를 딥러닝으로 예측하는 하이브리드. 아키텍처 7종을 비교해 인코더-디코더+self-attention 을 골랐고, 밀리초 예산을 지키려 Linear Transformer 와 임베딩 조회를 썼다. 손실 함수는 비대칭 Huber."
+    },
+    {
+      "title": "Reinforcement Learning for Modeling Marketplace Balance",
+      "url": "https://www.uber.com/us/en/blog/reinforcement-learning-for-modeling-marketplace-balance/",
+      "publisher": "Uber 엔지니어링 블로그",
+      "date": "2025-07-02",
+      "summary": "탐욕적 매칭이 지금의 균형은 맞추지만 도시의 다른 곳에 미래의 불균형을 만든다는 문제에서 출발해, 기사 상태의 가치함수를 오프라인 RL 로 학습해 매칭 알고리즘의 순위 지표에 신호로 넣은 이야기. 400개 넘는 도시에 배포했고 스위치백 실험에서 기사 수익 +0.52%, 라이더 취소 -2.2%."
+    }
+  ]
+}

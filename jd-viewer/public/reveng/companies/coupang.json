@@ -1,0 +1,2287 @@
+{
+  "slug": "coupang",
+  "name": "쿠팡",
+  "name_en": "Coupang",
+  "country": "KR",
+  "category": "커머스",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "'내일 도착한다'는 약속 하나를 지키려고 물류를 직접 소유한 커머스",
+  "business_model": "남의 물건을 중개만 하는 게 아니라 **직접 사서 직접 보관하고 직접 배송한다.** 2025년 연간 매출 345.34억 달러(49조 1,197억원) 중 프로덕트 커머스(로켓배송·로켓프레시·마켓플레이스·로켓그로스)가 295.92억 달러, 쿠팡이츠·쿠팡플레이·파페치·대만 같은 성장사업이 49.42억 달러다. 영업이익은 4.73억 달러(약 6,790억원)로 **매출 대비 이익률이 매우 얇고**, 성장사업은 연간 9.95억 달러의 EBITDA 손실을 낸다 — 커머스가 번 것을 새 사업에 붓는 구조다. 활성고객은 2,460만 명. 앞선 회사들과 다른 점은 수익원이 광고나 수수료가 아니라 **물건값 자체**이고, 그래서 물류 비용을 얼마나 줄이느냐가 곧 이익률이라는 것이다.\n\n**그리고 이 회사를 다섯 도메인에 걸쳐 읽으면 같은 처방이 세 번 반복된다.** SCM Workflow(물류), Indexing Platform 2.0(검색), core serving layer 템플릿(서빙)이 전부 **'반복되는 준비 작업을 플랫폼이 가져가고 사람은 로직만 쓴다'**로 끝난다. 세 글 모두 문제 진단이 같다 — 일의 대부분이 그 일 자체가 아니라 그 일을 하기 위한 준비였고, 그래서 도메인이 늘어날수록 성장 자체가 비용이 됐다는 것. 물류 비용이 곧 이익률인 회사가 **엔지니어링 반복 비용도 같은 눈으로 본다**는 점이 이 회사의 성격을 가장 잘 보여준다(마지막 문장은 이 사이트의 해석).",
+  "products": [
+    "로켓배송",
+    "로켓프레시",
+    "마켓플레이스·로켓그로스",
+    "와우 멤버십",
+    "쿠팡이츠",
+    "쿠팡플레이",
+    "파페치·대만"
+  ],
+  "domain_map": {
+    "title": "쿠팡 도메인 지도",
+    "question": "'내일 도착'이라는 약속이 어디에서 만들어지고 어디에서 돈이 되는가?",
+    "code": "flowchart TD\n  U[고객] --> SEARCH[상품 검색 · 추천]\n  SEARCH --> ORDER[주문 · 배송 약속]\n  ORDER --> FC[물류센터 · 재고 배치]\n  FC --> AREA[배송 영역 · 라스트마일]\n  AREA --> CPF[쿠팡친구가 배달한다]\n  CPF --> U\n  SELLER[셀러] -->|마켓플레이스 · 로켓그로스| FC\n  WOW[와우 멤버십] -.->|재방문| SEARCH\n  ORDER --> REV[프로덕트 커머스 295.92억 달러]\n  REV --> GROW[성장사업 49.42억 달러<br/>EBITDA -9.95억 달러]\n  AREA -.->|여기서 아낀 만큼이| MARGIN[영업이익률 약 1.4%]\n  classDef money stroke-dasharray: 3 3\n  class REV,GROW,MARGIN money"
+  },
+  "revenue_streams": [
+    {
+      "name": "프로덕트 커머스",
+      "how": "직매입 상품 판매(로켓배송·로켓프레시)와 마켓플레이스·로켓그로스. 2025년 295.92억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "쿠팡, 처음으로 분기 성장 꺾여…영업이익 97% 급감",
+          "url": "https://zdnet.co.kr/view/?no=20260227064907",
+          "publisher": "ZDNet Korea",
+          "date": "2026-02-27",
+          "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+        }
+      ]
+    },
+    {
+      "name": "성장사업",
+      "how": "쿠팡이츠·쿠팡플레이·파페치·대만. 2025년 49.42억 달러로 38% 성장했지만 EBITDA 손실 9.95억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "쿠팡, 처음으로 분기 성장 꺾여…영업이익 97% 급감",
+          "url": "https://zdnet.co.kr/view/?no=20260227064907",
+          "publisher": "ZDNet Korea",
+          "date": "2026-02-27",
+          "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "배송 영역·라스트마일",
+      "why": "'내일 도착'을 실제로 지키는 마지막 구간. 영역을 어떻게 나누느냐가 한 사람이 하루에 돌 수 있는 양을 정하고, 그게 곧 비용이 된다.",
+      "tech": [
+        {
+          "tech": "H3 육각 격자 기반 배송 영역 관리",
+          "solves": "텍스트 주소를 공간 데이터로 바꿔, 경험 많은 사람만 하던 영역 세분을 지도 위에서 누구나 하게 만들고 겹침·누락을 없앤다.",
+          "limits": "14레벨이면 한국만 217억 개 격자라 저장 설계를 뒤집어야 했고, 복잡한 폴리곤은 변환이 느려 비동기로 미룬다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+              "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+              "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+              "date": "2023-04-17",
+              "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "delivery-area"
+      ]
+    },
+    {
+      "name": "물류센터·재고 배치",
+      "why": "직접 사서 직접 보관하는 회사라, 무엇을 어디에 미리 놓아두느냐가 익일 배송의 가능 여부를 정한다.",
+      "tech": [
+        {
+          "tech": "SCM Workflow (노코드 데이터 빌더 + 로우코드 서비스 빌더)",
+          "solves": "수요 예측과 센터 간 상품 분배를 다루는 팀에서, 데이터에 닿는 일이 담당 엔지니어에게 병목되던 구조를 없앤다. 도메인이 늘어도 시스템을 새로 짓지 않는다.",
+          "limits": "알고리즘 바깥의 모든 것을 플랫폼이 정하게 되어, 플랫폼이 못 하는 일은 그 팀도 못 한다. 개인 실험 공간이 아직 없어 실험과 운영이 같은 자리에서 이뤄진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+              "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+              "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+              "date": "2022-10-28",
+              "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "커스텀 서비스 컴포넌트",
+          "solves": "도메인 엔지니어의 핵심 알고리즘을 블록으로 등록해 재사용하고, 비엔지니어도 ML 모델을 포함한 서비스를 조립하게 한다.",
+          "limits": "컴포넌트의 입출력 계약을 계속 지켜야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+              "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+              "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+              "date": "2022-10-28",
+              "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+            }
+          ]
+        },
+        {
+          "tech": "수요 예측 · 재고 배치 알고리즘 자체",
+          "solves": "— 확인하지 못했다.",
+          "limits": "SCM 팀이 '수요를 예측하고 센터 간 분배 효율을 높이는 알고리즘을 만든다'는 사실만 공개돼 있고, 무엇을 어떤 기준으로 어디에 미리 놓는지는 자료를 찾지 못했다. **이 회사의 핵심인데 이 사이트의 가장 큰 구멍이다.**",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "scm-workflow"
+      ]
+    },
+    {
+      "name": "상품 검색·추천",
+      "why": "수억 개 상품에서 살 만한 것을 찾게 하는 일. 직매입 상품과 셀러 상품이 같은 화면에서 경쟁한다.",
+      "tech": [
+        {
+          "tech": "질의 이해 → 검색 → 랭킹 3단계",
+          "solves": "수백만 개 상품에서 후보를 좁히고, 관련성만이 아니라 평점·리뷰·가격·브랜드까지 반영해 순서를 정한다.",
+          "limits": "어떤 랭킹 모델을 쓰는지, 각 시그널의 가중치를 어떻게 정하는지는 공개돼 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+              "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+              "publisher": "Coupang Engineering Blog · Winter Wang",
+              "date": "2020-05-07",
+              "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+            }
+          ]
+        },
+        {
+          "tech": "Indexing Platform (Hadoop · Spark · ProductJoin/HBase · Indexing Bus)",
+          "solves": "인덱스를 오프라인에서 만들어 모든 서빙 레플리카가 공유하게 하고, 랭킹 시그널을 플랫폼 위에서 직접 생성해 개발 시간을 며칠에서 몇 시간으로 줄인다.",
+          "limits": "인덱스 신선도를 일부 내주고, 시그널은 프레임워크가 정한 모양 안에서만 만들 수 있다. 플랫폼이 검색·추천·광고의 단일 의존점이 되어 간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+              "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+              "publisher": "Coupang Engineering Blog · Winter Wang",
+              "date": "2020-05-07",
+              "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "search-indexing"
+      ]
+    },
+    {
+      "name": "주문·배송 약속",
+      "why": "주문 시점에 '언제 도착한다'를 말해야 하고, 그 말이 틀리면 서비스의 이름 자체가 무너진다.",
+      "tech": [
+        {
+          "tech": "core serving layer (공통 NoSQL + 2단 캐시)",
+          "solves": "Catalog·Pricing·Stock and Fulfillment 에 흩어진 조각을 한 번의 호출로 모아 주고, 재고처럼 초 단위가 필요한 값은 실시간 캐시로 따로 다룬다.",
+          "limits": "강한 일관성을 포기하고 최종적 일관성을 받아들인다. 캐시와 저장소는 분 단위로 99.99% 동일할 뿐 완전히 같지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Our backend strategy to handle massive traffic (Part 1)",
+              "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+              "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+              "date": "2022-08-12",
+              "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "circuit breaker · CSP/N-CSP 분리",
+          "solves": "I/O 사고가 번지지 않게 격리하고, 홈·검색·결제를 별도 클러스터로 지키며 사고 시 서로의 예비 자리가 되게 한다.",
+          "limits": "클러스터를 둘로 나눠 자원을 더 쓰고, 우회 전환은 사람이 건다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Our backend strategy to handle massive traffic (Part 1)",
+              "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+              "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+              "date": "2022-08-12",
+              "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "배송일 계산 로직 자체",
+          "solves": "— 확인하지 못했다.",
+          "limits": "센터의 출고 여력이 보장 배송일을 바꾼다는 사실은 확인됐지만, 그 값을 어떤 규칙으로 계산하는지는 공개돼 있지 않다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "core-serving"
+      ]
+    },
+    {
+      "name": "마켓플레이스·셀러",
+      "why": "직매입만으로는 상품 수를 채울 수 없다. 전 세계 셀러가 들어와 파는데, 여기서 앞선 도메인과 다른 문제가 생긴다 — **셀러도 상품도 우리 언어로 오지 않는다.** 기계가 못 알아보는 상품은 검색에도 추천에도 광고에도 오르지 못한다.",
+      "tech": [
+        {
+          "tech": "LLM 기반 상품·셀러 이해(단일 카테고리 분류기 · 속성 추출 · 번역 · 키워드 생성)",
+          "solves": "여러 언어로 들어온 상품을 하나의 모델이 이해해 카테고리와 속성을 뽑는다. 카테고리마다 모델을 두던 운영 부담을 없애면서 정밀도도 올렸다.",
+          "limits": "남의 아키텍처와 토크나이저에 얹히고, CJK 특성 때문에 토크나이저가 품질에 직접 영향을 준다. 큰 모델을 실시간에 그대로 쓸 수 없어 증류나 임베딩을 거쳐야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Accelerating Coupang's AI Journey with LLMs",
+              "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+              "publisher": "Coupang Engineering Blog · ML Platform Team",
+              "date": "2024-10-15",
+              "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "LLM 약한 레이블 생성",
+          "solves": "고품질 레이블이 없는 언어·세그먼트에서 학습을 시작할 수 있게 한다.",
+          "limits": "기계가 만든 레이블이라 품질 검사를 반드시 거쳐야 하고, 검사 기준 자체는 공개돼 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Accelerating Coupang's AI Journey with LLMs",
+              "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+              "publisher": "Coupang Engineering Blog · ML Platform Team",
+              "date": "2024-10-15",
+              "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "ML 인프라(DeepSpeed ZeRO · Triton · Ray+vLLM · 멀티리전+온프렘)",
+          "solves": "단일 GPU 에 안 들어가는 모델을 학습하고, CPU 뿐이던 서빙을 GPU 로 옮기며(vLLM 약 20배 처리량), GPU 공급 부족을 우회한다.",
+          "limits": "여러 환경에서 저장소·네트워크·개발자 경험을 일관되게 유지해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Accelerating Coupang's AI Journey with LLMs",
+              "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+              "publisher": "Coupang Engineering Blog · ML Platform Team",
+              "date": "2024-10-15",
+              "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "셀러 운영(입점·정산·로켓그로스)",
+          "solves": "— 확인하지 못했다.",
+          "limits": "셀러가 어떻게 들어오고 무엇을 정산받는지, 로켓그로스가 물류와 어떻게 맞물리는지는 공개 엔지니어링 자료를 찾지 못했다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "seller-understanding"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "delivery-area",
+      "name": "배송 영역 — 우편번호를 버리고 육각형 위에 다시 그리다",
+      "domain": "배송 영역·라스트마일",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "로켓배송은 **'내일 도착한다'는 약속**이고, 그 약속을 실제로 지키는 건 쿠팡친구(CPF)라고 부르는 배송 기사다. 그러려면 시스템이 주소를 정확히 이해하고 그 주소에 맞는 배송 영역으로 기사를 보내야 한다. 그런데 회사가 커지면서 **배송 영역을 나누는 기준 자체가 부러졌다** — 우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수가 되어 한 사람이 하루에 돌 수 없는 크기가 됐다.",
+        "metrics": [
+          {
+            "label": "기준이 부러진 지점",
+            "value": "우편번호당 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어, CPF 한 명이 하루에 감당하기엔 너무 커졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "label": "격자 크기",
+            "value": "12레벨 약 300㎡ → 채택한 14레벨은 6.3㎡. 출입구나 우편함 같은 정밀한 위치의 위경도를 대체할 수 있는 해상도다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "label": "격자 개수",
+            "value": "한국을 12레벨로 나누면 약 4.32억 개, 13레벨 31억 개, 14레벨 217억 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "우편번호가 더 이상 배송 단위가 아니게 됐을 때",
+          "thought": "우편번호는 정부가 보장하는 가장 잘 정리된 체계이고 배송 효율도 높게 최적화돼 있다. 그래서 처음엔 그걸 그대로 썼다. 그런데 **잘 만들어진 남의 기준도 우리 규모가 커지면 우리 문제에 안 맞게 된다** — 이제 쪼개는 일은 우리가 해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쪼개는 일을 누가 할 수 있는지 보고",
+          "thought": "주소가 텍스트뿐이라 공간 정보가 거의 없다. 그래서 아파트 단지 → 개별 동으로 쪼개는 판단을 **그 동네를 잘 아는 경험 많은 캠프 리더와 CPF 그룹장만** 할 수 있었다. 사람의 경험에 묶인 작업은 사람 수만큼만 확장된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "지도에 폴리곤을 그리게 하려니",
+          "thought": "지도에 도형을 그리는 건 쉬워 보이지만, 겹치지도 빠지지도 않게 모든 곳을 덮는 건 어렵다. **MECE 한 폴리곤 집합**을 유지하려면 먼저 공간의 단위부터 정의해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "텍스트 주소를 전부 공간 데이터로 바꾸고 나서",
+          "thought": "이제 배송 지표를 우편번호가 아니라 격자 단위로 볼 수 있다. **배송 영역이 바뀌어도 예전과 같은 기준으로 비교할 수 있다** — 주소 체계에 묶여 있을 때는 불가능하던 일이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "우편번호",
+            "what": "여전히 배송 영역의 기본 단위. 필요하면 그 안에서 세분한다."
+          },
+          {
+            "name": "육각 격자(H3 14레벨)",
+            "what": "6.3㎡ 크기의 공간 단위. 좌표를 넣으면 하나의 ID 로 바뀐다."
+          },
+          {
+            "name": "배송 영역",
+            "what": "격자들의 묶음. 사용자가 그린 폴리곤과 육각형으로 변환된 폴리곤 두 가지 모습을 함께 갖는다."
+          },
+          {
+            "name": "CPF (쿠팡친구)",
+            "what": "실제로 배송하는 사람. 영역이 한 사람이 하루에 돌 수 있는 크기여야 한다."
+          }
+        ],
+        "invariants": [
+          "배송 영역은 겹치거나 빠진 곳 없이 모든 지역을 덮어야 한다(MECE).",
+          "격자가 너무 크면 여러 건물이 한 칸에 들어가고, 너무 작으면 건물 하나가 여러 칸에 걸친다.",
+          "주소가 텍스트뿐이면 그 동네를 아는 사람만 영역을 나눌 수 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "목록에서 우편번호를 고르면 지도에 그 범위가 그려진다",
+            "why": "우편번호는 버린 게 아니라 여전히 기본 단위다"
+          },
+          {
+            "step": "그 안에서 자유롭게 폴리곤을 그리고 설명을 붙인다",
+            "why": "아파트 단지처럼 실제 배송이 갈리는 경계를 사람이 안다"
+          },
+          {
+            "step": "저장하면 서버가 polyfill 로 14레벨 육각형 집합으로 바꾼다",
+            "why": "격자 단위로 만들어야 겹침도 누락도 없다"
+          },
+          {
+            "step": "바깥 경계만 다시 폴리곤으로 만들어 보관한다",
+            "why": "ID 목록만으로는 복잡한 공간 분석이 어렵다"
+          },
+          {
+            "step": "좌표를 조회할 땐 14레벨 ID 로 바꿔 어느 영역 묶음에 속하는지 찾는다",
+            "why": "PostGIS 같은 지오DB 가 없는 환경에서도 포함 관계를 따질 수 있다"
+          },
+          {
+            "step": "배송 지표를 격자 단위로 쌓는다",
+            "why": "영역이 바뀌어도 같은 기준으로 비교할 수 있다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "배송 영역의 단위를 계속 우편번호로 둘 것인가",
+            "chosen": "우편번호는 기본 단위로 남기되, 그 안을 여러 처리 가능한 영역으로 쪼갠다",
+            "alternatives": [
+              "우편번호 유지",
+              "우편번호를 완전히 대체하는 자체 체계"
+            ],
+            "tradeoff": "정부가 보장하고 이미 배송 효율이 높게 최적화된 체계를 일부 떠나, 경계 관리를 스스로 떠안는다. 그래도 우편번호 하나가 세 자릿수 배송이 된 이상 한 사람이 돌 수 있는 크기로 쪼개는 것 말고는 방법이 없었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "어떤 공간 인덱스를 쓸 것인가",
+            "chosen": "Uber 의 H3 — 확장성과 구현 이점 때문에",
+            "alternatives": [
+              "W3W(3m 사각 격자)",
+              "Google S2"
+            ],
+            "tradeoff": "W3W 는 말로 위치를 전하기엔 좋지만 **해상도를 조절할 수 없어 분석에 쓸 수 없다.** H3 는 부모 격자가 자식 격자를 물리적으로 완전히 덮지 않고, 육각형이 아닌 오각형 예외도 있다 — 다만 그 예외는 주로 바다에 있어 배송 주소가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "사각형(S2)이 아니라 육각형(H3)이어야 하는 이유는",
+            "chosen": "왜곡과 이웃 관계 때문에 육각형을 고른다",
+            "alternatives": [
+              "S2 의 사각 격자"
+            ],
+            "tradeoff": "S2 는 구를 정육면체에 투영해 같은 레벨이라도 투영 중심에서 멀수록 크기가 달라진다. H3 는 축구공(풀러렌) 모양이라 육각형마다 투영 중심이 있어 왜곡이 작고, 같은 면적을 더 적은 격자로 표현한다. 대신 육각형은 이웃 격자의 면적이 커서 **구획이 상대적으로 성기게 나뉜다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "격자를 얼마나 잘게 쓸 것인가",
+            "chosen": "14레벨(6.3㎡)",
+            "alternatives": [
+              "12레벨(약 300㎡)",
+              "13레벨"
+            ],
+            "tradeoff": "12레벨은 도로로 갈린 블록과 이웃 건물을 구분하지 못한다. 14레벨이면 출입구나 우편함 위치까지 표현되지만, **한국 전체가 217억 개 격자가 된다**(12레벨 4.32억, 13레벨 31억) — 정밀도를 산 값이 곧 데이터 문제가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "217억 개를 어떻게 저장할 것인가",
+            "chosen": "격자 ID 를 행으로 두지 않는다. **배송 영역이 격자 정보를 갖게** 하고, H3 의 compaction 으로 자식 격자가 모두 있으면 부모 격자로 접는다",
+            "alternatives": [
+              "RDBMS 에 hexagon ID 를 키로",
+              "지역별 테이블 분할·샤딩"
+            ],
+            "tradeoff": "RDBMS 는 통상 1억~10억 행 범위에서 읽기·쓰기가 제약된다. 12레벨은 어떻게든 되겠지만 14레벨은 테이블을 나누지 않으면 불가능하고, **해외로 넓히면 저장 공간이 계속 늘어난다.** 뒤집은 설계는 그 문제를 없애지만 영역 하나가 수많은 격자를 갖게 되어 메모리 문제를 compaction 으로 눌러야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "격자 ID 목록으로 충분한가",
+            "chosen": "단위는 격자로 두되 실제 데이터는 폴리곤으로 저장한다 — polyfill 로 14레벨 격자로 바꾼 뒤 바깥 경계만 다시 폴리곤으로 만든다",
+            "alternatives": [
+              "ID 목록 유지"
+            ],
+            "tradeoff": "ID 목록만으로는 복잡한 공간 분석이나 '특정 지점에서 먼 배송 영역 찾기'가 어려웠다. 벡터를 비트맵으로 바꿨다가 다시 벡터로 만드는 것과 같은 구조 — 겹침·누락 없는 관리와 지오서치를 함께 얻는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "복잡한 폴리곤의 변환이 느린 문제는",
+            "chosen": "사용자가 그린 폴리곤을 먼저 저장하고, 육각형 폴리곤은 나중에 비동기로 만든다",
+            "alternatives": [
+              "동기 변환",
+              "폴리곤 복잡도 제한"
+            ],
+            "tradeoff": "저장 직후 잠깐은 두 표현이 어긋난다. 대신 지도를 그리는 사람이 서버 변환을 기다리지 않는다 — **정확성보다 편집 흐름을 먼저 지킨 선택이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "question": "기존 시스템을 어떻게 할 것인가",
+            "chosen": "새 시스템이 레거시와 함께 쓰일 수 있게 둔다",
+            "alternatives": [
+              "전면 교체"
+            ],
+            "tradeoff": "두 체계를 동시에 유지하는 비용이 생긴다. 그래도 매일 물건이 나가는 시스템이라 한 번에 갈아엎을 수 없다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Uber H3 (14레벨, 6.3㎡)",
+            "role": "배송 영역의 공간 단위. 좌표를 격자 ID 로 바꾸고, 부모-자식 계층으로 해상도를 오르내린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "tech": "H3 compaction",
+            "role": "자식 격자가 모두 존재하면 부모 격자로 접어 저장·메모리를 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "tech": "polyfill → hexagonized polygon",
+            "role": "사용자가 그린 폴리곤을 격자 집합으로 바꾼 뒤 바깥 경계만 폴리곤으로 되돌려 저장한다. 비동기로 생성한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "tech": "배송 영역 관리 UI(지도 편집)",
+            "role": "우편번호를 고르면 범위가 그려지고, 그 안에 폴리곤을 그려 영역을 만들고 Edit 로 고친다. 경험 많은 사람만 하던 일을 모두가 하게 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "물류센터·재고 배치",
+          "via": "출고와 배송의 접점",
+          "contract": "어느 센터에서 나간 물건이 어느 영역으로 가는지가 이어져야 하는데, 이 사이트에는 아직 센터 쪽 자료가 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "주문·배송 약속",
+          "via": "도착 예정",
+          "contract": "영역별 배송 난이도와 이동 시간을 측정할 수 있게 되면 도착 예측의 재료가 된다 — 글은 이를 '앞으로 할 일'로 말한다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "uber:h3-grid",
+          "via": "만든 곳과 쓰는 곳",
+          "contract": "쿠팡이 배송 영역에 쓰는 H3 는 Uber 가 만든 것이다. 다만 두 회사의 쓰임이 다르다 — Uber 는 움직이는 사람을 세는 분석 단위로, 쿠팡은 사람이 그린 배송 영역을 담는 저장 단위로 쓴다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 그린 것을 격자로 접었다 다시 펴기",
+          "question": "사람이 그린 선이 어떻게 겹침 없는 공간 데이터가 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Z[우편번호 선택] --> MAP[지도에 범위 표시]\n  MAP --> DRAW[사람이 폴리곤을 그린다<br/>아파트 단지 · 동 단위]\n  DRAW --> SAVE[저장]\n  SAVE --> RAW[(사용자 폴리곤 그대로 저장)]\n  RAW -.->|비동기| FILL[polyfill · 14레벨 격자로 채움]\n  FILL --> COMPACT[compaction · 자식이 다 있으면 부모로 접는다]\n  COMPACT --> OUT[바깥 경계만 폴리곤으로]\n  OUT --> STORE[(육각형 폴리곤)]\n  Q[좌표 34.111 · 127.111] --> ID[14레벨 ID · 85283473fffffff]\n  ID --> LOOK[어느 영역 묶음에 속하나]\n  STORE --> LOOK\n  LOOK --> M[격자 단위 배송 지표]"
+        },
+        {
+          "title": "배송 영역이 지나는 상태",
+          "question": "사람이 그린 선과 격자로 접힌 선은 언제 어긋나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 우편번호단위: 처음엔 이걸로 충분했다\n  우편번호단위 --> 세분필요: 하루 배송이 세 자릿수\n  세분필요 --> 사람이그림: 지도에서 폴리곤\n  사람이그림 --> 저장됨: 그린 그대로 먼저 저장\n  저장됨 --> 변환대기: 복잡할수록 오래 걸린다\n  변환대기 --> 육각형화: polyfill + compaction\n  육각형화 --> 조회가능: 좌표로 찾을 수 있다\n  조회가능 --> 재편집: Edit 로 다시 그린다\n  재편집 --> 저장됨\n  조회가능 --> [*]\n  note right of 변환대기\n    이 구간에서는 사용자가 본 선과\n    시스템이 아는 선이 다르다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 주소가 텍스트뿐일 때",
+          "question": "잘 만들어진 우편번호 체계가 왜 병목이 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  T[텍스트 주소 · 우편번호] --> NOSPACE[공간 정보가 없다]\n  NOSPACE --> ONLYVET[그 동네를 아는 사람만 영역을 나눌 수 있다]\n  ONLYVET --> SCALE[사람 수만큼만 확장된다]\n  NOSPACE --> UPD[건물이 새로 서거나 헐리면 주소를 갱신해야 한다]\n  GROW[우편번호당 배송이 세 자릿수] --> TOOBIG[한 사람이 하루에 못 돈다]\n  TOOBIG --> SPLIT[쪼개야 한다]\n  SPLIT --> HAND{손으로 그리면}\n  HAND -->|겹치면| DUP[같은 곳에 두 번 간다]\n  HAND -->|빠지면| MISS[아무도 안 가는 곳이 생긴다]\n  BOUND[우편번호 경계가 바뀌면] -.-> NOCMP[예전 지표와 비교할 수 없다]\n  BIG[격자가 너무 크면] -.-> MANY[여러 건물이 한 칸에]\n  SMALL[너무 작으면] -.-> ONEB[건물 하나가 여러 칸에]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+          "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+          "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+          "date": "2023-04-17",
+          "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+        }
+      ]
+    },
+    {
+      "key": "scm-workflow",
+      "name": "SCM 워크플로 — 알고리즘이 아니라 알고리즘을 만드는 도구",
+      "domain": "물류센터·재고 배치",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "익일 배송은 전국의 물류센터들이 만들어 낸다. SCM 팀이 하는 일은 **수요를 예측하고, 주문 처리와 물류센터 사이의 상품 분배 효율을 높이는 알고리즘·모델을 만드는 것**이다. 그런데 이 팀에는 엔지니어만 있는 게 아니라 비즈니스 분석가·데이터 사이언티스트·운영 인력이 함께 있다. 그래서 이 도메인의 실제 병목은 알고리즘이 아니라 **'그 알고리즘에 필요한 데이터를 누가 꺼낼 수 있는가'**였다.",
+        "metrics": [
+          {
+            "label": "병목의 모양",
+            "value": "간단한 데이터 작업도 여러 도구를 거쳐야 해서 담당 엔지니어 말고는 아무도 바꿀 수 없었고, BA·데이터 사이언티스트가 새 모델을 만들려면 매번 엔지니어에게 요청해야 했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "label": "반복의 모양",
+            "value": "고객 수요·주문 이행 분배·주문·상품 이동 도메인이 서로의 데이터를 쓰며 비슷한 코드를 갖게 됐다 — 메인 알고리즘을 빼면 데이터 추출·처리·공유가 전부 반복이었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "BA 가 모델 하나를 만들려고 엔지니어를 기다릴 때",
+          "thought": "요청 자체는 표준적인 작업이다. 그런데 여러 도구에 접근해야 하고 코드를 써야 해서 담당 엔지니어만 할 수 있다. **그 소통 과정이 양쪽 모두의 시간을 크게 잡아먹는다** — 일이 어려워서가 아니라 접근 권한이 한 사람에게 몰려서다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "도메인이 하나 더 늘어날 때",
+          "thought": "시스템마다 목적은 비슷한데 각자 서버·배치·설정을 따로 만들고 따로 고친다. 메인 알고리즘만 다르고 나머지는 같은 코드다. **도메인을 늘리는 데 매번 시스템을 새로 짓는 구조라면, 성장 자체가 비용이 된다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "비엔지니어에게 캔버스를 주려 할 때",
+          "thought": "블록을 늘어놓는 것만으로는 부족하다. 실행 중에 각 블록이 다른 블록의 입출력을 파라미터로 받을 수 있어야 **워크플로 하나가 하나의 프로그램처럼 동작**한다. 조건·반복·병렬까지 캔버스 위에 있어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모두가 이 플랫폼 위에서 돌기 시작할 때",
+          "thought": "편해진 만큼 여기가 멈추면 전부 멈춘다. **단일 장애점이 되지 않게** 세 개 레이어로 나누고, 각 레이어를 필요할 때 늘릴 수 있는 클러스터로 둔다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "노드 / 서비스 블록",
+            "what": "데이터를 꺼내거나 계산하는 단위. 캔버스에서 끌어다 잇는다."
+          },
+          {
+            "name": "워크플로 모델",
+            "what": "블록들의 연결. 저장하면 ID·URL·파일 경로로 남에게 공유된다."
+          },
+          {
+            "name": "워크플로 인스턴스",
+            "what": "실제로 실행된 한 번. 고유한 상태를 갖고 순차·병렬·반복으로 처리된다."
+          },
+          {
+            "name": "커스텀 서비스 컴포넌트",
+            "what": "도메인 엔지니어가 만든 핵심 알고리즘을 등록해 남들이 블록으로 쓰게 한 것."
+          }
+        ],
+        "invariants": [
+          "데이터에 닿는 사람이 한 명이면, 그 사람이 곧 팀의 처리량 상한이다.",
+          "도메인이 늘 때마다 시스템을 새로 지어야 한다면 성장 자체가 비용이 된다.",
+          "모두가 올라탄 플랫폼은 단일 장애점이 되어서는 안 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "데이터 소스에서 값을 꺼내는 노드를 만든다(Hive·Presto·MySQL·S3 등)",
+            "why": "재고와 고객 주문 데이터를 가져와야 계산이 시작된다"
+          },
+          {
+            "step": "노드마다 필요한 쿼리를 넣는다",
+            "why": "코드가 아니라 쿼리 단위라 엔지니어가 아니어도 쓴다"
+          },
+          {
+            "step": "그 데이터를 입력으로 받는 계산 노드를 만들어 잇는다",
+            "why": "예: 물류센터 간에 무엇을 얼마나 옮겨야 주문을 가장 많이 채울 수 있는가"
+          },
+          {
+            "step": "복잡한 쿼리는 여러 개로 쪼개 병렬로 돌린다",
+            "why": "하나씩 처리하는 것보다 빠르다"
+          },
+          {
+            "step": "결과를 워크플로 ID·URL·파일 경로로 공유하고 callback 으로 다른 시스템에 넘긴다",
+            "why": "오프라인 파일을 주고받을 필요가 없어진다"
+          },
+          {
+            "step": "스케줄러로 시간·일·주 단위 반복을 건다",
+            "why": "한 번 만든 워크플로가 계속 도는 파이프라인이 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "BA·데이터 사이언티스트의 데이터 요구를 엔지니어가 계속 대신 처리할 것인가",
+            "chosen": "노코드 데이터 빌더를 만들어 데이터 소스 접근·추출·연동을 직접 하게 한다",
+            "alternatives": [
+              "요청 프로세스 개선",
+              "전담 인력 증원"
+            ],
+            "tradeoff": "플랫폼 자체를 만들고 계속 유지해야 하고, 엔지니어가 아닌 사람이 만든 파이프라인이 늘어난다. 대신 **요청과 대기라는 왕복이 통째로 사라진다** — 문제가 난이도가 아니라 접근 권한이었기 때문에 효과가 크다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "도메인이 늘 때마다 시스템을 새로 만들 것인가",
+            "chosen": "반복되는 데이터 추출·처리·공유를 표준화한 로우코드 서비스 빌더를 만들고, 엔지니어는 알고리즘에만 집중한다",
+            "alternatives": [
+              "도메인별 시스템 유지",
+              "공통 라이브러리만 제공"
+            ],
+            "tradeoff": "알고리즘 바깥의 모든 것을 플랫폼이 정하게 되어, 플랫폼이 못 하는 일은 그 팀도 못 하게 된다. 대신 시스템마다 따로 하던 유지·보수가 한 곳으로 모인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "핵심 알고리즘은 플랫폼 밖에 둘 것인가",
+            "chosen": "도메인 엔지니어가 알고리즘을 **커스텀 서비스 컴포넌트로 등록**해 남들이 블록처럼 쓰게 한다",
+            "alternatives": [
+              "알고리즘은 각 시스템에 유지",
+              "플랫폼이 알고리즘까지 제공"
+            ],
+            "tradeoff": "컴포넌트의 입출력 계약을 지켜야 하는 부담이 생긴다. 그 대신 **비엔지니어가 머신러닝 모델 같은 복잡한 서비스도 조립할 수 있게 되고**, 알고리즘 하나가 여러 워크플로에서 재사용된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "캔버스를 단순한 실행 순서 지정으로 둘 것인가",
+            "chosen": "실행 중에 블록들이 서로의 입출력을 파라미터로 주고받게 해 워크플로가 하나의 프로그램처럼 동작하게 한다. 조건문·반복·병렬화도 캔버스에 올린다",
+            "alternatives": [
+              "순서만 지정하는 오케스트레이션",
+              "상용 워크플로 도구 도입"
+            ],
+            "tradeoff": "그래픽으로 프로그래밍하는 것의 한계를 그대로 떠안는다 — 복잡해질수록 캔버스가 코드보다 읽기 어려워진다(뒷문장은 추정). 회사는 이 입출력 통합을 상용 워크플로 대비 가장 큰 장점으로 꼽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "모두가 올라탄 플랫폼의 장애를 어떻게 막을 것인가",
+            "chosen": "단일 장애점이 되지 않도록 아키텍처를 **세 개 레이어로 나누고**, 각 레이어를 필요할 때 스케일아웃하는 클러스터로 둔다",
+            "alternatives": [
+              "단일 서비스",
+              "팀별 인스턴스 분리"
+            ],
+            "tradeoff": "구조가 복잡해지고 레이어 사이의 계약을 관리해야 한다. 그래도 여기가 멈추면 SCM 의 여러 시스템이 함께 멈춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "오래 걸리는 작업이 다른 작업을 막지 않게 하려면",
+            "chosen": "워크플로 엔진과 워커를 독립된 존재로 설계하고, 시간·자원을 많이 쓰는 작업은 비동기 요청으로 따로 돌린다",
+            "alternatives": [
+              "동기 실행",
+              "작업 크기 제한"
+            ],
+            "tradeoff": "실행 인스턴스마다 상태를 따로 추적해야 한다. 대신 수많은 워크플로가 동시에 돌아도 서로를 막지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "결과를 어떻게 주고받을 것인가",
+            "chosen": "워크플로 ID·URL·파일 경로로 공유하고 callback 함수로 다른 시스템에 연동한다",
+            "alternatives": [
+              "파일을 내보내 주고받기"
+            ],
+            "tradeoff": "공유가 플랫폼 안에서만 자연스럽다는 뜻이기도 하다. 대신 오프라인 파일이 돌아다니지 않아 어떤 결과가 어느 워크플로에서 나왔는지가 항상 추적된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "question": "누구나 만들 수 있게 하면 통제는 어떻게 하나",
+            "chosen": "팀·프로젝트별 그룹 폴더에 생성·편집·삭제 권한을 건다",
+            "alternatives": [
+              "전면 개방",
+              "승인 절차"
+            ],
+            "tradeoff": "권한 관리가 또 하나의 일이 된다. 다만 개인 실험 공간은 아직 계획 단계라, **실험과 운영이 같은 자리에서 이뤄지는 상태**가 남아 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "노코드 데이터 빌더",
+            "role": "Hive·Presto·MySQL·S3 등에서 데이터를 꺼내고 가공해 다른 시스템에 넘긴다. 복잡한 쿼리는 쪼개 병렬 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "로우코드 서비스 빌더",
+            "role": "버저닝·설정·에러 로그·웹 디버깅·실시간 모니터링을 기본으로 주고, 메신저 알림·REST callback·retry·파일 처리·큐 송수신 같은 공유 컴포넌트를 제공한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "커스텀 서비스 컴포넌트",
+            "role": "도메인의 핵심 알고리즘을 블록으로 등록해 재사용하게 한다 — 비엔지니어도 ML 모델을 포함한 서비스를 조립할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "tech": "워크플로 엔진 + 독립 워커 · 3계층 클러스터",
+            "role": "실행 인스턴스별 상태를 관리하고 순차·병렬·반복으로 처리한다. 단일 장애점을 피하려 계층을 나누고 필요할 때 스케일아웃한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "delivery-area",
+          "via": "출고와 배송",
+          "contract": "센터에서 나간 물건이 어느 배송 영역으로 가는지 이어져야 하는데, 두 글은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "주문·배송 약속",
+          "via": "재고 위치",
+          "contract": "어느 센터에 무엇이 있느냐가 '언제 도착한다'를 정한다 — 글은 '주문을 가장 많이 채우는 이동량 계산'을 예로 든다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 센터 간 이동량을 계산하는 워크플로",
+          "question": "코드를 쓰지 않는 사람이 어떻게 데이터 파이프라인을 만드는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  INV[노드 · 재고 데이터<br/>Hive · Presto · MySQL · S3] --> CALC\n  ORD[노드 · 고객 주문 데이터] --> CALC[계산 노드<br/>얼마나 옮겨야 주문을 가장 많이 채우나]\n  SPLIT[복잡한 쿼리는 쪼개서] -.->|병렬| INV\n  SPLIT -.->|병렬| ORD\n  CALC --> OUT{결과}\n  OUT -->|워크플로 ID · URL · 경로| SHARE[다른 팀이 그대로 본다]\n  OUT -->|callback| SYS[다른 시스템에 연동]\n  SCHED[스케줄러 · 시간 · 일 · 주] --> CALC\n  CUSTOM[커스텀 컴포넌트<br/>도메인 엔지니어의 알고리즘] -.->|블록으로| CALC"
+        },
+        {
+          "title": "워크플로 인스턴스가 지나는 상태",
+          "question": "오래 걸리는 작업 하나가 왜 다른 작업을 막지 않는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 모델작성: 캔버스에서 블록을 잇는다\n  모델작성 --> 예약됨: 스케줄러 · 크론\n  예약됨 --> 실행중: 인스턴스가 고유 상태를 갖는다\n  실행중 --> 병렬처리: 설정에 따라\n  실행중 --> 순차처리\n  실행중 --> 비동기독립: 시간 · 자원을 많이 쓰는 작업\n  비동기독립 --> 실행중\n  병렬처리 --> 성공\n  순차처리 --> 성공\n  실행중 --> 실패: 에러 로그를 웹에서 본다\n  실패 --> 실행중: retry 컴포넌트\n  성공 --> [*]\n  note right of 비동기독립\n    엔진과 워커가 독립이라\n    서로를 막지 않는다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 한 사람만 데이터에 닿을 때, 그리고 모두가 한 곳에 올라탈 때",
+          "question": "이 플랫폼이 푼 문제와 새로 떠안은 위험은 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[데이터 작업이 여러 도구를 거친다] --> B[담당 엔지니어만 바꿀 수 있다]\n  B --> C[BA · 데이터 사이언티스트가 매번 요청한다]\n  C --> D[왕복이 양쪽 시간을 잡아먹는다]\n  D --> E[모델을 만드는 속도가 사람 한 명에 묶인다]\n  F[도메인이 늘어난다] --> G[시스템마다 서버 · 배치 · 설정을 따로]\n  G --> H[알고리즘만 다르고 나머지는 같은 코드]\n  H --> I[성장 자체가 유지보수 비용]\n  P[플랫폼이 이 둘을 푼다] -.-> RISK{그런데}\n  RISK -->|모두가 올라탄다| SPOF[여기가 멈추면 전부 멈춘다]\n  SPOF -.->|그래서| L3[3계층 분리 · 클러스터 스케일아웃]\n  RISK -->|개인 실험 공간이 아직 없다| MIX[실험과 운영이 같은 자리에]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+          "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+          "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+          "date": "2022-10-28",
+          "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+        }
+      ]
+    },
+    {
+      "key": "search-indexing",
+      "name": "검색 인덱싱 — 랭킹 엔지니어의 며칠을 몇 시간으로",
+      "domain": "상품 검색·추천",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**검색이 고객 여정을 연다.** 그런데 쿠팡의 검색은 일반 검색 엔진과 목표가 다르다 — 관련성만으로 순서를 정하면 안 되고 **상품 평점·고객 리뷰·가격·브랜드까지** 함께 봐야 한다. 좋은 답이 '질문에 맞는 문서'가 아니라 '사도 될 물건'이기 때문이다. 그래서 이 도메인의 진짜 과제는 랭킹 알고리즘 자체가 아니라, **수백만 개 상품과 페타바이트급 행동 데이터에서 랭킹 시그널을 얼마나 빨리 만들어 낼 수 있느냐**가 된다.",
+        "metrics": [
+          {
+            "label": "다루는 규모",
+            "value": "수백만 개 상품과 페타바이트급 고객 행동 데이터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "label": "2.0 이전의 부채",
+            "value": "시그널마다 원시 로그 파싱부터 파이프라인을 따로 세워야 했고, 그런 파이프라인이 약 70개였다 — 유지가 거의 불가능했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "label": "2.0 이후",
+            "value": "클래스 하나를 구현하고 로직을 넣으면 새 시그널이 된다. 랭킹 엔지니어가 몇 시간 안에 고품질 시그널을 만들고 유닛·통합 테스트까지 돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "커머스 검색의 목표를 정의할 때",
+          "thought": "전통적인 검색 엔진은 관련성이 결정적이다. 그런데 여기서는 관련성이 높아도 평점이 낮거나 비싸면 좋은 결과가 아니다. **'맞는 것'과 '살 만한 것'은 다른 질문이고, 랭킹은 그 둘을 동시에 답해야 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "레플리카를 하나 더 띄우면서",
+          "thought": "온라인 서빙 클러스터가 인덱스를 그때그때 만들다 보니, 레플리카를 만들 때마다 같은 인덱스를 처음부터 다시 계산한다. **같은 결과를 여러 번 만드는 구조는 대수롭지 않아 보이지만, 규모가 커지면 그게 확장성 자체를 막는다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "시그널 파이프라인이 70개가 됐을 때",
+          "thought": "랭킹 엔지니어가 시그널 하나를 추가하려면 데이터 소스를 찾고 워크플로를 잡는 데 시간을 다 쓴다. 정작 시그널의 로직은 그중 일부다. **일의 대부분이 그 일 자체가 아니라 그 일을 하기 위한 준비라면, 준비를 플랫폼이 가져가야 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "상품 데이터와 질의 데이터를 같은 곳에 두고 나서",
+          "thought": "가격은 상품 데이터인데, 질의별 가격 분포와 함께 보면 **질의 랭킹 시그널이 된다.** 서로 다른 축의 데이터를 한 플랫폼에 올려놓는 것만으로 전에 없던 시그널이 나온다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "랭킹 시그널",
+            "what": "후보에 점수를 매기는 재료. 빠르게 반복해 만들 수 있어야 한다."
+          },
+          {
+            "name": "ProductJoin",
+            "what": "모든 상품 데이터를 합친 Protobuf 구조. HBase 에 저장된다."
+          },
+          {
+            "name": "Session Log",
+            "what": "고객 행동 원시 로그를 파싱·병합한 데이터셋."
+          },
+          {
+            "name": "ProductJoiner / QueryJoiner",
+            "what": "상품·질의 데이터를 함께 써서 시그널을 만들어 내는 플랫폼 위의 생성기."
+          }
+        ],
+        "invariants": [
+          "커머스 검색에서 좋은 결과는 관련성만으로 정해지지 않는다.",
+          "같은 인덱스를 레플리카마다 다시 만들면 확장이 막힌다.",
+          "시그널을 만드는 데 파이프라인부터 세워야 한다면, 실험의 속도가 곧 팀의 한계가 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "질의 이해 — 의도를 파악하고 카테고리·브랜드 같은 주석을 붙인다",
+            "why": "무엇을 찾는지 모르면 후보를 좁힐 수 없다"
+          },
+          {
+            "step": "검색 — 질의와 상품의 텍스트 정보로 후보를 찾는다",
+            "why": "수백만 개에서 다룰 만한 수로 줄인다"
+          },
+          {
+            "step": "랭킹 — 랭킹 함수나 ML 모델이 시그널로 점수를 매긴다",
+            "why": "빠른 반복이 가능해야 한다"
+          },
+          {
+            "step": "Session Log parser 가 고객 행동 로그를 파싱·병합한다",
+            "why": "모든 시그널이 같은 로그 해석 위에 서야 한다"
+          },
+          {
+            "step": "Ground Truth Merger 가 상품 데이터를 합친다",
+            "why": "엔지니어가 원시 상품 데이터에 바로 닿게 한다"
+          },
+          {
+            "step": "ProductJoiner·QueryJoiner 가 노출·클릭·구매를 집계하고 시그널 프로세서를 돌린다",
+            "why": "시그널이 외부 테이블이 아니라 플랫폼 위에서 만들어진다"
+          },
+          {
+            "step": "생성된 시그널을 HBase 에 저장하고 인덱스를 만든다",
+            "why": "온라인 서빙 클러스터가 직접 읽어 쓴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "커머스 검색의 랭킹을 무엇으로 정할 것인가",
+            "chosen": "관련성만이 아니라 상품 평점·고객 리뷰·가격·브랜드까지 함께 본다",
+            "alternatives": [
+              "관련성 중심의 전통적 검색",
+              "판매량 순"
+            ],
+            "tradeoff": "'최선의 결과'가 무엇인지 정의가 복잡해지고 시그널 수가 계속 늘어난다. 그래서 **시그널을 빨리 만드는 능력 자체가 검색 품질의 상한**이 된다 — 이 글의 나머지 전부가 그 결론에서 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "인덱스를 어디서 만들 것인가",
+            "chosen": "온라인 서빙 클러스터에서 즉석으로 만들던 것을(0.1) 오프라인 Spark 잡으로 옮기고, 분산 스토리지에 둔 인덱스를 모든 레플리카가 함께 쓴다(1.0)",
+            "alternatives": [
+              "서빙 클러스터 빌드 유지",
+              "레플리카별 빌드 최적화"
+            ],
+            "tradeoff": "인덱스가 만들어지는 시점과 쓰이는 시점이 벌어져 신선도를 일부 내준다. 대신 **레플리카를 늘려도 같은 계산을 반복하지 않는다** — 서빙 클러스터에서의 인덱스 빌드는 극도로 느리고 비쌌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 소스를 어디에 둘 것인가",
+            "chosen": "관계형 데이터베이스가 병목이었으므로 ground truth 를 전부 Hive 로 복제하고 Hadoop 위에서 다룬다",
+            "alternatives": [
+              "RDB SQL 조인 유지",
+              "부분 복제"
+            ],
+            "tradeoff": "복제본을 유지하는 비용과 지연이 생긴다. 그래도 RDB 의 SQL 엔진은 **수십 개의 큰 테이블을 조인할 때 느리고 불안정했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "합친 상품 데이터를 어떤 모양으로 저장할 것인가",
+            "chosen": "Spark 잡(index merger)이 ProductJoin 이라는 Protobuf 구조로 합쳐 HBase 에 저장하고, 또 다른 Spark 잡(index builder)이 그걸 읽어 인덱스를 만든다",
+            "alternatives": [
+              "단일 비정규화 테이블",
+              "인덱스 직접 생성"
+            ],
+            "tradeoff": "구조가 계약이 되어 바꾸기 어려워지고 단계가 하나 늘어난다. 대신 합치는 일과 인덱스를 만드는 일이 분리되어 각각 따로 확장된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "랭킹 시그널을 어디서 만들 것인가",
+            "chosen": "외부 Hive 테이블에서 병합하던 방식(1.0)을 버리고, **플랫폼 위에서 직접 생성한다**(2.0의 Indexing Bus)",
+            "alternatives": [
+              "외부 생성 후 병합 유지",
+              "시그널 파이프라인 표준 문서화"
+            ],
+            "tradeoff": "플랫폼이 더 무거워지고 더 많은 책임을 진다. 그 대신 **약 70개의 개별 파이프라인이 사라진다** — 유지가 거의 불가능했고 자원도 크게 낭비하던 구조다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "상품 데이터와 질의 데이터를 나눠 다룰 것인가",
+            "chosen": "두 데이터셋을 상품 시그널과 질의 시그널 생성에 **모두** 쓴다",
+            "alternatives": [
+              "상품·질의 파이프라인 분리"
+            ],
+            "tradeoff": "두 축이 서로 얽혀 결합도가 올라간다. 그래도 이 교환이 강력한 시그널을 만든다 — 예를 들어 **상품의 가격이 질의별 가격 분포와 만나 상품을 올리거나 내리는 질의 랭킹 시그널이 된다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "시그널 개발의 단위를 무엇으로 정할 것인가",
+            "chosen": "클래스 하나를 구현하고 로직을 넣는 것으로 끝나게 하고, 유닛 테스트와 통합 테스트를 제공한다",
+            "alternatives": [
+              "파이프라인 단위 개발",
+              "쿼리 템플릿 제공"
+            ],
+            "tradeoff": "프레임워크가 정한 모양 안에서만 시그널을 만들 수 있다. 대신 **며칠이 걸리던 일이 몇 시간이 된다** — 검색 품질의 상한이 여기서 올라간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "이 플랫폼을 검색 전용으로 둘 것인가",
+            "chosen": "상품-질의 관계에서 시작해 고객·브랜드까지 관계를 넓히고, 추천과 광고도 받치는 방향으로 간다",
+            "alternatives": [
+              "검색 전용 유지"
+            ],
+            "tradeoff": "여기서 말하는 것은 확인된 '지향'이지 완료된 사실이 아니다. 범위를 넓힐수록 플랫폼이 회사의 단일 의존점이 된다 — 회사는 이를 '쿠팡 비즈니스의 두뇌'라고 표현한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Hadoop · Hive",
+            "role": "관계형 데이터베이스 병목을 피해 ground truth 를 복제해 두고 분산 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "Spark (index merger · index builder · Session Log parser · Ground Truth Merger)",
+            "role": "상품 데이터를 합치고, 로그를 파싱하고, 인덱스를 만든다. 확장이 쉬워 택했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "ProductJoin (Protobuf) + HBase",
+            "role": "합쳐진 상품 데이터와 생성된 시그널을 담는 저장 구조.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "Indexing Bus (ProductJoiner · QueryJoiner)",
+            "role": "시그널을 플랫폼 위에서 직접 만든다. 상품·질의 데이터를 서로의 시그널 생성에 함께 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "랭킹 모델",
+            "role": "랭킹 함수 또는 ML 모델이 시그널로 후보에 점수를 매긴다 — 어떤 모델을 어떻게 쓰는지는 이 글에 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "scm-workflow",
+          "via": "같은 처방",
+          "contract": "물류(SCM Workflow)와 검색(Indexing Platform 2.0)이 서로 다른 도메인에서 같은 결론에 도달했다 — 반복되는 준비 작업을 플랫폼이 가져가고 사람은 로직만 쓴다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "마켓플레이스·셀러",
+          "via": "노출",
+          "contract": "직매입 상품과 셀러 상품이 같은 검색 결과에서 어떻게 나란히 놓이는지는 확인하지 못했다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 검색 3단계와 그것을 먹이는 공장",
+          "question": "랭킹 시그널은 어디서 만들어져 어떻게 검색까지 오는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[검색어] --> QU[질의 이해<br/>의도 · 카테고리 · 브랜드]\n  QU --> RET[검색 · 후보 찾기]\n  RET --> RANK[랭킹 · 함수 또는 ML 모델]\n  RANK --> R[결과]\n  subgraph IDX [Indexing Platform 2.0 · Indexing Bus]\n    LOG[고객 행동 원시 로그] --> SLP[Session Log parser · Spark]\n    GT[상품 ground truth · Hive] --> GTM[Ground Truth Merger · Spark]\n    SLP --> PJ[ProductJoiner]\n    GTM --> PJ\n    SLP --> QJ[QueryJoiner]\n    GTM --> QJ\n    PJ <-.->|가격이 질의 시그널이 된다| QJ\n    PJ --> HB[(HBase · ProductJoin)]\n    QJ --> HB\n  end\n  HB --> IB[index builder · Spark]\n  IB --> DS[(분산 스토리지 · 인덱스)]\n  DS --> RET\n  DS --> RANK\n  DS -.->|재빌드 없이 공유| REP[모든 서빙 레플리카]"
+        },
+        {
+          "title": "인덱싱 플랫폼의 세 세대",
+          "question": "무엇이 부러질 때마다 무엇을 바꿨는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> v01: 0.1 · RDB 조인 + 서빙 클러스터가 인덱스 빌드\n  v01 --> 상품폭증: 상품 수가 빠르게 는다\n  상품폭증 --> 확장한계: 레플리카마다 인덱스를 다시 계산\n  상품폭증 --> 조인불안정: 큰 테이블 수십 개 조인이 느리고 불안정\n  확장한계 --> v10: 1.0 · Hadoop · Spark · ProductJoin · HBase\n  조인불안정 --> v10\n  v10 --> 성능해결: 인덱스를 레플리카가 공유\n  성능해결 --> 생산성문제: 시그널 파이프라인이 약 70개\n  생산성문제 --> v20: 2.0 · Indexing Bus\n  v20 --> 몇시간: 클래스 하나로 새 시그널\n  몇시간 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 준비가 일의 대부분일 때",
+          "question": "성능을 고친 다음에도 왜 검색이 빨리 좋아지지 않았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[서빙 클러스터가 인덱스를 즉석 빌드] --> B[레플리카마다 같은 계산을 반복]\n  B --> C[자원 낭비 · 확장 불가]\n  D[RDB SQL 로 수십 개 테이블 조인] --> E[느리고 불안정]\n  C --> F[랭킹 엔지니어가 며칠 안에 시그널을 못 넣는다]\n  E --> F\n  G[1.0 이 성능은 고쳤다] -.-> H{그런데 생산성은}\n  H --> I[시그널마다 로그 파싱부터 파이프라인을 세운다]\n  I --> J[Hive 쿼리 · Spark 잡 개발에 여러 시간]\n  J --> K[그런 파이프라인이 약 70개]\n  K --> L[유지 거의 불가능 · 자원 낭비]\n  L --> F\n  F --> M[시그널을 만드는 속도가 검색 품질의 상한이 된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+          "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+          "publisher": "Coupang Engineering Blog · Winter Wang",
+          "date": "2020-05-07",
+          "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+        }
+      ]
+    },
+    {
+      "key": "core-serving",
+      "name": "배송 약속 — 여러 팀의 데이터가 한 화면에서 만날 때",
+      "domain": "주문·배송 약속",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "상품 화면에 뜨는 **'언제 도착합니다'**는 이 회사의 이름 자체다. 그런데 그 한 줄은 한 팀이 만들지 않는다 — 이미지와 제목은 Catalog 가, 가격은 Pricing 이, 재고와 **보장 배송일은 Stock and Fulfillment** 가 관리한다. 게다가 이 값들은 고객마다 다르고 실시간으로 바뀐다. **물류센터의 하루 출고 능력이 차면 그 센터는 새 주문을 받을 수 없고, 영향을 받는 고객의 화면에서 재고와 배송일이 즉시 갱신돼야 한다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "2018년 대비 매출 4배, 고객 1,800만 명(글 작성 시점)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "label": "캐시의 효과",
+            "value": "공통 저장소 대비 처리량 10배, 지연 1/3",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "label": "일관성 목표",
+            "value": "가용성 99.99%. 공통 저장소와 캐시는 분 단위로 99.99% 동일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "상품 화면 하나를 뜯어볼 때",
+          "thought": "한 화면의 조각마다 주인이 다르다. 이미지는 Catalog, 가격은 Pricing, 재고는 Fulfillment. **각 페이지가 이 서비스들을 직접 부르면 모든 마이크로서비스가 항상 고가용성이어야 하고**, 공통 로직이 프론트마다 복사된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "물류센터의 출고 능력이 찼을 때",
+          "thought": "센터가 오늘 더 못 내보내면 그 순간부터 그 상품의 배송일이 달라진다. **약속은 고정된 값이 아니라 매 순간 계산되는 값이고**, 그래서 화면이 그걸 늦게 알면 지키지 못할 약속을 하게 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "캐시를 붙이고 나서",
+          "thought": "처리량과 지연은 좋아졌는데 캐시가 낡은 값을 준다. 그런데 **모든 데이터가 같은 신선도를 필요로 하지는 않는다** — 이미지가 몇 분 늦는 것과 품절이 몇 분 늦는 것은 전혀 다른 사건이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어떤 페이지가 정말 멈추면 안 되는지 물을 때",
+          "thought": "고객 페이지는 많지만 실패했을 때 경험과 매출에 치명적인 건 몇 개뿐이다 — 홈, 검색, 결제. **모든 것을 똑같이 지키려 하면 아무것도 제대로 못 지킨다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "보장 배송일",
+            "what": "Stock and Fulfillment 가 관리하는 값. 센터의 출고 여력에 따라 실시간으로 바뀐다."
+          },
+          {
+            "name": "공통 NoSQL 저장소",
+            "what": "각 마이크로서비스가 큐로 밀어 넣은 최신 데이터가 모이는 곳. 한 번의 읽기로 전부 가져온다."
+          },
+          {
+            "name": "캐시 / 실시간 캐시",
+            "what": "분 단위 신선도를 담당하는 층과 초 단위가 필요한 데이터를 담당하는 층."
+          },
+          {
+            "name": "CSP / N-CSP 클러스터",
+            "what": "멈추면 안 되는 페이지(홈·검색·결제)와 나머지를 나눠 놓은 서빙 경로."
+          }
+        ],
+        "invariants": [
+          "약속은 고정된 값이 아니라 센터의 여력에 따라 매 순간 바뀐다.",
+          "품절이 늦게 반영되면 고객은 물건 대신 환불을 받는다 — 그건 지연이 아니라 신뢰의 손실이다.",
+          "모든 페이지를 똑같이 지키려 하면 정작 중요한 페이지를 못 지킨다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "각 마이크로서비스가 갱신된 데이터를 큐로 보낸다",
+            "why": "서빙 계층이 모든 변경을 쫓아다니지 않아도 된다"
+          },
+          {
+            "step": "공통 NoSQL 저장소에 모인다",
+            "why": "여러 서비스의 데이터를 한 번의 읽기로 가져오려고 — 최종적 일관성을 받아들인 대가다"
+          },
+          {
+            "step": "read-through 캐시가 앞에서 읽기를 받아 낸다",
+            "why": "처리량 10배, 지연 1/3"
+          },
+          {
+            "step": "저장소가 갱신되면 notification queue 가 캐시를 무효화한다",
+            "why": "분 단위로 99.99% 동일하게 유지한다"
+          },
+          {
+            "step": "초 단위가 필요한 데이터는 실시간 updater 가 별도 캐시에 즉시 쓴다",
+            "why": "재고는 분 단위로도 늦다"
+          },
+          {
+            "step": "서빙 계층이 두 캐시를 동시에 읽어 더 최신인 값을 준다",
+            "why": "어느 쪽이 앞섰든 최신을 고른다"
+          },
+          {
+            "step": "고객 페이지는 이 한 서비스만 호출한다",
+            "why": "공통 비즈니스 로직이 한 곳에 모인다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "고객 페이지가 마이크로서비스를 직접 부를 것인가",
+            "chosen": "공통 비즈니스 로직과 데이터를 맡는 **core serving layer** 하나를 둔다",
+            "alternatives": [
+              "페이지가 각 서비스 직접 호출",
+              "프론트엔드 BFF 별도 구성"
+            ],
+            "tradeoff": "모든 화면이 한 서비스에 의존하게 된다. 대신 **모든 마이크로서비스가 각자 고가용성을 책임질 필요가 없어지고**, 프론트마다 복사되던 공통 로직이 한 곳으로 모인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "여러 서비스의 최신 데이터를 어떻게 모을 것인가",
+            "chosen": "서빙 계층이 변경을 쫓지 않는다. **각 마이크로서비스가 갱신을 큐로 밀어 공통 NoSQL 저장소에 쌓고**, 최종적 일관성을 받아들여 한 번의 읽기로 전부 가져온다",
+            "alternatives": [
+              "요청 시점에 각 서비스 조회",
+              "동기 복제"
+            ],
+            "tradeoff": "강한 일관성을 포기한다. 대신 I/O 가 크게 줄고 처리량이 올라간다 — 커머스 화면의 대부분은 몇 초 늦어도 되는 값이기 때문이다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "공통 저장소만으로 읽기 트래픽을 감당할 것인가",
+            "chosen": "앞에 read-through 캐시 층을 둔다",
+            "alternatives": [
+              "저장소 확장",
+              "페이지별 캐싱"
+            ],
+            "tradeoff": "낡은 값을 줄 수 있다는 문제가 새로 생긴다. 그 대가로 **처리량 10배, 지연 1/3**을 얻는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "캐시가 낡는 문제를 어떻게 할 것인가",
+            "chosen": "저장소가 갱신되면 notification queue 로 신호를 보내 캐시를 최신 값으로 교체한다",
+            "alternatives": [
+              "TTL 만료",
+              "쓰기 시 동시 갱신"
+            ],
+            "tradeoff": "무효화 경로가 하나 더 생겨 관리 대상이 늘어난다. 결과는 **분 단위로 99.99% 동일** — 완전한 동일이 아니라 목표치를 정해 놓은 설계다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "분 단위 신선도로 충분한가",
+            "chosen": "재고처럼 초 단위가 필요한 데이터는 **별도의 실시간 캐시**에 즉시 쓰고, 서빙 계층이 두 캐시를 동시에 읽어 더 최신인 값을 준다",
+            "alternatives": [
+              "전체를 실시간으로",
+              "분 단위 유지"
+            ],
+            "tradeoff": "캐시 층이 둘이 되어 복잡해진다. 그래도 품절이 늦게 반영되면 고객은 **물건 대신 환불을 받게 되고**, 그건 지연이 아니라 쿠팡에 대한 신뢰의 문제가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "한 곳의 장애가 번지는 것을 어떻게 막을 것인가",
+            "chosen": "모든 네트워크를 circuit breaker 로 감싸 I/O 지점의 사고를 격리하고, 문제가 난 구성요소의 I/O 를 수동으로 우회시킨다",
+            "alternatives": [
+              "재시도만",
+              "전면 자동 페일오버"
+            ],
+            "tradeoff": "우회를 사람이 판단해 거는 만큼 대응이 즉각적이지는 않다. 대신 자동 전환이 잘못 판단해 장애를 키우는 일을 피한다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "모든 고객 페이지를 똑같이 지킬 것인가",
+            "chosen": "홈·검색·결제 같은 치명적 페이지를 **CSP 클러스터**로, 나머지를 N-CSP 클러스터로 분리한다. CSP 에 사고가 나면 치명적 페이지가 **동적으로 N-CSP 쪽을 바라보게** 전환한다",
+            "alternatives": [
+              "단일 클러스터",
+              "페이지별 클러스터"
+            ],
+            "tradeoff": "클러스터를 둘로 나눠 자원을 더 쓴다. 그래도 N-CSP 의 사고가 결제에 번지지 않고, 반대로 CSP 가 무너져도 갈 곳이 남는다 — **덜 중요한 쪽이 중요한 쪽의 예비 자리가 된다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "question": "도메인마다 이 계층을 새로 만들 것인가",
+            "chosen": "핵심 로직을 공유하는 **템플릿**을 배포한다 — 공통 저장소·캐시·실시간 캐시 주소 같은 설정만 넣으면 그 도메인용 서빙 계층이 만들어진다",
+            "alternatives": [
+              "도메인별 구현",
+              "공용 라이브러리만"
+            ],
+            "tradeoff": "템플릿이 정한 모양을 벗어나기 어려워진다. 대신 주문·배송 정보 도메인이나 쿠팡이츠처럼 같은 필요를 가진 곳이 코드를 다시 쓰지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "공통 NoSQL 저장소 + 큐",
+            "role": "각 마이크로서비스가 밀어 넣은 최신 데이터를 모아, 한 번의 읽기로 화면에 필요한 모든 조각을 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "read-through 캐시 + notification queue 무효화",
+            "role": "읽기 트래픽을 받아 내고(처리량 10배·지연 1/3), 저장소 갱신 신호로 낡은 값을 교체한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "실시간 캐시 + 실시간 updater",
+            "role": "재고처럼 초 단위가 필요한 값을 즉시 반영한다. 서빙 계층이 두 캐시를 함께 읽어 더 최신을 고른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "circuit breaker · CSP/N-CSP 클러스터 분리",
+            "role": "I/O 사고를 격리하고, 홈·검색·결제를 별도 경로로 지키며 사고 시 다른 클러스터로 전환한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "core serving layer 템플릿",
+            "role": "설정만 넣으면 도메인별 서빙 계층이 생긴다. 쿠팡 본진과 쿠팡이츠가 같은 기반을 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "scm-workflow",
+          "via": "출고 여력",
+          "contract": "물류센터의 하루 출고 능력이 차면 그 센터는 새 주문을 받지 못하고, 재고와 보장 배송일이 화면에서 갱신된다 — 물류의 상태가 곧 약속의 입력이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "search-indexing",
+          "via": "같은 화면",
+          "contract": "검색은 멈추면 안 되는 CSP 페이지 중 하나다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "delivery-area",
+          "via": "약속과 실행",
+          "contract": "화면에서 말한 배송일을 실제로 지키는 것은 라스트마일이지만, 두 글은 서로를 언급하지 않는다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 흩어진 데이터가 한 화면으로",
+          "question": "여러 팀이 가진 조각들이 어떻게 한 번의 호출로 모이는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  CAT[Catalog · 이미지 · 제목] --> Q[큐]\n  PRC[Pricing · 가격] --> Q\n  SF[Stock and Fulfillment<br/>재고 · 보장 배송일] --> Q\n  Q --> DB[(공통 NoSQL 저장소<br/>최종적 일관성 · 한 번의 읽기)]\n  DB --> C[read-through 캐시<br/>처리량 10배 · 지연 1/3]\n  DB -->|갱신 신호| NQ[notification queue]\n  NQ -->|무효화| C\n  Q -->|초 단위가 필요한 값| RTU[실시간 updater]\n  RTU --> RC[실시간 캐시]\n  C --> CSL[core serving layer<br/>두 캐시를 동시에 읽어 최신을 고른다]\n  RC --> CSL\n  CSL --> PAGE[고객 페이지]\n  TPL[템플릿] -.->|설정만 넣으면| CSL\n  TPL -.-> EATS[쿠팡이츠 등 다른 도메인]"
+        },
+        {
+          "title": "보장 배송일이 바뀌는 상태",
+          "question": "'언제 도착합니다'는 언제 다른 값이 되는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 여력있음: 센터가 오늘 더 내보낼 수 있다\n  여력있음 --> 약속표시: 화면에 보장 배송일이 뜬다\n  약속표시 --> 주문접수\n  여력있음 --> 출고능력소진: 하루 출고 한도에 도달\n  출고능력소진 --> 주문불가: 그 센터는 새 주문을 못 받는다\n  주문불가 --> 값갱신: 재고 · 배송일이 큐로 흐른다\n  값갱신 --> 실시간캐시: 초 단위로 반영\n  실시간캐시 --> 약속표시: 영향받는 고객 화면이 바뀐다\n  주문접수 --> [*]\n  note right of 값갱신\n    약속은 고정값이 아니라\n    매 순간 계산되는 값이다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 늦은 값과 번지는 장애",
+          "question": "몇 분의 지연이 어디서 신뢰의 문제가 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[캐시가 낡은 값을 준다] --> B{어떤 데이터인가}\n  B -->|이미지 · 제목| OK[몇 분 늦어도 괜찮다]\n  B -->|재고| BAD[품절인데 살 수 있게 보인다]\n  BAD --> BUY[고객이 주문한다]\n  BUY --> REF[물건 대신 환불을 받는다]\n  REF --> TRUST[쿠팡에 대한 신뢰가 깎인다]\n  C[모든 페이지가 한 서빙 계층에 의존] --> D{여기가 무너지면}\n  D --> ALL[홈 · 검색 · 결제가 함께 멈춘다]\n  ALL -.->|그래서| SPLIT[CSP / N-CSP 클러스터 분리]\n  SPLIT -.->|CSP 사고 시| SHIFT[치명적 페이지가 N-CSP 를 바라본다]\n  E[한 I/O 지점의 사고] -.->|막지 않으면| CASCADE[연쇄된다]\n  CASCADE -.->|그래서| CB[circuit breaker 로 격리 후 수동 우회]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Our backend strategy to handle massive traffic (Part 1)",
+          "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+          "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+          "date": "2022-08-12",
+          "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+        }
+      ]
+    },
+    {
+      "key": "seller-understanding",
+      "name": "셀러·상품 이해 — 전 세계가 올린 물건을 기계가 알아보게 하기",
+      "domain": "마켓플레이스·셀러",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "쿠팡은 직접 사서 파는 것만으로는 상품 수를 채울 수 없다. **전 세계 셀러가 들어와 파는 마켓플레이스**가 그 자리를 메우는데, 여기서 앞선 도메인들과 다른 문제가 생긴다 — **셀러도 상품도 우리 언어로 오지 않는다.** 게다가 쿠팡의 주 무대인 한국어와 중국어는 대부분의 ML 과제에서 학습 데이터가 상대적으로 적고, 상품 이미지에는 글자가 박혀 있다. 셀러의 물건을 기계가 못 알아보면 검색에도 추천에도 광고에도 오르지 못한다.",
+        "metrics": [
+          {
+            "label": "판이 다른 지점",
+            "value": "한국어·중국어는 대부분의 ML 과제에서 학습 데이터가 상대적으로 적고, 전 세계 셀러가 여러 언어로 상품을 올리며 이미지에는 글자가 박혀 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "label": "합쳐서 얻은 것",
+            "value": "카테고리마다 두던 분류 모델을 LLM 기반 단일 분류기로 바꿔 대부분의 카테고리에서 정밀도가 올라갔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "label": "인프라에서 얻은 것",
+            "value": "vLLM 으로 여러 워크로드에서 약 20배 처리량 향상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "카테고리마다 모델을 관리하고 있을 때",
+          "thought": "통합 모델을 쓰면 **꼬리 카테고리에서 예측이 지저분해진다.** 그래서 카테고리마다 모델을 하나씩 뒀는데, 이번엔 그 모델들을 전부 관리하는 것이 일이 됐다. 정확도를 위해 나눈 것이 운영 부담으로 돌아온 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "한국어·중국어 레이블을 구하려 할 때",
+          "thought": "사람이 붙인 레이블은 원래 비싸고 어려운데, **다국어면 그 어려움이 배가된다.** 그런데 새 세그먼트를 시작할 때 필요한 건 완벽한 레이블이 아니라 시작할 수 있을 만큼의 레이블이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이미지와 텍스트를 따로 다루다가",
+          "thought": "상품에는 제목·설명·질의라는 텍스트와 이미지가 함께 있다. **둘을 따로 배우게 하는 것보다 함께 모델링할 때 더 좋은 임베딩이 나온다** — 그 임베딩이 광고 검색·유사도 검색·추천의 재료가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GPU 를 못 구할 때",
+          "thought": "클라우드 GPU 는 대기 시간이 길어 실행 계획이 흔들린다. 그리고 서빙 스택이 전부 CPU 였는데, 수십억 파라미터 모델에는 너무 느리다. **모델을 바꾸는 일이 곧 인프라를 바꾸는 일이 된다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "셀러·상품 데이터",
+            "what": "제목·설명·리뷰·셀러 정보 같은 텍스트와 글자가 박힌 이미지. 여러 언어로 들어온다."
+          },
+          {
+            "name": "약한 레이블",
+            "what": "LLM 이 대량으로 만든 레이블. 품질 검사를 통과하면 학습에 쓴다."
+          },
+          {
+            "name": "임베딩",
+            "what": "이미지와 텍스트를 함께 모델링해 얻은 표현. 광고 검색·유사도 검색·추천 피처로 쓰인다."
+          },
+          {
+            "name": "소스 LLM",
+            "what": "학습을 마친 큰 모델. 실시간에 그대로 쓰지 않고 증류하거나 임베딩을 뽑아 쓴다."
+          }
+        ],
+        "invariants": [
+          "기계가 못 알아보는 상품은 검색·추천·광고 어디에도 오르지 못한다.",
+          "정확도를 위해 모델을 쪼개면 운영 부담이 그만큼 늘어난다.",
+          "학습 데이터가 적은 언어에서는 레이블 자체가 병목이다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "셀러가 여러 언어로 상품을 올린다",
+            "why": "전 세계 셀러가 파는 마켓플레이스이기 때문"
+          },
+          {
+            "step": "이미지와 텍스트를 함께 모델링해 임베딩을 만든다",
+            "why": "따로 배우는 것보다 좋은 표현이 나온다"
+          },
+          {
+            "step": "LLM 단일 분류기가 카테고리와 속성을 뽑는다",
+            "why": "제목·설명·리뷰·셀러 정보를 함께 읽어 판단한다"
+          },
+          {
+            "step": "레이블이 부족한 곳은 LLM 이 만든 약한 레이블로 메운다",
+            "why": "품질 검사를 통과하면 학습에 쓸 수 있다"
+          },
+          {
+            "step": "제목을 한국어에서 중국어로 번역하고, 상품·셀러 키워드를 생성한다",
+            "why": "언어가 다르다고 노출에서 밀리지 않게"
+          },
+          {
+            "step": "소스 LLM 에서 작은 모델을 증류하거나 임베딩을 뽑아 실시간에 쓴다",
+            "why": "큰 모델을 실시간에 그대로 쓸 수 없다"
+          },
+          {
+            "step": "그 결과가 검색·광고·추천의 재료가 된다",
+            "why": "이해가 곧 노출이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "카테고리 분류를 어떻게 할 것인가",
+            "chosen": "카테고리마다 모델을 두던 방식을 버리고, 상품 데이터를 깊이 읽는 **LLM 기반 단일 분류기 하나**로 모든 카테고리를 처리한다",
+            "alternatives": [
+              "카테고리별 모델 유지",
+              "일반적인 다중 클래스 모델"
+            ],
+            "tradeoff": "원래 통합 모델을 못 쓴 이유가 **꼬리 카테고리에서 예측이 지저분해서**였다 — LLM 이 제목·설명·리뷰·셀러 정보를 함께 이해하면서 그 이유가 사라졌고, 대부분의 카테고리에서 정밀도가 올랐다. 대신 모델 하나에 더 큰 자원이 든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "레이블이 부족한 언어를 어떻게 할 것인가",
+            "chosen": "LLM 으로 대량의 약한 레이블을 만들고, 품질 검사를 통과한 것만 약한 지도학습에 쓴다",
+            "alternatives": [
+              "사람 레이블 확대",
+              "레이블 많은 세그먼트만 공략"
+            ],
+            "tradeoff": "기계가 만든 레이블이라 검사 단계를 반드시 끼워야 한다. 그래도 **고품질 레이블이 없는 새 세그먼트를 시작할 수 있게 해 준다** — 내부 실험에서 relevance 모델 품질이 좋아졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "이미지와 텍스트를 따로 배울 것인가",
+            "chosen": "vision·language 트랜스포머로 **함께 모델링**한다(CLIP·TrOCR 계열)",
+            "alternatives": [
+              "각각 임베딩 후 결합"
+            ],
+            "tradeoff": "학습이 무거워진다. 대신 따로 배운 것보다 나은 임베딩이 나오고, 이미지에 박힌 글자까지 다뤄야 하는 마켓플레이스 특성에 맞는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "모델을 직접 만들 것인가",
+            "chosen": "오픈소스 아키텍처를 가져와 도메인 데이터로 파인튜닝한다. CJK 성능을 우선 보고 3B~20B 규모를 선호한다",
+            "alternatives": [
+              "자체 사전학습",
+              "가장 큰 모델 사용"
+            ],
+            "tradeoff": "남의 아키텍처와 토크나이저에 얹히게 된다 — 한국어·중국어는 띄어쓰기와 문자 기반 특성, 큰 어휘 크기 때문에 **토크나이저가 곧 모델 품질에 영향**을 준다. 대신 시간과 연산을 크게 아낀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "LLM 을 어떤 방식으로 쓸 것인가",
+            "chosen": "맥락 학습(ICL)과 지도 파인튜닝(SFT)을 주로 쓴다",
+            "alternatives": [
+              "RAG",
+              "계속 사전학습(CPT)"
+            ],
+            "tradeoff": "CPT 는 속성 추출 같은 과제에서 가장 좋은 결과를 내지만 자원이 많이 든다. RAG 는 생성과 검색을 실시간으로 맞물리게 하는 게 까다로워 병목과 오류의 소지가 된다. **가장 좋은 방법이 아니라 가장 자주 돌릴 수 있는 방법을 골랐다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "학습한 큰 모델을 실시간에 그대로 쓸 것인가",
+            "chosen": "소스 LLM 에서 작은 모델을 **증류**하거나 **임베딩을 뽑아** 작은 모델에 넣어 쓴다",
+            "alternatives": [
+              "소스 LLM 직접 서빙"
+            ],
+            "tradeoff": "원본의 성능을 일부 내준다. 대신 실시간 서빙이 가능해지고, 랭킹 문제에서는 임베딩만으로 충분한 경우가 많다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "GPU 부족을 어떻게 넘길 것인가",
+            "chosen": "아시아태평양·미국 여러 리전에 걸친 클라우드 클러스터에 **온프렘 클러스터를 더한 하이브리드**로 간다. 1B 이상 학습은 A100-80GB, 테스트·경량 학습은 A10G-24GB",
+            "alternatives": [
+              "단일 리전 클라우드",
+              "전량 온프렘"
+            ],
+            "tradeoff": "저장소·네트워크·개발자 경험을 여러 환경에서 일관되게 유지해야 한다. 그래도 클라우드 GPU 대기 시간이 실행 계획을 흔드는 상황에서는 이쪽이 낫고 전체 학습 비용도 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "question": "CPU 뿐이던 서빙 스택을 어떻게 할 것인가",
+            "chosen": "실시간은 EKS 위의 Nvidia Triton, 배치는 Ray + vLLM 으로 옮긴다",
+            "alternatives": [
+              "기존 CPU 스택 유지",
+              "자체 서빙 엔진 개발"
+            ],
+            "tradeoff": "새 스택을 통째로 들여야 한다. 그래도 수십억 파라미터 모델에 CPU 는 너무 느렸고, 실험 결과 **vLLM 이 여러 워크로드에서 약 20배 처리량**을 냈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OSS LLM 파인튜닝 (Qwen·LLAMA·T5·Phi·Polyglot, 3B~20B)",
+            "role": "다국어(특히 CJK) 상품·셀러 이해. 카테고리 분류와 속성 추출을 단일 모델로 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "CLIP · TrOCR",
+            "role": "이미지와 텍스트를 함께 모델링해 임베딩을 만든다. 이미지에 박힌 글자를 읽는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "DeepSpeed ZeRO · PytorchJob · Polyaxon (Kubernetes)",
+            "role": "단일 GPU 에 안 들어가는 모델을 모델 병렬로 학습한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "Nvidia Triton (EKS) · Ray + vLLM",
+            "role": "실시간 GPU 서빙과, CPU·GPU 가 섞인 배치·니어라인 추론을 담당한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "멀티리전 클라우드 + 온프렘 하이브리드",
+            "role": "GPU 공급 부족과 대기 시간을 우회하고 학습 비용을 낮춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "search-indexing",
+          "via": "이해가 곧 노출",
+          "contract": "LLM 이 만든 임베딩과 속성이 검색·광고 검색·추천의 피처가 된다. 회사는 Search & Discovery 팀을 LLM 초기 도입자로 밝힌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "scm-workflow",
+          "via": "예측 모델",
+          "contract": "100개가 넘는 물류센터와 수백만 상품의 가격·물류·배송에 예측 모델이 쓰인다고 밝히지만, 그 모델이 무엇인지는 이 글에 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "core-serving",
+          "via": "카탈로그 데이터",
+          "contract": "여기서 정리된 상품 정보가 Catalog 마이크로서비스를 통해 화면에 오른다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 셀러가 올린 것이 노출되기까지",
+          "question": "우리 언어로 오지 않은 상품을 어떻게 알아보는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[전 세계 셀러<br/>여러 언어 · 글자 박힌 이미지] --> RAW[제목 · 설명 · 리뷰 · 셀러 정보 · 이미지]\n  RAW --> JOINT[이미지 · 텍스트 공동 모델링<br/>CLIP · TrOCR]\n  JOINT --> EMB[임베딩]\n  RAW --> LLM[LLM 단일 분류기]\n  LLM --> CAT[카테고리 · 속성]\n  LLM --> AUX[제목 번역 · 키워드 생성 · 리뷰 요약]\n  WEAK[레이블이 부족한 언어] --> GEN[LLM 이 약한 레이블 생성]\n  GEN --> CHK{품질 검사}\n  CHK -->|통과| TRAIN[모델 학습에 사용]\n  CHK -->|불합격| DROP[버린다]\n  EMB --> PROD{프로덕션 경로}\n  PROD -->|증류| SMALL[작은 모델로 실시간 추론]\n  PROD -->|임베딩 추출| RANK[랭킹 모델의 피처]\n  CAT --> SRCH[검색 · 광고 · 추천]\n  SMALL --> SRCH\n  RANK --> SRCH"
+        },
+        {
+          "title": "LLM 을 쓰는 네 가지 방식과 그 대가",
+          "question": "가장 좋은 방법 대신 가장 자주 돌릴 수 있는 방법을 고른 이유는?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> ICL: 맥락 학습 · 학습 없음 · 가장 저렴\n  ICL --> 프로토타입: 빠르게 세우고 평가\n  프로토타입 --> SFT: 작은 데이터로 파인튜닝\n  SFT --> 운영투입\n  프로토타입 --> RAG: 외부 지식으로 근거 붙이기\n  RAG --> 실시간난이도: 생성과 검색을 맞물리기 어렵다\n  실시간난이도 --> 병목위험\n  SFT --> CPT: 큰 데이터로 계속 사전학습\n  CPT --> 최고성능: 속성 추출에 가장 좋다\n  CPT --> 자원부담: 그만큼 비싸다\n  운영투입 --> [*]\n  note right of 운영투입\n    ICL 과 SFT 가 가장 널리 쓰인다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 언어·레이블·GPU 세 겹의 제약",
+          "question": "마켓플레이스가 커질수록 무엇이 먼저 막히는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[전 세계 셀러가 여러 언어로 올린다] --> B[기계가 상품을 못 알아본다]\n  B --> C[검색 · 추천 · 광고 어디에도 못 오른다]\n  D[한국어 · 중국어 학습 데이터가 적다] --> E[사람 레이블은 비싸고 다국어면 더하다]\n  E --> F[새 세그먼트를 시작조차 못 한다]\n  G[카테고리마다 모델을 둔다] --> H[정확도는 지키지만]\n  H --> I[관리할 모델이 계속 늘어난다]\n  J[통합 모델로 합치면] -.->|예전엔| K[꼬리 카테고리 예측이 지저분]\n  L[모델을 키우면] --> M[단일 GPU RAM 에 안 들어간다]\n  M --> N[데이터 병렬만으로 부족 · 모델 병렬 필요]\n  O[서빙이 전부 CPU 였다] --> P[수십억 파라미터에 너무 느리다]\n  Q[클라우드 GPU 대기 시간] --> R[실행 계획이 흔들린다]\n  R -.->|그래서| S2[멀티리전 + 온프렘 하이브리드]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Accelerating Coupang's AI Journey with LLMs",
+          "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+          "publisher": "Coupang Engineering Blog · ML Platform Team",
+          "date": "2024-10-15",
+          "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "물류센터가 무엇을 어디에 미리 배치하는지(수요 예측·재고 배치 알고리즘)는 여전히 자료를 찾지 못했다 — SCM 글은 그 알고리즘을 '만드는 도구'를 다루지 아직 알고리즘 자체를 다루지 않는다.",
+    "격자 단위 지표로 '배송 난이도'를 실제로 어떻게 계산하는지는 글이 앞으로 할 일로만 언급한다.",
+    "4분기 영업이익 97% 급감과 활성고객 감소가 개인정보 사고와 얼마나 인과가 있는지는 기사도 '추정된다'고만 쓴다 — 회사 공식 설명은 확인하지 못했다.",
+    "SCM Workflow 가 실제로 몇 개 워크플로를 돌리는지, 비엔지니어가 만든 비중이 얼마인지 같은 규모 수치는 공개돼 있지 않다.",
+    "쿠팡의 랭킹 모델이 무엇이고 시그널 가중치를 어떻게 정하는지는 공개돼 있지 않다 — 인덱싱 글은 시그널을 '만드는 공장'까지만 다룬다.",
+    "직매입 상품과 셀러 상품이 같은 검색 결과에서 어떻게 나란히 놓이는지(그리고 광고가 그 사이 어디에 들어가는지)는 확인하지 못했다.",
+    "보장 배송일을 어떤 규칙으로 계산하는지는 공개돼 있지 않다 — 센터의 출고 여력이 입력이라는 사실만 확인했다.",
+    "셀러 입점·정산과 로켓그로스가 물류에 어떻게 맞물리는지는 공개 엔지니어링 자료를 찾지 못했다 — 이 도메인은 '상품 이해' 축만 채웠다.",
+    "LLM 이 만든 약한 레이블의 품질 검사 기준은 공개돼 있지 않다."
+  ],
+  "sources": [
+    {
+      "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+      "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+      "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+      "date": "2023-04-17",
+      "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+    },
+    {
+      "title": "쿠팡, 처음으로 분기 성장 꺾여…영업이익 97% 급감",
+      "url": "https://zdnet.co.kr/view/?no=20260227064907",
+      "publisher": "ZDNet Korea",
+      "date": "2026-02-27",
+      "summary": "2025년 연간 매출 345.34억 달러(49조 1,197억원)·영업이익 4.73억 달러. 프로덕트 커머스 295.92억 달러, 성장사업 49.42억 달러(EBITDA 손실 9.95억 달러). 활성고객 2,460만. 4분기 영업이익 97% 급감."
+    },
+    {
+      "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+      "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+      "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+      "date": "2022-10-28",
+      "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+    },
+    {
+      "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+      "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+      "publisher": "Coupang Engineering Blog · Winter Wang",
+      "date": "2020-05-07",
+      "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+    },
+    {
+      "title": "Our backend strategy to handle massive traffic (Part 1)",
+      "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+      "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+      "date": "2022-08-12",
+      "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+    },
+    {
+      "title": "Accelerating Coupang's AI Journey with LLMs",
+      "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+      "publisher": "Coupang Engineering Blog · ML Platform Team",
+      "date": "2024-10-15",
+      "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+    }
+  ]
+}

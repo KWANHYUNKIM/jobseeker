@@ -14,8 +14,9 @@
 #   1) 누적 폴더 {사이트}_{키워드}  (~265MB)
 #      과거 스냅샷 all_통합_* / all_개발자_* 는 제외한다. 39GB 인데다 파생물이라
 #      옮길 이유가 없다. 새 서버가 첫 크롤을 돌리면 자기 스냅샷을 만든다.
-#   2) 뷰어 데이터 jd-viewer/public/*.json 은 rsync 하지 않는다. git 에 추적되고
-#      있으므로 원격에서 origin/main 을 체크아웃하는 쪽이 싸고 정확하다.
+#   2) 뷰어 데이터 jd-viewer/public/  (~90MB)
+#      예전에는 git 에 추적돼서 원격이 origin/main 을 체크아웃하면 됐지만,
+#      생성 데이터는 이제 추적하지 않는다(.gitignore). 그래서 여기서 함께 나른다.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -68,18 +69,6 @@ LOCAL_COUNT="$(count_stdin < "$ROOT_DIR/jd-viewer/public/all_jobs_enriched.json"
   || die "로컬이 ${LOCAL_COUNT}건뿐입니다 — 데이터가 온전한 쪽에서 실행하세요."
 log "로컬 뷰어 데이터: ${LOCAL_COUNT}건"
 
-# ── 사전 점검 2: origin/main 의 뷰어 데이터도 온전한가 ──────
-# 원격은 여기서 받아간다. 크롤러 autocommit 이 축소본을 push 해뒀다면
-# 그대로 다시 심는 꼴이 되므로 미리 막는다.
-git fetch --quiet origin || die "git fetch 실패"
-ORIGIN_COUNT="$(git show origin/main:jd-viewer/public/all_jobs_enriched.json 2>/dev/null | count_stdin)"
-[ -n "$ORIGIN_COUNT" ] || die "origin/main 에서 뷰어 데이터를 읽을 수 없습니다."
-if [ "$ORIGIN_COUNT" -lt "$MIN_COUNT" ]; then
-  die "origin/main 이 ${ORIGIN_COUNT}건으로 이미 축소돼 있습니다.
-  먼저 이쪽에서 ./deploy/restore-data.sh 로 되돌리고 push 한 뒤 다시 실행하세요."
-fi
-log "origin/main 뷰어 데이터: ${ORIGIN_COUNT}건"
-
 # ── 누적 폴더 목록 ─────────────────────────────────────────
 # all_* 은 스냅샷/심링크라 제외. 나머지가 {사이트}_{키워드} 누적 폴더다.
 SEED_DIRS="$(cd "$SCREENS" && ls -d */ 2>/dev/null | grep -v '^all_' | tr -d '/' || true)"
@@ -107,17 +96,21 @@ printf '%s\n' "$SEED_DIRS" \
       "$SCREENS/" "$REMOTE:$REMOTE_DIR/catch_capture/screenshots/" \
   || die "rsync 실패"
 
-# ── 2) 원격 뷰어 데이터를 origin/main 으로 되돌리기 ─────────
+# ── 2) 뷰어 데이터 전송 ────────────────────────────────────
 # nginx 는 /data 볼륨(= 호스트 jd-viewer/public)에서 JSON 을 직접 읽으므로
 # 컨테이너를 재시작할 필요가 없다. 파일만 바꾸면 즉시 반영된다.
-log "원격 뷰어 데이터 복구 (origin/main → jd-viewer/public)"
-ssh "$REMOTE" "set -e
-  cd ~/$REMOTE_DIR
-  git fetch --quiet origin
-  git checkout origin/main -- jd-viewer/public
-  echo -n '  복구 후 건수: '
+#
+# all_jobs.json 은 screenshots/ 안을 가리키는 심링크다. 원격의 심링크 타겟은
+# 원격 크롤이 정하므로 여기서 덮어쓰지 않는다.
+log "뷰어 데이터 rsync → $REMOTE:~/$REMOTE_DIR/jd-viewer/public/"
+rsync -a --info=progress2 --human-readable \
+    --exclude 'all_jobs.json' \
+    "$ROOT_DIR/jd-viewer/public/" "$REMOTE:$REMOTE_DIR/jd-viewer/public/" \
+  || die "뷰어 데이터 rsync 실패"
+
+ssh "$REMOTE" "cd ~/$REMOTE_DIR && echo -n '  전송 후 건수: ' &&
   python3 -c 'import json;print(len(json.load(open(\"jd-viewer/public/all_jobs_enriched.json\"))))'
-" || die "원격 복구 실패"
+" || die "원격 확인 실패"
 
 log "완료"
 echo

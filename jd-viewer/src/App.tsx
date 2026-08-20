@@ -7,8 +7,10 @@ import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
 import { BlogView } from './components/BlogView'
 import { RadarView } from './components/RadarView'
+import { RepostView } from './components/RepostView'
 import { CalendarView } from './components/CalendarView'
 import { TrendView } from './components/TrendView'
+import { RevengView } from './components/RevengView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
@@ -16,9 +18,9 @@ import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, emptyFilter, stackCounts, roleCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend'
+type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'reveng' | 'reposts'
 
-const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend']
+const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend', 'reveng', 'reposts']
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -28,7 +30,10 @@ function App() {
   const [companyFocus, setCompanyFocus] = useState<string | null>(null)
   const [techFocus, setTechFocus] = useState<{ tech: string; n: number } | null>(null)
   const [filterOpen, setFilterOpen] = useState(false)
-  const [semantic, setSemantic] = useState(false)
+  // 검색 API 가 있으면 의미 검색을 기본으로 쓴다. 키워드 필터는 사전에 있는 단어가
+  // 정확히 나와야만 잡아서, 문장으로 물으면 대개 0건이 된다 — 그게 기본값일 이유가 없다.
+  // 끄면 기존 로컬 필터로 돌아간다(API 가 없으면 토글 자체가 안 보인다).
+  const [semantic, setSemantic] = useState(true)
   const [light, setLight] = useState(
     () => typeof document !== 'undefined' && document.documentElement.classList.contains('light'),
   )
@@ -115,8 +120,14 @@ function App() {
           <TabButton active={tab === 'calendar'} onClick={() => setTab('calendar')}>
             모집 캘린더
           </TabButton>
+          <TabButton active={tab === 'reposts'} onClick={() => setTab('reposts')}>
+            재공고
+          </TabButton>
           <TabButton active={tab === 'trend'} onClick={() => setTab('trend')}>
             개발 트렌드
+          </TabButton>
+          <TabButton active={tab === 'reveng'} onClick={() => setTab('reveng')}>
+            기술 역설계
           </TabButton>
         </div>
         <button
@@ -156,9 +167,15 @@ function App() {
         <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
           <CalendarView />
         </div>
+      ) : tab === 'reposts' ? (
+        <RepostView />
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
           <TrendView onOpenCompany={openCompany} focusTech={techFocus} />
+        </div>
+      ) : tab === 'reveng' ? (
+        <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in">
+          <RevengView />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (

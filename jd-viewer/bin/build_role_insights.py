@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from classifier import classify_dev_roles, _norm_company  # noqa: E402
 from build_company_stacks import infer_domains  # noqa: E402
+from jobs_filter import active_only  # noqa: E402
 
 INPUT = ROOT / "jd-viewer" / "public" / "all_jobs_enriched.json"
 OUTPUT = ROOT / "jd-viewer" / "public" / "role_insights.json"
@@ -129,7 +130,10 @@ def kw_list(counter: Counter, n: int) -> list[dict]:
 
 
 def main() -> None:
-    jobs = json.loads(INPUT.read_text(encoding="utf-8"))
+    # 마감 공고는 뺀다. all_jobs_enriched.json 은 이제 모집중과 마감을 함께 담는데
+    # (색인·과거 조회를 살리려고) 이 빌더의 결과는 "지금 시장"이라 만료 공고를 세면
+    # 수요가 과거에 눌린다.
+    jobs = active_only(json.loads(INPUT.read_text(encoding="utf-8")))
     print(f"[*] loaded {len(jobs)} jobs")
 
     # 직군별 누적기

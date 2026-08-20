@@ -1,0 +1,278 @@
+{
+  "updated_at": "2026-08-21",
+  "docs": [
+    {
+      "slug": "webtoon-distribution",
+      "title": "웹툰 배급 — 같은 자원을 반대 방향으로 쓴다",
+      "question": "같은 제약 아래에서 두 회사가 왜 정반대 답을 냈는가?",
+      "companies": [
+        "naver",
+        "kakao"
+      ],
+      "features": [
+        "toon-radar",
+        "wait-to-free"
+      ],
+      "file": "webtoon-distribution.md"
+    },
+    {
+      "slug": "payments",
+      "title": "결제 — 되돌릴 수 없는 일을 다루는 네 가지 방식",
+      "question": "실패를 상태로 남길 것인가, 현재를 가리킬 것인가, 아니면 되돌릴 일이 생기지 않게 미리 붙잡을 것인가?",
+      "companies": [
+        "toss",
+        "stripe",
+        "shopify",
+        "naver"
+      ],
+      "features": [
+        "payment-approval",
+        "idempotent-payments",
+        "api-surface",
+        "checkout-reservations",
+        "fast-settlement"
+      ],
+      "file": "payments.md"
+    },
+    {
+      "slug": "ad-surface",
+      "title": "지면·광고 — 결과인 곳, 침입자인 곳, 원래 거기 있던 것",
+      "question": "같은 화면에서 사용자 경험과 광고 수익이 부딪힐 때, 광고의 지위가 답을 어떻게 바꾸는가?",
+      "companies": [
+        "naver",
+        "kakao",
+        "daangn"
+      ],
+      "features": [
+        "smart-block",
+        "bizboard-surface",
+        "local-ads"
+      ],
+      "file": "ad-surface.md"
+    },
+    {
+      "slug": "dispatch",
+      "title": "배차 — 같은 이름 아래 서로 다른 세 문제",
+      "question": "결정의 범위가 이 호출인지 도시 전체인지가 아키텍처를 어떻게 바꾸는가?",
+      "companies": [
+        "kakao",
+        "baemin",
+        "uber"
+      ],
+      "features": [
+        "taxi-dispatch",
+        "rider-dispatch",
+        "marketplace-rl"
+      ],
+      "file": "dispatch.md"
+    },
+    {
+      "slug": "search-intent",
+      "title": "검색 — 무엇을 위에 놓을지보다, 그걸 얼마나 자주 바꿀 수 있는지",
+      "question": "세 회사 중 둘은 왜 랭킹이 아니라 랭킹을 못 바꾸게 막던 것을 고쳤는가?",
+      "companies": [
+        "coupang",
+        "naver",
+        "daangn"
+      ],
+      "features": [
+        "search-indexing",
+        "smart-block",
+        "search-infra"
+      ],
+      "file": "search-intent.md"
+    },
+    {
+      "slug": "identity-trust",
+      "title": "신원과 신뢰 — 확인할 수 없을 때 무엇으로 대신하는가",
+      "question": "사람을 특정할 수 있느냐가 제재와 경고 중 무엇을 쓸 수 있는지를 어떻게 정하는가?",
+      "companies": [
+        "daangn",
+        "kakao"
+      ],
+      "features": [
+        "identity-auth",
+        "trust-score",
+        "identity-trust"
+      ],
+      "file": "identity-trust.md"
+    },
+    {
+      "slug": "spatial-units",
+      "title": "공간 — 세는 단위, 담는 단위, 그리고 아예 안 만드는 쪽",
+      "question": "같은 격자를 만든 곳과 쓰는 곳은 왜 다르게 쓰는가?",
+      "companies": [
+        "uber",
+        "coupang",
+        "baemin"
+      ],
+      "features": [
+        "h3-grid",
+        "delivery-area",
+        "rider-dispatch"
+      ],
+      "file": "spatial-units.md"
+    },
+    {
+      "slug": "what-to-mix",
+      "title": "추천 — 개인화만 하면 밀려나는 것들",
+      "question": "잘 맞힐수록 무엇이 안 보이게 되고, 그 자리를 옆·안·앞·뒤 중 어디에 마련하는가?",
+      "companies": [
+        "musinsa",
+        "daangn",
+        "naver",
+        "instagram"
+      ],
+      "features": [
+        "style-personalization",
+        "feed-platform",
+        "smart-block",
+        "notification-diversity"
+      ],
+      "file": "what-to-mix.md"
+    },
+    {
+      "slug": "prefetch",
+      "title": "어디에 무엇을 미리 놓아두는가",
+      "question": "거의 같은 시스템을 지어 놓고 한쪽은 미리 채우고 한쪽은 채우지 않는다 — 무엇이 그 차이를 정하는가?",
+      "companies": [
+        "netflix",
+        "youtube",
+        "instagram",
+        "toss",
+        "baemin"
+      ],
+      "features": [
+        "open-connect-fill",
+        "ggc-edge",
+        "adaptive-playback",
+        "explore-funnel",
+        "interest-accrual",
+        "store-exposure"
+      ],
+      "file": "prefetch.md"
+    },
+    {
+      "slug": "discrete-choice",
+      "title": "몇 칸으로 자를 것인가",
+      "question": "연속적인 것을 칸으로 자를 때, 한쪽은 최적점을 놓치고 다른 쪽은 잘라서 더 정확해졌다. 무엇이 그 차이를 만드는가?",
+      "companies": [
+        "netflix",
+        "uber",
+        "musinsa"
+      ],
+      "features": [
+        "per-title-encoding",
+        "deep-eta",
+        "search-relevance",
+        "style-personalization",
+        "fashion-taxonomy"
+      ],
+      "file": "discrete-choice.md"
+    },
+    {
+      "slug": "backward-compat",
+      "title": "옛 약속을 어떻게 지키는가",
+      "question": "약속의 상대가 개발자인가 팔려 나간 기기인가가, 그 약속을 끝낼 수 있는지를 정한다.",
+      "companies": [
+        "netflix",
+        "stripe",
+        "toss",
+        "coupang"
+      ],
+      "features": [
+        "per-title-encoding",
+        "api-surface",
+        "payment-approval",
+        "docdb-migrations",
+        "delivery-area"
+      ],
+      "file": "backward-compat.md"
+    },
+    {
+      "slug": "machine-cannot-judge",
+      "title": "기계가 판정할 수 없는 것을 어디에 두는가",
+      "question": "못 하는 판정을 절차로 미는가, 규칙을 얹는가, 권한을 넘기는가, 사람을 상류에 두는가, 아예 판정하지 않는가?",
+      "companies": [
+        "youtube",
+        "discord",
+        "instagram",
+        "kakao",
+        "daangn"
+      ],
+      "features": [
+        "content-id",
+        "watch-next-ranking",
+        "automod-layers",
+        "integrity-classification",
+        "taxi-dispatch",
+        "trust-score"
+      ],
+      "file": "machine-cannot-judge.md"
+    },
+    {
+      "slug": "backpressure",
+      "title": "멈춤을 어떻게 정의하고 무엇을 먼저 버리는가",
+      "question": "'무중단'은 목표가 아니라 정의다 — 재시도 예산 안인가, 무엇을 잃지 않았는가, 화면이 떴는가?",
+      "companies": [
+        "stripe",
+        "shopify",
+        "discord",
+        "baemin",
+        "youtube"
+      ],
+      "features": [
+        "docdb-migrations",
+        "pods-isolation",
+        "bfcm-readiness",
+        "presence-fanout",
+        "message-storage",
+        "store-exposure",
+        "ggc-edge"
+      ],
+      "file": "backpressure.md"
+    },
+    {
+      "slug": "parallel-cutover",
+      "title": "두 시스템을 나란히 돌려 옮기기 — 무엇을 정답으로 삼는가",
+      "question": "옛 구현의 응답인가, 옛 저장소의 상태인가, 사용자 행동이 만드는 비율인가, 아니면 정답을 만들지 않는가?",
+      "companies": [
+        "shopify",
+        "stripe",
+        "toss",
+        "discord",
+        "coupang"
+      ],
+      "features": [
+        "storefront-renderer",
+        "checkout-reservations",
+        "docdb-migrations",
+        "payment-approval",
+        "message-storage",
+        "delivery-area"
+      ],
+      "file": "parallel-cutover.md"
+    },
+    {
+      "slug": "what-counts-as-good",
+      "title": "무엇을 좋다고 부를 것인가",
+      "question": "정답이 계산식에서 오는가 사람에게서 오는가, 그리고 정답을 바꿀 때 옛 성적표가 나빠지는 것을 감수하는가?",
+      "companies": [
+        "netflix",
+        "youtube",
+        "musinsa",
+        "uber",
+        "instagram"
+      ],
+      "features": [
+        "per-title-encoding",
+        "uvq-quality",
+        "watch-next-ranking",
+        "search-relevance",
+        "marketplace-rl",
+        "integrity-classification"
+      ],
+      "file": "what-counts-as-good.md"
+    }
+  ]
+}

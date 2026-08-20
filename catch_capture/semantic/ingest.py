@@ -16,6 +16,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
+# 마감 판정은 파이프라인과 같은 규칙이어야 한다. 여기서 따로 파싱하면
+# 뷰어가 '모집중'이라 부르는 공고를 검색은 '마감'이라 부르는 어긋남이 생긴다.
+from pipeline.job_status import classify_status as _classify_status
+from pipeline.job_status import today_date as _status_today
+
 from . import db as dbm
 from .config import (
     BLOG_CONTENT_DIR,
@@ -119,10 +124,14 @@ def iter_jobs(path: Path = JOBS_JSON) -> Iterator[dict]:
     data = _load_json(path)
     if not isinstance(data, list):
         return
+    # 마감 여부는 뷰어 데이터가 만들어진 시점이 아니라 '지금' 기준으로 다시 본다.
+    # enriched 파일은 크롤 회차마다 갱신되지만 그 사이에도 마감일은 지나간다.
+    today = _status_today()
     for job in data:
         url = (job.get("url") or "").strip()
         if not url:
             continue
+        status, _reason, deadline_iso = _classify_status(job, today)
         text = job_embed_text(job)
         if len(text) < 30:  # 제목만 있는 껍데기는 추천 품질만 해친다
             continue
@@ -139,6 +148,10 @@ def iter_jobs(path: Path = JOBS_JSON) -> Iterator[dict]:
                 "tech_stack": _as_list(job.get("tech_stack")),
                 "pid": job.get("pid") or "",
                 "overseas": bool(job.get("overseas")),
+                # 마감 공고도 색인에는 남긴다 — 지난 공고 기반 통계·유사도의 재료다.
+                # 대신 status 를 달아두고 검색·추천에서 기본 제외한다.
+                "status": status,
+                "deadline_date": deadline_iso,
             },
             "embed_text": text,
         }

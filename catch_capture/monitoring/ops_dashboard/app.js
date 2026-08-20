@@ -242,6 +242,57 @@ function fillBar(v) {
   return `<div class="bar ${cls}"><span style="width:${pct}%"></span></div><div class="hv">${pct}%</div>`;
 }
 
+// 뷰어가 읽는 산출물별 상태. 두 가지를 겹쳐 보여준다.
+//   - 이번 사이클에서 그 빌더가 어떻게 끝났는지 (run_state.cycle.builders)
+//   - 산출물 파일이 실제로 얼마나 오래됐는지 (/api/builders 의 mtime)
+// 후자가 핵심이다. 데몬이 멈추면 사이클 상태는 아예 갱신되지 않는데, 화면은 며칠 전
+// JSON 을 그대로 잘 보여주기 때문에 "정상"으로 보인다. 파일 나이를 같이 띄워야
+// 어떤 화면이 지금 몇 시간째 옛 데이터인지 드러난다.
+function renderBuilders(s, files) {
+  const wrap = $("builders");
+  const cyc = (s.cycle || {}).builders || {};
+  const rows = files && files.length ? files : Object.keys(cyc).map((n) => ({ name: n }));
+  if (!rows.length) {
+    wrap.innerHTML = `<div class="muted">아직 빌더 실행 기록이 없습니다.</div>`;
+    return;
+  }
+  const stale = rows.filter((r) => r.exists && r.age_sec > 6 * 3600).length;
+  const missing = rows.filter((r) => r.exists === false).length;
+  $("builderSub").textContent =
+    (missing ? `${missing}개 없음 · ` : "") + (stale ? `${stale}개 6시간 이상 정체` : "전부 최신");
+
+  wrap.innerHTML = "";
+  for (const r of rows) {
+    const c = cyc[r.name] || {};
+    const status = c.status || (r.exists === false ? "failed" : "pending");
+    const div = document.createElement("div");
+    div.className = "site " + (status === "skipped" ? "pending" : status);
+    const label = {
+      pending: "이번 사이클 미실행", running: "생성 중…",
+      done: `완료${secs(c.elapsed)}`, failed: `실패${c.detail ? " " + c.detail : ""}`,
+      skipped: c.detail || "건너뜀",
+    }[status] || status;
+    const ageHtml = r.exists === false
+      ? `<span class="u">파일 없음</span>`
+      : `${fmtAge(r.age_sec)}<span class="u"> 전</span>`;
+    div.innerHTML =
+      `<div class="site-name">${r.name}</div>` +
+      `<div class="site-count">${ageHtml}</div>` +
+      `<div class="site-status">${label}</div>`;
+    if (r.exists && r.age_sec > 6 * 3600) div.classList.add("blocked");
+    div.title = r.file ? `${r.file}${r.mtime ? " · " + r.mtime : ""}` : r.name;
+    wrap.appendChild(div);
+  }
+}
+
+function fmtAge(sec) {
+  if (sec == null) return "—";
+  if (sec < 90) return `${sec}초`;
+  if (sec < 5400) return `${Math.round(sec / 60)}분`;
+  if (sec < 48 * 3600) return `${Math.round(sec / 3600)}시간`;
+  return `${Math.round(sec / 86400)}일`;
+}
+
 function renderHealth(s) {
   const h = s.health_latest || {};
   const banner = $("anomalyBanner");
@@ -341,6 +392,11 @@ async function pollState() {
     renderStepper(s);
     renderSites(s);
     renderHealth(s);
+    try {
+      renderBuilders(s, await fetchJSON("/api/builders"));
+    } catch (e) {
+      renderBuilders(s, null);
+    }
     $("connState").textContent = "연결됨";
   } catch (e) {
     $("connState").textContent = "서버 연결 끊김 — ops_server.py 실행 중인지 확인";

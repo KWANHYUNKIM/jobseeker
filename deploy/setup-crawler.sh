@@ -120,14 +120,10 @@ cat > "$PLIST" <<PLIST_EOF
 
   <key>EnvironmentVariables</key>
   <dict>
-    <!-- launchd 는 로그인 셸 PATH 를 주지 않는다. autocommit 이 git 을 부르므로 필요. -->
+    <!-- launchd 는 로그인 셸 PATH 를 주지 않는다. 크롤러가 git/docker 를 부르므로 필요. -->
     <key>PATH</key>
     <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
     <key>PYTHONUNBUFFERED</key>
-    <string>1</string>
-    <!-- 데이터 커밋을 push 까지 한다. 끄면 로컬 커밋만 쌓여 origin 과 갈라지고,
-         deploy.sh 의 git merge --ff-only 가 실패해 자동 배포가 멈춘다. -->
-    <key>JOBSEEKER_AUTOPUSH</key>
     <string>1</string>
   </dict>
 

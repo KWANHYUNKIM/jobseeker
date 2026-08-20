@@ -1,0 +1,3296 @@
+{
+  "slug": "naver",
+  "name": "네이버",
+  "name_en": "NAVER",
+  "country": "KR",
+  "category": "검색",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "검색 지면에서 광고와 커머스로 돈을 버는 한국의 관문 포털",
+  "business_model": "사용자가 무엇을 찾는지 아는 대가로 광고를 판다. 2025년 연결 매출 12조 350억 중 서치플랫폼이 4조 1,689억(약 34.6%)으로 가장 크고, 커머스 3조 6,884억(30.7%)·콘텐츠 1조 8,992억(15.8%)·핀테크 1조 6,907억(14.1%)·엔터프라이즈 5,878억(4.9%)이 뒤를 잇는다. 토스가 '돈이 오간 기록'을 다룬다면 네이버는 '무엇을 보여줄지의 판단'을 판다 — 검색 결과 한 화면이 사용자 만족과 광고 수익 양쪽의 전장이다.",
+  "products": [
+    "네이버 통합검색",
+    "네이버 쇼핑",
+    "블로그·카페",
+    "네이버 지도",
+    "네이버 페이",
+    "네이버 클라우드"
+  ],
+  "domain_map": {
+    "title": "네이버 도메인 지도",
+    "question": "질의 한 줄이 결과 화면이 되기까지 어떤 판단들이 순서대로 개입하는가?",
+    "code": "flowchart TD\n  U[사용자 질의] --> Q[질의 이해]\n  Q -->|무엇을 찾는지| M[랭킹·매칭]\n  IDX[문서 색인] -->|후보 문서| M\n  CAT[커머스 데이터] -->|상품 후보| M\n  M --> L[지면 구성]\n  AD[광고] -->|같은 지면을 두고 경쟁| L\n  L --> R[결과 화면]\n  R -->|클릭·체류| Q\n  R -->|클릭·구매| CAT\n  AD --> REV1[서치플랫폼 4.17조]\n  CAT --> REV2[커머스 3.69조]\n  subgraph 아직 미착수\n    C[콘텐츠 유통] --> REV3[콘텐츠 1.90조]\n    P[결제·페이] --> REV4[핀테크 1.69조]\n    CL[클라우드 인프라] --> REV5[엔터프라이즈 0.59조]\n  end\n  CAT -.->|거래 대금| P\n  L -.->|콘텐츠 노출| C\n  CL -.->|자사 서비스도 이 위에| M"
+  },
+  "revenue_streams": [
+    {
+      "name": "서치플랫폼",
+      "how": "검색 결과와 지면에 붙는 검색광고·디스플레이광고.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "커머스",
+      "how": "쇼핑 중개 수수료와 광고, 멤버십.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "콘텐츠",
+      "how": "웹툰 등 콘텐츠 유료 결제와 광고.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "핀테크",
+      "how": "네이버페이 결제·금융 서비스 수수료.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "엔터프라이즈(클라우드)",
+      "how": "클라우드·B2B 솔루션 판매.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "질의 이해",
+      "why": "사용자가 친 몇 글자에서 '무엇을 원하는가'를 정한다. 뒤의 모든 판단이 이 해석 위에 서기 때문에 여기서 틀리면 아무리 좋은 문서를 갖고 있어도 못 꺼낸다. 한국어의 띄어쓰기·오타·동음이의가 이 경계 안에서만 다뤄진다.",
+      "tech": [
+        {
+          "tech": "검색어 의도 분석 (D.I.A.+ · Intent Query)",
+          "solves": "같은 단어라도 사용자가 원하는 게 정보인지 장소인지 상품인지를 갈라, 뒤의 랭킹이 다른 후보를 보게 한다.",
+          "limits": "의도는 질의만으로 확정되지 않는다 — 결국 클릭·체류 같은 사후 행동으로 보정해야 하고, 그 신호가 적은 새 질의에서는 판단이 약해진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "눈치까지 챙긴 D.I.A.+ 시스템 — 검색어 의도 분석과 문서 이해 기술",
+              "url": "https://deview.kr/data/deview/session/attach/1500_T4_%EB%B0%95%EC%A7%80%ED%98%84_%EB%88%88%EC%B9%98%EA%B9%8C%EC%A7%80%20%EC%B1%99%EA%B8%B4%20D.I.A.+%20%EC%8B%9C%EC%8A%A4%ED%85%9C,%20%EC%8B%B9%20%EB%8B%A4%20%EC%B0%BE%EC%95%84%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4(%EA%B2%80%EC%83%89%EC%96%B4%20%EC%9D%98%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B3%BC%20%EB%AC%B8%EC%84%9C%20%EC%9D%B4%ED%95%B4%20%EA%B8%B0%EC%88%A0,%20%EB%84%A4%EC%9D%B4%EB%B2%84%20%EA%B2%80%EC%83%89%EC%97%90%20%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0).pdf",
+              "publisher": "NAVER DEVIEW",
+              "summary": "검색어 의도 분석과 문서 이해를 결합해 검색 결과를 고르는 시스템 발표."
+            }
+          ]
+        },
+        {
+          "tech": "프로덕트 네이티브 LLM (HyperCLOVA X 기반)",
+          "solves": "질의의 의도·맥락을 해석해 문서 선택이 아니라 답변을 만들고, 자사 버티컬 데이터로 행동까지 잇는다.",
+          "limits": "답변이 틀리면 출처 탓을 할 수 없고, 버티컬 데이터가 낡으면 '틀린 정보'가 아니라 '실패한 예약'이 된다. 자체 유지 부담도 계속 진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+              "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+              "publisher": "네이버 뉴스룸",
+              "date": "2026-06-26",
+              "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "ai-tab"
+      ]
+    },
+    {
+      "name": "문서 색인",
+      "why": "웹·블로그·카페 문서를 검색 가능한 형태로 쌓는다. 없는 문서는 어떤 랭킹으로도 꺼낼 수 없다. 수집 주기와 갱신 지연이라는 시간 문제가 이 도메인 고유의 것이다.",
+      "tech": [
+        {
+          "tech": "검색 모니터링 시스템",
+          "solves": "색인·검색 품질이 언제 어디서 나빠졌는지를 관측 가능하게 만든다.",
+          "limits": "관측은 원인을 알려주지 않는다. 지표가 나빠진 뒤에야 손을 대게 되고, 무엇을 지표로 삼을지가 다시 판단의 문제가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "앞으로 10년을 책임 질, 네이버 검색 모니터링 시스템 구축기",
+              "url": "https://deview.kr/2021/sessions/506",
+              "publisher": "NAVER DEVIEW 2021",
+              "summary": "검색 품질·장애를 관측하는 모니터링 체계를 새로 만든 과정."
+            }
+          ]
+        },
+        {
+          "tech": "서치 어드바이저 (웹마스터 도구)",
+          "solves": "사이트 소유자가 수집·색인 상태와 노출 키워드·클릭률을 직접 확인하고 오류를 고칠 수 있게 한다.",
+          "limits": "등록하지 않은 사이트는 자기가 왜 안 나오는지 알 방법이 없고, 공개된 노출 정보는 어뷰징 최적화의 재료로도 쓰인다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+              "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+              "publisher": "네이버 뉴스룸",
+              "date": "2019-10-23",
+              "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+            }
+          ]
+        },
+        {
+          "tech": "UGC 규칙 장치(수정 기간 제한)",
+          "solves": "리뷰가 시간이 지난 뒤 바뀌는 것을 규칙으로 막아 어뷰징 여지를 줄인다.",
+          "limits": "정당한 뒤늦은 정정도 함께 막힌다. 경계를 어디에 두든 억울한 쪽이 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+              "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+              "publisher": "네이버 뉴스룸",
+              "date": "2026-07",
+              "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "web-index-and-trust"
+      ]
+    },
+    {
+      "name": "랭킹·매칭",
+      "why": "꺼낸 후보를 어떤 순서로 보여줄지 정한다. 검색의 값어치가 사실상 전부 여기 모여 있고, 순서 하나가 광고 수익과 사용자 만족을 동시에 움직인다.",
+      "tech": [
+        {
+          "tech": "ColBERT 기반 벡터 유사도 검색",
+          "solves": "단어가 겹치지 않아도 뜻이 가까운 문서를 찾는다. 300억 규모 벡터를 서빙해 실제 검색에 적용했다.",
+          "limits": "벡터 서빙은 저장·연산 비용이 크고, 왜 이 문서가 위에 왔는지 설명하기 어렵다 — 문제가 생겼을 때 고칠 손잡이가 적다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+              "url": "https://deview.kr/2021/sessions/486",
+              "publisher": "NAVER DEVIEW 2021",
+              "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "colbert-matching"
+      ]
+    },
+    {
+      "name": "커머스 데이터",
+      "why": "판매자가 올린 제각각의 상품을 같은 물건끼리 묶고 검색어와 연결한다. 웹 문서와 달리 정답(같은 상품인가)이 존재하고, 틀리면 매출이 직접 깎인다.",
+      "tech": [
+        {
+          "tech": "쇼핑 검색 커버리지 개선",
+          "solves": "검색어와 상품이 표현은 달라도 같은 것을 가리킬 때 이어 준다.",
+          "limits": "커버리지를 넓히면 관련 없는 상품이 딸려 오고, 좁히면 있는 상품을 못 찾는다. 어느 쪽 실수를 감수할지의 문제로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버 쇼핑 검색 커버리지 개선 기술",
+              "url": "https://deview.kr/data/deview/session/attach/7%E1%84%80%E1%85%A5%E1%86%B7%E1%84%89%E1%85%A2%E1%86%A8%E1%84%8B%E1%85%A5%E1%84%8B%E1%85%AA%20%E1%84%89%E1%85%A1%E1%86%BC%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%8B%E1%85%A7%E1%86%AB%E1%84%80%E1%85%A7%E1%86%AF%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB.pdf",
+              "publisher": "NAVER DEVIEW",
+              "summary": "검색어와 상품을 연결하는 쇼핑 검색 커버리지 개선 발표."
+            }
+          ]
+        },
+        {
+          "tech": "AiTEMS 개인화",
+          "solves": "쇼핑 이력과 성·연령으로 검색 결과 순서를 사람마다 맞춘다(추천 영역 클릭 약 27% 증가).",
+          "limits": "이력이 적은 사용자에게는 효과가 없고, 판매자에게 노출 변화를 설명할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+              "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+              "publisher": "네이버 뉴스룸",
+              "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+            }
+          ]
+        },
+        {
+          "tech": "쇼핑 인텔리전스 (커머스 LLM)",
+          "solves": "가격·배송·속성·선호를 학습해 상품을 요약·비교하고 리뷰를 정리한다.",
+          "limits": "생태계 데이터가 계속 변해 신선도 유지 비용이 크고, 요약이 틀리면 판매자 설명을 왜곡한 책임이 플랫폼에 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+              "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+              "publisher": "네이버 뉴스룸",
+              "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "product-understanding"
+      ]
+    },
+    {
+      "name": "지면 구성",
+      "why": "결과 화면 어디에 무엇을 놓을지 정한다. 네이버에만 있는 경계다 — 사용자에게 가장 좋은 배치와 가장 많이 버는 배치가 다를 수 있고, 그 둘을 같은 지면에서 조정해야 한다.",
+      "tech": [
+        {
+          "tech": "스마트블록 (생성 + 랭킹 2단계)",
+          "solves": "형식으로 고정된 칸 대신 질의의 세부 의도마다 결과 묶음을 만들고, 그 묶음들의 순서를 사용자 취향으로 정한다.",
+          "limits": "지면이 질의·사용자마다 달라져 결과를 재현할 수 없다. 품질 문제를 개별 사례로 짚기 어렵고 집계 지표로만 감지된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+              "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+              "publisher": "네이버 뉴스룸",
+              "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+            }
+          ]
+        },
+        {
+          "tech": "AiRS · AiTEMS · AiRSPACE",
+          "solves": "콘텐츠·쇼핑·로컬 각 영역의 기존 추천 기술을 블록 단위로 끌어와 바로 쓴다.",
+          "limits": "영역마다 다른 모델이 붙어 지면 전체의 일관성을 맞추기 어렵고, 품질 문제가 특정 블록에만 국소적으로 나타난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+              "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+              "publisher": "네이버 뉴스룸",
+              "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "smart-block"
+      ]
+    },
+    {
+      "name": "콘텐츠 유통",
+      "why": "웹툰처럼 회차 단위로 팔리는 창작물을 어떻게 배급하고 과금할지의 문제. 검색이 '남의 문서를 찾아 주는' 일이라면 여기는 '우리가 계약한 작품을 파는' 일이라 권리·정산·유출 방지가 경계 안으로 들어온다.",
+      "tech": [
+        {
+          "tech": "툰레이더(보이지 않는 식별 정보 삽입)",
+          "solves": "유출본에서 최초 유출자를 역추적해 사이트가 아니라 유출의 출발점을 끊는다.",
+          "limits": "이미 새어 나간 뒤에야 작동하고, 재압축·크롭·재촬영으로 표시가 훼손되면 추적이 끊긴다. 오탐 시 정상 독자가 차단될 위험도 남는다(오탐률 미공개).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버웹툰, '툰레이더'로 불법 공유사이트 94% 퇴출",
+              "url": "https://www.etnews.com/20220715000142",
+              "publisher": "전자신문",
+              "date": "2022-07-15",
+              "summary": "이미지에 보이지 않는 식별 정보를 넣어 최초 유출자를 찾는 방식과 그 성과를 보도."
+            },
+            {
+              "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+              "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+              "publisher": "머니투데이방송",
+              "date": "2026-04-22",
+              "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+            }
+          ]
+        },
+        {
+          "tech": "다국어 동시 공개",
+          "solves": "번역 지연이라는 불법 번역본의 존재 이유를 없앤다(적용 작품 매출 200% 이상 증가).",
+          "limits": "번역·검수를 연재 속도에 맞춰야 해 제작 부담과 품질 관리 위험이 커진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+              "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+              "publisher": "머니투데이방송",
+              "date": "2026-04-22",
+              "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "toon-radar"
+      ]
+    },
+    {
+      "name": "결제·페이",
+      "why": "네이버페이가 다루는 자금 이동과 정산. 커머스 거래가 실제 돈이 되는 지점이고, 검색 도메인들과 달리 틀리면 순위가 아니라 잔액이 틀린다.",
+      "tech": [
+        {
+          "tech": "위험거래탐지시스템(FDS)",
+          "solves": "담보 없이도 선정산이 가능하도록 거래·판매자 위험을 판단해, 낮은 이용 요건(월 20건·반품률 20% 미만)을 유지한다.",
+          "limits": "미탐은 곧 회사 손실이고 과탐은 정상 판매자를 일반 정산으로 밀어 5일치 금융비용을 다시 지운다. 실제 손실률·회수율은 공개된 바 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+              "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+              "publisher": "네이버 뉴스룸",
+              "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+            }
+          ]
+        },
+        {
+          "tech": "빠른정산 지급 파이프라인",
+          "solves": "배송 시작 기준 약 3일 내 정산대금 100% 지급(월 지급액 1조원 규모, 누적 40조원).",
+          "limits": "확정 전에 나간 돈이라 반품·취소 시 회수는 이후 정산분에 의존한다 — 판매자가 이탈하면 회수 경로 자체가 사라진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+              "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+              "publisher": "네이버 뉴스룸",
+              "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+            },
+            {
+              "title": "네이버파이낸셜, '빠른정산' 월 지급액 1조원 돌파",
+              "url": "https://navercorp.com/media/pressReleasesDetail?seq=31001",
+              "publisher": "네이버 뉴스룸",
+              "summary": "빠른정산 월 지급 규모가 1조원을 넘어섰다는 발표."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "fast-settlement"
+      ]
+    },
+    {
+      "name": "클라우드 인프라",
+      "why": "자사 서비스를 떠받치는 동시에 외부에 파는 상품이기도 하다. 안에서 쓰는 것과 밖에 파는 것의 요구가 다르다는 점이 이 도메인 고유의 긴장이다.",
+      "tech": [
+        {
+          "tech": "하이퍼스케일 데이터센터",
+          "solves": "상시로 무겁게 도는 자사 워크로드의 원가를 낮추고, 남는 용량을 팔 수 있게 한다(각 세종 270MW·서버 60만 유닛).",
+          "limits": "전력·부지는 되돌릴 수 없는 선투자다. 수요가 안 따라오면 고정비만 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+              "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+              "publisher": "네이버",
+              "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+            }
+          ]
+        },
+        {
+          "tech": "GPU 클러스터 운영과 이기종 공급선",
+          "solves": "AI 연산 자원을 묶어 운영하고, 벤더를 넓혀 가격·물량 협상력을 확보한다.",
+          "limits": "이기종을 함께 돌리면 스케줄링·소프트웨어 스택이 복잡해지고, 자사와 고객이 같은 자원을 두고 경쟁하는 문제는 그대로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+              "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+              "publisher": "네이버 뉴스룸",
+              "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+            },
+            {
+              "title": "네이버-AMD, AI 생태계 확장 위한 차세대 GPU 인프라 협력 강화",
+              "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34426",
+              "publisher": "네이버 뉴스룸",
+              "summary": "GPU 공급선을 넓히기 위한 AMD 와의 협력 발표."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "ai-factory"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "colbert-matching",
+      "name": "ColBERT 벡터 유사도 매칭",
+      "domain": "랭킹·매칭",
+      "updated_at": "2026-08-20",
+      "business": {
+        "why": "검색의 값어치가 모이는 자리다. 사용자가 쓴 단어와 문서에 적힌 단어가 겹치지 않아도 같은 뜻이면 찾아 줘야 하는데, 어휘가 겹쳐야 잡히는 기존 방식으로는 '같은 것을 다르게 말한' 문서를 통째로 놓친다. 서치플랫폼 매출 4조가 결과 품질 위에 서 있으므로 이 매칭이 나빠지면 광고 지면의 값어치도 같이 떨어진다.",
+        "metrics": [
+          {
+            "label": "서빙 벡터 규모",
+            "value": "300억",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어휘 기반 검색의 한계를 마주했을 때",
+          "thought": "단어가 겹치지 않으면 못 찾는다는 건 오래된 문제였고, 문장 하나를 벡터 하나로 만드는 방식은 이미 있었다. 문제는 그 방식이 긴 문서에서 세부를 뭉개 버린다는 점 — 검색은 대개 문서 전체가 아니라 그 안의 한 문단 때문에 정답이 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "토큰마다 벡터를 두기로 했을 때",
+          "thought": "정확도를 위해 토큰 단위로 가면 저장량이 문서 수가 아니라 토큰 수만큼 늘어난다. 300억이라는 숫자는 성과가 아니라 감당해야 할 비용의 크기다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "검색 시간 예산을 확인했을 때",
+          "thought": "모델이 아무리 좋아도 사용자가 기다려 주는 시간은 정해져 있다. 그래서 질문이 '어떻게 더 정확하게'가 아니라 '이 시간 안에 얼마나 정확하게'로 바뀐다 — 기존 ANN 기법을 그대로 쓸 수 없었던 이유가 여기 있었을 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "운영을 생각했을 때",
+          "thought": "벡터 매칭은 왜 이 문서가 위에 왔는지 설명하기 어렵다. 어휘 기반이라면 '이 단어가 여기 있어서'라고 말할 수 있는데, 벡터는 고칠 손잡이가 없다. 품질 사고가 났을 때 대응 속도가 곧 이 선택의 대가가 된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "질의 토큰 벡터",
+            "what": "사용자가 친 문장을 토큰 단위로 쪼개 만든 벡터들. 질의 시각에 계산된다."
+          },
+          {
+            "name": "문서 토큰 벡터",
+            "what": "문서의 각 토큰에 대응하는 벡터. 색인 시각에 미리 계산해 둔다."
+          },
+          {
+            "name": "ANN 인덱스",
+            "what": "300억 개 벡터에서 가까운 후보를 근사적으로 찾아 주는 구조."
+          },
+          {
+            "name": "MaxSim 점수",
+            "what": "질의 토큰마다 가장 비슷한 문서 토큰을 골라 더한 값. 최종 순위의 근거."
+          }
+        ],
+        "invariants": [
+          "문서 벡터는 질의를 몰라도 계산될 수 있어야 한다 — 이 조건이 깨지면 미리 색인할 수 없고, 미리 색인할 수 없으면 웹 규모에서는 아예 쓸 수 없다.",
+          "후보를 좁히는 단계는 근사이고, 점수를 매기는 단계는 정확해야 한다. 둘을 뒤섞으면 어느 쪽이 틀렸는지 알 수 없게 된다.",
+          "검색 시간 예산은 모델이 아니라 사용자가 정한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "색인 시각에 문서의 토큰마다 벡터를 만들어 저장한다",
+            "why": "질의마다 문서를 다시 인코딩하면 웹 규모에서는 시간이 나오지 않는다"
+          },
+          {
+            "step": "그 벡터들로 ANN 인덱스를 만든다",
+            "why": "300억 개를 전부 비교할 수는 없다"
+          },
+          {
+            "step": "질의가 오면 질의 토큰 벡터를 계산한다",
+            "why": "질의는 미리 알 수 없으니 이 부분만 실시간이다"
+          },
+          {
+            "step": "ANN 으로 후보 문서를 좁힌다",
+            "why": "정확한 점수 계산은 비싸므로 대상을 먼저 줄인다"
+          },
+          {
+            "step": "후보에 대해 MaxSim 으로 다시 점수를 매긴다",
+            "why": "질의 토큰마다 가장 잘 맞는 문서 토큰을 보는 것이 이 방식의 정확도의 원천이다"
+          },
+          {
+            "step": "상위 결과를 랭킹 다음 단계로 넘긴다",
+            "why": "의미 매칭은 순위의 재료 중 하나일 뿐 최종 순위가 아니다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "문서를 벡터 하나로 압축할 것인가, 토큰마다 벡터를 둘 것인가",
+            "chosen": "토큰 단위 벡터를 두고 마지막에만 상호작용시킨다(late interaction)",
+            "alternatives": [
+              "문서 하나당 벡터 하나(dense single-vector)",
+              "어휘 기반 검색만 유지"
+            ],
+            "tradeoff": "저장량이 문서 수가 아니라 토큰 수에 비례해 폭증한다 — 300억이라는 규모가 그 결과다. 대신 문서 전체를 하나로 뭉개면 사라지는 '그 문단 때문에 정답인' 경우를 살린다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+                "url": "https://arxiv.org/abs/2004.12832",
+                "publisher": "Khattab & Zaharia, SIGIR 2020",
+                "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+              }
+            ]
+          },
+          {
+            "question": "질의와 문서를 언제 만나게 할 것인가",
+            "chosen": "문서 인코딩을 질의보다 먼저 끝내고, 만남은 점수 계산 단계로 미룬다",
+            "alternatives": [
+              "질의와 문서를 함께 인코딩(cross-encoder)"
+            ],
+            "tradeoff": "함께 인코딩하는 쪽이 정확하지만 질의마다 문서를 다시 계산해야 해 웹 규모에서 불가능하다. 정확도 일부를 내주고 사전 계산 가능성을 얻은 선택이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+                "url": "https://arxiv.org/abs/2004.12832",
+                "publisher": "Khattab & Zaharia, SIGIR 2020",
+                "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+              }
+            ]
+          },
+          {
+            "question": "300억 개 벡터에서 후보를 어떻게 좁힐 것인가",
+            "chosen": "적절한 ANN 기법을 찾아 검색 시간 제약에 맞게 수정해서 쓴다",
+            "alternatives": [
+              "전수 비교",
+              "기성 ANN 라이브러리를 그대로 사용"
+            ],
+            "tradeoff": "근사이므로 진짜 상위 문서를 후보 단계에서 놓칠 수 있고, 그 손실은 뒤의 정확한 점수 계산으로도 복구되지 않는다. 기성 구현을 고쳐 쓰는 순간 업스트림 개선을 그대로 받지 못하는 비용도 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          },
+          {
+            "question": "토큰 벡터의 저장 비용을 어떻게 감당할 것인가",
+            "chosen": "차원을 줄이고 값을 압축해 벡터당 크기를 낮추는 것으로 보인다",
+            "alternatives": [
+              "원본 정밀도 그대로 저장",
+              "문서 일부만 벡터화"
+            ],
+            "tradeoff": "압축은 정밀도 손실이고, 손실은 곧 순위가 미세하게 흔들린다는 뜻이다. 어느 지점까지 흔들려도 괜찮은지는 품질 지표로만 알 수 있다. — 네이버가 어떤 압축을 썼는지는 확인하지 못했다(ColBERTv2 의 잔차 압축이 같은 문제를 다룬 예시).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERTv2: Effective and Efficient Retrieval via Lightweight Late Interaction",
+                "url": "https://arxiv.org/abs/2112.01488",
+                "publisher": "Santhanam et al., NAACL 2022",
+                "summary": "잔차 압축으로 토큰 벡터 저장량을 줄인 후속 연구."
+              }
+            ]
+          },
+          {
+            "question": "기존 어휘 기반 검색을 대체할 것인가",
+            "chosen": "의미 매칭을 순위의 재료 중 하나로 얹는다(대체가 아니라 보완)",
+            "alternatives": [
+              "벡터 검색으로 전면 교체"
+            ],
+            "tradeoff": "두 체계를 함께 유지하는 비용이 들고 점수를 어떻게 합칠지가 새 문제로 생긴다. 대신 어휘 기반이 잘하는 것(정확한 고유명사·숫자)을 잃지 않는다.",
+            "confidence": "inferred"
+          },
+          {
+            "question": "설명 가능성을 어디까지 포기할 것인가",
+            "chosen": "왜 이 문서가 위에 왔는지 사람이 읽을 수 있는 근거는 포기하고 품질 지표로 관리한다",
+            "alternatives": [
+              "규칙 기반 가중치로 설명 가능성 유지"
+            ],
+            "tradeoff": "품질 사고가 났을 때 원인을 짚을 손잡이가 적다. 검색 모니터링 체계가 따로 필요해지는 이유가 여기 있다.",
+            "confidence": "inferred"
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ColBERT (late interaction)",
+            "role": "질의·문서를 토큰 벡터로 두고 MaxSim 으로 점수를 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          },
+          {
+            "tech": "ANN (근사 최근접 탐색)",
+            "role": "300억 벡터에서 후보를 검색 시간 안에 좁힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          },
+          {
+            "tech": "BERT 계열 인코더",
+            "role": "토큰 벡터를 만드는 모델",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+                "url": "https://arxiv.org/abs/2004.12832",
+                "publisher": "Khattab & Zaharia, SIGIR 2020",
+                "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "질의 이해",
+          "via": "해석된 의도와 질의 토큰",
+          "contract": "무엇을 찾는지에 대한 판단이 먼저 서고, 매칭은 그 판단 위에서 후보를 고른다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "문서 색인",
+          "via": "색인 시각의 토큰 벡터 생성",
+          "contract": "문서가 색인될 때 벡터도 함께 만들어져야 한다 — 색인 지연이 곧 의미 매칭의 지연이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "검색 모니터링",
+          "via": "품질 지표",
+          "contract": "설명 가능성을 포기한 대가로, 나빠졌다는 사실은 지표로만 알 수 있다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 색인 시각과 질의 시각이 나뉜다",
+          "question": "무엇을 미리 계산하고 무엇을 실시간에 하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph 색인 시각\n    DOC[문서] --> ENC1[토큰별 인코딩]\n    ENC1 --> VEC[(토큰 벡터 300억)]\n    VEC --> ANN[(ANN 인덱스)]\n  end\n  subgraph 질의 시각\n    Q[질의] --> ENC2[질의 토큰 인코딩]\n    ENC2 --> CAND[ANN 후보 축소]\n    ANN --> CAND\n    CAND --> SCORE[MaxSim 재점수]\n    VEC --> SCORE\n    SCORE --> TOP[상위 후보]\n  end\n  TOP --> RANK[랭킹 다음 단계]"
+        },
+        {
+          "title": "질의 한 건의 처리 상태",
+          "question": "정해진 시간 예산 안에서 어느 단계가 잘리는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 인코딩: 질의 도착\n  인코딩 --> 후보축소: 질의 벡터 완성\n  후보축소 --> 재점수: 후보 N개 확보\n  재점수 --> 완료: 상위 결과 확정\n  후보축소 --> 축소: 시간 예산 초과 → 후보 수를 줄인다\n  축소 --> 재점수\n  재점수 --> 폴백: 예산 초과 → 어휘 기반 결과로\n  폴백 --> 완료\n  완료 --> [*]\n  note right of 폴백\n    시간 초과 시 무엇으로 돌아가는지는\n    공개 자료로 확인하지 못했다(추정).\n  end note"
+        },
+        {
+          "title": "실패 경로 — 근사와 압축이 잃는 것",
+          "question": "정답 문서를 놓치는 일은 어느 단계에서 생기고, 그때 무엇으로 알아채는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[질의] --> ANN{ANN 후보 축소}\n  ANN -->|정답이 후보에 듦| S[MaxSim 재점수] --> OK[좋은 결과]\n  ANN -->|정답을 놓침| MISS[뒤 단계로는 복구 불가]\n  S -->|압축된 벡터로 점수| DRIFT[순위가 미세하게 흔들림]\n  MISS --> Z[사용자는 '없다'고 판단]\n  DRIFT --> Z\n  Z -.->|설명 불가| MON[품질 지표·모니터링으로만 감지]\n  MON -.-> FIX[원인 규명은 어휘 기반보다 오래 걸린다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+          "url": "https://deview.kr/2021/sessions/486",
+          "publisher": "NAVER DEVIEW 2021",
+          "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+        },
+        {
+          "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+          "url": "https://arxiv.org/abs/2004.12832",
+          "publisher": "Khattab & Zaharia, SIGIR 2020",
+          "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+        },
+        {
+          "title": "ColBERTv2: Effective and Efficient Retrieval via Lightweight Late Interaction",
+          "url": "https://arxiv.org/abs/2112.01488",
+          "publisher": "Santhanam et al., NAACL 2022",
+          "summary": "잔차 압축으로 토큰 벡터 저장량을 줄인 후속 연구."
+        }
+      ]
+    },
+    {
+      "key": "smart-block",
+      "name": "에어서치 스마트블록 (지면 구성)",
+      "domain": "지면 구성",
+      "updated_at": "2026-08-20",
+      "business": {
+        "why": "검색 결과 한 화면을 무엇으로 채울지 정하는 자리다. 서치플랫폼 매출 4조 1,689억이 이 지면 위에 서 있고, 사용자가 원하는 배치와 가장 많이 버는 배치가 늘 같지는 않다. 네이버는 여기서 '컬렉션(이미지·동영상·지식iN 같은 고정 칸)'을 버리고 '질의마다 다르게 만들어지는 블록'으로 옮겼다 — 지면의 구조 자체를 질의에 종속시킨 결정이다.",
+        "metrics": [
+          {
+            "label": "초기 적용 범위",
+            "value": "검색결과의 약 10~15%까지 단계적 확대(발표 시점 계획)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "label": "VIEW 영역 대체",
+            "value": "2024-02-01 인기글 블록으로 전환",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 검색, '인기글' 스마트블록 도입하여 'VIEW' 대체",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31528",
+                "publisher": "네이버 뉴스룸",
+                "date": "2024-02-01",
+                "summary": "VIEW 영역을 의도별로 나눈 인기글 블록으로 바꾸고 블로그·카페 탭을 따로 두었다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "고정 컬렉션의 한계를 볼 때",
+          "thought": "'이미지·동영상·블로그' 같은 칸은 문서의 형식이지 사용자의 의도가 아니다. 같은 질의라도 어떤 사람은 방법을 찾고 어떤 사람은 후기를 찾는데, 형식으로 나눈 칸은 그 차이를 담지 못한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "블록을 질의마다 만들기로 했을 때",
+          "thought": "지면이 질의마다 달라지면 '검색 결과 화면'이라는 고정된 대상이 사라진다. 품질을 어떻게 측정할지, 광고 지면을 어디에 둘지, 창작자에게 무엇을 최적화하라고 할지가 전부 다시 정의돼야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "생성과 랭킹을 나눌 때",
+          "thought": "어떤 주제의 블록을 만들 것인가와 그 블록들을 어떤 순서로 놓을 것인가는 다른 문제다. 하나로 합치면 인기 있는 주제만 계속 위로 올라가 새 주제가 자리를 못 잡는다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "VIEW 탭을 없앨 때",
+          "thought": "탭 하나를 없애는 건 사용자 습관을 건드리는 일이다. 그래서 블록으로 옮기면서도 블로그·카페 탭은 따로 남겼다 — '내 글이 어디로 갔는지' 묻는 사람에게 답할 자리는 있어야 했다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "스마트블록",
+            "what": "하나의 세부 의도에 대응하는 결과 묶음. 질의마다 다르게 만들어진다."
+          },
+          {
+            "name": "블록 주제",
+            "what": "그 블록이 답하는 세부 의도(예: 강아지 산책 → 반려동물 인기글)."
+          },
+          {
+            "name": "블록 순서",
+            "what": "만들어진 블록들을 지면에 놓는 순서. 사용자 취향이 반영된다."
+          },
+          {
+            "name": "컬렉션(구)",
+            "what": "이미지·동영상·지식iN 같은 형식 기준의 고정 칸. 대체 대상이다."
+          }
+        ],
+        "invariants": [
+          "블록은 질의에 종속된다 — 같은 질의라도 사용자가 다르면 순서가 달라질 수 있다.",
+          "블록을 만드는 판단과 순서를 정하는 판단은 분리된다. 섞으면 인기 주제가 새 주제를 영원히 밀어낸다.",
+          "형식(블로그·카페)이 아니라 의도가 1차 분류다. 형식은 탭으로만 남는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "질의를 받아 세부 의도를 나눈다",
+            "why": "같은 단어라도 사람마다 찾는 것이 다르다"
+          },
+          {
+            "step": "콘텐츠 분석으로 의도별 블록을 만든다",
+            "why": "블록은 미리 정해진 칸이 아니라 그때 만들어지는 묶음이다"
+          },
+          {
+            "step": "사용자 취향으로 블록들의 순서를 정한다",
+            "why": "무엇을 먼저 보여줄지는 문서가 아니라 사람에 달려 있다"
+          },
+          {
+            "step": "블록을 지면에 배치한다",
+            "why": "광고와 일반 결과가 같은 지면을 나눠 쓴다"
+          },
+          {
+            "step": "블로그·카페 탭은 형식별로 따로 남긴다",
+            "why": "의도로 재편해도 '내 글이 있던 자리'를 찾는 사용자가 있다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "결과 지면을 형식(컬렉션)으로 나눌 것인가, 의도로 나눌 것인가",
+            "chosen": "의도별 스마트블록으로 나눈다",
+            "alternatives": [
+              "이미지·동영상·지식iN 등 정형화된 컬렉션 유지"
+            ],
+            "tradeoff": "지면이 질의마다 달라져 '검색 결과 화면'이라는 고정 대상이 사라진다. 품질 측정도, 광고 지면 정의도, 창작자 가이드도 전부 다시 세워야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "question": "블록을 만드는 일과 순서를 정하는 일을 한 번에 할 것인가",
+            "chosen": "'콘텐츠 분석 기반 생성'과 '사용자 취향 기반 랭킹' 두 단계로 나눈다",
+            "alternatives": [
+              "하나의 모델이 블록과 순서를 동시에 결정"
+            ],
+            "tradeoff": "단계가 늘어 지연과 복잡도가 커지고, 두 단계 사이에서 책임이 흐려질 수 있다. 대신 인기 주제가 새 주제를 밀어내는 되먹임을 끊을 자리가 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "question": "개인화를 어디까지 걸 것인가",
+            "chosen": "성별·연령과 트렌드, 사용자 취향을 블록 랭킹에 반영한다",
+            "alternatives": [
+              "모든 사용자에게 동일한 결과"
+            ],
+            "tradeoff": "같은 질의에 다른 화면이 나오므로 '왜 나만 이게 안 보이나'를 설명하기 어려워지고, 결과 재현이 안 돼 품질 이슈를 재현하기도 힘들어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "question": "새 지면을 한 번에 적용할 것인가",
+            "chosen": "라이프스타일 키워드 일부에서 시작해 검색결과의 약 10~15%까지 단계적으로 넓힌다",
+            "alternatives": [
+              "전체 질의에 동시 적용"
+            ],
+            "tradeoff": "한동안 두 종류의 결과 화면이 공존해 사용자 경험이 갈리고, 창작자는 어느 쪽에 맞춰야 할지 모른다. 대신 되돌릴 수 있는 크기로 실험할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "question": "기존 VIEW 탭을 어떻게 처리할 것인가",
+            "chosen": "VIEW 영역을 의도별 인기글 블록으로 대체하되 블로그·카페 탭은 형식별로 남긴다",
+            "alternatives": [
+              "VIEW 유지",
+              "탭을 전부 없애고 블록만 남기기"
+            ],
+            "tradeoff": "익숙한 진입점이 사라져 사용자와 창작자 모두 혼란을 겪는다. 형식 탭을 남긴 것은 그 충격을 줄이려는 절충이고, 그만큼 '의도로 나눈다'는 원칙에 예외를 남긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 검색, '인기글' 스마트블록 도입하여 'VIEW' 대체",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31528",
+                "publisher": "네이버 뉴스룸",
+                "date": "2024-02-01",
+                "summary": "VIEW 영역을 의도별로 나눈 인기글 블록으로 바꾸고 블로그·카페 탭을 따로 두었다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "추천 기술을 지면 구성에 어떻게 끌어올 것인가",
+            "chosen": "콘텐츠·쇼핑·로컬별로 이미 있던 추천 기술(AiRS·AiTEMS·AiRSPACE)을 블록 단위로 붙인다",
+            "alternatives": [
+              "검색 전용 추천 모델을 새로 만들기"
+            ],
+            "tradeoff": "영역마다 다른 모델이 붙어 지면 전체의 일관성을 맞추기 어렵고, 한 영역의 품질 문제가 그 블록에만 국소적으로 나타난다. 대신 이미 검증된 추천을 바로 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "AiRS",
+            "role": "콘텐츠 추천 — 블록 안의 글을 고르는 데 쓰인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "tech": "AiTEMS",
+            "role": "쇼핑 추천 — 상품 블록에 붙는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          },
+          {
+            "tech": "AiRSPACE",
+            "role": "로컬(장소) 추천 — 지역 블록에 붙는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+                "publisher": "네이버 뉴스룸",
+                "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "colbert-matching",
+          "via": "블록에 담을 후보 문서",
+          "contract": "매칭이 고른 후보 위에서 블록이 만들어진다. 매칭이 놓친 문서는 어떤 블록에도 담기지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "질의 이해",
+          "via": "세부 의도 분해",
+          "contract": "블록의 주제는 질의를 어떤 의도들로 쪼갰는지에 직접 달려 있다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "광고 지면",
+          "via": "같은 화면의 공간 배분",
+          "contract": "블록과 광고가 같은 지면을 나눠 쓴다. 배치 기준은 공개된 바 없다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 컬렉션에서 블록으로",
+          "question": "질의 하나가 어떻게 여러 블록이 되어 지면에 놓이는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[질의] --> I[세부 의도 분해]\n  I --> GEN[블록 생성 · 콘텐츠 분석]\n  CAND[매칭이 고른 후보 문서] --> GEN\n  GEN --> B1[블록 A]\n  GEN --> B2[블록 B]\n  GEN --> B3[블록 C]\n  B1 --> RANK[블록 랭킹 · 사용자 취향]\n  B2 --> RANK\n  B3 --> RANK\n  RANK --> PAGE[지면 배치]\n  AD[광고] --> PAGE\n  TAB[블로그·카페 탭 · 형식별] --> PAGE"
+        },
+        {
+          "title": "지면 방식의 전환 상태",
+          "question": "컬렉션에서 블록으로 넘어가는 동안 한 질의는 어떤 상태에 있는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 컬렉션: 형식 기준 고정 칸\n  컬렉션 --> 부분적용: 라이프스타일 키워드부터\n  부분적용 --> 확대: 쇼핑·로컬 등 버티컬로\n  확대 --> 블록중심: 검색결과 약 10~15%\n  컬렉션 --> VIEW대체: 2024-02 인기글 블록\n  VIEW대체 --> 블록중심\n  블록중심 --> [*]\n  note right of 부분적용\n    두 종류의 결과 화면이 공존하는 구간.\n    사용자와 창작자 모두 기준이 둘이 된다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 지면이 질의마다 달라질 때 생기는 것",
+          "question": "블록이 잘못 만들어지거나 순서가 틀어지면 무엇으로 알아채는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[질의] --> GEN{의도 분해가 맞았나}\n  GEN -->|틀림| WRONG[엉뚱한 주제의 블록]\n  GEN -->|맞음| RANK{순서가 맞았나}\n  RANK -->|틀림| BURIED[원하는 블록이 아래로]\n  RANK -->|맞음| OK[좋은 지면]\n  WRONG --> USER[사용자는 '검색이 이상하다'고만 느낀다]\n  BURIED --> USER\n  USER -.->|개인화 때문에| REPRO[재현이 어렵다 · 같은 질의도 사람마다 다름]\n  REPRO -.-> METRIC[집계 지표로만 감지]\n  USER -.->|창작자| SEO[무엇에 맞춰야 하는지 기준이 흔들림]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+          "publisher": "네이버 뉴스룸",
+          "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+        },
+        {
+          "title": "네이버 검색, '인기글' 스마트블록 도입하여 'VIEW' 대체",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31528",
+          "publisher": "네이버 뉴스룸",
+          "date": "2024-02-01",
+          "summary": "VIEW 영역을 의도별로 나눈 인기글 블록으로 바꾸고 블로그·카페 탭을 따로 두었다는 발표."
+        }
+      ]
+    },
+    {
+      "key": "product-understanding",
+      "name": "상품 이해와 쇼핑 검색 개인화",
+      "domain": "커머스 데이터",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "커머스 매출 3조 6,884억이 이 도메인 위에 있다. 웹 문서 검색과 결정적으로 다른 점은 **정답이 존재한다**는 것이다 — 두 판매자가 올린 글이 같은 물건인지 아닌지에는 사실이 있고, 틀리면 사용자는 더 싼 같은 상품을 못 보고 판매자는 팔 기회를 잃는다. 검색 품질이 곧바로 거래액으로 환산되는 유일한 도메인이다.",
+        "metrics": [
+          {
+            "label": "개인화 추천 효과",
+            "value": "6개월간 추천 영역 일평균 클릭 약 27% 증가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+              }
+            ]
+          },
+          {
+            "label": "쇼핑 AI 에이전트 베타 범위",
+            "value": "디지털·리빙·생활 → 뷰티·식품 확대 예정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+                "publisher": "네이버 뉴스룸",
+                "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "상품을 문서처럼 다루려 할 때",
+          "thought": "웹 문서는 '어느 쪽이 더 좋은 답인가'가 취향이지만 상품은 아니다. 같은 물건이면 싼 쪽이 낫고, 다른 물건을 같다고 묶으면 그건 취향이 아니라 오류다. 검색의 성공 기준 자체가 다른 도메인이라는 걸 먼저 인정해야 했다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "개인화를 검색 결과에 넣을 때",
+          "thought": "쇼핑에서 개인화는 효과가 확실한 대신 판매자에게 설명이 안 된다. '왜 내 상품이 안 보이나'에 답할 수 없는 구조를 만드는 셈인데, 그 대가를 감수할 만큼 클릭이 오르는지가 관건이었다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "어떤 카테고리부터 할지 정할 때",
+          "thought": "패션은 취향이 결과를 가장 크게 가르는 영역이라 개인화 효과가 잘 보인다. 반대로 말하면 여기서 잘된 것이 가전·식품에서도 잘된다는 보장은 없다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "LLM 을 커머스에 붙일 때",
+          "thought": "상품 정보를 요약해 주면 편하지만, 요약이 틀리면 그건 판매자의 상품 설명을 우리가 왜곡한 것이 된다. 검색이 '연결'만 하던 시절과 책임의 성격이 달라진다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "상품",
+            "what": "판매자가 등록한 하나의 판매 단위. 같은 물건이 여러 개 존재할 수 있다."
+          },
+          {
+            "name": "카탈로그(묶음)",
+            "what": "같은 물건이라고 판단해 묶은 단위. 가격 비교가 성립하는 지점."
+          },
+          {
+            "name": "상품 속성",
+            "what": "색상·용량·모델명처럼 상품을 구별하는 값. 잘못 읽으면 다른 물건이 같은 묶음에 들어간다."
+          },
+          {
+            "name": "쇼핑 이력",
+            "what": "구매·찜·클릭·검색·장바구니. 개인화의 재료."
+          }
+        ],
+        "invariants": [
+          "같은 물건을 다르게 묶으면 사용자는 더 싼 선택지를 영원히 못 본다 — 이 오류는 화면에 드러나지 않는다.",
+          "다른 물건을 같다고 묶으면 잘못된 가격 비교가 만들어진다. 앞의 오류보다 눈에 잘 띄고 신뢰를 더 크게 깎는다.",
+          "개인화는 순서를 바꿀 뿐 존재를 지우지 않아야 한다 — 지우기 시작하면 판매자에게 설명할 수 없는 구조가 된다(추정)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "판매자가 올린 상품에서 속성을 읽어낸다",
+            "why": "같은 물건인지 판단할 재료가 여기서 나온다"
+          },
+          {
+            "step": "같은 물건으로 보이는 상품을 묶는다",
+            "why": "가격 비교는 묶여야 성립한다"
+          },
+          {
+            "step": "질의(또는 이미지)와 상품을 연결한다",
+            "why": "쇼핑렌즈는 말로 못 하는 질의를 이미지로 받는다"
+          },
+          {
+            "step": "성·연령과 쇼핑 이력으로 결과 순서를 조정한다",
+            "why": "같은 검색어라도 사려는 것이 사람마다 다르다"
+          },
+          {
+            "step": "커머스 LLM 이 상품을 요약·비교하고 리뷰를 정리한다",
+            "why": "고를 수 있게 하는 것까지가 쇼핑 검색의 일이 됐다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "쇼핑 검색 결과를 모두에게 같게 보여줄 것인가",
+            "chosen": "성·연령과 쇼핑 이력(구매·찜·클릭·검색·장바구니)을 반영해 개인화한다",
+            "alternatives": [
+              "모든 사용자에게 동일한 순서",
+              "명시적으로 고른 필터만 반영"
+            ],
+            "tradeoff": "판매자에게 '왜 내 상품이 안 보이는가'를 설명할 수 없게 되고, 이력이 적은 사용자에게는 효과가 없다(콜드 스타트). 클릭이 6개월간 약 27% 오른 것이 그 대가를 정당화한 근거다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+              }
+            ]
+          },
+          {
+            "question": "개인화를 어느 카테고리부터 적용할 것인가",
+            "chosen": "패션(의류·잡화)부터 시작하고 가전·리빙·식품으로 넓힌다",
+            "alternatives": [
+              "전 카테고리 동시 적용"
+            ],
+            "tradeoff": "패션은 취향이 결과를 크게 가르는 영역이라 효과가 잘 보인다 — 반대로 여기서의 성공이 다른 카테고리를 보장하지 않는다. 카테고리마다 어떤 이력 축(브랜드·스타일 태그 등)을 볼지 다시 정의해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+              }
+            ]
+          },
+          {
+            "question": "이력 중 어떤 신호를 믿을 것인가",
+            "chosen": "구매·찜·클릭·검색·장바구니를 함께 본다",
+            "alternatives": [
+              "구매 이력만 사용",
+              "클릭만 사용"
+            ],
+            "tradeoff": "클릭은 많지만 잘못 누른 것도 섞이고, 구매는 정확하지만 드물다. 섞으면 커버리지는 늘지만 어떤 신호가 이 순서를 만들었는지 되짚기 어려워진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+              }
+            ]
+          },
+          {
+            "question": "상품을 이해하는 일을 규칙으로 할 것인가, 모델로 할 것인가",
+            "chosen": "가격·배송·속성·선호를 학습한 커머스 특화 LLM(쇼핑 인텔리전스)을 자체 개발해 쓴다",
+            "alternatives": [
+              "속성 규칙과 사전 기반 매칭 유지",
+              "범용 LLM 사용"
+            ],
+            "tradeoff": "학습 재료가 곧 살아 움직이는 생태계 데이터라 신선도를 계속 유지해야 하고, 모델이 만든 문장의 사실성을 따로 보증해야 한다. 범용 모델로는 가격·배송 같은 커머스 고유 맥락을 다루기 어렵다는 판단이 깔려 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+                "publisher": "네이버 뉴스룸",
+                "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "AI 에이전트가 어디까지 해 줄 것인가",
+            "chosen": "상품 요약·비교·리뷰 분석까지 하고 선택은 사용자에게 남긴다",
+            "alternatives": [
+              "검색 결과 나열까지만",
+              "대신 골라 주거나 자동 구매까지"
+            ],
+            "tradeoff": "요약이 틀리면 판매자의 상품 설명을 플랫폼이 왜곡한 셈이 된다 — 연결만 하던 시절과 책임의 성격이 달라진다. 그렇다고 나열만 하면 비교의 수고가 그대로 사용자에게 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+                "publisher": "네이버 뉴스룸",
+                "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "말로 설명하기 어려운 상품은 어떻게 찾게 할 것인가",
+            "chosen": "이미지로 상품을 찾는 쇼핑렌즈를 두고, 패션은 색상·질감·로고 같은 메타를 따로 본다",
+            "alternatives": [
+              "텍스트 검색만 제공",
+              "카테고리 구분 없이 하나의 이미지 모델"
+            ],
+            "tradeoff": "카테고리마다 무엇을 봐야 하는지가 달라 모델을 나눠 만들어야 하고, 그만큼 유지 대상이 늘어난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 '스마트렌즈', 쇼핑에 특화된 이미지 검색 <쇼핑렌즈> 베타 오픈",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29643",
+                "publisher": "네이버 뉴스룸",
+                "summary": "이미지로 상품을 찾는 검색 모델을 적용하고, 패션은 색상·질감·로고 같은 메타 정보를 따로 고려한다는 발표."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "AiTEMS",
+            "role": "쇼핑 이력을 재료로 검색·추천 결과의 순서를 개인화",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+              }
+            ]
+          },
+          {
+            "tech": "쇼핑 인텔리전스 (커머스 특화 LLM)",
+            "role": "가격·배송·속성·선호를 학습해 상품 요약·비교·리뷰 분석을 수행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+                "publisher": "네이버 뉴스룸",
+                "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+              }
+            ]
+          },
+          {
+            "tech": "쇼핑렌즈 이미지 검색 모델",
+            "role": "이미지에서 상품을 찾아 연결. 패션은 색상·질감·로고 메타를 별도로 고려",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 '스마트렌즈', 쇼핑에 특화된 이미지 검색 <쇼핑렌즈> 베타 오픈",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=29643",
+                "publisher": "네이버 뉴스룸",
+                "summary": "이미지로 상품을 찾는 검색 모델을 적용하고, 패션은 색상·질감·로고 같은 메타 정보를 따로 고려한다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "smart-block",
+          "via": "쇼핑 블록",
+          "contract": "커머스 결과는 통합검색 지면에서 블록의 하나로 놓인다. 블록 랭킹에는 AiTEMS 계열 추천이 붙는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "colbert-matching",
+          "via": "질의–상품 연결",
+          "contract": "웹 문서와 달리 상품은 속성이 정답을 가르므로 의미 매칭만으로는 부족하다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "문서 색인",
+          "via": "상품 등록·변경 반영",
+          "contract": "판매자가 상품을 고치면 색인과 묶음이 따라 바뀌어야 한다. 지연되면 가격 비교가 어긋난다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 등록된 상품이 개인화된 결과가 되기까지",
+          "question": "판매자가 올린 상품이 어떤 판단을 거쳐 한 사람의 화면에 놓이는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[판매자 상품 등록] --> ATTR[속성 추출]\n  ATTR --> CAT[같은 물건끼리 묶기]\n  Q[검색어] --> MATCH[질의–상품 연결]\n  IMG[이미지 · 쇼핑렌즈] --> MATCH\n  CAT --> MATCH\n  MATCH --> PERS[AiTEMS 개인화]\n  HIST[(쇼핑 이력 · 성·연령)] --> PERS\n  PERS --> LLM[쇼핑 인텔리전스 · 요약·비교·리뷰]\n  LLM --> R[결과 화면]\n  R --> BLOCK[통합검색 쇼핑 블록]"
+        },
+        {
+          "title": "상품 하나의 상태",
+          "question": "등록된 상품은 검색에 뜨기까지 어떤 상태를 지나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 등록됨: 판매자가 올림\n  등록됨 --> 속성해석: 모델이 속성을 읽음\n  속성해석 --> 묶임: 같은 물건으로 판단\n  속성해석 --> 단독: 짝을 못 찾음\n  묶임 --> 노출: 가격 비교에 등장\n  단독 --> 노출: 개별 상품으로만 등장\n  묶임 --> 오묶음: 다른 물건이 섞임\n  오묶음 --> 묶임: 정정\n  노출 --> [*]\n  note right of 단독\n    같은 물건인데 못 묶인 경우.\n    화면에는 아무 이상이 없어 보인다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 묶음과 개인화가 틀릴 때",
+          "question": "두 종류의 오류는 각각 누구에게 어떻게 나타나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  C{묶음 판단}\n  C -->|같은 걸 못 묶음| MISS[더 싼 같은 상품이 안 보임]\n  C -->|다른 걸 묶음| WRONG[잘못된 가격 비교]\n  MISS --> HID[화면에는 정상으로 보임 · 아무도 신고하지 않는다]\n  WRONG --> VIS[사용자가 바로 알아챈다 · 신뢰 손상]\n  P{개인화}\n  P -->|이력 부족| COLD[콜드 스타트 · 효과 없음]\n  P -->|과도한 반영| NARROW[같은 것만 계속 보임]\n  NARROW --> SELLER[판매자: 왜 내 상품이 안 보이나]\n  SELLER -.->|설명 불가| TRUST[플랫폼 신뢰 문제로 번짐]\n  LLMX{LLM 요약}\n  LLMX -->|틀린 요약| DISTORT[판매자 설명을 플랫폼이 왜곡한 셈]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+          "publisher": "네이버 뉴스룸",
+          "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+        },
+        {
+          "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+          "publisher": "네이버 뉴스룸",
+          "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+        },
+        {
+          "title": "네이버 '스마트렌즈', 쇼핑에 특화된 이미지 검색 <쇼핑렌즈> 베타 오픈",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=29643",
+          "publisher": "네이버 뉴스룸",
+          "summary": "이미지로 상품을 찾는 검색 모델을 적용하고, 패션은 색상·질감·로고 같은 메타 정보를 따로 고려한다는 발표."
+        }
+      ]
+    },
+    {
+      "key": "ai-tab",
+      "name": "AI탭 — 질의를 답변과 행동으로",
+      "domain": "질의 이해",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "질의 해석의 결과물을 무엇으로 내놓을지가 바뀌는 자리다. 지금까지 네이버는 질의를 이해해 **문서를 골라 줬는데**, AI탭은 그 이해로 **답을 만들고 행동까지 잇는다**(쇼핑·장소·예약). 검색광고 매출이 '사용자가 링크를 눌러 어딘가로 간다'는 전제 위에 서 있으므로, 이 전환은 기술 변경이 아니라 수익 구조를 건드리는 결정이다.",
+        "metrics": [
+          {
+            "label": "베타 성장",
+            "value": "2026-04-27 시작, 약 2개월 만에 누적 400만 사용자",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "label": "정식 출시 규모",
+            "value": "2026-06-26, 일평균 5,000만 방문자 대상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "label": "베타 대상",
+            "value": "네이버플러스 멤버십 사용자 → 상반기 내 전체·모바일 메인 검색창",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, AI 검색 서비스 'AI탭' 베타 출시… '에이전틱 검색 경험의 시작'",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34984",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-04-27",
+                "summary": "네이버플러스 멤버십 대상 베타로 시작해 상반기 내 전체 사용자·모바일 메인 검색창으로 확대한다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "질의 이해의 출력을 다시 정할 때",
+          "thought": "'무엇을 원하는가'를 알아냈을 때 그걸로 문서를 고르는 것과 답을 쓰는 것은 완전히 다른 일이다. 답을 쓰기 시작하면 틀렸을 때 변명할 곳이 없다 — 링크는 '그 문서가 그렇게 말했다'지만 답변은 우리가 말한 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "범용 모델을 쓸지 정할 때",
+          "thought": "범용 LLM 은 말은 잘하지만 예약 가능 여부나 재고를 모른다. 네이버가 가진 것은 모델이 아니라 그 버티컬 데이터라서, 결합하지 않으면 우리가 잘하는 것을 하나도 못 쓰게 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "행동까지 연결할지 정할 때",
+          "thought": "정보에서 멈추면 안전하지만 검색이 그냥 답변기가 된다. 예약까지 이으면 값어치는 커지는데, 실패의 성격이 '틀린 정보'에서 '틀린 예약'으로 바뀐다 — 사용자가 실제로 손해를 본다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "기존 검색과의 관계를 정할 때",
+          "thought": "통합검색을 한 번에 대체하면 광고 지면과 창작자 생태계가 같이 흔들린다. 별도 탭으로 두고 사용을 지켜보다 메인으로 옮기는 편이 되돌릴 여지를 남긴다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "질의",
+            "what": "사용자가 친 문장. 이제는 키워드가 아니라 문장일 수 있다."
+          },
+          {
+            "name": "의도와 맥락",
+            "what": "무엇을 원하는지에 더해 어떤 상황인지까지 포함한 해석."
+          },
+          {
+            "name": "답변",
+            "what": "생성된 응답. 문서 목록이 아니라 완성된 문장이다."
+          },
+          {
+            "name": "행동",
+            "what": "예약·구매처럼 답변 다음에 이어지는 실제 실행."
+          },
+          {
+            "name": "버티컬 데이터",
+            "what": "지도·플레이스·쇼핑·실시간 예약 등 네이버 안에만 있는 사실."
+          }
+        ],
+        "invariants": [
+          "답변에 담기는 사실은 버티컬 데이터의 현재 상태와 어긋나면 안 된다 — 예약 가능하다고 말한 자리가 이미 찼으면 그건 틀린 답변이 아니라 실패한 행동이다.",
+          "행동까지 잇는 이상, 답변의 오류 비용은 정보의 오류 비용보다 크다.",
+          "새 검색이 기존 검색을 대체하기 전까지 두 표면은 같은 질의에 다른 답을 줄 수 있다(추정)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "질의를 문장 그대로 받는다",
+            "why": "키워드로 줄여 쓰던 습관을 전제하지 않는다"
+          },
+          {
+            "step": "의도와 맥락을 해석한다",
+            "why": "같은 문장이라도 어떤 상황에서 물었는지가 답을 가른다"
+          },
+          {
+            "step": "프로덕트 네이티브 LLM 이 자사 시나리오·버티컬 데이터와 결합해 답을 만든다",
+            "why": "범용 모델은 예약 가능 여부나 재고 같은 사실을 모른다"
+          },
+          {
+            "step": "지도·실시간 예약 정보를 답변 안에 넣는다",
+            "why": "확인하러 다른 화면으로 나가게 하면 행동으로 이어지지 않는다"
+          },
+          {
+            "step": "쇼핑·장소·예약 같은 실제 행동으로 연결한다",
+            "why": "검색의 끝을 '알게 됨'이 아니라 '하게 됨'으로 옮긴 것이 이 서비스의 주장이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "질의 해석의 결과를 문서 목록으로 줄 것인가, 답변으로 만들 것인가",
+            "chosen": "생성형 답변으로 만들고 행동까지 연결한다",
+            "alternatives": [
+              "기존처럼 문서·블록 목록만 제시"
+            ],
+            "tradeoff": "출처로 가는 클릭이 줄면 창작자와 검색광고 생태계가 함께 흔들린다. 게다가 답변이 틀렸을 때 '그 문서가 그렇게 말했다'고 할 수 없다 — 책임이 플랫폼으로 온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "question": "어떤 모델을 쓸 것인가",
+            "chosen": "하이퍼클로바X 기반에 자사 서비스 시나리오와 버티컬 데이터를 결합한 '프로덕트 네이티브 LLM'",
+            "alternatives": [
+              "범용 LLM 을 그대로 사용",
+              "검색 전용 소형 모델"
+            ],
+            "tradeoff": "자사 데이터와 시나리오에 맞춘 만큼 범용 모델 진영의 개선을 그대로 받아오기 어려워지고, 모델을 계속 자체 유지해야 한다. 대신 예약·재고처럼 네이버 안에만 있는 사실을 답변에 넣을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "question": "정보 제공에서 멈출 것인가, 행동까지 이을 것인가",
+            "chosen": "쇼핑·장소 탐색·예약 같은 실제 행동까지 연결한다",
+            "alternatives": [
+              "답변만 제공하고 실행은 사용자에게"
+            ],
+            "tradeoff": "실패의 성격이 바뀐다 — 틀린 정보는 사용자가 걸러 낼 수 있지만 틀린 예약은 이미 벌어진 일이다. 실시간 데이터 정합성 요구가 검색보다 훨씬 엄격해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "question": "새 검색을 통합검색 자리에 바로 넣을 것인가",
+            "chosen": "별도 탭으로 시작해 모바일 메인 검색창까지 단계적으로 넓힌다",
+            "alternatives": [
+              "통합검색을 즉시 대체",
+              "실험실 기능으로만 유지"
+            ],
+            "tradeoff": "두 검색 표면이 공존하는 동안 같은 질의에 다른 답이 나오고, 광고 지면·품질 지표도 갈라져 관리된다. 대신 생태계 충격을 되돌릴 수 있는 크기로 나눈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, AI 검색 서비스 'AI탭' 베타 출시… '에이전틱 검색 경험의 시작'",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34984",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-04-27",
+                "summary": "네이버플러스 멤버십 대상 베타로 시작해 상반기 내 전체 사용자·모바일 메인 검색창으로 확대한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "누구에게 먼저 열 것인가",
+            "chosen": "네이버플러스 멤버십 사용자 대상 베타 후 전체로 확대",
+            "alternatives": [
+              "처음부터 전체 공개",
+              "무작위 표본에만 노출"
+            ],
+            "tradeoff": "멤버십 사용자는 네이버를 원래 많이 쓰는 쪽이라 초기 지표가 실제보다 좋게 나올 수 있다. 2개월 400만이라는 숫자도 그 표본 위의 값이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, AI 검색 서비스 'AI탭' 베타 출시… '에이전틱 검색 경험의 시작'",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34984",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-04-27",
+                "summary": "네이버플러스 멤버십 대상 베타로 시작해 상반기 내 전체 사용자·모바일 메인 검색창으로 확대한다는 발표."
+              },
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "question": "AI 브리핑과 AI탭을 어떻게 나눌 것인가",
+            "chosen": "브리핑을 유지하면서 그 하단에서 AI탭으로 들어갈 수 있게 잇는다",
+            "alternatives": [
+              "하나로 통합",
+              "완전히 분리"
+            ],
+            "tradeoff": "AI 표면이 둘이 되어 어느 쪽이 답을 책임지는지 사용자에게 모호해지고, 품질 문제가 생겼을 때 어느 경로에서 나왔는지부터 가려야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "HyperCLOVA X 기반 프로덕트 네이티브 LLM",
+            "role": "자사 서비스 시나리오·버티컬 데이터와 결합해 답변을 생성",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          },
+          {
+            "tech": "버티컬 데이터 연동(지도·플레이스·실시간 예약)",
+            "role": "답변 안에 확인 가능한 사실과 실행 경로를 넣는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-06-26",
+                "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "smart-block",
+          "via": "같은 질의의 다른 표면",
+          "contract": "통합검색은 블록으로, AI탭은 답변으로 같은 질의에 답한다. 둘은 아직 대체 관계가 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "product-understanding",
+          "via": "쇼핑 행동 연결",
+          "contract": "답변에서 상품으로 이어질 때 커머스 도메인의 상품 이해·개인화가 그대로 쓰인다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "colbert-matching",
+          "via": "답변 근거 문서 검색",
+          "contract": "생성 전에 무엇을 읽을지 고르는 단계가 필요하다 — 그 자리에 기존 매칭이 쓰이는 것으로 추정된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 문서를 고르는 대신 답을 만든다",
+          "question": "질의 하나가 답변과 행동이 되기까지 무엇이 개입하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[질의 · 문장] --> UND[의도와 맥락 해석]\n  UND --> RET[근거 문서 검색]\n  UND --> VERT[(버티컬 데이터<br/>지도·플레이스·예약)]\n  RET --> GEN[프로덕트 네이티브 LLM]\n  VERT --> GEN\n  GEN --> ANS[답변]\n  ANS --> ACT[행동 · 쇼핑·장소·예약]\n  ANS -.->|기존 경로| DOC[문서로 이동]\n  DOC -.-> AD[검색광고 수익]\n  ACT --> COM[커머스·예약 수익]"
+        },
+        {
+          "title": "검색 표면의 전환 상태",
+          "question": "한 사용자가 같은 질의를 물을 때 지금 어느 표면에 있는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 통합검색: 블록 기반 결과\n  통합검색 --> AI브리핑: 요약 답변\n  AI브리핑 --> AI탭: 하단에서 진입(2026-07~)\n  통합검색 --> AI탭: 탭 선택\n  AI탭 --> 행동: 예약·구매로 이어짐\n  AI탭 --> 통합검색: 원하는 답이 아니면 되돌아감\n  행동 --> [*]\n  note right of AI탭\n    베타 2026-04-27 멤버십 대상\n    정식 2026-06-26 · 일평균 5,000만 방문자\n  end note"
+        },
+        {
+          "title": "실패 경로 — 답을 만들기 시작하면 생기는 것",
+          "question": "틀렸을 때 무엇이 어디까지 번지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  GEN[답변 생성] --> F1{사실이 맞나}\n  F1 -->|틀림| WRONG[잘못된 정보 · 출처 탓을 할 수 없다]\n  F1 -->|맞음| F2{버티컬 데이터가 최신인가}\n  F2 -->|낡음| BOOK[예약 가능하다고 했는데 이미 찬 자리]\n  F2 -->|최신| OK[답변 + 행동 성공]\n  BOOK --> HARM[사용자가 실제 손해를 본다]\n  WRONG --> RESP[책임이 플랫폼으로]\n  OK -.->|출처 클릭 감소| ECO[창작자·검색광고 생태계 영향]\n  ECO -.->|공개 자료 없음| Q2[전환율·클릭 변화는 미확인]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버, AI 검색 서비스 'AI탭' 베타 출시… '에이전틱 검색 경험의 시작'",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34984",
+          "publisher": "네이버 뉴스룸",
+          "date": "2026-04-27",
+          "summary": "네이버플러스 멤버십 대상 베타로 시작해 상반기 내 전체 사용자·모바일 메인 검색창으로 확대한다는 발표."
+        },
+        {
+          "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+          "publisher": "네이버 뉴스룸",
+          "date": "2026-06-26",
+          "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+        }
+      ]
+    },
+    {
+      "key": "web-index-and-trust",
+      "name": "수집·색인과 문서 신뢰",
+      "domain": "문서 색인",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "'누구의 문서를 검색에 올릴 것인가'를 정하는 자리다. 없는 문서는 어떤 랭킹으로도 꺼낼 수 없으니 검색 품질의 바닥이 여기서 정해지고, 동시에 이 판단이 창작자·사업자에게는 노출과 매출의 문제가 된다. 앞의 네 도메인이 '어떻게 보여줄까'를 다룬다면 여기는 그 앞의 '무엇을 가질까'다.",
+        "metrics": [
+          {
+            "label": "웹마스터 도구 통합",
+            "value": "2019-10-23 서치 어드바이저로 통합",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+                "publisher": "네이버 뉴스룸",
+                "date": "2019-10-23",
+                "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+              }
+            ]
+          },
+          {
+            "label": "리뷰 수정 가능 기간",
+            "value": "작성 후 3개월",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-07",
+                "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "외부 웹을 어떻게 가져올지 정할 때",
+          "thought": "우리가 만든 규칙으로 가져오면 사이트마다 따로 협의해야 한다. 이미 있는 웹 표준을 따르면 협의 없이 넓힐 수 있는데, 대신 표준을 모르는 사이트는 조용히 빠진다 — 그 사이트에는 아무 알림도 가지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "색인 상태를 공개할지 정할 때",
+          "thought": "어떤 키워드로 노출되고 얼마나 클릭되는지 알려주면 사이트 운영자는 고칠 수 있게 된다. 문제는 같은 정보가 검색을 겨냥해 문서를 찍어내는 쪽에도 똑같이 유용하다는 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "리뷰 수정 기간을 제한할 때",
+          "thought": "시간이 한참 지난 뒤 별점을 바꾸는 것은 대개 경험이 바뀐 게 아니라 거래가 있었던 것이다. 그렇다고 막으면 뒤늦게 오해를 바로잡으려는 사람도 함께 막힌다 — 어느 쪽 실수를 감수할지의 문제다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "신뢰 신호를 화면에 올릴 때",
+          "thought": "평균 별점을 보여주면 사용자는 판단이 쉬워지지만, 그 숫자가 곧 조작할 이유가 된다. 신뢰 신호를 노출하는 순간 그 신호 자체가 공격 대상이 된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "사이트",
+            "what": "수집 대상이 되는 외부 웹 출처. 소유자가 서치 어드바이저로 등록·확인한다."
+          },
+          {
+            "name": "색인 문서",
+            "what": "검색에 꺼낼 수 있게 저장된 문서. 여기 없으면 존재하지 않는 것과 같다."
+          },
+          {
+            "name": "노출 지표",
+            "what": "어떤 키워드로 보였고 얼마나 눌렸는지. 소유자에게 공개된다."
+          },
+          {
+            "name": "UGC 신뢰 신호",
+            "what": "리뷰·별점처럼 사용자가 만든 판단 근거. 조작 대상이 되기도 한다."
+          }
+        ],
+        "invariants": [
+          "색인에 없는 문서는 어떤 랭킹으로도 나타나지 않는다 — 색인 누락은 순위 하락과 성격이 다른 사고다.",
+          "노출 지표를 공개하면 개선하려는 쪽과 악용하려는 쪽에 같은 정보가 간다.",
+          "신뢰 신호를 화면에 올리는 순간 그 신호가 공격 대상이 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사이트 소유자가 서치 어드바이저에 사이트를 등록한다",
+            "why": "수집 대상임을 알리고 문제를 확인할 창구를 만든다"
+          },
+          {
+            "step": "글로벌 웹 표준 지침에 따라 문서를 수집한다",
+            "why": "사이트마다 따로 협의하지 않고도 넓힐 수 있다"
+          },
+          {
+            "step": "수집·색인 상태와 오류를 소유자에게 보여준다",
+            "why": "왜 안 나오는지 물어볼 곳이 없으면 생태계가 굴러가지 않는다"
+          },
+          {
+            "step": "노출 키워드와 클릭률을 함께 공개한다",
+            "why": "무엇을 고쳐야 하는지는 결과를 봐야 안다"
+          },
+          {
+            "step": "UGC 는 작성 이후 수정 가능 기간을 제한한다",
+            "why": "시간이 지난 뒤의 수정은 대개 경험의 변화가 아니다"
+          },
+          {
+            "step": "어뷰징 신호를 모니터링해 사전에 걸러낸다",
+            "why": "사후 제재는 이미 노출된 뒤라 늦다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "외부 웹 문서를 어떤 규칙으로 수집할 것인가",
+            "chosen": "글로벌 웹 표준 지침을 따르고, 사이트 소유자가 등록해 상태를 확인하게 한다",
+            "alternatives": [
+              "네이버 전용 등록 규격을 요구",
+              "제휴한 사이트만 수집"
+            ],
+            "tradeoff": "표준을 모르거나 지키지 못하는 사이트는 조용히 덜 수집된다 — 색인 커버리지가 사이트 운영자의 기술 역량에 좌우되고, 빠진 쪽에는 아무 알림도 가지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+                "publisher": "네이버 뉴스룸",
+                "date": "2019-10-23",
+                "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "색인·노출 상태를 사이트 소유자에게 보여줄 것인가",
+            "chosen": "노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 공개한다",
+            "alternatives": [
+              "비공개 — 문의 채널로만 대응"
+            ],
+            "tradeoff": "고치려는 쪽과 검색을 겨냥해 문서를 찍어내는 쪽에 같은 정보가 간다. 투명성이 곧 어뷰징의 재료가 되는 구조를 받아들인 셈이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+                "publisher": "네이버 뉴스룸",
+                "date": "2019-10-23",
+                "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "웹마스터 도구를 여러 개로 둘 것인가",
+            "chosen": "흩어져 있던 도구를 '서치 어드바이저' 하나로 통합한다",
+            "alternatives": [
+              "용도별로 분리 유지"
+            ],
+            "tradeoff": "하나의 도구가 개인 블로그부터 대형 쇼핑몰까지 전부 만족시켜야 해서, 어느 쪽에도 딱 맞지 않는 화면이 되기 쉽다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+                "publisher": "네이버 뉴스룸",
+                "date": "2019-10-23",
+                "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "리뷰를 언제까지 고칠 수 있게 할 것인가",
+            "chosen": "작성 후 3개월 이내로 제한한다",
+            "alternatives": [
+              "기간 제한 없음",
+              "수정 자체를 금지"
+            ],
+            "tradeoff": "시간이 지난 뒤의 어뷰징성 수정은 막지만, 뒤늦게 오해를 바로잡으려는 정당한 수정도 함께 막힌다. 기간을 며칠로 정하든 그 경계에서 억울한 쪽이 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-07",
+                "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "평균 별점을 사용자에게 보여줄 것인가",
+            "chosen": "평균 별점을 공개한다",
+            "alternatives": [
+              "별점 비공개 — 리뷰 텍스트만 노출"
+            ],
+            "tradeoff": "판단은 쉬워지지만 그 숫자가 곧 조작할 이유가 된다. 신뢰 신호를 노출하는 순간 그 신호 자체를 지켜야 하는 비용이 새로 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-07",
+                "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "어뷰징을 사후 제재로 다룰 것인가",
+            "chosen": "모니터링으로 사전에 탐지해 분쟁 발생 자체를 줄이는 쪽으로 보인다",
+            "alternatives": [
+              "신고가 들어온 건만 사후 처리"
+            ],
+            "tradeoff": "사전 탐지는 오탐이 곧 정상 문서·정상 리뷰의 억울한 차단이 된다. 그 억울함은 통계로 드러나지 않고 개별 항의로만 온다. — 네이버의 구체적 탐지 기준은 공개된 바 없다.",
+            "confidence": "inferred"
+          }
+        ],
+        "stack": [
+          {
+            "tech": "서치 어드바이저",
+            "role": "사이트 등록과 수집·색인 상태, 노출 키워드·클릭률 확인 창구",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+                "publisher": "네이버 뉴스룸",
+                "date": "2019-10-23",
+                "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+              }
+            ]
+          },
+          {
+            "tech": "웹 표준 기반 수집",
+            "role": "사이트별 협의 없이 외부 문서를 넓게 가져온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+                "publisher": "네이버 뉴스룸",
+                "date": "2019-10-23",
+                "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+              }
+            ]
+          },
+          {
+            "tech": "UGC 수정 기간 제한 정책",
+            "role": "리뷰가 시간이 지난 뒤 바뀌는 것을 막는 규칙 장치",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+                "publisher": "네이버 뉴스룸",
+                "date": "2026-07",
+                "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "colbert-matching",
+          "via": "색인된 문서와 그 벡터",
+          "contract": "색인에 없으면 벡터도 없고, 벡터가 없으면 의미 매칭도 그 문서를 못 꺼낸다. 색인 지연이 곧 매칭 지연이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "product-understanding",
+          "via": "상품 등록·변경 반영",
+          "contract": "판매자가 상품을 고치면 색인이 따라가야 가격 비교가 어긋나지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "smart-block",
+          "via": "블록에 담을 문서 공급",
+          "contract": "블록은 색인이 가진 것 안에서만 만들어진다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 문서가 검색에 오르기까지",
+          "question": "외부 문서와 UGC 는 각각 어떤 관문을 지나 색인에 들어가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OWN[사이트 소유자] -->|등록| SA[서치 어드바이저]\n  SA --> CRAWL[웹 표준 기반 수집]\n  CRAWL --> IDX[(색인)]\n  UGC[리뷰·블로그 등 UGC] --> RULE[작성·수정 규칙]\n  RULE --> MON[어뷰징 모니터링]\n  MON --> IDX\n  IDX --> MATCH[랭킹·매칭]\n  IDX --> BLOCK[지면 블록]\n  IDX --> SHOP[커머스 상품]\n  SA -.->|노출 키워드·클릭률| OWN"
+        },
+        {
+          "title": "문서 하나의 색인 상태",
+          "question": "'검색에 안 나온다'는 말은 어느 상태를 가리키는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미수집: 아직 발견되지 않음\n  미수집 --> 수집됨: 표준에 맞게 노출돼 있음\n  미수집 --> 미수집: 표준을 못 지켜 계속 빠짐\n  수집됨 --> 색인됨: 저장 완료\n  수집됨 --> 제외: 어뷰징 판정\n  색인됨 --> 노출: 질의에 걸림\n  색인됨 --> 미노출: 걸리지 않음(순위 문제)\n  제외 --> 색인됨: 이의·정정\n  노출 --> [*]\n  note right of 미수집\n    소유자에게 알림이 가지 않는 상태.\n    서치 어드바이저에 등록해야 보인다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 누락과 오탐",
+          "question": "색인이 틀렸을 때 누가 그것을 알아채는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A{수집됐나}\n  A -->|아니오| MISS[색인 누락]\n  MISS --> SILENT[검색에는 '없는 문서'와 구별되지 않는다]\n  SILENT -.->|등록했다면| SEE[서치 어드바이저에서 확인 가능]\n  SILENT -.->|등록 안 했다면| BLIND[아무도 모른다]\n  A -->|예| B{어뷰징 판정}\n  B -->|오탐| FALSE[정상 문서·리뷰가 빠진다]\n  FALSE --> COMPLAIN[개별 항의로만 드러난다 · 통계에는 안 잡힌다]\n  B -->|미탐| SPAM[검색을 겨냥해 찍어낸 문서가 남는다]\n  SPAM --> QUAL[상위 도메인의 품질이 함께 나빠진다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+          "publisher": "네이버 뉴스룸",
+          "date": "2019-10-23",
+          "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+        },
+        {
+          "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+          "publisher": "네이버 뉴스룸",
+          "date": "2026-07",
+          "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+        }
+      ]
+    },
+    {
+      "key": "toon-radar",
+      "name": "툰레이더 — 유출자를 찾는 배급",
+      "domain": "콘텐츠 유통",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "콘텐츠 부문 매출 1조 8,992억이 '다음 회차를 돈 내고 본다'는 행동 위에 서 있다. 그런데 유료 회차가 공개된 지 몇 시간 만에 불법 사이트에 올라가면 그 회차의 매출은 그냥 사라진다. 검색 도메인들이 '무엇을 보여줄까'를 다뤘다면 여기는 **보여준 것이 새어 나가는 것**을 다룬다 — 회사가 만든 물건을 스스로 배급하기 때문에 생기는 문제다.",
+        "metrics": [
+          {
+            "label": "도입 시점",
+            "value": "2017년 7월",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "label": "24시간 내 유출 감소",
+            "value": "2026년 3월 기준 1월 대비 약 90% 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "label": "유료 결제액 변화",
+            "value": "24시간 내 유출이 없던 주에 평균 23% 증가(작품별로는 60%에 근접한 사례도)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "label": "유출 지연",
+            "value": "인기작 기준 2회차 이상 지연(주 1회 연재 기준 약 2주)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "label": "다국어 동시 공개 실험",
+            "value": "번역 지연을 없앤 작품에서 매출 200% 이상 증가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "불법 사이트를 막는 방법을 고를 때",
+          "thought": "사이트를 하나씩 내리는 건 끝이 없다. 하나 내리면 도메인만 바꿔 다시 열린다. 그렇다면 막을 대상을 사이트가 아니라 **유출의 출발점**으로 바꿔야 한다 — 누가 처음 퍼뜨렸는지 알면 그 계정 하나로 흐름이 끊긴다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "이미지에 표시를 넣기로 했을 때",
+          "thought": "눈에 보이는 워터마크는 독자 경험을 망치고, 어차피 잘라내면 그만이다. 보이지 않게 넣어야 하는데 그러면 캡처·재압축을 거쳐도 살아남아야 한다 — 티가 나지 않을 만큼 약하면서 살아남을 만큼 질긴 표시를 만드는 게 문제였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "성과를 무엇으로 측정할지 정할 때",
+          "thought": "'불법 사이트를 몇 개 내렸다'는 노력의 지표지 성과의 지표가 아니다. 진짜 물어야 할 것은 유출이 늦어진 만큼 사람들이 돈을 냈는가였다 — 그래서 유출 지연과 유료 결제액을 같이 놓고 봤다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "번역 지연을 볼 때",
+          "thought": "해외에서 불법 번역본이 도는 이유는 정식 번역이 늦기 때문이다. 그러면 이건 단속 문제가 아니라 공급 속도 문제다 — 동시 공개로 바꾸자 매출이 200% 넘게 올랐다는 건 그 가설이 맞았다는 뜻이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "회차",
+            "what": "판매 단위. 최신 유료 회차일수록 유출 피해가 크다."
+          },
+          {
+            "name": "열람 세션",
+            "what": "누가 언제 이 회차를 봤는가. 식별 정보가 여기에 묶인다."
+          },
+          {
+            "name": "식별 표시",
+            "what": "이미지에 눈에 보이지 않게 넣은 사용자 식별 정보."
+          },
+          {
+            "name": "유출본",
+            "what": "불법 사이트에 올라온 사본. 표시를 읽어 출처를 되짚는다."
+          }
+        ],
+        "invariants": [
+          "유출본에서 표시를 읽어내면 최초 유출 계정으로 되돌아갈 수 있어야 한다 — 이 성질이 깨지면 이 시스템은 아무것도 아니다.",
+          "표시는 독자가 알아채지 못해야 한다. 알아채는 순간 그것은 독서 경험을 해치는 방해물이 된다.",
+          "차단의 목표는 유출을 0으로 만드는 것이 아니라 **늦추는 것**이다. 최신 회차를 기다리지 못하게 만드는 것으로 충분하다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "독자가 유료 회차를 연다",
+            "why": "여기서 그 사람만의 열람 세션이 생긴다"
+          },
+          {
+            "step": "이미지에 보이지 않는 사용자 식별 정보를 넣어 내려보낸다",
+            "why": "같은 회차라도 사람마다 조금씩 다른 파일이 된다"
+          },
+          {
+            "step": "불법 사이트에 올라온 사본을 수집한다",
+            "why": "되짚을 대상이 있어야 추적이 시작된다"
+          },
+          {
+            "step": "사본에서 식별 정보를 읽어 최초 유출 계정을 찾는다",
+            "why": "사이트를 내리는 대신 출발점을 끊는다"
+          },
+          {
+            "step": "해당 계정을 차단하고 필요하면 법적 대응으로 넘긴다",
+            "why": "반복 유출자는 대개 소수다"
+          },
+          {
+            "step": "유출 지연과 유료 결제액을 함께 측정한다",
+            "why": "차단 자체가 아니라 매출 회복이 목적이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "불법 유통을 사이트 차단으로 막을 것인가, 유출자 추적으로 막을 것인가",
+            "chosen": "이미지에 보이지 않는 사용자 식별 정보를 넣어 최초 유출자를 찾는다(2017년 7월 도입)",
+            "alternatives": [
+              "불법 사이트를 발견할 때마다 내리기",
+              "DRM 으로 열람 자체를 잠그기"
+            ],
+            "tradeoff": "사이트를 내리는 방식은 도메인만 바꾸면 되살아나 끝이 없고, DRM 은 정상 독자의 경험을 해친다. 대신 추적 방식은 유출을 **사전에 막지는 못한다** — 이미 새어 나간 뒤에 출발점을 끊는 구조다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 공유사이트 94% 퇴출",
+                "url": "https://www.etnews.com/20220715000142",
+                "publisher": "전자신문",
+                "date": "2022-07-15",
+                "summary": "이미지에 보이지 않는 식별 정보를 넣어 최초 유출자를 찾는 방식과 그 성과를 보도."
+              },
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "question": "식별 표시를 눈에 보이게 넣을 것인가",
+            "chosen": "독자가 알아채지 못하는 방식으로 넣는다",
+            "alternatives": [
+              "가시적 워터마크",
+              "표시 없음"
+            ],
+            "tradeoff": "보이지 않는 표시는 캡처·재압축·크롭을 거쳐도 살아남아야 해서 만들기 어렵고, 얼마나 견디는지는 공격자가 시험해 볼 수 있다. 반대로 가시적 워터마크는 확실하지만 돈 내고 보는 독자의 화면을 망친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 공유사이트 94% 퇴출",
+                "url": "https://www.etnews.com/20220715000142",
+                "publisher": "전자신문",
+                "date": "2022-07-15",
+                "summary": "이미지에 보이지 않는 식별 정보를 넣어 최초 유출자를 찾는 방식과 그 성과를 보도."
+              }
+            ]
+          },
+          {
+            "question": "목표를 유출 근절로 잡을 것인가",
+            "chosen": "유출을 늦추는 것을 목표로 잡고 지연 시간을 지표로 본다(인기작 2회차 이상 지연)",
+            "alternatives": [
+              "유출 0 을 목표로 삼기"
+            ],
+            "tradeoff": "근절을 목표로 하면 달성 못 할 목표에 자원을 계속 붓게 된다. 늦추기로 잡으면 측정 가능해지지만, '완전히 막지는 못한다'를 공개적으로 인정하는 셈이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "question": "성과를 무엇으로 증명할 것인가",
+            "chosen": "차단 건수가 아니라 유출 지연과 유료 결제액의 관계로 본다(유출 없던 주 평균 +23%)",
+            "alternatives": [
+              "내린 불법 사이트 수·삭제 건수로 보고"
+            ],
+            "tradeoff": "매출 지표는 계절성·작품 인기 같은 다른 요인이 섞여 인과를 딱 잘라 말하기 어렵다. 그래도 '몇 개를 내렸다'보다는 목적에 가까운 숫자다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "question": "해외 불법 번역본을 어떻게 다룰 것인가",
+            "chosen": "단속이 아니라 공급 속도로 대응한다 — 다국어 동시 공개를 시험했다",
+            "alternatives": [
+              "해외 불법 번역 사이트 단속 강화",
+              "지역별 순차 공개 유지"
+            ],
+            "tradeoff": "동시 공개는 번역·검수를 연재 속도에 맞춰야 해서 제작 부담이 커지고 품질 관리가 어려워진다. 대신 불법 번역본이 존재할 이유 자체를 줄인다(적용 작품 매출 200% 이상 증가).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "question": "대응을 어느 조직이 맡을 것인가",
+            "chosen": "전담 안티파이러시 조직을 두고 연구 인력과 함께 움직인다",
+            "alternatives": [
+              "법무 대응으로만 처리",
+              "외부 업체에 위탁"
+            ],
+            "tradeoff": "상시 조직은 고정 비용이고, 유출 수법이 바뀔 때마다 기술을 다시 만들어야 한다. 대신 대응이 사건 단위가 아니라 지속적인 개선이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "툰레이더 (보이지 않는 사용자 식별 정보 삽입)",
+            "role": "열람 세션마다 다른 표시를 이미지에 넣어 유출본에서 최초 유출자를 역추적",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 공유사이트 94% 퇴출",
+                "url": "https://www.etnews.com/20220715000142",
+                "publisher": "전자신문",
+                "date": "2022-07-15",
+                "summary": "이미지에 보이지 않는 식별 정보를 넣어 최초 유출자를 찾는 방식과 그 성과를 보도."
+              },
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "tech": "유출 모니터링·수집",
+            "role": "불법 사이트에 올라온 사본을 찾아 추적 대상으로 삼는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          },
+          {
+            "tech": "다국어 동시 공개 파이프라인",
+            "role": "번역 지연을 없애 불법 번역본의 수요를 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+                "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+                "publisher": "머니투데이방송",
+                "date": "2026-04-22",
+                "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "smart-block",
+          "via": "콘텐츠 노출",
+          "contract": "웹툰은 검색 지면에도 놓이지만, 콘텐츠 도메인의 관심사는 노출이 아니라 그 뒤의 유료 전환과 유출이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "결제·페이",
+          "via": "회차 결제",
+          "contract": "유출이 늦어져 생긴 구매 의사가 실제 결제로 이어지는 지점(추정 — 아직 역설계하지 않은 도메인).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "web-index-and-trust",
+          "via": "불법 사본의 검색 노출",
+          "contract": "불법 사이트가 검색에 잡히면 유출 피해가 커진다. 색인 정책과 콘텐츠 보호가 만나는 지점이다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 회차 한 편이 배급되고 추적되기까지",
+          "question": "같은 회차가 어떻게 사람마다 다른 파일이 되고, 유출본은 어떻게 되짚어지는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  E[유료 회차 공개] --> V[독자 열람]\n  V --> MARK[보이지 않는 식별 정보 삽입]\n  MARK --> IMG[독자별로 미세하게 다른 이미지]\n  IMG -.->|유출| PIRATE[(불법 사이트)]\n  PIRATE --> COLLECT[사본 수집]\n  COLLECT --> READ[표시 판독]\n  READ --> WHO[최초 유출 계정 특정]\n  WHO --> BLOCK[계정 차단 · 법적 대응]\n  BLOCK --> DELAY[다음 회차 유출이 늦어짐]\n  DELAY --> PAY[유료 결제 증가]"
+        },
+        {
+          "title": "회차 하나의 유출 상태",
+          "question": "공개된 회차는 시간이 지나며 어떤 상태를 지나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 공개: 유료 회차 오픈\n  공개 --> 무유출: 24시간 내 유출 없음\n  공개 --> 즉시유출: 24시간 내 불법 사이트 등장\n  무유출 --> 지연유출: 며칠~2주 뒤 유출\n  즉시유출 --> 추적: 표시 판독\n  지연유출 --> 추적\n  추적 --> 차단: 계정 특정\n  차단 --> 무유출: 다음 회차는 늦게 샌다\n  무유출 --> [*]: 유료 결제로 회수\n  note right of 무유출\n    이 주간의 유료 결제액이\n    평균 23% 높았다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 표시가 살아남지 못할 때",
+          "question": "추적이 실패하는 지점은 어디이고, 그때 무엇이 남는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  L[유출본 확보] --> R{표시 판독}\n  R -->|성공| WHO[계정 특정 → 차단]\n  R -->|재압축·크롭으로 훼손| LOST[출처 불명]\n  R -->|화면 재촬영 등| LOST\n  LOST --> ONLY[사이트 차단 요청만 남는다]\n  ONLY -.->|도메인 변경| AGAIN[다시 열린다]\n  N[유출본을 못 찾음] --> BLIND[추적 자체가 시작되지 않는다]\n  WHO -.->|오탐| INNOCENT[정상 독자 계정이 잘못 차단될 위험]\n  INNOCENT -.->|공개 자료 없음| Q[오탐률·이의 절차는 미확인]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+          "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+          "publisher": "머니투데이방송",
+          "date": "2026-04-22",
+          "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+        },
+        {
+          "title": "네이버웹툰, '툰레이더'로 불법 공유사이트 94% 퇴출",
+          "url": "https://www.etnews.com/20220715000142",
+          "publisher": "전자신문",
+          "date": "2022-07-15",
+          "summary": "이미지에 보이지 않는 식별 정보를 넣어 최초 유출자를 찾는 방식과 그 성과를 보도."
+        },
+        {
+          "title": "네이버웹툰 '툰레이더', APEC 국제 워크숍서 불법 사이트 대응 사례로 소개",
+          "url": "https://zdnet.co.kr/view/?no=20250807204515",
+          "publisher": "지디넷코리아",
+          "date": "2025-08-07",
+          "summary": "툰레이더가 국제 워크숍에서 불법 유통 대응 모범 사례로 발표됐다는 보도."
+        }
+      ]
+    },
+    {
+      "key": "fast-settlement",
+      "name": "빠른정산 — 돈을 먼저 주고 위험을 떠안는다",
+      "domain": "결제·페이",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "토스의 결제 도메인과 같은 문제를 정반대 방향에서 푼다. 토스는 PG 로서 **가맹점 쪽에서** 출발해 결제 승인·취소를 다뤘지만, 네이버는 **자기 커머스 안의 거래**에서 출발한다. 그래서 이 도메인의 핵심 질문이 '어떻게 승인할까'가 아니라 **'언제 판매자에게 돈을 줄까'**다. 정산이 빨라지면 판매자는 대출을 덜 받고, 그만큼 스마트스토어에 남을 이유가 생긴다 — 결제 수수료가 아니라 **판매자를 붙잡는 것**이 이 기능의 목적이다.",
+        "metrics": [
+          {
+            "label": "지급 시점",
+            "value": "배송 시작 다음날부터 약 3일 만에 정산대금 100%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "label": "일반 정산 대비",
+            "value": "약 8일 → 약 3일 (5일 단축)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "label": "이용 요건",
+            "value": "월 거래 20건 이상 3개월 연속 · 반품률 20% 미만 · 추가 비용 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "label": "누적 지급액",
+            "value": "약 40조원 · 금융비용 절감 약 1,800억원",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "label": "이용 규모",
+            "value": "약 12만명 (93%가 영세·중소사업자)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "label": "시작·확대",
+            "value": "2020년 11월 시작, 2023년 9월 외부몰로 확대",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "정산 주기를 볼 때",
+          "thought": "판매자가 물건을 보내고 8일을 기다리는 동안 그 돈은 어딘가에 묶여 있다. 작은 사업자에게 그 8일은 대출 이자다 — 우리가 앞당겨 주면 그 이자가 사라진다. 문제는 그 5일치 위험을 누가 지느냐였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "위험을 어떻게 감당할지 정할 때",
+          "thought": "선정산은 결국 '아직 확정되지 않은 거래에 돈을 먼저 주는 것'이다. 반품·취소·사기가 나면 그 돈은 우리 손해다. 담보를 요구하면 안전하지만 그러면 정작 도움이 필요한 사업자가 못 쓴다 — 담보 대신 탐지로 가야 했다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "이용 요건을 정할 때",
+          "thought": "요건을 높이면 손실은 줄지만 대상이 좁아진다. 월 20건·반품률 20% 미만이라는 낮은 문턱을 유지할 수 있었던 건 FDS 가 그만큼 걸러 준다는 자신 때문이었을 것이다. 요건이 낮다는 사실 자체가 탐지 성능의 증거다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "무료로 할지 정할 때",
+          "thought": "선정산은 원래 수수료를 받는 금융 상품이다. 무료로 하면 이 기능 자체는 돈을 못 번다 — 대신 판매자가 스마트스토어를 떠나지 않는다. 결제 도메인의 수익을 결제에서 걷지 않고 커머스 잔류에서 걷기로 한 셈이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "주문",
+            "what": "구매자가 결제한 거래. 아직 확정된 것은 아니다."
+          },
+          {
+            "name": "배송 시작",
+            "what": "정산 시계가 돌기 시작하는 기준점."
+          },
+          {
+            "name": "정산대금",
+            "what": "판매자에게 갈 돈. 빠른정산은 이걸 확정 전에 100% 먼저 준다."
+          },
+          {
+            "name": "위험 점수",
+            "what": "이 판매자·이 거래를 먼저 줘도 되는지에 대한 FDS 의 판단."
+          },
+          {
+            "name": "반품·취소",
+            "what": "먼저 준 돈을 되돌려야 하는 사건."
+          }
+        ],
+        "invariants": [
+          "먼저 준 돈은 거래가 확정되기 전의 돈이다 — 반품·취소가 나면 회수 문제가 남는다. 이 위험은 판매자가 아니라 플랫폼이 진다.",
+          "이용 요건이 낮을수록 대상이 넓어지고 위험도 커진다. 요건과 탐지 성능은 한 쌍이다.",
+          "정산 속도는 판매자에게 금융 비용이다. 5일은 시간이 아니라 이자다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "구매자가 결제하고 판매자가 배송을 시작한다",
+            "why": "배송 시작이 정산 시계의 기준점이다"
+          },
+          {
+            "step": "FDS 가 판매자·거래의 위험을 평가한다",
+            "why": "담보 대신 탐지로 위험을 관리하기로 했다"
+          },
+          {
+            "step": "요건(월 20건·반품률 20% 미만)을 만족하면 대상이 된다",
+            "why": "문턱을 낮게 유지해야 정작 필요한 사업자가 쓴다"
+          },
+          {
+            "step": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 를 지급한다",
+            "why": "일반 정산 8일과의 차이 5일이 곧 판매자의 이자다"
+          },
+          {
+            "step": "반품·취소가 발생하면 이후 정산분에서 조정한다",
+            "why": "먼저 준 돈을 되돌리는 경로가 있어야 이 구조가 성립한다(추정)"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "판매자에게 언제 돈을 줄 것인가",
+            "chosen": "거래 확정을 기다리지 않고 배송 시작 다음날부터 약 3일 만에 100% 지급한다",
+            "alternatives": [
+              "일반 정산(약 8일) 유지",
+              "일부만 선지급하고 잔액은 확정 후"
+            ],
+            "tradeoff": "확정 전에 준 돈이라 반품·취소·사기의 위험을 플랫폼이 떠안는다. 100% 를 주기로 한 순간 '일부만 줘서 위험을 나눈다'는 안전장치도 포기한 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "그 위험을 담보로 막을 것인가, 탐지로 막을 것인가",
+            "chosen": "담보 없이 FDS(위험거래탐지시스템)로 관리한다",
+            "alternatives": [
+              "담보·보증 요구",
+              "신용평가사 심사 연동"
+            ],
+            "tradeoff": "탐지가 틀리면 손실이 곧바로 회사 돈이고, 반대로 과하게 잡으면 정상 판매자가 자격에서 빠진다. 담보를 요구했다면 안전했겠지만 그러면 정작 자금이 급한 사업자가 못 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "이용 문턱을 어디에 둘 것인가",
+            "chosen": "월 거래 20건 이상 3개월 연속, 반품률 20% 미만이라는 낮은 요건",
+            "alternatives": [
+              "매출 규모 기준 상향",
+              "심사 후 개별 승인"
+            ],
+            "tradeoff": "문턱이 낮으면 대상이 넓어지는 만큼 위험 노출도 커진다. 이 요건을 유지할 수 있다는 것 자체가 탐지 성능에 대한 베팅이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "선정산에 수수료를 받을 것인가",
+            "chosen": "추가 비용 없이 무료로 제공한다",
+            "alternatives": [
+              "선정산 수수료 부과",
+              "유료 프리미엄 옵션"
+            ],
+            "tradeoff": "기능 자체로는 수익이 없고 위험만 진다. 대신 판매자가 스마트스토어를 떠날 이유를 줄인다 — 결제에서 걷지 않고 커머스 잔류에서 걷겠다는 선택이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "자사 스토어 안에서만 할 것인가",
+            "chosen": "2023년 9월부터 외부몰로 확대한다",
+            "alternatives": [
+              "스마트스토어 전용으로 유지"
+            ],
+            "tradeoff": "밖으로 나가면 거래 데이터를 우리가 다 갖지 못한 상태에서 위험을 판단해야 한다. 자사 스토어에서 통한 탐지가 밖에서도 통한다는 보장이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "question": "결제 수수료를 어떻게 다룰 것인가",
+            "chosen": "영세·중소 사업자의 결제 수수료를 추가로 낮춘다",
+            "alternatives": [
+              "수수료 유지",
+              "규모와 무관한 단일 요율"
+            ],
+            "tradeoff": "직접 수익이 줄어드는 결정이다. 정산 속도와 수수료를 함께 낮춰 판매자를 붙잡는 쪽에 걸었다는 뜻이고, 그만큼 커머스 거래액 성장에 의존하게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이(Npay), 영세·중소 사업자 온라인 결제 수수료 추가 인하",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=33382",
+                "publisher": "네이버 뉴스룸",
+                "summary": "영세·중소 사업자의 온라인 결제 수수료를 추가로 낮춘다는 발표."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "위험거래탐지시스템(FDS)",
+            "role": "담보 없이 선지급해도 되는 거래인지 판단해 낮은 이용 요건을 가능하게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              }
+            ]
+          },
+          {
+            "tech": "빠른정산 지급 파이프라인",
+            "role": "배송 시작을 기준으로 3일 내 100% 지급을 처리한다(월 지급액 1조원 규모)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+                "publisher": "네이버 뉴스룸",
+                "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+              },
+              {
+                "title": "네이버파이낸셜, '빠른정산' 월 지급액 1조원 돌파",
+                "url": "https://navercorp.com/media/pressReleasesDetail?seq=31001",
+                "publisher": "네이버 뉴스룸",
+                "summary": "빠른정산 월 지급 규모가 1조원을 넘어섰다는 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "product-understanding",
+          "via": "스마트스토어 거래",
+          "contract": "커머스에서 일어난 거래가 이 도메인의 정산 대상이 된다. 검색·추천이 만든 거래가 그대로 정산 부하다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "toon-radar",
+          "via": "콘텐츠 결제",
+          "contract": "웹툰 회차 결제도 결국 이 결제 도메인을 지난다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "ai-tab",
+          "via": "행동 연결의 종착점",
+          "contract": "AI탭이 이어 준 쇼핑·예약이 실제 돈이 되는 지점이 여기다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 확정 전에 돈이 나간다",
+          "question": "결제부터 판매자 입금까지, 빠른정산은 어디를 건너뛰는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  B[구매자 결제] --> SHIP[배송 시작]\n  SHIP --> FDS{FDS 위험 평가}\n  FDS -->|요건 충족| FAST[빠른정산 · 약 3일 · 100%]\n  FDS -->|미충족| NORMAL[일반 정산 · 약 8일]\n  FAST --> SELLER[판매자 입금]\n  NORMAL --> SELLER\n  CONFIRM[구매 확정] -.->|빠른정산은 여기를 기다리지 않는다| FAST\n  RET[반품·취소] -.->|이미 나간 돈| ADJ[이후 정산분에서 조정]\n  SELLER --> STAY[판매자가 스토어에 남을 이유]"
+        },
+        {
+          "title": "정산 한 건의 상태",
+          "question": "'돈을 줬다'와 '거래가 끝났다' 사이에 무엇이 있는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 결제됨\n  결제됨 --> 배송시작: 판매자 발송\n  배송시작 --> 심사: FDS 평가\n  심사 --> 선지급: 요건 충족 · 약 3일\n  심사 --> 대기: 일반 정산 · 약 8일\n  선지급 --> 확정: 구매 확정\n  대기 --> 확정\n  선지급 --> 회수대상: 반품·취소\n  회수대상 --> 조정: 이후 정산분에서 차감\n  조정 --> 확정\n  확정 --> [*]\n  note right of 선지급\n    이 구간의 위험은 판매자가 아니라\n    플랫폼이 진다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 먼저 준 돈이 돌아오지 않을 때",
+          "question": "탐지가 틀리면 손실은 누구에게, 얼마나 조용히 생기는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  F{FDS 판단}\n  F -->|미탐 · 위험 거래를 통과| PAID[돈이 먼저 나감]\n  PAID --> BAD[반품·취소·사기]\n  BAD --> RECOVER{이후 정산분이 있나}\n  RECOVER -->|있음| ADJ[차감으로 회수]\n  RECOVER -->|없음 · 판매자 이탈| LOSS[플랫폼 손실]\n  F -->|과탐 · 정상 판매자를 배제| OUT[일반 정산으로 밀림]\n  OUT --> COST[판매자는 5일치 금융비용을 다시 진다]\n  COST -.->|불만은 개별 문의로만| INVIS[집계에 잘 안 잡힌다]\n  LOSS -.->|공개 자료 없음| Q[실제 손실률·회수율은 미확인]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+          "publisher": "네이버 뉴스룸",
+          "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+        },
+        {
+          "title": "네이버파이낸셜, '빠른정산' 월 지급액 1조원 돌파",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=31001",
+          "publisher": "네이버 뉴스룸",
+          "summary": "빠른정산 월 지급 규모가 1조원을 넘어섰다는 발표."
+        },
+        {
+          "title": "네이버페이(Npay), 영세·중소 사업자 온라인 결제 수수료 추가 인하",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=33382",
+          "publisher": "네이버 뉴스룸",
+          "summary": "영세·중소 사업자의 온라인 결제 수수료를 추가로 낮춘다는 발표."
+        }
+      ]
+    },
+    {
+      "key": "ai-factory",
+      "name": "AI 팩토리 — 자사 인프라를 상품으로 파는 일",
+      "domain": "클라우드 인프라",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 도메인에는 다른 도메인에 없는 긴장이 있다. **같은 인프라가 자사 서비스를 떠받치는 원가이면서 동시에 밖에 파는 상품**이다. 검색·커머스가 이 위에서 돌아가고, 남는 용량을 팔아 엔터프라이즈 매출 5,878억이 나온다. AI 시대에는 이 긴장이 더 커진다 — GPU 는 비싸고 한정돼 있어서, 우리 모델을 돌릴지 고객 것을 돌릴지가 실제로 경쟁하는 자원이 된다.",
+        "metrics": [
+          {
+            "label": "각 세종 규모",
+            "value": "약 29만㎡ · 최대 전력 270MW · 서버 60만 유닛, GPU 운영 규모는 각 춘천의 4배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+                "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+                "publisher": "네이버",
+                "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+              }
+            ]
+          },
+          {
+            "label": "AI 팩토리 로드맵",
+            "value": "2027 상반기 55MW → 2027 말 100MW → 2028년 200MW → 목표 1GW(각 세종의 약 4배)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          },
+          {
+            "label": "대상 시장",
+            "value": "아시아·태평양, 유럽, 중동",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "데이터센터를 직접 지을지 정할 때",
+          "thought": "빌려 쓰면 초기 비용이 적지만, 검색·AI 처럼 상시로 무겁게 도는 워크로드는 결국 자기 건물이 싸진다. 게다가 남는 용량을 팔 수 있다면 원가 센터가 매출처가 된다 — 다만 그 순간부터 우리 서비스와 고객이 같은 자원을 두고 경쟁한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "GPU 공급선을 볼 때",
+          "thought": "GPU 한 곳에만 매이면 가격도 물량도 상대가 정한다. 그래서 협력선을 넓히는 건 성능 문제가 아니라 협상력 문제다 — 다만 이기종 GPU 를 함께 운영하면 스케줄링과 소프트웨어 스택이 복잡해진다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "'소버린 AI' 를 내세울 때",
+          "thought": "각 나라가 남의 기술에 의존하지 않으려 한다는 흐름은 우리에게 기회다. 한국에서 모델과 인프라를 다 갖고 있다는 사실이 해외에서는 '우리도 그렇게 할 수 있다'는 참조 사례가 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "규모를 단계로 나눌 때",
+          "thought": "1GW 를 한 번에 짓겠다고 하면 아무도 못 믿는다. 55MW 로 시작해 100MW, 200MW 로 올리는 계획은 수요가 안 오면 멈출 수 있는 구조이기도 하다 — 전력과 부지는 한 번 잡으면 되돌리기 어렵기 때문이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "전력",
+            "what": "이 도메인의 진짜 단위. 서버 대수가 아니라 MW 로 규모를 센다."
+          },
+          {
+            "name": "GPU 클러스터",
+            "what": "AI 연산을 담당하는 묶음. 자사 모델과 고객 워크로드가 이 위에서 경쟁한다."
+          },
+          {
+            "name": "자사 워크로드",
+            "what": "검색·커머스·하이퍼클로바X. 멈추면 회사가 멈춘다."
+          },
+          {
+            "name": "고객 워크로드",
+            "what": "클라우드로 파는 몫. 매출이지만 우선순위는 자사보다 낮을 수 있다(추정)."
+          }
+        ],
+        "invariants": [
+          "같은 자원을 자사와 고객이 나눠 쓴다 — 용량이 모자라면 둘 중 하나는 밀린다.",
+          "전력과 부지는 한 번 확보하면 되돌리기 어렵다. 그래서 이 도메인의 결정은 다른 도메인보다 훨씬 앞서 내려진다.",
+          "GPU 공급이 한 곳에 묶이면 가격과 물량을 상대가 정한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "전력과 부지를 먼저 확보한다",
+            "why": "이 도메인의 규모 단위는 서버가 아니라 MW 다"
+          },
+          {
+            "step": "GPU 클러스터를 구축·운영한다",
+            "why": "AI 워크로드의 성능은 개별 카드가 아니라 클러스터 운영에서 갈린다"
+          },
+          {
+            "step": "자사 서비스(검색·커머스·하이퍼클로바X)를 그 위에 올린다",
+            "why": "가장 무겁고 상시로 도는 워크로드가 원가의 기준선을 만든다"
+          },
+          {
+            "step": "남는 용량과 운영 역량을 클라우드 상품으로 판다",
+            "why": "원가 센터를 매출처로 바꾸는 지점이다"
+          },
+          {
+            "step": "단계적으로 규모를 올린다(55MW → 100MW → 200MW → 1GW)",
+            "why": "수요가 안 따라오면 멈출 수 있어야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "인프라를 빌려 쓸 것인가, 직접 지을 것인가",
+            "chosen": "하이퍼스케일 데이터센터를 직접 짓고 운영한다(각 춘천 → 각 세종)",
+            "alternatives": [
+              "퍼블릭 클라우드 임대",
+              "코로케이션만 사용"
+            ],
+            "tradeoff": "초기 투자와 전력·부지라는 되돌리기 어려운 결정을 떠안는다. 대신 상시로 무겁게 도는 자사 워크로드의 원가를 낮추고, 남는 용량을 팔 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+                "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+                "publisher": "네이버",
+                "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+              }
+            ]
+          },
+          {
+            "question": "자사용 인프라를 밖에 팔 것인가",
+            "chosen": "클라우드 상품으로 외부에 판다",
+            "alternatives": [
+              "자사 전용으로만 운영"
+            ],
+            "tradeoff": "같은 자원을 자사 서비스와 고객이 나눠 쓰게 되어, 용량이 모자랄 때 누구를 밀지 결정해야 한다. 고객에게는 SLA 를 약속해야 하므로 자사 서비스가 밀리는 순간도 생긴다(추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          },
+          {
+            "question": "GPU 를 어디서 받을 것인가",
+            "chosen": "엔비디아와 대규모 협력을 하되 AMD·SK하이닉스 등으로 공급·기술 협력선을 넓힌다",
+            "alternatives": [
+              "단일 벤더에 집중",
+              "자체 칩 개발"
+            ],
+            "tradeoff": "이기종 하드웨어를 함께 운영하면 스케줄링·소프트웨어 스택이 복잡해지고 최적화가 두 배로 든다. 대신 가격과 물량을 한 회사가 정하는 상황에서 벗어난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              },
+              {
+                "title": "네이버-AMD, AI 생태계 확장 위한 차세대 GPU 인프라 협력 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34426",
+                "publisher": "네이버 뉴스룸",
+                "summary": "GPU 공급선을 넓히기 위한 AMD 와의 협력 발표."
+              },
+              {
+                "title": "네이버클라우드, SK하이닉스와 손잡고 AI 서비스 성능·효율성 동시 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=33277",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AI 서비스의 성능과 효율을 함께 높이기 위한 메모리·인프라 협력 발표."
+              }
+            ]
+          },
+          {
+            "question": "규모를 한 번에 지을 것인가",
+            "chosen": "2027 상반기 55MW 로 시작해 2027 말 100MW, 2028년 200MW, 궁극적으로 1GW 로 단계 확장한다",
+            "alternatives": [
+              "목표 규모를 한 번에 착공"
+            ],
+            "tradeoff": "단계별로 나누면 초기 자본 부담과 수요 미달 위험은 줄지만, 전력·부지 선점 경쟁에서는 늦을 수 있다. 그리고 각 단계마다 수요를 증명해야 다음 단계가 열린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          },
+          {
+            "question": "어느 시장을 겨냥할 것인가",
+            "chosen": "아시아·태평양, 유럽, 중동의 '소버린 AI' 수요를 겨냥한다",
+            "alternatives": [
+              "국내 수요만 대상",
+              "미국 시장 직접 진입"
+            ],
+            "tradeoff": "각국이 자국 안에서 AI 역량을 갖추려는 흐름에 올라타는 대신, 지역마다 규제·데이터 주권 요구가 달라 표준화된 상품으로 팔기 어려워진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          },
+          {
+            "question": "모델과 인프라를 함께 가질 것인가",
+            "chosen": "하이퍼클로바X 를 자사 인프라 위에서 돌리며 둘을 함께 판다",
+            "alternatives": [
+              "모델만 개발하고 인프라는 외부",
+              "인프라만 팔고 모델은 포기"
+            ],
+            "tradeoff": "둘 다 무거운 투자라 어느 한쪽이 부진해도 멈추기 어렵다. 대신 '모델부터 인프라까지 국내에서 다 된다'는 사례 자체가 해외 소버린 AI 고객에게 파는 물건이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+                "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+                "publisher": "네이버",
+                "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+              },
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "하이퍼스케일 데이터센터(각 춘천·각 세종)",
+            "role": "전력 270MW·서버 60만 유닛 규모로 자사 워크로드와 클라우드 상품을 함께 떠받친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+                "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+                "publisher": "네이버",
+                "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+              }
+            ]
+          },
+          {
+            "tech": "GPU 클러스터 운영",
+            "role": "AI 연산 자원을 묶어 운영하는 역량 자체가 협력에서 네이버가 맡은 몫이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              }
+            ]
+          },
+          {
+            "tech": "이기종 GPU·메모리 협력(엔비디아·AMD·SK하이닉스)",
+            "role": "공급선을 넓혀 가격·물량 협상력을 확보한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+                "publisher": "네이버 뉴스룸",
+                "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+              },
+              {
+                "title": "네이버-AMD, AI 생태계 확장 위한 차세대 GPU 인프라 협력 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34426",
+                "publisher": "네이버 뉴스룸",
+                "summary": "GPU 공급선을 넓히기 위한 AMD 와의 협력 발표."
+              },
+              {
+                "title": "네이버클라우드, SK하이닉스와 손잡고 AI 서비스 성능·효율성 동시 강화",
+                "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=33277",
+                "publisher": "네이버 뉴스룸",
+                "summary": "AI 서비스의 성능과 효율을 함께 높이기 위한 메모리·인프라 협력 발표."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "ai-tab",
+          "via": "모델 서빙 자원",
+          "contract": "AI탭의 답변 생성이 이 인프라 위에서 돈다. 트래픽이 늘면 그대로 GPU 수요가 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "colbert-matching",
+          "via": "벡터 서빙 자원",
+          "contract": "300억 벡터를 서빙하는 저장·연산이 이 도메인의 원가로 잡힌다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "product-understanding",
+          "via": "커머스 LLM 서빙",
+          "contract": "쇼핑 인텔리전스도 같은 인프라 위에서 돌아간다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 원가이면서 상품인 자원",
+          "question": "같은 인프라가 어떻게 안으로는 원가, 밖으로는 매출이 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PWR[전력·부지 확보] --> DC[데이터센터 각 춘천·각 세종]\n  DC --> GPU[GPU 클러스터]\n  VEND[엔비디아 · AMD · SK하이닉스] --> GPU\n  GPU --> OWN[자사 워크로드<br/>검색·커머스·하이퍼클로바X]\n  GPU --> SELL[클라우드 상품 · AI 팩토리]\n  OWN --> COST[원가 · 서비스 품질]\n  SELL --> REV[엔터프라이즈 매출 0.59조]\n  SELL --> GLOBAL[APAC · 유럽 · 중동 소버린 AI 수요]\n  OWN -.->|같은 자원을 두고 경쟁| SELL"
+        },
+        {
+          "title": "규모 확장 단계",
+          "question": "1GW 라는 목표는 어떤 단계를 거쳐 도달하는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 각춘천: 첫 자체 데이터센터\n  각춘천 --> 각세종: 270MW · GPU 4배\n  각세종 --> AI팩토리_55MW: 2027 상반기 가동\n  AI팩토리_55MW --> AI팩토리_100MW: 2027 말\n  AI팩토리_100MW --> AI팩토리_200MW: 2028\n  AI팩토리_200MW --> 목표_1GW: 각 세종의 약 4배\n  AI팩토리_55MW --> 보류: 수요 미달 시\n  보류 --> AI팩토리_100MW: 수요 확인 후\n  note right of 보류\n    단계로 나눈 이유.\n    전력·부지는 되돌리기 어렵다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 자원이 모자랄 때 누가 밀리는가",
+          "question": "용량 부족·공급 차질·수요 미달은 각각 어디를 때리는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  CAP{용량이 충분한가}\n  CAP -->|부족| WHO{누구를 밀 것인가}\n  WHO -->|고객| SLA[SLA 위반 · 클라우드 신뢰 손상]\n  WHO -->|자사| SVC[검색·AI 응답 품질 저하]\n  SUP{GPU 공급}\n  SUP -->|단일 벤더 차질| STALL[증설 일정 전체가 밀린다]\n  SUP -->|이기종 운영| COMPLEX[스케줄링·소프트웨어 복잡도 증가]\n  DEM{수요}\n  DEM -->|미달| IDLE[지어 둔 전력·설비가 논다]\n  IDLE --> FIX[고정비는 그대로 남는다]\n  SLA -.->|공개 자료 없음| Q[우선순위 정책은 미확인]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+          "publisher": "네이버 뉴스룸",
+          "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+        },
+        {
+          "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+          "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+          "publisher": "네이버",
+          "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+        },
+        {
+          "title": "네이버-AMD, AI 생태계 확장 위한 차세대 GPU 인프라 협력 강화",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34426",
+          "publisher": "네이버 뉴스룸",
+          "summary": "GPU 공급선을 넓히기 위한 AMD 와의 협력 발표."
+        },
+        {
+          "title": "네이버클라우드, SK하이닉스와 손잡고 AI 서비스 성능·효율성 동시 강화",
+          "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=33277",
+          "publisher": "네이버 뉴스룸",
+          "summary": "AI 서비스의 성능과 효율을 함께 높이기 위한 메모리·인프라 협력 발표."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "색인 갱신 지연(문서가 올라가고 검색에 뜨기까지)의 실제 목표치를 모른다.",
+    "검색 자동완성은 네이버가 직접 밝힌 공개 자료를 찾지 못했다 — 일반적인 trie/FST 설명뿐이라 이 회사의 선택으로 쓸 수 없다.",
+    "DEVIEW 2021 ColBERT 발표 PDF 본문을 읽지 못했다(deview.naver.com 접근 불가). 세션 개요와 논문으로만 재구성했으므로 압축 방식·후보 수·지연 수치는 미확인이다.",
+    "시간 예산을 넘겼을 때 어떤 결과로 폴백하는지 확인하지 못했다.",
+    "블록과 광고가 같은 지면을 나눠 쓰는 기준(어느 위치까지 광고인지, 블록 수에 따라 어떻게 조정되는지)은 공개된 바 없다.",
+    "스마트블록 적용 비율이 발표 시점 계획(10~15%) 이후 실제로 어디까지 갔는지 확인하지 못했다.",
+    "같은 상품을 묶는 카탈로그 매칭의 실제 기준과 오류율은 공개된 바 없다 — 이 도메인에서 가장 중요한 숫자인데 없다.",
+    "개인화가 순서만 바꾸는지, 노출 자체를 줄이기도 하는지 확인하지 못했다(불변식에 추정으로 표시).",
+    "AI탭 도입 이후 출처 클릭·검색광고 전환이 어떻게 변했는지 공개된 수치가 없다 — 이 전환의 진짜 비용이 여기 있는데 확인할 수 없다.",
+    "AI 브리핑과 AI탭이 같은 질의에 다른 답을 줄 때 어느 쪽을 기준으로 품질을 관리하는지 모른다.",
+    "네이버의 어뷰징 탐지 기준과 오탐률은 공개된 바 없다. 사전 탐지의 대가(정상 문서가 억울하게 빠지는 비율)를 확인할 방법이 없다.",
+    "색인 누락과 순위 하락을 사이트 소유자가 구분할 수 있는지(서치 어드바이저가 어디까지 알려주는지) 확인하지 못했다.",
+    "AI 브리핑 도입 이후 창작자 지원을 확대했다는 언급을 봤으나 원 보도자료를 특정하지 못해 쓰지 않았다.",
+    "이 페이지는 아직 검색·커머스만 다룬다. 콘텐츠(1.90조)·핀테크(1.69조)·클라우드(0.59조)는 도메인만 잡아 두고 기능이 비어 있다 — 완주 기준(수익원마다 최소 한 기능)을 아직 못 채운 이유다.",
+    "툰레이더의 식별 표시가 재압축·크롭·화면 재촬영을 어디까지 견디는지, 판독 실패율이 얼마인지는 공개된 바 없다.",
+    "오탐으로 정상 독자가 차단됐을 때의 이의 절차와 그 빈도를 확인하지 못했다.",
+    "빠른정산의 실제 손실률과 회수율은 공개된 바 없다 — 이 구조의 진짜 비용이 그 숫자인데 확인할 수 없다.",
+    "먼저 지급한 뒤 반품·취소가 났을 때의 회수 절차(이후 정산분 차감인지 별도 청구인지)를 확인하지 못했다.",
+    "외부몰 확대 이후 자사 스토어와 위험 판단 기준이 같은지 다른지 모른다.",
+    "용량이 모자랄 때 자사 워크로드와 고객 워크로드 중 무엇을 우선하는지에 대한 정책은 공개된 바 없다 — 이 도메인의 가장 날카로운 질문인데 답이 없다.",
+    "엔터프라이즈 매출 5,878억 중 AI 인프라가 차지하는 비중을 확인하지 못했다."
+  ],
+  "sources": [
+    {
+      "title": "네이버 2025년 4분기 및 연간 실적",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+      "publisher": "네이버 IR",
+      "date": "2026-02",
+      "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+    },
+    {
+      "title": "눈치까지 챙긴 D.I.A.+ 시스템 — 검색어 의도 분석과 문서 이해 기술",
+      "url": "https://deview.kr/data/deview/session/attach/1500_T4_%EB%B0%95%EC%A7%80%ED%98%84_%EB%88%88%EC%B9%98%EA%B9%8C%EC%A7%80%20%EC%B1%99%EA%B8%B4%20D.I.A.+%20%EC%8B%9C%EC%8A%A4%ED%85%9C,%20%EC%8B%B9%20%EB%8B%A4%20%EC%B0%BE%EC%95%84%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4(%EA%B2%80%EC%83%89%EC%96%B4%20%EC%9D%98%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B3%BC%20%EB%AC%B8%EC%84%9C%20%EC%9D%B4%ED%95%B4%20%EA%B8%B0%EC%88%A0,%20%EB%84%A4%EC%9D%B4%EB%B2%84%20%EA%B2%80%EC%83%89%EC%97%90%20%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0).pdf",
+      "publisher": "NAVER DEVIEW",
+      "summary": "검색어 의도 분석과 문서 이해를 결합해 검색 결과를 고르는 시스템 발표."
+    },
+    {
+      "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+      "url": "https://deview.kr/2021/sessions/486",
+      "publisher": "NAVER DEVIEW 2021",
+      "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+    },
+    {
+      "title": "앞으로 10년을 책임 질, 네이버 검색 모니터링 시스템 구축기",
+      "url": "https://deview.kr/2021/sessions/506",
+      "publisher": "NAVER DEVIEW 2021",
+      "summary": "검색 품질·장애를 관측하는 모니터링 체계를 새로 만든 과정."
+    },
+    {
+      "title": "네이버 쇼핑 검색 커버리지 개선 기술",
+      "url": "https://deview.kr/data/deview/session/attach/7%E1%84%80%E1%85%A5%E1%86%B7%E1%84%89%E1%85%A2%E1%86%A8%E1%84%8B%E1%85%A5%E1%84%8B%E1%85%AA%20%E1%84%89%E1%85%A1%E1%86%BC%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%8B%E1%85%A7%E1%86%AB%E1%84%80%E1%85%A7%E1%86%AF%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB.pdf",
+      "publisher": "NAVER DEVIEW",
+      "summary": "검색어와 상품을 연결하는 쇼핑 검색 커버리지 개선 발표."
+    },
+    {
+      "title": "네이버, 새로운 검색경험 제공하는 '에어서치' 선보인다",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=30604",
+      "publisher": "네이버 뉴스룸",
+      "summary": "정형화된 컬렉션 단위 통합검색에서 스마트블록 중심으로 옮기며, 블록 생성과 블록 랭킹 두 단계를 둔다고 밝힘."
+    },
+    {
+      "title": "네이버 검색, '인기글' 스마트블록 도입하여 'VIEW' 대체",
+      "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31528",
+      "publisher": "네이버 뉴스룸",
+      "date": "2024-02-01",
+      "summary": "VIEW 영역을 의도별로 나눈 인기글 블록으로 바꾸고 블로그·카페 탭을 따로 두었다는 발표."
+    },
+    {
+      "title": "네이버, 내 취향에 맞게 쇼핑 검색 결과 보여준다",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=29922",
+      "publisher": "네이버 뉴스룸",
+      "summary": "AiTEMS 로 성·연령과 쇼핑 이력을 반영해 패션 카테고리부터 검색 결과를 개인화, 6개월간 추천 영역 일평균 클릭 약 27% 증가."
+    },
+    {
+      "title": "네이버 쇼핑앱, 대화하며 쇼핑하는 '쇼핑 AI 에이전트' 베타 출시",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=34353",
+      "publisher": "네이버 뉴스룸",
+      "summary": "가격·배송·상품 속성·사용자 선호를 학습한 커머스 특화 LLM '쇼핑 인텔리전스'로 요약·비교·리뷰 분석을 제공한다는 발표."
+    },
+    {
+      "title": "네이버 '스마트렌즈', 쇼핑에 특화된 이미지 검색 <쇼핑렌즈> 베타 오픈",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=29643",
+      "publisher": "네이버 뉴스룸",
+      "summary": "이미지로 상품을 찾는 검색 모델을 적용하고, 패션은 색상·질감·로고 같은 메타 정보를 따로 고려한다는 발표."
+    },
+    {
+      "title": "네이버, AI 검색 서비스 'AI탭' 베타 출시… '에이전틱 검색 경험의 시작'",
+      "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34984",
+      "publisher": "네이버 뉴스룸",
+      "date": "2026-04-27",
+      "summary": "네이버플러스 멤버십 대상 베타로 시작해 상반기 내 전체 사용자·모바일 메인 검색창으로 확대한다는 발표."
+    },
+    {
+      "title": "네이버, 대화형 검색 'AI탭' 정식 출시… 5,000만 사용자의 일상으로",
+      "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034429",
+      "publisher": "네이버 뉴스룸",
+      "date": "2026-06-26",
+      "summary": "베타 2개월 누적 400만 사용자, 정식 출시로 일평균 5,000만 방문자 대상 확대. 하이퍼클로바X 기반 '프로덕트 네이티브 LLM' 탑재."
+    },
+    {
+      "title": "네이버 웹마스터 도구, '네이버 서치 어드바이저'로 통합·개편",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=30045",
+      "publisher": "네이버 뉴스룸",
+      "date": "2019-10-23",
+      "summary": "사이트 소유자가 노출 키워드·클릭률·수집/색인 상태·오류를 직접 확인할 수 있게 웹마스터 도구를 통합했다는 발표."
+    },
+    {
+      "title": "네이버, 7월부터 플레이스 리뷰 평균 별점 공개…어뷰징 방지 정책도 강화",
+      "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034317",
+      "publisher": "네이버 뉴스룸",
+      "date": "2026-07",
+      "summary": "리뷰 작성 후 3개월 이내에만 내용·별점을 고칠 수 있게 제한해 시간이 지난 뒤의 어뷰징성 수정을 막는다는 발표."
+    },
+    {
+      "title": "네이버웹툰, '툰레이더'로 불법 유출 차단해 유료 결제액 23% '증가'",
+      "url": "https://news.mtn.co.kr/news-detail/2026042209473588349",
+      "publisher": "머니투데이방송",
+      "date": "2026-04-22",
+      "summary": "2026년 1분기 툰레이더 리포트 — 24시간 내 유출 작품 수 1월 대비 약 90% 감소, 유출 없던 주의 유료 결제액 평균 23% 증가."
+    },
+    {
+      "title": "네이버웹툰, '툰레이더'로 불법 공유사이트 94% 퇴출",
+      "url": "https://www.etnews.com/20220715000142",
+      "publisher": "전자신문",
+      "date": "2022-07-15",
+      "summary": "이미지에 보이지 않는 식별 정보를 넣어 최초 유출자를 찾는 방식과 그 성과를 보도."
+    },
+    {
+      "title": "네이버웹툰 '툰레이더', APEC 국제 워크숍서 불법 사이트 대응 사례로 소개",
+      "url": "https://zdnet.co.kr/view/?no=20250807204515",
+      "publisher": "지디넷코리아",
+      "date": "2025-08-07",
+      "summary": "툰레이더가 국제 워크숍에서 불법 유통 대응 모범 사례로 발표됐다는 보도."
+    },
+    {
+      "title": "네이버페이 빠른정산 누적대금 40조원 돌파, 소상공인 금융비용 약 1,800억원 절감",
+      "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=31938",
+      "publisher": "네이버 뉴스룸",
+      "summary": "배송 시작 다음날부터 약 3일 만에 정산대금 100% 지급, 일반 정산(약 8일)보다 5일 빠르며 FDS 고도화로 낮은 이용 요건을 유지한다는 발표."
+    },
+    {
+      "title": "네이버파이낸셜, '빠른정산' 월 지급액 1조원 돌파",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=31001",
+      "publisher": "네이버 뉴스룸",
+      "summary": "빠른정산 월 지급 규모가 1조원을 넘어섰다는 발표."
+    },
+    {
+      "title": "네이버페이(Npay), 영세·중소 사업자 온라인 결제 수수료 추가 인하",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=33382",
+      "publisher": "네이버 뉴스룸",
+      "summary": "영세·중소 사업자의 온라인 결제 수수료를 추가로 낮춘다는 발표."
+    },
+    {
+      "title": "네이버-엔비디아, 기가와트(GW)급 초대형 AI 팩토리 구축 맞손",
+      "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=10034355",
+      "publisher": "네이버 뉴스룸",
+      "summary": "2027년 상반기 55MW 가동을 시작해 2028년 200MW, 궁극적으로 1GW 규모의 AI 팩토리를 짓는다는 발표. 네이버는 GPU 클러스터 구축·운영을, 엔비디아는 인프라 플랫폼을 맡는다."
+    },
+    {
+      "title": "하이퍼스케일 데이터센터 '각 세종' 오픈",
+      "url": "https://www.navercorp.com/story/storyDetail?seq=2359",
+      "publisher": "네이버",
+      "summary": "약 29만㎡·최대 전력 270MW·서버 60만 유닛 규모로, GPU 운영 규모가 각 춘천의 4배이며 하이퍼클로바X 를 떠받친다는 소개."
+    }
+  ]
+}

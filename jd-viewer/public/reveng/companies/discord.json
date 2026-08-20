@@ -1,0 +1,2088 @@
+{
+  "slug": "discord",
+  "name": "Discord",
+  "name_en": "Discord",
+  "country": "US",
+  "category": "메시징",
+  "status": "done",
+  "updated_at": "2026-08-21",
+  "one_liner": "몰리는 것을 합치고, 터지기 전에 세어 보는 회사",
+  "business_model": "**이 사이트는 아직 Discord 의 수익 구조에 대한 1차 자료를 확보하지 못했다.** 비상장이라 매출과 그 구성이 공시되지 않고, 우리가 읽은 것은 전부 엔지니어링 글이다. **모르는 것은 비워 두는 것이 이 사이트의 규칙이므로 수익 구성은 `미확인` 으로 둔다.**\n\n대신 확인된 것은 규모와 비용의 성격이다. 동시 음성 사용자 **260만 명**, 이그레스 **220Gbps·120Mpps**, 13개 지역 30여 개 데이터센터에 음성 서버 **850대 이상**(2018년). 동시 접속은 **500만 명**을 넘겼고(2017년), 메시지는 **수조 개**가 쌓여 있다(2023년).\n\n그리고 앞서 판 회사들과 눈에 띄게 다른 점이 하나 있다. 네이버·카카오·당근·Instagram·YouTube 는 전부 **지면과 광고**가 기술 이야기의 한 축이었는데, **우리가 읽은 Discord 의 엔지니어링 글에는 지면·광고·랭킹 이야기가 한 줄도 없다.** 전부 **전달하고 저장하는 비용** 이야기다. (이것은 우리가 읽은 자료의 성격에 대한 관찰이지, 이 회사가 광고를 하지 않는다는 주장이 아니다 — 이 사이트의 해석.)\n\n**사내에서 같은 모양이 두 번씩 반복된다.** 첫째, **몰리는 것을 한 곳에서 합치거나 한 번만 하게 만든다** — 같은 행에 대한 동시 요청은 쿼리 한 번으로 합치고(요청 병합), 팬아웃은 원격 노드당 `send/2` 한 번으로 줄이며(Manifold), 한 길드의 음성은 서버 한 대가 맡는다. 둘째, **터진 뒤에 끊는 대신 들어가기 전에 센다** — 레지스트리가 포화면 세션이 아예 요청을 넣지 않고(Semaphore), 침묵 구간은 애초에 전송하지 않으며, 헬스체크에 실패한 음성 서버는 요청이 가기 전에 서비스 디스커버리에서 빠지고, AutoMod 는 메시지를 **게시되기 전에** 막는다.\n\n**그리고 이 회사에는 남기는 도메인과 남기지 않는 도메인이 뚜렷이 갈린다** — 메시지는 수조 개가 쌓여 위로 올려 읽히는데, 음성은 지나가면 끝난다. (이 묶음들은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
+  "products": [
+    "Discord — 길드(서버)·채널·DM",
+    "음성·영상 채널"
+  ],
+  "domain_map": {
+    "title": "Discord 도메인 지도",
+    "question": "대화가 사라지지 않고 사람은 한곳에 몰릴 때, 무엇이 먼저 부러지는가?",
+    "code": "flowchart TD\n  U[사용자] -->|WebSocket| GW[실시간 전달 · 프레즌스<br/>Elixir 게이트웨이 · 길드 프로세스]\n  GW --> MSG[메시지 저장 · 조회<br/>ScyllaDB + Rust 데이터 서비스]\n  MSG -->|위로 올려 읽기| U\n  GW --> VOICE[음성 · 영상<br/>C++ SFU · 850대+]\n  VOICE --> U\n  GW --> MOD[커뮤니티 운영 · 신뢰]\n  MOD --> GW\n  BIG[수십만 명 커뮤니티] -.->|쏠림| MSG\n  BIG -.->|쏠림| GW\n  REV[수익 구성 · 미확인]\n  U -.-> REV\n  classDef unk stroke-dasharray: 3 3\n  class REV unk"
+  },
+  "revenue_streams": [
+    {
+      "name": "미확인",
+      "how": "비상장이라 매출 구성이 공시되지 않고, 이 사이트는 1차 출처를 아직 찾지 못했다. 확인되기 전까지 비워 둔다.",
+      "confidence": "unknown",
+      "sources": []
+    }
+  ],
+  "domains": [
+    {
+      "name": "메시지 저장·조회",
+      "why": "이 서비스의 대화는 **사라지지 않는다.** 몇 년 전 대화도 위로 올려 읽을 수 있어 저장소가 계속 커지고(2017년 12노드 → 2022년 초 177노드, 메시지 수조 개), 무엇보다 **채널마다 트래픽의 자릿수가 달라** 인기 채널이 그대로 뜨거운 파티션이 된다.",
+      "tech": [
+        {
+          "tech": "ScyllaDB(C++) — GC 없는 Cassandra 호환 저장소",
+          "solves": "JVM 가비지 컬렉터 일시정지로 인한 지연 스파이크와 수동 재부팅을 없앤다. 177노드가 72노드가 되고 노드당 9TB 를 담는다.",
+          "limits": "데이터베이스를 통째로 바꾸는 일이고, 테스트에서 역방향 쿼리 성능이 부족해 벤더 최적화를 기다려야 했다. 삭제는 여전히 톰스톤으로 남아 압축되기 전까지 사라지지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Stores Trillions of Messages",
+              "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+              "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+              "date": "2023-03-06",
+              "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+            }
+          ]
+        },
+        {
+          "tech": "Rust 데이터 서비스 — 요청 병합 + 채널 ID 일관 해시",
+          "solves": "같은 행에 대한 동시 요청을 한 번의 쿼리로 합치고, 같은 채널의 요청을 같은 인스턴스로 보내 병합 효과를 키운다. 대형 이벤트의 트래픽 스파이크에서 데이터베이스를 가려 준다.",
+          "limits": "홉이 하나 늘고 그 계층이 새 장애점이 되며, 인기 채널의 부하가 특정 인스턴스에 몰린다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Stores Trillions of Messages",
+              "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+              "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+              "date": "2023-03-06",
+              "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+            }
+          ]
+        },
+        {
+          "tech": "채널 ID + 시간 버킷 파티션, Snowflake ID",
+          "solves": "한 채널의 대화를 시간 범위로 잘라 읽을 수 있게 한다. 복제본 3.",
+          "limits": "**작은 서버와 거대한 커뮤니티가 같은 스키마 위에 있어** 쏠림을 스키마로는 표현할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Stores Trillions of Messages",
+              "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+              "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+              "date": "2023-03-06",
+              "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+            }
+          ]
+        },
+        {
+          "tech": "검색·전문 인덱스, 첨부 파일 저장",
+          "solves": "— 이 사이트는 아직 1차 자료를 찾지 않았다.",
+          "limits": "읽은 글은 메시지 본문의 저장과 조회까지만 다룬다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "message-storage"
+      ]
+    },
+    {
+      "name": "실시간 전달·프레즌스",
+      "why": "접속하면 WebSocket 하나가 열리고 그 위로 길드·채널·메시지·프레즌스 이벤트가 흐른다. 동시 접속이 500만에 가까워지자 **큰 길드에서 이벤트 하나를 발행하는 데 900ms~2.1초**가 걸리는 지점이 왔다.",
+      "tech": [
+        {
+          "tech": "Elixir / Erlang VM — 세션·길드 GenServer",
+          "solves": "연결 하나와 커뮤니티 하나를 각각 프로세스로 두어 격리하고, 길드에 발행된 것을 연결된 모든 세션으로 팬아웃한다. 동시 접속 500만까지 이 구조로 갔다.",
+          "limits": "Erlang 프로세스는 단일 스레드라 **길드 하나의 처리량이 그 커뮤니티의 상한**이다. 동시 3만 명 길드에서 메시지 큐가 밀렸고 한동안 기능을 손으로 꺼서 버텼다. **큰 길드를 여러 프로세스로 쪼개는지는 이 글에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        },
+        {
+          "tech": "Manifold — 노드별 묶어 보내기 + 코어별 일관 해시 분배",
+          "solves": "`send/2` 하나가 30~70μs 라 대상 수만큼 부르면 발행 하나가 900ms~2.1초가 된다. 보내는 프로세스의 호출 수를 **관여한 원격 노드 수**로 제한하고, 노드 안에서는 `:erlang.phash2/2` 로 코어별 워커에 나누되 **선형화를 보장**한다. 노드 간 네트워크 트래픽도 줄었다.",
+          "limits": "라이브러리를 직접 만들고 유지해야 하며 전달 경로에 계층이 하나 는다. 해시가 고정이라 특정 워커에 부하가 쏠릴 여지가 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        },
+        {
+          "tech": "FastGlobal — 읽기 전용 공유 힙에 놓는 상수",
+          "solves": "Erlang VM 이 항상 같은 값을 반환하는 함수의 데이터를 읽기 전용 공유 힙에 두는 성질을 이용해, 일관 해시 링 조회를 **0.3μs**(ETS 7μs)로 만든다. 재접속 조회 총시간이 17.5초에서 750ms 가 됐다.",
+          "limits": "데이터를 바꿀 때 **런타임에 모듈을 빌드해야 하고 최대 1초**가 든다 — 링이 자주 바뀌지 않아서 성립하는 방식이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        },
+        {
+          "tech": "Semaphore — `:ets.update_counter/4` 원자적 카운터",
+          "solves": "진행 중인 요청 수를 세어 동시성 상한을 걸고, 포화 시 호출자가 **일찍 포기**하게 한다. 서킷 브레이커 대신 고른 방식이다. 이후 프레즌스 장애에서 세션 서비스가 안정적으로 유지됐다.",
+          "limits": "상한값이 또 하나의 튜닝 대상이 된다(추정). 포화 순간의 그 세션은 원하는 일을 하지 못한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+              "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+              "publisher": "Discord Blog · Stanislav Vishnevskiy",
+              "date": "2017-07-06",
+              "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "presence-fanout"
+      ]
+    },
+    {
+      "name": "음성·영상",
+      "why": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸져 서버가 미디어를 중계해야 하고, 그래야 IP 노출을 막고 서버측 음소거 같은 운영 기능도 가능해진다.",
+      "tech": [
+        {
+          "tech": "자체 제작 C++ SFU(Selective Forwarding Unit)",
+          "solves": "채널 안에서 오디오·영상을 전달한다. 서버를 거치기 때문에 **IP 노출을 막고 제재된 사용자의 패킷을 버릴 수 있으며**, 네이티브와 브라우저 사이를 번역한다. 다자 통화에서 P2P 는 참가자가 늘수록 감당할 수 없이 비싸진다.",
+          "limits": "서버 비용을 전부 회사가 진다 — 850대 이상, 220Gbps·120Mpps. 그리고 **길드 하나가 서버 하나에 묶여** 그 서버가 죽으면 그 길드의 통화가 통째로 영향을 받는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        },
+        {
+          "tech": "Elixir 제어 3종(Gateway · Guilds · Voice 시그널링) + etcd 배정",
+          "solves": "이미 열려 있는 게이트웨이 위에서 음성 연결을 시작하고, 첫 참가자가 들어올 때 그 지역에서 **가장 덜 쓰이는 서버**를 골라 길드에 배정한다. 시그널링을 모두 Elixir 로 써서 코드를 재사용한다.",
+          "limits": "제어와 미디어가 다른 스택이라 경계를 관리해야 하고, 클라이언트는 WebSocket 을 두 개 연다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        },
+        {
+          "tech": "경량화한 WebRTC 경로(ICE 제거 · Salsa20 · SDP 약 1000바이트)",
+          "solves": "모든 클라이언트가 우리 릴레이로 오므로 ICE 가 필요 없다. DTLS/SRTP 대신 더 빠른 Salsa20 을 쓰고, 표준의 왕복 10KB 협상을 1KB 로 줄인다. 방화벽 통과는 주기적 핑으로 유지한다.",
+          "limits": "브라우저는 표준을 써야 해 **두 세계가 생기고 서버가 번역**한다. 자체 WebRTC 네이티브 라이브러리의 **잦은 업데이트가 고통스러운 작업**이라고 회사가 밝힌다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        },
+        {
+          "tech": "침묵 억제 · RTCP 대역폭 통지 · 장애/DDoS 공통 재배정",
+          "solves": "침묵을 보내지 않아 대역폭과 CPU 를 아끼고, 수신자 리포트로 송신자의 영상 대역폭을 알려 준다. 서버 사망과 DDoS 를 **같은 절차**(디스커버리에서 제거 → 대체 배정 → voice state 이동 → 재연결 통지)로 처리한다.",
+          "limits": "재배정 순간 참가자가 한 번 끊겼다 붙는다. **기기 성능이 제각각인 그룹 영상과 화면 공유는 회사가 남은 과제로 밝힌 자리다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+              "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+              "publisher": "Discord Blog · Jozsef Vass",
+              "date": "2018-09-10",
+              "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "voice-sfu"
+      ]
+    },
+    {
+      "name": "커뮤니티 운영·신뢰",
+      "why": "길드는 **주인이 있는 공간**이라 규칙이 두 층에 걸쳐 있다 — 플랫폼의 이용약관과 그 서버만의 규칙. 그래서 이 도메인의 첫 문제는 무엇을 금지할지가 아니라 **누가 규칙을 만들 것인가**다.",
+      "tech": [
+        {
+          "tech": "세 층 구조(사용자 신고 · 커뮤니티 자치 · 플랫폼 집행)",
+          "solves": "회사가 모든 커뮤니티의 맥락을 알아야 하는 부담을 없앤다. 서버는 자기 규칙을 만들고, 플랫폼은 이용약관을 집행하며 최고 위험 사안(아동 안전·폭력적 극단주의)을 우선한다.",
+          "limits": "**같은 행동이 서버마다 다르게 다뤄지고** 사용자는 방을 옮길 때마다 규칙을 다시 배워야 한다(추정). 서버 규칙 위반이 곧 플랫폼 위반은 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Our Approach to Content Moderation at Discord",
+              "url": "https://discord.com/safety/our-approach-to-content-moderation",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+            }
+          ]
+        },
+        {
+          "tech": "AutoMod — 게시 전 차단 · 키워드 4개 필터 · 스팸 필터 2종",
+          "solves": "서버 주인이 설정한 규칙으로 메시지를 **게시되기 전에** 막는다. 2022년 이후 4,500만 개 이상이 그렇게 걸렸다. 스레드·text-in-voice·포럼 채널에도 적용된다.",
+          "limits": "와일드카드가 **과잉 매칭**을 만들고(`*cat*` → scathing·locate), 콘텐츠 스팸 필터는 **DM 스팸·복붙·반복 메시지를 못 잡을 수 있다**고 회사가 명시한다. Manage Server·Administrator 권한자는 항상 면제된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Auto Moderation in Discord",
+              "url": "https://discord.com/safety/auto-moderation-in-discord",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+            },
+            {
+              "title": "Privacy and Safety on Discord",
+              "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+              "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+              "date": "2023-06-08",
+              "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+            }
+          ]
+        },
+        {
+          "tech": "자동 조치 3종 + 모더레이터 인계",
+          "solves": "차단·로그 채널 알림·타임아웃 중에서 서버가 고르고, 알림에는 트리거된 필터까지 담겨 모더레이터가 Actions 버튼으로 킥·밴·타임아웃을 건다 — 자동으로 끝내는 길과 사람에게 넘기는 길을 함께 둔다.",
+          "limits": "조합을 서버가 정하므로 같은 위반의 결과가 서버마다 달라진다. 링크·파일 네이티브 필터는 클라이언트 측이라 경고까지다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Auto Moderation in Discord",
+              "url": "https://discord.com/safety/auto-moderation-in-discord",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+            }
+          ]
+        },
+        {
+          "tech": "플랫폼 선제 탐지(이미지 해싱 · ML · 네트워크 패턴 · 사람 주도 조사)",
+          "solves": "신고를 기다리지 않고 찾는다. CSAM 은 **전 서버 유형에서 파일을 스캔**해 발견 즉시 NCMEC 에 신고한다.",
+          "limits": "정책 위반 자동 탐지 도구는 **200명 이상 커뮤니티 서버**, 선제적 유해 콘텐츠 식별은 **Discoverable 서버**에 적용된다 — 서버의 크기와 공개 여부가 적용 범위를 정한다. **오탐률과 이의 제기 절차의 수치는 이 사이트에 없다**(투명성 보고서가 PDF 로만 제공된다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Privacy and Safety on Discord",
+              "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+              "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+              "date": "2023-06-08",
+              "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+            },
+            {
+              "title": "Our Approach to Content Moderation at Discord",
+              "url": "https://discord.com/safety/our-approach-to-content-moderation",
+              "publisher": "Discord Safety",
+              "date": "2026-08 확인",
+              "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "automod-layers"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "key": "message-storage",
+      "name": "메시지 저장 — 몰리는 곳과 지워도 남는 것",
+      "domain": "메시지 저장·조회",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 메시지는 **사라지지 않는다.** 몇 년 전 대화도 위로 올려 읽을 수 있고, 그래서 저장소가 계속 커진다 — 2017년 12노드로 시작한 메시지 클러스터가 2022년 초 **177노드**가 됐고 담긴 메시지는 **수조 개**다.\n\n그런데 크기보다 어려운 것이 **쏠림**이었다. 친구 몇 명이 쓰는 작은 서버와 수십만 명이 있는 커뮤니티가 **같은 스키마 위에 있다.** 메시지는 채널 ID 와 시간 버킷으로 묶여 저장되는데, 인기 있는 채널의 파티션에 읽기가 몰리면 그 노드가 못 버티고 **클러스터 전체의 지연으로 번졌다.**\n\n그래서 이 도메인의 이야기는 '어떻게 많이 담을까'가 아니라 **'어떻게 한 곳에 몰리지 않게 할까'**이고, 답이 두 층에서 나온다 — 데이터베이스를 바꾼 것과, 데이터베이스 앞에 계층을 하나 더 둔 것.",
+        "metrics": [
+          {
+            "label": "클러스터의 성장",
+            "value": "2017년 **12노드** → 2022년 초 **177노드**, 담긴 메시지 **수조 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "이전 후 규모",
+            "value": "177노드 → **72노드**. 노드당 **9TB**(이전 평균 4TB)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "조회 지연",
+            "value": "과거 메시지 조회 p99 **40~125ms → 15ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "삽입 지연",
+            "value": "메시지 삽입 p99 **5~70ms → 안정적인 5ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "이사 속도",
+            "value": "Spark 기반 추정 **3개월** → Rust 마이그레이터로 **9일**, 초당 **320만 건**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "채널마다 트래픽이 완전히 다르다는 것을 스키마로는 표현할 수 없었을 때",
+          "thought": "친구 몇 명의 서버와 수십만 명 커뮤니티는 메시지 양의 자릿수가 다른데 저장 구조는 같다. 그래서 **인기 있는 채널이 곧 뜨거운 파티션**이 된다. 게다가 읽기는 메모리 구조와 여러 SSTable 을 함께 봐야 해서 쓰기보다 비싸다 — **몰리는 것이 하필 더 비싼 쪽**이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "노드를 뺐다 넣었다 하는 일이 일상이 됐을 때",
+          "thought": "압축 백로그를 없애려고 노드를 로테이션에서 빼고, 트래픽 없이 SSTable 을 압축하고, 다시 넣어 hinted handoff 를 처리하고, 백로그가 사라질 때까지 반복했다. 팀은 이걸 **'gossip dance'** 라고 불렀다. 성능 문제가 아니라 **사람의 온콜 노동**이 이 시스템의 진짜 비용이 되어 있었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GC 일시정지 앞에서 튜닝의 한계를 봤을 때",
+          "thought": "JVM 가비지 컬렉터의 일시정지가 큰 지연 스파이크를 만들었고, 때로는 노드를 **손으로 재부팅**해야 했다. 튜닝으로 줄일 수는 있어도 없앨 수는 없다 — 그러면 **GC 가 아예 없는 것**을 고르는 수밖에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "3개월짜리 이사를 앞두고",
+          "thought": "Spark 로 짠 마이그레이터의 추정이 3개월이었다. 그동안 두 시스템을 함께 안고 가야 한다는 뜻이다. 그래서 도구를 다시 만들었다 — 이미 만들어 둔 데이터 서비스 라이브러리를 확장해 **토큰 범위를 읽고 SQLite 로 체크포인트하며 스트리밍**하게 했더니 **9일**이 됐다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "메시지 — Snowflake ID 로 시간순 정렬이 가능하다",
+          "파티션 — **채널 ID + 정적 시간 버킷**. 복제본 3",
+          "SSTable — 디스크에 쌓이는 정렬된 파일. 읽기는 여럿을 봐야 한다",
+          "톰스톤 — 지운 것의 자리표. 압축될 때까지 남는다",
+          "데이터 서비스 — API 와 데이터베이스 사이에 놓인 Rust 중간 계층"
+        ],
+        "invariants": [
+          "채널 ID + 시간 버킷이 한 파티션이다 — **채널의 인기가 곧 파티션의 부하**다.",
+          "읽기가 쓰기보다 비싸다 — 메모리 구조와 여러 SSTable 을 함께 봐야 한다.",
+          "지운 메시지는 톰스톤으로 남는다 — 압축되기 전까지 사라지지 않는다.",
+          "같은 행에 대한 동시 요청은 하나의 쿼리로 합칠 수 있다.",
+          "같은 채널의 요청이 같은 인스턴스로 가야 합치는 효과가 커진다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "API 가 데이터베이스를 직접 부르지 않고 **Rust 로 만든 데이터 서비스**를 부른다",
+            "why": "데이터베이스 앞에 완충을 두어야 트래픽 스파이크가 그대로 전달되지 않는다."
+          },
+          {
+            "step": "**채널 ID 를 라우팅 키로 일관 해시**해 같은 채널의 요청을 같은 서비스 인스턴스로 보낸다",
+            "why": "합칠 수 있는 요청들이 한곳에 모여야 합치는 효과가 커진다."
+          },
+          {
+            "step": "같은 행에 대한 동시 요청이 여러 개면 **데이터베이스 쿼리는 한 번만** 하고, 나머지 요청은 그 워커 태스크의 결과를 구독한다",
+            "why": "인기 채널에 사람이 몰릴 때 데이터베이스가 보는 부하는 사람 수가 아니라 서로 다른 요청 수가 된다."
+          },
+          {
+            "step": "ScyllaDB 가 **채널 ID + 시간 버킷** 파티션에서 메시지를 읽어 돌려준다(복제 3)",
+            "why": "Snowflake ID 가 시간순이라 한 채널의 대화를 시간 범위로 잘라 읽을 수 있다."
+          },
+          {
+            "step": "메시지를 지우면 즉시 사라지지 않고 **톰스톤**이 남는다 — 압축될 때 실제로 정리된다",
+            "why": "분산 저장소에서 삭제는 '없음'이 아니라 '지워졌음'이라는 기록이어야 복제본 사이에서 합의된다."
+          },
+          {
+            "step": "(이사) 새 클러스터를 Discord 의 super-disk 구성(로컬 SSD 를 영구 디스크에 미러)으로 올린다",
+            "why": "로컬 SSD 의 속도와 영구 디스크의 내구성을 함께 가져간다."
+          },
+          {
+            "step": "(이사) Rust 마이그레이터가 **토큰 범위를 읽고 SQLite 로 체크포인트하며** ScyllaDB 로 스트리밍한다",
+            "why": "중간에 멈춰도 이어서 갈 수 있어야 하고, 3개월을 기다릴 수는 없었다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "메시지를 어떤 단위로 묶어 저장할 것인가",
+            "chosen": "**채널 ID + 정적 시간 버킷**을 파티션 키로 쓰고, 시간순 정렬이 되는 Snowflake ID 를 메시지 ID 로 쓴다. 복제본은 3.",
+            "alternatives": [
+              "채널 단위로만 묶는다",
+              "사용자나 길드 단위로 묶는다"
+            ],
+            "tradeoff": "한 채널의 대화를 시간 범위로 잘라 읽기 쉬워지는 대신, **채널마다 트래픽이 극단적으로 달라 인기 채널이 그대로 뜨거운 파티션이 된다.** 친구 몇 명의 서버와 수십만 명 커뮤니티가 같은 스키마 위에 있기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "몰리는 읽기를 어디서 막을 것인가",
+            "chosen": "데이터베이스 앞에 **Rust 로 만든 데이터 서비스** 계층을 둔다. 같은 행에 대한 동시 요청은 **쿼리를 한 번만** 하고 나머지는 그 결과를 구독한다(request coalescing).",
+            "alternatives": [
+              "애플리케이션 캐시를 키운다",
+              "데이터베이스 노드를 더 늘린다"
+            ],
+            "tradeoff": "홉이 하나 늘고 그 계층 자체가 새로운 장애 지점이 된다(뒷문장은 이 사이트의 추정). 대신 **대형 이벤트 때 데이터베이스를 트래픽 스파이크로부터 가려 준다** — 사람이 몰려도 데이터베이스가 보는 것은 서로 다른 요청 수뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "요청을 인스턴스에 어떻게 흩을 것인가",
+            "chosen": "**채널 ID 를 라우팅 키로 일관 해시**해 같은 채널의 요청이 항상 같은 인스턴스로 가게 한다.",
+            "alternatives": [
+              "무작위·라운드로빈으로 흩는다"
+            ],
+            "tradeoff": "인기 채널의 부하가 특정 인스턴스에 몰리게 된다(뒷문장은 이 사이트의 추정). 그래도 **합칠 수 있는 요청이 한곳에 모여야 합치는 효과가 나온다** — 흩어 놓으면 병합할 것이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "GC 일시정지를 어떻게 할 것인가",
+            "chosen": "튜닝을 계속하는 대신 **가비지 컬렉터가 아예 없는 데이터베이스**로 간다 — ScyllaDB 는 Java 가 아니라 C++ 로 쓰였고 Cassandra 호환이다.",
+            "alternatives": [
+              "JVM 튜닝을 계속한다",
+              "다른 저장 엔진을 직접 만든다"
+            ],
+            "tradeoff": "데이터베이스를 통째로 바꾸는 일이고, 테스트에서 **역방향 쿼리 성능이 부족한 것이 드러나 ScyllaDB 팀의 최적화를 기다려야 했다.** 대신 JVM GC 일시정지와 그로 인한 수동 재부팅이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "가장 큰 것을 언제 옮길 것인가",
+            "chosen": "**메시지를 마지막에 옮긴다.** 2020년까지 메시지를 제외한 나머지 데이터베이스를 먼저 ScyllaDB 로 옮기고, 프로덕션 경험을 쌓고 우리 워크로드에 맞게 성능이 개선되기를 기다렸다.",
+            "alternatives": [
+              "가장 아픈 것부터 먼저 옮긴다",
+              "전부 한 번에 옮긴다"
+            ],
+            "tradeoff": "그 기간 동안 **Cassandra 의 온콜 노동('gossip dance')과 GC 스파이크를 계속 졌다.** 대신 가장 크고 되돌리기 어려운 이사를 **이미 검증된 위에서** 하게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "이사 도구를 무엇으로 만들 것인가",
+            "chosen": "Spark 기반 마이그레이터(추정 3개월) 대신 **데이터 서비스 라이브러리를 확장한 Rust 마이그레이터**를 쓴다 — 토큰 범위를 읽고 SQLite 로 체크포인트한 뒤 ScyllaDB 로 스트리밍한다.",
+            "alternatives": [
+              "Spark 로 3개월에 걸쳐 옮긴다",
+              "이중 쓰기만으로 자연스럽게 넘긴다"
+            ],
+            "tradeoff": "도구를 직접 만들어야 하고 그만큼 검증할 것이 늘어난다. 대신 **3개월이 9일이 됐고 초당 320만 건**이 나왔다 — 두 시스템을 함께 안고 가는 기간 자체가 위험이므로 이사 속도가 곧 안전이 된다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "99.9999% 에서 멈췄을 때 무엇을 할 것인가",
+            "chosen": "마지막 토큰 범위에 **Cassandra 에서 한 번도 압축된 적 없는 거대한 톰스톤 더미**가 있었다. 그 범위를 압축한 뒤 이사는 **몇 초 만에** 끝났다.",
+            "alternatives": [
+              "남은 범위를 건너뛰고 마무리한다",
+              "마이그레이터의 성능을 더 올린다"
+            ],
+            "tradeoff": "원인을 찾는 데 시간이 든다. 그래도 **지운 것이 실제로는 남아 있었다는 사실이 마지막 0.0001% 에서 드러났다** — 삭제를 자리표로 남기는 구조의 대가가 가장 끝에서 청구된 셈이다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "바꾼 것이 나아졌다고 무엇으로 말할 것인가",
+            "chosen": "노드 수와 지연의 꼬리로 말한다 — **177노드 → 72노드**, 조회 p99 **40~125ms → 15ms**, 삽입 p99 **5~70ms → 안정적인 5ms**.",
+            "alternatives": [
+              "평균 지연으로 말한다",
+              "처리량으로만 말한다"
+            ],
+            "tradeoff": "p99 는 좋아 보이기 어려운 지표라 개선을 작게 보이게 할 수 있다. 대신 **문제가 애초에 꼬리에 있었다** — 핫 파티션과 GC 일시정지는 평균이 아니라 최악의 순간에 나타난다(뒷문장은 이 사이트의 해석). 실제로 2022년 월드컵 결승의 트래픽 급증에서도 안정적이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ScyllaDB(C++, Cassandra 호환)",
+            "role": "메시지 저장소. GC 가 없어 JVM 일시정지로 인한 지연 스파이크가 사라졌다. 72노드에 노드당 9TB.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "Rust 데이터 서비스(요청 병합)",
+            "role": "API 와 데이터베이스 사이에서 같은 행에 대한 동시 요청을 한 번의 쿼리로 합친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "채널 ID 일관 해시 라우팅",
+            "role": "같은 채널의 요청을 같은 인스턴스로 보내 병합 효과를 키우고, 대형 이벤트 때 데이터베이스를 가려 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "Snowflake ID + 채널·시간 버킷 파티션",
+            "role": "한 채널의 대화를 시간 범위로 잘라 읽을 수 있게 한다. 복제본 3.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "super-disk(로컬 SSD 를 영구 디스크에 미러)",
+            "role": "새 클러스터의 디스크 구성. 속도와 내구성을 함께 가져간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "Rust 마이그레이터(토큰 범위 + SQLite 체크포인트)",
+            "role": "이사 도구. 9일 만에 초당 320만 건으로 옮겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "검색·전문 인덱스와 첨부 파일 저장",
+            "role": "— 이 글은 메시지 본문 저장과 조회까지만 다룬다. 이 사이트는 아직 1차 자료를 찾지 않았다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "실시간 전달·프레즌스",
+          "via": "쓰기와 전달의 경계",
+          "contract": "보낸 메시지는 저장되면서 동시에 연결된 사람들에게 전달돼야 하는데, 두 경로가 어디서 갈라지고 어떤 순서를 보장하는지는 이 글에 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "kakao:caribe-realtime",
+          "via": "같은 문제의 다른 무게",
+          "contract": "카카오는 실시간 전달의 '성능'을 다시 정의하는 데서 출발하고, Discord 는 **지난 대화를 언제든 위로 올려 읽는다**는 성질 때문에 저장·조회 쪽이 먼저 부러졌다. 두 회사는 서로를 언급하지 않는다 — 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "메시지 한 건을 읽는 길",
+          "question": "인기 채널에 사람이 몰려도 데이터베이스가 무너지지 않는 이유는 무엇인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[클라이언트들] --> API[Discord API]\n  API --> HASH[채널 ID 일관 해시]\n  HASH --> DS[데이터 서비스 · Rust]\n  DS --> COAL{같은 행 요청이<br/>이미 진행 중인가}\n  COAL -->|예| SUB[그 워커의 결과를 구독<br/>쿼리를 더 만들지 않는다]\n  COAL -->|아니오| Q[쿼리 1회]\n  Q --> SC[(ScyllaDB<br/>채널 ID + 시간 버킷 · 복제 3)]\n  SC --> RES[결과]\n  RES --> SUB\n  RES --> API\n  SUB --> API\n  SC -.->|GC 없음 · 72노드 · 노드당 9TB| PERF[조회 p99 15ms]"
+        },
+        {
+          "title": "메시지 한 건이 거치는 상태",
+          "question": "지운 메시지는 언제 진짜로 사라지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 작성됨: Snowflake ID 부여\n  작성됨 --> 저장됨: 채널 + 시간 버킷 파티션에 기록(복제 3)\n  저장됨 --> 조회됨: 메모리 구조 + 여러 SSTable\n  조회됨 --> 저장됨\n  저장됨 --> 톰스톤: 삭제 요청\n  note right of 톰스톤\n    '없음'이 아니라\n    '지워졌음'이라는 기록\n  end note\n  톰스톤 --> 압축대기: 아직 정리되지 않음\n  압축대기 --> 압축대기: 압축이 밀리면 계속 쌓인다\n  압축대기 --> 사라짐: SSTable 압축\n  사라짐 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 몰리는 곳과 밀리는 것",
+          "question": "평균은 멀쩡한데 어디서 꼬리가 터졌는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  BIG[수십만 명 커뮤니티] --> HOT[뜨거운 파티션]\n  SMALL[친구 몇 명의 서버] -.->|같은 스키마| HOT\n  HOT --> READ[동시 읽기<br/>메모리 + 여러 SSTable]\n  READ --> SLOW[그 노드가 못 버틴다]\n  SLOW --> CLUSTER[클러스터 전체 지연으로 번짐]\n  GC[JVM GC 일시정지] --> SPIKE[지연 스파이크]\n  SPIKE --> REBOOT[때때로 손으로 노드 재부팅]\n  BACKLOG[압축 백로그] --> DANCE[gossip dance<br/>노드를 뺐다 압축하고 다시 넣기]\n  DANCE --> TOIL[성능이 아니라 온콜 노동이 비용이 된다]\n  TS[압축되지 않은 톰스톤 더미] --> STUCK[이사가 99.9999% 에서 멈춤]\n  STUCK --> COMPACT[그 범위를 압축]\n  COMPACT --> DONE[몇 초 만에 완료]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Discord Stores Trillions of Messages",
+          "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+          "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+          "date": "2023-03-06",
+          "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+        }
+      ]
+    },
+    {
+      "key": "presence-fanout",
+      "name": "팬아웃 — 병목을 없애면 다음 병목이 드러난다",
+      "domain": "실시간 전달·프레즌스",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "접속하면 WebSocket 하나가 열리고, 그 연결마다 **세션 프로세스(GenServer)** 가 하나 생긴다. 세션은 원격 Erlang 노드에 있는 **길드 프로세스**와 통신하고, **길드에 무언가 발행되면 연결된 모든 세션으로 팬아웃된다.** 누군가 접속하면 그 사실(프레즌스)도 같은 길로 전부에게 퍼진다.\n\n이 구조는 길드가 작을 때는 아름답다. 그런데 **/r/Overwatch 길드가 동시 3만 명**이 되자 피크 시간에 길드 프로세스가 **메시지 큐를 따라잡지 못했다.** 팀은 한동안 **메시지를 만드는 기능을 손으로 꺼서** 부하를 관리했는데, 지속 가능한 방법이 아니라는 것을 알고 있었다.\n\n그리고 이 글의 진짜 이야기는 그 다음이다 — **병목 하나를 없앨 때마다 부하가 다음 자리로 옮겨 갔고, 회사는 그것을 세 번 연달아 만났다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "동시 접속 **500만 명**에 도달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "터진 지점",
+            "value": "**/r/Overwatch 길드 동시 3만 명** — 피크에 길드 프로세스가 메시지 큐에 밀렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "범인의 크기",
+            "value": "`send/2` 호출 하나의 실제 시간이 **30~70μs**(Erlang 이 호출 프로세스를 디스케줄하기 때문). 큰 길드의 이벤트 발행 하나가 **900ms~2.1초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "링 조회",
+            "value": "ETS **7μs** → FastGlobal **0.3μs**. 재접속 시 조회 총시간 **17.5초 → 750ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "label": "세마포어의 효과",
+            "value": "이후 프레즌스 서비스 장애 때 **세션 서비스는 안정적으로 유지**됐고 프레즌스는 몇 분 만에 회복했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "/r/Overwatch 가 동시 3만 명이 됐을 때",
+          "thought": "길드 프로세스가 피크에 메시지 큐를 따라잡지 못했다. 당장 할 수 있는 일은 **메시지를 만들어 내는 기능을 손으로 끄는 것**이었고, 실제로 그렇게 버텼다. 급한 불은 꺼지지만 **이건 방법이 아니다** — 커뮤니티가 커질수록 끌 기능이 더 필요해진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "벤치마크를 돌려 보고",
+          "thought": "범인이 뜻밖의 곳에 있었다. **`send/2` 호출 하나가 30~70μs** 였다 — Erlang 이 호출한 프로세스를 디스케줄하기 때문이다. 큰 길드에 이벤트 하나를 발행하는 데 900ms~2.1초가 걸린 이유가 우리 로직이 아니라 **보내는 횟수 그 자체**였다. 그러면 고쳐야 할 것은 무엇을 보내느냐가 아니라 **몇 번 보내느냐**가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "조회를 빠르게 만들고 나서",
+          "thought": "FastGlobal 로 링 조회가 0.3μs 가 되자 재접속 폭주가 풀렸다. 그런데 그러자 **길드 레지스트리 프로세스가 약 500만 개 세션의 동시 호출에 눌렸다.** 앞이 빨라지면 뒤가 더 많이 맞는다 — **병목을 없애는 일은 부하를 다음 자리로 옮기는 일**이기도 하다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "서킷 브레이커를 쓰지 않기로 했을 때",
+          "thought": "실패한 요청이 큐에 쌓이고 재시도가 몰리면 그 자체가 다음 장애를 만든다 — 실제로 타임아웃이 연쇄되고 결국 메모리 부족으로 죽었다. 그러면 필요한 것은 **끊는 스위치**가 아니라 **들어가기 전에 몇 개가 진행 중인지 세어 보는 것**이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "세션 프로세스 — WebSocket 연결 하나당 하나(GenServer)",
+          "길드 프로세스 — 원격 Erlang 노드에 있다. 발행의 시작점",
+          "일관 해시 링 — 어느 노드에 무엇이 있는지의 지도",
+          "Manifold.Partitioner — 노드마다 하나. 받은 PID 를 코어별 워커로 나눈다",
+          "세마포어 카운터 — 진행 중인 요청 수를 세는 ETS 카운터"
+        ],
+        "invariants": [
+          "길드에 발행된 것은 **연결된 모든 세션**으로 팬아웃된다.",
+          "Erlang 프로세스는 단일 스레드다 — **한 길드 프로세스의 처리량이 그 길드의 상한**이다.",
+          "Manifold 이후, 보내는 프로세스의 `send/2` 호출 수는 **관여한 원격 노드 수**를 넘지 않는다.",
+          "링은 자주 바뀌지 않는다 — 그래서 빌드 비용을 조회 비용과 맞바꿀 수 있다.",
+          "포화 상태에서는 기다리는 것보다 **일찍 포기하는 것**이 낫다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 WebSocket 으로 접속하면 **세션 프로세스(GenServer)** 가 뜬다",
+            "why": "연결마다 독립된 프로세스를 두면 하나가 죽어도 나머지가 영향을 받지 않는다."
+          },
+          {
+            "step": "세션이 **일관 해시 링**을 조회해 자기 길드가 어느 원격 노드에 있는지 찾는다 — 조회는 FastGlobal 로 0.3μs",
+            "why": "재접속이 몰릴 때 이 조회가 병목이 됐던 자리다."
+          },
+          {
+            "step": "길드 프로세스에 등록한다. 이때 **세마포어**가 진행 중인 요청 수를 세고, 포화면 세션이 **일찍 포기**한다",
+            "why": "실패가 큐에 쌓이면 그 적체가 다음 장애가 된다."
+          },
+          {
+            "step": "길드에 이벤트가 발행되면(메시지·프레즌스 등) 대상 세션들의 PID 를 **원격 노드별로 묶는다**(Manifold)",
+            "why": "`send/2` 하나가 30~70μs 라 대상 수만큼 부르면 발행 하나가 초 단위가 된다."
+          },
+          {
+            "step": "노드마다 하나 있는 **Manifold.Partitioner** 에 묶음을 보낸다",
+            "why": "보내는 프로세스는 관여한 노드 수만큼만 `send/2` 를 부르면 된다."
+          },
+          {
+            "step": "Partitioner 가 `:erlang.phash2/2` 일관 해시로 PID 를 **CPU 코어 수만큼의 자식 워커**에 나눈다",
+            "why": "한 프로세스가 다 보내면 그 프로세스가 다시 병목이 된다."
+          },
+          {
+            "step": "자식 워커가 실제 세션 프로세스에 메시지를 보낸다",
+            "why": "여기서 비로소 사용자에게 이벤트가 닿는다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "연결과 커뮤니티를 무엇으로 모델링할 것인가",
+            "chosen": "둘 다 **프로세스**로 둔다 — WebSocket 하나당 세션 GenServer, 커뮤니티 하나당 원격 노드의 길드 GenServer. 길드에 발행되면 연결된 모든 세션으로 팬아웃한다.",
+            "alternatives": [
+              "연결을 스레드·이벤트 루프로 다루고 커뮤니티는 자료구조로 둔다",
+              "공유 메모리 브로드캐스트 버스를 쓴다"
+            ],
+            "tradeoff": "격리와 장애 봉쇄를 얻는 대신, **Erlang 프로세스는 단일 스레드라 길드 하나의 처리량이 그 커뮤니티의 상한**이 된다. 실제로 동시 3만 명 길드에서 메시지 큐가 밀렸고, 한동안 **기능을 손으로 꺼서** 버텨야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "팬아웃을 그대로 보낼 것인가",
+            "chosen": "**Manifold** 를 만든다 — 대상 PID 를 원격 노드별로 묶어 노드마다 하나뿐인 Partitioner 에 보내고, 거기서 다시 나눈다. 그러면 **보내는 프로세스의 `send/2` 호출 수가 관여한 원격 노드 수를 넘지 않는다.**",
+            "alternatives": [
+              "대상마다 `send/2` 를 그대로 부른다",
+              "발행 자체를 줄인다(기능을 끈다)"
+            ],
+            "tradeoff": "라이브러리를 직접 만들고 유지해야 하고 전달 경로에 계층이 하나 늘어난다. 대신 **30~70μs × 대상 수**였던 비용이 노드 수에 비례하게 바뀌고, 노드 간 네트워크 트래픽도 함께 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "노드 안에서 다시 나눌 때 순서를 포기할 것인가",
+            "chosen": "포기하지 않는다. Partitioner 가 `:erlang.phash2/2` **일관 해시**로 PID 를 CPU 코어 수만큼의 워커에 나누므로, 같은 대상은 항상 같은 워커를 거친다 — 회사는 이 구조가 **선형화(linearizability)를 보장한다**고 밝힌다.",
+            "alternatives": [
+              "아무 워커에나 흩어 보낸다(순서 보장 포기)",
+              "단일 프로세스가 노드 안에서 다 보낸다"
+            ],
+            "tradeoff": "해시가 고정이라 특정 워커에 부하가 쏠릴 수 있다(뒷문장은 이 사이트의 추정). 대신 **분산시키면서도 같은 대상에 대한 순서가 지켜진다** — 흩어 보내면 빨라지지만 사용자가 이벤트를 뒤바뀐 순서로 볼 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "링 데이터를 어디에 둘 것인가",
+            "chosen": "**FastGlobal** — Erlang VM 이 **항상 같은 상수를 반환하는 함수의 데이터를 읽기 전용 공유 힙에 둔다**는 성질을 이용한다(mochiglobal 의 Elixir 포팅). 조회가 **0.3μs** 가 된다.",
+            "alternatives": [
+              "ETS 에 넣는다(7μs)",
+              "프로세스마다 링을 복사해 들고 있는다"
+            ],
+            "tradeoff": "ETS 로도 7μs 까지는 갔지만 **큰 링 데이터를 들고 나는 복사 비용이 남았다.** 공유 힙 방식은 그 복사를 없애 재접속 조회 총시간을 **17.5초에서 750ms** 로 줄였다. 대가는 다음 결정에 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "런타임에 모듈을 빌드하는 비용을 받아들일 것인가",
+            "chosen": "**받아들인다.** FastGlobal 방식은 데이터를 바꿀 때 모듈을 런타임에 만들어야 하고 그 비용이 **최대 1초**다.",
+            "alternatives": [
+              "자주 바뀌는 데이터에도 같은 방식을 쓴다",
+              "조회 비용을 감수하고 ETS 에 남긴다"
+            ],
+            "tradeoff": "쓰기가 비싸진다. **링이 자주 바뀌지 않기 때문에 성립하는 선택**이고, 자주 바뀌는 데이터였다면 이 트레이드오프는 반대로 뒤집힌다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "과부하를 서킷 브레이커로 끊을 것인가",
+            "chosen": "**아니다.** `:ets.update_counter/4` 와 ETS 의 write_concurrency 를 써서 **진행 중인 요청 수를 세는 원자적 세마포어**를 만들었다.",
+            "alternatives": [
+              "서킷 브레이커로 끊는다",
+              "타임아웃만 늘린다",
+              "레지스트리 프로세스를 늘린다"
+            ],
+            "tradeoff": "동시성 상한이라는 숫자가 또 하나의 튜닝 대상이 된다(뒷문장은 이 사이트의 추정). 대신 **실패가 큐에 쌓여 재시도가 몰리고 타임아웃이 연쇄되어 메모리 부족으로 죽는 경로**를 애초에 만들지 않는다 — 끊는 것보다 **들어가기 전에 세는 것**이 먼저다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "question": "세마포어에 걸린 세션은 무엇을 할 것인가",
+            "chosen": "**일찍 포기한다.** 레지스트리가 포화 상태면 세션 프로세스가 요청을 넣지 않고 빠진다.",
+            "alternatives": [
+              "줄을 서서 기다린다",
+              "무한히 재시도한다"
+            ],
+            "tradeoff": "그 순간 그 세션은 원하는 일을 못 한다. 대신 효과가 확인됐다 — 이후 **프레즌스 서비스에 장애가 났을 때 세션 서비스는 안정적으로 유지됐고 프레즌스는 몇 분 만에 회복**했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Elixir / Erlang VM (세션·길드 GenServer)",
+            "role": "연결 하나와 커뮤니티 하나를 각각 프로세스로 두어 격리하고, 길드 발행을 연결된 모든 세션으로 팬아웃한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "Manifold",
+            "role": "PID 를 원격 노드별로 묶어 보내 `send/2` 호출 수를 노드 수로 제한하고, 노드 안에서는 일관 해시로 코어별 워커에 나눠 선형화를 지킨다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "FastGlobal",
+            "role": "자주 바뀌지 않는 큰 데이터(일관 해시 링)를 읽기 전용 공유 힙에 두어 조회를 0.3μs 로 만든다. 쓰기(모듈 빌드)는 최대 1초.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "Semaphore(`:ets.update_counter/4`)",
+            "role": "진행 중인 요청 수를 원자적으로 세어 동시성 상한을 걸고, 포화 시 호출자가 일찍 포기하게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+                "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+                "publisher": "Discord Blog · Stanislav Vishnevskiy",
+                "date": "2017-07-06",
+                "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+              }
+            ]
+          },
+          {
+            "tech": "길드 샤딩·프레즌스 자체의 저장 구조",
+            "role": "— 이 글에 없다. 큰 길드를 여러 프로세스로 쪼개는지, 프레즌스를 어디에 어떻게 보관하는지는 다루지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "message-storage",
+          "via": "쓰기와 전달의 갈림",
+          "contract": "보낸 메시지는 저장되면서 동시에 연결된 세션들에 팬아웃돼야 하는데, **두 경로가 어디서 갈라지고 어떤 순서를 보장하는지는 두 글 모두 다루지 않는다.**",
+          "confidence": "unknown"
+        },
+        {
+          "to": "kakao:caribe-realtime",
+          "via": "같은 문제의 다른 무게",
+          "contract": "둘 다 실시간 전달을 다루지만 부러진 자리가 다르다 — 카카오는 실시간 전달의 '성능'을 다시 정의하는 데서 출발하고, Discord 는 **한 커뮤니티가 한 프로세스**라는 구조 때문에 **팬아웃의 횟수**에서 먼저 부러졌다. 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "음성·영상",
+          "via": "같은 게이트웨이",
+          "contract": "음성 연결도 이 게이트웨이 위의 이벤트로 시작한다고 회사가 밝히지만, 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "이벤트 하나가 3만 명에게 닿는 길",
+          "question": "보내는 프로세스가 3만 번 보내지 않으려면 무엇이 중간에 있어야 하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자 접속] --> S[세션 프로세스<br/>GenServer]\n  S --> RING[링 조회 · FastGlobal 0.3μs]\n  RING --> REG{길드 레지스트리<br/>세마포어 통과?}\n  REG -->|포화| BAIL[일찍 포기]\n  REG -->|통과| G[길드 프로세스<br/>원격 노드]\n  G -->|이벤트 발행| MF[Manifold<br/>PID 를 원격 노드별로 묶는다]\n  MF -->|노드 수만큼만 send/2| P1[노드 A · Partitioner]\n  MF --> P2[노드 B · Partitioner]\n  P1 -->|phash2 일관 해시| W1[코어별 워커]\n  P2 --> W2[코어별 워커]\n  W1 --> SS1[세션들]\n  W2 --> SS2[세션들]\n  W1 -.->|같은 대상은 같은 워커| LIN[선형화 보장]"
+        },
+        {
+          "title": "세션 프로세스가 거치는 상태",
+          "question": "재접속이 몰릴 때 세션은 어디서 멈추고 어떻게 빠져나오는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 연결됨: WebSocket\n  연결됨 --> 링조회: 어느 노드의 길드인가\n  링조회 --> 등록시도\n  등록시도 --> 조기포기: 세마포어 포화\n  조기포기 --> 등록시도: 잠시 뒤 다시\n  note right of 조기포기\n    줄을 서지 않는다\n    쌓이는 것이 다음 장애가 되므로\n  end note\n  등록시도 --> 구독중: 길드에 등록\n  구독중 --> 구독중: 팬아웃된 이벤트 수신\n  구독중 --> 정리: 연결 종료\n  정리 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 병목이 옮겨 다닌 세 자리",
+          "question": "하나를 고칠 때마다 어디가 새로 터졌는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  BIG[/r/Overwatch 동시 3만 명/] --> QUEUE[길드 프로세스가<br/>메시지 큐를 못 따라감]\n  QUEUE --> MANUAL[기능을 손으로 끄기<br/>지속 가능하지 않다]\n  SEND[send/2 하나가 30~70μs] --> SLOW[발행 하나에 900ms~2.1초]\n  SLOW --> FIX1[Manifold<br/>노드 수만큼만 보낸다]\n  RECON[재접속 폭주] --> RINGSLOW[링 조회가 병목<br/>세션 서버 재시작 시 추정 30초]\n  RINGSLOW --> FIX2[FastGlobal 0.3μs<br/>17.5초 → 750ms]\n  FIX2 --> NEXT[**빨라지자 다음이 터진다**]\n  NEXT --> REGOVER[길드 레지스트리가<br/>약 500만 세션의 동시 호출에 눌림]\n  REGOVER --> PILE[실패가 쌓이고 재시도가 몰림]\n  PILE --> TIMEOUT[타임아웃 연쇄]\n  TIMEOUT --> OOM[메모리 부족으로 사망]\n  REGOVER --> FIX3[Semaphore<br/>들어가기 전에 센다]\n  FIX3 --> OK[프레즌스 장애 때도<br/>세션 서비스는 안정 유지]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+          "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+          "publisher": "Discord Blog · Stanislav Vishnevskiy",
+          "date": "2017-07-06",
+          "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+        }
+      ]
+    },
+    {
+      "key": "voice-sfu",
+      "name": "음성 — 서버를 거치기로 하면 얻는 것",
+      "domain": "음성·영상",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**범위 주의** — 아래는 2018년 글 하나에서 왔다. 이후의 변화(코덱 전환, 그룹 영상 개선 등)는 담겨 있지 않다.\n\n게임하면서 같이 말하는 것이 이 서비스의 출발점이라, 음성은 부가 기능이 아니라 제품 자체다. 규모는 동시 음성 **260만 명**, 이그레스 **220Gbps·120Mpps**, **13개 지역 30여 개 데이터센터에 음성 서버 850대 이상**이다.\n\n그런데 이 도메인의 첫 결정은 코덱도 프로토콜도 아니었다. **미디어를 서로에게 보낼 것인가, 서버를 거치게 할 것인가.** 회사는 서버를 거치게 했고, 이유를 세 가지로 밝힌다 — 다자 통화에서 **P2P 는 참가자가 늘수록 감당할 수 없이 비싸지고**, 서버를 거쳐야 **IP 주소가 서로에게 노출되지 않으며**, **서버측 음소거 같은 운영 기능**이 가능해진다.\n\n**비용 문제처럼 보이지만 뒤의 두 이유는 권한의 문제다**(이 문장은 이 사이트의 해석). 남의 커뮤니티에서 누군가를 조용히 시킬 수 있으려면, 그 소리가 우리 서버를 지나야 한다.",
+        "metrics": [
+          {
+            "label": "동시 음성 사용자",
+            "value": "**260만 명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "트래픽",
+            "value": "이그레스 **220Gbps 이상**, **120Mpps 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "서버 배치",
+            "value": "**13개 지역 30여 개 데이터센터에 음성 서버 850대 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "협상 크기",
+            "value": "네이티브 앱의 SDP 교환을 **약 1000바이트**로 줄였다 — 표준 WebRTC 는 왕복 **10KB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "label": "품질 관측",
+            "value": "**클라이언트가 품질 지표를 백엔드로 보고**해 상시 관측한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "참가자가 늘어날 때 P2P 가 어떻게 되는지 따져 봤을 때",
+          "thought": "다자 통화에서 **P2P 는 참가자 수가 늘수록 감당할 수 없이 비싸진다.** 그런데 서버를 거치기로 하면 비용 말고 두 가지가 더 따라온다 — 서로의 **IP 주소가 노출되지 않고**, 문제가 된 사용자의 **오디오 패킷을 서버에서 버릴 수 있다.** 커뮤니티에 주인이 있는 서비스에서 이건 부가 기능이 아니다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "표준 WebRTC 를 그대로 쓰려다",
+          "thought": "**모든 클라이언트가 우리 릴레이 서버 하나로 오는데 ICE 로 경로 후보를 협상할 이유가 없다.** SDP 도 왕복 10KB 를 주고받을 이유가 없다 — 우리에게 필요한 것은 서버 주소와 포트, 암호화 방식과 키, 코덱, 스트림 식별자뿐이다. 그런데 브라우저는 표준을 지켜야 하니, **걷어낸 만큼을 서버가 번역**해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사람은 대부분의 시간에 말하지 않는다는 것을 이용할 때",
+          "thought": "음성 채널에 스무 명이 있어도 동시에 말하는 사람은 몇 안 된다. **침묵 구간을 아예 보내지 않으면** 대역폭과 CPU 가 크게 절약된다. 보내지 않는 것이 가장 싼 전송이다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "서버가 사라지는 일을 예외로 둘지 절차로 둘지 정할 때",
+          "thought": "음성 서버는 죽기도 하고 **DDoS 를 맞기도 한다.** 두 경우를 다르게 처리하면 대응 경로가 두 벌이 된다. 그래서 **DDoS 도 서버 장애와 같은 절차**로 처리하기로 했다 — 디스커버리에서 빼고, 대체 서버를 고르고, voice state 를 밀어 넣고, 클라이언트에 알린다. 공격이 잦아들면 다시 넣는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "Discord Gateway — 접속한 모든 클라이언트의 WebSocket. 길드·채널·메시지·프레즌스 이벤트가 흐른다",
+          "Discord Guilds — voice state 객체를 관리하고 길드에 음성 서버를 배정한다",
+          "Discord Voice — 미디어 서버. 시그널링 컴포넌트 + C++ SFU 두 부분",
+          "voice state 객체 — 누가 어느 음성 채널에 있는가",
+          "서비스 디스커버리(etcd) — 어느 서버가 얼마나 쓰이고 있는가"
+        ],
+        "invariants": [
+          "한 길드의 음성은 **하나의 음성 서버**를 거친다 — 첫 참가자가 들어올 때 정해진다.",
+          "클라이언트는 WebSocket 을 **두 개** 연다 — 게이트웨이용과 음성 서버용.",
+          "미디어는 UDP 로 흐르고, 시그널링은 WebSocket 으로 흐른다.",
+          "침묵은 보내지 않는다.",
+          "서버가 사라지는 것은 예외가 아니라 **절차**다 — 장애든 DDoS 든 같은 길로 처리한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 음성 채널에 들어가면 클라이언트가 게이트웨이 WebSocket 으로 **voice state 를 갱신**한다",
+            "why": "음성 연결도 이미 열려 있는 게이트웨이 위에서 시작한다 — 새 채널을 따로 열지 않는다."
+          },
+          {
+            "step": "Discord Guilds 가 **서비스 디스커버리(etcd)를 보고 그 지역에서 가장 덜 쓰이는 음성 서버**를 골라 길드에 배정하고, voice state 객체를 그 서버로 밀어 넣는다",
+            "why": "부하가 가장 적은 곳으로 보내면서, 그 길드의 오디오 포워딩 전체를 한 서버가 맡게 한다."
+          },
+          {
+            "step": "클라이언트에 선택된 음성 서버를 알린다",
+            "why": "클라이언트는 어디로 붙어야 할지 스스로 알 방법이 없다."
+          },
+          {
+            "step": "클라이언트가 **두 번째 WebSocket** 을 음성 서버에 연다 — 미디어 포워딩 설정과 발화 표시를 위해",
+            "why": "제어와 미디어를 분리하면 제어 채널이 미디어의 상태를 계속 반영할 수 있다."
+          },
+          {
+            "step": "클라이언트와 음성 서버가 **UDP 메시지를 교환**하고 미디어 전송을 시작한다",
+            "why": "실시간 미디어는 재전송을 기다릴 수 없다."
+          },
+          {
+            "step": "SFU 가 채널 안에서 오디오·영상을 전달한다 — **침묵은 보내지 않고**, 제재된 사용자의 오디오 패킷은 **버린다**",
+            "why": "보내지 않는 것이 가장 싸고, 서버를 지나기 때문에 버릴 수 있다."
+          },
+          {
+            "step": "수신자들의 **RTCP 리포트를 모아 송신자에게 쓸 수 있는 영상 대역폭을 알려 준다**",
+            "why": "보내는 쪽은 받는 쪽의 사정을 모른다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "미디어를 서로에게 보낼 것인가, 서버를 거치게 할 것인가",
+            "chosen": "**서버를 거친다** — 자체 제작 SFU(Selective Forwarding Unit)가 채널 안에서 미디어를 전달한다.",
+            "alternatives": [
+              "P2P·메시로 클라이언트끼리 직접 주고받는다",
+              "MCU 로 서버에서 믹싱해 하나로 내려보낸다"
+            ],
+            "tradeoff": "**서버 비용을 전부 우리가 진다** — 850대 이상, 220Gbps. 그래도 다자 통화에서 P2P 는 참가자가 늘수록 감당할 수 없이 비싸지고, 무엇보다 서버를 거쳐야 **IP 노출을 막고 서버측 음소거 같은 운영 기능**이 가능해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "길드마다 음성 서버를 어떻게 정할 것인가",
+            "chosen": "첫 참가자가 들어올 때 Discord Guilds 가 **서비스 디스커버리(etcd)를 보고 그 지역에서 가장 덜 쓰이는 서버**를 골라, **그 길드의 오디오 포워딩 전체**를 맡긴다. 길드 주인이 지역을 바꾸면 새 지역에서 다시 고른다.",
+            "alternatives": [
+              "참가자마다 가까운 서버에 붙인다",
+              "채널마다 서버를 따로 배정한다"
+            ],
+            "tradeoff": "**길드 하나가 서버 하나에 묶인다** — 그 서버가 죽으면 그 길드의 통화가 통째로 영향을 받는다(그래서 재배정 절차가 반드시 필요해진다). 대신 배정이 단순하고 그 길드의 상태가 한 곳에 모인다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "표준 WebRTC 를 어디까지 그대로 쓸 것인가",
+            "chosen": "브라우저에서는 표준 그대로(SDP·ICE·DTLS·SRTP), **네이티브 앱에서는 ICE 를 뺀다** — 모든 클라이언트가 우리 릴레이로 오기 때문이다. 대신 주기적인 핑으로 방화벽 통과를 유지한다.",
+            "alternatives": [
+              "모든 플랫폼에서 표준 WebRTC 를 그대로 쓴다",
+              "자체 프로토콜을 새로 만든다"
+            ],
+            "tradeoff": "**두 세계가 생기고 음성 서버가 그 차이를 다리 놓아야 한다.** 그리고 자체 WebRTC 네이티브 라이브러리를 유지해야 하는데, 회사는 **잦은 업데이트가 고통스러운 작업이고 자동화를 진행 중**이라고 남은 과제로 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "암호화와 협상을 얼마나 가볍게 할 것인가",
+            "chosen": "네이티브 앱에서 DTLS/SRTP 대신 **더 빠른 Salsa20** 을 쓰고, SDP 교환을 **약 1000바이트**로 최소화한다 — 서버 주소와 포트, 암호화 방식과 키, 코덱, 스트림 식별자만 주고받는다.",
+            "alternatives": [
+              "표준 DTLS/SRTP 와 전체 SDP 를 그대로 쓴다"
+            ],
+            "tradeoff": "표준에서 벗어나므로 표준만 아는 도구나 중계 장비와는 맞지 않게 된다(뒷문장은 이 사이트의 추정). 대신 표준 WebRTC 의 **왕복 10KB** 협상이 1KB 가 되어 연결이 빨리 선다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "대역폭을 어디서 아낄 것인가",
+            "chosen": "**침묵 구간을 아예 보내지 않는다.** 그리고 수신자들의 **RTCP 리포트를 모아 송신자에게 쓸 수 있는 영상 대역폭을 알려 준다.**",
+            "alternatives": [
+              "항상 일정한 비트레이트로 보낸다",
+              "송신자가 스스로 판단하게 둔다"
+            ],
+            "tradeoff": "수신자 리포트에 의존하게 되고, 리포트가 늦거나 부정확하면 조절도 어긋난다(뒷문장은 이 사이트의 추정). 대신 침묵을 안 보내는 것만으로 **대역폭과 CPU 가 크게 절약**된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "SFU 가 죽으면 클라이언트를 다시 붙일 것인가",
+            "chosen": "**아니다.** 시그널링 컴포넌트가 SFU 를 계속 감시하다가 죽으면 **즉시 재시작하고 상태를 클라이언트 개입 없이 재구성**한다 — 서비스 중단은 최소이고 패킷 몇 개가 빠지는 정도다. **같은 메커니즘으로 무중단 업데이트**도 한다.",
+            "alternatives": [
+              "SFU 가 죽으면 클라이언트에 재연결을 시킨다"
+            ],
+            "tradeoff": "상태를 밖에서 재구성하는 로직을 만들고 유지해야 한다. 대신 **장애 복구 장치가 그대로 배포 장치가 된다** — 하나를 잘 만들어 두 곳에 쓴다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "question": "서버가 죽는 것과 공격받는 것을 다르게 다룰 것인가",
+            "chosen": "**같은 절차로 다룬다.** 헬스체크에 실패하거나 DDoS 를 맞으면 서비스 디스커버리에서 빼고, 클라이언트가 끊긴 WebSocket 을 감지해 게이트웨이로 핑을 요청하면, Guilds 가 확인 후 새 음성 서버를 배정하고 voice state 를 밀어 넣고 참가자 전원에게 재연결을 알린다. **공격이 잦아들면 그 서버를 다시 디스커버리에 넣는다.**",
+            "alternatives": [
+              "DDoS 전용 대응 경로를 따로 둔다",
+              "공격받는 서버를 그대로 두고 방어한다"
+            ],
+            "tradeoff": "재배정 순간 참가자들이 한 번 끊겼다 붙는다. 대신 **대응 경로가 하나뿐이라 자주 도는 길이 되고**, 드물게 쓰이는 특별 경로가 정작 필요할 때 작동하지 않는 일을 피한다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Elixir — Gateway · Guilds · Voice 시그널링",
+            "role": "WebSocket 연결과 voice state 관리, 음성 서버 배정과 재배정 같은 제어를 맡는다. 코드 재사용을 위해 시그널링을 모두 Elixir 로 썼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 제작 C++ SFU",
+            "role": "채널 안에서 오디오·영상을 전달하고, 제재된 사용자의 패킷을 버리며, 네이티브와 브라우저 사이를 번역한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "etcd 서비스 디스커버리",
+            "role": "어느 음성 서버가 얼마나 쓰이는지를 보고 지역별로 가장 덜 쓰이는 서버를 고르게 한다. 장애·DDoS 시 서버를 빼고 넣는 자리이기도 하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 WebRTC 네이티브 라이브러리(데스크톱·iOS·안드로이드)",
+            "role": "ICE 를 빼고 Salsa20 을 쓰며 SDP 를 약 1000바이트로 줄인 경량 경로.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "침묵 억제 + RTCP 기반 대역폭 통지",
+            "role": "말하지 않는 동안 보내지 않아 대역폭과 CPU 를 아끼고, 수신자 리포트로 송신자의 영상 비트레이트를 조절한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          },
+          {
+            "tech": "이질적인 기기의 그룹 영상 / 화면 공유",
+            "role": "— 회사가 **남은 과제**로 밝힌 자리다. 그룹 안의 기기 성능이 제각각일 때 Scalable Video Coding 이 답일 수 있다고만 말하고, 화면 공유는 대역폭이 더 들어 **데스크톱에 하드웨어 인코딩을 추가하는 중**이라고 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+                "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+                "publisher": "Discord Blog · Jozsef Vass",
+                "date": "2018-09-10",
+                "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "presence-fanout",
+          "via": "같은 게이트웨이",
+          "contract": "음성 연결은 이미 열려 있는 게이트웨이 WebSocket 위에서 **voice state 갱신**으로 시작하고, 서버 재배정 통지도 그 길로 내려온다 — 실시간 전달 도메인이 흔들리면 음성 연결의 시작과 복구가 함께 흔들린다(뒷부분은 이 사이트의 추정).",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "커뮤니티 운영·신뢰",
+          "via": "서버측 음소거",
+          "contract": "제재된 사용자의 오디오 패킷을 SFU 가 버린다 — **미디어가 서버를 지나기 때문에 가능한 운영 수단**이다. 다만 제재를 누가 어떤 기준으로 정하는지는 이 사이트에 아직 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "message-storage",
+          "via": "보관하지 않는 쪽",
+          "contract": "메시지는 수조 개가 쌓이는데 음성은 지나가면 끝난다 — 같은 회사 안에서 **남기는 도메인과 남기지 않는 도메인**이 갈린다(이 대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "음성 채널에 들어가기까지",
+          "question": "클라이언트는 어느 서버에 붙어야 할지 어떻게 알게 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자: 음성 채널 참가] -->|게이트웨이 WebSocket| GW[Discord Gateway]\n  GW -->|voice state 갱신| GU[Discord Guilds]\n  GU -->|가장 덜 쓰이는 서버 조회| ETCD[(etcd 서비스 디스커버리)]\n  ETCD --> GU\n  GU -->|voice state 객체 밀어넣기| V[Discord Voice<br/>시그널링 + C++ SFU]\n  GU -->|선택된 서버 통지| U\n  U -->|두 번째 WebSocket| V\n  U -->|UDP 미디어| SFU[SFU]\n  SFU -->|채널 안 전달| OTHERS[다른 참가자들]\n  SFU -.->|침묵은 보내지 않는다| OTHERS\n  SFU -.->|제재된 사용자 패킷은 버린다| DROP[X]\n  OTHERS -->|RTCP 리포트| SFU\n  SFU -->|쓸 수 있는 영상 대역폭| U"
+        },
+        {
+          "title": "음성 연결이 거치는 상태",
+          "question": "서버가 사라졌을 때 통화는 어떤 경로로 되살아나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 미접속\n  미접속 --> 배정대기: voice state 갱신\n  배정대기 --> 시그널링연결: 음성 서버 통지 받음\n  시그널링연결 --> 통화중: UDP 미디어 수립\n  통화중 --> 통화중: 발화 · 침묵(전송 안 함)\n  통화중 --> SFU재시작: SFU 크래시\n  SFU재시작 --> 통화중: 상태 재구성(클라이언트 개입 없음)\n  note right of SFU재시작\n    패킷 몇 개 손실\n    무중단 업데이트도 같은 길\n  end note\n  통화중 --> 끊김감지: 음성 서버 사망 또는 DDoS\n  끊김감지 --> 배정대기: 게이트웨이로 핑 요청 → 새 서버 배정\n  통화중 --> 미접속: 채널 나가기\n  미접속 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 사라지는 서버와 제각각인 기기",
+          "question": "무엇이 같은 절차로 처리되고, 무엇이 아직 풀리지 않았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  CRASH[SFU 크래시] --> WATCH[시그널링이 감시 중]\n  WATCH --> RESTART[즉시 재시작 + 상태 재구성]\n  RESTART --> FEW[패킷 몇 개 손실]\n  RESTART -.->|같은 메커니즘| DEPLOY[무중단 업데이트]\n  DEAD[음성 서버 사망] --> HC[헬스체크 실패]\n  DDOS[DDoS 공격] --> HC\n  HC --> OUT[서비스 디스커버리에서 제거]\n  OUT --> DETECT[클라이언트가 끊김 감지]\n  DETECT --> PING[게이트웨이로 핑 요청]\n  PING --> REASSIGN[Guilds 가 새 서버 배정 + voice state 이동]\n  REASSIGN --> NOTIFY[참가자 전원 재연결 통지]\n  DDOS -.->|공격이 잦아들면| BACK[디스커버리에 다시 추가]\n  MIX[기기 성능이 제각각인 그룹 영상] --> HARD[**아직 과제**<br/>Scalable Video Coding 이 답일 수 있다]\n  SCREEN[화면 공유] --> BW[대역폭이 더 든다<br/>데스크톱 하드웨어 인코딩 추가 중]\n  NATIVE[자체 WebRTC 네이티브 라이브러리] --> PAIN[잦은 업데이트가 고통스럽다<br/>자동화 진행 중]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+          "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+          "publisher": "Discord Blog · Jozsef Vass",
+          "date": "2018-09-10",
+          "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+        }
+      ]
+    },
+    {
+      "key": "automod-layers",
+      "name": "모더레이션 — 규칙을 누가 만들지부터 나눈다",
+      "domain": "커뮤니티 운영·신뢰",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "길드는 **주인이 있는 공간**이다. 그래서 이 도메인의 첫 문제는 '무엇을 금지할까'가 아니라 **'누가 규칙을 만들 것인가'**다.\n\n회사는 층을 셋으로 나눈다 — **사용자**(신고), **커뮤니티**(서버 주인과 자원봉사 모더레이터가 그 서버에 맞는 추가 규칙을 만들고 집행), **플랫폼**(Discord 가 이용약관을 집행하고 유해 콘텐츠를 선제적으로 찾는다). 회사가 든 예가 이 구조를 잘 보여 준다 — 어떤 서버는 **고양이 이야기를 금지하는 규칙**을 둘 수 있는데, 그건 플랫폼 규칙 위반이 아니다.\n\n그리고 자동화는 **커뮤니티 층의 도구**로 들어간다. AutoMod 는 서버 주인이 설정하고, 걸리면 **메시지가 게시되기 전에** 막힌다 — 회사는 **2022년 이후 4,500만 개가 넘는 메시지**가 그렇게 차단됐다고 밝힌다.",
+        "metrics": [
+          {
+            "label": "게시 전 차단 규모",
+            "value": "**2022년 이후 4,500만 개 이상**의 원치 않는 메시지를 게시되기 전에 차단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "label": "키워드 필터의 크기",
+            "value": "Discord 가 유지하는 목록 1개 + 커스텀 3개, **각 최대 1,000개 키워드**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "멘션 스팸 상한",
+            "value": "메시지당 **고유 멘션 최대 50개**까지 설정 가능",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "자동 탐지의 적용 범위",
+            "value": "멀웨어·스팸 스캔은 **전 서버 유형**, 정책 위반 자동 탐지 도구는 **200명 이상 커뮤니티 서버**, 선제적 유해 콘텐츠 식별은 **Discoverable 서버**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "label": "최우선 사안",
+            "value": "**아동 안전·폭력적 극단주의** 같은 최고 위험 사안을 우선 처리한다. CSAM 은 발견 즉시 **NCMEC** 에 신고",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              },
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "규칙을 누가 만들지 나눌 때",
+          "thought": "회사가 모든 커뮤니티의 맥락을 알 수는 없다. 어떤 서버에서는 **고양이 이야기가 금지**일 수 있는데 그건 이용약관 위반이 아니다. 그러면 플랫폼이 할 일은 모든 규칙을 정하는 것이 아니라 **자기 규칙을 집행하고, 서버가 자기 규칙을 집행할 도구를 주는 것**이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자동 필터를 언제 걸지 정할 때",
+          "thought": "게시된 뒤에 지우면 이미 본 사람이 있다. 그래서 **게시 전에 막기로** 했고, 막힌 메시지는 보낸 사람에게만 보이는 알림으로 알린다. 2022년 이후 그렇게 걸린 것이 4,500만 개가 넘는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "와일드카드를 넣으면서",
+          "thought": "`*` 로 부분 일치를 허용하면 서버 주인이 변형된 표현까지 잡을 수 있다. 그런데 같은 규칙이 엉뚱한 것도 잡는다 — 회사는 문서에 **`*cat*` 이 'scathing' 과 'locate' 도 걸린다**는 예를 직접 적어 뒀다. **편의를 주되 과잉 차단이 일어난다는 사실을 설정하는 사람에게 미리 알려 두는 쪽**을 골랐다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "스팸 모델이 못 하는 것을 문서에 적을 때",
+          "thought": "콘텐츠 스팸 필터는 사용자가 스팸으로 신고한 메시지로 배운다. 회사는 이 필터가 **완벽하지 않고 DM 스팸·복붙·반복 메시지 같은 것은 못 잡을 수 있다**고 문서에 적는다. **못 하는 것을 계약서에 적어 두면 기대가 어긋나지 않는다**(이 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "플랫폼 규칙(이용약관·커뮤니티 가이드라인) — Discord 가 집행",
+          "서버 규칙 — 서버 주인과 자원봉사 모더레이터가 만들고 집행",
+          "AutoMod 규칙 — 키워드 필터 4개(유지 목록 1 + 커스텀 3) · 멘션 스팸 · 콘텐츠 스팸",
+          "자동 조치 — 게시 전 차단 · 로그 채널 알림 · 타임아웃",
+          "신고 — 사용자가 Safety 팀에 보내는 것"
+        ],
+        "invariants": [
+          "플랫폼 규칙과 서버 규칙은 다른 층이다 — **서버 규칙 위반이 곧 플랫폼 위반은 아니다.**",
+          "차단은 게시 전에 일어난다 — 막힌 메시지는 보낸 사람에게만 보인다.",
+          "**Manage Server·Administrator 권한자는 항상 필터에서 면제된다.**",
+          "링크·파일 네이티브 필터는 클라이언트 측이라 경고까지다 — 서버측 제거가 아니다.",
+          "자동 조치는 사람에게 넘기는 길(로그 채널 알림)을 남긴다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "서버 주인이 AutoMod 규칙을 설정한다 — 키워드 필터(유지 목록 1 + 커스텀 3, 각 최대 1,000개, 와일드카드 `*`), 멘션 스팸, 콘텐츠 스팸",
+            "why": "그 커뮤니티에서 무엇이 문제인지는 그 커뮤니티가 가장 잘 안다."
+          },
+          {
+            "step": "면제를 정한다 — 특정 역할과 채널은 필터를 통과시키고, **Manage Server·Administrator 권한자는 항상 면제**된다",
+            "why": "모더레이터가 자기 도구에 걸려 일을 못 하는 상황을 막기 위해서로 보인다(추정)."
+          },
+          {
+            "step": "메시지가 올라오면 **게시되기 전에** 필터를 지난다 — 스레드·text-in-voice·포럼 채널에도 적용된다",
+            "why": "게시된 뒤에 지우면 이미 본 사람이 있다."
+          },
+          {
+            "step": "걸리면 설정된 조치가 실행된다 — **차단**(보낸 사람에게만 보이는 알림) · **알림**(지정 로그 채널에 내용·발신자·채널·트리거된 필터) · **타임아웃**(메시지·반응·음성 참여 금지)",
+            "why": "자동으로 끝내는 길과 사람에게 넘기는 길을 함께 둔다."
+          },
+          {
+            "step": "모더레이터가 로그 채널에서 **Actions 버튼**으로 킥·밴·타임아웃을 건다",
+            "why": "자동 판정은 맥락을 모르므로 마지막 판단은 사람이 한다."
+          },
+          {
+            "step": "사용자는 커뮤니티 가이드라인 위반을 Discord Safety 팀에 **신고**한다",
+            "why": "서버 규칙이 아니라 플랫폼 규칙의 문제는 층이 다르다."
+          },
+          {
+            "step": "플랫폼은 신고를 처리하면서 동시에 **선제적으로** 찾는다 — 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사",
+            "why": "신고를 기다리면 아무도 신고하지 않는 종류의 피해를 놓친다."
+          },
+          {
+            "step": "CSAM 은 **모든 서버 유형에서 파일을 스캔**하고 발견 즉시 **NCMEC 에 신고**한다",
+            "why": "최고 위험 사안은 커뮤니티의 자치에 맡길 수 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "규칙을 누가 만들 것인가",
+            "chosen": "**층을 셋으로 나눈다** — 사용자(신고), 커뮤니티(서버 주인과 자원봉사 모더레이터가 서버별 추가 규칙을 만들고 집행), 플랫폼(Discord 가 이용약관을 집행하고 선제적으로 찾는다).",
+            "alternatives": [
+              "플랫폼이 모든 규칙을 정하고 집행한다",
+              "서버 자치에 전부 맡긴다"
+            ],
+            "tradeoff": "**같은 행동이 서버마다 다르게 다뤄지고**, 사용자는 방을 옮길 때마다 규칙을 다시 배워야 한다(뒷문장은 이 사이트의 추정). 대신 회사가 모든 커뮤니티의 맥락을 알아야 하는 부담에서 벗어난다 — 회사가 든 예처럼 **고양이 이야기를 금지하는 규칙**도 성립한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              }
+            ]
+          },
+          {
+            "question": "자동 조치를 게시 전에 걸 것인가 후에 걸 것인가",
+            "chosen": "**게시 전에 막는다.** 막힌 메시지는 보낸 사람에게만 보이는 알림으로 알려진다.",
+            "alternatives": [
+              "게시된 뒤 삭제한다",
+              "신고가 들어올 때만 처리한다"
+            ],
+            "tradeoff": "오탐이면 **정당한 메시지가 아예 올라가지 못하고**, 다른 사람은 무슨 일이 있었는지 모른다(뒷문장은 이 사이트의 추정). 대신 이미 본 사람이 생기지 않는다 — 2022년 이후 4,500만 개 이상이 게시되기 전에 걸렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              },
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 걸러낼 것인가",
+            "chosen": "**키워드 필터와 스팸 필터를 함께 둔다.** 키워드는 Discord 가 유지하는 목록(모욕·비속어, 성적 콘텐츠, 심한 욕설) 1개와 커스텀 3개, 각 최대 1,000개이며 `*` 와일드카드로 부분 일치를 지원한다.",
+            "alternatives": [
+              "정확 일치만 허용한다",
+              "전부 머신러닝에 맡긴다"
+            ],
+            "tradeoff": "와일드카드는 **과잉 매칭**을 만든다 — 회사가 문서에 `*cat*` 이 'scathing' 과 'locate' 도 잡는다고 직접 적는다. 대신 변형된 표현을 규칙 하나로 덮을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "스팸 모델을 무엇으로 학습시킬 것인가",
+            "chosen": "**사용자가 스팸으로 신고한 메시지**로 학습한다 — 원치 않는 메시지, 무료 Nitro 사기와 광고, 초대 스팸 같은 패턴을 잡는다.",
+            "alternatives": [
+              "규칙 기반으로만 잡는다",
+              "라벨링 팀이 정답을 만든다"
+            ],
+            "tradeoff": "신고가 정답이므로 **신고되지 않는 유형은 배우지 못한다**(뒷문장은 이 사이트의 추정). 회사도 이 필터가 완벽하지 않고 **DM 스팸·복붙·반복 메시지 같은 것은 못 잡을 수 있다**고 명시한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "자동 조치를 몇 종류로 둘 것인가",
+            "chosen": "**셋** — 차단 · 로그 채널 알림 · 타임아웃. 알림에는 메시지 내용·발신자·채널·트리거된 필터가 담기고 모더레이터가 **Actions 버튼**으로 킥·밴·타임아웃을 건다.",
+            "alternatives": [
+              "차단 하나로 끝낸다",
+              "전부 사람에게 넘긴다"
+            ],
+            "tradeoff": "서버마다 조합을 정해야 해서 같은 위반의 결과가 서버마다 달라진다. 대신 **자동으로 끝내는 길과 사람에게 넘기는 길을 함께 남긴다** — 자동 판정이 맥락을 모른다는 것을 구조가 인정하는 셈이다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "누구를 필터에서 면제할 것인가",
+            "chosen": "역할과 채널 단위로 면제를 설정할 수 있고, **Manage Server·Administrator 권한자는 항상 면제**된다.",
+            "alternatives": [
+              "예외 없이 모두에게 적용한다",
+              "면제를 서버 주인이 전부 직접 지정하게 한다"
+            ],
+            "tradeoff": "권한을 가진 사람은 필터가 막지 못한다 — 그 권한이 남용될 여지가 남는다(뒷문장은 이 사이트의 추정). 대신 모더레이터가 자기 도구에 걸려 대응을 못 하는 상황이 생기지 않는다(이 역시 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "링크와 파일은 어디서 막을 것인가",
+            "chosen": "**클라이언트 측 네이티브 필터**로 의심스러운 링크·파일을 사용자에게 경고한다 — 서버측에서 제거하지는 않는다.",
+            "alternatives": [
+              "서버에서 링크를 차단한다",
+              "아무 검사도 하지 않는다"
+            ],
+            "tradeoff": "경고까지이므로 **사용자가 무시하면 그만**이다. 대신 서버가 링크를 어떻게 다룰지에 개입하지 않는다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "question": "플랫폼이 직접 볼 범위를 어디까지로 할 것인가",
+            "chosen": "**위험도와 서버 유형으로 나눈다.** 멀웨어·스팸 스캔과 CSAM 파일 스캔은 **전 서버 유형**에, 정책 위반 자동 탐지 도구는 **200명 이상 커뮤니티 서버**에, 선제적 유해 콘텐츠 식별은 **Discoverable 서버**에 적용한다. 우선순위는 아동 안전·폭력적 극단주의 같은 최고 위험 사안이다.",
+            "alternatives": [
+              "모든 서버를 같은 강도로 본다",
+              "신고가 들어온 것만 본다"
+            ],
+            "tradeoff": "**서버의 크기와 공개 여부에 따라 적용되는 자동 탐지가 다르다** — 작은 친구 서버는 자동 탐지 도구의 대상이 아니다. 대신 최고 위험 사안(CSAM)만은 **서버 유형과 무관하게** 스캔하고 발견 즉시 NCMEC 에 신고한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              },
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "AutoMod 키워드 필터(유지 목록 1 + 커스텀 3, 각 1,000개, 와일드카드)",
+            "role": "서버 주인이 정한 표현을 게시 전에 막는다. Discord 유지 목록은 커뮤니티 가이드라인에 맞춰 관리된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "AutoMod 스팸 필터(멘션 스팸 · 콘텐츠 스팸 ML)",
+            "role": "고유 멘션 수 상한(최대 50)과, 사용자 신고로 학습한 모델로 스팸 패턴을 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "자동 조치 3종(차단 · 로그 채널 알림 · 타임아웃)",
+            "role": "자동으로 끝내는 길과 모더레이터에게 넘기는 길을 함께 둔다. 알림에는 트리거된 필터까지 담긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "클라이언트 측 링크·파일 네이티브 필터",
+            "role": "의심스러운 링크와 파일을 사용자에게 경고한다. 서버측 제거는 아니다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Auto Moderation in Discord",
+                "url": "https://discord.com/safety/auto-moderation-in-discord",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+              }
+            ]
+          },
+          {
+            "tech": "플랫폼 탐지 — 이미지 해싱 · ML · 메타데이터/네트워크 패턴 · 사람 주도 조사",
+            "role": "신고를 기다리지 않고 선제적으로 찾는다. CSAM 은 전 서버 유형 파일 스캔 후 NCMEC 에 즉시 신고.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Our Approach to Content Moderation at Discord",
+                "url": "https://discord.com/safety/our-approach-to-content-moderation",
+                "publisher": "Discord Safety",
+                "date": "2026-08 확인",
+                "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+              },
+              {
+                "title": "Privacy and Safety on Discord",
+                "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+                "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+                "date": "2023-06-08",
+                "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+              }
+            ]
+          },
+          {
+            "tech": "오탐률·이의 제기 절차·경고 시스템의 단계",
+            "role": "— 이 사이트는 아직 1차 자료를 찾지 못했다. 투명성 보고서는 PDF 로만 제공된다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "voice-sfu",
+          "via": "서버측 음소거",
+          "contract": "제재된 사용자의 오디오 패킷을 SFU 가 버린다 — **미디어가 서버를 지나기 때문에 가능한 운영 수단**이고, 이 도메인의 결정이 그 도메인의 설계를 정당화한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "presence-fanout",
+          "via": "차단은 팬아웃 이전",
+          "contract": "AutoMod 가 게시 전에 막으면 그 메시지는 애초에 팬아웃되지 않는다 — 다만 두 자료가 이 순서를 명시하지는 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "message-storage",
+          "via": "저장되지 않는 메시지",
+          "contract": "게시 전에 차단된 메시지가 저장소에 남는지는 어느 자료에도 없다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "메시지 하나가 필터를 지나는 길",
+          "question": "누가 만든 규칙이 어느 순서로 적용되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OWNER[서버 주인] -->|규칙 설정| RULES[AutoMod 규칙<br/>키워드 4 · 멘션 스팸 · 콘텐츠 스팸]\n  MSG[메시지 작성] --> EX{면제 대상인가<br/>Manage Server · Administrator}\n  EX -->|예| POST[게시]\n  EX -->|아니오| RULES\n  RULES --> HIT{걸리는가}\n  HIT -->|아니오| POST\n  HIT -->|예| ACT[설정된 조치]\n  ACT --> BLOCK[차단<br/>보낸 사람에게만 알림]\n  ACT --> LOG[로그 채널 알림<br/>내용 · 발신자 · 채널 · 트리거된 필터]\n  ACT --> TO[타임아웃]\n  LOG --> MODACT[모더레이터 Actions<br/>킥 · 밴 · 타임아웃]\n  POST --> USERS[다른 사용자]\n  USERS -->|신고| SAFETY[Discord Safety 팀]\n  PLAT[플랫폼 선제 탐지<br/>이미지 해싱 · ML · 네트워크 패턴] --> SAFETY\n  SAFETY --> ENF[경고 · 콘텐츠 제거 · 계정 정지]\n  SAFETY -.->|CSAM| NCMEC[NCMEC 즉시 신고]"
+        },
+        {
+          "title": "규칙 위반이 거치는 상태",
+          "question": "서버 규칙 위반과 플랫폼 규칙 위반은 어디서 갈라지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 작성됨\n  작성됨 --> 게시전차단: AutoMod 필터에 걸림\n  게시전차단 --> [*]: 보낸 사람에게만 알림\n  작성됨 --> 게시됨: 통과\n  게시됨 --> 모더레이터검토: 로그 채널 알림\n  모더레이터검토 --> 서버제재: 킥 · 밴 · 타임아웃\n  note right of 서버제재\n    서버 규칙의 층\n    플랫폼 위반은 아닐 수 있다\n  end note\n  게시됨 --> 신고됨: 사용자 신고\n  신고됨 --> 플랫폼심사: Safety 팀\n  게시됨 --> 플랫폼심사: 선제 탐지\n  플랫폼심사 --> 플랫폼제재: 경고 · 제거 · 계정 정지\n  플랫폼심사 --> 게시됨: 위반 아님\n  서버제재 --> [*]\n  플랫폼제재 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 과잉 차단과 놓치는 것",
+          "question": "자동 판정이 틀리는 두 방향에서 무엇이 남는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  WILD[와일드카드 `*cat*`] --> OVER[과잉 매칭<br/>scathing · locate 도 걸린다]\n  OVER --> LOST[정당한 메시지가<br/>게시조차 되지 않는다]\n  LOST -->|추정| INVIS[다른 사람은 무슨 일이 있었는지 모른다]\n  ML[콘텐츠 스팸 모델] --> TRAIN[사용자 신고로 학습]\n  TRAIN --> MISS[**회사가 밝힌 한계**<br/>DM 스팸 · 복붙 · 반복 메시지]\n  TRAIN -->|추정| BLIND[신고되지 않는 유형은 배우지 못한다]\n  LINK[링크·파일 필터] --> CLIENT[클라이언트 측 경고까지]\n  CLIENT --> IGNORE[사용자가 무시하면 그만]\n  PERM[Manage Server · Administrator] --> EXEMPT[항상 면제]\n  EXEMPT -->|추정| ABUSE[권한 남용을 필터가 막지 못한다]\n  SMALL[작은 친구 서버] --> SCOPE[정책 위반 자동 탐지 도구의 대상이 아니다]\n  SCOPE --> ONLY[다만 CSAM 스캔은 전 서버 유형에 적용]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Our Approach to Content Moderation at Discord",
+          "url": "https://discord.com/safety/our-approach-to-content-moderation",
+          "publisher": "Discord Safety",
+          "date": "2026-08 확인",
+          "summary": "모더레이션을 사용자(신고)·커뮤니티(서버 주인과 자원봉사 모더레이터)·플랫폼(Discord) 세 층으로 설명한다. 플랫폼은 이미지 해싱과 머신러닝, 메타데이터·네트워크 패턴 모델, 사람이 주도하는 조사로 유해 콘텐츠를 선제적으로 찾고, 아동 안전·폭력적 극단주의 같은 최고 위험 사안을 우선한다. 자원봉사 모더레이터가 서버에 맞는 추가 규칙을 만들고 집행한다는 점을 명시한다."
+        },
+        {
+          "title": "Auto Moderation in Discord",
+          "url": "https://discord.com/safety/auto-moderation-in-discord",
+          "publisher": "Discord Safety",
+          "date": "2026-08 확인",
+          "summary": "AutoMod 의 필터와 조치를 설명한다. 키워드 필터는 Discord 가 유지하는 목록 1개와 커스텀 3개(각 최대 1,000개, 와일드카드 `*`), 스팸 필터는 멘션 스팸과 사용자가 신고한 스팸으로 학습한 콘텐츠 스팸 둘이다. 조치는 게시 전 차단·로그 채널 알림·타임아웃 셋이고, Manage Server·Administrator 권한자는 항상 면제된다. 스팸 필터가 DM 스팸·복붙·반복 메시지를 못 잡을 수 있다고 밝힌다."
+        },
+        {
+          "title": "Privacy and Safety on Discord",
+          "url": "https://discord.com/blog/privacy-and-safety-on-discord",
+          "publisher": "Discord Blog · Clint Smith(Chief Legal Officer)",
+          "date": "2023-06-08",
+          "summary": "2022년 이후 AutoMod 가 4,500만 개가 넘는 원치 않는 메시지를 게시되기 전에 차단했다고 밝힌다. 모든 서버 유형에서 파일을 CSAM 스캔해 발견 시 즉시 NCMEC 에 신고하고, 멀웨어·스팸 스캔은 전 서버 유형에, 정책 위반 자동 탐지 도구는 200명 이상 커뮤니티 서버에, 선제적 유해 콘텐츠 식별은 Discoverable 서버에 적용한다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "Discord 의 수익 구성 — 비상장이라 공시가 없고 1차 출처를 아직 찾지 못했다.",
+    "메시지 검색과 첨부 파일 저장 — 읽은 글은 본문의 저장·조회까지만 다룬다.",
+    "저장과 실시간 전달이 어디서 갈라지고 어떤 순서를 보장하는지.",
+    "실시간 전달·프레즌스, 음성·영상, 커뮤니티 운영·신뢰 세 도메인은 아직 기능을 채우지 않았다.",
+    "큰 길드를 여러 프로세스로 쪼개는지 — 이 글은 보내는 방식을 고치는 데까지만 다룬다.",
+    "프레즌스 자체를 어디에 어떻게 보관하는지.",
+    "세마포어의 동시성 상한을 무엇으로 정하는지.",
+    "음성 코덱과 비트레이트 사다리 — 이 글은 코덱을 협상 항목으로만 언급한다.",
+    "기기 성능이 제각각인 그룹 영상 — 회사가 남은 과제로 밝혔고 Scalable Video Coding 을 가능성으로만 든다.",
+    "이 도메인의 자료는 2018년 글 하나다 — 이후의 변화는 반영돼 있지 않다.",
+    "AutoMod 의 오탐률과 이의 제기 절차 — 투명성 보고서가 PDF 로만 제공돼 이 사이트가 읽지 못했다.",
+    "경고 시스템(Warning System)의 단계와 계정 정지까지의 기준.",
+    "게시 전에 차단된 메시지가 저장소에 남는지."
+  ],
+  "sources": [
+    {
+      "title": "How Discord Stores Trillions of Messages",
+      "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+      "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+      "date": "2023-03-06",
+      "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+    },
+    {
+      "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+      "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+      "publisher": "Discord Blog · Jozsef Vass",
+      "date": "2018-09-10",
+      "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+    },
+    {
+      "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+      "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+      "publisher": "Discord Blog · Stanislav Vishnevskiy",
+      "date": "2017-07-06",
+      "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+    }
+  ]
+}
