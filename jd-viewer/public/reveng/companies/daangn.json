@@ -70,9 +70,23 @@
       "why": "개인이 올린 글에서 원하는 물건을 찾는 일. 판매자가 상인이 아니라서 제목·설명이 제각각이고 같은 물건도 다르게 쓴다 — 정형화된 카탈로그가 없는 검색이다.",
       "tech": [
         {
-          "tech": "쿠버네티스 위의 검색 엔진",
-          "solves": "2.7억 개가 넘는 문서와 초당 1K 이상 검색 요청을 다루는 검색 인프라를 운영 부담을 낮추며 굴린다.",
-          "limits": "개인이 쓴 글이라 색인 대상의 품질이 고르지 않고, 문서가 계속 생기고 사라진다(거래 완료·삭제).",
+          "tech": "Elasticsearch 클러스터(역할 분리 + 모니터링 분리)",
+          "solves": "문서 2.7억 건 위에서 초당 1K 검색을 받아 내고, 메인이 아플 때도 지표를 볼 수 있게 한다.",
+          "limits": "노드 종류와 클러스터 수가 늘어 배포·용량 산정이 복잡해진다. 그 운영 난도가 곧 검색 개선 속도의 상한이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+              "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+              "publisher": "당근 테크 블로그",
+              "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+            }
+          ]
+        },
+        {
+          "tech": "ECK(쿠버네티스) 기반 배포 자동화",
+          "solves": "평균 5시간·전 과정 수동이던 배포를 자동화해 누구나 안전하게, 30분 이내로 하는 것을 목표로 삼았다.",
+          "limits": "검색 클러스터를 컨테이너 위로 옮기는 것 자체가 새로운 위험이라 개념 검증과 규모 검증을 따로 거쳐야 했다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -84,7 +98,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "search-infra"
+      ]
     },
     {
       "name": "피드 노출",
@@ -120,11 +136,380 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "search-infra",
+      "name": "검색 인프라 — 배포에 5시간 걸리던 클러스터",
+      "domain": "중고거래 검색",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "중고거래는 카탈로그가 없다. 판매자가 상인이 아니라 옆집 사람이라 같은 물건도 제목이 제각각이고, 팔리면 문서가 사라진다. 그런 문서 2.7억 건 위에서 초당 1K 검색을 받아 내는 것이 이 도메인의 일이다. 그런데 이 기능의 이야기는 검색 품질이 아니라 **그 검색 엔진을 어떻게 배포하느냐**다 — 한 번 배포에 다섯 시간이 들고 사람이 계속 붙어 있어야 했다면, 그 비용은 결국 검색을 개선하지 못하는 값으로 돌아온다.",
+        "metrics": [
+          {
+            "label": "검색 트래픽",
+            "value": "초당 평균 1K 요청",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "label": "문서 규모",
+            "value": "중고거래 문서 기준 약 2.7억 건 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "label": "배포 소요",
+            "value": "평균 5시간 · 데이터 노드 18대를 한 대씩 순차 처리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "label": "운영 범위",
+            "value": "한국·일본·영국·캐나다 4개 지역 × Alpha·Production 2개 환경",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "배포 절차를 적어 놓고 봤을 때",
+          "thought": "이미지 교체 → ASG 를 2배로 늘려 새 노드 생성 → 인덱스를 옮김 → 옛 노드 종료. 네 단계가 전부 사람 손이고, 옮기는 중인 샤드는 요청을 못 받으니 배포하는 사람이 계속 지켜봐야 한다. 이건 위험한 작업이 아니라 **아무도 하고 싶지 않은 작업**이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "5시간이라는 숫자를 봤을 때",
+          "thought": "데이터 노드는 종료 전에 디스크의 샤드를 전부 옮겨야 해서 시간이 길어진다. 그런데 진짜 문제는 5시간 자체가 아니라, 그 5시간 때문에 배포를 미루게 되고 그러면 플러그인·설정 개선이 밀린다는 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "목표를 정할 때",
+          "thought": "'조금 빠르게'로는 습관이 안 바뀐다. 자동화해서 **누구나** 할 수 있게 하고 시간을 30분 안쪽으로 줄여야, 배포가 특별한 이벤트가 아니라 그냥 하는 일이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "쿠버네티스를 고를 때",
+          "thought": "검색 클러스터를 컨테이너 위에 올리는 것은 그 자체로 새로운 위험이다. 그래서 개념 검증과 규모 검증을 나눠 했다 — 작게 돌려 보는 것과 우리 데이터 크기에서 돌려 보는 것은 다른 질문이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "메인 ES 클러스터",
+            "what": "검색과 색인을 모두 받는 핵심. 마스터·코디네이팅·데이터 노드로 역할이 나뉜다."
+          },
+          {
+            "name": "모니터링 ES 클러스터",
+            "what": "메인의 쿼리·시스템 로그와 지표를 따로 받는 클러스터."
+          },
+          {
+            "name": "샤드",
+            "what": "데이터가 실제로 놓인 조각. 옮기는 동안에는 요청을 받지 못한다."
+          },
+          {
+            "name": "사전 파일",
+            "what": "형태소·동의어 등 검색 품질의 재료. 모든 노드가 같은 것을 봐야 한다."
+          }
+        ],
+        "invariants": [
+          "샤드를 옮기는 동안 그 샤드는 요청을 처리하지 못한다 — 배포 시간의 대부분이 여기서 나온다.",
+          "마스터 노드는 홀수로 둔다(split-brain 방지).",
+          "모니터링은 메인과 같은 클러스터에 쌓지 않는다 — 메인이 아플 때 지표까지 함께 아프면 안 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "검색 요청은 코디네이팅 노드가 받아 데이터 노드로 흩고 결과를 모은다",
+            "why": "역할을 나눠야 검색과 색인이 서로를 밀어내지 않는다"
+          },
+          {
+            "step": "검색용·색인용 로드밸런서를 따로 둔다",
+            "why": "성격이 다른 트래픽을 같은 문으로 들이지 않는다"
+          },
+          {
+            "step": "사전 파일은 EFS 로 공유하고 스냅샷은 S3 에 둔다",
+            "why": "모든 노드가 같은 사전을 보고, 데이터는 클러스터 밖에도 남아야 한다"
+          },
+          {
+            "step": "쿼리·시스템 로그와 지표는 별도 모니터링 클러스터로 보낸다",
+            "why": "메인이 흔들릴 때 그 사실을 보여 줄 곳은 메인이 아니어야 한다"
+          },
+          {
+            "step": "배포는 ASG 를 2배로 늘렸다가 인덱스를 옮기고 옛 노드를 종료한다(과거 방식)",
+            "why": "무중단을 지키려면 새 노드를 먼저 띄워야 했다"
+          },
+          {
+            "step": "쿠버네티스(ECK)로 옮겨 이 과정을 자동화한다",
+            "why": "사람이 다섯 시간 붙어 있는 절차는 결국 배포를 미루게 만든다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "검색 엔진을 무엇으로 할 것인가",
+            "chosen": "엘라스틱서치를 쓰고 풀 텍스트·준실시간 검색과 로그·지표 수집까지 함께 얹는다",
+            "alternatives": [
+              "검색 전용 엔진 자체 구축",
+              "관리형 검색 서비스"
+            ],
+            "tradeoff": "하나의 스택으로 검색과 관측을 함께 해결하는 대신, 그 클러스터의 운영 난도가 곧 검색 개선 속도의 상한이 된다 — 이 글 전체가 그 대가에 대한 이야기다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "노드 역할을 나눌 것인가",
+            "chosen": "마스터·코디네이팅·데이터 노드로 역할을 나누고 마스터는 홀수로 둔다",
+            "alternatives": [
+              "모든 노드가 모든 역할 수행"
+            ],
+            "tradeoff": "노드 종류가 늘어 배포와 용량 산정이 복잡해진다. 대신 검색 요청을 받는 층과 데이터를 든 층이 서로를 밀어내지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "모니터링 데이터를 어디에 쌓을 것인가",
+            "chosen": "메인과 분리된 모니터링 전용 ES 클러스터로 보낸다(Logstash·Metricbeat·Kibana)",
+            "alternatives": [
+              "메인 클러스터에 함께 저장"
+            ],
+            "tradeoff": "클러스터를 하나 더 운영해야 한다. 대신 메인이 아플 때 그 사실을 보여 줄 창구가 함께 무너지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "배포를 어떻게 할 것인가 (과거)",
+            "chosen": "ASG desired count 를 2배로 늘려 새 노드를 만들고 인덱스를 옮긴 뒤 옛 노드를 종료한다",
+            "alternatives": [
+              "롤링 재시작",
+              "클러스터 정지 후 교체"
+            ],
+            "tradeoff": "무중단은 지키지만 모든 단계를 사람이 직접 해야 하고, 데이터 노드 18대를 한 대씩 옮기느라 평균 5시간이 든다. 옮기는 중인 샤드는 요청을 못 받으므로 담당자가 계속 지켜봐야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "이 문제의 목표를 어디에 둘 것인가",
+            "chosen": "'배포 자동화로 누구나 안전하게' + '평균 5시간을 30분 이내로'",
+            "alternatives": [
+              "절차 문서화로 실수 줄이기",
+              "배포 빈도를 낮추기"
+            ],
+            "tradeoff": "목표를 시간과 사람 양쪽에 걸어서 부분적인 개선으로는 달성할 수 없게 만들었다 — 기존 방식을 손보는 대신 인프라를 통째로 옮겨야 한다는 뜻이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "쿠버네티스 도입을 어떻게 검증할 것인가",
+            "chosen": "개념 검증(PoC)과 규모 검증을 나눠서 한다",
+            "alternatives": [
+              "작은 환경에서 확인 후 바로 전환"
+            ],
+            "tradeoff": "검증 단계가 길어진다. 대신 '작게 돌아간다'와 '2.7억 문서에서도 돌아간다'가 다른 질문이라는 것을 인정한 절차다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "question": "여러 지역·환경을 어떻게 다룰 것인가",
+            "chosen": "한국·일본·영국·캐나다 4개 지역과 Alpha·Production 2개 환경에 같은 구성을 둔다",
+            "alternatives": [
+              "지역별로 다른 구성",
+              "단일 글로벌 클러스터"
+            ],
+            "tradeoff": "같은 작업을 8벌 해야 해서 수동 절차의 비용이 그만큼 곱해진다 — 자동화의 값어치도 같은 배수로 커진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Elasticsearch",
+            "role": "풀 텍스트·준실시간 검색과 로그·지표 저장을 함께 맡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "ECK (Elastic Cloud on Kubernetes)",
+            "role": "수동 배포를 쿠버네티스 위에서 자동화하기 위해 도입한 운영 방식",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "EFS · S3",
+            "role": "사전 파일 공유와 스냅샷 보관",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          },
+          {
+            "tech": "Logstash · Metricbeat · Kibana · Prometheus · Grafana",
+            "role": "쿼리·시스템 로그와 지표를 별도 클러스터에 모아 관측한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+                "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+                "publisher": "당근 테크 블로그",
+                "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "피드 노출",
+          "via": "색인된 문서 공급",
+          "contract": "검색에 없는 문서는 피드에도 담기지 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "동네 인증",
+          "via": "지역 조건 필터",
+          "contract": "검색 결과는 '내 동네'라는 조건 위에서만 의미가 있다 — 인증이 정한 범위가 곧 검색 범위다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "로컬 광고",
+          "via": "검색 지면",
+          "contract": "검색 결과 지면이 광고가 놓이는 자리이기도 하다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 역할을 나눈 클러스터",
+          "question": "검색 요청과 색인 요청이 어떻게 다른 길로 들어가는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[검색 요청 · 초당 1K] --> LB1[검색 LB]\n  IDX[색인 요청] --> LB2[색인 LB]\n  LB1 --> CO[코디네이팅 노드]\n  CO --> D[(데이터 노드 18대<br/>문서 2.7억+)]\n  LB2 --> D\n  M[마스터 노드 · 홀수] -.->|클러스터 상태| D\n  EFS[(EFS · 사전 파일)] --> D\n  D --> S3[(S3 · 스냅샷)]\n  D -->|쿼리·시스템 로그| MON[(모니터링 ES 클러스터)]\n  MON --> KIB[Kibana · Grafana]\n  CO --> R[검색 결과]"
+        },
+        {
+          "title": "배포 한 번의 상태 (과거 방식)",
+          "question": "왜 다섯 시간이 걸리고 사람이 붙어 있어야 했는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 이미지교체: 새 ES docker image 적용\n  이미지교체 --> 노드2배: ASG desired count ×2\n  노드2배 --> 샤드이동: 인덱스를 새 데이터 노드로\n  샤드이동 --> 샤드이동: 18대를 한 대씩 순차\n  샤드이동 --> 옛노드종료: ASG ÷2\n  옛노드종료 --> 완료\n  완료 --> [*]\n  샤드이동 --> 감시: 이동 중 샤드는 요청 불가\n  감시 --> 샤드이동\n  note right of 샤드이동\n    평균 5시간.\n    그 시간이 배포를 미루게 만든다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 배포가 비싸지면 생기는 일",
+          "question": "운영 난도가 왜 검색 품질의 문제가 되는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  COST[배포 1회 5시간 · 사람 상주] --> DELAY[배포를 미루게 된다]\n  DELAY --> OLD[플러그인·설정 개선이 밀린다]\n  OLD --> QUALITY[검색 품질 개선 속도가 떨어진다]\n  COST --> MULT[4개 지역 × 2개 환경 = 8벌]\n  MULT --> COST\n  MOVE{샤드 이동 중}\n  MOVE -->|요청 처리 불가| WATCH[담당자가 계속 지켜봐야 한다]\n  MOVE -->|설정 잘못| SLOW[CPU 급증 · 더 느려진다]\n  WATCH -.->|사람에 의존| RISK[특정 사람만 할 수 있는 작업이 된다]\n  RISK -.->|그래서 목표를| GOAL[자동화 + 30분 이내]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "당근마켓 검색 엔진, 쿠버네티스로 쉽게 운영하기",
+          "url": "https://medium.com/daangn/%EB%8B%B9%EA%B7%BC%EB%A7%88%EC%BC%93-%EA%B2%80%EC%83%89-%EC%97%94%EC%A7%84-%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EB%A1%9C-%EC%89%BD%EA%B2%8C-%EC%9A%B4%EC%98%81%ED%95%98%EA%B8%B0-bdf2688df267",
+          "publisher": "당근 테크 블로그",
+          "summary": "검색 플랫폼팀이 2.7억 개 이상 문서와 초당 1K 이상 검색 요청을 다루며 검색 엔진을 쿠버네티스로 운영하는 이야기."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "동네 인증을 무엇으로 판정하는지(GPS·기지국·인증 주기·이동 허용 범위) 공개 자료를 찾아야 한다 — 이 회사의 가장 중요한 판단인데 아직 비어 있다.",
     "로컬 광고의 노출 범위(반경·행정동 단위 등)를 어떻게 정하는지 모른다.",
-    "거래 분쟁 시 플랫폼이 어디까지 개입하는지, 당근페이가 그 개입 수단인지 확인하지 못했다."
+    "거래 분쟁 시 플랫폼이 어디까지 개입하는지, 당근페이가 그 개입 수단인지 확인하지 못했다.",
+    "ECK 도입 후 실제로 배포 시간이 얼마나 줄었는지는 글의 '결과' 절을 끝까지 읽지 못해 확인하지 못했다 — 목표(30분 이내)만 확인된 상태다.",
+    "동네 인증의 판정 방식은 이번 사이클에도 공식 자료를 찾지 못했다. 검색으로 나오는 것은 GPS 우회 방법을 다룬 제3자 블로그뿐이라 근거로 쓸 수 없다.",
+    "medium.com 은 WebFetch 가 403 을 돌려준다 — 당근 기술 자료는 브라우저로만 읽을 수 있다."
   ],
   "sources": [
     {
