@@ -209,6 +209,28 @@
         "trust-score"
       ],
       "file": "machine-cannot-judge.md"
+    },
+    {
+      "slug": "backpressure",
+      "title": "멈춤을 어떻게 정의하고 무엇을 먼저 버리는가",
+      "question": "'무중단'은 목표가 아니라 정의다 — 재시도 예산 안인가, 무엇을 잃지 않았는가, 화면이 떴는가?",
+      "companies": [
+        "stripe",
+        "shopify",
+        "discord",
+        "baemin",
+        "youtube"
+      ],
+      "features": [
+        "docdb-migrations",
+        "pods-isolation",
+        "bfcm-readiness",
+        "presence-fanout",
+        "message-storage",
+        "store-exposure",
+        "ggc-edge"
+      ],
+      "file": "backpressure.md"
     }
   ]
 }
