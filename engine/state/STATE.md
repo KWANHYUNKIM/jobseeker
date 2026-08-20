@@ -4,9 +4,12 @@
 
 ## 지금 파는 중
 
-**Stripe 진행 중 — 해외 첫 회사.** 도메인 5개 중 3개 완료(`idempotent-payments` 결제 API,
-`ledger` 자금 기록·검증, `radar` 리스크·사기 방지). 남은 도메인 2개: 결제 처리·결제수단 / 매출 운영.
-검증 경고 3건(Stripe 2 + 카카오 1).
+**Stripe 진행 중 — 해외 첫 회사.** 도메인 5개 중 3개 완료 · **기능 4개**
+(`idempotent-payments`+`api-surface` 결제 API·개발자 제품, `ledger` 자금 기록·검증, `radar` 리스크).
+남은 도메인 2개: 결제 처리·결제수단 / 매출 운영. 검증 경고 3건(Stripe 2 + 카카오 1).
+> `결제 API` 도메인을 **`결제 API·개발자 제품` 으로 넓혔다** — 계약이 문서·SDK·CLI 를 타고 나가므로
+> 개발자 제품 전체가 같은 도메인이다. **도메인 이름을 바꿀 때 각 feature 의 `domain` 필드도 함께
+> 고쳐야 한다**(이번에 검증 오류로 잡혔다).
 > `정산·계정(Connect)` 도메인을 **`자금 기록·검증` 으로 옮겼다** — 자료가 다룬 것은 Connect 가
 > 아니라 Ledger 였다. Connect 는 도메인 tech 에 `미확인` 으로 남겼다.
 > **stripe.com/blog/* 는 stripe.dev/blog/* 로 301 리다이렉트된다** — WebFetch 가 리다이렉트를
@@ -109,27 +112,30 @@ if(kakao)·medium 어디에도 엔지니어링 글이 없다. 검색에서 나�
 | 056 | 2026-08-21 | Stripe | **해외 첫 회사.** 프로파일(도메인 5·수익원 2) + `idempotent-payments` — 연결이 끊긴 자리에서 두 번 청구하지 않기 | Stripe 결제 처리 또는 리스크 |
 | 057 | 2026-08-21 | Stripe | `ledger`(자금 기록·검증) — 기대한 일이 실제로 일어났는지 증명하기 | Stripe 리스크(Radar) 또는 결제수단 |
 | 058 | 2026-08-21 | Stripe | `radar`(리스크·사기 방지) — 100밀리초 안에 의심하기 | Stripe 결제 처리·결제수단 또는 매출 운영 |
+| 059 | 2026-08-21 | Stripe | `api-surface`(결제 API·개발자 제품) — 계약 하나가 문서·SDK·CLI 까지 흘러가기 | Stripe 결제 처리 또는 매출 운영 |
 
 ## 다음 사이클 메모
 
-- **다음은 Stripe 결제 처리·결제수단 또는 매출 운영.** 확인된 후보 URL(전부 stripe.dev):
-  `how-api-changes-flow-into-stripes-developer-products`(API 호환성 — **토스의 '가맹점 코드를 깨지
-  않는다'와 바로 대조된다**, 지금 가장 값진 후보),
+- **다음은 Stripe 결제 처리·결제수단 또는 매출 운영**(남은 두 도메인). 확인된 후보 URL(stripe.dev):
   `how-stripes-document-databases-supported-99.999-uptime-with-zero-downtime-data-migrations`,
   `how-stripe-uses-graph-search-and-state-machines-to-auto-remediate-a-global-database-fleet`,
-  `shepherd-how-stripe-adapted-chronon-to-scale-ml-feature-development`, `how-we-built-stripe-credits`.
-  **stripe.com → stripe.dev 리다이렉트 주의.**
-- 이번에 나온 가장 좋은 이야기: **지금 조금 더 정확한 것보다 앞으로 빨리 좋아질 수 있는 것을 골랐다.**
-  XGBoost 를 빼면 재현율이 1.5% 떨어지는 걸 알면서도 뺐다 — 전이학습·임베딩과 양립하지 않고 재훈련이
-  느렸기 때문이다. 그 결과 훈련 시간이 85% 줄어 하루에 여러 실험을 돌리게 됐고, 잃은 1.5%는 모델을
-  키워 되사 왔다. **공격이 계속 바뀌는 도메인에서는 고치는 속도가 누적 성능을 정한다.**
-- 두 번째: **사람의 통찰이 항상 모델보다 앞서지는 않는다.** '지금 분산 사기 공격의 대상인가'를
-  특성으로 넣어 봤더니 모델이 이미 그 패턴을 학습하고 있었다. 그래서 특성은 만들기 전이 아니라
-  만든 뒤에 성능으로 판단한다.
-- 세 번째: **설명은 부가 기능이 아니라 제품의 일부다.** 순수 DNN 을 고르는 순간 '왜 막았는지'를
-  답할 수 없게 되므로, Risk Insights 가 없으면 성능을 얻고 제품을 잃는다.
-- 네 번째: **두 결정이 서로를 가능하게 했다.** DNN 전환이 훈련을 빠르게 만들었기에 학습 데이터를
-  10배(지금은 100배 실험)로 늘릴 수 있었다.
+  `how-we-built-stripe-credits`(매출 운영 쪽에 가깝다),
+  `shepherd-how-stripe-adapted-chronon-to-scale-ml-feature-development`.
+- 이번에 나온 가장 좋은 이야기이자 **토스와의 정면 대조**:
+  - **토스**는 옛 계약을 그대로 두고 **Converter 로 옛 파라미터를 흡수**하며 버전별로 완전히 독립된
+    API 를 유지한다 — 유지 비용이 버전 수만큼 선형으로 는다.
+  - **Stripe** 는 계약을 **하나의 스펙(OpenAPI)에서 생성**해 문서·스니펫·SDK·CLI 까지 흘려보내고,
+    머지 전에 역호환성을 자동 검사한다 — 대신 v2 를 들이면서 한동안 두 형식을 떠안았고 **v1 의
+    과거 버전은 지금도 되살릴 수 없다.**
+  - 같은 문제(가맹점 코드를 깨지 않기)에 **한쪽은 어댑터로, 한쪽은 생성 파이프라인으로** 답했다.
+    `payments.md` 를 3사로 다시 쓸 때 이 축을 넣으면 좋다.
+- 두 번째: **표준을 고르는 이유는 우아함이 아니라 하류가 넓어서다.** OpenAPI 를 고른 이유로 회사가
+  든 것이 '업계 표준 · 사내 검증 · 확장 가능'이다. 그리고 표준이 표현 못 하는 것은 형식을 새로
+  만드는 대신 vendor extension 으로 담았다.
+- 세 번째: **지금 잘 만드는 것과 과거를 되살리는 것은 다른 문제다.** v2 는 역사 전체를 재현할 수
+  있는데 v1 은 아키텍처가 그렇게 생기지 않아 새 메타데이터를 역채우기 할 수 없다.
+- 엔진 운영 교훈: **도메인 이름을 바꿀 때 feature 의 `domain` 필드도 같이 고쳐야 한다.**
+  validate.py 가 잡아 줬다 — 검증기가 제 몫을 했다.
 
 ## 이제 무엇을 할까 — 다음 사이클의 선택지
 

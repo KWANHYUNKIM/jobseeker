@@ -19,7 +19,7 @@
   "domain_map": {
     "title": "Stripe 도메인 지도",
     "question": "개발자에게 파는 회사는 무엇을 상품으로 만드는가?",
-    "code": "flowchart TD\n  DEV[가맹점 개발자] -->|API 계약| PAY[결제 API]\n  PAY --> PROC[결제 처리 · 결제수단]\n  PROC --> NET[카드망 · 은행 · 로컬 수단]\n  PAY --> RISK[리스크 · 사기 방지]\n  RISK -.->|막으면 매출도 막힌다| PROC\n  PAY --> REVN[매출 운영<br/>Billing · Invoicing · Tax]\n  PROC --> SETTLE[자금 기록 · 검증<br/>Ledger]\n  PROC --> TPV[총 결제액 1.9조 달러]\n  TPV --> REV[매출 68억 달러 · EBITDA 12억]\n  REVN -.->|연 런레이트 10억 달러 예정| REV\n  classDef money stroke-dasharray: 3 3\n  class TPV,REV money"
+    "code": "flowchart TD\n  DEV[가맹점 개발자] -->|API 계약| PAY[결제 API · 개발자 제품]\n  PAY --> PROC[결제 처리 · 결제수단]\n  PROC --> NET[카드망 · 은행 · 로컬 수단]\n  PAY --> RISK[리스크 · 사기 방지]\n  RISK -.->|막으면 매출도 막힌다| PROC\n  PAY --> REVN[매출 운영<br/>Billing · Invoicing · Tax]\n  PROC --> SETTLE[자금 기록 · 검증<br/>Ledger]\n  PROC --> TPV[총 결제액 1.9조 달러]\n  TPV --> REV[매출 68억 달러 · EBITDA 12억]\n  REVN -.->|연 런레이트 10억 달러 예정| REV\n  classDef money stroke-dasharray: 3 3\n  class TPV,REV money"
   },
   "revenue_streams": [
     {
@@ -53,8 +53,8 @@
   ],
   "domains": [
     {
-      "name": "결제 API",
-      "why": "이 회사의 제품은 화면이 아니라 개발자와 맺는 계약이다. '다시 시도해도 되는가', '지금 이 결제는 어떤 상태인가' 같은 질문에 대한 답이 곧 상품이다.",
+      "name": "결제 API·개발자 제품",
+      "why": "이 회사의 제품은 화면이 아니라 개발자와 맺는 계약이다. '다시 시도해도 되는가', '지금 이 결제는 어떤 상태인가' 같은 질문에 대한 답이 곧 상품이다. 그리고 그 계약은 문서·SDK·CLI 를 타고 나가므로, **개발자 제품 전체가 이 도메인의 일부**다 — 계약의 변경이 곧 제품의 변경이다.",
       "tech": [
         {
           "tech": "멱등 키 + PaymentIntent 상태 모델",
@@ -77,10 +77,25 @@
               "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
             }
           ]
+        },
+        {
+          "tech": "OpenAPI 단일 출처 파이프라인(v1 Ruby DSL · v2 Protobuf DSL → variant·phase·version)",
+          "solves": "여러 팀이 나눠 소유한 API 표면의 변경을 한 출처에서 API Reference·코드 스니펫·7개 언어 SDK·CLI 로 자동으로 흘려보내고, 머지 전에 역호환성을 검사한다.",
+          "limits": "v1 의 과거 버전은 설명을 다시 만들기 어렵고 새 메타데이터를 역채우기 할 수 없다. v1·v2 정의 통합은 아직 진행 중이고, 구 버전 지원 기간은 공개돼 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How API changes flow into Stripe's developer products",
+              "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+              "publisher": "Stripe 엔지니어링 블로그",
+              "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+            }
+          ]
         }
       ],
       "features": [
-        "idempotent-payments"
+        "idempotent-payments",
+        "api-surface"
       ]
     },
     {
@@ -188,7 +203,7 @@
     {
       "key": "idempotent-payments",
       "name": "재시도 — 연결이 끊긴 자리에서 두 번 청구하지 않기",
-      "domain": "결제 API",
+      "domain": "결제 API·개발자 제품",
       "updated_at": "2026-08-21",
       "business": {
         "why": "결제 API 를 파는 회사에서 가장 무서운 사건은 장애가 아니라 **중복 청구**다. 요청을 보냈는데 응답이 안 오면 가맹점은 다시 보낼 수밖에 없고, 그때 첫 요청이 사실은 성공했다면 손님은 두 번 결제된다. **되돌릴 수 없는 일을 다루는 API 에서는 '다시 시도해도 되는가'가 기능이 아니라 계약이다.** Stripe 는 이 문제를 두 층에서 다룬다 — API 요청 수준의 멱등 키와, 결제 하나를 통째로 붙잡아 두는 PaymentIntent.",
@@ -1356,6 +1371,387 @@
           "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
         }
       ]
+    },
+    {
+      "key": "api-surface",
+      "name": "API 표면 — 계약 하나가 문서·SDK·CLI 까지 흘러가기",
+      "domain": "결제 API·개발자 제품",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "개발자에게 파는 회사에서 **API 는 제품이고, 문서·SDK·CLI 는 그 제품의 포장이 아니라 제품 자체의 일부**다. 그런데 이 표면은 한 곳에서 만들어지지 않는다 — 여러 제품팀이 각자 엔드포인트를 바꾸고, 그 결과가 **7개 언어의 공식 SDK 와 3개 릴리스 채널**, API Reference, 코드 스니펫, CLI 로 동시에 나가야 한다. 게다가 2024년 **v2 네임스페이스**를 들이면서 이 회사는 한동안 **두 가지 스펙 형식**을 동시에 떠안았다.",
+        "metrics": [
+          {
+            "label": "흘러가는 곳",
+            "value": "**7개 언어 · 3개 릴리스 채널**의 공식 SDK, API Reference, 코드 스니펫, CLI",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "label": "v2 도입의 대가",
+            "value": "팀들이 OpenAPI 또는 Ruby DSL(v1)과 내부 API 스펙(v2) **두 형식을 함께 지원**해야 했고, SDK 생성기와 API Reference 생성기가 **중복**됐다. CLI 의 v2 미리보기 지원은 종료됐고 Stripe Shell 은 v2 를 지원하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "label": "v2 가 얻은 것",
+            "value": "모든 API 변경이 디스크에 저장되어 **역사의 시작부터 재현 가능** — 어느 시점의 API 표면이든 다시 만들어 낼 수 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "v2 를 들이고 나서",
+          "thought": "새 도메인 모델과 새 의미론을 주려면 네임스페이스를 갈라야 했는데, 그 순간 **모든 하류 도구가 두 세계를 다 알아야 하는 상태**가 됐다. 생성기가 둘로 늘고, 어떤 도구는 한쪽을 아예 못 따라온다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 단일 출처로 삼을지 고를 때",
+          "thought": "우리만 아는 형식을 계속 쓰면 우리만 쓸 수 있는 도구를 계속 만들어야 한다. **OpenAPI 는 업계 표준이고 이미 사내에서 검증됐으며 확장할 수 있다** — 표준을 고르는 이유는 우아함이 아니라 하류가 넓어서다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "표준이 우리 것을 다 표현하지 못한다는 걸 알 때",
+          "thought": "확장 가능한 리소스, 이벤트, 접근 권한 같은 건 OpenAPI 에 그대로 담기지 않는다. 그렇다고 형식을 새로 만들면 처음으로 돌아간다. **vendor extension 으로 표준 안에 우리 방언을 두는 것**이 절충이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "v1 의 과거 버전을 되살리려 할 때",
+          "thought": "v2 는 역사 전체를 재현할 수 있는데 v1 은 아니다. 아키텍처가 그렇게 생기지 않았기 때문이라, **옛 버전에는 새 변형이나 메타데이터를 역으로 채워 넣을 수 없다.** 지금 잘 만드는 것과 과거를 되살리는 것은 다른 문제다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "DSL",
+            "what": "v1 은 Ruby DSL, v2 는 Protocol Buffer 기반 DSL 로 API 를 정의한다."
+          },
+          {
+            "name": "OpenAPI 설명",
+            "what": "단일 정규 형식. v1·v2 DSL 양쪽에서 생성된다. 릴리스마다 그 버전의 정식 설명으로 스냅샷된다."
+          },
+          {
+            "name": "vendor extensions",
+            "what": "`x-stripeOperations`, `x-resourceId`, `x-stripeResource`, `x-stripeEvent`, `x-stripeAccess`, `x-expandableFields` 등 Stripe 고유 정보를 표준 안에 담는 확장."
+          },
+          {
+            "name": "생성 파라미터",
+            "what": "variant(제품별 산출물) · phase(GA·public preview·private preview) · version."
+          }
+        ],
+        "invariants": [
+          "표면이 여러 곳에서 바뀌어도 하류로 나가는 설명은 하나의 출처에서 와야 한다.",
+          "공개 산출물에는 내부 전용 정보가 섞이면 안 된다.",
+          "지금 잘 만드는 것과 과거를 되살리는 것은 다른 문제다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "제품팀이 v1 Ruby DSL 또는 v2 Protocol Buffer DSL 로 API 를 바꾼다",
+            "why": "표면은 여러 팀이 나눠 소유한다"
+          },
+          {
+            "step": "PR 에서 자동 테스트가 명명·필드 타입·역호환성을 검사한다",
+            "why": "머지 전에 잡아야 한다"
+          },
+          {
+            "step": "OpenAPI 기반 diff 를 사람이 눈으로 검토한다(v2 는 과거 버전 변경까지 감지)",
+            "why": "실수로 든 변경을 잡는다"
+          },
+          {
+            "step": "병합되면 내부 버저닝 도구가 이전·향후 버전의 OpenAPI 설명을 비교한다",
+            "why": "각 변경에 SDK 영향·영향받는 제품·변경로그 문구를 붙인다"
+          },
+          {
+            "step": "릴리스 시 정식 OpenAPI 설명을 스냅샷한다",
+            "why": "그 버전의 정식 설명으로 남긴다"
+          },
+          {
+            "step": "variant·phase·version 으로 소비자별 산출물을 만든다",
+            "why": "공개용에서는 민감 정보를 빼고 일부 API 는 아예 뺀다"
+          },
+          {
+            "step": "CDN 과 오픈소스 레포(stripe/openapi, stripe/stripe-cli) 워크플로가 가져간다",
+            "why": "내부 서비스와 외부 도구가 같은 출처를 본다"
+          },
+          {
+            "step": "API Reference · 코드 스니펫 · SDK · CLI 새 버전이 나간다",
+            "why": "계약의 변경이 곧 제품의 변경이다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "두 가지 스펙 형식을 계속 지원할 것인가",
+            "chosen": "**OpenAPI 하나로 수렴**한다 — 업계 표준이고, 사내에서 이미 검증됐으며, 확장 가능하기 때문",
+            "alternatives": [
+              "v1 Ruby DSL 과 v2 내부 스펙 병행",
+              "자체 통합 형식 신설"
+            ],
+            "tradeoff": "수렴 작업 자체가 큰 비용이고 v1·v2 정의의 차이를 매끄럽게 만드는 일은 **아직 진행 중**이다. 그래도 두 형식을 두면 생성기가 계속 중복되고 어떤 도구는 한쪽을 못 따라온다 — **표준을 고른 이유는 우아함이 아니라 하류가 넓기 때문이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "표준이 표현하지 못하는 것은 어떻게 할 것인가",
+            "chosen": "OpenAPI **vendor extensions** 로 Stripe 고유 정보를 표준 안에 담는다(`x-stripeResource`, `x-stripeEvent`, `x-stripeAccess`, `x-expandableFields` 등)",
+            "alternatives": [
+              "형식 자체를 확장",
+              "부가 메타데이터 파일 분리"
+            ],
+            "tradeoff": "표준을 따르되 표준만 아는 도구는 이 정보를 못 읽는 **방언**이 생긴다. 대신 형식을 새로 만들지 않아 하류의 기존 도구를 그대로 쓸 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "v2 를 무엇으로 정의할 것인가",
+            "chosen": "**Protocol Buffer 기반 DSL** 로 정의하고 내부 API 스펙으로 직렬화한 뒤, 거기서 OpenAPI 를 생성한다",
+            "alternatives": [
+              "OpenAPI 를 직접 손으로 작성",
+              "v1 과 같은 Ruby DSL"
+            ],
+            "tradeoff": "정의 → 내부 스펙 → OpenAPI 로 단계가 늘어난다. 그 대신 **정의가 코드로 검증되고**, 그 덕에 v2 는 모든 변경이 디스크에 남아 역사 전체를 재현할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "버전을 어떻게 붙들 것인가",
+            "chosen": "새 API 버전을 낼 때마다 **당시의 OpenAPI 스펙을 그 버전의 정식 설명으로 저장**한다",
+            "alternatives": [
+              "최신 스펙만 유지",
+              "버전별 수동 문서"
+            ],
+            "tradeoff": "저장할 것이 계속 늘어난다. 대신 v2 에서는 **어느 시점의 API 표면이든 다시 만들어 낼 수 있다** — v1 은 역사적 아키텍처 때문에 그게 안 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "하나의 산출물로 모두를 만족시킬 것인가",
+            "chosen": "**variant · phase · version** 세 파라미터로 소비자별 산출물을 만든다. phase 는 `generally_available` · `public_preview` · `private_preview` 로 거른다",
+            "alternatives": [
+              "단일 산출물",
+              "제품팀별 파이프라인"
+            ],
+            "tradeoff": "조합이 늘어 파이프라인이 복잡해지고, 새 개발자 제품이 나올 때마다 **새 사용 사례가 계속 발견된다**(회사가 진행 중 과제로 밝힌다). 대신 한 출처에서 서로 다른 청중용 산출물이 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "공개 산출물에 무엇을 담을 것인가",
+            "chosen": "민감한 메타데이터를 빼고, Dashboard 통합처럼 **특정 API 는 아예 생략**한다",
+            "alternatives": [
+              "전체 공개",
+              "수동 검수 후 공개"
+            ],
+            "tradeoff": "내부 스펙과 공개 스펙이 달라져 두 세계를 관리해야 한다. 그래도 **공개 SDK 를 지원하는 설명에 대시보드 같은 내부 통합 메서드가 섞이면 안 된다** — 이건 선택이 아니라 요구다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "호환성을 언제 검사할 것인가",
+            "chosen": "**PR 병합 전** 자동 테스트가 명명·필드 타입·버전 고려사항(역호환성 포함)을 검사하고, OpenAPI 기반 diff 를 사람이 눈으로 본다. v2 는 **과거 버전에 대한 변경까지 감지**한다",
+            "alternatives": [
+              "릴리스 전 일괄 검토",
+              "런타임 감시"
+            ],
+            "tradeoff": "머지 속도가 느려진다. 대신 실수로 든 변경을 그 자리에서 잡는다 — 계약이 이미 하류로 퍼진 뒤에 잡으면 되돌리는 비용이 훨씬 크다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "question": "변경을 어디까지 자동으로 흘려보낼 것인가",
+            "chosen": "릴리스 스냅샷을 CDN 과 오픈소스 레포(`stripe/openapi`, `stripe/stripe-cli`)로 보내 **API Reference · 코드 스니펫 · SDK · CLI 새 버전까지** 자동으로 나가게 한다",
+            "alternatives": [
+              "SDK 만 자동화",
+              "각 팀이 개별 배포"
+            ],
+            "tradeoff": "이 파이프라인이 회사의 단일 의존점이 되고, 각 변경에 SDK 영향과 변경로그 문구를 붙이는 부담이 생긴다. 대신 **계약의 변경이 곧 제품의 변경**이라는 사실이 구조로 강제된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "OpenAPI (단일 정규 형식) + vendor extensions",
+            "role": "v1·v2 DSL 양쪽에서 생성되는 하나의 설명. Stripe 고유 정보는 `x-` 확장으로 담는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "tech": "v1 Ruby DSL · v2 Protocol Buffer DSL",
+            "role": "API 정의의 입력. v2 는 내부 API 스펙으로 직렬화된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "tech": "생성기(variant · phase · version)",
+            "role": "소비자별 산출물을 만든다. 공개용은 민감 메타데이터를 빼고 일부 API 를 생략한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "tech": "CI 검증 + OpenAPI diff 검토",
+            "role": "머지 전에 명명·타입·역호환성을 검사하고 변경을 시각적으로 보여 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How API changes flow into Stripe's developer products",
+                "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+                "publisher": "Stripe 엔지니어링 블로그",
+                "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+              }
+            ]
+          },
+          {
+            "tech": "구 버전 지원 정책",
+            "role": "— 확인하지 못했다. 글은 오래된 버전을 얼마나 오래 지원하는지 밝히지 않고, v1 의 과거 버전 지원을 '아직 해결해야 할 문제'로 남겨 둔다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "idempotent-payments",
+          "via": "같은 계약",
+          "contract": "멱등 키와 PaymentIntent 의 동작이 곧 이 파이프라인이 실어 나르는 계약의 내용이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "매출 운영",
+          "via": "새 제품의 합류",
+          "contract": "새 개발자 제품이 나올 때마다 파이프라인에 새 사용 사례가 생긴다고 회사가 밝힌다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 하나의 출처에서 여러 청중으로",
+          "question": "한 팀의 API 변경이 어떻게 7개 언어의 SDK 까지 닿는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  T1[제품팀 A] --> V1[v1 Ruby DSL]\n  T2[제품팀 B] --> V2[v2 Protocol Buffer DSL]\n  V2 --> SPEC[내부 API 스펙]\n  V1 --> GEN[OpenAPI 생성기]\n  SPEC --> GEN\n  GEN --> OAS[(OpenAPI · 단일 정규 형식<br/>+ vendor extensions)]\n  OAS --> P{variant · phase · version}\n  P -->|공개용| PUB[민감 메타데이터 제외<br/>Dashboard API 는 생략]\n  P -->|내부용| INT[내부 서비스 · 빌드 산출물]\n  P -->|GA / preview| PH[단계별 필터]\n  PUB --> CDN[CDN]\n  CDN --> REPO[stripe/openapi · stripe/stripe-cli]\n  REPO --> DOC[API Reference]\n  REPO --> SNIP[코드 스니펫]\n  REPO --> SDK[SDK · 7개 언어 · 3개 채널]\n  REPO --> CLI[CLI]"
+        },
+        {
+          "title": "변경 하나가 지나는 관문",
+          "question": "머지 전과 후에 무엇이 붙는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> PR작성: DSL 을 고친다\n  PR작성 --> 자동검증: 명명 · 필드 타입 · 역호환성\n  자동검증 --> 반려: 규칙 위반\n  반려 --> PR작성\n  자동검증 --> diff검토: OpenAPI 기반 시각적 diff\n  diff검토 --> 과거버전감지: v2 는 옛 버전 변경까지 잡는다\n  과거버전감지 --> PR작성: 실수로 든 변경\n  diff검토 --> 병합\n  병합 --> 정보부착: SDK 영향 · 영향받는 제품 · 변경로그 문구\n  정보부착 --> 릴리스검토: 제품 설계자가 다가올 변경을 다듬는다\n  릴리스검토 --> 스냅샷: 그 버전의 정식 설명으로 저장\n  스냅샷 --> 전파: 문서 · 스니펫 · SDK · CLI\n  전파 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 두 세계를 동시에 가질 때",
+          "question": "v2 를 들인 대가는 무엇이었고 무엇이 아직 남았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[2024 · v2 네임스페이스 도입] --> B[새 도메인 모델 · 새 의미론]\n  A --> C[스펙 형식이 둘이 된다]\n  C --> D[팀들이 두 형식을 다 지원해야 한다]\n  C --> E[SDK 생성기와 API Reference 생성기 중복]\n  C --> F[CLI 의 v2 미리보기 지원 종료]\n  C --> G[Stripe Shell 은 v2 미지원]\n  D --> H[OpenAPI 로 수렴하기로]\n  E --> H\n  H -.->|아직 진행 중| I[v1 과 v2 정의의 차이 매끄럽게 하기]\n  J[v1 의 과거 버전] --> K[설명을 다시 만들기가 간단하지 않다]\n  K --> L[새 변형 · 메타데이터를 역채우기 할 수 없다]\n  L -.-> M[아직 해결해야 할 문제로 남아 있다]\n  N[새 개발자 제품이 나올 때마다] -.-> O[파이프라인에 새 사용 사례가 생긴다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How API changes flow into Stripe's developer products",
+          "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+          "publisher": "Stripe 엔지니어링 블로그",
+          "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1368,7 +1764,9 @@
     "Connect(플랫폼 정산·계정)는 아직 손대지 않았다 — 도메인 이름을 자료에 맞춰 '자금 기록·검증'으로 옮기고 구멍으로 남겼다.",
     "Radar 의 임계값과 정밀도-재현율 곡선, 미탐지율은 공개돼 있지 않다 — 오차단 0.1% 만 밝힌다.",
     "가맹점이 만드는 커스텀 규칙과 모델 판단이 어떤 순서로 상호작용하는지는 글에 없다.",
-    "결제 이후 단계의 사기 대응(분쟁·환불 악용 등)은 다음 글로 예고만 돼 있다."
+    "결제 이후 단계의 사기 대응(분쟁·환불 악용 등)은 다음 글로 예고만 돼 있다.",
+    "Stripe 가 오래된 API 버전을 얼마나 오래 지원하는지는 글에 없다 — v1 의 과거 버전 지원 자체를 '아직 해결해야 할 문제'로 남겨 둔다.",
+    "breaking change 를 어떤 기준으로 판정하고 어떤 절차로 내보내는지(정책)는 밝히지 않고, 자동 검사가 있다는 사실만 나온다."
   ],
   "sources": [
     {
@@ -1403,6 +1801,12 @@
       "url": "https://stripe.dev/blog/how-we-built-it-stripe-radar",
       "publisher": "Stripe 엔지니어링 블로그",
       "summary": "100밀리초 안에 1,000가지 넘는 특성을 보고 사기를 판단하는 시스템. 로지스틱 회귀 → Wide & Deep(XGBoost+DNN) → 순수 DNN(ResNeXt 영감 다중 분기)으로 옮기며 훈련 시간을 85% 줄였고, 그 대가로 잃은 재현율 1.5%를 모델을 키워 메웠다."
+    },
+    {
+      "title": "How API changes flow into Stripe's developer products",
+      "url": "https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products",
+      "publisher": "Stripe 엔지니어링 블로그",
+      "summary": "2024년 v2 네임스페이스를 들이면서 두 가지 스펙 형식을 떠안게 되자 OpenAPI 하나로 수렴한 이야기. variant·phase·version 세 파라미터로 소비자별 산출물을 만들어 API Reference·코드 스니펫·7개 언어 SDK·CLI 까지 자동으로 흘려보낸다."
     }
   ]
 }
