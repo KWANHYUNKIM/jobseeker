@@ -33,6 +33,17 @@
       "features_done": 6,
       "one_liner": "메시지가 반드시 도착한다는 약속 위에 올린 국민 플랫폼",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "baemin",
+      "name": "배달의민족",
+      "name_en": "Baemin",
+      "country": "KR",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "음식이 식기 전에 닿아야 하는 물류를 앱으로 만든 회사",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -53,7 +64,13 @@
     "관계·프레즌스",
     "톡비즈 지면",
     "모빌리티·페이",
-    "AI 모델"
+    "AI 모델",
+    "주문 접수",
+    "배차",
+    "위치·경로",
+    "가게 노출",
+    "커머스 물류(B마트)",
+    "정산"
   ],
   "countries": {
     "KR": "한국",
