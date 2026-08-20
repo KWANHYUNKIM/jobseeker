@@ -155,7 +155,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "colbert-matching"
+      ]
     },
     {
       "name": "커머스 데이터",
@@ -185,11 +187,305 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "colbert-matching",
+      "name": "ColBERT 벡터 유사도 매칭",
+      "domain": "랭킹·매칭",
+      "updated_at": "2026-08-20",
+      "business": {
+        "why": "검색의 값어치가 모이는 자리다. 사용자가 쓴 단어와 문서에 적힌 단어가 겹치지 않아도 같은 뜻이면 찾아 줘야 하는데, 어휘가 겹쳐야 잡히는 기존 방식으로는 '같은 것을 다르게 말한' 문서를 통째로 놓친다. 서치플랫폼 매출 4조가 결과 품질 위에 서 있으므로 이 매칭이 나빠지면 광고 지면의 값어치도 같이 떨어진다.",
+        "metrics": [
+          {
+            "label": "서빙 벡터 규모",
+            "value": "300억",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "어휘 기반 검색의 한계를 마주했을 때",
+          "thought": "단어가 겹치지 않으면 못 찾는다는 건 오래된 문제였고, 문장 하나를 벡터 하나로 만드는 방식은 이미 있었다. 문제는 그 방식이 긴 문서에서 세부를 뭉개 버린다는 점 — 검색은 대개 문서 전체가 아니라 그 안의 한 문단 때문에 정답이 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "토큰마다 벡터를 두기로 했을 때",
+          "thought": "정확도를 위해 토큰 단위로 가면 저장량이 문서 수가 아니라 토큰 수만큼 늘어난다. 300억이라는 숫자는 성과가 아니라 감당해야 할 비용의 크기다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "검색 시간 예산을 확인했을 때",
+          "thought": "모델이 아무리 좋아도 사용자가 기다려 주는 시간은 정해져 있다. 그래서 질문이 '어떻게 더 정확하게'가 아니라 '이 시간 안에 얼마나 정확하게'로 바뀐다 — 기존 ANN 기법을 그대로 쓸 수 없었던 이유가 여기 있었을 것이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "운영을 생각했을 때",
+          "thought": "벡터 매칭은 왜 이 문서가 위에 왔는지 설명하기 어렵다. 어휘 기반이라면 '이 단어가 여기 있어서'라고 말할 수 있는데, 벡터는 고칠 손잡이가 없다. 품질 사고가 났을 때 대응 속도가 곧 이 선택의 대가가 된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "질의 토큰 벡터",
+            "what": "사용자가 친 문장을 토큰 단위로 쪼개 만든 벡터들. 질의 시각에 계산된다."
+          },
+          {
+            "name": "문서 토큰 벡터",
+            "what": "문서의 각 토큰에 대응하는 벡터. 색인 시각에 미리 계산해 둔다."
+          },
+          {
+            "name": "ANN 인덱스",
+            "what": "300억 개 벡터에서 가까운 후보를 근사적으로 찾아 주는 구조."
+          },
+          {
+            "name": "MaxSim 점수",
+            "what": "질의 토큰마다 가장 비슷한 문서 토큰을 골라 더한 값. 최종 순위의 근거."
+          }
+        ],
+        "invariants": [
+          "문서 벡터는 질의를 몰라도 계산될 수 있어야 한다 — 이 조건이 깨지면 미리 색인할 수 없고, 미리 색인할 수 없으면 웹 규모에서는 아예 쓸 수 없다.",
+          "후보를 좁히는 단계는 근사이고, 점수를 매기는 단계는 정확해야 한다. 둘을 뒤섞으면 어느 쪽이 틀렸는지 알 수 없게 된다.",
+          "검색 시간 예산은 모델이 아니라 사용자가 정한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "색인 시각에 문서의 토큰마다 벡터를 만들어 저장한다",
+            "why": "질의마다 문서를 다시 인코딩하면 웹 규모에서는 시간이 나오지 않는다"
+          },
+          {
+            "step": "그 벡터들로 ANN 인덱스를 만든다",
+            "why": "300억 개를 전부 비교할 수는 없다"
+          },
+          {
+            "step": "질의가 오면 질의 토큰 벡터를 계산한다",
+            "why": "질의는 미리 알 수 없으니 이 부분만 실시간이다"
+          },
+          {
+            "step": "ANN 으로 후보 문서를 좁힌다",
+            "why": "정확한 점수 계산은 비싸므로 대상을 먼저 줄인다"
+          },
+          {
+            "step": "후보에 대해 MaxSim 으로 다시 점수를 매긴다",
+            "why": "질의 토큰마다 가장 잘 맞는 문서 토큰을 보는 것이 이 방식의 정확도의 원천이다"
+          },
+          {
+            "step": "상위 결과를 랭킹 다음 단계로 넘긴다",
+            "why": "의미 매칭은 순위의 재료 중 하나일 뿐 최종 순위가 아니다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "문서를 벡터 하나로 압축할 것인가, 토큰마다 벡터를 둘 것인가",
+            "chosen": "토큰 단위 벡터를 두고 마지막에만 상호작용시킨다(late interaction)",
+            "alternatives": [
+              "문서 하나당 벡터 하나(dense single-vector)",
+              "어휘 기반 검색만 유지"
+            ],
+            "tradeoff": "저장량이 문서 수가 아니라 토큰 수에 비례해 폭증한다 — 300억이라는 규모가 그 결과다. 대신 문서 전체를 하나로 뭉개면 사라지는 '그 문단 때문에 정답인' 경우를 살린다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+                "url": "https://arxiv.org/abs/2004.12832",
+                "publisher": "Khattab & Zaharia, SIGIR 2020",
+                "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+              }
+            ]
+          },
+          {
+            "question": "질의와 문서를 언제 만나게 할 것인가",
+            "chosen": "문서 인코딩을 질의보다 먼저 끝내고, 만남은 점수 계산 단계로 미룬다",
+            "alternatives": [
+              "질의와 문서를 함께 인코딩(cross-encoder)"
+            ],
+            "tradeoff": "함께 인코딩하는 쪽이 정확하지만 질의마다 문서를 다시 계산해야 해 웹 규모에서 불가능하다. 정확도 일부를 내주고 사전 계산 가능성을 얻은 선택이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+                "url": "https://arxiv.org/abs/2004.12832",
+                "publisher": "Khattab & Zaharia, SIGIR 2020",
+                "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+              }
+            ]
+          },
+          {
+            "question": "300억 개 벡터에서 후보를 어떻게 좁힐 것인가",
+            "chosen": "적절한 ANN 기법을 찾아 검색 시간 제약에 맞게 수정해서 쓴다",
+            "alternatives": [
+              "전수 비교",
+              "기성 ANN 라이브러리를 그대로 사용"
+            ],
+            "tradeoff": "근사이므로 진짜 상위 문서를 후보 단계에서 놓칠 수 있고, 그 손실은 뒤의 정확한 점수 계산으로도 복구되지 않는다. 기성 구현을 고쳐 쓰는 순간 업스트림 개선을 그대로 받지 못하는 비용도 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          },
+          {
+            "question": "토큰 벡터의 저장 비용을 어떻게 감당할 것인가",
+            "chosen": "차원을 줄이고 값을 압축해 벡터당 크기를 낮추는 것으로 보인다",
+            "alternatives": [
+              "원본 정밀도 그대로 저장",
+              "문서 일부만 벡터화"
+            ],
+            "tradeoff": "압축은 정밀도 손실이고, 손실은 곧 순위가 미세하게 흔들린다는 뜻이다. 어느 지점까지 흔들려도 괜찮은지는 품질 지표로만 알 수 있다. — 네이버가 어떤 압축을 썼는지는 확인하지 못했다(ColBERTv2 의 잔차 압축이 같은 문제를 다룬 예시).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERTv2: Effective and Efficient Retrieval via Lightweight Late Interaction",
+                "url": "https://arxiv.org/abs/2112.01488",
+                "publisher": "Santhanam et al., NAACL 2022",
+                "summary": "잔차 압축으로 토큰 벡터 저장량을 줄인 후속 연구."
+              }
+            ]
+          },
+          {
+            "question": "기존 어휘 기반 검색을 대체할 것인가",
+            "chosen": "의미 매칭을 순위의 재료 중 하나로 얹는다(대체가 아니라 보완)",
+            "alternatives": [
+              "벡터 검색으로 전면 교체"
+            ],
+            "tradeoff": "두 체계를 함께 유지하는 비용이 들고 점수를 어떻게 합칠지가 새 문제로 생긴다. 대신 어휘 기반이 잘하는 것(정확한 고유명사·숫자)을 잃지 않는다.",
+            "confidence": "inferred"
+          },
+          {
+            "question": "설명 가능성을 어디까지 포기할 것인가",
+            "chosen": "왜 이 문서가 위에 왔는지 사람이 읽을 수 있는 근거는 포기하고 품질 지표로 관리한다",
+            "alternatives": [
+              "규칙 기반 가중치로 설명 가능성 유지"
+            ],
+            "tradeoff": "품질 사고가 났을 때 원인을 짚을 손잡이가 적다. 검색 모니터링 체계가 따로 필요해지는 이유가 여기 있다.",
+            "confidence": "inferred"
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ColBERT (late interaction)",
+            "role": "질의·문서를 토큰 벡터로 두고 MaxSim 으로 점수를 낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          },
+          {
+            "tech": "ANN (근사 최근접 탐색)",
+            "role": "300억 벡터에서 후보를 검색 시간 안에 좁힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+                "url": "https://deview.kr/2021/sessions/486",
+                "publisher": "NAVER DEVIEW 2021",
+                "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+              }
+            ]
+          },
+          {
+            "tech": "BERT 계열 인코더",
+            "role": "토큰 벡터를 만드는 모델",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+                "url": "https://arxiv.org/abs/2004.12832",
+                "publisher": "Khattab & Zaharia, SIGIR 2020",
+                "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "질의 이해",
+          "via": "해석된 의도와 질의 토큰",
+          "contract": "무엇을 찾는지에 대한 판단이 먼저 서고, 매칭은 그 판단 위에서 후보를 고른다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "문서 색인",
+          "via": "색인 시각의 토큰 벡터 생성",
+          "contract": "문서가 색인될 때 벡터도 함께 만들어져야 한다 — 색인 지연이 곧 의미 매칭의 지연이다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "검색 모니터링",
+          "via": "품질 지표",
+          "contract": "설명 가능성을 포기한 대가로, 나빠졌다는 사실은 지표로만 알 수 있다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 색인 시각과 질의 시각이 나뉜다",
+          "question": "무엇을 미리 계산하고 무엇을 실시간에 하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph 색인 시각\n    DOC[문서] --> ENC1[토큰별 인코딩]\n    ENC1 --> VEC[(토큰 벡터 300억)]\n    VEC --> ANN[(ANN 인덱스)]\n  end\n  subgraph 질의 시각\n    Q[질의] --> ENC2[질의 토큰 인코딩]\n    ENC2 --> CAND[ANN 후보 축소]\n    ANN --> CAND\n    CAND --> SCORE[MaxSim 재점수]\n    VEC --> SCORE\n    SCORE --> TOP[상위 후보]\n  end\n  TOP --> RANK[랭킹 다음 단계]"
+        },
+        {
+          "title": "질의 한 건의 처리 상태",
+          "question": "정해진 시간 예산 안에서 어느 단계가 잘리는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 인코딩: 질의 도착\n  인코딩 --> 후보축소: 질의 벡터 완성\n  후보축소 --> 재점수: 후보 N개 확보\n  재점수 --> 완료: 상위 결과 확정\n  후보축소 --> 축소: 시간 예산 초과 → 후보 수를 줄인다\n  축소 --> 재점수\n  재점수 --> 폴백: 예산 초과 → 어휘 기반 결과로\n  폴백 --> 완료\n  완료 --> [*]\n  note right of 폴백\n    시간 초과 시 무엇으로 돌아가는지는\n    공개 자료로 확인하지 못했다(추정).\n  end note"
+        },
+        {
+          "title": "실패 경로 — 근사와 압축이 잃는 것",
+          "question": "정답 문서를 놓치는 일은 어느 단계에서 생기고, 그때 무엇으로 알아채는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[질의] --> ANN{ANN 후보 축소}\n  ANN -->|정답이 후보에 듦| S[MaxSim 재점수] --> OK[좋은 결과]\n  ANN -->|정답을 놓침| MISS[뒤 단계로는 복구 불가]\n  S -->|압축된 벡터로 점수| DRIFT[순위가 미세하게 흔들림]\n  MISS --> Z[사용자는 '없다'고 판단]\n  DRIFT --> Z\n  Z -.->|설명 불가| MON[품질 지표·모니터링으로만 감지]\n  MON -.-> FIX[원인 규명은 어휘 기반보다 오래 걸린다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+          "url": "https://deview.kr/2021/sessions/486",
+          "publisher": "NAVER DEVIEW 2021",
+          "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+        },
+        {
+          "title": "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
+          "url": "https://arxiv.org/abs/2004.12832",
+          "publisher": "Khattab & Zaharia, SIGIR 2020",
+          "summary": "질의·문서를 토큰 단위 벡터로 두고 마지막에만 상호작용시키는 late interaction 구조를 제안한 논문."
+        },
+        {
+          "title": "ColBERTv2: Effective and Efficient Retrieval via Lightweight Late Interaction",
+          "url": "https://arxiv.org/abs/2112.01488",
+          "publisher": "Santhanam et al., NAACL 2022",
+          "summary": "잔차 압축으로 토큰 벡터 저장량을 줄인 후속 연구."
+        }
+      ]
+    }
+  ],
   "open_questions": [
-    "자동완성이 어떤 자료구조·갱신 주기로 동작하는지 공개 자료를 아직 찾지 못했다 — 다음 사이클의 첫 기능 후보다.",
     "지면 구성에서 광고와 일반 결과의 배치를 어떤 기준으로 조정하는지 기술 자료가 없다.",
-    "색인 갱신 지연(문서가 올라가고 검색에 뜨기까지)의 실제 목표치를 모른다."
+    "색인 갱신 지연(문서가 올라가고 검색에 뜨기까지)의 실제 목표치를 모른다.",
+    "검색 자동완성은 네이버가 직접 밝힌 공개 자료를 찾지 못했다 — 일반적인 trie/FST 설명뿐이라 이 회사의 선택으로 쓸 수 없다.",
+    "DEVIEW 2021 ColBERT 발표 PDF 본문을 읽지 못했다(deview.naver.com 접근 불가). 세션 개요와 논문으로만 재구성했으므로 압축 방식·후보 수·지연 수치는 미확인이다.",
+    "시간 예산을 넘겼을 때 어떤 결과로 폴백하는지 확인하지 못했다."
   ],
   "sources": [
     {
