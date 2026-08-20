@@ -4,10 +4,10 @@
   "name_en": "Instagram (Meta)",
   "country": "US",
   "category": "소셜",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "수십억 개 중에서 고르되 한 번에 고르지 않는 법을 파는 회사",
-  "business_model": "**Meta 산하 서비스**다. 사용자에게 돈을 받지 않고 그들이 보는 지면을 광고로 판다. Meta 전체로는 2025년 매출 **2,009.7억 달러**(+22%), 2025년 12월 평균 Family 일간 활성 이용자 **35.8억 명**(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%. **Instagram 단독 매출은 IR 에서 분리 공시되지 않는다.** 앞선 회사들과 다른 점은 **다룰 콘텐츠의 자릿수**다 — 당근의 피드가 사내 서비스들의 콘텐츠를 모으는 문제였다면 여기는 **수십억 개에서 실시간으로 고르는** 문제다. 그래서 기술이 '무엇을 위에 놓을까'가 아니라 **'어떻게 하면 전부를 정밀하게 보지 않아도 되게 할까'**에서 시작한다.",
+  "business_model": "**Meta 산하 서비스**다. 사용자에게 돈을 받지 않고 그들이 보는 지면을 광고로 판다. Meta 전체로는 2025년 매출 **2,009.7억 달러**(+22%), 2025년 12월 평균 Family 일간 활성 이용자 **35.8억 명**(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%. **Instagram 단독 매출은 IR 에서 분리 공시되지 않는다.** 앞선 회사들과 다른 점은 **다룰 콘텐츠의 자릿수**다 — 당근의 피드가 사내 서비스들의 콘텐츠를 모으는 문제였다면 여기는 **수십억 개에서 실시간으로 고르는** 문제다. 그래서 기술이 '무엇을 위에 놓을까'가 아니라 **'어떻게 하면 전부를 정밀하게 보지 않아도 되게 할까'**에서 시작한다.\n\n**그리고 이 회사를 네 도메인에 걸쳐 읽으면 같은 처방이 두 번 반복된다.** Explore 퍼널의 **Two Tower** 와 광고 랭킹의 **오프라인/온라인 분리** — 둘 다 **미리 계산할 수 있게 하려고 사용자와 아이템(광고)의 상호작용 피처를 포기한다.** 밀리초 예산 안에서 수십억 개를 다뤄야 하는 회사라 **'사용자 쪽을 떼어 캐시한다'가 이 회사의 기본 문법**이다. 흥미로운 건 그 대가가 매번 같다는 것 — **지금 이 사람과 이 아이템 사이에서 벌어지는 일을 앞단에서 볼 수 없다**(마지막 문장은 이 사이트의 해석).",
   "products": [
     "피드",
     "Explore",
@@ -65,8 +65,48 @@
     {
       "name": "콘텐츠 무결성",
       "why": "추천이 세면 셀수록 나쁜 콘텐츠도 함께 증폭된다. 퍼널의 마지막에 걸러 내는 단계가 따로 있는 이유다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "TIE (상호작용 시퀀스 임베딩)",
+          "solves": "콘텐츠만으로는 판단할 수 없는 문제를 행동의 순서와 시점으로 다룬다. 하나의 임베딩을 어떤 예측 과제의 분류기에도 입력으로 쓴다.",
+          "limits": "학습된 표현이라 판단 근거를 읽기 어렵고(추정), 행동 데이터를 모아 다루는 부담이 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fighting Abuse @Scale 2019 recap",
+              "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+              "publisher": "Engineering at Meta",
+              "date": "2019-12-13",
+              "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+            }
+          ]
+        },
+        {
+          "tech": "DEC (그래프 기반 가짜 계정 탐지) + 혼합 레이블 학습",
+          "solves": "소셜 그래프 임베딩으로 계정의 진위를 판별해 수억 개를 제거하고, 다수의 자동 레이블과 소수의 사람 레이블을 함께 써 양과 정밀도를 모두 얻는다.",
+          "limits": "그래프 인프라가 필요하고, 두 종류 레이블을 섞는 방식 자체가 설계 문제가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fighting Abuse @Scale 2019 recap",
+              "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+              "publisher": "Engineering at Meta",
+              "date": "2019-12-13",
+              "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+            }
+          ]
+        },
+        {
+          "tech": "Instagram 전용 무결성 시스템",
+          "solves": "— 확인하지 못했다.",
+          "limits": "이 도메인의 자료는 2019년 발표이고 사례가 Facebook 계정 쪽에 치우쳐 있다. Instagram 고유의 무결성 시스템은 1차 자료를 찾지 못했다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "integrity-classification"
+      ]
     },
     {
       "name": "광고 랭킹",
@@ -1344,6 +1384,374 @@
           "summary": "사용자 시퀀스를 오프라인 트랜스포머로 비동기 처리해 임베딩을 캐시하고, 온라인 랭킹은 신선한 신호와 광고 후보만 다루는 2단 구조. 성능이 계산량에 로그-선형으로 따라오며 Instagram 전환 +6%, Facebook 전환 +3%·광고 클릭 +3.5%."
         }
       ]
+    },
+    {
+      "key": "integrity-classification",
+      "name": "무결성 — 콘텐츠만 봐서는 알 수 없는 것",
+      "domain": "콘텐츠 무결성",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**범위 주의**: 이 기능의 자료는 **2019년 발표**이고 사례가 **Facebook 계정 쪽**에 치우쳐 있다. Instagram 전용 무결성 자료는 찾지 못했다.\n\n추천이 세면 셀수록 나쁜 콘텐츠도 함께 증폭된다. 그래서 퍼널의 마지막에 걸러 내는 단계가 따로 있는데, 문제는 **무엇을 걸러야 하는지 판단하는 일 자체**다. 회사가 말하는 핵심은 이것이다 — **콘텐츠만으로는 정확한 예측에 충분하지 않고, 아예 콘텐츠가 없을 수도 있다.**",
+        "metrics": [
+          {
+            "label": "DEC 의 규모",
+            "value": "Deep Entity Classification 시스템이 **수억 개의 가짜 계정** 제거를 담당한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "label": "사람 검토",
+            "value": "**수백~수천 명** 규모의 검토자가 어뷰징을 측정하고, ML 학습 데이터를 만들고, 단속 조치를 정한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "label": "레이블 전략",
+            "value": "**다수의 중간 정밀도 자동 레이블 + 소수의 고정밀 사람 레이블**을 함께 쓰는 다단계·다중작업 학습",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "콘텐츠만 보고 있을 때",
+          "thought": "글과 이미지를 이해하는 기술은 많이 좋아졌다. 그런데 **콘텐츠만으로는 정확한 판단에 충분하지 않고, 애초에 콘텐츠가 없는 경우도 있다** — 가짜 계정처럼 무엇을 올렸느냐가 아니라 **어떻게 행동했느냐**가 증거인 문제가 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "행동 피처를 손으로 만들고 있을 때",
+          "thought": "사용자 행동을 담는 피처를 사람이 설계하는 건 **노동집약적이고 깊은 도메인 전문성을 요구하며, 그러고도 중요한 정보를 다 담지 못할 수 있다.** 어뷰저는 계속 바뀌는데 피처는 사람 속도로만 는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "레이블을 구하려 할 때",
+          "thought": "정확한 레이블은 사람이 붙여야 하는데 그건 적을 수밖에 없고, 자동 레이블은 많이 만들 수 있지만 정밀도가 떨어진다. **둘 중 하나를 고르는 문제가 아니라 둘을 어떻게 섞느냐의 문제**다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사람 검토의 역할을 정할 때",
+          "thought": "사람 검토를 '자동화가 아직 못 미친 자리'로만 보면 줄여야 할 비용이 된다. 그런데 여기서는 **어뷰징을 측정하고, 학습 데이터를 만들고, 조치를 정하는** 세 가지 일을 한다 — 모델을 없애는 게 아니라 **모델을 만드는 장치**다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "TIE(temporal interaction embeddings)",
+            "what": "상호작용의 출발점·대상 주변의 정적 피처와 시퀀스의 시간적 피처를 함께 잡는 지도학습 딥러닝 모델. 상호작용 전체를 저차원 벡터로 만든다."
+          },
+          {
+            "name": "DEC(Deep Entity Classification)",
+            "what": "가짜 계정 탐지 프레임워크. 소셜 그래프의 임베딩을 활용한다."
+          },
+          {
+            "name": "자동 레이블 / 사람 레이블",
+            "what": "다수의 중간 정밀도 자동 레이블과 소수의 고정밀 사람 레이블."
+          },
+          {
+            "name": "사람 검토 체계",
+            "what": "수백~수천 명 규모. 측정 · 학습 데이터 생성 · 조치 결정."
+          }
+        ],
+        "invariants": [
+          "콘텐츠만으로는 부족하고, 아예 콘텐츠가 없는 경우도 있다.",
+          "사람이 만드는 피처는 어뷰저가 바뀌는 속도를 따라가지 못한다.",
+          "정밀한 레이블은 적고, 많은 레이블은 정밀하지 않다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "판단할 엔티티(계정·콘텐츠)의 상호작용 시퀀스를 모은다",
+            "why": "행동이 콘텐츠보다 더 많은 것을 말할 때가 있다"
+          },
+          {
+            "step": "TIE 가 그 시퀀스 전체를 저차원 벡터로 만든다",
+            "why": "상호작용의 정적 특성과 시간적 특성을 함께 담는다"
+          },
+          {
+            "step": "그 임베딩을 어떤 예측 과제의 분류기에도 입력으로 넣는다",
+            "why": "과제마다 피처를 새로 설계하지 않아도 된다"
+          },
+          {
+            "step": "가짜 계정은 DEC 가 소셜 그래프 임베딩으로 판별한다",
+            "why": "계정은 무엇을 올렸느냐보다 누구와 어떻게 이어졌느냐가 증거다"
+          },
+          {
+            "step": "다수의 자동 레이블과 소수의 사람 레이블을 함께 쓴다",
+            "why": "양과 정밀도를 한쪽만 고를 수 없다"
+          },
+          {
+            "step": "사람 검토가 측정하고, 학습 데이터를 만들고, 조치를 정한다",
+            "why": "사람이 모델의 바깥이 아니라 모델을 만드는 자리에 있다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "무엇을 근거로 판단할 것인가",
+            "chosen": "콘텐츠만 보지 않는다 — **상호작용의 시퀀스**를 함께 본다",
+            "alternatives": [
+              "콘텐츠 이해 모델 강화",
+              "신고 기반"
+            ],
+            "tradeoff": "행동 데이터를 모으고 다뤄야 하는 부담이 생긴다. 그래도 **콘텐츠만으로는 충분하지 않고 아예 없을 수도 있다** — 가짜 계정처럼 무엇을 올렸느냐가 아니라 어떻게 행동했느냐가 증거인 문제가 있기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "question": "행동 피처를 사람이 설계할 것인가",
+            "chosen": "**TIE 로 학습한다** — 상호작용 전체 시퀀스를 저차원 피처 벡터로 만드는 지도학습 딥러닝 모델",
+            "alternatives": [
+              "수작업 피처 엔지니어링 유지"
+            ],
+            "tradeoff": "학습된 표현이라 무엇을 근거로 판단했는지 읽기 어려워진다(추정). 대신 수작업 피처는 **노동집약적이고 깊은 도메인 전문성을 요구하며 중요한 정보를 다 담지 못할 수 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "question": "임베딩에 무엇을 담을 것인가",
+            "chosen": "각 상호작용의 **출발점·대상 주변 정적 피처**와 **시퀀스의 시간적 피처**를 함께 담는다",
+            "alternatives": [
+              "집계 통계만",
+              "시간 순서 무시"
+            ],
+            "tradeoff": "모델이 무거워진다. 대신 '무엇을 했는가'와 '언제·어떤 순서로 했는가'가 함께 들어간다 — 어뷰징은 대개 순서와 속도에서 드러난다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "question": "과제마다 모델을 따로 만들 것인가",
+            "chosen": "**하나의 임베딩을 어떤 예측 과제의 분류기에도 입력으로 쓴다**",
+            "alternatives": [
+              "과제별 전용 피처·모델"
+            ],
+            "tradeoff": "특정 과제에 최적화된 표현보다는 덜 날카로울 수 있다(추정). 대신 새 어뷰징 유형이 나올 때마다 피처를 처음부터 설계하지 않아도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "question": "가짜 계정을 무엇으로 판별할 것인가",
+            "chosen": "**DEC** — 소셜 네트워크 그래프의 임베딩을 활용하는 프레임워크. 수억 개의 가짜 계정 제거를 담당한다",
+            "alternatives": [
+              "계정 단위 신호만",
+              "신고 기반 제재"
+            ],
+            "tradeoff": "그래프를 다루는 인프라가 필요하다. 대신 계정은 **누구와 어떻게 이어졌는지**가 가장 강한 증거이고, 그건 계정 하나만 봐서는 보이지 않는다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "question": "레이블의 양과 정밀도 중 무엇을 고를 것인가",
+            "chosen": "**둘 다 쓴다** — 다수의 중간 정밀도 자동 레이블과 소수의 고정밀 사람 레이블을 결합하는 다단계·다중작업 학습",
+            "alternatives": [
+              "사람 레이블만",
+              "자동 레이블만"
+            ],
+            "tradeoff": "두 종류의 레이블을 어떻게 섞을지가 또 하나의 설계 문제가 된다. 그래도 **정밀한 레이블은 적을 수밖에 없고 많은 레이블은 정밀하지 않다** — 하나만 고르면 어느 쪽이든 막힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "question": "사람 검토를 줄일 것인가",
+            "chosen": "**유지한다.** 어뷰징을 측정하고, ML 학습 데이터를 만들고, 단속 조치를 정하는 세 가지 일을 맡는다(수백~수천 명 규모)",
+            "alternatives": [
+              "전면 자동화",
+              "신고 처리 전용"
+            ],
+            "tradeoff": "규모가 크고 계속 유지해야 한다. 그래도 여기서 사람은 **자동화가 아직 못 미친 자리**가 아니라 **모델을 만드는 자리**에 있다 — 학습 데이터가 여기서 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "TIE (temporal interaction embeddings)",
+            "role": "상호작용 시퀀스를 저차원 벡터로 만들어 어떤 분류 과제에도 입력으로 쓴다. 정적 피처와 시간적 피처를 함께 담는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "tech": "DEC (Deep Entity Classification)",
+            "role": "소셜 그래프 임베딩 기반 가짜 계정 탐지. 수억 개 계정 제거를 담당한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "tech": "혼합 레이블 학습(자동 다수 + 사람 소수)",
+            "role": "중간 정밀도 자동 레이블의 양과 고정밀 사람 레이블의 질을 함께 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "tech": "사람 검토 체계",
+            "role": "측정 · 학습 데이터 생성 · 조치 결정. 수백~수천 명 규모.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fighting Abuse @Scale 2019 recap",
+                "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+                "publisher": "Engineering at Meta",
+                "date": "2019-12-13",
+                "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+              }
+            ]
+          },
+          {
+            "tech": "Instagram 전용 무결성 시스템",
+            "role": "— 확인하지 못했다. 이 자료는 2019년 발표이고 사례가 Facebook 계정 쪽에 치우쳐 있다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "explore-funnel",
+          "via": "퍼널의 마지막",
+          "contract": "추천 퍼널의 최종 재랭킹에서 무결성 점수로 항목을 걸러 내거나 순위를 낮춘다 — 그 점수가 이 도메인에서 나온다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "ads-ranking",
+          "via": "같은 방향의 다른 쓰임",
+          "contract": "광고 랭킹은 사용자 시퀀스를 '무엇을 좋아할까'에, 무결성은 같은 시퀀스를 '이 계정이 진짜인가'에 쓴다 — 두 글은 서로를 언급하지 않는다(이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 행동을 벡터로 만들어 어디에나 쓰기",
+          "question": "콘텐츠가 없어도 무엇을 근거로 판단하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  E[판단할 엔티티 · 계정 또는 콘텐츠] --> SEQ[(상호작용 시퀀스 전체)]\n  SEQ --> TIE[TIE · 지도학습 딥러닝<br/>정적 피처 + 시간적 피처]\n  TIE --> VEC[저차원 임베딩]\n  VEC --> C1[분류기 · 과제 A]\n  VEC --> C2[분류기 · 과제 B]\n  VEC --> C3[분류기 · 과제 C]\n  GRAPH[(소셜 네트워크 그래프)] --> DEC[DEC · 가짜 계정 탐지]\n  DEC --> REMOVE[수억 개 계정 제거]\n  AUTO[자동 레이블 · 다수 · 중간 정밀도] --> TRAIN[다단계 · 다중작업 학습]\n  HUMAN[사람 레이블 · 소수 · 고정밀] --> TRAIN\n  TRAIN --> TIE\n  TRAIN --> DEC\n  REV[사람 검토 · 수백~수천 명] --> HUMAN\n  REV --> MEASURE[어뷰징 측정]\n  REV --> ACTION[단속 조치 결정]\n  C1 -.->|무결성 점수| FUNNEL[추천 퍼널의 최종 재랭킹]"
+        },
+        {
+          "title": "판단의 근거가 옮겨 간 자리",
+          "question": "무엇을 보다가 무엇을 보게 됐는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 콘텐츠기반: 글과 이미지를 이해한다\n  콘텐츠기반 --> 부족함: 콘텐츠만으로는 충분하지 않다\n  콘텐츠기반 --> 없음: 아예 콘텐츠가 없을 수도 있다\n  부족함 --> 수작업피처: 사람이 행동 피처를 설계\n  없음 --> 수작업피처\n  수작업피처 --> 노동집약: 전문성이 필요하고 느리다\n  수작업피처 --> 누락: 중요한 정보를 다 담지 못한다\n  노동집약 --> 학습된표현: TIE\n  누락 --> 학습된표현\n  학습된표현 --> 범용입력: 어떤 예측 과제에도\n  범용입력 --> 계정판단: DEC · 그래프 임베딩\n  계정판단 --> [*]\n  note right of 학습된표현\n    어뷰저는 계속 바뀌는데\n    피처는 사람 속도로만 는다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 어느 쪽만 골라도 막힌다",
+          "question": "이 도메인에서 무엇이 함정인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[콘텐츠만 본다] --> B[가짜 계정처럼 콘텐츠가 증거가 아닌 경우]\n  B --> C[판단할 근거가 없다]\n  D[피처를 사람이 만든다] --> E[노동집약 · 깊은 전문성 필요]\n  D --> F[중요한 정보를 다 담지 못한다]\n  E --> G[어뷰저가 바뀌는 속도를 못 따라간다]\n  H{레이블} -->|사람 것만| I[정밀하지만 양이 적다]\n  H -->|자동 것만| J[많지만 정밀도가 낮다]\n  I -.->|그래서| K[둘을 섞는다]\n  J -.-> K\n  L[사람 검토를 줄이면] --> M[학습 데이터가 마른다]\n  M --> N[모델이 나빠진다]\n  O[학습된 임베딩을 쓰면] -.-> P[무엇을 근거로 막았는지 읽기 어려워진다]\n  Q[추천이 세질수록] --> R[나쁜 콘텐츠도 함께 증폭된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Fighting Abuse @Scale 2019 recap",
+          "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+          "publisher": "Engineering at Meta",
+          "date": "2019-12-13",
+          "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1356,7 +1764,9 @@
     "알림 해제율(disable rate)을 지표로 직접 보는지는 글에 나오지 않는다 — 스팸처럼 느껴지면 끈다는 인과만 서술한다.",
     "광고 경매·입찰·예산 제약을 랭킹이 어떻게 반영하는지는 공개 글에 없다.",
     "오프라인 사용자 임베딩을 얼마나 자주 갱신하는지(신선도)는 밝히지 않는다.",
-    "학습·서빙 인프라의 규모(가속기 수·파라미터 수)와 A/B 실험의 세부는 공개되지 않았다."
+    "학습·서빙 인프라의 규모(가속기 수·파라미터 수)와 A/B 실험의 세부는 공개되지 않았다.",
+    "Instagram 고유의 무결성 시스템은 1차 자료를 찾지 못했다 — 이 도메인의 자료는 2019년 발표이고 사례가 Facebook 계정 쪽에 치우쳐 있다.",
+    "무결성 점수가 추천 퍼널의 최종 재랭킹에 어떤 형태로 들어가는지는 두 글 모두 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1386,6 +1796,13 @@
       "publisher": "Engineering at Meta",
       "date": "2026-08-05",
       "summary": "사용자 시퀀스를 오프라인 트랜스포머로 비동기 처리해 임베딩을 캐시하고, 온라인 랭킹은 신선한 신호와 광고 후보만 다루는 2단 구조. 성능이 계산량에 로그-선형으로 따라오며 Instagram 전환 +6%, Facebook 전환 +3%·광고 클릭 +3.5%."
+    },
+    {
+      "title": "Fighting Abuse @Scale 2019 recap",
+      "url": "https://engineering.fb.com/2019/12/13/security/fighting-abuse-scale-2019/",
+      "publisher": "Engineering at Meta",
+      "date": "2019-12-13",
+      "summary": "Facebook 이 자사 무결성 기술을 발표한 자리의 정리 — 상호작용 시퀀스를 저차원 벡터로 만드는 TIE(temporal interaction embeddings), 수억 개의 가짜 계정 제거를 담당하는 DEC(Deep Entity Classification), 그리고 수백~수천 명 규모의 사람 검토 체계."
     }
   ]
 }
