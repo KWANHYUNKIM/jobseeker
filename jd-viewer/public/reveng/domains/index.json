@@ -50,15 +50,17 @@
     },
     {
       "slug": "dispatch",
-      "title": "배차 — 사람을 태우는 것과 음식을 나르는 것",
-      "question": "매칭이 1:1인지 N:1인지가 아키텍처를 어떻게 바꾸는가?",
+      "title": "배차 — 같은 이름 아래 서로 다른 세 문제",
+      "question": "결정의 범위가 이 호출인지 도시 전체인지가 아키텍처를 어떻게 바꾸는가?",
       "companies": [
         "kakao",
-        "baemin"
+        "baemin",
+        "uber"
       ],
       "features": [
         "taxi-dispatch",
-        "rider-dispatch"
+        "rider-dispatch",
+        "marketplace-rl"
       ],
       "file": "dispatch.md"
     },
