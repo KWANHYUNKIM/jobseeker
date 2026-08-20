@@ -1,0 +1,545 @@
+{
+  "slug": "netflix",
+  "name": "Netflix",
+  "name_en": "Netflix",
+  "country": "US",
+  "category": "스트리밍",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "모든 영상에 같은 잣대를 대지 않기로 한 회사",
+  "business_model": "구독료로 번다. 2025년 매출 **450억 달러**(+16%), 영업이익 133억 달러로 **영업이익률 29.5%**(2024년 26.7%), 유료 회원 **3.25억 명**. 광고 매출은 15억 달러를 넘어 전년의 2.5배 이상으로 자랐다. 앞선 회사들과 다른 점은 **비용의 성격**이다 — 추천이나 검색이 아니라 **비트를 실어 나르는 일 자체가 원가**이고, 같은 화질을 더 적은 비트로 보내면 그만큼이 곧 이익이자 회원의 경험이 된다. 그래서 이 회사의 기술은 **'무엇을 보여줄까'보다 '어떻게 보낼까'**에 무게가 실린다.",
+  "products": [
+    "스트리밍 구독",
+    "광고형 요금제",
+    "게임",
+    "라이브"
+  ],
+  "domain_map": {
+    "title": "Netflix 도메인 지도",
+    "question": "같은 화질을 더 적은 비트로 보내는 일이 어떻게 이익이 되는가?",
+    "code": "flowchart TD\n  SRC[원본 콘텐츠] --> ENC[인코딩 · 전송<br/>per-title 래더]\n  ENC --> CDN[콘텐츠 전송망 · Open Connect]\n  CDN --> PLAY[재생 · 적응 스트리밍]\n  PLAY --> U[회원 3.25억 명]\n  REC[추천 · 발견] --> U\n  U --> SUB[구독료]\n  U --> ADS[광고형 요금제<br/>광고 매출 15억 달러+]\n  SUB --> REV[매출 450억 달러 · 영업이익률 29.5%]\n  ADS --> REV\n  ENC -.->|비트를 아끼면| REV\n  ENC -.->|같은 대역폭에 더 좋은 화질| U\n  classDef money stroke-dasharray: 3 3\n  class REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "구독료",
+      "how": "유료 회원 3.25억 명. 2025년 매출 450억 달러(+16%), 영업이익률 29.5%.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Netflix 2025 Q4 Shareholder Letter",
+          "url": "https://s22.q4cdn.com/959853165/files/doc_financials/2025/q4/FINAL-Q4-25-Shareholder-Letter.pdf",
+          "publisher": "Netflix IR",
+          "date": "2026-01-20",
+          "summary": "2025년 매출 450억 달러(+16%), 영업이익 133억 달러, 영업이익률 29.5%(2024년 26.7%). 유료 회원 3.25억 명 돌파. 광고 매출 15억 달러 이상(전년의 2.5배 이상)."
+        }
+      ]
+    },
+    {
+      "name": "광고",
+      "how": "광고형 요금제. 2025년 광고 매출 15억 달러 이상으로 전년의 2.5배 이상.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Netflix 2025 Q4 Shareholder Letter",
+          "url": "https://s22.q4cdn.com/959853165/files/doc_financials/2025/q4/FINAL-Q4-25-Shareholder-Letter.pdf",
+          "publisher": "Netflix IR",
+          "date": "2026-01-20",
+          "summary": "2025년 매출 450억 달러(+16%), 영업이익 133억 달러, 영업이익률 29.5%(2024년 26.7%). 유료 회원 3.25억 명 돌파. 광고 매출 15억 달러 이상(전년의 2.5배 이상)."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "인코딩·전송",
+      "why": "이 회사에서는 **비트를 실어 나르는 일 자체가 원가**다. 같은 화질을 더 적은 비트로 보내면 그만큼이 이익이자 회원의 경험이 된다 — 특히 대역폭이 좁은 나라와 모바일 네트워크에서.",
+      "tech": [
+        {
+          "tech": "per-title 비트레이트 래더(시험 인코딩 + convex hull)",
+          "solves": "타이틀마다 복잡도가 달라 하나의 래더가 양쪽 모두에게 틀린 답이 되는 문제를 푼다. 단순한 콘텐츠는 더 낮은 비트레이트에서 더 높은 해상도를, 복잡한 콘텐츠는 필요한 만큼의 비트를 받는다(20% 절감 사례).",
+          "limits": "타이틀마다 시험 인코딩을 돌려야 하고, 하위 호환성 때문에 해상도·비트레이트가 유한 집합으로 묶여 이론적 최적점에 정확히 앉을 수 없다. 기기별 추가 래더는 저장 효율을 떨어뜨린다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Per-Title Encode Optimization",
+              "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+              "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+              "date": "2015-12-14",
+              "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "per-title-encoding"
+      ]
+    },
+    {
+      "name": "재생·적응 스트리밍",
+      "why": "무엇을 보낼지 아무리 잘 준비해도 **고르는 일은 회원 기기에서 일어난다.** 리버퍼 없이 화질을 최대화하는 판단이 매 순간 필요하다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "콘텐츠 전송망",
+      "why": "비트가 실제로 지나가는 길. 어디에 무엇을 미리 놓아두느냐가 화질과 원가를 함께 정한다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "추천·발견",
+      "why": "볼 것이 많을수록 무엇을 볼지 정하는 일이 어려워진다. 구독 서비스에서는 '볼 게 없다'는 인상이 곧 해지다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "per-title-encoding",
+      "name": "인코딩 — 모든 영상에 같은 잣대를 대지 않기",
+      "domain": "인코딩·전송",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "방송에는 **할당된 대역폭**이 있다. 통계적 다중화를 써도 총합은 고정 용량을 넘을 수 없고, 심지어 **null 패킷으로 패딩을 넣어 엄격한 고정 비트레이트를 보장하느라 귀한 데이터율을 버린다.** 게다가 채널이 미리 할당돼 있어 **덜 인기 있는 프로그램은 더 낮은 비트레이트, 즉 더 나쁜 품질을 받기도 한다.** 인터넷 스트리밍에는 그 제약이 없다 — 프로그램이나 장르와 무관하게 **그 회원의 대역폭과 기기에 맞춘 최선의 화질**을 줄 수 있다. 그런데 그러려면 **어떤 비트레이트에 어떤 해상도를 담을지**를 정해야 한다.",
+        "metrics": [
+          {
+            "label": "카탈로그의 다양성",
+            "value": "100개 소스를 1080p·고정 QP 로 인코딩해 보니, 어떤 타이틀은 **2500 kbps 이하에서 PSNR 45 dB 이상**에 닿고 어떤 타이틀은 **38 dB 을 얻는 데 8000 kbps 이상**이 필요했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "label": "단순한 콘텐츠",
+            "value": "BoJack Horseman — 고정 래더는 1750 kbps 에 480p 를 줬는데, per-title 은 **1540 kbps 에서 1080p 를 시작**한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "label": "평균 복잡도 콘텐츠",
+            "value": "Orange is the New Black — 최고 품질 1080p 에 4640 kbps 를 배정해 고정 래더의 5800 kbps 대비 **비트레이트 20% 절감**, 화질은 그대로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "label": "회사 규모",
+            "value": "2025년 매출 450억 달러(+16%), 영업이익률 29.5%, 유료 회원 3.25억 명",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Netflix 2025 Q4 Shareholder Letter",
+                "url": "https://s22.q4cdn.com/959853165/files/doc_financials/2025/q4/FINAL-Q4-25-Shareholder-Letter.pdf",
+                "publisher": "Netflix IR",
+                "date": "2026-01-20",
+                "summary": "2025년 매출 450억 달러(+16%), 영업이익 133억 달러, 영업이익률 29.5%(2024년 26.7%). 유료 회원 3.25억 명 돌파. 광고 매출 15억 달러 이상(전년의 2.5배 이상)."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "방송의 제약을 벗어난 것을 깨달을 때",
+          "thought": "방송은 고정 용량에 맞추느라 **null 패킷으로 패딩까지 넣어 데이터율을 버리고**, 미리 할당된 채널 탓에 덜 인기 있는 프로그램이 더 나쁜 화질을 받는다. 우리는 그 제약이 없다 — 그러면 **모든 타이틀에 같은 레시피를 쓸 이유도 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "100개 타이틀의 곡선을 겹쳐 놓고",
+          "thought": "어떤 것은 2500 kbps 로도 아주 좋은 품질에 닿고, 어떤 것은 8000 kbps 를 써도 겨우 봐줄 만하다. **이 폭 안에서 하나의 래더는 양쪽 모두에게 틀린 답이다** — 한쪽은 비트를 버리고 다른 쪽은 화질을 버린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "아티팩트와 흐릿함을 견줄 때",
+          "thought": "복잡한 장면을 1080p 로 무리하게 넣으면 블로킹·링잉·컨투어링이 생긴다. 720p 로 낮추면 스케일링 때문에 흐려진다. 둘 다 손해인데 **인코딩 아티팩트가 다운스케일 뒤 업샘플링으로 생기는 흐릿함보다 대개 더 거슬리고 눈에 띈다** — 그러면 해상도를 낮추는 쪽이 낫다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "720p 까지만 디코딩되는 태블릿을 떠올릴 때",
+          "thought": "1080p 까지 덮는 곡선으로 래더를 짜면, 어떤 지점에서 1080p 로 넘어간 순간 그 태블릿은 **대역폭이 남아도 그 스트림을 못 쓴다.** 최적으로 만든 래더가 어떤 기기에는 오히려 손해가 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "비트레이트 래더",
+            "what": "비트레이트-해상도 쌍의 집합. 클라이언트가 이 중에서 고른다."
+          },
+          {
+            "name": "convex hull",
+            "what": "각 해상도가 다른 해상도를 능가하는 비트레이트 구간들을 모은 경계. 경제학적으로 파레토 효율이다."
+          },
+          {
+            "name": "JND(just-noticeable-difference)",
+            "what": "사람이 겨우 알아챌 수 있는 차이. 인접 레벨 간격의 기준."
+          },
+          {
+            "name": "품질 지표",
+            "what": "PSNR(45 dB 아주 좋음 · 35 dB 아티팩트 보임)과 VMAF(Netflix 가 USC 연구자들과 만든 지각 품질 지표)."
+          }
+        ],
+        "invariants": [
+          "모든 해상도에는 만들어 낼 수 있는 지각 품질의 상한이 있다.",
+          "인코딩 아티팩트가 다운스케일·업샘플링의 흐릿함보다 대개 더 거슬린다.",
+          "최적으로 짠 래더도 그 해상도를 못 쓰는 기기에는 손해가 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "타이틀 하나를 유한한 해상도 집합에서 여러 QP 로 시험 인코딩한다",
+            "why": "전체 품질 영역의 완전한 곡선을 그리는 건 실질적으로 불가능하다"
+          },
+          {
+            "step": "QP 를 서로 1 JND 떨어지게 고른다",
+            "why": "사람이 겨우 알아채는 간격이 자연스러운 단위다"
+          },
+          {
+            "step": "각 시험 인코드의 비트레이트와 품질을 잰다",
+            "why": "해상도별 곡선의 표본점이 된다"
+          },
+          {
+            "step": "표본으로 해상도별 비트레이트-품질 곡선을 보간한다",
+            "why": "측정하지 않은 지점도 추정해야 한다"
+          },
+          {
+            "step": "convex hull 에 가장 가까운 비트레이트-해상도 쌍들을 고른다",
+            "why": "각 구간에서 가장 좋은 해상도를 쓴다"
+          },
+          {
+            "step": "인접 레벨의 지각 차이가 1 JND 바로 아래가 되게 맞춘다",
+            "why": "전환이 매끄럽고 레벨 수는 최소가 된다"
+          },
+          {
+            "step": "480p·720p 상한 기기용 래더를 따로 만든다",
+            "why": "못 쓰는 스트림은 그 기기에 없는 것과 같다"
+          },
+          {
+            "step": "클라이언트의 적응 스트리밍이 리버퍼 없이 최선을 고른다",
+            "why": "고르는 일은 결국 기기에서 일어난다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "카탈로그 전체에 하나의 래더를 쓸 것인가",
+            "chosen": "**타이틀마다 고유한 래더**를 만든다 — 그 타이틀의 복잡도를 분석해 최적 레시피를 정한다",
+            "alternatives": [
+              "고정 래더 유지",
+              "장르별 래더"
+            ],
+            "tradeoff": "타이틀마다 분석과 시험 인코딩을 돌려야 한다. 그래도 고정 래더는 **노이즈 많은 장면에서는 최고 5800 kbps 로도 블록이 생기고, 만화에는 5800 이 훨씬 과하다** — 하나의 답이 양쪽 모두에게 틀린 답이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "품질을 무엇으로 잴 것인가",
+            "chosen": "주로 **PSNR** 을 쓴다 — 비디오 압축에서 가장 흔한 지표이고 소스에 대한 충실도를 재는 간단한 방법이다. 같은 분석을 **VMAF** 로도 할 수 있다",
+            "alternatives": [
+              "사람이 보는 주관 평가만",
+              "지각 지표만"
+            ],
+            "tradeoff": "**PSNR 은 지각 품질을 항상 반영하지는 않는다.** 그래도 양 끝단의 품질을 잘 알려 주고(45 dB 아주 좋음, 35 dB 아티팩트 보임) **한 타이틀 안의 품질 추세**를 잘 나타낸다 — 비교의 기준으로는 단순한 편이 낫다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "해상도와 비트레이트를 자유롭게 고를 것인가",
+            "chosen": "**유한한 집합으로 제한한다** — 해상도는 1920×1080 · 1280×720 · 720×480 · 512×384 · 384×288 · 320×240, 비트레이트도 유한 집합이며 인접 값의 증분은 약 5%",
+            "alternatives": [
+              "연속적인 값 허용",
+              "타이틀마다 해상도 자유 선택"
+            ],
+            "tradeoff": "이론적 최적점에 정확히 앉을 수 없다. 그런데 이유가 성능이 아니라 **하위 호환성**이다 — 스트림이 **이전에 인증된 모든 Netflix 기기에서 재생되어야 한다.** 이미 팔려 나간 기기가 오늘의 선택지를 제한한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "품질 레벨을 몇 개, 얼마 간격으로 둘 것인가",
+            "chosen": "인접 비트레이트의 지각 차이가 **1 JND 바로 아래**가 되게 한다",
+            "alternatives": [
+              "균등 간격",
+              "레벨 수 고정"
+            ],
+            "tradeoff": "JND 를 판정할 방법이 필요하다. 대신 두 가지를 한꺼번에 얻는다 — **비트레이트 전환이 매끄럽고**, 넓은 품질 범위를 **가장 적은 레벨 수**로 덮는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "완전한 비트레이트-품질 곡선을 그릴 것인가",
+            "chosen": "**불가능하므로 표본을 뽑는다** — 유한한 해상도 집합에서 1 JND 간격의 여러 QP 로 시험 인코딩하고, 그 점들로 곡선을 보간한다",
+            "alternatives": [
+              "전 구간 완전 탐색",
+              "고정 규칙"
+            ],
+            "tradeoff": "보간이라 실제 곡선과 어긋날 수 있다. 그래도 카탈로그의 모든 타이틀에 대해 전체 품질 영역의 그래프를 만드는 것은 실질적으로 불가능하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "어느 해상도를 언제 쓸 것인가",
+            "chosen": "**convex hull 에 가능한 한 가까운 점**을 고른다 — 각 해상도가 다른 해상도를 능가하는 비트레이트 구간이 따로 있기 때문",
+            "alternatives": [
+              "해상도별 고정 구간",
+              "항상 최고 해상도"
+            ],
+            "tradeoff": "유한한 해상도 집합 같은 실무 제약 때문에 hull 위에 정확히 앉지는 못한다. 그래도 그 위가 **파레토 효율**이다 — 고해상도를 낮은 정밀도로 인코딩하는 것이 저해상도를 높은 정밀도로 인코딩한 뒤 업샘플하는 것보다 나쁠 수 있고, 아주 낮은 비트레이트에서는 **고정 크기 코딩 블록의 오버헤드가 비트를 다 먹어 버린다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "복잡한 장면을 어떻게 다룰 것인가",
+            "chosen": "**해상도를 낮춰 아티팩트를 없애고 스케일링을 감수한다.** 필요하면 반대로 5800 kbps 를 넘겨(예: 7500) 1080p 를 유지하는 것도 검토한다",
+            "alternatives": [
+              "항상 최고 해상도 유지",
+              "비트레이트 상한 고정"
+            ],
+            "tradeoff": "다운스케일 뒤 업샘플링하면 흐려진다. 그래도 **인코딩 아티팩트(블로킹·링잉·컨투어링)가 그 흐릿함보다 대개 더 거슬리고 눈에 띈다** — 두 손해 중 덜 아픈 쪽을 고른 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "question": "기기의 해상도 상한을 어떻게 다룰 것인가",
+            "chosen": "**480p·720p 상한 기기용 per-title 래더를 따로 설계한다**",
+            "alternatives": [
+              "단일 래더 유지",
+              "기기에서 알아서 처리"
+            ],
+            "tradeoff": "인코드가 늘어 **타이틀의 저장 효율이 떨어진다.** 그래도 1080p 까지 덮는 래더 하나만 두면, 어떤 지점에서 1080p 로 넘어간 순간 720p 태블릿은 **대역폭이 남아도 그 아래 스트림에 갇힌다** — 최적화가 특정 기기에 손해가 되는 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "시험 인코딩 기반 래더 탐색",
+            "role": "유한한 해상도 집합에서 1 JND 간격 QP 로 인코딩해 비트레이트-품질 표본을 만들고 곡선을 보간한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "tech": "convex hull 선택",
+            "role": "각 해상도가 우세한 구간을 모아 파레토 경계를 만들고, 거기에 가장 가까운 비트레이트-해상도 쌍을 고른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "tech": "PSNR · VMAF",
+            "role": "품질 측정. PSNR 은 충실도와 추세를, VMAF 는 지각 품질을 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "tech": "기기 상한별 추가 래더(480p · 720p)",
+            "role": "디코딩 해상도가 제한된 기기에서도 대역폭을 다 쓸 수 있게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "tech": "클라이언트 적응 스트리밍",
+            "role": "회원 기기에서 리버퍼를 피하면서 화질을 최대화하는 인코드를 즉시 고른다 — 이 글은 그 알고리즘 자체는 다루지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Per-Title Encode Optimization",
+                "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+                "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+                "date": "2015-12-14",
+                "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+              }
+            ]
+          },
+          {
+            "tech": "프로덕션 시스템의 구현",
+            "role": "— 이 글에 없다. '견고하고 확장 가능하게 답하는 시스템'을 연구 질문으로 꼽지만 그 구조는 밝히지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "재생·적응 스트리밍",
+          "via": "래더의 소비자",
+          "contract": "미리 인코딩된 래더 중에서 무엇을 고를지는 회원 기기의 적응 스트리밍 알고리즘이 정한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "콘텐츠 전송망",
+          "via": "저장과 전송",
+          "contract": "래더가 커질수록(기기별 추가 래더 포함) 저장·전송해야 할 인코드가 늘어난다 — 이 글은 저장 효율이 떨어진다고만 밝힌다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 타이틀 하나의 래더를 찾는 길",
+          "question": "어떤 비트레이트에 어떤 해상도를 담을지 어떻게 정하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  T[타이틀 하나] --> TRIAL[시험 인코딩<br/>유한 해상도 집합 × 여러 QP]\n  TRIAL -->|QP 는 1 JND 간격| M[비트레이트 · 품질 측정<br/>PSNR 또는 VMAF]\n  M --> CURVE[해상도별 곡선 보간]\n  CURVE --> HULL[convex hull<br/>각 해상도가 우세한 구간의 경계]\n  HULL --> PICK[가장 가까운 비트레이트-해상도 쌍 선택]\n  CONST[제약 · 하위 호환성<br/>해상도 6종 · 비트레이트 증분 약 5%] --> PICK\n  JND[인접 레벨 = 1 JND 바로 아래] --> PICK\n  PICK --> LADDER[per-title 비트레이트 래더]\n  LADDER --> CAP480[480p 상한 기기용 래더]\n  LADDER --> CAP720[720p 상한 기기용 래더]\n  LADDER --> CLIENT[클라이언트 적응 스트리밍<br/>리버퍼 없이 화질 최대화]\n  CAP720 --> CLIENT\n  CAP480 --> CLIENT"
+        },
+        {
+          "title": "해상도 하나의 품질 곡선이 지나는 구간",
+          "question": "비트레이트를 올리면 언제부터 소용이 없어지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 초저비트: 코딩 블록 오버헤드가 비트를 다 먹는다\n  초저비트 --> 아티팩트: 블로킹 · 링잉 · 컨투어링\n  아티팩트 --> 상승구간: 비트를 더 주면 품질이 오른다\n  상승구간 --> 우세구간: 이 해상도가 다른 해상도를 이긴다\n  우세구간 --> 평탄화: 곡선이 눕는다\n  평탄화 --> 상한도달: 이 해상도의 지각 품질 상한\n  상한도달 --> 낭비: 더 줘도 눈에 띄는 개선이 없다\n  낭비 --> [*]\n  우세구간 --> 해상도전환: 더 높은 해상도가 우세해진다\n  해상도전환 --> [*]\n  note right of 상한도달\n    다운샘플 후 업샘플하면\n    고주파 성분이 사라진다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 하나의 잣대가 만드는 손해",
+          "question": "고정 래더는 어디서 무엇을 잃는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[카탈로그 전체에 하나의 래더] --> B{타이틀의 복잡도}\n  B -->|노이즈 · 필름 그레인| C[최고 5800 kbps 에서도 블록이 보인다]\n  B -->|만화 · 단순한 장면| D[5800 kbps 는 훨씬 과하다]\n  D --> E[비트와 저장을 버린다]\n  C --> F[화질을 버린다]\n  G[1750 kbps 회원] --> H[래더가 SD 를 준다]\n  H -.->|사실은 HD 가 가능했다| I[받을 수 있던 화질을 못 받는다]\n  J[복잡한 장면을 1080p 로 무리하면] --> K[아티팩트]\n  L[720p 로 낮추면] --> M[흐릿함]\n  K -.->|더 거슬린다| M\n  N[1080p 까지 덮는 래더 하나만 두면] --> O[720p 태블릿]\n  O --> P[대역폭이 남아도 못 쓰는 스트림]\n  Q[기기별 래더를 더하면] -.-> R[저장 효율이 떨어진다]\n  S[방송의 고정 용량] -.->|null 패킷 패딩| T[데이터율을 버린다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Per-Title Encode Optimization",
+          "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+          "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+          "date": "2015-12-14",
+          "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "per-title 인코딩을 실제로 돌리는 프로덕션 시스템의 구조와 계산 비용은 이 글에 없다 — '견고하고 확장 가능한 시스템'을 연구 질문으로만 꼽는다.",
+    "클라이언트의 적응 스트리밍 알고리즘 자체(무엇을 보고 언제 전환하는지)는 다루지 않는다.",
+    "Open Connect(콘텐츠 전송망)와 추천·발견 도메인은 아직 손대지 않았다.",
+    "이 글은 2015년 자료다 — per-shot 인코딩이나 AV1 같은 이후의 진전은 반영돼 있지 않다."
+  ],
+  "sources": [
+    {
+      "title": "Per-Title Encode Optimization",
+      "url": "https://netflixtechblog.com/per-title-encode-optimization-7e99442b62a2",
+      "publisher": "Netflix TechBlog · Anne Aaron, Zhi Li, Megha Manohara, Jan De Cock, David Ronca",
+      "date": "2015-12-14",
+      "summary": "카탈로그 전체에 하나의 비트레이트 래더를 쓰던 방식을, 타이틀마다 복잡도를 분석해 고유한 래더를 만드는 방식으로 바꾼 이야기. 시험 인코딩으로 해상도별 비트레이트-품질 곡선을 그리고 convex hull 에 가까운 점을 고른다."
+    },
+    {
+      "title": "Netflix 2025 Q4 Shareholder Letter",
+      "url": "https://s22.q4cdn.com/959853165/files/doc_financials/2025/q4/FINAL-Q4-25-Shareholder-Letter.pdf",
+      "publisher": "Netflix IR",
+      "date": "2026-01-20",
+      "summary": "2025년 매출 450억 달러(+16%), 영업이익 133억 달러, 영업이익률 29.5%(2024년 26.7%). 유료 회원 3.25억 명 돌파. 광고 매출 15억 달러 이상(전년의 2.5배 이상)."
+    }
+  ]
+}

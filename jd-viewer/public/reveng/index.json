@@ -110,6 +110,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "수십억 개 중에서 고르되 한 번에 고르지 않는 법을 파는 회사",
       "features_done": 4
+    },
+    {
+      "slug": "netflix",
+      "name": "Netflix",
+      "name_en": "Netflix",
+      "country": "US",
+      "category": "스트리밍",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "모든 영상에 같은 잣대를 대지 않기로 한 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -160,7 +171,11 @@
     "추천 퍼널",
     "콘텐츠 무결성",
     "광고 랭킹",
-    "알림"
+    "알림",
+    "인코딩·전송",
+    "재생·적응 스트리밍",
+    "콘텐츠 전송망",
+    "추천·발견"
   ],
   "countries": {
     "KR": "한국",
