@@ -17,17 +17,19 @@
     },
     {
       "slug": "payments",
-      "title": "결제 — 되돌릴 수 없는 일을 다루는 세 가지 방식",
-      "question": "실패를 상태로 남길 것인가 현재를 가리킬 것인가, 그리고 옛 계약을 어떻게 지킬 것인가?",
+      "title": "결제 — 되돌릴 수 없는 일을 다루는 네 가지 방식",
+      "question": "실패를 상태로 남길 것인가, 현재를 가리킬 것인가, 아니면 되돌릴 일이 생기지 않게 미리 붙잡을 것인가?",
       "companies": [
         "toss",
         "stripe",
+        "shopify",
         "naver"
       ],
       "features": [
         "payment-approval",
         "idempotent-payments",
         "api-surface",
+        "checkout-reservations",
         "fast-settlement"
       ],
       "file": "payments.md"
