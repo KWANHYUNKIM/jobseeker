@@ -1,0 +1,511 @@
+{
+  "slug": "uber",
+  "name": "Uber",
+  "name_en": "Uber",
+  "country": "US",
+  "category": "모빌리티",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "움직이는 사람들을 다루려고 지구를 육각형으로 덮은 회사",
+  "business_model": "이동과 배달을 중개하고 거래액의 일부를 가져간다. 2025년 **총 예약액 1,930억 달러**, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 월간 활성 이용자는 **2억 200만 명**이고 **하루 4,000만 건이 넘는 이동**이 일어난다. 부문별로는 모빌리티 +19%, 배달 +22%, 화물 -1%. 앞선 회사들과 다른 점은 **파는 것이 물건도 화면도 아니라 '지금 여기'라는 순간**이라는 것이다 — 수요와 공급이 둘 다 움직이고, 1분 뒤면 답이 달라진다. 그래서 이 회사의 기술은 대부분 **공간과 시간을 다룰 수 있는 단위로 쪼개는 일**에서 시작한다.",
+  "products": [
+    "Uber(모빌리티)",
+    "Uber Eats(배달)",
+    "Uber Freight(화물)",
+    "Uber One(멤버십)"
+  ],
+  "domain_map": {
+    "title": "Uber 도메인 지도",
+    "question": "움직이는 수요와 공급을 어떻게 같은 좌표계 위에 올리는가?",
+    "code": "flowchart TD\n  R[라이더 · 수요] --> GEO[지리 인덱싱 · H3]\n  D[기사 · 공급] --> GEO\n  GEO --> MATCH[실시간 매칭 · 배차]\n  GEO --> PRICE[가격 · 수급 조절]\n  GEO --> ETA[도착 예측]\n  MATCH --> TRIP[하루 4,000만 건 이상의 이동]\n  PRICE --> TRIP\n  ETA --> TRIP\n  TRIP --> GB[총 예약액 1,930억 달러]\n  GB --> REV[매출 520억 달러]\n  EATS[배달 · 화물] --> GEO\n  EATS --> GB\n  classDef money stroke-dasharray: 3 3\n  class GB,REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "모빌리티",
+      "how": "이동 중개. 2025년 총예약 +19%(고정환율).",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+          "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+          "publisher": "Uber IR",
+          "date": "2026-02-04",
+          "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+        }
+      ]
+    },
+    {
+      "name": "배달",
+      "how": "Uber Eats. 2025년 총예약 +22%로 가장 빠르게 자란다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+          "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+          "publisher": "Uber IR",
+          "date": "2026-02-04",
+          "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+        }
+      ]
+    },
+    {
+      "name": "화물",
+      "how": "Uber Freight. 2025년 총예약 -1%로 유일하게 줄었다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+          "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+          "publisher": "Uber IR",
+          "date": "2026-02-04",
+          "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "지리 인덱싱",
+      "why": "수요도 공급도 움직이는 마켓플레이스에서는 **먼저 공간을 다룰 수 있는 단위로 쪼개야** 한다. 정확한 위치 그대로 분석하는 것은 아주 어렵고 비싸기 때문이다 — 이 회사의 다른 모든 도메인이 이 격자 위에 선다.",
+      "tech": [
+        {
+          "tech": "H3 (육각 계층 공간 인덱스)",
+          "solves": "도시 전역을 규칙적인 단위로 덮어 수요·공급 집계, 급증 가격, 디스패치 최적화, 시각화를 같은 좌표계 위에서 하게 한다. 위치 하나가 64비트 정수가 된다.",
+          "limits": "셀 경계가 실제 거리·동네와 맞지 않고, 오각형 12개라는 예외가 남으며, 부모-자식 포함이 근사여서 식별자를 자르면 고정된 형태 왜곡이 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+              "url": "https://www.uber.com/blog/h3/",
+              "publisher": "Uber 엔지니어링 블로그",
+              "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "h3-grid"
+      ]
+    },
+    {
+      "name": "실시간 매칭·배차",
+      "why": "손님 한 명에 차 한 대를 잇는 일. 1분 뒤면 답이 달라지므로 계산을 제때 끝내는 것 자체가 품질이 된다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "가격·수급 조절",
+      "why": "공급이 모자라면 가격을 올려 수요를 줄이거나 공급을 부른다 — 시장을 코드로 조절하는 자리다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "도착 예측",
+      "why": "'몇 분 뒤 도착'은 약속이다. 틀리면 신뢰가 깎이고, 배차와 가격의 입력이기도 하다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "h3-grid",
+      "name": "H3 — 도시를 육각형으로 덮어야 했던 이유",
+      "domain": "지리 인덱싱",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 마켓플레이스에서는 **매일 수백만 건의 이벤트**가 일어난다 — 호출, 기사의 이동, 배달 주문. 그런데 이걸 분석하려면 도시 전역을 **세밀한 입도로** 봐야 하고, **정확한 위치 그대로 분석하는 것은 아주 어렵고 비싸다.** 그래서 공간을 먼저 나눠야 하는데, 우편번호나 운영팀이 손으로 그은 경계는 모양과 크기가 제각각이고 임의로 바뀐다. **분석의 단위를 스스로 만들어야 했다.**",
+        "metrics": [
+          {
+            "label": "회사의 규모",
+            "value": "2025년 총 예약액 1,930억 달러 · 매출 520억 달러(+18%). 2억 명이 넘는 월간 이용자가 **하루 4,000만 건 넘는 이동**을 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+                "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+                "publisher": "Uber IR",
+                "date": "2026-02-04",
+                "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+              }
+            ]
+          },
+          {
+            "label": "격자의 구조",
+            "value": "정이십면체 위에 **기본 셀 122개**(면당 10개) — 그중 **12개가 오각형**이다. 해상도는 **16단계**이고 한 단계 내려갈 때마다 면적이 **1/7**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "label": "인덱스",
+            "value": "H3 인덱스는 **64비트 정수**. `geoToH3(위도, 경도, 해상도 0~15)` 로 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "분석의 단위를 고를 때",
+          "thought": "우편번호 구역이나 운영팀이 그은 경계를 쓸 수도 있다. 그런데 그건 **모양과 크기가 제각각이고, 임의로 바뀌고, 경계가 자의적이다.** 도시끼리 비교하거나 시간에 따라 추적하려면 단위 자체가 규칙적이어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "격자의 모양을 고를 때",
+          "thought": "사각형은 이웃이 두 종류다 — 변을 맞댄 넷과 꼭짓점만 닿은 넷. 그러면 분석에 **여러 벌의 계수**가 필요해진다. 삼각형은 세 종류라 더 나쁘다. **육각형은 중심에서 이웃까지의 거리가 하나뿐**이라 분석이 단순해진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "우리 사업이 무엇인지 다시 볼 때",
+          "thought": "우리가 다루는 건 **움직이는 사람들**이다. 도시를 가로지르는 동안 격자가 바뀌면서 생기는 양자화 오차가 계속 쌓이는데, **육각형은 그 오차를 최소화**한다. 반경을 근사하기도 쉽다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "계층을 만들려는데 7로 안 나눠질 때",
+          "thought": "육각형은 **7개의 육각형으로 완벽하게 쪼개지지 않는다.** 그러니 자식 셀이 부모 안에 **대략만** 들어간다. 그래도 식별자를 잘라내면 상위 셀을 찾을 수 있으니 인덱싱은 효율적이다 — **완벽한 포함을 포기하고 효율적인 조회를 얻었다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "셀(cell)",
+            "what": "육각형 하나. 64비트 정수 인덱스로 표현된다."
+          },
+          {
+            "name": "해상도",
+            "what": "0(가장 성김)에서 15(가장 세밀)까지 16단계. 한 단계마다 면적이 1/7."
+          },
+          {
+            "name": "기본 셀",
+            "what": "정이십면체 위에 놓인 122개(면당 10개). 그중 12개가 오각형이다."
+          },
+          {
+            "name": "오각형",
+            "what": "정이십면체의 각 꼭짓점에 하나씩. 벅민스터 풀러의 구면 정이십면체 방향을 써서 **모든 꼭짓점을 물 위에** 놓았다."
+          }
+        ],
+        "invariants": [
+          "정확한 위치 그대로 분석하는 것은 아주 어렵고 비싸다.",
+          "정이십면체를 육각형만으로 타일링할 수는 없다 — 오각형이 반드시 생긴다.",
+          "육각형은 7개의 육각형으로 완벽히 나뉘지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "지구를 정이십면체에 노모닉 투영한다",
+            "why": "구면 위에 규칙적인 격자를 놓으려면 먼저 다면체로 옮겨야 한다"
+          },
+          {
+            "step": "면당 10개씩 기본 셀 122개를 놓는다",
+            "why": "그중 12개는 오각형일 수밖에 없다"
+          },
+          {
+            "step": "오각형은 정이십면체 꼭짓점에, 그 꼭짓점은 모두 물 위에 오도록 방향을 잡는다",
+            "why": "실제 작업에서 오각형을 마주치지 않게 하려고"
+          },
+          {
+            "step": "`geoToH3(위도, 경도, 해상도)` 로 좌표를 64비트 인덱스로 바꾼다",
+            "why": "위치 하나가 하나의 정수가 된다"
+          },
+          {
+            "step": "필요하면 `h3ToGeo`·`h3ToGeoBoundary` 로 되돌린다",
+            "why": "셀의 중심이나 윤곽을 그려야 할 때가 있다"
+          },
+          {
+            "step": "식별자를 잘라 상위 해상도의 셀을 찾는다",
+            "why": "집계 단위를 올리는 일이 문자열 자르기가 된다"
+          },
+          {
+            "step": "그 격자 위에서 수요·공급을 세고 가격과 배차를 정한다",
+            "why": "분석의 단위가 곧 의사결정의 단위다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "공간을 무엇으로 나눌 것인가",
+            "chosen": "**규칙적인 격자를 직접 만든다** — 우편번호 구역이나 운영팀이 손으로 그은 경계를 쓰지 않는다",
+            "alternatives": [
+              "우편번호 구역",
+              "운영팀이 정한 경계",
+              "정확한 좌표 그대로"
+            ],
+            "tradeoff": "격자 체계를 직접 만들고 유지해야 하고, **셀 경계가 도시의 거리나 동네와 맞지 않는다.** 그래도 남의 경계는 모양·크기가 제각각이고 임의로 바뀌며 자의적이라, 도시 간 비교나 시계열 추적의 기준이 될 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "격자의 모양을 무엇으로 할 것인가",
+            "chosen": "**육각형**",
+            "alternatives": [
+              "사각형",
+              "삼각형"
+            ],
+            "tradeoff": "완벽한 타일링과 완벽한 부모-자식 관계를 포기해야 한다. 대신 **사각형은 이웃이 두 종류(변 4·꼭짓점 4)라 분석에 여러 벌의 계수가 필요하고 삼각형은 세 종류**인데, 육각형은 중심에서 이웃까지의 거리가 하나뿐이라 분석과 기울기 평탄화가 크게 단순해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "왜 하필 '이동'이 기준이 됐는가",
+            "chosen": "도시를 가로지르는 사용자의 **양자화 오차를 최소화**하는 것을 중요한 기준으로 둔다",
+            "alternatives": [
+              "면적 균일성 우선",
+              "구현 단순성 우선"
+            ],
+            "tradeoff": "다른 기준(예: 격자 크기의 완전한 균일성)을 양보하게 된다. 그래도 **이 회사가 다루는 것은 움직이는 사람들**이라, 이동 중에 쌓이는 오차가 곧 분석의 오차가 된다. 반경 근사가 쉬워지는 것도 같은 이유에서 얻는 이득이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "지구를 어떻게 평면으로 옮길 것인가",
+            "chosen": "**정이십면체 면 위에 노모닉 투영**한다. 면당 10개씩 기본 셀 122개",
+            "alternatives": [
+              "단일 평면 투영",
+              "정육면체(S2 방식)"
+            ],
+            "tradeoff": "다면체가 복잡한 만큼 구현이 어렵다. 대신 면이 많을수록 투영 왜곡이 작다(추정) — 구를 정육면체에 투영하면 중심에서 멀수록 같은 레벨의 셀도 크기가 달라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "피할 수 없는 오각형 12개를 어떻게 다룰 것인가",
+            "chosen": "**벅민스터 풀러의 구면 정이십면체 방향**을 써서 **모든 꼭짓점을 물 위에** 오게 배치한다",
+            "alternatives": [
+              "오각형을 특수 케이스로 코드에서 처리",
+              "다른 다면체 사용"
+            ],
+            "tradeoff": "오각형이 사라지는 것은 아니라서 **경계 조건은 여전히 남는다.** 그래도 실제 작업에서 마주칠 일이 거의 없어진다 — **수학적으로 못 없애는 예외를 지리적 배치로 무해하게 만든 것**이다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "계층을 어떻게 구성할 것인가",
+            "chosen": "**16단계 해상도**를 두고 한 단계마다 면적을 1/7 로 줄인다. 자식은 부모 안에 **대략** 포함되지만, **식별자를 잘라내면 상위 셀을 얻는다**",
+            "alternatives": [
+              "정확한 포함 관계를 보장하는 구조",
+              "단일 해상도"
+            ],
+            "tradeoff": "육각형은 7개로 완벽히 쪼개지지 않으므로 **부모-자식 포함이 근사**이고, 식별자를 자르면 **고정된 형태 왜곡**이 생긴다. 다만 특정 해상도에서 위치를 인덱싱할 때는 셀 경계가 정확하다 — **완벽한 포함을 포기하고 효율적인 조회를 샀다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "인덱스를 무엇으로 표현할 것인가",
+            "chosen": "**64비트 정수** 하나. `geoToH3` 로 만들고 `h3ToGeo`·`h3ToGeoBoundary` 로 되돌린다",
+            "alternatives": [
+              "문자열 지오해시",
+              "좌표쌍 유지"
+            ],
+            "tradeoff": "사람이 읽을 수 없다. 대신 위치 하나가 정수 하나가 되어 저장·조인·집계가 전부 정수 연산이 된다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "question": "이 격자를 어디에 쓸 것인가",
+            "chosen": "**가격 결정**(육각형 단위로 수요와 공급을 세어 급증 가격 계산), **디스패치 최적화**(uberPOOL 에서 한 기사에게 가까운 두 호출을 찾기), 마켓플레이스 분석 전반",
+            "alternatives": [
+              "분석 전용",
+              "지도 시각화 전용"
+            ],
+            "tradeoff": "분석의 단위가 곧 의사결정의 단위가 되므로 **격자의 한계가 그대로 상품의 한계**가 된다 — 셀 경계가 동네와 안 맞는다는 사실이 가격에도 영향을 준다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "H3 (정이십면체 노모닉 투영 · 육각 격자)",
+            "role": "지구를 122개 기본 셀로 덮고 16단계 해상도로 잘게 나눈다. 위치를 64비트 정수로 바꾼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "계층 인덱싱(식별자 절단)",
+            "role": "자식 식별자를 잘라 상위 해상도 셀을 얻는다 — 집계 단위를 올리는 일이 값 자르기가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "급증 가격(surge) 계산",
+            "role": "육각형 단위로 공급과 수요를 세어 가격을 정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "디스패치 최적화",
+            "role": "uberPOOL 에서 특정 기사에게 가까운 두 호출을 찾는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+                "url": "https://www.uber.com/blog/h3/",
+                "publisher": "Uber 엔지니어링 블로그",
+                "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+              }
+            ]
+          },
+          {
+            "tech": "매칭 시스템(DISCO 등)의 내부",
+            "role": "— 이번 사이클에서는 1차 출처를 찾지 못했다. 널리 인용되는 설명은 대부분 3자 요약이라 쓰지 않았다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "실시간 매칭·배차",
+          "via": "같은 격자",
+          "contract": "디스패치 최적화가 이 격자 위에서 이뤄진다고 회사가 밝힌다 — uberPOOL 에서 한 기사에게 가까운 두 호출을 찾는 데 쓴다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "가격·수급",
+          "via": "셀 단위 집계",
+          "contract": "육각형 단위로 공급과 수요를 세어 급증 가격을 계산한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 위치가 정수가 되기까지",
+          "question": "좌표 하나가 어떻게 분석과 가격의 단위가 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EARTH[지구] -->|노모닉 투영| ICO[정이십면체 · 20면]\n  ICO --> BASE[기본 셀 122개 · 면당 10개]\n  BASE --> HEX[육각형 110개]\n  BASE --> PENT[오각형 12개<br/>꼭짓점 · 모두 물 위]\n  LOC[위도 · 경도] --> G[geoToH3 · 해상도 0~15]\n  HEX --> G\n  G --> IDX[(64비트 정수 인덱스)]\n  IDX -->|식별자 절단| UP[상위 해상도 셀]\n  IDX --> R1[h3ToGeo · 셀 중심]\n  IDX --> R2[h3ToGeoBoundary · 셀 윤곽]\n  IDX --> USE1[수요 · 공급 집계]\n  USE1 --> SURGE[급증 가격]\n  IDX --> USE2[디스패치 최적화<br/>uberPOOL · 가까운 두 호출]\n  IDX --> USE3[마켓플레이스 분석 · 시각화]"
+        },
+        {
+          "title": "해상도 계층",
+          "question": "단계를 내려갈 때 무엇을 얻고 무엇을 잃는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 해상도0: 가장 성긴 격자\n  해상도0 --> 해상도n: 한 단계마다 면적 1÷7\n  해상도n --> 해상도15: 가장 세밀\n  해상도n --> 근사포함: 육각형은 7개로 완벽히 안 쪼개진다\n  근사포함 --> 자식은대략: 부모 안에 대략만 들어간다\n  자식은대략 --> 식별자절단: 그래도 상위 셀은 찾을 수 있다\n  식별자절단 --> 형태왜곡: 고정된 왜곡이 생긴다\n  식별자절단 --> 효율적조회: 인덱싱은 빨라진다\n  해상도n --> 경계정확: 특정 해상도에서 인덱싱하면 경계는 정확\n  해상도15 --> [*]\n  note right of 자식은대략\n    완벽한 포함을 포기하고\n    효율적인 조회를 샀다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 격자가 하지 못하는 것",
+          "question": "규칙적인 단위를 얻는 대신 무엇을 내주었는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[정확한 위치로 분석하면] --> B[아주 어렵고 비싸다]\n  C[우편번호 · 운영팀 경계를 쓰면] --> D[모양 · 크기가 제각각]\n  C --> E[임의로 바뀐다]\n  C --> F[경계가 자의적이다]\n  D -.-> G[도시 간 비교 · 시계열 추적 불가]\n  H[규칙적인 육각 격자를 만들면] --> I{그 대신}\n  I --> J[셀 경계가 거리 · 동네와 안 맞는다]\n  I --> K[정이십면체는 육각형만으로 못 덮는다]\n  K --> L[오각형 12개가 생긴다]\n  L -.->|꼭짓점을 물 위로| M[실무에서 마주칠 일이 거의 없다]\n  I --> N[육각형은 7개로 완벽히 안 쪼개진다]\n  N --> O[부모-자식 포함이 근사]\n  O --> P[식별자 절단 시 고정된 형태 왜곡]\n  J -.->|분석 단위가 곧 가격 단위라| Q[격자의 한계가 상품의 한계가 된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+          "url": "https://www.uber.com/blog/h3/",
+          "publisher": "Uber 엔지니어링 블로그",
+          "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "매칭 시스템(DISCO 등)의 실제 구조는 1차 출처를 찾지 못했다 — 널리 인용되는 설명은 대부분 3자 요약(컨퍼런스 발표의 재정리)이라 쓰지 않았다.",
+    "급증 가격을 셀 단위 수요·공급에서 어떤 규칙으로 계산하는지는 확인하지 못했다.",
+    "도착 예측(ETA) 모델과 그 정확도는 아직 자료를 찾지 못했다.",
+    "H3 의 각 해상도가 실제 몇 제곱미터인지는 이 글에 표로 나오지 않는다 — 쿠팡 자료에서 12레벨 약 300㎡, 14레벨 6.3㎡ 라는 값을 얻었다."
+  ],
+  "sources": [
+    {
+      "title": "H3: Uber's Hexagonal Hierarchical Spatial Index",
+      "url": "https://www.uber.com/blog/h3/",
+      "publisher": "Uber 엔지니어링 블로그",
+      "summary": "매일 수백만 건의 이벤트를 도시 단위로 분석하려고 만든 육각 격자 인덱스. 정이십면체 노모닉 투영 위에 기본 셀 122개(오각형 12개 포함), 해상도 16단계, 인덱스는 64비트 정수. 가격 결정과 디스패치 최적화에 쓴다."
+    },
+    {
+      "title": "Uber Announces Results for Fourth Quarter and Full Year 2025",
+      "url": "https://investor.uber.com/news-events/news/press-release-details/2026/Uber-Announces-Results-for-Fourth-Quarter-and-Full-Year-2025/default.aspx",
+      "publisher": "Uber IR",
+      "date": "2026-02-04",
+      "summary": "2025년 총 예약액 1,930억 달러, 매출 520억 달러(+18%), 잉여현금흐름 100억 달러. 4분기 월간 활성 이용자 2억 200만 명(+18%). 모빌리티 총예약 +19%, 배달 +22%, 화물 -1%."
+    }
+  ]
+}
