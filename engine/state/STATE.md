@@ -10,13 +10,14 @@
 
 작업 목록(경고가 곧 목록):
 1. `domain_map` — 회사 도메인 지도 한 장 (없음)
+   ~~0. `instant-transfer`~~ — 007에서 완료(경고 19→16)
 2. 도메인 4개의 `tech` — 무슨 기술로 풀었고 그 기술이 못 하는 것 (전부 없음)
 3. 기능 5개의 `diagrams` — 흐름/상태/실패 경로로 나눠 그리기 (전부 구버전 한 장)
 4. 기능 5개의 `thinking` — 개발 당시 무슨 생각을 했는가 (전부 없음)
 5. `decisions` 보강 — instant-transfer 3개, 나머지 4개씩 → 5~8개로 쪼개기
 
-한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. 순서는 instant-transfer →
-interest-accrual → payment-approval → request-passport → identity-certificate.
+한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. 남은 순서는 interest-accrual →
+payment-approval → request-passport → identity-certificate.
 그 뒤 domain_map 과 도메인 tech 를 채우고 다시 완주 판정한다.
 
 ## 사이클 로그
@@ -30,6 +31,7 @@ interest-accrual → payment-approval → request-passport → identity-certific
 | 004 | 2026-08-20 | 토스 | 인증 `request-passport` — Gateway 중앙화·요청 서명·Passport 전파·FDS 연계 | 토스인증서(전자서명) |
 | 005 | 2026-08-20 | 토스 | 인증 `identity-certificate`(토스인증서) + **완주 판정 → done** | 네이버 프로파일 |
 | 006 | 2026-08-20 | — | STYLE.md 신설(그림·도메인 기술·생각·결정 세분화) · schema/validator/뷰어 확장 · 토스 재개 | 토스 `instant-transfer` 심화 |
+| 007 | 2026-08-20 | 토스 | `instant-transfer` 심화 — 그림 3장(흐름·상태·실패) · thinking 4 · 결정 3→7 | `interest-accrual` 심화 |
 
 ## 다음 사이클 메모
 
