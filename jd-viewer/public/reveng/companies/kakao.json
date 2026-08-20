@@ -91,8 +91,41 @@
     {
       "name": "메시지 전달",
       "why": "보낸 메시지가 **반드시, 한 번만, 순서대로** 도착하는가. 이 회사의 다른 모든 것이 이 약속 위에 서 있고, 여기가 흔들리면 광고도 커머스도 의미가 없다. 받는 사람이 지금 접속해 있지 않다는 것이 정상 상태라는 점에서 다른 요청·응답 시스템과 근본적으로 다르다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Go 기반 pub/sub 서버",
+          "solves": "오래 사는 연결 수만 개를 유지하며 발행 1건을 구독자 전부에게 퍼뜨린다.",
+          "limits": "구독자가 늘면 메모리와 I/O 가 함께 늘고, 채널·구독자 관리 구조의 lock 경합이 새로운 병목이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+              "url": "https://tech.kakao.com/posts/679",
+              "publisher": "kakao tech",
+              "date": "2024-12-12",
+              "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+            }
+          ]
+        },
+        {
+          "tech": "pprof 프로파일링",
+          "solves": "지표가 '나빠졌다'까지만 말할 때 함수 단위로 '어디서'를 알려준다.",
+          "limits": "샘플링이라 짧은 순간의 병목은 놓칠 수 있고, 결과를 읽는 데 숙련이 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+              "url": "https://tech.kakao.com/posts/679",
+              "publisher": "kakao tech",
+              "date": "2024-12-12",
+              "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "caribe-realtime"
+      ]
     },
     {
       "name": "동기화·다중 기기",
@@ -131,11 +164,383 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "caribe-realtime",
+      "name": "카리브 — 실시간 전달의 성능을 정의하는 법",
+      "domain": "메시지 전달",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**범위 주의**: 이 기능은 카카오톡 채팅 메시지 전달이 아니라, 댓글·좋아요 같은 사용자 인터랙션을 실시간으로 퍼뜨리는 사내 플랫폼(카리브) 이야기다. 카카오톡 채팅 전달 자체를 다룬 공개 자료는 아직 못 찾았다.\n\n그럼에도 이 도메인의 첫 기능으로 고른 이유는, 이 글이 **'실시간 전달 시스템의 성능이란 무엇인가'** 라는 질문에 정면으로 답하기 때문이다. 한 번의 발행이 수많은 구독자에게 퍼지는 fan-out 구조에서는 흔한 TPS 숫자가 거짓말을 한다 — 그 사실을 발견하고 기준을 다시 세운 과정이 이 도메인의 성격을 그대로 보여준다.",
+        "metrics": [
+          {
+            "label": "성능 시나리오 정의",
+            "value": "\"N명의 구독자가 1개 채널을 구독할 때 초당 M개 메시지를 처리할 수 있는가\"",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "label": "합격 판정 기준",
+            "value": "초당 100개 발행 × 60초 구독 = 6,000개를 다 받았는가 (절반만 받으면 실패)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "label": "구현 언어",
+            "value": "Go (프로파일링은 pprof)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "TPS 를 그대로 쓰려 할 때",
+          "thought": "API 서버라면 요청 하나가 트랜잭션 하나다. 그런데 실시간 메시징은 구독 API 하나가 오래 살아 있는 연결이고, 발행 하나가 수천 명에게 퍼진다. 구독 API 기준으로 '100K TPS 가능'이라고 결론 내면, 실제로는 그보다 훨씬 낮은 부하에서 장애가 난다 — 그리고 그 장애는 예측할 수 없어서 크게 터진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 성능의 축으로 볼지 정할 때",
+          "thought": "변수를 여러 개 바꿔 가며 비교해 보니 결국 둘로 좁혀졌다 — 구독자 수와 메시지 발행량. 나머지(메시지 크기·채널 수·세션 유지 시간)도 영향은 있었지만 이 둘에 비하면 작거나 실제 운영 시나리오와 맞지 않았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "합격 기준을 정할 때",
+          "thought": "CPU 스로틀도 보고 메모리 누수도 보지만, 결국 가장 중요한 질문은 '사용자가 메시지를 잘 전달받았는가'다. 서버 지표가 멀쩡해도 6,000개 중 3,000개만 도착했다면 그건 실패다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "병목을 못 찾겠을 때",
+          "thought": "각자 의심되는 구간을 고쳐 보는 방식은 성능이 좋아질수록 통하지 않았다. 'CPU 100%, 서비스 안 됨' 말고는 아무것도 알려주지 않는 테스트로는 더 갈 수 없었다 — 그래서 추측을 버리고 프로파일러로 갔다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "채널",
+            "what": "메시지가 오가는 매개체. 구독자는 채널을 구독하고 발행자는 채널에 보낸다."
+          },
+          {
+            "name": "구독(Long Live Connection)",
+            "what": "오래 살아 있는 연결. 요청-응답으로 끝나지 않는다는 점이 이 시스템의 성격을 규정한다."
+          },
+          {
+            "name": "발행",
+            "what": "채널에 메시지를 넣는 행위. 하나가 구독자 수만큼 퍼진다(fan-out)."
+          },
+          {
+            "name": "구독자 관리 구조",
+            "what": "채널·구독자를 실시간으로 넣고 빼는 자료구조. 동시성 제어가 곧 경합 지점이다."
+          }
+        ],
+        "invariants": [
+          "구독 API 하나는 트랜잭션 하나가 아니다 — 오래 살아 있는 연결이고, 그 위로 메시지가 계속 흐른다.",
+          "발행 1건의 비용은 구독자 수에 비례한다. 같은 발행량이라도 구독자가 늘면 다른 시스템이 된다.",
+          "합격 여부는 서버 지표가 아니라 구독자가 받은 메시지 수로 판정한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "구독 API 호출로 오래 사는 연결을 만든다",
+            "why": "받는 쪽이 계속 기다리고 있어야 실시간이 성립한다"
+          },
+          {
+            "step": "발행 API 가 채널에 메시지를 넣는다",
+            "why": "발행자는 구독자가 몇 명인지 몰라도 된다"
+          },
+          {
+            "step": "채널을 구독 중인 모두에게 퍼뜨린다(fan-out)",
+            "why": "이 단계의 비용이 구독자 수에 비례한다 — 성능의 본체다"
+          },
+          {
+            "step": "구독 클라이언트가 받은 메시지 수를 센다",
+            "why": "'잘 전달됐는가'는 서버가 아니라 받은 쪽에서만 알 수 있다"
+          },
+          {
+            "step": "cAdvisor 로 컨테이너 지표를, pprof 로 함수 단위 병목을 본다",
+            "why": "지표는 '나빠졌다'만, 프로파일은 '어디서'를 알려준다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "실시간 메시징의 성능을 무엇으로 정의할 것인가",
+            "chosen": "\"N명 구독자가 1채널을 구독할 때 초당 M개를 처리하는가\" 라는 시나리오로 정의한다",
+            "alternatives": [
+              "구독 API 의 TPS",
+              "발행 API 의 TPS"
+            ],
+            "tradeoff": "하나의 숫자로 '우리 시스템은 몇 TPS' 라고 말할 수 없게 된다. 시나리오가 바뀌면 다시 측정해야 하고 다른 시스템과 비교도 어렵다. 대신 예상 한계치보다 훨씬 낮은 부하에서 터지는 사고를 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "question": "성능에 영향을 주는 요인 중 무엇을 축으로 삼을 것인가",
+            "chosen": "구독자 수와 메시지 발행량 둘로 좁힌다",
+            "alternatives": [
+              "메시지 크기·채널 수·세션 유지 시간까지 모두 변수로"
+            ],
+            "tradeoff": "버린 변수들도 영향은 있으므로, 그 축에서 문제가 생기면 이 테스트로는 안 잡힌다. 대신 변수를 줄여야 실험 사이클이 빨라지고 비교가 가능해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "question": "합격 판정을 서버 상태로 할 것인가, 수신 결과로 할 것인가",
+            "chosen": "구독자가 기대한 만큼(예: 60초×100개=6,000개) 받았는지로 판정한다",
+            "alternatives": [
+              "CPU·메모리 임계치 기준",
+              "응답 코드 기준"
+            ],
+            "tradeoff": "서버 지표가 멀쩡해 보여도 실패로 잡히므로 판정이 까다로워진다 — 그런데 그게 목적이다. 사용자 입장에서 절반만 도착한 시스템은 정상이 아니다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "question": "부하를 어떻게 만들 것인가 — 몰아서 보낼 것인가",
+            "chosen": "초당 100개라면 10ms 마다 1개씩, 균등하게 나눠 보낸다",
+            "alternatives": [
+              "1초 시작 시점에 100개를 한꺼번에"
+            ],
+            "tradeoff": "실제 사용자는 정확한 타이밍에 맞춰 활동하지 않지만, 반대로 진짜 버스트 상황도 재현되지 않는다. 균등 분배는 현실의 한 단면일 뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "question": "부하 클라이언트를 하나로 둘 것인가",
+            "chosen": "컨테이너 기반으로 여러 프로세스에서 요청을 보낸다",
+            "alternatives": [
+              "단일 애플리케이션(프로세스/스레드)에서 부하 생성"
+            ],
+            "tradeoff": "테스트 환경이 복잡해지고 조율할 것이 늘어난다. 대신 실제처럼 여러 지역·프로세스에서 오는 요청을 재현하고, 한 클라이언트에 rate limit 같은 제약이 걸리는 문제를 피한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "question": "병목을 어떻게 찾을 것인가",
+            "chosen": "추측 대신 Go pprof 로 CPU 점유·고루틴 스케줄링·lock 경합을 직접 본다",
+            "alternatives": [
+              "의심 구간을 하나씩 고쳐 보며 비교"
+            ],
+            "tradeoff": "프로파일링은 샘플링이라 아주 짧은 순간의 병목은 놓칠 수 있고, 읽는 데 숙련이 필요하다. 대신 성능이 좋아질수록 추측이 안 통하는 구간에서 유일하게 남는 방법이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Go",
+            "role": "실시간 메시징 서버 구현. 고루틴 스케줄링과 lock 경합이 그대로 성능 축이 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "tech": "pprof",
+            "role": "CPU 점유 함수·메모리 할당·고루틴·lock 병목을 함수 단위로 드러낸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "tech": "Redis (발행 경로)",
+            "role": "카리브의 발행 메시지가 지나는 경로 — 성능 테스트에서는 이 경로로 직접 부하를 넣었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "tech": "cAdvisor",
+            "role": "컨테이너 단위 CPU·메모리 지표 수집",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          },
+          {
+            "tech": "사내 인프라(DKOS·krane·D2Hub)",
+            "role": "쿠버네티스 클러스터·VM·이미지 배포를 빠르게 마련해 테스트 환경 구축 부담을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+                "url": "https://tech.kakao.com/posts/679",
+                "publisher": "kakao tech",
+                "date": "2024-12-12",
+                "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "톡비즈 지면",
+          "via": "인터랙션 실시간 반영",
+          "contract": "댓글·좋아요가 즉시 보이는 경험이 지면 체류에 영향을 준다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "동기화·다중 기기",
+          "via": "같은 사용자의 여러 연결",
+          "contract": "한 사람이 여러 기기에서 구독 중이면 fan-out 대상이 사람 수가 아니라 연결 수가 된다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "AI 모델",
+          "via": "실시간 응답 전달",
+          "contract": "생성 결과를 스트리밍으로 흘리는 경로도 같은 종류의 문제를 갖는다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 발행 하나가 구독자 수만큼 퍼진다",
+          "question": "요청-응답과 무엇이 다른가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PUB[발행자] -->|Publish| CH[(채널)]\n  CH --> FAN{fan-out}\n  FAN --> S1[구독자 1]\n  FAN --> S2[구독자 2]\n  FAN --> SN[구독자 N]\n  S1 -.->|Long Live Connection| CH\n  S2 -.-> CH\n  SN -.-> CH\n  FAN -->|비용 = 구독자 수에 비례| CPU[CPU · I/O]\n  CH --> LOCK[채널·구독자 관리 구조 · lock 경합]\n  SN --> COUNT[받은 메시지 수를 센다 = 합격 판정]"
+        },
+        {
+          "title": "성능 테스트 한 회차의 상태",
+          "question": "N 과 M 을 올리다 어디서 멈추는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 시나리오설정: N명 구독 · 초당 M개\n  시나리오설정 --> 부하생성: 10ms 간격 균등 발행\n  부하생성 --> 수신확인: 60초 동안 수신 집계\n  수신확인 --> 통과: 기대치(6,000개) 전부 수신\n  수신확인 --> 실패: 유실 발생\n  통과 --> 시나리오설정: N·M 을 올려 재시도\n  실패 --> 진단: CPU·메모리·네트워크 지표\n  진단 --> 프로파일링: 지표로는 '어디서'를 모를 때\n  프로파일링 --> 개선: 함수 단위 병목 발견\n  개선 --> 시나리오설정\n  note right of 실패\n    서버가 멀쩡해 보여도\n    절반만 도착했으면 실패다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 잘못된 성능 숫자가 만드는 사고",
+          "question": "구독 API 만으로 성능을 재면 무슨 일이 생기는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  M[구독 API 기준 측정] --> N[\"100K TPS 가능\" 이라는 결론]\n  N --> DEPLOY[그 수치를 믿고 용량 산정]\n  DEPLOY --> REAL{실제 트래픽}\n  REAL -->|구독자 많고 발행 잦음| BOOM[한계치보다 훨씬 낮은 부하에서 장애]\n  BOOM --> HARD[예측 못 한 장애라 크게 번진다]\n  REAL -->|메시지 유실| SILENT[서버는 살아 있는데 사용자만 못 받는다]\n  SILENT -.->|서버 지표로는 정상| MISS[수신 집계를 안 하면 놓친다]\n  BOOM -.-> FIX[성능의 정의를 시나리오로 바꾼다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "실시간 메시징 시스템 개발 — \"삽질 과정\"",
+          "url": "https://tech.kakao.com/posts/678",
+          "publisher": "kakao tech",
+          "summary": "실시간 메시징 시스템(카리브) 구축에서 만난 기술적 과제를 다룬 1편."
+        },
+        {
+          "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+          "url": "https://tech.kakao.com/posts/679",
+          "publisher": "kakao tech",
+          "date": "2024-12-12",
+          "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+        },
+        {
+          "title": "실시간 메시징 시스템 개발 — \"성능 개선 레슨런\"",
+          "url": "https://tech.kakao.com/posts/680",
+          "publisher": "kakao tech",
+          "summary": "병목 발견과 개선 적용 사례를 다룬 3편."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "카카오톡의 메시지 전달 보장 수준(정확히 한 번인지, 최소 한 번 + 중복 제거인지)을 공개 자료로 확인해야 한다 — 첫 기능의 핵심 질문이다.",
     "다중 기기 동기화에서 '읽음' 상태가 어느 시점에 확정되는지 모른다.",
-    "톡비즈 광고가 대화 지면 어디까지 들어가는지, 그 경계를 무엇으로 정하는지 확인하지 못했다."
+    "톡비즈 광고가 대화 지면 어디까지 들어가는지, 그 경계를 무엇으로 정하는지 확인하지 못했다.",
+    "카카오톡 채팅 메시지의 전달 보장(정확히 한 번인지, 최소 한 번 + 중복 제거인지)을 다룬 공개 자료를 아직 찾지 못했다 — 이 도메인의 원래 질문은 그대로 남아 있다.",
+    "카리브의 실제 운영 규모(동시 연결 수·일 메시지 수)는 글에 없다. 성능 테스트의 N·M 최댓값도 공개되지 않았다."
   ],
   "sources": [
     {
@@ -151,6 +556,25 @@
       "publisher": "머니투데이방송",
       "date": "2026-02-12",
       "summary": "4분기 기준 톡비즈 6,271억(+13%), 모빌리티·페이 등 플랫폼 기타 5,239억(+30%), 콘텐츠 9,106억."
+    },
+    {
+      "title": "실시간 메시징 시스템 개발 — \"삽질 과정\"",
+      "url": "https://tech.kakao.com/posts/678",
+      "publisher": "kakao tech",
+      "summary": "실시간 메시징 시스템(카리브) 구축에서 만난 기술적 과제를 다룬 1편."
+    },
+    {
+      "title": "실시간 메시징 시스템 개발 — \"성능 테스트 설계와 분석\"",
+      "url": "https://tech.kakao.com/posts/679",
+      "publisher": "kakao tech",
+      "date": "2024-12-12",
+      "summary": "구독/발행 fan-out 구조의 성능을 어떻게 정의·측정했는지와 Go pprof 프로파일링 과정을 다룬 2편."
+    },
+    {
+      "title": "실시간 메시징 시스템 개발 — \"성능 개선 레슨런\"",
+      "url": "https://tech.kakao.com/posts/680",
+      "publisher": "kakao tech",
+      "summary": "병목 발견과 개선 적용 사례를 다룬 3편."
     }
   ]
 }
