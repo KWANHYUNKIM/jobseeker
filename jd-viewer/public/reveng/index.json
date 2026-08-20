@@ -143,6 +143,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "몰리는 것을 합치고, 터지기 전에 세어 보는 회사",
       "features_done": 4
+    },
+    {
+      "slug": "shopify",
+      "name": "Shopify",
+      "name_en": "Shopify",
+      "country": "CA",
+      "category": "커머스",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "남의 가게가 판 만큼 버는 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -204,7 +215,11 @@
     "메시지 저장·조회",
     "실시간 전달·프레즌스",
     "음성·영상",
-    "커뮤니티 운영·신뢰"
+    "커뮤니티 운영·신뢰",
+    "멀티테넌시·격리",
+    "스토어프론트 렌더링",
+    "체크아웃·결제",
+    "회복탄력성·용량 계획"
   ],
   "countries": {
     "KR": "한국",

@@ -1,0 +1,566 @@
+{
+  "slug": "shopify",
+  "name": "Shopify",
+  "name_en": "Shopify",
+  "country": "CA",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "남의 가게가 판 만큼 버는 회사",
+  "business_model": "**구독료보다 거래에서 훨씬 많이 번다.** 2025년 매출 **115.6억 달러**(+30%) 중 머천트 솔루션이 **88.04억 달러**, 구독 솔루션이 **27.52억 달러**로 거래 쪽이 세 배 넘게 크다. 가게들이 실제로 판 금액(GMV)은 **3,784.41억 달러**(+29%), 월 반복 매출(MRR)은 2.05억 달러, 잉여현금흐름은 20억 달러(마진 17%)다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 **자기 지면**에서 벌고, Netflix 는 **자기 구독**에서 벌고, 쿠팡은 **자기가 파는 물건**에서 번다. Shopify 는 **남의 매출의 일부**를 받는다.\n\n**그래서 가용성이 자기 서비스의 문제가 아니라 남의 매출의 문제가 된다** — 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다. 이 회사의 엔지니어링 이야기가 확장보다 **격리와 복구**에 무게를 싣는 이유로 보인다(이 두 문단의 연결은 이 사이트의 해석이다).",
+  "products": [
+    "Shopify 플랫폼(온라인 스토어)",
+    "Shopify Payments · Shop Pay",
+    "B2B"
+  ],
+  "domain_map": {
+    "title": "Shopify 도메인 지도",
+    "question": "남의 가게가 판 만큼 버는 회사에서, 멈추지 않는다는 것은 무슨 뜻인가?",
+    "code": "flowchart TD\n  M[가게 주인] --> ST[스토어프론트 렌더링]\n  B[구매자] --> ST\n  ST --> CO[체크아웃 · 결제<br/>Shop Pay]\n  ST --> MT[멀티테넌시 · 격리<br/>pod]\n  CO --> MT\n  MT --> RES[회복탄력성 · 용량 계획]\n  RES --> MT\n  CO --> GMV[GMV 3,784억 달러]\n  GMV --> MS[머천트 솔루션 88.04억 달러]\n  M --> SUB[구독 솔루션 27.52억 달러<br/>MRR 2.05억]\n  MS --> REV[매출 115.6억 달러 · +30%]\n  SUB --> REV\n  MT -.->|멈추면 남의 매출이 멈춘다| GMV\n  classDef money stroke-dasharray: 3 3\n  class REV,GMV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "머천트 솔루션",
+      "how": "결제 처리·환전 수수료 등 거래에 붙는 수익. 2025년 88.04억 달러(2024년 65.30억). GMV 3,784.41억 달러를 따라간다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+          "publisher": "Shopify Inc. · SEC EDGAR",
+          "date": "2026-02-11",
+          "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+        }
+      ]
+    },
+    {
+      "name": "구독 솔루션",
+      "how": "플랫폼 구독료. 2025년 27.52억 달러(2024년 23.50억), MRR 2.05억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+          "publisher": "Shopify Inc. · SEC EDGAR",
+          "date": "2026-02-11",
+          "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "멀티테넌시·격리",
+      "why": "수백만 개의 남의 가게가 한 플랫폼 위에 있다. 그래서 이 도메인의 문제는 '어떻게 크게 만들까'가 아니라 **'한 곳의 실패가 어디까지 번지게 둘 것인가'**다. 2015년 샤딩으로 확장을 얻었지만 **샤드 하나의 실패가 플랫폼 전체의 실패**가 되면서, 회복력을 다시 사 오는 일이 이 도메인의 본체가 됐다.",
+      "tech": [
+        {
+          "tech": "pod — 완전히 격리된 데이터스토어 위의 상점 집합",
+          "solves": "한 pod 의 실패가 플랫폼 장애로 번지지 않게 blast radius 를 pod 크기로 묶는다. 샤딩으로 잃은 회복력을 되사 오는 장치다.",
+          "limits": "pod 단위로 용량과 배치를 관리해야 하고 **여러 pod 에 걸친 기능은 만들 수 없다**(뒷부분은 추정). 큰 상점의 부하를 어떻게 다루는지는 이 글에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        },
+        {
+          "tech": "Sorting Hat + pod 식별 헤더",
+          "solves": "로드밸런서가 규칙으로 요청을 pod 에 매칭하고 헤더를 붙여, 앱 서버가 pod 지도를 몰라도 올바른 데이터스토어로 가게 한다.",
+          "limits": "라우팅 판단이 로드밸런서 계층에 집중돼 그 계층이 중요한 단일 관문이 된다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        },
+        {
+          "tech": "단일 pod 통신 제약 + 크로스 pod 금지",
+          "solves": "공유 자원(잡 워커·앱 서버·LB)이 한 번에 하나의 pod 하고만 통신하게 해, 데이터 격리가 계산 계층에서 무너지지 않게 한다. 작업 단위 자체가 하나의 pod 만 대상으로 한다.",
+          "limits": "계산 자원을 pod 사이에서 자유롭게 굴리지 못해 활용도가 떨어질 수 있다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        },
+        {
+          "tech": "Pod Mover + 짝 복구 데이터센터",
+          "solves": "**요청이나 작업을 떨어뜨리지 않고 약 1분** 만에 pod 를 복구 데이터센터로 옮긴다. 이동의 단위가 플랫폼이 아니라 pod 다.",
+          "limits": "데이터센터를 짝으로 유지하는 비용이 들고 이동 중인 pod 를 관리해야 한다(추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "A Pods Architecture To Allow Shopify To Scale",
+              "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+              "publisher": "Shopify Engineering · Xavier Denis",
+              "date": "2018-03-02",
+              "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "pods-isolation"
+      ]
+    },
+    {
+      "name": "스토어프론트 렌더링",
+      "why": "가게마다 테마와 코드가 다른데 그 화면이 우리 인프라 위에서 그려진다. 남이 쓴 것이 우리 응답 시간이 되는 자리다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "체크아웃·결제",
+      "why": "머천트 솔루션 매출이 GMV 를 따라가므로, 이 경로가 곧 회사의 매출 경로다. Shop Pay GMV 는 2025년 62% 늘었다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "회복탄력성·용량 계획",
+      "why": "1년의 매출이 며칠에 몰리는 사업이라 평시 용량이 아니라 **최대 순간**에 맞춰 준비해야 한다. 이 사이트는 아직 이 도메인의 기능을 채우지 않았다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "pods-isolation",
+      "name": "Pod — 확장을 얻고 잃은 회복력을 되사기",
+      "domain": "멀티테넌시·격리",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사는 **남의 가게를 대신 돌려 준다.** 그리고 매출의 대부분이 구독료가 아니라 **그 가게들이 실제로 판 만큼**에서 나온다 — 2025년 머천트 솔루션 **88.04억 달러** 대 구독 솔루션 **27.52억 달러**로, **거래 쪽이 세 배 넘게 크다.**\n\n그러면 이 회사의 가용성은 자기 서비스의 문제가 아니라 **남의 매출의 문제**가 된다. 우리가 몇 분 멈추면 수백만 가게의 판매가 그만큼 멈춘다(이 문장은 이 사이트의 해석).\n\n그런데 확장을 위해 한 일이 바로 그 가용성을 깎았다. 2015년 샤딩으로 수평 확장을 얻었는데, **샤드 하나가 실패하면 그 동작이 플랫폼 전체에서 불가능해졌다.** 성능과 확장성을 사면서 회복력을 내준 셈이고, pod 아키텍처는 **그 회복력을 다시 사 오는 이야기**다.",
+        "metrics": [
+          {
+            "label": "매출 구성(2025년)",
+            "value": "총 **115.6억 달러**(+30%) — 머천트 솔루션 **88.04억**, 구독 솔루션 **27.52억**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "가게들이 판 금액(GMV)",
+            "value": "**3,784.41억 달러**(+29%). 2024년 2,922.75억",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "구독의 크기",
+            "value": "월 반복 매출(MRR) **2.05억 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "현금 창출",
+            "value": "잉여현금흐름 **20억 달러**, 마진 **17%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+                "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+                "publisher": "Shopify Inc. · SEC EDGAR",
+                "date": "2026-02-11",
+                "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+              }
+            ]
+          },
+          {
+            "label": "복구 속도",
+            "value": "Pod Mover 로 **요청이나 작업을 떨어뜨리지 않고 약 1분** 만에 복구 데이터센터로 이동",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "2015년 샤딩을 도입하고 나서",
+          "thought": "수평 확장은 얻었는데 **회복력을 잃었다.** 샤드 하나가 실패하면 그 동작이 **플랫폼 전체에서** 불가능해졌기 때문이다. 확장과 격리가 같은 방향이 아니라는 것 — 나눠서 커지는 대신 나눈 조각 하나가 전체를 멈출 수 있게 됐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "blast radius 를 어디까지 좁힐지 정할 때",
+          "thought": "데이터스토어만 나눠서는 부족하다. 잡 워커나 앱 서버가 여러 샤드를 넘나들면 **거기서 다시 번진다.** 그래서 공유 자원을 두되 **한 번에 하나의 pod 하고만 통신**하게 못 박았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "크로스 pod 통신을 금지할 때",
+          "thought": "편의를 위해 한 번만 열어 주면 격리는 그 순간 사라진다. 그래서 예외를 두지 않고 **작업 단위(웹 요청·지연 작업)가 하나의 pod 만 대상으로 하게** 만들었다 — 규칙이 아니라 구조로 막은 셈이다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복구를 어떻게 정의할지 정할 때",
+          "thought": "'몇 분 안에 복구'가 아니라 **'요청이나 작업을 떨어뜨리지 않고' 약 1분**이다. 얼마나 빨리가 아니라 **무엇을 잃지 않을 것인가**를 먼저 정한 것으로 보인다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "상점(shop) — 격리의 단위",
+          "pod — 완전히 격리된 데이터스토어 위에 사는 상점들의 집합",
+          "공유 자원 — 잡 워커 · 앱 서버 · 로드밸런서",
+          "Sorting Hat — 요청을 pod 에 매칭하는 로드밸런서 컴포넌트",
+          "Pod Mover — pod 를 복구 데이터센터로 옮기는 도구"
+        ],
+        "invariants": [
+          "한 pod 의 데이터스토어는 다른 pod 와 완전히 분리된다.",
+          "공유 자원은 **한 번에 하나의 pod 하고만** 통신한다.",
+          "작업 단위(웹 요청 · 지연 작업)는 **하나의 pod 만** 대상으로 한다 — 크로스 pod 통신은 없다.",
+          "요청이 어느 pod 로 갈지는 로드밸런서가 정하고 **헤더로 전달**된다.",
+          "pod 마다 짝이 되는 복구 데이터센터가 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "요청이 들어오면 **Sorting Hat** 이 규칙에 따라 그 요청이 속한 pod 를 정한다",
+            "why": "어느 상점의 요청인지에 따라 데이터가 어디 있는지가 결정된다."
+          },
+          {
+            "step": "Sorting Hat 이 **pod 를 식별하는 헤더를 붙인다**",
+            "why": "애플리케이션이 pod 지도를 직접 들고 있지 않아도 되게 한다."
+          },
+          {
+            "step": "앱 서버가 그 헤더를 보고 **해당 pod 의 격리된 데이터스토어**로 라우팅한다",
+            "why": "공유 자원이지만 그 순간에는 한 pod 하고만 통신한다."
+          },
+          {
+            "step": "지연 작업(delayed job)도 같은 규칙을 따른다 — 하나의 작업은 하나의 pod 만 대상으로 한다",
+            "why": "작업 하나가 두 pod 를 건드리면 격리가 무너진다."
+          },
+          {
+            "step": "pod 하나에 장애가 나면 그 pod 의 상점들만 영향을 받는다",
+            "why": "blast radius 를 pod 크기로 묶는 것이 이 구조의 목적이다."
+          },
+          {
+            "step": "필요하면 **Pod Mover** 로 그 pod 를 짝이 되는 복구 데이터센터로 옮긴다 — **요청이나 작업을 떨어뜨리지 않고 약 1분**",
+            "why": "복구를 '무엇을 잃지 않는가'로 정의했기 때문이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수평 확장을 어떻게 얻을 것인가",
+            "chosen": "**샤딩**(2015년) — 데이터베이스를 나눠 수평으로 늘린다.",
+            "alternatives": [
+              "수직 확장을 계속한다",
+              "읽기 복제본만 늘린다"
+            ],
+            "tradeoff": "성능과 확장성을 얻는 대신 **회복력을 잃었다** — 샤드 하나가 실패하면 그 동작이 **플랫폼 전체에서** 불가능해졌다. 이 대가가 그대로 다음 결정의 출발점이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "잃은 회복력을 어떻게 되사 올 것인가",
+            "chosen": "**pod** — 상점들의 집합이 **완전히 격리된 데이터스토어** 위에 살게 한다. 한 pod 의 실패가 플랫폼 장애로 번지지 않게 blast radius 를 묶는다.",
+            "alternatives": [
+              "샤드를 더 잘게 나눈다",
+              "장애 시 전체를 읽기 전용으로 돌린다"
+            ],
+            "tradeoff": "pod 단위로 용량과 배치를 관리해야 하고, 상점이 어느 pod 에 있는지가 운영의 1급 정보가 된다(뒷문장은 이 사이트의 추정). 대신 **실패의 크기가 pod 크기로 상한이 잡힌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 격리하고 무엇을 공유할 것인가",
+            "chosen": "**데이터스토어는 완전히 격리**하고, 잡 워커·앱 서버·로드밸런서 같은 계산 자원은 **공유하되 한 번에 하나의 pod 하고만 통신**하게 한다.",
+            "alternatives": [
+              "계산 자원까지 pod 마다 따로 둔다",
+              "데이터만 나누고 계산은 자유롭게 공유한다"
+            ],
+            "tradeoff": "계산 자원을 pod 사이에서 자유롭게 굴리지 못해 활용도가 떨어질 수 있다(뒷문장은 이 사이트의 추정). 그래도 **공유 자원이 여러 pod 를 넘나들면 격리가 거기서 무너진다** — 데이터만 나누는 것으로는 부족하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "pod 사이 통신을 허용할 것인가",
+            "chosen": "**금지한다.** 각 작업 단위(웹 요청·지연 작업)는 하나의 pod 만 대상으로 하며, pod 간 의존을 없앤다.",
+            "alternatives": [
+              "필요할 때만 크로스 pod 호출을 허용한다",
+              "pod 간 조회용 읽기 경로를 하나 연다"
+            ],
+            "tradeoff": "**여러 pod 에 걸친 기능은 이 구조 안에서 만들 수 없다**(뒷문장은 이 사이트의 추정). 대신 예외가 없으므로 격리가 규칙이 아니라 구조로 지켜진다 — 한 번 열어 주면 그때부터 격리는 보장이 아니라 관행이 된다(이 역시 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "요청을 어느 pod 로 보낼지 누가 정할 것인가",
+            "chosen": "로드밸런서 컴포넌트 **Sorting Hat** 이 규칙으로 매칭하고 **pod 를 식별하는 헤더를 붙인다.** 앱 서버는 그 헤더를 보고 라우팅한다.",
+            "alternatives": [
+              "애플리케이션이 매 요청마다 pod 를 조회한다",
+              "DNS 로 pod 별 엔드포인트를 나눈다"
+            ],
+            "tradeoff": "라우팅 판단이 로드밸런서 계층에 집중되어 그 계층이 중요한 단일 관문이 된다(뒷문장은 이 사이트의 추정). 대신 **애플리케이션은 pod 지도를 몰라도 되고**, 상점을 옮길 때 규칙만 바꾸면 된다(이 역시 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "재해 복구를 어떻게 준비할 것인가",
+            "chosen": "pod 마다 **짝이 되는 복구 데이터센터**를 두고, **Pod Mover** 로 옮긴다 — **요청이나 작업을 떨어뜨리지 않고 약 1분.**",
+            "alternatives": [
+              "전체 데이터센터 단위로만 장애 조치한다",
+              "백업에서 복원한다"
+            ],
+            "tradeoff": "데이터센터를 짝으로 유지하는 비용이 들고 이동 중인 pod 를 관리해야 한다(뒷문장은 이 사이트의 추정). 대신 **이동의 단위가 플랫폼이 아니라 pod** 라서, 문제가 난 부분만 옮길 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "question": "복구를 무엇으로 정의할 것인가",
+            "chosen": "속도가 아니라 **손실 없음**으로 먼저 정의한다 — '요청이나 작업을 떨어뜨리지 않고' 약 1분.",
+            "alternatives": [
+              "목표 복구 시간(RTO)만 정한다",
+              "일부 요청 실패를 허용하고 더 빨리 옮긴다"
+            ],
+            "tradeoff": "떨어뜨리지 않으려면 이동 절차가 복잡해진다(뒷문장은 이 사이트의 추정). 대신 **가게의 주문 하나가 사라지지 않는다** — 남의 매출을 대신 처리하는 회사에서는 이 정의가 다를 수 없다(이 역시 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "pod — 완전히 격리된 데이터스토어 집합",
+            "role": "상점들을 묶어 실패의 크기를 pod 단위로 상한 짓는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "Sorting Hat(로드밸런서 컴포넌트)",
+            "role": "규칙으로 요청을 pod 에 매칭하고 헤더를 붙여 앱 서버가 올바른 데이터스토어로 가게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "단일 pod 통신 제약",
+            "role": "공유 자원(잡 워커·앱 서버·LB)이 한 번에 하나의 pod 하고만 통신하게 해, 데이터 격리가 계산 계층에서 무너지지 않게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "Pod Mover + 짝 복구 데이터센터",
+            "role": "요청이나 작업을 떨어뜨리지 않고 약 1분 만에 pod 를 복구 데이터센터로 옮긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "A Pods Architecture To Allow Shopify To Scale",
+                "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+                "publisher": "Shopify Engineering · Xavier Denis",
+                "date": "2018-03-02",
+                "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+              }
+            ]
+          },
+          {
+            "tech": "pod 별 용량 배분과 상점 재배치 기준",
+            "role": "— 이 글에 없다. 어떤 상점이 어느 pod 에 가는지, 큰 상점의 부하를 어떻게 다루는지는 다루지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "체크아웃·결제",
+          "via": "매출이 걸린 경로",
+          "contract": "머천트 솔루션 매출이 GMV 를 따라가므로 결제가 멈추면 매출이 멈춘다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "회복탄력성·용량 계획",
+          "via": "장애의 단위",
+          "contract": "pod 가 격리의 단위이자 이동의 단위이므로 부하 대응과 용량 계획도 그 단위 위에서 이뤄질 것으로 보인다 — 이 사이트는 아직 확인하지 않았다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "stripe:docdb-migrations",
+          "via": "무중단을 무엇으로 정의하는가",
+          "contract": "Stripe 는 '멈추지 않는다'를 **애플리케이션의 재시도 예산**으로 정의해 핵심 단계를 2초 미만으로 두고, Shopify 는 **'요청이나 작업을 떨어뜨리지 않고 약 1분'**으로 정의한다. 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "요청 하나가 pod 를 찾아가는 길",
+          "question": "애플리케이션이 pod 지도를 모르는데 어떻게 올바른 데이터에 닿는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[요청 · 어느 상점] --> SH[Sorting Hat<br/>로드밸런서 컴포넌트]\n  SH -->|규칙으로 매칭| HDR[pod 식별 헤더 부착]\n  HDR --> APP[앱 서버 · 공유 자원]\n  APP -->|헤더를 보고| P1[(Pod A<br/>격리된 데이터스토어)]\n  APP -.->|한 번에 한 pod 하고만| P2[(Pod B)]\n  JOB[지연 작업] --> APP\n  P1 --> RESP[응답]\n  P1 -.->|짝 데이터센터| DR[(복구 DC)]\n  MOVER[Pod Mover] -.->|요청·작업 손실 없이 약 1분| DR\n  X[크로스 pod 통신] -.->|금지| P2\n  classDef ban stroke-dasharray: 4 4\n  class X ban"
+        },
+        {
+          "title": "pod 하나가 거치는 상태",
+          "question": "장애가 났을 때 무엇이 어느 단위로 움직이는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 정상: 상점들이 이 pod 의 데이터스토어를 쓴다\n  정상 --> 부분장애: 이 pod 의 데이터스토어 문제\n  note right of 부분장애\n    영향 범위는 이 pod 의 상점들\n    플랫폼 전체가 아니다\n  end note\n  부분장애 --> 정상: 복구\n  부분장애 --> 이동중: Pod Mover 실행\n  이동중 --> 복구DC: 약 1분 · 요청·작업 손실 없음\n  복구DC --> 정상: 원래 DC 복구 후 되돌림\n  정상 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 격리가 무너지는 자리",
+          "question": "데이터만 나누면 왜 부족한가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SHARD[2015 샤딩] --> SCALE[수평 확장 획득]\n  SHARD --> LOSS[**회복력 상실**]\n  LOSS --> ALL[샤드 하나 실패 →<br/>그 동작이 플랫폼 전체에서 불가]\n  ALL --> POD[pod 로 blast radius 격리]\n  SHARE[공유 자원이 여러 샤드를 넘나든다] --> SPREAD[격리가 계산 계층에서 무너진다]\n  SPREAD --> RULE[**한 번에 하나의 pod 하고만 통신**]\n  CROSS[크로스 pod 호출을 한 번 허용] -->|추정| WEAK[격리가 보장이 아니라 관행이 된다]\n  CROSS --> BAN[작업 단위를 하나의 pod 로 못 박음]\n  BIG[아주 큰 상점] -->|추정| HOT[그 pod 에 부하가 몰린다<br/>이 글에는 다루지 않음]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "A Pods Architecture To Allow Shopify To Scale",
+          "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+          "publisher": "Shopify Engineering · Xavier Denis",
+          "date": "2018-03-02",
+          "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+        },
+        {
+          "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+          "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+          "publisher": "Shopify Inc. · SEC EDGAR",
+          "date": "2026-02-11",
+          "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "어떤 상점이 어느 pod 에 배치되는지, 아주 큰 상점의 부하를 어떻게 다루는지 — pod 글에 없다.",
+    "pod 아키텍처는 2018년 글이다 — 이후의 변화(샤드 재배치, 클라우드 이전 등)는 반영돼 있지 않다.",
+    "스토어프론트 렌더링·체크아웃·회복탄력성 세 도메인은 아직 손대지 않았다.",
+    "부하가 몰릴 때 무엇을 먼저 버리는지(부하 차단 우선순위)는 아직 1차 자료를 찾지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "A Pods Architecture To Allow Shopify To Scale",
+      "url": "https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale",
+      "publisher": "Shopify Engineering · Xavier Denis",
+      "date": "2018-03-02",
+      "summary": "pod 은 완전히 격리된 데이터스토어 위에 사는 상점들의 집합이다. 잡 워커·앱 서버·로드밸런서는 공유하되 한 번에 하나의 pod 하고만 통신한다. 2015년 샤딩으로 수평 확장을 얻었지만 샤드 하나가 죽으면 그 동작이 플랫폼 전체에서 불가능해졌고, pod 로 blast radius 를 격리했다. Sorting Hat 이 요청을 pod 에 매칭해 헤더를 붙이고, 크로스 pod 통신은 금지된다. Pod Mover 로 요청이나 작업을 떨어뜨리지 않고 약 1분 만에 복구 데이터센터로 옮긴다."
+    },
+    {
+      "title": "Shopify Q4 2025 실적 발표(Form 8-K Exhibit 99.1)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000006/exhibit991pressreleaseq420.htm",
+      "publisher": "Shopify Inc. · SEC EDGAR",
+      "date": "2026-02-11",
+      "summary": "2025년 매출 115.6억 달러(+30%) — 구독 솔루션 27.52억, 머천트 솔루션 88.04억. GMV 3,784.41억 달러(+29%), MRR 2.05억 달러, 잉여현금흐름 20억 달러(마진 17%). Shop Pay GMV +62%, B2B GMV +96%."
+    }
+  ]
+}
