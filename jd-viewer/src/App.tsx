@@ -10,6 +10,7 @@ import { RadarView } from './components/RadarView'
 import { RepostView } from './components/RepostView'
 import { CalendarView } from './components/CalendarView'
 import { TrendView } from './components/TrendView'
+import { RevengView } from './components/RevengView'
 import { Loader, ErrorState, MobileBar } from './components/ui'
 import { useJobs } from './lib/useJobs'
 import { useHashTab } from './lib/useHashTab'
@@ -17,9 +18,9 @@ import { useHybridSearch, useSearchAvailable } from './lib/useHybridSearch'
 import { applyFilter, emptyFilter, stackCounts, roleCounts } from './lib/filter'
 import type { Job } from './types'
 
-type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'reposts'
+type Tab = 'jobs' | 'companies' | 'mindmap' | 'blog' | 'radar' | 'calendar' | 'trend' | 'reveng' | 'reposts'
 
-const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend', 'reposts']
+const TABS: readonly Tab[] = ['jobs', 'companies', 'mindmap', 'blog', 'radar', 'calendar', 'trend', 'reveng', 'reposts']
 
 function App() {
   const { jobs, loading, error } = useJobs()
@@ -125,6 +126,9 @@ function App() {
           <TabButton active={tab === 'trend'} onClick={() => setTab('trend')}>
             개발 트렌드
           </TabButton>
+          <TabButton active={tab === 'reveng'} onClick={() => setTab('reveng')}>
+            기술 역설계
+          </TabButton>
         </div>
         <button
           onClick={toggleTheme}
@@ -168,6 +172,10 @@ function App() {
       ) : tab === 'trend' ? (
         <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
           <TrendView onOpenCompany={openCompany} focusTech={techFocus} />
+        </div>
+      ) : tab === 'reveng' ? (
+        <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in">
+          <RevengView />
         </div>
       ) : tab === 'jobs' ? (
         loading ? (
