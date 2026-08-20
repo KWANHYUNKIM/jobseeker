@@ -73,10 +73,10 @@
       "name_en": "MUSINSA",
       "country": "KR",
       "category": "커머스",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "'같은 옷을 뭐라고 부를 것인가'부터 정해야 추천이 되는 패션 플랫폼",
-      "features_done": 2
+      "features_done": 3
     }
   ],
   "domains": [
@@ -115,8 +115,7 @@
     "상품 검색·추천",
     "상품 이해·속성",
     "개인화·추천",
-    "검색·랭킹",
-    "입점 브랜드·파트너"
+    "검색·랭킹"
   ],
   "countries": {
     "KR": "한국",
