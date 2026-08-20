@@ -133,8 +133,39 @@
     {
       "name": "가게 노출",
       "why": "목록에서 어떤 가게를 먼저 보여줄 것인가. 광고 수익이 여기서 나오고, 동시에 주문자가 만족할 가게를 골라야 한다 — 네이버·카카오의 지면 문제가 여기서도 반복된다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "비동기 조합(WebFlux·Reactor) + 서킷 브레이커",
+          "solves": "십여 개 시스템의 정보를 동시에 모아 초당 수십만 조회를 감당하고, 한 곳이 느려져도 화면을 돌려준다.",
+          "limits": "블로킹 한 줄이 전체를 막고 디버깅이 어렵다. 서킷이 열리면 일부 정보 없이 화면을 그리게 되어 표시가 실제와 달라질 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+              "url": "https://techblog.woowahan.com/2667/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+            }
+          ]
+        },
+        {
+          "tech": "3단 캐시(Redis→Redis→DynamoDB)",
+          "solves": "서비스향 모양·플랫폼 원래 모양·원본을 층으로 나눠 미스를 단계적으로 흡수한다.",
+          "limits": "층마다 낡음을 추적해야 하고 갱신 순서를 지켜야 한다. 순차 갱신이라 계층 간 값이 잠깐 어긋나는 구간이 생긴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+              "url": "https://techblog.woowahan.com/2667/",
+              "publisher": "우아한형제들 기술블로그",
+              "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "store-exposure"
+      ]
     },
     {
       "name": "커머스 물류(B마트)",
@@ -507,6 +538,349 @@
           "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
         }
       ]
+    },
+    {
+      "key": "store-exposure",
+      "name": "가게 노출 — 초당 수십만 번 다시 계산되는 목록",
+      "domain": "가게 노출",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "앱을 열면 가장 먼저 보이는 화면이고, 광고 매출이 여기서 나온다. 그런데 이 목록은 미리 만들어 둘 수가 없다 — **같은 가게라도 지금 몇 시인지, 사용자가 어디 있는지에 따라 주문할 수 있는 가게인지가 달라진다.** 문 닫은 가게를 보여주면 그건 광고가 아니라 사고이고, 배달 가능 지역 밖의 가게를 위에 올리면 주문 자체가 성립하지 않는다. 네이버·카카오의 지면 문제가 여기서도 반복되지만, 조건이 하나 더 붙는다 — **이 지면은 실시간으로 유효해야 한다.**",
+        "metrics": [
+          {
+            "label": "조회 규모",
+            "value": "초당 수십만 건 (앱 내 최고 트래픽)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "label": "갱신 이벤트",
+            "value": "초당 약 100여 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "label": "조합 대상",
+            "value": "십여 개 외부 시스템 · 수십 개 실시간 정보 · 십여 개 플랫폼 시스템 데이터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "목록을 미리 만들어 두려 할 때",
+          "thought": "가게 목록은 캐시하기 좋아 보인다. 그런데 영업 상태·배달 지역·예상 시간이 시시각각 바뀌고, 무엇보다 사용자의 위치에 따라 답이 달라진다. 미리 만들 수 있는 것은 '가게 정보'까지이고 '지금 이 사람에게 보일 목록'은 매번 계산해야 한다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "십여 개 시스템을 동시에 불러야 할 때",
+          "thought": "가게 하나를 보여주는 데 필요한 정보가 여러 시스템에 흩어져 있다. 순서대로 부르면 지연이 더해지고, 그중 하나가 느려지면 화면 전체가 멈춘다 — 최전방 시스템에서 이건 곧 앱이 안 열린다는 뜻이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "캐시 계층을 정할 때",
+          "thought": "한 겹으로는 부족했다. 서비스가 쓰기 좋은 모양과 플랫폼이 준 원래 모양이 다르고, 원본까지 필요한 순간도 있다. 계층을 나누면 각 층이 다른 실패를 흡수한다 — 대신 어느 층이 낡았는지 추적할 일이 늘어난다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "광고를 이 목록에 얹을 때",
+          "thought": "노출 순서는 광고 매출이 걸린 자리인 동시에 '지금 주문 가능한가'라는 사실이 걸린 자리다. 돈을 낸 가게를 위에 올리는 것과 문 닫은 가게를 걸러내는 것은 층이 다른 판단인데, 사용자에게는 한 줄로 보인다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "가게",
+            "what": "노출 대상. 영업 상태·배달 지역·최소 주문 금액이 계속 바뀐다."
+          },
+          {
+            "name": "노출 컨텍스트",
+            "what": "지금 시각과 사용자 위치. 같은 가게도 이 값에 따라 보이거나 안 보인다."
+          },
+          {
+            "name": "조합 결과",
+            "what": "여러 시스템의 정보를 합쳐 만든 '지금 이 사람에게 보일 가게 정보'."
+          },
+          {
+            "name": "캐시 계층",
+            "what": "서비스향 재구성(1차) · 플랫폼 1:1(2차) · 원본(3차)."
+          }
+        ],
+        "invariants": [
+          "가게 정보는 캐시할 수 있어도 '지금 이 사람에게 보일 목록'은 캐시할 수 없다 — 시간과 위치가 답을 바꾼다.",
+          "문 닫았거나 배달 지역 밖인 가게를 위에 올리면 그건 노출이 아니라 오류다.",
+          "최전방 시스템은 뒤의 어느 시스템이 느려져도 화면을 돌려줘야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자 위치와 현재 시각을 컨텍스트로 받는다",
+            "why": "이 둘이 '보일 가게'를 정한다"
+          },
+          {
+            "step": "1차 캐시(Redis, 서비스향 재구성 데이터)를 본다",
+            "why": "가장 자주 쓰이는 모양을 가장 앞에 둔다"
+          },
+          {
+            "step": "없으면 2차 캐시(Redis, 플랫폼 1:1 대응 데이터)로 내려간다",
+            "why": "원본까지 가지 않고 막을 수 있는 미스가 있다"
+          },
+          {
+            "step": "그래도 없으면 원본(DynamoDB)에서 읽고 비동기로 캐시를 채운다",
+            "why": "응답을 먼저 돌려주고 갱신은 뒤에서 한다"
+          },
+          {
+            "step": "십여 개 시스템의 정보를 비동기로 모아 조합한다",
+            "why": "순서대로 부르면 지연이 더해진다"
+          },
+          {
+            "step": "느린 시스템은 서킷 브레이커로 끊는다",
+            "why": "최전방에서 한 곳의 지연이 전체 화면을 멈추게 할 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "가게 목록을 미리 만들어 둘 것인가",
+            "chosen": "시간·위치 기반으로 실시간 계산해 내려준다",
+            "alternatives": [
+              "지역별 목록을 주기적으로 만들어 캐시",
+              "가게 정보만 캐시하고 정렬은 클라이언트에서"
+            ],
+            "tradeoff": "초당 수십만 조회를 매번 계산해야 하는 부담을 진다. 대신 문 닫은 가게나 배달 지역 밖의 가게가 목록에 남는 일을 막는다 — 이 도메인에서 낡은 데이터는 느린 것보다 나쁘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "여러 시스템을 어떻게 호출할 것인가",
+            "chosen": "WebFlux·Reactor 기반 비동기 논블로킹으로 십여 개 시스템을 동시에 부른다",
+            "alternatives": [
+              "요청당 스레드를 쓰는 동기 호출",
+              "필요한 정보를 미리 복제해 두기"
+            ],
+            "tradeoff": "적은 스레드로 많은 호출을 감당하는 대신, 블로킹 코드 한 줄이 전체를 막고 스택 트레이스가 끊겨 디버깅이 어려워진다 — 최전방이라 그 실수의 비용이 가장 크다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 몇 겹으로 둘 것인가",
+            "chosen": "3단 — 서비스향 재구성(Redis) → 플랫폼 1:1(Redis) → 원본(DynamoDB)",
+            "alternatives": [
+              "단일 캐시",
+              "캐시 없이 원본 직접 조회"
+            ],
+            "tradeoff": "층마다 다른 실패를 흡수하지만, 어느 층이 낡았는지 추적할 일이 늘고 갱신 순서를 지켜야 한다(주 저장소부터 순차 갱신). 계층은 공짜가 아니라 관리 대상이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "캐시 미스일 때 어떻게 할 것인가",
+            "chosen": "폴백으로 아래 계층에서 읽어 응답하고, 캐시 갱신은 비동기로 뒤에서 한다",
+            "alternatives": [
+              "캐시를 채운 뒤 응답",
+              "미스면 실패 반환"
+            ],
+            "tradeoff": "응답이 먼저 나가는 대신 그 순간의 값이 캐시에 아직 없어 뒤이은 요청도 같은 미스를 겪을 수 있다. 대신 사용자가 기다리지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "뒤의 시스템이 느려지면 어떻게 할 것인가",
+            "chosen": "Resilience4j 서킷 브레이커로 끊는다",
+            "alternatives": [
+              "타임아웃만 걸고 계속 시도",
+              "장애 시 전체 실패"
+            ],
+            "tradeoff": "끊긴 시스템의 정보 없이 화면을 그리게 되므로 일부 정보가 빠지거나 기본값으로 나간다. 그래도 앱이 열리지 않는 것보다는 낫다는 판단이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "question": "갱신 이벤트를 어떻게 반영할 것인가",
+            "chosen": "초당 100여 개의 이벤트로 캐시를 갱신하되 주 저장소부터 순차적으로 내려간다",
+            "alternatives": [
+              "모든 계층 동시 갱신",
+              "주기적 전체 재적재"
+            ],
+            "tradeoff": "순차 갱신이라 계층 간에 잠깐 값이 다른 구간이 생긴다. 대신 원본이 먼저 옳아지므로 폴백이 항상 더 정확한 값을 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Spring WebFlux · Reactor",
+            "role": "십여 개 시스템을 비동기로 동시에 호출해 최전방 지연을 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "tech": "Redis 2단 + DynamoDB",
+            "role": "서비스향 모양·플랫폼 원래 모양·원본을 층으로 나눠 캐시한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "tech": "Resilience4j",
+            "role": "느려진 하위 시스템을 끊어 화면 전체가 멈추지 않게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          },
+          {
+            "tech": "Micrometer",
+            "role": "초당 수십만 조회 위에서 무엇이 나빠졌는지 관측한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+                "url": "https://techblog.woowahan.com/2667/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "rider-dispatch",
+          "via": "예상 배달 시간",
+          "contract": "노출 목록에 보이는 예상 시간은 배차·이동이 만들어 내는 값이다. 배차가 밀리면 목록의 약속도 틀린다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "주문 접수",
+          "via": "영업 상태·주문 가능 여부",
+          "contract": "가게가 지금 받을 수 있는지가 노출의 전제다. 이 판단이 틀리면 주문이 접수 단계에서 깨진다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "정산",
+          "via": "광고비",
+          "contract": "노출 순서가 광고 매출과 얽혀 있다 — 이 목록은 사용자에게 보이는 화면이자 판매 상품이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 캐시를 내려가며 조합한다",
+          "question": "초당 수십만 조회를 어떻게 감당하면서 실시간성을 지키는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[사용자 · 위치 + 현재 시각] --> API[가게노출 시스템]\n  API --> C1{1차 캐시<br/>Redis · 서비스향}\n  C1 -->|히트| COMBINE[정보 조합]\n  C1 -->|미스| C2{2차 캐시<br/>Redis · 플랫폼 1:1}\n  C2 -->|히트| COMBINE\n  C2 -->|미스| DB[(DynamoDB 원본)]\n  DB --> COMBINE\n  DB -.->|비동기 갱신| C2 -.-> C1\n  EXT[십여 개 외부 시스템<br/>수십 개 실시간 정보] --> COMBINE\n  CB[Resilience4j] -.->|느리면 끊는다| EXT\n  COMBINE --> LIST[가게 목록]\n  AD[광고] --> LIST"
+        },
+        {
+          "title": "가게 하나의 노출 상태",
+          "question": "같은 가게가 왜 어떤 사람에게는 보이고 어떤 사람에게는 안 보이는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 등록됨\n  등록됨 --> 영업중: 영업 시작\n  영업중 --> 노출대상: 사용자가 배달 지역 안\n  영업중 --> 제외: 배달 지역 밖\n  노출대상 --> 노출: 목록에 포함\n  노출 --> 상위노출: 광고·정렬 기준 충족\n  영업중 --> 일시중지: 가게가 주문을 멈춤\n  일시중지 --> 영업중: 재개\n  영업중 --> 영업종료: 마감\n  영업종료 --> [*]\n  note right of 노출대상\n    이 판정은 사용자마다 다르다.\n    그래서 목록을 미리 만들 수 없다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 최전방에서 무엇이 무너지는가",
+          "question": "뒤의 시스템이 느려지거나 캐시가 낡으면 사용자는 무엇을 보는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  REQ[조회 요청] --> SLOW{하위 시스템 지연}\n  SLOW -->|서킷 오픈| PARTIAL[일부 정보 없이 화면을 그린다]\n  SLOW -->|끊지 않았다면| STUCK[앱이 안 열린다]\n  PARTIAL -.->|기본값 노출| WRONGINFO[표시가 실제와 다를 수 있다]\n  STALE{캐시가 낡았다}\n  STALE -->|영업 종료 반영 전| CLOSED[문 닫은 가게가 목록에]\n  CLOSED --> FAIL[주문이 접수 단계에서 깨진다]\n  STALE -->|배달 지역 변경 반영 전| OUT[주문 불가 지역 가게가 상위에]\n  OUT --> FAIL\n  FAIL -.->|사용자에게는| SAME[\"배민이 이상하다\" 한 문장으로 보인다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+          "url": "https://techblog.woowahan.com/2667/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+        },
+        {
+          "title": "배달의민족 광고데이터 이관기",
+          "url": "https://techblog.woowahan.com/14041/",
+          "publisher": "우아한형제들 기술블로그",
+          "summary": "광고 데이터를 옮긴 과정을 다룬 글 — 가게 노출 순서가 광고와 얽혀 있음을 보여준다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -515,7 +889,9 @@
     "가게 노출·광고 상품이 주문자 만족과 어떻게 균형을 맞추는지 공개 자료를 찾지 못했다.",
     "묶음 조합을 어디까지 탐색하고 무엇으로 자르는지(후보 수 상한·시간 예산)는 공개 자료에 없다.",
     "도착 시간 예측 모델의 정확도와, 예측이 배차 결정에 어떤 형태로 들어가는지 확인하지 못했다.",
-    "라이더 수락·거절이 배차에 어떻게 반영되는지 모른다 — 카카오 taxi-dispatch 의 수락률 되먹임과 같은 문제가 여기에도 있는지가 궁금한 지점이다."
+    "라이더 수락·거절이 배차에 어떻게 반영되는지 모른다 — 카카오 taxi-dispatch 의 수락률 되먹임과 같은 문제가 여기에도 있는지가 궁금한 지점이다.",
+    "노출 순서에서 광고와 '주문 가능성·거리·예상 시간' 같은 사실이 어떤 비중으로 섞이는지는 공개 자료에 없다 — 네이버·카카오와 같은 종류의 미확인 항목이다.",
+    "라이더 수락·거절이 배차에 어떻게 반영되는지는 이번에도 찾지 못했다(비교 문서에서 드러난 구멍, 032에 이어 미해결)."
   ],
   "sources": [
     {
@@ -555,6 +931,18 @@
       "url": "https://techblog.woowahan.com/11582/",
       "publisher": "우아한형제들 기술블로그",
       "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
+    },
+    {
+      "title": "배달의민족 최전방 시스템! '가게노출 시스템'을 소개합니다",
+      "url": "https://techblog.woowahan.com/2667/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "십여 개 외부 시스템과 수십 개 실시간 정보를 조합해 시간·위치 기반으로 가게를 노출하는 시스템. 초당 수십만 조회, 3단 캐시(Redis→Redis→DynamoDB), WebFlux·Resilience4j 사용."
+    },
+    {
+      "title": "배달의민족 광고데이터 이관기",
+      "url": "https://techblog.woowahan.com/14041/",
+      "publisher": "우아한형제들 기술블로그",
+      "summary": "광고 데이터를 옮긴 과정을 다룬 글 — 가게 노출 순서가 광고와 얽혀 있음을 보여준다."
     }
   ]
 }
