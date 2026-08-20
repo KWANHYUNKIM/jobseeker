@@ -99,6 +99,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "움직이는 사람들을 다루려고 지구를 육각형으로 덮은 회사",
       "features_done": 3
+    },
+    {
+      "slug": "instagram",
+      "name": "Instagram",
+      "name_en": "Instagram (Meta)",
+      "country": "US",
+      "category": "소셜",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "수십억 개 중에서 고르되 한 번에 고르지 않는 법을 파는 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -145,7 +156,11 @@
     "데이터 인프라",
     "지리 인덱싱",
     "실시간 매칭·배차",
-    "도착 예측"
+    "도착 예측",
+    "추천 퍼널",
+    "콘텐츠 무결성",
+    "광고 랭킹",
+    "알림"
   ],
   "countries": {
     "KR": "한국",

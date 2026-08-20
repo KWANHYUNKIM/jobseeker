@@ -9,7 +9,7 @@
 
 ## 대기 — 해외
 
-1. Instagram (US, 소셜) — 피드
+0. **Instagram** (US, 소셜, Meta 산하) — 피드  ← **진행 중** (도메인 4개 중 1개 완료 · 기능 1개)
 2. Netflix (US, 스트리밍) — 재생/CDN
 3. YouTube (US, 스트리밍) — 업로드 파이프라인
 6. Discord (US, 메시징) — 음성/실시간

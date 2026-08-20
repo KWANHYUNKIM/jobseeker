@@ -1,0 +1,511 @@
+{
+  "slug": "instagram",
+  "name": "Instagram",
+  "name_en": "Instagram (Meta)",
+  "country": "US",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "수십억 개 중에서 고르되 한 번에 고르지 않는 법을 파는 회사",
+  "business_model": "**Meta 산하 서비스**다. 사용자에게 돈을 받지 않고 그들이 보는 지면을 광고로 판다. Meta 전체로는 2025년 매출 **2,009.7억 달러**(+22%), 2025년 12월 평균 Family 일간 활성 이용자 **35.8억 명**(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%. **Instagram 단독 매출은 IR 에서 분리 공시되지 않는다.** 앞선 회사들과 다른 점은 **다룰 콘텐츠의 자릿수**다 — 당근의 피드가 사내 서비스들의 콘텐츠를 모으는 문제였다면 여기는 **수십억 개에서 실시간으로 고르는** 문제다. 그래서 기술이 '무엇을 위에 놓을까'가 아니라 **'어떻게 하면 전부를 정밀하게 보지 않아도 되게 할까'**에서 시작한다.",
+  "products": [
+    "피드",
+    "Explore",
+    "Reels",
+    "스토리",
+    "DM",
+    "광고"
+  ],
+  "domain_map": {
+    "title": "Instagram 도메인 지도",
+    "question": "수십억 개의 콘텐츠가 어떻게 한 사람의 화면과 광고 매출이 되는가?",
+    "code": "flowchart TD\n  C[(수십억 개 콘텐츠)] --> FUNNEL[추천 퍼널<br/>검색 → 1단계 → 2단계 → 재랭킹]\n  U[사용자 · Family DAP 35.8억] --> FUNNEL\n  FUNNEL --> FEED[피드 · Explore · Reels]\n  INTEG[콘텐츠 무결성] -->|필터 · 다운랭크| FUNNEL\n  NOTI[알림] -.->|다시 열게 한다| U\n  FEED --> AD[광고 랭킹]\n  AD --> REV[Meta 매출 2,009.7억 달러<br/>노출 +12% · 단가 +9%]\n  FEED -.->|체류가 지면을 만든다| AD\n  classDef money stroke-dasharray: 3 3\n  class REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "광고",
+      "how": "Family of Apps 지면에 광고를 노출한다. Meta 2025년 매출 2,009.7억 달러, 연간 광고 노출 +12%·평균 단가 +9%. Instagram 단독 수치는 분리 공시되지 않는다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Meta Reports Fourth Quarter and Full Year 2025 Results",
+          "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx",
+          "publisher": "Meta IR",
+          "date": "2026",
+          "summary": "2025년 매출 2,009.7억 달러(+22%). 2025년 12월 평균 Family 일간 활성 이용자 35.8억 명(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "추천 퍼널",
+      "why": "수십억 개에서 실시간으로 골라야 하는데 계산 능력은 유한하다. **전부를 정밀하게 보지 않아도 되게 만드는 것**이 이 도메인의 일이고, 나머지 모든 지면이 여기 얹혀 있다.",
+      "tech": [
+        {
+          "tech": "4단계 퍼널 + Two Tower 검색 + 증류된 1단계 랭커 + MTML/값 모델",
+          "solves": "수십억 개를 수천 → 상위 100 → 최종 목록으로 좁히면서, 단계마다 정밀도와 계산량을 맞바꾼다. 아이템 임베딩을 미리 만들어 두고 사용자 쪽만 실시간으로 계산한다.",
+          "limits": "앞 단계가 버린 것은 뒤 단계가 볼 기회가 없고, Two Tower 는 사용자-아이템 상호작용 피처를 쓸 수 없다. 오프피크 사전계산분은 그만큼 낡는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling the Instagram Explore recommendations system",
+              "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+              "publisher": "Engineering at Meta",
+              "date": "2023-08-09",
+              "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "explore-funnel"
+      ]
+    },
+    {
+      "name": "콘텐츠 무결성",
+      "why": "추천이 세면 셀수록 나쁜 콘텐츠도 함께 증폭된다. 퍼널의 마지막에 걸러 내는 단계가 따로 있는 이유다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "광고 랭킹",
+      "why": "이 회사의 돈이 나오는 자리. 추천 콘텐츠와 같은 화면을 나눠 쓴다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "알림",
+      "why": "앱을 다시 열게 하는 장치. 너무 많으면 끄고, 너무 적으면 잊는다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "explore-funnel",
+      "name": "Explore — 수십억 개에서 고르되, 한 번에 고르지 않기",
+      "domain": "추천 퍼널",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "앞선 회사들의 추천과 규모의 차원이 다르다. **수십억 개의 선택지**에서 실시간으로 고르는데, 무한한 계산 능력은 없다. 그래서 이 도메인의 첫 결정은 '무엇을 위에 놓을까'가 아니라 **'어떻게 하면 전부를 정밀하게 보지 않아도 되게 만들까'**가 된다. Explore 에는 **매일 수억 명**이 들어온다.",
+        "metrics": [
+          {
+            "label": "퍼널의 모양",
+            "value": "수십억 개 → **수천 개**(검색) → **상위 100개**(1단계 랭킹) → 정밀 랭킹 → 최종 재랭킹",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "label": "Explore 규모",
+            "value": "매일 **수억 명**이 Explore 를 방문한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "label": "회사의 규모",
+            "value": "Meta 2025년 매출 2,009.7억 달러(+22%), 2025년 12월 평균 Family 일간 활성 이용자 **35.8억 명**(+7%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Meta Reports Fourth Quarter and Full Year 2025 Results",
+                "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx",
+                "publisher": "Meta IR",
+                "date": "2026",
+                "summary": "2025년 매출 2,009.7억 달러(+22%). 2025년 12월 평균 Family 일간 활성 이용자 35.8억 명(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "수십억 개를 앞에 두고",
+          "thought": "정밀한 모델로 전부를 채점하는 건 불가능하다. 그러면 **정밀도와 계산량을 바꿔 가며 단계를 쌓는 수밖에 없다** — 앞 단계는 싸고 거칠게, 뒤 단계는 비싸고 정밀하게.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Two Tower 를 고르며",
+          "thought": "사용자 쪽과 아이템 쪽 신경망을 완전히 분리하면, 훈련이 끝난 뒤 **아이템 임베딩을 미리 만들어 둘 수 있다.** 그런데 그 대가가 있다 — **사용자와 아이템이 어떻게 상호작용했는지를 피처로 쓸 수 없다.** 그걸 넣는 순간 캐시가 불가능해진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "1단계 랭커를 무엇으로 가르칠지 정할 때",
+          "thought": "1단계의 목표는 좋은 콘텐츠를 고르는 게 아니라 **2단계가 고를 만한 것을 남기는 것**이다. 그러면 정답을 참여 이벤트가 아니라 **2단계의 출력**으로 두면 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "추천이 엉뚱하다는 신고를 볼 때",
+          "thought": "모델이 아니라 **입력이 오염돼 있었다.** 사용자의 상호작용 이력에 저품질 항목이 섞여 있으면 그걸 재료로 삼은 추천도 엉뚱해진다 — 모델을 고치기 전에 이력을 먼저 걸러야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "검색 소스",
+            "what": "휴리스틱 실시간 · 휴리스틱 사전생성 · ML 실시간 · ML 사전생성 네 종류. 조정 가능한 가중치로 섞는다."
+          },
+          {
+            "name": "Two Tower",
+            "what": "사용자 타워와 아이템 타워. 각자 자기 엔티티의 피처만 쓰고, 두 임베딩의 유사도로 참여를 예측하도록 학습한다."
+          },
+          {
+            "name": "MTML 모델",
+            "what": "2단계 랭커. P(click)·P(like)·P(see less) 등 여러 참여 이벤트를 함께 예측한다."
+          },
+          {
+            "name": "값 모델(Value Model)",
+            "what": "여러 예측을 하나의 점수로 합치는 가중합. `W_click×P(click) + W_like×P(like) − W_see_less×P(see less) + …`"
+          }
+        ],
+        "invariants": [
+          "정밀한 모델로 수십억 개를 전부 채점할 수는 없다.",
+          "캐시 가능한 임베딩을 원하면 사용자-아이템 상호작용 피처를 포기해야 한다.",
+          "이력이 오염되면 그 이력을 재료로 삼은 추천도 오염된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "네 종류의 검색 소스가 수십억 개에서 수천 개를 뽑는다",
+            "why": "관심사가 제각각인 사용자 집단을 한 소스로 덮을 수 없다"
+          },
+          {
+            "step": "사전생성 소스의 후보는 오프피크에 미리 만들어 둔다",
+            "why": "피크 시간의 계산을 앞당겨 쓴다"
+          },
+          {
+            "step": "Two Tower 의 아이템 임베딩은 일일 오프라인 파이프라인이 만들어 ANN(FAISS·HNSW)에 넣는다",
+            "why": "훈련 후 두 타워가 독립이라 미리 만들 수 있다"
+          },
+          {
+            "step": "온라인에서는 사용자 타워만 돌려 최신 피처로 사용자 임베딩을 만든다",
+            "why": "사용자 쪽은 지금 바뀌고 아이템 쪽은 안 바뀐다"
+          },
+          {
+            "step": "1단계 랭커가 수천 개에서 상위 100개를 남긴다",
+            "why": "2단계가 볼 만한 것만 넘긴다"
+          },
+          {
+            "step": "2단계 MTML 이 여러 참여 이벤트의 확률을 낸다",
+            "why": "클릭·좋아요·그만 보기는 다른 사건이다"
+          },
+          {
+            "step": "값 모델이 가중합으로 하나의 점수를 만든다",
+            "why": "무엇을 더 중요하게 볼지가 여기서 정해진다"
+          },
+          {
+            "step": "최종 재랭킹이 무결성 필터와 다양성 규칙을 적용한다",
+            "why": "같은 저자를 연달아 보여주지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "수십억 개를 어떻게 다룰 것인가",
+            "chosen": "**다단계 퍼널** — 앞 단계는 정밀도가 낮고 계산이 가벼운 모델로, 뒤 단계는 정밀도가 높고 계산이 무거운 모델로 후보를 좁힌다",
+            "alternatives": [
+              "단일 모델로 전량 채점",
+              "사전 계산된 고정 목록"
+            ],
+            "tradeoff": "**앞 단계가 버린 것은 뒤 단계가 볼 기회조차 없다** — 정밀한 모델이 좋아했을 콘텐츠가 거친 단계에서 탈락할 수 있다(뒷문장은 추정). 그래도 무한한 계산 능력이 없는 이상 이 구조 말고는 방법이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "검색 소스를 하나로 통일할 것인가",
+            "chosen": "**네 종류**(휴리스틱 실시간 · 휴리스틱 사전생성 · ML 실시간 · ML 사전생성)를 **조정 가능한 가중치로 섞는다**",
+            "alternatives": [
+              "단일 ML 검색",
+              "휴리스틱만"
+            ],
+            "tradeoff": "소스마다 유지 비용이 들고 가중치가 계속 튜닝 대상이 된다. 그래도 **관심사가 제각각인 사용자 집단**을 한 소스로 덮을 수 없다 — 회사는 앞으로 '더 적은 수의 고도로 맞춤화 가능한 ML 알고리즘으로 통합'하는 방법을 조사 중이라고 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "검색 단계의 모델을 무엇으로 할 것인가",
+            "chosen": "**Two Tower** — 사용자용·아이템용 두 신경망이 각자 자기 엔티티 피처만 쓰고, 두 임베딩의 유사도로 참여를 예측하도록 학습한다",
+            "alternatives": [
+              "교차 피처를 쓰는 단일 모델"
+            ],
+            "tradeoff": "**사용자-아이템 상호작용 피처를 쓸 수 없다** — 넣는 순간 캐시 가능한 임베딩을 만들 수 없기 때문이다. 그 대가로 아이템 임베딩을 일일 오프라인 파이프라인에서 만들어 ANN 에 넣어 둘 수 있다. **정확도를 내주고 미리 계산할 자유를 샀다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "1단계 랭커를 무엇으로 학습시킬 것인가",
+            "chosen": "**2단계의 출력을 예측하도록** 훈련한다 — `PSelect = {2단계로 가는 상위 K 에 든 미디어}`. 큰 2단계 모델의 지식을 가벼운 1단계로 **증류**하는 방식이다",
+            "alternatives": [
+              "참여 이벤트를 직접 예측",
+              "휴리스틱 필터"
+            ],
+            "tradeoff": "**2단계의 편향까지 그대로 물려받는다**(추정). 대신 1단계의 목표가 '좋은 콘텐츠 고르기'가 아니라 '2단계가 볼 만한 것 남기기'로 정확히 정렬된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 예측할 것인가",
+            "chosen": "**MTML** 로 P(click)·P(like)·**P(see less)** 등 여러 참여 이벤트를 함께 예측한다",
+            "alternatives": [
+              "단일 지표(클릭률 등) 예측"
+            ],
+            "tradeoff": "레이블과 태스크가 늘어 모델이 무거워진다. 대신 **'그만 보기' 같은 부정 신호를 1급으로 다룰 수 있다** — 좋아할 확률만 보면 싫어할 확률은 계산에 들어오지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "여러 예측을 어떻게 하나의 순서로 만들 것인가",
+            "chosen": "**값 모델**의 가중합 — `W_click×P(click) + W_like×P(like) − W_see_less×P(see less) + …`",
+            "alternatives": [
+              "단일 목표 최적화",
+              "학습된 결합 모델"
+            ],
+            "tradeoff": "가중치를 사람이 정해야 하고, 그 숫자가 곧 제품의 방향이 된다(추정). 대신 **무엇을 더 중요하게 볼지를 명시적으로 조절할 수 있다** — W_like 를 올리면 좋아할 확률에 더 무게가 실린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "피크 시간의 계산을 어떻게 감당할 것인가",
+            "chosen": "**일부 사용자의 추천을 오프피크에 미리 계산**한다. 사전생성 검색 소스의 후보도 오프피크에 오프라인으로 만든다",
+            "alternatives": [
+              "전량 실시간 계산",
+              "용량 증설"
+            ],
+            "tradeoff": "미리 만든 추천은 그만큼 낡는다. 그래도 이렇게 해야 **모든 Explore 사용자에게 추천 가용성이 보장된다** — 2단계 MTML 은 계산이 무겁다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "question": "모델 점수만으로 최종 순서를 정할 것인가",
+            "chosen": "**아니다.** 최종 재랭킹에서 무결성 점수로 걸러 내거나 순위를 낮추고, **비즈니스 규칙으로 섞는다**(예: 같은 저자의 항목을 연달아 보여주지 않기)",
+            "alternatives": [
+              "값 모델 점수 그대로",
+              "다양성도 모델로 학습"
+            ],
+            "tradeoff": "사람이 정한 규칙이 모델의 판단을 덮어쓴다. 그래도 회사는 이런 규칙이 **최종 추천에 대한 훨씬 나은 통제**를 주고 온라인 참여도 좋아졌다고 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "다단계 퍼널(검색 → 1단계 → 2단계 → 재랭킹)",
+            "role": "수십억 개를 수천 → 상위 100 → 최종 목록으로 좁힌다. 단계마다 정밀도와 계산량을 바꾼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "tech": "Two Tower + ANN(FAISS·HNSW)",
+            "role": "아이템 임베딩을 일일 오프라인으로 만들어 색인하고, 사용자 임베딩만 실시간으로 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "tech": "증류된 1단계 랭커",
+            "role": "2단계의 출력을 예측하도록 학습해 가벼운 모델로 무거운 모델을 흉내 낸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "tech": "MTML 2단계 랭커 + 값 모델",
+            "role": "여러 참여 이벤트를 함께 예측하고 가중합으로 하나의 점수를 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          },
+          {
+            "tech": "이력 정제 · 무결성 필터 · 다양성 규칙",
+            "role": "상호작용 이력에서 저품질 항목을 규칙으로 걸러 내고(성적·불쾌 이미지, 신고 많은 포스트), 최종 단계에서 무결성 점수와 비즈니스 규칙을 적용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling the Instagram Explore recommendations system",
+                "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+                "publisher": "Engineering at Meta",
+                "date": "2023-08-09",
+                "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "콘텐츠 무결성",
+          "via": "최종 재랭킹",
+          "contract": "무결성 점수로 항목을 걸러 내거나 순위를 낮추는 단계가 퍼널의 마지막에 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "광고 랭킹",
+          "via": "같은 지면",
+          "contract": "추천 콘텐츠와 광고가 같은 화면을 나눠 쓰지만, 그 배치 규칙은 이 글에 없다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 네 개의 관문",
+          "question": "수십억 개가 어떻게 한 화면이 되는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  ALL[(수십억 개 콘텐츠)] --> R{검색 · 네 종류 소스}\n  R --> R1[휴리스틱 실시간 · 트렌딩]\n  R --> R2[휴리스틱 사전생성]\n  R --> R3[ML 실시간]\n  R --> R4[ML 사전생성]\n  ITEM[아이템 타워 · 일일 오프라인] --> ANN[(ANN · FAISS · HNSW)]\n  ANN --> R3\n  USER[사용자 타워 · 실시간 피처] --> R3\n  R1 --> MIX[조정 가능한 가중치로 혼합]\n  R2 --> MIX\n  R3 --> MIX\n  R4 --> MIX\n  MIX -->|수천 개| S1[1단계 랭킹<br/>2단계 출력을 예측하도록 증류]\n  S1 -->|상위 100개| S2[2단계 MTML<br/>P click · P like · P see less]\n  S2 --> VM[값 모델 · 가중합]\n  VM --> RR[최종 재랭킹<br/>무결성 필터 · 같은 저자 연속 금지]\n  RR --> OUT[Explore 화면]\n  HIST[상호작용 이력] -.->|저품질 항목 규칙 필터| R\n  OFF[오프피크 사전계산] -.-> S2"
+        },
+        {
+          "title": "콘텐츠 하나가 지나는 관문",
+          "question": "어디서 떨어지면 다시는 기회가 없는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 후보풀: 수십억 개 중 하나\n  후보풀 --> 검색통과: 어느 소스에든 뽑혔다\n  후보풀 --> 탈락1: 어느 소스도 안 뽑았다\n  검색통과 --> 상위100: 1단계 랭커가 남겼다\n  검색통과 --> 탈락2: 2단계가 볼 만하지 않다고 판단\n  상위100 --> 정밀채점: MTML 이 확률들을 낸다\n  정밀채점 --> 점수합산: 값 모델 가중합\n  점수합산 --> 무결성검사\n  무결성검사 --> 다운랭크: 점수가 낮다\n  무결성검사 --> 다양성규칙: 통과\n  다양성규칙 --> 밀림: 같은 저자가 앞에 있다\n  다양성규칙 --> 노출\n  노출 --> [*]\n  note right of 탈락2\n    앞 단계가 버린 것은\n    뒤 단계가 볼 기회조차 없다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 각 단계가 놓치는 것",
+          "question": "이 구조가 무엇을 대가로 성립하는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[정밀 모델로 전량 채점] --> B[계산 능력이 무한하지 않다]\n  B --> C[퍼널로 나눈다]\n  C --> D[앞 단계가 버린 것은 뒤가 못 본다]\n  E[Two Tower 를 쓰면] --> F[임베딩을 캐시할 수 있다]\n  E --> G[사용자-아이템 상호작용 피처를 못 쓴다]\n  G -.->|넣는 순간| H[캐시 가능성이 사라진다]\n  I[1단계를 2단계로 증류하면] --> J[목표는 정확히 정렬된다]\n  I -.-> K[2단계의 편향까지 물려받는다]\n  L[상호작용 이력이 오염되면] --> M[엉뚱한 추천이 나온다]\n  M -.->|그래서| N[이력에서 저품질 항목을 규칙으로 걸러낸다]\n  O[오프피크에 미리 계산하면] --> P[가용성은 보장된다]\n  O -.-> Q[그만큼 낡은 추천을 본다]\n  R[값 모델의 가중치] -.->|사람이 정한다| S[그 숫자가 제품의 방향이 된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling the Instagram Explore recommendations system",
+          "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+          "publisher": "Engineering at Meta",
+          "date": "2023-08-09",
+          "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "추천 콘텐츠와 광고가 같은 화면에서 어떤 규칙으로 자리를 나누는지는 이 글에 없다.",
+    "값 모델의 가중치를 실제로 어떤 값으로 두는지, 누가 어떤 기준으로 바꾸는지는 공개돼 있지 않다.",
+    "1단계 랭커가 2단계를 증류하면서 생기는 편향을 어떻게 다루는지는 언급되지 않는다.",
+    "Instagram 단독 매출·사용자 수는 Meta IR 에서 분리 공시되지 않는다."
+  ],
+  "sources": [
+    {
+      "title": "Scaling the Instagram Explore recommendations system",
+      "url": "https://engineering.fb.com/2023/08/09/ml-applications/scaling-instagram-explore-recommendations-system/",
+      "publisher": "Engineering at Meta",
+      "date": "2023-08-09",
+      "summary": "수십억 개 콘텐츠에서 실시간으로 고르기 위한 4단계 퍼널 — 검색(수십억→수천), 1단계 랭킹(→상위 100), 2단계 MTML 랭킹, 최종 재랭킹. Two Tower 로 임베딩을 캐시하고, 1단계는 2단계의 출력을 예측하도록 증류한다."
+    },
+    {
+      "title": "Meta Reports Fourth Quarter and Full Year 2025 Results",
+      "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx",
+      "publisher": "Meta IR",
+      "date": "2026",
+      "summary": "2025년 매출 2,009.7억 달러(+22%). 2025년 12월 평균 Family 일간 활성 이용자 35.8억 명(+7%). 연간 광고 노출 +12%, 평균 광고 단가 +9%."
+    }
+  ]
+}
