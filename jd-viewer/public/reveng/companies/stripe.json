@@ -1,0 +1,538 @@
+{
+  "slug": "stripe",
+  "name": "Stripe",
+  "name_en": "Stripe",
+  "country": "US",
+  "category": "핀테크",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "되돌릴 수 없는 일을 다시 시도해도 안전하게 만드는 일을 파는 회사",
+  "business_model": "가맹점 대신 결제를 처리하고 거래액에 비례해 수수료를 받는다. 2025년 총 결제액 **1.9조 달러**(+34%)로 세계 GDP 의 약 1.6%가 이 위를 지나갔고, 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러다. 앞선 회사들과 결정적으로 다른 점은 **고객이 사용자가 아니라 개발자**라는 것이다 — 그래서 이 회사의 제품은 화면이 아니라 **API 의 계약**이고, '다시 시도해도 되는가' 같은 질문이 UX 문제가 아니라 상품의 핵심이 된다. 결제 위에 Billing·Invoicing·Tax 같은 매출 운영 제품(Revenue suite)을 얹어 수익원을 넓히고 있다.",
+  "products": [
+    "Payments",
+    "Checkout / Elements",
+    "Billing · Invoicing · Tax",
+    "Connect",
+    "Radar",
+    "Terminal"
+  ],
+  "domain_map": {
+    "title": "Stripe 도메인 지도",
+    "question": "개발자에게 파는 회사는 무엇을 상품으로 만드는가?",
+    "code": "flowchart TD\n  DEV[가맹점 개발자] -->|API 계약| PAY[결제 API]\n  PAY --> PROC[결제 처리 · 결제수단]\n  PROC --> NET[카드망 · 은행 · 로컬 수단]\n  PAY --> RISK[리스크 · 사기 방지]\n  RISK -.->|막으면 매출도 막힌다| PROC\n  PAY --> REVN[매출 운영<br/>Billing · Invoicing · Tax]\n  PROC --> SETTLE[정산 · 계정<br/>Connect]\n  PROC --> TPV[총 결제액 1.9조 달러]\n  TPV --> REV[매출 68억 달러 · EBITDA 12억]\n  REVN -.->|연 런레이트 10억 달러 예정| REV\n  classDef money stroke-dasharray: 3 3\n  class TPV,REV money"
+  },
+  "revenue_streams": [
+    {
+      "name": "결제 수수료",
+      "how": "가맹점 거래액에 비례해 받는다. 2025년 총 결제액 1.9조 달러 위에서 매출 68억 달러.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe 2025 annual letter",
+          "url": "https://stripe.com/newsroom/news/stripe-2025-update",
+          "publisher": "Stripe 뉴스룸",
+          "date": "2026",
+          "summary": "2025년 총 결제액 1.9조 달러(+34%, 세계 GDP 의 약 1.6%), 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러. 블랙프라이데이~사이버먼데이 4일간 5.78억 건·400억 달러 이상."
+        }
+      ]
+    },
+    {
+      "name": "Revenue suite",
+      "how": "Billing·Invoicing·Tax 등 매출 운영 제품. 연간 런레이트 10억 달러에 도달할 예정이라고 밝혔다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Stripe 2025 annual letter",
+          "url": "https://stripe.com/newsroom/news/stripe-2025-update",
+          "publisher": "Stripe 뉴스룸",
+          "date": "2026",
+          "summary": "2025년 총 결제액 1.9조 달러(+34%, 세계 GDP 의 약 1.6%), 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러. 블랙프라이데이~사이버먼데이 4일간 5.78억 건·400억 달러 이상."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "결제 API",
+      "why": "이 회사의 제품은 화면이 아니라 개발자와 맺는 계약이다. '다시 시도해도 되는가', '지금 이 결제는 어떤 상태인가' 같은 질문에 대한 답이 곧 상품이다.",
+      "tech": [
+        {
+          "tech": "멱등 키 + PaymentIntent 상태 모델",
+          "solves": "연결이 끊긴 자리에서 중복 청구를 막고, 실패한 시도까지 한 객체에 기록해 같은 객체로 재시도하게 한다.",
+          "limits": "키는 24시간 뒤 사라질 수 있고, 일시 장애로 저장된 오류는 그 키에 박제된다. 상태가 앞뒤로 오가서 현재 상태만으로는 몇 번 실패했는지 알 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Stripe API Reference — Idempotent requests",
+              "url": "https://docs.stripe.com/api/idempotent_requests",
+              "publisher": "Stripe 공식 문서",
+              "date": "2026-08 확인",
+              "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+            },
+            {
+              "title": "How Payment Intents and Setup Intents work",
+              "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+              "publisher": "Stripe 공식 문서",
+              "date": "2026-08 확인",
+              "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "idempotent-payments"
+      ]
+    },
+    {
+      "name": "결제 처리·결제수단",
+      "why": "카드망·은행·나라별 로컬 수단은 각자 규칙과 속도가 다르다. 그 차이를 하나의 API 뒤로 감추는 것이 이 회사가 파는 것이다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "리스크·사기 방지",
+      "why": "너무 막으면 정상 매출이 막히고 너무 열면 손실이 난다 — 결제 회사에서 가장 저울이 예민한 자리다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "매출 운영",
+      "why": "결제만으로는 성장에 한계가 있어 구독·인보이스·세금까지 넓혔다. 결제 위에 얹는 수익원이다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "정산·계정(Connect)",
+      "why": "플랫폼이 자기 판매자들에게 돈을 나눠 주려면 계정과 정산을 대신 다뤄 줘야 한다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "idempotent-payments",
+      "name": "재시도 — 연결이 끊긴 자리에서 두 번 청구하지 않기",
+      "domain": "결제 API",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "결제 API 를 파는 회사에서 가장 무서운 사건은 장애가 아니라 **중복 청구**다. 요청을 보냈는데 응답이 안 오면 가맹점은 다시 보낼 수밖에 없고, 그때 첫 요청이 사실은 성공했다면 손님은 두 번 결제된다. **되돌릴 수 없는 일을 다루는 API 에서는 '다시 시도해도 되는가'가 기능이 아니라 계약이다.** Stripe 는 이 문제를 두 층에서 다룬다 — API 요청 수준의 멱등 키와, 결제 하나를 통째로 붙잡아 두는 PaymentIntent.",
+        "metrics": [
+          {
+            "label": "다루는 규모",
+            "value": "2025년 총 결제액 1.9조 달러(+34%) — 세계 GDP 의 약 1.6%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe 2025 annual letter",
+                "url": "https://stripe.com/newsroom/news/stripe-2025-update",
+                "publisher": "Stripe 뉴스룸",
+                "date": "2026",
+                "summary": "2025년 총 결제액 1.9조 달러(+34%, 세계 GDP 의 약 1.6%), 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러. 블랙프라이데이~사이버먼데이 4일간 5.78억 건·400억 달러 이상."
+              }
+            ]
+          },
+          {
+            "label": "피크",
+            "value": "블랙프라이데이~사이버먼데이 4일간 5.78억 건, 400억 달러 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe 2025 annual letter",
+                "url": "https://stripe.com/newsroom/news/stripe-2025-update",
+                "publisher": "Stripe 뉴스룸",
+                "date": "2026",
+                "summary": "2025년 총 결제액 1.9조 달러(+34%, 세계 GDP 의 약 1.6%), 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러. 블랙프라이데이~사이버먼데이 4일간 5.78억 건·400억 달러 이상."
+              }
+            ]
+          },
+          {
+            "label": "멱등 키가 사는 기간",
+            "value": "최소 24시간이 지나면 시스템에서 제거될 수 있고, 제거된 뒤 같은 키를 다시 쓰면 새 요청으로 처리된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "연결이 끊긴 상황을 그릴 때",
+          "thought": "가맹점 쪽에서는 '요청이 안 갔다'와 '갔는데 응답이 안 왔다'가 똑같이 보인다. 구분할 방법이 없으니 **어느 쪽이든 다시 보내도 안전하게 만드는 수밖에 없다** — 클라이언트가 판단하게 두면 언젠가 틀린다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "무엇을 저장할지 정할 때",
+          "thought": "성공한 응답만 저장하면 실패한 요청은 재시도 때마다 다시 실행된다. 그러니 **성공이든 실패든 첫 결과를 그대로 저장**해야 한다. 500 오류까지 똑같이 돌려주는 게 이상해 보여도, 그게 '같은 요청은 같은 결과'라는 약속을 지키는 유일한 방법이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "PaymentIntent 를 언제 만들지 정할 때",
+          "thought": "결제가 끝난 뒤에 기록하면 실패한 시도는 아무 데도 안 남는다. **금액을 아는 순간 객체부터 만들면** 성공하든 실패하든 모든 시도가 한 자리에 기록된다 — 결제를 '사건'이 아니라 '상태를 가진 것'으로 본 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실패한 결제를 어떻게 둘지 정할 때",
+          "thought": "카드가 거절되면 그 결제는 끝난 걸까? 아니다 — 손님은 다른 카드를 낸다. 그러니 실패를 종착역으로 두지 말고 **상태를 처음으로 되돌려 같은 객체로 다시 시도하게** 해야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Idempotency-Key",
+            "what": "클라이언트가 만드는 고유 문자열(최대 255자, V4 UUID 권장). 첫 요청의 상태 코드와 본문이 여기에 붙는다."
+          },
+          {
+            "name": "PaymentIntent",
+            "what": "결제 하나를 대표하는 객체. 시도들이 이 안에 기록된다."
+          },
+          {
+            "name": "상태",
+            "what": "requires_payment_method · requires_confirmation · requires_action · processing · succeeded · canceled."
+          }
+        ],
+        "invariants": [
+          "'요청이 안 갔다'와 '갔는데 응답이 안 왔다'는 클라이언트에서 구분되지 않는다.",
+          "같은 키의 요청은 같은 결과를 받아야 한다 — 그 결과가 오류일 때도 마찬가지다.",
+          "결제 실패는 종착 상태가 아니다. 손님은 다른 카드를 낸다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 멱등 키를 만들어 POST 요청 헤더에 담는다",
+            "why": "재시도를 알아볼 표식이 요청보다 먼저 있어야 한다"
+          },
+          {
+            "step": "엔드포인트 실행이 시작되면 결과(상태 코드+본문)를 키에 저장한다",
+            "why": "실행이 시작되지 않은 요청은 저장할 결과가 없다"
+          },
+          {
+            "step": "같은 키로 다시 오면 저장된 결과를 그대로 돌려준다",
+            "why": "성공이든 실패든 같은 요청은 같은 결과"
+          },
+          {
+            "step": "파라미터가 첫 요청과 다르면 오류를 낸다",
+            "why": "키 재사용 실수를 잡는다"
+          },
+          {
+            "step": "금액을 아는 즉시 PaymentIntent 를 만든다",
+            "why": "모든 시도를 한 객체에 기록하기 위해"
+          },
+          {
+            "step": "3DS 같은 추가 인증이 필요하면 requires_action 으로 간다",
+            "why": "인증은 결제 흐름의 일부지 예외가 아니다"
+          },
+          {
+            "step": "결제가 실패하면 requires_payment_method 로 되돌린다",
+            "why": "같은 객체로 다른 결제수단을 다시 시도한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "재시도 안전성을 누가 책임질 것인가",
+            "chosen": "**클라이언트가 멱등 키를 만든다.** 만드는 방법은 자유지만 충돌하지 않을 만큼의 엔트로피(V4 UUID 등)를 권한다",
+            "alternatives": [
+              "서버가 요청 내용을 해싱",
+              "요청 지문 자동 생성"
+            ],
+            "tradeoff": "키 품질이 클라이언트 손에 달려 있어 잘못 만들면 보호가 사라진다. 대신 **무엇이 '같은 요청'인지를 그 요청을 만든 쪽이 정한다** — 서버가 내용을 보고 추측하면 의도적으로 두 번 결제하려는 경우를 막아 버린다(뒷문장은 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 저장할 것인가",
+            "chosen": "성공·실패를 가리지 않고 **첫 요청의 상태 코드와 본문**을 저장한다. 같은 키의 후속 요청은 **500 오류까지 그대로** 받는다",
+            "alternatives": [
+              "성공 응답만 저장",
+              "오류는 재실행 허용"
+            ],
+            "tradeoff": "일시적인 장애로 난 500 이 그 키에 **박제된다** — 다시 시도해도 같은 오류가 돌아온다. 그래도 '같은 키는 같은 결과'가 깨지는 것보다는 낫다. 새로 시도하려면 새 키를 써야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "같은 키에 다른 파라미터가 오면",
+            "chosen": "원래 요청의 파라미터와 비교해 **다르면 오류**를 낸다",
+            "alternatives": [
+              "새 요청으로 처리",
+              "덮어쓰기"
+            ],
+            "tradeoff": "유연성이 사라져 키를 재사용하는 편법을 못 쓴다. 그게 목적이다 — 문서는 이를 '실수로 잘못 쓰는 것을 막기 위해'라고 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "언제부터 결과를 저장할 것인가",
+            "chosen": "**엔드포인트 실행이 시작된 뒤에만** 저장한다. 파라미터 검증에 실패하거나 동시에 실행 중인 다른 요청과 충돌하면 저장하지 않는다 — 그런 요청은 다시 시도할 수 있다",
+            "alternatives": [
+              "요청 수신 시점에 키 선점",
+              "모든 결과 저장"
+            ],
+            "tradeoff": "클라이언트는 '이 오류는 재시도해도 되는 것'과 '박제된 것'을 구분할 줄 알아야 한다. 대신 검증에서 튕긴 요청 때문에 키가 낭비되지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "키를 얼마나 오래 보관할 것인가",
+            "chosen": "**최소 24시간**이 지나면 제거될 수 있고, 제거된 뒤 같은 키를 다시 쓰면 새 요청이 만들어진다",
+            "alternatives": [
+              "영구 보관",
+              "짧은 만료"
+            ],
+            "tradeoff": "하루가 지난 재시도는 보호받지 못한다 — 오래 걸리는 배치가 같은 키로 다시 돌면 중복 결제가 난다(뒷문장은 추정). 대신 저장소가 무한히 자라지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 요청에 적용할 것인가",
+            "chosen": "**모든 POST** 가 멱등 키를 받는다. GET·DELETE 에는 보내지 말라고 명시한다 — 정의상 이미 멱등이기 때문",
+            "alternatives": [
+              "결제 관련 엔드포인트만",
+              "전체 메서드 허용"
+            ],
+            "tradeoff": "규칙이 단순해 외울 게 없다. 다만 '멱등이 필요 없는 POST'에도 키를 쓰게 되어 서버가 그만큼을 저장한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "question": "결제 객체를 언제 만들 것인가",
+            "chosen": "**금액을 알게 되는 즉시** PaymentIntent 를 만든다 — 그래야 Stripe 가 시도된 모든 결제를 기록할 수 있다",
+            "alternatives": [
+              "결제 확정 시점에 기록",
+              "성공한 결제만 저장"
+            ],
+            "tradeoff": "끝내 완료되지 않는 객체가 쌓인다. 대신 **실패한 시도도 한 자리에 남아** 무엇이 왜 안 됐는지 볼 수 있다 — 결제를 사건이 아니라 상태를 가진 것으로 본 결정이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Payment Intents and Setup Intents work",
+                "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+              }
+            ]
+          },
+          {
+            "question": "실패를 종착 상태로 둘 것인가",
+            "chosen": "**아니다.** 결제 시도가 실패하면(카드 거절 등) 상태가 `requires_payment_method` 로 **되돌아가** 같은 객체로 다시 시도할 수 있다",
+            "alternatives": [
+              "실패 상태로 종료 후 새 객체",
+              "재시도 전용 상태 추가"
+            ],
+            "tradeoff": "상태가 앞뒤로 오가므로 **'지금 어디인지'만 봐서는 몇 번 실패했는지 알 수 없다.** 그리고 너무 여러 번 confirm 하면 자동으로 `canceled` 가 되기도 한다. 대신 손님이 다른 카드를 내는 현실이 그대로 모델에 담긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Payment Intents and Setup Intents work",
+                "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Idempotency-Key 헤더",
+            "role": "클라이언트가 만든 키에 첫 요청의 상태 코드와 본문을 묶어, 재시도가 같은 결과를 받게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stripe API Reference — Idempotent requests",
+                "url": "https://docs.stripe.com/api/idempotent_requests",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+              }
+            ]
+          },
+          {
+            "tech": "PaymentIntent / SetupIntent",
+            "role": "결제 하나(또는 결제수단 등록 하나)를 객체로 붙잡아 상태로 관리한다. 두 API 는 같은 상태 집합을 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Payment Intents and Setup Intents work",
+                "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+              }
+            ]
+          },
+          {
+            "tech": "3D Secure(3DS) 연동",
+            "role": "추가 인증이 필요한 거래를 `requires_action` 상태로 표현해 흐름의 정식 단계로 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Payment Intents and Setup Intents work",
+                "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+              }
+            ]
+          },
+          {
+            "tech": "비동기 결제수단 처리",
+            "role": "은행 이체처럼 며칠 걸리는 수단을 `processing` 으로 두고, 별도 승인·캡처 흐름은 `requires_capture` 로 갈라 놓는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Payment Intents and Setup Intents work",
+                "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+                "publisher": "Stripe 공식 문서",
+                "date": "2026-08 확인",
+                "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+              }
+            ]
+          },
+          {
+            "tech": "멱등 저장소의 내부 구조",
+            "role": "— 확인하지 못했다. 문서는 동작(계약)만 밝히고 어떻게 구현했는지는 말하지 않는다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "리스크·사기 방지",
+          "via": "재시도와 어뷰징",
+          "contract": "같은 결제를 여러 번 confirm 하면 자동 취소될 수 있다는 규칙이 있지만, 그것이 리스크 판단과 어떻게 이어지는지는 확인하지 못했다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "매출 운영(Billing·Invoicing)",
+          "via": "실패한 결제의 재시도",
+          "contract": "구독 결제에서 실패한 시도를 다시 거는 흐름이 이 상태 모델 위에 서 있을 것으로 보인다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 두 층의 보호막",
+          "question": "응답이 안 왔을 때 무엇이 중복을 막는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[가맹점 서버] -->|POST + Idempotency-Key| API[Stripe API]\n  API --> CHK{이 키를 본 적 있나}\n  CHK -->|있다| SAME[저장된 상태 코드 · 본문 그대로<br/>500 오류도 그대로]\n  CHK -->|없다| PARAM{파라미터가 같은가}\n  PARAM -->|다르다| ERR[오류 · 키 재사용 방지]\n  PARAM -->|처음| EXEC[엔드포인트 실행 시작]\n  EXEC --> SAVE[(결과를 키에 저장<br/>성공 · 실패 무관)]\n  EXEC --> PI[PaymentIntent 생성<br/>금액을 아는 즉시]\n  PI --> ST[상태로 관리]\n  SAVE --> RESP[응답]\n  ST --> RESP\n  VAL[검증 실패 · 동시 요청 충돌] -.->|저장하지 않는다| RETRY[다시 시도할 수 있다]\n  API -.-> VAL\n  SAVE -.->|최소 24시간 뒤| PRUNE[키 제거 · 이후 재사용은 새 요청]"
+        },
+        {
+          "title": "PaymentIntent 의 상태 — 실패가 되돌아간다",
+          "question": "카드가 거절되면 그 결제는 어디로 가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> requires_payment_method: 금액을 아는 즉시 생성\n  requires_payment_method --> requires_confirmation: 결제 정보 입력\n  requires_confirmation --> requires_action: 3DS 등 추가 인증\n  requires_payment_method --> requires_action: 대부분의 통합은 확인 단계를 건너뛴다\n  requires_action --> processing: 비동기 수단은 며칠 걸린다\n  requires_action --> succeeded\n  processing --> succeeded\n  succeeded --> [*]\n  requires_action --> requires_payment_method: 실패 · 거절\n  processing --> requires_payment_method: 실패\n  requires_payment_method --> canceled: processing · succeeded 전에만\n  requires_action --> canceled: confirm 을 너무 많이 하면 자동으로도\n  canceled --> [*]\n  note right of requires_payment_method\n    실패는 종착역이 아니다.\n    같은 객체로 다시 시도한다.\n  end note"
+        },
+        {
+          "title": "실패 경로 — 멱등성이 지켜 주지 않는 자리",
+          "question": "키를 붙였는데도 두 번 청구될 수 있는 경우는?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[응답이 오지 않았다] --> B{요청이 갔나}\n  B -->|알 수 없다| C[다시 보낼 수밖에 없다]\n  C -->|키가 있으면| SAFE[같은 결과를 받는다]\n  C -->|키가 없으면| DUP[두 번 청구된다]\n  D[24시간이 지났다] --> E[키가 제거될 수 있다]\n  E --> F[같은 키로 다시 보내면 새 요청]\n  F --> DUP\n  G[키를 이메일 · 개인 식별자로 만들었다] -.->|문서가 금지| PRIV[민감 정보가 키에 남는다]\n  H[엔트로피가 부족한 키] -.-> COLL[다른 요청과 충돌]\n  I[일시 장애로 500 이 저장됐다] --> J[재시도해도 같은 500]\n  J --> K[새 키를 써야 한다]\n  L[confirm 을 너무 여러 번] -.-> M[PaymentIntent 가 자동 canceled]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Stripe API Reference — Idempotent requests",
+          "url": "https://docs.stripe.com/api/idempotent_requests",
+          "publisher": "Stripe 공식 문서",
+          "date": "2026-08 확인",
+          "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+        },
+        {
+          "title": "How Payment Intents and Setup Intents work",
+          "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+          "publisher": "Stripe 공식 문서",
+          "date": "2026-08 확인",
+          "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "멱등 저장소를 어떻게 구현했는지(어디에 얼마나 저장하고 동시성을 어떻게 다루는지)는 공개돼 있지 않다 — 문서는 계약만 밝힌다.",
+    "'confirm 을 너무 많이 하면 자동 취소'의 기준 횟수는 밝히지 않는다.",
+    "리스크(Radar)·정산(Connect)·매출 운영은 아직 손대지 않았다.",
+    "1.9조 달러를 실제로 어떤 인프라가 받아 내는지(엔지니어링 블로그 쪽 자료)는 이번 사이클에서 확인하지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "Stripe API Reference — Idempotent requests",
+      "url": "https://docs.stripe.com/api/idempotent_requests",
+      "publisher": "Stripe 공식 문서",
+      "date": "2026-08 확인",
+      "summary": "첫 요청의 상태 코드와 본문을 키에 저장해 재시도 시 그대로(500 오류까지) 돌려준다. 키는 클라이언트가 만들고 최대 255자, 최소 24시간 뒤 제거될 수 있다. 파라미터가 다르면 오류, 모든 POST 가 키를 받는다."
+    },
+    {
+      "title": "How Payment Intents and Setup Intents work",
+      "url": "https://docs.stripe.com/payments/paymentintents/lifecycle",
+      "publisher": "Stripe 공식 문서",
+      "date": "2026-08 확인",
+      "summary": "requires_payment_method → requires_confirmation → requires_action → processing → succeeded, 그리고 canceled. 금액을 아는 즉시 PaymentIntent 를 만들어 모든 시도를 기록하게 하고, 결제가 실패하면 상태가 requires_payment_method 로 되돌아가 같은 객체로 재시도한다."
+    },
+    {
+      "title": "Stripe 2025 annual letter",
+      "url": "https://stripe.com/newsroom/news/stripe-2025-update",
+      "publisher": "Stripe 뉴스룸",
+      "date": "2026",
+      "summary": "2025년 총 결제액 1.9조 달러(+34%, 세계 GDP 의 약 1.6%), 매출 68억 달러(+33%), 잉여현금흐름 32억 달러, EBITDA 12억 달러. 블랙프라이데이~사이버먼데이 4일간 5.78억 건·400억 달러 이상."
+    }
+  ]
+}

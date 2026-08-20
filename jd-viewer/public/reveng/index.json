@@ -77,6 +77,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "'같은 옷을 뭐라고 부를 것인가'부터 정해야 추천이 되는 패션 플랫폼",
       "features_done": 3
+    },
+    {
+      "slug": "stripe",
+      "name": "Stripe",
+      "name_en": "Stripe",
+      "country": "US",
+      "category": "핀테크",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "되돌릴 수 없는 일을 다시 시도해도 안전하게 만드는 일을 파는 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -115,7 +126,12 @@
     "상품 검색·추천",
     "상품 이해·속성",
     "개인화·추천",
-    "검색·랭킹"
+    "검색·랭킹",
+    "결제 API",
+    "결제 처리·결제수단",
+    "리스크·사기 방지",
+    "매출 운영",
+    "정산·계정(Connect)"
   ],
   "countries": {
     "KR": "한국",
