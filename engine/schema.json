@@ -23,6 +23,12 @@
     "products": ["string — 사용자가 이름을 아는 단위"],
 
     "one_liner": "string — 디렉토리 카드에 뜨는 한 줄",
+    "domain_map": {
+      "_note": "회사 전체 도메인 지도. STYLE.md 1번 — 회사마다 반드시 한 장.",
+      "title": "string",
+      "question": "string — 이 그림이 답하는 질문",
+      "code": "string — mermaid flowchart"
+    },
     "revenue_streams": [
       {
         "name": "string — 수익원",
@@ -36,6 +42,15 @@
       {
         "name": "string — 문제의 경계 (조직도가 아니라). 예: 송금원장, 인증, 정산",
         "why": "string — 이 도메인이 왜 따로 존재하는가",
+        "tech": [
+          {
+            "tech": "string — 이 도메인을 실제로 떠받치는 기술(DB·큐·락·캐시·프로토콜)",
+            "solves": "string — 그 기술로 푼 문제",
+            "limits": "string — 그 기술이 못 하는 것과 그 구멍을 무엇으로 메웠는가",
+            "confidence": "confirmed|inferred|unknown",
+            "sources": ["source 객체"]
+          }
+        ],
         "features": ["string — 이 도메인에 속한 feature 의 key"]
       }
     ],
@@ -58,6 +73,15 @@
             }
           ]
         },
+
+        "thinking": [
+          {
+            "_note": "STYLE.md 6번 — 만든 사람이 그 지점에서 무슨 생각을 했는가. 결정(decisions)이 '무엇을 골랐나'라면 여기는 '고르기 전에 무엇이 걸렸나'다.",
+            "at": "string — 어느 지점에서의 생각인가 (예: 첫 화면 설계, 장애 대응, 규모가 10배 됐을 때)",
+            "thought": "string — 그때 걸렸던 것. 문제의식·불안·제약·욕심 중 무엇이든",
+            "confidence": "confirmed|inferred|unknown"
+          }
+        ],
 
         "domain_model": {
           "entities": [{ "name": "string", "what": "string — 무엇을 대표하는 기록인가" }],
@@ -95,7 +119,16 @@
           }
         ],
 
-        "diagram": "string — mermaid 소스 (flowchart 또는 sequenceDiagram). 없으면 빈 문자열",
+        "diagrams": [
+          {
+            "_note": "STYLE.md 1번 — 기능 하나에 그림 1장으로 끝내지 않는다. 정상 흐름과 실패 경로는 다른 그림이다.",
+            "title": "string",
+            "question": "string — 이 그림이 답하는 질문. 없으면 그 그림은 뺀다",
+            "kind": "flow|sequence|state|failure",
+            "code": "string — mermaid 소스"
+          }
+        ],
+        "diagram": "string — (구버전) mermaid 소스 한 장. 새로 쓸 때는 diagrams 를 쓴다",
         "sources": ["source 객체 — 이 기능 전체의 근거"]
       }
     ],

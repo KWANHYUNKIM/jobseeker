@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import {
   useCompany,
   type Confidence,
+  type Diagram,
   type Feature,
   type Source,
 } from '../lib/useReveng'
@@ -42,7 +43,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
 
   return (
     <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
-      <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel)/60 sticky top-0 z-10">
+      <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-10">
         <button
           onClick={onBack}
           className="text-xs text-(--color-muted) hover:text-(--color-accent) mb-1"
@@ -86,6 +87,12 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           )}
         </Section>
 
+        {c.domain_map?.code && (
+          <Section title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}>
+            <DiagramBlock d={c.domain_map} idKey={`reveng-${c.slug}-map`} />
+          </Section>
+        )}
+
         {c.domains && c.domains.length > 0 && (
           <Section title="도메인" sub="조직도가 아니라 문제의 경계로 나눈 단위">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -110,6 +117,21 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
                       </span>
                     </div>
                     <p className="text-xs text-(--color-muted) mt-1 leading-relaxed">{d.why}</p>
+                    {d.tech && d.tech.length > 0 && (
+                      <ul className="mt-2 flex flex-col gap-1.5 border-t border-(--color-border) pt-2">
+                        {d.tech.map((t) => (
+                          <li key={t.tech} className="text-xs leading-relaxed">
+                            <span className="text-(--color-accent)">{t.tech}</span>
+                            <ConfBadge c={t.confidence} />
+                            <span className="text-(--color-muted)"> — {t.solves}</span>
+                            <div className="text-(--color-muted) opacity-80">
+                              <span className="opacity-70">못 하는 것 </span>
+                              {t.limits}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </button>
                 )
               })}
@@ -165,8 +187,8 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
     <div className="rounded border border-(--color-border) bg-(--color-panel)">
       <button onClick={onToggle} className="w-full text-left px-3 py-2.5 flex items-center gap-2">
         <span className="text-(--color-muted) text-xs">{open ? '▾' : '▸'}</span>
-        <span className="text-sm font-medium text-(--color-text)">{f.name}</span>
-        <span className="text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
+        <span className="text-sm font-medium text-(--color-text) shrink-0 whitespace-nowrap">{f.name}</span>
+        <span className="shrink-0 whitespace-nowrap text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
           {f.domain}
         </span>
         {!open && (
@@ -198,6 +220,20 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               </div>
             )}
           </Sub>
+
+          {f.thinking && f.thinking.length > 0 && (
+            <Sub title="그때 무슨 생각을 했나">
+              <ul className="flex flex-col gap-2">
+                {f.thinking.map((t, i) => (
+                  <li key={i} className="text-sm border-l-2 border-(--color-border) pl-2.5">
+                    <span className="text-[11px] text-(--color-muted)">{t.at}</span>
+                    <ConfBadge c={t.confidence} />
+                    <div className="text-(--color-text) leading-relaxed">{t.thought}</div>
+                  </li>
+                ))}
+              </ul>
+            </Sub>
+          )}
 
           {f.domain_model && (
             <Sub title="도메인 모델">
@@ -244,11 +280,19 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
             </Sub>
           )}
 
-          {f.diagram && (
+          {f.diagrams && f.diagrams.length > 0 ? (
+            <Sub title="그림">
+              <div className="flex flex-col gap-4">
+                {f.diagrams.map((d, i) => (
+                  <DiagramBlock key={i} d={d} idKey={`reveng-${f.key}-${i}`} />
+                ))}
+              </div>
+            </Sub>
+          ) : f.diagram ? (
             <Sub title="구조">
               <ArchitectureDiagram code={f.diagram} idKey={`reveng-${f.key}`} />
             </Sub>
-          )}
+          ) : null}
 
           {impl.decisions && impl.decisions.length > 0 && (
             <Sub title="의사결정과 대가">
@@ -317,6 +361,32 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
         </div>
       )}
     </div>
+  )
+}
+
+const KIND_LABEL: Record<string, string> = {
+  flow: '흐름',
+  sequence: '흐름',
+  state: '상태 전이',
+  failure: '실패 경로',
+}
+
+function DiagramBlock({ d, idKey }: { d: Diagram; idKey: string }) {
+  return (
+    <figure className="m-0">
+      <figcaption className="mb-1.5">
+        <span className="text-sm font-medium text-(--color-text)">{d.title}</span>
+        {d.kind && (
+          <span className="ml-1.5 text-[10px] px-1 py-px rounded border border-(--color-border) text-(--color-muted)">
+            {KIND_LABEL[d.kind] ?? d.kind}
+          </span>
+        )}
+        {d.question && (
+          <div className="text-xs text-(--color-muted)">{d.question}</div>
+        )}
+      </figcaption>
+      <ArchitectureDiagram code={d.code} idKey={idKey} />
+    </figure>
   )
 }
 

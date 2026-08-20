@@ -26,10 +26,32 @@ export interface RevenueStream extends Claim {
   how: string
 }
 
+export interface DomainTech extends Claim {
+  tech: string
+  solves: string
+  limits: string
+}
+
 export interface Domain {
   name: string
   why: string
+  tech?: DomainTech[]
   features?: string[]
+}
+
+// 그림은 여러 장이다 — 정상 흐름과 실패 경로는 같은 그림에 그리면 둘 다 안 읽힌다.
+export interface Diagram {
+  title: string
+  question?: string
+  kind?: 'flow' | 'sequence' | 'state' | 'failure'
+  code: string
+}
+
+// 결정이 '무엇을 골랐나'라면 이건 '고르기 전에 무엇이 걸렸나'다.
+export interface Thought {
+  at: string
+  thought: string
+  confidence?: Confidence
 }
 
 export interface Metric extends Claim {
@@ -62,6 +84,7 @@ export interface Feature {
   domain: string
   updated_at?: string
   business: { why: string; metrics?: Metric[] }
+  thinking?: Thought[]
   domain_model?: {
     entities?: { name: string; what: string }[]
     invariants?: string[]
@@ -72,6 +95,7 @@ export interface Feature {
     stack?: StackItem[]
   }
   connections?: Connection[]
+  diagrams?: Diagram[]
   diagram?: string
   sources?: Source[]
 }
@@ -87,6 +111,7 @@ export interface Company {
   business_model: string
   products: string[]
   one_liner: string
+  domain_map?: Diagram
   revenue_streams?: RevenueStream[]
   domains?: Domain[]
   features?: Feature[]

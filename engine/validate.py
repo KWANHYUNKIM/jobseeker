@@ -98,9 +98,25 @@ def check_company(data: dict, r: Report) -> None:
     for i, rs in enumerate(data.get("revenue_streams") or []):
         _check_sources(rs, f"{w}.revenue_streams[{i}]", r)
 
+    if not (data.get("domain_map") or {}).get("code"):
+        r.warn(w, "domain_map 이 없다 — STYLE.md 1번은 회사마다 도메인 지도 한 장을 요구한다")
+
     domain_names = {d.get("name") for d in (data.get("domains") or [])}
     if not domain_names:
         r.warn(w, "domains 가 비어 있다 — 3단계(회사 프로파일)가 아직 안 끝났다")
+
+    for dom in data.get("domains") or []:
+        dw = f"{w}.domains[{dom.get('name')}]"
+        techs = dom.get("tech") or []
+        if not techs:
+            r.warn(dw, "tech 가 비어 있다 — STYLE.md 2번: 어떤 기술로 풀었는지까지 내려간다")
+        for j, t in enumerate(techs):
+            tw = f"{dw}.tech[{j}]"
+            if not t.get("solves"):
+                r.err(tw, "solves 없음 — 기술 이름만 나열하지 않는다")
+            if not t.get("limits"):
+                r.err(tw, "limits 없음 — 그 기술이 못 하는 것을 함께 쓴다(STYLE.md 2번)")
+            _check_sources(t, tw, r)
 
     keys: set[str] = set()
     for i, feat in enumerate(data.get("features") or []):
@@ -126,6 +142,8 @@ def check_company(data: dict, r: Report) -> None:
         decisions = impl.get("decisions") or []
         if not decisions:
             r.err(fw, "decisions 없음 — 의사결정 없는 기술 나열은 이 엔진의 산출물이 아니다")
+        elif len(decisions) < 5:
+            r.warn(fw, f"decisions {len(decisions)}개 — STYLE.md 3번 기준(보통 5~8개)에 못 미친다. 큰 결정 안에 숨은 작은 결정을 쪼갠다")
         for j, d in enumerate(decisions):
             dw = f"{fw}.decisions[{j}]"
             if not d.get("tradeoff"):
@@ -136,6 +154,32 @@ def check_company(data: dict, r: Report) -> None:
             if not s.get("role"):
                 r.err(sw, "role 없음 — 기술 이름만 나열하지 않는다")
             _check_sources(s, sw, r)
+
+        diagrams = feat.get("diagrams") or []
+        if not diagrams:
+            if feat.get("diagram"):
+                r.warn(fw, "그림이 구버전 diagram 한 장뿐 — STYLE.md 1번은 흐름/상태/실패 경로를 나눠 그리길 요구한다")
+            else:
+                r.err(fw, "그림이 없다")
+        for j, dg in enumerate(diagrams):
+            gw = f"{fw}.diagrams[{j}]"
+            if not dg.get("code"):
+                r.err(gw, "mermaid code 없음")
+            if not dg.get("title"):
+                r.err(gw, "title 없음")
+            if not dg.get("question"):
+                r.warn(gw, "이 그림이 답하는 질문이 없다 — 없으면 그 그림은 뺀다(STYLE.md 1번)")
+        if diagrams and not any(d.get("kind") == "failure" for d in diagrams):
+            r.warn(fw, "실패 경로 그림이 없다 — 정상 흐름만 그린 기능은 절반만 설명한 것이다")
+
+        for j, t in enumerate(feat.get("thinking") or []):
+            tw = f"{fw}.thinking[{j}]"
+            if not t.get("at") or not t.get("thought"):
+                r.err(tw, "at/thought 가 비었다")
+            if t.get("confidence") not in CONFIDENCE:
+                r.err(tw, f"confidence 값이 이상하다: {t.get('confidence')!r}")
+        if not feat.get("thinking"):
+            r.warn(fw, "thinking 이 없다 — STYLE.md 5번: 결론 앞의 생각을 남긴다")
 
         _check_sources(feat, fw, r)
 

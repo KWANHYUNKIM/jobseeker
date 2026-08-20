@@ -4,7 +4,20 @@
 
 ## 지금 파는 중
 
-_없음 — 토스 완주(2026-08-20). 다음 사이클이 QUEUE 맨 위(네이버 — 검색 자동완성)를 꺼낸다._
+**토스 — 재개(status: in_progress).** 1차로 도메인 4개·기능 5개를 채웠지만 전부 STYLE.md
+신설 이전 기준이다. `python3 engine/validate.py` 가 그 격차를 경고 19건으로 정확히 찍어
+주므로, 다음 사이클들은 **경고를 하나씩 지우는 방식**으로 진행한다.
+
+작업 목록(경고가 곧 목록):
+1. `domain_map` — 회사 도메인 지도 한 장 (없음)
+2. 도메인 4개의 `tech` — 무슨 기술로 풀었고 그 기술이 못 하는 것 (전부 없음)
+3. 기능 5개의 `diagrams` — 흐름/상태/실패 경로로 나눠 그리기 (전부 구버전 한 장)
+4. 기능 5개의 `thinking` — 개발 당시 무슨 생각을 했는가 (전부 없음)
+5. `decisions` 보강 — instant-transfer 3개, 나머지 4개씩 → 5~8개로 쪼개기
+
+한 사이클에 **기능 하나씩** 위 항목을 모두 채운다. 순서는 instant-transfer →
+interest-accrual → payment-approval → request-passport → identity-certificate.
+그 뒤 domain_map 과 도메인 tech 를 채우고 다시 완주 판정한다.
 
 ## 사이클 로그
 
@@ -16,6 +29,7 @@ _없음 — 토스 완주(2026-08-20). 다음 사이클이 QUEUE 맨 위(네이�
 | 003 | 2026-08-20 | 토스 | 결제 `payment-approval`(승인·취소) — 3-Step·Bridge·Converter·카나리 자동롤백·API 버저닝 | 인증 도메인 |
 | 004 | 2026-08-20 | 토스 | 인증 `request-passport` — Gateway 중앙화·요청 서명·Passport 전파·FDS 연계 | 토스인증서(전자서명) |
 | 005 | 2026-08-20 | 토스 | 인증 `identity-certificate`(토스인증서) + **완주 판정 → done** | 네이버 프로파일 |
+| 006 | 2026-08-20 | — | STYLE.md 신설(그림·도메인 기술·생각·결정 세분화) · schema/validator/뷰어 확장 · 토스 재개 | 토스 `instant-transfer` 심화 |
 
 ## 다음 사이클 메모
 

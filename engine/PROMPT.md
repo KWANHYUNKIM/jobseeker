@@ -13,6 +13,7 @@
 | 무엇 | 어디 |
 |---|---|
 | 이 프롬프트 | `engine/PROMPT.md` |
+| 서술 스타일 | `engine/STYLE.md` |
 | 스키마 | `engine/schema.json` |
 | 대기열 | `engine/state/QUEUE.md` |
 | 진행 상황 | `engine/state/STATE.md` |
@@ -24,6 +25,8 @@
 ## 매 사이클 절차 (순서 고정)
 
 ### 1단계: 상태 읽기
+- **`STYLE.md` 를 먼저 읽는다.** 무엇을 쓸지는 이 파일이, 어떻게 쓸지는 STYLE.md 가 정한다.
+  그림 몇 장을 어떤 종류로 그릴지, 결정을 어디까지 쪼갤지가 거기 있다.
 - `state/STATE.md` — 지금 파고 있는 회사, 끝낸 기능, 다음에 팔 것.
 - `state/QUEUE.md` — 대기열.
 - `reveng/index.json` — 이미 공개된 회사 목록.
@@ -54,7 +57,10 @@
 4. **연결 (connections)** — 이 기능이 다른 기능·시스템과 어떤 계약으로 이어지는가.
    무엇을 보내고 무엇을 기다리는가. 회사 전체 그림이 닫힐 때까지 이 층을 놓지 않는다.
 
-각 기능에는 mermaid 다이어그램 1개를 넣는다(`flowchart` 또는 `sequenceDiagram`).
+그림은 STYLE.md 1번을 따른다 — 기능마다 `diagrams` 에 여러 장(정상 흐름 / 상태 전이 /
+실패 경로)을 넣고, 회사에는 `domain_map` 한 장을 둔다. 결정은 STYLE.md 3번대로 잘게
+쪼갠다(기능당 보통 5~8개). 도메인에는 STYLE.md 2번의 `tech`(무슨 기술로 풀었고 그
+기술이 못 하는 것)를 채운다.
 
 ### 5단계: 근거와 신뢰도
 - 모든 주장에 `confidence` 를 붙인다: `confirmed`(회사가 공개 자료에서 직접 말함) /
