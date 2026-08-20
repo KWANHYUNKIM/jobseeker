@@ -127,8 +127,78 @@
     {
       "name": "체크아웃·결제",
       "why": "머천트 솔루션 매출이 GMV 를 따라가므로, 이 경로가 곧 회사의 매출 경로다. Shop Pay GMV 는 2025년 62% 늘었다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "MySQL 재고 예약(SKIP LOCKED · 판매 단위당 1행 · bounded pool)",
+          "solves": "결제 중 재고를 붙잡아 오버셀을 막되, 동시 요청이 서로 다른 행을 집어 기다리지 않게 한다. 예약과 원장이 같은 트랜잭션에 들어와 오버셀·언더셀·예약 유실 세 갈래 실패가 사라졌다.",
+          "limits": "행 수가 재고량에 비례하고, 플래시 세일에 풀이 마르면 보충을 기다리는 구간이 생긴다. 격리 수준을 READ COMMITTED 로 내리는 일반적 함의도 떠안는다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+              "url": "https://shopify.engineering/scaling-inventory-reservations",
+              "publisher": "Shopify Engineering · Emilie Noel",
+              "date": "2026-05-12",
+              "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+            }
+          ]
+        },
+        {
+          "tech": "커넥션 귀속 계측(SQL 주석 태그 + ProxySQL)",
+          "solves": "비즈니스 프로세스별 커넥션 보유 시간을 재서, 쿼리 성능·CPU 로는 보이지 않던 커넥션 풀 병목을 찾아낸다. 전체 경로 정리로 읽기 50%·트랜잭션 33% 감소.",
+          "limits": "모든 SQL 에 태그를 심고 프록시 계층에 계측을 넣어야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+              "url": "https://shopify.engineering/scaling-inventory-reservations",
+              "publisher": "Shopify Engineering · Emilie Noel",
+              "date": "2026-05-12",
+              "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+            }
+          ]
+        },
+        {
+          "tech": "결제 회복탄력성 관행(멱등 키 ULID · 낮은 타임아웃 · 대조 · 서킷 브레이커)",
+          "solves": "이중 청구를 막고(UUIDv4→ULID 로 INSERT 시간 50% 감소), 오픈 1초·읽기/쓰기 5초를 출발점으로 타임아웃을 낮추며, 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하고, 실패한 서비스는 타임아웃을 기다리지 않고 끊는다.",
+          "limits": "대조는 불일치를 사후에 찾는 장치라 그 사이의 창은 남는다(추정). 리틀의 법칙 기준 **70~80% 지점부터 큐가 자라** 완전 포화는 안전하게 도달할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "10 Tips for Building Resilient Payment Systems",
+              "url": "https://shopify.engineering/building-resilient-payment-systems",
+              "publisher": "Shopify Engineering · Bart de Water",
+              "date": "2022-07-28",
+              "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+            }
+          ]
+        },
+        {
+          "tech": "공개 API 의 멱등성 계약",
+          "solves": "카드 결제·구독 청구 시도·매출 확정에 `idempotencyKey` 나 `@idempotent(key:)` 를 받아, 같은 파라미터의 반복 요청이 몇 번을 재시도해도 한 번만 실행되게 한다.",
+          "limits": "**키 보관 기간과 재생 시 무엇을 돌려주는지는 문서에 없다** — Stripe 가 '첫 요청의 상태 코드와 본문을 그대로, 최소 24시간'까지 밝히는 것과 대비된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Idempotent requests — Shopify.dev",
+              "url": "https://shopify.dev/docs/api/usage/idempotent-requests",
+              "publisher": "Shopify 공식 개발자 문서",
+              "date": "2026-08 확인",
+              "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
+            }
+          ]
+        },
+        {
+          "tech": "결제 승인 자체의 상태 모델과 결제수단 연동",
+          "solves": "— 이 사이트는 아직 1차 자료를 찾지 않았다.",
+          "limits": "읽은 글은 재고 예약과 회복탄력성 관행까지다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "checkout-reservations"
+      ]
     },
     {
       "name": "회복탄력성·용량 계획",
@@ -1097,6 +1167,474 @@
           "summary": "부하·스트레스 테스트, Resiliency Matrix(의존성과 그 실패 모드를 사용자 경험에 대응시키는 문서), Game Days(문서화된 모델을 실제 시스템 동작과 대조하는 통제된 훈련) 세 가지가 중심이다. '변경은 새로운 형태의 실패를 만든다'며 BFCM 이 다가오면 변경 속도를 늦추고 신기능 대신 성능·신뢰성·확장으로 투자를 옮긴다고 밝힌다."
         }
       ]
+    },
+    {
+      "key": "checkout-reservations",
+      "name": "체크아웃 — 결제하는 동안 물건을 붙잡아 두기",
+      "domain": "체크아웃·결제",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "머천트 솔루션 매출(2025년 88.04억 달러)이 나오는 경로가 여기다. 그리고 이 경로에는 다른 도메인에 없는 성질이 하나 있다 — **틀리면 어느 쪽으로 틀리든 상인이 손해를 본다.**\n\n결제가 진행되는 동안 그 물건을 붙잡아 두지 않으면 두 사람이 **마지막 하나**를 동시에 산다. 회사의 표현으로, 그러면 **상인이 주문을 취소하고 사과 메일을 보내고 지원 비용을 문다.** 반대로 붙잡은 것을 제때 놓지 않으면 팔 수 있는 물건을 못 판다.\n\n규모가 이 문제를 어렵게 만든다. 회사는 **미국 이커머스의 14% 이상**을 떠받치고, 2025년 블랙 프라이데이 피크에 **분당 510만 달러**가 팔렸다(전년 대비 11% 증가). **모든 거래가 이 재고 시스템을 지난다.**",
+        "metrics": [
+          {
+            "label": "피크 판매 속도",
+            "value": "2025년 블랙 프라이데이 피크 **분당 510만 달러**(전년 대비 +11%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "플랫폼의 비중",
+            "value": "미국 이커머스의 **14% 이상**을 떠받친다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "행 상한",
+            "value": "아이템/로케이션 조합당 **가용 행 1,000개** — 소진되면 인라인 보충",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "전체 경로 정리 효과",
+            "value": "주 데이터베이스 **읽기 50% 감소**, **총 트랜잭션 33% 감소**. 이후 라이터 CPU **50% 미만**, 리더 CPU **16% 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "label": "멱등 키 형식을 바꾼 효과",
+            "value": "UUIDv4 → **ULID** 로 바꾸자 한 고처리량 시스템에서 **INSERT 시간 50% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "10 Tips for Building Resilient Payment Systems",
+                "url": "https://shopify.engineering/building-resilient-payment-systems",
+                "publisher": "Shopify Engineering · Bart de Water",
+                "date": "2022-07-28",
+                "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "틀리면 어느 쪽으로 틀리는지 따져 볼 때",
+          "thought": "한쪽으로 틀리면 **두 구매자가 같은 마지막 하나를 사고**, 상인이 주문을 취소하고 사과 메일을 보내고 지원 비용을 문다. 반대로 틀리면 붙잡아 둔 것을 못 놓아 **팔 수 있는 물건을 못 판다.** 두 실패의 성격이 다르므로 어느 쪽도 '조금 틀려도 되는' 방향이 아니다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "예약과 원장이 다른 저장소에 있다는 것을 볼 때",
+          "thought": "예약은 Redis 에, 원장은 MySQL 에 있었다. 그러면 청구(claim)가 **원자적으로 묶을 수 없는 두 개의 분리된 트랜잭션**이 되고, 거기서 실패 갈래가 셋 생긴다 — 결제는 성공했는데 원장이 안 바뀌거나(오버셀), 결제는 실패했는데 청구된 채 남거나(언더셀), 상태 불일치로 예약이 사라지거나. **문제는 Redis 가 느려서가 아니라 경계가 잘못 그어져 있어서였다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "지연도 CPU 도 멀쩡한데 처리량이 안 오를 때",
+          "thought": "쿼리는 최적화됐고 P90 도 괜찮고 CPU 도 안 찼는데 목표 처리량에 못 미쳤다. 재고 예약이 병목처럼 보였지만, 실제로는 **커넥션 풀이 이미 다른 코드 때문에 고갈 직전**이었다 — 예약은 마지막 한 방울을 쓴 쪽이었을 뿐이다. **재는 것을 바꿔야 보이는 병목이 있다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "옛 가정을 다시 볼 때",
+          "thought": "5년 전에는 없던 기능(고동시성 워크로드를 위한 `SKIP LOCKED`)이 그때는 불가능하던 접근을 가능하게 만든다. 그리고 최초 배포 이후 한 번도 다시 보지 않은 설정(InnoDB 스레드 동시성)이 그대로 남아 있었다. 회사의 결론은 이렇다 — **MySQL 이 이제 전용 인프라가 필요하다고 여기던 워크로드를 감당한다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "판매 단위(sellable unit) — **행 하나가 단위 하나**다. 재고 10개면 10행",
+          "예약(reservation) — 결제 처리 동안의 일시적 홀드(보통 몇 분)",
+          "청구(claim) — 결제 성공 시 원장에서 영구히 차감",
+          "가용 풀 — 아이템/로케이션 조합당 최대 1,000행",
+          "커넥션 태그 — SQL 주석에 붙는 호출자 표시(`/* conn_tag:checkout_completion */`)"
+        ],
+        "invariants": [
+          "예약은 일시적이고, 청구되어야 원장에서 영구히 빠진다.",
+          "예약과 원장이 다른 저장소에 있으면 두 연산을 **원자적으로 묶을 수 없다.**",
+          "**재고가 있는데 품절이라고 말해서는 안 된다** — 풀이 비어도 그것은 재고 없음이 아니다.",
+          "락 순서가 연산마다 다르면 데드락이 난다.",
+          "모든 거래가 이 시스템을 지난다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "구매자가 결제를 시작하면 그 아이템의 **가용 행을 예약**한다 — `SKIP LOCKED` 로 잠긴 행을 건너뛰고 집는다",
+            "why": "동시에 들어온 다른 체크아웃이 같은 단위를 집지 못하게 하되, 서로 기다리지 않게 한다."
+          },
+          {
+            "step": "장바구니에 여러 아이템이 있으면 **`UNION ALL` 로 한 번의 왕복에 묶어** 예약한다",
+            "why": "아이템 수만큼 왕복하면 데이터베이스와의 통신이 그만큼 늘어난다."
+          },
+          {
+            "step": "가용 풀(아이템/로케이션당 1,000행)이 비면 **인라인으로 보충**한다. 락으로 **한 트랜잭션만 보충**하고 나머지 예약은 줄을 선다",
+            "why": "플래시 세일에 여러 요청이 동시에 보충하려 달려들면 스탬피드가 된다."
+          },
+          {
+            "step": "결제가 성공하면 **청구** — `reserved_quantities` 에서 DELETE 하고 원장에서 영구히 차감한다",
+            "why": "예약과 원장이 같은 데이터베이스에 있어 한 트랜잭션으로 묶인다."
+          },
+          {
+            "step": "결제가 실패하거나 시간이 지나면 예약을 놓는다",
+            "why": "붙잡은 채로 두면 팔 수 있는 물건을 못 판다."
+          },
+          {
+            "step": "모든 SQL 문에 **호출자 태그**를 달고 ProxySQL 이 그 태그로 **비즈니스 프로세스별 커넥션 보유 시간**을 잰다",
+            "why": "쿼리 성능이 아니라 커넥션 풀이 병목일 때는 이것 말고 볼 방법이 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "오버셀을 어떻게 막을 것인가",
+            "chosen": "**결제 처리 동안 일시적으로 붙잡아 두고(예약), 성공하면 원장에서 영구히 차감한다(청구).** 예약은 보통 몇 분짜리 홀드다.",
+            "alternatives": [
+              "결제 성공 후에만 차감한다",
+              "주문 시점에 바로 차감한다"
+            ],
+            "tradeoff": "붙잡은 것을 제때 놓지 못하면 **팔 수 있는 물건을 못 판다.** 그래도 안 붙잡으면 두 구매자가 같은 마지막 하나를 사고, 그 비용(주문 취소·사과·지원)은 전부 상인이 문다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "예약을 원장과 다른 저장소에 둘 것인가",
+            "chosen": "**한 데이터베이스로 합친다.** 예약을 Redis 에서 MySQL 로 옮겨 예약과 원장이 같은 트랜잭션 안에 들어오게 했다.",
+            "alternatives": [
+              "Redis 를 유지하고 이중 쓰기를 정교하게 만든다",
+              "분산 트랜잭션을 도입한다"
+            ],
+            "tradeoff": "전용 인메모리 저장소의 속도를 포기한다. 대신 **원자적으로 묶을 수 없던 두 트랜잭션이 하나가 되면서** 세 갈래 실패(오버셀·언더셀·예약 유실)가 사라지고, 별도 Redis 클러스터 운영 부담도 없어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "재고를 수량으로 저장할 것인가 행으로 저장할 것인가",
+            "chosen": "**판매 가능한 단위마다 한 행**을 둔다 — 재고 10개면 10행. 예약은 `SKIP LOCKED` 로 잠기지 않은 행을 집는다.",
+            "alternatives": [
+              "아이템당 한 행에 수량 컬럼을 둔다(Redis 시절 모델)"
+            ],
+            "tradeoff": "행 수가 재고량에 비례해 늘어난다. 대신 **동시 요청들이 서로 다른 행을 집어 기다리지 않는다** — 수량 컬럼 하나면 모두가 같은 행을 두고 줄을 선다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "행이 무한히 늘어나는 것을 어떻게 막을 것인가",
+            "chosen": "**아이템/로케이션 조합당 가용 행을 1,000개로 상한**을 두고, 소진되면 **인라인으로 보충**한다. 보충은 락으로 한 트랜잭션만 하고 나머지 예약은 줄을 선다.",
+            "alternatives": [
+              "재고 전량을 행으로 미리 만들어 둔다",
+              "상한 없이 필요할 때마다 늘린다"
+            ],
+            "tradeoff": "플래시 세일에 풀이 마르면 **보충을 기다리는 구간**이 생긴다. 그래도 이 설계가 정확성을 지킨다 — **재고가 있는 구매자에게 품절이라고 잘못 말하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "기본키를 무엇으로 할 것인가",
+            "chosen": "auto-increment ID 대신 **복합 기본키 `(shop_id, inventory_item_id, inventory_group_id, id)`** 를 쓴다.",
+            "alternatives": [
+              "auto-increment ID 와 보조 인덱스"
+            ],
+            "tradeoff": "키가 길어지고 스키마가 복잡해진다. 대신 초기 프로토타입에서 **예약마다 락 2개**(보조 인덱스 + 클러스터드 인덱스)가 필요하던 것이 **행당 락 1개**로 줄어, 규모에서 처리량이 크게 올랐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "데드락을 어떻게 없앨 것인가",
+            "chosen": "두 가지를 함께 바꿨다 — 격리 수준을 기본 `REPEATABLE READ` 에서 **`READ COMMITTED`** 로 내리고, **모든 연산의 락 순서를 통일**했다(예약: units 에서 DELETE → reserved_quantities 에 INSERT / 청구: reserved_quantities 에서 DELETE).",
+            "alternatives": [
+              "데드락이 나면 재시도한다",
+              "락 타임아웃만 조정한다"
+            ],
+            "tradeoff": "격리 수준을 내리는 일반적인 함의를 떠안는다(뒷문장은 이 사이트의 추정). 그래도 `REPEATABLE READ` 에서는 **보충을 기다리는 빈 테이블에 갭 락(supremum 의사 레코드 포함)이 걸려 삽입 자체를 막았고**, 락 순서가 다른 두 연산이 순환 대기를 만들었다 — 재시도로 덮을 문제가 아니었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "처리량이 안 오르는데 무엇을 볼 것인가",
+            "chosen": "**커넥션을 누가 얼마나 오래 잡는지를 잰다.** 앱 계층에서 모든 SQL 문에 주석 태그(`/* conn_tag:checkout_completion */`)를 달고, **ProxySQL 이 그 태그를 파싱해 비즈니스 프로세스별 커넥션 보유 시간**을 측정했다.",
+            "alternatives": [
+              "쿼리를 더 최적화한다",
+              "데이터베이스를 키운다"
+            ],
+            "tradeoff": "모든 SQL 에 태그를 심고 프록시 계층에 계측을 넣어야 한다. 그 대가로 **진짜 범인이 재고 예약이 아니라는 것**이 드러났다 — 체크아웃 경로의 다른 부분이 긴 트랜잭션으로 커넥션을 잡고 있었고, 예약은 이미 고갈 직전이던 풀의 마지막을 썼을 뿐이다. 전체 경로를 정리하자 읽기 50%·트랜잭션 33% 가 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "question": "이 이사를 어떻게 할 것인가",
+            "chosen": "**섀도 모드** — 모든 예약을 Redis 와 MySQL 에 **이중 쓰기**하되 진실은 Redis 에 두고, 프로덕션 트래픽에서 둘을 나란히 비교한다. 검증되면 진실을 MySQL 로 옮기고 **pod 단위로 트래픽이 적은 곳부터** 점진 전환하며 킬 스위치를 상시 유지한다.",
+            "alternatives": [
+              "특정 시점에 한 번에 전환한다",
+              "새 상점부터만 새 시스템을 쓴다"
+            ],
+            "tradeoff": "이중 쓰기 기간의 비용과 복잡도를 진다. 대신 **진행 중인 예약을 수동으로 옮길 필요가 없었고**, 되돌릴 길이 내내 열려 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "MySQL + `SKIP LOCKED`, 판매 단위당 1행",
+            "role": "동시 체크아웃이 서로 다른 행을 집게 해 기다림 없이 재고를 붙잡는다. 예약과 원장이 같은 트랜잭션에 들어온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "bounded pool(1,000행) + 인라인 보충 락",
+            "role": "행 수를 억제하면서 버스트를 흡수하고, 보충 스탬피드를 막는다. 재고가 있는데 품절이라 말하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "복합 기본키 · READ COMMITTED · 락 순서 통일",
+            "role": "예약당 락을 2개에서 1개로 줄이고, 갭 락과 순환 대기로 인한 데드락을 없앤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "SQL 주석 태그 + ProxySQL 커넥션 귀속 계측",
+            "role": "비즈니스 프로세스별로 커넥션 보유 시간을 재서, 쿼리 성능으로는 보이지 않던 커넥션 풀 병목을 찾는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "섀도 모드 이중 쓰기 + pod 단위 점진 전환",
+            "role": "프로덕션 트래픽에서 두 시스템을 나란히 비교한 뒤 진실을 옮기고, 킬 스위치를 열어 둔 채 pod 단위로 굴린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+                "url": "https://shopify.engineering/scaling-inventory-reservations",
+                "publisher": "Shopify Engineering · Emilie Noel",
+                "date": "2026-05-12",
+                "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+              }
+            ]
+          },
+          {
+            "tech": "멱등 키(ULID) · 낮은 타임아웃 · 대조 · 서킷 브레이커",
+            "role": "결제 쪽 회복탄력성 관행. 멱등 키로 이중 청구를 막고(UUIDv4→ULID 로 INSERT 시간 50% 감소), 오픈 1초·읽기/쓰기 5초를 출발점으로 타임아웃을 낮추며, 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하고, 실패한 서비스는 타임아웃을 기다리지 않고 끊는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "10 Tips for Building Resilient Payment Systems",
+                "url": "https://shopify.engineering/building-resilient-payment-systems",
+                "publisher": "Shopify Engineering · Bart de Water",
+                "date": "2022-07-28",
+                "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+              }
+            ]
+          },
+          {
+            "tech": "공개 API 의 멱등성 계약",
+            "role": "카드 결제·구독 청구 시도·매출 확정에 `idempotencyKey` 인자나 `@idempotent(key:)` 디렉티브를 받는다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크는 행 단위 멱등성.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Idempotent requests — Shopify.dev",
+                "url": "https://shopify.dev/docs/api/usage/idempotent-requests",
+                "publisher": "Shopify 공식 개발자 문서",
+                "date": "2026-08 확인",
+                "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
+              }
+            ]
+          },
+          {
+            "tech": "결제 승인 자체의 상태 모델과 결제수단 연동",
+            "role": "— 이 사이트는 아직 1차 자료를 찾지 않았다. 읽은 글은 재고 예약과 회복탄력성 관행까지다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "pods-isolation",
+          "via": "전환의 단위",
+          "contract": "재고 예약을 MySQL 로 옮길 때 **pod 단위로 트래픽이 적은 곳부터** 점진 전환했다 — 격리의 단위가 그대로 배포·전환의 단위가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "bfcm-readiness",
+          "via": "중요 여정",
+          "contract": "Game Day 가 집중하는 중요 여정이 체크아웃·결제 처리·주문 생성·이행이고, 스케일 테스트에서 **체크아웃 큐 적체**가 문제로 드러났다. 다만 그 큐가 이 재고 예약과 어떻게 맞물리는지는 두 글 모두 밝히지 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "stripe:idempotent-payments",
+          "via": "멱등성의 계약",
+          "contract": "Stripe 는 **모든 POST** 에 멱등 키를 두고 첫 요청의 상태 코드와 본문을 그대로 돌려주며 최소 24시간 보관한다고 밝힌다. Shopify 는 **부작용이 있는 작업**(카드 결제·구독 청구·매출 확정)에 키를 받고 '반복 요청은 한 번만 실행된다'까지 밝히되 **보관 기간과 재생 시 응답은 문서에 없다.** 두 회사는 서로를 언급하지 않는다(대비는 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "결제 한 건이 재고를 붙잡았다 놓기까지",
+          "question": "두 사람이 마지막 하나를 동시에 사려 할 때 무엇이 막는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  BUY[구매자: 결제 시작] --> RES{가용 행 예약<br/>SKIP LOCKED}\n  CART[여러 아이템 장바구니] -->|UNION ALL 한 번의 왕복| RES\n  RES -->|행 있음| HOLD[예약됨 · 몇 분간 홀드]\n  RES -->|풀 소진| REFILL[인라인 보충<br/>락으로 한 트랜잭션만]\n  REFILL --> HOLD\n  HOLD --> PAY{결제}\n  PAY -->|성공| CLAIM[청구: reserved_quantities DELETE<br/>원장에서 영구 차감]\n  PAY -->|실패·만료| REL[예약 해제]\n  REL --> POOL[(가용 풀 · 아이템/로케이션당 1,000행)]\n  POOL --> RES\n  TAG[모든 SQL 에 호출자 태그] --> PROXY[ProxySQL<br/>프로세스별 커넥션 보유 시간]\n  PROXY -.->|병목의 진짜 위치| PAY"
+        },
+        {
+          "title": "판매 단위 한 행이 거치는 상태",
+          "question": "행 하나가 언제 사라지고 언제 돌아오는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 가용: 풀에 존재(최대 1,000행)\n  가용 --> 예약됨: 결제 시작 · SKIP LOCKED 로 집힘\n  예약됨 --> 청구됨: 결제 성공 → 원장에서 영구 차감\n  예약됨 --> 가용: 결제 실패 또는 만료\n  가용 --> 소진: 풀이 빔\n  소진 --> 가용: 인라인 보충(한 트랜잭션만)\n  note right of 소진\n    풀이 비었다는 것이\n    재고 없음은 아니다\n  end note\n  청구됨 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 경계가 잘못 그어져 있을 때",
+          "question": "예약과 원장이 다른 저장소에 있으면 무엇이 어긋나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SPLIT[예약은 Redis · 원장은 MySQL] --> TWO[청구가 **두 개의 분리된 트랜잭션**<br/>원자적으로 묶을 수 없다]\n  TWO --> F1[결제 성공 · 원장 미갱신<br/>→ 오버셀]\n  TWO --> F2[결제 실패 · 청구된 채 남음<br/>→ 언더셀]\n  TWO --> F3[상태 불일치 → 예약 유실]\n  F1 --> COST[주문 취소 · 사과 메일 · 지원 비용<br/>= 상인의 손해]\n  RR[REPEATABLE READ] --> GAP[빈 테이블에 갭 락<br/>supremum 의사 레코드]\n  GAP --> BLOCK[보충 삽입이 막히고 데드락]\n  BLOCK --> RC[READ COMMITTED 로 해결]\n  ORDER[reserve 와 claim 의 락 순서가 다름] --> CIRC[순환 대기 → 데드락]\n  CIRC --> UNI[락 순서 통일로 해결]\n  OK[쿼리 최적화됨 · P90 양호 · CPU 여유] --> PLATEAU[그런데 처리량 정체]\n  PLATEAU --> REAL[**진짜 범인은 커넥션 풀**<br/>체크아웃 경로의 다른 긴 트랜잭션]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "We replaced Redis with MySQL for inventory reservations—and it scaled",
+          "url": "https://shopify.engineering/scaling-inventory-reservations",
+          "publisher": "Shopify Engineering · Emilie Noel",
+          "date": "2026-05-12",
+          "summary": "결제 중 재고를 붙잡아 두는 예약 시스템을 Redis 에서 MySQL 로 옮긴 이야기. 예약은 Redis, 원장은 MySQL 이라 claim 이 두 개의 분리된 트랜잭션이 되어 오버셀·언더셀·예약 유실 세 갈래 실패가 있었다. 수량 컬럼 대신 판매 단위당 1행 + SKIP LOCKED 로 바꾸고, 아이템/로케이션당 1,000행 상한과 인라인 보충, 복합 기본키(락 2→1), READ COMMITTED, 락 순서 통일로 데드락을 없앴다. 진짜 병목은 커넥션 풀이었고 SQL 태그와 ProxySQL 계측으로 찾아 전체 경로를 정리했다(읽기 50%·트랜잭션 33% 감소). 섀도 모드 이중 쓰기 후 pod 단위로 점진 전환했다."
+        },
+        {
+          "title": "10 Tips for Building Resilient Payment Systems",
+          "url": "https://shopify.engineering/building-resilient-payment-systems",
+          "publisher": "Shopify Engineering · Bart de Water",
+          "date": "2022-07-28",
+          "summary": "결제 시스템의 회복탄력성 관행 열 가지. 타임아웃을 낮추고(오픈 1초·읽기/쓰기 5초가 출발점), 멱등 키로 이중 청구를 막고(UUIDv4 → ULID 로 바꿔 INSERT 시간 50% 감소), 금융 파트너와 상시 대조해 불일치를 기록·자동 교정하며, 서킷 브레이커로 타임아웃을 기다리지 않고 끊는다. 부하 테스트는 벤치마크 게이트웨이로 실제 응답을 흉내 내고, 리틀의 법칙으로 용량을 따지되 70~80% 지점부터 큐가 자란다."
+        },
+        {
+          "title": "Idempotent requests — Shopify.dev",
+          "url": "https://shopify.dev/docs/api/usage/idempotent-requests",
+          "publisher": "Shopify 공식 개발자 문서",
+          "date": "2026-08 확인",
+          "summary": "신용카드 결제·구독 청구 시도·매출 확정처럼 부작용이 있는 작업에 멱등 키를 받는다. 뮤테이션 인자로 `idempotencyKey` 를 넘기거나 `@idempotent(key: \"...\")` 디렉티브를 쓰고, 충돌을 피하려 UUID 를 권한다. 같은 파라미터의 반복 요청은 몇 번을 재시도해도 한 번만 실행된다. 벌크 뮤테이션은 행 단위로 멱등성이 적용된다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1106,7 +1644,10 @@
     "부하가 몰릴 때 무엇을 먼저 버리는지(부하 차단 우선순위)는 아직 1차 자료를 찾지 않았다.",
     "부하가 예측을 넘었을 때 무엇을 먼저 버리는지(부하 차단 우선순위) — 읽은 글에 없다. 체크아웃 큐가 존재한다는 사실만 문제 사례로 언급된다.",
     "pod 와 GCP 리전의 관계 — 리전 페일오버·재균형이 pod 단위 위에서 어떻게 이뤄지는지는 두 글 모두 명시하지 않는다.",
-    "변경 속도를 늦추는 기간의 실제 길이와 기준."
+    "변경 속도를 늦추는 기간의 실제 길이와 기준.",
+    "멱등 키의 보관 기간과 재생 시 응답 — Shopify 문서는 '한 번만 실행된다'까지만 밝힌다.",
+    "결제 승인 자체의 상태 모델(승인·취소·환불의 상태 전이)과 결제수단 연동.",
+    "BFCM 스케일 테스트에서 나온 '체크아웃 큐'가 재고 예약과 어떻게 맞물리는지."
   ],
   "sources": [
     {
