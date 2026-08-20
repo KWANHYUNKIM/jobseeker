@@ -5,17 +5,43 @@
       "slug": "webtoon-distribution",
       "title": "웹툰 배급 — 같은 자원을 반대 방향으로 쓴다",
       "question": "같은 제약 아래에서 두 회사가 왜 정반대 답을 냈는가?",
-      "companies": ["naver", "kakao"],
-      "features": ["toon-radar", "wait-to-free"],
+      "companies": [
+        "naver",
+        "kakao"
+      ],
+      "features": [
+        "toon-radar",
+        "wait-to-free"
+      ],
       "file": "webtoon-distribution.md"
     },
     {
       "slug": "payments",
       "title": "결제 — \"언제 승인할까\"와 \"언제 줄까\"",
       "question": "같은 이름의 도메인에서 회사의 위치가 질문을 어떻게 바꾸는가?",
-      "companies": ["toss", "naver"],
-      "features": ["payment-approval", "fast-settlement"],
+      "companies": [
+        "toss",
+        "naver"
+      ],
+      "features": [
+        "payment-approval",
+        "fast-settlement"
+      ],
       "file": "payments.md"
+    },
+    {
+      "slug": "ad-surface",
+      "title": "지면·광고 — 광고가 결과인 곳과 침입자인 곳",
+      "question": "같은 화면에서 사용자 경험과 광고 수익이 부딪힐 때, 광고의 지위가 답을 어떻게 바꾸는가?",
+      "companies": [
+        "naver",
+        "kakao"
+      ],
+      "features": [
+        "smart-block",
+        "bizboard-surface"
+      ],
+      "file": "ad-surface.md"
     }
   ]
 }
