@@ -103,6 +103,22 @@
         "rider-dispatch"
       ],
       "file": "spatial-units.md"
+    },
+    {
+      "slug": "what-to-mix",
+      "title": "추천 — 개인화만 하면 밀려나는 것들",
+      "question": "잘 맞힐수록 무엇이 안 보이게 되고, 그 자리를 어디에 마련하는가?",
+      "companies": [
+        "musinsa",
+        "daangn",
+        "naver"
+      ],
+      "features": [
+        "style-personalization",
+        "feed-platform",
+        "smart-block"
+      ],
+      "file": "what-to-mix.md"
     }
   ]
 }
