@@ -1,0 +1,227 @@
+{
+  "slug": "naver",
+  "name": "네이버",
+  "name_en": "NAVER",
+  "country": "KR",
+  "category": "검색",
+  "status": "in_progress",
+  "updated_at": "2026-08-20",
+  "one_liner": "검색 지면에서 광고와 커머스로 돈을 버는 한국의 관문 포털",
+  "business_model": "사용자가 무엇을 찾는지 아는 대가로 광고를 판다. 2025년 연결 매출 12조 350억 중 서치플랫폼이 4조 1,689억(약 34.6%)으로 가장 크고, 커머스 3조 6,884억(30.7%)·콘텐츠 1조 8,992억(15.8%)·핀테크 1조 6,907억(14.1%)·엔터프라이즈 5,878억(4.9%)이 뒤를 잇는다. 토스가 '돈이 오간 기록'을 다룬다면 네이버는 '무엇을 보여줄지의 판단'을 판다 — 검색 결과 한 화면이 사용자 만족과 광고 수익 양쪽의 전장이다.",
+  "products": [
+    "네이버 통합검색",
+    "네이버 쇼핑",
+    "블로그·카페",
+    "네이버 지도",
+    "네이버 페이",
+    "네이버 클라우드"
+  ],
+  "domain_map": {
+    "title": "네이버 도메인 지도",
+    "question": "질의 한 줄이 결과 화면이 되기까지 어떤 판단들이 순서대로 개입하는가?",
+    "code": "flowchart TD\n  U[사용자 질의] --> Q[질의 이해]\n  Q -->|무엇을 찾는지| M[랭킹·매칭]\n  IDX[문서 색인] -->|후보 문서| M\n  CAT[커머스 데이터] -->|상품 후보| M\n  M --> L[지면 구성]\n  AD[광고] -->|같은 지면을 두고 경쟁| L\n  L --> R[결과 화면]\n  R -->|클릭·체류| Q\n  R -->|클릭·구매| CAT\n  AD --> REV1[서치플랫폼 4.17조]\n  CAT --> REV2[커머스 3.69조]\n  classDef money stroke-dasharray: 3 3\n  class REV1,REV2 money"
+  },
+  "revenue_streams": [
+    {
+      "name": "서치플랫폼",
+      "how": "검색 결과와 지면에 붙는 검색광고·디스플레이광고.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "커머스",
+      "how": "쇼핑 중개 수수료와 광고, 멤버십.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "콘텐츠",
+      "how": "웹툰 등 콘텐츠 유료 결제와 광고.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "핀테크",
+      "how": "네이버페이 결제·금융 서비스 수수료.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    },
+    {
+      "name": "엔터프라이즈(클라우드)",
+      "how": "클라우드·B2B 솔루션 판매.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "네이버 2025년 4분기 및 연간 실적",
+          "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+          "publisher": "네이버 IR",
+          "date": "2026-02",
+          "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "질의 이해",
+      "why": "사용자가 친 몇 글자에서 '무엇을 원하는가'를 정한다. 뒤의 모든 판단이 이 해석 위에 서기 때문에 여기서 틀리면 아무리 좋은 문서를 갖고 있어도 못 꺼낸다. 한국어의 띄어쓰기·오타·동음이의가 이 경계 안에서만 다뤄진다.",
+      "tech": [
+        {
+          "tech": "검색어 의도 분석 (D.I.A.+ · Intent Query)",
+          "solves": "같은 단어라도 사용자가 원하는 게 정보인지 장소인지 상품인지를 갈라, 뒤의 랭킹이 다른 후보를 보게 한다.",
+          "limits": "의도는 질의만으로 확정되지 않는다 — 결국 클릭·체류 같은 사후 행동으로 보정해야 하고, 그 신호가 적은 새 질의에서는 판단이 약해진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "눈치까지 챙긴 D.I.A.+ 시스템 — 검색어 의도 분석과 문서 이해 기술",
+              "url": "https://deview.kr/data/deview/session/attach/1500_T4_%EB%B0%95%EC%A7%80%ED%98%84_%EB%88%88%EC%B9%98%EA%B9%8C%EC%A7%80%20%EC%B1%99%EA%B8%B4%20D.I.A.+%20%EC%8B%9C%EC%8A%A4%ED%85%9C,%20%EC%8B%B9%20%EB%8B%A4%20%EC%B0%BE%EC%95%84%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4(%EA%B2%80%EC%83%89%EC%96%B4%20%EC%9D%98%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B3%BC%20%EB%AC%B8%EC%84%9C%20%EC%9D%B4%ED%95%B4%20%EA%B8%B0%EC%88%A0,%20%EB%84%A4%EC%9D%B4%EB%B2%84%20%EA%B2%80%EC%83%89%EC%97%90%20%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0).pdf",
+              "publisher": "NAVER DEVIEW",
+              "summary": "검색어 의도 분석과 문서 이해를 결합해 검색 결과를 고르는 시스템 발표."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "문서 색인",
+      "why": "웹·블로그·카페 문서를 검색 가능한 형태로 쌓는다. 없는 문서는 어떤 랭킹으로도 꺼낼 수 없다. 수집 주기와 갱신 지연이라는 시간 문제가 이 도메인 고유의 것이다.",
+      "tech": [
+        {
+          "tech": "검색 모니터링 시스템",
+          "solves": "색인·검색 품질이 언제 어디서 나빠졌는지를 관측 가능하게 만든다.",
+          "limits": "관측은 원인을 알려주지 않는다. 지표가 나빠진 뒤에야 손을 대게 되고, 무엇을 지표로 삼을지가 다시 판단의 문제가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "앞으로 10년을 책임 질, 네이버 검색 모니터링 시스템 구축기",
+              "url": "https://deview.kr/2021/sessions/506",
+              "publisher": "NAVER DEVIEW 2021",
+              "summary": "검색 품질·장애를 관측하는 모니터링 체계를 새로 만든 과정."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "랭킹·매칭",
+      "why": "꺼낸 후보를 어떤 순서로 보여줄지 정한다. 검색의 값어치가 사실상 전부 여기 모여 있고, 순서 하나가 광고 수익과 사용자 만족을 동시에 움직인다.",
+      "tech": [
+        {
+          "tech": "ColBERT 기반 벡터 유사도 검색",
+          "solves": "단어가 겹치지 않아도 뜻이 가까운 문서를 찾는다. 300억 규모 벡터를 서빙해 실제 검색에 적용했다.",
+          "limits": "벡터 서빙은 저장·연산 비용이 크고, 왜 이 문서가 위에 왔는지 설명하기 어렵다 — 문제가 생겼을 때 고칠 손잡이가 적다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+              "url": "https://deview.kr/2021/sessions/486",
+              "publisher": "NAVER DEVIEW 2021",
+              "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "커머스 데이터",
+      "why": "판매자가 올린 제각각의 상품을 같은 물건끼리 묶고 검색어와 연결한다. 웹 문서와 달리 정답(같은 상품인가)이 존재하고, 틀리면 매출이 직접 깎인다.",
+      "tech": [
+        {
+          "tech": "쇼핑 검색 커버리지 개선",
+          "solves": "검색어와 상품이 표현은 달라도 같은 것을 가리킬 때 이어 준다.",
+          "limits": "커버리지를 넓히면 관련 없는 상품이 딸려 오고, 좁히면 있는 상품을 못 찾는다. 어느 쪽 실수를 감수할지의 문제로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "네이버 쇼핑 검색 커버리지 개선 기술",
+              "url": "https://deview.kr/data/deview/session/attach/7%E1%84%80%E1%85%A5%E1%86%B7%E1%84%89%E1%85%A2%E1%86%A8%E1%84%8B%E1%85%A5%E1%84%8B%E1%85%AA%20%E1%84%89%E1%85%A1%E1%86%BC%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%8B%E1%85%A7%E1%86%AB%E1%84%80%E1%85%A7%E1%86%AF%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB.pdf",
+              "publisher": "NAVER DEVIEW",
+              "summary": "검색어와 상품을 연결하는 쇼핑 검색 커버리지 개선 발표."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "지면 구성",
+      "why": "결과 화면 어디에 무엇을 놓을지 정한다. 네이버에만 있는 경계다 — 사용자에게 가장 좋은 배치와 가장 많이 버는 배치가 다를 수 있고, 그 둘을 같은 지면에서 조정해야 한다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "자동완성이 어떤 자료구조·갱신 주기로 동작하는지 공개 자료를 아직 찾지 못했다 — 다음 사이클의 첫 기능 후보다.",
+    "지면 구성에서 광고와 일반 결과의 배치를 어떤 기준으로 조정하는지 기술 자료가 없다.",
+    "색인 갱신 지연(문서가 올라가고 검색에 뜨기까지)의 실제 목표치를 모른다."
+  ],
+  "sources": [
+    {
+      "title": "네이버 2025년 4분기 및 연간 실적",
+      "url": "https://navercorp.com/media/pressReleasesDetail?seq=34325",
+      "publisher": "네이버 IR",
+      "date": "2026-02",
+      "summary": "연간 매출 12조 350억, 부문별 서치플랫폼 4조 1,689억·커머스 3조 6,884억·콘텐츠 1조 8,992억·핀테크 1조 6,907억·엔터프라이즈 5,878억."
+    },
+    {
+      "title": "눈치까지 챙긴 D.I.A.+ 시스템 — 검색어 의도 분석과 문서 이해 기술",
+      "url": "https://deview.kr/data/deview/session/attach/1500_T4_%EB%B0%95%EC%A7%80%ED%98%84_%EB%88%88%EC%B9%98%EA%B9%8C%EC%A7%80%20%EC%B1%99%EA%B8%B4%20D.I.A.+%20%EC%8B%9C%EC%8A%A4%ED%85%9C,%20%EC%8B%B9%20%EB%8B%A4%20%EC%B0%BE%EC%95%84%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4(%EA%B2%80%EC%83%89%EC%96%B4%20%EC%9D%98%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B3%BC%20%EB%AC%B8%EC%84%9C%20%EC%9D%B4%ED%95%B4%20%EA%B8%B0%EC%88%A0,%20%EB%84%A4%EC%9D%B4%EB%B2%84%20%EA%B2%80%EC%83%89%EC%97%90%20%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0).pdf",
+      "publisher": "NAVER DEVIEW",
+      "summary": "검색어 의도 분석과 문서 이해를 결합해 검색 결과를 고르는 시스템 발표."
+    },
+    {
+      "title": "300억 벡터를 서빙하라! 네이버 검색의 ColBERT 벡터 유사도 검색",
+      "url": "https://deview.kr/2021/sessions/486",
+      "publisher": "NAVER DEVIEW 2021",
+      "summary": "ColBERT 기반 의미 매칭을 대규모 벡터 서빙으로 적용한 사례."
+    },
+    {
+      "title": "앞으로 10년을 책임 질, 네이버 검색 모니터링 시스템 구축기",
+      "url": "https://deview.kr/2021/sessions/506",
+      "publisher": "NAVER DEVIEW 2021",
+      "summary": "검색 품질·장애를 관측하는 모니터링 체계를 새로 만든 과정."
+    },
+    {
+      "title": "네이버 쇼핑 검색 커버리지 개선 기술",
+      "url": "https://deview.kr/data/deview/session/attach/7%E1%84%80%E1%85%A5%E1%86%B7%E1%84%89%E1%85%A2%E1%86%A8%E1%84%8B%E1%85%A5%E1%84%8B%E1%85%AA%20%E1%84%89%E1%85%A1%E1%86%BC%E1%84%91%E1%85%AE%E1%86%B7%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%8B%E1%85%A7%E1%86%AB%E1%84%80%E1%85%A7%E1%86%AF%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB.pdf",
+      "publisher": "NAVER DEVIEW",
+      "summary": "검색어와 상품을 연결하는 쇼핑 검색 커버리지 개선 발표."
+    }
+  ]
+}

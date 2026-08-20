@@ -11,13 +11,29 @@
       "features_done": 5,
       "one_liner": "송금에서 시작해 금융 슈퍼앱이 된 핀테크",
       "updated_at": "2026-08-20"
+    },
+    {
+      "slug": "naver",
+      "name": "네이버",
+      "name_en": "NAVER",
+      "country": "KR",
+      "category": "검색",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "검색 지면에서 광고와 커머스로 돈을 버는 한국의 관문 포털",
+      "updated_at": "2026-08-20"
     }
   ],
   "domains": [
     "송금원장",
     "코어뱅킹",
     "결제",
-    "인증"
+    "인증",
+    "질의 이해",
+    "문서 색인",
+    "랭킹·매칭",
+    "커머스 데이터",
+    "지면 구성"
   ],
   "countries": {
     "KR": "한국",
