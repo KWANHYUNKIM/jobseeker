@@ -31,15 +31,17 @@
     },
     {
       "slug": "ad-surface",
-      "title": "지면·광고 — 광고가 결과인 곳과 침입자인 곳",
+      "title": "지면·광고 — 결과인 곳, 침입자인 곳, 원래 거기 있던 것",
       "question": "같은 화면에서 사용자 경험과 광고 수익이 부딪힐 때, 광고의 지위가 답을 어떻게 바꾸는가?",
       "companies": [
         "naver",
-        "kakao"
+        "kakao",
+        "daangn"
       ],
       "features": [
         "smart-block",
-        "bizboard-surface"
+        "bizboard-surface",
+        "local-ads"
       ],
       "file": "ad-surface.md"
     },
