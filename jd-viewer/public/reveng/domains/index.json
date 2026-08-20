@@ -147,6 +147,24 @@
         "store-exposure"
       ],
       "file": "prefetch.md"
+    },
+    {
+      "slug": "discrete-choice",
+      "title": "몇 칸으로 자를 것인가",
+      "question": "연속적인 것을 칸으로 자를 때, 한쪽은 최적점을 놓치고 다른 쪽은 잘라서 더 정확해졌다. 무엇이 그 차이를 만드는가?",
+      "companies": [
+        "netflix",
+        "uber",
+        "musinsa"
+      ],
+      "features": [
+        "per-title-encoding",
+        "deep-eta",
+        "search-relevance",
+        "style-personalization",
+        "fashion-taxonomy"
+      ],
+      "file": "discrete-choice.md"
     }
   ]
 }
