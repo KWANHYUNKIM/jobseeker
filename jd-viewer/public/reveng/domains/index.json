@@ -165,6 +165,25 @@
         "fashion-taxonomy"
       ],
       "file": "discrete-choice.md"
+    },
+    {
+      "slug": "backward-compat",
+      "title": "옛 약속을 어떻게 지키는가",
+      "question": "약속의 상대가 개발자인가 팔려 나간 기기인가가, 그 약속을 끝낼 수 있는지를 정한다.",
+      "companies": [
+        "netflix",
+        "stripe",
+        "toss",
+        "coupang"
+      ],
+      "features": [
+        "per-title-encoding",
+        "api-surface",
+        "payment-approval",
+        "docdb-migrations",
+        "delivery-area"
+      ],
+      "file": "backward-compat.md"
     }
   ]
 }
