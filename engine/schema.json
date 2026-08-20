@@ -1,0 +1,120 @@
+{
+  "_note": "설명형 스키마. 값은 그 필드에 무엇을 담는지에 대한 설명이다. 실제 검증은 engine/validate.py 가 한다.",
+
+  "index": {
+    "_file": "jd-viewer/public/reveng/index.json — 공개 사이트 메인이 이 파일 하나만 읽는다",
+    "updated_at": "YYYY-MM-DD",
+    "companies": ["company 객체의 요약본(아래 company 의 헤더 필드 + one_liner + features_done)"],
+    "domains": ["string — 지금까지 등장한 도메인 이름 (예: 송금원장, 인증)"],
+    "countries": { "KR": "한국", "US": "미국", "CN": "중국", "JP": "일본", "EU": "유럽" }
+  },
+
+  "company": {
+    "_file": "jd-viewer/public/reveng/companies/<slug>.json",
+
+    "slug": "string (URL용, 영문 소문자: toss, naver, karrot, baemin) — 한 번 정하면 불변",
+    "name": "string",
+    "name_en": "string",
+    "country": "KR|US|CN|JP|EU|기타",
+    "category": "핀테크|커머스|소셜|메시징|스트리밍|검색|모빌리티|게임|SaaS|기타",
+    "status": "in_progress|done",
+    "updated_at": "YYYY-MM-DD",
+    "business_model": "string — 무엇을 팔아 돈을 버는가. 수익원이 여럿이면 비중 순.",
+    "products": ["string — 사용자가 이름을 아는 단위"],
+
+    "one_liner": "string — 디렉토리 카드에 뜨는 한 줄",
+    "revenue_streams": [
+      {
+        "name": "string — 수익원",
+        "how": "string — 어떻게 돈이 되는가",
+        "confidence": "confirmed|inferred|unknown",
+        "sources": ["source 객체 (confirmed 면 필수)"]
+      }
+    ],
+
+    "domains": [
+      {
+        "name": "string — 문제의 경계 (조직도가 아니라). 예: 송금원장, 인증, 정산",
+        "why": "string — 이 도메인이 왜 따로 존재하는가",
+        "features": ["string — 이 도메인에 속한 feature 의 key"]
+      }
+    ],
+
+    "features": [
+      {
+        "key": "string — 파일 내 유일. 영문 소문자+하이픈 (예: instant-transfer)",
+        "name": "string — 한국어 기능명",
+        "domain": "string — 위 domains[].name 중 하나",
+        "updated_at": "YYYY-MM-DD",
+
+        "business": {
+          "why": "string — 이 기능이 없으면 회사가 무엇을 못 하는가",
+          "metrics": [
+            {
+              "label": "string (예: 일 송금 건수)",
+              "value": "string",
+              "confidence": "confirmed|inferred|unknown",
+              "sources": ["source 객체"]
+            }
+          ]
+        },
+
+        "domain_model": {
+          "entities": [{ "name": "string", "what": "string — 무엇을 대표하는 기록인가" }],
+          "invariants": ["string — 코드보다 오래 사는 규칙. 예: 출금·입금은 항상 같은 금액으로 짝을 이룬다"]
+        },
+
+        "implementation": {
+          "flow": [{ "step": "string — 무엇이 일어나는가", "why": "string — 왜 여기서" }],
+          "decisions": [
+            {
+              "question": "string — 무엇을 정해야 했나",
+              "chosen": "string — 고른 것",
+              "alternatives": ["string — 버린 것"],
+              "tradeoff": "string — 고른 대가로 무엇을 잃었나 (필수)",
+              "confidence": "confirmed|inferred|unknown",
+              "sources": ["source 객체"]
+            }
+          ],
+          "stack": [
+            {
+              "tech": "string",
+              "role": "string — 이 시스템에서 무슨 일을 하는가",
+              "confidence": "confirmed|inferred|unknown",
+              "sources": ["source 객체"]
+            }
+          ]
+        },
+
+        "connections": [
+          {
+            "to": "string — 다른 feature 의 key 또는 외부 시스템 이름",
+            "via": "string — 무엇으로 이어지는가 (Kafka 토픽, 동기 API, 배치 등)",
+            "contract": "string — 무엇을 보내고 무엇을 기다리는가",
+            "confidence": "confirmed|inferred|unknown"
+          }
+        ],
+
+        "diagram": "string — mermaid 소스 (flowchart 또는 sequenceDiagram). 없으면 빈 문자열",
+        "sources": ["source 객체 — 이 기능 전체의 근거"]
+      }
+    ],
+
+    "open_questions": ["string — 공개 자료로 확인 못 한 것. 비워 두는 것보다 이렇게 남긴다"],
+    "sources": ["source 객체 — 회사 레벨 근거"]
+  },
+
+  "source": {
+    "title": "string",
+    "url": "string",
+    "publisher": "string — 예: 토스 기술블로그, InfoQ, YouTube",
+    "date": "YYYY-MM-DD 또는 YYYY-MM (모르면 빈 문자열)",
+    "summary": "string — 한 줄 요약. 본문을 길게 옮기지 않는다(저작권)"
+  },
+
+  "confidence": {
+    "confirmed": "회사가 공개 자료에서 직접 말한 것. sources 필수.",
+    "inferred": "공개 자료에서 추론한 것. 사이트가 '추정' 뱃지를 단다.",
+    "unknown": "모르는 것. 그럴듯하게 채우지 않는다."
+  }
+}
