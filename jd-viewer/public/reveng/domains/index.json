@@ -231,6 +231,27 @@
         "ggc-edge"
       ],
       "file": "backpressure.md"
+    },
+    {
+      "slug": "parallel-cutover",
+      "title": "두 시스템을 나란히 돌려 옮기기 — 무엇을 정답으로 삼는가",
+      "question": "옛 구현의 응답인가, 옛 저장소의 상태인가, 사용자 행동이 만드는 비율인가, 아니면 정답을 만들지 않는가?",
+      "companies": [
+        "shopify",
+        "stripe",
+        "toss",
+        "discord",
+        "coupang"
+      ],
+      "features": [
+        "storefront-renderer",
+        "checkout-reservations",
+        "docdb-migrations",
+        "payment-approval",
+        "message-storage",
+        "delivery-area"
+      ],
+      "file": "parallel-cutover.md"
     }
   ]
 }
