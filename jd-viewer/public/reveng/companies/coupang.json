@@ -126,8 +126,41 @@
     {
       "name": "상품 검색·추천",
       "why": "수억 개 상품에서 살 만한 것을 찾게 하는 일. 직매입 상품과 셀러 상품이 같은 화면에서 경쟁한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "질의 이해 → 검색 → 랭킹 3단계",
+          "solves": "수백만 개 상품에서 후보를 좁히고, 관련성만이 아니라 평점·리뷰·가격·브랜드까지 반영해 순서를 정한다.",
+          "limits": "어떤 랭킹 모델을 쓰는지, 각 시그널의 가중치를 어떻게 정하는지는 공개돼 있지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+              "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+              "publisher": "Coupang Engineering Blog · Winter Wang",
+              "date": "2020-05-07",
+              "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+            }
+          ]
+        },
+        {
+          "tech": "Indexing Platform (Hadoop · Spark · ProductJoin/HBase · Indexing Bus)",
+          "solves": "인덱스를 오프라인에서 만들어 모든 서빙 레플리카가 공유하게 하고, 랭킹 시그널을 플랫폼 위에서 직접 생성해 개발 시간을 며칠에서 몇 시간으로 줄인다.",
+          "limits": "인덱스 신선도를 일부 내주고, 시그널은 프레임워크가 정한 모양 안에서만 만들 수 있다. 플랫폼이 검색·추천·광고의 단일 의존점이 되어 간다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+              "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+              "publisher": "Coupang Engineering Blog · Winter Wang",
+              "date": "2020-05-07",
+              "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "search-indexing"
+      ]
     },
     {
       "name": "주문·배송 약속",
@@ -890,13 +923,406 @@
           "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
         }
       ]
+    },
+    {
+      "key": "search-indexing",
+      "name": "검색 인덱싱 — 랭킹 엔지니어의 며칠을 몇 시간으로",
+      "domain": "상품 검색·추천",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**검색이 고객 여정을 연다.** 그런데 쿠팡의 검색은 일반 검색 엔진과 목표가 다르다 — 관련성만으로 순서를 정하면 안 되고 **상품 평점·고객 리뷰·가격·브랜드까지** 함께 봐야 한다. 좋은 답이 '질문에 맞는 문서'가 아니라 '사도 될 물건'이기 때문이다. 그래서 이 도메인의 진짜 과제는 랭킹 알고리즘 자체가 아니라, **수백만 개 상품과 페타바이트급 행동 데이터에서 랭킹 시그널을 얼마나 빨리 만들어 낼 수 있느냐**가 된다.",
+        "metrics": [
+          {
+            "label": "다루는 규모",
+            "value": "수백만 개 상품과 페타바이트급 고객 행동 데이터",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "label": "2.0 이전의 부채",
+            "value": "시그널마다 원시 로그 파싱부터 파이프라인을 따로 세워야 했고, 그런 파이프라인이 약 70개였다 — 유지가 거의 불가능했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "label": "2.0 이후",
+            "value": "클래스 하나를 구현하고 로직을 넣으면 새 시그널이 된다. 랭킹 엔지니어가 몇 시간 안에 고품질 시그널을 만들고 유닛·통합 테스트까지 돌린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "커머스 검색의 목표를 정의할 때",
+          "thought": "전통적인 검색 엔진은 관련성이 결정적이다. 그런데 여기서는 관련성이 높아도 평점이 낮거나 비싸면 좋은 결과가 아니다. **'맞는 것'과 '살 만한 것'은 다른 질문이고, 랭킹은 그 둘을 동시에 답해야 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "레플리카를 하나 더 띄우면서",
+          "thought": "온라인 서빙 클러스터가 인덱스를 그때그때 만들다 보니, 레플리카를 만들 때마다 같은 인덱스를 처음부터 다시 계산한다. **같은 결과를 여러 번 만드는 구조는 대수롭지 않아 보이지만, 규모가 커지면 그게 확장성 자체를 막는다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "시그널 파이프라인이 70개가 됐을 때",
+          "thought": "랭킹 엔지니어가 시그널 하나를 추가하려면 데이터 소스를 찾고 워크플로를 잡는 데 시간을 다 쓴다. 정작 시그널의 로직은 그중 일부다. **일의 대부분이 그 일 자체가 아니라 그 일을 하기 위한 준비라면, 준비를 플랫폼이 가져가야 한다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "상품 데이터와 질의 데이터를 같은 곳에 두고 나서",
+          "thought": "가격은 상품 데이터인데, 질의별 가격 분포와 함께 보면 **질의 랭킹 시그널이 된다.** 서로 다른 축의 데이터를 한 플랫폼에 올려놓는 것만으로 전에 없던 시그널이 나온다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "랭킹 시그널",
+            "what": "후보에 점수를 매기는 재료. 빠르게 반복해 만들 수 있어야 한다."
+          },
+          {
+            "name": "ProductJoin",
+            "what": "모든 상품 데이터를 합친 Protobuf 구조. HBase 에 저장된다."
+          },
+          {
+            "name": "Session Log",
+            "what": "고객 행동 원시 로그를 파싱·병합한 데이터셋."
+          },
+          {
+            "name": "ProductJoiner / QueryJoiner",
+            "what": "상품·질의 데이터를 함께 써서 시그널을 만들어 내는 플랫폼 위의 생성기."
+          }
+        ],
+        "invariants": [
+          "커머스 검색에서 좋은 결과는 관련성만으로 정해지지 않는다.",
+          "같은 인덱스를 레플리카마다 다시 만들면 확장이 막힌다.",
+          "시그널을 만드는 데 파이프라인부터 세워야 한다면, 실험의 속도가 곧 팀의 한계가 된다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "질의 이해 — 의도를 파악하고 카테고리·브랜드 같은 주석을 붙인다",
+            "why": "무엇을 찾는지 모르면 후보를 좁힐 수 없다"
+          },
+          {
+            "step": "검색 — 질의와 상품의 텍스트 정보로 후보를 찾는다",
+            "why": "수백만 개에서 다룰 만한 수로 줄인다"
+          },
+          {
+            "step": "랭킹 — 랭킹 함수나 ML 모델이 시그널로 점수를 매긴다",
+            "why": "빠른 반복이 가능해야 한다"
+          },
+          {
+            "step": "Session Log parser 가 고객 행동 로그를 파싱·병합한다",
+            "why": "모든 시그널이 같은 로그 해석 위에 서야 한다"
+          },
+          {
+            "step": "Ground Truth Merger 가 상품 데이터를 합친다",
+            "why": "엔지니어가 원시 상품 데이터에 바로 닿게 한다"
+          },
+          {
+            "step": "ProductJoiner·QueryJoiner 가 노출·클릭·구매를 집계하고 시그널 프로세서를 돌린다",
+            "why": "시그널이 외부 테이블이 아니라 플랫폼 위에서 만들어진다"
+          },
+          {
+            "step": "생성된 시그널을 HBase 에 저장하고 인덱스를 만든다",
+            "why": "온라인 서빙 클러스터가 직접 읽어 쓴다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "커머스 검색의 랭킹을 무엇으로 정할 것인가",
+            "chosen": "관련성만이 아니라 상품 평점·고객 리뷰·가격·브랜드까지 함께 본다",
+            "alternatives": [
+              "관련성 중심의 전통적 검색",
+              "판매량 순"
+            ],
+            "tradeoff": "'최선의 결과'가 무엇인지 정의가 복잡해지고 시그널 수가 계속 늘어난다. 그래서 **시그널을 빨리 만드는 능력 자체가 검색 품질의 상한**이 된다 — 이 글의 나머지 전부가 그 결론에서 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "인덱스를 어디서 만들 것인가",
+            "chosen": "온라인 서빙 클러스터에서 즉석으로 만들던 것을(0.1) 오프라인 Spark 잡으로 옮기고, 분산 스토리지에 둔 인덱스를 모든 레플리카가 함께 쓴다(1.0)",
+            "alternatives": [
+              "서빙 클러스터 빌드 유지",
+              "레플리카별 빌드 최적화"
+            ],
+            "tradeoff": "인덱스가 만들어지는 시점과 쓰이는 시점이 벌어져 신선도를 일부 내준다. 대신 **레플리카를 늘려도 같은 계산을 반복하지 않는다** — 서빙 클러스터에서의 인덱스 빌드는 극도로 느리고 비쌌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "데이터 소스를 어디에 둘 것인가",
+            "chosen": "관계형 데이터베이스가 병목이었으므로 ground truth 를 전부 Hive 로 복제하고 Hadoop 위에서 다룬다",
+            "alternatives": [
+              "RDB SQL 조인 유지",
+              "부분 복제"
+            ],
+            "tradeoff": "복제본을 유지하는 비용과 지연이 생긴다. 그래도 RDB 의 SQL 엔진은 **수십 개의 큰 테이블을 조인할 때 느리고 불안정했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "합친 상품 데이터를 어떤 모양으로 저장할 것인가",
+            "chosen": "Spark 잡(index merger)이 ProductJoin 이라는 Protobuf 구조로 합쳐 HBase 에 저장하고, 또 다른 Spark 잡(index builder)이 그걸 읽어 인덱스를 만든다",
+            "alternatives": [
+              "단일 비정규화 테이블",
+              "인덱스 직접 생성"
+            ],
+            "tradeoff": "구조가 계약이 되어 바꾸기 어려워지고 단계가 하나 늘어난다. 대신 합치는 일과 인덱스를 만드는 일이 분리되어 각각 따로 확장된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "랭킹 시그널을 어디서 만들 것인가",
+            "chosen": "외부 Hive 테이블에서 병합하던 방식(1.0)을 버리고, **플랫폼 위에서 직접 생성한다**(2.0의 Indexing Bus)",
+            "alternatives": [
+              "외부 생성 후 병합 유지",
+              "시그널 파이프라인 표준 문서화"
+            ],
+            "tradeoff": "플랫폼이 더 무거워지고 더 많은 책임을 진다. 그 대신 **약 70개의 개별 파이프라인이 사라진다** — 유지가 거의 불가능했고 자원도 크게 낭비하던 구조다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "상품 데이터와 질의 데이터를 나눠 다룰 것인가",
+            "chosen": "두 데이터셋을 상품 시그널과 질의 시그널 생성에 **모두** 쓴다",
+            "alternatives": [
+              "상품·질의 파이프라인 분리"
+            ],
+            "tradeoff": "두 축이 서로 얽혀 결합도가 올라간다. 그래도 이 교환이 강력한 시그널을 만든다 — 예를 들어 **상품의 가격이 질의별 가격 분포와 만나 상품을 올리거나 내리는 질의 랭킹 시그널이 된다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "시그널 개발의 단위를 무엇으로 정할 것인가",
+            "chosen": "클래스 하나를 구현하고 로직을 넣는 것으로 끝나게 하고, 유닛 테스트와 통합 테스트를 제공한다",
+            "alternatives": [
+              "파이프라인 단위 개발",
+              "쿼리 템플릿 제공"
+            ],
+            "tradeoff": "프레임워크가 정한 모양 안에서만 시그널을 만들 수 있다. 대신 **며칠이 걸리던 일이 몇 시간이 된다** — 검색 품질의 상한이 여기서 올라간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "question": "이 플랫폼을 검색 전용으로 둘 것인가",
+            "chosen": "상품-질의 관계에서 시작해 고객·브랜드까지 관계를 넓히고, 추천과 광고도 받치는 방향으로 간다",
+            "alternatives": [
+              "검색 전용 유지"
+            ],
+            "tradeoff": "여기서 말하는 것은 확인된 '지향'이지 완료된 사실이 아니다. 범위를 넓힐수록 플랫폼이 회사의 단일 의존점이 된다 — 회사는 이를 '쿠팡 비즈니스의 두뇌'라고 표현한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Hadoop · Hive",
+            "role": "관계형 데이터베이스 병목을 피해 ground truth 를 복제해 두고 분산 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "Spark (index merger · index builder · Session Log parser · Ground Truth Merger)",
+            "role": "상품 데이터를 합치고, 로그를 파싱하고, 인덱스를 만든다. 확장이 쉬워 택했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "ProductJoin (Protobuf) + HBase",
+            "role": "합쳐진 상품 데이터와 생성된 시그널을 담는 저장 구조.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "Indexing Bus (ProductJoiner · QueryJoiner)",
+            "role": "시그널을 플랫폼 위에서 직접 만든다. 상품·질의 데이터를 서로의 시그널 생성에 함께 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "tech": "랭킹 모델",
+            "role": "랭킹 함수 또는 ML 모델이 시그널로 후보에 점수를 매긴다 — 어떤 모델을 어떻게 쓰는지는 이 글에 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "scm-workflow",
+          "via": "같은 처방",
+          "contract": "물류(SCM Workflow)와 검색(Indexing Platform 2.0)이 서로 다른 도메인에서 같은 결론에 도달했다 — 반복되는 준비 작업을 플랫폼이 가져가고 사람은 로직만 쓴다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "마켓플레이스·셀러",
+          "via": "노출",
+          "contract": "직매입 상품과 셀러 상품이 같은 검색 결과에서 어떻게 나란히 놓이는지는 확인하지 못했다.",
+          "confidence": "unknown"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "정상 흐름 — 검색 3단계와 그것을 먹이는 공장",
+          "question": "랭킹 시그널은 어디서 만들어져 어떻게 검색까지 오는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[검색어] --> QU[질의 이해<br/>의도 · 카테고리 · 브랜드]\n  QU --> RET[검색 · 후보 찾기]\n  RET --> RANK[랭킹 · 함수 또는 ML 모델]\n  RANK --> R[결과]\n  subgraph IDX [Indexing Platform 2.0 · Indexing Bus]\n    LOG[고객 행동 원시 로그] --> SLP[Session Log parser · Spark]\n    GT[상품 ground truth · Hive] --> GTM[Ground Truth Merger · Spark]\n    SLP --> PJ[ProductJoiner]\n    GTM --> PJ\n    SLP --> QJ[QueryJoiner]\n    GTM --> QJ\n    PJ <-.->|가격이 질의 시그널이 된다| QJ\n    PJ --> HB[(HBase · ProductJoin)]\n    QJ --> HB\n  end\n  HB --> IB[index builder · Spark]\n  IB --> DS[(분산 스토리지 · 인덱스)]\n  DS --> RET\n  DS --> RANK\n  DS -.->|재빌드 없이 공유| REP[모든 서빙 레플리카]"
+        },
+        {
+          "title": "인덱싱 플랫폼의 세 세대",
+          "question": "무엇이 부러질 때마다 무엇을 바꿨는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> v01: 0.1 · RDB 조인 + 서빙 클러스터가 인덱스 빌드\n  v01 --> 상품폭증: 상품 수가 빠르게 는다\n  상품폭증 --> 확장한계: 레플리카마다 인덱스를 다시 계산\n  상품폭증 --> 조인불안정: 큰 테이블 수십 개 조인이 느리고 불안정\n  확장한계 --> v10: 1.0 · Hadoop · Spark · ProductJoin · HBase\n  조인불안정 --> v10\n  v10 --> 성능해결: 인덱스를 레플리카가 공유\n  성능해결 --> 생산성문제: 시그널 파이프라인이 약 70개\n  생산성문제 --> v20: 2.0 · Indexing Bus\n  v20 --> 몇시간: 클래스 하나로 새 시그널\n  몇시간 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 준비가 일의 대부분일 때",
+          "question": "성능을 고친 다음에도 왜 검색이 빨리 좋아지지 않았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[서빙 클러스터가 인덱스를 즉석 빌드] --> B[레플리카마다 같은 계산을 반복]\n  B --> C[자원 낭비 · 확장 불가]\n  D[RDB SQL 로 수십 개 테이블 조인] --> E[느리고 불안정]\n  C --> F[랭킹 엔지니어가 며칠 안에 시그널을 못 넣는다]\n  E --> F\n  G[1.0 이 성능은 고쳤다] -.-> H{그런데 생산성은}\n  H --> I[시그널마다 로그 파싱부터 파이프라인을 세운다]\n  I --> J[Hive 쿼리 · Spark 잡 개발에 여러 시간]\n  J --> K[그런 파이프라인이 약 70개]\n  K --> L[유지 거의 불가능 · 자원 낭비]\n  L --> F\n  F --> M[시그널을 만드는 속도가 검색 품질의 상한이 된다]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+          "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+          "publisher": "Coupang Engineering Blog · Winter Wang",
+          "date": "2020-05-07",
+          "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "물류센터가 무엇을 어디에 미리 배치하는지(수요 예측·재고 배치 알고리즘)는 여전히 자료를 찾지 못했다 — SCM 글은 그 알고리즘을 '만드는 도구'를 다루지 아직 알고리즘 자체를 다루지 않는다.",
     "격자 단위 지표로 '배송 난이도'를 실제로 어떻게 계산하는지는 글이 앞으로 할 일로만 언급한다.",
     "4분기 영업이익 97% 급감과 활성고객 감소가 개인정보 사고와 얼마나 인과가 있는지는 기사도 '추정된다'고만 쓴다 — 회사 공식 설명은 확인하지 못했다.",
-    "SCM Workflow 가 실제로 몇 개 워크플로를 돌리는지, 비엔지니어가 만든 비중이 얼마인지 같은 규모 수치는 공개돼 있지 않다."
+    "SCM Workflow 가 실제로 몇 개 워크플로를 돌리는지, 비엔지니어가 만든 비중이 얼마인지 같은 규모 수치는 공개돼 있지 않다.",
+    "쿠팡의 랭킹 모델이 무엇이고 시그널 가중치를 어떻게 정하는지는 공개돼 있지 않다 — 인덱싱 글은 시그널을 '만드는 공장'까지만 다룬다.",
+    "직매입 상품과 셀러 상품이 같은 검색 결과에서 어떻게 나란히 놓이는지(그리고 광고가 그 사이 어디에 들어가는지)는 확인하지 못했다."
   ],
   "sources": [
     {
@@ -919,6 +1345,13 @@
       "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
       "date": "2022-10-28",
       "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+    },
+    {
+      "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+      "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+      "publisher": "Coupang Engineering Blog · Winter Wang",
+      "date": "2020-05-07",
+      "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
     }
   ]
 }
