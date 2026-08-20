@@ -63,7 +63,9 @@
     {
       "name": "결제",
       "why": "가맹점 결제 승인·취소. 상대가 개인이 아니라 사업자이고, 실패했을 때 되돌리는 절차(취소·환불)가 송금과 완전히 다르다.",
-      "features": []
+      "features": [
+        "payment-approval"
+      ]
     },
     {
       "name": "인증",
@@ -568,6 +570,292 @@
           "summary": "하루 한 번, 전일 최종 잔액 기준으로 이자를 즉시 받는 기능이라는 설명."
         }
       ]
+    },
+    {
+      "key": "payment-approval",
+      "name": "결제 승인과 취소",
+      "domain": "결제",
+      "updated_at": "2026-08-20",
+      "business": {
+        "why": "머천트 부문 매출이 나오는 자리다. 개인 송금과 겉모습은 비슷하지만 성격이 정반대인 도메인이다 — 송금은 '보낸 돈을 되돌리는 것'이 예외 상황이지만, 결제는 취소·환불이 1급 기능이다. 가맹점은 자기 서비스 코드를 고치지 않고도 결제가 계속 되기를 기대하므로, 이 도메인의 모든 변경은 '기존 연동을 깨지 않는다'는 제약 아래에서만 가능하다.",
+        "metrics": [
+          {
+            "label": "레거시 결제수단 분기 코드",
+            "value": "2,500줄",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "label": "재작성 규모",
+            "value": "서버 2명 · FE 1명, 1달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "label": "감당한 피크",
+            "value": "평소의 20배 트래픽",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Payment",
+            "what": "결제 그 자체. paymentKey 로 식별되고 승인·취소·웹훅이 모두 이 객체를 돌려준다."
+          },
+          {
+            "name": "orderId",
+            "what": "가맹점이 부여한 주문 식별자. 가맹점 쪽 장부와 이어지는 유일한 끈."
+          },
+          {
+            "name": "결제수단",
+            "what": "카드·계좌이체·간편결제 등. 수단마다 인증 방식과 취소 절차가 다르다."
+          },
+          {
+            "name": "결제 세션",
+            "what": "결제창이 열려 있는 동안의 상태. ENTRY→PREPARE→CONFIRM 을 잇는다."
+          },
+          {
+            "name": "웹훅",
+            "what": "가맹점 서버에 상태 변화를 알리는 통지. 본문은 API 와 같은 Payment 객체다."
+          }
+        ],
+        "invariants": [
+          "결제는 CONFIRM 으로만 성립한다. PREPARE 까지 간 세션은 아직 돈이 아니다 — 이 구분이 무너지면 인증 없는 결제가 생긴다.",
+          "승인된 결제와 취소된 결제는 같은 모양의 객체다. 상태만 다르다 — 가맹점이 두 벌의 파싱 코드를 들 이유가 없다.",
+          "같은 취소 요청이 여러 번 도착해도 돈은 한 번만 돌아간다.",
+          "가맹점이 이미 연동한 버전의 계약은 나중 버전이 무엇을 하든 그대로 지켜진다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "ENTRY — 결제창 첫 화면에 필요한 데이터를 서버에 요청한다",
+            "why": "무엇을 보여줄지는 가맹점 설정과 결제수단 구성에 달려 있어 서버가 정한다"
+          },
+          {
+            "step": "PREPARE — 사용자가 고른 결제수단에 맞는 데이터를 요청한다",
+            "why": "수단마다 다음 화면과 인증 경로가 달라 여기서 갈린다"
+          },
+          {
+            "step": "인증 — 카드사·은행 등 외부 인증을 통과한다",
+            "why": "돈을 움직일 권한을 가진 쪽은 PG 가 아니라 발급사·은행이다"
+          },
+          {
+            "step": "CONFIRM — 인증 결과로 결제를 성립시킨다",
+            "why": "여기를 지나야 비로소 결제다"
+          },
+          {
+            "step": "웹훅으로 가맹점 서버에 결과를 통지한다",
+            "why": "브라우저가 닫혀도 가맹점은 결과를 알아야 한다"
+          },
+          {
+            "step": "취소 요청이 오면 같은 Payment 를 취소 상태로 되돌린다",
+            "why": "결제 도메인에서 되돌리기는 예외가 아니라 정상 경로다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "10년 된 결제창을 어떻게 갈아엎을 것인가 — 한 번에 바꿀 것인가",
+            "chosen": "신규·레거시를 병행 운영하고 가맹점별·기능별 카나리로 트래픽을 옮긴다. PREPARE 대비 CONFIRM 비율이 정상 범위를 벗어나면 자동으로 레거시로 원복한다",
+            "alternatives": [
+              "정해진 날에 전체 전환(빅뱅)",
+              "레거시를 고쳐 쓰기"
+            ],
+            "tradeoff": "두 시스템을 동시에 유지하는 기간이 생기고, 자동 롤백을 걸려면 '정상 범위'를 판정할 지표와 관측 체계를 먼저 만들어야 한다. 그 대가로 문제가 난 가맹점만 되돌릴 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "question": "가맹점이 보내는 수백 개의 평평한(flat) 파라미터를 새 구조가 어떻게 받아들일 것인가",
+            "chosen": "Converter 로 OpenAPI 와 레거시 파라미터를 각각 독립적으로 받아 도메인 객체(SessionCreationRequest)로 변환한다",
+            "alternatives": [
+              "가맹점에 새 파라미터 규격으로 수정 요청",
+              "레거시 파라미터를 새 코드가 그대로 다루기"
+            ],
+            "tradeoff": "변환 계층이 하나 늘어 초기 구현이 복잡해지고 다단계 변환의 오버헤드가 생긴다. 대신 비즈니스 로직이 '어느 시대의 파라미터로 들어왔는지'를 몰라도 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "question": "결제창 프론트엔드가 결제수단별 분기를 알아야 하는가",
+            "chosen": "서버가 <도착지, 전송방식, 데이터>를 내려주는 Bridge 인터페이스를 두고 FE 는 기계적으로 중계만 한다",
+            "alternatives": [
+              "FE 가 결제수단별로 다음 행동을 분기(레거시 JSP 방식)"
+            ],
+            "tradeoff": "FE 는 단순해지지만 서버가 화면 전환까지 책임지게 되어 서버 계약이 커지고, 새 결제수단의 흐름이 서버 응답 스펙 변경으로 이어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "question": "API 를 고쳐야 할 때 이미 연동한 가맹점을 어떻게 지킬 것인가",
+            "chosen": "버전을 경로 최상단에 두고 각 버전을 완전히 독립된 API 로 관리한다",
+            "alternatives": [
+              "하위 호환을 지키며 같은 엔드포인트를 계속 확장",
+              "마이그레이션 기한을 주고 강제 전환"
+            ],
+            "tradeoff": "버전 수만큼 검증·응답 코드가 병존해 유지 비용이 선형으로 늘고, 오래된 버전이 언제 죽는지 아무도 모르게 된다. 대신 가맹점은 자기 코드를 건드릴 이유가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스페이먼츠의 Open API 생태계",
+                "url": "https://toss.tech/article/payments-legacy-4",
+                "publisher": "토스 기술블로그",
+                "summary": "버전-도메인-ID 경로, 표준 오류 객체, 승인·취소·웹훅이 같은 Payment 객체를 쓰는 설계."
+              }
+            ]
+          },
+          {
+            "question": "취소 요청이 중복 도착해 두 번 환불되는 것을 어떻게 막을 것인가",
+            "chosen": "멱등키를 받아 같은 키의 재요청에는 첫 결과를 그대로 돌려준다",
+            "alternatives": [
+              "가맹점이 취소 전 조회로 상태를 확인하게 함",
+              "서버가 금액·시각으로 중복을 추정"
+            ],
+            "tradeoff": "가맹점이 키를 만들고 보관해야 하며, 서버는 키별 결과를 15일간 들고 있어야 한다. 그 기간이 지난 재요청은 새 요청으로 처리된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "멱등키 — 토스페이먼츠 개발자센터",
+                "url": "https://docs.tosspayments.com/guides/using-api/idempotency-key",
+                "publisher": "토스페이먼츠",
+                "summary": "결제 취소처럼 반복되면 곤란한 API 에 멱등키를 권장, 유효기간 15일."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Multi-Layer Cache",
+            "role": "평소의 20배 피크에서도 결제창 응답 시간을 지킨다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Struts · WebLogic · JSP (레거시)",
+            "role": "재작성 이전 결제창을 떠받치던 스택 — 무엇에서 벗어났는지가 이 설계의 절반이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+                "url": "https://toss.tech/article/payments-legacy-2",
+                "publisher": "토스 기술블로그",
+                "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Kotlin",
+            "role": "재작성된 결제창 서버 구현에 쓰인 것으로 보인다(글의 코드 예제가 Kotlin 데이터 클래스)",
+            "confidence": "inferred"
+          },
+          {
+            "tech": "공통 라이브러리(인증·암호화·문서 자동화)",
+            "role": "도메인 팀이 따로 일해도 API 결과물이 한 서비스처럼 보이게 표준을 강제한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "토스페이먼츠의 Open API 생태계",
+                "url": "https://toss.tech/article/payments-legacy-4",
+                "publisher": "토스 기술블로그",
+                "summary": "버전-도메인-ID 경로, 표준 오류 객체, 승인·취소·웹훅이 같은 Payment 객체를 쓰는 설계."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "가맹점 서버",
+          "via": "웹훅 (본문은 API 와 동일한 Payment 객체)",
+          "contract": "결제 상태가 바뀌면 가맹점 서버로 통지한다. API 응답과 같은 객체를 쓰므로 가맹점은 웹훅 전용 파싱 코드를 따로 두지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "instant-transfer",
+          "via": "계좌이체 결제수단의 자금 이동",
+          "contract": "결제수단이 계좌이체일 때 실제 돈은 송금원장 쪽 경로로 움직이는 것으로 추정된다. 결제의 성립 시점과 자금 이동 시점이 어긋날 수 있어 대사가 필요하다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "인증",
+          "via": "카드사·은행 인증 리다이렉트",
+          "contract": "CONFIRM 은 외부 인증 결과를 전제로만 성립한다. 인증 실패는 결제 실패이지 시스템 오류가 아니다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "diagram": "sequenceDiagram\n  participant U as 구매자\n  participant F as 결제창 FE\n  participant S as 결제창 서버\n  participant E as 카드사·은행\n  participant M as 가맹점 서버\n  U->>F: 결제하기\n  F->>S: ENTRY (첫 화면 데이터)\n  S-->>F: Bridge 응답 (도착지·전송방식·데이터)\n  U->>F: 결제수단 선택\n  F->>S: PREPARE\n  S-->>F: 인증 경로\n  F->>E: 인증 요청\n  E-->>F: 인증 결과\n  F->>S: CONFIRM\n  S-->>F: Payment (승인)\n  S->>M: 웹훅 (같은 Payment 객체)\n  M->>S: 취소 요청 + 멱등키\n  S-->>M: Payment (취소)",
+      "sources": [
+        {
+          "title": "가맹점은 변함없이, 결제창 시스템 전면 재작성하기",
+          "url": "https://toss.tech/article/payments-legacy-2",
+          "publisher": "토스 기술블로그",
+          "summary": "Struts/WebLogic 레거시 결제창을 병행 운영·카나리로 갈아엎은 과정."
+        },
+        {
+          "title": "토스페이먼츠의 Open API 생태계",
+          "url": "https://toss.tech/article/payments-legacy-4",
+          "publisher": "토스 기술블로그",
+          "summary": "버전-도메인-ID 경로, 표준 오류 객체, 승인·취소·웹훅이 같은 Payment 객체를 쓰는 설계."
+        },
+        {
+          "title": "멱등키 — 토스페이먼츠 개발자센터",
+          "url": "https://docs.tosspayments.com/guides/using-api/idempotency-key",
+          "publisher": "토스페이먼츠",
+          "summary": "결제 취소처럼 반복되면 곤란한 API 에 멱등키를 권장, 유효기간 15일."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -576,7 +864,10 @@
     "오픈뱅킹 전환 이후 펌뱅킹·CMS 경로가 얼마나 남아 있는지, 어떤 경우에 어느 경로를 타는지 모른다.",
     "이체 실패·지연 시 사용자에게 보이는 상태와 내부 재시도 정책의 관계를 확인하지 못했다.",
     "이자 계산 캐시가 하루 만료인데, 하루 중 계좌가 해지되거나 상품이 바뀌면 캐시를 어떻게 무효화하는지 확인하지 못했다.",
-    "세금 메시지가 DLQ 로도 끝내 처리되지 않았을 때 사람이 개입하는 절차가 있는지 모른다."
+    "세금 메시지가 DLQ 로도 끝내 처리되지 않았을 때 사람이 개입하는 절차가 있는지 모른다.",
+    "결제창 재작성에서 자동 롤백의 기준이 된 'PREPARE 대비 CONFIRM 비율'의 정상 범위가 얼마인지, 어느 단위(가맹점·결제수단)로 판정하는지 확인하지 못했다.",
+    "계좌이체 결제의 자금 이동이 개인 송금과 같은 송금 서버를 타는지 확인하지 못했다(현재 inferred).",
+    "오래된 API 버전을 언제 어떤 기준으로 폐기하는지 공개된 정책을 찾지 못했다."
   ],
   "sources": [
     {
