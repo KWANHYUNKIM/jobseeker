@@ -252,6 +252,27 @@
         "delivery-area"
       ],
       "file": "parallel-cutover.md"
+    },
+    {
+      "slug": "what-counts-as-good",
+      "title": "무엇을 좋다고 부를 것인가",
+      "question": "정답이 계산식에서 오는가 사람에게서 오는가, 그리고 정답을 바꿀 때 옛 성적표가 나빠지는 것을 감수하는가?",
+      "companies": [
+        "netflix",
+        "youtube",
+        "musinsa",
+        "uber",
+        "instagram"
+      ],
+      "features": [
+        "per-title-encoding",
+        "uvq-quality",
+        "watch-next-ranking",
+        "search-relevance",
+        "marketplace-rl",
+        "integrity-classification"
+      ],
+      "file": "what-counts-as-good.md"
     }
   ]
 }
