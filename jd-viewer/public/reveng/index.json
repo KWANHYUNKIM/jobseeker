@@ -132,6 +132,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "회사가 고르지 않은 카탈로그 위에서 성과의 정의부터 다시 세운 회사",
       "features_done": 4
+    },
+    {
+      "slug": "discord",
+      "name": "Discord",
+      "name_en": "Discord",
+      "country": "US",
+      "category": "메시징",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "지난 대화가 사라지지 않는 곳에서 쏠림을 다루는 회사",
+      "features_done": 1
     }
   ],
   "domains": [
@@ -189,7 +200,11 @@
     "추천·발견",
     "업로드·트랜스코딩",
     "전송·재생",
-    "저작권·콘텐츠 식별"
+    "저작권·콘텐츠 식별",
+    "메시지 저장·조회",
+    "실시간 전달·프레즌스",
+    "음성·영상",
+    "커뮤니티 운영·신뢰"
   ],
   "countries": {
     "KR": "한국",

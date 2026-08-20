@@ -1,0 +1,579 @@
+{
+  "slug": "discord",
+  "name": "Discord",
+  "name_en": "Discord",
+  "country": "US",
+  "category": "메시징",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "지난 대화가 사라지지 않는 곳에서 쏠림을 다루는 회사",
+  "business_model": "**이 사이트는 아직 Discord 의 수익 구조에 대한 1차 자료를 확보하지 못했다.** 비상장이라 매출과 그 구성이 공시되지 않고, 우리가 읽은 것은 전부 엔지니어링 글이다. **모르는 것은 비워 두는 것이 이 사이트의 규칙이므로 수익 구성은 `미확인` 으로 둔다.**\n\n대신 확인된 것은 규모와 비용의 성격이다. 동시 음성 사용자 **260만 명**, 이그레스 **220Gbps·120Mpps**, 13개 지역 30여 개 데이터센터에 음성 서버 **850대 이상**(2018년). 동시 접속은 **500만 명**을 넘겼고(2017년), 메시지는 **수조 개**가 쌓여 있다(2023년).\n\n그리고 앞서 판 회사들과 눈에 띄게 다른 점이 하나 있다. 네이버·카카오·당근·Instagram·YouTube 는 전부 **지면과 광고**가 기술 이야기의 한 축이었는데, **우리가 읽은 Discord 의 엔지니어링 글에는 지면·광고·랭킹 이야기가 한 줄도 없다.** 전부 **전달하고 저장하는 비용** 이야기다. (이것은 우리가 읽은 자료의 성격에 대한 관찰이지, 이 회사가 광고를 하지 않는다는 주장이 아니다 — 이 사이트의 해석.)",
+  "products": [
+    "Discord — 길드(서버)·채널·DM",
+    "음성·영상 채널"
+  ],
+  "domain_map": {
+    "title": "Discord 도메인 지도",
+    "question": "대화가 사라지지 않고 사람은 한곳에 몰릴 때, 무엇이 먼저 부러지는가?",
+    "code": "flowchart TD\n  U[사용자] -->|WebSocket| GW[실시간 전달 · 프레즌스<br/>Elixir 게이트웨이 · 길드 프로세스]\n  GW --> MSG[메시지 저장 · 조회<br/>ScyllaDB + Rust 데이터 서비스]\n  MSG -->|위로 올려 읽기| U\n  GW --> VOICE[음성 · 영상<br/>C++ SFU · 850대+]\n  VOICE --> U\n  GW --> MOD[커뮤니티 운영 · 신뢰]\n  MOD --> GW\n  BIG[수십만 명 커뮤니티] -.->|쏠림| MSG\n  BIG -.->|쏠림| GW\n  REV[수익 구성 · 미확인]\n  U -.-> REV\n  classDef unk stroke-dasharray: 3 3\n  class REV unk"
+  },
+  "revenue_streams": [
+    {
+      "name": "미확인",
+      "how": "비상장이라 매출 구성이 공시되지 않고, 이 사이트는 1차 출처를 아직 찾지 못했다. 확인되기 전까지 비워 둔다.",
+      "confidence": "unknown",
+      "sources": []
+    }
+  ],
+  "domains": [
+    {
+      "name": "메시지 저장·조회",
+      "why": "이 서비스의 대화는 **사라지지 않는다.** 몇 년 전 대화도 위로 올려 읽을 수 있어 저장소가 계속 커지고(2017년 12노드 → 2022년 초 177노드, 메시지 수조 개), 무엇보다 **채널마다 트래픽의 자릿수가 달라** 인기 채널이 그대로 뜨거운 파티션이 된다.",
+      "tech": [
+        {
+          "tech": "ScyllaDB(C++) — GC 없는 Cassandra 호환 저장소",
+          "solves": "JVM 가비지 컬렉터 일시정지로 인한 지연 스파이크와 수동 재부팅을 없앤다. 177노드가 72노드가 되고 노드당 9TB 를 담는다.",
+          "limits": "데이터베이스를 통째로 바꾸는 일이고, 테스트에서 역방향 쿼리 성능이 부족해 벤더 최적화를 기다려야 했다. 삭제는 여전히 톰스톤으로 남아 압축되기 전까지 사라지지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Stores Trillions of Messages",
+              "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+              "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+              "date": "2023-03-06",
+              "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+            }
+          ]
+        },
+        {
+          "tech": "Rust 데이터 서비스 — 요청 병합 + 채널 ID 일관 해시",
+          "solves": "같은 행에 대한 동시 요청을 한 번의 쿼리로 합치고, 같은 채널의 요청을 같은 인스턴스로 보내 병합 효과를 키운다. 대형 이벤트의 트래픽 스파이크에서 데이터베이스를 가려 준다.",
+          "limits": "홉이 하나 늘고 그 계층이 새 장애점이 되며, 인기 채널의 부하가 특정 인스턴스에 몰린다(뒷부분은 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Stores Trillions of Messages",
+              "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+              "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+              "date": "2023-03-06",
+              "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+            }
+          ]
+        },
+        {
+          "tech": "채널 ID + 시간 버킷 파티션, Snowflake ID",
+          "solves": "한 채널의 대화를 시간 범위로 잘라 읽을 수 있게 한다. 복제본 3.",
+          "limits": "**작은 서버와 거대한 커뮤니티가 같은 스키마 위에 있어** 쏠림을 스키마로는 표현할 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Discord Stores Trillions of Messages",
+              "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+              "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+              "date": "2023-03-06",
+              "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+            }
+          ]
+        },
+        {
+          "tech": "검색·전문 인덱스, 첨부 파일 저장",
+          "solves": "— 이 사이트는 아직 1차 자료를 찾지 않았다.",
+          "limits": "읽은 글은 메시지 본문의 저장과 조회까지만 다룬다.",
+          "confidence": "unknown",
+          "sources": []
+        }
+      ],
+      "features": [
+        "message-storage"
+      ]
+    },
+    {
+      "name": "실시간 전달·프레즌스",
+      "why": "접속하면 WebSocket 하나가 열리고 그 위로 길드·채널·메시지·프레즌스 이벤트가 흐른다. 동시 접속이 500만에 가까워지자 **큰 길드에서 이벤트 하나를 발행하는 데 900ms~2.1초**가 걸리는 지점이 왔다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "음성·영상",
+      "why": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸져 서버가 미디어를 중계해야 하고, 그래야 IP 노출을 막고 서버측 음소거 같은 운영 기능도 가능해진다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "커뮤니티 운영·신뢰",
+      "why": "길드는 주인이 있는 공간이라 규칙과 제재가 플랫폼과 서버 양쪽에 걸쳐 있다. 이 사이트는 아직 이 도메인의 1차 자료를 찾지 않았다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "message-storage",
+      "name": "메시지 저장 — 몰리는 곳과 지워도 남는 것",
+      "domain": "메시지 저장·조회",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 메시지는 **사라지지 않는다.** 몇 년 전 대화도 위로 올려 읽을 수 있고, 그래서 저장소가 계속 커진다 — 2017년 12노드로 시작한 메시지 클러스터가 2022년 초 **177노드**가 됐고 담긴 메시지는 **수조 개**다.\n\n그런데 크기보다 어려운 것이 **쏠림**이었다. 친구 몇 명이 쓰는 작은 서버와 수십만 명이 있는 커뮤니티가 **같은 스키마 위에 있다.** 메시지는 채널 ID 와 시간 버킷으로 묶여 저장되는데, 인기 있는 채널의 파티션에 읽기가 몰리면 그 노드가 못 버티고 **클러스터 전체의 지연으로 번졌다.**\n\n그래서 이 도메인의 이야기는 '어떻게 많이 담을까'가 아니라 **'어떻게 한 곳에 몰리지 않게 할까'**이고, 답이 두 층에서 나온다 — 데이터베이스를 바꾼 것과, 데이터베이스 앞에 계층을 하나 더 둔 것.",
+        "metrics": [
+          {
+            "label": "클러스터의 성장",
+            "value": "2017년 **12노드** → 2022년 초 **177노드**, 담긴 메시지 **수조 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "이전 후 규모",
+            "value": "177노드 → **72노드**. 노드당 **9TB**(이전 평균 4TB)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "조회 지연",
+            "value": "과거 메시지 조회 p99 **40~125ms → 15ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "삽입 지연",
+            "value": "메시지 삽입 p99 **5~70ms → 안정적인 5ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "label": "이사 속도",
+            "value": "Spark 기반 추정 **3개월** → Rust 마이그레이터로 **9일**, 초당 **320만 건**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "채널마다 트래픽이 완전히 다르다는 것을 스키마로는 표현할 수 없었을 때",
+          "thought": "친구 몇 명의 서버와 수십만 명 커뮤니티는 메시지 양의 자릿수가 다른데 저장 구조는 같다. 그래서 **인기 있는 채널이 곧 뜨거운 파티션**이 된다. 게다가 읽기는 메모리 구조와 여러 SSTable 을 함께 봐야 해서 쓰기보다 비싸다 — **몰리는 것이 하필 더 비싼 쪽**이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "노드를 뺐다 넣었다 하는 일이 일상이 됐을 때",
+          "thought": "압축 백로그를 없애려고 노드를 로테이션에서 빼고, 트래픽 없이 SSTable 을 압축하고, 다시 넣어 hinted handoff 를 처리하고, 백로그가 사라질 때까지 반복했다. 팀은 이걸 **'gossip dance'** 라고 불렀다. 성능 문제가 아니라 **사람의 온콜 노동**이 이 시스템의 진짜 비용이 되어 있었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GC 일시정지 앞에서 튜닝의 한계를 봤을 때",
+          "thought": "JVM 가비지 컬렉터의 일시정지가 큰 지연 스파이크를 만들었고, 때로는 노드를 **손으로 재부팅**해야 했다. 튜닝으로 줄일 수는 있어도 없앨 수는 없다 — 그러면 **GC 가 아예 없는 것**을 고르는 수밖에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "3개월짜리 이사를 앞두고",
+          "thought": "Spark 로 짠 마이그레이터의 추정이 3개월이었다. 그동안 두 시스템을 함께 안고 가야 한다는 뜻이다. 그래서 도구를 다시 만들었다 — 이미 만들어 둔 데이터 서비스 라이브러리를 확장해 **토큰 범위를 읽고 SQLite 로 체크포인트하며 스트리밍**하게 했더니 **9일**이 됐다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          "메시지 — Snowflake ID 로 시간순 정렬이 가능하다",
+          "파티션 — **채널 ID + 정적 시간 버킷**. 복제본 3",
+          "SSTable — 디스크에 쌓이는 정렬된 파일. 읽기는 여럿을 봐야 한다",
+          "톰스톤 — 지운 것의 자리표. 압축될 때까지 남는다",
+          "데이터 서비스 — API 와 데이터베이스 사이에 놓인 Rust 중간 계층"
+        ],
+        "invariants": [
+          "채널 ID + 시간 버킷이 한 파티션이다 — **채널의 인기가 곧 파티션의 부하**다.",
+          "읽기가 쓰기보다 비싸다 — 메모리 구조와 여러 SSTable 을 함께 봐야 한다.",
+          "지운 메시지는 톰스톤으로 남는다 — 압축되기 전까지 사라지지 않는다.",
+          "같은 행에 대한 동시 요청은 하나의 쿼리로 합칠 수 있다.",
+          "같은 채널의 요청이 같은 인스턴스로 가야 합치는 효과가 커진다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "API 가 데이터베이스를 직접 부르지 않고 **Rust 로 만든 데이터 서비스**를 부른다",
+            "why": "데이터베이스 앞에 완충을 두어야 트래픽 스파이크가 그대로 전달되지 않는다."
+          },
+          {
+            "step": "**채널 ID 를 라우팅 키로 일관 해시**해 같은 채널의 요청을 같은 서비스 인스턴스로 보낸다",
+            "why": "합칠 수 있는 요청들이 한곳에 모여야 합치는 효과가 커진다."
+          },
+          {
+            "step": "같은 행에 대한 동시 요청이 여러 개면 **데이터베이스 쿼리는 한 번만** 하고, 나머지 요청은 그 워커 태스크의 결과를 구독한다",
+            "why": "인기 채널에 사람이 몰릴 때 데이터베이스가 보는 부하는 사람 수가 아니라 서로 다른 요청 수가 된다."
+          },
+          {
+            "step": "ScyllaDB 가 **채널 ID + 시간 버킷** 파티션에서 메시지를 읽어 돌려준다(복제 3)",
+            "why": "Snowflake ID 가 시간순이라 한 채널의 대화를 시간 범위로 잘라 읽을 수 있다."
+          },
+          {
+            "step": "메시지를 지우면 즉시 사라지지 않고 **톰스톤**이 남는다 — 압축될 때 실제로 정리된다",
+            "why": "분산 저장소에서 삭제는 '없음'이 아니라 '지워졌음'이라는 기록이어야 복제본 사이에서 합의된다."
+          },
+          {
+            "step": "(이사) 새 클러스터를 Discord 의 super-disk 구성(로컬 SSD 를 영구 디스크에 미러)으로 올린다",
+            "why": "로컬 SSD 의 속도와 영구 디스크의 내구성을 함께 가져간다."
+          },
+          {
+            "step": "(이사) Rust 마이그레이터가 **토큰 범위를 읽고 SQLite 로 체크포인트하며** ScyllaDB 로 스트리밍한다",
+            "why": "중간에 멈춰도 이어서 갈 수 있어야 하고, 3개월을 기다릴 수는 없었다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "메시지를 어떤 단위로 묶어 저장할 것인가",
+            "chosen": "**채널 ID + 정적 시간 버킷**을 파티션 키로 쓰고, 시간순 정렬이 되는 Snowflake ID 를 메시지 ID 로 쓴다. 복제본은 3.",
+            "alternatives": [
+              "채널 단위로만 묶는다",
+              "사용자나 길드 단위로 묶는다"
+            ],
+            "tradeoff": "한 채널의 대화를 시간 범위로 잘라 읽기 쉬워지는 대신, **채널마다 트래픽이 극단적으로 달라 인기 채널이 그대로 뜨거운 파티션이 된다.** 친구 몇 명의 서버와 수십만 명 커뮤니티가 같은 스키마 위에 있기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "몰리는 읽기를 어디서 막을 것인가",
+            "chosen": "데이터베이스 앞에 **Rust 로 만든 데이터 서비스** 계층을 둔다. 같은 행에 대한 동시 요청은 **쿼리를 한 번만** 하고 나머지는 그 결과를 구독한다(request coalescing).",
+            "alternatives": [
+              "애플리케이션 캐시를 키운다",
+              "데이터베이스 노드를 더 늘린다"
+            ],
+            "tradeoff": "홉이 하나 늘고 그 계층 자체가 새로운 장애 지점이 된다(뒷문장은 이 사이트의 추정). 대신 **대형 이벤트 때 데이터베이스를 트래픽 스파이크로부터 가려 준다** — 사람이 몰려도 데이터베이스가 보는 것은 서로 다른 요청 수뿐이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "요청을 인스턴스에 어떻게 흩을 것인가",
+            "chosen": "**채널 ID 를 라우팅 키로 일관 해시**해 같은 채널의 요청이 항상 같은 인스턴스로 가게 한다.",
+            "alternatives": [
+              "무작위·라운드로빈으로 흩는다"
+            ],
+            "tradeoff": "인기 채널의 부하가 특정 인스턴스에 몰리게 된다(뒷문장은 이 사이트의 추정). 그래도 **합칠 수 있는 요청이 한곳에 모여야 합치는 효과가 나온다** — 흩어 놓으면 병합할 것이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "GC 일시정지를 어떻게 할 것인가",
+            "chosen": "튜닝을 계속하는 대신 **가비지 컬렉터가 아예 없는 데이터베이스**로 간다 — ScyllaDB 는 Java 가 아니라 C++ 로 쓰였고 Cassandra 호환이다.",
+            "alternatives": [
+              "JVM 튜닝을 계속한다",
+              "다른 저장 엔진을 직접 만든다"
+            ],
+            "tradeoff": "데이터베이스를 통째로 바꾸는 일이고, 테스트에서 **역방향 쿼리 성능이 부족한 것이 드러나 ScyllaDB 팀의 최적화를 기다려야 했다.** 대신 JVM GC 일시정지와 그로 인한 수동 재부팅이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "가장 큰 것을 언제 옮길 것인가",
+            "chosen": "**메시지를 마지막에 옮긴다.** 2020년까지 메시지를 제외한 나머지 데이터베이스를 먼저 ScyllaDB 로 옮기고, 프로덕션 경험을 쌓고 우리 워크로드에 맞게 성능이 개선되기를 기다렸다.",
+            "alternatives": [
+              "가장 아픈 것부터 먼저 옮긴다",
+              "전부 한 번에 옮긴다"
+            ],
+            "tradeoff": "그 기간 동안 **Cassandra 의 온콜 노동('gossip dance')과 GC 스파이크를 계속 졌다.** 대신 가장 크고 되돌리기 어려운 이사를 **이미 검증된 위에서** 하게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "이사 도구를 무엇으로 만들 것인가",
+            "chosen": "Spark 기반 마이그레이터(추정 3개월) 대신 **데이터 서비스 라이브러리를 확장한 Rust 마이그레이터**를 쓴다 — 토큰 범위를 읽고 SQLite 로 체크포인트한 뒤 ScyllaDB 로 스트리밍한다.",
+            "alternatives": [
+              "Spark 로 3개월에 걸쳐 옮긴다",
+              "이중 쓰기만으로 자연스럽게 넘긴다"
+            ],
+            "tradeoff": "도구를 직접 만들어야 하고 그만큼 검증할 것이 늘어난다. 대신 **3개월이 9일이 됐고 초당 320만 건**이 나왔다 — 두 시스템을 함께 안고 가는 기간 자체가 위험이므로 이사 속도가 곧 안전이 된다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "99.9999% 에서 멈췄을 때 무엇을 할 것인가",
+            "chosen": "마지막 토큰 범위에 **Cassandra 에서 한 번도 압축된 적 없는 거대한 톰스톤 더미**가 있었다. 그 범위를 압축한 뒤 이사는 **몇 초 만에** 끝났다.",
+            "alternatives": [
+              "남은 범위를 건너뛰고 마무리한다",
+              "마이그레이터의 성능을 더 올린다"
+            ],
+            "tradeoff": "원인을 찾는 데 시간이 든다. 그래도 **지운 것이 실제로는 남아 있었다는 사실이 마지막 0.0001% 에서 드러났다** — 삭제를 자리표로 남기는 구조의 대가가 가장 끝에서 청구된 셈이다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "question": "바꾼 것이 나아졌다고 무엇으로 말할 것인가",
+            "chosen": "노드 수와 지연의 꼬리로 말한다 — **177노드 → 72노드**, 조회 p99 **40~125ms → 15ms**, 삽입 p99 **5~70ms → 안정적인 5ms**.",
+            "alternatives": [
+              "평균 지연으로 말한다",
+              "처리량으로만 말한다"
+            ],
+            "tradeoff": "p99 는 좋아 보이기 어려운 지표라 개선을 작게 보이게 할 수 있다. 대신 **문제가 애초에 꼬리에 있었다** — 핫 파티션과 GC 일시정지는 평균이 아니라 최악의 순간에 나타난다(뒷문장은 이 사이트의 해석). 실제로 2022년 월드컵 결승의 트래픽 급증에서도 안정적이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "ScyllaDB(C++, Cassandra 호환)",
+            "role": "메시지 저장소. GC 가 없어 JVM 일시정지로 인한 지연 스파이크가 사라졌다. 72노드에 노드당 9TB.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "Rust 데이터 서비스(요청 병합)",
+            "role": "API 와 데이터베이스 사이에서 같은 행에 대한 동시 요청을 한 번의 쿼리로 합친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "채널 ID 일관 해시 라우팅",
+            "role": "같은 채널의 요청을 같은 인스턴스로 보내 병합 효과를 키우고, 대형 이벤트 때 데이터베이스를 가려 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "Snowflake ID + 채널·시간 버킷 파티션",
+            "role": "한 채널의 대화를 시간 범위로 잘라 읽을 수 있게 한다. 복제본 3.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "super-disk(로컬 SSD 를 영구 디스크에 미러)",
+            "role": "새 클러스터의 디스크 구성. 속도와 내구성을 함께 가져간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "Rust 마이그레이터(토큰 범위 + SQLite 체크포인트)",
+            "role": "이사 도구. 9일 만에 초당 320만 건으로 옮겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Discord Stores Trillions of Messages",
+                "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+                "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+                "date": "2023-03-06",
+                "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+              }
+            ]
+          },
+          {
+            "tech": "검색·전문 인덱스와 첨부 파일 저장",
+            "role": "— 이 글은 메시지 본문 저장과 조회까지만 다룬다. 이 사이트는 아직 1차 자료를 찾지 않았다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "실시간 전달·프레즌스",
+          "via": "쓰기와 전달의 경계",
+          "contract": "보낸 메시지는 저장되면서 동시에 연결된 사람들에게 전달돼야 하는데, 두 경로가 어디서 갈라지고 어떤 순서를 보장하는지는 이 글에 없다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "kakao:caribe-realtime",
+          "via": "같은 문제의 다른 무게",
+          "contract": "카카오는 실시간 전달의 '성능'을 다시 정의하는 데서 출발하고, Discord 는 **지난 대화를 언제든 위로 올려 읽는다**는 성질 때문에 저장·조회 쪽이 먼저 부러졌다. 두 회사는 서로를 언급하지 않는다 — 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "diagrams": [
+        {
+          "title": "메시지 한 건을 읽는 길",
+          "question": "인기 채널에 사람이 몰려도 데이터베이스가 무너지지 않는 이유는 무엇인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[클라이언트들] --> API[Discord API]\n  API --> HASH[채널 ID 일관 해시]\n  HASH --> DS[데이터 서비스 · Rust]\n  DS --> COAL{같은 행 요청이<br/>이미 진행 중인가}\n  COAL -->|예| SUB[그 워커의 결과를 구독<br/>쿼리를 더 만들지 않는다]\n  COAL -->|아니오| Q[쿼리 1회]\n  Q --> SC[(ScyllaDB<br/>채널 ID + 시간 버킷 · 복제 3)]\n  SC --> RES[결과]\n  RES --> SUB\n  RES --> API\n  SUB --> API\n  SC -.->|GC 없음 · 72노드 · 노드당 9TB| PERF[조회 p99 15ms]"
+        },
+        {
+          "title": "메시지 한 건이 거치는 상태",
+          "question": "지운 메시지는 언제 진짜로 사라지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 작성됨: Snowflake ID 부여\n  작성됨 --> 저장됨: 채널 + 시간 버킷 파티션에 기록(복제 3)\n  저장됨 --> 조회됨: 메모리 구조 + 여러 SSTable\n  조회됨 --> 저장됨\n  저장됨 --> 톰스톤: 삭제 요청\n  note right of 톰스톤\n    '없음'이 아니라\n    '지워졌음'이라는 기록\n  end note\n  톰스톤 --> 압축대기: 아직 정리되지 않음\n  압축대기 --> 압축대기: 압축이 밀리면 계속 쌓인다\n  압축대기 --> 사라짐: SSTable 압축\n  사라짐 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 몰리는 곳과 밀리는 것",
+          "question": "평균은 멀쩡한데 어디서 꼬리가 터졌는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  BIG[수십만 명 커뮤니티] --> HOT[뜨거운 파티션]\n  SMALL[친구 몇 명의 서버] -.->|같은 스키마| HOT\n  HOT --> READ[동시 읽기<br/>메모리 + 여러 SSTable]\n  READ --> SLOW[그 노드가 못 버틴다]\n  SLOW --> CLUSTER[클러스터 전체 지연으로 번짐]\n  GC[JVM GC 일시정지] --> SPIKE[지연 스파이크]\n  SPIKE --> REBOOT[때때로 손으로 노드 재부팅]\n  BACKLOG[압축 백로그] --> DANCE[gossip dance<br/>노드를 뺐다 압축하고 다시 넣기]\n  DANCE --> TOIL[성능이 아니라 온콜 노동이 비용이 된다]\n  TS[압축되지 않은 톰스톤 더미] --> STUCK[이사가 99.9999% 에서 멈춤]\n  STUCK --> COMPACT[그 범위를 압축]\n  COMPACT --> DONE[몇 초 만에 완료]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How Discord Stores Trillions of Messages",
+          "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+          "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+          "date": "2023-03-06",
+          "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "Discord 의 수익 구성 — 비상장이라 공시가 없고 1차 출처를 아직 찾지 못했다.",
+    "메시지 검색과 첨부 파일 저장 — 읽은 글은 본문의 저장·조회까지만 다룬다.",
+    "저장과 실시간 전달이 어디서 갈라지고 어떤 순서를 보장하는지.",
+    "실시간 전달·프레즌스, 음성·영상, 커뮤니티 운영·신뢰 세 도메인은 아직 기능을 채우지 않았다."
+  ],
+  "sources": [
+    {
+      "title": "How Discord Stores Trillions of Messages",
+      "url": "https://discord.com/blog/how-discord-stores-trillions-of-messages",
+      "publisher": "Discord Blog · Bo Ingram(Senior Staff Software Engineer)",
+      "date": "2023-03-06",
+      "summary": "메시지 저장소를 Cassandra 에서 ScyllaDB 로 옮긴 이야기. 채널 ID + 시간 버킷 파티션이 만든 핫 파티션, JVM GC 일시정지, 압축을 위해 노드를 뺐다 넣는 'gossip dance' 가 문제였다. Rust 데이터 서비스로 같은 행 요청을 병합하고 채널 ID 로 일관 해시 라우팅했다. 마이그레이터를 Rust 로 다시 짜 9일 만에 초당 320만 건으로 옮겼고, 177노드가 72노드가 되고 조회 p99 가 40~125ms 에서 15ms 로 내려갔다."
+    },
+    {
+      "title": "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC",
+      "url": "https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc",
+      "publisher": "Discord Blog · Jozsef Vass",
+      "date": "2018-09-10",
+      "summary": "동시 음성 사용자 260만 명, 이그레스 220Gbps·120Mpps, 13개 지역 30여 개 데이터센터에 음성 서버 850대 이상. 시그널링과 제어는 Elixir, 미디어 라우팅은 자체 제작 C++ SFU 다. 참가자가 늘수록 P2P 는 감당할 수 없이 비싸지고, 서버 경유라야 IP 노출을 막고 서버측 음소거 같은 운영 기능이 가능하다."
+    },
+    {
+      "title": "How Discord Scaled Elixir to 5,000,000 Concurrent Users",
+      "url": "https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users",
+      "publisher": "Discord Blog · Stanislav Vishnevskiy",
+      "date": "2017-07-06",
+      "summary": "WebSocket 마다 세션 프로세스(GenServer)를 띄우고 원격 노드의 길드 프로세스와 통신하는 구조. 동시 접속 500만에 가까워지자 큰 길드(동시 3만 명)에서 이벤트 발행이 900ms~2.1초가 걸리고 프로세스가 죽었다. Manifold(원격 노드별 묶어 보내기)·FastGlobal(0.3μs 조회)·Semaphore(동시성 상한)를 만들어 풀었다."
+    }
+  ]
+}
