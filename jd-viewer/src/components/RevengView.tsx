@@ -58,9 +58,9 @@ export function RevengView() {
     )
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto">
+    <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto jd-panel">
       <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel)/60">
-        <h2 className="text-base font-semibold text-(--color-text)">기술 역설계</h2>
+        <h2 className="text-base font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">기술 역설계</span></h2>
         <p className="text-xs text-(--color-muted) mt-0.5">
           비즈니스 모델 → 도메인 → 기능 구현 → 시스템 연결. 공개 자료만으로 재구성하고,
           회사가 직접 말한 것과 추정한 것을 구분해 표시합니다.
@@ -184,7 +184,7 @@ function DomainDocView({
         <button onClick={onBack} className="text-xs text-(--color-muted) hover:text-(--color-accent) mb-1">
           ← 회사 목록
         </button>
-        <h2 className="text-lg font-semibold text-(--color-text)">{title}</h2>
+        <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head">{title}</span></h2>
       </header>
       <div className="p-4 max-w-3xl">
         {loading ? (

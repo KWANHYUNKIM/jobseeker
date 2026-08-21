@@ -7,7 +7,19 @@ import {
   type Source,
 } from '../lib/useReveng'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
+import { Md, MdBlock } from './Md'
 import { Loader, ErrorState } from './ui'
+
+// 접힌 줄의 한 줄 미리보기처럼 마크업이 방해가 되는 자리에서만 기호를 걷어낸다.
+const strip = (s: string) => s.replace(/\*\*|`|\*/g, '')
+
+// 엔티티는 스키마상 {name, what} 이지만 초기 사이클들이 "이름 — 설명" 한 문자열로
+// 적어 둔 것이 남아 있다. 객체만 읽으면 그쪽이 통째로 빈 줄이 되므로 둘 다 받는다.
+function normEntity(e: { name: string; what: string } | string): { name: string; what: string } {
+  if (typeof e !== 'string') return e
+  const cut = e.indexOf(' — ')
+  return cut < 0 ? { name: e, what: '' } : { name: e.slice(0, cut), what: e.slice(cut + 3) }
+}
 
 // 회사 하나의 역설계 상세.
 //
@@ -51,7 +63,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           ← 회사 목록
         </button>
         <div className="flex items-baseline gap-2 flex-wrap">
-          <h2 className="text-lg font-semibold text-(--color-text)">{c.name}</h2>
+          <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">{c.name}</span></h2>
           <span className="text-sm text-(--color-muted)">{c.name_en}</span>
           <span className="text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
             {c.category}
@@ -61,9 +73,11 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
         <p className="text-xs text-(--color-muted) mt-1">{c.one_liner}</p>
       </header>
 
-      <div className="p-4 flex flex-col gap-6 max-w-4xl">
+      {/* 본문 줄길이는 .reveng-prose(74ch)가 잡는다. 바깥 폭까지 좁히면 그림이
+          화면 절반만 쓰게 되므로, 컨테이너는 넓게 두고 글만 좁힌다. */}
+      <div className="p-4 flex flex-col gap-7 max-w-[1400px]">
         <Section title="비즈니스 모델" sub="이 회사는 무엇을 팔아 돈을 버는가">
-          <p className="text-sm text-(--color-text) leading-relaxed">{c.business_model}</p>
+          <MdBlock className="reveng-prose text-sm text-(--color-text)">{c.business_model}</MdBlock>
           {c.products?.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
               {c.products.map((p) => (
@@ -77,9 +91,9 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
             <ul className="mt-3 flex flex-col gap-2">
               {c.revenue_streams.map((r) => (
                 <li key={r.name} className="text-sm">
-                  <span className="text-(--color-text) font-medium">{r.name}</span>
+                  <span className="text-(--color-text) font-medium"><Md>{r.name}</Md></span>
                   <ConfBadge c={r.confidence} />
-                  <span className="text-(--color-muted)"> — {r.how}</span>
+                  <span className="text-(--color-muted)"> — <Md>{r.how}</Md></span>
                   <SourceLinks sources={r.sources} />
                 </li>
               ))}
@@ -116,17 +130,17 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
                         기능 {n}
                       </span>
                     </div>
-                    <p className="text-xs text-(--color-muted) mt-1 leading-relaxed">{d.why}</p>
+                    <p className="text-xs text-(--color-muted) mt-1 leading-relaxed reveng-prose"><Md>{d.why}</Md></p>
                     {d.tech && d.tech.length > 0 && (
                       <ul className="mt-2 flex flex-col gap-1.5 border-t border-(--color-border) pt-2">
                         {d.tech.map((t) => (
                           <li key={t.tech} className="text-xs leading-relaxed">
-                            <span className="text-(--color-accent)">{t.tech}</span>
+                            <span className="text-(--color-accent)"><Md>{t.tech}</Md></span>
                             <ConfBadge c={t.confidence} />
-                            <span className="text-(--color-muted)"> — {t.solves}</span>
+                            <span className="text-(--color-muted)"> — <Md>{t.solves}</Md></span>
                             <div className="text-(--color-muted) opacity-80">
                               <span className="opacity-70">못 하는 것 </span>
-                              {t.limits}
+                              <Md>{t.limits}</Md>
                             </div>
                           </li>
                         ))}
@@ -165,7 +179,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           <Section title="확인 못 한 것" sub="공개 자료로 닿지 못한 부분 — 그럴듯하게 채우지 않는다">
             <ul className="list-disc pl-5 text-sm text-(--color-muted) flex flex-col gap-1">
               {c.open_questions.map((q) => (
-                <li key={q}>{q}</li>
+                <li key={q}><Md>{q}</Md></li>
               ))}
             </ul>
           </Section>
@@ -193,7 +207,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
         </span>
         {!open && (
           <span className="hidden sm:block text-xs text-(--color-muted) truncate ml-1">
-            {f.business.why}
+            {strip(f.business.why)}
           </span>
         )}
         <span className="ml-auto text-[11px] text-(--color-muted) tabular-nums shrink-0">
@@ -204,7 +218,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
       {open && (
         <div className="px-3 pb-4 pt-1 flex flex-col gap-4 border-t border-(--color-border)">
           <Sub title="왜 존재하나">
-            <p className="text-sm text-(--color-text) leading-relaxed">{f.business.why}</p>
+            <MdBlock className="reveng-prose text-sm text-(--color-text)">{f.business.why}</MdBlock>
             {f.business.metrics && f.business.metrics.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {f.business.metrics.map((m) => (
@@ -212,8 +226,8 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                     key={m.label}
                     className="px-2 py-1 rounded bg-(--color-bg) border border-(--color-border) text-xs"
                   >
-                    <span className="text-(--color-muted)">{m.label} </span>
-                    <span className="text-(--color-text) font-medium tabular-nums">{m.value}</span>
+                    <span className="text-(--color-muted)"><Md>{m.label}</Md> </span>
+                    <span className="text-(--color-text) font-medium tabular-nums"><Md>{m.value}</Md></span>
                     <ConfBadge c={m.confidence} />
                   </span>
                 ))}
@@ -228,7 +242,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                   <li key={i} className="text-sm border-l-2 border-(--color-border) pl-2.5">
                     <span className="text-[11px] text-(--color-muted)">{t.at}</span>
                     <ConfBadge c={t.confidence} />
-                    <div className="text-(--color-text) leading-relaxed">{t.thought}</div>
+                    <div className="text-(--color-text) leading-relaxed reveng-prose"><Md>{t.thought}</Md></div>
                   </li>
                 ))}
               </ul>
@@ -239,12 +253,20 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
             <Sub title="도메인 모델">
               {f.domain_model.entities && f.domain_model.entities.length > 0 && (
                 <ul className="text-sm flex flex-col gap-1">
-                  {f.domain_model.entities.map((e) => (
-                    <li key={e.name}>
-                      <span className="text-(--color-accent)">{e.name}</span>
-                      <span className="text-(--color-muted)"> — {e.what}</span>
-                    </li>
-                  ))}
+                  {f.domain_model.entities.map((raw, i) => {
+                    const e = normEntity(raw)
+                    return (
+                      <li key={i}>
+                        <span className="text-(--color-accent)"><Md>{e.name}</Md></span>
+                        {e.what && (
+                          <span className="text-(--color-muted)">
+                            {' — '}
+                            <Md>{e.what}</Md>
+                          </span>
+                        )}
+                      </li>
+                    )
+                  })}
                 </ul>
               )}
               {f.domain_model.invariants && f.domain_model.invariants.length > 0 && (
@@ -254,7 +276,7 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                   </p>
                   <ul className="list-disc pl-5 text-sm text-(--color-text) flex flex-col gap-1">
                     {f.domain_model.invariants.map((i) => (
-                      <li key={i}>{i}</li>
+                      <li key={i}><Md>{i}</Md></li>
                     ))}
                   </ul>
                 </>
@@ -271,8 +293,8 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                       {i + 1}
                     </span>
                     <span>
-                      <span className="text-(--color-text)">{s.step}</span>
-                      {s.why && <span className="text-(--color-muted)"> — {s.why}</span>}
+                      <span className="text-(--color-text)"><Md>{s.step}</Md></span>
+                      {s.why && <span className="text-(--color-muted)"> — <Md>{s.why}</Md></span>}
                     </span>
                   </li>
                 ))}
@@ -299,20 +321,27 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
               <div className="flex flex-col gap-2.5">
                 {impl.decisions.map((d, i) => (
                   <div key={i} className="rounded border border-(--color-border) p-2.5 bg-(--color-bg)">
-                    <div className="text-xs text-(--color-muted)">{d.question}</div>
+                    <div className="text-xs text-(--color-muted) mt-0.5 reveng-prose"><Md>{d.question}</Md></div>
                     <div className="text-sm mt-1">
-                      <span className="text-(--color-accent) font-medium">{d.chosen}</span>
+                      <span className="text-(--color-accent) font-medium">
+                        <Md>{d.chosen}</Md>
+                      </span>
                       <ConfBadge c={d.confidence} />
                       {d.alternatives && d.alternatives.length > 0 && (
                         <span className="text-(--color-muted)">
-                          {' '}
-                          · 버린 대안: {d.alternatives.join(', ')}
+                          {' · 버린 대안: '}
+                          {d.alternatives.map((a, k) => (
+                            <span key={k}>
+                              {k > 0 && ', '}
+                              <Md>{a}</Md>
+                            </span>
+                          ))}
                         </span>
                       )}
                     </div>
                     <div className="text-sm text-(--color-text) mt-1.5">
                       <span className="text-(--color-muted) text-xs">대가 </span>
-                      {d.tradeoff}
+                      <Md>{d.tradeoff}</Md>
                     </div>
                     <SourceLinks sources={d.sources} />
                   </div>
@@ -328,10 +357,10 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
                   <li key={i} className="text-sm">
                     <span className="text-(--color-muted)">→ </span>
                     <span className="text-(--color-text)">{c.to}</span>
-                    <span className="text-(--color-muted)"> · {c.via}</span>
+                    <span className="text-(--color-muted)"> · <Md>{c.via}</Md></span>
                     <ConfBadge c={c.confidence} />
                     {c.contract && (
-                      <div className="text-xs text-(--color-muted) pl-4">{c.contract}</div>
+                      <div className="text-xs text-(--color-muted) pl-4"><Md>{c.contract}</Md></div>
                     )}
                   </li>
                 ))}
@@ -339,14 +368,76 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
             </Sub>
           )}
 
+          {(f.research?.papers?.length || f.research?.hard_problems?.length) ? (
+            <Sub title="회사 밖의 근거">
+              {f.research.papers && f.research.papers.length > 0 && (
+                <ul className="flex flex-col gap-2">
+                  {f.research.papers.map((p) => (
+                    <li key={p.url} className="text-sm">
+                      <a
+                        href={p.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-(--color-accent) hover:underline"
+                      >
+                        {p.title}
+                      </a>
+                      <ConfBadge c={p.confidence} />
+                      <span className="text-[11px] text-(--color-muted)">
+                        {p.venue ? ` · ${p.venue}` : ''}
+                        {p.year ? ` · ${p.year}` : ''}
+                        {p.authors ? ` · ${p.authors}` : ''}
+                      </span>
+                      {/* 논문 요약이 아니라 '이 회사가 무엇을 가져다 썼는가' */}
+                      <div className="text-xs text-(--color-muted) reveng-prose">
+                        <Md>{p.takeaway}</Md>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {f.research.hard_problems && f.research.hard_problems.length > 0 && (
+                <>
+                  <p className="text-[11px] text-(--color-muted) mt-3 mb-1">
+                    아직 아무도 못 푼 것 — 내가 못 찾은 것(확인 못 한 것)과는 다르다
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {f.research.hard_problems.map((h, i) => (
+                      <div
+                        key={i}
+                        className="rounded border border-amber-500/25 bg-(--color-bg) p-2.5"
+                      >
+                        <div className="text-sm text-(--color-text)">
+                          <Md>{h.problem}</Md>
+                          <ConfBadge c={h.confidence} />
+                        </div>
+                        <div className="text-xs text-(--color-muted) mt-1 reveng-prose">
+                          <span className="opacity-70">왜 어려운가 </span>
+                          <Md>{h.why_hard}</Md>
+                        </div>
+                        {h.current_best && (
+                          <div className="text-xs text-(--color-muted) mt-1 reveng-prose">
+                            <span className="opacity-70">지금의 차선 </span>
+                            <Md>{h.current_best}</Md>
+                          </div>
+                        )}
+                        <SourceLinks sources={h.sources} />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </Sub>
+          ) : null}
+
           {impl.stack && impl.stack.length > 0 && (
             <Sub title="스택">
               <ul className="flex flex-col gap-1">
                 {impl.stack.map((s) => (
                   <li key={s.tech} className="text-sm">
-                    <span className="text-(--color-text) font-medium">{s.tech}</span>
+                    <span className="text-(--color-text) font-medium"><Md>{s.tech}</Md></span>
                     <ConfBadge c={s.confidence} />
-                    <span className="text-(--color-muted)"> — {s.role}</span>
+                    <span className="text-(--color-muted)"> — <Md>{s.role}</Md></span>
                   </li>
                 ))}
               </ul>
@@ -375,14 +466,14 @@ function DiagramBlock({ d, idKey }: { d: Diagram; idKey: string }) {
   return (
     <figure className="m-0">
       <figcaption className="mb-1.5">
-        <span className="text-sm font-medium text-(--color-text)">{d.title}</span>
+        <span className="text-sm font-medium text-(--color-text)"><Md>{d.title}</Md></span>
         {d.kind && (
           <span className="ml-1.5 text-[10px] px-1 py-px rounded border border-(--color-border) text-(--color-muted)">
             {KIND_LABEL[d.kind] ?? d.kind}
           </span>
         )}
         {d.question && (
-          <div className="text-xs text-(--color-muted)">{d.question}</div>
+          <div className="text-xs text-(--color-muted) mt-0.5 reveng-prose"><Md>{d.question}</Md></div>
         )}
       </figcaption>
       <ArchitectureDiagram code={d.code} idKey={idKey} />
@@ -444,7 +535,7 @@ function SourceList({ sources }: { sources: Source[] }) {
             {s.publisher ? ` · ${s.publisher}` : ''}
             {s.date ? ` · ${s.date}` : ''}
           </span>
-          {s.summary && <div className="text-xs text-(--color-muted)">{s.summary}</div>}
+          {s.summary && <div className="text-xs text-(--color-muted)"><Md>{s.summary}</Md></div>}
         </li>
       ))}
     </ul>
@@ -463,7 +554,7 @@ function Section({
   return (
     <section>
       <h3 className="text-base font-semibold text-(--color-text)">
-        {title}
+        <span className="jd-head">{title}</span>
         {sub && <span className="ml-2 text-xs font-normal text-(--color-muted)">{sub}</span>}
       </h3>
       <div className="mt-2">{children}</div>

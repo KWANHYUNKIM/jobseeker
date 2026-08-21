@@ -1,79 +1,150 @@
 @import "tailwindcss";
 
+/* ── 팔레트 ────────────────────────────────────────────────────────────────
+   한빛+(hanbit.co.kr)의 배색을 따른다. **테마 전환은 없다** — 흰 바탕 하나로 간다.
+   그 사이트에서 실측한 값: 바탕 흰색, 본문 #030712, 보조 글자 rgba(62,74,92,.61),
+   구분선 rgba(92,102,118,.16), 브랜드색 teal #03AEA0, 모서리 12px, 그림자는 거의 없음. */
 @theme {
-  --color-bg: #0b0c10;
-  --color-panel: #15171d;
-  --color-border: #2a2d36;
-  --color-text: #e6e7eb;
-  --color-muted: #9aa0aa;
-  --color-accent: #03C75A;
-  --color-on-accent: #000000; /* 액센트 배경 위 글자색(다크=초록 위 검정) */
+  /* 회색을 쓰기로 했으면 바탕이 완전한 흰색이면 안 된다 — 흰 카드가 떠 보이지 않는다.
+     캔버스(bg)는 옅은 회색, 그 위에 흰 패널(panel)을 올려 칸을 잡는다.
+     다크 때와 위계가 같다: bg 가 뒤로 물러나고 panel 이 앞으로 나온다. */
+  --color-bg: #eef1f4;        /* 캔버스 — 페이지 바탕 */
+  --color-panel: #ffffff;     /* 카드·패널 — 캔버스 위에 올라앉는 면 */
+  --color-band: #f5f7f9;      /* 패널 안에서 구역을 나누는 띠 */
+  --color-border: #d3d8de;    /* 구분선 — 흐리면 칸이 안 잡혀서 또렷하게 */
+  --color-border-soft: #e6e9ed;
+  --color-text: #000000;      /* 본문 — 완전한 검정 */
+  --color-muted: #4a515e;     /* 보조 글자 — 부제·메타. 회색이 아니라 짙은 먹빛 */
+  --color-faint: #737b88;     /* 더 뒤로 물린 글자 */
+  --color-accent: #00897B;    /* 브랜드 teal — 한빛보다 한 단계 진하게 */
+  --color-accent-deep: #00695C;
+  --color-accent-weak: #d6efec;
+  --color-on-accent: #ffffff;
+
+  /* 모서리 — 한빛에서 실측하면 12px 가 압도적(162회)이고 칩은 pill, 작은 것만 8px.
+     Tailwind 의 radius 눈금을 그 값으로 덮어써서 rounded-lg / rounded-md 를 쓰는
+     기존 컴포넌트가 그대로 따라오게 한다. */
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
 }
 
-/* 라이트 테마 — <html class="light"> 일 때 6개 변수를 덮어쓴다(모든 bg-(--color-*) 가 따라감)
-   모노톤: 흰 배경 + 검정 글자, 칸을 나누는 구분선만 회색(보더). 강조색은 검정으로 통일. */
-html { color-scheme: dark; }
-:root.light {
-  color-scheme: light;
-  --color-bg: #ffffff;        /* 페이지 = 흰색 */
-  --color-panel: #ffffff;     /* 카드/패널 = 흰색(배경과 동일, 구분은 보더로) */
-  --color-border: #d7dae0;    /* 칸 구분선 = 회색 */
-  --color-text: #000000;      /* 본문 = 완전 검정 */
-  --color-muted: #5a606a;     /* 보조 텍스트 = 회색 */
-  --color-accent: #000000;    /* 포인트(배지/버튼/탭/링크/포커스링) = 완전 검정 */
-  --color-on-accent: #ffffff; /* 검정 액센트 배경 위 글자색 = 흰색(가독성) */
-}
+html { color-scheme: light; }
 
-/* 라이트 테마 강조색 → 검정 통일 — 형광 초록/파랑/노랑/빨강을 전부 본문색으로.
-   Tailwind v4 색 팔레트 변수를 라이트에서만 덮어쓰면 text-/bg-/border- 유틸이
-   전부 따라온다(컴포넌트 수정 불필요). 틴트(/12·/25)는 검정 기반 옅은 회색이 됨. */
-:root.light {
-  --color-red-400: var(--color-text);     /* 에러/일요일 */
-  --color-red-500: var(--color-text);     /* 에러 아이콘 틴트 */
-  --color-amber-400: var(--color-text);   /* 경고/주의 */
-  --color-amber-500: var(--color-text);   /* 경고 틴트/보더 */
-  --color-sky-300: var(--color-text);     /* 링크/강의 */
-  --color-sky-400: var(--color-text);     /* 링크 틴트/보더 */
-  --color-emerald-300: var(--color-text); /* 기술 태그 */
-  --color-emerald-400: var(--color-text); /* 로드맵 마커/틴트 */
-  --color-blue-400: var(--color-text);    /* 토요일 */
+/* 카드가 살짝 떠 보이게 하는 그림자 — 평소엔 없고 hover 에만 준다.
+   한빛도 그림자를 거의 안 쓰고 선으로 칸을 나눈다. */
+:root {
+  --hover: #f6f7f8;
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
-
-/* hover/subtle 배경 — 본문색 기반이라 테마 자동 적응(다크=옅은 흰, 라이트=옅은 검정) */
-:root { --hover: color-mix(in srgb, var(--color-text) 7%, transparent); }
-:root.light { --hover: color-mix(in srgb, var(--color-text) 6%, transparent); }
 
 html, body, #root {
   height: 100%;
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: system-ui, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* 다크 테마 스크롤바 — 모든 패널/리스트 공통 */
+/* 다크 바탕을 전제로 쓰던 형광색들을 흰 바탕용으로 다시 맞춘다.
+   Tailwind 팔레트 변수만 덮어쓰면 text-/bg-/border- 유틸이 전부 따라오므로
+   컴포넌트는 건드리지 않는다. 채도를 낮춰 본문(#030712)과 다투지 않게 한다. */
+:root {
+  --color-red-400: #c01a10;      /* 오류·마감 */
+  --color-red-500: #9e1209;
+  --color-amber-400: #9a3a06;    /* 주의 */
+  --color-amber-500: #7c2d05;
+  --color-sky-300: #0a58a8;      /* 링크·강의 */
+  --color-sky-400: #0a58a8;
+  --color-emerald-300: var(--color-accent);  /* 기술 태그 */
+  --color-emerald-400: var(--color-accent);
+  --color-blue-400: #0a58a8;
+}
+
+/* ── 제목 하이라이트 ───────────────────────────────────────────────────────
+   형광펜으로 그은 것처럼 글자 아래쪽에만 색을 깐다. 배경을 통째로 칠하면
+   제목이 버튼처럼 보여서, 글자 높이의 아래 45% 만 덮는다.
+   inline 이라 제목이 두 줄로 접혀도 줄마다 따라 그어진다. */
+.jd-head {
+  display: inline;
+  background-image: linear-gradient(
+    transparent 55%,
+    color-mix(in srgb, var(--color-accent) 42%, transparent) 55%
+  );
+  background-repeat: no-repeat;
+  padding: 0 0.14em 0.04em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 페이지 최상단 제목은 조금 더 진하게 — 위계를 색 농도로 준다 */
+.jd-head-lg {
+  background-image: linear-gradient(
+    transparent 52%,
+    color-mix(in srgb, var(--color-accent) 55%, transparent) 52%
+  );
+}
+
+/* ── 프레임과 그룹 ─────────────────────────────────────────────────────────
+   회색 캔버스 위에 흰 패널을 얹고 테두리로 칸을 잡는다. 무엇이 한 덩어리인지
+   눈에 바로 잡히게 하는 것이 목적이라, 패널 사이는 캔버스가 보이도록 띄운다. */
+.jd-panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* 패널 안의 머리 — 목록·표의 제목 줄. 아래로 선을 그어 본문과 가른다. */
+.jd-panel-head {
+  background: var(--color-band);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 좌우 사이드 패널 — 데스크톱에서만 프레임을 준다.
+   모바일에서는 화면을 덮는 드로어라 테두리가 의미 없다. */
+@media (min-width: 768px) {
+  .jd-side-panel {
+    background: var(--color-panel);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+}
+
+/* 본문 영역을 감싸는 캔버스 여백 — 패널이 화면 끝에 붙지 않게 한다 */
+.jd-canvas {
+  background: var(--color-bg);
+  padding: 12px;
+  gap: 12px;
+}
+
+/* 스크롤바 — 흰 바탕에 맞춘 옅은 회색 */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: #d3d7de transparent;
 }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: #d3d7de;
   border-radius: 6px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3e49;
+  background: #b6bcc7;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-corner { background: transparent; }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
   color: var(--color-text);
 }
 
@@ -210,3 +281,107 @@ html, body, #root {
 }
 .blog-video-file { max-width: 100%; border-radius: 8px; margin: 1em 0; }
 .blog-md hr { border: none; border-top: 1px solid var(--color-border); margin: 1.4em 0; }
+
+/* ── 인라인 마크다운(Md.tsx) ───────────────────────────────────────────────
+   역설계 데이터의 본문 필드에 들어 있는 `**…**` 를 굵기가 아니라 하이라이트로
+   그린다. 저자가 굵게 쓴 자리는 문단의 결론이라 긴 글에서 눈에 걸려야 한다.
+   다크에서는 액센트 틴트, 라이트에서는 형광펜처럼 노란기 없는 회색 밴드. */
+.md-mark {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  color: var(--color-text);
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 0.05em 0.28em;
+  margin: 0 -0.04em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+:root.light .md-mark {
+  background: color-mix(in srgb, var(--color-text) 11%, transparent);
+  box-shadow: inset 0 -0.42em 0 color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+.md-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.08em 0.32em;
+  white-space: nowrap;
+}
+
+/* 본문 선택 하이라이트 — 드래그로 짚어 가며 읽을 수 있게 대비를 준다.
+   기본 파랑은 이 팔레트 위에서 글자를 삼킨다. */
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-text);
+}
+
+/* ── 역설계 본문 가독성 ────────────────────────────────────────────────────
+   한글 긴 문단이라 줄길이·자간·행간을 본문 전용으로 따로 잡는다. */
+.reveng-prose {
+  line-height: 1.78;
+  letter-spacing: -0.003em;
+  word-break: keep-all;      /* 한글 어절 중간에서 끊지 않는다 */
+  overflow-wrap: anywhere;   /* 다만 긴 URL·영문 토큰은 넘치게 두지 않는다 */
+  max-width: 74ch;
+}
+
+/* ── Mermaid 도판(圖版) ────────────────────────────────────────────────────
+   교과서 그림 양식이다. 종이 위의 잉크 — 각진 모서리, 얇고 균일한 선,
+   그림자·그라데이션·둥근 맛 없음. 색은 :::accent 한 곳에만 쓴다.
+   팔레트는 ArchitectureDiagram.tsx 의 plate() 가 정하고, 여기서는
+   themeVariables 로 닿지 않는 것(엣지 라벨 배경, 클러스터 라벨, 모서리)만 맡는다. */
+/* 도판은 앱 테마를 따르지 않는다 — 본문에 끼워 넣은 인쇄물이라 늘 흰 종이다.
+   덕분에 어두운 화면에서도 그림 하나의 경계가 눈에 잡힌다. */
+.mmd {
+  --plate-paper: #ffffff;
+  --plate-ink: #16181d;
+  --plate-faint: #8b9099;
+  --plate-accent-ink: #b4460d;
+  background: var(--plate-paper);
+}
+.mmd svg { max-width: none; height: auto; background: var(--plate-paper); }
+
+/* 각진 모서리 — 도판의 성격을 가장 크게 정하는 한 줄이다 */
+.mmd .node rect, .mmd .node polygon, .mmd .node path,
+.mmd .cluster rect, .mmd rect.actor, .mmd .labelBox {
+  rx: 0 !important; ry: 0 !important;
+}
+
+/* 선은 전부 같은 무게. 굵기로 중요도를 말하지 않는다 */
+.mmd .node rect, .mmd .node polygon, .mmd .node path { stroke-width: 1.15px; }
+.mmd .flowchart-link, .mmd .transition { stroke-width: 1.15px; }
+.mmd .marker { stroke: var(--plate-ink) !important; fill: var(--plate-ink) !important; }
+
+/* 묶음(subgraph)은 실선 테두리에 제목만. 바탕을 칠하지 않아 안쪽 상자가 살아난다 */
+.mmd .cluster rect {
+  fill: transparent !important;
+  stroke: var(--plate-ink) !important;
+  stroke-width: 1.15px;
+}
+.mmd .cluster-label, .mmd .cluster span {
+  color: var(--plate-ink) !important;
+  font-weight: 700;
+  font-size: 0.94em;
+}
+
+/* 화살표 라벨은 선 위에 얹히므로 종이색으로 선을 끊어 준다 */
+.mmd .edgeLabel, .mmd .edgeLabel p {
+  background: var(--plate-paper) !important;
+  color: var(--plate-ink) !important;
+  fill: var(--plate-paper) !important;
+  font-size: 0.9em;
+}
+.mmd .edgeLabel rect { fill: var(--plate-paper) !important; opacity: 1; }
+
+/* 불릿을 담은 상자는 왼쪽 정렬 — 목록은 가운데 정렬하면 읽는 눈이 매번 줄머리를 찾는다.
+   :::list 를 붙인 노드에만 적용한다(classDef 는 렌더러가 자동으로 넣는다). */
+.mmd .node.list .nodeLabel,
+.mmd .node.list .nodeLabel p,
+.mmd .node.list foreignObject div { text-align: left !important; }
+.mmd .node.list foreignObject div { display: block !important; }
+
+/* 강조 묶음의 테두리·제목만 색을 갖는다 */
+.mmd .cluster.accent rect { stroke: var(--plate-accent-ink) !important; }
+.mmd .cluster.accent .cluster-label span { color: var(--plate-accent-ink) !important; }

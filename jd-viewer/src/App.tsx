@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { Sidebar } from './components/Sidebar'
 import { JobList } from './components/JobList'
 import { JobDetail } from './components/JobDetail'
-import { TechChart } from './components/TechChart'
 import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
 import { BlogView } from './components/BlogView'
@@ -34,24 +33,6 @@ function App() {
   // 정확히 나와야만 잡아서, 문장으로 물으면 대개 0건이 된다 — 그게 기본값일 이유가 없다.
   // 끄면 기존 로컬 필터로 돌아간다(API 가 없으면 토글 자체가 안 보인다).
   const [semantic, setSemantic] = useState(true)
-  const [light, setLight] = useState(
-    () => typeof document !== 'undefined' && document.documentElement.classList.contains('light'),
-  )
-
-  const toggleTheme = () => {
-    setLight((v) => {
-      const next = !v
-      document.documentElement.classList.toggle('light', next)
-      try {
-        localStorage.theme = next ? 'light' : 'dark'
-      } catch {
-        /* localStorage 불가 시 무시 */
-      }
-      window.dispatchEvent(new Event('themechange')) // mermaid 등 테마 의존 컴포넌트 재렌더
-      return next
-    })
-  }
-
   // 추천 목록에서 고른 공고로 모달을 갈아끼운다. 추천 JSON 은 url 만 들고 있어서
   // 실제 Job 객체는 여기서 찾는다(필터에 걸려 목록에 없는 공고도 열려야 하므로 jobs 전체 대상).
   const openJobByUrl = (url: string) => {
@@ -84,7 +65,6 @@ function App() {
     const byUrl = new Map(jobs.map((j) => [j.url, j]))
     return hits.map((h) => byUrl.get(h.url)).filter((j): j is Job => Boolean(j))
   }, [hits, localFiltered, jobs])
-  const stacks = useMemo(() => stackCounts(filtered), [filtered])
   const allStacks = useMemo(() => stackCounts(jobs), [jobs])
   const allRoles = useMemo(() => roleCounts(jobs), [jobs])
 
@@ -97,12 +77,10 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen">
-      <nav className="flex items-center gap-2 px-3 sm:px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/95 backdrop-blur supports-[backdrop-filter]:bg-(--color-panel)/80 sticky top-0 z-30">
-        <span className="hidden md:flex items-center gap-2 shrink-0 mr-1 select-none">
-          <span className="h-5 w-5 rounded bg-(--color-accent)/20 border border-(--color-accent)/40 flex items-center justify-center text-(--color-accent) text-[11px] font-bold">
-            JD
-          </span>
-          <span className="text-sm font-semibold text-(--color-text) tracking-tight">Viewer</span>
+      <nav className="flex items-center gap-3 px-4 sm:px-6 h-14 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-30">
+        <span className="hidden md:flex items-baseline gap-1.5 shrink-0 mr-3 select-none">
+          <span className="text-lg font-extrabold text-(--color-accent) tracking-tight">JD</span>
+          <span className="text-lg font-bold text-(--color-text) tracking-tight">Viewer</span>
         </span>
         <div className="flex items-center gap-1 overflow-x-auto no-scrollbar -mx-1 px-1">
           <TabButton active={tab === 'jobs'} onClick={() => setTab('jobs')}>
@@ -130,15 +108,7 @@ function App() {
             기술 역설계
           </TabButton>
         </div>
-        <button
-          onClick={toggleTheme}
-          title={light ? '다크 모드로' : '라이트 모드로'}
-          aria-label="테마 전환"
-          className="ml-auto shrink-0 w-8 h-8 flex items-center justify-center rounded border border-(--color-border) text-base hover:border-(--color-accent)"
-        >
-          {light ? '🌙' : '☀️'}
-        </button>
-        <span className="shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
+        <span className="ml-auto shrink-0 text-xs text-(--color-muted) tabular-nums whitespace-nowrap">
           <span className="text-(--color-text) font-medium">{jobs.length.toLocaleString()}</span>건
           <span className="hidden sm:inline"> · 필터 </span>
           <span className="hidden sm:inline text-(--color-accent) font-medium">{filtered.length.toLocaleString()}</span>
@@ -147,11 +117,11 @@ function App() {
       </nav>
 
       {tab === 'companies' ? (
-        <div key="companies" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="companies" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <CompanyView focusNorm={companyFocus} onStudyTech={openStudy} />
         </div>
       ) : tab === 'blog' || tab === 'radar' ? (
-        <div key="blogradar" className="flex flex-col flex-1 min-h-0 jd-fade-in">
+        <div key="blogradar" className="flex flex-col flex-1 min-h-0 jd-fade-in jd-canvas">
           <div className="flex items-center gap-3 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/60">
             <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden shrink-0">
               <ModeBtn active={tab === 'blog'} onClick={() => setTab('blog')}>블로그 글</ModeBtn>
@@ -164,17 +134,17 @@ function App() {
           {tab === 'blog' ? <BlogView /> : <RadarView />}
         </div>
       ) : tab === 'calendar' ? (
-        <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <CalendarView />
         </div>
       ) : tab === 'reposts' ? (
         <RepostView />
       ) : tab === 'trend' ? (
-        <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="trend" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <TrendView onOpenCompany={openCompany} focusTech={techFocus} />
         </div>
       ) : tab === 'reveng' ? (
-        <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <RevengView />
         </div>
       ) : tab === 'jobs' ? (
@@ -187,7 +157,7 @@ function App() {
             hint={<>public/all_jobs_enriched.json 이 있는지 확인하세요.</>}
           />
         ) : (
-          <div className="flex flex-1 min-h-0 jd-fade-in">
+          <div className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
             <Sidebar
               filter={filter}
               setFilter={setFilter}
@@ -203,13 +173,12 @@ function App() {
                   : undefined
               }
             />
-            <main className="flex-1 min-w-0 overflow-auto">
+            <main className="flex-1 min-w-0 overflow-auto jd-panel">
               <MobileBar onMenu={() => setFilterOpen(true)} label="필터">
                 <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
                   {filtered.length.toLocaleString()}건
                 </span>
               </MobileBar>
-              <TechChart data={stacks} onPick={toggleStack} highlight={filter.stacks} />
               <JobList jobs={filtered} selected={selected} onSelect={setSelected} />
             </main>
             {selected && (
@@ -222,7 +191,7 @@ function App() {
           </div>
         )
       ) : (
-        <div key="mindmap" className="flex flex-1 min-h-0 relative jd-fade-in">
+        <div key="mindmap" className="flex flex-1 min-h-0 relative jd-fade-in jd-canvas">
           <CareerMap />
         </div>
       )}
@@ -242,10 +211,10 @@ function TabButton({
   return (
     <button
       onClick={onClick}
-      className={`px-3 sm:px-4 py-1.5 text-sm rounded transition whitespace-nowrap shrink-0 ${
+      className={`relative px-3 py-2 text-[15px] transition whitespace-nowrap shrink-0 after:absolute after:left-3 after:right-3 after:-bottom-px after:h-0.5 ${
         active
-          ? 'bg-(--color-accent) text-(--color-on-accent) font-medium'
-          : 'text-(--color-text) hover:bg-(--color-bg) border border-transparent hover:border-(--color-border)'
+          ? 'text-(--color-accent) font-bold after:bg-(--color-accent)'
+          : 'text-(--color-muted) hover:text-(--color-text) after:bg-transparent'
       }`}
     >
       {children}

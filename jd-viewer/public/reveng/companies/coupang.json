@@ -655,7 +655,70 @@
           "date": "2023-04-17",
           "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Geodesic Discrete Global Grid Systems",
+            "authors": "Kevin Sahr, Denis White, A. Jon Kimerling",
+            "year": "2003",
+            "venue": "Cartography and Geographic Information Science 30(2)",
+            "url": "https://www.tandfonline.com/doi/abs/10.1559/152304003100011090",
+            "takeaway": "쿠팡이 쓰는 H3 가 딛고 선 이론 — 구(球)를 계층적 격자로 이산화하는 체계를 정리한 논문이고, **정이십면체를 기반으로 하면 오각형 12개가 반드시 남는다**는 것도 여기서 나온다. 쿠팡이 '오각형 예외는 주로 바다에 있어 배송 주소가 없다'고 넘어간 그 예외가 구현의 흠이 아니라 **구를 격자로 덮으려 할 때 피할 수 없는 것**이라는 뜻이다. **쿠팡은 H3 를 쓴다고만 밝혔고 이 논문을 언급하지 않았다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Honeycomb Conjecture",
+            "authors": "Thomas C. Hales",
+            "year": "2001",
+            "venue": "Discrete & Computational Geometry 25(1)",
+            "url": "https://link.springer.com/article/10.1007/s004540010071",
+            "takeaway": "'왜 사각형(S2)이 아니라 육각형인가'의 수학적 바닥. 같은 넓이를 덮을 때 **둘레의 합을 최소로 하는 평면 분할이 정육각형**임을 증명한 논문이고, 쿠팡이 적은 '같은 면적을 더 적은 격자로 표현한다'가 이 성질의 실무적 표현이다. 이웃 쪽 이점은 이 논문 밖의 사실인데, 육각형은 이웃 여섯이 모두 같은 거리에 있는 반면 사각형은 변으로 닿는 넷과 꼭짓점으로 닿는 넷의 거리가 다르다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "R-Trees: A Dynamic Index Structure for Spatial Searching",
+            "authors": "Antonin Guttman",
+            "year": "1984",
+            "venue": "ACM SIGMOD 1984",
+            "url": "https://dl.acm.org/doi/10.1145/602259.602266",
+            "takeaway": "쿠팡이 **가지 않은 길**. 공간 검색의 표준 답은 도형마다 행을 두고 트리로 색인하는 것인데, 14레벨에서 한국만 217억 격자가 되는 규모에서는 그 모양 자체가 성립하지 않는다. 그래서 쿠팡은 **격자를 행으로 두는 대신 배송 영역이 격자를 갖게** 뒤집었다 — 색인을 더 잘 만드는 대신 색인해야 할 것의 수를 없앤 선택이다. **쿠팡이 인용한 적은 없다. 버린 대안의 이름을 붙이기 위해 놓는다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "격자 크기는 어느 값을 골라도 현실과 어긋난다",
+            "why_hard": "**현실의 경계가 격자와 정렬되지 않는다.** 격자가 크면 여러 건물이 한 칸에 들어가고 작으면 건물 하나가 여러 칸에 걸치는데, 이것은 해상도를 올려서 없어지는 문제가 아니라 **연속인 공간을 이산으로 덮을 때 남는 잔차**다. 건물·도로·출입구는 육각형에 맞춰 지어지지 않았다. 게다가 정밀도를 사면 데이터가 기하급수로 는다 — 12레벨 4.32억, 13레벨 31억, **14레벨 217억**. 정밀도의 값을 치르는 곳이 정확도가 아니라 저장 구조다.",
+            "current_best": "**해상도를 하나 고르고(14레벨, 6.3㎡) 저장을 뒤집는다.** 격자 ID 를 행으로 두면 RDBMS 가 통상 감당하는 1억~10억 행 범위를 훌쩍 넘으므로, 배송 영역이 격자 정보를 갖는 쪽으로 바꾸고 자식이 모두 있으면 부모로 접는다(compaction). 대가는 영역 하나가 수많은 격자를 들게 되어 **메모리로 문제가 옮겨간다**는 것, 그리고 해외로 넓히면 그만큼 계속 는다는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          },
+          {
+            "problem": "사람이 그리는 표현과 기계가 다루는 표현이 다르다",
+            "why_hard": "**같은 영역인데 목적마다 좋은 표현이 다르다.** 사람이 지도 위에 그리는 것은 폴리곤(벡터)이고, 겹침·누락 없이(MECE) 관리하기 좋은 것은 격자(래스터)이며, '이 지점에서 먼 배송 영역 찾기' 같은 지오서치에 좋은 것은 다시 폴리곤이다. 하나만 들면 다른 쪽 연산이 비싸지고, 둘을 들면 **반드시 어긋나는 순간이 생긴다.** 그리고 복잡한 폴리곤을 격자로 바꾸는 변환은 그리는 사람을 기다리게 할 만큼 느리다.",
+            "current_best": "**둘 다 들고, 어긋나는 창을 감수한다.** 사용자가 그린 폴리곤을 먼저 저장해 편집 흐름을 끊지 않고, 육각 폴리곤(polyfill → 바깥 경계만 다시 폴리곤)은 **비동기로 뒤에서** 만든다. 벡터를 래스터로 바꿨다가 다시 벡터로 되돌리는 구조라 관리와 검색을 함께 얻는다. 대가는 저장 직후 잠깐 두 표현이 다르다는 것 — **정확성보다 편집 흐름을 먼저 지킨 선택**이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Coupang Rocket Delivery's spatial index-based delivery management system",
+                "url": "https://medium.com/coupang-engineering/coupang-rocket-deliverys-spatial-index-based-delivery-management-system-26940eaaee63",
+                "publisher": "Coupang Engineering Blog · Geo J Son & Sam HS Jeon",
+                "date": "2023-04-17",
+                "summary": "우편번호 하나의 하루 배송 건수가 두 자릿수에서 세 자릿수로 늘어 CPF 한 명이 감당할 수 없게 되자, 텍스트 주소 기반 배송 영역을 Uber H3 14레벨(6.3㎡) 육각 격자 위로 옮긴 과정. 2021년 시작."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "scm-workflow",
@@ -1023,7 +1086,70 @@
           "date": "2022-10-28",
           "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "How Do Committees Invent?",
+            "authors": "Melvin E. Conway",
+            "year": "1968",
+            "venue": "Datamation 14(5)",
+            "url": "https://www.melconway.com/Home/Committees_Paper.html",
+            "takeaway": "이 기능의 출발점이 기술 문제가 아니라는 것의 이름. 쿠팡이 스스로 적었듯 **실제 병목은 알고리즘이 아니라 '누가 데이터를 꺼낼 수 있는가'** 였는데, 그것은 조직의 경계가 시스템의 제약으로 나타난 것이다. 이 플랫폼은 그 경계를 **기술로 다시 그으려는 시도**로 읽힌다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Usability Analysis of Visual Programming Environments: A 'Cognitive Dimensions' Framework",
+            "authors": "T. R. G. Green, M. Petre",
+            "year": "1996",
+            "venue": "Journal of Visual Languages & Computing 7(2)",
+            "url": "https://www.sciencedirect.com/science/article/pii/S1045926X96900099",
+            "takeaway": "캔버스로 프로그래밍하는 것이 **언제 도움이 되고 언제 해가 되는지**를 따진 연구. 쿠팡이 적은 대가('복잡해질수록 캔버스가 코드보다 읽기 어려워진다')가 여기서는 시각 표기법의 알려진 성질로 다뤄진다 — 작은 프로그램에서 얻은 이점이 규모가 커지면 뒤집힌다. 조건문·반복을 캔버스에 올린 결정이 그 뒤집힘을 앞당긴다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Advances in Dataflow Programming Languages",
+            "authors": "Wesley M. Johnston, J. R. Paul Hanna, Richard J. Millar",
+            "year": "2004",
+            "venue": "ACM Computing Surveys 36(1)",
+            "url": "https://dl.acm.org/doi/10.1145/1013208.1013209",
+            "takeaway": "'블록들이 실행 중에 서로의 입출력을 파라미터로 주고받는다'는 구조의 이름이 데이터플로다. 이 모델의 성질 하나가 쿠팡의 설계를 설명한다 — **의존 관계가 곧 실행 순서이므로 병렬성이 따로 지정하지 않아도 드러난다.** 순차·병렬·반복을 캔버스에 자연스럽게 올릴 수 있었던 이유이고, 회사가 입출력 통합을 상용 워크플로 대비 최대 장점으로 꼽은 근거이기도 하다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "병목이 접근 권한일 때, 도구를 주면 병목이 사라지지 않고 옮겨간다",
+            "why_hard": "**조직의 문제를 기술로 끝까지 없앨 수 없다.** 데이터에 닿는 사람이 한 명이면 그 사람이 팀의 처리량 상한인데, 도구를 줘서 모두가 닿게 하면 이번에는 **플랫폼이 상한이 된다** — 쿠팡 스스로 '플랫폼이 못 하는 일은 그 팀도 못 하게 된다'고 적었다. 게다가 상한만 옮겨가는 게 아니라 책임도 흐려진다. 엔지니어가 아닌 사람이 만든 파이프라인이 늘수록 **누가 그 품질과 운영을 책임지는지**가 불분명해지고, 개인 실험 공간이 아직 계획 단계라 **실험과 운영이 같은 자리에서 이뤄지는 상태**가 남아 있다.",
+            "current_best": "**층을 나눠 상한을 최대한 밀어낸다.** 반복되는 데이터 추출·처리·공유는 플랫폼이 표준화하고, 그것으로 안 되는 도메인 알고리즘은 엔지니어가 **커스텀 서비스 컴포넌트로 등록**해 비엔지니어가 블록으로 쓰게 한다. 통제는 팀·프로젝트 그룹 폴더의 권한으로 건다. 대가는 컴포넌트의 입출력 계약을 지켜야 하는 부담, 그리고 **모두가 올라탄 플랫폼이 단일 장애점 후보가 된다**는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "problem": "시각 프로그래밍은 규모가 커지면 코드보다 읽기 어려워진다",
+            "why_hard": "**화면은 2차원이고 유한한데 프로그램의 복잡도는 그렇지 않다.** 블록이 늘면 연결선이 교차하고, 한 화면에 안 들어가는 순간 전체를 한눈에 보는 방법이 사라진다. 텍스트 코드에는 검색·diff·리뷰·버전 비교라는 도구가 이미 있지만 캔버스에는 그 대응물이 빈약하다. 그리고 조건문·반복·병렬화까지 캔버스에 올리면 **이 뒤집힘이 더 빨리 온다** — 작은 워크플로에서 얻은 명료함이 큰 워크플로에서는 정확히 반대로 작용한다.",
+            "current_best": "**복잡한 것은 캔버스에서 접어 코드로 내린다.** 도메인의 핵심 알고리즘을 커스텀 서비스 컴포넌트로 만들어 블록 하나로 감추면 캔버스가 감당할 크기를 넘지 않는다. 다만 이 해법에는 되돌아오는 고리가 있다 — **접어 넣은 안쪽은 다시 엔지니어만 다룰 수 있게 되므로, 첫 번째 난제(접근 권한 병목)로 되돌아간다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "search-indexing",
@@ -1414,7 +1540,70 @@
           "date": "2020-05-07",
           "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Hidden Technical Debt in Machine Learning Systems",
+            "authors": "D. Sculley 외 (Google)",
+            "year": "2015",
+            "venue": "NeurIPS 2015",
+            "url": "https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+            "takeaway": "이 기능의 전체 논리를 그대로 담은 글. 요지는 **ML 시스템에서 모델은 작은 상자이고 진짜 일은 그 주변**이라는 것인데, 쿠팡이 '진짜 과제는 랭킹 알고리즘이 아니라 시그널을 얼마나 빨리 만들 수 있느냐'라고 쓴 것과 같은 말이다. 특히 논문이 이름 붙인 **'파이프라인 정글(pipeline jungle)'** 이 쿠팡의 '약 70개의 개별 파이프라인, 유지가 거의 불가능했다'와 정확히 같은 현상이다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Learning to Rank for Information Retrieval",
+            "authors": "Tie-Yan Liu (Microsoft Research)",
+            "year": "2009",
+            "venue": "Foundations and Trends in Information Retrieval 3(3)",
+            "url": "https://www.nowpublishers.com/article/Details/INR-016",
+            "takeaway": "'관련성만이 아니라 평점·리뷰·가격·브랜드까지 함께 본다'는 결정이 서 있는 자리 — 여러 시그널을 하나의 순서로 학습해 합치는 문제군이다. 다만 이 분야가 전제하는 **정답 라벨(무엇이 더 좋은 결과인가)이 커머스에서는 주어지지 않는다.** 쿠팡의 '좋은 답은 질문에 맞는 문서가 아니라 사도 될 물건'이라는 문장이 그 간극을 가리킨다. **쿠팡이 인용한 적은 없고, 어떤 모델을 쓰는지도 글에 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing",
+            "authors": "Matei Zaharia 외 (UC Berkeley)",
+            "year": "2012",
+            "venue": "NSDI 2012",
+            "url": "https://www.usenix.org/conference/nsdi12/technical-sessions/presentation/zaharia",
+            "takeaway": "쿠팡이 index merger·index builder·Session Log 파서를 전부 Spark 로 만든 이유의 바닥. 이 논문의 요점은 **중간 결과를 디스크에 되쓰지 않고 메모리에 두면서도 계보(lineage)로 장애를 복구한다**는 것이고, 그래서 여러 단계를 잇는 잡에서 MapReduce 보다 크게 유리하다. 쿠팡이 '확장이 쉬워 택했다'고만 적은 자리다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "커머스 검색에서 '가장 좋은 결과'가 무엇인지 정의할 수 없다",
+            "why_hard": "**최적화할 대상 자체가 정해지지 않는다.** 웹 검색에는 관련성이라는 비교적 합의된 기준이 있지만, 커머스에서 좋은 답은 '질문에 맞는 문서'가 아니라 '사도 될 물건'이다. 그런데 그 판단에 들어가는 것들 — 가격·평점·리뷰·브랜드·재고 — 은 **서로 다툰다.** 싼 것과 평점 높은 것 중 무엇을 위에 둘지는 데이터가 정해 주지 않고, 고객·판매자·회사의 이해도 같지 않다. 정답 라벨이 없으니 학습으로 밀어붙일 수도 없다.",
+            "current_best": "**정의를 고정하는 대신 실험 속도를 산다.** 무엇이 좋은지 모르니 빨리 시도해 보는 쪽으로 가고, 그래서 이 도메인의 투자가 랭킹 모델이 아니라 **시그널을 만드는 시간**(며칠 → 몇 시간)으로 갔다. 쿠팡 스스로 '시그널을 빨리 만드는 능력 자체가 검색 품질의 상한'이라고 적었다. 대가는 시그널을 **프레임워크가 정한 모양 안에서만** 만들 수 있다는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "problem": "파이프라인은 잘하고 있을 때 늘어난다",
+            "why_hard": "**시그널이 하나 늘 때마다 그것을 만드는 경로가 하나 는다.** 각 경로는 조금씩 다른 소스·스케줄·실패 모드를 갖는데, 하나하나는 전부 합리적인 결정이었다. 문제는 합쳐졌을 때 생긴다 — 쿠팡의 경우 **약 70개에 이르러 유지가 거의 불가능해졌고 자원도 크게 낭비했다.** 이것이 보통의 기술 부채와 다른 점은 **일을 잘할수록 빨리 자란다**는 것이다. 위의 첫 번째 난제에 대한 답(실험을 많이 빨리)이 그대로 이 문제의 연료가 된다.",
+            "current_best": "**새 경로를 만들 수 없게 한다.** 외부 Hive 테이블에서 병합하던 방식을 버리고 시그널 생성을 플랫폼 안(Indexing Bus)으로 들인 뒤, 개발 단위를 **'클래스 하나를 구현하는 것'** 으로 좁혔다. 만들 자유를 줄여서 늘어남을 막는 방식이다. 대가는 플랫폼이 더 무거워지고 더 많은 책임을 진다는 것, 그리고 범위를 추천·광고까지 넓힐수록 **회사의 단일 의존점**이 된다는 것이다 — 회사 스스로 이를 '쿠팡 비즈니스의 두뇌'라고 부른다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "core-serving",
@@ -1821,7 +2010,70 @@
           "date": "2022-08-12",
           "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Data on the Outside versus Data on the Inside",
+            "authors": "Pat Helland",
+            "year": "2005",
+            "venue": "CIDR 2005",
+            "url": "https://www.cidrdb.org/cidr2005/papers/P12.pdf",
+            "takeaway": "서비스 **안**의 데이터와 서비스 **밖**으로 나온 데이터는 성격이 다르다는 논지 — 밖으로 나온 것은 이미 과거의 사실이고, 그것을 현재처럼 다루면 안 된다. 쿠팡이 서빙 계층을 **변경을 쫓지 않게** 만들고 각 마이크로서비스가 자기 갱신을 큐로 밀어 넣게 한 구조가 정확히 이 관점이다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Eventually Consistent",
+            "authors": "Werner Vogels",
+            "year": "2009",
+            "venue": "Communications of the ACM 52(1)",
+            "url": "https://dl.acm.org/doi/10.1145/1435417.1435432",
+            "takeaway": "'최종적 일관성을 받아들여 한 번의 읽기로 전부 가져온다'는 결정이 딛고 선 자리. 이 글의 요점은 **일관성이 켜고 끄는 스위치가 아니라 데이터마다 다르게 정하는 값**이라는 것인데, 쿠팡은 그것을 극단까지 밀어 **가격은 분 단위, 재고는 초 단위**로 층을 갈랐다. 커머스 화면의 대부분은 몇 초 늦어도 되지만 재고는 아니라는 판단이 이 구분을 낳았다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The Tail at Scale",
+            "authors": "Jeffrey Dean, Luiz André Barroso (Google)",
+            "year": "2013",
+            "venue": "Communications of the ACM 56(2)",
+            "url": "https://dl.acm.org/doi/10.1145/2408776.2408794",
+            "takeaway": "화면 하나가 여러 하위 서비스를 부를 때 **가장 느린 하나가 전체를 정한다**는 문제를 정리한 글. 쿠팡의 대응 세 가지가 전부 여기에 대한 답이다 — 팬아웃 자체를 없애고(한 번의 읽기), 느려진 곳을 끊고(circuit breaker), 지켜야 할 페이지를 따로 떼어 놓는다(CSP 분리). **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "쓰기로 나눈 경계와 읽기로 합치는 화면이 어긋난다",
+            "why_hard": "**서비스 경계와 화면 경계가 같을 이유가 없다.** 마이크로서비스는 누가 그 데이터를 책임지는가로 쪼개지고(Catalog·Pricing·Stock and Fulfillment), 상품 화면은 고객이 한 번에 보고 싶은 것으로 합쳐진다. 화면이 서비스들을 직접 부르면 **지연은 가장 느린 하나에 묶이고 성공률은 곱으로 떨어지며**, 모든 마이크로서비스가 각자 고가용성을 책임져야 한다. 그렇다고 경계를 화면에 맞추면 이번엔 소유권이 무너져 쓰기 쪽이 망가진다 — 어느 한쪽을 옳게 하면 다른 쪽이 틀리는 구조다.",
+            "current_best": "**읽기용 사본을 따로 만든다.** 각 서비스가 자기 갱신을 큐로 밀어 공통 NoSQL 에 쌓고, 서빙 계층은 변경을 쫓는 대신 **한 번의 읽기로 화면에 필요한 조각을 전부** 가져온다. 강한 일관성을 포기한 대가로 I/O 가 줄고 처리량이 오른다. 다만 그 사본은 정의상 **항상 조금 과거**이고, 모든 화면이 이 한 계층에 의존하게 된다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          },
+          {
+            "problem": "얼마나 낡아도 되는지가 데이터마다 다른데, 틀렸을 때의 대가는 비대칭이다",
+            "why_hard": "**신선도는 공짜가 아니고 필요한 정도는 필드마다 다르다.** 가격이 몇 초 늦게 반영되는 것은 넘어갈 수 있지만 품절이 몇 초 늦으면 고객은 **물건 대신 환불을 받는다** — 그건 지연이 아니라 신뢰의 손실이다. 하나의 신선도 정책으로는 둘 다 맞출 수 없다. 전부 초 단위에 맞추면 비용이 감당되지 않고, 전부 분 단위에 맞추면 재고가 틀린다. 게다가 **보장 배송일은 센터의 출고 여력에 따라 실시간으로 바뀌므로** 미리 정해 둘 수도 없다.",
+            "current_best": "**층을 갈라 서로 다른 신선도를 준다.** 분 단위를 담당하는 read-through 캐시(저장소 갱신 신호로 교체, 분 단위 99.99% 동일)와 초 단위가 필요한 값만 담는 실시간 캐시를 따로 두고, 서빙 계층이 **둘을 함께 읽어 더 최신인 값**을 고른다. 대가는 캐시 층이 둘이 되어 무효화 경로가 늘고 복잡해진다는 것, 그리고 **99.99% 는 완전한 동일이 아니라 정해 놓은 목표치**라는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Our backend strategy to handle massive traffic (Part 1)",
+                "url": "https://medium.com/coupang-engineering/our-backend-strategy-to-handle-massive-traffic-d30cd6cc4fb2",
+                "publisher": "Coupang Engineering Blog · Gogi (Du Hyeong) Kim & Key (Ki Hyeon) Kim",
+                "date": "2022-08-12",
+                "summary": "상품 화면 하나에 Catalog·Pricing·Fulfillment 등 여러 마이크로서비스의 데이터가 모이고, 보장 배송일은 Stock and Fulfillment 가 관리한다. 공통 NoSQL 저장소 + read-through 캐시 + 실시간 캐시 + circuit breaker + CSP/N-CSP 분리로 이뤄진 core serving layer 이야기."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "seller-understanding",
@@ -2226,7 +2478,79 @@
           "date": "2024-10-15",
           "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Learning Transferable Visual Models From Natural Language Supervision (CLIP)",
+            "authors": "Alec Radford 외 (OpenAI)",
+            "year": "2021",
+            "venue": "ICML 2021",
+            "url": "https://proceedings.mlr.press/v139/radford21a.html",
+            "takeaway": "쿠팡이 이름을 대고 쓰는 기법. 가져다 쓴 성질은 **이미지와 텍스트를 같은 공간에 놓는다**는 것이고, 그래서 하나의 임베딩이 광고 검색·유사도 검색·추천 피처에 한꺼번에 쓰인다. 마켓플레이스에 특히 맞는 이유는 셀러가 올린 **이미지에 글자가 박혀 있어서** 둘을 따로 배우면 그 글자가 어느 쪽에도 온전히 안 들어가기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "title": "Snorkel: Rapid Training Data Creation with Weak Supervision",
+            "authors": "Alexander Ratner 외 (Stanford)",
+            "year": "2017",
+            "venue": "VLDB 2017",
+            "url": "https://www.vldb.org/pvldb/vol11/p269-ratner.pdf",
+            "takeaway": "'LLM 으로 약한 레이블을 대량 생성하고 품질 검사를 통과한 것만 쓴다'는 결정이 서 있는 방법론. 요지는 **완벽하지 않은 레이블을 많이 만들고 그 잡음을 모델링하는 편이, 완벽한 레이블을 적게 만드는 것보다 낫다**는 것이다. 쿠팡이 '고품질 레이블이 없는 새 세그먼트를 시작할 수 있게 해 준다'고 적은 자리가 이 논지 그대로다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+            "authors": "Woosuk Kwon 외 (UC Berkeley)",
+            "year": "2023",
+            "venue": "SOSP 2023",
+            "url": "https://dl.acm.org/doi/10.1145/3600006.3613165",
+            "takeaway": "쿠팡이 '실험 결과 약 20배 처리량'이라고만 적은 수치의 **이유**. vLLM 의 핵심은 KV 캐시를 운영체제의 페이징처럼 다뤄 **메모리 단편화로 낭비되던 GPU 공간을 회수**하는 것이고, 그 회수분이 곧 동시에 처리할 수 있는 요청 수가 된다. 즉 20배는 모델이 빨라져서가 아니라 **한 번에 더 많이 태울 수 있게 되어** 나온 값이다. **쿠팡은 vLLM 을 쓴다고만 밝혔고 이 논문을 언급하지 않았다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "레이블이 없어서 모델이 필요한데, 레이블을 만들려면 모델이 필요하다",
+            "why_hard": "**순환이다.** 좋은 모델을 학습하려면 레이블이 있어야 하고, 레이블을 사람 손으로 대량 생산하는 것은 비용과 시간에서 성립하지 않는다. 그래서 모델로 레이블을 만들게 되는데, 그 모델을 만들려면 다시 레이블이 필요하다. 영어라면 공개 데이터가 이 순환을 밖에서 끊어 주지만 **한국어와 중국어는 대부분의 ML 과제에서 학습 데이터가 상대적으로 적다.** 게다가 기계가 만든 레이블로 학습한 모델이 다시 레이블을 만들면 **오류가 증폭될 수 있다** — 순환이 스스로를 강화하는 방향으로 돌 위험이 있다.",
+            "current_best": "**순환을 끊지 않고 관문을 세운다.** LLM 으로 약한 레이블을 대량 만들되 **품질 검사를 통과한 것만** 약한 지도학습에 넣는다. 방법 선택에서도 같은 태도가 보이는데, 속성 추출에서 가장 좋은 결과를 내는 CPT 대신 자원이 덜 드는 ICL·SFT 를 주로 쓴다 — **가장 좋은 방법이 아니라 가장 자주 돌릴 수 있는 방법**을 고른 것이다. 대가는 검사 단계가 반드시 필요하다는 것, 그리고 그 검사의 기준을 무엇으로 삼을지는 결국 사람이 정해야 한다는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          },
+          {
+            "problem": "토크나이저가 모델 품질의 상한을 미리 정해 버린다",
+            "why_hard": "**파인튜닝으로 고칠 수 없는 자리다.** 오픈소스 아키텍처를 가져오면 토크나이저가 따라오는데, 그것들은 대개 영어를 중심으로 만들어졌다. 중국어는 띄어쓰기가 없고 한국어는 조사가 붙는 교착어이며 둘 다 문자 집합이 크다 — 그래서 같은 의미가 **더 많은 토큰으로 쪼개진다.** 같은 문맥 창에 더 적은 내용이 들어가고 추론 비용도 그만큼 오른다. 그런데 토크나이저를 바꾸려면 **사전학습을 다시 해야 하므로**, 파인튜닝 단계에서는 손댈 수 없는 제약으로 남는다. 쿠팡 스스로 '토크나이저가 곧 모델 품질에 영향을 준다'고 적었다.",
+            "current_best": "**고치는 대신 고른다.** 아키텍처를 평가할 때 CJK 성능을 우선 보고 3B~20B 규모를 선호하는 식으로, 토크나이저가 이미 괜찮은 모델을 찾아 쓴다. 대가는 선택지가 **남이 만들어 놓은 것 안으로 한정된다**는 것이다 — 더 좋은 아키텍처가 나와도 CJK 토크나이저가 나쁘면 쓸 수 없고, 그 판단이 매번 새로 필요하다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Accelerating Coupang's AI Journey with LLMs",
+                "url": "https://medium.com/coupang-engineering/accelerating-coupangs-ai-journey-with-llms-2817d55004d3",
+                "publisher": "Coupang Engineering Blog · ML Platform Team",
+                "date": "2024-10-15",
+                "summary": "전 세계 셀러가 파는 마켓플레이스에서 다른 언어의 셀러·상품을 이해하는 문제. 카테고리마다 두던 분류 모델을 LLM 단일 분류기로 합치고, 사람 레이블이 부족한 언어를 LLM 약한 레이블로 메우며, GPU 부족을 멀티리전+온프렘 하이브리드로 푼 이야기."
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "open_questions": [

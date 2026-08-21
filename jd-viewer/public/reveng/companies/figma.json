@@ -4,7 +4,7 @@
   "name_en": "Figma",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
   "business_model": "**좌석 기반 구독으로 번다.** 2025년 매출 **10.56억 달러**(+41%), 4분기 3.038억(+40%). 순매출유지율(NDR)이 **136%** 이고 연 10만 달러 이상 쓰는 유료 고객이 **1,405곳** 이라, **이미 들어온 고객이 더 쓰면서 자라는 구조**다. non-GAAP 영업이익은 1.295억 달러(마진 12%)이고, GAAP 영업손실 13억 달러에는 **IPO 관련 일회성 주식보상비용 9.757억 달러**가 들어 있다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 자기 지면에서, Netflix 는 자기 구독에서, 쿠팡은 자기가 파는 물건에서, Shopify 는 남의 매출의 일부에서 번다. Figma 는 **일하는 사람의 자리(좌석)** 에서 번다 — 그래서 **여러 사람이 한 파일에 동시에 들어와 있는 것 자체가 제품의 값어치**가 된다(뒷문장은 이 사이트의 해석).\n\n그리고 사용자의 위치가 인프라의 제약이 된다 — **주간 활성 사용자의 80% 이상이 미국 밖**인데 인프라는 오리건 데이터센터 중심이다(2019년 기준).",
@@ -114,20 +114,260 @@
     {
       "name": "실시간 데이터 구독",
       "why": "파일 캔버스 밖의 것 — 댓글·팀·프로젝트 — 은 멀티플레이어 시스템을 쓰지 않는다. 그런데 그것들도 실시간으로 보여야 한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Postgres 논리 복제 스트림(WAL) → Kafka",
+          "solves": "폴링 없이 변경을 밀어낸다. 폴링은 DB 질의 수를 통째로 배수로 늘리고, 주기를 쿼리마다 사람이 정하게 만든다.",
+          "limits": "복제 지연이 곧 제품 지연이다. 그리고 DB 가 샤드로 쪼개지면 스트림이 여럿이 되어 전역 순서가 사라진다 — 순서를 요구하지 않는 무효화 모델로 문제를 옮겨 메웠다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LiveGraph: real-time data fetching at Figma",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+              "publisher": "Figma Blog",
+              "date": "2021-10-14",
+              "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+            },
+            {
+              "title": "Keeping It 100(x) With Real-time Data At Scale",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-05-17",
+              "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+            }
+          ]
+        },
+        {
+          "tech": "읽기 관통 캐시 (쿼리 해시로 샤딩)",
+          "solves": "클라이언트로 가는 데이터의 큰 쪽은 실시간 갱신이 아니라 최초 읽기였다. 그 읽기를 DB 앞에서 막는다. 해시로만 나뉘므로 캐시는 DB 토폴로지를 몰라도 된다.",
+          "limits": "무효화되면 결과를 고치는 게 아니라 지우고 다시 조회한다 — 그 순간 부하가 DB 로 간다. 배포 때 빈 캐시로 몰리는 문제는 캐시를 edge 와 따로 배포해 메웠다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Keeping It 100(x) With Real-time Data At Scale",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-05-17",
+              "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+            }
+          ]
+        },
+        {
+          "tech": "확률적 필터(probabilistic filter)",
+          "solves": "무효화를 그 쿼리를 실제로 들고 있는 edge 로만 좁혀 보낸다.",
+          "limits": "위양성이 있어 필요 없는 재조회가 섞인다. 무효화 자체가 드물다는 관측 위에서만 값싼 선택이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Keeping It 100(x) With Real-time Data At Scale",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-05-17",
+              "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+            }
+          ]
+        },
+        {
+          "tech": "GraphQL 라이브 쿼리 + `useSubscription` 훅",
+          "solves": "제품 엔지니어가 DB 쓰기 지점마다 이벤트 메시지를 손으로 짜지 않아도 된다. 뷰를 선언하면 갱신은 계층이 나른다.",
+          "limits": "표준 GraphQL subscriptions 가 아니라서 기존 도구 생태계를 그대로 못 쓴다. **실시간 갱신 아래의 페이지네이션은 아직 안 된다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LiveGraph: real-time data fetching at Figma",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+              "publisher": "Figma Blog",
+              "date": "2021-10-14",
+              "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "livegraph-subscription"
+      ]
     },
     {
       "name": "렌더링·클라이언트 성능",
       "why": "디자인 툴이 브라우저에서 돈다. 동시 편집이 만든 변경이 결국 캔버스에 그려져야 하고, 그 속도가 곧 도구의 느낌이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "WebGL → WebGPU (타일 기반 렌더러)",
+          "solves": "무한 캔버스를 60fps 로 그린다. 마스킹·블러·디더링 그라디언트·블렌드 모드·중첩 레이어 불투명도까지 전부 GPU 에서, 안티에일리어싱을 켠 채로.",
+          "limits": "WebGL 은 전역 상태에 자원을 묶는 방식이라 버그가 나기 쉽고, **컴퓨트 셰이더가 없어 CPU 일을 GPU 로 넘길 수 없었다.** 픽셀 읽기도 동기뿐이었다. WebGPU 로 옮겨 메웠지만 두 백엔드를 한동안 같이 들고 가야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a professional design tool on the web",
+              "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+              "publisher": "Figma Blog",
+              "date": "2015-12-07",
+              "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+            },
+            {
+              "title": "Figma Rendering: Powered by WebGPU",
+              "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+              "publisher": "Figma Blog",
+              "date": "2025-09-18",
+              "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+            }
+          ]
+        },
+        {
+          "tech": "C++ → WebAssembly (Emscripten)",
+          "solves": "메모리 배치를 직접 정한다. JavaScript 의 64비트 double 대신 32비트 float 이나 바이트를 쓰고, **GC 정지가 없는 예측 가능한 성능**을 얻는다. 네이티브 대비 2배 이내.",
+          "limits": "32비트 Chrome 에서 ASLR 단편화로 큰 타입배열(256MB) 할당이 실패했다 — 이미지·지오메트리를 바깥에 두는 `IndirectBuffer` 로 우회했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a professional design tool on the web",
+              "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+              "publisher": "Figma Blog",
+              "date": "2015-12-07",
+              "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+            },
+            {
+              "title": "Figma is powered by WebAssembly",
+              "url": "https://www.figma.com/blog/webassembly-cut-figmas-load-time-by-3x/",
+              "publisher": "Figma Blog",
+              "date": "2017-11-01",
+              "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
+            }
+          ]
+        },
+        {
+          "tech": "자체 텍스트 레이아웃 엔진",
+          "solves": "브라우저·플랫폼마다 다르게 나오는 텍스트 배치를 하나로 고정한다. 디자인 툴에서 텍스트가 기기마다 다르면 그건 결과물이 다른 것이다.",
+          "limits": "**브라우저가 글리프 외곽선과 커닝 테이블을 열어 주지 않는다** — 2015년 글이 '가장 큰 고통'이라 부른 자리다. 폰트를 직접 파싱해 메우고, 그 대가로 브라우저가 이미 하는 일을 통째로 다시 만들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a professional design tool on the web",
+              "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+              "publisher": "Figma Blog",
+              "date": "2015-12-07",
+              "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+            }
+          ]
+        },
+        {
+          "tech": "naga (GLSL → WGSL 자동 변환)",
+          "solves": "셰이더를 두 벌 관리하지 않는다. 기존 WebGL 1 GLSL 을 파싱해 새 GLSL 로 올린 뒤 WGSL 로 옮긴다.",
+          "limits": "초기 엔지니어링 비용이 크고 외부 툴체인에 묶인다. Emscripten 의 WebGPU 바인딩이 폐기되어 `emdawnwebgpu` 로 다시 옮기는 중이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Figma Rendering: Powered by WebGPU",
+              "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+              "publisher": "Figma Blog",
+              "date": "2025-09-18",
+              "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+            }
+          ]
+        },
+        {
+          "tech": "동적 폴백 + 기기 블록리스트",
+          "solves": "WebGPU 로 세션을 시작하고, 실패하면 **세션 도중에도** WebGL 로 되돌아간다. 폴백률이 높은 GPU 는 아예 블록리스트에 올린다.",
+          "limits": "되돌아가는 순간 렌더링이 한 번 튄다. 그리고 블록리스트는 통계라 새로 나온 기기는 한동안 당하고 나서야 목록에 오른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Figma Rendering: Powered by WebGPU",
+              "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+              "publisher": "Figma Blog",
+              "date": "2025-09-18",
+              "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "webgpu-renderer"
+      ]
     },
     {
       "name": "데이터 저장·확장",
       "why": "메타데이터가 **AWS 의 가장 큰 축에 드는 머신 한 대 위 단일 데이터베이스**에 있었고, 회사는 그 구조가 한계에 다다르고 있다고 밝혔다(2019년). 사용자의 80% 이상이 미국 밖이라는 사실도 이 도메인의 제약이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Postgres 수직 분할 (vertical partitioning)",
+          "solves": "관련된 테이블 묶음('Figma 파일', '조직')을 각자의 DB 로 떼어 단일 인스턴스의 부하를 나눈다. 옮길 대상은 감이 아니라 `pg_stat_activity` 표본으로 잰 평균 활성 세션(AAS)과 의존 관계의 고립도로 골랐다.",
+          "limits": "**쪼갤 수 있는 가장 작은 단위가 테이블 하나다.** 그래서 수 테라바이트짜리 테이블 하나는 여전히 한 DB 에 남는다. 그리고 DB 간 원자적 트랜잭션·외래키 검증·조인을 잃는다. 클라이언트가 알아야 할 DB 가 늘수록 라우팅 복잡도가 곱으로 는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The growing pains of database architecture",
+              "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+              "publisher": "Figma Blog",
+              "date": "2023-04-04",
+              "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+            }
+          ]
+        },
+        {
+          "tech": "Postgres 수평 샤딩 — 논리와 물리를 분리",
+          "solves": "한 테이블을 여러 DB 로 나눈다. **먼저 뷰로 논리 샤딩만 걸어** 애플리케이션이 샤딩된 것처럼 굴게 하고, 물리적으로는 여전히 한 DB 에 둔다. 위험한 물리 페일오버는 그 뒤에 한다.",
+          "limits": "샤딩 키가 빠진 질의는 scatter-gather 가 되는데, **그 부하는 샤딩하지 않은 것과 같다** — 확장의 이득이 거기서 사라진다. 교차 샤드 범위 스캔·조인(같은 colo 밖)·샤딩 키 밖의 전역 유일 인덱스는 지원하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "DBProxy (Go) — 질의를 읽고 라우팅하는 계층",
+          "solves": "SQL 을 가로채 AST 로 파싱하고, 논리 플래너가 질의 종류와 논리 샤드 ID 를 뽑은 뒤 물리 플래너가 실제 DB 로 옮긴다. 제품 코드는 어느 샤드인지 모른다.",
+          "limits": "**전체 SQL 을 지원하지 않는다 — 흔한 90% 만 지원한다.** 무엇이 흔한지는 그림자 플래너로 실제 운영 트래픽을 분석해 정했다. 나머지 10% 는 제품 코드를 고쳐야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "colocation(colo) — 같은 샤딩 키를 쓰는 테이블 묶음",
+          "solves": "`users` 와 `user_favorites` 를 UserID 로 같이 묶는다. 같은 colo 안에서는 샤딩 키 조인이 된다 — 개발자가 다루는 단위가 샤드가 아니라 colo 다.",
+          "limits": "colo 를 가로지르는 조인은 안 된다. 그래서 어떤 테이블을 어느 colo 에 넣을지가 나중에 되돌리기 비싼 결정이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "읽기 복제본 · PgBouncer",
+          "solves": "읽기 트래픽을 복제본으로 흘리고, 수천 개에 이른 연결을 풀러로 눌러 담는다.",
+          "limits": "복제 지연에 민감한 읽기는 복제본으로 못 보낸다. PgBouncer 는 **연결 수만 다룰 뿐 질의량 자체는 줄이지 못한다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The growing pains of database architecture",
+              "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+              "publisher": "Figma Blog",
+              "date": "2023-04-04",
+              "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "horizontal-sharding"
+      ]
     }
   ],
   "features": [
@@ -576,13 +816,13 @@
           "title": "속성 변경 하나가 거치는 상태",
           "question": "내 변경은 언제 '확정'되는가?",
           "kind": "state",
-          "code": "stateDiagram-v2\n  [*] --> 로컬적용: 편집 발생\n  로컬적용 --> 미확인: 서버로 전송\n  미확인 --> 미확인: 충돌하는 서버 값 도착 → **버린다**\n  미확인 --> 확정: 서버가 이 값을 최신으로 유지\n  미확인 --> 거절됨: 사이클을 만드는 부모 변경\n  거절됨 --> 확정: 서버의 값으로 되돌아감\n  note right of 거절됨\n    그동안 객체가\n    트리에서 사라져 보인다\n  end note\n  확정 --> [*]\n  [*] --> 오프라인편집: 연결 끊김\n  오프라인편집 --> 재적용: 재연결 시 문서 사본을 새로 받아\n  재적용 --> 미확인"
+          "code": "stateDiagram-v2\n  [*] --> 로컬적용: 편집 발생\n  로컬적용 --> 미확인: 서버로 전송\n  미확인 --> 미확인: 충돌하는 서버 값 도착 → <b>버린다</b>\n  미확인 --> 확정: 서버가 이 값을 최신으로 유지\n  미확인 --> 거절됨: 사이클을 만드는 부모 변경\n  거절됨 --> 확정: 서버의 값으로 되돌아감\n  note right of 거절됨\n    그동안 객체가\n    트리에서 사라져 보인다\n  end note\n  확정 --> [*]\n  [*] --> 오프라인편집: 연결 끊김\n  오프라인편집 --> 재적용: 재연결 시 문서 사본을 새로 받아\n  재적용 --> 미확인"
         },
         {
           "title": "실패 경로 — 규칙 하나로 정할 때 남는 것",
           "question": "단순함을 고른 대가는 어디서 청구되는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  SIMPLE[OT 를 쓰지 않기로] --> NOMERGE[같은 텍스트 속성 동시 편집은<br/>**병합되지 않고 한쪽 값으로**]\n  MODEL[병합 단위 = 속성 값] --> INSIDE[속성 하나 안의 동시 편집은<br/>다룰 수 없다]\n  PREDICT[내가 마지막일 것이라 예측] --> WRONG{예측이 빗나가면}\n  WRONG --> TMPGONE[거절 도착까지<br/>객체가 트리에서 사라져 보인다]\n  FRAC[분수 인덱싱] -->|추정| DEEP[사이에 계속 넣으면<br/>분수가 잘게 쪼개진다]\n  CENTRAL[서버가 중앙 권위] -->|추정| NOSERVER[서버 없이는 돌지 않는다]\n  UNDO[혼자 쓰는 실행취소를 그대로 쓰면] --> OVERWRITE[협업자의 이후 편집을 덮어쓴다]\n  UNDO --> FIX[그래서 undo 는 그 시점의 redo 히스토리를,<br/>redo 는 그 시점의 undo 히스토리를 고친다]"
+          "code": "flowchart TD\n  SIMPLE[OT 를 쓰지 않기로] --> NOMERGE[같은 텍스트 속성 동시 편집은<br/><b>병합되지 않고 한쪽 값으로</b>]\n  MODEL[병합 단위 = 속성 값] --> INSIDE[속성 하나 안의 동시 편집은<br/>다룰 수 없다]\n  PREDICT[내가 마지막일 것이라 예측] --> WRONG{예측이 빗나가면}\n  WRONG --> TMPGONE[거절 도착까지<br/>객체가 트리에서 사라져 보인다]\n  FRAC[분수 인덱싱] -->|추정| DEEP[사이에 계속 넣으면<br/>분수가 잘게 쪼개진다]\n  CENTRAL[서버가 중앙 권위] -->|추정| NOSERVER[서버 없이는 돌지 않는다]\n  UNDO[혼자 쓰는 실행취소를 그대로 쓰면] --> OVERWRITE[협업자의 이후 편집을 덮어쓴다]\n  UNDO --> FIX[그래서 undo 는 그 시점의 redo 히스토리를,<br/>redo 는 그 시점의 undo 히스토리를 고친다]"
         }
       ],
       "sources": [
@@ -608,13 +848,1671 @@
           "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
         }
       ]
+    },
+    {
+      "key": "livegraph-subscription",
+      "name": "실시간 데이터 구독 (LiveGraph)",
+      "domain": "실시간 데이터 구독",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "캔버스 밖의 것 — 댓글·팀·프로젝트·권한 — 도 실시간으로 보여야 하는데, 이것들은 멀티플레이어 시스템을 쓰지 않는다. LiveGraph 이전에는 **제품 엔지니어가 DB 에 쓰는 자리마다 이벤트 메시지를 손으로 짜서** 관련 클라이언트에 보냈다. 그래서 같은 데이터를 여러 제품 영역이 요구할 때 누가 책임지는지가 흐려졌고, 권한 변경처럼 파급이 넓은 쓰기는 어디까지 번지는지 아무도 몰랐다. 메시지 순서가 DB 쓰기 순서와 같다는 보장도 없어 **데이터 정합성 버그**가 났다.",
+        "metrics": [
+          {
+            "label": "단일 인스턴스 쓰기 처리량",
+            "value": "초당 약 10,000건 (2021)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "갱신 지연",
+            "value": "밀리초 단위",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "클라이언트 세션",
+            "value": "2021년 대비 3배 (2024)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "label": "뷰 요청",
+            "value": "최근 1년 5배 (2024)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "label": "재설계 목표",
+            "value": "읽기·DB 갱신 부하 100배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "label": "무효화가 어려운 쿼리",
+            "value": "약 700개 중 11개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "쓰기 지점마다 이벤트를 손으로 짜던 시절",
+          "thought": "문제는 코드가 많다는 게 아니라 **책임이 흩어진다**는 것이었다. 같은 데이터를 여러 화면이 쓰기 시작하면 누가 그 갱신을 보내야 하는지가 모호해지고, 권한 변경처럼 파급이 넓은 쓰기는 어디까지 번지는지 아무도 모른다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실시간 DB 로 갈아탈지 정할 때",
+          "thought": "Firebase·RethinkDB 로 옮기는 길이 있었지만, 기존 시스템들이 **대량 동시 구독을 명시적으로 권하지 않는다.** 그리고 협업이 제품의 본체인 회사에서 이 계층은 남에게 맡길 자리가 아니라 경쟁력이 되는 자리다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "DB 가 샤드로 쪼개지기 시작했을 때",
+          "thought": "모든 복제 스트림을 억지로 하나로 합쳐 전역 순서를 유지하던 임시방편이, 샤드가 늘수록 fan-in·fan-out 을 키웠다. **순서를 지키는 비용이 순서가 주는 값보다 커지는 지점**이 있다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "무엇을 최적화할지 다시 정할 때",
+          "thought": "부하를 뜯어보니 클라이언트로 가는 데이터의 큰 쪽은 실시간 갱신이 아니라 **최초 읽기**였고, 대부분의 쿼리 결과는 화면에 뜬 뒤 한 번도 안 바뀌었다. 그러면 갱신을 정교하게 만드는 것보다 읽기를 싸게 만드는 쪽이 맞다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "스키마에 제약을 걸어야 할 때",
+          "thought": "700개 쿼리 중 무효화가 까다로운 건 11개뿐이었다. **나머지 689개를 위해 전부를 복잡하게 만들 이유가 없다** — 어려운 쪽만 따로 다루고 쉬운 쪽은 값싸게 지나가게 한다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "라이브 뷰 트리 (live view tree)",
+            "what": "화면 하나가 요구하는 데이터를 조인 없는 서브쿼리들의 트리로 쪼갠 것. 각 노드가 `SELECT … FROM … WHERE …` 하나다."
+          },
+          {
+            "name": "서브쿼리",
+            "what": "캐시와 무효화의 단위. 같은 서브쿼리를 두 사람이 구독하면 결과는 하나만 들고 있는다."
+          },
+          {
+            "name": "무효화 (invalidation)",
+            "what": "'이 쿼리의 결과는 이제 낡았다'는 통지. **값을 실어 나르지 않는다.**"
+          },
+          {
+            "name": "nonce",
+            "what": "쉬운 조건과 어려운 조건 사이의 간접층. `{쉬운조건} → nonce` 를 두고 `{쉬운조건}-{nonce}-{어려운조건}` 을 결과 키로 쓴다."
+          }
+        ],
+        "invariants": [
+          "무효화는 캐시 항목을 **고치지 않고 지운다.** 값을 나르지 않으므로 도착 순서가 결과를 바꾸지 못한다 — 전역 순서를 포기할 수 있었던 이유가 이것이다.",
+          "캐시 샤드는 **자기 해시 범위의 무효화만** 소비한다. 그래서 DB 가 몇 개로 쪼개지든 캐시는 그 사실을 몰라도 된다.",
+          "DB 토폴로지를 아는 서비스는 invalidator 하나뿐이다.",
+          "쿼리 모양은 사람의 시간(하루 단위 배포)으로 바뀌고 무효화는 1초 안쪽으로 일어난다. 그래서 모양은 **요청이 오기 전에** 미리 나눠 둘 수 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 `useSubscription(뷰, 인자)` 로 뷰를 선언한다",
+            "why": "무엇을 보낼지가 아니라 무엇이 필요한지를 쓴다"
+          },
+          {
+            "step": "Edge 가 뷰를 조인 없는 서브쿼리 트리로 펼친다",
+            "why": "캐시·무효화의 단위를 쿼리 하나로 맞추기 위해"
+          },
+          {
+            "step": "각 서브쿼리를 쿼리 해시로 정해진 캐시 샤드에 묻는다",
+            "why": "캐시가 DB 토폴로지를 몰라도 되게"
+          },
+          {
+            "step": "적중이면 그대로, 불발이면 캐시가 DB 에 읽어 채운다",
+            "why": "트래픽의 큰 쪽인 최초 읽기를 DB 앞에서 막는다"
+          },
+          {
+            "step": "Edge 가 결과를 트리로 다시 조립해 클라이언트에 준다",
+            "why": "클라이언트는 참조로 새 트리를 만들어 리렌더한다"
+          },
+          {
+            "step": "쓰기가 일어나면 invalidator 가 자기 샤드의 복제 스트림에서 그것을 본다",
+            "why": "폴링 없이, 그리고 샤드마다 독립적으로"
+          },
+          {
+            "step": "미리 나눠 둔 쿼리 모양으로 어떤 캐시 샤드가 영향받는지 계산해 무효화를 보낸다",
+            "why": "활성 쿼리 목록을 들고 있지 않아도 된다"
+          },
+          {
+            "step": "캐시가 항목을 지우고, 확률적 필터로 좁힌 edge 에만 알린다",
+            "why": "무효화 fan-out 을 실제로 그 쿼리를 든 곳으로 제한"
+          },
+          {
+            "step": "Edge 가 다시 조회해 클라이언트에 증분 갱신을 밀어 넣는다",
+            "why": "화면은 구독을 다시 걸지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "실시간 데이터 계층을 사 올 것인가 만들 것인가",
+            "chosen": "직접 만든다 (LiveGraph)",
+            "alternatives": [
+              "Firebase·RethinkDB 같은 실시간 DB 로 이전",
+              "Hasura·Prisma·PostGraphile 등 기성 GraphQL 계층"
+            ],
+            "tradeoff": "인프라 팀을 이 계층에 계속 묶어 둬야 하고 기성 도구의 생태계를 못 쓴다. 기성 시스템들이 **대량 동시 구독을 권하지 않는다**는 점과, 협업이 제품의 본체라 이 계층이 경쟁력이 된다는 판단으로 감수했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "이 계층이 저장을 맡을 것인가 조회만 맡을 것인가",
+            "chosen": "Postgres 위에 얹는 **조회 계층**. 저장은 계속 Postgres 가 한다",
+            "alternatives": [
+              "실시간 DB 로 저장까지 옮기기"
+            ],
+            "tradeoff": "실시간 DB 가 자체 제공하는 구독 최적화를 못 쓰고, 라이브 쿼리에 필요한 것을 전부 바깥에서 다시 만들어야 한다. 대신 기존 데이터와 운영을 하나도 안 건드린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "변경을 어떻게 알아챌 것인가",
+            "chosen": "복제 로그(WAL)를 Kafka 로 받아 따라간다",
+            "alternatives": [
+              "주기적 폴링"
+            ],
+            "tradeoff": "DB 의 복제 형식에 묶이고 복제 지연이 그대로 제품 지연이 된다. 폴링은 DB 질의를 배수로 늘리고 주기를 쿼리마다 사람이 정하게 만든다는 점에서 더 나빴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "GraphQL 의 어느 쪽을 쓸 것인가",
+            "chosen": "라이브 쿼리 — 쿼리 **결과**를 계속 최신으로 유지한다",
+            "alternatives": [
+              "표준 GraphQL subscriptions (이벤트 스트림)"
+            ],
+            "tradeoff": "표준 밖으로 나가 기존 GraphQL 도구를 그대로 못 쓴다. subscriptions 는 이벤트 스트림을 겨냥한 물건이라 '지금 이 뷰의 정답'을 유지하는 문제와 다르다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "캐시는 변경을 반영할 것인가 지울 것인가",
+            "chosen": "**무효화형** — 지우고 다시 조회한다",
+            "alternatives": [
+              "변경 반영형 — 행 하나가 바뀌면 캐시된 결과를 직접 고친다"
+            ],
+            "tradeoff": "무효화될 때마다 DB 재조회 비용이 든다. 대신 **무효화는 값을 나르지 않으므로 도착 순서가 결과를 바꾸지 못하고**, 그래서 전역 순서라는 요구 자체가 사라진다 — 샤딩된 DB 위로 갈 수 있게 한 결정이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "question": "invalidator 가 어떤 쿼리를 깨야 할지 어떻게 아는가",
+            "chosen": "쿼리 **모양**을 미리 나눠 둔다. 활성 쿼리는 추적하지 않는다",
+            "alternatives": [
+              "지금 살아 있는 구독 목록을 invalidator 가 들고 있기"
+            ],
+            "tradeoff": "모든 쿼리를 `(쉬운 조건) AND (어려운 조건)` 형태로 정규화하도록 **스키마에 제약**이 걸린다. 쿼리 모양은 하루 단위로 바뀌고 무효화는 1초 안쪽이라, 미리 나눠 두는 쪽이 성립한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "question": "범위 조건처럼 무효화 대상이 폭발하는 쿼리를 어떻게 다룰 것인가",
+            "chosen": "nonce 간접층 — `{쉬운조건} → nonce` 를 두고 쉬운 조건이 깨질 때 어려운 쿼리가 함께 쓸려 나가게 한다",
+            "alternatives": [
+              "어려운 쿼리를 직접 무효화하기"
+            ],
+            "tradeoff": "조회에 간접 비용이 붙고 **필요 이상으로 많이 깬다.** 직접 무효화는 `created_at < ?` 같은 조건에서 fan-out 이 무한이 되어 성립하지 않았고, 어려운 쿼리가 700개 중 11개뿐이라 과도 무효화를 감당할 만했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "question": "배포할 때마다 DB 가 얻어맞는 것을 어떻게 막을 것인가",
+            "chosen": "edge 와 cache 를 **따로 배포**한다. 캐시는 핫 스탠바이 복제본을 둔다",
+            "alternatives": [
+              "한 서비스로 두고 배포 시 캐시가 비는 것을 감수"
+            ],
+            "tradeoff": "서비스 두 종류를 따로 운영해야 한다. 합쳐 두면 배포마다 모든 클라이언트가 동시에 재접속해 빈 캐시로 몰리고, 그것만으로 서비스가 흔들렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Go",
+            "role": "성능이 걸리는 하위 계층 — 복제 스트림 처리와 캐시·무효화 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "NodeJS",
+            "role": "클라이언트와 공유하는 코드가 걸린 상위 계층",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka",
+            "role": "DB 복제 스트림을 여러 서버로 흘려보내는 통로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "Postgres",
+            "role": "정답이 있는 곳. LiveGraph 는 저장하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "React `useSubscription` 훅",
+            "role": "제품 코드가 뷰를 선언하는 유일한 창구",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "multiplayer-doc",
+          "via": "이어지지 않는다 — 경로가 아예 다르다",
+          "contract": "캔버스 **안**의 편집은 멀티플레이어 시스템이, 캔버스 **밖**(댓글·팀·프로젝트·권한)은 LiveGraph 가 나른다. 두 시스템은 저장소도 전달 경로도 공유하지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Postgres 복제 스트림(WAL) → Kafka",
+          "via": "복제 로그 tailing",
+          "contract": "invalidator 는 자기 샤드의 스트림만 읽는다. 무엇을 보낼지는 미리 나눠 둔 쿼리 모양이 정한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "권한 시스템",
+          "via": "객체·객체 간 관계 단위 접근 제어 규칙",
+          "contract": "권한이 바뀌면 그 자체가 무효화를 낳아 보이던 것이 실시간으로 사라진다 — 손으로 이벤트를 짜던 시절 가장 다루기 어렵던 자리다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "GraphQL Specification — Subscription",
+            "authors": "GraphQL Foundation",
+            "year": "2021",
+            "venue": "GraphQL Spec (October 2021)",
+            "url": "https://spec.graphql.org/October2021/#sec-Subscription",
+            "takeaway": "표준의 subscription 은 **이벤트 스트림**을 겨냥한다. Figma 는 이것 대신 쿼리 **결과**를 계속 최신으로 유지하는 라이브 쿼리를 골랐고, 그 대가로 표준 도구 생태계 밖으로 나갔다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "Noria: dynamic, partially-stateful dataflow for high-performance web applications",
+            "authors": "Jon Gjengset 외 (MIT)",
+            "year": "2018",
+            "venue": "OSDI 2018",
+            "url": "https://www.usenix.org/conference/osdi18/presentation/gjengset",
+            "takeaway": "같은 문제(웹 앱의 쿼리 결과를 계속 최신으로 유지하기)를 정반대로 푼 연구다. Noria 가 데이터플로로 결과를 **증분 갱신**하는 데 비해 Figma 는 100x 재설계에서 **지우고 다시 조회하는** 쪽을 골랐다 — 갱신보다 최초 읽기가 부하의 큰 쪽이라는 관측 때문이다. **Figma 가 이 논문을 언급한 적은 없다. 같은 문제의 다른 답으로 놓고 읽는 것이다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Space/Time Trade-offs in Hash Coding with Allowable Errors",
+            "authors": "Burton H. Bloom",
+            "year": "1970",
+            "venue": "Communications of the ACM 13(7)",
+            "url": "https://dl.acm.org/doi/10.1145/362686.362692",
+            "takeaway": "무효화를 관련 edge 로만 좁힐 때 쓰는 확률적 필터의 뿌리. 위양성을 허용하는 대신 공간을 줄이는 거래인데, 여기서 위양성의 대가는 **필요 없는 재조회 몇 번**이라 값이 싸다. **Figma 는 `probabilistic filters` 라고만 쓰고 구체적 자료구조나 이 논문을 밝히지 않았다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "샤드마다 따로 흐르는 복제 스트림 위에서 전역 순서를 어떻게 보장할 것인가",
+            "why_hard": "**불가능성이 아니라 비용 구조의 문제다.** 서로 다른 샤드의 WAL 은 각자의 시간축을 가지므로, 전역 순서를 만들려면 모든 스트림을 한 곳에 모아 줄을 세워야 한다. 그런데 그 지점이 곧 샤딩으로 없애려던 병목이다 — 순서를 지키는 비용이 샤드 수에 따라 커지고, Figma 의 임시방편이 실제로 그렇게 fan-in·fan-out 을 키웠다.",
+            "current_best": "**순서가 필요 없는 모델로 문제를 옮긴다.** 무효화는 값을 나르지 않고 지우기만 하므로 도착 순서가 결과를 바꾸지 못한다. 대가는 무효화마다 드는 재조회 비용과, 진행 중인 읽기와 무효화가 엇갈리는 경합(read-invalidation rendezvous)을 따로 막아야 한다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              },
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "problem": "실시간으로 바뀌는 목록에 페이지네이션을 어떻게 붙일 것인가",
+            "why_hard": "페이지의 정의가 데이터에 없다. 오프셋 기준은 앞쪽에 항목이 삽입·삭제되는 순간 의미를 잃고, 커서 기준은 **커서가 지나간 뒤 그 뒤에서 일어난 변경을 표현할 방법이 없다.** 구독은 '이 결과가 지금 정답'을 약속하는데, 페이지는 그 결과의 일부만 들고 있으므로 무엇을 정답이라 부를지가 애초에 정해지지 않는다.",
+            "current_best": "**하지 않는다.** Figma 는 2021년 글에서 이것을 남은 과제로 명시했고, 뷰의 크기를 제한하는 쪽으로 피해 간다. 대가는 무한 목록을 LiveGraph 로 못 만든다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "구독이 화면에 닿기까지",
+          "question": "뷰를 선언하면 무엇이 어떤 순서로 움직이는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"클라이언트 useSubscription(뷰, 인자)\"] --> E[\"Edge — 뷰를 조인 없는 서브쿼리 트리로 펼친다\"]\n  E --> H{\"쿼리 해시로 캐시 샤드 선택\"}\n  H --> K[\"Read-through Cache<br/>DB 토폴로지를 모른다\"]\n  K -->|\"적중\"| R[\"결과 트리 재조립\"]\n  K -->|\"불발\"| DB[(\"Postgres 샤드\")]\n  DB --> K\n  R --> C"
+        },
+        {
+          "title": "무효화가 도는 길",
+          "question": "누가 쓰기를 보고, 그것이 어떻게 화면까지 오는가?",
+          "kind": "flow",
+          "code": "flowchart LR\n  W[(\"Postgres 샤드 쓰기\")] --> WAL[\"복제 스트림 WAL\"]\n  WAL --> KF[\"Kafka\"]\n  KF --> INV[\"Invalidator<br/>DB 샤드와 같은 모양으로 샤딩\"]\n  INV -->|\"미리 나눠 둔 쿼리 모양으로 대상 계산\"| CS[\"해당 캐시 샤드만\"]\n  CS -->|\"고치지 않고 지운다\"| CS\n  CS -->|\"확률적 필터로 좁혀 통지\"| E[\"Edge\"]\n  E -->|\"재조회\"| CS\n  E -->|\"증분 갱신 push\"| C[\"클라이언트\"]"
+        },
+        {
+          "title": "정상 경로가 깨지는 두 자리",
+          "question": "배포할 때와, 읽는 도중 무효화가 올 때 무슨 일이 나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  D[\"LiveGraph 배포\"] --> RC[\"모든 클라이언트가 동시에 재접속\"]\n  RC --> EC{\"캐시가 비어 있나\"}\n  EC -->|\"예 — edge 와 한 몸이던 옛 구조\"| TH[\"빈 캐시로 몰림<br/>DB 가 통째로 얻어맞는다\"]\n  EC -->|\"아니오 — 캐시를 따로 배포\"| OK[\"핫 스탠바이 복제본이 받아낸다\"]\n  RD[\"진행 중인 읽기 도중 무효화 도착\"] --> RV{\"읽기-무효화 랑데부\"}\n  RV -->|\"동기화 없음\"| ST[\"무효화 이전 결과가<br/>캐시에 눌러앉는다\"]\n  RV -->|\"합쳐진 읽기를 막는 세 규칙\"| OK2[\"낡은 값이 캐시에 남지 않는다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "LiveGraph: real-time data fetching at Figma",
+          "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+          "publisher": "Figma Blog",
+          "date": "2021-10-14",
+          "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+        },
+        {
+          "title": "Keeping It 100(x) With Real-time Data At Scale",
+          "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-05-17",
+          "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+        }
+      ]
+    },
+    {
+      "key": "webgpu-renderer",
+      "name": "캔버스 렌더링 — WebGL 에서 WebGPU 로",
+      "domain": "렌더링·클라이언트 성능",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 제품은 **브라우저 탭 안에서 도는 디자인 툴**이다. 설치형 경쟁자와 같은 부드러움이 나오지 않으면 제품이 성립하지 않는다. 그런데 브라우저가 주는 것으로는 그게 안 됐다 — HTML·SVG 는 짐이 많아 느리고, Canvas2D 는 즉시 모드라 매 프레임 지오메트리를 다시 올려야 해서 **낭비가 구조적이었다.** 그래서 2015년에 WebGL 위에 렌더러를 직접 올렸고, 10년 뒤 그 WebGL 이 한계에 닿아 WebGPU 로 옮겼다.",
+        "metrics": [
+          {
+            "label": "네이티브 대비 성능",
+            "value": "2배 이내 (2015, asm.js)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "WebAssembly 전환 효과",
+            "value": "로드 시간 3배 단축",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma is powered by WebAssembly",
+                "url": "https://www.figma.com/blog/webassembly-cut-figmas-load-time-by-3x/",
+                "publisher": "Figma Blog",
+                "date": "2017-11-01",
+                "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
+              }
+            ]
+          },
+          {
+            "label": "WebGPU 전환 결과",
+            "value": "일부 기기에서 개선, 나머지는 중립. **회귀는 없었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "label": "32비트 Chrome 할당 한계",
+            "value": "256MB 타입배열 실패 (ASLR 단편화)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "테스트 범위",
+            "value": "Windows · Mac · ChromeOS 자동 성능 비교",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "2015년, 무엇으로 그릴지 정할 때",
+          "thought": "브라우저가 주는 텍스트를 쓰면 **브라우저마다, 같은 브라우저라도 플랫폼마다 배치가 달라진다.** 일반 웹사이트라면 넘어갈 일이지만 디자인 툴에서는 결과물 자체가 달라진다는 뜻이다. 그래서 텍스트를 남에게 맡길 수 없었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "언어를 고를 때",
+          "thought": "JavaScript 의 GC 정지는 프레임을 떨어뜨린다. 그리고 숫자가 전부 64비트 double 인 것도 문제였다 — 좌표 수백만 개를 다루는 데 필요한 건 32비트 float 이다. **성능이 빠른 것보다 예측 가능한 것이 중요했다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "WebGPU 로 옮길지 정할 때",
+          "thought": "당장의 속도가 이유가 아니었다. 측정해 보니 어떤 기기는 좋아지고 어떤 기기는 그대로였다. 값은 **지금까지 못 하던 것이 열린다**는 쪽에 있었다 — 컴퓨트 셰이더로 CPU 일을 GPU 로 넘기는 길, 그리고 동기 오류 검사 때문에 성능이 깎이지 않는 것.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "안전하게 내보낼 방법을 세 번 고쳐 잡을 때",
+          "thought": "로드할 때 호환성을 동기로 검사하면 수백 ms 가 붙는다. 그렇다고 세션 시작 뒤에 검사하면 **세션 도중에 장치를 잃는 경우**를 못 잡는다. 어느 시점에 한 번 판정하는 방식으로는 안 되고, 언제든 되돌아갈 수 있게 만드는 수밖에 없다는 결론이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "셰이더를 두 벌 만들지 말지 정할 때",
+          "thought": "10년치 GLSL 셰이더를 WGSL 로 손으로 옮기면, 그 뒤로는 고칠 때마다 두 군데를 고쳐야 한다. **한 번의 큰 비용과 영원한 작은 비용 중 앞의 것**을 골랐다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "타일",
+            "what": "화면을 나눈 그리기 단위. 렌더러가 '고도로 최적화된 타일 기반 엔진'이라는 것까지만 공개돼 있고, 타일 크기·분할 규칙은 밝히지 않았다."
+          },
+          {
+            "name": "드로우 호출",
+            "what": "WebGPU 경로에서는 `context->draw(vertexBuffer, framebuffer, {texture}, material, …)` 처럼 필요한 것을 전부 인자로 받는다. 전역 상태에 미리 묶어 두지 않는다."
+          },
+          {
+            "name": "셰이더",
+            "what": "원본은 WebGL 1 GLSL 한 벌. 빌드가 새 GLSL 로 올린 뒤 naga 로 WGSL 을 만든다."
+          },
+          {
+            "name": "렌더링 백엔드",
+            "what": "WebGPU 와 WebGL 둘. 세션은 앞의 것으로 시작하지만 언제든 뒤의 것으로 내려앉을 수 있다."
+          }
+        ],
+        "invariants": [
+          "**셰이더의 원본은 한 벌뿐이다.** 두 백엔드가 있어도 사람이 고치는 곳은 하나다 — 두 벌이 되는 순간 둘이 어긋나기 시작한다.",
+          "세션은 **어느 시점에든** WebGPU 에서 WebGL 로 내려앉을 수 있어야 한다. 시작할 때 한 번 판정하는 것으로 끝내지 않는다.",
+          "브라우저와 네이티브 앱이 같은 C++ 을 쓴다. 브라우저는 Emscripten 으로, 네이티브(x64·arm64)는 Dawn 으로 간다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "세션이 WebGPU 어댑터·디바이스를 요청한다",
+            "why": "얻을 수 있으면 이쪽이 기본이다"
+          },
+          {
+            "step": "비동기 호환성 테스트를 세션과 나란히 돌린다",
+            "why": "로드 시 동기 검사는 수백 ms 를 더한다"
+          },
+          {
+            "step": "C++ 렌더러가 타일 단위로 그릴 것을 정한다",
+            "why": "무한 캔버스에서 보이는 데만 일을 쓴다"
+          },
+          {
+            "step": "드로우 호출에 필요한 자원을 전부 인자로 넘긴다",
+            "why": "전역 바인딩을 잊어 생기는 버그를 구조적으로 없앤다"
+          },
+          {
+            "step": "유니폼 데이터를 모았다가 `encodeDraw` → `submit` 으로 한 번에 올린다",
+            "why": "유니폼마다 올리면 할당 비용으로 성능이 되레 깎인다"
+          },
+          {
+            "step": "Dawn 이 WebGPU 호출을 플랫폼 그래픽 API 로 옮긴다",
+            "why": "브라우저와 네이티브가 같은 경로를 쓴다"
+          },
+          {
+            "step": "테스트가 실패하거나 세션 도중 WebGPU 오류가 나면 WebGL 로 내려앉는다",
+            "why": "장치 손실은 시작할 때만 일어나지 않는다"
+          },
+          {
+            "step": "폴백률을 GPU 종류별로 집계해 높은 기기를 블록리스트에 올린다",
+            "why": "되돌아가는 순간의 렌더링 튐을 아예 안 겪게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "브라우저의 무엇으로 캔버스를 그릴 것인가",
+            "chosen": "WebGL 위에 렌더러를 직접 올린다",
+            "alternatives": [
+              "HTML·SVG",
+              "Canvas2D"
+            ],
+            "tradeoff": "**DOM·컴포지터·텍스트 레이아웃 엔진을 전부 직접 만들어야 했다** — '브라우저 안에 브라우저를 만든 셈'이다. HTML·SVG 는 짐이 많아 2D 캔버스보다도 느리고, Canvas2D 는 즉시 모드라 매 프레임 지오메트리를 다시 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "무슨 언어로 렌더러를 쓸 것인가",
+            "chosen": "C++ 을 Emscripten 으로 컴파일 (asm.js → WebAssembly)",
+            "alternatives": [
+              "JavaScript 로 직접 작성"
+            ],
+            "tradeoff": "빌드가 복잡해지고 브라우저의 메모리 제약을 정면으로 맞는다 — 32비트 Chrome 에서 256MB 타입배열 할당이 ASLR 단편화로 실패해 `IndirectBuffer` 우회를 만들어야 했다. 대신 메모리 배치를 직접 정하고 GC 정지를 없앴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "10년 된 WebGL 렌더러를 옮길 것인가",
+            "chosen": "WebGPU 로 옮긴다",
+            "alternatives": [
+              "WebGL 에 머문다"
+            ],
+            "tradeoff": "두 백엔드를 한동안 같이 유지해야 한다. 속도 자체는 **일부 기기만 좋아지고 나머지는 중립**이었다 — 값은 지금까지 못 하던 것(컴퓨트 셰이더로 CPU 일을 GPU 로 넘기기, 비동기 픽셀 읽기, 성능을 깎지 않는 오류 검사)이 열린다는 쪽에 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "자원을 드로우 호출에 어떻게 전달할 것인가",
+            "chosen": "명시적 인자 — `context->draw(vertexBuffer, framebuffer, {texture}, material, …)`",
+            "alternatives": [
+              "WebGL 식으로 전역 바인딩 포인트에 묶어 두기"
+            ],
+            "tradeoff": "호출부를 전부 뜯어고쳐야 했고 WebGL 경로는 여전히 옛 방식이다. 전역 상태 방식은 바인딩 갱신을 잊는 버그가 구조적으로 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "셰이더를 두 벌 관리할 것인가",
+            "chosen": "GLSL 원본 한 벌을 두고 빌드가 WGSL 을 만든다 (자체 처리기 + naga)",
+            "alternatives": [
+              "WGSL 셰이더를 따로 작성해 둘 다 유지"
+            ],
+            "tradeoff": "초기 엔지니어링 비용이 크고 외부 툴체인에 묶인다 — 실제로 Emscripten 의 WebGPU 바인딩이 폐기되어 `emdawnwebgpu` 로 다시 옮기는 중이다. 대신 사람이 고치는 곳은 계속 하나로 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "유니폼 데이터를 어떻게 올릴 것인가",
+            "chosen": "모았다가 한 번에 — `encodeDraw` 여러 번 뒤 `submit` 한 번",
+            "alternatives": [
+              "유니폼마다 그때그때 올리기 (WebGL 경로의 방식)"
+            ],
+            "tradeoff": "코드가 복잡해진다. 소박하게 만들면 할당 비용 때문에 **WebGPU 로 옮기고도 성능이 되레 나빠졌을** 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "WebGPU 를 쓸 수 있는지 언제 판정할 것인가",
+            "chosen": "판정하지 않는다 — WebGPU 로 시작하고 **세션 도중 언제든** WebGL 로 내려앉는다",
+            "alternatives": [
+              "로드 시 동기 호환성 테스트",
+              "세션 시작 후 한 번 비동기 테스트"
+            ],
+            "tradeoff": "되돌아가는 순간 렌더링이 한 번 튄다. 앞의 두 안은 각각 수백 ms 지연과 '세션 도중 장치 손실을 못 잡음'으로 실패했다 — 시점을 하나 고르는 방식 자체가 답이 아니었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "폴백이 잦은 기기를 어떻게 할 것인가",
+            "chosen": "GPU 종류별 폴백률을 재서 블록리스트에 올린다",
+            "alternatives": [
+              "모든 기기에서 일단 WebGPU 로 시도"
+            ],
+            "tradeoff": "그 기기는 WebGPU 의 이득을 영영 못 받는다. 그리고 판정이 통계라 **새로 나온 기기는 한동안 당하고 나서야** 목록에 오른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "C++",
+            "role": "렌더러 본체. 브라우저와 네이티브 앱이 같은 코드를 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              },
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Emscripten",
+            "role": "C++ 을 WebAssembly 로. 브라우저 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              },
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Dawn",
+            "role": "WebGPU 호출을 플랫폼 그래픽 API 로 옮긴다. 브라우저·네이티브 양쪽에서",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "naga",
+            "role": "GLSL 을 WGSL 로 변환. 셰이더 원본을 한 벌로 유지하는 수단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "WebGL",
+            "role": "폴백 백엔드. 2015년부터 10년간 주 경로였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              },
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "multiplayer-doc",
+          "via": "같은 클라이언트 안의 문서 트리",
+          "contract": "멀티플레이어가 문서 상태를 고치면 렌더러가 그 결과를 그린다. 렌더러는 누가 왜 고쳤는지 모른다 — 지금의 트리만 본다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "livegraph-subscription",
+          "via": "이어지지 않는다",
+          "contract": "LiveGraph 가 나르는 것(댓글·팀·권한)은 캔버스 밖이라 이 렌더러를 타지 않는다. React 가 보통의 DOM 으로 그린다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "브라우저 GPU 스택 (WebGPU · WebGL)",
+          "via": "Dawn 을 거친 그래픽 API 호출",
+          "contract": "디바이스를 얻지 못하거나 도중에 잃으면 렌더러가 백엔드를 바꾼다. 그 실패를 제품이 감춘다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "WebGPU Specification",
+            "authors": "W3C GPU for the Web Working Group",
+            "year": "2025",
+            "venue": "W3C Candidate Recommendation",
+            "url": "https://www.w3.org/TR/webgpu/",
+            "takeaway": "10년 된 WebGL 렌더러가 옮겨 간 목적지. Figma 가 가져다 쓴 것은 속도가 아니라 **WebGL 에 없던 것들**이다 — 컴퓨트 셰이더, 비동기 픽셀 읽기, 성능을 깎지 않는 오류 검사, 그리고 전역 상태가 아닌 명시적 자원 전달.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "Bringing the Web up to Speed with WebAssembly",
+            "authors": "Andreas Haas 외",
+            "year": "2017",
+            "venue": "PLDI 2017",
+            "url": "https://dl.acm.org/doi/10.1145/3062341.3062363",
+            "takeaway": "Figma 가 렌더러를 브라우저에서 돌릴 수 있게 한 토대. 이 회사가 여기서 가져간 값은 속도보다 **예측 가능성**이다 — GC 정지가 없고 메모리 배치를 직접 정할 수 있다는 것. **Figma 는 WebAssembly 를 쓴다고 밝혔을 뿐 이 논문을 언급한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Emscripten: an LLVM-to-JavaScript compiler",
+            "authors": "Alon Zakai",
+            "year": "2011",
+            "venue": "OOPSLA 2011 (companion)",
+            "url": "https://dl.acm.org/doi/10.1145/2048147.2048224",
+            "takeaway": "Figma 가 이름을 대고 쓰는 도구의 원 논문. 2015년에는 이것으로 asm.js 를 만들어 네이티브 대비 2배 이내를 얻었다. **도구는 Figma 가 직접 밝혔지만 이 논문을 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "브라우저 안에서 글리프 외곽선과 커닝 테이블에 닿을 수 없다",
+            "why_hard": "**웹 표준이 텍스트를 '그려 주는 것'으로만 노출하고 '구성 요소로' 열지 않기 때문이다.** 폰트 파일의 내부는 브라우저가 쥐고 있고, 앱은 결과만 받는다. 그래서 같은 텍스트가 브라우저마다·플랫폼마다 다르게 배치되는데, 일반 웹사이트라면 넘어갈 차이가 디자인 툴에서는 **결과물이 달라지는 것**이 된다.",
+            "current_best": "폰트를 직접 파싱해 텍스트 레이아웃 엔진을 스스로 만든다. 대가는 브라우저가 이미 하는 일을 통째로 다시 만드는 것, 그리고 폰트 포맷이 바뀔 때마다 직접 따라가야 한다는 것이다. Figma 는 2015년 글에서 이것을 **가장 큰 고통**이라고 불렀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "problem": "GPU 디바이스를 잃었는데 새로 얻을 수도 없는 상태",
+            "why_hard": "앱 바깥 — 드라이버와 OS 계층 — 에서 벌어지는 일이라 **애플리케이션이 손쓸 수 있는 자리가 없다.** 일부 Windows 기기에서 `requestDevice`·`requestAdapter` 가 실패한 뒤 회복 경로가 존재하지 않는다. 재시도가 답이 아닌 종류의 실패다.",
+            "current_best": "**고치지 않고 피한다.** 세션 도중에도 WebGL 로 내려앉을 수 있게 만들어 두고, 폴백률이 높은 GPU 는 블록리스트에 올려 아예 시도하지 않는다. 대가는 그 기기가 WebGPU 이득을 영영 못 받는 것, 그리고 판정이 통계라 새 기기는 한동안 당한 뒤에야 목록에 오른다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 벌의 셰이더가 두 백엔드로 가는 길",
+          "question": "두 그래픽 API 를 지원하면서 셰이더를 두 벌 만들지 않으려면?",
+          "kind": "flow",
+          "code": "flowchart LR\n  G[\"WebGL 1 GLSL 원본<br/>사람이 고치는 유일한 곳\"] --> PP[\"자체 셰이더 처리기<br/>새 GLSL 로 올린다\"]\n  PP --> NG[\"naga\"]\n  NG --> W[\"WGSL\"]\n  G --> WGL[\"WebGL 백엔드\"]\n  W --> WGP[\"WebGPU 백엔드\"]\n  WGP --> DAWN[\"Dawn\"]\n  DAWN --> NAT[\"플랫폼 그래픽 API\"]\n  WGL --> NAT"
+        },
+        {
+          "title": "브라우저와 네이티브가 같은 C++ 을 쓰는 방식",
+          "question": "탭 안의 앱과 설치형 앱이 어떻게 한 렌더러를 공유하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  CPP[\"C++ 렌더러 (타일 기반)\"] --> B{\"어디서 도는가\"}\n  B -->|\"브라우저\"| EM[\"Emscripten → WebAssembly\"]\n  B -->|\"네이티브 x64 · arm64\"| NA[\"직접 컴파일\"]\n  EM --> DW[\"Dawn\"]\n  NA --> DW\n  DW --> API[\"Metal · D3D12 · Vulkan\"]\n  CPP --> MEM[\"메모리 배치를 직접 정한다<br/>32비트 float · GC 정지 없음\"]"
+        },
+        {
+          "title": "WebGPU 를 못 쓰게 될 때",
+          "question": "호환성 판정을 언제 하느냐로 두 번 실패한 뒤 무엇을 했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"세션 시작 — WebGPU 로\"] --> T{\"호환성 확인 시점\"}\n  T -->|\"1차: 로드 시 동기 검사\"| F1[\"실패 — 비동기 읽기 때문에<br/>수백 ms 가 붙는다\"]\n  T -->|\"2차: 세션 시작 후 비동기\"| F2[\"부족 — 세션 도중의<br/>디바이스 손실을 못 잡는다\"]\n  T -->|\"3차: 판정하지 않는다\"| OK[\"언제든 WebGL 로 내려앉는다\"]\n  OK --> E{\"도중에 무슨 일이\"}\n  E -->|\"requestDevice·requestAdapter 실패\"| FB[\"WebGL 로 폴백<br/>렌더링이 한 번 튄다\"]\n  E -->|\"디바이스를 잃고 다시 못 얻음\"| BL[\"GPU 종류별 폴백률 집계<br/>→ 블록리스트\"]\n  BL --> NEVER[\"그 기기는 WebGPU 를 시도하지 않는다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Building a professional design tool on the web",
+          "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+          "publisher": "Figma Blog",
+          "date": "2015-12-07",
+          "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+        },
+        {
+          "title": "Figma Rendering: Powered by WebGPU",
+          "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+          "publisher": "Figma Blog",
+          "date": "2025-09-18",
+          "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+        },
+        {
+          "title": "Figma is powered by WebAssembly",
+          "url": "https://www.figma.com/blog/webassembly-cut-figmas-load-time-by-3x/",
+          "publisher": "Figma Blog",
+          "date": "2017-11-01",
+          "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
+        }
+      ]
+    },
+    {
+      "key": "horizontal-sharding",
+      "name": "데이터 저장·확장 — 논리를 먼저, 물리를 나중에",
+      "domain": "데이터 저장·확장",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "2020년의 Figma 는 **AWS 에서 가장 큰 물리 인스턴스 하나에 올린 Postgres 한 대**였다. 그 뒤 DB 는 100배 가까이 자랐고 트래픽은 해마다 3배씩 늘었다. 2022년 피크에 CPU 65% 를 찍었을 때 팀의 판단은 단순했다 — **DB 가 포화되면 Figma 는 멈춘다.** 수직 분할로 버텼지만 그 방식은 쪼갤 수 있는 가장 작은 단위가 테이블 하나여서, 수 테라바이트·수십억 행짜리 테이블은 그대로 남았다. 그 테이블들은 vacuum 때마다 불안했고 쓰기가 곧 RDS 의 IOPS 상한에 닿을 참이었다.",
+        "metrics": [
+          {
+            "label": "DB 규모 성장",
+            "value": "2020년 대비 약 100배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "트래픽 성장",
+            "value": "해마다 약 3배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "label": "위기 신호",
+            "value": "단일 RDS 피크 CPU 65% (2022)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "label": "첫 테이블 샤딩까지",
+            "value": "9개월 (2023-09 완료)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "물리 페일오버 시 영향",
+            "value": "프라이머리 **부분 가용성 10초**. 복제본은 영향 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "뷰의 성능 비용",
+            "value": "최악의 경우에도 10% 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "질의 엔진 지원 범위",
+            "value": "운영 질의의 흔한 90%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "수직 분할 이관 시 정지",
+            "value": "약 30초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "다른 DB 로 갈아탈지 정할 때",
+          "thought": "CockroachDB·TiDB·Spanner·Vitess 는 전부 **복잡한 데이터 이관**을 요구했고, 그러면 지금까지 쌓은 Postgres 운영 지식을 처음부터 다시 쌓아야 한다. 남은 활주로가 몇 달인 상황에서 감당할 수 있는 위험이 아니었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "직접 만들기로 한 뒤",
+          "thought": "범용 분산 DB 를 만드는 게 아니라는 점이 오히려 유리했다. **우리 질의만 감당하면 되니 기능을 훨씬 적게 만들어도 된다** — 남들이 푸는 문제를 다 풀 필요가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "샤딩 키를 하나로 통일할지 정할 때",
+          "thought": "하나로 통일하면 복합 키를 만들고 모든 테이블 스키마에 컬럼을 더하고 비싼 백필을 돌리고 제품 로직을 대대적으로 고쳐야 한다. **통일의 값보다 통일의 비용이 컸다** — UserID·FileID·OrgID 몇 개를 두는 쪽을 골랐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 지원할지 선을 그을 때",
+          "thought": "전체 SQL 을 지원하려 들면 질의 엔진이 최악의 복잡도로 간다. 그런데 실제로 운영에서 도는 질의를 그림자 플래너로 재 보니 **흔한 90% 만 받으면 됐다.** 나머지는 제품 코드를 고치는 게 싸다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "위험을 어떻게 나눌지 정할 때",
+          "thought": "논리 샤딩과 물리 샤딩을 한꺼번에 하면 버그가 났을 때 무엇이 원인인지 알 수 없다. **논리를 먼저 걸면 되돌리기가 설정 한 줄**이다 — 위험한 것은 되돌릴 수 있게 된 뒤에 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "물리 샤딩을 끝낸 뒤에도",
+          "thought": "끝났다고 되돌릴 길을 닫으면, 나중에 망가진 상태를 발견했을 때 갇힌다. **완료 후에도 롤백 능력을 유지한다**는 것이 이 작업의 조건이었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "colocation (colo)",
+            "what": "같은 샤딩 키와 같은 물리 배치를 공유하는 테이블 묶음. 개발자가 다루는 단위는 샤드가 아니라 이것이다."
+          },
+          {
+            "name": "샤딩 키",
+            "what": "UserID · FileID · OrgID 등 몇 개. 하나로 통일하지 않았다. 라우팅에는 값이 아니라 **해시**를 쓴다."
+          },
+          {
+            "name": "논리 샤드",
+            "what": "뷰 하나가 곧 논리 샤드 하나다 — `CREATE VIEW table_shard1 AS SELECT * FROM table WHERE hash(shard_key) >= …`."
+          },
+          {
+            "name": "물리 샤드",
+            "what": "실제 Postgres 데이터베이스. 논리 샤드 여럿이 한 물리 샤드에 얹힐 수 있다."
+          },
+          {
+            "name": "그림자 플래너 (shadow planner)",
+            "what": "살아 있는 운영 트래픽이 후보 샤딩 키 아래에서 어떻게 굴지 미리 예측하는 장치. 무엇을 고쳐야 하는지를 여기서 알았다."
+          }
+        ],
+        "invariants": [
+          "**라우팅은 샤딩 키의 해시로 한다.** 값 그대로 쓰면 자동 증가 ID 가 한 샤드에 몰린다 — 그 대신 범위 스캔을 잃는다.",
+          "같은 colo 안에서 샤딩 키로 하는 조인만 성립한다. colo 를 가로지르는 조인은 없다.",
+          "**논리 샤딩이 먼저, 물리 샤딩이 나중이다.** 앞의 것은 설정 한 줄로 되돌아가고 뒤의 것은 아니다.",
+          "물리 샤딩이 끝난 뒤에도 되돌릴 수 있어야 한다 — 망가진 상태에 갇히지 않기 위해."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "AAS(평균 활성 세션)와 의존 고립도로 다룰 테이블을 고른다",
+            "why": "감이 아니라 측정으로 — Ruby/ActiveRecord 는 동적이라 런타임 검증기를 붙여 실제 질의를 Snowflake 로 보냈다"
+          },
+          {
+            "step": "그림자 플래너로 후보 샤딩 키별 트래픽 거동을 예측한다",
+            "why": "어떤 애플리케이션 로직을 고쳐야 하는지를 먼저 안다"
+          },
+          {
+            "step": "테이블마다 샤드 범위별 뷰를 만든다",
+            "why": "물리적으로 쪼개지 않고도 샤딩된 것처럼 보이게"
+          },
+          {
+            "step": "그림자 읽기 — 운영 읽기를 뷰로도 동시에 흘려 본다",
+            "why": "뷰의 성능 영향이 실제로 미미한지 확인(최악 10% 미만)"
+          },
+          {
+            "step": "기능 플래그로 트래픽을 조금씩 뷰 경로로 옮긴다",
+            "why": "버그가 나면 설정 한 줄로 되돌린다"
+          },
+          {
+            "step": "DBProxy 가 SQL 을 AST 로 파싱해 논리 샤드 ID 를 뽑고 물리 DB 로 옮긴다",
+            "why": "제품 코드가 샤드를 몰라도 되게"
+          },
+          {
+            "step": "확신이 선 뒤에야 물리 페일오버 — 데이터를 실제로 여러 DB 로 가른다",
+            "why": "되돌릴 수 있는 것을 먼저 다 해 두고 위험한 것을 마지막에"
+          },
+          {
+            "step": "전체 데이터를 복사해 두고 각 샤드가 자기 몫만 읽고 쓰게 한다",
+            "why": "필터링 논리 복제는 너무 복잡했다 — 낭비를 감수하고 단순함을 산다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Postgres 를 떠날 것인가",
+            "chosen": "남는다. RDS 위에 수평 샤딩을 직접 만든다",
+            "alternatives": [
+              "CockroachDB",
+              "TiDB",
+              "Spanner",
+              "Vitess",
+              "NoSQL 로 이전"
+            ],
+            "tradeoff": "분산 DB 가 이미 푼 문제들(교차 샤드 트랜잭션, 전역 유일 인덱스, 자동 리샤딩)을 직접 풀거나 포기해야 한다. 대신 복잡한 데이터 이관과 운영 지식 재축적을 피했다 — **남은 활주로가 몇 달인 상황에서 이관 실패는 회사를 멈추게 한다.** NoSQL 은 관계형 모델이 복잡해 백엔드를 거의 다시 써야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "샤딩 키를 하나로 통일할 것인가",
+            "chosen": "UserID · FileID · OrgID 등 **여러 개**를 둔다",
+            "alternatives": [
+              "복합 키 하나로 통일"
+            ],
+            "tradeoff": "colo 마다 키가 달라 교차 colo 조인이 원천적으로 막히고, 어떤 테이블을 어느 colo 에 넣을지가 되돌리기 비싼 결정이 된다. 통일하려면 모든 테이블에 컬럼을 더하고 비싼 백필을 돌리고 제품 로직을 대대적으로 고쳐야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "라우팅에 키 값을 쓸 것인가 해시를 쓸 것인가",
+            "chosen": "**해시**",
+            "alternatives": [
+              "샤딩 키 값 그대로(범위 기반)"
+            ],
+            "tradeoff": "**범위 스캔이 비효율이 된다** — 연속된 ID 가 서로 다른 샤드로 흩어진다. 값 그대로 쓰면 자동 증가 ID 때문에 최신 데이터가 한 샤드에 몰린다. 범위 스캔이 코드베이스에서 흔한 패턴이 아니라 감수했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "질의 엔진이 SQL 을 어디까지 지원할 것인가",
+            "chosen": "운영 질의의 **흔한 90%** — 점/범위 질의, 샤딩 키 기준 단일 colo 조인",
+            "alternatives": [
+              "전체 SQL 호환"
+            ],
+            "tradeoff": "나머지 10% 는 제품 코드를 고쳐야 하고, 샤딩 키가 없는 질의는 scatter-gather 로 떨어진다. 전체를 지원하려 들면 질의 엔진이 최악의 복잡도로 간다 — 무엇이 흔한지는 그림자 플래너로 **실측해서** 정했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "논리 샤딩과 물리 샤딩을 어떤 순서로 할 것인가",
+            "chosen": "**논리를 먼저, 물리를 나중에.** 논리는 Postgres 뷰로 만든다",
+            "alternatives": [
+              "한 번에 물리적으로 쪼개기",
+              "물리 파티셔닝 기능 사용"
+            ],
+            "tradeoff": "뷰가 성능 비용을 더한다(최악 10% 미만). 대신 **버그를 찾았을 때 되돌리는 것이 설정 한 줄**이 된다 — 이 기능 전체에서 가장 값이 큰 결정이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "샤드로 데이터를 어떻게 옮길 것인가",
+            "chosen": "**전체 데이터셋을 통째로 복사**하고 각 샤드가 자기 몫만 읽고 쓰게 한다",
+            "alternatives": [
+              "필터링 논리 복제로 필요한 부분만 옮기기"
+            ],
+            "tradeoff": "샤드마다 쓰지 않을 데이터를 들고 있어 저장 공간이 낭비된다. 필터링 복제는 너무 복잡했고, 이관 단계의 복잡도는 곧 사고 확률이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "교차 샤드 트랜잭션을 지원할 것인가",
+            "chosen": "**처음에는 하지 않는다.** 실패를 애플리케이션에서 우회한다",
+            "alternatives": [
+              "원자적 분산 트랜잭션 구현"
+            ],
+            "tradeoff": "제품 로직이 부분 실패를 스스로 다뤄야 한다. 분산 트랜잭션은 그 자체로 하나의 프로젝트이고, 없이도 우회 가능하다는 판단이었다 — 다만 '업무상 중요한 경우'를 위해 남은 과제로 적어 뒀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "물리 샤딩이 끝난 뒤 롤백 경로를 닫을 것인가",
+            "chosen": "**연다.** 완료 후에도 되돌릴 수 있게 유지한다",
+            "alternatives": [
+              "완료 후 정리하고 단방향으로 확정"
+            ],
+            "tradeoff": "옛 경로를 계속 살려 둬야 해 운영 부담과 코드가 남는다. 대신 나중에 손상 상태를 발견했을 때 갇히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Amazon RDS for Postgres",
+            "role": "저장의 본체. 이 위에 샤딩을 얹었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "DBProxy (Go)",
+            "role": "SQL 파싱 → 논리 플래너 → 물리 플래너. 샤드 라우팅을 제품 코드에서 감춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Postgres 뷰",
+            "role": "논리 샤드의 구현체. 물리적으로 쪼개기 전에 애플리케이션을 먼저 옮기는 수단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "PgBouncer",
+            "role": "연결 풀러. 수천 개 연결을 눌러 담는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "tech": "Postgres 논리 복제",
+            "role": "수직 분할 때 테이블 묶음을 새 DB 로 옮기는 수단. 대량 복사 중에는 인덱스를 빼고 나중에 다시 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "tech": "Snowflake",
+            "role": "ActiveRecord 런타임 검증기가 보낸 운영 질의를 모아 분석하는 곳",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "livegraph-subscription",
+          "via": "Postgres 복제 스트림",
+          "contract": "샤딩이 LiveGraph 의 전제를 바꿨다 — 스트림이 여럿이 되면서 전역 순서가 사라졌고, 그래서 LiveGraph 100x 가 무효화형 캐시로 갈아엎어야 했다. **이 도메인의 결정이 저쪽의 재설계를 낳았다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "multiplayer-doc",
+          "via": "별개의 저장소",
+          "contract": "멀티플레이어 문서 데이터는 이 메타데이터 Postgres 와 별개다 — 어디에 어떻게 저장하는지는 공개되지 않았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "제품 백엔드 (Ruby / ActiveRecord)",
+          "via": "DBProxy 를 거친 SQL",
+          "contract": "제품 코드는 샤드를 모른다. 다만 지원되지 않는 10% 의 질의는 제품 쪽이 고쳐야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Spanner: Google's Globally-Distributed Database",
+            "authors": "James C. Corbett 외 (Google)",
+            "year": "2012",
+            "venue": "OSDI 2012",
+            "url": "https://www.usenix.org/conference/osdi12/technical-sessions/presentation/corbett",
+            "takeaway": "Figma 가 **검토하고 버린** 길이다. Spanner 계열이 이미 푼 것(원자적 교차 샤드 트랜잭션, 전역 유일 인덱스)을 Figma 는 직접 만드는 대신 **포기하는 쪽**을 골랐다 — 남은 활주로가 몇 달일 때 데이터 이관 실패는 회사를 멈추게 하기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "title": "Vitess: Scaling MySQL at YouTube (project)",
+            "authors": "Sugu Sougoumarane 외",
+            "year": "2019",
+            "venue": "CNCF / VLDB 2020 발표",
+            "url": "https://vitess.io/",
+            "takeaway": "Figma 가 만든 것과 가장 가까운 기성품이고 역시 검토 후 버렸다. **DBProxy 는 Vitess 의 vtgate 와 같은 자리에 서지만 훨씬 적은 기능만 만들었다** — 남의 질의가 아니라 자기 질의만 감당하면 되기 때문이다. **Figma 는 Vitess 를 대안으로 검토했다고만 밝혔고 구현을 참고했다고 말하지 않았다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Consistent Hashing and Random Trees",
+            "authors": "David Karger 외 (MIT)",
+            "year": "1997",
+            "venue": "STOC 1997",
+            "url": "https://dl.acm.org/doi/10.1145/258533.258660",
+            "takeaway": "샤딩 키의 **값이 아니라 해시로** 라우팅한다는 선택의 뿌리. 자동 증가 ID 를 그대로 쓰면 최신 데이터가 한 곳에 몰리는데, 해시는 그것을 흩는 대신 범위 스캔을 포기한다. **Figma 는 '샤딩 키의 해시를 쓴다'고만 밝혔고 어떤 해싱 기법인지, 이 논문을 참고했는지는 말하지 않았다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "샤딩 키 없는 질의는 샤딩의 이득을 되돌린다 (scatter-gather)",
+            "why_hard": "**비용 구조의 문제다.** 어느 샤드에 있는지 모르면 전부에게 물어보는 수밖에 없고, 그러면 전체가 지는 부하는 **샤딩하지 않았을 때와 같아진다.** 샤딩은 '어디를 봐야 하는지 안다'는 전제 위에서만 이득이고, 그 전제가 깨지는 질의는 아무리 엔진을 잘 만들어도 이득을 회복하지 못한다. 복잡한 집계와 중첩 질의가 구조적으로 여기 걸린다.",
+            "current_best": "**질의를 바꾼다.** 지원 범위를 흔한 90% 로 긋고, 그림자 플래너로 어떤 제품 코드가 걸리는지 미리 찾아 고친다. 대가는 제품 팀이 DB 사정에 맞춰 코드를 고쳐야 한다는 것 — 감췄다던 샤딩이 결국 제품 코드로 새어 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "problem": "샤딩된 기본 키에 전역적으로 유일한 ID 를 어떻게 만들 것인가",
+            "why_hard": "유일성은 **모두가 합의해야 성립하는 성질**인데, 샤딩은 합의를 없애려고 하는 일이다. 중앙에서 번호를 주면 그 중앙이 병목이자 단일 장애점이 되고, 각자 만들면 충돌하지 않는다는 보장이 사라진다. 샤딩 키 밖의 전역 유일 인덱스도 같은 이유로 막힌다.",
+            "current_best": "Figma 는 이것을 **아직 남은 과제로 적어 두었다** — 전역 유일 ID 생성, 분산 전역 유일 인덱스, 원자적 교차 샤드 트랜잭션, 자동 리샤딩이 함께 '앞으로 할 일'에 있다. 지금은 그 제약을 제품 로직이 피해 다닌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "위험을 두 번으로 나눈 순서",
+          "question": "되돌릴 수 있는 것과 없는 것을 어떻게 갈랐는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"단일 Postgres (2020)\"] --> B[\"수직 분할<br/>테이블 묶음별 DB\"]\n  B --> C{\"테이블 하나가<br/>수 TB 를 넘는다\"}\n  C --> D[\"논리 샤딩 — 뷰로만<br/>물리적으로는 아직 한 DB\"]\n  D --> E[\"그림자 읽기 · 기능 플래그로 점진 전환\"]\n  E --> F{\"버그가 나면\"}\n  F -->|\"설정 한 줄로 롤백\"| D\n  F -->|\"확신이 서면\"| G[\"물리 페일오버<br/>실제로 여러 DB 로 가른다\"]\n  G --> H[\"완료 후에도 롤백 경로를 연 채로 둔다\"]"
+        },
+        {
+          "title": "질의 하나가 샤드에 닿기까지",
+          "question": "제품 코드가 샤드를 모르게 하려면 무엇이 필요한가?",
+          "kind": "flow",
+          "code": "flowchart LR\n  APP[\"제품 백엔드<br/>Ruby · ActiveRecord\"] --> SQL[\"SQL\"]\n  SQL --> PX[\"DBProxy (Go)\"]\n  PX --> P1[\"질의 파서 → AST\"]\n  P1 --> P2[\"논리 플래너<br/>질의 종류 · 논리 샤드 ID\"]\n  P2 --> P3[\"물리 플래너<br/>어느 물리 DB 인가\"]\n  P3 --> DB1[(\"샤드 1\")]\n  P3 --> DB2[(\"샤드 2\")]\n  P3 --> DBN[(\"샤드 N\")]\n  P2 -.->|\"colo 로 묶인 테이블만<br/>샤딩 키 조인 가능\"| P3"
+        },
+        {
+          "title": "샤딩 키가 빠지면",
+          "question": "감췄다던 샤딩은 어디서 제품 코드로 새어 나오는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"들어온 질의\"] --> K{\"샤딩 키가 있나\"}\n  K -->|\"있다\"| PT[\"해당 샤드 한 곳으로<br/>점 · 범위 질의\"]\n  K -->|\"없다\"| SG[\"scatter-gather<br/>모든 샤드에 묻는다\"]\n  SG --> LOAD[\"전체 부하 = 샤딩 안 한 것과 같다<br/>확장의 이득이 사라진다\"]\n  Q --> U{\"지원 범위 밖인가\"}\n  U -->|\"교차 샤드 조인\"| X1[\"지원하지 않는다\"]\n  U -->|\"교차 샤드 범위 스캔\"| X2[\"해시 라우팅이라 불가\"]\n  U -->|\"샤딩 키 밖 전역 유일 인덱스\"| X3[\"지원하지 않는다\"]\n  X1 --> FIX[\"그림자 플래너로 미리 찾아<br/>제품 코드를 고친다\"]\n  X2 --> FIX\n  X3 --> FIX"
+        }
+      ],
+      "sources": [
+        {
+          "title": "The growing pains of database architecture",
+          "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+          "publisher": "Figma Blog",
+          "date": "2023-04-04",
+          "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+        },
+        {
+          "title": "How Figma's Databases Team Lived to Tell the Scale",
+          "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-03-14",
+          "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "멀티플레이어 데이터를 실제로 어디에 어떻게 저장하는지 — 메타데이터의 Postgres 와 별개라는 것까지만 밝힌다.",
-    "단일 데이터베이스 인스턴스에서 수평 확장으로 어떻게 옮겼는지 — 2019년 글은 계획으로만 언급한다.",
+    "멀티플레이어 문서 데이터를 실제로 어디에 어떻게 저장하는지 — 메타데이터 Postgres 와 별개라는 것까지만 밝힌다.",
     "미국 밖 사용자의 지연을 위해 멀티플레이어 인스턴스를 실제로 어떻게 분산했는지.",
-    "실시간 데이터 구독(LiveGraph)·렌더링·저장 세 도메인은 아직 손대지 않았다."
+    "LiveGraph 캐시의 실제 적중률과 무효화 빈도 — 2024년 글은 '무효화는 드물다'고만 하고 수치를 주지 않는다.",
+    "**타일 기반 렌더러의 내부** — 타일 크기·분할 규칙, 마스킹·블러·블렌드 모드를 GPU 에서 어떻게 구현했는지. '고도로 최적화된 타일 기반 엔진'이라는 표현까지만 공개돼 있다.",
+    "WebGPU 전환의 구체적 수치 — 어떤 기기에서 얼마나 좋아졌는지는 '일부 개선·나머지 중립'까지만 밝힌다.",
+    "샤딩 이후의 현재 상태 — 2024년 글은 '올해 더 복잡한 DB 를 샤딩한다'까지만 말한다. 어디까지 갔는지는 모른다.",
+    "PGKeeper(PgBouncer 를 대체한 자체 연결·부하 관리 서비스)는 이번 사이클에서 다루지 않았다 — 별도 자료가 있다."
   ],
   "sources": [
     {

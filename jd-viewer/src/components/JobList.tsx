@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
-import { useIsLight } from '../lib/useIsLight'
 import { EmptyState } from './ui'
 
 interface Props {
@@ -14,7 +13,6 @@ const PAGE_SIZE = 20
 
 export function JobList({ jobs, selected, onSelect }: Props) {
   const [page, setPage] = useState(0)
-  const isLight = useIsLight()
 
   // 필터가 바뀌면 1페이지로 돌아간다. effect 에서 setState 하면 한 번 그린 뒤 다시 그리게
   // 되어(잘못된 페이지가 한 프레임 보인다) React 가 권하는 '렌더 중 조정' 패턴을 쓴다.
@@ -72,7 +70,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                 <div className="flex flex-wrap gap-1 mb-1.5">
                   {roles.map((r) => (
                     <span key={r} className="text-[10px] px-1.5 py-0.5 rounded border"
-                      style={{ borderColor: roleColor(r, isLight), color: roleColor(r, isLight) }}>{r}</span>
+                      style={{ borderColor: roleColor(r), color: roleColor(r) }}>{r}</span>
                   ))}
                 </div>
               )}
@@ -96,8 +94,8 @@ export function JobList({ jobs, selected, onSelect }: Props) {
       {/* 데스크톱: 표 */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-sm border-collapse">
-          <thead className="bg-(--color-panel) border-b border-(--color-border) sticky top-0 z-10">
-            <tr className="text-left text-(--color-muted)">
+          <thead className="jd-panel-head sticky top-0 z-10">
+            <tr className="text-left text-(--color-muted) font-medium">
               <th className="px-3 py-2 font-medium w-10">#</th>
               <th className="px-3 py-2 font-medium w-20">사이트</th>
               <th className="px-3 py-2 font-medium w-48">회사</th>
@@ -141,7 +139,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                         <span
                           key={r}
                           className="text-[10px] px-1.5 py-0.5 rounded border"
-                          style={{ borderColor: roleColor(r, isLight), color: roleColor(r, isLight) }}
+                          style={{ borderColor: roleColor(r), color: roleColor(r) }}
                         >
                           {r}
                         </span>

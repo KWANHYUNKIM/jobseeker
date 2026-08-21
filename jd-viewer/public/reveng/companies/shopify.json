@@ -730,7 +730,7 @@
           "title": "실패 경로 — 격리가 무너지는 자리",
           "question": "데이터만 나누면 왜 부족한가?",
           "kind": "failure",
-          "code": "flowchart TD\n  SHARD[2015 샤딩] --> SCALE[수평 확장 획득]\n  SHARD --> LOSS[**회복력 상실**]\n  LOSS --> ALL[샤드 하나 실패 →<br/>그 동작이 플랫폼 전체에서 불가]\n  ALL --> POD[pod 로 blast radius 격리]\n  SHARE[공유 자원이 여러 샤드를 넘나든다] --> SPREAD[격리가 계산 계층에서 무너진다]\n  SPREAD --> RULE[**한 번에 하나의 pod 하고만 통신**]\n  CROSS[크로스 pod 호출을 한 번 허용] -->|추정| WEAK[격리가 보장이 아니라 관행이 된다]\n  CROSS --> BAN[작업 단위를 하나의 pod 로 못 박음]\n  BIG[아주 큰 상점] -->|추정| HOT[그 pod 에 부하가 몰린다<br/>이 글에는 다루지 않음]"
+          "code": "flowchart TD\n  SHARD[2015 샤딩] --> SCALE[수평 확장 획득]\n  SHARD --> LOSS[<b>회복력 상실</b>]\n  LOSS --> ALL[샤드 하나 실패 →<br/>그 동작이 플랫폼 전체에서 불가]\n  ALL --> POD[pod 로 blast radius 격리]\n  SHARE[공유 자원이 여러 샤드를 넘나든다] --> SPREAD[격리가 계산 계층에서 무너진다]\n  SPREAD --> RULE[<b>한 번에 하나의 pod 하고만 통신</b>]\n  CROSS[크로스 pod 호출을 한 번 허용] -->|추정| WEAK[격리가 보장이 아니라 관행이 된다]\n  CROSS --> BAN[작업 단위를 하나의 pod 로 못 박음]\n  BIG[아주 큰 상점] -->|추정| HOT[그 pod 에 부하가 몰린다<br/>이 글에는 다루지 않음]"
         }
       ],
       "sources": [
@@ -1199,7 +1199,7 @@
           "title": "한 해가 며칠을 향해 가는 길",
           "question": "3월부터 무엇을 하면 11월의 며칠을 견딜 수 있는가?",
           "kind": "flow",
-          "code": "flowchart TD\n  DS[데이터 사이언스<br/>트래픽 예측 · 여러 시나리오] --> PLAN[자원 영역별 용량 산정<br/>Memcache · Kafka · MySQL …]\n  PLAN --> BUF[페일오버 · 리전 이중화 버퍼]\n  BUF --> PROV[클라우드 배치]\n  PROV --> TEST[스케일 테스트 5회 · 4~10월]\n  GEN[Genghis<br/>트래픽을 점진적으로 올려 한계점 탐색] --> TEST\n  TOX[Toxiproxy<br/>네트워크 장애 · 파티션] --> TEST\n  GD[Game Days<br/>체크아웃 · 결제 · 주문 · 이행] --> FIND\n  TEST --> FIND[찾아낸 문제]\n  FIND --> MATRIX[(Resiliency Matrix<br/>실패 시나리오 · 복구 절차 · 플레이북 · 온콜)]\n  MATRIX --> FIX[고치기]\n  FIX --> TEST\n  FIX --> SLOW[**변경 속도 늦추기**<br/>신기능 대신 성능·신뢰성·확장]\n  SLOW --> BFCM([BFCM 주말<br/>24/7 대응 · 실시간 튜닝])\n  BFCM --> POST[사후 분석]\n  POST -.->|다음 해의 입력| DS"
+          "code": "flowchart TD\n  DS[데이터 사이언스<br/>트래픽 예측 · 여러 시나리오] --> PLAN[자원 영역별 용량 산정<br/>Memcache · Kafka · MySQL …]\n  PLAN --> BUF[페일오버 · 리전 이중화 버퍼]\n  BUF --> PROV[클라우드 배치]\n  PROV --> TEST[스케일 테스트 5회 · 4~10월]\n  GEN[Genghis<br/>트래픽을 점진적으로 올려 한계점 탐색] --> TEST\n  TOX[Toxiproxy<br/>네트워크 장애 · 파티션] --> TEST\n  GD[Game Days<br/>체크아웃 · 결제 · 주문 · 이행] --> FIND\n  TEST --> FIND[찾아낸 문제]\n  FIND --> MATRIX[(Resiliency Matrix<br/>실패 시나리오 · 복구 절차 · 플레이북 · 온콜)]\n  MATRIX --> FIX[고치기]\n  FIX --> TEST\n  FIX --> SLOW[<b>변경 속도 늦추기</b><br/>신기능 대신 성능·신뢰성·확장]\n  SLOW --> BFCM([BFCM 주말<br/>24/7 대응 · 실시간 튜닝])\n  BFCM --> POST[사후 분석]\n  POST -.->|다음 해의 입력| DS"
         },
         {
           "title": "한 해가 거치는 상태",
@@ -1211,7 +1211,7 @@
           "title": "실패 경로 — 준비가 못 덮는 자리",
           "question": "무엇이 이 준비 체계 밖에 남는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  CHANGE[변경] --> NEW[**새로운 형태의 실패**]\n  NEW --> FREEZE[그래서 성수기엔 변경을 늦춘다]\n  FREEZE --> COST[대가: 그 기간 제품이 나아가지 않는다]\n  NEWSYS[성수기 뒤에 올라간 새 시스템<br/>2024 애널리틱스 재구축] --> NOHIST[**홀리데이 트래픽 이력이 없다**]\n  NOHIST --> SIM[Game Day 시뮬레이션으로 대체<br/>Kafka 파티션 · API 메모리 · 타임아웃 · LB]\n  SIM -->|추정| GAP[시뮬레이션과 실제 부하의 차이는 남는다]\n  PASS[테스트 통과] -->|해석| FALSE[통과가 성공이 아니다<br/>문제를 찾은 테스트가 성공한 테스트다]\n  SHED[부하가 예측을 넘으면<br/>무엇을 먼저 버리는가] --> UNK[**읽은 글에 없다**<br/>체크아웃 큐의 존재만 언급된다]"
+          "code": "flowchart TD\n  CHANGE[변경] --> NEW[<b>새로운 형태의 실패</b>]\n  NEW --> FREEZE[그래서 성수기엔 변경을 늦춘다]\n  FREEZE --> COST[대가: 그 기간 제품이 나아가지 않는다]\n  NEWSYS[성수기 뒤에 올라간 새 시스템<br/>2024 애널리틱스 재구축] --> NOHIST[<b>홀리데이 트래픽 이력이 없다</b>]\n  NOHIST --> SIM[Game Day 시뮬레이션으로 대체<br/>Kafka 파티션 · API 메모리 · 타임아웃 · LB]\n  SIM -->|추정| GAP[시뮬레이션과 실제 부하의 차이는 남는다]\n  PASS[테스트 통과] -->|해석| FALSE[통과가 성공이 아니다<br/>문제를 찾은 테스트가 성공한 테스트다]\n  SHED[부하가 예측을 넘으면<br/>무엇을 먼저 버리는가] --> UNK[<b>읽은 글에 없다</b><br/>체크아웃 큐의 존재만 언급된다]"
         }
       ],
       "sources": [
@@ -1679,7 +1679,7 @@
           "title": "실패 경로 — 경계가 잘못 그어져 있을 때",
           "question": "예약과 원장이 다른 저장소에 있으면 무엇이 어긋나는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  SPLIT[예약은 Redis · 원장은 MySQL] --> TWO[청구가 **두 개의 분리된 트랜잭션**<br/>원자적으로 묶을 수 없다]\n  TWO --> F1[결제 성공 · 원장 미갱신<br/>→ 오버셀]\n  TWO --> F2[결제 실패 · 청구된 채 남음<br/>→ 언더셀]\n  TWO --> F3[상태 불일치 → 예약 유실]\n  F1 --> COST[주문 취소 · 사과 메일 · 지원 비용<br/>= 상인의 손해]\n  RR[REPEATABLE READ] --> GAP[빈 테이블에 갭 락<br/>supremum 의사 레코드]\n  GAP --> BLOCK[보충 삽입이 막히고 데드락]\n  BLOCK --> RC[READ COMMITTED 로 해결]\n  ORDER[reserve 와 claim 의 락 순서가 다름] --> CIRC[순환 대기 → 데드락]\n  CIRC --> UNI[락 순서 통일로 해결]\n  OK[쿼리 최적화됨 · P90 양호 · CPU 여유] --> PLATEAU[그런데 처리량 정체]\n  PLATEAU --> REAL[**진짜 범인은 커넥션 풀**<br/>체크아웃 경로의 다른 긴 트랜잭션]"
+          "code": "flowchart TD\n  SPLIT[예약은 Redis · 원장은 MySQL] --> TWO[청구가 <b>두 개의 분리된 트랜잭션</b><br/>원자적으로 묶을 수 없다]\n  TWO --> F1[결제 성공 · 원장 미갱신<br/>→ 오버셀]\n  TWO --> F2[결제 실패 · 청구된 채 남음<br/>→ 언더셀]\n  TWO --> F3[상태 불일치 → 예약 유실]\n  F1 --> COST[주문 취소 · 사과 메일 · 지원 비용<br/>= 상인의 손해]\n  RR[REPEATABLE READ] --> GAP[빈 테이블에 갭 락<br/>supremum 의사 레코드]\n  GAP --> BLOCK[보충 삽입이 막히고 데드락]\n  BLOCK --> RC[READ COMMITTED 로 해결]\n  ORDER[reserve 와 claim 의 락 순서가 다름] --> CIRC[순환 대기 → 데드락]\n  CIRC --> UNI[락 순서 통일로 해결]\n  OK[쿼리 최적화됨 · P90 양호 · CPU 여유] --> PLATEAU[그런데 처리량 정체]\n  PLATEAU --> REAL[<b>진짜 범인은 커넥션 풀</b><br/>체크아웃 경로의 다른 긴 트랜잭션]"
         }
       ],
       "sources": [
@@ -2152,7 +2152,7 @@
           "title": "실패 경로 — 우리가 고칠 수 없는 코드 위에서",
           "question": "테마가 남의 것이라는 사실이 어디서 문제가 되는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  THEME[테마 = 상인의 Liquid 코드] --> UNKNOWN[무엇을 부를지<br/>정적으로 알 수 없다]\n  UNKNOWN --> BK[지난 쿼리 목록으로 추측]\n  BK --> CHANGE{페이지가 바뀌면}\n  CHANGE --> OVER[과다 페치]\n  CHANGE --> UNDER[과소 페치]\n  OVER --> STABLE[요청이 쌓이며 안정화]\n  UNDER --> STABLE\n  THEME --> REPEAT[같은 객체를 반복 호출]\n  REPEAT --> MEMO[메모이저로 싸게 만든다<br/>고칠 수는 없으므로]\n  SLOWTHEME[테마 자체가 느릴 때] -->|**읽은 글에 없다**| UNK[회사가 무엇을 하는지 미확인]\n  MONO[모놀리스 시절] --> CONFLICT[결제는 정확성·가독성<br/>스토어프론트는 공격적 최적화]\n  CONFLICT --> TTFB[TTFB 가 서서히 상승<br/>= 상인의 매출과 검색 순위 하락]\n  TTFB --> SPLIT[전용 애플리케이션으로 분리]"
+          "code": "flowchart TD\n  THEME[테마 = 상인의 Liquid 코드] --> UNKNOWN[무엇을 부를지<br/>정적으로 알 수 없다]\n  UNKNOWN --> BK[지난 쿼리 목록으로 추측]\n  BK --> CHANGE{페이지가 바뀌면}\n  CHANGE --> OVER[과다 페치]\n  CHANGE --> UNDER[과소 페치]\n  OVER --> STABLE[요청이 쌓이며 안정화]\n  UNDER --> STABLE\n  THEME --> REPEAT[같은 객체를 반복 호출]\n  REPEAT --> MEMO[메모이저로 싸게 만든다<br/>고칠 수는 없으므로]\n  SLOWTHEME[테마 자체가 느릴 때] -->|<b>읽은 글에 없다</b>| UNK[회사가 무엇을 하는지 미확인]\n  MONO[모놀리스 시절] --> CONFLICT[결제는 정확성·가독성<br/>스토어프론트는 공격적 최적화]\n  CONFLICT --> TTFB[TTFB 가 서서히 상승<br/>= 상인의 매출과 검색 순위 하락]\n  TTFB --> SPLIT[전용 애플리케이션으로 분리]"
         }
       ],
       "sources": [

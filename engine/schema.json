@@ -18,6 +18,7 @@
     "country": "KR|US|CN|JP|EU|기타",
     "category": "핀테크|커머스|소셜|메시징|스트리밍|검색|모빌리티|게임|SaaS|기타",
     "status": "in_progress|done",
+    "hold_reason": "string (선택) — in_progress 인 채로 **더 파지 않기로 한** 이유. 공개 자료를 두 번 찾아 두 번 다 없었을 때처럼, 다음 사이클이 같은 벽을 다시 들이받지 않게 여기 남긴다. 이 값이 있으면 validate.py --gaps 가 확장 대상에서 뺀다. 새 단서(회사의 새 글·새 발표)가 생기면 지우고 다시 판다.",
     "updated_at": "YYYY-MM-DD",
     "business_model": "string — 무엇을 팔아 돈을 버는가. 수익원이 여럿이면 비중 순.",
     "products": ["string — 사용자가 이름을 아는 단위"],
@@ -42,6 +43,7 @@
       {
         "name": "string — 문제의 경계 (조직도가 아니라). 예: 송금원장, 인증, 정산",
         "why": "string — 이 도메인이 왜 따로 존재하는가",
+        "hold_reason": "string (선택) — 이 도메인만 **더 파지 않기로 한** 이유. 회사 전체가 아니라 도메인 하나에서 자료가 막혔을 때 쓴다. 회사 레벨 hold_reason 을 쓰면 나머지 도메인까지 재방문에서 빠지므로, 그럴 때는 이쪽을 쓴다. 이 값이 있으면 validate.py --gaps 가 확장 대상에서 뺀다. 새 자료가 나오면 지운다.",
         "tech": [
           {
             "tech": "string — 이 도메인을 실제로 떠받치는 기술(DB·큐·락·캐시·프로토콜)",
@@ -118,6 +120,31 @@
             "confidence": "confirmed|inferred|unknown"
           }
         ],
+
+        "research": {
+          "_note": "STYLE.md 7번 — 이 기능이 딛고 선 남의 연구와, 아직 아무도 못 푼 것. 회사 자료만 읽으면 '이 회사는 이렇게 했다'에서 끝나고, 왜 그것 말고 다른 수가 없었는지가 안 보인다.",
+          "papers": [
+            {
+              "title": "string — 논문·표준·기술 백서 제목(원어)",
+              "authors": "string — 대표 저자 또는 기관. 모르면 빈 문자열",
+              "year": "YYYY (문자열)",
+              "venue": "string — 학회·저널·RFC 번호 (예: SOSP 2007, RFC 9114)",
+              "url": "string — 원문 또는 공개 PDF",
+              "takeaway": "string — 이 기능과 무슨 상관인가. 논문 요약이 아니라 '이 회사가 여기서 무엇을 가져다 썼는가'",
+              "confidence": "confirmed|inferred|unknown",
+              "_confidence_note": "회사가 그 논문을 직접 언급했으면 confirmed(회사 자료 링크가 sources 에 있어야 한다). 기법이 같아 보여 연결한 것이면 inferred."
+            }
+          ],
+          "hard_problems": [
+            {
+              "problem": "string — 이 도메인에서 아직 정답이 없는 것",
+              "why_hard": "string — 왜 어려운가. 물리적 한계·불가능성 정리·비용 구조 중 무엇 때문인가",
+              "current_best": "string — 지금 업계가 쓰는 차선책과 그 차선책이 감수하는 것",
+              "confidence": "confirmed|inferred|unknown",
+              "sources": ["source 객체"]
+            }
+          ]
+        },
 
         "diagrams": [
           {

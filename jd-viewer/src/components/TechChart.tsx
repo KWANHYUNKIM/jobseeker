@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -7,31 +7,22 @@ interface Props {
   highlight: Set<string>
 }
 
-// 테마 변수를 런타임에 읽어 차트에 적용(SVG 속성은 var() 호환이 불안정).
-// themechange 이벤트로 다크/라이트 전환 시 재렌더.
-function useThemeColors() {
-  const read = () => {
-    const s = getComputedStyle(document.documentElement)
-    const v = (n: string) => s.getPropertyValue(n).trim()
-    return {
-      border: v('--color-border'),
-      muted: v('--color-muted'),
-      panel: v('--color-panel'),
-      text: v('--color-text'),
-      accent: v('--color-accent'),
-    }
+// 팔레트를 런타임에 한 번 읽어 차트에 넣는다(SVG 속성은 var() 호환이 불안정).
+// 테마 전환이 없어져서 다시 읽을 일도 없다 — 모듈 로드 시 한 번이면 된다.
+function readThemeColors() {
+  const s = getComputedStyle(document.documentElement)
+  const v = (n: string) => s.getPropertyValue(n).trim()
+  return {
+    border: v('--color-border'),
+    muted: v('--color-muted'),
+    panel: v('--color-panel'),
+    text: v('--color-text'),
+    accent: v('--color-accent'),
   }
-  const [c, setC] = useState(read)
-  useEffect(() => {
-    const on = () => setC(read())
-    window.addEventListener('themechange', on)
-    return () => window.removeEventListener('themechange', on)
-  }, [])
-  return c
 }
 
 export function TechChart({ data, onPick, highlight }: Props) {
-  const c = useThemeColors()
+  const c = useMemo(readThemeColors, [])
 
   if (data.length === 0) {
     return (
