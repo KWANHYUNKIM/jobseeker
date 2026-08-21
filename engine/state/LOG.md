@@ -113,3 +113,4 @@ STATE.md 가 "다음 실행이 알아야 할 것"이라면 여기는 "무엇을 
 | 103 | 2026-08-21 | 배민 | 주문 접수 research — 두 장군 문제·end-to-end 논지. **정확히 한 번이 왜 전달 계층 밖으로 나가야 했는지**가 여기서 나온다 | 보강 계속 (research 65) |
 | 104 | 2026-08-21 | 배민 | 배차 research — Contraction Hierarchies·온라인 이분 매칭·PDPTW. **초당 2만 건이 어떻게 가능한지**와 **왜 이벤트 구조인지**가 설명된다 | 보강 계속 (research 64) |
 | 105 | 2026-08-21 | 배민 | 정산 research — Helland 사후 대사·Sagas·복식부기. **마지막 단계가 보상되지 않는 saga** 라는 것이 이 도메인의 성격이다 | 보강 계속 (research 63) |
+| 106 | 2026-08-21 | 배민 | 가게 노출 research — Reactive Streams·Scaling Memcache·Circuit Breaker. **배민 5개 기능 research 완주** | 쿠팡으로 (research 62) |
