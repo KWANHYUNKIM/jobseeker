@@ -94,6 +94,21 @@ def main() -> int:
 
     # 원본 레코드가 크롤러가 쓰는 모양과 얼마나 다른지 본다. 크게 다르면
     # 되돌린 뒤 파이프라인이 다르게 동작할 수 있어 먼저 눈으로 확인해야 한다.
+    #
+    # 특히 본문(txt)과 기술스택이 살아 있는지가 중요하다 — 없으면 enrich 가
+    # 되살린 레코드에서 아무것도 못 뽑아 오히려 지금보다 나빠진다.
+    if hist:
+        keys = sorted(hist[0].keys())
+        print(f"\n원본 레코드 키({len(keys)}개): {keys}")
+        body_like = [k for k in keys if any(t in k.lower() for t in ("txt", "desc", "body", "content", "detail"))]
+        stack_like = [k for k in keys if "stack" in k.lower() or "skill" in k.lower() or "tech" in k.lower()]
+        print(f"본문 계열 키: {body_like or '(없음)'}")
+        print(f"기술 계열 키: {stack_like or '(없음)'}")
+        for k in body_like + stack_like:
+            filled = sum(1 for j in hist if j.get(k))
+            print(f"  {k}: 값 있는 레코드 {filled}/{len(hist)}건")
+        print()
+
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     total_before = total_after = 0
 
