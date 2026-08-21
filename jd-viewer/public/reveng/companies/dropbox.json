@@ -237,9 +237,26 @@
               "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
             }
           ]
+        },
+        {
+          "tech": "Lepton — JPEG 무손실 재압축 (디스크 쪽)",
+          "solves": "**JPEG 의 허프만 부호를 VP8 산술 부호로 갈아** 평균 **22%** 를 줄인다. 인코딩 5MB/s · 디코딩 15MB/s · 메모리 24MB 미만. **160억 장**에 적용해 페타바이트 단위를 아꼈다.",
+          "limits": "**비트 단위로 원본이 되돌아와야 한다** — 그래서 seccomp 샌드박스 안에서 돌리고 저장 전에 원본과 맞대 본다. 지금은 **오픈소스 유지보수가 중단됐다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+              "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+              "publisher": "Dropbox Tech",
+              "date": "2016-07-14",
+              "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "compression"
+      ]
     },
     {
       "name": "검색",
@@ -1503,6 +1520,562 @@
           "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
         }
       ]
+    },
+    {
+      "key": "compression",
+      "name": "덜 보내고 덜 담는다 — 제약이 반대인 두 압축",
+      "domain": "전송 효율",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**이 회사의 원가는 회선과 디스크 두 군데서 난다.** 수백만 대의 데스크톱이 매일 페타바이트를 밀어 올리니 회선에서 몇 %가 곧 돈이고, 그렇게 올라온 것이 엑사바이트로 눕는다. 그래서 압축을 두 자리에 따로 만들었는데, **두 자리의 제약이 정반대다.** 회선 쪽(Broccoli)은 **사용자 기기의 CPU 로 실시간에** 해야 하니 빨라야 하고 조금 손해 봐도 된다. 디스크 쪽(Lepton)은 **서버에서 느긋하게** 해도 되지만 **원본이 비트 하나까지 되돌아와야 한다** — 남이 맡긴 사진이기 때문이다. 같은 '압축'이라는 이름 아래 완전히 다른 문제다.",
+        "metrics": [
+          {
+            "label": "Broccoli — 업로드",
+            "value": "대역폭 **약 30~33%** 절감 · 중앙값 요청 3.5MiB → **1.6MiB** · p50 지연 **약 35%** 개선",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Broccoli — 다운로드",
+            "value": "대역폭 **약 15%** · 요청 3.4MiB → 1.6MiB · p50 지연 **50%** · p75 27% · p90 12%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Broccoli — 사용자별 편차",
+            "value": "**절반은 13% 절감 · 25%는 40% · 10%는 70%** — 평균 하나로 말할 수 없는 분포다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Broccoli — 속도",
+            "value": "**코어당 초당 300MiB 넘게**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Lepton — 절감",
+            "value": "JPEG 평균 **22%** (원본 비트 그대로 복원)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Lepton — 속도",
+            "value": "인코딩 **5MB/s** · 디코딩 **15MB/s** · 메모리 **24MB 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Lepton — 규모",
+            "value": "**160억 장** · 페타바이트 단위 절감 · 검증에 사진 **40억 장**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "label": "Lepton — DC 계수",
+            "value": "예측으로 **39%** 줄였다(단순 이웃 평균은 약 30%). 다만 **DC 는 평균 JPEG 의 8%뿐**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "회선 쪽 압축기를 고를 때",
+          "thought": "7zip·zstd·zlib 을 재 봤고 Lepton 도 후보에 올렸다. 고른 기준이 압축률만이 아니었다 — **파일 크기, 이미 저장된 것과의 호환(pre-coding), Rust 로 안전하게 쓸 수 있는가, HTTP 표준과 맞는가.** 클라이언트 회선 속도에서 못 버티거나 Rust 구현이 없는 것들이 떨어졌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사전을 끌지 정할 때",
+          "thought": "Brotli 내장 사전을 끄면 파일이 **약 0.1%** 커진다. 그걸 내고 산 것이 **압축 조각을 안전하게 이어 붙일 수 있다**는 성질이다 — 0.1% 로 조립 가능성을 산 셈이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "빠른 회선을 만났을 때",
+          "thought": "여기서 압축의 성질이 뒤집힌다. **100Mbps 가 넘어가면 압축이 오히려 병목**이라 품질 단계를 낮춰야 했다. 압축은 '느린 회선을 위한 것'이지 회선이 충분히 빠르면 **일하지 않는 것이 더 빠르다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "안 줄어드는 데이터를 볼 때",
+          "thought": "**드롭박스가 가진 데이터의 4분의 1 이상이 압축에 저항한다** — 동영상과 사진이다. 주말 사용 패턴에서 이게 뚜렷하게 보였다. 그리고 바로 그 지점이 Lepton 의 자리다 — **회선 압축이 포기한 JPEG 를 디스크 쪽에서 따로 판다.**",
+          "confidence": "inferred"
+        },
+        {
+          "at": "JPEG 를 다시 압축하기로 할 때",
+          "thought": "JPEG 는 이미 압축된 형식이라 다시 줄일 여지가 없어 보인다. 그런데 **맨 아래층인 허프만 부호는 낡았다** — 그 자리를 문맥을 먹인 산술 부호로 갈면, 화질을 하나도 안 건드리고 22% 가 나온다. **줄일 곳을 다시 정의한 것이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "DC 계수를 예측할 때",
+          "thought": "밝기(DC)를 이웃 블록 평균으로 때우면 약 30% 가 준다. 그런데 이웃에서 **기울기**를 뽑아 블록 경계를 넘어 매끄럽게 이어지도록 계산하면 **39%** 가 된다. 다만 **DC 는 평균 JPEG 의 8%뿐**이라, 22% 는 여러 기법을 합친 값이다 — 회사가 이걸 스스로 밝혔다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "남의 사진을 건드리는 게 두려울 때",
+          "thought": "여기가 이 기능의 진짜 어려운 자리다. 압축은 되돌릴 수 있어야 하는데 **'대체로 되돌아온다'로는 안 된다** — 사진 한 장이 깨지면 그건 그 사람의 사진이다. 그래서 규칙을 이렇게 세웠다: **한 번 원래 비트로 돌아오는 것을 확인한 파일은 앞으로도 항상 돌아온다.** 즉 결정성을 요구한 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그 결정성을 어떻게 담보할지 정할 때",
+          "thought": "세 겹으로 막았다 — 사진 **40억 장**으로 시험하고, **seccomp 샌드박스**(읽기·쓰기 시스템 호출만 허용) 안에서 돌리고, **저장하기 전에 원본과 비트 단위로 맞대 본다.** 비교하는 동안 원본 메모리는 **커널이 읽기 전용으로 잠근다.** 되돌릴 수 없는 작업을 남의 데이터에 하려면 이만큼이 든다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Broccoli",
+            "what": "Brotli 를 병렬 처리에 맞게 고친 것. **회선 쪽** — 사용자 기기 CPU 로 실시간."
+          },
+          {
+            "name": "Lepton",
+            "what": "JPEG 무손실 재압축. **디스크 쪽** — 서버에서, 대신 비트 단위 복원 필수."
+          },
+          {
+            "name": "DCT 계수",
+            "what": "JPEG 의 8×8 블록을 나타내는 **부호 있는 10비트 64개**. DC 하나(밝기)와 AC 63개."
+          },
+          {
+            "name": "DC 예측 ('미들아웃')",
+            "what": "이웃 블록에서 뽑은 기울기로 밝기를 예측하고 **차이만** 저장한다."
+          },
+          {
+            "name": "저장 전 검증",
+            "what": "압축한 것을 되돌려 원본과 비트 단위로 맞대 보는 관문. **통과 못 하면 원본을 그대로 둔다.**"
+          }
+        ],
+        "invariants": [
+          "**한 번 원래 비트로 돌아온 파일은 앞으로도 항상 돌아온다** — 결정성이 곧 안전이다.",
+          "**검증을 통과하기 전에는 원본을 지우지 않는다.**",
+          "회선 압축은 **회선보다 빨라야** 의미가 있다 — 아니면 품질을 낮춘다.",
+          "압축률만으로 고르지 않는다 — 안전성·표준·기존 저장물과의 호환도 함께 본다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "[회선] 올릴 블록을 Broccoli 로 압축한다",
+            "why": "코어당 300MiB/s 넘게 — 회선보다 빨라야 한다"
+          },
+          {
+            "step": "[회선] 회선이 100Mbps 를 넘으면 **압축 품질 단계를 낮춘다**",
+            "why": "그 지점부터는 압축이 병목이다"
+          },
+          {
+            "step": "[회선] Brotli 내장 사전은 끈다",
+            "why": "0.1% 를 내고 조각을 안전하게 이어 붙일 수 있게 산다"
+          },
+          {
+            "step": "[회선] 압축 해제 실패에 대비한 폴백을 둔다",
+            "why": "배포 중 클라이언트가 죽는 문제가 실제로 났다"
+          },
+          {
+            "step": "[디스크] 올라온 JPEG 를 Lepton 으로 다시 압축한다",
+            "why": "회선 압축이 포기한 형식이 바로 여기 있다"
+          },
+          {
+            "step": "[디스크] 허프만 부호를 **문맥을 먹인 VP8 산술 부호**로 바꾼다",
+            "why": "화질을 건드리지 않고 줄일 곳을 다시 정의한다"
+          },
+          {
+            "step": "[디스크] DC 는 이웃의 **기울기로 예측**하고 차이만 담는다",
+            "why": "단순 평균 30% → 기울기 연속 39%"
+          },
+          {
+            "step": "[디스크] **seccomp 샌드박스**에서 돌린다 — 읽기·쓰기 시스템 호출만",
+            "why": "남의 파일을 다루는 코드가 다른 짓을 못 하게"
+          },
+          {
+            "step": "[디스크] 저장 전에 되돌려 **비트 단위로 원본과 맞댄다**. 비교 중 원본은 커널이 읽기 전용으로 잠근다",
+            "why": "'대체로 되돌아온다'는 답이 될 수 없다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "압축을 어디서 할 것인가",
+            "chosen": "**두 군데 따로 — 회선(Broccoli)과 디스크(Lepton)**",
+            "alternatives": [
+              "한 곳에서 한 방식으로",
+              "회선만",
+              "디스크만"
+            ],
+            "tradeoff": "압축기를 둘 만들고 둘 다 운영해야 한다. 그래도 **제약이 정반대라 하나로 못 덮는다** — 회선 쪽은 사용자 CPU 로 실시간이라 빨라야 하고, 디스크 쪽은 느려도 되지만 **비트 단위 복원이 필수**다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              },
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "question": "회선 압축기로 무엇을 쓸 것인가",
+            "chosen": "**Brotli 를 고친 Broccoli**",
+            "alternatives": [
+              "7zip",
+              "zstd",
+              "zlib",
+              "Lepton(범용으로 쓰기)"
+            ],
+            "tradeoff": "표준 Brotli 가 아니게 되어 직접 유지해야 한다. 고른 기준이 압축률만이 아니었다 — **클라이언트 회선 속도에서 버티는가, Rust 로 안전하게 쓸 수 있는가, HTTP 표준과 맞는가, 이미 저장된 것과 호환되는가.** 후보들은 이 중 하나씩에서 떨어졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "question": "Brotli 내장 사전을 쓸 것인가",
+            "chosen": "**끈다**",
+            "alternatives": [
+              "기본값대로 사용"
+            ],
+            "tradeoff": "파일이 **약 0.1%** 커진다. 대신 **압축 조각을 안전하게 이어 붙일 수 있다** — 블록 단위로 다루는 이 시스템에서 그게 더 값졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "question": "빠른 회선에서는 어떻게 할 것인가",
+            "chosen": "**압축 품질 단계를 낮춘다** (100Mbps 초과)",
+            "alternatives": [
+              "항상 같은 품질로 압축",
+              "빠르면 압축을 아예 끄기"
+            ],
+            "tradeoff": "빠른 회선 사용자는 절감을 덜 받는다. 그래도 그 구간에서는 **압축이 병목이라 압축하는 편이 느리다** — p99 기준 최대 대역폭이 80Mbps 에서 100Mbps 로 올랐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "question": "JPEG 를 어떻게 더 줄일 것인가",
+            "chosen": "**허프만 부호를 문맥 기반 VP8 산술 부호로 교체**",
+            "alternatives": [
+              "다시 인코딩(손실)",
+              "그대로 두기",
+              "범용 압축기로 한 번 더"
+            ],
+            "tradeoff": "JPEG 내부 구조를 직접 다뤄야 해서 구현이 복잡하다. 대신 **화질을 하나도 안 건드리고** 평균 22% 가 나온다 — 이미 압축된 형식에서 '줄일 곳'을 다시 정의한 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "question": "DC 계수를 어떻게 예측할 것인가",
+            "chosen": "**이웃의 기울기를 뽑아 경계를 넘어 매끄럽게 잇는다**",
+            "alternatives": [
+              "단순 이웃 평균",
+              "예측하지 않기"
+            ],
+            "tradeoff": "예측 로직이 복잡해진다. 단순 평균이 약 30%, 기울기 연속이 **39%** 다. 다만 **DC 는 평균 JPEG 의 8%뿐**이라 전체 22% 중 일부일 뿐이라는 것을 회사가 스스로 밝혔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "question": "되돌릴 수 없는 작업을 남의 데이터에 어떻게 할 것인가",
+            "chosen": "**결정성을 요구하고 세 겹으로 막는다** — 40억 장 시험 · seccomp 샌드박스 · 저장 전 비트 비교",
+            "alternatives": [
+              "광범위한 테스트로 갈음",
+              "표본만 검증",
+              "안 한다"
+            ],
+            "tradeoff": "**모든 파일마다 압축·해제·비교를 다 해야 해서** 처리 비용이 배로 든다. 그래도 규칙이 명확했다 — **한 번 원래 비트로 돌아온 파일은 앞으로도 항상 돌아온다.** 비교하는 동안 원본 메모리는 커널이 읽기 전용으로 잠근다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Brotli / Broccoli (Rust)",
+            "role": "회선 압축. 병렬 처리에 맞게 고쳤고 HTTP 표준과 맞는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "tech": "VP8 산술 부호기",
+            "role": "Lepton 이 JPEG 허프만 자리에 넣은 것. 문맥을 먹인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "tech": "seccomp",
+            "role": "Lepton 을 읽기·쓰기 시스템 호출만 가능한 상자에 가둔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "tech": "커널 읽기 전용 메모리",
+            "role": "비트 비교 중 원본이 바뀌지 않도록 잠근다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "nucleus-rewrite",
+          "via": "변경분",
+          "contract": "동기화가 정한 변경분에 Broccoli 가 적용된다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "magic-pocket",
+          "via": "압축된 바이트",
+          "contract": "Broccoli 가 줄인 뒤의 것이 저장되고, JPEG 는 거기서 Lepton 으로 한 번 더 줄어든다 — **회선과 디스크가 절감을 나눠 갖는다.**",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "The Design, Implementation, and Deployment of a System to Transparently Compress Hundreds of Petabytes of Image Files for a File-Storage Service",
+            "authors": "Daniel Reiter Horn 외 (Dropbox)",
+            "year": "2017",
+            "venue": "NSDI 2017 (arXiv:1704.06192)",
+            "url": "https://arxiv.org/abs/1704.06192",
+            "takeaway": "**드롭박스 자신이 쓴 논문이고 대상이 바로 이 Lepton 이다.** 블로그 글이 '어떻게 22% 를 얻었나'라면 논문은 **'수억 명의 파일에 되돌릴 수 없는 변환을 어떻게 안전하게 배포했나'** 쪽이다 — 회사 블로그가 기법을, 논문이 배포와 검증을 맡는 흔치 않은 짝이다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "Brotli Compressed Data Format",
+            "authors": "J. Alakuijala, Z. Szabadka (Google)",
+            "year": "2016",
+            "venue": "RFC 7932",
+            "url": "https://www.rfc-editor.org/rfc/rfc7932",
+            "takeaway": "Broccoli 의 바탕이다. **드롭박스가 이것을 고른 이유 중 하나가 '표준이라 HTTP 와 맞는다'**는 것이었다 — 압축률이 아니라 **끼워 넣을 자리가 이미 있다**는 점이 선택 기준이 된 사례다. 대신 내장 사전은 껐다(0.1% 손해로 조각 이어 붙이기를 샀다).",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "**되돌릴 수 없는 변환을 남의 데이터 수억 개에 어떻게 적용하는가**",
+            "why_hard": "압축해서 원본을 지우는 순간 **되돌릴 길은 압축 알고리즘 하나뿐**이다. 그런데 '거의 항상 되돌아온다'는 여기서 답이 아니다 — 160억 장 중 100만 분의 1이 깨져도 그건 **1만 6천 명의 사진**이고, 그 사람에게 확률은 위로가 되지 않는다. 게다가 실패가 **즉시 드러나지 않는다.** 압축은 오늘 하고 복원은 3년 뒤에 하는데, 그때는 이미 원본이 없다. 더 나쁜 것은 **결정성이 저절로 보장되지 않는다**는 점이다 — 같은 코드라도 CPU 명령어, 부동소수점, 라이브러리 버전, 메모리 상태가 다르면 결과가 갈릴 수 있고, **한 번 되돌아왔다고 다음에도 되돌아온다는 보장이 없다.**",
+            "current_best": "**확률을 낮추는 대신 성질을 요구한다.** 드롭박스가 세운 규칙은 '한 번 원래 비트로 돌아오는 것을 확인한 파일은 앞으로도 항상 돌아온다' — 정확도가 아니라 **결정성**을 요구한 것이다. 그 위에 세 겹을 쌓았다: 사진 **40억 장** 사전 검증, **seccomp 샌드박스**(읽기·쓰기 시스템 호출만 허용 — 코드가 다른 짓을 할 수 없게), 그리고 **저장 전에 되돌려 비트 단위로 맞대 보고 비교 중에는 커널이 원본 메모리를 읽기 전용으로 잠근다.** 대가는 명확하다 — **모든 파일에 압축·해제·비교를 다 하므로 처리 비용이 배로 든다.** 같은 모양이 Slack Vitess 이중 읽기 대조와 Shopify 섀도 모드에도 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          },
+          {
+            "problem": "**압축이 이득을 멈추는 지점은 데이터가 아니라 회선이 정한다**",
+            "why_hard": "압축을 얼마나 할지는 보통 '얼마나 줄어드나'로 정하는데, 실시간 전송에서는 그게 아니다. **회선이 충분히 빠르면 압축하는 시간이 아낀 시간보다 커진다** — 드롭박스에서는 100Mbps 가 그 경계였고, 그 위에서는 품질 단계를 낮춰야 했다. 즉 **같은 코드가 같은 파일에 대해 어떤 사용자에게는 이득이고 어떤 사용자에게는 손해다.** 게다가 데이터 쪽에서도 한계가 있다 — **드롭박스가 가진 것의 4분의 1 이상이 애초에 안 줄어든다**(동영상·사진). 그래서 '평균 30% 절감'이라는 숫자가 실제로는 **절반은 13%, 25%는 40%, 10%는 70%** 라는 분포이고, 평균에 맞춰 튜닝하면 아무에게도 맞지 않는다.",
+            "current_best": "**한 값으로 정하지 않고 상황에 따라 바꾼다.** 회선 속도를 보고 압축 품질 단계를 낮추고, 안 줄어드는 형식은 회선에서 포기하되 **디스크 쪽에서 형식 전용 압축(Lepton)으로 따로 잡는다.** 남는 대가는 정직하다 — 빠른 회선 사용자는 절감을 덜 받고, 압축기를 둘 유지해야 하며, 배포 중 압축 해제 실패로 클라이언트가 죽는 문제가 실제로 나서 폴백과 upstream 수정이 필요했다. **Netflix 의 '평균에 맞춘 하나의 답을 버린다'와 같은 결론에 다른 경로로 도착했다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Broccoli: Syncing faster by syncing less",
+                "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+                "publisher": "Dropbox Tech",
+                "date": "2020-08-04",
+                "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+              },
+              {
+                "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+                "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+                "publisher": "Dropbox Tech",
+                "date": "2016-07-14",
+                "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "제약이 반대인 두 자리",
+          "question": "왜 압축기를 하나로 못 만드나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  F[\"파일 하나\"] --> W{\"어디서 줄이나\"}\n  W -->|\"**회선** — 사용자 기기 CPU · 실시간\"| B[\"**Broccoli** (Brotli 개조)\"]\n  B --> B1[\"제약 — **회선보다 빨라야 한다**<br/>코어당 300MiB/s 넘게\"]\n  B --> B2[\"✅ 업로드 −30~33% · p50 지연 −35%\"]\n  B --> B3[\"⚠️ 100Mbps 넘으면 **압축이 병목**<br/>→ 품질 단계를 낮춘다\"]\n  B --> B4[\"⚠️ **4분의 1 이상이 안 줄어든다**<br/>동영상·사진\"]\n  W -->|\"**디스크** — 서버 · 느긋해도 된다\"| L[\"**Lepton** (JPEG 재압축)\"]\n  L --> L1[\"제약 — **비트 하나까지 되돌아와야 한다**<br/>남이 맡긴 사진이다\"]\n  L --> L2[\"✅ 평균 −22% · 160억 장 · 화질 그대로\"]\n  L --> L3[\"속도는 느려도 된다<br/>인코딩 5MB/s · 디코딩 15MB/s\"]\n  B4 -.->|\"회선이 포기한 JPEG 를<br/>**디스크에서 따로 잡는다**\"| L"
+        },
+        {
+          "title": "이미 압축된 것을 더 줄이는 법",
+          "question": "JPEG 에서 화질을 안 건드리고 22% 가 어디서 나오나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  J[\"JPEG — 이미 압축된 형식<br/>8×8 블록 = 부호 있는 10비트 계수 64개\"] --> S{\"어디를 줄일 수 있나\"}\n  S -->|\"❌ 다시 인코딩\"| X[\"화질이 상한다 — answer 가 아니다\"]\n  S -->|\"✅ **맨 아래층인 허프만 부호가 낡았다**\"| A[\"**문맥을 먹인 VP8 산술 부호**로 교체<br/>→ 화질은 그대로, 바이트만 준다\"]\n  A --> AC[\"**AC 계수 63개**<br/>길이는 유너리 · 부호 비트 · 이진 잔차\"]\n  A --> DC[\"**DC 계수 1개** (밝기)\"]\n  DC --> P{\"어떻게 예측하나\"}\n  P -->|\"단순 이웃 평균\"| P1[\"약 30% 감소\"]\n  P -->|\"**이웃에서 기울기를 뽑아<br/>블록 경계를 넘어 매끄럽게 잇는다**\"| P2[\"**39% 감소**\"]\n  P2 -.->|\"**단, DC 는 평균 JPEG 의 8%뿐**<br/>22% 는 여러 기법을 합친 값이다<br/>(회사가 스스로 밝혔다)\"| R[\"평균 **22%**\"]\n  AC --> R"
+        },
+        {
+          "title": "남의 사진을 되돌릴 수 없게 건드릴 때",
+          "question": "'대체로 되돌아온다'가 왜 답이 아닌가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  P[\"사진 한 장을 압축하고<br/>원본을 지운다\"] --> R[\"되돌릴 길은 **알고리즘 하나뿐**\"]\n  R --> Q{\"확률로 충분한가\"}\n  Q -->|\"100만 분의 1이 깨진다면\"| N1[\"160억 장 중 **1만 6천 명의 사진**<br/>그 사람에게 확률은 위로가 아니다\"]\n  Q -->|\"게다가\"| N2[\"**실패가 즉시 안 드러난다**<br/>압축은 오늘, 복원은 3년 뒤<br/>그때는 원본이 없다\"]\n  Q -->|\"더 나쁜 것\"| N3[\"**결정성은 저절로 생기지 않는다**<br/>CPU 명령어·부동소수점·라이브러리 버전이<br/>다르면 결과가 갈릴 수 있다\"]\n  N1 & N2 & N3 --> RULE[\"**규칙을 바꾼다 — 정확도가 아니라 결정성**<br/>'한 번 원래 비트로 돌아온 파일은<br/>앞으로도 항상 돌아온다'\"]\n  RULE --> G1[\"① 사진 **40억 장**으로 사전 검증\"]\n  RULE --> G2[\"② **seccomp 샌드박스**<br/>읽기·쓰기 시스템 호출만 허용\"]\n  RULE --> G3[\"③ **저장 전 비트 단위 비교**<br/>비교 중 원본은 커널이 읽기 전용으로 잠금\"]\n  G1 & G2 & G3 --> C[\"대가 — **모든 파일에 압축·해제·비교**<br/>처리 비용이 배로 든다\"]\n  C -.->|\"같은 모양\"| SAME[\"Slack 이중 읽기 대조<br/>Shopify 섀도 모드\"]"
+        },
+        {
+          "title": "평균 30% 라는 말이 감추는 것",
+          "question": "같은 압축이 왜 사용자마다 다르게 듣나?",
+          "kind": "state",
+          "code": "flowchart TD\n  A[\"'업로드 대역폭 약 30% 절감'\"] --> D[\"실제 분포\"]\n  D --> D1[\"**절반은 13%**\"]\n  D --> D2[\"**25%는 40%**\"]\n  D --> D3[\"**10%는 70%**\"]\n  D1 & D2 & D3 --> W[\"**평균에 맞춰 튜닝하면<br/>아무에게도 맞지 않는다**\"]\n  W --> V1{\"무엇이 갈랐나\"}\n  V1 -->|\"데이터 종류\"| E1[\"4분의 1 이상은 애초에 안 줄어든다<br/>(동영상·사진)\"]\n  V1 -->|\"**회선 속도**\"| E2[\"100Mbps 초과 — **압축이 병목**<br/>같은 코드가 어떤 사용자에겐 손해\"]\n  E1 --> F1[\"→ 회선에서 포기하고<br/>**디스크에서 형식 전용(Lepton)으로**\"]\n  E2 --> F2[\"→ **품질 단계를 낮춘다**<br/>p99 최대 대역폭 80 → 100Mbps\"]\n  F1 & F2 -.->|\"같은 결론, 다른 경로\"| NF[\"Netflix — 평균에 맞춘<br/>하나의 답을 버린다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Broccoli: Syncing faster by syncing less",
+          "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+          "publisher": "Dropbox Tech",
+          "date": "2020-08-04",
+          "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+        },
+        {
+          "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+          "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+          "publisher": "Dropbox Tech",
+          "date": "2016-07-14",
+          "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1575,6 +2148,13 @@
       "publisher": "Dropbox Tech",
       "date": "2020-04-20",
       "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+    },
+    {
+      "title": "Lepton image compression: saving 22% losslessly from images at 15MB/s",
+      "url": "https://dropbox.tech/infrastructure/lepton-image-compression-saving-22-losslessly-from-images-at-15mbs",
+      "publisher": "Dropbox Tech",
+      "date": "2016-07-14",
+      "summary": "JPEG 를 비트 단위로 되돌릴 수 있게 22% 줄인 기록과, 남의 사진을 건드리기 위해 세운 안전장치. 저자 Daniel Reiter Horn."
     }
   ]
 }
