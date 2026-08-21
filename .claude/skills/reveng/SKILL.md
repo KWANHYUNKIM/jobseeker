@@ -30,8 +30,14 @@ description: 기업 기술 역설계 엔진 사이클을 한 번 돈다. 공개 
 python engine/validate.py --gaps
 ```
 
-출력의 사다리를 **위에서부터** 훑어 처음 걸리는 것 하나만 고른다. 규칙은 PROMPT.md
-2단계에 있다. 요약하면: 오류 → 진행 중인 회사 → 보강 후보 1순위 → QUEUE → 비교 문서.
+출력이 사다리 순서 그대로 **이번 대상 하나**를 지목한다. 규칙의 원본은 PROMPT.md
+2단계다. 요약하면: 오류 → 진행 중인 회사 확장 → 보강 후보 → QUEUE → 비교 문서.
+
+> **`python` 을 못 찾으면** 인터프리터를 찾아 그 경로로 부른다. 검증을 건너뛰지 않는다 —
+> 이 명령이 이 스킬의 유일한 입력이다. Windows 에서는 Microsoft Store 별칭 스텁(0바이트)이
+> 진짜 설치를 가리는 일이 있어 `where python` 이 엉뚱한 것을 내놓을 수 있다. 실제 설치는
+> 보통 `%LOCALAPPDATA%\Programs\Python\Python3xx\python.exe` 에 있다. macOS·Linux 면
+> `python3` 를 쓴다. 한글 출력이 깨지면 `PYTHONIOENCODING=utf-8` 을 붙인다.
 
 **`--gaps` 를 건너뛰고 감으로 고르지 않는다.** 루프는 매번 같은 기준으로 골라야 진도가
 나간다. 사람이 기억으로 고르면 쉬운 것만 반복하게 된다.

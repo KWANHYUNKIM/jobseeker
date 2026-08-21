@@ -4,7 +4,7 @@
   "name_en": "Figma",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
   "business_model": "**좌석 기반 구독으로 번다.** 2025년 매출 **10.56억 달러**(+41%), 4분기 3.038억(+40%). 순매출유지율(NDR)이 **136%** 이고 연 10만 달러 이상 쓰는 유료 고객이 **1,405곳** 이라, **이미 들어온 고객이 더 쓰면서 자라는 구조**다. non-GAAP 영업이익은 1.295억 달러(마진 12%)이고, GAAP 영업손실 13억 달러에는 **IPO 관련 일회성 주식보상비용 9.757억 달러**가 들어 있다.\n\n앞서 판 회사들과 수익의 자리가 다르다. 네이버·카카오·당근·Instagram·YouTube 는 자기 지면에서, Netflix 는 자기 구독에서, 쿠팡은 자기가 파는 물건에서, Shopify 는 남의 매출의 일부에서 번다. Figma 는 **일하는 사람의 자리(좌석)** 에서 번다 — 그래서 **여러 사람이 한 파일에 동시에 들어와 있는 것 자체가 제품의 값어치**가 된다(뒷문장은 이 사이트의 해석).\n\n그리고 사용자의 위치가 인프라의 제약이 된다 — **주간 활성 사용자의 80% 이상이 미국 밖**인데 인프라는 오리건 데이터센터 중심이다(2019년 기준).",
@@ -288,8 +288,86 @@
     {
       "name": "데이터 저장·확장",
       "why": "메타데이터가 **AWS 의 가장 큰 축에 드는 머신 한 대 위 단일 데이터베이스**에 있었고, 회사는 그 구조가 한계에 다다르고 있다고 밝혔다(2019년). 사용자의 80% 이상이 미국 밖이라는 사실도 이 도메인의 제약이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Postgres 수직 분할 (vertical partitioning)",
+          "solves": "관련된 테이블 묶음('Figma 파일', '조직')을 각자의 DB 로 떼어 단일 인스턴스의 부하를 나눈다. 옮길 대상은 감이 아니라 `pg_stat_activity` 표본으로 잰 평균 활성 세션(AAS)과 의존 관계의 고립도로 골랐다.",
+          "limits": "**쪼갤 수 있는 가장 작은 단위가 테이블 하나다.** 그래서 수 테라바이트짜리 테이블 하나는 여전히 한 DB 에 남는다. 그리고 DB 간 원자적 트랜잭션·외래키 검증·조인을 잃는다. 클라이언트가 알아야 할 DB 가 늘수록 라우팅 복잡도가 곱으로 는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The growing pains of database architecture",
+              "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+              "publisher": "Figma Blog",
+              "date": "2023-04-04",
+              "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+            }
+          ]
+        },
+        {
+          "tech": "Postgres 수평 샤딩 — 논리와 물리를 분리",
+          "solves": "한 테이블을 여러 DB 로 나눈다. **먼저 뷰로 논리 샤딩만 걸어** 애플리케이션이 샤딩된 것처럼 굴게 하고, 물리적으로는 여전히 한 DB 에 둔다. 위험한 물리 페일오버는 그 뒤에 한다.",
+          "limits": "샤딩 키가 빠진 질의는 scatter-gather 가 되는데, **그 부하는 샤딩하지 않은 것과 같다** — 확장의 이득이 거기서 사라진다. 교차 샤드 범위 스캔·조인(같은 colo 밖)·샤딩 키 밖의 전역 유일 인덱스는 지원하지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "DBProxy (Go) — 질의를 읽고 라우팅하는 계층",
+          "solves": "SQL 을 가로채 AST 로 파싱하고, 논리 플래너가 질의 종류와 논리 샤드 ID 를 뽑은 뒤 물리 플래너가 실제 DB 로 옮긴다. 제품 코드는 어느 샤드인지 모른다.",
+          "limits": "**전체 SQL 을 지원하지 않는다 — 흔한 90% 만 지원한다.** 무엇이 흔한지는 그림자 플래너로 실제 운영 트래픽을 분석해 정했다. 나머지 10% 는 제품 코드를 고쳐야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "colocation(colo) — 같은 샤딩 키를 쓰는 테이블 묶음",
+          "solves": "`users` 와 `user_favorites` 를 UserID 로 같이 묶는다. 같은 colo 안에서는 샤딩 키 조인이 된다 — 개발자가 다루는 단위가 샤드가 아니라 colo 다.",
+          "limits": "colo 를 가로지르는 조인은 안 된다. 그래서 어떤 테이블을 어느 colo 에 넣을지가 나중에 되돌리기 비싼 결정이 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How Figma's Databases Team Lived to Tell the Scale",
+              "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-03-14",
+              "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "읽기 복제본 · PgBouncer",
+          "solves": "읽기 트래픽을 복제본으로 흘리고, 수천 개에 이른 연결을 풀러로 눌러 담는다.",
+          "limits": "복제 지연에 민감한 읽기는 복제본으로 못 보낸다. PgBouncer 는 **연결 수만 다룰 뿐 질의량 자체는 줄이지 못한다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The growing pains of database architecture",
+              "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+              "publisher": "Figma Blog",
+              "date": "2023-04-04",
+              "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "horizontal-sharding"
+      ]
     }
   ],
   "features": [
@@ -1839,16 +1917,602 @@
           "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
         }
       ]
+    },
+    {
+      "key": "horizontal-sharding",
+      "name": "데이터 저장·확장 — 논리를 먼저, 물리를 나중에",
+      "domain": "데이터 저장·확장",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "2020년의 Figma 는 **AWS 에서 가장 큰 물리 인스턴스 하나에 올린 Postgres 한 대**였다. 그 뒤 DB 는 100배 가까이 자랐고 트래픽은 해마다 3배씩 늘었다. 2022년 피크에 CPU 65% 를 찍었을 때 팀의 판단은 단순했다 — **DB 가 포화되면 Figma 는 멈춘다.** 수직 분할로 버텼지만 그 방식은 쪼갤 수 있는 가장 작은 단위가 테이블 하나여서, 수 테라바이트·수십억 행짜리 테이블은 그대로 남았다. 그 테이블들은 vacuum 때마다 불안했고 쓰기가 곧 RDS 의 IOPS 상한에 닿을 참이었다.",
+        "metrics": [
+          {
+            "label": "DB 규모 성장",
+            "value": "2020년 대비 약 100배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "트래픽 성장",
+            "value": "해마다 약 3배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "label": "위기 신호",
+            "value": "단일 RDS 피크 CPU 65% (2022)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "label": "첫 테이블 샤딩까지",
+            "value": "9개월 (2023-09 완료)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "물리 페일오버 시 영향",
+            "value": "프라이머리 **부분 가용성 10초**. 복제본은 영향 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "뷰의 성능 비용",
+            "value": "최악의 경우에도 10% 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "질의 엔진 지원 범위",
+            "value": "운영 질의의 흔한 90%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "수직 분할 이관 시 정지",
+            "value": "약 30초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "다른 DB 로 갈아탈지 정할 때",
+          "thought": "CockroachDB·TiDB·Spanner·Vitess 는 전부 **복잡한 데이터 이관**을 요구했고, 그러면 지금까지 쌓은 Postgres 운영 지식을 처음부터 다시 쌓아야 한다. 남은 활주로가 몇 달인 상황에서 감당할 수 있는 위험이 아니었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "직접 만들기로 한 뒤",
+          "thought": "범용 분산 DB 를 만드는 게 아니라는 점이 오히려 유리했다. **우리 질의만 감당하면 되니 기능을 훨씬 적게 만들어도 된다** — 남들이 푸는 문제를 다 풀 필요가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "샤딩 키를 하나로 통일할지 정할 때",
+          "thought": "하나로 통일하면 복합 키를 만들고 모든 테이블 스키마에 컬럼을 더하고 비싼 백필을 돌리고 제품 로직을 대대적으로 고쳐야 한다. **통일의 값보다 통일의 비용이 컸다** — UserID·FileID·OrgID 몇 개를 두는 쪽을 골랐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 지원할지 선을 그을 때",
+          "thought": "전체 SQL 을 지원하려 들면 질의 엔진이 최악의 복잡도로 간다. 그런데 실제로 운영에서 도는 질의를 그림자 플래너로 재 보니 **흔한 90% 만 받으면 됐다.** 나머지는 제품 코드를 고치는 게 싸다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "위험을 어떻게 나눌지 정할 때",
+          "thought": "논리 샤딩과 물리 샤딩을 한꺼번에 하면 버그가 났을 때 무엇이 원인인지 알 수 없다. **논리를 먼저 걸면 되돌리기가 설정 한 줄**이다 — 위험한 것은 되돌릴 수 있게 된 뒤에 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "물리 샤딩을 끝낸 뒤에도",
+          "thought": "끝났다고 되돌릴 길을 닫으면, 나중에 망가진 상태를 발견했을 때 갇힌다. **완료 후에도 롤백 능력을 유지한다**는 것이 이 작업의 조건이었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "colocation (colo)",
+            "what": "같은 샤딩 키와 같은 물리 배치를 공유하는 테이블 묶음. 개발자가 다루는 단위는 샤드가 아니라 이것이다."
+          },
+          {
+            "name": "샤딩 키",
+            "what": "UserID · FileID · OrgID 등 몇 개. 하나로 통일하지 않았다. 라우팅에는 값이 아니라 **해시**를 쓴다."
+          },
+          {
+            "name": "논리 샤드",
+            "what": "뷰 하나가 곧 논리 샤드 하나다 — `CREATE VIEW table_shard1 AS SELECT * FROM table WHERE hash(shard_key) >= …`."
+          },
+          {
+            "name": "물리 샤드",
+            "what": "실제 Postgres 데이터베이스. 논리 샤드 여럿이 한 물리 샤드에 얹힐 수 있다."
+          },
+          {
+            "name": "그림자 플래너 (shadow planner)",
+            "what": "살아 있는 운영 트래픽이 후보 샤딩 키 아래에서 어떻게 굴지 미리 예측하는 장치. 무엇을 고쳐야 하는지를 여기서 알았다."
+          }
+        ],
+        "invariants": [
+          "**라우팅은 샤딩 키의 해시로 한다.** 값 그대로 쓰면 자동 증가 ID 가 한 샤드에 몰린다 — 그 대신 범위 스캔을 잃는다.",
+          "같은 colo 안에서 샤딩 키로 하는 조인만 성립한다. colo 를 가로지르는 조인은 없다.",
+          "**논리 샤딩이 먼저, 물리 샤딩이 나중이다.** 앞의 것은 설정 한 줄로 되돌아가고 뒤의 것은 아니다.",
+          "물리 샤딩이 끝난 뒤에도 되돌릴 수 있어야 한다 — 망가진 상태에 갇히지 않기 위해."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "AAS(평균 활성 세션)와 의존 고립도로 다룰 테이블을 고른다",
+            "why": "감이 아니라 측정으로 — Ruby/ActiveRecord 는 동적이라 런타임 검증기를 붙여 실제 질의를 Snowflake 로 보냈다"
+          },
+          {
+            "step": "그림자 플래너로 후보 샤딩 키별 트래픽 거동을 예측한다",
+            "why": "어떤 애플리케이션 로직을 고쳐야 하는지를 먼저 안다"
+          },
+          {
+            "step": "테이블마다 샤드 범위별 뷰를 만든다",
+            "why": "물리적으로 쪼개지 않고도 샤딩된 것처럼 보이게"
+          },
+          {
+            "step": "그림자 읽기 — 운영 읽기를 뷰로도 동시에 흘려 본다",
+            "why": "뷰의 성능 영향이 실제로 미미한지 확인(최악 10% 미만)"
+          },
+          {
+            "step": "기능 플래그로 트래픽을 조금씩 뷰 경로로 옮긴다",
+            "why": "버그가 나면 설정 한 줄로 되돌린다"
+          },
+          {
+            "step": "DBProxy 가 SQL 을 AST 로 파싱해 논리 샤드 ID 를 뽑고 물리 DB 로 옮긴다",
+            "why": "제품 코드가 샤드를 몰라도 되게"
+          },
+          {
+            "step": "확신이 선 뒤에야 물리 페일오버 — 데이터를 실제로 여러 DB 로 가른다",
+            "why": "되돌릴 수 있는 것을 먼저 다 해 두고 위험한 것을 마지막에"
+          },
+          {
+            "step": "전체 데이터를 복사해 두고 각 샤드가 자기 몫만 읽고 쓰게 한다",
+            "why": "필터링 논리 복제는 너무 복잡했다 — 낭비를 감수하고 단순함을 산다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Postgres 를 떠날 것인가",
+            "chosen": "남는다. RDS 위에 수평 샤딩을 직접 만든다",
+            "alternatives": [
+              "CockroachDB",
+              "TiDB",
+              "Spanner",
+              "Vitess",
+              "NoSQL 로 이전"
+            ],
+            "tradeoff": "분산 DB 가 이미 푼 문제들(교차 샤드 트랜잭션, 전역 유일 인덱스, 자동 리샤딩)을 직접 풀거나 포기해야 한다. 대신 복잡한 데이터 이관과 운영 지식 재축적을 피했다 — **남은 활주로가 몇 달인 상황에서 이관 실패는 회사를 멈추게 한다.** NoSQL 은 관계형 모델이 복잡해 백엔드를 거의 다시 써야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "샤딩 키를 하나로 통일할 것인가",
+            "chosen": "UserID · FileID · OrgID 등 **여러 개**를 둔다",
+            "alternatives": [
+              "복합 키 하나로 통일"
+            ],
+            "tradeoff": "colo 마다 키가 달라 교차 colo 조인이 원천적으로 막히고, 어떤 테이블을 어느 colo 에 넣을지가 되돌리기 비싼 결정이 된다. 통일하려면 모든 테이블에 컬럼을 더하고 비싼 백필을 돌리고 제품 로직을 대대적으로 고쳐야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "라우팅에 키 값을 쓸 것인가 해시를 쓸 것인가",
+            "chosen": "**해시**",
+            "alternatives": [
+              "샤딩 키 값 그대로(범위 기반)"
+            ],
+            "tradeoff": "**범위 스캔이 비효율이 된다** — 연속된 ID 가 서로 다른 샤드로 흩어진다. 값 그대로 쓰면 자동 증가 ID 때문에 최신 데이터가 한 샤드에 몰린다. 범위 스캔이 코드베이스에서 흔한 패턴이 아니라 감수했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "질의 엔진이 SQL 을 어디까지 지원할 것인가",
+            "chosen": "운영 질의의 **흔한 90%** — 점/범위 질의, 샤딩 키 기준 단일 colo 조인",
+            "alternatives": [
+              "전체 SQL 호환"
+            ],
+            "tradeoff": "나머지 10% 는 제품 코드를 고쳐야 하고, 샤딩 키가 없는 질의는 scatter-gather 로 떨어진다. 전체를 지원하려 들면 질의 엔진이 최악의 복잡도로 간다 — 무엇이 흔한지는 그림자 플래너로 **실측해서** 정했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "논리 샤딩과 물리 샤딩을 어떤 순서로 할 것인가",
+            "chosen": "**논리를 먼저, 물리를 나중에.** 논리는 Postgres 뷰로 만든다",
+            "alternatives": [
+              "한 번에 물리적으로 쪼개기",
+              "물리 파티셔닝 기능 사용"
+            ],
+            "tradeoff": "뷰가 성능 비용을 더한다(최악 10% 미만). 대신 **버그를 찾았을 때 되돌리는 것이 설정 한 줄**이 된다 — 이 기능 전체에서 가장 값이 큰 결정이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "샤드로 데이터를 어떻게 옮길 것인가",
+            "chosen": "**전체 데이터셋을 통째로 복사**하고 각 샤드가 자기 몫만 읽고 쓰게 한다",
+            "alternatives": [
+              "필터링 논리 복제로 필요한 부분만 옮기기"
+            ],
+            "tradeoff": "샤드마다 쓰지 않을 데이터를 들고 있어 저장 공간이 낭비된다. 필터링 복제는 너무 복잡했고, 이관 단계의 복잡도는 곧 사고 확률이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "교차 샤드 트랜잭션을 지원할 것인가",
+            "chosen": "**처음에는 하지 않는다.** 실패를 애플리케이션에서 우회한다",
+            "alternatives": [
+              "원자적 분산 트랜잭션 구현"
+            ],
+            "tradeoff": "제품 로직이 부분 실패를 스스로 다뤄야 한다. 분산 트랜잭션은 그 자체로 하나의 프로젝트이고, 없이도 우회 가능하다는 판단이었다 — 다만 '업무상 중요한 경우'를 위해 남은 과제로 적어 뒀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "물리 샤딩이 끝난 뒤 롤백 경로를 닫을 것인가",
+            "chosen": "**연다.** 완료 후에도 되돌릴 수 있게 유지한다",
+            "alternatives": [
+              "완료 후 정리하고 단방향으로 확정"
+            ],
+            "tradeoff": "옛 경로를 계속 살려 둬야 해 운영 부담과 코드가 남는다. 대신 나중에 손상 상태를 발견했을 때 갇히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Amazon RDS for Postgres",
+            "role": "저장의 본체. 이 위에 샤딩을 얹었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "DBProxy (Go)",
+            "role": "SQL 파싱 → 논리 플래너 → 물리 플래너. 샤드 라우팅을 제품 코드에서 감춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Postgres 뷰",
+            "role": "논리 샤드의 구현체. 물리적으로 쪼개기 전에 애플리케이션을 먼저 옮기는 수단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "PgBouncer",
+            "role": "연결 풀러. 수천 개 연결을 눌러 담는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "tech": "Postgres 논리 복제",
+            "role": "수직 분할 때 테이블 묶음을 새 DB 로 옮기는 수단. 대량 복사 중에는 인덱스를 빼고 나중에 다시 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          },
+          {
+            "tech": "Snowflake",
+            "role": "ActiveRecord 런타임 검증기가 보낸 운영 질의를 모아 분석하는 곳",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The growing pains of database architecture",
+                "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+                "publisher": "Figma Blog",
+                "date": "2023-04-04",
+                "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "livegraph-subscription",
+          "via": "Postgres 복제 스트림",
+          "contract": "샤딩이 LiveGraph 의 전제를 바꿨다 — 스트림이 여럿이 되면서 전역 순서가 사라졌고, 그래서 LiveGraph 100x 가 무효화형 캐시로 갈아엎어야 했다. **이 도메인의 결정이 저쪽의 재설계를 낳았다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "multiplayer-doc",
+          "via": "별개의 저장소",
+          "contract": "멀티플레이어 문서 데이터는 이 메타데이터 Postgres 와 별개다 — 어디에 어떻게 저장하는지는 공개되지 않았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "제품 백엔드 (Ruby / ActiveRecord)",
+          "via": "DBProxy 를 거친 SQL",
+          "contract": "제품 코드는 샤드를 모른다. 다만 지원되지 않는 10% 의 질의는 제품 쪽이 고쳐야 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Spanner: Google's Globally-Distributed Database",
+            "authors": "James C. Corbett 외 (Google)",
+            "year": "2012",
+            "venue": "OSDI 2012",
+            "url": "https://www.usenix.org/conference/osdi12/technical-sessions/presentation/corbett",
+            "takeaway": "Figma 가 **검토하고 버린** 길이다. Spanner 계열이 이미 푼 것(원자적 교차 샤드 트랜잭션, 전역 유일 인덱스)을 Figma 는 직접 만드는 대신 **포기하는 쪽**을 골랐다 — 남은 활주로가 몇 달일 때 데이터 이관 실패는 회사를 멈추게 하기 때문이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "title": "Vitess: Scaling MySQL at YouTube (project)",
+            "authors": "Sugu Sougoumarane 외",
+            "year": "2019",
+            "venue": "CNCF / VLDB 2020 발표",
+            "url": "https://vitess.io/",
+            "takeaway": "Figma 가 만든 것과 가장 가까운 기성품이고 역시 검토 후 버렸다. **DBProxy 는 Vitess 의 vtgate 와 같은 자리에 서지만 훨씬 적은 기능만 만들었다** — 남의 질의가 아니라 자기 질의만 감당하면 되기 때문이다. **Figma 는 Vitess 를 대안으로 검토했다고만 밝혔고 구현을 참고했다고 말하지 않았다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Consistent Hashing and Random Trees",
+            "authors": "David Karger 외 (MIT)",
+            "year": "1997",
+            "venue": "STOC 1997",
+            "url": "https://dl.acm.org/doi/10.1145/258533.258660",
+            "takeaway": "샤딩 키의 **값이 아니라 해시로** 라우팅한다는 선택의 뿌리. 자동 증가 ID 를 그대로 쓰면 최신 데이터가 한 곳에 몰리는데, 해시는 그것을 흩는 대신 범위 스캔을 포기한다. **Figma 는 '샤딩 키의 해시를 쓴다'고만 밝혔고 어떤 해싱 기법인지, 이 논문을 참고했는지는 말하지 않았다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "샤딩 키 없는 질의는 샤딩의 이득을 되돌린다 (scatter-gather)",
+            "why_hard": "**비용 구조의 문제다.** 어느 샤드에 있는지 모르면 전부에게 물어보는 수밖에 없고, 그러면 전체가 지는 부하는 **샤딩하지 않았을 때와 같아진다.** 샤딩은 '어디를 봐야 하는지 안다'는 전제 위에서만 이득이고, 그 전제가 깨지는 질의는 아무리 엔진을 잘 만들어도 이득을 회복하지 못한다. 복잡한 집계와 중첩 질의가 구조적으로 여기 걸린다.",
+            "current_best": "**질의를 바꾼다.** 지원 범위를 흔한 90% 로 긋고, 그림자 플래너로 어떤 제품 코드가 걸리는지 미리 찾아 고친다. 대가는 제품 팀이 DB 사정에 맞춰 코드를 고쳐야 한다는 것 — 감췄다던 샤딩이 결국 제품 코드로 새어 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "problem": "샤딩된 기본 키에 전역적으로 유일한 ID 를 어떻게 만들 것인가",
+            "why_hard": "유일성은 **모두가 합의해야 성립하는 성질**인데, 샤딩은 합의를 없애려고 하는 일이다. 중앙에서 번호를 주면 그 중앙이 병목이자 단일 장애점이 되고, 각자 만들면 충돌하지 않는다는 보장이 사라진다. 샤딩 키 밖의 전역 유일 인덱스도 같은 이유로 막힌다.",
+            "current_best": "Figma 는 이것을 **아직 남은 과제로 적어 두었다** — 전역 유일 ID 생성, 분산 전역 유일 인덱스, 원자적 교차 샤드 트랜잭션, 자동 리샤딩이 함께 '앞으로 할 일'에 있다. 지금은 그 제약을 제품 로직이 피해 다닌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How Figma's Databases Team Lived to Tell the Scale",
+                "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-03-14",
+                "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "위험을 두 번으로 나눈 순서",
+          "question": "되돌릴 수 있는 것과 없는 것을 어떻게 갈랐는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"단일 Postgres (2020)\"] --> B[\"수직 분할<br/>테이블 묶음별 DB\"]\n  B --> C{\"테이블 하나가<br/>수 TB 를 넘는다\"}\n  C --> D[\"논리 샤딩 — 뷰로만<br/>물리적으로는 아직 한 DB\"]\n  D --> E[\"그림자 읽기 · 기능 플래그로 점진 전환\"]\n  E --> F{\"버그가 나면\"}\n  F -->|\"설정 한 줄로 롤백\"| D\n  F -->|\"확신이 서면\"| G[\"물리 페일오버<br/>실제로 여러 DB 로 가른다\"]\n  G --> H[\"완료 후에도 롤백 경로를 연 채로 둔다\"]"
+        },
+        {
+          "title": "질의 하나가 샤드에 닿기까지",
+          "question": "제품 코드가 샤드를 모르게 하려면 무엇이 필요한가?",
+          "kind": "flow",
+          "code": "flowchart LR\n  APP[\"제품 백엔드<br/>Ruby · ActiveRecord\"] --> SQL[\"SQL\"]\n  SQL --> PX[\"DBProxy (Go)\"]\n  PX --> P1[\"질의 파서 → AST\"]\n  P1 --> P2[\"논리 플래너<br/>질의 종류 · 논리 샤드 ID\"]\n  P2 --> P3[\"물리 플래너<br/>어느 물리 DB 인가\"]\n  P3 --> DB1[(\"샤드 1\")]\n  P3 --> DB2[(\"샤드 2\")]\n  P3 --> DBN[(\"샤드 N\")]\n  P2 -.->|\"colo 로 묶인 테이블만<br/>샤딩 키 조인 가능\"| P3"
+        },
+        {
+          "title": "샤딩 키가 빠지면",
+          "question": "감췄다던 샤딩은 어디서 제품 코드로 새어 나오는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  Q[\"들어온 질의\"] --> K{\"샤딩 키가 있나\"}\n  K -->|\"있다\"| PT[\"해당 샤드 한 곳으로<br/>점 · 범위 질의\"]\n  K -->|\"없다\"| SG[\"scatter-gather<br/>모든 샤드에 묻는다\"]\n  SG --> LOAD[\"전체 부하 = 샤딩 안 한 것과 같다<br/>확장의 이득이 사라진다\"]\n  Q --> U{\"지원 범위 밖인가\"}\n  U -->|\"교차 샤드 조인\"| X1[\"지원하지 않는다\"]\n  U -->|\"교차 샤드 범위 스캔\"| X2[\"해시 라우팅이라 불가\"]\n  U -->|\"샤딩 키 밖 전역 유일 인덱스\"| X3[\"지원하지 않는다\"]\n  X1 --> FIX[\"그림자 플래너로 미리 찾아<br/>제품 코드를 고친다\"]\n  X2 --> FIX\n  X3 --> FIX"
+        }
+      ],
+      "sources": [
+        {
+          "title": "The growing pains of database architecture",
+          "url": "https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/",
+          "publisher": "Figma Blog",
+          "date": "2023-04-04",
+          "summary": "단일 RDS 가 피크 CPU 65% 에 닿은 뒤 읽기 복제본·PgBouncer·수직 분할로 버틴 기록."
+        },
+        {
+          "title": "How Figma's Databases Team Lived to Tell the Scale",
+          "url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-03-14",
+          "summary": "9개월에 걸쳐 Postgres 를 수평 샤딩하며 논리와 물리를 분리해 위험을 나눈 과정."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "멀티플레이어 데이터를 실제로 어디에 어떻게 저장하는지 — 메타데이터의 Postgres 와 별개라는 것까지만 밝힌다.",
+    "멀티플레이어 문서 데이터를 실제로 어디에 어떻게 저장하는지 — 메타데이터 Postgres 와 별개라는 것까지만 밝힌다.",
     "미국 밖 사용자의 지연을 위해 멀티플레이어 인스턴스를 실제로 어떻게 분산했는지.",
     "LiveGraph 캐시의 실제 적중률과 무효화 빈도 — 2024년 글은 '무효화는 드물다'고만 하고 수치를 주지 않는다.",
-    "invalidator 의 자동 리샤딩, Postgres 밖 출처의 쿼리, 서버측 권한 계산의 1급 지원 — 2024년 글이 남은 과제로 든 것들.",
     "**타일 기반 렌더러의 내부** — 타일 크기·분할 규칙, 마스킹·블러·블렌드 모드를 GPU 에서 어떻게 구현했는지. '고도로 최적화된 타일 기반 엔진'이라는 표현까지만 공개돼 있다.",
     "WebGPU 전환의 구체적 수치 — 어떤 기기에서 얼마나 좋아졌는지는 '일부 개선·나머지 중립'까지만 밝힌다.",
-    "데이터 저장·확장 도메인은 아직 손대지 않았다."
+    "샤딩 이후의 현재 상태 — 2024년 글은 '올해 더 복잡한 DB 를 샤딩한다'까지만 말한다. 어디까지 갔는지는 모른다.",
+    "PGKeeper(PgBouncer 를 대체한 자체 연결·부하 관리 서비스)는 이번 사이클에서 다루지 않았다 — 별도 자료가 있다."
   ],
   "sources": [
     {
