@@ -420,6 +420,18 @@
       "one_liner": "남의 데이터를 맡는 쪽 — 백업이 부가 기능이 아니라 제품이고, 고객의 실수까지 자기 문제로 받는다",
       "updated_at": "2026-08-22",
       "domain": "planetscale.com"
+    },
+    {
+      "slug": "tigerbeetle",
+      "name": "타이거비틀",
+      "name_en": "TigerBeetle",
+      "country": "기타",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "계정과 이체 둘만 다루는 원장 데이터베이스 — 스키마를 고정해서 메모리까지 미리 다 정한다",
+      "updated_at": "2026-08-22",
+      "domain": "tigerbeetle.com"
     }
   ],
   "domains": [
@@ -553,7 +565,10 @@
     "로그 저장",
     "백업·복구",
     "동시성과 처리량",
-    "고객의 실수를 감당하기"
+    "고객의 실수를 감당하기",
+    "정적 자원 할당",
+    "결정론적 시뮬레이션 테스트",
+    "확장의 축"
   ],
   "countries": {
     "KR": "한국",
