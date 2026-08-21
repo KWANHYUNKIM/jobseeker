@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
-import { useIsLight } from '../lib/useIsLight'
 import { useSimilarJobs } from '../lib/useSimilar'
 
 interface Props {
@@ -30,7 +29,6 @@ export function JobDetail({ job, onClose, onOpenUrl }: Props) {
     scrollRef.current?.scrollTo({ top: 0 })
   }, [job.url])
 
-  const isLight = useIsLight()
   const roles = classifyRoles(job.title, job.tech_stack, job.qualifications || '')
   const { lookup } = useSimilarJobs()
   const similar = onOpenUrl ? lookup(job.url) : []
@@ -57,7 +55,7 @@ export function JobDetail({ job, onClose, onOpenUrl }: Props) {
                   <span
                     key={r}
                     className="text-xs px-2 py-0.5 rounded border"
-                    style={{ borderColor: roleColor(r, isLight), color: roleColor(r, isLight) }}
+                    style={{ borderColor: roleColor(r), color: roleColor(r) }}
                   >
                     {r}
                   </span>

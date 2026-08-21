@@ -93,23 +93,8 @@ export function classifyRoles(title: string, techStack: string[] = [], extraText
   return roles.length > 0 ? roles : ['기타']
 }
 
+// 직군 색 — 흰 바탕 하나뿐이라 팔레트도 하나다(테마 전환 없음)
 export const ROLE_COLORS: Record<string, string> = {
-  백엔드: '#60a5fa',
-  프론트엔드: '#c084fc',
-  풀스택: '#34d399',
-  모바일: '#fbbf24',
-  'AI/ML': '#f472b6',
-  데이터: '#22d3ee',
-  'DevOps/인프라': '#fb923c',
-  '펌웨어/임베디드': '#a78bfa',
-  보안: '#f87171',
-  게임: '#84cc16',
-  QA: '#94a3b8',
-  기타: '#6b7280',
-}
-
-// 라이트 테마용 짙은 계열 — 위 밝은 색은 흰 배경에서 흐림
-export const ROLE_COLORS_LIGHT: Record<string, string> = {
   백엔드: '#1d4ed8',
   프론트엔드: '#7e22ce',
   풀스택: '#047857',
@@ -124,7 +109,7 @@ export const ROLE_COLORS_LIGHT: Record<string, string> = {
   기타: '#374151',
 }
 
-// 테마에 맞는 직군 색 — light면 짙은 계열, 아니면 밝은 계열
-export function roleColor(role: string, light: boolean): string {
-  return (light ? ROLE_COLORS_LIGHT : ROLE_COLORS)[role] ?? (light ? '#374151' : '#6b7280')
+// 직군 색 — 흰 바탕 하나뿐이라 짙은 계열만 쓴다(테마 전환 없음)
+export function roleColor(role: string): string {
+  return ROLE_COLORS[role] ?? '#374151'
 }

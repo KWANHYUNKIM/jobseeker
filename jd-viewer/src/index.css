@@ -1,79 +1,88 @@
 @import "tailwindcss";
 
+/* ── 팔레트 ────────────────────────────────────────────────────────────────
+   한빛+(hanbit.co.kr)의 배색을 따른다. **테마 전환은 없다** — 흰 바탕 하나로 간다.
+   그 사이트에서 실측한 값: 바탕 흰색, 본문 #030712, 보조 글자 rgba(62,74,92,.61),
+   구분선 rgba(92,102,118,.16), 브랜드색 teal #03AEA0, 모서리 12px, 그림자는 거의 없음. */
 @theme {
-  --color-bg: #0b0c10;
-  --color-panel: #15171d;
-  --color-border: #2a2d36;
-  --color-text: #e6e7eb;
-  --color-muted: #9aa0aa;
-  --color-accent: #03C75A;
-  --color-on-accent: #000000; /* 액센트 배경 위 글자색(다크=초록 위 검정) */
+  --color-bg: #ffffff;        /* 페이지 바탕 */
+  --color-panel: #ffffff;     /* 카드·패널 — 바탕과 같고 구분은 선으로 한다 */
+  --color-band: #f6f7f8;      /* 구역을 나누는 옅은 띠 */
+  --color-border: #e3e5e9;    /* 구분선 */
+  --color-border-soft: #eef0f2;
+  --color-text: #030712;      /* 본문 */
+  --color-muted: #667085;     /* 보조 글자 — 부제·메타 */
+  --color-faint: #98a1b0;     /* 더 뒤로 물린 글자 */
+  --color-accent: #03AEA0;    /* 브랜드 teal */
+  --color-accent-weak: #e6f7f5;
+  --color-on-accent: #ffffff;
+
+  /* 모서리 — 한빛에서 실측하면 12px 가 압도적(162회)이고 칩은 pill, 작은 것만 8px.
+     Tailwind 의 radius 눈금을 그 값으로 덮어써서 rounded-lg / rounded-md 를 쓰는
+     기존 컴포넌트가 그대로 따라오게 한다. */
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
 }
 
-/* 라이트 테마 — <html class="light"> 일 때 6개 변수를 덮어쓴다(모든 bg-(--color-*) 가 따라감)
-   모노톤: 흰 배경 + 검정 글자, 칸을 나누는 구분선만 회색(보더). 강조색은 검정으로 통일. */
-html { color-scheme: dark; }
-:root.light {
-  color-scheme: light;
-  --color-bg: #ffffff;        /* 페이지 = 흰색 */
-  --color-panel: #ffffff;     /* 카드/패널 = 흰색(배경과 동일, 구분은 보더로) */
-  --color-border: #d7dae0;    /* 칸 구분선 = 회색 */
-  --color-text: #000000;      /* 본문 = 완전 검정 */
-  --color-muted: #5a606a;     /* 보조 텍스트 = 회색 */
-  --color-accent: #000000;    /* 포인트(배지/버튼/탭/링크/포커스링) = 완전 검정 */
-  --color-on-accent: #ffffff; /* 검정 액센트 배경 위 글자색 = 흰색(가독성) */
-}
+html { color-scheme: light; }
 
-/* 라이트 테마 강조색 → 검정 통일 — 형광 초록/파랑/노랑/빨강을 전부 본문색으로.
-   Tailwind v4 색 팔레트 변수를 라이트에서만 덮어쓰면 text-/bg-/border- 유틸이
-   전부 따라온다(컴포넌트 수정 불필요). 틴트(/12·/25)는 검정 기반 옅은 회색이 됨. */
-:root.light {
-  --color-red-400: var(--color-text);     /* 에러/일요일 */
-  --color-red-500: var(--color-text);     /* 에러 아이콘 틴트 */
-  --color-amber-400: var(--color-text);   /* 경고/주의 */
-  --color-amber-500: var(--color-text);   /* 경고 틴트/보더 */
-  --color-sky-300: var(--color-text);     /* 링크/강의 */
-  --color-sky-400: var(--color-text);     /* 링크 틴트/보더 */
-  --color-emerald-300: var(--color-text); /* 기술 태그 */
-  --color-emerald-400: var(--color-text); /* 로드맵 마커/틴트 */
-  --color-blue-400: var(--color-text);    /* 토요일 */
+/* 카드가 살짝 떠 보이게 하는 그림자 — 평소엔 없고 hover 에만 준다.
+   한빛도 그림자를 거의 안 쓰고 선으로 칸을 나눈다. */
+:root {
+  --hover: #f6f7f8;
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
-
-/* hover/subtle 배경 — 본문색 기반이라 테마 자동 적응(다크=옅은 흰, 라이트=옅은 검정) */
-:root { --hover: color-mix(in srgb, var(--color-text) 7%, transparent); }
-:root.light { --hover: color-mix(in srgb, var(--color-text) 6%, transparent); }
 
 html, body, #root {
   height: 100%;
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: system-ui, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* 다크 테마 스크롤바 — 모든 패널/리스트 공통 */
+/* 다크 바탕을 전제로 쓰던 형광색들을 흰 바탕용으로 다시 맞춘다.
+   Tailwind 팔레트 변수만 덮어쓰면 text-/bg-/border- 유틸이 전부 따라오므로
+   컴포넌트는 건드리지 않는다. 채도를 낮춰 본문(#030712)과 다투지 않게 한다. */
+:root {
+  --color-red-400: #d92d20;      /* 오류·마감 */
+  --color-red-500: #b42318;
+  --color-amber-400: #b54708;    /* 주의 */
+  --color-amber-500: #93370d;
+  --color-sky-300: #0b6bcb;      /* 링크·강의 */
+  --color-sky-400: #0b6bcb;
+  --color-emerald-300: var(--color-accent);  /* 기술 태그 */
+  --color-emerald-400: var(--color-accent);
+  --color-blue-400: #0b6bcb;
+}
+
+/* 스크롤바 — 흰 바탕에 맞춘 옅은 회색 */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: #d3d7de transparent;
 }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: #d3d7de;
   border-radius: 6px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3e49;
+  background: #b6bcc7;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-corner { background: transparent; }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
   color: var(--color-text);
 }
 
@@ -269,8 +278,6 @@ html, body, #root {
   --plate-faint: #8b9099;
   --plate-accent-ink: #b4460d;
   background: var(--plate-paper);
-  border: 1px solid var(--color-border);
-  padding: 18px 16px;
 }
 .mmd svg { max-width: none; height: auto; background: var(--plate-paper); }
 

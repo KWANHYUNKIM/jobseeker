@@ -79,15 +79,6 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [zoomOpen, setZoomOpen] = useState(false)
-  const [themeV, setThemeV] = useState(0)
-
-  // 앱 테마 토글 시 다이어그램을 현재 테마로 다시 렌더
-  useEffect(() => {
-    const on = () => setThemeV((v) => v + 1)
-    window.addEventListener('themechange', on)
-    return () => window.removeEventListener('themechange', on)
-  }, [])
-
   useEffect(() => {
     let cancelled = false
     setError(null)
@@ -174,7 +165,7 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
     return () => {
       cancelled = true
     }
-  }, [code, idKey, themeV])
+  }, [code, idKey])
 
   if (error) {
     return (
