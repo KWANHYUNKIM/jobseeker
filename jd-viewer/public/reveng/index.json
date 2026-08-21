@@ -439,11 +439,23 @@
       "name_en": "Careem",
       "country": "AE",
       "category": "모빌리티",
-      "status": "in_progress",
+      "status": "done",
       "features_done": 1,
       "one_liner": "성수기가 라마단인 에브리싱 앱 — 라이드·배달·퀵커머스·결제를 한 앱에 담는다",
       "updated_at": "2026-08-22",
       "domain": "careem.com"
+    },
+    {
+      "slug": "mercari",
+      "name": "메르카리",
+      "name_en": "Mercari",
+      "country": "JP",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "일본에서 자란 C2C 마켓 — 수수료 10.1% 위에 여신 3,582억 엔을 얹고, 그다음에 국경으로 나간다",
+      "updated_at": "2026-08-22",
+      "domain": "mercari.com"
     }
   ],
   "domains": [
@@ -582,7 +594,10 @@
     "결정론적 시뮬레이션 테스트",
     "확장의 축",
     "화면을 서버가 정한다",
-    "인프라 비용이 새는 자리"
+    "인프라 비용이 새는 자리",
+    "잔액과 여신의 추상",
+    "비밀번호를 없앤 다음에 남는 문제",
+    "국내용으로 만든 것을 국경 밖으로"
   ],
   "countries": {
     "KR": "한국",
