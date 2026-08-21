@@ -4,7 +4,7 @@
   "name_en": "Notion",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
   "business_model": "팀 단위 좌석 구독으로 판다. 2025년 비공개 테일 오퍼에서 **110억 달러** 밸류에이션이 매겨졌고(총 약 2억 7천만 달러 규모, Sequoia·Index 재참여 + GIC 신규), **ARR 의 50% 이상이 AI 를 쓰는 고객에서 나온다** — 그 비중이 1년 만에 두 배 넘게 늘었다. 성장은 특히 아시아태평양에서 나서 싱가포르에 사무실을 열었다(도쿄·서울·시드니에 이어).\n\n**이 회사의 기술적 정체성은 '무엇을 파는가'보다 '무엇으로 만들어졌는가'에 있다.** 글자 한 줄, 이미지, 목록 항목, 데이터베이스의 행, 그리고 페이지 자체까지 **전부 같은 것(블록)** 이다. 이 하나의 선택이 제품의 자유로움과 시스템의 어려움을 동시에 만든다.",
@@ -306,8 +306,71 @@
     {
       "name": "검색·AI",
       "why": "**ARR 의 절반 이상이 여기 걸려 있다.** 그런데 블록은 잘게 쪼개져 있어서 '문서'라는 단위가 자명하지 않다 — 무엇을 한 덩어리로 볼 것인지부터 정해야 한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "turbopuffer (객체 저장소 기반 벡터 DB)",
+          "solves": "**가동 시간이 아니라 쓴 만큼** 받는 구조로 옮겼다. 샤딩과 세대 라우팅의 복잡도가 통째로 사라졌고, 검색 엔진 비용 **60%** · EMR 컴퓨트 **35%** 가 줄었으며 p50 질의 지연이 **70~100ms → 50~70ms** 로 내려갔다.",
+          "limits": "**검색 분야의 비교적 새 참여자**에 회사의 핵심 기능을 얹는다. 그리고 수십억 객체를 옮기는 마이그레이션이 8개월 걸렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+              "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2026-02-19",
+              "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+            }
+          ]
+        },
+        {
+          "tech": "Page State — span 단위 xxHash 64비트 + DynamoDB",
+          "solves": "페이지가 아니라 **span(텍스트+메타데이터) 단위로 해시**를 저장해 두고, **바뀐 span 만** 다시 임베딩·업로드한다. 권한처럼 메타데이터만 바뀌면 임베딩을 건너뛰고 값싼 PATCH 로 처리한다. 데이터 양 **70%** 감소.",
+          "limits": "**해시 충돌이 0 은 아니다** — 회사도 '낮다'까지만 말한다. 그리고 span 상태를 따로 저장·관리해야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+              "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2026-02-19",
+              "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+            }
+          ]
+        },
+        {
+          "tech": "Ray + Anyscale (임베딩 자체 호스팅)",
+          "solves": "Spark(EMR)로 전처리하고 외부 API 를 부르던 **이중 컴퓨트**를 하나로 합쳤다. 오픈소스 임베딩 모델을 GPU 에 직접 올려 토큰당 요금과 API 홉을 없앴다. 인프라 비용 **90% 이상** 감소(예상).",
+          "limits": "**Notion 에는 전담 ML 인프라 팀이 없다** — 그래서 Ray 를 직접 운영하지 않고 Anyscale 이라는 관리형에 기댄다. 의존이 API 에서 플랫폼으로 옮겨 갔을 뿐이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+              "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2026-02-19",
+              "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+            }
+          ]
+        },
+        {
+          "tech": "Ray Serve (질의 시점 임베딩 · 동적 배칭)",
+          "solves": "질의를 임베딩하는 일도 자체 GPU 에서 처리한다. GPU 할당·인그레스 라우팅·복제가 기본으로 제공되고 설정이 파이썬이다.",
+          "limits": "관리형 플랫폼의 모양 안에서만 움직일 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+              "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2026-02-19",
+              "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "vector-search-cost"
+      ]
     }
   ],
   "features": [
@@ -1659,16 +1722,524 @@
           "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
         }
       ]
+    },
+    {
+      "key": "vector-search-cost",
+      "name": "벡터 검색 — 2년에 걸쳐 네 번 갈아엎기",
+      "domain": "검색·AI",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**ARR 의 절반 이상이 AI 를 쓰는 고객에서 나온다.** 그런데 2023년 11월 출시 때 대기자가 수백만 워크스페이스였고 **한 달 만에 인덱스가 용량에 근접**했다 — 온보딩이 하루 수백 워크스페이스에 묶여 있었다. 그리고 첫 구조는 벡터 DB 가 **쓴 만큼이 아니라 켜 둔 만큼** 과금해서 연간 수백만 달러가 나갔다. **수요가 폭발하는데 단가 구조가 그것을 감당하지 못하는** 상황이었다.",
+        "metrics": [
+          {
+            "label": "출시 직후",
+            "value": "대기자 수백만 워크스페이스 · **한 달 만에 인덱스가 용량 근접**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "첫 구조 비용",
+            "value": "연간 **수백만 달러**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "온보딩 처리량",
+            "value": "**600배** 증가 (하루 수백 워크스페이스에서)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "활성 워크스페이스 / 벡터 DB 용량",
+            "value": "15배 / 8배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "① 서버리스 전환 (2024-05)",
+            "value": "비용 **50%** 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "② turbopuffer 이전 (2024-05~2025-01)",
+            "value": "검색 엔진 **60%** · EMR 컴퓨트 **35%** 감소 · 수십억 객체 이전",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "③ Page State 해싱 (2025-07)",
+            "value": "데이터 양 **70%** 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "④ Ray 임베딩 (2025-07~)",
+            "value": "인프라 비용 **90% 이상** 감소 (예상)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "질의 지연 (p50)",
+            "value": "70~100ms → **50~70ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "label": "AI 고객 ARR 비중",
+            "value": "50% 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+                "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+                "publisher": "Notion Blog",
+                "date": "2025",
+                "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "출시 한 달 만에 인덱스가 찼을 때",
+          "thought": "2주마다 다시 샤딩하는 것은 **가동 시간 과금 구조에서 너무 비쌌다.** 그래서 인덱스 묶음을 새로 만드는 세대 방식으로 갔다 — 운영 복잡도를 나중에 갚기로 하고 지금의 용량을 산 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "대기자를 다 태우고 나서(2024-04)",
+          "thought": "세대 샤딩은 **급할 때는 옳았지만 급하지 않게 되자 비용만 남았다.** 빌린 복잡도를 갚을 때가 됐다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "과금 구조를 다시 볼 때",
+          "thought": "문제가 용량이 아니라 **무엇에 값을 매기느냐**였다. 켜 둔 시간으로 받으면 안 쓰는 시간에도 낸다 — 저장과 컴퓨트를 떼어 쓴 만큼 받는 쪽으로 옮기니 그것만으로 절반이 줄었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇을 다시 임베딩할지 볼 때",
+          "thought": "페이지 하나가 바뀌면 페이지 전체를 다시 임베딩하고 있었다. 그런데 **실제로 바뀌는 것은 그 안의 한 조각**이고, 권한이 바뀐 경우에는 **글자는 하나도 안 바뀐다** — 임베딩을 다시 할 이유가 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이중 컴퓨트를 알아챘을 때",
+          "thought": "Spark 로 전처리하고 외부 API 로 임베딩을 부르면 **같은 데이터에 두 번 컴퓨트를 쓴다.** 게다가 토큰당 요금과 API 홉이 붙는다. 모델을 직접 올리면 셋이 한 번에 사라진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "직접 운영할지 정할 때",
+          "thought": "**우리에게는 전담 ML 인프라 팀이 없다.** 그래서 Ray 를 직접 운영하는 대신 Anyscale 에 맡긴다 — 의존을 없앤 게 아니라 **API 의존을 플랫폼 의존으로 바꾼** 것이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "span",
+            "what": "텍스트와 메타데이터의 조각. **임베딩과 해싱의 단위**이고, 페이지가 아니라 이것 단위로 다시 계산한다."
+          },
+          {
+            "name": "Page State",
+            "what": "페이지의 span 별 xxHash 64비트 목록. DynamoDB 에 있다."
+          },
+          {
+            "name": "인덱스 세대",
+            "what": "용량이 차면 새로 만들던 인덱스 묶음. turbopuffer 로 옮기며 이 개념이 사라졌다."
+          },
+          {
+            "name": "메타데이터",
+            "what": "권한·작성자 같은 것. **모든 span 에 붙어 있다** — 그래서 권한이 바뀌면 임베딩은 그대로여도 메타데이터는 갱신해야 한다."
+          }
+        ],
+        "invariants": [
+          "**바뀐 span 만 다시 계산한다.** 페이지가 아니라 조각이 단위다.",
+          "**메타데이터만 바뀌면 임베딩을 건너뛴다** — 권한이 바뀌어도 글자는 그대로다.",
+          "과금은 **켜 둔 시간이 아니라 쓴 양**을 따라야 한다.",
+          "같은 데이터에 컴퓨트를 두 번 쓰지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "페이지가 바뀌면 span 별로 xxHash 64비트를 계산한다",
+            "why": "무엇이 실제로 바뀌었는지 알아야 한다"
+          },
+          {
+            "step": "DynamoDB 의 이전 해시와 비교한다",
+            "why": "빠른 삽입·조회가 필요한 자리"
+          },
+          {
+            "step": "글자가 바뀐 span 만 다시 임베딩한다",
+            "why": "페이지 전체를 다시 하면 70%가 낭비다"
+          },
+          {
+            "step": "메타데이터(권한·작성자)만 바뀌었으면 임베딩을 건너뛰고 PATCH 한다",
+            "why": "권한이 바뀌어도 글자는 그대로다"
+          },
+          {
+            "step": "임베딩은 Ray 위에서 자체 GPU 모델로 만든다",
+            "why": "Spark 전처리 + 외부 API 의 이중 컴퓨트를 없앤다"
+          },
+          {
+            "step": "turbopuffer 에 올린다 — 객체 저장소 기반, 쓴 만큼 과금",
+            "why": "샤딩·세대 라우팅이 필요 없어진다"
+          },
+          {
+            "step": "질의 시점 임베딩도 Ray Serve 가 동적 배칭으로 처리한다",
+            "why": "외부 API 홉을 임계 경로에서 뺀다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "출시 직후 용량이 찼을 때 어떻게 늘릴 것인가",
+            "chosen": "**세대 샤딩** — 인덱스 묶음을 새로 만든다",
+            "alternatives": [
+              "2주마다 점진적 재샤딩",
+              "최종 규모로 미리 재샤딩"
+            ],
+            "tradeoff": "**운영 복잡도를 빌린다** — 실제로 대기자를 다 태운 2024년 4월 이후에는 그 복잡도만 남아 비용이 됐다. 그래도 가동 시간 과금 구조에서 잦은 재샤딩이나 선제적 대규모 확보는 **너무 비쌌다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "question": "벡터 DB 를 계속 쓸 것인가",
+            "chosen": "**turbopuffer 로 옮긴다** — 객체 저장소 기반, 쓴 만큼 과금",
+            "alternatives": [
+              "기존 공급자 유지"
+            ],
+            "tradeoff": "**검색 분야의 비교적 새 참여자**에 회사의 핵심 기능을 얹고, 수십억 객체를 옮기는 데 8개월이 걸렸다. 대신 검색 엔진 비용 60% · EMR 35% 가 줄고 **샤딩과 세대 라우팅 복잡도가 통째로 사라졌으며** p50 지연도 내려갔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 다시 임베딩할 것인가",
+            "chosen": "**바뀐 span 만** — xxHash 64비트로 판별",
+            "alternatives": [
+              "페이지 전체를 다시"
+            ],
+            "tradeoff": "span 상태를 따로 저장·관리해야 하고 **해시 충돌이 0 은 아니다**(회사도 '낮다'까지만 말한다). 대신 데이터 양이 70% 줄고, 권한 변경처럼 **글자가 안 바뀌는 경우에는 임베딩을 아예 건너뛴다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "question": "해시 알고리즘을 무엇으로 할 것인가",
+            "chosen": "**xxHash 64비트**",
+            "alternatives": [
+              "더 긴 해시",
+              "암호학적 해시"
+            ],
+            "tradeoff": "충돌 확률이 0 이 아니다. **쓰기 쉬움·속도·낮은 충돌·저장 공간** 넷을 저울질한 지점이었다 — 더 긴 해시는 span 마다 저장 공간이 늘고, 암호학적 해시는 느리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "question": "임베딩을 외부 API 로 부를 것인가",
+            "chosen": "**직접 호스팅한다** — Ray 위에 오픈소스 모델을 GPU 로",
+            "alternatives": [
+              "외부 임베딩 API 유지"
+            ],
+            "tradeoff": "모델 운영을 떠안는다. 그런데 외부 API 는 **토큰당 요금 + API 홉 + 이중 컴퓨트**(Spark 전처리와 API 호출)를 한꺼번에 물리고, 인덱스의 신선도가 **남의 API 안정성에 달려 있었다.** 셋이 함께 사라졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "question": "Ray 를 직접 운영할 것인가",
+            "chosen": "**Anyscale 관리형에 맡긴다**",
+            "alternatives": [
+              "Ray 를 자체 운영"
+            ],
+            "tradeoff": "**의존을 없앤 게 아니라 옮긴 것이다** — 외부 임베딩 API 의존이 플랫폼 의존이 됐고, 그 플랫폼의 모양 안에서만 움직일 수 있다. 근거는 명확하다: **Notion 에는 전담 ML 인프라 팀이 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "turbopuffer",
+            "role": "객체 저장소 기반 벡터 DB. 쓴 만큼 과금",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "tech": "xxHash 64비트 + DynamoDB",
+            "role": "span 단위 상태. 무엇이 바뀌었는지 빠르게 판별",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "tech": "Ray + Anyscale",
+            "role": "임베딩 인덱싱. 전처리와 추론을 한 계층으로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "tech": "Ray Serve",
+            "role": "질의 시점 임베딩. GPU 할당·라우팅·복제·동적 배칭",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka (온라인) + 배치 (오프라인)",
+            "role": "인덱싱의 두 경로. 초기 구조부터 있었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "block-model",
+          "via": "블록 → span",
+          "contract": "블록의 텍스트가 span 으로 쪼개져 임베딩의 단위가 된다. **블록이 이미 잘게 쪼개져 있어서 '바뀐 것만 다시 계산'이 자연스럽다**(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "offline-sync",
+          "via": "페이지 변경 신호",
+          "contract": "페이지가 바뀌면 오프라인 쪽도 인덱싱 쪽도 알아야 한다 — 다만 단위가 다르다(페이지 대 span).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "권한",
+          "via": "모든 span 에 붙은 메타데이터",
+          "contract": "**권한이 바뀌면 글자는 그대로여도 모든 span 의 메타데이터를 갱신해야 한다.** 권한이 데이터 모델을 타고 내려오는 구조가 여기서도 비용이 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "수요가 폭발하는 기능일수록 단가 구조가 먼저 무너진다",
+            "why_hard": "**성공이 곧 비용이다.** 대기자가 수백만이면 좋은 신호인데, 그것을 태우는 만큼 인덱스가 커지고 비용이 오른다. 그리고 이 도메인에서는 **비용이 사용량이 아니라 용량에 붙는 경우가 많다** — 벡터 DB 가 켜 둔 시간으로 과금하면 안 쓰는 시간에도 낸다. 그런데 급할 때는 그 구조를 바꿀 여유가 없어서, **급한 대로 용량을 사고 복잡도를 빌리게 된다**(세대 샤딩). 빌린 것은 급하지 않게 된 뒤에도 남는다.",
+            "current_best": "**무엇에 값이 매겨지는지를 바꾼다.** 저장과 컴퓨트를 떼어 쓴 만큼 받는 구조로 옮기고(50% 감소), 객체 저장소 기반 벡터 DB 로 가서 샤딩·세대 라우팅 복잡도까지 함께 없앤다(60% 감소). 대가는 **핵심 기능을 비교적 새 참여자에게 얹는다**는 것과, 수십억 객체 마이그레이션에 8개월이 든다는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          },
+          {
+            "problem": "권한이 바뀌면 글자는 그대로인데 색인은 갱신해야 한다",
+            "why_hard": "**같은 데이터에 성격이 다른 두 정보가 붙어 있다.** 임베딩은 글자에서 나오고 권한은 그와 무관한데, 검색 결과를 걸러내려면 권한이 **각 조각 옆에** 있어야 한다. 그래서 권한 하나만 바뀌어도 그 페이지의 **모든 span 을 손봐야 한다** — 임베딩은 하나도 안 바뀌는데도. 게다가 Notion 은 권한이 블록 트리를 타고 상속되므로, 상위에서 한 번 바꾸면 **아래 전부가 대상이 된다.**",
+            "current_best": "**두 경로를 갈라 놓는다.** span 별 해시로 글자가 바뀌었는지 먼저 보고, 메타데이터만 바뀌었으면 **임베딩을 건너뛰고 값싼 PATCH** 로 처리한다. 대가는 span 상태를 따로 저장·관리해야 한다는 것과, 해시 충돌이 0 은 아니라는 것이다. **다만 질의 시점에 권한을 어떻게 거르는지는 이 글이 다루지 않는다** — 색인 효율에 대한 글이지 접근 제어에 대한 글이 아니다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+                "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2026-02-19",
+                "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "2년 · 네 번의 갈아엎기",
+          "question": "비용을 90% 넘게 줄이는 동안 무엇을 순서대로 바꿨나?",
+          "kind": "state",
+          "code": "flowchart TD\n  A[\"2023-11 출시<br/>대기자 수백만 · 한 달 만에 인덱스 용량 근접<br/>연간 수백만 달러\"] --> B[\"세대 샤딩<br/>복잡도를 빌려 용량을 산다\"]\n  B --> C[\"2024-04 대기자 소진<br/>→ 빌린 복잡도만 남는다\"]\n  C --> D[\"① 2024-05 서버리스<br/>저장·컴퓨트 분리 · 쓴 만큼 과금<br/>**비용 50% ↓**\"]\n  D --> E[\"② 2024-05~2025-01 turbopuffer<br/>객체 저장소 · 샤딩 복잡도 소멸<br/>**검색 60% ↓ · EMR 35% ↓ · p50 70~100→50~70ms**\"]\n  E --> F[\"③ 2025-07 Page State 해싱<br/>바뀐 span 만 다시 계산<br/>**데이터 양 70% ↓**\"]\n  F --> G[\"④ 2025-07~ Ray + 자체 GPU<br/>이중 컴퓨트·토큰 요금·API 홉 제거<br/>**인프라 90%+ ↓ (예상)**\"]"
+        },
+        {
+          "title": "바뀐 것만 다시 계산한다",
+          "question": "권한 하나 바꿨을 뿐인데 왜 임베딩을 다시 안 해도 되나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  P[\"페이지가 바뀌었다\"] --> H[\"span 별 xxHash 64비트 계산\"]\n  H --> D[(\"DynamoDB — 이전 해시\")]\n  D --> C{\"무엇이 바뀌었나\"}\n  C -->|\"글자가 바뀐 span\"| E[\"다시 임베딩 → 업로드\"]\n  C -->|\"메타데이터만<br/>(권한 · 작성자)\"| M[\"임베딩 건너뜀<br/>값싼 PATCH\"]\n  C -->|\"안 바뀐 span\"| S[\"아무것도 안 함\"]\n  E --> T[(\"turbopuffer\")]\n  M --> T\n  H -.->|\"충돌 확률이 0 은 아니다\"| RISK[\"회사도 '낮다'까지만 말한다\"]"
+        },
+        {
+          "title": "의존을 없앤 게 아니라 옮겼다",
+          "question": "외부 API 를 버리고 무엇을 떠안았나?",
+          "kind": "failure",
+          "code": "flowchart LR\n  subgraph OLD[\"이전\"]\n    O1[\"Spark(EMR) 전처리\"]\n    O2[\"외부 임베딩 API\"]\n    O1 --> O2\n    O2 --> O3[\"토큰당 요금\"]\n    O2 --> O4[\"API 홉이 임계 경로에\"]\n    O1 -.->|\"같은 데이터에<br/>컴퓨트 두 번\"| O2\n    O2 --> O5[\"인덱스 신선도가<br/>남의 API 안정성에 달림\"]\n  end\n  subgraph NEW[\"이후\"]\n    N1[\"Ray — 전처리와 추론을 한 계층\"]\n    N2[\"자체 GPU 에 오픈소스 모델\"]\n    N1 --> N2\n  end\n  OLD --> NEW\n  NEW --> DEP{\"직접 운영할까\"}\n  DEP -->|\"전담 ML 인프라 팀이 없다\"| ANY[\"Anyscale 관리형\"]\n  ANY --> NOTE[\"API 의존 → 플랫폼 의존<br/>없앤 게 아니라 옮긴 것\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+          "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+          "publisher": "Notion Blog",
+          "date": "2026-02-19",
+          "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "검색·AI 도메인은 아직 손대지 않았다 — 남은 하나다.",
     "블록 모델 글은 2021년이다. 그 뒤 5년간 스키마가 어떻게 바뀌었는지 — 글이 '몇몇 예외를 정리하는 중'이라고 밝힌 부분이 어떻게 됐는지는 모른다.",
     "Notion 은 비상장이라 매출·사용자 수를 직접 공개하지 않는다. 밸류에이션과 AI 매출 비중은 회사 발표에서 왔지만 절대 매출은 확인하지 못했다.",
     "480 이라는 논리 샤드 수를 언젠가 넘어야 할 텐데 그때 어떻게 할 계획인지 — 두 글 모두 그 지점은 다루지 않는다.",
     "**CRDT 를 어떻게 쓰는지** — 회사가 '새 CRDT 데이터 모델로 이행한다'고만 밝히고 방식도, 텍스트가 아닌 블록(이미지·데이터베이스)의 충돌 처리도 설명하지 않았다.",
     "**블록 구조가 왜 참조 추적을 어렵게 하는지** — 회사가 '블록 구조 때문에 어려운 문제를 풀어야 했다'고 적었지만 무엇이 어떻게 어려웠는지는 쓰지 않았다.",
-    "오프라인으로 둘 수 있는 페이지 수의 현재 한계 — '계속 밀어 올리는 중'이라는 표현까지만 나온다."
+    "오프라인으로 둘 수 있는 페이지 수의 현재 한계 — '계속 밀어 올리는 중'이라는 표현까지만 나온다.",
+    "**질의 시점에 권한을 어떻게 거르는지** — 벡터 검색 글은 색인 효율만 다루고 접근 제어 구조는 밝히지 않는다. 권한이 회수됐을 때 이미 색인된 내용을 어떻게 하는지도 없다."
   ],
   "sources": [
     {
@@ -1705,6 +2276,13 @@
       "publisher": "Notion Blog",
       "date": "2025-12-11",
       "summary": "무엇을 미리 받아 둘지 정하는 방법과, 반쯤 있는 것을 일부러 만들지 않은 이유."
+    },
+    {
+      "title": "Two years of vector search at Notion: 10x scale, 1/10th cost",
+      "url": "https://www.notion.com/blog/two-years-of-vector-search-at-notion",
+      "publisher": "Notion Blog",
+      "date": "2026-02-19",
+      "summary": "2년에 걸쳐 네 번 갈아엎으며 비용을 90% 넘게 줄인 이력."
     }
   ]
 }
