@@ -140,7 +140,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "contract-notes"
+      ]
     },
     {
       "name": "로그 저장",
@@ -185,7 +187,9 @@
     "**매출에서 옵션이 차지하는 비중을 숫자로 확인하지 못했다.** 회사가 옵션 규제를 가장 큰 위험으로 들지만 비중은 밝히지 않는다.",
     "**주문 처리(매칭·거래소 연결) 자체를 다루는 기술 자료가 없다** — Kite 가 주문을 어떻게 받아 거래소로 보내는지, 장 시작 순간의 부하를 어떻게 감당하는지는 블로그에 없다. 지금 연 도메인 셋은 전부 **장이 끝난 뒤나 옆에서 도는 일**이다.",
     "**기술 블로그가 2024년 3월에 멈춰 있다**(글 12편). 여기 적은 수치는 대부분 2021~2024년 것이고 최신 상태는 확인할 수 없다.",
-    "**`sql-jobber` 와 `Tasqueue` 는 회사가 공개한 자체 도구인데**, 왜 기존 큐 대신 직접 만들었는지를 설명한 자료를 찾지 못했다."
+    "**`sql-jobber` 와 `Tasqueue` 는 회사가 공개한 자체 도구인데**, 왜 기존 큐 대신 직접 만들었는지를 설명한 자료를 찾지 못했다.",
+    "**자체 큐 `Tasqueue` 를 왜 직접 만들었는지 설명이 없다** — 기존 잡 큐를 검토했는지도 나오지 않는다.",
+    "**임시 인프라 40대를 매일 띄우는 일의 실패율을 밝히지 않는다** — 프로비저닝이 실패하면 마감 안에 어떻게 하는지 나오지 않는다."
   ],
   "sources": [
     {
@@ -229,7 +233,522 @@
       "publisher": "Zerodha Tech",
       "date": "2023-03-23",
       "summary": "2018년부터 쓰던 **ELK 를 버리고 ClickHouse + Vector + Metabase(사내 이름 Loj)** 로 옮긴 기록. Elasticsearch 는 **들어오는 필드를 전부 색인해 저장량이 원본의 최소 3~4배**가 되고 *\"긴 기간의 집계 질의가 느리다\"*. 옮긴 결과 같은 6,500만 행이 **22.1GB → 1.13GB(20배)**, 행당 **340바이트 → 17.38바이트**. 전체로는 ELK 가 **280억 줄에 약 13TB** 였던 것이 Loj 는 **300억 줄에 2.5TB**, 비용은 시간당 **$2.67 → $1.14**. **Grafana Loki 는 두 번 검토해 두 번 다 버렸고**(0.4 는 자체 운영이 너무 복잡, 2.4 는 *\"질의가 고통스럽게 느리고 대부분 타임아웃\"* + RBAC 부족), **cLoki 도 버렸다**."
+    },
+    {
+      "title": "Scaling with common sense #2: Being future ready",
+      "url": "https://zerodha.tech/blog/being-future-ready-with-common-sense/",
+      "publisher": "Zerodha Tech",
+      "date": "2021-07-28",
+      "summary": "*\"2020년 1월에 하루 200만 건 이상의 리테일 거래를 처리했다. 2020년 4월에는 700만 건 이상으로 올랐다. 지금은 1,200만 건 이상까지 간다.\"* 그런데 **기술팀은 *\"작년 30명에서 올해 31명\"*** 이다. 자체 호스팅의 값을 숫자로 댄다 — 사내 1,000명 이상이 쓰는 티켓 시스템을 **연 1만 달러 미만**(EC2·스토리지·백업)으로 돌리는데 *\"가장 유명한 SaaS 티켓 시스템을 썼다면 연 100만 달러가 넘었을 것\"*. 규제가 **4주 만에** 주식 매도 방식을 통째로 바꾸라고 한 일도 적는다. Kite 는 세 번, 티커는 6년 동안 **다섯 번 이상** 다시 썼다."
+    },
+    {
+      "title": "Scaling with common sense",
+      "url": "https://zerodha.tech/blog/scaling-with-common-sense/",
+      "publisher": "Zerodha Tech",
+      "date": "2020-06-14",
+      "summary": "확장에 대한 회사의 원칙. *\"상식적인 원칙과 관행이 복잡한 기술과 방법론을 이긴다.\"* **서비스와 네트워크 의존을 최대한 적게 두고**, *\"병목은 거의 언제나 데이터베이스\"* 라고 보며, *\"파일을 rsync 하는 bash 스크립트 몇 줄이어도 전혀 괜찮다\"* 고 적는다. 큰 프레임워크보다 **교체 가능한 라이브러리**를 고르고, *\"첫날부터 컨테이너로 만들어 K8s 클러스터에 올릴 필요는 없다\"*."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "contract-notes",
+      "name": "하루 25분만 존재하는 파이프라인",
+      "domain": "규제 문서 대량 생성",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "**거래 명세서(contract note)는 마케팅 메일이 아니라 규제 문서다.** 그날 거래한 사람 전원에게 **각 거래의 내역과 비용을 모두 담아**, **디지털 서명과 암호화를 갖춰**, **다음 거래일이 시작되기 전에** 보내야 한다.\n\n**이 일에는 두 가지가 동시에 걸려 있다 — 마감은 정해져 있고, 일의 양은 정할 수 없다.** 장이 끝나야 시작할 수 있고 다음 장이 열리기 전에 끝나야 하는데, **몇 장을 만들지는 그날 시장이 정한다.** 평소 **150만 명 이상**이고 변동성이 큰 날은 **두 배**다.\n\n예전 방식은 **7~8시간**이 걸렸고 거래가 많은 날은 더 늘어났다. **마감이 있는 일에서 '입력이 늘면 시간도 는다'는 것은 언젠가 반드시 넘긴다는 뜻이다**(이 정리는 이 사이트의 것이다).\n\n**그리고 이 회사의 사정을 하나 더 알아야 한다 — 기술팀이 31명이다.** 회사가 다른 글에 적는다: *\"작년 30명이던 기술팀이 올해 31명이 됐다.\"* 같은 글에 하루 거래가 *\"2020년 1월 200만 건 → 2020년 4월 700만 건 → 지금 1,200만 건 이상\"* 이라고 나온다. **늘릴 수 없는 것이 사람이면, 늘릴 수 있는 것은 잠깐 빌리는 기계뿐이다**(이 해석은 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "걸린 시간",
+            "value": "**7~8시간 → 25분** (거래가 많은 날 예전에는 더 늘어났다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "label": "만드는 양",
+            "value": "평소 **150만 명 이상**, 변동성 큰 날은 **두 배**. 한 번 돌 때 **임시 파일 700만 개**. 문서는 보통 **100~200KB**, 거래가 많은 고객은 메가바이트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "label": "빌리는 기계",
+            "value": "**EC2 40대** (c6a.8xlarge · c6a.2xlarge · c6a.4xlarge 혼합) — **필요할 때 띄웠다 없앤다.** 비용은 *\"무시할 만하다\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "label": "시험 실행",
+            "value": "**5분간 요청 161만 건 · 평균 초당 5.3천 건 · 오류율 0.13%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "label": "렌더링 속도",
+            "value": "**2,000쪽 리포트가 lualatex 18분 → Typst 약 1분**. 작은 파일에서도 LaTeX 계열보다 **2~3배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "label": "이걸 만드는 사람",
+            "value": "기술팀 **31명** (하루 거래 **1,200만 건 이상**)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling with common sense #2: Being future ready",
+                "url": "https://zerodha.tech/blog/being-future-ready-with-common-sense/",
+                "publisher": "Zerodha Tech",
+                "date": "2021-07-28",
+                "summary": "*\"2020년 1월에 하루 200만 건 이상의 리테일 거래를 처리했다. 2020년 4월에는 700만 건 이상으로 올랐다. 지금은 1,200만 건 이상까지 간다.\"* 그런데 **기술팀은 *\"작년 30명에서 올해 31명\"*** 이다. 자체 호스팅의 값을 숫자로 댄다 — 사내 1,000명 이상이 쓰는 티켓 시스템을 **연 1만 달러 미만**(EC2·스토리지·백업)으로 돌리는데 *\"가장 유명한 SaaS 티켓 시스템을 썼다면 연 100만 달러가 넘었을 것\"*. 규제가 **4주 만에** 주식 매도 방식을 통째로 바꾸라고 한 일도 적는다. Kite 는 세 번, 티커는 6년 동안 **다섯 번 이상** 다시 썼다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "7~8시간이라는 숫자를 보던 시점",
+          "thought": "문제는 느리다는 것이 아니라 **입력에 비례해 늘어난다**는 것이었다. 변동성이 큰 날은 사람이 두 배이니 시간도 두 배로 향한다. **마감이 고정된 일에서 그 성질은 '아직 안 터졌을 뿐'** 이다(뒤 문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디를 고칠지 고를 때",
+          "thought": "결과적으로 **한 군데도 남기지 않았다** — 렌더러 · 큐 · 저장 · 서명 · 메일 · 오케스트레이션이 전부 바뀌었다. **직렬로 이어진 파이프라인에서는 한 단계만 빨라져도 다음 단계가 곧바로 천장이 되기 때문**으로 보인다(이 해석은 이 사이트의 것이고, trivago 의 Kafka 컨슈머에서 본 것과 같은 모양이다).",
+          "confidence": "inferred"
+        },
+        {
+          "at": "파일을 어디에 둘지 고를 때",
+          "thought": "**가장 빠른 것은 EBS 였다** — 같은 작업을 **400밀리초**에 했고 S3 는 **4~5초**였다. 그런데 EBS 를 안 골랐다. **40대가 같은 파일을 봐야 하기 때문**이다. 여기서는 **빠름보다 공유 가능성이 먼저**였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "31명으로 이걸 돌린다는 것",
+          "thought": "사람을 늘리는 선택지가 사실상 없다. 그래서 **상시로 유지해야 하는 것을 늘리지 않는 쪽**으로 설계가 기운다 — 40대를 **하루 25분만** 띄우고, 서명은 검증된 Java 코드를 다시 쓰는 대신 **HTTP 로 감싸서** 그대로 쓴다. 회사가 이 둘을 인원과 이어 말한 적은 없다 — **이 연결은 이 사이트의 재구성이다.**",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "거래 명세서 (contract note)",
+            "what": "규제 문서. 그날 거래한 고객 한 명당 한 장이고, **각 거래의 내역과 비용을 전부** 담는다. 보통 100~200KB, 거래가 많은 고객은 메가바이트."
+          },
+          {
+            "name": "마감",
+            "what": "**다음 거래일이 시작되기 전.** 시작 시각(장 마감)과 끝 시각(다음 장 개장)이 모두 밖에서 정해진다."
+          },
+          {
+            "name": "작업 체인",
+            "what": "**데이터 처리 → PDF 생성 → 서명 → 발송** 네 단계. 각 단계가 Go 동시 워커이고 Tasqueue 로 이어진다."
+          },
+          {
+            "name": "S3 프리픽스 파티션",
+            "what": "`{0-9}-{pdfs, signed_pdfs, contract_notes}` 형태의 **고정 프리픽스 10개**. AWS 가 프리픽스 단위로 거는 한도를 열 배로 늘리는 장치다."
+          },
+          {
+            "name": "임시 인프라",
+            "what": "Terraform 이 만들고 Nomad 가 채우는 **EC2 40대**. 일이 끝나면 없어진다."
+          }
+        ],
+        "invariants": [
+          "**다음 장이 열리기 전에 끝나야 한다** — 이 하나가 나머지 모든 결정의 상위 조건이다.",
+          "**파일은 40대가 모두 볼 수 있어야 한다** — 그래서 로컬 디스크가 아무리 빨라도 쓸 수 없다.",
+          "**프리픽스 하나에 쓰기 3,500/초 · 읽기 5,500/초** 를 넘지 않는다 — 열 개로 갈라 그 한도를 피한다.",
+          "서명은 **검증된 Java 구현을 그대로** 쓴다 — 다시 구현하지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "장이 끝나면 Terraform 이 **EC2 40대를 띄우고** Nomad 가 노드마다 워커를 하나씩 올린다",
+            "why": "이 일은 하루 25분만 필요하다. 상시로 두면 나머지 23시간 반을 놀린다."
+          },
+          {
+            "step": "**1단계 — 데이터 처리.** 그날 거래를 고객별로 모은다",
+            "why": "문서 한 장이 그 고객의 그날 전부를 담아야 한다."
+          },
+          {
+            "step": "**2단계 — PDF 생성.** Typst 로 조판한다. 결과를 S3 의 `{0-9}-pdfs` 프리픽스에 흩어 넣는다",
+            "why": "한 프리픽스에 몰아 넣으면 초당 3,500 쓰기에서 막힌다."
+          },
+          {
+            "step": "**3단계 — 서명.** Java OpenPDF 를 감싼 HTTP 사이드카가 디지털 서명을 붙이고 `{0-9}-signed_pdfs` 로 옮긴다",
+            "why": "서명은 규제 요구라 틀리면 안 된다 — 검증된 구현을 Go 로 다시 쓰지 않고 그대로 부른다."
+          },
+          {
+            "step": "**4단계 — 발송.** Haraka SMTP 클러스터가 smtppool 로 커넥션을 재사용해 메일을 보낸다",
+            "why": "예전 Postal 서버가 병목이었다. 발송도 파이프라인의 한 단계로 병렬화해야 한다."
+          },
+          {
+            "step": "전 단계의 상태를 **Redis** 가 들고, **Tasqueue** 가 단계를 잇는다",
+            "why": "40대가 같은 작업 목록을 봐야 하므로 상태가 한 곳에 있어야 한다."
+          },
+          {
+            "step": "관리자는 **RunDeck** 으로 워크플로를 돌리고 상태를 본다",
+            "why": "하루에 한 번 도는 일이라 사람이 개입할 창구가 필요하다."
+          },
+          {
+            "step": "끝나면 **인프라를 없앤다** — 임시 파일 700만 개와 함께",
+            "why": "빌린 것은 돌려준다. 비용이 *\"무시할 만한\"* 이유다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "서버를 더 키울 것인가",
+            "chosen": "**수직 확장을 그만두고 병렬로 간다**",
+            "alternatives": [
+              "기존 방식대로 서버 한 대를 더 키우기"
+            ],
+            "tradeoff": "예전 구조는 **수직 확장한 서버 한 대가 병목**이었고 **7~8시간**이 걸렸으며 거래가 많은 날 더 늘어났다. 병렬로 가면 **조율할 것이 생긴다** — 작업 상태 · 파일 공유 · 순서. 아래 결정들이 전부 그 값이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "question": "인프라를 상시로 둘 것인가, 필요할 때 띄울 것인가",
+            "chosen": "**임시로 띄운다** — Terraform + Nomad 로 EC2 40대를 만들었다 없앤다",
+            "alternatives": [
+              "항상 떠 있는 클러스터를 유지하기"
+            ],
+            "tradeoff": "**매일 프로비저닝이 성공해야 하고, 그날 처음 뜬 인프라에서 문제가 나면 마감 안에 고쳐야 한다**(이 위험은 이 사이트의 추정이다). 얻는 것은 분명하다 — 하루 25분만 쓰니 비용이 *\"무시할 만하다\"*. **기술팀이 31명인 회사가 상시 운영 대상을 늘리지 않는 선택**이기도 하다(이 연결도 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              },
+              {
+                "title": "Scaling with common sense #2: Being future ready",
+                "url": "https://zerodha.tech/blog/being-future-ready-with-common-sense/",
+                "publisher": "Zerodha Tech",
+                "date": "2021-07-28",
+                "summary": "*\"2020년 1월에 하루 200만 건 이상의 리테일 거래를 처리했다. 2020년 4월에는 700만 건 이상으로 올랐다. 지금은 1,200만 건 이상까지 간다.\"* 그런데 **기술팀은 *\"작년 30명에서 올해 31명\"*** 이다. 자체 호스팅의 값을 숫자로 댄다 — 사내 1,000명 이상이 쓰는 티켓 시스템을 **연 1만 달러 미만**(EC2·스토리지·백업)으로 돌리는데 *\"가장 유명한 SaaS 티켓 시스템을 썼다면 연 100만 달러가 넘었을 것\"*. 규제가 **4주 만에** 주식 매도 방식을 통째로 바꾸라고 한 일도 적는다. Kite 는 세 번, 티커는 6년 동안 **다섯 번 이상** 다시 썼다."
+              }
+            ]
+          },
+          {
+            "question": "파일을 어디에 둘 것인가",
+            "chosen": "**S3** — 파일 1만 개에 4~5초",
+            "alternatives": [
+              "**EBS** — 같은 작업을 **400밀리초**. 가장 빠르지만 분산 구조에 안 맞는다",
+              "**EFS** — General Purpose 4~5초, **Max I/O 는 17~18초**에 지연도 높다",
+              "**FSx for Lustre** — 설정이 복잡하고 **ap-south-1 리전에 없다**",
+              "**FaaS** — 콜드 스타트 · 통신 비용 · 실행당 요금"
+            ],
+            "tradeoff": "**가장 빠른 것을 안 골랐다.** EBS 가 S3 보다 열 배 넘게 빠른데도 쓰지 못한 이유는 **40대가 같은 파일을 봐야 하기 때문**이다. 여기서 기준은 속도가 아니라 **공유 가능성**이었다. 그리고 FSx 를 버린 이유 하나는 기술이 아니라 **리전**이다 — 인도에서 도는 회사라는 사실이 선택지를 지웠다(이 관찰은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "question": "S3 의 프리픽스 한도를 어떻게 넘을 것인가",
+            "chosen": "**고정 프리픽스 10개로 흩는다** — `{0-9}-{pdfs, signed_pdfs, contract_notes}`",
+            "alternatives": [
+              "의미 있는 키 구조(날짜·고객 ID)로 자연스럽게 쌓기"
+            ],
+            "tradeoff": "AWS 는 **프리픽스마다** 쓰기 3,500/초 · 읽기 5,500/초를 건다. 열 개로 갈라 한도를 열 배로 만들었다. 대신 **키에서 의미가 사라진다** — 어떤 문서가 어디 있는지는 계산해서 찾아야 한다(이 대가는 이 사이트의 추정이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 조판할 것인가",
+            "chosen": "**Typst** — 세 번 갈아탄 끝에",
+            "alternatives": [
+              "**Chrome/Puppeteer** — 원래 쓰던 것. HTML 을 브라우저로 찍는다",
+              "**pdflatex** — 천 쪽이 넘는 문서에서 **메모리를 동적으로 늘리지 못해** 막혔다",
+              "**lualatex** — 메모리는 풀었지만 큰 표에서 *\"해독할 수 없는 스택 트레이스\"* 를 뱉고 **도커 이미지가 무거워졌다**"
+            ],
+            "tradeoff": "성능 차이가 크다 — **2,000쪽 리포트가 lualatex 18분 대 Typst 약 1분**, 작은 파일에서도 2~3배. 대가는 **규제 문서 전체를 비교적 새 조판기에 건다**는 것이다(이 위험은 이 사이트의 추정이다). **세 번 갈아탄 과정 자체가 기록으로 남아 있다는 점이 이 글의 값**이다 — 보통은 마지막 선택만 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "question": "서명을 어떻게 붙일 것인가",
+            "chosen": "**Java OpenPDF 를 HTTP 사이드카로 감싼다** — 단일 JVM 이 동시 요청을 받는다",
+            "alternatives": [
+              "Go 로 서명 로직을 다시 구현하기",
+              "기존처럼 Java CLI 를 프로세스로 부르기"
+            ],
+            "tradeoff": "**Go 파이프라인 안에 JVM 하나가 섞인다** — 런타임이 둘이 되고, 그 하나가 모든 서명 요청을 받는다. 그래도 그렇게 한 이유는 **서명이 규제 요구라 틀릴 수 없기 때문**으로 보인다(이 해석은 이 사이트의 것이다). CLI 를 매번 부르는 대신 **떠 있는 서비스로 바꾼 것**이 실제 개선이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "question": "메일을 직접 보낼 것인가",
+            "chosen": "**직접 보낸다** — Postal 대신 **Haraka** 클러스터 + smtppool 커넥션 풀",
+            "alternatives": [
+              "외부 이메일 발송 서비스에 맡기기"
+            ],
+            "tradeoff": "발송 실패와 도메인 평판이 회사 몫으로 남는다. 이 회사의 일관된 방향이기도 하다 — 다른 글에서 사내 1,000명 이상이 쓰는 티켓 시스템을 **연 1만 달러 미만**으로 자체 호스팅하면서 *\"가장 유명한 SaaS 를 썼다면 연 100만 달러가 넘었을 것\"* 이라고 비교한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              },
+              {
+                "title": "Scaling with common sense #2: Being future ready",
+                "url": "https://zerodha.tech/blog/being-future-ready-with-common-sense/",
+                "publisher": "Zerodha Tech",
+                "date": "2021-07-28",
+                "summary": "*\"2020년 1월에 하루 200만 건 이상의 리테일 거래를 처리했다. 2020년 4월에는 700만 건 이상으로 올랐다. 지금은 1,200만 건 이상까지 간다.\"* 그런데 **기술팀은 *\"작년 30명에서 올해 31명\"*** 이다. 자체 호스팅의 값을 숫자로 댄다 — 사내 1,000명 이상이 쓰는 티켓 시스템을 **연 1만 달러 미만**(EC2·스토리지·백업)으로 돌리는데 *\"가장 유명한 SaaS 티켓 시스템을 썼다면 연 100만 달러가 넘었을 것\"*. 규제가 **4주 만에** 주식 매도 방식을 통째로 바꾸라고 한 일도 적는다. Kite 는 세 번, 티커는 6년 동안 **다섯 번 이상** 다시 썼다."
+              }
+            ]
+          },
+          {
+            "question": "작업 큐를 직접 만들 것인가",
+            "chosen": "**직접 만든다** — 자체 Go 라이브러리 **Tasqueue** + Redis",
+            "alternatives": [
+              "기존 잡 큐 시스템을 가져다 쓰기"
+            ],
+            "tradeoff": "**회사가 왜 직접 만들었는지 설명하지 않는다.** 다만 다른 글의 원칙과는 맞는다 — *\"큰 프레임워크보다 교체 가능한 라이브러리\"*, *\"서비스와 네트워크 의존을 최대한 적게\"*, *\"파일을 rsync 하는 bash 스크립트 몇 줄이어도 괜찮다\"*. 이 회사는 **데이터베이스 쪽에서도 같은 이유로 Citus 를 거부했다**(스키마를 고쳐야 해서).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              },
+              {
+                "title": "Scaling with common sense",
+                "url": "https://zerodha.tech/blog/scaling-with-common-sense/",
+                "publisher": "Zerodha Tech",
+                "date": "2020-06-14",
+                "summary": "확장에 대한 회사의 원칙. *\"상식적인 원칙과 관행이 복잡한 기술과 방법론을 이긴다.\"* **서비스와 네트워크 의존을 최대한 적게 두고**, *\"병목은 거의 언제나 데이터베이스\"* 라고 보며, *\"파일을 rsync 하는 bash 스크립트 몇 줄이어도 전혀 괜찮다\"* 고 적는다. 큰 프레임워크보다 **교체 가능한 라이브러리**를 고르고, *\"첫날부터 컨테이너로 만들어 K8s 클러스터에 올릴 필요는 없다\"*."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Go 동시 워커 (4단계 체인)",
+            "role": "데이터 처리 → PDF 생성 → 서명 → 발송. Python 을 대체했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "Tasqueue + Redis",
+            "role": "자체 제작 경량 작업 큐와 전역 작업 상태. **40대가 같은 목록을 보게 하는 축.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "S3 (고정 프리픽스 10개)",
+            "role": "40대가 공유하는 파일 저장소. 프리픽스를 갈라 **쓰기 3,500/초 · 읽기 5,500/초** 한도를 열 배로 늘린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "Typst",
+            "role": "조판기. **2,000쪽 리포트를 약 1분**에 만든다(lualatex 은 18분).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "Java OpenPDF (HTTP 사이드카)",
+            "role": "디지털 서명. **다시 구현하지 않고 감싸서** 쓴다 — 단일 JVM 이 동시 요청을 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "Haraka SMTP + smtppool",
+            "role": "발송. 병목이던 Postal 을 대체하고 커넥션을 재사용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          },
+          {
+            "tech": "Nomad + Terraform + RunDeck",
+            "role": "임시 인프라의 생성·배치·조작. Nomad 는 **노드당 한 인스턴스**를 보장하는 system job 으로 워커를 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "1.5+ million PDFs in 25 minutes",
+                "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+                "publisher": "Zerodha Tech",
+                "date": "2024-02-14",
+                "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [],
+      "diagrams": [
+        {
+          "title": "하루 25분만 존재하는 파이프라인",
+          "kind": "flow",
+          "question": "40대가 같은 일을 나눠 하려면 무엇이 한 곳에 있어야 하는가?",
+          "code": "flowchart TD\n  CLOSE[\"<b>장 마감</b> — 여기서만 시작할 수 있다\"]\n  TF[\"Terraform — <b>EC2 40대를 만든다</b><br/>c6a.8xlarge · 2xlarge · 4xlarge\"]:::list\n  NOMAD[\"Nomad — 노드당 워커 하나(system job)\"]\n  W1[\"<b>1. 데이터 처리</b><br/>고객별로 그날 거래를 모은다\"]:::list\n  W2[\"<b>2. PDF 생성</b><br/>Typst 로 조판\"]:::list\n  W3[\"<b>3. 서명</b><br/>Java OpenPDF HTTP 사이드카\"]:::list\n  W4[\"<b>4. 발송</b><br/>Haraka SMTP + smtppool\"]:::list\n  Q[\"<b>Tasqueue + Redis</b><br/>• 전역 작업 상태<br/>• 40대가 같은 목록을 본다\"]:::accent\n  S3[(\"<b>S3 — 고정 프리픽스 10개</b><br/>{0-9}-pdfs / signed_pdfs / contract_notes<br/>프리픽스당 쓰기 3,500·읽기 5,500/초\")]\n  OPEN[\"<b>다음 장 개장</b> — 여기까지 끝나야 한다\"]\n  DONE[\"인프라를 없앤다<br/>임시 파일 700만 개와 함께\"]:::quiet\n  CLOSE --> TF --> NOMAD --> W1 --> W2 --> W3 --> W4 --> OPEN\n  Q --- W1\n  Q --- W2\n  Q --- W3\n  Q --- W4\n  W2 --> S3\n  S3 --> W3\n  W3 --> S3\n  S3 --> W4\n  W4 --> DONE\n  RD[\"RunDeck — 사람이 돌리고 들여다보는 창구\"]:::quiet\n  RD -.-> NOMAD"
+        },
+        {
+          "title": "명세서 한 장이 마감까지 가는 길",
+          "kind": "state",
+          "question": "시작도 끝도 밖에서 정해질 때 무엇을 조절할 수 있는가?",
+          "code": "stateDiagram-v2\n  [*] --> 대기: 장이 아직 열려 있다\n  note right of 대기\n    시작 시각을 우리가 정하지 못한다\n    장이 끝나야 그날 거래가 확정된다\n  end note\n  대기 --> 집계: 장 마감 — 고객의 그날 거래를 모은다\n  집계 --> 조판: Typst\n  note right of 조판\n    보통 100~200KB\n    거래가 많은 고객은 메가바이트\n    2,000쪽이면 약 1분\n  end note\n  조판 --> 서명대기: S3 {0-9}-pdfs 에 올린다\n  서명대기 --> 서명됨: Java OpenPDF 사이드카\n  서명됨 --> 발송대기: S3 {0-9}-signed_pdfs\n  발송대기 --> 발송됨: Haraka SMTP\n  발송됨 --> [*]: 다음 장 개장 전\n  note right of 발송됨\n    <b>마감도 우리가 정하지 못한다</b>\n    조절할 수 있는 것은\n    그 사이에 몇 대를 빌리느냐뿐이다\n    <i>(이 정리는 이 사이트의 것)</i>\n  end note\n  집계 --> 폭증: 변동성이 큰 날 — 대상이 두 배\n  폭증 --> 조판: 예전에는 7~8시간이 더 늘어났다"
+        },
+        {
+          "title": "실패 경로 — 버린 것들이 각각 어디서 막혔는가",
+          "kind": "failure",
+          "question": "가장 빠른 저장소를 왜 쓰지 못했는가?",
+          "code": "flowchart TD\n  ST[\"<b>파일을 어디에 둘 것인가</b>\"] --> E1[\"<b>EBS — 400밀리초</b><br/>가장 빠르다\"]\n  E1 -->|\"막힌 곳\"| E1B[\"<b>40대가 같은 파일을 못 본다</b><br/>분산 구조에 안 맞는다\"]:::quiet\n  ST --> E2[\"EFS\"] -->|\"막힌 곳\"| E2B[\"파일 1만 개에 General Purpose 4~5초<br/><b>Max I/O 는 17~18초</b> + 높은 지연\"]:::quiet\n  ST --> E3[\"FSx for Lustre\"] -->|\"막힌 곳\"| E3B[\"설정이 복잡하고<br/><b>ap-south-1 리전에 없다</b><br/>= 기술이 아니라 <b>위치</b>가 지웠다\"]:::quiet\n  ST --> E4[\"FaaS\"] -->|\"막힌 곳\"| E4B[\"콜드 스타트 · 통신 비용 · 실행당 요금\"]:::quiet\n  E1B --> PICK[\"<b>S3 — 4~5초인데 골랐다</b><br/>기준이 속도가 아니라 <b>공유 가능성</b>이었다\"]:::accent\n  E2B --> PICK\n  E3B --> PICK\n  E4B --> PICK\n  R[\"<b>무엇으로 조판할 것인가</b>\"] --> R1[\"Chrome/Puppeteer<br/>원래 쓰던 것\"]:::quiet\n  R --> R2[\"pdflatex\"] -->|\"막힌 곳\"| R2B[\"천 쪽이 넘으면<br/><b>메모리를 동적으로 못 늘린다</b>\"]:::quiet\n  R --> R3[\"lualatex\"] -->|\"막힌 곳\"| R3B[\"메모리는 풀렸지만 큰 표에서<br/><i>해독할 수 없는 스택 트레이스</i><br/>+ 도커 이미지 비대화\"]:::quiet\n  R3B --> R4[\"<b>Typst</b> — 2,000쪽 18분 → 약 1분\"]\n  OLD[\"<b>예전 구조가 막힌 곳</b>\"] --> O1[\"수직 확장한 <b>서버 한 대가 병목</b>\"]:::quiet\n  OLD --> O2[\"Postal SMTP 도 병목\"]:::quiet\n  OLD --> O3[\"<b>7~8시간</b> — 거래가 많은 날은 더\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "1.5+ million PDFs in 25 minutes",
+          "url": "https://zerodha.tech/blog/1-5-million-pdfs-in-25-minutes/",
+          "publisher": "Zerodha Tech",
+          "date": "2024-02-14",
+          "summary": "거래 명세서(contract note) PDF 를 **7~8시간에서 25분으로** 줄인 기록. 규제가 **다음 거래일이 시작되기 전** 디지털 서명된 문서를 보내라고 강제한다. 평소 **150만 명 이상**, 변동성 큰 날은 그 두 배. 옛 스택은 Python + Jinja + Puppeteer + Java 서명 + 자체 Postal SMTP 였고 **수직 확장한 서버 한 대가 병목**이었다. 새로 만든 것은 **Go 동시 워커 + 자체 큐 Tasqueue + Redis + S3(프리픽스 10개로 분산) + Haraka SMTP**, 그리고 렌더링을 **pdflatex → lualatex → Typst** 로 갈아탔다(2,000쪽 문서에서 lualatex **18분** → Typst **약 1분**). **EC2 40대**를 임시로 띄워 돌린다."
+        },
+        {
+          "title": "Scaling with common sense #2: Being future ready",
+          "url": "https://zerodha.tech/blog/being-future-ready-with-common-sense/",
+          "publisher": "Zerodha Tech",
+          "date": "2021-07-28",
+          "summary": "*\"2020년 1월에 하루 200만 건 이상의 리테일 거래를 처리했다. 2020년 4월에는 700만 건 이상으로 올랐다. 지금은 1,200만 건 이상까지 간다.\"* 그런데 **기술팀은 *\"작년 30명에서 올해 31명\"*** 이다. 자체 호스팅의 값을 숫자로 댄다 — 사내 1,000명 이상이 쓰는 티켓 시스템을 **연 1만 달러 미만**(EC2·스토리지·백업)으로 돌리는데 *\"가장 유명한 SaaS 티켓 시스템을 썼다면 연 100만 달러가 넘었을 것\"*. 규제가 **4주 만에** 주식 매도 방식을 통째로 바꾸라고 한 일도 적는다. Kite 는 세 번, 티커는 6년 동안 **다섯 번 이상** 다시 썼다."
+        },
+        {
+          "title": "Scaling with common sense",
+          "url": "https://zerodha.tech/blog/scaling-with-common-sense/",
+          "publisher": "Zerodha Tech",
+          "date": "2020-06-14",
+          "summary": "확장에 대한 회사의 원칙. *\"상식적인 원칙과 관행이 복잡한 기술과 방법론을 이긴다.\"* **서비스와 네트워크 의존을 최대한 적게 두고**, *\"병목은 거의 언제나 데이터베이스\"* 라고 보며, *\"파일을 rsync 하는 bash 스크립트 몇 줄이어도 전혀 괜찮다\"* 고 적는다. 큰 프레임워크보다 **교체 가능한 라이브러리**를 고르고, *\"첫날부터 컨테이너로 만들어 K8s 클러스터에 올릴 필요는 없다\"*."
+        }
+      ]
+    }
+  ]
 }
