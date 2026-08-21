@@ -64,12 +64,8 @@ jobs:
       - name: 반영 확인
         run: |
           set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
           REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
           idx="$REPO/jd-viewer/public/reveng/index.json"
-          if [ -f "$idx" ]; then
-            python3 - "$idx" <<'PY'
-import json, sys
-d = json.load(open(sys.argv[1], encoding='utf-8'))
-print(f"역설계 index — 회사 {len(d.get('companies', []))}곳 · 갱신 {d.get('updated_at')}")
-PY
-          fi
+          # heredoc 은 쓰지 않는다 — 본문이 컬럼 0 에 놓여 YAML 블록 스칼라가 끊긴다.
+          [ -f "$idx" ] && python3 -c "import json,sys; d=json.load(open(sys.argv[1],encoding='utf-8')); print('역설계 index — 회사', len(d.get('companies',[])), '곳 · 갱신', d.get('updated_at'))" "$idx" || true
