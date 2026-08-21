@@ -5,13 +5,21 @@
 
 > **표 형식을 지킨다.** `validate.py --gaps` 가 이 표의 행 수를 세어 큐 잔량을 판단하고,
 > 잔량이 목표(3)보다 적으면 후보 조사 사이클을 띄운다. 산문으로 적으면 세지 못한다.
-> `## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
+> `## 진행 중
+
+- **ByteDance** (CN · 소셜) — 사이클 149 에서 열었다. 회사 프로파일 + 도메인 3개
+  (추천 학습·서빙 · 로컬 저장 엔진 · 그래프·분석 데이터) + 기능 1개(`monolith`) 완료.
+  **1차 자료가 동료 심사 논문인 첫 회사다.** 남은 도메인 2개는 아직 **초록까지만** 읽었다 —
+  LavaStore(`vldb.org/pvldb/vol17/p3799-jiao.pdf`), ByteGraph·ByteHTAP(dl.acm.org).
+  ⚠️ **arXiv 초록 페이지(`arxiv.org/abs/…`)는 초록만 준다 — 본문은 `ar5iv.labs.arxiv.org/html/<id>`
+  로 읽는다.** 이번에 그렇게 전문을 얻었다.
+
+## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **ByteDance** | CN · 소셜/스트리밍 | `arxiv.org` · `vldb.org` (**논문 축**) | ✅ **본문 확인** — arXiv 잘 읽힘. VLDB PDF 는 WebFetch 요약이 얕지만 **파일이 로컬에 저장되므로 Read 로 정독**할 것 | **중국 회사가 0곳이다** — index.json 이 CN 을 정의해 두고 비어 있다. 그리고 축이 새롭다: **피드가 먼저인 추천**(YouTube·Netflix 는 검색·카탈로그가 먼저다). 1차 자료가 기술블로그가 아니라 **동료 심사 논문**이라는 점도 이 엔진에 처음이다 — Monolith(RecSys 2022, 충돌 없는 임베딩 테이블 + 온라인 학습, **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 논문이 직접 적었다), LavaStore(PVLDB 2024, 자체 로컬 저장 엔진), ByteHouse. 첫 기능은 **Monolith** |
 | **Spotify** | SE/EU · 스트리밍 | `engineering.atspotify.com` | ✅ 목록 확인 — 읽힘. ⚠️ 본문 미확인 | **유럽 회사가 0곳이다.** 추천·스트리밍 축이 Netflix·YouTube 와 겹치지만 **오디오와 팟캐스트는 다르다**(길이·소비 맥락·라이선스). 최근 글이 LLM·데이터 플랫폼에 쏠려 있어 **팔기 전에 본문을 하나 확인할 것** — 'Indexing the Data Lake for Online Point Queries'(2026-07)가 후보다 |
 | **Canva** | AU · SaaS | `canva.dev/blog/engineering` | ✅ **본문 확인.** `session-revocations-at-scale` 를 열어 버린 안과 대가가 명시돼 있음을 봤다 | Figma 와 겹칠까 봐 후순위였는데 **축이 다르다.** 세션 **수억 개**를 초당 **수십만 요청** 아래서 폐기하는 이야기 — Redis 를 **내구성 보장이 부족하다**며 버리고 S3 이진 청크(30분 파티션)로 갔고, ZooKeeper 리더 선출만 믿지 않고 조건부 PUT 을 겹쳤다(**"노드가 쓰기 직전 임의로 멈출 수 있다"**). 메모리 **87.5% 절감**, 게이트웨이 파드당 폐기 **100만 건 이상**, 쓰기 초당 **2,000건 이상**. 그 밖에 `the-science-of-routing-print-orders`(인쇄 주문을 물리 공급망으로 라우팅 — 이 엔진에 없는 축), `canva-incident-report-api-gateway-outage`, `snowpipe-streaming` |
 

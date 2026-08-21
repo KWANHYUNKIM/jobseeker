@@ -1,0 +1,696 @@
+{
+  "slug": "bytedance",
+  "name": "바이트댄스",
+  "name_en": "ByteDance",
+  "country": "CN",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "domain": "bytedance.com",
+  "one_liner": "검색하지 않는 사용자에게 다음 것을 계속 고르는 회사 — 그래서 모델이 '지금'을 따라잡아야 한다",
+  "business_model": "**이 회사의 제품은 사용자가 무엇을 원하는지 말하지 않아도 되는 곳이다.** 검색창에 무엇을 치는 대신 앱을 열면 다음 것이 나온다. 그래서 **추천이 부가 기능이 아니라 제품 그 자체**이고, 다른 회사들과 순서가 반대다 — 넷플릭스·유튜브는 카탈로그와 검색이 먼저 있고 추천이 그 위에 얹히지만, 여기는 **피드가 먼저**다.\n\n그 구조가 기술적 요구를 정한다. 사용자가 방금 무엇을 보고 넘겼는지가 **지금 다음 영상**에 반영돼야 하므로, 모델이 하루 한 번 학습해서는 늦는다. 이 회사의 논문이 다루는 것도 정확히 그 자리다 — **어떻게 하면 학습을 멈추지 않고 계속 돌릴 수 있는가.**\n\n**재무는 공시되지 않는다.** 비상장이라 매출 구성을 회사가 밝힌 적이 없고, 아래 수익원은 전부 **언론 보도와 분석가 추정**이다(2024년 매출 약 1,550억 달러, 2025년 목표 약 1,860억 달러, 2025년 이익 약 500억 달러 추정, 기업가치 3,300억 달러 이상). Discord·Slack·GitHub 때와 같은 처지다.\n\n**그리고 이 회사는 이 엔진에 처음인 종류의 자료를 가졌다** — 기술블로그가 아니라 **동료 심사 논문**이다(RecSys·VLDB). 블로그는 '우리가 이렇게 했다'로 끝나지만 논문은 **버린 대안과 실험 수치를 함께 싣는다**(이 관찰은 이 사이트의 해석이다).",
+  "products": [
+    "TikTok (해외 숏폼)",
+    "Douyin (중국 숏폼)",
+    "Toutiao (뉴스 피드)",
+    "광고 플랫폼",
+    "기업용 인프라·클라우드 제품"
+  ],
+  "revenue_streams": [
+    {
+      "name": "광고",
+      "how": "피드에 광고를 끼워 판다. **회사 공시가 없다** — 보도 기준으로 2025년 그룹 매출 목표가 약 1,860억 달러이고 TikTok 광고 매출만 2025년 약 356억 달러로 추정된다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "ByteDance 재무 — 회사 공시가 아니라 보도",
+          "url": "https://www.cnbc.com/2025/08/27/tiktok-owner-bytedance-sets-valuation-at-over-330-billion.html",
+          "publisher": "CNBC / Reuters · Bloomberg 보도",
+          "date": "2025~2026",
+          "summary": "비상장이라 공시가 없다. 보도 기준으로 2024년 매출 약 1,550억 달러, 2025년 목표 약 1,860억 달러, 2025년 이익 약 500억 달러 추정, 기업가치 3,300억 달러 이상. **전부 회사 발표가 아니라 언론 보도·분석가 추정이다.**"
+        }
+      ]
+    },
+    {
+      "name": "커머스·라이브 커머스",
+      "how": "앱 안에서 상품을 팔고 수수료를 받는 것으로 알려져 있으나 **구성 비율을 회사가 밝힌 적이 없다.**",
+      "confidence": "unknown",
+      "sources": []
+    },
+    {
+      "name": "기업용 클라우드·인프라 제품",
+      "how": "이 회사의 논문들이 '클라우드 서비스'를 대상으로 쓰였다는 점에서 사내 인프라를 제품화한 줄기가 있음을 알 수 있으나, **매출 기여는 확인되지 않는다.**",
+      "confidence": "unknown",
+      "sources": []
+    }
+  ],
+  "domain_map": {
+    "title": "바이트댄스 도메인 지도",
+    "question": "방금 넘긴 영상이 다음 추천에 닿기까지 무엇을 지나는가?",
+    "code": "flowchart TD\n  U[\"사용자 — 넘긴다 · 멈춘다 · 누른다\"]\n  subgraph REC[\"<b>추천 학습·서빙</b> — 멈추지 않는다\"]\n    KA[(\"Kafka — 사용자 행동\")]\n    KF[(\"Kafka — 피처\")]\n    FL[\"Flink 온라인 조이너<br/>행동과 피처를 붙여 학습 예제로\"]:::list\n    KE[(\"Kafka — 학습 예제\")]\n    TW[\"학습 워커\"]\n    TPS[(\"<b>학습 파라미터 서버</b><br/>충돌 없는 임베딩 테이블\")]:::accent\n    SPS[(\"<b>서빙 파라미터 서버</b>\")]\n    TPS -->|\"sparse 분 단위 · dense 하루 단위<br/>바뀐 키만\"| SPS\n  end\n  subgraph DATA[\"<b>저장 계층</b> — 논문으로만 확인\"]\n    LV[\"LavaStore — 로컬 저장 엔진<br/>GC 를 컴팩션에서 분리\"]:::quiet\n    BG[\"ByteGraph — 분산 그래프 DB\"]:::quiet\n    HT[\"ByteHTAP — 신선도 + 일관성\"]:::quiet\n  end\n  U --> KA --> FL\n  KF --> FL\n  FL --> KE --> TW --> TPS\n  SPS -->|\"다음 것을 고른다\"| U\n  REC -.-> DATA"
+  },
+  "domains": [
+    {
+      "name": "추천 학습·서빙",
+      "why": "**사용자가 검색하지 않으므로 모델이 대신 골라야 하고, 방금 넘긴 것이 지금 반영돼야 한다.** 그런데 추천 모델의 특징은 대부분 **범주형 ID** 이고 그 공간이 거대하다 — 이 회사의 프로덕션 데이터셋은 원래 ID 공간이 **2⁴⁸** 이었다. 해시로 줄이면 **서로 상관없는 것들이 같은 벡터를 나눠 쓰게 되고**, 줄이지 않으면 메모리가 감당이 안 된다. 이 도메인은 그 사이에서 무엇을 고를지의 이야기다.",
+      "tech": [
+        {
+          "tech": "Cuckoo HashMap 기반 충돌 없는 임베딩 테이블",
+          "solves": "테이블 둘과 해시 함수 둘을 두고, 자리가 차 있으면 **원래 있던 것을 다른 테이블로 밀어낸다.** 순환에 빠지면 리해시한다. 덕분에 ID 마다 자기 벡터를 갖는다 — 논문의 실험에서 **충돌 없는 테이블이 충돌 있는 것보다 일관되게 좋았고, 수렴 후에도 과적합하지 않았다.**",
+          "limits": "**테이블이 계속 자란다.** 그래서 빈도 필터와 만료가 따로 필요하다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+              "url": "https://arxiv.org/abs/2209.07663",
+              "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+              "date": "2022-09",
+              "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+            }
+          ]
+        },
+        {
+          "tech": "빈도 필터 + 확률적 필터 + 만료",
+          "solves": "등장 횟수가 임계 미만인 ID 는 아예 넣지 않고, 일정 기간 활동이 없으면 만료시킨다. 만료 시간은 **임베딩 테이블마다 따로** 정해 과거 정보에 대한 민감도가 다른 특징을 구분한다.",
+          "limits": "**임계값을 공개하지 않는다** — 모델마다 튜닝하는 하이퍼파라미터라고만 적혀 있다. 그리고 잘라 낸 ID 의 역사는 그대로 사라진다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+              "url": "https://arxiv.org/abs/2209.07663",
+              "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+              "date": "2022-09",
+              "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+            }
+          ]
+        },
+        {
+          "tech": "Kafka + Flink 온라인 조이너",
+          "solves": "사용자 행동(클릭·좋아요) 큐와 피처 큐를 **Flink 스트리밍 잡**이 실시간으로 붙여 학습 예제 큐로 내보낸다. 이 큐를 온라인 학습과 배치 학습이 **함께** 소비한다.",
+          "limits": "라벨이 늦게 오는 행동(오래 본 뒤 누르는 경우 등)을 어떻게 다루는지 이 사이트는 확인하지 못했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+              "url": "https://arxiv.org/abs/2209.07663",
+              "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+              "date": "2022-09",
+              "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "monolith"
+      ]
+    },
+    {
+      "name": "로컬 저장 엔진",
+      "why": "클라우드 서비스의 부하가 **쓰기 쪽으로 심하게 몰리는데**, 동시에 **비용 효율**과 **조회 꼬리 지연**을 함께 요구받는다. 범용 엔진을 그대로 쓰면 셋 중 하나를 놓치게 된다.",
+      "tech": [
+        {
+          "tech": "LavaStore — RocksDB 기반을 골라 고친 로컬 저장 엔진",
+          "solves": "**가비지 컬렉션을 컴팩션에서 떼어 낸 KV 분리 설계**와, 반복해서 나타나는 **WAL(선행 기록) 부하 전용 엔진 타입**을 둔다.",
+          "limits": "**이 사이트는 초록 수준까지만 읽었다** — 분리의 구체적인 방식과 실험 수치는 아직 확인하지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LavaStore: ByteDance's Purpose-Built, High-Performance, Cost-Effective Local Storage Engine for Cloud Services",
+              "url": "https://www.vldb.org/pvldb/vol17/p3799-jiao.pdf",
+              "publisher": "PVLDB Vol.17 No.12 (2024)",
+              "date": "2024",
+              "summary": "쓰기가 몰리는 부하와 조회 꼬리 지연·비용 요구를 동시에 맞추려고 RocksDB 기반 저장 엔진을 골라 고친 이야기. **가비지 컬렉션을 컴팩션에서 떼어 낸 KV 분리 설계**와 WAL 전용 엔진 타입이 핵심이다. **이 사이트는 초록 수준까지만 읽었다.**"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "그래프·분석 데이터",
+      "why": "TikTok·Douyin·Toutiao 가 **대량의 그래프 데이터를 자연히 만들어 낸다** — 누가 누구를 따르고 무엇에 반응했는지가 전부 그래프다. 그리고 그 데이터를 운영과 분석 양쪽에서 동시에 봐야 한다.",
+      "tech": [
+        {
+          "tech": "ByteGraph — 분산 그래프 데이터베이스",
+          "solves": "높은 처리량·낮은 지연·높은 확장성으로 그래프 부하를 다루려고 만들었다.",
+          "limits": "**이 사이트는 초록 수준까지만 읽었다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "ByteGraph: a high-performance distributed graph database in ByteDance",
+              "url": "https://dl.acm.org/doi/10.14778/3554821.3554824",
+              "publisher": "PVLDB Vol.15 No.12 (2022)",
+              "date": "2022",
+              "summary": "TikTok·Douyin·Toutiao 가 만들어 내는 대량의 그래프 데이터를 높은 처리량·낮은 지연으로 다루려고 만든 분산 그래프 데이터베이스. **이 사이트는 초록 수준까지만 읽었다.**"
+            }
+          ]
+        },
+        {
+          "tech": "ByteHTAP — 트랜잭션과 분석을 함께",
+          "solves": "높은 데이터 신선도와 강한 일관성을 함께 노린다.",
+          "limits": "**이 사이트는 제목·게재 정보까지만 확인했다** — 내용을 읽지 않았다.",
+          "confidence": "unknown",
+          "sources": [
+            {
+              "title": "ByteHTAP: ByteDance's HTAP system with high data freshness and strong data consistency",
+              "url": "https://dl.acm.org/doi/10.14778/3554821.3554832",
+              "publisher": "PVLDB Vol.15 No.12 (2022)",
+              "date": "2022",
+              "summary": "높은 데이터 신선도와 강한 일관성을 함께 노린 HTAP 시스템. **이 사이트는 제목·게재 정보까지만 확인했다.**"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "monolith",
+      "name": "Monolith — 학습을 멈추지 않는다",
+      "domain": "추천 학습·서빙",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**사용자가 검색하지 않는다.** 앱을 열면 다음 것이 나오고, 넘기면 그다음이 나온다. 그러니 방금 넘긴 것이 **지금** 반영돼야 한다 — 하루 한 번 학습해서는 늦는다.\n\n그런데 추천 모델을 실시간으로 돌리려면 두 가지가 동시에 걸린다.\n\n첫째, **ID 공간이 거대하다.** 이 회사의 프로덕션 데이터셋은 원래 ID 공간이 **2⁴⁸** 이었다. 흔한 방법은 해시로 작은 테이블에 욱여넣는 것인데, 그러면 **서로 아무 상관 없는 두 아이템이 같은 벡터를 나눠 쓴다.** 공개 데이터셋인 MovieLens 정도의 작은 규모에서도 사용자 **7.73%**, 아이템 **2.86%** 가 부딪힌다.\n\n둘째, **학습을 멈추지 않으려면 무언가를 내놓아야 한다.** 논문이 이것을 에두르지 않고 적었다 — **\"시스템 신뢰성은 실시간 학습을 위해 맞바꿀 수 있다.\"**",
+        "metrics": [
+          {
+            "label": "ID 공간",
+            "value": "프로덕션 데이터셋 원래 **2⁴⁸.** 비교 대상 베이스라인은 이를 **2²⁵ 테이블 둘**로 분해한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "label": "해시 충돌률 (MovieLens, 사용자 162,541 · 아이템 59,047)",
+            "value": "사용자 **7.73%** · 아이템 **2.86%** — 작은 공개 데이터셋에서도 이만큼 부딪힌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "label": "동기화 주기 실험 (Criteo, 온라인 AUC)",
+            "value": "5시간 **79.66** · 1시간 **79.78** · **30분 79.80.** 같은 조건의 배치 학습은 **79.42~79.44** 로 거의 움직이지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "label": "프로덕션 광고 모델 A/B (온라인 대 배치)",
+            "value": "7일 연속 **+14.0% ~ +18.1%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "label": "sparse 파라미터 전송량",
+            "value": "1분에 ID 10만 개가 갱신되고 임베딩 차원이 1024면 **분당 약 400MB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "label": "스냅샷을 줄여 감수한 손실",
+            "value": "파라미터가 **1,000개 PS** 에 나뉘고 실패율 0.01% 면 **10일마다 한 대**가 죽어 **하루치 갱신**을 잃는다. DAU 1,500만이 고르게 분포한다고 보면 **10일마다 사용자 15,000명의 하루치 피드백**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "ID 를 해시로 줄여 보고",
+          "thought": "충돌은 **서로 아무 상관 없는 두 아이템이 같은 벡터를 나눠 쓴다**는 뜻이다. 하나가 인기를 얻으면 다른 하나의 표현까지 그쪽으로 끌려간다. MovieLens 정도의 작은 데이터셋에서도 사용자의 7.73%가 부딪히는데, 우리 ID 공간은 2⁴⁸ 이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그럼 다 넣자니 메모리가",
+          "thought": "충돌을 없애면 테이블이 **계속 자란다.** 그런데 실제로 들어오는 ID 의 대부분은 몇 번 나오고 마는 것들이다. **들어오기 전에 빈도로 거르고, 들어온 뒤에는 활동이 없으면 만료**시킨다. 만료 시간은 임베딩 테이블마다 다르게 — 과거 정보에 민감한 특징과 그렇지 않은 특징이 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "학습을 얼마나 자주 반영할지 정할 때",
+          "thought": "동기화 간격을 5시간에서 30분으로 줄이니 AUC 가 계속 올라갔다(79.66 → 79.78 → 79.80). 반면 **같은 조건의 배치 학습은 거의 움직이지 않는다**(79.42~79.44). 즉 얻는 것은 모델 구조가 아니라 **신선도**에서 온다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실시간을 얻으려면 무엇을 내놓아야 하는지 계산할 때",
+          "thought": "스냅샷을 자주 뜨면 계산이 든다. 그래서 **하루 한 번**으로 낮추고 잃는 것을 세어 봤다 — 1,000대 중 0.01% 실패율이면 10일마다 한 대, 하루치, 사용자로 치면 **15,000명의 하루치 피드백**이다. 그리고 실제로 **모델 품질이 예상보다 견고했다.** 그래서 스냅샷 빈도를 과감히 낮췄다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "충돌 없는 임베딩 테이블",
+            "what": "Cuckoo HashMap — 해시 함수가 다른 테이블 **T₀·T₁** 을 두고 원소는 둘 중 한 곳에 산다."
+          },
+          {
+            "name": "학습 파라미터 서버 (Training PS)",
+            "what": "온라인 단계에서 파라미터를 저장하고 갱신한다. 논문의 예에서는 **1,000대**에 샤딩된다."
+          },
+          {
+            "name": "서빙 파라미터 서버 (Serving PS)",
+            "what": "사용자에게 나가는 예측에 쓰이는 파라미터를 쥔다. 학습 PS 로부터 밀려받는다."
+          },
+          {
+            "name": "온라인 조이너 (Flink)",
+            "what": "행동 큐와 피처 큐를 붙여 **학습 예제**를 만든다. 그 예제 큐를 온라인 학습과 배치 학습이 함께 소비한다."
+          },
+          {
+            "name": "touched-keys 집합",
+            "what": "지난 동기화 이후 **값이 바뀐 ID 의 해시 집합.** 이 안에 든 것만 밀어 보낸다."
+          }
+        ],
+        "invariants": [
+          "**한 ID 는 자기 벡터를 갖는다** — 다른 ID 와 나눠 쓰지 않는다.",
+          "임계 미만으로 등장한 ID 는 **애초에 테이블에 들어오지 않는다.**",
+          "활동이 없는 ID 는 **정해진 시간 뒤 만료**된다 — 만료 시간은 테이블마다 다르다.",
+          "sparse 파라미터는 **분 단위**, dense 파라미터는 **하루 단위**로 동기화된다.",
+          "동기화는 **바뀐 키만** 보낸다 — 그래서 서빙 PS 안의 파라미터 버전이 서로 다를 수 있다.",
+          "배치 학습이 끝나도 **학습은 멈추지 않는다** — 그대로 온라인 학습으로 넘어간다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자 행동(클릭·좋아요)은 **행동 Kafka 큐**로, 피처는 **피처 Kafka 큐**로 흘러온다",
+            "why": "둘은 서로 다른 시점에 서로 다른 곳에서 생긴다."
+          },
+          {
+            "step": "**Flink 온라인 조이너**가 둘을 붙여 **학습 예제 큐**로 내보낸다",
+            "why": "학습에 쓰려면 '무엇을 보여 줬는가'와 '어떻게 반응했는가'가 한 줄에 있어야 한다."
+          },
+          {
+            "step": "배치 학습이 끝나면 **멈추지 않고 온라인 학습으로 들어간다** — 저장소에서 미니배치를 읽는 대신 학습 워커가 실시간 데이터를 그때그때 소비한다",
+            "why": "학습의 끝이 있으면 그 순간부터 모델이 낡기 시작한다."
+          },
+          {
+            "step": "ID 는 테이블에 들어가기 전에 **빈도로 걸러지고**, 확률적 필터가 한 번 더 줄인다",
+            "why": "충돌을 없앤 대가로 테이블이 자라니, 자라는 쪽을 입구에서 막는다."
+          },
+          {
+            "step": "들어간 ID 는 **Cuckoo HashMap** 에 자리를 잡는다 — 자리가 차 있으면 원래 있던 것을 다른 테이블로 밀어내고, 순환이 생기면 리해시한다",
+            "why": "충돌을 허용하지 않으려면 밀어내기를 반복하는 수밖에 없다."
+          },
+          {
+            "step": "활동이 없는 ID 는 **만료**된다. 만료 시간은 임베딩 테이블마다 따로 정한다",
+            "why": "과거 정보에 대한 민감도가 특징마다 다르다."
+          },
+          {
+            "step": "학습 PS 는 **바뀐 키 집합(touched-keys)** 에 든 sparse 파라미터만 **분 단위**로 서빙 PS 에 민다. dense 는 **하루 단위**",
+            "why": "dense 변수는 sparse 임베딩보다 훨씬 느리게 움직인다 — 같은 주기로 보낼 이유가 없다."
+          },
+          {
+            "step": "학습 PS 전체를 **하루 한 번** 스냅샷한다",
+            "why": "더 자주 뜨는 비용과 잃는 것을 재어 보고 고른 지점이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "거대한 ID 공간을 해시로 줄일 것인가",
+            "chosen": "**줄이지 않는다.** Cuckoo HashMap 으로 **충돌 없는** 임베딩 테이블을 만든다.",
+            "alternatives": [
+              "ID 공간을 작은 테이블로 해시해 넣는다",
+              "2⁴⁸ 을 2²⁵ 테이블 둘로 분해한다(논문의 베이스라인)"
+            ],
+            "tradeoff": "**테이블이 계속 자라고** 밀어내기·리해시라는 비용이 생긴다. 대신 실험에서 **충돌 없는 테이블이 충돌 있는 것보다 일관되게 좋았고, 수렴한 뒤에도 과적합하지 않았다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "question": "자라는 테이블을 어떻게 감당할 것인가",
+            "chosen": "**입구에서 빈도로 거르고(+확률적 필터), 들어온 뒤에는 만료시킨다.** 만료 시간은 임베딩 테이블마다 따로 둔다.",
+            "alternatives": [
+              "전부 담고 메모리를 늘린다",
+              "오래된 것부터 일괄 삭제한다"
+            ],
+            "tradeoff": "임계 미만인 ID 는 **처음부터 학습되지 않고**, 만료된 ID 의 역사는 사라진다(뒷문장은 이 사이트의 해석). 논문은 **임계값을 공개하지 않는다** — 모델마다 튜닝한다고만 적는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "question": "배치 학습으로 충분한가",
+            "chosen": "**충분하지 않다.** 배치가 끝나면 멈추지 않고 **온라인 학습**으로 이어 간다.",
+            "alternatives": [
+              "하루 단위 배치 학습을 반복한다"
+            ],
+            "tradeoff": "학습이 끝나지 않으므로 **장애가 나면 되감을 지점이 명확하지 않다**(뒷문장은 이 사이트의 추정). 대신 프로덕션 광고 모델 A/B 에서 배치 대비 **7일 연속 +14.0~18.1%** 였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "question": "파라미터를 얼마나 자주 동기화할 것인가",
+            "chosen": "**sparse 는 분 단위, dense 는 하루 단위.**",
+            "alternatives": [
+              "전부 같은 주기로 동기화한다"
+            ],
+            "tradeoff": "서빙 PS 안에서 **sparse 와 dense 의 버전이 어긋난다.** 대신 dense 변수는 sparse 임베딩보다 훨씬 느리게 움직여 자주 보낼 실익이 없다. 실험상 동기화를 5시간→1시간→30분으로 줄일수록 AUC 가 올랐다(79.66→79.78→79.80).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "question": "sparse 를 통째로 보낼 것인가",
+            "chosen": "**바뀐 키만 보낸다** — touched-keys 집합에 든 부분집합만 민다.",
+            "alternatives": [
+              "매 주기마다 전체 sparse 파라미터를 보낸다"
+            ],
+            "tradeoff": "논문이 직접 적었다 — **\"파라미터 각 부분 사이의 버전 일관성은 네트워크 대역폭을 줄이기 위해 맞바꿀 수 있다.\"** 대신 1분에 10만 ID·1024차원이면 전송량이 **약 400MB** 로 억제된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "question": "스냅샷을 얼마나 자주 뜰 것인가",
+            "chosen": "**하루 한 번.** 모델 품질과 계산 비용 사이의 절충으로 잡았다.",
+            "alternatives": [
+              "자주 스냅샷해 손실을 최소화한다"
+            ],
+            "tradeoff": "손실을 논문이 직접 계산해 보였다 — 1,000 PS 에 실패율 0.01% 면 **10일마다 한 대가 하루치 갱신을 잃고**, DAU 1,500만 기준 **사용자 15,000명의 하루치 피드백**이 사라진다. 그런데 **모델 품질이 예상보다 견고해서** 빈도를 과감히 낮추고 계산 비용을 아꼈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "question": "신뢰성과 실시간성 중 무엇을 앞에 둘 것인가",
+            "chosen": "**실시간성.** 논문의 문장 그대로 — **\"시스템 신뢰성은 실시간 학습을 위해 맞바꿀 수 있다.\"**",
+            "alternatives": [
+              "일관된 스냅샷과 복구 보장을 우선한다"
+            ],
+            "tradeoff": "장애 시 일부 사용자의 하루치 피드백이 사라지고 파라미터 버전이 어긋난다. **다만 이 맞바꿈이 성립하는 이유는 추천이 틀려도 다음 것을 또 보여 주면 되는 종류의 일이기 때문이다** — 결제나 원장이었다면 같은 선택을 할 수 없다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Cuckoo HashMap",
+            "role": "충돌 없는 임베딩 테이블의 자료구조. 테이블 둘·해시 둘, 밀어내기와 리해시.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka (행동 큐 · 피처 큐 · 학습 예제 큐)",
+            "role": "세 갈래 큐. 학습 예제 큐는 온라인 학습과 배치 학습이 함께 소비한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "tech": "Flink 스트리밍 잡 (온라인 조이너)",
+            "role": "행동과 피처를 실시간으로 붙여 학습 예제를 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "tech": "학습 PS / 서빙 PS 분리",
+            "role": "학습은 학습 PS 에서, 예측은 서빙 PS 에서. 사이를 바뀐 키만 흐른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "tech": "touched-keys 해시 집합",
+            "role": "동기화 대상을 좁힌다. 버전 일관성을 내주고 대역폭을 얻는 장치.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "tech": "빈도 필터 + 확률적 필터 + 만료",
+            "role": "충돌을 없앤 대가로 자라는 테이블을 입구와 출구에서 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "tech": "어떤 딥러닝 프레임워크 위에 올렸는지",
+            "role": "— 이 사이트가 읽은 범위에서는 확인하지 못했다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [],
+      "research": {
+        "papers": [
+          {
+            "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+            "authors": "Zhuoran Liu, Leqi Zou, Xuan Zou, Caihua Wang, Biao Zhang, Da Tang, Bolin Zhu, Yijie Zhu, Peng Wu, Ke Wang, Youlong Cheng",
+            "year": "2022",
+            "venue": "ORSUM @ ACM RecSys 2022",
+            "url": "https://arxiv.org/abs/2209.07663",
+            "takeaway": "이 엔진에서 **1차 자료가 기술블로그가 아니라 동료 심사 논문인 첫 사례**다. 그래서 다른 회사 글에는 없는 것이 있다 — **버린 대안이 실험 표로 나란히 있고**(충돌 있는 테이블 대 없는 테이블, 동기화 5시간·1시간·30분), 맞바꿈을 문장으로만 말하는 대신 **잃는 양을 사용자 수로 계산해 보인다**(10일마다 15,000명의 하루치).",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "학습을 멈추지 않으면 되감을 지점이 없다",
+            "why_hard": "배치 학습에는 '이 시점의 모델'이라는 것이 있다. 그런데 학습이 끊기지 않고 계속 흐르면 **모델은 언제나 진행 중**이라, 장애가 났을 때 돌아갈 자리를 스냅샷으로 따로 만들어 두어야 한다. 그런데 스냅샷은 공짜가 아니다 — 자주 뜨면 계산을 먹고, 드물게 뜨면 그 사이의 학습이 통째로 사라진다. **실시간성을 얻은 대가가 복구 가능성으로 청구된다.**",
+            "current_best": "**손실을 세어 보고 감수한다.** 1,000 PS · 실패율 0.01% 면 10일마다 한 대가 하루치를 잃고, 그것은 DAU 1,500만 중 **15,000명의 하루치 피드백**이다. 실제로 **모델 품질이 예상보다 견고**해서 스냅샷 빈도를 낮추고 계산 비용을 아꼈다. 논문의 결론 문장이 그대로다 — **\"시스템 신뢰성은 실시간 학습을 위해 맞바꿀 수 있다.\"** 이 답이 성립하는 것은 추천이 **틀려도 다음 것을 또 보여 주면 되는 일**이기 때문이며, 같은 계산을 결제나 원장에 적용할 수는 없다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          },
+          {
+            "problem": "충돌을 없애면 테이블이 끝없이 자란다",
+            "why_hard": "해시 충돌은 **메모리를 아끼려고 치르는 값**이다. 그 값을 안 치르기로 하면 ID 하나가 늘 때마다 자리가 하나 늘고, 사용자와 콘텐츠가 계속 새로 생기는 서비스에서 그 증가는 멈추지 않는다. 게다가 잘라 내는 기준(빈도·만료)은 **미래를 모르는 채로 지금 정해야 한다** — 지금 드문 ID 가 다음 주에 유행할 수도 있다.",
+            "current_best": "**입구에서 빈도로 거르고 출구에서 만료시킨다.** 만료 시간을 임베딩 테이블마다 다르게 두어, 과거 정보에 민감한 특징과 그렇지 않은 특징을 구분한다. **임계값은 공개하지 않는다** — 모델마다 튜닝하는 값이라고만 적혀 있어, 이 부분은 논문을 읽어도 재현할 수 없다(마지막 절은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+                "url": "https://arxiv.org/abs/2209.07663",
+                "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+                "date": "2022-09",
+                "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "학습이 멈추지 않는 고리",
+          "question": "방금 넘긴 영상이 다음 추천에 닿기까지 얼마나 걸리는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"사용자 — 넘긴다 · 멈춘다 · 누른다\"]\n  U --> KA[(\"Kafka — 사용자 행동\")]\n  KF[(\"Kafka — 피처\")] --> FL\n  KA --> FL[\"<b>Flink 온라인 조이너</b><br/>행동 + 피처 → 학습 예제\"]:::list\n  FL --> KE[(\"Kafka — 학습 예제\")]\n  KE --> BATCH[\"배치 학습\"]:::quiet\n  KE --> TW[\"<b>학습 워커</b> — 실시간 소비<br/>배치가 끝나도 멈추지 않는다\"]:::accent\n  BATCH -->|\"끝나면 이어서\"| TW\n  TW --> GATE{\"<b>이 ID 를 담을 것인가</b><br/>빈도 임계 · 확률적 필터\"}\n  GATE -->|\"미달\"| DROP[\"담지 않는다\"]:::quiet\n  GATE -->|\"통과\"| CK[(\"<b>Cuckoo HashMap</b><br/>T₀ · T₁<br/>자리가 차면 밀어내고<br/>순환이면 리해시\")]:::accent\n  CK --> EXP[\"활동 없으면 <b>만료</b><br/>(테이블마다 다른 시간)\"]\n  CK --> TPS[(\"<b>학습 PS</b> — 1,000대\")]\n  TPS -->|\"<b>sparse: 분 단위</b> · 바뀐 키만 (~400MB/분)<br/><b>dense: 하루 단위</b>\"| SPS[(\"<b>서빙 PS</b>\")]\n  SPS -->|\"다음 것을 고른다\"| U\n  TPS -.->|\"하루 1회\"| SNAP[(\"스냅샷\")]:::quiet"
+        },
+        {
+          "title": "한 ID 가 테이블 안에서 겪는 일",
+          "question": "드물게 나오는 ID 는 어디로 가는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 관찰중: 처음 등장\n  관찰중 --> 관찰중: 등장 횟수 누적\n  관찰중 --> 버림: 빈도 임계 미달\n  note right of 버림\n    학습에 한 번도 들어가지 못한다\n    임계값은 공개하지 않는다\n  end note\n  관찰중 --> 테이블안: 임계 통과 · 확률적 필터 통과\n  테이블안 --> 테이블안: 밀려남 (T₀ ↔ T₁)\n  note right of 테이블안\n    자기 벡터를 갖는다\n    다른 ID 와 나눠 쓰지 않는다\n  end note\n  테이블안 --> 리해시: 밀어내기가 순환에 빠짐\n  리해시 --> 테이블안\n  테이블안 --> 만료: 일정 기간 활동 없음\n  note right of 만료\n    만료 시간은 임베딩 테이블마다 다르다\n    — 과거 정보에 민감한 특징과\n    그렇지 않은 특징을 구분한다\n  end note\n  만료 --> [*]\n  버림 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 실시간성의 청구서",
+          "question": "멈추지 않는 학습은 무엇으로 값을 치르는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  RT[\"<b>학습을 멈추지 않는다</b>\"] --> FRESH[\"신선도를 얻는다<br/>배치 대비 +14~18%\"]\n  RT --> NOPOINT[\"<b>되감을 지점이 없다</b>\"]\n  NOPOINT --> SNAP[\"스냅샷을 따로 떠야 한다\"]\n  SNAP -->|\"자주\"| COST[\"계산 비용\"]:::quiet\n  SNAP -->|\"드물게 (하루 1회)\"| LOSS[\"<b>10일마다 PS 한 대</b><br/>하루치 갱신 소실<br/>= 사용자 15,000명의 하루치\"]:::accent\n  LOSS -->|\"논문\"| OK[\"모델 품질이 예상보다 견고했다\"]\n  OK -->|\"해석\"| WHY[\"추천은 틀려도<br/>다음 것을 또 보여 주면 된다<br/>— 결제·원장이면 못 할 계산\"]\n  SYNC[\"바뀐 키만 보낸다\"] --> BW[\"대역폭 ~400MB/분으로 억제\"]\n  SYNC -->|\"논문이 인정\"| VER[\"<b>파라미터 버전이 어긋난다</b><br/>sparse 분 단위 · dense 하루 단위\"]\n  NOCOL[\"충돌을 없앤다\"] --> GROW[\"<b>테이블이 끝없이 자란다</b>\"]\n  GROW --> CUT[\"빈도 필터 · 만료로 자른다\"]\n  CUT -->|\"해석\"| FUT[\"지금 드문 ID 가<br/>다음 주에 유행할 수도 있다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+          "url": "https://arxiv.org/abs/2209.07663",
+          "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+          "date": "2022-09",
+          "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "**비상장이라 매출 구성을 확인할 수 없다.** 수익원 셋 중 둘은 비율조차 알 수 없어 `unknown` 으로 뒀다.",
+    "Monolith 논문은 빈도 필터 임계값과 만료 시간을 **모델마다 튜닝한다**고만 적고 실제 값을 공개하지 않는다.",
+    "온라인 조이너가 **늦게 도착하는 라벨**을 어떻게 다루는지 이 사이트는 확인하지 못했다.",
+    "Monolith 논문은 2022년 것이다 — **그 뒤 어떻게 바뀌었는지 최신 자료를 아직 찾지 못했다.**",
+    "LavaStore·ByteGraph 는 **초록까지만** 읽었고 ByteHTAP 은 제목만 확인했다 — 도메인 `tech` 에 그렇게 표시했다.",
+    "이 회사는 **중국 안(Douyin)과 밖(TikTok)의 시스템이 같은지 다른지**를 밝히지 않는다. 논문들도 어느 쪽 이야기인지 항상 명시하지는 않는다."
+  ],
+  "sources": [
+    {
+      "title": "Monolith: Real Time Recommendation System With Collisionless Embedding Table",
+      "url": "https://arxiv.org/abs/2209.07663",
+      "publisher": "ORSUM@ACM RecSys 2022 · Liu, Zou, Zou, Wang, Zhang, Tang, Zhu, Zhu, Wu, Wang, Cheng",
+      "date": "2022-09",
+      "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
+    },
+    {
+      "title": "LavaStore: ByteDance's Purpose-Built, High-Performance, Cost-Effective Local Storage Engine for Cloud Services",
+      "url": "https://www.vldb.org/pvldb/vol17/p3799-jiao.pdf",
+      "publisher": "PVLDB Vol.17 No.12 (2024)",
+      "date": "2024",
+      "summary": "쓰기가 몰리는 부하와 조회 꼬리 지연·비용 요구를 동시에 맞추려고 RocksDB 기반 저장 엔진을 골라 고친 이야기. **가비지 컬렉션을 컴팩션에서 떼어 낸 KV 분리 설계**와 WAL 전용 엔진 타입이 핵심이다. **이 사이트는 초록 수준까지만 읽었다.**"
+    },
+    {
+      "title": "ByteGraph: a high-performance distributed graph database in ByteDance",
+      "url": "https://dl.acm.org/doi/10.14778/3554821.3554824",
+      "publisher": "PVLDB Vol.15 No.12 (2022)",
+      "date": "2022",
+      "summary": "TikTok·Douyin·Toutiao 가 만들어 내는 대량의 그래프 데이터를 높은 처리량·낮은 지연으로 다루려고 만든 분산 그래프 데이터베이스. **이 사이트는 초록 수준까지만 읽었다.**"
+    },
+    {
+      "title": "ByteHTAP: ByteDance's HTAP system with high data freshness and strong data consistency",
+      "url": "https://dl.acm.org/doi/10.14778/3554821.3554832",
+      "publisher": "PVLDB Vol.15 No.12 (2022)",
+      "date": "2022",
+      "summary": "높은 데이터 신선도와 강한 일관성을 함께 노린 HTAP 시스템. **이 사이트는 제목·게재 정보까지만 확인했다.**"
+    },
+    {
+      "title": "ByteDance 재무 — 회사 공시가 아니라 보도",
+      "url": "https://www.cnbc.com/2025/08/27/tiktok-owner-bytedance-sets-valuation-at-over-330-billion.html",
+      "publisher": "CNBC / Reuters · Bloomberg 보도",
+      "date": "2025~2026",
+      "summary": "비상장이라 공시가 없다. 보도 기준으로 2024년 매출 약 1,550억 달러, 2025년 목표 약 1,860억 달러, 2025년 이익 약 500억 달러 추정, 기업가치 3,300억 달러 이상. **전부 회사 발표가 아니라 언론 보도·분석가 추정이다.**"
+    }
+  ]
+}

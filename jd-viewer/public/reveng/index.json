@@ -276,6 +276,18 @@
       "one_liner": "일본에서 메신저·포털·결제를 한 회사가 쥐고 있다 — 그래서 합병 이전의 시스템 두 벌을 물려받았다",
       "features_done": 3,
       "domain": "lycorp.co.jp"
+    },
+    {
+      "slug": "bytedance",
+      "name": "바이트댄스",
+      "name_en": "ByteDance",
+      "country": "CN",
+      "category": "소셜",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "검색하지 않는 사용자에게 다음 것을 계속 고르는 회사 — 그래서 모델이 '지금'을 따라잡아야 한다",
+      "features_done": 1,
+      "domain": "bytedance.com"
     }
   ],
   "domains": [
@@ -375,7 +387,10 @@
     "CI 실행",
     "스트리밍 파이프라인",
     "암호·기기 신뢰",
-    "데이터 레이크 통합"
+    "데이터 레이크 통합",
+    "추천 학습·서빙",
+    "로컬 저장 엔진",
+    "그래프·분석 데이터"
   ],
   "countries": {
     "KR": "한국",
