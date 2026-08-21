@@ -343,10 +343,10 @@
       "name_en": "Adyen",
       "country": "EU",
       "category": "핀테크",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-22",
       "one_liner": "결제 한 건이 회계 행 오십 개를 만드는 회사 — 그래서 병목이 결제가 아니라 그 뒤에 있다",
-      "features_done": 1,
+      "features_done": 2,
       "domain": "adyen.com"
     }
   ],

@@ -4,11 +4,11 @@
   "name_en": "Adyen",
   "country": "EU",
   "category": "핀테크",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-22",
   "domain": "adyen.com",
   "one_liner": "결제 한 건이 회계 행 오십 개를 만드는 회사 — 그래서 병목이 결제가 아니라 그 뒤에 있다",
-  "business_model": "**가맹점의 결제를 대신 처리하고 수수료를 받는다.** FY2025 순매출 **23억 6,420만 유로**(+18%, 고정환율 +21%), 처리 볼륨 **1조 3,943억 유로**, EBITDA **12억 4,570만 유로**로 마진 **53%**(2024년 50%). **순매출을 처리 볼륨으로 나누면 0.17% 정도**인데, 이건 이 사이트의 계산이고 회사가 그렇게 표현하지는 않는다.\n\n**그 비율이 이 회사의 기술적 성격을 정한다**(이 해석은 이 사이트의 것이다). 볼륨 대비 남는 것이 얇으니 **처리 원가가 곧 이익률**이고, 동시에 **한 건이라도 틀리면 그것이 돈이라서** 정확성을 깎아 원가를 줄일 수가 없다.\n\n**그리고 이 회사의 병목은 결제가 아니라 그 뒤에 있다.** 결제 처리는 초당 수백 건인데, **결제 한 건이 회계 데이터베이스에 약 50행을 남겨** 초당 회계 삽입이 **수천 건**이 된다 — **한 자릿수 배 더 큰 쪽이 결제가 아니라 장부다.**\n\n**설계 원칙의 이름부터 다르다 — \"Design to Duty\".** 시스템을 설계한 엔지니어가 **그것을 온콜로 지킨다.** 그리고 이 회사는 **클라우드에 있지 않다** — 역사적·법적·기술적 이유라고 적으며, 하드웨어와 소프트웨어가 묶여 있어 동적 확장이 제약된다는 대가도 함께 밝힌다.",
+  "business_model": "**가맹점의 결제를 대신 처리하고 수수료를 받는다.** FY2025 순매출 **23억 6,420만 유로**(+18%, 고정환율 +21%), 처리 볼륨 **1조 3,943억 유로**, EBITDA **12억 4,570만 유로**로 마진 **53%**(2024년 50%). **순매출을 처리 볼륨으로 나누면 0.17% 정도**인데, 이건 이 사이트의 계산이고 회사가 그렇게 표현하지는 않는다.\n\n**그 비율이 이 회사의 기술적 성격을 정한다**(이 해석은 이 사이트의 것이다). 볼륨 대비 남는 것이 얇으니 **처리 원가가 곧 이익률**이고, 동시에 **한 건이라도 틀리면 그것이 돈이라서** 정확성을 깎아 원가를 줄일 수가 없다.\n\n**그리고 이 회사의 병목은 결제가 아니라 그 뒤에 있다.** 결제 처리는 초당 수백 건인데, **결제 한 건이 회계 데이터베이스에 약 50행을 남겨** 초당 회계 삽입이 **수천 건**이 된다 — **한 자릿수 배 더 큰 쪽이 결제가 아니라 장부다.**\n\n**설계 원칙의 이름부터 다르다 — \"Design to Duty\".** 시스템을 설계한 엔지니어가 **그것을 온콜로 지킨다.** 그리고 이 회사는 **클라우드에 있지 않다** — 역사적·법적·기술적 이유라고 적으며, 하드웨어와 소프트웨어가 묶여 있어 동적 확장이 제약된다는 대가도 함께 밝힌다.\n\n**두 기능에서 같은 습관이 보인다.** 첫째, **판정 기준을 미리 정해 둔다** — 설계는 사내 **20배 규칙**으로, 코드는 **\"새벽 4시에 이해되는가\"** 로, build-vs-buy 는 **핵심이냐 주변부냐**로 판정한다. 기준이 있으니 **다시 지어야 할 시점도 사고가 아니라 계산으로** 온다(실제로 자체 스트리밍 프레임워크가 지금 그 판정 앞에 서 있다).\n\n둘째, **거절의 근거가 사라진 뒤에도 자체 구현은 남는다.** Kafka 를 안 쓴 이유는 *\"그때는 exactly-once 를 지원하지 않아서\"* 라는 사실이었는데, 그 사실이 사라진 지금도 자체 프레임워크는 돌아가고 그 위에 최적화와 운영 지식이 쌓여 있다. 회사는 결론 대신 **질문을 공개했다.**\n\n셋째, **재조정이 싼 설계를 고른다.** 샤딩은 도메인 지식 대신 **라운드로빈**이고, 엣지는 **무상태**다 — 둘 다 *늘리고 줄일 때 아무것도 다시 배치하지 않아도 되는* 쪽이다. **클라우드에 있지 않아 하드웨어를 유연하게 못 늘리는 회사**에서는 이 선택의 값이 더 크다(이 연결은 이 사이트의 해석).\n\n넷째, **책임을 문서가 아니라 구조에 심는다** — Design to Duty. 다만 그 대가로 **측정할 수 없는 기준들**(새벽 4시, 핵심이냐 주변부냐)이 늘어나 사람의 판단에 기대게 된다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "결제 처리 (온라인·POS)",
     "가맹점 계정·정산",
@@ -107,9 +107,26 @@
               "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
             }
           ]
+        },
+        {
+          "tech": "Design to Duty 가 일하는 방식으로 내려온 형태",
+          "solves": "엔지니어를 **설계자·아키텍트·테스터·운영자 전부**로 둔다 — 근거는 *\"연결 고리가 적을수록 시장까지 가장 빠르다.\"* 코드 기준은 **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다\"**, 모든 코드는 **최소 두 명** 리뷰, 테스트는 **단위·통합·베타 환경** 3단계, 릴리스는 **주 단위**.",
+          "limits": "**측정할 수 없는 기준이라 사람의 판단에 맡긴다.** 그리고 이 기준은 **설계한 사람이 실제로 온콜로 깨야** 성립한다 — 조직 구조에 기대고 있다(뒷문장은 이 사이트의 해석). **팀 규모와 엔지니어 수를 공개하지 않아** 어느 규모까지 성립하는지 알 수 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+              "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+              "publisher": "Adyen",
+              "date": "—",
+              "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "payment-path"
+      ]
     },
     {
       "name": "회계·리포팅 원장",
@@ -576,7 +593,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "payment-path",
+          "via": "무상태가 밀어낸 것이 오는 곳",
+          "contract": "엣지를 무상태로 두면 선형 확장이 되지만 **상태가 필요한 일은 뒤로 밀린다.** 그 뒤가 여기다 — 결제 한 건이 약 50행으로 불어나 초당 수천 건이 된다(이 연결은 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [],
         "hard_problems": [
@@ -655,6 +679,517 @@
           "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
         }
       ]
+    },
+    {
+      "key": "payment-path",
+      "name": "설계한 사람이 새벽에 깨는 구조",
+      "domain": "결제 처리 경로",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "**같은 결제 하나가 지나는 구간마다 무엇이 먼저인지가 다르다.** 엣지에서는 **지연**이 먼저이고, 백엔드에서는 **정확성과 신뢰성**이 먼저이며, 데이터 처리 계층에서는 **처리량**이 먼저다. 하나의 기준으로 전체를 최적화할 수가 없다.\n\n**그런데 이 회사에서 더 눈에 띄는 것은 그 결정을 누가 내리는가다.** 원칙의 이름이 **Design to Duty** — **시스템을 설계한 엔지니어가 그것을 온콜로 지킨다.** 책임을 문서가 아니라 **아키텍처 결정 안에 심어 두는** 방식이다.\n\n그리고 그 원칙이 코드 기준까지 내려온다. 이 회사가 내부 지침으로 쓰는 문장이 이것이다 — **\"당신의 코드는 새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 엔지니어를 코더가 아니라 **설계자·아키텍트·테스터·운영자 전부**로 두는 이유도 한 줄로 밝힌다: **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "결제를 **\"초당 수백 번, 24시간 내내\"** 처리하고 **연간 수천억 유로**를 다룬다. **정확한 TPS·행 수·클러스터 규모는 밝히지 않는다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "label": "엣지의 확장",
+            "value": "무상태라 **선형으로** 늘어난다 — *\"PAL 하나가 초당 X건을 처리하면 두 대는 2X\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "label": "릴리스",
+            "value": "**주 단위 릴리스 주기**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          },
+          {
+            "label": "리뷰",
+            "value": "모든 코드가 **최소 두 명**의 동료 리뷰를 거친다 — 이해 가능성과 지침 준수를 본다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          },
+          {
+            "label": "코드 기준",
+            "value": "**\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다\"**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          },
+          {
+            "label": "팀 규모·엔지니어 수",
+            "value": "**밝히지 않는다**",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "결제 경로를 어떻게 나눌지 정할 때",
+          "thought": "같은 요청인데 **구간마다 무엇이 먼저인지가 다르다.** 엣지는 사용자가 기다리고 있으니 **지연**, 백엔드는 돈을 기록하니 **정확성과 신뢰성**, 데이터 처리는 뒤에서 도니 **처리량**. 그러면 계층을 그 기준으로 갈라 놓고 **각각 다르게 설계**해야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "엣지를 어떻게 만들지 정하며",
+          "thought": "상태를 안 들면 **선형으로 늘어난다** — PAL 하나가 초당 X건이면 두 대는 2X다. 대신 **상태가 필요한 일은 전부 뒤로 밀린다.** 그래서 뒤가 무거워진다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "멱등성을 어떻게 할지 보고",
+          "thought": "결제에서 같은 요청이 두 번 처리되면 안 된다. 그런데 이건 **직접 만들지 않고 CockroachDB 를 가져왔다.** 우리 기준은 **핵심 흐름에는 자체 해법, 주변부(예: KYC 신원 확인)에는 오픈소스·벤더**인데 — 멱등성은 결제의 한복판인데도 가져온 셈이다(마지막 절은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "엔지니어의 역할을 정할 때",
+          "thought": "**연결 고리가 적을수록 시장까지 가장 빠르다.** 설계하는 사람과 코딩하는 사람과 테스트하는 사람과 **새벽에 깨는 사람**을 나누면 그 사이마다 고리가 하나씩 생긴다. 그래서 **한 사람이 전부** 한다 — 그러면 코드도 달라져야 한다: **새벽 4시에 압박 속에서도 이해할 수 있어야 한다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "PAL (엣지 계층)",
+            "what": "동기 처리. **지연이 최우선**이고 **무상태**라 선형 확장된다."
+          },
+          {
+            "name": "백엔드",
+            "what": "회계와 저장. **정확성과 신뢰성이 최우선.**"
+          },
+          {
+            "name": "데이터 처리 계층",
+            "what": "**처리량이 최우선.**"
+          },
+          {
+            "name": "단일 모노레포 (자바)",
+            "what": "업무 도메인별 서브시스템(결제 처리·뱅킹 등)으로 나뉘되 **데이터 계층에서 합쳐진다.**"
+          },
+          {
+            "name": "Design to Duty",
+            "what": "**설계한 엔지니어가 온콜로 그것을 지킨다.** 책임을 아키텍처 결정 안에 심는 원칙."
+          },
+          {
+            "name": "엔지니어의 역할",
+            "what": "코더가 아니라 **설계자·아키텍트·테스터·운영자 전부.** 근거는 *\"연결 고리가 적을수록 시장까지 가장 빠르다.\"*"
+          }
+        ],
+        "invariants": [
+          "**엣지는 상태를 갖지 않는다** — 그래서 대수를 늘리면 처리량이 그만큼 늘어난다.",
+          "구간마다 **최적화 기준이 다르다** — 지연 / 정확성·신뢰성 / 처리량.",
+          "**설계한 사람이 그것을 운영한다** — 요구사항부터 배포 후 수정까지 전 생애를 본다.",
+          "코드는 **새벽 4시에 압박 속에서도 이해할 수 있어야** 한다.",
+          "모든 코드는 **최소 두 명**의 동료 리뷰를 거친다.",
+          "**핵심 흐름에는 자체 해법**, 주변부에는 오픈소스·벤더 해법.",
+          "이 플랫폼은 **클라우드에 있지 않다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "결제 요청이 **PAL(엣지)** 로 들어온다 — 동기 처리, 지연이 최우선",
+            "why": "사용자가 기다리고 있는 구간이다."
+          },
+          {
+            "step": "PAL 은 **상태를 갖지 않는다** — 대수를 늘리면 처리량이 선형으로 늘어난다",
+            "why": "엣지에서 확장이 막히면 그 뒤의 어떤 최적화도 소용없다."
+          },
+          {
+            "step": "같은 요청이 두 번 처리되지 않도록 **CockroachDB 로 멱등성**을 건다 — 직접 만들지 않았다",
+            "why": "이미 잘 하는 물건이 있으면 가져온다."
+          },
+          {
+            "step": "**백엔드**가 회계와 저장을 맡는다 — 정확성과 신뢰성이 최우선",
+            "why": "여기서 틀리면 그것은 지연이 아니라 돈이다(뒷문장은 이 사이트의 해석)."
+          },
+          {
+            "step": "**데이터 처리 계층**이 뒤에서 받는다 — 처리량이 최우선",
+            "why": "사용자를 기다리게 하지 않으므로 다른 기준을 쓸 수 있다."
+          },
+          {
+            "step": "코드는 **단일 자바 모노레포**의 도메인별 서브시스템에 들어가고 **데이터 계층에서 합쳐진다**",
+            "why": "회계처럼 여러 도메인을 가로지르는 것을 한자리에서 다뤄야 한다."
+          },
+          {
+            "step": "작성한 엔지니어가 **단위·통합·베타 환경 테스트**를 직접 하고, **최소 두 명**의 리뷰를 받는다",
+            "why": "연결 고리가 적을수록 빠르고, 리뷰는 이해 가능성을 지키는 장치다."
+          },
+          {
+            "step": "**주 단위로 릴리스**하고, 배포 후 수정까지 같은 사람이 본다",
+            "why": "설계한 사람이 온콜로 지킨다는 원칙의 마지막 구간이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "결제 경로를 하나의 기준으로 최적화할 것인가",
+            "chosen": "**세 계층으로 나눠 각각 다른 기준을 쓴다** — 엣지는 지연, 백엔드는 정확성·신뢰성, 데이터 처리는 처리량.",
+            "alternatives": [
+              "전체를 하나의 기준(예: 지연)으로 최적화한다"
+            ],
+            "tradeoff": "계층 경계를 넘는 문제는 **누구의 책임인지 모호해질 수 있다**(이 지적은 이 사이트의 추정 — 글은 이 점을 다루지 않는다). 대신 각 구간에서 실제로 중요한 것을 최적화할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "question": "엣지에 상태를 둘 것인가",
+            "chosen": "**두지 않는다.** 무상태라 **선형 수평 확장**된다 — *\"PAL 하나가 초당 X건이면 두 대는 2X\"*.",
+            "alternatives": [
+              "엣지에서 상태를 관리해 왕복을 줄인다"
+            ],
+            "tradeoff": "**상태가 필요한 일이 사라지는 것이 아니라 전부 뒤로 밀린다** — 그래서 뒤가 무거워진다(뒷문장은 이 사이트의 해석). 실제로 이 회사의 부하 무게중심은 **결제가 아니라 회계**에 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "question": "멱등성을 직접 만들 것인가",
+            "chosen": "**가져온다 — CockroachDB.**",
+            "alternatives": [
+              "자체 해법을 만든다"
+            ],
+            "tradeoff": "이 회사의 기준은 **핵심 흐름엔 자체, 주변부(예: KYC 신원 확인)엔 오픈소스·벤더**인데 **멱등성은 결제의 한복판인데도 가져왔다** — 즉 이 기준은 규칙이라기보다 판단이다(이 관찰은 이 사이트의 해석). 대신 **직접 만들 것을 적게 유지**할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "question": "코드베이스를 어떻게 나눌 것인가",
+            "chosen": "**자바 단일 모노레포**를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.**",
+            "alternatives": [
+              "도메인마다 저장소와 데이터까지 분리한다"
+            ],
+            "tradeoff": "데이터 계층이 공유되면 그것이 결합 지점이 된다(뒷문장은 이 사이트의 추정). 대신 회계처럼 **여러 도메인을 가로지르는 것**을 한자리에서 다룰 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "question": "클라우드로 갈 것인가",
+            "chosen": "**가 있지 않다.** 역사적·법적·기술적 이유라고 적는다. 컨테이너화 작업은 진행 중이다.",
+            "alternatives": [
+              "퍼블릭 클라우드로 옮긴다"
+            ],
+            "tradeoff": "회사가 직접 밝혔다 — **하드웨어와 소프트웨어가 묶여 있어 동적 확장이 제약된다.** 이 제약이 다른 결정을 정한다: 클러스터를 늘리고 줄이는 일이 가볍지 않으니 **재조정 로직이 필요 없는 설계의 값이 커진다**(이 연결은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "question": "설계와 운영을 나눌 것인가",
+            "chosen": "**나누지 않는다 — Design to Duty.** 설계한 엔지니어가 그것을 온콜로 지키고, **요구사항부터 배포 후 수정까지 전 생애**를 본다.",
+            "alternatives": [
+              "설계·구현·운영을 다른 팀이 맡는다"
+            ],
+            "tradeoff": "한 사람이 지는 범위가 넓어진다(뒷문장은 이 사이트의 추정). 회사가 밝힌 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              },
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          },
+          {
+            "question": "'좋은 코드'를 무엇으로 정의할 것인가",
+            "chosen": "**\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 그리고 모든 코드는 **최소 두 명**의 동료 리뷰를 거친다.",
+            "alternatives": [
+              "정적 분석·커버리지 같은 측정 가능한 기준을 쓴다"
+            ],
+            "tradeoff": "**측정할 수 없는 기준이라 리뷰어 두 명의 판단에 맡긴다**(뒷문장은 이 사이트의 해석). 대신 **온콜로 지켜야 할 사람의 처지**에서 코드를 보게 된다 — Design to Duty 가 코드 수준으로 내려온 형태다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "PAL (무상태 엣지 서비스)",
+            "role": "동기 결제 처리. 지연 최우선, 선형 수평 확장.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "CockroachDB",
+            "role": "멱등성. 직접 만들지 않고 가져왔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "자바 단일 모노레포",
+            "role": "도메인별 서브시스템으로 나누되 데이터 계층에서 합친다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "온프레미스 인프라",
+            "role": "클라우드가 아니다. 하드웨어·소프트웨어 결합으로 동적 확장 제약, 컨테이너화 진행 중.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "3단계 테스트 (단위 · 통합 · 베타 환경)",
+            "role": "작성한 엔지니어가 직접 한다. 베타 환경은 부수 효과를 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          },
+          {
+            "tech": "최소 2인 코드 리뷰 · 주 단위 릴리스",
+            "role": "이해 가능성과 지침 준수를 지키는 장치, 그리고 배포 리듬.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          },
+          {
+            "tech": "엣지·백엔드 사이의 실제 프로토콜",
+            "role": "— 글이 **밝히지 않는다.** 계층의 우선순위만 설명한다.",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "accounting-ledger",
+          "via": "무상태가 밀어낸 것이 쌓이는 곳",
+          "contract": "엣지를 무상태로 두면 선형 확장이 되지만 **상태가 필요한 일은 사라지지 않고 뒤로 밀린다.** 그 뒤가 회계이고, 거기서 **결제 한 건이 약 50행**으로 불어난다 — **이 회사의 부하 무게중심이 결제가 아니라 장부에 있는 이유**다(이 연결은 이 사이트의 해석이며, 두 글이 그렇게 엮지는 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "무상태로 만들면 일이 사라지는 것이 아니라 옮겨 간다",
+            "why_hard": "엣지를 무상태로 두는 것은 확장 문제의 정답처럼 보인다 — 실제로 *\"PAL 하나가 초당 X건이면 두 대는 2X\"* 가 성립한다. 그런데 **결제에는 상태가 반드시 필요하다.** 같은 요청이 두 번 처리되면 안 되고, 돈의 이동은 기록으로 남아야 한다. 무상태 설계는 그 필요를 없앤 것이 아니라 **경계 밖으로 밀어낸 것**이다. 그리고 밀려난 쪽은 **선형으로 늘어나지 않는다** — 실제로 이 회사에서 결제는 초당 수백 건인데 회계 삽입은 초당 수천 건이다. **확장이 쉬운 쪽을 쉽게 만들수록 어려운 쪽에 더 많이 쌓인다**(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**밀려난 쪽을 다른 기준으로 설계한다.** 엣지는 지연, 백엔드는 정확성·신뢰성, 데이터 처리는 처리량으로 계층을 갈라 각각 다르게 최적화한다. 그리고 상태 중 **멱등성처럼 잘 정의된 것은 가져다 쓴다**(CockroachDB). 다만 **정확한 TPS·행 수·클러스터 규모를 공개하지 않아** 이 균형이 어디쯤인지는 바깥에서 알 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Design to Duty: How we make architecture decisions at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+              },
+              {
+                "title": "Design to Duty: The Accounting and Reporting Systems at Adyen",
+                "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture-part2",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "결제 한 건이 회계 DB 에 **약 50행**을 남겨 초당 삽입이 수천 건이 되는 시스템 이야기. **Kafka 를 안 쓴 이유가 \"그때는 exactly-once 전달을 지원하지 않아서\"** 이고 PostgreSQL + 자바로 직접 만들었다. 샤딩은 도메인 지식 대신 **라운드로빈** — 어차피 집계는 전 샤드를 물어야 하기 때문이다. 그리고 **이 틀이 20배를 더 갈 수 있을지 사내에서 논쟁 중**이라고 적는다."
+              }
+            ]
+          },
+          {
+            "problem": "'새벽 4시에 이해되는 코드'는 측정할 수 없다",
+            "why_hard": "이 회사의 코드 기준은 커버리지도 복잡도 지표도 아니라 **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다\"** 는 문장이다. 이 기준의 강점과 약점이 같다 — **온콜로 지킬 사람의 처지에서 코드를 보게 만들지만, 자동으로 검사할 수가 없다.** 그리고 이 기준이 성립하려면 **설계한 사람이 실제로 새벽에 깨야** 한다(Design to Duty). 즉 코드 기준이 **조직 구조에 기대고 있다** — 설계와 운영이 갈라지는 순간 이 문장은 수사가 된다(마지막 절은 이 사이트의 해석).",
+            "current_best": "**사람으로 검사한다** — 모든 코드가 **최소 두 명**의 동료 리뷰를 거치며 이해 가능성과 지침 준수를 본다. 그리고 엔지니어를 **설계자·아키텍트·테스터·운영자 전부**로 두어 그 기준을 지킬 이유를 구조로 만든다. 근거는 회사가 한 줄로 밝혔다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 다만 **팀 규모와 엔지니어 수를 공개하지 않아** 이 방식이 어느 규모까지 성립하는지는 알 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+                "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+                "publisher": "Adyen",
+                "date": "—",
+                "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "구간마다 무엇이 먼저인가",
+          "question": "같은 요청인데 왜 기준이 셋인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"결제 요청\"] --> PAL[\"<b>PAL (엣지)</b><br/>동기 처리 · <b>지연 최우선</b><br/><b>무상태</b> → 선형 확장<br/>*PAL 하나가 X면 둘은 2X*\"]:::accent\n  CR[(\"<b>CockroachDB</b> — 멱등성<br/>직접 만들지 않고 가져왔다\")]:::list --> PAL\n  PAL --> BE[\"<b>백엔드</b><br/>회계 · 저장<br/><b>정확성 · 신뢰성 최우선</b>\"]:::list\n  BE --> DP[\"<b>데이터 처리 계층</b><br/><b>처리량 최우선</b>\"]:::list\n  BE --> LEDGER[\"결제 1건 → 회계 약 50행<br/><b>무상태가 밀어낸 것이 여기 쌓인다</b> (해석)\"]:::accent\n  subgraph CODE[\"<b>코드가 만들어지는 방식</b>\"]\n    ONE[\"엔지니어 = 설계자 · 아키텍트<br/>· 코더 · 테스터 · 운영자 <b>전부</b><br/>*연결 고리가 적을수록 가장 빠르다*\"]:::accent\n    STD[\"코드 기준 —<br/><b>*새벽 4시에 압박 속에서도<br/>이해할 수 있어야 한다*</b>\"]:::list\n    REV[\"<b>최소 두 명</b> 동료 리뷰<br/>단위 · 통합 · 베타 환경 테스트\"]:::list\n    REL[\"<b>주 단위 릴리스</b>\"]\n    ONE --> STD --> REV --> REL\n  end\n  REL -.->|\"배포 후 수정까지 같은 사람\"| PAL\n  MONO[(\"자바 단일 모노레포<br/>도메인별 서브시스템<br/><b>데이터 계층에서 합친다</b>\")]:::quiet\n  ONP[\"<b>클라우드에 있지 않다</b><br/>역사적 · 법적 · 기술적 이유<br/>하드웨어·소프트웨어 결합 → 동적 확장 제약\"]:::quiet"
+        },
+        {
+          "title": "한 기능이 태어나 운영되기까지",
+          "question": "연결 고리를 없앤다는 것은 무엇을 없앤다는 뜻인가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 요구사항\n  요구사항 --> 설계: 같은 엔지니어\n  note right of 설계\n    분산 · 데이터 저장 · 확장성을\n    직접 판단한다\n    \"소프트웨어와 DB 가\n    어떤 모습이어야 하는가\"\n  end note\n  설계 --> 구현: 같은 엔지니어\n  note right of 구현\n    기준은 커버리지가 아니라\n    \"새벽 4시에 압박 속에서도\n    이해할 수 있어야 한다\"\n  end note\n  구현 --> 리뷰: 최소 두 명의 동료\n  리뷰 --> 구현: 이해 가능성 · 지침 미충족\n  리뷰 --> 테스트: 통과\n  테스트 --> 테스트: 단위 → 통합(엔드투엔드) → 베타(부수 효과)\n  테스트 --> 릴리스: 주 단위\n  릴리스 --> 운영: <b>같은 엔지니어가 온콜</b>\n  note right of 운영\n    Design to Duty —\n    설계한 사람이 그것을 지킨다\n    배포 후 수정까지 같은 사람\n  end note\n  운영 --> 설계: 다음 판단으로 되먹임\n  운영 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 쉬운 쪽을 쉽게 만들수록",
+          "question": "무상태의 값은 누가 치르는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  NEED[\"결제에는 <b>상태가 반드시 필요하다</b><br/>같은 요청이 두 번 처리되면 안 되고<br/>돈의 이동은 기록으로 남아야 한다\"] --> WHERE{\"어디에 둘 것인가\"}\n  WHERE -->|\"엣지에 둔다\"| SLOW[\"확장이 선형이 아니게 된다\"]:::quiet\n  WHERE -->|\"<b>엣지를 무상태로</b>\"| FAST[\"*PAL 하나가 X면 둘은 2X*\"]:::accent\n  FAST --> PUSH[\"<b>상태가 필요한 일은 사라지지 않고<br/>뒤로 밀린다</b>\"]\n  PUSH --> HEAVY[\"회계: 결제 1건 → 약 50행<br/>초당 수천 건 삽입\"]\n  HEAVY -->|\"해석\"| LAW[\"<b>확장이 쉬운 쪽을 쉽게 만들수록<br/>어려운 쪽에 더 많이 쌓인다</b>\"]\n  PART[\"멱등성처럼 잘 정의된 상태\"] -->|\"완화\"| BUY[\"가져다 쓴다 (CockroachDB)\"]:::quiet\n  STD[\"*새벽 4시에 이해되는 코드*\"] --> NOMEASURE[\"<b>자동으로 검사할 수 없다</b>\"]\n  NOMEASURE --> HUMAN[\"완화 — 최소 두 명의 동료 리뷰\"]:::quiet\n  STD --> DEPEND[\"<b>조직 구조에 기대고 있다</b><br/>설계한 사람이 실제로 새벽에 깨야 성립\"]\n  DEPEND -->|\"해석\"| RHET[\"설계와 운영이 갈라지면<br/>이 문장은 수사가 된다\"]\n  HIDE[\"정확한 TPS · 행 수 · 클러스터 규모<br/>팀 규모 · 엔지니어 수\"] -->|\"공개하지 않는다\"| UNK[\"이 방식이 어느 규모까지<br/>성립하는지 알 수 없다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Design to Duty: How we make architecture decisions at Adyen",
+          "url": "https://www.adyen.com/knowledge-hub/design-to-duty-adyen-architecture",
+          "publisher": "Adyen",
+          "date": "—",
+          "summary": "**설계한 사람이 그것을 온콜로 지킨다**는 원칙(Design to Duty)에서 출발해 결제 플랫폼의 구조를 설명한 글. 자바 단일 모노레포를 업무 도메인별 서브시스템으로 나누되 **데이터 계층에서 합친다.** 결제 경로는 지연을 우선하는 엣지(PAL) · 정확성을 우선하는 백엔드 · 처리량을 우선하는 데이터 처리 셋으로 갈린다. **클라우드에 있지 않다는 것**과 그 대가도 적었다."
+        },
+        {
+          "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+          "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+          "publisher": "Adyen",
+          "date": "—",
+          "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -663,7 +1198,10 @@
     "세 계층(엣지·백엔드·데이터 처리) 사이의 **경계를 넘는 문제를 누가 책임지는지** 글이 다루지 않는다.",
     "**클라우드로 가지 않은 '법적 이유'가 무엇인지** 구체적으로 밝히지 않는다.",
     "라운드로빈 샤딩에서 **한 가맹점의 데이터가 흩어지는 대가**를 글이 논하지 않는다.",
-    "1부는 **스트리밍·샤딩·20배 규칙을 다루지 않고** 2부에 있다 — 연재의 두 편을 함께 읽어야 한다."
+    "1부는 **스트리밍·샤딩·20배 규칙을 다루지 않고** 2부에 있다 — 연재의 두 편을 함께 읽어야 한다.",
+    "**엣지와 백엔드 사이의 실제 프로토콜**을 밝히지 않는다 — 계층의 우선순위만 설명한다.",
+    "**팀 규모와 엔지니어 수를 공개하지 않아** Design to Duty 방식이 어느 규모까지 성립하는지 알 수 없다.",
+    "모노레포의 **크기와 빌드 시간**을 밝히지 않는다."
   ],
   "sources": [
     {
@@ -686,6 +1224,13 @@
       "publisher": "Adyen 보도자료 · IR",
       "date": "2026",
       "summary": "FY2025 순매출 **23억 6,420만 유로**(+18%, 고정환율 +21%), 처리 볼륨 **1조 3,943억 유로**, EBITDA **12억 4,570만 유로**로 마진 **53%**(2024년 50%). 하반기만 보면 순매출 12억 7,070만 유로, EBITDA 마진 55%."
+    },
+    {
+      "title": "The Adyen way of engineering: engineers as designers, architects, coders, and testers",
+      "url": "https://www.adyen.com/knowledge-hub/the-adyen-way-of-engineering--engineers-as-designers-architects-coders-and-testers",
+      "publisher": "Adyen",
+      "date": "—",
+      "summary": "엔지니어를 **코더가 아니라 설계자·아키텍트·테스터·운영자 전부**로 두는 방식. 근거는 한 줄이다 — **\"연결 고리가 적을수록 시장까지 가장 빠르다.\"** 코드 기준도 구체적이다: **\"새벽 4시에 압박 속에서도 이해할 수 있어야 한다.\"** 모든 코드는 **최소 두 명**의 동료 리뷰를 거치고 릴리스는 **주 단위**다."
     }
   ]
 }
