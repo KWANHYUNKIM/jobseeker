@@ -6,7 +6,7 @@ import { useTechRelations } from '../lib/useTechRelations'
 import { ExpansionView } from './ExpansionView'
 import { RoleInsights } from './RoleInsights'
 import { LearningView } from './LearningView'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, TechIcon } from './ui'
 import type { TechRelation, TrendDay } from '../types'
 
 type TrendMode = 'trend' | 'relations' | 'learn' | 'paths'
@@ -114,6 +114,7 @@ export function TrendView({
                       className={`w-full flex items-center gap-2 px-2 py-1 rounded text-left ${on ? 'bg-(--color-accent)/15' : 'hover:bg-(--color-bg)'}`}
                     >
                       <span className="w-5 text-xs text-(--color-muted) tabular-nums">{i + 1}</span>
+                      <TechIcon tech={r.tech} size={14} />
                       <span className="w-28 text-sm text-(--color-text) truncate">{r.tech}</span>
                       <span className="flex-1 h-1.5 rounded bg-(--color-bg) overflow-hidden">
                         <span className="block h-full bg-(--color-accent)" style={{ width: `${(r.pct / maxPct) * 100}%` }} />
@@ -139,7 +140,8 @@ export function TrendView({
                       <div className="text-sm font-semibold text-(--color-text) mb-1">{d.domain}</div>
                       <div className="flex flex-wrap gap-1 mb-2">
                         {d.techs.map((t) => (
-                          <span key={t} className="px-1.5 py-0.5 text-[11px] rounded bg-(--color-accent)/15 text-(--color-accent)">
+                          <span key={t} className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[11px] rounded bg-(--color-accent)/15 text-(--color-accent)">
+                            <TechIcon tech={t} size={12} />
                             {t}
                           </span>
                         ))}

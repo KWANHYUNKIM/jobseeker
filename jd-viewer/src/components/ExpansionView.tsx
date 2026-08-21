@@ -12,7 +12,7 @@ import {
   CAT_COLOR,
   type TechNode,
 } from '../lib/expansion'
-import { Loader, ErrorState, EmptyState, SidePanel, MobileBar } from './ui'
+import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon } from './ui'
 
 const SIZE_COLOR: Record<string, string> = {
   대기업: '#f472b6',
@@ -150,6 +150,7 @@ function TechSidebar({
                       active ? 'bg-(--color-accent)/15' : 'hover:bg-(--hover)'
                     }`}
                   >
+                    <TechIcon tech={t.name} size={14} />
                     <span className="text-[13px] text-(--color-text) truncate">{t.name}</span>
                     <span className="ml-auto text-[11px] text-(--color-muted) shrink-0">{t.companyCount}</span>
                   </button>
@@ -194,7 +195,10 @@ function TechPanel({
     <div className="p-6 max-w-5xl">
       {/* 헤더 */}
       <div className="flex items-center flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-(--color-text)">{tech}</h1>
+        <h1 className="text-2xl font-bold text-(--color-text) flex items-center gap-2">
+          <TechIcon tech={tech} size={26} />
+          {tech}
+        </h1>
         <span
           className="text-xs px-2 py-0.5 rounded-full"
           style={{ background: color + '22', color }}

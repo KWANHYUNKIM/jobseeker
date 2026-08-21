@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useCompanies } from '../lib/useCompanies'
 import { useLearning, type LearningVideo } from '../lib/useLearning'
-import { Loader, ErrorState, EmptyState, SidePanel, MobileBar } from './ui'
+import { Loader, ErrorState, EmptyState, SidePanel, MobileBar, TechIcon, CompanyMark } from './ui'
 import { ROLE_COLORS } from '../lib/classify'
 import type { CompanyStack, CareerGuide } from '../types'
 
@@ -99,6 +99,7 @@ export function CompanyView({
                 }`}
               >
                 <div className="flex items-center gap-2">
+                  <CompanyMark name={c.name} size={17} />
                   <span className="text-sm text-(--color-text) font-medium truncate">{c.name}</span>
                   <span className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0 bg-(--color-text)/10 text-(--color-text)">
                     {c.size}
@@ -135,7 +136,10 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
     <div className="p-6 max-w-4xl">
       {/* 헤더 */}
       <div className="flex items-center flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-(--color-text)">{c.name}</h1>
+        <h1 className="text-2xl font-bold text-(--color-text) flex items-center gap-2">
+          <CompanyMark name={c.name} size={26} />
+          {c.name}
+        </h1>
         <span className="text-xs px-2 py-0.5 rounded-full bg-(--color-text)/10 text-(--color-text)">
           {c.size}
         </span>
@@ -233,12 +237,13 @@ function CompanyProfile({ c, onStudyTech }: { c: CompanyStack; onStudyTech?: (te
                       }`}
                       style={{ borderColor: (CAT_COLOR[cat] ?? '#6b7280') + '55', background: (CAT_COLOR[cat] ?? '#6b7280') + '12' }}
                     >
+                      <TechIcon tech={t.name} size={14} />
                       <span className="text-(--color-text)">{t.name}</span>
                       <span className="text-[10px] text-(--color-muted)">{t.count}</span>
                       {hasCurr ? (
-                        <span className="text-[10px]" title="학습 커리큘럼 있음">🗺️</span>
+                        <span className="text-[10px] text-(--color-muted)" title="학습 커리큘럼 있음">커리큘럼</span>
                       ) : hasVids ? (
-                        <span className="text-[10px]" title="학습 영상 있음">📺</span>
+                        <span className="text-[10px] text-(--color-muted)" title="학습 영상 있음">영상</span>
                       ) : null}
                     </button>
                   )
@@ -334,7 +339,7 @@ function CareerGuideBlock({
   }
 
   return (
-    <Section title="🎯 취업 가이드 (채용 데이터 기반 추론)">
+    <Section title="취업 가이드 (채용 데이터 기반 추론)">
       <div className="space-y-4">
         {/* 원하는 인재상 */}
         {g.wants.length > 0 && (
@@ -376,10 +381,11 @@ function CareerGuideBlock({
                           target="_blank"
                           rel="noreferrer"
                           title={`유튜브에서 '${t} 강의' 검색`}
-                          className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-400/12 text-emerald-300 border border-emerald-400/25 hover:bg-emerald-400/25"
+                          className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-emerald-400/12 text-emerald-300 border border-emerald-400/25 hover:bg-emerald-400/25"
                         >
+                          <TechIcon tech={t} size={13} />
                           {t}
-                          {videos[t]?.length ? ' 📺' : ''}
+                          {videos[t]?.length ? <span className="opacity-70">영상</span> : null}
                         </a>
                       ))}
                       {vids.length > 0 && (

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
 import { BlogDetail } from './BlogDetail'
-import { Loader, ErrorState, SidePanel, MobileBar } from './ui'
+import { Loader, ErrorState, SidePanel, MobileBar, TechIcon, CompanyMark } from './ui'
 import type { BlogPost } from '../types'
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -142,6 +142,7 @@ export function BlogView() {
                   <div className="flex flex-wrap gap-1.5 pl-3 pb-1">
                     {tags.map(([name, n]) => (
                       <Chip key={name} active={stacks.has(name)} onClick={() => toggleStack(name)}>
+                        <TechIcon tech={name} size={13} />
                         {name} <span className="opacity-60">{n}</span>
                       </Chip>
                     ))}
@@ -205,7 +206,10 @@ function PostRow({
   return (
     <li className="px-4 sm:px-5 py-4 min-w-0 hover:bg-(--color-panel) transition">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-(--color-muted) mb-1">
-        <span className="text-(--color-accent) font-medium">{post.company}</span>
+        <span className="inline-flex items-center gap-1.5">
+          <CompanyMark name={post.company} size={15} />
+          <span className="text-(--color-accent) font-medium">{post.company}</span>
+        </span>
         <span>{COUNTRY_LABEL[post.country] ?? post.country}</span>
         {post.published && <span>· {post.published}</span>}
         {post.lang && post.lang !== 'ko' && (
@@ -238,8 +242,9 @@ function PostRow({
             <button
               key={t}
               onClick={() => onPickStack(t)}
-              className="px-2 py-0.5 text-xs rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
+              className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
             >
+              <TechIcon tech={t} size={13} />
               {t}
             </button>
           ))}
@@ -261,7 +266,7 @@ function Chip({
   return (
     <button
       onClick={onClick}
-      className={`px-2 py-1 text-xs rounded transition border ${
+      className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded transition border ${
         active
           ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
           : 'bg-(--color-bg) text-(--color-text) border-(--color-border) hover:border-(--color-accent)'

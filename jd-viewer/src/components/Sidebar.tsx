@@ -1,7 +1,7 @@
 import { emptyFilter, type FilterState } from '../lib/filter'
 import type { Site } from '../types'
 import { CAREER_BUCKETS } from '../types'
-import { SidePanel } from './ui'
+import { SidePanel, TechIcon } from './ui'
 
 const SITES: Site[] = ['wanted', 'jumpit', 'jobkorea', 'saramin', 'dev', 'remote', 'ats']
 
@@ -144,6 +144,7 @@ export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, 
           <Chip
             key={s.name}
             label={`${s.name} (${s.count})`}
+            icon={s.name}
             active={filter.stacks.has(s.name)}
             onClick={() => setFilter({ ...filter, stacks: toggle(filter.stacks, s.name) })}
           />
@@ -181,21 +182,25 @@ function Chip({
   label,
   active,
   onClick,
+  icon,
 }: {
   label: string
   active: boolean
   onClick: () => void
+  /** 이 칩이 가리키는 기술 이름. 로고가 있으면 앞에 붙는다. */
+  icon?: string
 }) {
   return (
     <button
       onClick={onClick}
       className={
-        'px-2 py-1 rounded text-xs border transition ' +
+        'inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition ' +
         (active
           ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent)'
           : 'border-(--color-border) text-(--color-muted) hover:text-(--color-text) hover:border-(--color-accent)')
       }
     >
+      {icon && <TechIcon tech={icon} size={13} />}
       {label}
     </button>
   )

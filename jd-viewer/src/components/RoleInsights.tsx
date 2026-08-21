@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRoleInsights, type RoleInsight } from '../lib/useRoleInsights'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, TechIcon } from './ui'
 
 // 직군(수식어)별 산업·경력·학력·우대사항·자격요건을 한눈에.
 export function RoleInsights() {
@@ -87,8 +87,9 @@ export function RoleInsights() {
           {sel.tech.map((t) => (
             <span
               key={t.name}
-              className="text-[11px] px-2 py-0.5 rounded bg-(--color-accent)/12 text-(--color-accent) border border-(--color-accent)/25"
+              className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-(--color-accent)/12 text-(--color-accent) border border-(--color-accent)/25"
             >
+              <TechIcon tech={t.name} size={13} />
               {t.name} <span className="opacity-60 tabular-nums">{t.count}</span>
             </span>
           ))}

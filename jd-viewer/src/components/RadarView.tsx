@@ -233,10 +233,10 @@ export function RadarView() {
           <div className="text-xs text-(--color-muted) mb-2">콘텐츠</div>
           <div className="flex flex-wrap gap-1.5">
             {([
-              ['debate', '💬 토론', companies.filter((c) => c.debate).length],
-              ['interview', '🧭 전형', companies.filter((c) => c.interview).length],
+              ['debate', '토론', companies.filter((c) => c.debate).length],
+              ['interview', '전형', companies.filter((c) => c.interview).length],
               ['github', '⌥ 공개코드', companies.filter((c) => c.github?.repos?.length).length],
-              ['refined', '✦ AI갱신', companies.filter((c) => c.research_status === 'llm-refined').length],
+              ['refined', 'AI갱신', companies.filter((c) => c.research_status === 'llm-refined').length],
             ] as const).map(([key, label, n]) => (
               <Chip key={key} active={flags.has(key)} onClick={() => toggleFlag(key)}>
                 {label} <span className="opacity-60">{n}</span>
@@ -563,10 +563,10 @@ function CompanyRow({
 // 카드 하단 콘텐츠 보유 표시 — 어떤 회사가 풍부한 자료(구조도·심화·토론·코드)를 가졌는지 한눈에
 function ContentBadges({ company }: { company: RadarCompany }) {
   const items: string[] = []
-  if (company.diagram) items.push('🗺 구조도')
-  if (company.deep_dive?.length) items.push(`📖 심화 ${company.deep_dive.length}`)
-  if (company.debate) items.push('💬 토론')
-  if (company.interview) items.push('🧭 전형')
+  if (company.diagram) items.push('구조도')
+  if (company.deep_dive?.length) items.push(`심화 ${company.deep_dive.length}`)
+  if (company.debate) items.push('토론')
+  if (company.interview) items.push('전형')
   if (company.github?.repos?.length) items.push(`⌥ 코드 ${company.github.repos.length}`)
   if (!items.length) return null
   return (
@@ -667,7 +667,7 @@ function RadarDetail({
               title="이 회사 링크 복사"
               className="h-7 px-2 flex items-center rounded border border-(--color-border) text-xs text-(--color-muted) hover:border-(--color-accent) hover:text-(--color-accent)"
             >
-              {copied ? '복사됨' : '🔗 링크'}
+              {copied ? '복사됨' : '링크 복사'}
             </button>
             <NavBtn onClick={onPrev} title="이전 회사 (←)">‹</NavBtn>
             <NavBtn onClick={onNext} title="다음 회사 (→)">›</NavBtn>

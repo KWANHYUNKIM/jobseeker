@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
-import { EmptyState, TechTag } from './ui'
+import { EmptyState, TechTag, CompanyMark } from './ui'
 
 interface Props {
   jobs: Job[]
@@ -59,6 +59,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
               <div className="flex items-center gap-2 text-xs text-(--color-muted) mb-1">
                 <span className="tabular-nums">{start + i + 1}</span>
                 <span className="px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border)">{j.site}</span>
+                <CompanyMark name={j.company} size={16} />
                 <span className="text-(--color-accent) truncate">{j.company}</span>
                 {j.career && <span className="ml-auto shrink-0">{j.career}</span>}
               </div>
@@ -124,8 +125,11 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                       {j.site}
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-(--color-muted) truncate max-w-[12rem]" title={j.company}>
-                    {j.company}
+                  <td className="px-3 py-2 text-(--color-muted) max-w-[12rem]" title={j.company}>
+                    <span className="flex items-center gap-1.5 min-w-0">
+                      <CompanyMark name={j.company} size={16} />
+                      <span className="truncate">{j.company}</span>
+                    </span>
                   </td>
                   <td className="px-3 py-2 text-(--color-text)">
                     <div className="line-clamp-2 leading-snug">

@@ -5,7 +5,7 @@ import {
   type Course,
   type GuidePost,
 } from '../lib/useLearningPaths'
-import { Loader, ErrorState } from './ui'
+import { Loader, ErrorState, TechIcon } from './ui'
 
 // 요구사항 → 학습.
 //
@@ -83,6 +83,11 @@ export function LearningView() {
                   className={`w-full text-left px-2 py-1.5 rounded ${on ? 'bg-(--color-accent)/15' : 'hover:bg-(--color-bg)'}`}
                 >
                   <div className="flex items-baseline gap-2">
+                    {axis === 'tech' && (
+                      <span className="self-center">
+                        <TechIcon tech={it.name} size={13} />
+                      </span>
+                    )}
                     <span className="flex-1 text-xs text-(--color-text) truncate">{it.name}</span>
                     <span className="text-[11px] text-(--color-muted) tabular-nums shrink-0">
                       {it.n.toLocaleString()}
@@ -117,7 +122,8 @@ export function LearningView() {
             <div className="mt-2 flex flex-wrap gap-1.5">
               <span className="text-xs text-(--color-muted) mr-1 py-0.5">함께 쓰는 스택</span>
               {concept.tech.map((t) => (
-                <span key={t.name} className="px-2 py-0.5 text-xs rounded border border-(--color-border) bg-(--color-bg) text-(--color-text)">
+                <span key={t.name} className="inline-flex items-center gap-1.5 px-2 py-0.5 text-xs rounded border border-(--color-border) bg-(--color-bg) text-(--color-text)">
+                  <TechIcon tech={t.name} size={13} />
                   {t.name} <span className="text-(--color-muted)">{t.n}</span>
                 </span>
               ))}
