@@ -377,6 +377,25 @@
         "podcast-previews"
       ],
       "file": "build-or-buy.md"
+    },
+    {
+      "slug": "count-not-size",
+      "title": "벽이 되는 것은 크기가 아니라 개수다",
+      "question": "한계를 정한 것이 데이터의 크기가 아니라 개수였을 때, 무엇의 개수가 무엇을 정했고 어떻게 막았는가?",
+      "companies": [
+        "ly-corporation",
+        "grab",
+        "discord",
+        "notion"
+      ],
+      "features": [
+        "hdfs-bridge",
+        "iceberg-lake",
+        "counter-service",
+        "voice-sfu",
+        "logical-shard-reshard"
+      ],
+      "file": "count-not-size.md"
     }
   ]
 }
