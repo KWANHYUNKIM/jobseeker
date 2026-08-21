@@ -258,7 +258,7 @@ def check_company(data: dict, r: Report) -> None:
     for dom in data.get("domains") or []:
         dw = f"{w}.domains[{dom.get('name')}]"
         techs = dom.get("tech") or []
-        if not techs:
+        if not techs and not dom.get("hold_reason"):
             r.warn(dw, "tech 가 비어 있다 — STYLE.md 2번: 어떤 기술로 풀었는지까지 내려간다")
             r.gap("tech", dw, "tech 0개")
         for j, t in enumerate(techs):
@@ -370,6 +370,8 @@ def check_company(data: dict, r: Report) -> None:
     # 2순위다. 회사를 갈아타지 않는다는 규칙이 여기서 나온다.
     if data.get("status") == "in_progress" and not data.get("hold_reason"):
         for dom in data.get("domains") or []:
+            if dom.get("hold_reason"):
+                continue  # 이 도메인만 막혔다 — 회사는 계속 판다
             if not [f for f in (data.get("features") or []) if f.get("domain") == dom.get("name")]:
                 r.wip.append((slug, str(dom.get("name"))))
 
