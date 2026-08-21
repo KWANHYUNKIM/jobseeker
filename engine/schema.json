@@ -119,6 +119,31 @@
           }
         ],
 
+        "research": {
+          "_note": "STYLE.md 7번 — 이 기능이 딛고 선 남의 연구와, 아직 아무도 못 푼 것. 회사 자료만 읽으면 '이 회사는 이렇게 했다'에서 끝나고, 왜 그것 말고 다른 수가 없었는지가 안 보인다.",
+          "papers": [
+            {
+              "title": "string — 논문·표준·기술 백서 제목(원어)",
+              "authors": "string — 대표 저자 또는 기관. 모르면 빈 문자열",
+              "year": "YYYY (문자열)",
+              "venue": "string — 학회·저널·RFC 번호 (예: SOSP 2007, RFC 9114)",
+              "url": "string — 원문 또는 공개 PDF",
+              "takeaway": "string — 이 기능과 무슨 상관인가. 논문 요약이 아니라 '이 회사가 여기서 무엇을 가져다 썼는가'",
+              "confidence": "confirmed|inferred|unknown",
+              "_confidence_note": "회사가 그 논문을 직접 언급했으면 confirmed(회사 자료 링크가 sources 에 있어야 한다). 기법이 같아 보여 연결한 것이면 inferred."
+            }
+          ],
+          "hard_problems": [
+            {
+              "problem": "string — 이 도메인에서 아직 정답이 없는 것",
+              "why_hard": "string — 왜 어려운가. 물리적 한계·불가능성 정리·비용 구조 중 무엇 때문인가",
+              "current_best": "string — 지금 업계가 쓰는 차선책과 그 차선책이 감수하는 것",
+              "confidence": "confirmed|inferred|unknown",
+              "sources": ["source 객체"]
+            }
+          ]
+        },
+
         "diagrams": [
           {
             "_note": "STYLE.md 1번 — 기능 하나에 그림 1장으로 끝내지 않는다. 정상 흐름과 실패 경로는 다른 그림이다.",
