@@ -10,36 +10,33 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**진행 중인 회사가 없다. 사이클 199 는 후보 조사였고 큐를 3/3 으로 채웠다.**
+**Careem — 37번째 회사, 중동 첫 회사.** 사이클 200 에서 열었다. **`AE` 를 validate.py 와 index.json 에 추가.**
+프로파일 + 도메인 3개, 기능 0개. **다음 사이클은 `거대 단일 데이터베이스 줄이기`** —
+자료 정독 완료(`scaling-amazon-rds-for-mysql-performance-on-aws`).
 
-> **다음 사이클은 `## 대기` 맨 위 — Careem(AE · 모빌리티)을 연다.** 37번째이고 **중동 첫 회사**다.
-> 자료는 `engineering.careem.com`(본문 확인 완료 — 압축 코덱 다섯 비교로 LZ4 선택,
-> 처리량 **150 → 336 msg/s**, P99.9 **140ms → 35ms**, 저장 **88.2% 절감**, CPU **+8.3%**,
-> Gzip·Zstd·Snappy 를 각각 다른 이유로 버렸다).
-> ⚠️ **소유 구조를 1차 자료로 확인할 것** — 라이드헤일링은 Uber 가 인수했고 슈퍼앱은 별도 법인으로
-> 알려져 있다. **확인 전에는 쓰지 말 것.**
+> **이 회사의 축 — 성수기가 라마단이다.** 서버 주도 UI 를 만든 이유가 *"라마단 같은 시기에 화면을
+> 몇 주가 아니라 몇 시간 만에 바꾸기"* 였다. Allegro 의 'Vinted Autumn' 처럼 **부하와 수요의 달력이
+> 시장마다 다르다**는 것을 보여 주는 자리다. 그리고 **한 앱에 Go·Eat·Get·Pay 넷**이 들어 있어
+> **5,000만 사용자·100개 도시**의 라이드·배달·결제가 한때 **단일 RDS MySQL 270TB** 위에 있었다.
 
-**큐 3/3** — Careem(AE) · **Mercari(JP — C2C 인데 자체 결제·여신)** · **Yelp(US — 지역 검색·리뷰)**.
-뒤 둘은 이번 사이클에 본문까지 읽고 올렸다.
+> **🔑 다음 기능의 재료가 아주 두껍다** — 지우는 일 자체가 병목이었다.
+> 24TB 를 지우는 도중 지연이 **20ms**(SLA 1ms)를 넘겼고 원인은 **InnoDB 가 삭제 표시 행을 언두 로그에서
+> 처리하는 방식**, **HLL 58.7억 · 언두 로그 5.7TB**. **버린 대안이 시간으로 계산돼 있다** —
+> 자연 감소는 *"약 3.5개월"*. 그래서 **DMS Serverless 로 옮겨 담아 퍼지를 우회**했다.
+> 결과 **270TB → 78TB · 언두 5.7TB → 5.7GB · 지연 0.54ms**, *"사실상 무중단"*.
+> **⚠️ 두 번째 글이 필요하다** — Kafka 압축 글이 같은 '비용' 결이라 닿을 수 있고, 아니면
+> `source-binary-and-backward-compatibility-rule-them-all` 이나 얼굴 인식 글을 확인할 것.
 
-> **이번에 확인한 접근 결과** — ✅ 열림: `engineeringblog.yelp.com` · `engineering.mercari.com` ·
-> `clickhouse.com/blog`(본문도 읽힘) · `www.cockroachlabs.com/blog`(열리지만 **첫 페이지가 마케팅 위주**) ·
-> `www.factorio.com/blog`(열리지만 **최근 글이 게임플레이 위주**라 이 엔진에 안 맞는다).
-> ❌ 막힘: `www.scylladb.com/blog`(403) · `engineering.flutterwave.com`·`blog.mercadolibre.com`(DNS 없음) ·
-> `flexport.engineering`(응답 없음). **라틴아메리카·아프리카는 이번에도 못 뚫었다.**
+> **⚠️ 확인 못 한 것 셋** — **소유 구조**(`careem.com/about` 404), **매출·거래액**, **진출 국가 목록**.
+> 전부 `open_questions` 에 적었고 본문에는 쓰지 않았다. **다음 사이클에서도 지어내지 말 것.**
 
-> **⚠️ ㉑ 비교 문서 준비 — Discord 를 못 쓴다.** 확인해 보니 `presence-fanout`(Semaphore)과 `voice-sfu`(침묵 억제)는
-> **이미 다른 비교 문서에 쓰였다.** 그러니 ㉑ '터진 뒤 끊는 대신 들어가기 전에 센다' 는 **넷으로 쓰거나**
-> 다른 회사를 하나 더 찾아야 한다. 쓸 수 있는 넷(겹침 검산 완료): PlanetScale `concurrency-limits`(상한을
-> **낮춰서** 살았다) · TigerBeetle `static-allocation`(**아예 자라지 않게** 만든 극단) ·
-> trivago `kafka-consumers`(KEDA lag 로 0까지 축소) · Vinted `log-storage`(애그리게이터로 활성 파트 폭발 방지).
-> **넷이면 충분하다** — 기존 문서들도 다섯 안팎이다.
+> **⑳·㉑ 비교 문서 재료가 계속 쌓인다** — Careem 의 **Gzip·Zstd·Snappy 거절**(각각 다른 이유)과
+> **자연 감소 3.5개월 거절**은 ⑳ '누가 바뀌어야 하는가' 와 결이 다르다(저건 '우리가 바뀌어야 해서'였다).
+> **이건 '재 보고 골랐다' 쪽** — 새 축 후보 ㉒ **'재고 나서 고른 것과 재지 않고 고른 것'** 으로 적어 둔다.
 
-> **또 하나의 축 후보 — '축을 바꾼다'.** TigerBeetle `scaling-axis` 는 기존 문서 **`양 끝 중 하나를 고르지 않는 법`**
-> 과 결이 같다. **이어 붙일지 새로 쓸지 판단할 것**(기존 features: `kafka-e2ee`·`actions-runners`·
-> `magic-pocket`·`rap`·`session-revocations`).
+**큐 2/3** — Mercari(JP) · Yelp(US).
 
-마지막 사이클: 199 (2026-08-22) — 대기열 후보 보강(후보 조사).
+마지막 사이클: 200 (2026-08-22) — Careem 회사 프로파일.
 
 ## 다음 선택지
 
