@@ -59,6 +59,39 @@ jobs:
             [ -f "$f" ] && { echo "--- $f (마지막 12줄) ---"; tail -12 "$f"; }
           done 2>/dev/null || echo "(로그 파일 없음)"
 
+      - name: 크롤러가 왜 안 도는가
+        run: |
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO" || exit 0
+
+          echo "### launchctl 상세 (com.jobseeker.crawler)"
+          # PID 가 '-' 면 등록만 되고 안 도는 것이다. LastExitStatus 가 이유를 말해 준다.
+          launchctl list com.jobseeker.crawler 2>&1 | head -30 || echo "(조회 실패)"
+          echo ""
+
+          echo "### plist"
+          for p in "$HOME/Library/LaunchAgents"/com.jobseeker.crawler.plist \
+                   /Library/LaunchDaemons/com.jobseeker.crawler.plist; do
+            [ -f "$p" ] && { echo "--- $p ---"; cat "$p"; }
+          done 2>/dev/null || echo "(plist 없음)"
+          echo ""
+
+          echo "### plist 가 가리키는 로그"
+          plist="$HOME/Library/LaunchAgents/com.jobseeker.crawler.plist"
+          if [ -f "$plist" ]; then
+            for key in StandardOutPath StandardErrorPath; do
+              path=$(/usr/libexec/PlistBuddy -c "Print :$key" "$plist" 2>/dev/null || true)
+              [ -n "$path" ] && [ -f "$path" ] && { echo "--- $key: $path (마지막 25줄) ---"; tail -25 "$path"; }
+            done
+          fi
+
+          echo ""
+          echo "### auto_crawl 상태 파일"
+          for f in catch_capture/.auto_crawl_state.json catch_capture/.crawl_state.json catch_capture/*.pid; do
+            [ -f "$f" ] && { echo "--- $f ---"; head -20 "$f"; }
+          done 2>/dev/null || echo "(상태 파일 없음)"
+
       - name: 컨테이너와 서빙 확인
         run: |
           export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
