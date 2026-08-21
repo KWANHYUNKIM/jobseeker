@@ -168,9 +168,26 @@
               "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
             }
           ]
+        },
+        {
+          "tech": "세 나무(원격·로컬·동기됨) + 플래너",
+          "solves": "**세 개의 각각 일관된 파일시스템 상태 나무**를 둔다 — 원격(클라우드의 최신 상태), 로컬(마지막으로 관찰한 디스크 상태), 동기됨(둘의 병합 기준점). 플래너가 이 셋을 받아 **점진적으로 수렴시키는 연산 목록**을 낸다. 안전하게 동시에 할 수 있는 것은 묶는다(파일을 만들려면 부모 폴더가 먼저 있어야 한다는 것 등을 안다).",
+          "limits": "플래너가 이 엔진의 핵심 알고리즘이라 **여기 버그가 나면 동기화 전체가 틀린다** — 그래서 CanopyCheck 이라는 전용 무작위 테스트를 따로 만들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Testing sync at Dropbox",
+              "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2020-04-20",
+              "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "nucleus-rewrite"
+      ]
     },
     {
       "name": "전송 효율",
@@ -952,13 +969,548 @@
           "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
         }
       ]
+    },
+    {
+      "key": "nucleus-rewrite",
+      "name": "Nucleus — 4년에 걸친 동기화 엔진 재작성",
+      "domain": "파일 동기화",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**동기화는 이 회사의 심장이고, 심장이 잘못된 전제 위에 있었다.** 구엔진에는 파일에 **이동을 견디는 안정된 식별자가 없었고**, 그래서 이동을 '옛 자리에서 삭제 + 새 자리에 추가'로 표현했다. 이 둘은 원자적이지 않다 — **삭제는 갔는데 추가가 안 가면, 사용자는 파일을 옮겼을 뿐인데 파일이 사라진다.** 일관성 보장이 거의 없어서 '이론적으로는 가능하지만 극히 드물다'던 일이 실제 운영에서 나왔다. 근본 원인은 하나다 — **그 엔진은 공유가 없던 더 단순한 세상을 위해 설계됐다.** 수억 명, 수천억 개 파일, 수조 개 리비전이 그 위에 올라간 뒤였다.",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "사용자 **수억 명** · 파일 **수천억 개** · 파일 리비전 **수조 개** · 기기 **수억 대** · 고객 데이터 **엑사바이트**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "label": "기간",
+            "value": "**4년** (2016~2020)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "label": "야간 테스트",
+            "value": "**매일 밤 수천만 회**의 무작위 테스트 실행",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "label": "인메모리 파일시스템의 값",
+            "value": "네이티브 대비 테스트 실행 횟수 **약 10배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "label": "느린 순서",
+            "value": "Trinity(모의) → Trinity Native **약 10배 느림** → Heirloom(실서버) **약 100배 느림**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "label": "플래너 종료 조건",
+            "value": "약 **200회**의 계획 반복 안에 수렴해야 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "다시 쓸지 판단할 때",
+          "thought": "회사가 **체크리스트를 그대로 공개했다.** ① *점진적 개선을 다 써 봤는가* — 모듈로 리팩터링해 봤나, 핫스팟 최적화를 해 봤나, **점진적으로 가치를 낼 수 있나**. ② *해낼 수 있는가* — **지금 시스템을 깊이 이해하고 존중하는가**, 엔지니어 시간이 있는가, **기능 개발이 느려지는 것을 받아들일 수 있는가**. ③ *어디로 가는지 아는가* — 두 번째는 왜 더 나을 것인가, 새 시스템의 원칙은 무엇인가.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "리팩터링으로는 안 되는 이유를 설명할 때",
+          "thought": "**'시스템의 근본이 되는 명사를 바꾸는 일은 대개 작게 쪼개서 할 수 없다.'** 여기가 핵심이다. 데이터 모델이 관대해서 불변식을 강제하지 못했고, **불변식이 없으니 테스트가 힘을 못 썼다** — 무엇이 맞는지 코드가 말해 주지 않으면 무엇이 틀렸는지도 못 잡는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "재작성 중에 옛 시스템이 계속 움직일 때",
+          "thought": "**'옛 시스템에 변경이 하나 들어갈 때마다 새 시스템의 결승선이 그만큼 멀어졌다.'** 그래서 롤아웃을 담당할 인력을 따로 뒀다 — 재작성 팀이 느려지지 않게. **4년짜리 작업에서 진짜 적은 옛 시스템이 아니라 옛 시스템의 변화 속도다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "동시성 설계를 정할 때",
+          "thought": "구엔진은 스레드를 여러 개 쓰면서 **'추론하기 쉽게 만들려고 병렬성의 이득을 포기'**했다. Nucleus 는 그걸 뒤집었다 — **거의 모든 코드를 제어 스레드 하나**에 두고 네트워크 I/O·해싱·파일시스템만 밖으로 뺐다. 그 결과 **입력과 스케줄링이 고정되면 제어 스레드는 완전히 결정적**이 된다. 이게 나중에 테스트 전략 전체를 가능하게 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Rust 를 고를 때",
+          "thought": "이유가 속도가 아니었다 — **'시스템의 복잡한 불변식을 타입 시스템에 적어 두고 컴파일러가 검사하게 만들 수 있다.'** 구엔진의 병이 '불변식을 강제하지 못하는 데이터 모델'이었으니, **병에 맞춘 처방이었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 맞는지 어떻게 확인할지 정할 때",
+          "thought": "동기화는 순서의 가짓수가 사실상 무한해서 **예제 테스트로는 못 덮는다.** 그래서 무작위로 돌리되 **씨앗을 남겼다** — 네트워크·파일시스템·시계를 전부 모의로 바꾸고, 패킷을 떨어뜨리고 복제하고 순서를 바꾸는 교란까지 씨앗이 정한다. 실패하면 **같은 씨앗으로 그대로 재현된다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결정성을 지키려 할 때",
+          "thought": "여기까지 파고들었다 — **Rust 의 무작위 HashMap 해셔를 결정적인 것으로 바꿨다.** 그리고 커밋 해시 자체를 씨앗과 함께 '테스트 입력'으로 취급한다. **재현 가능성은 저절로 생기지 않고 이렇게 하나씩 막아야 생긴다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "테스트가 못 잡는 것을 인정할 때",
+          "thought": "이 회사 글이 드문 이유가 여기 있다 — **자기 테스트의 한계를 셋이나 이름 붙여 적었다.** 인메모리 파일시스템은 OS 고유 동작(권한·확장 속성·Smart Sync)을 안 덮고 **fsync 내구성을 검증하지 못한다**. 서버를 모의하면 실제와 갈라질 위험이 있다. 그리고 **Trinity 는 실패 사례를 최소화하지 못한다** — 입력을 조금만 바꿔도 요청 스케줄링이 달라져 씨앗이 무효가 되기 때문이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "원격 나무 (Remote Tree)",
+            "what": "드롭박스 클라우드의 최신 상태."
+          },
+          {
+            "name": "로컬 나무 (Local Tree)",
+            "what": "마지막으로 관찰한 디스크 상태."
+          },
+          {
+            "name": "동기됨 나무 (Synced Tree)",
+            "what": "원격과 로컬의 **병합 기준점** — '여기까지는 둘이 같았다'는 지점."
+          },
+          {
+            "name": "플래너 (Planner)",
+            "what": "세 나무를 받아 **수렴시키는 연산 목록**을 내는 핵심 알고리즘. 안전하게 동시에 할 수 있는 것은 묶는다."
+          },
+          {
+            "name": "안정된 식별자",
+            "what": "공유 폴더와 파일이 갖는 **전역 유일 ID**. 구엔진에 없던 것이고, 이것이 있어야 이동이 이동으로 표현된다."
+          },
+          {
+            "name": "씨앗 (Seed)",
+            "what": "무작위 테스트 한 회를 통째로 결정하는 값. 실패하면 이것만 있으면 재현된다."
+          }
+        ],
+        "invariants": [
+          "**이동은 이동이다** — 삭제 + 추가가 아니다.",
+          "이동은 **하위 트리 크기와 무관하게 원자적**이다.",
+          "**변경을 고려하기 전에 서버와 클라이언트가 원격 파일시스템을 같게 본다**(강한 일관성).",
+          "세 나무는 **반드시 수렴한다** — 약 200회 계획 반복 안에.",
+          "**클라이언트와 서버의 시각이 어긋나면 그것은 버그다** — 예외 없이.",
+          "실패한 테스트는 **씨앗 하나로 재현된다**."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "원격·로컬·동기됨 세 나무를 각각 일관되게 유지한다",
+            "why": "'무엇이 바뀌었나'는 세 상태를 비교해야 나온다"
+          },
+          {
+            "step": "플래너가 세 나무를 받아 **수렴 연산 목록**을 낸다",
+            "why": "한 번에 맞추는 것이 아니라 점진적으로 좁힌다"
+          },
+          {
+            "step": "안전하게 동시에 할 수 있는 연산을 묶는다",
+            "why": "파일 생성은 부모 폴더 생성 뒤여야 한다는 것 등을 플래너가 안다"
+          },
+          {
+            "step": "거의 모든 실행을 **제어 스레드 하나**에서 한다",
+            "why": "입력과 스케줄링이 고정되면 완전히 결정적이 된다 — 테스트의 전제다"
+          },
+          {
+            "step": "네트워크 I/O·해싱·파일시스템만 밖으로 뺀다",
+            "why": "결정성을 지키면서 느린 것만 떼어 낸다"
+          },
+          {
+            "step": "**CanopyCheck** — 나무 하나를 만들고 교란해 나머지 둘을 만든 뒤 플래너에 반복해 물린다",
+            "why": "서로 완전히 다른 나무를 주면 삭제·편집·이동 로직을 안 건드린다"
+          },
+          {
+            "step": "**Trinity** — 백엔드와 파일시스템 상태를 실제로 세우고 스케줄링을 직접 쥔 채 돌린다",
+            "why": "**덜 그럴듯한 실행 순서의 확률을 키우는** 것이 목적이다"
+          },
+          {
+            "step": "실패하면 **씨앗을 출력한다**",
+            "why": "그 씨앗으로 로컬에서 그대로 재현하고 로그를 끼워 넣는다"
+          },
+          {
+            "step": "CanopyCheck 은 실패 입력을 **노드를 지워 가며 최소화한다**",
+            "why": "최소 재현 입력이라야 진단이 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "고칠 것인가 다시 쓸 것인가",
+            "chosen": "**다시 쓴다 (4년)**",
+            "alternatives": [
+              "모듈 단위 리팩터링",
+              "핫스팟 최적화",
+              "데이터 모델은 두고 버그만 잡기"
+            ],
+            "tradeoff": "**기능 개발이 4년간 크게 느려진다.** 그리고 옛 시스템에 변경이 들어갈 때마다 결승선이 멀어지므로 롤아웃 담당 인력을 따로 둬야 했다. 그래도 회사의 판단은 명확했다 — **'시스템의 근본이 되는 명사를 바꾸는 일은 대개 작게 쪼개서 할 수 없다.'**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "question": "이동을 어떻게 표현할 것인가",
+            "chosen": "**전역 유일 ID + 원자적 이동**(하위 트리 크기와 무관)",
+            "alternatives": [
+              "옛 자리 삭제 + 새 자리 추가 (구엔진)"
+            ],
+            "tradeoff": "데이터 모델을 통째로 바꿔야 한다 — 즉 재작성의 이유 그 자체다. 구방식의 대가가 무엇이었는지가 분명하다: **삭제만 가고 추가가 안 가면 사용자는 옮겼을 뿐인데 파일이 사라진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "question": "동시성을 어떻게 다룰 것인가",
+            "chosen": "**제어 스레드 하나** + 필요한 것만 밖으로",
+            "alternatives": [
+              "구엔진처럼 여러 스레드",
+              "완전 병렬"
+            ],
+            "tradeoff": "**병렬성의 이득을 대부분 포기한다** — 제어 흐름이 한 스레드에 묶인다. 대신 개발자가 한 번에 머리에 담을 범위가 크게 줄고, 무엇보다 **결정적이 된다.** 구엔진도 '추론하기 쉽게 만들려고 병렬성을 포기'했지만 스레드를 여러 개 썼다 — 둘 다 포기했던 셈이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "question": "무슨 언어로 쓸 것인가",
+            "chosen": "**Rust**",
+            "alternatives": [
+              "기존 언어 유지",
+              "다른 시스템 언어"
+            ],
+            "tradeoff": "팀이 새 언어를 배워야 하고 생태계가 좁다. 그래도 이유가 병에 맞았다 — **복잡한 불변식을 타입 시스템에 적고 컴파일러가 검사하게 만들 수 있다.** 구엔진의 병이 '불변식을 강제 못 하는 데이터 모델'이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "question": "정확성을 어떻게 확인할 것인가",
+            "chosen": "**결정적 시뮬레이션 테스트** — 네트워크·파일시스템·시계를 전부 모의하고 씨앗으로 재현",
+            "alternatives": [
+              "예제 기반 단위·통합 테스트",
+              "실서버 대상 종단 테스트만"
+            ],
+            "tradeoff": "**모의한 것은 실제와 갈라질 수 있다** — 특히 서버 아키텍처 모의가 그렇다. 그래서 실서버 대상 Heirloom 을 따로 두는데 **약 100배 느리고 결정성을 잃는다.** 그래도 동기화는 순서 가짓수가 사실상 무한해서 예제 테스트로는 못 덮는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "question": "파일시스템을 모의할 것인가 진짜를 쓸 것인가",
+            "chosen": "**둘 다 — 인메모리 모의를 주로, Trinity Native 를 보조로**",
+            "alternatives": [
+              "네이티브 파일시스템만",
+              "모의만"
+            ],
+            "tradeoff": "모의는 실행 횟수를 **약 10배**로 늘려 주지만 **OS 고유 동작(권한·확장 속성·Smart Sync 수화)을 안 덮고 fsync 내구성을 검증하지 못한다.** Trinity Native 가 그 자리를 메우지만 **약 10배 느리다** — 속도와 충실도를 하나씩 나눠 가진 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "question": "무작위 나무를 어떻게 만들 것인가",
+            "chosen": "**하나를 만들고 교란해 나머지 둘을 만든다**",
+            "alternatives": [
+              "세 나무를 각각 독립적으로 무작위 생성"
+            ],
+            "tradeoff": "완전히 독립적인 나무가 만드는 상황은 못 본다. 대신 독립 생성은 **서로 겹치지 않는 나무만 나와 삭제·편집·이동 로직을 아예 안 건드린다** — 무작위성이 많다고 커버리지가 넓은 게 아니다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Rust + futures",
+            "role": "제어 스레드 하나에서 거의 전부를 돌린다. 불변식을 타입으로 적는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Rewriting the heart of our sync engine",
+                "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-03-09",
+                "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+              }
+            ]
+          },
+          {
+            "tech": "플래너",
+            "role": "세 나무를 받아 수렴 연산 목록을 내는 핵심 알고리즘",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "tech": "CanopyCheck",
+            "role": "플래너 전용 무작위 테스트. 종료·패닉 없음·수렴을 검사하고 실패 입력을 최소화한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "tech": "Trinity (커스텀 Rust Future 실행기)",
+            "role": "종단 동시성 테스트. 모의 요청의 성패 시점을 직접 쥐어 **덜 그럴듯한 실행 순서의 확률을 키운다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "tech": "Trinity Native · Heirloom",
+            "role": "각각 진짜 파일시스템·진짜 서버 대상. 10배·100배 느리다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "tech": "결정적 HashMap 해셔",
+            "role": "Rust 기본 해셔의 무작위성을 없앤다 — 재현 가능성을 위해",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "magic-pocket",
+          "via": "블록 업로드",
+          "contract": "동기화가 '무엇이 바뀌었는지' 정하면 그 결과가 4MB 블록으로 저장 인프라에 간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "전송 효율",
+          "via": "변경분 전송",
+          "contract": "덜 보내기(Broccoli·LAN Sync)는 여기서 정해진 변경분에 적용된다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "FoundationDB: A Distributed Unbundled Transactional Key Value Store",
+            "authors": "Jingyu Zhou 외 (Apple/FoundationDB)",
+            "year": "2021",
+            "venue": "SIGMOD 2021",
+            "url": "https://www.foundationdb.org/files/fdb-paper.pdf",
+            "takeaway": "**결정적 시뮬레이션 테스트를 대중화한 자리다** — 모든 하부 시스템(네트워크·디스크·시계)을 모의로 갈고 씨앗 하나로 전체 실행을 재현하는 방식. 드롭박스가 이 논문을 인용하지는 않았지만 **Trinity 의 구조가 같다**(모의 실행기, 교란, 씨앗 출력). 같은 문제(순서 가짓수가 무한한 분산 시스템)가 같은 답에 도달한 사례로 나란히 놓을 만하다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "**무작위 테스트에서 무작위성을 늘리면 커버리지가 줄어드는 구간이 있다**",
+            "why_hard": "직관은 '더 무작위로 만들수록 더 많은 경우를 본다'인데 **틀린다.** CanopyCheck 이 세 나무를 각각 독립적으로 무작위 생성했다면 대개 **서로 겹치지 않는 나무**가 나온다. 겹치지 않으면 삭제도 편집도 이동도 일어날 일이 없고, 그러면 **정작 검사하려던 로직을 한 줄도 안 지난다.** 문제는 이 실패가 조용하다는 것이다 — 테스트는 수백만 번 통과하고, 통과했으니 아무도 의심하지 않는다. **버그가 없어서 통과한 것인지 버그가 있는 코드에 닿지 않아서 통과한 것인지를 통과 여부로는 구별할 수 없다.**",
+            "current_best": "**무작위성을 구조에 종속시킨다.** 드롭박스는 나무 하나를 만든 뒤 **그것을 교란해** 나머지 둘을 만든다 — 셋이 공통 조상을 갖게 강제하는 것이다. 대가는 완전히 독립적인 나무가 만드는 상황을 못 본다는 것인데, 그 상황은 애초에 검사 대상이 아니었다. 같은 생각이 Trinity 에도 있다 — 스케줄링을 직접 쥐어 **덜 그럴듯한 실행 순서의 확률을 일부러 키운다.** **무작위 테스트의 설계란 결국 어디에 무작위를 넣지 않을지를 정하는 일이다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          },
+          {
+            "problem": "**모의한 것은 반드시 실제와 갈라지는데, 모의하지 않으면 재현할 수 없다**",
+            "why_hard": "결정적 재현은 **모든 비결정성을 모의로 갈아 끼워야** 성립한다 — 네트워크, 파일시스템, 시계, 심지어 Rust 의 HashMap 해셔까지. 그런데 갈아 끼운 순간 그것은 실제가 아니다. 인메모리 파일시스템은 권한·확장 속성·Smart Sync 수화 같은 **OS 고유 동작을 안 덮고, fsync 내구성을 아예 검증할 수 없다** — 즉 '전원이 나갔을 때 데이터가 남는가'는 이 테스트가 원리적으로 답하지 못한다. 서버를 모의하면 모의가 실제 서버와 갈라질 위험을 늘 안는다. **충실도와 재현성이 같은 축의 양 끝**이라 하나를 얻으면 하나를 잃는다.",
+            "current_best": "**하나를 고르지 않고 층으로 쌓아 값을 나눠 낸다.** 드롭박스는 셋을 함께 굴린다 — Trinity(전부 모의, 가장 빠르고 완전히 결정적) → Trinity Native(진짜 파일시스템, **약 10배 느림**) → Heirloom(진짜 서버, **약 100배 느림**, 결정성 상실). 빠른 층이 대부분의 버그를 잡고, 느린 층이 모의가 거짓말한 자리를 잡는다. 남는 대가는 정직하게 남는다 — **Trinity 는 실패 사례를 최소화하지 못한다.** 입력을 조금만 바꿔도 요청 스케줄링이 달라져 씨앗이 무효가 되기 때문이고, 그래서 CanopyCheck 에는 있는 최소화가 여기엔 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Testing sync at Dropbox",
+                "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+                "publisher": "Dropbox Tech",
+                "date": "2020-04-20",
+                "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "이동이 이동이 아니었을 때",
+          "question": "안정된 식별자가 없으면 무엇이 잘못되나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  U[\"사용자가 파일을 로컬에서 옮긴다\"] --> Q{\"이동을 어떻게 표현하나\"}\n  Q -->|\"**구엔진** — 안정된 ID 가 없다\"| A[\"옛 자리에서 **삭제**<br/>+ 새 자리에 **추가**\"]\n  A --> B[\"두 연산은 **원자적이지 않다**\"]\n  B --> C{\"둘 다 갔나\"}\n  C -->|\"예\"| OK1[\"정상\"]\n  C -->|\"**삭제만 갔다**\"| BAD[\"❌ 사용자는 옮겼을 뿐인데<br/>**파일이 사라진다**\"]\n  BAD --> D[\"'이론적으로 가능하지만 극히 드물다'<br/>→ **운영에서 실제로 나왔다**\"]\n  D --> E[\"근본 원인 — 관대한 데이터 모델이<br/>**불변식을 강제하지 못한다**<br/>불변식이 없으니 **테스트도 힘을 못 쓴다**\"]\n  Q -->|\"**Nucleus** — 전역 유일 ID\"| N[\"**이동은 이동이다**<br/>하위 트리 크기와 무관하게 원자적\"]\n  E --> R[\"'근본이 되는 명사를 바꾸는 일은<br/>**작게 쪼개서 할 수 없다**'<br/>→ 4년짜리 재작성\"]"
+        },
+        {
+          "title": "다시 쓸지 판단하는 체크리스트",
+          "question": "회사는 무엇을 물어보고 재작성을 결정했나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"다시 쓸까?\"] --> A{\"**① 점진적 개선을 다 써 봤는가**\"}\n  A --> A1[\"모듈로 리팩터링해 봤나\"]\n  A --> A2[\"핫스팟 최적화를 해 봤나\"]\n  A --> A3[\"**점진적으로 가치를 낼 수 있나**\"]\n  A1 & A2 & A3 --> B{\"**② 해낼 수 있는가**\"}\n  B --> B1[\"**지금 시스템을 깊이<br/>이해하고 존중하는가**\"]\n  B --> B2[\"엔지니어 시간이 있는가\"]\n  B --> B3[\"**기능 개발이 느려지는 것을<br/>받아들일 수 있는가**\"]\n  B1 & B2 & B3 --> C{\"**③ 어디로 가는지 아는가**\"}\n  C --> C1[\"두 번째는 왜 더 나을 것인가\"]\n  C --> C2[\"새 시스템의 원칙은 무엇인가\"]\n  C1 & C2 --> D[\"**4년** · 수억 사용자 · 수천억 파일\"]\n  D --> W[\"숨은 비용 — '옛 시스템에 변경이 하나 들어갈 때마다<br/>**새 시스템의 결승선이 그만큼 멀어졌다**'<br/>→ 롤아웃 담당을 따로 뒀다\"]"
+        },
+        {
+          "title": "세 나무와 플래너",
+          "question": "무엇이 바뀌었는지를 어떻게 정하나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  R[\"**원격 나무**<br/>클라우드의 최신 상태\"] --> P\n  L[\"**로컬 나무**<br/>마지막으로 관찰한 디스크 상태\"] --> P\n  S[\"**동기됨 나무**<br/>둘의 병합 기준점\"] --> P\n  P[\"**플래너**<br/>수렴시키는 연산 목록을 낸다\"]\n  P --> O1[\"안전하게 동시에 할 수 있는 것은 묶는다<br/>(파일 생성은 부모 폴더 뒤)\"]\n  O1 --> X{\"수렴했나\"}\n  X -->|\"아니오\"| P\n  X -->|\"예\"| DONE[\"세 나무가 같아진다\"]\n  X -.->|\"**약 200회 안에 못 끝나면 버그**\"| BUG[\"CanopyCheck 이 잡는다\"]\n  P -.->|\"거의 모든 실행이<br/>**제어 스레드 하나**에서\"| DET[\"입력·스케줄링이 고정되면<br/>**완전히 결정적**\"]\n  DET -.-> T[\"→ 테스트 전략 전체가<br/>여기에 기댄다\"]"
+        },
+        {
+          "title": "충실도와 재현성을 층으로 나눠 낸다",
+          "question": "모의하면 실제와 갈라지고, 안 하면 재현이 안 되는데?",
+          "kind": "state",
+          "code": "flowchart TD\n  T1[\"**Trinity** — 전부 모의<br/>네트워크·파일시스템·시계·HashMap 해셔까지<br/>✅ 가장 빠름 · 완전히 결정적<br/>❌ **실패 사례 최소화 불가** — 입력이 바뀌면<br/>요청 스케줄링이 달라져 씨앗이 무효\"]\n  T2[\"**Trinity Native** — 진짜 파일시스템<br/>✅ OS 고유 동작(권한·확장 속성·Smart Sync)<br/>❌ **약 10배 느림**\"]\n  T3[\"**Heirloom** — 진짜 서버<br/>✅ 모의 서버가 갈라진 자리를 잡는다<br/>❌ **약 100배 느림** · 결정성 상실\"]\n  T1 -->|\"모의가 거짓말한 자리\"| T2 -->|\"프로토콜이 갈라진 자리\"| T3\n  T1 --> N1[\"매일 밤 **수천만 회**<br/>인메모리 파일시스템이 실행 횟수를 **약 10배**로\"]\n  T2 -.-> LIM[\"**끝내 못 하는 것**<br/>fsync 내구성 검증 —<br/>'전원이 나가면 데이터가 남는가'는<br/>이 층들이 원리적으로 답하지 못한다\"]\n  C[\"**CanopyCheck** (플래너 전용)<br/>나무 하나를 교란해 나머지 둘을 만든다<br/>✅ **실패 입력을 최소화한다**\"] -.->|\"Trinity 에는 없는 능력\"| T1"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Rewriting the heart of our sync engine",
+          "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+          "publisher": "Dropbox Tech",
+          "date": "2020-03-09",
+          "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+        },
+        {
+          "title": "Testing sync at Dropbox",
+          "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+          "publisher": "Dropbox Tech",
+          "date": "2020-04-20",
+          "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
+        }
+      ]
     }
   ],
   "open_questions": [
     "**AWS 를 떠난 결정의 대가가 회사 글에 없다.** 2016년 이관 글은 성공만 적고 무엇을 잃었는지, 어떤 위험을 졌는지를 다루지 않는다 — 유럽 데이터 소재지 요건 때문에 독일에는 여전히 AWS 를 쓴다는 것만 밝혔다. **반면 'Inside the Magic Pocket' 은 버린 대안을 제대로 적었다** — 글마다 성격이 다르다.",
     "**Dropbox Dash(AI 검색)** 는 최근 제품인데 엔지니어링 자료를 아직 확인하지 않았다.",
     "**저장 원가의 실제 개선폭** — 자체 인프라가 S3 대비 얼마나 쌌는지 회사가 숫자로 밝힌 적이 없다. 매출총이익률(80.1%)과 '데이터센터 갱신 주기' 언급이 간접 단서다.",
-    "**SMR 도입(2017)과 콜드 스토리지(2019) 자체의 판단 근거** — 이번 사이클은 Cowling·SSD 제거·InfoQ 를 축으로 썼다. 그 두 해의 개별 글은 아직 안 읽었다."
+    "**SMR 도입(2017)과 콜드 스토리지(2019) 자체의 판단 근거** — 이번 사이클은 Cowling·SSD 제거·InfoQ 를 축으로 썼다. 그 두 해의 개별 글은 아직 안 읽었다.",
+    "**Nucleus 의 새 데이터 모델 자체** — 재작성 글은 세 나무와 플래너를 다루지 않고(테스트 글에서 나온다), 두 글 모두 나무를 어떻게 저장하고 서버 프로토콜이 어떤 모양인지는 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1016,6 +1568,13 @@
       "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
       "date": "2023-05-15",
       "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+    },
+    {
+      "title": "Testing sync at Dropbox",
+      "url": "https://dropbox.tech/infrastructure/-testing-our-new-sync-engine",
+      "publisher": "Dropbox Tech",
+      "date": "2020-04-20",
+      "summary": "세 나무와 플래너, 그리고 결정적 시뮬레이션 테스트(CanopyCheck·Trinity). 이 테스트가 못 잡는 것까지 밝혔다. 저자 Isaac Goldberg."
     }
   ]
 }
