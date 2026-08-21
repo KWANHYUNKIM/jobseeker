@@ -4,9 +4,9 @@
   "name_en": "GitHub",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
-  "business_model": "**개발자 도구를 구독으로 판다.** 개인·팀·엔터프라이즈 요금제가 바탕이고 그 위에 **Copilot**(AI 코딩 보조)이 얹혔다. **⚠️ 범위 주의 — Microsoft 산하라 GitHub 단독 재무가 공시되지 않는다.** Microsoft 가 밝힌 것은 **유료 Copilot 좌석 470만**(2026-01-28 FY26 Q2, 전년 대비 약 75% 증가)이고, **GitHub 전체 ARR 30억 달러 초과**는 회사 발표가 아니라 사정을 아는 사람을 인용한 보도다. 그래서 이 문서의 수익 항목은 대부분 `inferred` 로 둔다. 원가 쪽은 특이하다 — **남의 코드를 맡아 두고, 남의 코드를 실행해 주고, 남의 코드를 검색해 준다.** 저장·연산·색인이 전부 고객 수가 아니라 **고객이 밀어 넣는 양**에 비례한다.",
+  "business_model": "**개발자 도구를 구독으로 판다.** 개인·팀·엔터프라이즈 요금제가 바탕이고 그 위에 **Copilot**(AI 코딩 보조)이 얹혔다. **⚠️ 범위 주의 — Microsoft 산하라 GitHub 단독 재무가 공시되지 않는다.** Microsoft 가 밝힌 것은 **유료 Copilot 좌석 470만**(2026-01-28 FY26 Q2, 전년 대비 약 75% 증가)이고, **GitHub 전체 ARR 30억 달러 초과**는 회사 발표가 아니라 사정을 아는 사람을 인용한 보도다. 그래서 이 문서의 수익 항목은 대부분 `inferred` 로 둔다. 원가 쪽은 특이하다 — **남의 코드를 맡아 두고, 남의 코드를 실행해 주고, 남의 코드를 검색해 준다.** 저장·연산·색인이 전부 고객 수가 아니라 **고객이 밀어 넣는 양**에 비례한다.\n\n**사내에서 같은 모양이 네 도메인에 걸쳐 반복된다.** 첫째, **쪼개는 기준을 데이터의 성질에서 가져온다** — 코드 검색은 Git 블롭 ID 로(같은 내용이면 같은 블롭이라 중복이 저절로 사라진다), 데이터 계층은 함께 쓰이는 테이블로, 저장은 저장소 단위로 나눈다. 둘째, **옮기기 전에 선부터 긋는다** — 물리 이동보다 `schema-domains.yml` 과 린터가 먼저 왔고, 복제본이 같은 상태인지도 체크섬으로 먼저 증명한다. 셋째, **하나에 전부 걸지 않는다** — Vitess 도입이 초기라 자체 write-cutover 를 따로 만들었고, MySQL 8.0 업그레이드 내내 역방향 복제로 돌아갈 길을 열어 뒀다. 넷째, **물리 한계 앞에서는 병렬화로 물러선다** — 대륙 간 왕복은 줄일 수 없으니 복제본별 작업을 겹쳐 돌리고, 일회용 환경의 준비 시간은 없앨 수 없으니 캐시를 이미지 쪽으로 옮긴다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "GitHub (저장소 호스팅·PR·이슈)",
     "GitHub Actions (CI/CD)",
@@ -344,7 +344,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "actions-runners"
+      ]
     }
   ],
   "features": [
@@ -1982,6 +1984,506 @@
           "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
         }
       ]
+    },
+    {
+      "key": "actions-runners",
+      "name": "Actions — 일회용인데 빨라야 한다",
+      "domain": "CI 실행",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사는 **남의 코드를 대신 실행해 준다.** 그리고 그 실행은 평평하게 오지 않는다 — 사람들이 푸시할 때 몰리고, 그 사이에는 비어 있다.\n\n자기 자신이 그 부하의 큰 고객이기도 하다. github.com 을 빌드·테스트하는 데 **32코어 러너 4,500대가 동시에** 돌고, 시간당 **빌드 12만 5천 분**과 **잡 약 1만 5천 개**를 쓴다. 코어로 세면 약 **15만 개**다.\n\n그런데 이 도메인의 어려움은 크기가 아니라 **성질의 충돌**에 있다. CI 환경은 **일회용**이어야 한다 — 앞 잡의 찌꺼기가 남으면 결과를 믿을 수 없다. 그런데 매번 새로 만들면 **매번 처음부터 준비해야** 한다. 격리와 속도가 정면으로 부딪히는 자리다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "자사 CI 의 순간 규모",
+            "value": "**32코어 러너 4,500대 동시** · 시간당 **빌드 12만 5천 분** · 잡 약 **1만 5천 개** · 코어 약 **15만 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "label": "커스텀 이미지의 효과",
+            "value": "워크플로가 약 **50분 → 12분** — 소프트웨어와 **소스 코드를 미리 캐시**한 덕",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "label": "이미지를 갱신하는 주기",
+            "value": "캐시된 소스가 낡지 않도록 **하루에 여러 번**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "label": "아예 돌리지 않아 아낀 양",
+            "value": "Git 트리 ID 가 같으면 건너뛴다 — 하루 **300~500 워크플로 실행**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "label": "고를 수 있는 크기",
+            "value": "Linux·Windows **2~64코어**, 최대 **500대 동시**. 크기를 바꾸는 것은 **워크플로 파일 한 줄**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+                "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+                "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+                "date": "2022-09-01",
+                "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "레거시 CI 에서 옮길지 정할 때",
+          "thought": "두 가지가 걸렸다 — **일회성 빌드 환경을 어떻게 확장할 것인가**, 그리고 **내부 유지 부담 없이 안정적인 인프라를 어떻게 가질 것인가.** 우리 제품이 이미 그 일을 하고 있는데 따로 굴릴 이유를 찾기 어려웠다(마지막 절은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "미리 만들어 둔 러너 이미지를 써 보고",
+          "thought": "기본 이미지에는 **복잡한 프로덕션 서비스를 빌드하는 데 필요한 도구가 없었다.** 잡마다 설치하면 그 시간이 매번 든다. 그러면 이미지 자체를 우리가 만들어야 하고, **소스 코드까지 미리 캐시**해 둘 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "캐시를 이미지에 넣고 나서",
+          "thought": "50분이 12분이 됐다. 그런데 캐시는 넣는 순간부터 낡는다 — 우리 저장소는 하루에도 계속 바뀐다. 그래서 **이미지를 하루에 여러 번 다시 만든다.** 빨라진 대가로 **이미지 파이프라인이라는 시스템을 하나 더 갖게 됐다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "이미 아는 답을 또 계산하고 있다는 걸 봤을 때",
+          "thought": "파일 내용이 지난번과 똑같으면 결과도 같다. 그러면 그 CI 는 돌릴 이유가 없다. **Git 트리 ID 를 비교**해 건너뛰기로 했고 하루 300~500 실행이 사라졌다 — **가장 빠른 잡은 돌지 않은 잡이다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "러너 (runner)",
+            "what": "잡 하나를 돌리는 관리형 VM. **일회용** — 잡이 끝나면 등록이 풀린다."
+          },
+          {
+            "name": "larger runner",
+            "what": "기본 러너보다 RAM·CPU·디스크가 큰 관리형 VM. 2~64코어, 최대 500대 동시."
+          },
+          {
+            "name": "커스텀 VM 이미지",
+            "what": "프로젝트별 소프트웨어와 **미리 캐시한 소스 코드**를 담은 러너 이미지. 하루에 여러 번 다시 만든다."
+          },
+          {
+            "name": "재사용 워크플로 (reusable workflow)",
+            "what": "여러 저장소가 매개변수만 바꿔 부르는 공통 CI 정의."
+          },
+          {
+            "name": "Git 트리 ID",
+            "what": "파일 내용의 지문. 지난 실행과 같으면 그 워크플로를 건너뛴다."
+          }
+        ],
+        "invariants": [
+          "러너는 **일회용**이다 — 앞 잡의 찌꺼기가 다음 잡에 남지 않는다.",
+          "러너 크기를 바꾸는 것은 **워크플로 파일 한 줄**이다.",
+          "이미지에 캐시한 소스는 **넣는 순간부터 낡는다**.",
+          "같은 Git 트리 ID 면 같은 결과로 본다.",
+          "러너는 사설 네트워크 **밖**에 있다 — 안으로 닿으려면 토큰과 프록시가 필요하다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "워크플로가 요청되면 그 라벨에 맞는 **관리형 VM** 이 뜬다",
+            "why": "쓴 만큼만 내려면 필요할 때만 있어야 한다."
+          },
+          {
+            "step": "VM 은 **커스텀 이미지**로 뜬다 — 프로젝트 소프트웨어와 **미리 캐시된 소스 코드**가 이미 들어 있다",
+            "why": "기본 이미지에는 복잡한 프로덕션 서비스에 필요한 도구가 없고, 매번 설치하면 그 시간이 매번 든다."
+          },
+          {
+            "step": "돌리기 전에 **Git 트리 ID 를 지난 실행과 비교**한다. 같으면 그 워크플로를 건너뛴다",
+            "why": "파일 내용이 같으면 결과도 같다 — 가장 빠른 잡은 돌지 않은 잡이다."
+          },
+          {
+            "step": "공통 CI 는 **재사용 워크플로**로 부른다 — 저장소마다 정의를 복사하지 않는다",
+            "why": "CI 를 한 곳에서 바꾸려면 정의가 한 곳에 있어야 한다."
+          },
+          {
+            "step": "사설 VPC 안의 서비스가 필요하면 **OIDC 토큰을 검증하고 요청을 프록시**해 닿는다",
+            "why": "관리형 러너는 우리 네트워크 밖에 있다 — 열어 주는 대신 통과시킨다."
+          },
+          {
+            "step": "IP 허용 목록을 쓰는 조직에는 **예약된 고정 IP 범위**를 준다",
+            "why": "허용 목록과 관리형 러너를 함께 쓸 수 없으면 둘 중 하나를 포기해야 한다."
+          },
+          {
+            "step": "잡이 끝나면 러너는 **등록이 풀리고 사라진다**",
+            "why": "찌꺼기가 남으면 다음 잡의 결과를 믿을 수 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "CI 를 따로 굴릴 것인가, 우리 제품 위에서 굴릴 것인가",
+            "chosen": "**레거시 CI 를 버리고 자사 Actions larger runners 로 옮긴다.**",
+            "alternatives": [
+              "기존 CI 시스템을 계속 유지·확장한다",
+              "자체 러너 풀을 직접 운영한다"
+            ],
+            "tradeoff": "**우리 제품의 한계가 곧 우리 CI 의 한계**가 된다(뒷문장은 이 사이트의 해석). 대신 일회성 빌드 환경의 확장과 인프라 유지를 제품 쪽이 떠안아, 내부 유지 부담이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "question": "기본 크기의 러너로 될 것인가",
+            "chosen": "**더 큰 관리형 러너**를 쓴다 — RAM·CPU·디스크가 큰 VM 으로 2~64코어에서 고르고, 실제로는 32코어 4,500대를 동시에 돌린다.",
+            "alternatives": [
+              "기본 러너를 여러 개로 쪼개 병렬로 돌린다"
+            ],
+            "tradeoff": "큰 머신은 비싸고, 잡이 그 크기를 다 쓰지 못하면 그만큼 낭비다(뒷문장은 이 사이트의 추정). 대신 **크기를 바꾸는 것이 워크플로 파일 한 줄**이라 조정 비용이 거의 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              },
+              {
+                "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+                "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+                "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+                "date": "2022-09-01",
+                "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+              }
+            ]
+          },
+          {
+            "question": "미리 만들어 둔 러너 이미지로 충분한가",
+            "chosen": "**충분하지 않다.** 프로젝트별 소프트웨어와 **미리 캐시한 소스 코드**를 담은 **커스텀 VM 이미지**를 만든다.",
+            "alternatives": [
+              "잡마다 필요한 도구를 설치한다",
+              "의존성 캐시 액션에 맡긴다"
+            ],
+            "tradeoff": "이미지를 만들고 배포하는 **파이프라인 자체가 또 하나의 시스템**이 된다(뒷문장은 이 사이트의 해석). 대신 워크플로가 약 **50분에서 12분**이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "question": "이미지에 넣은 캐시가 낡는 것을 어떻게 할 것인가",
+            "chosen": "**하루에 여러 번 이미지를 다시 만든다.**",
+            "alternatives": [
+              "캐시 없이 매번 받아 온다",
+              "오래된 캐시를 그냥 쓰고 차이만 받는다"
+            ],
+            "tradeoff": "이미지 빌드가 계속 돌아야 하고 그 비용이 상시로 든다. 그래도 캐시가 낡을수록 잡마다 따라잡을 양이 늘어, **빨라지려고 넣은 것이 느려지는 이유가 된다**(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "question": "내용이 그대로인 변경도 CI 를 돌릴 것인가",
+            "chosen": "**돌리지 않는다.** **Git 트리 ID** 를 지난 실행과 비교해 같으면 워크플로 결과를 재사용한다(베타).",
+            "alternatives": [
+              "항상 전부 돌린다",
+              "경로 필터로 대충 거른다"
+            ],
+            "tradeoff": "트리 ID 는 **저장소 안의 내용만** 본다 — 바깥 의존이 그사이 바뀌었다면 같은 트리라도 결과가 다를 수 있다(뒷문장은 이 사이트의 추정). 대신 하루 300~500 실행이 통째로 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "question": "저장소마다 CI 설정을 복사할 것인가",
+            "chosen": "**재사용 워크플로**로 공통 정의를 한 곳에 두고 매개변수만 바꿔 부른다.",
+            "alternatives": [
+              "저장소마다 워크플로 파일을 복사한다",
+              "템플릿 생성기를 돌린다"
+            ],
+            "tradeoff": "공통 정의를 바꾸면 그것을 부르는 모든 저장소가 함께 영향을 받는다(뒷문장은 이 사이트의 추정). 대신 CI 를 한 곳에서 바꿀 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "question": "관리형 러너를 사설 네트워크에 어떻게 닿게 할 것인가",
+            "chosen": "**OIDC 기반 원격 접근** — 토큰을 검증하고 요청을 프록시해 사설 VPC 서비스에 닿는다.",
+            "alternatives": [
+              "러너를 VPC 안에 두는 self-hosted 로 간다",
+              "VPC 를 러너 IP 대역에 열어 준다"
+            ],
+            "tradeoff": "프록시가 새 관문이 되고 그 자체를 지켜야 한다(뒷문장은 이 사이트의 추정). 대신 네트워크를 여는 대신 **요청 하나하나를 통과시키는** 방식이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "question": "IP 허용 목록을 쓰는 조직은 어떻게 할 것인가",
+            "chosen": "엔터프라이즈에 **예약된 고정 IP 범위**를 준다.",
+            "alternatives": [
+              "허용 목록을 쓰는 조직은 self-hosted 만 쓰게 한다"
+            ],
+            "tradeoff": "고정 IP 를 유지·배정하는 부담이 생기고, 그 대역이 알려지면 그 자체가 표적이 될 수 있다(뒷문장은 이 사이트의 추정). 대신 Artifactory·Nexus 같은 사내 도구와 관리형 러너를 **함께** 쓸 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+                "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+                "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+                "date": "2022-09-01",
+                "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Actions larger runners",
+            "role": "2~64코어 관리형 VM. 자사 CI 는 32코어 4,500대를 동시에 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              },
+              {
+                "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+                "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+                "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+                "date": "2022-09-01",
+                "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+              }
+            ]
+          },
+          {
+            "tech": "커스텀 VM 이미지",
+            "role": "프로젝트 소프트웨어와 미리 캐시한 소스 코드를 담아 워크플로를 50분에서 12분으로 줄인다. 하루 여러 번 갱신.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "tech": "워크플로 결과 재사용(Git 트리 ID 비교)",
+            "role": "내용이 지난 실행과 같으면 CI 를 건너뛴다. 하루 300~500 실행 절감.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "tech": "재사용 워크플로",
+            "role": "여러 저장소의 CI 정의를 한 곳에 모은다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "tech": "OIDC 원격 접근 + 요청 프록시",
+            "role": "네트워크를 열지 않고 사설 VPC 서비스에 닿게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          },
+          {
+            "tech": "예약 고정 IP 범위",
+            "role": "IP 허용 목록을 쓰는 조직이 관리형 러너를 쓸 수 있게 한다(엔터프라이즈).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+                "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+                "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+                "date": "2022-09-01",
+                "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+              }
+            ]
+          },
+          {
+            "tech": "테스트를 쪼개 나눠 돌리는 방식",
+            "role": "— 재사용 워크플로를 언급하지만 **샤딩·병렬 배분의 구체적인 방식은 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "spokes-replication",
+          "via": "체크아웃의 출처",
+          "contract": "러너가 받아 가는 코드가 결국 Spokes 의 복제본에서 나온다. 커스텀 이미지에 **소스를 미리 캐시**해 두는 것은 그 체크아웃을 잡 시작 시점에서 이미지 빌드 시점으로 옮긴 셈이다(뒷문장은 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "schema-domains",
+          "via": "메타데이터의 출처",
+          "contract": "워크플로·권한·실행 상태 같은 관계형 데이터를 데이터 계층이 맡는다 — 두 글 모두 그 연결을 명시하지는 않는다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "blackbird",
+          "via": "같은 부하의 다른 얼굴",
+          "contract": "검색은 **읽기가 몰리는** 부하이고 CI 는 **계산이 몰리는** 부하다. 둘 다 사람이 푸시하는 순간에 함께 올라간다(이 대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "매번 새로 만드는 환경을 매번 빠르게 시작하기",
+            "why_hard": "**격리와 준비 시간이 같은 손잡이의 양 끝이다.** 앞 잡의 찌꺼기를 남기지 않으려면 환경을 버려야 하는데, 버리면 다음 잡이 처음부터 준비해야 한다. 캐시를 넣으면 빨라지지만 **캐시는 넣는 순간부터 낡고**, 낡은 캐시를 따라잡는 비용이 결국 캐시가 아꼈던 시간을 갉아먹는다. 어느 쪽으로도 완전히 기울일 수 없다.",
+            "current_best": "**캐시를 잡이 아니라 이미지에 넣고, 이미지를 하루에 여러 번 다시 만든다.** 워크플로는 약 50분에서 12분이 됐다. 대가는 이미지 빌드 파이프라인이 상시로 돌아야 한다는 것 — 빨라진 만큼의 비용이 다른 자리로 옮겨 갔을 뿐 사라지지는 않았다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+                "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+                "publisher": "GitHub Blog · Max Wagner",
+                "date": "2023-09-26",
+                "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "잡 하나가 도는 길 — 그리고 돌지 않는 길",
+          "question": "가장 빠른 잡은 무엇인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  PUSH[\"푸시 · PR\"] --> SKIP{\"<b>Git 트리 ID가</b><br/><b>지난 실행과 같은가</b>\"}\n  SKIP -->|\"같다\"| REUSE[\"<b>돌리지 않는다</b><br/>결과 재사용<br/>하루 300~500 실행\"]:::accent\n  SKIP -->|\"다르다\"| VM[\"<b>관리형 VM 기동</b><br/>• 2~64코어<br/>• 워크플로 한 줄로 크기 지정\"]:::list\n  IMG[(\"<b>커스텀 VM 이미지</b><br/>• 프로젝트 소프트웨어<br/>• 미리 캐시한 소스\")]:::list --> VM\n  BUILD[\"이미지 빌드<br/>하루 여러 번\"] -->|\"캐시가 낡지 않게\"| IMG\n  VM --> RUN[\"잡 실행\"]\n  RW[\"재사용 워크플로\"] --> RUN\n  RUN -->|\"사설 서비스 필요\"| OIDC[\"OIDC 토큰 검증<br/>+ 요청 프록시\"]\n  OIDC --> VPC[(\"사설 VPC\")]:::quiet\n  RUN --> DONE[\"잡 종료\"]\n  DONE --> GONE[\"러너 등록 해제 · 사라짐\"]"
+        },
+        {
+          "title": "러너 하나가 거치는 상태",
+          "question": "일회용이라는 말은 어디서 값을 치르는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 대기: 잡 요청 도착\n  대기 --> 기동: 커스텀 이미지로 VM 생성\n  note right of 기동\n    이미지에 소스가 캐시돼 있어\n    여기서 시간을 벌었다\n    50분 → 12분\n  end note\n  기동 --> 실행중\n  실행중 --> 실행중: 사설 VPC 접근은 OIDC 프록시로\n  실행중 --> 종료: 잡 완료 또는 실패\n  종료 --> 소멸: 등록 해제\n  note right of 소멸\n    찌꺼기를 남기지 않는다\n    대신 다음 잡은 다시 기동부터\n  end note\n  소멸 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 빨라지려고 넣은 것이 느려질 때",
+          "question": "캐시와 건너뛰기는 각각 어디서 틀리는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  EPH[\"<b>일회용 환경</b>\"] --> CLEAN[\"찌꺼기가 없다\"]\n  EPH --> SLOW[\"매번 처음부터 준비\"]\n  SLOW --> CACHE[\"캐시를 이미지에 넣는다\"]\n  CACHE --> STALE[\"캐시는 넣는 순간부터 낡는다\"]\n  STALE --> CATCH[\"낡을수록 따라잡을 양이 늘어난다\"]\n  CATCH -->|\"해석\"| LOSE[\"빨라지려고 넣은 것이<br/>느려지는 이유가 된다\"]\n  STALE --> REBUILD[\"하루 여러 번 이미지 재빌드\"]:::accent\n  REBUILD --> COST[\"이미지 파이프라인이<br/>상시로 돌아야 한다\"]:::quiet\n  TREE[\"Git 트리 ID 로 건너뛰기\"] --> ONLY[\"저장소 <b>안의 내용</b>만 본다\"]\n  ONLY -->|\"추정\"| EXT[\"바깥 의존이 바뀌었으면<br/>같은 트리라도 결과가 다를 수 있다\"]\n  BASE[\"기본 러너 이미지\"] --> MISS[\"복잡한 프로덕션 서비스에<br/>필요한 도구가 없다\"]\n  MISS --> CACHE"
+        }
+      ],
+      "sources": [
+        {
+          "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+          "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+          "publisher": "GitHub Blog · Max Wagner",
+          "date": "2023-09-26",
+          "summary": "레거시 CI 를 버리고 자사 Actions larger runners 위에서 github.com 을 빌드·테스트하는 이야기. 32코어 러너 4,500대가 동시에 돌고 시간당 12만 5천 빌드 분·약 1만 5천 잡, 코어 약 15만 개를 쓴다. 미리 만들어 둔 러너 환경에는 복잡한 프로덕션 서비스에 필요한 도구가 없어 커스텀 VM 이미지에 소프트웨어와 소스 코드를 미리 캐시했고 워크플로가 약 50분에서 12분이 됐다. Git 트리 ID 를 비교해 같은 내용이면 CI 를 건너뛰는 기능이 하루 300~500 실행을 아낀다."
+        },
+        {
+          "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+          "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+          "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+          "date": "2022-09-01",
+          "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1989,7 +2491,8 @@
     "**Actions 의 1차 엔지니어링 자료가 얇다.** 자기들이 어떻게 쓰는지에 대한 글은 있는데, **남의 코드를 격리해 실행하는 방법**(샌드박싱·탈출 방지·자원 배분)에 대한 회사 글을 아직 못 찾았다 — Cloudflare·Roblox 와 비교하려면 이게 필요하다.",
     "**수평 샤딩** — 2021년 파티셔닝 글이 '다음은 수평 파티셔닝'이라며 별도 글을 예고했다. 그 글을 아직 확인하지 않았다.",
     "**Copilot 의 서빙 구조** — 최근 블로그가 제품 발표 쪽에 쏠려 있어 추론 인프라에 대한 자료를 확인하지 못했다.",
-    "수평 샤딩(horizontal partitioning) — 회사가 계속 쓰고 있다고 밝히지만 별도 글로 미뤄 이 사이트에 내용이 없다."
+    "수평 샤딩(horizontal partitioning) — 회사가 계속 쓰고 있다고 밝히지만 별도 글로 미뤄 이 사이트에 내용이 없다.",
+    "CI 테스트를 쪼개 나눠 돌리는 방식(샤딩·병렬 배분) — 재사용 워크플로만 언급하고 구체적인 방식은 밝히지 않는다."
   ],
   "sources": [
     {
@@ -2054,6 +2557,13 @@
       "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
       "date": "2023-12-07",
       "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+    },
+    {
+      "title": "GitHub Actions: introducing the new, larger GitHub-hosted runners beta",
+      "url": "https://github.blog/news-insights/product-news/github-actions-introducing-the-new-larger-github-hosted-runners-beta/",
+      "publisher": "GitHub Blog · Ben De St Paer-Gotch",
+      "date": "2022-09-01",
+      "summary": "2~64코어의 Linux·Windows 머신을 최대 500대까지 동시에 쓸 수 있는 관리형 러너. 러너 크기를 바꾸는 것은 워크플로 파일 한 줄이고, 쓴 만큼만 낸다. 엔터프라이즈에는 예약된 고정 IP 범위를 줘서 IP 허용 목록을 쓰는 조직도 관리형 러너를 쓸 수 있게 했다. 2023년 6월 21일 정식 출시."
     }
   ],
   "domain": "github.com"
