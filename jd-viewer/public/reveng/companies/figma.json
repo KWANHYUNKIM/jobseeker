@@ -114,8 +114,78 @@
     {
       "name": "실시간 데이터 구독",
       "why": "파일 캔버스 밖의 것 — 댓글·팀·프로젝트 — 은 멀티플레이어 시스템을 쓰지 않는다. 그런데 그것들도 실시간으로 보여야 한다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Postgres 논리 복제 스트림(WAL) → Kafka",
+          "solves": "폴링 없이 변경을 밀어낸다. 폴링은 DB 질의 수를 통째로 배수로 늘리고, 주기를 쿼리마다 사람이 정하게 만든다.",
+          "limits": "복제 지연이 곧 제품 지연이다. 그리고 DB 가 샤드로 쪼개지면 스트림이 여럿이 되어 전역 순서가 사라진다 — 순서를 요구하지 않는 무효화 모델로 문제를 옮겨 메웠다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LiveGraph: real-time data fetching at Figma",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+              "publisher": "Figma Blog",
+              "date": "2021-10-14",
+              "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+            },
+            {
+              "title": "Keeping It 100(x) With Real-time Data At Scale",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-05-17",
+              "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+            }
+          ]
+        },
+        {
+          "tech": "읽기 관통 캐시 (쿼리 해시로 샤딩)",
+          "solves": "클라이언트로 가는 데이터의 큰 쪽은 실시간 갱신이 아니라 최초 읽기였다. 그 읽기를 DB 앞에서 막는다. 해시로만 나뉘므로 캐시는 DB 토폴로지를 몰라도 된다.",
+          "limits": "무효화되면 결과를 고치는 게 아니라 지우고 다시 조회한다 — 그 순간 부하가 DB 로 간다. 배포 때 빈 캐시로 몰리는 문제는 캐시를 edge 와 따로 배포해 메웠다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Keeping It 100(x) With Real-time Data At Scale",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-05-17",
+              "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+            }
+          ]
+        },
+        {
+          "tech": "확률적 필터(probabilistic filter)",
+          "solves": "무효화를 그 쿼리를 실제로 들고 있는 edge 로만 좁혀 보낸다.",
+          "limits": "위양성이 있어 필요 없는 재조회가 섞인다. 무효화 자체가 드물다는 관측 위에서만 값싼 선택이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Keeping It 100(x) With Real-time Data At Scale",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+              "publisher": "Figma Blog",
+              "date": "2024-05-17",
+              "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+            }
+          ]
+        },
+        {
+          "tech": "GraphQL 라이브 쿼리 + `useSubscription` 훅",
+          "solves": "제품 엔지니어가 DB 쓰기 지점마다 이벤트 메시지를 손으로 짜지 않아도 된다. 뷰를 선언하면 갱신은 계층이 나른다.",
+          "limits": "표준 GraphQL subscriptions 가 아니라서 기존 도구 생태계를 그대로 못 쓴다. **실시간 갱신 아래의 페이지네이션은 아직 안 된다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "LiveGraph: real-time data fetching at Figma",
+              "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+              "publisher": "Figma Blog",
+              "date": "2021-10-14",
+              "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "livegraph-subscription"
+      ]
     },
     {
       "name": "렌더링·클라이언트 성능",
@@ -608,13 +678,547 @@
           "summary": "2025년 매출 10.56억 달러(+41%), 4분기 3.038억 달러(+40%). 순매출유지율(NDR) 136%, 연 10만 달러 이상 쓰는 유료 고객 1,405곳. non-GAAP 영업이익 1.295억 달러(마진 12%)이고 GAAP 영업손실 13억 달러에는 IPO 관련 일회성 주식보상비용 9.757억 달러가 들어 있다. 2026년 매출 가이던스는 13.66~13.74억 달러."
         }
       ]
+    },
+    {
+      "key": "livegraph-subscription",
+      "name": "실시간 데이터 구독 (LiveGraph)",
+      "domain": "실시간 데이터 구독",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "캔버스 밖의 것 — 댓글·팀·프로젝트·권한 — 도 실시간으로 보여야 하는데, 이것들은 멀티플레이어 시스템을 쓰지 않는다. LiveGraph 이전에는 **제품 엔지니어가 DB 에 쓰는 자리마다 이벤트 메시지를 손으로 짜서** 관련 클라이언트에 보냈다. 그래서 같은 데이터를 여러 제품 영역이 요구할 때 누가 책임지는지가 흐려졌고, 권한 변경처럼 파급이 넓은 쓰기는 어디까지 번지는지 아무도 몰랐다. 메시지 순서가 DB 쓰기 순서와 같다는 보장도 없어 **데이터 정합성 버그**가 났다.",
+        "metrics": [
+          {
+            "label": "단일 인스턴스 쓰기 처리량",
+            "value": "초당 약 10,000건 (2021)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "갱신 지연",
+            "value": "밀리초 단위",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "클라이언트 세션",
+            "value": "2021년 대비 3배 (2024)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "label": "뷰 요청",
+            "value": "최근 1년 5배 (2024)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "label": "재설계 목표",
+            "value": "읽기·DB 갱신 부하 100배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "label": "무효화가 어려운 쿼리",
+            "value": "약 700개 중 11개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "쓰기 지점마다 이벤트를 손으로 짜던 시절",
+          "thought": "문제는 코드가 많다는 게 아니라 **책임이 흩어진다**는 것이었다. 같은 데이터를 여러 화면이 쓰기 시작하면 누가 그 갱신을 보내야 하는지가 모호해지고, 권한 변경처럼 파급이 넓은 쓰기는 어디까지 번지는지 아무도 모른다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실시간 DB 로 갈아탈지 정할 때",
+          "thought": "Firebase·RethinkDB 로 옮기는 길이 있었지만, 기존 시스템들이 **대량 동시 구독을 명시적으로 권하지 않는다.** 그리고 협업이 제품의 본체인 회사에서 이 계층은 남에게 맡길 자리가 아니라 경쟁력이 되는 자리다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "DB 가 샤드로 쪼개지기 시작했을 때",
+          "thought": "모든 복제 스트림을 억지로 하나로 합쳐 전역 순서를 유지하던 임시방편이, 샤드가 늘수록 fan-in·fan-out 을 키웠다. **순서를 지키는 비용이 순서가 주는 값보다 커지는 지점**이 있다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "무엇을 최적화할지 다시 정할 때",
+          "thought": "부하를 뜯어보니 클라이언트로 가는 데이터의 큰 쪽은 실시간 갱신이 아니라 **최초 읽기**였고, 대부분의 쿼리 결과는 화면에 뜬 뒤 한 번도 안 바뀌었다. 그러면 갱신을 정교하게 만드는 것보다 읽기를 싸게 만드는 쪽이 맞다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "스키마에 제약을 걸어야 할 때",
+          "thought": "700개 쿼리 중 무효화가 까다로운 건 11개뿐이었다. **나머지 689개를 위해 전부를 복잡하게 만들 이유가 없다** — 어려운 쪽만 따로 다루고 쉬운 쪽은 값싸게 지나가게 한다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "라이브 뷰 트리 (live view tree)",
+            "what": "화면 하나가 요구하는 데이터를 조인 없는 서브쿼리들의 트리로 쪼갠 것. 각 노드가 `SELECT … FROM … WHERE …` 하나다."
+          },
+          {
+            "name": "서브쿼리",
+            "what": "캐시와 무효화의 단위. 같은 서브쿼리를 두 사람이 구독하면 결과는 하나만 들고 있는다."
+          },
+          {
+            "name": "무효화 (invalidation)",
+            "what": "'이 쿼리의 결과는 이제 낡았다'는 통지. **값을 실어 나르지 않는다.**"
+          },
+          {
+            "name": "nonce",
+            "what": "쉬운 조건과 어려운 조건 사이의 간접층. `{쉬운조건} → nonce` 를 두고 `{쉬운조건}-{nonce}-{어려운조건}` 을 결과 키로 쓴다."
+          }
+        ],
+        "invariants": [
+          "무효화는 캐시 항목을 **고치지 않고 지운다.** 값을 나르지 않으므로 도착 순서가 결과를 바꾸지 못한다 — 전역 순서를 포기할 수 있었던 이유가 이것이다.",
+          "캐시 샤드는 **자기 해시 범위의 무효화만** 소비한다. 그래서 DB 가 몇 개로 쪼개지든 캐시는 그 사실을 몰라도 된다.",
+          "DB 토폴로지를 아는 서비스는 invalidator 하나뿐이다.",
+          "쿼리 모양은 사람의 시간(하루 단위 배포)으로 바뀌고 무효화는 1초 안쪽으로 일어난다. 그래서 모양은 **요청이 오기 전에** 미리 나눠 둘 수 있다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 `useSubscription(뷰, 인자)` 로 뷰를 선언한다",
+            "why": "무엇을 보낼지가 아니라 무엇이 필요한지를 쓴다"
+          },
+          {
+            "step": "Edge 가 뷰를 조인 없는 서브쿼리 트리로 펼친다",
+            "why": "캐시·무효화의 단위를 쿼리 하나로 맞추기 위해"
+          },
+          {
+            "step": "각 서브쿼리를 쿼리 해시로 정해진 캐시 샤드에 묻는다",
+            "why": "캐시가 DB 토폴로지를 몰라도 되게"
+          },
+          {
+            "step": "적중이면 그대로, 불발이면 캐시가 DB 에 읽어 채운다",
+            "why": "트래픽의 큰 쪽인 최초 읽기를 DB 앞에서 막는다"
+          },
+          {
+            "step": "Edge 가 결과를 트리로 다시 조립해 클라이언트에 준다",
+            "why": "클라이언트는 참조로 새 트리를 만들어 리렌더한다"
+          },
+          {
+            "step": "쓰기가 일어나면 invalidator 가 자기 샤드의 복제 스트림에서 그것을 본다",
+            "why": "폴링 없이, 그리고 샤드마다 독립적으로"
+          },
+          {
+            "step": "미리 나눠 둔 쿼리 모양으로 어떤 캐시 샤드가 영향받는지 계산해 무효화를 보낸다",
+            "why": "활성 쿼리 목록을 들고 있지 않아도 된다"
+          },
+          {
+            "step": "캐시가 항목을 지우고, 확률적 필터로 좁힌 edge 에만 알린다",
+            "why": "무효화 fan-out 을 실제로 그 쿼리를 든 곳으로 제한"
+          },
+          {
+            "step": "Edge 가 다시 조회해 클라이언트에 증분 갱신을 밀어 넣는다",
+            "why": "화면은 구독을 다시 걸지 않는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "실시간 데이터 계층을 사 올 것인가 만들 것인가",
+            "chosen": "직접 만든다 (LiveGraph)",
+            "alternatives": [
+              "Firebase·RethinkDB 같은 실시간 DB 로 이전",
+              "Hasura·Prisma·PostGraphile 등 기성 GraphQL 계층"
+            ],
+            "tradeoff": "인프라 팀을 이 계층에 계속 묶어 둬야 하고 기성 도구의 생태계를 못 쓴다. 기성 시스템들이 **대량 동시 구독을 권하지 않는다**는 점과, 협업이 제품의 본체라 이 계층이 경쟁력이 된다는 판단으로 감수했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "이 계층이 저장을 맡을 것인가 조회만 맡을 것인가",
+            "chosen": "Postgres 위에 얹는 **조회 계층**. 저장은 계속 Postgres 가 한다",
+            "alternatives": [
+              "실시간 DB 로 저장까지 옮기기"
+            ],
+            "tradeoff": "실시간 DB 가 자체 제공하는 구독 최적화를 못 쓰고, 라이브 쿼리에 필요한 것을 전부 바깥에서 다시 만들어야 한다. 대신 기존 데이터와 운영을 하나도 안 건드린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "변경을 어떻게 알아챌 것인가",
+            "chosen": "복제 로그(WAL)를 Kafka 로 받아 따라간다",
+            "alternatives": [
+              "주기적 폴링"
+            ],
+            "tradeoff": "DB 의 복제 형식에 묶이고 복제 지연이 그대로 제품 지연이 된다. 폴링은 DB 질의를 배수로 늘리고 주기를 쿼리마다 사람이 정하게 만든다는 점에서 더 나빴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "GraphQL 의 어느 쪽을 쓸 것인가",
+            "chosen": "라이브 쿼리 — 쿼리 **결과**를 계속 최신으로 유지한다",
+            "alternatives": [
+              "표준 GraphQL subscriptions (이벤트 스트림)"
+            ],
+            "tradeoff": "표준 밖으로 나가 기존 GraphQL 도구를 그대로 못 쓴다. subscriptions 는 이벤트 스트림을 겨냥한 물건이라 '지금 이 뷰의 정답'을 유지하는 문제와 다르다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "캐시는 변경을 반영할 것인가 지울 것인가",
+            "chosen": "**무효화형** — 지우고 다시 조회한다",
+            "alternatives": [
+              "변경 반영형 — 행 하나가 바뀌면 캐시된 결과를 직접 고친다"
+            ],
+            "tradeoff": "무효화될 때마다 DB 재조회 비용이 든다. 대신 **무효화는 값을 나르지 않으므로 도착 순서가 결과를 바꾸지 못하고**, 그래서 전역 순서라는 요구 자체가 사라진다 — 샤딩된 DB 위로 갈 수 있게 한 결정이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "question": "invalidator 가 어떤 쿼리를 깨야 할지 어떻게 아는가",
+            "chosen": "쿼리 **모양**을 미리 나눠 둔다. 활성 쿼리는 추적하지 않는다",
+            "alternatives": [
+              "지금 살아 있는 구독 목록을 invalidator 가 들고 있기"
+            ],
+            "tradeoff": "모든 쿼리를 `(쉬운 조건) AND (어려운 조건)` 형태로 정규화하도록 **스키마에 제약**이 걸린다. 쿼리 모양은 하루 단위로 바뀌고 무효화는 1초 안쪽이라, 미리 나눠 두는 쪽이 성립한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "question": "범위 조건처럼 무효화 대상이 폭발하는 쿼리를 어떻게 다룰 것인가",
+            "chosen": "nonce 간접층 — `{쉬운조건} → nonce` 를 두고 쉬운 조건이 깨질 때 어려운 쿼리가 함께 쓸려 나가게 한다",
+            "alternatives": [
+              "어려운 쿼리를 직접 무효화하기"
+            ],
+            "tradeoff": "조회에 간접 비용이 붙고 **필요 이상으로 많이 깬다.** 직접 무효화는 `created_at < ?` 같은 조건에서 fan-out 이 무한이 되어 성립하지 않았고, 어려운 쿼리가 700개 중 11개뿐이라 과도 무효화를 감당할 만했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "question": "배포할 때마다 DB 가 얻어맞는 것을 어떻게 막을 것인가",
+            "chosen": "edge 와 cache 를 **따로 배포**한다. 캐시는 핫 스탠바이 복제본을 둔다",
+            "alternatives": [
+              "한 서비스로 두고 배포 시 캐시가 비는 것을 감수"
+            ],
+            "tradeoff": "서비스 두 종류를 따로 운영해야 한다. 합쳐 두면 배포마다 모든 클라이언트가 동시에 재접속해 빈 캐시로 몰리고, 그것만으로 서비스가 흔들렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Go",
+            "role": "성능이 걸리는 하위 계층 — 복제 스트림 처리와 캐시·무효화 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "NodeJS",
+            "role": "클라이언트와 공유하는 코드가 걸린 상위 계층",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka",
+            "role": "DB 복제 스트림을 여러 서버로 흘려보내는 통로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "Postgres",
+            "role": "정답이 있는 곳. LiveGraph 는 저장하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "tech": "React `useSubscription` 훅",
+            "role": "제품 코드가 뷰를 선언하는 유일한 창구",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "multiplayer-doc",
+          "via": "이어지지 않는다 — 경로가 아예 다르다",
+          "contract": "캔버스 **안**의 편집은 멀티플레이어 시스템이, 캔버스 **밖**(댓글·팀·프로젝트·권한)은 LiveGraph 가 나른다. 두 시스템은 저장소도 전달 경로도 공유하지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "Postgres 복제 스트림(WAL) → Kafka",
+          "via": "복제 로그 tailing",
+          "contract": "invalidator 는 자기 샤드의 스트림만 읽는다. 무엇을 보낼지는 미리 나눠 둔 쿼리 모양이 정한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "권한 시스템",
+          "via": "객체·객체 간 관계 단위 접근 제어 규칙",
+          "contract": "권한이 바뀌면 그 자체가 무효화를 낳아 보이던 것이 실시간으로 사라진다 — 손으로 이벤트를 짜던 시절 가장 다루기 어렵던 자리다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "GraphQL Specification — Subscription",
+            "authors": "GraphQL Foundation",
+            "year": "2021",
+            "venue": "GraphQL Spec (October 2021)",
+            "url": "https://spec.graphql.org/October2021/#sec-Subscription",
+            "takeaway": "표준의 subscription 은 **이벤트 스트림**을 겨냥한다. Figma 는 이것 대신 쿼리 **결과**를 계속 최신으로 유지하는 라이브 쿼리를 골랐고, 그 대가로 표준 도구 생태계 밖으로 나갔다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "Noria: dynamic, partially-stateful dataflow for high-performance web applications",
+            "authors": "Jon Gjengset 외 (MIT)",
+            "year": "2018",
+            "venue": "OSDI 2018",
+            "url": "https://www.usenix.org/conference/osdi18/presentation/gjengset",
+            "takeaway": "같은 문제(웹 앱의 쿼리 결과를 계속 최신으로 유지하기)를 정반대로 푼 연구다. Noria 가 데이터플로로 결과를 **증분 갱신**하는 데 비해 Figma 는 100x 재설계에서 **지우고 다시 조회하는** 쪽을 골랐다 — 갱신보다 최초 읽기가 부하의 큰 쪽이라는 관측 때문이다. **Figma 가 이 논문을 언급한 적은 없다. 같은 문제의 다른 답으로 놓고 읽는 것이다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Space/Time Trade-offs in Hash Coding with Allowable Errors",
+            "authors": "Burton H. Bloom",
+            "year": "1970",
+            "venue": "Communications of the ACM 13(7)",
+            "url": "https://dl.acm.org/doi/10.1145/362686.362692",
+            "takeaway": "무효화를 관련 edge 로만 좁힐 때 쓰는 확률적 필터의 뿌리. 위양성을 허용하는 대신 공간을 줄이는 거래인데, 여기서 위양성의 대가는 **필요 없는 재조회 몇 번**이라 값이 싸다. **Figma 는 `probabilistic filters` 라고만 쓰고 구체적 자료구조나 이 논문을 밝히지 않았다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "샤드마다 따로 흐르는 복제 스트림 위에서 전역 순서를 어떻게 보장할 것인가",
+            "why_hard": "**불가능성이 아니라 비용 구조의 문제다.** 서로 다른 샤드의 WAL 은 각자의 시간축을 가지므로, 전역 순서를 만들려면 모든 스트림을 한 곳에 모아 줄을 세워야 한다. 그런데 그 지점이 곧 샤딩으로 없애려던 병목이다 — 순서를 지키는 비용이 샤드 수에 따라 커지고, Figma 의 임시방편이 실제로 그렇게 fan-in·fan-out 을 키웠다.",
+            "current_best": "**순서가 필요 없는 모델로 문제를 옮긴다.** 무효화는 값을 나르지 않고 지우기만 하므로 도착 순서가 결과를 바꾸지 못한다. 대가는 무효화마다 드는 재조회 비용과, 진행 중인 읽기와 무효화가 엇갈리는 경합(read-invalidation rendezvous)을 따로 막아야 한다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              },
+              {
+                "title": "Keeping It 100(x) With Real-time Data At Scale",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+                "publisher": "Figma Blog",
+                "date": "2024-05-17",
+                "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+              }
+            ]
+          },
+          {
+            "problem": "실시간으로 바뀌는 목록에 페이지네이션을 어떻게 붙일 것인가",
+            "why_hard": "페이지의 정의가 데이터에 없다. 오프셋 기준은 앞쪽에 항목이 삽입·삭제되는 순간 의미를 잃고, 커서 기준은 **커서가 지나간 뒤 그 뒤에서 일어난 변경을 표현할 방법이 없다.** 구독은 '이 결과가 지금 정답'을 약속하는데, 페이지는 그 결과의 일부만 들고 있으므로 무엇을 정답이라 부를지가 애초에 정해지지 않는다.",
+            "current_best": "**하지 않는다.** Figma 는 2021년 글에서 이것을 남은 과제로 명시했고, 뷰의 크기를 제한하는 쪽으로 피해 간다. 대가는 무한 목록을 LiveGraph 로 못 만든다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "LiveGraph: real-time data fetching at Figma",
+                "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+                "publisher": "Figma Blog",
+                "date": "2021-10-14",
+                "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "구독이 화면에 닿기까지",
+          "question": "뷰를 선언하면 무엇이 어떤 순서로 움직이는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"클라이언트 useSubscription(뷰, 인자)\"] --> E[\"Edge — 뷰를 조인 없는 서브쿼리 트리로 펼친다\"]\n  E --> H{\"쿼리 해시로 캐시 샤드 선택\"}\n  H --> K[\"Read-through Cache<br/>DB 토폴로지를 모른다\"]\n  K -->|\"적중\"| R[\"결과 트리 재조립\"]\n  K -->|\"불발\"| DB[(\"Postgres 샤드\")]\n  DB --> K\n  R --> C"
+        },
+        {
+          "title": "무효화가 도는 길",
+          "question": "누가 쓰기를 보고, 그것이 어떻게 화면까지 오는가?",
+          "kind": "flow",
+          "code": "flowchart LR\n  W[(\"Postgres 샤드 쓰기\")] --> WAL[\"복제 스트림 WAL\"]\n  WAL --> KF[\"Kafka\"]\n  KF --> INV[\"Invalidator<br/>DB 샤드와 같은 모양으로 샤딩\"]\n  INV -->|\"미리 나눠 둔 쿼리 모양으로 대상 계산\"| CS[\"해당 캐시 샤드만\"]\n  CS -->|\"고치지 않고 지운다\"| CS\n  CS -->|\"확률적 필터로 좁혀 통지\"| E[\"Edge\"]\n  E -->|\"재조회\"| CS\n  E -->|\"증분 갱신 push\"| C[\"클라이언트\"]"
+        },
+        {
+          "title": "정상 경로가 깨지는 두 자리",
+          "question": "배포할 때와, 읽는 도중 무효화가 올 때 무슨 일이 나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  D[\"LiveGraph 배포\"] --> RC[\"모든 클라이언트가 동시에 재접속\"]\n  RC --> EC{\"캐시가 비어 있나\"}\n  EC -->|\"예 — edge 와 한 몸이던 옛 구조\"| TH[\"빈 캐시로 몰림<br/>DB 가 통째로 얻어맞는다\"]\n  EC -->|\"아니오 — 캐시를 따로 배포\"| OK[\"핫 스탠바이 복제본이 받아낸다\"]\n  RD[\"진행 중인 읽기 도중 무효화 도착\"] --> RV{\"읽기-무효화 랑데부\"}\n  RV -->|\"동기화 없음\"| ST[\"무효화 이전 결과가<br/>캐시에 눌러앉는다\"]\n  RV -->|\"합쳐진 읽기를 막는 세 규칙\"| OK2[\"낡은 값이 캐시에 남지 않는다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "LiveGraph: real-time data fetching at Figma",
+          "url": "https://www.figma.com/blog/livegraph-real-time-data-fetching-at-figma/",
+          "publisher": "Figma Blog",
+          "date": "2021-10-14",
+          "summary": "복제 로그를 따라가는 GraphQL 라이브 쿼리 계층을 왜 직접 만들었는지."
+        },
+        {
+          "title": "Keeping It 100(x) With Real-time Data At Scale",
+          "url": "https://www.figma.com/blog/livegraph-real-time-data-at-scale/",
+          "publisher": "Figma Blog",
+          "date": "2024-05-17",
+          "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
+        }
+      ]
     }
   ],
   "open_questions": [
     "멀티플레이어 데이터를 실제로 어디에 어떻게 저장하는지 — 메타데이터의 Postgres 와 별개라는 것까지만 밝힌다.",
-    "단일 데이터베이스 인스턴스에서 수평 확장으로 어떻게 옮겼는지 — 2019년 글은 계획으로만 언급한다.",
     "미국 밖 사용자의 지연을 위해 멀티플레이어 인스턴스를 실제로 어떻게 분산했는지.",
-    "실시간 데이터 구독(LiveGraph)·렌더링·저장 세 도메인은 아직 손대지 않았다."
+    "LiveGraph 캐시의 실제 적중률과 무효화 빈도 — 2024년 글은 '무효화는 드물다'고만 하고 수치를 주지 않는다.",
+    "invalidator 의 자동 리샤딩, Postgres 밖 출처의 쿼리, 서버측 권한 계산의 1급 지원 — 2024년 글이 남은 과제로 든 것들.",
+    "렌더링·클라이언트 성능, 데이터 저장·확장 두 도메인은 아직 손대지 않았다."
   ],
   "sources": [
     {
