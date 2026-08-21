@@ -87,6 +87,23 @@ jobs:
           fi
 
           echo ""
+          echo "### 누적 폴더 실태 (급감 가드의 진짜 원인)"
+          S=catch_capture/screenshots
+          echo "-- 전체 폴더 수: $(ls -1 "$S" 2>/dev/null | wc -l | tr -d ' ')"
+          echo "-- 고정(누적) 폴더 {site}_{keyword} — 타임스탬프 없는 것:"
+          ls -1 "$S" 2>/dev/null | grep -vE '_[0-9]{8}_[0-9]{6}$' | head -20 || echo "   (없음)"
+          echo "-- 사이트별 타임스탬프 폴더 개수:"
+          ls -1 "$S" 2>/dev/null | sed -E 's/_[0-9]{8}_[0-9]{6}$//' | sort | uniq -c | sort -rn | head -12
+          echo ""
+          echo "### 건수 비교"
+          python3 -c "import json,pathlib; p=pathlib.Path('jd-viewer/public/all_jobs_enriched.json'); d=json.load(open(p,encoding='utf-8')) if p.exists() else []; print('현재 all_jobs_enriched:', len(d), '건')" 2>/dev/null || echo "(읽기 실패)"
+          latest=$(ls -1d "$S"/all_개발자_* 2>/dev/null | tail -1)
+          [ -n "$latest" ] && python3 -c "import json,sys,pathlib; p=pathlib.Path(sys.argv[1])/'all_jobs.json'; d=json.load(open(p,encoding='utf-8')) if p.exists() else []; print('최신 스냅샷', p.parent.name, ':', len(d), '건')" "$latest" 2>/dev/null || true
+          echo ""
+          echo "### 마감 아카이브 (reposts 입력)"
+          ls -1 "$S"/closed_*.json 2>/dev/null | head -5 || echo "(closed_*.json 없음 — reposts 가 참조할 아카이브가 없다)"
+
+          echo ""
           echo "### auto_crawl 상태 파일"
           for f in catch_capture/.auto_crawl_state.json catch_capture/.crawl_state.json catch_capture/*.pid; do
             [ -f "$f" ] && { echo "--- $f ---"; head -20 "$f"; }
