@@ -184,8 +184,71 @@
     {
       "name": "실시간 메시지 전달",
       "why": "호스트당 수천만 채널, 수천만 연결. 그런데 **기업용이라 조직 하나에 워크스페이스가 수천 개**여서, 조직 전체 데이터를 모든 워크스페이스에 뿌리던 구조가 대형 고객에서 무너졌다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Channel · Gateway · Admin · Presence 서버 (Java)",
+          "solves": "호스트당 수천만 채널, 수천만 연결. **Channel 서버는 상태를 가진 인메모리**이고 일부 이력을 들고 있으며, 일관 해싱으로 채널의 부분집합에 매핑된다. Gateway 서버는 지리적으로 흩어져 있어 클라이언트가 가까운 곳에 붙는다.",
+          "limits": "**회사 글이 구성요소를 나열하는 데 가깝고 버린 대안과 대가를 거의 적지 않는다** — 실패 시나리오, 병목, 설계 대가가 빠져 있다. 그래서 이 기능은 Unified Grid 쪽 자료에 더 기댄다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Real-time Messaging",
+              "url": "https://slack.engineering/real-time-messaging/",
+              "publisher": "Engineering at Slack",
+              "date": "2023-04-11",
+              "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+            }
+          ]
+        },
+        {
+          "tech": "CHARM (일관 해시 링 관리자) + Consul + Envoy",
+          "solves": "채널을 어느 Channel 서버가 맡을지 정한다. CS 교체가 **20초 미만**에 끝난다.",
+          "limits": "일관 해싱의 대가(서버 집합이 바뀔 때의 재배치)를 그 글이 다루지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Real-time Messaging",
+              "url": "https://slack.engineering/real-time-messaging/",
+              "publisher": "Engineering at Slack",
+              "date": "2023-04-11",
+              "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+            }
+          ]
+        },
+        {
+          "tech": "조직 전체 데이터의 팬아웃 제거",
+          "solves": "**조직 전체 데이터를 그리드의 모든 워크스페이스에 뿌리던 것을 없앴다.** 대형 고객은 워크스페이스가 수천 개라 그 팬아웃이 그대로 비용이었다.",
+          "limits": "이 변경이 Unified Grid 의 **전제 조건**이었다 — 클라이언트·저장·API 를 함께 고쳐야 성립한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+              "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+              "publisher": "Engineering at Slack",
+              "date": "2024-07-31",
+              "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+            }
+          ]
+        },
+        {
+          "tech": "Vitess 재샤딩 (워크스페이스/조직 ID 가 아닌 축으로)",
+          "solves": "**워크스페이스 라우팅 없이도 질의할 수 있게** 데이터를 다른 축으로 다시 나눴다. 채널 ID 로 이미 샤딩된 것(메시지 테이블 등)은 손댈 것이 없었다.",
+          "limits": "그렇지 않은 질의는 **여러 샤드를 돌아야** 한다 — 보통 사용자에게는 '놀랍도록 잘 돌았'지만 **긴 꼬리에서는 성능이 나빠졌다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+              "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+              "publisher": "Engineering at Slack",
+              "date": "2024-07-31",
+              "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "unified-grid"
+      ]
     },
     {
       "name": "저장·샤딩",
@@ -1085,13 +1148,455 @@
           "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
         }
       ]
+    },
+    {
+      "key": "unified-grid",
+      "name": "Unified Grid — 11년 된 전제를 걷어내기",
+      "domain": "실시간 메시지 전달",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**2013년의 Slack 은 '거의 모든 데이터는 워크스페이스 하나의 것'이라고 전제하고 지어졌다.** 사용자는 워크스페이스 하나에 속하고, 채널도 그 안에 있고, DB 는 워크스페이스 ID 로 샤딩되고, 세션 토큰에 워크스페이스 ID 가 들어간다. 그런데 2017년 Enterprise Grid 가 나오면서 조직 개념이 얹혔고, **대형 고객은 워크스페이스를 수천 개** 갖게 됐다. 사용자는 일하려고 워크스페이스를 계속 갈아타야 했고, 갈아타는 사이에 알림을 놓쳤으며, 조직 전체 데이터를 워크스페이스마다 동기화하느라 버그가 났다. **전제가 틀린 게 아니라 세상이 그 전제를 벗어난 것이다.**",
+        "metrics": [
+          {
+            "label": "대형 고객의 워크스페이스",
+            "value": "**수천 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "label": "작업 기간",
+            "value": "프로토타입(2023 여름 사내 사용) → 2023 가을 출시 시작 → **2024-03 완료** · 약 2년",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "label": "작업 규모",
+            "value": "**깨진 테스트 스위트 수백 개** · API 와 권한 검사를 스프레드시트로 추적 · 대부분의 제품 엔지니어링 팀에서 수십 명",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "label": "'관련 있는' 워크스페이스 상한",
+            "value": "**50개** (수동 설정 가능)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "label": "실시간 규모",
+            "value": "호스트당 수천만 채널 · 수천만 연결 · 전 세계 500ms 안에 전달",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time Messaging",
+                "url": "https://slack.engineering/real-time-messaging/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-04-11",
+                "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+              }
+            ]
+          },
+          {
+            "label": "Channel 서버 교체",
+            "value": "20초 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time Messaging",
+                "url": "https://slack.engineering/real-time-messaging/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-04-11",
+                "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "임시방편이 굳어 가는 걸 볼 때",
+          "thought": "Enterprise Grid 를 얹으면서 백엔드가 **워크스페이스 샤드를 보고 없으면 조직 샤드를 보는** 식으로 갔다. 처음엔 됐지만 **사용자가 여러 워크스페이스에 걸치는 쪽으로 쓰임새가 옮겨 가자** 그 반창고가 감당을 못 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "질문을 뒤집었을 때",
+          "thought": "회사가 스스로 던진 질문이 정확하다 — **\"같은 그리드 안에서 데이터가 공유되고 사용자가 일하려고 그 사이를 갈아타야 한다면, 차라리 접근 가능한 전부를 하나의 화면으로 주면 안 되나?\"** 워크스페이스를 잘 갈아타게 만드는 대신 **갈아탈 이유를 없애는** 쪽으로 문제를 옮겼다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇부터 고칠지 정할 때",
+          "thought": "화면을 먼저 고칠 수 없었다. **Vitess 로 데이터를 다른 축으로 다시 나누고, 실시간 스택에서 조직 전체 팬아웃을 없애고, 클라이언트가 조직 단위로 저장할 수 있게** 한 다음에야 그 화면이 성립한다 — 아래가 준비돼야 위가 가능한 순서였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "API 를 하나씩 고칠 때",
+          "thought": "API 마다 사정이 달랐다. **채널 ID 로 이미 샤딩된 것은 손댈 게 없었고**, 워크스페이스가 꼭 필요한 것(채널 생성 같은)은 사용자에게 고르게 했으며, 나머지는 여러 샤드를 도는 방식으로 갔다 — **하나의 해법이 아니라 네 가지를 상황에 맞춰 썼다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "수백 개 워크스페이스에 속한 사람을 볼 때",
+          "thought": "여러 샤드를 도는 방식이 보통 사용자에게는 **놀랍도록 잘 돌았는데** 긴 꼬리에서 무너졌다. 그래서 **'관련 있는' 워크스페이스를 50개로 잘랐다** — 완전함을 포기하고 쓸 만함을 샀다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "테스트가 수백 개 깨졌을 때",
+          "thought": "11년 된 전제가 코드 곳곳에 박혀 있었다. API 와 권한 검사를 **스프레드시트로 추적**하며 하나씩 지웠고, 대부분의 제품 팀에서 수십 명이 붙었다 — **전제를 바꾸는 일의 비용은 그 전제가 얼마나 오래 있었느냐에 비례한다.**",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "워크스페이스",
+            "what": "2013년의 기본 단위. **DB 샤딩 키이자 세션 토큰에 들어가는 값**이었다."
+          },
+          {
+            "name": "그리드(조직)",
+            "what": "2017년에 얹힌 상위 단위. 대형 고객은 워크스페이스를 수천 개 갖는다."
+          },
+          {
+            "name": "Boot API",
+            "what": "**그리드 전체에서 그 사용자가 속한 모든 워크스페이스와 채널**을 한 번에 돌려주는 새 엔드포인트."
+          },
+          {
+            "name": "'관련 있는' 워크스페이스",
+            "what": "상한 50개. 수백 개에 속한 사람을 위해 자른 선."
+          }
+        ],
+        "invariants": [
+          "**갈아탈 이유를 없앤다** — 잘 갈아타게 만드는 것이 아니라.",
+          "아래(저장·실시간·클라이언트)가 준비돼야 위(화면)가 성립한다.",
+          "**API 마다 사정이 다르다** — 하나의 해법으로 다 덮지 않는다.",
+          "긴 꼬리에서는 **완전함보다 쓸 만함**을 고른다(50개 상한)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "Vitess 로 데이터를 워크스페이스/조직 ID 가 아닌 축으로 다시 나눈다",
+            "why": "워크스페이스 라우팅 없이 질의할 수 있어야 한다"
+          },
+          {
+            "step": "실시간 스택에서 **조직 전체 데이터의 워크스페이스별 팬아웃을 없앤다**",
+            "why": "워크스페이스가 수천 개면 그 팬아웃이 그대로 비용이다"
+          },
+          {
+            "step": "클라이언트 저장을 워크스페이스 단위에서 **조직 단위**로 옮긴다",
+            "why": "화면이 조직 전체를 보려면 저장도 그래야 한다"
+          },
+          {
+            "step": "Boot API 를 만든다 — 그리드 전체의 워크스페이스와 채널을 한 번에",
+            "why": "갈아타지 않고 한 화면에서 보게"
+          },
+          {
+            "step": "API 를 하나씩 네 방식 중 하나로 고친다",
+            "why": "채널 ID 샤딩 / 사용자에게 묻기 / 여러 샤드 순회 / 그대로 두기"
+          },
+          {
+            "step": "고친 API 에 'Unified Grid 호환' 표시를 단다",
+            "why": "수백 개를 추적하려면 표시가 필요했다 — 스프레드시트로 관리했다"
+          },
+          {
+            "step": "수백 개에 속한 사용자는 '관련 있는' 50개로 자른다",
+            "why": "긴 꼬리에서 여러 샤드 순회가 무너진다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "워크스페이스 갈아타기를 어떻게 개선할 것인가",
+            "chosen": "**갈아탈 이유를 없앤다** — 그리드 전체를 하나의 화면으로",
+            "alternatives": [
+              "갈아타기를 빠르고 매끄럽게 만들기"
+            ],
+            "tradeoff": "**11년 된 전제를 걷어내야 한다** — 약 2년, 수십 명, 깨진 테스트 수백 개. 그래도 갈아타기를 개선하는 것으로는 **알림을 놓치는 것과 조직 데이터 동기화 버그**가 안 없어진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "question": "무엇부터 바꿀 것인가",
+            "chosen": "**아래부터** — Vitess 재샤딩 · 실시간 팬아웃 제거 · 클라이언트 저장",
+            "alternatives": [
+              "화면부터 바꾸고 뒤를 맞추기"
+            ],
+            "tradeoff": "사용자에게 보이는 것이 한참 뒤에 나온다 — 프로토타입이 2023년 여름 사내용이었고 출시 완료가 2024년 3월이다. 그래도 **아래가 안 되면 위가 성립하지 않는다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "question": "API 를 어떻게 고칠 것인가",
+            "chosen": "**사정에 따라 네 가지로** — 그대로 / 사용자에게 묻기 / 여러 샤드 순회 / 상한 두기",
+            "alternatives": [
+              "하나의 라우팅 규칙으로 통일"
+            ],
+            "tradeoff": "**규칙이 넷이라 어느 API 가 어느 쪽인지를 따로 추적해야 한다**(스프레드시트로 관리했다). 대신 채널 ID 로 이미 샤딩된 고트래픽 질의는 **손댈 것이 없었고**, 통일하려 했다면 그것들까지 건드려야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "question": "워크스페이스 전용 동작(채널 생성 등)은 어떻게 할 것인가",
+            "chosen": "**사용자에게 고르게 한다**",
+            "alternatives": [
+              "자동으로 추론",
+              "기능 제한"
+            ],
+            "tradeoff": "**사용자에게 마찰이 생긴다** — 갈아탈 이유를 없애려던 작업에서 다시 고르라고 묻는 셈이다. 그래도 자동 추론은 틀리면 엉뚱한 워크스페이스에 채널이 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "question": "수백 개 워크스페이스에 속한 사용자는 어떻게 할 것인가",
+            "chosen": "**'관련 있는' 것을 50개로 자른다** (수동 설정 가능)",
+            "alternatives": [
+              "전부 보여 주기",
+              "성능을 더 최적화"
+            ],
+            "tradeoff": "**완전한 화면을 포기한다** — 51번째부터는 자동으로 안 보이고 사용자가 직접 설정해야 한다. 여러 샤드를 도는 방식이 보통 사용자에게는 놀랍도록 잘 돌았지만 **긴 꼬리에서 무너졌고**, 그쪽을 위해 전체를 느리게 만들 수는 없었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Vitess",
+            "role": "워크스페이스/조직 ID 가 아닌 축으로 재샤딩. **Figma·Notion 이 버린 것을 고른 자리**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Boot API",
+            "role": "그리드 전체의 워크스페이스·채널을 한 번에 돌려주는 새 엔드포인트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Channel · Gateway · Admin · Presence 서버 (Java)",
+            "role": "실시간 전달. Channel 서버는 상태를 가진 인메모리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time Messaging",
+                "url": "https://slack.engineering/real-time-messaging/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-04-11",
+                "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+              }
+            ]
+          },
+          {
+            "tech": "CHARM (일관 해시 링 관리자) · Consul · Envoy",
+            "role": "채널을 서버에 매핑하고 발견한다. CS 교체 20초 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time Messaging",
+                "url": "https://slack.engineering/real-time-messaging/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-04-11",
+                "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+              }
+            ]
+          },
+          {
+            "tech": "조직 단위 클라이언트 저장소",
+            "role": "워크스페이스 단위에서 옮겨 왔다 — 화면이 조직 전체를 보려면 필요했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "저장·샤딩",
+          "via": "Vitess 재샤딩",
+          "contract": "**이 기능의 전제 조건이다** — 워크스페이스 라우팅 없이 질의할 수 있어야 조직 전체 화면이 성립한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "az-siloing",
+          "via": "AZ 별 배포",
+          "contract": "실시간 서버들도 AZ 안에서 완결돼야 배수 버튼이 듣는다 — 다만 **Channel 서버가 상태를 가진 인메모리**라 사일로화 가능 여부는 회사가 후속 글로 미뤘다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "kafka-job-queue",
+          "via": "메시지 게시",
+          "contract": "게시된 메시지가 잡 큐를 지나 실시간 전달로 온다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "전제를 바꾸는 비용은 그 전제가 얼마나 오래 있었느냐에 비례한다",
+            "why_hard": "**2013년의 '데이터는 워크스페이스 하나의 것'은 틀린 전제가 아니었다** — 그때는 맞았다. 문제는 그 전제가 DB 샤딩 키, 세션 토큰, API 시그니처, 권한 검사, 테스트에 **11년 동안 박혔다**는 것이다. 그리고 전제는 코드에 '이것은 전제입니다'라고 적혀 있지 않다 — 그냥 모두가 그렇게 짜 놓은 모양으로만 존재한다. 그래서 걷어내려면 **어디에 박혀 있는지부터 찾아야** 하는데, 그것을 알려 주는 것이 결국 깨지는 테스트다(수백 개). 임시방편(워크스페이스 샤드 보고 없으면 조직 샤드 보기)이 한동안 통했다는 것도 문제를 늦춘다 — **아프지 않으면 고치지 않는다.**",
+            "current_best": "**아래부터 순서대로 걷어내고, 진행 상황을 밖에 적어 둔다.** Vitess 재샤딩 → 실시간 팬아웃 제거 → 클라이언트 저장소 이전 → Boot API → API 하나씩. 어느 API 가 고쳐졌는지를 **스프레드시트로 추적**하고 'Unified Grid 호환' 표시를 달았다 — 코드가 스스로 말해 주지 않으니 밖에 적은 것이다. 약 2년, 수십 명이 들었다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "problem": "보통 사용자에게 잘 도는 것이 긴 꼬리에서 무너진다",
+            "why_hard": "**분포에 맞춘 설계는 분포 밖에서 정확히 실패한다.** 워크스페이스 라우팅 없이 여러 샤드를 도는 방식은 보통 사용자에게 '놀랍도록 잘 돌았다' — 속한 워크스페이스가 몇 개뿐이기 때문이다. 그런데 **수백 개에 속한 사람**에게는 같은 방식이 무너진다. 이들을 위해 전체를 최적화하면 대다수가 쓰지 않을 복잡도를 모두가 지게 되고, 무시하면 그 사람들에게 제품이 안 쓰인다. 그리고 이들은 **대개 대형 고객의 사람들**이라 무시하기도 어렵다.",
+            "current_best": "**선을 긋고 넘어가는 것은 사용자에게 넘긴다.** '관련 있는' 워크스페이스를 50개로 자르고 그 이상은 수동 설정하게 했다 — 완전함을 포기하고 쓸 만함을 산 것이다. 대가는 **51번째부터는 사용자가 직접 챙겨야 한다**는 것이고, 자동으로 놓치는 것이 생긴다는 점에서 원래 고치려던 문제(알림을 놓친다)가 일부 남는다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "11년에 걸쳐 전제가 어긋나는 과정",
+          "question": "맞았던 전제가 어떻게 문제가 되나?",
+          "kind": "state",
+          "code": "flowchart TD\n  A[\"2013 — 데이터는 워크스페이스 하나의 것\"] --> A1[\"DB 샤딩 키 = 워크스페이스 ID\"]\n  A --> A2[\"세션 토큰에 워크스페이스 ID\"]\n  A --> A3[\"채널은 워크스페이스 안에\"]\n  A --> B[\"2017 — Enterprise Grid 등장\"]\n  B --> C[\"조직 개념을 **얹는다**<br/>라우팅은 워크스페이스 중심 그대로\"]\n  C --> D[\"반창고 — 워크스페이스 샤드를 보고<br/>없으면 조직 샤드를 본다\"]\n  D --> E[\"처음엔 됐다\"]\n  E --> F[\"쓰임새가 여러 워크스페이스로 옮겨 간다\"]\n  F --> G[\"갈아타야 한다 · 알림을 놓친다 ·<br/>동기화 버그 · 수천 워크스페이스 팬아웃\"]\n  G --> H[\"**전제가 틀린 게 아니라<br/>세상이 그 전제를 벗어났다**\"]"
+        },
+        {
+          "title": "아래부터 걷어낸다",
+          "question": "화면을 바꾸기 전에 무엇이 준비돼야 했나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  V[\"Vitess 재샤딩<br/>워크스페이스/조직 ID 가 아닌 축으로\"] --> R[\"실시간 스택<br/>조직 전체 팬아웃 제거\"]\n  R --> CL[\"클라이언트 저장<br/>워크스페이스 단위 → 조직 단위\"]\n  CL --> B[\"**Boot API**<br/>그리드 전체의 워크스페이스·채널을 한 번에\"]\n  B --> UI[\"하나의 화면\"]\n  V -.->|\"아래가 안 되면<br/>위가 성립하지 않는다\"| UI\n  T[\"기간 — 프로토타입 2023 여름 사내<br/>→ 2024-03 완료 · 약 2년\"] -.-> UI"
+        },
+        {
+          "title": "하나의 규칙으로 안 되는 API 들",
+          "question": "API 마다 사정이 다를 때 무엇을 했나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"API 하나\"] --> Q{\"어떻게 라우팅되나\"}\n  Q -->|\"이미 채널 ID 로 샤딩됨<br/>(메시지 테이블 등)\"| N[\"**그대로 둔다**<br/>고트래픽 질의 다수가 여기\"]\n  Q -->|\"워크스페이스가 꼭 필요<br/>(채널 생성 등)\"| P[\"**사용자에게 묻는다**<br/>대가 — 마찰이 생긴다\"]\n  Q -->|\"전용 라우팅 없이<br/>워크스페이스를 가로지름\"| M[\"**여러 샤드를 돈다**<br/>보통 사용자엔 놀랍도록 잘 돌았다\"]\n  M --> T{\"수백 개에 속한 사람\"}\n  T --> C[\"**50개로 자른다**<br/>완전함 대신 쓸 만함\"]\n  N & P & M --> TR[\"'Unified Grid 호환' 표시<br/>스프레드시트로 추적 · 깨진 테스트 수백 개\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+          "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+          "publisher": "Engineering at Slack",
+          "date": "2024-07-31",
+          "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+        },
+        {
+          "title": "Real-time Messaging",
+          "url": "https://slack.engineering/real-time-messaging/",
+          "publisher": "Engineering at Slack",
+          "date": "2023-04-11",
+          "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "실시간 메시지 전달과 저장·샤딩 두 도메인은 아직 손대지 않았다.",
+    "저장·샤딩 도메인은 아직 손대지 않았다 — 남은 하나다. Vitess 글이 그 자리다.",
     "**Slack 매출은 회사 발표가 아니다** — Salesforce 인수 후 따로 공시되지 않아 3자 집계에 의존했고, 그래서 수익원을 전부 `inferred` 로 뒀다.",
     "잡 큐 글은 2017년(2020년 갱신)이다. 그 뒤 6년간 무엇이 바뀌었는지, 특히 '더 강한 일관성 보장을 검토 중'이라던 부분이 어떻게 됐는지는 모른다.",
-    "**사일로화할 수 없는 서비스가 무엇인지** — 회사가 후속 글로 미뤘다. 상태를 가진 것들로 추정되지만 확인하지 못했고, 잡 큐의 Kafka·Redis 가 거기 드는지도 모른다."
+    "**사일로화할 수 없는 서비스가 무엇인지** — 회사가 후속 글로 미뤘다. 상태를 가진 것들로 추정되지만 확인하지 못했고, 잡 큐의 Kafka·Redis 가 거기 드는지도 모른다.",
+    "**실시간 전달 자체의 대가** — Channel 서버가 상태를 가진 인메모리인데, 일관 해싱에서 서버 집합이 바뀔 때 무엇이 어떻게 되는지를 회사 글이 다루지 않는다(구성요소 나열에 가깝다)."
   ],
   "sources": [
     {
@@ -1128,6 +1633,13 @@
       "publisher": "Business of Apps",
       "date": "2026",
       "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+    },
+    {
+      "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+      "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+      "publisher": "Engineering at Slack",
+      "date": "2024-07-31",
+      "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
     }
   ]
 }
