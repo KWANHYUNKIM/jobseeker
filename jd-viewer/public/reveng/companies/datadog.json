@@ -4,7 +4,7 @@
   "name_en": "Datadog",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "남의 시스템이 무슨 일을 겪고 있는지 보여 주는 것이 제품인 회사",
   "business_model": "고객이 자기 인프라·애플리케이션에서 뿜어내는 **로그·지표·트레이스를 받아 저장하고 보여 준다.** FY2025 매출 **34억 3천만 달러(+28%)**. 이 사업의 성격은 두 숫자에 있다 — **순액유지율 약 120%** 이고 **고객의 54%가 제품 4개 이상**을 쓴다(1년 전 49%). 한 번 데이터를 들여보내면 그 위에 얹는 제품이 늘어난다는 뜻이고, 2025년에만 400개가 넘는 기능을 내놓은 이유가 거기 있다.\n\n앞서 판 회사들과 다른 자리가 하나 있다. **원가가 고객의 사정에 달려 있다.** 고객이 로그를 많이 뿜으면 우리 저장 비용이 오르는데, 얼마나 뿜을지는 고객이 정한다 — 그리고 사고가 났을 때 가장 많이 뿜는다. **가장 값이 필요한 순간에 가장 비싸진다.**",
@@ -284,8 +284,86 @@
     {
       "name": "질의·대시보드",
       "why": "받은 것을 사람이 볼 수 있게 돌려주는 자리. 사고 중에 보는 화면이라 **느린 답은 틀린 답과 비슷한 값**을 갖는다 — 그런데 사고 중에는 데이터가 가장 많이 들어와 있다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "4단 분리 — 플래너 · 오케스트레이터 · 메타데이터 · 리더",
+          "solves": "플래너가 시간 단위로 쪼개 스케줄하고, 오케스트레이터가 존맵으로 볼 조각을 고르고, 메타데이터가 조각의 경계를 알려주고, 리더가 실제로 읽는다. **읽기 전에 안 읽어도 되는 것을 걸러 내는 단이 셋이나 있다.**",
+          "limits": "단계가 넷이라 실패 지점도 넷이고, 메타데이터의 FoundationDB 는 **5초 트랜잭션 한도**가 있어 컴팩션 원자성을 따로 다뤄야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+              "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-10-01",
+              "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+            }
+          ]
+        },
+        {
+          "tech": "결과 캐시 (조각 단위, 불변 데이터 전제)",
+          "solves": "대시보드 위젯·모니터·자동 새로고침이 **같은 질의를 반복**한다. 조각 단위로 캐시하면 적중률 **80%** 가 나온다. 데이터가 불변이라 **무효화 자체가 필요 없다.**",
+          "limits": "불변이라는 전제 위에서만 성립한다. 그리고 새 리더 노드는 캐시가 비어 있어 처음엔 느리다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+              "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-10-01",
+              "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+            }
+          ]
+        },
+        {
+          "tech": "셔플 샤딩 (테넌트마다 리더 부분집합)",
+          "solves": "테넌트마다 **설정 가능한 크기의 리더 묶음**을 준다. 한 테넌트의 비싼 질의가 다른 테넌트를 느리게 만들지 못한다. 부하 신호를 보고 붐비면 2차 노드로 돌린다.",
+          "limits": "테넌트끼리 워커가 **일부 겹친다** — 완전 격리는 자원을 낭비하므로 겹침을 감수한 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+              "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-10-01",
+              "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+            }
+          ]
+        },
+        {
+          "tech": "존맵 프루닝 + 지연 평가 (Volcano 식 반복자)",
+          "solves": "조각의 최소·최대값으로 통째로 건너뛰고, 값은 **실제로 볼 때만** 디코딩한다. 구조화 이벤트에서 최대 60%(평균 약 30%) 작업이 사라진다.",
+          "limits": "존맵이 잘 듣는 것은 값이 시간·범위로 뭉쳐 있을 때다. 흩어진 값에는 덜 듣는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+              "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-10-01",
+              "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+            }
+          ]
+        },
+        {
+          "tech": "n-gram 해싱 텍스트 검색",
+          "solves": "용어를 그대로 저장하지 않고 n-gram 을 해싱해 **세그먼트 크기를 묶어 둔다.**",
+          "limits": "**위양성이 생긴다** — 와일드카드 질의에서 안 맞는 것이 걸린다. n-gram 은 최종 판정이 아니라 앞단 필터라 감수한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+              "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-10-01",
+              "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "husky-query-engine"
+      ]
     }
   ],
   "features": [
@@ -1708,14 +1786,523 @@
           "summary": "Redis 를 떠난 이유를 대가로 적은 시계열 저장 재설계."
         }
       ]
+    },
+    {
+      "key": "husky-query-engine",
+      "name": "질의 — 100조 개를 안 읽는 방법",
+      "domain": "질의·대시보드",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**100조 개가 넘는 이벤트에 하루 수십억 건의 질의**가 들어온다. 그런데 이 질의들은 사람이 하나씩 치는 것이 아니라 **대시보드 위젯과 모니터와 자동 새로고침**이 같은 것을 계속 반복해서 묻는 것이다. 그리고 사고 중에 보는 화면이라 **느린 답은 틀린 답과 비슷한 값**을 갖는다. 그래서 이 도메인의 과제는 '어떻게 빨리 읽을까'가 아니라 **'어떻게 안 읽고 답할까'** 가 된다 — 실제로 질의의 **3.4%만 조각 데이터를 훑고 0.4%만 블롭 저장소까지 간다.**",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "이벤트 100조 개 이상 · 하루 질의 수십억 건",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "실제 데이터를 읽는 질의",
+            "value": "3.4% — 블롭 저장소까지 가는 것은 0.4%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "결과 캐시 적중률",
+            "value": "80%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "블롭 범위 캐시 적중률",
+            "value": "70%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "술어 캐시",
+            "value": "적중률 3% · 효율비 11배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "존맵 프루닝",
+            "value": "구조화 이벤트에서 최대 60% · 평균 약 30% 작업 감소",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "조각 질의 지연",
+            "value": "중간값 2.01ms · p90 6.04ms · p95 19.93ms · **p99 257.36ms** · 최대 12.82초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "label": "사용자 체감",
+            "value": "가장 느린 조각을 안 기다리고 **약 1초에 데이터의 90%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "질의 패턴을 들여다볼 때",
+          "thought": "사람이 새 질문을 던지는 것이 아니라 **위젯과 모니터가 같은 질문을 반복**하고 있었다. 그러면 캐시가 단순해도 잘 듣는다 — 실제로 조각 단위 결과 캐시 하나로 80%가 걸린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "캐시 무효화를 어떻게 할지 고민할 때",
+          "thought": "**데이터가 불변이면 무효화라는 문제 자체가 없어진다.** 흔히 어려운 축에 드는 문제를 푸는 대신, 그 문제가 생기지 않는 자리에 캐시를 놓는 쪽을 골랐다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "술어 캐시의 적중률이 3%인 걸 보고",
+          "thought": "3%면 보통 버릴 숫자다. 그런데 **한 번 걸릴 때 아끼는 CPU 가 캐시 비용의 10배**라 효율비가 11배로 나온다 — **적중률이 아니라 값으로** 봐야 하는 캐시였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "테넌트 격리를 완전히 할지 정할 때",
+          "thought": "테넌트마다 워커를 통째로 떼어 주면 확실하지만 **자원이 낭비된다.** 겹침을 조금 허용하되 한 테넌트가 다른 테넌트를 죽이지 못할 만큼만 나누는 지점이 있다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "스트리밍으로 바꿀지 정할 때",
+          "thought": "블로킹 호출이면 실패했을 때 그냥 다시 부르면 된다. 스트리밍으로 가면 **중간에 실패했을 때 어디까지 보냈는지를 관리해야** 한다 — 그 복잡도를 사서, 가장 느린 조각을 안 기다리고 1초에 90%를 보여 주는 것을 얻는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "조각 (fragment)",
+            "what": "질의와 캐시의 단위. 경로·버전·행 수·시각 경계·존맵을 메타데이터가 들고 있다."
+          },
+          {
+            "name": "존맵",
+            "what": "조각 안 값의 최소·최대. 이것만 보고 조각을 통째로 건너뛴다."
+          },
+          {
+            "name": "테넌트 샤드",
+            "what": "그 테넌트의 질의가 갈 수 있는 리더 묶음. 크기를 테넌트마다 정한다."
+          },
+          {
+            "name": "행 그룹",
+            "what": "지연 평가의 단위. 메타데이터로 걸러지면 디코딩조차 안 한다."
+          }
+        ],
+        "invariants": [
+          "**데이터는 불변이다.** 그래서 캐시 무효화라는 문제가 애초에 없다.",
+          "**읽기 전에 세 번 거른다** — 메타데이터, 결과 캐시, 컬럼 메타데이터. 실제로 읽는 것은 3.4%다.",
+          "한 테넌트의 비싼 질의가 다른 테넌트를 느리게 만들지 못한다 — 다만 완전 격리가 아니라 **겹침을 감수한 부분 격리**다.",
+          "n-gram 은 **최종 판정이 아니라 앞단 필터**다. 위양성이 나와도 뒤에서 걸러진다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "플래너가 맥락을 풀고 검증·스로틀링한 뒤 질의를 **시간 단위로 쪼갠다**",
+            "why": "긴 구간을 통째로 잡으면 하나가 늦을 때 전체가 늦는다"
+          },
+          {
+            "step": "오케스트레이터가 메타데이터에서 조각 정보를 받아 **존맵으로 볼 것을 고른다**",
+            "why": "구조화 이벤트에서 최대 60% 작업이 여기서 사라진다"
+          },
+          {
+            "step": "결과 캐시를 먼저 본다 — 조각 단위",
+            "why": "위젯·모니터가 같은 질의를 반복하므로 80%가 여기서 끝난다"
+          },
+          {
+            "step": "남은 것을 테넌트 샤드 안의 리더로 보낸다. 1차가 붐비면 2차 노드로",
+            "why": "한 테넌트의 비싼 질의가 남을 죽이지 못하게"
+          },
+          {
+            "step": "리더가 반복자 모델로 **지연 평가**한다 — 행 그룹 메타데이터로 건너뛰고 필요할 때만 디코딩",
+            "why": "싼 필터로 행이 지워지면 컬럼을 열 이유가 없다"
+          },
+          {
+            "step": "부분 결과를 **스트리밍으로** 위로 올린다",
+            "why": "가장 느린 조각을 기다리지 않게"
+          },
+          {
+            "step": "플래머가 부분 결과를 합쳐 최종 답을 만든다. 중간 실패는 체크포인트로 되잡는다",
+            "why": "스트리밍의 대가를 여기서 갚는다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "결과를 블로킹으로 돌려줄 것인가 스트리밍할 것인가",
+            "chosen": "**스트리밍** — 부분 결과를 흘려보낸다",
+            "alternatives": [
+              "블로킹 RPC (다 모아서 한 번에)"
+            ],
+            "tradeoff": "**중간에 실패하면 어디까지 보냈는지를 관리해야 한다** — 체크포인트 장치가 필요해지고, 블로킹이면 그냥 다시 부르면 될 일이 복잡해진다. 대신 가장 느린 조각을 기다리지 않고 **약 1초에 데이터의 90%** 를 보여 주며, 전체 결과를 버퍼링하지 않아 메모리 압박도 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "question": "캐시 무효화를 어떻게 할 것인가",
+            "chosen": "**하지 않는다** — 데이터를 불변으로 두어 문제 자체를 없앤다",
+            "alternatives": [
+              "변경 시 무효화 신호를 돌린다"
+            ],
+            "tradeoff": "불변이라는 전제 위에서만 성립하고, 새 리더 노드는 캐시가 비어 처음엔 느리다(가상 노드 수를 조절해 트래픽을 천천히 올려 메운다). 대신 **캐시 무효화라는 어려운 문제를 푸는 대신 그 문제가 없는 자리로 옮겼고**, 단순한 조각 단위 캐시로 적중률 80%가 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "question": "적중률 3%인 술어 캐시를 유지할 것인가",
+            "chosen": "**유지한다** — 비싸고 자주 재사용되는 술어만 캐시한다",
+            "alternatives": [
+              "적중률이 낮으니 없앤다",
+              "모든 술어를 캐시"
+            ],
+            "tradeoff": "3%면 보통 버릴 숫자이고 캐시 관리 비용이 그대로 든다. 그런데 **한 번 걸릴 때 아끼는 CPU 가 캐시 비용의 10배**라 효율비가 11배다 — **적중률이 아니라 값으로 판단해야 하는** 캐시였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "question": "테넌트를 어떻게 격리할 것인가",
+            "chosen": "**셔플 샤딩** — 테넌트마다 설정 가능한 크기의 리더 부분집합",
+            "alternatives": [
+              "테넌트마다 완전히 분리된 워커",
+              "격리 없이 공유"
+            ],
+            "tradeoff": "**테넌트끼리 워커가 일부 겹친다** — 완전 격리가 아니다. 그래도 완전히 떼어 주면 자원이 낭비되고, 안 나누면 한 테넌트의 비싼 질의가 모두를 느리게 만든다. 부하 신호를 보고 붐비는 1차 노드 대신 2차로 돌린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "question": "텍스트 검색을 어떻게 색인할 것인가",
+            "chosen": "**n-gram 해싱** — 용어를 그대로 저장하지 않는다",
+            "alternatives": [
+              "명시적 용어 저장"
+            ],
+            "tradeoff": "**와일드카드 질의에서 위양성이 생긴다** — 안 맞는 것이 걸린다. 그래도 n-gram 은 최종 판정이 아니라 앞단 필터라 뒤에서 걸러지고, 대신 **세그먼트 크기가 묶인다**(용어를 다 저장하면 커진다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "question": "값을 언제 디코딩할 것인가",
+            "chosen": "**볼 때만** — 지연 참조를 돌려주고 접근할 때 푼다(Volcano 식 반복자)",
+            "alternatives": [
+              "읽는 즉시 전부 디코딩"
+            ],
+            "tradeoff": "실행 모델이 복잡해진다. 대신 행 그룹의 최소·최대만 보고 통째로 건너뛸 수 있고, **싼 필터가 행을 먼저 지우면 컬럼을 열 이유가 없어진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Query Planner",
+            "role": "맥락 해소·검증·스로틀링·시간 단위 분할·최종 병합",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "tech": "Query Orchestrator",
+            "role": "조각 메타데이터를 받아 존맵으로 프루닝하고 리더에 배분",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "tech": "Metadata Service (FoundationDB 프런트엔드)",
+            "role": "조각의 경로·버전·행 수·시각 경계·존맵. 5초 트랜잭션 한도를 추상화 계층으로 다룬다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "tech": "Reader Service",
+            "role": "실제 실행. 캐시에서 주거나 블롭 저장소에서 가져온다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "tech": "결과 캐시 (인메모리 + 디스크 지속)",
+            "role": "조각 단위. 적중률 80%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "tech": "셔플 샤딩 + 부하 소킹(load soaking)",
+            "role": "테넌트 격리. 새 노드는 캐시가 데워질 때까지 몫을 낮춰 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "husky-exactly-once",
+          "via": "같은 저장 엔진의 반대편",
+          "contract": "수집이 쌓은 조각을 여기서 읽는다. **불변으로 쌓기 때문에 여기서 무효화를 안 해도 된다** — 수집 쪽 결정이 질의 쪽 단순함을 만든다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "monocle-timeseries",
+          "via": "다른 질의 경로",
+          "contract": "지표는 Monocle 이, 이벤트(로그·트레이스)는 Husky 가 답한다. **엔진이 둘인 만큼 질의 경로도 둘이다.**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "demand-driven-ingestion",
+          "via": "화면의 수요",
+          "contract": "대시보드가 반복해서 묻는 것이 **캐시 적중률 80%의 이유**이자, 수집 쪽에서 '보고 있는 것만 모으는' 근거이기도 하다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Volcano — An Extensible and Parallel Query Evaluation System",
+            "authors": "Goetz Graefe",
+            "year": "1994",
+            "venue": "IEEE TKDE 6(1)",
+            "url": "https://ieeexplore.ieee.org/document/273032",
+            "takeaway": "리더가 쓰는 반복자 실행 모델의 원형 — 회사가 'Volcano 에서 영감을 받았다'고 직접 밝혔다. 이 모델의 성질 하나가 여기서 값을 낸다: **연산자가 필요한 만큼만 위로 당겨 오므로**, 싼 필터가 행을 먼저 지우면 그 아래 컬럼은 디코딩되지 않는다. 지연 평가와 행 그룹 건너뛰기가 그 성질 위에 얹혀 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "한 테넌트의 비싼 질의를 막으면서 자원은 낭비하지 않기",
+            "why_hard": "**완전한 격리와 자원 효율이 정면으로 부딪힌다.** 테넌트마다 워커를 통째로 떼어 주면 남을 방해할 수 없지만, 대부분의 테넌트가 대부분의 시간 동안 그 자원을 놀리게 된다 — 크기가 수천 배 차이 나는 고객들에게 각자 몫을 떼어 주는 것은 성립하지 않는다. 반대로 다 공유하면 **누군가의 12.82초짜리 질의**(실측 최대치)가 모두의 대시보드를 세운다. 그리고 어떤 질의가 비쌀지는 **던져 보기 전에는 정확히 모른다.**",
+            "current_best": "**부분 격리 — 겹치되 죽이지 못할 만큼만 나눈다.** 셔플 샤딩으로 테넌트마다 리더의 부분집합을 주고 그 크기를 테넌트별로 정한다. 부하 신호를 보고 1차 노드가 붐비면 2차로 돌린다. 대가는 **테넌트끼리 워커가 일부 겹친다**는 것 — 완전한 보장이 아니라 확률적으로 충돌을 줄이는 장치다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          },
+          {
+            "problem": "p99 가 중간값의 128배인데 사람은 p99 를 기다린다",
+            "why_hard": "**분포의 꼬리가 사용자 경험을 정한다.** 조각 질의의 중간값은 2.01ms 인데 p99 는 257.36ms 이고 최대는 12.82초다. 그런데 화면 하나는 조각 여럿을 합쳐서 그리므로, **조각을 많이 볼수록 그중 하나가 꼬리에 걸릴 확률이 오른다** — 평균을 개선해도 사람이 보는 시간은 안 줄어든다. 그리고 하필 사고 중일 때 질의가 몰리고 그때가 가장 기다릴 수 없는 때다.",
+            "current_best": "**가장 느린 것을 기다리지 않는다.** 부분 결과를 스트리밍해 약 1초에 데이터의 90%를 보여 주고 나머지는 흘러 들어오게 한다. 대가는 **중간에 실패했을 때 어디까지 보냈는지를 관리해야** 한다는 것 — 블로킹이면 그냥 다시 부르면 될 일에 체크포인트 장치가 필요해진다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+                "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-10-01",
+                "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "1,000개 조각 질의 중 실제로 읽는 것은 몇 개인가",
+          "question": "'어떻게 빨리 읽을까'가 아니라 '어떻게 안 읽을까'로 문제를 바꾸면 무엇이 남는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"조각 질의 1,000개\"] --> M{\"메타데이터 단계\"}\n  M -->|\"300개 프루닝\"| P1[\"끝\"]\n  M --> RC{\"결과 캐시\"}\n  RC -->|\"560개 적중\"| P2[\"끝 — 적중률 80%\"]\n  RC --> CM{\"컬럼 메타데이터\"}\n  CM -->|\"78개 제거\"| P3[\"끝\"]\n  CM --> OC{\"다른 캐시들\"}\n  OC -->|\"28개\"| P4[\"끝\"]\n  OC --> READ[\"34개만 실제로 데이터를 읽는다\"]\n  READ --> BLOB[\"그중 4개만 블롭 저장소까지\"]\n  READ --> NOTE[\"전체의 3.4% · 블롭은 0.4%\"]"
+        },
+        {
+          "title": "가장 느린 조각을 기다리지 않는다",
+          "question": "p99 가 중간값의 128배일 때 화면을 어떻게 그리는가?",
+          "kind": "flow",
+          "code": "flowchart LR\n  subgraph L[\"조각 질의 지연 분포\"]\n    L1[\"중간값 2.01ms\"]\n    L2[\"p90 6.04ms\"]\n    L3[\"p95 19.93ms\"]\n    L4[\"p99 257.36ms\"]\n    L5[\"최대 12.82초\"]\n  end\n  L --> C{\"어떻게 돌려줄까\"}\n  C -->|\"블로킹 — 다 모아서\"| B[\"가장 느린 조각이 화면을 정한다\"]\n  C -->|\"스트리밍 (선택)\"| S[\"약 1초에 데이터의 90%\"]\n  S --> COST[\"대가 — 중간 실패 시<br/>어디까지 보냈는지 관리해야 한다<br/>= 체크포인트 장치\"]\n  B -.->|\"다시 부르면 그만\"| SIMPLE[\"복구는 단순하다\"]"
+        },
+        {
+          "title": "격리하면 낭비되고 공유하면 물린다",
+          "question": "누군가의 12.82초 질의가 남의 대시보드를 세우지 않게 하려면?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"테넌트의 비싼 질의\"] --> B{\"어떻게 나눌까\"}\n  B -->|\"완전 격리 — 각자 워커\"| C[\"대부분의 시간 놀린다<br/>크기가 수천 배 차이 나는데\"]\n  B -->|\"격리 없음 — 다 공유\"| D[\"한 질의가 모두를 세운다\"]\n  B -->|\"셔플 샤딩 (선택)\"| E[\"테넌트마다 리더 부분집합<br/>크기는 테넌트별로 설정\"]\n  E --> F{\"1차 노드가 붐비면\"}\n  F --> G[\"부하 신호를 보고 2차로\"]\n  E --> H[\"대가 — 워커가 일부 겹친다<br/>확률적으로 줄일 뿐 보장이 아니다\"]\n  I[\"새 리더 노드\"] --> J[\"캐시가 비어 느리다\"]\n  J --> K[\"가상 노드 수를 낮춰<br/>트래픽을 천천히 올린다(load soaking)\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+          "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+          "publisher": "Datadog Engineering",
+          "date": "2025-10-01",
+          "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "질의·대시보드 도메인은 아직 손대지 않았다 — 남은 하나다.",
     "Husky 글은 2023년이다. 그 뒤 3년간 무엇이 바뀌었는지 — 특히 Rust 시계열 엔진 글(2025)이 이 구조와 어떻게 맞물리는지는 아직 안 봤다.",
     "요금과 원가의 관계 — 고객이 사고 중에 뿜는 폭증분을 어떻게 과금하고 어떻게 감당하는지는 공개 자료에서 아직 못 찾았다.",
     "호스트 구독이 화면 이동을 못 따라갈 때의 거동 — 회사 글이 '구독 지연 시 실패 모드는 논하지 않는다'고 스스로 남긴 자리다.",
-    "Monocle 의 한계 — 회사 글이 새 엔진의 실패 모드나 성능 천장을 밝히지 않는다. 정적 샤드 배정을 동적으로 바꾸는 중이라는 것과, 값과 인덱스를 분리한 결정을 다시 보는 중이라는 것까지만 나온다."
+    "Monocle 의 한계 — 회사 글이 새 엔진의 실패 모드나 성능 천장을 밝히지 않는다. 정적 샤드 배정을 동적으로 바꾸는 중이라는 것과, 값과 인덱스를 분리한 결정을 다시 보는 중이라는 것까지만 나온다.",
+    "셔플 샤딩의 겹침이 실제로 얼마나 되는지 — '설정 가능한 샤드 크기'까지만 나오고 실제 값과 충돌 빈도는 없다."
   ],
   "sources": [
     {
@@ -1759,6 +2346,13 @@
       "publisher": "Datadog Engineering",
       "date": "2019-04-02",
       "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+    },
+    {
+      "title": "Inside Husky's query engine: Real-time access to 100 trillion events",
+      "url": "https://www.datadoghq.com/blog/engineering/husky-query-architecture/",
+      "publisher": "Datadog Engineering",
+      "date": "2025-10-01",
+      "summary": "질의의 96.6%가 실제 데이터를 안 읽고 끝나게 만든 4단 구조와 셔플 샤딩."
     }
   ]
 }
