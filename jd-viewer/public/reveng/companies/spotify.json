@@ -49,7 +49,7 @@
   "domain_map": {
     "title": "스포티파이 도메인 지도",
     "question": "엑사바이트짜리 레이크에서 한 행을 꺼내려면 무엇을 지나는가?",
-    "code": "flowchart TD\n  C[\"크리에이터 — 팟캐스트 · 영상\"]\n  U[\"사용자\"]\n  subgraph ING[\"<b>콘텐츠 수집·트랜스코딩</b>\"]\n    Q[\"제출 큐\"]\n    TR[\"트랜스코딩<br/>품질을 올리자 편당 시간·연산이 늘었다\"]:::list\n    BAT[\"정기 유지보수 재처리 잡\"]:::quiet\n    BAT -.->|\"피크에 자원을 함께 먹었다\"| TR\n  end\n  subgraph PLAT[\"<b>데이터 플랫폼</b> — 하루 1.4조 데이터 포인트\"]\n    COL[\"수집\"]\n    PRO[\"처리 — 파이프라인 스케줄링\"]\n    MAN[\"관리 — 귀속 · 프라이버시\"]\n  end\n  subgraph LAKE[\"<b>데이터 레이크 조회</b>\"]\n    BT[(\"Bigtable — <b>페타바이트</b><br/>온라인 용도\")]\n    GCS[(\"GCS 데이터 레이크 — <b>엑사바이트</b><br/>Parquet\")]:::accent\n    TRINO[\"Trino · BigQuery<br/>한 행 조회에도 스케줄링·플래닝 초 단위\"]:::quiet\n    RAP[\"<b>RAP</b> — 외부 인덱스 + 범위 읽기<br/>같은 Parquet 파일 위에서<br/>한 번 저장하고 한 번 낸다\"]:::accent\n  end\n  C --> Q --> TR --> U\n  U --> COL --> PRO --> MAN --> GCS\n  GCS --> TRINO\n  GCS --> RAP\n  RAP -->|\"단건 조회\"| U\n  BT -.->|\"복사해 두는 대신\"| RAP"
+    "code": "flowchart TD\n  C[\"크리에이터 — 팟캐스트 · 영상\"]\n  U[\"사용자\"]\n  subgraph ING[\"<b>콘텐츠 수집·트랜스코딩</b>\"]\n    Q[\"제출 큐\"]\n    TR[\"트랜스코딩<br/>품질을 올리자 편당 시간·연산이 늘었다\"]:::list\n    BAT[\"정기 유지보수 재처리 잡\"]:::quiet\n    BAT -.->|\"피크에 자원을 함께 먹었다\"| TR\n  end\n  subgraph PLAT[\"<b>데이터 플랫폼</b> — 하루 1.4조 데이터 포인트\"]\n    COL[\"수집\"]\n    PRO[\"처리 — 파이프라인 스케줄링\"]\n    MAN[\"관리 — 귀속 · 프라이버시\"]\n  end\n  subgraph EXP[\"<b>실험 플랫폼</b> — 지은 것이 정말 나은지 안다\"]\n    EV[\"LLM eval — 약한 후보를 거른다\"]:::list\n    AB[\"A/B — 12%만 출시 · 64%는 학습\"]:::accent\n    CAL[\"보정 — 없으면 eval 은 의견이다\"]:::list\n    EV --> AB --> CAL -.-> EV\n  end\n  subgraph LAKE[\"<b>데이터 레이크 조회</b>\"]\n    BT[(\"Bigtable — <b>페타바이트</b><br/>온라인 용도\")]\n    GCS[(\"GCS 데이터 레이크 — <b>엑사바이트</b><br/>Parquet\")]:::accent\n    TRINO[\"Trino · BigQuery<br/>한 행 조회에도 스케줄링·플래닝 초 단위\"]:::quiet\n    RAP[\"<b>RAP</b> — 외부 인덱스 + 범위 읽기<br/>같은 Parquet 파일 위에서<br/>한 번 저장하고 한 번 낸다\"]:::accent\n  end\n  C --> Q --> TR --> U\n  U --> COL --> PRO --> MAN --> GCS\n  GCS --> TRINO\n  GCS --> RAP\n  MAN --> EXP\n  RAP -->|\"단건 조회\"| U\n  BT -.->|\"복사해 두는 대신\"| RAP"
   },
   "domains": [
     {
@@ -181,6 +181,45 @@
         }
       ],
       "features": []
+    },
+    {
+      "name": "실험 플랫폼",
+      "why": "**이 엔진의 25개 회사를 통틀어 처음 여는 도메인이다.** 다른 회사들의 자료는 '무엇을 어떻게 지었는가'를 다루는데, 이 회사는 **'지은 것이 정말 나은지 어떻게 아는가'**를 다룬다.\n\n그리고 그 답이 겸손하다 — A/B 테스트의 **12%만 긍정 결과로 출시**되고, 출시된 것의 **42%가 측정하지 않은 지표의 퇴행 때문에 롤백**된다. **대부분의 아이디어는 틀렸고, 맞은 것도 절반 가까이는 다른 데를 망가뜨린다**(마지막 문장은 이 사이트의 해석).",
+      "tech": [
+        {
+          "tech": "대리 지표(surrogate endpoint) 틀로 LLM 대체 가능성을 검정",
+          "solves": "'LLM 이 사람을 대신할 수 있는가'를 감이 아니라 **조건 둘(대리성·비교가능성) + 반증 검정**으로 판정한다. 보정 없는 예측은 처치 효과의 **39%만** 회복하고, 선형 OLS 보정은 **3.8 표준오차**로 탈락한다.",
+          "limits": "**한 번도 시험해 본 적 없는 처치에 대해서는 두 조건을 결코 증명할 수 없다.** 검정에 쓴 Upworthy 데이터는 이진 결과·텍스트 처치라 거의 이상적 조건이었고, **회사 포트폴리오 전반에서 조건이 성립한다는 실증 근거는 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "When Can LLMs Replace Humans in A/B Tests?",
+              "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+              "publisher": "Spotify Engineering",
+              "date": "2026-08",
+              "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+            }
+          ]
+        },
+        {
+          "tech": "검증 → 검정 → 보정 3단 깔때기",
+          "solves": "LLM eval 로 약한 후보를 거르고, A/B 로 실제 반응을 보고, **A/B 데이터로 eval 점수를 사후에 맞춘다.**",
+          "limits": "회사가 못 박았다 — **보정 단계가 없으면 \"eval 은 증거가 아니라 의견\"** 이다. 그리고 **오래 걸리는 과제와 장기 행동은 설계상 eval 로 담기지 않는다** — Opus 4.5 가 코딩 eval 에서는 개선이 안 보였는데 통제 실험의 긴 과제에서는 상당한 개선을 보인 사례를 든다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+              "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+              "publisher": "Spotify Engineering",
+              "date": "2026-05",
+              "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "llm-evals-vs-experiments"
+      ]
     }
   ],
   "features": [
@@ -1013,6 +1052,12 @@
           "via": "같은 데이터의 아래층",
           "contract": "이 플랫폼이 만들어 레이크에 쌓아 둔 Parquet 파일을 RAP 이 다시 읽는다. **'ML 파이프라인·노트북·실험 플랫폼·배치 분석이 이미 함께 쓰는 파일'** 이라는 RAP 의 전제가 바로 이 플랫폼의 산출물이다 — 두 글이 서로를 언급하지는 않는다(추정).",
           "confidence": "inferred"
+        },
+        {
+          "to": "llm-evals-vs-experiments",
+          "via": "실험을 떠받치는 것",
+          "contract": "이 플랫폼이 **'핵심 역량으로서의 실험'** 을 투자 계기 중 하나로 꼽는다. LLM 보정에 필요한 **과거 실험 데이터**도 결국 여기서 나온다 — 두 글이 서로를 언급하지는 않는다(추정).",
+          "confidence": "inferred"
         }
       ],
       "research": {
@@ -1093,6 +1138,470 @@
           "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
         }
       ]
+    },
+    {
+      "key": "llm-evals-vs-experiments",
+      "name": "LLM 이 사람을 대신할 수 있는가 — 조건을 세우고 검정했다",
+      "domain": "실험 플랫폼",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "A/B 테스트는 느리고 트래픽을 먹는다. 그러니 **LLM 이 사용자 반응을 예측해 주면 실험을 건너뛸 수 있지 않을까**는 자연스러운 생각이다.\n\n이 회사가 한 일은 그 생각에 답한 것이 아니라, **어떻게 답할지를 먼저 정한 것**이다. 생물통계에는 이미 같은 질문이 있다 — 임상시험에서 **진짜 결과(사망률) 대신 대리 지표(혈압)를 써도 되는가.** 거기서 빌려 온 조건이 둘이다: **대리성**(공변량을 통제한 뒤 LLM 출력이 처치 효과를 온전히 매개하는가)과 **비교가능성**(LLM 예측을 인간 행동으로 옮기는 보정 함수가 실험 사이에서 안정적인가).\n\n그리고 검정 결과는 대체로 **아니다** 쪽이었다. 보정 없는 예측은 인간 처치 효과의 **39%만** 회복했고, 선형 보정은 반증 검정에서 **3.8 표준오차** 떨어져 탈락했다.\n\n**그런데 이 도메인의 진짜 무게는 다른 숫자에 있다** — 이 회사 A/B 테스트의 **12%만 긍정 결과로 출시**되고, 출시된 것 중 **42%가 이차 지표 퇴행 때문에 롤백**된다. **그 42%를 잡아낸 eval 은 하나도 없었다.**",
+        "metrics": [
+          {
+            "label": "보정 없는 LLM 예측이 회복한 처치 효과",
+            "value": "**39%** — 예측이 효과를 0 쪽으로 체계적으로 줄인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "label": "선형(OLS) 보정의 반증 검정",
+            "value": "인간 기준선에서 **3.8 표준오차** — 탈락. **ML 보정(랜덤 포레스트·GBT)만** 표본오차 안에 들었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "label": "A/B 테스트의 결말",
+            "value": "**12%** 만 긍정 결과로 출시. **64%** 는 유효한 학습을 남긴다(퇴행을 잡거나, 아이디어를 배제하거나, 가설을 다듬는다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          },
+          {
+            "label": "출시 뒤에 되돌리는 비율",
+            "value": "출시된 실험의 **42%** 가 **측정하지 않은 이차 지표의 퇴행**을 막으려 롤백된다 — **어떤 eval 도 이것을 표시하지 못했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          },
+          {
+            "label": "비용·시간 절감",
+            "value": "**글에 없다** — 단위당 여러 LLM 출력을 평균 내면 잡음이 준다고만 하고 개선폭도 밝히지 않는다",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "LLM 으로 실험을 대신하자는 말이 나왔을 때",
+          "thought": "빨라지는 것은 분명하다. 그런데 **'된다'와 '안 된다'를 무엇으로 가를 것인가**가 먼저다. 예측이 사람과 대체로 비슷해 보인다는 것만으로는 부족하다 — **얼마나 비슷해야 대신해도 되는가**에 답이 있어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 문제가 어디에 있었는지 찾다가",
+          "thought": "생물통계에 이미 있다 — 임상시험에서 진짜 결과 대신 **대리 지표**를 쓰는 문제다. 조건이 둘로 정리돼 있다. **대리성**: 공변량을 통제한 뒤 LLM 출력이 처치 효과를 **온전히 매개**해야 한다. **비교가능성**: 예측을 인간 행동으로 옮기는 **보정 함수가 실험 사이에서 안정적**이어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "실제로 검정해 보고",
+          "thought": "Upworthy 아카이브의 A/B 테스트 수천 건에 gpt-4o-mini 로 헤드라인 클릭률을 예측시켰다. 보정 없이는 **39%만** 회복한다 — **예측이 효과를 0 쪽으로 끌어당긴다.** 선형 보정을 붙여도 반증 검정에서 **3.8 표준오차** 떨어졌다. **ML 보정만** 표본오차 안에 들어왔다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "통과했으니 써도 되는지 물었을 때",
+          "thought": "안 된다. **한 번도 시험해 본 적 없는 처치에 대해서는 대리성도 비교가능성도 결코 증명할 수 없다.** 게다가 Upworthy 는 거의 이상적인 조건이었다 — 이진 결과에, 텍스트 처치에, 변형끼리 언어적으로도 비슷했다. 레이아웃·알고리즘·가격 변경이라면 정당화가 훨씬 어렵다. 그래서 결론은 **대체가 아니라 순서**다 — **갈림길이 아니라 깔때기.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "대리성 (surrogacy)",
+            "what": "공변량을 통제한 뒤 **LLM 출력이 처치 효과를 온전히 매개**해야 한다는 조건."
+          },
+          {
+            "name": "비교가능성 (comparability)",
+            "what": "LLM 예측을 인간 행동으로 옮기는 **보정 함수가 실험 사이에서 안정적**이어야 한다는 조건."
+          },
+          {
+            "name": "보정 함수",
+            "what": "예측을 실제 행동으로 옮기는 사상. **모델과 시점에 묶여 있어 LLM 이 갱신되면 이전 보정이 무효가 된다.**"
+          },
+          {
+            "name": "반증 검정 (falsification test)",
+            "what": "보정이 인간 기준선을 얼마나 벗어나는지를 재는 검정. OLS 는 3.8 표준오차로 탈락했다."
+          },
+          {
+            "name": "깔때기 3단계",
+            "what": "**검증**(eval 이 약한 후보를 거른다) → **검정**(A/B 로 실제 사용자가 예측대로 반응하는지 본다) → **보정**(A/B 결과로 eval 점수를 사후에 맞춰 본다)."
+          },
+          {
+            "name": "이차 지표",
+            "what": "측정하지 않은 쪽의 지표. 출시된 실험의 42%가 여기의 퇴행 때문에 되돌아간다."
+          }
+        ],
+        "invariants": [
+          "**무작위 실험 설계를 포기하지 않는다** — 회사의 권고 그대로다.",
+          "**보정 단계가 없으면 eval 은 증거가 아니라 의견이다.**",
+          "보정 함수는 **모델·시점에 묶인다** — LLM 이 갱신되면 다시 맞춰야 한다.",
+          "**한 번도 시험해 본 적 없는 처치**에 대해서는 두 조건을 증명할 수 없다.",
+          "LLM 을 분산 축소용 공변량으로 쓰는 것은 **새 처치가 과거 것과 닮았을 때만** 정당하다.",
+          "신뢰할 만한 보정에는 **과거 실험 데이터가 많이** 필요하다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**[검증]** LLM 판정자가 출력이 품질 기준을 만족하는지 본다 — 적합성·일관성·어조·의도 정렬",
+            "why": "약한 후보를 실험에 올리기 전에 걸러 낸다."
+          },
+          {
+            "step": "**[검정]** 남은 것을 A/B 테스트에 올린다 — 실제 사용자가 예측대로 반응하는지, 의도한 변경이 사업 성과로 이어지는지",
+            "why": "eval 은 사용자가 실제로 더 나은 결과를 겪었는지를 말해 주지 못한다."
+          },
+          {
+            "step": "**[보정]** A/B 데이터 위에서 eval 을 다시 돌려 **점수와 실제 결과를 맞춰 본다**",
+            "why": "이 되먹임이 없으면 eval 점수를 믿을 근거가 없다 — 그러면 의견이다."
+          },
+          {
+            "step": "대체 가능성을 따질 때는 **대리성과 비교가능성**을 형식적으로 세우고 **반증 검정**을 돌린다",
+            "why": "'비슷해 보인다'로는 얼마나 비슷해야 하는지에 답할 수 없다."
+          },
+          {
+            "step": "보정 함수는 **ML(랜덤 포레스트·GBT)** 로 학습한다 — 선형 OLS 는 검정을 통과하지 못했다",
+            "why": "LLM 예측과 인간 반응의 관계가 선형이 아니었다."
+          },
+          {
+            "step": "단위마다 **여러 LLM 출력을 평균** 낸다",
+            "why": "샘플링 온도에서 오는 잡음을 줄인다."
+          },
+          {
+            "step": "LLM 을 실험 자체에 쓸 때는 **분산 축소용 공변량**으로만, 그것도 **새 처치가 과거 것과 닮았을 때만** 쓴다",
+            "why": "닮지 않은 처치에서는 조건이 성립한다고 볼 근거가 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "LLM 예측으로 A/B 테스트를 대신할 것인가",
+            "chosen": "**대신하지 않는다.** 회사의 권고 그대로 — **\"무작위 실험 설계를 포기하지 말라.\"**",
+            "alternatives": [
+              "LLM 시뮬레이션으로 실험을 대체해 시간과 트래픽을 아낀다"
+            ],
+            "tradeoff": "실험은 여전히 느리고 트래픽을 먹는다. 그런데 대체했을 때의 대가가 더 크다 — 보정 없는 예측은 **효과의 39%만** 잡아내고, 그 오차는 무작위가 아니라 **0 쪽으로 치우친 체계적 편향**이라 **있는 효과를 없다고 판정하게 만든다**(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "question": "'대신해도 되는가'를 무엇으로 판정할 것인가",
+            "chosen": "**생물통계의 대리 지표 이론**을 빌려 조건 둘(**대리성**·**비교가능성**)을 세우고 **반증 검정**을 돌린다.",
+            "alternatives": [
+              "예측과 실제의 상관계수를 보고 판단한다",
+              "몇 건 돌려 보고 눈으로 비교한다"
+            ],
+            "tradeoff": "조건을 형식화하면 **통과하지 못하는 경우가 많아진다** — 실제로 대부분 통과하지 못했다(뒷문장은 이 사이트의 해석). 대신 '얼마나 비슷해야 하는가'에 답할 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "question": "보정 함수를 무엇으로 만들 것인가",
+            "chosen": "**ML(랜덤 포레스트·그래디언트 부스팅).** 선형 OLS 는 반증 검정에서 **3.8 표준오차** 떨어져 탈락했다.",
+            "alternatives": [
+              "선형 OLS 로 단순하게 맞춘다"
+            ],
+            "tradeoff": "회사가 적었다 — **보정 함수는 모델·시점에 묶여 있어 LLM 이 갱신되면 이전 보정이 무효가 된다.** 그리고 **신뢰할 만한 보정에는 과거 실험 데이터가 많이 필요하다** — 실험을 적게 하는 조직일수록 이 방법을 쓸 수 없다는 뜻이다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "question": "그럼 LLM 을 어디에 쓸 것인가",
+            "chosen": "**깔때기의 앞단과 옆단.** 실험 전에 약한 아이디어를 거르는 데 쓰고, **새 처치가 과거 것과 닮았을 때만** 분산 축소용 공변량으로 쓴다.",
+            "alternatives": [
+              "실험 대신 쓴다",
+              "아예 쓰지 않는다"
+            ],
+            "tradeoff": "'닮았다'의 판정을 사람이 해야 하고, 그 판단이 틀리면 조건이 깨진 채로 쓰게 된다(뒷문장은 이 사이트의 추정). 대신 실험의 수를 줄이지 않으면서 **실험에 올릴 후보의 질**을 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "question": "eval 과 실험을 어떤 관계로 놓을 것인가",
+            "chosen": "**갈림길이 아니라 깔때기.** 검증(eval) → 검정(A/B) → **보정**(A/B 데이터로 eval 점수를 사후에 맞춘다) 3단계.",
+            "alternatives": [
+              "eval 이냐 실험이냐를 팀이 고르게 한다"
+            ],
+            "tradeoff": "단계가 늘어 한 변경이 출시되기까지 더 오래 걸린다(뒷문장은 이 사이트의 추정). 대신 회사가 못 박은 조건이 지켜진다 — **보정이 없으면 \"eval 은 증거가 아니라 의견\"** 이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          },
+          {
+            "question": "eval 점수가 안 움직이면 개선이 없는 것인가",
+            "chosen": "**그렇게 보지 않는다.** 회사가 실제 사례를 든다 — Opus 4.5 는 Qodo 의 코딩 eval 에서 개선이 안 보였는데 **통제 실험에서는 긴 과제에서 상당한 개선**이 드러났다.",
+            "alternatives": [
+              "eval 점수를 출시 판단의 기준으로 삼는다"
+            ],
+            "tradeoff": "eval 을 게이트로 못 쓰니 판단 비용이 는다. 이유는 구조적이다 — **오래 걸리는 과제와 장기적 행동은 설계상 eval 로 담기 어렵다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          },
+          {
+            "question": "측정하지 않은 지표는 어떻게 할 것인가",
+            "chosen": "**실험으로 잡는다** — 출시된 실험의 **42%** 가 이차 지표 퇴행을 막으려 롤백되는데, **이 중 어떤 것도 eval 이 표시하지 못했다.**",
+            "alternatives": [
+              "주요 지표만 보고 출시한다"
+            ],
+            "tradeoff": "롤백이 잦아 보이지만, **A/B 의 64%가 유효한 학습을 남긴다** — 퇴행을 잡고, 아이디어를 배제하고, 가설을 다듬는다. 긍정 결과로 출시되는 것은 **12%** 뿐인데도 나머지가 낭비가 아니라는 뜻이다(마지막 절은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "gpt-4o-mini",
+            "role": "헤드라인 변형(처치·대조)의 클릭률을 예측하게 한 모델.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "tech": "Upworthy Research Archive",
+            "role": "검정에 쓴 공개 데이터셋 — 실제 A/B 테스트 수천 건.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "tech": "대리 지표 이론 (생물통계)",
+            "role": "대리성·비교가능성 두 조건의 출처. 이 회사의 것이 아니라 빌려 온 틀이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "tech": "반증 검정",
+            "role": "보정이 인간 기준선을 얼마나 벗어나는지 재는 장치. OLS 를 탈락시켰다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "tech": "랜덤 포레스트 · 그래디언트 부스팅 트리",
+            "role": "보정 함수. 선형 OLS 를 대신해 표본오차 안에 들어왔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "tech": "LLM 판정자 (LLM judge)",
+            "role": "깔때기 첫 단에서 적합성·일관성·어조·의도 정렬을 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          },
+          {
+            "tech": "실험 플랫폼의 내부 구조",
+            "role": "— 두 글 모두 방법론을 다루고 **실험 플랫폼 자체의 시스템 설계는 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "data-platform",
+          "via": "실험을 떠받치는 것",
+          "contract": "데이터 플랫폼이 **'핵심 역량으로서의 실험'** 을 투자 계기 다섯 중 하나로 꼽는다. 보정에 필요한 **과거 실험 데이터가 많이 있어야 한다**는 조건도 결국 그 플랫폼이 대는 것이다 — **두 글이 서로를 언급하지는 않는다**(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "처음 보는 것에 대해서는 대리 지표가 성립하는지 알 수 없다",
+            "why_hard": "대리 지표를 쓰려면 두 조건이 성립해야 하는데, 회사가 못 박은 문장이 이것이다 — **한 번도 시험해 본 적 없는 처치에 대해 대리성과 비교가능성은 결코 증명될 수 없다.** 그런데 실험을 하는 이유가 바로 **처음 보는 것을 시험하기 위해서**다. 즉 **대리 지표가 가장 필요한 자리에서 정확히 못 쓰게 되고, 쓸 수 있는 자리는 이미 답을 아는 자리다.** 게다가 검정이 통과한 조건조차 이상적이었다 — Upworthy 는 **이진 결과에 텍스트 처치에 변형끼리 언어적으로도 비슷했다.** 레이아웃·알고리즘·가격 변경으로 가면 정당화가 훨씬 어렵다. **회사 포트폴리오 전반에서 조건이 성립한다는 실증 근거는 없다**고도 적었다.",
+            "current_best": "**대체하지 말고 순서로 놓는다** — 갈림길이 아니라 깔때기다. LLM 은 실험 **전에** 약한 후보를 거르고, **새 처치가 과거 것과 닮았을 때만** 분산 축소용 공변량이 된다. 그리고 무작위 설계는 그대로 둔다. 보정 함수도 영구적이지 않아 **LLM 이 갱신되면 이전 보정이 무효**가 되므로, 이 방법은 **계속 다시 맞춰야 하는 것**이지 한 번 세우면 끝나는 장치가 아니다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "When Can LLMs Replace Humans in A/B Tests?",
+                "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+                "publisher": "Spotify Engineering",
+                "date": "2026-08",
+                "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+              }
+            ]
+          },
+          {
+            "problem": "측정하지 않은 것은 평가로도 잡히지 않는다",
+            "why_hard": "이 회사에서 출시된 실험의 **42%가 이차 지표 퇴행 때문에 롤백**되는데, **그중 어떤 것도 eval 이 표시하지 못했다.** 이유는 구조적이다 — eval 은 **출력이 기준을 만족하는지**를 보지, **사용자가 실제로 더 나은 결과를 겪었는지**를 보지 못한다. 그리고 **측정하지 않은 이차 지표에 대한 영향**과 **장기적 행동 변화·시스템 전반의 효과**는 설계상 담기지 않는다. 실제로 반대 방향의 사례도 있다 — eval 점수는 안 움직였는데 통제 실험에서는 긴 과제에서 상당한 개선이 드러난 경우다.",
+            "current_best": "**되먹임을 끝까지 닫는다.** 깔때기의 세 번째 단에서 **A/B 데이터 위에 eval 을 다시 돌려 점수와 실제 결과를 맞춰 본다.** 회사의 표현이 기준을 정한다 — 점수가 실제 결과를 따라가는 동안에만 유효하고, **보정 없이는 \"eval 은 증거가 아니라 의견\"** 이다. 근본 해결은 아니다 — 42%는 여전히 실험이 잡아내는 것이지 eval 이 잡아내는 것이 아니다(마지막 절은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+                "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+                "publisher": "Spotify Engineering",
+                "date": "2026-05",
+                "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "갈림길이 아니라 깔때기",
+          "question": "LLM 평가는 실험의 앞인가 대신인가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  IDEA[\"아이디어들\"]\n  FORK[\"<b>갈림길</b> — eval 이냐 실험이냐\"]:::quiet\n  FORK -->|\"이 회사가 고르지 않은 길\"| X[\"대체\"]\n  IDEA --> S1[\"<b>① 검증 (eval)</b><br/>LLM 판정자 — 적합성 · 일관성<br/>어조 · 의도 정렬<br/>약한 후보를 거른다\"]:::list\n  S1 --> S2[\"<b>② 검정 (A/B)</b><br/>실제 사용자가 예측대로 반응하는가<br/>의도한 변경이 성과로 이어지는가\"]:::accent\n  S2 --> OUT{\"결말\"}\n  OUT -->|\"<b>12%</b>\"| SHIP[\"긍정 결과로 출시\"]\n  OUT -->|\"<b>64%</b>\"| LEARN[\"유효한 학습<br/>퇴행 포착 · 아이디어 배제 · 가설 정련\"]\n  SHIP --> RB[\"<b>그중 42% 롤백</b><br/>측정하지 않은 이차 지표 퇴행<br/><b>어떤 eval 도 표시하지 못했다</b>\"]:::accent\n  S2 --> S3[\"<b>③ 보정 (사후)</b><br/>A/B 데이터 위에서 eval 을 다시 돌려<br/>점수와 실제 결과를 맞춘다\"]:::list\n  S3 -->|\"이 단계가 없으면\"| OPINION[\"<b>eval 은 증거가 아니라 의견</b>\"]:::quiet\n  S3 -.->|\"되먹임\"| S1"
+        },
+        {
+          "title": "'대신해도 되는가'를 판정하는 절차",
+          "question": "어디에서 탈락하는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 질문: LLM 이 사람을 대신할 수 있는가\n  질문 --> 조건세우기: 생물통계의 대리 지표 이론을 빌린다\n  note right of 조건세우기\n    대리성 — 공변량 통제 후\n    LLM 출력이 처치 효과를 온전히 매개하는가\n    비교가능성 — 보정 함수가\n    실험 사이에서 안정적인가\n  end note\n  조건세우기 --> 무보정: 그대로 써 본다\n  무보정 --> 탈락1: 인간 처치 효과의 39%만 회복\n  note right of 탈락1\n    오차가 무작위가 아니다\n    효과를 0 쪽으로 끌어당긴다\n  end note\n  탈락1 --> 선형보정: OLS 로 맞춘다\n  선형보정 --> 탈락2: 반증 검정에서 3.8 표준오차\n  탈락2 --> ML보정: 랜덤 포레스트 · GBT\n  ML보정 --> 통과: 표본오차 안\n  통과 --> 그래도조건부\n  note right of 그래도조건부\n    한 번도 시험해 본 적 없는 처치에는\n    두 조건을 결코 증명할 수 없다\n    Upworthy 는 거의 이상적 조건이었다\n    LLM 이 갱신되면 보정이 무효가 된다\n  end note\n  그래도조건부 --> [*]: 대체가 아니라 깔때기로 쓴다"
+        },
+        {
+          "title": "실패 경로 — 가장 필요한 자리에서 못 쓴다",
+          "question": "조건이 성립하는 곳은 어디인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  NEED[\"<b>대리 지표가 가장 필요한 자리</b><br/>= 처음 보는 처치\"] -->|\"회사가 못 박음\"| NEVER[\"<b>대리성 · 비교가능성을<br/>결코 증명할 수 없다</b>\"]\n  OK[\"<b>조건이 성립하는 자리</b><br/>= 과거와 닮은 처치\"] -->|\"해석\"| KNOWN[\"이미 답을 아는 자리\"]\n  NEVER & KNOWN --> IRONY[\"필요한 곳에서 못 쓰고<br/>쓸 수 있는 곳에서는 덜 필요하다\"]:::accent\n  IDEAL[\"Upworthy — 거의 이상적 조건<br/>이진 결과 · 텍스트 처치<br/>언어적으로 비슷한 변형\"] --> HARD[\"레이아웃 · 알고리즘 · 가격 변경은<br/>정당화가 훨씬 어렵다\"]\n  CAL[\"보정 함수\"] --> TIED[\"<b>모델 · 시점에 묶인다</b><br/>LLM 이 갱신되면 무효\"]:::quiet\n  CAL --> DATA[\"<b>과거 실험 데이터가 많이 필요하다</b><br/>— 실험을 적게 하는 조직은 쓸 수 없다 (해석)\"]:::quiet\n  EVAL[\"eval 로 판단\"] --> CANT[\"사용자가 실제로 더 나은 결과를<br/>겪었는지 말해 주지 못한다\"]\n  CANT --> SEC[\"<b>이차 지표 퇴행 42%</b><br/>eval 이 하나도 못 잡았다\"]\n  CANT --> LONG[\"장기 행동 · 시스템 전반 효과는<br/><b>설계상</b> 담기지 않는다\"]\n  LONG --> OPUS[\"반대 사례 — Opus 4.5 는<br/>코딩 eval 에서 개선이 안 보였는데<br/>통제 실험의 긴 과제에서는 상당한 개선\"]\n  NOPORT[\"회사 포트폴리오 전반에서<br/>조건이 성립한다는<br/><b>실증 근거는 없다</b>\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "When Can LLMs Replace Humans in A/B Tests?",
+          "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+          "publisher": "Spotify Engineering",
+          "date": "2026-08",
+          "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+        },
+        {
+          "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+          "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+          "publisher": "Spotify Engineering",
+          "date": "2026-05",
+          "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1103,7 +1612,9 @@
     "사고 보고서는 **영향받은 쇼·에피소드·이용자 수를 공개하지 않는다.**",
     "2부까지 읽었지만 **스케줄러의 구체적인 구현**(자체 제작인지 기존 도구인지)은 밝히지 않는다.",
     "**품질 검사가 실패하면 어떻게 되는지** — 파이프라인을 막는지 경고만 하는지 적혀 있지 않다.",
-    "**실험 플랫폼**은 아직 도메인으로 열지 않았다 — 자료는 확인했다(`when-can-llms-replace-humans-in-a-b-tests` 2026-08, `better-experiments-with-llm-evals` 2026-05). 다음 사이클의 후보다."
+    "두 글 모두 **방법론**을 다루고 **실험 플랫폼 자체의 시스템 설계**(할당·순차 검정·지표 파이프라인)는 밝히지 않는다.",
+    "LLM 대체가 가져올 **비용·시간 절감치가 글에 없다** — 단위당 여러 출력을 평균 내면 잡음이 준다고만 하고 개선폭도 밝히지 않는다.",
+    "대리 지표 이론의 **원 출처(생물통계 문헌)를 이 사이트는 직접 확인하지 않았다** — 그래서 `research.papers` 를 비워 두었다. 있는 것처럼 인용하지 않는다."
   ],
   "sources": [
     {
@@ -1140,6 +1651,20 @@
       "publisher": "Spotify Engineering",
       "date": "2024-05",
       "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+    },
+    {
+      "title": "When Can LLMs Replace Humans in A/B Tests?",
+      "url": "https://engineering.atspotify.com/2026/8/when-can-llms-replace-humans-in-a-b-tests",
+      "publisher": "Spotify Engineering",
+      "date": "2026-08",
+      "summary": "LLM 예측으로 A/B 테스트의 사람을 대신할 수 있는지를 **감이 아니라 생물통계의 대리 지표 이론**으로 검정한 글. 조건 둘(대리성·비교가능성)을 세우고 Upworthy 아카이브의 실험 수천 건으로 반증 검정을 돌린다. 보정 없는 예측은 인간 처치 효과의 39%만 회복하고, 선형 보정은 3.8 표준오차 떨어져 탈락한다."
+    },
+    {
+      "title": "Better Experiments with LLM Evals — A funnel, not a fork",
+      "url": "https://engineering.atspotify.com/2026/5/better-experiments-with-llm-evals-a-funnel-not-a-fork",
+      "publisher": "Spotify Engineering",
+      "date": "2026-05",
+      "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
     }
   ]
 }
