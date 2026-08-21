@@ -15,9 +15,9 @@
 
 - **PlanetScale** (US · SaaS) — 사이클 190 에서 열었다. **35번째 회사, 데이터베이스 회사 첫 곳.**
   프로파일 + 도메인 지도 + 도메인 3개(**백업·복구** · **동시성과 처리량** · **고객의 실수를 감당하기**).
-  **기능 1개 완료**(`concurrency-limits`, 사이클 191 — 두 번째 글로 `postgresql-mvcc` 를 썼다).
-  **다음은 `백업·복구`**(주 자료 정독 완료. **두 번째 글로 `postgres-backups-under-the-hood` 필요**),
-  그 뒤가 `고객의 실수를 감당하기`(**두 번째 글로 `the-dangers-of-postgres-subtransactions` 필요**).
+  **기능 2개 완료**(`concurrency-limits` 191 · `parallel-backups` 192).
+  **남은 것은 `고객의 실수를 감당하기`** 하나 — **두 번째 글로 `the-dangers-of-postgres-subtransactions` 필요**
+  (주 자료 `postgres-poisoned-connection-pools` 는 수치가 없다). **채우면 done 으로 닫는다.**
   ⚠️ **비상장이라 매출·고객 수가 없다** — 요금표에서 '파는 방식'만 확인했다. 지어내지 말 것.
 
 ## 대기
