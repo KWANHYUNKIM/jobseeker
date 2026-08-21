@@ -331,10 +331,10 @@
       "name_en": "Zalando",
       "country": "EU",
       "category": "커머스",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-22",
       "one_liner": "거의 안 바뀌는 것과 시시각각 바뀌는 것을 한 파이프라인에 태웠던 회사 — 그걸 떼어내는 중이다",
-      "features_done": 1,
+      "features_done": 2,
       "domain": "zalando.com"
     }
   ],

@@ -4,11 +4,11 @@
   "name_en": "Zalando",
   "country": "EU",
   "category": "커머스",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-22",
   "domain": "zalando.com",
   "one_liner": "거의 안 바뀌는 것과 시시각각 바뀌는 것을 한 파이프라인에 태웠던 회사 — 그걸 떼어내는 중이다",
-  "business_model": "**유럽 패션 커머스**다. FY2025 기준 그룹 **GMV 176억 유로**(+14.7%), **매출 123억 유로**(+16.8%), 조정 EBIT **5.91억 유로**. **B2C 매출 113억 유로 · 활성 고객 6,200만**이고, **B2B 매출 11억 유로**(+14.6%)에 조정 EBIT 이 두 배 이상 뛰었다(ZEOS 물류와 SCAYLE 편입).\n\n**그런데 이 회사의 기술적 성격은 데이터의 두 성질이 섞여 있다는 데서 나온다.** 파는 것은 **상품(Product)** 과 **오퍼(Offer)** 두 가지인데 — 오퍼는 *\"어떤 판매자가 어떤 가격에 어느 재고 수준으로 파는 것\"* 이다 — **둘의 변화 속도가 완전히 다르다.** 상품 설명은 거의 그대로인데 재고와 가격은 시시각각 바뀐다. 그런데 예전 파이프라인은 둘을 **한 이벤트 구조로 합쳐** 흘려보냈고, 그 결과 **페이로드의 90% 이상이 바뀌지 않은 채 실려 다녔다.**\n\n**그래서 이 회사가 최근 몇 년 하고 있는 일은 대체로 '섞여 있던 것을 떼어내는 일'이다**(이 관찰은 이 사이트의 해석) — 상품과 오퍼를 갈라놓고(PODS), 내부 팬아웃 트래픽을 공유 인그레스에서 떼어내고(CSLB), 부하 신호에서 '빠른 것과 느린 것'을 갈라낸다.\n\n**그리고 이 회사 글의 미덕은 접은 실험도 적는다는 것이다** — 비용 이득이 보였던 가용영역 친화 라우팅을 **\"팀 지속가능성과 온콜 건강\"** 을 이유로 껐고, **\"그것이 비용을 회수하는지는 아직 답하지 못한 질문\"** 이라고 남겼다.",
+  "business_model": "**유럽 패션 커머스**다. FY2025 기준 그룹 **GMV 176억 유로**(+14.7%), **매출 123억 유로**(+16.8%), 조정 EBIT **5.91억 유로**. **B2C 매출 113억 유로 · 활성 고객 6,200만**이고, **B2B 매출 11억 유로**(+14.6%)에 조정 EBIT 이 두 배 이상 뛰었다(ZEOS 물류와 SCAYLE 편입).\n\n**그런데 이 회사의 기술적 성격은 데이터의 두 성질이 섞여 있다는 데서 나온다.** 파는 것은 **상품(Product)** 과 **오퍼(Offer)** 두 가지인데 — 오퍼는 *\"어떤 판매자가 어떤 가격에 어느 재고 수준으로 파는 것\"* 이다 — **둘의 변화 속도가 완전히 다르다.** 상품 설명은 거의 그대로인데 재고와 가격은 시시각각 바뀐다. 그런데 예전 파이프라인은 둘을 **한 이벤트 구조로 합쳐** 흘려보냈고, 그 결과 **페이로드의 90% 이상이 바뀌지 않은 채 실려 다녔다.**\n\n**그래서 이 회사가 최근 몇 년 하고 있는 일은 대체로 '섞여 있던 것을 떼어내는 일'이다**(이 관찰은 이 사이트의 해석) — 상품과 오퍼를 갈라놓고(PODS), 내부 팬아웃 트래픽을 공유 인그레스에서 떼어내고(CSLB), 부하 신호에서 '빠른 것과 느린 것'을 갈라낸다.\n\n**그리고 이 회사 글의 미덕은 접은 실험도 적는다는 것이다** — 비용 이득이 보였던 가용영역 친화 라우팅을 **\"팀 지속가능성과 온콜 건강\"** 을 이유로 껐고, **\"그것이 비용을 회수하는지는 아직 답하지 못한 질문\"** 이라고 남겼다.\n\n**두 기능이 같은 동작을 한다 — 섞여 있던 것을 갈라낸다.** 상품·오퍼 서빙은 **변화 속도가 다른 두 데이터**를 갈랐고(거의 안 바뀌는 상품이 시시각각 바뀌는 재고를 붙잡고 있었다), 내부 트래픽 라우팅은 **엣지 트래픽과 내부 팬아웃**을 갈랐으며(공유 인그레스를 함께 쓰던 탓에 지연의 출처를 가릴 수 없었다), 부하 신호에서는 **'빠른 것과 느린 것'** 을 갈랐다(인플라이트 개수로는 캐시가 뜨거운 파드와 밀린 파드가 똑같아 보인다).\n\n**그리고 갈라낸 뒤에 남는 값이 매번 같은 자리로 온다 — 캐시.** 카탈로그를 쪼개면 파드마다 데울 범위가 줄고, 트래픽을 재배치하면 그 지역성이 깎이고, 가용영역으로 몰면 파드가 더 넓은 범위를 맡아 미스가 폭발한다. 회사가 남긴 경고가 그 요약이다 — **\"캐시 지역성과 트래픽 격리는 반대 방향으로 잡아당긴다. 둘 중 하나를 켜기 전에 각 파티션이 뜨거운 상품 집합을 덮을 만큼 노드가 있는지 확인하라. 아니면 한 비용을 다른 비용으로 바꾸는 것일 뿐이다.\"**\n\n**셋째로, 이 회사는 접은 것과 되돌린 것을 적는다.** 가용영역 친화 라우팅은 비용 이득이 보였는데도 **\"팀 지속가능성과 온콜 건강\"** 을 이유로 껐고 **\"비용을 회수하는지는 아직 답하지 못한 질문\"** 이라고 남겼으며, 2017년에 스스로 고른 이벤트 주도 구조를 2025년에 읽기 경로에서 되돌렸다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "Zalando (패션 커머스 · 다중 앱)",
     "마켓플레이스 (판매자 오퍼)",
@@ -139,9 +139,26 @@
               "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
             }
           ]
+        },
+        {
+          "tech": "이벤트 주도를 고른 2017년의 이유 (되짚기)",
+          "solves": "이 회사는 2017년에 이벤트 주도를 **의식적으로** 골랐다 — 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로** 처리하게 하면 성능이 예측 가능해지고 결합이 느슨해지며 **서비스 팀의 백로그에 막히지 않는다**는 것이었다. 장애 때도 낡은 데이터로 버티는 편이 낫다고 봤다.",
+          "limits": "**그 대가를 그때 함께 적었다** — 클라이언트가 **로컬 지속 프로젝션을 직접 만들어 운영**해야 하고 **단일 진실 원천을 잃는다**('Event First' 로 완화). 그리고 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부·커스텀 통합은 요청-응답이 나을 수 있다고. **다만 2025년에 실제로 되돌린 자리는 그 예외와 다르다 — 요청이 아주 많은 읽기 경로였다**(이 대비는 이 사이트의 해석이며 두 글은 서로를 인용하지 않는다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Why Event-Driven?",
+              "url": "https://engineering.zalando.com/posts/2017/11/why-event-driven.html",
+              "publisher": "Zalando Engineering Blog",
+              "date": "2017-11",
+              "summary": "2017년에 이 회사가 이벤트 주도를 고른 이유를 스스로 적은 글. 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로 처리**하게 하고, 대가로 **클라이언트가 로컬 프로젝션을 만들어 운영하는 부담**을 진다고 밝힌다. 그러면서 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부 통합은 요청-응답이 나을 수 있다고."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "pods-prapi"
+      ]
     }
   ],
   "features": [
@@ -606,7 +623,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "pods-prapi",
+          "via": "같은 시스템의 두 층",
+          "contract": "PRAPI 가 캐시를 키우는 대신 **일관 해시로 카탈로그를 파드에 나눴고**, 그 해시 라우팅을 실제로 수행하는 것이 이 로드밸런서다. **\"캐시 지역성과 트래픽 격리는 반대 방향으로 잡아당긴다\"** 는 경고가 그 설계 위에서 성립한다(해석 — 두 글이 서로를 그렇게 엮지는 않는다).",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [],
         "hard_problems": [
@@ -678,14 +702,551 @@
           "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
         }
       ]
+    },
+    {
+      "key": "pods-prapi",
+      "name": "거의 안 바뀌는 것이 시시각각 바뀌는 것을 붙잡고 있었다",
+      "domain": "상품·오퍼 서빙",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "이 회사가 파는 것은 두 가지다. **상품(Product)** 은 설명과 사양이라 거의 안 바뀌고 **1,000줄짜리 JSON** 만큼 크다. **오퍼(Offer)** 는 *\"어떤 판매자가 어떤 가격에 어느 재고 수준으로 파는 것\"* 이라 시시각각 바뀌고 작다.\n\n그런데 옛 파이프라인은 **Product·Price·Stock 을 하나의 구조로 합쳐** 여러 단계의 변환·집계·보강을 거치게 했다. 결과가 두 가지로 나타났다.\n\n**첫째, 낭비다** — 각 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다니며 네트워크와 메모리와 연산을 먹었다.\n**둘째, 더 나쁜 것 — 가장 급한 것이 가장 안 급한 것 뒤에 서 있었다.** 사이버위크에 **재고와 가격 이벤트가 최대 30분** 밀렸다(마지막 문장의 표현은 이 사이트의 해석).\n\n**그리고 이것이 이 회사가 2017년에 의식적으로 고른 구조였다는 점이 이 사례를 흥미롭게 만든다.**",
+        "metrics": [
+          {
+            "label": "낭비의 크기",
+            "value": "각 페이로드의 **90% 이상이 바뀌지 않은 채** 처리됐다. 상품 페이로드는 **약 1,000줄 JSON**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "label": "밀린 시간",
+            "value": "사이버위크에 **재고·가격 이벤트가 최대 30분 지연**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "label": "목표와 실제",
+            "value": "목표는 단건 p99 **50ms** · 배치 **100ms** 였는데, 실제로는 단건 GET **p99 10ms 미만**, 최대 100건 배치가 **단건 p999 에 근접**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "label": "캐시가 안 들어가는 이유",
+            "value": "*\"상품 1,000만 개 중 10%만 뜨겁다 해도 파드마다 1,000줄짜리 큰 JSON 100만 개를 캐시하는 것은 불가능하다\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "label": "캐시 설정",
+            "value": "Caffeine 비동기 로딩 캐시 — **TTL 60초 · stale 15초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "label": "이관의 무게",
+            "value": "**약 350개 엔지니어링 팀 · 수천 개 배포된 애플리케이션** — Accept 헤더로 옛 형식을 한동안 함께 지원했다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "파이프라인이 실제로 무엇을 나르는지 세어 보고",
+          "thought": "각 페이로드의 **90% 이상이 바뀌지 않은 것**이었다. 상품 설명은 그대로인데 재고 하나가 바뀔 때마다 1,000줄짜리 JSON 이 통째로 흘러간다. **네트워크도 메모리도 연산도 그 90%에 쓰이고 있었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "사이버위크에 재고가 30분 밀리는 것을 보고",
+          "thought": "가장 급한 것이 **가장 안 급한 것 뒤에 서 있었다.** 재고와 가격은 지금 맞아야 하는데, 거의 안 바뀌는 상품 데이터와 같은 줄에 서서 같은 변환 단계를 거친다. **둘의 변화 속도가 다르면 같은 파이프라인에 태울 수 없다**(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "중간 형식들을 들여다보고",
+          "thought": "Alpha·Beta·Gamma 세 형식이 **원형에서 크게 벗어나** 있었고 의존이 엉켜 있었다. 무엇보다 **데이터 계보가 없어서 어떤 속성이 원래 무엇을 뜻했는지 되짚을 수가 없었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "읽기 경로를 새로 지으며",
+          "thought": "파드마다 전부 캐시하는 것은 불가능하다 — **1,000만 개 중 10%만 뜨겁다 해도 100만 개의 큰 JSON** 이다. 그러면 **캐시를 키우는 대신 카탈로그를 쪼개야** 한다. 일관 해시로 나누면 파드마다 자기 몫만 데우면 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Product (상품)",
+            "what": "설명과 사양. **거의 안 바뀌고 크다**(약 1,000줄 JSON)."
+          },
+          {
+            "name": "Offer (오퍼)",
+            "what": "*\"어떤 판매자가 어떤 가격에 어느 재고 수준으로 파는 것\"*. **시시각각 바뀐다.**"
+          },
+          {
+            "name": "세 엔드포인트",
+            "what": "`/products/{id}` · `/products/{id}/offers` · `/product-offers/{id}`(합친 표현). **읽는 쪽이 필요한 것만 고른다.**"
+          },
+          {
+            "name": "마켓 그룹 (국가 단위)",
+            "what": "격리와 복원력의 단위. 한 나라의 문제가 다른 나라로 번지지 않게 한다."
+          },
+          {
+            "name": "Updaters",
+            "what": "DynamoDB 배치로 데이터를 수집해 넣는다."
+          },
+          {
+            "name": "Caffeine 비동기 로딩 캐시",
+            "what": "**TTL 60초, stale 15초.** 파드 안의 뜨거운 상품을 들고 있다."
+          }
+        ],
+        "invariants": [
+          "**상품과 오퍼는 다른 엔드포인트로 나간다** — 필요한 쪽만 가져간다.",
+          "**파드는 카탈로그 전부를 캐시하지 않는다** — 일관 해시로 나눈 자기 몫만 든다.",
+          "격리 단위는 **국가별 마켓 그룹**이다.",
+          "상품은 메모리에서 **`ObjectNode` 그래프가 아니라 `ByteArray`** 로 들고 있는다.",
+          "이관 중에는 **Accept 헤더로 옛 형식도 함께** 응답한다.",
+          "부하가 올라갈수록 **캐시 적중률이 올라 더 빨라진다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "상품과 오퍼를 **엔드포인트 셋으로 갈라** 내놓는다 — 상품 / 오퍼 / 합친 표현",
+            "why": "읽는 쪽이 필요한 것만 가져가면 90%의 낭비가 사라진다."
+          },
+          {
+            "step": "큰 상품 데이터를 **이벤트 스트림에서 빼낸다**",
+            "why": "오퍼 파이프라인의 병목이 거기 있었다."
+          },
+          {
+            "step": "**Updaters** 가 DynamoDB 배치로 데이터를 넣는다",
+            "why": "쓰기를 묶어야 처리량이 나온다."
+          },
+          {
+            "step": "요청은 **국가별 마켓 그룹**으로 갈라져 처리된다",
+            "why": "한 나라의 문제가 전체로 번지지 않게 한다."
+          },
+          {
+            "step": "**일관 해시**로 카탈로그를 파드에 나눈다 — 파드는 자기 몫만 캐시한다",
+            "why": "1,000만 개 중 10%만 뜨거워도 파드마다 100만 개는 불가능하다."
+          },
+          {
+            "step": "파드 안에서는 **Caffeine 비동기 로딩 캐시**(TTL 60초 · stale 15초)가 받는다",
+            "why": "stale 창이 있으면 갱신 중에도 답을 줄 수 있다."
+          },
+          {
+            "step": "배치 요청은 **Power of Two Random Choices** 로 나눈다",
+            "why": "모든 후보를 재지 않고도 고르게 퍼진다."
+          },
+          {
+            "step": "상품은 메모리에 **`ByteArray`** 로 들고 있는다",
+            "why": "객체 그래프로 들면 할당이 GC 압력이 되어 꼬리 지연을 밀어 올린다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "상품과 오퍼를 한 이벤트 구조로 합칠 것인가",
+            "chosen": "**가른다(PODS).** 엔드포인트를 셋으로 나눠 상품·오퍼·합친 표현을 따로 내놓고, **큰 상품 데이터를 이벤트 스트림에서 빼낸다.**",
+            "alternatives": [
+              "기존처럼 Product·Price·Stock 을 한 구조로 합쳐 흘린다"
+            ],
+            "tradeoff": "읽는 쪽이 두 번 호출해야 하는 경우가 생긴다 — 그래서 **합친 표현 엔드포인트를 따로 뒀다**(뒷문장은 이 사이트의 해석). 대신 **페이로드의 90% 이상이 헛되이 흐르던 것**과 **사이버위크의 30분 지연**이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "question": "읽기 경로를 이벤트 스트림으로 계속 채울 것인가",
+            "chosen": "**서빙 API 를 만든다(PRAPI).** 목표는 단건 p99 50ms · 배치 100ms 였는데 실제로는 단건 **p99 10ms 미만**이 나왔다.",
+            "alternatives": [
+              "클라이언트가 이벤트 스트림에서 로컬 프로젝션을 유지한다(2017년의 방식)"
+            ],
+            "tradeoff": "**2017년에 이 회사가 밝힌 이벤트 주도의 이득을 일부 내주는 것**이다 — 그때 적은 이유는 클라이언트가 *\"자기 속도로\"* 처리하고 서비스 팀의 백로그에 막히지 않는다는 것이었다. 대신 그 대가도 그때 함께 적혀 있었다 — 클라이언트가 **로컬 지속 프로젝션을 만들어 운영해야 한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              },
+              {
+                "title": "Why Event-Driven?",
+                "url": "https://engineering.zalando.com/posts/2017/11/why-event-driven.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2017-11",
+                "summary": "2017년에 이 회사가 이벤트 주도를 고른 이유를 스스로 적은 글. 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로 처리**하게 하고, 대가로 **클라이언트가 로컬 프로젝션을 만들어 운영하는 부담**을 진다고 밝힌다. 그러면서 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부 통합은 요청-응답이 나을 수 있다고."
+              }
+            ]
+          },
+          {
+            "question": "캐시를 어떻게 할 것인가",
+            "chosen": "**파드마다 전부 캐시하지 않는다.** 일관 해시로 **카탈로그를 파드에 나눈다.**",
+            "alternatives": [
+              "파드마다 뜨거운 상품 전부를 캐시한다"
+            ],
+            "tradeoff": "파드가 죽거나 늘면 **누가 무엇을 데우는지가 바뀐다**(뒷문장은 이 사이트의 추정 — 그 문제는 로드밸런싱 쪽에서 다룬다). 대신 회사가 계산해 보였다 — *\"1,000만 개 중 10%만 뜨겁다 해도 파드마다 1,000줄짜리 JSON 100만 개는 불가능하다.\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "question": "신선도를 어떻게 잡을 것인가",
+            "chosen": "Caffeine 비동기 로딩 캐시에 **TTL 60초 · stale 15초.**",
+            "alternatives": [
+              "짧은 TTL 로 항상 최신을 노린다"
+            ],
+            "tradeoff": "최대 60초까지 낡은 값을 줄 수 있다(뒷문장은 이 사이트의 추정 — 글은 이 창의 의미를 따로 논하지 않는다). 대신 stale 창이 있어 **갱신 중에도 답을 멈추지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "question": "배치 요청을 어떻게 나눌 것인가",
+            "chosen": "**Power of Two Random Choices.**",
+            "alternatives": [
+              "모든 후보의 부하를 재고 가장 덜 바쁜 곳을 고른다"
+            ],
+            "tradeoff": "둘만 보므로 최적이 아닐 수 있다(뒷문장은 이 사이트의 추정). 대신 전수 비교 없이도 고르게 퍼진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "question": "상품을 메모리에 어떤 표현으로 들 것인가",
+            "chosen": "**`ByteArray`.** `ObjectNode` 그래프로 들지 않는다.",
+            "alternatives": [
+              "파싱된 객체 그래프로 들고 있는다"
+            ],
+            "tradeoff": "쓸 때마다 다시 해석해야 한다(뒷문장은 이 사이트의 추정). 대신 **객체 할당이 만드는 GC 압력이 꼬리 지연을 밀어 올리는 것**을 피한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "question": "350개 팀이 쓰는 형식을 어떻게 바꿀 것인가",
+            "chosen": "**Accept 헤더로 옛 형식을 한동안 함께 지원한다.**",
+            "alternatives": [
+              "시점을 정해 모두 새 형식으로 전환한다"
+            ],
+            "tradeoff": "두 형식을 동시에 유지하는 기간이 생긴다. 그런데 대안이 없었다 — **약 350개 엔지니어링 팀과 수천 개의 배포된 애플리케이션**이 걸려 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "question": "격리 단위를 무엇으로 할 것인가",
+            "chosen": "**국가별 마켓 그룹.**",
+            "alternatives": [
+              "전 지역을 하나의 풀로 다룬다"
+            ],
+            "tradeoff": "나라마다 자원을 따로 잡아야 해 여유가 분산된다(뒷문장은 이 사이트의 추정). 대신 한 나라의 문제가 다른 나라로 번지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "PODS 엔드포인트 셋",
+            "role": "상품 / 오퍼 / 합친 표현을 나눠 내놓는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "DynamoDB + Updaters (배치 수집)",
+            "role": "데이터 저장과 수집. 쓰기 용량이 병목이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "Caffeine 비동기 로딩 캐시 (TTL 60초 · stale 15초)",
+            "role": "파드 안의 뜨거운 상품. 부하가 오를수록 적중률이 올라간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "일관 해시 로드밸런싱",
+            "role": "카탈로그를 파드에 나눈다 — 캐시를 키우는 대신 범위를 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "Power of Two Random Choices",
+            "role": "배치 요청 분배.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "ByteArray 표현",
+            "role": "GC 압력을 줄여 꼬리 지연을 지킨다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "국가별 마켓 그룹",
+            "role": "격리·복원력의 단위.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "tech": "버린 대안",
+            "role": "— 글이 **밝히지 않는다.** 왜 이 구조를 골랐는지는 있으나 무엇을 검토했다가 접었는지는 없다.",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "client-side-lb",
+          "via": "같은 시스템의 두 층",
+          "contract": "PRAPI 가 카탈로그를 **일관 해시로 파드에 나눠** 캐시 범위를 줄이는데, **그 해시 라우팅을 실제로 수행하는 것**이 인프로세스 로드밸런서다. 그래서 저쪽 글의 \"캐시 지역성과 트래픽 격리는 반대 방향으로 잡아당긴다\"는 경고가 **이쪽 설계의 전제 위에서만 성립한다**(이 연결은 이 사이트의 해석이며, 두 글이 서로를 그렇게 엮지는 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "변화 속도가 다른 데이터를 한 줄에 세우면 느린 쪽이 빠른 쪽을 붙잡는다",
+            "why_hard": "상품과 오퍼는 **같은 화면에 함께 나오므로** 한 파이프라인에 태우는 것이 자연스럽다. 그런데 **바뀌는 빈도가 다르다.** 그러면 두 가지가 동시에 나빠진다 — 거의 안 바뀌는 쪽은 **매번 통째로 다시 실려** 페이로드의 90% 이상을 헛되이 만들고, 시시각각 바뀌는 쪽은 **그 무거운 것과 같은 변환 단계에 줄을 서서** 밀린다. 사이버위크에 **재고·가격이 최대 30분** 밀린 것이 그 결과다. **가장 급한 것이 가장 안 급한 것 뒤에 서 있었다**(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**변화 속도로 가른다.** 엔드포인트를 상품/오퍼/합친 표현 셋으로 나누고 **큰 상품 데이터를 이벤트 스트림에서 빼낸다.** 함께 필요할 때를 위해 합친 표현을 따로 두어, 가른 대가가 호출 횟수로 돌아오지 않게 했다(마지막 절은 이 사이트의 해석). 다만 **버린 대안을 글이 밝히지 않아** 다른 수를 검토했는지는 알 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          },
+          {
+            "problem": "형식이 단계를 거칠수록 원래 뜻이 사라진다",
+            "why_hard": "이 파이프라인에는 중간 형식이 셋(**Alpha·Beta·Gamma**) 있었고 모두 **원형에서 크게 벗어나** 있었다. 그러면 두 가지가 생긴다 — 형식끼리 **의존이 엉키고**, 무엇보다 **데이터 계보가 없어 어떤 속성이 원래 무엇을 뜻했는지 되짚을 수 없다.** 변환이 늘어날수록 시스템은 **자기가 무엇을 나르고 있는지 모르게 된다**(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**변환 단계를 줄이고 원형에 가까운 것을 그대로 내놓는다** — 서빙 API 가 상품과 오퍼를 각각의 모양으로 준다. 다만 이 문제의 값은 **이관 비용으로 청구됐다**: 옛 형식을 쓰던 **약 350개 팀·수천 개 애플리케이션** 때문에 Accept 헤더로 두 형식을 한동안 함께 지원해야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+                "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+                "publisher": "Zalando Engineering Blog",
+                "date": "2025-03",
+                "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 줄에 서 있던 둘을 갈라놓는다",
+          "question": "왜 재고가 상품 뒤에서 기다렸는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  M[\"판매자 — 가격 · 재고를 바꾼다\"] --> OLD\n  P[\"상품 데이터 — 거의 안 바뀜<br/><b>약 1,000줄 JSON</b>\"] --> OLD\n  subgraph OLD[\"<b>옛 구조</b>\"]\n    MERGE[\"Product + Price + Stock 을 <b>한 구조로</b><br/>여러 단계의 변환 · 집계 · 보강\"]:::quiet\n    FMT[\"중간 형식 셋 — Alpha · Beta · Gamma<br/><b>원형에서 크게 벗어남 · 계보 없음</b>\"]:::quiet\n    W[\"<b>페이로드의 90% 이상이<br/>바뀌지 않은 채 실려 다닌다</b>\"]:::quiet\n    D[\"<b>사이버위크: 재고·가격 최대 30분 지연</b><br/>가장 급한 것이 가장 안 급한 것 뒤에\"]:::quiet\n    MERGE --> FMT --> W --> D\n  end\n  OLD -.->|\"갈랐다 (PODS)\"| NEW\n  subgraph NEW[\"<b>새 구조</b>\"]\n    E1[\"/products/{id}\"]:::list\n    E2[\"/products/{id}/offers\"]:::list\n    E3[\"/product-offers/{id}<br/>— 함께 필요할 때\"]:::list\n  end\n  NEW --> PRAPI\n  subgraph PRAPI[\"<b>PRAPI</b> — 목표 p99 50ms → 실제 <b>10ms 미만</b>\"]\n    MG[\"국가별 마켓 그룹 (격리)\"]\n    CH[\"<b>일관 해시로 카탈로그 분할</b><br/>파드는 자기 몫만 캐시한다\"]:::accent\n    CA[(\"Caffeine 비동기 로딩 캐시<br/>TTL 60초 · stale 15초<br/>상품은 <b>ByteArray</b> 로 (GC 압력)\")]:::list\n    P2C[\"배치 → Power of Two Random Choices\"]\n    MG --> CH --> CA\n    P2C --> CH\n  end\n  UP[\"Updaters — DynamoDB 배치 수집\"] --> DDB[(\"DynamoDB<br/><b>쓰기 용량이 병목</b>\")]:::quiet\n  DDB --> CA\n  OLDC[\"옛 형식을 쓰는 <b>약 350개 팀 · 수천 앱</b>\"]:::quiet -->|\"Accept 헤더로 병행\"| NEW"
+        },
+        {
+          "title": "2017년의 선택과 2025년의 되돌림",
+          "question": "같은 회사가 8년 사이에 무엇을 바꿨는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 이벤트주도: 2017 — 의식적으로 골랐다\n  note right of 이벤트주도\n    이유: 클라이언트가 자기 속도로 처리\n    서비스 팀 백로그에 막히지 않는다\n    장애 때도 낡은 데이터로 버틴다\n    대가: 클라이언트가 로컬 지속 프로젝션을\n    직접 만들어 운영해야 한다\n  end note\n  이벤트주도 --> 예외명시: 2017 글이 이미 적었다\n  note right of 예외명시\n    \"요청 수가 적은 클라이언트\"\n    \"외부 · 커스텀 통합\"\n    → 요청-응답이 나을 수 있다\n  end note\n  이벤트주도 --> 부하증가: 상품이 오퍼와 한 줄에\n  부하증가 --> 한계: 90%가 헛되이 흐른다 · 30분 지연\n  한계 --> 서빙API: 2025 — 읽기 경로를 API 로\n  note right of 서빙API\n    ⚠ 되돌린 자리는 2017년이 든 예외와 다르다\n    \"요청이 적은 곳\"이 아니라\n    요청이 아주 많은 읽기 경로였다 (해석)\n    두 글은 서로를 인용하지 않는다\n  end note\n  서빙API --> [*]"
+        },
+        {
+          "title": "실패 경로 — 캐시를 키울 수 없을 때",
+          "question": "뜨거운 것이 다 안 들어가면 무엇을 줄이는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  BIG[\"상품 1,000만 개 · 개당 ~1,000줄 JSON\"] --> HOT[\"10%만 뜨겁다 해도 <b>100만 개</b>\"]\n  HOT --> IMPOSS[\"<b>파드마다 캐시하는 것은 불가능</b><br/>(회사가 직접 계산)\"]:::accent\n  IMPOSS --> A1[\"캐시를 키운다\"]\n  A1 -->|\"추정\"| MEM[\"메모리 비용 · GC 압력\"]\n  IMPOSS --> A2[\"<b>카탈로그를 쪼갠다 (일관 해시)</b><br/>파드는 자기 몫만 데운다\"]:::accent\n  A2 -->|\"그러면\"| DEP[\"<b>누가 무엇을 데우는지</b>가<br/>라우팅에 달리게 된다\"]\n  DEP --> LB[\"→ 인프로세스 로드밸런서 쪽 문제로 넘어간다<br/>*캐시 지역성과 트래픽 격리는 반대 방향*\"]:::quiet\n  GC[\"ObjectNode 그래프로 보관\"] -->|\"할당 → GC 압력\"| TAIL[\"<b>꼬리 지연이 밀려 올라간다</b>\"]\n  TAIL --> BA[\"완화 — ByteArray 로 보관\"]:::quiet\n  WRITE[\"배치 쓰기를 수백 개로 늘린다\"] --> WCU[\"<b>DynamoDB 쓰기 용량이 병목</b>\"]:::quiet\n  FIFO[\"FIFO 큐\"] --> LONG[\"<b>롱테일 지연 스파이크</b><br/>지연 민감한 곳에서 문제\"]:::quiet\n  FMT[\"변환 단계가 쌓인다 (Alpha·Beta·Gamma)\"] --> LOST[\"<b>계보가 없어 속성의 원래 뜻을<br/>되짚을 수 없다</b>\"]\n  LOST -->|\"해석\"| BLIND[\"시스템이 자기가 무엇을<br/>나르는지 모르게 된다\"]\n  LOST --> MIG[\"값은 이관 비용으로 —<br/><b>350개 팀 · 수천 앱</b> · Accept 헤더 병행\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "From Event-Driven Chaos to a Blazingly Fast Serving API",
+          "url": "https://engineering.zalando.com/posts/2025/03/event-driven-to-api.html",
+          "publisher": "Zalando Engineering Blog",
+          "date": "2025-03",
+          "summary": "거의 안 바뀌는 상품 데이터와 시시각각 바뀌는 재고·가격이 **한 이벤트 스트림에 섞여** 흐르던 구조를 갈라놓은 이야기(PODS). 페이로드의 **90% 이상이 바뀌지 않은 채** 실려 다녔고 사이버위크에는 재고·가격 이벤트가 **최대 30분** 밀렸다."
+        },
+        {
+          "title": "Why Event-Driven?",
+          "url": "https://engineering.zalando.com/posts/2017/11/why-event-driven.html",
+          "publisher": "Zalando Engineering Blog",
+          "date": "2017-11",
+          "summary": "2017년에 이 회사가 이벤트 주도를 고른 이유를 스스로 적은 글. 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로 처리**하게 하고, 대가로 **클라이언트가 로컬 프로젝션을 만들어 운영하는 부담**을 진다고 밝힌다. 그러면서 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부 통합은 요청-응답이 나을 수 있다고."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "PODS 글은 **버린 대안을 밝히지 않는다** — 왜 그 구조를 골랐는지는 있는데 무엇을 검토했다가 접었는지는 없다.",
     "가용영역 친화 라우팅이 **비용을 회수하는지는 회사도 답을 못 냈다** — \"아직 답하지 못한 질문\"이라고 적는다.",
     "CSLB 글은 **인프로세스 로드밸런서의 CPU 비용을 수치로 밝히지 않는다** — Java Flight Recorder 로 프로파일하고 핫 패스를 락 프리·할당 적게 유지했다고만 적는다.",
     "노드가 **2~3초 얼어붙는 현상**의 원인을 밝히지 않는다 — 증상과 대처만 적혀 있다.",
-    "**패션 커머스 특유의 축(사이즈·반품·시즌)** 을 다루는 1차 자료를 이 사이트는 아직 찾지 못했다. 지금 연 도메인 둘은 모두 인프라 쪽이다."
+    "**패션 커머스 특유의 축(사이즈·반품·시즌)** 을 다루는 1차 자료를 이 사이트는 아직 찾지 못했다. 지금 연 도메인 둘은 모두 인프라 쪽이다.",
+    "PODS 글은 **버린 대안을 밝히지 않는다** — 왜 이 구조인지는 있는데 무엇을 검토했다가 접었는지가 없다.",
+    "**2025년 글이 2017년 글을 인용하지 않는다** — 같은 회사의 두 시점을 엮은 것은 이 사이트의 해석이다.",
+    "Caffeine 의 **TTL 60초·stale 15초가 재고·가격의 신선도 요구와 어떻게 맞물리는지** 글이 논하지 않는다."
   ],
   "sources": [
     {
@@ -708,6 +1269,13 @@
       "publisher": "Zalando SE IR",
       "date": "2026-03-12",
       "summary": "그룹 GMV 176억 유로(+14.7%), 매출 123억 유로(+16.8%), 조정 EBIT 5.91억 유로. **B2C 매출 113억 · 조정 EBIT 5.36억, 활성 고객 6,200만.** B2B 매출 11억(+14.6%)에 조정 EBIT 5,390만으로 두 배 이상. ABOUT YOU 인수가 반영된 해다."
+    },
+    {
+      "title": "Why Event-Driven?",
+      "url": "https://engineering.zalando.com/posts/2017/11/why-event-driven.html",
+      "publisher": "Zalando Engineering Blog",
+      "date": "2017-11",
+      "summary": "2017년에 이 회사가 이벤트 주도를 고른 이유를 스스로 적은 글. 요청 시점에 가져오는 대신 **클라이언트가 자기 속도로 처리**하게 하고, 대가로 **클라이언트가 로컬 프로젝션을 만들어 운영하는 부담**을 진다고 밝힌다. 그러면서 **예외도 명시했다** — 요청 수가 적은 클라이언트와 외부 통합은 요청-응답이 나을 수 있다고."
     }
   ]
 }
