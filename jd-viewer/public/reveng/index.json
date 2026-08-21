@@ -367,10 +367,10 @@
       "name_en": "trivago",
       "country": "EU",
       "category": "검색",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-22",
       "one_liner": "자기 재고가 없는 검색 — 남의 가격을 모아 비교하고, 그 가격이 낡으면 그게 곧 장애다",
-      "features_done": 1,
+      "features_done": 2,
       "domain": "trivago.com"
     }
   ],
