@@ -4,7 +4,7 @@
   "name_en": "Slack",
   "country": "US",
   "category": "메시징",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "one_liner": "메시지 하나가 조직 하나의 일이 되는 회사",
   "business_model": "조직 단위 좌석 구독으로 판다. 2021년 Salesforce 에 인수되어 **매출이 따로 공시되지 않는다** — 3자 집계로는 2025년 약 23억 달러, 일 활성 사용자 약 4,720만 명, 유료 조직 20만 곳 이상, 포춘 100 중 77곳이 쓴다.\n\n**Discord 와 같은 실시간 메시징인데 문제의 모양이 다르다.** Discord 는 사람이 몰리는 것이 문제였고(길드 하나에 수십만 명), Slack 은 **조직 하나에 워크스페이스가 수천 개**인 것이 문제다. 그리고 기업용이라 **놓친 메시지 하나가 업무 사고**가 되는데, 동시에 **메시지 게시·푸시 알림·URL 펼치기·일정 알림·과금 계산이 전부 같은 비동기 큐**를 지난다 — 그 큐가 멈추면 제품의 거의 모든 것이 멈춘다.",
@@ -253,8 +253,71 @@
     {
       "name": "저장·샤딩",
       "why": "MySQL 위에 Vitess 를 얹었다. **Figma 와 Notion 이 각각 검토하고 버린 그것을 고른 회사**라, 같은 문제에 다른 답이 나온 자리다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "Vitess (MySQL 위의 수평 확장 계층)",
+          "solves": "**MySQL 을 버리지 않고** 샤딩을 애플리케이션 밖으로 뺐다. 프라이머리 페일오버·백업을 스스로 하고, 락 서버가 토폴로지를 들고 있어 **애플리케이션이 어느 호스트인지 몰라도 된다.** 2020-12 기준 전체 질의의 99%, 최대 230만 QPS(읽기 200만 · 쓰기 30만), 중앙값 2ms · p99 11ms.",
+          "limits": "**Slack 이 필요한 것이 기본으로는 없었다** — MySQL 질의 호환성 구멍, 격리 리전에 걸친 토폴로지 메타데이터 확장성, 이관 도구, 부하 시험·관찰 수단을 직접 만들어 upstream 에 올렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Datastores at Slack with Vitess",
+              "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+              "publisher": "Engineering at Slack",
+              "date": "2020-12-01",
+              "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+            }
+          ]
+        },
+        {
+          "tech": "채널 ID 샤딩 (키스페이스)",
+          "solves": "메시지를 **워크스페이스가 아니라 채널 단위로** 흩었다. 키스페이스는 '같은 배수로 자라는 것'(사용자·팀·채널 수)끼리 묶은 논리 단위다.",
+          "limits": "워크스페이스 하나로 묶여 있던 질의가 **샤드를 가로지르게** 된다 — 이것이 나중에 Unified Grid 에서 '여러 샤드 순회'로 나타난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Datastores at Slack with Vitess",
+              "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+              "publisher": "Engineering at Slack",
+              "date": "2020-12-01",
+              "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+            }
+          ]
+        },
+        {
+          "tech": "백필 + 이중 쓰기 · 이중 읽기 대조",
+          "solves": "기존 테이블을 복제하면서 양쪽에 쓰고, **양쪽에서 읽어 결과를 맞대 봤다** — 옮긴 쪽이 같은 의미를 갖는지 확인하는 장치다.",
+          "limits": "테이블 단위로 옮기는 방식이었고, 회사가 나중에 **샤드 통째로 옮기는 쪽으로 전략을 바꿨다**고 적었다(그 글은 아직 없다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Datastores at Slack with Vitess",
+              "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+              "publisher": "Engineering at Slack",
+              "date": "2020-12-01",
+              "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+            }
+          ]
+        },
+        {
+          "tech": "Vitess 분할 워크플로",
+          "solves": "**살아 있는 채로** 바쁜 샤드를 갈라 절반을 새 샤드로 옮긴다. 2020년 3월 일주일 만에 질의가 50% 늘었을 때 이걸로 넘겼다.",
+          "limits": "그전 구조에서는 이 수 자체가 없었다 — '재샤딩과 Vitess 없이는 **가장 큰 고객을 위해 확장할 수단이 아예 없었다**'고 적었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Datastores at Slack with Vitess",
+              "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+              "publisher": "Engineering at Slack",
+              "date": "2020-12-01",
+              "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "vitess-resharding"
+      ]
     }
   ],
   "features": [
@@ -1571,6 +1634,12 @@
           "question": "API 마다 사정이 다를 때 무엇을 했나?",
           "kind": "flow",
           "code": "flowchart TD\n  A[\"API 하나\"] --> Q{\"어떻게 라우팅되나\"}\n  Q -->|\"이미 채널 ID 로 샤딩됨<br/>(메시지 테이블 등)\"| N[\"**그대로 둔다**<br/>고트래픽 질의 다수가 여기\"]\n  Q -->|\"워크스페이스가 꼭 필요<br/>(채널 생성 등)\"| P[\"**사용자에게 묻는다**<br/>대가 — 마찰이 생긴다\"]\n  Q -->|\"전용 라우팅 없이<br/>워크스페이스를 가로지름\"| M[\"**여러 샤드를 돈다**<br/>보통 사용자엔 놀랍도록 잘 돌았다\"]\n  M --> T{\"수백 개에 속한 사람\"}\n  T --> C[\"**50개로 자른다**<br/>완전함 대신 쓸 만함\"]\n  N & P & M --> TR[\"'Unified Grid 호환' 표시<br/>스프레드시트로 추적 · 깨진 테스트 수백 개\"]"
+        },
+        {
+          "title": "긴 꼬리에서 무너지는 곳",
+          "question": "수백 개 워크스페이스에 속한 사람에게는 무슨 일이 일어나나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  R[\"Boot API — 그리드 전체의<br/>워크스페이스·채널을 한 번에\"] --> Q{\"전용 라우팅이 있나\"}\n  Q -->|\"채널 ID 로 샤딩됨\"| OK[\"샤드 하나로 간다 ✅\"]\n  Q -->|\"없다\"| M[\"**여러 샤드를 돈다**\"]\n  M --> N{\"속한 워크스페이스 수\"}\n  N -->|\"보통 — 몇 개\"| F[\"'놀랍도록 잘 돌았다' ✅\"]\n  N -->|\"**수백 개**\"| S[\"샤드 순회가 그만큼 늘어난다<br/>**성능이 나빠진다**\"]\n  S --> T{\"어떻게 할까\"}\n  T -->|\"전부 보여 준다\"| T1[\"❌ 긴 꼬리를 위해<br/>전체가 복잡도를 진다\"]\n  T -->|\"무시한다\"| T2[\"❌ 대개 **대형 고객의 사람들**이다\"]\n  T -->|\"고른 답\"| C[\"**'관련 있는' 50개로 자른다**<br/>수동 설정 가능\"]\n  C --> P1[\"대가 — 51번째부터는 사용자가 챙긴다\"]\n  P1 --> P2[\"**원래 고치려던 문제(알림을 놓친다)가<br/>여기서 일부 남는다**\"]"
         }
       ],
       "sources": [
@@ -1589,14 +1658,536 @@
           "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
         }
       ]
+    },
+    {
+      "key": "vitess-resharding",
+      "name": "Vitess 이관 — 워크스페이스 샤딩을 3년에 걸쳐 걷어내기",
+      "domain": "저장·샤딩",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "Slack 은 처음부터 MySQL 을 썼고 **워크스페이스 ID 로 샤딩**했다 — 한 워크스페이스의 모든 데이터가 한 샤드에 있다. 개발이 직관적이고(팀 하나 = 샤드 하나), 디버깅할 때 그 고객 샤드에 바로 붙으면 되고, 늘리려면 샤드를 하나 더 놓으면 됐다. **그런데 고객이 그 전제를 벗어났다.** 큰 팀 하나가 **구할 수 있는 가장 큰 하드웨어에 도달**했고 그 한 대의 한계를 계속 들이받았다. 수천 명짜리 Enterprise 고객 때문에 **대부분의 샤드를 과잉 할당**해야 했고 긴 꼬리는 놀았다. 그리고 로그인·메시지·채널 참가가 전부 그 샤드에 걸려 있어서 **샤드 하나가 죽으면 그 고객들에게는 Slack 전체가 죽은 것**이었다.",
+        "metrics": [
+          {
+            "label": "이관 기간",
+            "value": "**2017 시작 → 2020-12 시점 99%** · 약 3년 (판단은 2016 가을)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "최대 QPS",
+            "value": "**230만** (읽기 200만 · 쓰기 30만)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "지연",
+            "value": "중앙값 **2ms** · p99 **11ms**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "판단 시점의 규모",
+            "value": "초당 수십만 MySQL 질의 · 샤딩된 MySQL 호스트 수천 대",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "키스페이스",
+            "value": "수십 개 · 데이터 소재지 요건으로 **6개 리전**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "2020년 3월 급증",
+            "value": "**일주일 만에 질의율 +50%** — 분할 워크플로로 살아 있는 채 넘겼다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "남은 것",
+            "value": "2020-12 기준 1% — '앞으로 두 달 안에' 끝낼 예정이라 적었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "2016년 가을, 무엇을 고칠지 정할 때",
+          "thought": "경영진이 던진 질문이 정확하다 — **\"제자리에서 발전시킬 것인가, 갈아치울 것인가?\"** 이미 초당 수십만 질의에 호스트 수천 대였다. 어느 쪽이든 값이 컸고, **아무것도 안 하는 것도 값이 컸다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "NoSQL·NewSQL 을 볼 때",
+          "thought": "DynamoDB·Cassandra 는 관계형을 버리라는 뜻이었다. **질의가 수천 종류였고 MySQL 고유 구문을 썼다.** Spanner·CockroachDB 도 같은 문제였고, 게다가 배포·내구성·백업·데이터 웨어하우스 ETL·컴플라이언스가 전부 MySQL 을 전제로 쌓여 있었다 — **버리는 것은 DB 가 아니라 그 위에 쌓은 몇 년치였다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "애플리케이션 안에 샤딩 계층을 넣어 볼 때",
+          "thought": "프로토타입을 만들어 보고 **애플리케이션 로직과 저장 전제가 얼마나 얽혀 있는지**를 봤다. '채널 ID 로 샤딩' 같은 새 방식을 넣으려면 그 얽힘을 풀어야 했고, 무엇보다 **예상 못 한 쓰기 핫스팟 같은 운영 문제는 그렇게 해도 안 풀린다** — 코드를 고쳐도 그때 가서 사람이 손으로 옮겨야 하는 것은 그대로다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Vitess 를 고른 이유를 정리할 때",
+          "thought": "**MySQL 위에 있다**는 것이 결정적이었다 — 쌓아 둔 인프라와 사람들의 지식이 그대로 남는다. 거기에 애플리케이션 없이 되는 유연한 샤딩, 자동 페일오버·백업, **락 서버가 토폴로지를 들고 있어 앱이 위상을 몰라도 되는 것**, 그리고 100% 오픈소스라는 점.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "먼저 무엇으로 시험할지 고를 때",
+          "thought": "**RSS 피드 연동** 하나로 끝에서 끝까지 시험했다 — 제품에서 작고 잃을 게 적은 것. 그러려면 프로비저닝과 서비스 디스커버리를 뜯어야 했고, **백필 시스템과 이중 읽기 대조기**를 만들어야 했다. 작은 기능 하나를 옮기는 데 든 그 장치가 결국 3년치 이관의 도구가 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "옮긴 것이 맞는지 확인할 때",
+          "thought": "**\"같은 결과가 나온다\"를 믿지 않고 재 봤다.** 양쪽에 쓰고 양쪽에서 읽어 맞대 보는 장치를 먼저 만들었다 — 옮기기 전에 옮김을 검사할 방법부터 만든 셈이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "2020년 3월, 일주일에 50% 가 늘었을 때",
+          "thought": "여기서 3년이 값을 했다. 바쁜 키스페이스를 **살아 있는 채로 갈랐다.** 회사 표현이 담담한데 무겁다 — **재샤딩과 Vitess 없이는 가장 큰 고객을 위해 확장할 수단이 아예 없었고, 그건 곧 다운타임이었다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "샤드(구)",
+            "what": "워크스페이스 ID 로 나뉜 고객 데이터. **한 워크스페이스의 전부가 한 곳에.** 데이터센터 두 곳에 MySQL 두 대, 비동기 복제."
+          },
+          {
+            "name": "메타데이터 클러스터(구)",
+            "what": "워크스페이스 ID → 샤드 위치. 앱이 어디로 갈지 여기서 찾았다."
+          },
+          {
+            "name": "부엌 싱크대 클러스터(구)",
+            "what": "워크스페이스에 속하지 않는 것들(앱 디렉터리 등). 이름이 그 자체로 설명이다."
+          },
+          {
+            "name": "키스페이스",
+            "what": "**같은 배수로 자라는 것끼리 묶은 논리 단위** — 사용자·팀·채널 수. 수십 개, 6개 리전."
+          },
+          {
+            "name": "락 서버(Vitess 토폴로지)",
+            "what": "어느 데이터가 어느 호스트에 있는지를 들고 있다. **덕분에 앱이 위상을 모른다.**"
+          }
+        ],
+        "invariants": [
+          "**MySQL 을 버리지 않는다** — 버리는 것은 DB 가 아니라 그 위에 쌓은 몇 년치다.",
+          "옮기기 전에 **옮김을 검사할 방법**부터 만든다(이중 쓰기·이중 읽기 대조).",
+          "**같은 배수로 자라는 것끼리** 한 키스페이스에 둔다.",
+          "확장은 살아 있는 채로 — 분할이 서비스를 멈추지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "2016 가을 — '제자리에서 발전 vs 갈아치움'을 판단한다",
+            "why": "이미 초당 수십만 질의, 호스트 수천 대. 늦출수록 비싸진다"
+          },
+          {
+            "step": "NoSQL·NewSQL·앱 내 샤딩 계층을 각각 재 본다",
+            "why": "앞의 둘은 관계형을 버리라는 뜻이었고, 셋째는 프로토타입에서 얽힘이 드러났다"
+          },
+          {
+            "step": "RSS 피드 연동 하나로 끝에서 끝까지 시험한다",
+            "why": "작고 잃을 게 적은 것으로 먼저 — 그 과정에서 이관 도구가 만들어진다"
+          },
+          {
+            "step": "백필 + 이중 쓰기 시스템, 이중 읽기 대조기를 만든다",
+            "why": "옮긴 쪽이 **같은 의미**인지 재기 위해"
+          },
+          {
+            "step": "샤딩 키를 다시 고른다 — 워크스페이스 → **채널 ID**",
+            "why": "큰 고객이 한 샤드에 다시 뭉치지 않게"
+          },
+          {
+            "step": "테이블 단위로 옮긴다 (전체 질의의 20% 를 차지하던 테이블 포함)",
+            "why": "무거운 것부터 하나씩"
+          },
+          {
+            "step": "Vitess 에 없던 것을 직접 만들어 올린다",
+            "why": "질의 호환성, 격리 리전 토폴로지, 이관 도구, 부하 시험·관찰"
+          },
+          {
+            "step": "2020-12 — 질의의 99%. 남은 1% 는 두 달 안에",
+            "why": ""
+          }
+        ],
+        "decisions": [
+          {
+            "question": "제자리에서 발전시킬 것인가, 갈아치울 것인가",
+            "chosen": "**갈아친다 — 단, MySQL 위에서**(Vitess)",
+            "alternatives": [
+              "액티브-액티브 MySQL 을 계속 개선",
+              "DynamoDB·Cassandra",
+              "Spanner·CockroachDB",
+              "애플리케이션 안에 샤딩 계층"
+            ],
+            "tradeoff": "**3년이 든다.** 그래도 액티브-액티브는 표준 MySQL 구성이 아니어서 **사내 도구를 잔뜩 만들어야 유지되는** 상태였고, 리플리카를 쓰려면 앱의 라우팅 로직을 다시 짜야 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "관계형을 버리고 NoSQL 로 갈 것인가",
+            "chosen": "**남는다**",
+            "alternatives": [
+              "DynamoDB",
+              "Cassandra"
+            ],
+            "tradeoff": "수평 확장을 이미 푼 제품을 못 쓴다. 대신 **질의 수천 종류가 MySQL 고유 구문을 쓰고 있었고**, 배포·내구성·백업·ETL·컴플라이언스가 전부 MySQL 전제로 쌓여 있었다 — 버리는 값이 얻는 값보다 컸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "샤딩을 애플리케이션 안에 넣을 것인가",
+            "chosen": "**밖으로 뺀다** — Vitess 가 라우팅한다",
+            "alternatives": [
+              "앱 내 샤딩 계층 (프로토타입까지 만들어 봤다)"
+            ],
+            "tradeoff": "새 시스템을 배우고 운영해야 한다. 그래도 프로토타입에서 **로직과 저장 전제의 얽힘**이 드러났고, 결정적으로 **예상 못 한 쓰기 핫스팟 같은 운영 문제는 앱을 고쳐도 안 풀린다** — 그때 가서 사람이 옮겨야 하는 건 그대로다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 샤딩할 것인가",
+            "chosen": "**채널 ID** (키스페이스 = 같은 배수로 자라는 것끼리)",
+            "alternatives": [
+              "워크스페이스 ID 유지"
+            ],
+            "tradeoff": "**워크스페이스 하나로 묶여 있던 질의가 샤드를 가로지른다** — 이 대가를 4년 뒤 Unified Grid 가 '여러 샤드 순회'와 '50개 상한'으로 치른다. 대신 팀 핫스팟이 사라지고 부하가 고르게 퍼진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              },
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 먼저 시험할 것인가",
+            "chosen": "**RSS 피드 연동** 하나로 끝에서 끝까지",
+            "alternatives": [
+              "핵심 경로부터",
+              "설계 검토로 대신하기"
+            ],
+            "tradeoff": "작은 기능 하나에 프로비저닝·디스커버리 개편과 백필·대조 시스템까지 만들게 된다 — **비용이 앞에 몰린다.** 그래도 그때 만든 장치가 3년치 이관의 도구가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "옮긴 것이 맞다고 어떻게 믿을 것인가",
+            "chosen": "**이중 쓰기 + 이중 읽기 대조** — 양쪽에서 읽어 맞대 본다",
+            "alternatives": [
+              "테스트로 검증",
+              "옮기고 나서 모니터링"
+            ],
+            "tradeoff": "쓰기가 두 배가 되고 대조 시스템을 따로 운영해야 한다. 대신 **'같은 의미인가'를 믿지 않고 잰다** — 수천 종류 질의에서 테스트로는 안 잡히는 차이가 나온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Vitess",
+            "role": "MySQL 위의 수평 확장 계층. 라우팅·페일오버·백업·토폴로지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "MySQL",
+            "role": "그대로 남은 저장 엔진 — 이 이관의 전제이자 목적",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "백필 + 이중 쓰기 · 이중 읽기 대조기",
+            "role": "옮김이 의미를 보존하는지 재는 장치. RSS 연동 시험 때 만들어졌다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "Vitess 분할 워크플로",
+            "role": "살아 있는 채로 바쁜 샤드를 갈라 절반을 옮긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "Prometheus · Orchestrator · Percona xtrabackup",
+            "role": "Vitess 와의 연동을 Slack 이 다듬어 올렸다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "unified-grid",
+          "via": "채널 ID 샤딩",
+          "contract": "**이 기능이 Unified Grid 를 가능하게 하고 동시에 그 숙제를 만들었다** — 워크스페이스 라우팅 없이 질의할 수 있게 됐지만, 가로지르는 질의는 여러 샤드를 돌아야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "az-siloing",
+          "via": "리전·AZ 배치",
+          "contract": "6개 리전에 키스페이스가 흩어져 있다 — 데이터 소재지 요건이 배치를 먼저 정한다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "kafka-job-queue",
+          "via": "쓰기 경로",
+          "contract": "잡이 처리되며 남기는 쓰기가 여기로 온다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Vitess: Scaling MySQL at YouTube",
+            "authors": "Sugu Sougoumarane 외 (YouTube/Google)",
+            "year": "2015",
+            "venue": "오픈소스 프로젝트 · CNCF",
+            "url": "https://vitess.io/",
+            "takeaway": "Slack 은 이 프로젝트를 **가져다 쓰고 되돌려줬다** — 질의 호환성, 격리 리전 토폴로지, 이관 도구를 직접 만들어 upstream 에 올렸고, Vitess 코어의 Sugu Sougoumarane 를 기여자로 적었다. **'오픈소스라서 골랐다'가 선언이 아니라 실제 작업으로 나타난 드문 사례다.**",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "샤딩 키를 바꾸는 것은 데이터를 옮기는 일이 아니라 **질의의 모양을 바꾸는 일**이다",
+            "why_hard": "워크스페이스 샤딩에서는 '이 팀의 모든 것'이 한 번의 질의였다. **채널 샤딩으로 바꾸는 순간 그 질의가 존재할 수 없게 된다** — 데이터를 다 옮겨도 그 질의를 쓰던 코드는 여전히 그것이 가능하다고 전제하고 있다. 그래서 이관은 '옮기고 끝'이 아니라 **질의 수천 종류를 하나씩 다시 보는 일**이 된다. 그리고 그 대가는 이관이 끝난 뒤에 청구된다 — Slack 은 2020년에 채널 샤딩을 마쳤고, **2024년 Unified Grid 에서 '여러 샤드 순회'와 '관련 워크스페이스 50개 상한'으로 그 값을 냈다.**",
+            "current_best": "**흩는 이득을 먼저 받고 가로지르는 비용은 나중에 개별로 갚는다.** Slack 은 채널 ID 로 흩어 핫스팟을 없앤 뒤, 가로지르는 질의를 API 마다 다르게 처리했다 — 그대로 두기 / 사용자에게 묻기 / 여러 샤드 순회 / 상한 두기. **하나의 규칙으로 덮지 못한다는 것이 이 문제의 성질이다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              },
+              {
+                "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+                "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+                "publisher": "Engineering at Slack",
+                "date": "2024-07-31",
+                "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+              }
+            ]
+          },
+          {
+            "problem": "옮긴 것이 '같은가'를 어떻게 아는가",
+            "why_hard": "**테스트는 짠 사람이 생각한 경우만 확인한다.** 질의가 수천 종류이고 MySQL 고유 구문을 쓰고 있으면, 새 계층에서 미묘하게 다르게 도는 것을 테스트로 다 잡을 수 없다 — 무엇이 다른지 알아야 테스트를 짜는데, 모르니까 옮기는 것이다. 게다가 다름은 대개 **평소에는 안 나타나고** 특정 데이터 모양에서만 드러난다.",
+            "current_best": "**실제 트래픽으로 양쪽을 동시에 돌려 결과를 맞대 본다.** Slack 은 백필 + 이중 쓰기로 데이터를 맞추고 **이중 읽기 대조기**로 실 트래픽의 결과를 비교했다. 대가는 쓰기가 두 배가 되고 대조 시스템을 따로 운영해야 한다는 것이다. 같은 모양이 Shopify 섀도 모드에도 있다 — **'맞을 것이다'를 믿지 않고 재는 장치를 옮기기 전에 먼저 만든다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Scaling Datastores at Slack with Vitess",
+                "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+                "publisher": "Engineering at Slack",
+                "date": "2020-12-01",
+                "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "워크스페이스 샤딩이 좋았던 이유와 무너진 이유",
+          "question": "같은 설계가 어떻게 장점이자 단점이 되나?",
+          "kind": "state",
+          "code": "flowchart TD\n  W[\"**워크스페이스 ID 샤딩**<br/>한 팀의 전부가 한 샤드에\"]\n  W --> G1[\"✅ 개발이 직관적<br/>팀 하나 = 샤드 하나\"]\n  W --> G2[\"✅ 디버깅 — 그 고객 샤드에 바로\"]\n  W --> G3[\"✅ 확장 — 샤드를 하나 더\"]\n  W --> B1[\"❌ 큰 팀이 **가장 큰 하드웨어**에 도달<br/>한 대의 한계를 계속 들이받는다\"]\n  W --> B2[\"❌ Enterprise 때문에 **대부분 과잉 할당**<br/>긴 꼬리는 논다\"]\n  W --> B3[\"❌ Grid·Connect 가 전제를 깬다<br/>한 팀 데이터가 한 샤드에 없다\"]\n  W --> B4[\"❌ **샤드 하나 = 그 고객의 Slack 전체**<br/>로그인·메시지·채널 참가가 다 걸린다\"]\n  B1 & B2 & B3 & B4 --> Q[\"2016 가을 — 제자리에서 발전할까<br/>갈아치울까\"]"
+        },
+        {
+          "title": "무엇을 버리고 무엇을 남길지 재는 순서",
+          "question": "왜 NoSQL 도 NewSQL 도 앱 내 샤딩도 아니었나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"초당 수십만 질의 · 호스트 수천 대\"] --> A{\"관계형을 버릴 수 있나\"}\n  A -->|\"질의 수천 종류가 MySQL 고유 구문<br/>배포·백업·ETL·컴플라이언스가 MySQL 전제\"| N1[\"❌ DynamoDB · Cassandra\"]\n  A -->|\"같은 이유\"| N2[\"❌ Spanner · CockroachDB\"]\n  A -->|\"남는다\"| B{\"샤딩을 어디에 둘까\"}\n  B -->|\"프로토타입 — 로직과 저장 전제가 얽혀 있다<br/>**핫스팟 같은 운영 문제는 앱을 고쳐도 안 풀린다**\"| N3[\"❌ 앱 내 샤딩 계층\"]\n  B -->|\"MySQL 위에 있다 · 앱 없이 샤딩<br/>자동 페일오버·백업 · 락 서버가 위상을 든다<br/>100% 오픈소스\"| V[\"✅ **Vitess**\"]\n  V --> T[\"3년 · 2017 → 2020-12 질의의 99%\"]"
+        },
+        {
+          "title": "옮김을 믿지 않고 재는 장치",
+          "question": "수천 종류 질의가 같은 의미인지 어떻게 아나?",
+          "kind": "flow",
+          "code": "sequenceDiagram\n  participant App as 애플리케이션\n  participant Old as 레거시 MySQL\n  participant New as Vitess\n  participant D as 대조기\n  Note over App,New: 1. 백필 — 기존 테이블을 복제한다\n  App->>Old: 쓰기\n  App->>New: **같은 쓰기** (이중 쓰기)\n  Note over App,D: 2. 실 트래픽으로 양쪽을 읽는다\n  App->>Old: 읽기\n  App->>New: 같은 읽기\n  Old-->>D: 결과 A\n  New-->>D: 결과 B\n  D->>D: **맞대 본다 — 같은 의미인가**\n  Note over D: 다르면 옮기지 않는다<br/>테스트는 짠 사람이 생각한 것만 본다\n  Note over App,New: 3. 확인된 것만 트래픽을 넘긴다"
+        },
+        {
+          "title": "2020년 3월 — 3년이 값을 한 순간",
+          "question": "일주일에 질의가 50% 늘면 무슨 수가 있나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  C[\"2020-03 — 재택 전환<br/>**일주일 만에 질의율 +50%**\"] --> P{\"그 전 구조였다면\"}\n  P -->|\"워크스페이스 샤딩\"| X[\"큰 고객은 이미 가장 큰 하드웨어에 있다<br/>**더 큰 기계가 없다**\"]\n  X --> D[\"회사 표현 — 재샤딩과 Vitess 없이는<br/>**확장할 수단이 아예 없었고 곧 다운타임**\"]\n  P -->|\"Vitess\"| S[\"바쁜 키스페이스를 **분할 워크플로**로<br/>살아 있는 채 가른다\"]\n  S --> H[\"절반을 새 샤드로<br/>다운타임 없음\"]\n  H --> R[\"230만 QPS · 중앙값 2ms · p99 11ms\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling Datastores at Slack with Vitess",
+          "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+          "publisher": "Engineering at Slack",
+          "date": "2020-12-01",
+          "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
+        },
+        {
+          "title": "Unified Grid: How We Re-Architected Slack for Our Largest Customers",
+          "url": "https://slack.engineering/unified-grid-how-we-re-architected-slack-for-our-largest-customers/",
+          "publisher": "Engineering at Slack",
+          "date": "2024-07-31",
+          "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "저장·샤딩 도메인은 아직 손대지 않았다 — 남은 하나다. Vitess 글이 그 자리다.",
     "**Slack 매출은 회사 발표가 아니다** — Salesforce 인수 후 따로 공시되지 않아 3자 집계에 의존했고, 그래서 수익원을 전부 `inferred` 로 뒀다.",
     "잡 큐 글은 2017년(2020년 갱신)이다. 그 뒤 6년간 무엇이 바뀌었는지, 특히 '더 강한 일관성 보장을 검토 중'이라던 부분이 어떻게 됐는지는 모른다.",
     "**사일로화할 수 없는 서비스가 무엇인지** — 회사가 후속 글로 미뤘다. 상태를 가진 것들로 추정되지만 확인하지 못했고, 잡 큐의 Kafka·Redis 가 거기 드는지도 모른다.",
-    "**실시간 전달 자체의 대가** — Channel 서버가 상태를 가진 인메모리인데, 일관 해싱에서 서버 집합이 바뀔 때 무엇이 어떻게 되는지를 회사 글이 다루지 않는다(구성요소 나열에 가깝다)."
+    "**실시간 전달 자체의 대가** — Channel 서버가 상태를 가진 인메모리인데, 일관 해싱에서 서버 집합이 바뀔 때 무엇이 어떻게 되는지를 회사 글이 다루지 않는다(구성요소 나열에 가깝다).",
+    "**샤드 통째로 옮기는 전략** — 회사가 테이블 단위에서 샤드 단위로 이관 전략을 바꿨다고 적었지만 그 글은 아직 없다.",
+    "**이관 이후의 운영 부담** — Vitess 글이 이관 성공만 적고 그 뒤 무엇이 나빠졌는지는 다루지 않는다."
   ],
   "sources": [
     {
@@ -1640,6 +2231,13 @@
       "publisher": "Engineering at Slack",
       "date": "2024-07-31",
       "summary": "2013년의 '데이터는 워크스페이스 하나의 것' 전제를 11년 만에 걷어낸 과정."
+    },
+    {
+      "title": "Scaling Datastores at Slack with Vitess",
+      "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+      "publisher": "Engineering at Slack",
+      "date": "2020-12-01",
+      "summary": "워크스페이스 단위 액티브-액티브 MySQL 에서 Vitess 로 3년에 걸쳐 옮긴 기록. 무엇을 버렸고 왜 버렸는지가 적혀 있다."
     }
   ]
 }
