@@ -231,6 +231,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "남의 클라우드를 떠나 엑사바이트를 자기 하드웨어에 얹은 회사 — 원가가 감가상각으로 잡힌다",
       "features_done": 4
+    },
+    {
+      "slug": "github",
+      "name": "깃허브",
+      "name_en": "GitHub",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "남의 코드를 맡고, 실행하고, 검색해 주는 회사 — 셋 다 규모의 성질이 다르다",
+      "features_done": 0
     }
   ],
   "domains": [
@@ -323,7 +334,11 @@
     "저장 인프라",
     "파일 동기화",
     "전송 효율",
-    "검색"
+    "검색",
+    "코드 검색",
+    "Git 저장·복제",
+    "데이터 계층",
+    "CI 실행"
   ],
   "countries": {
     "KR": "한국",

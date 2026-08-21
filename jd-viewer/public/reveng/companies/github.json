@@ -1,0 +1,380 @@
+{
+  "slug": "github",
+  "name": "깃허브",
+  "name_en": "GitHub",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "business_model": "**개발자 도구를 구독으로 판다.** 개인·팀·엔터프라이즈 요금제가 바탕이고 그 위에 **Copilot**(AI 코딩 보조)이 얹혔다. **⚠️ 범위 주의 — Microsoft 산하라 GitHub 단독 재무가 공시되지 않는다.** Microsoft 가 밝힌 것은 **유료 Copilot 좌석 470만**(2026-01-28 FY26 Q2, 전년 대비 약 75% 증가)이고, **GitHub 전체 ARR 30억 달러 초과**는 회사 발표가 아니라 사정을 아는 사람을 인용한 보도다. 그래서 이 문서의 수익 항목은 대부분 `inferred` 로 둔다. 원가 쪽은 특이하다 — **남의 코드를 맡아 두고, 남의 코드를 실행해 주고, 남의 코드를 검색해 준다.** 저장·연산·색인이 전부 고객 수가 아니라 **고객이 밀어 넣는 양**에 비례한다.",
+  "products": [
+    "GitHub (저장소 호스팅·PR·이슈)",
+    "GitHub Actions (CI/CD)",
+    "GitHub Copilot (AI 코딩)",
+    "코드 검색 (Blackbird)",
+    "GitHub Enterprise / Advanced Security"
+  ],
+  "one_liner": "남의 코드를 맡고, 실행하고, 검색해 주는 회사 — 셋 다 규모의 성질이 다르다",
+  "domain_map": {
+    "title": "깃허브 도메인 지도",
+    "question": "코드 한 줄이 올라가서 실행되고 검색되기까지 어디를 지나는가?",
+    "code": "flowchart TD\n  D[\"개발자\"]\n  subgraph GIT[\"**Git 저장·복제** — 맡아 둔다\"]\n    P[\"프록시 — 3단계 커밋\"]\n    R1[\"복제본 1\"]\n    R2[\"복제본 2\"]\n    R3[\"복제본 3\"]\n    H[\"치유 — 3벌 미만이면<br/>다른 서버에 새로 만든다\"]\n  end\n  subgraph DATA[\"**데이터 계층** — 주변을 기억한다\"]\n    SD[\"스키마 도메인<br/>(가상 파티션)\"]\n    L[\"린터 — 도메인을 넘는<br/>조인·트랜잭션을 막는다\"]\n    MC[\"여러 MySQL 클러스터\"]\n  end\n  subgraph CI[\"**CI 실행** — 남의 코드를 돌린다\"]\n    Q[\"큐\"]\n    RUN[\"러너 — 자동 확장\"]\n  end\n  subgraph SEARCH[\"**코드 검색** — 다시 찾는다\"]\n    IDX[\"Blackbird 색인<br/>Git 블롭 ID 로 샤딩\"]\n    NG[\"희소 n그램\"]\n  end\n  D -->|\"git push\"| P --> R1 & R2 & R3\n  R1 -.-> H\n  D -->|\"PR · 이슈\"| SD --> L --> MC\n  D -->|\"워크플로 트리거\"| Q --> RUN\n  RUN -.->|\"결과\"| SD\n  R1 -.->|\"부모와의 차이만\"| IDX --> NG\n  NG -.->|\"결과\"| D\n  style GIT fill:#1e293b,stroke:#475569\n  style DATA fill:#1e293b,stroke:#475569\n  style CI fill:#1e293b,stroke:#475569\n  style SEARCH fill:#1e293b,stroke:#475569"
+  },
+  "revenue_streams": [
+    {
+      "name": "GitHub 구독 (개인·팀·엔터프라이즈)",
+      "how": "저장소 호스팅과 협업 기능을 좌석 단위로 판다. **GitHub 전체 ARR 이 2025년 말 30억 달러를 넘었다는 보도**가 있으나 **회사 발표가 아니다** — Microsoft 는 GitHub 단독 재무를 공시하지 않는다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Microsoft FY26 Q2 실적 발표 · GitHub ARR 보도",
+          "url": "https://github.blog/",
+          "publisher": "Microsoft 실적 발표 및 언론 보도",
+          "date": "2026-01-28",
+          "summary": "유료 Copilot 좌석 470만(전년 대비 약 75% 증가)은 Microsoft 가 밝혔고, GitHub 전체 ARR 30억 달러 초과는 사정을 아는 사람을 인용한 보도다."
+        }
+      ]
+    },
+    {
+      "name": "GitHub Copilot",
+      "how": "AI 코딩 보조를 좌석 단위로 판다. **Microsoft 가 직접 밝힌 것은 유료 좌석 470만**(2026-01-28, 전년 대비 약 75% 증가)이고 **ARR 은 공시하지 않는다** — 9억~11억 달러라는 수치는 애널리스트 추정이다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Microsoft FY26 Q2 실적 발표 · GitHub ARR 보도",
+          "url": "https://github.blog/",
+          "publisher": "Microsoft 실적 발표 및 언론 보도",
+          "date": "2026-01-28",
+          "summary": "유료 Copilot 좌석 470만(전년 대비 약 75% 증가)은 Microsoft 가 밝혔고, GitHub 전체 ARR 30억 달러 초과는 사정을 아는 사람을 인용한 보도다."
+        }
+      ]
+    },
+    {
+      "name": "GitHub Actions (사용량 과금)",
+      "how": "공개 저장소는 무료, 그 외에는 실행 시간·러너 사양에 따라 과금한다. **남의 코드를 실행해 주는 것이 원가이자 매출인 구조.** 별도 공시가 없다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+          "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+          "publisher": "The GitHub Blog",
+          "date": "2023",
+          "summary": "자기 제품으로 자기를 빌드·테스트한다 — 한 시간에 CI 작업 15,000건, 코어 150,000개."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "코드 검색",
+      "why": "**검색 대상이 산문이 아니라 코드라서 일반 검색엔진이 안 맞는다.** 회사가 기존 도구를 두고 직접 지은 이유가 셋이다 — 코드 질의에서 성능이 나쁘고, 색인이 느리고, **저장소 2억 개 규모로 안 늘어난다.**",
+      "tech": [
+        {
+          "tech": "Blackbird — Rust 로 새로 지은 코드 전용 검색엔진",
+          "solves": "저장소 **4,500만 개 · 코드 115TB · 문서 155억 개**를 색인해 **원본 포함 25TB**로 줄였다. 초당 문서 **약 12만 개**를 먹고, **64코어 호스트 한 대가 초당 640 질의**를 감당하며 샤드 응답 p99 가 **100ms**다.",
+          "limits": "실시간 색인이 아니라 **커밋 단위 일관성**을 택했다 — 방금 푸시한 것이 즉시 검색되지는 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The technology behind GitHub's new code search",
+              "url": "https://github.blog/engineering/the-technology-behind-githubs-new-code-search/",
+              "publisher": "The GitHub Blog",
+              "date": "2023-02-06",
+              "summary": "Blackbird — 코드 전용 검색엔진을 Rust 로 새로 지은 이유와 버린 대안을 숫자로 계산해 둔 글. 저자 Timothy Clem."
+            }
+          ]
+        },
+        {
+          "tech": "Git 블롭 오브젝트 ID 로 샤딩",
+          "solves": "**같은 내용이면 같은 블롭**이라, 이 축으로 나누면 문서가 샤드에 고르게 흩어지면서 **중복이 저절로 사라진다.** 포크가 많은 생태계에서 결정적이다.",
+          "limits": "저장소 단위 질의는 여러 샤드를 지나야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The technology behind GitHub's new code search",
+              "url": "https://github.blog/engineering/the-technology-behind-githubs-new-code-search/",
+              "publisher": "The GitHub Blog",
+              "date": "2023-02-06",
+              "summary": "Blackbird — 코드 전용 검색엔진을 Rust 로 새로 지은 이유와 버린 대안을 숫자로 계산해 둔 글. 저자 Timothy Clem."
+            }
+          ]
+        },
+        {
+          "tech": "가변 길이 n그램 ('희소 그램')",
+          "solves": "3그램만 쓰면 흔한 토큰에서 **오탐이 너무 많이** 나온다. 그래서 안쪽 가중치가 경계 가중치보다 작은 구간을 고르는 **재귀적 토큰화**로 길이를 가변으로 만들었다.",
+          "limits": "색인 구조가 복잡해지고 질의 계획도 그만큼 어려워진다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The technology behind GitHub's new code search",
+              "url": "https://github.blog/engineering/the-technology-behind-githubs-new-code-search/",
+              "publisher": "The GitHub Blog",
+              "date": "2023-02-06",
+              "summary": "Blackbird — 코드 전용 검색엔진을 Rust 로 새로 지은 이유와 버린 대안을 숫자로 계산해 둔 글. 저자 Timothy Clem."
+            }
+          ]
+        },
+        {
+          "tech": "델타 트리 기반 증분 색인",
+          "solves": "저장소를 **부모 노드와의 차이로** 색인해 **긁어야 할 내용을 절반 넘게 줄였고**, 전체 재색인을 **약 18시간**에 끝낸다.",
+          "limits": "포크 관계가 얕거나 없는 저장소에서는 이 이득이 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The technology behind GitHub's new code search",
+              "url": "https://github.blog/engineering/the-technology-behind-githubs-new-code-search/",
+              "publisher": "The GitHub Blog",
+              "date": "2023-02-06",
+              "summary": "Blackbird — 코드 전용 검색엔진을 Rust 로 새로 지은 이유와 버린 대안을 숫자로 계산해 둔 글. 저자 Timothy Clem."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "Git 저장·복제",
+      "why": "**맡아 둔 것이 남의 작업 결과 전부다.** 저장소 3,800만 개와 gist 3,600만 개를 서버와 네트워크가 죽는 와중에도 계속 읽고 쓸 수 있어야 한다.",
+      "tech": [
+        {
+          "tech": "Spokes(옛 DGit) — 저장소마다 복제본 셋",
+          "solves": "모든 저장소와 gist 를 **서로 다른 서버 세 대**에 둔다. 한 대가 죽어도 **중단 없이** 계속 쓸 수 있다.",
+          "limits": "저장 용량이 3배 든다 — 소거 부호가 아니라 온전한 복제본이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Introducing DGit",
+              "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+              "publisher": "The GitHub Blog",
+              "date": "2016-04-05",
+              "summary": "Git 저장소를 서버 세 대에 애플리케이션 계층에서 복제하는 시스템(뒤에 Spokes 로 개명)."
+            },
+            {
+              "title": "Building resilience in Spokes",
+              "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+              "publisher": "The GitHub Blog",
+              "date": "2016-09",
+              "summary": "Spokes 가 서버·네트워크 장애에서 저장소 가용성을 유지하는 방법."
+            }
+          ]
+        },
+        {
+          "tech": "**디스크가 아니라 애플리케이션 계층**에서 복제",
+          "solves": "복제본을 '같은 디스크 이미지'가 아니라 **Git 프로토콜로 맞춰 둔 느슨하게 결합된 세 저장소**로 본다. Git 자체가 내용 주소 기반이라 이게 성립한다.",
+          "limits": "세 복제본의 물리적 표현이 서로 다를 수 있다 — 같음의 기준이 바이트가 아니라 Git 객체다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Introducing DGit",
+              "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+              "publisher": "The GitHub Blog",
+              "date": "2016-04-05",
+              "summary": "Git 저장소를 서버 세 대에 애플리케이션 계층에서 복제하는 시스템(뒤에 Spokes 로 개명)."
+            }
+          ]
+        },
+        {
+          "tech": "3단계 커밋 — 최소 두 복제본이 적용해야 성공",
+          "solves": "`git push` 가 들어오면 프록시가 세 복제본에 동시에 흘려보내고, **적어도 둘이 같은 Git 트랜잭션을 적용한 뒤에야** 성공을 알린다.",
+          "limits": "쓰기 지연이 가장 느린 두 복제본에 묶인다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Introducing DGit",
+              "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+              "publisher": "The GitHub Blog",
+              "date": "2016-04-05",
+              "summary": "Git 저장소를 서버 세 대에 애플리케이션 계층에서 복제하는 시스템(뒤에 Spokes 로 개명)."
+            }
+          ]
+        },
+        {
+          "tech": "자동 치유(healing)",
+          "solves": "서버를 내려야 하면 **복제본이 셋 미만이 된 저장소를 찾아** 다른 서버에 새로 만든다. 남은 서버 전부를 **출발지이자 목적지로** 함께 쓴다.",
+          "limits": "치유 중에는 그 부하가 정상 트래픽과 같은 서버를 지난다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Introducing DGit",
+              "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+              "publisher": "The GitHub Blog",
+              "date": "2016-04-05",
+              "summary": "Git 저장소를 서버 세 대에 애플리케이션 계층에서 복제하는 시스템(뒤에 Spokes 로 개명)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "데이터 계층",
+      "why": "**코드가 아니라 코드 주변이 여기 있다** — 사용자, 저장소 메타데이터, 이슈, PR. 이것이 오래도록 **`mysql1` 이라는 단일 클러스터 하나**에 있었고, 그래서 **여기 사고가 나면 모든 기능이 영향을 받았다.**",
+      "tech": [
+        {
+          "tech": "스키마 도메인 (물리 분리 이전의 가상 파티션)",
+          "solves": "YAML 파일에 **함께 있어야 하는 테이블 묶음**을 적어 둔다(예: `gists`, `gist_comments`, `starred_gists`). **물리적으로 나누기 전에 논리적 경계를 먼저 코드로 못 박은 것.**",
+          "limits": "여러 도메인의 데이터를 담던 다형(polymorphic) 테이블은 **도메인별 사본으로 비정규화**해야 했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "The GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "단일 MySQL 클러스터(mysql1)를 스키마 도메인으로 갈라낸 과정. 린터로 경계를 지키고 쓰기 전환을 수십 밀리초에 끝냈다. 저자 Thomas Maurer."
+            }
+          ]
+        },
+        {
+          "tech": "질의 린터 · 트랜잭션 린터",
+          "solves": "도메인을 넘는 조인과 트랜잭션을 **개발 단계에서 잡는다.** 예외는 주석으로 명시하게 했고(`/* cross-schema-domain-query-exempted */`), 트랜잭션 린터는 운영에서 표본으로 돌려 부담을 줄였다.",
+          "limits": "조인을 애플리케이션 코드로 옮기면 **MySQL 실행 계획의 이점을 잃는다** — 그 대가를 감수했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "The GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "단일 MySQL 클러스터(mysql1)를 스키마 도메인으로 갈라낸 과정. 린터로 경계를 지키고 쓰기 전환을 수십 밀리초에 끝냈다. 저자 Thomas Maurer."
+            }
+          ]
+        },
+        {
+          "tech": "쓰기 전환 스크립트 (수십 밀리초)",
+          "solves": "여섯 단계를 **수십 밀리초** 안에 끝낸다 — 원본을 읽기 전용으로, GTID 위치 기록, 목적지 따라잡음 확인, 복제 중단, ProxySQL 경로 변경, 쓰기 재개. 핵심 기능 테이블 **130개**를 한꺼번에 옮겼고 **사용자에게 보인 오류는 몇 건뿐**이었다.",
+          "limits": "회사 글이 **롤백 절차를 명시하지 않는다** — 사전 예행연습과 GTID 지연 관찰로 갈음했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "The GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "단일 MySQL 클러스터(mysql1)를 스키마 도메인으로 갈라낸 과정. 린터로 경계를 지키고 쓰기 전환을 수십 밀리초에 끝냈다. 저자 Thomas Maurer."
+            }
+          ]
+        },
+        {
+          "tech": "Vitess (VTGate · VReplication) — 보조 수단",
+          "solves": "무중단 수직 샤딩에 썼다. **Slack·Figma·Notion 에 이어 네 번째 Vitess 사례**다.",
+          "limits": "**Vitess 도입이 초기 단계라 망설임이 있었고**, 그래서 쓰기 전환 스크립트를 **위험 완화책으로 따로** 만들었다 — 하나에 전부 걸지 않았다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Partitioning GitHub's relational databases to handle scale",
+              "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+              "publisher": "The GitHub Blog",
+              "date": "2021-09-27",
+              "summary": "단일 MySQL 클러스터(mysql1)를 스키마 도메인으로 갈라낸 과정. 린터로 경계를 지키고 쓰기 전환을 수십 밀리초에 끝냈다. 저자 Thomas Maurer."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "CI 실행",
+      "why": "**남의 코드를 우리 기계에서 돌려 준다.** Cloudflare(Workers)·Roblox(Luau)와 같은 축인데 성격이 다르다 — 여기서는 **빌드 한 번이 몇 분씩 코어 수십 개를 잡아먹고**, 결과를 오래 보관할 필요는 없다.",
+      "tech": [
+        {
+          "tech": "GitHub Actions — 큐 + 자동 확장 러너",
+          "solves": "워크플로가 트리거되면 이벤트가 큐에 실리고, 러너가 없으면 작업이 **큐에서 기다린다.** 수요에 맞춰 러너 인스턴스를 자동으로 늘리고 줄인다.",
+          "limits": "요금제별 동시 실행 상한이 있어, 그 위로 가려면 자체 호스팅 러너(ARC 등)를 써야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+              "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+              "publisher": "The GitHub Blog",
+              "date": "2023",
+              "summary": "자기 제품으로 자기를 빌드·테스트한다 — 한 시간에 CI 작업 15,000건, 코어 150,000개."
+            }
+          ]
+        },
+        {
+          "tech": "Larger runners (사양이 큰 러너)",
+          "solves": "GitHub 자신이 **GitHub.com 을 이것으로 빌드·테스트한다** — 한 시간에 **CI 작업 15,000건**, **코어 150,000개** 규모.",
+          "limits": "자기 제품을 자기가 쓰는 구조라 **자기 CI 가 자기 장애의 영향을 받는다.**",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+              "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+              "publisher": "The GitHub Blog",
+              "date": "2023",
+              "summary": "자기 제품으로 자기를 빌드·테스트한다 — 한 시간에 CI 작업 15,000건, 코어 150,000개."
+            }
+          ]
+        },
+        {
+          "tech": "Actions Runner Controller (ARC) — 자체 호스팅",
+          "solves": "쿠버네티스 위에서 KEDA 로 러너를 자동 확장한다. 고객이 자기 인프라에서 돌릴 수 있게 한다.",
+          "limits": "**이 부분의 1차 자료가 얇다** — 검색 결과 대부분이 3자 블로그다. 기능으로 팔 때 회사 문서를 따로 확인할 것.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+              "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+              "publisher": "The GitHub Blog",
+              "date": "2023",
+              "summary": "자기 제품으로 자기를 빌드·테스트한다 — 한 시간에 CI 작업 15,000건, 코어 150,000개."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**GitHub 단독 재무가 공시되지 않는다.** Microsoft 산하라 매출·ARR 이 세그먼트로 나오지 않고, 유료 Copilot 좌석 수(470만)만 회사가 밝혔다. ARR 30억 달러 초과는 보도이지 발표가 아니다 — 수익원을 전부 `inferred` 로 뒀다.",
+    "**Actions 의 1차 엔지니어링 자료가 얇다.** 자기들이 어떻게 쓰는지에 대한 글은 있는데, **남의 코드를 격리해 실행하는 방법**(샌드박싱·탈출 방지·자원 배분)에 대한 회사 글을 아직 못 찾았다 — Cloudflare·Roblox 와 비교하려면 이게 필요하다.",
+    "**수평 샤딩** — 2021년 파티셔닝 글이 '다음은 수평 파티셔닝'이라며 별도 글을 예고했다. 그 글을 아직 확인하지 않았다.",
+    "**Copilot 의 서빙 구조** — 최근 블로그가 제품 발표 쪽에 쏠려 있어 추론 인프라에 대한 자료를 확인하지 못했다."
+  ],
+  "sources": [
+    {
+      "title": "The technology behind GitHub's new code search",
+      "url": "https://github.blog/engineering/the-technology-behind-githubs-new-code-search/",
+      "publisher": "The GitHub Blog",
+      "date": "2023-02-06",
+      "summary": "Blackbird — 코드 전용 검색엔진을 Rust 로 새로 지은 이유와 버린 대안을 숫자로 계산해 둔 글. 저자 Timothy Clem."
+    },
+    {
+      "title": "Partitioning GitHub's relational databases to handle scale",
+      "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+      "publisher": "The GitHub Blog",
+      "date": "2021-09-27",
+      "summary": "단일 MySQL 클러스터(mysql1)를 스키마 도메인으로 갈라낸 과정. 린터로 경계를 지키고 쓰기 전환을 수십 밀리초에 끝냈다. 저자 Thomas Maurer."
+    },
+    {
+      "title": "Introducing DGit",
+      "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+      "publisher": "The GitHub Blog",
+      "date": "2016-04-05",
+      "summary": "Git 저장소를 서버 세 대에 애플리케이션 계층에서 복제하는 시스템(뒤에 Spokes 로 개명)."
+    },
+    {
+      "title": "Building resilience in Spokes",
+      "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+      "publisher": "The GitHub Blog",
+      "date": "2016-09",
+      "summary": "Spokes 가 서버·네트워크 장애에서 저장소 가용성을 유지하는 방법."
+    },
+    {
+      "title": "How GitHub uses GitHub Actions and Actions larger runners to build and test GitHub.com",
+      "url": "https://github.blog/engineering/infrastructure/how-github-uses-github-actions-and-actions-larger-runners-to-build-and-test-github-com/",
+      "publisher": "The GitHub Blog",
+      "date": "2023",
+      "summary": "자기 제품으로 자기를 빌드·테스트한다 — 한 시간에 CI 작업 15,000건, 코어 150,000개."
+    },
+    {
+      "title": "Microsoft FY26 Q2 실적 발표 · GitHub ARR 보도",
+      "url": "https://github.blog/",
+      "publisher": "Microsoft 실적 발표 및 언론 보도",
+      "date": "2026-01-28",
+      "summary": "유료 Copilot 좌석 470만(전년 대비 약 75% 증가)은 Microsoft 가 밝혔고, GitHub 전체 ARR 30억 달러 초과는 사정을 아는 사람을 인용한 보도다."
+    }
+  ]
+}
