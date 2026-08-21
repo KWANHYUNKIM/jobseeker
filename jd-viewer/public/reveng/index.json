@@ -165,6 +165,17 @@
       "updated_at": "2026-08-21",
       "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
       "features_done": 4
+    },
+    {
+      "slug": "cloudflare",
+      "name": "Cloudflare",
+      "name_en": "Cloudflare",
+      "country": "US",
+      "category": "기타",
+      "status": "in_progress",
+      "features_done": 1,
+      "one_liner": "남의 트래픽과 남의 코드를 자기 서버에서 대신 다뤄 주고 돈을 받는 회사",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -234,7 +245,11 @@
     "동시 편집·문서 동기화",
     "실시간 데이터 구독",
     "렌더링·클라이언트 성능",
-    "데이터 저장·확장"
+    "데이터 저장·확장",
+    "엣지 네트워크·트래픽 전달",
+    "엣지 컴퓨트 (Workers)",
+    "엣지 저장",
+    "보안·차단 판단"
   ],
   "countries": {
     "KR": "한국",
