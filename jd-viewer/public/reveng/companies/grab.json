@@ -1,0 +1,659 @@
+{
+  "slug": "grab",
+  "name": "그랩",
+  "name_en": "Grab",
+  "country": "SG",
+  "category": "모빌리티",
+  "status": "in_progress",
+  "updated_at": "2026-08-22",
+  "domain": "grab.com",
+  "one_liner": "한 앱 안에서 태우고 배달하고 결제까지 하는 회사 — 그래서 '누가 사기꾼인가'를 한자리에서 세야 한다",
+  "business_model": "**동남아의 슈퍼앱**이다. 한 앱 안에 **이동·배달·금융**이 함께 있다. 2025년 **온디맨드 GMV 221억 달러**(+21%)인데 그 안에서 **배달이 142억 달러(+21%)** 로 **모빌리티 79억 달러(+19%)** 보다 크다. 금융 서비스는 이 사이트가 **2024년 매출 2억 5,300만 달러(+44%)** 까지만 확인했다.\n\n**그리고 이 구조가 기술적 성격을 정한다**(이 해석은 이 사이트의 것이다). 한 사람이 **택시를 타고, 밥을 시키고, 결제까지** 같은 계정으로 하니 — **이상거래 판정도 한자리에서** 해야 한다. 실제로 이 회사의 이상거래 카운터는 **초당 수만 질의, 하루 약 10억 요청**을 받는다.\n\n**두 번째 성격은 저장소를 자주 갈아탄다는 것이다.** 이 사이트가 확인한 글 둘이 모두 이관 이야기다 — 카운터 저장소를 **와이드 컬럼 DB 에서 Aerospike 로**, 데이터 레이크를 **디렉터리 기반 Hive Parquet 에서 Apache Iceberg 로.** 그리고 두 글 다 **해 보고 안 된 것을 적는다** — 특히 카운터 쪽은 **주 인덱스를 NVMe 로 내렸다가 되돌린** 기록을 남겼다.",
+  "products": [
+    "Grab (차량 호출·이동)",
+    "GrabFood · GrabMart (배달)",
+    "GrabPay · 금융 서비스 (결제·대출)",
+    "GrabUnlimited (구독)",
+    "기사·가맹점용 앱"
+  ],
+  "revenue_streams": [
+    {
+      "name": "배달 (Deliveries)",
+      "how": "음식·생필품 배달. **2025년 GMV 142억 달러**(+21%) — 세 부문 중 가장 크다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Grab Holdings FY2025 실적",
+          "url": "https://investors.grab.com/",
+          "publisher": "Grab Holdings IR · SEC 공시",
+          "date": "2026",
+          "summary": "2025년 온디맨드 GMV **221억 달러**(+21%, 2024년 184억). **배달 GMV 142억 달러**(+21%), **모빌리티 GMV 79억 달러**(+19%, 월간 활성 기사 공급 +17%). 금융 서비스는 **2024년 매출 2억 5,300만 달러(+44%)** 까지 확인했고 2025년 수치는 이 사이트가 확인하지 못했다."
+        }
+      ]
+    },
+    {
+      "name": "모빌리티 (Mobility)",
+      "how": "차량 호출. **2025년 GMV 79억 달러**(+19%). 월간 활성 기사 공급 **+17%**.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Grab Holdings FY2025 실적",
+          "url": "https://investors.grab.com/",
+          "publisher": "Grab Holdings IR · SEC 공시",
+          "date": "2026",
+          "summary": "2025년 온디맨드 GMV **221억 달러**(+21%, 2024년 184억). **배달 GMV 142억 달러**(+21%), **모빌리티 GMV 79억 달러**(+19%, 월간 활성 기사 공급 +17%). 금융 서비스는 **2024년 매출 2억 5,300만 달러(+44%)** 까지 확인했고 2025년 수치는 이 사이트가 확인하지 못했다."
+        }
+      ]
+    },
+    {
+      "name": "금융 서비스",
+      "how": "결제와 대출. **2024년 매출 2억 5,300만 달러(+44%)** 까지 확인했고 **2025년 수치는 이 사이트가 확인하지 못했다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Grab Holdings FY2025 실적",
+          "url": "https://investors.grab.com/",
+          "publisher": "Grab Holdings IR · SEC 공시",
+          "date": "2026",
+          "summary": "2025년 온디맨드 GMV **221억 달러**(+21%, 2024년 184억). **배달 GMV 142억 달러**(+21%), **모빌리티 GMV 79억 달러**(+19%, 월간 활성 기사 공급 +17%). 금융 서비스는 **2024년 매출 2억 5,300만 달러(+44%)** 까지 확인했고 2025년 수치는 이 사이트가 확인하지 못했다."
+        }
+      ]
+    }
+  ],
+  "domain_map": {
+    "title": "그랩 도메인 지도",
+    "question": "한 계정이 태우고 시키고 결제하면 그 판정은 어디서 하는가?",
+    "code": "flowchart TD\n  U[\"한 사용자 — 이동 · 배달 · 결제<br/><b>같은 계정</b>\"]\n  subgraph FRAUD[\"<b>이상거래 카운터 저장소</b>\"]\n    Q[\"초당 수만 질의 · <b>하루 약 10억 요청</b><br/>15분 · 시간 · 일 단위 창\"]:::accent\n    AS[(\"Aerospike — 하이브리드 메모리<br/>인덱스는 <b>RAM</b>, 데이터는 SSD<br/><b>레코드당 인덱스 64바이트</b>\")]:::accent\n    MAP[\"<b>맵 한 레코드</b><br/>타임스탬프=키 · 카운트=값<br/>MapIncrementOp 원자적 증가\"]:::list\n    NVME[\"주 인덱스를 로컬 NVMe 로\"]:::quiet\n    NVME -->|\"<b>되돌렸다</b> — 핫 키 I/O 를 따라 p99 스파이크\"| AS\n    Q --> AS --> MAP\n  end\n  subgraph LAKE[\"<b>데이터 레이크</b>\"]\n    HIVE[\"디렉터리 기반 Hive Parquet<br/><b>HMS 가 중앙 장애점 · 목록 O(n)</b><br/>ML 데이터셋 <b>평균 1MB 미만 · 파티션당 수천 개</b>\"]:::quiet\n    ICE[\"Apache Iceberg<br/>가장 값진 표부터 점진 이관\"]:::accent\n    HIVE -->|\"옮겼다\"| ICE\n  end\n  U --> Q\n  U --> LAKE\n  RF[\"복제 계수 <b>3 → 2</b><br/>저장·인덱스 메모리 약 1/3 절감\"]:::list --> AS"
+  },
+  "domains": [
+    {
+      "name": "이상거래 카운터 저장소",
+      "why": "**한 앱 안에서 이동·배달·결제가 다 일어나므로 '이 계정이 최근에 무엇을 얼마나 했는가'를 한자리에서 세야 한다.** 그 카운터가 **초당 수만 질의, 하루 약 10억 요청**을 받고, **15분·시간·일** 세 가지 창으로 답한다.\n\n문제는 세는 것 자체가 아니라 **그 많은 카운터를 어디에 둘 것인가**다. 수십억 레코드가 되면 **데이터가 아니라 인덱스가 먼저 메모리를 다 쓴다.**",
+      "tech": [
+        {
+          "tech": "Aerospike 하이브리드 메모리 (인덱스 RAM · 데이터 SSD)",
+          "solves": "인덱스와 데이터를 모두 DRAM 에 두는 것보다 싸다.",
+          "limits": "회사가 명시했다 — **주 인덱스가 레코드당 64바이트이고 메모리에 상주**하므로, **수십억 레코드에서는 인덱스 메모리가 제약**이 된다. 실제로 노드당 인덱스가 **약 50GB**(가용 약 100GB 중)를 쓴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Counter Service storage: Design choices and learnings",
+              "url": "https://engineering.grab.com/counter-service-storage-migration",
+              "publisher": "Grab Engineering",
+              "date": "—",
+              "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+            }
+          ]
+        },
+        {
+          "tech": "맵 기반 스키마 (버킷당 행 대신 레코드당 맵)",
+          "solves": "한 카운터의 모든 버킷을 **한 레코드 안의 맵**으로 접는다 — 타임스탬프가 키, 카운트가 값. 쓰기는 **`MapIncrementOp` 원자적 증가**이고 오래된 항목은 **`MapRemoveByKeyRangeOp`** 로 잘라 낸다. 이전의 **읽고-고쳐-쓰기가 단일 원자 증가**로 바뀌었다.",
+          "limits": "**레코드 단위 TTL 을 쓸 수 없다** — 그러면 전부 만료되거나 아무것도 만료되지 않는다. 그래서 **맵 항목을 명시적으로 잘라 내는 방식**을 직접 만들었다. 맵 항목 수는 '유계'라고만 하고 **구체적 상한은 밝히지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Counter Service storage: Design choices and learnings",
+              "url": "https://engineering.grab.com/counter-service-storage-migration",
+              "publisher": "Grab Engineering",
+              "date": "—",
+              "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+            }
+          ]
+        },
+        {
+          "tech": "단계적 전환 장치 (LegacyStorage → 파사드 → Single/WithShadow/WithSplit)",
+          "solves": "저장소 코드를 `LegacyStorage` 구조체로 떼어 내고, **열거형 디스패치 파사드**로 `legacy`·`aerospike`·`mock` 을 라우팅한 뒤, **설정으로 Single·WithShadow·WithSplit** 모드를 바꿔 트래픽을 점진 이관했다.",
+          "limits": "트레이트 객체 대신 **구체 열거형 디스패치**를 쓴 이유가 질의마다 드는 **힙 할당 비용**이었다 — 즉 추상화의 값을 지연으로 냈다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Migrating Counter Service storage: Design choices and learnings",
+              "url": "https://engineering.grab.com/counter-service-storage-migration",
+              "publisher": "Grab Engineering",
+              "date": "—",
+              "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "counter-service"
+      ]
+    },
+    {
+      "name": "데이터 레이크",
+      "why": "오랫동안 **표의 대부분**이 디렉터리 기반 Hive Parquet 이었다. 그런데 규모가 커지자 **카탈로그가 먼저 무너졌다** — Hive Metastore 가 **중앙 장애점**이 되고 메타데이터 접근이 몰리면 **질의 계획 시간이 파티션 수에 선형으로** 늘어난다.",
+      "tech": [
+        {
+          "tech": "Apache Iceberg 로 이관 (가장 값진 표부터)",
+          "solves": "한 번에 다 바꾸지 않고 **가장 값진 표부터** 옮겼다. 확인된 성과 — 내비게이션 데이터셋 질의 시간 **70초 → 6초(10배)**(Z-ordering), 운영 테이블의 **일일 S3 API 비용 95% 절감**, 퍼널 분석 데이터셋의 클러스터 자원 사용 **약 절반**.",
+          "limits": "이관 중 문제도 적었다 — **Spark 3.4 의 `TIMESTAMP_NTZ` 와 Iceberg 의 `TIMESTAMP_LTZ` 호환 문제**, 부하가 높을 때 HMS 의 **'좀비 락'**, 메타데이터 생성 중 **저장 계층 비용 급등**(그래서 이관 순서를 정해야 했다). **검토했다가 버린 다른 오픈 테이블 형식은 이름을 밝히지 않는다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+              "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+              "publisher": "Grab Engineering",
+              "date": "—",
+              "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+            }
+          ]
+        },
+        {
+          "tech": "작은 파일 문제",
+          "solves": "—",
+          "limits": "회사가 수치로 적었다 — 일부 **ML 데이터셋은 평균 파일 크기가 1MB 미만인데 파티션마다 파일이 수천 개**다. 그 파편화가 **S3 API 비용을 밀어 올리고 스캔을 느리게** 만든다. 그리고 **HMS 가 진실의 원천이라 S3 를 직접 고치면 카탈로그가 낡은 채로 남는** 문제도 함께 있었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+              "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+              "publisher": "Grab Engineering",
+              "date": "—",
+              "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "counter-service",
+      "name": "인덱스가 데이터보다 먼저 메모리를 다 쓸 때",
+      "domain": "이상거래 카운터 저장소",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "이 카운터는 **이상거래 탐지가 실시간으로 묻는 곳**이다 — 초당 **수만 질의**, 하루 약 **10억 요청**. 답해야 하는 것은 단순하다: **이 계정이 최근 15분 / 한 시간 / 하루에 몇 번 했는가.**\n\n그런데 세는 것 자체는 어렵지 않다. 어려운 것은 **그 많은 카운터를 어디에 둘 것인가**다. 카운터가 수십억 개가 되면 이상한 일이 벌어진다 — **데이터가 아니라 인덱스가 먼저 메모리를 다 쓴다.** Aerospike 의 주 인덱스는 **레코드당 64바이트**이고 **메모리에 상주**하기 때문이다.\n\n**그래서 이 기능의 이야기는 저장 형식이 아니라 인덱스를 어디에 둘 것인가의 이야기다** — 그리고 이 회사는 **한 번 잘못 짚었다가 되돌린 기록을 남겼다.**",
+        "metrics": [
+          {
+            "label": "부하",
+            "value": "초당 **수만 질의(QPS)**, 하루 약 **10억 요청**. 창은 **15분·시간·일** 세 가지",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "label": "인덱스가 제약이 되는 지점",
+            "value": "**주 인덱스가 레코드당 64바이트**이고 메모리 상주 — **수십억 레코드에서는 인덱스 메모리가 제약**이 된다. 실제로 노드당 **약 50GB**(가용 약 100GB 중)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "label": "저장 공간",
+            "value": "Aerospike 에서 **약 1TB** — 원래 구성의 **약 3TB** 대비",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "label": "읽기 지연",
+            "value": "**p99 이 원래 구성보다 일관되게 좋았고 약 50% 개선**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "노드당 **약 45~50% 저렴**. 복제 계수를 **3에서 2로** 낮춰 저장과 인덱스 메모리를 **약 3분의 1** 아꼈다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "label": "왕복 횟수",
+            "value": "Aerospike 는 사용자 요청당 **최대 3회 네트워크 왕복** — 비교 대상 백엔드는 *\"작은 페이지 단위 행 스트림을 여러 개\"* 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "인덱스 메모리를 계산해 보고",
+          "thought": "Aerospike 는 **인덱스는 RAM, 데이터는 SSD** 에 두는 하이브리드다. 그런데 **주 인덱스가 레코드당 64바이트**이고 우리 카운터는 수십억 개다. 그러면 **데이터가 아니라 인덱스가 먼저 메모리를 다 쓴다** — 노드당 약 50GB 다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "인덱스를 디스크로 내려 보며",
+          "thought": "인덱스를 **로컬 NVMe** 로 내리고 데이터는 SSD 에 두면 어떨까. 추가되는 인덱스 지연은 **전체 요청 예산 안에서 안 보일 것**이라고 예상했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "결과를 보고",
+          "thought": "예상과 달랐다. **p99 스파이크가 전체 QPS 를 따라가지 않고 핫 키의 I/O 활동을 따라갔다.** 같은 레코드에 동시 조회가 몰릴 때 **인메모리 인덱스가 디스크 기반 인덱스보다 그것을 더 신중하게 다룬다.** 노드를 더 붙여도 **약간 나아졌을 뿐**이었다. **되돌린다** — 메모리 최적화 인스턴스로 간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그럼 레코드 수를 줄이자고 생각하며",
+          "thought": "인덱스가 **레코드당** 붙으니, 버킷마다 행을 만들면 레코드가 폭발한다. **한 카운터의 모든 버킷을 한 레코드 안의 맵으로 접으면** 레코드 수가 줄고 인덱스도 준다 — 타임스탬프를 키, 카운트를 값으로.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "카운터",
+            "what": "한 대상의 시간 창별 횟수. 창은 **15분·시간·일** 세 가지."
+          },
+          {
+            "name": "주 인덱스",
+            "what": "**레코드당 64바이트**, **메모리 상주.** 수십억 레코드에서 제약이 된다."
+          },
+          {
+            "name": "맵 레코드",
+            "what": "한 카운터의 모든 버킷을 담은 **한 레코드.** 타임스탬프가 키, 카운트가 값이다."
+          },
+          {
+            "name": "`MapIncrementOp` / `MapRemoveByKeyRangeOp`",
+            "what": "원자적 증가와 오래된 항목 잘라 내기. 이전의 읽고-고쳐-쓰기를 대체한다."
+          },
+          {
+            "name": "파사드 (열거형 디스패치)",
+            "what": "`legacy`·`aerospike`·`mock` 으로 라우팅. **Single / WithShadow / WithSplit** 모드를 설정으로 바꾼다."
+          }
+        ],
+        "invariants": [
+          "**인덱스는 레코드 수에 비례한다** — 데이터 크기가 아니라.",
+          "**인덱스는 메모리에 있어야 한다** — 디스크로 내리면 핫 키에서 무너진다(실측으로 확인).",
+          "쓰기는 **단일 원자 증가**다 — 읽고-고쳐-쓰지 않는다.",
+          "오래된 항목은 **명시적으로 잘라 낸다** — 레코드 단위 TTL 을 쓸 수 없다.",
+          "사용자 요청당 **최대 3회** 네트워크 왕복.",
+          "이관은 **설정으로 모드를 바꿔** 점진적으로 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "저장소 코드를 **`LegacyStorage` 구조체로 떼어 낸다** — 드라이버를 격리한다",
+            "why": "바꾸려면 먼저 경계를 만들어야 한다."
+          },
+          {
+            "step": "그 위에 **열거형 디스패치 파사드**를 놓아 `legacy`·`aerospike`·`mock` 으로 라우팅한다",
+            "why": "트레이트 객체를 쓰면 질의마다 힙 할당이 붙는다."
+          },
+          {
+            "step": "**Single / WithShadow / WithSplit** 모드를 설정으로 바꿔 트래픽을 점진 이관한다",
+            "why": "섀도로 먼저 견주고, 그다음 나눠 보내야 되돌릴 수 있다."
+          },
+          {
+            "step": "한 카운터의 모든 버킷을 **한 레코드 안의 맵**으로 접는다 — 타임스탬프=키, 카운트=값",
+            "why": "인덱스가 레코드 수에 비례하므로 레코드를 줄이는 것이 인덱스를 줄이는 것이다."
+          },
+          {
+            "step": "쓰기는 **`MapIncrementOp` 원자적 증가**로 한다",
+            "why": "읽고-고쳐-쓰기를 없애면 경쟁도 왕복도 준다."
+          },
+          {
+            "step": "오래된 항목은 **`MapRemoveByKeyRangeOp`** 로 잘라 낸다",
+            "why": "레코드 단위 TTL 을 걸면 전부 만료되거나 아무것도 만료되지 않는다."
+          },
+          {
+            "step": "**주 인덱스는 메모리에 둔다** — 메모리 최적화 인스턴스로",
+            "why": "NVMe 로 내려 봤더니 핫 키에서 p99 가 튀었다."
+          },
+          {
+            "step": "복제 계수를 **3에서 2로** 낮춘다",
+            "why": "저장과 인덱스 메모리를 약 3분의 1 아낀다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "주 인덱스를 어디에 둘 것인가",
+            "chosen": "**메모리에 둔다.** 로컬 NVMe 로 내려 봤다가 **되돌렸다.**",
+            "alternatives": [
+              "주 인덱스를 로컬 NVMe 에 두고 데이터는 SSD 에"
+            ],
+            "tradeoff": "기대와 실제가 갈렸다 — **추가 인덱스 지연이 전체 요청 예산 안에서 안 보일 것**이라 예상했는데, 실제로는 **p99 스파이크가 전체 QPS 가 아니라 핫 키의 I/O 활동을 따라갔다.** 회사의 설명은 이렇다 — **같은 레코드에 동시 조회가 몰릴 때 인메모리 인덱스가 디스크 기반 인덱스보다 더 신중하게 다룬다.** 노드를 더 붙여도 **약간 나아졌을 뿐**이라 메모리 최적화 인스턴스로 돌아갔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "question": "버킷을 어떻게 저장할 것인가",
+            "chosen": "**한 카운터의 모든 버킷을 한 레코드 안의 맵으로 접는다** — 타임스탬프가 키, 카운트가 값.",
+            "alternatives": [
+              "버킷마다 행을 만들고 보조 인덱스로 찾는다",
+              "버킷마다 행을 만들고 클라이언트에서 BatchGet 한다"
+            ],
+            "tradeoff": "버린 두 안이 **같은 벽에 부딪혔다** — 수십억 레코드 규모에서 **주 인덱스 메모리 오버헤드**다. 즉 조회 방식이 아니라 **레코드 개수가 문제였다**(뒷문장은 이 사이트의 해석). 대신 맵으로 접으면 **레코드 단위 TTL 을 쓸 수 없어** 잘라 내는 일을 직접 해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "question": "오래된 버킷을 어떻게 지울 것인가",
+            "chosen": "**`MapRemoveByKeyRangeOp` 로 맵 항목을 명시적으로 잘라 낸다.**",
+            "alternatives": [
+              "Aerospike 의 레코드 단위 만료(TTL)를 쓴다"
+            ],
+            "tradeoff": "레코드 단위 TTL 은 쓸 수가 없다 — 한 레코드에 모든 버킷이 들어 있으니 **전부 만료되거나 아무것도 만료되지 않는다.** 대신 잘라 내는 시점과 범위를 우리가 관리해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "question": "쓰기를 어떻게 할 것인가",
+            "chosen": "**`MapIncrementOp` 단일 원자 증가.** 이전의 읽고-고쳐-쓰기를 대체했다.",
+            "alternatives": [
+              "읽어서 더하고 다시 쓴다(기존 방식)"
+            ],
+            "tradeoff": "저장소가 그 연산을 지원해야 한다 — 즉 저장소 선택에 묶인다(뒷문장은 이 사이트의 추정). 대신 왕복과 경쟁이 함께 줄어든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "question": "복제 계수를 몇으로 할 것인가",
+            "chosen": "**3에서 2로 낮춘다** — 저장과 인덱스 메모리를 약 3분의 1 아꼈다.",
+            "alternatives": [
+              "복제 3벌을 유지한다"
+            ],
+            "tradeoff": "여러 가용영역이 동시에 죽으면 잃는다. 회사가 그것을 받아들인 근거를 적었다 — **쓰기 쪽이 원본 이벤트 스트림에서 증분을 계속 만들어 내기 때문이다.** 즉 **다시 만들 수 있는 데이터라 덜 지켜도 된다**(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "question": "이관을 어떻게 할 것인가",
+            "chosen": "**3단계로.** ① 저장소 코드를 `LegacyStorage` 로 격리 ② **열거형 디스패치 파사드**로 `legacy`·`aerospike`·`mock` 라우팅 ③ **Single / WithShadow / WithSplit** 을 설정으로 전환.",
+            "alternatives": [
+              "시점을 정해 한 번에 전환한다"
+            ],
+            "tradeoff": "코드에 전환용 구조가 남는다(뒷문장은 이 사이트의 추정). 대신 **섀도로 먼저 견주고 비율로 나눠 보낼 수 있어** 되돌리기가 쉽다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "question": "파사드를 트레이트 객체로 만들 것인가",
+            "chosen": "**구체 열거형 디스패치**로 만든다.",
+            "alternatives": [
+              "트레이트 객체(동적 디스패치)를 쓴다"
+            ],
+            "tradeoff": "백엔드를 추가할 때 열거형을 고쳐야 한다(뒷문장은 이 사이트의 추정). 대신 **질의마다 드는 힙 할당 비용**을 피한다 — 초당 수만 질의에서는 그것이 값이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Aerospike (하이브리드 메모리 아키텍처)",
+            "role": "인덱스는 RAM, 데이터는 SSD. 인덱스는 레코드당 64바이트.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "tech": "맵 기반 레코드 (`MapIncrementOp` · `MapRemoveByKeyRangeOp`)",
+            "role": "버킷을 한 레코드에 접고 원자적으로 증가·정리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "tech": "메모리 최적화 인스턴스",
+            "role": "NVMe 인덱스를 되돌린 뒤의 선택.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "tech": "열거형 디스패치 파사드 (Single / WithShadow / WithSplit)",
+            "role": "저장소 전환을 설정으로 다룬다. 힙 할당을 피하려 트레이트 객체를 쓰지 않았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "tech": "Aerospike Rust 클라이언트",
+            "role": "— 성숙도 문제로 **동기-비동기 브리징**과 **DNS 재해석 버그 우회**가 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "tech": "p99 스파이크의 실제 크기",
+            "role": "— **밝히지 않는다.** 개선 폭은 백분율(약 50%)로만 나온다.",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "인덱스는 데이터가 아니라 개수에 비례한다",
+            "why_hard": "저장소를 고를 때 흔히 보는 것은 **데이터 크기**다. 그런데 이 사례에서 벽이 된 것은 **레코드 수**였다 — 주 인덱스가 **레코드당 64바이트**이고 메모리에 상주하므로, 수십억 개가 되면 **데이터가 SSD 에 잘 들어가 있어도 인덱스가 먼저 RAM 을 다 쓴다.** 그래서 버킷마다 행을 만드는 안이 **두 가지 조회 방식(보조 인덱스 / 클라이언트 BatchGet) 모두에서 같은 벽**에 부딪혔다 — **조회 방법을 바꿔도 레코드 수가 그대로였기 때문**이다(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**레코드 수를 줄인다.** 한 카운터의 모든 버킷을 **한 레코드 안의 맵**으로 접어 타임스탬프를 키로 쓴다. 그 결과 저장은 약 3TB 에서 **약 1TB**, 노드당 인덱스는 **약 50GB**(가용 약 100GB 중), 노드당 비용은 **약 45~50% 절감**, 읽기 p99 는 **약 50% 개선**됐다. 대가는 **레코드 단위 TTL 을 못 쓰게 된 것**이고, 그래서 잘라 내는 일을 직접 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          },
+          {
+            "problem": "평균 지연으로는 안 보이는 것이 있다",
+            "why_hard": "인덱스를 NVMe 로 내릴 때의 계산은 합리적이었다 — **추가되는 인덱스 지연이 전체 요청 예산 안에서 안 보일 것**. 평균으로 보면 실제로 그렇다. 그런데 무너진 것은 평균이 아니라 **꼬리**였고, 그 꼬리가 **전체 QPS 가 아니라 핫 키의 I/O 활동을 따라갔다.** 즉 **부하의 총량이 아니라 부하의 쏠림**이 문제였고, 이것은 **부하를 나눠도(노드를 더 붙여도) 약간만 나아진다** — 같은 키가 여전히 같은 곳으로 가기 때문이다(마지막 절은 이 사이트의 해석).",
+            "current_best": "**되돌렸다.** 회사가 관찰을 그대로 적었다 — **같은 레코드에 동시 조회가 몰릴 때 인메모리 인덱스가 디스크 기반 인덱스보다 더 신중하게 다룬다.** 그래서 메모리 최적화 인스턴스로 돌아가고, 대신 **레코드 수를 줄이는 쪽**(맵 스키마)으로 메모리 문제를 풀었다. **문제를 옮겨서 푼 것이지 그 자리에서 이긴 것이 아니다**(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Migrating Counter Service storage: Design choices and learnings",
+                "url": "https://engineering.grab.com/counter-service-storage-migration",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "레코드를 줄여 인덱스를 줄인다",
+          "question": "데이터가 SSD 에 있는데 왜 RAM 이 먼저 찼는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  F[\"이상거래 탐지 질의<br/>초당 <b>수만</b> · 하루 약 <b>10억</b><br/>창: 15분 · 시간 · 일\"] --> Q{\"어떻게 저장할 것인가\"}\n  Q -->|\"안 1 — 버킷마다 행 + 보조 인덱스\"| W1[\"<b>같은 벽</b>\"]:::quiet\n  Q -->|\"안 2 — 버킷마다 행 + 클라이언트 BatchGet\"| W1\n  W1 --> WHY[\"<b>주 인덱스 = 레코드당 64바이트 · 메모리 상주</b><br/>수십억 레코드 → 인덱스가 RAM 을 먼저 다 쓴다<br/><i>조회 방법을 바꿔도 레코드 수는 그대로</i>\"]:::accent\n  Q -->|\"<b>안 3 — 채택</b>\"| MAP[\"<b>한 레코드 안의 맵</b><br/>타임스탬프=키 · 카운트=값<br/>MapIncrementOp 원자적 증가<br/>MapRemoveByKeyRangeOp 로 정리\"]:::accent\n  MAP --> RES[\"저장 3TB → <b>약 1TB</b><br/>노드당 인덱스 <b>약 50GB</b> (가용 100GB)<br/>읽기 p99 <b>약 50% 개선</b> · 노드 비용 <b>45~50% 절감</b><br/>요청당 <b>최대 3회</b> 왕복\"]\n  MAP -.->|\"대가\"| TTL[\"<b>레코드 단위 TTL 을 쓸 수 없다</b><br/>전부 만료되거나 아무것도 안 된다\"]:::quiet\n  RF[\"복제 3 → 2<br/>저장·인덱스 메모리 약 1/3 절감<br/><i>쓰기가 원본 스트림에서 계속 만들어 내니까</i>\"]:::list --> MAP\n  MIG[\"이관 — LegacyStorage 격리 →<br/>열거형 디스패치 파사드 →<br/>Single / WithShadow / WithSplit\"]:::list --> MAP"
+        },
+        {
+          "title": "인덱스를 디스크로 내렸다가 되돌린 자리",
+          "question": "평균은 맞았는데 무엇이 틀렸는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 메모리인덱스: Aerospike HMA — 인덱스 RAM · 데이터 SSD\n  메모리인덱스 --> 제약발견: 수십억 레코드 → 인덱스 메모리가 한계\n  제약발견 --> NVMe시도: 인덱스를 로컬 NVMe 로 내린다\n  note right of NVMe시도\n    기대: 추가 인덱스 지연은\n    전체 요청 예산 안에서 안 보인다\n    — 평균으로 보면 맞는 계산이었다\n  end note\n  NVMe시도 --> 관찰: p99 스파이크\n  note right of 관찰\n    스파이크가 전체 QPS 를 따라가지 않았다\n    핫 키의 I/O 활동을 따라갔다\n    = 부하의 총량이 아니라 쏠림\n  end note\n  관찰 --> 노드추가: 분산시켜 보면 나아질까\n  노드추가 --> 관찰: 약간만 나아졌다\n  note right of 노드추가\n    같은 키는 여전히 같은 곳으로 간다 (해석)\n  end note\n  관찰 --> 되돌림: 메모리 최적화 인스턴스로\n  note right of 되돌림\n    \"같은 레코드에 동시 조회가 몰릴 때\n    인메모리 인덱스가 디스크 기반보다\n    더 신중하게 다룬다\"\n  end note\n  되돌림 --> 다른길: 레코드 수를 줄이는 쪽으로 (맵 스키마)\n  note right of 다른길\n    문제를 옮겨서 풀었지\n    그 자리에서 이긴 것이 아니다 (해석)\n  end note\n  다른길 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 접었더니 따라온 것들",
+          "question": "한 레코드에 다 넣으면 무엇을 잃는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  IDX[\"<b>인덱스가 레코드 수에 비례</b><br/>64바이트 × 수십억\"] --> A1[\"인덱스를 디스크로\"]\n  A1 --> TAIL[\"<b>핫 키에서 p99 스파이크</b><br/>평균은 괜찮았다\"]:::accent\n  TAIL --> BACK[\"되돌림\"]:::quiet\n  IDX --> A2[\"<b>레코드를 줄인다 — 맵으로 접기</b>\"]:::accent\n  A2 --> LOSE1[\"<b>레코드 단위 TTL 을 못 쓴다</b><br/>전부 만료 or 아무것도 안 됨\"]\n  LOSE1 --> PRUNE[\"직접 잘라 낸다<br/>MapRemoveByKeyRangeOp\"]:::quiet\n  A2 --> LOSE2[\"맵 항목 수 상한은<br/><b>'유계'라고만 하고 안 밝힌다</b>\"]:::quiet\n  RF2[\"복제 3 → 2\"] --> RISK[\"다중 AZ 동시 장애 시 잃는다\"]\n  RISK -->|\"받아들인 근거\"| REBUILD[\"쓰기가 원본 이벤트 스트림에서<br/>증분을 계속 만들어 낸다<br/><i>= 다시 만들 수 있는 데이터라 덜 지켜도 된다</i>\"]\n  RUST[\"Aerospike Rust 클라이언트\"] --> IMMATURE[\"<b>성숙도 문제</b><br/>동기-비동기 브리징 · DNS 재해석 버그 우회\"]:::quiet\n  TRAIT[\"트레이트 객체로 파사드\"] -->|\"버렸다\"| HEAP[\"질의마다 <b>힙 할당</b><br/>초당 수만이면 그게 값이다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Migrating Counter Service storage: Design choices and learnings",
+          "url": "https://engineering.grab.com/counter-service-storage-migration",
+          "publisher": "Grab Engineering",
+          "date": "—",
+          "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "**금융 서비스의 2025년 매출을 확인하지 못했다** — 2024년 2억 5,300만 달러(+44%)까지만 확인했다.",
+    "**이 회사의 축인 배차(모빌리티 매칭)를 다루는 1차 자료를 아직 확인하지 않았다** — 카카오·배민·우버와 겹칠 수 있어 자료를 보기 전에는 도메인으로 열지 않았다.",
+    "카운터 저장소 글은 **맵 항목 수의 상한**을 '유계'라고만 하고 밝히지 않는다.",
+    "NVMe 실험에서 **p99 스파이크의 크기를 수치로 밝히지 않는다** — 개선 폭은 백분율로만 나온다.",
+    "Iceberg 글은 **검토했다가 버린 다른 오픈 테이블 형식의 이름을 밝히지 않는다.**",
+    "`turbocharging-grabunlimited-with-temporal`(구독자 1,000% 증가, 사고 80% 감소)과 `real-time-data-ingestion`, `migrating-existing-datastores` 는 **제목만 확인했고 본문을 읽지 않았다.**"
+  ],
+  "sources": [
+    {
+      "title": "Migrating Counter Service storage: Design choices and learnings",
+      "url": "https://engineering.grab.com/counter-service-storage-migration",
+      "publisher": "Grab Engineering",
+      "date": "—",
+      "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
+    },
+    {
+      "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+      "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+      "publisher": "Grab Engineering",
+      "date": "—",
+      "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+    },
+    {
+      "title": "Grab Holdings FY2025 실적",
+      "url": "https://investors.grab.com/",
+      "publisher": "Grab Holdings IR · SEC 공시",
+      "date": "2026",
+      "summary": "2025년 온디맨드 GMV **221억 달러**(+21%, 2024년 184억). **배달 GMV 142억 달러**(+21%), **모빌리티 GMV 79억 달러**(+19%, 월간 활성 기사 공급 +17%). 금융 서비스는 **2024년 매출 2억 5,300만 달러(+44%)** 까지 확인했고 2025년 수치는 이 사이트가 확인하지 못했다."
+    }
+  ]
+}

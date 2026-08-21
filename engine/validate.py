@@ -29,7 +29,7 @@ REVENG = ROOT / "jd-viewer" / "public" / "reveng"
 INDEX = REVENG / "index.json"
 COMPANIES = REVENG / "companies"
 
-COUNTRIES = {"KR", "US", "CN", "JP", "EU", "CA", "AU", "기타"}
+COUNTRIES = {"KR", "US", "CN", "JP", "EU", "CA", "AU", "SG", "기타"}
 CATEGORIES = {"핀테크", "커머스", "소셜", "메시징", "스트리밍", "검색",
               "모빌리티", "게임", "SaaS", "기타"}
 STATUSES = {"in_progress", "done"}

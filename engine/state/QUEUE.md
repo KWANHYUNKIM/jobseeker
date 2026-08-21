@@ -7,7 +7,19 @@
 > 잔량이 목표(3)보다 적으면 후보 조사 사이클을 띄운다. 산문으로 적으면 세지 못한다.
 > **⚠️ 행을 추가할 때는 앞 행 끝의 줄바꿈을 확인한다** — 두 번(Canva·Grafana) 앞 행에 붙어
 > 큐 잔량이 잘못 세어졌다. 고친 뒤 `sed -n '/^## 대기/,/^### 확인/p' engine/state/QUEUE.md | grep -c '^| \*\*'` 로 센다.
-> `## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
+> `## 진행 중
+
+- **Grab** (SG · 모빌리티) — 사이클 170 에서 열었다. **30번째 회사, 동남아 첫 회사**
+  (`SG` 를 validate.py COUNTRIES 와 index.json countries 에 추가했다). 프로파일 + 도메인 2개
+  (이상거래 카운터 저장소 · 데이터 레이크) + 기능 1개(`counter-service`) 완료.
+  **다음 기능은 `데이터 레이크`** — 자료 확인 완료(`our-journey-to-apache-iceberg-adoption`:
+  HMS 가 **중앙 장애점 + O(n) 목록**, ML 데이터셋 **평균 1MB 미만·파티션당 수천 개**, 카탈로그와
+  저장소 어긋남 / 성과: 질의 **70초→6초**, S3 API 비용 **95% 절감**, 클러스터 자원 **약 절반** /
+  문제: `TIMESTAMP_NTZ`↔`TIMESTAMP_LTZ`, HMS **좀비 락**, 메타데이터 생성 중 저장 비용 급등).
+  **두 번째 글이 필요하다** — `real-time-data-ingestion` 이나 `migrating-existing-datastores` 확인.
+  ⚠️ **배차(모빌리티 매칭) 자료는 아직 확인하지 않았다** — 카카오·배민·우버와 겹칠 수 있다.
+
+## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
 
 ## 대기
 
@@ -15,7 +27,6 @@
 |---|---|---|---|---|
 
 
-| **Grab** | SG · 모빌리티 | `engineering.grab.com` | ✅ **본문 확인.** 여러 글에서 버린 안·수치가 명시돼 있음을 봤다. ⚠️ **`SG` 는 validate.py 의 COUNTRIES 에 없다** — Canva 때처럼 추가하거나 `기타` 를 쓸 것 | **동남아 첫 회사**가 된다. 배차는 카카오·배민·우버와 겹치지만 **축이 다르다 — 한 앱 안에 이동·음식·결제가 함께 있는 슈퍼앱**이고, 확인된 글은 배차가 아니라 **저장·데이터**다. ① `counter-service-storage-migration`: Aerospike 를 **하이브리드 메모리**(인덱스는 RAM, 데이터는 SSD)로 쓰는데, **인덱스를 로컬 NVMe 로 내려 봤다가 되돌렸다** — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났고, 인메모리 인덱스가 동시 조회를 더 잘 다룬다고 적는다. **레코드당 인덱스 64바이트**라 수십억 건이면 인덱스 메모리가 제약이 된다. ② `our-journey-to-apache-iceberg-adoption`: Hive Metastore 가 **중앙 장애점이 되고 목록 조회가 O(n)**, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개** — **비교 축 ④(작은 파일 문제)의 두 번째 사례**다. ③ `turbocharging-grabunlimited-with-temporal`: 구독자가 **1,000% 이상** 늘며 무너진 구조를 Temporal 로 옮겨 **프로덕션 사고 80% 감소** |
 
 | **trivago** | DE/EU · 검색 | `tech.trivago.com` | ✅ **접속 확인.** 목록이 열리고 최근 글에 수치·버린 안이 명시돼 있다 | **여행 메타서치**는 이 엔진에 없는 축이다 — 자기 재고가 없고 **남의 재고를 모아 비교**해 파는 쪽이라 쿠팡·아마존·무신사와 다르다. 확인된 글: `2026-06-12 how-we-cut-kafka-consumer-deployment-costs-by-83`(**Kafka 컨슈머 배포 비용 83% 절감**, 계층별 성능 조사, **P1 사고 19건**을 다룬다), `2026-03-27 unifying-internal-apis-a-different-use-case-for-graphql-gateways`(**고객 대면이 아닌 내부 API 통합** — GraphQL 게이트웨이의 다른 용례라고 스스로 구분한다), `2026-02-18 from-always-on-to-on-demand-scaling-kafka-sinks-with-keda`(상시 가동 → 온디맨드), `2022-05-16 warp-a-web-application-rewrite-project`(웹 앱 재작성). **⚠️ 아직 본문은 안 읽었다 — 팔기 전에 한 편을 정독할 것** |
 
