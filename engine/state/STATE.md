@@ -10,8 +10,8 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**Cloudflare — 진행 중(사이클 114 에 시작).** 도메인 4개 중 **엣지 저장 하나 완료**
-(`workers-kv-redundancy`). 남은 것: 엣지 네트워크·트래픽 전달 / 엣지 컴퓨트(Workers) / 보안·차단 판단.
+**Cloudflare — 진행 중.** 도메인 4개 중 **2개 완료** — 엣지 저장(`workers-kv-redundancy`),
+엣지 네트워크·트래픽 전달(`unimog-edge-lb`). 남은 것: 엣지 컴퓨트(Workers) / 보안·차단 판단.
 
 **`category` 는 `기타` 로 넣었다** — validate.py 의 CATEGORIES 에 인프라·CDN 이 없다.
 분류를 늘릴지는 회사가 더 쌓인 뒤에 정한다.
@@ -23,7 +23,8 @@
 > **작업 메모:** `blog.cloudflare.com` 은 WebFetch 로 잘 읽힌다. IR 보도자료
 > (`cloudflare.com/press`)와 `cloudflare.com/plans` 도 읽힌다.
 
-마지막 사이클: 114 (2026-08-21) — Cloudflare 프로파일 + Workers KV.
+마지막 사이클: 115 (2026-08-21) — Unimog. **새 research 규칙의 첫 적용** — 논문 2편으로
+끝냈다(전에는 예외 없이 3편이었다). Beamer 는 Cloudflare 가 직접 언급해 confirmed 다.
 
 ## 다음 선택지
 

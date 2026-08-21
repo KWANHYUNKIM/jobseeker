@@ -55,8 +55,71 @@
     {
       "name": "엣지 네트워크·트래픽 전달",
       "why": "이 회사의 다른 모든 것이 이 위에 얹힌다. 애니캐스트로 방문자를 가장 가까운 지점에 붙이고, 그 지점이 155곳(2018년 기준)이라 **어떤 결정이든 155번 곱해서 비용이 든다.** 한 곳에서 값싼 선택이 전체에서는 성립하지 않는 자리다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "BGP 애니캐스트 + 라우터 ECMP",
+          "solves": "200곳 넘는 데이터센터가 **같은 IP 를 광고**해서 방문자가 가장 가까운 곳에 붙는다. 데이터센터 안에서는 라우터가 ECMP 로 아무 서버에나 뿌린다.",
+          "limits": "ECMP 는 서버 집합이 바뀌면 **재해싱이 일어나 관련 없는 연결까지 끊는다.** 라우터가 정한 ECMP 그룹 크기 한도도 큰 데이터센터에는 모자라고, 서버의 실제 부하를 보고 조정할 방법이 없다 — 그 셋을 메우려고 Unimog 를 얹었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Unimog — Cloudflare's edge load balancer",
+              "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+              "publisher": "Cloudflare Blog",
+              "date": "2020-09-09",
+              "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "Unimog (XDP/eBPF L4 로드밸런서, 모든 서버에서 실행)",
+          "solves": "전용 LB 계층 없이 **서버마다** 돈다. 패킷이 아무 서버에 떨어져도 4-튜플 해시로 올바른 서버를 찾아 넘긴다. CPU 비용이 1% 미만이다.",
+          "limits": "L7 을 모른다 — HTTP 헤더를 보고 판단하는 일은 못 한다. 그리고 모든 서버가 XDP 코드를 돌려야 해서 서버당 복잡도가 는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Unimog — Cloudflare's edge load balancer",
+              "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+              "publisher": "Cloudflare Blog",
+              "date": "2020-09-09",
+              "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "GUE 캡슐화 (Generic UDP Encapsulation)",
+          "solves": "패킷을 원형 그대로 감싸 다른 서버로 넘긴다. GitHub GLB 의 `glb-redirect` 를 재사용할 수 있고 헤더에 메타데이터를 실을 수 있다.",
+          "limits": "패킷마다 **약 36바이트**가 붙어 캡슐화 후 최대 1536바이트가 된다(인터넷 표준 1500). **데이터센터 망이 점보 프레임을 지원해야** 성립한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Unimog — Cloudflare's edge load balancer",
+              "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+              "publisher": "Cloudflare Blog",
+              "date": "2020-09-09",
+              "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "포워딩 테이블 (2의 거듭제곱 버킷 · 서버 수의 100배 이상) + conductor",
+          "solves": "버킷을 서버 수보다 훨씬 잘게 쪼개 두면 **버킷 몇 개를 옮기는 것만으로 부하를 미세 조정**할 수 있다. conductor 가 Prometheus 지표를 보고 데이터센터마다 재배치한다.",
+          "limits": "해시 분포가 통계라 버킷마다 연결 수가 정확히 같지는 않다. 그리고 conductor 는 데이터센터당 하나여서 조율의 단일 지점이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Unimog — Cloudflare's edge load balancer",
+              "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+              "publisher": "Cloudflare Blog",
+              "date": "2020-09-09",
+              "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "unimog-edge-lb"
+      ]
     },
     {
       "name": "엣지 컴퓨트 (Workers)",
@@ -528,12 +591,530 @@
           "summary": "공급자를 하나로 줄였다가 2시간 장애를 맞고 자체 백엔드로 이중화한 과정."
         }
       ]
+    },
+    {
+      "key": "unimog-edge-lb",
+      "name": "Unimog — 전용 로드밸런서를 없애고 모든 서버가 서로에게 넘긴다",
+      "domain": "엣지 네트워크·트래픽 전달",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "200곳 넘는 데이터센터가 **같은 IP 를 광고**하는 애니캐스트 망이라, 방문자는 가장 가까운 곳에 붙고 그 안에서는 어느 서버든 그 연결을 처리할 수 있다. 그러면 두 가지를 지켜야 한다 — **살아 있는 서버에만 연결이 가야 하고**, 부하가 고르게 퍼져야 한다. 그런데 데이터센터 크기가 제각각이라 **가장 큰 곳은 가장 작은 곳보다 서버가 100배 많다.** 라우터의 ECMP 하나로는 이 폭을 감당할 수 없었다.",
+        "metrics": [
+          {
+            "label": "데이터센터",
+            "value": "200곳 이상",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "label": "데이터센터 규모 편차",
+            "value": "가장 큰 곳이 가장 작은 곳의 약 100배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "label": "버킷 수",
+            "value": "서버 수의 100배 이상 (서버 수백 → 버킷 수만)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "label": "CPU 비용",
+            "value": "프로세서 사용률의 1% 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "label": "2홉을 타는 패킷",
+            "value": "보통 1% 미만",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "label": "캡슐화 오버헤드",
+            "value": "패킷당 약 36바이트 (최대 1536바이트)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "ECMP 가 왜 모자란지 알았을 때",
+          "thought": "서버 하나가 들고 나는 것만으로 **그 서버와 아무 상관 없는 연결들까지 끊긴다.** 해시로 나누는 방식의 성질이지 버그가 아니라서, 라우터 설정으로는 고칠 수 없는 종류였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "로드밸런서를 어디에 둘지 정할 때",
+          "thought": "전용 계층을 두면 **그 계층 자체가 새 병목이자 새 장애점**이 된다. 그런데 우리는 이미 모든 서버에서 DDoS 완화(l4drop)를 돌리고 있었다 — 같은 자리에 얹으면 패킷이 한 번만 지나가고, 특수한 역할을 하는 서버가 생기지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "커널 우회를 검토할 때",
+          "thought": "순수 처리량만 보면 DPDK 같은 커널 우회가 낫다. 그런데 이건 **200곳 넘는 데이터센터에 배포하고 계속 고쳐야 하는 물건**이다. 가장 빠른 것보다 **가장 고치기 쉬운 것**이 맞고, 실제로 치른 값은 CPU 1% 미만이었다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "테이블을 바꿀 때마다 연결이 끊기는 걸 보고",
+          "thought": "부하를 고르게 하려면 테이블을 자주 바꿔야 하는데, 바꿀 때마다 TCP 연결이 끊기면 **고르게 만들어 얻는 것보다 끊어서 잃는 것이 크다.** 조정 가능성과 연결 수명이 정면으로 부딪히는 자리였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "데이터센터 하나가 통째로 과부하됐을 때",
+          "thought": "서버 하나가 나빠지면 거기서 연결을 빼는 게 맞다. 그런데 **전부 나빠지면 뺄 곳이 없는데도 계속 빼려 들어** 연쇄로 악화됐다. 로드밸런서가 보는 신호만으로는 '이 서버가 이상하다'와 '여기 전체가 이상하다'가 똑같이 보인다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "VIP / DIP",
+            "what": "VIP 는 고객에게 광고하는 가상 IP, DIP 는 실제 서버 주소. 포워딩은 VIP → DIP 를 정하는 일이다."
+          },
+          {
+            "name": "포워딩 테이블",
+            "what": "버킷 배열. **항상 2의 거듭제곱 크기**이고 모든 로드밸런서가 같은 것을 들고 있다."
+          },
+          {
+            "name": "버킷",
+            "what": "DIP 를 담는 칸. **두 칸(현재·이전)** 을 갖는 것이 이 설계의 핵심이다."
+          },
+          {
+            "name": "conductor",
+            "what": "데이터센터당 하나. Prometheus 로 서버 부하를 재고 버킷을 재배치한다. Consul 로 KV·헬스·분산 락을 쓴다."
+          },
+          {
+            "name": "GUE 캡슐",
+            "what": "원 패킷을 감싸는 바깥 헤더. 약 36바이트."
+          }
+        ],
+        "invariants": [
+          "**모든 로드밸런서의 포워딩 테이블이 같다.** 그래야 서로 말을 맞추지 않고도 같은 결정에 도달한다 — 조율이 없다는 것이 이 설계의 처리량이다.",
+          "테이블은 항상 2의 거듭제곱 크기다.",
+          "**버킷 수는 서버 수의 100배가 넘는다.** 버킷이 잘아야 몇 개만 옮겨 부하를 미세하게 고칠 수 있다.",
+          "**2홉까지만 간다.** 그 이상 이어지는 사슬은 만들지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "라우터가 ECMP 로 패킷을 아무 서버에나 보낸다",
+            "why": "어느 서버가 맞는지 라우터는 모른다"
+          },
+          {
+            "step": "그 서버의 XDP 프로그램이 커널 네트워크 스택 **전에** 패킷을 잡는다",
+            "why": "일반 스택을 타면 이미 늦고 비싸다"
+          },
+          {
+            "step": "이 패킷이 VIP 로 가는 것인지 본다",
+            "why": "아니면 그냥 통과시킨다"
+          },
+          {
+            "step": "4-튜플(출발·목적 IP 와 포트)을 해시해 포워딩 테이블의 버킷을 고른다",
+            "why": "같은 연결은 항상 같은 버킷으로 간다"
+          },
+          {
+            "step": "버킷의 DIP 로 **GUE 캡슐화**해 그 서버로 재전송한다(TX)",
+            "why": "원 패킷을 그대로 보존한 채 넘기려고"
+          },
+          {
+            "step": "받은 서버가 껍질을 벗기고 처리한다. 그 연결이 원래 다른 서버 것이었으면 **2홉째**로 넘긴다",
+            "why": "테이블이 바뀌어도 기존 연결이 살아남게"
+          },
+          {
+            "step": "conductor 가 Prometheus 지표를 보고 버킷을 재배치한다",
+            "why": "부하가 기울면 버킷 몇 개만 옮겨 되돌린다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "라우터의 ECMP 만으로 갈 것인가",
+            "chosen": "**Unimog 를 그 위에 얹는다**",
+            "alternatives": [
+              "ECMP 단독"
+            ],
+            "tradeoff": "계층이 하나 늘고 모든 서버가 그것을 돌려야 한다. ECMP 단독은 셋을 못 한다 — 서버 집합이 바뀌면 **재해싱으로 관련 없는 연결까지 끊기고**, 라우터의 ECMP 그룹 크기 한도가 큰 데이터센터에 모자라며, 서버의 실제 부하를 보고 조정할 방법이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "로드밸런서를 전용 계층에 둘 것인가",
+            "chosen": "**모든 서버가 로드밸런서다.** 전용 계층을 두지 않는다",
+            "alternatives": [
+              "전용 L7 LB 어플라이언스 계층",
+              "LB 전용 서버 풀"
+            ],
+            "tradeoff": "모든 서버가 XDP 코드를 돌려야 해 서버당 복잡도가 는다. 대신 **특수한 역할을 하는 서버가 없어지고**, 이미 모든 서버에서 도는 DDoS 완화(l4drop)와 한 스택에 붙는다. 전용 계층은 규모가 안 나왔고 전용 하드웨어가 필요했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "커널을 우회할 것인가",
+            "chosen": "**XDP/eBPF** — 커널 안에서 돈다",
+            "alternatives": [
+              "DPDK 같은 커널 우회"
+            ],
+            "tradeoff": "순수 처리량은 커널 우회보다 낮다. 대신 **업그레이드와 디버깅이 쉽고** 일반 커널 스택과 함께 쓸 수 있다 — 200곳 넘는 곳에 배포하고 계속 고쳐야 하는 물건이라 이쪽이 맞았다. 실제 비용은 CPU 1% 미만이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "패킷을 어떻게 넘길 것인가",
+            "chosen": "**GUE 캡슐화**",
+            "alternatives": [
+              "다른 캡슐화 방식",
+              "패킷 재작성(NAT)"
+            ],
+            "tradeoff": "패킷마다 **약 36바이트**가 붙어 최대 1536바이트가 되고, 그래서 **데이터센터 망이 점보 프레임을 지원해야** 한다. 대신 GitHub GLB 의 `glb-redirect` 를 재사용할 수 있고 헤더에 메타데이터를 실을 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "연결 상태를 들고 있을 것인가",
+            "chosen": "**무상태.** 해시로만 정한다",
+            "alternatives": [
+              "연결별 상태 테이블 유지"
+            ],
+            "tradeoff": "연결 하나하나의 가중치를 조정할 수 없고 **통계적 분포에 기댄다** — 버킷마다 연결 수가 정확히 같지는 않다. 대신 모든 로드밸런서가 **서로 말을 맞추지 않고도** 같은 결론에 도달한다. 조율이 없다는 것이 이 설계의 처리량이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "테이블이 바뀔 때 이미 열린 연결을 어떻게 할 것인가",
+            "chosen": "버킷에 **두 칸(현재·이전)** 을 두고 2홉까지 넘긴다(daisy chaining)",
+            "alternatives": [
+              "끊고 다시 맺게 둔다",
+              "Beamer 처럼 무한 체이닝"
+            ],
+            "tradeoff": "2홉 전달 비용이 든다(실제로는 패킷의 1% 미만). **2홉까지만** 지원하는 것은 Beamer 논문보다 약한 보장인데, 테이블을 조심스럽게 갱신하면 **며칠짜리 연결 수명**이 나온다고 판단했다. 새 연결인지는 **SYN 으로 구별**한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "Beamer 의 generation number 를 도입할 것인가",
+            "chosen": "**도입하지 않는다**",
+            "alternatives": [
+              "Beamer 방식 그대로 구현"
+            ],
+            "tradeoff": "이론적으로 더 강한 보장을 포기한다. **영향받는 연결 수가 무시할 만하다**는 측정이 근거였다 — 완전한 해법의 값이 그 복잡도만큼은 아니라고 본 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "question": "Facebook 의 Katran 을 가져다 쓸 것인가",
+            "chosen": "**직접 만든다**",
+            "alternatives": [
+              "Katran 재사용"
+            ],
+            "tradeoff": "남이 검증한 코드를 버리고 처음부터 만든다. 다만 **핵심 C 코드가 1,000줄 남짓**이라 만드는 비용 자체가 크지 않았고, l4drop 과 통합해야 해서 **그대로 쓸 수 있는 부분이 거의 없었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "XDP / eBPF",
+            "role": "커널 네트워크 스택 이전에 패킷을 잡아 해시하고 넘긴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "GUE (Generic UDP Encapsulation)",
+            "role": "서버 간 패킷 전달의 껍질. glb-redirect 재사용을 가능하게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "eBPF TC classifier (리디렉터)",
+            "role": "2홉 전달을 담당. 원래 커널 모듈이었다가 옮겨 왔다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "conductor + Consul + Prometheus",
+            "role": "데이터센터마다 부하를 재고 버킷을 재배치한다. Consul 이 KV·헬스·분산 락",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "l4drop",
+            "role": "같은 XDP 자리에서 도는 DDoS 완화. Unimog 가 이것과 한 스택에 붙는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "workers-kv-redundancy",
+          "via": "같은 서버 위의 다른 계층",
+          "contract": "Unimog 가 패킷을 올바른 서버로 보내면 그 서버에서 Worker 가 돌고, 그 Worker 가 KV 를 읽는다. **Unimog 는 무엇이 실행될지 모른다** — L4 라서 안을 보지 않는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "l4drop (DDoS 완화)",
+          "via": "같은 XDP 프로그램 경로",
+          "contract": "막을 것은 l4drop 이 먼저 떨어뜨리고, 남은 것을 Unimog 가 넘긴다. **한 자리에 둘을 얹은 것이 전용 LB 계층을 두지 않은 이유 중 하나다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "라우터 ECMP",
+          "via": "BGP 애니캐스트",
+          "contract": "라우터는 '이 데이터센터의 아무 서버'까지만 책임진다. 그 뒤 올바른 서버를 찾는 일은 Unimog 가 한다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Stateless Datacenter Load-balancing with Beamer",
+            "authors": "Vladimir Olteanu 외",
+            "year": "2018",
+            "venue": "NSDI 2018",
+            "url": "https://www.usenix.org/conference/nsdi18/presentation/olteanu",
+            "takeaway": "Cloudflare 가 **읽고 일부를 일부러 안 가져온** 논문이다. 데이지 체이닝으로 무상태 LB 에서 연결을 지키는 방법이 여기서 오는데, Beamer 의 generation number 는 도입하지 않았다 — **영향받는 연결이 무시할 만하다**는 측정이 근거였다. 완전한 해법을 알면서 그 값이 복잡도만큼은 아니라고 판단한 기록이라 드물게 선명하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "title": "The eXpress Data Path: Fast Programmable Packet Processing in the Operating System Kernel",
+            "authors": "Toke Høiland-Jørgensen 외",
+            "year": "2018",
+            "venue": "CoNEXT 2018",
+            "url": "https://dl.acm.org/doi/10.1145/3281411.3281443",
+            "takeaway": "'커널 우회 대신 커널 안에서'를 고른 결정의 바닥. 이 논문의 요지가 **커널 우회에 가까운 성능을 내면서 커널의 도구와 운영성을 잃지 않는다**는 것이고, Cloudflare 가 DPDK 대신 XDP 를 고르며 든 이유(업그레이드·디버깅·일반 스택과의 공존)가 그대로 이 논지다. **Cloudflare 는 XDP 를 쓴다고만 밝혔고 이 논문을 언급하지 않았다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "조율하지 않으면서 연결을 지킬 수 없다",
+            "why_hard": "**무상태와 연결 보존이 정면으로 부딪힌다.** 해시로만 정하면 로드밸런서들이 서로 말을 맞추지 않고도 같은 답을 내지만, 서버 집합이 바뀌는 순간 **같은 연결이 다른 답을 받는다.** 반대로 연결별 상태를 들면 연결은 지켜지지만 그 상태를 로드밸런서끼리 맞춰야 하고, 그 조율이 곧 새 병목이자 새 장애점이 된다. 어느 쪽도 공짜가 아니다.",
+            "current_best": "**과거를 한 칸만 기억한다.** 버킷에 현재와 이전 DIP 두 칸을 두고, 새 연결(SYN)이면 현재 칸으로 보내고 아니면 이전 칸으로 한 번 더 넘긴다. 대가는 2홉 비용(패킷의 1% 미만)과 **2홉까지만이라는 약한 보장**, 그리고 **SYN 이 없는 UDP 에는 이 방법이 안 통한다**는 것이다 — 연결 소켓을 쓰는 UDP 서비스만 4-튜플이 드러나고, 비연결 소켓만 쓰는 서비스는 이 보호 밖에 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          },
+          {
+            "problem": "서버 하나가 나쁜 것과 데이터센터 전체가 나쁜 것을 신호만으로 구별할 수 없다",
+            "why_hard": "**같은 관측이 정반대의 처방을 요구한다.** 로드밸런서가 보는 것은 '이 서버의 부하가 높다'뿐인데, 서버 하나가 이상한 경우에는 거기서 연결을 빼는 것이 맞고 전체가 과부하인 경우에는 빼면 안 된다 — 뺄 곳이 없기 때문이다. 실제로 Cloudflare 에서 그 구별 없이 빼다가 **연쇄로 악화됐다.** 여기에 헬스 정보 자체가 틀릴 수도 있다 — Consul 에이전트가 재시작하면 그 서버의 상태를 일시적으로 잘못 보고한다.",
+            "current_best": "**conductor 에 둘을 구별하는 로직을 넣고, 일시적 오보는 걸러 낸다.** 다만 구별의 정체는 결국 임계값이고 **임계값은 언제나 어느 한쪽으로 틀린다** — 너무 민감하면 정상 변동에 반응하고, 너무 둔하면 진짜 이상한 서버를 늦게 뺀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Unimog — Cloudflare's edge load balancer",
+                "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+                "publisher": "Cloudflare Blog",
+                "date": "2020-09-09",
+                "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "패킷이 올바른 서버를 찾아가는 길",
+          "question": "라우터가 아무 서버에나 던진 패킷이 어떻게 제 주인을 찾는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  I[\"인터넷 — 애니캐스트 VIP\"] --> R[\"데이터센터 라우터\"]\n  R -->|\"ECMP — 아무 서버에나\"| S1[\"서버 A\"]\n  S1 --> XDP[\"XDP 프로그램<br/>커널 스택 이전\"]\n  XDP --> Q{\"VIP 로 가는 패킷인가\"}\n  Q -->|\"아니다\"| PASS[\"그냥 통과\"]\n  Q -->|\"맞다\"| H[\"4-튜플 해시 → 버킷\"]\n  H --> T[\"포워딩 테이블<br/>모든 서버가 같은 것을 든다\"]\n  T --> GUE[\"GUE 로 감싸 DIP 로 재전송\"]\n  GUE --> S2[\"서버 B — 껍질을 벗기고 처리\"]"
+        },
+        {
+          "title": "테이블이 바뀌어도 연결이 살아남는 법",
+          "question": "부하를 고치려고 버킷을 옮기면 이미 열린 TCP 연결은 어떻게 되나?",
+          "kind": "state",
+          "code": "flowchart TD\n  P[\"도착한 패킷\"] --> SYN{\"SYN 인가<br/>= 새 연결인가\"}\n  SYN -->|\"그렇다\"| CUR[\"버킷의 **현재** 칸으로\"]\n  SYN -->|\"아니다\"| CHK{\"현재 칸 서버가<br/>이 연결을 아는가\"}\n  CHK -->|\"안다\"| DONE[\"여기서 처리\"]\n  CHK -->|\"모른다\"| PREV[\"버킷의 **이전** 칸으로 2홉째\"]\n  PREV --> DONE2[\"원래 서버가 처리<br/>전체 패킷의 1% 미만\"]\n  CUR --> DONE\n  DONE --> LIM[\"2홉까지만 — 사슬은 더 안 이어진다\"]"
+        },
+        {
+          "title": "빼는 것이 옳지 않은 순간",
+          "question": "부하를 옮기는 규칙이 언제 스스로를 악화시키는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"서버 부하가 높다\"] --> B{\"고립된 문제인가<br/>전체 문제인가\"}\n  B -->|\"고립 — 이 서버만\"| C[\"연결을 다른 서버로 뺀다 ✓\"]\n  B -->|\"전체 — 데이터센터 과부하\"| D[\"빼도 갈 곳이 없다\"]\n  D --> E[\"옮겨받은 서버도 나빠진다\"]\n  E --> F[\"거기서도 뺀다\"]\n  F --> E\n  F --> G[\"연쇄 악화\"]\n  B -.->|\"신호만으로는<br/>둘이 똑같이 보인다\"| B\n  H[\"Consul 에이전트 재시작\"] --> I[\"헬스 정보를 일시적으로 잘못 보고\"]\n  I --> J[\"멀쩡한 서버를 뺄 뻔\"]\n  G --> K[\"conductor 가 둘을 구별하는 로직 추가\"]\n  J --> L[\"일시적 오보를 걸러 내는 로직 추가\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Unimog — Cloudflare's edge load balancer",
+          "url": "https://blog.cloudflare.com/unimog-cloudflares-edge-load-balancer/",
+          "publisher": "Cloudflare Blog",
+          "date": "2020-09-09",
+          "summary": "전용 로드밸런서 계층 없이 모든 서버가 XDP 로 서로에게 패킷을 넘기는 구조."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "엣지 네트워크·보안 판단·컴퓨트 세 도메인은 아직 손대지 않았다 — 이번 사이클은 회사 프로파일과 저장 도메인 하나다.",
+    "엣지 컴퓨트(Workers)와 보안·차단 판단 두 도메인은 아직 손대지 않았다.",
     "Workers KV 의 자체 백엔드(Cloudflare 내부 분산 DB)가 구체적으로 무엇인지 — 글은 '3중 복제·샤딩된 클러스터'까지만 밝힌다.",
-    "2025-06-12 장애의 근본 원인이 무엇이었는지 — 단일 공급자였다는 사실까지만 나오고 그 공급자 쪽에서 무슨 일이 있었는지는 이 글에 없다."
+    "2025-06-12 장애의 근본 원인이 무엇이었는지 — 단일 공급자였다는 사실까지만 나오고 그 공급자 쪽에서 무슨 일이 있었는지는 이 글에 없다.",
+    "Unimog 글은 2020년이다. 그 뒤 6년간 무엇이 바뀌었는지 — 특히 '서버가 더 이상 IP 를 소유하지 않는다'는 후속 글이 이 구조를 어떻게 바꿨는지는 아직 안 봤다."
   ],
   "sources": [
     {
