@@ -1,0 +1,75 @@
+name: Sync data
+
+# 데이터만 바뀐 커밋을 서버 작업트리에 반영한다. **재빌드는 하지 않는다.**
+#
+# 왜 따로 있나:
+#   nginx 가 `*.json` 을 이미지가 아니라 호스트 볼륨(`./jd-viewer/public` → `/data`)
+#   에서 서빙한다. 그래서 데이터는 컨테이너를 다시 만들 이유가 없고, Deploy 는
+#   그 사실을 근거로 `jd-viewer/public/**` 을 paths-ignore 로 빼 두었다.
+#
+#   문제는 그 다음이다 — 배포가 스킵되면 서버가 `git pull` 을 할 계기 자체가
+#   사라진다. 크롤 데이터는 서버가 스스로 만들어 내니 상관없었지만, 역설계
+#   데이터처럼 **밖에서 커밋되어 들어오는 것**은 아무도 당겨받지 않아 사이트가
+#   낡은 채로 남는다. 이 워크플로가 그 구멍을 메운다.
+#
+#   즉 Deploy(무겁다, 이미지 재빌드)와 이 워크플로(가볍다, fast-forward 만)가
+#   경로로 갈린다. 둘의 paths 는 서로 여집합이어야 한다.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "jd-viewer/public/**"
+  workflow_dispatch:
+
+# Deploy 와 같은 자리를 두고 다투지 않게 별도 그룹을 쓰되, 자기들끼리는
+# 최신 것만 남긴다 — fast-forward 는 여러 번 돌 이유가 없다.
+concurrency:
+  group: sync-data-production
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: 서버 데이터 동기화
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 5
+    steps:
+      - name: 작업트리 fast-forward
+        env:
+          BRANCH: main
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+          # 러너 워크스페이스가 아니라 **서버가 실제로 서빙하는 클론**을 갱신해야 한다.
+          # deploy.sh 와 같은 규칙($DEPLOY_DIR, 기본 ~/jobseeker)을 쓴다 —
+          # 컴포즈가 그 경로의 jd-viewer/public 을 데이터 볼륨으로 물고 있다.
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          [ -d "$REPO/.git" ] || { echo "::error::서버 클론을 찾지 못했다: $REPO"; exit 1; }
+          cd "$REPO"
+
+          git fetch --prune origin
+          before=$(git rev-parse --short HEAD)
+          git merge --ff-only "origin/$BRANCH" || {
+            echo "::error::fast-forward 불가 — 서버에 로컬 변경이나 분기가 있다. git status 확인"
+            exit 1
+          }
+          after=$(git rev-parse --short HEAD)
+          echo "작업트리 $before → $after"
+
+          # 볼륨이 read-only 로 물려 있어 파일만 바뀌면 즉시 반영된다.
+          # 컨테이너를 건드리지 않았다는 사실을 로그에 남긴다.
+          echo "재빌드 없음 — nginx 가 /data 볼륨에서 JSON 을 직접 읽는다"
+
+      - name: 반영 확인
+        run: |
+          set -euo pipefail
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          idx="$REPO/jd-viewer/public/reveng/index.json"
+          if [ -f "$idx" ]; then
+            python3 - "$idx" <<'PY'
+import json, sys
+d = json.load(open(sys.argv[1], encoding='utf-8'))
+print(f"역설계 index — 회사 {len(d.get('companies', []))}곳 · 갱신 {d.get('updated_at')}")
+PY
+          fi
