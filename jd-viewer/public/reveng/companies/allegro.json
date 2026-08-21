@@ -1,0 +1,257 @@
+{
+  "slug": "allegro",
+  "name": "알레그로",
+  "name_en": "Allegro",
+  "country": "EU",
+  "category": "커머스",
+  "status": "in_progress",
+  "updated_at": "2026-08-22",
+  "domain": "allegro.pl",
+  "one_liner": "거래액의 16%를 자기 대출로 대는 마켓플레이스 — 물건도 창고도 남의 것인데 돈·배송·광고는 자기 것이다",
+  "business_model": "**폴란드의 마켓플레이스다 — 물건은 판매자 것이고 Allegro 는 거래에 수수료를 매긴다.** FY2025 그룹 GMV **PLN 69,736m**(+9.0%), 그룹 매출 **PLN 12,103m**(+10.6%), 조정 EBITDA **PLN 3.5bn**(+15.4%). 폴란드 GMV 가 **PLN 66,416m** 이니 **그룹의 약 95%가 폴란드 한 나라**다(이 비율은 이 사이트의 계산). 폴란드 **테이크레이트 12.26%**.\n\n**그런데 수수료만 받는 회사가 아니다.** 회사가 스스로 '성장 엔진'이라 부르는 넷이 매출을 갈라 갖는다.\n\n- **마켓플레이스 수수료** — 본체. 활성 구매자 **21.0m**(폴란드 15.3m), 구매자당 GMV 폴란드 **PLN 4.3k**(+7.3%), 상품 **8천만 개 이상**.\n- **광고** — Q4 **+24.1%**, **GMV 의 2.24%**. 대표 상품 Sponsored Offers 만 **연 PLN 1.2bn**.\n- **금융(Allegro Pay)** — **2025년에 GMV 중 PLN 10.1bn(+20%)** 을 자기 대출로 댔고 **Q4 에는 GMV 의 16.0%** 다. 소비자 대출이 2025년 기타영업수익에 **PLN 181m**(+83%) 를 보탰다. 회사는 대출 생성 규모가 *\"폴란드 상위 은행 수준\"* 이라고 적는다.\n- **물류(Allegro Delivery)** — 자사 관리 소포 비중이 Q4 **41%**. 다만 **자기 배송망을 혼자 짓는 방식이 아니다** — Orlen Paczka · DHL · DPD 를 자기 사물함(One Box)과 함께 묶어 **사물함 36,000개 · 픽업 37,000곳**을 만들었다.\n- **구독(Smart!)** — 폴란드 **750만 명**, 그중 **거의 90%가 유료**. 해외 사용자는 2025년에 거의 세 배가 됐다.\n\n**이 사이트에 이미 있는 커머스들과 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **쿠팡**은 직매입 재고와 자기 물류(로켓배송)로 속도를 만든다. Allegro 는 **반대 방향으로 갔다** — 인수한 1P(Mall · CZC 브랜드)를 **마켓플레이스에서 파는 판매자 모델로 밀어냈고**, Mall North 의 1P 조직을 **108명으로 줄였다**(2024년 12월 대비 **83% 감축**, 비수익 구색은 **90% 이상** 정리). 물류도 혼자 짓지 않고 **경쟁 택배사까지 포함한 제휴망**으로 만들었다.\n- **Zalando** 는 자기 재고를 가진 채 파트너 프로그램을 붙였다. Allegro 는 **가진 1P 를 3P 로 내보내는** 쪽이다.\n- **Shopify** 는 판매자에게 가게를 파는 쪽이라 트래픽이 판매자 몫이다. Allegro 는 **자기 트래픽에 수수료를 매긴다.**\n- **trivago** 는 재고도 결제도 없이 클릭만 넘긴다. Allegro 는 **거래가 자기 안에서 끝난다** — 수수료 · 결제 · 대출 · 배송 · 광고가 전부 한 회사 안에 있다.\n- **가장 특이한 것은 금융이다.** 커머스인데 **자기 거래액의 16%를 자기가 만든 소비자 대출로 댄다.** 이 사이트에 없던 자리다 — 토스·Stripe·Adyen 은 금융이 본업이고, 쿠팡·무신사는 결제를 붙였을 뿐 여신을 직접 만들지 않는다.\n\n**해외는 아직 만드는 중이다.** 체코 · 슬로바키아 · 헝가리 3개 마켓플레이스 GMV **+58%**(PLN 2,677m), 손익분기는 **2029년** 목표. 슬로베니아 · 크로아티아 사업은 팔았다. 룩셈부르크 법인이고 **바르샤바 증권거래소 상장**(그 거래소 역사상 최대 IPO), 회사는 자신이 *\"폴란드 GDP 의 약 1%\"* 를 만든다고 적는다.",
+  "products": [
+    "Allegro (마켓플레이스)",
+    "Allegro Smart! (배송 구독)",
+    "Allegro Pay (자체 소비자 금융 · BNPL · 할부)",
+    "Allegro Delivery · Allegro One Box (배송망 · 사물함)",
+    "Allegro Ads · Sponsored Offers (광고)",
+    "Allegro 체코 · 슬로바키아 · 헝가리 마켓플레이스"
+  ],
+  "domain_map": {
+    "title": "Allegro 의 도메인 지도",
+    "question": "수수료만 받는 마켓플레이스와 무엇이 다른가?",
+    "kind": "flow",
+    "code": "flowchart TD\n  B[\"구매자 <b>21.0m</b><br/>(폴란드 15.3m)\"]\n  M[\"<b>마켓플레이스</b><br/>• 상품 8천만 개 이상<br/>• 테이크레이트 12.26%<br/>• GMV PLN 69,736m\"]:::list\n  subgraph ENG[\"<b>회사가 '성장 엔진'이라 부르는 것 — 전부 자기 것</b>\"]\n    AD[\"<b>광고</b><br/>• GMV 의 2.24%<br/>• Sponsored Offers 연 PLN 1.2bn\"]:::list\n    PAY[\"<b>Allegro Pay</b><br/>• 2025년 GMV 중 PLN 10.1bn<br/>• Q4 에는 GMV 의 16.0%\"]:::accent\n    DEL[\"<b>Allegro Delivery</b><br/>• 자사 관리 소포 Q4 41%<br/>• 경쟁 택배사까지 묶은 제휴망\"]:::list\n    SM[\"<b>Smart! 구독</b><br/>• 폴란드 750만 · 거의 90% 유료\"]:::list\n  end\n  subgraph TECH[\"<b>이 사이트가 연 기술 도메인</b>\"]\n    SR[\"<b>검색 적합성 평가</b><br/>사람 38만 건 주석을 기준으로<br/>LLM 을 심판으로 세운다\"]:::list\n    FE[\"<b>프론트엔드 배포</b><br/>서비스 하나에 126팀 · 의존성 1,206개\"]:::list\n    DC[\"<b>저장을 어디에 둘 것인가</b><br/>클라우드에서 자체 DC 로 되돌린 자리\"]:::list\n  end\n  S[\"판매자 · 브랜드\"] --> M\n  M --> B\n  B --> SM\n  M --> AD\n  M --> PAY\n  M --> DEL\n  SR -->|\"무엇이 위에 오는지를 잰다\"| M\n  FE -->|\"이 화면을 그린다\"| M\n  DC -.->|\"어디서 돌리는가\"| M\n  INTL[\"해외 — 체코 · 슬로바키아 · 헝가리<br/>GMV +58% · 손익분기 2029년 목표<br/><b>인수한 1P 를 3P 로 밀어냈다</b>\"]:::quiet\n  M --> INTL"
+  },
+  "revenue_streams": [
+    {
+      "name": "마켓플레이스 수수료 (3P)",
+      "how": "판매자 거래에 수수료를 매긴다. 폴란드 **테이크레이트 12.26%**(Q4, +0.25pp). 그룹 GMV **PLN 69,736m** 에서 그룹 매출 **PLN 12,103m** 이 나온다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Allegro.eu Q4 2025 실적 발표자료 (2026-03-12)",
+          "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-results-presentation-Q4-2025.pdf",
+          "publisher": "Allegro.eu (투자자 발표)",
+          "date": "2026-03-12",
+          "summary": "FY2025 — 그룹 GMV **PLN 69,736m(+9.0%)**, 그룹 매출 **PLN 12,103m(+10.6%)**, 조정 EBITDA **PLN 3.5bn(+15.4%)**. 폴란드 GMV **PLN 66,416m(+9.4%)** · 매출 **PLN 11,147m(+17.4%)** · 테이크레이트 **12.26%**. 광고 Q4 **+24.1%**, GMV 의 **2.24%**(Sponsored Offers 연 **PLN 1.2bn**). Allegro Pay 가 **2025년 GMV 중 PLN 10.1bn(+20%)** 을 댔고 Q4 에는 **GMV 의 16.0%**. 활성 구매자 **21.0m**(폴란드 15.3m)."
+        }
+      ]
+    },
+    {
+      "name": "광고",
+      "how": "판매자가 노출을 산다. Q4 **+24.1%** 로 **GMV 의 2.24%**(+0.28pp). Sponsored Offers 하나가 **연 PLN 1.2bn**.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Allegro.eu Q4 2025 실적 발표자료 (2026-03-12)",
+          "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-results-presentation-Q4-2025.pdf",
+          "publisher": "Allegro.eu (투자자 발표)",
+          "date": "2026-03-12",
+          "summary": "FY2025 — 그룹 GMV **PLN 69,736m(+9.0%)**, 그룹 매출 **PLN 12,103m(+10.6%)**, 조정 EBITDA **PLN 3.5bn(+15.4%)**. 폴란드 GMV **PLN 66,416m(+9.4%)** · 매출 **PLN 11,147m(+17.4%)** · 테이크레이트 **12.26%**. 광고 Q4 **+24.1%**, GMV 의 **2.24%**(Sponsored Offers 연 **PLN 1.2bn**). Allegro Pay 가 **2025년 GMV 중 PLN 10.1bn(+20%)** 을 댔고 Q4 에는 **GMV 의 16.0%**. 활성 구매자 **21.0m**(폴란드 15.3m)."
+        }
+      ]
+    },
+    {
+      "name": "금융 (Allegro Pay)",
+      "how": "BNPL · 할부 · 판매자 대출을 **직접** 만든다. 2025년 **PLN 10.1bn**(+20%) 의 GMV 를 댔고 Q4 에는 **GMV 의 16.0%**. 소비자 대출이 기타영업수익에 **PLN 181m**(+83%).",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Allegro.eu Q4 2025 실적 발표자료 (2026-03-12)",
+          "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-results-presentation-Q4-2025.pdf",
+          "publisher": "Allegro.eu (투자자 발표)",
+          "date": "2026-03-12",
+          "summary": "FY2025 — 그룹 GMV **PLN 69,736m(+9.0%)**, 그룹 매출 **PLN 12,103m(+10.6%)**, 조정 EBITDA **PLN 3.5bn(+15.4%)**. 폴란드 GMV **PLN 66,416m(+9.4%)** · 매출 **PLN 11,147m(+17.4%)** · 테이크레이트 **12.26%**. 광고 Q4 **+24.1%**, GMV 의 **2.24%**(Sponsored Offers 연 **PLN 1.2bn**). Allegro Pay 가 **2025년 GMV 중 PLN 10.1bn(+20%)** 을 댔고 Q4 에는 **GMV 의 16.0%**. 활성 구매자 **21.0m**(폴란드 15.3m)."
+        },
+        {
+          "title": "Allegro's GMV nears PLN 70 bln in 2025 as it enters new market segments",
+          "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-Q4-2025-Press-release.pdf",
+          "publisher": "Allegro.eu (보도자료)",
+          "date": "2026-03-12",
+          "summary": "Smart! 폴란드 **750만 명** + 해외 100만 명 이상, Allegro Pay 가 **GMV 의 15% 이상**을 금융, Allegro Delivery 의 자사 관리 소포 비중 **Q4 41%**(사물함 36,000개 · 픽업 37,000곳). 해외는 체코·슬로바키아·헝가리 **3개 마켓플레이스로 GMV +58%**, 슬로베니아·크로아티아 사업은 매각. 룩셈부르크 법인 · **바르샤바 증권거래소 상장**, *\"폴란드 GDP 의 약 1%\"* 를 만든다고 회사가 적는다."
+        }
+      ]
+    },
+    {
+      "name": "물류 (Allegro Delivery) · 구독 (Smart!)",
+      "how": "자사 관리 소포 비중 Q4 **41%**. Smart! 는 폴란드 **750만 명**이고 **거의 90%가 유료 구독**이다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Allegro.eu Q4 2025 실적 발표자료 (2026-03-12)",
+          "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-results-presentation-Q4-2025.pdf",
+          "publisher": "Allegro.eu (투자자 발표)",
+          "date": "2026-03-12",
+          "summary": "FY2025 — 그룹 GMV **PLN 69,736m(+9.0%)**, 그룹 매출 **PLN 12,103m(+10.6%)**, 조정 EBITDA **PLN 3.5bn(+15.4%)**. 폴란드 GMV **PLN 66,416m(+9.4%)** · 매출 **PLN 11,147m(+17.4%)** · 테이크레이트 **12.26%**. 광고 Q4 **+24.1%**, GMV 의 **2.24%**(Sponsored Offers 연 **PLN 1.2bn**). Allegro Pay 가 **2025년 GMV 중 PLN 10.1bn(+20%)** 을 댔고 Q4 에는 **GMV 의 16.0%**. 활성 구매자 **21.0m**(폴란드 15.3m)."
+        },
+        {
+          "title": "Allegro's GMV nears PLN 70 bln in 2025 as it enters new market segments",
+          "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-Q4-2025-Press-release.pdf",
+          "publisher": "Allegro.eu (보도자료)",
+          "date": "2026-03-12",
+          "summary": "Smart! 폴란드 **750만 명** + 해외 100만 명 이상, Allegro Pay 가 **GMV 의 15% 이상**을 금융, Allegro Delivery 의 자사 관리 소포 비중 **Q4 41%**(사물함 36,000개 · 픽업 37,000곳). 해외는 체코·슬로바키아·헝가리 **3개 마켓플레이스로 GMV +58%**, 슬로베니아·크로아티아 사업은 매각. 룩셈부르크 법인 · **바르샤바 증권거래소 상장**, *\"폴란드 GDP 의 약 1%\"* 를 만든다고 회사가 적는다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "검색 적합성 평가",
+      "why": "**마켓플레이스에서 검색은 곧 매대다.** 그런데 *\"A/B 테스트 같은 온라인 신호는 개별 결과가 질의에 얼마나 맞는지를 직접 재지 못한다.\"* 클릭이 오르는 것과 결과가 맞는 것은 다른 일이기 때문이다.\n\n그래서 Allegro 는 **사람이 매긴 정답 집합**을 먼저 만들었다 — **약 30명의 전문가 · 4개 언어(폴란드어 · 체코어 · 슬로바키아어 · 헝가리어) · 38만 건 이상**, 질의-상품 쌍마다 **블라인드 주석 2명 + 전문가 중재**, 일치도는 Cohen's kappa 로 감시. **문제는 이 방식이 *\"비싸고 시간이 오래 걸려 규모를 못 키운다\"* 는 것**이었다. 이 도메인은 그 정답 집합을 **기준으로 삼아 심판을 기계로 바꾸는** 일이다.",
+      "tech": [
+        {
+          "tech": "LLM-as-a-Judge — 사람 주석을 정답이 아니라 **채점 기준**으로 쓴다",
+          "solves": "질의-상품 쌍을 ESCI 계열을 세분화한 등급(정확 일치 · 높은 대체 가능 · 대체 가능 · 보완재 · 무관 · 판단 불가)으로 매긴다. **실시간 요청과 배치를 함께 받는 이중 속도 파이프라인**이고, **순위 위치로 가중치를 준다** — 1위의 어긋남은 치명적으로, 20위의 어긋남은 덜 세게 센다. 프롬프트에는 부서별 규칙을 직접 박아 넣었다(예: 서드파티 휴대폰 케이스는 '정확 일치'로 본다).",
+          "limits": "**가운데 등급이 안 갈린다** — '높은 대체 가능'은 F1 **0.51**, '대체 가능'은 **0.33** 인 반면 '정확 일치'는 **0.94**, '보완재'는 **0.83** 이다(가중 평균 F1 0.88). 그리고 **텍스트만 본다** — 상품 이미지를 쓰지 않아 *\"boho dress\"* 같은 **영감형 검색과 패션 부서에서 약하다.** 정답 집합을 계속 사람이 만들어야 한다는 것도 그대로 남는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+              "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+              "publisher": "Allegro Tech Blog",
+              "date": "2026-08-20",
+              "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+            }
+          ]
+        },
+        {
+          "tech": "클라우드 기준선에서 **로컬 모델로 내려오기**",
+          "solves": "기준선은 비용 대비 성능으로 고른 **Gemini 3.1 Flash Lite** 였고, 이후 로컬로 옮겨 **추론 비용을 약 60% 줄였다.** 고른 것은 **Gemma 4 26B 의 no-thinking · AWQ 4비트 변형**으로, 폴란드어에서 **κ-quad 0.69 · 정확도 0.87**(클라우드 기준선 0.67 을 넘었다), 처리량 **초당 약 16쌍**(12B 대비 약 2.5배), 파싱 오류 **0.2% 미만**.",
+          "limits": "**언어마다 다르다** — *\"체코어가 모든 모델에게 가장 어려웠고\"*, 슬로바키아어 · 헝가리어에서는 **클라우드 모델이 여전히 앞선다**(체코어 0.52 대 0.58, 헝가리어 0.67 대 0.73). 그리고 **점수가 높다고 쓸 수 있는 게 아니다** — Qwen 3.6 27B 는 κ-quad **0.70** 으로 가장 높았는데 **파싱 오류 약 5%** 때문에 버렸고, Mellum 2 12B 는 **20%**, PLLuM 8B 는 정확도 0.84 인데 **클래스 불균형을 이용한 것**이라 κ-quad 가 **0.17** 이었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+              "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+              "publisher": "Allegro Tech Blog",
+              "date": "2026-08-20",
+              "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "프론트엔드 배포",
+      "why": "**Allegro 의 화면 전체를 서비스 하나가 그린다** — `opbox-web`. 그 위에 **126개 팀의 npm 의존성 1,206개**가 얹혀 있다.\n\n그래서 배포가 개인의 일이 아니라 행사였다. **하루 두 번 '릴리스 트레인'** 을 띄우려면 **그 회차에 바뀐 것을 만진 사람들을 전부 동시에 모아** 확인을 받아야 했고, Opbox 당직 엔지니어 한 명이 오류를 지켜보다 담당 팀으로 넘겼으며, **문제가 생겨 되돌리면 그 회차에 탄 다른 배포까지 같이 막혔다.** 회사의 표현으로 *\"당직 엔지니어와 개발자 모두에게 큰 고통\"* 이었다.\n\n**한 화면을 여러 팀이 나눠 그리는 회사라면 어디서든 만나는 문제**이고, Allegro 는 그 값을 사람-일 단위로 재서 공개했다.",
+      "tech": [
+        {
+          "tech": "**기본 비활성 버전 + 레지스트리** — 배포와 활성화를 분리한다",
+          "solves": "*\"새로 추가된 버전은 기본적으로 비활성이고, 소유자가 관리 화면에서 명시적으로 켜기 전까지는 쓰이지 않는다.\"* 버전은 **스냅샷(테스트 전용, 30일 만료) · 정식(main 에서 자동 발행) · 베타(A/B)** 로 갈리고, 환경은 **테스트 → 프로덕션 0%(내부만) → 5%(최소 10분 유지) → 95%** 순으로 올라간다. 구성은 Backstage 기반 개발자 포털 · 의존성 레지스트리 · 실시간 검증기 · 변경을 알리는 비동기 브로커 **Hermes**.\n\n효과를 사람-일로 쟀다 — **2026년 6월 한 달에 독립 배포 136.48 man-day + 동적 설치 104.44 man-day = 240.92 man-day(약 11 FTE)**. 건당으로는 독립 배포 **약 40분**, 동적 설치 **약 15분** 이 준다. 개발자 만족도는 **8.7/10 · NPS +64**, 이관 과정 자체는 **9.7/10 · NPS +87**.",
+          "limits": "**되돌리는 쪽이 비대칭이다** — 지운 버전은 **다시 켤 수 없고** 레지스트리에서 영구 삭제해야 한다. `opbox-web` 자체 배포는 여전히 **하루 세 번**이고 카나리(0% → 합성 트래픽 8분 → 1% 10분 → 10% 10분 → 100%)를 거치는데, **세 번이 다 성공해야** 하고 지표가 어긋나면 자동으로 멈춰 당직자를 부른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we achieved independent deployments in a micro-frontend architecture",
+              "url": "https://blog.allegro.tech/2026/08/how-we-achieved-independent-deployments-in-a-micro-frontend-architecture.html",
+              "publisher": "Allegro Tech Blog",
+              "date": "2026-08-03",
+              "summary": "**단일 서비스 `opbox-web` 이 Allegro 프론트엔드 전체를 렌더링**하고, 거기에 **126개 팀의 npm 의존성 1,206개**가 얹혀 있다. 하루 두 번 사람이 모여 확인하는 **릴리스 트레인**이 병목이었다. FaaS 컴포넌트를 먼저 시도했다가 **네트워크 왕복 비용 때문에 접었고**, 결국 **레지스트리 + 기본 비활성 버전 + 단계적 활성화**로 옮겼다."
+            }
+          ]
+        },
+        {
+          "tech": "**해 보고 접은 것 — FaaS 컴포넌트**",
+          "solves": "의존성을 HTTP 로 호출해 HTML 과 자산 URL 만 받아 오면 컴포넌트를 `opbox-web` 메모리에 안 올려도 된다는 발상이었다.",
+          "limits": "*\"네트워크 통신 비용이 매우 컸고 전체 페이지 렌더링 성능을 크게 떨어뜨렸다\"* — **한 페이지에 여러 번 박히는 작은 컴포넌트일수록 호출 수가 폭발**했다. 게다가 **의존성 100% 에 적용할 수 없어** 배포 방식을 두 벌 유지해야 했고, 그래서 접었다. 개발 환경의 동적 설치에도 대가가 남았다 — *\"Node.js 에서는 한번 가져온 의존성을 더 이상 안 쓸 때 메모리를 되돌릴 간단한 방법이 없다\"* 라서 **단일 인스턴스 환경에만** 쓴다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "How we achieved independent deployments in a micro-frontend architecture",
+              "url": "https://blog.allegro.tech/2026/08/how-we-achieved-independent-deployments-in-a-micro-frontend-architecture.html",
+              "publisher": "Allegro Tech Blog",
+              "date": "2026-08-03",
+              "summary": "**단일 서비스 `opbox-web` 이 Allegro 프론트엔드 전체를 렌더링**하고, 거기에 **126개 팀의 npm 의존성 1,206개**가 얹혀 있다. 하루 두 번 사람이 모여 확인하는 **릴리스 트레인**이 병목이었다. FaaS 컴포넌트를 먼저 시도했다가 **네트워크 왕복 비용 때문에 접었고**, 결국 **레지스트리 + 기본 비활성 버전 + 단계적 활성화**로 옮겼다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "저장을 어디에 둘 것인가",
+      "why": "*\"몇 년 전만 해도 전부 클라우드로 옮기는 것이 당연해 보였다.\"* 이 도메인은 그 문장을 회사가 스스로 되짚은 자리다.\n\n**사건 하나가 계기였다.** GCP 파이프라인이 만든 결과 파일을 기동할 때 GCS 에서 받아 오는 서비스가 있었는데, **파일이 10GB 를 넘었다.** 파이프라인 버그로 파일 크기가 **두 배**가 되자 그 서비스는 메모리 부족으로 죽고 다시 뜨고를 반복했고, **약 두 시간 동안 재시작마다 다시 받으면서 이그레스 요금으로 약 1,000달러를 태웠다.**\n\n**요점은 금액이 아니라 성질이다** — *\"클라우드 비용은 계획대로 돌아갈 때는 무시할 만하지만, 잘못될 때는 예상 밖으로 부풀 수 있다.\"* 장애가 **성능뿐 아니라 청구서로도** 나타나는 구조인 것이다.",
+      "tech": [
+        {
+          "tech": "사내 데이터센터의 **Ceph(S3 호환)** 로 저장을 되돌리기",
+          "solves": "이미 데이터센터에 있던 S3 호환 저장소를 쓰고, **파이프라인이 파일을 만든 뒤 그쪽으로 밀어 넣는다.** 인터페이스가 S3 호환이라 **서비스 쪽 코드를 크게 바꾸지 않고** 위치만 옮길 수 있었던 것으로 보인다(이 부분은 이 사이트의 추정이다). 회사는 그 뒤로 같은 문제가 다시 생기지 않았다고 적는다.",
+          "limits": "**되돌려서 무엇을 잃었는지를 글이 밝히지 않는다** — 자체 저장소의 운영 부담 · 용량 계획 · 가용성은 언급이 없다. 서비스가 무엇이고 파일이 무엇인지, 인스턴스가 몇 개이고 파이프라인이 얼마나 자주 도는지도 적혀 있지 않다. **그래서 이 사례는 '클라우드가 비싸다'가 아니라 '이 워크로드가 클라우드의 과금 축과 안 맞았다'로 읽는 편이 맞다**(이 해석은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Back to the data center in 2026 (just a little bit)",
+              "url": "https://blog.allegro.tech/2026/08/back-to-dc-in-2026.html",
+              "publisher": "Allegro Tech Blog",
+              "date": "2026-08-11",
+              "summary": "*\"몇 년 전만 해도 전부 클라우드로 옮기는 것이 당연해 보였다.\"* 기동할 때 GCS 에서 **10GB 넘는 파일**을 받는 서비스가 파이프라인 버그로 파일이 두 배가 되자 OOM 재시작 루프에 빠졌고, **약 두 시간 만에 이그레스 요금으로 약 1,000달러**를 태웠다. 저장을 사내 데이터센터의 **Ceph(S3 호환)** 로 되돌렸다. *\"때로는 그것이 데이터센터로 돌아가는 것을 뜻한다 — 2026년에도.\"*"
+            }
+          ]
+        },
+        {
+          "tech": "**먼저 검토하고 버린 완화책들**",
+          "solves": "되돌리기 전에 네 가지를 따져 봤다 — 재시작 횟수 제한 · 사설 인터커넥트 · init 컨테이너 · 영구 볼륨 · 리더-팔로워 캐시.",
+          "limits": "전부 막혔다. **재시작 제한은 쿠버네티스가 지원하지 않고**, 인터커넥트는 *\"짧은 순간에 높은 대역폭이 필요했는데 우리가 가진 인터커넥트는 그런 트래픽 패턴에 맞게 구성돼 있지 않았다.\"* init 컨테이너는 플랫폼 팀 제약에 걸렸고, 영구 볼륨은 *\"오토스케일링과 잘 맞지 않는다.\"* 리더-팔로워 캐시는 *\"구현이 너무 복잡하고 예외 경우가 많으며 유지 비용이 높다.\"*",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Back to the data center in 2026 (just a little bit)",
+              "url": "https://blog.allegro.tech/2026/08/back-to-dc-in-2026.html",
+              "publisher": "Allegro Tech Blog",
+              "date": "2026-08-11",
+              "summary": "*\"몇 년 전만 해도 전부 클라우드로 옮기는 것이 당연해 보였다.\"* 기동할 때 GCS 에서 **10GB 넘는 파일**을 받는 서비스가 파이프라인 버그로 파일이 두 배가 되자 OOM 재시작 루프에 빠졌고, **약 두 시간 만에 이그레스 요금으로 약 1,000달러**를 태웠다. 저장을 사내 데이터센터의 **Ceph(S3 호환)** 로 되돌렸다. *\"때로는 그것이 데이터센터로 돌아가는 것을 뜻한다 — 2026년에도.\"*"
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**그룹 매출 PLN 12,103m 의 라인별 구성**(3P 수수료 · 1P · 광고 · 핀테크 · 배송)을 금액으로 확인하지 못했다 — 발표 자료는 광고(Sponsored Offers 연 PLN 1.2bn)와 핀테크(기타영업수익 PLN 181m)만 금액으로 준다.",
+    "**검색 랭킹 본체 — 무엇을 보고 순위를 매기는가 — 를 다루는 글을 찾지 못했다.** 지금 연 도메인은 랭킹을 **평가하는** 쪽이다.",
+    "**Allegro Pay 의 여신 심사·한도 산정** 기술 자료를 찾지 못했다. GMV 의 16%를 대는 규모인데 기술 블로그에 없다.",
+    "`back-to-dc` 글은 **어떤 서비스인지 · 파일이 무엇인지 · 되돌린 뒤 무엇을 잃었는지**를 밝히지 않는다. 인스턴스 수 · 파이프라인 주기 · 기동 시간도 없다.",
+    "`Transactions Aren't Enough`(2025-12)는 **예산 재배분이라는 가상의 예시**로 멱등성을 설명하는 교육적인 글이라, **Allegro 의 실제 주문·결제 시스템이 그렇게 되어 있는지는 확인할 수 없다.** 그래서 도메인으로 열지 않았다.",
+    "LLM-as-a-Judge 글은 **사람 주석의 Cohen's kappa 실제 값**을 그림으로만 보여 주고 숫자로 적지 않는다(2023→2024 개선 추세만 확인된다)."
+  ],
+  "sources": [
+    {
+      "title": "Allegro.eu Q4 2025 실적 발표자료 (2026-03-12)",
+      "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-results-presentation-Q4-2025.pdf",
+      "publisher": "Allegro.eu (투자자 발표)",
+      "date": "2026-03-12",
+      "summary": "FY2025 — 그룹 GMV **PLN 69,736m(+9.0%)**, 그룹 매출 **PLN 12,103m(+10.6%)**, 조정 EBITDA **PLN 3.5bn(+15.4%)**. 폴란드 GMV **PLN 66,416m(+9.4%)** · 매출 **PLN 11,147m(+17.4%)** · 테이크레이트 **12.26%**. 광고 Q4 **+24.1%**, GMV 의 **2.24%**(Sponsored Offers 연 **PLN 1.2bn**). Allegro Pay 가 **2025년 GMV 중 PLN 10.1bn(+20%)** 을 댔고 Q4 에는 **GMV 의 16.0%**. 활성 구매자 **21.0m**(폴란드 15.3m)."
+    },
+    {
+      "title": "Allegro's GMV nears PLN 70 bln in 2025 as it enters new market segments",
+      "url": "https://about.allegro.eu/wp-content/uploads/2026/03/Allegro-Q4-2025-Press-release.pdf",
+      "publisher": "Allegro.eu (보도자료)",
+      "date": "2026-03-12",
+      "summary": "Smart! 폴란드 **750만 명** + 해외 100만 명 이상, Allegro Pay 가 **GMV 의 15% 이상**을 금융, Allegro Delivery 의 자사 관리 소포 비중 **Q4 41%**(사물함 36,000개 · 픽업 37,000곳). 해외는 체코·슬로바키아·헝가리 **3개 마켓플레이스로 GMV +58%**, 슬로베니아·크로아티아 사업은 매각. 룩셈부르크 법인 · **바르샤바 증권거래소 상장**, *\"폴란드 GDP 의 약 1%\"* 를 만든다고 회사가 적는다."
+    },
+    {
+      "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+      "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+      "publisher": "Allegro Tech Blog",
+      "date": "2026-08-20",
+      "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+    },
+    {
+      "title": "How we achieved independent deployments in a micro-frontend architecture",
+      "url": "https://blog.allegro.tech/2026/08/how-we-achieved-independent-deployments-in-a-micro-frontend-architecture.html",
+      "publisher": "Allegro Tech Blog",
+      "date": "2026-08-03",
+      "summary": "**단일 서비스 `opbox-web` 이 Allegro 프론트엔드 전체를 렌더링**하고, 거기에 **126개 팀의 npm 의존성 1,206개**가 얹혀 있다. 하루 두 번 사람이 모여 확인하는 **릴리스 트레인**이 병목이었다. FaaS 컴포넌트를 먼저 시도했다가 **네트워크 왕복 비용 때문에 접었고**, 결국 **레지스트리 + 기본 비활성 버전 + 단계적 활성화**로 옮겼다."
+    },
+    {
+      "title": "Back to the data center in 2026 (just a little bit)",
+      "url": "https://blog.allegro.tech/2026/08/back-to-dc-in-2026.html",
+      "publisher": "Allegro Tech Blog",
+      "date": "2026-08-11",
+      "summary": "*\"몇 년 전만 해도 전부 클라우드로 옮기는 것이 당연해 보였다.\"* 기동할 때 GCS 에서 **10GB 넘는 파일**을 받는 서비스가 파이프라인 버그로 파일이 두 배가 되자 OOM 재시작 루프에 빠졌고, **약 두 시간 만에 이그레스 요금으로 약 1,000달러**를 태웠다. 저장을 사내 데이터센터의 **Ceph(S3 호환)** 로 되돌렸다. *\"때로는 그것이 데이터센터로 돌아가는 것을 뜻한다 — 2026년에도.\"*"
+    }
+  ],
+  "features": []
+}

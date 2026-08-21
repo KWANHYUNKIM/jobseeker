@@ -372,6 +372,18 @@
       "one_liner": "자기 재고가 없는 검색 — 남의 가격을 모아 비교하고, 그 가격이 낡으면 그게 곧 장애다",
       "features_done": 2,
       "domain": "trivago.com"
+    },
+    {
+      "slug": "allegro",
+      "name": "알레그로",
+      "name_en": "Allegro",
+      "country": "EU",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "거래액의 16%를 자기 대출로 대는 마켓플레이스 — 물건도 창고도 남의 것인데 돈·배송·광고는 자기 것이다",
+      "updated_at": "2026-08-22",
+      "domain": "allegro.pl"
     }
   ],
   "domains": [
@@ -493,7 +505,10 @@
     "데이터 레이크",
     "배차 실험·검증",
     "Kafka 소비 파이프라인",
-    "내부 API 통합"
+    "내부 API 통합",
+    "검색 적합성 평가",
+    "프론트엔드 배포",
+    "저장을 어디에 둘 것인가"
   ],
   "countries": {
     "KR": "한국",
