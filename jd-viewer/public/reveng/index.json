@@ -264,6 +264,18 @@
       "one_liner": "남의 코드를 맡고, 실행하고, 검색해 주는 회사 — 셋 다 규모의 성질이 다르다",
       "features_done": 4,
       "domain": "github.com"
+    },
+    {
+      "slug": "ly-corporation",
+      "name": "LY 코퍼레이션 (라인야후)",
+      "name_en": "LY Corporation",
+      "country": "JP",
+      "category": "메시징",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "일본에서 메신저·포털·결제를 한 회사가 쥐고 있다 — 그래서 합병 이전의 시스템 두 벌을 물려받았다",
+      "features_done": 1,
+      "domain": "lycorp.co.jp"
     }
   ],
   "domains": [
@@ -360,7 +372,10 @@
     "코드 검색",
     "Git 저장·복제",
     "데이터 계층",
-    "CI 실행"
+    "CI 실행",
+    "스트리밍 파이프라인",
+    "메시지 암호화",
+    "데이터 레이크 통합"
   ],
   "countries": {
     "KR": "한국",
