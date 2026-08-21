@@ -221,7 +221,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "spokes-replication"
+      ]
     },
     {
       "name": "데이터 계층",
@@ -933,6 +935,560 @@
           "summary": "조기 종료를 **없애서** 케이스 폴딩을 3.1 → 45 GiB/s 로 만든 기록. Blackbird 의 현재 규모(저장소 1.8억·480TB)도 여기 있다. 저자 Alexander Neubeck · Greg Orzell."
         }
       ]
+    },
+    {
+      "key": "spokes-replication",
+      "name": "Spokes — 복제본이 서로 다른 저장소일 때",
+      "domain": "Git 저장·복제",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사가 맡아 둔 것은 **남의 작업 결과 전부**다. 저장소를 잃으면 사과로 끝나지 않는다.\n\n예전 구조는 파일서버를 **쌍**으로 묶었다. 저장소 하나가 네 벌로 있었지만(활성 서버의 RAID 두 벌 + 크로스오버 케이블로 이어진 핫스페어의 DRBD 두 벌) 문제가 셋이었다 — 페일오버에 **사람 손이 필요했고 그때마다 잠깐 멈췄으며**, 핫스페어는 거의 놀았고, **서버 두 대가 함께 죽으면 저장소 수십만 개가 한꺼번에 내려갔다.**\n\n그리고 조용한 문제가 하나 더 있었다. 같은 서버에 있는 저장소들은 **운명을 공유한다** — 크거나 인기 있는 저장소 하나가 옆의 저장소들을 함께 느리게 만든다.\n\nSpokes(처음 이름은 DGit)는 그 넷을 셋으로 줄이면서 셋을 **큰 풀에서 서로 독립적으로** 고른다. 복제본 수를 줄이고 안전을 늘린 셈이다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "맡아 둔 양(2016년 기준)",
+            "value": "저장소 **3,800만 개** · gist **3,600만 개**, 전부 **최소 세 벌**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building resilience in Spokes",
+                "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-09-07",
+                "summary": "Spokes(옛 DGit)가 저장소 3,800만 개와 gist 3,600만 개를 최소 세 벌로 들고 있으며, 커널 데드락·불량 RAM·DNS 실패 같은 부분 고장을 어떻게 견디는지 설명한다. 하루에 수십 건은 만장일치가 아닌 투표가 나오고, 뒤처진 복제본은 대개 1~2분 안에 따라잡는다. 미달 복제 저장소는 주기적으로 찾아 살아남은 복제본 아무 데서나 새로 만든다."
+              }
+            ]
+          },
+          {
+            "label": "읽기와 쓰기의 비",
+            "value": "약 **100 : 1** — 그래서 읽기를 아무 복제본이나 받게 하면 처리량이 거의 세 배가 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              },
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "label": "대륙을 건널 때의 벽",
+            "value": "미국 대륙 왕복 **60~80ms**, 3단계 커밋은 먼 복제본까지 **네 왕복**. 업데이트 하나의 예산은 수백 밀리초",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "label": "실제 지연",
+            "value": "참조 업데이트 하나에 약 **0.33초**. master 푸시 하나가 참조 100개를 만들면 그대로 **30초**가 된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "label": "어긋나는 빈도",
+            "value": "하루 **수십 건**은 만장일치가 아닌 투표가 나온다. 뒤처진 복제본은 **거의 언제나 1~2분 안에** 따라잡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building resilience in Spokes",
+                "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-09-07",
+                "summary": "Spokes(옛 DGit)가 저장소 3,800만 개와 gist 3,600만 개를 최소 세 벌로 들고 있으며, 커널 데드락·불량 RAM·DNS 실패 같은 부분 고장을 어떻게 견디는지 설명한다. 하루에 수십 건은 만장일치가 아닌 투표가 나오고, 뒤처진 복제본은 대개 1~2분 안에 따라잡는다. 미달 복제 저장소는 주기적으로 찾아 살아남은 복제본 아무 데서나 새로 만든다."
+              }
+            ]
+          },
+          {
+            "label": "전환에 걸린 시간",
+            "value": "개인 저장소 → 비공개 저장소 → **3개월 안정화** → 공개 저장소 순으로 **6개월**. 발표 시점에 저장소 58%·gist 96%(Git 작업의 67%)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "파일서버를 쌍으로 묶던 시절",
+          "thought": "네 벌이나 있는데도 안심이 안 됐다. 페일오버가 **수동**이라 사람이 붙어야 했고 그때마다 조금씩 멈췄으며, 핫스페어는 대부분의 시간을 놀았다. 무엇보다 **두 대가 함께 죽으면 저장소 수십만 개가 같이 내려간다** — 벌 수가 아니라 **같이 죽는 단위**가 문제였다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "분산 파일시스템을 검토할 때",
+          "thought": "복제를 아래 계층에 맡기면 편하다. 그런데 **Git 은 지연에 아주 예민하다** — `git log` 나 `git blame` 한 번이 객체 수천 개를 차례로 읽는다. 분산 파일시스템의 왕복이 그 수천 번에 곱해지면 감당이 안 된다. 그래서 저장은 **로컬 SSD** 에 두고, 복제는 Git 이 이미 잘하는 것(push·fetch 프로토콜)으로 하기로 했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복제본을 대륙 규모로 떨어뜨리려 할 때",
+          "thought": "3단계 커밋은 먼 복제본까지 **네 왕복**을 쓴다. 왕복 하나가 60~80ms 면 그것만으로 예산을 넘는다. 왕복 수를 줄일 수 없다면 **겹치는 수밖에 없다** — 한 복제본이 락을 잡는 동안 다른 복제본은 체크섬을 계산하게 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "체크섬을 매번 다시 계산할 수 없다는 것을 알았을 때",
+          "thought": "복제본이 같은 상태인지 확인하려면 체크섬이 필요한데, 참조가 하나 바뀔 때마다 전체를 다시 계산하면 그 비용이 예산을 먹는다. 그래서 **바뀐 참조만 XOR 로 빼고 더한다** — `새 체크섬 = 옛 체크섬 XOR 해시(이름, 옛 값) XOR 해시(이름, 새 값)`.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "복제본 (replica)",
+            "what": "같은 저장소의 한 벌. **바이트 단위로 같은 디스크 이미지가 아니라** Git 프로토콜로 맞춰 둔 **느슨하게 결합된 Git 저장소**다."
+          },
+          {
+            "name": "프록시 (proxy)",
+            "what": "푸시를 받아 여러 파일서버로 **투명하게 복제**하고, 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보낸다."
+          },
+          {
+            "name": "체크섬 (checksum)",
+            "what": "복제본들이 같은 상태인지 판정하는 값. 참조가 바뀔 때마다 **XOR 로 증분 계산**한다."
+          },
+          {
+            "name": "참조 트랜잭션 (reference transaction)",
+            "what": "참조 여러 개를 전부 적용하거나 전부 되돌리는 단위. GitHub 이 **오픈소스 Git 에 기여**했다."
+          },
+          {
+            "name": "투표 (vote)",
+            "what": "쓰기 한 건에 대한 복제본들의 결과. **둘 이상이 같은 결과**여야 확정된다."
+          }
+        ],
+        "invariants": [
+          "모든 저장소와 gist 는 **최소 세 벌**로 존재한다.",
+          "쓰기는 **적어도 두 복제본이 같은 결과로** 적용해야 확정된다.",
+          "복제본은 동일한 디스크 이미지가 아니다 — 그래서 **같은지 여부를 스스로 증명해야 한다**(체크섬).",
+          "읽기는 **동기화된 복제본**으로만 간다.",
+          "트랜잭션의 결과는 복제본마다 **결정적**이어야 한다 — 아니면 투표가 갈린다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "푸시가 프록시에 도착한다",
+            "why": "클라이언트는 복제본이 몇 개인지, 어디 있는지 몰라야 한다."
+          },
+          {
+            "step": "프록시가 **세 복제본 모두에 동시에** 쓰기를 흘려보낸다",
+            "why": "순차로 보내면 왕복이 복제본 수만큼 곱해진다."
+          },
+          {
+            "step": "각 복제본이 **참조 트랜잭션**으로 락을 잡고 옛 값을 확인한 뒤 전부 적용하거나 전부 되돌린다",
+            "why": "부분 적용된 복제본이 생기면 그 뒤로는 무엇이 옳은지 아무도 모른다."
+          },
+          {
+            "step": "각 복제본이 체크섬을 **XOR 로 증분 계산**해 결과를 보고한다(투표)",
+            "why": "참조 하나 바뀔 때마다 전체를 다시 계산하면 예산을 넘는다."
+          },
+          {
+            "step": "**둘 이상이 같은 결과**면 확정한다. 갈리면 그 복제본은 뒤처진 것으로 두고 따로 따라잡게 한다",
+            "why": "셋을 다 기다리면 한 대의 고장이 전체를 멈춘다."
+          },
+          {
+            "step": "읽기(fetch·clone·웹 화면)는 **동기화된 복제본 중 가장 가까운 곳**으로 보낸다",
+            "why": "읽기가 쓰기의 약 100배라, 읽기를 흩는 것만으로 처리량이 거의 세 배가 된다."
+          },
+          {
+            "step": "부기(bookkeeping) 업데이트는 **합쳐서 사용자 업데이트 뒤로 미룬다**",
+            "why": "정리 작업이 앞에 서면 사람이 기다린다."
+          },
+          {
+            "step": "주기적으로 **세 벌이 안 되는 저장소**를 찾아, 살아남은 복제본 아무 데서나 새 복제본을 만든다",
+            "why": "복구가 특정 짝에 묶이지 않아야 클러스터 전체가 함께 회복한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "복제를 어느 계층에서 할 것인가",
+            "chosen": "**애플리케이션 계층**에서 한다. 복제본은 동일한 디스크 이미지가 아니라 **Git 프로토콜과 rsync 로 맞춰 둔 느슨하게 결합된 Git 저장소 셋**이다.",
+            "alternatives": [
+              "RAID·DRBD 로 디스크 계층에서 복제한다(기존 방식)",
+              "분산 파일시스템에 얹는다"
+            ],
+            "tradeoff": "세 벌이 바이트 단위로 같다는 보장이 사라져, **같은 상태인지를 스스로 증명해야 한다** — 체크섬과 투표가 여기서 나온다. 대신 Git 이 이미 잘하는 전송 방식을 그대로 쓰고, 복제본을 어디에 두든 상관없게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "question": "저장은 어디에 둘 것인가",
+            "chosen": "**로컬 SSD** 에 둔다.",
+            "alternatives": [
+              "분산 파일시스템에 저장한다"
+            ],
+            "tradeoff": "서버가 죽으면 그 안의 데이터도 함께 사라져 복제를 우리가 책임져야 한다. 그래도 **Git 은 지연에 아주 예민하다** — `git log` 한 번이 객체 수천 개를 차례로 읽으므로, 왕복이 그만큼 곱해지는 저장소는 쓸 수 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "question": "몇 벌을, 어떻게 고를 것인가",
+            "chosen": "**세 벌**을 큰 풀에서 **서로 독립적으로** 고른다.",
+            "alternatives": [
+              "서버를 쌍으로 묶고 네 벌을 둔다(기존 방식)"
+            ],
+            "tradeoff": "저장 비용이 원본의 세 배다. 대신 **함께 죽는 단위가 사라진다** — 예전에는 서버 두 대가 함께 죽으면 저장소 수십만 개가 같이 내려갔고, 같은 서버의 저장소들이 서로의 부하를 나눠 졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "question": "쓰기를 몇 표로 확정할 것인가",
+            "chosen": "세 복제본에 동시에 흘려보내되 **둘 이상이 같은 결과**로 적용하면 확정한다.",
+            "alternatives": [
+              "셋 모두의 성공을 기다린다",
+              "하나만 쓰고 나머지는 비동기로 따라오게 한다"
+            ],
+            "tradeoff": "확정된 뒤에도 **한 복제본은 뒤처져 있을 수 있다** — 실제로 하루 수십 건은 만장일치가 아닌 투표가 나온다(거의 언제나 1~2분 안에 따라잡는다). 그래도 셋을 다 기다리면 한 대의 고장이 전체 쓰기를 멈춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              },
+              {
+                "title": "Building resilience in Spokes",
+                "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-09-07",
+                "summary": "Spokes(옛 DGit)가 저장소 3,800만 개와 gist 3,600만 개를 최소 세 벌로 들고 있으며, 커널 데드락·불량 RAM·DNS 실패 같은 부분 고장을 어떻게 견디는지 설명한다. 하루에 수십 건은 만장일치가 아닌 투표가 나오고, 뒤처진 복제본은 대개 1~2분 안에 따라잡는다. 미달 복제 저장소는 주기적으로 찾아 살아남은 복제본 아무 데서나 새로 만든다."
+              }
+            ]
+          },
+          {
+            "question": "읽기를 어디로 보낼 것인가",
+            "chosen": "**동기화된 복제본 중 가장 가까운 곳**으로 보낸다.",
+            "alternatives": [
+              "쓰기를 받은 복제본에서만 읽는다",
+              "항상 정해진 한 곳에서 읽는다"
+            ],
+            "tradeoff": "어느 복제본이 최신인지 **빠르게 판정할 수 있어야** 성립한다. 대신 읽기가 쓰기의 약 100배라, 이 하나로 처리량이 거의 세 배가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              },
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "question": "대륙을 건너는 왕복을 어떻게 감당할 것인가",
+            "chosen": "왕복 수를 줄이는 대신 **겹쳐서 돌린다** — 한 복제본이 락을 잡는 동안 다른 복제본은 체크섬을 계산한다. 그리고 **참조 트랜잭션을 오픈소스 Git 에 기여**해 결과가 복제본마다 결정적이게 만들고, 체크섬은 **XOR 증분 계산**으로 바꿨다.",
+            "alternatives": [
+              "복제본을 가까이 모아 둔다(초기 Spokes)",
+              "비동기 복제로 바꾼다"
+            ],
+            "tradeoff": "프로토콜이 복잡해지고 Git 본체에까지 손을 대야 했다. 그래도 3단계 커밋의 **네 왕복 × 60~80ms** 는 수백 밀리초 예산을 그냥 넘긴다 — 순차로 두면 대륙 분산 자체가 성립하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "question": "사용자의 업데이트와 내부 정리 작업 중 무엇을 먼저 할 것인가",
+            "chosen": "부기 업데이트를 **합치고 뒤로 미룬다.** 사용자 업데이트가 앞선다.",
+            "alternatives": [
+              "도착한 순서대로 처리한다"
+            ],
+            "tradeoff": "정리 작업이 밀린다. 그래도 참조 업데이트 하나가 약 0.33초라, **master 푸시 하나가 만든 참조 100여 개**가 앞에 서면 그대로 30초가 된다 — 사람이 그 시간을 기다린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "question": "복제본이 모자랄 때 어디서 복사할 것인가",
+            "chosen": "주기적으로 미달 복제 저장소를 찾아, **살아남은 복제본 아무 데서나** 새 복제본을 만든다. 새 복제본은 어디에든 놓을 수 있다.",
+            "alternatives": [
+              "정해진 짝에서만 복사한다(기존 쌍 구조)"
+            ],
+            "tradeoff": "복구 중에는 클러스터 전체가 그 트래픽을 나눠 진다. 대신 회복이 **N 대 N** 으로 일어나 서버가 많을수록 빨라진다 — 짝에 묶여 있으면 한 대가 한 대를 통째로 복사할 때까지 기다려야 한다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              },
+              {
+                "title": "Building resilience in Spokes",
+                "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-09-07",
+                "summary": "Spokes(옛 DGit)가 저장소 3,800만 개와 gist 3,600만 개를 최소 세 벌로 들고 있으며, 커널 데드락·불량 RAM·DNS 실패 같은 부분 고장을 어떻게 견디는지 설명한다. 하루에 수십 건은 만장일치가 아닌 투표가 나오고, 뒤처진 복제본은 대개 1~2분 안에 따라잡는다. 미달 복제 저장소는 주기적으로 찾아 살아남은 복제본 아무 데서나 새로 만든다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Spokes(옛 DGit)",
+            "role": "저장소·gist 복제 전체를 맡는다. 이름이 Git 프로젝트와 헷갈려 DGit 에서 바뀌었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building resilience in Spokes",
+                "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-09-07",
+                "summary": "Spokes(옛 DGit)가 저장소 3,800만 개와 gist 3,600만 개를 최소 세 벌로 들고 있으며, 커널 데드락·불량 RAM·DNS 실패 같은 부분 고장을 어떻게 견디는지 설명한다. 하루에 수십 건은 만장일치가 아닌 투표가 나오고, 뒤처진 복제본은 대개 1~2분 안에 따라잡는다. 미달 복제 저장소는 주기적으로 찾아 살아남은 복제본 아무 데서나 새로 만든다."
+              }
+            ]
+          },
+          {
+            "tech": "Git 프로토콜 + rsync",
+            "role": "복제본 사이의 복제·복구·재분배. Git 이 이미 최적화해 둔 push·fetch 를 그대로 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "tech": "3단계 커밋 + 투표",
+            "role": "락 획득 → 옛 값 확인 → 전부 적용/되돌림. 둘 이상이 같은 결과여야 확정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              },
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "tech": "참조 트랜잭션(오픈소스 Git 기여)",
+            "role": "참조 여러 개를 원자적으로 적용해 트랜잭션 결과가 복제본마다 결정적이게 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "tech": "XOR 증분 체크섬",
+            "role": "`새 = 옛 XOR 해시(이름, 옛값) XOR 해시(이름, 새값)`. 참조 하나 바뀔 때마다 전체를 다시 계산하지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          },
+          {
+            "tech": "로컬 SSD",
+            "role": "저장소 본체. 지연에 예민한 Git 작업을 왕복 없이 처리한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Introducing DGit",
+                "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+                "publisher": "GitHub Blog · Patrick Reynolds",
+                "date": "2016-04-05",
+                "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+              }
+            ]
+          },
+          {
+            "tech": "복제본 배치 규칙(랙·데이터센터 단위)",
+            "role": "— 랙 단위 가용 영역을 언급하지만 **배치 규칙의 구체적인 형태는 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "blackbird",
+          "via": "같은 저장소를 다르게 쪼갠다",
+          "contract": "Spokes 는 **저장소 단위**로 세 벌을 흩고, 코드 검색은 **Git 블롭 ID 단위**로 샤딩해 중복을 없앤다 — 같은 데이터를 저장은 복제하고 검색은 합친다(이 대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "데이터 계층",
+          "via": "다른 종류의 상태",
+          "contract": "저장소 내용은 Spokes 가, 이슈·PR 같은 관계형 데이터는 데이터 계층이 맡는다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "unknown"
+        },
+        {
+          "to": "CI 실행",
+          "via": "체크아웃의 출처",
+          "contract": "Actions 러너가 받아 가는 코드가 결국 이 복제본들에서 나온다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Nonblocking Commit Protocols",
+            "authors": "Dale Skeen",
+            "year": "1981",
+            "venue": "ACM SIGMOD",
+            "url": "https://dl.acm.org/doi/10.1145/582318.582339",
+            "takeaway": "GitHub 이 복제본 갱신에 **3단계 커밋**을 쓴다고 밝힌 그 프로토콜의 출처다. 2단계 커밋은 조정자가 죽으면 참가자가 무한정 잠기는데, 한 단계를 더 두면 그 봉쇄를 피하는 대신 **왕복이 늘어난다** — 그 늘어난 왕복이 대륙을 건널 때 정확히 문제가 됐다. 회사가 이 논문을 인용하지는 않았다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "멀리 떨어진 복제본들이 '같은 상태'라는 데 동의하면서도 사람이 기다릴 만한 시간 안에 끝내기",
+            "why_hard": "**빛의 속도가 하한을 정한다.** 미국 대륙 왕복이 60~80ms 이고 합의 프로토콜이 네 왕복을 쓰면, 아무리 코드를 빠르게 짜도 240~320ms 는 네트워크가 가져간다. 사람이 견디는 예산은 수백 밀리초뿐이라 **알고리즘 최적화로 넘을 수 있는 벽이 아니다.**",
+            "current_best": "왕복 수를 줄이지 못하니 **복제본별 작업을 겹쳐서 돌린다** — 한쪽이 락을 잡는 동안 다른 쪽은 체크섬을 계산한다. 대가는 프로토콜의 복잡도이고, 그래도 참조 업데이트 하나에 약 0.33초가 남아 **푸시 한 번이 참조 100개를 만들면 30초**가 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Stretching Spokes",
+                "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+                "publisher": "GitHub Blog · Michael Haggerty",
+                "date": "2017-10-13",
+                "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "푸시 한 번이 세 복제본에 닿기까지",
+          "question": "복제본이 서로 다른 저장소인데 어떻게 같은 상태라고 확신하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"<b>푸시</b>\"] --> P[\"<b>프록시</b><br/>• 복제본 위치 감춤<br/>• 동시 전송\"]:::list\n  P --> R1[\"<b>복제본 1</b>\"]\n  P --> R2[\"<b>복제본 2</b>\"]\n  P --> R3[\"<b>복제본 3</b>\"]\n  R1 --> T[\"<b>참조 트랜잭션</b><br/>• 락 획득<br/>• 옛 값 확인<br/>• 전부 적용 또는 되돌림\"]:::list\n  R2 --> T\n  R3 --> T\n  T --> C[\"<b>XOR 증분 체크섬</b>\"]\n  C --> V{\"<b>둘 이상이 같은 결과인가</b>\"}\n  V -->|\"예\"| OK[\"<b>확정</b>\"]:::accent\n  V -->|\"아니오\"| LAG[\"뒤처진 복제본으로 표시<br/>따로 따라잡게 한다\"]:::quiet\n  LAG -->|\"보통 1~2분\"| C\n  READ[\"읽기 · fetch · clone\"] --> NEAR[\"동기화된 복제본 중<br/>가장 가까운 곳\"]\n  NEAR --> R2\n  BK[\"부기 업데이트\"] -.->|\"합쳐서 뒤로\"| P"
+        },
+        {
+          "title": "복제본 하나가 거치는 상태",
+          "question": "뒤처진 복제본과 사라진 복제본은 어떻게 다르게 다뤄지는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 동기화됨: 새 복제본 생성\n  동기화됨 --> 동기화됨: 투표에 참여하고 읽기를 받는다\n  동기화됨 --> 뒤처짐: 투표가 갈림 (하루 수십 건)\n  뒤처짐 --> 동기화됨: 따라잡음 (거의 언제나 1~2분)\n  note right of 뒤처짐\n    읽기를 받지 않는다\n    확정에는 나머지 둘로 충분하다\n  end note\n  동기화됨 --> 사라짐: 서버 고장 · 커널 데드락 · 불량 RAM\n  뒤처짐 --> 사라짐\n  사라짐 --> 미달복제: 세 벌이 안 됨\n  미달복제 --> 동기화됨: 살아남은 복제본 아무 데서나 새로 만든다\n  동기화됨 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 무엇이 함께 죽는가",
+          "question": "예전 구조에서 무엇이 같이 무너졌고, 지금은 무엇이 남았는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  OLD[\"<b>파일서버 쌍</b><br/>• RAID 두 벌<br/>• DRBD 핫스페어 두 벌\"]:::list --> M[\"수동 페일오버<br/>= 매번 잠깐 멈춤\"]\n  OLD --> IDLE[\"핫스페어가 논다\"]:::quiet\n  OLD --> TWO[\"두 대가 함께 죽으면<br/>저장소 수십만 개가 같이 내려간다\"]\n  OLD --> FATE[\"같은 서버의 저장소끼리<br/>운명을 공유한다\"]\n  TWO --> FIX[\"<b>세 벌을 큰 풀에서 독립적으로</b>\"]:::accent\n  FATE --> FIX\n  FIX --> COST[\"저장 비용 3배\"]:::quiet\n  DIST[\"복제본을 대륙 규모로\"] --> RT[\"3단계 커밋 네 왕복<br/>× 60~80ms\"]\n  RT --> OVER[\"예산 초과\"]\n  OVER --> PAR[\"복제본별 작업을 겹쳐 돌린다\"]\n  PAR --> LEFT[\"그래도 참조 하나에 0.33초<br/>참조 100개면 30초\"]\n  LEFT --> DEFER[\"부기 업데이트를 뒤로 미룬다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Introducing DGit",
+          "url": "https://github.blog/engineering/architecture-optimization/introducing-dgit/",
+          "publisher": "GitHub Blog · Patrick Reynolds",
+          "date": "2016-04-05",
+          "summary": "파일서버 쌍(RAID+DRBD, 수동 페일오버)을 버리고 저장소마다 복제본 셋을 큰 풀에서 독립적으로 고르는 구조로 옮긴 이야기. 디스크가 아니라 애플리케이션 계층에서 Git 프로토콜과 rsync 로 복제하고, 쓰기는 셋에 동시에 흘려보내되 둘 이상이 성공해야 확정한다. 읽기는 아무 복제본이나 받을 수 있어 처리량이 거의 세 배가 된다."
+        },
+        {
+          "title": "Building resilience in Spokes",
+          "url": "https://github.blog/engineering/infrastructure/building-resilience-in-spokes/",
+          "publisher": "GitHub Blog · Patrick Reynolds",
+          "date": "2016-09-07",
+          "summary": "Spokes(옛 DGit)가 저장소 3,800만 개와 gist 3,600만 개를 최소 세 벌로 들고 있으며, 커널 데드락·불량 RAM·DNS 실패 같은 부분 고장을 어떻게 견디는지 설명한다. 하루에 수십 건은 만장일치가 아닌 투표가 나오고, 뒤처진 복제본은 대개 1~2분 안에 따라잡는다. 미달 복제 저장소는 주기적으로 찾아 살아남은 복제본 아무 데서나 새로 만든다."
+        },
+        {
+          "title": "Stretching Spokes",
+          "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+          "publisher": "GitHub Blog · Michael Haggerty",
+          "date": "2017-10-13",
+          "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -990,6 +1546,13 @@
       "publisher": "The GitHub Blog",
       "date": "2026-07-31",
       "summary": "조기 종료를 **없애서** 케이스 폴딩을 3.1 → 45 GiB/s 로 만든 기록. Blackbird 의 현재 규모(저장소 1.8억·480TB)도 여기 있다. 저자 Alexander Neubeck · Greg Orzell."
+    },
+    {
+      "title": "Stretching Spokes",
+      "url": "https://github.blog/engineering/infrastructure/stretching-spokes/",
+      "publisher": "GitHub Blog · Michael Haggerty",
+      "date": "2017-10-13",
+      "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
     }
   ],
   "domain": "github.com"
