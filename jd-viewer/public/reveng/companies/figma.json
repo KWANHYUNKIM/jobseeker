@@ -190,8 +190,100 @@
     {
       "name": "렌더링·클라이언트 성능",
       "why": "디자인 툴이 브라우저에서 돈다. 동시 편집이 만든 변경이 결국 캔버스에 그려져야 하고, 그 속도가 곧 도구의 느낌이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "WebGL → WebGPU (타일 기반 렌더러)",
+          "solves": "무한 캔버스를 60fps 로 그린다. 마스킹·블러·디더링 그라디언트·블렌드 모드·중첩 레이어 불투명도까지 전부 GPU 에서, 안티에일리어싱을 켠 채로.",
+          "limits": "WebGL 은 전역 상태에 자원을 묶는 방식이라 버그가 나기 쉽고, **컴퓨트 셰이더가 없어 CPU 일을 GPU 로 넘길 수 없었다.** 픽셀 읽기도 동기뿐이었다. WebGPU 로 옮겨 메웠지만 두 백엔드를 한동안 같이 들고 가야 한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a professional design tool on the web",
+              "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+              "publisher": "Figma Blog",
+              "date": "2015-12-07",
+              "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+            },
+            {
+              "title": "Figma Rendering: Powered by WebGPU",
+              "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+              "publisher": "Figma Blog",
+              "date": "2025-09-18",
+              "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+            }
+          ]
+        },
+        {
+          "tech": "C++ → WebAssembly (Emscripten)",
+          "solves": "메모리 배치를 직접 정한다. JavaScript 의 64비트 double 대신 32비트 float 이나 바이트를 쓰고, **GC 정지가 없는 예측 가능한 성능**을 얻는다. 네이티브 대비 2배 이내.",
+          "limits": "32비트 Chrome 에서 ASLR 단편화로 큰 타입배열(256MB) 할당이 실패했다 — 이미지·지오메트리를 바깥에 두는 `IndirectBuffer` 로 우회했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a professional design tool on the web",
+              "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+              "publisher": "Figma Blog",
+              "date": "2015-12-07",
+              "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+            },
+            {
+              "title": "Figma is powered by WebAssembly",
+              "url": "https://www.figma.com/blog/webassembly-cut-figmas-load-time-by-3x/",
+              "publisher": "Figma Blog",
+              "date": "2017-11-01",
+              "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
+            }
+          ]
+        },
+        {
+          "tech": "자체 텍스트 레이아웃 엔진",
+          "solves": "브라우저·플랫폼마다 다르게 나오는 텍스트 배치를 하나로 고정한다. 디자인 툴에서 텍스트가 기기마다 다르면 그건 결과물이 다른 것이다.",
+          "limits": "**브라우저가 글리프 외곽선과 커닝 테이블을 열어 주지 않는다** — 2015년 글이 '가장 큰 고통'이라 부른 자리다. 폰트를 직접 파싱해 메우고, 그 대가로 브라우저가 이미 하는 일을 통째로 다시 만들었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building a professional design tool on the web",
+              "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+              "publisher": "Figma Blog",
+              "date": "2015-12-07",
+              "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+            }
+          ]
+        },
+        {
+          "tech": "naga (GLSL → WGSL 자동 변환)",
+          "solves": "셰이더를 두 벌 관리하지 않는다. 기존 WebGL 1 GLSL 을 파싱해 새 GLSL 로 올린 뒤 WGSL 로 옮긴다.",
+          "limits": "초기 엔지니어링 비용이 크고 외부 툴체인에 묶인다. Emscripten 의 WebGPU 바인딩이 폐기되어 `emdawnwebgpu` 로 다시 옮기는 중이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Figma Rendering: Powered by WebGPU",
+              "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+              "publisher": "Figma Blog",
+              "date": "2025-09-18",
+              "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+            }
+          ]
+        },
+        {
+          "tech": "동적 폴백 + 기기 블록리스트",
+          "solves": "WebGPU 로 세션을 시작하고, 실패하면 **세션 도중에도** WebGL 로 되돌아간다. 폴백률이 높은 GPU 는 아예 블록리스트에 올린다.",
+          "limits": "되돌아가는 순간 렌더링이 한 번 튄다. 그리고 블록리스트는 통계라 새로 나온 기기는 한동안 당하고 나서야 목록에 오른다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Figma Rendering: Powered by WebGPU",
+              "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+              "publisher": "Figma Blog",
+              "date": "2025-09-18",
+              "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "webgpu-renderer"
+      ]
     },
     {
       "name": "데이터 저장·확장",
@@ -1211,6 +1303,542 @@
           "summary": "변경 반영형 캐시를 무효화형으로 갈아엎어 샤딩된 DB 위에서 100배를 노린 재설계."
         }
       ]
+    },
+    {
+      "key": "webgpu-renderer",
+      "name": "캔버스 렌더링 — WebGL 에서 WebGPU 로",
+      "domain": "렌더링·클라이언트 성능",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "이 회사의 제품은 **브라우저 탭 안에서 도는 디자인 툴**이다. 설치형 경쟁자와 같은 부드러움이 나오지 않으면 제품이 성립하지 않는다. 그런데 브라우저가 주는 것으로는 그게 안 됐다 — HTML·SVG 는 짐이 많아 느리고, Canvas2D 는 즉시 모드라 매 프레임 지오메트리를 다시 올려야 해서 **낭비가 구조적이었다.** 그래서 2015년에 WebGL 위에 렌더러를 직접 올렸고, 10년 뒤 그 WebGL 이 한계에 닿아 WebGPU 로 옮겼다.",
+        "metrics": [
+          {
+            "label": "네이티브 대비 성능",
+            "value": "2배 이내 (2015, asm.js)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "WebAssembly 전환 효과",
+            "value": "로드 시간 3배 단축",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma is powered by WebAssembly",
+                "url": "https://www.figma.com/blog/webassembly-cut-figmas-load-time-by-3x/",
+                "publisher": "Figma Blog",
+                "date": "2017-11-01",
+                "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
+              }
+            ]
+          },
+          {
+            "label": "WebGPU 전환 결과",
+            "value": "일부 기기에서 개선, 나머지는 중립. **회귀는 없었다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "label": "32비트 Chrome 할당 한계",
+            "value": "256MB 타입배열 실패 (ASLR 단편화)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "label": "테스트 범위",
+            "value": "Windows · Mac · ChromeOS 자동 성능 비교",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "2015년, 무엇으로 그릴지 정할 때",
+          "thought": "브라우저가 주는 텍스트를 쓰면 **브라우저마다, 같은 브라우저라도 플랫폼마다 배치가 달라진다.** 일반 웹사이트라면 넘어갈 일이지만 디자인 툴에서는 결과물 자체가 달라진다는 뜻이다. 그래서 텍스트를 남에게 맡길 수 없었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "언어를 고를 때",
+          "thought": "JavaScript 의 GC 정지는 프레임을 떨어뜨린다. 그리고 숫자가 전부 64비트 double 인 것도 문제였다 — 좌표 수백만 개를 다루는 데 필요한 건 32비트 float 이다. **성능이 빠른 것보다 예측 가능한 것이 중요했다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "WebGPU 로 옮길지 정할 때",
+          "thought": "당장의 속도가 이유가 아니었다. 측정해 보니 어떤 기기는 좋아지고 어떤 기기는 그대로였다. 값은 **지금까지 못 하던 것이 열린다**는 쪽에 있었다 — 컴퓨트 셰이더로 CPU 일을 GPU 로 넘기는 길, 그리고 동기 오류 검사 때문에 성능이 깎이지 않는 것.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "안전하게 내보낼 방법을 세 번 고쳐 잡을 때",
+          "thought": "로드할 때 호환성을 동기로 검사하면 수백 ms 가 붙는다. 그렇다고 세션 시작 뒤에 검사하면 **세션 도중에 장치를 잃는 경우**를 못 잡는다. 어느 시점에 한 번 판정하는 방식으로는 안 되고, 언제든 되돌아갈 수 있게 만드는 수밖에 없다는 결론이었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "셰이더를 두 벌 만들지 말지 정할 때",
+          "thought": "10년치 GLSL 셰이더를 WGSL 로 손으로 옮기면, 그 뒤로는 고칠 때마다 두 군데를 고쳐야 한다. **한 번의 큰 비용과 영원한 작은 비용 중 앞의 것**을 골랐다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "타일",
+            "what": "화면을 나눈 그리기 단위. 렌더러가 '고도로 최적화된 타일 기반 엔진'이라는 것까지만 공개돼 있고, 타일 크기·분할 규칙은 밝히지 않았다."
+          },
+          {
+            "name": "드로우 호출",
+            "what": "WebGPU 경로에서는 `context->draw(vertexBuffer, framebuffer, {texture}, material, …)` 처럼 필요한 것을 전부 인자로 받는다. 전역 상태에 미리 묶어 두지 않는다."
+          },
+          {
+            "name": "셰이더",
+            "what": "원본은 WebGL 1 GLSL 한 벌. 빌드가 새 GLSL 로 올린 뒤 naga 로 WGSL 을 만든다."
+          },
+          {
+            "name": "렌더링 백엔드",
+            "what": "WebGPU 와 WebGL 둘. 세션은 앞의 것으로 시작하지만 언제든 뒤의 것으로 내려앉을 수 있다."
+          }
+        ],
+        "invariants": [
+          "**셰이더의 원본은 한 벌뿐이다.** 두 백엔드가 있어도 사람이 고치는 곳은 하나다 — 두 벌이 되는 순간 둘이 어긋나기 시작한다.",
+          "세션은 **어느 시점에든** WebGPU 에서 WebGL 로 내려앉을 수 있어야 한다. 시작할 때 한 번 판정하는 것으로 끝내지 않는다.",
+          "브라우저와 네이티브 앱이 같은 C++ 을 쓴다. 브라우저는 Emscripten 으로, 네이티브(x64·arm64)는 Dawn 으로 간다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "세션이 WebGPU 어댑터·디바이스를 요청한다",
+            "why": "얻을 수 있으면 이쪽이 기본이다"
+          },
+          {
+            "step": "비동기 호환성 테스트를 세션과 나란히 돌린다",
+            "why": "로드 시 동기 검사는 수백 ms 를 더한다"
+          },
+          {
+            "step": "C++ 렌더러가 타일 단위로 그릴 것을 정한다",
+            "why": "무한 캔버스에서 보이는 데만 일을 쓴다"
+          },
+          {
+            "step": "드로우 호출에 필요한 자원을 전부 인자로 넘긴다",
+            "why": "전역 바인딩을 잊어 생기는 버그를 구조적으로 없앤다"
+          },
+          {
+            "step": "유니폼 데이터를 모았다가 `encodeDraw` → `submit` 으로 한 번에 올린다",
+            "why": "유니폼마다 올리면 할당 비용으로 성능이 되레 깎인다"
+          },
+          {
+            "step": "Dawn 이 WebGPU 호출을 플랫폼 그래픽 API 로 옮긴다",
+            "why": "브라우저와 네이티브가 같은 경로를 쓴다"
+          },
+          {
+            "step": "테스트가 실패하거나 세션 도중 WebGPU 오류가 나면 WebGL 로 내려앉는다",
+            "why": "장치 손실은 시작할 때만 일어나지 않는다"
+          },
+          {
+            "step": "폴백률을 GPU 종류별로 집계해 높은 기기를 블록리스트에 올린다",
+            "why": "되돌아가는 순간의 렌더링 튐을 아예 안 겪게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "브라우저의 무엇으로 캔버스를 그릴 것인가",
+            "chosen": "WebGL 위에 렌더러를 직접 올린다",
+            "alternatives": [
+              "HTML·SVG",
+              "Canvas2D"
+            ],
+            "tradeoff": "**DOM·컴포지터·텍스트 레이아웃 엔진을 전부 직접 만들어야 했다** — '브라우저 안에 브라우저를 만든 셈'이다. HTML·SVG 는 짐이 많아 2D 캔버스보다도 느리고, Canvas2D 는 즉시 모드라 매 프레임 지오메트리를 다시 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "무슨 언어로 렌더러를 쓸 것인가",
+            "chosen": "C++ 을 Emscripten 으로 컴파일 (asm.js → WebAssembly)",
+            "alternatives": [
+              "JavaScript 로 직접 작성"
+            ],
+            "tradeoff": "빌드가 복잡해지고 브라우저의 메모리 제약을 정면으로 맞는다 — 32비트 Chrome 에서 256MB 타입배열 할당이 ASLR 단편화로 실패해 `IndirectBuffer` 우회를 만들어야 했다. 대신 메모리 배치를 직접 정하고 GC 정지를 없앴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "question": "10년 된 WebGL 렌더러를 옮길 것인가",
+            "chosen": "WebGPU 로 옮긴다",
+            "alternatives": [
+              "WebGL 에 머문다"
+            ],
+            "tradeoff": "두 백엔드를 한동안 같이 유지해야 한다. 속도 자체는 **일부 기기만 좋아지고 나머지는 중립**이었다 — 값은 지금까지 못 하던 것(컴퓨트 셰이더로 CPU 일을 GPU 로 넘기기, 비동기 픽셀 읽기, 성능을 깎지 않는 오류 검사)이 열린다는 쪽에 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "자원을 드로우 호출에 어떻게 전달할 것인가",
+            "chosen": "명시적 인자 — `context->draw(vertexBuffer, framebuffer, {texture}, material, …)`",
+            "alternatives": [
+              "WebGL 식으로 전역 바인딩 포인트에 묶어 두기"
+            ],
+            "tradeoff": "호출부를 전부 뜯어고쳐야 했고 WebGL 경로는 여전히 옛 방식이다. 전역 상태 방식은 바인딩 갱신을 잊는 버그가 구조적으로 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "셰이더를 두 벌 관리할 것인가",
+            "chosen": "GLSL 원본 한 벌을 두고 빌드가 WGSL 을 만든다 (자체 처리기 + naga)",
+            "alternatives": [
+              "WGSL 셰이더를 따로 작성해 둘 다 유지"
+            ],
+            "tradeoff": "초기 엔지니어링 비용이 크고 외부 툴체인에 묶인다 — 실제로 Emscripten 의 WebGPU 바인딩이 폐기되어 `emdawnwebgpu` 로 다시 옮기는 중이다. 대신 사람이 고치는 곳은 계속 하나로 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "유니폼 데이터를 어떻게 올릴 것인가",
+            "chosen": "모았다가 한 번에 — `encodeDraw` 여러 번 뒤 `submit` 한 번",
+            "alternatives": [
+              "유니폼마다 그때그때 올리기 (WebGL 경로의 방식)"
+            ],
+            "tradeoff": "코드가 복잡해진다. 소박하게 만들면 할당 비용 때문에 **WebGPU 로 옮기고도 성능이 되레 나빠졌을** 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "WebGPU 를 쓸 수 있는지 언제 판정할 것인가",
+            "chosen": "판정하지 않는다 — WebGPU 로 시작하고 **세션 도중 언제든** WebGL 로 내려앉는다",
+            "alternatives": [
+              "로드 시 동기 호환성 테스트",
+              "세션 시작 후 한 번 비동기 테스트"
+            ],
+            "tradeoff": "되돌아가는 순간 렌더링이 한 번 튄다. 앞의 두 안은 각각 수백 ms 지연과 '세션 도중 장치 손실을 못 잡음'으로 실패했다 — 시점을 하나 고르는 방식 자체가 답이 아니었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "question": "폴백이 잦은 기기를 어떻게 할 것인가",
+            "chosen": "GPU 종류별 폴백률을 재서 블록리스트에 올린다",
+            "alternatives": [
+              "모든 기기에서 일단 WebGPU 로 시도"
+            ],
+            "tradeoff": "그 기기는 WebGPU 의 이득을 영영 못 받는다. 그리고 판정이 통계라 **새로 나온 기기는 한동안 당하고 나서야** 목록에 오른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "C++",
+            "role": "렌더러 본체. 브라우저와 네이티브 앱이 같은 코드를 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              },
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Emscripten",
+            "role": "C++ 을 WebAssembly 로. 브라우저 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              },
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Dawn",
+            "role": "WebGPU 호출을 플랫폼 그래픽 API 로 옮긴다. 브라우저·네이티브 양쪽에서",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "naga",
+            "role": "GLSL 을 WGSL 로 변환. 셰이더 원본을 한 벌로 유지하는 수단",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          },
+          {
+            "tech": "WebGL",
+            "role": "폴백 백엔드. 2015년부터 10년간 주 경로였다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              },
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "multiplayer-doc",
+          "via": "같은 클라이언트 안의 문서 트리",
+          "contract": "멀티플레이어가 문서 상태를 고치면 렌더러가 그 결과를 그린다. 렌더러는 누가 왜 고쳤는지 모른다 — 지금의 트리만 본다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "livegraph-subscription",
+          "via": "이어지지 않는다",
+          "contract": "LiveGraph 가 나르는 것(댓글·팀·권한)은 캔버스 밖이라 이 렌더러를 타지 않는다. React 가 보통의 DOM 으로 그린다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "브라우저 GPU 스택 (WebGPU · WebGL)",
+          "via": "Dawn 을 거친 그래픽 API 호출",
+          "contract": "디바이스를 얻지 못하거나 도중에 잃으면 렌더러가 백엔드를 바꾼다. 그 실패를 제품이 감춘다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "WebGPU Specification",
+            "authors": "W3C GPU for the Web Working Group",
+            "year": "2025",
+            "venue": "W3C Candidate Recommendation",
+            "url": "https://www.w3.org/TR/webgpu/",
+            "takeaway": "10년 된 WebGL 렌더러가 옮겨 간 목적지. Figma 가 가져다 쓴 것은 속도가 아니라 **WebGL 에 없던 것들**이다 — 컴퓨트 셰이더, 비동기 픽셀 읽기, 성능을 깎지 않는 오류 검사, 그리고 전역 상태가 아닌 명시적 자원 전달.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "Bringing the Web up to Speed with WebAssembly",
+            "authors": "Andreas Haas 외",
+            "year": "2017",
+            "venue": "PLDI 2017",
+            "url": "https://dl.acm.org/doi/10.1145/3062341.3062363",
+            "takeaway": "Figma 가 렌더러를 브라우저에서 돌릴 수 있게 한 토대. 이 회사가 여기서 가져간 값은 속도보다 **예측 가능성**이다 — GC 정지가 없고 메모리 배치를 직접 정할 수 있다는 것. **Figma 는 WebAssembly 를 쓴다고 밝혔을 뿐 이 논문을 언급한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Emscripten: an LLVM-to-JavaScript compiler",
+            "authors": "Alon Zakai",
+            "year": "2011",
+            "venue": "OOPSLA 2011 (companion)",
+            "url": "https://dl.acm.org/doi/10.1145/2048147.2048224",
+            "takeaway": "Figma 가 이름을 대고 쓰는 도구의 원 논문. 2015년에는 이것으로 asm.js 를 만들어 네이티브 대비 2배 이내를 얻었다. **도구는 Figma 가 직접 밝혔지만 이 논문을 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "브라우저 안에서 글리프 외곽선과 커닝 테이블에 닿을 수 없다",
+            "why_hard": "**웹 표준이 텍스트를 '그려 주는 것'으로만 노출하고 '구성 요소로' 열지 않기 때문이다.** 폰트 파일의 내부는 브라우저가 쥐고 있고, 앱은 결과만 받는다. 그래서 같은 텍스트가 브라우저마다·플랫폼마다 다르게 배치되는데, 일반 웹사이트라면 넘어갈 차이가 디자인 툴에서는 **결과물이 달라지는 것**이 된다.",
+            "current_best": "폰트를 직접 파싱해 텍스트 레이아웃 엔진을 스스로 만든다. 대가는 브라우저가 이미 하는 일을 통째로 다시 만드는 것, 그리고 폰트 포맷이 바뀔 때마다 직접 따라가야 한다는 것이다. Figma 는 2015년 글에서 이것을 **가장 큰 고통**이라고 불렀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building a professional design tool on the web",
+                "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+                "publisher": "Figma Blog",
+                "date": "2015-12-07",
+                "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+              }
+            ]
+          },
+          {
+            "problem": "GPU 디바이스를 잃었는데 새로 얻을 수도 없는 상태",
+            "why_hard": "앱 바깥 — 드라이버와 OS 계층 — 에서 벌어지는 일이라 **애플리케이션이 손쓸 수 있는 자리가 없다.** 일부 Windows 기기에서 `requestDevice`·`requestAdapter` 가 실패한 뒤 회복 경로가 존재하지 않는다. 재시도가 답이 아닌 종류의 실패다.",
+            "current_best": "**고치지 않고 피한다.** 세션 도중에도 WebGL 로 내려앉을 수 있게 만들어 두고, 폴백률이 높은 GPU 는 블록리스트에 올려 아예 시도하지 않는다. 대가는 그 기기가 WebGPU 이득을 영영 못 받는 것, 그리고 판정이 통계라 새 기기는 한동안 당한 뒤에야 목록에 오른다는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Figma Rendering: Powered by WebGPU",
+                "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+                "publisher": "Figma Blog",
+                "date": "2025-09-18",
+                "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 벌의 셰이더가 두 백엔드로 가는 길",
+          "question": "두 그래픽 API 를 지원하면서 셰이더를 두 벌 만들지 않으려면?",
+          "kind": "flow",
+          "code": "flowchart LR\n  G[\"WebGL 1 GLSL 원본<br/>사람이 고치는 유일한 곳\"] --> PP[\"자체 셰이더 처리기<br/>새 GLSL 로 올린다\"]\n  PP --> NG[\"naga\"]\n  NG --> W[\"WGSL\"]\n  G --> WGL[\"WebGL 백엔드\"]\n  W --> WGP[\"WebGPU 백엔드\"]\n  WGP --> DAWN[\"Dawn\"]\n  DAWN --> NAT[\"플랫폼 그래픽 API\"]\n  WGL --> NAT"
+        },
+        {
+          "title": "브라우저와 네이티브가 같은 C++ 을 쓰는 방식",
+          "question": "탭 안의 앱과 설치형 앱이 어떻게 한 렌더러를 공유하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  CPP[\"C++ 렌더러 (타일 기반)\"] --> B{\"어디서 도는가\"}\n  B -->|\"브라우저\"| EM[\"Emscripten → WebAssembly\"]\n  B -->|\"네이티브 x64 · arm64\"| NA[\"직접 컴파일\"]\n  EM --> DW[\"Dawn\"]\n  NA --> DW\n  DW --> API[\"Metal · D3D12 · Vulkan\"]\n  CPP --> MEM[\"메모리 배치를 직접 정한다<br/>32비트 float · GC 정지 없음\"]"
+        },
+        {
+          "title": "WebGPU 를 못 쓰게 될 때",
+          "question": "호환성 판정을 언제 하느냐로 두 번 실패한 뒤 무엇을 했나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  S[\"세션 시작 — WebGPU 로\"] --> T{\"호환성 확인 시점\"}\n  T -->|\"1차: 로드 시 동기 검사\"| F1[\"실패 — 비동기 읽기 때문에<br/>수백 ms 가 붙는다\"]\n  T -->|\"2차: 세션 시작 후 비동기\"| F2[\"부족 — 세션 도중의<br/>디바이스 손실을 못 잡는다\"]\n  T -->|\"3차: 판정하지 않는다\"| OK[\"언제든 WebGL 로 내려앉는다\"]\n  OK --> E{\"도중에 무슨 일이\"}\n  E -->|\"requestDevice·requestAdapter 실패\"| FB[\"WebGL 로 폴백<br/>렌더링이 한 번 튄다\"]\n  E -->|\"디바이스를 잃고 다시 못 얻음\"| BL[\"GPU 종류별 폴백률 집계<br/>→ 블록리스트\"]\n  BL --> NEVER[\"그 기기는 WebGPU 를 시도하지 않는다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Building a professional design tool on the web",
+          "url": "https://www.figma.com/blog/building-a-professional-design-tool-on-the-web/",
+          "publisher": "Figma Blog",
+          "date": "2015-12-07",
+          "summary": "브라우저가 주는 렌더링·텍스트를 왜 안 쓰고 직접 만들었는지."
+        },
+        {
+          "title": "Figma Rendering: Powered by WebGPU",
+          "url": "https://www.figma.com/blog/figma-rendering-powered-by-webgpu/",
+          "publisher": "Figma Blog",
+          "date": "2025-09-18",
+          "summary": "10년 된 WebGL 렌더러를 WebGPU 로 옮기며 셰이더 한 벌을 유지하고 언제든 되돌아가게 만든 과정."
+        },
+        {
+          "title": "Figma is powered by WebAssembly",
+          "url": "https://www.figma.com/blog/webassembly-cut-figmas-load-time-by-3x/",
+          "publisher": "Figma Blog",
+          "date": "2017-11-01",
+          "summary": "asm.js 에서 WebAssembly 로 옮겨 로드 시간을 줄인 기록."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1218,7 +1846,9 @@
     "미국 밖 사용자의 지연을 위해 멀티플레이어 인스턴스를 실제로 어떻게 분산했는지.",
     "LiveGraph 캐시의 실제 적중률과 무효화 빈도 — 2024년 글은 '무효화는 드물다'고만 하고 수치를 주지 않는다.",
     "invalidator 의 자동 리샤딩, Postgres 밖 출처의 쿼리, 서버측 권한 계산의 1급 지원 — 2024년 글이 남은 과제로 든 것들.",
-    "렌더링·클라이언트 성능, 데이터 저장·확장 두 도메인은 아직 손대지 않았다."
+    "**타일 기반 렌더러의 내부** — 타일 크기·분할 규칙, 마스킹·블러·블렌드 모드를 GPU 에서 어떻게 구현했는지. '고도로 최적화된 타일 기반 엔진'이라는 표현까지만 공개돼 있다.",
+    "WebGPU 전환의 구체적 수치 — 어떤 기기에서 얼마나 좋아졌는지는 '일부 개선·나머지 중립'까지만 밝힌다.",
+    "데이터 저장·확장 도메인은 아직 손대지 않았다."
   ],
   "sources": [
     {

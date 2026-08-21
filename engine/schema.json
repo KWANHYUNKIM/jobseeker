@@ -18,6 +18,7 @@
     "country": "KR|US|CN|JP|EU|기타",
     "category": "핀테크|커머스|소셜|메시징|스트리밍|검색|모빌리티|게임|SaaS|기타",
     "status": "in_progress|done",
+    "hold_reason": "string (선택) — in_progress 인 채로 **더 파지 않기로 한** 이유. 공개 자료를 두 번 찾아 두 번 다 없었을 때처럼, 다음 사이클이 같은 벽을 다시 들이받지 않게 여기 남긴다. 이 값이 있으면 validate.py --gaps 가 확장 대상에서 뺀다. 새 단서(회사의 새 글·새 발표)가 생기면 지우고 다시 판다.",
     "updated_at": "YYYY-MM-DD",
     "business_model": "string — 무엇을 팔아 돈을 버는가. 수익원이 여럿이면 비중 순.",
     "products": ["string — 사용자가 이름을 아는 단위"],

@@ -63,6 +63,8 @@ class Report:
         self.warnings: list[str] = []
         # (우선순위, 종류, 위치, 무엇이 모자란가)
         self.gaps: list[tuple[int, str, str, str]] = []
+        # 진행 중인 회사의 아직 안 판 도메인. 사다리에서 보강보다 위라 따로 담는다.
+        self.wip: list[tuple[str, str]] = []
 
     def err(self, where: str, msg: str) -> None:
         self.errors.append(f"{where}: {msg}")
@@ -309,6 +311,13 @@ def check_company(data: dict, r: Report) -> None:
                        f"feature key 처럼 생겼는데 그런 기능이 없다: {to!r}")
 
 
+    # 진행 중인 회사에서 아직 기능이 하나도 없는 도메인 — PROMPT.md 2단계 사다리의
+    # 2순위다. 회사를 갈아타지 않는다는 규칙이 여기서 나온다.
+    if data.get("status") == "in_progress" and not data.get("hold_reason"):
+        for dom in data.get("domains") or []:
+            if not [f for f in (data.get("features") or []) if f.get("domain") == dom.get("name")]:
+                r.wip.append((slug, str(dom.get("name"))))
+
     _check_plain_text(data, w, r)
 
 
@@ -368,7 +377,26 @@ def _print_gaps(r: Report) -> int:
         print("  채울 게 없다. 없는 일을 만들지 말고 QUEUE 를 보거나 비교 문서를 쓴다.")
         return 1 if r.errors else 0
 
+    # 사다리(PROMPT.md 2단계)는 보강보다 '진행 중인 회사 확장'을 위에 둔다.
+    # 루프가 맨 윗줄만 보고 고르더라도 규칙을 어기지 않도록 여기서 먼저 말한다.
     ordered = sorted(r.gaps, key=lambda g: (g[0], g[2]))
+
+    # 사다리(PROMPT.md 2단계) 그대로 이번 대상을 정해 준다. 루프가 판단하지 않아도
+    # 되게 하는 것이 이 출력의 목적이다 — 판단이 끼면 매번 쉬운 것만 고르게 된다.
+    if r.wip:
+        slug, dom = r.wip[0]
+        print("### 이번 사이클의 대상 — 확장 (사다리 2순위)")
+        print(f"  [확장] {slug} — 도메인 '{dom}' 에 기능이 없다")
+        print("  할 일: 이 도메인의 기능 하나를 끝까지 판다 (PROMPT.md 4단계)")
+        if len(r.wip) > 1:
+            print()
+            print(f"  진행 중인 빈 도메인 {len(r.wip)}개 중 첫 번째다:")
+            for s2, d2 in r.wip[1:]:
+                print(f"    · {s2} — '{d2}'")
+        print()
+        print(f"  보강 후보 {len(ordered)}건은 **이 회사가 done 이 된 뒤에** 본다 —")
+        print("  회사를 갈아타지 않는다는 규칙이 보강보다 위다.")
+        return 1 if r.errors else 0
 
     # 종류별 집계를 먼저 준다. 루프는 매 사이클 이 출력을 읽으므로 전량을 쏟으면
     # 그것만으로 맥락이 찬다. 고를 것은 어차피 하나다.
