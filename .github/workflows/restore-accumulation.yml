@@ -1,0 +1,83 @@
+name: Restore accumulation
+
+# 고정 누적 폴더의 jobs.json 을 되살려 급감 가드를 정상적으로 통과시킨다.
+#
+# 기본은 **실측만** 한다(dry-run). 무엇이 얼마나 바뀌는지 먼저 보고,
+# 숫자가 납득되면 apply=true 로 다시 눌러 실제로 쓴다.
+# 쓰기 전에 기존 jobs.json 을 jobs.json.bak-<타임스탬프> 로 백업한다.
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "실제로 쓴다 (false면 실측만)"
+        required: false
+        default: false
+        type: boolean
+      refresh:
+        description: "복원 뒤 refresh-data.sh 까지 돌린다 (apply=true 일 때만)"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: restore-accumulation
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    name: 누적 복원
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 30
+    steps:
+      - name: 복원 (기본 실측)
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO"
+
+          # 서버 클론을 먼저 최신으로 — 스크립트가 이번 커밋에 들어 있다.
+          git fetch --prune origin
+          git merge --ff-only origin/main
+
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+
+          if [ "${{ inputs.apply }}" = "true" ]; then
+            "$PY" catch_capture/pipeline/restore_accumulation.py --apply
+          else
+            "$PY" catch_capture/pipeline/restore_accumulation.py
+          fi
+
+      - name: 집계와 갱신
+        if: ${{ inputs.apply == true && inputs.refresh == true }}
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO/catch_capture"
+
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+
+          # 복원한 jobs.json 으로 다시 집계한다.
+          "$PY" -m pipeline.aggregate 개발자
+
+          cd "$REPO"
+          # 가드는 그대로 둔다 — 복원이 제대로 됐으면 저절로 통과해야 하고,
+          # 통과 못 하면 그건 복원이 덜 된 것이라 덮어쓰면 안 된다.
+          ./jd-viewer/bin/refresh-data.sh
+
+      - name: 결과 확인
+        if: always()
+        run: |
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO" || exit 0
+          for u in reposts.json all_jobs_enriched.json job_calendar.json; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "http://127.0.0.1:8080/$u" 2>/dev/null)
+            printf '%-28s HTTP %s\n' "$u" "$code"
+          done
+          echo ""
+          find jd-viewer/public -maxdepth 1 -name '*.json' -exec stat -f '%Sm  %N' -t '%Y-%m-%d %H:%M' {} \; 2>/dev/null | sort | tail -8
