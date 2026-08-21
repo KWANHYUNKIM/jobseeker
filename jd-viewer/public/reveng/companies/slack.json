@@ -1,0 +1,633 @@
+{
+  "slug": "slack",
+  "name": "Slack",
+  "name_en": "Slack",
+  "country": "US",
+  "category": "메시징",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "메시지 하나가 조직 하나의 일이 되는 회사",
+  "business_model": "조직 단위 좌석 구독으로 판다. 2021년 Salesforce 에 인수되어 **매출이 따로 공시되지 않는다** — 3자 집계로는 2025년 약 23억 달러, 일 활성 사용자 약 4,720만 명, 유료 조직 20만 곳 이상, 포춘 100 중 77곳이 쓴다.\n\n**Discord 와 같은 실시간 메시징인데 문제의 모양이 다르다.** Discord 는 사람이 몰리는 것이 문제였고(길드 하나에 수십만 명), Slack 은 **조직 하나에 워크스페이스가 수천 개**인 것이 문제다. 그리고 기업용이라 **놓친 메시지 하나가 업무 사고**가 되는데, 동시에 **메시지 게시·푸시 알림·URL 펼치기·일정 알림·과금 계산이 전부 같은 비동기 큐**를 지난다 — 그 큐가 멈추면 제품의 거의 모든 것이 멈춘다.",
+  "products": [
+    "채널 메시징",
+    "허들·화상",
+    "워크플로 빌더",
+    "Slack Connect (조직 간)",
+    "Enterprise Grid"
+  ],
+  "domain_map": {
+    "title": "Slack 도메인 지도",
+    "question": "메시지 하나를 보내면 무엇이 동기로 처리되고 무엇이 뒤로 밀리는가?",
+    "code": "flowchart TD\n  U[\"사용자가 메시지를 보낸다\"] --> W[\"웹앱\"]\n  W -->|\"동기 — 즉시 응답\"| DB[(\"저장 · 샤딩<br/>MySQL + Vitess\")]\n  W -->|\"비동기 — 뒤로 민다\"| JQ[\"잡 큐<br/>게시 · 알림 · URL 펼치기 · 과금\"]\n  DB --> RT[\"실시간 전달<br/>Channel · Gateway · Presence 서버\"]\n  JQ --> RT\n  RT --> C[\"연결된 클라이언트\"]\n  ALL[\"가용성 · 장애 격리<br/>셀 · 사일로\"] -.->|\"위 전부를 감싼다\"| W\n  ALL -.-> DB\n  ALL -.-> JQ\n  ALL -.-> RT\n  subgraph note[\"조직 하나에 워크스페이스 수천 개\"]\n    RT\n  end"
+  },
+  "revenue_streams": [
+    {
+      "name": "조직 단위 좌석 구독",
+      "how": "유료 조직 20만 곳 이상. 3자 집계로 2025년 약 23억 달러. **Salesforce 가 Slack 을 따로 공시하지 않아 회사 발표가 아니다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Slack 사용 통계 (3자 집계)",
+          "url": "https://www.businessofapps.com/data/slack-statistics/",
+          "publisher": "Business of Apps",
+          "date": "2026",
+          "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+        }
+      ]
+    },
+    {
+      "name": "Enterprise Grid (대형 조직)",
+      "how": "조직 하나가 워크스페이스 수천 개를 갖는 형태. 포춘 100 중 77곳이 Slack 을 쓴다 — **이 계층이 기술적 난제의 출처이기도 하다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Slack 사용 통계 (3자 집계)",
+          "url": "https://www.businessofapps.com/data/slack-statistics/",
+          "publisher": "Business of Apps",
+          "date": "2026",
+          "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+        },
+        {
+          "title": "Slack's Migration to a Cellular Architecture",
+          "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+          "publisher": "Engineering at Slack",
+          "date": "2023-08-22",
+          "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "비동기 작업 (잡 큐)",
+      "why": "**메시지 게시·푸시 알림·URL 펼치기·일정 알림·과금 계산이 전부 여기를 지난다.** 그래서 이 큐가 멈추면 제품의 거의 모든 것이 멈추는데, 실제로 2017년에 그렇게 됐다 — 그리고 **풀려면 메모리가 필요한 데드락**이었다.",
+      "tech": [
+        {
+          "tech": "Kafka 를 Redis **앞에** 세운다",
+          "solves": "Redis 를 걷어내지 않고 앞에 완충을 둔다. 큐가 넘칠 때 **Redis 가 아니라 Kafka 가 받아 낸다** — 16 브로커(i3.2xlarge), 토픽당 32 파티션, 복제 3, 보존 2일.",
+          "limits": "계층이 하나 늘어 운영 대상이 는다. 그리고 Kafka 가 받아 준 것을 **결국 Redis 로 흘려보내야** 해서 Redis 의 한계가 사라진 것은 아니다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Slack's Job Queue",
+              "url": "https://slack.engineering/scaling-slacks-job-queue/",
+              "publisher": "Engineering at Slack",
+              "date": "2017-12-06 (2020-06-25 갱신)",
+              "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+            }
+          ]
+        },
+        {
+          "tech": "Kafkagate (Go · 무상태 HTTP)",
+          "solves": "웹앱이 Kafka 클라이언트를 직접 쓰지 않게 한다 — **HTTP 라 언어를 안 가린다.** 같은 가용 영역의 인스턴스로 보내 지연과 전송 비용을 줄인다.",
+          "limits": "**리더 응답만 기다리고 복제를 안 기다린다** — 브로커가 복제 전에 죽으면 잡이 사라질 수 있다. 회사가 그 위험을 명시적으로 감수한다고 적었다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Slack's Job Queue",
+              "url": "https://slack.engineering/scaling-slacks-job-queue/",
+              "publisher": "Engineering at Slack",
+              "date": "2017-12-06 (2020-06-25 갱신)",
+              "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+            }
+          ]
+        },
+        {
+          "tech": "JQRelay (Go · 무상태 · Consul 락으로 자기 설정)",
+          "solves": "Kafka 를 읽어 Redis 에 쓴다. 파티션마다 하나가 붙게 Consul 락으로 스스로 정한다.",
+          "limits": "**디큐 확장이 JQRelay 의 속도 제한 설정에 묶인다** — 병목이 Redis 에서 여기로 옮겨 온 셈이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Slack's Job Queue",
+              "url": "https://slack.engineering/scaling-slacks-job-queue/",
+              "publisher": "Engineering at Slack",
+              "date": "2017-12-06 (2020-06-25 갱신)",
+              "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+            }
+          ]
+        },
+        {
+          "tech": "그림자 모드 (shadow mode) 롤아웃",
+          "solves": "JQRelay 가 Kafka 를 읽되 **읽고 나서 버린다.** 실제 처리 없이 경로만 시험한다.",
+          "limits": "버리는 동안에는 진짜 부하가 Redis 에 안 걸려서, 그림자에서 괜찮았던 것이 본 경로에서 다를 수 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling Slack's Job Queue",
+              "url": "https://slack.engineering/scaling-slacks-job-queue/",
+              "publisher": "Engineering at Slack",
+              "date": "2017-12-06 (2020-06-25 갱신)",
+              "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "kafka-job-queue"
+      ]
+    },
+    {
+      "name": "가용성·장애 격리",
+      "why": "**2021-06-30 us-east-1 에서 회색 장애**를 겪었다 — 가용 영역 사이 링크가 간헐적으로 끊기면서 **구성요소마다 무엇이 살아 있는지 판단이 엇갈렸다.** 완전히 죽었으면 오히려 쉬웠을 것이다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "실시간 메시지 전달",
+      "why": "호스트당 수천만 채널, 수천만 연결. 그런데 **기업용이라 조직 하나에 워크스페이스가 수천 개**여서, 조직 전체 데이터를 모든 워크스페이스에 뿌리던 구조가 대형 고객에서 무너졌다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "저장·샤딩",
+      "why": "MySQL 위에 Vitess 를 얹었다. **Figma 와 Notion 이 각각 검토하고 버린 그것을 고른 회사**라, 같은 문제에 다른 답이 나온 자리다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "kafka-job-queue",
+      "name": "잡 큐 — 풀려면 메모리가 필요한 데드락",
+      "domain": "비동기 작업 (잡 큐)",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**메시지 게시·푸시 알림·URL 펼치기·일정 알림·과금 계산이 전부 이 큐를 지난다.** 그런데 2017년에 데이터베이스 계층의 자원 경합이 Redis 메모리를 고갈시켰고, 한도에 닿자 **새 잡을 못 넣게 됐다.** 문제는 그다음이다 — **잡을 빼내는 데도 여유 메모리가 필요했다.** 그래서 원인이던 DB 경합이 풀린 뒤에도 큐는 잠긴 채였고 손으로 오래 풀어야 했다. 그리고 이 경험이 남긴 것이 하나 더 있다: **엔지니어들이 비동기 처리를 쓰기 꺼리게 됐다** — 시스템 구조상 근본이 되는 계층인데도.",
+        "metrics": [
+          {
+            "label": "처리량",
+            "value": "피크 **초당 33,000건** · 하루 **14억 건 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "label": "Redis 클러스터",
+            "value": "50개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "label": "Kafka 구성",
+            "value": "브로커 16대(i3.2xlarge) · 토픽 50 × 파티션 32 = **1,600 파티션** · 복제 3 · 보존 2일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "label": "일 활성 사용자",
+            "value": "약 4,720만 (2025, 3자 집계)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Slack 사용 통계 (3자 집계)",
+                "url": "https://www.businessofapps.com/data/slack-statistics/",
+                "publisher": "Business of Apps",
+                "date": "2026",
+                "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+              }
+            ]
+          },
+          {
+            "label": "유료 조직",
+            "value": "20만 곳 이상 · 포춘 100 중 77곳 (3자 집계)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Slack 사용 통계 (3자 집계)",
+                "url": "https://www.businessofapps.com/data/slack-statistics/",
+                "publisher": "Business of Apps",
+                "date": "2026",
+                "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "데드락을 겪고 나서",
+          "thought": "**빼내는 데도 메모리가 필요하다**는 것이 핵심이었다. 넣지 못하는 것은 견딜 수 있지만, **빼지도 못하면 스스로 회복할 수 없다** — 원인이 사라져도 상태가 안 풀린다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Redis 를 통째로 바꿀지 볼 때",
+          "thought": "Kafka 로 전부 옮기면 **애플리케이션 로직을 너무 많이 고쳐야** 했다. 대신 **앞에 세우면** 기존 경로를 건드리지 않고 완충만 얻는다 — 바꾸는 범위를 좁히는 쪽을 골랐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Redis 연결 구조를 볼 때",
+          "thought": "모든 잡 큐 클라이언트가 **모든 Redis 인스턴스에 연결**해야 했다 — 완전 이분 그래프다. 그러면 인스턴스 목록이 정확하고 최신이어야 하는데, 그 요구가 규모와 함께 커진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "복제를 기다릴지 정할 때",
+          "thought": "리더만 확인하고 넘어가면 가장 빠르다. 대신 **브로커가 복제 전에 죽으면 잡이 사라진다** — 확률은 낮고, Slack 의 잡 대부분은 그 위험을 감당할 만한 성질이라고 봤다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "웹앱이 Kafka 를 직접 부를지 정할 때",
+          "thought": "Kafka 클라이언트를 언어마다 붙이는 대신 **HTTP 한 겹**을 두면 언어를 안 가린다. 무상태라 늘리기도 쉽다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "내보내는 방법을 정할 때",
+          "thought": "새 경로를 켜기 전에 **읽고 버리는 모드**로 돌려 보면, 진짜 잡을 건드리지 않고 경로만 시험할 수 있다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "잡",
+            "what": "메시지 게시·푸시 알림·URL 펼치기·일정 알림·과금 계산. 하루 14억 건 이상."
+          },
+          {
+            "name": "Kafkagate",
+            "what": "무상태 HTTP 게이트웨이(Go). 웹앱과 Kafka 사이. **리더 응답만 기다린다.**"
+          },
+          {
+            "name": "JQRelay",
+            "what": "Kafka 를 읽어 Redis 에 쓰는 무상태 릴레이(Go). Consul 락으로 파티션을 스스로 잡는다."
+          },
+          {
+            "name": "Redis 클러스터",
+            "what": "50개. 워커가 여기서 잡을 꺼낸다 — 옛 구조가 그대로 남아 있다."
+          }
+        ],
+        "invariants": [
+          "**빼내는 데 자원이 필요한 큐는 스스로 회복하지 못한다** — 이 사고의 핵심 교훈이다.",
+          "넘치는 것은 Kafka 가 받는다. Redis 는 한도가 있는 자리로 남겨 둔다.",
+          "**리더만 확인하고 넘어간다** — 잡이 드물게 사라질 수 있다는 것을 알고 감수한다.",
+          "새 경로는 읽고 버리는 그림자 모드로 먼저 돌린다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "웹앱이 잡을 만들어 **HTTP 로** Kafkagate 에 보낸다",
+            "why": "Kafka 클라이언트를 언어마다 붙이지 않으려고"
+          },
+          {
+            "step": "같은 가용 영역의 Kafkagate 인스턴스로 간다",
+            "why": "지연과 영역 간 전송 비용을 줄인다"
+          },
+          {
+            "step": "Kafkagate 가 Kafka 에 쓰고 **리더 응답만 받고 돌아온다**",
+            "why": "가장 낮은 지연 — 대신 복제 전 브로커 사망 시 유실을 감수"
+          },
+          {
+            "step": "JQRelay 가 Kafka 를 읽는다. 파티션마다 하나씩 Consul 락으로 정해진다",
+            "why": "무상태로 두면서 중복 처리를 막는다"
+          },
+          {
+            "step": "JQRelay 가 Redis 에 쓴다 — 속도를 제한하면서",
+            "why": "Redis 가 다시 넘치지 않게. 완충은 Kafka 가 한다"
+          },
+          {
+            "step": "워커가 Redis 에서 잡을 꺼내 처리한다",
+            "why": "옛 경로를 그대로 둔다 — 애플리케이션 로직을 안 고치려고"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "Redis 를 걷어낼 것인가",
+            "chosen": "**앞에 Kafka 를 세운다.** Redis 는 그대로 둔다",
+            "alternatives": [
+              "Kafka 로 전면 교체"
+            ],
+            "tradeoff": "계층이 하나 늘고, **Kafka 가 받아 준 것을 결국 Redis 로 흘려보내야 해서 Redis 의 한계 자체는 남는다.** 그래도 전면 교체는 **애플리케이션 로직을 너무 많이 고쳐야** 했다 — 바꾸는 범위를 좁혔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "question": "복제까지 기다릴 것인가",
+            "chosen": "**리더 응답만 기다린다** — 가용성을 일관성보다 위에",
+            "alternatives": [
+              "복제 확인 후 응답"
+            ],
+            "tradeoff": "**브로커가 복제 전에 죽으면 잡이 사라진다.** 회사가 그 위험을 명시적으로 적고 감수했다 — Slack 의 잡 대부분이 그 성질이라 봤고, 중요한 것에 더 강한 보장을 주는 선택지는 **나중 과제로 남겼다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "question": "웹앱이 Kafka 를 직접 부를 것인가",
+            "chosen": "**무상태 HTTP 게이트웨이(Kafkagate)를 둔다**",
+            "alternatives": [
+              "각 언어에서 Kafka 클라이언트 직접 사용"
+            ],
+            "tradeoff": "홉이 하나 늘어 지연이 조금 붙는다. 대신 **언어를 안 가리고** 게이트웨이는 무상태라 늘리기 쉽다 — 같은 가용 영역으로 라우팅해 지연과 전송 비용도 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "question": "릴레이를 어떻게 나눌 것인가",
+            "chosen": "**파티션 기반** — Consul 락으로 스스로 잡는다",
+            "alternatives": [
+              "단일 기록자(single-writer) 최적화"
+            ],
+            "tradeoff": "**디큐 확장이 JQRelay 의 속도 제한 설정에 묶인다** — 병목이 Redis 에서 릴레이로 옮겨 왔다. 대신 릴레이가 무상태로 남고 파티션 수만큼 자연스럽게 늘어난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "question": "Kafka 클러스터를 어떻게 설정할 것인가",
+            "chosen": "**불결한 리더 선출(unclean leader election)을 켠다** — 가용성 우선",
+            "alternatives": [
+              "끄고 데이터 손실 방지 우선"
+            ],
+            "tradeoff": "뒤처진 복제본이 리더가 될 수 있어 **데이터가 사라질 수 있다.** 앞의 '리더만 확인'과 같은 방향의 선택이다 — 이 큐에서는 잠깐 멈추는 것이 드물게 잃는 것보다 나쁘다고 봤다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "question": "새 경로를 어떻게 내보낼 것인가",
+            "chosen": "**그림자 모드** — JQRelay 가 Kafka 를 읽고 **버린다**",
+            "alternatives": [
+              "바로 전환",
+              "일부 트래픽만 전환"
+            ],
+            "tradeoff": "**버리는 동안에는 진짜 부하가 Redis 에 안 걸려서** 그림자에서 괜찮았던 것이 본 경로에서 다를 수 있다. 그래도 진짜 잡을 잃지 않고 경로를 시험할 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka (16 브로커 · 1,600 파티션)",
+            "role": "넘치는 것을 받아 내는 완충. 보존 2일",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Kafkagate (Go · Sarama)",
+            "role": "무상태 HTTP 게이트웨이. 리더 응답만 기다린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "tech": "JQRelay (Go)",
+            "role": "Kafka → Redis 무상태 릴레이. Consul 락으로 파티션을 잡는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Redis 클러스터 50개",
+            "role": "워커가 잡을 꺼내는 자리. 옛 구조가 그대로 남았다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Consul",
+            "role": "릴레이가 스스로 파티션을 정할 때 쓰는 분산 락",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "실시간 메시지 전달",
+          "via": "게시된 메시지",
+          "contract": "메시지 게시가 이 큐를 지나 실시간 전달로 간다 — **큐가 멈추면 메시지가 안 뜬다.**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "저장·샤딩",
+          "via": "DB 자원 경합",
+          "contract": "**2017년 사고의 방아쇠가 데이터베이스 계층의 자원 경합이었다** — 저장 쪽 문제가 큐를 데드락으로 밀어 넣었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "과금",
+          "via": "비동기 잡",
+          "contract": "과금 계산도 이 큐를 지난다 — 잡을 드물게 잃는 것을 감수한 결정이 여기까지 닿는다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "빼내는 데 자원이 필요한 큐는 스스로 회복하지 못한다",
+            "why_hard": "**넣기와 빼기가 같은 자원을 쓰면 가득 찬 상태에서 출구가 닫힌다.** Redis 큐는 잡을 꺼내 다른 리스트로 옮기는 방식이라 **디큐에도 여유 메모리가 필요했고**, 메모리가 한도에 닿자 넣지도 빼지도 못하게 됐다. 이건 부하가 지나가면 저절로 풀리는 종류가 아니다 — 실제로 원인이던 DB 경합이 해소된 뒤에도 큐는 잠긴 채였고 손으로 오래 풀어야 했다. **가장 도움이 필요한 순간에 시스템이 스스로 도울 수 없는 상태가 되는** 구조다.",
+            "current_best": "**넘치는 것을 다른 곳이 받게 한다.** Redis 를 걷어내는 대신 앞에 Kafka 를 세워, 한도에 닿는 자리와 넘침을 흡수하는 자리를 갈랐다 — 디스크에 순차로 쌓는 Kafka 는 가득 참의 성격이 다르다. 대가는 계층이 하나 늘고 **Kafka 가 받은 것을 결국 Redis 로 흘려보내야** 해서 Redis 의 한계 자체는 남는다는 것, 그리고 **병목이 Redis 에서 JQRelay 의 속도 제한으로 옮겨 왔다**는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          },
+          {
+            "problem": "드물게 잃는 것과 자주 느린 것 중 무엇을 고를지가 잡마다 다르다",
+            "why_hard": "**같은 큐를 지나는 것들의 성질이 다르다.** URL 펼치기가 하나 사라지는 것과 **과금 계산이 하나 사라지는 것은 같은 무게가 아닌데**, 둘 다 이 큐를 지난다. 그런데 보장은 큐 단위로 걸린다 — 리더만 확인하고 넘어가면 전부 빨라지고 전부 드물게 위험해지며, 복제를 기다리면 전부 안전해지고 전부 느려진다. **잡마다 다른 보장을 주려면 경로를 나눠야 하고, 나누면 그만큼 시스템이 둘이 된다.**",
+            "current_best": "**전부에 약한 보장을 걸고 위험을 감수한다.** 리더 응답만 기다리고 불결한 리더 선출도 켜서 가용성을 위에 뒀다 — 회사가 '대부분의 Slack 시맨틱에 적절하다'고 적었다. 다만 이것이 끝이 아니라는 것도 함께 적었다: **중요한 것에 더 강한 보장을 주는 선택지를 나중 과제로 남겼다.** 지금은 과금 계산이 URL 펼치기와 같은 보장 위에 있다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Scaling Slack's Job Queue",
+                "url": "https://slack.engineering/scaling-slacks-job-queue/",
+                "publisher": "Engineering at Slack",
+                "date": "2017-12-06 (2020-06-25 갱신)",
+                "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "출구가 닫히는 데드락",
+          "question": "원인이 사라졌는데 왜 저절로 안 풀렸나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"DB 계층 자원 경합\"] --> B[\"Redis 메모리 고갈\"]\n  B --> C[\"한도 도달 — **새 잡을 못 넣는다**\"]\n  B --> D[\"**빼는 데도 여유 메모리가 필요하다**\"]\n  D --> E[\"잡을 꺼내 다른 리스트로 옮기는 방식\"]\n  E --> F[\"넣지도 빼지도 못한다\"]\n  A -.->|\"경합이 해소돼도\"| G[\"큐는 잠긴 채\"]\n  F --> G\n  G --> H[\"손으로 오래 풀어야 했다\"]\n  H --> I[\"부수 효과 — 엔지니어들이<br/>비동기 처리를 쓰기 꺼리게 됐다\"]"
+        },
+        {
+          "title": "걷어내지 않고 앞에 세운다",
+          "question": "Redis 를 그대로 두고 무엇을 바꿨나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  W[\"웹앱\"] -->|\"HTTP\"| KG[\"Kafkagate (Go · 무상태)<br/>같은 AZ 로 라우팅\"]\n  KG -->|\"**리더 응답만 기다림**\"| K[(\"Kafka<br/>16 브로커 · 1,600 파티션<br/>보존 2일\")]\n  K --> JR[\"JQRelay (Go · 무상태)<br/>Consul 락으로 파티션 획득\"]\n  JR -->|\"속도 제한하며\"| R[(\"Redis 클러스터 50\")]\n  R --> WK[\"워커 — 옛 경로 그대로\"]\n  KG -.->|\"대가 — 복제 전 브로커 사망 시<br/>잡이 사라질 수 있다\"| K\n  JR -.->|\"병목이 Redis 에서<br/>여기로 옮겨 왔다\"| R"
+        },
+        {
+          "title": "같은 큐에 성질이 다른 것들이 지난다",
+          "question": "과금 계산과 URL 펼치기가 왜 같은 보장 위에 있나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  JQ[\"잡 큐 — 하루 14억 건 · 피크 초당 33,000\"] --> J1[\"메시지 게시\"]\n  JQ --> J2[\"푸시 알림\"]\n  JQ --> J3[\"URL 펼치기\"]\n  JQ --> J4[\"일정 알림\"]\n  JQ --> J5[\"**과금 계산**\"]\n  G{\"보장을 어디에 걸까\"} -->|\"큐 단위 (지금)\"| ALL[\"전부 약한 보장<br/>리더만 확인 · 불결한 리더 선출 켬\"]\n  ALL --> FAST[\"전부 빠르다\"]\n  ALL --> RISK[\"전부 드물게 위험하다\"]\n  RISK -.->|\"URL 하나 사라짐 ≠ 과금 하나 사라짐\"| J5\n  G -->|\"잡마다 (나중 과제)\"| SPLIT[\"경로를 나눠야 한다<br/>= 시스템이 둘이 된다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling Slack's Job Queue",
+          "url": "https://slack.engineering/scaling-slacks-job-queue/",
+          "publisher": "Engineering at Slack",
+          "date": "2017-12-06 (2020-06-25 갱신)",
+          "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+        },
+        {
+          "title": "Slack 사용 통계 (3자 집계)",
+          "url": "https://www.businessofapps.com/data/slack-statistics/",
+          "publisher": "Business of Apps",
+          "date": "2026",
+          "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "가용성·장애 격리, 실시간 전달, 저장·샤딩 세 도메인은 아직 손대지 않았다 — 이번 사이클은 회사 프로파일과 잡 큐다.",
+    "**Slack 매출은 회사 발표가 아니다** — Salesforce 인수 후 따로 공시되지 않아 3자 집계에 의존했고, 그래서 수익원을 전부 `inferred` 로 뒀다.",
+    "잡 큐 글은 2017년(2020년 갱신)이다. 그 뒤 6년간 무엇이 바뀌었는지, 특히 '더 강한 일관성 보장을 검토 중'이라던 부분이 어떻게 됐는지는 모른다."
+  ],
+  "sources": [
+    {
+      "title": "Scaling Slack's Job Queue",
+      "url": "https://slack.engineering/scaling-slacks-job-queue/",
+      "publisher": "Engineering at Slack",
+      "date": "2017-12-06 (2020-06-25 갱신)",
+      "summary": "Redis 큐가 메모리 고갈로 데드락에 빠진 뒤 앞에 Kafka 를 세운 과정."
+    },
+    {
+      "title": "Slack's Migration to a Cellular Architecture",
+      "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+      "publisher": "Engineering at Slack",
+      "date": "2023-08-22",
+      "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+    },
+    {
+      "title": "Real-time Messaging",
+      "url": "https://slack.engineering/real-time-messaging/",
+      "publisher": "Engineering at Slack",
+      "date": "2023-04-11",
+      "summary": "Channel · Gateway · Admin · Presence 서버의 구성. 다만 버린 대안과 대가는 거의 없다."
+    },
+    {
+      "title": "Scaling Datastores at Slack with Vitess",
+      "url": "https://slack.engineering/scaling-datastores-at-slack-with-vitess/",
+      "publisher": "Engineering at Slack",
+      "date": "",
+      "summary": "MySQL 위에 Vitess 로 샤딩을 얹은 과정."
+    },
+    {
+      "title": "Slack 사용 통계 (3자 집계)",
+      "url": "https://www.businessofapps.com/data/slack-statistics/",
+      "publisher": "Business of Apps",
+      "date": "2026",
+      "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
+    }
+  ]
+}

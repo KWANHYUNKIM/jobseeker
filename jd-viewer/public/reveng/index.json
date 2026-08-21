@@ -209,6 +209,17 @@
       "features_done": 3,
       "one_liner": "남이 만든 세계를 남의 기계가 아니라 우리 기계에서 돌려 주는 회사",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "slack",
+      "name": "Slack",
+      "name_en": "Slack",
+      "country": "US",
+      "category": "메시징",
+      "status": "in_progress",
+      "features_done": 1,
+      "one_liner": "메시지 하나가 조직 하나의 일이 되는 회사",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -294,7 +305,10 @@
     "서비스 발견·오케스트레이션",
     "게임 서버 운영",
     "콘텐츠 저장·전송",
-    "안전·모더레이션"
+    "안전·모더레이션",
+    "비동기 작업 (잡 큐)",
+    "가용성·장애 격리",
+    "실시간 메시지 전달"
   ],
   "countries": {
     "KR": "한국",
