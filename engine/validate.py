@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -47,11 +48,18 @@ MIRRORED = ("name", "name_en", "country", "category", "status", "updated_at")
 # --gaps 가 대상 하나 말고 몇 건을 더 보여줄지. 루프의 맥락을 아끼려고 짧게 끊는다.
 SHOW_NEXT = 5
 
+# 이 날수가 지난 회사는 다시 들여다볼 때가 된 것으로 본다.
+#
+# 이 단이 있어야 루프가 루프다. 나머지 단은 전부 유한한 목록을 줄이는 일이라
+# 다 줄이고 나면 돌 이유가 없어진다 — 그건 느린 배치 작업이지 루프가 아니다.
+# 바깥(회사가 새로 쓰는 글)이 변하기 때문에 다시 볼 값이 생기는 것이고,
+# 그 변화를 엔진이 알아채는 자리가 여기다.
+STALE_DAYS = 14
+
 GAP_KINDS = {
     "decisions": (1, "결정을 쪼갠다 (STYLE.md 3번)"),
     "failure":   (2, "실패 경로 그림을 그린다 (STYLE.md 1번)"),
     "thinking":  (3, "결론 앞의 생각을 남긴다 (STYLE.md 5번)"),
-    "research":  (4, "논문·표준과 난제를 채운다 (STYLE.md 7번)"),
     "tech":      (5, "도메인을 무슨 기술로 풀었는지까지 내린다 (STYLE.md 2번)"),
     "sources":   (6, "링크를 찾거나 등급을 inferred 로 내린다"),
 }
@@ -65,6 +73,10 @@ class Report:
         self.gaps: list[tuple[int, str, str, str]] = []
         # 진행 중인 회사의 아직 안 판 도메인. 사다리에서 보강보다 위라 따로 담는다.
         self.wip: list[tuple[str, str]] = []
+        # 다시 들여다볼 때가 된 회사 — (slug, updated_at, 지난 날수)
+        self.stale: list[tuple[str, str, int]] = []
+        # 지금 검사 중인 회사가 보류 상태인가. gap() 이 이 값을 보고 걸러 낸다.
+        self._held = False
 
     def err(self, where: str, msg: str) -> None:
         self.errors.append(f"{where}: {msg}")
@@ -74,6 +86,8 @@ class Report:
 
     def gap(self, kind: str, where: str, msg: str) -> None:
         """보강 후보. 형식이 깨진 건 아니지만 아직 얇은 자리."""
+        if self._held:
+            return  # 보류 중인 회사는 손대지 않기로 한 곳이다
         self.gaps.append((GAP_KINDS[kind][0], kind, where, msg))
 
 
@@ -137,8 +151,10 @@ def _check_research(feat: dict, fw: str, r: Report) -> None:
             r.warn(hw, "current_best 없음 — 차선책과 그 차선책이 감수하는 것을 함께 쓴다")
         _check_sources(hp, hw, r)
 
-    if not papers and not hard:
-        r.gap("research", fw, "research 없음 (논문·난제)")
+    # 비어 있는 것은 결함이 아니다(STYLE.md 7번: 억지로 채우지 않는다).
+    # 여기를 보강 후보로 올리면 도구가 '채워라'라고 지목하게 되고, 그러면 있지도
+    # 않은 논문을 만들어 개수를 맞추게 된다. research 는 확장 사이클에서 자료를
+    # 열어 둔 채로 쓰는 것이지, 뒤늦게 채워 넣는 항목이 아니다.
 
 
 MD_EMPHASIS = re.compile(r"\*\*|`")
@@ -174,6 +190,7 @@ def _check_plain_text(data: dict, w: str, r: Report) -> None:
 def check_company(data: dict, r: Report) -> None:
     slug = data.get("slug", "?")
     w = f"companies/{slug}.json"
+    r._held = bool(data.get("hold_reason"))
 
     for f in ("slug", "name", "name_en", "country", "category", "status",
               "updated_at", "business_model", "products", "one_liner"):
@@ -318,6 +335,17 @@ def check_company(data: dict, r: Report) -> None:
             if not [f for f in (data.get("features") or []) if f.get("domain") == dom.get("name")]:
                 r.wip.append((slug, str(dom.get("name"))))
 
+    # 다시 들여다볼 때가 됐는가. 보류(hold_reason)인 회사는 세지 않는다 — 새 단서가
+    # 생기기 전엔 다시 파지 않기로 한 곳이라, 날짜만으로 부르면 같은 벽을 또 친다.
+    if not data.get("hold_reason"):
+        try:
+            y, m, dd = (int(x) for x in str(data.get("updated_at", "")).split("-"))
+            days = (date.today() - date(y, m, dd)).days
+            if days >= STALE_DAYS:
+                r.stale.append((slug, str(data.get("updated_at")), days))
+        except (ValueError, TypeError):
+            pass  # updated_at 형식 오류는 위에서 이미 err 로 잡힌다
+
     _check_plain_text(data, w, r)
 
 
@@ -372,13 +400,6 @@ def _print_gaps(r: Report) -> int:
             print(f"  ✗ {line}")
         print()
 
-    if not r.gaps:
-        print("## 보강 후보 없음")
-        print("  채울 게 없다. 없는 일을 만들지 말고 QUEUE 를 보거나 비교 문서를 쓴다.")
-        return 1 if r.errors else 0
-
-    # 사다리(PROMPT.md 2단계)는 보강보다 '진행 중인 회사 확장'을 위에 둔다.
-    # 루프가 맨 윗줄만 보고 고르더라도 규칙을 어기지 않도록 여기서 먼저 말한다.
     ordered = sorted(r.gaps, key=lambda g: (g[0], g[2]))
 
     # 사다리(PROMPT.md 2단계) 그대로 이번 대상을 정해 준다. 루프가 판단하지 않아도
@@ -396,6 +417,40 @@ def _print_gaps(r: Report) -> int:
         print()
         print(f"  보강 후보 {len(ordered)}건은 **이 회사가 done 이 된 뒤에** 본다 —")
         print("  회사를 갈아타지 않는다는 규칙이 보강보다 위다.")
+        return 1 if r.errors else 0
+
+    # 재방문 — 진행 중인 회사가 없을 때 사다리의 다음 단.
+    # 이 단만이 바깥을 본다. 나머지는 전부 이미 가진 것을 정리하는 일이다.
+    if r.stale:
+        r.stale.sort(key=lambda x: -x[2])
+        slug, when, days = r.stale[0]
+        print("### 이번 사이클의 대상 — 재방문 (사다리 3순위)")
+        print(f"  [재방문] {slug} — 마지막 갱신 {when} ({days}일 전)")
+        print("  할 일: 그 회사가 그 뒤로 낸 공개 자료를 찾는다.")
+        print("         새 기능이 나오면 확장, 기존 서술과 어긋나면 PROMPT.md 2″단계(정정),")
+        print("         아무것도 없으면 **그 사실만 기록하고 끝낸다** — 없는 일을 만들지 않는다.")
+        if len(r.stale) > 1:
+            print()
+            print(f"  다시 볼 때가 된 회사 {len(r.stale)}곳 중 가장 오래된 것이다:")
+            for s2, w2, d2 in r.stale[1:1 + SHOW_NEXT]:
+                print(f"    · {s2} — {w2} ({d2}일 전)")
+            if len(r.stale) > 1 + SHOW_NEXT:
+                print(f"    … 외 {len(r.stale) - 1 - SHOW_NEXT}곳")
+        print()
+        print(f"  (보강 후보 {len(ordered)}건은 그 아래 단이다.)")
+        return 1 if r.errors else 0
+
+    # 여기까지 왔는데 보강 후보도 없으면, 사다리는 이미 가진 것을 정리하는 단을
+    # 다 지난 것이다. 아래 단은 전부 '바깥에서 가져오는' 일이다.
+    if not ordered:
+        print("## 정리할 것이 없다 — 사다리를 더 내려간다")
+        print("  4순위: engine/state/QUEUE.md 에 회사가 있으면 그것을 판다(신규).")
+        print("  5순위: 큐도 비었으면 **후보 조사 사이클**을 돈다 — 공개 기술 자료가")
+        print("         꾸준한 회사를 찾아 근거(어느 블로그·읽히는지·최근 글 시점)와")
+        print("         함께 QUEUE 에 적는다. 그 자체로 한 사이클이다.")
+        print("  6순위: 같은 도메인을 두 회사 이상에서 채웠다면 비교 문서를 쓴다.")
+        print("  이 중 아무것도 아니면 그 사실만 STATE.md 에 적고 끝낸다 —")
+        print("  채울 게 없을 때 지어내는 것이 이 데이터를 망치는 가장 빠른 길이다.")
         return 1 if r.errors else 0
 
     # 종류별 집계를 먼저 준다. 루프는 매 사이클 이 출력을 읽으므로 전량을 쏟으면
