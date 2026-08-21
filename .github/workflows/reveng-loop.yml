@@ -26,11 +26,13 @@ on:
         default: "1"
         type: string
 
-  # 정기 실행 — 6시간마다. 하루 4사이클.
+  # 정기 실행 — **인증을 확인한 뒤에 켠다.**
+  # 지금 켜 두면 서버 Claude Code 가 로그인될 때까지 6시간마다 실패 알림만 쌓인다.
+  # 수동 실행(workflow_dispatch)이 한 번 성공하면 아래 두 줄의 주석을 벗기면 된다.
   # 자주 돌린다고 빨라지지 않는다: 사이클마다 사람이 읽을 글이 쌓이고,
-  # 큐가 마르면 후보 조사에 시간이 든다. 바꾸려면 이 줄만 고치면 된다.
-  schedule:
-    - cron: "0 */6 * * *"
+  # 큐가 마르면 후보 조사에 시간이 든다.
+  # schedule:
+  #   - cron: "0 */6 * * *"
 
 # 사이클이 겹치면 STATE.md 를 서로 덮어쓴다. 진행 중인 것은 끝까지 보낸다.
 concurrency:
@@ -49,6 +51,8 @@ jobs:
     steps:
       - name: 사전 점검
         id: pre
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set -euo pipefail
           export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
@@ -58,10 +62,33 @@ jobs:
           [ -f "$REPO/engine/validate.py" ] || { echo "::error::engine/validate.py 가 없다"; exit 1; }
 
           command -v claude >/dev/null || {
-            echo "::error::claude CLI 를 찾지 못했다. 서버에서 'npm i -g @anthropic-ai/claude-code' 로 설치하고 한 번 로그인해 둘 것"
+            echo "::error::claude CLI 를 찾지 못했다. 서버에서 'npm i -g @anthropic-ai/claude-code' 로 설치할 것"
             exit 1
           }
           echo "claude $(claude --version)"
+
+          # 인증을 여기서 먼저 확인한다. 사이클을 다 돌린 뒤에 로그인 문제로
+          # 죽으면 무엇 때문에 실패했는지가 로그 저 아래 묻힌다.
+          if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "인증: ANTHROPIC_API_KEY (레포 시크릿)"
+          else
+            probe=$(cd "$REPO" && claude -p "ok" --dangerously-skip-permissions --output-format text 2>&1 | head -3 || true)
+            case "$probe" in
+              *"Not logged in"*|*"/login"*)
+                echo "::error::서버의 Claude Code 가 로그인되어 있지 않다."
+                echo "::error::해결 둘 중 하나 —"
+                echo "::error::  (1) 서버 Mac 에서 'cd ~/jobseeker && claude' 를 한 번 실행해 신뢰 대화상자를 수락하고 /login 으로 로그인"
+                echo "::error::  (2) 레포에 ANTHROPIC_API_KEY 시크릿을 등록 (gh secret set ANTHROPIC_API_KEY)"
+                exit 1
+                ;;
+              *"has not been trusted"*)
+                echo "::error::워크스페이스가 신뢰되지 않았다. 서버에서 'cd ~/jobseeker && claude' 를 한 번 실행해 신뢰를 수락할 것"
+                exit 1
+                ;;
+            esac
+            echo "인증: 서버에 로그인된 계정"
+          fi
+
           echo "repo=$REPO" >> "$GITHUB_OUTPUT"
 
       - name: 최신으로 맞춘다
@@ -87,7 +114,9 @@ jobs:
 
       - name: 사이클 실행
         env:
-          # 서버 Mac 에 이미 로그인된 자격을 그대로 쓴다(별도 API 키 없음).
+          # 인증 경로 둘: 레포에 ANTHROPIC_API_KEY 가 있으면 그것, 없으면
+          # 서버 Mac 에 로그인된 계정을 쓴다. 둘 다 없으면 사전 점검에서 막힌다.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CYCLES: ${{ inputs.cycles || '1' }}
         run: |
           set -euo pipefail
