@@ -307,10 +307,10 @@
       "name_en": "Canva",
       "country": "AU",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "디자인 도구인데 인쇄물을 실제로 만들어 보내는 회사 — 그래서 소프트웨어 밖에 공급망이 있다",
-      "features_done": 1,
+      "features_done": 2,
       "domain": "canva.com"
     }
   ],

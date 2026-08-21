@@ -4,11 +4,11 @@
   "name_en": "Canva",
   "country": "AU",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "domain": "canva.com",
   "one_liner": "디자인 도구인데 인쇄물을 실제로 만들어 보내는 회사 — 그래서 소프트웨어 밖에 공급망이 있다",
-  "business_model": "**무료로 열어 두고 유료 구독과 기업 계약으로 회수하는 구조**다. 외부 추정 기준 **MAU 2억 6,500만** 중 **유료가 3,100만** 남짓이니, 대다수는 돈을 내지 않는다.\n\n**재무는 감사받은 공시가 없다.** 비상장이라 회사 자체 결산(2025년 매출 35억 달러)과 외부 추정(2025년 말 ARR 40억 달러, 기업가치 약 420억 달러)이 섞여 있고, 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Figma 같은 디자인 도구와 갈라놓는 것은 재무가 아니라 인쇄다.** 사용자가 만든 디자인을 **실제 티셔츠·명함·물병으로 찍어 국제 배송**한다. 그래서 이 회사의 시스템에는 다른 SaaS 에 없는 층이 하나 더 있다 — **소프트웨어가 끝나는 자리에서 시작하는 물리 공급망**이다. 어디서 만들지, 어떻게 보낼지, 그 공장이 그 제품을 만들 수 있는지, 용량이 남았는지가 **실시간 질의의 대상**이 된다(마지막 문장은 이 사이트의 해석).\n\n**두 번째 성격은 규모의 모양이다.** 대부분이 무료 사용자이므로 **요청당 원가가 곧 이익률**이고, 그래서 이 회사 글은 '더 빠르게'보다 **'같은 일을 더 싸게'** 를 자주 다룬다 — 세션 폐기를 DB 에서 S3 로 옮긴 것도 성능이 아니라 **배포 때마다 DB 를 때리는 스탬피드**를 없애려던 것이었다.",
+  "business_model": "**무료로 열어 두고 유료 구독과 기업 계약으로 회수하는 구조**다. 외부 추정 기준 **MAU 2억 6,500만** 중 **유료가 3,100만** 남짓이니, 대다수는 돈을 내지 않는다.\n\n**재무는 감사받은 공시가 없다.** 비상장이라 회사 자체 결산(2025년 매출 35억 달러)과 외부 추정(2025년 말 ARR 40억 달러, 기업가치 약 420억 달러)이 섞여 있고, 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Figma 같은 디자인 도구와 갈라놓는 것은 재무가 아니라 인쇄다.** 사용자가 만든 디자인을 **실제 티셔츠·명함·물병으로 찍어 국제 배송**한다. 그래서 이 회사의 시스템에는 다른 SaaS 에 없는 층이 하나 더 있다 — **소프트웨어가 끝나는 자리에서 시작하는 물리 공급망**이다. 어디서 만들지, 어떻게 보낼지, 그 공장이 그 제품을 만들 수 있는지, 용량이 남았는지가 **실시간 질의의 대상**이 된다(마지막 문장은 이 사이트의 해석).\n\n**두 번째 성격은 규모의 모양이다.** 대부분이 무료 사용자이므로 **요청당 원가가 곧 이익률**이고, 그래서 이 회사 글은 '더 빠르게'보다 **'같은 일을 더 싸게'** 를 자주 다룬다 — 세션 폐기를 DB 에서 S3 로 옮긴 것도 성능이 아니라 **배포 때마다 DB 를 때리는 스탬피드**를 없애려던 것이었다.\n\n**두 기능이 같은 모양을 하고 있다 — 실시간 경로에서 관계형 데이터베이스를 지운다.** 세션 폐기는 원천을 MySQL 에 두되 게이트웨이가 읽는 것은 **S3 의 이진 청크**이고, 인쇄 라우팅은 원천을 관계형 DB 에 두되 질의가 닿는 것은 **Redis 의 샤딩된 그래프**다. 둘 다 **사본이 조금 낡을 수 있다는 것을 감수**하고(폐기는 30분 청크 창 안에서, 그래프는 비동기 생성 주기만큼) 대신 뜨거운 경로에서 DB 왕복을 없앤다.\n\n**그리고 둘 다 '확장 가능하게 만들기'보다 '확장할 필요를 없애기'를 골랐다.** 세션 쪽은 읽고-고쳐-다시 쓰는 구조를 수평으로 늘리는 대신 배치로 묶어 초당 2,000건을 냈고(\"예상 가능한 요구를 넘어선다\"), 라우팅 쪽은 그래프를 키우는 대신 **목적지 지역으로 잘라** 한 주문이 세계의 나머지를 보지 않게 했다. **그리고 둘 다 남의 것을 빌린다** — Redis 를 버린 이유가 *\"클러스터 자체를 우리가 운영해야 한다\"* 였던 것처럼, 이 회사는 **운영해야 할 것을 늘리지 않는 쪽**을 반복해서 고른다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "Canva (디자인 편집기 · 무료/유료)",
     "Canva for Teams / Enterprise",
@@ -146,7 +146,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "print-routing"
+      ]
     }
   ],
   "features": [
@@ -553,7 +555,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "print-routing",
+          "via": "실시간 경로에서 관계형 DB 를 뺀다",
+          "contract": "둘 다 **원천은 관계형에 두고 읽기 경로에는 다른 모양의 사본**을 만든다 — 이쪽은 S3 이진 청크, 저쪽은 Redis 그래프. 둘 다 **사본이 낡을 수 있다는 것을 감수**하고 실시간 경로에서 DB 를 지운다. **두 글은 서로를 언급하지 않는다**(해석).",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [],
         "hard_problems": [
@@ -625,6 +634,478 @@
           "summary": "CDN 네트워크 문제 · 캐시 스트림 합류 · 텔레메트리 라이브러리의 잠금 경합 · 부족한 배포 안전장치가 겹쳐 canva.com 이 약 52분간 멈춘 기록. **카나리아가 아무 오류도 못 본 이유가 '요청이 실패한 게 아니라 완료되지 않아서'** 였다는 대목이 값지다."
         }
       ]
+    },
+    {
+      "key": "print-routing",
+      "name": "소프트웨어가 끝나는 자리에서 시작하는 계산",
+      "domain": "인쇄 주문 라우팅",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**주문의 물건을 어디서 만드느냐가 배송 시간과 소포 개수와 배출량을 한꺼번에 정한다.** 티셔츠는 이 공장에서, 명함은 저 공장에서 만들면 상자가 둘이 되고 그만큼 더 멀리 간다.\n\n그런데 이 계산에는 소프트웨어가 정할 수 없는 제약이 잔뜩 붙는다 — **모든 생산지가 모든 제품을 만들지는 못하고**, 배송 권역이 공급사마다 다르고, **작은 공장은 용량이 찬다.** 그리고 운영팀은 지역별 라우팅 규칙을 스스로 관리할 수 있어야 한다.\n\n**결정적인 것은 이 계산을 언제 해야 하는가다.** 회사가 노린 것은 **결제 버튼을 누르기 전에** 가장 정확한 배송 예상일을 보여 주는 것이다. 그러니 이 그래프 탐색이 **실시간 질의**여야 한다 — 주문이 들어온 뒤 배치로 정리하면 되는 일이 아니다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "그래프 조회",
+            "value": "대부분의 지역 **6ms**, 큰 샤드는 **20ms 까지**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "라우팅 지연",
+            "value": "피크에 **p99 50ms**, 피크 밖 **5ms**, **p50 30ms 이하**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "가용성",
+            "value": "라우팅 데이터 **99.999%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "알고리즘 복잡도",
+            "value": "최소비용유량 변형 **O(VE)** (V=노드, E=간선)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "label": "네트워크의 크기",
+            "value": "**밝히지 않는다** — 생산 파트너 수·서비스 국가 수·주문 건수·절감액이 모두 없다. \"국제 인쇄 네트워크 전체를 담은 그래프는 필연적으로 크다\"는 서술만 있다",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "관계형 데이터베이스로 질의해 보고",
+          "thought": "운영팀이 규칙을 관리하기에는 관계형이 맞다. 그런데 **실시간 라우팅 질의에는 너무 느리다.** 그러면 둘을 갈라야 한다 — 관계형은 **진실의 원천이자 운영 관리용**으로 두고, 질의는 다른 모양의 사본에 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그래프를 통째로 올려 보려다",
+          "thought": "**국제 인쇄 네트워크 전체를 담은 그래프는 필연적으로 크다.** 그런데 한 주문의 목적지는 하나다 — **목적지 지역으로 샤딩**하면 그 주문이 볼 필요가 없는 세계의 나머지를 아예 건드리지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "다익스트라를 쓸지 정할 때",
+          "thought": "다익스트라는 **순회와 비용 판단이 묶여 있다.** 우리는 그 둘을 떼어 놓고 싶다 — **각각 따로 최적화하고, 결정 규칙을 A/B 로 시험**하려면 순회가 비용 함수를 모르는 편이 낫다. 그래서 **최소비용유량(successive shortest path)** 을 변형해 쓰고 비용 판단은 **결정 엔진**으로 뺀다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "탐색이 깊어지는 것을 보고",
+          "thought": "**그래프 순회는 탐색 깊이·시간·복잡도가 폭발하는 경향**이 있다. 그렇다고 앞에서 성급히 잘라내면 더 좋은 경로를 놓친다. **후회(regret)** — 대안 경로를 들고 있다가 중간에 더 나은 것이 보이면 되돌아간다. 다만 **후회는 불필요하게 쓰면 비싸므로**, **제약이 적은 쪽부터 미리 순위**를 매겨 되돌아갈 일을 줄인다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "그래프 계층",
+            "what": "**제품 → 생산지 → 배송 선택지** 세 층. 관계형 DB 에서 **비동기로 생성**해 캐시에 싣는다."
+          },
+          {
+            "name": "샤드",
+            "what": "**목적지 지역** 단위로 나눈 그래프 조각. 대부분 6ms, 큰 것은 20ms 에 조회된다."
+          },
+          {
+            "name": "간선의 유량 한도",
+            "what": "**0이면 제외, 1이면 한 번만 지날 수 있고, 큰 값이면 사실상 무제한.** 용량 제약을 이 값으로 표현한다."
+          },
+          {
+            "name": "결정 규칙",
+            "what": "**순서대로** 적용되는 설정 가능한 규칙들(예: 용량이 남은 생산지 선호). 기본 동점 처리는 **총 생산지 거리가 가장 낮은 경로**."
+          },
+          {
+            "name": "후회 (regret)",
+            "what": "이미 고른 경로보다 나은 것이 나중에 보였을 때 되돌아가는 장치. 대안 경로를 추적해 둔다."
+          },
+          {
+            "name": "순회 로그",
+            "what": "모든 결정과 후보 경로와 결정 엔진의 결과를 담는다. **비동기로 블롭 저장소**에 넣고 주문에 붙이며 **자동 만료**된다."
+          }
+        ],
+        "invariants": [
+          "**관계형 DB 가 진실의 원천**이고 그래프는 거기서 파생된 사본이다.",
+          "**순회는 비용 판단을 모른다** — 결정 엔진이 따로 순위를 매긴다.",
+          "샤드는 **목적지 지역**으로 나뉜다 — 한 주문은 자기 지역 샤드만 본다.",
+          "**규칙은 차이가 꼭 필요해질 때까지 경로들을 동등하게** 다룬다 — 일부러 관대하게 설계했다.",
+          "모든 순회는 **되짚어 볼 수 있는 로그**를 남긴다.",
+          "예상 배송일은 **결제 전에** 나와야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "운영팀이 **관계형 DB** 에서 지역별 라우팅 규칙과 네트워크 정보를 관리한다",
+            "why": "사람이 다루는 데이터는 관계형이 맞다."
+          },
+          {
+            "step": "거기서 **비동기로 그래프를 만들어** ElastiCache/Redis 에 싣는다 — **목적지 지역으로 샤딩**해서",
+            "why": "실시간 질의에 관계형은 너무 느리고, 전체 그래프는 필연적으로 크다."
+          },
+          {
+            "step": "주문이 오면 **그 목적지의 샤드**를 조회한다 — 대부분 6ms",
+            "why": "세계의 나머지를 볼 이유가 없다."
+          },
+          {
+            "step": "간선에 **유량 한도**를 준다 — 0이면 제외, 1이면 한 번, 큰 값이면 무제한. **소스·싱크 노드**를 만들어 유량을 맞춘다",
+            "why": "'이 공장은 이 제품을 못 만든다'와 '용량이 찼다'를 같은 언어로 표현한다."
+          },
+          {
+            "step": "**제약이 적은 쪽(앞으로 갈 경로가 가장 적은 쪽)부터 미리 순위**를 매긴다",
+            "why": "선택지가 좁은 것을 먼저 정해야 나중에 되돌아갈 일이 줄어든다."
+          },
+          {
+            "step": "**최소비용유량(successive shortest path) 변형**으로 순회하며 경로를 비교한다 — O(VE)",
+            "why": "순회가 비용 함수를 모르게 하려면 다익스트라가 아니어야 한다."
+          },
+          {
+            "step": "**결정 엔진**이 규칙을 순서대로 적용해 후보 경로에 순위를 매긴다. 동점이면 **총 생산지 거리가 가장 낮은 경로**",
+            "why": "비용 판단을 여기 모아 두면 따로 최적화하고 A/B 로 시험할 수 있다."
+          },
+          {
+            "step": "중간에 더 나은 경로가 보이면 **후회**로 되돌아간다",
+            "why": "앞선 결정이 최선이 아니었다는 것은 나중에야 알 수 있다."
+          },
+          {
+            "step": "모든 결정·후보·엔진 결과를 **비동기로 블롭 저장소**에 남기고 주문에 붙인다(자동 만료)",
+            "why": "'왜 이 공장에서 만들었나'를 나중에 물을 수 있어야 한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "라우팅 질의를 관계형 DB 에 직접 할 것인가",
+            "chosen": "**하지 않는다.** 관계형은 **진실의 원천이자 운영 관리용**으로 두고, 거기서 **비동기로 그래프를 만들어** 캐시에 싣는다.",
+            "alternatives": [
+              "관계형 모델만으로 라우팅 질의를 처리한다"
+            ],
+            "tradeoff": "**사본이 생긴다** — 원천이 바뀐 뒤 그래프에 반영되기까지 시차가 있다(뒷문장은 이 사이트의 추정). 대신 관계형만으로는 **실시간 라우팅 질의에 너무 느리다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "그래프를 통째로 둘 것인가",
+            "chosen": "**목적지 지역으로 샤딩한다.**",
+            "alternatives": [
+              "국제 네트워크 전체를 하나의 그래프로 올린다"
+            ],
+            "tradeoff": "지역을 가로지르는 배치를 찾기 어려워진다(뒷문장은 이 사이트의 추정). 대신 **전체 그래프는 필연적으로 크다**는 문제가 사라지고 조회가 대부분 6ms, 큰 샤드도 20ms 로 들어온다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 그래프 알고리즘을 쓸 것인가",
+            "chosen": "**최소비용유량(successive shortest path)의 변형**, O(VE). 간선에 유량 한도를 주고 소스·싱크로 균형을 맞춘다.",
+            "alternatives": [
+              "다익스트라"
+            ],
+            "tradeoff": "버린 이유가 명시돼 있다 — **다익스트라는 순회와 비용 결정을 묶어 버린다.** 이 회사는 둘을 분리해 **각각 독립적으로 최적화하고 A/B 로 시험**하고 싶었다. 대신 유량 모델로 표현하는 만큼 개념이 한 겹 더 생긴다(뒷문장은 이 사이트의 추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "여러 목표(배송 시간·배출량·용량·운영 규칙)를 어떻게 합칠 것인가",
+            "chosen": "**하나의 점수로 합치지 않는다.** 설정 가능한 규칙을 **순서대로** 적용하고, 동점이면 **총 생산지 거리가 가장 낮은 경로**를 고른다.",
+            "alternatives": [
+              "목표들을 가중합으로 묶어 하나의 비용 함수를 만든다"
+            ],
+            "tradeoff": "가중치를 미세 조정할 수 없고 규칙의 순서가 곧 우선순위가 된다(뒷문장은 이 사이트의 추정). 대신 **운영팀이 지역별로 규칙을 직접 관리**할 수 있고, 규칙 하나를 바꾸는 것이 곧 정책 변경이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "규칙을 얼마나 정교하게 만들 것인가",
+            "chosen": "**일부러 단순하게 유지한다.** 그리고 **차이가 꼭 필요해질 때까지 경로들을 동등하게** 다루도록 관대하게 설계했다.",
+            "alternatives": [
+              "정교한 규칙으로 후보를 빨리 좁힌다"
+            ],
+            "tradeoff": "이른 단계에서 후보가 많이 남아 탐색이 넓어진다(뒷문장은 이 사이트의 추정). 대신 **관리 가능한 상태로 유지**되고, 성급히 갈라 놓아 좋은 경로를 잃는 일이 줄어든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "앞선 결정이 나빴다는 것을 나중에 알면",
+            "chosen": "**후회(regret) 로 되돌아간다** — 대안 경로를 추적해 두었다가 중간에 더 나은 것이 보이면 바꾼다. 그리고 **제약이 적은 쪽부터 미리 순위**를 매겨 되돌아갈 일을 줄인다.",
+            "alternatives": [
+              "한 번 고른 경로를 유지한다",
+              "전부 탐색한 뒤 고른다"
+            ],
+            "tradeoff": "회사가 적었다 — **후회는 불필요하게 쓰면 비싸다.** 그래서 사전 순위로 최적화한다. 대신 그래프 순회 특유의 **탐색 깊이·시간·복잡도 폭발**을 성급한 가지치기 없이 다룰 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "question": "왜 이렇게 배정됐는지를 나중에 어떻게 아나",
+            "chosen": "**모든 결정·후보 경로·결정 엔진 결과를 순회 로그로 남긴다.** 비동기로 블롭 저장소에 넣고 주문에 붙이며 자동 만료시킨다.",
+            "alternatives": [
+              "최종 결과만 저장한다"
+            ],
+            "tradeoff": "저장 비용이 들고 만료 정책을 관리해야 한다(뒷문장은 이 사이트의 추정). 대신 **규칙 기반 시스템에서 '왜'를 되짚을 수 있다** — 규칙이 순서대로 적용되는 구조에서는 결과만 봐서는 어느 규칙이 갈랐는지 알 수 없다(마지막 절은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "관계형 데이터베이스",
+            "role": "진실의 원천이자 운영팀의 관리 도구. 실시간 라우팅 질의에는 쓰지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "tech": "ElastiCache / Redis",
+            "role": "비동기로 만든 그래프를 목적지 지역으로 샤딩해 싣는다. 조회 6ms(큰 샤드 20ms).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "tech": "최소비용유량 변형 (successive shortest path, O(VE))",
+            "role": "순회. 간선 유량 한도와 소스·싱크로 제약을 표현한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "tech": "규칙 기반 결정 엔진",
+            "role": "비용 판단을 순회에서 떼어 낸 자리. 규칙을 순서대로 적용하고 동점은 총 생산지 거리로.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "tech": "후회(regret) 메커니즘 + 사전 순위",
+            "role": "되돌아갈 수 있게 하되 되돌아갈 일을 줄인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "tech": "블롭 저장소 (순회 로그)",
+            "role": "결정 과정을 주문에 붙여 되짚을 수 있게 한다. 자동 만료.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "tech": "그래프를 다시 만드는 주기",
+            "role": "— 글은 '비동기로 생성한다'고만 하고 **얼마나 자주인지 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "session-revocations",
+          "via": "실시간 경로에서 관계형 DB 를 뺀다",
+          "contract": "두 기능이 같은 모양을 하고 있다 — **원천은 관계형에 두고, 읽기 경로에는 다른 모양의 사본을 만든다.** 세션 쪽은 S3 이진 청크로, 라우팅 쪽은 Redis 그래프로. 둘 다 **사본이 낡을 수 있다는 것을 감수**하고 대신 실시간 경로에서 DB 를 지운다. **두 글은 서로를 언급하지 않는다** — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "좋은 답은 멀리 봐야 나오는데, 멀리 볼수록 탐색이 폭발한다",
+            "why_hard": "회사가 적었다 — **그래프 순회는 탐색 깊이·시간·복잡도가 폭발하는 경향이 있다.** 그렇다고 앞에서 후보를 빨리 좁히면 더 나은 배치를 놓친다. 인쇄 주문에서는 이것이 특히 아프다: **티셔츠 하나만 보면 A 공장이 가깝지만, 명함까지 함께 보면 B 공장에서 둘 다 만드는 편이 상자 하나로 끝난다.** 즉 **부분적으로 최적인 선택이 전체로는 나쁠 수 있어서**, 일찍 결정할수록 틀릴 위험이 커진다(이 예시는 이 사이트의 해석).",
+            "current_best": "**되돌아갈 수 있게 만들되, 되돌아갈 일을 줄인다.** 대안 경로를 추적해 중간에 더 나은 것이 보이면 바꾸고(**후회**), **제약이 적은 쪽(앞으로 갈 경로가 가장 적은 쪽)부터 미리 순위**를 매겨 되돌아갈 상황 자체를 줄인다. 규칙도 **차이가 꼭 필요해질 때까지 경로들을 동등하게** 다루도록 관대하게 설계했다 — **성급히 가르지 않는 것**이 이 시스템의 일관된 태도다. 다만 회사도 **후회가 불필요하게 쓰이면 비싸다**고 인정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          },
+          {
+            "problem": "목표가 여럿인데 그중 하나는 사람이 계속 바꾼다",
+            "why_hard": "최적화해야 할 것이 **배송 시간 · 배출량 · 생산 용량 · 지역별 운영 규칙**으로 여럿이고 서로 다툰다. 흔한 답은 가중합으로 하나의 비용 함수를 만드는 것인데, 그러면 **운영팀이 지역 규칙을 바꿀 때마다 가중치를 다시 맞춰야** 한다. 게다가 이 결정은 **결제 전에** 나와야 하므로 오래 계산할 수도 없다.",
+            "current_best": "**합치지 않고 순서로 푼다.** 설정 가능한 규칙을 차례로 적용하고, 끝까지 동점이면 **총 생산지 거리가 가장 낮은 경로**로 가른다. 그리고 규칙 자체를 **일부러 단순하게** 유지해 관리 가능한 상태로 둔다. 대가는 **가중치의 미세 조정을 포기**하는 것이고 **규칙의 순서가 곧 우선순위**가 된다는 점이다(마지막 문장은 이 사이트의 추정). 대신 정책 변경이 **규칙 하나를 바꾸는 일**이 되고, 순회 로그가 남아 있어 **어느 규칙이 갈랐는지 되짚을 수 있다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The science of routing print orders",
+                "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+                "publisher": "Canva Engineering",
+                "date": "—",
+                "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "주문 하나가 공장을 고르기까지",
+          "question": "순회는 왜 비용을 모르는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  OPS[\"운영팀 — 지역별 라우팅 규칙\"] --> RDB[(\"<b>관계형 DB</b><br/>진실의 원천 · 운영 관리<br/><b>실시간 질의에는 너무 느리다</b>\")]:::list\n  RDB -->|\"비동기로 그래프 생성\"| CACHE[(\"<b>ElastiCache / Redis</b><br/>목적지 지역으로 <b>샤딩</b><br/>제품 → 생산지 → 배송 선택지<br/>조회 6ms (큰 샤드 20ms)\")]:::accent\n  ORD[\"주문 — 티셔츠 + 명함 + 물병<br/>목적지 하나\"] --> CACHE\n  CACHE --> PREP[\"<b>전처리</b><br/>• 간선 유량 한도 (0=제외 · 1=한 번 · 큰 값=무제한)<br/>• 소스 · 싱크로 유량 균형<br/>• <b>제약이 적은 쪽부터 미리 순위</b>\"]:::list\n  PREP --> TRV[\"<b>순회</b> — 최소비용유량 변형<br/>successive shortest path · O(VE)<br/><b>비용 판단을 모른다</b>\"]:::accent\n  DEC[\"<b>결정 엔진</b><br/>규칙을 순서대로 적용<br/>동점 → 총 생산지 거리 최소<br/><b>따로 최적화 · A/B 가능</b>\"]:::accent\n  DEC <-->|\"순위를 매긴다\"| TRV\n  TRV -->|\"더 나은 경로가 보이면\"| REG[\"<b>후회 (regret)</b><br/>되돌아간다<br/>— 불필요하면 비싸다\"]\n  REG --> TRV\n  TRV --> OUT[\"생산지 · 배송 선택<br/><b>결제 전에</b> 예상일 표시\"]\n  TRV -.->|\"모든 결정 · 후보 · 엔진 결과\"| LOG[(\"블롭 저장소 — 순회 로그<br/>주문에 붙고 자동 만료\")]:::quiet\n  DIJ[\"다익스트라\"]:::quiet -->|\"버렸다 — <b>순회와 비용 판단이 묶인다</b>\"| TRV"
+        },
+        {
+          "title": "한 경로 후보가 겪는 일",
+          "question": "언제 잘리고 언제 되살아나는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 후보: 샤드에서 꺼낸 경로\n  후보 --> 제외: 간선 유량 한도가 0\n  note right of 제외\n    이 생산지는 이 제품을 못 만든다\n    또는 용량이 찼다\n  end note\n  후보 --> 동등: 규칙이 아직 가르지 않는다\n  note right of 동등\n    규칙은 차이가 꼭 필요해질 때까지\n    경로들을 동등하게 다룬다\n    — 일부러 관대하게 설계했다\n  end note\n  동등 --> 동등: 다음 규칙 적용\n  동등 --> 선택: 규칙이 갈랐다\n  동등 --> 거리비교: 끝까지 동점\n  거리비교 --> 선택: 총 생산지 거리가 가장 낮은 경로\n  선택 --> 후회: 중간에 더 나은 경로가 드러났다\n  note right of 후회\n    되돌아간다\n    — 다만 후회는 비싸므로\n    사전 순위로 이 상태를 줄인다\n  end note\n  후회 --> 동등\n  선택 --> [*]: 생산지·배송 확정 · 로그 기록\n  제외 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 성급히 가르면 잃는 것",
+          "question": "부분적으로 최적인 선택은 왜 위험한가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  DEEP[\"멀리 봐야 좋은 답이 나온다\"] --> BOOM[\"<b>탐색 깊이 · 시간 · 복잡도가 폭발한다</b><br/>(회사 서술)\"]\n  BOOM --> EARLY[\"앞에서 후보를 빨리 좁힌다\"]\n  EARLY -->|\"해석\"| LOCAL[\"<b>부분적으로 최적인 선택이<br/>전체로는 나쁠 수 있다</b><br/>티셔츠만 보면 A 공장,<br/>명함까지 보면 B 공장에서 상자 하나\"]\n  BOOM --> LATE[\"<b>후회로 되돌아간다</b>\"]:::accent\n  LATE --> COST[\"<b>후회는 불필요하게 쓰면 비싸다</b><br/>(회사가 인정)\"]\n  COST --> PRE[\"완화 — 제약이 적은 쪽부터 사전 순위\"]:::quiet\n  MULTI[\"목표가 여럿<br/>배송 시간 · 배출량 · 용량 · 운영 규칙\"] --> SUM[\"가중합으로 합친다\"]\n  SUM -->|\"추정\"| RETUNE[\"운영팀이 규칙을 바꿀 때마다<br/>가중치를 다시 맞춰야 한다\"]\n  MULTI --> ORDER[\"<b>합치지 않고 순서로 푼다</b>\"]:::accent\n  ORDER -->|\"추정\"| NOFINE[\"가중치 미세 조정 포기<br/><b>규칙의 순서가 곧 우선순위</b>\"]\n  ORDER --> WHY[\"결과만 봐서는<br/><b>어느 규칙이 갈랐는지 모른다</b>\"]\n  WHY --> LOG[\"완화 — 순회 로그를 주문에 붙인다\"]:::quiet\n  BIG[\"국제 네트워크 전체 그래프\"] -->|\"필연적으로 크다\"| SHARD[\"완화 — 목적지 지역 샤딩\"]:::quiet\n  SHARD -->|\"추정\"| CROSS[\"지역을 가로지르는 배치는<br/>찾기 어려워진다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "The science of routing print orders",
+          "url": "https://www.canva.dev/blog/engineering/the-science-of-routing-print-orders/",
+          "publisher": "Canva Engineering",
+          "date": "—",
+          "summary": "디자인을 인쇄해 배송하는 국제 네트워크에서 **어디서 만들어 어떻게 보낼지**를 고르는 이야기. 관계형 DB 를 진실의 원천으로 두되 그래프를 Redis 에 캐시하고, 최소비용유량 알고리즘을 변형해 쓴다. 순회와 비용 판단을 분리하려고 다익스트라를 쓰지 않았다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -633,7 +1114,10 @@
     "세션 폐기 글은 **청크 하나의 실제 크기 분포**를 밝히지 않는다(100만 폐기가 16MB 라는 예시만 있다).",
     "장애 보고서는 **영향받은 사용자 수를 밝히지 않는다** — '아시아 사용자가 특히 영향받았다'와 자산 요청 27만 건만 나온다.",
     "**Figma 와 겹치는 동시 편집·렌더링 축은 이 사이트가 아직 자료를 확인하지 않았다** — 있는지 없는지 모르는 상태이므로 도메인으로 열지 않았다.",
-    "`snowpipe-streaming`(데이터 플랫폼)과 `image-replacement-...-reverse-image-search`(역방향 이미지 검색)은 제목만 확인했고 본문을 읽지 않았다."
+    "`snowpipe-streaming`(데이터 플랫폼)과 `image-replacement-...-reverse-image-search`(역방향 이미지 검색)은 제목만 확인했고 본문을 읽지 않았다.",
+    "**이 도메인은 1차 자료가 한 편뿐이다.** `canva.dev` 에서 인쇄 공급망·물류를 다루는 두 번째 엔지니어링 글을 찾지 못했고, `canva.dev/docs/print-partnerships/` 는 **'새 파트너 신청을 받지 않는다'는 안내 외에 기술적 요구사항을 담고 있지 않다.** 그래서 이 도메인은 **한 글에만 기대고 있다** — 최신 수치로 갱신할 두 번째 글이 없다.",
+    "라우팅 그래프를 **얼마나 자주 다시 만드는지** 밝히지 않는다.",
+    "결정 규칙이 실제로 **몇 개나 있는지**, 지역마다 얼마나 다른지 밝히지 않는다."
   ],
   "sources": [
     {
