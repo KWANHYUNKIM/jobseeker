@@ -4,11 +4,11 @@
   "name_en": "Grafana Labs",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-22",
   "domain": "grafana.com",
   "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
-  "business_model": "**오픈소스를 만들어 놓고, 그것을 대신 굴려 주는 것으로 번다.** Grafana·Mimir·Loki·Tempo 는 누구나 받아서 자기 서버에 올릴 수 있고, 회사는 **관리형 Grafana Cloud** 와 엔터프라이즈 계약으로 회수한다.\n\n**비상장이라 감사받은 공시가 없다.** 회사 발표 기준으로 **2025년 ARR 4억 달러 초과 · 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳)이고, 기업가치는 보도 기준 60억 달러에서 90억 달러 라운드 논의로 이어졌다 — 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Datadog 같은 관측 회사와 갈라놓는 것은 사업 모델이 아니라 그 결과다.** 코드가 열려 있으면 **아키텍처를 바꾸는 과정도 숨길 수 없다.** 그래서 이 회사의 글에는 다른 곳에서 보기 힘든 종류의 문장이 있다 — **\"복제 계수 3은 비싸다\"** 처럼, 자기가 골랐던 설계를 이름 붙여 부정하는 문장이다. 초기 Mimir 는 카산드라에서 영감을 받았고, 지금은 그 구조를 걷어내는 중이다(이 관찰은 이 사이트의 해석이다).\n\n**두 번째 성격은 남의 규모까지 감당해야 한다는 것이다.** Grafana Cloud 의 활성 시리즈가 수십억인데, **오픈소스 사용까지 합치면 전 세계에서 수백억**이다. 즉 이 회사가 만든 것은 자기 클라우드만이 아니라 **모르는 사람들의 온프렘 클러스터에서도 돌아야** 한다 — 그래서 '우리 환경에서만 되는 최적화'를 고르기 어렵다(마지막 문장은 이 사이트의 추정).",
+  "business_model": "**오픈소스를 만들어 놓고, 그것을 대신 굴려 주는 것으로 번다.** Grafana·Mimir·Loki·Tempo 는 누구나 받아서 자기 서버에 올릴 수 있고, 회사는 **관리형 Grafana Cloud** 와 엔터프라이즈 계약으로 회수한다.\n\n**비상장이라 감사받은 공시가 없다.** 회사 발표 기준으로 **2025년 ARR 4억 달러 초과 · 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳)이고, 기업가치는 보도 기준 60억 달러에서 90억 달러 라운드 논의로 이어졌다 — 이 사이트는 그것을 **추정으로만** 적는다.\n\n**그런데 이 회사를 Datadog 같은 관측 회사와 갈라놓는 것은 사업 모델이 아니라 그 결과다.** 코드가 열려 있으면 **아키텍처를 바꾸는 과정도 숨길 수 없다.** 그래서 이 회사의 글에는 다른 곳에서 보기 힘든 종류의 문장이 있다 — **\"복제 계수 3은 비싸다\"** 처럼, 자기가 골랐던 설계를 이름 붙여 부정하는 문장이다. 초기 Mimir 는 카산드라에서 영감을 받았고, 지금은 그 구조를 걷어내는 중이다(이 관찰은 이 사이트의 해석이다).\n\n**두 번째 성격은 남의 규모까지 감당해야 한다는 것이다.** Grafana Cloud 의 활성 시리즈가 수십억인데, **오픈소스 사용까지 합치면 전 세계에서 수백억**이다. 즉 이 회사가 만든 것은 자기 클라우드만이 아니라 **모르는 사람들의 온프렘 클러스터에서도 돌아야** 한다 — 그래서 '우리 환경에서만 되는 최적화'를 고르기 어렵다(마지막 문장은 이 사이트의 추정).\n\n**두 기능이 같은 습관을 보인다.** 첫째, **자기가 고른 것을 이름 붙여 부정한다** — *\"복제 계수 3은 비싸다\"*, 인제스터가 *\"사실상 분산된 단일 장애점\"* 이었다는 문장은 남이 한 지적이 아니라 자기 글이다. 둘째, **좋아지지 않은 것을 좋아졌다고 하지 않는다** — 차세대 구조 글은 **확장성이 나아진 게 아니라고 명시**하고(옛 구조도 새 구조도 \"매우 확장 가능하다\"), 질의 샤딩 문서는 **고객 질의의 60%만 샤딩된다**고 적으며 **병렬화가 아래 계층의 부하를 늘린다**고 경고한다. 셋째, **켜져 있다는 이유만으로 값을 내던 것을 찾아낸다** — 분산 환경에서 쓰지 않는 TSDB 격리를 끄자 인제스터 p99 지연이 90% 줄었다.\n\n**그리고 이 정직함은 성격이 아니라 구조에서 나올 수 있다**(추정) — 코드가 열려 있고 남의 온프렘 클러스터에서도 돌아야 하면, 되는 것과 안 되는 것을 정확히 적어야 남이 쓸 수 있기 때문이다. 실제로 이 회사의 문서에는 **설정 플래그 이름과 기본값, 그리고 지켜지지 않을 수 있는 조건**까지 적혀 있다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "Grafana (대시보드·시각화)",
     "Grafana Mimir (Prometheus 호환 시계열 장기 저장)",
@@ -175,9 +175,26 @@
               "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
             }
           ]
+        },
+        {
+          "tech": "`__query_shard__` 라벨 주입 · 상한 · 옵트인",
+          "solves": "질의를 다시 써서 부분 질의로 나눈다(`\"N_of_M\"`). 전체가 안 되면 **안쪽 부분만** 나누고, 프론트엔드가 이어 붙인 뒤 비샤딩 연산을 마지막에 적용한다.",
+          "limits": "**샤딩되는 것은 `sum`·`min`·`max`·`count`·`avg` 뿐**이고 `histogram_quantile`·`absent`·`sort` 는 안 된다. 부분 질의는 **입력당 기본 128개**로 묶인다(시간 분할과 합산). **카디널리티 기반 샤딩을 써도 샤드당 실제 시리즈 수가 상한을 넘을 수 있다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+              "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+              "publisher": "Grafana Labs Docs",
+              "date": "—",
+              "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "query-sharding"
+      ]
     }
   ],
   "features": [
@@ -577,7 +594,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "query-sharding",
+          "via": "읽기 쪽 부하가 가는 곳",
+          "contract": "샤딩은 querier 와 그 아래 인제스터·스토어 게이트웨이의 부하를 늘리는데, **옛 구조에서는 그 인제스터가 쓰기도 함께 받고 있었다.** 읽기·쓰기 분리가 병렬화의 전제이기도 하다 — **두 자료가 서로를 그렇게 엮지는 않는다**(해석).",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [],
         "hard_problems": [
@@ -649,6 +673,520 @@
           "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
         }
       ]
+    },
+    {
+      "key": "query-sharding",
+      "name": "데이터는 나눠 뒀는데 질의가 한 코어에서 돈다",
+      "domain": "질의 실행",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "저장을 아무리 잘 나눠 놓아도 **질의를 실행하는 엔진이 한 코어에서 돌면** 소용이 없다. **PromQL 엔진은 단일 스레드**여서, 고카디널리티·CPU 집약 질의는 결국 **CPU 코어 하나의 속도**에 묶인다.\n\n그런데 이 도메인의 어려움은 병렬화 자체가 아니다. **질의를 쪼개려면 질의의 의미를 알아야 한다.** `sum` 은 부분합을 더하면 되지만 `histogram_quantile` 은 그렇지 않다 — 조각마다 분위수를 구해 합칠 수 없기 때문이다(뒤 예시는 이 사이트의 해석).\n\n그래서 이 기능은 **어떤 질의를 쪼갤 수 있는지 목록을 만들고, 못 쪼개는 것은 어떻게 할지 정하는 일**이 된다.",
+        "metrics": [
+          {
+            "label": "효과",
+            "value": "고카디널리티·CPU 집약 질의의 **실행 시간 10분의 1** — 한 사례에서 **37.7초 → 3.9초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "적용 범위",
+            "value": "**Grafana Cloud 고객 질의의 60%** 가 샤딩된다 — 나머지는 아직",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "label": "폭발 방지 상한",
+            "value": "입력 질의 하나당 부분 질의 **기본 최대 128개**. 시간 분할을 함께 쓰면 **둘을 합쳐서** 이 상한이 적용된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "샤딩되는 집계",
+            "value": "**`sum` · `min` · `max` · `count` · `avg`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "샤딩되지 않는 함수",
+            "value": "**`absent` · `absent_over_time` · `histogram_quantile` · `sort` · `sort_desc`**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "label": "안 쓰는 기능을 끈 효과",
+            "value": "분산 Mimir 에서 쓰지 않는 **TSDB 격리(isolation)** 가 잠금 경합을 일으키고 있었다 — 끄자 **인제스터 p99 지연 90% 감소**. 라벨 정규식 매처 최적화로 흔한 정규식에서 **CPU 최대 90% 절감**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "데이터를 잘 나눠 놓고도 질의가 느린 것을 보고",
+          "thought": "저장은 샤딩돼 있는데 **PromQL 엔진이 단일 스레드**다. 그러면 질의 하나의 속도는 **CPU 코어 하나**가 정한다 — 머신을 아무리 늘려도 그 질의는 빨라지지 않는다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "먼저 시간으로 잘라 보고",
+          "thought": "긴 구간의 질의는 **여러 개의 짧은 질의로 나눠 병렬로** 돌릴 수 있다. 그런데 이건 **구간이 길 때만** 듣는다 — 짧은 구간에서 카디널리티가 높은 질의는 그대로 한 코어에 묶인다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "데이터셋 쪽을 나눌 방법을 찾다가",
+          "thought": "질의에 **`__query_shard__=\"1_of_4\"` 같은 라벨 셀렉터를 끼워 넣으면** 그 자체가 다른 질의가 된다. 즉 실행기를 고치지 않고 **질의를 다시 써서** 여러 대에 나눠 던질 수 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어떤 연산까지 되는지 따져 보고",
+          "thought": "부분 결과를 합칠 수 있어야 나눌 수 있다. `sum`·`min`·`max`·`count`·`avg` 는 되고 `histogram_quantile`·`absent`·`sort` 는 안 된다. **전체 질의가 안 되더라도 안쪽 부분은 될 수 있으니** 그 부분만 나눈다 — 다만 나눌 수 있는 부분이 여럿이면 **조합적으로 폭발**하므로 상한이 필요하다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "query-frontend",
+            "what": "질의를 받아 **샤딩 가능한 부분을 다시 쓰고** 부분 질의를 여러 querier 에 뿌린 뒤, 결과를 이어 붙이고 **남은 비샤딩 연산(예: `histogram_quantile`)을 마지막에** 적용한다."
+          },
+          {
+            "name": "querier",
+            "what": "부분 질의를 독립적으로 실행한다. 최근 데이터는 인제스터에서, 과거 데이터는 스토어 게이트웨이에서 가져온다."
+          },
+          {
+            "name": "`__query_shard__` 라벨",
+            "what": "`\"N_of_M\"` 형식(예: `\"1_of_4\"`). **질의에 끼워 넣는 라벨 셀렉터**이자 일을 나누는 유일한 장치."
+          },
+          {
+            "name": "시간 분할 (time splitting)",
+            "what": "긴 구간의 질의를 여러 짧은 질의로 나눈다. 샤딩과 **함께 쓰면 상한을 공유**한다."
+          },
+          {
+            "name": "`sharded_queries` 통계",
+            "what": "부분 질의가 몇 개였는지. **`sharded_queries=0` 이면 그 질의는 샤딩되지 않았다는 뜻.**"
+          }
+        ],
+        "invariants": [
+          "**부분 결과를 합칠 수 있는 연산만 샤딩한다** — `sum`·`min`·`max`·`count`·`avg`.",
+          "**전체가 안 되어도 안쪽 부분은 샤딩될 수 있다** — 샤딩 가능한 부분마다 따로 나눈다.",
+          "입력 질의 하나가 만드는 부분 질의는 **기본 128개를 넘지 않는다**(시간 분할과 합산).",
+          "샤딩은 **옵트인**이다 — `-query-frontend.parallelize-shardable-queries=true`.",
+          "샤딩되지 않는 질의도 **그대로 실행된다** — 병렬화의 이득만 못 볼 뿐이다.",
+          "**카디널리티 상한을 걸어도 실제 시리즈 수는 그것을 넘을 수 있다** — 회사가 명시한 한계다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "query-frontend 가 질의를 받아 **샤딩 가능한 부분을 찾는다**",
+            "why": "부분 결과를 합칠 수 있는 연산만 나눌 수 있다."
+          },
+          {
+            "step": "그 부분을 **`__query_shard__=\"N_of_M\"` 라벨 셀렉터가 붙은 부분 질의들로 다시 쓴다**",
+            "why": "실행 엔진을 고치지 않고 질의만 바꿔 병렬화한다."
+          },
+          {
+            "step": "긴 구간이면 **시간 분할**도 함께 적용한다 — 다만 **상한은 둘을 합쳐** 센다",
+            "why": "둘을 곱하면 부분 질의가 폭발한다."
+          },
+          {
+            "step": "부분 질의를 **여러 querier 에 병렬로** 던진다",
+            "why": "단일 스레드 엔진의 한계를 머신 수로 넘어선다."
+          },
+          {
+            "step": "각 querier 가 자기 샤드를 독립 실행한다 — 최근 데이터는 인제스터, 과거는 스토어 게이트웨이에서",
+            "why": "부분 질의끼리 서로 기다릴 필요가 없다."
+          },
+          {
+            "step": "프론트엔드가 결과를 **이어 붙이고(concat)**, **남은 비샤딩 연산을 마지막에** 적용한다",
+            "why": "`histogram_quantile` 같은 것은 합쳐진 뒤에야 계산할 수 있다."
+          },
+          {
+            "step": "샤딩되지 않은 질의는 **그대로 실행되고 `sharded_queries=0`** 으로 기록된다",
+            "why": "안 되는 것을 억지로 나누지 않고, 안 됐다는 사실만 남긴다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "단일 스레드 PromQL 엔진을 어떻게 넘어설 것인가",
+            "chosen": "**엔진을 고치지 않는다.** 질의를 **시간으로 나누고**(시간 분할) **데이터셋으로 나눠**(질의 샤딩) 여러 머신에서 부분 질의를 돌린다.",
+            "alternatives": [
+              "PromQL 엔진 자체를 다중 스레드로 만든다",
+              "더 빠른 CPU 를 쓴다"
+            ],
+            "tradeoff": "**상류 Prometheus 의 엔진을 그대로 쓰는 대신 모든 병렬화를 바깥에서 해야 한다**(뒷문장은 이 사이트의 해석). 대신 고카디널리티 질의의 실행 시간이 **10분의 1**(37.7초 → 3.9초)이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "question": "어떻게 나눌 것인가",
+            "chosen": "**질의를 다시 쓴다** — `__query_shard__=\"N_of_M\"` 라벨 셀렉터를 끼워 넣어 부분 질의를 만든다.",
+            "alternatives": [
+              "실행 계층에서 데이터를 나눠 준다"
+            ],
+            "tradeoff": "질의 재작성이 정확해야 하고, 재작성 규칙이 곧 기능의 한계가 된다(뒷문장은 이 사이트의 추정). 대신 querier 는 **평범한 PromQL 질의를 받는 것처럼** 동작한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "어떤 연산까지 샤딩할 것인가",
+            "chosen": "**부분 결과를 합칠 수 있는 것만** — `sum`·`min`·`max`·`count`·`avg`. `absent`·`absent_over_time`·`histogram_quantile`·`sort`·`sort_desc` 는 하지 않는다.",
+            "alternatives": [
+              "모든 질의를 억지로 나누고 근사한다"
+            ],
+            "tradeoff": "**대시보드에서 흔한 `histogram_quantile` 이 목록의 반대쪽에 있다** — 지연 분위수 패널이 샤딩되지 않는다는 뜻이다(이 지적은 이 사이트의 추정 — 문서는 흔한 정도를 말하지 않는다). 대신 **결과가 정확하다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "전체 질의가 샤딩 불가면 포기할 것인가",
+            "chosen": "**안쪽 부분만 나눈다.** \"전체 질의가 샤딩 가능하지 않아도 질의의 안쪽 부분은 샤딩될 수 있다.\" 샤딩 가능한 부분이 여럿이면 **각각 따로** 나눈다.",
+            "alternatives": [
+              "전체가 안 되면 통째로 단일 실행한다"
+            ],
+            "tradeoff": "샤딩 가능한 부분이 여럿이면 부분 질의가 **조합적으로 늘어난다** — 그래서 상한이 필요해졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "질의 폭발을 어떻게 막을 것인가",
+            "chosen": "**입력 질의당 부분 질의 상한**(`query-sharding-max-sharded-queries`, 기본 **128**). 시간 분할을 함께 쓰면 **둘을 합쳐** 상한을 적용한다.",
+            "alternatives": [
+              "샤드 수만 정하고 상한은 두지 않는다"
+            ],
+            "tradeoff": "복잡한 질의는 원하는 만큼 나뉘지 않는다(뒷문장은 이 사이트의 추정). 대신 질의 하나가 클러스터를 통째로 먹는 일이 막힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "샤드 수를 고정할 것인가, 데이터에 맞출 것인가",
+            "chosen": "**둘 다 둔다** — 고정(`query-sharding-total-shards`)과 **카디널리티 기반(실험적, `query-sharding-target-series-per-shard`)**. 후자는 결과 캐시 설정이 필요하다.",
+            "alternatives": [
+              "고정 샤드 수만 지원한다"
+            ],
+            "tradeoff": "회사가 인정했다 — **샤드당 실제로 가져오는 시리즈 수가 상한을 넘을 수 있다.** 질의의 카디널리티가 짧은 시간에 빠르게 변할 때 그렇다. 그래서 **고정 상한은 카디널리티 추정과 무관하게 항상 적용**된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "기본으로 켤 것인가",
+            "chosen": "**옵트인이다** — `-query-frontend.parallelize-shardable-queries=true` 를 켜야 동작한다. 켜면 `-querier.max-query-parallelism` 에 샤드 수를 곱해 조정하라고 안내한다.",
+            "alternatives": [
+              "기본으로 켠다"
+            ],
+            "tradeoff": "켜지 않은 사용자는 이득을 못 본다(뒷문장은 이 사이트의 추정). 대신 **병렬화가 클러스터 부하를 늘리기 때문에** 운영자가 알고 켜게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "question": "쓰지 않는 기능은 어떻게 할 것인가",
+            "chosen": "**끈다.** 분산 Mimir 에서 쓰이지 않는 **TSDB 격리(isolation)** 를 비활성화했다 — **인제스터 p99 지연이 90% 줄었다.**",
+            "alternatives": [
+              "기본값을 그대로 둔다"
+            ],
+            "tradeoff": "상류의 기본값에서 벗어나므로 이후 변경을 따라가야 한다(뒷문장은 이 사이트의 추정). 대신 **안 쓰는 기능이 잠금 경합으로 값을 내고 있었다** — 켜져 있다는 이유만으로.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "query-frontend",
+            "role": "질의를 다시 쓰고 뿌리고 합친다. 비샤딩 연산은 마지막에 여기서 적용한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "`__query_shard__` 라벨 셀렉터",
+            "role": "`\"N_of_M\"` 형식으로 질의에 주입돼 일을 나눈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "시간 분할 (`split-queries-by-interval`)",
+            "role": "긴 구간을 여러 질의로. 샤딩과 상한을 공유한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "카디널리티 기반 샤딩 (실험적)",
+            "role": "샤드당 목표 시리즈 수로 샤드 수를 정한다. 결과 캐시가 필요하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "수정된 Prometheus TSDB",
+            "role": "격리 비활성화(인제스터 p99 -90%), 라벨 정규식 매처 최적화(CPU 최대 -90%).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          },
+          {
+            "tech": "`sharded_queries` 질의 통계",
+            "role": "샤딩이 실제로 동작하는지 확인하는 지표. 0이면 샤딩되지 않은 질의다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "tech": "샤딩되는 질의 유형이 앞으로 얼마나 늘어날지",
+            "role": "— \"더 많은 질의 유형의 샤딩을 지원하려고 작업 중\" 이라고만 하고 **어떤 유형인지 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "mimir-next-gen",
+          "via": "읽기 쪽 부하가 가는 곳",
+          "contract": "샤딩은 **querier 와 그 아래 데이터 저장소(최근 데이터는 인제스터, 과거는 스토어 게이트웨이)의 부하를 늘린다** — 그런데 옛 구조에서는 그 인제스터가 쓰기도 함께 받고 있었다. **읽기·쓰기를 떼어 낸 재설계가 이 병렬화의 전제 조건이기도 하다**(이 연결은 이 사이트의 해석이며, 두 자료가 서로를 그렇게 엮지는 않는다).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "병렬화는 시간을 없애지 않고 옮긴다",
+            "why_hard": "질의를 128조각으로 나누면 그 질의는 빨라진다. 그런데 **일의 총량은 그대로이고, 그 일이 동시에 아래로 쏟아진다.** 회사가 문서에 직접 적었다 — **\"병렬화는 질의 처리 시간을 줄이지만 querier 구성 요소와 그 아래 데이터 저장소(최근 데이터는 인제스터, 과거 데이터는 스토어 게이트웨이)의 부하를 늘린다. 청크와 인덱스 캐시 계층도 부하가 늘어난다.\"** 게다가 **샤딩 가능한 부분이 여럿이면 조합적으로** 부분 질의가 불어나, 질의 하나가 클러스터 전체를 먹을 수 있다.",
+            "current_best": "**상한을 둔다** — 입력 질의당 부분 질의 **기본 128개**, 시간 분할과 합산. 카디널리티 기반 샤딩을 쓰더라도 **고정 상한은 항상 적용**된다. 그리고 샤딩을 **옵트인**으로 두어 운영자가 부하 증가를 알고 켜게 하고, `-querier.max-query-parallelism` 을 샤드 수만큼 곱해 조정하라고 안내한다. 즉 **없앤 것이 아니라 얼마나 옮길지를 손잡이로 만든 것**이다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              }
+            ]
+          },
+          {
+            "problem": "나눌 수 있는 질의와 사람들이 쓰는 질의가 같지 않다",
+            "why_hard": "부분 결과를 합칠 수 있어야 나눌 수 있다. 그래서 `sum`·`min`·`max`·`count`·`avg` 는 되지만 **`histogram_quantile`·`absent`·`sort` 는 안 된다** — 조각마다 분위수를 구해 더할 수 없고, '없음'은 조각 하나만 봐서는 알 수 없기 때문이다(이 설명은 이 사이트의 해석). 문제는 **못 나누는 쪽이 대시보드에서 드물지 않다**는 것이다(추정). 실제로 **Grafana Cloud 고객 질의의 60%만 샤딩된다.**",
+            "current_best": "**전체가 안 되면 안쪽 부분만 나눈다.** 샤딩 가능한 부분마다 따로 나누고, 프론트엔드가 결과를 이어 붙인 뒤 **남은 비샤딩 연산을 마지막에** 적용한다. 안 되는 질의는 그대로 실행하고 **`sharded_queries=0`** 으로 남긴다 — 억지로 근사하지 않는다. 회사는 **\"더 많은 질의 유형의 샤딩을 지원하려고 작업 중\"** 이라고만 적고 어떤 유형인지는 밝히지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+                "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+                "publisher": "Grafana Labs Docs",
+                "date": "—",
+                "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+              },
+              {
+                "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+                "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+                "publisher": "Grafana Labs Blog",
+                "date": "2022-04-08",
+                "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "질의를 고치는 대신 질의를 다시 쓴다",
+          "question": "엔진이 단일 스레드인데 어떻게 여러 대를 쓰는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Q[\"PromQL 질의\"] --> FE[\"<b>query-frontend</b>\"]\n  FE --> CHECK{\"<b>샤딩 가능한가</b>\"}\n  CHECK -->|\"불가 — absent · histogram_quantile<br/>sort · sort_desc\"| NOSH[\"그대로 실행<br/><b>sharded_queries=0</b>\"]:::quiet\n  CHECK -->|\"가능 — sum · min · max<br/>count · avg\"| REW[\"<b>질의 재작성</b><br/>__query_shard__=\\\"1_of_M\\\" …<br/>(전체가 안 되면 <b>안쪽 부분만</b>)\"]:::accent\n  SPLIT[\"시간 분할<br/>긴 구간 → 여러 짧은 질의\"]:::list --> LIMIT\n  REW --> LIMIT{\"<b>상한 — 기본 128</b><br/>시간 분할과 <b>합산</b>\"}:::accent\n  LIMIT --> QR1[\"querier 1\"]\n  LIMIT --> QR2[\"querier 2\"]\n  LIMIT --> QRN[\"querier N\"]\n  QR1 & QR2 & QRN --> DATA[(\"인제스터 (최근) · 스토어 게이트웨이 (과거)<br/>청크 · 인덱스 캐시<br/><b>여기 부하가 늘어난다</b>\")]:::quiet\n  QR1 & QR2 & QRN --> CAT[\"<b>concat</b> — 결과 이어 붙이기\"]\n  CAT --> REST[\"남은 <b>비샤딩 연산</b>을 마지막에<br/>(예: histogram_quantile)\"]:::list\n  REST --> OUT[\"결과 — 고카디널리티 질의 <b>37.7초 → 3.9초</b>\"]\n  NOSH --> OUT"
+        },
+        {
+          "title": "질의 하나가 몇 조각이 되는지 정해지는 순서",
+          "question": "카디널리티로 정해도 상한은 왜 남는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 도착: 질의가 들어온다\n  도착 --> 비활성: parallelize-shardable-queries 가 꺼져 있다\n  note right of 비활성\n    샤딩은 옵트인이다\n    부하가 늘어나기 때문에\n    운영자가 알고 켜게 한다\n  end note\n  비활성 --> [*]\n  도착 --> 분석: 샤딩 가능한 부분을 찾는다\n  분석 --> 단일실행: 어느 부분도 샤딩 불가\n  단일실행 --> [*]\n  분석 --> 샤드수결정\n  샤드수결정 --> 고정: query-sharding-total-shards\n  샤드수결정 --> 카디널리티기반: target-series-per-shard (실험적)\n  note right of 카디널리티기반\n    결과 캐시가 필요하다\n    ⚠ 샤드당 실제 시리즈 수가\n    상한을 넘을 수 있다 —\n    카디널리티가 빠르게 변할 때\n  end note\n  고정 --> 상한적용\n  카디널리티기반 --> 상한적용\n  note right of 상한적용\n    기본 128\n    시간 분할과 합쳐서 센다\n    카디널리티 추정과 무관하게 항상 적용\n  end note\n  상한적용 --> 병렬실행\n  병렬실행 --> 병합: concat + 남은 비샤딩 연산\n  병합 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 빨라진 만큼 어딘가가 바빠진다",
+          "question": "질의 하나가 클러스터를 먹지 않게 하는 것은 무엇인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  ONE[\"<b>PromQL 엔진은 단일 스레드</b>\"] --> BOUND[\"질의 하나의 속도 =<br/>CPU 코어 하나의 속도\"]\n  BOUND --> SPLIT[\"질의를 나눈다\"]:::accent\n  SPLIT --> FAST[\"실행 시간 10분의 1\"]\n  SPLIT --> LOAD[\"<b>일의 총량은 그대로인데<br/>동시에 아래로 쏟아진다</b>\"]\n  LOAD -->|\"문서가 명시\"| WHO[\"querier · 인제스터 · 스토어 게이트웨이<br/>청크 · 인덱스 캐시 <b>부하 증가</b>\"]\n  SPLIT --> COMBO[\"샤딩 가능한 부분이 여럿이면<br/><b>조합적으로 불어난다</b>\"]\n  COMBO --> EAT[\"질의 하나가 클러스터를 먹을 수 있다\"]\n  EAT --> CAP[\"완화 — 입력당 <b>기본 128</b> 상한<br/>시간 분할과 합산 · 항상 적용\"]:::quiet\n  WHO --> OPT[\"완화 — <b>옵트인</b> + max-query-parallelism 조정 안내\"]:::quiet\n  CAP & OPT -->|\"해석\"| KNOB[\"없앤 게 아니라<br/><b>얼마나 옮길지를 손잡이로</b> 만들었다\"]\n  TYPE[\"나눌 수 있는 연산만 나눈다\"] --> LIST[\"sum · min · max · count · avg ✅<br/><b>histogram_quantile · absent · sort ❌</b>\"]\n  LIST --> ONLY[\"<b>고객 질의의 60%만 샤딩된다</b>\"]\n  ONLY -->|\"추정\"| DASH[\"못 나누는 쪽이<br/>대시보드에서 드물지 않다\"]\n  UNUSED[\"안 쓰는 TSDB 격리가 켜져 있었다\"] -->|\"잠금 경합\"| COST[\"<b>인제스터 p99 지연</b><br/>끄자 90% 감소\"]:::accent"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+          "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+          "publisher": "Grafana Labs Docs",
+          "date": "—",
+          "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
+        },
+        {
+          "title": "How we scaled our new Prometheus TSDB Grafana Mimir to 1 billion active series",
+          "url": "https://grafana.com/blog/2022/04/08/how-we-scaled-our-new-prometheus-tsdb-grafana-mimir-to-1-billion-active-series/",
+          "publisher": "Grafana Labs Blog",
+          "date": "2022-04-08",
+          "summary": "활성 시리즈 10억을 한 테넌트에 밀어 넣으며 무엇이 먼저 부러지는지 하나씩 적은 글. 해시 링 가십이 CPU 2,500코어를 먹던 것, 컴팩터가 TSDB 인덱스 한계에 부딪힌 것, 인제스터 디스크 쓰기가 40분마다 동시에 몰려 지연이 10ms 에서 20~60초로 튀던 것까지 원인과 수치를 함께 남겼다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -657,7 +1195,9 @@
     "새 구조 글은 **객체 저장에 먼저 쓰는 지연 대가를 수치로 밝히지 않는다** — '지연 페널티를 받아들였다'고만 적는다.",
     "새 구조가 **어디까지 배포됐는지**(Grafana Cloud 전체인지 일부인지) 이 사이트는 확인하지 못했다.",
     "10억 시리즈 글(2022)과 새 구조 글은 **시점이 몇 년 떨어져 있다** — 두 글 사이에 바뀐 것이 더 있을 수 있는데, 그 사이를 메우는 글은 아직 읽지 못했다(`a-year-in-mimir`, `maintainers-tell-all` 등).",
-    "**Loki(로그)·Tempo(트레이스)는 자료를 확인하지 않아 도메인으로 열지 않았다.**"
+    "**Loki(로그)·Tempo(트레이스)는 자료를 확인하지 않아 도메인으로 열지 않았다.**",
+    "질의 샤딩 문서는 **어떤 질의 유형을 앞으로 지원할지** 밝히지 않는다 — '작업 중'이라고만 적혀 있다.",
+    "**샤딩된 질의가 아래 계층에 얼마나 부하를 더 주는지** 수치가 없다 — '늘어난다'는 경고만 있다."
   ],
   "sources": [
     {
@@ -680,6 +1220,13 @@
       "publisher": "Grafana Labs 보도자료 · 언론 보도",
       "date": "2025-09-30",
       "summary": "비상장이라 감사받은 공시는 없다. 회사 발표로 **2025년 ARR 4억 달러 초과, 고객 7,000곳**(2024년 8월에는 2.5억 달러·5,000곳). 기업가치는 보도 기준 60억 달러였고 이후 90억 달러 라운드 논의가 보도됐다."
+    },
+    {
+      "title": "Query sharding (Grafana Mimir 아키텍처 참조 문서)",
+      "url": "https://grafana.com/docs/mimir/latest/references/architecture/query-sharding/",
+      "publisher": "Grafana Labs Docs",
+      "date": "—",
+      "summary": "질의 샤딩이 실제로 어떻게 동작하는지 — `__query_shard__=\"1_of_4\"` 라벨을 질의에 주입해 부분 질의로 나누고 프론트엔드가 합친다. **샤딩되는 집계와 안 되는 함수의 목록**, 질의 폭발을 막는 상한(기본 128), 그리고 **병렬화가 querier·인제스터·스토어 게이트웨이·캐시의 부하를 늘린다**는 경고까지 적혀 있다."
     }
   ]
 }

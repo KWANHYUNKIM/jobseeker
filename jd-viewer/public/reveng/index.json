@@ -319,10 +319,10 @@
       "name_en": "Grafana Labs",
       "country": "US",
       "category": "SaaS",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-22",
       "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
-      "features_done": 1,
+      "features_done": 2,
       "domain": "grafana.com"
     }
   ],
