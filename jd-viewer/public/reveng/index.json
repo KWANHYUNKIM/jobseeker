@@ -360,6 +360,18 @@
       "one_liner": "한 앱 안에서 태우고 배달하고 결제까지 하는 회사 — 그래서 '누가 사기꾼인가'를 한자리에서 세야 한다",
       "features_done": 3,
       "domain": "grab.com"
+    },
+    {
+      "slug": "trivago",
+      "name": "트리바고",
+      "name_en": "trivago",
+      "country": "EU",
+      "category": "검색",
+      "status": "in_progress",
+      "updated_at": "2026-08-22",
+      "one_liner": "자기 재고가 없는 검색 — 남의 가격을 모아 비교하고, 그 가격이 낡으면 그게 곧 장애다",
+      "features_done": 1,
+      "domain": "trivago.com"
     }
   ],
   "domains": [
@@ -479,7 +491,9 @@
     "회계·리포팅 원장",
     "이상거래 카운터 저장소",
     "데이터 레이크",
-    "배차 실험·검증"
+    "배차 실험·검증",
+    "Kafka 소비 파이프라인",
+    "내부 API 통합"
   ],
   "countries": {
     "KR": "한국",

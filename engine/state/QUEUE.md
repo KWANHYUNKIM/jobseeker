@@ -7,7 +7,20 @@
 > 잔량이 목표(3)보다 적으면 후보 조사 사이클을 띄운다. 산문으로 적으면 세지 못한다.
 > **⚠️ 행을 추가할 때는 앞 행 끝의 줄바꿈을 확인한다** — 두 번(Canva·Grafana) 앞 행에 붙어
 > 큐 잔량이 잘못 세어졌다. 고친 뒤 `sed -n '/^## 대기/,/^### 확인/p' engine/state/QUEUE.md | grep -c '^| \*\*'` 로 센다.
-> `## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
+> `## 진행 중
+
+- **trivago** (EU · 검색) — 사이클 174 에서 열었다. **31번째 회사.** 프로파일 + 도메인 2개
+  (Kafka 소비 파이프라인 · 내부 API 통합) + 기능 1개(`kafka-consumers`) 완료.
+  **다음 기능은 `내부 API 통합`** — 자료 확인 완료(`2026-03-27 unifying-internal-apis...`:
+  **상류 15개 이상**(OpenAPI·MySQL·gRPC·기존 GraphQL·분석 뷰)을 **GraphQL Mesh 스키마 스티칭**으로
+  묶었고 **Federation 을 버린 이유가 "상류가 GraphQL 을 채택하고 스키마를 조율해야 해서"** 다.
+  스키마를 **의도적으로 얕고 넓게** 뒀다 — 상류가 병합 속도보다 빨리 바뀌기 때문. **6년째 운영**.
+  인정한 한계가 많다: **스키마 레지스트리 없음**(깨지는 변경을 수동/런타임에 발견, *"자랑스럽지
+  않다"*), 스테이징이 프로덕션에 붙기도 함, 감사 항목을 클라이언트가 구성해야 함).
+  **두 번째 글이 필요하다** — `2022-05-16 warp-a-web-application-rewrite-project` 확인.
+  ⚠️ **메타서치의 본체(가격 수집·비교·랭킹·광고 입찰) 자료는 못 찾았다.**
+
+## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
 
 ## 대기
 
@@ -16,7 +29,6 @@
 
 
 
-| **trivago** | DE/EU · 검색 | `tech.trivago.com` | ✅ **접속 확인.** 목록이 열리고 최근 글에 수치·버린 안이 명시돼 있다 | **여행 메타서치**는 이 엔진에 없는 축이다 — 자기 재고가 없고 **남의 재고를 모아 비교**해 파는 쪽이라 쿠팡·아마존·무신사와 다르다. 확인된 글: `2026-06-12 how-we-cut-kafka-consumer-deployment-costs-by-83`(**Kafka 컨슈머 배포 비용 83% 절감**, 계층별 성능 조사, **P1 사고 19건**을 다룬다), `2026-03-27 unifying-internal-apis-a-different-use-case-for-graphql-gateways`(**고객 대면이 아닌 내부 API 통합** — GraphQL 게이트웨이의 다른 용례라고 스스로 구분한다), `2026-02-18 from-always-on-to-on-demand-scaling-kafka-sinks-with-keda`(상시 가동 → 온디맨드), `2022-05-16 warp-a-web-application-rewrite-project`(웹 앱 재작성). **⚠️ 아직 본문은 안 읽었다 — 팔기 전에 한 편을 정독할 것** |
 
 | **Allegro** | PL/EU · 커머스 | `blog.allegro.tech` | ✅ **접속 확인.** 목록이 열리고 최근 글에 수치·되돌린 결정이 있다 | **폴란드 최대 마켓플레이스** — 이 엔진에 **동유럽 회사가 0곳**이다. 가장 눈에 띄는 글은 **`2026/08/back-to-dc-in-2026`(클라우드에서 데이터센터로 되돌아간 이야기)** — *"클라우드가 늘 정답은 아니다"* 를 다룬다. **비교 축 ⑫ '해 보고 되돌린 것'의 재료**가 되고, **Adyen 의 '클라우드에 있지 않다'와 짝**이 된다. 그 밖에 `how-we-achieved-independent-deployments-in-a-frontend-architecture`(마이크로 프론트엔드 독립 배포 — 여러 접근을 거쳐 찾았고 **수치를 함께 밝힌다**), `how-ai-agents-halved-effort-migrating-gradle-modules-koin-to-hilt`(**Gradle 모듈 500개** 이관, 모듈당 **약 1주 → 이틀 미만**). **⚠️ 아직 본문 미독 — 팔기 전에 `back-to-dc-in-2026` 을 정독할 것** |
 
