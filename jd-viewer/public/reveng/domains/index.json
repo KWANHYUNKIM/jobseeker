@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-08-22",
   "docs": [
     {
       "slug": "webtoon-distribution",
@@ -282,16 +282,38 @@
         "baemin",
         "instagram",
         "bytedance",
-        "spotify"
+        "spotify",
+        "canva"
       ],
       "features": [
         "rider-dispatch",
         "notification-diversity",
         "heteroscale",
         "megascale",
-        "llm-evals-vs-experiments"
+        "llm-evals-vs-experiments",
+        "session-revocations"
       ],
       "file": "wrong-yardstick.md"
+    },
+    {
+      "slug": "move-the-axis",
+      "title": "양 끝 중 하나를 고르지 않는 법",
+      "question": "절충점이 없는 갈등 앞에서, 손잡이를 돌리는 대신 그 손잡이가 걸려 있던 축을 어떻게 바꿨는가?",
+      "companies": [
+        "ly-corporation",
+        "github",
+        "dropbox",
+        "spotify",
+        "canva"
+      ],
+      "features": [
+        "kafka-e2ee",
+        "actions-runners",
+        "magic-pocket",
+        "rap",
+        "session-revocations"
+      ],
+      "file": "move-the-axis.md"
     }
   ]
 }
