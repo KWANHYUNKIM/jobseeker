@@ -1385,5 +1385,6 @@
       "date": "2021-05-13",
       "summary": "인기도만 보던 '무신사 추천순'에 적합도를 더한 과정. '레이스 양말'에 삭스 부츠가 뜨던 문제에서 시작해, BM25 프로토타입으로 가중치를 시뮬레이션하고 Elasticsearch Function score query 로 구현했다. A/B 테스트에서 mAP 37.13% → 37.64%."
     }
-  ]
+  ],
+  "domain": "musinsa.com"
 }

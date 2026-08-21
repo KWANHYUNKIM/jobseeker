@@ -2072,5 +2072,6 @@
     "title": "토스 도메인 지도",
     "question": "돈이 어디서 들어와 어디로 흐르고, 그 길목마다 어느 도메인이 서 있는가?",
     "code": "flowchart TD\n  U[사용자] --> AUTH[인증]\n  M[가맹점] --> PAY[결제]\n  AUTH -->|Passport 로 신원 확정| SEND[송금원장]\n  AUTH -->|전자서명으로 계약 성립| CORE[코어뱅킹]\n  AUTH -->|앱 요청 검증| PAY\n  PAY -->|계좌이체 수단일 때 자금 이동| SEND\n  CORE -->|이자 지급 = 계좌 입금| SEND\n  SEND -->|잔액·거래내역| CORE\n  PAY -->|결제 수수료| REV1[머천트 매출]\n  AUTH -->|인증 · 중개 · 광고| REV2[컨슈머 매출]\n  CORE -->|예대마진| REV2\n  SEND -.->|수익 없음 · 유입 담당| REV2\n  classDef money fill:transparent,stroke-dasharray: 3 3\n  class REV1,REV2 money"
-  }
+  },
+  "domain": "toss.im"
 }

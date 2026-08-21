@@ -991,5 +991,6 @@
       "date": "2026-07-31",
       "summary": "조기 종료를 **없애서** 케이스 폴딩을 3.1 → 45 GiB/s 로 만든 기록. Blackbird 의 현재 규모(저장소 1.8억·480TB)도 여기 있다. 저자 Alexander Neubeck · Greg Orzell."
     }
-  ]
+  ],
+  "domain": "github.com"
 }

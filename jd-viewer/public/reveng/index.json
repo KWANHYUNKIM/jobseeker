@@ -10,7 +10,8 @@
       "status": "done",
       "features_done": 5,
       "one_liner": "송금에서 시작해 금융 슈퍼앱이 된 핀테크",
-      "updated_at": "2026-08-20"
+      "updated_at": "2026-08-20",
+      "domain": "toss.im"
     },
     {
       "slug": "naver",
@@ -21,7 +22,8 @@
       "status": "done",
       "features_done": 8,
       "one_liner": "검색 지면에서 광고와 커머스로 돈을 버는 한국의 관문 포털",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "naver.com"
     },
     {
       "slug": "kakao",
@@ -32,7 +34,8 @@
       "status": "in_progress",
       "features_done": 6,
       "one_liner": "메시지가 반드시 도착한다는 약속 위에 올린 국민 플랫폼",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "kakaocorp.com"
     },
     {
       "slug": "baemin",
@@ -43,7 +46,8 @@
       "status": "done",
       "features_done": 5,
       "one_liner": "음식이 식기 전에 닿아야 하는 물류를 앱으로 만든 회사",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "baemin.com"
     },
     {
       "slug": "daangn",
@@ -54,7 +58,8 @@
       "status": "done",
       "features_done": 5,
       "one_liner": "'같은 동네 사람'이라는 전제 하나로 굴러가는 로컬 플랫폼",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "daangn.com"
     },
     {
       "slug": "coupang",
@@ -65,7 +70,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "'내일 도착한다'는 약속 하나를 지키려고 물류를 직접 소유한 커머스",
-      "features_done": 5
+      "features_done": 5,
+      "domain": "coupang.com"
     },
     {
       "slug": "musinsa",
@@ -76,7 +82,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "'같은 옷을 뭐라고 부를 것인가'부터 정해야 추천이 되는 패션 플랫폼",
-      "features_done": 3
+      "features_done": 3,
+      "domain": "musinsa.com"
     },
     {
       "slug": "stripe",
@@ -87,7 +94,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "되돌릴 수 없는 일을 다시 시도해도 안전하게 만드는 일을 파는 회사",
-      "features_done": 6
+      "features_done": 6,
+      "domain": "stripe.com"
     },
     {
       "slug": "uber",
@@ -98,7 +106,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "움직이는 사람들을 다루려고 지구를 육각형으로 덮은 회사",
-      "features_done": 3
+      "features_done": 3,
+      "domain": "uber.com"
     },
     {
       "slug": "instagram",
@@ -109,7 +118,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "수십억 개 중에서 고르되 한 번에 고르지 않는 법을 파는 회사",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "instagram.com"
     },
     {
       "slug": "netflix",
@@ -120,7 +130,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "평균에 맞춘 하나의 답을 버린 회사",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "netflix.com"
     },
     {
       "slug": "youtube",
@@ -131,7 +142,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "회사가 고르지 않은 카탈로그 위에서 성과의 정의부터 다시 세운 회사",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "youtube.com"
     },
     {
       "slug": "discord",
@@ -142,7 +154,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "몰리는 것을 합치고, 터지기 전에 세어 보는 회사",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "discord.com"
     },
     {
       "slug": "shopify",
@@ -153,7 +166,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "남의 가게가 판 만큼 버는 회사",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "shopify.com"
     },
     {
       "slug": "figma",
@@ -164,7 +178,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "권위가 하나 있다는 사실에서 걷어낼 것을 세어 나간 회사",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "figma.com"
     },
     {
       "slug": "cloudflare",
@@ -175,7 +190,8 @@
       "status": "done",
       "features_done": 4,
       "one_liner": "남의 트래픽과 남의 코드를 자기 서버에서 대신 다뤄 주고 돈을 받는 회사",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "cloudflare.com"
     },
     {
       "slug": "datadog",
@@ -186,7 +202,8 @@
       "status": "done",
       "features_done": 4,
       "one_liner": "남의 시스템이 무슨 일을 겪고 있는지 보여 주는 것이 제품인 회사",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "datadoghq.com"
     },
     {
       "slug": "notion",
@@ -197,7 +214,8 @@
       "status": "done",
       "features_done": 4,
       "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "notion.com"
     },
     {
       "slug": "roblox",
@@ -208,7 +226,8 @@
       "status": "in_progress",
       "features_done": 3,
       "one_liner": "남이 만든 세계를 남의 기계가 아니라 우리 기계에서 돌려 주는 회사",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "roblox.com"
     },
     {
       "slug": "slack",
@@ -219,7 +238,8 @@
       "status": "done",
       "features_done": 4,
       "one_liner": "메시지 하나가 조직 하나의 일이 되는 회사",
-      "updated_at": "2026-08-21"
+      "updated_at": "2026-08-21",
+      "domain": "slack.com"
     },
     {
       "slug": "dropbox",
@@ -230,7 +250,8 @@
       "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "남의 클라우드를 떠나 엑사바이트를 자기 하드웨어에 얹은 회사 — 원가가 감가상각으로 잡힌다",
-      "features_done": 4
+      "features_done": 4,
+      "domain": "dropbox.com"
     },
     {
       "slug": "github",
@@ -241,7 +262,8 @@
       "status": "in_progress",
       "updated_at": "2026-08-21",
       "one_liner": "남의 코드를 맡고, 실행하고, 검색해 주는 회사 — 셋 다 규모의 성질이 다르다",
-      "features_done": 1
+      "features_done": 1,
+      "domain": "github.com"
     }
   ],
   "domains": [
