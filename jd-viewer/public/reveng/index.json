@@ -198,6 +198,17 @@
       "features_done": 4,
       "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "roblox",
+      "name": "Roblox",
+      "name_en": "Roblox",
+      "country": "US",
+      "category": "게임",
+      "status": "in_progress",
+      "features_done": 1,
+      "one_liner": "남이 만든 세계를 남의 기계가 아니라 우리 기계에서 돌려 주는 회사",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -279,7 +290,11 @@
     "블록 데이터 모델",
     "저장·샤딩",
     "동시 편집·실시간",
-    "검색·AI"
+    "검색·AI",
+    "서비스 발견·오케스트레이션",
+    "게임 서버 운영",
+    "콘텐츠 저장·전송",
+    "안전·모더레이션"
   ],
   "countries": {
     "KR": "한국",
