@@ -125,3 +125,4 @@ STATE.md 가 "다음 실행이 알아야 할 것"이라면 여기는 "무엇을 
 | 115 | 2026-08-21 | Cloudflare | 엣지 네트워크 `unimog-edge-lb` — 전용 LB 계층을 없애고 모든 서버가 서로에게 넘긴다. **논문 2편으로 끝낸 첫 사례**(Beamer 는 회사가 직접 언급) | Cloudflare 컴퓨트 또는 보안 |
 | 116 | 2026-08-21 | Cloudflare | 엣지 컴퓨트 `workers-isolation` — **고칠 수 없는 것을 비싸게 만든다.** 회사가 '아무도 Spectre 를 고치지 못했다'를 명시. 논문 1편(회사 공저) | Cloudflare 보안·차단 → 완주 판정 |
 | 117 | 2026-08-21 | Cloudflare | 보안·차단 `autonomous-ddos` — 물어볼 시간이 없을 때 스스로 정한다. **Cloudflare 완주(도메인 4·기능 4)**. 논문 0편 — 억지로 안 채웠다 | Datadog 신규 |
+| 118 | 2026-08-21 | Datadog | **17번째 회사 시작.** 프로파일(도메인 4·수익원 2) + `husky-exactly-once` — **받은 데이터가 곧 청구서**라 중복이 금액의 문제가 된다. 논문 0편 | Datadog 확장 |

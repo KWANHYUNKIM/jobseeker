@@ -176,6 +176,17 @@
       "features_done": 4,
       "one_liner": "남의 트래픽과 남의 코드를 자기 서버에서 대신 다뤄 주고 돈을 받는 회사",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "datadog",
+      "name": "Datadog",
+      "name_en": "Datadog",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 1,
+      "one_liner": "남의 시스템이 무슨 일을 겪고 있는지 보여 주는 것이 제품인 회사",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -249,7 +260,11 @@
     "엣지 네트워크·트래픽 전달",
     "엣지 컴퓨트 (Workers)",
     "엣지 저장",
-    "보안·차단 판단"
+    "보안·차단 판단",
+    "수집 (ingestion)",
+    "저장·멀티테넌시",
+    "실시간 시계열",
+    "질의·대시보드"
   ],
   "countries": {
     "KR": "한국",
