@@ -53,8 +53,8 @@
   ],
   "domains": [
     {
-      "name": "거대 단일 데이터베이스 줄이기",
-      "why": "**5,000만 사용자와 100개 도시의 라이드·배달·결제가 한때 단일 RDS for MySQL 위에 있었다.** 그 데이터베이스가 **270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다.\n\n**그런데 이 도메인의 어려움은 지우는 일 자체에 있었다.** 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼는데, 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL(히스토리 리스트 길이)이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다.",
+      "name": "인프라 비용이 새는 자리",
+      "why": "**5,000만 사용자 · 100개 도시를 AWS 위에서 굴리면 비용이 여러 층에서 동시에 샌다.** 이 회사의 엔지니어링 글 중 둘이 그 자리를 다루는데, **층은 다른데 하는 일이 같다** — 재고, 비교하고, 고르고, **프로덕션에서 다시 확인한다**(이 관찰은 이 사이트의 것이다).\n\n**하나는 저장이다.** 라이드·배달·결제가 **단일 RDS for MySQL** 위에 있었고 **270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 그런데 **줄이려는 행위 자체가 더 큰 문제**였다 — **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼고 업무 SLA 는 **1밀리초**였다.\n\n**다른 하나는 전송이다.** Kafka 로 흐르는 이벤트의 저장과 네트워크가 곧 청구서인데, 코덱을 **실제 프로덕션 메시지 20만 건**으로 재 보고 골랐다.\n\n**두 경우 모두 값이 예상한 자리에서 나오지 않았다** — 지우면 줄 줄 알았는데 **언두 로그가 쌓였고**, 압축하면 CPU 를 더 쓸 줄 알았는데 **Gzip 은 프로듀서가 놀아서 CPU 가 오히려 낮게 보였다.**\n\n⚠️ **이 회사의 엔지니어링 글은 여섯 편뿐이다.** 이 도메인은 원래 저장과 전송으로 나눠 열었다가, **각각 글이 하나씩뿐이라 하나로 합쳤다**(이 판단은 이 사이트의 것이다).",
       "tech": [
         {
           "tech": "지우는 대신 옮겨 담기 — 퍼지 병목을 우회한다",
@@ -70,14 +70,7 @@
               "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
             }
           ]
-        }
-      ],
-      "features": []
-    },
-    {
-      "name": "이벤트 파이프라인 비용",
-      "why": "**네 사업이 한 앱에 있으면 이벤트도 한 파이프라인으로 몰린다.** 이 회사는 Kafka 를 쓰는데, **저장과 네트워크가 곧 청구서**가 된다.\n\n그래서 **재 보고 골랐다** — 실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none · Snappy · Gzip · Zstd · LZ4)을 비교했다.",
-      "tech": [
+        },
         {
           "tech": "코덱 다섯을 재고 LZ4 를 고르기",
           "solves": "고른 결과가 한쪽으로 쏠린다 — 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. 그리고 **벤치마크에서 끝내지 않았다** — **1KB Avro 프로덕션 토픽**에 실제로 적용해 **저장과 네트워크가 약 45% 줄어드는 것**을 확인했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가).",
@@ -94,7 +87,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "cost-leaks"
+      ]
     },
     {
       "name": "화면을 서버가 정한다",
@@ -116,7 +111,8 @@
           ]
         }
       ],
-      "features": []
+      "features": [],
+      "hold_reason": "글이 한 편뿐이고 **그 글에 수치가 하나도 없다** — 화면 수·팀 수·실제로 얼마나 빨라졌는지가 나오지 않고 버린 대안도 논하지 않는다. **한 도메인당 최소 두 글** 규칙을 채울 두 번째 글을 못 찾아 기능을 열지 않는다. 이 회사의 엔지니어링 글이 여섯 편뿐이라, 새 글이 나오기 전에는 이 자리가 채워지지 않을 것으로 보인다."
     }
   ],
   "open_questions": [
@@ -125,7 +121,10 @@
     "**진출 국가 목록을 1차 자료로 확인하지 못했다** — 홈페이지가 `/en-AE/` 경로를 쓰는 것으로 UAE 를 짐작할 뿐이다.",
     "**얼굴 인식으로 중복 Captain 계정을 찾는 글은 제목만 확인했다.** 공급자 신원 확인이 이 시장에서 어떤 문제인지 알 만한 자리인데, **본문을 읽지 않아 도메인으로 열지 않았다.**",
     "**서버 주도 UI 글에는 수치가 하나도 없다** — 이 도메인으로 기능을 쓰려면 **두 번째 글이 반드시 필요하다.**",
-    "**단일 MySQL 을 '나누는' 이야기는 못 찾았다** — 읽은 글은 **줄이는 방법**(퍼지·이관)이고, 그 뒤 샤딩이나 분리를 했는지는 나오지 않는다."
+    "**단일 MySQL 을 '나누는' 이야기는 못 찾았다** — 읽은 글은 **줄이는 방법**(퍼지·이관)이고, 그 뒤 샤딩이나 분리를 했는지는 나오지 않는다.",
+    "**이 회사의 엔지니어링 글이 여섯 편뿐이라 도메인 셋은 과했다.** 저장과 전송을 따로 열었다가 **각각 글이 하나씩뿐이어서 `인프라 비용이 새는 자리` 하나로 합쳤다.** `화면을 서버가 정한다` 는 **수치가 하나도 없어 보류(hold_reason)** 로 두었다.",
+    "**`/tech/blogs` 에 '더 보기' 버튼이 있어 글이 더 있을 수 있다** — 이 사이트가 확인한 것은 엔지니어링 6편 + Academia 3편뿐이다.",
+    "**Academia 섹션에 논문 성격의 글이 있다** — `STEF-DHNet`(장기 택시 수요 예측)과 `Silent Labor Time in the Gig Economy`. **제목만 확인했고 읽지 않았다** — 수요 예측이나 공급자 대기 시간은 도메인을 하나 더 열 재료가 될 수 있다."
   ],
   "sources": [
     {
@@ -164,5 +163,452 @@
       "summary": "**제목만 확인했고 본문은 읽지 않았다.** 다만 제목에서 이 회사가 기사를 **Captain** 이라 부른다는 것과, **중복 계정**을 문제로 다룬다는 것을 확인했다."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "cost-leaks",
+      "name": "예상한 자리에서 새지 않는다",
+      "domain": "인프라 비용이 새는 자리",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "**이 기능은 같은 회사의 두 사건을 나란히 놓은 것이다.** 층이 다르고 도구가 다른데, **값이 예상 밖의 자리에서 나왔다는 점이 같다.**\n\n**첫째 — 지우면 줄어들 줄 알았다.** 라이드·배달·결제가 **단일 RDS for MySQL 270TB** 위에 있었고, 4단계로 **24TB 를 지우기** 시작했다. 그런데 지우는 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 삭제 자체가 아니라 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었다. **InnoDB HLL(히스토리 리스트 길이)이 58.7억**까지 올랐고 **언두 로그가 5.7TB** 생겼다. **지운 것을 실제로 치우는 일이 지우는 일보다 비쌌다**(이 정리는 이 사이트의 것이다).\n\n**둘째 — 압축하면 CPU 를 더 쓸 줄 알았다.** 코덱 다섯을 실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 재 봤더니, **Gzip 의 CPU 가 낮게 나왔다.** 그런데 회사는 그것을 이득으로 읽지 않고 **착시라고 짚는다** — *\"프로듀서가 놀고 있어서\"* 낮게 보인 것이다. **지표 하나만 보면 가장 느린 것이 가장 효율적으로 보인다**(이 해석은 이 사이트의 것이다).\n\n**두 사건에서 결정을 가른 것은 둘 다 '재 본 숫자'였다.** 저장 쪽에서는 **자연 감소를 기다리면 약 3.5개월**이라는 계산이 대안을 지웠고, 전송 쪽에서는 다섯 코덱의 표가 **LZ4** 를 가리켰다.",
+        "metrics": [
+          {
+            "label": "저장 — 줄인 결과",
+            "value": "**270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, **언두 로그 5.7TB → 5.7GB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "label": "저장 — 지연",
+            "value": "업무 SLA **1ms** · 퍼지 중 **20ms 초과**(실패) · 최종 **0.54ms**. IOPS 는 22,000 → 30,000 → (퍼지 중) **50,000** → **12,000**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "label": "저장 — 버린 대안의 값",
+            "value": "자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 **약 3.5개월**\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "label": "전송 — 고른 결과",
+            "value": "LZ4 — 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+                "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+                "publisher": "Careem Engineering",
+                "date": "2026-06-02",
+                "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+              }
+            ]
+          },
+          {
+            "label": "전송 — 프로덕션 검증",
+            "value": "**1KB Avro 토픽에서 저장·네트워크 약 45% 감소**(벤치마크의 88.2% 와 다르다)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+                "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+                "publisher": "Careem Engineering",
+                "date": "2026-06-02",
+                "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+              }
+            ]
+          },
+          {
+            "label": "이관에 든 시간",
+            "value": "복제 따라잡기 **7시간**(1~3단계) · **11시간**(DMS). 읽기 레플리카 **5대** 유지, **binlog 보존 최대 7일**, *\"사실상 무중단\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "퍼지 중에 지연이 튀는 것을 볼 때",
+          "thought": "지우면 가벼워질 것 같은데 오히려 무거워졌다. **삭제는 즉시가 아니라 예약**이기 때문이다 — 행에 표시만 하고 실제 정리는 나중에 하는데, 그 '나중'이 밀리면 **언두 로그가 쌓이고 읽는 쪽이 그것을 다 건너뛰어야** 한다. HLL 58.7억은 그 밀린 양의 이름이다(뒤 절은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "기다릴지 옮길지 정할 때",
+          "thought": "기다리면 언젠가는 줄어든다. 그래서 **얼마나 걸리는지를 계산했다** — *\"58.7억에서 10만으로 줄이는 데 약 3.5개월.\"* **그 숫자가 대안을 지웠다.** 막연히 '오래 걸린다'가 아니라 **일정과 비교할 수 있는 값**으로 만든 것이 이 결정의 방식이다(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "코덱 표를 읽을 때",
+          "thought": "**Gzip 의 CPU 가 낮게 나왔다.** 좋아 보이는 숫자였는데, 회사는 그것을 *\"프로듀서가 놀고 있어서\"* 라고 짚는다 — 너무 느려서 CPU 를 쓸 일이 없었던 것이다. **가장 느린 것이 지표 하나에서는 가장 효율적으로 보인다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "벤치마크와 프로덕션이 다를 때",
+          "thought": "4.37MB JSON 에서 저장이 **88.2%** 줄었는데 1KB Avro 프로덕션 토픽에서는 **약 45%** 였다. **압축 이득은 코덱이 아니라 메시지의 모양에 달려 있다** — 그래서 벤치마크에서 멈추지 않고 실제 토픽에서 다시 쟀다(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "삭제 표시된 행",
+            "what": "MySQL 에서 지운 행. **바로 사라지지 않고** 언두 로그를 거쳐 나중에 정리된다."
+          },
+          {
+            "name": "언두 로그",
+            "what": "정리 대기 중인 옛 버전이 쌓이는 곳. 이 사건에서 **5.7TB** 까지 갔다."
+          },
+          {
+            "name": "InnoDB HLL (히스토리 리스트 길이)",
+            "what": "아직 치우지 못한 이력의 길이. **58.7억**이 문제의 크기였고, 자연 감소에 *\"약 3.5개월\"* 이 걸린다는 계산의 대상이다."
+          },
+          {
+            "name": "압축 코덱",
+            "what": "Kafka 프로듀서가 고르는 것 — none · Snappy · Gzip · Zstd · **LZ4**. 저장·네트워크·CPU·지연을 서로 바꾼다."
+          },
+          {
+            "name": "메시지 모양",
+            "what": "압축 이득을 정하는 것. **4.37MB JSON 에서 88.2%, 1KB Avro 에서 약 45%.**"
+          }
+        ],
+        "invariants": [
+          "**업무 SLA 는 1밀리초다** — 정리 작업이 그것을 넘기면 그 작업이 잘못된 것이다.",
+          "**벤치마크에서 끝내지 않는다** — 프로덕션 토픽에서 다시 잰다.",
+          "**버린 대안은 값을 매겨서 버린다** — *\"약 3.5개월\"* 처럼 일정과 비교할 수 있는 값으로.",
+          "이관 중에도 **읽기 레플리카 5대**를 유지하고 **binlog 보존 7일** 안에 끝낸다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**저장** — Go 로 만든 삭제 잡이 `MaxConcurrency` 로 스레드를 조절하며 배치로 지운다(4단계, 총 24TB)",
+            "why": "한 번에 지우면 데이터베이스가 그동안 다른 일을 못 한다."
+          },
+          {
+            "step": "퍼지 중 IOPS 를 **22,000 → 30,000 → 50,000** 으로 올린다",
+            "why": "지우는 동안에만 필요한 성능이라 그때만 산다."
+          },
+          {
+            "step": "(사고) 4단계에서 읽기·쓰기 지연이 **20밀리초**를 넘는다 — SLA 는 1밀리초",
+            "why": "삭제 표시된 행이 언두 로그에 쌓여 **HLL 이 58.7억**이 됐고, 읽는 쪽이 그것을 건너뛰어야 한다."
+          },
+          {
+            "step": "자연 감소를 계산한다 — *\"58.7억에서 10만으로 약 3.5개월\"*",
+            "why": "기다리는 안을 **일정과 비교할 수 있는 값**으로 만들어야 버릴 수 있다."
+          },
+          {
+            "step": "**AWS DMS Serverless 로 정리된 데이터를 새 인스턴스에 옮겨 담는다**",
+            "why": "퍼지를 기다리는 대신 **깨끗한 데이터베이스를 다시 만들어** 병목 자체를 건너뛴다."
+          },
+          {
+            "step": "이관 중 읽기 레플리카 **5대**를 유지하고 **binlog 7일** 안에 끝낸다. 복제 따라잡기 **11시간**",
+            "why": "서비스는 멈출 수 없다 — 회사는 *\"사실상 무중단\"* 이었다고 적는다."
+          },
+          {
+            "step": "끝난 뒤 IOPS 를 **12,000** 으로 내린다",
+            "why": "올린 것을 내리지 않으면 절감이 사라진다."
+          },
+          {
+            "step": "**전송** — 코덱 다섯을 실제 프로덕션 메시지 **20만 건**으로 잰다",
+            "why": "합성 데이터로는 메시지 모양이 실제와 달라 결과가 달라진다."
+          },
+          {
+            "step": "LZ4 를 고르고 **1KB Avro 프로덕션 토픽에서 다시 잰다** — 저장·네트워크 약 45% 감소",
+            "why": "벤치마크의 88.2% 가 실제로도 나오는지 확인해야 한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "지울 것인가, 옮겨 담을 것인가",
+            "chosen": "**옮겨 담는다** — DMS Serverless 로 새 인스턴스에 정리된 데이터를 넣는다",
+            "alternatives": [
+              "계속 지우면서 InnoDB 퍼지가 따라오기를 기다리기"
+            ],
+            "tradeoff": "**지운 것을 실제로 치우는 일이 지우는 일보다 비쌌다** — HLL 58.7억, 언두 로그 5.7TB, 지연 20ms. 옮겨 담으면 그 청소를 통째로 건너뛰지만, **이관에 11시간이 들고 그동안 두 벌을 유지**해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "question": "자연 감소를 기다릴 것인가",
+            "chosen": "**기다리지 않는다**",
+            "alternatives": [
+              "InnoDB 가 스스로 HLL 을 줄일 때까지 두기 — *\"58.7억에서 10만으로 약 3.5개월\"*"
+            ],
+            "tradeoff": "**대안을 시간으로 계산해서 버렸다.** 3.5개월이라는 값이 없었다면 *\"언젠가는 줄어든다\"* 와 *\"일정에 안 맞는다\"* 를 비교할 수 없었을 것이다(이 정리는 이 사이트의 것이다). 대신 **그 3.5개월 동안 저절로 될 일을 사람이 하게** 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "question": "한 번에 지울 것인가 나눠 지울 것인가",
+            "chosen": "**4단계로 나눈다** — Go 삭제 잡이 `MaxConcurrency` 로 스레드를 조절한다",
+            "alternatives": [
+              "한 번에 24TB 를 지우기"
+            ],
+            "tradeoff": "나눠도 **4단계에서 결국 SLA 를 넘겼다** — 나누는 것만으로는 언두 로그 누적을 못 막았다는 뜻이다(이 해석은 이 사이트의 것이다). 동시성 손잡이가 있어도 **지운 양 자체가 원인**이면 조절로 안 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "question": "IOPS 를 언제 올리고 내릴 것인가",
+            "chosen": "**퍼지 동안만 올린다** — 22,000 → 30,000 → **50,000**, 끝난 뒤 **12,000**",
+            "alternatives": [
+              "평소 수준을 유지하며 천천히 하기",
+              "높인 채로 두기"
+            ],
+            "tradeoff": "작업에 필요한 성능을 **작업하는 동안만** 산다. 끝난 뒤 **원래보다 낮은 12,000** 으로 내려간 것이 이 프로젝트의 절감 중 하나다. 대신 **올린 것을 내리는 일을 잊으면** 절감이 사라진다(뒤 문장은 이 사이트의 해석이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "question": "이관 중 서비스를 멈출 것인가",
+            "chosen": "**멈추지 않는다** — 읽기 레플리카 5대를 유지한 채, *\"사실상 무중단\"*",
+            "alternatives": [
+              "점검 시간을 잡고 한 번에 옮기기"
+            ],
+            "tradeoff": "**binlog 보존이 최대 7일**이라 그 안에 끝내야 하고, 복제 따라잡기에만 **11시간**이 걸린다. 즉 **멈추지 않기로 하면 시계가 돌기 시작한다**(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "question": "압축 코덱을 무엇으로 고를 것인가",
+            "chosen": "**LZ4** — 처리량 336 msg/s · P99.9 35ms · 저장 88.2% 절감 · CPU +8.3%",
+            "alternatives": [
+              "**Gzip** — *\"극도로 느리다\"*",
+              "**Zstd** — 압축은 좋은데 **CPU 부담**",
+              "**Snappy** — 전 지표에서 LZ4 에 밀린다",
+              "압축하지 않기"
+            ],
+            "tradeoff": "**버린 이유가 각각 다르다**는 것이 이 표의 값이다. 그리고 **Gzip 의 CPU 가 낮게 나온 것을 회사가 착시로 짚는다** — *\"프로듀서가 놀고 있어서\"* 다. **가장 느린 것이 지표 하나에서는 가장 효율적으로 보인다**(이 표현은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+                "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+                "publisher": "Careem Engineering",
+                "date": "2026-06-02",
+                "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+              }
+            ]
+          },
+          {
+            "question": "무엇으로 잴 것인가",
+            "chosen": "**실제 프로덕션 메시지 20만 건**(약 4.37MB JSON)",
+            "alternatives": [
+              "합성 데이터로 벤치마크하기"
+            ],
+            "tradeoff": "메시지의 모양이 결과를 정하기 때문이다 — 실제로 **4.37MB JSON 에서 88.2%** 였던 절감이 **1KB Avro 에서는 약 45%** 였다. 대신 **프로덕션 데이터를 벤치마크에 쓰는 부담**이 따른다(추정).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+                "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+                "publisher": "Careem Engineering",
+                "date": "2026-06-02",
+                "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+              }
+            ]
+          },
+          {
+            "question": "벤치마크에서 끝낼 것인가",
+            "chosen": "**프로덕션 토픽에서 다시 잰다** — 1KB Avro 에서 저장·네트워크 약 45% 감소",
+            "alternatives": [
+              "벤치마크 결과를 그대로 적용하고 끝내기"
+            ],
+            "tradeoff": "다시 잰 덕분에 **88.2% 와 45% 의 차이**를 알게 됐다. 소비자 쪽 CPU 가 압축 해제로 **소폭 증가**하는 것도 이때 확인된다. 대신 **적용과 검증에 시간이 더 든다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+                "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+                "publisher": "Careem Engineering",
+                "date": "2026-06-02",
+                "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Amazon RDS for MySQL (InnoDB)",
+            "role": "라이드·배달·결제가 올라 있던 단일 데이터베이스. **270TB → 78TB.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "tech": "Go 삭제 잡 (`MaxConcurrency`)",
+            "role": "배치로 지우면서 **동시 스레드 수를 조절**한다 — 지우는 동안 서비스를 덜 방해하려는 손잡이.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "tech": "AWS DMS Serverless",
+            "role": "정리된 데이터를 새 인스턴스로 옮겨 담아 **InnoDB 퍼지 병목을 우회**한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "tech": "프로비저닝된 IOPS",
+            "role": "퍼지 동안만 **50,000** 까지 올리고 끝나면 **12,000** 으로 내린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+                "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+                "publisher": "Careem Engineering",
+                "date": "2025-05-16",
+                "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+              }
+            ]
+          },
+          {
+            "tech": "Kafka 프로듀서 압축 (LZ4)",
+            "role": "이벤트의 저장·네트워크 비용을 줄인다. 다섯 코덱을 재고 골랐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+                "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+                "publisher": "Careem Engineering",
+                "date": "2026-06-02",
+                "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [],
+      "diagrams": [
+        {
+          "title": "지우는 대신 옮겨 담는다",
+          "kind": "flow",
+          "question": "줄이려는 행위가 문제를 키울 때 무엇을 하는가?",
+          "code": "flowchart TD\n  BIG[(\"<b>단일 RDS for MySQL — 270TB</b><br/>5,000만 사용자 · 100개 도시<br/>라이드 · 배달 · 결제\")]\n  JOB[\"<b>Go 삭제 잡</b><br/>MaxConcurrency 로 스레드 조절<br/>4단계 · 총 24TB\"]:::list\n  IOPS[\"IOPS 를 그때만 올린다<br/>22,000 → 30,000 → 50,000\"]:::quiet\n  UNDO[\"<b>언두 로그가 쌓인다</b><br/>HLL 58.7억 · 5.7TB<br/>지연 20ms (SLA 1ms)\"]:::accent\n  CALC[\"<b>기다리면?</b> — 계산한다<br/><i>58.7억 → 10만: 약 3.5개월</i>\"]:::list\n  DMS[\"<b>AWS DMS Serverless</b><br/>정리된 데이터를 새 인스턴스로<br/>= 퍼지를 건너뛴다\"]:::list\n  NEW[(\"<b>새 인스턴스 — 78TB</b><br/>언두 5.7GB · 지연 0.54ms<br/>IOPS 12,000\")]\n  KEEP[\"이관 중에도<br/>읽기 레플리카 5대 · binlog 7일 안에<br/><i>사실상 무중단</i>\"]:::quiet\n  BIG --> JOB --> UNDO\n  JOB --- IOPS\n  UNDO --> CALC --> DMS --> NEW\n  DMS --- KEEP"
+        },
+        {
+          "title": "삭제 표시된 행 하나가 겪는 것",
+          "kind": "state",
+          "question": "지웠는데 왜 안 없어지는가?",
+          "code": "stateDiagram-v2\n  [*] --> 살아있음: 행이 있다\n  살아있음 --> 삭제표시: DELETE\n  note right of 삭제표시\n    삭제는 즉시가 아니라 예약이다\n    표시만 하고 정리는 나중에\n  end note\n  삭제표시 --> 언두로그: 옛 버전이 쌓인다\n  언두로그 --> 정리됨: 퍼지가 따라온다\n  언두로그 --> 누적: <b>퍼지가 못 따라온다</b>\n  note right of 누적\n    HLL 58.7억 · 언두 로그 5.7TB\n    읽는 쪽이 이것을 건너뛰어야 한다\n    → 지연 20ms (SLA 1ms)\n  end note\n  누적 --> 대기: 자연 감소를 기다리면 약 3.5개월\n  누적 --> 우회: <b>새 인스턴스로 옮겨 담는다</b>\n  note right of 우회\n    이 행은 아예 옮겨지지 않는다\n    = 치울 필요가 없어진다\n  end note\n  정리됨 --> [*]\n  우회 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 지표 하나만 보면 속는다",
+          "kind": "failure",
+          "question": "값은 어디서 새고, 어디서 새는 것처럼 보이는가?",
+          "code": "flowchart TD\n  EXP1[\"<b>예상</b> — 지우면 가벼워진다\"] --> REAL1[\"<b>실제</b> — 지우는 동안 더 무거워졌다<br/>언두 로그 5.7TB · HLL 58.7억<br/>지연 20ms vs SLA 1ms\"]:::accent\n  REAL1 --> L1[\"<b>삭제는 즉시가 아니라 예약이다</b><br/>치우는 값이 지우는 값보다 컸다<br/><i>(이 정리는 이 사이트의 것)</i>\"]\n  STEP[\"4단계로 나눠 지웠는데도\"] -->|\"막지 못했다\"| REAL1\n  EXP2[\"<b>예상</b> — 압축하면 CPU 를 더 쓴다\"] --> REAL2[\"<b>실제</b> — Gzip 의 CPU 가 낮게 나왔다\"]\n  REAL2 --> TRAP[\"<b>착시였다</b> — 회사가 직접 짚는다<br/><i>프로듀서가 놀고 있어서</i><br/>= 가장 느린 것이 지표 하나에서는<br/>가장 효율적으로 보인다\"]:::accent\n  BENCH[\"<b>벤치마크 88.2% 절감</b><br/>4.37MB JSON\"] -->|\"프로덕션에서 다시 재니\"| PROD[\"<b>약 45%</b><br/>1KB Avro 토픽\"]\n  PROD --> L2[\"압축 이득은 코덱이 아니라<br/><b>메시지의 모양</b>에 달려 있다\"]:::quiet\n  REJ[\"<b>버린 코덱들 — 이유가 각각 다르다</b>\"] --> R1[\"Gzip — <i>극도로 느리다</i>\"]:::quiet\n  REJ --> R2[\"Zstd — 압축은 좋은데 <b>CPU 부담</b>\"]:::quiet\n  REJ --> R3[\"Snappy — 전 지표에서 LZ4 에 밀린다\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling Amazon RDS for MySQL performance for Careem's digital platform on AWS",
+          "url": "https://engineering.careem.com/tech/posts/scaling-amazon-rds-for-mysql-performance-on-aws",
+          "publisher": "Careem Engineering",
+          "date": "2025-05-16",
+          "summary": "**5,000만 사용자 · 100개 도시**의 라이드·배달·결제를 받던 **단일 RDS for MySQL 이 270TB** 에 이르자 저장 사용률·느린 질의·복제 지연·비용이 함께 나빠졌다. 4단계로 **24TB 를 지우는** 도중 읽기·쓰기 지연이 **20밀리초**를 넘겼다 — 업무 SLA 는 **1밀리초**였다. 원인은 **InnoDB 가 삭제 표시된 행을 언두 로그에서 처리하는 방식**이었고, **InnoDB HLL 이 58.7억**까지 올라 **언두 로그가 5.7TB** 생겼다. **버린 대안이 시간으로 계산돼 있다** — 자연 감소를 기다리면 *\"58.7억에서 10만으로 줄이는 데 약 3.5개월\"* 이라 일정에 맞지 않았다. 그래서 **AWS DMS Serverless 로 정리된 데이터를 새 인스턴스로 옮겨** 퍼지 병목 자체를 우회했다. 결과: 저장 **270TB → 78TB**, 인스턴스당 **45TB → 13TB**, 표 데이터 **21.5TB → 9TB**, 언두 로그 **5.7TB → 5.7GB**, 지연 **0.54밀리초**, IOPS 는 22,000 → 30,000 → (퍼지 중) 50,000 → **12,000**. 복제 따라잡기 7시간(1~3단계)·11시간(DMS), 읽기 레플리카 **5대** 유지, *\"이관 중 사실상 무중단\"*."
+        },
+        {
+          "title": "Benchmarking Kafka compression for increased performance and reduced cost",
+          "url": "https://engineering.careem.com/tech/posts/benchmarking-kafka-compression-for-increased-performance-and-reduced-cost",
+          "publisher": "Careem Engineering",
+          "date": "2026-06-02",
+          "summary": "실제 프로덕션 메시지 **20만 건**(약 4.37MB JSON)으로 코덱 다섯(none·Snappy·Gzip·Zstd·LZ4)을 비교해 **LZ4** 를 골랐다. 처리량 **약 150 → 336 msg/s**, P99.9 지연 **약 140ms → 35ms**, **저장 88.2% 절감**, CPU **+8.3%**. **버린 이유가 각각 다르다** — Gzip 은 *\"극도로 느리고\"* 지연이 나빴으며(프로듀서가 놀아 CPU 가 낮게 보이는 착시도 적는다), Zstd 는 압축은 좋은데 **CPU 부담**이 컸고, Snappy 는 전 지표에서 LZ4 에 밀렸다. 그리고 **1KB Avro 프로덕션 토픽에서 저장·네트워크 약 45% 감소**로 검증했다(프로듀서 CPU 영향은 미미, 컨슈머는 압축 해제로 소폭 증가)."
+        }
+      ]
+    }
+  ]
 }
