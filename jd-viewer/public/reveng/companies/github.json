@@ -290,7 +290,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "schema-domains"
+      ]
     },
     {
       "name": "CI 실행",
@@ -1489,13 +1491,505 @@
           "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
         }
       ]
+    },
+    {
+      "key": "schema-domains",
+      "name": "스키마 도메인 — 옮기기 전에 선부터 긋는다",
+      "domain": "데이터 계층",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "첫 10년 동안 사용자·저장소·이슈·PR 이 **`mysql1` 이라는 클러스터 하나**에 전부 들어 있었다. 그래서 문제가 두 가지 모양으로 왔다 — 감당하려면 **더 큰 기계로 올리는 수밖에 없었고**, `mysql1` 에 사고가 나면 **거기 붙은 모든 기능이 함께 무너졌다.**\n\n쪼개는 것 말고 답이 없다는 건 분명했다. 그런데 관계형 데이터베이스를 쪼개는 일에는 파일을 나누는 것과 다른 함정이 있다 — **어느 테이블이 함께 쓰이는지 아무도 정확히 모른다.** 조인과 트랜잭션은 코드 곳곳에 흩어져 있고, 갈라놓은 뒤에야 드러난다.\n\n그래서 이 회사는 **물리적으로 옮기기 전에 논리적으로 먼저 쪼갰다.** 어느 테이블이 한 덩어리인지를 파일에 적고, 그 선을 넘는 쿼리와 트랜잭션을 린터로 찾아 없앤 다음에야 데이터를 움직였다.",
+        "metrics": [
+          {
+            "label": "쪼갠 효과(2019 → 2021)",
+            "value": "총 쿼리 초당 **95만 → 120만**(복제본 90만 → 112.5만, 프라이머리 5만 → 7.5만). 그런데 **호스트당 부하는 절반**이 됐다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "label": "자체 도구로 옮긴 양",
+            "value": "저장소·이슈·PR 을 떠받치는 **가장 바쁜 테이블 130개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "label": "컷오버 시간",
+            "value": "6단계가 **가장 바쁜 테이블에서도 수십 밀리초**. 트래픽이 가장 적은 시간에 돌려 사용자에게 보이는 오류는 몇 건뿐",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "label": "2년 뒤의 규모(2023)",
+            "value": "호스트 **1,200대 이상**, 데이터 **300TB 이상**, 초당 **550만 쿼리**, 제품 도메인별 클러스터 **50개 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Upgrading GitHub.com to MySQL 8.0",
+                "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+                "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+                "date": "2023-12-07",
+                "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+              }
+            ]
+          },
+          {
+            "label": "클러스터가 늘어난 폭",
+            "value": "MySQL 5.7 로 올릴 때는 클러스터가 **5개**뿐이었다 — 8.0 때는 **10배**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Upgrading GitHub.com to MySQL 8.0",
+                "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+                "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+                "date": "2023-12-07",
+                "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "`mysql1` 하나에 전부 들어 있던 시절",
+          "thought": "성장의 방향이 **위로만** 나 있었다. 더 큰 기계로 계속 올려야 했고, 그 클러스터에 사고가 나면 사용자·저장소·이슈·PR 이 **한꺼번에** 영향을 받았다. 2019년에 이 길이 지속 가능하지 않다고 판단했다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디를 잘라야 할지 정하려 할 때",
+          "thought": "테이블을 갈라놓고 나서 '아 여기가 이어져 있었네'를 알게 되면 이미 늦다. **함께 쓰이는 테이블이 무엇인지를 먼저 글로 적어야** 어긋남을 기계가 찾아낼 수 있다 — 그래서 물리 이동보다 `db/schema-domains.yml` 이 먼저 왔다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "트랜잭션이 도메인을 넘는 것을 봤을 때",
+          "thought": "**MySQL 트랜잭션은 한 데이터베이스 안에서만 일관성을 보장한다.** 테이블을 다른 데이터베이스로 갈라놓는 순간 그 보장이 사라진다. 특히 `reactions` 처럼 이슈·PR·디스커션에 다 붙는 **다형성 테이블**이 걸렸다 — 하나인데 여러 도메인에 속한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "Vitess 에 전부 걸지 말지 정할 때",
+          "thought": "Vitess 의 수직 샤딩이면 테이블 묶음을 무중단으로 옮길 수 있다. 그런데 **2020년 당시 우리 쪽 도입이 아직 초기**였다. 그래서 자체 write-cutover 를 따로 만들어 **도구를 두 벌 들고** 갔다 — 배치 형태와 read-your-writes 요구에 따라 골라 쓰기 위해서다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "스키마 도메인 (schema domain)",
+            "what": "쿼리와 트랜잭션에서 **함께 쓰이는 테이블 묶음**. `db/schema-domains.yml` 에 적는다 — 예: `users` 아래 avatars·gpg_keys·public_keys·users."
+          },
+          {
+            "name": "쿼리 린터 (query linter)",
+            "what": "한 쿼리가 **한 도메인의 테이블만** 건드리는지 본다. 개발 중과 CI 에서 돈다."
+          },
+          {
+            "name": "트랜잭션 린터 (transaction linter)",
+            "what": "도메인을 넘는 트랜잭션을 찾는다. **프로덕션에서 무겁게 샘플링**하며 돈다."
+          },
+          {
+            "name": "예외 표기",
+            "what": "`/* cross-schema-domain-query-exempted */` — 아직 못 없앤 위반을 코드에 드러내 둔다."
+          },
+          {
+            "name": "write-cutover",
+            "what": "복제로 따라온 새 클러스터를 6단계로 승격시키는 자체 절차. GTID 로 따라잡음을 확인한다."
+          }
+        ],
+        "invariants": [
+          "한 쿼리는 **한 스키마 도메인** 안에서만 테이블을 건드린다(예외는 주석으로 드러낸다).",
+          "**MySQL 트랜잭션의 일관성은 한 데이터베이스 안에서만** 성립한다 — 그래서 도메인을 넘는 트랜잭션은 없애야 한다.",
+          "물리 이동은 **가상 경계가 먼저 지켜진 뒤에만** 한다.",
+          "컷오버 중에는 쓰기가 잠깐 막힌다 — 그 시간이 곧 사용자에게 보이는 오류다.",
+          "되돌릴 길이 남아 있어야 한다 — 새 버전에서 옛 버전으로 **역방향 복제**를 유지한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "함께 쓰이는 테이블을 **`db/schema-domains.yml` 에 적는다**",
+            "why": "경계가 글로 있어야 기계가 위반을 찾을 수 있다."
+          },
+          {
+            "step": "**쿼리 린터**가 개발 중과 CI 에서 도메인을 넘는 쿼리를 막는다",
+            "why": "위반이 프로덕션까지 가면 그때는 고치는 비용이 다르다(추정)."
+          },
+          {
+            "step": "조인을 없앤다 — `includes` 를 **`preload`** 로 바꿔 쿼리를 나누고, `has_many :through` 에는 **`disable_joins`**(Rails 7 에 업스트림 기여)를 쓰고, 필요하면 **애플리케이션 계층에서 조인**한다",
+            "why": "데이터베이스가 하던 조인을 앱이 대신하지 않으면 테이블을 갈라놓을 수 없다."
+          },
+          {
+            "step": "**트랜잭션 린터**가 프로덕션에서 무겁게 샘플링하며 도메인을 넘는 트랜잭션을 찾는다",
+            "why": "쿼리와 달리 트랜잭션은 실행 경로를 따라가 봐야 무엇을 건드리는지 드러난다(추정)."
+          },
+          {
+            "step": "일관성이 꼭 필요한 곳은 **같은 도메인 안의 새 테이블로 데이터를 뽑아낸다** — `reactions` 같은 다형성 테이블이 대표적이다",
+            "why": "트랜잭션을 포기할 수 없으면 데이터를 옮기는 수밖에 없다."
+          },
+          {
+            "step": "물리 이동 — **Vitess 수직 샤딩**(VTGate·VTTablet·VReplication) 또는 **자체 write-cutover** 중 배치 형태와 read-your-writes 요구에 맞는 쪽을 고른다",
+            "why": "둘의 강점이 달라 하나로 다 덮이지 않는다."
+          },
+          {
+            "step": "write-cutover 준비 — 새 클러스터를 옛 클러스터의 **복제 하위 클러스터**로 붙이고, ProxySQL 이 새 클러스터 트래픽을 **옛 프라이머리로** 보낸다",
+            "why": "데이터가 따라잡을 때까지 진실은 한 곳에 있어야 한다."
+          },
+          {
+            "step": "컷오버 6단계 — ① 옛 프라이머리를 읽기 전용으로 ② 마지막 GTID 를 읽고 ③ 새 프라이머리에 도착했는지 확인하고 ④ 복제를 끊고 ⑤ ProxySQL 을 새 프라이머리로 돌리고 ⑥ 읽기 전용을 푼다",
+            "why": "쓰기를 멈춘 채 GTID 로 따라잡음을 확인해야 잃는 쓰기가 없다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "물리적으로 먼저 쪼갤 것인가, 논리적으로 먼저 쪼갤 것인가",
+            "chosen": "**논리가 먼저다.** 함께 쓰이는 테이블 묶음을 `db/schema-domains.yml` 에 적어 **가상 파티션**을 만들고, 그 경계가 지켜진 뒤에야 데이터를 옮긴다.",
+            "alternatives": [
+              "먼저 옮기고 깨지는 것을 고친다",
+              "도메인 경계 없이 테이블 단위로 옮긴다"
+            ],
+            "tradeoff": "코드가 지켜야 할 경계가 하나 늘고, 아직 못 없앤 위반이 **주석으로 코드에 남는다**. 대신 갈라놓은 뒤에 발견했을 문제를 **갈라놓기 전에** 발견한다 — 그리고 그 과정에서 기능 사이의 숨은 의존이 드러난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "question": "경계를 무엇으로 지킬 것인가",
+            "chosen": "**린터 둘.** 쿼리 린터는 개발 중과 CI 에서, 트랜잭션 린터는 **프로덕션에서 무겁게 샘플링**하며 돈다.",
+            "alternatives": [
+              "코드 리뷰로 지킨다",
+              "데이터베이스 권한으로 막는다"
+            ],
+            "tradeoff": "CI 가 막히는 일이 늘고 예외 주석(`cross-schema-domain-query-exempted`)이 코드에 쌓인다. 그리고 트랜잭션 쪽은 **샘플링이라 전수 검사가 아니다**(뒷문장은 이 사이트의 추정). 대신 사람의 기억이 아니라 도구가 경계를 지킨다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "question": "도메인을 넘는 조인을 어떻게 없앨 것인가",
+            "chosen": "세 가지를 쓴다 — `includes` 대신 **`preload`** 로 쿼리를 나누고, `has_many :through` 에는 **`disable_joins`** 를 쓰고(Rails 7 에 업스트림 기여), 나머지는 **애플리케이션 계층에서 조인**한다.",
+            "alternatives": [
+              "조인이 필요한 테이블은 같은 도메인에 둔다",
+              "데이터베이스 링크·페더레이션을 쓴다"
+            ],
+            "tradeoff": "**데이터베이스가 한 번에 하던 일을 애플리케이션이 여러 번에 나눠 한다** — 왕복이 늘고 정렬·필터를 앱이 떠안는다(뒷부분은 이 사이트의 추정). 대신 테이블을 실제로 갈라놓을 수 있게 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "question": "트랜잭션 일관성이 꼭 필요한 곳은 어떻게 할 것인가",
+            "chosen": "**데이터를 옮긴다.** 같은 스키마 도메인 안의 새 테이블로 뽑아낸다. `reactions` 처럼 이슈·PR·디스커션에 모두 붙는 **다형성 테이블**이 이 경우였다.",
+            "alternatives": [
+              "분산 트랜잭션(2PC)을 도입한다",
+              "일관성을 포기하고 최종 일관성으로 간다"
+            ],
+            "tradeoff": "같은 성격의 데이터가 여러 테이블로 갈라져 **모델이 도메인 경계에 맞춰 휜다**(뒷문장은 이 사이트의 해석). 그래도 MySQL 트랜잭션은 한 데이터베이스 안에서만 일관성을 보장하므로, 갈라놓은 채로는 그 보장을 되살릴 방법이 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "question": "옮기는 도구를 하나로 정할 것인가",
+            "chosen": "**둘을 함께 유지한다.** Vitess 수직 샤딩과 자체 write-cutover 를, 배치 형태와 read-your-writes 지원 요구에 따라 골라 쓴다.",
+            "alternatives": [
+              "Vitess 하나로 통일한다",
+              "자체 도구만 만든다"
+            ],
+            "tradeoff": "이관 도구를 **두 벌 만들고 유지**해야 한다. 그래도 2020년 당시 Vitess 도입이 아직 초기였고, 가장 바쁜 테이블 130개를 옮기는 일에 **검증이 덜 된 것 하나에 전부 걸 수는 없었다**(뒷문장은 이 사이트의 해석). 회사는 앞으로의 이관은 대부분 Vitess 로 갈 것으로 본다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "question": "컷오버를 어떻게 끊을 것인가",
+            "chosen": "**쓰기를 잠깐 막고 GTID 로 따라잡음을 확인한다.** ① 옛 프라이머리 읽기 전용 ② 마지막 GTID 읽기 ③ 새 프라이머리 도착 확인 ④ 복제 중단 ⑤ ProxySQL 전환 ⑥ 읽기 전용 해제.",
+            "alternatives": [
+              "양방향 쓰기로 무중단 전환한다",
+              "점검 시간을 잡고 멈춘 채 옮긴다"
+            ],
+            "tradeoff": "그 사이의 쓰기가 실패해 **사용자에게 500 오류가 몇 건 보인다.** 그래서 하루 중 트래픽이 가장 적은 시간에 돌린다. 대신 여섯 단계가 가장 바쁜 테이블에서도 **수십 밀리초**에 끝나고, GTID 확인 덕에 잃는 쓰기가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "question": "버전을 올릴 때 되돌릴 길을 어떻게 남길 것인가",
+            "chosen": "**8.0 → 5.7 역방향 복제**를 유지한다. MySQL 이 공식 지원하지 않는 방향이라 걸림돌을 하나씩 걷어냈다 — 8.0 기본 콜레이션 `utf8mb4_0900_ai_ci` 가 5.7 에 없어 **`utf8_unicode_ci` 로 통일**했고, 8.0 의 역할 기반 권한이 복제를 깨뜨려 업그레이드 창 동안 권한문을 조정했다.",
+            "alternatives": [
+              "앞으로만 간다(롤백 없음)",
+              "백업에서 복원하는 것으로 대신한다"
+            ],
+            "tradeoff": "**새 버전의 기본 콜레이션을 포기**하고, 클라이언트 설정이 섞이면 역방향 복제가 몇 시간 안에 깨진다. 대신 1,200대 넘는 호스트를 옮기는 1년짜리 작업 내내 **돌아갈 길이 열려 있었다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Upgrading GitHub.com to MySQL 8.0",
+                "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+                "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+                "date": "2023-12-07",
+                "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+              }
+            ]
+          },
+          {
+            "question": "업그레이드를 한 번에 할 것인가",
+            "chosen": "**클러스터 단위로 나눠서** 한다 — 복제본부터 굴려 올리고, 5.7·8.0 두 복제 사슬을 만든 뒤, Orchestrator 로 8.0 복제본을 프라이머리로 승격한다. Orchestrator 는 되돌아가는 사고를 막으려 **5.7 호스트를 블랙리스트**에 둔다.",
+            "alternatives": [
+              "전체를 한 번에 올린다"
+            ],
+            "tradeoff": "1년 넘게 걸리고 수작업 단계가 많아 자동화가 숙제로 남았다. 그래도 **앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눌 수 있었고**, 그만큼 한 번에 위험해지는 범위가 줄었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Upgrading GitHub.com to MySQL 8.0",
+                "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+                "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+                "date": "2023-12-07",
+                "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "`db/schema-domains.yml`",
+            "role": "함께 쓰이는 테이블 묶음을 적어 두는 가상 파티션의 원본.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "쿼리 린터 · 트랜잭션 린터",
+            "role": "도메인을 넘는 쿼리는 개발·CI 에서, 트랜잭션은 프로덕션 샘플링으로 잡는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "Rails `preload` · `disable_joins` · 쿼리 주석",
+            "role": "조인을 쪼개고 예외를 코드에 드러낸다. `disable_joins` 와 주석 API 는 Rails 에 업스트림 기여했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "Vitess (VTGate · VTTablet · VReplication)",
+            "role": "수직 샤딩으로 테이블 묶음을 무중단 이동. 2020년에는 도입 초기라 전량을 맡기지 않았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "자체 write-cutover + ProxySQL + GTID",
+            "role": "복제로 따라온 새 클러스터를 6단계로 승격한다. ProxySQL 이 연결을 다중화해 전환 순간을 감춘다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          },
+          {
+            "tech": "Orchestrator",
+            "role": "MySQL 8.0 업그레이드에서 프라이머리 승격을 조정하고, 되돌아가는 사고를 막으려 5.7 호스트를 블랙리스트에 둔다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Upgrading GitHub.com to MySQL 8.0",
+                "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+                "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+                "date": "2023-12-07",
+                "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+              }
+            ]
+          },
+          {
+            "tech": "수평 샤딩(horizontal partitioning)",
+            "role": "— 회사가 계속 쓰고 있다고 밝히지만 **별도 글로 미루었다.** 이 사이트에는 그 내용이 없다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "spokes-replication",
+          "via": "다른 종류의 상태",
+          "contract": "저장소 내용은 Spokes 가 세 벌로 들고, 이슈·PR·사용자 같은 관계형 데이터는 이 도메인이 맡는다. **한쪽은 복제로, 다른 쪽은 분할로** 규모를 감당한다(이 대비는 이 사이트의 해석).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "blackbird",
+          "via": "쪼개는 기준",
+          "contract": "코드 검색은 **Git 블롭 ID** 로, 데이터 계층은 **함께 쓰이는 테이블**로 쪼갠다 — 같은 회사 안에서 분할 기준이 데이터의 성질을 따라 갈린다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "CI 실행",
+          "via": "메타데이터의 출처",
+          "contract": "Actions 가 읽는 워크플로·권한·상태가 결국 이 관계형 데이터에서 나온다 — 이 사이트는 아직 그 도메인을 채우지 않았다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "한 데이터베이스 안에서만 보장되던 트랜잭션을, 테이블을 갈라놓은 뒤에 어떻게 되살릴 것인가",
+            "why_hard": "**원자성은 경계를 넘으면 공짜가 아니다.** 여러 데이터베이스에 걸친 원자적 커밋은 2단계 커밋 같은 합의 프로토콜을 요구하고, 그 순간 왕복·봉쇄·조정자 고장이 따라 들어온다. 쪼개서 얻은 격리가 바로 그 프로토콜 때문에 다시 묶이는 셈이라, **쪼개기와 원자성은 같은 방향으로 갈 수 없다.**",
+            "current_best": "분산 트랜잭션을 도입하는 대신 **도메인을 넘는 트랜잭션 자체를 없앤다** — 일관성이 꼭 필요한 데이터를 같은 스키마 도메인 안의 새 테이블로 뽑아낸다. 대가는 데이터 모델이 도메인 경계에 맞춰 휘는 것이고, `reactions` 처럼 원래 여러 대상에 걸치던 다형성 테이블이 특히 그렇다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Partitioning GitHub's relational databases to handle scale",
+                "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+                "publisher": "GitHub Blog · Thomas Maurer",
+                "date": "2021-09-27",
+                "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "쪼개기 전에 선을 긋는 순서",
+          "question": "왜 데이터를 옮기기 전에 린터부터 만들었는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  Y[\"<b>db/schema-domains.yml</b><br/>• 함께 쓰이는 테이블 묶음<br/>• users · repositories · gists\"]:::list --> QL[\"<b>쿼리 린터</b><br/>• 개발 중<br/>• CI\"]:::list\n  Y --> TL[\"<b>트랜잭션 린터</b><br/>• 프로덕션 샘플링\"]:::list\n  QL --> J{\"도메인을 넘는 조인인가\"}\n  J -->|\"예\"| FIX[\"<b>조인을 쪼갠다</b><br/>• includes → preload<br/>• disable_joins<br/>• 앱 계층 조인\"]:::list\n  J -->|\"예외 불가피\"| EX[\"주석으로 드러낸다<br/>cross-schema-domain-query-exempted\"]:::quiet\n  TL --> T{\"도메인을 넘는 트랜잭션인가\"}\n  T -->|\"예\"| MOVE[\"같은 도메인 안 새 테이블로<br/>데이터를 뽑아낸다\"]\n  FIX --> READY[\"<b>가상 경계가 지켜짐</b>\"]:::accent\n  MOVE --> READY\n  READY --> PHYS[\"물리 이동<br/>Vitess 또는 write-cutover\"]\n  PHYS -->|\"위반이 다시 생기면\"| QL"
+        },
+        {
+          "title": "클러스터 하나가 갈라져 나오기까지",
+          "question": "쓰기를 잃지 않으면서 진실을 어떻게 옮기는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 한덩어리: mysql1 하나에 전부\n  한덩어리 --> 복제중: 새 클러스터를 하위 클러스터로 붙임\n  note right of 복제중\n    ProxySQL 은 아직\n    옛 프라이머리로 쓰기를 보낸다\n  end note\n  복제중 --> 읽기전용: ① 옛 프라이머리 읽기 전용\n  읽기전용 --> GTID확인: ② 마지막 GTID 읽기 → ③ 도착 확인\n  GTID확인 --> 복제끊김: ④ 복제 중단\n  복제끊김 --> 전환됨: ⑤ ProxySQL 을 새 프라이머리로\n  전환됨 --> 독립: ⑥ 읽기 전용 해제\n  note right of 독립\n    여섯 단계 전체가\n    수십 밀리초\n  end note\n  독립 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 갈라놓은 뒤에 드러나는 것",
+          "question": "경계를 넘는 것을 못 잡으면 무엇이 깨지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  MONO[\"<b>mysql1 하나</b>\"] --> UP[\"더 큰 기계로 올리는 수밖에\"]\n  MONO --> BLAST[\"사고 하나가<br/>모든 기능을 함께 무너뜨린다\"]\n  BLAST --> SPLIT[\"<b>쪼갠다</b>\"]:::accent\n  SPLIT --> LOST[\"MySQL 트랜잭션의 일관성은<br/>한 데이터베이스 안에서만\"]\n  LOST --> POLY[\"다형성 테이블이 걸린다<br/>reactions = 이슈 · PR · 디스커션\"]\n  POLY --> EXTRACT[\"같은 도메인 안으로 데이터를 뽑아낸다\"]\n  SAMP[\"트랜잭션 린터는 샘플링\"] -.->|\"추정\"| MISS[\"전수 검사가 아니다\"]:::quiet\n  CUT[\"컷오버 중 쓰기 차단\"] --> ERR[\"500 오류가 몇 건 난다\"]\n  ERR --> QUIET[\"트래픽이 가장 적은 시간에 돌린다\"]\n  REV[\"8.0 → 5.7 역방향 복제\"] --> UNSUP[\"MySQL 이 공식 지원하지 않는 방향\"]\n  UNSUP --> CS[\"콜레이션을 utf8_unicode_ci 로 통일\"]\n  UNSUP --> MIX[\"클라이언트 설정이 섞이면<br/>몇 시간 안에 복제가 깨진다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Partitioning GitHub's relational databases to handle scale",
+          "url": "https://github.blog/engineering/infrastructure/partitioning-githubs-relational-databases-scale/",
+          "publisher": "GitHub Blog · Thomas Maurer",
+          "date": "2021-09-27",
+          "summary": "사용자·저장소·이슈·PR 이 전부 들어 있던 단일 클러스터 mysql1 을 쪼갠 이야기. 물리적으로 옮기기 전에 `db/schema-domains.yml` 로 가상 파티션을 먼저 만들고, 쿼리 린터와 트랜잭션 린터로 도메인을 넘는 쿼리·트랜잭션을 찾아 없앴다. 옮기는 도구는 Vitess 수직 샤딩과 자체 write-cutover 둘을 함께 유지했고, 6단계 컷오버가 가장 바쁜 테이블에서도 수십 밀리초에 끝난다. 2019→2021 총 쿼리가 초당 95만→120만으로 늘었는데도 호스트당 부하는 절반이 됐다."
+        },
+        {
+          "title": "Upgrading GitHub.com to MySQL 8.0",
+          "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+          "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+          "date": "2023-12-07",
+          "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "**GitHub 단독 재무가 공시되지 않는다.** Microsoft 산하라 매출·ARR 이 세그먼트로 나오지 않고, 유료 Copilot 좌석 수(470만)만 회사가 밝혔다. ARR 30억 달러 초과는 보도이지 발표가 아니다 — 수익원을 전부 `inferred` 로 뒀다.",
     "**Actions 의 1차 엔지니어링 자료가 얇다.** 자기들이 어떻게 쓰는지에 대한 글은 있는데, **남의 코드를 격리해 실행하는 방법**(샌드박싱·탈출 방지·자원 배분)에 대한 회사 글을 아직 못 찾았다 — Cloudflare·Roblox 와 비교하려면 이게 필요하다.",
     "**수평 샤딩** — 2021년 파티셔닝 글이 '다음은 수평 파티셔닝'이라며 별도 글을 예고했다. 그 글을 아직 확인하지 않았다.",
-    "**Copilot 의 서빙 구조** — 최근 블로그가 제품 발표 쪽에 쏠려 있어 추론 인프라에 대한 자료를 확인하지 못했다."
+    "**Copilot 의 서빙 구조** — 최근 블로그가 제품 발표 쪽에 쏠려 있어 추론 인프라에 대한 자료를 확인하지 못했다.",
+    "수평 샤딩(horizontal partitioning) — 회사가 계속 쓰고 있다고 밝히지만 별도 글로 미뤄 이 사이트에 내용이 없다."
   ],
   "sources": [
     {
@@ -1553,6 +2047,13 @@
       "publisher": "GitHub Blog · Michael Haggerty",
       "date": "2017-10-13",
       "summary": "복제본을 대륙 규모로 떨어뜨리기 위해 무엇을 고쳤는지. 3단계 커밋의 네 왕복이 60~80ms 지연과 곱해지면 예산을 넘어, 복제본별 작업을 겹쳐 돌리고 Git 에 참조 트랜잭션을 오픈소스로 기여했으며 체크섬을 XOR 증분 계산으로 바꿨다. 읽기는 동기화된 복제본 중 가장 가까운 곳으로 보내고, 부기 업데이트는 사용자 업데이트 뒤로 미룬다."
+    },
+    {
+      "title": "Upgrading GitHub.com to MySQL 8.0",
+      "url": "https://github.blog/engineering/upgrading-github-com-to-mysql-8-0/",
+      "publisher": "GitHub Blog · Jiaqi Liu, Daniel Rogart, Xin Wu",
+      "date": "2023-12-07",
+      "summary": "1,200대 넘는 호스트, 300TB 이상, 초당 550만 쿼리, 제품 도메인별 50개 이상 클러스터를 MySQL 5.7 에서 8.0 으로 올린 1년짜리 작업. 5.7 로 되돌릴 수 있도록 8.0→5.7 역방향 복제를 유지했는데 MySQL 이 그 방향을 공식 지원하지 않아 문자셋과 역할 기반 권한이 걸림돌이었다. 앞서 해 둔 파티셔닝 덕에 클러스터 단위로 나눠 올릴 수 있었다."
     }
   ],
   "domain": "github.com"
