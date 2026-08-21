@@ -30,6 +30,13 @@
   큐 맨 위에 두면 다음 신규 사이클이 통째로 막힌다.** 브라우저가 살아나면 그때 올린다.
 - **Spotify** (SE/EU, 스트리밍) — 블로그는 읽히고 EU 가 0곳이라는 점이 매력. 다만 최근 글이
   LLM·데이터 플랫폼 쪽에 쏠려 있고 추천·스트리밍 축은 Netflix·YouTube 와 겹친다. 후순위
+- **인도 후보 (Zomato · Swiggy · Flipkart)** — **사이클 166 에서 접근 확인 실패.**
+  `blog.swiggy.com/category/engineering/` 는 **404**, `blog.zomato.com/...` 는 **301 리다이렉트 뒤
+  본문 요청이 60초 타임아웃**, Swiggy 의 `bytes.swiggy.com` 은 **Medium 호스팅**이라 403 위험이 있다
+  (Airbnb 선례). 다만 **글감 자체는 좋아 보인다** — Zomato 의 *TiDB → DynamoDB 전환*, **300개 이상
+  마이크로서비스 벤치마킹 플랫폼 자체 제작**, NYE 트래픽 대응기 / Swiggy 의 **k8s 워크로드 Graviton
+  이전**(가격 대비 성능 최대 40% 개선). **다시 볼 때는 `www.zomato.com/blog/...` 정규 URL 로
+  시도할 것**(리다이렉트된 주소다).
 - **Nubank** (BR, 핀테크) — **막혔다(사이클 165).** 남미 첫 회사가 될 후보였고 Clojure·Datomic·
   Kafka 라는 드문 스택이지만, `building.nubank.com.br/engineering-tech/` 가 **WebFetch 403**.
   검색으로는 본문 수준 근거를 못 얻었다. **다른 경로(international.nubank.com.br 의 발표 자료 등)를

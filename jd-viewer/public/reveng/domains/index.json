@@ -334,6 +334,26 @@
         "mimir-next-gen"
       ],
       "file": "what-expires-a-design.md"
+    },
+    {
+      "slug": "what-they-did-not-do",
+      "title": "안 하기로 한 것을 어떻게 적는가",
+      "question": "켰다가 끄거나, 되돌리지 않거나, 여기까지만 하기로 한 결정은 무엇이 뒤집었고 글에 어떻게 남았는가?",
+      "companies": [
+        "zalando",
+        "cloudflare",
+        "bytedance",
+        "grafana-labs",
+        "slack"
+      ],
+      "features": [
+        "client-side-lb",
+        "workers-kv-redundancy",
+        "muxflow",
+        "query-sharding",
+        "az-siloing"
+      ],
+      "file": "what-they-did-not-do.md"
     }
   ]
 }
