@@ -68,13 +68,6 @@ function App() {
   const allStacks = useMemo(() => stackCounts(jobs), [jobs])
   const allRoles = useMemo(() => roleCounts(jobs), [jobs])
 
-  const toggleStack = (name: string) => {
-    const next = new Set(filter.stacks)
-    if (next.has(name)) next.delete(name)
-    else next.add(name)
-    setFilter({ ...filter, stacks: next })
-  }
-
   return (
     <div className="flex flex-col h-screen">
       <nav className="flex items-center gap-3 px-4 sm:px-6 h-14 border-b border-(--color-border) bg-(--color-panel) sticky top-0 z-30">
