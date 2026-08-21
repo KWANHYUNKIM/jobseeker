@@ -9,15 +9,13 @@
 > 큐 잔량이 잘못 세어졌다. 고친 뒤 `sed -n '/^## 대기/,/^### 확인/p' engine/state/QUEUE.md | grep -c '^| \*\*'` 로 센다.
 > `## 진행 중
 
-- **Grab** (SG · 모빌리티) — 사이클 170 에서 열었다. **30번째 회사, 동남아 첫 회사**
-  (`SG` 를 validate.py COUNTRIES 와 index.json countries 에 추가했다). 프로파일 + 도메인 2개
-  (이상거래 카운터 저장소 · 데이터 레이크) + 기능 1개(`counter-service`) 완료.
-  **다음 기능은 `데이터 레이크`** — 자료 확인 완료(`our-journey-to-apache-iceberg-adoption`:
-  HMS 가 **중앙 장애점 + O(n) 목록**, ML 데이터셋 **평균 1MB 미만·파티션당 수천 개**, 카탈로그와
-  저장소 어긋남 / 성과: 질의 **70초→6초**, S3 API 비용 **95% 절감**, 클러스터 자원 **약 절반** /
-  문제: `TIMESTAMP_NTZ`↔`TIMESTAMP_LTZ`, HMS **좀비 락**, 메타데이터 생성 중 저장 비용 급등).
-  **두 번째 글이 필요하다** — `real-time-data-ingestion` 이나 `migrating-existing-datastores` 확인.
-  ⚠️ **배차(모빌리티 매칭) 자료는 아직 확인하지 않았다** — 카카오·배민·우버와 겹칠 수 있다.
+- **Grab** (SG · 모빌리티) — 도메인 2개에 기능 2개(`counter-service`, `iceberg-lake`).
+  **아직 닫지 않았다** — **배차 자료가 실제로 있다는 것을 사이클 171 에서 확인했다**:
+  `techblog_-dispatchgym`(배차 강화학습 연구 프레임워크 — 예약 생성부터 배차·기사 이동·완료까지
+  모델링, Gymnasium API), `the-data-and-science-behind-grabshare-part-i`(합승 매칭을 최적화 문제로),
+  `understanding-supply-demand-ride-hailing-data`. **다음 사이클에 도메인 하나를 더 열고 본문을
+  정독한다** — 카카오·배민·우버와 겹치면 **축을 슈퍼앱/합승 쪽으로** 잡는다.
+  안 읽은 글: `turbocharging-grabunlimited-with-temporal`, `migrating-existing-datastores`.
 
 ## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
 
@@ -29,6 +27,8 @@
 
 
 | **trivago** | DE/EU · 검색 | `tech.trivago.com` | ✅ **접속 확인.** 목록이 열리고 최근 글에 수치·버린 안이 명시돼 있다 | **여행 메타서치**는 이 엔진에 없는 축이다 — 자기 재고가 없고 **남의 재고를 모아 비교**해 파는 쪽이라 쿠팡·아마존·무신사와 다르다. 확인된 글: `2026-06-12 how-we-cut-kafka-consumer-deployment-costs-by-83`(**Kafka 컨슈머 배포 비용 83% 절감**, 계층별 성능 조사, **P1 사고 19건**을 다룬다), `2026-03-27 unifying-internal-apis-a-different-use-case-for-graphql-gateways`(**고객 대면이 아닌 내부 API 통합** — GraphQL 게이트웨이의 다른 용례라고 스스로 구분한다), `2026-02-18 from-always-on-to-on-demand-scaling-kafka-sinks-with-keda`(상시 가동 → 온디맨드), `2022-05-16 warp-a-web-application-rewrite-project`(웹 앱 재작성). **⚠️ 아직 본문은 안 읽었다 — 팔기 전에 한 편을 정독할 것** |
+
+| **Allegro** | PL/EU · 커머스 | `blog.allegro.tech` | ✅ **접속 확인.** 목록이 열리고 최근 글에 수치·되돌린 결정이 있다 | **폴란드 최대 마켓플레이스** — 이 엔진에 **동유럽 회사가 0곳**이다. 가장 눈에 띄는 글은 **`2026/08/back-to-dc-in-2026`(클라우드에서 데이터센터로 되돌아간 이야기)** — *"클라우드가 늘 정답은 아니다"* 를 다룬다. **비교 축 ⑫ '해 보고 되돌린 것'의 재료**가 되고, **Adyen 의 '클라우드에 있지 않다'와 짝**이 된다. 그 밖에 `how-we-achieved-independent-deployments-in-a-frontend-architecture`(마이크로 프론트엔드 독립 배포 — 여러 접근을 거쳐 찾았고 **수치를 함께 밝힌다**), `how-ai-agents-halved-effort-migrating-gradle-modules-koin-to-hilt`(**Gradle 모듈 500개** 이관, 모듈당 **약 1주 → 이틀 미만**). **⚠️ 아직 본문 미독 — 팔기 전에 `back-to-dc-in-2026` 을 정독할 것** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)

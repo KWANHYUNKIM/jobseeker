@@ -153,9 +153,26 @@
               "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
             }
           ]
+        },
+        {
+          "tech": "CDC 수집 (Debezium · Lambda · Kafka · 분 단위 S3 쓰기)",
+          "solves": "운영 DB 의 변경 로그를 그대로 흘려보내 **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앴다.** 검색 용도에서 **운영 DB 읽기 90% 감소**, 직접 DB 도구로 바꾼 변경까지 감사 기록에 남는다.",
+          "limits": "**순서 보장이 소스마다 다르다** — MySQL 은 전역·exactly-once 인데 DynamoDB 는 파티션 단위뿐이라 *\"소비자 B 의 순서가 A 보다 먼저 나타날 수 있다.\"* 그리고 **Kafka 가 분산 트랜잭션에 참여할 수 없어** 두 쓰기를 한 트랜잭션으로 묶는 길은 애초에 없다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Real-time data ingestion in Grab",
+              "url": "https://engineering.grab.com/real-time-data-ingestion",
+              "publisher": "Grab Engineering",
+              "date": "—",
+              "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "iceberg-lake"
+      ]
     }
   ],
   "features": [
@@ -558,7 +575,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "iceberg-lake",
+          "via": "개수가 크기보다 먼저 벽이 된다",
+          "contract": "여기서는 **인덱스가 레코드당 64바이트**라 수십억 개에서 메모리가 먼저 찼고, 레이크에서는 **평균 1MB 미만 파일이 파티션당 수천 개**라 S3 비용과 스캔이 먼저 무너졌다. **둘 다 데이터 크기가 아니라 개수가 벽**이다(해석 — 글들은 서로를 언급하지 않는다).",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [],
         "hard_problems": [
@@ -623,6 +647,493 @@
           "summary": "이상거래 탐지가 쓰는 카운터 저장소를 옮긴 기록. 초당 수만 질의·하루 약 10억 요청을 받는다. **주 인덱스를 로컬 NVMe 로 내려 봤다가 되돌린** 대목이 특히 값지다 — 지연이 안 보일 줄 알았는데 **핫 키의 I/O 를 따라 p99 스파이크**가 났다. 결국 버킷마다 행을 만드는 대신 **한 레코드 안의 맵**으로 접었다."
         }
       ]
+    },
+    {
+      "key": "iceberg-lake",
+      "name": "데이터가 아니라 카탈로그가 먼저 무너진다",
+      "domain": "데이터 레이크",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "오랫동안 **표의 대부분**이 디렉터리 기반 Hive Parquet 이었다. 그런데 규모가 커지자 무너진 것이 **데이터가 아니라 그것을 가리키는 목록**이었다.\n\n**Hive Metastore(HMS)가 중앙 장애점이 됐다.** 메타데이터 접근이 몰리면 **질의 계획 시간이 파티션 수에 선형(O(n))으로** 늘어난다 — 즉 **데이터를 읽기도 전에 느려진다.**\n\n그리고 더 근본적인 어긋남이 있었다 — **HMS 가 진실의 원천이라, S3 를 직접 고치면 카탈로그가 낡은 채로 남는다.** 실제 파일과 그것을 설명하는 목록이 **서로 다른 진실을 가리키게** 되는 것이다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "작은 파일 문제",
+            "value": "일부 ML 데이터셋은 **평균 파일 크기 1MB 미만인데 파티션마다 파일이 수천 개** — S3 API 비용을 밀어 올리고 스캔을 느리게 한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "질의 시간",
+            "value": "내비게이션 데이터셋 **70초 → 6초 (10배)** — Z-ordering",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "운영 테이블의 **일일 S3 API 비용 95% 절감**. 퍼널 분석 데이터셋은 클러스터 자원 사용 **약 절반**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "label": "수집 쪽 효과",
+            "value": "검색 용도에서 **운영 DB 읽기 90% 감소** — 시간 단위 SQL 질의를 CDC 스트림으로 대체",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "label": "S3 쓰기 주기",
+            "value": "스트림 프로세서가 **분 단위**로 S3 에 쓴다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "label": "버린 대안의 이름",
+            "value": "Iceberg 를 고르며 **\"여러 오픈 테이블 형식을 검토했다\"** 고만 적고 **이름을 밝히지 않는다**",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "질의가 느려진 이유를 찾다가",
+          "thought": "데이터가 아니라 **카탈로그**였다. HMS 에 메타데이터 접근이 몰리면 **질의 계획 시간이 파티션 수에 선형으로** 늘어난다. 그리고 HMS 하나가 **중앙 장애점**이다 — 데이터는 S3 에 잘 흩어져 있는데 그것을 가리키는 목록이 한 곳에 묶여 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "파일 크기를 들여다보고",
+          "thought": "일부 ML 데이터셋은 **평균 1MB 미만짜리 파일이 파티션마다 수천 개**다. 크기로 보면 작은데 **개수로 보면 크다** — 그리고 S3 는 개수로 값을 받는다(뒷문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "S3 를 직접 고쳐 보고",
+          "thought": "**HMS 가 진실의 원천이라** 스토리지를 직접 만지면 카탈로그가 낡은 채 남는다. 파일과 목록이 서로 다른 이야기를 하게 된다. 게다가 파티션은 **손으로 등록**해야 하고 **네이티브 ACID 가 없어** 데이터 변경마다 복잡한 우회가 필요하다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "들어오는 쪽도 손보며",
+          "thought": "파이프라인이 시간마다 운영 DB 에 SQL 을 던지고 있었다 — 그러면 **프로덕션 DB 에 읽기 폭증**이 생긴다. 그리고 애플리케이션이 **DB 와 Kafka 에 두 번 쓰는** 패턴은 **Kafka 가 분산 트랜잭션에 참여할 수 없어** 하나의 트랜잭션으로 묶을 수도 없다. 그러면 **DB 의 변경 로그 자체를 흘려보내면** 된다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "Hive Metastore (HMS)",
+            "what": "옛 구조에서 **진실의 원천**. 중앙 장애점이 되고 목록 조회가 O(n)."
+          },
+          {
+            "name": "Apache Iceberg 테이블",
+            "what": "새 형식. **가장 값진 표부터** 옮겼다."
+          },
+          {
+            "name": "binlog / DynamoDB 스트림",
+            "what": "수집의 출발점. MySQL·Aurora 는 **ROW 형식 binlog** 로 **전역 순서와 exactly-once**, DynamoDB 는 `NEW_AND_OLD_IMAGES` 로 **파티션 단위 순서만**."
+          },
+          {
+            "name": "이벤트 생산자",
+            "what": "MySQL·Aurora 는 **Debezium**(Kafka Connect 와 깊이 통합), DynamoDB 는 **Lambda**(동시성이 트래픽에 따라 늘어난다)."
+          },
+          {
+            "name": "스트림 프로세서",
+            "what": "Kafka(Protobuf 인코딩)에서 받아 **분 단위로 S3** 에 쓴다."
+          }
+        ],
+        "invariants": [
+          "**카탈로그가 진실의 원천이면 저장소를 직접 고칠 수 없다** — 옛 구조의 근본 제약이었다.",
+          "MySQL·Aurora 는 **전역 순서 + exactly-once**, DynamoDB 는 **파티션 단위 순서만** — 보장이 소스마다 다르다.",
+          "애플리케이션은 **DB 와 Kafka 에 두 번 쓰지 않는다** — 변경 로그를 흘려보낸다.",
+          "이관은 **가장 값진 표부터** 한다 — 한 번에 다 바꾸지 않는다.",
+          "**Kafka 는 분산 트랜잭션에 참여할 수 없다** — 그래서 한 트랜잭션으로 묶는 길이 애초에 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "운영 DB 의 변경을 **스트림에서 읽는다** — MySQL·Aurora 는 ROW 형식 binlog, DynamoDB 는 `NEW_AND_OLD_IMAGES`",
+            "why": "애플리케이션이 두 번 쓰지 않게 하려면 DB 자신의 기록을 써야 한다."
+          },
+          {
+            "step": "**이벤트 생산자**가 그것을 메시지로 바꾼다 — MySQL·Aurora 는 **Debezium**, DynamoDB 는 **Lambda**",
+            "why": "소스마다 스트림의 성질이 달라 같은 도구를 쓸 수 없다."
+          },
+          {
+            "step": "**Kafka(Protobuf)** 로 흘려보낸다",
+            "why": "여러 소비자가 같은 변경을 각자의 속도로 읽는다."
+          },
+          {
+            "step": "**스트림 프로세서**가 **분 단위**로 S3 에 쓴다",
+            "why": "시간 단위 SQL 질의로 DB 를 때리던 것을 대체한다 — 검색 용도에서 DB 읽기가 90% 줄었다."
+          },
+          {
+            "step": "표를 **Iceberg 로 옮긴다 — 가장 값진 것부터**",
+            "why": "한 번에 다 바꾸면 되돌릴 수가 없다."
+          },
+          {
+            "step": "자주 읽는 데이터는 **Z-ordering** 으로 정렬한다",
+            "why": "내비게이션 데이터셋이 70초에서 6초가 됐다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "카탈로그를 계속 HMS 에 둘 것인가",
+            "chosen": "**Apache Iceberg 로 옮긴다.** 여러 오픈 테이블 형식을 검토한 뒤 골랐다.",
+            "alternatives": [
+              "디렉터리 기반 Hive Parquet + HMS 를 유지한다",
+              "다른 오픈 테이블 형식들(이름 비공개)"
+            ],
+            "tradeoff": "**버린 형식들의 이름을 밝히지 않아** 왜 Iceberg 인지는 바깥에서 알 수 없다. 대신 옛 구조의 병목은 넷 다 분명하다 — **HMS 중앙 장애점 · O(n) 목록 · 작은 파일 · 카탈로그와 저장소의 단절.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "이관을 어떻게 할 것인가",
+            "chosen": "**가장 값진 표부터 점진적으로.** 한 번에 다 바꾸지 않는다.",
+            "alternatives": [
+              "전체를 한 번에 전환한다"
+            ],
+            "tradeoff": "두 형식이 한동안 공존한다(뒷문장은 이 사이트의 추정). 그리고 이관 자체에 값이 있었다 — **메타데이터 생성 중 저장 계층 비용이 급등**해서 **이관 우선순위를 정해야 했다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인이 운영 DB 에 질의할 것인가",
+            "chosen": "**하지 않는다.** DB 의 **변경 로그를 흘려보낸다**(CDC).",
+            "alternatives": [
+              "시간 단위로 SQL 질의를 던진다(기존 방식)",
+              "애플리케이션이 DB 와 Kafka 에 각각 쓴다"
+            ],
+            "tradeoff": "보장이 소스마다 달라진다 — MySQL 은 전역 순서인데 **DynamoDB 는 파티션 단위 순서뿐**이라 *\"소비자 B 의 순서가 A 보다 먼저 나타날 수 있다.\"* 대신 **운영 DB 의 읽기 폭증이 사라지고**(검색 용도에서 90% 감소) **직접 DB 도구로 바꾼 변경까지** 감사 기록에 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "question": "두 번 쓰기를 트랜잭션으로 묶을 것인가",
+            "chosen": "**묶을 수 없다.** 회사가 이유를 적었다 — **Kafka 는 분산 트랜잭션에 참여할 수 없다.**",
+            "alternatives": [
+              "DB 와 Kafka 를 하나의 분산 트랜잭션으로 묶는다"
+            ],
+            "tradeoff": "애초에 선택지가 아니었다는 뜻이다. 그래서 **DB 를 유일한 쓰기 지점으로 두고 그 로그를 흘려보내는** 쪽으로 갔다(뒷문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "question": "MySQL·Aurora 의 이벤트 생산자를 무엇으로 할 것인가",
+            "chosen": "**Debezium** — *\"Kafka Connect 프레임워크와 깊이 통합돼 있어서.\"*",
+            "alternatives": [
+              "Maxwell",
+              "Canal"
+            ],
+            "tradeoff": "Kafka Connect 생태계에 묶인다(뒷문장은 이 사이트의 추정). 대신 이미 쓰는 틀 위에 얹힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "question": "DynamoDB 는 무엇으로 할 것인가",
+            "chosen": "**Lambda** — 동시성이 트래픽에 따라 늘어난다.",
+            "alternatives": [
+              "Kafka Connect 커스텀 커넥터",
+              "오픈소스 DynamoDB Kafka Connect"
+            ],
+            "tradeoff": "버린 이유가 분명하다 — 단일 스레드 Kafka Connect 커넥터는 **지연 병목**을 만들었고, 오픈소스 해법은 **DynamoDB 스트림의 본질인 동적 파티셔닝과 트래픽 기반 자동 확장을 살리지 못한다.** 즉 **저장소의 성질에 맞는 실행 모델을 골랐다**(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "question": "큰 표에 인덱스를 더할 것인가",
+            "chosen": "**권하지 않는다** — 저장·메모리 비용 때문에.",
+            "alternatives": [
+              "필요한 곳마다 인덱스를 추가한다"
+            ],
+            "tradeoff": "조회가 느린 자리를 인덱스로 못 메운다(뒷문장은 이 사이트의 추정). **이 회사의 카운터 저장소에서도 인덱스가 메모리 제약이었다** — 같은 결이다(이 연결은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Apache Iceberg",
+            "role": "새 테이블 형식. 가장 값진 표부터 옮겼다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "Hive Metastore (옛 구조)",
+            "role": "진실의 원천이자 병목. 중앙 장애점 · O(n) 목록 · 부하 시 좀비 락.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "Debezium (MySQL·Aurora CDC)",
+            "role": "ROW 형식 binlog 를 메시지로. Kafka Connect 와 통합돼 골랐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "tech": "AWS Lambda (DynamoDB 스트림)",
+            "role": "동시성이 트래픽에 따라 늘어난다. 단일 스레드 커넥터의 병목을 피한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "tech": "Kafka (Protobuf) + 스트림 프로세서",
+            "role": "변경을 나르고 분 단위로 S3 에 쓴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          },
+          {
+            "tech": "Z-ordering",
+            "role": "자주 읽는 데이터의 정렬. 내비게이션 질의 70초 → 6초.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "tech": "버린 오픈 테이블 형식의 이름",
+            "role": "— **밝히지 않는다.** '여러 형식을 검토했다'고만 적는다.",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "counter-service",
+          "via": "개수가 크기보다 먼저 벽이 된다",
+          "contract": "카운터 저장소에서는 **인덱스가 레코드당 64바이트**라 수십억 개에서 메모리가 먼저 찼고, 레이크에서는 **평균 1MB 미만 파일이 파티션당 수천 개**라 S3 API 비용과 스캔이 먼저 무너졌다. **둘 다 데이터의 크기가 아니라 개수가 벽**이었다 — 그리고 수집 글에서도 *\"큰 표에 인덱스를 더하는 것은 저장·메모리 비용 때문에 권하지 않는다\"* 고 적는다. **세 글은 서로를 언급하지 않는다** — 이 묶음은 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "목록이 데이터보다 먼저 무너진다",
+            "why_hard": "데이터를 S3 에 잘 흩어 놓아도 **그것을 가리키는 목록은 한 곳에 있다.** 그래서 Hive Metastore 가 **중앙 장애점**이 되고, 메타데이터 접근이 몰리면 **질의 계획 시간이 파티션 수에 선형으로** 늘어난다 — **데이터를 읽기도 전에 느려지는** 것이다. 게다가 **카탈로그가 진실의 원천이면 저장소를 직접 고칠 수 없다**: S3 를 만지면 목록이 낡은 채 남아 **파일과 목록이 서로 다른 이야기를 한다.** 파티션을 손으로 등록해야 하고 네이티브 ACID 가 없어 변경마다 복잡한 우회가 필요했던 것도 같은 뿌리다(마지막 절은 이 사이트의 해석).",
+            "current_best": "**테이블 형식 자체를 바꾼다.** Iceberg 로 옮기되 **가장 값진 표부터** 점진적으로. 성과는 분명하다 — 질의 **70초 → 6초**, S3 API 비용 **95% 절감**, 클러스터 자원 **약 절반**. 다만 이관에도 값이 있었다: **`TIMESTAMP_NTZ`↔`TIMESTAMP_LTZ` 충돌**, 부하 시 HMS **좀비 락**, **메타데이터 생성 중 저장 비용 급등**. 그리고 **왜 Iceberg 인지는 알 수 없다** — 버린 형식의 이름을 밝히지 않았다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+                "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+              }
+            ]
+          },
+          {
+            "problem": "보장이 소스마다 다른데 하나의 파이프라인으로 받아야 한다",
+            "why_hard": "MySQL·Aurora 의 binlog 는 **전역 순서와 exactly-once** 를 주는데, DynamoDB 스트림은 **파티션 단위 순서만** 준다 — 회사의 표현으로 *\"소비자 B 의 순서가 A 보다 먼저 나타날 수 있다.\"* 그렇다고 애플리케이션이 DB 와 Kafka 에 **두 번 쓰면** 둘이 어긋나는데, **한 트랜잭션으로 묶는 길도 없다** — **Kafka 는 분산 트랜잭션에 참여할 수 없기 때문**이다. 즉 **일관성을 만들 자리가 애초에 없다**(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**DB 를 유일한 쓰기 지점으로 두고 그 변경 로그를 흘려보낸다**(CDC). 그러면 두 번 쓰는 문제가 사라지고, **직접 DB 도구로 바꾼 변경까지** 감사 기록에 남으며, 운영 DB 의 읽기 폭증도 없어진다(검색 용도에서 **90% 감소**). 다만 **순서 보장의 차이는 남는다** — 소스의 성질이라 파이프라인이 없앨 수 없고, 실행 모델도 소스에 맞춰 달리 골랐다(Debezium vs Lambda).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Real-time data ingestion in Grab",
+                "url": "https://engineering.grab.com/real-time-data-ingestion",
+                "publisher": "Grab Engineering",
+                "date": "—",
+                "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "변경이 DB 에서 레이크까지 가는 길",
+          "question": "왜 애플리케이션이 두 번 쓰지 않는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  APP[\"애플리케이션\"] -->|\"한 번만 쓴다\"| DB[(\"MySQL · Aurora · DynamoDB\")]\n  APP -.->|\"<b>버린 패턴</b> — 두 번 쓰기<br/>Kafka 는 분산 트랜잭션에<br/><b>참여할 수 없다</b>\"| K\n  DB --> ST[\"<b>스트림</b><br/>MySQL/Aurora: ROW binlog<br/>→ 전역 순서 · exactly-once<br/>DynamoDB: NEW_AND_OLD_IMAGES<br/>→ <b>파티션 단위 순서만</b>\"]:::list\n  ST --> P1[\"<b>Debezium</b> (MySQL·Aurora)<br/><i>Kafka Connect 와 깊이 통합</i>\"]:::accent\n  ST --> P2[\"<b>Lambda</b> (DynamoDB)<br/><i>동시성이 트래픽 따라 늘어난다</i>\"]:::accent\n  ALT[\"버린 것 — Maxwell · Canal /<br/>단일 스레드 Kafka Connect 커넥터<br/><i>동적 파티셔닝·자동 확장을 못 살린다</i>\"]:::quiet -.-> P2\n  P1 & P2 --> K[(\"Kafka — Protobuf\")]\n  K --> SP[\"스트림 프로세서<br/><b>분 단위로 S3 에 쓴다</b>\"]\n  SP --> LAKE\n  subgraph LAKE[\"<b>데이터 레이크</b>\"]\n    OLD[\"디렉터리 Hive Parquet + HMS<br/><b>중앙 장애점 · 목록 O(n)</b><br/>ML 데이터셋 <b>평균 1MB 미만 · 파티션당 수천 개</b><br/><b>S3 를 직접 고치면 카탈로그가 낡는다</b>\"]:::quiet\n    ICE[\"<b>Apache Iceberg</b> — 가장 값진 표부터<br/>Z-ordering: 질의 <b>70초 → 6초</b><br/>S3 API 비용 <b>95% 절감</b>\"]:::accent\n    OLD -->|\"옮겼다\"| ICE\n  end\n  SQL[\"시간 단위 SQL 질의로 운영 DB 를 때리던 방식\"]:::quiet -->|\"대체 — 검색 용도 <b>DB 읽기 90% 감소</b>\"| ST"
+        },
+        {
+          "title": "표 하나가 옮겨 가는 동안",
+          "question": "이관 자체가 왜 비용을 만드는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> Hive: 디렉터리 기반 Parquet + HMS\n  note right of Hive\n    파티션은 손으로 등록\n    네이티브 ACID 없음 → 복잡한 우회\n    질의 계획이 파티션 수에 선형\n  end note\n  Hive --> 우선순위: 가장 값진 표부터 고른다\n  note right of 우선순위\n    메타데이터 생성 중\n    저장 계층 비용이 급등한다\n    → 순서를 정해야 했다\n  end note\n  우선순위 --> 이관중\n  이관중 --> 충돌: TIMESTAMP_NTZ ↔ TIMESTAMP_LTZ\n  충돌 --> 이관중: 해결\n  이관중 --> 좀비락: 부하가 높을 때 HMS\n  좀비락 --> 이관중\n  이관중 --> Iceberg\n  Iceberg --> 정렬: Z-ordering 적용\n  정렬 --> Iceberg: 질의 70초 → 6초\n  Iceberg --> [*]"
+        },
+        {
+          "title": "실패 경로 — 개수가 크기보다 먼저 벽이 된다",
+          "question": "이 회사의 두 도메인이 같은 벽에 부딪힌 이유는?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SIZE[\"데이터 <b>크기</b>로 보면 괜찮다\"] --> COUNT[\"<b>개수로 보면 다르다</b>\"]:::accent\n  COUNT --> A[\"<b>레이크</b> — 평균 1MB 미만 파일이<br/>파티션당 수천 개\"]\n  A --> AC[\"S3 API 비용 상승 · 스캔 느려짐\"]\n  COUNT --> B[\"<b>카운터 저장소</b> — 인덱스가<br/>레코드당 64바이트 · 메모리 상주\"]\n  B --> BC[\"수십억 레코드 → 인덱스가 RAM 을 먼저 채운다\"]\n  COUNT --> C[\"<b>수집</b> — *큰 표에 인덱스를 더하는 것은<br/>저장·메모리 비용 때문에 권하지 않는다*\"]\n  AC & BC & C -->|\"<b>해석 — 세 글은 서로를 언급하지 않는다</b>\"| LAW[\"이 회사에서 벽이 되는 것은<br/><b>데이터의 크기가 아니라 개수</b>\"]:::accent\n  CAT[\"카탈로그가 진실의 원천\"] --> DIRECT[\"S3 를 직접 고치면<br/><b>카탈로그가 낡은 채 남는다</b>\"]\n  DIRECT --> TWO[\"파일과 목록이<br/>서로 다른 이야기를 한다 (해석)\"]\n  ORD[\"소스마다 다른 순서 보장\"] --> MY[\"MySQL — 전역 순서 · exactly-once\"]\n  ORD --> DY[\"DynamoDB — <b>파티션 단위만</b><br/>*소비자 B 가 A 보다 먼저 나타날 수 있다*\"]\n  DY --> LEFT[\"파이프라인이 없앨 수 없다 —<br/><b>소스의 성질이다</b>\"]:::quiet\n  TX[\"한 트랜잭션으로 묶기\"] -->|\"불가\"| NOTX[\"<b>Kafka 는 분산 트랜잭션에<br/>참여할 수 없다</b>\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling Grab's Data Lake: Our journey to Apache Iceberg adoption",
+          "url": "https://engineering.grab.com/our-journey-to-apache-iceberg-adoption",
+          "publisher": "Grab Engineering",
+          "date": "—",
+          "summary": "디렉터리 기반 Hive Parquet 이 부딪힌 네 가지 병목 — **Hive Metastore 가 중앙 장애점**이 되고 질의 계획이 파티션 수에 **선형(O(n))** 으로 늘어나며, 일부 ML 데이터셋은 **평균 파일 1MB 미만에 파티션당 수천 개**이고, **카탈로그와 저장소가 어긋난다.** 가장 값진 표부터 옮기는 점진 이관을 골랐다."
+        },
+        {
+          "title": "Real-time data ingestion in Grab",
+          "url": "https://engineering.grab.com/real-time-data-ingestion",
+          "publisher": "Grab Engineering",
+          "date": "—",
+          "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -631,7 +1142,9 @@
     "카운터 저장소 글은 **맵 항목 수의 상한**을 '유계'라고만 하고 밝히지 않는다.",
     "NVMe 실험에서 **p99 스파이크의 크기를 수치로 밝히지 않는다** — 개선 폭은 백분율로만 나온다.",
     "Iceberg 글은 **검토했다가 버린 다른 오픈 테이블 형식의 이름을 밝히지 않는다.**",
-    "`turbocharging-grabunlimited-with-temporal`(구독자 1,000% 증가, 사고 80% 감소)과 `real-time-data-ingestion`, `migrating-existing-datastores` 는 **제목만 확인했고 본문을 읽지 않았다.**"
+    "**배차(모빌리티 매칭) 자료는 실제로 존재한다** — `techblog_-dispatchgym`(강화학습 연구 프레임워크, Gymnasium API), `the-data-and-science-behind-grabshare-part-i`, `understanding-supply-demand-ride-hailing-data`. **아직 본문을 읽지 않아 도메인으로 열지 않았다** — 다음에 열 자리다.",
+    "수집 글은 **초당 이벤트 수·처리 데이터 양을 밝히지 않는다.**",
+    "`turbocharging-grabunlimited-with-temporal`(구독자 1,000% 증가, 사고 80% 감소)은 제목만 확인했다."
   ],
   "sources": [
     {
@@ -654,6 +1167,13 @@
       "publisher": "Grab Holdings IR · SEC 공시",
       "date": "2026",
       "summary": "2025년 온디맨드 GMV **221억 달러**(+21%, 2024년 184억). **배달 GMV 142억 달러**(+21%), **모빌리티 GMV 79억 달러**(+19%, 월간 활성 기사 공급 +17%). 금융 서비스는 **2024년 매출 2억 5,300만 달러(+44%)** 까지 확인했고 2025년 수치는 이 사이트가 확인하지 못했다."
+    },
+    {
+      "title": "Real-time data ingestion in Grab",
+      "url": "https://engineering.grab.com/real-time-data-ingestion",
+      "publisher": "Grab Engineering",
+      "date": "—",
+      "summary": "운영 DB(MySQL·Aurora·DynamoDB)의 변경을 그대로 흘려보내 레이크까지 잇는 이야기. **애플리케이션이 DB 와 Kafka 에 두 번 쓰는 패턴을 없앤 것**이 핵심이고, 이벤트 생산자를 고르며 **Debezium·Maxwell·Canal**, **Kafka Connect 커넥터 대 Lambda** 를 견줘 버린 이유를 적었다. 검색 용도에서 **DB 읽기 90% 감소.**"
     }
   ]
 }
