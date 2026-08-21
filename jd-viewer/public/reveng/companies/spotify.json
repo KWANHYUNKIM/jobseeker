@@ -4,11 +4,11 @@
   "name_en": "Spotify",
   "country": "EU",
   "category": "스트리밍",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-21",
   "domain": "spotify.com",
   "one_liner": "광고가 아니라 구독으로 사는 스트리밍 회사 — 그래서 데이터가 제품이 아니라 원가 쪽에 있다",
-  "business_model": "**같은 스트리밍이라도 유튜브와 정반대의 몸통을 가졌다.** 2025 회계연도 매출 **17,186백만 유로** 중 **프리미엄 구독이 15,350(89%)**, **광고가 1,836(11%)** 이다. 게다가 프리미엄은 1,531백만(11%) 늘어난 반면 **광고는 18백만(1%) 줄었다.**\n\n이 비율이 기술적 성격을 정한다. 광고로 사는 회사에서는 **추천이 곧 매출**이라 랭킹·지면 구성이 제품의 심장이 된다. 구독으로 사는 회사에서는 **사람들이 계속 구독하게 만드는 것**이 목표이고, 데이터 인프라는 매출을 직접 만들기보다 **원가와 속도** 쪽에 붙는다(이 대비는 이 사이트의 해석이다).\n\n**그리고 이 회사의 공개 자료가 실제로 그렇게 생겼다.** 기술 블로그의 최근 글은 **데이터 플랫폼·실험·개발자 도구·AI 도구**에 몰려 있고, 추천 알고리즘이나 오디오 전송을 파고드는 글은 눈에 띄지 않는다. 그래서 이 사이트가 이 회사에서 팔 수 있는 자리도 그쪽이다 — **없는 것을 있는 것처럼 쓰지 않는다.**",
+  "business_model": "**같은 스트리밍이라도 유튜브와 정반대의 몸통을 가졌다.** 2025 회계연도 매출 **17,186백만 유로** 중 **프리미엄 구독이 15,350(89%)**, **광고가 1,836(11%)** 이다. 게다가 프리미엄은 1,531백만(11%) 늘어난 반면 **광고는 18백만(1%) 줄었다.**\n\n이 비율이 기술적 성격을 정한다. 광고로 사는 회사에서는 **추천이 곧 매출**이라 랭킹·지면 구성이 제품의 심장이 된다. 구독으로 사는 회사에서는 **사람들이 계속 구독하게 만드는 것**이 목표이고, 데이터 인프라는 매출을 직접 만들기보다 **원가와 속도** 쪽에 붙는다(이 대비는 이 사이트의 해석이다).\n\n**그리고 이 회사의 공개 자료가 실제로 그렇게 생겼다.** 기술 블로그의 최근 글은 **데이터 플랫폼·실험·개발자 도구·AI 도구**에 몰려 있고, 추천 알고리즘이나 오디오 전송을 파고드는 글은 눈에 띄지 않는다. 그래서 이 사이트가 이 회사에서 팔 수 있는 자리도 그쪽이다 — **없는 것을 있는 것처럼 쓰지 않는다.**\n\n**네 도메인에 걸쳐 같은 문장이 반복된다 — 아낀 것의 값이 다른 자리로 청구된다.** RAP 은 조회용 사본을 만들지 않아 저장을 한 번만 하는 대신, **그 파일이 두 가지 일을 하게 되어 레이아웃으로 값을 치른다**(co-grouping 은 컬럼 프루닝을, 인터리빙은 단일 컬럼 스캔 I/O 를 내준다). 데이터 플랫폼은 셀프서비스로 인프라 팀의 병목을 없앤 대신 **38,000개가 남의 것이 되어 변경 가능성으로 값을 치른다**(회사가 꼽은 어려움 넷 중 둘이 그것이다). 미리듣기 파이프라인은 GPU 메모리 제약을 시간으로 나눈 대신 **조밀한 ParDo 에 오류와 로그가 갇혀 가시성으로 값을 치른다.** 그리고 실험 쪽은 아예 그 청구서를 숫자로 낸다 — **출시의 42%가 측정하지 않은 이차 지표의 퇴행 때문에 되돌아가고, 그것을 잡아낸 eval 은 하나도 없었다.**\n\n**그래서 이 회사 글의 미덕은 대가를 항목마다 적는다는 데 있다.** 30배 개선을 말하면서 **'처리된 에피소드의 80% 기준, 롱테일 제외'** 를 함께 적고, 사고 보고서에서는 **알림을 놓친 네 시간을 스스로 '받아들일 수 없다'** 고 쓴다. (이 묶음은 이 사이트의 해석이며, 회사가 스스로 이렇게 정리한 적은 없다.)",
   "products": [
     "Spotify (음악 스트리밍 · 프리미엄/무료)",
     "팟캐스트 (영상 팟캐스트 포함)",
@@ -178,9 +178,26 @@
               "summary": "2026년 6월 24일 영상 팟캐스트 공개가 몇 시간 밀린 사고 보고서. 원인 넷이 겹쳤고, 13:30 에 알림이 떴는데 용량 문제로 인식하지 못해 **17:34 에야 정식 대응이 시작됐다** — 회사가 그 네 시간을 받아들일 수 없다고 적었다."
             }
           ]
+        },
+        {
+          "tech": "Google Dataflow + Klio 위의 미디어 ML 파이프라인",
+          "solves": "인수한 하루 수천 편짜리 구조를 관리형 Beam 위에 다시 지어 **하루 수십만 편**을 받는다. 배치를 스트리밍으로 옮겨 중앙값 **111.7분 → 3.7분(약 30배)**.",
+          "limits": "T4 의 **16GB 에 앙상블이 다 안 올라가** 모델을 갈아 끼우고, 오버헤드를 줄이려 **하나의 조밀한 ParDo 로 묶어 파이프라인 가시성을 내준다.** Beam 업그레이드에서 **전이 의존성 충돌**로 SDK harness 오류를 맞았고, 30배라는 수치는 **처리된 에피소드의 80% 기준(롱테일 제외)** 이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+              "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+              "publisher": "Spotify Engineering",
+              "date": "2023-04",
+              "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "podcast-previews"
+      ]
     },
     {
       "name": "실험 플랫폼",
@@ -1058,6 +1075,12 @@
           "via": "실험을 떠받치는 것",
           "contract": "이 플랫폼이 **'핵심 역량으로서의 실험'** 을 투자 계기 중 하나로 꼽는다. LLM 보정에 필요한 **과거 실험 데이터**도 결국 여기서 나온다 — 두 글이 서로를 언급하지는 않는다(추정).",
           "confidence": "inferred"
+        },
+        {
+          "to": "podcast-previews",
+          "via": "같은 실행 기반",
+          "contract": "플랫폼은 Scio 로, 미리듣기 파이프라인은 Klio 로 — 둘 다 Apache Beam 위에 있다. **두 글이 서로를 언급하지는 않는다**(추정).",
+          "confidence": "inferred"
         }
       ],
       "research": {
@@ -1602,11 +1625,476 @@
           "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
         }
       ]
+    },
+    {
+      "key": "podcast-previews",
+      "name": "하루 수천 편짜리 파이프라인에 수십만 편이 들어올 때",
+      "domain": "콘텐츠 수집·트랜스코딩",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**표지 그림을 보고 고르는 대신 소리를 듣고 고르게 하자** — 팟캐스트마다 **60초짜리 미리듣기**를 만들어 홈 피드에 얹는 일이다(2023년 3월 8일 출시).\n\n문제는 규모였다. 이 기능은 **인수한 회사(Podz)의 구조**를 물려받았는데, 그것은 **하루 수천 편**의 오프셋을 만들 수 있는 마이크로서비스였다. 그런데 이 회사의 카탈로그는 **하루 수십만 편씩** 늘어난다. **두 자릿수 배가 아니라 두 자릿수 배수의 간극**이다.\n\n그리고 미리듣기는 **오래된 것부터 천천히 만들면 되는 일이 아니다** — 새 에피소드가 올라온 순간 홈 피드에 걸려야 값이 있다. 규모와 지연을 함께 맞춰야 하는 자리다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "만들어야 하는 양",
+            "value": "카탈로그가 **하루 수십만 편**씩 는다. 물려받은 파이프라인의 능력은 **하루 수천 편**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "배치에서 스트리밍으로 옮긴 효과",
+            "value": "중앙값 **111.7분 → 3.7분 (약 30배).** 처리된 에피소드의 **80%** 기준이며 **롱테일은 그래프에서 뺐다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "모델",
+            "value": "미세조정 언어 모델과 음향 이벤트 탐지를 포함해 **6개가 넘는 앙상블.** TensorFlow · PyTorch · Scikit-learn · Gensim 이 섞여 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "워커",
+            "value": "**NVIDIA T4 GPU, 워커당 메모리 16GB** — 앙상블을 한꺼번에 올릴 수 없어 갈아 끼운다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "**금액은 밝히지 않는다.** 배치→스트리밍 전환, 오토스케일링 껐다 켜기, 워커 기동·종료 최적화로 줄였다고만 적는다",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "label": "같은 계열의 다른 파이프라인이 무너진 날",
+            "value": "2026년 6월 24일 영상 팟캐스트 공개가 몇 시간 지연 — **여유 용량 부족 · 정기 재처리 잡 · 화질 개선으로 늘어난 편당 연산 · 처리량을 약 10% 깎던 스케줄링 결함**이 겹쳤다. 이후 트랜스코딩 용량 **약 67%** 증설",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Content Ingestion & Podcast Video Incident Report",
+                "url": "https://engineering.atspotify.com/2026/7/content-ingestion-and-podcast-video-incident-report",
+                "publisher": "Spotify Engineering",
+                "date": "2026-07",
+                "summary": "2026년 6월 24일 영상 팟캐스트 공개가 몇 시간 밀린 사고 보고서. 원인 넷이 겹쳤고, 13:30 에 알림이 떴는데 용량 문제로 인식하지 못해 **17:34 에야 정식 대응이 시작됐다** — 회사가 그 네 시간을 받아들일 수 없다고 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "인수한 구조를 그대로 쓸 수 있는지 보고",
+          "thought": "Podz 의 마이크로서비스는 **하루 수천 편**을 위한 물건이다. 우리 카탈로그는 **하루 수십만 편**씩 는다. 이건 튜닝으로 좁힐 수 있는 간극이 아니다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "직접 굴릴지 맡길지 정할 때",
+          "thought": "쿠버네티스 서비스를 우리가 운영하면 **업데이트·확장·보안·신뢰성이 전부 우리 일**이 된다. 관리형 Dataflow 는 도커화된 DAG 를 맡아 주고 수요에 따라 스스로 늘고 준다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "모델을 GPU 에 올리다가",
+          "thought": "T4 의 **16GB 에 여섯 개가 넘는 모델이 다 들어가지 않는다.** 그래서 **fusion break** 를 넣어 한 번에 한 단계씩만 올리고 **모델을 GPU 메모리에서 갈아 끼운다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "배치의 시간이 어디로 가는지 보고",
+          "thought": "실제 계산보다 **고정된 시간 파티션을 기다리는 시간**과 **워커를 띄우고 내리는 시간**이 컸다. 스트리밍으로 옮기니 중앙값이 **111.7분에서 3.7분**이 됐다 — 운영 복잡도는 올라가지만 지연과 비용이 함께 좋아졌다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "미리듣기 (preview)",
+            "what": "에피소드에서 뽑은 **60초** 오디오. 홈 피드에서 표지 대신 들려 준다."
+          },
+          {
+            "name": "ML 앙상블",
+            "what": "미세조정 언어 모델과 음향 이벤트 탐지를 포함한 **6개 이상**의 모델. 프레임워크가 넷이나 섞여 있다."
+          },
+          {
+            "name": "fusion break",
+            "what": "Beam 이 단계들을 하나로 합치지 못하게 끊는 장치. **한 번에 한 모델 단계만 GPU 에 올리려고** 넣었다."
+          },
+          {
+            "name": "dense ParDo",
+            "what": "여러 처리를 한 덩어리에 넣은 연산자. 빠르지만 **오류와 로그가 전부 그 안에 갇힌다.**"
+          },
+          {
+            "name": "Klio",
+            "what": "오디오·미디어 파이프라인을 위한 이 회사의 오픈소스 프레임워크(Python + Apache Beam). 스트리밍 구현으로 채택했다."
+          }
+        ],
+        "invariants": [
+          "**앙상블을 한꺼번에 GPU 에 올리지 않는다** — 한 단계씩 갈아 끼운다.",
+          "지연 비교는 **처리된 에피소드의 80%** 기준이다 — 롱테일은 그래프에서 뺐다.",
+          "파이프라인 실행은 **관리형 서비스가 맡는다** — 업데이트·확장·보안·신뢰성을 우리가 지지 않는다.",
+          "미리듣기는 **새 에피소드가 올라온 뒤 빨리** 나와야 한다 — 그래서 배치가 아니라 스트리밍이다.",
+          "**컨테이너를 우리가 만들면 디버깅은 우리 몫이 된다** — 특히 VPN 환경에서."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "원본 오디오와 전사(transcription) 데이터를 받아 **중복 제거와 정제**를 한다",
+            "why": "같은 것을 두 번 계산할 이유가 없다."
+          },
+          {
+            "step": "**Dataflow** 가 도커화된 DAG 를 맡아 수요에 따라 워커를 늘리고 줄인다",
+            "why": "직접 굴리면 업데이트·확장·보안·신뢰성이 전부 우리 일이 된다."
+          },
+          {
+            "step": "**T4 GPU(16GB)** 워커에서 **fusion break** 로 단계를 끊어 **한 번에 한 모델만** 올린다",
+            "why": "6개가 넘는 앙상블이 16GB 에 동시에 들어가지 않는다."
+          },
+          {
+            "step": "모델을 **GPU 메모리에서 갈아 끼우며** 앙상블을 차례로 돌린다",
+            "why": "메모리가 한계라면 시간으로 나누는 수밖에 없다."
+          },
+          {
+            "step": "여러 처리를 **하나의 dense ParDo** 에 넣는다",
+            "why": "단계를 쪼개면 그만큼 오버헤드가 든다 — 대신 가시성을 내준다."
+          },
+          {
+            "step": "**배치가 아니라 스트리밍(Klio)** 으로 돌린다",
+            "why": "배치는 고정 시간 파티션을 기다리고 워커를 매번 띄웠다 내린다. 중앙값 111.7분이 3.7분이 됐다."
+          },
+          {
+            "step": "결과를 하류 저장소로 넘긴다",
+            "why": "홈 피드가 그것을 읽어 들려 준다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "인수한 파이프라인을 그대로 쓸 것인가",
+            "chosen": "**다시 짓는다.** Podz 의 마이크로서비스는 **하루 수천 편**용이었다.",
+            "alternatives": [
+              "기존 마이크로서비스를 확장한다"
+            ],
+            "tradeoff": "인수하며 얻은 것을 상당 부분 다시 만들게 된다(뒷문장은 이 사이트의 추정). 대신 **하루 수십만 편**이 드는 카탈로그를 감당할 수 있게 된다 — 튜닝으로 좁힐 간극이 아니었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "실행 환경을 직접 굴릴 것인가",
+            "chosen": "**관리형 Google Dataflow.** Apache Beam 위에 얹힌 관리형 실행 엔진으로, 도커화된 DAG 를 맡고 수요에 따라 자동 확장한다.",
+            "alternatives": [
+              "쿠버네티스 서비스를 직접 운영한다"
+            ],
+            "tradeoff": "**관리형의 버전에 묶인다** — 실제로 Beam 을 2.35.0 에서 2.40.0 으로 올릴 때 전이 의존성 충돌(`grpcio==1.34.1` 과 `google-cloud-pubsublite==1.4.2`)로 **\"SDK harness disconnected\"** 오류를 맞고 패키지를 손으로 걷어내야 했다. 대신 **업데이트·확장·보안·신뢰성**을 우리가 지지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "배치로 돌릴 것인가 스트리밍으로 돌릴 것인가",
+            "chosen": "**스트리밍.** 중앙값 **111.7분 → 3.7분 (약 30배).**",
+            "alternatives": [
+              "고정 시간 파티션의 배치로 돌린다"
+            ],
+            "tradeoff": "**운영 복잡도가 올라간다.** 대신 배치가 먹던 것 — 파티션 대기 시간, 워커 기동·종료 오버헤드 — 이 사라져 지연과 비용이 함께 좋아졌다. 다만 비교는 **처리된 에피소드의 80%** 기준이고 **롱테일은 그래프에서 뺐다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "모델 여섯 개를 GPU 에 어떻게 올릴 것인가",
+            "chosen": "**한 번에 하나씩.** fusion break 로 단계를 끊고 모델을 GPU 메모리에서 갈아 끼운다.",
+            "alternatives": [
+              "전부 올릴 수 있는 큰 GPU 를 쓴다",
+              "모델별로 다른 워커에 나눈다"
+            ],
+            "tradeoff": "모델을 넣고 빼는 시간이 매번 든다(뒷문장은 이 사이트의 추정). 회사도 이것을 최종형으로 보지 않는다 — **Dataflow Prime Right Fitting**(단계별 자원 할당)과 **RunInference API**(모델마다 전용 머신)를 앞으로 쓰겠다고 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인을 잘게 쪼갤 것인가",
+            "chosen": "**하나의 조밀한 ParDo 로 묶는다.**",
+            "alternatives": [
+              "단계마다 별도 연산자로 나눈다"
+            ],
+            "tradeoff": "회사가 직접 적었다 — **파이프라인 가시성을 내주는 것**이라, 오류와 로그가 **전부 그 조밀한 ParDo 하나 안에** 들어간다. 앞으로 RunInference API 로 쪼개겠다고 했다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "컨테이너를 직접 만들 것인가",
+            "chosen": "**커스텀 컨테이너**를 쓴다 — 프레임워크가 넷(TensorFlow·PyTorch·Scikit-learn·Gensim)이나 섞여 있다.",
+            "alternatives": [
+              "제공되는 기본 이미지를 쓴다"
+            ],
+            "tradeoff": "회사가 적었다 — **VPN 환경의 커스텀 컨테이너는 디버깅이 어려운 상황을 만든다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "question": "같은 계열의 다른 파이프라인(영상 트랜스코딩)은 어떤 여유를 두었나",
+            "chosen": "**사고 뒤에 용량을 약 67% 늘렸다.** 그와 함께 더 이른 알림, 급증을 감안한 용량 계획, **배경 작업보다 크리에이터 콘텐츠를 우선**, 요청 제한과 배압 확대를 계획으로 내놓았다.",
+            "alternatives": [
+              "기존 여유 수준을 유지한다"
+            ],
+            "tradeoff": "늘린 만큼 평시에는 논다(뒷문장은 이 사이트의 추정). 그러나 2026년 6월 24일에 **여유 용량 부족 · 정기 재처리 잡의 자원 경합 · 화질 개선으로 늘어난 편당 연산 · 처리량을 약 10% 깎던 스케줄링 결함**이 한꺼번에 겹치자 공개가 몇 시간 밀렸다. 회사는 **13:30 에 뜬 알림을 용량 문제로 알아보지 못해 17:34 에야 정식 대응이 시작된 네 시간**을 **받아들일 수 없다**고 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Content Ingestion & Podcast Video Incident Report",
+                "url": "https://engineering.atspotify.com/2026/7/content-ingestion-and-podcast-video-incident-report",
+                "publisher": "Spotify Engineering",
+                "date": "2026-07",
+                "summary": "2026년 6월 24일 영상 팟캐스트 공개가 몇 시간 밀린 사고 보고서. 원인 넷이 겹쳤고, 13:30 에 알림이 떴는데 용량 문제로 인식하지 못해 **17:34 에야 정식 대응이 시작됐다** — 회사가 그 네 시간을 받아들일 수 없다고 적었다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Google Dataflow (Apache Beam)",
+            "role": "도커화된 DAG 를 맡아 수요에 따라 자동 확장하는 관리형 실행 엔진.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "Klio",
+            "role": "오디오·미디어 파이프라인용 이 회사의 오픈소스 프레임워크(Python + Beam). 스트리밍 구현으로 채택.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "NVIDIA T4 GPU (워커당 16GB)",
+            "role": "앙상블 추론. 용량이 모자라 모델을 갈아 끼운다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "fusion break",
+            "role": "Beam 단계 병합을 끊어 한 번에 한 모델만 GPU 에 올린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "TensorFlow · PyTorch · Scikit-learn · Gensim",
+            "role": "앙상블의 프레임워크들. 커스텀 컨테이너가 필요한 이유이기도 하다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "tech": "영상 트랜스코딩 인프라의 구성",
+            "role": "— 사고 보고서는 **무엇으로 만들어졌는지 밝히지 않는다.** 용량·큐·스케줄링만 이야기한다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "data-platform",
+          "via": "같은 실행 기반",
+          "contract": "이 파이프라인의 Beam·Dataflow 는 데이터 플랫폼이 쓰는 것과 같은 계열이다(플랫폼 쪽은 Scio 로 Beam 을 쓴다). **두 글이 서로를 언급하지는 않는다** — 이 연결은 이 사이트의 추정이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "메모리에 안 들어가는 앙상블을 시간으로 나눌 때 잃는 것",
+            "why_hard": "모델 여섯 개가 **T4 의 16GB 에 동시에 들어가지 않는다.** 공간이 부족하면 **시간으로 나누는 수밖에** 없고, 그러려면 단계를 끊어야 한다(fusion break). 그런데 단계를 끊고 모델을 갈아 끼우는 비용이 매번 들기 때문에, 반대로 처리를 **하나의 조밀한 ParDo 로 묶게** 된다 — 그리고 그 순간 **오류와 로그가 전부 그 덩어리 안에 갇힌다.** 회사의 표현으로 **파이프라인 가시성을 내주는 것**이다. **메모리 제약이 관측 가능성의 문제로 번진다**(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**지금은 갈아 끼우고 묶는다.** 회사도 이것을 끝으로 보지 않고 둘을 예고했다 — **Dataflow Prime Right Fitting**(파이프라인 전체가 아니라 단계별로 자원을 준다)과 **RunInference API**(조밀한 ParDo 를 쪼개 모델마다 전용 머신을 주고 추론 지표를 표준화한다). 즉 **자원 할당의 단위를 파이프라인에서 단계로 내리는 것**이 방향이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+                "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+                "publisher": "Spotify Engineering",
+                "date": "2023-04",
+                "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+              }
+            ]
+          },
+          {
+            "problem": "여유 용량은 평소에 노는 것으로만 보인다",
+            "why_hard": "영상 트랜스코딩이 무너진 날, 원인은 하나가 아니라 **넷이 겹친 것**이었다 — 급증을 받아 낼 **여유 부족**, 피크 시간에 자원을 함께 먹은 **정기 재처리 잡**, **화질 개선으로 늘어난 편당 연산**, 그리고 **처리량을 약 10% 깎던 스케줄링 결함.** 하나씩이면 아무것도 아니고 평소에는 여유가 남아 보인다. **부하가 회사가 정하는 시각이 아니라 크리에이터의 사정에 따라 몰린다**는 점이 이것을 더 어렵게 만든다(마지막 절은 이 사이트의 해석). 게다가 감지도 늦었다 — **13:30 에 알림이 떴지만 용량 문제로 인식되지 않아 17:34 에야 정식 대응이 시작됐다.**",
+            "current_best": "**용량을 약 67% 늘리고, 순서를 정했다** — 더 이른 알림, 급증을 감안한 용량 계획, **배경 작업보다 크리에이터 콘텐츠를 우선**, 요청 제한과 배압 확대. 회사는 네 시간의 감지 지연을 **받아들일 수 없다**고 스스로 적었다. 다만 **영향받은 쇼·에피소드·이용자 수는 공개하지 않는다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Content Ingestion & Podcast Video Incident Report",
+                "url": "https://engineering.atspotify.com/2026/7/content-ingestion-and-podcast-video-incident-report",
+                "publisher": "Spotify Engineering",
+                "date": "2026-07",
+                "summary": "2026년 6월 24일 영상 팟캐스트 공개가 몇 시간 밀린 사고 보고서. 원인 넷이 겹쳤고, 13:30 에 알림이 떴는데 용량 문제로 인식하지 못해 **17:34 에야 정식 대응이 시작됐다** — 회사가 그 네 시간을 받아들일 수 없다고 적었다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "에피소드 하나가 미리듣기가 되기까지",
+          "question": "모델 여섯 개가 16GB 에 안 들어가면 어떻게 하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  EP[\"새 에피소드<br/>카탈로그가 <b>하루 수십만 편</b>씩 는다\"]\n  OLD[\"물려받은 구조 (Podz 마이크로서비스)<br/><b>하루 수천 편</b>\"]:::quiet\n  OLD -->|\"간극이 튜닝으로 좁혀지지 않는다\"| NEW\n  EP --> NEW[\"<b>Google Dataflow</b> (관리형 Beam)<br/>도커화된 DAG · 수요에 따라 자동 확장\"]:::accent\n  NEW --> PRE[\"전처리 — 중복 제거 · 정제<br/>(오디오 + 전사)\"]\n  PRE --> GPU\n  subgraph GPU[\"<b>T4 GPU 워커 — 16GB</b>\"]\n    FB[\"fusion break<br/>한 번에 한 단계만\"]:::list\n    SWAP[\"모델을 GPU 메모리에서<br/><b>갈아 끼운다</b>\"]:::accent\n    DENSE[\"<b>하나의 조밀한 ParDo</b><br/>— 오류와 로그가 전부 여기 갇힌다\"]:::quiet\n    FB --> SWAP --> DENSE\n  end\n  M[\"앙상블 <b>6개 이상</b><br/>TF · PyTorch · Scikit-learn · Gensim<br/><b>동시에 안 올라간다</b>\"] --> GPU\n  GPU --> OUT[\"60초 미리듣기 → 하류 저장소 → 홈 피드\"]\n  BATCH[\"배치 — 고정 시간 파티션 대기<br/>워커 기동·종료<br/><b>중앙값 111.7분</b>\"]:::quiet -->|\"옮겼다\"| STREAM[\"<b>스트리밍 (Klio)</b><br/><b>중앙값 3.7분 · 약 30배</b><br/>(처리된 80% 기준, 롱테일 제외)\"]:::accent\n  NEW -.-> STREAM"
+        },
+        {
+          "title": "같은 계열의 다른 파이프라인이 무너진 날",
+          "question": "평소에 남아 보이던 여유는 어디로 갔는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 정상: 영상 팟캐스트, 보통 몇 분 안에 공개\n  정상 --> 압박: 크리에이터 제출이 몰린다\n  note right of 압박\n    부하가 몰리는 시각을\n    회사가 정하지 못한다\n  end note\n  압박 --> 포화: 원인 넷이 겹친다\n  note right of 포화\n    ① 여유 용량 부족\n    ② 정기 재처리 잡의 자원 경합\n    ③ 화질 개선으로 늘어난 편당 연산\n    ④ 처리량을 약 10% 깎던 스케줄링 결함\n  end note\n  포화 --> 미인지: 13:30 알림 — 용량 문제로 알아보지 못했다\n  note right of 미인지\n    회사가 \"받아들일 수 없다\"고 적은\n    네 시간이 여기다\n  end note\n  미인지 --> 대응: 17:34 정식 대응 시작\n  대응 --> 회복1: 16:35 배치 잡 중단\n  회복1 --> 회복2: 20:49 스케줄링 수정 배포\n  회복2 --> 회복3: 00:14 용량 증설\n  회복3 --> 정상: 01:02 큐 해소\n  정상 --> 정상: 이후 용량 약 67% 증설 · 크리에이터 우선 · 배압 확대"
+        },
+        {
+          "title": "실패 경로 — 메모리 제약이 다른 곳으로 번진다",
+          "question": "공간이 모자라면 무엇을 시간으로, 무엇을 가시성으로 내는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  MEM[\"<b>모델 6개+ · GPU 16GB</b><br/>동시에 안 들어간다\"] --> TIME[\"공간이 없으면 <b>시간으로 나눈다</b><br/>fusion break · 모델 스와핑\"]\n  TIME --> COST1[\"넣고 빼는 시간이 매번 든다 (추정)\"]:::quiet\n  TIME --> MERGE[\"오버헤드를 줄이려<br/><b>하나의 조밀한 ParDo 로 묶는다</b>\"]\n  MERGE --> BLIND[\"<b>오류와 로그가 그 안에 갇힌다</b><br/>— 회사의 표현: 가시성을 내준다\"]:::accent\n  BLIND -->|\"해석\"| SPREAD[\"메모리 제약이<br/><b>관측 가능성의 문제</b>로 번진다\"]\n  BLIND --> FUTURE[\"예고 — Right Fitting(단계별 자원)<br/>RunInference API(모델별 전용 머신)\"]:::quiet\n  MAN[\"관리형 서비스에 맡긴다\"] --> FREE[\"업데이트 · 확장 · 보안 · 신뢰성을 안 진다\"]\n  MAN --> LOCK[\"<b>버전에 묶인다</b>\"]\n  LOCK --> DEP[\"Beam 2.35 → 2.40 에서<br/>전이 의존성 충돌<br/><b>SDK harness disconnected</b><br/>패키지를 손으로 걷어냈다\"]\n  CUSTOM[\"커스텀 컨테이너 (프레임워크 넷)\"] --> VPN[\"<b>VPN 환경에서 디버깅이 어렵다</b>\"]:::quiet\n  NUM[\"30배라는 숫자\"] -->|\"단서\"| BASE[\"처리된 에피소드의 <b>80%</b> 기준<br/><b>롱테일은 그래프에서 뺐다</b>\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+          "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+          "publisher": "Spotify Engineering",
+          "date": "2023-04",
+          "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
+        },
+        {
+          "title": "Content Ingestion & Podcast Video Incident Report",
+          "url": "https://engineering.atspotify.com/2026/7/content-ingestion-and-podcast-video-incident-report",
+          "publisher": "Spotify Engineering",
+          "date": "2026-07",
+          "summary": "2026년 6월 24일 영상 팟캐스트 공개가 몇 시간 밀린 사고 보고서. 원인 넷이 겹쳤고, 13:30 에 알림이 떴는데 용량 문제로 인식하지 못해 **17:34 에야 정식 대응이 시작됐다** — 회사가 그 네 시간을 받아들일 수 없다고 적었다."
+        }
+      ]
     }
   ],
   "open_questions": [
     "**이 회사의 기술 블로그에는 추천 알고리즘을 파고드는 글이 보이지 않는다.** 최근 글이 데이터 플랫폼·실험·개발자 도구·AI 도구에 몰려 있어, 넷플릭스·유튜브와 견줄 **추천 도메인을 이 사이트는 열지 못했다.**",
-    "오디오 인코딩·전송(코덱·비트레이트 적응·CDN)에 대한 1차 자료도 찾지 못했다.",
     "RAP 글은 **인덱스가 어디에 사는지**(별도 시스템인지 파일 옆인지) 밝히지 않는다.",
     "RAP 의 **QPS·처리량·비용 수치가 없다** — 지연은 저장소 자체의 값(GCS 30~100ms)만 나온다.",
     "사고 보고서는 **영향받은 쇼·에피소드·이용자 수를 공개하지 않는다.**",
@@ -1614,7 +2102,11 @@
     "**품질 검사가 실패하면 어떻게 되는지** — 파이프라인을 막는지 경고만 하는지 적혀 있지 않다.",
     "두 글 모두 **방법론**을 다루고 **실험 플랫폼 자체의 시스템 설계**(할당·순차 검정·지표 파이프라인)는 밝히지 않는다.",
     "LLM 대체가 가져올 **비용·시간 절감치가 글에 없다** — 단위당 여러 출력을 평균 내면 잡음이 준다고만 하고 개선폭도 밝히지 않는다.",
-    "대리 지표 이론의 **원 출처(생물통계 문헌)를 이 사이트는 직접 확인하지 않았다** — 그래서 `research.papers` 를 비워 두었다. 있는 것처럼 인용하지 않는다."
+    "대리 지표 이론의 **원 출처(생물통계 문헌)를 이 사이트는 직접 확인하지 않았다** — 그래서 `research.papers` 를 비워 두었다. 있는 것처럼 인용하지 않는다.",
+    "**앞선 사이클에 '오디오 인코딩·전송 자료를 찾지 못했다'고 적었으나 정확하지 않았다** — `how-spotify-aligned-cdn-services`(2020)와 `smoother-streaming-with-bbr`(2018)이 있다. 다만 **2018~2020년 글이라 현재 상태를 말해 주지 못해** 이번에도 도메인으로 열지 않았다. 최신 자료가 나오면 열 자리다.",
+    "미리듣기 글은 **비용 금액을 밝히지 않는다** — 무엇으로 줄였는지만 적는다.",
+    "**30배 개선은 처리된 에피소드의 80% 기준이고 롱테일은 그래프에서 제외했다** — 꼬리가 얼마나 긴지는 알 수 없다.",
+    "사고 보고서는 **영상 트랜스코딩 인프라가 무엇으로 만들어졌는지** 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1665,6 +2157,13 @@
       "publisher": "Spotify Engineering",
       "date": "2026-05",
       "summary": "LLM 평가(eval)와 A/B 실험을 **양자택일이 아니라 순서**로 놓는 글. 검증 → 검정 → 보정의 깔때기이고, 마지막 단계가 없으면 **\"eval 은 증거가 아니라 의견\"** 이라고 못 박는다. 이 회사 A/B 테스트의 12%만 긍정 결과로 출시되고, 출시된 것의 42%가 이차 지표 퇴행 때문에 롤백된다."
+    },
+    {
+      "title": "Large-Scale Generation of ML Podcast Previews at Spotify with Google Dataflow",
+      "url": "https://engineering.atspotify.com/2023/04/large-scale-generation-of-ml-podcast-previews-at-spotify-with-google-dataflow",
+      "publisher": "Spotify Engineering",
+      "date": "2023-04",
+      "summary": "인수한 회사(Podz)의 파이프라인이 하루 수천 편짜리였는데 카탈로그는 하루 수십만 편씩 늘고 있었다. 관리형 Dataflow 위에 다시 지어 배치 중앙값 **111.7분을 스트리밍 3.7분(30배)** 으로 줄인 기록. GPU 메모리에 모델을 다 못 올려 한 단계씩 갈아 끼우고, 그 대가로 파이프라인 가시성을 내준 것까지 적었다."
     }
   ]
 }

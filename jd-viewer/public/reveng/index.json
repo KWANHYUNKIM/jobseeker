@@ -295,10 +295,10 @@
       "name_en": "Spotify",
       "country": "EU",
       "category": "스트리밍",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "광고가 아니라 구독으로 사는 스트리밍 회사 — 그래서 데이터가 제품이 아니라 원가 쪽에 있다",
-      "features_done": 3,
+      "features_done": 4,
       "domain": "spotify.com"
     }
   ],
