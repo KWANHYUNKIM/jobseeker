@@ -271,10 +271,10 @@
       "name_en": "LY Corporation",
       "country": "JP",
       "category": "메시징",
-      "status": "in_progress",
+      "status": "done",
       "updated_at": "2026-08-21",
       "one_liner": "일본에서 메신저·포털·결제를 한 회사가 쥐고 있다 — 그래서 합병 이전의 시스템 두 벌을 물려받았다",
-      "features_done": 2,
+      "features_done": 3,
       "domain": "lycorp.co.jp"
     }
   ],
@@ -374,7 +374,7 @@
     "데이터 계층",
     "CI 실행",
     "스트리밍 파이프라인",
-    "메시지 암호화",
+    "암호·기기 신뢰",
     "데이터 레이크 통합"
   ],
   "countries": {
