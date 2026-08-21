@@ -1086,7 +1086,70 @@
           "date": "2022-10-28",
           "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "How Do Committees Invent?",
+            "authors": "Melvin E. Conway",
+            "year": "1968",
+            "venue": "Datamation 14(5)",
+            "url": "https://www.melconway.com/Home/Committees_Paper.html",
+            "takeaway": "이 기능의 출발점이 기술 문제가 아니라는 것의 이름. 쿠팡이 스스로 적었듯 **실제 병목은 알고리즘이 아니라 '누가 데이터를 꺼낼 수 있는가'** 였는데, 그것은 조직의 경계가 시스템의 제약으로 나타난 것이다. 이 플랫폼은 그 경계를 **기술로 다시 그으려는 시도**로 읽힌다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Usability Analysis of Visual Programming Environments: A 'Cognitive Dimensions' Framework",
+            "authors": "T. R. G. Green, M. Petre",
+            "year": "1996",
+            "venue": "Journal of Visual Languages & Computing 7(2)",
+            "url": "https://www.sciencedirect.com/science/article/pii/S1045926X96900099",
+            "takeaway": "캔버스로 프로그래밍하는 것이 **언제 도움이 되고 언제 해가 되는지**를 따진 연구. 쿠팡이 적은 대가('복잡해질수록 캔버스가 코드보다 읽기 어려워진다')가 여기서는 시각 표기법의 알려진 성질로 다뤄진다 — 작은 프로그램에서 얻은 이점이 규모가 커지면 뒤집힌다. 조건문·반복을 캔버스에 올린 결정이 그 뒤집힘을 앞당긴다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Advances in Dataflow Programming Languages",
+            "authors": "Wesley M. Johnston, J. R. Paul Hanna, Richard J. Millar",
+            "year": "2004",
+            "venue": "ACM Computing Surveys 36(1)",
+            "url": "https://dl.acm.org/doi/10.1145/1013208.1013209",
+            "takeaway": "'블록들이 실행 중에 서로의 입출력을 파라미터로 주고받는다'는 구조의 이름이 데이터플로다. 이 모델의 성질 하나가 쿠팡의 설계를 설명한다 — **의존 관계가 곧 실행 순서이므로 병렬성이 따로 지정하지 않아도 드러난다.** 순차·병렬·반복을 캔버스에 자연스럽게 올릴 수 있었던 이유이고, 회사가 입출력 통합을 상용 워크플로 대비 최대 장점으로 꼽은 근거이기도 하다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "병목이 접근 권한일 때, 도구를 주면 병목이 사라지지 않고 옮겨간다",
+            "why_hard": "**조직의 문제를 기술로 끝까지 없앨 수 없다.** 데이터에 닿는 사람이 한 명이면 그 사람이 팀의 처리량 상한인데, 도구를 줘서 모두가 닿게 하면 이번에는 **플랫폼이 상한이 된다** — 쿠팡 스스로 '플랫폼이 못 하는 일은 그 팀도 못 하게 된다'고 적었다. 게다가 상한만 옮겨가는 게 아니라 책임도 흐려진다. 엔지니어가 아닌 사람이 만든 파이프라인이 늘수록 **누가 그 품질과 운영을 책임지는지**가 불분명해지고, 개인 실험 공간이 아직 계획 단계라 **실험과 운영이 같은 자리에서 이뤄지는 상태**가 남아 있다.",
+            "current_best": "**층을 나눠 상한을 최대한 밀어낸다.** 반복되는 데이터 추출·처리·공유는 플랫폼이 표준화하고, 그것으로 안 되는 도메인 알고리즘은 엔지니어가 **커스텀 서비스 컴포넌트로 등록**해 비엔지니어가 블록으로 쓰게 한다. 통제는 팀·프로젝트 그룹 폴더의 권한으로 건다. 대가는 컴포넌트의 입출력 계약을 지켜야 하는 부담, 그리고 **모두가 올라탄 플랫폼이 단일 장애점 후보가 된다**는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          },
+          {
+            "problem": "시각 프로그래밍은 규모가 커지면 코드보다 읽기 어려워진다",
+            "why_hard": "**화면은 2차원이고 유한한데 프로그램의 복잡도는 그렇지 않다.** 블록이 늘면 연결선이 교차하고, 한 화면에 안 들어가는 순간 전체를 한눈에 보는 방법이 사라진다. 텍스트 코드에는 검색·diff·리뷰·버전 비교라는 도구가 이미 있지만 캔버스에는 그 대응물이 빈약하다. 그리고 조건문·반복·병렬화까지 캔버스에 올리면 **이 뒤집힘이 더 빨리 온다** — 작은 워크플로에서 얻은 명료함이 큰 워크플로에서는 정확히 반대로 작용한다.",
+            "current_best": "**복잡한 것은 캔버스에서 접어 코드로 내린다.** 도메인의 핵심 알고리즘을 커스텀 서비스 컴포넌트로 만들어 블록 하나로 감추면 캔버스가 감당할 크기를 넘지 않는다. 다만 이 해법에는 되돌아오는 고리가 있다 — **접어 넣은 안쪽은 다시 엔지니어만 다룰 수 있게 되므로, 첫 번째 난제(접근 권한 병목)로 되돌아간다.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Coupang SCM Workflow: Building a low-code, no-code platform",
+                "url": "https://medium.com/coupang-engineering/coupang-scm-workflow-building-a-low-code-no-code-platform-3d035c1fa37a",
+                "publisher": "Coupang Engineering Blog · Ryan Donghyun Jin",
+                "date": "2022-10-28",
+                "summary": "SCM 팀은 수요를 예측하고 물류센터 간 상품 분배를 다룬다. 엔지니어·BA·데이터 사이언티스트가 섞인 팀에서 데이터 작업이 담당 엔지니어에게 병목되자, 노코드 데이터 빌더와 로우코드 서비스 빌더를 갖춘 SCM Workflow 플랫폼을 만들었다."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "search-indexing",
