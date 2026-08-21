@@ -116,7 +116,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "magic-pocket"
+      ]
     },
     {
       "name": "파일 동기화",
@@ -275,11 +277,688 @@
       "features": []
     }
   ],
-  "features": [],
+  "features": [
+    {
+      "key": "magic-pocket",
+      "name": "Magic Pocket — 남의 클라우드를 떠나 엑사바이트를 자기 디스크에",
+      "domain": "저장 인프라",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**파일을 맡아 주는 회사에서 저장은 기능이 아니라 원가다.** 2012년 40PB 였던 것이 4년 만에 **12배**로 늘어 500PB 가 됐고, 그 전부가 S3 위에 있었다. 회사가 밝힌 이유는 두 가지다 — 스택을 끝에서 끝까지 자기 용도에 맞게 고칠 수 있다는 것, 그리고 **규모가 크면 하드웨어와 소프트웨어를 함께 고쳐 단위 원가를 낫게 만들 수 있다**는 것. 다만 이 결정은 공짜가 아니라 **자리를 옮긴 것**이다 — 매달 나가던 클라우드 요금이 **자기 자산의 감가상각**으로 바뀌었고, FY2025 에 GAAP 매출총이익률이 82.5% → 80.1% 로 내렸을 때 회사가 그 원인을 '데이터센터 갱신 주기'라고 적었다.",
+        "metrics": [
+          {
+            "label": "옮긴 규모",
+            "value": "**500PB 넘게** · 2012년 약 40PB 에서 4년 만에 12배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling to exabytes and beyond",
+                "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+                "publisher": "Dropbox Tech",
+                "date": "2016-03-14",
+                "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+              }
+            ]
+          },
+          {
+            "label": "일정",
+            "value": "2013 여름 착수 → **2014-08 다크 런치** → **2015-02-27 첫 실서비스** → 2015-04-30~10-07 다중 리전 확장 → **2015-10-07 목표 90% 달성**(마감보다 약 한 달 빠르게)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling to exabytes and beyond",
+                "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+                "publisher": "Dropbox Tech",
+                "date": "2016-03-14",
+                "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+              }
+            ]
+          },
+          {
+            "label": "이관 속도",
+            "value": "확장 기간 중 **초당 0.5테라비트**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling to exabytes and beyond",
+                "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+                "publisher": "Dropbox Tech",
+                "date": "2016-03-14",
+                "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+              }
+            ]
+          },
+          {
+            "label": "목표",
+            "value": "가용성 **99.99% 이상** · 연 내구성 **99.9999999999%**(12개의 9)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling to exabytes and beyond",
+                "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+                "publisher": "Dropbox Tech",
+                "date": "2016-03-14",
+                "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+              }
+            ]
+          },
+          {
+            "label": "밀도",
+            "value": "OSD 한 대에 **1PB 넘게**(디스크 약 100장, 2PB+) · 랙 하나에 **8PB**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              },
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "label": "저장 오버헤드",
+            "value": "복제 4배 → **소거 부호 약 1.33배**(LRC) · Reed-Solomon 만 쓰면 1.5배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "label": "콜드 데이터",
+            "value": "복제 계수 2배 → **1.5배(−25%)** · 근거는 **조회의 90% 가 최근 1년치**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "label": "복구",
+            "value": "**초당 익스텐트 4개**(개당 1~2GB) · SLA **48시간 미만** — 내구성 모델의 입력값이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "label": "SSD 캐시 제거 효과",
+            "value": "실운영 쓰기 처리량 **+15~20%** (최대 부하 시험에서는 2~2.5배)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Increasing Magic Pocket write throughput by removing our SSD cache disks",
+                "url": "https://dropbox.tech/infrastructure/increasing-magic-pocket-write-throughput-by-removing-our-ssd-cache-disks",
+                "publisher": "Dropbox Tech",
+                "date": "2022-12-08",
+                "summary": "2017년에 옳았던 SSD 쓰기 캐시를 2021년에 떼어 낸 기록. 저자 Ankur Kulshrestha · Rajat Goel · Sandeep Ummadi."
+              }
+            ]
+          },
+          {
+            "label": "만든 사람",
+            "value": "**엔지니어 여섯 명이 안 됐다** — 설계 철학의 이유로 회사가 직접 든 근거",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "직접 지을지 판단할 때",
+          "thought": "'우리 규모에서 검증된 오픈소스가 없다'는 것이 출발점이었다. **엑사바이트급 저장 시스템은 세상에 몇 개 없고**, 그 말은 사올 것도 베낄 것도 없다는 뜻이다 — 지으면 처음부터 전부 지어야 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇으로 만들지 고를 때",
+          "thought": "여기가 이 시스템의 성격을 정한 지점이다. **화려한 것을 전부 버렸다** — 쿼럼 프로토콜도, DHT 도, 트라이도, Paxos 도, 자체 KV 스토어도. 회사가 남긴 문장이 이유 전부다: **'복잡함은 대개 신뢰성의 반대다.'** 그리고 만드는 사람이 여섯 명도 안 됐다 — **인원이 설계를 정한 셈이다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "메타데이터를 어디 둘지 정할 때",
+          "thought": "블록 해시 → 위치 매핑에 분산 해시 테이블을 쓰는 게 '맞는' 답처럼 보였는데 **샤딩된 MySQL** 로 갔다. 회사가 나중에 이걸 **'개발을 단순하게 만든 정말 좋은 결정'**이라고 적었다 — 이유는 성능이 아니라 **사내에 이미 MySQL 운영 지식이 쌓여 있었다**는 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "옮기는 방법을 정할 때",
+          "thought": "한 번에 넘기지 않았다. **2014년 8월에 다크 런치로 두 리전에 거울처럼 써 두고**, 실서비스로 넘긴 뒤에도 **백업을 6개월 더** 들고 있었다. 500PB 를 옮기면서 '큰 장애도 데이터 손실도 없었다'는 결과 뒤에 그 6개월이 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "SMR 을 쓰기로 할 때 (2017)",
+          "thought": "SMR 은 밀도를 얻는 대신 **아무 데나 쓸 수 없다** — 순차 쓰기여야 한다. 그래서 앞에 SSD 를 두고 라이브 쓰기를 먼저 받은 뒤 **비동기로 모아 순차로** 내리기로 했다. 이 판단은 그때 옳았다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "2020년 초, SSD 들이 한꺼번에 수명에 닿았을 때",
+          "thought": "**여러 SSD 가 동시에 쓰기 수명 한계에 도달했다.** 대량 복구가 한꺼번에 돌았고 내구성이 위태로워졌다. 캐시를 더 좋은 SSD 로 바꾸는 대신 **캐시가 왜 거기 있는지**를 다시 물었다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "캐시를 뗄지 정할 때 (2021)",
+          "thought": "밀도가 디스크당 14~20TB 로 오르자 **모든 라이브 쓰기가 SSD 한 장을 지나게** 됐다. NVMe 도 15~20Gbps 가 한계인데 호스트에는 디스크가 수백 장이다. 게다가 밀도가 오르면 서버 수가 줄고 **서버당 요구 처리량은 그만큼 올라간다** — 병목이 스스로 조여 온다. **캐시가 성능을 주던 자리에서 성능을 막는 자리로 옮겨 갔다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "읽기 캐시까지 없앨 때",
+          "thought": "방금 쓴 블록을 위한 인메모리 읽기 캐시도 같이 없앴다. 읽기 지연이 나빠지는 걸 알면서 했고, **'문제가 되면 다시 넣으면 된다'**고 적었다 — 되돌릴 수 있는 것으로 만들어 두고 뺀 것이다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "내구성을 어떻게 믿을지 정할 때",
+          "thought": "12개의 9 는 **재 볼 수 있는 숫자가 아니다.** 그래서 관측이 아니라 모델로 다룬다 — 고장을 **15분** 관찰하고 복구를 걸고, **복구를 48시간 안에 끝낸다**는 SLA 자체가 모델의 입력이 된다. **복구가 늦어지는 것이 곧 내구성이 나빠지는 것이다.**",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "블록",
+            "what": "최대 **4MB**. 저장의 최소 단위이고 해시로 식별된다 — 같은 내용이면 같은 블록이다."
+          },
+          {
+            "name": "버킷",
+            "what": "논리적으로 **1GB** 를 묶은 그릇. 블록이 여기 담긴다."
+          },
+          {
+            "name": "볼륨",
+            "what": "버킷을 여러 OSD 에 걸쳐 실제로 앉힌 것. **열린 볼륨만 쓰기를 받고**, 닫히면 불변이 되어 옮기기 안전해진다."
+          },
+          {
+            "name": "OSD (Object Storage Device)",
+            "what": "'디스크로 가득 찬 상자'. 디스크 약 100장, **2PB 넘게**. 볼륨 수천 개를 든다."
+          },
+          {
+            "name": "셀",
+            "what": "자기완결 논리 클러스터. 원시 데이터 **약 50PB**, 실질 한계 **약 100PB**. 셀마다 마스터가 하나다."
+          },
+          {
+            "name": "존",
+            "what": "지리적 구역 3곳(서·중·동부 미국). **블록마다 최소 2개 존**에 있고, 로컬 업로드 후 **1초 안에** 건너간다."
+          },
+          {
+            "name": "익스텐트",
+            "what": "복구의 단위. 개당 **1~2GB**, 초당 4개를 고친다."
+          }
+        ],
+        "invariants": [
+          "**복잡함은 대개 신뢰성의 반대다** — 회사가 직접 쓴 문장이고 이 시스템 전체의 규칙이다.",
+          "**닫힌 볼륨은 불변이다** — 그래야 안전하게 옮길 수 있다.",
+          "블록은 **최소 두 개의 존**에 있다.",
+          "**복구 48시간** — 이 약속이 내구성 숫자의 근거다.",
+          "되돌릴 수 있게 만들어 두고 뺀다(읽기 캐시)."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "클라이언트가 블록(≤4MB)을 올린다",
+            "why": "해시로 식별되므로 이미 있는 블록이면 다시 안 올린다"
+          },
+          {
+            "step": "프론트엔드가 어느 셀·볼륨에 둘지 정한다",
+            "why": "쓰기를 받는 **열린 볼륨**은 소수만 유지한다"
+          },
+          {
+            "step": "블록 인덱스(샤딩된 MySQL)에 해시 → 위치를 적는다",
+            "why": "DHT 가 아니라 MySQL 인 것이 이 시스템의 성격이다"
+          },
+          {
+            "step": "OSD 의 SMR 디스크에 **직접** 쓴다 — 메타데이터와 데이터를 한 익스텐트에 함께",
+            "why": "2021년 이후. 그전에는 SSD 캐시를 거쳤다"
+          },
+          {
+            "step": "**1초 안에** 다른 존으로 건넌다",
+            "why": "블록마다 최소 두 존 — 지역 재해가 데이터 손실이 되지 않게"
+          },
+          {
+            "step": "갓 올라온 블록은 복제본을 여러 벌 둔다",
+            "why": "막 쓴 것은 아직 소거 부호로 바꿀 시점이 아니다"
+          },
+          {
+            "step": "나이가 들면 **소거 부호**로 바꾼다 — Reed-Solomon(6+3) + 국소 복원 부호",
+            "why": "오버헤드를 1.5배에서 약 1.33배로. 엑사바이트에서는 이 차이가 크다"
+          },
+          {
+            "step": "잘 안 열리는 것은 **콜드 계층**으로 — 블롭을 쪼개 존 간 XOR",
+            "why": "조회의 90% 가 최근 1년치다. 복제 2배 → 1.5배 (−25%)"
+          },
+          {
+            "step": "고장은 **15분** 관찰 후 복구를 건다 — 초당 익스텐트 4개, 48시간 SLA",
+            "why": "잠깐 사라진 것에 매번 복구를 걸면 복구가 부하가 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "S3 에 남을 것인가 나갈 것인가",
+            "chosen": "**나간다 — 자기 하드웨어에 짓는다**",
+            "alternatives": [
+              "S3 에 남아 규모 할인 협상",
+              "다른 클라우드로 이전"
+            ],
+            "tradeoff": "**우리 규모에서 검증된 오픈소스가 없어 처음부터 전부 지어야 한다.** 그리고 원가가 사라지는 게 아니라 **자리를 옮긴다** — 매달의 요금이 자산의 감가상각이 되고, 그것이 FY2025 매출총이익률 하락으로 나타났다. **유럽 데이터 소재지 요건 때문에 독일은 여전히 AWS 에 둔다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling to exabytes and beyond",
+                "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+                "publisher": "Dropbox Tech",
+                "date": "2016-03-14",
+                "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+              },
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          },
+          {
+            "question": "분산 조율을 무엇으로 할 것인가",
+            "chosen": "**아무것도 안 쓴다** — 셀마다 마스터 하나, 실패하면 재시도",
+            "alternatives": [
+              "쿼럼 기반 프로토콜",
+              "Paxos 등 분산 합의"
+            ],
+            "tradeoff": "**가끔 재시도해야 하고, 셀마다 마스터가 하나라는 천장이 생긴다.** 그래도 회사의 이유가 분명하다 — **'복잡함은 대개 신뢰성의 반대다'**, 그리고 만드는 사람이 여섯 명도 안 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          },
+          {
+            "question": "블록 위치 메타데이터를 어디 둘 것인가",
+            "chosen": "**샤딩된 MySQL**",
+            "alternatives": [
+              "분산 해시 테이블",
+              "트라이",
+              "자체 키-값 스토어"
+            ],
+            "tradeoff": "**최신 기술이 아니고 샤딩을 직접 관리해야 한다.** 대신 사내에 MySQL 운영 지식이 이미 쌓여 있었고, 회사가 이 선택을 '개발을 단순하게 만든 정말 좋은 결정'이라고 회고했다. **Slack 이 Vitess 를 고른 이유와 같은 모양이다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          },
+          {
+            "question": "어떤 매체에 담을 것인가",
+            "chosen": "**회전 디스크**(뒤에 SMR) — SSD 는 DB·캐시에만",
+            "alternatives": [
+              "SSD 기반 저장",
+              "PMR 디스크 유지"
+            ],
+            "tradeoff": "SMR 은 밀도를 주는 대신 **아무 데나 못 쓴다** — 순차 쓰기여야 한다. 드라이브 용량의 **1% 미만**을 일반 구역으로 남겨 랜덤 쓰기를 받는다. 비용·밀도·내구성이 이 용도에는 SSD 보다 낫다는 판단이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              },
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "question": "복제할 것인가 소거 부호로 갈 것인가",
+            "chosen": "**나이에 따라 갈아탄다** — 갓 쓴 것은 복제, 오래된 것은 소거 부호",
+            "alternatives": [
+              "전부 복제(초기 4배)",
+              "전부 소거 부호"
+            ],
+            "tradeoff": "**소거 부호는 복구가 비싸다** — 한 조각을 되살리려 여러 조각을 읽어야 한다. 그래서 국소 복원 부호를 함께 써 **약 1.33배**(RS 만 쓰면 1.5배)로 낮췄다. 대가는 부호 방식이 둘이 되어 운영이 복잡해지는 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "question": "잘 안 열리는 데이터를 어떻게 할 것인가",
+            "chosen": "**콜드 계층 — 블롭을 쪼개 존 간 XOR** (Facebook f4 에서 배웠다)",
+            "alternatives": [
+              "전부 같은 방식으로 보관",
+              "테이프 등 별도 매체"
+            ],
+            "tradeoff": "**복구 경로가 길어지고 콜드 데이터 읽기가 느려진다.** 근거는 관측이다 — **조회의 90% 가 최근 1년치**다. 복제 계수를 2배에서 1.5배로 낮춰 25% 를 아꼈다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "question": "SSD 쓰기 캐시를 어떻게 할 것인가 (2021)",
+            "chosen": "**뗀다 — SMR 에 직접 쓴다**",
+            "alternatives": [
+              "더 빠른/더 큰 SSD 로 교체",
+              "SSD 를 여러 장으로 늘리기"
+            ],
+            "tradeoff": "**p95 디스크 쓰기 지연이 10~15% 나빠진다**(다만 전체 쓰기 지연의 2% 에 불과하다). 방금 쓴 블록용 인메모리 읽기 캐시도 함께 없애 **읽기 지연도 나빠졌다**. 대신 실운영 쓰기 처리량이 **15~20%** 오르고, 월 8~10건의 SSD 고장과 **단일 장애점**이 사라졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Increasing Magic Pocket write throughput by removing our SSD cache disks",
+                "url": "https://dropbox.tech/infrastructure/increasing-magic-pocket-write-throughput-by-removing-our-ssd-cache-disks",
+                "publisher": "Dropbox Tech",
+                "date": "2022-12-08",
+                "summary": "2017년에 옳았던 SSD 쓰기 캐시를 2021년에 떼어 낸 기록. 저자 Ankur Kulshrestha · Rajat Goel · Sandeep Ummadi."
+              }
+            ]
+          },
+          {
+            "question": "셀이 100PB 에 닿으면 어떻게 할 것인가",
+            "chosen": "**셀을 더 놓는다**",
+            "alternatives": [
+              "셀 하나를 더 키운다"
+            ],
+            "tradeoff": "셀이 늘수록 배치·운영 대상이 늘어난다. 그래도 셀을 키우면 **메모리·CPU 부담이 감당이 안 된다** — 마스터 하나로 단순하게 간 대가를 여기서 치른다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "샤딩된 MySQL",
+            "role": "블록 인덱스(해시 → 위치) · 복제 테이블(버킷 → 볼륨·OSD)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          },
+          {
+            "tech": "SMR 디스크 (Shingled Magnetic Recording)",
+            "role": "실제 저장 매체. 순차 쓰기로 밀도를 얻고, 1% 미만의 일반 구역으로 랜덤 쓰기를 받는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "tech": "Reed-Solomon (6+3) + 국소 복원 부호(LRC)",
+            "role": "오래된 데이터의 저장 오버헤드를 약 1.33배로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "tech": "존 간 XOR + 블롭 분할 (콜드 계층)",
+            "role": "콜드 데이터 복제 계수 2배 → 1.5배",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          },
+          {
+            "tech": "마스터 (셀마다 하나)",
+            "role": "복구와 배경 작업을 조율한다. 분산 합의 대신 고른 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          },
+          {
+            "tech": "볼륨 매니저",
+            "role": "데이터 이동과 소거 부호화 명령을 실행한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "파일 동기화",
+          "via": "블록 업로드",
+          "contract": "동기화 엔진이 '무엇이 바뀌었는지' 정하면 그 결과가 4MB 블록으로 여기 온다. **해시로 식별하므로 이미 있는 블록은 안 올라온다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "전송 효율",
+          "via": "압축된 블록",
+          "contract": "Broccoli 가 줄인 뒤의 바이트가 저장된다 — **회선과 디스크가 같은 절감을 나눠 갖는다.**",
+          "confidence": "inferred"
+        },
+        {
+          "to": "AWS (독일)",
+          "via": "데이터 소재지 요건",
+          "contract": "유럽 기업 고객이 요청하면 독일에 둔다 — **완전히 떠난 것이 아니다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "f4: Facebook's Warm BLOB Storage System",
+            "authors": "Subramanian Muralidhar 외 (Facebook)",
+            "year": "2014",
+            "venue": "OSDI 2014",
+            "url": "https://www.usenix.org/conference/osdi14/technical-sessions/presentation/muralidhar",
+            "takeaway": "**드롭박스 콜드 스토리지가 여기서 배웠다고 밝혔다** — 블롭을 쪼개고 존을 가로질러 XOR 로 묶어 복제 계수를 낮추는 방식. f4 의 전제(오래된 블롭은 덜 읽힌다)가 드롭박스에서도 관측으로 확인됐다 — **조회의 90% 가 최근 1년치**. 같은 관측이 같은 설계를 낳았다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "Erasure Coding in Windows Azure Storage",
+            "authors": "Cheng Huang 외 (Microsoft)",
+            "year": "2012",
+            "venue": "USENIX ATC 2012",
+            "url": "https://www.usenix.org/conference/atc12/technical-sessions/presentation/huang",
+            "takeaway": "국소 복원 부호(LRC)의 출처다. **Reed-Solomon 만 쓰면 오버헤드가 1.5배인데 LRC 를 얹으면 약 1.33배**가 된다 — 조각 하나를 되살릴 때 전체를 읽지 않아도 되게 만드는 것이 핵심이고, 드롭박스가 쓰는 방식이 이것이다.",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "**캐시를 더하는 것이 아니라 빼는 것이 답인 때를 어떻게 아는가**",
+            "why_hard": "2017년에 SSD 쓰기 캐시를 넣은 판단은 **틀리지 않았다** — SMR 은 랜덤 쓰기가 느리니 앞에서 받아 순차로 내리는 것이 맞았다. 문제는 그 뒤에 일어난 일이다. 디스크 밀도가 14~20TB 로 오르면서 **모든 라이브 쓰기가 SSD 한 장을 지나게** 됐는데 NVMe 조차 15~20Gbps 가 한계이고 호스트에는 디스크가 수백 장이다. 게다가 밀도가 오르면 **서버 수가 줄어 서버당 요구 처리량이 그만큼 올라간다** — 병목이 스스로 조여 온다. 캐시는 '성능을 주는 것'으로 이름 붙어 있어서 **성능이 안 나올 때 사람들은 캐시를 의심하지 않고 캐시를 키운다.** 실제로 2020년 초 SSD 여러 장이 동시에 쓰기 수명에 닿아 대량 복구가 돌았을 때도, 자연스러운 다음 수는 '더 좋은 SSD'였다.",
+            "current_best": "**캐시가 왜 거기 있었는지를 다시 묻고, 그 이유가 아직 유효한지 잰다.** 드롭박스는 익스텐트 형식을 바꿔 메타데이터와 데이터를 함께 SMR 에 직접 쓰게 하고 인덱스는 시동 시 메모리에 다시 만들었다. 결과는 실운영 쓰기 처리량 **+15~20%**, 대가는 p95 디스크 쓰기 지연 **10~15% 악화**(전체의 2%)와 읽기 캐시 상실이다. **되돌릴 수 있게 남겨 두는 것**도 함께 했다 — '문제가 되면 다시 넣으면 된다'고 적었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Increasing Magic Pocket write throughput by removing our SSD cache disks",
+                "url": "https://dropbox.tech/infrastructure/increasing-magic-pocket-write-throughput-by-removing-our-ssd-cache-disks",
+                "publisher": "Dropbox Tech",
+                "date": "2022-12-08",
+                "summary": "2017년에 옳았던 SSD 쓰기 캐시를 2021년에 떼어 낸 기록. 저자 Ankur Kulshrestha · Rajat Goel · Sandeep Ummadi."
+              }
+            ]
+          },
+          {
+            "problem": "**재 볼 수 없는 숫자를 어떻게 지키는가** — 12개의 9",
+            "why_hard": "연 99.9999999999% 내구성은 **관측으로 확인할 수 없다.** 그만큼의 사건을 모으려면 우주의 나이가 필요하고, 회사 자신도 '무작위 디스크 고장보다 소행성 충돌이 더 그럴듯하다'는 식으로밖에 표현하지 못한다. 그래서 이 숫자는 **측정값이 아니라 모델의 출력**이고, 모델이 틀리면 **틀렸다는 사실조차 늦게 안다** — 데이터가 실제로 사라진 뒤에야 안다. 게다가 모델의 입력은 고정된 상수가 아니다. 디스크 고장률, 복구 속도, 동시에 죽는 상관성 — **SSD 들이 한꺼번에 수명에 닿았던 2020년처럼 '독립적'이라는 가정이 깨지는 순간** 모델은 조용히 무의미해진다.",
+            "current_best": "**모델의 입력을 운영 약속으로 바꾼다.** 드롭박스는 복구를 **초당 익스텐트 4개**로 돌리고 **48시간 SLA** 를 건다 — 이 SLA 자체가 내구성 계산의 입력이라, **복구가 늦어지는 것이 곧 내구성이 나빠지는 것**이 된다. 그래서 재 볼 수 없는 것 대신 **잴 수 있는 것(복구 지연)을 지킨다.** 여기에 존 3곳·최소 2벌 보관, 고장 15분 관찰 후 복구, 배포를 4주에 걸쳐 단계마다 약 일주일씩 내구성 검증과 함께 굴리는 것이 붙는다. 회사가 남긴 운영 교훈도 같은 말이다 — **'지키고, 그리고 검증하라(protect and verify)'.**",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Inside the Magic Pocket",
+                "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+                "publisher": "Dropbox Tech",
+                "date": "2016-05-06",
+                "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+              },
+              {
+                "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+                "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+                "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+                "date": "2023-05-15",
+                "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "블록 하나가 앉는 자리",
+          "question": "4MB 짜리 하나가 올라오면 어디를 지나 어디에 눕는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  C[\"클라이언트 — 블록 ≤4MB<br/>해시로 식별\"] --> F[\"프론트엔드<br/>어디 둘지 정한다\"]\n  F --> BI[(\"블록 인덱스<br/>**샤딩된 MySQL**<br/>해시 → 위치\")]\n  F --> V[\"**열린 볼륨** (쓰기를 받는 소수)\"]\n  V --> O[\"OSD — 디스크 ~100장 · 2PB+<br/>**SMR 에 직접 쓴다**(2021~)\"]\n  O --> CL[\"볼륨이 닫힌다 → **불변**<br/>이제 안전하게 옮길 수 있다\"]\n  V -.->|\"**1초 안에**\"| Z2[\"다른 존<br/>블록마다 최소 2곳\"]\n  subgraph CELL[\"셀 — 원시 ~50PB · 한계 ~100PB\"]\n    V\n    O\n    M[\"마스터 (셀당 1대)<br/>복구·배경 작업\"]\n  end\n  M -.-> O\n  CELL -.->|\"100PB 에 닿으면<br/>**키우지 않고 하나 더 놓는다**\"| CELL2[\"셀 하나 더\"]"
+        },
+        {
+          "title": "나이에 따라 보관 방식이 바뀐다",
+          "question": "같은 데이터를 왜 시간이 지나면 다르게 두는가?",
+          "kind": "state",
+          "code": "flowchart TD\n  N[\"**갓 쓴 것** — 복제, 여러 벌 그대로<br/>막 쓴 것은 부호화할 시점이 아니다\"]\n  N -->|\"나이가 든다\"| O[\"**오래된 것** — 소거 부호<br/>Reed-Solomon(6+3) + LRC<br/>오버헤드 1.5배 → **약 1.33배**<br/>대가 — 복구가 비싸다\"]\n  O -->|\"잘 안 열린다\"| C[\"**콜드** — 블롭 분할 + 존 간 XOR<br/>(Facebook f4 에서 배웠다)<br/>복제 2배 → **1.5배 (−25%)**<br/>근거 — **조회의 90% 가 최근 1년치**<br/>대가 — 복구 경로가 길어진다\"]\n  O -->|\"15분 넘게 안 보인다\"| R[\"**복구 중**<br/>초당 익스텐트 4개 (개당 1~2GB)<br/>**48시간 SLA — 내구성 모델의 입력**\"]\n  C -->|\"15분 넘게 안 보인다\"| R\n  R -->|\"되살렸다\"| O"
+        },
+        {
+          "title": "캐시가 병목이 되어 가는 과정",
+          "question": "2017년에 옳았던 SSD 캐시가 왜 2021년에 걸림돌이 됐나?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"2017 — SMR 도입<br/>SMR 은 랜덤 쓰기가 느리다\"] --> B[\"**SSD 를 쓰기 캐시로**<br/>라이브 쓰기를 먼저 받고<br/>비동기로 모아 순차로 내린다\"]\n  B --> C[\"✅ 그때는 옳았다\"]\n  C --> D[\"밀도가 오른다 — 디스크당 **14~20TB**\"]\n  D --> E[\"**모든 라이브 쓰기가 SSD 한 장을 지난다**<br/>NVMe 도 15~20Gbps 가 한계<br/>호스트엔 디스크 수백 장\"]\n  D --> F[\"밀도↑ → 서버 수↓ → **서버당 요구 처리량↑**<br/>병목이 스스로 조여 온다\"]\n  E & F --> G[\"2020 초 — **SSD 여럿이 동시에 쓰기 수명 도달**<br/>대량 복구 동시 발생 · 내구성 위태\"]\n  G --> H{\"다음 수\"}\n  H -->|\"자연스러운 답\"| X[\"더 좋은 · 더 많은 SSD<br/>❌ 병목의 모양을 안 바꾼다\"]\n  H -->|\"고른 답\"| Y[\"**캐시를 뗀다** — SMR 에 직접 쓴다<br/>익스텐트에 메타데이터+데이터 함께<br/>인덱스는 시동 시 메모리에 재구성\"]\n  Y --> R1[\"✅ 실운영 쓰기 처리량 **+15~20%**\"]\n  Y --> R2[\"✅ 월 8~10건 SSD 고장 · **단일 장애점 제거**\"]\n  Y --> R3[\"❌ p95 디스크 쓰기 지연 10~15% 악화<br/>(전체 쓰기 지연의 2%)\"]\n  Y --> R4[\"❌ 방금 쓴 블록 읽기 캐시도 상실<br/>**'문제 되면 다시 넣는다'로 남겨 뒀다**\"]"
+        },
+        {
+          "title": "버린 것들",
+          "question": "엑사바이트 저장소를 지으면서 왜 화려한 것을 전부 버렸나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  S[\"엔지니어 **여섯 명이 안 됐다**<br/>우리 규모에서 검증된 오픈소스는 없다\"] --> P[\"**'복잡함은 대개 신뢰성의 반대다'**\"]\n  P --> D1{\"분산 조율\"}\n  D1 -->|\"❌ 쿼럼 프로토콜<br/>❌ Paxos\"| A1[\"**셀마다 마스터 하나 + 재시도**<br/>대가 — 가끔 재시도 · 마스터가 천장\"]\n  P --> D2{\"메타데이터 저장\"}\n  D2 -->|\"❌ DHT<br/>❌ 트라이<br/>❌ 자체 KV\"| A2[\"**샤딩된 MySQL**<br/>이유 — 사내에 운영 지식이 이미 있다<br/>회사 회고: '개발을 단순하게 만든 정말 좋은 결정'\"]\n  P --> D3{\"저장 매체\"}\n  D3 -->|\"❌ SSD 기반\"| A3[\"**회전 디스크 → SMR**<br/>SSD 는 DB·캐시에만<br/>대가 — 순차 쓰기여야 한다 (일반 구역 1% 미만)\"]\n  A1 & A2 & A3 --> R[\"500PB 이관 · 큰 장애도 데이터 손실도 없음<br/>다크런치 후 **백업을 6개월 더** 들고 있었다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Inside the Magic Pocket",
+          "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+          "publisher": "Dropbox Tech",
+          "date": "2016-05-06",
+          "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+        },
+        {
+          "title": "Scaling to exabytes and beyond",
+          "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+          "publisher": "Dropbox Tech",
+          "date": "2016-03-14",
+          "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+        },
+        {
+          "title": "Increasing Magic Pocket write throughput by removing our SSD cache disks",
+          "url": "https://dropbox.tech/infrastructure/increasing-magic-pocket-write-throughput-by-removing-our-ssd-cache-disks",
+          "publisher": "Dropbox Tech",
+          "date": "2022-12-08",
+          "summary": "2017년에 옳았던 SSD 쓰기 캐시를 2021년에 떼어 낸 기록. 저자 Ankur Kulshrestha · Rajat Goel · Sandeep Ummadi."
+        },
+        {
+          "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+          "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+          "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+          "date": "2023-05-15",
+          "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
+        }
+      ]
+    }
+  ],
   "open_questions": [
     "**AWS 를 떠난 결정의 대가가 회사 글에 없다.** 2016년 이관 글은 성공만 적고 무엇을 잃었는지, 어떤 위험을 졌는지를 다루지 않는다 — 유럽 데이터 소재지 요건 때문에 독일에는 여전히 AWS 를 쓴다는 것만 밝혔다. **반면 'Inside the Magic Pocket' 은 버린 대안을 제대로 적었다** — 글마다 성격이 다르다.",
     "**Dropbox Dash(AI 검색)** 는 최근 제품인데 엔지니어링 자료를 아직 확인하지 않았다.",
-    "**저장 원가의 실제 개선폭** — 자체 인프라가 S3 대비 얼마나 쌌는지 회사가 숫자로 밝힌 적이 없다. 매출총이익률(80.1%)과 '데이터센터 갱신 주기' 언급이 간접 단서다."
+    "**저장 원가의 실제 개선폭** — 자체 인프라가 S3 대비 얼마나 쌌는지 회사가 숫자로 밝힌 적이 없다. 매출총이익률(80.1%)과 '데이터센터 갱신 주기' 언급이 간접 단서다.",
+    "**SMR 도입(2017)과 콜드 스토리지(2019) 자체의 판단 근거** — 이번 사이클은 Cowling·SSD 제거·InfoQ 를 축으로 썼다. 그 두 해의 개별 글은 아직 안 읽었다."
   ],
   "sources": [
     {
@@ -323,6 +1002,20 @@
       "publisher": "Dropbox Investor Relations",
       "date": "2026-02",
       "summary": "FY2025 실적. 매출총이익률 하락 원인을 데이터센터 갱신 주기의 감가상각으로 밝혔다."
+    },
+    {
+      "title": "Increasing Magic Pocket write throughput by removing our SSD cache disks",
+      "url": "https://dropbox.tech/infrastructure/increasing-magic-pocket-write-throughput-by-removing-our-ssd-cache-disks",
+      "publisher": "Dropbox Tech",
+      "date": "2022-12-08",
+      "summary": "2017년에 옳았던 SSD 쓰기 캐시를 2021년에 떼어 낸 기록. 저자 Ankur Kulshrestha · Rajat Goel · Sandeep Ummadi."
+    },
+    {
+      "title": "Magic Pocket: Dropbox's Exabyte-Scale Blob Storage System",
+      "url": "https://www.infoq.com/articles/dropbox-magic-pocket-exabyte-storage/",
+      "publisher": "InfoQ (저자 Facundo Agriel — Dropbox 엔지니어)",
+      "date": "2023-05-15",
+      "summary": "소거 부호 방식과 콜드 스토리지 설계를 회사 블로그보다 구체적으로 밝힌 글."
     }
   ]
 }
