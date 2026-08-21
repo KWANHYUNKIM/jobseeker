@@ -124,3 +124,4 @@ STATE.md 가 "다음 실행이 알아야 할 것"이라면 여기는 "무엇을 
 | 114 | 2026-08-21 | Cloudflare | **16번째 회사 시작.** 프로파일(도메인 4·수익원 2) + `workers-kv-redundancy` — 단순하게 줄인 결정이 2시간 장애가 되고, **되돌릴 길이 이미 썩어 있었다** | Cloudflare 엣지 네트워크 또는 컴퓨트 |
 | 115 | 2026-08-21 | Cloudflare | 엣지 네트워크 `unimog-edge-lb` — 전용 LB 계층을 없애고 모든 서버가 서로에게 넘긴다. **논문 2편으로 끝낸 첫 사례**(Beamer 는 회사가 직접 언급) | Cloudflare 컴퓨트 또는 보안 |
 | 116 | 2026-08-21 | Cloudflare | 엣지 컴퓨트 `workers-isolation` — **고칠 수 없는 것을 비싸게 만든다.** 회사가 '아무도 Spectre 를 고치지 못했다'를 명시. 논문 1편(회사 공저) | Cloudflare 보안·차단 → 완주 판정 |
+| 117 | 2026-08-21 | Cloudflare | 보안·차단 `autonomous-ddos` — 물어볼 시간이 없을 때 스스로 정한다. **Cloudflare 완주(도메인 4·기능 4)**. 논문 0편 — 억지로 안 채웠다 | Datadog 신규 |
