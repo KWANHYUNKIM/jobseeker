@@ -113,11 +113,22 @@ def normalize(job: dict) -> dict:
 
     if site == "jobkorea":
         txt_name = job.get("txt")
+        parsed_ok = False
         if txt_name:
             txt_path = DATA_DIR / "jobkorea" / txt_name
             if txt_path.exists():
                 parsed = parse_jobkorea_txt(txt_path.read_text(encoding="utf-8"))
                 out.update(parsed)
+                parsed_ok = True
+        if not parsed_ok:
+            # txt 파일이 없는 입력(이미 enrich 된 레코드를 다시 넣는 경우)에서는
+            # 레코드가 들고 있는 값을 그대로 쓴다. 그러지 않으면 본문과 기술스택이
+            # 통째로 빈 채 나가서, 되돌리는 작업이 오히려 데이터를 깎는다.
+            for k in ("tech_stack", "main_tasks", "qualifications", "preferences",
+                      "benefits", "full_jd", "career", "location"):
+                v = job.get(k)
+                if v:
+                    out[k] = v
         # 마감 캘린더용: 원본 마감 표기 보존(jobkorea 는 parsed 에 deadline 포함)
         out["dday"] = job.get("dday", "") or ""
         out.setdefault("deadline", job.get("deadline", "") or "")
