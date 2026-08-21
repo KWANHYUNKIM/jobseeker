@@ -288,6 +288,18 @@
       "one_liner": "검색하지 않는 사용자에게 다음 것을 계속 고르는 회사 — 그래서 모델이 '지금'을 따라잡아야 한다",
       "features_done": 4,
       "domain": "bytedance.com"
+    },
+    {
+      "slug": "spotify",
+      "name": "스포티파이",
+      "name_en": "Spotify",
+      "country": "EU",
+      "category": "스트리밍",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "광고가 아니라 구독으로 사는 스트리밍 회사 — 그래서 데이터가 제품이 아니라 원가 쪽에 있다",
+      "features_done": 1,
+      "domain": "spotify.com"
     }
   ],
   "domains": [
@@ -392,7 +404,10 @@
     "로컬 저장 엔진",
     "그래프·분석 데이터",
     "대규모 학습 인프라",
-    "GPU 자원 배분·서빙"
+    "GPU 자원 배분·서빙",
+    "데이터 레이크 조회",
+    "데이터 플랫폼",
+    "콘텐츠 수집·트랜스코딩"
   ],
   "countries": {
     "KR": "한국",
