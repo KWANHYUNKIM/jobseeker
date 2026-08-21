@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
 import { useSimilarJobs } from '../lib/useSimilar'
+import { TechTag } from './ui'
 
 interface Props {
   job: Job
@@ -94,12 +95,12 @@ export function JobDetail({ job, onClose, onOpenUrl }: Props) {
             <Section title="기술 스택">
               <div className="flex flex-wrap gap-1.5">
                 {job.tech_stack.map((t) => (
-                  <span
+                  <TechTag
                     key={t}
+                    tech={t}
+                    size={14}
                     className="text-xs px-2 py-1 rounded bg-(--color-accent)/15 text-(--color-accent) border border-(--color-accent)/30"
-                  >
-                    {t}
-                  </span>
+                  />
                 ))}
               </div>
             </Section>

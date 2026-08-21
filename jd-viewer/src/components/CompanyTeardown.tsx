@@ -7,6 +7,7 @@ import {
   type Source,
 } from '../lib/useReveng'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
+import { CompanyLogo } from './RevengView'
 import { Md, MdBlock } from './Md'
 import { Loader, ErrorState } from './ui'
 
@@ -63,6 +64,9 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           ← 회사 목록
         </button>
         <div className="flex items-baseline gap-2 flex-wrap">
+          <span className="self-center">
+            <CompanyLogo domain={c.domain} name={c.name} size={32} />
+          </span>
           <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">{c.name}</span></h2>
           <span className="text-sm text-(--color-muted)">{c.name_en}</span>
           <span className="text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">

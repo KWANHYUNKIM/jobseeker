@@ -1,5 +1,6 @@
 // 모든 탭이 공유하는 상태 컴포넌트 — 로딩/에러/빈 화면을 일관되게 표시.
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { techIconUrl } from '../lib/techIcon'
 
 // 반응형 사이드 패널.
 // - 데스크톱(md+): 일반 정적 컬럼으로 표시(기존 레이아웃 유지)
@@ -131,5 +132,40 @@ export function EmptyState({ title, hint }: { title: string; hint?: ReactNode })
         {hint && <div className="mt-1.5 text-xs text-(--color-muted)/80">{hint}</div>}
       </div>
     </div>
+  )
+}
+
+// ── 기술 태그 ────────────────────────────────────────────────
+// 목록에서 스택을 훑을 때 글자만 있으면 전부 같은 무게로 보인다. 아는 로고가
+// 하나 붙으면 거기서부터 읽게 되므로, 아이콘이 있는 기술만 앞에 작게 붙인다.
+// 아이콘이 없거나 못 받아오면 지금까지처럼 글자 태그 그대로다.
+export function TechTag({
+  tech,
+  size = 12,
+  className = 'text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)',
+}: {
+  tech: string
+  size?: number
+  className?: string
+}) {
+  const url = techIconUrl(tech)
+  const [failed, setFailed] = useState(false)
+  const showIcon = url && !failed
+  return (
+    <span className={'inline-flex items-center gap-1 ' + className}>
+      {showIcon && (
+        <img
+          src={url}
+          alt=""
+          width={size}
+          height={size}
+          loading="lazy"
+          onError={() => setFailed(true)}
+          style={{ width: size, height: size }}
+          className="shrink-0 object-contain"
+        />
+      )}
+      {tech}
+    </span>
   )
 }

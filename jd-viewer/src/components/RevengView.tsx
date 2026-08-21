@@ -201,6 +201,46 @@ function DomainDocView({
   )
 }
 
+// 회사 로고. 도메인만 알면 되도록 파비콘 서비스를 쓴다 — 22개 회사의 로고 파일을
+// 직접 받아 두면 저작권과 갱신을 우리가 떠안게 된다.
+// 네트워크가 막히거나 도메인이 없으면 첫 글자 마크로 조용히 물러선다.
+export function CompanyLogo({
+  domain,
+  name,
+  size = 28,
+}: {
+  domain?: string
+  name: string
+  size?: number
+}) {
+  const [failed, setFailed] = useState(false)
+  const box = { width: size, height: size }
+
+  if (!domain || failed) {
+    return (
+      <span
+        style={box}
+        className="shrink-0 grid place-items-center rounded border border-(--color-border) bg-(--color-bg) text-(--color-muted) font-semibold"
+        aria-hidden
+      >
+        <span style={{ fontSize: size * 0.45 }}>{name.slice(0, 1)}</span>
+      </span>
+    )
+  }
+  return (
+    <img
+      src={`https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
+      alt=""
+      width={size}
+      height={size}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      style={box}
+      className="shrink-0 rounded border border-(--color-border) bg-(--color-bg) object-contain"
+    />
+  )
+}
+
 function CompanyCard({
   c,
   countryLabel,
@@ -216,9 +256,12 @@ function CompanyCard({
       className="text-left rounded-lg border border-(--color-border) bg-(--color-panel) p-3 hover:border-(--color-accent) transition-colors"
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <div className="font-semibold text-(--color-text) truncate">{c.name}</div>
-          <div className="text-[11px] text-(--color-muted) truncate">{c.name_en}</div>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <CompanyLogo domain={c.domain} name={c.name} />
+          <div className="min-w-0">
+            <div className="font-semibold text-(--color-text) truncate">{c.name}</div>
+            <div className="text-[11px] text-(--color-muted) truncate">{c.name_en}</div>
+          </div>
         </div>
         <span
           className={

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
-import { EmptyState } from './ui'
+import { EmptyState, TechTag } from './ui'
 
 interface Props {
   jobs: Job[]
@@ -76,7 +76,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
               )}
               <div className="flex flex-wrap items-center gap-1">
                 {(j.tech_stack || []).slice(0, 6).map((t) => (
-                  <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)">{t}</span>
+                  <TechTag key={t} tech={t} />
                 ))}
                 {j.tech_stack && j.tech_stack.length > 6 && (
                   <span className="text-[10px] text-(--color-muted)">+{j.tech_stack.length - 6}</span>
@@ -150,12 +150,7 @@ export function JobList({ jobs, selected, onSelect }: Props) {
                   <td className="px-3 py-2">
                     <div className="flex flex-wrap gap-1">
                       {(j.tech_stack || []).slice(0, 8).map((t) => (
-                        <span
-                          key={t}
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-(--color-bg) border border-(--color-border) text-(--color-muted)"
-                        >
-                          {t}
-                        </span>
+                        <TechTag key={t} tech={t} />
                       ))}
                       {j.tech_stack && j.tech_stack.length > 8 && (
                         <span className="text-[10px] text-(--color-muted)">

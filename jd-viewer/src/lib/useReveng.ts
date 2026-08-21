@@ -140,6 +140,8 @@ export interface Company {
   business_model: string
   products: string[]
   one_liner: string
+  /** 로고를 가져올 회사 도메인. 없으면 글자 마크로 대체한다. */
+  domain?: string
   domain_map?: Diagram
   revenue_streams?: RevenueStream[]
   domains?: Domain[]
@@ -158,6 +160,8 @@ export interface IndexEntry {
   features_done: number
   one_liner: string
   updated_at: string
+  /** 로고를 가져올 회사 도메인. 없으면 글자 마크로 대체한다. */
+  domain?: string
 }
 
 export interface RevengIndex {

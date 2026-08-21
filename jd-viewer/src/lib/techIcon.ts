@@ -1,0 +1,101 @@
+// 기술 이름 → devicon 아이콘 경로.
+//
+// 태그가 글자만 있으면 목록이 회색 덩어리로 보인다. 로고가 하나씩 붙으면 눈이
+// 먼저 걸리는 지점이 생겨서 훑기가 쉬워진다 — 검색 결과에서 특히 그렇다.
+//
+// 아이콘은 jsDelivr 의 devicon 에서 가져온다. 여기 적힌 경로는 전부 200 을
+// 확인한 것이고, 그래도 못 받아오면 <TechIcon> 이 조용히 글자만 남긴다.
+// 매핑에 없는 기술(전체 829종 중 대부분)도 그냥 글자 태그로 나온다.
+
+const ICON: Record<string, string> = {
+  ".NET": "dotnetcore/dotnetcore-original",
+  "Airflow": "apacheairflow/apacheairflow-original",
+  "Android": "android/android-original",
+  "Angular": "angularjs/angularjs-original",
+  "Apache": "apache/apache-original",
+  "AWS": "amazonwebservices/amazonwebservices-original-wordmark",
+  "Azure": "azure/azure-original",
+  "Bash": "bash/bash-original",
+  "C#": "csharp/csharp-original",
+  "C++": "cplusplus/cplusplus-original",
+  "C/C++": "cplusplus/cplusplus-original",
+  "Confluence": "confluence/confluence-original",
+  "CSS": "css3/css3-original",
+  "Django": "django/django-plain",
+  "Docker": "docker/docker-original",
+  "Elasticsearch": "elasticsearch/elasticsearch-original",
+  "Express": "express/express-original",
+  "FastAPI": "fastapi/fastapi-original",
+  "Figma": "figma/figma-original",
+  "Firebase": "firebase/firebase-plain",
+  "Flask": "flask/flask-original",
+  "Flutter": "flutter/flutter-original",
+  "GCP": "googlecloud/googlecloud-original",
+  "Git": "git/git-original",
+  "GitHub Actions": "githubactions/githubactions-original",
+  "GitLab": "gitlab/gitlab-original",
+  "Go": "go/go-original-wordmark",
+  "Grafana": "grafana/grafana-original",
+  "GraphQL": "graphql/graphql-plain",
+  "Hadoop": "hadoop/hadoop-original",
+  "HTML": "html5/html5-original",
+  "iOS": "apple/apple-original",
+  "Java": "java/java-original",
+  "JavaScript": "javascript/javascript-original",
+  "Jenkins": "jenkins/jenkins-original",
+  "Jira": "jira/jira-original",
+  "Jupyter": "jupyter/jupyter-original",
+  "K8s": "kubernetes/kubernetes-original",
+  "Kafka": "apachekafka/apachekafka-original",
+  "Kibana": "kibana/kibana-original",
+  "Kotlin": "kotlin/kotlin-original",
+  "Kubernetes": "kubernetes/kubernetes-original",
+  "Linux": "linux/linux-original",
+  "MariaDB": "mariadb/mariadb-original",
+  "MongoDB": "mongodb/mongodb-original",
+  "MySQL": "mysql/mysql-original",
+  "NestJS": "nestjs/nestjs-original",
+  "Next.js": "nextjs/nextjs-original",
+  "Nginx": "nginx/nginx-original",
+  "Node.js": "nodejs/nodejs-original",
+  "Notion": "notion/notion-original",
+  "Numpy": "numpy/numpy-original",
+  "OpenCV": "opencv/opencv-original",
+  "Oracle": "oracle/oracle-original",
+  "Pandas": "pandas/pandas-original",
+  "PHP": "php/php-original",
+  "PostgreSQL": "postgresql/postgresql-original",
+  "Prometheus": "prometheus/prometheus-original",
+  "Python": "python/python-original",
+  "PyTorch": "pytorch/pytorch-original",
+  "RabbitMQ": "rabbitmq/rabbitmq-original",
+  "React": "react/react-original",
+  "React Native": "react/react-original",
+  "Redis": "redis/redis-original",
+  "Ruby": "ruby/ruby-original",
+  "Rust": "rust/rust-original",
+  "Scala": "scala/scala-original",
+  "Selenium": "selenium/selenium-original",
+  "Slack": "slack/slack-original",
+  "Spark": "apachespark/apachespark-original",
+  "Spring": "spring/spring-original",
+  "Spring Boot": "spring/spring-original",
+  "SQLite": "sqlite/sqlite-original",
+  "Svelte": "svelte/svelte-original",
+  "Swift": "swift/swift-original",
+  "Tailwind": "tailwindcss/tailwindcss-original",
+  "TensorFlow": "tensorflow/tensorflow-original",
+  "Terraform": "terraform/terraform-original",
+  "TypeScript": "typescript/typescript-original",
+  "Unity": "unity/unity-original",
+  "Vite": "vitejs/vitejs-original",
+  "Vue": "vuejs/vuejs-original",
+}
+
+const BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/'
+
+/** 그 기술의 아이콘 URL. 매핑에 없으면 null — 부르는 쪽이 글자만 그린다. */
+export function techIconUrl(tech: string): string | null {
+  const path = ICON[tech] ?? ICON[tech.trim()]
+  return path ? `${BASE}${path}.svg` : null
+}
