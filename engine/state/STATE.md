@@ -10,38 +10,38 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**LY Corporation (라인야후) — 23번째 회사, 일본 첫 회사.** 사이클 146 에서 열었다.
-프로파일 + 도메인 3개 + 기능 1개(`kafka-e2ee`)까지 갔다. **다음 사이클은 `--gaps` 가
-'기능이 없는 도메인'을 가리킬 것이다 — 남은 둘은 `메시지 암호화`와 `데이터 레이크 통합`.**
+**LY Corporation (라인야후) — 도메인 3개 중 2개에 기능이 있다.** 사이클 147 에서
+`hdfs-bridge`(데이터 레이크 통합)를 채웠다. **남은 하나는 `메시지 암호화`인데, 지금은 팔 수 없다.**
 
-> **⚠️ URL 함정 — 이번에 실물로 확인했다.** WebFetch 로 `techblog.lycorp.co.jp/en/` 목록을
-> 읽으면 링크 호스트를 **`www.lycorp.co.jp`** 로 바꿔서 내놓는다. 그대로 쓰면 404 다.
-> **경로는 맞으니 호스트만 `techblog.` 로 고쳐 쓴다.** IR 쪽은 반대로 `www.lycorp.co.jp` 가 맞다.
+> **⚠️ Letter Sealing 을 열어 봤고, 얇았다 — 다시 시도하지 말 것.**
+> `engineering.linecorp.com/en/blog/the-next-step-for-even-safer-messaging-letter-sealing/` 는
+> **열리기는 한다.** 하지만 **키 교환 방식을 밝히지 않고**(세션 키를 어떤 프로토콜로 맞추는지),
+> 다중 기기 키 동기화도 다루지 않는다. 확인된 것은 그룹 초기 50명 제한, 키를 기기에만 둔다,
+> iOS 9.3.1 VoIP 알림 이후에야 알림에서 복호화 가능 — **도메인 `tech` 에는 넣었지만 기능 하나를
+> 채우기에는 모자란다.** PQC 글도 계획 단계다. **다른 글을 찾거나(예: `line-device-attestation-1/2`
+> 로 인증 축을 열거나) LY 를 여기서 done 으로 닫는 판단이 다음 사이클의 몫이다.**
 
-> **다음 기능 후보 — 이미 본문을 확보했다.**
-> ① **데이터 레이크 통합**: `techverse2026-184` (1EB+ HDFS 두 벌 잇기 — ViewFS vs RBF,
-> 테이블 단위 권한 vs 경로 단위 권한, 버린 안이 명시돼 있다. **두 번째 글로
-> `migration-from-hive-to-trino-and-spark` 가 있다**).
-> ② **메시지 암호화**: `pqc-to-protect-data-in-the-age-of-quantum-computers` 는 계획 단계라
-> 기능 하나를 채우기엔 얇다. **Letter Sealing 원문은 구 `engineering.linecorp.com` 에 있고
-> 접근을 아직 확인하지 않았다** — 열리면 이 도메인의 첫 기능이 되고, 안 열리면 ①을 먼저 판다.
-> ③ 그 밖에 확인된 제목: `line-device-attestation-1/2`, `req-saver-for-thundering-herd-problem-in-cache`,
-> `techverse2026-231`(Flava DBaaS), `how-to-measure-voice-quality-in-line-app`.
+> **남은 후보 (목록에서 제목만 확인, 본문 미확인):** `line-device-attestation-1/2`,
+> `req-saver-for-thundering-herd-problem-in-cache`, `techverse2026-231`(Flava DBaaS),
+> `how-to-measure-voice-quality-in-line-app`, `techverse2026-86`(OpenTofu·ChatOps).
 
-> **이 회사의 축 — 합병.** LINE 과 Yahoo! JAPAN 이 각자 십수 년 키운 시스템을 물려받아
-> **같은 일을 하는 물건이 두 벌** 있다. 그래서 글이 '무엇을 새로 지었나'보다
-> **'서로 다른 역사를 가진 둘을 어떻게 잇는가'**를 다룬다 — 다른 22곳에 없던 결이다.
-> IR 은 열린다(`www.lycorp.co.jp/en/ir/finance/highlight.html`, HTML). **커머스가 광고보다 크다**
-> (FY2026/03 · 백만 엔: Commerce 857,897 · Media 734,545 · Strategic 445,775 · 합계 2,036,366).
+> **⚠️ URL 함정 (그대로 유효):** WebFetch 로 `techblog.lycorp.co.jp/en/` 목록을 읽으면 링크
+> 호스트를 **`www.lycorp.co.jp`** 로 바꿔 내놓는다 — 경로는 맞으니 호스트만 `techblog.` 로 고친다.
+> IR 은 반대로 `www.lycorp.co.jp/en/ir/finance/highlight.html` 이 맞다(HTML, 잘 열린다).
 
-> **새 축 — '크기와 격리가 같은 손잡이의 양 끝이다.'** 소비자마다 키를 주면 헤더가 소비자
-> 수만큼 불어나고, 하나로 모으면 그 키가 새는 순간 과거와 미래가 함께 열린다. LY 는 **공유
-> KEK 으로 물러서고 격리를 시간(회전)으로 옮겼다.** GitHub 의 '일회용인데 빨라야 한다'와
-> 같은 모양이라 — **양 끝 중 하나를 고르는 대신 축을 바꿔 버리는** 수 — 비교 문서 후보다.
+> **이번에 나온 것 — 두 글이 각자 다른 쪽에서 같은 벽에 부딪혔다.** HDFS 통합 글은
+> **네임노드 힙** 쪽에서, Hive→Trino 글은 **Spark 출력** 쪽에서 **'작은 파일이 너무 많다'** 를 만난다.
+> HDFS 의 한계는 데이터 양이 아니라 **파일 개수**라서, **빨라지려고 병렬로 쪼갠 것이 저장 계층의
+> 한계를 당긴다.** 둘 다 근본 해결이 아니라 **주기적 병합으로 눌러 둔다.**
 
-**큐 잔량 2/3.** ByteDance → Spotify. 다음 신규 사이클 전에 후보를 하나 채워야 한다.
+> **비교 문서 후보가 셋으로 늘었다** — ① LY 공유 KEK(크기 vs 격리) · GitHub 일회용 러너(격리 vs
+> 속도) · Dropbox SSD 캐시 제거: **양 끝 중 하나를 고르는 대신 축을 바꿔 버리는** 수.
+> ② 데이터 레이크 위의 **작은 파일 문제**(LY · 다른 회사에도 있는지 확인 필요).
+> ③ **합병·인수로 시스템이 두 벌이 된 회사**가 LY 뿐인지 — 있으면 좋은 축이다.
 
-마지막 사이클: 146 (2026-08-21) — LY Corporation 개설 + Kafka E2EE.
+**큐 잔량 3/3 — 채웠다.** Canva 를 후보에서 대기로 올렸다(본문 확인). ByteDance → Spotify → Canva.
+
+마지막 사이클: 147 (2026-08-21) — LY 데이터 레이크 통합 + Canva 큐 승격.
 
 ## 다음 선택지
 
