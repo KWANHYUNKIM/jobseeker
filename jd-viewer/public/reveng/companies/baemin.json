@@ -637,7 +637,68 @@
           "publisher": "우아한형제들 기술블로그",
           "summary": "'음식이 언제 도착하는지 예측'을 포함해 수십 개의 AI 서비스가 서비스에 적용돼 있으며 MLOps 플랫폼으로 배포·운영한다는 글."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Contraction Hierarchies: Faster and Simpler Hierarchical Routing in Road Networks",
+            "authors": "Robert Geisberger, Peter Sanders, Dominik Schultes, Daniel Delling",
+            "year": "2008",
+            "venue": "WEA 2008",
+            "url": "https://link.springer.com/chapter/10.1007/978-3-540-68552-4_24",
+            "takeaway": "**'초당 약 2만 건'이 어떻게 가능한지의 답.** 도로망은 매번 최단경로를 다시 푸는 대신 미리 전처리해 계층을 만들어 두면 질의가 수백~수천 배 빨라진다. 배민이 실거리로 갈아탈 수 있었던 것은 이 전처리 기법이 있었기 때문이고, 그 대가는 **지도 데이터가 바뀔 때마다 전처리를 다시 돌려야 한다**는 것 — '지도 데이터 갱신을 직접 떠안는다'는 기존 결정의 대가가 여기서 나온다. **배민은 OSRM 을 쓴다고만 밝혔고 이 기법이나 논문을 언급하지 않았다. OSRM 쪽 문서가 밝히는 내부다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "An Optimal Algorithm for On-line Bipartite Matching",
+            "authors": "Richard M. Karp, Umesh V. Vazirani, Vijay V. Vazirani",
+            "year": "1990",
+            "venue": "STOC 1990",
+            "url": "https://dl.acm.org/doi/10.1145/100216.100262",
+            "takeaway": "배차가 **온라인 문제**라는 사실의 이론적 바닥. 주문과 라이더는 시간에 따라 도착하고 배정은 미래를 모르는 채 지금 해야 하는데, 이 논문은 그런 상황에서 **미래를 다 아는 최적해의 1−1/e(약 63%) 가 원리적 상한**임을 보인다. 배민이 배차를 요청·응답이 아니라 **이벤트로 두고 계속 다시 계산하는** 구조를 고른 것이 이 한계에 대한 실무적 대응으로 읽힌다. **배민이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "The General Pickup and Delivery Problem",
+            "authors": "Martin W. P. Savelsbergh, Marc Sol",
+            "year": "1995",
+            "venue": "Transportation Science 29(1)",
+            "url": "https://pubsonline.informs.org/doi/10.1287/trsc.29.1.17",
+            "takeaway": "'여러 건을 묶는다 + 시간 제약이 있다'가 정확히 이 문제군(PDPTW)이다. 배민의 사정이 교과서적 형태와 다른 곳이 하나 있는데, **시간 창(time window)이 고객 요구가 아니라 음식의 물리적 성질**에서 온다는 점이다 — 늦으면 약속을 어기는 게 아니라 상품이 상한다. **배민이 인용한 적은 없다. 문제군의 이름을 붙이기 위해 놓는다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "묶을수록 경우의 수가 폭발하는데, 묶어야 원가가 준다",
+            "why_hard": "**계산 복잡도와 사업 구조가 정반대를 가리킨다.** 라이더 비용을 줄이는 유일한 길은 여러 배달을 묶는 것인데, 묶는 순간 따져야 할 것이 두 겹으로 는다 — 어떤 건들을 묶을지(조합)와 그 안에서 어떤 순서로 돌지(순열). 거리 계산량부터가 묶음 크기에 제곱으로 늘어서 **2건이면 6개, 3건이면 15개**다. 여기에 '음식이 식는다'는 시간 제약이 붙는데, 제약이 늘면 탐색이 쉬워질 것 같지만 실제로는 **실현 가능한 해를 찾는 것 자체가 더 어려워진다.** 그리고 이 계산에 쓸 수 있는 시간은 초 단위다.",
+            "current_best": "**최적을 포기하고 입력의 질과 반복 비용에 투자한다.** 직선거리를 실거리로 바꿔 최적화의 입력이 현실과 맞게 하고(계산 비용은 주말 피크 분당 15~20만 경로), 같은 거리를 다시 계산하지 않도록 Redis 로 재사용한다(분당 약 120만 건 중복 방지). 대가는 **캐시 자체가 새 병목이 된다**는 것 — 압축 데이터로는 초당 3,400회 조회가 한계여서 자료구조와 클러스터 구성을 다시 짜야 했다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          },
+          {
+            "problem": "5분 뒤에 올 주문을 모르는 채로 지금 배정해야 한다",
+            "why_hard": "**결정이 정보보다 먼저다.** 지금 이 라이더를 이 주문에 붙이는 것이 옳은지는 앞으로 어떤 주문이 들어올지에 달렸는데, 그것을 알 방법이 없다. 조금 기다리면 같은 방향의 주문이 와서 묶을 수 있었을지도 모르지만, 기다리는 동안 음식은 식는다. 온라인 이분 매칭의 결과가 말하는 것은 이 손해가 **구현을 잘해서 없앨 수 있는 종류가 아니라는 것**이다 — 미래를 아는 최적해 대비 일정 비율 이상은 원리적으로 보장되지 않는다.",
+            "current_best": "**한 번 정하고 끝내지 않는다.** 배달 생성·위치 변경·완료·취소를 전부 이벤트로 흘려서, 상태가 바뀔 때마다 '지금 최선'을 다시 계산하는 구조로 둔다. 확정을 미루는 것이 아니라 **확정을 계속 갱신하는** 쪽이다. 대가는 부하가 상시로 걸린다는 것, 그리고 같은 지역의 배달이 서로 영향을 주므로 지역 ID 로 순서를 지켜야 해서 **주문이 몰린 지역의 파티션이 뜨거워진다**는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "배차 정확도를 높이는 실거리 시스템 구축하기: OSRM, Kafka, 그리고 Redis",
+                "url": "https://techblog.woowahan.com/22396/",
+                "publisher": "우아한형제들 기술블로그",
+                "summary": "직선거리에서 실거리로 바꾼 이유와 OSRM·Kafka·Redis 구성, 주말 피크 분당 15~20만 경로 계산 규모."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "store-exposure",
