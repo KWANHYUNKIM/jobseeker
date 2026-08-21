@@ -1,0 +1,87 @@
+name: Diagnose server
+
+# 서버 데이터가 왜 안 들어오는지 보는 진단용. 아무것도 고치지 않고 읽기만 한다.
+#
+# 왜 필요한가:
+#   서버는 공개키 전용 SSH 만 열려 있고 등록된 키가 없어 원격 접속이 안 된다
+#   (seed-server.yml 의 설명과 같은 사정). 살아있는 실행 경로가 셀프호스티드
+#   러너뿐이라, 서버 안을 들여다보려면 여기를 통해야 한다.
+#
+# 데이터 JSON 은 .gitignore 대상이라 git 으로 넘어가지 않는다. 전부 서버에서
+# 크롤 파이프라인이 만들어 내는 것이고, 그래서 "안 들어온다"의 원인은 대개
+# 배포가 아니라 크롤 쪽에 있다.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: diagnose
+  cancel-in-progress: true
+
+jobs:
+  look:
+    name: 서버 상태 읽기
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 10
+    steps:
+      - name: 데이터 파일 현황
+        run: |
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO" || { echo "::error::서버 클론 없음: $REPO"; exit 1; }
+
+          echo "### 데이터 파일 (jd-viewer/public)"
+          echo "지금: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+          echo ""
+          # 크기와 수정시각을 함께 본다 — 파일이 있어도 낡았으면 '안 들어오는' 것이다.
+          ls -lT jd-viewer/public/*.json 2>/dev/null | awk '{printf "%-42s %10s  %s %s %s %s\n", $9, $5, $6, $7, $8, $9}' || echo "(없음)"
+          echo ""
+          echo "### 오래된 순 (수정시각)"
+          find jd-viewer/public -maxdepth 1 -name '*.json' -exec stat -f '%Sm  %N' -t '%Y-%m-%d %H:%M' {} \; 2>/dev/null | sort | head -25
+
+      - name: 크롤 파이프라인 상태
+        run: |
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO" || exit 0
+
+          echo "### auto_crawl 프로세스"
+          pgrep -fl 'auto_crawl|crawl_all|jd-viewer' 2>/dev/null || echo "(도는 프로세스 없음)"
+          echo ""
+          echo "### launchd 등록"
+          launchctl list 2>/dev/null | grep -i 'jobseeker\|crawl\|search\|ollama' || echo "(등록된 것 없음)"
+          echo ""
+          echo "### 누적 스냅샷 폴더"
+          ls -1 catch_capture/screenshots 2>/dev/null | head -12 || echo "(screenshots 없음)"
+          echo ""
+          echo "### 최근 크롤 로그"
+          for f in catch_capture/*.log catch_capture/logs/*.log logs/*.log; do
+            [ -f "$f" ] && { echo "--- $f (마지막 12줄) ---"; tail -12 "$f"; }
+          done 2>/dev/null || echo "(로그 파일 없음)"
+
+      - name: 컨테이너와 서빙 확인
+        run: |
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO" || exit 0
+
+          echo "### 컨테이너"
+          docker compose -f docker-compose.prod.yml ps 2>&1 | head -12 || echo "(docker 조회 실패)"
+          echo ""
+          echo "### 뷰어가 실제로 돌려주는 것"
+          for u in reposts.json all_jobs_enriched.json reveng/index.json; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "http://127.0.0.1:8080/$u" 2>/dev/null)
+            size=$(curl -s --max-time 10 "http://127.0.0.1:8080/$u" 2>/dev/null | wc -c | tr -d ' ')
+            printf '%-28s HTTP %s  %s bytes\n' "$u" "$code" "$size"
+          done
+
+      - name: 서버 git 상태
+        run: |
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO" || exit 0
+          echo "### 리비전"
+          git log --oneline -3
+          echo ""
+          echo "### 작업트리(추적 파일만)"
+          git status --short --untracked-files=no | head -15 || true
