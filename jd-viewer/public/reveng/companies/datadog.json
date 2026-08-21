@@ -62,8 +62,71 @@
     {
       "name": "수집 (ingestion)",
       "why": "**남의 시스템이 보내는 것을 받는 자리다.** 우리가 보내는 게 아니라서 언제 얼마나 올지 정할 수 없고, 네트워크가 재시도하면 같은 것이 두 번 온다. 그런데 이 데이터는 **과금의 근거**이기도 해서 두 번 세면 돈이 틀린다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "수요 기반 수집 (host subscription)",
+          "solves": "**보고 있는 것만 모은다.** 지금 화면에 뜬 호스트(사용자당 최대 50대)를 Kafka 로 1초마다 알리고, 인테이크가 그것만 받는다. 트래픽이 초당 50만 → 5천 메시지로 약 **100배** 줄었다.",
+          "limits": "화면 이동보다 구독 갱신이 늦으면 그 순간의 데이터가 빈다. TTL 캐시로 버티지만 **구독이 지연될 때의 거동은 공개 자료에 없다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+              "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-08-12",
+              "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+            }
+          ]
+        },
+        {
+          "tech": "이른 필터링 (인테이크에서 거른다)",
+          "solves": "라이브 데이터 서버까지 다 보내고 거기서 거르는 대신 **들어오는 자리에서** 거른다. 서버 메모리 85%·CPU 33% 감소, 인프라 98% 축소(600코어·1TiB 이상 회수).",
+          "limits": "필터 기준이 인테이크에 있어야 하므로 **수집 계층이 화면의 사정을 알게 된다** — 순수한 수집 계층이기를 그만둔다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+              "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+              "publisher": "Datadog Engineering",
+              "date": "2025-08-12",
+              "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+            }
+          ]
+        },
+        {
+          "tech": "파이프라인마다 수명 3시간짜리 전용 클러스터",
+          "solves": "큰 클러스터 하나에서 자리를 다투는 대신 **파이프라인마다 자기 클러스터를 띄운다.** 잡의 성격에 맞춰 CPU 최적화·메모리 최적화 인스턴스를 고르고, Hadoop·Spark 버전도 따로 올린다.",
+          "limits": "스팟 인스턴스라 **언제든 사라질 수 있고**, 잡을 띄우고 S3 에 체크포인트하는 비용이 클러스터 안 캐시보다 느리다. 디스크 고갈과 Spark 메모리 관리가 잦은 실패 원인이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building highly reliable data pipelines at Datadog",
+              "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+              "publisher": "Datadog Engineering",
+              "date": "2019-04-02",
+              "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+            }
+          ]
+        },
+        {
+          "tech": "잡을 세로·가로로 쪼개기 + S3 체크포인트",
+          "solves": "변환 단계를 나누고(세로) 입력을 분할해(가로) 잡을 짧게 만든다. **14시간짜리 롤업 하나를 1시간 미만 여러 개로** 바꿨다 — 스팟이 죽어도 잃는 일이 적다.",
+          "limits": "단계마다 S3 에 쓰고 읽는 오버헤드가 붙는다. 로컬 캐시보다 느린 것을 **회복 가능성과 맞바꾼** 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Building highly reliable data pipelines at Datadog",
+              "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+              "publisher": "Datadog Engineering",
+              "date": "2019-04-02",
+              "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "demand-driven-ingestion"
+      ]
     },
     {
       "name": "저장·멀티테넌시",
@@ -560,12 +623,495 @@
           "summary": "고객의 54%가 제품 4개 이상을 쓴다(1년 전 49%)."
         }
       ]
+    },
+    {
+      "key": "demand-driven-ingestion",
+      "name": "수집 — 보고 있는 것만 모은다",
+      "domain": "수집 (ingestion)",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**우리가 모으는 양이 곧 우리 원가**인데, 그것을 정하는 쪽은 고객이다. 라이브 프로세스 지표는 그 비대칭이 가장 심한 자리였다 — 누군가 Processes 화면을 열면 **모든 호스트에서 초당 수백만 프로세스**를 모으는데, 정작 그 사람이 보는 것은 **한 번에 약 50개**다. 게다가 한 테넌트의 데이터를 라이브 서버 하나가 메모리에 다 들고 있어서 수평 확장도 막혀 있었다.",
+        "metrics": [
+          {
+            "label": "수집 트래픽",
+            "value": "초당 50만 → 5천 메시지 (약 100배 감소)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "label": "인프라 축소",
+            "value": "98% — 600코어 이상·1TiB 이상 메모리 회수",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "label": "라이브 서버 자원",
+            "value": "메모리 85% 감소 · CPU 33% 감소 (PoC 단계)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "label": "실제로 보는 양",
+            "value": "사용자당 한 번에 약 50개 프로세스 · 최대 50대 호스트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "label": "클러스터 수명",
+            "value": "평균 약 3시간 · 피크에 수십 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "label": "스팟 인스턴스 절감",
+            "value": "온디맨드 대비 최대 80%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "label": "롤업 잡 분할",
+            "value": "14시간 이상 하나 → 1시간 미만 여러 개",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "label": "처리량",
+            "value": "하루 수조 개 데이터 포인트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "라이브 지표 비용을 뜯어볼 때",
+          "thought": "화면 하나를 열었다고 **모든 호스트**에서 모으고 있었다. 사람이 실제로 보는 것은 50개인데. 문제가 '어떻게 더 싸게 모을까'가 아니라 **'왜 이걸 다 모으고 있나'** 였다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "정렬에도 2초 데이터가 필요한지 따질 때",
+          "thought": "정렬은 **10초에 한 번** 일어난다. 그러면 2초 간격 라이브 데이터에 기댈 이유가 없다 — 이미 있는 10초 표준 데이터로 충분하다. **요구를 다시 읽으니 요구가 아니었다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "필터를 어디에 둘지 정할 때",
+          "thought": "라이브 서버까지 다 보내 놓고 거기서 거르면 **보내는 비용은 그대로**다. 거를 거면 들어오는 자리에서 걸러야 하는데, 그러면 수집 계층이 화면의 사정을 알아야 한다 — 순수함을 내주고 비용을 산다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "파이프라인 클러스터를 나눌 때",
+          "thought": "큰 클러스터 하나면 자원을 아낄 것 같지만 실제로는 **팀들이 자리를 기다린다.** 그리고 한 잡의 메모리 문제가 다른 잡을 죽인다. 자원 효율보다 **격리**가 더 값어치 있었다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "14시간짜리 잡이 자꾸 죽는 걸 보고",
+          "thought": "스팟 인스턴스는 언제든 사라진다. 그러면 **잡을 튼튼하게 만들 게 아니라 짧게 만들어야** 한다 — 죽었을 때 잃는 일의 양을 줄이는 쪽이 죽지 않게 만드는 쪽보다 싸다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "호스트 구독 (host subscription)",
+            "what": "지금 누군가 보고 있는 호스트 목록. Kafka 로 1초마다 발행된다."
+          },
+          {
+            "name": "인테이크 캐시",
+            "what": "구독 상태를 들고 있는 메모리 캐시. TTL 로 만료돼 장애에 견딘다."
+          },
+          {
+            "name": "파이프라인 클러스터",
+            "what": "잡 하나를 위해 띄우고 끝나면 없앤다. 평균 수명 약 3시간."
+          },
+          {
+            "name": "S3 체크포인트",
+            "what": "잡을 쪼갠 경계마다 남기는 중간 결과. 회복의 단위."
+          }
+        ],
+        "invariants": [
+          "**아무도 안 보는 것은 모으지 않는다.** 모으는 양이 곧 원가이고, 그 양을 정하는 것은 화면이다.",
+          "**필터는 들어오는 자리에 있어야 한다.** 뒤에서 거르면 보내는 비용은 그대로 든다.",
+          "**잡은 죽는다는 것을 전제한다.** 튼튼하게 만드는 대신 짧게 만들어 잃는 양을 줄인다.",
+          "요구 간격보다 촘촘한 데이터는 필요 없다 — 정렬이 10초에 한 번이면 2초 데이터를 쓸 이유가 없다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 Processes·Containers 화면을 연다",
+            "why": "여기서 수요가 생긴다"
+          },
+          {
+            "step": "지금 보이는 호스트(최대 50대)를 **구독**으로 만들어 Kafka 에 1초마다 발행한다",
+            "why": "무엇을 모을지가 화면에서 정해진다"
+          },
+          {
+            "step": "인테이크가 구독을 메모리 캐시에 들고, **그 호스트의 것만** 받는다",
+            "why": "뒤에서 거르면 보내는 비용은 그대로다"
+          },
+          {
+            "step": "캐시는 TTL 로 만료된다",
+            "why": "구독 갱신이 끊겨도 무한정 붙들지 않게"
+          },
+          {
+            "step": "정렬은 2초 라이브가 아니라 기존 10초 표준 데이터로 한다",
+            "why": "정렬 자체가 10초에 한 번이라 더 촘촘할 이유가 없다"
+          },
+          {
+            "step": "무거운 집계는 파이프라인마다 전용 클러스터를 띄워 돌린다",
+            "why": "잡의 성격에 맞는 하드웨어를 고르고 서로 간섭하지 않게"
+          },
+          {
+            "step": "잡을 세로(변환 단계)·가로(입력 분할)로 쪼개고 경계마다 S3 에 체크포인트한다",
+            "why": "스팟이 죽어도 잃는 일이 적게"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "라이브 지표를 어디서 모을 것인가",
+            "chosen": "**보고 있는 호스트에서만** — 사용자당 최대 50대",
+            "alternatives": [
+              "테넌트 전체 호스트에서 상시 수집"
+            ],
+            "tradeoff": "화면 이동보다 구독 갱신이 늦으면 그 순간이 빈다. 그래도 전체 수집은 **초당 수백만 프로세스를 모아 50개를 보여 주는** 구조였다 — 트래픽이 100배(초당 50만 → 5천) 줄고 인프라가 98% 축소됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "question": "필터를 어디에 둘 것인가",
+            "chosen": "**인테이크에서** 이르게 거른다",
+            "alternatives": [
+              "라이브 데이터 서버에서 늦게 거르기"
+            ],
+            "tradeoff": "**수집 계층이 화면의 사정(무엇이 보이고 있는지)을 알게 된다** — 순수한 수집 계층이기를 그만둔다. 늦게 거르면 보내고 받는 비용은 그대로 들어서, 줄이려는 것 자체가 안 줄어든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "question": "정렬에 2초 라이브 데이터를 쓸 것인가",
+            "chosen": "**기존 10초 표준 데이터**를 쓴다",
+            "alternatives": [
+              "2초 라이브 데이터 유지"
+            ],
+            "tradeoff": "정렬이 덜 촘촘한 데이터에 기댄다. 그런데 **정렬 자체가 10초에 한 번** 일어나므로 제품 거동은 그대로다 — 요구를 다시 읽었더니 요구가 아니었던 경우다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "question": "집계 잡을 큰 클러스터 하나에서 돌릴 것인가",
+            "chosen": "**파이프라인마다 전용 클러스터**를 띄운다. 평균 수명 3시간",
+            "alternatives": [
+              "전통적인 큰 Hadoop 클러스터 하나"
+            ],
+            "tradeoff": "클러스터 수십 개를 운영해야 하고 태그 관리 같은 운영 복잡도가 는다. 대신 **팀이 자원을 기다리지 않고**, 잡 성격에 맞는 인스턴스를 고르고, Hadoop·Spark 버전을 단계적으로 올릴 수 있다 — 자원 효율보다 격리가 값어치 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "question": "잡이 죽는 문제를 어떻게 다룰 것인가",
+            "chosen": "**짧게 쪼갠다** — 세로(변환 단계)·가로(입력 분할)로 나누고 S3 에 체크포인트",
+            "alternatives": [
+              "긴 잡을 튼튼하게 만들기",
+              "정교한 재시도 로직"
+            ],
+            "tradeoff": "단계마다 S3 에 쓰고 읽는 오버헤드가 붙어 **클러스터 안 캐시보다 느리다.** 그래도 스팟 인스턴스는 언제든 사라지므로, 죽지 않게 만드는 것보다 **죽었을 때 잃는 양을 줄이는** 쪽이 쌌다 — 14시간짜리 롤업 하나가 1시간 미만 여러 개가 됐다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "question": "집계가 늦으면 화면을 어떻게 할 것인가",
+            "chosen": "**원본 데이터로 폴백**한다 — 느린 질의를 감수한다",
+            "alternatives": [
+              "데이터 없음으로 표시",
+              "집계를 기다리게 하기"
+            ],
+            "tradeoff": "질의가 느려진다. 그래도 **사고 중에 보는 화면**이라 느린 답이 없는 답보다 낫다 — 데이터 가용성을 속도보다 위에 뒀다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Kafka (호스트 구독 발행)",
+            "role": "지금 보고 있는 호스트를 1초마다 알린다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "tech": "인테이크 서비스 + TTL 메모리 캐시",
+            "role": "구독을 들고 그 호스트의 것만 받는다. TTL 로 장애에 견딘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "tech": "Spark on 단명 클러스터",
+            "role": "파이프라인마다 띄우고 3시간쯤 살다 없어진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "스팟 인스턴스",
+            "role": "온디맨드 대비 최대 80% 싸다. 대신 언제든 사라진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          },
+          {
+            "tech": "S3 (체크포인트 · 지연 모니터링)",
+            "role": "잡 경계마다 중간 결과를 남기고, 출력 신선도를 5분마다 잰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "husky-exactly-once",
+          "via": "수집된 이벤트 전달",
+          "contract": "여기서 걸러진 것만 저장으로 간다. **덜 모으면 덜 저장하고 덜 세면 된다** — 이 도메인의 절감이 저장·과금까지 그대로 내려간다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "질의·대시보드",
+          "via": "화면의 구독 상태",
+          "contract": "**화면이 무엇을 모을지 정한다.** 보통은 저장이 화면에 데이터를 주는 방향인데, 여기서는 화면이 수집에 지시를 내리는 역방향이 하나 더 있다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "고객 에이전트",
+          "via": "수집 대상 지정",
+          "contract": "에이전트가 보내는 양이 우리 원가다. 그래서 무엇을 보낼지를 우리가 좁힌다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "모으는 양을 우리가 정하지 못하는데 그 양이 우리 원가다",
+            "why_hard": "**수요와 비용의 주인이 다르다.** 데이터를 뿜는 것은 고객의 시스템이고 그 양을 정하는 것도 고객인데, 그것을 받아 저장하는 비용은 우리가 낸다. 그리고 **가장 많이 뿜는 때가 고객에게 사고가 난 때**인데, 하필 그때가 그 고객이 우리 화면을 가장 절실히 보는 때다 — 값을 아끼려고 그때 덜 받으면 제품이 제 일을 못 한다. 요금을 사용량에 연동해도 이 긴장은 사라지지 않는다. 폭증분을 그대로 청구하면 고객은 사고 뒤에 청구서까지 맞고, 아니면 우리가 떠안는다.",
+            "current_best": "**받는 양이 아니라 모으는 양을 줄인다.** 아무도 안 보는 데이터는 애초에 모으지 않는 쪽으로 옮겼다 — 라이브 프로세스 지표에서 트래픽이 100배 줄었다. 그리고 요구 간격보다 촘촘한 데이터를 쓰지 않는다(정렬은 10초에 한 번이니 2초 데이터가 필요 없다). 대가는 **수집 계층이 화면의 사정을 알게 된다**는 것, 그리고 화면 이동보다 구독 갱신이 늦으면 그 순간이 빈다는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+                "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+                "publisher": "Datadog Engineering",
+                "date": "2025-08-12",
+                "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+              }
+            ]
+          },
+          {
+            "problem": "값싼 자원은 언제든 사라진다",
+            "why_hard": "**싼 것과 안정적인 것이 같은 축의 양 끝이다.** 스팟 인스턴스는 온디맨드보다 최대 80% 싸지만 수요와 공급에 따라 언제든 회수된다 — 그리고 회수 시점을 우리가 정하지 못한다. 하루 수조 개 데이터 포인트를 다루면서 온디맨드만 쓰면 원가가 감당되지 않고, 스팟만 쓰면 긴 잡이 끝나지 못한다. 이건 더 좋은 재시도 로직으로 풀리는 문제가 아니다 — **잡이 길수록 죽을 확률이 오르는 것 자체가** 원인이기 때문이다.",
+            "current_best": "**죽지 않게 만드는 대신 잃는 양을 줄인다.** 잡을 세로·가로로 쪼개 짧게 만들고(14시간 → 1시간 미만) 경계마다 S3 에 체크포인트한다. 클러스터도 파이프라인마다 따로 띄워 하나의 실패가 다른 것을 죽이지 않게 한다. 대가는 S3 왕복 오버헤드가 클러스터 안 캐시보다 느리다는 것이고, 그래도 못 맞추면 **원본 데이터로 폴백해 느린 질의를 감수한다** — 느린 답이 없는 답보다 낫기 때문이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Building highly reliable data pipelines at Datadog",
+                "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+                "publisher": "Datadog Engineering",
+                "date": "2019-04-02",
+                "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "화면이 수집에 지시를 내린다",
+          "question": "보통과 반대 방향의 화살표가 왜 필요했나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  U[\"사용자가 Processes 화면을 연다<br/>실제로 보는 것 — 약 50개\"] -->|\"보이는 호스트 최대 50대\"| SUB[\"호스트 구독\"]\n  SUB -->|\"Kafka · 1초마다\"| INT[\"인테이크 서비스<br/>TTL 메모리 캐시\"]\n  A[\"고객 에이전트 (모든 호스트)\"] --> INT\n  INT -->|\"구독된 것만 통과\"| LIVE[\"라이브 데이터 서버\"]\n  LIVE --> U\n  INT -.->|\"나머지는 여기서 멈춘다\"| DROP[\"안 받는다\"]\n  OLD[\"옛 구조 — 모든 호스트에서 상시<br/>초당 수백만 프로세스\"] -.-> X[\"50개를 보여 주려고\"]"
+        },
+        {
+          "title": "짧게 쪼개는 것이 튼튼하게 만드는 것보다 싸다",
+          "question": "언제든 사라지는 자원 위에서 잡을 어떻게 끝내나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"14시간 롤업 잡 하나\"] --> B{\"스팟이 회수되면\"}\n  B --> C[\"14시간치를 잃는다\"]\n  D[\"세로로 쪼갬 — 변환 단계 분리\"] --> E[\"가로로 쪼갬 — 입력 분할\"]\n  E --> F[\"1시간 미만 잡 여러 개\"]\n  F --> G[\"경계마다 S3 체크포인트\"]\n  G --> H{\"스팟이 회수되면\"}\n  H --> I[\"그 조각만 다시\"]\n  G --> J[\"대가 — S3 왕복이<br/>클러스터 안 캐시보다 느리다\"]"
+        },
+        {
+          "title": "가장 값이 필요할 때 가장 비싸진다",
+          "question": "사고가 났을 때 무엇이 동시에 일어나는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"고객에게 사고가 난다\"] --> B[\"로그·지표가 폭증한다\"]\n  A --> C[\"그 고객이 우리 화면을 가장 절실히 본다\"]\n  B --> D[\"우리 수집·저장 원가가 오른다\"]\n  D --> E{\"어떻게 할까\"}\n  E -->|\"그때 덜 받는다\"| F[\"제품이 제 일을 못 한다\"]\n  E -->|\"폭증분을 그대로 청구\"| G[\"고객이 사고 뒤에 청구서까지 맞는다\"]\n  E -->|\"우리가 떠안는다\"| H[\"원가가 고객의 사정에 달린다\"]\n  C --> I[\"집계가 늦으면\"]\n  I --> J[\"원본 데이터로 폴백 — 느린 질의를 감수\"]\n  J --> K[\"느린 답이 없는 답보다 낫다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+          "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+          "publisher": "Datadog Engineering",
+          "date": "2025-08-12",
+          "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+        },
+        {
+          "title": "Building highly reliable data pipelines at Datadog",
+          "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+          "publisher": "Datadog Engineering",
+          "date": "2019-04-02",
+          "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "저장·멀티테넌시 말고 수집·실시간 시계열·질의 세 도메인은 아직 손대지 않았다 — 이번 사이클은 회사 프로파일과 기능 하나다.",
+    "실시간 시계열과 질의·대시보드 두 도메인은 아직 손대지 않았다.",
     "Husky 글은 2023년이다. 그 뒤 3년간 무엇이 바뀌었는지 — 특히 Rust 시계열 엔진 글(2025)이 이 구조와 어떻게 맞물리는지는 아직 안 봤다.",
-    "요금과 원가의 관계 — 고객이 사고 중에 뿜는 폭증분을 어떻게 과금하고 어떻게 감당하는지는 공개 자료에서 아직 못 찾았다."
+    "요금과 원가의 관계 — 고객이 사고 중에 뿜는 폭증분을 어떻게 과금하고 어떻게 감당하는지는 공개 자료에서 아직 못 찾았다.",
+    "호스트 구독이 화면 이동을 못 따라갈 때의 거동 — 회사 글이 '구독 지연 시 실패 모드는 논하지 않는다'고 스스로 남긴 자리다."
   ],
   "sources": [
     {
@@ -595,6 +1141,20 @@
       "publisher": "Datadog Engineering",
       "date": "2025",
       "summary": "Redis 를 떠난 이유를 대가로 적은 시계열 저장 재설계."
+    },
+    {
+      "title": "Scaling down to speed up: How we improved efficiency of live process metrics by 100x",
+      "url": "https://www.datadoghq.com/blog/engineering/scaling-process-pipeline-efficiency/",
+      "publisher": "Datadog Engineering",
+      "date": "2025-08-12",
+      "summary": "보고 있는 것만 모으도록 바꿔 트래픽을 100배 줄인 기록."
+    },
+    {
+      "title": "Building highly reliable data pipelines at Datadog",
+      "url": "https://www.datadoghq.com/blog/engineering/highly-reliable-data-pipelines/",
+      "publisher": "Datadog Engineering",
+      "date": "2019-04-02",
+      "summary": "큰 클러스터 하나 대신 파이프라인마다 3시간짜리 클러스터를 띄우는 구조."
     }
   ]
 }
