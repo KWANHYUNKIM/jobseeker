@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-08-22",
   "companies": [
     {
       "slug": "toss",
@@ -312,6 +312,18 @@
       "one_liner": "디자인 도구인데 인쇄물을 실제로 만들어 보내는 회사 — 그래서 소프트웨어 밖에 공급망이 있다",
       "features_done": 2,
       "domain": "canva.com"
+    },
+    {
+      "slug": "grafana-labs",
+      "name": "그라파나 랩스",
+      "name_en": "Grafana Labs",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "updated_at": "2026-08-22",
+      "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
+      "features_done": 1,
+      "domain": "grafana.com"
     }
   ],
   "domains": [
@@ -422,7 +434,9 @@
     "콘텐츠 수집·트랜스코딩",
     "실험 플랫폼",
     "세션·인증 게이트웨이",
-    "인쇄 주문 라우팅"
+    "인쇄 주문 라우팅",
+    "시계열 수집·저장",
+    "질의 실행"
   ],
   "countries": {
     "KR": "한국",
