@@ -100,6 +100,16 @@ jobs:
           latest=$(ls -1d "$S"/all_개발자_* 2>/dev/null | tail -1)
           [ -n "$latest" ] && python3 -c "import json,sys,pathlib; p=pathlib.Path(sys.argv[1])/'all_jobs.json'; d=json.load(open(p,encoding='utf-8')) if p.exists() else []; print('최신 스냅샷', p.parent.name, ':', len(d), '건')" "$latest" 2>/dev/null || true
           echo ""
+          echo "### 고정 폴더 안 — 누적이 실제로 되고 있나"
+          for d in "$S"/wanted_개발자 "$S"/jumpit_개발자 "$S"/jobkorea_개발자 "$S"/saramin_개발자 "$S"/dev_개발자; do
+            [ -d "$d" ] || continue
+            n=$(ls -1 "$d" 2>/dev/null | wc -l | tr -d ' ')
+            jobs=$(python3 -c "import json,sys,pathlib; p=pathlib.Path(sys.argv[1])/'jobs.json'; print(len(json.load(open(p,encoding='utf-8'))) if p.exists() else 'jobs.json없음')" "$d" 2>/dev/null || echo "?")
+            mtime=$(stat -f '%Sm' -t '%Y-%m-%d %H:%M' "$d" 2>/dev/null)
+            printf '%-22s 파일 %5s · jobs %8s · 수정 %s\n' "$(basename "$d")" "$n" "$jobs" "$mtime"
+          done
+
+          echo ""
           echo "### 마감 아카이브 (reposts 입력)"
           ls -1 "$S"/closed_*.json 2>/dev/null | head -5 || echo "(closed_*.json 없음 — reposts 가 참조할 아카이브가 없다)"
 
