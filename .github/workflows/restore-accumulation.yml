@@ -19,6 +19,11 @@ on:
         required: false
         default: false
         type: boolean
+      builders:
+        description: "refresh-data.sh 가 안 도는 빌더(재공고 등)까지 돌린다"
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: restore-accumulation
@@ -68,6 +73,27 @@ jobs:
           # 가드는 그대로 둔다 — 복원이 제대로 됐으면 저절로 통과해야 하고,
           # 통과 못 하면 그건 복원이 덜 된 것이라 덮어쓰면 안 된다.
           ./jd-viewer/bin/refresh-data.sh
+
+      - name: 나머지 빌더
+        if: ${{ inputs.builders == true }}
+        run: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          REPO="${DEPLOY_DIR:-$HOME/jobseeker}"
+          cd "$REPO"
+
+          PY="$REPO/catch_capture/.venv/bin/python"
+          [ -x "$PY" ] || PY=python3
+
+          # refresh-data.sh 는 mindmap·stacks·learning·calendar·trends·relations·insights 만
+          # 돈다. 재공고·커리어맵·블로그가이드는 auto_crawl 쪽에만 있어서, 가드에 막혀
+          # auto_crawl 이 도중에 끊긴 동안 통째로 빠져 있었다(reposts.json 이 아예 없었다).
+          for s in build_reposts build_career_map build_blog_guides; do
+            f="jd-viewer/bin/$s.py"
+            [ -f "$f" ] || { echo "  ($s 없음 — 건너뜀)"; continue; }
+            echo "── $s"
+            "$PY" "$f" || echo "::warning::$s 실패 — 나머지는 계속한다"
+          done
 
       - name: 결과 확인
         if: always()
