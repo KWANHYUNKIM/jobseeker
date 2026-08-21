@@ -354,6 +354,29 @@
         "az-siloing"
       ],
       "file": "what-they-did-not-do.md"
+    },
+    {
+      "slug": "build-or-buy",
+      "title": "직접 만들 것인가, 가져올 것인가",
+      "question": "만들지 가져올지를 가른 것은 우리 쪽 실력이 아니라 후보 쪽의 무엇이었는가?",
+      "companies": [
+        "adyen",
+        "cloudflare",
+        "figma",
+        "coupang",
+        "ly-corporation",
+        "spotify"
+      ],
+      "features": [
+        "accounting-ledger",
+        "payment-path",
+        "unimog-edge-lb",
+        "livegraph-subscription",
+        "seller-understanding",
+        "device-attestation",
+        "podcast-previews"
+      ],
+      "file": "build-or-buy.md"
     }
   ]
 }
