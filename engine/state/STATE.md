@@ -10,31 +10,32 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**아무 회사도 진행 중이 아니다.** Zerodha 를 사이클 188 에서 **done 으로 닫았다**(34번째, 도메인 3 · 기능 3).
+**진행 중인 회사가 없다. 사이클 189 는 후보 조사였고 큐를 3/3 으로 채웠다.**
 
-> **⚠️ 다음 사이클은 후보 조사다 — 회사를 열지 않는다.** 큐가 **1/3**(PlanetScale 하나)이다.
-> **후보를 최소 두 곳 본문까지 읽고 `## 대기` 표에 올려 3 으로 만든다.** 여전히 비어 있는 자리:
-> **라틴아메리카 · 중동 · 아프리카가 0곳**, **하드웨어에 가까운 회사 0곳**.
-> '확인해 둔 후보'에 **Mercari**(읽히지만 최근 두 편에 수치가 거의 없었다)와 **ClickHouse**(본문 미확인)가 있다.
-> 시도해 볼 곳: `www.cockroachlabs.com/blog` · `tigerbeetle.com` · `www.scylladb.com/blog` ·
-> `engineeringblog.yelp.com` · 중동/아프리카·라틴아메리카의 **자체 도메인** 기술 블로그.
+> **다음 사이클은 `## 대기` 맨 위 — PlanetScale(US · SaaS)을 연다.** 35번째이고 **데이터베이스 회사 첫 곳**이다.
+> 자료는 `planetscale.com/blog`, 본문 확인해 뒀다(`massively-parallel-postgres-backups`: **50GB/s**,
+> **32TB → 20TB 압축**, 같은 데이터가 **샤드 없이 22시간 → 8샤드 2.8시간 → 32샤드 42분**,
+> *"100샤드의 100TB 는 1샤드의 1TB 와 거의 같은 속도로 백업된다"*. **버린 대안 둘** — 프라이머리 직접 백업
+> (*"IOPS 와 컴퓨트를 크게 먹는다"*), 프라이머리에서 WAL 재생(고변경 DB 에서 너무 느리고 WAL 이 이미 S3 로 감).
+> 대신 **샤드당 임시 EC2** 를 띄워 이전 백업 복원 → WAL 재생 → 암호화 → S3 → 노드 폐기).
+> 다른 글: `concurrency-vs-throughput-vitess-mysql` · `postgres-poisoned-connection-pools` ·
+> `the-dangers-of-postgres-subtransactions` · `what-is-a-data-topology`.
 
-> **Zerodha 에서 확인한 회사 축 — '우리가 맞춰야 하는' 도구를 거절한다.** Citus(스키마를 고쳐야 해서) ·
-> cLoki(파티셔닝·TTL 을 못 정해서) · Loki(자체 호스팅 복잡 + RBAC 없음) · FSx(리전에 없어서) ·
-> EBS(40대가 공유 못 해서). **기준이 '이게 좋은가'가 아니라 '우리 것을 안 바꾸고 우리가 돌릴 수 있는가'다.**
-> 대가로 부품을 직접 엮고 운영을 떠안는데 **그 전부를 기술팀 31명이 한다** — 하루 거래 1,200만 건 이상,
-> 고객 1,600만 명 이상인 회사에서다.
+**큐 3/3** — PlanetScale(US) · **TigerBeetle(기타 — 하드웨어에 가장 가까운 후보)** ·
+**Careem(AE — 중동 첫 회사)**. 뒤 둘은 이번 사이클에 본문까지 읽고 올렸다.
 
-> **🔑 비교 문서를 쓸 재료가 모였다 — ⑳ '거절한 이유가 성능이 아니었다'.**
-> Zerodha **Citus**(*"수백 개의 질의를 다시 써야"*) · trivago **Federation**(*"상류가 GraphQL 을 채택하고
-> 스키마를 조율해야"*) · Allegro **FaaS**(*"의존성 100%에 적용할 수 없다"*) · Vinted **큰 L2 + MLAG**
-> (*"대역폭이 늘고 가용성이 조금 좋아지지만"* 경계는 그대로) · Zerodha **EBS**(가장 빠른데 공유 불가).
-> **다섯이 전부 '그걸 쓰면 우리 쪽이 바뀌어야 한다'로 모인다.**
+> **아직 비어 있는 자리**: **라틴아메리카 · 아프리카 0곳**(중동은 Careem 으로 메운다), **게임은 Roblox 하나**,
+> **의료·바이오 0곳**, **물류 전문 0곳**. Riot Games 는 `technology.riotgames.com` 이 **뉴스 검색 페이지로 301** 돼
+> 기술 블로그가 사라진 것으로 보인다. Paystack 은 **403**.
 
-> **⑫ '해 보고 되돌린 것' 도 넘친다** — Zerodha 렌더러 3번·저장 4개·일 단위 파티셔닝 되돌림·
-> 모바일 2번·티커 6년간 5번, Allegro 클라우드→DC, Vinted ES→Vespa·수직→수평 샤딩.
+> **🔑 다음다음 사이클 후보 — 비교 문서 ⑳ '거절한 이유가 성능이 아니었다'.** 사례가 다섯이다:
+> Zerodha **Citus**(*"수백 개의 질의를 다시 써야"*) · Zerodha **EBS**(가장 빠른데 40대가 공유 못 함) ·
+> trivago **Federation**(*"상류가 GraphQL 을 채택하고 스키마를 조율해야"*) · Allegro **FaaS**
+> (*"의존성 100%에 적용할 수 없다"*) · Vinted **큰 L2 + MLAG**(*"대역폭이 늘고 가용성이 조금 좋아지지만"* 경계는 그대로).
+> **다섯이 전부 '그걸 쓰면 우리 쪽이 바뀌어야 한다'로 모인다.** 여기에 Zerodha **cLoki**(파티셔닝·TTL 을 못 정함)와
+> **FSx**(리전에 없음)를 더할 수 있다. **비교 문서를 쓸 때 기능이 겹치지 않는지 domains/index.json 으로 먼저 검산할 것.**
 
-마지막 사이클: 188 (2026-08-22) — Zerodha 로그 저장 + 완주.
+마지막 사이클: 189 (2026-08-22) — 대기열 후보 보강(후보 조사).
 
 ## 다음 선택지
 
@@ -73,6 +74,9 @@
 | `tech.trivago.com` · `vinted.engineering` · `engineering.mercari.com` | ✅ 자체 도메인 정적 블로그 — 목록·본문 모두 열린다 |
 | `engineering.klarna.com` · `engineering.razorpay.com` · `blog.flipkart.tech` | ❌ 403 |
 | `zerodha.tech` · `planetscale.com/blog` · `clickhouse.com/blog` | ✅ 목록·본문 모두 열린다 (사이클 180 에서 확인) |
+| `tigerbeetle.com/blog` · `engineering.careem.com` | ✅ 목록·본문 모두 열린다 (사이클 189 에서 확인) |
+| `blog.paystack.com` | ❌ 403 |
+| `technology.riotgames.com` | ❌ **뉴스 검색 페이지로 301** — 기술 블로그가 없어진 것으로 보인다 |
 | `engineering.leboncoin.fr` · `tech.showmax.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
 | **PDF (IR 자료 등)** | ✅ **읽을 수 있다.** WebFetch 가 *"decode 할 수 없다"* 고 답해도 **바이너리를 `tool-results/` 에 저장해 준다** — 그 파일을 아래 방법으로 직접 푼다 |
 
