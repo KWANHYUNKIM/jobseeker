@@ -124,8 +124,93 @@
     {
       "name": "저장·샤딩",
       "why": "블록이 행이 되면 **테이블 하나가 수십억 행**이 된다. 2020년 중반 단일 Postgres 가 한계에 닿았고, 그때부터 이 도메인은 '어떻게 나눌 것인가'의 연속이 된다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "논리 샤드 480개 (물리와 분리)",
+          "solves": "**논리 개수를 고정하고 물리 배치만 바꾼다.** 물리 인스턴스를 32→96 으로 늘릴 때 인스턴스당 스키마가 15→5 가 됐을 뿐, **애플리케이션이 아는 샤드 수는 그대로**였다. 라우팅 코드도 데이터 키도 안 바뀐다.",
+          "limits": "480 이라는 수 자체가 천장이다 — 언젠가 그것도 넘어야 하고, 그때는 키 재계산과 데이터 이동이 따라온다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+              "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-10-06",
+              "summary": "Citus·Vitess 를 버리고 애플리케이션 계층에서 480 논리 샤드로 나눈 과정."
+            },
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023",
+              "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+            }
+          ]
+        },
+        {
+          "tech": "Postgres 논리 복제 (인덱스는 나중에)",
+          "solves": "옮기는 동안 원본과 새 인스턴스를 계속 맞춘다. **대량 복사 중 인덱스를 만들지 않고 나중에 다시 세워** 동기화가 3일에서 **12시간**으로 줄었다.",
+          "limits": "복제 지연이 남고, 인덱스를 뒤에 만드는 동안은 그 인스턴스가 아직 서비스할 준비가 안 된 상태다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023",
+              "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+            }
+          ]
+        },
+        {
+          "tech": "dark read (그림자 읽기)",
+          "solves": "새 인스턴스에 **운영 읽기를 나란히 흘려** 원본과 결과를 비교한다. 일치율이 거의 100% 였다.",
+          "limits": "**전부 비교하면 CPU 가 감당 안 돼** 5행만 표본으로 본다. 복제 지연 때문에 비교 전 1초를 일부러 기다려야 했고, `limit` 이 붙은 비결정적 질의는 원래 안 맞는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023",
+              "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+            }
+          ]
+        },
+        {
+          "tech": "PgBouncer 를 4개 클러스터로 먼저 쪼갬",
+          "solves": "샤드 하나가 3개로 갈라지면 연결이 **600 × 3 = 1,800** 이 된다. 본 작업 전에 PgBouncer 를 4개(각 24 DB)로 나눠 **연결 여유와 격리**를 먼저 확보했다.",
+          "limits": "본 작업 전에 다른 마이그레이션을 하나 더 해야 했다 — 우회로가 그 자체로 프로젝트가 된다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023",
+              "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+            }
+          ]
+        },
+        {
+          "tech": "역방향 복제 스트림 (롤백 보험)",
+          "solves": "전환 후 **새 → 옛 방향으로 복제를 되돌려** 두면 문제가 생겼을 때 돌아갈 수 있다.",
+          "limits": "운영 복잡도가 늘고, 실제로 쓴 적은 없다 — 쓰지 않은 보험의 값을 미리 낸 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+              "url": "https://www.notion.com/blog/the-great-re-shard",
+              "publisher": "Notion Blog",
+              "date": "2023",
+              "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "logical-shard-reshard"
+      ]
     },
     {
       "name": "동시 편집·실시간",
@@ -556,12 +641,524 @@
           "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
         }
       ]
+    },
+    {
+      "key": "logical-shard-reshard",
+      "name": "재분배 — 논리는 그대로 두고 물리만 바꾼다",
+      "domain": "저장·샤딩",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**블록을 기본 단위로 삼은 결정이 여기서 청구서가 된다.** 글자 한 줄이 행 하나면 테이블이 수십억 행이 되고, 2020년 중반 단일 Postgres 가 CPU 급등과 위험한 카탈로그 마이그레이션으로 한계에 닿았다. 그래서 480 논리 샤드 / 32 물리 인스턴스로 나눴는데, **2022년 말 그것도 다시 찼다** — 일부 샤드가 피크에 **CPU 90%** 를 넘었고 IOPS 도 한도에 붙었으며 PgBouncer 연결 풀링까지 걸렸다. 연말 트래픽 급증이 예고돼 있었다.",
+        "metrics": [
+          {
+            "label": "첫 샤딩(2021)",
+            "value": "논리 480 / 물리 32 · 테이블당 상한 500GB · 물리 DB당 10TB",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+                "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-10-06",
+                "summary": "Citus·Vitess 를 버리고 애플리케이션 계층에서 480 논리 샤드로 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "한계 신호(2022 말)",
+            "value": "일부 샤드 피크 **CPU 90% 초과** · IOPS 한도 · PgBouncer 제약",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "label": "재분배",
+            "value": "물리 32 → **96** (3배) · 인스턴스당 스키마 15 → 5",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "label": "재분배 후",
+            "value": "피크 CPU 90% → **약 20%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "label": "사용자가 겪은 정지",
+            "value": "전환 순간 '저장 중' 표시 **약 1초**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "label": "복제 동기화",
+            "value": "3일 → **12시간** (인덱스를 나중에 만들어서)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "label": "연결 폭발 위험",
+            "value": "샤드당 600 → 순진하게 하면 **1,800**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "label": "dark read 일치율",
+            "value": "거의 100% (비결정적 질의·복제 지연이 나머지)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "논리 샤드 수를 다시 정할지 고민할 때",
+          "thought": "480 을 바꾸면 **키 계산이 바뀌고 그러면 데이터가 실제로 이사해야 한다.** 그대로 두면 옮기는 것은 '어느 기계에 있느냐'뿐이다 — **바꾸지 않기로 한 것이 이 작업 전체를 무중단으로 만든 결정**이었다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "몇 배로 늘릴지 정할 때",
+          "thought": "논리 샤드마다 기계 하나씩(480대)이면 너무 잘다. 3배(96대)면 **인스턴스당 5개**가 되어 여유도 생기고 관리도 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "인스턴스 크기를 정할 때",
+          "thought": "기계가 3배가 되니 각각은 **작아도 된다.** 디스크는 지금 병목이 아니니 프로비저닝을 줄이고, 필요하면 나중에 키우면 된다 — 수직 확장의 여지를 남겨 둔 채 수평으로 갔다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그냥 트래픽을 옮기려다 연결 수를 계산했을 때",
+          "thought": "PgBouncer 100대 × 샤드당 6연결 = 600 인데, 샤드 하나가 셋으로 갈라지면 **1,800** 이 된다. 본 작업을 하기 전에 **PgBouncer 부터 쪼개야 했다** — 우회로가 그 자체로 프로젝트가 됐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "옮기고 나서 지표를 볼 때",
+          "thought": "부하를 더 많은 기계에 펴니 **전에는 합계에 묻혀 안 보이던 이상치가 드러났다.** 나누는 일의 부수 효과가 성능만이 아니라 **가시성**이기도 했다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "논리 샤드",
+            "what": "480개. 애플리케이션이 아는 단위이고 **개수가 바뀌지 않는다.**"
+          },
+          {
+            "name": "물리 인스턴스",
+            "what": "논리 샤드를 담는 기계. 32 → 96 으로 늘었고 인스턴스당 15 → 5 개를 담는다."
+          },
+          {
+            "name": "dark read",
+            "what": "운영 읽기를 새 인스턴스에도 나란히 흘려 결과를 비교하는 장치. 5행 표본."
+          },
+          {
+            "name": "역방향 복제",
+            "what": "전환 후 새→옛 방향으로 되돌려 둔 복제. 쓰지 않은 보험."
+          }
+        ],
+        "invariants": [
+          "**논리 샤드 수는 바꾸지 않는다.** 바꾸면 키가 바뀌고, 키가 바뀌면 데이터가 실제로 이사해야 한다.",
+          "옮기는 것은 '어느 기계에 있느냐'뿐이다 — 애플리케이션은 아무것도 모른다.",
+          "**전환은 되돌릴 수 있어야 한다** — 역방향 복제를 걸어 두고 넘어간다.",
+          "확인은 표본으로 한다 — 전부 비교하면 운영 규모에서 CPU 가 감당되지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "새 물리 인스턴스 96대를 띄우고 Postgres 논리 복제를 건다",
+            "why": "옮기는 동안 계속 맞춰 두려고"
+          },
+          {
+            "step": "대량 복사 중에는 **인덱스를 만들지 않는다.** 복사가 끝나면 다시 세운다",
+            "why": "동기화가 3일에서 12시간으로 줄었다"
+          },
+          {
+            "step": "본 작업 전에 **PgBouncer 를 4개 클러스터(각 24 DB)로 먼저 쪼갠다**",
+            "why": "안 그러면 전환 순간 연결이 600에서 1,800으로 튄다"
+          },
+          {
+            "step": "dark read 로 새 인스턴스 결과를 원본과 비교한다 — 5행 표본, 비교 전 1초 대기",
+            "why": "전부 비교하면 CPU 가 안 되고, 복제 지연을 기다려 줘야 한다"
+          },
+          {
+            "step": "① 트래픽을 멈추고 진행 중인 질의가 끝나기를 기다린다",
+            "why": "전환 순간에 걸친 질의를 없앤다"
+          },
+          {
+            "step": "② 논리 복제가 따라잡았는지 확인한다",
+            "why": "덜 따라온 상태로 넘기면 데이터가 빈다"
+          },
+          {
+            "step": "③ PgBouncer 설정을 새 DB 로 바꾸고 **역방향 복제를 건다**",
+            "why": "돌아갈 길을 열어 둔 채 넘어간다"
+          },
+          {
+            "step": "④ 트래픽을 새 샤드로 재개한다",
+            "why": "사용자는 '저장 중' 표시를 약 1초 본다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "논리 샤드 수를 늘릴 것인가",
+            "chosen": "**480 을 그대로 둔다.** 물리 인스턴스만 32→96 으로",
+            "alternatives": [
+              "논리 샤드 수를 함께 늘리기"
+            ],
+            "tradeoff": "**480 이라는 수가 천장으로 남는다** — 언젠가 그것도 넘어야 하고 그때는 키 재계산과 실제 데이터 이동이 따라온다. 대신 지금은 옮기는 것이 '어느 기계에 있느냐'뿐이라 **애플리케이션이 아무것도 모르는 채로** 넘어갈 수 있다. 이 결정 하나가 전체를 무중단으로 만들었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "question": "몇 배로 늘릴 것인가",
+            "chosen": "**3배(96대)** — 인스턴스당 5개",
+            "alternatives": [
+              "논리 샤드마다 기계 하나(480대)",
+              "2배 정도"
+            ],
+            "tradeoff": "480대는 너무 잘아 관리가 안 되고, 적게 늘리면 곧 또 해야 한다. 3배가 여유와 관리 가능성이 맞는 지점이었다 — 결과는 피크 CPU 90% → 약 20%.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "question": "새 인스턴스를 얼마나 크게 잡을 것인가",
+            "chosen": "**더 작게** 잡고 디스크 프로비저닝도 줄인다",
+            "alternatives": [
+              "기존과 같은 크기 유지"
+            ],
+            "tradeoff": "디스크가 나중에 병목이 되면 다시 키워야 한다. 그래도 기계가 3배가 됐으니 각각은 작아도 되고, **디스크는 지금 병목이 아니었다** — 필요할 때 키우기로 하고 비용을 먼저 줄였다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "question": "복사 중에 인덱스를 만들 것인가",
+            "chosen": "**만들지 않는다.** 복사가 끝나고 다시 세운다",
+            "alternatives": [
+              "복사하면서 인덱스도 함께"
+            ],
+            "tradeoff": "인덱스를 세우는 동안 그 인스턴스는 아직 서비스할 준비가 안 된 상태로 남는다. 대신 **동기화가 3일에서 12시간으로** 줄었다 — 연말 트래픽 급증이 예고된 상황에서 그 차이가 결정적이었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "question": "PgBouncer 를 그대로 두고 트래픽만 옮길 것인가",
+            "chosen": "**본 작업 전에 PgBouncer 를 4개 클러스터로 먼저 쪼갠다**",
+            "alternatives": [
+              "그대로 두고 전환"
+            ],
+            "tradeoff": "본 작업 전에 **다른 마이그레이션을 하나 더** 해야 한다. 그런데 계산해 보니 샤드 하나가 셋으로 갈라지면 연결이 **600에서 1,800으로** 튀어 감당이 안 됐다 — 우회로가 그 자체로 프로젝트가 된 경우다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "question": "새 인스턴스가 맞는지 어떻게 확인할 것인가",
+            "chosen": "**dark read** — 운영 읽기를 나란히 흘려 비교한다. 5행 표본, 비교 전 1초 대기",
+            "alternatives": [
+              "모든 질의 결과를 전부 비교",
+              "확인 없이 전환"
+            ],
+            "tradeoff": "**전부 비교하면 운영 규모에서 CPU 가 감당되지 않아** 표본으로 줄여야 했고, 복제 지연 때문에 1초를 일부러 기다려야 했다. `limit` 이 붙은 비결정적 질의는 원래 안 맞아서 불일치에 섞인다 — 일치율 '거의 100%' 의 나머지가 그것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "question": "전환 후 돌아갈 길을 둘 것인가",
+            "chosen": "**역방향 복제를 건다** — 새 → 옛",
+            "alternatives": [
+              "전환 후 옛 경로 정리"
+            ],
+            "tradeoff": "운영 복잡도가 늘고, **실제로는 쓰지 않았다** — 쓰지 않은 보험의 값을 미리 낸 셈이다. 그래도 되돌릴 수 없는 전환은 전환 자체를 못 하게 만든다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Postgres 논리 복제 (publication / subscription)",
+            "role": "옮기는 동안 원본과 새 인스턴스를 계속 맞춘다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "tech": "PgBouncer (4개 샤드 클러스터, 각 24 DB)",
+            "role": "연결 풀링. 본 작업 전에 먼저 쪼갰다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "tech": "dark read 프레임워크",
+            "role": "운영 읽기를 나란히 흘려 결과를 비교. 5행 표본",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "tech": "역방향 복제 스트림",
+            "role": "전환 후의 롤백 경로",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "tech": "애플리케이션 계층 샤딩 (Citus·Vitess 아님)",
+            "role": "분포를 우리가 통제한다 — 2021년 첫 샤딩 때의 선택",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+                "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-10-06",
+                "summary": "Citus·Vitess 를 버리고 애플리케이션 계층에서 480 논리 샤드로 나눈 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "block-model",
+          "via": "블록이 곧 행",
+          "contract": "**블록을 기본 단위로 삼은 결정이 여기서 수십억 행이 된다.** 위 계층의 자유가 이 계층의 청구서다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "PgBouncer 연결 계층",
+          "via": "연결 풀링",
+          "contract": "샤드가 갈라지면 연결이 배수로 튄다 — **샤딩의 비용이 DB 가 아니라 연결 계층에서 먼저 터진다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "동시 편집·실시간",
+          "via": "샤드 라우팅",
+          "contract": "같은 페이지의 블록들이 같은 샤드에 있어야 트랜잭션이 한 곳에서 끝난다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "나누는 단위를 바꾸는 순간 데이터가 실제로 이사해야 한다",
+            "why_hard": "**샤드 수가 키 계산에 들어가 있기 때문이다.** 어느 샤드로 갈지는 키의 해시를 샤드 수로 나눈 나머지로 정해지는데, 그 수를 바꾸면 **거의 모든 키의 목적지가 바뀐다.** 그러면 데이터가 기계 사이를 실제로 옮겨 다녀야 하고, 그 동안 읽기·쓰기가 어느 쪽을 봐야 하는지가 매 순간 달라진다 — 무중단으로 하기가 대단히 어려워지는 지점이 여기다. 그런데 용량은 계속 필요하다.",
+            "current_best": "**논리와 물리를 분리해 두고 물리만 바꾼다.** 논리 샤드 480개를 고정해 두면 키 계산이 그대로이므로, 옮기는 것은 '어느 기계에 있느냐'뿐이고 애플리케이션은 아무것도 모른다. 사용자가 겪은 정지가 **약 1초**였던 이유가 이것이다. 대가는 **480 이라는 수가 새 천장으로 남는다**는 것 — 미룬 것이지 없앤 것이 아니다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+                "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-10-06",
+                "summary": "Citus·Vitess 를 버리고 애플리케이션 계층에서 480 논리 샤드로 나눈 과정."
+              },
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          },
+          {
+            "problem": "옮긴 것이 맞는지 확인하는 비용이 옮기는 비용만큼 든다",
+            "why_hard": "**옳음을 확인하려면 두 번 해 봐야 한다.** 새 인스턴스가 원본과 같은 답을 주는지 알려면 같은 질의를 양쪽에 흘려 비교해야 하는데, 운영 규모에서 그것을 전부 하면 **CPU 가 감당되지 않는다.** 표본으로 줄이면 확인의 강도가 떨어지고, 게다가 비교 대상 자체가 흔들린다 — 복제에는 지연이 있어 잠깐 다른 것이 정상이고, `limit` 이 붙은 질의는 원래 결과가 매번 다르다. **'다르다'가 오류인지 정상인지를 구별하는 것부터 문제다.**",
+            "current_best": "**표본으로 줄이고 흔들림을 보정한다.** 결과를 5행까지만 비교하고, 복제가 따라오도록 비교 전에 1초를 일부러 기다린다. 일치율이 '거의 100%' 이고 나머지는 비결정적 질의와 복제 지연으로 설명된다 — **완전한 증명이 아니라 설명 가능한 불일치만 남기는** 방식이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+                "url": "https://www.notion.com/blog/the-great-re-shard",
+                "publisher": "Notion Blog",
+                "date": "2023",
+                "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "무엇을 바꾸지 않기로 했나",
+          "question": "같은 용량 증설인데 왜 정지가 1초로 끝났는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  A[\"용량이 또 찼다 — 피크 CPU 90%\"] --> B{\"무엇을 바꿀까\"}\n  B -->|\"논리 샤드 수를 늘린다\"| C[\"키 계산이 바뀐다\"]\n  C --> D[\"거의 모든 키의 목적지가 바뀐다\"]\n  D --> E[\"데이터가 실제로 이사한다<br/>= 무중단이 대단히 어려워진다\"]\n  B -->|\"논리는 480 고정, 물리만 32→96 (선택)\"| F[\"키 계산 그대로\"]\n  F --> G[\"옮기는 것은 어느 기계에 있느냐뿐\"]\n  G --> H[\"애플리케이션은 아무것도 모른다\"]\n  H --> I[\"사용자가 겪은 정지 약 1초\"]\n  F --> J[\"대가 — 480 이 새 천장으로 남는다<br/>미룬 것이지 없앤 것이 아니다\"]"
+        },
+        {
+          "title": "우회로가 그 자체로 프로젝트가 될 때",
+          "question": "트래픽만 옮기려다 무엇에 먼저 걸렸나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  A[\"샤드 하나를 셋으로\"] --> B[\"PgBouncer 100대 × 샤드당 6연결 = 600\"]\n  B --> C[\"× 3 = 1,800 연결\"]\n  C --> D[\"감당 안 됨\"]\n  D --> E[\"본 작업 전에 PgBouncer 를<br/>4개 클러스터로 먼저 쪼갠다<br/>(각 24 DB)\"]\n  E --> F[\"연결 여유 + 격리 확보\"]\n  F --> G[\"그제야 본 작업\"]\n  D -.->|\"샤딩의 비용이 DB 가 아니라<br/>연결 계층에서 먼저 터진다\"| C"
+        },
+        {
+          "title": "다르다는 것이 오류인지 정상인지",
+          "question": "옮긴 것이 맞는지 확인하는 일이 왜 그 자체로 문제인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"dark read — 양쪽에 같은 질의\"] --> B{\"결과가 다르다\"}\n  B -->|\"진짜 오류\"| C[\"마이그레이션이 잘못됐다\"]\n  B -->|\"복제 지연\"| D[\"잠깐 다른 게 정상이다\"]\n  B -->|\"limit 붙은 비결정적 질의\"| E[\"원래 매번 다르다\"]\n  D --> F[\"비교 전 1초를 일부러 기다린다\"]\n  E --> G[\"일치율 '거의 100%' 의 나머지로 설명\"]\n  A --> H{\"전부 비교할까\"}\n  H -->|\"전부\"| I[\"운영 규모에서 CPU 감당 안 됨\"]\n  H -->|\"5행 표본 (선택)\"| J[\"확인 강도를 낮춰 비용을 맞춘다\"]\n  J --> K[\"완전한 증명이 아니라<br/>설명 가능한 불일치만 남긴다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+          "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+          "publisher": "Notion Blog",
+          "date": "2021-10-06",
+          "summary": "Citus·Vitess 를 버리고 애플리케이션 계층에서 480 논리 샤드로 나눈 과정."
+        },
+        {
+          "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+          "url": "https://www.notion.com/blog/the-great-re-shard",
+          "publisher": "Notion Blog",
+          "date": "2023",
+          "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "저장·샤딩 말고 동시 편집·검색·AI 세 도메인은 아직 손대지 않았다 — 이번 사이클은 회사 프로파일과 블록 데이터 모델이다.",
+    "동시 편집·실시간과 검색·AI 두 도메인은 아직 손대지 않았다.",
     "블록 모델 글은 2021년이다. 그 뒤 5년간 스키마가 어떻게 바뀌었는지 — 글이 '몇몇 예외를 정리하는 중'이라고 밝힌 부분이 어떻게 됐는지는 모른다.",
-    "Notion 은 비상장이라 매출·사용자 수를 직접 공개하지 않는다. 밸류에이션과 AI 매출 비중은 회사 발표에서 왔지만 절대 매출은 확인하지 못했다."
+    "Notion 은 비상장이라 매출·사용자 수를 직접 공개하지 않는다. 밸류에이션과 AI 매출 비중은 회사 발표에서 왔지만 절대 매출은 확인하지 못했다.",
+    "480 이라는 논리 샤드 수를 언젠가 넘어야 할 텐데 그때 어떻게 할 계획인지 — 두 글 모두 그 지점은 다루지 않는다."
   ],
   "sources": [
     {
