@@ -324,6 +324,18 @@
       "one_liner": "자기가 지은 구조를 공개적으로 버리는 회사 — 코드가 열려 있어 그 과정도 숨길 수 없다",
       "features_done": 2,
       "domain": "grafana.com"
+    },
+    {
+      "slug": "zalando",
+      "name": "잘란도",
+      "name_en": "Zalando",
+      "country": "EU",
+      "category": "커머스",
+      "status": "in_progress",
+      "updated_at": "2026-08-22",
+      "one_liner": "거의 안 바뀌는 것과 시시각각 바뀌는 것을 한 파이프라인에 태웠던 회사 — 그걸 떼어내는 중이다",
+      "features_done": 1,
+      "domain": "zalando.com"
     }
   ],
   "domains": [
@@ -436,7 +448,9 @@
     "세션·인증 게이트웨이",
     "인쇄 주문 라우팅",
     "시계열 수집·저장",
-    "질의 실행"
+    "질의 실행",
+    "내부 트래픽 라우팅",
+    "상품·오퍼 서빙"
   ],
   "countries": {
     "KR": "한국",
