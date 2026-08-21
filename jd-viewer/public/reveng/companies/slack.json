@@ -130,8 +130,56 @@
     {
       "name": "가용성·장애 격리",
       "why": "**2021-06-30 us-east-1 에서 회색 장애**를 겪었다 — 가용 영역 사이 링크가 간헐적으로 끊기면서 **구성요소마다 무엇이 살아 있는지 판단이 엇갈렸다.** 완전히 죽었으면 오히려 쉬웠을 것이다.",
-      "tech": [],
-      "features": []
+      "tech": [
+        {
+          "tech": "사일로화 (siloing) — 가용 영역 안에서만 주고받는다",
+          "solves": "서비스가 **자기 AZ 안에서 온 트래픽만 받고 자기 AZ 안의 서버로만 보낸다.** 서비스 하나가 사실상 AZ 개수만큼의 독립 가상 서비스가 되고, **한 AZ 안의 고장이 그 AZ 안에 갇힌다.**",
+          "limits": "**모든 서비스를 모든 AZ 에 같은 설정으로 배포해야** 하고, 깊은 변경은 연결된 여러 서비스에 함께 퍼져야 한다. 그리고 **사일로화할 수 없는 서비스가 있다** — 회사가 후속 글로 미뤘다(상태를 가진 것들로 추정).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Slack's Migration to a Cellular Architecture",
+              "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+              "publisher": "Engineering at Slack",
+              "date": "2023-08-22",
+              "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "Rotor (자체 xDS 제어 평면) + Envoy 가중 클러스터 · RTDS",
+          "solves": "엣지 로드밸런서에 **AZ 별 가중치**를 내린다. Envoy 의 기성 기능 둘(weighted clusters, RTDS 동적 가중치)만 쓴다 — 제어 평면 전파가 **초 단위**이고 Envoy 는 새 가중치를 즉시 적용한다.",
+          "limits": "제어 평면 자체가 살아 있어야 한다. 다만 **고장 난 AZ 의 자원에 기대지 않는 것**이 설계 목표에 들어 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Slack's Migration to a Cellular Architecture",
+              "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+              "publisher": "Engineering at Slack",
+              "date": "2023-08-22",
+              "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+            }
+          ]
+        },
+        {
+          "tech": "1% 단위 점진 배수(drain)",
+          "solves": "한 번에 다 빼지 않고 **1%씩** 옮긴다. 되돌리는 것도 같은 단위다. **배수 중인 AZ 로 간 질의를 로드밸런서가 버리지 않는다.**",
+          "limits": "1% 가 바닥이라 그보다 잘게는 못 나눈다. 그리고 판단은 여전히 사람이 한다(자동 완화가 회색 장애에서 부족했던 것이 이 설계의 출발점이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Slack's Migration to a Cellular Architecture",
+              "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+              "publisher": "Engineering at Slack",
+              "date": "2023-08-22",
+              "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "az-siloing"
+      ]
     },
     {
       "name": "실시간 메시지 전달",
@@ -586,12 +634,464 @@
           "summary": "일 활성 사용자·유료 조직 수. Salesforce 가 Slack 매출을 따로 공시하지 않아 3자 집계에 의존한다."
         }
       ]
+    },
+    {
+      "key": "az-siloing",
+      "name": "회색 장애 — 죽은 것보다 애매한 것이 나쁘다",
+      "domain": "가용성·장애 격리",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "**99.99% 가용성 SLA 는 1년에 1시간 미만의 정지만 허용한다.** 그런데 2021년 6월 30일, 미 동부의 한 가용 영역에서 네트워크 링크가 간헐적으로 고장 나면서 **두 구간 합쳐 47분**을 썼다 — 1년 예산의 상당 부분이다. 그리고 이 장애의 성격이 특별했다: **완전히 죽은 것이 아니라 애매했다.** 그 AZ 안의 시스템은 자기 백엔드가 멀쩡하다고 봤고 바깥 AZ 들은 그 AZ 가 죽었다고 봤으며, **같은 AZ 안의 클라이언트끼리도 트래픽이 고장 난 장비를 지나느냐에 따라 판단이 갈렸다.**",
+        "metrics": [
+          {
+            "label": "장애",
+            "value": "2021-06-30 · 두 구간 합쳐 **47분** (11:45~12:33, 17:22~17:31 PDT)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "SLA",
+            "value": "99.99% — **1년에 1시간 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "설계 목표",
+            "value": "**5분 안에** 트래픽 제거",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "배수 단위",
+            "value": "**1%**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "제어 평면 전파",
+            "value": "**초 단위** · Envoy 는 즉시 적용",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "이전 기간",
+            "value": "약 1년 반",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "label": "언어",
+            "value": "Hack · Go · Java · C++ — 사용자 대면 서비스에 넷",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "장애의 성격을 알았을 때",
+          "thought": "**완전히 죽었으면 오히려 쉬웠을 것이다.** 죽은 것은 모두가 같이 알아보지만, 애매한 것은 **구성요소마다 다른 답을 낸다** — 그러면 자동 완화가 서로 다른 판단 위에서 움직이게 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자동 완화가 왜 부족했는지 볼 때",
+          "thought": "회사 표현이 정확하다 — **\"분산 시스템이 진짜 할 일을 하러 가는 길에 감당하라고 하기에는 꽤 많은 복잡도\"** 다. 시스템에게 '무엇이 진짜 고장인가'를 스스로 판단하라고 요구하는 것 자체가 무리였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그래서 무엇을 만들지 정할 때",
+          "thought": "판단을 자동화하는 대신 **끊는 동작을 확실하게** 만들기로 했다. 사람이 '저 AZ 를 빼'라고 하면 5분 안에 확실히 빠지는 버튼 — **누가 결정하느냐가 아니라 결정이 확실히 실행되느냐**로 문제를 옮겼다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "RPC 클라이언트에 신호를 넣을지 볼 때",
+          "thought": "각 언어의 클라이언트에 AZ 배수 신호를 넣으려 했는데 **언어가 넷(Hack·Go·Java·C++)이고 서비스 발견이 셋(Envoy xDS·Consul·DNS)** 이었다. 게다가 **DNS 에는 AZ 를 겨냥하거나 일부만 빼는 개념이 아예 없다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "오픈소스 의존을 볼 때",
+          "thought": "Vitess 같은 것에 깊이 기대고 있어서, 우리 쪽 포크를 유지할지 상류에 올릴지의 부담이 그 위에 또 얹혔다 — **언어 곱하기 서비스 발견 곱하기 오픈소스** 였다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "어디에 걸지 정할 때",
+          "thought": "각자에게 시키는 대신 **엣지 한 곳**에서 가중치로 조절하면 된다. Envoy 가 이미 가진 기능 둘(가중 클러스터·RTDS)로 충분했다 — **새로 만들 것이 적다는 것 자체가 값**이었다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "사일로",
+            "what": "가용 영역 하나 안의 서비스 집합. **자기 AZ 안에서만 주고받는다.**"
+          },
+          {
+            "name": "회색 장애",
+            "what": "구성요소마다 가용성 판단이 갈리는 상태. 완전한 고장보다 다루기 어렵다."
+          },
+          {
+            "name": "Rotor",
+            "what": "자체 xDS 제어 평면. 엣지 로드밸런서에 AZ 별 가중치를 내린다."
+          },
+          {
+            "name": "가중치",
+            "what": "AZ 로 갈 트래픽의 비율. 1% 단위로 움직인다."
+          }
+        ],
+        "invariants": [
+          "**한 AZ 안의 고장은 그 AZ 안에 갇힌다** — 사일로화된 서비스는 밖으로 보내지도 밖에서 받지도 않는다.",
+          "**5분 안에 뺄 수 있어야 한다** — 99.99% 는 1년에 1시간 미만이다.",
+          "**배수 중인 AZ 로 간 질의를 버리지 않는다.**",
+          "**고장 난 AZ 의 자원에 기대지 않고** 뺄 수 있어야 한다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "모든 서비스를 모든 AZ 에 같은 설정으로 배포한다",
+            "why": "사일로 하나가 스스로 완결돼야 한다"
+          },
+          {
+            "step": "서비스가 자기 AZ 안에서만 주고받게 만든다(사일로화)",
+            "why": "고장이 AZ 경계를 못 넘게"
+          },
+          {
+            "step": "장애가 의심되면 사람이 그 AZ 를 뺀다고 결정한다",
+            "why": "회색 장애에서는 자동 판단이 부족했다"
+          },
+          {
+            "step": "Rotor 가 엣지 로드밸런서에 새 가중치를 내린다 — 전파는 초 단위",
+            "why": "각 언어의 RPC 클라이언트를 안 고치려고"
+          },
+          {
+            "step": "Envoy 가 가중 클러스터와 RTDS 로 즉시 적용한다. 1%씩",
+            "why": "한 번에 다 빼면 그 자체가 사고가 된다"
+          },
+          {
+            "step": "새 요청이 안 들어오면 그 AZ 안의 서비스가 자연히 잦아든다",
+            "why": "사일로라 안에서 서로만 부르기 때문"
+          },
+          {
+            "step": "되돌릴 때도 같은 단위로 올린다",
+            "why": "복귀도 점진적이어야 한다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "회색 장애를 자동으로 판단하게 할 것인가",
+            "chosen": "**하지 않는다.** 대신 끊는 동작을 확실하게 만든다",
+            "alternatives": [
+              "자동 완화를 더 정교하게"
+            ],
+            "tradeoff": "**사람이 결정해야 하므로 알아채는 시간이 든다.** 그래도 회색 장애에서는 구성요소마다 판단이 갈려서, 시스템에게 '무엇이 진짜 고장인가'를 스스로 알라고 요구하는 것이 무리였다 — 회사 표현대로 **\"진짜 할 일을 하러 가는 길에 감당하라기엔 꽤 많은 복잡도\"** 다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "배수 신호를 어디에 넣을 것인가",
+            "chosen": "**엣지 로드밸런서 한 곳** — Rotor 가 가중치를 내린다",
+            "alternatives": [
+              "각 언어의 RPC 클라이언트에 신호를 넣기"
+            ],
+            "tradeoff": "엣지에만 걸리므로 **엣지를 지나지 않는 내부 트래픽은 이 버튼이 안 듣는다**(사일로화가 그것을 메운다). 대안은 **언어 넷(Hack·Go·Java·C++) × 서비스 발견 셋(Envoy xDS·Consul·DNS)** 을 각각 고쳐야 했고, **DNS 에는 AZ 를 겨냥하거나 일부만 빼는 개념이 아예 없었다.** 게다가 Vitess 같은 오픈소스 의존까지 얹혀 있었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "새 메커니즘을 만들 것인가",
+            "chosen": "**Envoy 의 기성 기능 둘만 쓴다** — 가중 클러스터 + RTDS",
+            "alternatives": [
+              "전용 배수 프로토콜 개발"
+            ],
+            "tradeoff": "Envoy 가 주는 모양 안에서만 움직일 수 있다. 대신 **새로 만들 것이 적고**, 전파가 초 단위이며 Envoy 가 즉시 적용한다 — 5분 목표에 여유가 생긴다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "한 번에 뺄 것인가",
+            "chosen": "**1% 단위로 점진적으로**",
+            "alternatives": [
+              "해당 AZ 를 통째로 즉시 차단"
+            ],
+            "tradeoff": "완전히 빼는 데 시간이 더 걸린다(그래도 5분 목표 안). 대신 **빼는 동작 자체가 사고가 되는 것을 막고**, 잘못 판단했을 때 같은 단위로 되돌릴 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "배수 중인 질의를 어떻게 할 것인가",
+            "chosen": "**버리지 않는다** — 로드밸런서가 끝까지 보낸다",
+            "alternatives": [
+              "즉시 차단하고 재시도에 맡기기"
+            ],
+            "tradeoff": "완전히 빠지기까지 그 AZ 가 조금 더 일한다. 그래도 설계 목표에 **'사용자에게 보이는 오류를 만들지 않는다'** 가 있었다 — 고치는 동작이 새 오류를 만들면 안 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "question": "모든 서비스를 사일로화할 것인가",
+            "chosen": "**할 수 있는 것부터.** 못 하는 것은 따로 다룬다",
+            "alternatives": [
+              "전부 사일로화",
+              "안 함"
+            ],
+            "tradeoff": "**어떤 서비스는 사일로화할 수 없고**(회사가 후속 글로 미뤘다 — 상태를 가진 것들로 추정), 그것들은 이 격리의 밖에 남는다. 그리고 사일로화한 것들도 **모든 AZ 에 같은 설정으로 배포해야** 하고 깊은 변경은 연결된 여러 서비스에 함께 퍼져야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Envoy (가중 클러스터 + RTDS)",
+            "role": "엣지에서 AZ 별 트래픽 비율을 즉시 적용한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Rotor (자체 xDS 제어 평면)",
+            "role": "가중치를 로드밸런서에 내린다. 전파 초 단위",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "사일로화된 서비스 배포",
+            "role": "모든 AZ 에 같은 설정으로. AZ 하나가 스스로 완결된다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "tech": "Consul · DNS · Envoy xDS",
+            "role": "서비스 발견 셋. **이 셋을 각각 고치는 대신 엣지 한 곳으로 우회했다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "kafka-job-queue",
+          "via": "사일로 안의 서비스",
+          "contract": "잡 큐도 이 격리 안에 있다 — 다만 **Kafka·Redis 처럼 상태를 가진 것이 사일로화 가능한지**는 회사가 후속 글로 미뤘다(추정).",
+          "confidence": "inferred"
+        },
+        {
+          "to": "실시간 메시지 전달",
+          "via": "AZ 별 배포",
+          "contract": "Gateway·Channel 서버도 AZ 안에서 완결돼야 이 버튼이 듣는다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "Envoy · Consul · DNS (서비스 발견)",
+          "via": "우회",
+          "contract": "**이 셋을 각각 고치는 대신 엣지 한 곳에 걸었다** — DNS 에는 AZ 부분 배수라는 개념 자체가 없었다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "완전히 죽은 것보다 애매하게 살아 있는 것이 다루기 어렵다",
+            "why_hard": "**고장을 알아보려면 관측이 일치해야 하는데, 회색 장애에서는 관측 자체가 갈린다.** 2021년 6월 30일 그 AZ 안의 시스템은 자기 백엔드가 멀쩡하다고 봤고 바깥 AZ 들은 그 AZ 가 죽었다고 봤으며, **같은 AZ 안의 클라이언트끼리도 트래픽이 고장 난 장비를 지나느냐에 따라 답이 달랐다.** 자동 완화는 어느 쪽 관측을 믿을지 스스로 정해야 하는데, 그것을 정할 근거가 바로 그 관측이다 — 순환이다. 완전한 고장이라면 모두가 같이 알아보므로 오히려 쉽다.",
+            "current_best": "**판단을 자동화하는 대신 실행을 확실하게 만든다.** 사람이 '저 AZ 를 빼'라고 결정하면 **5분 안에 확실히 빠지는** 장치를 만들었다 — 1% 단위로 점진적이고, 배수 중인 질의를 버리지 않으며, **고장 난 AZ 의 자원에 기대지 않는다.** 문제를 '누가 판단하느냐'에서 '결정이 확실히 실행되느냐'로 옮긴 것이다. 대가는 **알아채는 데 걸리는 시간이 사람에게 남는다**는 것 — 99.99% 예산이 1년에 1시간 미만인데 이 장애 하나가 47분을 썼다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          },
+          {
+            "problem": "고치는 지점이 언어·서비스 발견·오픈소스의 곱으로 늘어난다",
+            "why_hard": "**같은 능력을 여러 곳에 각각 넣어야 하는 구조가 있다.** AZ 배수 신호를 RPC 클라이언트에 넣으려면 **언어 넷(Hack·Go·Java·C++)** 마다 구현해야 하고, 서비스 발견이 **셋(Envoy xDS·Consul·DNS)** 이라 각각에 맞춰야 하며, Vitess 같은 오픈소스 의존까지 얹히면 포크를 유지할지 상류에 올릴지가 또 붙는다. 그리고 그중 하나는 **개념 자체가 없다** — DNS 에는 AZ 를 겨냥하거나 일부만 빼는 추상이 없어서, 구현이 어려운 게 아니라 표현할 수가 없다.",
+            "current_best": "**여러 곳에 넣는 대신 지나는 곳 한 군데에 건다.** 엣지 로드밸런서에서 가중치로 조절하면 언어도 서비스 발견도 상관이 없어진다 — Envoy 의 기성 기능 둘만으로 됐고 새로 만들 것이 적었다. 대가는 **엣지를 지나지 않는 내부 트래픽에는 이 버튼이 안 듣는다**는 것이고, 그것을 사일로화가 메운다 — 다만 **사일로화할 수 없는 서비스가 있다**는 것을 회사가 인정하며 후속 글로 미뤘다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Slack's Migration to a Cellular Architecture",
+                "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+                "publisher": "Engineering at Slack",
+                "date": "2023-08-22",
+                "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "회색 장애 — 누구 말이 맞는가",
+          "question": "완전히 죽은 것보다 왜 어려운가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  L[\"AZ 안의 네트워크 링크가 간헐적으로 고장\"] --> V{\"무엇이 살아 있나\"}\n  V -->|\"그 AZ 안의 시스템\"| A[\"내 백엔드는 멀쩡하다\"]\n  V -->|\"바깥 AZ 들\"| B[\"저 AZ 는 죽었다\"]\n  V -->|\"같은 AZ 안이라도<br/>고장 난 장비를 지나면\"| C[\"또 다른 답\"]\n  A --> D[\"**관측이 갈린다**\"]\n  B --> D\n  C --> D\n  D --> E{\"자동 완화가 어느 쪽을 믿나\"}\n  E -->|\"그 판단의 근거가<br/>바로 그 관측이다\"| F[\"순환\"]\n  F --> G[\"'진짜 할 일을 하러 가는 길에<br/>감당하라기엔 꽤 많은 복잡도'\"]\n  H[\"완전한 고장이라면\"] -.->|\"모두가 같이 알아본다\"| I[\"오히려 쉽다\"]"
+        },
+        {
+          "title": "여러 곳 대신 지나는 곳 한 군데",
+          "question": "배수 신호를 어디에 넣을지가 왜 문제였나?",
+          "kind": "flow",
+          "code": "flowchart TD\n  N[\"배수 신호를 RPC 클라이언트에\"] --> L1[\"Hack\"]\n  N --> L2[\"Go\"]\n  N --> L3[\"Java\"]\n  N --> L4[\"C++\"]\n  L1 & L2 & L3 & L4 --> SD{\"서비스 발견도 셋\"}\n  SD --> S1[\"Envoy xDS\"]\n  SD --> S2[\"Consul\"]\n  SD --> S3[\"DNS — **AZ 부분 배수 개념 자체가 없다**\"]\n  S3 --> X[\"구현이 어려운 게 아니라<br/>표현할 수가 없다\"]\n  SD --> OSS[\"Vitess 등 오픈소스<br/>포크 유지 vs 상류 기여\"]\n  X --> ALT[\"**대신 엣지 한 곳에 건다**\"]\n  OSS --> ALT\n  ALT --> R[\"Rotor → Envoy 가중 클러스터 + RTDS<br/>전파 초 단위 · 1% 단위\"]\n  ALT -.->|\"대가\"| GAP[\"엣지를 안 지나는 내부 트래픽엔<br/>안 듣는다 → 사일로화가 메운다\"]"
+        },
+        {
+          "title": "빼는 동작이 사고가 되지 않게",
+          "question": "5분 안에 빼면서 오류를 안 내려면?",
+          "kind": "flow",
+          "code": "flowchart LR\n  D[\"사람이 '저 AZ 를 빼' 라고 결정\"] --> R[\"Rotor 가 가중치를 내린다\"]\n  R -->|\"초 단위 전파\"| E[\"Envoy — 즉시 적용\"]\n  E --> P[\"**1%씩** 옮긴다\"]\n  P --> Q[\"배수 중인 질의는 **버리지 않는다**\"]\n  P --> S[\"사일로라 새 요청이 안 오면<br/>그 AZ 안의 서비스가 자연히 잦아든다\"]\n  P --> U[\"잘못 판단했으면 같은 단위로 되돌린다\"]\n  R -.->|\"설계 목표\"| G1[\"5분 안에 · 사용자 오류 없이 ·<br/>점진적으로 · **고장 난 AZ 자원에 안 기대고**\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Slack's Migration to a Cellular Architecture",
+          "url": "https://slack.engineering/slacks-migration-to-a-cellular-architecture/",
+          "publisher": "Engineering at Slack",
+          "date": "2023-08-22",
+          "summary": "2021-06-30 us-east-1 회색 장애 뒤 사일로 전략으로 셀을 나눈 과정."
+        }
+      ]
     }
   ],
   "open_questions": [
-    "가용성·장애 격리, 실시간 전달, 저장·샤딩 세 도메인은 아직 손대지 않았다 — 이번 사이클은 회사 프로파일과 잡 큐다.",
+    "실시간 메시지 전달과 저장·샤딩 두 도메인은 아직 손대지 않았다.",
     "**Slack 매출은 회사 발표가 아니다** — Salesforce 인수 후 따로 공시되지 않아 3자 집계에 의존했고, 그래서 수익원을 전부 `inferred` 로 뒀다.",
-    "잡 큐 글은 2017년(2020년 갱신)이다. 그 뒤 6년간 무엇이 바뀌었는지, 특히 '더 강한 일관성 보장을 검토 중'이라던 부분이 어떻게 됐는지는 모른다."
+    "잡 큐 글은 2017년(2020년 갱신)이다. 그 뒤 6년간 무엇이 바뀌었는지, 특히 '더 강한 일관성 보장을 검토 중'이라던 부분이 어떻게 됐는지는 모른다.",
+    "**사일로화할 수 없는 서비스가 무엇인지** — 회사가 후속 글로 미뤘다. 상태를 가진 것들로 추정되지만 확인하지 못했고, 잡 큐의 Kafka·Redis 가 거기 드는지도 모른다."
   ],
   "sources": [
     {
