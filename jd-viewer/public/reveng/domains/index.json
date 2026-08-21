@@ -314,6 +314,26 @@
         "session-revocations"
       ],
       "file": "move-the-axis.md"
+    },
+    {
+      "slug": "what-expires-a-design",
+      "title": "무엇이 설계를 만료시키는가",
+      "question": "심장을 다시 짓게 만든 것은 무엇이었고, 몇 번이나 다시 지었는가?",
+      "companies": [
+        "dropbox",
+        "slack",
+        "notion",
+        "datadog",
+        "grafana-labs"
+      ],
+      "features": [
+        "nucleus-rewrite",
+        "unified-grid",
+        "vector-search-cost",
+        "monocle-timeseries",
+        "mimir-next-gen"
+      ],
+      "file": "what-expires-a-design.md"
     }
   ]
 }
