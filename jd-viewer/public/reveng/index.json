@@ -408,6 +408,18 @@
       "one_liner": "거래대금이 아니라 주문 건수로 버는 브로커 — 그래서 규제 한 줄이 매출을 직접 움직인다",
       "updated_at": "2026-08-22",
       "domain": "zerodha.com"
+    },
+    {
+      "slug": "planetscale",
+      "name": "플래닛스케일",
+      "name_en": "PlanetScale",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "남의 데이터를 맡는 쪽 — 백업이 부가 기능이 아니라 제품이고, 고객의 실수까지 자기 문제로 받는다",
+      "updated_at": "2026-08-22",
+      "domain": "planetscale.com"
     }
   ],
   "domains": [
@@ -538,7 +550,10 @@
     "자체 데이터센터 망",
     "과거 거래·리포트 데이터",
     "규제 문서 대량 생성",
-    "로그 저장"
+    "로그 저장",
+    "백업·복구",
+    "동시성과 처리량",
+    "고객의 실수를 감당하기"
   ],
   "countries": {
     "KR": "한국",
