@@ -427,8 +427,8 @@
       "name_en": "TigerBeetle",
       "country": "기타",
       "category": "SaaS",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "계정과 이체 둘만 다루는 원장 데이터베이스 — 스키마를 고정해서 메모리까지 미리 다 정한다",
       "updated_at": "2026-08-22",
       "domain": "tigerbeetle.com"

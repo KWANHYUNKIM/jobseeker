@@ -10,33 +10,36 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**TigerBeetle — 36번째 회사.** 사이클 197 까지 프로파일 + 도메인 3개 + 기능 2개
-(`deterministic-testing` · `static-allocation`). **마지막 남은 도메인은 `확장의 축`** —
-주 자료 `2026-03-19-a-trillion-transactions` 는 정독했고 **두 번째 글이 필요하다**:
-`2025-11-06-the-write-last-read-first-rule` 또는
-`2024-07-23-rediscovering-transaction-processing-from-history-and-first-principles`.
-**읽고 실제로 닿는 것만 쓰고, 둘 다 안 닿으면 도메인을 열지 말고 그 사실만 적을 것.**
-**채우면 TigerBeetle 을 done 으로 닫고 곧바로 후보 조사**(큐 1/3).
+**아무 회사도 진행 중이 아니다.** TigerBeetle 을 사이클 198 에서 **done 으로 닫았다**(36번째, 도메인 3 · 기능 3).
 
-> **`static-allocation` 에서 나온 것 — 할당을 없애면 산수가 남는다.**
-> 정적 할당의 첫 번째 이유가 성능이 아니라 **과부하 방어**였고(*"크기가 고정이면 잘못 설정된
-> 클라이언트가 너무 많이 보내도 끝없이 자라는 버퍼가 없다"*), 그것이 가능한 이유는
-> **계정·이체만 다루기로 먼저 좁혔기 때문**이다(메시지 128바이트 고정 → 총 메모리를 곱셈으로).
-> **그런데 고정은 공짜가 아니다** — 고정된 그릇에 담으려니 **항목마다 태그를 붙일 여유가 없어져**
-> 배열의 열거형으로 뒤집었고(배치 8,000 · 패딩 없음 · 분기 없음 → SIMD), 할당자가 없으니
-> **경계 계산이 코드 곳곳에 퍼져** `index/count/offset/size` 이름 규약을 만들었다.
-> 회사가 인덱싱·off-by-one 을 *"가장 성가신 문제 중 하나"* 라고 적는다.
+> **⚠️ 다음 사이클은 후보 조사다 — 회사를 열지 않는다.** 큐가 **1/3**(Careem 하나)이다.
+> **후보를 최소 두 곳 본문까지 읽고 `## 대기` 표에 올려 3 으로 만든다.** 비어 있는 자리:
+> **라틴아메리카 · 아프리카 0곳**, **게임은 Roblox 하나**, **의료·바이오 0곳**, **물류 전문 0곳**.
+> '확인해 둔 후보'에 **Mercari**(읽히지만 최근 두 편에 수치가 거의 없었다)와 **ClickHouse**(본문 미확인)가 있다.
+> 시도해 볼 곳: `www.cockroachlabs.com/blog` · `www.scylladb.com/blog` · `engineeringblog.yelp.com` ·
+> `flexport.engineering`(물류) · `engineering.grab.com` 은 이미 있음 · 라틴아메리카·아프리카의 **자체 도메인**.
 
-> **㉑ '터진 뒤 끊는 대신 들어가기 전에 센다' 재료가 또 붙었다** — TigerBeetle 은 **아예 자라지 않게**
-> 만들어 그 축의 극단에 있다. 지금 재료: PlanetScale `concurrency-limits`(상한을 낮춰서 살았다) ·
-> TigerBeetle `static-allocation`(자라지 않는 것이 방어) · trivago `kafka-consumers`(KEDA lag) ·
-> Vinted `log-storage`(애그리게이터로 파트 폭발 방지) · Discord(STATE '되풀이되는 설계 축'에
+> **TigerBeetle 에서 확인한 회사 축 — 먼저 좁혀서, 대신 확실하게 만든다.**
+> 다룰 것을 좁혀(계정·이체) 레코드를 **128바이트=캐시라인 2줄**로 고정하고 **총 메모리를 곱셈으로** 구한다.
+> 워크로드를 좁혀(OLTP) *"거래 하나에 SQL 질의 10~20회"* 라는 임피던스 불일치를 보고 **한 왕복 8,000건**을 정한다.
+> 비결정성을 좁혀(시간·분단·디스크·크래시를 통제) **같은 시드가 같은 실행**을 내게 한다.
+> **대가가 한결같다 — 좁힌 밖은 못 한다**(늘어나야 할 때 못 늘고, 모델링 안 한 결함은 안 나오고,
+> 한 클러스터 상한이 곧 시스템 상한이다).
+
+> **🔑 ㉑ '터진 뒤 끊는 대신 들어가기 전에 센다' 비교 문서를 다음다음에 쓸 만하다.** 재료 다섯:
+> PlanetScale `concurrency-limits`(상한을 **낮춰서** 살았다 — 올리면 역압이 사라진다) ·
+> TigerBeetle `static-allocation`(**아예 자라지 않게** 만든 극단) · trivago `kafka-consumers`(KEDA lag) ·
+> Vinted `log-storage`(애그리게이터로 활성 파트 폭발 방지) · Discord(STATE '되풀이되는 설계 축'에
 > Semaphore·침묵 억제로 적혀 있다 — **어느 기능인지 확인 필요**).
-> **다음 비교 문서 후보 1순위.** 쓰기 전에 `domains/index.json` 으로 겹침을 검산할 것.
+> **쓰기 전에 `domains/index.json` 으로 겹침을 검산할 것.** 위 넷은 아직 어느 문서에도 안 쓰였다(검산 완료).
+
+> **또 다른 축 후보 — '축을 바꾼다'.** TigerBeetle `scaling-axis`(수평 샤딩을 거절하고 왕복을 줄였다)는
+> 기존 비교 문서 **`양 끝 중 하나를 고르지 않는 법`** 과 결이 같다 — **그 문서에 이어 붙일지, 새 문서로 쓸지
+> 판단할 것**(기존 문서의 features 는 `kafka-e2ee`·`actions-runners`·`magic-pocket`·`rap`·`session-revocations`).
 
 **큐 1/3** — Careem(AE — 중동 첫 회사).
 
-마지막 사이클: 197 (2026-08-22) — TigerBeetle 정적 자원 할당.
+마지막 사이클: 198 (2026-08-22) — TigerBeetle 확장의 축 + 완주.
 
 ## 다음 선택지
 
