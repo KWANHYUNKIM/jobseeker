@@ -220,6 +220,17 @@
       "features_done": 4,
       "one_liner": "메시지 하나가 조직 하나의 일이 되는 회사",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "dropbox",
+      "name": "드롭박스",
+      "name_en": "Dropbox",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "updated_at": "2026-08-21",
+      "one_liner": "남의 클라우드를 떠나 엑사바이트를 자기 하드웨어에 얹은 회사 — 원가가 감가상각으로 잡힌다",
+      "features_done": 0
     }
   ],
   "domains": [
@@ -308,7 +319,11 @@
     "안전·모더레이션",
     "비동기 작업 (잡 큐)",
     "가용성·장애 격리",
-    "실시간 메시지 전달"
+    "실시간 메시지 전달",
+    "저장 인프라",
+    "파일 동기화",
+    "전송 효율",
+    "검색"
   ],
   "countries": {
     "KR": "한국",

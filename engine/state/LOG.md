@@ -214,3 +214,32 @@ Vitess 글(2020-12-01, Arka Ganguli·Guido Iaquinti·Maggie Zhou·Rafael Chacón
 남고(큐가 4/3 으로 보였다) 인용문 한 줄이 잘렸다. 둘 다 고쳤다. **다음부터 마크다운 절을
 자를 때는 줄머리(`\n## `)로 찾고, 자른 뒤 절 개수를 확인할 것.** 이번엔 --gaps 의
 '4/3' 이 아니었으면 못 봤다.
+
+## 135 (2026-08-21) — Dropbox 프로파일 (21번째 회사)
+
+**앞의 20곳은 전부 남의 클라우드 위에 있었다.** 이 회사는 2013년 여름에 시작해 2016년에
+500PB 를 S3 에서 자기 인프라로 옮겼고, 그 결정이 지금도 손익계산서에 잡힌다 — FY2025
+GAAP 매출총이익률 82.5% → 80.1%, 회사가 원인을 **'데이터센터 갱신 주기'의 감가상각**이라
+명시했다(약 0.8%p). 매출 25.21억(−1.1%) · 유료 1,808만 · ARPU 138.91(140.23에서 하락).
+**기술 결정이 재무제표에서 보이는 드문 경우**라 business_model 을 원가 쪽으로 썼다.
+
+도메인 4개를 세웠고 **넷 다 1차 자료를 확인하고 나서** 세웠다(129의 교훈):
+저장 인프라(Magic Pocket) · 파일 동기화(Nucleus) · 전송 효율(Broccoli) · 검색(Nautilus).
+도메인마다 tech 3~4개, limits 까지. 검증 경고 0건.
+
+**자료 성격이 글마다 갈린다 — 이게 이번 사이클의 발견이다.**
+`Inside the Magic Pocket`(Cowling)은 **쿼럼·DHT·Paxos·자체 KV 를 전부 버리고 샤딩된
+MySQL 을 고른 이유**를 적었다 — '복잡함은 대개 신뢰성의 반대다', '엔지니어 여섯 명도 안 됐다'.
+반면 `Scaling to exabytes`(Gupta)는 같은 회사 같은 시기 글인데 **성공만 적고 대가가 없다.**
+→ 저장 인프라 기능은 Cowling 을 축으로, Gupta 는 일정·숫자로만 쓴다고 STATE 에 적었다.
+
+**작업 메모:** `dropbox.tech` 는 잘 읽히지만 **URL 을 추측하면 404**다
+(`scaling-to-exabytes-and-beyond` ✗ → `magic-pocket-infrastructure` ✓,
+Broccoli 는 `/-broccoli--syncing-faster-by-syncing-less`). LY 에서도 같은 일을 겪었다 —
+**기사 주소는 검색이나 목록에서 딴다**를 규칙으로 굳힐 때가 됐다.
+
+비교 축 둘이 이 회사로 강해졌다 — **'리팩터링으로는 데이터 모델을 못 바꾼다'**(Nucleus 4년 ·
+Slack Vitess 3년 · Notion 블록 테이블)와 **'일부러 시시한 것을 고른다'**(Paxos 대신 MySQL ·
+NoSQL 대신 Vitess, 이유도 같다 — 사내에 이미 있는 운영 지식).
+
+큐 3/3 → 2/3 (Dropbox 를 대기에서 뺐다). 다음: 저장 인프라 기능.

@@ -1,0 +1,328 @@
+{
+  "slug": "dropbox",
+  "name": "드롭박스",
+  "name_en": "Dropbox",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "business_model": "**구독 하나로 번다.** FY2025 매출 25.21억 달러 · 유료 사용자 1,808만 · 사용자당 연 138.91달러. 개인·팀 요금제가 사실상 전부이고 전자서명(Dropbox Sign)·문서 공유 분석(DocSend)이 붙어 있다. **이 회사의 특이한 점은 원가 쪽에 있다** — 남의 클라우드가 아니라 자기 데이터센터에 파일을 두기 때문에, 매출총이익률이 **감가상각 일정**을 따라 움직인다. FY2025 에 GAAP 매출총이익률이 82.5% → 80.1% 로 떨어졌고 회사는 그 원인을 **'데이터센터 갱신 주기'**라고 명시했다.",
+  "products": [
+    "Dropbox (파일 저장·동기화·공유)",
+    "Dropbox Dash (검색·AI)",
+    "Dropbox Sign (전자서명, 옛 HelloSign)",
+    "DocSend (문서 공유·추적)",
+    "Dropbox Replay / Capture"
+  ],
+  "one_liner": "남의 클라우드를 떠나 엑사바이트를 자기 하드웨어에 얹은 회사 — 원가가 감가상각으로 잡힌다",
+  "domain_map": {
+    "title": "드롭박스 도메인 지도",
+    "question": "파일 하나가 올라가서 다시 찾아지기까지 어디를 지나는가?",
+    "code": "flowchart TD\n  U[\"사용자 기기<br/>수백만 대의 데스크톱·모바일\"]\n  subgraph SYNC[\"**파일 동기화** — 무엇이 바뀌었는지 정한다\"]\n    N[\"Nucleus (Rust)<br/>2016~2020 재작성\"]\n    N1[\"안정된 파일 ID<br/>이동을 삭제+추가로 안 본다\"]\n  end\n  subgraph WIRE[\"**전송 효율** — 덜 보낸다\"]\n    B[\"Broccoli (Brotli 개조)<br/>업로드 대역폭 −30%\"]\n    L[\"LAN Sync<br/>같은 망이면 옆 기계에서\"]\n  end\n  subgraph MP[\"**저장 인프라** — Magic Pocket\"]\n    F[\"프론트엔드 — 어디 둘지 정한다\"]\n    BI[\"블록 인덱스<br/>샤딩된 MySQL\"]\n    CELL[\"셀 (~50PB)<br/>버킷 → 볼륨 → OSD\"]\n    Z[\"존 3곳 (서·중·동부)<br/>블록마다 최소 2곳\"]\n  end\n  subgraph SEARCH[\"**검색** — 다시 찾는다\"]\n    IX[\"색인 파이프라인<br/>네임스페이스 단위 샤딩\"]\n    OC[\"Octopus — 병합·랭킹\"]\n  end\n  U -->|\"바뀐 것만\"| N --> N1\n  N1 --> B --> L\n  B -->|\"4MB 블록\"| F\n  F --> BI\n  F --> CELL --> Z\n  N1 -.->|\"파일·활동 기록\"| IX --> OC\n  OC -.->|\"결과\"| U\n  Z -.->|\"내구성 99.9999999999%\"| CELL\n  style MP fill:#1e293b,stroke:#475569\n  style SYNC fill:#1e293b,stroke:#475569\n  style WIRE fill:#1e293b,stroke:#475569\n  style SEARCH fill:#1e293b,stroke:#475569"
+  },
+  "revenue_streams": [
+    {
+      "name": "개인·팀 구독",
+      "how": "저장 용량과 협업 기능을 묶어 월·연 단위로 판다. **FY2025 매출 25.21억 달러의 사실상 전부**이고, 유료 사용자 1,808만 · 사용자당 연 138.91달러다. 성장은 멈춰 있다 — 전년 대비 **−1.1%**, ARPU 도 140.23 → 138.91 로 내렸다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Dropbox Announces Fourth Quarter and Fiscal 2025 Results",
+          "url": "https://investors.dropbox.com/news-releases/news-release-details/dropbox-announces-fourth-quarter-and-fiscal-2025-results",
+          "publisher": "Dropbox Investor Relations",
+          "date": "2026-02",
+          "summary": "FY2025 실적. 매출총이익률 하락 원인을 데이터센터 갱신 주기의 감가상각으로 밝혔다."
+        }
+      ]
+    },
+    {
+      "name": "전자서명·문서 도구 (Dropbox Sign · DocSend)",
+      "how": "파일을 두는 것 다음에 벌어지는 일(서명받기, 보낸 문서가 열렸는지 보기)을 붙여 판다. **별도 공시가 없어 규모는 확인하지 못했다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Dropbox Announces Fourth Quarter and Fiscal 2025 Results",
+          "url": "https://investors.dropbox.com/news-releases/news-release-details/dropbox-announces-fourth-quarter-and-fiscal-2025-results",
+          "publisher": "Dropbox Investor Relations",
+          "date": "2026-02",
+          "summary": "FY2025 실적. 매출총이익률 하락 원인을 데이터센터 갱신 주기의 감가상각으로 밝혔다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "저장 인프라",
+      "why": "**이 회사를 다른 20곳과 가르는 자리다.** 파일 자체를 남의 클라우드가 아니라 자기 하드웨어에 둔다. 2013년 여름에 시작해 2016년에 500PB 를 옮겼고, 그 결정이 지금도 **감가상각으로 손익계산서에 잡힌다.**",
+      "tech": [
+        {
+          "tech": "Magic Pocket — 존 3곳 · 셀 · 버킷 · 볼륨 · OSD",
+          "solves": "블록(최대 4MB) → 버킷(논리 1GB) → 볼륨(여러 OSD 에 복제)로 쌓는다. OSD 는 '디스크로 가득 찬 상자'로 **한 대에 1PB 넘고 랙 하나에 8PB**. 셀 하나가 원시 데이터 **약 50PB** 를 담는 자기완결 단위다. 존은 서·중·동부 3곳이고 **블록마다 최소 2개 존**에 둔다 — 로컬 업로드 후 **1초 안에** 존을 건넌다.",
+          "limits": "**셀은 100PB 근처가 한계다** — 그 위로는 메모리·CPU 부담이 커져서, 키우는 대신 셀을 더 놓는 방식으로 피했다. 셀마다 마스터가 하나라 조율은 단순해졌지만 그 자체가 천장이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside the Magic Pocket",
+              "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+              "publisher": "Dropbox Tech",
+              "date": "2016-05-06",
+              "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+            }
+          ]
+        },
+        {
+          "tech": "복제 → 소거 부호 (나이에 따라 갈아탄다)",
+          "solves": "갓 올라온 블록은 복제본을 많이 두고, **오래된 것은 소거 부호로 바꿔** 저장 효율을 올린다. 목표 내구성은 연 **99.9999999999%** — 회사 표현으로 '무작위 디스크 고장보다 소행성 충돌이 더 그럴듯한' 수준.",
+          "limits": "소거 부호는 복구가 비싸다. 그래서 고장을 **15분** 관찰한 뒤에야 복구를 시작하고, 복구 부하를 **수백 장의 네트워크 카드와 수천 개 스핀들**에 흩는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside the Magic Pocket",
+              "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+              "publisher": "Dropbox Tech",
+              "date": "2016-05-06",
+              "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+            }
+          ]
+        },
+        {
+          "tech": "샤딩된 MySQL (블록 인덱스 · 복제 테이블)",
+          "solves": "블록 해시 → 저장 위치, 버킷 → 볼륨·OSD 를 MySQL 로 들고 있다. **DHT 도 트라이도 자체 KV 도 아니다.**",
+          "limits": "**일부러 시시한 것을 골랐다.** 회사가 이 선택을 '개발을 단순하게 만든 정말 좋은 결정'이라고 적었고, 이유는 사내에 MySQL 운영 지식이 이미 쌓여 있었다는 것이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Inside the Magic Pocket",
+              "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+              "publisher": "Dropbox Tech",
+              "date": "2016-05-06",
+              "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+            }
+          ]
+        },
+        {
+          "tech": "SMR 드라이브 · 콜드 스토리지 계층",
+          "solves": "**SMR 드라이브를 페타바이트 규모로 처음 깔았고**(2018), 잘 안 열리는 데이터를 콜드 계층으로 내렸다(2019). 2022년에는 **SSD 캐시 디스크를 떼어서** 쓰기 처리량을 올렸다.",
+          "limits": "**이 축의 자료는 아직 안 읽었다** — 이번 사이클은 프로파일까지다. 기능으로 팔 때 2018·2019·2022·2023·2026 글을 함께 볼 것.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Inside the Magic Pocket",
+              "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+              "publisher": "Dropbox Tech",
+              "date": "2016-05-06",
+              "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "파일 동기화",
+      "why": "**제품의 심장이자 가장 오래된 코드다.** 무엇이 바뀌었는지를 기기와 서버가 같게 보는 일인데, 초기 데이터 모델이 이동을 '삭제 + 추가'로 봐서 내구성 문제가 났다. 2016~2020년 4년에 걸쳐 통째로 다시 썼다.",
+      "tech": [
+        {
+          "tech": "Nucleus — Rust 로 다시 쓴 동기화 엔진",
+          "solves": "구엔진의 문제가 **데이터 모델 자체**였다 — 파일에 이동을 견디는 안정된 식별자가 없었고, 이동을 삭제+추가로 표현했고, 일관성 보장이 약해 운영 버그가 났고, 굵은 락과 메모리 사용량 때문에 **파일 수백만 개로 못 늘어났다.**",
+          "limits": "**4년이 들었고 그동안 기능 개발이 크게 느려졌다.** 회사가 '리팩터링만으로는 데이터 모델을 바꿀 수 없다'는 판단 기준을 남겼다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Rewriting the heart of our sync engine",
+              "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2020-03-09",
+              "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+            }
+          ]
+        },
+        {
+          "tech": "단일 제어 스레드 + 전용 스레드 풀",
+          "solves": "Rust futures 위에 **제어 흐름은 스레드 하나**로 두고 네트워크 I/O·해싱·파일시스템만 풀로 뺐다. 개발자가 동시에 머리에 담아야 할 범위를 줄이는 것이 목적이다.",
+          "limits": "제어 스레드가 병목이 될 수 있는 구조다 — 회사 글은 그 대가를 다루지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Rewriting the heart of our sync engine",
+              "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2020-03-09",
+              "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+            }
+          ]
+        },
+        {
+          "tech": "의사난수 시뮬레이션 테스트 (결정적 재생)",
+          "solves": "난수 씨앗으로 **하루에 수백만 가지 시나리오**를 만들고, 깨지면 같은 씨앗으로 그대로 재생한다. 동기화처럼 순서가 무한한 문제에서 예제 테스트는 짠 사람이 생각한 것만 본다.",
+          "limits": "시뮬레이션이 실제 파일시스템의 이상 동작을 다 흉내 내지는 못한다(별도 글 'Testing sync at Dropbox' 가 있다 — 아직 안 읽음).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Rewriting the heart of our sync engine",
+              "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2020-03-09",
+              "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "전송 효율",
+      "why": "**이 회사의 원가는 두 군데서 난다 — 디스크와 회선.** 저장은 Magic Pocket 이 맡고, 회선은 '덜 보내기'로 줄인다. 수백만 대의 데스크톱이 매일 페타바이트를 밀어 올리기 때문에 몇 %가 곧 돈이다.",
+      "tech": [
+        {
+          "tech": "Broccoli — Brotli 를 고친 병렬 압축기",
+          "solves": "업로드 대역폭 **약 30~33%**, 중앙값 요청 크기 3.5MiB → 1.6MiB, p50 지연 약 **35%** 개선. 다운로드는 대역폭 15%, p50 지연 50% 개선. **코어당 초당 300MiB 넘게** 압축한다.",
+          "limits": "**드롭박스가 가진 데이터의 4분의 1 이상이 안 줄어든다** — 동영상·사진이다. 그리고 회선이 100Mbps 넘게 빠르면 압축이 오히려 병목이라 **품질 단계를 낮춰야** 했다. 배포 중 압축 해제 실패로 클라이언트가 죽는 문제가 나서 폴백과 upstream 수정이 필요했다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Broccoli: Syncing faster by syncing less",
+              "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+              "publisher": "Dropbox Tech",
+              "date": "2020-08-04",
+              "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+            }
+          ]
+        },
+        {
+          "tech": "Brotli 내장 사전 끄기",
+          "solves": "사전을 꺼서 **압축 조각을 안전하게 이어 붙일 수 있게** 했다.",
+          "limits": "파일 크기가 약 **0.1%** 커진다 — 이어 붙이기를 사기 위해 낸 값이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Broccoli: Syncing faster by syncing less",
+              "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+              "publisher": "Dropbox Tech",
+              "date": "2020-08-04",
+              "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+            }
+          ]
+        },
+        {
+          "tech": "LAN Sync · 스트리밍 동기화",
+          "solves": "같은 망 안에 이미 그 파일을 가진 기계가 있으면 **인터넷을 안 거치고** 가져온다. 스트리밍 동기화는 업로드가 다 끝나기 전에 내려받기를 시작한다.",
+          "limits": "**자료를 아직 안 읽었다**(2014·2015년 글) — 기능으로 팔 때 확인할 것.",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Broccoli: Syncing faster by syncing less",
+              "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+              "publisher": "Dropbox Tech",
+              "date": "2020-08-04",
+              "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "검색",
+      "why": "파일을 맡아 두는 회사에서 **다시 못 찾으면 맡아 둔 의미가 없다.** 그런데 대상이 공개 웹이 아니라 **각자 접근 권한이 다른 남의 파일**이라, 검색 문제의 모양이 네이버·GitHub 와 다르다.",
+      "tech": [
+        {
+          "tech": "Nautilus — 색인과 서빙을 나눈 전문 검색",
+          "solves": "수천억 조각의 콘텐츠를 **네임스페이스**(한 명 이상이 접근 권한을 갖는 폴더) 단위로 샤딩한다. **권한 경계가 곧 샤딩 경계다.**",
+          "limits": "구엔진 Firefly 를 대체한 것인데, 두 세대에 걸친 판단 근거는 별도 글에 있다(아직 안 읽음).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Architecture of Nautilus, the new Dropbox search engine",
+              "url": "https://dropbox.tech/machine-learning/architecture-of-nautilus-the-new-dropbox-search-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2018-09-27",
+              "summary": "네임스페이스 단위로 샤딩한 전문 검색 엔진. 색인과 서빙을 분리했다."
+            }
+          ]
+        },
+        {
+          "tech": "며칠 단위 오프라인 색인 + 실시간 변경분",
+          "solves": "평균 며칠에 한 번 색인을 통째로 다시 만들고, 그 사이의 변경은 **색인 변경분**으로 라이브 색인과 문서 저장소에 **몇 초 안에** 반영한다.",
+          "limits": "통째 재빌드와 변경분 두 경로를 함께 운영해야 한다 — 두 경로가 어긋날 때의 처리를 회사 글이 다루지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Architecture of Nautilus, the new Dropbox search engine",
+              "url": "https://dropbox.tech/machine-learning/architecture-of-nautilus-the-new-dropbox-search-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2018-09-27",
+              "summary": "네임스페이스 단위로 샤딩한 전문 검색 엔진. 색인과 서빙을 분리했다."
+            }
+          ]
+        },
+        {
+          "tech": "Octopus (병합·랭킹) + ML 랭킹 모델",
+          "solves": "루트가 **수백 개의 리프**로 질의를 흩고 Octopus 가 결과를 합친다. 랭킹은 질의와의 관련성(BM25 등)과 **지금 이 사용자에게의 관련성**을 함께 본다.",
+          "limits": "익명화된 클릭 데이터로 학습한다 — 개인 식별 정보를 뺀다고 명시했다. 클릭이 적은 사용자에게 어떻게 되는지는 안 적혀 있다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Architecture of Nautilus, the new Dropbox search engine",
+              "url": "https://dropbox.tech/machine-learning/architecture-of-nautilus-the-new-dropbox-search-engine",
+              "publisher": "Dropbox Tech",
+              "date": "2018-09-27",
+              "summary": "네임스페이스 단위로 샤딩한 전문 검색 엔진. 색인과 서빙을 분리했다."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "features": [],
+  "open_questions": [
+    "**AWS 를 떠난 결정의 대가가 회사 글에 없다.** 2016년 이관 글은 성공만 적고 무엇을 잃었는지, 어떤 위험을 졌는지를 다루지 않는다 — 유럽 데이터 소재지 요건 때문에 독일에는 여전히 AWS 를 쓴다는 것만 밝혔다. **반면 'Inside the Magic Pocket' 은 버린 대안을 제대로 적었다** — 글마다 성격이 다르다.",
+    "**Dropbox Dash(AI 검색)** 는 최근 제품인데 엔지니어링 자료를 아직 확인하지 않았다.",
+    "**저장 원가의 실제 개선폭** — 자체 인프라가 S3 대비 얼마나 쌌는지 회사가 숫자로 밝힌 적이 없다. 매출총이익률(80.1%)과 '데이터센터 갱신 주기' 언급이 간접 단서다."
+  ],
+  "sources": [
+    {
+      "title": "Inside the Magic Pocket",
+      "url": "https://dropbox.tech/infrastructure/inside-the-magic-pocket",
+      "publisher": "Dropbox Tech",
+      "date": "2016-05-06",
+      "summary": "Magic Pocket 의 내부 구조와 왜 화려한 기법을 전부 버렸는지. 저자 James Cowling."
+    },
+    {
+      "title": "Scaling to exabytes and beyond",
+      "url": "https://dropbox.tech/infrastructure/magic-pocket-infrastructure",
+      "publisher": "Dropbox Tech",
+      "date": "2016-03-14",
+      "summary": "S3 에서 자체 인프라로 500PB 를 옮긴 과정과 일정. 저자 Akhil Gupta."
+    },
+    {
+      "title": "Rewriting the heart of our sync engine",
+      "url": "https://dropbox.tech/infrastructure/rewriting-the-heart-of-our-sync-engine",
+      "publisher": "Dropbox Tech",
+      "date": "2020-03-09",
+      "summary": "동기화 엔진을 4년에 걸쳐 Rust 로 다시 쓴 이유와 그 판단 기준. 저자 Sujay Jayakar."
+    },
+    {
+      "title": "Broccoli: Syncing faster by syncing less",
+      "url": "https://dropbox.tech/infrastructure/-broccoli--syncing-faster-by-syncing-less",
+      "publisher": "Dropbox Tech",
+      "date": "2020-08-04",
+      "summary": "Brotli 를 고쳐 만든 압축기로 업로드 대역폭을 30% 줄인 기록. 저자 Rishabh Jain · Daniel Reiter Horn."
+    },
+    {
+      "title": "Architecture of Nautilus, the new Dropbox search engine",
+      "url": "https://dropbox.tech/machine-learning/architecture-of-nautilus-the-new-dropbox-search-engine",
+      "publisher": "Dropbox Tech",
+      "date": "2018-09-27",
+      "summary": "네임스페이스 단위로 샤딩한 전문 검색 엔진. 색인과 서빙을 분리했다."
+    },
+    {
+      "title": "Dropbox Announces Fourth Quarter and Fiscal 2025 Results",
+      "url": "https://investors.dropbox.com/news-releases/news-release-details/dropbox-announces-fourth-quarter-and-fiscal-2025-results",
+      "publisher": "Dropbox Investor Relations",
+      "date": "2026-02",
+      "summary": "FY2025 실적. 매출총이익률 하락 원인을 데이터센터 갱신 주기의 감가상각으로 밝혔다."
+    }
+  ]
+}
