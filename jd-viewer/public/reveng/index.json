@@ -384,6 +384,18 @@
       "one_liner": "거래액의 16%를 자기 대출로 대는 마켓플레이스 — 물건도 창고도 남의 것인데 돈·배송·광고는 자기 것이다",
       "updated_at": "2026-08-22",
       "domain": "allegro.pl"
+    },
+    {
+      "slug": "vinted",
+      "name": "빈티드",
+      "name_en": "Vinted",
+      "country": "EU",
+      "category": "커머스",
+      "status": "in_progress",
+      "features_done": 0,
+      "one_liner": "재고가 하나도 자기 것이 아닌 국경 넘는 중고 장터 — 10억 개를 자기 하드웨어 위에서 검색한다",
+      "updated_at": "2026-08-22",
+      "domain": "vinted.com"
     }
   ],
   "domains": [
@@ -508,7 +520,10 @@
     "내부 API 통합",
     "검색 적합성 평가",
     "프론트엔드 배포",
-    "저장을 어디에 둘 것인가"
+    "저장을 어디에 둘 것인가",
+    "아이템 검색",
+    "데이터베이스 샤딩",
+    "자체 데이터센터 망"
   ],
   "countries": {
     "KR": "한국",
