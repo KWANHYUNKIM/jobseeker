@@ -56,6 +56,44 @@ SHOW_NEXT = 5
 # 그 변화를 엔진이 알아채는 자리가 여기다.
 STALE_DAYS = 14
 
+# 큐에 유지할 회사 수.
+#
+# 후보 조사를 '큐가 비었을 때만' 돌리면 큐가 앞서 나가지 못한다 — 바닥 → 한 사이클
+# 써서 하나 채움 → 다시 바닥이 반복되고, 팔 회사가 떨어질 때마다 사이클을 버린다.
+# 재고를 미리 채워 두는 것과 같은 이치라 목표 수량을 두고 그 아래로 내려가면 채운다.
+QUEUE_TARGET = 3
+QUEUE_MD = ROOT / "engine" / "state" / "QUEUE.md"
+
+
+def _queue_depth() -> int | None:
+    """QUEUE.md 의 '## 대기' 표에 몇 곳이 남았는지. 못 읽으면 None.
+
+    '## 보류' 와 '## 완료' 는 세지 않는다 — 지금 팔 수 있는 것만 큐다.
+    """
+    if not QUEUE_MD.exists():
+        return None
+    rows = 0
+    in_wait = False
+    for line in QUEUE_MD.read_text(encoding="utf-8").splitlines():
+        st = line.strip()
+        if st.startswith("## "):
+            in_wait = st == "## 대기"
+            continue
+        if st.startswith("### "):      # '확인해 둔 후보' 는 검증 전이라 큐가 아니다
+            in_wait = False
+            continue
+        if not in_wait or not st.startswith("|"):
+            continue
+        cells = [c.strip() for c in st.strip("|").split("|")]
+        if not cells or not cells[0]:
+            continue
+        if set(cells[0]) <= {"-", ":", " "}:   # 표 구분선
+            continue
+        if cells[0] in ("회사",):               # 머리글
+            continue
+        rows += 1
+    return rows
+
 GAP_KINDS = {
     "decisions": (1, "결정을 쪼갠다 (STYLE.md 3번)"),
     "failure":   (2, "실패 경로 그림을 그린다 (STYLE.md 1번)"),
@@ -400,6 +438,16 @@ def _print_gaps(r: Report) -> int:
             print(f"  ✗ {line}")
         print()
 
+    # 큐 잔량은 어느 단으로 가든 보인다. 파는 쪽과 채우는 쪽은 별개의 일이고,
+    # 채우는 쪽이 밀리고 있다는 사실이 파는 사이클에서도 눈에 띄어야 한다.
+    depth = _queue_depth()
+    if depth is None:
+        print("## 큐 — QUEUE.md 를 읽지 못했다")
+    else:
+        mark = "비었다" if depth == 0 else ("목표 미달" if depth < QUEUE_TARGET else "충분")
+        print(f"## 큐 잔량 {depth}/{QUEUE_TARGET} — {mark}")
+    print()
+
     ordered = sorted(r.gaps, key=lambda g: (g[0], g[2]))
 
     # 사다리(PROMPT.md 2단계) 그대로 이번 대상을 정해 준다. 루프가 판단하지 않아도
@@ -417,6 +465,21 @@ def _print_gaps(r: Report) -> int:
         print()
         print(f"  보강 후보 {len(ordered)}건은 **이 회사가 done 이 된 뒤에** 본다 —")
         print("  회사를 갈아타지 않는다는 규칙이 보강보다 위다.")
+        return 1 if r.errors else 0
+
+    # 큐가 비었고 진행 중인 회사도 없으면, '파는 쪽' 트랙이 통째로 멈춰 있다.
+    # 재방문·보강은 계속 돌 수 있지만 그것만 돌면 새 회사는 영영 안 들어온다.
+    if depth == 0:
+        print("### 이번 사이클의 대상 — 후보 조사 (큐가 비었다)")
+        print("  할 일: PROMPT.md 2⁗단계. 회사를 파지 말고 **팔 수 있는지 확인해 적기만** 한다.")
+        print("         QUEUE.md 의 '확인해 둔 후보'부터 보고, 1차 자료가 의사결정과")
+        print("         대가를 말하는지 확인한 뒤 '## 대기' 표로 올린다.")
+        print(f"         목표는 {QUEUE_TARGET}곳이다 — 한 사이클에 여러 곳을 올려도 된다.")
+        print("         (이 사이클은 회사를 파는 게 아니라 큐를 채우는 것이므로,")
+        print("          '한 사이클 = 한 대상' 은 '한 사이클 = 한 번의 조사' 로 읽는다.)")
+        if r.stale:
+            print()
+            print(f"  참고: 다시 볼 때가 된 회사도 {len(r.stale)}곳 있다(재방문, 그 아래 단).")
         return 1 if r.errors else 0
 
     # 재방문 — 진행 중인 회사가 없을 때 사다리의 다음 단.
@@ -444,12 +507,19 @@ def _print_gaps(r: Report) -> int:
     # 다 지난 것이다. 아래 단은 전부 '바깥에서 가져오는' 일이다.
     if not ordered:
         print("## 정리할 것이 없다 — 사다리를 더 내려간다")
-        print("  4순위: engine/state/QUEUE.md 에 회사가 있으면 그것을 판다(신규).")
-        print("  5순위: 큐도 비었으면 **후보 조사 사이클**을 돈다 — 공개 기술 자료가")
-        print("         꾸준한 회사를 찾아 근거(어느 블로그·읽히는지·최근 글 시점)와")
-        print("         함께 QUEUE 에 적는다. 그 자체로 한 사이클이다.")
-        print("  6순위: 같은 도메인을 두 회사 이상에서 채웠다면 비교 문서를 쓴다.")
-        print("  이 중 아무것도 아니면 그 사실만 STATE.md 에 적고 끝낸다 —")
+        if depth:
+            print("  이번 사이클의 대상 — **신규**: QUEUE.md '## 대기' 맨 위 회사를")
+            print("  in_progress 로 만들고 PROMPT.md 3단계(회사 프로파일)부터 판다.")
+            if depth < QUEUE_TARGET:
+                print()
+                print(f"  (큐가 {depth}/{QUEUE_TARGET} 로 목표에 못 미친다. 이 회사를 다 판 뒤")
+                print("   후보 조사 사이클을 한 번 끼워 버퍼를 채운다 — 바닥을 치고 나서")
+                print("   채우면 팔 회사가 떨어질 때마다 사이클을 하나씩 버리게 된다.)")
+        else:
+            print("  큐도 비었다 → 후보 조사 사이클(PROMPT.md 2⁗단계).")
+        print()
+        print("  그것도 아니면 같은 도메인을 두 회사 이상에서 채웠는지 보고 비교 문서를 쓴다.")
+        print("  아무것도 아니면 그 사실만 STATE.md 에 적고 끝낸다 —")
         print("  채울 게 없을 때 지어내는 것이 이 데이터를 망치는 가장 빠른 길이다.")
         return 1 if r.errors else 0
 
