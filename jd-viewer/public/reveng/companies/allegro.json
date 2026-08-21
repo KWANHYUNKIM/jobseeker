@@ -131,7 +131,9 @@
           ]
         }
       ],
-      "features": []
+      "features": [
+        "search-relevance-judge"
+      ]
     },
     {
       "name": "프론트엔드 배포",
@@ -214,7 +216,8 @@
     "**Allegro Pay 의 여신 심사·한도 산정** 기술 자료를 찾지 못했다. GMV 의 16%를 대는 규모인데 기술 블로그에 없다.",
     "`back-to-dc` 글은 **어떤 서비스인지 · 파일이 무엇인지 · 되돌린 뒤 무엇을 잃었는지**를 밝히지 않는다. 인스턴스 수 · 파이프라인 주기 · 기동 시간도 없다.",
     "`Transactions Aren't Enough`(2025-12)는 **예산 재배분이라는 가상의 예시**로 멱등성을 설명하는 교육적인 글이라, **Allegro 의 실제 주문·결제 시스템이 그렇게 되어 있는지는 확인할 수 없다.** 그래서 도메인으로 열지 않았다.",
-    "LLM-as-a-Judge 글은 **사람 주석의 Cohen's kappa 실제 값**을 그림으로만 보여 주고 숫자로 적지 않는다(2023→2024 개선 추세만 확인된다)."
+    "LLM-as-a-Judge 글은 **사람 주석의 Cohen's kappa 실제 값**을 그림으로만 보여 주고 숫자로 적지 않는다(2023→2024 개선 추세만 확인된다).",
+    "2025년 3월 합성 주석자 글과 2026년 8월 검색 적합성 글은 **프롬프트 결론이 정반대**인데(5-shot·맥락 추가가 낫다 ↔ few-shot 을 빼고 맥락을 더하지 않는 편이 낫다), **회사가 그 차이를 설명하지 않는다.** 과제가 달라서인지 모델이 달라서인지 구분할 수 없다."
   ],
   "sources": [
     {
@@ -251,7 +254,530 @@
       "publisher": "Allegro Tech Blog",
       "date": "2026-08-11",
       "summary": "*\"몇 년 전만 해도 전부 클라우드로 옮기는 것이 당연해 보였다.\"* 기동할 때 GCS 에서 **10GB 넘는 파일**을 받는 서비스가 파이프라인 버그로 파일이 두 배가 되자 OOM 재시작 루프에 빠졌고, **약 두 시간 만에 이그레스 요금으로 약 1,000달러**를 태웠다. 저장을 사내 데이터센터의 **Ceph(S3 호환)** 로 되돌렸다. *\"때로는 그것이 데이터센터로 돌아가는 것을 뜻한다 — 2026년에도.\"*"
+    },
+    {
+      "title": "How to create a synthetic annotator? The process of developing a domain-specific LLM-as-a-Judge.",
+      "url": "https://blog.allegro.tech/2025/03/how-to-create-a-synthetic-annotator.html",
+      "publisher": "Allegro Tech Blog",
+      "date": "2025-03-07",
+      "summary": "**1년 앞선 같은 시도 — 그리고 안 됐다.** 폴란드어 리뷰 요약·카테고리 토픽의 품질을 GPT-4(2024-08-06)로 채점하려고 데이터셋당 **사람 1,000건 · 실험 72회**를 돌렸는데 **Cohen's kappa 가 0.2 남짓**에서 멈췄다. *\"Allegro 에서는 아직 프로덕션 프로젝트에 사람 주석을 쓴다.\"* **5-shot 이 0-shot·1-shot 보다 나았고 맥락을 더하면 좋아졌다** — 2026년 검색 적합성 글의 결론과 **정반대**다."
+    },
+    {
+      "title": "Trust no one, not even your training data! Machine learning from noisy data",
+      "url": "https://blog.allegro.tech/2023/04/learning-from-noisy-data.html",
+      "publisher": "Allegro Tech Blog",
+      "date": "2023-04-18",
+      "summary": "**23,000개가 넘는 카테고리**(7단계 · 노드 2,600개 이상)에 상품을 넣는 분류기 이야기. 라벨 잡음이 사람 주석자만의 문제가 아니라 **판매자가 잘못 넣고, 맞는 카테고리가 아예 없고, 분류 체계가 시간에 따라 바뀌는** 데서도 온다고 적는다. 건설 카테고리 **130만 건**에 **20% 인공 잡음**을 넣어 일곱 기법을 비교했다(정확도 90.26% → 85.31%, CCE 로 89.51% 회복)."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "search-relevance-judge",
+      "name": "가장 잘 맞히는 모델을 고르지 않는다",
+      "domain": "검색 적합성 평가",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "**범위 주의 — 이건 랭킹이 아니라 랭킹을 재는 자를 만드는 일이다.** Allegro 의 검색이 무엇을 보고 순위를 매기는지는 공개 자료에 없다. 여기 있는 것은 **매겨진 결과가 질의에 맞는지를 어떻게 재는가** 뿐이다.\n\n그런데 그게 사소한 일이 아니다. 마켓플레이스에서 **검색은 매대**이고, 회사는 *\"A/B 테스트 같은 온라인 신호는 개별 결과가 질의에 얼마나 맞는지를 직접 재지 못한다\"* 고 적는다. **클릭이 오르는 것과 결과가 맞는 것은 다른 사건**이다 — 잘못된 결과도 눈에 띄면 눌린다.\n\n그래서 사람이 매긴 정답 집합을 먼저 만들었다. **약 30명의 전문가 · 4개 언어 · 38만 건 이상**, 쌍마다 **블라인드 2명 + 전문가 중재**. 문제는 이 방식이 *\"비싸고 시간이 오래 걸려 규모를 못 키운다\"* 는 것이었다.\n\n**이 기능이 흥미로운 이유는, 같은 회사가 1년 전에 같은 일을 시도했다가 안 된다고 적었기 때문이다.** 2025년 3월 글에서 Allegro 는 GPT-4 로 합성 주석자를 만들다가 **Cohen's kappa 0.2 남짓**에서 멈췄고 *\"Allegro 에서는 아직 프로덕션 프로젝트에 사람 주석을 쓴다\"* 고 썼다. 2026년 8월에는 **실시간과 배치를 함께 받는 프로덕션 파이프라인**이 돌아간다.\n\n**무엇이 달라졌는가가 이 기능의 내용이다** — 그리고 답의 상당 부분은 모델이 좋아져서가 아니라 **재는 방법과 고르는 기준을 바꿨기 때문**이다(이 해석은 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "사람이 만든 정답 집합",
+            "value": "**38만 건 이상** · 4개 언어(PL · CZ · SK · HU) · 전문가 **약 30명**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "label": "심판의 사람 대비 일치도 (폴란드어)",
+            "value": "**κ-quad 0.69 · 정확도 0.87 · F1 0.87 · MAE 0.27** — 클라우드 기준선 0.67 을 넘었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "label": "클라우드 기준선의 등급별 F1",
+            "value": "정확 일치 **0.94** / 보완재 **0.83** / 무관 **0.52** / 높은 대체 가능 **0.51** / 대체 가능 **0.33** (가중 평균 0.88)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "label": "로컬 전환의 값",
+            "value": "추론 비용 **약 60% 절감**, 처리량 **초당 약 16쌍**(12B 대비 약 2.5배), 파싱 오류 **0.2% 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "label": "1년 전 같은 시도의 결과",
+            "value": "**Cohen's kappa 0.2 남짓** — 다른 과제(생성물 품질 채점)였고, 회사는 *\"아직 사람을 대체하지 못한다\"* 고 적었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "How to create a synthetic annotator? The process of developing a domain-specific LLM-as-a-Judge.",
+                "url": "https://blog.allegro.tech/2025/03/how-to-create-a-synthetic-annotator.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2025-03-07",
+                "summary": "**1년 앞선 같은 시도 — 그리고 안 됐다.** 폴란드어 리뷰 요약·카테고리 토픽의 품질을 GPT-4(2024-08-06)로 채점하려고 데이터셋당 **사람 1,000건 · 실험 72회**를 돌렸는데 **Cohen's kappa 가 0.2 남짓**에서 멈췄다. *\"Allegro 에서는 아직 프로덕션 프로젝트에 사람 주석을 쓴다.\"* **5-shot 이 0-shot·1-shot 보다 나았고 맥락을 더하면 좋아졌다** — 2026년 검색 적합성 글의 결론과 **정반대**다."
+              }
+            ]
+          },
+          {
+            "label": "운영 규모 — 하루 몇 쌍을 재는가 · 지연 · 절대 비용",
+            "value": "**밝히지 않는다**",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "온라인 신호로는 안 되겠다고 판단한 지점",
+          "thought": "A/B 로 알 수 있는 것은 **바뀐 뒤 사람들이 더 눌렀는가**이지 **이 결과가 이 질의에 맞는가**가 아니다. 검색을 고치려면 결과 하나하나를 두고 옳고 그름을 말할 수 있어야 하는데, 그 말을 해 줄 사람이 비싸다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "2025년 첫 시도가 막힌 뒤",
+          "thought": "1년 전 같은 회사가 GPT-4 로 합성 주석자를 만들다 **κ 0.2** 에서 멈췄고 *\"프로덕션에서 사람을 완전히 대체하려면 아직 큰 개선이 필요하다\"* 고 적었다. **그때 방법을 버리지 않고 과제를 바꿔 다시 왔다** — 열린 텍스트의 품질을 채점하는 대신 **정답 집합이 이미 있는 순서형 등급**을 매기게 했다. 이 연결은 회사가 말한 것이 아니라 이 사이트의 재구성이다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "모델 비교표를 보던 지점",
+          "thought": "표에서 가장 높은 칸은 Qwen 3.6 27B(κ-quad **0.70**)였다. 그런데 **응답의 약 5%가 파싱되지 않았다.** 평균 점수는 파싱된 95%에서만 나온 값이라 **실패한 5%가 어디로 갔는지를 보여 주지 않는다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "프롬프트를 만들 때",
+          "thought": "**작년에 통했던 것이 올해는 반대였다.** 2025년 글은 *\"5-shot 이 0-shot·1-shot 보다 낫다\"*, *\"외부 맥락을 더하면 좋아진다\"* 였는데, 2026년 검색 적합성에서는 *\"few-shot 예시를 빼자 성능이 올랐고\"* **부서·카테고리 정보를 더해도 좋아지지 않았다.** 같은 회사 · 1년 · 정반대 결론이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "질의-상품 쌍 (query-product pair)",
+            "what": "심판이 등급을 매기는 최소 단위. **한 요청에 하나만 넣는다** — 묶으면 응답이 깨진다."
+          },
+          {
+            "name": "등급 (relevance label)",
+            "what": "ESCI 를 세분화한 여섯 — 정확 일치 · 높은 대체 가능 · 대체 가능 · 보완재 · 무관 · 판단 불가. **순서가 있는 척도**다."
+          },
+          {
+            "name": "정답 집합 (gold set)",
+            "what": "약 30명이 4개 언어로 만든 **38만 건 이상**. 쌍마다 블라인드 2명이 매기고 어긋나면 전문가가 중재한다. **심판의 상한은 이 집합의 일치도다.**"
+          },
+          {
+            "name": "시스템 프롬프트",
+            "what": "주석 지침을 옮긴 것. **부서별 규칙을 문장으로 직접 박는다** — 예: 서드파티 휴대폰 케이스는 '정확 일치'로 본다."
+          },
+          {
+            "name": "위치 가중치",
+            "what": "어긋남을 순위 위치에 따라 다르게 센다. 1위의 어긋남은 치명적으로, 20위의 어긋남은 덜 세게."
+          }
+        ],
+        "invariants": [
+          "**심판이 정답을 정하지 않는다** — 사람 정답 집합에 맞춰 검증된 뒤에만 쓰인다.",
+          "등급은 순서형이므로 일치도는 **제곱 가중(κ-quad)** 으로 잰다 — 멀리 틀린 것을 가까이 틀린 것보다 훨씬 세게 벌한다.",
+          "**한 요청에 상품 하나.** 페이지 단위나 10개 단위로 묶지 않는다.",
+          "파싱되지 않은 응답은 점수에 들어가지 않는다 — 그래서 **파싱 오류율은 정확도와 같은 급의 지표**다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "주석 지침을 만든다 — ESCI 를 더 잘게 쪼개고 부서별 예외를 적는다",
+            "why": "사람마다 다르게 매기면 잴 자 자체가 없다. 심판의 상한이 여기서 정해진다."
+          },
+          {
+            "step": "질의-상품 쌍마다 블라인드 주석자 2명이 매기고, 어긋나면 전문가가 중재한다 — 4개 언어 38만 건 이상",
+            "why": "한 사람의 판단은 재현되지 않는다. 두 사람과 중재자를 거쳐야 '정답'이라 부를 수 있다."
+          },
+          {
+            "step": "Cohen's kappa 로 주석자 간 일치도를 계속 감시한다",
+            "why": "사람끼리도 안 맞는 자리에서는 심판을 아무리 좋게 만들어도 점수가 오르지 않는다."
+          },
+          {
+            "step": "그 지침을 시스템 프롬프트로 옮긴다 — few-shot 예시 없이, 논리 제약과 단계적 추론을 넣어서",
+            "why": "이 과제에서는 예시를 넣으면 성능이 떨어졌다. 규칙은 예시가 아니라 문장으로 준다."
+          },
+          {
+            "step": "클라우드 기준선(Gemini 3.1 Flash Lite)으로 먼저 잰다",
+            "why": "로컬로 내려가기 전에 '도달 가능한 수준'이 얼마인지 알아야 내려간 대가를 계산할 수 있다."
+          },
+          {
+            "step": "후보 모델들을 정답 집합에 붙여 **κ-quad · 정확도 · F1 · MAE 와 함께 파싱 오류율**을 잰다",
+            "why": "점수만 보면 못 쓰는 모델이 1등으로 올라온다."
+          },
+          {
+            "step": "고른 모델(Gemma 4 26B no-thinking AWQ 4비트)로 실시간 + 배치 이중 파이프라인을 돌린다 — 상품 하나씩",
+            "why": "온디맨드 확인과 대량 평가가 같은 자를 써야 두 결과를 비교할 수 있다."
+          },
+          {
+            "step": "등급을 **순위 위치 가중치**와 함께 사업 지표로 합친다",
+            "why": "1위에 엉뚱한 상품이 있는 것과 20위에 있는 것은 같은 사건이 아니다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "검색 품질을 무엇으로 잴 것인가",
+            "chosen": "**사람이 매긴 등급(오프라인)** 을 자로 삼는다",
+            "alternatives": [
+              "A/B 테스트·클릭 등 온라인 신호만 보기"
+            ],
+            "tradeoff": "*\"비싸고 시간이 오래 걸려 규모를 못 키운다.\"* **이 기능 전체가 그 대가를 갚으러 나온 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "question": "사람을 대체할 것인가, 사람을 기준으로 남길 것인가",
+            "chosen": "**정답 집합은 계속 사람이 만들고, 심판만 기계로 바꾼다**",
+            "alternatives": [
+              "완전 자동 — 모델이 정답까지 정하게 하기"
+            ],
+            "tradeoff": "**정답 집합을 유지하는 비용이 영구히 남는다.** 회사도 *\"수작업 주석으로 만든 골드 정답 데이터에 기대고 있으며 심판을 계속 개발해야 한다\"* 고 적는다. 1년 전 글이 *\"아직 사람 주석을 쓴다\"* 고 끝난 것과 이어지는 자리다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              },
+              {
+                "title": "How to create a synthetic annotator? The process of developing a domain-specific LLM-as-a-Judge.",
+                "url": "https://blog.allegro.tech/2025/03/how-to-create-a-synthetic-annotator.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2025-03-07",
+                "summary": "**1년 앞선 같은 시도 — 그리고 안 됐다.** 폴란드어 리뷰 요약·카테고리 토픽의 품질을 GPT-4(2024-08-06)로 채점하려고 데이터셋당 **사람 1,000건 · 실험 72회**를 돌렸는데 **Cohen's kappa 가 0.2 남짓**에서 멈췄다. *\"Allegro 에서는 아직 프로덕션 프로젝트에 사람 주석을 쓴다.\"* **5-shot 이 0-shot·1-shot 보다 나았고 맥락을 더하면 좋아졌다** — 2026년 검색 적합성 글의 결론과 **정반대**다."
+              }
+            ]
+          },
+          {
+            "question": "클라우드 API 를 쓸 것인가, 로컬 모델로 내려갈 것인가",
+            "chosen": "**로컬** — Gemma 4 26B(no-thinking · AWQ 4비트)",
+            "alternatives": [
+              "Gemini 3.1 Flash Lite 유지(비용 대비 성능으로 고른 기준선)"
+            ],
+            "tradeoff": "**비용 약 60% 를 얻고 두 언어의 정확도를 내줬다.** 폴란드어는 기준선을 넘었지만(0.69 대 0.67) **슬로바키아어 0.59 대 0.65 · 헝가리어 0.67 대 0.73 으로 클라우드가 여전히 앞선다.** 회사는 *\"체코어가 모든 모델에게 가장 어려웠다\"* 고도 적는다 — **비용을 아끼는 결정이 언어마다 다른 크기의 손해로 나타난다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "question": "점수가 가장 높은 모델을 고를 것인가, 응답이 안 깨지는 모델을 고를 것인가",
+            "chosen": "**파싱이 안정된 쪽** — Gemma 4 26B(파싱 오류 0.2% 미만)",
+            "alternatives": [
+              "Qwen 3.6 27B — κ-quad **0.70** 으로 표에서 가장 높지만 파싱 오류 약 5%",
+              "Mellum 2 12B — 파싱 오류 20%",
+              "GPT-OSS 20B — 파싱 오류 5%",
+              "PLLuM 8B — 정확도 0.84 인데 κ-quad 0.17"
+            ],
+            "tradeoff": "**표에서 가장 높은 칸을 포기했다.** 그리고 PLLuM 은 반대 방향의 함정을 보여 준다 — **정확도 0.84 는 클래스 불균형을 이용한 것**이라 순서형 일치도로 재자 0.17 로 무너졌다. **평균 점수 하나로 모델을 고르면 두 가지 방식으로 속는다** — 실패한 응답이 안 보이는 방식과, 다수 클래스만 맞혀서 오르는 방식(이 정리는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "question": "한 번에 여러 상품을 채점할 것인가",
+            "chosen": "**상품 하나씩** 요청한다",
+            "alternatives": [
+              "검색 결과 페이지 통째로",
+              "10개 단위 묶음"
+            ],
+            "tradeoff": "**호출 수가 상품 수만큼 늘어난다.** 그래도 묶으면 *\"대부분의 모델 요청이 응답을 파싱하지 못했다\"* — JSON 이 깨졌다. **처리량을 위해 묶는 최적화가 정확도가 아니라 형식에서 무너진 것**이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "question": "프롬프트에 예시를 넣을 것인가",
+            "chosen": "**뺀다** — *\"few-shot 예시를 제거하자 오히려 모델 성능이 좋아졌다\"*",
+            "alternatives": [
+              "5-shot — **1년 전 같은 회사가 최선이라고 결론 낸 것**",
+              "부서·카테고리 맥락 추가 — *\"오프라인 테스트에서 출력 품질을 높이지 못했다\"*"
+            ],
+            "tradeoff": "지침의 미묘한 부분을 예시로 보여 줄 수 없어 **규칙을 전부 문장으로 써야 한다**(추정). 더 큰 대가는 **이식할 수 없다는 것**이다 — 2025년 글의 결론(5-shot 이 낫다, 맥락을 더하면 낫다)이 2026년 과제에서 정확히 뒤집혔으니, **프롬프트 기법은 회사의 자산이 아니라 그 과제·그 모델의 성질**로 봐야 한다(이 해석은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              },
+              {
+                "title": "How to create a synthetic annotator? The process of developing a domain-specific LLM-as-a-Judge.",
+                "url": "https://blog.allegro.tech/2025/03/how-to-create-a-synthetic-annotator.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2025-03-07",
+                "summary": "**1년 앞선 같은 시도 — 그리고 안 됐다.** 폴란드어 리뷰 요약·카테고리 토픽의 품질을 GPT-4(2024-08-06)로 채점하려고 데이터셋당 **사람 1,000건 · 실험 72회**를 돌렸는데 **Cohen's kappa 가 0.2 남짓**에서 멈췄다. *\"Allegro 에서는 아직 프로덕션 프로젝트에 사람 주석을 쓴다.\"* **5-shot 이 0-shot·1-shot 보다 나았고 맥락을 더하면 좋아졌다** — 2026년 검색 적합성 글의 결론과 **정반대**다."
+              }
+            ]
+          },
+          {
+            "question": "추론(thinking)을 켤 것인가",
+            "chosen": "**끈다** — no-thinking 변형",
+            "alternatives": [
+              "Gemma 4 26B thinking 변형 (κ-quad 0.65)"
+            ],
+            "tradeoff": "**왜 그 등급을 줬는지가 남지 않는다**(추정). 심판의 판단을 사람이 되짚어야 할 때 근거가 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "question": "상품 이미지를 볼 것인가",
+            "chosen": "**지금은 텍스트만** — 상품명 하나만 넣는 것이 가장 좋았다",
+            "alternatives": [
+              "멀티모달 — 상품 이미지 함께 보기"
+            ],
+            "tradeoff": "회사가 직접 인정한 구멍이다 — *\"현재 우리 시스템은 텍스트 데이터에 의존한다.\"* 그래서 **패션처럼 눈으로 판단하는 부서와 *\"boho dress\"* 같은 영감형 검색에서 약하다.** 재는 자가 못 재는 영역이 있으면 **그 영역의 랭킹은 개선 여부를 모르는 채로 남는다**(이 해석은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Gemma 4 26B (no-thinking · AWQ 4비트) · 로컬 추론",
+            "role": "프로덕션 심판. 폴란드어 κ-quad 0.69, 처리량 초당 약 16쌍, 파싱 오류 0.2% 미만.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "tech": "Gemini 3.1 Flash Lite (클라우드)",
+            "role": "비용 대비 성능으로 고른 **기준선**. 로컬로 내려간 뒤에도 '무엇을 내줬는지'를 재는 자로 남는다 — 실제로 SK·HU 에서는 아직 이쪽이 앞선다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "tech": "제곱 가중 코헨 카파 (κ-quad)",
+            "role": "등급이 순서형이라 쓰는 일치도 지표. *\"큰 차이의 불일치를 근소한 차이보다 훨씬 크게 벌한다.\"* PLLuM 이 정확도 0.84 로 통과할 뻔한 것을 0.17 로 걸러낸 것이 이 지표다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "tech": "이중 속도 파이프라인 (실시간 + 배치)",
+            "role": "온디맨드 요청과 대량 평가를 같은 심판으로 받는다. 라벨링과 사업 지표 계산을 함께 돌린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "tech": "순위 위치 가중치",
+            "role": "어긋남의 무게를 위치로 조절한다 — 1위는 치명적, 20위는 덜. **정확도 하나로 뭉개지 않기 위한 장치.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          },
+          {
+            "tech": "사람 주석 파이프라인 (블라인드 2명 + 전문가 중재)",
+            "role": "정답 집합을 만들고 유지한다. 일치도는 Cohen's kappa 로 감시한다 — **이 파이프라인이 멈추면 심판을 검증할 방법이 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [],
+      "research": {
+        "papers": [
+          {
+            "title": "Shopping Queries Dataset: A Large-Scale ESCI Benchmark for Improving Product Search",
+            "authors": "Chandan K. Reddy 외",
+            "year": "2022",
+            "venue": "arXiv:2206.06588",
+            "url": "https://arxiv.org/abs/2206.06588",
+            "takeaway": "상품 검색의 적합성을 **정확 일치 / 대체재 / 보완재 / 무관** 네 등급으로 나누는 척도의 출처다. Allegro 는 이 척도를 **그대로 쓰지 않고 더 잘게 쪼갰고**(대체재를 '높은 대체 가능'과 '대체 가능'으로), **정확히 그 쪼갠 자리에서 심판이 가장 안 맞았다**(F1 0.51 과 0.33). 등급을 늘리면 재는 눈금은 촘촘해지지만 **합의는 그만큼 어려워진다**(이 해석은 이 사이트의 것이다).",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "순서가 있는 판단에서 **가운데 등급**을 무엇으로 가를 것인가",
+            "why_hard": "양 끝은 데이터 안에 답이 있다 — '이 질의가 찾는 바로 그 상품인가'와 '아무 상관 없는가'는 대체로 사람끼리 합의된다(실제로 F1 0.94 와 0.83). 그런데 **'높은 대체 가능'과 '대체 가능'의 경계는 데이터가 아니라 판단자 집단 안에 있다.** 그래서 **심판의 상한이 모델 성능이 아니라 사람 사이의 일치도**로 정해진다 — 정답 집합을 더 늘려도 그 안에서 사람이 갈리면 상한은 올라가지 않는다. 이것은 계산의 한계가 아니라 **정의의 한계**다.",
+            "current_best": "제곱 가중 일치도(κ-quad)로 **가까운 오답을 덜 벌하고**, 순위 위치 가중치로 **아래쪽 오답을 덜 센다.** 그 대가로 **가운데 등급의 오류를 사실상 용인한다** — 실제 F1 이 0.51 과 0.33 인데도 가중 평균은 0.88 로 읽힌다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+                "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+                "publisher": "Allegro Tech Blog",
+                "date": "2026-08-20",
+                "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "사람이 만든 자로 기계 심판을 검증한다",
+          "kind": "flow",
+          "question": "심판을 기계로 바꾸면서 무엇을 사람에게 남겨 두었는가?",
+          "code": "flowchart TD\n  G[\"<b>주석 지침</b><br/>• ESCI 를 더 잘게 쪼갠 6등급<br/>• 부서별 예외를 문장으로<br/>• 예: 서드파티 폰케이스 = 정확 일치\"]:::list\n  A1[\"블라인드 주석자 2명\"]\n  AR[\"전문가 중재 — 어긋난 쌍\"]\n  GS[\"<b>정답 집합</b><br/>• 4개 언어 · 38만 건 이상<br/>• 전문가 약 30명<br/>• Cohen's kappa 로 일치도 감시\"]:::accent\n  PR[\"<b>시스템 프롬프트</b><br/>• few-shot 예시 없음<br/>• 논리 제약 + 단계적 추론<br/>• 부서 규칙 직접 삽입\"]:::list\n  BASE[\"클라우드 기준선<br/>Gemini 3.1 Flash Lite\"]:::quiet\n  CAND[\"후보 로컬 모델들\"]\n  MEAS[\"<b>재는 자 — 점수만이 아니다</b><br/>• κ-quad · 정확도 · F1 · MAE<br/>• <b>파싱 오류율</b>\"]:::list\n  PICK[\"<b>Gemma 4 26B</b><br/>no-thinking · AWQ 4비트\"]\n  PIPE[\"<b>이중 속도 파이프라인</b><br/>• 실시간 온디맨드<br/>• 배치 대량 평가<br/>• 상품 하나씩\"]:::list\n  BIZ[\"사업 지표 — <b>순위 위치 가중치</b> 적용\"]\n  G --> A1 --> AR --> GS\n  G --> PR\n  GS --> MEAS\n  BASE --> MEAS\n  CAND --> MEAS\n  PR --> CAND\n  MEAS --> PICK\n  PICK --> PIPE --> BIZ\n  BIZ -.->|\"자가 못 재는 곳은 개선 여부를 모른다\"| GAP[\"텍스트만 본다<br/>패션 · 영감형 검색\"]:::quiet\n  GS -.->|\"계속 사람이 만들어야 한다\"| A1"
+        },
+        {
+          "title": "한 쌍이 등급을 받기까지",
+          "kind": "state",
+          "question": "응답이 깨지면 그 쌍은 어디로 가는가?",
+          "code": "stateDiagram-v2\n  [*] --> 대기: 질의-상품 쌍 하나\n  대기 --> 요청됨: 상품 하나만 담아 보낸다\n  note right of 요청됨\n    페이지 단위·10개 단위로 묶지 않는다\n    묶으면 \"대부분의 요청이\n    응답을 파싱하지 못했다\"\n  end note\n  요청됨 --> 파싱성공: JSON 이 규격대로\n  요청됨 --> 파싱실패: JSON 이 깨졌다\n  note right of 파싱실패\n    Gemma 4 26B 0.2% 미만\n    Qwen 3.6 27B 약 5%\n    Mellum 2 12B 20%\n    이 쌍은 점수에 들어가지 않는다\n  end note\n  파싱실패 --> 요청됨: 다시 보낸다\n  파싱성공 --> 등급부여: 6등급 중 하나\n  등급부여 --> 가중치적용: 순위 위치로 무게 조절\n  note right of 가중치적용\n    1위의 어긋남 — 치명적\n    20위의 어긋남 — 덜 세게\n  end note\n  가중치적용 --> 지표반영\n  등급부여 --> 검증: 정답 집합과 대조\n  note right of 검증\n    κ-quad · 정확도 · F1 · MAE\n    사람 일치도가 상한이다\n  end note\n  검증 --> [*]"
+        },
+        {
+          "title": "실패 경로 — 점수가 가장 높은 모델을 쓰지 못한 이유",
+          "kind": "failure",
+          "question": "평균 점수 하나로 모델을 고르면 어떻게 속는가?",
+          "code": "flowchart TD\n  T[\"<b>모델 비교표</b>\"] --> W1[\"<b>속는 방식 ① 실패가 안 보인다</b>\"]\n  T --> W2[\"<b>속는 방식 ② 다수만 맞혀도 오른다</b>\"]\n  W1 --> Q[\"Qwen 3.6 27B<br/>κ-quad <b>0.70 — 표에서 1등</b><br/>파싱 오류 약 <b>5%</b>\"]\n  Q --> QW[\"점수는 <b>파싱된 95%</b> 에서만 나온다<br/>실패한 5% 가 어디로 갔는지는 표에 없다\"]:::quiet\n  W1 --> ETC[\"Mellum 2 12B <b>20%</b><br/>GPT-OSS 20B <b>5%</b>\"]:::quiet\n  W2 --> P[\"PLLuM 8B<br/>정확도 <b>0.84</b><br/>κ-quad <b>0.17</b>\"]\n  P --> PW[\"<b>클래스 불균형을 이용했다</b><br/>정확 일치가 압도적으로 많은 데이터에서<br/>다수 클래스만 답해도 정확도가 오른다\"]:::quiet\n  QW --> PICK[\"고른 것 — <b>Gemma 4 26B</b><br/>κ-quad 0.69 · 파싱 오류 0.2% 미만<br/><b>1등을 포기하고 안 깨지는 쪽</b>\"]:::accent\n  PW --> PICK\n  B[\"<b>묶어서 처리하기</b><br/>페이지 단위 · 10개 단위\"] -->|\"되돌렸다\"| BF[\"정확도가 아니라 <b>형식</b>에서 무너졌다<br/>JSON 이 깨져 대부분 파싱 실패\"]:::quiet\n  L[\"<b>비용을 아낀 대가는 언어마다 다르다</b>\"] --> L1[\"PL 0.69 vs 0.67 — 로컬이 이겼다\"]\n  L --> L2[\"SK 0.59 vs 0.65 · HU 0.67 vs 0.73<br/><b>클라우드가 여전히 앞선다</b>\"]:::quiet\n  L --> L3[\"<i>체코어가 모든 모델에게 가장 어려웠다</i>\"]:::quiet\n  M[\"<b>재는 자가 못 보는 것</b>\"] --> M1[\"텍스트만 — 이미지 없음\"]:::quiet\n  M1 --> M2[\"패션 · <i>boho dress</i> 같은 영감형 검색<br/><b>그 영역은 개선 여부를 모르는 채 남는다</b>\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Automating Search Relevance Assessment at Scale with LLM-as-a-Judge",
+          "url": "https://blog.allegro.tech/2026/08/automating-search-relevance-llm-as-a-judge.html",
+          "publisher": "Allegro Tech Blog",
+          "date": "2026-08-20",
+          "summary": "사람 주석 **약 30명 · 4개 언어 · 38만 건 이상**으로 만든 정답 집합을 기준으로 LLM 을 심판으로 세운 이야기. 클라우드 기준선(Gemini 3.1 Flash Lite)에서 **로컬 모델로 내려 추론 비용 약 60% 절감**. **few-shot 예시를 빼자 성능이 올랐고**, **thinking 변형이 no-thinking 보다 나빴으며**, **여러 상품을 한 번에 묶으면 JSON 파싱이 무너졌다.**"
+        },
+        {
+          "title": "How to create a synthetic annotator? The process of developing a domain-specific LLM-as-a-Judge.",
+          "url": "https://blog.allegro.tech/2025/03/how-to-create-a-synthetic-annotator.html",
+          "publisher": "Allegro Tech Blog",
+          "date": "2025-03-07",
+          "summary": "**1년 앞선 같은 시도 — 그리고 안 됐다.** 폴란드어 리뷰 요약·카테고리 토픽의 품질을 GPT-4(2024-08-06)로 채점하려고 데이터셋당 **사람 1,000건 · 실험 72회**를 돌렸는데 **Cohen's kappa 가 0.2 남짓**에서 멈췄다. *\"Allegro 에서는 아직 프로덕션 프로젝트에 사람 주석을 쓴다.\"* **5-shot 이 0-shot·1-shot 보다 나았고 맥락을 더하면 좋아졌다** — 2026년 검색 적합성 글의 결론과 **정반대**다."
+        },
+        {
+          "title": "Trust no one, not even your training data! Machine learning from noisy data",
+          "url": "https://blog.allegro.tech/2023/04/learning-from-noisy-data.html",
+          "publisher": "Allegro Tech Blog",
+          "date": "2023-04-18",
+          "summary": "**23,000개가 넘는 카테고리**(7단계 · 노드 2,600개 이상)에 상품을 넣는 분류기 이야기. 라벨 잡음이 사람 주석자만의 문제가 아니라 **판매자가 잘못 넣고, 맞는 카테고리가 아예 없고, 분류 체계가 시간에 따라 바뀌는** 데서도 온다고 적는다. 건설 카테고리 **130만 건**에 **20% 인공 잡음**을 넣어 일곱 기법을 비교했다(정확도 90.26% → 85.31%, CCE 로 89.51% 회복)."
+        }
+      ]
+    }
+  ]
 }
