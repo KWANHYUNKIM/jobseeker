@@ -124,9 +124,26 @@
               "summary": "유럽 최대 하둡 클러스터를 굴리던 시절에서 전사 데이터 플랫폼으로 온 과정. 수집·처리·관리 세 덩어리로 나뉘고 하루 **1.4조 데이터 포인트**를 처리한다. 플랫폼에 투자하게 만든 사업적 계기 다섯을 밝힌다."
             }
           ]
+        },
+        {
+          "tech": "Scio(Beam) + BigQuery·Flink·Dataflow + 커스텀 K8s 오퍼레이터 + Backstage",
+          "solves": "파이프라인 API 를 하나로 모으되 실행 엔진은 셋으로 나눈다. 자원 정의는 파이프라인 코드와 **같은 저장소**에 두고 codeowners 가 GitOps 로 관리한다. 규모는 하루 **1조+ 이벤트**, **1,800+ 이벤트 종류**, **활성 파이프라인 38,000+**, **엔지니어 100+**.",
+          "limits": "회사가 어려움 넷을 꼽았다 — 다양한 용도에 걸친 **유연성 유지**, **비용 효율과 개발자 경험의 균형**, **사용자를 방해하지 않는 업그레이드**, **중요 작업의 신뢰성 보장.** 스케줄러가 자체 제작인지 기존 도구인지는 밝히지 않는다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Data Platform Explained Part II",
+              "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+              "publisher": "Spotify Engineering",
+              "date": "2024-05",
+              "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "data-platform"
+      ]
     },
     {
       "name": "콘텐츠 수집·트랜스코딩",
@@ -545,7 +562,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "data-platform",
+          "via": "같은 데이터의 위층",
+          "contract": "RAP 이 읽는 그 Parquet 파일을 데이터 플랫폼이 만들어 쌓는다. **'이미 함께 쓰는 파일'** 이라는 전제 자체가 그 플랫폼의 산출물이다 — 두 글이 서로를 언급하지는 않는다(추정).",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [],
         "hard_problems": [
@@ -617,6 +641,458 @@
           "summary": "유럽 최대 하둡 클러스터를 굴리던 시절에서 전사 데이터 플랫폼으로 온 과정. 수집·처리·관리 세 덩어리로 나뉘고 하루 **1.4조 데이터 포인트**를 처리한다. 플랫폼에 투자하게 만든 사업적 계기 다섯을 밝힌다."
         }
       ]
+    },
+    {
+      "key": "data-platform",
+      "name": "파이프라인 38,000개를 100명이 받치는 법",
+      "domain": "데이터 플랫폼",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "하루에 **1조 개가 넘는 이벤트**가 들어오고, **1,800가지가 넘는 이벤트 종류**가 발행되며, **활성 스케줄 파이프라인이 38,000개**다. 그런데 데이터 플랫폼을 만드는 사람은 **100여 명**이다.\n\n이 숫자들의 비율이 이 도메인의 문제를 그대로 말한다 — **플랫폼 팀이 모든 파이프라인을 볼 수는 없다.** 처음에는 몇 사람이 시작한 팀이었고 유럽 최대 하둡 클러스터를 굴리던 시절도 있었지만, 지금 규모에서는 **중앙에서 다 받는 방식이 성립하지 않는다.**\n\n그래서 이 플랫폼의 설계는 성능이 아니라 **누가 무엇을 책임지는가**를 정하는 일에 가깝다. 회사가 밝힌 균형점이 그것이다 — **소비 데이터셋의 소비자가 대부분의 갱신을 인프라 팀의 개입 없이 스스로 처리한다.**\n\n**그리고 이 플랫폼에 투자하게 만든 계기 중 하나가 재무 보고였다** — 예측 가능한 파이프라인이 필요했기 때문이다. 데이터 파이프라인이 분석 도구가 아니라 **공시 의무의 일부**가 되면, '늦어도 되는 잡'이라는 것이 사라진다(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "들어오는 양",
+            "value": "하루 **1조 개 이상의 이벤트**. 발행되는 이벤트 종류 **1,800가지 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "label": "도는 것",
+            "value": "**활성 스케줄 파이프라인 38,000개 이상** (시간 단위·일 단위)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "label": "받치는 사람",
+            "value": "GCP 위에서 이 플랫폼을 만드는 **엔지니어 100명 이상.** 시작은 **몇 사람**이었다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "label": "처리되는 데이터 포인트",
+            "value": "하루 **1.4조 개**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained (Part I)",
+                "url": "https://engineering.atspotify.com/2024/4/data-platform-explained",
+                "publisher": "Spotify Engineering",
+                "date": "2024-04",
+                "summary": "유럽 최대 하둡 클러스터를 굴리던 시절에서 전사 데이터 플랫폼으로 온 과정. 수집·처리·관리 세 덩어리로 나뉘고 하루 **1.4조 데이터 포인트**를 처리한다. 플랫폼에 투자하게 만든 사업적 계기 다섯을 밝힌다."
+              }
+            ]
+          },
+          {
+            "label": "파이프라인 하나당 사람",
+            "value": "**38,000 ÷ 100 = 380** — 이 나눗셈이 왜 셀프서비스여야 하는지를 말한다(이 계산은 이 사이트의 것이다)",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "팀이 커지는 것을 보고",
+          "thought": "몇 사람으로 시작한 팀이 100명이 넘었는데 파이프라인은 **38,000개**다. **비율이 맞지 않는다.** 인프라 팀이 모든 변경을 받아 주는 구조로는 어느 지점부터 팀이 병목이 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그럼 전부 각자에게 맡길지 정할 때",
+          "thought": "완전히 분산하면 계보도 메타데이터도 접근 통제도 제각각이 된다. 그래서 **균형**을 잡는다 — **대부분의 갱신은 소비 데이터셋의 소비자가 직접** 하되, 인프라 배포 자체는 자동으로 일어나게 한다. 팀이 이벤트 스키마를 정의하면 **핵심 인프라 팀의 수작업 없이 인프라가 배포된다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "자원 정의를 어디에 둘지 정할 때",
+          "thought": "**파이프라인 코드와 같은 저장소에 둔다.** 그러면 codeowners 가 그대로 관리자가 되고, 배포는 GitOps 방식으로 흐른다 — **누가 책임지는가가 파일 위치로 정해진다**(마지막 절은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "무엇이 어려운지 물으면",
+          "thought": "회사가 넷을 꼽았다 — **다양한 용도에 걸친 유연성 유지**, **비용 효율과 개발자 경험 사이의 균형**, **사용자를 방해하지 않는 플랫폼 업그레이드**, **비즈니스에 중요한 작업의 신뢰성 보장.** 셋째와 넷째가 특히 셀프서비스의 대가다 — 남에게 넘긴 것을 나중에 바꾸려면 남의 일정에 맞춰야 한다(마지막 문장은 이 사이트의 해석).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "이벤트 스키마",
+            "what": "팀이 정의한다. 정의하면 **인프라가 자동으로 배포**된다 — 핵심 인프라 팀의 수작업이 없다."
+          },
+          {
+            "name": "워크플로",
+            "what": "**커스텀 K8s 오퍼레이터**로 정의·배포한다. 스케줄러가 집어 BigQuery·Flink·Dataflow 중 한 곳에서 실행한다."
+          },
+          {
+            "name": "파이프라인 코드",
+            "what": "**대부분 Scio** — Apache Beam 의 Scala API. 자원 정의가 **같은 저장소**에 함께 산다."
+          },
+          {
+            "name": "엔드포인트",
+            "what": "관리의 단위. **계보·메타데이터·접근 통제·보존 정책·품질 검사가 전부 엔드포인트에 붙는다.**"
+          },
+          {
+            "name": "codeowners",
+            "what": "저장소의 소유자가 그대로 자원의 관리자다. 배포는 GitOps 방식."
+          }
+        ],
+        "invariants": [
+          "**자원 정의는 파이프라인 코드와 같은 저장소에 산다** — 소유자가 파일 위치로 정해진다.",
+          "스키마를 정의하면 **인프라가 저절로 배포된다** — 인프라 팀에 요청하지 않는다.",
+          "**대부분의 갱신은 소비자가 직접** 한다. 인프라 팀은 끼어들지 않는다.",
+          "계보·메타데이터·접근 통제·보존·품질 검사는 **엔드포인트마다** 걸린다.",
+          "보존 정책은 저장 비용과 규제 준수를 **함께** 다룬다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "팀이 **이벤트 스키마를 정의**한다",
+            "why": "무엇을 보낼지는 그 데이터를 아는 팀이 가장 잘 안다."
+          },
+          {
+            "step": "정의가 들어가면 **인프라가 자동으로 배포**된다 — 핵심 인프라 팀의 수작업이 없다",
+            "why": "38,000개를 100명이 손으로 받으면 그 팀이 병목이 된다."
+          },
+          {
+            "step": "파이프라인은 **Scio(Beam 의 Scala API)** 로 쓴다. 자원 정의는 **같은 저장소**에 둔다",
+            "why": "코드와 자원이 떨어져 있으면 누가 주인인지 흐려진다."
+          },
+          {
+            "step": "**커스텀 K8s 오퍼레이터**로 워크플로를 정의·배포하고, 스케줄러가 집어 **BigQuery·Flink·Dataflow** 중 맞는 곳에서 실행한다",
+            "why": "부하 성격이 달라 한 엔진으로 다 받을 수 없다."
+          },
+          {
+            "step": "각 **엔드포인트**에 계보·메타데이터·접근 통제·보존 정책·품질 검사를 건다",
+            "why": "관리를 파이프라인이 아니라 엔드포인트에 걸면, 파이프라인이 바뀌어도 규칙이 따라다닌다."
+          },
+          {
+            "step": "**Backstage** 로 모니터링과 비용 분석을 본다",
+            "why": "셀프서비스로 넘겼으면 각 팀이 자기 것의 상태와 비용을 볼 수 있어야 한다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "파이프라인 변경을 누가 할 것인가",
+            "chosen": "**소비자가 직접.** \"중앙집중과 분산 소유 사이의 균형 덕에, 소비 데이터셋의 소비자가 인프라 팀의 개입 없이 대부분의 갱신을 관리할 수 있다.\"",
+            "alternatives": [
+              "인프라 팀이 모든 변경을 받아 처리한다",
+              "완전히 분산해 각 팀이 자기 인프라를 직접 운영한다"
+            ],
+            "tradeoff": "인프라 팀이 **자기가 만든 것을 나중에 바꾸기 어려워진다** — 회사가 꼽은 어려움에 **\"사용자를 방해하지 않는 플랫폼 업그레이드\"** 가 들어 있는 이유다(뒷문장은 이 사이트의 해석). 대신 파이프라인 38,000개에 엔지니어 100명이라는 비율에서 팀이 병목이 되지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "question": "인프라를 어떻게 붙일 것인가",
+            "chosen": "**스키마 정의가 배포를 트리거한다** — 팀이 이벤트 스키마를 정의하면 인프라가 자동으로 배포된다.",
+            "alternatives": [
+              "인프라 팀에 요청해 받는다"
+            ],
+            "tradeoff": "자동 배포는 **잘못된 정의도 자동으로 배포한다**(뒷문장은 이 사이트의 추정). 대신 요청-대기 고리가 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "question": "자원 정의를 어디에 둘 것인가",
+            "chosen": "**파이프라인 코드와 같은 저장소.** codeowners 가 관리하고 GitOps 방식으로 배포한다.",
+            "alternatives": [
+              "중앙 인프라 저장소에 모아 둔다"
+            ],
+            "tradeoff": "전사 차원의 변경을 하려면 **저장소 수천 개를 건드려야 한다**(뒷문장은 이 사이트의 추정). 대신 소유가 파일 위치로 분명해진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "question": "파이프라인을 무엇으로 쓰게 할 것인가",
+            "chosen": "**대부분 Scio** — Apache Beam 의 Scala API. 실행은 **BigQuery·Flink·Dataflow** 로 나눈다.",
+            "alternatives": [
+              "엔진마다 다른 API 를 쓰게 둔다",
+              "하나의 실행 엔진으로 통일한다"
+            ],
+            "tradeoff": "Scala 라는 진입 장벽이 생긴다(뒷문장은 이 사이트의 추정). 대신 하나의 API 로 여러 실행 엔진을 쓸 수 있어, 부하 성격에 따라 실행처를 고를 수 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "question": "거버넌스를 무엇에 걸 것인가",
+            "chosen": "**엔드포인트에.** 계보·메타데이터·접근 통제·보존 정책·품질 검사가 전부 엔드포인트마다 붙는다.",
+            "alternatives": [
+              "파이프라인이나 팀 단위로 건다"
+            ],
+            "tradeoff": "엔드포인트가 늘어날 때마다 규칙도 늘어난다(뒷문장은 이 사이트의 추정). 대신 **보존 정책이 저장 비용과 규제 준수를 함께** 다룰 수 있고, 파이프라인이 바뀌어도 규칙이 데이터를 따라다닌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "question": "이 플랫폼에 왜 투자하는가",
+            "chosen": "회사가 계기 다섯을 밝혔다 — **데이터 접근의 민주화**, **재무 보고에 필요한 예측 가능한 파이프라인**, **핵심 데이터셋의 품질 보장**, **핵심 역량으로서의 실험**, **잘 분류된 데이터를 요구하는 머신러닝.**",
+            "alternatives": [
+              "필요할 때마다 개별 팀이 각자 만든다"
+            ],
+            "tradeoff": "**재무 보고가 계기 중 하나**라는 점이 이 플랫폼의 성격을 정한다 — 데이터 파이프라인이 분석 도구가 아니라 **공시 의무의 일부**가 되면 '늦어도 되는 잡'이 사라지고, 신뢰성 요구가 전체로 번진다(이 해석은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained (Part I)",
+                "url": "https://engineering.atspotify.com/2024/4/data-platform-explained",
+                "publisher": "Spotify Engineering",
+                "date": "2024-04",
+                "summary": "유럽 최대 하둡 클러스터를 굴리던 시절에서 전사 데이터 플랫폼으로 온 과정. 수집·처리·관리 세 덩어리로 나뉘고 하루 **1.4조 데이터 포인트**를 처리한다. 플랫폼에 투자하게 만든 사업적 계기 다섯을 밝힌다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Scio (Apache Beam 의 Scala API)",
+            "role": "대부분의 파이프라인이 이것으로 쓰인다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "tech": "BigQuery · Flink · Dataflow",
+            "role": "실행 엔진 셋. 스케줄러가 워크플로를 집어 맞는 곳에서 돌린다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "tech": "커스텀 Kubernetes 오퍼레이터",
+            "role": "워크플로 정의·배포와 자원 관리.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "tech": "Backstage",
+            "role": "모니터링과 비용 분석을 한자리에서 본다. 셀프서비스로 넘긴 것의 상태를 각 팀이 스스로 보게 하는 창구.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "tech": "GitOps · codeowners",
+            "role": "자원 정의가 파이프라인 코드와 같은 저장소에 살고, 소유자가 곧 관리자다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "tech": "Google Cloud Platform",
+            "role": "플랫폼 전체가 그 위에 있다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "tech": "스케줄러의 구체적인 구현",
+            "role": "— 글은 '스케줄러가 워크플로를 집어 실행한다'고만 적고 **자체 제작인지 기존 도구인지 밝히지 않는다.**",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "rap",
+          "via": "같은 데이터의 아래층",
+          "contract": "이 플랫폼이 만들어 레이크에 쌓아 둔 Parquet 파일을 RAP 이 다시 읽는다. **'ML 파이프라인·노트북·실험 플랫폼·배치 분석이 이미 함께 쓰는 파일'** 이라는 RAP 의 전제가 바로 이 플랫폼의 산출물이다 — 두 글이 서로를 언급하지는 않는다(추정).",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [],
+        "hard_problems": [
+          {
+            "problem": "넘겨 준 것을 나중에 바꾸기",
+            "why_hard": "파이프라인 38,000개를 엔지니어 100명이 받을 수 없으니 **권한을 각 팀에 넘기는 것이 유일한 답**이다. 그런데 넘기는 순간 그것들은 **남의 것**이 된다. 플랫폼을 고치려면 그 위에 얹힌 38,000개가 함께 움직여야 하는데, 이제 그 일정과 우선순위는 플랫폼 팀의 것이 아니다. 회사가 꼽은 어려움 넷 중 둘이 정확히 여기다 — **\"사용자를 방해하지 않는 플랫폼 업그레이드\"** 와 **\"비즈니스에 중요한 작업의 신뢰성 보장\".** 셀프서비스로 얻은 속도의 값이 **변경 가능성**으로 청구된다(마지막 문장은 이 사이트의 해석).",
+            "current_best": "**균형을 잡는다** — 완전 중앙집중도 완전 분산도 아니고, 소비자가 대부분의 갱신을 스스로 하되 **인프라 배포 자체는 자동화**한다. 자원 정의를 코드와 같은 저장소에 두어 소유를 분명히 하고, Backstage 로 각 팀이 자기 것의 상태와 비용을 보게 한다. 회사도 이것을 해결이 아니라 **계속 어려운 것**의 목록에 올려 두었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          },
+          {
+            "problem": "비용 효율과 개발자 경험이 같은 손잡이의 양 끝이다",
+            "why_hard": "회사가 어려움으로 직접 꼽았다 — **\"비용 효율과 개발자 경험 사이의 균형.\"** 하루 1조 이벤트 규모에서 비용을 줄이려면 파이프라인이 언제 어떻게 도는지를 제약해야 하는데, 제약할수록 각 팀이 자유롭게 쓰기 어려워진다. 반대로 아무나 아무렇게나 돌리게 두면 **비용이 누구의 것도 아닌 것**이 된다(마지막 절은 이 사이트의 해석).",
+            "current_best": "**보이게 만든다** — Backstage 에 모니터링과 **비용 분석**을 함께 두어, 각 팀이 자기가 쓴 것을 보게 한다. 그리고 보존 정책을 엔드포인트마다 걸어 **저장 비용과 규제 준수를 같은 장치로** 다룬다. 강제하기 전에 보이게 하는 쪽을 먼저 쓴 셈이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Data Platform Explained (Part I)",
+                "url": "https://engineering.atspotify.com/2024/4/data-platform-explained",
+                "publisher": "Spotify Engineering",
+                "date": "2024-04",
+                "summary": "유럽 최대 하둡 클러스터를 굴리던 시절에서 전사 데이터 플랫폼으로 온 과정. 수집·처리·관리 세 덩어리로 나뉘고 하루 **1.4조 데이터 포인트**를 처리한다. 플랫폼에 투자하게 만든 사업적 계기 다섯을 밝힌다."
+              },
+              {
+                "title": "Data Platform Explained Part II",
+                "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+                "publisher": "Spotify Engineering",
+                "date": "2024-05",
+                "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "이벤트 하나가 플랫폼을 지나는 길",
+          "question": "인프라 팀은 어디에 끼어드는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  T[\"<b>팀</b>\"] -->|\"① 이벤트 스키마를 정의한다\"| SCHEMA[\"스키마 정의<br/>(1,800+ 이벤트 종류)\"]:::list\n  SCHEMA -->|\"<b>② 인프라가 자동 배포된다</b><br/>인프라 팀 수작업 없음\"| INFRA[\"수집 인프라\"]:::accent\n  CLIENT[\"클라이언트\"] -->|\"하루 1조+ 이벤트\"| INFRA\n  T -->|\"③ 파이프라인을 쓴다 (대부분 Scio)\"| REPO[(\"저장소<br/><b>자원 정의가 코드와 같은 곳에</b><br/>codeowners · GitOps\")]:::list\n  REPO --> K8S[\"커스텀 K8s 오퍼레이터<br/>워크플로 정의 · 배포\"]\n  K8S --> SCHED{\"스케줄러\"}\n  SCHED --> BQ[\"BigQuery\"]\n  SCHED --> FL[\"Flink\"]\n  SCHED --> DF[\"Dataflow\"]\n  BQ & FL & DF --> EP[(\"<b>엔드포인트</b><br/>• 계보 (lineage)<br/>• 메타데이터 검색<br/>• 접근 통제<br/>• 보존 정책 (비용 + 규제)<br/>• 품질 검사\")]:::accent\n  EP --> LAKE[(\"데이터 레이크<br/>— RAP 이 다시 읽는다\")]:::quiet\n  BS[\"<b>Backstage</b><br/>모니터링 + 비용 분석\"] -.->|\"각 팀이 자기 것을 본다\"| REPO\n  PLAT[\"플랫폼 엔지니어 <b>100+</b>\"]:::quiet -.->|\"38,000 파이프라인 ÷ 100명 = 380<br/><b>모든 변경을 받을 수 없다</b>\"| K8S"
+        },
+        {
+          "title": "파이프라인 하나의 소유가 옮겨 가는 자리",
+          "question": "넘겨 준 뒤에는 누가 결정하는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 중앙: 몇 사람으로 시작한 팀\n  note right of 중앙\n    유럽 최대 하둡 클러스터 시절\n    모든 변경이 팀을 거친다\n  end note\n  중앙 --> 병목: 파이프라인이 38,000개가 된다\n  병목 --> 셀프서비스: 스키마 정의 → 인프라 자동 배포\n  note right of 셀프서비스\n    소비자가 대부분의 갱신을 직접 한다\n    인프라 팀이 끼어들지 않는다\n  end note\n  셀프서비스 --> 소유이전: 자원 정의가 팀 저장소로\n  note right of 소유이전\n    codeowners 가 관리자가 된다\n    — 소유가 파일 위치로 정해진다\n  end note\n  소유이전 --> 업그레이드난망: 플랫폼을 고쳐야 할 때\n  note right of 업그레이드난망\n    이제 38,000개는 남의 것이다\n    회사가 꼽은 어려움 —\n    \"사용자를 방해하지 않는 업그레이드\"\n    \"중요 작업의 신뢰성 보장\"\n  end note\n  업그레이드난망 --> 셀프서비스: 보이게 만들어 유도한다 (Backstage)"
+        },
+        {
+          "title": "실패 경로 — 넘겨 준 속도의 청구서",
+          "question": "38,000을 100명이 받을 수 없다면 무엇을 포기하는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  RATIO[\"<b>파이프라인 38,000 · 엔지니어 100</b>\"] --> CENTER[\"중앙에서 다 받는다\"]\n  CENTER --> BOTTLE[\"팀이 병목이 된다\"]:::quiet\n  RATIO --> FULL[\"완전히 분산한다\"]\n  FULL --> CHAOS[\"계보 · 메타데이터 · 접근 통제가<br/>제각각이 된다\"]:::quiet\n  RATIO --> MID[\"<b>균형 — 셀프서비스 + 자동 배포</b>\"]:::accent\n  MID --> FAST[\"요청-대기 고리가 사라진다\"]\n  MID --> AUTO[\"<b>잘못된 정의도 자동으로 배포된다</b><br/>(추정)\"]\n  MID --> OWN[\"38,000개가 남의 것이 된다\"]\n  OWN --> UP[\"<b>플랫폼 업그레이드가 어려워진다</b><br/>회사가 꼽은 어려움\"]\n  OWN --> REL[\"<b>중요 작업의 신뢰성 보장이 어려워진다</b><br/>회사가 꼽은 어려움\"]\n  COST[\"비용 효율\"] <-->|\"회사가 꼽은 어려움 —<br/>같은 손잡이의 양 끝\"| DX[\"개발자 경험\"]\n  COST --> LIMIT[\"제약하면 자유롭게 못 쓴다\"]\n  DX --> FREE[\"풀어 주면 <b>비용이 누구의 것도 아니게 된다</b> (해석)\"]\n  LIMIT & FREE --> SHOW[\"완화 — 강제 전에 <b>보이게</b> 한다<br/>Backstage 비용 분석 · 엔드포인트 보존 정책\"]:::quiet\n  FIN[\"재무 보고가 투자 계기 중 하나\"] -->|\"해석\"| NOSLACK[\"'늦어도 되는 잡'이 사라진다<br/>신뢰성 요구가 전체로 번진다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Data Platform Explained (Part I)",
+          "url": "https://engineering.atspotify.com/2024/4/data-platform-explained",
+          "publisher": "Spotify Engineering",
+          "date": "2024-04",
+          "summary": "유럽 최대 하둡 클러스터를 굴리던 시절에서 전사 데이터 플랫폼으로 온 과정. 수집·처리·관리 세 덩어리로 나뉘고 하루 **1.4조 데이터 포인트**를 처리한다. 플랫폼에 투자하게 만든 사업적 계기 다섯을 밝힌다."
+        },
+        {
+          "title": "Data Platform Explained Part II",
+          "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+          "publisher": "Spotify Engineering",
+          "date": "2024-05",
+          "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -625,7 +1101,9 @@
     "RAP 글은 **인덱스가 어디에 사는지**(별도 시스템인지 파일 옆인지) 밝히지 않는다.",
     "RAP 의 **QPS·처리량·비용 수치가 없다** — 지연은 저장소 자체의 값(GCS 30~100ms)만 나온다.",
     "사고 보고서는 **영향받은 쇼·에피소드·이용자 수를 공개하지 않는다.**",
-    "'Data Platform Explained' 는 1부라 각 구성 요소의 내부 설계가 아직 없다."
+    "2부까지 읽었지만 **스케줄러의 구체적인 구현**(자체 제작인지 기존 도구인지)은 밝히지 않는다.",
+    "**품질 검사가 실패하면 어떻게 되는지** — 파이프라인을 막는지 경고만 하는지 적혀 있지 않다.",
+    "**실험 플랫폼**은 아직 도메인으로 열지 않았다 — 자료는 확인했다(`when-can-llms-replace-humans-in-a-b-tests` 2026-08, `better-experiments-with-llm-evals` 2026-05). 다음 사이클의 후보다."
   ],
   "sources": [
     {
@@ -655,6 +1133,13 @@
       "publisher": "Spotify IR / SEC",
       "date": "2026",
       "summary": "2025 회계연도 매출 총 17,186백만 유로. **프리미엄 15,350(89%) · 광고 1,836(11%).** 프리미엄은 1,531백만(11%) 늘었고 **광고는 18백만(1%) 줄었다.**"
+    },
+    {
+      "title": "Data Platform Explained Part II",
+      "url": "https://engineering.atspotify.com/2024/05/data-platform-explained-part-ii",
+      "publisher": "Spotify Engineering",
+      "date": "2024-05",
+      "summary": "1부가 '왜'였다면 2부는 '무엇으로'다. 하루 **1조 개 넘는 이벤트**와 **활성 스케줄 파이프라인 38,000개**를 **엔지니어 100여 명**이 받치는 구조 — Scio(Beam) · BigQuery/Flink/Dataflow · 커스텀 K8s 오퍼레이터 · Backstage. 중앙집중과 분산 소유의 균형을 어떻게 잡았는지가 핵심이다."
     }
   ]
 }
