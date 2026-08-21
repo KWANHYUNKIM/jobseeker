@@ -1540,7 +1540,70 @@
           "date": "2020-05-07",
           "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
         }
-      ]
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Hidden Technical Debt in Machine Learning Systems",
+            "authors": "D. Sculley 외 (Google)",
+            "year": "2015",
+            "venue": "NeurIPS 2015",
+            "url": "https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+            "takeaway": "이 기능의 전체 논리를 그대로 담은 글. 요지는 **ML 시스템에서 모델은 작은 상자이고 진짜 일은 그 주변**이라는 것인데, 쿠팡이 '진짜 과제는 랭킹 알고리즘이 아니라 시그널을 얼마나 빨리 만들 수 있느냐'라고 쓴 것과 같은 말이다. 특히 논문이 이름 붙인 **'파이프라인 정글(pipeline jungle)'** 이 쿠팡의 '약 70개의 개별 파이프라인, 유지가 거의 불가능했다'와 정확히 같은 현상이다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Learning to Rank for Information Retrieval",
+            "authors": "Tie-Yan Liu (Microsoft Research)",
+            "year": "2009",
+            "venue": "Foundations and Trends in Information Retrieval 3(3)",
+            "url": "https://www.nowpublishers.com/article/Details/INR-016",
+            "takeaway": "'관련성만이 아니라 평점·리뷰·가격·브랜드까지 함께 본다'는 결정이 서 있는 자리 — 여러 시그널을 하나의 순서로 학습해 합치는 문제군이다. 다만 이 분야가 전제하는 **정답 라벨(무엇이 더 좋은 결과인가)이 커머스에서는 주어지지 않는다.** 쿠팡의 '좋은 답은 질문에 맞는 문서가 아니라 사도 될 물건'이라는 문장이 그 간극을 가리킨다. **쿠팡이 인용한 적은 없고, 어떤 모델을 쓰는지도 글에 없다.**",
+            "confidence": "inferred"
+          },
+          {
+            "title": "Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing",
+            "authors": "Matei Zaharia 외 (UC Berkeley)",
+            "year": "2012",
+            "venue": "NSDI 2012",
+            "url": "https://www.usenix.org/conference/nsdi12/technical-sessions/presentation/zaharia",
+            "takeaway": "쿠팡이 index merger·index builder·Session Log 파서를 전부 Spark 로 만든 이유의 바닥. 이 논문의 요점은 **중간 결과를 디스크에 되쓰지 않고 메모리에 두면서도 계보(lineage)로 장애를 복구한다**는 것이고, 그래서 여러 단계를 잇는 잡에서 MapReduce 보다 크게 유리하다. 쿠팡이 '확장이 쉬워 택했다'고만 적은 자리다. **쿠팡이 인용한 적은 없다.**",
+            "confidence": "inferred"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "커머스 검색에서 '가장 좋은 결과'가 무엇인지 정의할 수 없다",
+            "why_hard": "**최적화할 대상 자체가 정해지지 않는다.** 웹 검색에는 관련성이라는 비교적 합의된 기준이 있지만, 커머스에서 좋은 답은 '질문에 맞는 문서'가 아니라 '사도 될 물건'이다. 그런데 그 판단에 들어가는 것들 — 가격·평점·리뷰·브랜드·재고 — 은 **서로 다툰다.** 싼 것과 평점 높은 것 중 무엇을 위에 둘지는 데이터가 정해 주지 않고, 고객·판매자·회사의 이해도 같지 않다. 정답 라벨이 없으니 학습으로 밀어붙일 수도 없다.",
+            "current_best": "**정의를 고정하는 대신 실험 속도를 산다.** 무엇이 좋은지 모르니 빨리 시도해 보는 쪽으로 가고, 그래서 이 도메인의 투자가 랭킹 모델이 아니라 **시그널을 만드는 시간**(며칠 → 몇 시간)으로 갔다. 쿠팡 스스로 '시그널을 빨리 만드는 능력 자체가 검색 품질의 상한'이라고 적었다. 대가는 시그널을 **프레임워크가 정한 모양 안에서만** 만들 수 있다는 것이다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          },
+          {
+            "problem": "파이프라인은 잘하고 있을 때 늘어난다",
+            "why_hard": "**시그널이 하나 늘 때마다 그것을 만드는 경로가 하나 는다.** 각 경로는 조금씩 다른 소스·스케줄·실패 모드를 갖는데, 하나하나는 전부 합리적인 결정이었다. 문제는 합쳐졌을 때 생긴다 — 쿠팡의 경우 **약 70개에 이르러 유지가 거의 불가능해졌고 자원도 크게 낭비했다.** 이것이 보통의 기술 부채와 다른 점은 **일을 잘할수록 빨리 자란다**는 것이다. 위의 첫 번째 난제에 대한 답(실험을 많이 빨리)이 그대로 이 문제의 연료가 된다.",
+            "current_best": "**새 경로를 만들 수 없게 한다.** 외부 Hive 테이블에서 병합하던 방식을 버리고 시그널 생성을 플랫폼 안(Indexing Bus)으로 들인 뒤, 개발 단위를 **'클래스 하나를 구현하는 것'** 으로 좁혔다. 만들 자유를 줄여서 늘어남을 막는 방식이다. 대가는 플랫폼이 더 무거워지고 더 많은 책임을 진다는 것, 그리고 범위를 추천·광고까지 넓힐수록 **회사의 단일 의존점**이 된다는 것이다 — 회사 스스로 이를 '쿠팡 비즈니스의 두뇌'라고 부른다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Fueling the Coupang search engine — 검색 인덱싱 플랫폼의 진화",
+                "url": "https://medium.com/coupang-engineering/the-evolution-of-search-discovery-indexing-platform-fa43e41305f9",
+                "publisher": "Coupang Engineering Blog · Winter Wang",
+                "date": "2020-05-07",
+                "summary": "질의 이해 → 검색 → 랭킹의 3단계 위에서, 인덱싱 플랫폼이 0.1(RDB 조인 + 온라인 클러스터 인덱스 빌드) → 1.0(Hadoop·Spark·ProductJoin·HBase) → 2.0(Indexing Bus, 시그널을 플랫폼 위에서 직접 생성)으로 바뀐 과정. 2.0 이전에는 시그널 파이프라인이 약 70개였다."
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "key": "core-serving",

@@ -117,3 +117,4 @@ STATE.md 가 "다음 실행이 알아야 할 것"이라면 여기는 "무엇을 
 | 107 | 2026-08-21 | 쿠팡 | 배송 약속 research — Helland 안팎의 데이터·Eventually Consistent·Tail at Scale. **쓰기 경계와 읽기 화면이 어긋난다**가 축 | 보강 계속 (research 61) |
 | 108 | 2026-08-21 | 쿠팡 | 배송 영역 research — DGGS·벌집 추측·R-tree. **연속 공간을 이산으로 덮을 때 남는 잔차**가 축. 오각형 예외가 흠이 아니라 필연임이 드러난다 | 보강 계속 (research 60) |
 | 109 | 2026-08-21 | 쿠팡 | SCM 워크플로 research — Conway·시각 프로그래밍 인지 차원·데이터플로. **병목이 옮겨갈 뿐 사라지지 않는다**는 고리가 드러난다 | 보강 계속 (research 59) |
+| 110 | 2026-08-21 | 쿠팡 | 검색 인덱싱 research — ML 시스템 기술 부채·Learning to Rank·RDD. **파이프라인 정글이 70개라는 수치와 정확히 겹친다** | 보강 계속 (research 58) |
