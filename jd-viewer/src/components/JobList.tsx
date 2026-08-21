@@ -94,8 +94,8 @@ export function JobList({ jobs, selected, onSelect }: Props) {
       {/* 데스크톱: 표 */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-sm border-collapse">
-          <thead className="bg-(--color-panel) border-b border-(--color-border) sticky top-0 z-10">
-            <tr className="text-left text-(--color-muted)">
+          <thead className="jd-panel-head sticky top-0 z-10">
+            <tr className="text-left text-(--color-muted) font-medium">
               <th className="px-3 py-2 font-medium w-10">#</th>
               <th className="px-3 py-2 font-medium w-20">사이트</th>
               <th className="px-3 py-2 font-medium w-48">회사</th>

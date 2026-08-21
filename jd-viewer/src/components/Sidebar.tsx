@@ -33,11 +33,11 @@ function toggle<T>(set: Set<T>, val: T): Set<T> {
 
 export function Sidebar({ filter, setFilter, topStacks, roleCounts, totalCount, filteredCount, open, onClose, semantic }: Props) {
   return (
-    <SidePanel side="left" desktopWidth="md:w-72" open={open} onClose={onClose}>
+    <SidePanel side="left" desktopWidth="md:w-72" open={open} onClose={onClose} className="jd-side-panel">
      <div className="p-4 overflow-y-auto flex flex-col gap-5 text-sm h-full">
       <div className="flex items-start">
         <div>
-          <h1 className="text-lg font-semibold text-(--color-text)">JD Viewer</h1>
+          <h1 className="text-lg font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">JD Viewer</span></h1>
           <p className="text-xs text-(--color-muted) mt-1">
             {filteredCount.toLocaleString()} / {totalCount.toLocaleString()} 건
           </p>

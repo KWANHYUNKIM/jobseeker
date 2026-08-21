@@ -63,7 +63,7 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           ← 회사 목록
         </button>
         <div className="flex items-baseline gap-2 flex-wrap">
-          <h2 className="text-lg font-semibold text-(--color-text)">{c.name}</h2>
+          <h2 className="text-lg font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">{c.name}</span></h2>
           <span className="text-sm text-(--color-muted)">{c.name_en}</span>
           <span className="text-[11px] px-1.5 py-0.5 rounded border border-(--color-border) text-(--color-muted)">
             {c.category}
@@ -554,7 +554,7 @@ function Section({
   return (
     <section>
       <h3 className="text-base font-semibold text-(--color-text)">
-        {title}
+        <span className="jd-head">{title}</span>
         {sub && <span className="ml-2 text-xs font-normal text-(--color-muted)">{sub}</span>}
       </h3>
       <div className="mt-2">{children}</div>

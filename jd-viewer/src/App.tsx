@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { Sidebar } from './components/Sidebar'
 import { JobList } from './components/JobList'
 import { JobDetail } from './components/JobDetail'
-import { TechChart } from './components/TechChart'
 import { CareerMap } from './components/CareerMap'
 import { CompanyView } from './components/CompanyView'
 import { BlogView } from './components/BlogView'
@@ -66,7 +65,6 @@ function App() {
     const byUrl = new Map(jobs.map((j) => [j.url, j]))
     return hits.map((h) => byUrl.get(h.url)).filter((j): j is Job => Boolean(j))
   }, [hits, localFiltered, jobs])
-  const stacks = useMemo(() => stackCounts(filtered), [filtered])
   const allStacks = useMemo(() => stackCounts(jobs), [jobs])
   const allRoles = useMemo(() => roleCounts(jobs), [jobs])
 
@@ -119,11 +117,11 @@ function App() {
       </nav>
 
       {tab === 'companies' ? (
-        <div key="companies" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="companies" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <CompanyView focusNorm={companyFocus} onStudyTech={openStudy} />
         </div>
       ) : tab === 'blog' || tab === 'radar' ? (
-        <div key="blogradar" className="flex flex-col flex-1 min-h-0 jd-fade-in">
+        <div key="blogradar" className="flex flex-col flex-1 min-h-0 jd-fade-in jd-canvas">
           <div className="flex items-center gap-3 px-4 py-2 border-b border-(--color-border) bg-(--color-panel)/60">
             <div className="inline-flex rounded-md border border-(--color-border) overflow-hidden shrink-0">
               <ModeBtn active={tab === 'blog'} onClick={() => setTab('blog')}>블로그 글</ModeBtn>
@@ -136,17 +134,17 @@ function App() {
           {tab === 'blog' ? <BlogView /> : <RadarView />}
         </div>
       ) : tab === 'calendar' ? (
-        <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="calendar" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <CalendarView />
         </div>
       ) : tab === 'reposts' ? (
         <RepostView />
       ) : tab === 'trend' ? (
-        <div key="trend" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="trend" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <TrendView onOpenCompany={openCompany} focusTech={techFocus} />
         </div>
       ) : tab === 'reveng' ? (
-        <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in">
+        <div key="reveng" className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
           <RevengView />
         </div>
       ) : tab === 'jobs' ? (
@@ -159,7 +157,7 @@ function App() {
             hint={<>public/all_jobs_enriched.json 이 있는지 확인하세요.</>}
           />
         ) : (
-          <div className="flex flex-1 min-h-0 jd-fade-in">
+          <div className="flex flex-1 min-h-0 jd-fade-in jd-canvas">
             <Sidebar
               filter={filter}
               setFilter={setFilter}
@@ -175,13 +173,12 @@ function App() {
                   : undefined
               }
             />
-            <main className="flex-1 min-w-0 overflow-auto">
+            <main className="flex-1 min-w-0 overflow-auto jd-panel">
               <MobileBar onMenu={() => setFilterOpen(true)} label="필터">
                 <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
                   {filtered.length.toLocaleString()}건
                 </span>
               </MobileBar>
-              <TechChart data={stacks} onPick={toggleStack} highlight={filter.stacks} />
               <JobList jobs={filtered} selected={selected} onSelect={setSelected} />
             </main>
             {selected && (
@@ -194,7 +191,7 @@ function App() {
           </div>
         )
       ) : (
-        <div key="mindmap" className="flex flex-1 min-h-0 relative jd-fade-in">
+        <div key="mindmap" className="flex flex-1 min-h-0 relative jd-fade-in jd-canvas">
           <CareerMap />
         </div>
       )}

@@ -5,16 +5,20 @@
    그 사이트에서 실측한 값: 바탕 흰색, 본문 #030712, 보조 글자 rgba(62,74,92,.61),
    구분선 rgba(92,102,118,.16), 브랜드색 teal #03AEA0, 모서리 12px, 그림자는 거의 없음. */
 @theme {
-  --color-bg: #ffffff;        /* 페이지 바탕 */
-  --color-panel: #ffffff;     /* 카드·패널 — 바탕과 같고 구분은 선으로 한다 */
-  --color-band: #f6f7f8;      /* 구역을 나누는 옅은 띠 */
-  --color-border: #e3e5e9;    /* 구분선 */
-  --color-border-soft: #eef0f2;
-  --color-text: #030712;      /* 본문 */
-  --color-muted: #667085;     /* 보조 글자 — 부제·메타 */
-  --color-faint: #98a1b0;     /* 더 뒤로 물린 글자 */
-  --color-accent: #03AEA0;    /* 브랜드 teal */
-  --color-accent-weak: #e6f7f5;
+  /* 회색을 쓰기로 했으면 바탕이 완전한 흰색이면 안 된다 — 흰 카드가 떠 보이지 않는다.
+     캔버스(bg)는 옅은 회색, 그 위에 흰 패널(panel)을 올려 칸을 잡는다.
+     다크 때와 위계가 같다: bg 가 뒤로 물러나고 panel 이 앞으로 나온다. */
+  --color-bg: #eef1f4;        /* 캔버스 — 페이지 바탕 */
+  --color-panel: #ffffff;     /* 카드·패널 — 캔버스 위에 올라앉는 면 */
+  --color-band: #f5f7f9;      /* 패널 안에서 구역을 나누는 띠 */
+  --color-border: #d3d8de;    /* 구분선 — 흐리면 칸이 안 잡혀서 또렷하게 */
+  --color-border-soft: #e6e9ed;
+  --color-text: #000000;      /* 본문 — 완전한 검정 */
+  --color-muted: #4a515e;     /* 보조 글자 — 부제·메타. 회색이 아니라 짙은 먹빛 */
+  --color-faint: #737b88;     /* 더 뒤로 물린 글자 */
+  --color-accent: #00897B;    /* 브랜드 teal — 한빛보다 한 단계 진하게 */
+  --color-accent-deep: #00695C;
+  --color-accent-weak: #d6efec;
   --color-on-accent: #ffffff;
 
   /* 모서리 — 한빛에서 실측하면 12px 가 압도적(162회)이고 칩은 pill, 작은 것만 8px.
@@ -51,15 +55,73 @@ html, body, #root {
    Tailwind 팔레트 변수만 덮어쓰면 text-/bg-/border- 유틸이 전부 따라오므로
    컴포넌트는 건드리지 않는다. 채도를 낮춰 본문(#030712)과 다투지 않게 한다. */
 :root {
-  --color-red-400: #d92d20;      /* 오류·마감 */
-  --color-red-500: #b42318;
-  --color-amber-400: #b54708;    /* 주의 */
-  --color-amber-500: #93370d;
-  --color-sky-300: #0b6bcb;      /* 링크·강의 */
-  --color-sky-400: #0b6bcb;
+  --color-red-400: #c01a10;      /* 오류·마감 */
+  --color-red-500: #9e1209;
+  --color-amber-400: #9a3a06;    /* 주의 */
+  --color-amber-500: #7c2d05;
+  --color-sky-300: #0a58a8;      /* 링크·강의 */
+  --color-sky-400: #0a58a8;
   --color-emerald-300: var(--color-accent);  /* 기술 태그 */
   --color-emerald-400: var(--color-accent);
-  --color-blue-400: #0b6bcb;
+  --color-blue-400: #0a58a8;
+}
+
+/* ── 제목 하이라이트 ───────────────────────────────────────────────────────
+   형광펜으로 그은 것처럼 글자 아래쪽에만 색을 깐다. 배경을 통째로 칠하면
+   제목이 버튼처럼 보여서, 글자 높이의 아래 45% 만 덮는다.
+   inline 이라 제목이 두 줄로 접혀도 줄마다 따라 그어진다. */
+.jd-head {
+  display: inline;
+  background-image: linear-gradient(
+    transparent 55%,
+    color-mix(in srgb, var(--color-accent) 42%, transparent) 55%
+  );
+  background-repeat: no-repeat;
+  padding: 0 0.14em 0.04em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 페이지 최상단 제목은 조금 더 진하게 — 위계를 색 농도로 준다 */
+.jd-head-lg {
+  background-image: linear-gradient(
+    transparent 52%,
+    color-mix(in srgb, var(--color-accent) 55%, transparent) 52%
+  );
+}
+
+/* ── 프레임과 그룹 ─────────────────────────────────────────────────────────
+   회색 캔버스 위에 흰 패널을 얹고 테두리로 칸을 잡는다. 무엇이 한 덩어리인지
+   눈에 바로 잡히게 하는 것이 목적이라, 패널 사이는 캔버스가 보이도록 띄운다. */
+.jd-panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* 패널 안의 머리 — 목록·표의 제목 줄. 아래로 선을 그어 본문과 가른다. */
+.jd-panel-head {
+  background: var(--color-band);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 좌우 사이드 패널 — 데스크톱에서만 프레임을 준다.
+   모바일에서는 화면을 덮는 드로어라 테두리가 의미 없다. */
+@media (min-width: 768px) {
+  .jd-side-panel {
+    background: var(--color-panel);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+}
+
+/* 본문 영역을 감싸는 캔버스 여백 — 패널이 화면 끝에 붙지 않게 한다 */
+.jd-canvas {
+  background: var(--color-bg);
+  padding: 12px;
+  gap: 12px;
 }
 
 /* 스크롤바 — 흰 바탕에 맞춘 옅은 회색 */
