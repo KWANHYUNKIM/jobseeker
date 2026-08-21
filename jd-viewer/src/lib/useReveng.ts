@@ -78,6 +78,31 @@ export interface Connection {
   confidence?: Confidence
 }
 
+// 회사 밖의 근거 — engine/STYLE.md 7번.
+// 회사 자료만 읽으면 '이 회사는 이렇게 했다'에서 끝나고, 왜 그것 말고 다른 수가
+// 없었는지가 안 보인다. 그 답은 대개 논문과 난제 쪽에 있다.
+export interface Paper {
+  title: string
+  authors?: string
+  year?: string
+  venue?: string
+  url: string
+  takeaway: string
+  confidence?: Confidence
+}
+
+// open_questions 와 다르다 — 저건 '내가 못 찾은 것', 이건 '업계가 아직 못 푼 것'.
+export interface HardProblem extends Claim {
+  problem: string
+  why_hard: string
+  current_best?: string
+}
+
+export interface Research {
+  papers?: Paper[]
+  hard_problems?: HardProblem[]
+}
+
 export interface Feature {
   key: string
   name: string
@@ -86,7 +111,10 @@ export interface Feature {
   business: { why: string; metrics?: Metric[] }
   thinking?: Thought[]
   domain_model?: {
-    entities?: { name: string; what: string }[]
+    // 스키마는 {name, what} 객체지만, 초기 사이클들이 "이름 — 설명" 한 문자열로 적은
+    // 데이터가 6개 회사 14개 기능에 남아 있다. 화면은 둘 다 읽는다 — 객체만 읽으면
+    // 그 14개는 빈 줄로 나온다. 엔진 쪽은 validate.py 가 경고로 몰아간다.
+    entities?: ({ name: string; what: string } | string)[]
     invariants?: string[]
   }
   implementation?: {
@@ -95,6 +123,7 @@ export interface Feature {
     stack?: StackItem[]
   }
   connections?: Connection[]
+  research?: Research
   diagrams?: Diagram[]
   diagram?: string
   sources?: Source[]

@@ -210,3 +210,72 @@ html, body, #root {
 }
 .blog-video-file { max-width: 100%; border-radius: 8px; margin: 1em 0; }
 .blog-md hr { border: none; border-top: 1px solid var(--color-border); margin: 1.4em 0; }
+
+/* ── 인라인 마크다운(Md.tsx) ───────────────────────────────────────────────
+   역설계 데이터의 본문 필드에 들어 있는 `**…**` 를 굵기가 아니라 하이라이트로
+   그린다. 저자가 굵게 쓴 자리는 문단의 결론이라 긴 글에서 눈에 걸려야 한다.
+   다크에서는 액센트 틴트, 라이트에서는 형광펜처럼 노란기 없는 회색 밴드. */
+.md-mark {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  color: var(--color-text);
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 0.05em 0.28em;
+  margin: 0 -0.04em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+:root.light .md-mark {
+  background: color-mix(in srgb, var(--color-text) 11%, transparent);
+  box-shadow: inset 0 -0.42em 0 color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+.md-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.08em 0.32em;
+  white-space: nowrap;
+}
+
+/* 본문 선택 하이라이트 — 드래그로 짚어 가며 읽을 수 있게 대비를 준다.
+   기본 파랑은 이 팔레트 위에서 글자를 삼킨다. */
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-text);
+}
+
+/* ── 역설계 본문 가독성 ────────────────────────────────────────────────────
+   한글 긴 문단이라 줄길이·자간·행간을 본문 전용으로 따로 잡는다. */
+.reveng-prose {
+  line-height: 1.78;
+  letter-spacing: -0.003em;
+  word-break: keep-all;      /* 한글 어절 중간에서 끊지 않는다 */
+  overflow-wrap: anywhere;   /* 다만 긴 URL·영문 토큰은 넘치게 두지 않는다 */
+  max-width: 74ch;
+}
+
+/* ── Mermaid 다이어그램 ────────────────────────────────────────────────────
+   mermaid 가 인라인으로 박는 색을 앱 팔레트로 덮는다. themeVariables 로는
+   엣지 라벨 배경·서브그래프 라벨까지 닿지 않는다. */
+.mmd svg { max-width: none; height: auto; }
+.mmd .edgeLabel,
+.mmd .edgeLabel p {
+  background: var(--color-panel) !important;
+  color: var(--color-muted) !important;
+  fill: var(--color-panel) !important;
+}
+.mmd .edgeLabel rect { fill: var(--color-panel) !important; opacity: 0.92; }
+.mmd .cluster rect {
+  fill: color-mix(in srgb, var(--color-text) 4%, transparent) !important;
+  stroke: var(--color-border) !important;
+  rx: 10px; ry: 10px;
+}
+.mmd .cluster-label,
+.mmd .cluster span { color: var(--color-muted) !important; font-weight: 600; }
+.mmd .node rect, .mmd .node polygon, .mmd .node circle, .mmd .node path {
+  rx: 7px; ry: 7px;
+}
+.mmd .flowchart-link { stroke-width: 1.6px; }
+.mmd .marker { stroke: var(--color-muted) !important; fill: var(--color-muted) !important; }
