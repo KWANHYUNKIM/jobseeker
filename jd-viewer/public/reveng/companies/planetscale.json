@@ -4,11 +4,11 @@
   "name_en": "PlanetScale",
   "country": "US",
   "category": "SaaS",
-  "status": "in_progress",
+  "status": "done",
   "updated_at": "2026-08-22",
   "domain": "planetscale.com",
   "one_liner": "남의 데이터를 맡는 쪽 — 백업이 부가 기능이 아니라 제품이고, 고객의 실수까지 자기 문제로 받는다",
-  "business_model": "**관리형 데이터베이스를 판다.** 제품은 두 갈래다 — **Postgres** 와 **Vitess(MySQL)**. Vitess 의 출처를 회사가 직접 적는다: *\"Vitess 는 대규모 데이터베이스 인스턴스 클러스터를 배포·확장·관리하기 위해 **YouTube 에서 발명된**, 실전에서 단련된 오픈소스 기술이다.\"* PlanetScale 은 그 **Operator 를 유지**하고 호스팅을 판다.\n\n**과금이 사용량이 아니라 인스턴스 크기(SKU)** 라는 점이 눈에 띈다. 요금은 *\"클러스터 크기 + 스토리지(EBS) + 백업 + 이그레스\"* 로 짜여 있고, AWS us-east-1 기준으로 Postgres **EBS HA(3노드)** 가 `PS-5` **월 $15** 부터 `PS-2560` **월 $5,599** 까지, **metal(3노드)** 이 `M-10` **$50** 부터 `M-7680` **$47,229** 까지다. Vitess 는 non-metal 3노드가 `PS-10` **$39** ~ `PS-2800` **$7,199**. 요금 페이지에 **무료 티어는 없다.**\n\n**metal 과 EBS 를 갈라 파는 것 자체가 이 회사의 성격을 보여 준다**(이 해석은 이 사이트의 것이다) — metal SKU 는 **스토리지가 값에 포함**되고(로컬 디스크), EBS 는 네트워크 스토리지를 따로 센다. **저장이 어디에 붙느냐를 상품 라인으로 만든 것**이다.\n\n**이 사이트의 다른 인프라 회사들과 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **Cloudflare · Datadog · Grafana** 는 앞단이나 관측을 맡는다. 잘못되면 느려지거나 안 보인다. **PlanetScale 은 원본 데이터를 맡는다** — 잘못되면 없어진다.\n- **그래서 백업이 부가 기능이 아니라 제품이다.** **12시간마다** 백업하되 **프로덕션에 부담을 주지 않는 것**을 설계 목표로 두고, 샤드마다 임시 노드를 띄워 돌린다.\n- **고객의 실수까지 자기 문제로 받는다.** 연결 풀 오염 글은 원인이 **고객의 애플리케이션 코드**라고 분명히 적으면서도, `DISCARD ALL` 로 풀을 초기화해 주고 예방책까지 안내한다. **맡아 두는 쪽은 '누구 잘못인가'로 끝낼 수 없다**(이 정리는 이 사이트의 것이다).\n- **이 사이트의 두 회사가 각자 겪은 일을 이 회사는 제품으로 판다.** **Vinted** 는 Vitess 로 옮기며 질의 1만 단위를 고치고 2021년 한 해를 이관에 썼고, **Zerodha** 는 Citus 가 *\"수백 개의 질의를 다시 쓰게\"* 만든다는 이유로 거부하고 직접 샤딩했다. PlanetScale 은 **그 일을 대신 해 주겠다는 쪽**이다.",
+  "business_model": "**관리형 데이터베이스를 판다.** 제품은 두 갈래다 — **Postgres** 와 **Vitess(MySQL)**. Vitess 의 출처를 회사가 직접 적는다: *\"Vitess 는 대규모 데이터베이스 인스턴스 클러스터를 배포·확장·관리하기 위해 **YouTube 에서 발명된**, 실전에서 단련된 오픈소스 기술이다.\"* PlanetScale 은 그 **Operator 를 유지**하고 호스팅을 판다.\n\n**과금이 사용량이 아니라 인스턴스 크기(SKU)** 라는 점이 눈에 띈다. 요금은 *\"클러스터 크기 + 스토리지(EBS) + 백업 + 이그레스\"* 로 짜여 있고, AWS us-east-1 기준으로 Postgres **EBS HA(3노드)** 가 `PS-5` **월 $15** 부터 `PS-2560` **월 $5,599** 까지, **metal(3노드)** 이 `M-10` **$50** 부터 `M-7680` **$47,229** 까지다. Vitess 는 non-metal 3노드가 `PS-10` **$39** ~ `PS-2800` **$7,199**. 요금 페이지에 **무료 티어는 없다.**\n\n**metal 과 EBS 를 갈라 파는 것 자체가 이 회사의 성격을 보여 준다**(이 해석은 이 사이트의 것이다) — metal SKU 는 **스토리지가 값에 포함**되고(로컬 디스크), EBS 는 네트워크 스토리지를 따로 센다. **저장이 어디에 붙느냐를 상품 라인으로 만든 것**이다.\n\n**이 사이트의 다른 인프라 회사들과 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **Cloudflare · Datadog · Grafana** 는 앞단이나 관측을 맡는다. 잘못되면 느려지거나 안 보인다. **PlanetScale 은 원본 데이터를 맡는다** — 잘못되면 없어진다.\n- **그래서 백업이 부가 기능이 아니라 제품이다.** **12시간마다** 백업하되 **프로덕션에 부담을 주지 않는 것**을 설계 목표로 두고, 샤드마다 임시 노드를 띄워 돌린다.\n- **고객의 실수까지 자기 문제로 받는다.** 연결 풀 오염 글은 원인이 **고객의 애플리케이션 코드**라고 분명히 적으면서도, `DISCARD ALL` 로 풀을 초기화해 주고 예방책까지 안내한다. **맡아 두는 쪽은 '누구 잘못인가'로 끝낼 수 없다**(이 정리는 이 사이트의 것이다).\n- **이 사이트의 두 회사가 각자 겪은 일을 이 회사는 제품으로 판다.** **Vinted** 는 Vitess 로 옮기며 질의 1만 단위를 고치고 2021년 한 해를 이관에 썼고, **Zerodha** 는 Citus 가 *\"수백 개의 질의를 다시 쓰게\"* 만든다는 이유로 거부하고 직접 샤딩했다. PlanetScale 은 **그 일을 대신 해 주겠다는 쪽**이다.\n\n**세 기능을 다 판 뒤에 보이는 것 — 남의 것을 맡으면 남의 실수도 맡는다**(이 해석은 이 사이트의 것이고, 셋 다에서 확인된다).\n\n- **동시성** 쪽에서는 **고객의 15분짜리 트랜잭션**이 시스템을 무너뜨렸다. 그 트랜잭션을 막을 권한이 없으니 **번지는 것만** vttablet 상한으로 막았다.\n- **연결 풀** 쪽에서는 **고객 코드가 남긴 세션 상태**가 아무 잘못 없는 다른 요청을 깨뜨렸다. 할 수 있는 것은 `DISCARD ALL` 로 **씻어내고 알려 주는 것**뿐이다.\n- **백업** 쪽에서는 아예 방향을 뒤집었다 — **고객이 실수해도 되돌릴 수 있게** 12시간마다 복원 가능한 상태를 만들어 둔다.\n\n**세 기능이 전부 '내가 통제할 수 없는 것이 내 시스템 안에서 벌어진다'를 다룬다.** 그리고 **고칠 권한이 없는 것은 고객 쪽만이 아니다** — 서브트랜잭션 오버플로의 근본 해법은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"* **이 회사는 Postgres 를 만들지 않는다.**\n\n**그래서 이 회사에서는 글을 쓰는 것 자체가 대응 수단이 된다** — 두 사고 글 모두 **막지 못한 일을 원인·재현·조치·예방까지 공개한 기록**이다.",
   "products": [
     "PlanetScale for Postgres (관리형)",
     "PlanetScale for Vitess / MySQL (관리형)",
@@ -169,9 +169,26 @@
               "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
             }
           ]
+        },
+        {
+          "tech": "서브트랜잭션 오버플로 — 고객이 만든 줄도 모르는 것",
+          "solves": "같은 도메인의 더 어려운 얼굴이다. 서브트랜잭션은 `SAVEPOINT` 로도 만들지만 **ORM 이 자동으로**, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드가 캐시하는 서브xid 는 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**이고, 넘으면 `pg_subtrans` 를 SLRU 로 뒤진다. 대응은 **짧게 쓰기 + 감시**다(`pg_stat_get_backend_subxact()` · `pg_stat_slru` · `pg_stat_activity`).",
+          "limits": "**영향이 그 트랜잭션 밖으로 나간다** — *\"클러스터 전체의 질의가 느려질 수 있고\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌다. **새 읽기 레플리카는 접속조차 못 받는다**(`STANDBY_SNAPSHOT_PENDING`). 그리고 **손쓸 데가 없다** — 한도를 키워 재컴파일해도 **미룰 뿐**이고, 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치가 있는데도 *\"어느 것도 머지되지 않았다.\"*",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "The dangers of Postgres subtransactions",
+              "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+              "publisher": "PlanetScale",
+              "date": "2026-08-11",
+              "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "tenant-blast-radius"
+      ]
     }
   ],
   "open_questions": [
@@ -184,7 +201,9 @@
     "**트랜잭션 풀 상한의 적정값을 어떻게 정하는지 회사가 밝히지 않는다** — 1,000 남짓으로 되돌린 근거가 *\"예전 스레드 풀이 쓰던 값\"* 이라, 워크로드가 바뀌면 다시 틀릴 수 있다.",
     "**긴 트랜잭션을 만든 고객 코드가 무엇이었는지, 그 뒤 고쳐졌는지** 글에 없다 — 원인은 남아 있다.",
     "**백업 회차가 실패하면 어떻게 되는지 글에 없다** — 임시 노드 프로비저닝이나 WAL 재생이 어긋났을 때 무엇이 보장되지 않는지, 다음 회차가 어떻게 이어받는지 나오지 않는다.",
-    "**복구가 실제로 검증되는지에 대한 문장을 찾지 못했다.** 절차상 매 회차가 직전 백업을 복원하지만, 회사가 그것을 복구 검증으로 설명하지는 않는다."
+    "**복구가 실제로 검증되는지에 대한 문장을 찾지 못했다.** 절차상 매 회차가 직전 백업을 복원하지만, 회사가 그것을 복구 검증으로 설명하지는 않는다.",
+    "**`DISCARD ALL` 을 상시로 도는지 사고 때만 도는지 글에서 분명하지 않다.** 매 반환마다 돌리면 오염은 원천 차단되지만 왕복 비용이 생기는데, 그 균형을 어떻게 잡는지 나오지 않는다.",
+    "**오염된 커넥션 풀 글에는 수치가 전혀 없다** — 얼마나 많은 요청이 영향을 받았는지, 얼마나 오래 갔는지 알 수 없다."
   ],
   "sources": [
     {
@@ -235,6 +254,13 @@
       "publisher": "PlanetScale",
       "date": "2026-07-24",
       "summary": "백업이 실제로 무엇으로 이뤄지는지 — *\"연속 아카이빙은 파일시스템 백업과 WAL(선행 기록 로그)을 합친 것이다.\"* 베이스 백업은 특정 LSN 시점의 파일 상태이고(`start_lsn` ~ `end_lsn`), 그 뒤는 WAL 이 채운다. *\"WAL 이 계속 S3 로 저장되므로, 어떤 백업이든 복원해서 `end_lsn` 너머로 WAL 을 이어 재생하면 임의의 시점으로 되돌릴 수 있다.\"* **버린 대안 둘** — 논리 백업(`pg_dump`)은 *\"30TB 에서 성공한다 해도 자원을 많이 먹고\"* **PITR 이 안 되며** 큰 클러스터에서 **트랜잭션 랩어라운드 위험**이 있다. 오프라인 파일시스템 백업은 *\"매일 백업하자고 몇 시간씩 데이터베이스를 내리고 싶은 사람은 없다.\"* 수치: WAL 세그먼트 **16MB**, 페이지 **8KB**, xid 범위 **약 40억**·랩어라운드 임계 **약 20억**, 기본 백업 주기 **12시간**, **복원에 12시간에서 며칠**이 걸릴 수 있다."
+    },
+    {
+      "title": "The dangers of Postgres subtransactions",
+      "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+      "publisher": "PlanetScale",
+      "date": "2026-08-11",
+      "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
     }
   ],
   "features": [
@@ -664,6 +690,11 @@
         {
           "to": "parallel-backups",
           "via": "같은 자리를 반대편에서 다룬다 — **프라이머리를 무엇으로부터 지킬 것인가.** 여기서는 **고객의 질의**가 몰릴 때 vttablet 상한으로 막고, 백업 쪽은 **자기 작업**이 프라이머리를 먹지 않게 임시 노드로 떼어낸다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "tenant-blast-radius",
+          "via": "**상한을 두고 정반대 교훈이 나온다.** 여기서는 상한을 **낮춰서** 살았고(올리면 역압이 사라진다), 서브트랜잭션 캐시에서는 상한을 **올려도 소용없다**(오버플로를 미룰 뿐). **하나는 우리가 만든 상한이고 하나는 업스트림이 정한 상한**이라는 차이로 보인다.",
           "confidence": "inferred"
         }
       ],
@@ -1202,6 +1233,483 @@
           "publisher": "PlanetScale",
           "date": "2026-07-24",
           "summary": "백업이 실제로 무엇으로 이뤄지는지 — *\"연속 아카이빙은 파일시스템 백업과 WAL(선행 기록 로그)을 합친 것이다.\"* 베이스 백업은 특정 LSN 시점의 파일 상태이고(`start_lsn` ~ `end_lsn`), 그 뒤는 WAL 이 채운다. *\"WAL 이 계속 S3 로 저장되므로, 어떤 백업이든 복원해서 `end_lsn` 너머로 WAL 을 이어 재생하면 임의의 시점으로 되돌릴 수 있다.\"* **버린 대안 둘** — 논리 백업(`pg_dump`)은 *\"30TB 에서 성공한다 해도 자원을 많이 먹고\"* **PITR 이 안 되며** 큰 클러스터에서 **트랜잭션 랩어라운드 위험**이 있다. 오프라인 파일시스템 백업은 *\"매일 백업하자고 몇 시간씩 데이터베이스를 내리고 싶은 사람은 없다.\"* 수치: WAL 세그먼트 **16MB**, 페이지 **8KB**, xid 범위 **약 40억**·랩어라운드 임계 **약 20억**, 기본 백업 주기 **12시간**, **복원에 12시간에서 며칠**이 걸릴 수 있다."
+        }
+      ]
+    },
+    {
+      "key": "tenant-blast-radius",
+      "name": "고칠 권한이 남에게 있다",
+      "domain": "고객의 실수를 감당하기",
+      "updated_at": "2026-08-22",
+      "business": {
+        "why": "**남의 데이터를 맡는다는 것은 남의 코드도 함께 맡는다는 뜻이다**(이 정리는 이 사이트의 것이다). 이 회사의 글 두 편이 그 자리를 정확히 보여 준다 — **원인은 고객 쪽에 있고, 증상은 우리 제품에서 난다.**\n\n**첫째, 오염된 커넥션 풀.** PgBouncer 를 트랜잭션 모드로 쓰면 여러 클라이언트가 적은 수의 실제 커넥션을 **돌려 쓴다.** 회사의 표현으로 *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 한 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 **세션 수준**으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **그 요청을 보낸 쪽은 아무 잘못이 없다.**\n\n**둘째, 서브트랜잭션.** 이쪽은 더 나쁘다 — **개발자가 만든 줄도 모르고 만든다.** ORM 이 자동으로 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 그런데 백엔드가 캐시할 수 있는 서브트랜잭션 ID 는 **보통 64개**이고, 넘으면 디스크의 `pg_subtrans` 를 SLRU 캐시로 뒤지게 된다. 결과가 문서의 경고 그대로다 — *\"하나의 트랜잭션이 그 한도를 넘으면 **PostgreSQL 클러스터 전체**의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌다.\n\n**두 경우 모두 이 회사가 할 수 있는 일은 정해져 있다 — 씻어내고, 알려 주고, 번지지 않게 막는 것.** 원인을 없애는 것은 고객의 코드에서만 가능하다.",
+        "metrics": [
+          {
+            "label": "서브트랜잭션 캐시 한도",
+            "value": "`PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**. 넘으면 오버플로로 표시되고 `pg_subtrans` 를 SLRU 로 뒤진다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "label": "무너지는 크기",
+            "value": "초당 **7,200~8,600 트랜잭션 → 약 160**. 시간의 상당 부분이 `XidInMVCCSnapshot` 의 **SLRU 경량 락**에서 쓰인다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "label": "번지는 범위",
+            "value": "*\"**클러스터 전체**의 질의가 느려질 수 있다\"*. **새 읽기 레플리카는 접속조차 못 받는다** — `STANDBY_SNAPSHOT_PENDING` 에 머문다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "label": "회복",
+            "value": "**오버플로를 일으킨 트랜잭션이 끝나면 즉시** 회복된다 — 고칠 수 있는 게 아니라 **끝나기를 기다리는 것**이다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "label": "오염된 풀의 규모",
+            "value": "**밝히지 않는다** — 이 글에는 수치가 없다",
+            "confidence": "unknown",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "label": "근본 해법의 나이",
+            "value": "CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 머지되지 않았다\"*",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "오염된 풀 사고를 짚을 때",
+          "thought": "**터진 쪽과 만든 쪽이 다르다.** `INSERT` 가 안 된다고 오류를 받은 요청은 읽기 전용을 건 적이 없다 — 그저 앞사람이 쓰던 커넥션을 물려받았을 뿐이다. **공유 자원에서는 잘못과 증상이 같은 자리에 있지 않다**(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "서브트랜잭션 문제를 볼 때",
+          "thought": "이건 더 어렵다 — **고객이 만든 줄도 모른다.** ORM 이 자동으로 만들고 PL/pgSQL 은 `EXCEPTION` 블록마다 만든다. 그래서 *\"트랜잭션을 짧게 쓰세요\"* 라는 조언조차 **무엇을 짧게 하라는 것인지 보이지 않는 사람에게** 하는 말이 된다(뒤 문장은 이 사이트의 해석이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "한도를 늘릴지 생각할 때",
+          "thought": "`PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일할 수 있다. 그런데 회사가 적는다 — 백엔드 메모리만 늘고 **오버플로를 미룰 뿐**이다. **상한을 옮기는 것과 상한이 없어지는 것은 다르다**(이 정리는 이 사이트의 것이고, 같은 회사의 트랜잭션 풀 이야기와 정확히 반대 방향의 교훈이다 — 거기서는 상한을 **낮춰서** 살았다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "근본 해법을 기다릴지 정할 때",
+          "thought": "CSN 스냅숏이 있으면 이 구조 자체가 사라진다. 그런데 *\"10년 넘게 논의됐고\"* 패치가 여럿 있는데도 *\"어느 것도 머지되지 않았다.\"* **고칠 권한이 고객에게만 없는 게 아니라 업스트림에도 있다** — 이 회사는 Postgres 를 만들지 않는다(이 관찰은 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "공유 커넥션",
+            "what": "PgBouncer 트랜잭션 모드에서 여러 클라이언트가 **돌려 쓰는** 실제 백엔드 연결. 세션 상태가 여기에 남는다."
+          },
+          {
+            "name": "세션 상태",
+            "what": "`SET SESSION ...` 으로 걸리는 설정. **트랜잭션이 끝나도 남고**, 다음 사람에게 넘어간다."
+          },
+          {
+            "name": "서브트랜잭션",
+            "what": "상위 트랜잭션 안에 중첩된 트랜잭션. `SAVEPOINT` 로 명시적으로도, **ORM 과 PL/pgSQL `EXCEPTION` 블록으로 자동으로도** 만들어진다."
+          },
+          {
+            "name": "서브xid 캐시",
+            "what": "백엔드가 공유 메모리에 들고 있는 서브트랜잭션 ID — **보통 64개**. 넘으면 오버플로로 표시된다."
+          },
+          {
+            "name": "`pg_subtrans` + SLRU",
+            "what": "오버플로 뒤에 뒤지게 되는 디스크 구조와 그 캐시. **여기의 락 경합이 클러스터 전체를 느리게 만든다.**"
+          }
+        ],
+        "invariants": [
+          "**공유 커넥션은 반환될 때 원래 상태여야 한다** — 그렇지 않으면 다음 사람이 그 상태를 물려받는다.",
+          "한 상위 트랜잭션의 서브트랜잭션 ID 는 **64개를 넘지 않아야** 한다 — 넘으면 영향이 그 트랜잭션 밖으로 나간다.",
+          "**원인을 없애는 일은 고객의 코드에서만 가능하다** — 이 시스템이 할 수 있는 것은 씻어내기와 알려 주기다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "많은 클라이언트가 PgBouncer 에 붙는다 — **트랜잭션 모드**",
+            "why": "적은 수의 실제 커넥션으로 많은 클라이언트를 받기 위해서다. 이 이득이 아래 모든 문제의 값이다."
+          },
+          {
+            "step": "트랜잭션이 끝나면 커넥션이 풀로 **반환된다**",
+            "why": "다음 클라이언트가 곧바로 쓸 수 있어야 풀링이 성립한다."
+          },
+          {
+            "step": "(사고) 앞사람이 걸어 둔 **세션 수준 설정이 그대로 남는다**",
+            "why": "세션 설정은 트랜잭션 경계로 지워지지 않는다 — 트랜잭션 모드 풀링이 가정하는 것과 어긋나는 자리다."
+          },
+          {
+            "step": "다음 클라이언트가 그 커넥션을 받아 쓰다 `ERROR: cannot execute INSERT in a read-only transaction` 을 만난다",
+            "why": "자기가 걸지 않은 설정 때문이다."
+          },
+          {
+            "step": "조치 — **`DISCARD ALL` 로 풀에 있는 커넥션들의 세션 상태를 초기화한다**",
+            "why": "오염을 사후에 씻어내는 유일한 손잡이다."
+          },
+          {
+            "step": "예방 안내 — **읽기 트래픽을 레플리카로 보낸다**",
+            "why": "프라이머리 트랜잭션에 읽기 전용 제약을 거는 대신 라우팅으로 풀면 **세션 수준 설정을 아예 안 만지게** 된다."
+          },
+          {
+            "step": "(다른 얼굴) 고객의 ORM 이나 PL/pgSQL `EXCEPTION` 블록이 **서브트랜잭션을 자동으로 만든다**",
+            "why": "개발자가 의도한 것이 아니다 — 그래서 눈에 안 보인다."
+          },
+          {
+            "step": "한 상위 트랜잭션이 **64개를 넘기면** 오버플로되어 `pg_subtrans` 를 SLRU 로 뒤진다 → **클러스터 전체가 느려진다**",
+            "why": "스냅숏 가시성 판정이 캐시에서 디스크로 내려가고, 그 락을 모두가 기다린다."
+          },
+          {
+            "step": "감시 — `pg_stat_get_backend_subxact()` 로 오버플로를 보고, `pg_stat_slru` 로 서브트랜잭션 SLRU 활동을, `pg_stat_activity` 로 가장 오래된 트랜잭션을 본다",
+            "why": "막을 수 없으면 **적어도 무엇이 일어나는지는 보여야** 한다."
+          },
+          {
+            "step": "회복 — **그 트랜잭션이 끝나면 즉시** 돌아온다",
+            "why": "고치는 것이 아니라 지나가기를 기다리는 것이다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "커넥션 풀링을 트랜잭션 모드로 할 것인가",
+            "chosen": "**트랜잭션 모드** — 여러 클라이언트가 적은 커넥션을 돌려 쓴다",
+            "alternatives": [
+              "세션 모드 — 클라이언트마다 커넥션을 붙잡아 두기"
+            ],
+            "tradeoff": "**풀링의 이득과 상태 격리가 정면으로 부딪히는 자리다**(이 정리는 이 사이트의 것이다). 적은 커넥션으로 많이 받으려면 **같은 커넥션을 나눠 써야** 하고, 나눠 쓰면 **앞사람의 상태가 남는다.** 세션 모드로 가면 오염은 사라지지만 풀링의 이유가 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "question": "오염을 예방할 것인가, 나면 씻을 것인가",
+            "chosen": "**씻는다** — `DISCARD ALL` 로 풀의 세션 상태를 초기화",
+            "alternatives": [
+              "커넥션을 반환할 때마다 무조건 초기화하기"
+            ],
+            "tradeoff": "매 반환마다 씻으면 오염은 원천 차단되지만 **왕복이 하나 늘어난다** — 트랜잭션 모드 풀링이 아끼려던 바로 그 비용이다(이 대가는 이 사이트의 추정이다). **회사가 `DISCARD ALL` 을 상시로 도는지 사고 때만 도는지는 글에서 분명하지 않다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "question": "고객 코드를 강제할 것인가 안내할 것인가",
+            "chosen": "**안내한다** — 원인을 짚어 주고 대안 패턴을 권한다",
+            "alternatives": [
+              "세션 수준 설정을 막거나 제한하기"
+            ],
+            "tradeoff": "**같은 일이 다른 고객에게서 또 난다.** 그런데 막는 쪽도 쉽지 않다 — 세션 설정은 Postgres 의 정상 기능이라, 막으면 **그것을 제대로 쓰던 고객까지** 잃는다(이 판단은 이 사이트의 추정이다). 그래서 이 회사에서는 **글을 쓰는 것 자체가 대응 수단**이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "question": "읽기 전용을 어떻게 표현하게 할 것인가",
+            "chosen": "**읽기를 레플리카로 보내라고 권한다**",
+            "alternatives": [
+              "프라이머리 트랜잭션에 읽기 전용 제약을 걸기(사고를 낸 방식)"
+            ],
+            "tradeoff": "라우팅으로 풀면 **세션 수준 설정을 아예 안 만지게** 되어 오염의 원인이 사라진다. 대신 **레플리카 지연을 받아들여야** 하고, ORM 이 레플리카 라우팅을 지원해야 한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "question": "서브트랜잭션 캐시 한도를 늘릴 것인가",
+            "chosen": "**늘리지 않는다**",
+            "alternatives": [
+              "`PGPROC_MAX_CACHED_SUBXIDS` 를 키워 PostgreSQL 을 재컴파일하기"
+            ],
+            "tradeoff": "회사가 분명히 적는다 — 백엔드 메모리만 늘고 **오버플로를 미룰 뿐**이다. **상한을 옮기는 것과 상한이 없어지는 것은 다르다.** 같은 회사의 트랜잭션 풀 이야기와 정반대 방향의 교훈이라는 점이 흥미롭다 — 거기서는 상한을 **낮춰서** 살았다(이 대비는 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "question": "근본 해법을 기다릴 것인가",
+            "chosen": "**기다리지 않는다** — 감시와 습관으로 다룬다",
+            "alternatives": [
+              "CSN(Commit Sequence Number) 스냅숏이 들어오기를 기다리기"
+            ],
+            "tradeoff": "*\"10년 넘게 논의됐고\"* 패치도 여럿 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"* **이 회사는 Postgres 를 만들지 않는다** — 고칠 권한이 고객에게만 없는 것이 아니라 **업스트림에도 있다**(이 관찰은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "question": "막을 수 없다면 무엇을 할 것인가",
+            "chosen": "**보이게 만든다** — `pg_stat_get_backend_subxact()` · `pg_stat_slru` · `pg_stat_activity`",
+            "alternatives": [
+              "증상이 날 때 대응하기"
+            ],
+            "tradeoff": "보인다고 멈출 수 있는 것은 아니다 — 오버플로는 **그 트랜잭션이 끝나야** 풀린다. 다만 **무엇 때문인지 아는 것과 모르는 것은 다르다**(이 정리는 이 사이트의 것이다). 그리고 이 지표들을 실제로 보는 것은 결국 고객이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "question": "이런 문제를 제품으로 막을 것인가 글로 막을 것인가",
+            "chosen": "**글로 막는다** — 원인·재현·조치·예방을 공개한다",
+            "alternatives": [
+              "제품 안에서 자동으로 감지·차단하기"
+            ],
+            "tradeoff": "두 글 모두 **막지 못한 사고를 공개한 기록**이다. 제품으로 막을 수 없는 이유가 분명하기 때문이다 — 하나는 **정상 기능의 오용**이고 하나는 **업스트림의 구조**다. 대신 회사는 코드 패턴을 자동으로 찾아 주는 방향을 이야기한다. **맡아 두는 쪽이 '누구 잘못인가'로 끝낼 수 없다는 것이 이 결정의 근거로 보인다**(이 해석은 이 사이트의 것이다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              },
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "PgBouncer (트랜잭션 모드)",
+            "role": "여러 클라이언트를 적은 실제 커넥션으로 받는 풀러. **이 기능의 모든 이득과 모든 문제가 여기서 나온다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "tech": "`DISCARD ALL`",
+            "role": "풀에 있는 커넥션들의 **세션 상태를 씻어내는** 조치.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "tech": "레플리카 라우팅 (ORM 수준)",
+            "role": "읽기를 레플리카로 보내 **세션 수준 설정을 아예 안 만지게** 하는 예방책.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Poisoned Postgres connection pools",
+                "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+                "publisher": "PlanetScale",
+                "date": "2026-08-18",
+                "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+              }
+            ]
+          },
+          {
+            "tech": "`pg_subtrans` + SLRU 캐시",
+            "role": "서브xid 캐시가 넘친 뒤 가시성을 판정하는 곳. **여기의 경량 락 경합이 클러스터 전체를 느리게 만든다**(`XidInMVCCSnapshot`).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          },
+          {
+            "tech": "`pg_stat_get_backend_subxact()` · `pg_stat_slru` · `pg_stat_activity`",
+            "role": "오버플로 여부 · SLRU 활동 · 가장 오래된 트랜잭션을 보는 창. **막을 수 없는 것을 최소한 보이게 한다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "concurrency-limits",
+          "via": "같은 회사에서 **상한을 두고 정반대 교훈이 나온다.** 트랜잭션 풀에서는 상한을 **낮춰서** 살았고(올리면 역압이 사라진다), 서브트랜잭션 캐시에서는 상한을 **올려도 소용없다**(오버플로를 미룰 뿐이다). **하나는 우리가 만든 상한이고 하나는 업스트림이 정한 상한**이라는 차이로 보인다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "**중첩 트랜잭션의 가시성을 어떻게 싸게 판정할 것인가**",
+            "why_hard": "지금 구조에서는 백엔드가 서브트랜잭션 ID 를 공유 메모리에 **고정 개수(보통 64)** 만 들고, 넘치면 디스크의 `pg_subtrans` 를 SLRU 로 뒤진다. 그 순간 **한 트랜잭션의 문제가 클러스터 전체의 문제**가 된다 — 모두가 같은 락을 기다리기 때문이다. 한도를 키우는 것은 **미루는 것일 뿐**이고, 근본 수정은 **스냅숏 표현 방식 자체를 바꾸는 일**이라 호환성과 회귀 위험이 크다. 그 증거가 시간이다 — CSN 스냅숏이 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 머지되지 않았다.\"* **기술적으로 막힌 것이 아니라 합의가 안 된 것**이다(뒤 문장은 이 사이트의 해석이다).",
+            "current_best": "**짧게 쓰고 감시한다.** 트랜잭션을 짧게 유지하고 `pg_stat_get_backend_subxact()` 로 오버플로를, `pg_stat_slru` 로 활동을 본다. 대가가 둘이다 — **ORM 과 `EXCEPTION` 블록이 만드는 서브트랜잭션은 개발자 눈에 안 보이고**, 오버플로가 나면 **그 트랜잭션이 끝날 때까지 기다리는 수밖에** 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "The dangers of Postgres subtransactions",
+                "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+                "publisher": "PlanetScale",
+                "date": "2026-08-11",
+                "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "앞사람의 상태가 다음 사람에게 간다",
+          "kind": "flow",
+          "question": "잘못한 쪽과 터지는 쪽이 왜 다른가?",
+          "code": "flowchart TD\n  C1[\"<b>클라이언트 A</b> — 고객의 코드<br/>SET SESSION ... READ ONLY<br/>되돌리지 않는다\"]:::accent\n  C2[\"클라이언트 B · C · D …<br/>아무 잘못이 없다\"]:::list\n  PB[\"<b>PgBouncer — 트랜잭션 모드</b><br/>적은 커넥션을 돌려 쓴다\"]:::list\n  CONN[\"실제 백엔드 커넥션<br/><b>세션 상태가 여기 남는다</b>\"]\n  PG[(\"Postgres\")]\n  ERR[\"<b>ERROR: cannot execute INSERT<br/>in a read-only transaction</b><br/>— 터지는 쪽은 B 다\"]:::quiet\n  FIX[\"<b>DISCARD ALL</b> — 풀의 세션 상태를 씻는다\"]:::list\n  PREV[\"예방 — <b>읽기를 레플리카로</b><br/>세션 설정을 아예 안 만지게 된다\"]:::list\n  C1 --> PB --> CONN --> PG\n  C2 --> PB\n  CONN -->|\"반환 — <b>상태가 남은 채로</b>\"| PB\n  PB -->|\"재대여\"| C2\n  C2 --> ERR\n  FIX -.-> CONN\n  PREV -.-> C1\n  NOTE[\"<b>이득과 문제가 같은 데서 나온다</b><br/>적은 커넥션으로 많이 받으려면 나눠 써야 하고<br/>나눠 쓰면 앞사람의 상태가 남는다\"]:::quiet\n  PB --- NOTE"
+        },
+        {
+          "title": "커넥션 하나가 겪는 상태",
+          "kind": "state",
+          "question": "오염은 어느 지점에서 생기는가?",
+          "code": "stateDiagram-v2\n  [*] --> 유휴: 풀에 들어 있다\n  유휴 --> 대여: 클라이언트가 트랜잭션을 시작한다\n  대여 --> 사용중\n  사용중 --> 반환: 트랜잭션이 끝났다\n  반환 --> 유휴: 상태가 깨끗하다\n  사용중 --> 오염됨: <b>세션 수준 설정을 걸고 안 되돌렸다</b>\n  note right of 오염됨\n    트랜잭션이 끝나도 세션 설정은 남는다\n    — 트랜잭션 모드 풀링이 가정하는 것과\n    어긋나는 자리다\n  end note\n  오염됨 --> 유휴: 그대로 풀에 돌아간다\n  유휴 --> 대여: <b>다음 클라이언트가 물려받는다</b>\n  사용중 --> 실패: 자기가 걸지 않은 설정 때문에 오류\n  실패 --> 반환\n  오염됨 --> 세척: DISCARD ALL\n  세척 --> 유휴\n  note right of 세척\n    매 반환마다 씻으면 원천 차단이지만\n    왕복이 하나 는다 — 풀링이 아끼려던 비용\n    <i>(이 대가는 이 사이트의 추정)</i>\n  end note"
+        },
+        {
+          "title": "실패 경로 — 한 트랜잭션이 클러스터 전체를 잡는다",
+          "kind": "failure",
+          "question": "고객이 만든 줄도 모르는 것이 어떻게 남을 무너뜨리는가?",
+          "code": "flowchart TD\n  ORM[\"<b>ORM · PL/pgSQL EXCEPTION 블록</b><br/>서브트랜잭션을 <b>자동으로</b> 만든다<br/>= 개발자는 만든 줄 모른다\"]:::accent\n  CNT[\"한 상위 트랜잭션의 서브xid 가<br/><b>64개(PGPROC_MAX_CACHED_SUBXIDS)</b> 를 넘는다\"]\n  OVF[\"<b>오버플로</b> — 공유 메모리 캐시를 못 쓴다\"]\n  DISK[\"디스크의 pg_subtrans 를 <b>SLRU 캐시</b>로 뒤진다\"]\n  LOCK[\"XidInMVCCSnapshot 에서<br/><b>SLRU 경량 락</b>을 모두가 기다린다\"]\n  DOWN[\"<b>초당 7,200~8,600 → 약 160 TPS</b><br/><i>클러스터 전체의 질의가 느려질 수 있다</i>\"]\n  REP[\"<b>새 읽기 레플리카는 접속조차 못 받는다</b><br/>STANDBY_SNAPSHOT_PENDING 에 머물러<br/>hot standby 를 못 켠다\"]:::quiet\n  ORM --> CNT --> OVF --> DISK --> LOCK --> DOWN\n  OVF --> REP\n  BIG[\"<b>한도를 키워 재컴파일한다</b>\"] -->|\"막힌 곳\"| BIGX[\"백엔드 메모리만 늘고<br/><b>오버플로를 미룰 뿐</b>\"]:::quiet\n  CSN[\"<b>근본 해법 — CSN 스냅숏</b>\"] -->|\"막힌 곳\"| CSNX[\"<i>10년 넘게 논의됐고 패치도 있지만<br/>어느 것도 머지되지 않았다</i><br/>= 고칠 권한이 <b>업스트림에도 없다</b>\"]:::quiet\n  DOWN --> WAIT[\"<b>회복은 그 트랜잭션이 끝날 때</b><br/>고치는 것이 아니라 지나가기를 기다린다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Poisoned Postgres connection pools",
+          "url": "https://planetscale.com/blog/postgres-poisoned-connection-pools",
+          "publisher": "PlanetScale",
+          "date": "2026-08-18",
+          "summary": "PgBouncer 트랜잭션 모드에서 **여러 클라이언트가 커넥션을 돌려 쓰는데**, *\"이전 클라이언트가 풀을 원치 않는 상태로 두면 이후 클라이언트의 질의에 영향을 준다.\"* 실제 사례는 고객이 `SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY` 를 세션 수준으로 걸어 놓고 되돌리지 않은 것이었고, 그 커넥션을 물려받은 요청마다 `ERROR: cannot execute INSERT in a read-only transaction` 이 났다. **원인은 고객의 애플리케이션 코드**인데 PlanetScale 이 `DISCARD ALL` 로 풀 전체 상태를 초기화해 주고 글로 남긴다. 예방책으로 **읽기를 레플리카로 보내라**고 권한다."
+        },
+        {
+          "title": "The dangers of Postgres subtransactions",
+          "url": "https://planetscale.com/blog/the-dangers-of-postgres-subtransactions",
+          "publisher": "PlanetScale",
+          "date": "2026-08-11",
+          "summary": "**개발자가 만든 줄 모르는 것이 클러스터 전체를 무너뜨린다.** 서브트랜잭션은 `SAVEPOINT` 로 명시적으로 만들 수도 있지만 **ORM 이 자동으로** 만들고, PL/pgSQL 은 *\"`EXCEPTION` 절이 있는 모든 블록\"* 마다 만든다. 백엔드는 현재 상위 트랜잭션의 서브트랜잭션 ID 를 공유 메모리에 캐시하는데 그 한도가 `PGPROC_MAX_CACHED_SUBXIDS` — **보통 64개**다. 넘으면 오버플로로 표시되고 디스크의 `pg_subtrans` 를 **SLRU 캐시**로 뒤지게 된다. 문서의 경고 그대로 *\"하나의 트랜잭션이 `PGPROC_MAX_CACHED_SUBXIDS` 를 넘는 서브트랜잭션 ID 를 쌓으면 PostgreSQL 클러스터 전체의 질의가 느려질 수 있다.\"* 벤치마크에서 **초당 7,200~8,600 트랜잭션이 약 160 으로** 무너졌고, 시간의 상당 부분이 `XidInMVCCSnapshot` 에서 **SLRU 경량 락**을 잡는 데 쓰였다. **새 읽기 레플리카는 접속을 못 받는다** — 오버플로된 `RUNNING_XACTS` 를 읽으면 `STANDBY_SNAPSHOT_PENDING` 에 머물러 hot standby 를 켜지 못한다. **버린 해법**: `PGPROC_MAX_CACHED_SUBXIDS` 를 키워 재컴파일하는 것은 메모리만 늘고 **오버플로를 미룰 뿐**이다. 근본 해법인 CSN 스냅숏은 *\"10년 넘게 논의됐고\"* 패치도 있지만 *\"어느 것도 PostgreSQL 에 머지되지 않았다.\"*"
         }
       ]
     }
