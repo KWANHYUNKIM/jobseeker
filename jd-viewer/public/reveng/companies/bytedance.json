@@ -111,7 +111,7 @@
         {
           "tech": "LavaStore — RocksDB 기반을 골라 고친 로컬 저장 엔진",
           "solves": "**가비지 컬렉션을 컴팩션에서 떼어 낸 KV 분리 설계**와, 반복해서 나타나는 **WAL(선행 기록) 부하 전용 엔진 타입**을 둔다.",
-          "limits": "**이 사이트는 초록 수준까지만 읽었다** — 분리의 구체적인 방식과 실험 수치는 아직 확인하지 않았다.",
+          "limits": "**이 사이트는 초록까지만 읽었다 — 그리고 본문은 이 환경에서 읽을 수 없다.** VLDB PDF 는 WebFetch 가 디코드하지 못하고 로컬에도 PDF 도구가 없다. 분리의 구체적인 방식과 실험 수치는 확인되지 않았다.",
           "confidence": "confirmed",
           "sources": [
             {
@@ -120,6 +120,21 @@
               "publisher": "PVLDB Vol.17 No.12 (2024)",
               "date": "2024",
               "summary": "쓰기가 몰리는 부하와 조회 꼬리 지연·비용 요구를 동시에 맞추려고 RocksDB 기반 저장 엔진을 골라 고친 이야기. **가비지 컬렉션을 컴팩션에서 떼어 낸 KV 분리 설계**와 WAL 전용 엔진 타입이 핵심이다. **이 사이트는 초록 수준까지만 읽었다.**"
+            }
+          ]
+        },
+        {
+          "tech": "TerarkDB — RocksDB v5.18.3 에서 갈라져 나온 KV 엔진 (오픈소스)",
+          "solves": "API 가 호환되어 **코드를 바꾸지 않고** 기존 RocksDB 인스턴스를 옮길 수 있다. BlockBasedTable 과 TerarkZipTable 두 형식을 **LSM 레벨별로** 고를 수 있어 꼬리 지연·처리량·압축률을 함께 겨냥한다.",
+          "limits": "**한 번 옮기면 RocksDB 로 되돌아갈 수 없다.** 프로덕션은 **리눅스만** 검증됐고 C/C++ 외의 바인딩은 테스트가 완전하지 않다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "TerarkDB — RocksDB 호환 KV 저장 엔진",
+              "url": "https://github.com/bytedance/terarkdb",
+              "publisher": "ByteDance (오픈소스)",
+              "date": "—",
+              "summary": "RocksDB v5.18.3 에서 갈라져 나온 KV 엔진. API 호환이라 코드를 안 바꾸고 옮길 수 있지만 **되돌아갈 수는 없다.** BlockBasedTable 과 TerarkZipTable 두 가지 테이블 형식을 LSM 레벨별로 고를 수 있다. 프로덕션은 리눅스만 검증했다."
             }
           ]
         }
@@ -162,6 +177,45 @@
         }
       ],
       "features": []
+    },
+    {
+      "name": "대규모 학습 인프라",
+      "why": "**GPU 만 대 위에서는 한 대만 느려도 전부가 그 속도에 묶인다.** 같은 이터레이션 안에서 서로를 기다리기 때문이다. 그런데 이 회사가 부딪힌 진짜 벽은 최적화가 아니라 **보이지 않는 고장**이었다 — 같은 설정으로 돌려도 실행마다 효율이 달랐고, 원인인 0.5%의 느린 기계는 마이크로벤치마크에 잡히지 않았다.",
+      "tech": [
+        {
+          "tech": "MegaScale — 모델·시스템 동시 최적화",
+          "solves": "병렬 트랜스포머 블록·SWA·LAMB·3D 병렬 통신 겹치기·연산자 융합·데이터 파이프라인을 함께 고쳐 **MFU 41.2% → 55.2%**(12,288 GPU · 175B, Megatron-LM 대비 1.34배).",
+          "limits": "**GPU 를 늘릴수록 MFU 는 내려간다**(59.1% → 55.2%) — 배치가 고정이면 계산 대 통신 비율이 나빠지기 때문이고, 논문도 이를 지우지 못하고 인정한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+              "url": "https://arxiv.org/abs/2402.15627",
+              "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+              "date": "2024-02",
+              "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+            }
+          ]
+        },
+        {
+          "tech": "CUDA 이벤트 모니터 + 3D 병렬 시각화 + 하트비트/RDMA 감시",
+          "solves": "실제 학습 안에서 랭크별 구간 시간을 재 **마이크로벤치마크에 안 보이던 0.5%의 느린 기계**를 찾는다. 고장의 **90% 이상을 자동 감지·복구**하고 감지·진단 평균 10분 미만.",
+          "limits": "**확률적으로 나타나는 하드웨어 이상은 자체 점검을 통과한다** — 정상으로 보이는데 효율만 떨어뜨린다고 논문이 인정한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+              "url": "https://arxiv.org/abs/2402.15627",
+              "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+              "date": "2024-02",
+              "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "megascale"
+      ]
     }
   ],
   "features": [
@@ -571,7 +625,14 @@
           }
         ]
       },
-      "connections": [],
+      "connections": [
+        {
+          "to": "megascale",
+          "via": "같은 회사의 다른 학습",
+          "contract": "둘 다 '학습을 멈추지 않는 법'이지만 성질이 반대다 — 이쪽은 **작은 갱신이 끝없이 흐르고**, 저쪽은 **거대한 한 판을 수 주 동안 버틴다.** 그래서 잃는 것을 세는 단위도 다르다(사용자 수 vs 유효 학습 시간 비율). **두 논문은 서로를 인용하지 않는다** — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
       "research": {
         "papers": [
           {
@@ -646,6 +707,519 @@
           "summary": "추천 모델의 ID 를 해시로 줄이지 않고 **충돌 없이** 담는 테이블(Cuckoo HashMap)과, 배치 학습이 끝난 뒤 멈추지 않고 이어 도는 온라인 학습을 함께 설명한 논문. **'실시간 학습을 위해 시스템 신뢰성을 맞바꿀 수 있다'**고 직접 적고, 그 손실을 사용자 수로 계산해 보인다."
         }
       ]
+    },
+    {
+      "key": "megascale",
+      "name": "만 대를 넘기면 같은 설정도 같은 결과를 내지 않는다",
+      "domain": "대규모 학습 인프라",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "GPU 만 대 위에서 도는 학습은 **한 대만 느려도 전부가 그 속도에 묶인다.** 같은 이터레이션 안에서 모두가 서로를 기다리기 때문이다.\n\n그런데 이 논문에서 정말 어려웠던 것은 최적화가 아니라 **보이지 않는 고장**이었다. 저자들이 놀란 것을 그대로 적었다 — **작은 규모에서와 달리, 똑같은 설정으로 돌려도 실행마다 계산 효율이 달랐다.** 원인을 찾아보니 기계의 **약 0.5%** 가 순전파를 10% 정도 느리게 하고 있었는데, **단일 GPU GEMM 마이크로벤치마크로는 아무 차이도 보이지 않았다.**\n\n그래서 이 시스템은 절반이 최적화이고 절반이 **관측 장비**다. 규모가 커지면 **무엇을 고칠지보다 무엇이 잘못됐는지 아는 것이 어려워진다**(마지막 문장은 이 사이트의 해석).",
+        "metrics": [
+          {
+            "label": "규모",
+            "value": "**GPU 12,288대**에서 **175B** 모델 학습. 530B 모델까지 다룬다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "label": "MFU (모델 FLOPs 활용률)",
+            "value": "12,288 GPU · 175B 에서 **41.2% → 55.2%** (Megatron-LM 대비 **1.34배**). 256 GPU 에서는 53.0% → **65.3%** (1.23배)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "label": "학습 시간",
+            "value": "175B · 3,000억 토큰 기준 **2.37일 → 1.75일**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "label": "집합 통신 초기화",
+            "value": "2,048 GPU 에서 **1,047초 → 361초(Redis 로 교체) → 5초 미만**(배리어 로직 최적화). **1만 대 이상에서도 30초 미만**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "label": "실제 학습 운영 (1만 GPU 이상, 수 주)",
+            "value": "장애로 인한 **재시작 100회 이상**. 고장의 **90% 이상을 자동 감지·복구**. 감지·진단 평균 **10분 미만**, 체크포인트 따라잡기 **15분 미만**. **유효 학습 시간 비율 90% 이상**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "label": "보이지 않던 느린 기계",
+            "value": "기계의 **약 0.5%** 가 순전파를 10% 정도 느리게 했지만 **단일 GPU GEMM 마이크로벤치마크로는 안 보였다.** 걷어내니 MFU 가 실행마다 일정해졌고 약 **0.7%** 개선",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "같은 설정으로 두 번 돌려 보고",
+          "thought": "**작은 규모에서와 달리 실행마다 계산 효율이 달랐다.** 설정이 같은데도 그랬다. 기계 배정이 확률적이고 그 안에 느린 기계가 섞이기 때문이다 — 그런데 **그 느림이 마이크로벤치마크에는 안 잡힌다.** 고칠 것을 찾기 전에 **볼 수 있게 만드는 일**이 먼저다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "시간이 갈수록 MFU 가 떨어지는 것을 봤을 때",
+          "thought": "연산도 네트워크도 안정적인데 학습 효율만 서서히 내려갔다. 파고들어 보니 **불규칙한 가비지 컬렉션과 일부 PyTorch 연산**이 순전파에 지연 편차를 만들고 있었다. 그 코드를 걷어내자 MFU 가 다시 평평해졌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "GPU 를 더 붙이면서",
+          "thought": "12,288대로 가면 MFU 가 **59.1%에서 55.2%로 떨어진다.** 그런데 이건 예상된 일이다 — **배치 크기가 고정이면 GPU 가 늘수록 계산 대 통신 비율이 나빠진다.** 규모가 공짜가 아니라는 것을 숫자로 인정하고 간다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "고장을 사람이 쫓아다니다가",
+          "thought": "수 주짜리 학습에서 재시작이 100번을 넘었다. 사람이 붙어서 고칠 수 있는 빈도가 아니다. **하트비트에 IP·파드·하드웨어 정보·프로세스 상태·로그·RDMA 트래픽까지 실어** 드라이버가 스스로 이상을 감지하게 만든다 — **RDMA 트래픽이 눈에 띄게 줄거나 비정상적으로 흔들리면 그 자체가 신호다.**",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "드라이버 / 실행자(executor)",
+            "what": "드라이버가 하트비트를 받아 이상을 감지하고 복구를 띄운다. 하트비트에는 IP·파드 이름·하드웨어 정보·프로세스 상태·표준출력/에러·RDMA 트래픽이 들어간다."
+          },
+          {
+            "name": "CUDA 이벤트 모니터",
+            "what": "랭크별로 핵심 구간의 실행 시간을 CUDA 이벤트로 잰다. 동기화 오버헤드가 거의 없다. 히트맵과 분산 타임라인 두 가지로 본다."
+          },
+          {
+            "name": "3D 병렬 학습 시각화",
+            "what": "텐서·파이프라인·데이터 병렬 축의 논리 토폴로지를 그린다. NCCL 통신 타임아웃이 났을 때 고장 노드를 빨리 짚는다 — **고장 난 GPU 에 걸린 노드는 로그를 남기지 않고, 그 아래 노드들이 기다리는 로그를 남기기 때문이다.**"
+          },
+          {
+            "name": "경량 진단 스위트",
+            "what": "호스트 내부 네트워크 루프백(모든 RNIC ↔ 메모리·GPU), RNIC 간 연결, 노드 내 all-to-all, 같은 ToR 스위치 아래 이웃 기계와의 all-reduce."
+          },
+          {
+            "name": "두 단계 체크포인트",
+            "what": "GPU → 호스트 메모리(수 초, 블로킹) / 호스트 → HDFS(비동기, 논블로킹)."
+          }
+        ],
+        "invariants": [
+          "**한 대가 느리면 전부가 그 속도에 묶인다** — 같은 이터레이션 안에서 서로를 기다린다.",
+          "같은 텐서 병렬 그룹의 GPU 워커는 **같은 입력을 받는다** — 데이터 로더를 트리로 줄일 수 있는 근거다.",
+          "체크포인트 복구 시 데이터 병렬 그룹당 **한 워커만 읽고 나머지에 브로드캐스트**한다.",
+          "**하드웨어 이상 중 일부는 확률적으로 나타나** 자체 점검을 통과한다.",
+          "배치 크기가 고정이면 GPU 가 늘수록 **계산 대 통신 비율이 나빠진다.**"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "트랜스포머 블록을 **병렬 형태**로 바꾼다 — `y = x + MLP(LN(x)) + Attention(LN(x))`",
+            "why": "어텐션과 MLP 를 순차가 아니라 함께 계산할 수 있게 만든다. MFU +4.6%."
+          },
+          {
+            "step": "**슬라이딩 윈도 어텐션**을 쓴다 — O(s²) 대신 O(s×w)",
+            "why": "윈도 w 가 시퀀스 s 보다 훨씬 작으면 계산이 크게 준다. +1.0%."
+          },
+          {
+            "step": "**LAMB 옵티마이저**로 배치를 4배로 키운다",
+            "why": "정확도 손실 없이 배치를 키우면 **파이프라인 버블이 87.5% 줄어든다.** +3.0%."
+          },
+          {
+            "step": "**3D 병렬의 통신을 계산과 겹친다** — 데이터 병렬은 첫 all-gather 를 데이터 로딩과, 파이프라인은 워밍업·쿨다운의 송수신을 분리, 텐서 병렬은 all-gather/reduce-scatter 를 GEMM 과 융합",
+            "why": "통신이 계산을 기다리게 두면 GPU 가 논다. 누적 +10.3%(텐서 7.8 · 파이프라인 2.5 · 데이터 1.5)."
+          },
+          {
+            "step": "**연산자를 융합한다** — FlashAttention-2, LayerNorm·GeLU 융합 커널",
+            "why": "커널 경계마다 메모리를 오간다. +1.7%."
+          },
+          {
+            "step": "**데이터 파이프라인을 비동기화하고**, 같은 텐서 병렬 그룹이 같은 입력을 받는다는 점을 이용해 로더를 **트리 형태로 줄인다**",
+            "why": "같은 것을 여러 번 읽을 이유가 없다. +1.1%."
+          },
+          {
+            "step": "NCCL 그룹 초기화에서 **TCPStore 를 Redis 로 바꾸고** 전역 배리어를 **O(n²) → O(n)** 으로 줄인다",
+            "why": "2,048 GPU 초기화가 1,047초였다. 5초 미만이 됐다."
+          },
+          {
+            "step": "**CUDA 이벤트 모니터**로 랭크별 구간 시간을 재고 히트맵·타임라인으로 본다",
+            "why": "마이크로벤치마크에 안 잡히는 느린 기계를 실제 학습 안에서 찾아야 한다."
+          },
+          {
+            "step": "드라이버가 **하트비트와 RDMA 트래픽**으로 이상을 감지하고, 경량 진단 스위트를 돌려 고장 노드를 지목한 뒤 복구한다",
+            "why": "수 주 학습에서 재시작이 100회를 넘는다 — 사람이 쫓아다닐 빈도가 아니다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "규모를 키우는 데 무엇을 먼저 할 것인가",
+            "chosen": "**최적화만이 아니라 관측 장비를 함께 짓는다.** 논문의 절반이 진단·고장 감지에 쓰인다.",
+            "alternatives": [
+              "연산·통신 최적화에 집중하고 운영은 사람이 본다"
+            ],
+            "tradeoff": "관측 장비 자체가 유지해야 할 시스템이 된다(뒷문장은 이 사이트의 해석). 대신 **마이크로벤치마크에 안 잡히는 0.5%의 느린 기계**를 찾아냈고, 걷어내자 실행마다 들쭉날쭉하던 MFU 가 일정해졌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "트랜스포머 블록을 그대로 쓸 것인가",
+            "chosen": "**병렬 트랜스포머 블록**으로 바꾼다 — 어텐션과 MLP 를 함께 계산한다. +4.6% MFU.",
+            "alternatives": [
+              "표준 순차 블록을 유지한다"
+            ],
+            "tradeoff": "모델 구조 자체를 바꾸는 것이라 학습 결과의 동등성을 따로 확인해야 한다(뒷문장은 이 사이트의 추정). 이 논문의 특징이 여기 있다 — **시스템만 고치는 게 아니라 모델 쪽도 함께 고친다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "배치 크기를 키울 것인가",
+            "chosen": "**LAMB 로 배치를 4배**로 키운다. 정확도 손실 없이 **파이프라인 버블이 87.5% 감소.**",
+            "alternatives": [
+              "배치를 유지하고 파이프라인 스케줄만 손본다"
+            ],
+            "tradeoff": "이 이득은 **배치를 키울 수 있는 옵티마이저가 있을 때만** 성립한다 — 표준 4단계·1배 배치의 버블이 `4/v × (p-1)/m` 인데 4배 배치·1단계면 `1/v × (p-1)/(4m)` 이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "집합 통신 초기화를 어떻게 할 것인가",
+            "chosen": "**TCPStore 를 Redis 로 교체**(논블로킹)하고 전역 배리어를 **O(n²)에서 O(n)** 으로 줄인다.",
+            "alternatives": [
+              "Megatron-LM 의 기본 초기화를 쓴다"
+            ],
+            "tradeoff": "Redis 라는 외부 의존이 생긴다(뒷문장은 이 사이트의 추정). 대신 2,048 GPU 기준 **1,047초 → 361초 → 5초 미만**, 1만 대 이상에서도 30초 미만이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "고장을 사람이 볼 것인가, 자동으로 볼 것인가",
+            "chosen": "**자동.** 하트비트에 하드웨어 정보·프로세스 상태·로그·RDMA 트래픽을 실어 드라이버가 판단하고, 경량 진단 스위트로 범위를 좁힌다.",
+            "alternatives": [
+              "운영자가 알림을 보고 판단한다"
+            ],
+            "tradeoff": "오탐이 나면 멀쩡한 노드를 빼게 된다(뒷문장은 이 사이트의 추정). 대신 **고장의 90% 이상을 자동 감지·복구**했고, 감지·진단이 평균 10분 미만이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "체크포인트를 어떻게 뜰 것인가",
+            "chosen": "**두 단계로.** GPU → 호스트 메모리는 수 초 동안 블로킹, 호스트 → HDFS 는 비동기. 복구 때는 데이터 병렬 그룹당 **한 워커만 읽고 브로드캐스트**한다.",
+            "alternatives": [
+              "매번 곧장 분산 저장소에 쓴다",
+              "모든 워커가 각자 체크포인트를 읽는다"
+            ],
+            "tradeoff": "호스트 메모리에만 있고 아직 HDFS 로 안 넘어간 구간에 호스트가 죽으면 그만큼을 잃는다(뒷문장은 이 사이트의 추정). 대신 학습이 멈추는 시간이 수 초로 줄고, 복구 시 저장소 부하가 선형으로 준다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "question": "네트워크 인터페이스가 잠깐 끊기는 것을 어떻게 다룰 것인가",
+            "chosen": "**타임아웃을 명시적으로 조정하고 하드웨어 품질(신호 강도·AOC 케이블)을 관리한다.** `adap_retrans` 로 재전송을 빠르게 한다. ECMP 충돌을 줄이려 400G 포트를 2×200G 로 쪼개 GPU 8개를 서로 다른 ToR 스위치 8대에 붙인다.",
+            "alternatives": [
+              "소프트웨어 재시도에만 맡긴다"
+            ],
+            "tradeoff": "물리 계층 품질 관리까지 떠안게 된다. 이유를 논문이 적었다 — **인터페이스가 플래핑하면 먼저 내려갔다가 다시 올라오는데, 내려가 있는 동안 전송 중이던 패킷이 전부 버려진다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Megatron-LM (비교 기준)",
+            "role": "같은 하드웨어에서의 베이스라인. 12,288 GPU·175B 에서 MFU 41.2%.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "병렬 트랜스포머 블록 · 슬라이딩 윈도 어텐션 · LAMB",
+            "role": "모델 쪽 최적화. 각각 +4.6% · +1.0% · +3.0% MFU.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "3D 병렬 통신 겹치기",
+            "role": "텐서 7.8% · 파이프라인 2.5% · 데이터 1.5%, 누적 +10.3% MFU.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "FlashAttention-2 + 융합 커널 (LayerNorm · GeLU)",
+            "role": "연산자 융합. +1.7% MFU.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "Redis (NCCL 그룹 초기화)",
+            "role": "TCPStore 를 대체한 논블로킹 저장소. 초기화 1,047초 → 5초 미만.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "CUDA 이벤트 모니터 + 3D 병렬 시각화",
+            "role": "랭크별 구간 시간 측정과 토폴로지 시각화. 0.5%의 느린 기계와 고장 노드를 찾아낸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "HDFS",
+            "role": "체크포인트의 최종 저장소. 호스트 메모리에서 비동기로 넘어간다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "tech": "Broadcom Tomahawk 4 스위치",
+            "role": "데이터센터 스위치. 칩당 25.6Tbps, 400Gbps 포트 64개.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "monolith",
+          "via": "같은 회사의 다른 학습",
+          "contract": "둘 다 '학습을 어떻게 계속 돌릴 것인가'지만 성질이 반대다 — Monolith 는 **작은 갱신이 끝없이 흐르는** 온라인 학습이고, MegaScale 은 **거대한 한 판을 수 주 동안 버티는** 배치 학습이다. **두 논문은 서로를 인용하지 않는다** — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+            "authors": "Ziheng Jiang, Haibin Lin, Yinmin Zhong 외 (ByteDance · Peking University)",
+            "year": "2024",
+            "venue": "NSDI 2024",
+            "url": "https://arxiv.org/abs/2402.15627",
+            "takeaway": "이 논문에서 가장 값진 부분은 최적화 표가 아니라 **저자들이 놀란 대목**이다 — 같은 설정으로 돌려도 실행마다 효율이 달랐고, 원인인 0.5%의 느린 기계는 **마이크로벤치마크로는 보이지 않았다.** 그리고 시간이 갈수록 MFU 가 떨어지던 현상의 범인이 **불규칙한 가비지 컬렉션과 일부 PyTorch 연산**이었다. 규모가 커지면 **고치는 일보다 보는 일이 어려워진다.**",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "확률적으로만 나타나는 고장",
+            "why_hard": "논문이 직접 적었다 — **어떤 하드웨어 이상은 확률적으로 나타나 기계 자체 점검으로는 찾을 수 없다. 어떤 이상은 시스템이 정상으로 보이는데도 학습 효율을 크게 떨어뜨린다.** 고장이 '되거나 안 되거나'라면 감지는 쉽다. 어려운 것은 **되기는 되는데 느린** 상태다 — 알람도 없고 로그도 없고 마이크로벤치마크도 통과한다. 실제로 기계의 0.5%가 순전파를 10% 느리게 하고 있었는데 단일 GPU GEMM 벤치마크에서는 아무 차이가 없었다.",
+            "current_best": "**실제 학습 안에서 잰다.** CUDA 이벤트로 랭크별 구간 시간을 모아 히트맵과 타임라인으로 보고, 느린 기계를 걷어낸다. 그러자 실행마다 들쭉날쭉하던 MFU 가 일정해졌다(약 0.7% 개선). 즉 답은 더 나은 벤치마크가 아니라 **벤치마크를 버리고 실제 부하를 관측 대상으로 삼는 것**이었다(마지막 문장은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          },
+          {
+            "problem": "GPU 를 더 붙일수록 한 대당 효율은 떨어진다",
+            "why_hard": "12,288대로 늘리면 MFU 가 **59.1%에서 55.2%로** 내려간다. 논문은 이것을 실패가 아니라 예상된 일로 적는다 — **배치 크기가 고정이면 GPU 가 늘어날수록 계산 대 통신 비율이 나빠지기** 때문이다. 통신은 대수적으로 늘고 한 GPU 가 맡는 계산은 줄어드니, 어느 지점부터는 기계를 더 넣는 것이 **더 많은 기다림을 사는 일**이 된다.",
+            "current_best": "**통신을 계산 뒤에 숨긴다**(3D 병렬 겹치기로 누적 +10.3% MFU)와 **배치를 키운다**(LAMB 로 4배, 파이프라인 버블 87.5% 감소). 둘 다 비율을 되돌리는 것이지 없애는 것은 아니다 — 논문도 MFU 감소를 지우지 못하고 **숫자로 인정하고 간다**(마지막 절은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+                "url": "https://arxiv.org/abs/2402.15627",
+                "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+                "date": "2024-02",
+                "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "만 대가 한 이터레이션을 도는 동안",
+          "question": "왜 관측이 최적화만큼 큰 자리를 차지하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  subgraph OPT[\"<b>빨라지게 하는 쪽</b>\"]\n    M1[\"병렬 트랜스포머 블록 +4.6%\"]:::list\n    M2[\"슬라이딩 윈도 어텐션 +1.0%\"]:::list\n    M3[\"LAMB · 배치 4배 +3.0%<br/>파이프라인 버블 -87.5%\"]:::list\n    M4[\"3D 병렬 통신 겹치기 +10.3%\"]:::list\n    M5[\"연산자 융합 +1.7%\"]:::list\n    M6[\"데이터 파이프라인 +1.1%\"]:::list\n  end\n  OPT --> MFU[\"<b>MFU 41.2% → 55.2%</b><br/>12,288 GPU · 175B\"]:::accent\n  subgraph OBS[\"<b>보이게 하는 쪽</b>\"]\n    C[\"CUDA 이벤트 모니터<br/>랭크별 구간 시간\"]\n    V[\"3D 병렬 시각화<br/>고장 노드는 로그를 남기지 않는다<br/>— 기다리는 아래 노드가 남긴다\"]\n    H[\"하트비트 + RDMA 트래픽<br/>줄거나 흔들리면 신호\"]\n    T[\"경량 진단 스위트<br/>루프백 · RNIC · all-reduce\"]\n  end\n  OBS --> FOUND[\"<b>0.5%의 느린 기계</b><br/>마이크로벤치마크에는 안 보였다\"]:::accent\n  FOUND --> STABLE[\"걷어내니 실행마다<br/>MFU 가 일정해졌다 (+0.7%)\"]\n  OBS --> AUTO[\"고장 90% 이상 자동 복구<br/>감지·진단 10분 · 따라잡기 15분\"]\n  AUTO --> RATE[\"유효 학습 시간 90% 이상<br/>(재시작 100회 이상에도)\"]:::accent"
+        },
+        {
+          "title": "수 주짜리 학습이 오가는 상태",
+          "question": "재시작 100번을 어떻게 견디는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 초기화: NCCL 그룹 (1만 대 이상 30초 미만)\n  초기화 --> 학습중\n  학습중 --> 학습중: 이터레이션 · CUDA 이벤트로 계측\n  학습중 --> 체크포인트: GPU → 호스트 메모리 (수 초 · 블로킹)\n  체크포인트 --> 학습중\n  체크포인트 --> 업로드중: 호스트 → HDFS (비동기)\n  업로드중 --> 학습중\n  학습중 --> 이상감지: 하트비트 결손 · RDMA 트래픽 급감\n  이상감지 --> 진단: 경량 스위트 (루프백 · RNIC · all-reduce)\n  진단 --> 복구: 고장 노드 교체 — 90% 이상 자동\n  복구 --> 초기화\n  학습중 --> 회색지대: 돌기는 도는데 느리다\n  note right of 회색지대\n    알람도 로그도 없다\n    자체 점검을 통과한다\n    확률적으로만 나타난다\n  end note\n  회색지대 --> 진단: CUDA 이벤트 히트맵이 잡아낸다"
+        },
+        {
+          "title": "실패 경로 — 규모가 되돌려 주는 것들",
+          "question": "기계를 더 넣으면 무엇이 나빠지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  MORE[\"GPU 를 더 붙인다\"] --> RATIO[\"<b>배치가 고정이면</b><br/>계산 대 통신 비율이 나빠진다\"]\n  RATIO --> DROP[\"MFU 59.1% → 55.2%\"]:::accent\n  DROP -->|\"논문은 지우지 않고 인정한다\"| ADMIT[\"예상된 일이라고 적는다\"]\n  RATIO --> HIDE[\"완화 — 통신을 계산 뒤에 숨긴다 (+10.3%)<br/>배치를 키운다 (버블 -87.5%)\"]:::quiet\n  HIDE -->|\"해석\"| NOTGONE[\"비율을 되돌릴 뿐<br/>없애지는 못한다\"]\n  SLOW[\"기계 0.5%가 10% 느리다\"] --> INVIS[\"<b>단일 GPU GEMM 벤치마크에<br/>아무 차이도 안 나온다</b>\"]\n  INVIS --> VARY[\"같은 설정인데<br/>실행마다 효율이 다르다\"]\n  VARY --> REAL[\"완화 — 벤치마크를 버리고<br/>실제 학습을 관측한다\"]:::quiet\n  DECAY[\"시간이 갈수록 MFU 가 떨어진다\"] --> GC[\"범인 — 불규칙한 가비지 컬렉션<br/>+ 일부 PyTorch 연산의 지연 편차\"]\n  FLAP[\"네트워크 인터페이스 플래핑\"] --> DOWN[\"내려갔다 올라오는 동안<br/><b>전송 중 패킷이 전부 버려진다</b>\"]\n  DOWN --> PHY[\"완화 — 타임아웃 조정 · adap_retrans<br/>신호 강도 · AOC 케이블 품질 관리\"]:::quiet\n  PROB[\"확률적 하드웨어 이상\"] -->|\"논문이 인정\"| SELF[\"기계 자체 점검을 통과한다<br/>정상으로 보이는데 효율만 떨어뜨린다\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+          "url": "https://arxiv.org/abs/2402.15627",
+          "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+          "date": "2024-02",
+          "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -654,7 +1228,11 @@
     "온라인 조이너가 **늦게 도착하는 라벨**을 어떻게 다루는지 이 사이트는 확인하지 못했다.",
     "Monolith 논문은 2022년 것이다 — **그 뒤 어떻게 바뀌었는지 최신 자료를 아직 찾지 못했다.**",
     "LavaStore·ByteGraph 는 **초록까지만** 읽었고 ByteHTAP 은 제목만 확인했다 — 도메인 `tech` 에 그렇게 표시했다.",
-    "이 회사는 **중국 안(Douyin)과 밖(TikTok)의 시스템이 같은지 다른지**를 밝히지 않는다. 논문들도 어느 쪽 이야기인지 항상 명시하지는 않는다."
+    "이 회사는 **중국 안(Douyin)과 밖(TikTok)의 시스템이 같은지 다른지**를 밝히지 않는다. 논문들도 어느 쪽 이야기인지 항상 명시하지는 않는다.",
+    "**LavaStore 본문을 읽지 못했다.** VLDB PDF 를 WebFetch 가 디코드하지 못하고(두 번 시도) 로컬에도 PDF 도구가 없다. 초록의 주장(GC 를 컴팩션에서 분리한 KV 분리, WAL 전용 엔진 타입) 외에는 **설계·수치를 확인할 수 없어 기능으로 쓰지 않았다.**",
+    "같은 이유로 **ByteGraph·ByteHTAP 본문도 읽을 수 없다** — 둘 다 VLDB PDF 다.",
+    "`대규모 학습 인프라` 도메인은 지금 **논문 한 편(2024)에만** 기대고 있다 — 그 뒤의 후속 자료를 아직 찾지 못했다.",
+    "TerarkDB 는 README 수준까지만 확인했다 — 설계 문서가 외부 문서 저장소로 링크돼 있어 내부 구조(KV 분리·GC)를 확인하지 못했다."
   ],
   "sources": [
     {
@@ -691,6 +1269,20 @@
       "publisher": "CNBC / Reuters · Bloomberg 보도",
       "date": "2025~2026",
       "summary": "비상장이라 공시가 없다. 보도 기준으로 2024년 매출 약 1,550억 달러, 2025년 목표 약 1,860억 달러, 2025년 이익 약 500억 달러 추정, 기업가치 3,300억 달러 이상. **전부 회사 발표가 아니라 언론 보도·분석가 추정이다.**"
+    },
+    {
+      "title": "MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs",
+      "url": "https://arxiv.org/abs/2402.15627",
+      "publisher": "NSDI 2024 · ByteDance & Peking University · Ziheng Jiang, Haibin Lin, Yinmin Zhong 외",
+      "date": "2024-02",
+      "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
+    },
+    {
+      "title": "TerarkDB — RocksDB 호환 KV 저장 엔진",
+      "url": "https://github.com/bytedance/terarkdb",
+      "publisher": "ByteDance (오픈소스)",
+      "date": "—",
+      "summary": "RocksDB v5.18.3 에서 갈라져 나온 KV 엔진. API 호환이라 코드를 안 바꾸고 옮길 수 있지만 **되돌아갈 수는 없다.** BlockBasedTable 과 TerarkZipTable 두 가지 테이블 형식을 LSM 레벨별로 고를 수 있다. 프로덕션은 리눅스만 검증했다."
     }
   ]
 }

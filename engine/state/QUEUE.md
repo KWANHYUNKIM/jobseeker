@@ -7,12 +7,12 @@
 > 잔량이 목표(3)보다 적으면 후보 조사 사이클을 띄운다. 산문으로 적으면 세지 못한다.
 > `## 진행 중
 
-- **ByteDance** (CN · 소셜) — 사이클 149 에서 열었다. 회사 프로파일 + 도메인 3개
-  (추천 학습·서빙 · 로컬 저장 엔진 · 그래프·분석 데이터) + 기능 1개(`monolith`) 완료.
-  **1차 자료가 동료 심사 논문인 첫 회사다.** 남은 도메인 2개는 아직 **초록까지만** 읽었다 —
-  LavaStore(`vldb.org/pvldb/vol17/p3799-jiao.pdf`), ByteGraph·ByteHTAP(dl.acm.org).
-  ⚠️ **arXiv 초록 페이지(`arxiv.org/abs/…`)는 초록만 준다 — 본문은 `ar5iv.labs.arxiv.org/html/<id>`
-  로 읽는다.** 이번에 그렇게 전문을 얻었다.
+- **ByteDance** (CN · 소셜) — 도메인 4개 중 2개에 기능이 있다(`monolith`, `megascale`).
+  ⚠️ **남은 둘은 이 환경에서 팔 수 없을 가능성이 높다** — `로컬 저장 엔진`(LavaStore)과
+  `그래프·분석 데이터`(ByteGraph·ByteHTAP)의 본문이 전부 **VLDB PDF** 인데,
+  **WebFetch 가 디코드하지 못하고 로컬에도 PDF 도구가 없다**(사이클 150 에서 두 번 확인).
+  다음 사이클은 **arXiv 에 있는 ByteDance 논문을 더 찾아 새 도메인을 열거나, 여기서 done 으로
+  닫는** 판단을 한다. arXiv 는 `ar5iv.labs.arxiv.org/html/<id>` 로 전문이 읽힌다.
 
 ## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
 
@@ -21,7 +21,7 @@
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
 | **Spotify** | SE/EU · 스트리밍 | `engineering.atspotify.com` | ✅ 목록 확인 — 읽힘. ⚠️ 본문 미확인 | **유럽 회사가 0곳이다.** 추천·스트리밍 축이 Netflix·YouTube 와 겹치지만 **오디오와 팟캐스트는 다르다**(길이·소비 맥락·라이선스). 최근 글이 LLM·데이터 플랫폼에 쏠려 있어 **팔기 전에 본문을 하나 확인할 것** — 'Indexing the Data Lake for Online Point Queries'(2026-07)가 후보다 |
-| **Canva** | AU · SaaS | `canva.dev/blog/engineering` | ✅ **본문 확인.** `session-revocations-at-scale` 를 열어 버린 안과 대가가 명시돼 있음을 봤다 | Figma 와 겹칠까 봐 후순위였는데 **축이 다르다.** 세션 **수억 개**를 초당 **수십만 요청** 아래서 폐기하는 이야기 — Redis 를 **내구성 보장이 부족하다**며 버리고 S3 이진 청크(30분 파티션)로 갔고, ZooKeeper 리더 선출만 믿지 않고 조건부 PUT 을 겹쳤다(**"노드가 쓰기 직전 임의로 멈출 수 있다"**). 메모리 **87.5% 절감**, 게이트웨이 파드당 폐기 **100만 건 이상**, 쓰기 초당 **2,000건 이상**. 그 밖에 `the-science-of-routing-print-orders`(인쇄 주문을 물리 공급망으로 라우팅 — 이 엔진에 없는 축), `canva-incident-report-api-gateway-outage`, `snowpipe-streaming` |
+| **Canva** | AU · SaaS | `canva.dev/blog/engineering` | ✅ **본문 확인.** `session-revocations-at-scale` 를 열어 버린 안과 대가가 명시돼 있음을 봤다 | Figma 와 겹칠까 봐 후순위였는데 **축이 다르다.** 세션 **수억 개**를 초당 **수십만 요청** 아래서 폐기하는 이야기 — Redis 를 **내구성 보장이 부족하다**며 버리고 S3 이진 청크(30분 파티션)로 갔고, ZooKeeper 리더 선출만 믿지 않고 조건부 PUT 을 겹쳤다(**"노드가 쓰기 직전 임의로 멈출 수 있다"**). 메모리 **87.5% 절감**, 게이트웨이 파드당 폐기 **100만 건 이상**, 쓰기 초당 **2,000건 이상**. 그 밖에 `the-science-of-routing-print-orders`(인쇄 주문을 물리 공급망으로 라우팅 — 이 엔진에 없는 축), `canva-incident-report-api-gateway-outage`, `snowpipe-streaming` || **Grafana Labs** | US/EU · SaaS | `grafana.com/blog` | ✅ **본문 확인.** Mimir 차세대 아키텍처 글에 버린 안과 수치가 명시돼 있다 | Datadog 과 겹칠까 봐 후순위였는데 **축이 다르다 — 자기가 지은 원래 구조를 공개적으로 버리는 이야기다.** 초기 Mimir 는 **카산드라에서 영감받아 복제 3벌 + 쿼럼 읽기/쓰기**였는데, 쓰기 때 3벌을 두고 최근 데이터를 읽을 때 일관성을 위해 최소 2벌을 물어야 해서 **비쌌다.** 그래서 **Kafka 를 가운데 두고 객체 저장을 밑에 깔아** 읽기/쓰기 경로를 떼어 냈고 **총소유비용 25% 절감.** 질의는 시간 분할 + 샤딩으로 **실행 시간 10분의 1.** 활성 시리즈 **10억** 규모. 오픈소스·온프렘 축도 이 엔진에 없다 |
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
 
@@ -37,7 +37,6 @@
 - **Monzo** (UK/EU, 핀테크) — **재 보고 뺐다(140).** 예전에는 마이크로서비스·Cassandra 로
   유명했는데 **최근 글이 AI 도구·채용·조직 문화 쪽으로 기울었다.** 아키텍처 결정과 대가를
   다루는 글이 안 보인다. 옛 글을 파고들 이유가 생기면 다시 본다.
-- Grafana (Datadog 과 겹친다 — 오픈소스·온프렘 축이 다르긴 하다. 후순위)
 
 
 ## 보류
