@@ -15,8 +15,10 @@
 
 - **TigerBeetle** (기타 · SaaS) — 사이클 195 에서 열었다. **36번째 회사, 하드웨어에 가장 가까운 첫 회사.**
   프로파일 + 도메인 지도 + 도메인 3개(**정적 자원 할당** · **결정론적 시뮬레이션 테스트** · **확장의 축**).
-  **기능 1개 완료**(`deterministic-testing`, 사이클 196).
-  **남은 도메인 둘은 아직 글이 하나씩뿐이다** — 기능을 쓰려면 두 번째 글부터 읽어야 한다.
+  **기능 2개 완료**(`deterministic-testing` 196 · `static-allocation` 197 —
+  두 번째 글로 `enum-of-arrays` 와 `index-count-offset-size` 를 읽어 붙였다).
+  **남은 것은 `확장의 축`** 하나 — **두 번째 글이 필요하다**
+  (`the-write-last-read-first-rule` / `rediscovering-transaction-processing`).
   ⚠️ **두 번째 글이 필요한 도메인 둘** — 정적 할당은 `2026-02-16-index-count-offset-size` 나
   `2024-12-19-enum-of-arrays`, 확장의 축은 `2025-11-06-the-write-last-read-first-rule` 이나
   `2024-07-23-rediscovering-transaction-processing-from-history-and-first-principles`.
