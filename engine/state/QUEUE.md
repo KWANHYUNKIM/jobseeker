@@ -9,12 +9,13 @@
 > 큐 잔량이 잘못 세어졌다. 고친 뒤 `sed -n '/^## 대기/,/^### 확인/p' engine/state/QUEUE.md | grep -c '^| \*\*'` 로 센다.
 > `## 진행 중
 
-- **ByteDance** (CN · 소셜) — 도메인 4개 중 2개에 기능이 있다(`monolith`, `megascale`).
-  ⚠️ **남은 둘은 이 환경에서 팔 수 없을 가능성이 높다** — `로컬 저장 엔진`(LavaStore)과
-  `그래프·분석 데이터`(ByteGraph·ByteHTAP)의 본문이 전부 **VLDB PDF** 인데,
-  **WebFetch 가 디코드하지 못하고 로컬에도 PDF 도구가 없다**(사이클 150 에서 두 번 확인).
-  다음 사이클은 **arXiv 에 있는 ByteDance 논문을 더 찾아 새 도메인을 열거나, 여기서 done 으로
-  닫는** 판단을 한다. arXiv 는 `ar5iv.labs.arxiv.org/html/<id>` 로 전문이 읽힌다.
+- **ByteDance** (CN · 소셜) — 도메인 5개 중 3개에 기능이 있다(`monolith`, `megascale`, `heteroscale`).
+  🚫 **남은 둘(`로컬 저장 엔진`, `그래프·분석 데이터`)은 이 환경에서 팔 수 없다** — 본문이 전부
+  **VLDB PDF** 이고 WebFetch 가 디코드하지 못한다(사이클 150 에서 두 번 확인, 첫 응답은 수치를
+  지어냈다). 로컬에 PDF 도구도 없다. **다시 시도하지 말 것.**
+  ✅ **arXiv 는 잘 읽힌다** — `arxiv.org/html/<id>v1` 또는 `ar5iv.labs.arxiv.org/html/<id>`.
+  다음 기능 후보: **MuxFlow**(2303.13803, 이미 정독함 — GPU 공유. `GPU 자원 배분·서빙` 도메인의
+  두 번째 기능으로 바로 쓸 수 있다). 그 외 arXiv 에서 더 찾거나 여기서 done 으로 닫는다.
 
 ## 보류` 와 `## 완료` 는 세지 않는다 — 팔 수 있는 것만 큐다.
 

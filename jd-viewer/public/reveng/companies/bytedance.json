@@ -216,6 +216,45 @@
       "features": [
         "megascale"
       ]
+    },
+    {
+      "name": "GPU 자원 배분·서빙",
+      "why": "**이 회사에서 가장 비싼 것이 GPU 이고, 가장 흔한 일이 GPU 를 놀리는 것이다.** MuxFlow 가 조사한 사내 클러스터에서는 **GPU 의 99% 이상이 사용률 60% 미만**이었고 **약 90%가 메모리도 60% 미만**이었다. 지연에 민감한 온라인 추론은 배치를 크게 못 잡고 요청량이 출렁이기 때문이다. 이 도메인은 그 빈자리를 어떻게 메울 것인가의 이야기다 — **겹쳐 쓰거나(MuxFlow), 제때 늘렸다 줄이거나(HeteroScale).**",
+      "tech": [
+        {
+          "tech": "HeteroScale — P/D 분리 서빙의 결합 오토스케일",
+          "solves": "**decode TPS** 를 신호로 삼아 prefill·decode 를 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 **+26.6%p**, SM 활동 **+9.2%p**, 하루 **수십만 GPU-시간** 절감.",
+          "limits": "**확장 중 일시적 P/D 불균형으로 TTFT 가 가끔 튄다.** 지표가 모델·하드웨어에 어느 정도 맞춤 튜닝을 요구한다는 것을 저자들도 인정한다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+              "url": "https://arxiv.org/abs/2508.19559",
+              "publisher": "arXiv · ByteDance · Shufan Liu 외",
+              "date": "2025-08",
+              "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+            }
+          ]
+        },
+        {
+          "tech": "MuxFlow — 온라인 추론과 오프라인 학습의 GPU 공간 공유",
+          "solves": "온라인 컨테이너 옆에 오프라인을 끼워 넣고, **xCUDA**(메모리 쿼터 · SM 클럭 기반 커널 지연, PID 제어)와 **SysMonitor**(5상태 기계: Init·Healthy·Unhealthy·Overlimit·Disabled)로 온라인을 지킨다. SM 은 온라인이 쓰는 만큼의 **여집합**으로 오프라인에 준다. 프로덕션 2만 GPU 에서 사용률 **26% → 76%**, SM 활동 16% → 33%, 지연 증가는 평균·p99 모두 **10ms 미만.**",
+          "limits": "저자들이 인정한 것이 많다 — **신뢰할 수 있는 오프라인 작업만 받는다**(악의적 행동 방어가 없다), MPS 서버 크래시·행은 여전히 남아 **기기 오류율이 0.9% 대 0.7%** 로 높다, 메모리는 **보수적으로 40% 로 고정**해 다른 지표만큼 안 오른다, GPU 당 **오프라인 하나만** 얹는다, 임계값이 대부분 **경험적으로 고른 값**이다. **적절한 성능 저하 임계값을 어떻게 정할지는 열린 문제로 남겼다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "MuxFlow: Efficient and Safe GPU Sharing in Large-Scale Production Deep Learning Clusters",
+              "url": "https://arxiv.org/abs/2303.13803",
+              "publisher": "arXiv · ByteDance",
+              "date": "2023-03",
+              "summary": "지연에 민감한 온라인 추론과 급하지 않은 오프라인 학습을 **같은 GPU 에 겹쳐 돌린** 기록. 클러스터의 99% 넘는 GPU 가 사용률 60% 미만이었다는 관찰에서 출발해, 온라인을 지키는 2단 보호와 SM 을 상호보완적으로 나누는 방식을 만들었다. 프로덕션 2만 GPU 에서 사용률 26% → 76%."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "heteroscale"
+      ]
     }
   ],
   "features": [
@@ -1144,6 +1183,12 @@
           "via": "같은 회사의 다른 학습",
           "contract": "둘 다 '학습을 어떻게 계속 돌릴 것인가'지만 성질이 반대다 — Monolith 는 **작은 갱신이 끝없이 흐르는** 온라인 학습이고, MegaScale 은 **거대한 한 판을 수 주 동안 버티는** 배치 학습이다. **두 논문은 서로를 인용하지 않는다** — 이 대비는 이 사이트의 해석이다.",
           "confidence": "inferred"
+        },
+        {
+          "to": "heteroscale",
+          "via": "같은 GPU 를 놓고 다투는 두 쪽",
+          "contract": "이쪽은 **학습**이 만 대를 수 주 붙잡는 문제이고, 저쪽은 **추론**이 수만 대를 시시각각 늘렸다 줄이는 문제다. **두 논문은 서로를 인용하지 않는다** — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
         }
       ],
       "research": {
@@ -1220,6 +1265,506 @@
           "summary": "GPU 12,288대에서 175B 모델을 학습하며 MFU 를 41.2%에서 55.2%로 끌어올린 기록. 알고리즘·통신·연산자·데이터 파이프라인을 함께 고치고, 그보다 더 많은 지면을 **관측과 고장 진단**에 쓴다 — 규모가 커지면 같은 설정으로 돌려도 실행마다 성능이 달라지고, 마이크로벤치마크로는 안 보이는 느린 기계가 0.5% 섞여 있기 때문이다."
         }
       ]
+    },
+    {
+      "key": "heteroscale",
+      "name": "무엇을 보고 늘릴 것인가 — 하드웨어 지표가 거짓말할 때",
+      "domain": "GPU 자원 배분·서빙",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "LLM 추론은 두 단계의 성질이 아주 다르다. **prefill** 은 프롬프트 전체를 한꺼번에 처리해 **계산에 묶이고**, **decode** 는 토큰을 하나씩 만들어 내며 **메모리 대역폭에 묶인다.** 그래서 요즘은 둘을 갈라 다른 풀에서 돌린다 — 같은 GPU 풀에 몰아넣으면 한쪽에 과잉 공급이 생겨 **토큰당 비용이 41% 더 든다.**\n\n그런데 갈라 놓는 순간 **자동 확장이 어려워진다.** 이 논문이 실측으로 밝힌 것이 그 지점이다 — **decode 인스턴스는 부하가 낮아도 GPU 사용률이 높게 유지된다.** KV 캐시 메모리 작업과 데이터 전송 때문이다. 그래서 흔히 쓰는 GPU 사용률로 스케일하면 **decode 는 늘 바빠 보이고**, 두 풀의 균형이 깨져 전체 처리량이 무너진다.\n\n**이 기능의 진짜 내용은 스케줄러가 아니라 '무엇을 신호로 삼을 것인가'의 선택**이고, 그 선택을 감이 아니라 **프로덕션 신호에 대한 첫 대규모 실측 연구**로 했다.",
+        "metrics": [
+          {
+            "label": "프로덕션 규모와 효과",
+            "value": "**수만 GPU.** GPU 사용률 **+26.6%p**, SM 활동 **+9.2%p**, 하루 **수십만 GPU-시간** 절감",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "label": "적용 범위",
+            "value": "TPS 기반 정책이 **전체 GPU 중 64%** 에 적용됐다. 주기 기반 정책 대비 GPU 사용률 **+10.0%p**, SM 활동 **+11.1%p**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "label": "사례 — 개방형 대화 서비스",
+            "value": "prefill GPU 사용률 **46.8% → 76.2%**, prefill SM 활동 **36.6% → 62.5%**. decode 사용률은 86.0% → 82.2% 로 소폭 내려가되 높게 유지. **전체 GPU 사용량 41.3% 감소**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "label": "토폴로지를 무시하면",
+            "value": "배치가 네트워크 스위치를 가로지를 때 **KV 캐시 전송 대역폭이 약 20% 줄어든다**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "label": "동종 풀로 몰면",
+            "value": "단계별 배치 대비 **토큰당 비용 41% 증가**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "label": "P/D 비율의 실제 범위",
+            "value": "부하 성격·하드웨어·SLO 우선순위에 따라 **1P/5D 에서 9P/1D 까지.** 양 극단은 모두 나쁘고 **중간 어딘가에 봉우리**가 있다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "GPU 사용률로 스케일해 보고",
+          "thought": "**decode 는 부하가 낮아도 사용률이 높게 남는다** — KV 캐시 메모리 작업과 데이터 전송 때문이다. 부하 변화에 대한 민감도가 낮으니 **늘 바쁜 것처럼 보인다.** SM 활동도 마찬가지로 **요청이 적을 때조차 계속 높다.** 하드웨어 지표를 믿으면 잘못된 순간에 늘리고 줄이게 된다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그럼 지연을 보자고 했을 때",
+          "thought": "TTFT 는 **절벽처럼** 반응한다 — 오버슈팅하고 진동하고 반응이 늦는다. 신호 대 잡음비가 낮고 하이퍼파라미터가 너무 많다. TBT 는 더 매끄럽지만 여전히 비선형이고 다단 임계값이 필요하다. **대규모 프로덕션에서 서로 얽힌 파라미터를 그만큼 튜닝하는 것은 감당이 안 된다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "신호를 고를 때",
+          "thought": "처리량과 하드웨어 지표는 **자원에 비례해 움직여** 비례 제어를 쓸 수 있다. 지연은 비선형이라 보수적인 음의 피드백이 필요하다. 그중 **decode TPS** 는 신호 대 잡음비가 좋고, 부하 변화에 빨리 반응하고, **인스턴스마다 고르게 분포하고**, 무엇보다 사업 목표와 곧장 이어진다. prefill TPS 도 좋지만 **KV 캐시가 적중하면 흔들린다.**",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "두 풀을 따로 늘려 보고",
+          "thought": "prefill 과 decode 를 각자 늘리면 **비율이 깨지고 전체 처리량이 무너진다.** 그러니 **한쪽의 신호로 양쪽의 필요 용량을 계산**해 목표 비율을 강제한다 — 독립적인 확장을 **하나의 결합 최적화**로 바꾸는 셈이다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "prefill 인스턴스",
+            "what": "프롬프트 전체를 병렬로 처리한다. **계산 집약** — 계산에 최적화된 하드웨어에 얹는다."
+          },
+          {
+            "name": "decode 인스턴스",
+            "what": "토큰을 자기회귀로 하나씩 만든다. **메모리 대역폭 집약** — 부하가 낮아도 사용률이 높게 보인다."
+          },
+          {
+            "name": "Deployment Group",
+            "what": "prefill 역할과 decode 역할을 한 스케줄링 도메인에 묶은 논리 단위. 그 안에서 각 역할은 따로 늘고 준다."
+          },
+          {
+            "name": "RDMA 서브그룹",
+            "what": "네트워크 계층에 따라 우선순위를 매긴 자원 풀. **낮음** = S2 아래 동종 GPU 풀(가장 흔하다), **중간** = S2 아래 이종 S1 스위치, **높음** = S1 에 서로 다른 GPU 종류가 직결(가장 희소하다)."
+          },
+          {
+            "name": "decode TPS",
+            "what": "스케일 신호. 인스턴스마다 고르게 분포해 대규모 배포에서 다루기 쉽다."
+          },
+          {
+            "name": "P/D 목표 비율",
+            "what": "압박 시험과 과거 데이터로 미리 정한 값. 실제로 1P/5D ~ 9P/1D 범위."
+          }
+        ],
+        "invariants": [
+          "**prefill 과 decode 는 같은 고속 RDMA 상호연결(공통 S2 또는 S1 스위치) 아래에 놓인다** — KV 캐시를 주고받아야 하기 때문이다.",
+          "두 풀은 **동시에** 늘고 준다 — 한 신호로 양쪽 용량을 함께 계산한다.",
+          "**scale-out 은 낮은 우선순위 풀부터** 쓴다 — 희소한 고순위 하드웨어를 아낀다.",
+          "**scale-in 은 높은 우선순위 풀부터** 비운다 — 희소 자원을 되돌려 받는다.",
+          "인스턴스가 순서 어긋나게 뜨면, **먼저 준비된 역할의 서비스 디스커버리를 보류**해 비율이 맞을 때까지 기다린다.",
+          "한 스케줄링 주기 안에서 고른 자원은 **가상 할당**해 두어 같은 주기에 두 번 쓰이지 않는다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "**decode TPS** 를 관측해 필요 용량을 계산한다",
+            "why": "하드웨어 지표는 decode 에서 거짓말하고, 지연 지표는 비선형이라 진동한다."
+          },
+          {
+            "step": "그 한 신호로 **prefill 과 decode 양쪽의 용량을 함께** 계산해 목표 P/D 비율을 강제한다",
+            "why": "따로 늘리면 비율이 깨지고 전체 처리량이 무너진다."
+          },
+          {
+            "step": "매 주기 **토폴로지 자원 트리**를 새로 만든다 — 데이터센터부터 개별 노드까지 GPU 위치를 담는다",
+            "why": "어디에 놓느냐가 KV 캐시 전송 대역폭을 20% 좌우한다."
+          },
+          {
+            "step": "대기 중인 요청을 **서비스 우선순위**로 정렬한다",
+            "why": "자원이 모자랄 때 무엇을 먼저 채울지 정해 두어야 한다."
+          },
+          {
+            "step": "scale-out 이면 **기존 Deployment Group 을 넓힐지, 다른 도메인에 새로 만들지** 견줘 본다",
+            "why": "넓히면 네트워크 친화성이 유지되지만 그 도메인의 여유가 필요하다."
+          },
+          {
+            "step": "**RDMA 서브그룹 우선순위로 점수를 매기고**, 친화성 요구가 느슨한 서비스는 낮은 우선순위 풀에 보낸다",
+            "why": "S1 직결 이종 GPU 같은 희소 자원을 아무에게나 주면 정작 필요한 서비스가 못 쓴다."
+          },
+          {
+            "step": "고른 자원을 **가상 할당**해 같은 주기에 재사용되지 않게 한다",
+            "why": "한 주기 안에서 두 결정이 같은 GPU 를 집으면 둘 다 실패한다."
+          },
+          {
+            "step": "scale-in 이면 **높은 우선순위 풀에 있는 그룹부터** 비운다",
+            "why": "줄일 때는 희소한 것을 먼저 돌려받는 것이 이득이다."
+          },
+          {
+            "step": "역할들이 순서 어긋나게 뜨면, 먼저 찬 쪽의 **서비스 디스커버리를 보류**한다",
+            "why": "비율이 깨진 채로 트래픽을 받으면 TTFT SLO 가 잠시 깨진다."
+          }
+        ],
+        "decisions": [
+          {
+            "question": "prefill 과 decode 를 같은 GPU 풀에 둘 것인가",
+            "chosen": "**나눈다.** 단계별로 다른 하드웨어에 얹는다 — prefill 은 계산 최적, decode 는 메모리 최적.",
+            "alternatives": [
+              "동종 GPU 풀 하나로 둘 다 돌린다"
+            ],
+            "tradeoff": "두 풀의 **균형을 따로 관리해야 하고**, 그 균형이 깨지면 전체 처리량이 무너진다. 대신 동종 풀은 한쪽에 과잉 공급이 생겨 **토큰당 비용이 41% 더 들고** 큰 클러스터에서 단편화가 늘어난다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "question": "무엇을 보고 인스턴스를 늘릴 것인가",
+            "chosen": "**decode TPS.** GPU 사용률·SM 활동·TTFT·TBT·prefill TPS 를 모두 실측해 보고 골랐다.",
+            "alternatives": [
+              "GPU 사용률 (표준적인 선택)",
+              "SM 활동",
+              "TTFT / TBT 같은 지연 지표",
+              "prefill TPS"
+            ],
+            "tradeoff": "모델·하드웨어에 맞춘 튜닝이 어느 정도 필요하다 — 저자들도 앞으로 **모델·하드웨어·부하에 무관한 지표**를 찾겠다고 적었다. 대신 버린 것들의 이유가 분명하다: **decode GPU 사용률은 부하가 낮아도 높게 남아 오해를 부르고**, decode SM 활동도 **요청이 적을 때조차 계속 높다.** TTFT 는 절벽처럼 반응해 오버슈팅·진동하고 파라미터가 너무 많다. prefill TPS 는 **KV 캐시가 적중하면 신뢰할 수 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "question": "두 풀을 각자 늘릴 것인가",
+            "chosen": "**함께 늘린다.** 한쪽의 신호(decode TPS)로 **양쪽의 필요 용량을 계산**해 목표 P/D 비율을 강제한다.",
+            "alternatives": [
+              "prefill 과 decode 를 독립적으로 오토스케일한다"
+            ],
+            "tradeoff": "비율을 미리 정해 두어야 하고, 그 값은 **압박 시험과 과거 데이터**로 얻는다 — 부하가 변하면 다시 재야 한다(뒷문장은 이 사이트의 추정). 대신 독립 확장이 만드는 불균형이 사라진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "question": "어디에 놓을 것인가 — 자원을 평평한 풀로 볼 것인가",
+            "chosen": "**토폴로지를 안다.** prefill 과 decode 를 공통 고속 RDMA 상호연결 아래에 함께 놓고, RDMA 서브그룹을 우선순위로 나눠 점수를 매긴다.",
+            "alternatives": [
+              "모든 GPU 를 하나의 평평한 자원 풀로 본다"
+            ],
+            "tradeoff": "스케줄러가 네트워크 계층을 알아야 하고 매 주기 자원 트리를 새로 만든다. 대신 토폴로지를 모르고 배치하면 **KV 캐시 전송 대역폭이 약 20% 줄어든다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "question": "희소한 하드웨어를 누구에게 줄 것인가",
+            "chosen": "**친화성 요구가 느슨한 서비스는 낮은 우선순위 풀로 보내고**, scale-in 할 때는 **높은 우선순위 풀부터 비운다.**",
+            "alternatives": [
+              "요청 순서대로 가장 좋은 자리를 준다"
+            ],
+            "tradeoff": "느슨한 서비스는 덜 좋은 자리를 받는다. 대신 S1 직결 이종 GPU 같은 **가장 희소한 자원**이 정작 필요한 서비스를 위해 남는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "question": "인스턴스가 순서 어긋나게 뜨면",
+            "chosen": "**먼저 찬 역할의 서비스 디스커버리를 보류**해, 양쪽이 견딜 만한 P/D 비율에 이를 때까지 트래픽을 받지 않는다.",
+            "alternatives": [
+              "준비된 인스턴스부터 곧바로 트래픽을 받는다"
+            ],
+            "tradeoff": "확장이 완료되기까지 새 용량이 놀고 있게 된다(뒷문장은 이 사이트의 해석). 대신 비율이 깨진 채로 받아 **TTFT SLO 를 잠시 깨는 일**을 막는다. 그래도 논문은 **확장 중 일시적 비율 불균형으로 TTFT 가 가끔 튄다**고 인정한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "question": "비수기에 인스턴스를 얼마나 줄일 것인가",
+            "chosen": "일부 서비스는 **최소 인스턴스 수를 일부러 높게** 잡는다 — 그래서 지표가 오토스케일 안 하는 서비스와 비슷해 보일 때가 있다.",
+            "alternatives": [
+              "부하에 맞춰 최소까지 줄인다"
+            ],
+            "tradeoff": "비수기에 자원이 논다. 저자들이 **의도적인 선택**이라고 밝혔다 — 급작스러운 트래픽 폭증에 대비해 **안정성과 준비 상태를 우선**한 것이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "decode TPS 기반 비례 제어",
+            "role": "스케일 신호. 자원에 비례해 움직여 비례 제어를 쓸 수 있다. 전체 GPU 중 64%에 적용.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "tech": "Deployment Group",
+            "role": "prefill·decode 역할을 한 스케줄링 도메인에 묶는 단위.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "tech": "RDMA 서브그룹 (S1 · S2 계층)",
+            "role": "네트워크 계층별 우선순위 풀. 배치 점수의 기준이 된다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "tech": "토폴로지 자원 트리",
+            "role": "매 주기 새로 만드는 GPU 위치 지도. 데이터센터부터 노드까지.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "tech": "서비스 디스커버리 보류 (soft P/D 유지)",
+            "role": "역할이 순서 어긋나게 뜰 때 비율이 맞을 때까지 트래픽을 막는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "tech": "어떤 오케스트레이터 위에서 도는지",
+            "role": "— 이 사이트가 읽은 범위에서는 확인하지 못했다.",
+            "confidence": "unknown",
+            "sources": []
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "megascale",
+          "via": "같은 GPU 를 놓고 다투는 두 쪽",
+          "contract": "MegaScale 은 **학습**이 만 대를 오래 붙잡는 이야기이고, 이쪽은 **추론**이 수만 대를 시시각각 늘렸다 줄이는 이야기다. 둘 다 결국 **GPU 를 놀리지 않는 법**이지만, 하나는 **한 판을 버티는 문제**이고 하나는 **파도를 따라가는 문제**다. **두 논문은 서로를 인용하지 않는다** — 이 대비는 이 사이트의 해석이다.",
+          "confidence": "inferred"
+        }
+      ],
+      "research": {
+        "papers": [
+          {
+            "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference",
+            "authors": "Shufan Liu 외 (ByteDance)",
+            "year": "2025",
+            "venue": "arXiv 2508.19559",
+            "url": "https://arxiv.org/abs/2508.19559",
+            "takeaway": "이 논문의 값은 스케줄러 설계가 아니라 **버린 지표들의 목록**에 있다. GPU 사용률·SM 활동·TTFT·TBT·prefill TPS 를 프로덕션에서 실제로 재 보고 각각 **왜 못 쓰는지**를 밝힌다 — 특히 **decode 의 하드웨어 지표는 부하가 낮아도 높게 남아 오해를 부른다.** '무엇을 볼 것인가'를 감이 아니라 실측으로 고른 사례다.",
+            "confidence": "confirmed"
+          },
+          {
+            "title": "MuxFlow: Efficient and Safe GPU Sharing in Large-Scale Production Deep Learning Clusters",
+            "authors": "ByteDance",
+            "year": "2023",
+            "venue": "arXiv 2303.13803",
+            "url": "https://arxiv.org/abs/2303.13803",
+            "takeaway": "같은 회사가 2년 앞서 쓴, **반대 방향의 글**이다. 이쪽은 GPU 를 **나눠 쓰는** 이야기 — 온라인 추론과 오프라인 학습을 한 GPU 에 겹쳐 프로덕션 2만 GPU 에서 사용률을 **26% → 76%** 로 올렸다. **버린 대안이 셋 다 명시돼 있다**: 시간 분할(온라인 하나로는 SM 을 다 못 채운다), NVIDIA MIG(실행 중 분할을 바꿀 수 없어 최대치를 미리 잡아야 한다), CUDA 스트림(한 프로세스 안에서만 되어 관리가 어렵다).",
+            "confidence": "confirmed"
+          }
+        ],
+        "hard_problems": [
+          {
+            "problem": "바쁜 것과 일하는 것을 구분하기",
+            "why_hard": "자동 확장은 결국 **하나의 숫자를 믿는 일**이다. 그런데 이 논문이 실측으로 보인 것은 **가장 흔히 쓰는 숫자가 가장 많이 속인다**는 것이다 — decode 인스턴스의 GPU 사용률과 SM 활동은 **요청이 적을 때조차 높게 남는다.** KV 캐시 메모리 작업과 데이터 전송이 계속 돌기 때문이다. 그렇다고 지연을 보면 **비선형이라 절벽처럼 반응하고 오버슈팅과 진동을 낳는다.** 즉 **하드웨어에 가까운 지표는 부하를 못 읽고, 사용자에 가까운 지표는 제어가 안 된다.**",
+            "current_best": "**둘 다 아닌 것을 고른다 — 처리량(decode TPS).** 자원에 비례해 움직여 비례 제어가 되고, 인스턴스마다 고르게 분포하고, 사업 목표와 곧장 이어진다. 대신 완전한 답은 아니다 — 저자들도 앞으로 **모델·하드웨어·부하에 무관한 지표**를 찾겠다고 적어, 지금 것이 어느 정도 맞춤 튜닝을 필요로 함을 인정한다(마지막 절은 이 사이트의 해석).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          },
+          {
+            "problem": "두 자원의 최적 비율은 부하마다 다르고, 부하는 계속 바뀐다",
+            "why_hard": "실험에서 P/D 비율을 바꿔 보면 처리량이 **중간 어딘가에서 봉우리를 이루고 양 극단에서는 모두 나빠진다.** 그런데 그 봉우리의 위치가 서비스마다 다르다 — 실제 프로덕션에서 **1P/5D 부터 9P/1D 까지** 걸쳐 있고, 입력·출력 길이 비율과 하드웨어와 SLO 우선순위가 함께 정한다. **미리 정해 두면 부하가 변할 때 틀리고, 실시간으로 찾으려면 무엇을 보고 찾을지가 다시 문제가 된다.**",
+            "current_best": "**압박 시험과 과거 데이터로 비율을 미리 정하고, 그 비율을 확장 과정 내내 강제한다.** 순서가 어긋나면 서비스 디스커버리를 보류해 비율이 맞을 때까지 기다린다. 그래도 논문은 **확장 중 일시적 불균형으로 TTFT 가 가끔 튄다**고 인정한다 — 설계를 조심스럽게 해도 남는 부작용이다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+                "url": "https://arxiv.org/abs/2508.19559",
+                "publisher": "arXiv · ByteDance · Shufan Liu 외",
+                "date": "2025-08",
+                "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "한 신호로 두 풀을 함께 늘린다",
+          "question": "왜 GPU 사용률을 보지 않는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  REQ[\"요청\"] --> P[\"<b>prefill 풀</b><br/>프롬프트 전체를 병렬 처리<br/>계산 집약 · 계산 최적 하드웨어\"]:::list\n  P -->|\"KV 캐시 전송<br/><b>같은 RDMA 아래여야 한다</b><br/>가로지르면 대역폭 -20%\"| D[\"<b>decode 풀</b><br/>토큰을 하나씩<br/>메모리 대역폭 집약\"]:::list\n  D --> OUT[\"응답\"]\n  subgraph SIG[\"<b>무엇을 볼 것인가</b> — 실측으로 골랐다\"]\n    X1[\"decode GPU 사용률\"]:::quiet\n    X2[\"decode SM 활동\"]:::quiet\n    X3[\"TTFT · TBT\"]:::quiet\n    OK[\"<b>decode TPS</b>\"]:::accent\n  end\n  X1 -->|\"부하가 낮아도 높다<br/>KV 캐시 메모리 압력\"| BAD[\"오해를 부른다\"]\n  X2 -->|\"요청이 적어도 계속 높다\"| BAD\n  X3 -->|\"절벽처럼 반응<br/>오버슈팅 · 진동 · 파라미터 과다\"| BAD\n  D --> OK\n  OK --> CALC[\"<b>한 신호로 양쪽 용량을 계산</b><br/>목표 P/D 비율 강제<br/>(실제 범위 1P/5D ~ 9P/1D)\"]:::accent\n  CALC --> SCH[\"<b>토폴로지 인지 스케줄러</b><br/>• 매 주기 자원 트리 재구성<br/>• 서비스 우선순위로 정렬<br/>• RDMA 서브그룹 점수<br/>• 가상 할당으로 중복 방지\"]:::list\n  SCH -->|\"scale-out — 낮은 우선순위 풀부터\"| P\n  SCH -->|\"scale-in — 높은 우선순위 풀부터\"| D"
+        },
+        {
+          "title": "확장 한 번이 지나는 상태",
+          "question": "먼저 뜬 쪽은 왜 기다리는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 정상: P/D 비율 유지\n  정상 --> 확장결정: decode TPS 상승\n  확장결정 --> 배치탐색: 자원 트리 재구성 · 우선순위 정렬\n  배치탐색 --> 기존그룹확장: 같은 도메인에 여유가 있다\n  배치탐색 --> 새그룹생성: 다른 도메인에 만든다\n  기존그룹확장 --> 기동중\n  새그룹생성 --> 기동중\n  기동중 --> 비율대기: 한 역할이 먼저 준비됨\n  note right of 비율대기\n    먼저 찬 역할의 서비스 디스커버리를 보류한다\n    비율이 깨진 채 트래픽을 받으면\n    TTFT SLO 가 잠시 깨진다\n  end note\n  비율대기 --> 정상: 양쪽이 견딜 만한 비율에 도달\n  정상 --> 축소결정: decode TPS 하락\n  축소결정 --> 정상: 최소 인스턴스 수에 걸림 (의도적 여유)\n  축소결정 --> 고순위회수: 높은 우선순위 풀의 그룹부터 비운다\n  고순위회수 --> 정상"
+        },
+        {
+          "title": "실패 경로 — 나눈 대가와 안 나눈 대가",
+          "question": "어느 쪽으로도 공짜가 없다면 무엇을 고르는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  SAME[\"<b>동종 풀 하나로</b>\"] --> OVER[\"한쪽에 과잉 공급<br/>decode 에 계산이 남거나<br/>prefill 에 메모리 대역폭이 남는다\"]\n  OVER --> COST41[\"<b>토큰당 비용 +41%</b>\"]:::quiet\n  SAME --> FRAG[\"큰 클러스터에서 단편화 증가\"]\n  SPLIT[\"<b>P/D 로 나눈다</b>\"]:::accent --> BAL[\"<b>균형을 따로 관리해야 한다</b>\"]\n  BAL --> INDEP[\"따로 늘리면<br/>비율이 깨지고 처리량이 무너진다\"]\n  INDEP --> JOINT[\"완화 — 한 신호로 함께 늘린다\"]:::quiet\n  JOINT --> SPIKE[\"그래도 확장 중 일시적 불균형으로<br/><b>TTFT 가 가끔 튄다</b> (논문이 인정)\"]\n  SPLIT --> NET[\"KV 캐시를 주고받아야 한다\"]\n  NET --> CROSS[\"스위치를 가로지르면<br/><b>대역폭 -20%</b>\"]\n  CROSS --> TOPO[\"완화 — 토폴로지 인지 배치\"]:::quiet\n  METRIC[\"표준 지표로 스케일\"] --> LIE[\"<b>decode 는 늘 바빠 보인다</b><br/>KV 캐시 메모리 압력\"]\n  LIE --> WRONG[\"잘못된 순간에 늘리고 줄인다\"]\n  IDLE[\"비수기에 최소까지 줄인다\"] -->|\"의도적으로 안 한다\"| KEEP[\"최소 인스턴스를 높게 유지<br/>— 폭증 대비 안정성 우선\"]:::quiet"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+          "url": "https://arxiv.org/abs/2508.19559",
+          "publisher": "arXiv · ByteDance · Shufan Liu 외",
+          "date": "2025-08",
+          "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+        },
+        {
+          "title": "MuxFlow: Efficient and Safe GPU Sharing in Large-Scale Production Deep Learning Clusters",
+          "url": "https://arxiv.org/abs/2303.13803",
+          "publisher": "arXiv · ByteDance",
+          "date": "2023-03",
+          "summary": "지연에 민감한 온라인 추론과 급하지 않은 오프라인 학습을 **같은 GPU 에 겹쳐 돌린** 기록. 클러스터의 99% 넘는 GPU 가 사용률 60% 미만이었다는 관찰에서 출발해, 온라인을 지키는 2단 보호와 SM 을 상호보완적으로 나누는 방식을 만들었다. 프로덕션 2만 GPU 에서 사용률 26% → 76%."
+        }
+      ]
     }
   ],
   "open_questions": [
@@ -1232,7 +1777,10 @@
     "**LavaStore 본문을 읽지 못했다.** VLDB PDF 를 WebFetch 가 디코드하지 못하고(두 번 시도) 로컬에도 PDF 도구가 없다. 초록의 주장(GC 를 컴팩션에서 분리한 KV 분리, WAL 전용 엔진 타입) 외에는 **설계·수치를 확인할 수 없어 기능으로 쓰지 않았다.**",
     "같은 이유로 **ByteGraph·ByteHTAP 본문도 읽을 수 없다** — 둘 다 VLDB PDF 다.",
     "`대규모 학습 인프라` 도메인은 지금 **논문 한 편(2024)에만** 기대고 있다 — 그 뒤의 후속 자료를 아직 찾지 못했다.",
-    "TerarkDB 는 README 수준까지만 확인했다 — 설계 문서가 외부 문서 저장소로 링크돼 있어 내부 구조(KV 분리·GC)를 확인하지 못했다."
+    "TerarkDB 는 README 수준까지만 확인했다 — 설계 문서가 외부 문서 저장소로 링크돼 있어 내부 구조(KV 분리·GC)를 확인하지 못했다.",
+    "HeteroScale 이 **어떤 오케스트레이터 위에서** 도는지 밝히지 않는다.",
+    "MuxFlow(2023)와 HeteroScale(2025) 사이에 **GPU 공유 방식이 어떻게 이어졌는지** — 두 논문이 서로를 언급하지 않아 이 사이트는 알 수 없다.",
+    "P/D 목표 비율을 **얼마나 자주 다시 재는지** 논문이 밝히지 않는다."
   ],
   "sources": [
     {
@@ -1283,6 +1831,20 @@
       "publisher": "ByteDance (오픈소스)",
       "date": "—",
       "summary": "RocksDB v5.18.3 에서 갈라져 나온 KV 엔진. API 호환이라 코드를 안 바꾸고 옮길 수 있지만 **되돌아갈 수는 없다.** BlockBasedTable 과 TerarkZipTable 두 가지 테이블 형식을 LSM 레벨별로 고를 수 있다. 프로덕션은 리눅스만 검증했다."
+    },
+    {
+      "title": "Taming the Chaos: Coordinated Autoscaling for Heterogeneous and Disaggregated LLM Inference (HeteroScale)",
+      "url": "https://arxiv.org/abs/2508.19559",
+      "publisher": "arXiv · ByteDance · Shufan Liu 외",
+      "date": "2025-08",
+      "summary": "prefill 과 decode 를 분리해 서빙할 때 **무엇을 보고 인스턴스를 늘릴 것인가**를 대규모 실측으로 고른 논문. 흔히 쓰는 GPU 사용률이 **decode 에서는 거짓말을 한다**는 것을 보이고, decode TPS 를 신호로 삼아 두 풀을 함께 늘린다. 수만 GPU 프로덕션에서 GPU 사용률 26.6%p 상승."
+    },
+    {
+      "title": "MuxFlow: Efficient and Safe GPU Sharing in Large-Scale Production Deep Learning Clusters",
+      "url": "https://arxiv.org/abs/2303.13803",
+      "publisher": "arXiv · ByteDance",
+      "date": "2023-03",
+      "summary": "지연에 민감한 온라인 추론과 급하지 않은 오프라인 학습을 **같은 GPU 에 겹쳐 돌린** 기록. 클러스터의 99% 넘는 GPU 가 사용률 60% 미만이었다는 관찰에서 출발해, 온라인을 지키는 2단 보호와 SM 을 상호보완적으로 나누는 방식을 만들었다. 프로덕션 2만 GPU 에서 사용률 26% → 76%."
     }
   ]
 }
