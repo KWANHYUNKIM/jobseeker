@@ -10,36 +10,36 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**아무 회사도 진행 중이 아니다.** TigerBeetle 을 사이클 198 에서 **done 으로 닫았다**(36번째, 도메인 3 · 기능 3).
+**진행 중인 회사가 없다. 사이클 199 는 후보 조사였고 큐를 3/3 으로 채웠다.**
 
-> **⚠️ 다음 사이클은 후보 조사다 — 회사를 열지 않는다.** 큐가 **1/3**(Careem 하나)이다.
-> **후보를 최소 두 곳 본문까지 읽고 `## 대기` 표에 올려 3 으로 만든다.** 비어 있는 자리:
-> **라틴아메리카 · 아프리카 0곳**, **게임은 Roblox 하나**, **의료·바이오 0곳**, **물류 전문 0곳**.
-> '확인해 둔 후보'에 **Mercari**(읽히지만 최근 두 편에 수치가 거의 없었다)와 **ClickHouse**(본문 미확인)가 있다.
-> 시도해 볼 곳: `www.cockroachlabs.com/blog` · `www.scylladb.com/blog` · `engineeringblog.yelp.com` ·
-> `flexport.engineering`(물류) · `engineering.grab.com` 은 이미 있음 · 라틴아메리카·아프리카의 **자체 도메인**.
+> **다음 사이클은 `## 대기` 맨 위 — Careem(AE · 모빌리티)을 연다.** 37번째이고 **중동 첫 회사**다.
+> 자료는 `engineering.careem.com`(본문 확인 완료 — 압축 코덱 다섯 비교로 LZ4 선택,
+> 처리량 **150 → 336 msg/s**, P99.9 **140ms → 35ms**, 저장 **88.2% 절감**, CPU **+8.3%**,
+> Gzip·Zstd·Snappy 를 각각 다른 이유로 버렸다).
+> ⚠️ **소유 구조를 1차 자료로 확인할 것** — 라이드헤일링은 Uber 가 인수했고 슈퍼앱은 별도 법인으로
+> 알려져 있다. **확인 전에는 쓰지 말 것.**
 
-> **TigerBeetle 에서 확인한 회사 축 — 먼저 좁혀서, 대신 확실하게 만든다.**
-> 다룰 것을 좁혀(계정·이체) 레코드를 **128바이트=캐시라인 2줄**로 고정하고 **총 메모리를 곱셈으로** 구한다.
-> 워크로드를 좁혀(OLTP) *"거래 하나에 SQL 질의 10~20회"* 라는 임피던스 불일치를 보고 **한 왕복 8,000건**을 정한다.
-> 비결정성을 좁혀(시간·분단·디스크·크래시를 통제) **같은 시드가 같은 실행**을 내게 한다.
-> **대가가 한결같다 — 좁힌 밖은 못 한다**(늘어나야 할 때 못 늘고, 모델링 안 한 결함은 안 나오고,
-> 한 클러스터 상한이 곧 시스템 상한이다).
+**큐 3/3** — Careem(AE) · **Mercari(JP — C2C 인데 자체 결제·여신)** · **Yelp(US — 지역 검색·리뷰)**.
+뒤 둘은 이번 사이클에 본문까지 읽고 올렸다.
 
-> **🔑 ㉑ '터진 뒤 끊는 대신 들어가기 전에 센다' 비교 문서를 다음다음에 쓸 만하다.** 재료 다섯:
-> PlanetScale `concurrency-limits`(상한을 **낮춰서** 살았다 — 올리면 역압이 사라진다) ·
-> TigerBeetle `static-allocation`(**아예 자라지 않게** 만든 극단) · trivago `kafka-consumers`(KEDA lag) ·
-> Vinted `log-storage`(애그리게이터로 활성 파트 폭발 방지) · Discord(STATE '되풀이되는 설계 축'에
-> Semaphore·침묵 억제로 적혀 있다 — **어느 기능인지 확인 필요**).
-> **쓰기 전에 `domains/index.json` 으로 겹침을 검산할 것.** 위 넷은 아직 어느 문서에도 안 쓰였다(검산 완료).
+> **이번에 확인한 접근 결과** — ✅ 열림: `engineeringblog.yelp.com` · `engineering.mercari.com` ·
+> `clickhouse.com/blog`(본문도 읽힘) · `www.cockroachlabs.com/blog`(열리지만 **첫 페이지가 마케팅 위주**) ·
+> `www.factorio.com/blog`(열리지만 **최근 글이 게임플레이 위주**라 이 엔진에 안 맞는다).
+> ❌ 막힘: `www.scylladb.com/blog`(403) · `engineering.flutterwave.com`·`blog.mercadolibre.com`(DNS 없음) ·
+> `flexport.engineering`(응답 없음). **라틴아메리카·아프리카는 이번에도 못 뚫었다.**
 
-> **또 다른 축 후보 — '축을 바꾼다'.** TigerBeetle `scaling-axis`(수평 샤딩을 거절하고 왕복을 줄였다)는
-> 기존 비교 문서 **`양 끝 중 하나를 고르지 않는 법`** 과 결이 같다 — **그 문서에 이어 붙일지, 새 문서로 쓸지
-> 판단할 것**(기존 문서의 features 는 `kafka-e2ee`·`actions-runners`·`magic-pocket`·`rap`·`session-revocations`).
+> **⚠️ ㉑ 비교 문서 준비 — Discord 를 못 쓴다.** 확인해 보니 `presence-fanout`(Semaphore)과 `voice-sfu`(침묵 억제)는
+> **이미 다른 비교 문서에 쓰였다.** 그러니 ㉑ '터진 뒤 끊는 대신 들어가기 전에 센다' 는 **넷으로 쓰거나**
+> 다른 회사를 하나 더 찾아야 한다. 쓸 수 있는 넷(겹침 검산 완료): PlanetScale `concurrency-limits`(상한을
+> **낮춰서** 살았다) · TigerBeetle `static-allocation`(**아예 자라지 않게** 만든 극단) ·
+> trivago `kafka-consumers`(KEDA lag 로 0까지 축소) · Vinted `log-storage`(애그리게이터로 활성 파트 폭발 방지).
+> **넷이면 충분하다** — 기존 문서들도 다섯 안팎이다.
 
-**큐 1/3** — Careem(AE — 중동 첫 회사).
+> **또 하나의 축 후보 — '축을 바꾼다'.** TigerBeetle `scaling-axis` 는 기존 문서 **`양 끝 중 하나를 고르지 않는 법`**
+> 과 결이 같다. **이어 붙일지 새로 쓸지 판단할 것**(기존 features: `kafka-e2ee`·`actions-runners`·
+> `magic-pocket`·`rap`·`session-revocations`).
 
-마지막 사이클: 198 (2026-08-22) — TigerBeetle 확장의 축 + 완주.
+마지막 사이클: 199 (2026-08-22) — 대기열 후보 보강(후보 조사).
 
 ## 다음 선택지
 
@@ -79,6 +79,12 @@
 | `engineering.klarna.com` · `engineering.razorpay.com` · `blog.flipkart.tech` | ❌ 403 |
 | `zerodha.tech` · `planetscale.com/blog` · `clickhouse.com/blog` | ✅ 목록·본문 모두 열린다 (사이클 180 에서 확인) |
 | `tigerbeetle.com/blog` · `engineering.careem.com` | ✅ 목록·본문 모두 열린다 (사이클 189 에서 확인) |
+| `engineeringblog.yelp.com` · `engineering.mercari.com` | ✅ 목록·본문 모두 열린다 (사이클 199 에서 확인) |
+| `www.cockroachlabs.com/blog` | ⚠️ 열리지만 **첫 페이지가 제품 마케팅 위주** — 심층 글을 따로 찾아야 한다 |
+| `www.factorio.com/blog` | ⚠️ 열리지만 **최근 글이 게임플레이 위주** — 이 엔진에 안 맞는다 |
+| `www.scylladb.com/blog` | ❌ 403 |
+| `engineering.flutterwave.com` · `blog.mercadolibre.com` | ❌ DNS 자체가 없다 |
+| `flexport.engineering` | ❌ 응답 없음 |
 | `blog.paystack.com` | ❌ 403 |
 | `technology.riotgames.com` | ❌ **뉴스 검색 페이지로 301** — 기술 블로그가 없어진 것으로 보인다 |
 | `engineering.leboncoin.fr` · `tech.showmax.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
