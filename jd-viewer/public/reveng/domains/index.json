@@ -273,6 +273,25 @@
         "integrity-classification"
       ],
       "file": "what-counts-as-good.md"
+    },
+    {
+      "slug": "wrong-yardstick",
+      "title": "잘못된 자를 어떻게 알아채는가",
+      "question": "재고 있던 숫자가 재려던 것이 아니었을 때, 무엇이 그것을 드러냈고 무엇으로 바꿨는가?",
+      "companies": [
+        "baemin",
+        "instagram",
+        "bytedance",
+        "spotify"
+      ],
+      "features": [
+        "rider-dispatch",
+        "notification-diversity",
+        "heteroscale",
+        "megascale",
+        "llm-evals-vs-experiments"
+      ],
+      "file": "wrong-yardstick.md"
     }
   ]
 }
