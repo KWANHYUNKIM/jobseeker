@@ -10,30 +10,23 @@
 
 *(덮어쓴다. 이어붙이지 않는다.)*
 
-**아무 회사도 진행 중이 아니다.** Allegro 를 사이클 179 에서 **done 으로 닫았다**(32번째, 도메인 3 · 기능 3).
+**진행 중인 회사가 없다. 사이클 180 은 후보 조사였고 큐를 3/3 으로 채웠다.**
 
-> **⚠️ 다음 사이클은 후보 조사다.** 큐 잔량이 **1/3**(Vinted 하나)이라 `--gaps` 는 신규를 가리키지만,
-> **Vinted 를 열기 전에 후보 두 곳을 본문까지 확인해 큐를 3 으로 채운다.** 바닥을 치고 나서 채우면
-> 팔 회사가 떨어질 때마다 사이클을 하나씩 버리게 된다. 시도해 볼 곳: **자체 도메인 + 정적 블로그**.
-> ✅ 열린 곳: canva.dev · engineering.zalando.com · tech.trivago.com · grafana.com · adyen.com ·
-> engineering.grab.com · blog.allegro.tech · vinted.engineering · **engineering.mercari.com**(확인함).
-> 🚫 Medium 호스팅 · Delivery Hero · Zomato/Swiggy · Nubank · Klarna(403) · leboncoin·showmax(DNS 없음).
+> **다음 사이클은 `## 대기` 맨 위 — Vinted(LT/EU · 커머스)를 연다.** 33번째 회사이고 **발트 첫 회사**다.
+> 자료는 `vinted.engineering` 이고 본문까지 확인해 뒀다. 가장 먼저 팔 것은 **개인화 자동완성**
+> (`2026/04/22 personalized-search-autocomplete`) — 후보 **1억 2,500만 개**, **초당 4,700 질의 · P99 31ms**,
+> Vespa 요청의 **62% 정확 접두사 / 21% 퍼지-1 / 17% 퍼지-2**, LTR 로 **CTR +8%**, A/B **35회 이상**.
+> **버린 것이 특히 좋다** — 대소문자 혼용은 CTR 이 조금 나았는데도 버렸고, **범주 한정 제안은 CTR +2.4% 인데
+> 구매 확률이 약 1.3% 낮아져 접었다**(⑬ '누구의 손해로 만드는 이득' 재료).
+> 그 밖에 **Elasticsearch → Vespa 이관**(2024) · **Vitess 샤딩 4부작** · **Clos/eBGP 데이터센터 망** ·
+> **동일 서버인데 성능이 다른 원인이 clocksource 였던 조사기**가 있다.
 
-> **Allegro 에서 확인한 회사 축 — 경계를 넘는 대신 경계를 없앤다.** 심판을 **클라우드 API → 로컬**로
-> (비용 60%↓), 컴포넌트를 **FaaS 에서 프로세스 안으로**, 저장을 **GCS → 같은 DC 의 Ceph** 로,
-> 프로세스 **3계층 → 하나**로(*"큰 JSON 을 IPC 로 보내는 것이 성능을 해쳤다"*).
-> **대가도 한 방향이다 — 격리가 사라진다**: 의존성 1,206개가 한 프로세스 메모리를 나눠 쓰고,
-> *"Node.js 는 안 쓰는 의존성의 메모리를 되돌릴 방법이 없다"* 가 곧 회사의 한계가 된다.
+**큐 3/3** — Vinted(LT) · **Zerodha(IN — 인도 첫 회사, 증권 첫 회사, 자체 호스팅 고집)** ·
+**PlanetScale(US — 데이터베이스 회사 첫 곳)**. 뒤 둘은 이번 사이클에 본문까지 읽고 올렸다.
 
-> **🔑 축 후보 둘이 재료를 얻었다.** ⑯ **'평균 하나로 고르면 속는다'** — Qwen κ-quad 0.70(표 1등)인데
-> 파싱 5% 실패 / PLLuM 정확도 0.84 인데 κ 0.17(불균형 악용). ⑰ **'막힌 층이 서로 다를 때'** —
-> 완화책 다섯이 각각 **플랫폼 기능 · 기존 설비 · 조직 규칙 · 다른 설계와의 충돌 · 유지 비용**에서 막혔고,
-> **어느 하나가 뚫렸다면 경계는 그대로 남았을 것**이다. ⑮ '되돌릴 수 있는 방향이 한쪽뿐일 때'도 유효
-> (지운 버전은 못 켠다 · 이그레스는 나간 뒤 청구된다).
+**아직 비어 있는 자리**: 라틴아메리카 · 중동 · 아프리카가 **0곳**이고, 하드웨어에 가까운 회사도 없다.
 
-**📌 PDF 를 읽을 수 있게 됐다**(사이클 176). 절차는 '배운 것'에 있다 — **논문 PDF·IR 자료가 1차 출처로 열렸다.**
-
-마지막 사이클: 179 (2026-08-22) — Allegro 저장을 어디에 둘 것인가 + 완주.
+마지막 사이클: 180 (2026-08-22) — 대기열 후보 보강(후보 조사).
 
 ## 다음 선택지
 
@@ -70,7 +63,8 @@
 | `stripe.com/blog/*` | ⚠️ `stripe.dev` 로 301. WebFetch 는 리다이렉트를 안 따라간다 |
 | `deview.naver.com` · `blog.naver.com` · `d2.naver.com` | ❌ fetch 불가 |
 | `tech.trivago.com` · `vinted.engineering` · `engineering.mercari.com` | ✅ 자체 도메인 정적 블로그 — 목록·본문 모두 열린다 |
-| `engineering.klarna.com` | ❌ 403 |
+| `engineering.klarna.com` · `engineering.razorpay.com` · `blog.flipkart.tech` | ❌ 403 |
+| `zerodha.tech` · `planetscale.com/blog` · `clickhouse.com/blog` | ✅ 목록·본문 모두 열린다 (사이클 180 에서 확인) |
 | `engineering.leboncoin.fr` · `tech.showmax.com` | ❌ DNS 자체가 없다 (주소를 잘못 알고 있었다) |
 | **PDF (IR 자료 등)** | ✅ **읽을 수 있다.** WebFetch 가 *"decode 할 수 없다"* 고 답해도 **바이너리를 `tool-results/` 에 저장해 준다** — 그 파일을 아래 방법으로 직접 푼다 |
 
