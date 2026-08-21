@@ -187,6 +187,17 @@
       "features_done": 4,
       "one_liner": "남의 시스템이 무슨 일을 겪고 있는지 보여 주는 것이 제품인 회사",
       "updated_at": "2026-08-21"
+    },
+    {
+      "slug": "notion",
+      "name": "Notion",
+      "name_en": "Notion",
+      "country": "US",
+      "category": "SaaS",
+      "status": "in_progress",
+      "features_done": 1,
+      "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
+      "updated_at": "2026-08-21"
     }
   ],
   "domains": [
@@ -264,7 +275,11 @@
     "수집 (ingestion)",
     "저장·멀티테넌시",
     "실시간 시계열",
-    "질의·대시보드"
+    "질의·대시보드",
+    "블록 데이터 모델",
+    "저장·샤딩",
+    "동시 편집·실시간",
+    "검색·AI"
   ],
   "countries": {
     "KR": "한국",

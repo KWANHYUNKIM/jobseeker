@@ -1,0 +1,596 @@
+{
+  "slug": "notion",
+  "name": "Notion",
+  "name_en": "Notion",
+  "country": "US",
+  "category": "SaaS",
+  "status": "in_progress",
+  "updated_at": "2026-08-21",
+  "one_liner": "글자 한 줄도 페이지도 DB 행도 전부 같은 것으로 만든 회사",
+  "business_model": "팀 단위 좌석 구독으로 판다. 2025년 비공개 테일 오퍼에서 **110억 달러** 밸류에이션이 매겨졌고(총 약 2억 7천만 달러 규모, Sequoia·Index 재참여 + GIC 신규), **ARR 의 50% 이상이 AI 를 쓰는 고객에서 나온다** — 그 비중이 1년 만에 두 배 넘게 늘었다. 성장은 특히 아시아태평양에서 나서 싱가포르에 사무실을 열었다(도쿄·서울·시드니에 이어).\n\n**이 회사의 기술적 정체성은 '무엇을 파는가'보다 '무엇으로 만들어졌는가'에 있다.** 글자 한 줄, 이미지, 목록 항목, 데이터베이스의 행, 그리고 페이지 자체까지 **전부 같은 것(블록)** 이다. 이 하나의 선택이 제품의 자유로움과 시스템의 어려움을 동시에 만든다.",
+  "products": [
+    "문서·위키",
+    "데이터베이스",
+    "프로젝트 관리",
+    "Notion AI",
+    "캘린더",
+    "메일"
+  ],
+  "domain_map": {
+    "title": "Notion 도메인 지도",
+    "question": "'전부 블록이다'라는 하나의 선택이 아래 계층들에 각각 어떤 문제를 만드는가?",
+    "code": "flowchart TD\n  U[\"사용자 — 글자 한 줄을 친다\"] --> B[\"블록 하나\"]\n  B --> M[\"블록 데이터 모델<br/>글자 · 페이지 · DB 행이 전부 같은 것\"]\n  M --> T[\"트리 — 부모 포인터와 자식 배열이 서로를 비춘다\"]\n  T --> PERM[\"권한 — 부모를 타고 상속된다\"]\n  T --> LOAD[\"로딩 — 페이지 하나가 블록 수천 개다\"]\n  M --> STORE[\"저장 — 블록이 행이 되면<br/>테이블 하나가 수십억 행이 된다\"]\n  STORE --> SHARD[\"샤딩 — 480 논리 샤드\"]\n  M --> SYNC[\"동시 편집 — 같은 블록을 둘이 고칠 때\"]\n  subgraph note[\"하나의 결정이 모든 계층의 문제를 정한다\"]\n    PERM\n    LOAD\n    SHARD\n    SYNC\n  end"
+  },
+  "revenue_streams": [
+    {
+      "name": "좌석 구독",
+      "how": "팀·기업이 사람 수만큼 낸다. 무료 구간을 두고 Plus·Business·Enterprise 로 올라간다.",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+          "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+          "publisher": "Notion Blog",
+          "date": "2025",
+          "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+        }
+      ]
+    },
+    {
+      "name": "AI 애드온",
+      "how": "**ARR 의 50% 이상이 AI 를 쓰는 고객에서 나오고** 그 비중이 1년 만에 두 배 넘게 늘었다.",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+          "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+          "publisher": "Notion Blog",
+          "date": "2025",
+          "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "블록 데이터 모델",
+      "why": "**모든 것이 같은 것이라는 선택**이 이 회사의 출발점이다. 글자도 페이지도 DB 행도 블록이라 서로 변환되고 자유롭게 옮겨지는데, 그 자유의 대가를 아래 모든 계층이 나눠 진다.",
+      "tech": [
+        {
+          "tech": "블록 = {ID, type, properties, content, parent}",
+          "solves": "**하나의 스키마로 모든 것을 표현한다.** UUID v4 로 식별하고, `type` 이 렌더링과 속성 해석을 정하며, `content` 가 자식 ID의 순서 있는 배열, `parent` 가 부모 하나를 가리킨다.",
+          "limits": "**페이지 하나를 여는 데 블록이 수천 개** 필요할 수 있다. 그리고 타입마다 `properties` 의 의미가 달라 스키마가 형식만 같고 내용은 제각각이다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+              "url": "https://www.notion.com/blog/data-model-behind-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-05-18",
+              "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+            }
+          ]
+        },
+        {
+          "tech": "양방향 포인터 — 아래로 `content`, 위로 `parent`",
+          "solves": "부모 포인터가 있으면 **권한을 확인할 때 조상을 찾아 전체를 훑지 않아도 된다.** 두 방향이 서로를 비추므로 어느 쪽에서든 트리를 걸을 수 있다.",
+          "limits": "**같은 사실을 두 번 저장하는 셈**이라 둘이 어긋날 수 있다 — 회사도 '몇몇 예외를 정리하는 중'이라고 적었다. 그리고 블록이 여러 `content` 배열에 들어가던 시절에는 부모가 모호해 권한 판정이 흔들렸다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+              "url": "https://www.notion.com/blog/data-model-behind-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-05-18",
+              "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+            }
+          ]
+        },
+        {
+          "tech": "TransactionQueue → `/saveTransactions`",
+          "solves": "클라이언트에서 만든 변경을 **모아서** 한 번에 보낸다. 글자 하나 칠 때마다 왕복하지 않는다.",
+          "limits": "모으는 만큼 서버가 아는 상태와 화면이 잠시 다르다.",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+              "url": "https://www.notion.com/blog/data-model-behind-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-05-18",
+              "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+            }
+          ]
+        },
+        {
+          "tech": "MessageStore + WebSocket",
+          "solves": "저장된 변경을 같은 페이지를 보는 사람들에게 밀어 캐시를 갱신한다.",
+          "limits": "구독하는 단위가 블록 트리라, 큰 페이지에서는 알림 대상이 넓어진다(추정).",
+          "confidence": "inferred",
+          "sources": [
+            {
+              "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+              "url": "https://www.notion.com/blog/data-model-behind-notion",
+              "publisher": "Notion Blog",
+              "date": "2021-05-18",
+              "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+            }
+          ]
+        }
+      ],
+      "features": [
+        "block-model"
+      ]
+    },
+    {
+      "name": "저장·샤딩",
+      "why": "블록이 행이 되면 **테이블 하나가 수십억 행**이 된다. 2020년 중반 단일 Postgres 가 한계에 닿았고, 그때부터 이 도메인은 '어떻게 나눌 것인가'의 연속이 된다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "동시 편집·실시간",
+      "why": "같은 페이지를 여럿이 동시에 고친다. 블록 단위로 쪼개져 있어 충돌 범위가 좁아지는 이점이 있지만, **트랜잭션이 여러 블록에 걸치면** 그 이점이 사라진다.",
+      "tech": [],
+      "features": []
+    },
+    {
+      "name": "검색·AI",
+      "why": "**ARR 의 절반 이상이 여기 걸려 있다.** 그런데 블록은 잘게 쪼개져 있어서 '문서'라는 단위가 자명하지 않다 — 무엇을 한 덩어리로 볼 것인지부터 정해야 한다.",
+      "tech": [],
+      "features": []
+    }
+  ],
+  "features": [
+    {
+      "key": "block-model",
+      "name": "블록 — 전부 같은 것으로 만들면 생기는 일",
+      "domain": "블록 데이터 모델",
+      "updated_at": "2026-08-21",
+      "business": {
+        "why": "제품의 약속이 **'무엇이든 어디로든 옮길 수 있다'** 인데, 그러려면 옮기는 것들이 **같은 종류여야** 한다. 그래서 글자 한 줄도, 이미지도, 목록 항목도, 데이터베이스의 행도, 페이지 자체도 전부 블록이다. 사용자가 체크박스를 제목으로 바꿔도 속성이 보존되는 것, 들여쓰기가 겉모습이 아니라 **실제 구조**인 것이 이 선택에서 나온다. 그리고 그 자유의 대가를 저장·권한·로딩이 나눠 진다.",
+        "metrics": [
+          {
+            "label": "밸류에이션",
+            "value": "110억 달러 (2025년 비공개 테일 오퍼)",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+                "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+                "publisher": "Notion Blog",
+                "date": "2025",
+                "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+              }
+            ]
+          },
+          {
+            "label": "테일 오퍼 규모",
+            "value": "약 2억 7천만 달러",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+                "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+                "publisher": "Notion Blog",
+                "date": "2025",
+                "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+              }
+            ]
+          },
+          {
+            "label": "AI 고객 ARR 비중",
+            "value": "50% 이상 — 1년 만에 두 배 넘게 증가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+                "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+                "publisher": "Notion Blog",
+                "date": "2025",
+                "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+              }
+            ]
+          },
+          {
+            "label": "블록 식별자",
+            "value": "UUID v4",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "label": "중첩 깊이",
+            "value": "제한 없음",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "무엇을 기본 단위로 삼을지 정할 때",
+          "thought": "**컨테이너가 데이터를 가두면** '이건 문서고 저건 표'라는 경계가 생기고, 그 경계를 넘는 이동이 특별한 기능이 된다. 전부 같은 것으로 만들면 이동이 그냥 부모를 바꾸는 일이 된다.",
+          "confidence": "inferred"
+        },
+        {
+          "at": "블록이 여러 곳에 들어갈 수 있게 뒀을 때",
+          "thought": "한 블록이 여러 `content` 배열에 들어가면 **부모가 누구인지 모호해진다.** 그런데 권한은 부모를 타고 내려오므로, 부모가 모호하면 **누가 이걸 볼 수 있는지가 모호해진다** — 유연함이 곧바로 보안 문제가 됐다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "그래서 부모 포인터를 하나로 고정할 때",
+          "thought": "위로 가는 포인터를 두면 아래로 가는 배열과 **같은 사실을 두 번 저장**하게 된다. 그래도 그게 낫다 — 없으면 조상을 찾을 때마다 **모든 블록을 뒤져야** 한다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "페이지를 여는 비용을 볼 때",
+          "thought": "`loadPageChunk` 가 트리를 재귀로 내려가는데, 블록마다 의존이 또 있어서 **DB 왕복이 여러 번**이 된다. 모든 것을 잘게 쪼갠 대가가 여기서 나온다 — 자유롭게 옮길 수 있다는 것은 **미리 뭉쳐 둘 수 없다**는 뜻이기도 하다.",
+          "confidence": "inferred"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "블록",
+            "what": "정보의 기본 단위. 글자·이미지·목록 항목·DB 행·페이지가 전부 이것이다."
+          },
+          {
+            "name": "type",
+            "what": "어떻게 그릴지와 `properties` 를 어떻게 해석할지를 정한다. 바꿔도 속성이 보존된다."
+          },
+          {
+            "name": "properties",
+            "what": "타입마다 의미가 다른 자유 구조 — `title`, `checked` 같은 것."
+          },
+          {
+            "name": "content",
+            "what": "자식 블록 ID 의 **순서 있는** 배열. 아래로 가는 포인터."
+          },
+          {
+            "name": "parent",
+            "what": "부모 블록 ID **하나**. 위로 가는 포인터이고, 권한 상속의 통로다."
+          }
+        ],
+        "invariants": [
+          "**모든 것이 블록이다.** 그래서 옮기는 것은 부모를 바꾸는 일이고, 형태를 바꾸는 것은 `type` 을 바꾸는 일이다.",
+          "**부모는 하나다.** 여럿이면 권한이 누구를 따라 내려오는지 정해지지 않는다.",
+          "위로 가는 포인터와 아래로 가는 배열은 **서로를 비춘다** — 다만 회사가 '몇몇 예외를 정리하는 중'이라고 밝혔다.",
+          "들여쓰기는 겉모습이 아니라 **실제 구조**다. 그래서 앞 블록이 목록이 아니면 들여쓸 곳이 없어 아무 일도 안 일어난다."
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "사용자가 글자를 치면 클라이언트가 블록 변경을 만든다",
+            "why": "화면이 먼저 반응해야 한다"
+          },
+          {
+            "step": "TransactionQueue 가 변경을 모은다",
+            "why": "글자마다 왕복하지 않으려고"
+          },
+          {
+            "step": "`/saveTransactions` 로 한 번에 보낸다",
+            "why": "묶어 보내는 것이 싸다"
+          },
+          {
+            "step": "DB 에 블록 행으로 저장한다",
+            "why": "블록이 저장의 단위이기도 하다"
+          },
+          {
+            "step": "MessageStore 가 WebSocket 으로 같은 페이지를 보는 사람들에게 민다",
+            "why": "협업자의 캐시를 갱신하려고"
+          },
+          {
+            "step": "페이지를 열 때는 `loadPageChunk` 가 트리를 재귀로 내려간다",
+            "why": "무엇이 필요한지는 트리를 걸어 봐야 안다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "정보의 기본 단위를 무엇으로 할 것인가",
+            "chosen": "**전부 블록** — 글자·이미지·목록·DB 행·페이지가 같은 것",
+            "alternatives": [
+              "문서·표·페이지를 각각 다른 타입으로",
+              "컨테이너 기반 모델"
+            ],
+            "tradeoff": "**모든 것이 잘게 쪼개져 페이지 하나에 블록 수천 개**가 되고, 미리 뭉쳐 둘 수가 없다. 대신 옮기는 것이 부모를 바꾸는 일, 형태를 바꾸는 것이 `type` 을 바꾸는 일이 되어 **제품의 자유로움이 데이터 모델에서 곧바로 나온다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "question": "블록이 여러 부모를 가질 수 있게 할 것인가",
+            "chosen": "**부모는 하나**로 고정한다",
+            "alternatives": [
+              "여러 `content` 배열에 들어갈 수 있게 (초기 방식)"
+            ],
+            "tradeoff": "같은 블록을 여러 곳에 두는 유연함을 잃는다. 그래도 여러 부모를 허용하니 **권한이 누구를 타고 내려오는지가 모호해졌다** — 유연함이 곧바로 보안 문제가 됐고, 그래서 되돌렸다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "question": "부모를 어떻게 알 것인가",
+            "chosen": "**위로 가는 포인터를 따로 둔다**(`parent`)",
+            "alternatives": [
+              "자식 배열만 두고 필요할 때 역추적"
+            ],
+            "tradeoff": "아래로 가는 배열과 **같은 사실을 두 번 저장**하게 되고 둘이 어긋날 수 있다 — 회사도 예외를 정리하는 중이라고 적었다. 없으면 조상을 찾을 때마다 **모든 블록을 뒤져야** 하는데, 권한 확인이 그 작업이라 감당할 수 없었다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "question": "변경을 언제 보낼 것인가",
+            "chosen": "**모았다가 한 번에** (TransactionQueue → `/saveTransactions`)",
+            "alternatives": [
+              "변경마다 즉시 전송"
+            ],
+            "tradeoff": "모으는 동안 서버가 아는 상태와 화면이 다르다. 대신 글자 하나에 왕복 하나를 쓰지 않는다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "question": "들여쓰기를 겉모습으로 둘 것인가",
+            "chosen": "**실제 구조로** 만든다 — 들여쓰면 자식이 된다",
+            "alternatives": [
+              "시각적 들여쓰기(스타일)"
+            ],
+            "tradeoff": "**앞 블록이 목록이 아니면 들여쓸 곳이 없어 아무 일도 안 일어난다** — 사용자에게는 버그처럼 보일 수 있는 자리다. 대신 화면에 보이는 구조가 실제 정보 구조와 같아진다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "UUID v4",
+            "role": "블록 식별자",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "tech": "TransactionQueue",
+            "role": "클라이언트에서 변경을 모으는 자리",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "tech": "`/saveTransactions` API",
+            "role": "모은 변경을 한 번에 받는 엔드포인트",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "tech": "MessageStore + WebSocket",
+            "role": "저장된 변경을 협업자에게 밀어 캐시를 갱신",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "tech": "`loadPageChunk`",
+            "role": "페이지를 열 때 트리를 재귀로 내려가며 블록을 모은다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          }
+        ]
+      },
+      "connections": [
+        {
+          "to": "저장·샤딩",
+          "via": "블록이 곧 행",
+          "contract": "**블록을 기본 단위로 삼은 결정이 그대로 저장의 문제가 된다** — 잘게 쪼갤수록 행이 늘고, 테이블 하나가 수십억 행이 되면 샤딩 말고 길이 없어진다.",
+          "confidence": "confirmed"
+        },
+        {
+          "to": "동시 편집·실시간",
+          "via": "MessageStore + WebSocket",
+          "contract": "블록 단위로 쪼개져 있어 충돌 범위가 좁다. 다만 한 트랜잭션이 여러 블록에 걸치면 그 이점이 줄어든다.",
+          "confidence": "inferred"
+        },
+        {
+          "to": "권한",
+          "via": "`parent` 포인터",
+          "contract": "권한은 부모를 타고 내려온다. **그래서 부모가 하나여야 하고**, 그 제약이 데이터 모델의 유연함을 되돌린 이유다.",
+          "confidence": "confirmed"
+        }
+      ],
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "자유롭게 옮길 수 있다는 것은 미리 뭉쳐 둘 수 없다는 뜻이다",
+            "why_hard": "**두 좋은 것이 같은 결정에 매달려 있다.** 무엇이든 어디로든 옮기려면 옮기는 것들이 같은 종류여야 하고, 그러려면 가장 작은 단위(글자 한 줄)까지 쪼개야 한다. 그런데 쪼갤수록 **읽을 때 다시 모아야 하는 것이 늘어난다** — 페이지 하나가 블록 수천 개가 되고, `loadPageChunk` 가 트리를 재귀로 내려가며 블록마다 의존을 또 따라간다. 미리 합쳐 두면 읽기는 빨라지지만 **합쳐 둔 그 형태가 곧 컨테이너**여서, 없애려던 경계가 되살아난다.",
+            "current_best": "**쪼갠 채로 두고 읽기 비용을 감수한다.** 대신 쓰기 쪽에서는 TransactionQueue 로 변경을 모아 왕복을 줄이고, 읽기는 청크 단위로 나눠 가져온다. 근본적으로 해결된 것은 아니고, 회사도 이 경로가 **DB 왕복 여러 번**이 될 수 있다고 적었다.",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          },
+          {
+            "problem": "권한이 구조를 타고 내려오면 구조의 자유가 권한의 모호함이 된다",
+            "why_hard": "**같은 포인터가 두 가지 일을 한다.** `parent` 는 '어디에 놓여 있는가'(구조)이면서 동시에 '누가 볼 수 있는가'(권한)의 통로다. 그래서 구조를 유연하게 만들면 — 한 블록이 여러 곳에 놓일 수 있게 하면 — **그 블록의 권한이 어느 부모를 따르는지 정해지지 않는다.** 이건 구현을 잘해서 피할 수 있는 문제가 아니다. 상속의 출처가 여럿이면 상속 결과가 하나로 정해지지 않는 것이 정의상 그렇다.",
+            "current_best": "**구조 쪽을 포기한다** — 부모를 하나로 고정했다. 대가는 같은 블록을 여러 곳에 두는 유연함을 잃는 것이고, 그것 없이 조상을 찾으려면 모든 블록을 뒤져야 하므로 위로 가는 포인터를 따로 들고 있어야 한다(같은 사실을 두 번 저장하는 셈이고, 그래서 어긋나는 예외가 남는다).",
+            "confidence": "inferred",
+            "sources": [
+              {
+                "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+                "url": "https://www.notion.com/blog/data-model-behind-notion",
+                "publisher": "Notion Blog",
+                "date": "2021-05-18",
+                "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "하나의 결정이 아래로 퍼진다",
+          "question": "'전부 블록이다'가 각 계층에 어떤 문제를 만드는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  D[\"결정 — 전부 블록으로 만든다\"] --> FREE[\"얻는 것<br/>무엇이든 어디로든 옮긴다<br/>타입을 바꿔도 속성이 남는다<br/>들여쓰기가 실제 구조다\"]\n  D --> C1[\"대가 1 — 페이지 하나가 블록 수천 개<br/>loadPageChunk 가 트리를 재귀로 내려간다\"]\n  D --> C2[\"대가 2 — 블록이 행이 되어<br/>테이블 하나가 수십억 행\"]\n  D --> C3[\"대가 3 — 권한이 parent 를 타고 내려온다\"]\n  C3 --> C3a[\"그래서 부모는 하나여야 한다\"]\n  C3a --> C3b[\"구조의 유연함을 되돌렸다\"]"
+        },
+        {
+          "title": "블록 하나의 모양",
+          "question": "모든 것을 담을 스키마는 무엇으로 되어 있나?",
+          "kind": "flow",
+          "code": "flowchart LR\n  B[\"블록\"] --> ID[\"ID — UUID v4\"]\n  B --> T[\"type — 어떻게 그릴지<br/>properties 를 어떻게 읽을지\"]\n  B --> PR[\"properties — 타입마다 의미가 다르다<br/>title · checked …\"]\n  B --> CT[\"content — 자식 ID 의 **순서 있는** 배열<br/>아래로 가는 포인터\"]\n  B --> PA[\"parent — 부모 ID **하나**<br/>위로 가는 포인터 · 권한의 통로\"]\n  CT -.->|\"서로를 비춘다<br/>(몇몇 예외는 정리 중)\"| PA"
+        },
+        {
+          "title": "유연함이 보안 문제가 됐을 때",
+          "question": "한 블록이 여러 곳에 놓일 수 있게 두면 무엇이 깨지는가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"초기 — 블록이 여러 content 배열에\"] --> B[\"같은 블록이 여러 곳에 놓인다\"]\n  B --> C{\"이 블록의 부모는 누구인가\"}\n  C -->|\"여럿\"| D[\"권한이 어느 부모를 따르나\"]\n  D --> E[\"볼 수 있는지가 정해지지 않는다\"]\n  E --> F[\"구조의 자유 → 권한의 모호함\"]\n  F --> G[\"부모를 하나로 고정한다\"]\n  G --> H[\"대가 — 같은 블록을 여러 곳에 못 둔다\"]\n  G --> I[\"그리고 위로 가는 포인터를 따로 들어야 한다\"]\n  I --> J[\"같은 사실을 두 번 저장<br/>= 어긋나는 예외가 남는다\"]\n  K[\"포인터가 없다면\"] --> L[\"조상을 찾을 때마다 모든 블록을 뒤져야\"]"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+          "url": "https://www.notion.com/blog/data-model-behind-notion",
+          "publisher": "Notion Blog",
+          "date": "2021-05-18",
+          "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+        },
+        {
+          "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+          "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+          "publisher": "Notion Blog",
+          "date": "2025",
+          "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+        }
+      ]
+    }
+  ],
+  "open_questions": [
+    "저장·샤딩 말고 동시 편집·검색·AI 세 도메인은 아직 손대지 않았다 — 이번 사이클은 회사 프로파일과 블록 데이터 모델이다.",
+    "블록 모델 글은 2021년이다. 그 뒤 5년간 스키마가 어떻게 바뀌었는지 — 글이 '몇몇 예외를 정리하는 중'이라고 밝힌 부분이 어떻게 됐는지는 모른다.",
+    "Notion 은 비상장이라 매출·사용자 수를 직접 공개하지 않는다. 밸류에이션과 AI 매출 비중은 회사 발표에서 왔지만 절대 매출은 확인하지 못했다."
+  ],
+  "sources": [
+    {
+      "title": "Exploring Notion's Data Model: A Block-Based Architecture",
+      "url": "https://www.notion.com/blog/data-model-behind-notion",
+      "publisher": "Notion Blog",
+      "date": "2021-05-18",
+      "summary": "글자·이미지·페이지·DB 행이 전부 같은 '블록'인 데이터 모델."
+    },
+    {
+      "title": "Herding elephants: lessons learned from sharding Postgres at Notion",
+      "url": "https://www.notion.com/blog/sharding-postgres-at-notion",
+      "publisher": "Notion Blog",
+      "date": "2021-10-06",
+      "summary": "Citus·Vitess 를 버리고 애플리케이션 계층에서 480 논리 샤드로 나눈 과정."
+    },
+    {
+      "title": "The Great Re-shard: adding Postgres capacity (again) with zero downtime",
+      "url": "https://www.notion.com/blog/the-great-re-shard",
+      "publisher": "Notion Blog",
+      "date": "2023",
+      "summary": "논리 샤드 480개는 그대로 두고 물리 인스턴스를 32→96 으로 늘린 무중단 재분배."
+    },
+    {
+      "title": "GIC, Sequoia, Index purchase Notion shares in private tender offer",
+      "url": "https://www.notion.com/blog/gic-sequoia-index-purchase-notion-shares",
+      "publisher": "Notion Blog",
+      "date": "2025",
+      "summary": "110억 달러 밸류에이션 · ARR 의 50% 이상이 AI 사용 고객에서 나온다."
+    }
+  ]
+}
