@@ -396,6 +396,25 @@
         "logical-shard-reshard"
       ],
       "file": "count-not-size.md"
+    },
+    {
+      "slug": "who-has-to-change",
+      "title": "누가 바뀌어야 하는가",
+      "question": "남의 도구를 거절한 이유가 성능이 아니었다면 무엇이었고, 그 대신 무엇을 직접 떠안았는가?",
+      "companies": [
+        "zerodha",
+        "trivago",
+        "allegro",
+        "vinted"
+      ],
+      "features": [
+        "console-warehouse",
+        "contract-notes",
+        "internal-graphql-gateway",
+        "independent-deploys",
+        "dc-network"
+      ],
+      "file": "who-has-to-change.md"
     }
   ]
 }
