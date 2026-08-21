@@ -1235,7 +1235,7 @@
           "title": "업로드 하나가 클레임을 받기까지",
           "question": "올라온 영상이 남의 것인지 어떻게 알고, 알고 나면 무엇이 일어나는가?",
           "kind": "flow",
-          "code": "flowchart TD\n  RH[권리자] -->|참조 파일 제출| DB[(참조 데이터베이스<br/>오디오 · 영상)]\n  UP[업로드] --> SCAN[자동 스캔]\n  DB --> SCAN\n  SCAN --> M{일치하는 구간이 있나}\n  M -->|아니오| PUB[그대로 공개]\n  M -->|예| CLAIM[해당 **구간**에 클레임]\n  CLAIM --> POL{권리자 정책 · 지역별}\n  POL -->|차단| BLOCK[그 지역에서 볼 수 없음]\n  POL -->|수익화| MON[광고 실행<br/>수익이 권리자에게]\n  POL -->|추적| TRACK[시청 통계만]\n  CLAIM --> SELF[업로더 자가 해결<br/>음소거 · 잘라내기 · 교체]\n  SELF --> PUB\n  MON -.->|3년간 300억 달러 이상| RH"
+          "code": "flowchart TD\n  RH[권리자] -->|참조 파일 제출| DB[(참조 데이터베이스<br/>오디오 · 영상)]\n  UP[업로드] --> SCAN[자동 스캔]\n  DB --> SCAN\n  SCAN --> M{일치하는 구간이 있나}\n  M -->|아니오| PUB[그대로 공개]\n  M -->|예| CLAIM[해당 <b>구간</b>에 클레임]\n  CLAIM --> POL{권리자 정책 · 지역별}\n  POL -->|차단| BLOCK[그 지역에서 볼 수 없음]\n  POL -->|수익화| MON[광고 실행<br/>수익이 권리자에게]\n  POL -->|추적| TRACK[시청 통계만]\n  CLAIM --> SELF[업로더 자가 해결<br/>음소거 · 잘라내기 · 교체]\n  SELF --> PUB\n  MON -.->|3년간 300억 달러 이상| RH"
         },
         {
           "title": "클레임 하나가 거치는 상태",
@@ -2193,7 +2193,7 @@
           "title": "실패 경로 — 조용히 깨지는 것들",
           "question": "무엇이 티 나지 않게 망가지고, 그 비용은 어디에 나타나는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  ACL[ACL 오설정] --> SILENT[P2P 캐시필이<br/>**조용히** 끊긴다]\n  SILENT --> CORE[모든 미스가 코어로]\n  SLOW[P2P 경로가 느리거나 들쭉날쭉] --> WORSE[아예 끄는 것보다<br/>GGC 효율에 더 해롭다]\n  WORSE --> AUTO[Google 이 지연을 측정해<br/>나쁜 피어를 소스에서 제외]\n  PFX[같은 GNL 인데 프리픽스가 다름] --> ROUTE[사용자 라우팅이 흔들린다]\n  DOWN[노드 장애] --> NODATA[다른 노드에 그 데이터가 없다]\n  NODATA --> CORE\n  CORE --> BILL[비용이 화면이 아니라<br/>트랜짓 트래픽으로 나타난다]\n  OVER[한 대를 크게 잡는 과다 프로비저닝] --> NOTRED[지원되는 이중화 전략이 아니다]"
+          "code": "flowchart TD\n  ACL[ACL 오설정] --> SILENT[P2P 캐시필이<br/><b>조용히</b> 끊긴다]\n  SILENT --> CORE[모든 미스가 코어로]\n  SLOW[P2P 경로가 느리거나 들쭉날쭉] --> WORSE[아예 끄는 것보다<br/>GGC 효율에 더 해롭다]\n  WORSE --> AUTO[Google 이 지연을 측정해<br/>나쁜 피어를 소스에서 제외]\n  PFX[같은 GNL 인데 프리픽스가 다름] --> ROUTE[사용자 라우팅이 흔들린다]\n  DOWN[노드 장애] --> NODATA[다른 노드에 그 데이터가 없다]\n  NODATA --> CORE\n  CORE --> BILL[비용이 화면이 아니라<br/>트랜짓 트래픽으로 나타난다]\n  OVER[한 대를 크게 잡는 과다 프로비저닝] --> NOTRED[지원되는 이중화 전략이 아니다]"
         }
       ],
       "sources": [

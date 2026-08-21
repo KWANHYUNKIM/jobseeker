@@ -1136,7 +1136,7 @@
           "title": "실패 경로 — 병목이 옮겨 다닌 세 자리",
           "question": "하나를 고칠 때마다 어디가 새로 터졌는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  BIG[/r/Overwatch 동시 3만 명/] --> QUEUE[길드 프로세스가<br/>메시지 큐를 못 따라감]\n  QUEUE --> MANUAL[기능을 손으로 끄기<br/>지속 가능하지 않다]\n  SEND[send/2 하나가 30~70μs] --> SLOW[발행 하나에 900ms~2.1초]\n  SLOW --> FIX1[Manifold<br/>노드 수만큼만 보낸다]\n  RECON[재접속 폭주] --> RINGSLOW[링 조회가 병목<br/>세션 서버 재시작 시 추정 30초]\n  RINGSLOW --> FIX2[FastGlobal 0.3μs<br/>17.5초 → 750ms]\n  FIX2 --> NEXT[**빨라지자 다음이 터진다**]\n  NEXT --> REGOVER[길드 레지스트리가<br/>약 500만 세션의 동시 호출에 눌림]\n  REGOVER --> PILE[실패가 쌓이고 재시도가 몰림]\n  PILE --> TIMEOUT[타임아웃 연쇄]\n  TIMEOUT --> OOM[메모리 부족으로 사망]\n  REGOVER --> FIX3[Semaphore<br/>들어가기 전에 센다]\n  FIX3 --> OK[프레즌스 장애 때도<br/>세션 서비스는 안정 유지]"
+          "code": "flowchart TD\n  BIG[/r/Overwatch 동시 3만 명/] --> QUEUE[길드 프로세스가<br/>메시지 큐를 못 따라감]\n  QUEUE --> MANUAL[기능을 손으로 끄기<br/>지속 가능하지 않다]\n  SEND[send/2 하나가 30~70μs] --> SLOW[발행 하나에 900ms~2.1초]\n  SLOW --> FIX1[Manifold<br/>노드 수만큼만 보낸다]\n  RECON[재접속 폭주] --> RINGSLOW[링 조회가 병목<br/>세션 서버 재시작 시 추정 30초]\n  RINGSLOW --> FIX2[FastGlobal 0.3μs<br/>17.5초 → 750ms]\n  FIX2 --> NEXT[<b>빨라지자 다음이 터진다</b>]\n  NEXT --> REGOVER[길드 레지스트리가<br/>약 500만 세션의 동시 호출에 눌림]\n  REGOVER --> PILE[실패가 쌓이고 재시도가 몰림]\n  PILE --> TIMEOUT[타임아웃 연쇄]\n  TIMEOUT --> OOM[메모리 부족으로 사망]\n  REGOVER --> FIX3[Semaphore<br/>들어가기 전에 센다]\n  FIX3 --> OK[프레즌스 장애 때도<br/>세션 서비스는 안정 유지]"
         }
       ],
       "sources": [
@@ -1555,7 +1555,7 @@
           "title": "실패 경로 — 사라지는 서버와 제각각인 기기",
           "question": "무엇이 같은 절차로 처리되고, 무엇이 아직 풀리지 않았는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  CRASH[SFU 크래시] --> WATCH[시그널링이 감시 중]\n  WATCH --> RESTART[즉시 재시작 + 상태 재구성]\n  RESTART --> FEW[패킷 몇 개 손실]\n  RESTART -.->|같은 메커니즘| DEPLOY[무중단 업데이트]\n  DEAD[음성 서버 사망] --> HC[헬스체크 실패]\n  DDOS[DDoS 공격] --> HC\n  HC --> OUT[서비스 디스커버리에서 제거]\n  OUT --> DETECT[클라이언트가 끊김 감지]\n  DETECT --> PING[게이트웨이로 핑 요청]\n  PING --> REASSIGN[Guilds 가 새 서버 배정 + voice state 이동]\n  REASSIGN --> NOTIFY[참가자 전원 재연결 통지]\n  DDOS -.->|공격이 잦아들면| BACK[디스커버리에 다시 추가]\n  MIX[기기 성능이 제각각인 그룹 영상] --> HARD[**아직 과제**<br/>Scalable Video Coding 이 답일 수 있다]\n  SCREEN[화면 공유] --> BW[대역폭이 더 든다<br/>데스크톱 하드웨어 인코딩 추가 중]\n  NATIVE[자체 WebRTC 네이티브 라이브러리] --> PAIN[잦은 업데이트가 고통스럽다<br/>자동화 진행 중]"
+          "code": "flowchart TD\n  CRASH[SFU 크래시] --> WATCH[시그널링이 감시 중]\n  WATCH --> RESTART[즉시 재시작 + 상태 재구성]\n  RESTART --> FEW[패킷 몇 개 손실]\n  RESTART -.->|같은 메커니즘| DEPLOY[무중단 업데이트]\n  DEAD[음성 서버 사망] --> HC[헬스체크 실패]\n  DDOS[DDoS 공격] --> HC\n  HC --> OUT[서비스 디스커버리에서 제거]\n  OUT --> DETECT[클라이언트가 끊김 감지]\n  DETECT --> PING[게이트웨이로 핑 요청]\n  PING --> REASSIGN[Guilds 가 새 서버 배정 + voice state 이동]\n  REASSIGN --> NOTIFY[참가자 전원 재연결 통지]\n  DDOS -.->|공격이 잦아들면| BACK[디스커버리에 다시 추가]\n  MIX[기기 성능이 제각각인 그룹 영상] --> HARD[<b>아직 과제</b><br/>Scalable Video Coding 이 답일 수 있다]\n  SCREEN[화면 공유] --> BW[대역폭이 더 든다<br/>데스크톱 하드웨어 인코딩 추가 중]\n  NATIVE[자체 WebRTC 네이티브 라이브러리] --> PAIN[잦은 업데이트가 고통스럽다<br/>자동화 진행 중]"
         }
       ],
       "sources": [
@@ -2019,7 +2019,7 @@
           "title": "실패 경로 — 과잉 차단과 놓치는 것",
           "question": "자동 판정이 틀리는 두 방향에서 무엇이 남는가?",
           "kind": "failure",
-          "code": "flowchart TD\n  WILD[와일드카드 `*cat*`] --> OVER[과잉 매칭<br/>scathing · locate 도 걸린다]\n  OVER --> LOST[정당한 메시지가<br/>게시조차 되지 않는다]\n  LOST -->|추정| INVIS[다른 사람은 무슨 일이 있었는지 모른다]\n  ML[콘텐츠 스팸 모델] --> TRAIN[사용자 신고로 학습]\n  TRAIN --> MISS[**회사가 밝힌 한계**<br/>DM 스팸 · 복붙 · 반복 메시지]\n  TRAIN -->|추정| BLIND[신고되지 않는 유형은 배우지 못한다]\n  LINK[링크·파일 필터] --> CLIENT[클라이언트 측 경고까지]\n  CLIENT --> IGNORE[사용자가 무시하면 그만]\n  PERM[Manage Server · Administrator] --> EXEMPT[항상 면제]\n  EXEMPT -->|추정| ABUSE[권한 남용을 필터가 막지 못한다]\n  SMALL[작은 친구 서버] --> SCOPE[정책 위반 자동 탐지 도구의 대상이 아니다]\n  SCOPE --> ONLY[다만 CSAM 스캔은 전 서버 유형에 적용]"
+          "code": "flowchart TD\n  WILD[와일드카드 `*cat*`] --> OVER[과잉 매칭<br/>scathing · locate 도 걸린다]\n  OVER --> LOST[정당한 메시지가<br/>게시조차 되지 않는다]\n  LOST -->|추정| INVIS[다른 사람은 무슨 일이 있었는지 모른다]\n  ML[콘텐츠 스팸 모델] --> TRAIN[사용자 신고로 학습]\n  TRAIN --> MISS[<b>회사가 밝힌 한계</b><br/>DM 스팸 · 복붙 · 반복 메시지]\n  TRAIN -->|추정| BLIND[신고되지 않는 유형은 배우지 못한다]\n  LINK[링크·파일 필터] --> CLIENT[클라이언트 측 경고까지]\n  CLIENT --> IGNORE[사용자가 무시하면 그만]\n  PERM[Manage Server · Administrator] --> EXEMPT[항상 면제]\n  EXEMPT -->|추정| ABUSE[권한 남용을 필터가 막지 못한다]\n  SMALL[작은 친구 서버] --> SCOPE[정책 위반 자동 탐지 도구의 대상이 아니다]\n  SCOPE --> ONLY[다만 CSAM 스캔은 전 서버 유형에 적용]"
         }
       ],
       "sources": [

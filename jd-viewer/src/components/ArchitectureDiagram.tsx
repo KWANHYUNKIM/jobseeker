@@ -9,6 +9,49 @@ function loadMermaid() {
 
 let seq = 0
 
+// ── 도판(圖版) 양식 ────────────────────────────────────────────────────────
+// 교과서 그림처럼 그린다: 종이 위의 잉크, 각진 모서리, 그림자·그라데이션 없음.
+// 강조는 색이 아니라 자리로 하고, 색을 쓰는 곳은 그림마다 한 군데(:::accent)뿐이다.
+//
+// **앱 테마를 따르지 않는다.** 도판은 본문에 끼워 넣은 인쇄물이지 UI 가 아니라서,
+// 어두운 테마에서도 흰 종이 그대로 둔다 — 그래야 그림 하나가 어디서 시작하고
+// 어디서 끝나는지가 눈에 잡힌다. (테마를 따르게 하려면 PAPER/INK 만 갈아 끼우면 된다.)
+type Plate = {
+  isLight: boolean
+  paper: string
+  ink: string
+  faint: string
+  accentBg: string
+  accentInk: string
+}
+function plate(): Plate {
+  return {
+    isLight: true, // 도판은 언제나 밝다 — mermaid 의 darkMode 계산도 이 값을 따른다
+    paper: '#ffffff',
+    ink: '#16181d',
+    faint: '#8b9099',
+    accentBg: '#fbdcc4', // 살구색 — 그림마다 한 군데뿐인 강조
+    accentInk: '#b4460d',
+  }
+}
+
+// 필자가 매번 classDef 를 선언하지 않아도 되게 표준 클래스를 앞에 붙인다.
+// 규격을 데이터가 아니라 렌더러가 들고 있어야, 나중에 양식을 바꿀 때
+// 그림 311장을 다시 건드리지 않는다.
+const CLASSED = /^\s*(flowchart|graph|stateDiagram)/
+function withStandardClasses(code: string, p: Plate): string {
+  if (!CLASSED.test(code.trim())) return code // 시퀀스도는 classDef 를 안 받는다
+  const defs = [
+    `classDef accent fill:${p.accentBg},stroke:${p.ink},color:${p.ink}`,
+    `classDef quiet fill:${p.paper},stroke:${p.faint},color:${p.faint}`,
+    `classDef list fill:${p.paper},stroke:${p.ink},color:${p.ink},text-align:left`,
+  ]
+  const lines = code.split('\n')
+  const head = lines.findIndex((l) => l.trim() !== '')
+  lines.splice(head + 1, 0, ...defs.map((d) => '  ' + d))
+  return lines.join('\n')
+}
+
 // mermaid 는 svg 에 `style="max-width: 123px"` 를 박고 width/height 를 지운다.
 // 그 상태로는 우리가 크기를 잡을 수 없어서 걷어내고, 대신 viewBox 에서 원본
 // 치수를 읽어 온다. 확대의 기준이 되는 값이라 여기서 한 번만 구한다.
@@ -51,15 +94,7 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
     setLoading(true)
     loadMermaid()
       .then((mermaid) => {
-        const css = getComputedStyle(document.documentElement)
-        const v = (n: string, fb: string) => css.getPropertyValue(n).trim() || fb
-        const isLight = document.documentElement.classList.contains('light')
-        const bg = v('--color-bg', '#0b0c10')
-        const panel = v('--color-panel', '#15171d')
-        const border = v('--color-border', '#2a2d36')
-        const text = v('--color-text', '#e6e7eb')
-        const muted = v('--color-muted', '#9aa0aa')
-        const accent = v('--color-accent', '#03C75A')
+        const p = plate()
 
         mermaid.initialize({
           startOnLoad: false,
@@ -68,56 +103,61 @@ export function ArchitectureDiagram({ code, idKey }: { code: string; idKey: stri
           fontFamily: "system-ui, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif",
           flowchart: {
             htmlLabels: true,
-            curve: 'basis',
-            nodeSpacing: 46,
-            rankSpacing: 68,
-            padding: 14,
+            // 인쇄 도판은 곡선을 쓰지 않는다. 선이 어디서 어디로 가는지가
+            // 모양보다 중요해서 직선이 읽기 쉽다.
+            curve: 'linear',
+            nodeSpacing: 40,
+            rankSpacing: 64,
+            padding: 12,
+            // 기본값(200px)은 한국어에서 '…아니 / 다' 처럼 낱말을 잘라 놓는다.
+            // 줄바꿈은 필자가 <br/> 로 정하게 두고, 자동 줄바꿈은 넉넉히 뒤로 민다.
+            wrappingWidth: 300,
             useMaxWidth: false,
           },
           sequence: { useMaxWidth: false, actorMargin: 62, boxMargin: 12 },
-          // 팔레트를 앱과 묶는다. 노드는 패널색 위에 옅은 액센트 테두리 —
-          // 회색 상자만 늘어놓으면 어디가 중요한지 그림이 말해 주지 못한다.
+          // 도판 양식: 종이 위의 잉크. 상자는 전부 같은 무게로 두고,
+          // 색은 한 곳(:::accent)에만 쓴다 — 색이 여러 개면 강조가 사라진다.
           themeVariables: {
-            darkMode: !isLight,
-            background: bg,
-            fontSize: '14px',
-            primaryColor: panel,
-            primaryTextColor: text,
-            primaryBorderColor: isLight ? border : `${accent}66`,
-            secondaryColor: bg,
-            secondaryTextColor: muted,
-            secondaryBorderColor: border,
-            tertiaryColor: bg,
-            tertiaryTextColor: muted,
-            tertiaryBorderColor: border,
-            lineColor: muted,
-            textColor: text,
-            mainBkg: panel,
-            nodeBorder: isLight ? border : `${accent}66`,
+            darkMode: !p.isLight,
+            background: p.paper,
+            fontSize: '13.5px',
+            primaryColor: p.paper,
+            primaryTextColor: p.ink,
+            primaryBorderColor: p.ink,
+            secondaryColor: p.paper,
+            secondaryTextColor: p.ink,
+            secondaryBorderColor: p.ink,
+            tertiaryColor: p.paper,
+            tertiaryTextColor: p.ink,
+            tertiaryBorderColor: p.ink,
+            lineColor: p.ink,
+            textColor: p.ink,
+            mainBkg: p.paper,
+            nodeBorder: p.ink,
             clusterBkg: 'transparent',
-            clusterBorder: border,
-            edgeLabelBackground: panel,
-            titleColor: text,
+            clusterBorder: p.ink,
+            edgeLabelBackground: p.paper,
+            titleColor: p.ink,
             // 시퀀스
-            actorBkg: panel,
-            actorBorder: isLight ? border : `${accent}66`,
-            actorTextColor: text,
-            actorLineColor: muted,
-            signalColor: text,
-            signalTextColor: muted,
-            labelBoxBkgColor: panel,
-            labelBoxBorderColor: border,
-            labelTextColor: text,
-            noteBkgColor: isLight ? '#f4f5f7' : '#1d2028',
-            noteTextColor: text,
-            noteBorderColor: border,
+            actorBkg: p.paper,
+            actorBorder: p.ink,
+            actorTextColor: p.ink,
+            actorLineColor: p.faint,
+            signalColor: p.ink,
+            signalTextColor: p.ink,
+            labelBoxBkgColor: p.paper,
+            labelBoxBorderColor: p.ink,
+            labelTextColor: p.ink,
+            noteBkgColor: p.accentBg,
+            noteTextColor: p.ink,
+            noteBorderColor: p.ink,
             // 상태도
-            labelColor: text,
-            altBackground: bg,
+            labelColor: p.ink,
+            altBackground: p.paper,
           },
         })
         const id = `mmd-${idKey.replace(/[^a-zA-Z0-9]/g, '')}-${seq++}`
-        return mermaid.render(id, code)
+        return mermaid.render(id, withStandardClasses(code, p))
       })
       .then(({ svg }) => {
         if (cancelled) return
