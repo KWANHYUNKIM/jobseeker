@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { Job } from '../types'
 import { classifyRoles, roleColor } from '../lib/classify'
-import { EmptyState, TechTag, CompanyMark } from './ui'
+import { usePaged } from '../lib/usePaged'
+import { EmptyState, TechTag, CompanyMark, Pagination } from './ui'
 
 interface Props {
   jobs: Job[]
@@ -12,19 +13,7 @@ interface Props {
 const PAGE_SIZE = 20
 
 export function JobList({ jobs, selected, onSelect }: Props) {
-  const [page, setPage] = useState(0)
-
-  // 필터가 바뀌면 1페이지로 돌아간다. effect 에서 setState 하면 한 번 그린 뒤 다시 그리게
-  // 되어(잘못된 페이지가 한 프레임 보인다) React 가 권하는 '렌더 중 조정' 패턴을 쓴다.
-  const [prevJobs, setPrevJobs] = useState(jobs)
-  if (jobs !== prevJobs) {
-    setPrevJobs(jobs)
-    setPage(0)
-  }
-
-  const totalPages = Math.max(1, Math.ceil(jobs.length / PAGE_SIZE))
-  const start = page * PAGE_SIZE
-  const slice = useMemo(() => jobs.slice(start, start + PAGE_SIZE), [jobs, start])
+  const { page, setPage, totalPages, start, slice } = usePaged(jobs, PAGE_SIZE)
 
   const rows = useMemo(
     () =>
@@ -183,77 +172,14 @@ export function JobList({ jobs, selected, onSelect }: Props) {
           </tbody>
         </table>
       </div>
-      <Pagination page={page} totalPages={totalPages} total={jobs.length} onChange={setPage} />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        total={jobs.length}
+        pageSize={PAGE_SIZE}
+        onChange={setPage}
+      />
     </div>
-  )
-}
-
-function Pagination({
-  page,
-  totalPages,
-  total,
-  onChange,
-}: {
-  page: number
-  totalPages: number
-  total: number
-  onChange: (p: number) => void
-}) {
-  const go = (p: number) => onChange(Math.max(0, Math.min(totalPages - 1, p)))
-
-  // 페이지 번호 윈도우: 현재 페이지 ±3
-  const start = Math.max(0, Math.min(totalPages - 7, page - 3))
-  const end = Math.min(totalPages, start + 7)
-  const nums = []
-  for (let i = start; i < end; i++) nums.push(i)
-
-  return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-(--color-border) bg-(--color-panel)">
-      <div className="text-xs text-(--color-muted)">
-        총 <span className="text-(--color-text)">{total.toLocaleString()}</span>건 · 페이지{' '}
-        <span className="text-(--color-text)">{page + 1}</span> / {totalPages} (20개씩)
-      </div>
-      <div className="flex items-center gap-1">
-        <PgBtn onClick={() => go(0)} disabled={page === 0}>«</PgBtn>
-        <PgBtn onClick={() => go(page - 1)} disabled={page === 0}>‹</PgBtn>
-        {nums.map((n) => (
-          <PgBtn key={n} onClick={() => go(n)} active={n === page}>
-            {n + 1}
-          </PgBtn>
-        ))}
-        <PgBtn onClick={() => go(page + 1)} disabled={page >= totalPages - 1}>›</PgBtn>
-        <PgBtn onClick={() => go(totalPages - 1)} disabled={page >= totalPages - 1}>»</PgBtn>
-      </div>
-    </div>
-  )
-}
-
-function PgBtn({
-  children,
-  onClick,
-  disabled,
-  active,
-}: {
-  children: React.ReactNode
-  onClick: () => void
-  disabled?: boolean
-  active?: boolean
-}) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={
-        'min-w-[2rem] px-2 py-1 text-xs rounded border transition ' +
-        (active
-          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
-          : disabled
-            ? 'border-(--color-border) text-(--color-muted)/50 cursor-not-allowed'
-            : 'border-(--color-border) text-(--color-text) hover:border-(--color-accent)')
-      }
-    >
-      {children}
-    </button>
   )
 }
 

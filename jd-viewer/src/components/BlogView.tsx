@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useBlogs } from '../lib/useBlogs'
+import { usePaged } from '../lib/usePaged'
 import { BlogDetail } from './BlogDetail'
-import { Loader, ErrorState, SidePanel, MobileBar, TechIcon, CompanyMark } from './ui'
+import { Loader, ErrorState, SidePanel, MobileBar, TechIcon, CompanyMark, Pagination } from './ui'
 import type { BlogPost } from '../types'
+
+const PAGE_SIZE = 20
 
 const COUNTRY_LABEL: Record<string, string> = {
   KR: '🇰🇷 한국',
@@ -81,6 +84,9 @@ export function BlogView() {
     setCollapsed(next)
   }
 
+  // 훅이라 로딩·에러 조기 반환보다 위에 있어야 한다(호출 순서가 렌더마다 같아야 한다).
+  const paged = usePaged(filtered, PAGE_SIZE)
+
   if (loading) return <Loader label="기술 블로그 불러오는 중…" />
   if (error)
     return (
@@ -156,7 +162,7 @@ export function BlogView() {
       </SidePanel>
 
       {/* 본문: 글 목록 */}
-      <main className="flex-1 min-w-0 overflow-auto">
+      <main data-scroll className="flex-1 min-w-0 overflow-auto">
         <MobileBar onMenu={() => setNavOpen(true)} label="검색·필터">
           <span className="ml-auto text-xs text-(--color-muted)">{filtered.length}건</span>
         </MobileBar>
@@ -169,13 +175,22 @@ export function BlogView() {
           {data?.generated_at && <span className="ml-auto">갱신 {data.generated_at.slice(0, 10)}</span>}
         </div>
         <ul className="divide-y divide-(--color-border)">
-          {filtered.map((p) => (
+          {paged.slice.map((p) => (
             <PostRow key={p.url} post={p} onPickStack={toggleStack} onOpen={setSelected} />
           ))}
           {filtered.length === 0 && (
             <li className="p-8 text-(--color-muted)">조건에 맞는 글이 없습니다.</li>
           )}
         </ul>
+        {filtered.length > 0 && (
+          <Pagination
+            page={paged.page}
+            totalPages={paged.totalPages}
+            total={filtered.length}
+            pageSize={PAGE_SIZE}
+            onChange={paged.setPage}
+          />
+        )}
       </main>
 
       {selected && (

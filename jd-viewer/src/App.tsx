@@ -166,7 +166,7 @@ function App() {
                   : undefined
               }
             />
-            <main className="flex-1 min-w-0 overflow-auto jd-panel">
+            <main data-scroll className="flex-1 min-w-0 overflow-auto jd-panel">
               <MobileBar onMenu={() => setFilterOpen(true)} label="필터">
                 <span className="ml-auto text-xs text-(--color-muted) tabular-nums">
                   {filtered.length.toLocaleString()}건

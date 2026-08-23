@@ -136,6 +136,101 @@ export function EmptyState({ title, hint }: { title: string; hint?: ReactNode })
   )
 }
 
+// ── 페이지네이션 ─────────────────────────────────────────────
+// 목록 탭(잡 리스트·기술 블로그·기술 역설계)이 공유한다. 왼쪽 필터 바는 길어서 스크롤이
+// 자연스럽지만, 오른쪽 본문까지 끝없이 스크롤되면 몇 번째를 보고 있는지가 사라진다.
+//
+// 기본값이 `sticky bottom-0` 인 이유: 페이지 버튼이 목록 끝에만 있으면 그 버튼을 누르려고
+// 다시 스크롤해야 한다 — 스크롤을 없애려고 넣은 장치가 스크롤을 요구하게 된다.
+export function Pagination({
+  page,
+  totalPages,
+  total,
+  pageSize,
+  unit = '건',
+  sticky = true,
+  onChange,
+}: {
+  page: number
+  totalPages: number
+  total: number
+  pageSize: number
+  unit?: string
+  sticky?: boolean
+  onChange: (p: number) => void
+}) {
+  // 페이지를 넘겼는데 스크롤이 그대로면 새 페이지의 중간부터 보인다. 스크롤 컨테이너는
+  // 탭마다 다르므로(App 의 main, BlogView 의 main, RevengView 의 바깥 div) DOM 에서
+  // [data-scroll] 을 거슬러 찾는다 — 각 탭이 자기 스크롤 요소에 그 표시를 달아 둔다.
+  const go = (p: number, el: HTMLElement | null) => {
+    const next = Math.max(0, Math.min(totalPages - 1, p))
+    if (next === page) return
+    onChange(next)
+    el?.closest<HTMLElement>('[data-scroll]')?.scrollTo({ top: 0 })
+  }
+
+  // 페이지 번호 윈도우: 현재 페이지 ±3
+  const start = Math.max(0, Math.min(totalPages - 7, page - 3))
+  const end = Math.min(totalPages, start + 7)
+  const nums = []
+  for (let i = start; i < end; i++) nums.push(i)
+
+  return (
+    <div
+      className={
+        'flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-t border-(--color-border) bg-(--color-panel) ' +
+        (sticky ? 'sticky bottom-0 z-10' : '')
+      }
+    >
+      <div className="text-xs text-(--color-muted)">
+        총 <span className="text-(--color-text)">{total.toLocaleString()}</span>
+        {unit} · 페이지 <span className="text-(--color-text)">{page + 1}</span> / {totalPages} (
+        {pageSize}개씩)
+      </div>
+      <div className="flex items-center gap-1">
+        <PgBtn onClick={(e) => go(0, e.currentTarget)} disabled={page === 0}>«</PgBtn>
+        <PgBtn onClick={(e) => go(page - 1, e.currentTarget)} disabled={page === 0}>‹</PgBtn>
+        {nums.map((n) => (
+          <PgBtn key={n} onClick={(e) => go(n, e.currentTarget)} active={n === page}>
+            {n + 1}
+          </PgBtn>
+        ))}
+        <PgBtn onClick={(e) => go(page + 1, e.currentTarget)} disabled={page >= totalPages - 1}>›</PgBtn>
+        <PgBtn onClick={(e) => go(totalPages - 1, e.currentTarget)} disabled={page >= totalPages - 1}>»</PgBtn>
+      </div>
+    </div>
+  )
+}
+
+function PgBtn({
+  children,
+  onClick,
+  disabled,
+  active,
+}: {
+  children: ReactNode
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void
+  disabled?: boolean
+  active?: boolean
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={
+        'min-w-[2rem] px-2 py-1 text-xs rounded border transition ' +
+        (active
+          ? 'bg-(--color-accent) text-(--color-on-accent) border-(--color-accent) font-medium'
+          : disabled
+            ? 'border-(--color-border) text-(--color-muted)/50 cursor-not-allowed'
+            : 'border-(--color-border) text-(--color-text) hover:border-(--color-accent)')
+      }
+    >
+      {children}
+    </button>
+  )
+}
+
 // ── 기술 태그 ────────────────────────────────────────────────
 // 목록에서 스택을 훑을 때 글자만 있으면 전부 같은 무게로 보인다. 아는 로고가
 // 하나 붙으면 거기서부터 읽게 되므로, 아이콘이 있는 기술만 앞에 작게 붙인다.

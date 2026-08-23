@@ -2,8 +2,12 @@ import { useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useDomainDocs, useMarkdown, useRevengIndex, type IndexEntry } from '../lib/useReveng'
+import { usePaged } from '../lib/usePaged'
 import { CompanyTeardown } from './CompanyTeardown'
-import { Loader, ErrorState, EmptyState } from './ui'
+import { Loader, ErrorState, EmptyState, Pagination } from './ui'
+
+// 카드 3열 × 4줄. 회사가 계속 쌓이는 탭이라 한 화면에 다 밀어 넣으면 곧 통 스크롤이 된다.
+const PAGE_SIZE = 12
 
 // 기술 역설계 — 회사가 무엇으로 돈을 벌고, 그 돈이 어떤 도메인으로 쪼개지고,
 // 각 기능이 어떻게 구현되고 서로 어떻게 이어지는지.
@@ -36,6 +40,8 @@ export function RevengView() {
       ),
     [companies, country, category],
   )
+  // 훅이라 아래의 조기 반환들보다 위에 있어야 한다(호출 순서가 렌더마다 같아야 한다).
+  const paged = usePaged(shown, PAGE_SIZE)
 
   if (slug) return <CompanyTeardown slug={slug} onBack={() => setSlug(null)} />
   if (docSlug) {
@@ -58,7 +64,7 @@ export function RevengView() {
     )
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto jd-panel">
+    <div data-scroll className="flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto jd-panel">
       <header className="px-4 py-3 border-b border-(--color-border) bg-(--color-panel)/60">
         <h2 className="text-base font-semibold text-(--color-text)"><span className="jd-head jd-head-lg">기술 역설계</span></h2>
         <p className="text-xs text-(--color-muted) mt-0.5">
@@ -99,10 +105,25 @@ export function RevengView() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
-            {shown.map((c) => (
+            {paged.slice.map((c) => (
               <CompanyCard key={c.slug} c={c} countryLabel={data?.countries?.[c.country] ?? c.country} onOpen={() => setSlug(c.slug)} />
             ))}
           </div>
+          {shown.length === 0 ? (
+            <p className="px-4 pb-4 text-sm text-(--color-muted)">조건에 맞는 회사가 없습니다.</p>
+          ) : (
+            // 아래에 비교 문서·도메인 목록이 이어지므로 바닥에 고정하지 않는다 —
+            // 고정하면 그 절들 위에 계속 떠 있게 된다.
+            <Pagination
+              page={paged.page}
+              totalPages={paged.totalPages}
+              total={shown.length}
+              pageSize={PAGE_SIZE}
+              unit="곳"
+              sticky={false}
+              onChange={paged.setPage}
+            />
+          )}
 
           {domainDocs && domainDocs.docs.length > 0 && (
             <section className="px-4 pb-4">
