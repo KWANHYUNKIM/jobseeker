@@ -103,11 +103,72 @@ export interface Research {
   hard_problems?: HardProblem[]
 }
 
+// ── 화면 도해 (UiSketch) ─────────────────────────────────────
+// 이 탭의 글은 "무엇을 어떻게 만들었나"인데, 읽는 사람에게는 그게 앱의 어느 부분
+// 이야기인지 붙들 데가 없다. 그래서 사용자가 보는 화면을 먼저 놓고, 그 위의 번호에
+// 설명을 건다.
+//
+// ⚠️ 실제 화면 캡처가 아니다. 남의 앱 화면을 공개 사이트에 올리는 문제를 피하고,
+// 앱 로그인이 필요해 애초에 찍을 수 없는 회사(토스·당근 등)까지 같은 형식으로
+// 다루려고 **공개 자료에 적힌 것만으로 다시 그린 도해**를 쓴다. 그래서 element 는
+// 자유 HTML 이 아니라 아래의 정해진 종류만 받는다 — 형식이 열려 있으면 회사마다
+// 제각각이 되고, 그 순간 이 도해는 '그 회사 화면'이 아니라 '그린 사람의 취향'이 된다.
+export type UiElementType =
+  | 'appbar'
+  | 'label'
+  | 'text'
+  | 'input'
+  | 'chips'
+  | 'amount'
+  | 'button'
+  | 'rows'
+  | 'tabs'
+  | 'card'
+  | 'divider'
+  | 'spacer'
+
+export interface UiElement {
+  type: UiElementType
+  /** appbar·label·text·input·amount·button·card 의 본문 */
+  text?: string
+  /** input 의 회색 자리표시자 */
+  hint?: string
+  /** chips·tabs 의 항목, card 의 줄 */
+  items?: string[]
+  /** rows 의 줄 */
+  rows?: { title: string; sub?: string; right?: string }[]
+  /** button 의 강조 여부 */
+  variant?: 'primary' | 'ghost'
+  /** 이 요소에 걸린 설명 번호. pins[].n 과 맞는다 */
+  pin?: number
+}
+
+export interface UiPin extends Claim {
+  n: number
+  title: string
+  what: string
+  /** 회사 화면 도해에서만 — 이 자리가 어느 도메인인가 */
+  domain?: string
+}
+
+export interface UiSketchData {
+  title: string
+  /** 이 도해가 답하는 질문. 없으면 빼는 것이 낫다 — STYLE.md 1번 */
+  question?: string
+  kind?: 'phone' | 'web'
+  /** 재구성이라는 사실을 화면에 남기는 자리. 비어 있으면 기본 문구가 붙는다 */
+  note?: string
+  screen: UiElement[]
+  pins: UiPin[]
+}
+
 export interface Feature {
   key: string
   name: string
   domain: string
   updated_at?: string
+  /** 이 기능이 사용자에게 보이는 자리 */
+  ui?: UiSketchData
   business: { why: string; metrics?: Metric[] }
   thinking?: Thought[]
   domain_model?: {
@@ -142,6 +203,8 @@ export interface Company {
   one_liner: string
   /** 로고를 가져올 회사 도메인. 없으면 글자 마크로 대체한다. */
   domain?: string
+  /** 앱 첫 화면 도해 — 어느 자리가 어느 도메인인지. 있으면 도메인 지도(mermaid)는 접힌다 */
+  ui_map?: UiSketchData
   domain_map?: Diagram
   revenue_streams?: RevenueStream[]
   domains?: Domain[]

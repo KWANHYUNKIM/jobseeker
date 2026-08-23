@@ -154,6 +154,54 @@ def _check_sources(node: dict, where: str, r: Report) -> None:
             r.warn(f"{where}.sources[{i}]", "한 줄 요약 없음")
 
 
+UI_ELEMENT_TYPES = {
+    "appbar", "label", "text", "input", "chips", "amount",
+    "button", "rows", "tabs", "card", "divider", "spacer",
+}
+
+
+def _check_ui(ui: dict, where: str, r: Report) -> None:
+    """화면 도해(UiSketch) — 사용자가 보는 자리에 설명을 거는 그림.
+
+    실제 화면 캡처가 아니라 재구성이라, 형식이 열려 있으면 회사마다 제각각이 되고
+    그 순간 이 도해는 '그 회사 화면' 이 아니라 '그린 사람의 취향' 이 된다.
+    그래서 요소 종류를 뷰어가 아는 것으로 묶어 두고, 번호가 서로 맞는지만 본다.
+    """
+    if not ui.get("title"):
+        r.err(where, "title 없음")
+    if not ui.get("question"):
+        r.warn(where, "이 도해가 답하는 질문이 없다 — 없으면 그 그림은 뺀다(STYLE.md 1번)")
+
+    pins = ui.get("pins") or []
+    if not pins:
+        r.err(where, "pins 가 없다 — 번호에 걸 설명이 없으면 그냥 그림이다")
+    nums = [p.get("n") for p in pins]
+    if len(set(nums)) != len(nums):
+        r.err(f"{where}.pins", f"번호가 겹친다: {nums}")
+    for i, p in enumerate(pins):
+        pw = f"{where}.pins[{i}]"
+        if not p.get("title") or not p.get("what"):
+            r.err(pw, "title 또는 what 이 비어 있다")
+        _check_sources(p, pw, r)
+
+    screen = ui.get("screen") or []
+    if not screen:
+        r.err(where, "screen 이 비어 있다")
+    used = set()
+    for i, el in enumerate(screen):
+        ew = f"{where}.screen[{i}]"
+        t = el.get("type")
+        if t not in UI_ELEMENT_TYPES:
+            r.err(ew, f"뷰어가 모르는 요소 종류다: {t!r} (가능: {', '.join(sorted(UI_ELEMENT_TYPES))})")
+        if el.get("pin") is not None:
+            used.add(el["pin"])
+            if el["pin"] not in nums:
+                r.err(ew, f"pin {el['pin']} 번에 해당하는 설명이 없다")
+    for n in nums:
+        if n not in used:
+            r.warn(f"{where}.pins", f"{n}번 설명이 화면의 어느 자리에도 안 걸려 있다")
+
+
 def _check_research(feat: dict, fw: str, r: Report) -> None:
     """STYLE.md 7번 — 회사 밖의 근거(논문·표준)와 아직 아무도 못 푼 것.
 
@@ -248,6 +296,9 @@ def check_company(data: dict, r: Report) -> None:
     for i, rs in enumerate(data.get("revenue_streams") or []):
         _check_sources(rs, f"{w}.revenue_streams[{i}]", r)
 
+    if data.get("ui_map"):
+        _check_ui(data["ui_map"], f"{w}.ui_map", r)
+
     if not (data.get("domain_map") or {}).get("code"):
         r.warn(w, "domain_map 이 없다 — STYLE.md 1번은 회사마다 도메인 지도 한 장을 요구한다")
 
@@ -306,6 +357,9 @@ def check_company(data: dict, r: Report) -> None:
             if not s.get("role"):
                 r.err(sw, "role 없음 — 기술 이름만 나열하지 않는다")
             _check_sources(s, sw, r)
+
+        if feat.get("ui"):
+            _check_ui(feat["ui"], f"{fw}.ui", r)
 
         diagrams = feat.get("diagrams") or []
         if not diagrams:

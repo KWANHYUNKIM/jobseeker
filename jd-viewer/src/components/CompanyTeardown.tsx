@@ -1,13 +1,9 @@
 import { useMemo, useState } from 'react'
-import {
-  useCompany,
-  type Confidence,
-  type Diagram,
-  type Feature,
-  type Source,
-} from '../lib/useReveng'
+import { useCompany, type Diagram, type Feature, type Source } from '../lib/useReveng'
 import { ArchitectureDiagram } from './ArchitectureDiagram'
 import { CompanyLogo } from './RevengView'
+import { UiSketch } from './UiSketch'
+import { ConfBadge, SourceLinks } from './RevengBits'
 import { Md, MdBlock } from './Md'
 import { Loader, ErrorState } from './ui'
 
@@ -28,11 +24,6 @@ function normEntity(e: { name: string; what: string } | string): { name: string;
 // → 각 기능이 어떻게 구현됐는가 → 기능끼리 어떻게 이어지는가. 기술 스택을 맨 위에 두면
 // 또 하나의 '기술 나열'이 되므로 일부러 맨 아래에 둔다.
 
-const CONF_LABEL: Record<Confidence, string> = {
-  confirmed: '확인',
-  inferred: '추정',
-  unknown: '미확인',
-}
 
 export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => void }) {
   const { data: c, loading, error } = useCompany(slug)
@@ -105,11 +96,31 @@ export function CompanyTeardown({ slug, onBack }: { slug: string; onBack: () => 
           )}
         </Section>
 
-        {c.domain_map?.code && (
-          <Section title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}>
-            <DiagramBlock d={c.domain_map} idKey={`reveng-${c.slug}-map`} />
+        {/* 화면 도해가 있으면 그쪽이 입구다 — 사용자가 실제로 누르는 것에서 시작하는 편이
+            추상적인 네모에서 시작하는 것보다 붙들기 쉽다. 그때 mermaid 도메인 지도는
+            같은 일을 두 번 하게 되므로 접어 둔다(지우지는 않는다 — 관계는 저쪽이 정확하다). */}
+        {c.ui_map && (
+          <Section title="화면에서 시작하기" sub={c.ui_map.question ?? '사용자가 보는 이 부분이 어느 도메인인가'}>
+            <UiSketch ui={c.ui_map} idKey={`reveng-${c.slug}-uimap`} onPickDomain={setDomain} />
           </Section>
         )}
+
+        {c.domain_map?.code &&
+          (c.ui_map ? (
+            <details className="rounded border border-(--color-border) px-3 py-2">
+              <summary className="cursor-pointer text-sm text-(--color-muted) hover:text-(--color-accent)">
+                도메인 지도(추상) 펼치기 —{' '}
+                {c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}
+              </summary>
+              <div className="mt-3">
+                <DiagramBlock d={c.domain_map} idKey={`reveng-${c.slug}-map`} />
+              </div>
+            </details>
+          ) : (
+            <Section title="도메인 지도" sub={c.domain_map.question ?? '도메인들이 어떻게 맞물리는가'}>
+              <DiagramBlock d={c.domain_map} idKey={`reveng-${c.slug}-map`} />
+            </Section>
+          ))}
 
         {c.domains && c.domains.length > 0 && (
           <Section title="도메인" sub="조직도가 아니라 문제의 경계로 나눈 단위">
@@ -221,6 +232,14 @@ function FeatureBlock({ f, open, onToggle }: { f: Feature; open: boolean; onTogg
 
       {open && (
         <div className="px-3 pb-4 pt-1 flex flex-col gap-4 border-t border-(--color-border)">
+          {/* 글보다 화면이 먼저다. '이 기능' 이 앱의 어느 자리인지를 붙들고 나서
+              왜 그렇게 만들었는지를 읽는 편이 순서가 맞다. */}
+          {f.ui && (
+            <Sub title="사용자가 보는 자리">
+              <UiSketch ui={f.ui} idKey={`reveng-ui-${f.key}`} />
+            </Sub>
+          )}
+
           <Sub title="왜 존재하나">
             <MdBlock className="reveng-prose text-sm text-(--color-text)">{f.business.why}</MdBlock>
             {f.business.metrics && f.business.metrics.length > 0 && (
@@ -482,43 +501,6 @@ function DiagramBlock({ d, idKey }: { d: Diagram; idKey: string }) {
       </figcaption>
       <ArchitectureDiagram code={d.code} idKey={idKey} />
     </figure>
-  )
-}
-
-function ConfBadge({ c }: { c?: Confidence }) {
-  if (!c || c === 'confirmed') return null // '확인'은 기본값 — 뱃지로 화면을 채우지 않는다
-  return (
-    <span
-      className={
-        'ml-1.5 align-middle px-1 py-px rounded text-[10px] border ' +
-        (c === 'inferred'
-          ? 'border-amber-500/40 text-amber-500'
-          : 'border-(--color-border) text-(--color-muted)')
-      }
-      title={c === 'inferred' ? '공개 자료에서 추론한 내용' : '공개 자료로 확인하지 못함'}
-    >
-      {CONF_LABEL[c]}
-    </span>
-  )
-}
-
-function SourceLinks({ sources }: { sources?: Source[] }) {
-  if (!sources || sources.length === 0) return null
-  return (
-    <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1">
-      {sources.map((s) => (
-        <a
-          key={s.url}
-          href={s.url}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="text-[11px] text-(--color-accent) hover:underline"
-          title={s.title}
-        >
-          {s.publisher || new URL(s.url).hostname}
-        </a>
-      ))}
-    </div>
   )
 }
 
