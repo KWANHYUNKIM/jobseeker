@@ -463,8 +463,8 @@
       "name_en": "Yelp",
       "country": "US",
       "category": "검색",
-      "status": "in_progress",
-      "features_done": 2,
+      "status": "done",
+      "features_done": 3,
       "one_liner": "재고도 거래도 자기 것이 아닌 지역 검색 — 파는 것은 동네 가게의 '보이는 자리' 하나다",
       "updated_at": "2026-08-27",
       "domain": "yelp.com"
