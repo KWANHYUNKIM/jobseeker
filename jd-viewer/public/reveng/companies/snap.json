@@ -170,7 +170,7 @@
   "domains": [
     {
       "name": "사람보다 코드가 빨리 늘어난다",
-      "why": "**코드를 빨리 쓰게 되면 그다음이 막힌다.** 회사가 그것을 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* **PR 이 연 60% 늘었는데 사람 첫 리뷰까지 약 5시간**이 걸렸다.\n\n**⭐ 이 도메인은 회사가 스스로 연작으로 묶었다** — CodePal 과 Casper 가 *\"how Snap is building toward end-to-end autonomous software delivery\"* 라는 **3부작의 일부**다. 여기에 `Code Search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01)와 `Building SPECS Experiences Faster`(AI 가 Lens Studio 를 직접 몬다, 2026-08-20)가 이어진다.\n\n**목록 1쪽 여섯 편 중 넷이 이 주제다** — 회사가 지금 무엇을 자랑하고 싶은지가 드러난다(이 추측은 이 사이트의 것이다).\n\n⚠️ **본문은 CodePal 한 편만 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다.",
+      "why": "**코드를 빨리 쓰게 되면 그다음이 막힌다.** 회사가 그것을 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* **PR 이 연 60% 늘었는데 사람 첫 리뷰까지 약 5시간**이 걸렸다.\n\n**⭐ 이 도메인은 회사가 스스로 연작으로 묶었다** — CodePal 과 Casper 가 *\"how Snap is building toward end-to-end autonomous software delivery\"* 라는 **3부작의 일부**다. 여기에 `Code Search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01)와 `Building SPECS Experiences Faster`(AI 가 Lens Studio 를 직접 몬다, 2026-08-20)가 이어진다.\n\n**목록 1쪽 여섯 편 중 넷이 이 주제다** — 회사가 지금 무엇을 자랑하고 싶은지가 드러난다(이 추측은 이 사이트의 것이다).\n\n**🔴 267 에서 Casper 를 읽고 확인한 것 — 이 회사는 글끼리 서로를 명시적으로 잇는다.** Casper 의 첫 문장이 *\"This is Part 3 of a three-part series… Part 1 introduced CodePal, our AI code reviewer. Part 2 covered Code Search\"* 이고, **시스템도 실제로 이어진다**: *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"*\n\n**이 사이트가 여러 회사에서 관찰해 온 것과 정반대다**(이 대비는 이 사이트의 것이다) — CyberAgent 도 Wayfair 도 컬리도 **같은 문제를 다루는 글끼리 서로를 언급하지 않았는데**, Snap 은 **연작 번호를 달고 파이프라인으로 잇는다.**",
       "tech": [
         {
           "tech": "사내 코드 리뷰어를 직접 만든다 — CodePal",
@@ -186,9 +186,26 @@
               "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.**"
             }
           ]
+        },
+        {
+          "tech": "작업을 받아 PR 까지 여는 에이전트 부대 — Casper",
+          "solves": "막힌 것이 **엔지니어의 주의력**이라고 본다 — 깨진 테스트나 의존성 올리기 같은 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **격리된 샌드박스에서 떠서 Slack·Jira·문서로 맥락을 모으고, 고치고, 테스트·빌드·린터를 돌리고, 실패하면 다시 하고, PR 을 연 뒤 CodePal 을 불러 리뷰까지 받는다.** *\"thousands of mergeable PRs each week\"* 를 내고 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"* 가 생겼다. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack**.",
+          "limits": "**버린 대안은 벤더 코딩 에이전트이고 부족했던 것이 다섯이다** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"*: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **⚠️ 그런데 이 글은 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적고, **수치도 둘뿐**이다(주간 PR 수와 에이전트 수). **같은 연작의 CodePal 이 대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는 것과 대비된다**(이 관찰은 이 사이트의 것이다).",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "Casper: Snap's fleet of friendly AI teammates",
+              "url": "https://eng.snap.com/casper",
+              "publisher": "Snap Engineering",
+              "date": "2026-07-28",
+              "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
+            }
+          ]
         }
       ],
-      "features": []
+      "features": [
+        "code-review-agent"
+      ]
     },
     {
       "name": "얼굴 앞에 컴퓨터를 놓는다",
@@ -229,11 +246,13 @@
     }
   ],
   "open_questions": [
+    "**🔴 이 회사는 글끼리 서로를 명시적으로 잇는다 — 이 사이트가 다른 회사에서 관찰해 온 것과 정반대다.** Casper 의 첫 문장이 *\"This is Part 3 of a three-part series… Part 1 introduced CodePal, our AI code reviewer. Part 2 covered Code Search\"* 이고, **시스템도 실제로 이어진다**: *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **CyberAgent · Wayfair · 컬리는 같은 문제를 다루는 글끼리도 서로를 언급하지 않았다.**",
     "**🔴 매출 실액과 DAU 를 못 찾았다.** IR 홈에서 받은 것은 **MAU 971백만 · 총매출 19% 성장 · 미국 Spotlight 게시자 115% 증가 · 기타 매출 85% 성장**(*\"Snap Inc. internal data Q2 2026\"*)뿐이다. `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다. **목록에 2026-08-03 자 `Snap Inc. Announces Second Quarter 2026 Financial Results` 가 있으니 경로만 찾으면 받을 수 있다** — 다음에 보도자료 목록에서 링크를 눌러 들어간다.",
     "**블로그 2쪽 이후를 못 봤다.** `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 **404** 다 — **페이지네이션이 JS 로 도는 것으로 보인다.** **8페이지 중 1쪽만 보고 도메인을 열었다.** 브라우저 `get_page_text` 로 다시 시도해 볼 여지가 있다.",
     "**🔴 1쪽에 Snapchat 본체의 시스템 글이 하나도 없다.** 피드·렌즈·메시징·미디어 저장·추천 같은 이야기가 없고 **여섯 편 중 넷이 사내 AI 개발 도구**다. **2쪽 이후에 있는지 확인하지 못했다** — 없다면 **이 회사의 기술블로그는 제품 시스템을 안 말하는 곳**이라는 뜻이 된다(이 판단은 아직 이르다).",
     "**Specs 도메인의 본문을 한 편도 안 읽었다.** `World-scale Outdoor AR Tracking with GNSS`(2026-07-10)와 `Measuring Spatial Intelligence in LLMs`(2026-06-17)를 **제목만 보고 도메인을 열었다.** 기능을 쓰기 전에 두 편 이상 읽는다.",
-    "**SPECS 의 판매량·가격·매출 기여를 확인하지 못했다.** 출시 사실(2026-06-16)만 확인했다."
+    "**SPECS 의 판매량·가격·매출 기여를 확인하지 못했다.** 출시 사실(2026-06-16)만 확인했다.",
+    "**같은 연작인데 글마다 대가의 밀도가 다르다.** CodePal 은 **대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데**(*\"the held-out golden dataset, not on live traffic\"*), **Casper 는 대가를 한 줄도 안 적고 수치도 둘뿐이다**(*\"thousands of mergeable PRs each week\"* · *\"hundreds of custom Casper agents\"*). **PR 을 여는 쪽이 리뷰하는 쪽보다 자랑할 것이 많아서인지, 아직 겪은 게 적어서인지는 알 수 없다**(이 관찰은 이 사이트의 것이다). **Part 2 인 Code Search 는 아직 안 읽었다.**"
   ],
   "sources": [
     {
@@ -248,7 +267,7 @@
       "url": "https://eng.snap.com/codepal",
       "publisher": "Snap Engineering",
       "date": "2026-06-05",
-      "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.**"
+      "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
     },
     {
       "title": "Snap Inc. Investor Relations",
@@ -256,7 +275,716 @@
       "publisher": "Snap Inc.",
       "date": "2026-08-27",
       "summary": "IR 홈에서 받은 것 — **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**(출처 표기: *\"Snap Inc. internal data Q2 2026\"*). ⚠️ **매출 실액도 DAU 도 Snapchat+ 구독자 수도 이 페이지에 없다.** `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다(목록에는 **2026-08-03 Q2 2026 실적 발표**가 있다). **SPECS 증강현실 안경 출시 발표가 2026-06-16** 이다."
+    },
+    {
+      "title": "Casper: Snap's fleet of friendly AI teammates",
+      "url": "https://eng.snap.com/casper",
+      "publisher": "Snap Engineering",
+      "date": "2026-07-28",
+      "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
     }
   ],
-  "features": []
+  "features": [
+    {
+      "key": "code-review-agent",
+      "name": "사람보다 먼저 읽는다",
+      "domain": "사람보다 코드가 빨리 늘어난다",
+      "updated_at": "2026-08-27",
+      "ui": {
+        "title": "PR 하나가 리뷰되기까지",
+        "question": "모델이 지어낸 지적을 어떻게 걸러 내는가?",
+        "kind": "web",
+        "note": "**리뷰 파이프라인을 도해로 그린 것입니다** — 실제 화면 캡처가 아니고, **사내 도구의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 회사의 CodePal·Casper 글에 적힌 것만으로 재구성했습니다. 번호가 붙은 자리만 근거가 있습니다.",
+        "screen": [
+          {
+            "type": "appbar",
+            "text": "PR 리뷰"
+          },
+          {
+            "type": "card",
+            "text": "PR 이 한 해에 육십 퍼센트 늘었다",
+            "items": [
+              "사람 첫 리뷰까지 약 다섯 시간",
+              "AI 리뷰는 중앙값 십 분"
+            ],
+            "pin": 1
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "어디를 볼지 고른다"
+          },
+          {
+            "type": "rows",
+            "rows": [
+              {
+                "title": "저장소를 심볼 목록으로 만들어 둔다",
+                "sub": "미리 한 번",
+                "right": "1단계"
+              },
+              {
+                "title": "바뀐 부분의 심볼과 겹치는 파일에 점수",
+                "sub": "리뷰마다",
+                "right": "2단계"
+              }
+            ],
+            "pin": 2
+          },
+          {
+            "type": "text",
+            "text": "저장소를 통째로 내려받지 않습니다",
+            "pin": 3
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "label",
+            "text": "읽는다"
+          },
+          {
+            "type": "card",
+            "text": "한 번에 끝내지 않습니다",
+            "items": [
+              "한 번만 물으면 지어내고 매번 달라진다",
+              "여러 번 돌려 일관되게 만든다",
+              "대신 계산이 더 든다"
+            ],
+            "pin": 4
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "text",
+            "text": "지적에 인용된 이름이 실제 코드에 있는지 확인합니다",
+            "pin": 5
+          },
+          {
+            "type": "card",
+            "text": "채점은 사람이 남긴 반응으로",
+            "items": [
+              "좋아요와 싫어요",
+              "병합된 지적과 고쳐진 이슈"
+            ],
+            "pin": 6
+          },
+          {
+            "type": "button",
+            "text": "사람 리뷰로 넘긴다",
+            "variant": "ghost"
+          }
+        ],
+        "pins": [
+          {
+            "n": 1,
+            "title": "병목이 옮겨 갔다",
+            "what": "*\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었고 사람 첫 리뷰까지 **약 5시간**이 걸리는데, CodePal 은 **중앙값 10분**에 답한다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "n": 2,
+            "title": "두 단계로 볼 곳을 좁힌다",
+            "what": "1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "n": 3,
+            "title": "저장소를 안 내려받는다",
+            "what": "**로컬 체크아웃을 하지 않는 것이 의도적 제약이다.** 그래서 **심볼 색인과 diff 만으로** 어디를 볼지 정해야 한다(뒤 문장은 이 사이트의 정리다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "n": 4,
+            "title": "한 번 묻는 방식을 해 보고 버렸다",
+            "what": "*\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 더 철저하고 **실행 간 일관성**이 높지만 *\"It costs more compute\"*.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "n": 5,
+            "title": "지어낸 것을 마지막에 거른다",
+            "what": "검증기가 *\"performs a final integrity check on each finding before it's posted\"* 하고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* — **모델이 없는 이름을 인용하면 그 지적은 안 나간다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "n": 6,
+            "title": "정답을 사람에게서 모은다",
+            "what": "*\"We formed a ground truth dataset from real engineer feedback\"* — Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈로 만든다. **⚠️ 오탐 0% 는 그 골든셋 기준이고 라이브가 아니다** — 회사가 그렇게 밝힌다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          }
+        ]
+      },
+      "business": {
+        "why": "**AI 가 코드를 빨리 쓰게 되자 막히는 자리가 옮겨 갔다.** 회사가 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* **PR 이 연 60% 늘었는데 사람 첫 리뷰까지 약 5시간**이 걸렸다.\n\n**그리고 이 회사는 그 다음 칸까지 자동화했다** — 같은 연작의 Casper 가 **PR 을 직접 열고 CodePal 을 불러 리뷰를 받은 뒤** 사람에게 넘긴다: *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **쓰는 쪽과 읽는 쪽을 다 기계에 맡기고 사람은 마지막에 선다**(이 정리는 이 사이트의 것이다).\n\n**⭐ 같은 결정을 다른 이유로 한 회사가 이 사이트에 있다**(이 비교는 이 사이트의 것이다). **LinkedIn 도 AI 코드 리뷰를 직접 만들었는데** 벤더를 거절한 이유가 *\"벤더의 모델을 카나리로 돌릴 수 없고 두 번째 리뷰어로 페일오버할 수도 없다\"* 였고, **Snap 은 통합 깊이와 속도**다 — *\"A generic tool with only a few configuration knobs wasn't going to work\"*, *\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished.\"*\n\n**그리고 재는 자가 다르다.** LinkedIn 은 **병합된 코드와 대조한 채택률 63.9%** 를 쓰고, **Snap 은 골든셋에서의 오탐 0% 와 재현율 30%→80%** 를 쓴다. **한쪽은 사람이 받아들였는가를, 한쪽은 지적이 맞았는가를 잰다**(이 대비는 이 사이트의 것이다).",
+        "metrics": [
+          {
+            "label": "적용 범위",
+            "value": "PR 의 90% 를 리뷰 · 4개월간 20만+ 리뷰",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "label": "속도",
+            "value": "CodePal 중앙값 10분 · 사람 첫 리뷰는 약 5시간",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "label": "채택",
+            "value": "한 분기에 0%에서 90%",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "label": "품질 (⚠️ 골든셋 기준)",
+            "value": "재현율 30%→80% · 오탐 0% — 회사가 범위를 밝힌다: 라이브 트래픽이 아니라 held-out 골든셋",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "label": "사람의 반응",
+            "value": "버그 발견 만족도 80% · 이전 버전 대비 긍정 평가 버그 75% 증가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "label": "비용",
+            "value": "리뷰당 약 $0.40 — 다중 패스라 It costs more compute",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "label": "배경",
+            "value": "PR 발생률 연 60% 증가",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          }
+        ]
+      },
+      "thinking": [
+        {
+          "at": "오탐 0% 의 범위를 볼 때",
+          "thought": "**회사가 스스로 범위를 좁혀 적는다** — *\"the held-out golden dataset, not on live traffic.\"* **이건 드문 정직함이다**(이 평가는 이 사이트의 것이다). 대부분의 글은 지표를 내놓고 그 지표가 어디서 나온 값인지는 흐린다. **그리고 골든셋이 사람 반응에서 왔으므로**(좋아요·싫어요·병합·수정) **거기서의 0% 는 '사람이 싫다고 표시한 종류를 안 낸다' 에 가깝다** — 라이브에서 처음 보는 종류의 오탐은 이 자로 안 잡힌다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "단일 패스를 버린 대목에서",
+          "thought": "**실제로 해 보고 버렸고 무엇이 나빴는지 셋을 댄다** — *\"it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* **셋 중 둘이 정확도가 아니라 일관성 문제다**(같은 입력에 다른 답). **리뷰는 매번 같은 기준으로 보여야 신뢰가 생기니**, 여기서는 **일관성이 정확도만큼 값이 나간다**(이 정리는 이 사이트의 것이다).",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "검증기의 규칙을 볼 때",
+          "thought": "**환각을 잡는 규칙이 놀랍도록 단순하다** — *\"checks that every symbol cited in a finding is actually present in the provided context.\"* **모델을 더 좋게 만드는 대신 출력이 입력에 근거하는지만 본다**(이 표현은 이 사이트의 것이다). ⚠️ **대신 맞는 지적인데 이름을 살짝 다르게 쓴 경우도 함께 걸릴 수 있다** — 그 이야기는 글에 없다.",
+          "confidence": "confirmed"
+        },
+        {
+          "at": "같은 연작의 두 글을 나란히 볼 때",
+          "thought": "**CodePal 은 대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데, Casper 는 대가를 한 줄도 안 적는다**(이 관찰은 이 사이트의 것이다). 같은 연작인데도 그렇다. **PR 을 여는 쪽이 리뷰하는 쪽보다 자랑할 것이 많아서인지, 아직 겪은 게 적어서인지는 알 수 없다.** Casper 의 수치도 둘뿐이다 — *\"thousands of mergeable PRs each week\"* 와 *\"hundreds of custom Casper agents\"*.",
+          "confidence": "confirmed"
+        }
+      ],
+      "domain_model": {
+        "entities": [
+          {
+            "name": "심볼 색인",
+            "what": "tree-sitter 로 저장소를 파싱해 만든 **심볼에서 파일로** 가는 표"
+          },
+          {
+            "name": "파일 선별기",
+            "what": "diff 의 심볼을 색인에서 찾아 **겹침으로 파일에 점수**를 매긴다"
+          },
+          {
+            "name": "리뷰 루프",
+            "what": "한 번에 끝내지 않고 여러 번 돈다. 더 철저하고 **실행 간 일관성**이 높다"
+          },
+          {
+            "name": "검증기",
+            "what": "내보내기 전 마지막 관문. **인용된 심볼이 컨텍스트에 실제로 있는지** 본다"
+          },
+          {
+            "name": "Finding Lifecycle",
+            "what": "지적에 사람이 남기는 반응 — 좋아요·싫어요·병합·수정. **골든셋의 재료다**"
+          },
+          {
+            "name": "골든셋",
+            "what": "사람 피드백에서 만든 정답 묶음. **오탐 0% 는 여기서의 값이고 라이브가 아니다**"
+          }
+        ],
+        "invariants": [
+          "**저장소를 통째로 내려받지 않는다** — 심볼 색인과 diff 로 판단한다",
+          "**인용된 심볼이 컨텍스트에 없으면 그 지적은 안 나간다**",
+          "**리뷰는 여러 번 돌려 만든다** — 한 번의 모델 호출로 끝내지 않는다",
+          "**사람 리뷰를 없애지 않는다** — 회사가 *\"reshapes it\"* 이라고 적는다",
+          "⚠️ **모델 이름을 밝히지 않는다** — the model · frontier models 로만 부른다"
+        ]
+      },
+      "implementation": {
+        "flow": [
+          {
+            "step": "저장소를 미리 심볼 색인으로 만든다",
+            "why": "tree-sitter 로 파싱해 심볼에서 파일로 가는 표를 만든다"
+          },
+          {
+            "step": "PR 이 열린다",
+            "why": "사람이 열거나 Casper 가 연다 — 같은 연작의 파이프라인이 여기로 닿는다"
+          },
+          {
+            "step": "diff 에서 심볼을 뽑아 색인에서 찾는다",
+            "why": "어디를 읽어야 할지 정해야 한다. 저장소를 클론하지 않는다"
+          },
+          {
+            "step": "겹침으로 파일에 점수를 매겨 볼 곳을 좁힌다",
+            "why": "컨텍스트에 넣을 것을 고른다"
+          },
+          {
+            "step": "여러 번 돌며 지적을 만든다",
+            "why": "한 번만 물으면 지어내고 실행마다 달라진다"
+          },
+          {
+            "step": "검증기가 인용된 심볼을 확인한다",
+            "why": "컨텍스트에 없는 이름을 쓴 지적은 환각이다"
+          },
+          {
+            "step": "PR 에 지적을 남긴다",
+            "why": "중앙값 10분. 사람 첫 리뷰는 약 5시간이다"
+          },
+          {
+            "step": "사람이 남긴 반응이 골든셋으로 쌓인다",
+            "why": "좋아요·싫어요·병합·수정이 다음 평가의 정답이 된다"
+          }
+        ],
+        "decisions": [
+          {
+            "question": "코드 리뷰 도구를 사 올 것인가?",
+            "chosen": "**직접 만든다.** *\"We evaluated several vendor solutions before deciding to build in-house\"*",
+            "alternatives": [
+              "벤더 도구를 도입하기 — 검토하고 버렸다"
+            ],
+            "tradeoff": "이유가 둘이다 — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가는 이제 우리가 유지한다는 것**이고, 실제로 선별기·루프·검증기·골든셋을 전부 직접 만든다(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "모델에게 한 번 물어서 끝낼 것인가?",
+            "chosen": "**아니다 — 여러 번 돈다.** 그리고 **단일 패스를 실제로 해 보고 버렸다**",
+            "alternatives": [
+              "diff 와 컨텍스트를 한 번에 보내고 지적을 받기 — *\"We tried that. It works, sort of\"*"
+            ],
+            "tradeoff": "버린 이유를 셋 댄다 — *\"The model finds real bugs, but it also **makes things up**, **contradicts itself between runs**, and produces **wildly different findings**.\"* **셋 중 둘이 일관성 문제다**(이 관찰은 이 사이트의 것이다). 얻는 것은 *\"more thorough than a single pass and more consistent across runs\"* 이고 **대가는 계산량이다** — *\"It costs more compute\"*, 리뷰당 **약 $0.40**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "저장소를 내려받을 것인가?",
+            "chosen": "**아니다 — 로컬 체크아웃을 하지 않는다.** 의도적 제약이다",
+            "alternatives": [
+              "리뷰마다 저장소를 클론해 파일을 직접 읽기"
+            ],
+            "tradeoff": "**대신 심볼 색인과 diff 만으로 어디를 읽을지 정해야 한다**(이 정리는 이 사이트의 것이다) — 그래서 두 단계 파일 선별기가 필요해진다. ⚠️ **클론을 피한 이유가 속도인지 보안인지 규모인지는 글에 없다**(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "볼 파일을 어떻게 고를 것인가?",
+            "chosen": "**두 단계로 고른다.** 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*",
+            "alternatives": [
+              "diff 에 든 파일만 보기",
+              "모델에게 어떤 파일이 필요한지 묻기"
+            ],
+            "tradeoff": "**색인을 미리 만들어 두므로 리뷰마다 저장소를 다시 파싱하지 않아도 된다**(이 정리는 이 사이트의 것이다). **대가는 색인을 최신으로 유지해야 한다는 것**이고, ⚠️ **언제 다시 만드는지는 글에 없다**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "모델이 지어낸 지적을 어떻게 막을 것인가?",
+            "chosen": "**검증기를 마지막에 둔다.** *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"*",
+            "alternatives": [
+              "프롬프트로 지어내지 말라고 지시하기",
+              "모델을 더 좋은 것으로 바꾸기"
+            ],
+            "tradeoff": "**모델을 고치는 대신 출력이 입력에 근거하는지만 본다**(이 표현은 이 사이트의 것이다) — 규칙이 단순해서 모델이 바뀌어도 그대로 쓸 수 있다. ⚠️ **대신 맞는 지적인데 이름을 살짝 다르게 쓴 경우도 함께 걸릴 수 있고**, 그 이야기는 글에 없다.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "품질을 무엇으로 잴 것인가?",
+            "chosen": "**사람이 남긴 반응으로 골든셋을 만든다.** *\"We formed a ground truth dataset from real engineer feedback\"* — Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈",
+            "alternatives": [
+              "사람이 라벨을 따로 붙이기",
+              "모델로 채점하기"
+            ],
+            "tradeoff": "**회사가 그 자의 범위를 스스로 밝힌다** — 오탐 0% 는 *\"the held-out golden dataset, not on live traffic\"* 이다. **드문 정직함이다**(이 평가는 이 사이트의 것이다). **다만 골든셋이 사람 반응에서 왔으므로 거기서의 0% 는 '사람이 싫다고 표시한 종류를 안 낸다' 에 가깝고**, 라이브에서 처음 보는 종류의 오탐은 이 자로 안 잡힌다(이 지적도 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "저장소마다 다르게 동작할 것인가?",
+            "chosen": "**`.codepal.yaml` 로 경로별 지시와 팀별 조정을 둔다**",
+            "alternatives": [
+              "모든 저장소에 같은 규칙을 적용하기"
+            ],
+            "tradeoff": "회사가 그 필요를 적는다 — *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more.\"* **대가는 설정 파일이 늘어나고 그것을 팀이 관리해야 한다는 것**이다(이 지적은 이 사이트의 것이다). ⚠️ **무엇을 설정할 수 있는지 예시가 글에 없다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "question": "사람 리뷰를 없앨 것인가?",
+            "chosen": "**아니다 — 자리를 옮긴다.** *\"AI review doesn't yet replace human review, it reshapes it\"*",
+            "alternatives": [
+              "확신이 높은 PR 은 자동 승인하기"
+            ],
+            "tradeoff": "**PR 의 90% 가 리뷰되고 중앙값 10분에 답이 나오지만 승인은 여전히 사람이 한다.** **얻는 것은 사람이 보기 전에 기계가 먼저 걸러 준다는 것**이고, **대가는 자동화가 여기서 멈춘다는 것**이다(이 정리는 이 사이트의 것이다) — **다만 같은 연작의 Casper 가 그 앞 칸(PR 을 여는 일)을 이미 가져갔다.**",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              },
+              {
+                "title": "Casper: Snap's fleet of friendly AI teammates",
+                "url": "https://eng.snap.com/casper",
+                "publisher": "Snap Engineering",
+                "date": "2026-07-28",
+                "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ],
+        "stack": [
+          {
+            "tech": "Tree-sitter",
+            "role": "저장소를 파싱해 심볼에서 파일로 가는 색인을 만든다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "tech": "GitHub Enterprise API · Git tree diff",
+            "role": "PR 과 변경 내용을 가져온다 — 저장소를 클론하지 않는다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "tech": "다중 패스 리뷰 루프",
+            "role": "한 번의 모델 호출보다 철저하고 실행 간 일관성이 높다. 대가는 계산량",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "tech": "검증기 (verifier)",
+            "role": "내보내기 전에 인용된 심볼이 컨텍스트에 있는지 확인해 환각을 거른다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "tech": ".codepal.yaml",
+            "role": "저장소별 경로 지시와 팀별 조정",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "tech": "⚠️ 모델",
+            "role": "밝히지 않는다 — the model · frontier models 로만 부른다. 같은 연작의 Casper 는 Claude Code 와 Codex 를 언급한다",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              },
+              {
+                "title": "Casper: Snap's fleet of friendly AI teammates",
+                "url": "https://eng.snap.com/casper",
+                "publisher": "Snap Engineering",
+                "date": "2026-07-28",
+                "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
+              }
+            ]
+          }
+        ]
+      },
+      "research": {
+        "hard_problems": [
+          {
+            "problem": "모델이 없는 것을 지어내고 물을 때마다 다르게 답한다",
+            "why_hard": "단일 패스를 실제로 해 보고 적는다 — *\"The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* **셋 중 둘이 정확도가 아니라 일관성 문제이고**, 리뷰는 매번 같은 기준으로 보여야 신뢰가 생긴다(이 정리는 이 사이트의 것이다).",
+            "current_best": "**여러 번 돌려 일관성을 얻고, 마지막에 검증기로 지어낸 것을 거른다** — *\"checks that every symbol cited in a finding is actually present in the provided context.\"* 대가는 *\"It costs more compute\"* 와 리뷰당 **약 $0.40**.",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          },
+          {
+            "problem": "AI 리뷰가 좋은지 무엇으로 아는가",
+            "why_hard": "**틀린 지적을 자주 내면 아무도 안 읽게 된다**(이 정리는 이 사이트의 것이다). 그런데 '맞는 지적' 의 정답을 어디서 구할지가 문제다.",
+            "current_best": "**사람이 남긴 반응을 정답으로 삼는다** — 좋아요·싫어요·병합된 발견·고쳐진 이슈. **그리고 그 자의 범위를 밝힌다** — 오탐 0% 는 *\"the held-out golden dataset, not on live traffic\"*. ⚠️ **라이브에서 처음 보는 종류의 오탐은 이 자로 안 잡힌다**(이 지적은 이 사이트의 것이다).",
+            "confidence": "confirmed",
+            "sources": [
+              {
+                "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+                "url": "https://eng.snap.com/codepal",
+                "publisher": "Snap Engineering",
+                "date": "2026-06-05",
+                "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+              }
+            ]
+          }
+        ]
+      },
+      "diagrams": [
+        {
+          "title": "PR 하나가 지적을 받기까지",
+          "question": "저장소를 안 받고 어떻게 볼 곳을 정하는가?",
+          "kind": "flow",
+          "code": "flowchart TD\n  IDX[\"미리 만들어 둔 심볼 목록<br/>저장소를 파싱해서\"]:::list\n  PR[\"PR 이 열린다<br/>사람이 열거나 에이전트가 연다\"]:::list\n  PICK[\"<b>볼 곳을 좁힌다</b><br/>• 바뀐 부분의 이름을 뽑는다<br/>• 목록에서 찾아 겹치는 파일에 점수<br/>• 저장소는 내려받지 않는다\"]:::accent\n  LOOP[\"여러 번 돌며 지적을 만든다\"]:::list\n  VER[\"인용한 이름이 실제로 있는지 확인\"]:::list\n  POST[\"PR 에 남긴다 — 중앙값 십 분\"]:::list\n  HUMAN[\"사람이 승인한다 — 없어지지 않았다\"]:::list\n  FB[\"좋아요와 싫어요가 정답으로 쌓인다\"]:::list\n  X1[\"벤더 도구<br/>버렸다 — 통합 깊이와 속도\"]:::quiet\n  X2[\"한 번만 묻기<br/>해 보고 버렸다 — 지어내고 매번 달라진다\"]:::quiet\n  IDX --> PICK\n  PR --> PICK --> LOOP --> VER --> POST --> HUMAN\n  POST --> FB\n  PICK -.-> X1\n  LOOP -.-> X2"
+        },
+        {
+          "title": "지적 하나가 지나는 자리",
+          "question": "무엇이 사람 눈앞까지 오는가?",
+          "kind": "state",
+          "code": "stateDiagram-v2\n  [*] --> 후보\n  후보 : <b>모델이 낸 지적</b><br/>여러 번 돌린 결과가 모인다\n  후보 --> 검증 : 내보내기 전\n  검증 : <b>인용한 이름을 확인한다</b><br/>주어진 코드에 실제로 있는가\n  검증 --> 폐기 : 없는 이름을 인용했다\n  폐기 : <b>지어낸 것이다</b><br/>여기서 멈춘다\n  검증 --> 게시 : 근거가 있다\n  게시 : <b>PR 에 달린다</b><br/>중앙값 십 분 · 사람 첫 리뷰는 약 다섯 시간\n  게시 --> 좋아요 : 도움이 됐다\n  게시 --> 싫어요 : 틀렸거나 시끄럽다\n  좋아요 : <b>정답으로 쌓인다</b><br/>고쳐지거나 병합되면 더 확실한 정답이 된다\n  싫어요 : <b>반례로 쌓인다</b><br/>다음 평가의 기준이 된다\n  좋아요 --> [*]\n  싫어요 --> [*]\n  폐기 --> [*]"
+        },
+        {
+          "title": "이 자가 못 재는 것",
+          "question": "오탐 영 퍼센트는 어디까지의 이야기인가?",
+          "kind": "failure",
+          "code": "flowchart TD\n  A[\"정답을 사람 반응에서 모은다\"]:::list\n  B[\"<b>사람이 싫다고 표시한 종류만 안 낸다는 뜻에 가깝다</b><br/>처음 보는 종류의 오탐은 이 자로 안 잡힌다\"]:::accent\n  C[\"회사가 범위를 밝힌다\"]:::list\n  D[\"골든셋 기준이고 라이브가 아니다 — 드문 정직함이다\"]:::list\n  E[\"인용한 이름으로 환각을 거른다\"]:::list\n  F[\"맞는 지적인데 이름을 다르게 쓴 경우도 걸릴 수 있다\"]:::list\n  G[\"색인을 미리 만들어 둔다\"]:::list\n  H[\"언제 다시 만드는지 글에 없다\"]:::list\n  I[\"모델을 밝히지 않는다\"]:::list\n  J[\"바꿨을 때 지표가 어떻게 되는지 알 수 없다\"]:::list\n  N[\"<i>범위를 밝힌 것만 회사가 적었다 — 나머지는 이 사이트의 지적</i>\"]:::quiet\n  A --> B\n  C --> D\n  E --> F\n  G --> H\n  I --> J\n  B --- N"
+        }
+      ],
+      "sources": [
+        {
+          "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+          "url": "https://eng.snap.com/codepal",
+          "publisher": "Snap Engineering",
+          "date": "2026-06-05",
+          "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.** **267 에서 원문을 다시 읽어 여섯을 더 찾았다.** ① **🔴 오탐 0% 는 라이브가 아니다** — 회사가 그 범위를 밝힌다: *\"the held-out golden dataset, not on live traffic\"*. **265 요약에는 이 단서가 없었다.** ② **단일 패스를 실제로 해 보고 버렸다** — *\"The naive way to generate an AI code review is to send the diff and context to a model and ask it for findings. We tried that. It works, sort of. The model finds real bugs, but it also makes things up, contradicts itself between runs, and produces wildly different findings.\"* 다중 패스는 *\"reviews that are more thorough than a single pass and more consistent across runs than any single model call could be\"* 를 낸다. ③ **두 단계 파일 선별기의 각 단계** — 1단계는 *\"parses the repository with tree-sitter to build a symbol-to-file index\"*, 2단계는 *\"analyzes the diff, extracts referenced symbols, looks them up in the index, and scores files by symbol overlap\"*. ④ **검증기가 무엇을 거르는지** — *\"performs a final integrity check on each finding before it's posted\"* 이고 *\"checks that every symbol cited in a finding is actually present in the provided context\"* 라 **모델이 지어낸 심볼을 잡는다**. ⑤ **골든셋은 사람 피드백에서 만들었다** — *\"We formed a ground truth dataset from real engineer feedback\"*(Finding Lifecycle 의 좋아요·싫어요, 병합된 발견, 고쳐진 이슈). ⑥ **저장소를 클론하지 않는다**(의도적 제약)이고 **`.codepal.yaml` 은 경로별 지시와 팀별 조정을 담는다**(⚠️ 예시는 없다). ⚠️ **모델을 끝내 명시하지 않는다** — *\"the model\"* 과 *\"frontier models\"* 로만 부른다."
+        },
+        {
+          "title": "Casper: Snap's fleet of friendly AI teammates",
+          "url": "https://eng.snap.com/casper",
+          "publisher": "Snap Engineering",
+          "date": "2026-07-28",
+          "summary": "**작업을 받아 PR 까지 스스로 여는 에이전트 부대.** 첫 문장이 연작을 밝힌다 — *\"This is Part 3 of a three-part series on how Snap is building AI-assisted software development workflows. Part 1 introduced **CodePal**, our AI code reviewer. Part 2 covered **Code Search**.\"* 문제는 **엔지니어의 주의력**이다 — 깨진 테스트를 고치거나 의존성을 올리는 일도 *\"consume valuable cognitive bandwidth\"* 이고 *\"context-switching, environment setup, and review cycles\"* 를 요구한다. **흐름** — 격리된 샌드박스에서 뜨고 → Slack·Jira·문서에서 맥락을 모으고 → 계획하고 고치고 → 테스트·빌드·린터를 돌리고 → 실패하면 다시 하고 → *\"Produce a PR that is wired into existing workflows\"* → **CodePal 을 불러 자동 리뷰를 받고** → 사람 리뷰로 넘긴다. **🔴 두 시스템이 실제로 이어진다** — *\"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated review before the PR is presented for human review, closing the loop between writing and reviewing.\"* **버린 대안** — *\"We evaluated if we should build or buy a coding agent and ultimately decided that vendor solutions solved some, but not all of the things we needed\"* 이고 부족했던 것이 다섯이다: 내부 서비스 전반과의 상호운용성 · 내부 도구와의 긴밀한 통합 · 에이전트의 신원·보안·신뢰성에 대한 *\"full control\"* · **모델 비종속** · 제품 UX 통제. **수치는 둘뿐** — *\"thousands of mergeable PRs each week\"* 와 지난 분기 GA 이후 *\"hundreds of custom Casper agents\"*. 스택 — **Claude Code · Codex · MCP Gateway · Jira · Slack · CodePal · Code Search**. **⚠️ 대가를 하나도 적지 않는다** — 실패도 한계도 없이 이점만 적는다(이 관찰은 이 사이트의 것이다)."
+        }
+      ]
+    }
+  ]
 }

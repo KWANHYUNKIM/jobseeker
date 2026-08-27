@@ -8,102 +8,83 @@
 
 ## 지금 파는 중
 
-**Snap (US · 소셜/카메라·AR) — 48번째. 회사 프로파일 완료. 도메인 2개 · 기능 0개. 큐 잔량 0/3.**
+**Snap (US · 소셜/카메라·AR) — 48번째. 도메인 2개 · 기능 1개. 큐 잔량 0/3.**
 
-**⚠️ 블로그 8페이지 중 1쪽만 보고 도메인을 열었다.** `?page=2` 는 **1쪽과 같은 것**을 돌려주고
-`/blog/2` 는 **404** 다 — **페이지네이션이 JS 로 도는 것으로 보인다.** 브라우저 `get_page_text` 로
-다시 시도해 볼 여지가 있다.
+**267 에서 도메인 ①`사람보다 코드가 빨리 늘어난다` 에 기능 하나를 썼다** —
+`code-review-agent`(사람보다 먼저 읽는다), **결정 8개** 전부 대가가 붙었다.
 
-**1쪽 여섯 편이 두 묶음으로 갈린다.**
-- **AI 개발 도구 넷** — CodePal(2026-06-05) · Casper(2026-07-28) · Code Search(2026-07-01) ·
-  SPECS 경험 제작(2026-08-20). **⭐ CodePal 과 Casper 는 회사가 명시적으로 3부작으로 묶었다** —
-  *"how Snap is building toward end-to-end autonomous software delivery"*.
-- **Specs/AR 둘** — GNSS 실외 추적(2026-07-10) · LLM 공간 지능 측정(2026-06-17).
+### 🔴 267 의 발견 — 이 회사는 글끼리 명시적으로 잇는다
 
-**🔴 1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.**
-**2쪽 이후에 있는지 확인하지 못했다** — 없다면 **이 회사의 기술블로그는 제품 시스템을 안 말하는
-곳**이라는 뜻이 되는데, **아직 그렇게 판단하기엔 이르다.**
+**이 사이트가 여러 회사에서 관찰해 온 것과 정반대다.** Casper 의 첫 문장이
+*"This is Part 3 of a three-part series… Part 1 introduced CodePal, our AI code reviewer.
+Part 2 covered Code Search."* 이고, **시스템도 실제로 이어진다** —
+*"Once a task lands as a PR, Casper hands it straight to CodePal (Part 1) for automated
+review before the PR is presented for human review, closing the loop between writing and
+reviewing."* **CyberAgent · Wayfair · 컬리는 같은 문제를 다루는 글끼리도 서로를 언급하지
+않았다.** 회사 파일 `open_questions` 맨 앞에 적어 두었다.
 
-**🔴 도메인 ②(Specs/AR)는 본문을 한 편도 안 읽고 열었다** — 제목과 **2026-06-16 SPECS 출시 사실**로
-열었고, 그 `tech` 항목 둘을 `confidence: unknown` 으로 두고 *"제목만 근거로 한다"* 고 밝혔다.
-**기능을 쓰기 전에 두 편 이상 읽는다.**
+### 🔴 CodePal 재독이 열세 번째로 옳았다 — 여섯을 더 찾았다
 
-**⚠️ 사업 수치를 절반만 찾았다.** IR 홈에서 **MAU 971백만 · 총매출 전년 대비 19% 성장 · 미국
-Spotlight 게시자 115% 증가 · 기타 매출 85% 성장**(*"Snap Inc. internal data Q2 2026"*)을 받았지만
-**매출 실액도 DAU 도 Snapchat+ 구독자 수도 없다.** `financials/quarterly-results/` 는 WebFetch 로
-껍데기만 오고, **보도자료 상세 URL 을 브라우저로 두 번 추측해 들어갔지만 404** 였다(운영 사실대로
-두 번에서 접었다). **목록에 2026-08-03 자 `Snap Inc. Announces Second Quarter 2026 Financial Results`
-가 있으니 다음에 보도자료 목록에서 링크를 눌러 들어간다.** **⭐ 대신 얻은 것** — **2026-06-16 에
-SPECS 증강현실 안경을 출시했다**는 사실(*"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make
-Computing More Human"*). **그게 블로그 절반의 배경이다.**
+1. **오탐 0% 는 라이브가 아니다** — 회사가 스스로 범위를 밝힌다: *"the held-out golden
+   dataset, not on live traffic."* **265 요약에는 이 단서가 없었다.**
+2. **단일 패스를 실제로 해 보고 버렸다** — *"We tried that. It works, sort of. The model
+   finds real bugs, but it also makes things up, contradicts itself between runs, and
+   produces wildly different findings."* **셋 중 둘이 일관성 문제다.**
+3. **두 단계 파일 선별기의 각 단계** — 1단계 *"parses the repository with tree-sitter to
+   build a symbol-to-file index"*, 2단계 *"scores files by symbol overlap"*.
+4. **검증기가 무엇을 거르는지** — *"checks that every symbol cited in a finding is actually
+   present in the provided context"* (지어낸 심볼을 잡는다).
+5. **골든셋을 사람 피드백에서 만들었다** — Finding Lifecycle(좋아요·싫어요·병합·수정).
+6. **저장소를 클론하지 않는다**(의도적 제약). `.codepal.yaml` 은 경로별 지시·팀별 조정
+   (⚠️ 예시 없음). ⚠️ **모델을 끝내 명시하지 않는다** — *"the model"* · *"frontier models"*.
 
-**🚨 다음 사이클 — `--gaps` 가 [진행 중 확장]을 가리킬 것이다. 도메인 하나의 기능을 쓴다.**
-- **도메인 ①(AI 개발 도구)이 더 준비돼 있다** — CodePal 본문을 읽었고 **버린 대안 둘 · 대가 다섯 ·
-  수치 여덟**이 확보돼 있다. **두 번째 글로 `/casper`(2026-07-28)를 연다** — 같은 3부작이다.
-  **⚠️ CodePal 원문도 다시 읽는다**(운영 사실 ⑫ — **열두 번 다** 새 결정을 찾았다). **특히 볼 것**:
-  **두 단계 파일 선별기의 근거** · **다중 패스 리뷰 루프를 고른 이유**(단일 패스와 비교했는가) ·
-  **검증기 구조** · **골든셋을 어떻게 만들었는지**(오탐 0% 의 근거).
-- **도메인 ②를 쓰려면 GNSS 와 공간 지능 본문을 둘 다 읽어야 한다.**
-- **⭐ 비교 축이 이미 서 있다** — **LinkedIn `ai-code-review` 와 같은 결정을 다른 이유로 했다.**
-  LinkedIn 은 *"벤더의 모델을 카나리로 돌릴 수 없고 두 번째 리뷰어로 페일오버할 수도 없다"*, Snap 은
-  **통합 깊이와 속도**. **재는 방식도 다르다** — LinkedIn 은 **채택률 63.9%**(병합된 코드와 대조),
-  Snap 은 **골든셋 오탐 0% 와 재현율 30%→80%**. **기능의 `connections` 나 thinking 에 쓴다.**
+### ⚠️ Casper 는 대가를 한 줄도 안 적는다
 
-**⚠️ 큐가 0 이다 — Snap 을 완주하면 곧바로 후보 조사다.**
+같은 연작인데 **CodePal 은 대가를 다섯 줄 적고 오탐 0% 의 범위까지 밝히는데, Casper 는
+실패도 한계도 없이 이점만 적고 수치도 둘뿐**이다(*"thousands of mergeable PRs each week"* ·
+*"hundreds of custom Casper agents"*). 버린 대안은 있다 — 벤더 코딩 에이전트를 다섯 이유로
+거절(상호운용성·통합·에이전트 신원/보안/신뢰성 통제·**모델 비종속**·제품 UX 통제).
+도메인 `tech` 에 넣었고, `open_questions` 에도 적었다.
 
-**📌 Grab 보강 후보(265 에서 발견).** 이미 `done` 인데 `engineering.grab.com` 최신이 **2026-08-21** 이고
-새 글이 많다: **Palana 2부작**(AI 에이전트의 격리·신원·감사, 2026-06-19/21) · **Agent platform (Part 1)**
-(2026-07-24) · **Apache Iceberg 데이터 레이크 이전**(2026-07-10) · **Counter Service 저장소 이전**
-(2026-07-03). **이 사이트의 Grab 기능이 `counter-service`·`iceberg-lake`·`dispatchgym` 인데 앞의 둘에
-후속 글이 나온 셈이다.** **2부작이 있어 파기 좋다**(262).
+### 이 회사에서 남은 것
 
-**아직 안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) · GoTo/Tokopedia · Traveloka · Plaid ·
-Adevinta · Skyscanner · Carousell · VNG. **자체 도메인을 가진 곳을 더 찾아본다**(Medium 은 막혔다).
-**📌 238 의 기준(유효)** — 자체 서비스를 굴리는 회사부터. 인프라·개발자 제품은 뒤로.
-**📌 262 의 발견** — **2부작·연작 글이 있는 블로그가 파기 좋다.**
-**📌 246·253·265 가 확인한 것** — **403 · DNS 없음 · JS 렌더링 · 리다이렉트 미로가 절반을 넘는다.**
-그래도 **여덟에 하나는 나온다.**
+- **도메인 ②`얼굴 앞에 컴퓨터를 놓는다`(SPECS/AR) 는 여전히 본문을 한 편도 안 읽었다** —
+  `tech` 항목 둘이 `confidence: unknown` 이고 "제목만 근거로 한다" 고 밝혀 두었다.
+  **기능을 쓰려면 두 편 이상 읽는다**(스물세 번 확인된 규칙).
+- **⚠️ 3부작의 Part 2 `Code Search` 를 아직 안 읽었다.** 도메인 ① 의 두 번째 기능 재료가
+  될 수 있다.
+- **⚠️ 블로그 8쪽 중 1쪽만 봤다** — `?page=2` 는 1쪽과 같고 `/blog/2` 는 404(JS
+  페이지네이션). 브라우저로 시도해 볼 여지가 있다.
+- **⚠️ 매출 실액·DAU 를 못 찾았다.** IR 홈에 MAU **971백만** · 총매출 **19% 성장**(Q2 2026)
+  만 있다. **다음엔 IR 보도자료 목록에서 링크를 눌러 들어간다** — URL 추측은 두 번 404 였다
+  (운영 사실 ⑰).
 
-**⚠️ 한국 편중 — 아홉이다**(NAVER · Kakao · Toss · 당근 · 배민 · 쿠팡 · 무신사 · 하이퍼커넥트 · 컬리).
+### ⭐ 비교 축을 기능 안에 넣어 두었다
 
-**비어 있는 자리** — 라틴아메리카 0(접었다 · 재시도 금지) · **게임 1(Roblox — Cygames 를 접어 실마리
-없음)** · 아프리카 1(Moniepoint) · 인도 1(Zerodha) · 여행 1(trivago). **동남아는 Grab 이 있다.**
+**LinkedIn `ai-code-review` 와 같은 결정을 다른 이유로 했다** — LinkedIn 은 *"벤더의 모델을
+카나리로 돌릴 수 없고 두 번째 리뷰어로 페일오버할 수도 없다"*, Snap 은 **통합 깊이와 속도**.
+**재는 자도 다르다** — LinkedIn 은 **병합된 코드와 대조한 채택률 63.9%**, Snap 은 **골든셋
+오탐 0% + 재현율 30%→80%**. `connections` 는 같은 회사 안에서만 걸리므로 `business.why` 에
+이 사이트의 정리로 적었다.
 
-**`hold_reason` 두 곳** — LinkedIn `랭킹 모델을 얼마나 빨리 다시 만들 수 있는가` ·
-kakao `동기화·다중 기기`.
+### 다음 사이클
 
-**📌 비교 문서 재료(27편 있음 — 큐가 안 차면 이걸 쓴다)**
-- **`관측에 값을 무엇으로 치르는가`(새 축, 여덟)** — CyberAgent 둘(돈 · 주의력) · 컬리 셋(임계로 ·
-  토픽으로 · 막되 안 내리는 것으로) · Yelp `partition-access` · Zerodha `log-storage` ·
-  Doximity `prod-profiling`.
-- **`기한을 무엇으로 정하는가`(새 축, 여섯)** — 컬리 셋(업무 데드라인 / 예측 가능성 / 근거 없음) +
-  Moniepoint 신선도 창 + Doximity 나이·양 임계 + PlanetScale 12시간 WAL.
-- **`기계가 그렇다는데`(machine-says-so) 보강** — 그 문서는 LinkedIn 의 두 시스템이 **정반대 답**
-  (보내기 전에 거르기 vs 다 보내고 사후에 재기)을 쓴다는 것이 축인데, **Snap `codepal` 이 세 번째
-  답을 준다** — **골든셋으로 오탐을 0% 로 만들고 재현율을 올린다.** **기능을 쓰면 바로 붙는다.**
-- **`되돌릴 수 있는 것을 먼저 한다` 보강** — CyberAgent `env-split-migration` 은 **반례**, 하이퍼커넥트
-  **한 회사가 세 가지를 다 준다**.
-- **`무엇을 좋다고 부를 것인가` · `재 보고 나서` 보강** — 둘 다 *"잘못 고른 사례가 없다"* 로 끝나는데
-  **하이퍼커넥트 `objective-relaxation` 이 반례다.**
+**큐가 0 이다.** Snap 을 완주하면 곧바로 후보 조사이고, **한국 밖에서** 찾는다(한국 회사가
+아홉이다). **📌 Grab 보강 후보** — 이미 `done` 이지만 `engineering.grab.com` 에 2026 새 글이
+있다: **Palana 2부작**(06-19/21) · Agent platform Part 1(07-24) · **Iceberg(07-10)** ·
+**Counter Service 저장소 이전(07-03)** — 뒤 둘은 이 사이트의 기존 `iceberg-lake` ·
+`counter-service` 기능의 후속이다. **안 열어 본 후보(한국 밖)** — Sea/Shopee(다른 주소?) ·
+GoTo/Tokopedia · Traveloka · Plaid · Adevinta · Skyscanner · Carousell · VNG.
 
-**운영 사실**
-① `hold_reason` 은 도메인 레벨에서 경고를 거른다(`validate.py:312`).
-② 회사 파일의 `updated_at` 을 고치면 `index.json` 도 함께 고친다(235 에서 ✗).
-③ `validate.py` 는 비교 문서를 안 본다 — 직접 검산한다.
-④ **회사를 새로 열 때는 중복 검사부터** — `python3 -c "import json;print(sorted(e['name_en'] for e in json.load(open('jd-viewer/public/reveng/index.json'))['companies']))"`
-⑤ **태그·카테고리·페이지 수를 새 재료의 양으로 읽지 않는다**(244).
-⑥ **QUEUE.md 를 스크립트로 고칠 때 `## 완료` 를 문자열로 찾으면 상단 설명문의 백틱 안에 걸린다**(245) — `\n## 완료\n` 처럼 줄 경계로 찾는다.
-⑦ **완료 섹션은 표가 아니라 불릿이다** — 진행 중·대기·보류만 표다.
-⑧ **대기 표는 5칸**, **진행 중 표는 3칸**.
-⑨ **`index.json` 의 회사 엔트리는 `domain` 키를 쓴다**(247).
-⑩ **새 카테고리는 `validate.py` 의 CATEGORIES 와 `schema.json` 양쪽에 넣는다**.
-⑪ **mermaid 라벨에 수식 기호(=, ×, ÷, 위첨자, $)를 넣지 않는다** — 말로 푼다(248).
-⑫ **요약이 아니라 원문을 다시 읽는다** — **열두 번 다** 새 결정을 찾았다. **"얕다"·"재료가 없다" 는 판단이 재독 앞에서 두 번(258·264) 다 틀렸다.**
-⑬ **JS 로 그려지는 목록·페이지네이션은 WebFetch 로 안 나올 수 있다**(253·266). **두 번 실패하면 접거나 브라우저로 옮긴다.**
-⑭ **`--gaps` 가 프롬프트의 지시와 다른 도메인을 가리키면 `--gaps` 를 따른다**(255).
-⑮ **2부작·연작 글은 도메인을 열기에 좋다**(262).
-⑯ **리다이렉트를 두 번 따라가도 목적지가 아니면 접는다**(265, Atlassian).
-⑰ **IR 상세 URL 을 추측하지 말고 목록에서 링크를 눌러 들어간다**(266 에서 두 번 404 였다).
+**빈 자리** — 라틴아메리카 0(접었다·재시도 금지) · **게임 1**(Roblox — Cygames 접어 실마리
+없음) · 아프리카 1 · 인도 1 · 여행 1. 동남아는 Grab.
+**`hold_reason` 두 곳** — LinkedIn `랭킹 모델을…`, kakao `동기화·다중 기기`.
+
+**비교 문서 재료(4~5축)** — `관측에 값을 무엇으로 치르는가`(여덟) · `기한을 무엇으로
+정하는가`(여섯) · **`기계가 그렇다는데` 보강**(Snap `code-review-agent` 가 세 번째 답이고,
+**골든셋 오탐 0% 의 범위를 회사가 스스로 밝힌 것**이 이 축의 새 재료다) ·
+`되돌릴 수 있는 것을 먼저 한다` 보강 · `무엇을 좋다고 부를 것인가`/`재 보고 나서`
+보강(하이퍼커넥트 반례).
 
 ## 다음 선택지
 
