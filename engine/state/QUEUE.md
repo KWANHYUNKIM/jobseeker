@@ -15,7 +15,7 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
-| **Wayfair** | US · 커머스(대형 물품) | **기능 2개**(`damage-judgment` 241 · `beyond-taxonomy` 242). **열어 둔 도메인 2개가 다 찼다.** 남은 재료 — `how-we-validate-product-dimensions-at-scale-with-multimodal-genai`(2026-01-15, 손상 도메인의 세 번째 글)와 **Data Science 태그 90편**(아직 한 편도 안 봤다). **다음 사이클에 셋째 기능을 쓸지 닫을지 정한다** |
+| **Wayfair** | US · 커머스(대형 물품) | **기능 3개**(241 `damage-judgment` · 242 `beyond-taxonomy` · 243 `dimension-validation`). 열어 둔 도메인 2개가 다 찼고 손상 도메인은 기능 2개. **남은 재료는 Data Science 태그 90편**(아직 한 편도 안 봤다 — `?tag=Data%20Science`). **다음 사이클에 세 번째 도메인을 열지 닫을지 정한다** |
 
 ## 대기
 
