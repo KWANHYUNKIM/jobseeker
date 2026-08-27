@@ -8,52 +8,51 @@
 
 ## 지금 파는 중
 
-**(회사는 없다. 사이클 238 은 후보 조사였다 — 다섯 곳을 열어 0곳.)**
+**(회사는 없다. 사이클 239 는 후보 조사였고 — **Wayfair 한 곳을 넣었다.** 큐 0 → 1.)**
 
-**🔴 237 이 적은 *"후보 조사(막힘)"* 는 과한 표현이었다. 이번 사이클에 바로잡는다.**
-230 에서 여덟 곳, 238 에서 다섯 곳 — **모두 열세 곳을 두드렸을 뿐이고 아직 안 열어 본 후보가
-스무 곳 가까이 남아 있다.** '막혔다' 가 아니라 **'아직 못 찾았다'** 가 맞다.
+**238 의 관찰을 적용한 것이 통했다** — 개발자 대상 제품 회사를 뒤로 미루고 **자체 서비스를
+굴리는 회사부터** 보니 첫 시도에서 나왔다. **연속 0곳은 238 한 번으로 끊겼다.**
 
-**238 에서 열어 본 다섯 곳 — 하나도 못 넣었다.**
-- `engineering.dena.com/en/` ❌ **영문 블로그가 2020-12 에서 멈췄다**(마지막 글 *"Looking Back
-  DeNA Engineers' Blog"*). 일본어 쪽은 확인하지 않았다.
-- `www.honeycomb.io/blog` ⚠️ 살아 있지만(최신 **2026-08-26**) **제품 마케팅**이다 —
-  *"7 Best Datadog Alternatives"* 같은 글이 최상단이고 AI 카테고리가 15편 넘는다.
-- `www.fastly.com/blog` ⚠️ 살아 있지만(최신 **2026-08-26**) **마케팅·사례 위주**다. 인턴십
-  소개와 제품 기능 글이 앞에 온다.
-- `techlife.cookpad.com` ⚠️ **살아 있고 기술 블로그가 맞지만 얇다**(최신 **2026-05-12**).
-  홈에 보이는 세 편이 *iOS Liquid Glass 대응 · RubyKaigi 부스 소개 · RuboCop 캐시* 라
-  **두 편 이상 묶이는 주제가 안 보인다.** 전부 일본어. **아래 '확인해 둔 후보' 에 남긴다.**
-- **한국 게임사(Krafton · Nexon · NCSOFT)** ❌ **엔지니어링 블로그를 못 찾았다.** 검색 결과가
-  전부 사업·AI 제휴 뉴스다. **게임 자리가 Roblox 하나뿐인 채로 남는다.**
+**239 에서 열어 본 곳**
+- **Wayfair** ✅ **대기에 넣었다.** `aboutwayfair.com/careers/tech-blog` — 최신 **2026-07-17**,
+  태그 편수 **Data Science 90 · ML/AI 68 · Computer Vision 10**. 읽은 글은 **창고 컨베이어에서
+  포장 손상을 카메라로 탐지**하는 것(Tarragon). ⚠️ **버린 대안은 없지만 대가가 여섯 줄** 적혀
+  있다 — 특히 **"사람 주석자들이 이미지 수준 손상/무손상 라벨의 16% 에서 의견이 갈렸다"**
+  와 *"클라우드 추론은 로컬 대비 약 250ms 지연을 더한다"*(SLA **1초**).
+  **자리 구분**: Target 은 매장이 배송 거점, 쿠팡은 자체 물류센터인데 **여기는 소프트웨어가
+  물리 세계를 판정한다**(이 구분은 이 사이트의 것).
+- **CyberAgent** ⚠️ **확인해 둔 후보로 남겼다.** 블로그는 활발한데(최신 **2026-08-26**,
+  Engineers 138 · **ABEMA 125**) **연 글이 얇았다** — Bucketeer A/B 테스트 글에 버린 대안이
+  없고 대가가 한 줄뿐이다. **다음에는 `ABEMA` 태그를 본다** — 일본의 실시간 스트리밍이라
+  넷플릭스·유튜브와 자리가 다를 수 있다.
+- **Reddit** ❌ `www.reddit.com` 은 **Claude Code 가 아예 못 가져온다**(도메인 차단).
+  다른 경로(`redditinc.com` 등)가 있는지는 확인하지 않았다.
 
-**📌 이번 사이클에서 굳어진 관찰** — **큰 인프라 회사의 '블로그' 는 대개 마케팅이다.**
-Honeycomb · Fastly · Temporal(230) 셋이 같은 모양이었다. **관측·엣지·워크플로 같은 개발자
-대상 제품 회사는 블로그가 곧 영업 채널**이라 의사결정과 대가가 안 적힌다(이 정리는 이 사이트의
-것이다). **다음 후보 조사에서는 이 부류를 뒤로 미루고 자체 서비스를 굴리는 회사를 먼저 본다.**
+**🚨 다음 사이클 — `--gaps` 는 [신규]를 가리킬 것이다. `## 대기` 맨 위 Wayfair 를 연다**
+(44번째 회사). PROMPT.md 3단계(회사 프로파일)까지 파고 기능은 그다음이다.
+**⚠️ 회사를 열기 전에 반드시 중복 검사부터**(226 에서 Grab 파일을 덮어썼다).
+**⚠️ 도메인 수를 정하기 전에 글이 몇 편인지 먼저 센다** — 태그 편수가 나오니 그것을 쓰되
+**목록을 실제로 열어 두 편 이상 묶이는 주제를 확인한다.** 큐가 1/3 이라 **Wayfair 를 완주한 뒤
+후보 조사를 한 번 더 끼운다.**
 
-**아직 한 번도 안 열어 본 후보(다음 사이클이 이어받는다)**
-- **일본**: SmartNews · PayPay · CyberAgent(`developers.cyberagent.co.jp`)
+**아직 한 번도 안 열어 본 후보(다음 후보 조사가 이어받는다)**
+- **일본**: SmartNews · PayPay · **CyberAgent 의 ABEMA 태그**(위 참조)
 - **동남아**: Sea/Shopee · GoTo/Gojek · Tokopedia · Traveloka
-- **미국**: Reddit(`r/RedditEng` 계열) · Wayfair · Robinhood · Plaid · Ramp
-- **유럽**: Adevinta · Revolut · Skyscanner
-- **인프라**(⚠️ 위 관찰대로 **뒤로 미룬다**): Vercel · Neon · Elastic · MongoDB · Confluent
-**⚠️ 주소는 검증되지 않았다.** WebSearch 로 찾고 **반드시 WebFetch 로 목록을 열어** 확인한다.
-
-**큐는 여전히 0 이다.** 대기에 넣을 만한 곳을 못 찾았고, **자리를 채우려고 얕은 곳을 넣지
-않았다.** 다음 사이클도 후보 조사이고, **네다섯 곳까지만 열어 본다.**
+- **미국**: Robinhood · Plaid · Ramp
+- **유럽**: Adevinta · Revolut · Skyscanner(⚠️ 여행은 trivago 와 겹칠 수 있다)
+- **인프라**(⚠️ **뒤로 미룬다** — 238 의 관찰): Vercel · Neon · Elastic · MongoDB · Confluent
+**⚠️ 주소는 검증되지 않았다.** WebSearch 로 찾고 **반드시 WebFetch 로 목록을 연다.**
 
 **비어 있는 자리** — 라틴아메리카 0(접었다) · **게임 1(Roblox — 후보가 계속 안 나온다)** ·
 아프리카 1(Moniepoint) · 인도 1(Zerodha) · 여행 1(trivago). **동남아는 Grab 이 있다.**
 
-**`hold_reason` 이 붙은 두 곳** — LinkedIn `랭킹 모델을 얼마나 빨리 다시 만들 수 있는가`
-(목록·분류를 못 열어 두 번째 글을 못 찾았다) · kakao `동기화·다중 기기`(본문이 안 열린다).
-**새 글 주소를 알게 되면 `hold_reason` 을 지우고 판다.**
+**`hold_reason` 이 붙은 두 곳** — LinkedIn `랭킹 모델을 얼마나 빨리 다시 만들 수 있는가` ·
+kakao `동기화·다중 기기`. **새 글 주소를 알게 되면 지우고 판다.**
 
 **운영 사실** — ① `hold_reason` 은 도메인 레벨에서 경고를 거른다(`validate.py:312`).
 ② 회사 파일의 `updated_at` 을 고치면 `index.json` 의 같은 항목도 함께 고친다(235 에서 ✗).
 ③ `validate.py` 는 비교 문서를 안 본다 — 직접 검산한다.
-④ **회사를 새로 열 때는 중복 검사부터**(226 에서 Grab 파일을 덮어썼다).
+④ **회사를 새로 열 때는 중복 검사부터.**
 
 
 ## 다음 선택지
@@ -132,6 +131,9 @@ Honeycomb · Fastly · Temporal(230) 셋이 같은 모양이었다. **관측·�
 | `www.honeycomb.io/blog` · `www.fastly.com/blog` | ⚠️ 살아 있지만 **제품 마케팅**(238). Temporal 과 같은 부류 — **개발자 대상 제품 회사의 블로그는 영업 채널이다** |
 | `techlife.cookpad.com` | ⚠️ 살아 있고 기술 블로그가 맞지만 **얇다**(최신 2026-05-12, 홈에 3편). 전부 일본어. 두 편 이상 묶이는 주제가 안 보인다(238) |
 | 한국 게임사(Krafton·Nexon·NCSOFT) | ❌ **엔지니어링 블로그를 못 찾았다**(238). 검색 결과가 전부 사업·AI 제휴 뉴스다 |
+| `aboutwayfair.com/careers/tech-blog` | ✅ **목록·본문·태그 편수 모두 열린다**(239). 최신 2026-07-17, Data Science 90 · ML/AI 68 |
+| `developers.cyberagent.co.jp/blog/` | ⚠️ **목록은 열리고 활발한데**(최신 2026-08-26, ABEMA 125편) **연 글이 얇았다**(239). 영어 글도 섞여 있다 |
+| `www.reddit.com` | ❌ **Claude Code 가 아예 못 가져온다**(도메인 차단, 239) |
 | `linkedin.com/blog/engineering` | ⚠️ **글 본문은 URL 을 알면 열리는데 목록·분류 페이지는 안 열린다.** WebFetch 는 내비게이션만 주고(`/artificial-intelligence`·`/infrastructure`·`/search` 전부), **브라우저도 탭을 못 만들었다**(No tab available, 사이클 228). `/talent` 만 12편이 떴는데 대부분 경력 이야기다 — **글 편수를 셀 수 없다** |
 | `about.gitlab.com/blog/categories/engineering/` | ⚠️ **열리지만 날짜가 본문에 안 실리고 제품 홍보가 섞여 있다** — 넣으려면 심층 글을 먼저 확인해야 한다 |
 | `etsy.com/codeascraft` · `tech.groww.in` · `unity.com/blog` · `zillow.com/tech` | ❌ 전부 **403** |
