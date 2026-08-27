@@ -1,0 +1,262 @@
+{
+  "slug": "snap",
+  "name": "스냅",
+  "name_en": "Snap",
+  "country": "US",
+  "category": "소셜",
+  "status": "in_progress",
+  "updated_at": "2026-08-27",
+  "domain": "카메라 중심 소셜과 AR 글라스",
+  "one_liner": "카메라가 먼저인 소셜을 만들면서 안경도 직접 만든다 — 그리고 그 코드를 AI 에게 점점 더 맡긴다",
+  "business_model": "**미국 상장사(NYSE: SNAP).** IR 홈이 내건 수치는 **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**이다(출처 표기가 *\"Snap Inc. internal data Q2 2026\"*).\n\n**⚠️ 매출 실액과 DAU 는 못 찾았다.** `financials/quarterly-results/` 는 WebFetch 로 껍데기만 오고, 보도자료 상세 URL 을 브라우저로 두 번 추측해 들어갔지만 **404** 였다. **목록에 2026-08-03 자 Q2 2026 실적 발표가 있으니 경로만 찾으면 받을 수 있다** — 다음에 다시 본다.\n\n**⭐ 2026-06-16 에 SPECS 증강현실 안경을 출시했다** — 보도자료 제목이 *\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"* 이다. **소프트웨어 회사가 쓰고 다니는 하드웨어를 파는 자리로 옮겨 갔다는 뜻이고**, 기술블로그 1쪽의 절반이 그 이야기다(이 연결은 이 사이트의 해석이다).\n\n**이 사이트의 다른 소셜과 자리가 다르다**(아래 비교는 이 사이트의 정리다).\n\n- **인스타그램**은 피드이고 **Discord** 는 음성 커뮤니티이며 **하이퍼커넥트**는 낯선 사람과의 실시간 영상 매칭이다. **셋 다 화면 안에서 끝난다.**\n- **여기는 카메라가 먼저이고**, 그 연장선에서 **안경이라는 하드웨어를 직접 굴린다.** 그러면 **바깥 세계의 좌표**(GNSS 로 실외 AR 을 추적한다)와 **모델이 공간을 이해하는지**(LLM 의 공간 지능을 잰다)가 소프트웨어 문제가 된다.\n- **⚠️ 그런데 기술블로그의 성격이 특이하다** — 1쪽 여섯 편 중 **넷이 사내 AI 개발 도구**이고 **Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** **회사가 지금 무엇을 자랑하고 싶은지가 그대로 드러난 목록으로 보인다**(이 추측은 이 사이트의 것이다).",
+  "products": [
+    "Snapchat — 카메라가 먼저인 메시징·소셜",
+    "SPECS — 증강현실 안경(2026-06-16 출시)",
+    "Lens Studio — AR 렌즈 제작 도구",
+    "Spotlight — 짧은 영상 피드"
+  ],
+  "ui_map": {
+    "title": "코드 한 줄과 시야 한 칸",
+    "question": "이 회사가 지금 파는 두 문제는 무엇인가?",
+    "kind": "web",
+    "note": "**실제 화면 캡처가 아닙니다.** 기술블로그 목록과 본문 한 편에 적힌 것만으로 그린 도해이고, **Snapchat 앱이나 사내 도구의 실제 화면이 어떤 모양인지 이 사이트는 확인하지 못했습니다.** 번호가 붙은 자리만 근거가 있습니다.",
+    "screen": [
+      {
+        "type": "appbar",
+        "text": "Snap 엔지니어링"
+      },
+      {
+        "type": "label",
+        "text": "안쪽 — 코드"
+      },
+      {
+        "type": "card",
+        "text": "코드는 빨라졌는데 리뷰는 그대로다",
+        "items": [
+          "PR 이 한 해에 육십 퍼센트 늘었다",
+          "사람 첫 리뷰까지 약 다섯 시간",
+          "AI 리뷰는 중앙값 십 분"
+        ],
+        "pin": 1
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "label",
+        "text": "바깥 — 시야"
+      },
+      {
+        "type": "card",
+        "text": "안경을 쓰고 밖에 나간다",
+        "items": [
+          "실외에서 위치를 잡아야 한다",
+          "모델이 공간을 이해하는지 재야 한다"
+        ],
+        "pin": 2
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "text",
+        "text": "⚠️ 목록에 Snapchat 본체의 시스템 글은 없습니다",
+        "pin": 1
+      },
+      {
+        "type": "button",
+        "text": "블로그 8페이지",
+        "variant": "ghost"
+      }
+    ],
+    "pins": [
+      {
+        "n": 1,
+        "title": "병목이 옮겨 갔다",
+        "domain": "사람보다 코드가 빨리 늘어난다",
+        "what": "*\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었고, 사람 첫 리뷰까지 **약 5시간**이 걸렸다. **CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*.",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+            "url": "https://eng.snap.com/codepal",
+            "publisher": "Snap Engineering",
+            "date": "2026-06-05",
+            "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.**"
+          },
+          {
+            "title": "Snap Engineering Blog",
+            "url": "https://eng.snap.com/blog",
+            "publisher": "Snap",
+            "date": "2026-08-27",
+            "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
+          }
+        ]
+      },
+      {
+        "n": 2,
+        "title": "안경을 팔면 바깥이 문제가 된다",
+        "domain": "얼굴 앞에 컴퓨터를 놓는다",
+        "what": "**2026-06-16 에 SPECS 증강현실 안경을 출시했다.** 그 뒤 블로그에 **실외 AR 추적(GNSS)** 과 **LLM 의 공간 지능 측정**이 올라온다 — **화면 안에서 끝나던 문제가 바깥 세계의 좌표 문제가 된다**(이 연결은 이 사이트의 해석이다).",
+        "confidence": "confirmed",
+        "sources": [
+          {
+            "title": "Snap Engineering Blog",
+            "url": "https://eng.snap.com/blog",
+            "publisher": "Snap",
+            "date": "2026-08-27",
+            "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
+          },
+          {
+            "title": "Snap Inc. Investor Relations",
+            "url": "https://investor.snap.com/",
+            "publisher": "Snap Inc.",
+            "date": "2026-08-27",
+            "summary": "IR 홈에서 받은 것 — **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**(출처 표기: *\"Snap Inc. internal data Q2 2026\"*). ⚠️ **매출 실액도 DAU 도 Snapchat+ 구독자 수도 이 페이지에 없다.** `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다(목록에는 **2026-08-03 Q2 2026 실적 발표**가 있다). **SPECS 증강현실 안경 출시 발표가 2026-06-16** 이다."
+          }
+        ]
+      }
+    ]
+  },
+  "domain_map": {
+    "title": "카메라 회사가 안경을 팔면서 코드를 AI 에게 맡길 때",
+    "question": "안쪽과 바깥쪽에서 각각 무엇이 문제가 되는가?",
+    "code": "flowchart TD\n  BIZ[\"<b>월간 활성 사용자 구억 칠천만 명</b><br/>• 총매출 전년 대비 십구 퍼센트 성장<br/>• 미국 Spotlight 게시자 백십오 퍼센트 증가<br/>• 매출 실액과 DAU 는 못 찾았다\"]:::accent\n  CAM[\"카메라가 먼저인 소셜\"]:::list\n  GLASS[\"안경을 직접 판다<br/>이천이십육년 유월 출시\"]:::list\n  OUT[\"바깥 세계의 좌표<br/>실외 추적 · 공간 이해\"]:::list\n  CODE[\"코드를 AI 가 쓴다\"]:::list\n  REV[\"리뷰가 병목이 된다<br/>PR 이 한 해에 육십 퍼센트 늘었다\"]:::list\n  TOOL[\"사내 도구를 직접 만든다<br/>벤더는 통합 깊이와 속도에서 안 맞았다\"]:::list\n  N[\"<i>블로그 첫 쪽에 Snapchat 본체의 시스템 글이 없다</i>\"]:::quiet\n  BIZ --> CAM --> GLASS --> OUT\n  BIZ --> CODE --> REV --> TOOL\n  CAM --- N"
+  },
+  "revenue_streams": [
+    {
+      "name": "광고 — 주 수익원(추정)",
+      "how": "IR 홈이 **총매출 전년 대비 19% 성장**과 **기타 매출 전년 대비 85% 성장**을 나란히 내건다. **'기타' 를 따로 세운다는 것은 본체가 광고라는 뜻으로 읽힌다**(이 해석은 이 사이트의 것이다). ⚠️ **부문별 실액은 이 페이지에 없다.**",
+      "confidence": "inferred",
+      "sources": [
+        {
+          "title": "Snap Inc. Investor Relations",
+          "url": "https://investor.snap.com/",
+          "publisher": "Snap Inc.",
+          "date": "2026-08-27",
+          "summary": "IR 홈에서 받은 것 — **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**(출처 표기: *\"Snap Inc. internal data Q2 2026\"*). ⚠️ **매출 실액도 DAU 도 Snapchat+ 구독자 수도 이 페이지에 없다.** `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다(목록에는 **2026-08-03 Q2 2026 실적 발표**가 있다). **SPECS 증강현실 안경 출시 발표가 2026-06-16** 이다."
+        }
+      ]
+    },
+    {
+      "name": "⚠️ 매출 실액을 못 찾았다",
+      "how": "`financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다. **목록에 2026-08-03 자 Q2 2026 실적 발표가 있다** — 경로만 찾으면 받을 수 있다.",
+      "confidence": "unknown",
+      "sources": [
+        {
+          "title": "Snap Inc. Investor Relations",
+          "url": "https://investor.snap.com/",
+          "publisher": "Snap Inc.",
+          "date": "2026-08-27",
+          "summary": "IR 홈에서 받은 것 — **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**(출처 표기: *\"Snap Inc. internal data Q2 2026\"*). ⚠️ **매출 실액도 DAU 도 Snapchat+ 구독자 수도 이 페이지에 없다.** `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다(목록에는 **2026-08-03 Q2 2026 실적 발표**가 있다). **SPECS 증강현실 안경 출시 발표가 2026-06-16** 이다."
+        }
+      ]
+    },
+    {
+      "name": "하드웨어 — SPECS",
+      "how": "**2026-06-16 에 증강현실 안경을 출시했다**(*\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"*). ⚠️ **판매량도 가격도 매출 기여도 확인하지 못했다.**",
+      "confidence": "confirmed",
+      "sources": [
+        {
+          "title": "Snap Inc. Investor Relations",
+          "url": "https://investor.snap.com/",
+          "publisher": "Snap Inc.",
+          "date": "2026-08-27",
+          "summary": "IR 홈에서 받은 것 — **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**(출처 표기: *\"Snap Inc. internal data Q2 2026\"*). ⚠️ **매출 실액도 DAU 도 Snapchat+ 구독자 수도 이 페이지에 없다.** `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다(목록에는 **2026-08-03 Q2 2026 실적 발표**가 있다). **SPECS 증강현실 안경 출시 발표가 2026-06-16** 이다."
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "name": "사람보다 코드가 빨리 늘어난다",
+      "why": "**코드를 빨리 쓰게 되면 그다음이 막힌다.** 회사가 그것을 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* **PR 이 연 60% 늘었는데 사람 첫 리뷰까지 약 5시간**이 걸렸다.\n\n**⭐ 이 도메인은 회사가 스스로 연작으로 묶었다** — CodePal 과 Casper 가 *\"how Snap is building toward end-to-end autonomous software delivery\"* 라는 **3부작의 일부**다. 여기에 `Code Search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01)와 `Building SPECS Experiences Faster`(AI 가 Lens Studio 를 직접 몬다, 2026-08-20)가 이어진다.\n\n**목록 1쪽 여섯 편 중 넷이 이 주제다** — 회사가 지금 무엇을 자랑하고 싶은지가 드러난다(이 추측은 이 사이트의 것이다).\n\n⚠️ **본문은 CodePal 한 편만 읽었다** — 기능을 쓰기 전에 두 편 이상 읽는다.",
+      "tech": [
+        {
+          "tech": "사내 코드 리뷰어를 직접 만든다 — CodePal",
+          "solves": "PR 의 **90%** 를 자동으로 리뷰하고 4개월간 **20만+ 리뷰**를 냈다. **중앙값 10분**에 결과가 나오는데 **사람 첫 리뷰는 약 5시간**이 걸린다. 한 분기에 채택률이 **0%에서 90%** 로 올랐고, 재현율은 **30%에서 80%**, 골든셋 **오탐 0%**, 버그 발견 만족도 **80%**, 이전 버전 대비 **긍정 평가 버그 75% 증가**. **Tree-sitter** 로 심볼을 색인하고 **GitHub Enterprise API** 와 Git tree diff 를 쓰며 저장소별 설정은 `.codepal.yaml` 이다.",
+          "limits": "**벤더 도구를 버린 이유가 둘이다** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **남는 대가** — 다중 패스라 *\"It costs more compute\"* 이고 리뷰당 **약 $0.40** · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"*. ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 루프 · 검증기)**을 풀린 문제로 서술하고 왜 그 구조인지는 덜 따진다.**",
+          "confidence": "confirmed",
+          "sources": [
+            {
+              "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+              "url": "https://eng.snap.com/codepal",
+              "publisher": "Snap Engineering",
+              "date": "2026-06-05",
+              "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.**"
+            }
+          ]
+        }
+      ],
+      "features": []
+    },
+    {
+      "name": "얼굴 앞에 컴퓨터를 놓는다",
+      "why": "**2026-06-16 에 SPECS 증강현실 안경을 출시했다** — 보도자료 제목이 *\"Snap Inc. Debuts SPECS Augmented Reality Glasses to Make Computing More Human\"* 이다.\n\n**안경을 팔면 문제가 화면 밖으로 나간다**(이 연결은 이 사이트의 해석이다). 블로그에 **실외 AR 추적(GNSS, 2026-07-10)** 과 **LLM 의 공간 지능 측정(2026-06-17)** 이 올라오고, **AR 경험을 더 빨리 만드는 도구(2026-08-20)** 도 나온다.\n\n**이 사이트의 다른 소셜은 전부 화면 안에서 끝난다** — 인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭이다. **바깥 세계의 좌표를 다루는 회사는 여기가 처음이다.**\n\n⚠️ **본문을 한 편도 안 읽었다** — 도메인은 제목과 출시 사실로 열었고, **기능을 쓰기 전에 두 편 이상 읽는다.**",
+      "tech": [
+        {
+          "tech": "실외에서 AR 을 붙잡아 둔다 — GNSS 기반 월드스케일 추적",
+          "solves": "⚠️ **본문을 아직 안 읽었다** — 제목(`World-scale Outdoor AR Tracking with GNSS`, 2026-07-10)이 알려 주는 것만 적는다. **위성 항법으로 실외의 넓은 공간에서 AR 을 추적**한다는 것이고, **실내용 방식으로는 안 되는 자리**로 보인다(이 추측은 이 사이트의 것이다).",
+          "limits": "⚠️ **이 항목은 제목만 근거로 한다.** 버린 대안도 대가도 수치도 확인하지 않았다. **기능을 쓰기 전에 본문을 읽는다.**",
+          "confidence": "unknown",
+          "sources": [
+            {
+              "title": "Snap Engineering Blog",
+              "url": "https://eng.snap.com/blog",
+              "publisher": "Snap",
+              "date": "2026-08-27",
+              "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
+            }
+          ]
+        },
+        {
+          "tech": "모델이 공간을 이해하는지 잰다 — Measuring Spatial Intelligence in LLMs",
+          "solves": "⚠️ **본문을 아직 안 읽었다** — 제목(2026-06-17)이 알려 주는 것만 적는다. **LLM 이 공간을 얼마나 이해하는지 재는 기준을 만든 것**으로 보이고, **안경 위에서 도는 것을 만들려면 그 척도가 먼저 필요했을 것**이다(이 추측은 이 사이트의 것이다).",
+          "limits": "⚠️ **이 항목도 제목만 근거로 한다.**",
+          "confidence": "unknown",
+          "sources": [
+            {
+              "title": "Snap Engineering Blog",
+              "url": "https://eng.snap.com/blog",
+              "publisher": "Snap",
+              "date": "2026-08-27",
+              "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
+            }
+          ]
+        }
+      ],
+      "features": []
+    }
+  ],
+  "open_questions": [
+    "**🔴 매출 실액과 DAU 를 못 찾았다.** IR 홈에서 받은 것은 **MAU 971백만 · 총매출 19% 성장 · 미국 Spotlight 게시자 115% 증가 · 기타 매출 85% 성장**(*\"Snap Inc. internal data Q2 2026\"*)뿐이다. `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다. **목록에 2026-08-03 자 `Snap Inc. Announces Second Quarter 2026 Financial Results` 가 있으니 경로만 찾으면 받을 수 있다** — 다음에 보도자료 목록에서 링크를 눌러 들어간다.",
+    "**블로그 2쪽 이후를 못 봤다.** `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 **404** 다 — **페이지네이션이 JS 로 도는 것으로 보인다.** **8페이지 중 1쪽만 보고 도메인을 열었다.** 브라우저 `get_page_text` 로 다시 시도해 볼 여지가 있다.",
+    "**🔴 1쪽에 Snapchat 본체의 시스템 글이 하나도 없다.** 피드·렌즈·메시징·미디어 저장·추천 같은 이야기가 없고 **여섯 편 중 넷이 사내 AI 개발 도구**다. **2쪽 이후에 있는지 확인하지 못했다** — 없다면 **이 회사의 기술블로그는 제품 시스템을 안 말하는 곳**이라는 뜻이 된다(이 판단은 아직 이르다).",
+    "**Specs 도메인의 본문을 한 편도 안 읽었다.** `World-scale Outdoor AR Tracking with GNSS`(2026-07-10)와 `Measuring Spatial Intelligence in LLMs`(2026-06-17)를 **제목만 보고 도메인을 열었다.** 기능을 쓰기 전에 두 편 이상 읽는다.",
+    "**SPECS 의 판매량·가격·매출 기여를 확인하지 못했다.** 출시 사실(2026-06-16)만 확인했다."
+  ],
+  "sources": [
+    {
+      "title": "Snap Engineering Blog",
+      "url": "https://eng.snap.com/blog",
+      "publisher": "Snap",
+      "date": "2026-08-27",
+      "summary": "**8페이지 목록이고 최신이 2026-08-20 이다.** 1쪽 6편 — `/specs_experiences`(SPECS 경험을 더 빨리 만들기, 2026-08-20) · `/casper`(Snap 의 AI 팀메이트 부대, 2026-07-28) · `/specs_gnss`(GNSS 로 실외 AR 추적, 2026-07-10) · `/code_search`(에이전트가 코드베이스를 검색하는 법, 2026-07-01) · `/spatial_intelligence`(LLM 의 공간 지능 측정, 2026-06-17) · `/codepal`(AI 코드 리뷰어, 2026-06-05). **묶음이 둘로 뚜렷하다** — **AI 개발 도구 넷**(CodePal · Casper · Code Search · SPECS 경험 제작)과 **Specs/AR 둘**(GNSS 추적 · 공간 지능 측정). **⭐ CodePal 과 Casper 는 명시적으로 3부작의 일부다** — *\"how Snap is building toward end-to-end autonomous software delivery\"*. ⚠️ **1쪽에 Snapchat 본체(피드·렌즈·메시징·미디어 저장·추천)의 시스템 글이 하나도 없다.** ⚠️ **2쪽 이후를 못 봤다** — `?page=2` 는 1쪽과 같은 것을 돌려주고 `/blog/2` 는 404 다(페이지네이션이 JS 로 도는 것으로 보인다)."
+    },
+    {
+      "title": "CodePal: How Snap Built an AI Code Reviewer for the Age of AI-Written Code",
+      "url": "https://eng.snap.com/codepal",
+      "publisher": "Snap Engineering",
+      "date": "2026-06-05",
+      "summary": "**AI 가 코드를 빨리 쓰게 되자 병목이 리뷰로 옮겨 간 이야기.** 문제를 한 문장으로 적는다 — *\"When everyone can produce code faster, the bottleneck doesn't disappear, it shifts. And at Snap, it moved squarely onto the code review process.\"* PR 이 **연 60%** 늘었는데 리뷰 용량이 못 따라갔다. **버린 대안은 벤더 도구이고 이유가 둘** — **통합 깊이**(*\"Snap's engineering infrastructure is extensive and deeply interconnected… CodePal needed to understand Snap-specific proto definitions, our internal configuration systems… A generic tool with only a few configuration knobs wasn't going to work\"*)와 **속도**(*\"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished\"*). **대가 다섯** — 다중 패스 리뷰 루프라 *\"It costs more compute\"* · *\"Out of the box, it's surprisingly generalizable… But the largest, most complex repos need more\"* · *\"AI review doesn't yet replace human review, it reshapes it\"* · 리뷰당 **약 $0.40**. **수치가 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · 이전 버전 대비 **긍정 평가 버그 75% 증가**. 스택 — **Tree-sitter**(심볼 색인) · **GitHub Enterprise API** · Git tree diff · `.codepal.yaml` · Claude(암시). ⚠️ **구현 선택**(두 단계 파일 선별기 · 다중 패스 리뷰 루프 · 검증기 구조)**을 풀린 문제로 서술하지 왜 그 구조인지는 덜 따진다.**"
+    },
+    {
+      "title": "Snap Inc. Investor Relations",
+      "url": "https://investor.snap.com/",
+      "publisher": "Snap Inc.",
+      "date": "2026-08-27",
+      "summary": "IR 홈에서 받은 것 — **월간 활성 사용자 971백만 명**, **총매출 전년 대비 19% 성장**, **미국 Spotlight 게시자 115% 증가**, **기타 매출 전년 대비 85% 성장**(출처 표기: *\"Snap Inc. internal data Q2 2026\"*). ⚠️ **매출 실액도 DAU 도 Snapchat+ 구독자 수도 이 페이지에 없다.** `financials/quarterly-results/` 는 **WebFetch 로 껍데기만 오고**, 보도자료 상세 URL 을 **브라우저로 두 번 추측해 들어갔지만 404** 였다(목록에는 **2026-08-03 Q2 2026 실적 발표**가 있다). **SPECS 증강현실 안경 출시 발표가 2026-06-16** 이다."
+    }
+  ],
+  "features": []
+}

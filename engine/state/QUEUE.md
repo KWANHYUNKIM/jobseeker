@@ -15,12 +15,12 @@
 
 | 회사 | 국가·분류 | 상태 |
 |---|---|---|
+| **Snap** | US · 소셜(카메라·AR) | **266 회사 프로파일 완료. 도메인 2개 · 기능 0개.** ① `사람보다 코드가 빨리 늘어난다`(AI 개발 도구 — **회사가 스스로 3부작으로 묶었다**, CodePal 본문 확인) · ② `얼굴 앞에 컴퓨터를 놓는다`(SPECS/AR — **본문을 한 편도 안 읽었다**, 제목과 출시 사실로 열었다). **⚠️ 블로그 8페이지 중 1쪽만 봤다**(`?page=2` 는 1쪽과 같고 `/blog/2` 는 404 — JS 페이지네이션). **⚠️ 1쪽에 Snapchat 본체 시스템 글이 하나도 없다.** **⚠️ 매출 실액·DAU 를 못 찾았다**(IR 홈에 MAU 971M · 매출 19% 성장만) |
 
 ## 대기
 
 | 회사 | 국가·분류 | 1차 자료 | 접근 | 왜 이 회사인가 |
 |---|---|---|---|---|
-| **Snap** | US · 소셜(카메라·AR) | `eng.snap.com` | ✅ WebFetch 로 목록·본문 다 열린다 | **265 에서 본문을 열어 확인했다** — `/codepal`(AI 코드 리뷰어, 2026-06-05)이 **벤더를 버린 이유를 둘 댄다**: **통합 깊이**(*"Snap's engineering infrastructure is extensive and deeply interconnected… A generic tool with only a few configuration knobs wasn't going to work"*)와 **속도**(*"We shipped a working end-to-end demo in two weeks. A vendor procurement cycle hadn't even finished"*). **대가도 다섯** — 다중 패스라 *"It costs more compute"* · 큰 저장소는 설정이 더 필요하다 · *"AI review doesn't yet replace human review, it reshapes it"* · 리뷰당 **약 $0.40**. **수치가 아주 촘촘하다** — PR 의 **90%** 를 리뷰 · 4개월간 **20만+ 리뷰** · 중앙값 **10분** 대 사람 첫 리뷰 **약 5시간** · 한 분기에 채택률 **0%→90%** · 재현율 **30%→80%** · 골든셋 **오탐 0%** · 버그 발견 만족도 **80%** · PR 증가율 **연 60%**. 스택 — Tree-sitter · GitHub Enterprise API · `.codepal.yaml`. **⭐ 비교 축이 이미 있다** — LinkedIn `ai-code-review` 와 **같은 결정을 다른 이유로** 했다(LinkedIn 은 *"벤더의 모델을 카나리로 돌릴 수 없고 두 번째 리뷰어로 페일오버할 수도 없다"*, Snap 은 통합 깊이와 속도). **자리** — 이 사이트에 **카메라 중심 소셜도 AR 글라스도 없다**(인스타그램은 피드, Discord 는 음성, 하이퍼커넥트는 실시간 영상 매칭). ⚠️ **블로그 1쪽이 AI 개발 도구에 쏠려 있다**(Code Search · Casper · CodePal · Spatial Intelligence) — **8페이지이니 뒤쪽에 Snapchat 본체의 시스템 글이 있는지 확인하고 도메인을 연다** |
 
 
 ### 확인해 둔 후보 (아직 검증 안 됨)
