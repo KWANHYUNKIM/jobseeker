@@ -492,6 +492,22 @@
         "parallel-backups"
       ],
       "file": "reversible-first.md"
+    },
+    {
+      "slug": "where-it-piles-up",
+      "title": "미루되 미룬 것이 안 보이게 한다 — 그럼 그것은 어디에 쌓이는가",
+      "question": "미룬 일을 감추는 장치는 무엇을 대신 떠안고, 그 청구서는 언제 오는가?",
+      "companies": [
+        "doximity",
+        "careem",
+        "planetscale"
+      ],
+      "features": [
+        "cdc-overlap",
+        "cost-leaks",
+        "parallel-backups"
+      ],
+      "file": "where-it-piles-up.md"
     }
   ]
 }
